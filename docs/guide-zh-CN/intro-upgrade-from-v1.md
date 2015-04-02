@@ -11,7 +11,7 @@
 安装
 ------------
 
-Yii 2.0 完全拥抱 [Composer](https://getcomposer.org/)，它是PHP中的一个依赖管理工具。核心框架以及扩展的安装都通过 Composer 来处理。想要了解更多如何安装 Yii 2.0 请参阅本指南的 [安装 Yii](start-installation.md) 章节。如果你想创建新扩展，或者把你已有的 Yii 1.1 的扩展改写成兼容 2.0 的版本，你可以参考 [创建扩展](extend-creating-extensions.md) 章节。
+Yii 2.0 完全拥抱 [Composer](https://getcomposer.org/)，它是事实上的 PHP 依赖管理工具。核心框架以及扩展的安装都通过 Composer 来处理。想要了解更多如何安装 Yii 2.0 请参阅本指南的 [安装 Yii](start-installation.md) 章节。如果你想创建新扩展，或者把你已有的 Yii 1.1 的扩展改写成兼容 2.0 的版本，你可以参考 [创建扩展](structure-extensions.md#creating-extensions) 章节。
 
 
 PHP 需求
@@ -33,17 +33,17 @@ Yii 2.0 需要 PHP 5.4 或更高版本，该版本相对于 Yii 1.1 所需求的
 命名空间
 ---------
 
-Yii 2.0 里最明显的改动就数命名空间的使用了。几乎每一个核心类都引入了命名空间，比如 `yii\web\Request`。1.1 版用于类名前的字母 “C” 已经不再使用。当前的命名规范与目录结构相吻合。例如，`yii\web\Request` 就表明对应的类文件是 Yii 框架文件夹下的 `web/Request.php` 文件。
+Yii 2.0 里最明显的改动就数命名空间的使用了。几乎每一个核心类都引入了命名空间，比如 `yii\web\Request`。1.1 版类名前缀 “C” 已经不再使用。当前的命名方案与目录结构相吻合。例如，`yii\web\Request` 就表明对应的类文件是 Yii 框架文件夹下的 `web/Request.php` 文件。
 
-（有了 Yii 的类自动加载器，你可以直接使用全部核心类而不需要显式包含具体文件。）
+有了 Yii 的类自动加载器，你可以直接使用全部核心类而不需要显式包含具体文件。
 
 
 组件（Component）与对象（Object）
 --------------------
 
-Yii 2.0 把 1.1 里的 `CComponent` 类拆分成了两个类：[[yii\base\Object]] 和 [[yii\base\Component]]。[[yii\base\Object|Object]] 类是一个轻量级的基类，你可以通过 getters 和 setters 来定义 [object 的属性](concept-properties.md)。[[yii\base\Component|Component]] 类继承自 [[yii\base\Object|Object]]，同时进一步支持 [事件](concept-events.md) 和 [行为](concept-behaviors.md)。
+Yii 2.0 把 1.1 中的 `CComponent` 类拆分成了两个类：[[yii\base\Object]] 和 [[yii\base\Component]]。[[yii\base\Object|Object]] 类是一个轻量级的基类，你可以通过 getters 和 setters 来定义[对象的属性](concept-properties.md)。[[yii\base\Component|Component]] 类继承自 [[yii\base\Object|Object]]，同时进一步支持 [事件](concept-events.md) 和 [行为](concept-behaviors.md)。
 
-如果你不需要用到事件或行为，应该考虑使用 [[yii\base\Object|Object]] 类作为基类。这通常是表示基本数据结构的类。
+如果你不需要用到事件或行为，应该考虑使用 [[yii\base\Object|Object]] 类作为基类。这种类通常用来表示基本的数据结构。
 
 
 对象的配置
@@ -65,12 +65,12 @@ class MyClass extends \yii\base\Object
     {
         parent::init();
 
-        // ...配置生效后的初始化过程
+        // ... 配置生效后的初始化过程
     }
 }
 ```
 
-在上面的例子里，构造方法的最后一个参数必须输入一个配置数组，包含一系列用于在方法结尾初始化相关属性的键值对。你可以重写 [[yii\base\Object::init()|init()]] 方法来执行一些需要在配置生效后进行的初始化工作。
+在上面的例子里，构造方法的最后一个参数必须传入一个配置数组，包含一系列用于在方法结尾初始化相关属性的键值对。你可以重写 [[yii\base\Object::init()|init()]] 方法来执行一些需要在配置生效后进行的初始化工作。
 
 你可以通过遵循以下约定俗成的编码习惯，来使用配置数组创建并配置新的对象：
 
@@ -95,11 +95,11 @@ $event = new \yii\base\Event;
 $component->trigger($eventName, $event);
 ```
 
-要给事件附加一个事件句柄（Event Handler 或者叫事件处理器），需要使用 [[yii\base\Component::on()|on()]] 方法：
+要给事件附加一个事件事件处理器，需要使用 [[yii\base\Component::on()|on()]] 方法：
 
 ```php
 $component->on($eventName, $handler);
-// 要解除相关句柄，使用 off 方法：
+// 解除事件处理器，使用 off 方法：
 // $component->off($eventName, $handler);
 ```
 
@@ -158,7 +158,7 @@ public function scenarios()
 控制器（Controller）
 -----------
 
-Yii 2.0 使用 [[yii\web\Controller]] 作为控制器的基类，类似于 1.1 的 `CWebController`。使用 [[yii\base\Action]] 作为操作类的基类。
+Yii 2.0 使用 [[yii\web\Controller]] 作为控制器的基类，它类似于 1.1 的 `CController`。使用 [[yii\base\Action]] 作为操作类的基类。
 
 这些变化最明显的影响是，当你在写控制器操作的代码时，应该返回（return）要渲染的内容而不是输出（echo）它：
 
@@ -174,7 +174,7 @@ public function actionView($id)
 }
 ```
 
-请查看 [控制器（Controller）](structure-controllers.md) 章节了解有关控制器的更多细节。
+请查看[控制器（Controller）](structure-controllers.md)章节了解有关控制器的更多细节。
 
 
 小部件（Widget）
@@ -283,7 +283,7 @@ Yii 2.0 很多常用的静态助手类，包括：
 表单
 -----
 
-Yii 2.0 引进了**表单栏（field）**的概念，用来创建一个基于 [[yii\widgets\ActiveForm]]的表单。一个表单栏是一个由标签、输入框、错误消息（可能还有提示文字）组成的容器，被表示为 [[yii\widgets\ActiveField|ActiveField]] 对象。使用表单栏建立表单的过程比以前更整洁利落：
+Yii 2.0 引进了**表单栏（field）**的概念，用来创建一个基于 [[yii\widgets\ActiveForm]] 的表单。一个表单栏是一个由标签、输入框、错误消息（可能还有提示文字）组成的容器，被表示为一个 [[yii\widgets\ActiveField|ActiveField]] 对象。使用表单栏建立表单的过程比以前更整洁利落：
 
 ```php
 <?php $form = yii\widgets\ActiveForm::begin(); ?>
@@ -327,14 +327,14 @@ Yii 2.0 的[活动记录](db-active-record.md)改动了很多。两个最显而�
 1.1 中的 `CDbCriteria` 类在 Yii 2 中被 [[yii\db\ActiveQuery]] 所替代。这个类是继承自 [[yii\db\Query]]，因此也继承了所有查询生成方法。开始拼装一个查询可以调用 [[yii\db\ActiveRecord::find()]] 方法进行：
 
 ```php
-// 检索所有 *活动的* 客户和订单，并以 ID 排序：
+// 检索所有“活动的”客户和订单，并以 ID 排序：
 $customers = Customer::find()
     ->where(['status' => $active])
     ->orderBy('id')
     ->all();
 ```
 
-要声明一个关联关系，只需简单地定义一个 getter 方法来返回一个 [[yii\db\ActiveQuery|ActiveQuery]] 对象。getter 方法定义的属性名（译者注：即 getOrders() 中的 orders）表示关联关系名。如，以下代码声明了一个名为 `orders` 的关系（1.1 中必须在 `relations()` 方法内声明关系）：
+要声明一个关联关系，只需简单地定义一个 getter 方法来返回一个 [[yii\db\ActiveQuery|ActiveQuery]] 对象。getter 方法定义的属性名代表关联表名称。如，以下代码声明了一个名为 `orders` 的关系（1.1 中必须在 `relations()` 方法内声明关系）：
 
 ```php
 class Customer extends \yii\db\ActiveRecord
@@ -360,7 +360,7 @@ $orders = $customer->getOrders()->andWhere('status=1')->all();
 $customers = Customer::find()->asArray()->all();
 ```
 
-另一个改变是你不能再通过公共数据定属性（Attribute）的默认值了。如果你需要这么做的话，可以在你的记录类的 `init` 方法中设置它们。
+另一个改变是你不能再通过公共变量定义属性（Attribute）的默认值了。如果你需要这么做的话，可以在你的记录类的 `init` 方法中设置它们。
 
 ```php
 public function init()
@@ -370,9 +370,39 @@ public function init()
 }
 ```
 
-曾几何时，在 1.1 中重写一个活动记录类的构造方法（Constructor）会导致一些问题。它们不会在 2.0 中出现了。需要注意的是，如果你需要在构造方法中添加一些参数，恐怕必须重写 [[yii\db\ActiveRecord::instantiate()]] 方法。
+曾几何时，在 1.1 中重写一个活动记录类的构造方法会导致一些问题。它们不会在 2.0 中出现了。需要注意的是，如果你需要在构造方法中添加一些参数，恐怕必须重写 [[yii\db\ActiveRecord::instantiate()]] 方法。
 
 活动记录方面还有很多其他的变化与改进，请参考[活动记录](db-active-record.md)章节以了解更多细节。
+
+
+活动记录行为（Active Record Behaviors）
+------------------------------------
+
+在 2.0 中遗弃了活动记录行为基类 `CActiveRecordBehavior`。如果你想创建活动记录行为，需要直接继承 `yii\base\Behavior`。如果行为类中需要表示一些事件，需要像这样覆写 `events()` 方法：
+
+```php
+namespace app\components;
+
+use yii\db\ActiveRecord;
+use yii\base\Behavior;
+
+class MyBehavior extends Behavior
+{
+    // ...
+
+    public function events()
+    {
+        return [
+            ActiveRecord::EVENT_BEFORE_VALIDATE => 'beforeValidate',
+        ];
+    }
+
+    public function beforeValidate($event)
+    {
+        // ...
+    }
+}
+```
 
 
 用户及身份验证接口（IdentityInterface）
@@ -401,4 +431,4 @@ Yii 2.0 的 URL 管理跟 1.1 中很像。一个主要的改进是现在的 URL 
 同时使用 Yii 1.1 和 2.x
 ----------------------
 
-如果你有一些遗留的 Yii 1.1 代码，需要跟 Yii 2.0 一起使用，可以参考 [1.1 和 2.0 共用](extend-using-v1-v2.md)章节。
+如果你有一些遗留的 Yii 1.1 代码，需要跟 Yii 2.0 一起使用，可以参考 [1.1 和 2.0 共用](tutorial-yii-integration.md)章节。

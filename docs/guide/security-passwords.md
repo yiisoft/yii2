@@ -1,4 +1,4 @@
-Security
+Working with Passwords
 ========
 
 > Note: This section is under development.
@@ -6,7 +6,7 @@ Security
 Good security is vital to the health and success of any application. Unfortunately, many developers cut corners when it comes to security, either due to a lack of understanding or because implementation is too much of a hurdle. To make your Yii powered application as secure as possible, Yii has included several excellent and easy to use security features.
 
 
-Hashing and verifying passwords
+Hashing and Verifying Passwords
 -------------------------------
 
 Most developers know that passwords cannot be stored in plain text, but many developers believe it's still safe to hash passwords using `md5` or `sha1`. There was a time when using the aforementioned hashing algorithms was sufficient, but modern hardware makes it possible to reverse such hashes very quickly using brute force attacks.
@@ -33,10 +33,10 @@ if (Yii::$app->getSecurity()->validatePassword($password, $hash)) {
 }
 ```
 
-Generating Pseudorandom data
+Generating Pseudorandom Data
 -----------
 
-Pseudorandom data is useful in many situations. For example when resetting a password via email you need to generate a token, save it to the database, and send it via email to end user which in turn will allow them to prove ownership of that account. It is very important that this token be unique and hard to guess, else there is a possibility and attacker can predict the token's value and reset the user's password.
+Pseudorandom data is useful in many situations. For example when resetting a password via email you need to generate a token, save it to the database, and send it via email to end user which in turn will allow them to prove ownership of that account. It is very important that this token be unique and hard to guess, else there is a possibility that attacker can predict the token's value and reset the user's password.
 
 Yii security helper makes generating pseudorandom data simple:
 
@@ -47,16 +47,16 @@ $key = Yii::$app->getSecurity()->generateRandomString();
 
 Note that you need to have the `openssl` extension installed in order to generate cryptographically secure random data.
 
-Encryption and decryption
+Encryption and Decryption
 -------------------------
 
-Yii provides convenient helper functions that allow you to encrypt/decrypt data using a secret key. The data is passed through and encryption function so that only the person which has the secret key will be able to decrypt it.
+Yii provides convenient helper functions that allow you to encrypt/decrypt data using a secret key. The data is passed through the encryption function so that only the person which has the secret key will be able to decrypt it.
 For example, we need to store some information in our database but we need to make sure only the user which has the secret key can view it (even if the application database is compromised):
 
 
 ```php
 // $data and $secretKey are obtained from the form
-$encryptedData = Yii::$app->getSecurity()->encrypt($data, $secretKey);
+$encryptedData = Yii::$app->getSecurity()->encryptByPassword($data, $secretKey);
 // store $encryptedData to database
 ```
 
@@ -64,26 +64,26 @@ Subsequently when user wants to read the data:
 
 ```php
 // $secretKey is obtained from user input, $encryptedData is from the database
-$data = Yii::$app->getSecurity()->decrypt($encryptedData, $secretKey);
+$data = Yii::$app->getSecurity()->decryptByPassword($encryptedData, $secretKey);
 ```
 
-Confirming data integrity
+Confirming Data Integrity
 --------------------------------
 
-There are situations in which you need to verify that your data hasn't been tampered with by a third party or even corrupted in some way. Yii provides an easy way to confirm data integrity in the form of two helper functions.  
+There are situations in which you need to verify that your data hasn't been tampered with by a third party or even corrupted in some way. Yii provides an easy way to confirm data integrity in the form of two helper functions.
 
 Prefix the data with a hash generated from the secret key and data
 
 
 ```php
-// $secretKey our application or user secret, $genuineData obtained from a reliable source 
+// $secretKey our application or user secret, $genuineData obtained from a reliable source
 $data = Yii::$app->getSecurity()->hashData($genuineData, $secretKey);
 ```
 
 Checks if the data integrity has been compromised
 
 ```php
-// $secretKey our application or user secret, $data obtained from an unreliable source 
+// $secretKey our application or user secret, $data obtained from an unreliable source
 $data = Yii::$app->getSecurity()->validateData($data, $secretKey);
 ```
 
@@ -136,5 +136,5 @@ Securing Cookies
 See also
 --------
 
-- [Views security](view.md#security)
+- [Views security](structure-views.md#security)
 

@@ -50,20 +50,31 @@ class DataColumn extends Column
      */
     public $label;
     /**
-     * @var string|\Closure an anonymous function that returns the value to be displayed for every data model.
-     * The signature of this function is `function ($model, $key, $index, $column)`.
-     * If this is not set, `$model[$attribute]` will be used to obtain the value.
+     * @var boolean whether the header label should be HTML-encoded.
+     * @see label
+     * @since 2.0.1
+     */
+    public $encodeLabel = true;
+    /**
+     * @var string|\Closure an anonymous function or a string that is used to determine the value to display in the current column.
+     *
+     * If this is an anonymous function, it will be called for each row and the return value will be used as the value to
+     * display for every data model. The signature of this function should be: `function ($model, $key, $index, $column)`.
+     * Where `$model`, `$key`, and `$index` refer to the model, key and index of the row currently being rendered
+     * and `$column` is a reference to the [[DataColumn]] object.
      *
      * You may also set this property to a string representing the attribute name to be displayed in this column.
      * This can be used when the attribute to be displayed is different from the [[attribute]] that is used for
      * sorting and filtering.
+     *
+     * If this is not set, `$model[$attribute]` will be used to obtain the value, where `$attribute` is the value of [[attribute]].
      */
     public $value;
     /**
-     * @var string|array in which format should the value of each data model be displayed as (e.g. "raw", "text", "html",
-     * ['date', 'Y-m-d']). Supported formats are determined by the [[GridView::formatter|formatter]] used by
+     * @var string|array in which format should the value of each data model be displayed as (e.g. `"raw"`, `"text"`, `"html"`,
+     * `['date', 'php:Y-m-d']`). Supported formats are determined by the [[GridView::formatter|formatter]] used by
      * the [[GridView]]. Default format is "text" which will format the value as an HTML-encoded plain text when
-     * [[\yii\base\Formatter::format()]] or [[\yii\i18n\Formatter::format()]] is used.
+     * [[\yii\i18n\Formatter]] is used as the [[GridView::$formatter|formatter]] of the GridView.
      */
     public $format = 'text';
     /**
@@ -128,9 +139,9 @@ class DataColumn extends Column
 
         if ($this->attribute !== null && $this->enableSorting &&
             ($sort = $provider->getSort()) !== false && $sort->hasAttribute($this->attribute)) {
-            return $sort->link($this->attribute, array_merge($this->sortLinkOptions, ['label' => Html::encode($label)]));
+            return $sort->link($this->attribute, array_merge($this->sortLinkOptions, ['label' => ($this->encodeLabel ? Html::encode($label) : $label)]));
         } else {
-            return Html::encode($label);
+            return $this->encodeLabel ? Html::encode($label) : $label;
         }
     }
 
@@ -148,15 +159,15 @@ class DataColumn extends Column
         if ($this->filter !== false && $model instanceof Model && $this->attribute !== null && $model->isAttributeActive($this->attribute)) {
             if ($model->hasErrors($this->attribute)) {
                 Html::addCssClass($this->filterOptions, 'has-error');
-                $error = Html::error($model, $this->attribute, $this->grid->filterErrorOptions);
+                $error = ' ' . Html::error($model, $this->attribute, $this->grid->filterErrorOptions);
             } else {
                 $error = '';
             }
             if (is_array($this->filter)) {
                 $options = array_merge(['prompt' => ''], $this->filterInputOptions);
-                return Html::activeDropDownList($model, $this->attribute, $this->filter, $options) . ' ' . $error;
+                return Html::activeDropDownList($model, $this->attribute, $this->filter, $options) . $error;
             } else {
-                return Html::activeTextInput($model, $this->attribute, $this->filterInputOptions) . ' ' . $error;
+                return Html::activeTextInput($model, $this->attribute, $this->filterInputOptions) . $error;
             }
         } else {
             return parent::renderFilterCellContent();

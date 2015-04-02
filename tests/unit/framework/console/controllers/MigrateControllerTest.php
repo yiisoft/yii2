@@ -20,7 +20,7 @@ class MigrateControllerTest extends TestCase
 
     public function setUp()
     {
-        $this->migrateControllerClass = MigrateController::className();
+        $this->migrateControllerClass = EchoMigrateController::className();
         $this->migrationBaseClass = Migration::className();
 
         $this->mockApplication([

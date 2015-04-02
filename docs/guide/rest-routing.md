@@ -70,9 +70,23 @@ For example, to support a new action `search` by the endpoint `GET /users/search
     'extraPatterns' => [
         'GET search' => 'search',
     ],
+]
 ```
 
-You may have noticed that the controller ID `user` appears in plural form as `users` in the endpoints.
-This is because [[yii\rest\UrlRule]] automatically pluralizes controller IDs for them to use in endpoints.
-You may disable this behavior by setting [[yii\rest\UrlRule::pluralize]] to be false, or if you want
-to use some special names you may configure the [[yii\rest\UrlRule::controller]] property.
+You may have noticed that the controller ID `user` appears in plural form as `users` in the endpoint URLs.
+This is because [[yii\rest\UrlRule]] automatically pluralizes controller IDs when creating child URL rules.
+You may disable this behavior by setting [[yii\rest\UrlRule::pluralize]] to be false. 
+
+> Info: The pluralization of controller IDs is done by [[yii\helpers\Inflector::pluralize()]]. The method respects
+  special pluralization rules. For example, the word `box` will be pluralized as `boxes` instead of `boxs`.
+
+In case when the automatic pluralization does not meet your requirement, you may also configure the 
+[[yii\rest\UrlRule::controller]] property to explicitly specify how to map a name used in endpoint URLs to 
+a controller ID. For example, the following code maps the name `u` to the controller ID `user`.  
+ 
+```php
+[
+    'class' => 'yii\rest\UrlRule',
+    'controller' => ['u' => 'user'],
+]
+```

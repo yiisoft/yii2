@@ -146,6 +146,14 @@ interface ManagerInterface
     public function removeChild($parent, $child);
 
     /**
+     * Removed all children form their parent.
+     * Note, the children items are not deleted. Only the parent-child relationships are removed.
+     * @param Item $parent
+     * @return boolean whether the removal is successful
+     */
+    public function removeChildren($parent);
+
+    /**
      * Returns a value indicating whether the child already exists for the parent.
      * @param Item $parent
      * @param Item $child

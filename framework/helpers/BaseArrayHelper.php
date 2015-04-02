@@ -81,7 +81,7 @@ class BaseArrayHelper
                         }
                     }
 
-                    return $recursive ? static::toArray($result) : $result;
+                    return $recursive ? static::toArray($result, $properties) : $result;
                 }
             }
             if ($object instanceof Arrayable) {
@@ -120,7 +120,11 @@ class BaseArrayHelper
             $next = array_shift($args);
             foreach ($next as $k => $v) {
                 if (is_integer($k)) {
-                    isset($res[$k]) ? $res[] = $v : $res[$k] = $v;
+                    if (isset($res[$k])) {
+                        $res[] = $v;
+                    } else {
+                        $res[$k] = $v;
+                    }
                 } elseif (is_array($v) && isset($res[$k]) && is_array($res[$k])) {
                     $res[$k] = self::merge($res[$k], $v);
                 } else {
@@ -320,7 +324,7 @@ class BaseArrayHelper
      *     ['id' => '123', 'name' => 'aaa', 'class' => 'x'],
      *     ['id' => '124', 'name' => 'bbb', 'class' => 'x'],
      *     ['id' => '345', 'name' => 'ccc', 'class' => 'y'],
-     * );
+     * ];
      *
      * $result = ArrayHelper::map($array, 'id', 'name');
      * // the result is:
@@ -435,8 +439,9 @@ class BaseArrayHelper
 
     /**
      * Encodes special characters in an array of strings into HTML entities.
-     * Both the array keys and values will be encoded.
+     * Only array values will be encoded by default.
      * If a value is an array, this method will also encode it recursively.
+     * Only string values will be encoded.
      * @param array $data data to be encoded
      * @param boolean $valuesOnly whether to encode array values only. If false,
      * both the array keys and array values will be encoded.
@@ -458,7 +463,9 @@ class BaseArrayHelper
             if (is_string($value)) {
                 $d[$key] = htmlspecialchars($value, ENT_QUOTES, $charset);
             } elseif (is_array($value)) {
-                $d[$key] = static::htmlEncode($value, $charset);
+                $d[$key] = static::htmlEncode($value, $valuesOnly, $charset);
+            } else {
+                $d[$key] = $value;
             }
         }
 
@@ -467,8 +474,9 @@ class BaseArrayHelper
 
     /**
      * Decodes HTML entities into the corresponding characters in an array of strings.
-     * Both the array keys and values will be decoded.
+     * Only array values will be decoded by default.
      * If a value is an array, this method will also decode it recursively.
+     * Only string values will be decoded.
      * @param array $data data to be decoded
      * @param boolean $valuesOnly whether to decode array values only. If false,
      * both the array keys and array values will be decoded.
@@ -486,6 +494,8 @@ class BaseArrayHelper
                 $d[$key] = htmlspecialchars_decode($value, ENT_QUOTES);
             } elseif (is_array($value)) {
                 $d[$key] = static::htmlDecode($value);
+            } else {
+                $d[$key] = $value;
             }
         }
 

@@ -69,6 +69,7 @@ class ErrorHandler extends \yii\base\ErrorHandler
     {
         if (Yii::$app->has('response')) {
             $response = Yii::$app->getResponse();
+            $response->isSent = false;
         } else {
             $response = new Response();
         }
@@ -83,7 +84,7 @@ class ErrorHandler extends \yii\base\ErrorHandler
                 $response->data = $result;
             }
         } elseif ($response->format === Response::FORMAT_HTML) {
-            if (isset($_SERVER['HTTP_X_REQUESTED_WITH']) && $_SERVER['HTTP_X_REQUESTED_WITH'] === 'XMLHttpRequest' || YII_ENV_TEST) {
+            if (YII_ENV_TEST || isset($_SERVER['HTTP_X_REQUESTED_WITH']) && $_SERVER['HTTP_X_REQUESTED_WITH'] === 'XMLHttpRequest') {
                 // AJAX request
                 $response->data = '<pre>' . $this->htmlEncode($this->convertExceptionToString($exception)) . '</pre>';
             } else {
@@ -97,6 +98,8 @@ class ErrorHandler extends \yii\base\ErrorHandler
                     'exception' => $exception,
                 ]);
             }
+        } elseif ($response->format === Response::FORMAT_RAW) {
+            $response->data = $exception;
         } else {
             $response->data = $this->convertExceptionToArray($exception);
         }
@@ -117,8 +120,11 @@ class ErrorHandler extends \yii\base\ErrorHandler
      */
     protected function convertExceptionToArray($exception)
     {
+        if (!YII_DEBUG && !$exception instanceof UserException && !$exception instanceof HttpException) {
+            $exception = new HttpException(500, 'There was an error at the server.');
+        }
+
         $array = [
-            'type' => get_class($exception),
             'name' => ($exception instanceof Exception || $exception instanceof ErrorException) ? $exception->getName() : 'Exception',
             'message' => $exception->getMessage(),
             'code' => $exception->getCode(),
@@ -126,12 +132,15 @@ class ErrorHandler extends \yii\base\ErrorHandler
         if ($exception instanceof HttpException) {
             $array['status'] = $exception->statusCode;
         }
-        if (YII_DEBUG && !$exception instanceof UserException) {
-            $array['file'] = $exception->getFile();
-            $array['line'] = $exception->getLine();
-            $array['stack-trace'] = explode("\n", $exception->getTraceAsString());
-            if ($exception instanceof \yii\db\Exception) {
-                $array['error-info'] = $exception->errorInfo;
+        if (YII_DEBUG) {
+            $array['type'] = get_class($exception);
+            if (!$exception instanceof UserException) {
+                $array['file'] = $exception->getFile();
+                $array['line'] = $exception->getLine();
+                $array['stack-trace'] = explode("\n", $exception->getTraceAsString());
+                if ($exception instanceof \yii\db\Exception) {
+                    $array['error-info'] = $exception->errorInfo;
+                }
             }
         }
         if (($prev = $exception->getPrevious()) !== null) {
@@ -164,20 +173,39 @@ class ErrorHandler extends \yii\base\ErrorHandler
             $text = $this->htmlEncode($class) . '::' . $this->htmlEncode($method);
         } else {
             $class = $code;
+            $method = null;
             $text = $this->htmlEncode($class);
         }
 
-        if (strpos($code, 'yii\\') !== 0) {
+        $url = $this->getTypeUrl($class, $method);
+
+        if (!$url) {
             return $text;
+        }
+
+        return '<a href="' . $url . '" target="_blank">' . $text . '</a>';
+    }
+
+    /**
+     * Returns the informational link URL for a given PHP type/class.
+     * @param string $class the type or class name.
+     * @param string|null $method the method name.
+     * @return string|null the informational link URL.
+     * @see addTypeLinks()
+     */
+    protected function getTypeUrl($class, $method)
+    {
+        if (strpos($class, 'yii\\') !== 0) {
+            return null;
         }
 
         $page = $this->htmlEncode(strtolower(str_replace('\\', '-', $class)));
         $url = "http://www.yiiframework.com/doc-2.0/$page.html";
-        if (isset($method)) {
+        if ($method) {
             $url .= "#$method()-detail";
         }
 
-        return '<a href="' . $url . '" target="_blank">' . $text . '</a>';
+        return $url;
     }
 
     /**
@@ -343,8 +371,8 @@ class ErrorHandler extends \yii\base\ErrorHandler
 
         foreach ($args as $key => $value) {
             $count++;
-            if($count>=5) {
-                if($count>5) {
+            if ($count>=5) {
+                if ($count>5) {
                     unset($args[$key]);
                 } else {
                     $args[$key] = '...';
@@ -368,7 +396,7 @@ class ErrorHandler extends \yii\base\ErrorHandler
                 $args[$key] = '[' . $this->argumentsToString($value) . ']';
             } elseif ($value === null) {
                 $args[$key] = '<span class="keyword">null</span>';
-            } elseif(is_resource($value)) {
+            } elseif (is_resource($value)) {
                 $args[$key] = '<span class="keyword">resource</span>';
             } else {
                 $args[$key] = '<span class="number">' . $value . '</span>';

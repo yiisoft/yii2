@@ -25,7 +25,7 @@ will be described in detail in the next few sections:
 * User authorization in regarding to the requested action and resource.
 
 
-## Creating Controller Classes <a name="creating-controller"></a>
+## Creating Controller Classes <span id="creating-controller"></span>
 
 When creating a new controller class, a convention in naming the controller class is to use
 the type name of the resource and use singular form. For example, to serve user information,
@@ -45,7 +45,7 @@ public function actionView($id)
 ```
 
 
-## Filters <a name="filters"></a>
+## Filters <span id="filters"></span>
 
 Most RESTful API features provided by [[yii\rest\Controller]] are implemented in terms of [filters](structure-filters.md).
 In particular, the following filters will be executed in the order they are listed:
@@ -59,7 +59,7 @@ In particular, the following filters will be executed in the order they are list
   the [Rate Limiting](rest-rate-limiting.md) section.
 
 These named filters are declared in the [[yii\rest\Controller::behaviors()|behaviors()]] method.
-You may override this method to configure individual filters,  disable some of them, or add your own filters.
+You may override this method to configure individual filters, disable some of them, or add your own filters.
 For example, if you only want to use HTTP basic authentication, you may write the following code:
 
 ```php
@@ -76,14 +76,14 @@ public function behaviors()
 ```
 
 
-## Extending `ActiveController` <a name="extending-active-controller"></a>
+## Extending `ActiveController` <span id="extending-active-controller"></span>
 
 If your controller class extends from [[yii\rest\ActiveController]], you should set
 its [[yii\rest\ActiveController::modelClass||modelClass]] property to be the name of the resource class
 that you plan to serve through this controller. The class must extend from [[yii\db\ActiveRecord]].
 
 
-### Customizing Actions <a name="customizing-actions"></a>
+### Customizing Actions <span id="customizing-actions"></span>
 
 By default, [[yii\rest\ActiveController]] provides the following actions:
 
@@ -120,7 +120,7 @@ public function prepareDataProvider()
 Please refer to the class references for individual action classes to learn what configuration options are available.
 
 
-### Performing Access Check <a name="performing-access-check"></a>
+### Performing Access Check <span id="performing-access-check"></span>
 
 When exposing resources through RESTful APIs, you often need to check if the current user has the permission
 to access and manipulate the requested resource(s). With [[yii\rest\ActiveController]], this can be done

@@ -157,28 +157,26 @@ class Command extends Component
     {
         if (empty($this->params)) {
             return $this->_sql;
-        } else {
-            $params = [];
-            foreach ($this->params as $name => $value) {
-                if (is_string($value)) {
-                    $params[$name] = $this->db->quoteValue($value);
-                } elseif ($value === null) {
-                    $params[$name] = 'NULL';
-                } else {
-                    $params[$name] = $value;
-                }
-            }
-            if (isset($params[1])) {
-                $sql = '';
-                foreach (explode('?', $this->_sql) as $i => $part) {
-                    $sql .= (isset($params[$i]) ? $params[$i] : '') . $part;
-                }
-
-                return $sql;
-            } else {
-                return strtr($this->_sql, $params);
+        }
+        $params = [];
+        foreach ($this->params as $name => $value) {
+            if (is_string($value)) {
+                $params[$name] = $this->db->quoteValue($value);
+            } elseif ($value === null) {
+                $params[$name] = 'NULL';
+            } elseif (!is_object($value) && !is_resource($value)) {
+                $params[$name] = $value;
             }
         }
+        if (!isset($params[1])) {
+            return strtr($this->_sql, $params);
+        }
+        $sql = '';
+        foreach (explode('?', $this->_sql) as $i => $part) {
+            $sql .= (isset($params[$i]) ? $params[$i] : '') . $part;
+        }
+
+        return $sql;
     }
 
     /**
@@ -651,9 +649,9 @@ class Command extends Component
      * The method will properly quote the table and column names.
      * @param string $name the name of the foreign key constraint.
      * @param string $table the table that the foreign key constraint will be added to.
-     * @param string $columns the name of the column to that the constraint will be added on. If there are multiple columns, separate them with commas.
+     * @param string|array $columns the name of the column to that the constraint will be added on. If there are multiple columns, separate them with commas.
      * @param string $refTable the table that the foreign key references to.
-     * @param string $refColumns the name of the column that the foreign key references to. If there are multiple columns, separate them with commas.
+     * @param string|array $refColumns the name of the column that the foreign key references to. If there are multiple columns, separate them with commas.
      * @param string $delete the ON DELETE option. Most DBMS support these options: RESTRICT, CASCADE, NO ACTION, SET DEFAULT, SET NULL
      * @param string $update the ON UPDATE option. Most DBMS support these options: RESTRICT, CASCADE, NO ACTION, SET DEFAULT, SET NULL
      * @return Command the command object itself
@@ -778,55 +776,37 @@ class Command extends Component
     }
 
     /**
-     * Returns the effective query cache information.
-     * @return array the current query cache information, or null if query cache is not used.
-     */
-    private function getQueryCacheInfo()
-    {
-        $info = $this->db->getQueryCacheInfo();
-        if (is_array($info)) {
-            if ($this->queryCacheDuration !== null) {
-                $info[1] = $this->queryCacheDuration;
-            }
-            if ($this->queryCacheDependency !== null) {
-                $info[2] = $this->queryCacheDependency;
-            }
-            if ($info[1] !== null && $info[1] >= 0) {
-                return $info;
-            }
-        }
-        return null;
-    }
-
-    /**
      * Performs the actual DB query of a SQL statement.
      * @param string $method method of PDOStatement to be called
      * @param integer $fetchMode the result fetch mode. Please refer to [PHP manual](http://www.php.net/manual/en/function.PDOStatement-setFetchMode.php)
      * for valid fetch modes. If this parameter is null, the value set in [[fetchMode]] will be used.
      * @return mixed the method execution result
      * @throws Exception if the query causes any problem
+     * @since 2.0.1 this method is protected (was private before).
      */
-    private function queryInternal($method, $fetchMode = null)
+    protected function queryInternal($method, $fetchMode = null)
     {
         $rawSql = $this->getRawSql();
 
         Yii::info($rawSql, 'yii\db\Command::query');
 
         if ($method !== '') {
-            $info = $this->getQueryCacheInfo();
+            $info = $this->db->getQueryCacheInfo($this->queryCacheDuration, $this->queryCacheDependency);
             if (is_array($info)) {
                 /* @var $cache \yii\caching\Cache */
                 $cache = $info[0];
                 $cacheKey = [
                     __CLASS__,
                     $method,
+                    $fetchMode,
                     $this->db->dsn,
                     $this->db->username,
                     $rawSql,
                 ];
-                if (($result = $cache->get($cacheKey)) !== false) {
+                $result = $cache->get($cacheKey);
+                if (is_array($result) && isset($result[0])) {
                     Yii::trace('Query result served from cache', 'yii\db\Command::query');
-                    return $result;
+                    return $result[0];
                 }
             }
         }
@@ -856,7 +836,7 @@ class Command extends Component
         }
 
         if (isset($cache, $cacheKey, $info)) {
-            $cache->set($cacheKey, $result, $info[1], $info[2]);
+            $cache->set($cacheKey, [$result], $info[1], $info[2]);
             Yii::trace('Saved query result in cache', 'yii\db\Command::query');
         }
 

@@ -94,7 +94,7 @@ class Module extends ServiceLocator
      * For example, if the namespace of this module is "foo\bar", then the default
      * controller namespace would be "foo\bar\controllers".
      *
-     * See also the [guide section on autoloading][guide-concept-autoloading] to learn more about
+     * See also the [guide section on autoloading](guide:concept-autoloading) to learn more about
      * defining namespaces and how classes are loaded.
      */
     public $controllerNamespace;
@@ -123,10 +123,6 @@ class Module extends ServiceLocator
      * @var array child modules of this module
      */
     private $_modules = [];
-    /**
-     * @var array list of currently requested modules indexed by their class names
-     */
-    private static $_instances = [];
 
 
     /**
@@ -151,7 +147,7 @@ class Module extends ServiceLocator
     public static function getInstance()
     {
         $class = get_called_class();
-        return isset(self::$_instances[$class]) ? self::$_instances[$class] : null;
+        return isset(Yii::$app->loadedModules[$class]) ? Yii::$app->loadedModules[$class] : null;
     }
 
     /**
@@ -162,9 +158,9 @@ class Module extends ServiceLocator
     public static function setInstance($instance)
     {
         if ($instance === null) {
-            unset(self::$_instances[get_called_class()]);
+            unset(Yii::$app->loadedModules[get_called_class()]);
         } else {
-            self::$_instances[get_class($instance)] = $instance;
+            Yii::$app->loadedModules[get_class($instance)] = $instance;
         }
     }
 
@@ -354,9 +350,6 @@ class Module extends ServiceLocator
                 return $this->_modules[$id];
             } elseif ($load) {
                 Yii::trace("Loading module: $id", __METHOD__);
-                if (is_array($this->_modules[$id]) && !isset($this->_modules[$id]['class'])) {
-                    $this->_modules[$id]['class'] = 'yii\base\Module';
-                }
                 /* @var $module Module */
                 $module = Yii::createObject($this->_modules[$id], [$id, $this]);
                 $module->setInstance($module);
@@ -511,14 +504,13 @@ class Module extends ServiceLocator
         }
 
         // module and controller map take precedence
+        if (isset($this->controllerMap[$id])) {
+            $controller = Yii::createObject($this->controllerMap[$id], [$id, $this]);
+            return [$controller, $route];
+        }
         $module = $this->getModule($id);
         if ($module !== null) {
             return $module->createController($route);
-        }
-        if (isset($this->controllerMap[$id])) {
-            $controller = Yii::createObject($this->controllerMap[$id], [$id, $this]);
-
-            return [$controller, $route];
         }
 
         if (($pos = strrpos($route, '/')) !== false) {
@@ -573,7 +565,8 @@ class Module extends ServiceLocator
         }
 
         if (is_subclass_of($className, 'yii\base\Controller')) {
-            return Yii::createObject($className, [$id, $this]);
+            $controller = Yii::createObject($className, [$id, $this]);
+            return get_class($controller) === $className ? $controller : null;
         } elseif (YII_DEBUG) {
             throw new InvalidConfigException("Controller class must extend from \\yii\\base\\Controller.");
         } else {
@@ -587,17 +580,21 @@ class Module extends ServiceLocator
      * The method will trigger the [[EVENT_BEFORE_ACTION]] event. The return value of the method
      * will determine whether the action should continue to run.
      *
+     * In case the action should not run, the request should be handled inside of the `beforeAction` code
+     * by either providing the necessary output or redirecting the request. Otherwise the response will be empty.
+     *
      * If you override this method, your code should look like the following:
      *
      * ```php
      * public function beforeAction($action)
      * {
-     *     if (parent::beforeAction($action)) {
-     *         // your custom code here
-     *         return true;  // or false if needed
-     *     } else {
+     *     if (!parent::beforeAction($action)) {
      *         return false;
      *     }
+     *
+     *     // your custom code here
+     *
+     *     return true; // or false to not run the action
      * }
      * ```
      *

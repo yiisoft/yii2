@@ -68,12 +68,16 @@ class Menu extends Widget
      *   The token `{url}` will be replaced by the URL associated with this menu item,
      *   and the token `{label}` will be replaced by the label of the menu item.
      *   If this option is not set, [[linkTemplate]] or [[labelTemplate]] will be used instead.
+     * - submenuTemplate: string, optional, the template used to render the list of sub-menus.
+     *   The token `{items}` will be replaced with the rendered sub-menu items.
+     *   If this option is not set, [[submenuTemplate]] will be used instead.
      * - options: array, optional, the HTML attributes for the menu container tag.
      */
     public $items = [];
     /**
-     * @var array list of HTML attributes for the menu container tag. This will be overwritten
-     * by the "options" set in individual [[items]]. The following special options are recognized:
+     * @var array list of HTML attributes shared by all menu [[items]]. If any individual menu item
+     * specifies its `options`, it will be merged with this property before being used to generate the HTML
+     * attributes for the menu item tag. The following special options are recognized:
      *
      * - tag: string, defaults to "li", the tag name of the item container tags.
      *
@@ -95,7 +99,7 @@ class Menu extends Widget
     public $labelTemplate = '{label}';
     /**
      * @var string the template used to render a list of sub-menus.
-     * In this template, the token `{items}` will be replaced with the renderer sub-menu items.
+     * In this template, the token `{items}` will be replaced with the rendered sub-menu items.
      */
     public $submenuTemplate = "\n<ul>\n{items}\n</ul>\n";
     /**
@@ -125,7 +129,7 @@ class Menu extends Widget
     /**
      * @var array the HTML attributes for the menu's container tag. The following special options are recognized:
      *
-     * - tag: string, defaults to "ul", the tag name of the item container tags.
+     * - tag: string, defaults to "ul", the tag name of the item container tags. Set to false to disable container tag.
      *
      * @see \yii\helpers\Html::renderTagAttributes() for details on how attributes are being rendered.
      */
@@ -207,11 +211,16 @@ class Menu extends Widget
 
             $menu = $this->renderItem($item);
             if (!empty($item['items'])) {
-                $menu .= strtr($this->submenuTemplate, [
+                $submenuTemplate = ArrayHelper::getValue($item, 'submenuTemplate', $this->submenuTemplate);
+                $menu .= strtr($submenuTemplate, [
                     '{items}' => $this->renderItems($item['items']),
                 ]);
             }
-            $lines[] = Html::tag($tag, $menu, $options);
+            if ($tag === false) {
+                $lines[] = $menu;
+            } else {
+                $lines[] = Html::tag($tag, $menu, $options);
+            }
         }
 
         return implode("\n", $lines);
@@ -229,7 +238,7 @@ class Menu extends Widget
             $template = ArrayHelper::getValue($item, 'template', $this->linkTemplate);
 
             return strtr($template, [
-                '{url}' => Url::to($item['url']),
+                '{url}' => Html::encode(Url::to($item['url'])),
                 '{label}' => $item['label'],
             ]);
         } else {

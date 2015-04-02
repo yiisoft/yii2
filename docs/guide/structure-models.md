@@ -21,7 +21,7 @@ Please refer to the relevant documentation for more details about these advanced
   components built to support [[yii\base\Model]], it is usually the preferable base class for a model.
 
 
-## Attributes <a name="attributes"></a>
+## Attributes <span id="attributes"></span>
 
 Models represent business data in terms of *attributes*. Each attribute is like a publicly accessible property
 of a model. The method [[yii\base\Model::attributes()]] specifies what attributes a model class has.
@@ -54,7 +54,7 @@ foreach ($model as $name => $value) {
 ```
 
 
-### Defining Attributes <a name="defining-attributes"></a>
+### Defining Attributes <span id="defining-attributes"></span>
 
 By default, if your model class extends directly from [[yii\base\Model]], all its *non-static public* member
 variables are attributes. For example, the `ContactForm` model class below has four attributes: `name`, `email`,
@@ -82,7 +82,7 @@ override the magic methods such as `__get()`, `__set()` so that the attributes c
 normal object properties.
 
 
-### Attribute Labels <a name="attribute-labels"></a>
+### Attribute Labels <span id="attribute-labels"></span>
 
 When displaying values or getting input for attributes, you often need to display some labels associated
 with attributes. For example, given an attribute named `firstName`, you may want to display a label `First Name`
@@ -151,7 +151,7 @@ is being used in, you may return different labels for the same attribute.
   in models is often very convenient and can result in very clean and reusable code.
 
 
-## Scenarios <a name="scenarios"></a>
+## Scenarios <span id="scenarios"></span>
 
 A model may be used in different *scenarios*. For example, a `User` model may be used to collect user login inputs,
 but it may also be used for the user registration purpose. In different scenarios, a model may use different
@@ -226,7 +226,7 @@ You can, however, use it for other purposes. For example, you may declare [attri
 differently based on the current scenario.
 
 
-## Validation Rules <a name="validation-rules"></a>
+## Validation Rules <span id="validation-rules"></span>
 
 When the data for a model is received from end users, it should be validated to make sure it satisfies
 certain rules (called *validation rules*, also known as *business rules*). For example, given a `ContactForm` model,
@@ -298,10 +298,10 @@ An attribute will be validated if and only if it is an active attribute declared
 is associated with one or multiple active rules declared in `rules()`.
 
 
-## Massive Assignment <a name="massive-assignment"></a>
+## Massive Assignment <span id="massive-assignment"></span>
 
 Massive assignment is a convenient way of populating a model with user inputs using a single line of code.
-It populates the attributes of a model by assigning the input data directly to the [[yii\base\Model::attributes]]
+It populates the attributes of a model by assigning the input data directly to the [[yii\base\Model::$attributes]]
 property. The following two pieces of code are equivalent, both trying to assign the form data submitted by end users
 to the attributes of the `ContactForm` model. Clearly, the former, which uses massive assignment, is much cleaner
 and less error prone than the latter:
@@ -321,7 +321,7 @@ $model->body = isset($data['body']) ? $data['body'] : null;
 ```
 
 
-### Safe Attributes <a name="safe-attributes"></a>
+### Safe Attributes <span id="safe-attributes"></span>
 
 Massive assignment only applies to the so-called *safe attributes* which are the attributes listed in
 [[yii\base\Model::scenarios()]] for the current [[yii\base\Model::scenario|scenario]] of a model.
@@ -362,7 +362,7 @@ public function rules()
 ```
 
 
-### Unsafe Attributes <a name="unsafe-attributes"></a>
+### Unsafe Attributes <span id="unsafe-attributes"></span>
 
 As described above, the [[yii\base\Model::scenarios()]] method serves for two purposes: determining which attributes
 should be validated, and determining which attributes are safe. In some rare cases, you may want to validate
@@ -387,7 +387,7 @@ $model->secret = $secret;
 ```
 
 
-## Data Exporting <a name="data-exporting"></a>
+## Data Exporting <span id="data-exporting"></span>
 
 Models often need to be exported in different formats. For example, you may want to convert a collection of
 models into JSON or Excel format. The exporting process can be broken down into two independent steps.
@@ -395,7 +395,7 @@ In the first step, models are converted into arrays; in the second step, the arr
 target formats. You may just focus on the first step, because the second step can be achieved by generic
 data formatters, such as [[yii\web\JsonResponseFormatter]].
 
-The simplest way of converting a model into an array is to use the [[yii\base\Model::attributes]] property.
+The simplest way of converting a model into an array is to use the [[yii\base\Model::$attributes]] property.
 For example,
 
 ```php
@@ -403,17 +403,17 @@ $post = \app\models\Post::findOne(100);
 $array = $post->attributes;
 ```
 
-By default, the [[yii\base\Model::attributes]] property will return the values of *all* attributes
+By default, the [[yii\base\Model::$attributes]] property will return the values of *all* attributes
 declared in [[yii\base\Model::attributes()]].
 
 A more flexible and powerful way of converting a model into an array is to use the [[yii\base\Model::toArray()]]
-method. Its default behavior is the same as that of [[yii\base\Model::attributes]]. However, it allows you
+method. Its default behavior is the same as that of [[yii\base\Model::$attributes]]. However, it allows you
 to choose which data items, called *fields*, to be put in the resulting array and how they should be formatted.
 In fact, it is the default way of exporting models in RESTful Web service development, as described in
 the [Response Formatting](rest-response-formatting.md).
 
 
-### Fields <a name="fields"></a>
+### Fields <span id="fields"></span>
 
 A field is simply a named element in the array that is obtained by calling the [[yii\base\Model::toArray()]] method
 of a model.
@@ -474,7 +474,7 @@ public function fields()
 > to filter out `auth_key`, `password_hash` and `password_reset_token`.
 
 
-## Best Practices <a name="best-practices"></a>
+## Best Practices <span id="best-practices"></span>
 
 Models are the central places to represent business data, rules and logic. They often need to be reused
 in different places. In a well-designed application, models are usually much fatter than
@@ -493,7 +493,7 @@ In summary, models
 You may usually consider the last recommendation above when you are developing large complex systems.
 In these systems, models could be very fat because they are used in many places and may thus contain many sets
 of rules and business logic. This often ends up in a nightmare in maintaining the model code
-because a single touch of the code could affect several different places. To make the mode code more maintainable,
+because a single touch of the code could affect several different places. To make the model code more maintainable,
 you may take the following strategy:
 
 * Define a set of base model classes that are shared by different [applications](structure-applications.md) or

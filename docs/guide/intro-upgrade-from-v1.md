@@ -19,7 +19,7 @@ Yii 2.0 fully embraces [Composer](https://getcomposer.org/), the de facto PHP pa
 of the core framework, as well as extensions, are handled through Composer. Please refer to
 the [Installing Yii](start-installation.md) section to learn how to install Yii 2.0. If you want to
 create new extensions, or turn your existing 1.1 extensions into 2.0-compatible extensions, please refer to
-the [Creating Extensions](extend-creating-extensions.md) section of the guide.
+the [Creating Extensions](structure-extensions.md#creating-extensions) section of the guide.
 
 
 PHP Requirements
@@ -143,13 +143,13 @@ supported in most places in the Yii core code. For example, [[yii\caching\FileCa
 both a path alias and a normal directory path.
 
 A path alias is also closely related to a class namespace. It is recommended that a path
-alias be defined for each root namespace, thereby allowing you to use Yii the class autoloader without
+alias be defined for each root namespace, thereby allowing you to use Yii class autoloader without
 any further configuration. For example, because `@yii` refers to the Yii installation directory,
 a class like `yii\web\Request` can be autoloaded. If you use a third party library,
 such as the Zend Framework, you may define a path alias `@Zend` that refers to that framework's installation
 directory. Once you've done that, Yii will be able to autoload any class in that Zend Framework library, too.
 
-More on path aliases can be found in the [Path Aliases](concept-aliases.md) section.
+More on path aliases can be found in the [Aliases](concept-aliases.md) section.
 
 
 Views
@@ -209,7 +209,7 @@ To learn more details about models, please refer to the [Models](structure-model
 Controllers
 -----------
 
-Yii 2.0 uses [[yii\web\Controller]] as the base controller class, similar to `CWebController` in Yii 1.1.
+Yii 2.0 uses [[yii\web\Controller]] as the base controller class, which is similar to `CController` in Yii 1.1.
 [[yii\base\Action]] is the base class for action classes.
 
 The most obvious impact of these changes on your code is that a controller action should return the content
@@ -459,11 +459,43 @@ public function init()
 }
 ```
 
-There where some problems with overriding the constructor of an ActiveRecord class in 1.1. These are not present in
+There were some problems with overriding the constructor of an ActiveRecord class in 1.1. These are not present in
 version 2.0 anymore. Note that when adding parameters to the constructor you might have to override [[yii\db\ActiveRecord::instantiate()]].
 
 There are many other changes and enhancements to Active Record. Please refer to
 the [Active Record](db-active-record.md) section for more details.
+
+
+Active Record Behaviors
+-----------------------
+
+In 2.0, we have dropped the base behavior class `CActiveRecordBehavior`. If you want to create an Active Record Behavior,
+you will have to extend directly from `yii\base\Behavior`. If the behavior class needs to respond to some events
+of the owner, you have to override the `events()` method like the following,
+
+```php
+namespace app\components;
+
+use yii\db\ActiveRecord;
+use yii\base\Behavior;
+
+class MyBehavior extends Behavior
+{
+    // ...
+
+    public function events()
+    {
+        return [
+            ActiveRecord::EVENT_BEFORE_VALIDATE => 'beforeValidate',
+        ];
+    }
+
+    public function beforeValidate($event)
+    {
+        // ...
+    }
+}
+```
 
 
 User and IdentityInterface
@@ -473,7 +505,7 @@ The `CWebUser` class in 1.1 is now replaced by [[yii\web\User]], and there is no
 `CUserIdentity` class. Instead, you should implement the [[yii\web\IdentityInterface]] which
 is much more straightforward to use. The advanced application template provides such an example.
 
-Please refer to the [Authentication](security-authentication.md), [Authorization](security-authorization.md), and [Advanced Application Technique](tutorial-advanced-app.md) sections for more details.
+Please refer to the [Authentication](security-authentication.md), [Authorization](security-authorization.md), and [Advanced Application Template](tutorial-advanced-app.md) sections for more details.
 
 
 URL Management
@@ -492,7 +524,7 @@ the same goal.
 ]
 ```
 
-Please refer to the [Url manager docs](runtime-url-handling.md) section for more details.
+Please refer to the [Url manager docs](runtime-routing.md) section for more details.
 
 Using Yii 1.1 and 2.x together
 ------------------------------

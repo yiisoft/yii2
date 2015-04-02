@@ -11,8 +11,7 @@ use yii\web\Request;
 use yiiunit\TestCase;
 
 /**
- * @author Qiang Xue <qiang.xue@gmail.com>
- * @since 2.0
+ * @group web
  */
 class RequestTest extends TestCase
 {
@@ -37,5 +36,46 @@ class RequestTest extends TestCase
             application/json; version=1.0,
             application/xml; version=2.0; x,
             text/x-dvi; q=0.8, text/x-c'));
+    }
+
+    public function testPrefferedLanguage()
+    {
+        $this->mockApplication([
+            'language' => 'en',
+        ]);
+
+        $request = new Request();
+        $request->acceptableLanguages = [];
+        $this->assertEquals('en', $request->getPreferredLanguage());
+
+        $request = new Request();
+        $request->acceptableLanguages = ['de'];
+        $this->assertEquals('en', $request->getPreferredLanguage());
+
+        $request = new Request();
+        $request->acceptableLanguages = ['en-us', 'de', 'ru-RU'];
+        $this->assertEquals('en', $request->getPreferredLanguage(['en']));
+
+        $request = new Request();
+        $request->acceptableLanguages = ['en-us', 'de', 'ru-RU'];
+        $this->assertEquals('de', $request->getPreferredLanguage(['ru', 'de']));
+        $this->assertEquals('de-DE', $request->getPreferredLanguage(['ru', 'de-DE']));
+
+        $request = new Request();
+        $request->acceptableLanguages = ['en-us', 'de', 'ru-RU'];
+        $this->assertEquals('de', $request->getPreferredLanguage(['de', 'ru']));
+
+        $request = new Request();
+        $request->acceptableLanguages = ['en-us', 'de', 'ru-RU'];
+        $this->assertEquals('ru-ru', $request->getPreferredLanguage(['ru-ru']));
+
+        $request = new Request();
+        $request->acceptableLanguages = ['en-us', 'de'];
+        $this->assertEquals('ru-ru', $request->getPreferredLanguage(['ru-ru', 'pl']));
+        $this->assertEquals('ru-RU', $request->getPreferredLanguage(['ru-RU', 'pl']));
+
+        $request = new Request();
+        $request->acceptableLanguages = ['en-us', 'de'];
+        $this->assertEquals('pl', $request->getPreferredLanguage(['pl', 'ru-ru']));
     }
 }

@@ -5,7 +5,7 @@ Yii provides a whole set of tools to simplify the task of implementing RESTful W
 In particular, Yii supports the following features about RESTful APIs:
 
 * Quick prototyping with support for common APIs for [Active Record](db-active-record.md);
-* Response format (supporting JSON and XML by default) negotiation;
+* Response format negotiation (supporting JSON and XML by default);
 * Customizable object serialization with support for selectable output fields;
 * Proper formatting of collection data and validation errors;
 * Support for [HATEOAS](http://en.wikipedia.org/wiki/HATEOAS);
@@ -18,11 +18,11 @@ In particular, Yii supports the following features about RESTful APIs:
 
 In the following, we use an example to illustrate how you can build a set of RESTful APIs with some minimal coding effort.
 
-Assume you want to expose the user data via RESTful APIs. The user data are stored in the user DB table,
+Assume you want to expose the user data via RESTful APIs. The user data are stored in the `user` DB table,
 and you have already created the [[yii\db\ActiveRecord|ActiveRecord]] class `app\models\User` to access the user data.
 
 
-## Creating a Controller <a name="creating-controller"></a>
+## Creating a Controller <span id="creating-controller"></span>
 
 First, create a controller class `app\controllers\UserController` as follows,
 
@@ -41,7 +41,7 @@ The controller class extends from [[yii\rest\ActiveController]]. By specifying [
 as `app\models\User`, the controller knows what model can be used for fetching and manipulating data.
 
 
-## Configuring URL Rules <a name="configuring-url-rules"></a>
+## Configuring URL Rules <span id="configuring-url-rules"></span>
 
 Then, modify the configuration about the `urlManager` component in your application configuration:
 
@@ -60,7 +60,24 @@ The above configuration mainly adds a URL rule for the `user` controller so that
 can be accessed and manipulated with pretty URLs and meaningful HTTP verbs.
 
 
-## Trying it Out <a name="trying-it-out"></a>
+## Enabling JSON Input <span id="enabling-json-input"></span>
+
+To let the API accept input data in JSON format, configure the [[yii\web\Request::$parsers|parsers]] property of
+the `request` application component to use the [[yii\web\JsonParser]] for JSON input:
+
+```php
+'request' => [
+    'parsers' => [
+        'application/json' => 'yii\web\JsonParser',
+    ]
+]
+```
+
+> Info: The above configuration is optional. Without the above configuration, the API would only recognize 
+  `application/x-www-form-urlencoded` and `multipart/form-data` input formats.
+
+
+## Trying it Out <span id="trying-it-out"></span>
 
 With the above minimal amount of effort, you have already finished your task of creating the RESTful APIs
 for accessing the user data. The APIs you have created include:
@@ -76,6 +93,7 @@ for accessing the user data. The APIs you have created include:
 * `OPTIONS /users/123`: show the supported verbs regarding endpoint `/users/123`.
 
 > Info: Yii will automatically pluralize controller names for use in endpoints.
+> You can configure this using the [[yii\rest\UrlRule::$pluralize]]-property.
 
 You may access your APIs with the `curl` command like the following,
 
@@ -83,9 +101,7 @@ You may access your APIs with the `curl` command like the following,
 $ curl -i -H "Accept:application/json" "http://localhost/users"
 
 HTTP/1.1 200 OK
-Date: Sun, 02 Mar 2014 05:31:43 GMT
-Server: Apache/2.2.26 (Unix) DAV/2 PHP/5.4.20 mod_ssl/2.2.26 OpenSSL/0.9.8y
-X-Powered-By: PHP/5.4.20
+...
 X-Pagination-Total-Count: 1000
 X-Pagination-Page-Count: 50
 X-Pagination-Current-Page: 1
@@ -116,9 +132,7 @@ is returned in XML format:
 $ curl -i -H "Accept:application/xml" "http://localhost/users"
 
 HTTP/1.1 200 OK
-Date: Sun, 02 Mar 2014 05:31:43 GMT
-Server: Apache/2.2.26 (Unix) DAV/2 PHP/5.4.20 mod_ssl/2.2.26 OpenSSL/0.9.8y
-X-Powered-By: PHP/5.4.20
+...
 X-Pagination-Total-Count: 1000
 X-Pagination-Page-Count: 50
 X-Pagination-Current-Page: 1
@@ -143,6 +157,20 @@ Content-Type: application/xml
 </response>
 ```
 
+The following command will create a new user by sending a POST request with the user data in JSON format:
+
+```
+$ curl -i -H "Accept:application/json" -H "Content-Type:application/json" -XPOST "http://localhost/users" -d '{"username": "example", "email": "user@example.com"}'
+
+HTTP/1.1 201 Created
+...
+Location: http://localhost/users/1
+Content-Length: 99
+Content-Type: application/json; charset=UTF-8
+
+{"id":1,"username":"example","email":"user@example.com","created_at":1414674789,"updated_at":1414674789}
+```
+
 > Tip: You may also access your APIs via Web browser by entering the URL `http://localhost/users`.
   However, you may need some browser plugins to send specific request headers.
 
@@ -159,7 +187,7 @@ For example, the URL `http://localhost/users?fields=id,email` will only return t
 > You can and should filter out these fields as described in the [Response Formatting](rest-response-formatting.md) section.
 
 
-## Summary <a name="summary"></a>
+## Summary <span id="summary"></span>
 
 Using the Yii RESTful API framework, you implement an API endpoint in terms of a controller action, and you use
 a controller to organize the actions that implement the endpoints for a single type of resource.
@@ -172,4 +200,3 @@ You may use [[yii\rest\UrlRule]] to simplify the routing to your API endpoints.
 
 While not required, it is recommended that you develop your RESTful APIs as a separate application, different from
 your Web front end and back end for easier maintenance.
-

@@ -332,7 +332,7 @@ class BaseConsole
     /**
      * Returns the length of the string without ANSI color codes.
      * @param string $string the string to measure
-     * @return int the length of the string not counting ANSI format characters
+     * @return integer the length of the string not counting ANSI format characters
      */
     public static function ansiStrlen($string) {
         return mb_strlen(static::stripAnsiFormat($string));
@@ -491,15 +491,15 @@ class BaseConsole
      * </pre>
      * First param is the string to convert, second is an optional flag if
      * colors should be used. It defaults to true, if set to false, the
-     * colorcodes will just be removed (And %% will be transformed into %)
+     * color codes will just be removed (And %% will be transformed into %)
      *
      * @param string $string String to convert
      * @param boolean $colored Should the string be colored?
      * @return string
      */
-    // TODO rework/refactor according to https://github.com/yiisoft/yii2/issues/746
     public static function renderColoredString($string, $colored = true)
     {
+        // TODO rework/refactor according to https://github.com/yiisoft/yii2/issues/746
         static $conversions = [
             '%y' => [self::FG_YELLOW],
             '%g' => [self::FG_GREEN],
@@ -562,9 +562,9 @@ class BaseConsole
      * @access public
      * @return string
      */
-    // TODO rework/refactor according to https://github.com/yiisoft/yii2/issues/746
     public static function escape($string)
     {
+        // TODO rework/refactor according to https://github.com/yiisoft/yii2/issues/746
         return str_replace('%', '%%', $string);
     }
 
@@ -633,6 +633,46 @@ class BaseConsole
         }
 
         return $size = false;
+    }
+
+    /**
+     * Word wrap text with indentation to fit the screen size
+     *
+     * If screen size could not be detected, or the indentation is greater than the screen size, the text will not be wrapped.
+     *
+     * The first line will **not** be indented, so `Console::wrapText("Lorem ipsum dolor sit amet.", 4)` will result in the
+     * following output, given the screen width is 16 characters:
+     *
+     * ```
+     * Lorem ipsum
+     *     dolor sit
+     *     amet.
+     * ```
+     *
+     * @param string $text the text to be wrapped
+     * @param integer $indent number of spaces to use for indentation.
+     * @param boolean $refresh whether to force refresh of screen size.
+     * This will be passed to [[getScreenSize()]].
+     * @return string the wrapped text.
+     * @since 2.0.3
+     */
+    public static function wrapText($text, $indent = 0, $refresh = false)
+    {
+        $size = static::getScreenSize($refresh);
+        if ($size === false || $size[0] <= $indent) {
+            return $text;
+        }
+        $pad = str_repeat(' ', $indent);
+        $lines = explode("\n", wordwrap($text, $size[0] - $indent, "\n", true));
+        $first = true;
+        foreach($lines as $i => $line) {
+            if ($first) {
+                $first = false;
+                continue;
+            }
+            $lines[$i] = $pad . $line;
+        }
+        return implode("\n", $lines);
     }
 
     /**
@@ -737,8 +777,8 @@ class BaseConsole
 
         top:
         $input = $options['default']
-            ? static::input("$text [" . $options['default'] . ']: ')
-            : static::input("$text: ");
+            ? static::input("$text [" . $options['default'] . '] ')
+            : static::input("$text ");
 
         if (!strlen($input)) {
             if (isset($options['default'])) {
@@ -763,16 +803,28 @@ class BaseConsole
     /**
      * Asks user to confirm by typing y or n.
      *
-     * @param string $message to echo out before waiting for user input
+     * @param string $message to print out before waiting for user input
      * @param boolean $default this value is returned if no selection is made.
      * @return boolean whether user confirmed
      */
-    public static function confirm($message, $default = true)
+    public static function confirm($message, $default = false)
     {
-        echo $message . ' (yes|no) [' . ($default ? 'yes' : 'no') . ']:';
-        $input = trim(static::stdin());
+        while (true) {
+            static::stdout($message . ' (yes|no) [' . ($default ? 'yes' : 'no') . ']:');
+            $input = trim(static::stdin());
 
-        return empty($input) ? $default : !strncasecmp($input, 'y', 1);
+            if (empty($input)) {
+                return $default;
+            }
+
+            if (!strcasecmp ($input, 'y') || !strcasecmp ($input, 'yes') ) {
+                return true;
+            }
+
+            if (!strcasecmp ($input, 'n') || !strcasecmp ($input, 'no') ) {
+                return false;
+            }
+        }
     }
 
     /**

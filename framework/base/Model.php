@@ -575,6 +575,27 @@ class Model extends Component implements IteratorAggregate, ArrayAccess, Arrayab
     }
 
     /**
+     * Adds a list of errors.
+     * @param array $items a list of errors. The array keys must be attribute names.
+     * The array values should be error messages. If an attribute has multiple errors,
+     * these errors must be given in terms of an array.
+     * You may use the result of [[getErrors()]] as the value for this parameter.
+     * @since 2.0.2
+     */
+    public function addErrors(array $items)
+    {
+        foreach ($items as $attribute => $errors) {
+            if (is_array($errors)) {
+                foreach($errors as $error) {
+                    $this->addError($attribute, $error);
+                }
+            } else {
+                $this->addError($attribute, $errors);
+            }
+        }
+    }
+
+    /**
      * Removes errors for all attributes or a single attribute.
      * @param string $attribute attribute name. Use null to remove errors for all attribute.
      */
@@ -740,7 +761,7 @@ class Model extends Component implements IteratorAggregate, ArrayAccess, Arrayab
     public function load($data, $formName = null)
     {
         $scope = $formName === null ? $this->formName() : $formName;
-        if ($scope == '' && !empty($data)) {
+        if ($scope === '' && !empty($data)) {
             $this->setAttributes($data);
 
             return true;
@@ -763,25 +784,32 @@ class Model extends Component implements IteratorAggregate, ArrayAccess, Arrayab
      * @param array $models the models to be populated. Note that all models should have the same class.
      * @param array $data the data array. This is usually `$_POST` or `$_GET`, but can also be any valid array
      * supplied by end user.
-     * @return boolean whether the model is successfully populated with some data.
+     * @param string $formName the form name to be used for loading the data into the models.
+     * If not set, it will use the [[formName()]] value of the first model in `$models`.
+     * This parameter is available since version 2.0.1.
+     * @return boolean whether at least one of the models is successfully populated.
      */
-    public static function loadMultiple($models, $data)
+    public static function loadMultiple($models, $data, $formName = null)
     {
-        /* @var $model Model */
-        $model = reset($models);
-        if ($model === false) {
-            return false;
+        if ($formName === null) {
+            /* @var $first Model */
+            $first = reset($models);
+            if ($first === false) {
+                return false;
+            }
+            $formName = $first->formName();
         }
+
         $success = false;
-        $scope = $model->formName();
         foreach ($models as $i => $model) {
-            if ($scope == '') {
-                if (isset($data[$i])) {
-                    $model->setAttributes($data[$i]);
+            /* @var $model Model */
+            if ($formName == '') {
+                if (!empty($data[$i])) {
+                    $model->load($data[$i], '');
                     $success = true;
                 }
-            } elseif (isset($data[$scope][$i])) {
-                $model->setAttributes($data[$scope][$i]);
+            } elseif (!empty($data[$formName][$i])) {
+                $model->load($data[$formName][$i], '');
                 $success = true;
             }
         }
@@ -841,8 +869,8 @@ class Model extends Component implements IteratorAggregate, ArrayAccess, Arrayab
      *     'email',
      *     'firstName' => 'first_name',
      *     'lastName' => 'last_name',
-     *     'fullName' => function () {
-     *         return $this->first_name . ' ' . $this->last_name;
+     *     'fullName' => function ($model) {
+     *         return $model->first_name . ' ' . $model->last_name;
      *     },
      * ];
      * ```

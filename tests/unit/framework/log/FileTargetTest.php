@@ -8,7 +8,6 @@ namespace yiiunit\framework\log;
 use yii\helpers\FileHelper;
 use yii\log\Dispatcher;
 use yii\log\Logger;
-use yii\log\Target;
 use Yii;
 use yiiunit\TestCase;
 

@@ -29,6 +29,15 @@ use yii\web\View;
  * ]);
  * ```
  *
+ * You can also use this widget in an [[yii\widgets\ActiveForm|ActiveForm]] using the [[yii\widgets\ActiveField::widget()|widget()]]
+ * method, for example like this:
+ *
+ * ```php
+ * <?= $form->field($model, 'from_date')->widget(\yii\widgets\MaskedInput::classname(), [
+ *     'mask' => '999-999-9999',
+ * ]) ?>
+ * ```
+ *
  * The masked text field is implemented based on the
  * [jQuery input masked plugin](https://github.com/RobinHerbots/jquery.inputmask).
  *
@@ -59,7 +68,7 @@ class MaskedInput extends InputWidget
      * @var array custom mask definitions to use. Should be configured as `maskSymbol => settings`, where
      *
      * - `maskSymbol` is a string, containing a character to identify your mask definition and
-     * - `settings` is an array, consisiting of the following entries:
+     * - `settings` is an array, consisting of the following entries:
      *   - `validator`: string, a JS regular expression or a JS function.
      *   - `cardinality`: int, specifies how many characters are represented and validated for the definition.
      *   - `prevalidator`: array, validate the characters before the definition cardinality is reached.
@@ -143,8 +152,8 @@ class MaskedInput extends InputWidget
     {
         $options = $this->clientOptions;
         foreach ($options as $key => $value) {
-            if (in_array($key, ['oncomplete', 'onincomplete', 'oncleared', 'onKeyUp', 'onKeyDown', 'onBeforeMask',
-                    'onBeforePaste', 'onUnMask', 'isComplete', 'determineActiveMasksetIndex']) && !$value instanceof JsExpression
+            if (!$value instanceof JsExpression && in_array($key, ['oncomplete', 'onincomplete', 'oncleared', 'onKeyUp',
+                    'onKeyDown', 'onBeforeMask', 'onBeforePaste', 'onUnMask', 'isComplete', 'determineActiveMasksetIndex'])
             ) {
                 $options[$key] = new JsExpression($value);
             }

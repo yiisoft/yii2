@@ -142,7 +142,7 @@ class HeaderCollection extends Object implements \IteratorAggregate, \ArrayAcces
     /**
      * Removes a header.
      * @param string $name the name of the header to be removed.
-     * @return string the value of the removed header. Null is returned if the header does not exist.
+     * @return array the value of the removed header. Null is returned if the header does not exist.
      */
     public function remove($name)
     {
@@ -150,7 +150,6 @@ class HeaderCollection extends Object implements \IteratorAggregate, \ArrayAcces
         if (isset($this->_headers[$name])) {
             $value = $this->_headers[$name];
             unset($this->_headers[$name]);
-
             return $value;
         } else {
             return null;
@@ -173,6 +172,16 @@ class HeaderCollection extends Object implements \IteratorAggregate, \ArrayAcces
     public function toArray()
     {
         return $this->_headers;
+    }
+
+    /**
+     * Populates the header collection from an array.
+     * @param array $array the headers to populate from
+     * @since 2.0.3
+     */
+    public function fromArray(array $array)
+    {
+        $this->_headers = $array;
     }
 
     /**

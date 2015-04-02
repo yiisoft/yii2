@@ -23,7 +23,7 @@ Entry scripts mainly do the following work:
 * Call [[yii\base\Application::run()]] to process the incoming request.
 
 
-## Web Applications <a name="web-applications"></a>
+## Web Applications <span id="web-applications"></span>
 
 The following is the code in the entry script for the [Basic Web Application Template](start-installation.md).
 
@@ -47,7 +47,7 @@ $config = require(__DIR__ . '/../config/web.php');
 ```
 
 
-## Console Applications <a name="console-applications"></a>
+## Console Applications <span id="console-applications"></span>
 
 Similarly, the following is the code for the entry script of a console application:
 
@@ -83,14 +83,14 @@ exit($exitCode);
 ```
 
 
-## Defining Constants <a name="defining-constants"></a>
+## Defining Constants <span id="defining-constants"></span>
 
 Entry scripts are the best place for defining global constants. Yii supports the following three constants:
 
 * `YII_DEBUG`: specifies whether the application is running in debug mode. When in debug mode, an application
   will keep more log information, and will reveal detailed error call stacks if exceptions are thrown. For this
   reason, debug mode should be used mainly during development. The default value of `YII_DEBUG` is false.
-* `YII_ENV`: specifies which environment the application is running in. This has been described in
+* `YII_ENV`: specifies which environment the application is running in. This will be described in
   more detail in the [Configurations](concept-configurations.md#environment-constants) section.
   The default value of `YII_ENV` is `'prod'`, meaning the application is running in production environment.
 * `YII_ENABLE_ERROR_HANDLER`: specifies whether to enable the error handler provided by Yii. The default

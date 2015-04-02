@@ -9,7 +9,7 @@
 /* @var $end integer */
 /* @var $handler \yii\web\ErrorHandler */
 ?>
-<li class="<?php if (!$handler->isCoreFile($file) || $index === 1) echo 'application'; ?> call-stack-item"
+<li class="<?php if ($index === 1 || !$handler->isCoreFile($file)) echo 'application'; ?> call-stack-item"
     data-line="<?= (int) ($line - $begin) ?>">
     <div class="element-wrap">
         <div class="element">
@@ -17,7 +17,7 @@
             <span class="text"><?php if ($file !== null) echo 'in ' . $handler->htmlEncode($file); ?></span>
             <?php if ($method !== null): ?>
                 <span class="call">
-                    <?php if ($file !== null) echo '&ndash;' ?>
+                    <?php if ($file !== null) echo '&ndash;'; ?>
                     <?= ($class !== null ? $handler->addTypeLinks("$class::$method") : $handler->htmlEncode($method)) . '(' . $handler->argumentsToString($args) . ')' ?>
                 </span>
             <?php endif; ?>

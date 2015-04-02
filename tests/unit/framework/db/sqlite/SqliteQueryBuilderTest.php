@@ -84,7 +84,8 @@ class SqliteQueryBuilderTest extends QueryBuilderTest
 
     public function testBatchInsert()
     {
-        if (version_compare(\SQLite3::version()['versionString'], '3.7.11', '>=')) {
+        $db = $this->getConnection();
+        if (version_compare($db->pdo->getAttribute(\PDO::ATTR_SERVER_VERSION), '3.7.11', '>=')) {
             $this->markTestSkipped('This test is only relevant for SQLite < 3.7.11');
         }
         $sql = $this->getQueryBuilder()->batchInsert('{{customer}} t', ['t.id', 't.name'], [[1, 'a'], [2, 'b']]);

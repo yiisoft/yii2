@@ -85,8 +85,8 @@ abstract class ErrorHandler extends Component
         $this->exception = $exception;
 
         // disable error capturing to avoid recursive errors while handling exceptions
-        restore_error_handler();
-        restore_exception_handler();
+        $this->unregister();
+
         try {
             $this->logException($exception);
             if ($this->discardExistingOutput) {
@@ -107,9 +107,15 @@ abstract class ErrorHandler extends Component
                 } else {
                     echo '<pre>' . htmlspecialchars($msg, ENT_QUOTES, Yii::$app->charset) . '</pre>';
                 }
+            } else {
+                echo 'An internal server error occurred.';
             }
             $msg .= "\n\$_SERVER = " . VarDumper::export($_SERVER);
             error_log($msg);
+
+            if (PHP_SAPI !== 'cli') {
+                http_response_code(500);
+            }
             exit(1);
         }
 
@@ -125,6 +131,7 @@ abstract class ErrorHandler extends Component
      * @param string $message the error message.
      * @param string $file the filename that the error was raised in.
      * @param integer $line the line number the error was raised at.
+     * @return boolean whether the normal error handler continues.
      *
      * @throws ErrorException
      */
@@ -139,7 +146,7 @@ abstract class ErrorHandler extends Component
             $exception = new ErrorException($message, $code, $code, $file, $line);
 
             // in case error appeared in __toString method we can't throw any exception
-            $trace = debug_backtrace(0);
+            $trace = debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS);
             array_shift($trace);
             foreach ($trace as $frame) {
                 if ($frame['function'] == '__toString') {
@@ -150,6 +157,7 @@ abstract class ErrorHandler extends Component
 
             throw $exception;
         }
+        return false;
     }
 
     /**
@@ -194,8 +202,9 @@ abstract class ErrorHandler extends Component
     /**
      * Logs the given exception
      * @param \Exception $exception the exception to be logged
+     * @since 2.0.3 this method is now public.
      */
-    protected function logException($exception)
+    public function logException($exception)
     {
         $category = get_class($exception);
         if ($exception instanceof HttpException) {

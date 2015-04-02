@@ -23,16 +23,16 @@ structure-models.md                 | Yes
 structure-modules.md                | Yes
 structure-filters.md                | Yes
 structure-widgets.md                | Yes
-structure-assets.md                 |
+structure-assets.md                 | Yes
 structure-extensions.md             | Yes
-runtime-bootstrapping.md            |
-runtime-routing.md                  |
-runtime-requests.md                 |
-runtime-responses.md                |
-runtime-sessions-cookies.md         |
-runtime-url-handling.md             |
-runtime-handling-errors.md          |
-runtime-logging.md                  |
+runtime-overview.md                 | Yes
+runtime-bootstrapping.md            | Yes
+runtime-routing.md                  | Yes
+runtime-requests.md                 | Yes
+runtime-responses.md                | Yes
+runtime-sessions-cookies.md         | Yes
+runtime-handling-errors.md          | Yes
+runtime-logging.md                  | Yes
 concept-components.md               | Yes
 concept-properties.md               | Yes
 concept-events.md                   | Yes
@@ -42,18 +42,19 @@ concept-aliases.md                  | Yes
 concept-autoloading.md              | Yes
 concept-service-locator.md          | Yes
 concept-di-container.md             | Yes
-db-dao.md                           |
-db-query-builder.md                 |
-db-active-record.md                 |
-db-migrations.md                    |
+db-dao.md                           | Yes
+db-query-builder.md                 | Yes
+db-active-record.md                 | Yes
+db-migrations.md                    | Yes
 db-sphinx.md                        |
 db-redis.md                         |
 db-mongodb.md                       |
-db-elastic-search.md                |
+db-elasticsearch.md                 |
 input-forms.md                      |
 input-validation.md                 | Yes
-input-file-uploading.md             |
+input-file-upload.md                |
 input-multiple-models.md            |
+input-tabular-input.md              |
 output-formatting.md                |
 output-pagination.md                |
 output-sorting.md                   |
@@ -103,4 +104,3 @@ helper-overview.md                  |
 helper-array.md                     |
 helper-html.md                      |
 helper-url.md                       |
-helper-security.md                  |

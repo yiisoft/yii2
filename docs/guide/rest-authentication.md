@@ -6,12 +6,12 @@ be used. Therefore, each request should come with some sort of authentication cr
 the user authentication status may not be maintained by sessions or cookies. A common practice is
 to send a secret access token with each request to authenticate the user. Since an access token
 can be used to uniquely identify and authenticate a user, **API requests should always be sent
-via HTTPS to prevent from man-in-the-middle (MitM) attacks**.
+via HTTPS to prevent man-in-the-middle (MitM) attacks**.
 
 There are different ways to send an access token:
 
 * [HTTP Basic Auth](http://en.wikipedia.org/wiki/Basic_access_authentication): the access token
-  is sent as the username. This is should only be used when an access token can be safely stored
+  is sent as the username. This should only be used when an access token can be safely stored
   on the API consumer side. For example, the API consumer is a program running on a server.
 * Query parameter: the access token is sent as a query parameter in the API URL, e.g.,
   `https://example.com/users?access-token=xxxxxxxx`. Because most Web servers will keep query
@@ -25,7 +25,9 @@ Yii supports all of the above authentication methods. You can also easily create
 
 To enable authentication for your APIs, do the following steps:
 
-1. Configure the [[yii\web\User::enableSession|enableSession]] property of the `user` application component to be false.
+1. Configure the `user` application component:
+   - Set the [[yii\web\User::enableSession|enableSession]] property to be `false`.
+   - Set the [[yii\web\User::loginUrl|loginUrl]] property to be `null` to show a HTTP 403 error instead of redirecting to the login page. 
 2. Specify which authentication methods you plan to use by configuring the `authenticator` behavior
    in your REST controller classes.
 3. Implement [[yii\web\IdentityInterface::findIdentityByAccessToken()]] in your [[yii\web\User::identityClass|user identity class]].
@@ -45,7 +47,7 @@ public function init()
 }
 ```
 
-For example, to use HTTP Basic Auth, you may configure `authenticator` as follows,
+For example, to use HTTP Basic Auth, you may configure the `authenticator` behavior as follows,
 
 ```php
 use yii\filters\auth\HttpBasicAuth;
@@ -113,7 +115,7 @@ If authentication fails, a response with HTTP status 401 will be sent back toget
 (such as a `WWW-Authenticate` header for HTTP Basic Auth).
 
 
-## Authorization <a name="authorization"></a>
+## Authorization <span id="authorization"></span>
 
 After a user is authenticated, you probably want to check if he or she has the permission to perform the requested
 action for the requested resource. This process is called *authorization* which is covered in detail in

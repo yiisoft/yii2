@@ -102,7 +102,7 @@ RESULT;
     public function testExport($var, $expectedResult)
     {
         $exportResult = VarDumper::export($var);
-        $this->assertEquals($expectedResult, $exportResult);
+        $this->assertEqualsWithoutLE($expectedResult, $exportResult);
         $this->assertEquals($var, eval('return ' . $exportResult . ';'));
     }
 }

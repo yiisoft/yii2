@@ -25,14 +25,14 @@ is called, the generated content will be captured and stored in the cache.
 Like [data caching](caching-data.md), a unique `$id` is needed to identify a content cache.
 
 
-## Caching Options <a name="caching-options"></a>
+## Caching Options <span id="caching-options"></span>
 
 You may specify additional options about fragment caching by passing the option array as the second
 parameter to the [[yii\base\View::beginCache()|beginCache()]] method. Behind the scene, this option array
 will be used to configure a [[yii\widgets\FragmentCache]] widget which implements the actual fragment caching
 functionality.
 
-### Duration <a name="duration"></a>
+### Duration <span id="duration"></span>
 
 Perhaps the most commonly used option of fragment caching is [[yii\widgets\FragmentCache::duration|duration]].
 It specifies for how many seconds the content can remain valid in a cache. The following code
@@ -47,10 +47,10 @@ if ($this->beginCache($id, ['duration' => 3600])) {
 }
 ```
 
-If the option is not set, it will take the default value 0, which means the cached content will never expire.
+If the option is not set, it will take the default value 60, which means the cached content will expire in 60 seconds.
 
 
-### Dependencies <a name="dependencies"></a>
+### Dependencies <span id="dependencies"></span>
 
 Like [data caching](caching-data.md#cache-dependencies), content fragment being cached can also have dependencies.
 For example, the content of a post being displayed depends on whether or not the post is modified.
@@ -74,7 +74,7 @@ if ($this->beginCache($id, ['dependency' => $dependency])) {
 ```
 
 
-### Variations <a name="variations"></a>
+### Variations <span id="variations"></span>
 
 Content being cached may be variated according to some parameters. For example, for a Web application
 supporting multiple languages, the same piece of view code may generate the content in different languages.
@@ -94,7 +94,7 @@ if ($this->beginCache($id, ['variations' => [Yii::$app->language]])) {
 ```
 
 
-### Toggling Caching <a name="toggling-caching"></a>
+### Toggling Caching <span id="toggling-caching"></span>
 
 Sometimes you may want to enable fragment caching only when certain conditions are met. For example, for a page
 displaying a form, you only want to cache the form when it is initially requested (via GET request). Any
@@ -111,7 +111,7 @@ if ($this->beginCache($id, ['enabled' => Yii::$app->request->isGet])) {
 ```
 
 
-## Nested Caching <a name="nested-caching"></a>
+## Nested Caching <span id="nested-caching"></span>
 
 Fragment caching can be nested. That is, a cached fragment can be enclosed within another fragment which is also cached.
 For example, the comments are cached in an inner fragment cache, and they are cached together with the
@@ -143,7 +143,7 @@ inner cache has been invalidated. Therefore, you must be careful in setting the 
 of the nested caches, otherwise the outdated inner fragments may be kept in the outer fragment.
 
 
-## Dynamic Content <a name="dynamic-content"></a>
+## Dynamic Content <span id="dynamic-content"></span>
 
 When using fragment caching, you may encounter the situation where a large fragment of content is relatively
 static except at one or a few places. For example, a page header may display the main menu bar together with

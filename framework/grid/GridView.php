@@ -9,7 +9,7 @@ namespace yii\grid;
 
 use Yii;
 use Closure;
-use yii\base\Formatter;
+use yii\i18n\Formatter;
 use yii\base\InvalidConfigException;
 use yii\helpers\Url;
 use yii\helpers\Html;
@@ -20,7 +20,26 @@ use yii\base\Model;
 /**
  * The GridView widget is used to display data in a grid.
  *
- * It provides features like sorting, paging and also filtering the data.
+ * It provides features like [[sorter|sorting]], [[pager|paging]] and also [[filterModel|filtering]] the data.
+ *
+ * A basic usage looks like the following:
+ *
+ * ```php
+ * <?= GridView::widget([
+ *     'dataProvider' => $dataProvider,
+ *     'columns' => [
+ *         'id',
+ *         'name',
+ *         'created_at:datetime',
+ *         // ...
+ *     ],
+ * ]) ?>
+ * ```
+ *
+ * The columns of the grid table are configured in terms of [[Column]] classes,
+ * which are configured via [[columns]].
+ *
+ * The look and feel of a grid view can be customized using the large amount of properties.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
@@ -124,7 +143,7 @@ class GridView extends BaseListView
      * [
      *     ['class' => SerialColumn::className()],
      *     [
-     *         'class' => DataColumn::className(),
+     *         'class' => DataColumn::className(), // this line is optional
      *         'attribute' => 'name',
      *         'format' => 'text',
      *         'label' => 'Name',
@@ -136,9 +155,33 @@ class GridView extends BaseListView
      * If a column is of class [[DataColumn]], the "class" element can be omitted.
      *
      * As a shortcut format, a string may be used to specify the configuration of a data column
-     * which only contains "attribute", "format", and/or "label" options: `"attribute:format:label"`.
+     * which only contains [[DataColumn::attribute|attribute]], [[DataColumn::format|format]],
+     * and/or [[DataColumn::label|label]] options: `"attribute:format:label"`.
      * For example, the above "name" column can also be specified as: `"name:text:Name"`.
      * Both "format" and "label" are optional. They will take default values if absent.
+     *
+     * Using the shortcut format the configuration for columns in simple cases would look like this:
+     *
+     * ```php
+     * [
+     *     'id',
+     *     'amount:currency:Total Amount',
+     *     'created_at:datetime',
+     * ]
+     * ```
+     *
+     * When using a [[dataProvider]] with active records, you can also display values from related records,
+     * e.g. the `name` attribute of the `author` relation:
+     *
+     * ```php
+     * // shortcut syntax
+     * 'author.name',
+     * // full syntax
+     * [
+     *     'attribute' => 'author.name',
+     *     // ...
+     * ]
+     * ```
      */
     public $columns = [];
     /**
@@ -459,7 +502,7 @@ class GridView extends BaseListView
         } else {
             $options = $this->rowOptions;
         }
-        $options['data-key'] = is_array($key) ? json_encode($key) : (string)$key;
+        $options['data-key'] = is_array($key) ? json_encode($key) : (string) $key;
 
         return Html::tag('tr', implode('', $cells), $options);
     }
@@ -522,8 +565,6 @@ class GridView extends BaseListView
             foreach ($model as $name => $value) {
                 $this->columns[] = $name;
             }
-        } else {
-            throw new InvalidConfigException('Unable to generate columns from the data. Please manually configure the "columns" property.');
         }
     }
 }

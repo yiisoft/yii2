@@ -74,12 +74,17 @@ class CompositeAuth extends AuthMethod
             }
         }
 
-        if (!empty($this->authMethods)) {
-            /* @var $auth AuthInterface */
-            $auth = reset($this->authMethods);
-            $auth->handleFailure($response);
-        }
-
         return null;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function challenge($response)
+    {
+        foreach ($this->authMethods as $method) {
+            /** @var $method AuthInterface */
+            $method->challenge($response);
+        }
     }
 }

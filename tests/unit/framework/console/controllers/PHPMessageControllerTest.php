@@ -74,11 +74,14 @@ class PHPMessageControllerTest extends BaseMessageControllerTest
     {
         if (defined('HHVM_VERSION')) {
             // https://github.com/facebook/hhvm/issues/1447
-            $this->markTestSkipped('Can not test on HHVM because require is cached.');
+            static::markTestSkipped('Can not test on HHVM because require is cached.');
         }
 
         $messageFilePath = $this->getMessageFilePath($category);
-        $this->assertTrue(file_exists($messageFilePath), "There's no message file $messageFilePath!");
+
+        if (!file_exists($messageFilePath)) {
+            return [];
+        }
         return require $messageFilePath;
     }
 }

@@ -20,7 +20,8 @@ use Yii;
  * - Data tampering prevention: [[hashData()]] and [[validateData()]]
  * - Password validation: [[generatePasswordHash()]] and [[validatePassword()]]
  *
- * > Note: this class requires 'mcrypt' PHP extension. For the highest security level PHP version >= 5.5.0 is recommended.
+ * > Note: this class requires 'OpenSSL' PHP extension for random key/string generation on Windows and
+ * for encryption/decryption on all platforms. For the highest security level PHP version >= 5.5.0 is recommended.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @author Tom Worster <fsb@thefsb.org>
@@ -30,35 +31,41 @@ use Yii;
 class Security extends Component
 {
     /**
-     * Cipher algorithm for mcrypt module.
-     * AES has 128-bit block size and three key sizes: 128, 192 and 256 bits.
-     * mcrypt offers the Rijndael cipher with block sizes of 128, 192 and 256
-     * bits but only the 128-bit Rijndael is standardized in AES.
-     * So to use AES in mycrypt, specify `'rijndael-128'` cipher and mcrypt
-     * chooses the appropriate AES based on the length of the supplied key.
+     * @var string The cipher to use for encryption and decryption.
      */
-    const MCRYPT_CIPHER = 'rijndael-128';
+    public $cipher = 'AES-128-CBC';
     /**
-     * Block cipher operation mode for mcrypt module.
+     * @var array[] Look-up table of block sizes and key sizes for each supported OpenSSL cipher.
+     *
+     * In each element, the key is one of the ciphers supported by OpenSSL (@see openssl_get_cipher_methods()).
+     * The value is an array of two integers, the first is the cipher's block size in bytes and the second is
+     * the key size in bytes.
+     *
+     * > Warning: All OpenSSL ciphers that we recommend are in the default value, i.e. AES in CBC mode.
+     *
+     * > Note: Yii's encryption protocol uses the same size for cipher key, HMAC signature key and key
+     * derivation salt.
      */
-    const MCRYPT_MODE = 'cbc';
+    public $allowedCiphers = [
+        'AES-128-CBC' => [16, 16],
+        'AES-192-CBC' => [16, 24],
+        'AES-256-CBC' => [16, 32],
+    ];
     /**
-     * Size in bytes of encryption key, message authentication key and KDF salt.
+     * @var string Hash algorithm for key derivation. Recommend sha256, sha384 or sha512.
+     * @see hash_algos()
      */
-    const KEY_SIZE = 16;
+    public $kdfHash = 'sha256';
     /**
-     * Hash algorithm for key derivation.
+     * @var string Hash algorithm for message authentication. Recommend sha256, sha384 or sha512.
+     * @see hash_algos()
      */
-    const KDF_HASH = 'sha256';
+    public $macHash = 'sha256';
     /**
-     * Hash algorithm for message authentication.
+     * @var string HKDF info value for derivation of message authentication key.
+     * @see hkdf()
      */
-    const MAC_HASH = 'sha256';
-    /**
-     * HKDF info value for derivation of message authentication key.
-     */
-    const AUTH_KEY_INFO = 'AuthorizationKey';
-
+    public $authKeyInfo = 'AuthorizationKey';
     /**
      * @var integer derivation iterations count.
      * Set as high as possible to hinder dictionary password attacks.
@@ -73,8 +80,6 @@ class Security extends Component
      */
     public $passwordHashStrategy = 'crypt';
 
-    private $_cryptModule;
-
 
     /**
      * Encrypts data using a password.
@@ -85,7 +90,7 @@ class Security extends Component
      * The encrypted data includes a keyed message authentication code (MAC) so there is no need
      * to hash input or output data.
      * > Note: Avoid encrypting with passwords wherever possible. Nothing can protect against
-     * poor-quality or compromosed passwords.
+     * poor-quality or compromised passwords.
      * @param string $data the data to encrypt
      * @param string $password the password to use for encryption
      * @return string the encrypted data
@@ -98,7 +103,7 @@ class Security extends Component
     }
 
     /**
-     * Encrypts data using a cyptograhic key.
+     * Encrypts data using a cryptograhic key.
      * Derives keys for encryption and authentication from the input key using HKDF and a random salt,
      * which is very fast relative to [[encryptByPassword()]]. The input key must be properly
      * random -- use [[generateRandomKey()]] to generate keys.
@@ -142,147 +147,107 @@ class Security extends Component
     }
 
     /**
-     * Initializes the mcrypt module.
-     * @return resource the mcrypt module handle.
-     * @throws InvalidConfigException if mcrypt extension is not installed
-     * @throws Exception if mcrypt initialization fails
-     */
-    protected function getCryptModule()
-    {
-        if ($this->_cryptModule === null) {
-            if (!extension_loaded('mcrypt')) {
-                throw new InvalidConfigException('The mcrypt PHP extension is not installed.');
-            }
-
-            $this->_cryptModule = @mcrypt_module_open(self::MCRYPT_CIPHER, '', self::MCRYPT_MODE, '');
-            if ($this->_cryptModule === false) {
-                $this->_cryptModule = null;
-                throw new Exception('Failed to initialize the mcrypt module.');
-            }
-        }
-
-        return $this->_cryptModule;
-    }
-
-    public function __destruct()
-    {
-        if ($this->_cryptModule !== null) {
-            mcrypt_module_close($this->_cryptModule);
-            $this->_cryptModule = null;
-        }
-    }
-
-
-    /**
      * Encrypts data.
+     *
      * @param string $data data to be encrypted
-     * @param bool $passwordBased set true to use password-based key derivation
+     * @param boolean $passwordBased set true to use password-based key derivation
      * @param string $secret the encryption password or key
      * @param string $info context/application specific information, e.g. a user ID
      * See [RFC 5869 Section 3.2](https://tools.ietf.org/html/rfc5869#section-3.2) for more details.
+     *
      * @return string the encrypted data
-     * @throws Exception if PHP Mcrypt extension is not loaded or failed to be initialized
+     * @throws InvalidConfigException on OpenSSL not loaded
+     * @throws Exception on OpenSSL error
      * @see decrypt()
      */
     protected function encrypt($data, $passwordBased, $secret, $info)
     {
-        $module = $this->getCryptModule();
-
-        $keySalt = $this->generateRandomKey(self::KEY_SIZE);
-        if ($passwordBased) {
-            $key = $this->pbkdf2(self::KDF_HASH, $secret, $keySalt, $this->derivationIterations, self::KEY_SIZE);
-        } else {
-            $key = $this->hkdf(self::KDF_HASH, $secret, $keySalt, $info, self::KEY_SIZE);
+        if (!extension_loaded('openssl')) {
+            throw new InvalidConfigException('Encryption requires the OpenSSL PHP extension');
+        }
+        if (!isset($this->allowedCiphers[$this->cipher][0], $this->allowedCiphers[$this->cipher][1])) {
+            throw new InvalidConfigException($this->cipher . ' is not an allowed cipher');
         }
 
-        $data = $this->addPadding($data);
-        $ivSize = mcrypt_enc_get_iv_size($module);
-        $iv = mcrypt_create_iv($ivSize, MCRYPT_DEV_URANDOM);
-        mcrypt_generic_init($module, $key, $iv);
-        $encrypted = mcrypt_generic($module, $data);
-        mcrypt_generic_deinit($module);
+        list($blockSize, $keySize) = $this->allowedCiphers[$this->cipher];
 
-        $authKey = $this->hkdf(self::KDF_HASH, $key, null, self::AUTH_KEY_INFO, self::KEY_SIZE);
+        $keySalt = $this->generateRandomKey($keySize);
+        if ($passwordBased) {
+            $key = $this->pbkdf2($this->kdfHash, $secret, $keySalt, $this->derivationIterations, $keySize);
+        } else {
+            $key = $this->hkdf($this->kdfHash, $secret, $keySalt, $info, $keySize);
+        }
+
+        $iv = $this->generateRandomKey($blockSize);
+
+        $encrypted = openssl_encrypt($data, $this->cipher, $key, OPENSSL_RAW_DATA, $iv);
+        if ($encrypted === false) {
+            throw new \yii\base\Exception('OpenSSL failure on encryption: ' . openssl_error_string());
+        }
+
+        $authKey = $this->hkdf($this->kdfHash, $key, null, $this->authKeyInfo, $keySize);
         $hashed = $this->hashData($iv . $encrypted, $authKey);
 
         /*
          * Output: [keySalt][MAC][IV][ciphertext]
          * - keySalt is KEY_SIZE bytes long
          * - MAC: message authentication code, length same as the output of MAC_HASH
-         * - IV: initialization vector, length set by CRYPT_CIPHER and CRYPT_MODE, mcrypt_enc_get_iv_size()
+         * - IV: initialization vector, length $blockSize
          */
         return $keySalt . $hashed;
     }
 
     /**
      * Decrypts data.
+     *
      * @param string $data encrypted data to be decrypted.
-     * @param bool $passwordBased set true to use password-based key derivation
+     * @param boolean $passwordBased set true to use password-based key derivation
      * @param string $secret the decryption password or key
      * @param string $info context/application specific information, @see encrypt()
+     *
      * @return bool|string the decrypted data or false on authentication failure
+     * @throws InvalidConfigException on OpenSSL not loaded
+     * @throws Exception on OpenSSL error
      * @see encrypt()
      */
     protected function decrypt($data, $passwordBased, $secret, $info)
     {
-        $keySalt = StringHelper::byteSubstr($data, 0, self::KEY_SIZE);
-        if ($passwordBased) {
-            $key = $this->pbkdf2(self::KDF_HASH, $secret, $keySalt, $this->derivationIterations, self::KEY_SIZE);
-        } else {
-            $key = $this->hkdf(self::KDF_HASH, $secret, $keySalt, $info, self::KEY_SIZE);
+        if (!extension_loaded('openssl')) {
+            throw new InvalidConfigException('Encryption requires the OpenSSL PHP extension');
+        }
+        if (!isset($this->allowedCiphers[$this->cipher][0], $this->allowedCiphers[$this->cipher][1])) {
+            throw new InvalidConfigException($this->cipher . ' is not an allowed cipher');
         }
 
-        $authKey = $this->hkdf(self::KDF_HASH, $key, null, self::AUTH_KEY_INFO, self::KEY_SIZE);
-        $data = $this->validateData(StringHelper::byteSubstr($data, self::KEY_SIZE, null), $authKey);
+        list($blockSize, $keySize) = $this->allowedCiphers[$this->cipher];
+
+        $keySalt = StringHelper::byteSubstr($data, 0, $keySize);
+        if ($passwordBased) {
+            $key = $this->pbkdf2($this->kdfHash, $secret, $keySalt, $this->derivationIterations, $keySize);
+        } else {
+            $key = $this->hkdf($this->kdfHash, $secret, $keySalt, $info, $keySize);
+        }
+
+        $authKey = $this->hkdf($this->kdfHash, $key, null, $this->authKeyInfo, $keySize);
+        $data = $this->validateData(StringHelper::byteSubstr($data, $keySize, null), $authKey);
         if ($data === false) {
             return false;
         }
 
-        $module = $this->getCryptModule();
-        $ivSize = mcrypt_enc_get_iv_size($module);
-        $iv = StringHelper::byteSubstr($data, 0, $ivSize);
-        $encrypted = StringHelper::byteSubstr($data, $ivSize, null);
-        mcrypt_generic_init($module, $key, $iv);
-        $decrypted = mdecrypt_generic($module, $encrypted);
-        mcrypt_generic_deinit($module);
+        $iv = StringHelper::byteSubstr($data, 0, $blockSize);
+        $encrypted = StringHelper::byteSubstr($data, $blockSize, null);
 
-        return $this->stripPadding($decrypted);
-    }
-
-    /**
-     * Adds a padding to the given data (PKCS #7).
-     * @param string $data the data to pad
-     * @return string the padded data
-     */
-    protected function addPadding($data)
-    {
-        $module = $this->getCryptModule();
-        $blockSize = mcrypt_enc_get_block_size($module);
-        $pad = $blockSize - (StringHelper::byteLength($data) % $blockSize);
-
-        return $data . str_repeat(chr($pad), $pad);
-    }
-
-    /**
-     * Strips the padding from the given data.
-     * @param string $data the data to trim
-     * @return string the trimmed data
-     */
-    protected function stripPadding($data)
-    {
-        $end = StringHelper::byteSubstr($data, -1, null);
-        $last = ord($end);
-        $n = StringHelper::byteLength($data) - $last;
-        if (StringHelper::byteSubstr($data, $n, null) === str_repeat($end, $last)) {
-            return StringHelper::byteSubstr($data, 0, $n);
+        $decrypted = openssl_decrypt($encrypted, $this->cipher, $key, OPENSSL_RAW_DATA, $iv);
+        if ($decrypted === false) {
+            throw new \yii\base\Exception('OpenSSL failure on decryption: ' . openssl_error_string());
         }
 
-        return false;
+        return $decrypted;
     }
 
     /**
      * Derives a key from the given input key using the standard HKDF algorithm.
-     * Implements HKDF spcified in [RFC 5869](https://tools.ietf.org/html/rfc5869).
+     * Implements HKDF specified in [RFC 5869](https://tools.ietf.org/html/rfc5869).
      * Recommend use one of the SHA-2 hash algorithms: sha224, sha256, sha384 or sha512.
      * @param string $algo a hash algorithm supported by `hash_hmac()`, e.g. 'SHA-256'
      * @param string $inputKey the source key
@@ -290,9 +255,9 @@ class Security extends Component
      * @param string $info optional info to bind the derived key material to application-
      * and context-specific information, e.g. a user ID or API version, see
      * [RFC 5869](https://tools.ietf.org/html/rfc5869)
-     * @param int $length length of the output key in bytes. If 0, the output key is
+     * @param integer $length length of the output key in bytes. If 0, the output key is
      * the length of the hash algorithm output.
-     * @throws InvalidParamException
+     * @throws InvalidParamException when HMAC generation fails.
      * @return string the derived key
      */
     public function hkdf($algo, $inputKey, $salt = null, $info = null, $length = 0)
@@ -335,12 +300,12 @@ class Security extends Component
      * @param string $algo a hash algorithm supported by `hash_hmac()`, e.g. 'SHA-256'
      * @param string $password the source password
      * @param string $salt the random salt
-     * @param int $iterations the number of iterations of the hash algorithm. Set as high as
+     * @param integer $iterations the number of iterations of the hash algorithm. Set as high as
      * possible to hinder dictionary password attacks.
-     * @param int $length length of the output key in bytes. If 0, the output key is
+     * @param integer $length length of the output key in bytes. If 0, the output key is
      * the length of the hash algorithm output.
-     * @throws InvalidParamException
      * @return string the derived key
+     * @throws InvalidParamException when hash generation fails due to invalid params given.
      */
     public function pbkdf2($algo, $password, $salt, $iterations, $length = 0)
     {
@@ -398,8 +363,8 @@ class Security extends Component
      * cryptographic key.
      * @param boolean $rawHash whether the generated hash value is in raw binary format. If false, lowercase
      * hex digits will be generated.
-     * @throws InvalidConfigException
      * @return string the data prefixed with the keyed hash
+     * @throws InvalidConfigException when HMAC generation fails.
      * @see validateData()
      * @see generateRandomKey()
      * @see hkdf()
@@ -407,9 +372,9 @@ class Security extends Component
      */
     public function hashData($data, $key, $rawHash = false)
     {
-        $hash = hash_hmac(self::MAC_HASH, $data, $key, $rawHash);
+        $hash = hash_hmac($this->macHash, $data, $key, $rawHash);
         if (!$hash) {
-            throw new InvalidConfigException('Failed to generate HMAC with hash algorithm: ' . self::MAC_HASH);
+            throw new InvalidConfigException('Failed to generate HMAC with hash algorithm: ' . $this->macHash);
         }
         return $hash . $data;
     }
@@ -425,22 +390,22 @@ class Security extends Component
      * It indicates whether the hash value in the data is in binary format. If false, it means the hash value consists
      * of lowercase hex digits only.
      * hex digits will be generated.
-     * @throws InvalidConfigException
      * @return string the real data with the hash stripped off. False if the data is tampered.
+     * @throws InvalidConfigException when HMAC generation fails.
      * @see hashData()
      */
     public function validateData($data, $key, $rawHash = false)
     {
-        $test = @hash_hmac(self::MAC_HASH, '', '', $rawHash);
+        $test = @hash_hmac($this->macHash, '', '', $rawHash);
         if (!$test) {
-            throw new InvalidConfigException('Failed to generate HMAC with hash algorithm: ' . self::MAC_HASH);
+            throw new InvalidConfigException('Failed to generate HMAC with hash algorithm: ' . $this->macHash);
         }
         $hashLength = StringHelper::byteLength($test);
         if (StringHelper::byteLength($data) >= $hashLength) {
             $hash = StringHelper::byteSubstr($data, 0, $hashLength);
             $pureData = StringHelper::byteSubstr($data, $hashLength, null);
 
-            $calculatedHash = hash_hmac(self::MAC_HASH, $pureData, $key, $rawHash);
+            $calculatedHash = hash_hmac($this->macHash, $pureData, $key, $rawHash);
 
             if ($this->compareString($hash, $calculatedHash)) {
                 return $pureData;
@@ -455,19 +420,73 @@ class Security extends Component
      * @see generateRandomString() if you need a string.
      *
      * @param integer $length the number of bytes to generate
-     * @throws Exception on failure.
      * @return string the generated random bytes
+     * @throws InvalidConfigException if OpenSSL extension is required (e.g. on Windows) but not installed.
+     * @throws Exception on failure.
      */
     public function generateRandomKey($length = 32)
     {
-        if (!extension_loaded('mcrypt')) {
-            throw new InvalidConfigException('The mcrypt PHP extension is not installed.');
+        /*
+         * Strategy
+         *
+         * The most common platform is Linux, on which /dev/urandom is the best choice. Many other OSs
+         * implement a device called /dev/urandom for Linux compat and it is good too. So if there is
+         * a /dev/urandom then it is our first choice regardless of OS.
+         *
+         * Nearly all other modern Unix-like systems (the BSDs, Unixes and OS X) have a /dev/random
+         * that is a good choice. If we didn't get bytes from /dev/urandom then we try this next but
+         * only if the system is not Linux. Do not try to read /dev/random on Linux.
+         *
+         * Finally, OpenSSL can supply CSPR bytes. It is our last resort. On Windows this reads from
+         * CryptGenRandom, which is the right thing to do. On other systems that don't have a Unix-like
+         * /dev/urandom, it will deliver bytes from its own CSPRNG that is seeded from kernel sources
+         * of randomness. Even though it is fast, we don't generally prefer OpenSSL over /dev/urandom
+         * because an RNG in user space memory is undesirable.
+         *
+         * For background, see http://sockpuppet.org/blog/2014/02/25/safely-generate-random-numbers/
+         */
+
+        $bytes = '';
+
+        // If we are on Linux or any OS that mimics the Linux /dev/urandom device, e.g. FreeBSD or OS X,
+        // then read from /dev/urandom.
+        if (@file_exists('/dev/urandom')) {
+            $handle = fopen('/dev/urandom', 'r');
+            if ($handle !== false) {
+                $bytes .= fread($handle, $length);
+                fclose($handle);
+            }
         }
-        $bytes = mcrypt_create_iv($length, MCRYPT_DEV_URANDOM);
-        if ($bytes === false) {
+
+        if (StringHelper::byteLength($bytes) >= $length) {
+            return StringHelper::byteSubstr($bytes, 0, $length);
+        }
+
+        // If we are not on Linux and there is a /dev/random device then we have a BSD or Unix device
+        // that won't block. It's not safe to read from /dev/random on Linux.
+        if (PHP_OS !== 'Linux' && @file_exists('/dev/random')) {
+            $handle = fopen('/dev/random', 'r');
+            if ($handle !== false) {
+                $bytes .= fread($handle, $length);
+                fclose($handle);
+            }
+        }
+
+        if (StringHelper::byteLength($bytes) >= $length) {
+            return StringHelper::byteSubstr($bytes, 0, $length);
+        }
+
+        if (!extension_loaded('openssl')) {
+            throw new InvalidConfigException('The OpenSSL PHP extension is not installed.');
+        }
+
+        $bytes .= openssl_random_pseudo_bytes($length, $cryptoStrong);
+
+        if (StringHelper::byteLength($bytes) < $length || !$cryptoStrong) {
             throw new Exception('Unable to generate random bytes.');
         }
-        return $bytes;
+
+        return StringHelper::byteSubstr($bytes, 0, $length);
     }
 
     /**
@@ -475,8 +494,9 @@ class Security extends Component
      * The string generated matches [A-Za-z0-9_-]+ and is transparent to URL-encoding.
      *
      * @param integer $length the length of the key in characters
-     * @throws Exception Exception on failure.
      * @return string the generated random key
+     * @throws InvalidConfigException if OpenSSL extension is needed but not installed.
+     * @throws Exception on failure.
      */
     public function generateRandomString($length = 32)
     {
@@ -510,14 +530,14 @@ class Security extends Component
      * @param integer $cost Cost parameter used by the Blowfish hash algorithm.
      * The higher the value of cost,
      * the longer it takes to generate the hash and to verify a password against it. Higher cost
-     * therefore slows down a brute-force attack. For best protection against brute for attacks,
+     * therefore slows down a brute-force attack. For best protection against brute-force attacks,
      * set it to the highest value that is tolerable on production servers. The time taken to
      * compute the hash doubles for every increment by one of $cost.
-     * @throws Exception on bad password parameter or cost parameter
-     * @throws InvalidConfigException
      * @return string The password hash string. When [[passwordHashStrategy]] is set to 'crypt',
      * the output is always 60 ASCII characters, when set to 'password_hash' the output length
      * might increase in future versions of PHP (http://php.net/manual/en/function.password-hash.php)
+     * @throws Exception on bad password parameter or cost parameter.
+     * @throws InvalidConfigException when an unsupported password hash strategy is configured.
      * @see validatePassword()
      */
     public function generatePasswordHash($password, $cost = 13)
@@ -547,8 +567,8 @@ class Security extends Component
      * @param string $password The password to verify.
      * @param string $hash The hash to verify the password against.
      * @return boolean whether the password is correct.
-     * @throws InvalidParamException on bad password or hash parameters or if crypt() with Blowfish hash is not available.
-     * @throws InvalidConfigException on unsupported password hash strategy is configured.
+     * @throws InvalidParamException on bad password/hash parameters or if crypt() with Blowfish hash is not available.
+     * @throws InvalidConfigException when an unsupported password hash strategy is configured.
      * @see generatePasswordHash()
      */
     public function validatePassword($password, $hash)
@@ -589,11 +609,11 @@ class Security extends Component
      *
      * @param integer $cost the cost parameter
      * @return string the random salt value.
-     * @throws InvalidParamException if the cost parameter is not between 4 and 31
+     * @throws InvalidParamException if the cost parameter is out of the range of 4 to 31.
      */
     protected function generateSalt($cost = 13)
     {
-        $cost = (int)$cost;
+        $cost = (int) $cost;
         if ($cost < 4 || $cost > 31) {
             throw new InvalidParamException('Cost must be between 4 and 31.');
         }

@@ -362,6 +362,16 @@ class UrlRuleTest extends TestCase
                     ['post/index', ['page' => 1, 'tag' => 'a', 'lang' => 'en'], 'http://en.example.com/post/a'],
                 ],
             ],
+            [
+                'with unicode',
+                [
+                    'pattern' => '/blog/search/<tag:[a-zA-Zа-яА-Я0-9\_\+\-]{1,255}>',
+                    'route' => 'blog/search',
+                ],
+                [
+                    ['blog/search', ['tag' => 'метра'], 'blog/search/%D0%BC%D0%B5%D1%82%D1%80%D0%B0'],
+                ],
+            ],
         ];
     }
 
@@ -681,6 +691,18 @@ class UrlRuleTest extends TestCase
                     ['post/1', 'post/index', ['page' => '1', 'lang' => 'en']],
                     ['post/a', false],
                     ['post/1/a', false],
+                ],
+            ],
+            [
+                'host info + defaults', // https://github.com/yiisoft/yii2/issues/6871
+                [
+                    'pattern' => 'http://en.example.com/<page>',
+                    'route' => 'post/index',
+                    'defaults' => ['page' => 1],
+                ],
+                [
+                    ['', 'post/index', ['page' => 1]],
+                    ['2', 'post/index', ['page' => 2]],
                 ],
             ],
         ];

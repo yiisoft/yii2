@@ -6,9 +6,7 @@ The scripts are:
 
  - [`apc-setup.sh`](apc-setup.sh)
    Installs and configures the [apc pecl extension](http://pecl.php.net/package/apc)
- - [`memcache-setup.sh`](memcache-setup.sh)
-   Compiles and installs the [memcache pecl extension](http://pecl.php.net/package/memcache)
  - [`cubrid-setup.sh`](cubrid-setup.sh)
    Prepares the [CUBRID](http://www.cubrid.org/) server instance by installing the server and PHP PDO driver
- - [`sphinx-setup.sh`](sphinx-setup.sh)
-   Prepares the [Sphinx](http://sphinxsearch.com/) server instances by installing the server and attaching it to MySQL
+ - [`memcache-setup.sh`](memcache-setup.sh)
+   Compiles and installs the [memcache pecl extension](http://pecl.php.net/package/memcache)

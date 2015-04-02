@@ -1,7 +1,7 @@
 Guia Definitivo para Yii 2.0
 ============================
-Esse tutorial está disponível sob os [termos da documentação do Yii](http://www.yiiframework.com/doc/terms/).
 
+Esse tutorial está disponível sob os [termos da documentação do Yii](http://www.yiiframework.com/doc/terms/).
 
 Todos os Direitos Reservados.
 
@@ -12,7 +12,7 @@ Introdução
 ----------
 
 * [Sobre o Yii](intro-yii.md)
-* [Migrando a partir da versão 1.1.*](intro-upgrade-from-v1.md)
+* [Migrando a partir da versão 1.1](intro-upgrade-from-v1.md)
 
 
 Primeiros Passos
@@ -22,9 +22,9 @@ Primeiros Passos
 * [Executando Aplicações](start-workflow.md)
 * [Como Fazer um "Hello World"](start-hello.md)
 * [Trabalhando com Formulários](start-forms.md)
-* [Trabalhando com Banco de Dados](start-databases.md)
+* [Trabalhando com Bancos de Dados](start-databases.md)
 * [Gerando Código com Gii](start-gii.md)
-* [Visão Geral](start-looking-ahead.md)
+* [Seguindo em Frente](start-looking-ahead.md)
 
 
 Estrutura de uma Aplicação
@@ -37,28 +37,28 @@ Estrutura de uma Aplicação
 * [Controllers (Controladores)](structure-controllers.md)
 * [Models (Modelos)](structure-models.md)
 * [Views (Visões)](structure-views.md)
-* **TBD** [Filtros](structure-filters.md)
-* **TBD** [Widgets](structure-widgets.md)
-* **TBD** [Módulos](structure-modules.md)
+* [Módulos](structure-modules.md)
+* [Filtros](structure-filters.md)
+* [Widgets](structure-widgets.md)
 * [Assets](structure-assets.md)
-* **TBD** [Extensões](structure-extensions.md)
+* [Extensões](structure-extensions.md)
 
 
 Tratamento de Requisições
 -------------------------
 
-* **TBD** [Bootstrapping](runtime-bootstrapping.md)
-* **TBD** [Rotas](runtime-routing.md)
-* **TBD** [Requisições](runtime-requests.md)
-* **TBD** [Respostas](runtime-responses.md)
-* **TBD** [Seções e Cookies](runtime-sessions-cookies.md)
-* [Análise e Geração de URLs](runtime-url-handling.md)
+* [Visão Geral](runtime-overview.md)
+* [Inicialização (Bootstrapping)](runtime-bootstrapping.md)
+* [Roteamento e Criação de URL](runtime-routing.md)
+* [Requisições](runtime-requests.md)
+* [Respostas](runtime-responses.md)
+* [Sessões e Cookies](runtime-sessions-cookies.md)
 * [Tratamento de Erros](runtime-handling-errors.md)
 * [Gerenciamento de Logs](runtime-logging.md)
 
 
-Conceitos Chaves
-----------------
+Conceitos Chave
+---------------
 
 * [Componentes](concept-components.md)
 * [Propriedades](concept-properties.md)
@@ -68,39 +68,41 @@ Conceitos Chaves
 * [Aliases](concept-aliases.md)
 * [Autoloading de Classes](concept-autoloading.md)
 * [Service Locator](concept-service-locator.md)
-* [Injeção de Dependência](concept-di-container.md)
+* [Container de Injeção de Dependência](concept-di-container.md)
 
 
 Trabalhando com Banco de Dados
 ------------------------------
 
-* [Data Access Objects (DAO, Objeto de Acesso a Dados)](db-dao.md) - Estabelecendo uma conexão com o Banco de Dados, consultas básicas, transações e manipulação do esquema
-* [Query Builder (Construtor de Consulta)](db-query-builder.md) - Consultando o banco de dados usando uma camada de abstração simples
-* [Active Record](db-active-record.md) - Sobre "Active Record ORM" (Mapeamento Objeto-Relacional), recuperando e manipulando registros e definindo relacionamentos
-* [Migrations (Migrações)](db-migrations.md) - Controle de versão do bancos de dados em um ambiente de desenvolvimento em equipe
+* [Data Access Objects (DAO, Objeto de Acesso a Dados)](db-dao.md)? Estabelecendo uma conexão com o Banco de Dados, consultas básicas, transações e manipulação do esquema
+* [Query Builder (Construtor de Consulta)](db-query-builder.md)? Consultando o banco de dados usando uma camada de abstração simples
+* [Active Record](db-active-record.md): Sobre o Active Record ORM, recuperando e manipulando registros e definindo relacionamentos
+* [Migrations (Migrações)](db-migrations.md): Aplica controle de versão para seus banco de dados em um ambiente de desenvolvimento em equipe
 * **TBD** [Sphinx](db-sphinx.md)
 * **TBD** [Redis](db-redis.md)
 * **TBD** [MongoDB](db-mongodb.md)
-* **TBD** [ElasticSearch](db-elastic-search.md)
+* **TBD** [ElasticSearch](db-elasticsearch.md)
 
 
 Coletando Dados de Usuários
 ---------------------------
 
-* [Criando um Formulário](input-forms.md)
+* [Criando Formulários](input-forms.md)
 * [Validação de Dados](input-validation.md)
-* **TBD** [Uploading de Arquivos](input-file-upload.md)
-* **TBD** [Coletando Dados de Múltiplos Modelos](input-multiple-models.md)
+* [Upload de Arquivos](input-file-upload.md)
+* [Coletando Entradas Tabulares](input-tabular-input.md)
+* [Coletando Dados de Múltiplos Models](input-multiple-models.md)
 
 
 Exibindo Dados
 ---------------
 
-* **TBD** [Formatando Dados](output-formatting.md)
-* **TBD** [Paginação](output-pagination.md)
-* **TBD** [Ordenação](output-sorting.md)
+* [Formatando Dados](output-formatting.md)
+* [Paginação](output-pagination.md)
+* [Ordenação](output-sorting.md)
 * [Data Providers (Provedores de Dados)](output-data-providers.md)
 * [Widgets de Dados](output-data-widgets.md)
+* [Trabalhando com Client Scripts](output-client-scripts.md)
 * [Temas](output-theming.md)
 
 
@@ -109,9 +111,9 @@ Segurança
 
 * [Autenticação](security-authentication.md)
 * [Autorização](security-authorization.md)
-* [Trabalhando Com Senhas](security-passwords.md)
-* **TBD** [Auth Clients](security-auth-clients.md)
-* **TBD** [Melhores Práticas](security-best-practices.md)
+* [Trabalhando com Senhas](security-passwords.md)
+* [Auth Clients](security-auth-clients.md)
+* [Melhores Práticas](security-best-practices.md)
 
 
 Cache
@@ -124,16 +126,16 @@ Cache
 * [Cache HTTP](caching-http.md)
 
 
-Web Services com RESTful 
---------------------
+Web Services RESTful 
+------------------------
 
-* [Visão Inicial](rest-quick-start.md)
+* [Introdução](rest-quick-start.md)
 * [Recursos](rest-resources.md)
 * [Controllers (Controladores)](rest-controllers.md)
-* [Rotas](rest-routing.md)
+* [Roteamento](rest-routing.md)
 * [Formatando Respostas](rest-response-formatting.md)
 * [Autenticação](rest-authentication.md)
-* [Rate Limiting](rest-rate-limiting.md)
+* [Limitador de Acesso](rest-rate-limiting.md)
 * [Versionamento](rest-versioning.md)
 * [Tratamento de Erros](rest-error-handling.md)
 
@@ -150,57 +152,47 @@ Testes
 ------
 
 * [Visão Geral](test-overview.md)
-* **TBD** [Testes Unitários](test-unit.md)
-* **TBD** [Testes Funcionais](test-functional.md)
-* **TBD** [Testes de Aceitação](test-acceptance.md)
+* [Configuração do ambiente de testes](test-environment-setup.md)
+* [Testes Unitários](test-unit.md)
+* [Testes Funcionais](test-functional.md)
+* [Testes de Aceitação](test-acceptance.md)
 * [Fixtures](test-fixtures.md)
-
-
-Estendendo o Yii
-----------------
-
-* [Criando Extensões](extend-creating-extensions.md)
-* [Customizando o Código do Núcleo](extend-customizing-core.md)
-* [Usando Bibliotecas de Terceiros](extend-using-libs.md)
-* **TBD** [Usando o Yii em Sistemas de Terceiros](extend-embedding-in-others.md)
-* **TBD** [Usando Yii 1.1 e 2.0 juntos](extend-using-v1-v2.md)
-* [Usando o Composer](extend-using-composer.md)
 
 
 Tópicos Especiais
 -----------------
 
-* [Modelo de Aplicação Avançada](tutorial-advanced-app.md)
+* [Template Avançado de Aplicação](tutorial-advanced-app.md)
 * [Construindo uma Aplicação a Partir do Zero](tutorial-start-from-scratch.md)
 * [Comandos de Console](tutorial-console.md)
-* [Ferramentas de Validação](tutorial-core-validators.md)
+* [Ferramentas de Validação Embutidas](tutorial-core-validators.md)
 * [Internacionalização](tutorial-i18n.md)
 * [Enviando E-mails](tutorial-mailing.md)
 * [Ajustes no Desempenho](tutorial-performance-tuning.md)
-* **TBD** [Ambiente de Hospedagem Compartilhada](tutorial-shared-hosting.md)
-* [Ferramentas de Templates](tutorial-template-engines.md)
+* [Ambiente de Hospedagem Compartilhada](tutorial-shared-hosting.md)
+* [Motor de Template](tutorial-template-engines.md)
+* [Utilização com Códigos de Terceiros](tutorial-yii-integration.md)
 
 
 Widgets
 -------
 
-* GridView
-* ListView
-* DetailView
-* ActiveForm
-* Pjax
-* Menu
-* LinkPager
-* LinkSorter
-* [Bootstrap Widgets](bootstrap-widgets.md)
-* **TBD** [Jquery UI Widgets](jui-widgets.md)
+* GridView: **TBD** link para a página de demonstração
+* ListView: **TBD** link para a página de demonstração
+* DetailView: **TBD** link para a página de demonstração
+* ActiveForm: **TBD** link para a página de demonstração
+* Pjax: **TBD** link para a página de demonstração
+* Menu: **TBD** link para a página de demonstração
+* LinkPager: **TBD** link para a página de demonstração
+* LinkSorter: **TBD** link para a página de demonstração
+* [Widgets do Bootstrap](widget-bootstrap.md)
+* [Widgets do JQuery UI](widget-jui.md)
 
 
 Helpers
 -------
 
 * [Visão Geral](helper-overview.md)
-* **TBD** [ArrayHelper](helper-array.md)
-* **TBD** [Html](helper-html.md)
-* **TBD** [Url](helper-url.md)
-* **TBD** [Security](helper-security.md)
+* [ArrayHelper](helper-array.md)
+* [Html](helper-html.md)
+* [Url](helper-url.md)

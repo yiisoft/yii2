@@ -2,7 +2,7 @@
 
 return [
     // string, required, root directory of all source files
-    'sourcePath' => __DIR__,
+    'sourcePath' => __DIR__ . DIRECTORY_SEPARATOR . '..',
     // array, required, list of language codes that the extracted messages
     // should be translated to. For example, ['zh-CN', 'de'].
     'languages' => ['de'],
@@ -18,6 +18,10 @@ return [
     // boolean, whether to remove messages that no longer appear in the source code.
     // Defaults to false, which means each of these messages will be enclosed with a pair of '@@' marks.
     'removeUnused' => false,
+    // array, list of patterns that specify which files (not directories) should be processed.
+    // If empty or not set, all files will be processed.
+    // Please refer to "except" for details about the patterns.
+    'only' => ['*.php'],
     // array, list of patterns that specify which files/directories should NOT be processed.
     // If empty or not set, all files/directories will be processed.
     // A path matches a pattern if it contains the pattern string at its end. For example,
@@ -26,10 +30,6 @@ return [
     // and the '.svn' will match all files and directories named exactly '.svn'.
     // Note, the '/' characters in a pattern matches both '/' and '\'.
     // See helpers/FileHelper::findFiles() description for more details on pattern matching rules.
-    'only' => ['*.php'],
-    // array, list of patterns that specify which files (not directories) should be processed.
-    // If empty or not set, all files will be processed.
-    // Please refer to "except" for details about the patterns.
     // If a file/directory matches both a pattern in "only" and "except", it will NOT be processed.
     'except' => [
         '.svn',
@@ -44,10 +44,16 @@ return [
     // 'php' output format is for saving messages to php files.
     'format' => 'php',
     // Root directory containing message translations.
-    'messagePath' => __DIR__ . DIRECTORY_SEPARATOR . 'messages',
+    'messagePath' => __DIR__,
     // boolean, whether the message file should be overwritten with the merged messages
     'overwrite' => true,
 
+    /*
+    // Message categories to ignore
+    'ignoreCategories' => [
+        'yii',
+    ],
+     */
 
     /*
     // 'db' output format is for saving messages to database.

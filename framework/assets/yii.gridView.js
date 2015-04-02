@@ -28,6 +28,28 @@
 
     var gridData = {};
 
+    var gridEvents = {
+        /**
+         * beforeFilter event is triggered before filtering the grid.
+         * The signature of the event handler should be:
+         *     function (event)
+         * where
+         *  - event: an Event object.
+         *
+         * If the handler returns a boolean false, it will stop filter form submission after this event. As
+         * a result, afterFilter event will not be triggered.
+         */
+        beforeFilter: 'beforeFilter',
+        /**
+         * afterFilter event is triggered after filtering the grid and filtered results are fetched.
+         * The signature of the event handler should be:
+         *     function (event)
+         * where
+         *  - event: an Event object.
+         */
+        afterFilter: 'afterFilter'
+    };
+    
     var methods = {
         init: function (options) {
             return this.each(function () {
@@ -60,7 +82,7 @@
         },
 
         applyFilter: function () {
-            var $grid = $(this);
+            var $grid = $(this), event;
             var settings = gridData[$grid.prop('id')].settings;
             var data = {};
             $.each($(settings.filterSelector).serializeArray(), function () {
@@ -81,7 +103,16 @@
             $.each(data, function (name, value) {
                 $form.append($('<input type="hidden" name="t" value="" />').attr('name', name).val(value));
             });
+            
+            event = $.Event(gridEvents.beforeFilter);
+            $grid.trigger(event);
+            if (event.result === false) {
+                return;
+            }
+
             $form.submit();
+            
+            $grid.trigger(gridEvents.afterFilter);
         },
 
         setSelectionColumn: function (options) {
@@ -91,8 +122,9 @@
             if (!options.multiple) {
                 return;
             }
-            var inputs = "#" + id + " input[name='" + options.checkAll + "']";
-            $(document).off('click.yiiGridView', inputs).on('click.yiiGridView', inputs, function () {
+            var checkAll = "#" + id + " input[name='" + options.checkAll + "']";
+            var inputs = "#" + id + " input[name='" + options.name + "']";
+            $(document).off('click.yiiGridView', checkAll).on('click.yiiGridView', checkAll, function () {
                 $grid.find("input[name='" + options.name + "']:enabled").prop('checked', this.checked);
             });
             $(document).off('click.yiiGridView', inputs + ":enabled").on('click.yiiGridView', inputs + ":enabled", function () {
@@ -126,4 +158,3 @@
         }
     };
 })(window.jQuery);
-

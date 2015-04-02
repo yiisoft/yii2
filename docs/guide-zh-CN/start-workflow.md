@@ -1,11 +1,11 @@
 运行应用
 ====================
 
-安装 Yii 后，就有了一个运行中的 Yii 应用，根据配置的不同，可以通过 `http://hostname/basic/web/index.php` 或 `http://hostname/index.php` 访问。本章节将介绍应用的内建功能，如何组织代码，以及一般情况下应用如何处理请求。
+安装 Yii 后，就有了一个可运行的 Yii 应用，根据配置的不同，可以通过 `http://hostname/basic/web/index.php` 或 `http://hostname/index.php` 访问。本章节将介绍应用的内建功能，如何组织代码，以及一般情况下应用如何处理请求。
 
 > 补充：为简单起见，在整个“入门”板块都假定你已经把 `basic/web` 设为 Web 服务器根目录并配置完毕，你访问应用的地址会是 `http://lostname/index.php` 或类似的。请按需调整 URL。
 
-功能 <a name="functionality"></a>
+功能 <span id="functionality"></span>
 -------------
 
 一个安装完的基本应用包含四页：
@@ -20,10 +20,11 @@
 在浏览器底部可以看到一个工具栏。这是 Yii 提供的很有用的[调试工具](tool-debugger.md)，可以记录并显示大量的调试信息，例如日志信息，响应状态，数据库查询等等。
 
 
-应用结构 <a name="application-structure"></a>
+应用结构 <span id="application-structure"></span>
 ---------------------
 
 应用中最重要的目录和文件（假设应用根目录是 `basic`）：
+
 ```
 basic/                  应用根目录
     composer.json       Composer 配置文件, 描述包信息
@@ -53,12 +54,12 @@ Yii 实现了[模型-视图-控制器 (MVC)](http://wikipedia.org/wiki/Model-vie
 每个应用都有一个入口脚本 `web/index.php`，这是整个应用中唯一可以访问的 PHP 脚本。入口脚本接受一个 Web 请求并创建[应用](structure-application.md)实例去处理它。 [应用](structure-applications.md)在它的[组建](concept-components.md)辅助下解析请求，并分派请求至 MVC 元素。[视图](structure-views.md)使用[小部件](structure-widgets.md)去创建复杂和动态的用户界面。
 
 
-请求生命周期 <a name="request-lifecycle"></a>
+请求生命周期 <span id="request-lifecycle"></span>
 -----------------
 
 以下图表展示了一个应用如何处理请求：
 
-![请求生命周期](images/application-lifecycle.png)
+![请求生命周期](images/request-lifecycle.png)
 
 1. 用户向[入口脚本](structure-entry-scripts.md) `web/index.php` 发起请求。
 2. 入口脚本加载应用[配置](concept-configurations.md)并创建一个[应用](structure-applications.md)实例去处理请求。

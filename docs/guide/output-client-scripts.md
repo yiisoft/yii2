@@ -30,7 +30,7 @@ instead of adding a new one. If you don't provide it, the JS code itself will be
 An external script can be added like the following:
 
 ```php
-$this->registerJsFile('http://example.com/js/main.js', [JqueryAsset::className()]);
+$this->registerJsFile('http://example.com/js/main.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
 ```
 
 The arguments for [[yii\web\View::registerJsFile()|registerJsFile()]] are similar to those for
@@ -76,16 +76,19 @@ If you want to specify additional properties of the style tag, pass an array of 
 If you need to make sure there's only a single style tag use fourth argument as was mentioned in meta tags description.
 
 ```php
-$this->registerCssFile("http://example.com/css/themes/black-and-white.css", [BootstrapAsset::className()], ['media' => 'print'], 'css-print-theme');
+$this->registerCssFile("http://example.com/css/themes/black-and-white.css", [
+    'depends' => [BootstrapAsset::className()],
+    'media' => 'print',
+], 'css-print-theme');
 ```
 
 The code above will add a link to CSS file to the head section of the page.
 
 * The first argument specifies the CSS file to be registered.
-* The second argument specifies that this CSS file depends on [[yii\bootstrap\BootstrapAsset|BootstrapAsset]], meaning it will be added
-  AFTER the CSS files in [[yii\bootstrap\BootstrapAsset|BootstrapAsset]]. Without this dependency specification, the relative order
-  between this CSS file and the [[yii\bootstrap\BootstrapAsset|BootstrapAsset]] CSS files would be undefined.
-* The third argument specifies the attributes for the resulting `<link>` tag.
+* The second argument specifies the HTML attributes for the resulting `<link>` tag. The option `depends`
+  is specially handled. It specifies which asset bundles this CSS file depends on. In this case, the dependent
+  asset bundle is [[yii\bootstrap\BootstrapAsset|BootstrapAsset]]. This means the CSS file will be added
+  *after* the CSS files in [[yii\bootstrap\BootstrapAsset|BootstrapAsset]].
 * The last argument specifies an ID identifying this CSS file. If it is not provided, the URL of the CSS file will be
   used instead.
 

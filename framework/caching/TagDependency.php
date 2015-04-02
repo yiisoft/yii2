@@ -65,7 +65,7 @@ class TagDependency extends Dependency
     public static function invalidate($cache, $tags)
     {
         $keys = [];
-        foreach ((array)$tags as $tag) {
+        foreach ((array) $tags as $tag) {
             $keys[] = $cache->buildKey([__CLASS__, $tag]);
         }
         static::touchKeys($cache, $keys);

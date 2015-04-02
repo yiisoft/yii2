@@ -2,6 +2,7 @@
 namespace yiiunit\framework\db;
 
 use yiiunit\data\ar\ActiveRecord;
+use yiiunit\data\ar\Category;
 use yiiunit\data\ar\Customer;
 use yiiunit\data\ar\NullValues;
 use yiiunit\data\ar\OrderItem;
@@ -13,6 +14,9 @@ use yiiunit\data\ar\Profile;
 use yiiunit\data\ar\Type;
 use yiiunit\framework\ar\ActiveRecordTestTrait;
 use yiiunit\framework\db\cubrid\CubridActiveRecordTest;
+use yiiunit\data\ar\Animal;
+use yiiunit\data\ar\Cat;
+use yiiunit\data\ar\Dog;
 
 /**
  * @group db
@@ -60,8 +64,13 @@ class ActiveRecordTest extends DatabaseTestCase
     public function testCustomColumns()
     {
         // find custom column
-        $customer = Customer::find()->select(['*', '(status*2) AS status2'])
-            ->where(['name' => 'user3'])->one();
+        if ($this->driverName === 'oci') {
+            $customer = Customer::find()->select(['{{customer}}.*', '([[status]]*2) AS [[status2]]'])
+                ->where(['name' => 'user3'])->one();
+        } else {
+            $customer = Customer::find()->select(['*', '([[status]]*2) AS [[status2]]'])
+                ->where(['name' => 'user3'])->one();
+        }
         $this->assertEquals(3, $customer->id);
         $this->assertEquals(4, $customer->status2);
     }
@@ -70,41 +79,41 @@ class ActiveRecordTest extends DatabaseTestCase
     {
         // find count, sum, average, min, max, scalar
         $this->assertEquals(3, Customer::find()->count());
-        $this->assertEquals(2, Customer::find()->where('id=1 OR id=2')->count());
-        $this->assertEquals(6, Customer::find()->sum('id'));
-        $this->assertEquals(2, Customer::find()->average('id'));
-        $this->assertEquals(1, Customer::find()->min('id'));
-        $this->assertEquals(3, Customer::find()->max('id'));
+        $this->assertEquals(2, Customer::find()->where('[[id]]=1 OR [[id]]=2')->count());
+        $this->assertEquals(6, Customer::find()->sum('[[id]]'));
+        $this->assertEquals(2, Customer::find()->average('[[id]]'));
+        $this->assertEquals(1, Customer::find()->min('[[id]]'));
+        $this->assertEquals(3, Customer::find()->max('[[id]]'));
         $this->assertEquals(3, Customer::find()->select('COUNT(*)')->scalar());
     }
 
     public function testFindScalar()
     {
         // query scalar
-        $customerName = Customer::find()->where(['id' => 2])->select('name')->scalar();
+        $customerName = Customer::find()->where(['[[id]]' => 2])->select('[[name]]')->scalar();
         $this->assertEquals('user2', $customerName);
     }
 
     public function testFindColumn()
     {
         /* @var $this TestCase|ActiveRecordTestTrait */
-        $this->assertEquals(['user1', 'user2', 'user3'], Customer::find()->select('name')->column());
-        $this->assertEquals(['user3', 'user2', 'user1'], Customer::find()->orderBy(['name' => SORT_DESC])->select('name')->column());
+        $this->assertEquals(['user1', 'user2', 'user3'], Customer::find()->select('[[name]]')->column());
+        $this->assertEquals(['user3', 'user2', 'user1'], Customer::find()->orderBy(['[[name]]' => SORT_DESC])->select('[[name]]')->column());
     }
 
     public function testFindBySql()
     {
         // find one
-        $customer = Customer::findBySql('SELECT * FROM customer ORDER BY id DESC')->one();
+        $customer = Customer::findBySql('SELECT * FROM {{customer}} ORDER BY [[id]] DESC')->one();
         $this->assertTrue($customer instanceof Customer);
         $this->assertEquals('user3', $customer->name);
 
         // find all
-        $customers = Customer::findBySql('SELECT * FROM customer')->all();
+        $customers = Customer::findBySql('SELECT * FROM {{customer}}')->all();
         $this->assertEquals(3, count($customers));
 
         // find with parameter binding
-        $customer = Customer::findBySql('SELECT * FROM customer WHERE id=:id', [':id' => 2])->one();
+        $customer = Customer::findBySql('SELECT * FROM {{customer}} WHERE [[id]]=:id', [':id' => 2])->one();
         $this->assertTrue($customer instanceof Customer);
         $this->assertEquals('user2', $customer->name);
     }
@@ -173,6 +182,34 @@ class ActiveRecordTest extends DatabaseTestCase
         $this->assertInstanceOf(Item::className(), $items[1]);
         $this->assertEquals(1, $items[0]->id);
         $this->assertEquals(2, $items[1]->id);
+    }
+
+    /**
+     * https://github.com/yiisoft/yii2/issues/5341
+     *
+     * Issue:     Plan     1 -- * Account * -- * User
+     * Our Tests: Category 1 -- * Item    * -- * Order
+     */
+    public function testDeeplyNestedTableRelation2()
+    {
+        /* @var $category Category */
+        $category = Category::findOne(1);
+        $this->assertNotNull($category);
+        $orders = $category->orders;
+        $this->assertEquals(2, count($orders));
+        $this->assertInstanceOf(Order::className(), $orders[0]);
+        $this->assertInstanceOf(Order::className(), $orders[1]);
+        $ids = [$orders[0]->id, $orders[1]->id];
+        sort($ids);
+        $this->assertEquals([1, 3], $ids);
+
+        $category = Category::findOne(2);
+        $this->assertNotNull($category);
+        $orders = $category->orders;
+        $this->assertEquals(1, count($orders));
+        $this->assertInstanceOf(Order::className(), $orders[0]);
+        $this->assertEquals(2, $orders[0]->id);
+
     }
 
     public function testStoreNull()
@@ -276,7 +313,7 @@ class ActiveRecordTest extends DatabaseTestCase
         // inner join filtering and eager loading
         $orders = Order::find()->innerJoinWith([
             'customer' => function ($query) {
-                $query->where('customer.id=2');
+                $query->where('{{customer}}.[[id]]=2');
             },
         ])->orderBy('order.id')->all();
         $this->assertEquals(2, count($orders));
@@ -298,7 +335,7 @@ class ActiveRecordTest extends DatabaseTestCase
         // inner join filtering without eager loading
         $orders = Order::find()->innerJoinWith([
             'customer' => function ($query) {
-                $query->where('customer.id=2');
+                $query->where('{{customer}}.[[id]]=2');
             },
         ], false)->orderBy('order.id')->all();
         $this->assertEquals(2, count($orders));
@@ -333,7 +370,7 @@ class ActiveRecordTest extends DatabaseTestCase
                 $q->orderBy('item.id');
             },
             'items.category' => function ($q) {
-                $q->where('category.id = 2');
+                $q->where('{{category}}.[[id]] = 2');
             },
         ])->orderBy('order.id')->all();
         $this->assertEquals(1, count($orders));
@@ -410,6 +447,24 @@ class ActiveRecordTest extends DatabaseTestCase
                     ->orderBy('items.id');
             },
         ])->orderBy('order.id')->one();
+
+        // join with sub-relation called inside Closure
+        $orders = Order::find()->joinWith([
+                'items' => function ($q) {
+                    $q->orderBy('item.id');
+                    $q->joinWith([
+                            'category'=> function ($q) {
+                                $q->where('{{category}}.[[id]] = 2');
+                            }
+                        ]);
+                },
+            ])->orderBy('order.id')->all();
+        $this->assertEquals(1, count($orders));
+        $this->assertTrue($orders[0]->isRelationPopulated('items'));
+        $this->assertEquals(2, $orders[0]->id);
+        $this->assertEquals(3, count($orders[0]->items));
+        $this->assertTrue($orders[0]->items[0]->isRelationPopulated('category'));
+        $this->assertEquals(2, $orders[0]->items[0]->category->id);
     }
 
     public function testJoinWithAndScope()
@@ -583,7 +638,7 @@ class ActiveRecordTest extends DatabaseTestCase
         $model->char_col = '1337';
         $model->char_col2 = 'test';
         $model->char_col3 = 'test123';
-        $model->float_col = 1337.42;
+        $model->float_col = 3.742;
         $model->float_col2 = 42.1337;
         $model->bool_col = true;
         $model->bool_col2 = false;
@@ -601,5 +656,39 @@ class ActiveRecordTest extends DatabaseTestCase
 //        $this->assertSame(42.1337, $model->float_col2);
 //        $this->assertSame(true, $model->bool_col);
 //        $this->assertSame(false, $model->bool_col2);
+    }
+
+    public function testIssues()
+    {
+        // https://github.com/yiisoft/yii2/issues/4938
+        $category = Category::findOne(2);
+        $this->assertTrue($category instanceof Category);
+        $this->assertEquals(3, $category->getItems()->count());
+        $this->assertEquals(1, $category->getLimitedItems()->count());
+        $this->assertEquals(1, $category->getLimitedItems()->distinct(true)->count());
+
+        // https://github.com/yiisoft/yii2/issues/3197
+        $orders = Order::find()->with('orderItems')->orderBy('id')->all();
+        $this->assertEquals(3, count($orders));
+        $this->assertEquals(2, count($orders[0]->orderItems));
+        $this->assertEquals(3, count($orders[1]->orderItems));
+        $this->assertEquals(1, count($orders[2]->orderItems));
+        $orders = Order::find()->with(['orderItems' => function ($q) { $q->indexBy('item_id'); }])->orderBy('id')->all();
+        $this->assertEquals(3, count($orders));
+        $this->assertEquals(2, count($orders[0]->orderItems));
+        $this->assertEquals(3, count($orders[1]->orderItems));
+        $this->assertEquals(1, count($orders[2]->orderItems));
+    }
+    
+    public function testPopulateRecordCallWhenQueryingOnParentClass() 
+    {
+        (new Cat())->save(false);
+        (new Dog())->save(false);
+
+        $animal = Animal::find()->where(['type' => Dog::className()])->one();
+        $this->assertEquals('bark', $animal->getDoes());
+
+        $animal = Animal::find()->where(['type' => Cat::className()])->one();
+        $this->assertEquals('meow', $animal->getDoes());
     }
 }

@@ -77,9 +77,11 @@ class POMessageControllerTest extends BaseMessageControllerTest
     protected function loadMessages($category)
     {
         $messageFilePath = $this->getMessageFilePath();
-        $this->assertTrue(file_exists($messageFilePath), "There's no message file $messageFilePath!");
+        if (!file_exists($messageFilePath)) {
+            return [];
+        }
 
         $gettext = new GettextPoFile();
         return $gettext->load($messageFilePath, $category);
     }
-} 
+}

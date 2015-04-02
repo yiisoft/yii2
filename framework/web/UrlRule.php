@@ -84,7 +84,7 @@ class UrlRule extends Object implements UrlRuleInterface
      */
     public $mode;
     /**
-     * @var bool a value indicating if parameters should be url encoded.
+     * @var boolean a value indicating if parameters should be url encoded.
      */
     public $encodeParams = true;
 
@@ -131,6 +131,7 @@ class UrlRule extends Object implements UrlRuleInterface
         }
 
         $this->pattern = trim($this->pattern, '/');
+        $this->route = trim($this->route, '/');
 
         if ($this->host !== null) {
             $this->host = rtrim($this->host, '/');
@@ -150,7 +151,6 @@ class UrlRule extends Object implements UrlRuleInterface
             $this->pattern = '/' . $this->pattern . '/';
         }
 
-        $this->route = trim($this->route, '/');
         if (strpos($this->route, '<') !== false && preg_match_all('/<(\w+)>/', $this->route, $matches)) {
             foreach ($matches[1] as $name) {
                 $this->_routeParams[$name] = "<$name>";
@@ -174,7 +174,7 @@ class UrlRule extends Object implements UrlRuleInterface
                 if (array_key_exists($name, $this->defaults)) {
                     $length = strlen($match[0][0]);
                     $offset = $match[0][1];
-                    if ($offset > 1 && $this->pattern[$offset - 1] === '/' && $this->pattern[$offset + $length] === '/') {
+                    if ($offset > 1 && $this->pattern[$offset - 1] === '/' && (!isset($this->pattern[$offset + $length]) || $this->pattern[$offset + $length] === '/')) {
                         $tr["/<$name>"] = "(/(?P<$name>$pattern))?";
                     } else {
                         $tr["<$name>"] = "(?P<$name>$pattern)?";
@@ -185,7 +185,7 @@ class UrlRule extends Object implements UrlRuleInterface
                 if (isset($this->_routeParams[$name])) {
                     $tr2["<$name>"] = "(?P<$name>$pattern)";
                 } else {
-                    $this->_paramRules[$name] = $pattern === '[^\/]+' ? '' : "#^$pattern$#";
+                    $this->_paramRules[$name] = $pattern === '[^\/]+' ? '' : "#^$pattern$#u";
                 }
             }
         }
@@ -219,7 +219,7 @@ class UrlRule extends Object implements UrlRuleInterface
         $suffix = (string) ($this->suffix === null ? $manager->suffix : $this->suffix);
         if ($suffix !== '' && $pathInfo !== '') {
             $n = strlen($suffix);
-            if (substr_compare($pathInfo, $suffix, -$n) === 0) {
+            if (substr_compare($pathInfo, $suffix, -$n, $n) === 0) {
                 $pathInfo = substr($pathInfo, 0, -$n);
                 if ($pathInfo === '') {
                     // suffix alone is not allowed

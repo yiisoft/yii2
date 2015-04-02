@@ -13,7 +13,7 @@ function time()
 
 /**
  * Mock for the microtime() function for caching classes
- * @param bool $float
+ * @param boolean $float
  * @return float
  */
 function microtime($float = false)

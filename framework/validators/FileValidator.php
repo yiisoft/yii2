@@ -29,7 +29,7 @@ class FileValidator extends Validator
      * separated by space or comma (e.g. "gif, jpg").
      * Extension names are case-insensitive. Defaults to null, meaning all file name
      * extensions are allowed.
-     * @see wrongType
+     * @see wrongType for the customized message for wrong file type.
      */
     public $extensions;
     /**
@@ -43,13 +43,13 @@ class FileValidator extends Validator
      * separated by space or comma (e.g. "text/plain, image/png").
      * Mime type names are case-insensitive. Defaults to null, meaning all MIME types
      * are allowed.
-     * @see wrongMimeType
+     * @see wrongMimeType for the customized message for wrong MIME type.
      */
     public $mimeTypes;
     /**
      * @var integer the minimum number of bytes required for the uploaded file.
      * Defaults to null, meaning no limit.
-     * @see tooSmall
+     * @see tooSmall for the customized message for a file that is too small.
      */
     public $minSize;
     /**
@@ -57,14 +57,14 @@ class FileValidator extends Validator
      * Defaults to null, meaning no limit.
      * Note, the size limit is also affected by 'upload_max_filesize' INI setting
      * and the 'MAX_FILE_SIZE' hidden field value.
-     * @see tooBig
+     * @see tooBig for the customized message for a file that is too big.
      */
     public $maxSize;
     /**
      * @var integer the maximum file count the given attribute can hold.
      * It defaults to 1, meaning single file upload. By defining a higher number,
      * multiple uploads become possible.
-     * @see tooMany
+     * @see tooMany for the customized message when too many files are uploaded.
      */
     public $maxFiles = 1;
     /**
@@ -166,12 +166,12 @@ class FileValidator extends Validator
     /**
      * @inheritdoc
      */
-    public function validateAttribute($object, $attribute)
+    public function validateAttribute($model, $attribute)
     {
         if ($this->maxFiles > 1) {
-            $files = $object->$attribute;
+            $files = $model->$attribute;
             if (!is_array($files)) {
-                $this->addError($object, $attribute, $this->uploadRequired);
+                $this->addError($model, $attribute, $this->uploadRequired);
 
                 return;
             }
@@ -180,24 +180,24 @@ class FileValidator extends Validator
                     unset($files[$i]);
                 }
             }
-            $object->$attribute = array_values($files);
+            $model->$attribute = array_values($files);
             if (empty($files)) {
-                $this->addError($object, $attribute, $this->uploadRequired);
+                $this->addError($model, $attribute, $this->uploadRequired);
             }
             if (count($files) > $this->maxFiles) {
-                $this->addError($object, $attribute, $this->tooMany, ['limit' => $this->maxFiles]);
+                $this->addError($model, $attribute, $this->tooMany, ['limit' => $this->maxFiles]);
             } else {
                 foreach ($files as $file) {
                     $result = $this->validateValue($file);
                     if (!empty($result)) {
-                        $this->addError($object, $attribute, $result[0], $result[1]);
+                        $this->addError($model, $attribute, $result[0], $result[1]);
                     }
                 }
             }
         } else {
-            $result = $this->validateValue($object->$attribute);
+            $result = $this->validateValue($model->$attribute);
             if (!empty($result)) {
-                $this->addError($object, $attribute, $result[0], $result[1]);
+                $this->addError($model, $attribute, $result[0], $result[1]);
             }
         }
     }
@@ -334,24 +334,25 @@ class FileValidator extends Validator
     /**
      * @inheritdoc
      */
-    public function clientValidateAttribute($object, $attribute, $view)
+    public function clientValidateAttribute($model, $attribute, $view)
     {
         ValidationAsset::register($view);
-        $options = $this->getClientOptions($object, $attribute);
-        return 'yii.validation.file(attribute, messages, ' . json_encode($options) . ');';
+        $options = $this->getClientOptions($model, $attribute);
+        return 'yii.validation.file(attribute, messages, ' . json_encode($options, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE) . ');';
     }
 
     /**
      * Returns the client side validation options.
-     * @param \yii\base\Model $object the model being validated
+     * @param \yii\base\Model $model the model being validated
      * @param string $attribute the attribute name being validated
      * @return array the client side validation options
      */
-    protected function getClientOptions($object, $attribute)
+    protected function getClientOptions($model, $attribute)
     {
-        $label = $object->getAttributeLabel($attribute);
+        $label = $model->getAttributeLabel($attribute);
 
-        if ( $this->message !== null ){
+        $options = [];
+        if ($this->message !== null) {
             $options['message'] = Yii::$app->getI18n()->format($this->message, [
                 'attribute' => $label,
             ], Yii::$app->language);

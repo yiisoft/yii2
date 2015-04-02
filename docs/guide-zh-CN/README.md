@@ -28,7 +28,7 @@ Yii 2.0 权威指南
 应用结构
 --------
 
-* **已定稿** [结构总览](structure-overview.md)
+* **已定稿** [结构概述](structure-overview.md)
 * **已定稿** [入口脚本](structure-entry-scripts.md)
 * **已定稿** [应用](structure-applications.md)
 * **已定稿** [应用组件](structure-application-components.md)
@@ -38,20 +38,20 @@ Yii 2.0 权威指南
 * **已定稿** [过滤器](structure-filters.md)
 * **已定稿** [小部件（Widget）](structure-widgets.md)
 * **已定稿** [模块（Module）](structure-modules.md)
-* **编撰中** [前端资源（Asset）](structure-assets.md)
+* **已定稿** [前端资源（Asset）](structure-assets.md)
 * **已定稿** [扩展（extensions）](structure-extensions.md)
 
 请求处理
 --------
 
-* **待定中** [引导（Bootstrapping）](runtime-bootstrapping.md)
-* **待定中** [路由（Routing）](runtime-routing.md)
-* **待定中** [请求（Request）](runtime-requests.md)
-* **待定中** [响应（Response）](runtime-responses.md)
-* **待定中** [Sessions（会话）和 Cookies](runtime-sessions-cookies.md)
-* **已定稿** [URL 解析和生成](runtime-url-handling.md)
-* **编撰中** [错误处理](runtime-handling-errors.md)
-* **编撰中** [日志](runtime-logging.md)
+* **已定稿** [运行概述](runtime-overview.md)
+* **已定稿** [引导（Bootstrapping）](runtime-bootstrapping.md)
+* **已定稿** [路由（Route）引导与创建 URL](runtime-routing.md)
+* **已定稿** [请求（Request）](runtime-requests.md)
+* **已定稿** [响应（Response）](runtime-responses.md)
+* **已定稿** [Sessions（会话）和 Cookies](runtime-sessions-cookies.md)
+* **已定稿** [错误处理](runtime-handling-errors.md)
+* **已定稿** [日志](runtime-logging.md)
 
 关键概念
 --------
@@ -62,14 +62,14 @@ Yii 2.0 权威指南
 * **已定稿** [行为（Behavior）](concept-behaviors.md)
 * **已定稿** [配置（Configurations）](concept-configurations.md)
 * **已定稿** [类自动加载（Autoloading）](concept-autoloading.md)
-* **已定稿** [别名（Alias）](concept-alias.md)
+* **已定稿** [别名（Alias）](concept-aliases.md)
 * **已定稿** [服务定位器（Service Locator）](concept-service-locator.md)
 * **已定稿** [依赖注入容器（DI Container）](concept-di-container.md)
 
 配合数据库工作
 -------------
 
-* **编撰中** [数据访问对象（DAO）](db-dao.md) - 数据库连接、基本查询、事务和模式操作
+* **已定稿** [数据访问对象（DAO）](db-dao.md) - 数据库连接、基本查询、事务和模式操作
 * **编撰中** [查询生成器（Query Builder）](db-query-builder.md) - 使用简单抽象层查询数据库
 * **编撰中** [活动记录（Active Record）](db-active-record.md) - 活动记录对象关系映射（ORM），检索和操作记录、定义关联关系
 * **编撰中** [数据库迁移（Migration）](db-migrations.md) - 在团体开发中对你的数据库使用版本控制
@@ -83,17 +83,19 @@ Yii 2.0 权威指南
 
 * **编撰中** [创建表单](input-forms.md)
 * **已定稿** [输入验证](input-validation.md)
-* **编撰中** [文件上传](input-file-uploading.md)
-* **待定中** [多模型同时输入](input-multiple-models.md)
+* **编撰中** [文件上传](input-file-upload.md)
+* **编撰中** [收集列表输入（待定）](input-tabular-input.md)
+* **编撰中** [多模型同时输入](input-multiple-models.md)
 
 显示数据
 --------
 
-* **待定中** [格式化输出数据](output-formatting.md)
-* **待定中** [分页（Pagination）](output-pagination.md)
-* **待定中** [排序（Sorting）](output-sorting.md)
+* **编撰中** [格式化输出数据](output-formatting.md)
+* **编撰中** [分页（Pagination）](output-pagination.md)
+* **编撰中** [排序（Sorting）](output-sorting.md)
 * **编撰中** [数据提供器](output-data-providers.md)
 * **编撰中** [数据小部件](output-data-widgets.md)
+* **编撰中** [操作客户端脚本](output-client-scripts.md)
 * **编撰中** [主题](output-theming.md)
 
 安全
@@ -102,8 +104,8 @@ Yii 2.0 权威指南
 * **编撰中** [认证（Authentication）](security-authentication.md)
 * **编撰中** [授权（Authorization）](security-authorization.md)
 * **编撰中** [处理密码](security-passwords.md)
-* **待定中** [客户端认证](security-auth-clients.md)
-* **待定中** [安全领域的最佳实践](security-best-practices.md)
+* **编撰中** [客户端认证](security-auth-clients.md)
+* **编撰中** [安全领域的最佳实践](security-best-practices.md)
 
 缓存
 -----
@@ -119,13 +121,13 @@ RESTful Web 服务
 
 * **已定稿** [快速入门](rest-quick-start.md)
 * **已定稿** [资源](rest-resources.md)
+* **已定稿** [控制器](rest-controllers.md)
 * **已定稿** [路由](rest-routing.md)
 * **已定稿** [格式化响应](rest-response-formatting.md)
 * **已定稿** [授权验证](rest-authentication.md)
 * **已定稿** [速率限制](rest-rate-limiting.md)
 * **已定稿** [版本化](rest-versioning.md)
 * **已定稿** [错误处理](rest-error-handling.md)
-* **已定稿** [测试](rest-testing.md)
 
 开发工具
 --------
@@ -139,9 +141,10 @@ RESTful Web 服务
 -----
 
 * **编撰中** [概述](test-overview.md)
-* **待定中** [单元测试](test-unit.md)
-* **待定中** [功能测试](test-functional.md)
-* **待定中** [验收测试](test-acceptance.md)
+* **编撰中** [搭建测试环境](test-endvironment-setup.md)
+* **编撰中** [单元测试](test-unit.md)
+* **编撰中** [功能测试](test-functional.md)
+* **编撰中** [验收测试](test-acceptance.md)
 * **编撰中** [测试夹具](test-fixtures.md)
 
 
@@ -170,17 +173,16 @@ RESTful Web 服务
 * 菜单（Menu）：链接到 demo 页
 * LinkPager：链接到 demo 页
 * LinkSorter：链接到 demo 页
-* **已完成** [Bootstrap 小部件](widget-bootstrap.md)
-* **已完成** [Jquery UI 小部件](widget-jui.md)
+* **编撰中** [Bootstrap 小部件](widget-bootstrap.md)
+* **编撰中** [jQuery UI 小部件](widget-jui.md)
 
 助手类
 ------
 
 * **编撰中** [助手一览](helper-overview.md)
-* **待定中** [ArrayHelper](helper-array.md)
-* **待定中** [Html](helper-html.md)
-* **待定中** [Url](helper-url.md)
-* **待定中** [security](helper-security.md)
+* **编撰中** [Array 助手](helper-array.md)
+* **编撰中** [Html 助手](helper-html.md)
+* **编撰中** [Url 助手](helper-url.md)
 
 不在目录内的文件
 ----------------

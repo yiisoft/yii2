@@ -14,6 +14,11 @@ use yii\helpers\ArrayHelper;
 use yii\helpers\Html;
 
 /**
+ * BaseListView is a base class for widgets displaying data from data provider
+ * such as ListView and GridView.
+ *
+ * It provides features like sorting, paging and also filtering the data.
+ *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */
@@ -32,11 +37,15 @@ abstract class BaseListView extends Widget
     /**
      * @var array the configuration for the pager widget. By default, [[LinkPager]] will be
      * used to render the pager. You can use a different widget class by configuring the "class" element.
+     * Note that the widget must support the `pagination` property which will be populated with the
+     * [[\yii\data\BaseDataProvider::pagination|pagination]] value of the [[dataProvider]].
      */
     public $pager = [];
     /**
      * @var array the configuration for the sorter widget. By default, [[LinkSorter]] will be
      * used to render the sorter. You can use a different widget class by configuring the "class" element.
+     * Note that the widget must support the `sort` property which will be populated with the
+     * [[\yii\data\BaseDataProvider::sort|sort]] value of the [[dataProvider]].
      */
     public $sorter = [];
     /**
@@ -112,7 +121,7 @@ abstract class BaseListView extends Widget
      */
     public function run()
     {
-        if ($this->dataProvider->getCount() > 0 || $this->showOnEmpty) {
+        if ($this->showOnEmpty || $this->dataProvider->getCount() > 0) {
             $content = preg_replace_callback("/{\\w+}/", function ($matches) {
                 $content = $this->renderSection($matches[0]);
 

@@ -46,6 +46,7 @@ abstract class Schema extends Object
     const TYPE_INTEGER = 'integer';
     const TYPE_BIGINT = 'bigint';
     const TYPE_FLOAT = 'float';
+    const TYPE_DOUBLE = 'double';
     const TYPE_DECIMAL = 'decimal';
     const TYPE_DATETIME = 'datetime';
     const TYPE_TIMESTAMP = 'timestamp';
@@ -312,7 +313,7 @@ abstract class Schema extends Object
     public function getLastInsertID($sequenceName = '')
     {
         if ($this->db->isActive) {
-            return $this->db->pdo->lastInsertId($sequenceName);
+            return $this->db->pdo->lastInsertId($sequenceName === '' ? null : $this->quoteSimpleTableName($sequenceName));
         } else {
             throw new InvalidCallException('DB Connection is not active.');
         }
@@ -493,6 +494,7 @@ abstract class Schema extends Object
             'bigint' => 'integer',
             'boolean' => 'boolean',
             'float' => 'double',
+            'double' => 'double',
             'binary' => 'resource',
         ];
         if (isset($typeMap[$column->type])) {

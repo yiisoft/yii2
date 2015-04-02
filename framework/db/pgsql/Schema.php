@@ -59,8 +59,8 @@ class Schema extends \yii\db\Schema
 
         'real' => self::TYPE_FLOAT,
         'float4' => self::TYPE_FLOAT,
-        'double precision' => self::TYPE_FLOAT,
-        'float8' => self::TYPE_FLOAT,
+        'double precision' => self::TYPE_DOUBLE,
+        'float8' => self::TYPE_DOUBLE,
         'decimal' => self::TYPE_DECIMAL,
         'numeric' => self::TYPE_DECIMAL,
 
@@ -167,29 +167,6 @@ class Schema extends \yii\db\Schema
     }
 
     /**
-     * Determines the PDO type for the given PHP data value.
-     * @param mixed $data the data whose PDO type is to be determined
-     * @return integer the PDO type
-     * @see http://www.php.net/manual/en/pdo.constants.php
-     */
-    public function getPdoType($data)
-    {
-        // php type => PDO type
-        static $typeMap = [
-            // https://github.com/yiisoft/yii2/issues/1115
-            // Cast boolean to integer values to work around problems with PDO casting false to string '' https://bugs.php.net/bug.php?id=33876
-            'boolean' => \PDO::PARAM_INT,
-            'integer' => \PDO::PARAM_INT,
-            'string' => \PDO::PARAM_STR,
-            'resource' => \PDO::PARAM_LOB,
-            'NULL' => \PDO::PARAM_NULL,
-        ];
-        $type = gettype($data);
-
-        return isset($typeMap[$type]) ? $typeMap[$type] : \PDO::PARAM_STR;
-    }
-
-    /**
      * Returns all table names in the database.
      * @param string $schema the schema of the tables. Defaults to empty string, meaning the current or default schema.
      * @return array all table names in the database. The names have NO schema name prefix.
@@ -199,12 +176,14 @@ class Schema extends \yii\db\Schema
         if ($schema === '') {
             $schema = $this->defaultSchema;
         }
-        $sql = <<<EOD
-SELECT table_name, table_schema FROM information_schema.tables
-WHERE table_schema=:schema AND table_type='BASE TABLE'
-EOD;
-        $command = $this->db->createCommand($sql);
-        $command->bindParam(':schema', $schema);
+        $sql = <<<SQL
+SELECT c.relname AS table_name
+FROM pg_class c
+INNER JOIN pg_namespace ns ON ns.oid = c.relnamespace
+WHERE ns.nspname = :schemaName AND c.relkind IN ('r','v','m','f')
+ORDER BY c.relname
+SQL;
+        $command = $this->db->createCommand($sql, [':schemaName' => $schema]);
         $rows = $command->queryAll();
         $names = [];
         foreach ($rows as $row) {
@@ -229,35 +208,40 @@ EOD;
 
         $sql = <<<SQL
 select
-    (select string_agg(attname,',') attname from pg_attribute where attrelid=ct.conrelid and attnum = any(ct.conkey)) as columns,
+    a.attname as column_name,
     fc.relname as foreign_table_name,
     fns.nspname as foreign_table_schema,
-    (select string_agg(attname,',') attname from pg_attribute where attrelid=ct.confrelid and attnum = any(ct.confkey)) as foreign_columns
+    fa.attname as foreign_column_name
 from
     pg_constraint ct
+    inner join generate_subscripts(ct.conkey, 1) as s on 1=1
     inner join pg_class c on c.oid=ct.conrelid
     inner join pg_namespace ns on c.relnamespace=ns.oid
+    inner join pg_attribute a on a.attrelid=ct.conrelid and a.attnum = ct.conkey[s]
     left join pg_class fc on fc.oid=ct.confrelid
     left join pg_namespace fns on fc.relnamespace=fns.oid
-
+    left join pg_attribute fa on fa.attrelid=ct.confrelid and fa.attnum = ct.confkey[s]
 where
     ct.contype='f'
     and c.relname={$tableName}
     and ns.nspname={$tableSchema}
+order by
+    fns.nspname, fc.relname, a.attnum
 SQL;
 
-        $constraints = $this->db->createCommand($sql)->queryAll();
-        foreach ($constraints as $constraint) {
-            $columns = explode(',', $constraint['columns']);
-            $fcolumns = explode(',', $constraint['foreign_columns']);
+        $constraints = [];
+        foreach ($this->db->createCommand($sql)->queryAll() as $constraint) {
             if ($constraint['foreign_table_schema'] !== $this->defaultSchema) {
                 $foreignTable = $constraint['foreign_table_schema'] . '.' . $constraint['foreign_table_name'];
             } else {
                 $foreignTable = $constraint['foreign_table_name'];
             }
+            $constraints[$foreignTable][$constraint['column_name']] = $constraint['foreign_column_name'];
+        }
+        foreach ($constraints as $foreignTable => $columns) {
             $citem = [$foreignTable];
-            foreach ($columns as $idx => $column) {
-                $citem[$column] = $fcolumns[$idx];
+            foreach ($columns as $column => $foreignColumn) {
+                $citem[$column] = $foreignColumn;
             }
             $table->foreignKeys[] = $citem;
         }
@@ -266,34 +250,28 @@ SQL;
     /**
      * Gets information about given table unique indexes.
      * @param TableSchema $table the table metadata
-     * @return array with index names, columns and if it is an expression tree
+     * @return array with index and column names
      */
     protected function getUniqueIndexInformation($table)
     {
-        $tableName = $this->quoteValue($table->name);
-        $tableSchema = $this->quoteValue($table->schemaName);
-
         $sql = <<<SQL
 SELECT
     i.relname as indexname,
-    ARRAY(
-        SELECT pg_get_indexdef(idx.indexrelid, k + 1, True)
-        FROM generate_subscripts(idx.indkey, 1) AS k
-        ORDER BY k
-    ) AS indexcolumns,
-    idx.indexprs IS NOT NULL AS indexprs
+    pg_get_indexdef(idx.indexrelid, k + 1, TRUE) AS columnname
 FROM pg_index idx
+INNER JOIN generate_subscripts(idx.indkey, 1) AS k ON 1=1
 INNER JOIN pg_class i ON i.oid = idx.indexrelid
 INNER JOIN pg_class c ON c.oid = idx.indrelid
 INNER JOIN pg_namespace ns ON c.relnamespace = ns.oid
-WHERE idx.indisprimary != True
-AND idx.indisunique = True
-AND c.relname = {$tableName}
-AND ns.nspname = {$tableSchema}
-;
+WHERE idx.indisprimary = FALSE AND idx.indisunique = TRUE
+AND c.relname = :tableName AND ns.nspname = :schemaName
+ORDER BY i.relname, k
 SQL;
 
-        return $this->db->createCommand($sql)->queryAll();
+        return $this->db->createCommand($sql, [
+            ':schemaName' => $table->schemaName,
+            ':tableName' => $table->name,
+        ])->queryAll();
     }
 
     /**
@@ -312,21 +290,11 @@ SQL;
      */
     public function findUniqueIndexes($table)
     {
-        $indexes = $this->getUniqueIndexInformation($table);
         $uniqueIndexes = [];
 
-        foreach ($indexes as $index) {
-            $indexName = $index['indexname'];
-
-            if ($index['indexprs']) {
-                // Index is an expression like "lower(colname::text)"
-                $indexColumns = preg_replace("/.*\(([^\:]+).*/mi", "$1", $index['indexcolumns']);
-            } else {
-                $indexColumns = array_map('trim', explode(',', str_replace(['{', '}', '"', '\\'], '', $index['indexcolumns'])));
-            }
-
-            $uniqueIndexes[$indexName] = $indexColumns;
-
+        $rows = $this->getUniqueIndexInformation($table);
+        foreach ($rows as $row) {
+            $uniqueIndexes[$row['indexname']][] = $row['columnname'];
         }
 
         return $uniqueIndexes;
@@ -448,7 +416,7 @@ SQL;
         $column->name = $info['column_name'];
         $column->precision = $info['numeric_precision'];
         $column->scale = $info['numeric_scale'];
-        $column->size = $info['size'] === null ? null : (int)$info['size'];
+        $column->size = $info['size'] === null ? null : (int) $info['size'];
         if (isset($this->typeMap[$column->dbType])) {
             $column->type = $this->typeMap[$column->dbType];
         } else {

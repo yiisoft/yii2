@@ -2,11 +2,11 @@ Caché HTTP
 ==========
 
 Además del almacenamiento de caché en el servidor que hemos descrito en secciones anteriores, las aplicaciones Web
-pueden hacer uso del caché en el lado del cliente para así ahorrar tiempo y recursos para generar y transmitir el
+pueden hacer uso de la caché en el lado del cliente para así ahorrar tiempo y recursos para generar y transmitir el
 mismo contenido una y otra vez.
 
 Para usar la caché del lado del cliente, puedes configurar [[yii\filters\HttpCache]] como un filtro en el controlador
-para aquellas acciones cuyo resultado deba estar estar almacenado en la caché en el lado del cliente. [[yii\filters\HttpCache|HttpCache]]
+para aquellas acciones cuyo resultado deba estar almacenado en la caché en el lado del cliente. [[yii\filters\HttpCache|HttpCache]]
 solo funciona en peticiones `GET` y `HEAD`. Puede manejar tres tipos de cabeceras (headers) HTTP relacionadas en este tipo de
 consultas:
 
@@ -15,7 +15,7 @@ consultas:
 * [[yii\filters\HttpCache::cacheControlHeader|Cache-Control]]
 
 
-## La Cabecera `Last-Modified` <a name="last-modified"></a>
+## La Cabecera `Last-Modified` <span id="last-modified"></span>
 
 La cabecera `Last-Modified` usa un sello de tiempo para indicar si la página ha sido modificada desde que el cliente la
 almacena en la caché.
@@ -59,10 +59,10 @@ regenerar la página, y el navegador usará la versión caché del lado del clie
 lado del servidor y la transmisión del contenido de la página son ambos omitidos.
 
 
-## La Cabecera `ETag` <a name="etag"></a>
+## La Cabecera `ETag` <span id="etag"></span>
 
 La cabecera "Entity Tag" (o para abreviar `ETag`) usa un hash para representar el contenido de una página. Si la página
-ha sido cambiada, el hash también cambiará. Al comprar el hash guardado en el lado del cliente con el hash generado en
+ha sido cambiada, el hash también cambiará. Al comparar el hash guardado en el lado del cliente con el hash generado en
 el servidor, la caché puede determinar si la página ha cambiado y deber ser retransmitida.
 
 Puedes configurar la propiedad [[yii\filters\HttpCache::etagSeed]] para activar el envío de la cabecera `ETag`.
@@ -97,9 +97,9 @@ public function behaviors()
 ```
 
 El código anterior establece que la caché HTTP debe ser activada únicamente para la acción `view`. Debería generar una
-cabecera HTTP `ETag` basándose en el título y contenido del artículo consultado. Cuando un navegador vista la página
+cabecera HTTP `ETag` basándose en el título y contenido del artículo consultado. Cuando un navegador visita la página
 `view` por primera vez, la página se generará en el servidor y será enviada al navegador; Si el navegador visita la
-misma página de nuevo y ha ocurrido un cambio en el título o contenido del artículo, el servidor no volverá a generar
+misma página de nuevo y no ha ocurrido un cambio en el título o contenido del artículo, el servidor no volverá a generar
 la página, y el navegador usará la versión guardada en la caché del lado del cliente. Como resultado, la representación del
 lado del servidor y la transmisión del contenido de la página son ambos omitidos.
 
@@ -110,11 +110,10 @@ La generación de un ETag que requiera muchos recursos puede echar por tierra el
 introducir una sobrecarga innecesaria, ya que debe ser re-evaluada en cada solicitud (request). Trata de encontrar una
 expresión sencilla para invalidar la caché si la página ha sido modificada.
 
-> Nota: En cumplimiento con [RFC 2616, section 13.3.4](http://tools.ietf.org/html/rfc2616#section-13.3.4),
-  `HttpCache` enviará ambas cabeceras `ETag` y `Last-Modified` si ambas estaán configuradas. En consecuencia, ambas serán
-  utilizadas para la validación de la caché si han sido enviadas por el cliente.
+> Nota: En cumplimiento con [RFC 7232](http://tools.ietf.org/html/rfc7232#section-2.4),
+  `HttpCache` enviará ambas cabeceras `ETag` y `Last-Modified` si ambas están configuradas. Y si el clientes envía tanto la cabecera `If-None-Match` como la cabecera `If-Modified-Since`, solo la primera será respetada.
 
-## La Cabecera `Cache-Control` <a name="cache-control"></a>
+## La Cabecera `Cache-Control` <span id="cache-control"></span>
 
 La cabecera `Cache-Control` especifica la directiva general de la caché para páginas. Puedes enviarla configurando la
 propiedad [[yii\filters\HttpCache::cacheControlHeader]] con el valor de la cabecera. Por defecto, la siguiente cabecera
@@ -124,18 +123,18 @@ será enviada:
 Cache-Control: public, max-age=3600
 ```
 
-## Limitador de la Sesión de Caché <a name="session-cache-limiter"></a>
+## Limitador de la Sesión de Caché <span id="session-cache-limiter"></span>
 
-Cuando una página utiliza la sesión, PHP enviará automaticamente cabeceras HTTP relacionadas con la caché tal y como se
+Cuando una página utiliza la sesión, PHP enviará automáticamente cabeceras HTTP relacionadas con la caché tal y como se
 especifican en `session.cache_limiter` de la configuración INI de PHP. Estas cabeceras pueden interferir o deshabilitar
 el almacenamiento de caché que desees de `HttpCache`. Para evitar este problema, por defecto `HttpCache` deshabilitará
-automaticamente el envío de estas cabeceras. Si deseas modificar este comportamiento, tienes que configurar la propiedad
+automáticamente el envío de estas cabeceras. Si deseas modificar este comportamiento, tienes que configurar la propiedad
 [[yii\filters\HttpCache::sessionCacheLimiter]]. La propiedad puede tomar un valor de cadena, incluyendo `public`, `private`,
 `private_no_expire`, and `nocache`. Por favor, consulta el manual PHP acerca de [session_cache_limiter()](http://www.php.net/manual/es/function.session-cache-limiter.php)
 para una mejor explicación sobre esos valores.
 
 
-## Implicaciones SEO <a name="seo-implications"></a>
+## Implicaciones SEO <span id="seo-implications"></span>
 
 Los robots de motores de búsqueda tienden a respetar las cabeceras de caché. Dado que algunos `crawlers` tienen limitado
 el número de páginas que pueden rastrear por dominios dentro de un cierto período de tiempo, la introducción de cabeceras

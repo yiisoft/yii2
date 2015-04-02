@@ -10,15 +10,15 @@ Yii introduces a base class called [[yii\base\Component]] to support events. If 
 events, it should extend from [[yii\base\Component]], or from a child class.
 
 
-Event Handlers <a name="event-handlers"></a>
+Event Handlers <span id="event-handlers"></span>
 --------------
 
 An event handler is a [PHP callback](http://www.php.net/manual/en/language.types.callable.php) that gets executed
 when the event it is attached to is triggered. You can use any of the following callbacks:
 
 - a global PHP function specified as a string (without parentheses), e.g., `'trim'`;
-- an object method specified as an array of an object and a method name as a string (without parenthess), e.g., `[$object, 'methodName']`;
-- a static class method specified as an array of a class name and a method name as a string (without parentheses), e.g., `[$class, 'methodName']`;
+- an object method specified as an array of an object and a method name as a string (without parentheses), e.g., `[$object, 'methodName']`;
+- a static class method specified as an array of a class name and a method name as a string (without parentheses), e.g., `['ClassName', 'methodName']`;
 - an anonymous function, e.g., `function ($event) { ... }`.
 
 The signature of an event handler is:
@@ -36,7 +36,7 @@ Through the `$event` parameter, an event handler may get the following informati
 - [[yii\base\Event::data|custom data]]: the data that is provided when attaching the event handler (to be explained next)
 
 
-Attaching Event Handlers <a name="attaching-event-handlers"></a>
+Attaching Event Handlers <span id="attaching-event-handlers"></span>
 ------------------------
 
 You can attach a handler to an event by calling the [[yii\base\Component::on()]] method. For example:
@@ -99,7 +99,7 @@ $foo->on(Foo::EVENT_HELLO, function ($event) {
 }, $data, false);
 ```
 
-Triggering Events <a name="triggering-events"></a>
+Triggering Events <span id="triggering-events"></span>
 -----------------
 
 Events are triggered by calling the [[yii\base\Component::trigger()]] method. The method requires an *event name*,
@@ -131,8 +131,8 @@ With the above code, any calls to `bar()` will trigger an event named `hello`.
 Sometimes when triggering an event you may want to pass along additional information to the event handlers.
 For example, a mailer may want pass the message information to the handlers of the `messageSent` event so that the handlers
 can know the particulars of the sent messages. To do so, you can provide an event object as the second parameter to
-the [[yii\base\Component::trigger()]] method. The event object must be an instance of the [[yii\base\Event]] class,
-or of a child class. For example:
+the [[yii\base\Component::trigger()]] method. The event object must be an instance of the [[yii\base\Event]] class
+or a child class. For example:
 
 ```php
 namespace app\components;
@@ -164,7 +164,7 @@ When the [[yii\base\Component::trigger()]] method is called, it will call all ha
 the named event.
 
 
-Detaching Event Handlers <a name="detaching-event-handlers"></a>
+Detaching Event Handlers <span id="detaching-event-handlers"></span>
 ------------------------
 
 To detach a handler from an event, call the [[yii\base\Component::off()]] method. For example:
@@ -194,7 +194,7 @@ $foo->off(Foo::EVENT_HELLO);
 ```
 
 
-Class-Level Event Handlers <a name="class-level-event-handlers"></a>
+Class-Level Event Handlers <span id="class-level-event-handlers"></span>
 --------------------------
 
 The above subsections described how to attach a handler to an event on an *instance level*.
@@ -202,7 +202,7 @@ Sometimes, you may want to respond to an event triggered by *every* instance of 
 a specific instance. Instead of attaching an event handler to every instance, you may attach the handler
 on the *class level* by calling the static method [[yii\base\Event::on()]].
 
-For example, an [Active Record](db-active-record.md) object will trigger an [[yii\base\ActiveRecord::EVENT_AFTER_INSERT]]
+For example, an [Active Record](db-active-record.md) object will trigger an [[yii\db\BaseActiveRecord::EVENT_AFTER_INSERT|EVENT_AFTER_INSERT]]
 event whenever it inserts a new record into the database. In order to track insertions done by *every*
 [Active Record](db-active-record.md) object, you may use the following code:
 
@@ -216,8 +216,8 @@ Event::on(ActiveRecord::className(), ActiveRecord::EVENT_AFTER_INSERT, function 
 });
 ```
 
-The event handler will be invoked whenever an instance of [[yii\base\ActiveRecord|ActiveRecord]], or one of its child classes, triggers
-the [[yii\base\ActiveRecord::EVENT_AFTER_INSERT|EVENT_AFTER_INSERT]] event. In the handler, you can get the object
+The event handler will be invoked whenever an instance of [[yii\db\ActiveRecord|ActiveRecord]], or one of its child classes, triggers
+the [[yii\db\BaseActiveRecord::EVENT_AFTER_INSERT|EVENT_AFTER_INSERT]] event. In the handler, you can get the object
 that triggered the event through `$event->sender`.
 
 When an object triggers an event, it will first call instance-level handlers, followed by the class-level handlers.
@@ -252,13 +252,13 @@ Event::off(Foo::className(), Foo::EVENT_HELLO);
 ```
 
 
-Global Events <a name="global-events"></a>
+Global Events <span id="global-events"></span>
 -------------
 
 Yii supports a so-called *global event*, which is actually a trick based on the event mechanism described above.
 The global event requires a globally accessible Singleton, such as the [application](structure-applications.md) instance itself.
 
-To create the global evant, an event sender calls the Singleton's `trigger()` method
+To create the global event, an event sender calls the Singleton's `trigger()` method
 to trigger the event, instead of calling the sender's own `trigger()` method. Similarly, the event handlers are attached to the event on the Singleton. For example:
 
 ```php
