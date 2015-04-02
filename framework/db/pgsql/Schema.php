@@ -213,14 +213,15 @@ select
     fns.nspname as foreign_table_schema,
     fa.attname as foreign_column_name
 from
-    pg_constraint ct
-    inner join generate_subscripts(ct.conkey, 1) as s on 1=1
+    (SELECT ct.conrelid, ct.confrelid, ct.conkey, ct.contype, ct.confkey, generate_subscripts(ct.conkey, 1) AS s
+       FROM pg_constraint ct
+    ) AS ct
     inner join pg_class c on c.oid=ct.conrelid
     inner join pg_namespace ns on c.relnamespace=ns.oid
-    inner join pg_attribute a on a.attrelid=ct.conrelid and a.attnum = ct.conkey[s]
+    inner join pg_attribute a on a.attrelid=ct.conrelid and a.attnum = ct.conkey[ct.s]
     left join pg_class fc on fc.oid=ct.confrelid
     left join pg_namespace fns on fc.relnamespace=fns.oid
-    left join pg_attribute fa on fa.attrelid=ct.confrelid and fa.attnum = ct.confkey[s]
+    left join pg_attribute fa on fa.attrelid=ct.confrelid and fa.attnum = ct.confkey[ct.s]
 where
     ct.contype='f'
     and c.relname={$tableName}
