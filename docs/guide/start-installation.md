@@ -99,7 +99,7 @@ http://localhost/basic/web/index.php
 This URL assumes you have installed Yii in a directory named `basic`, directly under the Web server's document root directory,
 and that the Web server is running on your local machine (`localhost`). You may need to adjust it to your installation environment.
 
-![Successful Installation of Yii](images/start-app-installed.png)
+<img alt="Successful Installation of Yii" src="images/start-app-installed.png" style="max-width: 100%" />
 
 You should see the above "Congratulations!" page in your browser. If not, please check if your PHP installation satisfies
 Yii's requirements. You can check if the minimum requirements are met using one of the following approaches:
