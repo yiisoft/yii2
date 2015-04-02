@@ -263,7 +263,6 @@ FROM (
   SELECT *, generate_subscripts(indkey, 1) AS k
   FROM pg_index
 ) idx
-INNER JOIN generate_subscripts(idx.indkey, 1) AS k ON 1=1
 INNER JOIN pg_class i ON i.oid = idx.indexrelid
 INNER JOIN pg_class c ON c.oid = idx.indrelid
 INNER JOIN pg_namespace ns ON c.relnamespace = ns.oid
