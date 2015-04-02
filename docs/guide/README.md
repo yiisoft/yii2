@@ -145,7 +145,7 @@ Development Tools
 
 * [Debug Toolbar and Debugger](https://github.com/yiisoft/yii2-debug/blob/master/docs/guide/README.md)
 * [Generating Code using Gii](https://github.com/yiisoft/yii2-gii/blob/master/docs/guide/README.md)
-* **TBD** [Generating API Documentation](tool-api-doc.md)
+* **TBD** [Generating API Documentation](https://github.com/yiisoft/yii2-apidoc)
 
 
 Testing
