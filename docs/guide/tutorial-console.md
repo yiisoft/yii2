@@ -8,7 +8,7 @@ The structure of console applications is very similar to a Yii web application. 
 or more [[yii\console\Controller]] classes, which are often referred to as "commands" in the console environment.
 Each controller can also have one or more actions, just like web controllers.
 
-Both Application templates already have a console application with them.
+Both project templates already have a console application with them.
 You can run it by calling the `yii` script, which is located in the base directory of the repository. 
 This will give you a list of available commands when you run it without any further parameters:
 
@@ -95,7 +95,8 @@ As can be seen in the code above, the console application uses its own configura
 you should configure various [application components](structure-application-components.md) and properties for the console application in particular.
 
 If your web application and console application share a lot of configuration parameters and values, you may consider moving the common
-parts into a separate file, and including this file in both of the application configurations (web and console). You can see an example of this in the "advanced" application template.
+parts into a separate file, and including this file in both of the application configurations (web and console).
+You can see an example of this in the "advanced" project template.
 
 > Tip: Sometimes, you may want to run a console command using an application configuration that is different
 > from the one specified in the entry script. For example, you may want to use the `yii migrate` command to

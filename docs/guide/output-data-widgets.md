@@ -16,7 +16,7 @@ It is best used for displaying a model in a regular format (e.g. each model attr
 The model can be either an instance or subclass of [[\yii\base\Model]] such as an [active record](db-active-record.md) or an associative array.
 
 DetailView uses the [[yii\widgets\DetailView::$attributes|$attributes]] property to determine which model attributes should be displayed and how they
-should be formatted. See the [formatter section](output-formatter.md) for available formatting options.
+should be formatted. See the [formatter section](output-formatting.md) for available formatting options.
 
 A typical usage of DetailView is as follows:
  
@@ -227,7 +227,7 @@ In the above, `text` corresponds to [[\yii\i18n\Formatter::asText()]]. The value
 argument. In the second column definition, `date` corresponds to [[\yii\i18n\Formatter::asDate()]]. The value of the
 column is, again, passed as the first argument while 'php:Y-m-d' is used as the second argument value.
 
-For a list of available formatters see the [section about Data Formatting](output-formatter.md).
+For a list of available formatters see the [section about Data Formatting](output-formatting.md).
 
 For configuring data columns there is also a shortcut format which is described in the 
 API documentation for [[yii\grid\GridView::columns|columns]].

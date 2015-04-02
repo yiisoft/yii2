@@ -509,12 +509,20 @@
                 data.validated = true;
                 var $button = data.submitObject || $form.find(':submit:first');
                 // TODO: if the submission is caused by "change" event, it will not work
-                if ($button.length) {
-                    $button.click();
-                } else {
-                    // no submit button in the form
-                    $form.submit();
+                if ($button.length && $button.prop('type') == 'submit' && $button.prop('name')) {
+                    // simulate button input value
+                    var $hiddenButton = $('input[type="hidden"][name="' + $button.prop('name') + '"]', $form);
+                    if (!$hiddenButton.length) {
+                        $('<input>').attr({
+                            type: 'hidden',
+                            name: $button.prop('name'),
+                            value: $button.prop('value')
+                        }).appendTo($form);
+                    } else {
+                        $hiddenButton.prop('value', $button.prop('value'));
+                    }
                 }
+                $form.submit();
             }
         } else {
             $.each(data.attributes, function () {

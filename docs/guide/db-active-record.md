@@ -127,7 +127,7 @@ The process usually takes the following three steps:
 
 1. Create a new query object by calling the [[yii\db\ActiveRecord::find()]] method;
 2. Build the query object by calling [query building methods](db-query-builder.md#building-queries);
-3. Call a [query method](db-query-builder.md#query-methods) to retrieve data in terms ofActive Record instances.
+3. Call a [query method](db-query-builder.md#query-methods) to retrieve data in terms of Active Record instances.
 
 As you can see, this is very similar to the procedure with [query builder](db-query-builder.md). The only difference
 is that instead of using the `new` operator to create a query object, you call [[yii\db\ActiveRecord::find()]]
@@ -641,7 +641,7 @@ To use optimistic locking,
 1. Create a column in the DB table associated with the Active Record class to store the version number of each row.
    The column should be of big integer type (in MySQL it would be `BIGINT DEFAULT 0`).
 2. Override the [[yii\db\ActiveRecord::optimisticLock()]] method to return the name of this column.
-3. In the Web form that takes user inputs, add a hidden field to store the current version number of the row being updated.
+3. In the Web form that takes user inputs, add a hidden field to store the current version number of the row being updated. Be sure your version attribute has input validation rules and validates successfully.
 4. In the controller action that updates the row using Active Record, try and catch the [[yii\db\StaleObjectException]]
    exception. Implement necessary business logic (e.g. merging the changes, prompting staled data) to resolve the conflict.
    
@@ -654,7 +654,7 @@ the following.
 use yii\helpers\Html;
 
 // ...other input fields
-echo Html::activeHiddenField($model, 'version');
+echo Html::activeHiddenInput($model, 'version');
 
 
 // ------ controller code -------
@@ -918,8 +918,8 @@ foreach ($customers as $customer) {
 By calling [[yii\db\ActiveQuery::with()]], you instruct Active Record to bring back the orders for the first 100
 customers in one single SQL statement. As a result, you reduce the number of the executed SQL statements from 101 to 2!
 
-You can eagerly load one or multiple relations. You can even eagerly load *nested relations*. A nest relation is a relation
-is declared within a related Active Record class. For example,  `Customer` is related with `Order` through the `orders`
+You can eagerly load one or multiple relations. You can even eagerly load *nested relations*. A nested relation is a relation
+that is declared within a related Active Record class. For example, `Customer` is related with `Order` through the `orders`
 relation, and `Order` is related with `Item` through the `items` relation. When querying for `Customer`, you can eagerly
 load `items` using the nested relation notation `orders.items`. 
 
@@ -1035,7 +1035,7 @@ and [[yii\db\ActiveQuery::joinWith()|joinWith()]]. For example,
 ```php
 $customers = Customer::find()->joinWith([
     'orders' => function ($query) {
-        $query->andWhere(['>', 'subtotal', 100);
+        $query->andWhere(['>', 'subtotal', 100]);
     },
 ])->with('country')
     ->all();

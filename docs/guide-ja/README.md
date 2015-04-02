@@ -97,7 +97,7 @@ All Rights Reserved.
 データの表示
 ------------
 
-* [データのフォーマット](output-formatter.md)
+* [データのフォーマット](output-formatting.md)
 * [ページネーション](output-pagination.md)
 * [並べ替え](output-sorting.md)
 * [データプロバイダ](output-data-providers.md)

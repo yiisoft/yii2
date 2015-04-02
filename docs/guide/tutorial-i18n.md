@@ -520,7 +520,7 @@ and fall back to the original view file if none was found.
 Formatting Number and Date values
 ---------------------------------
 
-See the [data formatter section](output-formatter.md) for details.
+See the [data formatter section](output-formatting.md) for details.
 
 
 Setting up your PHP environment <span id="setup-environment"></span>

@@ -509,7 +509,7 @@ class TranslationEventHandler
 Форматирование чисел и дат
 --------------------------
 
-См. описание [форматирования дат](output-formatter.md).
+См. описание [форматирования дат](output-formatting.md).
 
 
 Настройка PHP-окружения <span id="setup-environment"></span>

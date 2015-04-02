@@ -4,18 +4,18 @@ Installing Yii
 You can install Yii in two ways, using the [Composer](http://getcomposer.org/) package manager or by downloading an archive file.
 The former is the preferred way, as it allows you to install new [extensions](structure-extensions.md) or update Yii by simply running a single command.
 
-Standard installations of Yii result in both the framework and an application template being downloaded and installed.
-An application template is a working Yii application implementing some basic features, such as login, contact form, etc. 
+Standard installations of Yii result in both the framework and a project template being downloaded and installed.
+A project template is a working Yii project implementing some basic features, such as login, contact form, etc. 
 Its code is organized in a recommended way. Therefore, it can serve as a good starting point for your projects.
     
-In this and the next few sections, we will describe how to install Yii with the so-called *Basic Application Template* and
+In this and the next few sections, we will describe how to install Yii with the so-called *Basic Project Template* and
 how to implement new features on top of this template. Yii also provides another template called
-the [Advanced Application Template](tutorial-advanced-app.md) which is better used in a team development environment
+the [Advanced Project Template](tutorial-advanced-app.md) which is better used in a team development environment
 to develop applications with multiple tiers.
 
-> Info: The Basic Application Template is suitable for developing 90 percent of Web applications. It differs
-  from the Advanced Application Template mainly in how their code is organized. If you are new to Yii, we strongly
-  recommend you stick to the Basic Application Template for its simplicity yet sufficient functionalities.
+> Info: The Basic Project Template is suitable for developing 90 percent of Web applications. It differs
+  from the Advanced Project Template mainly in how their code is organized. If you are new to Yii, we strongly
+  recommend you stick to the Basic Project Template for its simplicity yet sufficient functionalities.
 
 
 Installing via Composer <span id="installing-via-composer"></span>
@@ -84,7 +84,7 @@ But there are other installation options available:
 * If you only want to install the core framework and would like to build an entire  application from scratch,
   you may follow the instructions as explained in [Building Application from Scratch](tutorial-start-from-scratch.md).
 * If you want to start with a more sophisticated application, better suited to team development environments,
-  you may consider installing the [Advanced Application Template](tutorial-advanced-app.md).
+  you may consider installing the [Advanced Project Template](tutorial-advanced-app.md).
 
 
 Verifying the Installation <span id="verifying-installation"></span>

@@ -303,7 +303,7 @@ After executing the command with `yii rbac/init` we'll get the following hierarc
 Author can create post, admin can update post and do everything author can.
 
 If your application allows user signup you need to assign roles to these new users once. For example, in order for all
-signed up users to become authors in your advanced application template you need to modify `frontend\models\SignupForm::signup()`
+signed up users to become authors in your advanced project template you need to modify `frontend\models\SignupForm::signup()`
 as follows:
 
 ```php

@@ -97,7 +97,7 @@ Getting Data from Users
 Displaying Data
 ---------------
 
-* [Data Formatting](output-formatter.md)
+* [Data Formatting](output-formatting.md)
 * [Pagination](output-pagination.md)
 * [Sorting](output-sorting.md)
 * [Data Providers](output-data-providers.md)
@@ -162,7 +162,7 @@ Testing
 Special Topics
 --------------
 
-* [Advanced Application Template](https://github.com/yiisoft/yii2-app-advanced/blob/master/docs/guide/README.md)
+* [Advanced Project Template](https://github.com/yiisoft/yii2-app-advanced/blob/master/docs/guide/README.md)
 * [Building Application from Scratch](tutorial-start-from-scratch.md)
 * [Console Commands](tutorial-console.md)
 * [Core Validators](tutorial-core-validators.md)

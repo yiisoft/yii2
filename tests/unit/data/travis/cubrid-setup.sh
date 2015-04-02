@@ -48,10 +48,10 @@ export PATH
 
 # start cubrid
 echo "starting cubrid..."
-cubrid service start
+cubrid service start || echo "starting CUBRID services failed with exit code $?"
 # create and start the demo db
-$CUBRID/demo/make_cubrid_demo.sh
-cubrid server start demodb
+$CUBRID/demo/make_cubrid_demo.sh || echo "setting up CUBRID demodb failed with exit code $?"
+cubrid server start demodb || (echo "starting CUBRID demodb failed with exit code $?" && cat demodb_loaddb.log)
 
 echo ""
 echo "Installed CUBRID $CUBRID_VERSION"

@@ -97,7 +97,7 @@ All Rights Reserved.
 Відображення даних
 ------------------
 
-* [Форматування даних](output-formatter.md)
+* [Форматування даних](output-formatting.md)
 * [Посторінкове розбиття](output-pagination.md)
 * [Сортування](output-sorting.md)
 * [Провайдери даних](output-data-providers.md)

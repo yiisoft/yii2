@@ -144,7 +144,7 @@ the following variables if the error action is defined as [[yii\web\ErrorAction]
 * `exception`: the exception object through which you can retrieve more useful information, such as HTTP status code,
   error code, error call stack, etc.
 
-> Info: If you are using the [basic application template](start-installation.md) or the [advanced application template](tutorial-advanced-app.md),
+> Info: If you are using the [basic project template](start-installation.md) or the [advanced project template](tutorial-advanced-app.md),
 the error action and the error view are already defined for you.
 
 

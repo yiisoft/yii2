@@ -24,6 +24,8 @@ class SchemaTest extends DatabaseTestCase
         $this->assertTrue(in_array('order', $tables));
         $this->assertTrue(in_array('order_item', $tables));
         $this->assertTrue(in_array('type', $tables));
+        $this->assertTrue(in_array('animal', $tables));
+        $this->assertTrue(in_array('animal_view', $tables));
     }
 
     public function testGetTableSchemas()
@@ -36,6 +38,16 @@ class SchemaTest extends DatabaseTestCase
         foreach ($tables as $table) {
             $this->assertInstanceOf('yii\db\TableSchema', $table);
         }
+    }
+
+    public function testGetTableSchemasWithAttrCase()
+    {
+        $db = $this->getConnection(false);
+        $db->slavePdo->setAttribute(\PDO::ATTR_CASE, \PDO::CASE_LOWER);
+        $this->assertEquals(count($db->schema->getTableNames()), count($db->schema->getTableSchemas()));
+
+        $db->slavePdo->setAttribute(\PDO::ATTR_CASE, \PDO::CASE_UPPER);
+        $this->assertEquals(count($db->schema->getTableNames()), count($db->schema->getTableSchemas()));
     }
 
     public function testGetNonExistingTableSchema()

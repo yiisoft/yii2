@@ -110,7 +110,7 @@ If the validation is successful, then we're saving the file:
 $model->file->saveAs('uploads/' . $model->file->baseName . '.' . $model->file->extension);
 ```
 
-If you're using the "basic" application template, then folder `uploads` should be created under `web`.
+If you're using the "basic" project template, then folder `uploads` should be created under `web`.
 
 That's it. Load the page and try uploading. Uploads should end up in `basic/web/uploads`.
 

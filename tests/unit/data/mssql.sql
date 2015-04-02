@@ -9,6 +9,7 @@ IF OBJECT_ID('[dbo].[profile]', 'U') IS NOT NULL DROP TABLE [dbo].[profile];
 IF OBJECT_ID('[dbo].[type]', 'U') IS NOT NULL DROP TABLE [dbo].[type];
 IF OBJECT_ID('[dbo].[null_values]', 'U') IS NOT NULL DROP TABLE [dbo].[null_values];
 IF OBJECT_ID('[dbo].[animal]', 'U') IS NOT NULL DROP TABLE [dbo].[animal];
+IF OBJECT_ID('[dbo].[animal_view]', 'V') IS NOT NULL DROP VIEW [dbo].[animal_view];
 
 CREATE TABLE [dbo].[profile] (
 	[id] [int] IDENTITY(1,1) NOT NULL,
@@ -112,7 +113,9 @@ CREATE TABLE [dbo].[animal] (
 	CONSTRAINT [PK_animal] PRIMARY KEY CLUSTERED (
 		[id] ASC
 	) ON [PRIMARY]
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+);
+
+CREATE VIEW [dbo].[animal_view] AS SELECT * FROM [dbo].[animal];
 
 INSERT INTO [dbo].[animal] (type) VALUES ('yiiunit\data\ar\Cat');
 INSERT INTO [dbo].[animal] (type) VALUES ('yiiunit\data\ar\Dog');
