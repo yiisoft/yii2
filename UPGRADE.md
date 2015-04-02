@@ -184,7 +184,7 @@ Upgrade from Yii 2.0 Beta
   ];
   ```
 
-  > Note: If you are using the `Advanced Application Template` you should not add this configuration to `common/config`
+  > Note: If you are using the `Advanced Project Template` you should not add this configuration to `common/config`
   or `console/config` because the console application doesn't have to deal with CSRF and uses its own request that
   doesn't have `cookieValidationKey` property.
 
