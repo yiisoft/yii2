@@ -291,6 +291,23 @@ SQL;
     /**
      * @inheritdoc
      */
+    protected function findSchemaNames()
+    {
+        $sql = <<<SQL
+SELECT username
+  FROM dba_users u
+ WHERE EXISTS (
+    SELECT 1
+      FROM dba_objects o
+     WHERE o.owner = u.username )
+   AND default_tablespace not in ('SYSTEM','SYSAUX')
+SQL;
+        return $this->db->createCommand($sql)->queryColumn();
+    }
+
+    /**
+     * @inheritdoc
+     */
     protected function findTableNames($schema = '')
     {
         if ($schema === '') {
