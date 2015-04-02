@@ -167,6 +167,23 @@ class Schema extends \yii\db\Schema
     }
 
     /**
+     * Returns all schema names in the database, including the default one but not system schemas.
+     * This method should be overridden by child classes in order to support this feature
+     * because the default implementation simply throws an exception.
+     * @return array all schema names in the database, except system schemas
+     */
+    protected function findSchemaNames()
+    {
+        $sql = <<<SQL
+SELECT ns.nspname AS schema_name
+FROM pg_namespace ns
+WHERE ns.nspname != 'information_schema' AND ns.nspname NOT LIKE 'pg_%'
+ORDER BY ns.nspname
+SQL;
+        return $this->db->createCommand($sql)->queryColumn();
+    }
+
+    /**
      * Returns all table names in the database.
      * @param string $schema the schema of the tables. Defaults to empty string, meaning the current or default schema.
      * @return array all table names in the database. The names have NO schema name prefix.

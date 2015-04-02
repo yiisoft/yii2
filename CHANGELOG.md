@@ -27,6 +27,7 @@ Yii Framework 2 Change Log
 - Enh #7850: Added `yii\filters\PageCache::cacheCookies` and `cacheHeaders` to allow selectively caching cookies and HTTP headers (qiangxue)
 - Enh #7867: Implemented findUniqueIndexes for oci and mssql (nineinchnick)
 - Enh #7912: Added `aria-label` to ActionColumn buttons (LAV45, samdark)
+- Enh #7973: Added `Schema::getSchemaNames` method (nineinchnick)
 - Enh: Added `yii\helper\Console::wrapText()` method to wrap indented text by console window width and used it in `yii help` command (cebe)
 - Enh: Implement batchInsert for oci (nineinchnick)
 - Enh: Detecting IntegrityException for oci (nineinchnick)
