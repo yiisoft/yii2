@@ -142,7 +142,7 @@ $config = require(__DIR__ . '/../config/web.php');
 ブートストラップの過程で、各コンポーネントのインスタンスが作成されます。
 そして、コンポーネントクラスが [[yii\base\BootstrapInterface]] を実装している場合は、その [[yii\base\BootstrapInterface::bootstrap()|bootstrap()]] メソッドも呼び出されます。
 
-もう一つの実用的な例が [ベーシックアプリケーションテンプレート](start-installation.md) のアプリケーションの構成情報の中にあります。
+もう一つの実用的な例が [ベーシックプロジェクトテンプレート](start-installation.md) のアプリケーションの構成情報の中にあります。
 そこでは、アプリケーションが開発環境で走るときには `debug` モジュールと `gii` モジュールがブートストラップコンポーネントとして構成されています。
 
 ```php

@@ -25,12 +25,12 @@ $classFile = Yii::getAlias('@' . str_replace('\\', '/', $className) . '.php');
 `@foo/bar/MyClass.php` になります。このエイリアスがファイルパスになるようにするには、`@foo` または `@foo/bar`
 のどちらかが、 [ルートエイリアス](concept-aliases.md#defining-aliases) でなければなりません。
 
-[Basic Application Template](start-basic.md) を使用している場合、最上位の名前空間 `app` の下にクラスを置くことができ、
+[ベーシックプロジェクトテンプレート](start-basic.md) を使用している場合、最上位の名前空間 `app` の下にクラスを置くことができ、
 そうすると、新しいエイリアスを定義しなくても、Yii によってそれらをオートロードできるようになります。これは `@app`
 が [事前定義されたエイリアス](concept-aliases.md#predefined-aliases) であるためで、`app\components\MyClass` のようなクラス名を
 今説明したアルゴリズムに従って、クラスファイル `AppBasePath/components/MyClass.php` だと解決できるのです。
 
-[Advanced Application Template](tutorial-advanced-app.md) では、各階層にそれ自身のルートエイリアスを持っています。たとえば、
+[アドバンストプロジェクトテンプレート](https://github.com/yiisoft/yii2-app-advanced/blob/master/docs/guide-ja/README.md) では、各階層にそれ自身のルートエイリアスを持っています。たとえば、
 フロントエンド層はルートエイリアス `@frontend` を持ち、バックエンド層は `@backend` です。その結果、名前空間 `frontend` の下に
 フロントエンドクラスを置き、バックエンドクラスを `backend` の下に置けます。これで、これらのクラスは Yii のオートローダーによって
 オートロードできるようになります。

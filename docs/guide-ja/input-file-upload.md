@@ -111,7 +111,7 @@ if (!$file instanceof UploadedFile || $file->error == UPLOAD_ERR_NO_FILE) {
 $model->file->saveAs('uploads/' . $model->file->baseName . '.' . $model->file->extension);
 ```
 
-「ベーシック」アプリケーションテンプレートを使っている場合は、`uploads` フォルダを `web` の下に作成しなければなりません。
+「ベーシック」プロジェクトテンプレートを使っている場合は、`uploads` フォルダを `web` の下に作成しなければなりません。
 
 以上です。ページをロードして、アップロードを試して見てください。ファイルは `basic/web/uploads` にアップロードされます。
 

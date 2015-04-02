@@ -162,7 +162,7 @@ RESTful ウェブサービス
 スペシャルトピック
 ------------------
 
-* [アドバンストアプリケーションテンプレート](tutorial-advanced-app.md)
+* [アドバンストプロジェクトテンプレート](https://github.com/yiisoft/yii2-app-advanced/blob/master/docs/guide-ja/README.md)
 * [アプリケーションを一から構築する](tutorial-start-from-scratch.md)
 * [コンソールコマンド](tutorial-console.md)
 * [コアバリデータ](tutorial-core-validators.md)
