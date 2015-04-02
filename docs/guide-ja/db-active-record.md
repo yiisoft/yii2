@@ -594,7 +594,8 @@ class Post extends \yii\db\ActiveRecord
    カラムは長倍精度整数 (big integer) タイプでなければなりません (MySQL では `BIGINT DEFAULT 0` です)。
 2.  [[yii\db\ActiveRecord::optimisticLock()]] メソッドをオーバーライドして、このカラムの名前を返すようにします。
 3. ユーザ入力を収集するウェブフォームに、更新されるレコードの現在のバージョン番号を保持する隠しフィールドを追加します。
-3. アクティブレコードを使って行の更新を行うコントローラアクションにおいて、[[\yii\db\StaleObjectException]] 例外を捕捉して、衝突を解決するために必要なビジネスロジック (例えば、変更をマージしたり、データの陳腐化を知らせたり) を実装します。
+   バージョン属性が入力の検証規則を持っており、検証が成功することを確かめてください。
+4. アクティブレコードを使って行の更新を行うコントローラアクションにおいて、[[\yii\db\StaleObjectException]] 例外を捕捉して、衝突を解決するために必要なビジネスロジック (例えば、変更をマージしたり、データの陳腐化を知らせたり) を実装します。
 
 例えば、バージョン番号のカラムが `version` と名付けられているとすると、次のようなコードによって楽観的ロックを実装することが出来ます。
 
@@ -974,7 +975,7 @@ $customers = Customer::find()
 ```php
 $customers = Customer::find()->joinWith([
     'orders' => function ($query) {
-        $query->andWhere(['>', 'subtotal', 100);
+        $query->andWhere(['>', 'subtotal', 100]);
     },
 ])->with('country')
     ->all();
