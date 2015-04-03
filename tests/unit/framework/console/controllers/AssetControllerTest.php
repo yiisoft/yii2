@@ -378,6 +378,61 @@ EOL;
     }
 
     /**
+     * @depends testActionCompress
+     *
+     * @see https://github.com/yiisoft/yii2/issues/7539
+     */
+    public function testDetectCircularDependency()
+    {
+        // Given :
+        $namespace = __NAMESPACE__;
+
+        $this->declareAssetBundleClass([
+            'namespace' => $namespace,
+            'class' => 'AssetStart',
+            'depends' => [
+                $namespace . '\AssetA'
+            ],
+        ]);
+        $this->declareAssetBundleClass([
+            'namespace' => $namespace,
+            'class' => 'AssetA',
+            'depends' => [
+                $namespace . '\AssetB'
+            ],
+        ]);
+        $this->declareAssetBundleClass([
+            'namespace' => $namespace,
+            'class' => 'AssetB',
+            'depends' => [
+                $namespace . '\AssetC'
+            ],
+        ]);
+        $this->declareAssetBundleClass([
+            'namespace' => $namespace,
+            'class' => 'AssetC',
+            'depends' => [
+                $namespace . '\AssetA'
+            ],
+        ]);
+
+        $bundles = [
+            $namespace . '\AssetStart'
+        ];
+        $bundleFile = $this->testFilePath . DIRECTORY_SEPARATOR . 'bundle.php';
+
+        $configFile = $this->testFilePath . DIRECTORY_SEPARATOR . 'config.php';
+        $this->createCompressConfigFile($configFile, $bundles);
+
+        // Assert :
+        $expectedExceptionMessage = ": {$namespace}\AssetA -> {$namespace}\AssetB -> {$namespace}\AssetC -> {$namespace}\AssetA";
+        $this->setExpectedException('yii\console\Exception', $expectedExceptionMessage);
+
+        // When :
+        $this->runAssetControllerAction('compress', [$configFile, $bundleFile]);
+    }
+
+    /**
      * Data provider for [[testAdjustCssUrl()]].
      * @return array test data.
      */

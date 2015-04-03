@@ -21,6 +21,7 @@ Yii Framework 2 Change Log
 - Enh #6975: Pressing arrows while focused in inputs of Active Form with `validateOnType` enabled no longer triggers validation (slinstj)
 - Enh #7488: Added `StringHelper::explode` to perform explode with trimming and skipping of empty elements (SilverFire, nineinchnick, creocoder, samdark)
 - Enh #7530: Improved default values for `yii\data\Sort` link labels in a `ListView` when used with an `ActiveDataProvider` (cebe)
+- Enh #7539: `yii\console\controllers\AssetController` provides dependency trace in case bundle circular dependency detected (klimov-paul)
 - Enh #7562: `yii help` now lists all sub-commands by default (callmez)
 - Enh #7571: HTTP status 500 and "An internal server error occurred." are now returned in case there was an exception in layout and `YII_DEBUG` is false (samdark)
 - Enh #7636: `yii\web\Session::getHasSessionId()` uses a more lenient way to check if session ID is provided in URL (robsch)
