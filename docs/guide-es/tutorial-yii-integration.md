@@ -4,12 +4,12 @@ Trabajando con código de terceros
 De tiempo en tiempo, puede necesitar usar algún código de terceros en sus aplicaciones Yii. O puedes querer usar Yii como una librería en otros sistemas de terceros. En esta sección, te enseñaremos cómo conseguir estos objetivos.
 
 
-## Usando librerías de terceros en Yii <a name="using-libs-in-yii"></a>
+## Usando librerías de terceros en Yii <span id="using-libs-in-yii"></span>
 
 Para usar una librería en una aplicación Yii, primeramente debes de asegurarte que las clases een la librería son incluidas adecuadamente o pueden ser cargadas de forma automática.
 
 
-### Usando Paquetes de Composer <a name="using-composer-packages"></a>
+### Usando Paquetes de Composer <span id="using-composer-packages"></span>
 
 Muchas librerías de terceros son liberadas en términos de paquetes [Composer](https://getcomposer.org/).
 Puedes instalar este tipo de librerias siguiendo dos sencillos pasos:
@@ -28,7 +28,7 @@ require(__DIR__ . '/../vendor/yiisoft/yii2/Yii.php');
 ```
 
 
-### Usando librerías Descargadas <a name="using-downloaded-libs"></a>
+### Usando librerías Descargadas <span id="using-downloaded-libs"></span>
 
 Si la librería no es liberada como un paquete de Composer, debes de seguir sus instrucciones de instalación para instalarla.
 En muchos casos, puedes necesitar descargar manualmente el fichero de la versión y desempaquetarlo en el directorio `BasePath/vendor` , donde `BasePath` representa el [camino base (base path)](structure-applications.md#basePath) de tu aplicación.
@@ -57,7 +57,7 @@ Yii::$classMap['Class2'] = 'path/to/Class2.php';
 ```
 
 
-## Usando Yii en Sistemas de Terceros <a name="using-yii-in-others"></a>
+## Usando Yii en Sistemas de Terceros <span id="using-yii-in-others"></span>
 
 Debido a que Yii provee muchas posibilidades excelentes, a veces puedes querer usar alguna de sus características para permitir el desarrollo o mejora de sistemas de terceros, como es WordPress, Joomla, o aplicaciones desarrolladas usando otros frameworks de PHP. Por ejemplo, puedes queres usar la clase [[yii\helpers\ArrayHelper]]  o usar la característica [Active Record](db-active-record.md) en un sistema de terceros. Para lograr este objetivo, principalmente necesitas realizar dos pasos: instalar Yii , e iniciar  Yii.
 
@@ -86,7 +86,7 @@ Como en una aplicación Yii, debes configurar la instancia de la aplicación bas
 Ahora puedes usar muchas características provistas por Yii. Por ejemplo, puedes crear clases Active Record y usarlas para trabajar con bases de datos.
 
 
-## Usando Yii 2 con Yii 1 <a name="using-both-yii2-yii1"></a>
+## Usando Yii 2 con Yii 1 <span id="using-both-yii2-yii1"></span>
 
 Si estaba usando Yii 1 previamente, es como si tuvieras una aplicación Yii 1 funcionando. En vez de reescribir toda la aplicación en Yii 2, puedes solamente mejorarla usando alguna de las características sólo disponibles en Yii 2.
 

@@ -11,7 +11,7 @@ Yii では、このプロセス全体が半自動的に実行されます。
 開発者に残されているのは、認証システムにおいて最も重要なクラスである [[yii\web\IdentityInterface]] を実装することだけです。
 典型的には、`IdentityInterface` の実装は `User` モデルを使って達成されます。
 
-十分な機能を有する認証の実例を [アドバンストアプリケーションテンプレート](tutorial-advanced-app.md) の中に見出すことが出来ます。
+十分な機能を有する認証の実例を [アドバンストプロジェクトテンプレート](https://github.com/yiisoft/yii2-app-advanced/blob/master/docs/guide-ja/README.md) の中に見出すことが出来ます。
 下記にインターフェイスのメソッドだけをリストします。
 
 ```php
@@ -20,10 +20,10 @@ class User extends ActiveRecord implements IdentityInterface
     // ...
 
     /**
-     * 与えられた ID によって識別子を探す
+     * 与えられた ID によってユーザ識別情報を探す
      *
      * @param string|integer $id 探すための ID
-     * @return IdentityInterface|null 与えられた ID に合致する識別子オブジェクト
+     * @return IdentityInterface|null 与えられた ID に合致する Identity オブジェクト
      */
     public static function findIdentity($id)
     {
@@ -31,10 +31,10 @@ class User extends ActiveRecord implements IdentityInterface
     }
 
     /**
-     * 与えられたトークンによって識別子を探す
+     * 与えられたトークンによってユーザ識別情報を探す
      *
      * @param string $token 探すためのトークン
-     * @return IdentityInterface|null 与えられたトークンに合致する識別子オブジェクト
+     * @return IdentityInterface|null 与えられたトークンに合致する Identity オブジェクト
      */
     public static function findIdentityByAccessToken($token, $type = null)
     {
@@ -74,7 +74,7 @@ class User extends ActiveRecord implements IdentityInterface
 その他のメソッドのうち、二つのもの - `getAuthKey` と `validateAuthKey` - は、「次回から自動ログイン ("remember me")」のクッキーに対して追加のセキュリティを提供するために使われます。
 `getAuthKey` メソッドは全てのユーザに対してユニークな文字列を返さなければなりません。
 `Yii::$app->getSecurity()->generateRandomString()` を使うと、信頼性の高い方法でユニークな文字列を生成することが出来ます。
-これをユーザのレコードの一部として保存しておくのが良いアイデアです。
+これをユーザのレコードの一部として保存しておくのは良いアイデアです。
 
 ```php
 public function beforeSave($insert)

@@ -20,7 +20,7 @@ banco de dados, e como executar instruções SQL usando uma ferramenta de client
 de BD.
 
 
-Preparando o Banco de Dados <a name="preparing-database"></a>
+Preparando o Banco de Dados <span id="preparing-database"></span>
 ---------------------------
 
 Para começar, crie um banco de dados chamado `yii2basic`, a partir do qual você
@@ -54,7 +54,7 @@ INSERT INTO `country` VALUES ('US','United States',278357000);
 Neste ponto, você tem um banco de dados chamado `yii2basic`, e dentro dele uma
 tabela `country` com três colunas, contendo dez linhas de dados.
 
-Configurando uma Conexão do BD <a name="configuring-db-connection"></a>
+Configurando uma Conexão do BD <span id="configuring-db-connection"></span>
 ------------------------------
 
 Antes de prosseguir, certifique-se de que você possui instalados tanto a
@@ -91,7 +91,7 @@ através da expressão `Yii::$app->db`.
   deverá ser inicializada. Para mais informações, por favor consulte a seção sobre [Configurações](concept-configurations.md).
 
 
-Criando um Active Record <a name="creating-active-record"></a>
+Criando um Active Record <span id="creating-active-record"></span>
 ------------------------
 
 Para representar e buscar os dados da tabela `country`, crie uma classe que
@@ -145,7 +145,7 @@ $country->save();
   dados de baixo nível chamado [Data Access Objects](db-dao.md).
 
 
-Criando uma Action <a name="creating-action"></a>
+Criando uma Action <span id="creating-action"></span>
 ------------------
 
 Para expor os dados de países aos usuários finais, você precisaria de uma nova
@@ -205,7 +205,7 @@ No final do código, a action `index` renderiza uma view chamada `index`, e pass
 para ela os dados dos países bem como as informações de paginação.
 
 
-Criando uma View <a name="creating-view"></a>
+Criando uma View <span id="creating-view"></span>
 ----------------
 
 Dentro do diretório `views`, primeiro crie um sub-diretório chamado `country`.
@@ -239,7 +239,7 @@ lista de botões para as páginas. Ao clicar em qualquer um deles atualizará
 os dados dos países com a página correspondente.
 
 
-Testando <a name="trying-it-out"></a>
+Testando <span id="trying-it-out"></span>
 --------
 
 Para verificar se todo os códigos acima funcionam, use o seu navegador para
@@ -278,7 +278,7 @@ a funcionalidade necessária para paginar um conjunto de dados:
   próximos cinco países para a exibição.
 
 
-Resumo <a name="summary"></a>
+Resumo <span id="summary"></span>
 ------
 
 Nesta seção, você aprendeu como trabalhar com um banco de dados. Você também

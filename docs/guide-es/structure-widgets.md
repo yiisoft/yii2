@@ -18,7 +18,7 @@ Hay un buen número de widgets incluidos en Yii, tales como [[yii\widgets\Active
 En adelante, introduciremos las nociones básicas acerca de los widgets. Por favor, refiérase a la documentación de la 
 API de clases si quiere aprender más acerca de el uso de un widget en particular.
 
-## Uso de los Widgets <a name="using-widgets"></a>
+## Uso de los Widgets <span id="using-widgets"></span>
 
 Los Widgets son usados principalmente en las [vistas](structure-views.md). Se puede llamar al método 
 [[yii\base\Widget::widget()]] para usar un widget en una vista. El método obtiene un array de 
@@ -69,7 +69,7 @@ Hay que tener en cuenta que a diferencia de [[yii\base\Widget::widget()]] que de
 del widget, el método [[yii\base\Widget::begin()]] devuelve una instancia del widget que se puede usar para generar el 
 contenido del widget.
 
-## Creación Widgets <a name="creating-widgets"></a>
+## Creación Widgets <span id="creating-widgets"></span>
 
 Para crear un widget, se debe extender a [[yii\base\Widget]] y sobrescribir los métodos [[yii\base\Widget::init()]] 
 y/o [[yii\base\Widget::run()]]. Normalmente el método 'init()' debería contener el código que estandariza las 
@@ -176,7 +176,7 @@ ejemplo representará el fichero de la vista `@app/components/views/hello.php`, 
 encuentre en `@app/components`. Se puede sobrescribir el método [[yii\base\Widget::getViewPath()]] para personalizar 
 el directorio que contenga los ficheros de la vista del widget.
 
-## Mejores Prácticas <a name="best-practices"></a>
+## Mejores Prácticas <span id="best-practices"></span>
 
 Los widgets son una manera orientada a objetos de reutilizar código de las vistas.
 

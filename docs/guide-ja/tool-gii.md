@@ -16,7 +16,7 @@ Gii は、また、ほとんどの時間はコンソールウィンドウで仕�
 Gii は Yii の公式エクステンションです。
 このエクステンションをインストールする望ましい方法は、[composer](http://getcomposer.org/download/) を使うことです。
 
-このコマンドを走らせてください。
+次のコマンドを走らせてください。
 
 ```
 composer require "yiisoft/yii2-gii:*"
@@ -87,7 +87,7 @@ yii gii/model --tableName=city --modelClass=City
 ```php
 // ...
 if (YII_ENV_DEV) {
-    // configuration adjustments for 'dev' environment
+    // 'dev' 環境のための構成の修正
     $config['bootstrap'][] = 'debug';
     $config['modules']['debug'] = 'yii\debug\Module';
 
@@ -100,7 +100,7 @@ if (YII_ENV_DEV) {
 
 ```php
 if (YII_ENV_DEV) {
-    // configuration adjustments for 'dev' environment
+    // 'dev' 環境のための構成の修正
     $config['bootstrap'][] = 'debug';
     $config['modules']['debug'] = 'yii\debug\Module';
 
@@ -122,7 +122,7 @@ Gii にアクセスすると、最初に、ジェネレータを選択できる�
 デフォルトでは、以下のジェネレータを利用できます。
 
 - **モデルジェネレータ** - このジェネレータは、指定したデータベーステーブルの ActiveRecord クラスを生成します。
-- **CRUD ジェネレータ** - このジェネレータは、指定されたデータモデルの CRUD 操作 (作成・読み出し・更新･削除) を実装するコントローラとビューを生成します。
+- **CRUD ジェネレータ** - このジェネレータは、指定されたデータモデルの CRUD 操作 (作成・読み出し・更新・削除) を実装するコントローラとビューを生成します。
 - **コントローラジェネレータ** - このジェネレータは、新しいコントローラのクラスと、一つまたはいくつかのコントローラアクションおよびそれに対応するビューを迅速に生成するのを手助けしてくれます。
 - **フォームジェネレータ** - このジェネレータは、指定されたモデルクラスのための、入力を収集するフォームを表示するビュースクリプトを生成します。
 - **モジュールジェネレータ** - このジェネレータは、Yii のモジュールが必要とするコードのスケルトンを生成するのを手助けしてくれます。

@@ -15,15 +15,8 @@ class ActiveFormTest extends \yiiunit\TestCase
 {
     protected function setUp()
     {
+        parent::setUp();
         $this->mockApplication();
-    }
-
-    public function assertEqualsWithoutLE($expected, $actual)
-    {
-        $expected = str_replace("\r\n", "\n", $expected);
-        $actual = str_replace("\r\n", "\n", $actual);
-
-        $this->assertEquals($expected, $actual);
     }
 
     public function testBooleanAttributes()

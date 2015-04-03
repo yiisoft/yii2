@@ -19,7 +19,7 @@ The [[yii\validators\Validator::builtInValidators]] property declares all suppor
 In the following, we will describe the main usage and properties of every core validator.
 
 
-## [[yii\validators\BooleanValidator|boolean]] <a name="boolean"></a>
+## [[yii\validators\BooleanValidator|boolean]] <span id="boolean"></span>
 
 ```php
 [
@@ -42,7 +42,7 @@ This validator checks if the input value is a boolean.
   [[yii\validators\BooleanValidator::strict|strict]] property as false.
 
 
-## [[yii\captcha\CaptchaValidator|captcha]] <a name="captcha"></a>
+## [[yii\captcha\CaptchaValidator|captcha]] <span id="captcha"></span>
 
 ```php
 [
@@ -60,7 +60,7 @@ to make sure an input is the same as the verification code displayed by [[yii\ca
   which means the input is required.
   
 
-## [[yii\validators\CompareValidator|compare]] <a name="compare"></a>
+## [[yii\validators\CompareValidator|compare]] <span id="compare"></span>
 
 ```php
 [
@@ -93,7 +93,7 @@ is as specified by the `operator` property.
      * `<=`: check if value being validated is less than or equal to the value being compared with.
 
 
-## [[yii\validators\DateValidator|date]] <a name="date"></a>
+## [[yii\validators\DateValidator|date]] <span id="date"></span>
 
 ```php
 [
@@ -111,17 +111,22 @@ specified via [[yii\validators\DateValidator::timestampAttribute|timestampAttrib
    `Datetime` class. Please refer to <http://php.net/manual/en/datetime.createfromformat.php> on supported formats.
    If this is not set, it will take the value of `Yii::$app->formatter->dateFormat`.
 - `timestampAttribute`: the name of the attribute to which this validator may assign the UNIX timestamp
-  converted from the input date/time.
+  converted from the input date/time. This can be the same attribute as the one being validated. If this is the case,
+  the original value will be overwritten with the timestamp value after validation.
+  See ["Handling date input with the DatePicker"](widget-jui#datepicker-date-input) for a usage example.
 
-In case the input is optional you may also want to add a default value filter in addition to the date validator
+In case the input is optional you may also want to add a [default value filter](#default) in addition to the date validator
 to ensure empty input is stored as `NULL`. Other wise you may end up with dates like `0000-00-00` in your database
 or `1970-01-01` in the input field of a date picker.
 
 ```php
-[['from_date', 'to_date'], 'default', 'value' => null],
+[
+    [['from_date', 'to_date'], 'default', 'value' => null],
+    [['from_date', 'to_date'], 'date'],
+],
 ```
 
-## [[yii\validators\DefaultValueValidator|default]] <a name="default"></a>
+## [[yii\validators\DefaultValueValidator|default]] <span id="default"></span>
 
 ```php
 [
@@ -155,7 +160,7 @@ function foo($model, $attribute) {
   in the [Empty Values](input-validation.md#handling-empty-inputs) section.
 
 
-## [[yii\validators\NumberValidator|double]] <a name="double"></a>
+## [[yii\validators\NumberValidator|double]] <span id="double"></span>
 
 ```php
 [
@@ -170,7 +175,7 @@ This validator checks if the input value is a double number. It is equivalent to
 - `min`: the lower limit (inclusive) of the value. If not set, it means the validator does not check the lower limit.
 
 
-## [[yii\validators\EmailValidator|email]] <a name="email"></a>
+## [[yii\validators\EmailValidator|email]] <span id="email"></span>
 
 ```php
 [
@@ -190,7 +195,7 @@ This validator checks if the input value is a valid email address.
   or an exception would be thrown.
 
 
-## [[yii\validators\ExistValidator|exist]] <a name="exist"></a>
+## [[yii\validators\ExistValidator|exist]] <span id="exist"></span>
 
 ```php
 [
@@ -234,13 +239,13 @@ either a single column or multiple columns.
   this property cannot be set true if you are validating against multiple columns by setting `targetAttribute` as an array.
 
 
-## [[yii\validators\FileValidator|file]] <a name="file"></a>
+## [[yii\validators\FileValidator|file]] <span id="file"></span>
 
 ```php
 [
     // checks if "primaryImage" is an uploaded image file in PNG, JPG or GIF format.
     // the file size must be less than 1MB
-    ['primaryImage', 'file', 'extensions' => ['png', 'jpg', 'gif'], 'maxSize' => 1024*1024*1024],
+    ['primaryImage', 'file', 'extensions' => ['png', 'jpg', 'gif'], 'maxSize' => 1024*1024],
 ]
 ```
 
@@ -266,7 +271,7 @@ This validator checks if the input is a valid uploaded file.
 section for complete coverage about uploading files and performing validation about the uploaded files.
 
 
-## [[yii\validators\FilterValidator|filter]] <a name="filter"></a>
+## [[yii\validators\FilterValidator|filter]] <span id="filter"></span>
 
 ```php
 [
@@ -303,7 +308,7 @@ back to the attribute being validated.
 > ```
 
 
-## [[yii\validators\ImageValidator|image]] <a name="image"></a>
+## [[yii\validators\ImageValidator|image]] <span id="image"></span>
 
 ```php
 [
@@ -325,7 +330,7 @@ validation purpose:
 - `maxHeight`: the maximum height of the image. Defaults to null, meaning no upper limit.
 
 
-## [[yii\validators\RangeValidator|in]] <a name="in"></a>
+## [[yii\validators\RangeValidator|in]] <span id="in"></span>
 
 ```php
 [
@@ -345,7 +350,7 @@ This validator checks if the input value can be found among the given list of va
   every element in the array must be found in the given list of values, or the validation would fail.
 
 
-## [[yii\validators\NumberValidator|integer]] <a name="integer"></a>
+## [[yii\validators\NumberValidator|integer]] <span id="integer"></span>
 
 ```php
 [
@@ -360,7 +365,7 @@ This validator checks if the input value is an integer.
 - `min`: the lower limit (inclusive) of the value. If not set, it means the validator does not check the lower limit.
 
 
-## [[yii\validators\RegularExpressionValidator|match]] <a name="match"></a>
+## [[yii\validators\RegularExpressionValidator|match]] <span id="match"></span>
 
 ```php
 [
@@ -378,7 +383,7 @@ This validator checks if the input value matches the specified regular expressio
    successful only if the input value does NOT match the pattern.
 
 
-## [[yii\validators\NumberValidator|number]] <a name="number"></a>
+## [[yii\validators\NumberValidator|number]] <span id="number"></span>
 
 ```php
 [
@@ -393,7 +398,7 @@ This validator checks if the input value is a number. It is equivalent to the [d
 - `min`: the lower limit (inclusive) of the value. If not set, it means the validator does not check the lower limit.
 
 
-## [[yii\validators\RequiredValidator|required]] <a name="required"></a>
+## [[yii\validators\RequiredValidator|required]] <span id="required"></span>
 
 ```php
 [
@@ -415,7 +420,7 @@ This validator checks if the input value is provided and not empty.
   in the [Empty Values](input-validation.md#handling-empty-inputs) section.
 
 
-## [[yii\validators\SafeValidator|safe]] <a name="safe"></a>
+## [[yii\validators\SafeValidator|safe]] <span id="safe"></span>
 
 ```php
 [
@@ -428,7 +433,7 @@ This validator does not perform data validation. Instead, it is used to mark an 
 a [safe attribute](structure-models.md#safe-attributes).
 
 
-## [[yii\validators\StringValidator|string]] <a name="string"></a>
+## [[yii\validators\StringValidator|string]] <span id="string"></span>
 
 ```php
 [
@@ -451,7 +456,7 @@ This validator checks if the input value is a valid string with certain length.
   [[yii\base\Application::charset|charset]] value which defaults to `UTF-8`.
 
 
-## [[yii\validators\FilterValidator|trim]] <a name="trim"></a>
+## [[yii\validators\FilterValidator|trim]] <span id="trim"></span>
 
 ```php
 [
@@ -464,7 +469,7 @@ This validator does not perform data validation. Instead, it will trim the surro
 the input value. Note that if the input value is an array, it will be ignored by this validator.
 
 
-## [[yii\validators\UniqueValidator|unique]] <a name="unique"></a>
+## [[yii\validators\UniqueValidator|unique]] <span id="unique"></span>
 
 ```php
 [
@@ -502,7 +507,7 @@ either a single column or multiple columns.
   is the [[yii\db\Query|Query]] object that you can modify in the function.
 
 
-## [[yii\validators\UrlValidator|url]] <a name="url"></a>
+## [[yii\validators\UrlValidator|url]] <span id="url"></span>
 
 ```php
 [

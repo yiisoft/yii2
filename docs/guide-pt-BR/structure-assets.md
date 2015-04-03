@@ -15,7 +15,7 @@ de assets. Neste tutorial, iremos descrever esta poderosa capacidade de gerênci
 de assets fornecidas pelo Yii.
 
 
-## Asset Bundles <a name="asset-bundles"></a>
+## Asset Bundles <span id="asset-bundles"></span>
 
 O Yii gerencia os assets na unidade de *asset bundle*. Um asset bundle é 
 simplesmente uma coleção de assets localizados em um diretório. Quando você 
@@ -23,7 +23,7 @@ registrar um asset bundle em uma [view (visão)](structure-views.md), serão
 incluídos os arquivos CSS e JavaScript do bundle na página Web renderizada.
 
 
-## Definindo os Asset Bundles <a name="defining-asset-bundles"></a>
+## Definindo os Asset Bundles <span id="defining-asset-bundles"></span>
 
 Os asset bundles são especificados como classes PHP que estendem de 
 [[yii\web\AssetBundle]]. O nome de um bundle corresponde simplesmente a um nome 
@@ -115,7 +115,7 @@ O bundle depende de outros dois bundles: [[yii\web\YiiAsset]] e
   apenas se você especificar a propriedade [[yii\web\AssetBundle::sourcePath|sourcePath]].
 
 
-### Localização dos Assets <a name="asset-locations"></a>
+### Localização dos Assets <span id="asset-locations"></span>
 
 Os assets, com base em sua localização, podem ser classificados como:
 
@@ -155,7 +155,7 @@ ao definir as classes de asset bundle.
   estar sujeitos a serem deletados.
 
 
-### Dependências de Assets <a name="asset-dependencies"></a>
+### Dependências de Assets <span id="asset-dependencies"></span>
 
 Ao incluir vários arquivos CSS ou JavaScript em uma página Web, devem seguir uma 
 determinada ordem para evitar problemas de sobrescritas. Por exemplo, se você 
@@ -173,7 +173,7 @@ As dependências de assets são transitivas. Isto significa que se um asset bund
 A depende de B e que o B depende de C, o A também dependerá de C.
 
 
-### Opções do Asset <a name="asset-options"></a>
+### Opções do Asset <span id="asset-options"></span>
 
 Você pode especificar as propriedades [[yii\web\AssetBundle::cssOptions|cssOptions]] 
 e [[yii\web\AssetBundle::jsOptions|jsOptions]] para personalizar o modo que os 
@@ -254,7 +254,7 @@ O exemplo anterior define um asset bundle para o
 publicação `beforeCopy`, apenas os subdiretórios `fonts` e `css` serão publicados.
 
 
-### Assets do Bower e NPM<a name="bower-npm-assets"></a>
+### Assets do Bower e NPM<span id="bower-npm-assets"></span>
 
 A maioria dos pacotes JavaScript/CSS são gerenciados pelo [Bower](http://bower.io/) 
 e/ou [NPM](https://www.npmjs.org/).
@@ -277,7 +277,7 @@ você siga os passos a seguir para gerenciar os assets na biblioteca:
   `@bower/jquery`.
 
 
-## Usando Asset Bundles <a name="using-asset-bundles"></a>
+## Usando Asset Bundles <span id="using-asset-bundles"></span>
 
 Para usar um asset bundle, registre uma [view (visão)](structure-views.md) 
 chamando o método [[yii\web\AssetBundle::register()]]. Por exemplo, no template 
@@ -307,7 +307,7 @@ registrados e pela ordem dos assets informados nas propriedades
 [[yii\web\AssetBundle::css]] e [[yii\web\AssetBundle::js]].
 
 
-### Personalizando os Asset Bundles <a name="customizing-asset-bundles"></a>
+### Personalizando os Asset Bundles <span id="customizing-asset-bundles"></span>
 
 O Yii gerencia os asset bundles através do componente de aplicação chamado 
 `assetManager` que é implementado pelo [[yii\web\AssetManager]]. 
@@ -378,7 +378,7 @@ Você também pode desabilitar *todos* os asset bundles definindo o
 [[yii\web\AssetManager::bundles]] como `false`.
 
 
-### Mapeando Asset <a name="asset-mapping"></a>
+### Mapeando Asset <span id="asset-mapping"></span>
 
 Às vezes, você pode querer "corrigir" os caminhos dos arquivos de asset 
 incorretos/incompatíveis em vários asset bundles. Por exemplo, o bundle A usa o 
@@ -418,7 +418,7 @@ chave a chave `jquery.js`.
    ou caminhos relativos ao caminho da propriedade [[yii\web\AssetManager::basePath]].
 
 
-### Publicação de Asset <a name="asset-publishing"></a>
+### Publicação de Asset <span id="asset-publishing"></span>
 
 Como mencionado anteriormente, se um asset bundle for localizado em um diretório
  que não é acessível pela Web, os seus assets serão copiados para um diretório 
@@ -452,8 +452,33 @@ o caminho fonte de um asset bundle quando estiver sendo publicado. Isto é mais
 rápido que a cópia de arquivos e também pode garantir que os assets publicados 
 estejam sempre atualizados.
 
+### Cache Busting <span id="cache-busting"></span>
 
-## Asset Bundles de Uso Comum <a name="common-asset-bundles"></a>
+Para aplicações Web que estam rodando no modo produção, é uma prática comum habilitar
+o cache HTTP paraassets e outros recursos estáticos. A desvantagem desta prática é que 
+sempre que você modificar um asset e implantá-lo em produção, um cliente pode ainda
+estar usando a versão antiga, devido ao cache HTTP. Para superar esta desvantagem, 
+você pode utilizar o recurso cache busting, que foi implementado na versão 2.0.3, 
+configurando o [[yii\web\AssetManager]] como mostrado a seguir:
+  
+```php
+return [
+    // ...
+    'components' => [
+        'assetManager' => [
+            'appendTimestamp' => true,
+        ],
+    ],
+];
+```
+
+Ao fazer isto, a URL de cada asset publicado será anexada ao seu último horário de 
+modificação. Por exemplo, a URL do `yii.js` pode parecer com `/assets/5515a87c/yii.js?v=1423448645"`,
+onde o parâmetro `V` representa o último horário de modificação do arquivo `yii.js`.
+Agora se você modificar um asset, a sua URL será alterada, fazendo com que o cliente
+busque a versão mais recente do asset.
+
+## Asset Bundles de Uso Comum <span id="common-asset-bundles"></span>
 
 O código nativo do Yii definiu vários asset bundles. Entre eles, os bundles a 
 seguir são de uso comum e podem ser referenciados em sua aplicação ou no código 
@@ -476,7 +501,7 @@ padrão destes bundles não satisfazer o que precisa, você pode personaliza-los
 conforme descrito na subseção [Personalizando os Asset Bundles](#customizing-asset-bundles). 
 
 
-## Conversão de Assets <a name="asset-conversion"></a>
+## Conversão de Assets <span id="asset-conversion"></span>
 
 Ao invés de escrever diretamente códigos CSS e/ou JavaScript, os desenvolvedores 
 geralmente os escrevem em alguma sintaxe estendida e usam ferramentas especiais 
@@ -561,7 +586,7 @@ de asset fonte e pelo caminho do arquivo de asset de destino.
   CSS/JavaScript resultantes nos asset bundles ao invés dos arquivos originais.
 
 
-## Combinando e Comprimindo Assets <a name="combining-compressing-assets"></a>
+## Combinando e Comprimindo Assets <span id="combining-compressing-assets"></span>
 
 Uma página Web pode incluir muitos arquivos CSS e/ou JavaScript. Para reduzir o 
 número de requisições HTTP e o tamanho total de downloads destes arquivos, uma 
@@ -598,7 +623,7 @@ original pertence. E, como resultado, os arquivos de asset combinados/comprimido
 serão incluídos na página, ao invés dos originais.
 
 
-### Um Exemplo <a name="example"></a>
+### Um Exemplo <span id="example"></span>
 
 Vamos usar um exemplo para explicar melhor o exemplo acima: 
 
@@ -687,7 +712,7 @@ Ou seja, o array de configuração do asset bundle será salvo no arquivo
 quando não estiver em produção.
 
 
-### Usando o Comando `asset` <a name="using-asset-command"></a>
+### Usando o Comando `asset` <span id="using-asset-command"></span>
 
 O Yii fornece um comando console chamado `asset` para automatizar a abordagem que 
 acabamos de descrever.
@@ -771,3 +796,59 @@ conforme descrito na última subseção.
 > Informação: O uso do comando `asset` não é a única opção para automatizar o 
   processo de combinação e compressão de asset. Você pode usar a excelente 
   ferramenta chamada [grunt](http://gruntjs.com/) para atingir o mesmo objetivo.
+
+### Agrupando Asset Bundles <span id="grouping-asset-bundles"></span>
+
+Na última subseção, nós explicamos como combinar todos os asset bundles em um
+único bundle, a fim de minimizar as requisições HTTP de arquivos de asset referenciados
+em uma aplicação. Porém, isto nem sempre é desejável na prática. Por exemplo, imagine 
+que sua aplicação possua um "front end", bem como um "back end", cada um possuindo um 
+conjunto diferente de JavaScript e CSS. Neste caso, combinando todos os asset bundles
+de ambas as extremidades em um único bundle não faz sentido, porque os asset bundles 
+pata o "front end" não são utilizados pelo "back end" e seria um desperdício de uso 
+de banda de rede para enviar os assets do "back end" quando uma página de "front end"
+for solicitada.
+
+Para resolver este problema, você pode dividir asset bundles e, grupos e combinar 
+asset bundles para cada grupo. A configuração a seguir mostra como pode agrupar 
+os asset bundles:
+
+```php
+return [
+    ...
+    // Especifique o bundle de saída com os grupos:
+    'targets' => [
+        'allShared' => [
+            'js' => 'js/all-shared-{hash}.js',
+            'css' => 'css/all-shared-{hash}.css',
+            'depends' => [
+                // Inclua todos os asset que serão compartilhados entre o 'backend' e o 'frontend'
+                'yii\web\YiiAsset',
+                'app\assets\SharedAsset',
+            ],
+        ],
+        'allBackEnd' => [
+            'js' => 'js/all-{hash}.js',
+            'css' => 'css/all-{hash}.css',
+            'depends' => [
+                // Inclua apenas os assets do 'backend':
+                'app\assets\AdminAsset'
+            ],
+        ],
+        'allFrontEnd' => [
+            'js' => 'js/all-{hash}.js',
+            'css' => 'css/all-{hash}.css',
+            'depends' => [], // Inclua todos os asset restantes
+        ],
+    ],
+    ...
+];
+```
+
+Como você pode ver, os asset bundles são divididos em três grupos: `allShared`, `allBackEnd` e `allFrontEnd`.
+Cada um deles dependem de um conjunto de asset bundles. Por exemplo, o `allBackEnd` depende de `app\assets\AdminAsset`.
+Ao executar o comando `asset` com essa configuração, será combinado os asset bundles de acordo com as especificações acima.
+
+> Informação: Voce pode deixar a configuração `depends` em branco para um determinado bundle.
+Ao fazer isso, esse asset bundle dependerá de todos os asset bundles restantes que outros
+determinados bundles não dependam.

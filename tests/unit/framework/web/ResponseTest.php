@@ -82,4 +82,23 @@ class ResponseTest extends \yiiunit\TestCase
     {
         return '12ёжик3456798áèabcdefghijklmnopqrstuvwxyz!"§$%&/(ёжик)=?';
     }
+
+    /**
+     * https://github.com/yiisoft/yii2/issues/7529
+     */
+    public function testSendContentAsFile()
+    {
+        ob_start();
+        $this->response->sendContentAsFile('test', 'test.txt')->send([
+            'mimeType' => 'text/plain'
+        ]);
+        $content = ob_get_clean();
+
+        static::assertEquals('test', $content);
+        static::assertEquals(200, $this->response->statusCode);
+        $headers = $this->response->headers;
+        static::assertEquals('application/octet-stream', $headers->get('Content-Type'));
+        static::assertEquals('attachment; filename="test.txt"', $headers->get('Content-Disposition'));
+        static::assertEquals(4, $headers->get('Content-Length'));
+    }
 }

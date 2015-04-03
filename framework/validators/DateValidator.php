@@ -57,6 +57,9 @@ class DateValidator extends Validator
      * @var string the name of the attribute to receive the parsing result.
      * When this property is not null and the validation is successful, the named attribute will
      * receive the parsing result.
+     *
+     * This can be the same attribute as the one being validated. If this is the case,
+     * the original value will be overwritten with the timestamp value after validation.
      */
     public $timestampAttribute;
 
@@ -139,7 +142,12 @@ class DateValidator extends Validator
 
                 // There should not be a warning thrown by parse() but this seems to be the case on windows so we suppress it here
                 // See https://github.com/yiisoft/yii2/issues/5962 and https://bugs.php.net/bug.php?id=68528
-                return @$formatter->parse($value);
+                $parsePos = 0;
+                $parsedDate = @$formatter->parse($value, $parsePos);
+                if ($parsedDate !== false && $parsePos === mb_strlen($value, Yii::$app ? Yii::$app->charset : 'UTF-8')) {
+                    return $parsedDate;
+                }
+                return false;
             } else {
                 // fallback to PHP if intl is not installed
                 $format = FormatConverter::convertDateIcuToPhp($format, 'date');

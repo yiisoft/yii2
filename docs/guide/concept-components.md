@@ -8,7 +8,8 @@ or an extended class. The three main features that components provide to other c
 * [Events](concept-events.md)
 * [Behaviors](concept-behaviors.md)
  
-Separately and combined, these features make Yii classes much more customizable and easier to use. For example, the included [[yii\jui\DatePicker|date picker widget]], a user interface component, can be used in a [view](structure-view.md)
+Separately and combined, these features make Yii classes much more customizable and easier to use. For example,
+the included [[yii\jui\DatePicker|date picker widget]], a user interface component, can be used in a [view](structure-view.md)
 to generate an interactive date picker:
 
 ```php
@@ -42,6 +43,8 @@ these conventions:
 For example:
 
 ```php
+<?php
+
 namespace yii\components\MyClass;
 
 use yii\base\Object;
@@ -79,7 +82,8 @@ $component = \Yii::createObject([
 ], [1, 2]);
 ```
 
-> Info: While the approach of calling [[Yii::createObject()]] looks more complicated, it is more powerful because it is implemented on top of a [dependency injection container](concept-di-container.md).
+> Info: While the approach of calling [[Yii::createObject()]] looks more complicated, it is more powerful because it is
+> implemented on top of a [dependency injection container](concept-di-container.md).
   
 
 The [[yii\base\Object]] class enforces the following object lifecycle:

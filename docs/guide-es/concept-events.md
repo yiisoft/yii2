@@ -9,7 +9,7 @@ el correcto envío del mensaje, se puede, simplemente, añadir un código de seg
 Yii introduce una clase base [[yii\base\Component]] para soportar eventos. Si una clase necesita lanzar un evento,
 este debe extender a [[yii\base\Component]] o a una clase hija.
 
-Gestor de Eventos <a name="event-handlers"></a>
+Gestor de Eventos <span id="event-handlers"></span>
 -----------------
 
 Un gestor de eventos es una
@@ -40,7 +40,7 @@ Un gestor de eventos puede obtener la siguiente información acerca de un evento
   (se explicará más adelante)
 
 
-Añadir Gestores de Eventos <a name="attaching-event-handlers"></a>
+Añadir Gestores de Eventos <span id="attaching-event-handlers"></span>
 --------------------------
 
 Se puede añadir un gestor a un evento llamando al método [[yii\base\Component::on()]]. Por ejemplo:
@@ -104,7 +104,7 @@ $foo->on(Foo::EVENT_HELLO, function ($event) {
 }, $data, false);
 ```
 
-Lanzamiento de Eventos <a name="triggering-events"></a>
+Lanzamiento de Eventos <span id="triggering-events"></span>
 ----------------------
 
 Los eventos se lanzan llamando al método [[yii\base\Component::trigger()]]. El método requiere un *nombre de evento*,
@@ -169,7 +169,7 @@ class Mailer extends Component
 
 Cuando se lanza el método [[yii\base\Component::trigger()]], se ejecutarán todos los gestores adjuntos al evento.
 
-Desadjuntar Gestores de Evento <a name="detaching-event-handlers"></a>
+Desadjuntar Gestores de Evento <span id="detaching-event-handlers"></span>
 ------------------------------
 
 Para desadjuntar un gestor de un evento, se puede ejecutar el método [[yii\base\Component::off()]]. Por ejemplo:
@@ -199,7 +199,7 @@ parámetro:
 $foo->off(Foo::EVENT_HELLO);
 ```
 
-Nivel de Clase (Class-Level) Gestores de Eventos <a name="class-level-event-handlers"></a>
+Nivel de Clase (Class-Level) Gestores de Eventos <span id="class-level-event-handlers"></span>
 ------------------------------------------------
 
 En las subsecciones anteriores se ha descrito como adjuntar un gestor a un evento a *nivel de instancia*. A veces, se
@@ -260,7 +260,7 @@ Event::off(Foo::className(), Foo::EVENT_HELLO, $handler);
 Event::off(Foo::className(), Foo::EVENT_HELLO);
 ```
 
-Eventos Globales <a name="global-events"></a>
+Eventos Globales <span id="global-events"></span>
 ----------------
 
 Yii soporta los llamados *eventos globales*, que en realidad es un truco basado en el gestor de eventos descrito

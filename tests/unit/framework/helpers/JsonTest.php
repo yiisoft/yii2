@@ -2,6 +2,7 @@
 
 namespace yiiunit\framework\helpers;
 
+use yii\base\Model;
 use yii\helpers\Json;
 use yiiunit\TestCase;
 use yii\web\JsExpression;
@@ -48,6 +49,10 @@ class JsonTest extends TestCase
         // https://github.com/yiisoft/yii2/issues/957
         $data = (object) null;
         $this->assertSame('{}', Json::encode($data));
+
+        // JsonSerializable
+        $data = new JsonModel();
+        $this->assertSame('{"json":"serializable"}', Json::encode($data));
     }
 
     public function testDecode()
@@ -64,5 +69,13 @@ class JsonTest extends TestCase
         $json = '{"a":1,"b":2';
         $this->setExpectedException('yii\base\InvalidParamException');
         Json::decode($json);
+    }
+}
+
+class JsonModel extends Model implements \JsonSerializable
+{
+    function jsonSerialize()
+    {
+        return ['json' => 'serializable'];
     }
 }

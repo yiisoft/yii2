@@ -4,7 +4,7 @@ Url ヘルパ
 Url ヘルパは URL を管理するための一連のスタティックメソッドを提供します。
 
 
-## よく使う URL を取得する <a name="getting-common-urls"></a>
+## よく使う URL を取得する <span id="getting-common-urls"></span>
 
 よく使う URL を取得するために使うことが出来るメソッドが二つあります。
 すなわち、ホーム URL と、現在のリクエストのベース URL を取得するメソッドです。
@@ -18,7 +18,7 @@ $httpsAbsoluteHomeUrl = Url::home('https');
 
 パラメータが渡されない場合は、相対 URL が生成されます。
 `true` を渡すと、現在のスキーマの絶対 URL を取得することが出来ます。
-または、スキームを明示的に指定して (`http`, `https`) 絶対 URL を取得することも出来ます。
+または、スキーマを明示的に指定して (`http`, `https`) 絶対 URL を取得することも出来ます。
 
 現在のリクエストのベース URL を取得するためには、次のようにします。
  
@@ -31,7 +31,7 @@ $httpsAbsoluteBaseUrl = Url::base('https');
 このメソッドの唯一のパラメータは、`Url::home()` の場合と全く同じ動作をします。
 
 
-## URL を生成する <a name="creating-urls"></a>
+## URL を生成する <span id="creating-urls"></span>
 
 与えられたルートへの URL を生成するためには、`Url::toRoute()` メソッドを使います。
 このメソッドは、[[\yii\web\UrlManager]] を使って URL を生成します。
@@ -94,7 +94,6 @@ echo Url::toRoute('site/index', 'https');
 
 - 配列: URL を生成するために [[toRoute()]] が呼び出されます。例えば、`['site/index']`、`['post/index', 'page' => 2]`。
   ルートの指定方法の詳細については [[toRoute()]] を参照してください。
-  on how to specify a route.
 - `@` で始まる文字列: これはエイリアスとして扱われ、エイリアスに対応する文字列が返されます。
 - 空文字列: 現在リクエストされている URL が返されます。
 - 通常の文字列: その通りのものとして扱われます。
@@ -133,9 +132,6 @@ echo Url::to('@web/images/logo.gif', 'https');
 バージョン 2.0.3 以降では、[[yii\helpers\Url::current()]] を使って、現在リクエストされているルートと GET パラメータに基づいて URL を生成することが出来ます。
 `$params` パラメータを渡して、GET パラメータの中のいくつかを修正したり削除したり、または新しい GET パラメータを追加したりすることが出来ます。
 例えば、
-Starting from version 2.0.3, you may use [[yii\helpers\Url::current()]] to create a URL based on the currently
-requested route and GET parameters. You may modify or remove some of the GET parameters or add new ones by
-passing a `$params` parameter to the method. For example,
 
 ```php
 // $_GET が ['id' => 123, 'src' => 'google'] であり、現在のルートが "post/view" であると仮定
@@ -150,7 +146,7 @@ echo Url::current(['id' => 100]);
 ```
 
 
-## URL を記憶する <a name="remember-urls"></a>
+## URL を記憶する <span id="remember-urls"></span>
 
 URL を記憶して、後に続く一連のリクエストの一つを処理するときに、記憶した URL を使わなければならないという場合があります。
 これは、次のようにして達成することが出来ます。
@@ -173,7 +169,7 @@ $url = Url::previous();
 $productUrl = Url::previous('product');
 ```
 
-## 相対 URL かどうかチェックする <a name="checking-relative-urls"></a>
+## 相対 URL かどうかチェックする <span id="checking-relative-urls"></span>
 
 URL が相対 URL であること、すなわち、URL がホスト情報の部分を持っていないことを確かめるために、次のコードを使うことが出来ます。
 

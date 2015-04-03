@@ -68,6 +68,9 @@ class Menu extends Widget
      *   The token `{url}` will be replaced by the URL associated with this menu item,
      *   and the token `{label}` will be replaced by the label of the menu item.
      *   If this option is not set, [[linkTemplate]] or [[labelTemplate]] will be used instead.
+     * - submenuTemplate: string, optional, the template used to render the list of sub-menus.
+     *   The token `{items}` will be replaced with the rendered sub-menu items.
+     *   If this option is not set, [[submenuTemplate]] will be used instead.
      * - options: array, optional, the HTML attributes for the menu container tag.
      */
     public $items = [];
@@ -96,7 +99,7 @@ class Menu extends Widget
     public $labelTemplate = '{label}';
     /**
      * @var string the template used to render a list of sub-menus.
-     * In this template, the token `{items}` will be replaced with the renderer sub-menu items.
+     * In this template, the token `{items}` will be replaced with the rendered sub-menu items.
      */
     public $submenuTemplate = "\n<ul>\n{items}\n</ul>\n";
     /**
@@ -126,7 +129,7 @@ class Menu extends Widget
     /**
      * @var array the HTML attributes for the menu's container tag. The following special options are recognized:
      *
-     * - tag: string, defaults to "ul", the tag name of the item container tags.
+     * - tag: string, defaults to "ul", the tag name of the item container tags. Set to false to disable container tag.
      *
      * @see \yii\helpers\Html::renderTagAttributes() for details on how attributes are being rendered.
      */
@@ -208,11 +211,16 @@ class Menu extends Widget
 
             $menu = $this->renderItem($item);
             if (!empty($item['items'])) {
-                $menu .= strtr($this->submenuTemplate, [
+                $submenuTemplate = ArrayHelper::getValue($item, 'submenuTemplate', $this->submenuTemplate);
+                $menu .= strtr($submenuTemplate, [
                     '{items}' => $this->renderItems($item['items']),
                 ]);
             }
-            $lines[] = Html::tag($tag, $menu, $options);
+            if ($tag === false) {
+                $lines[] = $menu;
+            } else {
+                $lines[] = Html::tag($tag, $menu, $options);
+            }
         }
 
         return implode("\n", $lines);

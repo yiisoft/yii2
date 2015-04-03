@@ -396,4 +396,72 @@ class ArrayHelperTest extends TestCase
         $this->assertTrue(ArrayHelper::isIndexed([2 => 'a', 3 => 'b']));
         $this->assertFalse(ArrayHelper::isIndexed([2 => 'a', 3 => 'b'], true));
     }
+
+    public function testHtmlEncode()
+    {
+        $array = [
+            'abc' => '123',
+            '<' => '>',
+            'cde' => false,
+            3 => 'blank',
+            [
+                '<>' => 'a<>b',
+                '23' => true,
+            ]
+        ];
+        $this->assertEquals([
+            'abc' => '123',
+            '<' => '&gt;',
+            'cde' => false,
+            3 => 'blank',
+            [
+                '<>' => 'a&lt;&gt;b',
+                '23' => true,
+            ]
+        ], ArrayHelper::htmlEncode($array));
+        $this->assertEquals([
+            'abc' => '123',
+            '&lt;' => '&gt;',
+            'cde' => false,
+            3 => 'blank',
+            [
+                '&lt;&gt;' => 'a&lt;&gt;b',
+                '23' => true,
+            ]
+        ], ArrayHelper::htmlEncode($array, false));
+    }
+
+    public function testHtmlDecode()
+    {
+        $array = [
+            'abc' => '123',
+            '&lt;' => '&gt;',
+            'cde' => false,
+            3 => 'blank',
+            [
+                '<>' => 'a&lt;&gt;b',
+                '23' => true,
+            ]
+        ];
+        $this->assertEquals([
+            'abc' => '123',
+            '&lt;' => '>',
+            'cde' => false,
+            3 => 'blank',
+            [
+                '<>' => 'a<>b',
+                '23' => true,
+            ]
+        ], ArrayHelper::htmlDecode($array));
+        $this->assertEquals([
+            'abc' => '123',
+            '<' => '>',
+            'cde' => false,
+            3 => 'blank',
+            [
+                '<>' => 'a<>b',
+                '23' => true,
+            ]
+        ], ArrayHelper::htmlDecode($array, false));
+    }
 }

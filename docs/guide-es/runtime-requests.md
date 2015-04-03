@@ -7,7 +7,7 @@ objeto request correspondiente a través del [componente de aplicación](structu
 que, por defecto, es una instancia de [[yii\web\Request]]. En esta sección se describirá como hacer uso de este 
 componente en las aplicaciones.
 
-## Parámetros de Request <a name="request-parameters"></a>
+## Parámetros de Request <span id="request-parameters"></span>
 
 Para obtener los parámetros de la petición, se puede llamar a los métodos [[yii\web\Request::get()|get()]] y 
 [[yii\web\Request::post()|post()]] del componente `request`. Estos devuelven los valores de `$_GET` y `$_POST`, 
@@ -58,7 +58,7 @@ $param = $request->getBodyParam('id');
   se acceda a él a través de los métodos descritos anteriormente. Se puede personalizar la manera en como los 
   parámetros se convierten configurando la propiedad [[yii\web\Request::parsers]].
 
-## Métodos de Request <a name="request-methods"></a>
+## Métodos de Request <span id="request-methods"></span>
 
 Se puede obtener el método HTTP usado por la petición actual a través de la expresión `Yii::$app->request->method`. Se 
 proporcionan un conjunto de propiedades booleanas para comprobar si el método actual es de un cierto tipo. Por ejemplo:
@@ -72,7 +72,7 @@ if ($request->isPost) { // el método de la request es POST }
 if ($request->isPut)  { // el método de la request es PUT }
 ```
 
-## URLs de Request <a name="request-urls"></a>
+## URLs de Request <span id="request-urls"></span>
 
 El componente `request` proporciona muchas maneras de inspeccionar la URL solicitada actualmente.
 
@@ -95,7 +95,7 @@ varias partes de la URL explicadas en los siguientes puntos:
 * [[yii\web\Request::serverName|serverName]]: devuelve `example.com`, que es el nombre del host dentro de la URL.
 * [[yii\web\Request::serverPort|serverPort]]: devuelve 80, que es el puerto que usa el servidor web.
 
-## Cabeceras HTTP <a name="http-headers"></a> 
+## Cabeceras HTTP <span id="http-headers"></span> 
 
 Se pueden obtener la información de las cabeceras HTTP a través de [[yii\web\HeaderCollection|header collection]] 
 devueltas por la propiedad [[yii\web\Request::headers]]. Por ejemplo:
@@ -130,7 +130,7 @@ lista de idiomas soportados por la aplicación, comparados con
 diatónicamente el content type y el idioma que debe usarse en la respuesta. El filtro implementa la negociación de 
 contenido en la parte superior de las propiedades y métodos descritos anteriormente.
 
-## Información del cliente <a name="client-information"></a>
+## Información del cliente <span id="client-information"></span>
 
 Se puede obtener el nombre del host y la dirección IP de la máquina cliente a través de 
 [[yii\web\Request::userHost|userHost]] y [[yii\web\Request::userIP|userIP]], respectivamente. Por ejemplo:

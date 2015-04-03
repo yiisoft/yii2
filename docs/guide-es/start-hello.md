@@ -15,7 +15,7 @@ A lo largo de este tutorial, aprenderás tres cosas:
 3. Cómo una aplicación envía peticiones a las [acciones](structure-controllers.md#creating-actions).
 
 
-Creando una Acción <a name="creating-action"></a>
+Creando una Acción <span id="creating-action"></span>
 ------------------
 
 Para la tarea "Hola", crearás una [acción](structure-controllers.md#creating-actions) `say` que lee
@@ -70,7 +70,7 @@ El resultado es devuelto al método de la acción. Ese resultado será recibido 
 navegador (como parte de una página HTML completa).
 
 
-Creando una Vista <a name="creating-view"></a>
+Creando una Vista <span id="creating-view"></span>
 -----------------
 
 Las [vistas](structure-views.md) son scripts que escribes para generar una respuesta de contenido.
@@ -95,7 +95,7 @@ De hecho, la vista `say` es sólo un script PHP que es ejecutado por el método 
 El contenido impreso por el script de la vista será regresado a la aplicación como la respuesta del resultado. La aplicación a cambio mostrará el resultado al usuario final.
 
 
-Probándolo <a name="trying-it-out"></a>
+Probándolo <span id="trying-it-out"></span>
 ----------
 
 Después de crear la acción y la vista, puedes acceder a la nueva página abriendo el siguiente URL:
@@ -127,7 +127,7 @@ el método `SiteController::actionSay()` será llamado para manejar el requerimi
   al nombre de clase del controlador `PostComentarioController`.
 
 
-Resumen <a name="summary"></a>
+Resumen <span id="summary"></span>
 -------
 
 En esta sección, has tocado las partes del controlador y la vista del patrón de diseño MVC.

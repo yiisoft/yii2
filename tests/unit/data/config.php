@@ -43,34 +43,7 @@ $config = [
             'password' => 'postgres',
             'fixture' => __DIR__ . '/postgres.sql',
         ],
-        'elasticsearch' => [
-            'dsn' => 'elasticsearch://localhost:9200'
-        ],
-        'redis' => [
-            'hostname' => 'localhost',
-            'port' => 6379,
-            'database' => 0,
-            'password' => null,
-        ],
     ],
-    'sphinx' => [
-        'sphinx' => [
-            'dsn' => 'mysql:host=127.0.0.1;port=9306;',
-            'username' => 'travis',
-            'password' => '',
-        ],
-        'db' => [
-            'dsn' => 'mysql:host=127.0.0.1;dbname=yiitest',
-            'username' => 'travis',
-            'password' => '',
-            'fixture' => __DIR__ . '/sphinx/source.sql',
-        ],
-    ],
-    'mongodb' => [
-        'dsn' => 'mongodb://travis:test@localhost:27017',
-        'defaultDatabaseName' => 'yii2test',
-        'options' => [],
-    ]
 ];
 
 if (is_file(__DIR__ . '/config.local.php')) {

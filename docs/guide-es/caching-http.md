@@ -15,7 +15,7 @@ consultas:
 * [[yii\filters\HttpCache::cacheControlHeader|Cache-Control]]
 
 
-## La Cabecera `Last-Modified` <a name="last-modified"></a>
+## La Cabecera `Last-Modified` <span id="last-modified"></span>
 
 La cabecera `Last-Modified` usa un sello de tiempo para indicar si la página ha sido modificada desde que el cliente la
 almacena en la caché.
@@ -59,7 +59,7 @@ regenerar la página, y el navegador usará la versión caché del lado del clie
 lado del servidor y la transmisión del contenido de la página son ambos omitidos.
 
 
-## La Cabecera `ETag` <a name="etag"></a>
+## La Cabecera `ETag` <span id="etag"></span>
 
 La cabecera "Entity Tag" (o para abreviar `ETag`) usa un hash para representar el contenido de una página. Si la página
 ha sido cambiada, el hash también cambiará. Al comparar el hash guardado en el lado del cliente con el hash generado en
@@ -113,7 +113,7 @@ expresión sencilla para invalidar la caché si la página ha sido modificada.
 > Nota: En cumplimiento con [RFC 7232](http://tools.ietf.org/html/rfc7232#section-2.4),
   `HttpCache` enviará ambas cabeceras `ETag` y `Last-Modified` si ambas están configuradas. Y si el clientes envía tanto la cabecera `If-None-Match` como la cabecera `If-Modified-Since`, solo la primera será respetada.
 
-## La Cabecera `Cache-Control` <a name="cache-control"></a>
+## La Cabecera `Cache-Control` <span id="cache-control"></span>
 
 La cabecera `Cache-Control` especifica la directiva general de la caché para páginas. Puedes enviarla configurando la
 propiedad [[yii\filters\HttpCache::cacheControlHeader]] con el valor de la cabecera. Por defecto, la siguiente cabecera
@@ -123,7 +123,7 @@ será enviada:
 Cache-Control: public, max-age=3600
 ```
 
-## Limitador de la Sesión de Caché <a name="session-cache-limiter"></a>
+## Limitador de la Sesión de Caché <span id="session-cache-limiter"></span>
 
 Cuando una página utiliza la sesión, PHP enviará automáticamente cabeceras HTTP relacionadas con la caché tal y como se
 especifican en `session.cache_limiter` de la configuración INI de PHP. Estas cabeceras pueden interferir o deshabilitar
@@ -134,7 +134,7 @@ automáticamente el envío de estas cabeceras. Si deseas modificar este comporta
 para una mejor explicación sobre esos valores.
 
 
-## Implicaciones SEO <a name="seo-implications"></a>
+## Implicaciones SEO <span id="seo-implications"></span>
 
 Los robots de motores de búsqueda tienden a respetar las cabeceras de caché. Dado que algunos `crawlers` tienen limitado
 el número de páginas que pueden rastrear por dominios dentro de un cierto período de tiempo, la introducción de cabeceras

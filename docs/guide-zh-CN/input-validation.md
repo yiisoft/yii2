@@ -26,7 +26,7 @@ if ($model->validate()) {
 3. 用每个激活规则去验证每个与之关联的激活特性。若失败，则记录下对应模型特性的错误信息。
 
 
-## 声明规则（Rules） <a name="declaring-rules"></a>
+## 声明规则（Rules） <span id="declaring-rules"></span>
 
 要让 `validate()` 方法起作用，你需要声明与需验证模型特性相关的验证规则。为此，需要重写 [[yii\base\Model::rules()]] 方法。下面的例子展示了如何声明用于验证 `ContactForm` 模型的相关验证规则：
 
@@ -82,7 +82,7 @@ public function rules()
 基于以上验证步骤，有且仅有声明在 `scenarios()` 方法里的激活特性，且它还必须与一或多个声明自 `rules()` 里的激活规则相关联才会被验证。
 
 
-### 自定义错误信息 <a name="customizing-error-messages"></a>
+### 自定义错误信息 <span id="customizing-error-messages"></span>
 
 大多数的验证器都有默认的错误信息，当模型的某个特性验证失败的时候，该错误信息会被返回给模型。比如，用 [[yii\validators\RequiredValidator|required]] 验证器的规则检验 `username` 特性失败的话，会返还给模型 "Username cannot be blank." 信息。
 
@@ -101,7 +101,7 @@ public function rules()
 你也可以像配置验证器的其他属性一样配置它们俩各自的错误信息。
 
 
-### 验证事件 <a name="validation-events"></a>
+### 验证事件 <span id="validation-events"></span>
 
 当调用 [[yii\base\Model::validate()]] 方法的过程里，它同时会调用两个特殊的方法，把它们重写掉可以实现自定义验证过程的目的：
 
@@ -109,7 +109,7 @@ public function rules()
 * [[yii\base\Model::afterValidate()]]：在默认的实现中会触发 [[yii\base\Model::EVENT_AFTER_VALIDATE]] 事件。你可以重写该方法或者响应此事件，来在验证结束之后，再进行一些收尾的工作。
 
 
-### 条件式验证 <a name="conditional-validation"></a>
+### 条件式验证 <span id="conditional-validation"></span>
 
 若要只在某些条件满足时，才验证相关特性，比如：是否验证某特性取决于另一特性的值，你可以通过
 [[yii\validators\Validator::when|when]] 属性来定义相关条件。举例而言，
@@ -147,7 +147,7 @@ function ($model, $attribute)
 ```
 
 
-### 数据预处理 <a name="data-filtering"></a>
+### 数据预处理 <span id="data-filtering"></span>
 
 用户输入经常需要进行数据过滤，或者叫预处理。比如你可能会需要先去掉 `username` 输入的收尾空格。你可以通过使用验证规则来实现此目的。
 
@@ -165,7 +165,7 @@ function ($model, $attribute)
 如你所见，这些验证规则并不真的对输入数据进行任何验证。而是，对输入数据进行一些处理，然后把它们存回当前被验证的模型特性。
 
 
-### 处理空输入 <a name="handling-empty-inputs"></a>
+### 处理空输入 <span id="handling-empty-inputs"></span>
 
 当输入数据是通过 HTML 表单，你经常会需要给空的输入项赋默认值。你可以通过调整
 [default](tutorial-core-validators.md#default) 验证器来实现这一点。举例来说，
@@ -196,7 +196,7 @@ true，则它们不会对空值进行任何处理。也就是当他们的关联�
 [核心验证器](tutorial-core-validators.md) 之中，只有 `captcha`（验证码），`default`（默认值），`filter`（滤镜），`required`（必填），以及 `trim`（去首尾空格），这几个验证器会处理空输入。
 
 
-## 临时验证 <a name="ad-hoc-validation"></a>
+## 临时验证 <span id="ad-hoc-validation"></span>
 
 有时，你需要对某些没有绑定任何模型类的值进行 **临时验证**。
 
@@ -262,12 +262,12 @@ public function actionSearch($name, $email)
 `$model->name` 和 `$model->email`。
 
 
-## 创建验证器（Validators） <a name="creating-validators"></a>
+## 创建验证器（Validators） <span id="creating-validators"></span>
 
 除了使用 Yii 的发布版里所包含的[核心验证器](tutorial-core-validators.md)之外，你也可以创建你自己的验证器。自定义的验证器可以是**行内验证器**，也可以是**独立验证器**。
 
 
-### 行内验证器（Inline Validators） <a name="inline-validators"></a>
+### 行内验证器（Inline Validators） <span id="inline-validators"></span>
 
 行内验证器是一种以模型方法或匿名函数的形式定义的验证器。这些方法/函数的结构如下：
 
@@ -324,7 +324,7 @@ class MyForm extends Model
 ```
 
 
-### 独立验证器（Standalone Validators） <a name="standalone-validators"></a>
+### 独立验证器（Standalone Validators） <span id="standalone-validators"></span>
 
 独立验证器是继承自 [[yii\validators\Validator]] 或其子类的类。你可以通过重写
 [[yii\validators\Validator::validateAttribute()]] 来实现它的验证规则。若特性验证失败，可以调用
@@ -353,14 +353,14 @@ class CountryValidator extends Validator
 `validateValue()`实现的。
 
 
-## 客户端验证器（Client-Side Validation） <a name="client-side-validation"></a>
+## 客户端验证器（Client-Side Validation） <span id="client-side-validation"></span>
 
 当终端用户通过 HTML 表单提供相关输入信息时，我们可能会需要用到基于 JavaScript 的客户端验证。因为，它可以让用户更快速的得到错误信息，也因此可以提供更好的用户体验。你可以使用或自己实现除服务器端验证之外，**还能额外**客户端验证功能的验证器。
 
 > 补充：尽管客户端验证为加分项，但它不是必须项。它存在的主要意义在于给用户提供更好的客户体验。正如“永远不要相信来自终端用户的输入信息”，也同样永远不要相信客户端验证。基于这个理由，你应该始终如前文所描述的那样，通过调用 [[yii\base\Model::validate()]] 方法执行服务器端验证。
 
 
-### 使用客户端验证 <a name="using-client-side-validation"></a>
+### 使用客户端验证 <span id="using-client-side-validation"></span>
 
 许多[核心验证器](tutorial-core-validators.md)都支持开箱即用的客户端验证。你只需要用 [[yii\widgets\ActiveForm]] 的方式构建 HTML 表单即可。比如，下面的 `LoginForm`（登录表单）声明了两个规则：其一为 [required](tutorial-core-validators.md#required) 核心验证器，它同时支持客户端与服务器端的验证；另一个则采用 `validatePassword` 行内验证器，它只支持服务器端。
 
@@ -412,7 +412,7 @@ class LoginForm extends Model
 若你需要完全关闭客户端验证，你只需配置 [[yii\widgets\ActiveForm::enableClientValidation]] 属性为 false。你同样可以关闭各个输入框各自的客户端验证，只要把它们的 [[yii\widgets\ActiveField::enableClientValidation]] 属性设为 false。
 
 
-### 自己实现客户端验证 <a name="implementing-client-side-validation"></a>
+### 自己实现客户端验证 <span id="implementing-client-side-validation"></span>
 
 要穿件一个支持客户端验证的验证器，你需要实现
 [[yii\validators\Validator::clientValidateAttribute()]] 方法，用于返回一段用于运行客户端验证的 JavaScript 代码。在这段 JavaScript 代码中，你可以使用以下预定义的变量：

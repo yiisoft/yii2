@@ -39,9 +39,9 @@ return array(
         'memo' => 'Required for multibyte encoding string processing.'
     ),
     array(
-        'name' => 'Mcrypt extension',
+        'name' => 'OpenSSL extension',
         'mandatory' => false,
-        'condition' => extension_loaded('mcrypt'),
+        'condition' => extension_loaded('openssl'),
         'by' => '<a href="http://www.yiiframework.com/doc-2.0/yii-base-security.html">Security Component</a>',
         'memo' => 'Required by encrypt and decrypt methods.'
     ),
@@ -54,6 +54,17 @@ return array(
         in <code>Yii::t()</code>, non-latin languages with <code>Inflector::slug()</code>,
         <abbr title="Internationalized domain names">IDN</abbr>-feature of
         <code>EmailValidator</code> or <code>UrlValidator</code> or the <code>yii\i18n\Formatter</code> class.'
+    ),
+    array(
+        'name' => 'ICU version',
+        'mandatory' => false,
+        'condition' => version_compare(INTL_ICU_VERSION, '49', '>='),
+        'by' => '<a href="http://www.php.net/manual/en/book.intl.php">Internationalization</a> support',
+        'memo' => 'ICU 49.0 or higher is required when you want to use <code>#</code> placeholder in plural rules
+        (for example, plural in
+        <a href=\"http://www.yiiframework.com/doc-2.0/yii-i18n-formatter.html#asRelativeTime%28%29-detail\">
+        Formatter::asRelativeTime()</a>) in the <code>yii\i18n\Formatter</code> class. Your current ICU version is ' .
+        INTL_ICU_VERSION . '.'
     ),
     array(
         'name' => 'Fileinfo extension',

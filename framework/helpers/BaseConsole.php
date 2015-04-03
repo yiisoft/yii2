@@ -636,6 +636,46 @@ class BaseConsole
     }
 
     /**
+     * Word wrap text with indentation to fit the screen size
+     *
+     * If screen size could not be detected, or the indentation is greater than the screen size, the text will not be wrapped.
+     *
+     * The first line will **not** be indented, so `Console::wrapText("Lorem ipsum dolor sit amet.", 4)` will result in the
+     * following output, given the screen width is 16 characters:
+     *
+     * ```
+     * Lorem ipsum
+     *     dolor sit
+     *     amet.
+     * ```
+     *
+     * @param string $text the text to be wrapped
+     * @param integer $indent number of spaces to use for indentation.
+     * @param boolean $refresh whether to force refresh of screen size.
+     * This will be passed to [[getScreenSize()]].
+     * @return string the wrapped text.
+     * @since 2.0.3
+     */
+    public static function wrapText($text, $indent = 0, $refresh = false)
+    {
+        $size = static::getScreenSize($refresh);
+        if ($size === false || $size[0] <= $indent) {
+            return $text;
+        }
+        $pad = str_repeat(' ', $indent);
+        $lines = explode("\n", wordwrap($text, $size[0] - $indent, "\n", true));
+        $first = true;
+        foreach($lines as $i => $line) {
+            if ($first) {
+                $first = false;
+                continue;
+            }
+            $lines[$i] = $pad . $line;
+        }
+        return implode("\n", $lines);
+    }
+
+    /**
      * Gets input from STDIN and returns a string right-trimmed for EOLs.
      *
      * @param boolean $raw If set to true, returns the raw string without trimming
@@ -769,10 +809,22 @@ class BaseConsole
      */
     public static function confirm($message, $default = false)
     {
-        static::stdout($message . ' (yes|no) [' . ($default ? 'yes' : 'no') . ']:');
-        $input = trim(static::stdin());
+        while (true) {
+            static::stdout($message . ' (yes|no) [' . ($default ? 'yes' : 'no') . ']:');
+            $input = trim(static::stdin());
 
-        return empty($input) ? $default : !strncasecmp($input, 'y', 1);
+            if (empty($input)) {
+                return $default;
+            }
+
+            if (!strcasecmp ($input, 'y') || !strcasecmp ($input, 'yes') ) {
+                return true;
+            }
+
+            if (!strcasecmp ($input, 'n') || !strcasecmp ($input, 'no') ) {
+                return false;
+            }
+        }
     }
 
     /**

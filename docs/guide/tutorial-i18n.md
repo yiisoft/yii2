@@ -7,7 +7,7 @@ Internationalization (I18N) refers to the process of designing a software applic
 various languages and regions without engineering changes. For Web applications, this is of particular importance
 because the potential users may be worldwide.
 
-Yii offers several tools that help with internationalisation of a website such as message translation and
+Yii offers several tools that help with internationalization of a website such as message translation and
 number- and date-formatting.
 
 Locale and Language
@@ -479,6 +479,31 @@ If [[yii\i18n\MissingTranslationEvent::translatedMessage]] is set by the event h
 > and wish them to treat the missing translations in the same way, you should assign the corresponding event handler to each of them.
 
 
+### Using the `message` command <a name="message-command"></a>
+
+Translations can be stored in [[yii\i18n\PhpMessageSource|php files]], [[yii\i18n\GettextMessageSource|.po files] or to [[yii\i18n\DbMessageSource|database]]. See specific classes for additional options.
+
+First of all you need to create a config file. Decide where you want to store it and then issue the command 
+
+```bash
+./yii message/config path/to/config.php
+```
+
+Open the created file and adjust the parameters to fit your needs. Pay special attention to:
+
+* `languages`: an array representing what languages your app should be translated to;
+* `messagePath`: path where to store message files, which should match the `i18n`'s `basePath` parameter stated in config.
+
+> Note that aliases are not supported here, they must be real path relative to the config file location
+
+Once you're done with the config file you can finally extract your messages with the command
+
+```bash
+./yii message path/to/config.php
+```
+
+You will then find your files (if you've choosen file based translations) in your `messagePath` directory.
+
 Views
 -----
 
@@ -495,10 +520,10 @@ and fall back to the original view file if none was found.
 Formatting Number and Date values
 ---------------------------------
 
-See the [data formatter section](output-formatter.md) for details.
+See the [data formatter section](output-formatting.md) for details.
 
 
-Setting up your PHP environment <a name="setup-environment"></a>
+Setting up your PHP environment <span id="setup-environment"></span>
 -------------------------------
 
 Yii uses the [PHP intl extension](http://php.net/manual/en/book.intl.php) to provide most of its internationalization features

@@ -12,7 +12,7 @@
 Як можна здогадатися із назв, перший тип, в основному, займається обробкою веб запитів, а другий - консольними командами.
 
 
-## Конфігурації додатка <a name="application-configurations"></a>
+## Конфігурації додатка <span id="application-configurations"></span>
 
 Коли [вхідний скрипт](structure-entry-scripts.md) створює додаток, він завантажить 
 [конфігурацію](concept-configurations.md) та застосує її до додатка, наприклад:
@@ -33,7 +33,7 @@ $config = require(__DIR__ . '/../config/web.php');
 [конфігураційних файлів](concept-configurations.md#configuration-files), наприклад, файл `web.php` у наведеному вище прикладі.
 
 
-## Властивості додатка <a name="application-properties"></a>
+## Властивості додатка <span id="application-properties"></span>
 
 Існує багато важливих властивостей додатка, які ви налаштовуєте в конфігураціях додатка. 
 Ці властивості, зазвичай, описують середовище, у якому працює додаток. Наприклад, 
@@ -41,20 +41,20 @@ $config = require(__DIR__ . '/../config/web.php');
 де зберігати тимчасові файли, і т.п. Нижче ми розглянемо дані властивості.
 
 
-### Об’язкові властивості <a name="required-properties"></a>
+### Об’язкові властивості <span id="required-properties"></span>
 
 В кожному додатку, ви маєте налаштувати мінімум дві властивості: [[yii\base\Application::id|id]]
 та [[yii\base\Application::basePath|basePath]].
 
 
-#### [[yii\base\Application::id|id]] <a name="id"></a>
+#### [[yii\base\Application::id|id]] <span id="id"></span>
 
 Властивість [[yii\base\Application::id|id]] є унікальним ID додатка, який відрізняє його від решти інших додатків.
 Здебільшого, це використовується всередені системи. Хоч і не є обов’язковим, але для кращої сумістності рекомендується 
 використовувати буквено-цифрові символи при налаштуванні ID додатка.
 
 
-#### [[yii\base\Application::basePath|basePath]] <a name="basePath"></a>
+#### [[yii\base\Application::basePath|basePath]] <span id="basePath"></span>
 
 Властивість [[yii\base\Application::basePath|basePath]] вказує на кореневу директорію додатка. Ця директорія, 
 яка містить весь код прикладної системи додатка. В цій директорії, зазвичай, можуть знаходитись підкаталоги `models`,
@@ -70,13 +70,13 @@ runtime директорії). Саме з цієї причини, псевдо
 звертання до runtime директорії).
 
 
-### Важливі властивості <a name="important-properties"></a>
+### Важливі властивості <span id="important-properties"></span>
 
 Властивості, перелічені в даному підрозділі, частіш за все повинні бути визначені, тому що вони можуть
 відрізнятися у різних додатках.
 
 
-#### [[yii\base\Application::aliases|aliases]] <a name="aliases"></a>
+#### [[yii\base\Application::aliases|aliases]] <span id="aliases"></span>
 
 Дана властивість дозволяє налаштувати вам безліч [псевдонімів](concept-aliases.md) у рамках масиву.
 Ключами масива є імена псевдонімів, а значеннами - відповідні значення шляхів. Наприклад,
@@ -94,7 +94,7 @@ runtime директорії). Саме з цієї причини, псевдо
 а не викликаючи метод [[Yii::setAlias()]].
 
 
-#### [[yii\base\Application::bootstrap|bootstrap]] <a name="bootstrap"></a>
+#### [[yii\base\Application::bootstrap|bootstrap]] <span id="bootstrap"></span>
 
 Дана властивість є дуже зручною, вона дозволяє вказувати масив компонентів, котрі мусять бути завантажені
 у процесі [[yii\base\Application::bootstrap()|початкового завантаження]] додатка. Наприклад, якщо ви хочете, 
@@ -168,7 +168,7 @@ if (YII_ENV_DEV) {
   розсудливо використовувати компоненти початкового завантаження.
 
 
-#### [[yii\web\Application::catchAll|catchAll]] <a name="catchAll"></a>
+#### [[yii\web\Application::catchAll|catchAll]] <span id="catchAll"></span>
 
 Дана властивість підтримується тільки [[yii\web\Application|веб додатками]]. Вона вказує на 
 [дії контролера](structure-controllers.md), які мусять обробляти всі вхідні запити від користувача. Переважно, 
@@ -188,7 +188,7 @@ if (YII_ENV_DEV) {
 ```
 
 
-#### [[yii\base\Application::components|components]] <a name="components"></a>
+#### [[yii\base\Application::components|components]] <span id="components"></span>
 
 Дана властивість є найважливішою. Вона дозволяє вам зареєструвати іменні компоненти у 
 [компонентах додатку](structure-application-components.md), які ви можете використовувати в інших місцях. Наприклад,
@@ -216,7 +216,7 @@ if (YII_ENV_DEV) {
 Більш детальна інформація наведена в розділі [Компоненти додатка](structure-application-components.md).
 
 
-#### [[yii\base\Application::controllerMap|controllerMap]] <a name="controllerMap"></a>
+#### [[yii\base\Application::controllerMap|controllerMap]] <span id="controllerMap"></span>
 
 Дана властивість дозволяє вам встановлювати відповідність між ID контролера та його класом. За замовчуванням, 
 Yii встановлює відповідність між ID контролера та його класом згідно [домовленості](#controllerNamespace) 
@@ -242,7 +242,7 @@ Yii встановлює відповідність між ID контролер
 [конфігурації](concept-configurations.md).
 
 
-#### [[yii\base\Application::controllerNamespace|controllerNamespace]] <a name="controllerNamespace"></a>
+#### [[yii\base\Application::controllerNamespace|controllerNamespace]] <span id="controllerNamespace"></span>
 
 Дана властивість вказує на простір імен за замовчуванням, під яким повинні знаходитись класи контролерів.
 За замовчуванням, це значення рівне `app\controllers`. Якщо ID контролера є `post`, то, згідно домовленості, 
@@ -260,7 +260,7 @@ Yii встановлює відповідність між ID контролер
 [controllerMap](#controllerMap).
 
 
-#### [[yii\base\Application::language|language]] <a name="language"></a>
+#### [[yii\base\Application::language|language]] <span id="language"></span>
 
 Дана властивість вказує на мову додатка, на якій додаток повинен відображати зміст кінцевому користувачу.
 За замовчуванням, значення даної властивості рівне `en`, означаючи англійську мову.
@@ -277,7 +277,7 @@ Yii встановлює відповідність між ID контролер
 Більш детальна інформація наведена у розділі [Інтернаціоналізація](tutorial-i18n.md).
 
 
-#### [[yii\base\Application::modules|modules]] <a name="modules"></a>
+#### [[yii\base\Application::modules|modules]] <span id="modules"></span>
 
 Дана властивість визначає [модулі](structure-modules.md), які містить додаток.
 
@@ -302,7 +302,7 @@ Yii встановлює відповідність між ID контролер
 Більш детальна інформація наведена у розділі [Модулі](structure-modules.md).
 
 
-#### [[yii\base\Application::name|name]] <a name="name"></a>
+#### [[yii\base\Application::name|name]] <span id="name"></span>
 
 Дана властивість вказує на ім’я додатка, яке може бути відображене кінцевому користувачу. На відміну від властивості
 [[yii\base\Application::id|id]], яка має бути унікальною, значення даної властивості потрібне в основному для
@@ -311,7 +311,7 @@ Yii встановлює відповідність між ID контролер
 Якщо ваш код не використовує дану властивість, то ви можете не налаштовувати її.
 
 
-#### [[yii\base\Application::params|params]] <a name="params"></a>
+#### [[yii\base\Application::params|params]] <span id="params"></span>
 
 Дана властивість описує масив глобально доступних параметрів додатка. Замість того, щоб використовувати жорстко 
 фіксовані числа і строки у вашому коді, краще оголосити їх параметрами додатка в одному місці і використовувати 
@@ -336,7 +336,7 @@ $width = \Yii::$app->params['thumbnail.size'][0];
 конфігураційному файлі додатка, не змінюючи будь-який залежний код.
 
 
-#### [[yii\base\Application::sourceLanguage|sourceLanguage]] <a name="sourceLanguage"></a>
+#### [[yii\base\Application::sourceLanguage|sourceLanguage]] <span id="sourceLanguage"></span>
 
 Дана властивість вказує мову, на якій написаний код додатка. За замовчуванням значення рівне `'en-US'`, 
 що означає англійську мову (США). Ви повинні змінити дану властивість, якщо мовою змісту у вашому коді
@@ -349,7 +349,7 @@ $width = \Yii::$app->params['thumbnail.size'][0];
 Більш детальна інформація наведена у розділі [Інтернаціоналізація](tutorial-i18n.md).
 
 
-#### [[yii\base\Application::timeZone|timeZone]] <a name="timeZone"></a>
+#### [[yii\base\Application::timeZone|timeZone]] <span id="timeZone"></span>
 
 Дана властивість надає альтернативний спосіб встановлення часової зони за замовчуванням у процесі роботи додатка.
 Таким чином, вказуючи дану властивість, ви, по суті, викликаєте PHP функцію 
@@ -362,27 +362,27 @@ $width = \Yii::$app->params['thumbnail.size'][0];
 ]
 ```
 
-#### [[yii\base\Application::version|version]] <a name="version"></a>
+#### [[yii\base\Application::version|version]] <span id="version"></span>
 
 Дана властивість вказує на версію додатка. За замовчуванням значення рівне `'1.0'`. Ви можете не змінювати
 дану властивість, якщо ваш код не використовує її.
 
 
-### Корисні властивості <a name="useful-properties"></a>
+### Корисні властивості <span id="useful-properties"></span>
 
 Властивості, які перераховані в даному розділі, не є часто змінюваними, так як їх значення за замовчуванням
 відповідають загальноприйнятим домовленостям. Однак, ви можете їх налаштувати, якщо вам потрібно використовувати 
 інші значення.
 
 
-#### [[yii\base\Application::charset|charset]] <a name="charset"></a>
+#### [[yii\base\Application::charset|charset]] <span id="charset"></span>
 
 Властивість вказує кодування, яке використовує додаток. За замовчуванням значення рівне `'UTF-8'`,
 яке має бути незмінним для більшості додатків, тільки якщо ви не працюєте із застарілим кодом, який використовує 
 значний об’єм не юнікод даних.
 
 
-#### [[yii\base\Application::defaultRoute|defaultRoute]] <a name="defaultRoute"></a>
+#### [[yii\base\Application::defaultRoute|defaultRoute]] <span id="defaultRoute"></span>
 
 Властивість вказує [маршрут](runtime-routing.md), який повинен використовувати додаток, коли його не вказано у 
 вхідному запиті. Маршрут може складатись із ID модуля, ID контролера і/або ID дії. Наприклад, `help`,
@@ -398,7 +398,7 @@ $width = \Yii::$app->params['thumbnail.size'][0];
 Таким чином, якщо ви виконаєте команду `yii` без аргументів, вам будет зображена довідкова інформація.
 
 
-#### [[yii\base\Application::extensions|extensions]] <a name="extensions"></a>
+#### [[yii\base\Application::extensions|extensions]] <span id="extensions"></span>
 
 Дана властивість описує перелік [розширень](structure-extensions.md), які встановлені і використовуються додатком. 
 За замовчуванням, значенням даної властивості буде масив, отриманий із файла `@vendor/yiisoft/extensions.php`. 
@@ -433,7 +433,7 @@ $width = \Yii::$app->params['thumbnail.size'][0];
 Розширення також може визначати декілька [псевдонімів](concept-aliases.md).
 
 
-#### [[yii\base\Application::layout|layout]] <a name="layout"></a>
+#### [[yii\base\Application::layout|layout]] <span id="layout"></span>
 
 Дана властивість визначає ім’я шаблону за замовчуванням, який мусить бути використаний при формувані 
 [представлення](structure-views.md). Значення за замовчуванням рівне `'main'`, яке означає, що має бути використаний 
@@ -444,7 +444,7 @@ $width = \Yii::$app->params['thumbnail.size'][0];
 Для відключення використання шаблону, ви можете вказати дану властивість як `false`, однак це є дуже рідкісним випадком.
 
 
-#### [[yii\base\Application::layoutPath|layoutPath]] <a name="layoutPath"></a>
+#### [[yii\base\Application::layoutPath|layoutPath]] <span id="layoutPath"></span>
 
 Дана властивість визначає шлях, по якому слід шукати шаблони. Значення за замовчуванням рівне `layouts`, 
 що означає підпапку у [директорії представлень](#viewPath). Якщо значення [директорії представлень](#viewPath) 
@@ -453,7 +453,7 @@ $width = \Yii::$app->params['thumbnail.size'][0];
 Ви можете налаштувати дану властивість як директорію, так і як [псевдонім шляху](concept-aliases.md).
 
 
-#### [[yii\base\Application::runtimePath|runtimePath]] <a name="runtimePath"></a>
+#### [[yii\base\Application::runtimePath|runtimePath]] <span id="runtimePath"></span>
 
 Дана властивість визначає шлях, по якому зберігаються тимчасові файли, такі як: лог файли, кеш файли. 
 За замовчуванням це значення рівне директорії, яка преставлена псевдонімом шляху `@app/runtime`.
@@ -465,13 +465,13 @@ $width = \Yii::$app->params['thumbnail.size'][0];
 Для спрощення роботи з даною директорією, Yii надає зумовлений псевдонім шляху `@runtime`.
 
 
-#### [[yii\base\Application::viewPath|viewPath]] <a name="viewPath"></a>
+#### [[yii\base\Application::viewPath|viewPath]] <span id="viewPath"></span>
 
 Дана властивість визначає базову директорію, де містяться всі файли представлень. Значення за замовчуванням являє 
 собою псевдонім `@app/views`. Ви можете налаштувати дану властивість як директорі або [псевдонім шляху](concept-aliases.md).
 
 
-#### [[yii\base\Application::vendorPath|vendorPath]] <a name="vendorPath"></a>
+#### [[yii\base\Application::vendorPath|vendorPath]] <span id="vendorPath"></span>
 
 Дана властивість визначає директорію сторонніх бібліотек, які використовуються і керуються за допомогою
 [Composer](http://getcomposer.org). Вона містить всі сторонні бібліотеки, які використовуються додатком, 
@@ -483,13 +483,13 @@ $width = \Yii::$app->params['thumbnail.size'][0];
 Для спрощення роботи з даною директорією, Yii надає зумовлений псевдонім шляху `@vendor`.
 
 
-#### [[yii\console\Application::enableCoreCommands|enableCoreCommands]] <a name="enableCoreCommands"></a>
+#### [[yii\console\Application::enableCoreCommands|enableCoreCommands]] <span id="enableCoreCommands"></span>
 
 Дана властивість підтримується тільки [[yii\console\Application|консольними додатками]]. Вона вказує чи потрібно
 використовувати вбудовані в Yii консольні команди. Значення за замовчуванням рівне `true`.
 
 
-## Події додатка <a name="application-events"></a>
+## Події додатка <span id="application-events"></span>
 
 Додаток викликає декілька подій під час свого життєвого циклу обробки запиту. 
 Ви можете приєднати обробники подій в конфігурації додатка наступним чином:
@@ -514,7 +514,7 @@ $width = \Yii::$app->params['thumbnail.size'][0];
 });
 ```
 
-### [[yii\base\Application::EVENT_BEFORE_REQUEST|EVENT_BEFORE_REQUEST]] <a name="beforeRequest"></a>
+### [[yii\base\Application::EVENT_BEFORE_REQUEST|EVENT_BEFORE_REQUEST]] <span id="beforeRequest"></span>
 
 Дана подія виникає *до* того, як додаток починає обробляти вхідний запит. Справжнє ім’я події - `beforeRequest`.
 
@@ -524,7 +524,7 @@ $width = \Yii::$app->params['thumbnail.size'][0];
 в залежності від деяких параметрів.
 
 
-### [[yii\base\Application::EVENT_AFTER_REQUEST|EVENT_AFTER_REQUEST]] <a name="afterRequest"></a>
+### [[yii\base\Application::EVENT_AFTER_REQUEST|EVENT_AFTER_REQUEST]] <span id="afterRequest"></span>
 
 Дана подія виникає *після* закінчення обробки запиту додатком, але *до* відправки відповіді.
 Справжнє ім’я події - `afterRequest`.
@@ -536,7 +536,7 @@ $width = \Yii::$app->params['thumbnail.size'][0];
 користувачу. Ці події виникають *після* поточної події.
 
 
-### [[yii\base\Application::EVENT_BEFORE_ACTION|EVENT_BEFORE_ACTION]] <a name="beforeAction"></a>
+### [[yii\base\Application::EVENT_BEFORE_ACTION|EVENT_BEFORE_ACTION]] <span id="beforeAction"></span>
 
 Подія виникає *до* виконання кожної [дії контролера](structure-controllers.md).
 Справжнє ім’я події - `beforeAction`.
@@ -563,7 +563,7 @@ $width = \Yii::$app->params['thumbnail.size'][0];
 [[yii\base\ActionEvent::isValid]] рівним `false`, то всі наступні події не будуть викликані.
 
 
-### [[yii\base\Application::EVENT_AFTER_ACTION|EVENT_AFTER_ACTION]] <a name="afterAction"></a>
+### [[yii\base\Application::EVENT_AFTER_ACTION|EVENT_AFTER_ACTION]] <span id="afterAction"></span>
 
 Ця подія виникає *після* виконання [дії контролера](structure-controllers.md). Справжнє ім’я події - `afterAction`.
 
@@ -586,7 +586,7 @@ $width = \Yii::$app->params['thumbnail.size'][0];
 Таким чином, контролери є першими, хто ініціює дану подію, далі йдуть модулі (якщо такі є), і врешті - у додатках.
 
 
-## Життєвий цикл додатка <a name="application-lifecycle"></a>
+## Життєвий цикл додатка <span id="application-lifecycle"></span>
 
 ![Життєвий цикл додатка](images/application-lifecycle.png)
 

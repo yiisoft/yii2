@@ -39,7 +39,7 @@ defined('YII_DEBUG') or define('YII_DEBUG', false);
 
 PHP opcode キャッシュを有効にすると、すべての PHP アプリケーションで、顕著にパフォーマンスが向上し、メモリ使用量が削減されます。
 Yii も例外ではありません。
-[PHP 5.5 OPcache](http://php.net/manual/ja/book.opcache.php) と [APC PHP 拡張](http://php.net/manual/ja/book.apc.php) の両方でテストされています。
+Yii は [PHP 5.5 OPcache](http://php.net/manual/ja/book.opcache.php) と [APC PHP 拡張](http://php.net/manual/ja/book.apc.php) の両方でテストされています。
 どちらのキャッシュも、PHP 中間コードを最適化して、入ってくるリクエストごとに PHP スクリプトを解析するために時間を消費することを回避します。
 
 ### ActiveRecord のデータベーススキーマキャッシュを有効にする
@@ -201,6 +201,10 @@ foreach ($posts as $post) {
 
 `asArray` が指定されていなくても配列記法を使用してフィールドにアクセスすることが出来ますが、その場合は AR オブジェクトを扱っていることに注意してください。
 
+### Composer オートローダを最適化する
+
+全体としてのパフォーマンスを改善するために、`composer dumpautoload -o` を実行して、Composer のオートローダを最適化することが出来ます。
+
 ### バックグラウンドでデータを処理する
 
 ユーザのリクエストに素早く応答したい場合、リクエストの重い部分は、それについて即座にレスポンスを返す必要がなければ、後から処理することが出来ます。
@@ -222,7 +226,7 @@ foreach ($posts as $post) {
 ### 何をしても効果がない場合
 
 何をしても効果がない場合は、何がパフォーマンスの問題を解決するかについての思い込みを排することです。
-代りに、何でも変更する前には、常にコードをプロファイルにかけてください。
+代りに、いつでも、何かを変更する前にはコードをプロファイルしてください。
 次のツールが役に立つでしょう。
 
 - [Yii のデバッグツールバーとデバッガ](tool-debugger.md)

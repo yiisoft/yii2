@@ -23,14 +23,14 @@ Yii は、RESTful アクションを作成する仕事を簡単にするため�
 * リクエストされたアクションとリソースに関するユーザへの権限付与
 
 
-## コントローラクラスを作成する <a name="creating-controller"></a>
+## コントローラクラスを作成する <span id="creating-controller"></span>
 
 新しいコントローラクラスを作成する場合、コントローラクラスの命名規約は、リソースの型の名前を単数形で使う、というものです。
 例えば、ユーザの情報を提供するコントローラは `UserController` と名付けることが出来ます。
 
 新しいアクションを作成する仕方はウェブアプリケーションの場合とほぼ同じです。
 唯一の違いは、`render()` メソッドを呼んでビューを使って結果を表示する代りに、RESTful アクションの場合はデータを直接に返す、という点です。
-[[yii\rest\Controller::serializer|シリアライザ]] と [[yii\web\Response|レスポンスオブジェクト]] が、下のデータからリクエストされた形式への変換を処理します。
+[[yii\rest\Controller::serializer|シリアライザ]] と [[yii\web\Response|レスポンスオブジェクト]] が、元のデータからリクエストされた形式への変換を処理します。
 例えば、
 
 ```php
@@ -41,7 +41,7 @@ public function actionView($id)
 ```
 
 
-## フィルタ <a name="filters"></a>
+## フィルタ <span id="filters"></span>
 
 [[yii\rest\Controller]] によって提供される RESTful API 機能のほとんどは [フィルタ](structure-filters.md) の形で実装されています。
 具体的に言うと、次のフィルタがリストされた順に従って実行されます。
@@ -72,21 +72,21 @@ public function behaviors()
 ```
 
 
-## `ActiveController` を拡張する <a name="extending-active-controller"></a>
+## `ActiveController` を拡張する <span id="extending-active-controller"></span>
 
 コントローラを [[yii\rest\ActiveController]] から拡張する場合は、このコントローラを通じて提供しようとしているリソースクラスの名前を [[yii\rest\ActiveController::modelClass||modelClass]] プロパティにセットしなければなりません。
 リソースクラスは [[yii\db\ActiveRecord]] から拡張しなければなりません。
 
 
-### アクションをカスタマイズする <a name="customizing-actions"></a>
+### アクションをカスタマイズする <span id="customizing-actions"></span>
 
 デフォルトでは、[[yii\rest\ActiveController]] は次のアクションを提供します。
 
-* [[yii\rest\IndexAction|index]]: リソースをページごとに一覧する。
-* [[yii\rest\ViewAction|view]]: 指定したリソースの詳細を返す。
+* [[yii\rest\IndexAction|index]]: リソースをページごとにリストする。
+* [[yii\rest\ViewAction|view]]: 指定されたリソースの詳細を返す。
 * [[yii\rest\CreateAction|create]]: 新しいリソースを作成する。
 * [[yii\rest\UpdateAction|update]]: 既存のリソースを更新する。
-* [[yii\rest\DeleteAction|delete]]: 指定したりソースを削除する。
+* [[yii\rest\DeleteAction|delete]]: 指定されたりソースを削除する。
 * [[yii\rest\OptionsAction|options]]: サポートされている HTTP メソッドを返す。
 
 これらのアクションは全て [[yii\rest\ActiveController::actions()|actions()]] メソッドによって宣言されます。
@@ -116,7 +116,7 @@ public function prepareDataProvider()
 どういう構成オプションが利用できるかを学ぶためには、個々のアクションクラスのリファレンスを参照してください。
 
 
-### アクセスチェックを実行する <a name="performing-access-check"></a>
+### アクセスチェックを実行する <span id="performing-access-check"></span>
 
 RESTful API によってリソースを公開するときには、たいてい、現在のユーザがリクエストしているリソースにアクセスしたり操作したりする許可を持っているか否かをチェックする必要があります。
 これは、[[yii\rest\ActiveController]] を使う場合は、[[yii\rest\ActiveController::checkAccess()|checkAccess()]] メソッドを次のようにオーバーライドすることによって出来ます。
@@ -130,7 +130,7 @@ RESTful API によってリソースを公開するときには、たいてい�
  * ユーザが権限をもたない場合は、[[ForbiddenHttpException]] が投げられなければなりません。
  *
  * @param string $action 実行されるアクションの ID。
- * @param \yii\base\Model $model アクセスされるモデル。null の場合は、アクセスされる特定の特定がないことを意味する。
+ * @param \yii\base\Model $model アクセスされるモデル。null の場合は、アクセスされる特定のモデルが無いことを意味する。
  * @param array $params 追加のパラメータ
  * @throws ForbiddenHttpException ユーザが権限をもたない場合
  */

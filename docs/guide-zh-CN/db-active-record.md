@@ -37,7 +37,7 @@ $db->createCommand('INSERT INTO customer (name) VALUES (:name)', [
 * Microsoft SQL Server 2010 及以上：通过 [[yii\db\ActiveRecord]]
 * Oracle: 通过 [[yii\db\ActiveRecord]]
 * CUBRID 9.1 及以上：通过 [[yii\db\ActiveRecord]]
-* Sphnix：通过 [[yii\sphinx\ActiveRecord]]，需求 `yii2-sphinx` 扩展
+* Sphinx：通过 [[yii\sphinx\ActiveRecord]]，需求 `yii2-sphinx` 扩展
 * ElasticSearch：通过 [[yii\elasticsearch\ActiveRecord]]，需求 `yii2-elasticsearch` 扩展
 * Redis 2.6.12 及以上：通过 [[yii\redis\ActiveRecord]]，需求 `yii2-redis` 扩展
 * MongoDB 1.3.0 及以上：通过 [[yii\mongodb\ActiveRecord]]，需求 `yii2-mongodb` 扩展

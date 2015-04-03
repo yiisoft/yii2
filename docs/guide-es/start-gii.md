@@ -13,7 +13,7 @@ A lo largo de este tutorial, aprenderás
 * Cómo personalizar el código generado por Gii.
 
 
-Comenzando con Gii <a name="starting-gii"></a>
+Comenzando con Gii <span id="starting-gii"></span>
 ------------------
 
 [Gii](tool-gii.md) está provisto por Yii en forma de [módulo](structure-modules.md). Puedes habilitar Gii
@@ -47,7 +47,7 @@ http://hostname/index.php?r=gii
 ![Gii](images/start-gii.png)
 
 
-Generando una Clase Active Record <a name="generating-ar"></a>
+Generando una Clase Active Record <span id="generating-ar"></span>
 ---------------------------------
 
 Para poder generar una clase Active Record con Gii, selecciona "Model Generator" (haciendo click en el vínculo que existe en la página inicial del modulo Gii). Después, completa el formulario de la siguiente manera,
@@ -71,7 +71,7 @@ Después, verás una página de confirmación indicando que el código ha sido g
 ha sido sobrescrito con el nuevo código generado.
 
 
-Generando código de ABM (CRUD en inglés) <a name="generating-crud"></a>
+Generando código de ABM (CRUD en inglés) <span id="generating-crud"></span>
 ----------------------------------------
 
 En computación, CRUD es el acrónimo de Crear, Obtener, Actualizar y Borrar (del inglés: Create, Read, Update y Delete) 
@@ -90,7 +90,7 @@ Si has creado previamente los archivos `controllers/CountryController.php` y
 `views/country/index.php` (en la sección sobre bases de datos de esta guía), asegúrate de seleccionar el checkbox "overwrite" para reemplazarlos. (Las versiones anteriores no disponían de un soporte ABM (CRUD) completo.)
 
 
-Probándolo <a name="trying-it-out"></a>
+Probándolo <span id="trying-it-out"></span>
 ----------
 
 Para ver cómo funciona, accede desde tu navegador a la siguiente URL:
@@ -122,7 +122,7 @@ o por si desearas personalizarlos:
   sección [Gii](tool-gii.md).
 
 
-Resumen <a name="summary"></a>
+Resumen <span id="summary"></span>
 -------
 
 En esta sección, has aprendido a utilizar Gii para generar el código que implementa completamente las características

@@ -22,7 +22,7 @@ Yii は、RESTful ウェブサービス API を実装する仕事を簡単にす
 ユーザのデータは `user` という DB テーブルに保存されており、それにアクセスするための [[yii\db\ActiveRecord|ActiveRecord]] クラス `app\models\User` が既に作成済みであるとします。
 
 
-## コントローラを作成する <a name="creating-controller"></a>
+## コントローラを作成する <span id="creating-controller"></span>
 
 最初に、コントローラクラス `app\controllers\UserController` を次のようにして作成します。
 
@@ -41,7 +41,7 @@ class UserController extends ActiveController
 [[yii\rest\ActiveController::modelClass|modelClass]] を `app\models\User` と指定することによって、データの取得と操作にどのモデルが使用できるかをコントローラに教えてやります。
 
 
-## URL 規則を構成する <a name="configuring-url-rules"></a>
+## URL 規則を構成する <span id="configuring-url-rules"></span>
 
 次に、アプリケーションの構成情報において、`urlManager` コンポーネントに関する構成情報を修正します。
 
@@ -59,7 +59,7 @@ class UserController extends ActiveController
 上記の構成情報は、主として、`user` コントローラの URL 規則を追加して、ユーザのデータが綺麗な URL と意味のある HTTP 動詞によってアクセスおよび操作できるようにするものです。
 
 
-## JSON の入力を可能にする <a name="enabling-json-input"></a>
+## JSON の入力を可能にする <span id="enabling-json-input"></span>
 
 API が JSON 形式で入力データを受け取ることが出来るように、`request` アプリケーションコンポーネントの [[yii\web\Request::$parsers|parsers]] プロパティを構成して、JSON 入力のために [[yii\web\JsonParser]] を使うようにします。
 
@@ -75,7 +75,7 @@ API が JSON 形式で入力データを受け取ることが出来るように�
   上記のように構成しない場合は、API は `application/x-www-form-urlencoded` と `multipart/form-data` だけを入力形式として認識します。
 
 
-## 試してみる <a name="trying-it-out"></a>
+## 試してみる <span id="trying-it-out"></span>
 
 上記で示した最小限の労力によって、ユーザのデータにアクセスする RESTful API を作成する仕事は既に完成しています。
 作成した API は次のものを含みます。
@@ -90,8 +90,8 @@ API が JSON 形式で入力データを受け取ることが出来るように�
 * `OPTIONS /users`: エンドポイント `/users` に関してサポートされている動詞を示す
 * `OPTIONS /users/123`: エンドポイント `/users/123` に関してサポートされている動詞を示す
 
-> Info|情報: Yii は、エンドポイントとして使用されるコントローラの名前を自動的に複数形にします。
-> これは [[yii\rest\UrlRule::$pluralize]] プロパティを使って構成することが可能です。
+> Info|情報: Yii はコントローラの名前を自動的に複数形にしてエンドポイントとして使用します。
+> この振る舞いは [[yii\rest\UrlRule::$pluralize]] プロパティを使って構成することが可能です。
 
 作成した API は、次のように、`curl` コマンドでアクセスすることが出来ます。
 
@@ -170,7 +170,7 @@ Content-Type: application/json; charset=UTF-8
 ```
 
 > Tip|ヒント: URL `http://localhost/users` を入力すれば、ウェブブラウザ経由で API にアクセスすることも出来ます。
-  ただし、特殊なリクエストヘッダを送信するためには、何らかのブラウザプラグインが必要になるかも知れません。
+  ただし、特殊なリクエストヘッダを送信するためには、何らかのブラウザプラグインが必要になるでしょう。
 
 ご覧のように、レスポンスヘッダの中には、総ユーザ数やページ数などの情報が書かれています。
 また、データの他のページへナビゲートすることを可能にするリンクもあります。
@@ -185,14 +185,14 @@ Content-Type: application/json; charset=UTF-8
 > [レスポンス形式の設定](rest-response-formatting.md) の節で説明されているように、これらのフィールドを除外することは出来ますし、また、除外しなければなりません。
 
 
-## まとめ <a name="summary"></a>
+## まとめ <span id="summary"></span>
 
 Yii の RESTful API フレームワークを使う場合は、API エンドポイントをコントローラアクションの形式で実装します。
-そして、コントローラを使って、単一タイプのリソースに対するエンドポイントを実装するアクションを組織化します。
+そして、コントローラを使って、単一タイプのリソースに対するエンドポイントを実装するアクションを編成します。
 
 リソースは [[yii\base\Model]] クラスを拡張するデータモデルとして表現されます。
 データベース (リレーショナルまたは NoSQL) を扱っている場合は、[[yii\db\ActiveRecord|ActiveRecord]] を使ってリソースを表現することが推奨されます。
 
 [[yii\rest\UrlRule]] を使って API エンドポイントへのルーティングを簡単にすることが出来ます。
 
-これは必須ではありませんが、RESTful API は、保守を容易にするために、ウェブのフロントエンドやバックエンドとは別の独立したアプリケーションとして開発することを推奨します。
+これは要求されてはいませんが、RESTful API は、保守を容易にするために、ウェブのフロントエンドやバックエンドとは別の独立したアプリケーションとして開発することが推奨されます。

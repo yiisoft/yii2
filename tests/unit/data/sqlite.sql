@@ -14,6 +14,8 @@ DROP TABLE IF EXISTS "customer";
 DROP TABLE IF EXISTS "profile";
 DROP TABLE IF EXISTS "type";
 DROP TABLE IF EXISTS "null_values";
+DROP TABLE IF EXISTS "animal";
+DROP VIEW IF EXISTS "animal_view";
 
 CREATE TABLE "profile" (
   id INTEGER NOT NULL,
@@ -107,6 +109,17 @@ CREATE TABLE "type" (
   bool_col2 tinyint(1) DEFAULT '1',
   ts_default TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
+
+CREATE TABLE "animal" (
+  id INTEGER NOT NULL,
+  type VARCHAR(255) NOT NULL,
+  PRIMARY KEY (id)
+);
+
+CREATE VIEW "animal_view" AS SELECT * FROM "animal";
+
+INSERT INTO "animal" ("type") VALUES ('yiiunit\data\ar\Cat');
+INSERT INTO "animal" ("type") VALUES ('yiiunit\data\ar\Dog');
 
 INSERT INTO "profile" (description) VALUES ('profile customer 1');
 INSERT INTO "profile" (description) VALUES ('profile customer 3');

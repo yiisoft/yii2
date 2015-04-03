@@ -46,6 +46,7 @@ abstract class Schema extends Object
     const TYPE_INTEGER = 'integer';
     const TYPE_BIGINT = 'bigint';
     const TYPE_FLOAT = 'float';
+    const TYPE_DOUBLE = 'double';
     const TYPE_DECIMAL = 'decimal';
     const TYPE_DATETIME = 'datetime';
     const TYPE_TIMESTAMP = 'timestamp';
@@ -71,6 +72,10 @@ abstract class Schema extends Object
         'SQLSTATE[23' => 'yii\db\IntegrityException',
     ];
 
+    /**
+     * @var array list of ALL schema names in the database, except system schemas
+     */
+    private $_schemaNames;
     /**
      * @var array list of ALL table names in the database
      */
@@ -192,6 +197,21 @@ abstract class Schema extends Object
     }
 
     /**
+     * Returns all schema names in the database, except system schemas.
+     * @param boolean $refresh whether to fetch the latest available schema names. If this is false,
+     * schema names fetched previously (if available) will be returned.
+     * @return string[] all schema names in the database, except system schemas.
+     */
+    public function getSchemaNames($refresh = false)
+    {
+        if ($this->_schemaNames === null || $refresh) {
+            $this->_schemaNames = $this->findSchemaNames();
+        }
+
+        return $this->_schemaNames;
+    }
+
+    /**
      * Returns all table names in the database.
      * @param string $schema the schema of the tables. Defaults to empty string, meaning the current or default schema name.
      * If not empty, the returned table names will be prefixed with the schema name.
@@ -268,6 +288,18 @@ abstract class Schema extends Object
     }
 
     /**
+     * Returns all schema names in the database, including the default one but not system schemas.
+     * This method should be overridden by child classes in order to support this feature
+     * because the default implementation simply throws an exception.
+     * @return array all schema names in the database, except system schemas
+     * @throws NotSupportedException if this method is called
+     */
+    protected function findSchemaNames()
+    {
+        throw new NotSupportedException(get_class($this) . ' does not support fetching all schema names.');
+    }
+
+    /**
      * Returns all table names in the database.
      * This method should be overridden by child classes in order to support this feature
      * because the default implementation simply throws an exception.
@@ -312,7 +344,7 @@ abstract class Schema extends Object
     public function getLastInsertID($sequenceName = '')
     {
         if ($this->db->isActive) {
-            return $this->db->pdo->lastInsertId($sequenceName === '' ? null : $sequenceName);
+            return $this->db->pdo->lastInsertId($sequenceName === '' ? null : $this->quoteSimpleTableName($sequenceName));
         } else {
             throw new InvalidCallException('DB Connection is not active.');
         }
@@ -493,6 +525,7 @@ abstract class Schema extends Object
             'bigint' => 'integer',
             'boolean' => 'boolean',
             'float' => 'double',
+            'double' => 'double',
             'binary' => 'resource',
         ];
         if (isset($typeMap[$column->type])) {

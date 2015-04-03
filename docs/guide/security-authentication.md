@@ -8,7 +8,7 @@ Authentication is the act of verifying who a user is, and is the basis of the lo
 In Yii, this entire process is performed semi-automatically, leaving the developer to merely implement [[yii\web\IdentityInterface]], the most important class in the authentication system. Typically, implementation of `IdentityInterface` is accomplished using the `User` model.
 
 You can find a fully featured example of authentication in the
-[advanced application template](tutorial-advanced-app.md). Below, only the interface methods are listed:
+[advanced project template](https://github.com/yiisoft/yii2-app-advanced/blob/master/docs/guide/README.md). Below, only the interface methods are listed:
 
 ```php
 class User extends ActiveRecord implements IdentityInterface

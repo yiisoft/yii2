@@ -8,7 +8,7 @@
 过滤器可包含 预过滤（过滤逻辑在动作*之前*） 或 后过滤（过滤逻辑在动作*之后*），也可同时包含两者。
 
 
-## 使用过滤器 <a name="using-filters"></a>
+## 使用过滤器 <span id="using-filters"></span>
 
 过滤器本质上是一类特殊的 [行为](concept-behaviors.md)，所以使用过滤器和 [使用 行为](concept-behaviors.md#attaching-behaviors)一样。
 可以在控制器类中覆盖它的 [[yii\base\Controller::behaviors()|behaviors()]] 方法来申明过滤器，如下所示：
@@ -55,7 +55,7 @@ public function behaviors()
     - 倒序执行应用主体中`behaviors()`列出的过滤器。
 
 
-## 创建过滤器 <a name="creating-filters"></a>
+## 创建过滤器 <span id="creating-filters"></span>
 
 继承 [[yii\base\ActionFilter]] 类并覆盖
 [[yii\base\ActionFilter::beforeAction()|beforeAction()]] 和/或 [[yii\base\ActionFilter::afterAction()|afterAction()]]
@@ -91,12 +91,12 @@ class ActionTimeFilter extends ActionFilter
 ```
 
 
-## 核心过滤器 <a name="core-filters"></a>
+## 核心过滤器 <span id="core-filters"></span>
 
 Yii提供了一组常用过滤器，在`yii\filters`命名空间下，接下来我们简要介绍这些过滤器。
 
 
-### [[yii\filters\AccessControl|AccessControl]] <a name="access-control"></a>
+### [[yii\filters\AccessControl|AccessControl]] <span id="access-control"></span>
 
 AccessControl提供基于[[yii\filters\AccessControl::rules|rules]]规则的访问控制。
 特别是在动作执行之前，访问控制会检测所有规则并找到第一个符合上下文的变量（比如用户IP地址、登录状态等等）的规则，
@@ -129,7 +129,7 @@ public function behaviors()
 更多关于访问控制的详情请参阅 [授权](security-authorization.md) 一节。
 
 
-### 认证方法过滤器 <a name="auth-method-filters"></a>
+### 认证方法过滤器 <span id="auth-method-filters"></span>
 
 认证方法过滤器通过[HTTP Basic Auth](http://en.wikipedia.org/wiki/Basic_access_authentication)或[OAuth 2](http://oauth.net/2/)
 来认证一个用户，认证方法过滤器类在 `yii\filters\auth` 命名空间下。
@@ -154,7 +154,7 @@ public function behaviors()
 认证方法过滤器通常在实现RESTful API中使用，更多关于访问控制的详情请参阅 RESTful [认证](rest-authentication.md) 一节。
 
 
-### [[yii\filters\ContentNegotiator|ContentNegotiator]] <a name="content-negotiator"></a>
+### [[yii\filters\ContentNegotiator|ContentNegotiator]] <span id="content-negotiator"></span>
 
 ContentNegotiator支持响应内容格式处理和语言处理。
 通过检查 `GET` 参数和 `Accept` HTTP头部来决定响应内容格式和语言。
@@ -212,7 +212,7 @@ use yii\web\Response;
 
 
 
-### [[yii\filters\HttpCache|HttpCache]] <a name="http-cache"></a>
+### [[yii\filters\HttpCache|HttpCache]] <span id="http-cache"></span>
 
 HttpCache利用`Last-Modified` 和 `Etag` HTTP头实现客户端缓存。例如：
 
@@ -237,7 +237,7 @@ public function behaviors()
 更多关于使用HttpCache详情请参阅 [HTTP 缓存](caching-http.md) 一节。
 
 
-### [[yii\filters\PageCache|PageCache]] <a name="page-cache"></a>
+### [[yii\filters\PageCache|PageCache]] <span id="page-cache"></span>
 
 PageCache实现服务器端整个页面的缓存。如下示例所示，PageCache应用在`index`动作，
 缓存整个页面60秒或`post`表的记录数发生变化。它也会根据不同应用语言保存不同的页面版本。
@@ -268,13 +268,13 @@ public function behaviors()
 更多关于使用PageCache详情请参阅 [页面缓存](caching-page.md) 一节。
 
 
-### [[yii\filters\RateLimiter|RateLimiter]] <a name="rate-limiter"></a>
+### [[yii\filters\RateLimiter|RateLimiter]] <span id="rate-limiter"></span>
 
 RateLimiter 根据 [漏桶算法](http://en.wikipedia.org/wiki/Leaky_bucket) 来实现速率限制。
 主要用在实现RESTful APIs，更多关于该过滤器详情请参阅 [Rate Limiting](rest-rate-limiting.md) 一节。
 
 
-### [[yii\filters\VerbFilter|VerbFilter]] <a name="verb-filter"></a>
+### [[yii\filters\VerbFilter|VerbFilter]] <span id="verb-filter"></span>
 
 VerbFilter检查请求动作的HTTP请求方式是否允许执行，如果不允许，会抛出HTTP 405异常。
 如下示例，VerbFilter指定CRUD动作所允许的请求方式。
@@ -299,7 +299,7 @@ public function behaviors()
 }
 ```
 
-### [[yii\filters\Cors|Cors]] <a name="cors"></a>
+### [[yii\filters\Cors|Cors]] <span id="cors"></span>
 
 跨域资源共享 [CORS](https://developer.mozilla.org/fr/docs/HTTP/Access_control_CORS) 机制允许一个网页的许多资源（例如字体、JavaScript等）
 这些资源可以通过其他域名访问获取。

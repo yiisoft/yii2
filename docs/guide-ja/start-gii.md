@@ -12,7 +12,7 @@ Gii を使ってコードを自動生成することは、Gii のウェブペー
 * Gii によって生成されるコードをカスタマイズする方法
 
 
-Gii を開始する<a name="starting-gii"></a>
+Gii を開始する <span id="starting-gii"></span>
 --------------
 
 [Gii](tool-gii.md) は Yii の [モジュール](structure-modules.md) として提供されています。
@@ -28,8 +28,7 @@ if (YII_ENV_DEV) {
 }
 ```
 
-上記の構成情報は、[開発環境](concept-configurations.md#environment-constants) において、アプリケーションは
-`gii` という名前のモジュールをインクルードすべきこと、そして `gii` は [[yii\gii\Module]] というクラスであることを記述しています。
+上記の構成情報は、[開発環境](concept-configurations.md#environment-constants) において、アプリケーションは `gii` という名前のモジュールをインクルードすべきこと、そして `gii` は [[yii\gii\Module]] というクラスであることを記述しています。
 
 アプリケーションの [エントリスクリプト](structure-entry-scripts.md) である `web/index.php` をチェックすると、次の行があることに気付くでしょう。
 これは本質的には `YII_ENV_DEV` を true に設定するものです。
@@ -45,7 +44,7 @@ defined('YII_ENV') or define('YII_ENV', 'dev');
 http://hostname/index.php?r=gii
 ```
 
-> Note|注意: ローカルホスト以外のマシンから Gii にアクセスしようとすると、既定ではセキュリティ上の理由でアクセスが拒否されます。
+> Note|注意: ローカルホスト以外のマシンから Gii にアクセスしようとすると、デフォルトではセキュリティ上の理由でアクセスが拒否されます。
 > 下記のように Gii を構成して、許可される IP アドレスを追加することが出来ます。
 >
 ```php
@@ -58,10 +57,11 @@ http://hostname/index.php?r=gii
 ![Gii](images/start-gii.png)
 
 
-アクティブレコードのクラスを生成する<a name="generating-ar"></a>
+アクティブレコードのクラスを生成する <span id="generating-ar"></span>
 ------------------------------------
 
-Gii を使ってアクティブレコードのクラスを生成するためには、(Gii のインデックスページのリンクをクリックして) "Model Generator" を選びます。
+Gii を使ってアクティブレコードのクラスを生成するためには、"Model Generator" を選びます
+(Gii のインデックスページのリンクをクリックして下さい)。
 そして、次のようにフォームに入力します。
 
 * Table Name: `country`
@@ -71,26 +71,25 @@ Gii を使ってアクティブレコードのクラスを生成するために�
 
 次に、"Preview" ボタンをクリックします。
 そうすると、結果として作成されるクラスファイルのリストに `models/Country.php` が挙ってきます。
-クラスファイルの名前をクリックすると、内容をプレビュー出来ます。
+クラスファイルの名前をクリックすると、内容をプレビューすることが出来ます。
 
-Gii を使うときに、既に同じファイルを作成していて、それを上書きしようとしている場合は、ファイル名の隣の `diff`
-ボタンをクリックして、生成されようとしているコードと既存のバージョンの違いを見てください。
+Gii を使うときに、既に同じファイルを作成していて、それを上書きしようとしている場合は、ファイル名の隣の `diff` ボタンをクリックして、生成されようとしているコードと既存のバージョンの違いを見てください。
 
 ![Model Generator のプレビュー](images/start-gii-model-preview.png)
 
-既存のファイルを上書きしようとしているときは、"overwrite" の隣のチェックボックスをチェックしてから "Generate" ボタンをクリックします。
-新しいファイルを作成しようとしているときは、単に "Generate" を押せば大丈夫です。
+既存のファイルを上書きするときは、"overwrite" の隣のチェックボックスをチェックしてから "Generate" ボタンをクリックします。
+新しいファイルを作成するときは、単に "Generate" をクリックすれば十分です。
 
 次に、コードの生成が成功したことを示す確認ページが表示されます。
 既存のファイルがあった場合は、それが新しく生成されたコードで上書きされたことを示すメッセージも同じく表示されます。
 
 
-CRUD コードを生成する<a name="generating-crud"></a>
+CRUD コードを生成する <span id="generating-crud"></span>
 ---------------------
 
 CRUD は Create(作成)、Read(読出し)、Update(更新)、そして Delete(削除) を意味しており、ほとんどのウェブサイトでデータを扱うときによく用いられる4つのタスクを表しています。
-Gii を使って CRUD 機能を作成するためには、(Gii のインデックスページのリンクをクリックして) "CRUD Generator" を選びます。
-「国リスト」のサンプルのためには、以下のようにフォームに入力します。
+Gii を使って CRUD 機能を作成するためには、"CRUD Generator" を選びます (Gii のインデックスページのリンクをクリックしてください) 。
+「国リスト」のサンプルのためには、表示されたフォームに以下のように入力します。
 
 * Model Class: `app\models\Country`
 * Search Model Class: `app\models\CountrySearch`
@@ -103,11 +102,11 @@ Gii を使って CRUD 機能を作成するためには、(Gii のインデッ�
 
 ![CRUD Generator のプレビュー](images/start-gii-crud-preview.png)
 
-以前に（ガイドのデータベースの節で）`controllers/CountryController.php` と `views/country/index.php` のファイルを作成していた場合は、それらを置き換えるために
-"overwrite" のチェックボックスをチェックしてください。(以前のバージョンは フル機能の CRUD をサポートしていません。)
+以前に（ガイドのデータベースの節で）`controllers/CountryController.php` と `views/country/index.php` のファイルを作成していた場合は、それらを置き換えるために "overwrite" のチェックボックスをチェックしてください。
+(以前のバージョンは フル機能の CRUD をサポートしていません。)
 
 
-試してみる<a name="trying-it-out"></a>
+試してみる <span id="trying-it-out"></span>
 ----------
 
 どのように動作するかを見るために、ブラウザを使って下記の URL にアクセスしてください。
@@ -130,7 +129,7 @@ http://hostname/index.php?r=country/index
 これらの機能がどのように実装されているかを調査したい場合、また、これらの機能をカスタマイズしたいときに参照してください。
 
 * Controller: `controllers/CountryController.php`
-* Models: `models/Country.php` and `models/CountrySearch.php`
+* Models: `models/Country.php` と `models/CountrySearch.php`
 * Views: `views/country/*.php`
 
 > Info|情報: Gii は非常にカスタマイズしやすく拡張しやすいコード生成ツールとして設計されています。
@@ -138,7 +137,7 @@ http://hostname/index.php?r=country/index
   詳細については、[Gii](tool-gii.md) の節を参照してください。
 
 
-まとめ<a name="summary"></a>
+まとめ <span id="summary"></span>
 ------
 
-この節では、Gii を使ってコードを生成して、データベーステーブルに保存されているコンテンツのための完全な CRUD 機能を実装する方法を学びました。
+この節では、Gii を使ってコードを生成して、データベーステーブルに保存されているコンテントのための完全な CRUD 機能を実装する方法を学びました。

@@ -213,7 +213,7 @@ abstract class Target extends Component
             if ($matched) {
                 foreach ($except as $category) {
                     $prefix = rtrim($category, '*');
-                    if (strpos($message[2], $prefix) === 0 && ($message[2] === $category || $prefix !== $category)) {
+                    if (($message[2] === $category || $prefix !== $category) && strpos($message[2], $prefix) === 0) {
                         $matched = false;
                         break;
                     }

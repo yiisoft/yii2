@@ -47,11 +47,11 @@ $locator->set('pageCache', new FileCache);
 
 ```php
 $cache = $locator->get('cache');
-// または代わりに
+// または代りに
 $cache = $locator->cache;
 ```
 
-以上のように、 [[yii\di\ServiceLocator]] はコンポーネント ID を使用したプロパティのように、コンポーネントにアクセスすることができます。
+上記のように、 [[yii\di\ServiceLocator]] を使うと、コンポーネント ID を使用して、プロパティのようにコンポーネントにアクセスすることができます。
 あなたが最初にコンポーネントにアクセスしたとき、 [[yii\di\ServiceLocator]] はコンポーネントの登録情報を使用してコンポーネントの新しいインスタンスを作成し、
 それを返します。後でそのコンポーネントが再度アクセスされた場合、サービスロケータは同じインスタンスを返します。
 
@@ -60,8 +60,8 @@ $cache = $locator->cache;
 
 サービスロケータは多くの場合、 [構成情報](concept-configurations.md) で作成されるため、
 [[yii\di\ServiceLocator::setComponents()|components]] という名前の書き込み可能プロパティが提供されています。
-これで一度に複数のコンポーネントを設定して登録することができます。次のコードはアプリケーションを構成する構成情報配列を示しており、
-"db" と "cache" と "search" コンポーネントの登録もしています:
+これで一度に複数のコンポーネントを設定して登録することができます。
+次のコードは、サービスロケータ (例えば [アプリケーション](structure-applications.md)) を "db"、"cache"、"search" コンポーネントとともに構成するための構成情報配列を示しています。
 
 ```php
 return [
@@ -75,9 +75,39 @@ return [
         ],
         'cache' => 'yii\caching\ApcCache',
         'search' => function () {
-            return new app\components\SolrService;
+            $solr = new app\components\SolrService('127.0.0.1');
+            // ... その他の初期化 ...
+            return $solr;
         },
     ],
 ];
 ```
 
+上記において、"search" コンポーネントを構成する別の方法があります。
+`SolrService` のインスタンスを構築する PHP コールバックを直接に書く代りに、下記のように、そういうコールバックを返すスタティックなクラスメソッドを使うことが出来ます。
+
+```php
+class SolrServiceBuilder
+{
+    public static function build($ip)
+    {
+        return function () use ($ip) {
+            $solr = new app\components\SolrService($ip);
+            // ... その他の初期化 ...
+            return $solr;
+        };
+    }
+}
+
+return [
+    // ...
+    'components' => [
+        // ...
+        'search' => SolrServiceBuilder::build('127.0.0.1'),
+    ],
+];
+```
+
+この方法は、Yii に属さないサードパーティのライブラリをカプセル化する Yii コンポーネントをリリースしようとする場合に、特に推奨される代替手法です。
+上で示されているようなスタティックなメソッドを使ってサードパーティのオブジェクトを構築する複雑なロジックを表現します。
+そうすれば、あなたのコンポーネントのユーザは、コンポーネントを構成するスタティックなメソッドを呼ぶ必要があるだけになります。

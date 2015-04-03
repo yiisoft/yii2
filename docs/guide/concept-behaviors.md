@@ -9,7 +9,7 @@ can respond to the [events](concept-events.md) triggered by the component, which
 code execution of the component.
 
 
-Defining Behaviors <a name="defining-behaviors"></a>
+Defining Behaviors <span id="defining-behaviors"></span>
 ------------------
 
 To define a behavior, create a class that extends [[yii\base\Behavior]], or extends a child class. For example:
@@ -96,7 +96,7 @@ function ($event) {
 }
 ```
 
-Attaching Behaviors <a name="attaching-behaviors"></a>
+Attaching Behaviors <span id="attaching-behaviors"></span>
 -------------------
 
 You can attach a behavior to a [[yii\base\Component|component]] either statically or dynamically. The former is more common in practice.
@@ -189,7 +189,7 @@ You may also attach behaviors through [configurations](concept-configurations.md
 For more details,
 please refer to the [Configurations](concept-configurations.md#configuration-format) section.
 
-Using Behaviors <a name="using-behaviors"></a>
+Using Behaviors <span id="using-behaviors"></span>
 ---------------
 
 To use a behavior, first attach it to a [[yii\base\Component|component]] per the instructions above. Once a behavior is attached to a component, its usage is straightforward.
@@ -230,7 +230,7 @@ $behaviors = $component->getBehaviors();
 ```
 
 
-Detaching Behaviors <a name="detaching-behaviors"></a>
+Detaching Behaviors <span id="detaching-behaviors"></span>
 -------------------
 
 To detach a behavior, call [[yii\base\Component::detachBehavior()]] with the name associated with the behavior:
@@ -246,7 +246,7 @@ $component->detachBehaviors();
 ```
 
 
-Using `TimestampBehavior` <a name="using-timestamp-behavior"></a>
+Using `TimestampBehavior` <span id="using-timestamp-behavior"></span>
 -------------------------
 
 To wrap up, let's take a look at [[yii\behaviors\TimestampBehavior]]. This behavior supports automatically
@@ -303,7 +303,7 @@ to a specified attribute and save it to the database:
 $user->touch('login_time');
 ```
 
-Comparing Behaviors with Traits <a name="comparison-with-traits"></a>
+Comparing Behaviors with Traits <span id="comparison-with-traits"></span>
 ----------------------
 
 While behaviors are similar to [traits](http://www.php.net/traits) in that they both "inject" their
@@ -311,12 +311,13 @@ properties and methods to the primary class, they differ in many aspects. As exp
 both have pros and cons. They are more like complements to each other rather than alternatives.
 
 
-### Reasons to Use Behaviors <a name="pros-for-behaviors"></a>
+### Reasons to Use Behaviors <span id="pros-for-behaviors"></span>
 
 Behavior classes, like normal classes, support inheritance. Traits, on the other hand,
 can be considered as language-supported copy and paste. They do not support inheritance.
 
-Behaviors can be attached and detached to a component dynamically without requiring modification of the component class. To use a trait, you must modify the class using it.
+Behaviors can be attached and detached to a component dynamically without requiring modification of the component class.
+To use a trait, you must modify the code of the class using it.
 
 Behaviors are configurable while traits are not.
 
@@ -328,7 +329,7 @@ Name conflicts caused by different traits requires manual resolution by renaming
 properties or methods.
 
 
-### Reasons to Use Traits <a name="pros-for-traits"></a>
+### Reasons to Use Traits <span id="pros-for-traits"></span>
 
 Traits are much more efficient than behaviors as behaviors are objects that take both time and memory.
 

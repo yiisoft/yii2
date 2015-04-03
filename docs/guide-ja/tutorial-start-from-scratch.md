@@ -3,10 +3,10 @@
 
 > Note|注意: この節はまだ執筆中です。
 
-[ベーシック](https://github.com/yiisoft/yii2/tree/master/apps/basic) と [アドバンスト](https://github.com/yiisoft/yii2/tree/master/apps/advanced) のアプリケーションテンプレートは、あなたの要求をほとんどカバーする優れたものですが、あなたのプロジェクトを開始するためのあなた自身のテンプレートを作成したいこともあるでしょう。
+[ベーシック](https://github.com/yiisoft/yii2-app-basic) と [アドバンスト](https://github.com/yiisoft/yii2-app-advanced) のプロジェクトテンプレートは、あなたの要求をほとんどカバーする優れたものですが、あなたのプロジェクトを開始するためのあなた自身のテンプレートを作成したいこともあるでしょう。
 
-Yii におけるアプリケーションテンプレートは、`composer.json` ファイルを含み、Composer パッケージとして登録されたレポジトリであるに過ぎません。
-どのようなレポジトリでも、Composer パッケージとして特定し、`create-project` Composer コマンドによってインストール可能なものとすることが可能です。
+Yii におけるプロジェクトテンプレートは、`composer.json` ファイルを含み、Composer パッケージとして登録されたレポジトリであるに過ぎません。
+どのようなレポジトリでも、Composer パッケージとして特定し、`create-project` Composer コマンドによってインストール可能なものにすることが出来ます。
 
 テンプレート全体を最初から構築するのは少々大変ですので、内蔵のテンプレートの一つを基礎として使うのが良いでしょう。
 ここでは、ベーシックテンプレートを使いましょう。
@@ -21,7 +21,7 @@ git clone git@github.com:yiisoft/yii2-app-basic.git
 ```
 
 そして、レポジトリがあなたのコンピュータにダウンロードされるのを待ちます。
-テンプレートに加えた変更はプッシュバックされませんので、ダウンロードしたものから `.git` ディレクトリとその中身を全て削除して構いません。
+テンプレートに加えられた変更がレポジトリにプッシュバックされることはありませんので、ダウンロードしたものから `.git` ディレクトリとその中身を全て削除して構いません。
 
 ファイルを修正する
 ------------------
@@ -30,9 +30,9 @@ git clone git@github.com:yiisoft/yii2-app-basic.git
 `name`、`description`、`keywords`、`homepage`、`license` および `support` の値を、あなたの新しいテンプレートを説明するものに変更します。
 また、`require`、`require-dev`、`suggest` や、その他のオプションも、あなたのテンプレートの要求に合うように調整します。
 
-> Note|注意: `composer.json` ファイルで、`extra` の下の `writable` パラメータを使って、アプリケーションがテンプレートを使って作成された後に設定すべきファイル単位のアクセス権限を指定してください。
+> Note|注意: `composer.json` ファイルで、`extra` の下の `writable` パラメータを使って、アプリケーションがテンプレートを使って作成された後に設定されるべきファイル単位のアクセス権限を指定してください。
 
-次に、あなたがデフォルトとしたいと思うように、アプリケーションの構造と内容を実際に修正します。
+次に、あなたが好むデフォルトの状態に合うように、アプリケーションの構造と内容を実際に修正します。
 最後に、あなたのテンプレートに適用できるように、README ファイルを更新します。
 
 パッケージを作る
@@ -50,10 +50,10 @@ git clone git@github.com:yiisoft/yii2-app-basic.git
 テンプレートを使う
 ------------------
 
-Yii の新しいアプリケーションテンプレートを作成するのに必要なことは以上です。
+Yii の新しいプロジェクトテンプレートを作成するのに必要なことは以上です。
 これで、あなたのテンプレートを使ってプロジェクトを作成することが出来ます。
 
 ```
-composer global require "fxp/composer-asset-plugin:1.0.0-beta4"
+composer global require "fxp/composer-asset-plugin:1.0.0"
 composer create-project --prefer-dist --stability=dev mysoft/yii2-app-coolone new-project
 ```

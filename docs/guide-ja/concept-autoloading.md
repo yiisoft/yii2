@@ -1,7 +1,7 @@
 クラスのオートローディング
 =================
 
-Yiiは、必要となるすべてのクラスファイルを、特定してインクルードするにあたり、 [クラスのオートローディングメカニズム](http://www.php.net/manual/en/language.oop5.autoload.php)
+Yiiは、必要となるすべてのクラスファイルを、特定してインクルードするにあたり、 [クラスのオートローディングメカニズム](http://www.php.net/manual/ja/language.oop5.autoload.php)
 を頼りにします。[PSR-4 標準](https://github.com/php-fig/fig-standards/blob/master/proposed/psr-4-autoloader/psr-4-autoloader.md) に準拠した、高性能なクラスのオートローダーを提供します。
 このオートローダーは、あなたが `Yii.php` ファイルをインクルードするときにインストールされます。
 
@@ -9,7 +9,7 @@ Yiiは、必要となるすべてのクラスファイルを、特定してイ�
   ここに記述されている内容は、同様に、インタフェースとトレイトのオートロードにも適用されることに注意してください。
 
 
-Yii オートローダーの使用 <a name="using-yii-autoloader"></a>
+Yii オートローダーの使用 <span id="using-yii-autoloader"></span>
 ------------------------
 
 Yii のクラスオートローダーを使用するには、自分のクラスを作成して名前を付けるとき、次の2つの単純なルールに従わなければなりません:
@@ -25,18 +25,18 @@ $classFile = Yii::getAlias('@' . str_replace('\\', '/', $className) . '.php');
 `@foo/bar/MyClass.php` になります。このエイリアスがファイルパスになるようにするには、`@foo` または `@foo/bar`
 のどちらかが、 [ルートエイリアス](concept-aliases.md#defining-aliases) でなければなりません。
 
-[Basic Application Template](start-basic.md) を使用している場合、最上位の名前空間 `app` の下にクラスを置くことができ、
+[ベーシックプロジェクトテンプレート](start-basic.md) を使用している場合、最上位の名前空間 `app` の下にクラスを置くことができ、
 そうすると、新しいエイリアスを定義しなくても、Yii によってそれらをオートロードできるようになります。これは `@app`
 が [事前定義されたエイリアス](concept-aliases.md#predefined-aliases) であるためで、`app\components\MyClass` のようなクラス名を
 今説明したアルゴリズムに従って、クラスファイル `AppBasePath/components/MyClass.php` だと解決できるのです。
 
-[Advanced Application Template](tutorial-advanced-app.md) では、各階層にそれ自身のルートエイリアスを持っています。たとえば、
+[アドバンストプロジェクトテンプレート](https://github.com/yiisoft/yii2-app-advanced/blob/master/docs/guide-ja/README.md) では、各階層にそれ自身のルートエイリアスを持っています。たとえば、
 フロントエンド層はルートエイリアス `@frontend` を持ち、バックエンド層は `@backend` です。その結果、名前空間 `frontend` の下に
 フロントエンドクラスを置き、バックエンドクラスを `backend` の下に置けます。これで、これらのクラスは Yii のオートローダーによって
 オートロードできるようになります。
 
 
-クラスマップ <a name="class-map"></a>
+クラスマップ <span id="class-map"></span>
 ---------
 
 Yii のクラスオートローダーは、 *クラスマップ* 機能をサポートしており、クラス名を対応するクラスファイルのパスにマップできます。
@@ -54,7 +54,7 @@ Yii::$classMap['foo\bar\MyClass'] = 'path/to/MyClass.php';
 [ブートストラップ](runtime-bootstrapping.md) プロセス内でクラスマップを設定する必要があります。
 
 
-他のオートローダーの使用 <a name="using-other-autoloaders"></a>
+他のオートローダーの使用 <span id="using-other-autoloaders"></span>
 -----------------------
 
 Yii はパッケージ依存関係マネージャとして Composer を包含しているので、Composer のオートローダーもインストールすることをお勧めします。
@@ -77,7 +77,7 @@ require(__DIR__ . '/../vendor/yiisoft/yii2/Yii.php');
   それを [エントリスクリプト](structure-entry-scripts.md) でインクルードする必要があります。
 
 
-エクステンションクラスのオートロード <a name="autoloading-extension-classes"></a>
+エクステンションクラスのオートロード <span id="autoloading-extension-classes"></span>
 -----------------------------
 
 Yii のオートローダーは、 [エクステンション](structure-extensions.md) クラスのオートロードが可能です。唯一の要件は、

@@ -7,21 +7,7 @@
 
 namespace yiiunit\framework\web;
 
-use yii\base\Object;
-use yii\web\Response;
 use yii\web\XmlResponseFormatter;
-
-class Post extends Object
-{
-    public $id;
-    public $title;
-
-    public function __construct($id, $title)
-    {
-        $this->id = $id;
-        $this->title = $title;
-    }
-}
 
 /**
  * @author Qiang Xue <qiang.xue@gmail.com>
@@ -29,64 +15,39 @@ class Post extends Object
  *
  * @group web
  */
-class XmlResponseFormatterTest extends \yiiunit\TestCase
+class XmlResponseFormatterTest extends FormatterTest
 {
     /**
-     * @var Response
+     * @return XmlResponseFormatter
      */
-    public $response;
-    /**
-     * @var XmlResponseFormatter
-     */
-    public $formatter;
-
-    protected function setUp()
+    protected function getFormatterInstance()
     {
-        $this->mockApplication();
-        $this->response = new Response;
-        $this->formatter = new XmlResponseFormatter;
+        return new XmlResponseFormatter();
     }
 
-    /**
-     * @param mixed  $data the data to be formatted
-     * @param string $xml  the expected XML body
-     * @dataProvider formatScalarDataProvider
-     */
-    public function testFormatScalar($data, $xml)
+    private $xmlHead = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n";
+
+    private function addXmlHead(array $data)
     {
-        $head = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n";
-        $this->response->data = $data;
-        $this->formatter->format($this->response);
-        $this->assertEquals($head . $xml, $this->response->content);
+        foreach ($data as &$item) {
+            $item[1] = $this->xmlHead . $item[1];
+        }
+        return $data;
     }
 
     public function formatScalarDataProvider()
     {
-        return [
-            [null, "<response></response>\n"],
+        return $this->addXmlHead([
             [1, "<response>1</response>\n"],
             ['abc', "<response>abc</response>\n"],
             [true, "<response>1</response>\n"],
             ["<>", "<response>&lt;&gt;</response>\n"],
-        ];
-    }
-
-    /**
-     * @param mixed  $data the data to be formatted
-     * @param string $xml  the expected XML body
-     * @dataProvider formatArrayDataProvider
-     */
-    public function testFormatArrays($data, $xml)
-    {
-        $head = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n";
-        $this->response->data = $data;
-        $this->formatter->format($this->response);
-        $this->assertEquals($head . $xml, $this->response->content);
+        ]);
     }
 
     public function formatArrayDataProvider()
     {
-        return [
+        return $this->addXmlHead([
             [[], "<response/>\n"],
             [[1, 'abc'], "<response><item>1</item><item>abc</item></response>\n"],
             [[
@@ -105,25 +66,12 @@ class XmlResponseFormatterTest extends \yiiunit\TestCase
                 'c' => [2, '<>'],
                 true,
             ], "<response><a>1</a><b>abc</b><c><item>2</item><item>&lt;&gt;</item></c><item>1</item></response>\n"],
-        ];
-    }
-
-    /**
-     * @param mixed  $data the data to be formatted
-     * @param string $xml  the expected XML body
-     * @dataProvider formatObjectDataProvider
-     */
-    public function testFormatObjects($data, $xml)
-    {
-        $head = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n";
-        $this->response->data = $data;
-        $this->formatter->format($this->response);
-        $this->assertEquals($head . $xml, $this->response->content);
+        ]);
     }
 
     public function formatObjectDataProvider()
     {
-        return [
+        return $this->addXmlHead([
             [new Post(123, 'abc'), "<response><Post><id>123</id><title>abc</title></Post></response>\n"],
             [[
                 new Post(123, 'abc'),
@@ -133,6 +81,6 @@ class XmlResponseFormatterTest extends \yiiunit\TestCase
                 new Post(123, '<>'),
                 'a' => new Post(456, 'def'),
             ], "<response><Post><id>123</id><title>&lt;&gt;</title></Post><a><Post><id>456</id><title>def</title></Post></a></response>\n"],
-        ];
+        ]);
     }
 }

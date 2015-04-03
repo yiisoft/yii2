@@ -1,17 +1,17 @@
 サードパーティのコードを扱う
 ============================
 
-時々、Yii アプリケーションの中でサードパーティのコードを使用する必要がある場合があります。
+時々、Yii アプリケーションの中でサードパーティのコードを使用する必要があることがあります。
 あるいは、サードパーティのシステムの中で Yii をライブラリとして使用したいこともあるでしょう。
 この節では、こういう目的をどうやって達成するかを説明します。
 
 
-Yii の中でサードパーティのライブラリを使う <a name="using-libs-in-yii"></a>
+Yii の中でサードパーティのライブラリを使う <span id="using-libs-in-yii"></span>
 ------------------------------------------
 
-Yii アプリケーションの中でサードパーティのライブラリを使うために主として必要なことは、そのライブラリの中のクラスが適切にインクルードされること、または、オートロード可能な状態にあることを保証することです。
+Yii アプリケーションの中でサードパーティのライブラリを使うために主として必要なことは、そのライブラリのクラスが適切にインクルードされること、または、オートロード可能であることを保証することです。
 
-### Composer パッケージを使う <a name="using-composer-packages"></a>
+### Composer パッケージを使う <span id="using-composer-packages"></span>
 
 多くのサードパーティライブラリは [Composer](https://getcomposer.org/) パッケージの形式でリリースされています。
 そのようなライブラリは、次の二つの簡単なステップを踏むことによって、インストールすることが出来ます。
@@ -30,7 +30,7 @@ require(__DIR__ . '/../vendor/autoload.php');
 require(__DIR__ . '/../vendor/yiisoft/yii2/Yii.php');
 ```
 
-### ダウンロードしたライブラリを使う <a name="using-downloaded-libs"></a>
+### ダウンロードしたライブラリを使う <span id="using-downloaded-libs"></span>
 
 ライブラリが Composer パッケージとしてリリースされていない場合は、そのライブラリのインストールの指示に従ってインストールしなければなりません。
 たいていの場合は、リリースファイルを手動でダウンロードし、`BasePath/vendor` ディレクトリの下に解凍する必要があります。
@@ -67,7 +67,7 @@ Yii::$classMap['Class2'] = 'path/to/Class2.php';
 ```
 
 
-サードパーティのシステムで Yii を使う <a name="using-yii-in-others"></a>
+サードパーティのシステムで Yii を使う <span id="using-yii-in-others"></span>
 -------------------------------------
 
 Yii は数多くの優れた機能を提供していますので、サードパーティのシステム (例えば、WordPress、Joomla、または、他の PHP フレームワークを使って開発されるアプリケーション) を開発したり機能拡張したりするのをサポートするために Yii の機能のいくつかを使用したいことがあるでしょう。
@@ -77,8 +77,8 @@ Yii は数多くの優れた機能を提供していますので、サードパ�
 
 サードパーティのシステムが Composer を使って依存を管理している場合は、単に下記のコマンドを実行すれば Yii をインストールすることが出来ます。
 
-    composer global require "fxp/composer-asset-plugin:1.0.0-beta4"
-    composer require "yiisoft/yii2:*"
+    composer global require "fxp/composer-asset-plugin:1.0.0"
+    composer require yiisoft/yii2
     composer install
 
 最初のコマンドは [composer アセットプラグイン](https://github.com/francoispluchino/composer-asset-plugin/) をインストールします。
@@ -109,7 +109,7 @@ Yii アプリケーションでの場合と同じように、サードパーテ�
 例えば、アクティブレコードクラスを作成して、それを使ってデータベースを扱うことが出来ます。
 
 
-Yii 2 を Yii 1 とともに使う <a name="using-both-yii2-yii1"></a>
+Yii 2 を Yii 1 とともに使う <span id="using-both-yii2-yii1"></span>
 ---------------------------
 
 あなたが Yii 1 を前から使っている場合は、たぶん、稼働中の Yii 1 アプリケーションを持っているでしょう。

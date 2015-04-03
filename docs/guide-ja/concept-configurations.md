@@ -1,7 +1,8 @@
 構成情報
 ==============
 
-新しいオブジェクトを作成したり、既存のオブジェクトを初期化するとき、Yiiでは構成情報が広く使用されています。構成情報は通常、作成されるオブジェクトのクラス名、およびオブジェクトの [プロパティ](concept-properties.md)
+新しいオブジェクトを作成したり、既存のオブジェクトを初期化するとき、Yiiでは構成情報が広く使用されています。
+構成情報は通常、作成されるオブジェクトのクラス名、およびオブジェクトの [プロパティ](concept-properties.md)
 に割り当てられる初期値のリストを含みます。構成情報は、オブジェクトの [イベント](concept-events.md) にアタッチされるハンドラのリストや、オブジェクトにアタッチされる
 [ビヘイビア](concept-behaviors.md) のリストを含むこともできます。
 
@@ -18,7 +19,8 @@ $config = [
 
 $db = Yii::createObject($config);
 ```
-[[Yiiの::CreateObject()]] メソッドは引数に構成情報の配列を受け取り、構成情報で名前指定されたクラスをインスタンス化してオブジェクトを作成します。オブジェクトがインスタンス化されるとき、その他の設定は、
+[[Yiiの::CreateObject()]] メソッドは引数に構成情報の配列を受け取り、構成情報で名前指定されたクラスをインスタンス化してオブジェクトを作成します。
+オブジェクトがインスタンス化されるとき、その他の設定は、
 オブジェクトのプロパティ、イベントハンドラ、およびビヘイビアを初期化するのに使われます。
 
 すでにオブジェクトがある場合は、構成情報配列でオブジェクトのプロパティを初期化するのに [[Yii::configure()]] を使用することができます:
@@ -30,7 +32,7 @@ Yii::configure($object, $config);
 なお、この場合には、構成情報配列に `class` 要素を含んではいけません。
 
 
-## 構成情報の形式 <a name="configuration-format"></a>
+## 構成情報の形式 <span id="configuration-format"></span>
 
 構成情報の形式は、フォーマルには次のように説明できます:
 
@@ -72,19 +74,19 @@ Yii::configure($object, $config);
 ```
 
 
-## 構成情報の使用 <a name="using-configurations"></a>
+## 構成情報の使用 <span id="using-configurations"></span>
 
 構成情報は Yii の多くの場所で使用されています。このセクションの冒頭では、 [[Yii::createObject()]]
 を使って、構成情報に応じてオブジェクトを作成する方法を示しました。このサブセクションでは、
 アプリケーションの構成とウィジェットの構成という、2つの主要な構成情報の用途を説明します。
 
 
-### アプリケーションの構成 <a name="application-configurations"></a>
+### アプリケーションの構成 <span id="application-configurations"></span>
 
 [アプリケーション](structure-applications.md) の構成は、おそらく Yii の中で最も複雑な配列のひとつです。
-それは [[yii\web\Application|application]] クラスが、設定可能なプロパティとイベントを数多く持つためです。
+それは [[yii\web\Application|アプリケーション]] クラスが、設定可能なプロパティとイベントを数多く持つためです。
 さらに重要なことは、その [[yii\web\Application::components|components]] プロパティが、アプリケーションに登録されている
-コンポーネント生成用の構成情報配列を受け取ることができることです。以下は、 [basic application template](start-basic.md)
+コンポーネント生成用の構成情報配列を受け取ることができることです。以下は、 [ベーシックプロジェクトテンプレート](start-basic.md)
 のアプリケーション構成ファイルの概要です。
 
 ```php
@@ -129,7 +131,7 @@ $config = [
 アプリケーションの `components` プロパティ構成の詳細については、 [アプリケーション](structure-applications.md) セクションと [サービスロケータ](concept-service-locator.md) セクションにあります。
 
 
-### ウィジェットの構成 <a name="widget-configurations"></a>
+### ウィジェットの構成 <span id="widget-configurations"></span>
 
 [ウィジェット](structure-widgets.md) を使用するときは、多くの場合、ウィジェットのプロパティをカスタマイズするために、構成情報を使用する必要があります。
 [[yii\base\Widget::widget()]] と [[yii\base\Widget::begin()]] の両メソッドを使って、ウィジェットを作成できます。それらは、以下のような構成情報配列を取ります。
@@ -153,7 +155,7 @@ echo Menu::widget([
 クラス名がすでに与えられているので、構成情報配列が `class` キーを持つべきではないことに注意してください。
 
 
-## 構成情報ファイル <a name="configuration-files"></a>
+## 構成情報ファイル <span id="configuration-files"></span>
 
 構成情報がとても複雑になる場合、一般的な方法は、 *構成情報ファイル* と呼ばれる、ひとつまたは複数の PHP ファイルにそれを格納することです。
 構成情報ファイルは、構成情報を表す PHP 配列を return します。
@@ -205,7 +207,7 @@ $config = require('path/to/web.php');
 ```
 
 
-## デフォルト設定 <a name="default-configurations"></a>
+## デフォルト設定 <span id="default-configurations"></span>
 
 [[Yii::createObject()]] メソッドは、 [依存性注入コンテナ](concept-di-container.md) をベースに実装されています。
 そのため、指定されたクラスが [[Yii::createObject()]] を使用して作成されるとき、そのすべてのインスタンスに適用される、
@@ -224,7 +226,7 @@ $config = require('path/to/web.php');
 デフォルト設定を使用しなければ、あなたは、リンクページャーを使うすべての箇所で `maxButtonCount` を設定しなければなりません。
 
 
-## 環境定数 <a name="environment-constants"></a>
+## 環境定数 <span id="environment-constants"></span>
 
 構成情報は、多くの場合、アプリケーションが実行される環境に応じて変化します。たとえば、
 開発環境では `mydb_dev` という名前のデータベースを使用し、本番サーバー上では `mydb_prod` データベースを

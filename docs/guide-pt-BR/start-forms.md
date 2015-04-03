@@ -16,7 +16,7 @@ Através deste tutorial, você aprenderá como:
 * Criar um formulário HTML em uma [visão](structure-views.md) (view)
 
 
-Criando uma Modelo (Model) <a name="creating-model"></a>
+Criando uma Modelo (Model) <span id="creating-model"></span>
 ----------------
 
 Os dados a serem solicitados pelo usuário será representados por uma classe modelo
@@ -82,7 +82,7 @@ if ($model->validate()) {
 ```
 
 
-Criando uma Ação <a name="creating-action"></a>
+Criando uma Ação <span id="creating-action"></span>
 ------------------
 
 Em seguida, você precisará criar uma ação `entry` no controlador `site` que será usado no novo modelo. O processo de criação e utilização das ações são explicadas na seção 
@@ -103,7 +103,7 @@ class SiteController extends Controller
 
     public function actionEntry()
     {
-        $model = new EntryForm;
+        $model = new EntryForm();
 
         if ($model->load(Yii::$app->request->post()) && $model->validate()) {
             // dados válidos recebidos pelo $model
@@ -144,7 +144,7 @@ validação.
   para evitar [problemas ao reenviar formulários](http://en.wikipedia.org/wiki/Post/Redirect/Get).
 
 
-Criando Visões <a name="creating-views"></a>
+Criando Visões <span id="creating-views"></span>
 --------------
 
 Finalmente, crie dois arquivos de visões chamados de `entry-confirm` e `entry`. 
@@ -195,7 +195,7 @@ o método [[yii\helpers\Html::submitButton()]] é chamado para criar o botão
 de enviar.
 
 
-Testando <a name="trying-it-out"></a>
+Testando <span id="trying-it-out"></span>
 -------------
 
 Para ver como ele funciona, utilize seu navegador para acessar a seguinte URL:
@@ -218,7 +218,7 @@ nova página exibindo os dados informados por você.
 
 
 
-### Explicação da Mágica <a name="magic-explained"></a>
+### Explicação da Mágica <span id="magic-explained"></span>
 
 Você pode querer saber como o formulário HTML trabalha por baixo dos panos, porque 
 parece quase mágica exibir um *label* para cada campo de entrada e mostrar mensagens
@@ -255,7 +255,7 @@ Você pode personalizar um *label* em uma visão utilizando o seguinte código:
   widget para simplificar o desenvolvimento de visões no futuro.
 
  
-Resumo <a name="summary"></a>
+Resumo <span id="summary"></span>
 -------
 
 Nesta seção, você tocou em cada parte do padrão de arquitetura MVC. 

@@ -15,6 +15,8 @@ DROP TABLE IF EXISTS "profile";
 DROP TABLE IF EXISTS "null_values";
 DROP TABLE IF EXISTS "type";
 DROP TABLE IF EXISTS "constraints";
+DROP TABLE IF EXISTS "animal";
+DROP VIEW IF EXISTS "animal_view";
 
 CREATE TABLE "constraints"
 (
@@ -123,6 +125,17 @@ CREATE TABLE "composite_fk" (
   PRIMARY KEY ("id"),
   CONSTRAINT "FK_composite_fk_order_item" FOREIGN KEY ("order_id","item_id") REFERENCES "order_item" ("order_id","item_id") ON DELETE CASCADE
 );
+
+CREATE TABLE "animal" (
+  "id" int(11) NOT NULL AUTO_INCREMENT,
+  "type" varchar(255) NOT NULL,
+  PRIMARY KEY ("id")
+);
+
+CREATE VIEW "animal_view" AS SELECT * FROM "animal";
+
+INSERT INTO "animal" ("type") VALUES ('yiiunit\data\ar\Cat');
+INSERT INTO "animal" ("type") VALUES ('yiiunit\data\ar\Dog');
 
 INSERT INTO "profile" (description) VALUES ('profile customer 1');
 INSERT INTO "profile" (description) VALUES ('profile customer 3');

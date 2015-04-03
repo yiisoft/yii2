@@ -20,7 +20,7 @@ public function rules()
 以下では、全てのコアバリデータについて、主な使用方法とプロパティを説明します。
 
 
-## [[yii\validators\BooleanValidator|boolean]] <a name="boolean"></a>
+## [[yii\validators\BooleanValidator|boolean]] <span id="boolean"></span>
 
 ```php
 [
@@ -42,7 +42,7 @@ public function rules()
 > Note|注意: HTML フォームで送信されたデータ入力値は全て文字列であるため、通常は、[[yii\validators\BooleanValidator::strict|strict]] プロパティは false のままにすべきです。
 
 
-## [[yii\captcha\CaptchaValidator|captcha]] <a name="captcha"></a>
+## [[yii\captcha\CaptchaValidator|captcha]] <span id="captcha"></span>
 
 ```php
 [
@@ -53,11 +53,11 @@ public function rules()
 このバリデータは、通常、[[yii\captcha\CaptchaAction]] および [[yii\captcha\Captcha]] と一緒に使われ、入力値が [[yii\captcha\Captcha|CAPTCHA]] ウィジェットによって表示された検証コードと同じであることを確認します。
 
 - `caseSensitive`: 検証コードの比較で大文字と小文字を区別するかどうか。デフォルト値は false。
-- `captchaAction`: CAPTCHA 画像を表示する [[yii\captcha\CaptchaAction|CAPTCHA action]] に対応する [ルート](structure-controllers.md#routes)。デフォルト値は `'site/captcha'`。
+- `captchaAction`: CAPTCHA 画像を表示する [[yii\captcha\CaptchaAction|CAPTCHA アクション]] に対応する [ルート](structure-controllers.md#routes)。デフォルト値は `'site/captcha'`。
 - `skipOnEmpty`: 入力値が空のときに検証をスキップできるかどうか。デフォルト値は false で、入力が必須であることを意味します。
   
 
-## [[yii\validators\CompareValidator|compare]] <a name="compare"></a>
+## [[yii\validators\CompareValidator|compare]] <span id="compare"></span>
 
 ```php
 [
@@ -88,7 +88,7 @@ public function rules()
      * `<=`: 検証される値が比較される値よりも小さいか等しいことを検証する。
 
 
-## [[yii\validators\DateValidator|date]] <a name="date"></a>
+## [[yii\validators\DateValidator|date]] <span id="date"></span>
 
 ```php
 [
@@ -99,21 +99,21 @@ public function rules()
 このバリデータは、入力値が正しい書式の date、time、または datetime であるかどうかをチェックします。
 オプションとして、入力値を UNIX タイムスタンプに変換して、[[yii\validators\DateValidator::timestampAttribute|timestampAttribute]] によって指定された属性に保存することも出来ます。
 
-- `format`: 検証される値が従っているべき日付・時刻の書式。
-  これには [ICU manual](http://userguide.icu-project.org/formatparse/datetime#TOC-Date-Time-Format-Syntax) で記述されている日付・時刻のパターンを使うことが出来ます。
+- `format`: 検証される値が従っているべき日付/時刻の書式。
+  これには [ICU manual](http://userguide.icu-project.org/formatparse/datetime#TOC-Date-Time-Format-Syntax) で記述されている日付/時刻のパターンを使うことが出来ます。
   あるいは、PHP の `Datetime` クラスによって認識される書式に接頭辞 `php:` を付けた文字列でも構いません。
   サポートされている書式については、<http://php.net/manual/ja/datetime.createfromformat.php> を参照してください。
   このプロパティが設定されていないときは、`Yii::$app->formatter->dateFormat` の値を取ります。
-- `timestampAttribute`: このバリデータが入力された日付・時刻から変換した UNIX タイムスタンプを代入することが出来る属性の名前。
+- `timestampAttribute`: このバリデータが入力された日付/時刻から変換した UNIX タイムスタンプを代入することが出来る属性の名前。
 
-入力が必須でない場合には、date バリデータに加えて、default バリデータ (フィルタ) を追加すれば、空の入力値が `NULL` として保存されることを保証することが出来ます。
+入力が必須でない場合には、date バリデータに加えて、default バリデータ (デフォルト値フィルタ) を追加すれば、空の入力値が `NULL` として保存されることを保証することが出来ます。
 そうしないと、データベースに `0000-00-00` という日付が保存されたり、デートピッカーの入力フィールドが `1970-01-01` になったりしてしまいます。
 
 ```php
 [['from_date', 'to_date'], 'default', 'value' => null],
 ```
 
-## [[yii\validators\DefaultValueValidator|default]] <a name="default"></a>
+## [[yii\validators\DefaultValueValidator|default]] <span id="default"></span>
 
 ```php
 [
@@ -147,7 +147,7 @@ function foo($model, $attribute) {
 > Info|情報: 値が空であるか否かを決定する方法については、独立したトピックとして、[空の入力値を扱う](input-validation.md#handling-empty-inputs) の節でカバーされています。
 
 
-## [[yii\validators\NumberValidator|double]] <a name="double"></a>
+## [[yii\validators\NumberValidator|double]] <span id="double"></span>
 
 ```php
 [
@@ -165,7 +165,7 @@ function foo($model, $attribute) {
   設定されていない場合は、バリデータが下限値をチェックしないことを意味します。
 
 
-## [[yii\validators\EmailValidator|email]] <a name="email"></a>
+## [[yii\validators\EmailValidator|email]] <span id="email"></span>
 
 ```php
 [
@@ -176,7 +176,7 @@ function foo($model, $attribute) {
 
 このバリデータは、入力値が有効なメールアドレスであるかどうかをチェックします。
 
-- `allowName`: メールアドレスに表示名を許容するか否か (例えば、`John Smith <john.smith@example.com>`)。デフォルト値は false。
+- `allowName`: メールアドレスに表示名 (例えば、`John Smith <john.smith@example.com>`) を許容するか否か。デフォルト値は false。
 - `checkDNS`: メールのドメインが存在して A または MX レコードを持っているかどうかをチェックするか否か。
   このチェックは、メールアドレスが実際には有効なものでも、一時的な DNS の問題によって失敗する場合があることに注意してください。
   デフォルト値は false。
@@ -185,7 +185,7 @@ function foo($model, $attribute) {
   IDN のバリデーションを使用するためには、`intl` PHP 拡張をインストールして有効化する必要があることに注意してください。そうしないと、例外が投げられます。
 
 
-## [[yii\validators\ExistValidator|exist]] <a name="exist"></a>
+## [[yii\validators\ExistValidator|exist]] <span id="exist"></span>
 
 ```php
 [
@@ -235,13 +235,13 @@ function foo($model, $attribute) {
   `targetAttribute` を配列で指定して複数のカラムに対して検証しようとしている場合は、このプロパティを true に設定することが出来ないことに注意してください。
 
 
-## [[yii\validators\FileValidator|file]] <a name="file"></a>
+## [[yii\validators\FileValidator|file]] <span id="file"></span>
 
 ```php
 [
     // "primaryImage" が PNG、JPG、または GIF 形式のアップロードされた
     // 画像ファイルであり、ファイルサイズが 1MB 以下であるかどうかチェック
-    ['primaryImage', 'file', 'extensions' => ['png', 'jpg', 'gif'], 'maxSize' => 1024*1024*1024],
+    ['primaryImage', 'file', 'extensions' => ['png', 'jpg', 'gif'], 'maxSize' => 1024*1024],
 ]
 ```
 
@@ -267,10 +267,10 @@ function foo($model, $attribute) {
   デフォルト値は true であり、そのようなチェックが行われることを意味します。
 
 `FileValidator` は [[yii\web\UploadedFile]] と一緒に使用されます。
-ファイルのアップロードおよびアップロードされたファイルのバリデーションの実行に関する完全な説明は、[ファイルをアップロードする](input-file-upload.md) の節を参照してください。
+ファイルのアップロードおよびアップロードされたファイルの検証の実行に関する完全な説明は、[ファイルをアップロードする](input-file-upload.md) の節を参照してください。
 
 
-## [[yii\validators\FilterValidator|filter]] <a name="filter"></a>
+## [[yii\validators\FilterValidator|filter]] <span id="filter"></span>
 
 ```php
 [
@@ -300,7 +300,7 @@ function foo($model, $attribute) {
 > Tip|ヒント: 入力値をトリムしたい場合は、[trim](#trim) バリデータを直接使うことが出来ます。
 
 > Tip|ヒント: `filter` のコールバックに期待されるシグニチャを持つ PHP 関数が多数存在します。
-> 例えば、型キャストを適用して (例えば、[intval](http://php.net/manual/ja/function.intval.php) や [boolval](http://php.net/manual/ja/function.boolval.php) などを使って) 属性が特定の型になるように保証したい場合は、それらの関数をクロージャで包む必要はなく、単にフィルタの関数名を指定するだけで十分です。
+> 例えば、([intval](http://php.net/manual/ja/function.intval.php) や [boolval](http://php.net/manual/ja/function.boolval.php) などを使って) 型キャストを適用し、属性が特定の型になるように保証したい場合は、それらの関数をクロージャで包む必要はなく、単にフィルタの関数名を指定するだけで十分です。
 >
 > ```php
 > ['property', 'filter', 'filter' => 'boolval'],
@@ -308,7 +308,7 @@ function foo($model, $attribute) {
 > ```
 
 
-## [[yii\validators\ImageValidator|image]] <a name="image"></a>
+## [[yii\validators\ImageValidator|image]] <span id="image"></span>
 
 ```php
 [
@@ -330,7 +330,7 @@ function foo($model, $attribute) {
 - `maxHeight`: 画像の高さの最大値。デフォルト値は null であり、上限値がないことを意味します。
 
 
-## [[yii\validators\RangeValidator|in]] <a name="in"></a>
+## [[yii\validators\RangeValidator|in]] <span id="in"></span>
 
 ```php
 [
@@ -350,7 +350,7 @@ function foo($model, $attribute) {
   このプロパティが true であるときに、入力値が配列である場合は、配列の全ての要素が所与の値のリストにある必要があり、そうでなければ検証は失敗します。
 
 
-## [[yii\validators\NumberValidator|integer]] <a name="integer"></a>
+## [[yii\validators\NumberValidator|integer]] <span id="integer"></span>
 
 ```php
 [
@@ -365,7 +365,7 @@ function foo($model, $attribute) {
 - `min`: 下限値 (その値を含む)。設定されていないときは、バリデータは下限をチェックしません。
 
 
-## [[yii\validators\RegularExpressionValidator|match]] <a name="match"></a>
+## [[yii\validators\RegularExpressionValidator|match]] <span id="match"></span>
 
 ```php
 [
@@ -376,13 +376,13 @@ function foo($model, $attribute) {
 
 このバリデータは、入力値が指定された正規表現に一致するかどうかをチェックします。
 
-- `pattern`: 入寮値が一致すべき正規表現。このプロパティを設定することは必須です。そうしないと、例外が投げられます。
+- `pattern`: 入力値が一致すべき正規表現。このプロパティを設定することは必須です。そうしないと、例外が投げられます。
 - `not`: 検証結果を反転すべきかどうか。
   デフォルト値は false で、入力値がパターンに一致したときにだけ検証が成功することを意味します。
   このプロパティが true に設定されているときは、入力値がパターンに一致しない場合にだけ検証が成功したと見なされます。
 
 
-## [[yii\validators\NumberValidator|number]] <a name="number"></a>
+## [[yii\validators\NumberValidator|number]] <span id="number"></span>
 
 ```php
 [
@@ -397,7 +397,7 @@ function foo($model, $attribute) {
 - `min`: 下限値 (その値を含む)。設定されていないときは、バリデータは下限をチェックしません。
 
 
-## [[yii\validators\RequiredValidator|required]] <a name="required"></a>
+## [[yii\validators\RequiredValidator|required]] <span id="required"></span>
 
 ```php
 [
@@ -418,7 +418,7 @@ function foo($model, $attribute) {
 > Info|情報: 値が空であるか否かを決定する方法については、独立したトピックとして、[空の入力値を扱う](input-validation.md#handling-empty-inputs) の節でカバーされています。
 
 
-## [[yii\validators\SafeValidator|safe]] <a name="safe"></a>
+## [[yii\validators\SafeValidator|safe]] <span id="safe"></span>
 
 ```php
 [
@@ -431,7 +431,7 @@ function foo($model, $attribute) {
 その代りに、このバリデータは、属性を [安全な属性](structure-models.md#safe-attributes) としてマークするために使われます。
 
 
-## [[yii\validators\StringValidator|string]] <a name="string"></a>
+## [[yii\validators\StringValidator|string]] <span id="string"></span>
 
 ```php
 [
@@ -452,7 +452,7 @@ function foo($model, $attribute) {
 - `encoding`: 検証される入力文字列の文字エンコーディング。設定されていない時は、アプリケーションの [[yii\base\Application::charset|charset]] の値が使われ、デフォルトでは `UTF-8` となります。
 
 
-## [[yii\validators\FilterValidator|trim]] <a name="trim"></a>
+## [[yii\validators\FilterValidator|trim]] <span id="trim"></span>
 
 ```php
 [
@@ -466,7 +466,7 @@ function foo($model, $attribute) {
 入力値が配列であるときは、このバリデータによって無視されることに注意してください。
 
 
-## [[yii\validators\UniqueValidator|unique]] <a name="unique"></a>
+## [[yii\validators\UniqueValidator|unique]] <span id="unique"></span>
 
 ```php
 [
@@ -508,7 +508,7 @@ function foo($model, $attribute) {
   `$query` は関数の中で修正できる [[yii\db\Query|Query]] オブジェクトです。
 
 
-## [[yii\validators\UrlValidator|url]] <a name="url"></a>
+## [[yii\validators\UrlValidator|url]] <span id="url"></span>
 
 ```php
 [

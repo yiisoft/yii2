@@ -148,7 +148,7 @@
         validationDelay: 500,
         // whether to enable AJAX-based validation.
         enableAjaxValidation: false,
-        // function (attribute, value, messages), the client-side validation function.
+        // function (attribute, value, messages, deferred, $form), the client-side validation function.
         validate: undefined,
         // status of the input field, 0: empty, not entered before, 1: validated, 2: pending validation, 3: validating
         status: 0,
@@ -227,6 +227,14 @@
             return attribute;
         },
 
+        // manually trigger the validation of the attribute with the specified ID
+        validateAttribute: function (id) {
+            var attribute = methods.find.call(this, id);
+            if (attribute != undefined) {
+                validateAttribute($(this), attribute, true);
+            }
+        },
+
         // find an attribute config based on the specified attribute ID
         find: function (id) {
             var attributes = $(this).data('yiiActiveForm').attributes,
@@ -251,6 +259,7 @@
             return this.data('yiiActiveForm');
         },
 
+        // validate all applicable inputs in the form
         validate: function () {
             var $form = $(this),
                 data = $form.data('yiiActiveForm'),
@@ -282,7 +291,7 @@
                     $form.trigger(event, [this, msg, deferreds]);
                     if (event.result !== false) {
                         if (this.validate) {
-                            this.validate(this, getValue($form, this), msg, deferreds);
+                            this.validate(this, getValue($form, this), msg, deferreds, $form);
                         }
                         if (this.enableAjaxValidation) {
                             needAjaxValidation = true;
@@ -395,7 +404,7 @@
     var watchAttribute = function ($form, attribute) {
         var $input = findInput($form, attribute);
         if (attribute.validateOnChange) {
-            $input.on('change.yiiActiveForm',function () {
+            $input.on('change.yiiActiveForm', function () {
                 validateAttribute($form, attribute, false);
             });
         }
@@ -407,7 +416,10 @@
             });
         }
         if (attribute.validateOnType) {
-            $input.on('keyup.yiiActiveForm', function () {
+            $input.on('keyup.yiiActiveForm', function (e) {
+                if ($.inArray(e.which, [16, 17, 18, 37, 38, 39, 40]) !== -1 ) {
+                    return;
+                }
                 if (attribute.value !== getValue($form, attribute)) {
                     validateAttribute($form, attribute, false, attribute.validationDelay);
                 }
@@ -497,12 +509,20 @@
                 data.validated = true;
                 var $button = data.submitObject || $form.find(':submit:first');
                 // TODO: if the submission is caused by "change" event, it will not work
-                if ($button.length) {
-                    $button.click();
-                } else {
-                    // no submit button in the form
-                    $form.submit();
+                if ($button.length && $button.prop('type') == 'submit' && $button.prop('name')) {
+                    // simulate button input value
+                    var $hiddenButton = $('input[type="hidden"][name="' + $button.prop('name') + '"]', $form);
+                    if (!$hiddenButton.length) {
+                        $('<input>').attr({
+                            type: 'hidden',
+                            name: $button.prop('name'),
+                            value: $button.prop('value')
+                        }).appendTo($form);
+                    } else {
+                        $hiddenButton.prop('value', $button.prop('value'));
+                    }
                 }
+                $form.submit();
             }
         } else {
             $.each(data.attributes, function () {

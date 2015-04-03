@@ -127,6 +127,27 @@ class I18NTest extends TestCase
     }
 
     /**
+     * https://github.com/yiisoft/yii2/issues/7093
+     */
+    public function testRussianPlurals()
+    {
+        $this->assertEquals('На диване лежит 6 кошек!', $this->i18n->translate('test', 'There {n, plural, =0{no cats} =1{one cat} other{are # cats}} on lying on the sofa!', ['n' => 6], 'ru'));
+    }
+
+    public function testUsingSourceLanguageForMissingTranslation()
+    {
+        \Yii::$app->sourceLanguage = 'ru';
+        \Yii::$app->language = 'en';
+
+        $msg = '{n, plural, =0{Нет комментариев} =1{# комментарий} one{# комментарий} few{# комментария} many{# комментариев} other{# комментария}}';
+        $this->assertEquals('5 комментариев', \Yii::t('app', $msg, ['n' => 5]));
+        $this->assertEquals('3 комментария', \Yii::t('app', $msg, ['n' => 3]));
+        $this->assertEquals('1 комментарий', \Yii::t('app', $msg, ['n' => 1]));
+        $this->assertEquals('21 комментарий', \Yii::t('app', $msg, ['n' => 21]));
+        $this->assertEquals('Нет комментариев', \Yii::t('app', $msg, ['n' => 0]));
+    }
+
+    /**
      * https://github.com/yiisoft/yii2/issues/2519
      */
     public function testMissingTranslationEvent()

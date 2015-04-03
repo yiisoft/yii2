@@ -61,8 +61,10 @@ If you call [[yii\di\ServiceLocator::get()]] with an invalid ID, an exception wi
 
 
 Because service locators are often being created with [configurations](concept-configurations.md),
-a writable property named [[yii\di\ServiceLocator::setComponents()|components]] is provided. This allows you to configure and register multiple components at once. The following code shows a configuration array
-that can be used to configure an application, while also registering the "db", "cache" and "search" components:
+a writable property named [[yii\di\ServiceLocator::setComponents()|components]] is provided. This allows you 
+to configure and register multiple components at once. The following code shows a configuration array
+that can be used to configure a service locator (e.g. an [application](structure-applications.md)) with 
+the "db", "cache" and "search" components:
 
 ```php
 return [
@@ -76,8 +78,40 @@ return [
         ],
         'cache' => 'yii\caching\ApcCache',
         'search' => function () {
-            return new app\components\SolrService;
+            $solr = new app\components\SolrService('127.0.0.1');
+            // ... other initializations ...
+            return $solr;
         },
     ],
 ];
 ```
+
+In the above, there is an alternative way to configure the "search" component. Instead of directly writing a PHP
+callback which builds a `SolrService` instance, you can use a static class method to return such a callback, like
+shown as below:
+
+```php
+class SolrServiceBuilder
+{
+    public static function build($ip)
+    {
+        return function () use ($ip) {
+            $solr = new app\components\SolrService($ip);
+            // ... other initializations ...
+            return $solr;
+        };
+    }
+}
+
+return [
+    // ...
+    'components' => [
+        // ...
+        'search' => SolrServiceBuilder::build('127.0.0.1'),
+    ],
+];
+```
+
+This alternative approach is most preferable when you are releasing a Yii component which encapsulates some non-Yii
+3rd-party library. You use the static method like shown above to represent the complex logic of building the
+3rd-party object, and the user of your component only needs to call the static method to configure the component.

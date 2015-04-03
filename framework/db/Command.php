@@ -157,28 +157,26 @@ class Command extends Component
     {
         if (empty($this->params)) {
             return $this->_sql;
-        } else {
-            $params = [];
-            foreach ($this->params as $name => $value) {
-                if (is_string($value)) {
-                    $params[$name] = $this->db->quoteValue($value);
-                } elseif ($value === null) {
-                    $params[$name] = 'NULL';
-                } else {
-                    $params[$name] = $value;
-                }
-            }
-            if (isset($params[1])) {
-                $sql = '';
-                foreach (explode('?', $this->_sql) as $i => $part) {
-                    $sql .= (isset($params[$i]) ? $params[$i] : '') . $part;
-                }
-
-                return $sql;
-            } else {
-                return strtr($this->_sql, $params);
+        }
+        $params = [];
+        foreach ($this->params as $name => $value) {
+            if (is_string($value)) {
+                $params[$name] = $this->db->quoteValue($value);
+            } elseif ($value === null) {
+                $params[$name] = 'NULL';
+            } elseif (!is_object($value) && !is_resource($value)) {
+                $params[$name] = $value;
             }
         }
+        if (!isset($params[1])) {
+            return strtr($this->_sql, $params);
+        }
+        $sql = '';
+        foreach (explode('?', $this->_sql) as $i => $part) {
+            $sql .= (isset($params[$i]) ? $params[$i] : '') . $part;
+        }
+
+        return $sql;
     }
 
     /**
@@ -651,9 +649,9 @@ class Command extends Component
      * The method will properly quote the table and column names.
      * @param string $name the name of the foreign key constraint.
      * @param string $table the table that the foreign key constraint will be added to.
-     * @param string $columns the name of the column to that the constraint will be added on. If there are multiple columns, separate them with commas.
+     * @param string|array $columns the name of the column to that the constraint will be added on. If there are multiple columns, separate them with commas.
      * @param string $refTable the table that the foreign key references to.
-     * @param string $refColumns the name of the column that the foreign key references to. If there are multiple columns, separate them with commas.
+     * @param string|array $refColumns the name of the column that the foreign key references to. If there are multiple columns, separate them with commas.
      * @param string $delete the ON DELETE option. Most DBMS support these options: RESTRICT, CASCADE, NO ACTION, SET DEFAULT, SET NULL
      * @param string $update the ON UPDATE option. Most DBMS support these options: RESTRICT, CASCADE, NO ACTION, SET DEFAULT, SET NULL
      * @return Command the command object itself
@@ -805,9 +803,10 @@ class Command extends Component
                     $this->db->username,
                     $rawSql,
                 ];
-                if (($result = $cache->get($cacheKey)) !== false) {
+                $result = $cache->get($cacheKey);
+                if (is_array($result) && isset($result[0])) {
                     Yii::trace('Query result served from cache', 'yii\db\Command::query');
-                    return $result;
+                    return $result[0];
                 }
             }
         }
@@ -837,7 +836,7 @@ class Command extends Component
         }
 
         if (isset($cache, $cacheKey, $info)) {
-            $cache->set($cacheKey, $result, $info[1], $info[2]);
+            $cache->set($cacheKey, [$result], $info[1], $info[2]);
             Yii::trace('Saved query result in cache', 'yii\db\Command::query');
         }
 

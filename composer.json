@@ -52,32 +52,12 @@
         "source": "https://github.com/yiisoft/yii2"
     },
     "minimum-stability": "dev",
-    "replace": {
-        "yiisoft/yii2-apidoc": "self.version",
-        "yiisoft/yii2-authclient": "self.version",
-        "yiisoft/yii2-bootstrap": "self.version",
-        "yiisoft/yii2-codeception": "self.version",
-        "yiisoft/yii2-debug": "self.version",
-        "yiisoft/yii2-elasticsearch": "self.version",
-        "yiisoft/yii2-faker": "self.version",
-        "yiisoft/yii2-imagine": "self.version",
-        "yiisoft/yii2-gii": "self.version",
-        "yiisoft/yii2-jui": "self.version",
-        "yiisoft/yii2-mongodb": "self.version",
-        "yiisoft/yii2-redis": "self.version",
-        "yiisoft/yii2-smarty": "self.version",
-        "yiisoft/yii2-swiftmailer": "self.version",
-        "yiisoft/yii2-sphinx": "self.version",
-        "yiisoft/yii2-twig": "self.version",
-        "yiisoft/yii2": "self.version"
-    },
     "require": {
         "php": ">=5.4.0",
         "ext-mbstring": "*",
         "lib-pcre": "*",
-        "yiisoft/yii2-composer": "*",
         "ezyang/htmlpurifier": "4.6.*",
-        "cebe/markdown": "~1.0.0",
+        "cebe/markdown": "~1.0.0 | ~1.1.0",
         "bower-asset/jquery": "2.1.*@stable | 1.11.*@stable",
         "bower-asset/jquery.inputmask": "3.1.*",
         "bower-asset/punycode": "1.3.*",
@@ -87,7 +67,7 @@
         "bower-asset/typeahead.js": "0.10.*"
     },
     "require-dev": {
-        "phpunit/phpunit": "3.7.*",
+        "phpunit/phpunit": "~4.5",
         "twig/twig": "*",
         "smarty/smarty": "~3.1",
         "imagine/imagine": "0.5.*",
@@ -111,23 +91,7 @@
     },
     "autoload": {
         "psr-4": {
-            "yii\\": "framework/",
-            "yii\\apidoc\\": "extensions/apidoc/",
-            "yii\\authclient\\": "extensions/authclient/",
-            "yii\\bootstrap\\": "extensions/bootstrap/",
-            "yii\\codeception\\": "extensions/codeception/",
-            "yii\\debug\\": "extensions/debug/",
-            "yii\\elasticsearch\\": "extensions/elasticsearch/",
-            "yii\\faker\\": "extensions/faker/",
-            "yii\\gii\\": "extensions/gii/",
-            "yii\\imagine\\": "extensions/imagine/",
-            "yii\\jui\\": "extensions/jui/",
-            "yii\\mongodb\\": "extensions/mongodb/",
-            "yii\\redis\\": "extensions/redis/",
-            "yii\\smarty\\": "extensions/smarty/",
-            "yii\\swiftmailer\\": "extensions/swiftmailer/",
-            "yii\\sphinx\\": "extensions/sphinx/",
-            "yii\\twig\\": "extensions/twig/"
+            "yii\\": "framework/"
         }
     },
     "bin": [

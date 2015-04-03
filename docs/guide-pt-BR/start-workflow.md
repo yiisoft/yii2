@@ -14,7 +14,7 @@ em geral.
   necessidades.
 
 
-Funcionalidade <a name="functionality"></a>
+Funcionalidade <span id="functionality"></span>
 --------------
 
 A aplicação básica instalada contém quatro páginas:
@@ -35,8 +35,12 @@ Essa é uma [ferramenta de depuração](tool-debugger.md) fornecida pelo Yii par
 registrar e exibir várias informações de depuração, tais como mensagens de logs,
 status de respostas, as consultas de banco de dados executadas, e assim por diante.
 
+Além da aplicação Web, existe um script console chamado `yii`, que está localizado
+na pasta base da aplicação.
+Este script pode ser usado para executar rotinas em segundo plano e tarefas de
+manutenção da aplicação, descritas na [seção Comandos de Console](tutoral-console.md).
 
-Estrutura da Aplicação <a name="application-structure"></a>
+Estrutura da Aplicação <span id="application-structure"></span>
 ----------------------
 
 Os diretórios e arquivos mais importantes em sua aplicação são (assumindo que
@@ -84,7 +88,7 @@ do MVC. São usados [Widgets](structure-widgets.md) nas [views](structure-views.
 para ajudar a construir elementos de interface de usuário complexos e dinâmicos.
 
 
-Ciclo de Vida da Requisição <a name="request-lifecycle"></a>
+Ciclo de Vida da Requisição <span id="request-lifecycle"></span>
 ---------------------------
 
 O diagrama a seguir demonstra como uma aplicação gerencia uma requisição.
