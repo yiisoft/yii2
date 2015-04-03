@@ -32,7 +32,7 @@ namespace `app` so that they can be autoloaded by Yii without the need of defini
 `@app` is a [predefined alias](concept-aliases.md#predefined-aliases), and a class name like `app\components\MyClass`
 can be resolved into the class file `AppBasePath/components/MyClass.php`, according to the algorithm just described.
 
-In the [Advanced Project Template](tutorial-advanced-app.md), each tier has its own root alias. For example,
+In the [Advanced Project Template](https://github.com/yiisoft/yii2-app-advanced/blob/master/docs/guide/README.md), each tier has its own root alias. For example,
 the front-end tier has a root alias `@frontend`, while the back-end tier root alias is `@backend`. As a result,
 you may put the front-end classes under the namespace `frontend` while the back-end classes are under `backend`. This will
 allow these classes to be autoloaded by the Yii autoloader.
