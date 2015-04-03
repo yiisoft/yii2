@@ -11,6 +11,7 @@ use Yii;
 use yii\console\Exception;
 use yii\console\Controller;
 use yii\helpers\Console;
+use yii\helpers\FileHelper;
 use yii\helpers\VarDumper;
 use yii\web\AssetBundle;
 
@@ -325,9 +326,7 @@ class AssetController extends Controller
      */
     protected function buildTarget($target, $type, $bundles)
     {
-        $tempFile = $target->basePath . '/' . strtr($target->$type, ['{hash}' => 'temp']);
         $inputFiles = [];
-
         foreach ($target->depends as $name) {
             if (isset($bundles[$name])) {
                 if (!$this->isBundleExternal($bundles[$name])) {
@@ -339,16 +338,26 @@ class AssetController extends Controller
                 throw new Exception("Unknown bundle: '{$name}'");
             }
         }
-        if ($type === 'js') {
-            $this->compressJsFiles($inputFiles, $tempFile);
-        } else {
-            $this->compressCssFiles($inputFiles, $tempFile);
-        }
 
-        $targetFile = strtr($target->$type, ['{hash}' => md5_file($tempFile)]);
-        $outputFile = $target->basePath . '/' . $targetFile;
-        rename($tempFile, $outputFile);
-        $target->$type = [$targetFile];
+        if (empty($inputFiles)) {
+            $target->$type = [];
+        } else {
+            if (!file_exists($target->basePath)) {
+                FileHelper::createDirectory($target->basePath, $this->getAssetManager()->dirMode);
+            }
+            $tempFile = $target->basePath . '/' . strtr($target->$type, ['{hash}' => 'temp']);
+
+            if ($type === 'js') {
+                $this->compressJsFiles($inputFiles, $tempFile);
+            } else {
+                $this->compressCssFiles($inputFiles, $tempFile);
+            }
+
+            $targetFile = strtr($target->$type, ['{hash}' => md5_file($tempFile)]);
+            $outputFile = $target->basePath . '/' . $targetFile;
+            rename($tempFile, $outputFile);
+            $target->$type = [$targetFile];
+        }
     }
 
     /**
