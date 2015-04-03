@@ -145,7 +145,6 @@ RESTful ウェブサービス
 
 * [デバッグツールバーとデバッガ](tool-debugger.md)
 * [Gii を使ってコードを生成する](tool-gii.md)
-* **未定** [API ドキュメントを生成する](tool-api-doc.md)
 
 
 テスト
