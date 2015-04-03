@@ -9,7 +9,7 @@ Yii2 は [`Codeception`](https://github.com/Codeception/Codeception) テスト�
 - [機能テスト](test-functional.md) - ブラウザのエミュレーションによって、ユーザの視点からシナリオを検証する。
 - [受入テスト](test-acceptance.md) - ブラウザの中で、ユーザの視点からシナリオを検証する。
 
-これら三つのタイプのテスト全てについて、Yii は、[`yii2-basic`](https://github.com/yiisoft/yii2/tree/master/apps/basic) と [`yii2-advanced`](https://github.com/yiisoft/yii2/tree/master/apps/advanced) の両方のテンプレートで、そのまま使えるテストセットを提供しています。
+これら三つのタイプのテスト全てについて、Yii は、[`yii2-basic`](https://github.com/yiisoft/yii2-app-basic) と [`yii2-advanced`](https://github.com/yiisoft/yii2-app-advanced) の両方のプロジェクトテンプレートで、そのまま使えるテストセットを提供しています。
 
 テストを走らせるためには、[Codeception](https://github.com/Codeception/Codeception) をインストールする必要があります。
 インストールするのに良い方法は次のとおりです。

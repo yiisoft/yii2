@@ -11,7 +11,7 @@ Yii では、このプロセス全体が半自動的に実行されます。
 開発者に残されているのは、認証システムにおいて最も重要なクラスである [[yii\web\IdentityInterface]] を実装することだけです。
 典型的には、`IdentityInterface` の実装は `User` モデルを使って達成されます。
 
-十分な機能を有する認証の実例を [アドバンストアプリケーションテンプレート](tutorial-advanced-app.md) の中に見出すことが出来ます。
+十分な機能を有する認証の実例を [アドバンストプロジェクトテンプレート](https://github.com/yiisoft/yii2-app-advanced/blob/master/docs/guide-ja/README.md) の中に見出すことが出来ます。
 下記にインターフェイスのメソッドだけをリストします。
 
 ```php

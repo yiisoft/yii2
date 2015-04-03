@@ -145,7 +145,6 @@ RESTful ウェブサービス
 
 * [デバッグツールバーとデバッガ](tool-debugger.md)
 * [Gii を使ってコードを生成する](tool-gii.md)
-* **未定** [API ドキュメントを生成する](tool-api-doc.md)
 
 
 テスト
@@ -162,7 +161,7 @@ RESTful ウェブサービス
 スペシャルトピック
 ------------------
 
-* [アドバンストアプリケーションテンプレート](tutorial-advanced-app.md)
+* [アドバンストプロジェクトテンプレート](https://github.com/yiisoft/yii2-app-advanced/blob/master/docs/guide-ja/README.md)
 * [アプリケーションを一から構築する](tutorial-start-from-scratch.md)
 * [コンソールコマンド](tutorial-console.md)
 * [コアバリデータ](tutorial-core-validators.md)

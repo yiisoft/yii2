@@ -23,7 +23,7 @@
 
 ## ウェブアプリケーション<span id="web-applications"></span>
 
-次に示すのが、[ベーシックウェブアプリケーションテンプレート](start-installation.md) のエントリスクリプトです。
+次に示すのが、[ベーシックウェブプロジェクトテンプレート](start-installation.md) のエントリスクリプトです。
 
 ```php
 <?php

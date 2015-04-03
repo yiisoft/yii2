@@ -503,9 +503,9 @@ User と IdentityInterface
 
 1.1 の `CWebUser` クラスは [[yii\web\User]] に取って換られました。
 そして `CUserIdentity` クラスはもうありません。代りに、使い方がもっと単純な [[yii\web\IdentityInterface]] を実装すべきです。
-アドバンストアプリケーションテンプレートがそういう例を提供しています。
+アドバンストプロジェクトテンプレートがそういう例を提供しています。
 
-詳細は [認証](security-authentication.md)、[権限付与](security-authorization.md)、そして [アドバンストアプリケーションテンプレート](tutorial-advanced-app.md) の節を参照してください。
+詳細は [認証](security-authentication.md)、[権限付与](security-authorization.md)、そして [アドバンストプロジェクトテンプレート](https://github.com/yiisoft/yii2-app-advanced/blob/master/docs/guide-ja/README.md) の節を参照してください。
 
 
 URL 管理
