@@ -6,6 +6,7 @@ Yii Framework 2 Change Log
 
 - Bug #6642: Fixed the bug that using confirmation dialog via `data-confirm` in an `ActiveForm` may cause the dialog to appear twice (pana1990, qiangxue)
 - Bug #6871: Fixed the bug that using defaults and hostnames in URL rules may cause an out-of-range index issue (qiangxue)
+- Bug #7473: Fixed `yii\console\controllers\AssetController` does not create missing folders for the target bundles (schmunk42, klimov-paul)
 - Bug #7529: Fixed `yii\web\Response::sendContentAsFile()` that was broken in 2.0.3 (samdark)
 - Bug #7603: Fixed escape characters in `FormatConverter` to work with unicode characters (maddoger, cebe)
 - Bug #7757: Fix fetching tables schema for oci and mysql when PDO::ATTR_CASE is set (nineinchnick)
@@ -27,6 +28,7 @@ Yii Framework 2 Change Log
 - Enh #7850: Added `yii\filters\PageCache::cacheCookies` and `cacheHeaders` to allow selectively caching cookies and HTTP headers (qiangxue)
 - Enh #7867: Implemented findUniqueIndexes for oci and mssql (nineinchnick)
 - Enh #7912: Added `aria-label` to ActionColumn buttons (LAV45, samdark)
+- Enh #7973: Added `Schema::getSchemaNames` method (nineinchnick)
 - Enh: Added `yii\helper\Console::wrapText()` method to wrap indented text by console window width and used it in `yii help` command (cebe)
 - Enh: Implement batchInsert for oci (nineinchnick)
 - Enh: Detecting IntegrityException for oci (nineinchnick)
