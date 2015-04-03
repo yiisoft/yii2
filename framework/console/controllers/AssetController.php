@@ -342,9 +342,7 @@ class AssetController extends Controller
         if (empty($inputFiles)) {
             $target->$type = [];
         } else {
-            if (!file_exists($target->basePath)) {
-                FileHelper::createDirectory($target->basePath, $this->getAssetManager()->dirMode);
-            }
+            FileHelper::createDirectory($target->basePath, $this->getAssetManager()->dirMode);
             $tempFile = $target->basePath . '/' . strtr($target->$type, ['{hash}' => 'temp']);
 
             if ($type === 'js') {
