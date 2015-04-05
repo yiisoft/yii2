@@ -429,7 +429,7 @@ class AppAsset extends AssetBundle
         'css/site.less',
     ];
     public $js = [
-        'js/site.ts',
+        'js/site.js',
     ];
     public $depends = [
         'yii\web\YiiAsset',
