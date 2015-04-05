@@ -1345,12 +1345,18 @@ class Request extends \yii\base\Request
 
     /**
      * Performs the CSRF validation.
-     * The method will compare the CSRF token obtained from a cookie and from a POST field or HTTP header.
-     * If they are different, a CSRF attack is detected and a 400 HTTP exception will be raised.
-     * This method is called in [[Controller::beforeAction()]].
+     *
+     * This method will validate the user-provided CSRF token by comparing it with the one stored in cookie or session.
+     * This method is mainly called in [[Controller::beforeAction()]].
+     *
+     * Note that the method will NOT perform CSRF validation if [[enableCsrfValidation]] is false or the HTTP method
+     * is among GET, HEAD or OPTIONS.
+     *
+     * @param string $token the user-provided CSRF token to be validated. If null, the token will be retrieved from
+     * the [[csrfParam]] POST field or HTTP header.
      * @return boolean whether CSRF token is valid. If [[enableCsrfValidation]] is false, this method will return true.
      */
-    public function validateCsrfToken()
+    public function validateCsrfToken($token = null)
     {
         $method = $this->getMethod();
         // only validate CSRF token on non-"safe" methods http://www.w3.org/Protocols/rfc2616/rfc2616-sec9.html#sec9.1.1
@@ -1360,8 +1366,12 @@ class Request extends \yii\base\Request
 
         $trueToken = $this->loadCsrfToken();
 
-        return $this->validateCsrfTokenInternal($this->getBodyParam($this->csrfParam), $trueToken)
-            || $this->validateCsrfTokenInternal($this->getCsrfTokenFromHeader(), $trueToken);
+        if ($token !== null) {
+            return $this->validateCsrfTokenInternal($token, $this->loadCsrfToken());
+        } else {
+            return $this->validateCsrfTokenInternal($this->getBodyParam($this->csrfParam), $trueToken)
+                || $this->validateCsrfTokenInternal($this->getCsrfTokenFromHeader(), $trueToken);
+        }
     }
 
     /**
