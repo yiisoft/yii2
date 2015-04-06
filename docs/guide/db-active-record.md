@@ -667,7 +667,7 @@ public function actionUpdate($id)
 
     try {
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            return $this->redirect(['view', $urlParams]);
+            return $this->redirect(['view', ['id' => $model->primaryKey]]);
         } else {
             return $this->render('update', [
                 'model' => $model,
