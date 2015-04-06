@@ -1367,7 +1367,7 @@ class Request extends \yii\base\Request
         $trueToken = $this->loadCsrfToken();
 
         if ($token !== null) {
-            return $this->validateCsrfTokenInternal($token, $this->loadCsrfToken());
+            return $this->validateCsrfTokenInternal($token, $trueToken);
         } else {
             return $this->validateCsrfTokenInternal($this->getBodyParam($this->csrfParam), $trueToken)
                 || $this->validateCsrfTokenInternal($this->getCsrfTokenFromHeader(), $trueToken);
