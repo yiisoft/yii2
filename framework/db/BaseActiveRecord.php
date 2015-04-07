@@ -233,7 +233,7 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
      * @return mixed property value
      * @see getAttribute()
      */
-    public function __get($name)
+    public function &__get($name)
     {
         if (isset($this->_attributes[$name]) || array_key_exists($name, $this->_attributes)) {
             return $this->_attributes[$name];
