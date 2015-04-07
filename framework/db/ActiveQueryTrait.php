@@ -32,6 +32,31 @@ trait ActiveQueryTrait
 
 
     /**
+     * Calls the named method which is not a class method.
+     *
+     * This method will check if [[modelClass]] declares static named method
+     * and will execute it if available passing self instance as a first argument.
+     *
+     * Do not call this method directly as it is a PHP magic method that
+     * will be implicitly called when an unknown method is being invoked.
+     * @param string $name the method name
+     * @param array $params method parameters
+     * @return mixed the method return value
+     */
+    public function __call($name, $params)
+    {
+        $reflection = new \ReflectionClass($this->modelClass);
+        if ($reflection->hasMethod($name)) {
+            $method = $reflection->getMethod($name);
+            if ($method->isStatic() && $method->isPublic() && $method->getNumberOfParameters() > 0) {
+                array_unshift($params, $this);
+                return forward_static_call_array([$this->modelClass, $name], $params);
+            }
+        }
+        return parent::__call($name, $params);
+    }
+
+    /**
      * Sets the [[asArray]] property.
      * @param boolean $value whether to return the query results in terms of arrays instead of Active Records.
      * @return static the query object itself
