@@ -103,6 +103,9 @@ trait ActiveRecordTestTrait
         // scope
         $this->assertEquals(2, count($customerClass::find()->active()->all()));
         $this->assertEquals(2, $customerClass::find()->active()->count());
+        // inline scope
+        $this->assertEquals(2, count($customerClass::find()->whereActive()->all()));
+        $this->assertEquals(2, $customerClass::find()->whereActive()->count());
     }
 
     public function testFindAsArray()
