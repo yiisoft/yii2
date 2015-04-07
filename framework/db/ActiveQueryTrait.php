@@ -50,7 +50,8 @@ trait ActiveQueryTrait
             $method = $reflection->getMethod($name);
             if ($method->isStatic() && $method->isPublic() && $method->getNumberOfParameters() > 0) {
                 array_unshift($params, $this);
-                return forward_static_call_array([$this->modelClass, $name], $params);
+                forward_static_call_array([$this->modelClass, $name], $params);
+                return $this;
             }
         }
         return parent::__call($name, $params);

@@ -87,11 +87,9 @@ class Customer extends ActiveRecord
 
     /**
      * @param ActiveQuery $query
-     * @return ActiveQuery
      */
     public static function whereActive($query)
     {
         $query->andWhere('[[status]]=1');
-        return $query;
     }
 }
