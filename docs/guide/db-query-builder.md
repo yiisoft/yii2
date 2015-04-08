@@ -383,7 +383,7 @@ If `GROUP BY` only involves simple column names, you can specify it using a stri
 raw SQLs. For example,
 
 ```php
-$query->groupBy('id, status']);
+$query->groupBy('id, status');
 ```
 
 > Note: You should use the array format if `GROUP BY` involves some DB expression.
