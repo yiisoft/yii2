@@ -18,6 +18,7 @@ Yii Framework 2 Change Log
 - Bug #7868: Fixed creating raw sql (for logging) by skipping object and resource params (nineinchnick)
 - Bug #7868: Fixed Schema::getLastInsertID() by quoting sequence name (nineinchnick)
 - Bug #7957: Removed extra `parseFloat()` call for the `compare` js validator (CthulhuDen)
+- Bug #8014: Fixed setting incorrect form "action" property after submitting a form using a link with "data-method" and containing "action" among "data-params" (samdark) 
 - Enh #6895: Added `ignoreCategories` config option for message command to ignore categories specified (samdark)
 - Enh #6975: Pressing arrows while focused in inputs of Active Form with `validateOnType` enabled no longer triggers validation (slinstj)
 - Enh #7409: Allow `yii\filters\auth\CompositeAuth::authMethods` to take authentication objects (fernandezekiel, qiangxue)
