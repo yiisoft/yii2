@@ -17,6 +17,7 @@ DROP TABLE IF EXISTS "type";
 DROP TABLE IF EXISTS "constraints";
 DROP TABLE IF EXISTS "animal";
 DROP VIEW IF EXISTS "animal_view";
+DROP TABLE IF EXISTS "default_pk";
 
 CREATE TABLE "constraints"
 (
@@ -133,6 +134,12 @@ CREATE TABLE "animal" (
 );
 
 CREATE VIEW "animal_view" AS SELECT * FROM "animal";
+
+CREATE TABLE "default_pk" (
+  "id" int(11) NOT NULL DEAFULT 5,
+  "type" varchar(255) NOT NULL,
+  PRIMARY KEY ("id")
+);
 
 INSERT INTO "animal" ("type") VALUES ('yiiunit\data\ar\Cat');
 INSERT INTO "animal" ("type") VALUES ('yiiunit\data\ar\Dog');

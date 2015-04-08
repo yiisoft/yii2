@@ -19,6 +19,7 @@ DROP TABLE IF EXISTS "constraints" CASCADE;
 DROP TABLE IF EXISTS "bool_values" CASCADE;
 DROP TABLE IF EXISTS "animal" CASCADE;
 DROP VIEW IF EXISTS "animal_view";
+DROP TABLE IF EXISTS "default_pk" CASCADE;
 DROP SCHEMA IF EXISTS "schema1" CASCADE;
 DROP SCHEMA IF EXISTS "schema2" CASCADE;
 
@@ -137,6 +138,11 @@ CREATE TABLE "animal" (
 );
 
 CREATE VIEW "animal_view" AS SELECT * FROM "animal";
+
+CREATE TABLE "default_pk" (
+  id integer not null default 5 primary key,
+  type varchar(255) not null
+);
 
 INSERT INTO "animal" (type) VALUES ('yiiunit\data\ar\Cat');
 INSERT INTO "animal" (type) VALUES ('yiiunit\data\ar\Dog');

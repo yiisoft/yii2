@@ -17,6 +17,7 @@ use yiiunit\framework\db\cubrid\CubridActiveRecordTest;
 use yiiunit\data\ar\Animal;
 use yiiunit\data\ar\Cat;
 use yiiunit\data\ar\Dog;
+use yiiunit\data\ar\DefaultPk;
 
 /**
  * @group db
@@ -679,8 +680,8 @@ class ActiveRecordTest extends DatabaseTestCase
         $this->assertEquals(3, count($orders[1]->orderItems));
         $this->assertEquals(1, count($orders[2]->orderItems));
     }
-    
-    public function testPopulateRecordCallWhenQueryingOnParentClass() 
+
+    public function testPopulateRecordCallWhenQueryingOnParentClass()
     {
         (new Cat())->save(false);
         (new Dog())->save(false);
@@ -690,5 +691,13 @@ class ActiveRecordTest extends DatabaseTestCase
 
         $animal = Animal::find()->where(['type' => Cat::className()])->one();
         $this->assertEquals('meow', $animal->getDoes());
+    }
+
+    public function testPrimaryKeyAfterSave()
+    {
+        $record = new DefaultPk;
+        $record->type = 'type';
+        $record->save(false);
+        $this->assertEquals(5, $record->primaryKey);
     }
 }

@@ -17,6 +17,7 @@ DROP TABLE IF EXISTS `type` CASCADE;
 DROP TABLE IF EXISTS `constraints` CASCADE;
 DROP TABLE IF EXISTS `animal` CASCADE;
 DROP VIEW IF EXISTS `animal_view`;
+DROP TABLE IF EXISTS `default_pk` CASCADE;
 
 CREATE TABLE `constraints`
 (
@@ -135,6 +136,12 @@ CREATE TABLE `animal` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE VIEW `animal_view` AS SELECT * FROM `animal`;
+
+CREATE TABLE `default_pk` (
+  `id` INT NOT NULL DEFAULT 5,
+  `type` VARCHAR(255) NOT NULL,
+  PRIMARY KEY (id)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 INSERT INTO `animal` (`type`) VALUES ('yiiunit\data\ar\Cat');
 INSERT INTO `animal` (`type`) VALUES ('yiiunit\data\ar\Dog');
