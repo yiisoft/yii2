@@ -162,6 +162,31 @@ EOD;
     }
 
     /**
+     * For each return column a param will be added to $returnParams.
+     * They should have variables bound before executing the query.
+     * @inheritdoc
+     */
+    public function insert($table, $columns, &$params, $returnColumns = null, &$returnParams = null)
+    {
+        list($names, $placeholders) = $this->prepareInsertColumns($table, $columns, $params);
+
+        $schema = $this->db->getSchema();
+        $returning = [];
+        if ($returnColumns !== null) {
+            foreach ($returnColumns as $name) {
+                $phName = self::PARAM_PREFIX . count($returnParams);
+                $returnParams[$phName] = null;
+                $returning[] = $name === '*' ? $name : $schema->quoteColumnName($name);
+            }
+        }
+
+        return 'INSERT INTO ' . $schema->quoteTableName($table)
+        . ' (' . implode(', ', $names) . ') VALUES ('
+        . implode(', ', $placeholders) . ')'
+        . (empty($returning) ? '' : ' RETURNING ' . implode(', ', $returning) . ' INTO ' . implode(', ', array_keys($returnParams)));
+    }
+
+    /**
      * Generates a batch INSERT SQL statement.
      * For example,
      *

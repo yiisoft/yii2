@@ -455,18 +455,37 @@ class ActiveRecord extends BaseActiveRecord
             }
         }
         $db = static::getDb();
-        $command = $db->createCommand()->insert($this->tableName(), $values);
-        if (!$command->execute()) {
-            return false;
+        // depending on the underlying DBMS, either $returnParams will be not empty, the command will return results
+        // or lastInsertId has to be used to fetch primary key values
+        $returnParams = [];
+        $command = $db->createCommand()->insert($this->tableName(), $values, $this->primaryKey(), $returnParams);
+        // force preparing as a command for writing, not reading
+        $command->prepare(false);
+        if ($returnParams === null || !empty($returnParams)) {
+            if (!$command->execute()) {
+                return false;
+            }
+            $primaryKeys = [];
+            if (!empty($returnParams)) {
+                foreach ($this->primaryKey() as $primaryKey) {
+                    $primaryKeys[$primaryKey] = array_shift($returnParams);
+                }
+            }
+        } else {
+            $primaryKeys = $command->queryOne();
         }
-        $table = $this->getTableSchema();
-        if ($table->sequenceName !== null) {
-            foreach ($table->primaryKey as $name) {
-                if ($this->getAttribute($name) === null) {
-                    $id = $table->columns[$name]->phpTypecast($db->getLastInsertID($table->sequenceName));
-                    $this->setAttribute($name, $id);
-                    $values[$name] = $id;
-                    break;
+        if (!empty($primaryKeys)) {
+            $this->setAttributes($primaryKeys, false);
+        } else {
+            $table = $this->getTableSchema();
+            if ($table->sequenceName !== null) {
+                foreach ($table->primaryKey as $name) {
+                    if ($this->getAttribute($name) === null) {
+                        $id = $table->columns[$name]->phpTypecast($db->getLastInsertID($table->sequenceName));
+                        $this->setAttribute($name, $id);
+                        $values[$name] = $id;
+                        break;
+                    }
                 }
             }
         }

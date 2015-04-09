@@ -408,14 +408,27 @@ class Command extends Component
      *
      * @param string $table the table that new rows will be inserted into.
      * @param array $columns the column data (name => value) to be inserted into the table.
+     * @param array $returnColumns the column names which values to be returned after inserting rows.
+     * @param array $returnParams if not empty after calling this method, each value is bound to the query.
      * @return Command the command object itself
+     * @throws NotSupportedException if $returnColumns is set but the underlying DBMS doesn't support returning
      */
-    public function insert($table, $columns)
+    public function insert($table, $columns, $returnColumns = null, &$returnParams = null)
     {
         $params = [];
-        $sql = $this->db->getQueryBuilder()->insert($table, $columns, $params);
+        $sql = $this->db->getQueryBuilder()->insert($table, $columns, $params, $returnColumns, $returnParams);
 
-        return $this->setSql($sql)->bindValues($params);
+        $this->setSql($sql)->bindValues($params);
+
+        if ($returnParams !== null) {
+            $this->prepare(false);
+            foreach ($returnParams as $param => &$value) {
+                //! @todo type has to be determined from column schema
+                $this->bindParam($param, $value);
+            }
+        }
+
+        return $this;
     }
 
     /**

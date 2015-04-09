@@ -159,6 +159,14 @@ class PostgreSQLActiveRecordTest extends ActiveRecordTest
 
         $this->assertTrue($model->save(false));
     }
+
+    public function testPrimaryKeyAfterSave()
+    {
+        $record = new DefaultPk;
+        $record->type = 'type';
+        $record->save(false);
+        $this->assertEquals(5, $record->primaryKey);
+    }
 }
 
 class BoolAR extends ActiveRecord

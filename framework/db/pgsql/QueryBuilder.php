@@ -168,6 +168,38 @@ class QueryBuilder extends \yii\db\QueryBuilder
     /**
      * @inheritdoc
      */
+    public function insert($table, $columns, &$params, $returnColumns = null, &$returnParams = null)
+    {
+        list($names, $placeholders) = $this->prepareInsertColumns($table, $columns, $params);
+
+        // set to empty array to indicate that returning is supported
+        $returnParams = [];
+        $schema = $this->db->getSchema();
+        $returning = [];
+        if ($returnColumns !== null) {
+            if (!is_array($returnColumns)) {
+                $returnColumns = [$returnColumns];
+            }
+            foreach ($returnColumns as $name) {
+                if ($name === '*') {
+                    $returning[] = $name;
+                } elseif (preg_match('/^(.*?)(?i:\s+as\s+|\s+)([\w\-_\.]+)$/', $name, $matches)) {
+                    $returning[] = $schema->quoteColumnName($matches[1]) . ' AS ' . $schema->quoteColumnName($matches[2]);
+                } else {
+                    $returning[] = $schema->quoteColumnName($name);
+                }
+            }
+        }
+
+        return 'INSERT INTO ' . $schema->quoteTableName($table)
+        . ' (' . implode(', ', $names) . ') VALUES ('
+        . implode(', ', $placeholders) . ')'
+        . (empty($returning) ? '' : ' RETURNING ' . implode(', ', $returning));
+    }
+
+    /**
+     * @inheritdoc
+     */
     public function batchInsert($table, $columns, $rows)
     {
         $schema = $this->db->getSchema();

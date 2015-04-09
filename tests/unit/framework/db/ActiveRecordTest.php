@@ -692,12 +692,4 @@ class ActiveRecordTest extends DatabaseTestCase
         $animal = Animal::find()->where(['type' => Cat::className()])->one();
         $this->assertEquals('meow', $animal->getDoes());
     }
-
-    public function testPrimaryKeyAfterSave()
-    {
-        $record = new DefaultPk;
-        $record->type = 'type';
-        $record->save(false);
-        $this->assertEquals(5, $record->primaryKey);
-    }
 }
