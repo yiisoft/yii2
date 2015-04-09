@@ -30,7 +30,9 @@ use yii\base\Model;
  * }
  * ~~~
  *
- * Note: this validator will not work with validation declared via model inline method.
+ * Note: this validator will not work with validation declared via model inline method. If you declare inline
+ * validation rule for attribute, you should avoid usage of this validator and iterate over array attribute
+ * values manually inside your code.
  *
  * @property Validator $validator related validator instance. This property is read only.
  *
