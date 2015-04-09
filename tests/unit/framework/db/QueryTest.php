@@ -190,4 +190,19 @@ class QueryTest extends DatabaseTestCase
         $result = (new Query)->from('customer')->where(['status' => 3])->one($db);
         $this->assertFalse($result);
     }
+
+    public function testColumn()
+    {
+        $db = $this->getConnection();
+        $result = (new Query)->select('name')->from('customer')->orderBy(['id' => SORT_DESC])->column($db);
+        $this->assertEquals(['user3', 'user2', 'user1'], $result);
+
+        // https://github.com/yiisoft/yii2/issues/7515
+        $result = (new Query)->from('customer')
+            ->select('name')
+            ->orderBy(['id' => SORT_DESC])
+            ->indexBy('id')
+            ->column($db);
+        $this->assertEquals([3 => 'user3', 2 => 'user2', 1 => 'user1'], $result);
+    }
 }
