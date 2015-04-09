@@ -57,6 +57,7 @@ class Validator extends Component
         'date' => 'yii\validators\DateValidator',
         'default' => 'yii\validators\DefaultValueValidator',
         'double' => 'yii\validators\NumberValidator',
+        'each' => 'yii\validators\EachValidator',
         'email' => 'yii\validators\EmailValidator',
         'exist' => 'yii\validators\ExistValidator',
         'file' => 'yii\validators\FileValidator',
