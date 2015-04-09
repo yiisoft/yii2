@@ -27,6 +27,7 @@ use yii\base\NotSupportedException;
  * - `date`: [[DateValidator]]
  * - `default`: [[DefaultValueValidator]]
  * - `double`: [[NumberValidator]]
+ * - `each`: [[EachValidator]]
  * - `email`: [[EmailValidator]]
  * - `exist`: [[ExistValidator]]
  * - `file`: [[FileValidator]]
