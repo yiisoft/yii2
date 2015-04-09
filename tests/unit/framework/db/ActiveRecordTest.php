@@ -17,7 +17,6 @@ use yiiunit\framework\db\cubrid\CubridActiveRecordTest;
 use yiiunit\data\ar\Animal;
 use yiiunit\data\ar\Cat;
 use yiiunit\data\ar\Dog;
-use yiiunit\data\ar\DefaultPk;
 
 /**
  * @group db

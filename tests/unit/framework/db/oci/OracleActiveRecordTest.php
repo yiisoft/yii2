@@ -3,6 +3,7 @@ namespace yiiunit\framework\db\oci;
 
 use yiiunit\framework\db\ActiveRecordTest;
 use yiiunit\data\ar\Type;
+use yiiunit\data\ar\DefaultPk;
 
 /**
  * @group db
