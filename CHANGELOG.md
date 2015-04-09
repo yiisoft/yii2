@@ -24,6 +24,7 @@ Yii Framework 2 Change Log
 - Enh #6975: Pressing arrows while focused in inputs of Active Form with `validateOnType` enabled no longer triggers validation (slinstj)
 - Enh #7409: Allow `yii\filters\auth\CompositeAuth::authMethods` to take authentication objects (fernandezekiel, qiangxue)
 - Enh #7488: Added `StringHelper::explode` to perform explode with trimming and skipping of empty elements (SilverFire, nineinchnick, creocoder, samdark)
+- Enh #7515: Added support to use `indexBy()` together with `column()` in query builder (qiangxue)
 - Enh #7530: Improved default values for `yii\data\Sort` link labels in a `ListView` when used with an `ActiveDataProvider` (cebe)
 - Enh #7539: `yii\console\controllers\AssetController` provides dependency trace in case bundle circular dependency detected (klimov-paul)
 - Enh #7562: `yii help` now lists all sub-commands by default (callmez)
