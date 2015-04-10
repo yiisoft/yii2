@@ -567,15 +567,23 @@ class PhpManager extends BaseManager
     }
 
     /**
+     * @param string $name The name of the item being updated (aka : the 'old' name)
+     * @param Item $item The updated item
+     * @return bool
      * @inheritdoc
      */
     protected function updateItem($name, $item)
     {
+        // You can't overload an item with an existing name
+        if (isset($this->items[$item->name])) {
+            throw new InvalidParamException("Unable to change the item name. The name '{$item->name}' is already used by another item.");
+        }
+
+        // The is no conflict on names, we can register the updated item
         $this->items[$item->name] = $item;
+
+        // If the item's name has changed, unset the old references
         if ($name !== $item->name) {
-            if (isset($this->items[$item->name])) {
-                throw new InvalidParamException("Unable to change the item name. The name '{$item->name}' is already used by another item.");
-            }
             if (isset($this->items[$name])) {
                 unset ($this->items[$name]);
 
