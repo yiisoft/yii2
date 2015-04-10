@@ -466,6 +466,7 @@ class ActiveRecord extends BaseActiveRecord
         }
         if (!empty($primaryKeys)) {
             $this->setAttributes($primaryKeys, false);
+            $values = array_merge($values, $primaryKeys);
         } else {
             $table = $this->getTableSchema();
             if ($table->sequenceName !== null) {
