@@ -447,6 +447,15 @@ class Command extends Component
      * Before executing the query prepare it for writing using [[prepare(false)]].
      * Because it returns results, use [[queryOne()]] to execute it.
      *
+     * For example,
+     *
+     * ~~~
+     * $id = $connection->createCommand()->insertReturning('user', [
+     *     'name' => 'Sam',
+     *     'age' => 30,
+     * ], ['id'])->prepare(false)->queryOne();
+     * ~~~
+     *
      * @param string $table the table that new rows will be inserted into.
      * @param array $columns the column data (name => value) to be inserted into the table.
      * @param array $returnColumns the column names which values to be returned after inserting rows.
