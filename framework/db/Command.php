@@ -450,7 +450,7 @@ class Command extends Component
      * For example,
      *
      * ~~~
-     * $id = $connection->createCommand()->insertReturning('user', [
+     * $row = $connection->createCommand()->insertReturning('user', [
      *     'name' => 'Sam',
      *     'age' => 30,
      * ], ['id'])->prepare(false)->queryOne();
