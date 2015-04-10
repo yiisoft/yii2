@@ -97,7 +97,7 @@ CREATE TABLE "composite_fk" (
 );
 
 CREATE TABLE "null_values" (
-  id INT NOT NULL,
+  id serial NOT NULL,
   var1 INT NULL,
   var2 INT NULL,
   var3 INT DEFAULT NULL,

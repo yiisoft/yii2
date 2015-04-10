@@ -679,7 +679,7 @@ class ActiveRecordTest extends DatabaseTestCase
         $this->assertEquals(3, count($orders[1]->orderItems));
         $this->assertEquals(1, count($orders[2]->orderItems));
     }
-    
+
     public function testPopulateRecordCallWhenQueryingOnParentClass() 
     {
         (new Cat())->save(false);
@@ -690,5 +690,12 @@ class ActiveRecordTest extends DatabaseTestCase
 
         $animal = Animal::find()->where(['type' => Cat::className()])->one();
         $this->assertEquals('meow', $animal->getDoes());
+    }
+
+    public function testSaveEmpty()
+    {
+        $record = new NullValues;
+        $this->assertTrue($record->save(false));
+        $this->assertEquals(1, $record->id);
     }
 }
