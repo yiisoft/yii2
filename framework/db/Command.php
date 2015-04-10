@@ -90,8 +90,8 @@ class Command extends Component
      */
     private $_pendingParams = [];
     /**
-     * @var array|true INSERT/UPDATE return parameters to be bound to the current PDO statement
-     * or boolean true if return parameters are the query result.
+     * @var array|true Either an array of return parameters to be bound to the current PDO statement
+     * or a special boolean value "true" if return parameters are the query result.
      */
     private $_returningParams;
     /**
