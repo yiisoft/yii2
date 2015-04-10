@@ -249,10 +249,10 @@ named in this way. If you are concerned about code style consistency, you should
 
 ### Data Transformation <span id="data-transformation"></span>
 
-It often happens that the data being entered and/or displayed are in a different format from the one used in
+It often happens that the data being entered and/or displayed are in a format which is different from the one used in
 storing the data in a database. For example, in the database you are storing customers' birthdays as UNIX timestamps
 (which is not a good design, though), while in most cases you would like to manipulate birthdays as strings in
-the format of `'YYYY/MM/DD'`. To achieve this goal, you can define data transformation methods in the `Customer`
+the format of `'YYYY/MM/DD'`. To achieve this goal, you can define *data transformation* methods in the `Customer`
 Active Record class like the following:
 
 ```php
@@ -275,9 +275,9 @@ class Customer extends ActiveRecord
 Now in your PHP code, instead of accessing `$customer->birthday`, you would access `$customer->birthdayText`, which
 will allow you to input and display customer birthdays in the format of `'YYYY/MM/DD'`.
 
-> Tip: the above shows an easy approach to achieve data transformation in general. For date values Yii provides a better
-> way using the [DateValidator](tutorial-core-validators.md#date) and a DatePicker widget, which is described in the
-> [JUI Widgets section](widget-jui#datepicker-date-input).
+> Tip: The above example shows a generic way of transforming data in different formats. If you are working with
+> date values, you may use [DateValidator](tutorial-core-validators.md#date) and [[yii\jui\DatePicker|DatePicker]],
+> which is easier to use and more powerful.
 
 
 ### Retrieving Data in Arrays <span id="data-in-arrays"></span>
