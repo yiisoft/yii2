@@ -283,7 +283,7 @@ class Command extends Component
                     'driverOptions' => null,
                     'bound' => false,
                 ], $value);
-                if ($value['bound'] !== false) {
+                if ($value['bound'] === true) {
                     continue;
                 }
                 $this->pdoStatement->bindParam($name, $value['value'], $value['dataType'], $value['length'], $value['driverOptions']);
@@ -451,6 +451,7 @@ class Command extends Component
      * @param array $returnColumns the column names which values to be returned after inserting rows.
      * @return Command the command object itself
      * @throws NotSupportedException if $returnColumns is set but the underlying DBMS doesn't support returning
+     * @since 2.0.4
      */
     public function insertReturning($table, $columns, $returnColumns = null)
     {

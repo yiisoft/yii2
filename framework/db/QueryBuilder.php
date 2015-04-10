@@ -183,6 +183,7 @@ class QueryBuilder extends \yii\base\Object
      * @param array $returnParams used only when if underlying DBMS support returning data from an INSERT statement
      * They should be bound to the DB command later.
      * @return string the INSERT SQL
+     * @since 2.0.4
      */
     public function insertReturning($table, $columns, &$params, $returnColumns, &$returnParams)
     {
