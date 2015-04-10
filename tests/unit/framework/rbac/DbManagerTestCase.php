@@ -6,6 +6,7 @@ use yii\console\Application;
 use yii\console\Controller;
 use yii\db\Connection;
 use yii\rbac\DbManager;
+use yiiunit\framework\console\controllers\EchoMigrateController;
 
 /**
  * DbManagerTestCase
@@ -26,6 +27,9 @@ abstract class DbManagerTestCase extends ManagerTestCase
             new Application([
                 'id' => 'Migrator',
                 'basePath' => '@yiiunit',
+                'controllerMap' => [
+                    'migrate' => EchoMigrateController::className(),
+                ],
                 'components' => [
                     'db' => static::getConnection(),
                     'authManager' => '\yii\rbac\DbManager',
@@ -35,7 +39,7 @@ abstract class DbManagerTestCase extends ManagerTestCase
 
         ob_start();
         $result = Yii::$app->runAction($route, $params);
-        echo "Result is ".$result;
+        echo "Result is " . $result;
         if ($result !== Controller::EXIT_CODE_NORMAL) {
             ob_end_flush();
         } else {
