@@ -90,7 +90,7 @@ class Command extends Component
      */
     private $_pendingParams = [];
     /**
-     * @var mixed INSERT/UPDATE return parameters to be bound to the current PDO statement
+     * @var array|true INSERT/UPDATE return parameters to be bound to the current PDO statement
      * or boolean true if return parameters are the query result.
      */
     private $_returningParams;
@@ -444,7 +444,8 @@ class Command extends Component
      * Creates an INSERT INTO RETURNING command or plain INSERT if the underlying DBMS does not support it.
      * @see insert()
      *
-     * Note that the created command is not executed until [[execute()]] is called.
+     * Before executing the query prepare it for writing using [[prepare(false)]].
+     * Because it returns results, use [[queryOne()]] to execute it.
      *
      * @param string $table the table that new rows will be inserted into.
      * @param array $columns the column data (name => value) to be inserted into the table.
