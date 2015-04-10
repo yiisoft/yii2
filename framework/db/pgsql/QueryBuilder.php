@@ -168,10 +168,8 @@ class QueryBuilder extends \yii\db\QueryBuilder
     /**
      * @inheritdoc
      */
-    public function insert($table, $columns, &$params, $returnColumns = null, &$returnParams = null)
+    public function insertReturning($table, $columns, &$params, $returnColumns = null, &$returnParams = null)
     {
-        list($names, $placeholders) = $this->prepareInsertColumns($table, $columns, $params);
-
         // set to empty array to indicate that returning is supported
         $returnParams = [];
         $schema = $this->db->getSchema();
@@ -191,9 +189,7 @@ class QueryBuilder extends \yii\db\QueryBuilder
             }
         }
 
-        return 'INSERT INTO ' . $schema->quoteTableName($table)
-        . ' (' . implode(', ', $names) . ') VALUES ('
-        . implode(', ', $placeholders) . ')'
+        return $this->insert($table, $columns, $params)
         . (empty($returning) ? '' : ' RETURNING ' . implode(', ', $returning));
     }
 

@@ -408,15 +408,35 @@ class Command extends Component
      *
      * @param string $table the table that new rows will be inserted into.
      * @param array $columns the column data (name => value) to be inserted into the table.
+     * @return Command the command object itself
+     */
+    public function insert($table, $columns)
+    {
+        $params = [];
+        $sql = $this->db->getQueryBuilder()->insert($table, $columns, $params);
+
+        return $this->setSql($sql)->bindValues($params);
+    }
+
+    /**
+     * Creates an INSERT INTO RETURNING command or plain INSERT if the underlying DBMS does not support it.
+     * @see insert()
+     *
+     * If $returnParams is not empty after calling this, those params should be bound to the query.
+     *
+     * Note that the created command is not executed until [[execute()]] is called.
+     *
+     * @param string $table the table that new rows will be inserted into.
+     * @param array $columns the column data (name => value) to be inserted into the table.
      * @param array $returnColumns the column names which values to be returned after inserting rows.
      * @param array $returnParams if not empty after calling this method, each value is bound to the query.
      * @return Command the command object itself
      * @throws NotSupportedException if $returnColumns is set but the underlying DBMS doesn't support returning
      */
-    public function insert($table, $columns, $returnColumns = null, &$returnParams = null)
+    public function insertReturning($table, $columns, $returnColumns = null, &$returnParams = null)
     {
         $params = [];
-        $sql = $this->db->getQueryBuilder()->insert($table, $columns, $params, $returnColumns, $returnParams);
+        $sql = $this->db->getQueryBuilder()->insertReturning($table, $columns, $params, $returnColumns, $returnParams);
 
         $this->setSql($sql)->bindValues($params);
 

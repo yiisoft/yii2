@@ -166,10 +166,8 @@ EOD;
      * They should have variables bound before executing the query.
      * @inheritdoc
      */
-    public function insert($table, $columns, &$params, $returnColumns = null, &$returnParams = null)
+    public function insertReturning($table, $columns, &$params, $returnColumns = null, &$returnParams = null)
     {
-        list($names, $placeholders) = $this->prepareInsertColumns($table, $columns, $params);
-
         $schema = $this->db->getSchema();
         $returning = [];
         if ($returnColumns !== null) {
@@ -180,9 +178,7 @@ EOD;
             }
         }
 
-        return 'INSERT INTO ' . $schema->quoteTableName($table)
-        . ' (' . implode(', ', $names) . ') VALUES ('
-        . implode(', ', $placeholders) . ')'
+        return $this->insert($table, $columns, $params)
         . (empty($returning) ? '' : ' RETURNING ' . implode(', ', $returning) . ' INTO ' . implode(', ', array_keys($returnParams)));
     }
 

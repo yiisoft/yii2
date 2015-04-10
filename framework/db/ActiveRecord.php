@@ -458,9 +458,7 @@ class ActiveRecord extends BaseActiveRecord
         // depending on the underlying DBMS, either $returnParams will be not empty, the command will return results
         // or lastInsertId has to be used to fetch primary key values
         $returnParams = [];
-        $command = $db->createCommand()->insert($this->tableName(), $values, $this->primaryKey(), $returnParams);
-        // force preparing as a command for writing, not reading
-        $command->prepare(false);
+        $command = $db->createCommand()->insertReturning($this->tableName(), $values, $this->primaryKey(), $returnParams);
         if ($returnParams === null || !empty($returnParams)) {
             if (!$command->execute()) {
                 return false;
@@ -472,6 +470,8 @@ class ActiveRecord extends BaseActiveRecord
                 }
             }
         } else {
+            // force preparing as a command for writing, not reading
+            $command->prepare(false);
             $primaryKeys = $command->queryOne();
         }
         if (!empty($primaryKeys)) {
