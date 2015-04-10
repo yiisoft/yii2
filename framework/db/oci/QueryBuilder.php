@@ -168,12 +168,18 @@ EOD;
      */
     public function insertReturning($table, $columns, &$params, $returnColumns = null, &$returnParams = null)
     {
+        $result = $this->insert($table, $columns, $params);
+
+        if (empty($returnColumns)) {
+            return $result;
+        }
+
         $schema = $this->db->getSchema();
         $columnSchemas = ($tableSchema = $schema->getTableSchema($table)) !== null ? $tableSchema->columns : [];
         $returning = [];
         if ($returnColumns !== null) {
             foreach ($returnColumns as $name) {
-                $phName = self::PARAM_PREFIX . count($returnParams);
+                $phName = self::PARAM_PREFIX . (count($params) + count($returnParams));
                 $returnParams[$phName] = [
                     'columnName' => $name,
                     'value' => null,
@@ -187,8 +193,7 @@ EOD;
             }
         }
 
-        return $this->insert($table, $columns, $params)
-        . (empty($returning) ? '' : ' RETURNING ' . implode(', ', $returning) . ' INTO ' . implode(', ', array_keys($returnParams)));
+        return $result . ' RETURNING ' . implode(', ', $returning) . ' INTO ' . implode(', ', array_keys($returnParams));
     }
 
     /**
