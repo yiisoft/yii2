@@ -455,24 +455,14 @@ class ActiveRecord extends BaseActiveRecord
             }
         }
         $db = static::getDb();
-        // depending on the underlying DBMS, either $returnParams will be not empty, the command will return results
+        // depending on the underlying DBMS, the command may return results
         // or lastInsertId has to be used to fetch primary key values
-        $returnParams = [];
-        $command = $db->createCommand()->insertReturning($this->tableName(), $values, $this->primaryKey(), $returnParams);
-        if ($returnParams === null || !empty($returnParams)) {
-            if (!$command->execute()) {
-                return false;
-            }
-            $primaryKeys = [];
-            if (!empty($returnParams)) {
-                foreach ($this->primaryKey() as $primaryKey) {
-                    $primaryKeys[$primaryKey] = array_shift($returnParams);
-                }
-            }
-        } else {
-            // force preparing as a command for writing, not reading
-            $command->prepare(false);
-            $primaryKeys = $command->queryOne();
+        $command = $db->createCommand()->insertReturning($this->tableName(), $values, $this->primaryKey());
+        // force preparing as a command for writing, not reading
+        $command->prepare(false);
+        $primaryKeys = $command->queryOne();
+        if (!$command->pdoStatement->rowCount()) {
+            return false;
         }
         if (!empty($primaryKeys)) {
             $this->setAttributes($primaryKeys, false);

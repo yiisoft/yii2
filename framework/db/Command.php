@@ -90,6 +90,11 @@ class Command extends Component
      */
     private $_pendingParams = [];
     /**
+     * @var mixed INSERT/UPDATE return parameters to be bound to the current PDO statement
+     * or boolean true if return parameters are the query result.
+     */
+    private $_returningParams;
+    /**
      * @var string the SQL statement that this command represents
      */
     private $_sql;
@@ -141,6 +146,7 @@ class Command extends Component
             $this->cancel();
             $this->_sql = $this->db->quoteSql($sql);
             $this->_pendingParams = [];
+            $this->_returningParams = null;
             $this->params = [];
         }
 
@@ -267,6 +273,22 @@ class Command extends Component
     {
         foreach ($this->_pendingParams as $name => $value) {
             $this->pdoStatement->bindValue($name, $value[0], $value[1]);
+        }
+        if (is_array($this->_returningParams)) {
+            foreach ($this->_returningParams as $name => &$value) {
+                $value = array_merge([
+                    'value' => null,
+                    'dataType' => \PDO::PARAM_STR,
+                    'length' => null,
+                    'driverOptions' => null,
+                    'bound' => false,
+                ], $value);
+                if ($value['bound'] !== false) {
+                    continue;
+                }
+                $this->pdoStatement->bindParam($name, $value['value'], $value['dataType'], $value['length'], $value['driverOptions']);
+                $value['bound'] = true;
+            }
         }
         $this->_pendingParams = [];
     }
@@ -422,31 +444,23 @@ class Command extends Component
      * Creates an INSERT INTO RETURNING command or plain INSERT if the underlying DBMS does not support it.
      * @see insert()
      *
-     * If $returnParams is not empty after calling this, those params should be bound to the query.
-     *
      * Note that the created command is not executed until [[execute()]] is called.
      *
      * @param string $table the table that new rows will be inserted into.
      * @param array $columns the column data (name => value) to be inserted into the table.
      * @param array $returnColumns the column names which values to be returned after inserting rows.
-     * @param array $returnParams if not empty after calling this method, each value is bound to the query.
      * @return Command the command object itself
      * @throws NotSupportedException if $returnColumns is set but the underlying DBMS doesn't support returning
      */
-    public function insertReturning($table, $columns, $returnColumns = null, &$returnParams = null)
+    public function insertReturning($table, $columns, $returnColumns = null)
     {
         $params = [];
-        $sql = $this->db->getQueryBuilder()->insertReturning($table, $columns, $params, $returnColumns, $returnParams);
+        $returningParams = [];
+        $sql = $this->db->getQueryBuilder()->insertReturning($table, $columns, $params, $returnColumns, $returningParams);
 
         $this->setSql($sql)->bindValues($params);
 
-        if ($returnParams !== null) {
-            $this->prepare(false);
-            foreach ($returnParams as $param => &$value) {
-                //! @todo type has to be determined from column schema
-                $this->bindParam($param, $value);
-            }
-        }
+        $this->_returningParams = $returningParams;
 
         return $this;
     }
@@ -823,7 +837,7 @@ class Command extends Component
 
         Yii::info($rawSql, 'yii\db\Command::query');
 
-        if ($method !== '') {
+        if ($method !== '' && $this->_returningParams === null) {
             $info = $this->db->getQueryCacheInfo($this->queryCacheDuration, $this->queryCacheDependency);
             if (is_array($info)) {
                 /* @var $cache \yii\caching\Cache */
@@ -852,7 +866,12 @@ class Command extends Component
 
             $this->pdoStatement->execute();
 
-            if ($method === '') {
+            if (is_array($this->_returningParams)) {
+                $result = [];
+                foreach ($this->_returningParams as $name => $value) {
+                    $result[$value['columnName']] = $value['value'];
+                }
+            } elseif ($method === '') {
                 $result = new DataReader($this);
             } else {
                 if ($fetchMode === null) {

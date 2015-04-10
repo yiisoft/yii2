@@ -184,10 +184,8 @@ class QueryBuilder extends \yii\base\Object
      * They should be bound to the DB command later.
      * @return string the INSERT SQL
      */
-    public function insertReturning($table, $columns, &$params, $returnColumns = null, &$returnParams = null)
+    public function insertReturning($table, $columns, &$params, $returnColumns, &$returnParams)
     {
-        // clear returnParams
-        $returnParams = null;
         return $this->insert($table, $columns, $params);
     }
 

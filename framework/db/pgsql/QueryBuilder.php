@@ -168,10 +168,10 @@ class QueryBuilder extends \yii\db\QueryBuilder
     /**
      * @inheritdoc
      */
-    public function insertReturning($table, $columns, &$params, $returnColumns = null, &$returnParams = null)
+    public function insertReturning($table, $columns, &$params, $returnColumns, &$returnParams)
     {
-        // set to empty array to indicate that returning is supported
-        $returnParams = [];
+        // set to true to indicate that query result should be returned
+        $returnParams = true;
         $schema = $this->db->getSchema();
         $returning = [];
         if ($returnColumns !== null) {
