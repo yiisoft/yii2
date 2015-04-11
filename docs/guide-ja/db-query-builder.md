@@ -363,7 +363,7 @@ $query->groupBy(['id', 'status']);
 例えば、
 
 ```php
-$query->groupBy('id, status']);
+$query->groupBy('id, status');
 ```
 
 > Note|注意: `GROUP BY` が何らかの DB 式を含む場合は、配列形式を使わなければなりません。
