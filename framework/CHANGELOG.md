@@ -39,6 +39,7 @@ Yii Framework 2 Change Log
 - Enh #7912: Added `aria-label` to ActionColumn buttons (LAV45, samdark)
 - Enh #7918: `yii\widgets\Pjax` got ability to avoid registering link/form handler via setting `false` to `$linkSelector`/`$formSelector` (usualdesigner, Alex-Code, samdark)
 - Enh #7973: Added `Schema::getSchemaNames` method (nineinchnick)
+- Enh #8027: Added support for using sub queries in simple Query WHERE conditions (cebe)
 - Enh: Added `yii\helper\Console::wrapText()` method to wrap indented text by console window width and used it in `yii help` command (cebe)
 - Enh: Implement batchInsert for oci (nineinchnick)
 - Enh: Detecting IntegrityException for oci (nineinchnick)

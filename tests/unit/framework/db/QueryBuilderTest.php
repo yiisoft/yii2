@@ -220,6 +220,7 @@ class QueryBuilderTest extends DatabaseTestCase
             [ ['!=', 'a', 'b'], '`a` != :qp0', [':qp0' => 'b'] ],
             [ ['>=', 'date', new Expression('DATE_SUB(NOW(), INTERVAL 1 MONTH)')], '`date` >= DATE_SUB(NOW(), INTERVAL 1 MONTH)', [] ],
             [ ['>=', 'date', new Expression('DATE_SUB(NOW(), INTERVAL :month MONTH)', [':month' => 2])], '`date` >= DATE_SUB(NOW(), INTERVAL :month MONTH)', [':month' => 2] ],
+            [ ['=', 'date', (new Query())->select('max(date)')->from('test')->where(['id' => 5])], '`date` = (SELECT max(date) FROM `test` WHERE `id`=:qp0)', [':qp0' => 5] ],
 
             // hash condition
             [ ['a' => 1, 'b' => 2], '(`a`=:qp0) AND (`b`=:qp1)', [':qp0' => 1, ':qp1' => 2] ],
