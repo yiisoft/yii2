@@ -75,7 +75,7 @@ class EachValidator extends Validator
     {
         parent::init();
         if ($this->message === null) {
-            $this->message = $this->allowMessageFromRule ? Yii::t('yii', '{attribute} should be an array.') : Yii::t('yii', '{attribute} is invalid.');
+            $this->message = Yii::t('yii', '{attribute} is invalid.');
         }
     }
 
