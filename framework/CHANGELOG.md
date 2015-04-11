@@ -69,6 +69,7 @@ Yii Framework 2 Change Log
 - Bug #7358: Fix trimming PHPDoc prefix with TAB indent in `yii\console\Controller::parseDocCommentSummary()` (gugglegum)
 - Bug #7384: Fix precision loss in log timestamps when using `yii\log\DBTarget` (samdark)
 - Bug #7425: `yii\widgets\ActiveField::radio()` should not generate the label twice (justinvoelker)
+- Bug #7847: `yii\db\ColumnSchema` was typecasting numerics to strings with incorrect decimal separator for some locales (nineinchnick)
 - Enh #3168: Improved the performance of `yii\rbac\DbManager::checkAccess()` by caching mechanism (qiangxue)
 - Enh #3723: `yii\filters\PageCache` now supports caching response headers as well as non-HTML response content (qiangxue)
 - Enh #4710: Added `yii\web\AssetManager::appendTimestamp` to support cache busting for assets  (qiangxue)
