@@ -449,11 +449,6 @@ class ActiveRecord extends BaseActiveRecord
             return false;
         }
         $values = $this->getDirtyAttributes($attributes);
-        if (empty($values)) {
-            foreach ($this->getPrimaryKey(true) as $key => $value) {
-                $values[$key] = $value;
-            }
-        }
         $db = static::getDb();
         $command = $db->createCommand()->insert($this->tableName(), $values);
         if (!$command->execute()) {
