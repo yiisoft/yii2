@@ -530,7 +530,33 @@ class TranslationEventHandler
 
 ### `message` コマンドを使う <a name="message-command"></a>
 
-TBD
+翻訳は [[yii\i18n\PhpMessageSource|php ファイル]]、[[yii\i18n\GettextMessageSource|.po ファイル]、または [[yii\i18n\DbMessageSource|database]] に保存することが出来ます。
+追加のオプションについてはそれぞれのクラスを参照してください。
+
+まず最初に、構成情報ファイルを作成する必要があります。
+どこに保存したいかを決めて、次のコマンドを発行してください。
+
+```bash
+./yii message/config path/to/config.php
+```
+
+作成されたファイルを開いて、あなたの要求に合わせてパラメータを修正します。
+特に、下記の項目に注意を払ってください。
+
+* `languages`: あなたのアプリケーションが翻訳されるべき言語を表す配列。
+* `messagePath`: メッセージファイルを保存するパス。
+  これは、アプリケーションの構成情報で記述されている `i18n` の `basePath` と合致しなければなりません。
+
+> エイリアスがここではサポートされていないことに注意してください。
+  構成情報ファイルの位置からの相対パスで記述しなければなりません。
+
+構成情報ファイルの編集が完了すれば、ついに、下記のコマンドを使ってメッセージを抽出することが出来ます。
+
+```bash
+./yii message path/to/config.php
+```
+
+これで、(あなたがファイルベースの翻訳を選択していた場合は) `messagePath` ディレクトリにファイルが出現します。
 
 
 ビュー
