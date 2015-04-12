@@ -53,7 +53,7 @@ use yii\helpers\StringHelper;
  * * Using the `new` operator to create a new, empty object
  * * Using a method to fetch an existing record (or records) from the database
  *
- * Here is a short teaser how working with an ActiveRecord looks like:
+ * Below is an example showing some typical usage of ActiveRecord:
  *
  * ```php
  * $user = new User();

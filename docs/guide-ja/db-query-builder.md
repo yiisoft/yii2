@@ -84,7 +84,7 @@ $query->select(['user_id' => 'user.id', 'email']);
 例えば、
 
 ```php
-$query->select(["CONCAT(first_name, ' ', last_name]) AS full_name", 'email']);
+$query->select(["CONCAT(first_name, ' ', last_name) AS full_name", 'email']); 
 ```
 
 バージョン 2.0.1 以降では、サブクエリもセレクトすることが出来ます。
@@ -363,7 +363,7 @@ $query->groupBy(['id', 'status']);
 例えば、
 
 ```php
-$query->groupBy('id, status']);
+$query->groupBy('id, status');
 ```
 
 > Note|注意: `GROUP BY` が何らかの DB 式を含む場合は、配列形式を使わなければなりません。

@@ -574,34 +574,29 @@ class PhpManager extends BaseManager
      */
     protected function updateItem($name, $item)
     {
-        // You can't overload an item with an existing name
         if (isset($this->items[$item->name])) {
             throw new InvalidParamException("Unable to change the item name. The name '{$item->name}' is already used by another item.");
         }
 
-        // The is no conflict on names, we can register the updated item
         $this->items[$item->name] = $item;
 
-        // If the item's name has changed, unset the old references
-        if ($name !== $item->name) {
-            if (isset($this->items[$name])) {
-                unset ($this->items[$name]);
+        if ($name !== $item->name && isset($this->items[$name])) {
+            unset ($this->items[$name]);
 
-                if (isset($this->children[$name])) {
-                    $this->children[$item->name] = $this->children[$name];
-                    unset ($this->children[$name]);
+            if (isset($this->children[$name])) {
+                $this->children[$item->name] = $this->children[$name];
+                unset ($this->children[$name]);
+            }
+            foreach ($this->children as &$children) {
+                if (isset($children[$name])) {
+                    $children[$item->name] = $children[$name];
+                    unset ($children[$name]);
                 }
-                foreach ($this->children as &$children) {
-                    if (isset($children[$name])) {
-                        $children[$item->name] = $children[$name];
-                        unset ($children[$name]);
-                    }
-                }
-                foreach ($this->assignments as &$assignments) {
-                    if (isset($assignments[$name])) {
-                        $assignments[$item->name] = $assignments[$name];
-                        unset($assignments[$name]);
-                    }
+            }
+            foreach ($this->assignments as &$assignments) {
+                if (isset($assignments[$name])) {
+                    $assignments[$item->name] = $assignments[$name];
+                    unset($assignments[$name]);
                 }
             }
         }
