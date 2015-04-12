@@ -2,6 +2,7 @@
 
 namespace yiiunit\framework\rbac;
 
+use yii\base\Exception;
 use yii\rbac\Item;
 use yii\rbac\Permission;
 use yii\rbac\PhpManager;
@@ -285,5 +286,47 @@ abstract class ManagerTestCase extends TestCase
         $this->assertEquals(0, count($this->auth->getAssignments(0)));
         $this->assertEquals(1, count($this->auth->getAssignments(42)));
         $this->assertEquals(2, count($this->auth->getAssignments(1337)));
+    }
+
+    public function testUpdateItem()
+    {
+        $this->prepareData();
+        $count = count($this->auth->getPermissions());
+
+        // changing something else than the name of an item is OK
+        $item = $this->auth->getPermission('readPost');
+        $item->description = "new description";
+        $this->assertTrue($this->auth->update('readPost', $item));
+
+        $item = $this->auth->getPermission('readPost');
+        $this->assertEquals("new description", $item->description);
+        $this->assertEquals($count, count($this->auth->getPermissions()));
+
+        // changing the name is OK if the new name does not exist
+        $item = $this->auth->getPermission('readPost');
+        $item->name = 'newName';
+        $this->assertTrue($this->auth->update('readPost', $item));
+
+        $item = $this->auth->getPermission('readPost');
+        $this->assertNull($item);
+        $item = $this->auth->getPermission('newName');
+        $this->assertNotNull($item);
+        $this->assertEquals($count, count($this->auth->getPermissions()));
+
+        // changing anything on a non-existent key (typo) will fail
+        $item = $this->auth->getPermission('updatePost');
+        $item->description = 'new description';
+        try {
+            $this->auth->update('updatePostt', $item);
+            $this->fail('expected exception not thrown');
+        } catch (\yii\base\InvalidParamException $x) {
+        }
+        $this->assertEquals($count, count($this->auth->getPermissions()));
+
+        // changing the name will fail if the new name already exists
+        $item = $this->auth->getPermission('updatePost');
+        $item->name = 'newName';
+        $this->setExpectedException('yii\base\InvalidParamException');
+        $this->auth->update('updatePost', $item);
     }
 }
