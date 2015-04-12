@@ -454,32 +454,11 @@ class ActiveRecord extends BaseActiveRecord
                 $values[$key] = $value;
             }
         }
-        $db = static::getDb();
-        // depending on the underlying DBMS, the command may return results
-        // or lastInsertId has to be used to fetch primary key values
-        $command = $db->createCommand()->insertReturning($this->tableName(), $values, $this->primaryKey());
-        // force preparing as a command for writing, not reading
-        $command->prepare(false);
-        $primaryKeys = $command->queryOne();
-        if (!$command->pdoStatement->rowCount()) {
+        if (($primaryKeys = static::getDb()->schema->insert($this->tableName(), $values)) === false) {
             return false;
         }
-        if (!empty($primaryKeys)) {
-            $this->setAttributes($primaryKeys, false);
-            $values = array_merge($values, $primaryKeys);
-        } else {
-            $table = $this->getTableSchema();
-            if ($table->sequenceName !== null) {
-                foreach ($table->primaryKey as $name) {
-                    if ($this->getAttribute($name) === null) {
-                        $id = $table->columns[$name]->phpTypecast($db->getLastInsertID($table->sequenceName));
-                        $this->setAttribute($name, $id);
-                        $values[$name] = $id;
-                        break;
-                    }
-                }
-            }
-        }
+        $this->setAttributes($primaryKeys, false);
+        $values = array_merge($values, $primaryKeys);
 
         $changedAttributes = array_fill_keys(array_keys($values), null);
         $this->setOldAttributes($values);

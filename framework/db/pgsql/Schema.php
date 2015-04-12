@@ -446,4 +446,19 @@ SQL;
 
         return $column;
     }
+
+    /**
+     * Executes the INSERT command, returning primary key values.
+     *
+     * @param string $table the table that new rows will be inserted into.
+     * @param array $columns the column data (name => value) to be inserted into the table.
+     * @return array primary key values or false if the command fails
+     */
+    public function insert($table, $columns)
+    {
+        $command = $this->db->createCommand()->insertReturning($table, $columns, $this->getTableSchema($table)->primaryKey);
+        $command->prepare(false);
+        $result = $command->queryOne();
+        return !$command->pdoStatement->rowCount() ? false : $result;
+    }
 }

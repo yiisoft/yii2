@@ -184,10 +184,14 @@ class QueryBuilder extends \yii\base\Object
      * or an array of parameters to be bound before executing, @see Command::bindPendingParams
      * They should be bound to the DB command later.
      * @return string the INSERT SQL
+     * @throws NotSupportedException if $returnColumns is set but the underlying DBMS doesn't support returning
      * @since 2.0.4
      */
     public function insertReturning($table, $columns, &$params, $returnColumns, &$returnParams)
     {
+        if (!empty($returnColumns)) {
+            throw new NotSupportedException($this->db->getDriverName() . ' does not support INSERT INTO RETURNING.');
+        }
         return $this->insert($table, $columns, $params);
     }
 
