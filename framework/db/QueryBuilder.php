@@ -100,11 +100,7 @@ class QueryBuilder extends \yii\base\Object
 
         $sql = implode($this->separator, array_filter($clauses));
         $sql = $this->buildOrderByAndLimit($sql, $query->orderBy, $query->limit, $query->offset);
-
-        $union = $this->buildUnion($query->union, $params);
-        if ($union !== '') {
-            $sql = "($sql){$this->separator}$union";
-        }
+        $sql = $this->buildUnion($sql, $query->union, $params);
 
         return [$sql, $params];
     }
@@ -841,14 +837,15 @@ class QueryBuilder extends \yii\base\Object
     }
 
     /**
+     * @param string $sql
      * @param array $unions
      * @param array $params the binding parameters to be populated
      * @return string the UNION clause built from [[Query::$union]].
      */
-    public function buildUnion($unions, &$params)
+    public function buildUnion($sql, $unions, &$params)
     {
         if (empty($unions)) {
-            return '';
+            return $sql;
         }
 
         $result = '';
@@ -861,8 +858,10 @@ class QueryBuilder extends \yii\base\Object
 
             $result .= 'UNION ' . ($union['all'] ? 'ALL ' : '') . '( ' . $unions[$i]['query'] . ' ) ';
         }
-
-        return trim($result);
+        if ($result !== '') {
+            $sql = "($sql){$this->separator}$result";
+        }
+        return trim($sql);
     }
 
     /**
