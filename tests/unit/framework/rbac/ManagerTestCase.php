@@ -303,6 +303,10 @@ abstract class ManagerTestCase extends TestCase
         $this->assertEquals($count, count($this->auth->getPermissions()));
 
         // changing the name is OK if the new name does not exist
+        $readerPermissions = $this->auth->getPermissionsByRole('reader');
+        $countReaderPermissions = count($readerPermissions);
+        $this->assertTrue(isset($readerPermissions['readPost']));
+
         $item = $this->auth->getPermission('readPost');
         $item->name = 'newName';
         $this->assertTrue($this->auth->update('readPost', $item));
@@ -311,7 +315,9 @@ abstract class ManagerTestCase extends TestCase
         $this->assertNull($item);
         $item = $this->auth->getPermission('newName');
         $this->assertNotNull($item);
-        $this->assertEquals($count, count($this->auth->getPermissions()));
+        $readerPermissions = $this->auth->getPermissionsByRole('reader');
+        $this->assertEquals($countReaderPermissions, count($readerPermissions));
+        $this->assertTrue(isset($readerPermissions['newName']));
 
         // changing anything on a non-existent key (typo) will fail
         $item = $this->auth->getPermission('updatePost');
