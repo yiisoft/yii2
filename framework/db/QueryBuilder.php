@@ -1285,6 +1285,9 @@ class QueryBuilder extends \yii\base\Object
                 $params[$n] = $v;
             }
             return "$column $operator {$value->expression}";
+        } elseif ($value instanceof Query) {
+            list($sql, $params) = $this->build($value, $params);
+            return "$column $operator ($sql)";
         } else {
             $phName = self::PARAM_PREFIX . count($params);
             $params[$phName] = $value;
