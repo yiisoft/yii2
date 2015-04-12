@@ -100,21 +100,26 @@ CREATE TABLE null_values (
 
 
 CREATE TABLE "type" (
-  "int_col" int(11) NOT NULL,
+  "int_col" int(11) NOT NULL UNIQUE AUTO_INCREMENT,
   "int_col2" int(11) DEFAULT '1',
+  "int_col3" int(11) DEFAULT -5,
   "smallint_col" smallint DEFAULT '1',
   "char_col" char(100) NOT NULL,
   "char_col2" varchar(100) DEFAULT 'something',
   "char_col3" string,
+  "escape_col" varchar(100) DEFAULT n'foo\\bar',
+  "func_default" varchar(255) NOT NULL DEFAULT 'bar',
   "enum_col" enum('a','B'),
   "float_col" double NOT NULL,
   "float_col2" double DEFAULT '1.23',
+  "float_col3" double DEFAULT 1.2E-3,
   "blob_col" blob,
   "numeric_col" decimal(5,2) DEFAULT '33.22',
   "time" timestamp NOT NULL DEFAULT '2002-01-01 00:00:00',
   "bool_col" tinyint NOT NULL,
   "bool_col2" tinyint DEFAULT '1',
   "ts_default" TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  "date_default" DATE NOT NULL DEFAULT DATE '2015-04-12',
   "bit_col" BIT(8) NOT NULL DEFAULT b'10000010'
 );
 

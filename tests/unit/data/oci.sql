@@ -130,18 +130,23 @@ CREATE TABLE "null_values" (
 CREATE TABLE "type" (
   "int_col" integer NOT NULL,
   "int_col2" integer DEFAULT 1,
+  "int_col3" integer DEFAULT -5,
   "smallint_col" smallint DEFAULT 1,
   "char_col" char(100) NOT NULL,
   "char_col2" varchar2(100) DEFAULT 'something',
   "char_col3" varchar2(4000),
+  "escape_col" varchar2(100) DEFAULT n'foo\\bar',
+  "func_default" varchar2(100) DEFAULT TRIM(BOTH 'x' FROM 'xxxbarxxx') NOT NULL,
   "float_col" double precision NOT NULL,
   "float_col2" double precision DEFAULT 1.23,
+  "float_col3" double precision DEFAULT 1.2E-3,
   "blob_col" blob,
   "numeric_col" decimal(5,2) DEFAULT 33.22,
   "time" timestamp DEFAULT to_timestamp('2002-01-01 00:00:00', 'yyyy-mm-dd hh24:mi:ss') NOT NULL,
   "bool_col" char NOT NULL check ("bool_col" in (0,1)),
   "bool_col2" char DEFAULT 1 check("bool_col2" in (0,1)),
   "ts_default" TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
+  "date_default" DATE DEFAULT DATE '2015-04-12' NOT NULL,
   "bit_col" char(3) DEFAULT 130 NOT NULL
 );
 

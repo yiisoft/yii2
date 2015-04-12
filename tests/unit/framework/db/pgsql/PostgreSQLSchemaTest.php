@@ -26,6 +26,10 @@ class PostgreSQLSchemaTest extends SchemaTest
         $columns['int_col2']['size'] = null;
         $columns['int_col2']['precision'] = 32;
         $columns['int_col2']['scale'] = 0;
+        $columns['int_col3']['dbType'] = 'int4';
+        $columns['int_col3']['size'] = null;
+        $columns['int_col3']['precision'] = 32;
+        $columns['int_col3']['scale'] = 0;
         $columns['smallint_col']['dbType'] = 'int2';
         $columns['smallint_col']['size'] = null;
         $columns['smallint_col']['precision'] = 16;
@@ -42,6 +46,10 @@ class PostgreSQLSchemaTest extends SchemaTest
         $columns['float_col2']['precision'] = 53;
         $columns['float_col2']['scale'] = null;
         $columns['float_col2']['size'] = null;
+        $columns['float_col3']['dbType'] = 'float8';
+        $columns['float_col3']['precision'] = 53;
+        $columns['float_col3']['scale'] = null;
+        $columns['float_col3']['size'] = null;
         $columns['blob_col']['dbType'] = 'bytea';
         $columns['blob_col']['phpType'] = 'resource';
         $columns['blob_col']['type'] = 'binary';

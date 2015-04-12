@@ -96,18 +96,23 @@ CREATE TABLE "null_values" (
 CREATE TABLE "type" (
   int_col INTEGER NOT NULL,
   int_col2 INTEGER DEFAULT '1',
+  int_col3 INTEGER DEFAULT -5,
   smallint_col SMALLINT(1) DEFAULT '1',
   char_col char(100) NOT NULL,
   char_col2 varchar(100) DEFAULT 'something',
   char_col3 text,
+  escape_col varchar(100) DEFAULT 'foo\bar',
+  func_default text NOT NULL DEFAULT (TRIM('xxxbarxxx', 'x')),
   float_col double(4,3) NOT NULL,
   float_col2 double DEFAULT '1.23',
+  float_col3 double DEFAULT 1.2E-3,
   blob_col blob,
   numeric_col decimal(5,2) DEFAULT '33.22',
   time timestamp NOT NULL DEFAULT '2002-01-01 00:00:00',
   bool_col tinyint(1) NOT NULL,
   bool_col2 tinyint(1) DEFAULT '1',
-  ts_default TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+  ts_default TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  date_default DATE NOT NULL DEFAULT '2015-04-12'
 );
 
 CREATE TABLE "animal" (

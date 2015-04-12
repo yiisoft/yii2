@@ -94,17 +94,24 @@ CREATE TABLE [dbo].[null_values] (
 CREATE TABLE [dbo].[type] (
 	[int_col] [int] NOT NULL,
 	[int_col2] [int] DEFAULT '1',
+  [int_col3] [int] DEFAULT -5,
 	[smallint_col] [smallint] DEFAULT '1',
 	[char_col] [char](100) NOT NULL,
 	[char_col2] [varchar](100) DEFAULT 'something',
 	[char_col3] [text],
+  [escape_col] [varchar](100) DEFAULT n'foo\\bar',
+  [func_default] [varchar](100) NOT NULL DEFAULT REPLACE('xxxbarxxx','x',''),
 	[float_col] [decimal](4,3) NOT NULL,
 	[float_col2] [float] DEFAULT '1.23',
+  [float_col3] [float] DEFAULT 1.2E-3,
 	[blob_col] [varbinary](MAX),
 	[numeric_col] [decimal](5,2) DEFAULT '33.22',
 	[time] [datetime] NOT NULL DEFAULT '2002-01-01 00:00:00',
 	[bool_col] [tinyint] NOT NULL,
-	[bool_col2] [tinyint] DEFAULT '1'
+	[bool_col2] [tinyint] DEFAULT '1',
+  [ts_default] [datetime] NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  [date_default] [date] NOT NULL DEFAULT DATE '2015-04-12',
+  [bit_col] [binary](8) NOT NULL DEFAULT 0xf2
 );
 
 CREATE TABLE [dbo].[animal] (

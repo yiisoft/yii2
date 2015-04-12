@@ -106,20 +106,25 @@ CREATE TABLE "null_values" (
 );
 
 CREATE TABLE "type" (
-  int_col integer NOT NULL,
+  int_col serial NOT NULL,
   int_col2 integer DEFAULT '1',
+  int_col3 integer DEFAULT -5,
   smallint_col smallint DEFAULT '1',
   char_col char(100) NOT NULL,
   char_col2 varchar(100) DEFAULT 'something',
   char_col3 text,
+  escape_col varchar(100) DEFAULT E'foo\\bar',
+  func_default VARCHAR NOT NULL DEFAULT TRIM(BOTH 'x' FROM 'xxxbarxxx'),
   float_col double precision NOT NULL,
   float_col2 double precision DEFAULT '1.23',
+  float_col3 double precision DEFAULT 1.2E-3,
   blob_col bytea,
   numeric_col decimal(5,2) DEFAULT '33.22',
   time timestamp NOT NULL DEFAULT '2002-01-01 00:00:00',
   bool_col boolean NOT NULL,
   bool_col2 boolean DEFAULT TRUE,
   ts_default TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  date_default DATE NOT NULL DEFAULT DATE '2015-04-12',
   bit_col BIT(8) NOT NULL DEFAULT B'10000010'
 );
 

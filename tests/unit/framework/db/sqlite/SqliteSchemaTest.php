@@ -17,11 +17,16 @@ class SqliteSchemaTest extends SchemaTest
         unset($columns['enum_col']);
         unset($columns['bit_col']);
         $columns['int_col']['dbType'] = 'integer';
+        $columns['int_col']['autoIncrement'] = false;
         $columns['int_col']['size'] = null;
         $columns['int_col']['precision'] = null;
         $columns['int_col2']['dbType'] = 'integer';
         $columns['int_col2']['size'] = null;
         $columns['int_col2']['precision'] = null;
+        $columns['int_col3']['dbType'] = 'integer';
+        $columns['int_col3']['size'] = null;
+        $columns['int_col3']['precision'] = null;
+        $columns['escape_col']['defaultValue'] = 'foo\bar';
         $columns['bool_col']['type'] = 'boolean';
         $columns['bool_col']['phpType'] = 'boolean';
         $columns['bool_col2']['type'] = 'boolean';
