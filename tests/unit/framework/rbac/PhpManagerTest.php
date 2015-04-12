@@ -110,14 +110,33 @@ class PhpManagerTest extends ManagerTestCase
         $this->assertEquals($rules, $this->auth->rules);
     }
 
-    public function testUpdateItem()
+    public function testUpdateItemName()
     {
         $this->prepareData();
 
         $name = 'readPost';
         $permission = $this->auth->getPermission($name);
         $permission->name = 'UPDATED-NAME';
-        $this->assertTrue($this->auth->update($name, $permission));
+        $this->assertTrue($this->auth->update($name, $permission), 'You should be able to update name.');
     }
 
+    public function testUpdateDescription() {
+        $this->prepareData();
+        $name = 'readPost';
+        $permission = $this->auth->getPermission($name);
+        $permission->description = 'UPDATED-DESCRIPTION';
+        $this->assertTrue($this->auth->update($name, $permission), 'You should be able to save w/o changing name.');
+    }
+
+    /**
+     * @expectedException \yii\base\InvalidParamException
+     */
+    public function testOverwriteName()
+    {
+        $this->prepareData();
+        $name = 'readPost';
+        $permission = $this->auth->getPermission($name);
+        $permission->name = 'createPost';
+        $this->auth->update($name, $permission);
+    }
 }
