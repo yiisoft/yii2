@@ -246,19 +246,32 @@ class Schema extends \yii\db\Schema
      */
     protected function findConstraints($table)
     {
-        $sql = $this->getCreateTableSql($table);
+        $sql = <<<SQL
+SELECT
+    kcu.constraint_name,
+    kcu.column_name,
+    kcu.referenced_table_name,
+    kcu.referenced_column_name
+FROM information_schema.referential_constraints AS rc
+JOIN information_schema.key_column_usage AS kcu ON
+    kcu.constraint_catalog = rc.constraint_catalog AND
+    kcu.constraint_schema = rc.constraint_schema AND
+    kcu.constraint_name = rc.constraint_name
+WHERE rc.table_name = :tableName
+SQL;
 
-        $regexp = '/FOREIGN KEY\s+\(([^\)]+)\)\s+REFERENCES\s+([^\(^\s]+)\s*\(([^\)]+)\)/mi';
-        if (preg_match_all($regexp, $sql, $matches, PREG_SET_ORDER)) {
-            foreach ($matches as $match) {
-                $fks = array_map('trim', explode(',', str_replace('`', '', $match[1])));
-                $pks = array_map('trim', explode(',', str_replace('`', '', $match[3])));
-                $constraint = [str_replace('`', '', $match[2])];
-                foreach ($fks as $k => $name) {
-                    $constraint[$name] = $pks[$k];
-                }
-                $table->foreignKeys[] = $constraint;
-            }
+        $rows = $this->db->createCommand($sql, [':tableName' => $table->name])->queryAll();
+        $constraints = [];
+        foreach ($rows as $row) {
+            $constraints[$row['constraint_name']]['referenced_table_name'] = $row['referenced_table_name'];
+            $constraints[$row['constraint_name']]['columns'][$row['column_name']] = $row['referenced_column_name'];
+        }
+        $table->foreignKeys = [];
+        foreach ($constraints as $constraint) {
+            $table->foreignKeys[] = array_merge(
+                [$constraint['referenced_table_name']],
+                $constraint['columns']
+            );
         }
     }
 
