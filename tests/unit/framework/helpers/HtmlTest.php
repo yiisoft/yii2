@@ -109,6 +109,7 @@ class HtmlTest extends TestCase
         $this->assertEquals('<a>something<></a>', Html::a('something<>'));
         $this->assertEquals('<a href="/example">something</a>', Html::a('something', '/example'));
         $this->assertEquals('<a href="/test">something</a>', Html::a('something', ''));
+        $this->assertEquals('<a href="http://www.быстроном.рф">http://www.быстроном.рф</a>', Html::a('http://www.быстроном.рф', 'http://www.быстроном.рф'));
     }
 
     public function testMailto()
