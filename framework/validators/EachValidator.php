@@ -12,8 +12,7 @@ use Yii;
 use yii\base\Model;
 
 /**
- * EachValidator serves validation of the array attributes.
- * It perform validation of each array element using any other validator specified by [[rule]].
+ * EachValidator validates an array by checking each of its elements against an embedded validation rule.
  *
  * ~~~php
  * class MyModel extends Model
@@ -23,16 +22,14 @@ use yii\base\Model;
  *     public function rules()
  *     {
  *         return [
- *             ['arrayAttribute', 'each', 'rule' => ['trim']],
- *             ['arrayAttribute', 'each', 'rule' => ['integer']],
+ *             // checks if every category ID is an integer
+ *             ['categoryIDs', 'each', 'rule' => ['integer']],
  *         ]
  *     }
  * }
  * ~~~
  *
- * Note: this validator will not work with validation declared via model inline method. If you declare inline
- * validation rule for attribute, you should avoid usage of this validator and iterate over array attribute
- * values manually inside your code.
+ * > Note: This validator will not work with inline validation rules.
  *
  * @property Validator $validator related validator instance. This property is read only.
  *
@@ -86,7 +83,7 @@ class EachValidator extends Validator
     public function getValidator()
     {
         if ($this->_validator === null) {
-            $this->_validator = $this->createValidators();
+            $this->_validator = $this->createEmbeddedValidator();
         }
         return $this->_validator;
     }
@@ -96,7 +93,7 @@ class EachValidator extends Validator
      * @return Validator validator instance
      * @throws InvalidConfigException if any validation rule configuration is invalid
      */
-    private function createValidators()
+    private function createEmbeddedValidator()
     {
         $rule = $this->rule;
         if ($rule instanceof Validator) {
