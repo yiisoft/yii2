@@ -18,6 +18,7 @@ DROP TABLE IF EXISTS "null_values" CASCADE;
 DROP TABLE IF EXISTS "constraints" CASCADE;
 DROP TABLE IF EXISTS "bool_values" CASCADE;
 DROP TABLE IF EXISTS "animal" CASCADE;
+DROP TABLE IF EXISTS "default_pk" CASCADE;
 DROP VIEW IF EXISTS "animal_view";
 DROP SCHEMA IF EXISTS "schema1" CASCADE;
 DROP SCHEMA IF EXISTS "schema2" CASCADE;
@@ -133,6 +134,11 @@ CREATE TABLE "bool_values" (
 
 CREATE TABLE "animal" (
   id serial primary key,
+  type varchar(255) not null
+);
+
+CREATE TABLE "default_pk" (
+  id integer not null default 5 primary key,
   type varchar(255) not null
 );
 

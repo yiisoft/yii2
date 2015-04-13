@@ -450,4 +450,33 @@ SQL;
 
         return $column;
     }
+
+    /**
+     * @inheritdoc
+     */
+    public function insert($table, $columns)
+    {
+        $params = [];
+        $sql = $this->db->getQueryBuilder()->insert($table, $columns, $params);
+        $returnColumns = $this->getTableSchema($table)->primaryKey;
+        if (!empty($returnColumns)) {
+            $returning = [];
+            foreach ((array)$returnColumns as $name) {
+                if ($name === '*') {
+                    $returning[] = $name;
+                } elseif (preg_match('/^(.*?)(?i:\s+as\s+|\s+)([\w\-_\.]+)$/', $name, $matches)) {
+                    $returning[] = $this->quoteColumnName($matches[1]) . ' AS ' . $this->quoteColumnName($matches[2]);
+                } else {
+                    $returning[] = $this->quoteColumnName($name);
+                }
+            }
+            $sql .= ' RETURNING ' . implode(', ', $returning);
+        }
+
+        $command = $this->db->createCommand($sql, $params);
+        $command->prepare(false);
+        $result = $command->queryOne();
+
+        return !$command->pdoStatement->rowCount() ? false : $result;
+    }
 }
