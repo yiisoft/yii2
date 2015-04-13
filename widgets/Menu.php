@@ -79,7 +79,7 @@ class Menu extends Widget
      * specifies its `options`, it will be merged with this property before being used to generate the HTML
      * attributes for the menu item tag. The following special options are recognized:
      *
-     * - tag: string, defaults to "li", the tag name of the item container tags.
+     * - tag: string, defaults to "li", the tag name of the item container tags. Set to false to disable container tag.
      *
      * @see \yii\helpers\Html::renderTagAttributes() for details on how attributes are being rendered.
      */
@@ -175,7 +175,12 @@ class Menu extends Widget
         if (!empty($items)) {
             $options = $this->options;
             $tag = ArrayHelper::remove($options, 'tag', 'ul');
-            echo Html::tag($tag, $this->renderItems($items), $options);
+
+            if ($tag !== false) {
+                echo Html::tag($tag, $this->renderItems($items), $options);
+            } else {
+                echo $this->renderItems($items);
+            }
         }
     }
 
