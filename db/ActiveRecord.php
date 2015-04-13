@@ -454,22 +454,11 @@ class ActiveRecord extends BaseActiveRecord
                 $values[$key] = $value;
             }
         }
-        $db = static::getDb();
-        $command = $db->createCommand()->insert($this->tableName(), $values);
-        if (!$command->execute()) {
+        if (($primaryKeys = static::getDb()->schema->insert($this->tableName(), $values)) === false) {
             return false;
         }
-        $table = $this->getTableSchema();
-        if ($table->sequenceName !== null) {
-            foreach ($table->primaryKey as $name) {
-                if ($this->getAttribute($name) === null) {
-                    $id = $table->columns[$name]->phpTypecast($db->getLastInsertID($table->sequenceName));
-                    $this->setAttribute($name, $id);
-                    $values[$name] = $id;
-                    break;
-                }
-            }
-        }
+        $this->setAttributes($primaryKeys, false);
+        $values = array_merge($values, $primaryKeys);
 
         $changedAttributes = array_fill_keys(array_keys($values), null);
         $this->setOldAttributes($values);
