@@ -403,6 +403,7 @@ abstract class Schema extends Object
      * @param string $table the table that new rows will be inserted into.
      * @param array $columns the column data (name => value) to be inserted into the table.
      * @return array primary key values or false if the command fails
+     * @since 2.0.4
      */
     public function insert($table, $columns)
     {
