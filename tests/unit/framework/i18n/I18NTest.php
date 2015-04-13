@@ -8,7 +8,6 @@
 namespace yiiunit\framework\i18n;
 
 use yii\base\Event;
-use yii\i18n\I18N;
 use yii\i18n\PhpMessageSource;
 use yiiunit\TestCase;
 
@@ -20,7 +19,7 @@ use yiiunit\TestCase;
 class I18NTest extends TestCase
 {
     /**
-     * @var I18N
+     * @var ExposedI18N
      */
     public $i18n;
 
@@ -28,7 +27,7 @@ class I18NTest extends TestCase
     {
         parent::setUp();
         $this->mockApplication();
-        $this->i18n = new I18N([
+        $this->i18n = new ExposedI18N([
             'translations' => [
                 'test' => new PhpMessageSource([
                     'basePath' => '@yiiunit/data/i18n/messages',
@@ -56,7 +55,7 @@ class I18NTest extends TestCase
 
     public function testDefaultSource()
     {
-        $i18n = new I18N([
+        $i18n = new ExposedI18N([
             'translations' => [
                 '*' => new PhpMessageSource([
                 'basePath' => '@yiiunit/data/i18n/messages',
@@ -173,5 +172,40 @@ class I18NTest extends TestCase
         $this->assertEquals('TRANSLATION MISSING HERE!', $this->i18n->translate('test', 'New missing translation message.', [], 'de-DE'));
         $this->assertEquals('Hallo Welt!', $this->i18n->translate('test', 'Hello world!', [], 'de-DE'));
         Event::off(PhpMessageSource::className(), PhpMessageSource::EVENT_MISSING_TRANSLATION);
+    }
+
+    public function normalizeLocaleDataProvider()
+    {
+        return [
+            ['zh-Hant-CN', 'zh-Hant-CN'],
+            ['zh-CN', 'zh-CN'],
+            ['zH-cN', 'zh-CN'],
+            ['zh_CN', 'zh-CN'],
+            ['ZH-cn', 'zh-CN'],
+            ['ru', 'ru'],
+            ['DE', 'de'],
+            ['en_IE_PREEURO', 'en-IE'],
+            ['en_IE@currency=IEP', 'en-IE'],
+            ['fr@collation=phonebook;calendar=islamic-civil', 'fr'],
+            ['sr_Latn_RS_REVISED@currency=USD', 'sr-Latn-RS'],
+        ];
+    }
+
+    /**
+     * https://github.com/yiisoft/yii2/issues/7883
+     * @dataProvider normalizeLocaleDataProvider
+     */
+    public function testNormalizeLocale($in, $expected)
+    {
+        $this->assertEquals($expected, $this->i18n->normalizeLocale($in));
+    }
+
+    /**
+     * https://github.com/yiisoft/yii2/issues/7883
+     * @dataProvider normalizeLocaleDataProvider
+     */
+    public function testFallbackNormalizeLocale($in, $expected)
+    {
+        $this->assertEquals($expected, $this->i18n->fallbackNormalizeLocale($in));
     }
 }

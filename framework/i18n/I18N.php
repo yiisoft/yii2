@@ -199,4 +199,86 @@ class I18N extends Component
 
         throw new InvalidConfigException("Unable to locate message source for category '$category'.");
     }
+
+    /**
+     * Normalizes language string to "zh-Hant-CN", "zh-CN" or "CN" format ready
+     * to be used to specify translation language.
+     *
+     * @param string $language language string. Could be either:
+     *
+     * - Language tag according to https://www.rfc-editor.org/bcp/bcp47.txt
+     * - ICU locale string http://userguide.icu-project.org/locale
+     *
+     * @return string normalized language ID
+     *
+     * @since 2.0.4
+     */
+    public function normalizeLocale($locale)
+    {
+        if (!class_exists('\Locale')) {
+            return $this->fallbackNormalizeLocale($locale);
+        }
+
+        $data = [];
+
+        $parts = \Locale::parseLocale($locale);
+        if (isset($parts['language'])) {
+            $data[] = $parts['language'];
+        }
+        if (isset($parts['script'])) {
+            $data[] = $parts['script'];
+        }
+        if (isset($parts['region'])) {
+            $data[] = $parts['region'];
+        }
+
+        return implode('-', $data);
+    }
+
+    /**
+     * Normalizes language string to "zh-Hant-CN", "zh-CN" or "CN" format ready
+     * to be used to specify translation language. Doesn't require intl.
+     *
+     * @param string $language language string. Could be either:
+     *
+     * - Language tag according to https://www.rfc-editor.org/bcp/bcp47.txt
+     * - ICU locale string http://userguide.icu-project.org/locale
+     *
+     * @return string normalized language ID
+     *
+     * @since 2.0.4
+     */
+    protected function fallbackNormalizeLocale($locale)
+    {
+        $language = null;
+        $region = null;
+        $script = null;
+
+        $parts = preg_split('~[@_-]~', $locale);
+
+        foreach ($parts as $part) {
+            if (preg_match('~^[a-zA-Z]{2,3}$~', $part)) {
+                if ($language === null) {
+                    $language = strtolower($part);
+                } elseif ($region === null) {
+                    $region = strtoupper($part);
+                }
+            } elseif (preg_match('~^[a-zA-Z]{4}$~', $part) && $script === null) {
+                $script = $part;
+            }
+        }
+
+        $data = [];
+        if ($language !== null) {
+            $data[] = $language;
+        }
+        if ($script !== null) {
+            $data[] = $script;
+        }
+        if ($region !== null) {
+            $data[] = $region;
+        }
+
+       return implode('-', $data);
+    }
 }
