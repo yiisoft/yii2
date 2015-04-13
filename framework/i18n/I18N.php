@@ -215,7 +215,7 @@ class I18N extends Component
      */
     public function normalizeLocale($locale)
     {
-        if (!class_exists('\Locale')) {
+        if (!class_exists('\Locale', false)) {
             return $this->fallbackNormalizeLocale($locale);
         }
 
