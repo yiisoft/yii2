@@ -66,4 +66,39 @@ HTML
             , $output);
 
     }
+
+    /**
+     * @see https://github.com/yiisoft/yii2/issues/8064
+     */
+    public function testTagOption()
+    {
+        $output = Menu::widget([
+            'route' => 'test/test',
+            'params' => [],
+            'encodeLabels' => true,
+            'options' => [
+                'tag' => false,
+            ],
+            'items' => [
+                [
+                    'label'  => 'item1',
+                    'url'    => '#',
+                    'options' => ['tag' => 'div'],
+                ],
+                [
+                    'label'  => 'item2',
+                    'url'    => '#',
+                    'options' => ['tag' => false],
+                ],
+            ]
+        ]);
+
+        $this->assertEqualsWithoutLE(<<<HTML
+<div><a href="#">item1</a></div>
+<a href="#">item2</a>
+HTML
+        , $output);
+    }
+
+
 }
