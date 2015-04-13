@@ -457,8 +457,7 @@ SQL;
             $command->pdoStatement->bindParam($name, $value['value']);
         }
 
-        $command->queryOne();
-        if (!$command->pdoStatement->rowCount()) {
+        if (!$command->execute()) {
             return false;
         }
 
