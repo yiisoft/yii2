@@ -72,4 +72,16 @@ class FormatConverterTest extends TestCase
         $formatter = new Formatter(['locale' => 'ru-RU']);
         $this->assertEquals('24 авг 2014 г.', $formatter->asDate('2014-8-24', 'dd MMM y \'г\'.'));
     }
+
+    public function testIntlL()
+    {
+        $formatter = new Formatter(['locale' => 'en-US']);
+
+        $format = "L";
+        // NOTE: assertEquals would pass, because '08' == '8'
+        $this->assertSame(
+            $formatter->asDate('2014-8-24', $format),
+            date(FormatConverter::convertDateIcuToPhp($format), strtotime('2014-8-24'))
+        );
+    }
 }
