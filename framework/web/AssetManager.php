@@ -476,7 +476,7 @@ class AssetManager extends Component
         if ($this->linkAssets) {
             if (!is_dir($dstDir)) {
                 $symlink= @ symlink($src, $dstDir);
-                if (!$symlink)
+                if (!$symlink) {
                     if (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN') {
                         exec('mklink /J '.$dstDir.' '.$src);
                     } else {
