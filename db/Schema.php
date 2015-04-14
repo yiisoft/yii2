@@ -418,8 +418,7 @@ abstract class Schema extends Object
         $result = [];
         foreach ($tableSchema->primaryKey as $name) {
             if ($tableSchema->columns[$name]->autoIncrement) {
-                $id = $tableSchema->columns[$name]->phpTypecast($this->db->getLastInsertID($tableSchema->sequenceName));
-                $result[$name] = $id;
+                $result[$name] = $this->db->getLastInsertID($tableSchema->sequenceName);
                 break;
             }
         }
