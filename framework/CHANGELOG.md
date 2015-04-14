@@ -32,6 +32,7 @@ Yii Framework 2 Change Log
 - Enh #7530: Improved default values for `yii\data\Sort` link labels in a `ListView` when used with an `ActiveDataProvider` (cebe)
 - Enh #7539: `yii\console\controllers\AssetController` provides dependency trace in case bundle circular dependency detected (klimov-paul)
 - Enh #7562: `yii help` now lists all sub-commands by default (callmez)
+- Enh #7566: Fixes compareValidator default messages as it uses compareValue or compareAttribute (slinstj)
 - Enh #7571: HTTP status 500 and "An internal server error occurred." are now returned in case there was an exception in layout and `YII_DEBUG` is false (samdark)
 - Enh #7636: `yii\web\Session::getHasSessionId()` uses a more lenient way to check if session ID is provided in URL (robsch)
 - Enh #7637: Allow `yii\web\Request::validateCsrfToken()` to validate a manually provided token (miraage, qiangxue)
