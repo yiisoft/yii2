@@ -45,6 +45,7 @@ Yii Framework 2 Change Log
 - Enh: Detecting IntegrityException for oci (nineinchnick)
 - Chg #7924: Migrations in history are now ordered by time applied allowing to roll back in reverse order no matter how these were applied (samdark)
 - Chg: Updated dependency to `cebe/markdown` to version `1.1.x` (cebe)
+- Enh: Add new properties to `yii\rest\Serializer` (arturf)
 
 
 2.0.3 March 01, 2015
