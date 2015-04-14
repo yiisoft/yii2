@@ -462,13 +462,7 @@ SQL;
         if (!empty($returnColumns)) {
             $returning = [];
             foreach ((array)$returnColumns as $name) {
-                if ($name === '*') {
-                    $returning[] = $name;
-                } elseif (preg_match('/^(.*?)(?i:\s+as\s+|\s+)([\w\-_\.]+)$/', $name, $matches)) {
-                    $returning[] = $this->quoteColumnName($matches[1]) . ' AS ' . $this->quoteColumnName($matches[2]);
-                } else {
-                    $returning[] = $this->quoteColumnName($name);
-                }
+                $returning[] = $this->quoteColumnName($name);
             }
             $sql .= ' RETURNING ' . implode(', ', $returning);
         }
