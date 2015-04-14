@@ -457,8 +457,14 @@ class ActiveRecord extends BaseActiveRecord
         if (($primaryKeys = static::getDb()->schema->insert($this->tableName(), $values)) === false) {
             return false;
         }
-        $this->setAttributes($primaryKeys, false);
-        $values = array_merge($values, $primaryKeys);
+        foreach ($primaryKeys as $name => $value) {
+            if ($this->getAttribute($name) === null) {
+                $id = $this->getTableSchema()->columns[$name]->phpTypecast($value);
+                $this->setAttribute($name, $id);
+                $values[$name] = $id;
+                break;
+            }
+        }
 
         $changedAttributes = array_fill_keys(array_keys($values), null);
         $this->setOldAttributes($values);
