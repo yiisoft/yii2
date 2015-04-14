@@ -445,7 +445,7 @@ SQL;
                 } else {
                     $returnParams[$phName]['dataType'] = \PDO::PARAM_INT;
                 }
-                $returning[] = $name === '*' ? $name : $this->quoteColumnName($name);
+                $returning[] = $this->quoteColumnName($name);
             }
             $sql .= ' RETURNING ' . implode(', ', $returning) . ' INTO ' . implode(', ', array_keys($returnParams));
         }
@@ -454,7 +454,7 @@ SQL;
         $command->prepare(false);
 
         foreach ($returnParams as $name => &$value) {
-            $command->pdoStatement->bindParam($name, $value['value']);
+            $command->pdoStatement->bindParam($name, $value['value'], $value['dataType']);
         }
 
         if (!$command->execute()) {
