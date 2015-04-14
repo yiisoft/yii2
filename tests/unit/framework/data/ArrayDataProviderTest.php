@@ -150,4 +150,33 @@ class ArrayDataProviderTest extends TestCase
 
         $this->assertEquals($sortedProjects, $dataProvider->getModels());
     }
+
+    public function testGetKeys()
+    {
+        $pagination = ['pageSize' => 2];
+
+        $simpleArray = [
+            ['name' => 'zero'],
+            ['name' => 'one'],
+            ['name' => 'tow'],
+        ];
+        $dataProvider = new ArrayDataProvider(['allModels' => $simpleArray, 'pagination' => $pagination]);
+        $this->assertEquals([0, 1], $dataProvider->getKeys());
+
+        $namedArray = [
+            'key1' => ['name' => 'zero'],
+            'key2' => ['name' => 'one'],
+            'key3' => ['name' => 'two'],
+        ];
+        $dataProvider = new ArrayDataProvider(['allModels' => $namedArray, 'pagination' => $pagination]);
+        $this->assertEquals(['key1', 'key2'], $dataProvider->getKeys());
+
+        $mixedArray = [
+            'key1' => ['name' => 'zero'],
+            9 => ['name' => 'one'],
+            'key3' => ['name' => 'two'],
+        ];
+        $dataProvider = new ArrayDataProvider(['allModels' => $mixedArray, 'pagination' => $pagination]);
+        $this->assertEquals(['key1', 9], $dataProvider->getKeys());
+    }
 } 

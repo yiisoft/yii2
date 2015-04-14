@@ -22,6 +22,7 @@ Yii Framework 2 Change Log
 - Bug #8014: Fixed setting incorrect form "action" property after submitting a form using a link with "data-method" and containing "action" among "data-params" (samdark)
 - Bug #8032: `yii\rbac\PhpManager::updateItem()` was unable to rename item updated (ChristopheBrun, samdark) 
 - Bug #8068: Fixed `yii\db\Query::count()` fails for query containing 'having' without 'group by' (klimov-paul)
+- Bug #8073: Fixed `yii\data\ArrayDataProvider::getKeys()` return wrong when `yii\data\ArrayDataProvider::$allModels` contain integer key (mdmunir, klimov-paul)
 - Enh #3376: Added `yii\validators\EachValidator`, which allows validation of the array attributes (klimov-paul)
 - Enh #6895: Added `ignoreCategories` config option for message command to ignore categories specified (samdark)
 - Enh #6975: Pressing arrows while focused in inputs of Active Form with `validateOnType` enabled no longer triggers validation (slinstj)
