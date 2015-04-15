@@ -344,6 +344,7 @@ class ArrayHelperTest extends TestCase
                 '31-12-2113test',
                 'test'
             ],
+            [['version', '1.0', 'option'], 'test'],
         ];
     }
 
@@ -372,6 +373,11 @@ class ArrayHelperTest extends TestCase
             'admin.lastname' => 'Xue',
             'admin' => [
                 'lastname' => 'cebe',
+            ],
+            'version' => [
+                '1.0' => [
+                    'option' => 'test'
+                ]
             ],
         ];
 
