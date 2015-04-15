@@ -155,7 +155,7 @@ $count = Customer::find()
     ->where(['status' => Customer::STATUS_ACTIVE])
     ->count();
 
-// return all active customers in an array indexed by customer IDs
+// return all customers in an array indexed by customer IDs
 // SELECT * FROM `customer`
 $customers = Customer::find()
     ->indexBy('id')
@@ -458,7 +458,7 @@ table rows. To update multiple rows simultaneously, you should call [[yii\db\Act
 which is a static method.
 
 ```php
-// UPDATE `customer` SET `status` = 1 WHERE `email` LIKE `%@example.com`
+// UPDATE `customer` SET `status` = 1 WHERE `email` LIKE `%@example.com%`
 Customer::updateAll(['status' => Customer::STATUS_ACTIVE], ['like', 'email', '@example.com']);
 ```
 
@@ -944,7 +944,7 @@ $items = $customers[0]->orders[0]->items;
 ```
 
 You can eagerly load deeply nested relations, such as `a.b.c.d`. All parent relations will be eagerly loaded.
-That is, when you call [[yii\db\ActiveQuery::with()|with()]] using `a.b.c.d`, you will be eagerly load
+That is, when you call [[yii\db\ActiveQuery::with()|with()]] using `a.b.c.d`, you will eagerly load
 `a`, `a.b`, `a.b.c` and `a.b.c.d`.  
 
 > Info: In general, when eagerly loading `N` relations among which `M` relations are defined with a 
@@ -1057,9 +1057,9 @@ $customers = Customer::find()->joinWith([
 ```
 
 This above query brings back *all* customers, and for each customer it brings back all active orders.
-Note that this differs from our earlier example which only brings back customers who have at least one active orders.
+Note that this differs from our earlier example which only brings back customers who have at least one active order.
 
-> Info: When [[yii\db\ActiveQuery]] is specified with a condition via [[[[yii\db\ActiveQuery::onCondition()|onCondition()]],
+> Info: When [[yii\db\ActiveQuery]] is specified with a condition via [[yii\db\ActiveQuery::onCondition()|onCondition()]],
   the condition will be put in the `ON` part if the query involves a JOIN query. If the query does not involve
   JOIN, the on-condition will be automatically appended to the `WHERE` part of the query.
 
