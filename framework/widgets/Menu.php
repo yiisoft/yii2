@@ -175,7 +175,12 @@ class Menu extends Widget
         if (!empty($items)) {
             $options = $this->options;
             $tag = ArrayHelper::remove($options, 'tag', 'ul');
-            echo Html::tag($tag, $this->renderItems($items), $options);
+            
+            if ($tag !== false) {
+                echo Html::tag($tag, $this->renderItems($items), $options);
+            } else {
+                echo $this->renderItems($items);
+            }
         }
     }
 
