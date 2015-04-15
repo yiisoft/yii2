@@ -512,6 +512,14 @@ class ActiveRecordTest extends DatabaseTestCase
         ])->all();
     }
 
+    public function testJoinWithViaCallback()
+    {
+        $orders = Order::find()
+            ->where(['order.id' => 1])
+            ->innerJoinWith('itemsOrderSortBySubtotal');
+        $this->assertEquals(2, $orders->asArray()->one()['itemsOrderSortBySubtotal'][0]['id']);
+    }
+
     public function testInverseOf()
     {
         // eager loading: find one and all

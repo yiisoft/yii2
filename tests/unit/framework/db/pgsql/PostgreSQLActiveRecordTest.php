@@ -159,6 +159,13 @@ class PostgreSQLActiveRecordTest extends ActiveRecordTest
 
         $this->assertTrue($model->save(false));
     }
+
+    public function testJoinWithViaCallback()
+    {
+        $this->markTestSkipped(
+            'The PostgreSQL does not support ORDER BY FIELD.'
+        );
+    }
 }
 
 class BoolAR extends ActiveRecord

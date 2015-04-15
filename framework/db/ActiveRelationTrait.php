@@ -62,6 +62,11 @@ trait ActiveRelationTrait
      */
     public $inverseOf;
 
+    /**
+     * @var callable
+     */
+    public $viaCallback;
+
 
     /**
      * Clones internal objects.
@@ -107,6 +112,16 @@ trait ActiveRelationTrait
         if ($callable !== null) {
             call_user_func($callable, $relation);
         }
+        return $this;
+    }
+
+    /**
+     * @param callable $callback
+     * @return $this
+     */
+    public function viaCallback(callable $callback)
+    {
+        $this->viaCallback = $callback;
         return $this;
     }
 
@@ -474,6 +489,9 @@ trait ActiveRelationTrait
             }
         }
         $this->andWhere(['in', $attributes, array_unique($values, SORT_REGULAR)]);
+        if (isset($this->viaCallback)) {
+            call_user_func($this->viaCallback, $this, $attributes, $values);
+        }
     }
 
     /**
