@@ -29,9 +29,8 @@ use yii\base\Model;
  * }
  * ~~~
  *
- * > Note: This validator will not work with inline validation rules.
- *
- * @property Validator $validator related validator instance. This property is read only.
+ * > Note: This validator will not work with inline validation rules in case of usage outside the model scope,
+ *   e.g. via [[validate()]] method.
  *
  * @author Paul Klimov <klimov.paul@gmail.com>
  * @since 2.0.4
@@ -78,28 +77,33 @@ class EachValidator extends Validator
 
     /**
      * Returns the validator declared in [[rule]].
+     * @param Model|null $model model in which context validator should be created.
      * @return Validator the declared validator.
      */
-    public function getValidator()
+    private function getValidator($model = null)
     {
         if ($this->_validator === null) {
-            $this->_validator = $this->createEmbeddedValidator();
+            $this->_validator = $this->createEmbeddedValidator($model);
         }
         return $this->_validator;
     }
 
     /**
      * Creates validator object based on the validation rule specified in [[rule]].
+     * @param Model|null $model model in which context validator should be created.
+     * @throws \yii\base\InvalidConfigException
      * @return Validator validator instance
-     * @throws InvalidConfigException if any validation rule configuration is invalid
      */
-    private function createEmbeddedValidator()
+    private function createEmbeddedValidator($model)
     {
         $rule = $this->rule;
         if ($rule instanceof Validator) {
             return $rule;
         } elseif (is_array($rule) && isset($rule[0])) { // validator type
-            return Validator::createValidator($rule[0], new Model(), $this->attributes, array_slice($rule, 1));
+            if (!is_object($model)) {
+                $model = new Model(); // mock up context model
+            }
+            return Validator::createValidator($rule[0], $model, $this->attributes, array_slice($rule, 1));
         } else {
             throw new InvalidConfigException('Invalid validation rule: a rule must be an array specifying validator type.');
         }
@@ -121,6 +125,7 @@ class EachValidator extends Validator
             }
             $model->$attribute = $filteredValue;
         } else {
+            $this->getValidator($model); // ensure model context while validator creation
             parent::validateAttribute($model, $attribute);
         }
     }
