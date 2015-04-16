@@ -85,11 +85,11 @@ foreach ($model as $name => $value) {
 
 ### Определение Атрибутов <span id="defining-attributes"></span>
 <!-- Defining Attributes  -->
-
+<!--
 By default, if your model class extends directly from [[yii\base\Model]], all its *non-static public* member
 variables are attributes. For example, the `ContactForm` model class below has four attributes: `name`, `email`,
 `subject` and `body`. The `ContactForm` model is used to represent the input data received from an HTML form.
-
+-->
 По умолчанию, если ваш класс модели расширяется напрямую от [[yii\base\Model]], то все *не статичные публичные* переменные являются атрибутами. Например, у класса модели `ContactForm` , который находится ниже, четыре атрибута: `name`, `email`, `subject` и `body`. Модель `ContactForm` используется для представления входных данных, полученных из HTML формы.
 
 ```php
@@ -106,21 +106,29 @@ class ContactForm extends Model
 }
 ```
 
-
+<!--
 You may override [[yii\base\Model::attributes()]] to define attributes in a different way. The method should
 return the names of the attributes in a model. For example, [[yii\db\ActiveRecord]] does so by returning
 the column names of the associated database table as its attribute names. Note that you may also need to
 override the magic methods such as `__get()`, `__set()` so that the attributes can be accessed like
 normal object properties.
+-->
+Вы можете переопределить метод [[yii\base\Model::attributes()]], чтобы определять атрибуты другим способом. Метод должен возвращать имена атрибутов в модели. Например [[yii\db\ActiveRecord]] делает так, возвращая имена столбцов из связанной таблицы базы данных в качестве имён атрибутов. Также может понадобиться переопределить магические методы, такие как `__get()`, `__set()` для того, что бы атрибуты могли быть доступны как обычные свойства объекта.
 
 
-### Attribute Labels <span id="attribute-labels"></span>
-
+### Метки атрибутов <span id="attribute-labels"></span>
+<!-- Attribute Labels -->
+<!--
 When displaying values or getting input for attributes, you often need to display some labels associated
 with attributes. For example, given an attribute named `firstName`, you may want to display a label `First Name`
 which is more user-friendly when displayed to end users in places such as form inputs and error messages.
+-->
+При отображении значений или при получении ввода значений атрибутов, часто требуется отобразить некоторые надписи, связанные с атрибутами. Например, если атрибут назван `firstName`, Вы можете отобразить его как `First Name`, что является более удобным для пользователя, в тех случаях, когда атрибут отображается конечным пользователям в таких местах, как форма входа и сообщения об ошибках.
 
+<!--
 You can get the label of an attribute by calling [[yii\base\Model::getAttributeLabel()]]. For example,
+-->
+Вы можете получить метку атрибута, вызвав [[yii\base\Model::getAttributeLabel()]]. Например,
 
 ```php
 $model = new \app\models\ContactForm;
@@ -129,13 +137,19 @@ $model = new \app\models\ContactForm;
 echo $model->getAttributeLabel('name');
 ```
 
+<!--
 By default, attribute labels are automatically generated from attribute names. The generation is done by
 the method [[yii\base\Model::generateAttributeLabel()]]. It will turn camel-case variable names into
 multiple words with the first letter in each word in upper case. For example, `username` becomes `Username`,
 and `firstName` becomes `First Name`.
+-->
+По умолчанию, метки атрибутов автоматически генерируются из названия атрибута. Генерация выполняется методом [[yii\base\Model::generateAttributeLabel()]]. Он превращает первую букву каждого слова в верхний регистр, если имена переменных состоят из нескольких слов. Например, `username` станет `Username`, а `firstName` станет `First Name`.
 
+<!--
 If you do not want to use automatically generated labels, you may override [[yii\base\Model::attributeLabels()]]
 to explicitly declare attribute labels. For example,
+-->
+Если Вы не хотите использовать автоматически сгенерированные метки, Вы можете переопределить метод [[yii\base\Model::attributeLabels()]] чтобы явно объявить метку атрибута. Например,
 
 ```php
 namespace app\models;
@@ -161,8 +175,11 @@ class ContactForm extends Model
 }
 ```
 
+<!--
 For applications supporting multiple languages, you may want to translate attribute labels. This can be done
 in the [[yii\base\Model::attributeLabels()|attributeLabels()]] method as well, like the following:
+-->
+Для приложений поддерживающих мультиязычность, Вы можете перевести метки атрибутов. Это можно сделать в методе [[yii\base\Model::attributeLabels()|attributeLabels()]] как показано ниже:
 
 ```php
 public function attributeLabels()
@@ -176,23 +193,35 @@ public function attributeLabels()
 }
 ```
 
+<!--
 You may even conditionally define attribute labels. For example, based on the [scenario](#scenarios) the model
 is being used in, you may return different labels for the same attribute.
+-->
+Можно даже условно определять метки атрибутов. Например, на основе [сценариев](#scenarios) использованной в нём модели , Вы можете возвращать различные метки для одного и того же атрибута.
 
+<!--
 > Info: Strictly speaking, attribute labels are part of [views](structure-views.md). But declaring labels
   in models is often very convenient and can result in very clean and reusable code.
+-->
+> Для справки: Строго говоря, метки атрибутов являются частью [видов](structure-views.md). Но объявление меток в моделях часто очень удобно и приводит к чистоте кода и повторному его использованию.
 
-
-## Scenarios <span id="scenarios"></span>
-
+## Сценарии <span id="scenarios"></span>
+<!-- Scenarios  -->
+<!--
 A model may be used in different *scenarios*. For example, a `User` model may be used to collect user login inputs,
 but it may also be used for the user registration purpose. In different scenarios, a model may use different
 business rules and logic. For example, the `email` attribute may be required during user registration,
 but not so during user login.
+-->
+Модель может быть использованна в различных *сценариях*. Например, модель `User` может быть использованна для коллекции входных логинов пользователей, а также может быть использованна для цели регистрации пользователей.  	
+В различных сценариях, модель может использовать различные бизнес-правила и логику. Например, атрибут `email` может потребоваться во время регистрации пользователя, но не во время входа пользователя в систему.
 
+<!--
 A model uses the [[yii\base\Model::scenario]] property to keep track of the scenario it is being used in.
 By default, a model supports only a single scenario named `default`. The following code shows two ways of
 setting the scenario of a model:
+-->
+Модель использует свойство [[yii\base\Model::scenario]], чтобы отслеживать сценарий, в котором она используется. По умолчанию, модель поддерживает только один сценарий с именем `default`. В следующем коде показано два способа установки сценария модели:
 
 ```php
 // scenario is set as a property
