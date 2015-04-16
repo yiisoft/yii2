@@ -44,7 +44,7 @@ install:
   - travis_retry composer install --prefer-dist --no-interaction
   - tests/data/travis/apc-setup.sh
   - tests/data/travis/memcache-setup.sh
-#  - tests/unit/data/travis/cubrid-setup.sh
+#  - tests/data/travis/cubrid-setup.sh
 
 before_script:
   # show some versions and env information
