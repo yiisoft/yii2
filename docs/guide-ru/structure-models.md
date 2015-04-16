@@ -1,11 +1,18 @@
-Models
+<!--Models-->
+Модели
 ======
 
+<!--
 Models are part of the [MVC](http://en.wikipedia.org/wiki/Model%E2%80%93view%E2%80%93controller) architecture.
 They are objects representing business data, rules and logic.
+-->
+Модели являются частью архитектуры [MVC](http://en.wikipedia.org/wiki/Model%E2%80%93view%E2%80%93controller) (Модель-Вид-Контроллер). Они представляют собой объекты олицетворяющие рабочую информацию, правила и логику.
 
+<!--
 You can create model classes by extending [[yii\base\Model]] or its child classes. The base class
 [[yii\base\Model]] supports many useful features:
+-->
+Вы можете создавать классы моделей путём расширения класса [[yii\base\Model]] или его дочерних классов. Базовый класс [[yii\base\Model]] поддерживает много полезных функций:
 
 * [Attributes](#attributes): represent the business data and can be accessed like normal object properties
   or array elements;
@@ -13,6 +20,11 @@ You can create model classes by extending [[yii\base\Model]] or its child classe
 * [Massive assignment](#massive-assignment): supports populating multiple attributes in a single step;
 * [Validation rules](#validation-rules): ensures input data based on the declared validation rules;
 * [Data Exporting](#data-exporting): allows model data to be exported in terms of arrays with customizable formats.
+
+* [Attributes](#attributes) (Атрибуты): представляют собой рабочие данные и могут быть доступны как обычные свойства объекта или элементы массыва;
+* [Attribute labels](#attribute-labels) (Метки атрибута): задают отображение атрибута;
+* [Massive assignment](#massive-assignment) (Массовое присвоение): поддержка заполнения нескольких атрибутов в один шаг;
+* [Validation rules](#validation-rules) (Правила проверки):	обеспечивают ввод данных на основе заявленных правил проверки;
 
 The `Model` class is also the base class for more advanced models, such as [Active Record](db-active-record.md).
 Please refer to the relevant documentation for more details about these advanced models.
