@@ -11,6 +11,7 @@ use yii\db\Connection;
 use yii\db\Exception;
 use yii\base\InvalidParamException;
 use yii\base\NotSupportedException;
+use yii\db\Query;
 
 /**
  * QueryBuilder is the query builder for SQLite databases.
@@ -292,6 +293,31 @@ class QueryBuilder extends \yii\db\QueryBuilder
         }
 
         return $sql;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function buildUnion($sql, $unions, &$params)
+    {
+        if (empty($unions)) {
+            return $sql;
+        }
+
+        $result = '';
+
+        foreach ($unions as $i => $union) {
+            $query = $union['query'];
+            if ($query instanceof Query) {
+                list($unions[$i]['query'], $params) = $this->build($query, $params);
+            }
+
+            $result .= 'UNION ' . ($union['all'] ? 'ALL ' : '') . ' ' . $unions[$i]['query'] . ' ';
+        }
+        if ($result !== '') {
+            $sql = "$sql{$this->separator}$result";
+        }
+        return trim($sql);
     }
 
     /**
