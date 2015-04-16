@@ -4,10 +4,10 @@ Yii 2.0 Unit tests
 DIRECTORY STRUCTURE
 -------------------
 
-  data/            models, config and other test data
-      config.php   this file contains configuration for database and caching backends
-  framework/       the framework unit tests
-  runtime/         the application runtime dir for the yii test app
+    data/            models, config and other test data
+        config.php   this file contains configuration for database and caching backends
+    framework/       the framework unit tests
+    runtime/         the application runtime dir for the yii test app
 
 
 HOW TO RUN THE TESTS
