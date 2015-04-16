@@ -42,8 +42,8 @@ install:
   - export PATH="$HOME/.composer/vendor/bin:$PATH"
 # core framework:
   - travis_retry composer install --prefer-dist --no-interaction
-  - tests/unit/data/travis/apc-setup.sh
-  - tests/unit/data/travis/memcache-setup.sh
+  - tests/data/travis/apc-setup.sh
+  - tests/data/travis/memcache-setup.sh
 #  - tests/unit/data/travis/cubrid-setup.sh
 
 before_script:
