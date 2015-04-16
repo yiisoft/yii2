@@ -28,51 +28,69 @@ You can create model classes by extending [[yii\base\Model]] or its child classe
 * [Validation rules](#validation-rules) (Правила проверки):	обеспечивают ввод данных на основе заявленных правил проверки;
 * [Data Exporting](#data-exporting) (Экспорт Данных): разрешает данным модели быть экспортированными <b>УТОЧНИТЬ ДАЛЕЕ-></b> при помощи массивов настройки форматов.
 
+<!--
 The `Model` class is also the base class for more advanced models, such as [Active Record](db-active-record.md).
 Please refer to the relevant documentation for more details about these advanced models.
+-->
+Класс `Model` также является базовым классом для многих расширенных моделей, таких как [Active Record](db-active-record.md). Пожалуйста, обратитесь к соответствующей документации для более подробной информации об этих расширенных моделях.
 
+<!--
 > Info: You are not required to base your model classes on [[yii\base\Model]]. However, because there are many Yii
   components built to support [[yii\base\Model]], it is usually the preferable base class for a model.
+-->
+> Для справки: Вы не обязаны основывать свои классы моделей на [[yii\base\Model]]. Однако, поскольку в yii есть много компонентов, созданных для поддержки [[yii\base\Model]], обычно так делать предпочтительнее для базового класса модели.
 
-
-## Attributes <span id="attributes"></span>
-
+## Атрибуты <span id="attributes"></span>
+<!-- Attributes -->
+<!--
 Models represent business data in terms of *attributes*. Each attribute is like a publicly accessible property
 of a model. The method [[yii\base\Model::attributes()]] specifies what attributes a model class has.
+-->
+Модели предоставляют рабочие данные в терминах *атрибутах*. Каждый атрибут представляет собой публично доступное свойство модели. Метод [[yii\base\Model::attributes()]] определяет какие атрибуты имеет класс модели.
 
+<!--
 You can access an attribute like accessing a normal object property:
+-->
+Вы можете получить доступ к атрибуту как к обычному свойству объекта:
 
 ```php
 $model = new \app\models\ContactForm;
 
-// "name" is an attribute of ContactForm
+// "name" - это атрибут модели ContactForm
 $model->name = 'example';
 echo $model->name;
 ```
 
+<!--
 You can also access attributes like accessing array elements, thanks to the support for
 [ArrayAccess](http://php.net/manual/en/class.arrayaccess.php) and [ArrayIterator](http://php.net/manual/en/class.arrayiterator.php)
 by [[yii\base\Model]]:
+-->
+Также возможно получить доступ к атрибутам как к элементам массива, спасибо поддержке [ArrayAccess](http://php.net/manual/en/class.arrayaccess.php) и [ArrayIterator](http://php.net/manual/en/class.arrayiterator.php)
+в [[yii\base\Model]]:
 
 ```php
 $model = new \app\models\ContactForm;
 
-// accessing attributes like array elements
+// доступ к атрибутам как к элементам массива
 $model['name'] = 'example';
 echo $model['name'];
 
-// iterate attributes
+// перебор атрибутов
 foreach ($model as $name => $value) {
     echo "$name: $value\n";
 }
 ```
 
 
-### Defining Attributes <span id="defining-attributes"></span>
+### Определение Атрибутов <span id="defining-attributes"></span>
+<!-- Defining Attributes  -->
 
 By default, if your model class extends directly from [[yii\base\Model]], all its *non-static public* member
 variables are attributes. For example, the `ContactForm` model class below has four attributes: `name`, `email`,
 `subject` and `body`. The `ContactForm` model is used to represent the input data received from an HTML form.
+
+По умолчанию, если ваш класс модели расширяется напрямую от [[yii\base\Model]], то все *не статичные публичные* переменные являются атрибутами. Например, у класса модели `ContactForm` , который находится ниже, четыре атрибута: `name`, `email`, `subject` и `body`. Модель `ContactForm` используется для представления входных данных, полученных из HTML формы.
 
 ```php
 namespace app\models;
