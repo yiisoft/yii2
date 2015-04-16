@@ -4,6 +4,7 @@ Yii Framework 2 Change Log
 2.0.4 under development
 -----------------------
 
+- Bug #8104: Fixed regression that had set Memcache expiration to time plus seconds instead of just seconds (wilwade)
 - Bug #6642: Fixed the bug that using confirmation dialog via `data-confirm` in an `ActiveForm` may cause the dialog to appear twice (pana1990, qiangxue)
 - Bug #6871: Fixed the bug that using defaults and hostnames in URL rules may cause an out-of-range index issue (qiangxue)
 - Bug #7473: Fixed `yii\console\controllers\AssetController` does not create missing folders for the target bundles (schmunk42, klimov-paul)

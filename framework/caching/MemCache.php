@@ -282,7 +282,7 @@ class MemCache extends Cache
     {
         $expire = $duration > 0 ? $duration + time() : 0;
 
-        return $this->useMemcached ? $this->_cache->set($key, $value, $expire) : $this->_cache->set($key, $value, 0, $expire);
+        return $this->useMemcached ? $this->_cache->set($key, $value, $expire) : $this->_cache->set($key, $value, 0, $duration);
     }
 
     /**
