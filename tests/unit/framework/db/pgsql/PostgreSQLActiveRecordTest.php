@@ -5,6 +5,7 @@ namespace yiiunit\framework\db\pgsql;
 use yii\behaviors\TimestampBehavior;
 use yii\db\pgsql\Schema;
 use yiiunit\data\ar\ActiveRecord;
+use yiiunit\data\ar\DefaultPk;
 use yiiunit\framework\ar\ActiveRecordTestTrait;
 use yiiunit\framework\db\ActiveRecordTest;
 use yiiunit\TestCase;
@@ -158,6 +159,14 @@ class PostgreSQLActiveRecordTest extends ActiveRecordTest
         $this->assertSame(false, $model->default_false);
 
         $this->assertTrue($model->save(false));
+    }
+
+    public function testPrimaryKeyAfterSave()
+    {
+        $record = new DefaultPk;
+        $record->type = 'type';
+        $record->save(false);
+        $this->assertEquals(5, $record->primaryKey);
     }
 }
 

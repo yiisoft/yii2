@@ -168,6 +168,34 @@ class QueryBuilder extends \yii\db\QueryBuilder
     /**
      * @inheritdoc
      */
+    public function insertReturning($table, $columns, &$params, $returnColumns, &$returnParams)
+    {
+        // set to true to indicate that query result should be returned when calling Command::query*
+        $returnParams = true;
+        $schema = $this->db->getSchema();
+        $returning = [];
+        if ($returnColumns !== null) {
+            if (!is_array($returnColumns)) {
+                $returnColumns = [$returnColumns];
+            }
+            foreach ($returnColumns as $name) {
+                if ($name === '*') {
+                    $returning[] = $name;
+                } elseif (preg_match('/^(.*?)(?i:\s+as\s+|\s+)([\w\-_\.]+)$/', $name, $matches)) {
+                    $returning[] = $schema->quoteColumnName($matches[1]) . ' AS ' . $schema->quoteColumnName($matches[2]);
+                } else {
+                    $returning[] = $schema->quoteColumnName($name);
+                }
+            }
+        }
+
+        return $this->insert($table, $columns, $params)
+        . (empty($returning) ? '' : ' RETURNING ' . implode(', ', $returning));
+    }
+
+    /**
+     * @inheritdoc
+     */
     public function batchInsert($table, $columns, $rows)
     {
         $schema = $this->db->getSchema();

@@ -3,6 +3,7 @@ namespace yiiunit\framework\db\oci;
 
 use yiiunit\framework\db\ActiveRecordTest;
 use yiiunit\data\ar\Type;
+use yiiunit\data\ar\DefaultPk;
 
 /**
  * @group db
@@ -106,5 +107,13 @@ class OracleActiveRecordTest extends ActiveRecordTest
         $this->assertArrayHasKey('address', $customers[2]);
         $this->assertArrayHasKey('status', $customers[2]);
         $this->assertArrayHasKey('bool_status', $customers[2]);
+    }
+
+    public function testPrimaryKeyAfterSave()
+    {
+        $record = new DefaultPk;
+        $record->type = 'type';
+        $record->save(false);
+        $this->assertEquals(5, $record->primaryKey);
     }
 }

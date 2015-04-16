@@ -16,6 +16,7 @@ DROP TABLE IF EXISTS "type";
 DROP TABLE IF EXISTS "null_values";
 DROP TABLE IF EXISTS "animal";
 DROP VIEW IF EXISTS "animal_view";
+DROP TABLE IF EXISTS "default_pk";
 
 CREATE TABLE "profile" (
   id INTEGER NOT NULL,
@@ -117,6 +118,12 @@ CREATE TABLE "animal" (
 );
 
 CREATE VIEW "animal_view" AS SELECT * FROM "animal";
+
+CREATE TABLE "default_pk" (
+  id INTEGER NOT NULL DEFAULT 5,
+  type VARCHAR(255) NOT NULL,
+  PRIMARY KEY (id)
+);
 
 INSERT INTO "animal" ("type") VALUES ('yiiunit\data\ar\Cat');
 INSERT INTO "animal" ("type") VALUES ('yiiunit\data\ar\Dog');

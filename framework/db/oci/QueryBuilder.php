@@ -162,6 +162,41 @@ EOD;
     }
 
     /**
+     * For each return column a param will be added to $returnParams.
+     * They should have variables bound before executing the query.
+     * @inheritdoc
+     */
+    public function insertReturning($table, $columns, &$params, $returnColumns = null, &$returnParams = null)
+    {
+        $result = $this->insert($table, $columns, $params);
+
+        if (empty($returnColumns)) {
+            return $result;
+        }
+
+        $schema = $this->db->getSchema();
+        $columnSchemas = ($tableSchema = $schema->getTableSchema($table)) !== null ? $tableSchema->columns : [];
+        $returning = [];
+        if ($returnColumns !== null) {
+            foreach ($returnColumns as $name) {
+                $phName = self::PARAM_PREFIX . (count($params) + count($returnParams));
+                $returnParams[$phName] = [
+                    'columnName' => $name,
+                    'value' => null,
+                ];
+                if (!isset($columnSchemas[$name]) || $columnSchemas[$name]->phpType !== 'integer') {
+                    $returnParams[$phName]['dataType'] = \PDO::PARAM_STR;
+                } else {
+                    $returnParams[$phName]['dataType'] = \PDO::PARAM_INT;
+                }
+                $returning[] = $name === '*' ? $name : $schema->quoteColumnName($name);
+            }
+        }
+
+        return $result . ' RETURNING ' . implode(', ', $returning) . ' INTO ' . implode(', ', array_keys($returnParams));
+    }
+
+    /**
      * Generates a batch INSERT SQL statement.
      * For example,
      *

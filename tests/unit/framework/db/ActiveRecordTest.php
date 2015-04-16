@@ -679,8 +679,8 @@ class ActiveRecordTest extends DatabaseTestCase
         $this->assertEquals(3, count($orders[1]->orderItems));
         $this->assertEquals(1, count($orders[2]->orderItems));
     }
-    
-    public function testPopulateRecordCallWhenQueryingOnParentClass() 
+
+    public function testPopulateRecordCallWhenQueryingOnParentClass()
     {
         (new Cat())->save(false);
         (new Dog())->save(false);

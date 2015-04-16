@@ -90,6 +90,11 @@ class Command extends Component
      */
     private $_pendingParams = [];
     /**
+     * @var array|true Either an array of return parameters to be bound to the current PDO statement
+     * or a special boolean value "true" if return parameters are the query result.
+     */
+    private $_returningParams;
+    /**
      * @var string the SQL statement that this command represents
      */
     private $_sql;
@@ -141,6 +146,7 @@ class Command extends Component
             $this->cancel();
             $this->_sql = $this->db->quoteSql($sql);
             $this->_pendingParams = [];
+            $this->_returningParams = null;
             $this->params = [];
         }
 
@@ -267,6 +273,22 @@ class Command extends Component
     {
         foreach ($this->_pendingParams as $name => $value) {
             $this->pdoStatement->bindValue($name, $value[0], $value[1]);
+        }
+        if (is_array($this->_returningParams)) {
+            foreach ($this->_returningParams as $name => &$value) {
+                $value = array_merge([
+                    'value' => null,
+                    'dataType' => \PDO::PARAM_STR,
+                    'length' => null,
+                    'driverOptions' => null,
+                    'bound' => false,
+                ], $value);
+                if ($value['bound'] === true) {
+                    continue;
+                }
+                $this->pdoStatement->bindParam($name, $value['value'], $value['dataType'], $value['length'], $value['driverOptions']);
+                $value['bound'] = true;
+            }
         }
         $this->_pendingParams = [];
     }
@@ -416,6 +438,42 @@ class Command extends Component
         $sql = $this->db->getQueryBuilder()->insert($table, $columns, $params);
 
         return $this->setSql($sql)->bindValues($params);
+    }
+
+    /**
+     * Creates an INSERT INTO RETURNING command or plain INSERT if the underlying DBMS does not support it.
+     * @see insert()
+     *
+     * Before executing the query prepare it for writing using [[prepare(false)]].
+     * Because it returns results, use [[queryOne()]] to execute it.
+     *
+     * For example,
+     *
+     * ~~~
+     * $row = $connection->createCommand()->insertReturning('user', [
+     *     'name' => 'Sam',
+     *     'age' => 30,
+     * ], ['id'])->prepare(false)->queryOne();
+     * ~~~
+     *
+     * @param string $table the table that new rows will be inserted into.
+     * @param array $columns the column data (name => value) to be inserted into the table.
+     * @param array $returnColumns the column names which values to be returned after inserting rows.
+     * @return Command the command object itself
+     * @throws NotSupportedException if $returnColumns is set but the underlying DBMS doesn't support returning
+     * @since 2.0.4
+     */
+    public function insertReturning($table, $columns, $returnColumns = null)
+    {
+        $params = [];
+        $returningParams = [];
+        $sql = $this->db->getQueryBuilder()->insertReturning($table, $columns, $params, $returnColumns, $returningParams);
+
+        $this->setSql($sql)->bindValues($params);
+
+        $this->_returningParams = $returningParams;
+
+        return $this;
     }
 
     /**
@@ -790,7 +848,7 @@ class Command extends Component
 
         Yii::info($rawSql, 'yii\db\Command::query');
 
-        if ($method !== '') {
+        if ($method !== '' && $this->_returningParams === null) {
             $info = $this->db->getQueryCacheInfo($this->queryCacheDuration, $this->queryCacheDependency);
             if (is_array($info)) {
                 /* @var $cache \yii\caching\Cache */
@@ -819,7 +877,12 @@ class Command extends Component
 
             $this->pdoStatement->execute();
 
-            if ($method === '') {
+            if (is_array($this->_returningParams)) {
+                $result = [];
+                foreach ($this->_returningParams as $name => $value) {
+                    $result[$value['columnName']] = $value['value'];
+                }
+            } elseif ($method === '') {
                 $result = new DataReader($this);
             } else {
                 if ($fetchMode === null) {
