@@ -38,6 +38,8 @@ class QueryBuilder extends \yii\db\QueryBuilder
         Schema::TYPE_BINARY => 'bytea',
         Schema::TYPE_BOOLEAN => 'boolean',
         Schema::TYPE_MONEY => 'numeric(19,4)',
+        Schema::TYPE_INTEGER_ARRAY => 'integer[]',
+        Schema::TYPE_TEXT_ARRAY => 'text[]',
     ];
 
     /**
@@ -62,6 +64,8 @@ class QueryBuilder extends \yii\db\QueryBuilder
         'OR NOT ILIKE' => 'buildLikeCondition',
         'EXISTS' => 'buildExistsCondition',
         'NOT EXISTS' => 'buildExistsCondition',
+        'IN INTEGER ARRAY' => 'buildInIntArrayCondition',
+        'IN TEXT ARRAY' => 'buildInTextArrayCondition',
     ];
 
 
@@ -204,5 +208,70 @@ class QueryBuilder extends \yii\db\QueryBuilder
 
         return 'INSERT INTO ' . $schema->quoteTableName($table)
         . ' (' . implode(', ', $columns) . ') VALUES ' . implode(', ', $values);
+    }
+
+    /**
+     * Creates an SQL expressions with the `@>` operator for postgres integer arrays.
+     * @param string $operator the operator to use (e.g. `in int array` )
+     * @param array $operands the first operand is the column name.
+     * The second operand is an array of values that column value should be among.
+     * @param array $params the binding parameters to be populated
+     * @return string the generated SQL expression
+     * @throws Exception if wrong number of operands have been given.
+     */
+    public function buildInIntArrayCondition($operator, $operands, &$params)
+    {
+        return $this->buildInArrayCondition($operator, $operands, $params, Schema::TYPE_INTEGER_ARRAY);
+    }
+
+    /**
+     * Creates an SQL expressions with the `@>` operator for postgres text arrays.
+     * @param string $operator the operator to use (e.g. `in text array` )
+     * @param array $operands the first operand is the column name.
+     * The second operand is an array of values that column value should be among.
+     * @param array $params the binding parameters to be populated
+     * @return string the generated SQL expression
+     * @throws Exception if wrong number of operands have been given.
+     */
+    public function buildInTextArrayCondition($operator, $operands, &$params)
+    {
+        return $this->buildInArrayCondition($operator, $operands, $params, Schema::TYPE_TEXT_ARRAY);
+    }
+
+    /**
+     * Creates an SQL expressions with the `@>` operator for postgres arrays.
+     * @param string $operator the operator to use (e.g. `in text array` )
+     * @param array $operands the first operand is the column name.
+     * The second operand is an array of values that column value should be among.
+     * @param array $params the binding parameters to be populated
+     * @param string $type type of array for explicit type casts
+     * @return string the generated SQL expression
+     * @throws Exception if wrong number of operands have been given.
+     */
+    protected function buildInArrayCondition($operator, $operands, &$params, $type)
+    {
+        if (!isset($operands[0], $operands[1])) {
+            throw new Exception("Operator '$operator' requires two operands.");
+        }
+        list($column, $values) = $operands;
+        $values = (array)$values;
+        if (is_array($column)) {
+            $column = reset($column);
+        }
+        $column = $this->db->quoteColumnName($column);
+
+        foreach ($values as $i => $value) {
+            if (is_array($value)) {
+                $value = isset($value[$column]) ? $value[$column] : null;
+            }
+            if (empty($value)) {
+                unset($value[$i]);
+            } else {
+                $phName = self::PARAM_PREFIX.count($params);
+                $params[$phName] = $value;
+                $values[$i] = $phName;
+            }
+        }
+        return "$column @> ARRAY[".implode(',', $values)."]::".$type;
     }
 }

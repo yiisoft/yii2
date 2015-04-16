@@ -20,6 +20,9 @@ use yii\db\ColumnSchema;
  */
 class Schema extends \yii\db\Schema
 {
+    const TYPE_INTEGER_ARRAY = 'integer[]';
+    const TYPE_TEXT_ARRAY = 'text[]';
+
     /**
      * @var string the default schema used for the current session.
      */
@@ -104,7 +107,9 @@ class Schema extends \yii\db\Schema
         'uuid' => self::TYPE_STRING,
         'json' => self::TYPE_STRING,
         'jsonb' => self::TYPE_STRING,
-        'xml' => self::TYPE_STRING
+        'xml' => self::TYPE_STRING,
+        'integer[]' => self::TYPE_INTEGER_ARRAY,
+        'text[]' => self::TYPE_TEXT_ARRAY,
     ];
 
 
