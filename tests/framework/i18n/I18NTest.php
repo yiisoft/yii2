@@ -208,4 +208,11 @@ class I18NTest extends TestCase
     {
         $this->assertEquals($expected, $this->i18n->fallbackNormalizeLocale($in));
     }
+
+    public function testGetFallbackLanguageId()
+    {
+        $this->assertEquals('zh-CN', $this->i18n->getFallbackLanguageId('zh-Hant-CN'));
+        $this->assertEquals('zh', $this->i18n->getFallbackLanguageId('zh-CN'));
+        $this->assertEquals(null, $this->i18n->getFallbackLanguageId('zh'));
+    }
 }

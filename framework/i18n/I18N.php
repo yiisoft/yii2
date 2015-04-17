@@ -281,4 +281,26 @@ class I18N extends Component
 
        return implode('-', $data);
     }
+
+    /**
+     * Returns fallback language ID
+     *
+     * "zh-Hant-CN" ? "zh-CN" ? "zh"
+     *
+     * @param string $languageId normalized language ID. Either "zh-Hant-CN", "zh-CN" or "CN".
+     * @return string fallback language ID or null if there's no fallback
+     */
+    public function getFallbackLanguageId($languageId)
+    {
+        $parts = explode('-', $languageId);
+
+        switch(count($parts)) {
+            case 3:
+                return $parts[0] . '-' . $parts[2];
+            case 2:
+                return $parts[0];
+        }
+
+        return null;
+    }
 }
