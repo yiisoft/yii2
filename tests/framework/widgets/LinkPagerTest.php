@@ -36,7 +36,7 @@ class LinkPagerTest extends \yiiunit\TestCase
         ]);
 
         static::assertContains('<li class="first"><a href="/?r=test&amp;page=1" data-page="0">1</a></li>', $output);
-        static::assertContains('<li class="last"><a href="/?r=test&amp;page=25" data-page="24">24</a></li>', $output);
+        static::assertContains('<li class="last"><a href="/?r=test&amp;page=25" data-page="24">25</a></li>', $output);
 
         $output = LinkPager::widget([
             'pagination' => $pagination,
