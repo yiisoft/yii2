@@ -184,7 +184,7 @@ class LinkPager extends Widget
         }
 
         // last page
-        $lastPageLabel = $this->lastPageLabel === true ? $pageCount - 1 : $this->lastPageLabel;
+        $lastPageLabel = $this->lastPageLabel === true ? $pageCount : $this->lastPageLabel;
         if ($lastPageLabel !== false) {
             $buttons[] = $this->renderPageButton($lastPageLabel, $pageCount - 1, $this->lastPageCssClass, $currentPage >= $pageCount - 1, false);
         }
