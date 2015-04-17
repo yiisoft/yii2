@@ -10,6 +10,7 @@ namespace yii\validators;
 use IntlDateFormatter;
 use Yii;
 use DateTime;
+use yii\base\InvalidConfigException;
 use yii\helpers\FormatConverter;
 
 /**
@@ -62,6 +63,36 @@ class DateValidator extends Validator
      * the original value will be overwritten with the timestamp value after validation.
      */
     public $timestampAttribute;
+    /**
+     * @var integer|string upper limit of the date. Defaults to null, meaning no upper limit.
+     * If this property is a string, [[format]] will be used to parse it.
+     * @see tooBig for the customized message used when the date is too big.
+     */
+    public $max;
+    /**
+     * @var integer|string lower limit of the date. Defaults to null, meaning no lower limit.
+     * If this property is a string, [[format]] will be used to parse it.
+     * @see tooSmall for the customized message used when the date is too small.
+     */
+    public $min;
+    /**
+     * @var string user friendly value of upper limit to display in the error message.
+     * If this property is null, the value of [[max]] will be used (before parsing).
+     */
+    public $maxString;
+    /**
+     * @var string user friendly value of lower limit to display in the error message.
+     * If this property is null, the value of [[min]] will be used (before parsing).
+     */
+    public $minString;
+    /**
+     * @var string user-defined error message used when the value is bigger than [[max]].
+     */
+    public $tooBig;
+    /**
+     * @var string user-defined error message used when the value is smaller than [[min]].
+     */
+    public $tooSmall;
 
     /**
      * @var array map of short format names to IntlDateFormatter constant values.
@@ -92,6 +123,32 @@ class DateValidator extends Validator
         if ($this->timeZone === null) {
             $this->timeZone = Yii::$app->timeZone;
         }
+        if ($this->min !== null && $this->tooSmall === null) {
+            $this->tooSmall = Yii::t('yii', '{attribute} must be no less than {min}.');
+        }
+        if ($this->max !== null && $this->tooBig === null) {
+            $this->tooBig = Yii::t('yii', '{attribute} must be no greater than {max}.');
+        }
+        if ($this->maxString === null) {
+            $this->maxString = $this->max;
+        }
+        if ($this->minString === null) {
+            $this->minString = $this->min;
+        }
+        if ($this->max !== null && is_string($this->max)) {
+            $timestamp = $this->parseDateValue($this->max);
+            if ($timestamp === false) {
+                throw new InvalidConfigException("Invalid max date value: {$this->max}");
+            }
+            $this->max = $timestamp;
+        }
+        if ($this->min !== null && is_string($this->min)) {
+            $timestamp = $this->parseDateValue($this->min);
+            if ($timestamp === false) {
+                throw new InvalidConfigException("Invalid min date value: {$this->min}");
+            }
+            $this->min = $timestamp;
+        }
     }
 
     /**
@@ -103,8 +160,19 @@ class DateValidator extends Validator
         $timestamp = $this->parseDateValue($value);
         if ($timestamp === false) {
             $this->addError($model, $attribute, $this->message, []);
-        } elseif ($this->timestampAttribute !== null) {
-            $model->{$this->timestampAttribute} = $timestamp;
+        } else {
+            $error = false;
+            if ($this->min !== null && $timestamp < $this->min) {
+                $this->addError($model, $attribute, $this->tooSmall, ['min' => $this->minString]);
+                $error = true;
+            }
+            if ($this->max !== null && $timestamp > $this->max) {
+                $this->addError($model, $attribute, $this->tooBig, ['max' => $this->maxString]);
+                $error = true;
+            }
+            if (!$error && $this->timestampAttribute !== null) {
+                $model->{$this->timestampAttribute} = $timestamp;
+            }
         }
     }
 
@@ -113,7 +181,16 @@ class DateValidator extends Validator
      */
     protected function validateValue($value)
     {
-        return $this->parseDateValue($value) === false ? [$this->message, []] : null;
+        $timestamp = $this->parseDateValue($value);
+        if ($timestamp === false) {
+            return [$this->message, []];
+        } elseif ($this->min !== null && $timestamp < $this->min) {
+            return [$this->tooSmall, ['min' => $this->minString]];
+        } elseif ($this->max !== null && $timestamp > $this->max) {
+            return [$this->tooBig, ['max' => $this->maxString]];
+        } else {
+            return null;
+        }
     }
 
     /**
