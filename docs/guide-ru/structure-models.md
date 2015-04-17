@@ -224,17 +224,21 @@ setting the scenario of a model:
 Модель использует свойство [[yii\base\Model::scenario]], чтобы отслеживать сценарий, в котором она используется. По умолчанию, модель поддерживает только один сценарий с именем `default`. В следующем коде показано два способа установки сценария модели:
 
 ```php
-// scenario is set as a property
+// сценарий задается как свойство
 $model = new User;
 $model->scenario = 'login';
 
-// scenario is set through configuration
+// сценарий задается через конфигурацию
 $model = new User(['scenario' => 'login']);
 ```
 
+<!--
 By default, the scenarios supported by a model are determined by the [validation rules](#validation-rules) declared
 in the model. However, you can customize this behavior by overriding the [[yii\base\Model::scenarios()]] method,
 like the following:
+-->
+По умолчанию сценарии, поддерживаемые моделью, определяются [правилами валидации](#validation-rules) объявленными
+в модели. Однако, Вы можете изменить это поведение путем переопределения метода [[yii\base\Model::scenarios()]] как показано ниже:
 
 ```php
 namespace app\models;
@@ -253,17 +257,26 @@ class User extends ActiveRecord
 }
 ```
 
+<!--
 > Info: In the above and following examples, the model classes are extending from [[yii\db\ActiveRecord]]
   because the usage of multiple scenarios usually happens to [Active Record](db-active-record.md) classes.
+-->
+> Для справки: В приведенном выше и следующих примерах, классы моделей расширяются от [[yii\db\ActiveRecord]] потому, что использование нескольких сценариев обычно происходит от классов [Active Record](db-active-record.md).
 
+<!--
 The `scenarios()` method returns an array whose keys are the scenario names and values the corresponding
 *active attributes*. An active attribute can be [massively assigned](#massive-assignment) and is subject
 to [validation](#validation-rules). In the above example, the `username` and `password` attributes are active
 in the `login` scenario; while in the `register` scenario, `email` is also active besides `username` and `password`.
+-->
+Метод `scenarios()` возвращает массив, ключами которого являются имена сценариев, а значения - соответствующие *активные атрибуты*. Активные атрибуты могут быть [массово присвоены](#massive-assignment) и подлежат [валидации](#validation-rules). В приведенном выше примере, атрибуты `username` и `password` это активные атрибуты сценария `login`, а в сценарии `register` так же активным атрибутом является `email` вместе с `username` и `password`.
 
+<!--
 The default implementation of `scenarios()` will return all scenarios found in the validation rule declaration
 method [[yii\base\Model::rules()]]. When overriding `scenarios()`, if you want to introduce new scenarios
 in addition to the default ones, you may write code like the following:
+-->
+По умолчанию реализация `scenarios()` вернёт все найденные сценарии в правилах валидации задекларированных в методе [[yii\base\Model::rules()]]. При переопределении метода `scenarios()`, если Вы хотите ввести новые сценарии помимо стандартных, Вы можете написать код на основе следующего примера:
 
 ```php
 namespace app\models;
@@ -282,12 +295,16 @@ class User extends ActiveRecord
 }
 ```
 
+<!--
 The scenario feature is primarily used by [validation](#validation-rules) and [massive attribute assignment](#massive-assignment).
 You can, however, use it for other purposes. For example, you may declare [attribute labels](#attribute-labels)
 differently based on the current scenario.
+-->
+Возможности сценариев в основном используются [валидацией](#validation-rules) и [массовым присвоением атрибутов](#massive-assignment). Однако, Вы можете использовать их и для других целей. Например, Вы можете различным образом объявлять [метки атрибутов](#attribute-labels) на основе текущего сценария.
 
 
-## Validation Rules <span id="validation-rules"></span>
+##  Правила валидации <span id="validation-rules"></span>
+<!-- Validation Rules -->
 
 When the data for a model is received from end users, it should be validated to make sure it satisfies
 certain rules (called *validation rules*, also known as *business rules*). For example, given a `ContactForm` model,
