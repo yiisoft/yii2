@@ -1068,6 +1068,38 @@ class BaseHtml
     }
 
     /**
+     * Generates a hint tag for the given model attribute.
+     * The hint text is the hint associated with the attribute, obtained via [[Model::getAttributeHint()]].
+     * If no hint content can be obtained, method will return an empty string.
+     * @param Model $model the model object
+     * @param string $attribute the attribute name or expression. See [[getAttributeName()]] for the format
+     * about attribute expression.
+     * @param array $options the tag options in terms of name-value pairs. These will be rendered as
+     * the attributes of the resulting tag. The values will be HTML-encoded using [[encode()]].
+     * If a value is null, the corresponding attribute will not be rendered.
+     * The following options are specially handled:
+     *
+     * - hint: this specifies the hint to be displayed. Note that this will NOT be [[encode()|encoded]].
+     *   If this is not set, [[Model::getAttributeHint()]] will be called to get the hint for display
+     *   (after encoding).
+     *
+     * See [[renderTagAttributes()]] for details on how attributes are being rendered.
+     *
+     * @return string the generated label tag
+     */
+    public static function activeHint($model, $attribute, $options = [])
+    {
+        $attribute = static::getAttributeName($attribute);
+        $hint = isset($options['hint']) ? $options['hint'] : static::encode($model->getAttributeHint($attribute));
+        if (empty($hint)) {
+            return '';
+        }
+        $tag = ArrayHelper::remove($options, 'tag', 'div');
+        unset($options['hint']);
+        return static::tag($tag, $hint, $options);
+    }
+
+    /**
      * Generates a summary of the validation errors.
      * If there is no validation error, an empty error summary markup will still be generated, but it will be hidden.
      * @param Model|Model[] $models the model(s) whose validation errors are to be displayed
