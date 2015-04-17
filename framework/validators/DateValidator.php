@@ -130,10 +130,10 @@ class DateValidator extends Validator
             $this->tooBig = Yii::t('yii', '{attribute} must be no greater than {max}.');
         }
         if ($this->maxString === null) {
-            $this->maxString = $this->max;
+            $this->maxString = (string)$this->max;
         }
         if ($this->minString === null) {
-            $this->minString = $this->min;
+            $this->minString = (string)$this->min;
         }
         if ($this->max !== null && is_string($this->max)) {
             $timestamp = $this->parseDateValue($this->max);
@@ -197,7 +197,7 @@ class DateValidator extends Validator
      * Parses date string into UNIX timestamp
      *
      * @param string $value string representing date
-     * @return boolean|integer UNIX timestamp or false on failure
+     * @return false|integer UNIX timestamp or false on failure
      */
     protected function parseDateValue($value)
     {
