@@ -114,6 +114,7 @@ Yii Framework 2 Change Log
 - Enh #6442: Improved error message on `FileHelper::createDirectory()` to include the path name of the directory (cebe)
 - Enh #6895: Added `ignoreCategories` config option for message command to ignore categories specified (samdark)
 - Enh #6975: Pressing arrows while focused in inputs of Active Form with `validateOnType` enabled no longer triggers validation (slinstj)
+- Enh #7259: Added errorAttributes parameter to ActiveForm afterValidate event. Made scrolling to first error optional (nkovacs)
 - Enh #7409: Allow `yii\filters\auth\CompositeAuth::authMethods` to take authentication objects (fernandezekiel, qiangxue)
 - Enh #7443: Allow specification of the `$key` as an array at `yii\helpers\ArrayHelper::getValue()` (Alex-Code)
 - Enh #7488: Added `StringHelper::explode` to perform explode with trimming and skipping of empty elements (SilverFire, nineinchnick, creocoder, samdark)
