@@ -115,4 +115,4 @@ To read about more complex usage of forms, you may want to check out the followi
 
 - [Collecting tabular input](input-tabular-input.md) for collecting data for multiple models of the same kind.
 - [Complex Forms with Multiple Models](input-multiple-models.md) for handling multiple different models in the same form.
-- [Uploading Files](input-file-upload) on how to use forms for uploading files.
+- [Uploading Files](input-file-upload.md) on how to use forms for uploading files.

@@ -10,6 +10,7 @@ use yiiunit\TestCase;
 
 /**
  * @group helpers
+ * @group i18n
  */
 class FormatConverterTest extends TestCase
 {

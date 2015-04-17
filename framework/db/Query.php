@@ -385,7 +385,7 @@ class Query extends Component implements QueryInterface
         $this->limit = $limit;
         $this->offset = $offset;
 
-        if (empty($this->groupBy) && empty($this->union) && !$this->distinct) {
+        if (empty($this->groupBy) && empty($this->having) && empty($this->union) && !$this->distinct) {
             return $command->queryScalar();
         } else {
             return (new Query)->select([$selectExpression])
@@ -428,6 +428,14 @@ class Query extends Component implements QueryInterface
 
     /**
      * Add more columns to the SELECT part of the query.
+     *
+     * Note, that if [[select]] has not been specified before, you should include `*` explicitly
+     * if you want to select all remaining columns too:
+     *
+     * ```php
+     * $query->addSelect(["*", "CONCAT(first_name, ' ', last_name) AS full_name"])->one();
+     * ```
+     *
      * @param string|array $columns the columns to add to the select.
      * @return static the query object itself
      * @see select()

@@ -1,98 +1,103 @@
-Data providers
+Data Providers
 ==============
 
-> Note: This section is under development.
+In the [Pagination](output-pagination.md) and [Sorting](output-sorting.md) sections, we have described how to
+allow end users to choose a particular page of data to display and sort them by some columns. Because the task
+of paginating and sorting data is very common, Yii provides a set of *data provider* classes to encapsulate it.
 
-Data provider abstracts data set via [[yii\data\DataProviderInterface]] and handles pagination and sorting.
-It can be used by [grids, lists and other data widgets](output-data-widgets.md).
+A data provider is a class implementing [[yii\data\DataProviderInterface]]. It mainly supports retrieving paginated
+and sorted data. It is usually used to work with [data widgets](output-data-widgets.md) so that end users can 
+interactively paginate and sort data. 
 
-In Yii there are three built-in data providers: [[yii\data\ActiveDataProvider]], [[yii\data\ArrayDataProvider]] and
-[[yii\data\SqlDataProvider]].
+The following data provider classes are included in the Yii releases:
 
-Active data provider
---------------------
+* [[yii\data\ActiveDataProvider]]: uses [[yii\db\Query]] or [[yii\db\ActiveQuery]] to query data from databases
+  and return them in terms of arrays or [Active Record](db-active-record.md) instances.
+* [[yii\data\SqlDataProvider]]: executes a SQL statement and returns database data as arrays.
+* [[yii\data\ArrayDataProvider]]: takes a big array and returns a slice of it based on the paginating and sorting
+  specifications.
 
-`ActiveDataProvider` provides data by performing DB queries using [[yii\db\Query]] and [[yii\db\ActiveQuery]].
-
-The following is an example of using it to provide ActiveRecord instances:
+The usage of all these data providers share the following common pattern:
 
 ```php
+// create the data provider by configuring its pagination and sort properties
+$provider = new XyzDataProvider([
+    'pagination' => [...],
+    'sort' => [...],
+]);
+
+// retrieves paginated and sorted data
+$models = $provider->getModels();
+
+// get the number of data items in the current page
+$count = $provider->getCount();
+
+// get the total number of data items across all pages
+$totalCount = $provider->getTotalCount();
+```
+
+The `pagination` and `sort` properties of data providers correspond to the configurations for
+[[yii\data\Pagination]] and [[yii\data\Sort]], respectively.
+
+[Data widgets](output-data-widgets.md), such as [[yii\grid\GridView]], have a property named `dataProvider` which
+can take a data provider instance and display the data it provides. For example,
+
+```php
+echo yii\grid\GridView::widget([
+    'dataProvider' => $dataProvider,
+]);
+```
+
+These data providers mainly vary in the way how the data source is specified. In the following subsections,
+we will explain the detailed usage of each of these data providers.
+
+
+## Active Data Provider <span id="active-data-provider"></span> 
+
+To use [[yii\data\ActiveDataProvider]], you should configure its [[yii\data\ActiveDataProvider::query|query]] property.
+It can take either a [[yii\db\Query]] or [[yii\db\ActiveQuery]] object. If the former, the data returned will be arrays;
+if the latter, the data returned can be either arrays or [Active Record](db-active-record.md) instances.
+For example,
+
+```php
+use yii\data\ActiveDataProvider;
+
+$query = Post::find()->where(['status' => 1]);
+
 $provider = new ActiveDataProvider([
     'query' => Post::find(),
     'pagination' => [
         'pageSize' => 20,
     ],
-]);
-
-// get the posts in the current page
-$posts = $provider->getModels();
-```
-
-And the following example shows how to use ActiveDataProvider without ActiveRecord:
-
-```php
-$query = new Query();
-$provider = new ActiveDataProvider([
-    'query' => $query->from('post'),
     'sort' => [
-        // Set the default sort by name ASC and created_at DESC.
         'defaultOrder' => [
-            'name' => SORT_ASC, 
             'created_at' => SORT_DESC
+            'title' => SORT_ASC, 
         ]
     ],
-    'pagination' => [
-        'pageSize' => 20,
-    ],
 ]);
 
-// get the posts in the current page
+// returns an array of Post objects
 $posts = $provider->getModels();
 ```
 
-Array data provider
--------------------
-
-ArrayDataProvider implements a data provider based on a data array.
-
-The [[yii\data\ArrayDataProvider::$allModels]] property contains all data models that may be sorted and/or paginated.
-ArrayDataProvider will provide the data after sorting and/or pagination.
-You may configure the [[yii\data\ArrayDataProvider::$sort]] and [[yii\data\ArrayDataProvider::$pagination]] properties to
-customize the sorting and pagination behaviors.
-
-Elements in the [[yii\data\ArrayDataProvider::$allModels]] array may be either objects (e.g. model objects)
-or associative arrays (e.g. query results of DAO).
-Make sure to set the [[yii\data\ArrayDataProvider::$key]] property to the name of the field that uniquely
-identifies a data record or false if you do not have such a field.
-
-Compared to `ActiveDataProvider`, `ArrayDataProvider` could be less efficient
-because it needs to have [[yii\data\ArrayDataProvider::$allModels]] ready.
-
-ArrayDataProvider may be used in the following way:
+If `$query` in the above example is created using the following code, then the data provider will return raw arrays.
 
 ```php
-$query = new Query();
-$provider = new ArrayDataProvider([
-    'allModels' => $query->from('post')->all(),
-    'sort' => [
-        'attributes' => ['id', 'username', 'email'],
-    ],
-    'pagination' => [
-        'pageSize' => 10,
-    ],
-]);
-// get the posts in the current page
-$posts = $provider->getModels();
+use yii\db\Query;
+
+$query = (new Query())->from('post')->where(['status' => 1]); 
 ```
 
-> Note: if you want to use the sorting feature, you must configure the [[sort]] property
-so that the provider knows which columns can be sorted.
+> Note: If a query already specifies the `orderBy` clause, the new ordering instructions given by end users
+  (through the `sort` configuration) will be appended to the existing `orderBy` clause. Any existing `limit`
+  and `offset` clauses will be overwritten by the pagination request from end users (through the `pagination` configuration). 
 
-SQL data provider
------------------
+By default, [[yii\data\ActiveDataProvider]] uses the `db` application component as the database connection. You may
+use a different database connection by configuring the [[yii\data\ActiveDataProvider::db]] property. For example,
 
-SqlDataProvider implements a data provider based on a plain SQL statement. It provides data in terms of arrays, each
-representing a row of query result.
+
+## SQL Data Provider <span id="sql-data-provider"></span>
 
 Like other data providers, SqlDataProvider also supports sorting and pagination. It does so by modifying the given
 [[yii\data\SqlDataProvider::$sql]] statement with "ORDER BY" and "LIMIT" clauses. You may configure the
@@ -134,6 +139,44 @@ $models = $dataProvider->getModels();
 property to be the total number of rows (without pagination). And if you want to use the sorting feature,
 you must configure the [[yii\data\SqlDataProvider::$sort]] property so that the provider knows which columns can
 be sorted.
+
+
+## Array Data Provider <span id="array-data-provider"></span>
+
+ArrayDataProvider implements a data provider based on a data array.
+
+The [[yii\data\ArrayDataProvider::$allModels]] property contains all data models that may be sorted and/or paginated.
+ArrayDataProvider will provide the data after sorting and/or pagination.
+You may configure the [[yii\data\ArrayDataProvider::$sort]] and [[yii\data\ArrayDataProvider::$pagination]] properties to
+customize the sorting and pagination behaviors.
+
+Elements in the [[yii\data\ArrayDataProvider::$allModels]] array may be either objects (e.g. model objects)
+or associative arrays (e.g. query results of DAO).
+Make sure to set the [[yii\data\ArrayDataProvider::$key]] property to the name of the field that uniquely
+identifies a data record or false if you do not have such a field.
+
+Compared to `ActiveDataProvider`, `ArrayDataProvider` could be less efficient
+because it needs to have [[yii\data\ArrayDataProvider::$allModels]] ready.
+
+ArrayDataProvider may be used in the following way:
+
+```php
+$query = new Query();
+$provider = new ArrayDataProvider([
+    'allModels' => $query->from('post')->all(),
+    'sort' => [
+        'attributes' => ['id', 'username', 'email'],
+    ],
+    'pagination' => [
+        'pageSize' => 10,
+    ],
+]);
+// get the posts in the current page
+$posts = $provider->getModels();
+```
+
+> Note: if you want to use the sorting feature, you must configure the [[sort]] property
+so that the provider knows which columns can be sorted.
 
 
 Implementing your own custom data provider

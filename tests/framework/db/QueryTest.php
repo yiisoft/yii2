@@ -205,4 +205,35 @@ class QueryTest extends DatabaseTestCase
             ->column($db);
         $this->assertEquals([3 => 'user3', 2 => 'user2', 1 => 'user1'], $result);
     }
+
+    public function testCount()
+    {
+        $db = $this->getConnection();
+
+        $count = (new Query)->from('customer')->count('*', $db);
+        $this->assertEquals(3, $count);
+
+        $count = (new Query)->from('customer')->where(['status' => 2])->count('*', $db);
+        $this->assertEquals(1, $count);
+
+        $count = (new Query)->select('status, COUNT(id)')->from('customer')->groupBy('status')->count('*', $db);
+        $this->assertEquals(2, $count);
+    }
+
+    /**
+     * @see https://github.com/yiisoft/yii2/issues/8068
+     *
+     * @depends testCount
+     */
+    public function testCountHavingWithoutGroupBy()
+    {
+        if (!in_array($this->driverName, ['mysql'])) {
+            $this->markTestSkipped("{$this->driverName} does not support having without group by.");
+        }
+
+        $db = $this->getConnection();
+
+        $count = (new Query)->from('customer')->having(['status' => 2])->count('*', $db);
+        $this->assertEquals(1, $count);
+    }
 }

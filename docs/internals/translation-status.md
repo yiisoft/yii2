@@ -56,8 +56,8 @@ input-file-upload.md                |
 input-multiple-models.md            |
 input-tabular-input.md              |
 output-formatting.md                |
-output-pagination.md                |
-output-sorting.md                   |
+output-pagination.md                | Yes
+output-sorting.md                   | Yes
 output-data-providers.md            |
 output-data-widgets.md              |
 output-theming.md                   |
