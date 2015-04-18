@@ -305,56 +305,70 @@ differently based on the current scenario.
 
 ##  Правила валидации <span id="validation-rules"></span>
 <!-- Validation Rules -->
-
+<!--
 When the data for a model is received from end users, it should be validated to make sure it satisfies
 certain rules (called *validation rules*, also known as *business rules*). For example, given a `ContactForm` model,
 you may want to make sure all attributes are not empty and the `email` attribute contains a valid email address.
 If the values for some attributes do not satisfy the corresponding business rules, appropriate error messages
 should be displayed to help the user to fix the errors.
+-->
+Когда данные модели, получены от конечных пользователей, они должны быть проверены, для того чтобы убедиться, что данные удовлетворяют определенным правилам (так называемым *правилам валидации* также известными как *бизнес-правила*). Например, дана модель `ContactForm`, возможно Вы захотите убедиться, что все атрибуты являются не пустыми значениями, а атрибут `email` содержит допустимый адрес электронной почты. Если значения нескольких атрибутов не удовлетворяют соответствующим бизнес-правилам, то должны быть показаны соответствующие сообщения об ошибках, чтобы помочь конечному пользователю исправить допущенные ошибки.
 
+<!--
 You may call [[yii\base\Model::validate()]] to validate the received data. The method will use
 the validation rules declared in [[yii\base\Model::rules()]] to validate every relevant attribute. If no error
 is found, it will return true. Otherwise, it will keep the errors in the [[yii\base\Model::errors]] property
 and return false. For example,
+-->
+Вы можете вызвать [[yii\base\Model::validate()]] для проверки полученных данных. Данный метод будет использовать
+правила валидации определённые в [[yii\base\Model::rules()]] для проверки каждого соответствующего атрибута. Если ошибок не найдено, то возвращается True, в противном случае возвращается false, а ошибки содержит свойство [[yii\base\Model::errors]]. Например,
 
 ```php
 $model = new \app\models\ContactForm;
 
-// populate model attributes with user inputs
+// модель заполнения атрибутов данными, вводимыми пользователем
 $model->attributes = \Yii::$app->request->post('ContactForm');
 
 if ($model->validate()) {
-    // all inputs are valid
+    // все данные верны
 } else {
-    // validation failed: $errors is an array containing error messages
+    // проверка не удалась:  $errors - это массив содержащий сообщения об ошибках
     $errors = $model->errors;
 }
 ```
 
-
+<!--
 To declare validation rules associated with a model, override the [[yii\base\Model::rules()]] method by returning
 the rules that the model attributes should satisfy. The following example shows the validation rules declared
 for the `ContactForm` model:
+-->
+Объявляем правила валидации связанные с моделью, переопределяем метод [[yii\base\Model::rules()]] возврата правил атрибутов модели которые следует удовлетворить. В следующем примере показаны правила проверки объявленные в модели `ContactForm`:
 
 ```php
 public function rules()
 {
     return [
-        // the name, email, subject and body attributes are required
+        // name, email, subject и body атрибуты обязательны
         [['name', 'email', 'subject', 'body'], 'required'],
 
-        // the email attribute should be a valid email address
+        // атрибут email должен быть правильным email адресом
         ['email', 'email'],
     ];
 }
 ```
 
+<!--
 A rule can be used to validate one or multiple attributes, and an attribute may be validated by one or multiple rules.
 Please refer to the [Validating Input](input-validation.md) section for more details on how to declare
 validation rules.
+-->
+Правило может использоваться для проверки одного или нескольких атрибутов, также и атрибут может быть проверен одним или несколькими правилами. Пожалуйста, обратитесь к разделу [Проверка входных значений](input-validation.md) для более подробной информации о том, как объявлять правила проверки.
 
+<!--
 Sometimes, you may want a rule to be applied only in certain [scenarios](#scenarios). To do so, you can
 specify the `on` property of a rule, like the following:
+-->
+Иногда необходимо, чтобы правила применялись только в определенных [сценариях](#scenarios). Чтобы это сделать необходимо указать свойство `on` в правилах, следующим образом:
 
 ```php
 public function rules()
@@ -369,20 +383,30 @@ public function rules()
 }
 ```
 
+<!--
 If you do not specify the `on` property, the rule would be applied in all scenarios. A rule is called
 an *active rule* if it can be applied in the current [[yii\base\Model::scenario|scenario]].
+-->
+Если не указать свойство `on`, то правило применяется во всех сценариях. Правило называется *активным правилом* если оно может быть применено в текущем сценарии [[yii\base\Model::scenario|scenario]].
 
+<!--
 An attribute will be validated if and only if it is an active attribute declared in `scenarios()` and
 is associated with one or multiple active rules declared in `rules()`.
+-->
+Атрибут будет проверяться тогда и только тогда если он является активным атрибутом объявленным в `scenarios()` и
+связаным с одним или несколькими активными правилами, объявленными в `rules()`.
 
+## Массовое Присвоение <span id="massive-assignment"></span>
+<!--Massive Assignment-->
 
-## Massive Assignment <span id="massive-assignment"></span>
-
+<!--
 Massive assignment is a convenient way of populating a model with user inputs using a single line of code.
 It populates the attributes of a model by assigning the input data directly to the [[yii\base\Model::$attributes]]
 property. The following two pieces of code are equivalent, both trying to assign the form data submitted by end users
 to the attributes of the `ContactForm` model. Clearly, the former, which uses massive assignment, is much cleaner
 and less error prone than the latter:
+-->
+Массовое присвоение - это удобный способ заполнения модели данными вводимыми пользователем с помощью одной строки кода. Он заполняет атрибуты модели путем присвоения входных данных непосредственно в свойстве [[yii\base\Model::$attributes]]. Следующие два куска кода эквивалентны, они оба пытаются присвоить данные из формы представленные конечными пользователями атрибутам модели `ContactForm`. Ясно, что первый код гораздо чище и менее подвержен ошибкам, чем второй:
 
 ```php
 $model = new \app\models\ContactForm;
@@ -399,7 +423,8 @@ $model->body = isset($data['body']) ? $data['body'] : null;
 ```
 
 
-### Safe Attributes <span id="safe-attributes"></span>
+### Хранение Атрибутов <span id="safe-attributes"></span>
+<!--Safe Attributes-->
 
 Massive assignment only applies to the so-called *safe attributes* which are the attributes listed in
 [[yii\base\Model::scenarios()]] for the current [[yii\base\Model::scenario|scenario]] of a model.
