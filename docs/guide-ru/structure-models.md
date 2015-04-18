@@ -544,16 +544,16 @@ to choose which data items, called *fields*, to be put in the resulting array an
 In fact, it is the default way of exporting models in RESTful Web service development, as described in
 the [Response Formatting](rest-response-formatting.md).
 
-Более гибкий и мощный способ конвертирования модели в массив - использовать метод [[yii\base\Model::toArray()]]. Его поведение по умолчанию такое же как и у [[yii\base\Model::$attributes]]. Тем не менее, он позволяет выбрать, какие элементы данных, называемые *областью*, поставить в результирующий массив и как они должны быть отформатированы. На самом деле, этот способ экспорта моделей по умолчанию применяется при разработке в RESTful Web service, как описано в [Response Formatting](rest-response-formatting.md).
+Более гибкий и мощный способ конвертирования модели в массив - использовать метод [[yii\base\Model::toArray()]]. Его поведение по умолчанию такое же как и у [[yii\base\Model::$attributes]]. Тем не менее, он позволяет выбрать, какие элементы данных, называемые *полями*, поставить в результирующий массив и как они должны быть отформатированы. На самом деле, этот способ экспорта моделей по умолчанию применяется при разработке в RESTful Web service, как описано в [Response Formatting](rest-response-formatting.md).
 
-### Области <span id="fields"></span>
+### Поля <span id="fields"></span>
 <!--Fields-->
 
 <!--
 A field is simply a named element in the array that is obtained by calling the [[yii\base\Model::toArray()]] method
 of a model.
 -->
-Область - это просто именованный элемент в массиве, который может быть получен вызовом метода [[yii\base\Model::toArray()]] модели.
+Поле - это просто именованный элемент в массиве, который может быть получен вызовом метода [[yii\base\Model::toArray()]] модели.
 
 <!--
 By default, field names are equivalent to attribute names. However, you can change this behavior by overriding
@@ -564,8 +564,8 @@ which can also be returned by `toArray()` as long as you specify them via the `$
 the following code will return all fields defined in `fields()` and the `prettyName` and `fullAddress` fields
 if they are defined in `extraFields()`.
 -->
-По умолчанию имена областей эквивалентны именам атрибутов. Однако, это поведение можно изменить, переопределив методы
-[[yii\base\Model::fields()|fields()]] и/или [[yii\base\Model::extraFields()|extraFields()]]. Оба метода должны возвращать список определенных областей. Области определённые `fields()` являются областями по умолчанию, это означает, что `toArray()` будет возвращать эти области по умолчанию. Метод `extraFields()` определяет дополнительно доступные области, которые также могут быть возвращены `toArray()` так много, как Вы укажите их через параметр `$expand`. Например, следующий код будет возвращать все области определённые в `fields()` и области `prettyName` и `fullAddress`, если они определены в `extraFields()`.
+По умолчанию имена полей эквивалентны именам атрибутов. Однако, это поведение можно изменить, переопределив методы
+[[yii\base\Model::fields()|fields()]] и/или [[yii\base\Model::extraFields()|extraFields()]]. Оба метода должны возвращать список определенных полей. Поля определённые `fields()` являются полями по умолчанию, это означает, что `toArray()` будет возвращать эти поля по умолчанию. Метод `extraFields()` определяет дополнительно доступные поля, которые также могут быть возвращены `toArray()` так много, как Вы укажите их через параметр `$expand`. Например, следующий код будет возвращать все поля определённые в `fields()`, а также поля `prettyName` и `fullAddress`, если они определены в `extraFields()`.
 
 ```php
 $array = $model->toArray([], ['prettyName', 'fullAddress']);
@@ -577,7 +577,7 @@ field definitions which can be either property/attribute names or anonymous func
 corresponding field values. In the special case when a field name is the same as its defining attribute
 name, you can omit the array key. For example,
 
-Вы можете переопределить `fields()` чтобы добавить, удалить, переименовать или переопределить области. Возвращаемым значением `fields()` должен быть массив. Ключами массива являются имена областей, а значениями - соответствующие определения областей, которые могут быть либо именами свойств/атрибутов, либо анонимными функциями, возвращающими соответствующие значения областей. В частном случае, когда имя области совпадает с его именем атрибута, возможно опустить ключ массива. Например,
+Вы можете переопределить `fields()` чтобы добавить, удалить, переименовать или переопределить поля. Возвращаемым значением `fields()` должен быть массив. Ключами массива являются имена полей, а значениями - соответствующие определения полей, которые могут быть либо именами свойств/атрибутов, либо анонимными функциями, возвращающими соответствующие значения полей. В частном случае, когда имя поля совпадает с именем его атрибута, возможно опустить ключ массива. Например,
 
 ```php
 // explicitly list every field, best used when you want to make sure the changes
