@@ -423,14 +423,17 @@ $model->body = isset($data['body']) ? $data['body'] : null;
 ```
 
 
-### Хранение Атрибутов <span id="safe-attributes"></span>
+### Безопасные Атрибуты <span id="safe-attributes"></span>
 <!--Safe Attributes-->
 
+<!--
 Massive assignment only applies to the so-called *safe attributes* which are the attributes listed in
 [[yii\base\Model::scenarios()]] for the current [[yii\base\Model::scenario|scenario]] of a model.
 For example, if the `User` model has the following scenario declaration, then when the current scenario
 is `login`, only the `username` and `password` can be massively assigned. Any other attributes will
 be kept untouched.
+-->
+Массовое присвоение применяется только к так называемым *безопасным атрибутам*, которые являются атрибутами, перечисленными в [[yii\base\Model::scenarios()]] в текущем сценарии [[yii\base\Model::scenario|scenario]] модели. Например, если модель `User` имеет следующий заданный сценарий, в данном случае это сценарий `login`, то только `username` и `password` могут быть массово присвоены. Любые другие атрибуты остануться нетронутыми.
 
 ```php
 public function scenarios()
@@ -442,10 +445,13 @@ public function scenarios()
 }
 ```
 
+<!--
 > Info: The reason that massive assignment only applies to safe attributes is because you want to
   control which attributes can be modified by end user data. For example, if the `User` model
   has a `permission` attribute which determines the permission assigned to the user, you would
   like this attribute to be modifiable by administrators through a backend interface only.
+-->
+> Для справки: Причиной того, что массовое присвоение атрибутов применяется только к безопасным атрибутам, является то, что необходимо контролировать какие атрибуты могут быть изменены конечными пользователями. Например, если модель `User` имеет атрибут `permission`, который определяет разрешения, назначенные пользователю, то необходимо быть уверенным, что данный атрибут может быть изменён только администраторами через бэкэнд-интерфейс.
 
 Because the default implementation of [[yii\base\Model::scenarios()]] will return all scenarios and attributes
 found in [[yii\base\Model::rules()]], if you do not override this method, it means an attribute is safe as long
