@@ -453,13 +453,19 @@ public function scenarios()
 -->
 > Для справки: Причиной того, что массовое присвоение атрибутов применяется только к безопасным атрибутам, является то, что необходимо контролировать какие атрибуты могут быть изменены конечными пользователями. Например, если модель `User` имеет атрибут `permission`, который определяет разрешения, назначенные пользователю, то необходимо быть уверенным, что данный атрибут может быть изменён только администраторами через бэкэнд-интерфейс.
 
+<!--
 Because the default implementation of [[yii\base\Model::scenarios()]] will return all scenarios and attributes
 found in [[yii\base\Model::rules()]], if you do not override this method, it means an attribute is safe as long
 as it appears in one of the active validation rules.
+-->
+По умолчанию реализация [[yii\base\Model::scenarios()]] будет возвращать все сценарии и атрибуты найденные в [[yii\base\Model::rules()]], если не переопределить этот метод, это будет означать, что атрибуты являются безопасными до тех пор пока они не появятся в одном из активных правил проверки.
 
+<!--
 For this reason, a special validator aliased `safe` is provided so that you can declare an attribute
 to be safe without actually validating it. For example, the following rules declare that both `title`
 and `description` are safe attributes.
+-->
+По этой причине существует специальный валидатор с псевдонимом `safe`, он предоставляет возможность объявить атрибут безопасным без фактической его проверки. Например, следующие правила определяют, что оба атрибута `title` и `description` являются безопасными атрибутами.
 
 ```php
 public function rules()
@@ -471,12 +477,15 @@ public function rules()
 ```
 
 
-### Unsafe Attributes <span id="unsafe-attributes"></span>
-
+### Небезопасные атрибуты <span id="unsafe-attributes"></span>
+<!--Unsafe Attributes-->
+<!--
 As described above, the [[yii\base\Model::scenarios()]] method serves for two purposes: determining which attributes
 should be validated, and determining which attributes are safe. In some rare cases, you may want to validate
 an attribute but do not want to mark it safe. You can do so by prefixing an exclamation mark `!` to the attribute
 name when declaring it in `scenarios()`, like the `secret` attribute in the following:
+-->
+Как сказано выше, метод [[yii\base\Model::scenarios()]] служит двум целям: определения, какие атрибуты должны быть проверены, и определения, какие атрибуты являются безопасными (т.е. не требуют проверки). В некоторых случаях необходимо проверить атрибут не объявляя его безопасным. Вы можете сделать это с помощью префикса восклицательный знак `!` в имени атрибута при объявлении его в `scenarios()` как атрибут `secret` в следующем примере:
 
 ```php
 public function scenarios()
@@ -487,33 +496,47 @@ public function scenarios()
 }
 ```
 
+<!--
 When the model is in the `login` scenario, all three attributes will be validated. However, only the `username`
 and `password` attributes can be massively assigned. To assign an input value to the `secret` attribute, you
 have to do it explicitly as follows,
+-->
+Когда модель будет присутствовать в сценарии `login`, то все три эти атрибута будут проверены. Однако, только атрибуты `username` и `password` могут быть массово присвоены. Назначить входное значение атрибуту `secret` нужно явно следующим образом,
 
 ```php
 $model->secret = $secret;
 ```
 
 
-## Data Exporting <span id="data-exporting"></span>
+## Экспорт Данных <span id="data-exporting"></span>
+<!--Data Exporting-->
 
+<!--
 Models often need to be exported in different formats. For example, you may want to convert a collection of
 models into JSON or Excel format. The exporting process can be broken down into two independent steps.
 In the first step, models are converted into arrays; in the second step, the arrays are converted into
 target formats. You may just focus on the first step, because the second step can be achieved by generic
 data formatters, such as [[yii\web\JsonResponseFormatter]].
+-->
+Часто нужно экспортировать модели в различные форматы. Например, может потребоваться преобразовать коллекцию моделей в JSON или Excel формат. Процесс экспорта может быть разбит на два самостоятельных шага. На первом этапе модели преобразуются в массивы; на втором этапе массивы преобразуются в целевые форматы. Вы можете сосредоточиться только на первом шаге потому, что второй шаг может быть достигнут путем универсального инструмента форматирования данных, такого как [[yii\web\JsonResponseFormatter]].
 
+<!--
 The simplest way of converting a model into an array is to use the [[yii\base\Model::$attributes]] property.
 For example,
+-->
+Самый простой способ преобразования модели в массив - использовать свойство [[yii\base\Model::$attributes]].
+Например,
 
 ```php
 $post = \app\models\Post::findOne(100);
 $array = $post->attributes;
 ```
 
+<!--
 By default, the [[yii\base\Model::$attributes]] property will return the values of *all* attributes
 declared in [[yii\base\Model::attributes()]].
+-->
+По умолчанию, свойство [[yii\base\Model::$attributes]] возвращает значения *всех* атрибутов объявленных в [[yii\base\Model::attributes()]].
 
 A more flexible and powerful way of converting a model into an array is to use the [[yii\base\Model::toArray()]]
 method. Its default behavior is the same as that of [[yii\base\Model::$attributes]]. However, it allows you
@@ -521,12 +544,18 @@ to choose which data items, called *fields*, to be put in the resulting array an
 In fact, it is the default way of exporting models in RESTful Web service development, as described in
 the [Response Formatting](rest-response-formatting.md).
 
+Более гибкий и мощный способ конвертирования модели в массив - использовать метод [[yii\base\Model::toArray()]]. Его поведение по умолчанию такое же как и у [[yii\base\Model::$attributes]]. Тем не менее, он позволяет выбрать, какие элементы данных, называемые *областью*, поставить в результирующий массив и как они должны быть отформатированы. На самом деле, этот способ экспорта моделей по умолчанию применяется при разработке в RESTful Web service, как описано в [Response Formatting](rest-response-formatting.md).
 
-### Fields <span id="fields"></span>
+### Области <span id="fields"></span>
+<!--Fields-->
 
+<!--
 A field is simply a named element in the array that is obtained by calling the [[yii\base\Model::toArray()]] method
 of a model.
+-->
+Область - это просто именованный элемент в массиве, который может быть получен вызовом метода [[yii\base\Model::toArray()]] модели.
 
+<!--
 By default, field names are equivalent to attribute names. However, you can change this behavior by overriding
 the [[yii\base\Model::fields()|fields()]] and/or [[yii\base\Model::extraFields()|extraFields()]] methods. Both methods
 should return a list of field definitions. The fields defined by `fields()` are default fields, meaning that
@@ -534,6 +563,9 @@ should return a list of field definitions. The fields defined by `fields()` are 
 which can also be returned by `toArray()` as long as you specify them via the `$expand` parameter. For example,
 the following code will return all fields defined in `fields()` and the `prettyName` and `fullAddress` fields
 if they are defined in `extraFields()`.
+-->
+По умолчанию имена областей эквивалентны именам атрибутов. Однако, это поведение можно изменить, переопределив методы
+[[yii\base\Model::fields()|fields()]] и/или [[yii\base\Model::extraFields()|extraFields()]]. Оба метода должны возвращать список определенных областей. Области определённые `fields()` являются областями по умолчанию, это означает, что `toArray()` будет возвращать эти области по умолчанию. Метод `extraFields()` определяет дополнительно доступные области, которые также могут быть возвращены `toArray()` так много, как Вы укажите их через параметр `$expand`. Например, следующий код будет возвращать все области определённые в `fields()` и области `prettyName` и `fullAddress`, если они определены в `extraFields()`.
 
 ```php
 $array = $model->toArray([], ['prettyName', 'fullAddress']);
@@ -544,6 +576,8 @@ should be an array. The array keys are the field names, and the array values are
 field definitions which can be either property/attribute names or anonymous functions returning the
 corresponding field values. In the special case when a field name is the same as its defining attribute
 name, you can omit the array key. For example,
+
+Вы можете переопределить `fields()` чтобы добавить, удалить, переименовать или переопределить области. Возвращаемым значением `fields()` должен быть массив. Ключами массива являются имена областей, а значениями - соответствующие определения областей, которые могут быть либо именами свойств/атрибутов, либо анонимными функциями, возвращающими соответствующие значения областей. В частном случае, когда имя области совпадает с его именем атрибута, возможно опустить ключ массива. Например,
 
 ```php
 // explicitly list every field, best used when you want to make sure the changes
