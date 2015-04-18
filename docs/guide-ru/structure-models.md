@@ -571,40 +571,56 @@ if they are defined in `extraFields()`.
 $array = $model->toArray([], ['prettyName', 'fullAddress']);
 ```
 
+<!--
 You can override `fields()` to add, remove, rename or redefine fields. The return value of `fields()`
 should be an array. The array keys are the field names, and the array values are the corresponding
 field definitions which can be either property/attribute names or anonymous functions returning the
 corresponding field values. In the special case when a field name is the same as its defining attribute
 name, you can omit the array key. For example,
-
+-->
 Вы можете переопределить `fields()` чтобы добавить, удалить, переименовать или переопределить поля. Возвращаемым значением `fields()` должен быть массив. Ключами массива являются имена полей, а значениями - соответствующие определения полей, которые могут быть либо именами свойств/атрибутов, либо анонимными функциями, возвращающими соответствующие значения полей. В частном случае, когда имя поля совпадает с именем его атрибута, возможно опустить ключ массива. Например,
 
-```php
+<!--
 // explicitly list every field, best used when you want to make sure the changes
 // in your DB table or model attributes do not cause your field changes (to keep API backward compatibility).
+
+        // field name is "email", the corresponding attribute name is "email_address"
+        // field name is "name", its value is defined by a PHP callback
+        
+// filter out some fields, best used when you want to inherit the parent implementation
+// and blacklist some sensitive fields.
+    // remove fields that contain sensitive information
+-->
+
+```php
+// использовать явное перечисление всех полей, лучше всего тогда, когда вы хотите убедиться, что изменения в вашей
+// таблице базы данных или атрибуте модели не вызывают изменение вашего поля (для поддержания обратной совместимости
+// API интерфейса).
+
 public function fields()
 {
     return [
-        // field name is the same as the attribute name
+        // здесь имя поля совпадает с именем атрибута
         'id',
 
-        // field name is "email", the corresponding attribute name is "email_address"
+        // здесь имя поля - "email", соответствующее ему имя атрибута - "email_address"
         'email' => 'email_address',
 
-        // field name is "name", its value is defined by a PHP callback
+        // здесь имя поля - "name", а значение определяется обратным вызовом PHP
         'name' => function () {
             return $this->first_name . ' ' . $this->last_name;
         },
     ];
 }
 
-// filter out some fields, best used when you want to inherit the parent implementation
-// and blacklist some sensitive fields.
+// использовать фильтрование нескольких полей, лучше тогда, когда вы хотите наследовать родительскую реализацию и
+// черный список некоторых "чувствительных" полей.
+
 public function fields()
 {
     $fields = parent::fields();
 
-    // remove fields that contain sensitive information
+    // удаляем поля, содержащие конфиденциальную информацию
     unset($fields['auth_key'], $fields['password_hash'], $fields['password_reset_token']);
 
     return $fields;
