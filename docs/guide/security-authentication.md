@@ -19,7 +19,7 @@ class User extends ActiveRecord implements IdentityInterface
      * Finds an identity by the given ID.
      *
      * @param string|integer $id the ID to be looked for
-     * @return IdentityInterface|null the identity object that matches the given ID.
+     * @return BasicIdentityInterface|null the identity object that matches the given ID.
      */
     public static function findIdentity($id)
     {
@@ -60,6 +60,35 @@ class User extends ActiveRecord implements IdentityInterface
     public function validateAuthKey($authKey)
     {
         return $this->getAuthKey() === $authKey;
+    }
+}
+```
+
+If You don't need to used authorization key, You can implement Your User class from BasicIdentityInterface and realize
+only two methods.
+Below, only the interface methods are listed:
+```php
+class User extends ActiveRecord implements IdentityInterface
+{
+    // ...
+
+    /**
+     * Finds an identity by the given ID.
+     *
+     * @param string|integer $id the ID to be looked for
+     * @return BasicIdentityInterface|null the identity object that matches the given ID.
+     */
+    public static function findIdentity($id)
+    {
+        return static::findOne($id);
+    }
+
+    /**
+     * @return int|string current user ID
+     */
+    public function getId()
+    {
+        return $this->id;
     }
 }
 ```

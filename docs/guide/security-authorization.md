@@ -288,7 +288,7 @@ class RbacController extends Controller
         $auth->addChild($admin, $updatePost);
         $auth->addChild($admin, $author);
 
-        // Assign roles to users. 1 and 2 are IDs returned by IdentityInterface::getId()
+        // Assign roles to users. 1 and 2 are IDs returned by BasicIdentityInterface::getId()
         // usually implemented in your User model.
         $auth->assign($author, 2);
         $auth->assign($admin, 1);

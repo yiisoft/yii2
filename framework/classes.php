@@ -271,6 +271,7 @@ return [
   'yii\web\HeaderCollection' => YII2_PATH . '/web/HeaderCollection.php',
   'yii\web\HtmlResponseFormatter' => YII2_PATH . '/web/HtmlResponseFormatter.php',
   'yii\web\HttpException' => YII2_PATH . '/web/HttpException.php',
+  'yii\web\BasicIdentityInterface' => YII2_PATH . '/web/BasicIdentityInterface.php',
   'yii\web\IdentityInterface' => YII2_PATH . '/web/IdentityInterface.php',
   'yii\web\JqueryAsset' => YII2_PATH . '/web/JqueryAsset.php',
   'yii\web\JsExpression' => YII2_PATH . '/web/JsExpression.php',

@@ -498,12 +498,13 @@ class MyBehavior extends Behavior
 ```
 
 
-User and IdentityInterface
+User and BasicIdentityInterface|IdentityInterface
 --------------------------
 
 The `CWebUser` class in 1.1 is now replaced by [[yii\web\User]], and there is no more
-`CUserIdentity` class. Instead, you should implement the [[yii\web\IdentityInterface]] which
-is much more straightforward to use. The advanced project template provides such an example.
+`CUserIdentity` class. Instead, you should implement the [[yii\web\BasicIdentityInterface]] or
+[[yii\web\IdentityInterface]] which is much more straightforward to use. The advanced project template provides
+such an example.
 
 Please refer to the [Authentication](security-authentication.md), [Authorization](security-authorization.md), and [Advanced Project Template](https://github.com/yiisoft/yii2-app-advanced/blob/master/docs/guide/README.md) sections for more details.
 
