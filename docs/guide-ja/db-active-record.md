@@ -145,7 +145,7 @@ $count = Customer::find()
     ->where(['status' => Customer::STATUS_ACTIVE])
     ->count();
 
-// アクティブな全ての顧客を顧客IDによってインデックスされた配列として返す
+// 全ての顧客を顧客IDによってインデックスされた配列として返す
 // SELECT * FROM `customer`
 $customers = Customer::find()
     ->indexBy('id')
