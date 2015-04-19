@@ -6,7 +6,7 @@
 Models are part of the [MVC](http://en.wikipedia.org/wiki/Model%E2%80%93view%E2%80%93controller) architecture.
 They are objects representing business data, rules and logic.
 -->
-Модели являются частью архитектуры [MVC](http://en.wikipedia.org/wiki/Model%E2%80%93view%E2%80%93controller) (Модель-Вид-Контроллер). Они представляют собой объекты олицетворяющие рабочую информацию, правила и логику.
+Модели являются частью архитектуры [MVC](http://en.wikipedia.org/wiki/Model%E2%80%93view%E2%80%93controller) (Модель-Вид-Контроллер). Они представляют собой объекты бизнес данных, правил и логики.
 
 <!--
 You can create model classes by extending [[yii\base\Model]] or its child classes. The base class
@@ -22,11 +22,11 @@ You can create model classes by extending [[yii\base\Model]] or its child classe
 * [Validation rules](#validation-rules): ensures input data based on the declared validation rules;
 * [Data Exporting](#data-exporting): allows model data to be exported in terms of arrays with customizable formats.
 -->
-* [Attributes](#attributes) (Атрибуты): представляют собой рабочие данные и могут быть доступны как обычные свойства объекта или элементы массыва;
-* [Attribute labels](#attribute-labels) (Метки атрибута): задают отображение атрибута;
-* [Massive assignment](#massive-assignment) (Массовое присвоение): поддержка заполнения нескольких атрибутов в один шаг;
-* [Validation rules](#validation-rules) (Правила проверки):	обеспечивают ввод данных на основе заявленных правил проверки;
-* [Data Exporting](#data-exporting) (Экспорт Данных): разрешает данным модели быть экспортированными <b>УТОЧНИТЬ ДАЛЕЕ-></b> при помощи массивов настройки форматов.
+* [Атрибуты](#attributes): представляют собой рабочие данные и могут быть доступны как обычные свойства объекта или элементы массыва;
+* [Метки атрибутов](#attribute-labels): задают отображение атрибута;
+* [Массовое присвоение](#massive-assignment): поддержка заполнения нескольких атрибутов в один шаг;
+* [Правила проверки](#validation-rules): обеспечивают ввод данных на основе заявленных правил проверки;
+* [Экспорт Данных](#data-exporting): разрешает данным модели быть экспортированными в массивы с настройкой форматов.
 
 <!--
 The `Model` class is also the base class for more advanced models, such as [Active Record](db-active-record.md).
@@ -133,7 +133,7 @@ You can get the label of an attribute by calling [[yii\base\Model::getAttributeL
 ```php
 $model = new \app\models\ContactForm;
 
-// displays "Name"
+// отобразит "Name"
 echo $model->getAttributeLabel('name');
 ```
 
@@ -197,7 +197,7 @@ public function attributeLabels()
 You may even conditionally define attribute labels. For example, based on the [scenario](#scenarios) the model
 is being used in, you may return different labels for the same attribute.
 -->
-Можно даже условно определять метки атрибутов. Например, на основе [сценариев](#scenarios) использованной в нём модели , Вы можете возвращать различные метки для одного и того же атрибута.
+Можно даже условно определять метки атрибутов. Например, на основе [сценариев](#scenarios) и использованной в нём модели , Вы можете возвращать различные метки для одного и того же атрибута.
 
 <!--
 > Info: Strictly speaking, attribute labels are part of [views](structure-views.md). But declaring labels
@@ -374,10 +374,10 @@ specify the `on` property of a rule, like the following:
 public function rules()
 {
     return [
-        // username, email and password are all required in "register" scenario
+        // username, email и password требуются в сценарии "register"
         [['username', 'email', 'password'], 'required', 'on' => 'register'],
 
-        // username and password are required in "login" scenario
+        // username и password требуются в сценарии "login"
         [['username', 'password'], 'required', 'on' => 'login'],
     ];
 }
@@ -406,7 +406,7 @@ property. The following two pieces of code are equivalent, both trying to assign
 to the attributes of the `ContactForm` model. Clearly, the former, which uses massive assignment, is much cleaner
 and less error prone than the latter:
 -->
-Массовое присвоение - это удобный способ заполнения модели данными вводимыми пользователем с помощью одной строки кода. Он заполняет атрибуты модели путем присвоения входных данных непосредственно в свойстве [[yii\base\Model::$attributes]]. Следующие два куска кода эквивалентны, они оба пытаются присвоить данные из формы представленные конечными пользователями атрибутам модели `ContactForm`. Ясно, что первый код гораздо чище и менее подвержен ошибкам, чем второй:
+Массовое присвоение - это удобный способ заполнения модели данными вводимыми пользователем с помощью одной строки кода. Он заполняет атрибуты модели путем присвоения входных данных непосредственно свойству [[yii\base\Model::$attributes]]. Следующие два куска кода эквивалентны, они оба пытаются присвоить данные из формы представленные конечными пользователями атрибутам модели `ContactForm`. Ясно, что первый код гораздо чище и менее подвержен ошибкам, чем второй:
 
 ```php
 $model = new \app\models\ContactForm;
@@ -538,12 +538,13 @@ declared in [[yii\base\Model::attributes()]].
 -->
 По умолчанию, свойство [[yii\base\Model::$attributes]] возвращает значения *всех* атрибутов объявленных в [[yii\base\Model::attributes()]].
 
+<!--
 A more flexible and powerful way of converting a model into an array is to use the [[yii\base\Model::toArray()]]
 method. Its default behavior is the same as that of [[yii\base\Model::$attributes]]. However, it allows you
 to choose which data items, called *fields*, to be put in the resulting array and how they should be formatted.
 In fact, it is the default way of exporting models in RESTful Web service development, as described in
 the [Response Formatting](rest-response-formatting.md).
-
+-->
 Более гибкий и мощный способ конвертирования модели в массив - использовать метод [[yii\base\Model::toArray()]]. Его поведение по умолчанию такое же как и у [[yii\base\Model::$attributes]]. Тем не менее, он позволяет выбрать, какие элементы данных, называемые *полями*, поставить в результирующий массив и как они должны быть отформатированы. На самом деле, этот способ экспорта моделей по умолчанию применяется при разработке в RESTful Web service, как описано в [Response Formatting](rest-response-formatting.md).
 
 ### Поля <span id="fields"></span>
@@ -593,9 +594,9 @@ name, you can omit the array key. For example,
 -->
 
 ```php
-// использовать явное перечисление всех полей, лучше всего тогда, когда вы хотите убедиться, что изменения в вашей
-// таблице базы данных или атрибуте модели не вызывают изменение вашего поля (для поддержания обратной совместимости
-// API интерфейса).
+// использовать явное перечисление всех полей, лучше всего тогда, когда вы хотите убедиться,
+// что изменения в вашей таблице базы данных или атрибуте модели не вызывают изменение вашего поля
+// (для поддержания обратной совместимости API интерфейса).
 
 public function fields()
 {
@@ -613,8 +614,8 @@ public function fields()
     ];
 }
 
-// использовать фильтрование нескольких полей, лучше тогда, когда вы хотите наследовать родительскую реализацию и
-// черный список некоторых "чувствительных" полей.
+// использовать фильтрование нескольких полей, лучше тогда, когда вы хотите наследовать
+// родительскую реализацию и черный список некоторых "чувствительных" полей.
 
 public function fields()
 {
@@ -637,11 +638,8 @@ public function fields()
 > переопределить `fields()` и отфильтровать поля. В приведенном выше примере мы выбираем и отфильтровываем `auth_key`,
 > `password_hash` и `password_reset_token`.
 
-## Для практики <span id="best-practices"></span>
+## Лучшие приёмы разработки моделей <span id="best-practices"></span>
 <!--Best Practices-->
-Рекомендуемая практика
-Лучшая практика
-Для практики
 
 <!--
 Models are the central places to represent business data, rules and logic. They often need to be reused
