@@ -92,6 +92,10 @@ class AssetBundle extends Object
      */
     public $css = [];
     /**
+     * @var array list of HTML files (to be imported) that this bundle contains.
+     */
+    public $imports = [];
+    /**
      * @var array the options that will be passed to [[View::registerJsFile()]]
      * when registering the JS files in this bundle.
      */
@@ -101,6 +105,11 @@ class AssetBundle extends Object
      * when registering the CSS files in this bundle.
      */
     public $cssOptions = [];
+    /**
+     * @var array the options that will be passed to [[View::registerLinkTag()]]
+     * when registering the HTML imports in this bundle.
+     */
+    public $importOptions = [];
     /**
      * @var array the options to be passed to [[AssetManager::publish()]] when the asset bundle
      * is being published. This property is used only when [[sourcePath]] is set.
@@ -147,6 +156,9 @@ class AssetBundle extends Object
         }
         foreach ($this->css as $css) {
             $view->registerCssFile($manager->getAssetUrl($this, $css), $this->cssOptions);
+        }
+        foreach ($this->imports as $import) {
+            $view->registerImportFile($manager->getAssetUrl($this, $import), $this->importOptions);
         }
     }
 

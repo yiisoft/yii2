@@ -68,7 +68,8 @@ EOF;
         $this->assertTrue($view->assetBundles['yiiunit\\framework\\web\\TestAssetLevel3'] instanceof AssetBundle);
 
         $expected = <<<EOF
-1<link href="/files/cssFile.css" rel="stylesheet">23<script src="/js/jquery.js"></script>
+1<link href="/files/cssFile.css" rel="stylesheet">
+<link href="/files/import.html" rel="import">23<script src="/js/jquery.js"></script>
 <script src="/files/jsFile.js"></script>4
 EOF;
         $this->assertEqualsWithoutLE($expected, $view->renderFile('@yiiunit/data/views/rawlayout.php'));
@@ -125,19 +126,22 @@ EOF;
                 $expected = <<<EOF
 1<link href="/files/cssFile.css" rel="stylesheet">
 <script src="/js/jquery.js"></script>
-<script src="/files/jsFile.js"></script>234
+<script src="/files/jsFile.js"></script>
+<link href="/files/import.html" rel="import">234
 EOF;
             break;
             case View::POS_BEGIN:
                 $expected = <<<EOF
-1<link href="/files/cssFile.css" rel="stylesheet">2<script src="/js/jquery.js"></script>
+1<link href="/files/cssFile.css" rel="stylesheet">
+<link href="/files/import.html" rel="import">2<script src="/js/jquery.js"></script>
 <script src="/files/jsFile.js"></script>34
 EOF;
             break;
             default:
             case View::POS_END:
                 $expected = <<<EOF
-1<link href="/files/cssFile.css" rel="stylesheet">23<script src="/js/jquery.js"></script>
+1<link href="/files/cssFile.css" rel="stylesheet">
+<link href="/files/import.html" rel="import">23<script src="/js/jquery.js"></script>
 <script src="/files/jsFile.js"></script>4
 EOF;
             break;
@@ -224,6 +228,9 @@ class TestAssetBundle extends AssetBundle
     ];
     public $js = [
         'jsFile.js',
+    ];
+    public $imports = [
+        'import.html',
     ];
     public $depends = [
         'yiiunit\\framework\\web\\TestJqueryAsset'

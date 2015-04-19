@@ -236,6 +236,27 @@ class BaseHtml
     }
 
     /**
+     * Generates a link tag that refers to an external HTML file to be imported.
+     * @param array|string $url the URL of the external HTML file. This parameter will be processed by [[Url::to()]].
+     * @param array $options the tag options in terms of name-value pairs.
+     *
+     * The options will be rendered as the attributes of the resulting link tag. The values will
+     * be HTML-encoded using [[encode()]]. If a value is null, the corresponding attribute will not be rendered.
+     * See [[renderTagAttributes()]] for details on how attributes are being rendered.
+     * @return string the generated link tag
+     * @see Url::to()
+     */
+    public static function importFile($url, $options = [])
+    {
+        if (!isset($options['rel'])) {
+            $options['rel'] = 'import';
+        }
+        $options['href'] = Url::to($url);
+
+        return static::tag('link', '', $options);
+    }
+
+    /**
      * Generates a script tag that refers to an external JavaScript file.
      * @param string $url the URL of the external JavaScript file. This parameter will be processed by [[Url::to()]].
      * @param array $options the tag options in terms of name-value pairs. The following option is specially handled:

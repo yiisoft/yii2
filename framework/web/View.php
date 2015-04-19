@@ -127,6 +127,11 @@ class View extends \yii\base\View
      * @see registerJsFile()
      */
     public $jsFiles;
+    /**
+     * @var array the registered HTML import files.
+     * @see registerImportFile()
+     */
+    public $importFiles;
 
     private $_assetManager;
 
@@ -454,6 +459,37 @@ class View extends \yii\base\View
     }
 
     /**
+     * Registers an HTML file for importing.
+     * @param string $url the HTML file to be registered.
+     * @param array $options the HTML attributes for the script tag. The following options are specially handled
+     * and are not treated as HTML attributes:
+     *
+     * - `depends`: array, specifies the names of the asset bundles that this HTML file depends on.
+     *
+     * @param string $key the key that identifies the HTML import file. If null, it will use
+     * $url as the key. If two HTML import files are registered with the same key, the latter
+     * will overwrite the former.
+     */
+    public function registerImportFile($url, $options = [], $key = null)
+    {
+        $url = Yii::getAlias($url);
+        $key = $key ?: $url;
+        $depends = ArrayHelper::remove($options, 'depends', []);
+
+        if (empty($depends)) {
+            $this->importFiles[$key] = Html::importFile($url, $options);
+        } else {
+            $this->getAssetManager()->bundles[$key] = new AssetBundle([
+                'baseUrl' => '',
+                'imports' => [strncmp($url, '//', 2) === 0 ? $url : ltrim($url, '/')],
+                'importOptions' => $options,
+                'depends' => (array) $depends,
+            ]);
+            $this->registerAssetBundle($key);
+        }
+    }
+
+    /**
      * Renders the content to be inserted in the head section.
      * The content is rendered using the registered meta tags, link tags, CSS/JS code blocks and files.
      * @return string the rendered content
@@ -479,6 +515,9 @@ class View extends \yii\base\View
         }
         if (!empty($this->js[self::POS_HEAD])) {
             $lines[] = Html::script(implode("\n", $this->js[self::POS_HEAD]), ['type' => 'text/javascript']);
+        }
+        if (!empty($this->importFiles)) {
+            $lines[] = implode("\n", $this->importFiles);
         }
 
         return empty($lines) ? '' : implode("\n", $lines);
