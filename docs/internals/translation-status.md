@@ -58,7 +58,7 @@ input-tabular-input.md              |
 output-formatting.md                |
 output-pagination.md                | Yes
 output-sorting.md                   | Yes
-output-data-providers.md            |
+output-data-providers.md            | Yes
 output-data-widgets.md              |
 output-theming.md                   |
 security-authentication.md          |

@@ -36,8 +36,10 @@ $count = $provider->getCount();
 $totalCount = $provider->getTotalCount();
 ```
 
-The `pagination` and `sort` properties of data providers correspond to the configurations for
-[[yii\data\Pagination]] and [[yii\data\Sort]], respectively.
+You specify the pagination and sorting behaviors of a data provider by configuring its 
+[[yii\data\BaseDataProvider::pagination|pagination]] and [[yii\data\BaseDataProvider::sort|sort]] properties
+which correspond to the configurations for [[yii\data\Pagination]] and [[yii\data\Sort]], respectively.
+You may also configure them to be false to disable pagination and/or sorting features.
 
 [Data widgets](output-data-widgets.md), such as [[yii\grid\GridView]], have a property named `dataProvider` which
 can take a data provider instance and display the data it provides. For example,
@@ -67,7 +69,7 @@ $query = Post::find()->where(['status' => 1]);
 $provider = new ActiveDataProvider([
     'query' => Post::find(),
     'pagination' => [
-        'pageSize' => 20,
+        'pageSize' => 10,
     ],
     'sort' => [
         'defaultOrder' => [
@@ -99,104 +101,152 @@ use a different database connection by configuring the [[yii\data\ActiveDataProv
 
 ## SQL Data Provider <span id="sql-data-provider"></span>
 
-Like other data providers, SqlDataProvider also supports sorting and pagination. It does so by modifying the given
-[[yii\data\SqlDataProvider::$sql]] statement with "ORDER BY" and "LIMIT" clauses. You may configure the
-[[yii\data\SqlDataProvider::$sort]] and [[yii\data\SqlDataProvider::$pagination]] properties to customize sorting
-and pagination behaviors.
+[[yii\data\SqlDataProvider]] works with a raw SQL statement which is used to fetch the needed
+data. Based on the specifications of [[yii\data\SqlDataProvider::sort|sort]] and 
+[[yii\data\SqlDataProvider::pagination|pagination]], the provider will adjust the `ORDER BY` and `LIMIT`
+clauses of the SQL statement accordingly to fetch only the requested page of data in the desired order.
 
-`SqlDataProvider` may be used in the following way:
+To use [[yii\data\SqlDataProvider]], you should specify the [[yii\data\SqlDataProvider::sql|sql]] property as well
+as the [[yii\data\SqlDataProvider::totalCount|totalCount]] property. For example,
 
 ```php
+use yii\data\SqlDataProvider;
+
 $count = Yii::$app->db->createCommand('
-    SELECT COUNT(*) FROM user WHERE status=:status
+    SELECT COUNT(*) FROM post WHERE status=:status
 ', [':status' => 1])->queryScalar();
 
-$dataProvider = new SqlDataProvider([
-    'sql' => 'SELECT * FROM user WHERE status=:status',
+$provider = new SqlDataProvider([
+    'sql' => 'SELECT * FROM post WHERE status=:status',
     'params' => [':status' => 1],
     'totalCount' => $count,
+    'pagination' => [
+        'pageSize' => 10,
+    ],
     'sort' => [
         'attributes' => [
-            'age',
-            'name' => [
-                'asc' => ['first_name' => SORT_ASC, 'last_name' => SORT_ASC],
-                'desc' => ['first_name' => SORT_DESC, 'last_name' => SORT_DESC],
-                'default' => SORT_DESC,
-                'label' => 'Name',
-            ],
+            'title',
+            'view_count',
+            'created_at',
         ],
-    ],
-    'pagination' => [
-        'pageSize' => 20,
     ],
 ]);
 
-// get the user records in the current page
-$models = $dataProvider->getModels();
+// returns an array of data rows
+$models = $provider->getModels();
 ```
 
-> Note: if you want to use the pagination feature, you must configure the [[yii\data\SqlDataProvider::$totalCount]]
-property to be the total number of rows (without pagination). And if you want to use the sorting feature,
-you must configure the [[yii\data\SqlDataProvider::$sort]] property so that the provider knows which columns can
-be sorted.
+> Info: The [[yii\data\SqlDataProvider::totalCount|totalCount]] property is required only if you need to
+  paginate the data. This is because the SQL statement specified via [[yii\data\SqlDataProvider::sql|sql]]
+  will be modified by the provider to return only the currently requested page of data. The provider still
+  needs to know the total number of data items in order to correctly calculate the number of pages available.
 
 
 ## Array Data Provider <span id="array-data-provider"></span>
 
-ArrayDataProvider implements a data provider based on a data array.
-
-The [[yii\data\ArrayDataProvider::$allModels]] property contains all data models that may be sorted and/or paginated.
-ArrayDataProvider will provide the data after sorting and/or pagination.
-You may configure the [[yii\data\ArrayDataProvider::$sort]] and [[yii\data\ArrayDataProvider::$pagination]] properties to
-customize the sorting and pagination behaviors.
-
-Elements in the [[yii\data\ArrayDataProvider::$allModels]] array may be either objects (e.g. model objects)
-or associative arrays (e.g. query results of DAO).
-Make sure to set the [[yii\data\ArrayDataProvider::$key]] property to the name of the field that uniquely
-identifies a data record or false if you do not have such a field.
-
-Compared to `ActiveDataProvider`, `ArrayDataProvider` could be less efficient
-because it needs to have [[yii\data\ArrayDataProvider::$allModels]] ready.
-
-ArrayDataProvider may be used in the following way:
+[[yii\data\ArrayDataProvider]] is best used when working with a big array. The provider allows you to return
+a page of the array data sorted by one or multiple columns. To use [[yii\data\ArrayDataProvider]], you should
+specify the [[yii\data\ArrayDataProvider::allModels|allModels]] property as the big array.
+Elements in the big array can be either associative arrays
+(e.g. query results of [DAO](db-dao.md)) or objects (e.g. [Active Record](db-active-record.md) instances).
+For example,
 
 ```php
-$query = new Query();
+use yii\data\ArrayDataProvider;
+
+$data = [
+    ['id' => 1, 'name' => 'name 1', ...],
+    ['id' => 2, 'name' => 'name 2', ...],
+    ...
+    ['id' => 100, 'name' => 'name 100', ...],
+];
+
 $provider = new ArrayDataProvider([
-    'allModels' => $query->from('post')->all(),
-    'sort' => [
-        'attributes' => ['id', 'username', 'email'],
-    ],
+    'allModels' => $data,
     'pagination' => [
         'pageSize' => 10,
     ],
+    'sort' => [
+        'attributes' => ['id', 'name'],
+    ],
 ]);
-// get the posts in the current page
+
+// get the rows in the currently requested page
+$rows = $provider->getModels();
+``` 
+
+> Note: Compared to [Active Data Provider](#active-data-provider) and [SQL Data Provider](#sql-data-provider),
+  array data provider is less efficient because it requires loading *all* data into the memory.
+
+
+## Working with Data Keys <span id="working-with-keys"></span>
+
+When using the data items returned by a data provider, you often need to identify each data item with a unique key.
+For example, if the data items represent customer information, you may want to use the customer ID as the key
+for each customer data. Data providers can return a list of such keys corresponding with the data items returned 
+by [[yii\data\DataProviderInterface::getModels()]]. For example,
+
+```php
+use yii\data\ActiveDataProvider;
+
+$query = Post::find()->where(['status' => 1]);
+
+$provider = new ActiveDataProvider([
+    'query' => Post::find(),
+]);
+
+// returns an array of Post objects
 $posts = $provider->getModels();
+
+// returns the primary key values corresponding to $posts
+$ids = $provider->getKeys();
 ```
 
-> Note: if you want to use the sorting feature, you must configure the [[sort]] property
-so that the provider knows which columns can be sorted.
+In the above example, because you provide to [[yii\data\ActiveDataProvider]] an [[yii\db\ActiveQuery]] object,
+it is intelligent enough to return primary key values as the keys. You may also explicitly specify how the key
+values should be calculated by configuring [[yii\data\ActiveDataProvider::key]] with a column name or
+a callable calculating key values. For example,
+
+```php
+// use "slug" column as key values
+$provider = new ActiveDataProvider([
+    'query' => Post::find(),
+    'key' => 'slug',
+]);
+
+// use the result of md5(id) as key values
+$provider = new ActiveDataProvider([
+    'query' => Post::find(),
+    'key' => function ($model) {
+        return md5($model->id);
+    }
+]);
+```
 
 
-Implementing your own custom data provider
-------------------------------------------
+## Creating Custom Data Provider <span id="custom-data-provider"></span>
 
-Yii allows you to introduce your own custom data providers. In order to do it you need to implement the following
-`protected` methods:
+To create your own custom data provider classes, you should implement [[yii\data\DataProviderInterface]].
+An easier way is to extend from [[yii\data\BaseDataProvider]] which allows you to focus on the core data provider
+logic. In particular, you mainly need to implement the following methods:
                                                    
-- `prepareModels` that prepares the data models that will be made available in the current page and returns them as an array.
-- `prepareKeys` that accepts an array of currently available data models and returns keys associated with them.
-- `prepareTotalCount` that returns a value indicating the total number of data models in the data provider.
+- [[yii\data\BaseDataProvider::prepareModels()|prepareModels()]]: prepares the data models that will be made 
+  available in the current page and returns them as an array.
+- [[yii\data\BaseDataProvider::prepareKeys()|prepareKeys()]]: accepts an array of currently available data models
+  and returns keys associated with them.
+- [[yii\data\BaseDataProvider::prepareTotalCount()|prepareTotalCount]]: returns a value indicating the total number 
+  of data models in the data provider.
 
-Below is an example of a data provider that reads CSV efficiently:
+Below is an example of a data provider that reads CSV data efficiently:
 
 ```php
 <?php
-class CsvDataProvider extends \yii\data\BaseDataProvider
+use yii\data\BaseDataProvider;
+
+class CsvDataProvider extends BaseDataProvider
 {
     /**
-     * @var string name of the file to read
+     * @var string name of the CSV file to read
      */
     public $filename;
     
@@ -289,4 +339,3 @@ class CsvDataProvider extends \yii\data\BaseDataProvider
     }
 }
 ```
- 
