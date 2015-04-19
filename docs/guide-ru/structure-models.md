@@ -648,7 +648,7 @@ Models are the central places to represent business data, rules and logic. They 
 in different places. In a well-designed application, models are usually much fatter than
 [controllers](structure-controllers.md).
 -->
-Модели являются центральным местом представления бизнес-данных, правил и логики. Они часто повторно используются в разных местах. В хорошо спроектированном приложении, модели, как правило, намного жирнее, чем [контроллеры](structure-controllers.md).
+Модели являются центральным местом представления бизнес-данных, правил и логики. Они часто повторно используются в разных местах. В хорошо спроектированном приложении, модели, как правило, намного больше, чем [контроллеры](structure-controllers.md).
 
 <!--
 In summary, models
@@ -677,7 +677,7 @@ of rules and business logic. This often ends up in a nightmare in maintaining th
 because a single touch of the code could affect several different places. To make the model code more maintainable,
 you may take the following strategy:
 
-Рекомендации выше обычно учитываются при разработке больших сложных систем.
+Рекомендации выше обычно учитываются при разработке больших сложных систем. В таких системах, модели могут быть очень большими, в связи стем, что они используются во многих местах и поэтому могут содержать множество наборов правил и бизнес-логики. Это часто заканчивается кошмаром при поддержании кода модели, поскольку одним касанием кода можно повлиять на несколько разных мест. Чтобы сделать код модели более легким в обслуживании, Вы можете предпринять следующую стратегию:
 
 * Define a set of base model classes that are shared by different [applications](structure-applications.md) or
   [modules](structure-modules.md). These model classes should contain minimal sets of rules and logic that
@@ -685,6 +685,9 @@ you may take the following strategy:
 * In each [application](structure-applications.md) or [module](structure-modules.md) that uses a model,
   define a concrete model class by extending from the corresponding base model class. The concrete model classes
   should contain rules and logic that are specific for that application or module.
+
+* Определить набор базовых классов моделей, которые являются общими для разных [приложений](structure-applications.md) или [модулей](structure-modules.md). Эти классы моделей должны содержать минимальный набор правил и логики, которые являются общими среди всех используемых приложений или модулей.
+* В каждом [приложении](structure-applications.md) или [модуле](structure-modules.md) в котором используется модель, определить конкретный класс модели (или классы моделей), отходящий от соответствующего базового класса модели. Конкретный класс модели должен содержать правила и логику, которые являются специфическими для данного приложения или модуля.
 
 For example, in the [Advanced Project Template](https://github.com/yiisoft/yii2-app-advanced/blob/master/docs/guide/README.md), you may define a base model
 class `common\models\Post`. Then for the front end application, you define and use a concrete model class
