@@ -27,15 +27,17 @@ and you have already created the [[yii\db\ActiveRecord|ActiveRecord]] class `app
 First, create a controller class `app\controllers\UserController` as follows,
 
 ```php
-namespace app\controllers;
+<?php
+    namespace app\controllers;
 
-use yii\rest\ActiveController;
+    use yii\rest\ActiveController;
 
-class UserController extends ActiveController
-{
-    public $modelClass = 'app\models\User';
-}
+    class UserController extends ActiveController
+    {
+        public $modelClass = 'app\models\User';
+    }
 ```
+Save the file as inside your app root directory as `controller\UserController.php`.
 
 The controller class extends from [[yii\rest\ActiveController]]. By specifying [[yii\rest\ActiveController::modelClass|modelClass]]
 as `app\models\User`, the controller knows what model can be used for fetching and manipulating data.
