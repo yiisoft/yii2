@@ -671,27 +671,32 @@ In summary, models
 * следует избегать встраивания HTML или другого отображаемого кода - это лучше делать в [видах](structure-views.md);
 * избегайте слишком большого количества [сценариев](#scenarios) в одной модели.
 
+<!--
 You may usually consider the last recommendation above when you are developing large complex systems.
 In these systems, models could be very fat because they are used in many places and may thus contain many sets
 of rules and business logic. This often ends up in a nightmare in maintaining the model code
 because a single touch of the code could affect several different places. To make the model code more maintainable,
 you may take the following strategy:
-
+-->
 Рекомендации выше обычно учитываются при разработке больших сложных систем. В таких системах, модели могут быть очень большими, в связи стем, что они используются во многих местах и поэтому могут содержать множество наборов правил и бизнес-логики. Это часто заканчивается кошмаром при поддержании кода модели, поскольку одним касанием кода можно повлиять на несколько разных мест. Чтобы сделать код модели более легким в обслуживании, Вы можете предпринять следующую стратегию:
 
+<!--
 * Define a set of base model classes that are shared by different [applications](structure-applications.md) or
   [modules](structure-modules.md). These model classes should contain minimal sets of rules and logic that
   are common among all their usages.
 * In each [application](structure-applications.md) or [module](structure-modules.md) that uses a model,
   define a concrete model class by extending from the corresponding base model class. The concrete model classes
   should contain rules and logic that are specific for that application or module.
-
+-->
 * Определить набор базовых классов моделей, которые являются общими для разных [приложений](structure-applications.md) или [модулей](structure-modules.md). Эти классы моделей должны содержать минимальный набор правил и логики, которые являются общими среди всех используемых приложений или модулей.
 * В каждом [приложении](structure-applications.md) или [модуле](structure-modules.md) в котором используется модель, определить конкретный класс модели (или классы моделей), отходящий от соответствующего базового класса модели. Конкретный класс модели должен содержать правила и логику, которые являются специфическими для данного приложения или модуля.
 
+<!--
 For example, in the [Advanced Project Template](https://github.com/yiisoft/yii2-app-advanced/blob/master/docs/guide/README.md), you may define a base model
 class `common\models\Post`. Then for the front end application, you define and use a concrete model class
 `frontend\models\Post` which extends from `common\models\Post`. And similarly for the back end application,
 you define `backend\models\Post`. With this strategy, you will be sure that the code in `frontend\models\Post`
 is only specific to the front end application, and if you make any change to it, you do not need to worry if
 the change may break the back end application.
+-->
+Например, в [Дополнительном Шаблоне Проекта](https://github.com/yiisoft/yii2-app-advanced/blob/master/docs/guide/README.md), Вы можете определить базовым классом модели `common\models\Post`. Тогда для frontend приложения, Вы определяете и используете конкретный класс модели `frontend\models\Post`, который расширяется от `common\models\Post`. И аналогичным образом для backend приложения, Вы определяете `backend\models\Post`. С помощью такой стратегии, можно быть уверенным, что код в `frontend\models\Post` используется только для конкретного frontend приложения, и если делаются любые изменения в нём, то не нужно беспокоиться, что изменения могут сломать backend приложение.
