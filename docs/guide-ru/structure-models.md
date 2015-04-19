@@ -627,20 +627,35 @@ public function fields()
 }
 ```
 
+<!--
 > Warning: Because by default all attributes of a model will be included in the exported array, you should
 > examine your data to make sure they do not contain sensitive information. If there is such information,
 > you should override `fields()` to filter them out. In the above example, we choose
 > to filter out `auth_key`, `password_hash` and `password_reset_token`.
+-->
+> Внимание: по умолчанию все атрибуты модели будут включены в экспортируемый массив, вы должны проверить ваши данные и > убедиться, что они не содержат конфиденциальной информации. Если такая информация присутствует, вы должны
+> переопределить `fields()` и отфильтровать поля. В приведенном выше примере мы выбираем и отфильтровываем `auth_key`,
+> `password_hash` и `password_reset_token`.
 
+## Для практики <span id="best-practices"></span>
+<!--Best Practices-->
+Рекомендуемая практика
+Лучшая практика
+Для практики
 
-## Best Practices <span id="best-practices"></span>
-
+<!--
 Models are the central places to represent business data, rules and logic. They often need to be reused
 in different places. In a well-designed application, models are usually much fatter than
 [controllers](structure-controllers.md).
+-->
+Модели являются центральным местом представления бизнес-данных, правил и логики. Они часто повторно используются в разных местах. В хорошо спроектированном приложении, модели, как правило, намного жирнее, чем [контроллеры](structure-controllers.md).
 
+<!--
 In summary, models
+-->
+В целом, модели
 
+<!--
 * may contain attributes to represent business data;
 * may contain validation rules to ensure the data validity and integrity;
 * may contain methods implementing business logic;
@@ -648,12 +663,21 @@ In summary, models
   by [controllers](structure-controllers.md) into models;
 * should avoid embedding HTML or other presentational code - this is better done in [views](structure-views.md);
 * avoid having too many [scenarios](#scenarios) in a single model.
+-->
+* могут содержать атрибуты для представления бизнес-данных;
+* могут содержать правила проверки для обеспечения целостности и достоверности данных;
+* могут содержать методы с реализацией бизнес-логики;
+* не следует напрямую задавать запрос на доступ, либо сессии, либо любые другие данные об окружающей среде. Эти данные должны быть введены [контроллерами](structure-controllers.md) в модели;
+* следует избегать встраивания HTML или другого отображаемого кода - это лучше делать в [видах](structure-views.md);
+* избегайте слишком большого количества [сценариев](#scenarios) в одной модели.
 
 You may usually consider the last recommendation above when you are developing large complex systems.
 In these systems, models could be very fat because they are used in many places and may thus contain many sets
 of rules and business logic. This often ends up in a nightmare in maintaining the model code
 because a single touch of the code could affect several different places. To make the model code more maintainable,
 you may take the following strategy:
+
+Рекомендации выше обычно учитываются при разработке больших сложных систем.
 
 * Define a set of base model classes that are shared by different [applications](structure-applications.md) or
   [modules](structure-modules.md). These model classes should contain minimal sets of rules and logic that
