@@ -182,6 +182,10 @@ abstract class ManagerTestCase extends TestCase
         $rule = new AuthorRule;
         $this->auth->add($rule);
 
+        $uniqueTrait = $this->auth->createPermission('Fast Metabolism');
+        $uniqueTrait->description = 'Your metabolic rate is twice normal. This means that you are much less resistant to radiation and poison, but your body heals faster.';
+        $this->auth->add($uniqueTrait);
+
         $createPost = $this->auth->createPermission('createPost');
         $createPost->description = 'create a post';
         $this->auth->add($createPost);
@@ -213,6 +217,8 @@ abstract class ManagerTestCase extends TestCase
         $this->auth->add($admin);
         $this->auth->addChild($admin, $author);
         $this->auth->addChild($admin, $updateAnyPost);
+
+        $this->auth->assign($uniqueTrait, 'reader A');
 
         $this->auth->assign($reader, 'reader A');
         $this->auth->assign($author, 'author B');

@@ -377,7 +377,10 @@ class PhpManager extends BaseManager
     {
         $roles = [];
         foreach ($this->getAssignments($userId) as $name => $assignment) {
-            $roles[$name] = $this->items[$assignment->roleName];
+            $role = $this->items[$assignment->roleName];
+            if ($role->type === Item::TYPE_ROLE) {
+                $roles[$name] = $role;
+            }
         }
 
         return $roles;
