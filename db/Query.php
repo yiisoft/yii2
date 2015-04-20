@@ -285,7 +285,7 @@ class Query extends Component implements QueryInterface
     /**
      * Returns the number of records.
      * @param string $q the COUNT expression. Defaults to '*'.
-     * Make sure you properly quote column names in the expression.
+     * Make sure you properly [quote](guide:db-dao#quoting-table-and-column-names) column names in the expression.
      * @param Connection $db the database connection used to generate the SQL statement.
      * If this parameter is not given (or null), the `db` application component will be used.
      * @return integer|string number of records. The result may be a string depending on the
@@ -299,7 +299,7 @@ class Query extends Component implements QueryInterface
     /**
      * Returns the sum of the specified column values.
      * @param string $q the column name or expression.
-     * Make sure you properly quote column names in the expression.
+     * Make sure you properly [quote](guide:db-dao#quoting-table-and-column-names) column names in the expression.
      * @param Connection $db the database connection used to generate the SQL statement.
      * If this parameter is not given, the `db` application component will be used.
      * @return mixed the sum of the specified column values.
@@ -312,7 +312,7 @@ class Query extends Component implements QueryInterface
     /**
      * Returns the average of the specified column values.
      * @param string $q the column name or expression.
-     * Make sure you properly quote column names in the expression.
+     * Make sure you properly [quote](guide:db-dao#quoting-table-and-column-names) column names in the expression.
      * @param Connection $db the database connection used to generate the SQL statement.
      * If this parameter is not given, the `db` application component will be used.
      * @return mixed the average of the specified column values.
@@ -325,7 +325,7 @@ class Query extends Component implements QueryInterface
     /**
      * Returns the minimum of the specified column values.
      * @param string $q the column name or expression.
-     * Make sure you properly quote column names in the expression.
+     * Make sure you properly [quote](guide:db-dao#quoting-table-and-column-names) column names in the expression.
      * @param Connection $db the database connection used to generate the SQL statement.
      * If this parameter is not given, the `db` application component will be used.
      * @return mixed the minimum of the specified column values.
@@ -338,7 +338,7 @@ class Query extends Component implements QueryInterface
     /**
      * Returns the maximum of the specified column values.
      * @param string $q the column name or expression.
-     * Make sure you properly quote column names in the expression.
+     * Make sure you properly [quote](guide:db-dao#quoting-table-and-column-names) column names in the expression.
      * @param Connection $db the database connection used to generate the SQL statement.
      * If this parameter is not given, the `db` application component will be used.
      * @return mixed the maximum of the specified column values.
