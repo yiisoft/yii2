@@ -98,6 +98,11 @@ use Yii;
 class Component extends Object
 {
     /**
+     * @event Event an event that is triggered when the component is initialized via [[init()]].
+     */
+    const EVENT_INIT = 'init';
+    
+    /**
      * @var array the attached event handlers (event name => handlers)
      */
     private $_events = [];
@@ -106,7 +111,18 @@ class Component extends Object
      */
     private $_behaviors;
 
-
+    /**
+     * Initializes the component.
+     * This method is called at the end of the constructor.
+     * The default implementation will trigger an [[EVENT_INIT]] event.
+     * If you override this method, make sure you call the parent implementation at the end
+     * to ensure triggering of the event.
+     */
+    public function init()
+    {
+        parent::init();
+        $this->trigger(self::EVENT_INIT);
+    }
     /**
      * Returns the value of a component property.
      * This method will check in the following order and act accordingly:
