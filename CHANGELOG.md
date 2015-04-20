@@ -25,6 +25,7 @@ Yii Framework 2 Change Log
 - Bug #8073: Fixed `yii\data\ArrayDataProvider::getKeys()` return wrong when `yii\data\ArrayDataProvider::$allModels` contain integer key (mdmunir, klimov-paul)
 - Enh #1468: Added ability to specify hints for model attributes via `attributeHints()` method (klimov-paul)
 - Enh #3376: Added `yii\validators\EachValidator`, which allows validation of the array attributes (klimov-paul)
+- Enh #6442: Improved error message on `FileHelper::createDirectory()` to include the path name of the directory (cebe)
 - Enh #6895: Added `ignoreCategories` config option for message command to ignore categories specified (samdark)
 - Enh #6975: Pressing arrows while focused in inputs of Active Form with `validateOnType` enabled no longer triggers validation (slinstj)
 - Enh #7409: Allow `yii\filters\auth\CompositeAuth::authMethods` to take authentication objects (fernandezekiel, qiangxue)
