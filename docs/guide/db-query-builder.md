@@ -535,7 +535,7 @@ $row = (new \yii\db\Query())
   `(new \yii\db\Query())->from('user')->limit(1)->one()`.
 
 All these query methods take an optional `$db` parameter representing the [[yii\db\Connection|DB connection]] that
-should be used to perform a DB query. If you omit this parameter, the `db` application component will be used
+should be used to perform a DB query. If you omit this parameter, the `db` [application component](structure-application-components.md) will be used
 as the DB connection. Below is another example using the `count()` query method:
 
 ```php
