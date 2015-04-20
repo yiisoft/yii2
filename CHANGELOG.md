@@ -9,6 +9,7 @@ Yii Framework 2 Change Log
 - Bug #7473: Fixed `yii\console\controllers\AssetController` does not create missing folders for the target bundles (schmunk42, klimov-paul)
 - Bug #7529: Fixed `yii\web\Response::sendContentAsFile()` that was broken in 2.0.3 (samdark)
 - Bug #7603: Fixed escape characters in `FormatConverter` to work with unicode characters (maddoger, cebe)
+- Bug #7656: Fixed `yii\rbac\DbManager::getRolesByUser()` and `yii\rbac\PhpManager::getRolesByUser()` to return roles only (samdark)
 - Bug #7757: Fix fetching tables schema for oci and mysql when PDO::ATTR_CASE is set (nineinchnick)
 - Bug #7775: Added more strict check on controller IDs when they are being used to create controller instances on Windows (Bhoft, qiangxue)
 - Bug #7831: Add order when fetching database table names and constraints (nineinchnick)
