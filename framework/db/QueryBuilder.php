@@ -866,7 +866,7 @@ class QueryBuilder extends \yii\base\Object
     }
 
     /**
-     * Processes columns and properly quote them if necessary.
+     * Processes columns and properly quotes them if necessary.
      * It will join all columns into a string with comma as separators.
      * @param string|array $columns the columns to be processed
      * @return string the processing result
