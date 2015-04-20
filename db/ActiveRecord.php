@@ -458,12 +458,9 @@ class ActiveRecord extends BaseActiveRecord
             return false;
         }
         foreach ($primaryKeys as $name => $value) {
-            if ($this->getAttribute($name) === null) {
-                $id = $this->getTableSchema()->columns[$name]->phpTypecast($value);
-                $this->setAttribute($name, $id);
-                $values[$name] = $id;
-                break;
-            }
+            $id = $this->getTableSchema()->columns[$name]->phpTypecast($value);
+            $this->setAttribute($name, $id);
+            $values[$name] = $id;
         }
 
         $changedAttributes = array_fill_keys(array_keys($values), null);

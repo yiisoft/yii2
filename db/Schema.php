@@ -412,14 +412,13 @@ abstract class Schema extends Object
             return false;
         }
         $tableSchema = $this->getTableSchema($table);
-        if ($tableSchema->sequenceName === null) {
-            return [];
-        }
         $result = [];
         foreach ($tableSchema->primaryKey as $name) {
             if ($tableSchema->columns[$name]->autoIncrement) {
                 $result[$name] = $this->db->getLastInsertID($tableSchema->sequenceName);
                 break;
+            } else {
+                $result[$name] = $columns[$name];
             }
         }
         return $result;
