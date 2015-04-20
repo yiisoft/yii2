@@ -1085,7 +1085,7 @@ class BaseHtml
      *
      * See [[renderTagAttributes()]] for details on how attributes are being rendered.
      *
-     * @return string the generated label tag
+     * @return string the generated hint tag
      * @since 2.0.4
      */
     public static function activeHint($model, $attribute, $options = [])
