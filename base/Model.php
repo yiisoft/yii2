@@ -159,17 +159,17 @@ class Model extends Component implements IteratorAggregate, ArrayAccess, Arrayab
      * An active attribute is one that is subject to validation in the current scenario.
      * The returned array should be in the following format:
      *
-     * ~~~
+     * ```php
      * [
      *     'scenario1' => ['attribute11', 'attribute12', ...],
      *     'scenario2' => ['attribute21', 'attribute22', ...],
      *     ...
      * ]
-     * ~~~
+     * ```
      *
      * By default, an active attribute is considered safe and can be massively assigned.
      * If an attribute should NOT be massively assigned (thus considered unsafe),
-     * please prefix the attribute with an exclamation character (e.g. '!rank').
+     * please prefix the attribute with an exclamation character (e.g. `'!rank'`).
      *
      * The default implementation of this method will return all scenarios found in the [[rules()]]
      * declaration. A special scenario named [[SCENARIO_DEFAULT]] will contain all attributes
