@@ -200,12 +200,13 @@ class ActiveRecord extends BaseActiveRecord
      * @param string|array $condition the conditions that will be put in the WHERE part of the UPDATE SQL.
      * Please refer to [[Query::where()]] on how to specify this parameter.
      * @param array $params the parameters (name => value) to be bound to the query.
+     * @param array $options for NoSQL databases and/or engine-specific extras
      * @return integer the number of rows updated
      */
-    public static function updateAll($attributes, $condition = '', $params = [])
+    public static function updateAll($attributes, $condition = '', $params = [], $options = [])
     {
         $command = static::getDb()->createCommand();
-        $command->update(static::tableName(), $attributes, $condition, $params);
+        $command->update(static::tableName(), $attributes, $condition, $params, $options);
 
         return $command->execute();
     }
@@ -455,7 +456,8 @@ class ActiveRecord extends BaseActiveRecord
             }
         }
         $db = static::getDb();
-        $command = $db->createCommand()->insert($this->tableName(), $values);
+        $options = $this->getCommandOptions();
+        $command = $db->createCommand()->insert($this->tableName(), $values, $options);
         if (!$command->execute()) {
             return false;
         }
