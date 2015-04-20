@@ -142,7 +142,7 @@ class MaskedInput extends InputWidget
         $this->_hashVar = self::PLUGIN_NAME . '_' . hash('crc32', $encOptions);
         $this->options['data-plugin-name'] = self::PLUGIN_NAME;
         $this->options['data-plugin-options'] = $this->_hashVar;
-        $view->registerJs("var {$this->_hashVar} = {$encOptions};\n", View::POS_HEAD);
+        $view->registerJs("var {$this->_hashVar} = {$encOptions};", View::POS_HEAD);
     }
 
     /**
@@ -174,13 +174,13 @@ class MaskedInput extends InputWidget
         }
         $this->hashPluginOptions($view);
         if (is_array($this->definitions) && !empty($this->definitions)) {
-            $js .= '$.extend($.' . self::PLUGIN_NAME . '.defaults.definitions, ' . Json::encode($this->definitions) . ");\n";
+            $js .= '$.extend($.' . self::PLUGIN_NAME . '.defaults.definitions, ' . Json::encode($this->definitions) . ");";
         }
         if (is_array($this->aliases) && !empty($this->aliases)) {
-            $js .= '$.extend($.' . self::PLUGIN_NAME . '.defaults.aliases, ' . Json::encode($this->aliases) . ");\n";
+            $js .= '$.extend($.' . self::PLUGIN_NAME . '.defaults.aliases, ' . Json::encode($this->aliases) . ");";
         }
         $id = $this->options['id'];
-        $js .= '$("#' . $id . '").' . self::PLUGIN_NAME . "(" . $this->_hashVar . ");\n";
+        $js .= '$("#' . $id . '").' . self::PLUGIN_NAME . "(" . $this->_hashVar . ");";
         MaskedInputAsset::register($view);
         $view->registerJs($js);
     }
