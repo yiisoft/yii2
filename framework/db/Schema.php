@@ -418,7 +418,7 @@ abstract class Schema extends Object
                 $result[$name] = $this->db->getLastInsertID($tableSchema->sequenceName);
                 break;
             } else {
-                $result[$name] = $columns[$name];
+                $result[$name] = isset($columns[$name]) ? $columns[$name] : $tableSchema->columns[$name]->defaultValue;
             }
         }
         return $result;
