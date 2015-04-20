@@ -10,7 +10,7 @@ namespace yii\filters\auth;
 use yii\web\User;
 use yii\web\Request;
 use yii\web\Response;
-use yii\web\IdentityInterface;
+use yii\web\BasicIdentityInterface;
 use yii\web\UnauthorizedHttpException;
 
 /**
@@ -26,7 +26,7 @@ interface AuthInterface
      * @param User $user
      * @param Request $request
      * @param Response $response
-     * @return IdentityInterface the authenticated user identity. If authentication information is not provided, null will be returned.
+     * @return BasicIdentityInterface the authenticated user identity. If authentication information is not provided, null will be returned.
      * @throws UnauthorizedHttpException if authentication information is provided but is invalid.
      */
     public function authenticate($user, $request, $response);

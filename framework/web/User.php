@@ -17,7 +17,7 @@ use yii\base\InvalidValueException;
  *
  * You may use [[isGuest]] to determine whether the current user is a guest or not.
  * If the user is a guest, the [[identity]] property would return null. Otherwise, it would
- * be an instance of [[IdentityInterface]].
+ * be an instance of [[BasicIdentityInterface]] or [[IdentityInterface]].
  *
  * You may call various methods to change the user authentication status:
  *
@@ -27,7 +27,8 @@ use yii\base\InvalidValueException;
  *   This is best used in stateless RESTful API implementation.
  *
  * Note that User only maintains the user authentication status. It does NOT handle how to authenticate
- * a user. The logic of how to authenticate a user should be done in the class implementing [[IdentityInterface]].
+ * a user. The logic of how to authenticate a user should be done in the class implementing [[BasicIdentityInterface]]
+ * or [[IdentityInterface]].
  * You are also required to set [[identityClass]] with the name of this class.
  *
  * User is configured as an application component in [[\yii\web\Application]] by default.
@@ -38,7 +39,7 @@ use yii\base\InvalidValueException;
  *
  * ~~~
  * 'user' => [
- *     'identityClass' => 'app\models\User', // User must implement the IdentityInterface
+ *     'identityClass' => 'app\models\User', // User must implement the BasicIdentityInterface or IdentityInterface
  *     'enableAutoLogin' => true,
  *     // 'loginUrl' => ['user/login'],
  *     // ...
@@ -47,8 +48,8 @@ use yii\base\InvalidValueException;
  *
  * @property string|integer $id The unique identifier for the user. If null, it means the user is a guest.
  * This property is read-only.
- * @property IdentityInterface|null $identity The identity object associated with the currently logged-in
- * user. `null` is returned if the user is not logged in (not authenticated).
+ * @property BasicIdentityInterface|IdentityInterface|null $identity The identity object associated with the currently
+ * logged-in user. `null` is returned if the user is not logged in (not authenticated).
  * @property boolean $isGuest Whether the current user is a guest. This property is read-only.
  * @property string $returnUrl The URL that the user should be redirected to after login. Note that the type
  * of this property differs in getter and setter. See [[getReturnUrl()]] and [[setReturnUrl()]] for details.
@@ -163,7 +164,7 @@ class User extends Component
      * stored in session and reconstruct the corresponding identity object, if it has not done so before.
      * @param boolean $autoRenew whether to automatically renew authentication status if it has not been done so before.
      * This is only useful when [[enableSession]] is true.
-     * @return IdentityInterface|null the identity object associated with the currently logged-in user.
+     * @return BasicIdentityInterface|null the identity object associated with the currently logged-in user.
      * `null` is returned if the user is not logged in (not authenticated).
      * @see login()
      * @see logout()
@@ -188,19 +189,19 @@ class User extends Component
      * Note that this method does not deal with session or cookie. You should usually use [[switchIdentity()]]
      * to change the identity of the current user.
      *
-     * @param IdentityInterface|null $identity the identity object associated with the currently logged user.
+     * @param BasicIdentityInterface|null $identity the identity object associated with the currently logged user.
      * If null, it means the current user will be a guest without any associated identity.
-     * @throws InvalidValueException if `$identity` object does not implement [[IdentityInterface]].
+     * @throws InvalidValueException if `$identity` object does not implement [[BasicIdentityInterface]].
      */
     public function setIdentity($identity)
     {
-        if ($identity instanceof IdentityInterface) {
+        if ($identity instanceof BasicIdentityInterface) {
             $this->_identity = $identity;
             $this->_access = [];
         } elseif ($identity === null) {
             $this->_identity = null;
         } else {
-            throw new InvalidValueException('The identity object must implement IdentityInterface.');
+            throw new InvalidValueException('The identity object must implement BasicIdentityInterface.');
         }
     }
 
@@ -223,14 +224,14 @@ class User extends Component
      * Note that if [[enableSession]] is false, the `$duration` parameter will be ignored as it is meaningless
      * in this case.
      *
-     * @param IdentityInterface $identity the user identity (which should already be authenticated)
+     * @param BasicIdentityInterface $identity the user identity (which should already be authenticated)
      * @param integer $duration number of seconds that the user can remain in logged-in status.
      * Defaults to 0, meaning login till the user closes the browser or the session is manually destroyed.
      * If greater than 0 and [[enableAutoLogin]] is true, cookie-based login will be supported.
      * Note that if [[enableSession]] is false, this parameter will be ignored.
      * @return boolean whether the user is logged in
      */
-    public function login(IdentityInterface $identity, $duration = 0)
+    public function login(BasicIdentityInterface $identity, $duration = 0)
     {
         if ($this->beforeLogin($identity, false, $duration)) {
             $this->switchIdentity($identity, $duration);
@@ -436,7 +437,7 @@ class User extends Component
      * The default implementation will trigger the [[EVENT_BEFORE_LOGIN]] event.
      * If you override this method, make sure you call the parent implementation
      * so that the event is triggered.
-     * @param IdentityInterface $identity the user identity information
+     * @param BasicIdentityInterface $identity the user identity information
      * @param boolean $cookieBased whether the login is cookie-based
      * @param integer $duration number of seconds that the user can remain in logged-in status.
      * If 0, it means login till the user closes the browser or the session is manually destroyed.
@@ -459,7 +460,7 @@ class User extends Component
      * The default implementation will trigger the [[EVENT_AFTER_LOGIN]] event.
      * If you override this method, make sure you call the parent implementation
      * so that the event is triggered.
-     * @param IdentityInterface $identity the user identity information
+     * @param BasicIdentityInterface $identity the user identity information
      * @param boolean $cookieBased whether the login is cookie-based
      * @param integer $duration number of seconds that the user can remain in logged-in status.
      * If 0, it means login till the user closes the browser or the session is manually destroyed.
@@ -478,7 +479,7 @@ class User extends Component
      * The default implementation will trigger the [[EVENT_BEFORE_LOGOUT]] event.
      * If you override this method, make sure you call the parent implementation
      * so that the event is triggered.
-     * @param IdentityInterface $identity the user identity information
+     * @param BasicIdentityInterface $identity the user identity information
      * @return boolean whether the user should continue to be logged out
      */
     protected function beforeLogout($identity)
@@ -496,7 +497,7 @@ class User extends Component
      * The default implementation will trigger the [[EVENT_AFTER_LOGOUT]] event.
      * If you override this method, make sure you call the parent implementation
      * so that the event is triggered.
-     * @param IdentityInterface $identity the user identity information
+     * @param BasicIdentityInterface $identity the user identity information
      */
     protected function afterLogout($identity)
     {
@@ -555,7 +556,7 @@ class User extends Component
      * This method is mainly called by [[login()]], [[logout()]] and [[loginByCookie()]]
      * when the current user needs to be associated with the corresponding identity information.
      *
-     * @param IdentityInterface|null $identity the identity information to be associated with the current user.
+     * @param BasicIdentityInterface|null $identity the identity information to be associated with the current user.
      * If null, it means switching the current user to be a guest.
      * @param integer $duration number of seconds that the user can remain in logged-in status.
      * This parameter is used only when `$identity` is not null.
@@ -609,7 +610,7 @@ class User extends Component
         if ($id === null) {
             $identity = null;
         } else {
-            /* @var $class IdentityInterface */
+            /* @var $class BasicIdentityInterface */
             $class = $this->identityClass;
             $identity = $class::findIdentity($id);
         }
