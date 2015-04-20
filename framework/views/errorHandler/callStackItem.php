@@ -14,13 +14,15 @@
     <div class="element-wrap">
         <div class="element">
             <span class="item-number"><?= (int) $index ?>.</span>
-            <span class="text"><?php if ($file !== null) echo 'in ' . $handler->htmlEncode($file); ?></span>
-            <?php if ($method !== null): ?>
-                <span class="call">
-                    <?php if ($file !== null) echo '&ndash;'; ?>
-                    <?= ($class !== null ? $handler->addTypeLinks("$class::$method") : $handler->htmlEncode($method)) . '(' . $handler->argumentsToString($args) . ')' ?>
-                </span>
-            <?php endif; ?>
+            <div class="message">
+                <span class="text"><?php if ($file !== null) echo 'in ' . $handler->htmlEncode($file); ?></span>
+                <?php if ($method !== null): ?>
+                    <span class="call">
+                        <?php if ($file !== null) echo '&ndash;'; ?>
+                        <?= ($class !== null ? $handler->addTypeLinks("$class::$method") : $handler->htmlEncode($method)) . '(' . $handler->argumentsToString($args) . ')' ?>
+                    </span>
+                <?php endif; ?>
+            </div>
             <span class="at"><?php if ($line !== null) echo 'at line'; ?></span>
             <span class="line"><?php if ($line !== null) echo (int) $line + 1; ?></span>
         </div>
