@@ -246,7 +246,7 @@ Below is a summary of the available cache dependencies:
 Query caching is a special caching feature built on top of data caching. It is provided to cache the result
 of database queries.
 
-Query caching requires a [[yii\db\Connection|DB connection]] and a valid `cache` application component.
+Query caching requires a [[yii\db\Connection|DB connection]] and a valid `cache` [application component](#cache-components).
 The basic usage of query caching is as follows, assuming `$db` is a [[yii\db\Connection]] instance:
 
 ```php
