@@ -1081,7 +1081,7 @@ class BaseHtml
      *
      * - hint: this specifies the hint to be displayed. Note that this will NOT be [[encode()|encoded]].
      *   If this is not set, [[Model::getAttributeHint()]] will be called to get the hint for display
-     *   (after encoding).
+     *   (without encoding).
      *
      * See [[renderTagAttributes()]] for details on how attributes are being rendered.
      *
@@ -1090,7 +1090,7 @@ class BaseHtml
     public static function activeHint($model, $attribute, $options = [])
     {
         $attribute = static::getAttributeName($attribute);
-        $hint = isset($options['hint']) ? $options['hint'] : static::encode($model->getAttributeHint($attribute));
+        $hint = isset($options['hint']) ? $options['hint'] : $model->getAttributeHint($attribute);
         if (empty($hint)) {
             return '';
         }
