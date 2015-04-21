@@ -15,6 +15,7 @@ DROP TABLE IF EXISTS "profile";
 DROP TABLE IF EXISTS "type";
 DROP TABLE IF EXISTS "null_values";
 DROP TABLE IF EXISTS "animal";
+DROP TABLE IF EXISTS "default_pk";
 DROP VIEW IF EXISTS "animal_view";
 
 CREATE TABLE "profile" (
@@ -112,6 +113,12 @@ CREATE TABLE "type" (
 
 CREATE TABLE "animal" (
   id INTEGER NOT NULL,
+  type VARCHAR(255) NOT NULL,
+  PRIMARY KEY (id)
+);
+
+CREATE TABLE "default_pk" (
+  id INTEGER NOT NULL DEFAULT 5,
   type VARCHAR(255) NOT NULL,
   PRIMARY KEY (id)
 );
