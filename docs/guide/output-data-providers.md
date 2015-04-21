@@ -67,13 +67,13 @@ use yii\data\ActiveDataProvider;
 $query = Post::find()->where(['status' => 1]);
 
 $provider = new ActiveDataProvider([
-    'query' => Post::find(),
+    'query' => $query,
     'pagination' => [
         'pageSize' => 10,
     ],
     'sort' => [
         'defaultOrder' => [
-            'created_at' => SORT_DESC
+            'created_at' => SORT_DESC,
             'title' => SORT_ASC, 
         ]
     ],
