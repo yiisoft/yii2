@@ -678,6 +678,14 @@ class ActiveRecordTest extends DatabaseTestCase
         $this->assertEquals(2, count($orders[0]->orderItems));
         $this->assertEquals(3, count($orders[1]->orderItems));
         $this->assertEquals(1, count($orders[2]->orderItems));
+
+        // https://github.com/yiisoft/yii2/issues/8149
+        $model = new Customer();
+        $model->name = 'test';
+        $model->email = 'test';
+        $model->save(false);
+        $model->updateCounters(['status' => 1]);
+        $this->assertEquals(1, $model->status);
     }
     
     public function testPopulateRecordCallWhenQueryingOnParentClass() 
