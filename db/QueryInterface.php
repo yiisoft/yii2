@@ -91,7 +91,7 @@ interface QueryInterface
      * - `['status' => null]` generates `status IS NULL`.
      *
      * A condition in operator format generates the SQL expression according to the specified operator, which
-     * can be one of the followings:
+     * can be one of the following:
      *
      * - **and**: the operands should be concatenated together using `AND`. For example,
      *   `['and', 'id=1', 'id=2']` will generate `id=1 AND id=2`. If an operand is an array,
