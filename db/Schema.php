@@ -399,6 +399,32 @@ abstract class Schema extends Object
     }
 
     /**
+     * Executes the INSERT command, returning primary key values.
+     * @param string $table the table that new rows will be inserted into.
+     * @param array $columns the column data (name => value) to be inserted into the table.
+     * @return array primary key values or false if the command fails
+     * @since 2.0.4
+     */
+    public function insert($table, $columns)
+    {
+        $command = $this->db->createCommand()->insert($table, $columns);
+        if (!$command->execute()) {
+            return false;
+        }
+        $tableSchema = $this->getTableSchema($table);
+        $result = [];
+        foreach ($tableSchema->primaryKey as $name) {
+            if ($tableSchema->columns[$name]->autoIncrement) {
+                $result[$name] = $this->db->getLastInsertID($tableSchema->sequenceName);
+                break;
+            } else {
+                $result[$name] = isset($columns[$name]) ? $columns[$name] : $tableSchema->columns[$name]->defaultValue;
+            }
+        }
+        return $result;
+    }
+
+    /**
      * Quotes a string value for use in a query.
      * Note that if the parameter is not a string, it will be returned without change.
      * @param string $str string to be quoted
