@@ -135,7 +135,7 @@ which may reduce the overhead involved in retrieving cached data. The APIs [[yii
 and [[yii\caching\Cache::madd()|madd()]] are provided to exploit this feature. In case the underlying cache storage
 does not support this feature, it will be simulated.
 
-Because [[yii\caching\Cache]] implements `ArrayAccess`, a cache component can be used like an array. The followings
+Because [[yii\caching\Cache]] implements `ArrayAccess`, a cache component can be used like an array. The following
 are some examples:
 
 ```php
