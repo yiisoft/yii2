@@ -745,6 +745,9 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
     {
         if ($this->updateAllCounters($counters, $this->getOldPrimaryKey(true)) > 0) {
             foreach ($counters as $name => $value) {
+                if (!isset($this->_attributes[$name])) {
+                    $this->_attributes[$name] = 0;
+                }
                 $this->_attributes[$name] += $value;
                 $this->_oldAttributes[$name] = $this->_attributes[$name];
             }
