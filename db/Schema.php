@@ -36,7 +36,7 @@ use yii\caching\TagDependency;
 abstract class Schema extends Object
 {
     /**
-     * The followings are the supported abstract column data types.
+     * The following are the supported abstract column data types.
      */
     const TYPE_PK = 'pk';
     const TYPE_BIGPK = 'bigpk';

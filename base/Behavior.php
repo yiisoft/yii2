@@ -36,7 +36,7 @@ class Behavior extends Object
      * attached to the owner; and they will be detached from the events when
      * the behavior is detached from the component.
      *
-     * The callbacks can be any of the followings:
+     * The callbacks can be any of the following:
      *
      * - method in this behavior: `'handleClick'`, equivalent to `[$this, 'handleClick']`
      * - object method: `[$object, 'handleClick']`
