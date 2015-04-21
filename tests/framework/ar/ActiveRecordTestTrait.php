@@ -873,6 +873,25 @@ trait ActiveRecordTestTrait
         $this->assertFalse($customer->isNewRecord);
     }
 
+    public function testExplicitPkOnAutoIncrement()
+    {
+        /* @var $customerClass \yii\db\ActiveRecordInterface */
+        $customerClass = $this->getCustomerClass();
+        /* @var $this TestCase|ActiveRecordTestTrait */
+        $customer = new $customerClass;
+        $customer->id = 1337;
+        $customer->email = 'user1337@example.com';
+        $customer->name = 'user1337';
+        $customer->address = 'address1337';
+
+        $this->assertTrue($customer->isNewRecord);
+        $customer->save();
+        $this->afterSave();
+
+        $this->assertEquals(1337, $customer->id);
+        $this->assertFalse($customer->isNewRecord);
+    }
+
     public function testUpdate()
     {
         /* @var $customerClass \yii\db\ActiveRecordInterface */
