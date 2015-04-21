@@ -53,7 +53,7 @@ use yii\helpers\StringHelper;
  * * Using the `new` operator to create a new, empty object
  * * Using a method to fetch an existing record (or records) from the database
  *
- * Here is a short teaser how working with an ActiveRecord looks like:
+ * Below is an example showing some typical usage of ActiveRecord:
  *
  * ```php
  * $user = new User();
@@ -449,21 +449,13 @@ class ActiveRecord extends BaseActiveRecord
             return false;
         }
         $values = $this->getDirtyAttributes($attributes);
-        $db = static::getDb();
-        $command = $db->createCommand()->insert($this->tableName(), $values);
-        if (!$command->execute()) {
+        if (($primaryKeys = static::getDb()->schema->insert($this->tableName(), $values)) === false) {
             return false;
         }
-        $table = $this->getTableSchema();
-        if ($table->sequenceName !== null) {
-            foreach ($table->primaryKey as $name) {
-                if ($this->getAttribute($name) === null) {
-                    $id = $table->columns[$name]->phpTypecast($db->getLastInsertID($table->sequenceName));
-                    $this->setAttribute($name, $id);
-                    $values[$name] = $id;
-                    break;
-                }
-            }
+        foreach ($primaryKeys as $name => $value) {
+            $id = $this->getTableSchema()->columns[$name]->phpTypecast($value);
+            $this->setAttribute($name, $id);
+            $values[$name] = $id;
         }
 
         $changedAttributes = array_fill_keys(array_keys($values), null);

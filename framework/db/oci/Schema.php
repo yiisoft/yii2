@@ -422,4 +422,50 @@ SQL;
         $column->precision = trim($precision) == '' ? null : (int)$precision;
         $column->scale = trim($scale) == '' ? null : (int)$scale;
     }
+
+    /**
+     * @inheritdoc
+     */
+    public function insert($table, $columns)
+    {
+        $params = [];
+        $returnParams = [];
+        $sql = $this->db->getQueryBuilder()->insert($table, $columns, $params);
+        $returnColumns = $this->getTableSchema($table)->primaryKey;
+        if (!empty($returnColumns)) {
+            $returning = [];
+            foreach ((array)$returnColumns as $name) {
+                $phName = QueryBuilder::PARAM_PREFIX . (count($params) + count($returnParams));
+                $returnParams[$phName] = [
+                    'column' => $name,
+                    'value' => null,
+                ];
+                if (!isset($columnSchemas[$name]) || $columnSchemas[$name]->phpType !== 'integer') {
+                    $returnParams[$phName]['dataType'] = \PDO::PARAM_STR;
+                } else {
+                    $returnParams[$phName]['dataType'] = \PDO::PARAM_INT;
+                }
+                $returning[] = $this->quoteColumnName($name);
+            }
+            $sql .= ' RETURNING ' . implode(', ', $returning) . ' INTO ' . implode(', ', array_keys($returnParams));
+        }
+
+        $command = $this->db->createCommand($sql, $params);
+        $command->prepare(false);
+
+        foreach ($returnParams as $name => &$value) {
+            $command->pdoStatement->bindParam($name, $value['value'], $value['dataType']);
+        }
+
+        if (!$command->execute()) {
+            return false;
+        }
+
+        $result = [];
+        foreach ($returnParams as $value) {
+            $result[$value['column']] = $value['value'];
+        }
+
+        return $result;
+    }
 }

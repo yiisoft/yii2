@@ -866,7 +866,7 @@ class QueryBuilder extends \yii\base\Object
     }
 
     /**
-     * Processes columns and properly quote them if necessary.
+     * Processes columns and properly quotes them if necessary.
      * It will join all columns into a string with comma as separators.
      * @param string|array $columns the columns to be processed
      * @return string the processing result
@@ -1285,6 +1285,9 @@ class QueryBuilder extends \yii\base\Object
                 $params[$n] = $v;
             }
             return "$column $operator {$value->expression}";
+        } elseif ($value instanceof Query) {
+            list($sql, $params) = $this->build($value, $params);
+            return "$column $operator ($sql)";
         } else {
             $phName = self::PARAM_PREFIX . count($params);
             $params[$phName] = $value;

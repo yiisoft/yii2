@@ -101,7 +101,7 @@ All Rights Reserved.
 * [Сортировка](output-sorting.md)
 * **TBD** [Провайдеры данных](output-data-providers.md)
 * **TBD** [Виджеты для данных](output-data-widgets.md)
-* **TBD** [Темизация](output-theming.md)
+* [Темизация](output-theming.md)
 
 
 Безопасность

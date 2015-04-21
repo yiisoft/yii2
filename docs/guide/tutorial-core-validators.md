@@ -175,6 +175,30 @@ This validator checks if the input value is a double number. It is equivalent to
 - `min`: the lower limit (inclusive) of the value. If not set, it means the validator does not check the lower limit.
 
 
+## [[yii\validators\EachValidator|each]] <span id="each"></span>
+
+> Info: This validator has been available since version 2.0.4.
+
+```php
+[
+    // checks if every category ID is an integer
+    ['categoryIDs', 'each', 'rule' => ['integer']],
+]
+```
+
+This validator only works with an array attribute. It validates if *every* element of the array can be successfully
+validated by a specified validation rule. In the above example, the `categoryIDs` attribute must take an array value
+and each array element will be validated by the `integer` validation rule.
+
+- `rule`: an array specifying a validation rule. The first element in the array specifies the class name or 
+  the alias of the validator. The rest of the name-value pairs in the array are used to configure the validator object.
+- `allowMessageFromRule`: whether to use the error message returned by the embedded validation rule. Defaults to true.
+  If false, it will use `message` as the error message.
+
+> Note: If the attribute value is not an array, it is considered validation fails and the `message` will be returned
+  as the error message.
+
+
 ## [[yii\validators\EmailValidator|email]] <span id="email"></span>
 
 ```php

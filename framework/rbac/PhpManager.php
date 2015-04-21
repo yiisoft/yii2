@@ -377,7 +377,10 @@ class PhpManager extends BaseManager
     {
         $roles = [];
         foreach ($this->getAssignments($userId) as $name => $assignment) {
-            $roles[$name] = $this->items[$assignment->roleName];
+            $role = $this->items[$assignment->roleName];
+            if ($role->type === Item::TYPE_ROLE) {
+                $roles[$name] = $role;
+            }
         }
 
         return $roles;
@@ -571,22 +574,21 @@ class PhpManager extends BaseManager
      */
     protected function updateItem($name, $item)
     {
-        $this->items[$item->name] = $item;
         if ($name !== $item->name) {
             if (isset($this->items[$item->name])) {
                 throw new InvalidParamException("Unable to change the item name. The name '{$item->name}' is already used by another item.");
-            }
-            if (isset($this->items[$name])) {
-                unset ($this->items[$name]);
+            } else {
+                // Remove old item in case of renaming
+                unset($this->items[$name]);
 
                 if (isset($this->children[$name])) {
                     $this->children[$item->name] = $this->children[$name];
-                    unset ($this->children[$name]);
+                    unset($this->children[$name]);
                 }
                 foreach ($this->children as &$children) {
                     if (isset($children[$name])) {
                         $children[$item->name] = $children[$name];
-                        unset ($children[$name]);
+                        unset($children[$name]);
                     }
                 }
                 foreach ($this->assignments as &$assignments) {
@@ -597,6 +599,9 @@ class PhpManager extends BaseManager
                 }
             }
         }
+
+        $this->items[$item->name] = $item;
+
         $this->saveItems();
         return true;
     }

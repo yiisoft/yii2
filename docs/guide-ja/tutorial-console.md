@@ -17,16 +17,16 @@
 
 スクリーンショットに表示されているように、デフォルトで利用できる一連のコマンドが Yii によって既に定義されています。
 
-- [yii\console\controllers\AssetController|AssetController] - JavaScript と CSS ファイルを結合して圧縮することが出来ます。
+- [[yii\console\controllers\AssetController|AssetController]] - JavaScript と CSS ファイルを結合して圧縮することが出来ます。
   このコマンドについては、[アセットの節](structure-assets.md#using-the-asset-command) でさらに学習することが出来ます。
-- [yii\console\controllers\CacheController|CacheController] - アプリケーションのキャッシュをフラッシュすることが出来ます。
-- [yii\console\controllers\FixtureController|FixtureController] - テストのために、フィクスチャデータのロードとアンロードを管理します。
+- [[yii\console\controllers\CacheController|CacheController]] - アプリケーションのキャッシュをフラッシュすることが出来ます。
+- [[yii\console\controllers\FixtureController|FixtureController]] - テストのために、フィクスチャデータのロードとアンロードを管理します。
   このコマンドについては [テストのフィクスチャの節](test-fixtures.md#managing-fixtures) で詳細に説明されています。
-- [yii\console\controllers\HelpController|HelpController] - コンソールコマンドについてのヘルプ情報を提供します。
+- [[yii\console\controllers\HelpController|HelpController]] - コンソールコマンドについてのヘルプ情報を提供します。
   これがデフォルトのコマンドであり、上のスクリーンショットで見た出力を表示するものです。
-- [yii\console\controllers\MessageController|MessageController] - ソースファイルから翻訳すべきメッセージを抽出します。
+- [[yii\console\controllers\MessageController|MessageController]] - ソースファイルから翻訳すべきメッセージを抽出します。
   このコマンドについてさらに学習するためには、[国際化の節](tutorial-i18n.md#message-command) を参照してください。
-- [yii\console\controllers\MigrateController|MigrateController] - アプリケーションのマイグレーションを管理します。
+- [[yii\console\controllers\MigrateController|MigrateController]] - アプリケーションのマイグレーションを管理します。
   データベースのマイグレーションについては、[データベースのマイグレーションの節](db-migrations.md) で詳しく説明されています。
 
 
