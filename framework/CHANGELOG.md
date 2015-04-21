@@ -49,6 +49,7 @@ Yii Framework 2 Change Log
 - Enh #8055: `yii\rest\UrlRule::extraPatterns` should take precedence over `patterns` (Agrumas)
 - Enh #8064: Added ability to remove containing menu tag by setting `yii\widgets\Menu::$options['tag']` to `false` (kirsenn, samdark)
 - Enh #8078: 'links' and 'meta' envelope names are now configurable at `yii\rest\Serializer` (arturf)
+- Enh #8139: Added unsafe validator (mdmunir)
 - Enh: Added `yii\helper\Console::wrapText()` method to wrap indented text by console window width and used it in `yii help` command (cebe)
 - Enh: Implement batchInsert for oci (nineinchnick)
 - Enh: Detecting IntegrityException for oci (nineinchnick)

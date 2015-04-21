@@ -296,6 +296,47 @@ class ModelTest extends TestCase
         $invalid = new InvalidRulesModel();
         $invalid->createValidators();
     }
+
+    public function testUnsafeValidator()
+    {
+        $scenarios = [
+            'default' => ['id', 'name', 'is_disabled'],
+            'update' => ['id', 'name', 'is_disabled', 'status'],
+            'anotherScenario' => ['id', 'name', '!is_disabled'],
+        ];
+        $model = new ComplexModel3();
+        $this->assertEquals($scenarios, $model->scenarios());
+
+        // massive assigment
+        $data = ['id'=>1, 'name'=>'M Munir', 'is_disabled'=>true, 'status'=>10];
+        $model = new ComplexModel3();
+        $model->setAttributes($data);
+        $this->assertNotNull($model->is_disabled);
+        $this->assertNull($model->status);
+
+        $model = new ComplexModel3();
+        $model->setScenario('update');
+        $model->setAttributes($data);
+        $this->assertNotNull($model->is_disabled);
+        $this->assertNotNull($model->status);
+
+        $model = new ComplexModel3();
+        $model->setScenario('anotherScenario');
+        $model->setAttributes($data);
+        $this->assertNull($model->is_disabled);
+        $this->assertNull($model->status);
+
+        // complex rule
+        $scenarios = [
+            'default' => ['!id', '!name', 'description', 'status'],
+            'suddenlyUnexpectedScenario' => ['!name', 'description', 'status', '!id'],
+            'administration' => ['!id', '!name', 'description', 'status', 'is_disabled'],
+            'anotherScenario' => ['!id', '!name', '!description', 'status'],
+        ];
+        $model = new ComplexModel4();
+        $this->assertEquals($scenarios, $model->scenarios());
+
+    }
 }
 
 class ComplexModel1 extends Model
@@ -318,6 +359,42 @@ class ComplexModel2 extends Model
             [['id'], 'required', 'except' => 'suddenlyUnexpectedScenario'],
             [['name', 'description'], 'filter', 'filter' => 'trim'],
             [['is_disabled'], 'boolean', 'on' => 'administration'],
+        ];
+    }
+}
+
+class ComplexModel3 extends Model
+{
+    public $id;
+    public $name;
+    public $status;
+    public $is_disabled;
+    public function rules()
+    {
+        return [
+            [['id', 'name', 'is_disabled'], 'required'],
+            [['status'], 'safe', 'on' => 'update'],
+            [['is_disabled'], 'unsafe', 'on' => 'anotherScenario'],
+        ];
+    }
+}
+
+class ComplexModel4 extends Model
+{
+    public $id;
+    public $name;
+    public $description;
+    public $status;
+    public $is_disabled;
+    public function rules()
+    {
+        return [
+            [['id'], 'required', 'except' => 'suddenlyUnexpectedScenario'],
+            [['name', 'description'], 'filter', 'filter' => 'trim'],
+            [['status'], 'integer'],
+            [['is_disabled'], 'boolean', 'on' => 'administration'],
+            [['id', 'name'], 'unsafe'],
+            [['description'], 'unsafe', 'on' => 'anotherScenario'],
         ];
     }
 }
