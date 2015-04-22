@@ -8,6 +8,7 @@ Yii Framework 2 Change Log
 - Bug #6642: Fixed the bug that using confirmation dialog via `data-confirm` in an `ActiveForm` may cause the dialog to appear twice (pana1990, qiangxue)
 - Bug #6871: Fixed the bug that using defaults and hostnames in URL rules may cause an out-of-range index issue (qiangxue)
 - Bug #7473: Fixed `yii\console\controllers\AssetController` does not create missing folders for the target bundles (schmunk42, klimov-paul)
+- Bug #7894: Fixed incorrect URL config processing at `yii\web\Application::handleRequest()` and `yii\widgets\Menu::items` if route element is not a first one (nkovacs, klimov-paul)
 - Bug #7529: Fixed `yii\web\Response::sendContentAsFile()` that was broken in 2.0.3 (samdark)
 - Bug #7603: Fixed escape characters in `FormatConverter` to work with unicode characters (maddoger, cebe)
 - Bug #7656: Fixed `yii\rbac\DbManager::getRolesByUser()` and `yii\rbac\PhpManager::getRolesByUser()` to return roles only (samdark)
