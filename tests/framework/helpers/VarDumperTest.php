@@ -92,10 +92,7 @@ RESULT;
 
         $var = new \StdClass();
         $var->testFunction = function () {return 2;};
-        $expectedResult = "stdClass::__set_state(array(
-   'testFunction' => \n  Closure::__set_state(array(
-  )),
-))";
+        $expectedResult = var_export($var, true);
         $data[] = [$var, $expectedResult];
 
         return $data;
