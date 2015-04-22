@@ -452,7 +452,7 @@ class ActiveField extends Component
      * This method will generate the "checked" tag attribute according to the model attribute value.
      * @param array $options the tag options in terms of name-value pairs. The following options are specially handled:
      *
-     * - uncheck: string, the value associated with the uncheck state of the radio button. If not set,
+     * - unselect: string, the value associated with the unselect state of the radio button. If not set,
      *   it will take the default value '0'. This method will render a hidden input so that if the radio button
      *   is not checked and is submitted, the value of this attribute will still be submitted to the server
      *   via the hidden input. If you do not want any hidden input, you should explicitly set this option as null.
