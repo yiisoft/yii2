@@ -225,7 +225,7 @@ Operator format allows you to specify arbitrary conditions in a programmatic way
 ```
 
 where the operands can each be specified in string format, hash format or operator format recursively, while
-the operator can be one of the followings:
+the operator can be one of the following:
 
 - `and`: the operands should be concatenated together using `AND`. For example,
   `['and', 'id=1', 'id=2']` will generate `id=1 AND id=2`. If an operand is an array,

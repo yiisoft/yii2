@@ -2,7 +2,7 @@ Handling Errors
 ===============
 
 Yii includes a built-in [[yii\web\ErrorHandler|error handler]] which makes error handling a much more pleasant
-experience than before. In particular, the Yii error handler does the followings to improve error handling:
+experience than before. In particular, the Yii error handler does the following to improve error handling:
 
 * All non-fatal PHP errors (e.g. warnings, notices) are converted into catchable exceptions.
 * Exceptions and fatal PHP errors are displayed with detailed call stack information and source code lines

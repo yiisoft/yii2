@@ -344,7 +344,7 @@ When to Register Dependencies <span id="when-to-register-dependencies"></span>
 -----------------------------
 
 Because dependencies are needed when new objects are being created, their registration should be done
-as early as possible. The followings are the recommended practices:
+as early as possible. The following are the recommended practices:
 
 * If you are the developer of an application, you can register dependencies in your
   application's [entry script](structure-entry-scripts.md) or in a script that is included by the entry script.
