@@ -611,7 +611,7 @@ class BaseConsole
         if (static::isRunningOnWindows()) {
             $output = [];
             exec('mode con', $output);
-            if (isset($output) && strpos($output[1], 'CON') !== false) {
+            if (isset($output, $output[1]) && strpos($output[1], 'CON') !== false) {
                 return $size = [(int) preg_replace('~[^0-9]~', '', $output[3]), (int) preg_replace('~[^0-9]~', '', $output[4])];
             }
         } else {
