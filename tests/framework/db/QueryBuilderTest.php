@@ -477,4 +477,22 @@ class QueryBuilderTest extends DatabaseTestCase
         ];
         (new Query())->from('customer')->where($condition)->all($this->getConnection());
     }
+
+    public function testSetDropNotNull()
+    {
+        $tableName = 'constraints';
+        $column = 'field1';
+
+        // SET
+        $qb = $this->getQueryBuilder();
+        $qb->db->createCommand()->setNotNull($tableName, $column)->execute();
+        $columnSchema = $qb->db->getSchema()->getTableSchema($tableName)->getColumn($column);
+        $this->assertFalse($columnSchema->allowNull);
+
+        // DROP
+        $qb->db->createCommand()->dropNotNull($tableName, $column)->execute();
+        $qb = $this->getQueryBuilder(); // resets the schema
+        $columnSchema = $qb->db->getSchema()->getTableSchema($tableName)->getColumn($column);
+        $this->assertTrue($columnSchema->allowNull);
+    }
 }

@@ -739,6 +739,32 @@ class Command extends Component
     }
 
     /**
+     * Creates a SQL command for setting not null constraint on a column.
+     * @param string $table the table whose column is to be changed. The table name will be properly quoted by the method.
+     * @param string $column the name of the column to be changed. The name will be properly quoted by the method.
+     * @return Command the command object itself
+     */
+    public function setNotNull($table, $column)
+    {
+        $sql = $this->db->getQueryBuilder()->setNotNull($table, $column);
+
+        return $this->setSql($sql);
+    }
+
+    /**
+     * Creates a SQL command for dropping not null constraint of a column.
+     * @param string $table the table whose column is to be changed. The table name will be properly quoted by the method.
+     * @param string $column the name of the column to be changed. The name will be properly quoted by the method.
+     * @return Command the command object itself
+     */
+    public function dropNotNull($table, $column)
+    {
+        $sql = $this->db->getQueryBuilder()->dropNotNull($table, $column);
+
+        return $this->setSql($sql);
+    }
+
+    /**
      * Executes the SQL statement.
      * This method should only be used for executing non-query SQL statement, such as `INSERT`, `DELETE`, `UPDATE` SQLs.
      * No result set will be returned.
