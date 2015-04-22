@@ -1477,6 +1477,45 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
     }
 
     /**
+     * Returns the text hint for the specified attribute.
+     * If the attribute looks like `relatedModel.attribute`, then the attribute will be received from the related model.
+     * @param string $attribute the attribute name
+     * @return string the attribute hint
+     * @see attributeHints()
+     * @since 2.0.4
+     */
+    public function getAttributeHint($attribute)
+    {
+        $hints = $this->attributeHints();
+        if (isset($hints[$attribute])) {
+            return ($hints[$attribute]);
+        } elseif (strpos($attribute, '.')) {
+            $attributeParts = explode('.', $attribute);
+            $neededAttribute = array_pop($attributeParts);
+
+            $relatedModel = $this;
+            foreach ($attributeParts as $relationName) {
+                if (isset($this->_related[$relationName]) && $this->_related[$relationName] instanceof self) {
+                    $relatedModel = $this->_related[$relationName];
+                } else {
+                    try {
+                        $relation = $relatedModel->getRelation($relationName);
+                    } catch (InvalidParamException $e) {
+                        return '';
+                    }
+                    $relatedModel = new $relation->modelClass;
+                }
+            }
+
+            $hints = $relatedModel->attributeHints();
+            if (isset($hints[$neededAttribute])) {
+                return $hints[$neededAttribute];
+            }
+        }
+        return '';
+    }
+
+    /**
      * @inheritdoc
      *
      * The default implementation returns the names of the columns whose values have been populated into this record.
