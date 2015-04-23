@@ -29,6 +29,7 @@ Yii Framework 2 Change Log
 - Bug #8073: Fixed `yii\data\ArrayDataProvider::getKeys()` return wrong when `yii\data\ArrayDataProvider::$allModels` contain integer key (mdmunir, klimov-paul)
 - Bug #8082: Fixed `yii\db\BaseActiveRecord::getAttributeLabel()` return wrong label for related attribute, if several relations in chain share same name (klimov-paul)
 - Bug #8149: Fixed `yii\db\BaseActiveRecord::updateCounters()` fails for new record saved with counter attribute not set (klimov-paul)
+- Bug #8158: Avoid exception when detecting console screen size fails on windows (EliasZ)
 - Enh #1468: Added ability to specify hints for model attributes via `attributeHints()` method (klimov-paul)
 - Enh #3376: Added `yii\validators\EachValidator`, which allows validation of the array attributes (klimov-paul)
 - Enh #6442: Improved error message on `FileHelper::createDirectory()` to include the path name of the directory (cebe)

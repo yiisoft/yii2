@@ -3,14 +3,57 @@ Authentication
 
 > Note: This section is under development.
 
-Authentication is the process of determining the identity of a user. It typically uses an identifier 
+Authentication is the process of verifying the identity of a user. It usually uses an identifier 
 (e.g. a username or an email address) and a secret token (e.g. a password or an access token) to judge 
-if the user is the one whom he claims as. Authentication is the basis of more complex security-related
-features, such as login.
+if the user is the one whom he claims as. Authentication is the basis of the login feature.
 
-In Yii, this entire process is performed semi-automatically, leaving the developer to merely implement
- [[yii\web\IdentityInterface]], the most important class in the authentication system. 
- Typically, implementation of `IdentityInterface` is accomplished using the `User` model.
+Yii provides an authentication framework which wires up various components to support login. To use this framework, 
+you mainly need to do the following work:
+ 
+* Configure the [[yii\web\User|user]] application component;
+* Create a class that implements the [[yii\web\IdentityInterface]] interface.
+
+
+## Configuring [[yii\web\User]] <span id="configuring-user"></span>
+
+The [[yii\web\User|user]] application component manages the user authentication status. With the help of
+an [[yii\web\User::identityClass|identity class]], it implements the full login workflow. In the following
+application configuration, the [[yii\web\User::identityClass|identity class]] for [[yii\web\User|user]] 
+is configured to be `app\models\User` whose implementation is explained in the next subsection:
+  
+```php
+return [
+    'components' => [
+        'user' => [
+            'identityClass' => 'app\models\User',
+        ],
+    ],
+];
+```
+
+
+## Implementing [[yii\web\IdentityInterface]] <span id="implementing-identity"></span>
+
+The [[yii\web\User::identityClass|identity class]] must implement the [[yii\web\IdentityInterface]] which
+requires the implementation of the following methods:
+
+* [[yii\web\IdentityInterface::findIdentity()|findIdentity()]]: it looks for an instance of the identity
+  class using the specified user ID. This method is used when you need to maintain logic status via session.
+* [[yii\web\IdentityInterface::findIdentityByAccessToken()|findIdentityByAccessToken()]]: it looks for
+  an instance of the identity class using the specified access token. This method is used when you need
+  to authenticate a user by a single secret token (e.g. in a stateless RESTful application).
+* [[yii\web\IdentityInterface::getId()|getId()]]: it returns the ID of the user represented by this identity instance.
+* [[yii\web\IdentityInterface::getAuthKey()|getAuthKey()]]: it returns a key used to verify cookie-based login.
+  The key is stored in the login cookie and will be later compared with the server-side version to make
+  sure the login cookie is valid.
+* [[yii\web\IdentityInterface::validateAuthKey()|validateAuthKey()]]: it implements the logic for verifying
+  the cookie-based login key.
+
+As you can see, these methods are required by different features. If you do not need a particular feature,
+you may implement the corresponding methods with an empty body. For example, if your application is a pure
+stateless RESTful application, you would only need to implement [[yii\web\IdentityInterface::findIdentityByAccessToken()|findIdentityByAccessToken()]]
+and [[yii\web\IdentityInterface::getId()|getId()]].
+
 
 You can find a fully featured example of authentication in the
 [advanced project template](https://github.com/yiisoft/yii2-app-advanced/blob/master/docs/guide/README.md). Below, only the interface methods are listed:
