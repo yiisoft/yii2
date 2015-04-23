@@ -35,6 +35,9 @@ All these tools are accessible through the command `yii migrate`. In this sectio
 how to accomplish various tasks using these tools. You may also get the usage of each tool via the help
 command `yii help migrate`.
 
+> Note: migrations could affect not only database schema but adjust existing data to fit new schema, create RBAC
+  hierarcy or clean up cache.
+
 
 ## Creating Migrations <span id="creating-migrations"></span>
 
