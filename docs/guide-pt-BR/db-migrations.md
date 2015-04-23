@@ -78,174 +78,164 @@ class m150101_185401_criar_tabela_noticias extends Migration
     }
 }
 ```
+Cada migração de dados é definida como uma classe PHP extendida de [[yii\db\Migration]]. O nome da
+calsse de migração é automaticamente gerado no formato `m<YYMMDD_HHMMSS>_<Name>`, onde 
 
-Each database migration is defined as a PHP class extending from [[yii\db\Migration]]. The migration
-class name is automatically generated in the format of `m<YYMMDD_HHMMSS>_<Name>`, where
+* `<YYMMDD_HHMMSS>` refere-se a data UTC em que o comando de criação da migração foi executado.
+* `<Name>` é igual ao valor do argumento `name` que você passou no comando.
 
-* `<YYMMDD_HHMMSS>` refers to the UTC datetime at which the migration creation command is executed.
-* `<Name>` is the same as the value of the `name` argument that you provide to the command.
-
-In the migration class, you are expected to write code in the `up()` method that makes changes to the database structure.
-You may also want to write code in the `down()` method to revert the changes made by `up()`. The `up` method is invoked
-when you upgrade the database with this migration, while the `down()` method is invoked when you downgrade the database.
-The following code shows how you may implement the migration class to create a `news` table: 
+Na classe de migração, é esperado que você escreva no método `up()` as mudanças a serem feitas na estrutura do banco de dados.
+Você pode também escrever código no método `down()` para reverter as mudanças feitas por `up()`. O método `up` é invocado quando você atualiza o seu banco de dados com esta migração, enquanto o método `down()` é invocado quando você reverte as mudanças no banco. O seguinte código mostra como você pode implementar a classe de migração para criar a tabela `noticias`: 
 
 ```php
 
 use yii\db\Schema;
 use yii\db\Migration;
 
-class m150101_185401_create_news_table extends \yii\db\Migration
+class m150101_185401_criar_tabela_noticias extends \yii\db\Migration
 {
     public function up()
     {
-        $this->createTable('news', [
+        $this->createTable('noticias', [
             'id' => Schema::TYPE_PK,
-            'title' => Schema::TYPE_STRING . ' NOT NULL',
-            'content' => Schema::TYPE_TEXT,
+            'titulo' => Schema::TYPE_STRING . ' NOT NULL',
+            'conteudo' => Schema::TYPE_TEXT,
         ]);
     }
 
     public function down()
     {
-        $this->dropTable('news');
+        $this->dropTable('noticias');
     }
 
 }
 ```
 
-> Info: Not all migrations are reversible. For example, if the `up()` method deletes a row of a table, you may
-  not be able to recover this row in the `down()` method. Sometimes, you may be just too lazy to implement 
-  the `down()`, because it is not very common to revert database migrations. In this case, you should return
-  `false` in the `down()` method to indicate that the migration is not reversible.
+> Observação: Nem todas as migrações são reversíveis. Por exemplo, se o método `up()` deleta um registro de uma tabela,
+  você possívelmente não será capas de recuperar este registro com o método `down()`. Em alguns casos, você pode ter 
+  tido muita preguiça e não ter implementado o método `down()`, porque não é muito comum reverter migrações de dados.
+  Neste caso, você deve retornar `false` no método `down()` para indicar que a migração não é reversível.
 
-The base migration class [[yii\db\Migration]] exposes a database connection via the [[yii\db\Migration::db|db]]
-property. You can use it to manipulate the database schema using the methods as described in 
+A classe base Migration [[yii\db\Migration]] expões a conexão ao banco através da propriedade [[yii\db\Migration::db|db]].
+Você pode usá-la para manípular o esquema do banco de dados usando os métods como descritos em 
 [Working with Database Schema](db-dao.md#database-schema).
 
-Rather than using physical types, when creating a table or column you should use *abstract types*
-so that your migrations are independent of specific DBMS. The [[yii\db\Schema]] class defines
-a set of constants to represent the supported abstract types. These constants are named in the format
-of `TYPE_<Name>`. For example, `TYPE_PK` refers to auto-incremental primary key type; `TYPE_STRING`
-refers to a string type. When a migration is applied to a particular database, the abstract types
-will be translated into the corresponding physical types. In the case of MySQL, `TYPE_PK` will be turned
-into `int(11) NOT NULL AUTO_INCREMENT PRIMARY KEY`, while `TYPE_STRING` becomes `varchar(255)`.
+Ao invés de usar típos físicos, ao criar uma tabela ou coluna, você deve usar *tipos abstratos* para que
+suas migrações sejam independentes do SGBD. A classe [[yii\db\Schema]] define uma gama de constantes para
+representar os tipos abstratos suportados. Estas constantes são nomeandas no formato `TYPE_<Name>`. Por exemplo,
+`TYPE_PK` refere-se ao tipo chave primária auto-incrementavel; `TYPE_STRING` refere-se ao típo string. 
+Quando a migração for aplicada a um banco de dados em particular, os tipos abstratos serão traduzidos nos
+respectívos tipos físicos. No caso do MySQL, `TYPE_PK` será traduzida para 
+`int(11) NOT NULL AUTO_INCREMENT PRIMARY KEY`, enquanto `TYPE_STRING` será `varchar(255)`. 
 
-You can append additional constraints when using abstract types. In the above example, ` NOT NULL` is appended
-to `Schema::TYPE_STRING` to specify that the column cannot be null.
+Você pode adicionar algumas constraints ao usar tipos abstratos. No exemplo acíma, ` NOT NULL` é adicionado
+a `Schema::TYPE_STRING` para especificar que a coluna não pode ser nula.
 
-> Info: The mapping between abstract types and physical types is specified by 
-  the [[yii\db\QueryBuilder::$typeMap|$typeMap]] property in each concrete `QueryBuilder` class.
+> Observação: O mapeamento entre tipos abstratos e tipos físicos é especificado pela propriedade [[yii\db\QueryBuilder::$typeMap|$typeMap]] em cada classe `QueryBuilder`.
 
 
-### Transactional Migrations <span id="transactional-migrations"></span>
+### Migrações Transacionais <span id="transactional-migrations"></span>
 
-While performing complex DB migrations, it is important to ensure each migration to either succeed or fail as a whole
-so that the database can maintain integrity and consistency. To achieve this goal, it is recommended that you 
-enclose the DB operations of each migration in a [transaction](db-dao.md#performing-transactions).
- 
-An even easier way of implementing transactional migrations is to put migration code in the `safeUp()` and `safeDown()` 
-methods. These two methods differ from `up()` and `down()` in that they are enclosed implicitly in a transaction.
-As a result, if any operation in these methods fails, all prior operations will be rolled back automatically.
+Ao realizar migrações de dados complexas, é importante assegurar que cada migração irá ter sucesso ou irá falhar 
+por completo para que o banco não perca sua integridade e consistencia. Para atingir este objetivo, recomenda-se que
+você encapsule suas operações de banco de dados em cada migração em uma [transaction](db-dao.md#performing-transactions).
 
-In the following example, besides creating the `news` table we also insert an initial row into this table.
+Um jeito mais fácil de implementar uma migraçãó transacional é colocar o seu código de migração nos métodos `safeUp()` e `safeDown()`. Estes métodos diferem de `up()` e `down()` por que eles estão implicitamente encapsulados em uma transação. Como resultado, se qualquer operação nestes métodos falhar, todas as operações anteriores sofrerão roll back
+automaticamente.
+
+No exemplo a seguir, além de criar a tabela `noticias` nós também inserimos um registro inicial a esta tabela.
 
 ```php
 
 use yii\db\Schema;
 use yii\db\Migration;
 
-class m150101_185401_create_news_table extends Migration
+class m150101_185401_criar_tabela_noticias extends Migration
 {
     public function safeUp()
     {
-        $this->createTable('news', [
+        $this->createTable('noticias', [
             'id' => 'pk',
-            'title' => Schema::TYPE_STRING . ' NOT NULL',
-            'content' => Schema::TYPE_TEXT,
+            'titulo' => Schema::TYPE_STRING . ' NOT NULL',
+            'conteudo' => Schema::TYPE_TEXT,
         ]);
         
-        $this->insert('news', [
-            'title' => 'test 1',
-            'content' => 'content 1',
+        $this->insert('noticias', [
+            'titulo' => 'título 1',
+            'conteudo' => 'conteúdo 1',
         ]);
     }
 
     public function safeDown()
     {
-        $this->delete('news', ['id' => 1]);
-        $this->dropTable('news');
+        $this->delete('noticias', ['id' => 1]);
+        $this->dropTable('noticias');
     }
 }
 ```
 
-Note that usually when you perform multiple DB operations in `safeUp()`, you should reverse their execution order 
-in `safeDown()`. In the above example we first create the table and then insert a row in `safeUp()`; while
-in `safeDown()` we first delete the row and then drop the table.
+Note que normalmente quando você realiza multiplas operações em `safeUp()`, você deverá reverter a ordem de execução
+em `safeDown()`. No exemplo acima nós primeiramente criamos a tabela e depois inserimos uma túpla em `safeUp()`; enquanto
+em `safeDown()` nós primeiramente apagamos o registro e depois eliminamos a tabela.
 
-> Note: Not all DBMS support transactions. And some DB queries cannot be put into a transaction. For some examples,
-  please refer to [implicit commit](http://dev.mysql.com/doc/refman/5.1/en/implicit-commit.html). If this is the case,
-  you should still implement `up()` and `down()`, instead.
+> Nota: Nem todos os SGBDs suportam transações. E algumas requisições de banco não podem ser encapsuladas em uma transação. Para alguns exemplos, referir a [implicit commit](http://dev.mysql.com/doc/refman/5.1/en/implicit-commit.html). Se este for o caso, implemente os métodos `up()` e `down()`.
 
+### Métodos de acesso ao Banco de Dados <span id="db-accessing-methods"></span>
 
-### Database Accessing Methods <span id="db-accessing-methods"></span>
+A classe base migration [[yii\db\Migration]] entrega vários métodos que facilitam o acesso e a manipulação de 
+bancos de dados. Você deve achar que estes métodos são nomeados similarmente a [DAO methods](db-dao.md) encontrados 
+na classe [[yii\db\Command]]. Por exemplo, o método [[yii\db\Migration::createTable()]] permite que você crie uma 
+nova tabela assim como [[yii\db\Command::createTable()]] o faz.
 
-The base migration class [[yii\db\Migration]] provides a set of methods to let you access and manipulate databases.
-You may find these methods are named similarly as the [DAO methods](db-dao.md) provided by the [[yii\db\Command]] class. 
-For example, the [[yii\db\Migration::createTable()]] method allows you to create a new table, 
-just like [[yii\db\Command::createTable()]] does. 
+O benefício ao usar os métodos encontrados em [[yii\db\Migration]] é que você não precisa criar explícitamente
+instancias de [[yii\db\Command]] e a execução de cada método automaticamente exibirá mensagens úteis que dirão
+a você quais operações estão sendo feitas e quanto tempo elas estão durando.
 
-The benefit of using the methods provided by [[yii\db\Migration]] is that you do not need to explicitly 
-create [[yii\db\Command]] instances and the execution of each method will automatically display useful messages 
-telling you what database operations are done and how long they take.
+Abaixo etá uma lista de todos estes métodos de acesso ao banco de dados:
 
-Below is the list of all these database accessing methods:
+* [[yii\db\Migration::execute()|execute()]]: executando um SQL
+* [[yii\db\Migration::insert()|insert()]]: inserindo um novo regístro
+* [[yii\db\Migration::batchInsert()|batchInsert()]]: inserindo vários registros
+* [[yii\db\Migration::update()|update()]]: atualizando registros
+* [[yii\db\Migration::delete()|delete()]]: apagando registros
+* [[yii\db\Migration::createTable()|createTable()]]: criando uma tabela
+* [[yii\db\Migration::renameTable()|renameTable()]]: renomeando uma tabela
+* [[yii\db\Migration::dropTable()|dropTable()]]: removendo uma tabela
+* [[yii\db\Migration::truncateTable()|truncateTable()]]: removendo todos os registros em uma tabela
+* [[yii\db\Migration::addColumn()|addColumn()]]: adicionando uma coluna
+* [[yii\db\Migration::renameColumn()|renameColumn()]]: renomeando uma coluna
+* [[yii\db\Migration::dropColumn()|dropColumn()]]: removendo uma coluna
+* [[yii\db\Migration::alterColumn()|alterColumn()]]: alterando uma coluna
+* [[yii\db\Migration::addPrimaryKey()|addPrimaryKey()]]: adicionando uma chave primária
+* [[yii\db\Migration::dropPrimaryKey()|dropPrimaryKey()]]: removendo uma chave primária
+* [[yii\db\Migration::addForeignKey()|addForeignKey()]]: adicionando uma chave estrangeira
+* [[yii\db\Migration::dropForeignKey()|dropForeignKey()]]: removendo uma chave estrangeira
+* [[yii\db\Migration::createIndex()|createIndex()]]: criando um índice
+* [[yii\db\Migration::dropIndex()|dropIndex()]]: removendo um índice
 
-* [[yii\db\Migration::execute()|execute()]]: executing a SQL statement
-* [[yii\db\Migration::insert()|insert()]]: inserting a single row
-* [[yii\db\Migration::batchInsert()|batchInsert()]]: inserting multiple rows
-* [[yii\db\Migration::update()|update()]]: updating rows
-* [[yii\db\Migration::delete()|delete()]]: deleting rows
-* [[yii\db\Migration::createTable()|createTable()]]: creating a table
-* [[yii\db\Migration::renameTable()|renameTable()]]: renaming a table
-* [[yii\db\Migration::dropTable()|dropTable()]]: removing a table
-* [[yii\db\Migration::truncateTable()|truncateTable()]]: removing all rows in a table
-* [[yii\db\Migration::addColumn()|addColumn()]]: adding a column
-* [[yii\db\Migration::renameColumn()|renameColumn()]]: renaming a column
-* [[yii\db\Migration::dropColumn()|dropColumn()]]: removing a column
-* [[yii\db\Migration::alterColumn()|alterColumn()]]: altering a column
-* [[yii\db\Migration::addPrimaryKey()|addPrimaryKey()]]: adding a primary key
-* [[yii\db\Migration::dropPrimaryKey()|dropPrimaryKey()]]: removing a primary key
-* [[yii\db\Migration::addForeignKey()|addForeignKey()]]: adding a foreign key
-* [[yii\db\Migration::dropForeignKey()|dropForeignKey()]]: removing a foreign key
-* [[yii\db\Migration::createIndex()|createIndex()]]: creating an index
-* [[yii\db\Migration::dropIndex()|dropIndex()]]: removing an index
-
-> Info: [[yii\db\Migration]] does not provide a database query method. This is because you normally do not need
-  to display extra message about retrieving data from a database. It is also because you can use the powerful
-  [Query Builder](db-query-builder.md) to build and run complex queries.
+> Observação: [[yii\db\Migration]] não possui um método de consulta ao banco de dados. Isto porque você normalmente não irá precisar exibir informações extras ao recuperar informações de um banco de dados. E além disso você pode usar o poderoso [Query Builder](db-query-builder.md) para construir e executar consultas complexas.
 
 
-## Applying Migrations <span id="applying-migrations"></span>
+## Aplicando migrações <span id="applying-migrations"></span>
 
-To upgrade a database to its latest structure, you should apply all available new migrations using the following command:
+Para atualizar um banco de dados para a sua estrutura mais atual, você deve aplicar todas as migracões disponíveis usando o seguinte comando:
 
 ```
 yii migrate
 ```
 
-This command will list all migrations that have not been applied so far. If you confirm that you want to apply
-these migrations, it will run the `up()` or `safeUp()` method in every new migration class, one after another, 
-in the order of their timestamp values. If any of the migrations fails, the command will quit without applying
-the rest of the migrations.
+Este comando irá listar todas as migrações que não foram alicadas até agora. Se você confirmar que deseja aplicar
+estas migrações, cada nova classe de migração irá executar os métodos `up()` ou `safeUp()` um após o outro, na 
+ordem relacionada a data marcada em seus nomes. Se qualquer uma das migrações falhar o comando terminará sem aplicar
+o resto das migrações. 
 
-For each migration that has been successfully applied, the command will insert a row into a database table named 
-`migration` to record the successful application of the migration. This will allow the migration tool to identify
-which migrations have been applied and which have not.
+Para cada migração aplicada com sucesso, o comando irá inserir um registro numa tabela no banco de dados chamada
+`migration` para registrar uma aplicação de migração. Isto irá permitir que a ferramenta de migração identifique
+quais migrações foram aplicadas e quais não foram.
 
-> Info: The migration tool will automatically create the `migration` table in the database specified by
-  the [[yii\console\controllers\MigrateController::db|db]] option of the command. By default, the database
-  is specified by the `db` [application component](structure-application-components.md).
+> Observação: Esta ferramenta de migração irá automaticamente criar a tabela `migration` no banco de dados especificado pela opção do comando [[yii\console\controllers\MigrateController::db|db]]. Por padrão, o banco de dados é especificado por `db` [application component](structure-application-components.md).
+
+Eventualmente, você 
   
 Sometimes, you may only want to apply one or a few new migrations, instead of all available migrations.
 You can do so by specifying the number of migrations that you want to apply when running the command.
@@ -280,7 +270,7 @@ yii migrate/down     # revert the most recently applied migration
 yii migrate/down 3   # revert the most 3 recently applied migrations
 ```
 
-> Note: Not all migrations are reversible. Trying to revert such migrations will cause an error and stop the
+> Nota: Not all migrations are reversible. Trying to revert such migrations will cause an error and stop the
   entire reverting process.
 
 
@@ -294,7 +284,7 @@ yii migrate/redo        # redo the last applied migration
 yii migrate/redo 3      # redo the last 3 applied migrations
 ```
 
-> Note: If a migration is not reversible, you will not be able to redo it.
+> Nota: If a migration is not reversible, you will not be able to redo it.
 
 
 ## Listing Migrations <span id="listing-migrations"></span>
