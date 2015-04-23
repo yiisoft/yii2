@@ -1336,3 +1336,72 @@ $customers = Customer::find()->with([
 > Info: In Yii 1.1, there is a concept called *scope*. Scope is no longer directly supported in Yii 2.0,
   and you should use customized query classes and query methods to achieve the same goal.
 
+
+## Selecting extra fields
+
+When Active Record instance is populated from query results, its attributes are filled up by corresponding column
+values from received data set.
+
+You are able to fetch additional columns or values from query and store it inside the Active Record.
+For example, assume we have a table named 'room', which contains information about rooms available in the hotel.
+Each room stores information about its geometrical size using fields 'length', 'width', 'height'.
+Imagine we need to retrieve list of all available rooms with their volume in descendant order.
+So you can not calculate volume using PHP, because we need to sort the records by its value, but you also want 'volume'
+to be displayed in the list.
+To achieve the goal, you need to declare an extra field in your 'Room' Active Record class, which will store 'volume' value:
+
+```php
+class Room extends \yii\db\ActiveRecord
+{
+    public $volume;
+
+    // ...
+}
+```
+
+Then you need to compose a query, which calculates volume of the room and performs the sort:
+
+```php
+$rooms = Room::find()
+    ->select([
+        '{{room}}.*', // select all columns
+        '([[length]] * [[width]].* [[height]]) AS volume', // calculate a volume
+    ])
+    ->orderBy('volume DESC') // apply sort
+    ->all();
+
+foreach ($rooms as $room) {
+    echo $room->volume; // contains value calculated by SQL
+}
+```
+
+Ability to select extra fields can be exceptionally useful for aggregation queries.
+Assume you need to display a list of customers with the count of orders they have made.
+First of all, you need to declare a `Customer` class with 'orders' relation and extra field for count storage:
+
+```php
+class Customer extends \yii\db\ActiveRecord
+{
+    public $ordersCount;
+
+    // ...
+
+    public function getOrders()
+    {
+        return $this->hasMany(Order::className(), ['customer_id' => 'id']);
+    }
+}
+```
+
+Then you can compose a query, which joins the orders and calculates their count:
+
+```php
+$customers = Customer::find()
+    ->select([
+        '{{customer}}.*', // select all customer fields
+        'COUNT({{order}}.id) AS ordersCount' // calculate orders count
+    ])
+    ->joinWith('orders') // ensure table junction
+    ->groupBy('{{customer}}.id') // group the result to ensure aggregation function works
+    ->all();
+```
