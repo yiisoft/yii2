@@ -229,6 +229,6 @@ foreach ($posts as $post) {
 代りに、いつでも、何かを変更する前にはコードをプロファイルしてください。
 次のツールが役に立つでしょう。
 
-- [Yii のデバッグツールバーとデバッガ](tool-debugger.md)
+- [Yii のデバッグツールバーとデバッガ](https://github.com/yiisoft/yii2-debug/blob/master/docs/guide/README.md)
 - [XDebug プロファイラ](http://xdebug.org/docs/profiler)
 - [XHProf](http://www.php.net/manual/en/book.xhprof.php)
