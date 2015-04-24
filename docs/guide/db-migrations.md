@@ -86,7 +86,7 @@ class name is automatically generated in the format of `m<YYMMDD_HHMMSS>_<Name>`
 * `<Name>` is the same as the value of the `name` argument that you provide to the command.
 
 In the migration class, you are expected to write code in the `up()` method that makes changes to the database structure.
-You may also want to write code in the `down()` method to revert the changes made by `up()`. The `up` method is invoked
+You may also want to write code in the `down()` method to revert the changes made by `up()`. The `up()` method is invoked
 when you upgrade the database with this migration, while the `down()` method is invoked when you downgrade the database.
 The following code shows how you may implement the migration class to create a `news` table: 
 
@@ -121,7 +121,7 @@ class m150101_185401_create_news_table extends \yii\db\Migration
 
 The base migration class [[yii\db\Migration]] exposes a database connection via the [[yii\db\Migration::db|db]]
 property. You can use it to manipulate the database schema using the methods as described in 
-[Working with Database Schema](db-dao.md#database-schema).
+[Working with Database Schema](db-dao.md#working-with-database-schema-).
 
 Rather than using physical types, when creating a table or column you should use *abstract types*
 so that your migrations are independent of specific DBMS. The [[yii\db\Schema]] class defines
@@ -142,7 +142,7 @@ to `Schema::TYPE_STRING` to specify that the column cannot be null.
 
 While performing complex DB migrations, it is important to ensure each migration to either succeed or fail as a whole
 so that the database can maintain integrity and consistency. To achieve this goal, it is recommended that you 
-enclose the DB operations of each migration in a [transaction](db-dao.md#performing-transactions).
+enclose the DB operations of each migration in a [transaction](db-dao.md#performing-transactions-).
  
 An even easier way of implementing transactional migrations is to put migration code in the `safeUp()` and `safeDown()` 
 methods. These two methods differ from `up()` and `down()` in that they are enclosed implicitly in a transaction.

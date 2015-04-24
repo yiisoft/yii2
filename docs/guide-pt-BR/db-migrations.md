@@ -23,7 +23,7 @@ E os seguintes passos mostram como fazer o deploy para produção de uma nova ve
 2. Luiz atualiza o código fonte no servidor em produção para a tag criada.
 3. Luiz aplica todas as migrações de dados acumuladas para o banco de dados em produção. 
 
-Yii oferece um conjunto de ferramentas em linha de comando que permitem que você:
+Yii oferece um conjunto de ferramentas de linha de comando que permitem que você:
 
 * crie novas migrações;
 * aplique migrações;
@@ -79,13 +79,13 @@ class m150101_185401_criar_tabela_noticias extends Migration
 }
 ```
 Cada migração de dados é definida como uma classe PHP extendida de [[yii\db\Migration]]. O nome da
-calsse de migração é automaticamente gerado no formato `m<YYMMDD_HHMMSS>_<Name>`, onde 
+classe de migração é automaticamente gerado no formato `m<YYMMDD_HHMMSS>_<Nome>`, onde 
 
 * `<YYMMDD_HHMMSS>` refere-se a data UTC em que o comando de criação da migração foi executado.
-* `<Name>` é igual ao valor do argumento `name` que você passou no comando.
+* `<Nome>` é igual ao valor do argumento `nome` que você passou no comando.
 
 Na classe de migração, é esperado que você escreva no método `up()` as mudanças a serem feitas na estrutura do banco de dados.
-Você pode também escrever código no método `down()` para reverter as mudanças feitas por `up()`. O método `up` é invocado quando você atualiza o seu banco de dados com esta migração, enquanto o método `down()` é invocado quando você reverte as mudanças no banco. O seguinte código mostra como você pode implementar a classe de migração para criar a tabela `noticias`: 
+Você também pode escrever código no método `down()` para reverter as mudanças feitas por `up()`. O método `up()` é invocado quando você atualiza o seu banco de dados com esta migração, enquanto o método `down()` é invocado quando você reverte as mudanças no banco. O seguinte código mostra como você pode implementar a classe de migração para criar a tabela `noticias`: 
 
 ```php
 
@@ -112,17 +112,17 @@ class m150101_185401_criar_tabela_noticias extends \yii\db\Migration
 ```
 
 > Observação: Nem todas as migrações são reversíveis. Por exemplo, se o método `up()` deleta um registro de uma tabela,
-  você possívelmente não será capas de recuperar este registro com o método `down()`. Em alguns casos, você pode ter 
+  você possívelmente não será capaz de recuperar este registro com o método `down()`. Em alguns casos, você pode ter 
   tido muita preguiça e não ter implementado o método `down()`, porque não é muito comum reverter migrações de dados.
   Neste caso, você deve retornar `false` no método `down()` para indicar que a migração não é reversível.
 
-A classe base Migration [[yii\db\Migration]] expões a conexão ao banco através da propriedade [[yii\db\Migration::db|db]].
-Você pode usá-la para manípular o esquema do banco de dados usando os métods como descritos em 
-[Working with Database Schema](db-dao.md#database-schema).
+A classe base de Migração [[yii\db\Migration]] expõe a conexão ao banco através da propriedade [[yii\db\Migration::db|db]].
+Você pode usá-la para manípular o esquema do banco de dados usando os métodos como descritos em 
+[Trabalhando com um Esquema de Banco de Dados](db-dao.md#working-with-database-schema-).
 
 Ao invés de usar típos físicos, ao criar uma tabela ou coluna, você deve usar *tipos abstratos* para que
 suas migrações sejam independentes do SGBD. A classe [[yii\db\Schema]] define uma gama de constantes para
-representar os tipos abstratos suportados. Estas constantes são nomeandas no formato `TYPE_<Name>`. Por exemplo,
+representar os tipos abstratos suportados. Estas constantes são nomeadas no formato `TYPE_<NOME>`. Por exemplo,
 `TYPE_PK` refere-se ao tipo chave primária auto-incrementavel; `TYPE_STRING` refere-se ao típo string. 
 Quando a migração for aplicada a um banco de dados em particular, os tipos abstratos serão traduzidos nos
 respectívos tipos físicos. No caso do MySQL, `TYPE_PK` será traduzida para 
@@ -138,9 +138,9 @@ a `Schema::TYPE_STRING` para especificar que a coluna não pode ser nula.
 
 Ao realizar migrações de dados complexas, é importante assegurar que cada migração irá ter sucesso ou irá falhar 
 por completo para que o banco não perca sua integridade e consistencia. Para atingir este objetivo, recomenda-se que
-você encapsule suas operações de banco de dados em cada migração em uma [transaction](db-dao.md#performing-transactions).
+você encapsule suas operações de banco de dados de cada migração em uma [transação](db-dao.md#performing-transactions-).
 
-Um jeito mais fácil de implementar uma migraçãó transacional é colocar o seu código de migração nos métodos `safeUp()` e `safeDown()`. Estes métodos diferem de `up()` e `down()` por que eles estão implicitamente encapsulados em uma transação. Como resultado, se qualquer operação nestes métodos falhar, todas as operações anteriores sofrerão roll back
+Um jeito mais fácil de implementar uma migração transacional é colocar o seu código de migração nos métodos `safeUp()` e `safeDown()`. Estes métodos diferem de `up()` e `down()` por que eles estão implicitamente encapsulados em uma transação. Como resultado, se qualquer operação nestes métodos falhar, todas as operações anteriores sofrerão roll back
 automaticamente.
 
 No exemplo a seguir, além de criar a tabela `noticias` nós também inserimos um registro inicial a esta tabela.
@@ -178,12 +178,12 @@ Note que normalmente quando você realiza multiplas operações em `safeUp()`, v
 em `safeDown()`. No exemplo acima nós primeiramente criamos a tabela e depois inserimos uma túpla em `safeUp()`; enquanto
 em `safeDown()` nós primeiramente apagamos o registro e depois eliminamos a tabela.
 
-> Nota: Nem todos os SGBDs suportam transações. E algumas requisições de banco não podem ser encapsuladas em uma transação. Para alguns exemplos, referir a [implicit commit](http://dev.mysql.com/doc/refman/5.1/en/implicit-commit.html). Se este for o caso, implemente os métodos `up()` e `down()`.
+> Nota: Nem todos os SGBDs suportam transações. E algumas requisições de banco não podem ser encapsuladas em uma transação. Para alguns exemplos, referir a [commit implicito(inglês)](http://dev.mysql.com/doc/refman/5.1/en/implicit-commit.html). Se este for o caso, implemente os métodos `up()` e `down()`.
 
 ### Métodos de acesso ao Banco de Dados <span id="db-accessing-methods"></span>
 
-A classe base migration [[yii\db\Migration]] entrega vários métodos que facilitam o acesso e a manipulação de 
-bancos de dados. Você deve achar que estes métodos são nomeados similarmente a [DAO methods](db-dao.md) encontrados 
+A classe base migração [[yii\db\Migration]] entrega vários métodos que facilitam o acesso e a manipulação de 
+bancos de dados. Você deve achar que estes métodos são nomeados similarmente a [métodos DAO](db-dao.md) encontrados 
 na classe [[yii\db\Command]]. Por exemplo, o método [[yii\db\Migration::createTable()]] permite que você crie uma 
 nova tabela assim como [[yii\db\Command::createTable()]] o faz.
 
@@ -191,7 +191,7 @@ O benefício ao usar os métodos encontrados em [[yii\db\Migration]] é que voc�
 instancias de [[yii\db\Command]] e a execução de cada método automaticamente exibirá mensagens úteis que dirão
 a você quais operações estão sendo feitas e quanto tempo elas estão durando.
 
-Abaixo etá uma lista de todos estes métodos de acesso ao banco de dados:
+Abaixo está uma lista de todos estes métodos de acesso ao banco de dados:
 
 * [[yii\db\Migration::execute()|execute()]]: executando um SQL
 * [[yii\db\Migration::insert()|insert()]]: inserindo um novo regístro
@@ -226,17 +226,17 @@ yii migrate
 
 Este comando irá listar todas as migrações que não foram alicadas até agora. Se você confirmar que deseja aplicar
 estas migrações, cada nova classe de migração irá executar os métodos `up()` ou `safeUp()` um após o outro, na 
-ordem relacionada a data marcada em seus nomes. Se qualquer uma das migrações falhar o comando terminará sem aplicar
+ordem relacionada à data marcada em seus nomes. Se qualquer uma das migrações falhar, o comando terminará sem aplicar
 o resto das migrações. 
 
 Para cada migração aplicada com sucesso, o comando irá inserir um registro numa tabela no banco de dados chamada
 `migration` para registrar uma aplicação de migração. Isto irá permitir que a ferramenta de migração identifique
 quais migrações foram aplicadas e quais não foram.
 
-> Observação: Esta ferramenta de migração irá automaticamente criar a tabela `migration` no banco de dados especificado pela opção do comando [[yii\console\controllers\MigrateController::db|db]]. Por padrão, o banco de dados é especificado por `db` [application component](structure-application-components.md).
+> Observação: Esta ferramenta de migração irá automaticamente criar a tabela `migration` no banco de dados especificado pela opção do comando [[yii\console\controllers\MigrateController::db|db]]. Por padrão, o banco de dados é especificado por `db` em [Componentes de Aplicação](structure-application-components.md).
 
 Eventualmente, você desejará aplicar apenas uma ou algumas migrações, em vez de todas as disponíveis.
-Você pode fazê-lo especificando o número de migrações que você deseja aplicar ao executar o comando.
+Você pode fazê-lo especificando o número de migrações que deseja aplicar ao executar o comando.
 Por exemplo, o comando a seguir irá tentar aplicar as próximas 3 migrações disponíveis:
   
 ```
@@ -253,7 +253,7 @@ yii migrate/to 1392853618                           # usando uma marcação de d
 ```
 Se existirem migrações mais recentes do que a especificada, elas serão todas aplicadas antes da migração definida.
 
-Se a migração especificada ja tiver sido aplicada, qualque migração posterior já aplicada será revertida.
+Se a migração especificada ja tiver sido aplicada, qualquer migração posterior já aplicada será revertida.
 
 
 ## Revertendo Migrações <span id="reverting-migrations"></span>
@@ -278,7 +278,7 @@ yii migrate/redo        # refazer a última migração aplicada
 yii migrate/redo 3      # refazer as 3 últimas migrações aplicadas
 ```
 
-> Nota: Se a migração não for reversíveel, você não poderá refazê-la.
+> Nota: Se a migração não for reversível, você não poderá refazê-la.
 
 
 ## Listando Migrações <span id="listing-migrations"></span>
@@ -296,11 +296,11 @@ yii migrate/new all     # exibir todas as novas migrações
 ```
 
 
-## Modificando o histórico das Migrações <span id="modifying-migration-history"></span>
+## Modificando o Histórico das Migrações <span id="modifying-migration-history"></span>
 
 Ao invés de aplicar ou reverter migrações, pode ser que você queira apenas definir que o seu banco de dados
 foi atualizado para uma migração em particular. Isto normalmente acontece quando você muda manualmente o banco
-de dados para um estado em particular em que você não queira que as mudanças para aquela migração sejam reaplicadas
+de dados para um estado em particular, e não deseja que as mudanças para aquela migração sejam reaplicadas
 posteriormente. Você pode alcancar este objetivo com o seguinte comando:
 
 ```
@@ -332,15 +332,14 @@ O comando de migração vem com algumas opções de linha de comando que podem s
 * `migrationTable`: string (o padrão é `migration`), especifica o nome da tabela no banco de dados para armazenar o histórico das migrações. A tabela será automaticamente criada pelo comando caso não exista.
   Você também pode criá-la manualmente usando a estrutura `version varchar(255) primary key, apply_time integer`.
 
-* `db`: string (o padrão é `db`), especifica o banco de dados [application component](structure-application-components.md).
+* `db`: string (o padrão é `db`), especifica o banco de dados [componente de aplicação](structure-application-components.md).
   Representa qual banco sofrerá as migrações usando este comando.
 
 * `templateFile`: string (o padrão é `@yii/views/migration.php`), especifica o caminho do arquivo de modelo que é usado para gerar um esqueleto para os arquivos das classes de migração. Isto pode ser especificado por um caminho de arquivo ou por um [alias](concept-aliases.md). O arquivo modelo é um script PHP em que você pode usar uma variaval pré-definida `$className` para obter o nome da classe de migração.
 
 O seguinte exemplo exibe como você pode usar estas opções.
-The following example shows how you can use these options.
 
-Por exemplo, se nós quisermos migrar um módulo `forum` cujo os arquivos de migração estão localizado dentro da pasta `migrations` do módulo, nós podemos usar o seguinte comando:
+Por exemplo, se nós quisermos migrar um módulo `forum` cujo os arquivos de migração estão localizados dentro da pasta `migrations` do módulo, nós podemos usar o seguinte comando:
 
 ```
 # migrate the migrations in a forum module non-interactively
@@ -350,7 +349,7 @@ yii migrate --migrationPath=@app/modules/forum/migrations --interactive=0
 
 ### Configurando o Comando Globalmente <span id="configuring-command-globally"></span>
 
-Ao invés de fornecer os mesmos valores de opção todas as vezes que você executar o comando de migração,
+Ao invés de fornecer opções todas as vezes que você executar o comando de migração,
 você pode configurá-lo de uma vez por todas na configuração da aplicação como exibido abaixo:
 
 ```php
@@ -365,13 +364,13 @@ return [
 ```
 
 Com a configuração acima, toda a vez que você executar o comando de migração, a tabela `backend_migration`
-será usada para gravar o histórico de migração. Você não irá mais precisar fornecê-la através da opção de linha de comando `migrationTable`.
+será usada para gravar o histórico de migração. Você não irá mais precisar fornecê-la através da opção `migrationTable`.
 
 
 ## Migrando Multiplos Bancos De Dados <span id="migrating-multiple-databases"></span>
 
-Por padrão, as migrações são aplicadas no mesmo banco de dados especificado por `db` [application component](structure-application-components.md).
-Se você quiser que elas sejam aglicadas em um banco de dados diferente, você deve especificar na opção `db` como exibido abaixo,
+Por padrão, as migrações são aplicadas no mesmo banco de dados especificado por `db` [componente de aplicação](structure-application-components.md).
+Se você quiser que elas sejam aplicadas em um banco de dados diferente, você deve especificar na opção `db` como exibido abaixo,
 
 ```
 yii migrate --db=db2
@@ -380,8 +379,8 @@ yii migrate --db=db2
 O comando acima irá aplicar as migrações para o banco de dados `db2`.
 
 Algumas vezes pode ocorrer que você queira aplicar *algumas* das migrações para um banco de dados, e outras para
-outro banco de dados. Para atingir este objetivo ao implementar uma classe de migração você deve especificar a
-ID DB component que a migração irá usar, como o seguinte:
+outro banco de dados. Para atingir este objetivo, ao implementar uma classe de migração você deve especificar a
+ID do componente DB que a migração irá usar, como o seguinte:
 
 ```php
 use yii\db\Schema;
@@ -397,12 +396,12 @@ class m150101_185401_criar_tabela_noticias extends Migration
 }
 ```
 
-A migração acima será aplicada a `db2`, mesmo que você especifique um banco de dados diferente através da opção de linha de comando `db`. Note que o histórico da migração continuará sendo registrado no banco especificado pela opção de comando `db`.
-Se você tiver multiplas migrações que usam o mesmo banco de dados, é recomendado que você crie uma classe de migração
+A migração acima será aplicada a `db2`, mesmo que você especifique um banco de dados diferente através da opção `db`. Note que o histórico da migração continuará sendo registrado no banco especificado pela opção `db`.
+Se você tiver multiplas migrações que usam o mesmo banco de dados, é recomenda-se criar uma classe de migração
 base com o codigo acima em `init()`. Então cada classe de migração poderá ser extendida desta classe base. 
 
 > Dica: Apesas de definir a propriedade [[yii\db\Migration::db|db]], você também pode operar em diferentes bancos
-  de dados ao criar novas conexões de banco para eles em sua classe de migração. Você então usará os [DAO methods](db-dao.md)
+  de dados ao criar novas conexões de banco para eles em sua classe de migração. Você então usará os [métodos DAO](db-dao.md)
   com estas conexões para manipular diferentes bancos de dados.
 
 Outra estratégia que você pode seguir para migrar multiplos bancos de dados é manter as migrações para diferentes bancos
