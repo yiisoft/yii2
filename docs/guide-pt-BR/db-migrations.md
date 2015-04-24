@@ -235,125 +235,112 @@ quais migrações foram aplicadas e quais não foram.
 
 > Observação: Esta ferramenta de migração irá automaticamente criar a tabela `migration` no banco de dados especificado pela opção do comando [[yii\console\controllers\MigrateController::db|db]]. Por padrão, o banco de dados é especificado por `db` [application component](structure-application-components.md).
 
-Eventualmente, você 
+Eventualmente, você desejará aplicar apenas uma ou algumas migrações, em vez de todas as disponíveis.
+Você pode fazê-lo especificando o número de migrações que você deseja aplicar ao executar o comando.
+Por exemplo, o comando a seguir irá tentar aplicar as próximas 3 migrações disponíveis:
   
-Sometimes, you may only want to apply one or a few new migrations, instead of all available migrations.
-You can do so by specifying the number of migrations that you want to apply when running the command.
-For example, the following command will try to apply the next three available migrations:
-
 ```
 yii migrate 3
 ```
-
-You can also explicitly specify a particular migration to which the database should be migrated
-by using the `migrate/to` command in one of the following formats:
-
-```
-yii migrate/to 150101_185401                      # using timestamp to specify the migration
-yii migrate/to "2015-01-01 18:54:01"              # using a string that can be parsed by strtotime()
-yii migrate/to m150101_185401_create_news_table   # using full name
-yii migrate/to 1392853618                         # using UNIX timestamp
-```
-
-If there are any unapplied migrations earlier than the specified one, they will all be applied before the specified
-migration is applied.
-
-If the specified migration has already been applied before, any later applied migrations will be reverted.
-
-
-## Reverting Migrations <span id="reverting-migrations"></span>
-
-To revert (undo) one or multiple migrations that have been applied before, you can run the following command:
+Você também pode especificar para qual migração em particular o banco de dados deve ser migrado
+usando o comando `migrate/to` em um dos formatos seguintes:
 
 ```
-yii migrate/down     # revert the most recently applied migration
-yii migrate/down 3   # revert the most 3 recently applied migrations
+yii migrate/to 150101_185401                        # usando a marcação de data para especificar a migração
+yii migrate/to "2015-01-01 18:54:01"                # usando uma string que pode ser analisada por strtotime()
+yii migrate/to m150101_185401_criar_tabela_noticias # usando o nome completo
+yii migrate/to 1392853618                           # usando uma marcação de data no estilo UNIX
 ```
+Se existirem migrações mais recentes do que a especificada, elas serão todas aplicadas antes da migração definida.
 
-> Nota: Not all migrations are reversible. Trying to revert such migrations will cause an error and stop the
-  entire reverting process.
-
-
-## Redoing Migrations <span id="redoing-migrations"></span>
-
-Redoing migrations means first reverting the specified migrations and then applying again. This can be done
-as follows:
-
-```
-yii migrate/redo        # redo the last applied migration 
-yii migrate/redo 3      # redo the last 3 applied migrations
-```
-
-> Nota: If a migration is not reversible, you will not be able to redo it.
+Se a migração especificada ja tiver sido aplicada, qualque migração posterior já aplicada será revertida.
 
 
-## Listing Migrations <span id="listing-migrations"></span>
+## Revertendo Migrações <span id="reverting-migrations"></span>
 
-To list which migrations have been applied and which are not, you may use the following commands:
+Para reverter uma ou multiplas migrações que tenham sido aplicadas antes, você pode executar o seguinte comando:
 
 ```
-yii migrate/history     # showing the last 10 applied migrations
-yii migrate/history 5   # showing the last 5 applied migrations
-yii migrate/history all # showing all applied migrations
+yii migrate/down     # reverter a última migração aplicada
+yii migrate/down 3   # reverter as 3 últimas migrações aplicadas
+```
 
-yii migrate/new         # showing the first 10 new migrations
-yii migrate/new 5       # showing the first 5 new migrations
-yii migrate/new all     # showing all new migrations
+> Nota: Nem todas as migrações são reversíveis. Tentar reverter tais migrações irá causar um erro que irá cancelar todo o processo de reversão.
+
+
+## Refazendo Migrações <span id="redoing-migrations"></span>
+
+Refazer as migrações significa primeiramente reverter migrações especificadas e depois aplicá-las novamente.
+Isto pode ser feito da seguinte maneira:
+
+```
+yii migrate/redo        # refazer a última migração aplicada 
+yii migrate/redo 3      # refazer as 3 últimas migrações aplicadas
+```
+
+> Nota: Se a migração não for reversíveel, você não poderá refazê-la.
+
+
+## Listando Migrações <span id="listing-migrations"></span>
+
+Para listar quais migrações foram aplicadas e quais não foram, você deve usar os seguintes comandos:
+
+```
+yii migrate/history     # exibir as 10 últimas migrações aplicadas
+yii migrate/history 5   # exibir as 5 últimas migrações aplicadas
+yii migrate/history all # exibir todas as migrações aplicadas
+
+yii migrate/new         # exibir as 10 primeiras novas migrações
+yii migrate/new 5       # exibir as 5 primeiras novas migrações
+yii migrate/new all     # exibir todas as novas migrações
 ```
 
 
-## Modifying Migration History <span id="modifying-migration-history"></span>
+## Modificando o histórico das Migrações <span id="modifying-migration-history"></span>
 
-Instead of actually applying or reverting migrations, sometimes you may simply want to mark that your database
-has been upgraded to a particular migration. This often happens when you manually change the database to a particular
-state and you do not want the migration(s) for that change to be re-applied later. You can achieve this goal with
-the following command:
+Ao invés de aplicar ou reverter migrações, pode ser que você queira apenas definir que o seu banco de dados
+foi atualizado para uma migração em particular. Isto normalmente acontece quando você muda manualmente o banco
+de dados para um estado em particular em que você não queira que as mudanças para aquela migração sejam reaplicadas
+posteriormente. Você pode alcancar este objetivo com o seguinte comando:
 
 ```
-yii migrate/mark 150101_185401                      # using timestamp to specify the migration
-yii migrate/mark "2015-01-01 18:54:01"              # using a string that can be parsed by strtotime()
-yii migrate/mark m150101_185401_create_news_table   # using full name
-yii migrate/mark 1392853618                         # using UNIX timestamp
+yii migrate/mark 150101_185401                        # usando a marcação de data para especificar a migração
+yii migrate/mark "2015-01-01 18:54:01"                # usando uma string que pode ser analisada por strtotime()
+yii migrate/mark m150101_185401_criar_tabela_noticias # usando o nome completo
+yii migrate/mark 1392853618                           # usando uma marcação de data no estilo UNIX
 ```
-
-The command will modify the `migration` table by adding or deleting certain rows to indicate that the database
-has been applied migrations to the specified one. No migrations will be applied or reverted by this command.
-
-
-## Customizing Migrations <span id="customizing-migrations"></span>
-
-There are several ways to customize the migration command.
+O comando irá modificar a tabela `migration` adicionando ou deletando certos registros para indicar que o banco
+de dados sofreu as migrações especificadas. Nenhuma migração será aplicada ou revertida por este comando.
 
 
-### Using Command Line Options <span id="using-command-line-options"></span>
+## Customizando Migrações <span id="customizing-migrations"></span>
 
-The migration command comes with a few command-line options that can be used to customize its behaviors:
+Existem várias maneiras de customizar o comando de migração.
 
-* `interactive`: boolean (defaults to true), specifies whether to perform migrations in an interactive mode. 
-  When this is true, the user will be prompted before the command performs certain actions.
-  You may want to set this to false if the command is being used in a background process.
 
-* `migrationPath`: string (defaults to `@app/migrations`), specifies the directory storing all migration 
-  class files. This can be specified as either a directory path or a path [alias](concept-aliases.md). 
-  Note that the directory must exist, or the command may trigger an error.
+### Usando Opções na Linha de Comando <span id="using-command-line-options"></span>
 
-* `migrationTable`: string (defaults to `migration`), specifies the name of the database table for storing
-  migration history information. The table will be automatically created by the command if it does not exist.
-  You may also manually create it using the structure `version varchar(255) primary key, apply_time integer`.
+O comando de migração vem com algumas opções de linha de comando que podem ser usadas para customizar o seu comportamento:
 
-* `db`: string (defaults to `db`), specifies the ID of the database [application component](structure-application-components.md).
-  It represents the database that will be migrated using this command.
+* `interactive`: boolean (o padrão é true), especifica se as migrações serão executadas em modo interativo.
+  Quando for true, ao usuario será perguntado se a execução deve continuar antes de o comando executar certas ações. 
+  Você provavelmente marcará isto para falso se o comando estiver sendo feito em algum processo em segundo plano.
 
-* `templateFile`: string (defaults to `@yii/views/migration.php`), specifies the path of the template file
-  that is used for generating skeleton migration class files. This can be specified as either a file path
-  or a path [alias](concept-aliases.md). The template file is a PHP script in which you can use a predefined variable
-  named `$className` to get the migration class name.
+* `migrationPath`: string (o padrão é `@app/migrations`), especifica o diretório em que os arquivos das classes de migração estão. Isto pode ser especificado ou como um diretório ou como um [alias](concept-aliases.md).
+  Note que o diretório deve existir, ou o comando irá disparar um erro. 
 
+* `migrationTable`: string (o padrão é `migration`), especifica o nome da tabela no banco de dados para armazenar o histórico das migrações. A tabela será automaticamente criada pelo comando caso não exista.
+  Você também pode criá-la manualmente usando a estrutura `version varchar(255) primary key, apply_time integer`.
+
+* `db`: string (o padrão é `db`), especifica o banco de dados [application component](structure-application-components.md).
+  Representa qual banco sofrerá as migrações usando este comando.
+
+* `templateFile`: string (o padrão é `@yii/views/migration.php`), especifica o caminho do arquivo de modelo que é usado para gerar um esqueleto para os arquivos das classes de migração. Isto pode ser especificado por um caminho de arquivo ou por um [alias](concept-aliases.md). O arquivo modelo é um script PHP em que você pode usar uma variaval pré-definida `$className` para obter o nome da classe de migração.
+
+O seguinte exemplo exibe como você pode usar estas opções.
 The following example shows how you can use these options.
 
-For example, if we want to migrate a `forum` module whose migration files
-are located within the module's `migrations` directory, we can use the following
-command:
+Por exemplo, se nós quisermos migrar um módulo `forum` cujo os arquivos de migração estão localizado dentro da pasta `migrations` do módulo, nós podemos usar o seguinte comando:
 
 ```
 # migrate the migrations in a forum module non-interactively
@@ -361,10 +348,10 @@ yii migrate --migrationPath=@app/modules/forum/migrations --interactive=0
 ```
 
 
-### Configuring Command Globally <span id="configuring-command-globally"></span>
+### Configurando o Comando Globalmente <span id="configuring-command-globally"></span>
 
-Instead of entering the same option values every time you run the migration command, you may configure it
-once for all in the application configuration like shown below:
+Ao invés de fornecer os mesmos valores de opção todas as vezes que você executar o comando de migração,
+você pode configurá-lo de uma vez por todas na configuração da aplicação como exibido abaixo:
 
 ```php
 return [
@@ -377,31 +364,30 @@ return [
 ];
 ```
 
-With the above configuration, each time you run the migration command, the `backend_migration` table
-will be used to record the migration history. You no longer need to specify it via the `migrationTable`
-command-line option.
+Com a configuração acima, toda a vez que você executar o comando de migração, a tabela `backend_migration`
+será usada para gravar o histórico de migração. Você não irá mais precisar fornecê-la através da opção de linha de comando `migrationTable`.
 
 
-## Migrating Multiple Databases <span id="migrating-multiple-databases"></span>
+## Migrando Multiplos Bancos De Dados <span id="migrating-multiple-databases"></span>
 
-By default, migrations are applied to the same database specified by the `db` [application component](structure-application-components.md).
-If you want them to be applied to a different database, you may specify the `db` command-line option like shown below,
+Por padrão, as migrações são aplicadas no mesmo banco de dados especificado por `db` [application component](structure-application-components.md).
+Se você quiser que elas sejam aglicadas em um banco de dados diferente, você deve especificar na opção `db` como exibido abaixo,
 
 ```
 yii migrate --db=db2
 ```
 
-The above command will apply migrations to the `db2` database.
+O comando acima irá aplicar as migrações para o banco de dados `db2`.
 
-Sometimes it may happen that you want to apply *some* of the migrations to one database, while some others to another
-database. To achieve this goal, when implementing a migration class you should explicitly specify the DB component
-ID that the migration would use, like the following:
+Algumas vezes pode ocorrer que você queira aplicar *algumas* das migrações para um banco de dados, e outras para
+outro banco de dados. Para atingir este objetivo ao implementar uma classe de migração você deve especificar a
+ID DB component que a migração irá usar, como o seguinte:
 
 ```php
 use yii\db\Schema;
 use yii\db\Migration;
 
-class m150101_185401_create_news_table extends Migration
+class m150101_185401_criar_tabela_noticias extends Migration
 {
     public function init()
     {
@@ -411,18 +397,16 @@ class m150101_185401_create_news_table extends Migration
 }
 ```
 
-The above migration will be applied to `db2`, even if you specify a different database through the `db` command-line
-option. Note that the migration history will still be recorded in the database specified by the `db` command-line option.
+A migração acima será aplicada a `db2`, mesmo que você especifique um banco de dados diferente através da opção de linha de comando `db`. Note que o histórico da migração continuará sendo registrado no banco especificado pela opção de comando `db`.
+Se você tiver multiplas migrações que usam o mesmo banco de dados, é recomendado que você crie uma classe de migração
+base com o codigo acima em `init()`. Então cada classe de migração poderá ser extendida desta classe base. 
 
-If you have multiple migrations that use the same database, it is recommended that you create a base migration class
-with the above `init()` code. Then each migration class can extend from this base class.
+> Dica: Apesas de definir a propriedade [[yii\db\Migration::db|db]], você também pode operar em diferentes bancos
+  de dados ao criar novas conexões de banco para eles em sua classe de migração. Você então usará os [DAO methods](db-dao.md)
+  com estas conexões para manipular diferentes bancos de dados.
 
-> Tip: Besides setting the [[yii\db\Migration::db|db]] property, you can also operate on different databases
-  by creating new database connections to them in your migration classes. You then use the [DAO methods](db-dao.md)
-  with these connections to manipulate different databases.
-
-Another strategy that you can take to migrate multiple databases is to keep migrations for different databases in
-different migration paths. Then you can migrate these databases in separate commands like the following:
+Outra estratégia que você pode seguir para migrar multiplos bancos de dados é manter as migrações para diferentes bancos
+de dados em diferentes pastas de migrações. Então você poderá migrar estes bancos de dados em comandos separados como os seguintes:
 
 ```
 yii migrate --migrationPath=@app/migrations/db1 --db=db1
@@ -430,5 +414,5 @@ yii migrate --migrationPath=@app/migrations/db2 --db=db2
 ...
 ```
 
-The first command will apply migrations in `@app/migrations/db1` to the `db1` database, the second command
-will apply migrations in `@app/migrations/db2` to `db2`, and so on.
+O primeiro comando irá aplicar as migrações em `@app/migrations/db1` para o banco de dados `db1`, e o segundo comando
+irá aplicar as migrações em `@app/migrations/db2` para `db2`, e assim sucessivamente. 
