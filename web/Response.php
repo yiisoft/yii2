@@ -504,6 +504,8 @@ class Response extends \yii\base\Response
      *  - `mimeType`: the MIME type of the content. Defaults to 'application/octet-stream'.
      *  - `inline`: boolean, whether the browser should open the file within the browser window. Defaults to false,
      *     meaning a download dialog will pop up.
+     *  - `fileSize`: the size of the content to stream this is usefull when size of the content is known
+     *     and the content is not seekable. Defaults to content size using `ftell()`
      *
      * @return static the response object itself
      * @throws HttpException if the requested range cannot be satisfied.
@@ -511,8 +513,12 @@ class Response extends \yii\base\Response
     public function sendStreamAsFile($handle, $attachmentName, $options = [])
     {
         $headers = $this->getHeaders();
-        fseek($handle, 0, SEEK_END);
-        $fileSize = ftell($handle);
+        if (isset($options['fileSize'])) {
+            $fileSize = $options['fileSize'];
+        } else {
+            fseek($handle, 0, SEEK_END);
+            $fileSize = ftell($handle);
+        }
 
         $range = $this->getHttpRange($fileSize);
         if ($range === false) {
