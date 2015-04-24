@@ -59,7 +59,7 @@ class DateValidator extends Validator
      * receive the parsing result.
      *
      * This can be the same attribute as the one being validated. If this is the case,
-     * the original value will be overwritten with the timestamp value after validation.
+     * the original value will be overwritten with the timestamp value after successful validation.
      */
     public $timestampAttribute;
 

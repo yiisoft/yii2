@@ -171,6 +171,7 @@ class Schema extends \yii\db\Schema
      * This method should be overridden by child classes in order to support this feature
      * because the default implementation simply throws an exception.
      * @return array all schema names in the database, except system schemas
+     * @since 2.0.4
      */
     protected function findSchemaNames()
     {

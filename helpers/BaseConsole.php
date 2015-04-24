@@ -654,7 +654,7 @@ class BaseConsole
      * @param boolean $refresh whether to force refresh of screen size.
      * This will be passed to [[getScreenSize()]].
      * @return string the wrapped text.
-     * @since 2.0.3
+     * @since 2.0.4
      */
     public static function wrapText($text, $indent = 0, $refresh = false)
     {

@@ -287,6 +287,7 @@ SQL;
      * @param TableSchema $table
      * @param string $type either PRIMARY KEY or UNIQUE
      * @return array each entry contains index_name and field_name
+     * @since 2.0.4
      */
     protected function findTableConstraints($table, $type)
     {
@@ -411,6 +412,7 @@ SQL;
      *
      * @param TableSchema $table the table metadata
      * @return array all unique indexes for the given table.
+     * @since 2.0.4
      */
     public function findUniqueIndexes($table)
     {
