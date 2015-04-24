@@ -61,7 +61,7 @@ output-sorting.md                   | Yes
 output-data-providers.md            | Yes
 output-data-widgets.md              |
 output-theming.md                   | Yes
-security-authentication.md          |
+security-authentication.md          | Yes
 security-authorization.md           |
 security-passwords.md               |
 security-auth-clients.md            |
