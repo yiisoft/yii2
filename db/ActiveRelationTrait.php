@@ -258,7 +258,7 @@ trait ActiveRelationTrait
                         if (isset($buckets[$key])) {
                             if ($this->indexBy !== null) {
                                 // if indexBy is set, array_merge will cause renumbering of numeric array
-                                foreach($buckets[$key] as $bucketKey => $bucketValue) {
+                                foreach ($buckets[$key] as $bucketKey => $bucketValue) {
                                     $value[$bucketKey] = $bucketValue;
                                 }
                             } else {
@@ -367,7 +367,7 @@ trait ActiveRelationTrait
         $linkKeys = array_keys($link);
 
         if (isset($map)) {
-            foreach ($models as $i => $model) {
+            foreach ($models as $model) {
                 $key = $this->getModelKey($model, $linkKeys);
                 if (isset($map[$key])) {
                     foreach (array_keys($map[$key]) as $key2) {
@@ -376,7 +376,7 @@ trait ActiveRelationTrait
                 }
             }
         } else {
-            foreach ($models as $i => $model) {
+            foreach ($models as $model) {
                 $key = $this->getModelKey($model, $linkKeys);
                 $buckets[$key][] = $model;
             }
