@@ -417,7 +417,7 @@ abstract class Schema extends Object
         $result = [];
         foreach ($tableSchema->primaryKey as $name) {
             if ($tableSchema->columns[$name]->autoIncrement) {
-                $result[$name] = $this->db->getLastInsertID($tableSchema->sequenceName);
+                $result[$name] = $this->getLastInsertID($tableSchema->sequenceName);
                 break;
             } else {
                 $result[$name] = isset($columns[$name]) ? $columns[$name] : $tableSchema->columns[$name]->defaultValue;
