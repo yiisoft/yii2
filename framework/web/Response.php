@@ -505,7 +505,8 @@ class Response extends \yii\base\Response
      *  - `inline`: boolean, whether the browser should open the file within the browser window. Defaults to false,
      *     meaning a download dialog will pop up.
      *  - `fileSize`: the size of the content to stream this is usefull when size of the content is known
-     *     and the content is not seekable. Defaults to content size using `ftell()`
+     *     and the content is not seekable. Defaults to content size using `ftell()`.
+     *     This option is available since version 2.0.4.
      *
      * @return static the response object itself
      * @throws HttpException if the requested range cannot be satisfied.
