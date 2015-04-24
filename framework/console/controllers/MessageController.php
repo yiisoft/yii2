@@ -241,7 +241,8 @@ class MessageController extends Controller
      *
      * @param string $fileName name of the file to extract messages from
      * @param string $translator name of the function used to translate messages
-     * @param array $ignoreCategories message categories to ignore
+     * @param array $ignoreCategories message categories to ignore.
+     * This parameter is available since version 2.0.4.
      * @return array
      */
     protected function extractMessages($fileName, $translator, $ignoreCategories = [])
