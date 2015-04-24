@@ -26,6 +26,7 @@ Yii Framework 2 Change Log
 - Bug #8012: Fixed fetching multiple relations between two tables for pgsql (nineinchnick)
 - Bug #8014: Fixed setting incorrect form "action" property after submitting a form using a link with "data-method" and containing "action" among "data-params" (samdark)
 - Bug #8032: `yii\rbac\PhpManager::updateItem()` was unable to rename item updated (ChristopheBrun, samdark)
+- Bug #8036: Fixed `yii\log\Logger` unable to export session id (klimov-paul)
 - Bug #8068: Fixed `yii\db\Query::count()` fails for query containing 'having' without 'group by' (klimov-paul)
 - Bug #8073: Fixed `yii\data\ArrayDataProvider::getKeys()` return wrong when `yii\data\ArrayDataProvider::$allModels` contain integer key (mdmunir, klimov-paul)
 - Bug #8082: Fixed `yii\db\BaseActiveRecord::getAttributeLabel()` return wrong label for related attribute, if several relations in chain share same name (klimov-paul)
