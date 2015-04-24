@@ -58,13 +58,13 @@ Yii Framework 2 Change Log
 - Enh #8055: `yii\rest\UrlRule::extraPatterns` should take precedence over `patterns` (Agrumas)
 - Enh #8064: Added ability to remove containing menu tag by setting `yii\widgets\Menu::$options['tag']` to `false` (kirsenn, samdark)
 - Enh #8078: 'links' and 'meta' envelope names are now configurable at `yii\rest\Serializer` (arturf)
+- Enh #8171: Allow the user to enforce the fileSize to allow sending files which are not seekable. Needed when using S3 Stream Wrapper (pgaultier)
 - Enh: Added `yii\helper\Console::wrapText()` method to wrap indented text by console window width and used it in `yii help` command (cebe)
 - Enh: Implement batchInsert for oci (nineinchnick)
 - Enh: Detecting IntegrityException for oci (nineinchnick)
 - Enh: `yii\widgets\LinkPager::$firstPageLabel` and `yii\widgets\LinkPager::$lastPageLabel` now could be set to true in order to use page number as label (samdark)
 - Chg #7924: Migrations in history are now ordered by time applied allowing to roll back in reverse order no matter how these were applied (samdark)
 - Chg: Updated dependency to `cebe/markdown` to version `1.1.x` (cebe)
-- Enh #8171: Allow the user to enforce the fileSize to allow sending files which are not seekable. Needed when using S3 Stream Wrapper (pgaultier)
 
 
 2.0.3 March 01, 2015
