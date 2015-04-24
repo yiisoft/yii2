@@ -483,19 +483,20 @@ trait ActiveRelationTrait
      */
     private function getModelKey($model, $attributes)
     {
-        if (count($attributes) > 1) {
-            $key = [];
-            foreach ($attributes as $attribute) {
-                $key[] = $model[$attribute];
+        $key = [];
+        foreach ($attributes as $attribute) {
+            $value = $model[$attribute];
+            if (is_object($value) && method_exists($value, '__toString')) {
+                // ensure matching to special objects, which are convertable to string, for cross-DBMS relations, for example: `|MongoId`
+                $value = $value->__toString();
             }
-
-            return serialize($key);
-        } else {
-            $attribute = reset($attributes);
-            $key = $model[$attribute];
-
-            return is_scalar($key) ? $key : serialize($key);
+            $key[] = $value;
         }
+        if (count($key) > 1) {
+            return serialize($key);
+        }
+        $key = reset($key);
+        return is_scalar($key) ? $key : serialize($key);
     }
 
     /**
