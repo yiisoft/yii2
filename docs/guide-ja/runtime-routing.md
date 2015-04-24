@@ -9,7 +9,7 @@ Yii のアプリケーションがリクエストされた URL の処理を開�
 これは、与えられたルートとそれに結び付けられたクエリパラメータから URL を生成するものです。
 生成された URL が後でリクエストされたときには、ルーティングのプロセスがその URL を解決して元のルートとクエリパラメータに戻すことが出来ます。
 
-ルーティングと URL 生成について主たる役割を果たすのが `urlManager` アプリケーションコンポーネントとして登録されている [[yii\web\UrlManager|URL マネージャ]] です。
+ルーティングと URL 生成について主たる役割を果たすのが `urlManager` [アプリケーションコンポーネント](structure-application-components.md) として登録されている [[yii\web\UrlManager|URL マネージャ]] です。
 [[yii\web\UrlManager|URL マネージャ]] は、入ってくるリクエストをルートとそれに結び付けられたクエリパラメータとして解析するための [[yii\web\UrlManager::parseRequest()|parseRequest()]] メソッドと、与えられたルートとそれに結び付けられたクエリパラメータから URL を生成するための [[yii\web\UrlManager::createUrl()|createUrl()]] メソッドを提供します。
 
 アプリケーション構成情報の `urlManager` コンポーネントを構成することによって、既存のアプリケーションコードを修正することなく、任意の URL 形式をアプリケーションに認識させることが出来ます。
