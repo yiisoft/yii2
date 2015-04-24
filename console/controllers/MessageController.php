@@ -203,13 +203,11 @@ class MessageController extends Controller
         foreach ($new as $category => $msgs) {
             foreach ($msgs as $m) {
                 $savedFlag = true;
-
-                $db->createCommand()
-                   ->insert($sourceMessageTable, ['category' => $category, 'message' => $m])->execute();
-                $lastID = $db->getLastInsertID();
+                $lastPk = $db->schema->insert($sourceMessageTable, ['category' => $category, 'message' => $m]);
                 foreach ($languages as $language) {
                     $db->createCommand()
-                       ->insert($messageTable, ['id' => $lastID, 'language' => $language])->execute();
+                       ->insert($messageTable, ['id' => $lastPk['id'], 'language' => $language])
+                       ->execute();
                 }
             }
         }
@@ -222,7 +220,8 @@ class MessageController extends Controller
         } else {
             if ($removeUnused) {
                 $db->createCommand()
-                   ->delete($sourceMessageTable, ['in', 'id', $obsolete])->execute();
+                   ->delete($sourceMessageTable, ['in', 'id', $obsolete])
+                   ->execute();
                 $this->stdout("deleted.\n");
             } else {
                 $db->createCommand()
