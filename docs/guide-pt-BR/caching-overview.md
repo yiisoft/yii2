@@ -1,19 +1,17 @@
-Caching
+Cache
 =======
 
-Caching is a cheap and effective way to improve the performance of a Web application. By storing relatively
-static data in cache and serving it from cache when requested, the application saves the time that would be
-required to generate the data from scratch every time.
+Cache é uma maneira barata e eficiente de melhorar o desempenho de uma aplicação web. Ao gravar dados relativamente
+estáticos em cache e servindo os do cache quando requisitados, a aplicação economiza o tempo que seria necessário
+para renderizar as informações do zero toda vez.
 
-Caching can occur at different levels and places in a Web application. On the server side, at the lower level,
-cache may be used to store basic data, such as a list of most recent article information fetched from database;
-and at the higher level, cache may be used to store fragments or whole of Web pages, such as the rendering result
-of the most recent articles. On the client side, HTTP caching may be used to keep most recently visited page content in
-the browser cache.
+Cache pode ocorrer em diferentes níveis e locais em uma aplicação web. No servidor, no baixo nível,
+cache pode ser usado para armazenar dados básicos, como a informação de uma lista de artigos mais recentes trazidos
+do banco de dados; e no alto nível, cache pode ser usado para armazenar fragmentos ou páginas web inteiras,como o 
+resultado da renderização dos artigos mais recentes. No cliente, cache HTTP pode ser usado para manter o conteúdo da última página acessada no cache do navegador.
 
-Yii supports all these caching mechanisms:
-
-* [Data caching](caching-data.md)
-* [Fragment caching](caching-fragment.md)
-* [Page caching](caching-page.md)
+Yii suporta todos os os três métodos de cache:
+* [Cache de Dados](caching-data.md)
+* [Cache de Fragmento](caching-fragment.md)
+* [Cache de Página](caching-page.md)
 * [HTTP caching](caching-http.md)
