@@ -24,11 +24,6 @@ class CreateAction extends Action
      * @var string the scenario to be assigned to the new model before it is validated and saved.
      */
     public $scenario = Model::SCENARIO_DEFAULT;
-    /**
-     * @var string the name of the view action. This property is need to create the URL when the model is successfully created.
-     */
-    public $viewAction = 'view';
-
 
     /**
      * Creates a new model.
@@ -51,7 +46,7 @@ class CreateAction extends Action
             $response = Yii::$app->getResponse();
             $response->setStatusCode(201);
             $id = implode(',', array_values($model->getPrimaryKey(true)));
-            $response->getHeaders()->set('Location', Url::toRoute([$this->viewAction, 'id' => $id], true));
+            $response->getHeaders()->set('Location', Url::toRoute($id, true));
         } elseif (!$model->hasErrors()) {
             throw new ServerErrorHttpException('Failed to create the object for unknown reason.');
         }
