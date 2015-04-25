@@ -14,4 +14,4 @@ Yii suporta todos os os três métodos de cache:
 * [Cache de Dados](caching-data.md)
 * [Cache de Fragmento](caching-fragment.md)
 * [Cache de Página](caching-page.md)
-* [HTTP caching](caching-http.md)
+* [Cache de HTTP](caching-http.md)

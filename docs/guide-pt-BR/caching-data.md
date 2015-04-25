@@ -1,38 +1,36 @@
-Data Caching
+Cache de Dados
 ============
 
-Data caching is about storing some PHP variable in cache and retrieving it later from cache.
-It is also the foundation for more advanced caching features, such as [query caching](#query-caching)
-and [page caching](caching-page.md).
+O Cache de Dados é responsável por armazenar uma ou mais variáveis PHP em um arquivo temporário para
+ser recuperado posteriormente.
+Este também é a fundação para funcionalidades mais avançadas do cache, como [cache de consulta](#query-caching)
+e [cache de página](caching-page.md).
 
-The following code is a typical usage pattern of data caching, where `$cache` refers to
-a [cache component](#cache-components):
+O código a seguir é um padrão de uso típico de cache de dados, onde `$cache` refere-se a
+um [Componente de Cache](#cache-components):
 
 ```php
-// try retrieving $data from cache
+// tentar recuperar $data do cache
 $data = $cache->get($key);
 
 if ($data === false) {
 
-    // $data is not found in cache, calculate it from scratch
+    // $data não foi encontrado no cache, calculá-la do zero
 
-    // store $data in cache so that it can be retrieved next time
+    // armzaenar $data no cache para que esta possa ser recuperada na próxima vez
     $cache->set($key, $data);
 }
 
-// $data is available here
+// $data é acessível a partir daqui
 ```
 
 
-## Cache Components <span id="cache-components"></span>
+## Componentes de Cache <span id="cache-components"></span>
 
-Data caching relies on the so-called *cache components* which represent various cache storage,
-such as memory, files, databases.
+O cache de dados se baseia nos, então chamados, *Componentes de Cache* que representam vários armazenamentos de cache,
+como memória, arquivos, bancos de dados.
 
-Cache components are usually registered as [application components](structure-application-components.md) so
-that they can be globally configurable
-and accessible. The following code shows how to configure the `cache` application component to use
-[memcached](http://memcached.org/) with two cache servers:
+Componentes de Cache são normalmente registrados como [componentes de aplicação](structure-application-components.md) para que possam ser globalmente configuraveis e acessiveis. O código a seguir exibe como configurar o componente de aplicação `cache` para usar [memcached](http://memcached.org/) com dois servidores de cache:
 
 ```php
 'components' => [
@@ -40,12 +38,12 @@ and accessible. The following code shows how to configure the `cache` applicatio
         'class' => 'yii\caching\MemCache',
         'servers' => [
             [
-                'host' => 'server1',
+                'host' => 'servidor1',
                 'port' => 11211,
                 'weight' => 100,
             ],
             [
-                'host' => 'server2',
+                'host' => 'servidor2',
                 'port' => 11211,
                 'weight' => 50,
             ],
@@ -54,11 +52,11 @@ and accessible. The following code shows how to configure the `cache` applicatio
 ],
 ```
 
-You can then access the above cache component using the expression `Yii::$app->cache`.
+Você pode então, acessar o componente de cache acima usando a expressão `Yii::$app->cache`.
 
-Because all cache components support the same set of APIs, you can swap the underlying cache component
-with a different one by reconfiguring it in the application configuration without modifying the code that uses the cache.
-For example, you can modify the above configuration to use [[yii\caching\ApcCache|APC cache]]:
+Já que todos os componentes de cache suportam as mesmas APIs, você pode trocar o componente de cache por outro 
+reconfigurando-o nas configurações da aplicação sem modificar o código que usa o cache.
+Por exemplo, você pode modificar a configuração acima para usar [[yii\caching\ApcCache|APC cache]]:
 
 
 ```php
@@ -69,50 +67,50 @@ For example, you can modify the above configuration to use [[yii\caching\ApcCach
 ],
 ```
 
-> Tip: You can register multiple cache application components. The component named `cache` is used
-  by default by many cache-dependent classes (e.g. [[yii\web\UrlManager]]).
+> Dica: você pode registrar múltiplos componentes de cache na aplicação. O componente chamado `cache` é usado 
+  por padrão por muitas classes dependentes de cache (ex. [[yii\web\UrlManager]]).
 
 
-### Supported Cache Storage <span id="supported-cache-storage"></span>
+### Sistemas de cache suportados <span id="supported-cache-storage"></span>
 
-Yii supports a wide range of cache storage. The following is a summary:
+Yii suporta uma ampla gama de sistemas de cache. A seguir um sumario:
 
-* [[yii\caching\ApcCache]]: uses PHP [APC](http://php.net/manual/en/book.apc.php) extension. This option can be
-  considered as the fastest one when dealing with cache for a centralized thick application (e.g. one
-  server, no dedicated load balancers, etc.).
-* [[yii\caching\DbCache]]: uses a database table to store cached data. To use this cache, you must
-  create a table as specified in [[yii\caching\DbCache::cacheTable]].
-* [[yii\caching\DummyCache]]: serves as a cache placeholder which does no real caching.
-  The purpose of this component is to simplify the code that needs to check the availability of cache.
-  For example, during development or if the server doesn't have actual cache support, you may configure
-  a cache component to use this cache. When an actual cache support is enabled, you can switch to use
-  the corresponding cache component. In both cases, you may use the same code
-  `Yii::$app->cache->get($key)` to attempt retrieving data from the cache without worrying that
-  `Yii::$app->cache` might be `null`.
-* [[yii\caching\FileCache]]: uses standard files to store cached data. This is particular suitable
-  to cache large chunk of data, such as page content.
-* [[yii\caching\MemCache]]: uses PHP [memcache](http://php.net/manual/en/book.memcache.php)
-  and [memcached](http://php.net/manual/en/book.memcached.php) extensions. This option can be considered as
-  the fastest one when dealing with cache in a distributed applications (e.g. with several servers, load
-  balancers, etc.)
-* [[yii\redis\Cache]]: implements a cache component based on [Redis](http://redis.io/) key-value store
-  (redis version 2.6.12 or higher is required).
-* [[yii\caching\WinCache]]: uses PHP [WinCache](http://iis.net/downloads/microsoft/wincache-extension)
-  ([see also](http://php.net/manual/en/book.wincache.php)) extension.
-* [[yii\caching\XCache]]: uses PHP [XCache](http://xcache.lighttpd.net/) extension.
-* [[yii\caching\ZendDataCache]]: uses
-  [Zend Data Cache](http://files.zend.com/help/Zend-Server-6/zend-server.htm#data_cache_component.htm)
-  as the underlying caching medium.
+* [[yii\caching\ApcCache]]: usa a extensão do PHP [APC](http://php.net/manual/en/book.apc.php). Esta opção pode ser
+  considerada a mais rápida ao se implementar o cache de uma aplicação densa e centralizada (ex. um
+  servidor, sem balanceadores de carga dedicados, etc.).
+* [[yii\caching\DbCache]]: usa uma tabela no banco de dados para armazenar os dados em cache. Para usar este cache
+  você deve criar uma tabela como especificada em [[yii\caching\DbCache::cacheTable]].
+* [[yii\caching\DummyCache]]: serve apenas como um substituto e não faz nenhum cache na realidade
+  O propósito deste comoponente é simplificar o codigo que precisa checar se o cache está disponível.
+  Por exemplo, durante o desenvolvimento or se o servidor não suporta cache, você pode configurar um
+  componente de cache para usar este cache. Quando o suporte ao cache for habilitado, você pode trocar o
+  para o componente correspondente. Em ambos os casos, você pode usar o mesmo código 
+  `Yii::$app->cache->get($key)` para tentar recuperar os dados do cache sem se procupar que
+  `Yii::$app->cache` possa ser `null`.
+* [[yii\caching\FileCache]]: usa arquivos para armazenar os dados em cache. Este é particularmente indicado 
+  para armazenar grandes quantidades de dados como o conteúdo da página.
+* [[yii\caching\MemCache]]: usa o [memcache](http://php.net/manual/en/book.memcache.php) do PHP e as extensões
+  [memcached](http://php.net/manual/en/book.memcached.php). Esta opção pode ser considerada a mais rápida
+  ao se implementar o cache em aplicações distribuidas (ex. vários servidores, balanceadores de carga, etc.)
+* [[yii\redis\Cache]]: implementa um componente de cache baseado em armazenamento chave-valor 
+  [Redis](http://redis.io/) (requere redis versão 2.6.12 ou mais recente).
+* [[yii\caching\WinCache]]: usa a extensão PHP [WinCache](http://iis.net/downloads/microsoft/wincache-extension)
+  ([veja também](http://php.net/manual/en/book.wincache.php)).
+* [[yii\caching\XCache]]: usa a extensão PHP [XCache](http://xcache.lighttpd.net/).
+* [[yii\caching\ZendDataCache]]: usa
+  [Cache de Dados Zend](http://files.zend.com/help/Zend-Server-6/zend-server.htm#data_cache_component.htm)
+  como o meio de cache subjacente.
 
 
-> Tip: You may use different cache storage in the same application. A common strategy is to use memory-based
-  cache storage to store data that is small but constantly used (e.g. statistical data), and use file-based
-  or database-based cache storage to store data that is big and less frequently used (e.g. page content).
+> Dica: Você pode usar vários tipos de cache na mesma aplicação. Uma estratégia comum é usar caches baseados 
+  em memória para armazenar dados pequenos mas constantemente usados (ex. dados estatísticos), e usar caches
+  baseados em arquivo ou banco da dados para armazenar dados que são maiores mas são menos usados 
+  (ex. conteúdo da página).
 
 
 ## Cache APIs <span id="cache-apis"></span>
 
-All cache components have the same base class [[yii\caching\Cache]] and thus support the following APIs:
+All Componente de Caches have the same base class [[yii\caching\Cache]] and thus support the following APIs:
 
 * [[yii\caching\Cache::get()|get()]]: retrieves a data item from cache with a specified key. A `false`
   value will be returned if the data item is not found in the cache or is expired/invalidated.
@@ -135,7 +133,7 @@ which may reduce the overhead involved in retrieving cached data. The APIs [[yii
 and [[yii\caching\Cache::madd()|madd()]] are provided to exploit this feature. In case the underlying cache storage
 does not support this feature, it will be simulated.
 
-Because [[yii\caching\Cache]] implements `ArrayAccess`, a cache component can be used like an array. The following
+Because [[yii\caching\Cache]] implements `ArrayAccess`, a Componente de Cache can be used like an array. The following
 are some examples:
 
 ```php
@@ -241,25 +239,25 @@ Below is a summary of the available cache dependencies:
   the cached data items with the specified tag(s) by calling [[yii\caching\TagDependency::invalidate()]].
 
 
-## Query Caching <span id="query-caching"></span>
+## Cache De Consulta <span id="query-caching"></span>
 
-Query caching is a special caching feature built on top of data caching. It is provided to cache the result
+Cache de consulta is a special caching feature built on top of data caching. It is provided to cache the result
 of database queries.
 
-Query caching requires a [[yii\db\Connection|DB connection]] and a valid `cache` [application component](#cache-components).
-The basic usage of query caching is as follows, assuming `$db` is a [[yii\db\Connection]] instance:
+Cache de consulta requires a [[yii\db\Connection|DB connection]] and a valid `cache` [application component](#cache-components).
+The basic usage of cache de consulta is as follows, assuming `$db` is a [[yii\db\Connection]] instance:
 
 ```php
 $result = $db->cache(function ($db) {
 
     // the result of the SQL query will be served from the cache
-    // if query caching is enabled and the query result is found in the cache
+    // if cache de consulta is enabled and the query result is found in the cache
     return $db->createCommand('SELECT * FROM customer WHERE id=1')->queryOne();
 
 });
 ```
 
-Query caching can be used for [DAO](db-dao.md) as well as [ActiveRecord](db-active-record.md):
+Cache de consulta can be used for [DAO](db-dao.md) as well as [ActiveRecord](db-active-record.md):
 
 ```php
 $result = Customer::getDb()->cache(function ($db) {
@@ -268,30 +266,30 @@ $result = Customer::getDb()->cache(function ($db) {
 ```
 
 > Info: Some DBMS (e.g. [MySQL](http://dev.mysql.com/doc/refman/5.1/en/query-cache.html))
-  also support query caching on the DB server side. You may choose to use either query caching mechanism.
-  The query caching described above has the advantage that you may specify flexible cache dependencies
+  also support cache de consulta on the DB server side. You may choose to use either cache de consulta mechanism.
+  The cache de consulta described above has the advantage that you may specify flexible cache dependencies
   and are potentially more efficient.
 
 
 ### Configurations <span id="query-caching-configs"></span>
 
-Query caching has three global configurable options through [[yii\db\Connection]]:
+Cache de consulta has three global configurable options through [[yii\db\Connection]]:
 
-* [[yii\db\Connection::enableQueryCache|enableQueryCache]]: whether to turn on or off query caching.
-  It defaults to true. Note that to effectively turn on query caching, you also need to have a valid
+* [[yii\db\Connection::enableQueryCache|enableQueryCache]]: whether to turn on or off cache de consulta.
+  It defaults to true. Note that to effectively turn on cache de consulta, you also need to have a valid
   cache, as specified by [[yii\db\Connection::queryCache|queryCache]].
 * [[yii\db\Connection::queryCacheDuration|queryCacheDuration]]: this represents the number of seconds
   that a query result can remain valid in the cache. You can use 0 to indicate a query result should
   remain in the cache forever. This property is the default value used when [[yii\db\Connection::cache()]]
   is called without specifying a duration.
 * [[yii\db\Connection::queryCache|queryCache]]: this represents the ID of the cache application component.
-  It defaults to `'cache'`. Query caching is enabled only if there is a valid cache application component.
+  It defaults to `'cache'`. Cache de consulta is enabled only if there is a valid cache application component.
 
 
 ### Usages <span id="query-caching-usages"></span>
 
 You can use [[yii\db\Connection::cache()]] if you have multiple SQL queries that need to take advantage of
-query caching. The usage is as follows,
+cache de consulta. The usage is as follows,
 
 ```php
 $duration = 60;     // cache query results for 60 seconds.
@@ -311,17 +309,17 @@ If the result of a query is found valid in the cache, the query will be skipped 
 from the cache instead. If you do not specify the `$duration` parameter, the value of
 [[yii\db\Connection::queryCacheDuration|queryCacheDuration]] will be used instead.
 
-Sometimes within `cache()`, you may want to disable query caching for some particular queries. You can use
+Sometimes within `cache()`, you may want to disable cache de consulta for some particular queries. You can use
 [[yii\db\Connection::noCache()]] in this case.
 
 ```php
 $result = $db->cache(function ($db) {
 
-    // SQL queries that use query caching
+    // SQL queries that use cache de consulta
 
     $db->noCache(function ($db) {
 
-        // SQL queries that do not use query caching
+        // SQL queries that do not use cache de consulta
 
     });
 
@@ -331,22 +329,22 @@ $result = $db->cache(function ($db) {
 });
 ```
 
-If you just want to use query caching for a single query, you can call [[yii\db\Command::cache()]] when building
+If you just want to use cache de consulta for a single query, you can call [[yii\db\Command::cache()]] when building
 the command. For example,
 
 ```php
-// use query caching and set query cache duration to be 60 seconds
+// use cache de consulta and set query cache duration to be 60 seconds
 $customer = $db->createCommand('SELECT * FROM customer WHERE id=1')->cache(60)->queryOne();
 ```
 
-You can also use [[yii\db\Command::noCache()]] to disable query caching for a single command. For example,
+You can also use [[yii\db\Command::noCache()]] to disable cache de consulta for a single command. For example,
 
 ```php
 $result = $db->cache(function ($db) {
 
-    // SQL queries that use query caching
+    // SQL queries that use cache de consulta
 
-    // do not use query caching for this command
+    // do not use cache de consulta for this command
     $customer = $db->createCommand('SELECT * FROM customer WHERE id=1')->noCache()->queryOne();
 
     // ...
@@ -358,7 +356,7 @@ $result = $db->cache(function ($db) {
 
 ### Limitations <span id="query-caching-limitations"></span>
 
-Query caching does not work with query results that contain resource handlers. For example,
+Cache de consulta does not work with query results that contain resource handlers. For example,
 when using the `BLOB` column type in some DBMS, the query result will return a resource
 handler for the column data.
 
