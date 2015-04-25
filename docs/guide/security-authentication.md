@@ -33,11 +33,11 @@ return [
 
 ## Implementing [[yii\web\IdentityInterface]] <span id="implementing-identity"></span>
 
-The [[yii\web\User::identityClass|identity class]] must implement the [[yii\web\IdentityInterface]] contains
+The [[yii\web\User::identityClass|identity class]] must implement the [[yii\web\IdentityInterface]] which contains
 the following methods:
 
 * [[yii\web\IdentityInterface::findIdentity()|findIdentity()]]: it looks for an instance of the identity
-  class using the specified user ID. This method is used when you need to maintain logic status via session.
+  class using the specified user ID. This method is used when you need to maintain the login status via session.
 * [[yii\web\IdentityInterface::findIdentityByAccessToken()|findIdentityByAccessToken()]]: it looks for
   an instance of the identity class using the specified access token. This method is used when you need
   to authenticate a user by a single secret token (e.g. in a stateless RESTful application).
@@ -176,7 +176,7 @@ $identity = User::findOne(['username' => $username]);
 Yii::$app->user->login($identity);
 ```
 
-The [[yii\web\User::login()]] method sets the identity of the current user. If session is 
+The [[yii\web\User::login()]] method sets the identity of the current user to the [[yii\web\User]]. If session is 
 [[yii\web\User::enableSession|enabled]], it will keep the identity in the session so that the user
 authentication status is maintained throughout the whole session. If cookie-based login (i.e. "remember me" login)
 is [[yii\web\User::enableAutoLogin|enabled]], it will also save the identity in a cookie so that
