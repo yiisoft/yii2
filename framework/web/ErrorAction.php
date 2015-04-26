@@ -56,6 +56,10 @@ class ErrorAction extends Action
      */
     public $view;
     /**
+     * @var string the layout file to be applied. If not set, will be used the default controller layout.
+     */
+    public $layout;
+    /**
      * @var string the name of the error when the exception name cannot be determined.
      * Defaults to "Error".
      */
@@ -101,6 +105,9 @@ class ErrorAction extends Action
         if (Yii::$app->getRequest()->getIsAjax()) {
             return "$name: $message";
         } else {
+            if (!empty($this->layout)) {
+                $this->controller->layout = $this->layout;
+            }
             return $this->controller->render($this->view ?: $this->id, [
                 'name' => $name,
                 'message' => $message,
