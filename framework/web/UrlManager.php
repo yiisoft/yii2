@@ -129,6 +129,7 @@ class UrlManager extends Component
     private $_baseUrl;
     private $_scriptUrl;
     private $_hostInfo;
+    private $_ruleMatchCache;
 
 
     /**
@@ -309,9 +310,19 @@ class UrlManager extends Component
         $baseUrl = $this->showScriptName || !$this->enablePrettyUrl ? $this->getScriptUrl() : $this->getBaseUrl();
 
         if ($this->enablePrettyUrl) {
+            $key = $route . ',' . implode(',', array_keys($params));
+
+            if (isset($this->_ruleMatchCache[$key])) {
+                $rules = $this->_ruleMatchCache[$key];
+            } else {
+                $rules = $this->rules;
+            }
+
             /* @var $rule UrlRule */
-            foreach ($this->rules as $rule) {
+            foreach ($rules as $rule) {
                 if (($url = $rule->createUrl($this, $route, $params)) !== false) {
+                    $this->_ruleMatchCache[$key] = [$rule];
+
                     if (strpos($url, '://') !== false) {
                         if ($baseUrl !== '' && ($pos = strpos($url, '/', 8)) !== false) {
                             return substr($url, 0, $pos) . $baseUrl . substr($url, $pos);
@@ -323,6 +334,8 @@ class UrlManager extends Component
                     }
                 }
             }
+
+            $this->_ruleMatchCache[$key] = [];
 
             if ($this->suffix !== null) {
                 $route .= $this->suffix;
