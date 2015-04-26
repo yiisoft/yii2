@@ -65,6 +65,7 @@ Yii Framework 2 Change Log
 - Enh: `yii\widgets\LinkPager::$firstPageLabel` and `yii\widgets\LinkPager::$lastPageLabel` now could be set to true in order to use page number as label (samdark)
 - Chg #7924: Migrations in history are now ordered by time applied allowing to roll back in reverse order no matter how these were applied (samdark)
 - Chg: Updated dependency to `cebe/markdown` to version `1.1.x` (cebe)
+- Chg #8179: Added parameter to define whether the comparison of `yii\db\BaseActiveRecord::isAttributeChanged()` method will be made as identical (thiagotalma)
 
 
 2.0.3 March 01, 2015
