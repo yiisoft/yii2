@@ -4,6 +4,7 @@ Yii Framework 2 Change Log
 2.0.4 under development
 -----------------------
 
+- Enh #7808: Adjusted Masked input to correctly generate the hash variable to store the plugin options (wbraganca)
 - Bug #5042: Use RETURNING for inserts for pgsql and oci to support PKs with a custom default value expression (nineinchnick, klimov-paul)
 - Bug #6642: Fixed the bug that using confirmation dialog via `data-confirm` in an `ActiveForm` may cause the dialog to appear twice (pana1990, qiangxue)
 - Bug #6871: Fixed the bug that using defaults and hostnames in URL rules may cause an out-of-range index issue (qiangxue)
