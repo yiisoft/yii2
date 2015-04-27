@@ -53,9 +53,27 @@ class QueryBuilder extends \yii\db\QueryBuilder
     public function renameColumn($table, $oldName, $newName)
     {
         $quotedTable = $this->db->quoteTableName($table);
-        $row = $this->db->createCommand('SHOW CREATE TABLE ' . $quotedTable)->queryOne();
+        $definition = $this->getColumnDefinition($quotedTable, $oldName);
+
+        return "ALTER TABLE $quotedTable CHANGE "
+            . $this->db->quoteColumnName($oldName) . ' '
+            . $this->db->quoteColumnName($newName)
+            . (empty($definition) ? '' : ' ' . $definition);
+    }
+
+    /**
+     * Gets column definition.
+     *
+     * @param string $table table name
+     * @param string $column column name
+     * @return null|string the column definition
+     * @throws Exception in case when table does not contain column
+     */
+    private function getColumnDefinition($table, $column)
+    {
+        $row = $this->db->createCommand('SHOW CREATE TABLE ' . $table)->queryOne();
         if ($row === false) {
-            throw new Exception("Unable to find column '$oldName' in table '$table'.");
+            throw new Exception("Unable to find column '$column' in table '$table'.");
         }
         if (isset($row['Create Table'])) {
             $sql = $row['Create Table'];
@@ -65,19 +83,49 @@ class QueryBuilder extends \yii\db\QueryBuilder
         }
         if (preg_match_all('/^\s*`(.*?)`\s+(.*?),?$/m', $sql, $matches)) {
             foreach ($matches[1] as $i => $c) {
-                if ($c === $oldName) {
-                    return "ALTER TABLE $quotedTable CHANGE "
-                        . $this->db->quoteColumnName($oldName) . ' '
-                        . $this->db->quoteColumnName($newName) . ' '
-                        . $matches[2][$i];
+                if ($c === $column) {
+                    return $matches[2][$i];
                 }
             }
         }
-        // try to give back a SQL anyway
-        return "ALTER TABLE $quotedTable CHANGE "
-            . $this->db->quoteColumnName($oldName) . ' '
-            . $this->db->quoteColumnName($newName);
+        return null;
     }
+
+    /**
+     * @inheritdoc
+     */
+    public function setNotNull($table, $column)
+    {
+        $quotedTable = $this->db->quoteTableName($table);
+        $definition = $this->getColumnDefinition($quotedTable, $column);
+        $definition = trim(str_replace('DEFAULT NULL', '', $definition));
+
+        return sprintf(
+            'ALTER TABLE %s CHANGE %s %s %s NOT NULL',
+            $quotedTable,
+            $this->db->quoteColumnName($column),
+            $this->db->quoteColumnName($column),
+            empty($definition) ? '' : ' ' . $definition
+        );
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function dropNotNull($table, $column)
+    {
+        $quotedTable = $this->db->quoteTableName($table);
+        $definition = $this->getColumnDefinition($quotedTable, $column);
+        $definition = trim(str_replace('NOT NULL', '', $definition));
+        return sprintf(
+            'ALTER TABLE %s CHANGE %s %s %s',
+            $quotedTable,
+            $this->db->quoteColumnName($column),
+            $this->db->quoteColumnName($column),
+            empty($definition) ? '' : ' ' . $definition
+        );
+    }
+
 
     /**
      * Builds a SQL statement for dropping a foreign key constraint.

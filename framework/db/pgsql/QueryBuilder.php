@@ -211,7 +211,11 @@ class QueryBuilder extends \yii\db\QueryBuilder
      */
     public function setNotNull($table, $column)
     {
-        return $this->alterColumn($table, $column, 'SET NOT NULL');
+        return sprintf(
+            'ALTER TABLE %s ALTER COLUMN %s SET NOT NULL',
+            $this->db->quoteTableName($table),
+            $this->db->quoteColumnName($column)
+        );
     }
 
     /**
@@ -219,7 +223,11 @@ class QueryBuilder extends \yii\db\QueryBuilder
      */
     public function dropNotNull($table, $column)
     {
-        return $this->alterColumn($table, $column, 'DROP NOT NULL');
+        return sprintf(
+            'ALTER TABLE %s ALTER COLUMN %s DROP NOT NULL',
+            $this->db->quoteTableName($table),
+            $this->db->quoteColumnName($column)
+        );
     }
 
 
