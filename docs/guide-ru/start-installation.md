@@ -1,7 +1,7 @@
 Установка Yii
 ==============
 
-Вы можете установить Yii двумя способами: используя [Composer](http://getcomposer.org/) или скачав архив.
+Вы можете установить Yii двумя способами: используя [Composer](https://getcomposer.org/) или скачав архив.
 Первый способ предпочтительнее так как позволяет установить новые [расширения](structure-extensions.md)
 или обновить Yii одной командой.
 
@@ -16,7 +16,7 @@
 используйте следующую команду:
 
   ```
-  curl -s http://getcomposer.org/installer | php
+  curl -sS https://getcomposer.org/installer | php
   mv composer.phar /usr/local/bin/composer
   ```
 

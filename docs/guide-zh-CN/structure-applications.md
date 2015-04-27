@@ -346,7 +346,7 @@ $width = \Yii::$app->params['thumbnail.size'][0];
 #### [[yii\base\Application::extensions|extensions]] <span id="extensions"></span>
 
 该属性用数组列表指定应用安装和使用的 [扩展](structure-extensions.md)，默认使用`@vendor/yiisoft/extensions.php`文件返回的数组。
-当你使用 [Composer](http://getcomposer.org) 安装扩展，`extensions.php` 会被自动生成和维护更新。
+当你使用 [Composer](https://getcomposer.org) 安装扩展，`extensions.php` 会被自动生成和维护更新。
 所以大多数情况下，不需要配置该属性。
 
 特殊情况下你想自己手动维护扩展，可以参照如下配置该属性：
@@ -408,7 +408,7 @@ $width = \Yii::$app->params['thumbnail.size'][0];
 
 #### [[yii\base\Application::vendorPath|vendorPath]] <span id="vendorPath"></span>
 
-该属性指定 [Composer](http://getcomposer.org) 管理的供应商路径，该路径包含应用使用的包括Yii框架在内的所有第三方库。
+该属性指定 [Composer](https://getcomposer.org) 管理的供应商路径，该路径包含应用使用的包括Yii框架在内的所有第三方库。
 默认值为带别名的 `@app/vendor` 。
 
 可以配置它为一个目录或者路径 [别名](concept-aliases.md)，当你修改时，务必修改对应的 Composer 配置。

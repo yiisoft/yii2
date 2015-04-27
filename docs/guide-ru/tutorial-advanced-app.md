@@ -14,7 +14,7 @@
 
 ### Установка при помощи Composer
 
-Если у вас ещё не установлен [Composer](http://getcomposer.org/), следуйте инструкциям в разделе
+Если у вас ещё не установлен [Composer](https://getcomposer.org/), следуйте инструкциям в разделе
 [установка Yii](start-installation.md#installing-via-composer).
 
 Если Composer установлен, вы можете установить приложение используя следующие команды:

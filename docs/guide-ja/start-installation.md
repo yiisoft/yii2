@@ -1,7 +1,7 @@
 Yii をインストールする
 ======================
 
-Yii は二つの方法でインストールすることが出来ます。すなわち、[Composer](http://getcomposer.org/) を使うか、アーカイブファイルをダウンロードするかです。
+Yii は二つの方法でインストールすることが出来ます。すなわち、[Composer](https://getcomposer.org/) を使うか、アーカイブファイルをダウンロードするかです。
 前者がお薦めの方法です。と言うのは、一つのコマンドを走らせるだけで、新しい [エクステンション](structure-extensions.md) をインストールしたり、Yii をアップデートしたりすることが出来るからです。
 
 Yii の標準的なインストールを実行すると、フレームワークとプロジェクトテンプレートの両方がダウンロードされてインストールされます。
@@ -24,7 +24,7 @@ Composer によるインストール <span id="installing-via-composer"></span>
 まだ Composer をインストールしていない場合は、[getcomposer.org](https://getcomposer.org/download/) の指示に従ってインストールすることが出来ます。
 Linux や Mac OS X では、次のコマンドを実行します。
 
-    curl -s http://getcomposer.org/installer | php
+    curl -sS https://getcomposer.org/installer | php
     mv composer.phar /usr/local/bin/composer
 
 Windows では、[Composer-Setup.exe](https://getcomposer.org/Composer-Setup.exe) をダウンロードして実行します。
