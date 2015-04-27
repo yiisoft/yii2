@@ -16,7 +16,7 @@
 Входные скрипты в основном делают следующую работу:
 
 * Объявляют глобальные константы;
-* Регистрируют загрузчик классов [Composer](http://getcomposer.org/doc/01-basic-usage.md#autoloading);
+* Регистрируют загрузчик классов [Composer](https://getcomposer.org/doc/01-basic-usage.md#autoloading);
 * Подключают файл класса [[Yii]];
 * Загружают конфигурацию приложения;
 * Создают и конфигурируют объект [приложения](structure-applications.md);

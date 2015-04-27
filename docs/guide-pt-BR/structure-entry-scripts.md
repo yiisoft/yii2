@@ -20,7 +20,7 @@ possam executar aplicações do console através do comando
 O trabalho principal dos scripts de entrada é o seguinte:
 
 * Definir constantes globais;
-* Registrar o [autoloader do Composer](http://getcomposer.org/doc/01-basic-usage.md#autoloading);
+* Registrar o [autoloader do Composer](https://getcomposer.org/doc/01-basic-usage.md#autoloading);
 * Incluir o arquivo da classe [[Yii]];
 * Carregar a configuração da aplicação;
 * Criar e configurar uma instância da [aplicação](structure-applications.md);
