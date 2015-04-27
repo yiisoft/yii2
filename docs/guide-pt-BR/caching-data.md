@@ -108,44 +108,41 @@ Yii suporta uma ampla gama de sistemas de cache. A seguir um sumario:
   (ex. conteúdo da página).
 
 
-## Cache APIs <span id="cache-apis"></span>
+## APIs De Cache <span id="cache-apis"></span>
 
-All Componente de Caches have the same base class [[yii\caching\Cache]] and thus support the following APIs:
+Todos os componentes de caches extendem a mesma classe base [[yii\caching\Cache]] e assim suportam as seguintes APIs:
 
-* [[yii\caching\Cache::get()|get()]]: retrieves a data item from cache with a specified key. A `false`
-  value will be returned if the data item is not found in the cache or is expired/invalidated.
-* [[yii\caching\Cache::set()|set()]]: stores a data item identified by a key in cache.
-* [[yii\caching\Cache::add()|add()]]: stores a data item identified by a key in cache if the key is not found in the cache.
-* [[yii\caching\Cache::mget()|mget()]]: retrieves multiple data items from cache with the specified keys.
-* [[yii\caching\Cache::mset()|mset()]]: stores multiple data items in cache. Each item is identified by a key.
-* [[yii\caching\Cache::madd()|madd()]]: stores multiple data items in cache. Each item is identified by a key.
-  If a key already exists in the cache, the data item will be skipped.
-* [[yii\caching\Cache::exists()|exists()]]: returns a value indicating whether the specified key is found in the cache.
-* [[yii\caching\Cache::delete()|delete()]]: removes a data item identified by a key from the cache.
-* [[yii\caching\Cache::flush()|flush()]]: removes all data items from the cache.
+* [[yii\caching\Cache::get()|get()]]: recupera um registro no cache usando uma chave específica. 
+  Retorna `false` caso o item não for encontrado no cache ou se o registro está expirado/invalidado.
+* [[yii\caching\Cache::set()|set()]]: armazena um registro no cache identificado por uma chave.
+* [[yii\caching\Cache::add()|add()]]: armazena um registro no cache identificado por uma chave se a chave não 
+  for encontrada em cache.
+* [[yii\caching\Cache::mget()|mget()]]: recupera múltiplos registros do cache com as chaves especificadas.
+* [[yii\caching\Cache::mset()|mset()]]: armazena múltiplos registros no cachee. Cada item identificado por uma chave.
+* [[yii\caching\Cache::madd()|madd()]]: armazena múltiplos registros no cachee. Cada item identificado por uma chave.
+  Se a chave já existir em cache, o registro é ignorado.
+* [[yii\caching\Cache::exists()|exists()]]: retorna se a chave específica é encontrada no cache.
+* [[yii\caching\Cache::delete()|delete()]]: remove um registro do cache identificado por uma chave.
+* [[yii\caching\Cache::flush()|flush()]]: remove todos os registros do cache.
 
-> Note: Do not cache a `false` boolean value directly because the [[yii\caching\Cache::get()|get()]] method uses
-`false` return value to indicate the data item is not found in the cache. You may put `false` in an array and cache
-this array instead to avoid this problem.
+> Note: Não armazene o valor boleano `false` diretamente, porque o método [[yii\caching\Cache::get()|get()]] retorna `false`para indicar que o registro não foi encontrado em cache. Você pode armazena `false` em um array e armazenar este em cache para evitar este problema.
 
-Some cache storage, such as MemCache, APC, support retrieving multiple cached values in a batch mode,
-which may reduce the overhead involved in retrieving cached data. The APIs [[yii\caching\Cache::mget()|mget()]]
-and [[yii\caching\Cache::madd()|madd()]] are provided to exploit this feature. In case the underlying cache storage
-does not support this feature, it will be simulated.
+Alguns tipos de cache como MemCache, APC, suportam recuperar em lote múltiplos registros em cache, o que poder reduzir
+o custo de processamento envolvido ao recuperar informações em cache. The APIs [[yii\caching\Cache::mget()|mget()]]
+e [[yii\caching\Cache::madd()|madd()]] são equipadas para explorar esta funcionalidade. Em caso do cache em questão não suportar esta funcionalidade, ele será simulado.
 
-Because [[yii\caching\Cache]] implements `ArrayAccess`, a Componente de Cache can be used like an array. The following
-are some examples:
+Como [[yii\caching\Cache]] implementa `ArrayAccess`, um componente de cache pode ser usado como um array. A seguir alguns exemplos:
 
 ```php
-$cache['var1'] = $value1;  // equivalent to: $cache->set('var1', $value1);
-$value2 = $cache['var2'];  // equivalent to: $value2 = $cache->get('var2');
+$cache['var1'] = $valor1;  // equivalente a: $cache->set('var1', $valor1);
+$valor2 = $cache['var2'];  // equivalente a: $valor2 = $cache->get('var2');
 ```
 
 
 ### Cache Keys <span id="cache-keys"></span>
 
-Each data item stored in cache is uniquely identified by a key. When you store a data item in cache,
-you have to specify a key for it. Later when you retrieve the data item from cache, you should provide
+Each registro stored in cache is uniquely identified by a key. When you store a registro in cache,
+you have to specify a key for it. Later when you retrieve the registro from cache, you should provide
 the corresponding key.
 
 You may use a string or an arbitrary value as a cache key. When a key is not a string, it will be automatically
@@ -183,12 +180,12 @@ To ensure interoperability, only alphanumeric characters should be used.
 
 ### Cache Expiration <span id="cache-expiration"></span>
 
-A data item stored in a cache will remain there forever unless it is removed because of some caching policy
+A registro stored in a cache will remain there forever unless it is removed because of some caching policy
 enforcement (e.g. caching space is full and the oldest data are removed). To change this behavior, you can provide
-an expiration parameter when calling [[yii\caching\Cache::set()|set()]] to store a data item. The parameter
-indicates for how many seconds the data item can remain valid in the cache. When you call
-[[yii\caching\Cache::get()|get()]] to retrieve the data item, if it has passed the expiration time, the method
-will return `false`, indicating the data item is not found in the cache. For example,
+an expiration parameter when calling [[yii\caching\Cache::set()|set()]] to store a registro. The parameter
+indicates for how many seconds the registro can remain valid in the cache. When you call
+[[yii\caching\Cache::get()|get()]] to retrieve the registro, if it has passed the expiration time, the method
+will return `false`, indicating the registro is not found in the cache. For example,
 
 ```php
 // keep the data in cache for at most 45 seconds
@@ -205,14 +202,14 @@ if ($data === false) {
 
 ### Cache Dependencies <span id="cache-dependencies"></span>
 
-Besides expiration setting, cached data item may also be invalidated by changes of the so-called *cache dependencies*.
+Besides expiration setting, cached registro may also be invalidated by changes of the so-called *cache dependencies*.
 For example, [[yii\caching\FileDependency]] represents the dependency of a file's modification time.
 When this dependency changes, it means the corresponding file is modified. As a result, any outdated
 file content found in the cache should be invalidated and the [[yii\caching\Cache::get()|get()]] call
 should return `false`.
 
 Cache dependencies are represented as objects of [[yii\caching\Dependency]] descendant classes. When you call
-[[yii\caching\Cache::set()|set()]] to store a data item in the cache, you can pass along an associated cache
+[[yii\caching\Cache::set()|set()]] to store a registro in the cache, you can pass along an associated cache
 dependency object. For example,
 
 ```php
@@ -235,8 +232,8 @@ Below is a summary of the available cache dependencies:
 - [[yii\caching\DbDependency]]: the dependency is changed if the query result of the specified SQL statement is changed.
 - [[yii\caching\ExpressionDependency]]: the dependency is changed if the result of the specified PHP expression is changed.
 - [[yii\caching\FileDependency]]: the dependency is changed if the file's last modification time is changed.
-- [[yii\caching\TagDependency]]: associates a cached data item with one or multiple tags. You may invalidate
-  the cached data items with the specified tag(s) by calling [[yii\caching\TagDependency::invalidate()]].
+- [[yii\caching\TagDependency]]: associates a cached registro with one or multiple tags. You may invalidate
+  the cached registros with the specified tag(s) by calling [[yii\caching\TagDependency::invalidate()]].
 
 
 ## Cache De Consulta <span id="query-caching"></span>
