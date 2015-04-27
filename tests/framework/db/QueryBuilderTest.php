@@ -495,4 +495,39 @@ class QueryBuilderTest extends DatabaseTestCase
         $columnSchema = $qb->db->getSchema()->getTableSchema($tableName)->getColumn($column);
         $this->assertTrue($columnSchema->allowNull);
     }
+
+    public function testRenameColumn()
+    {
+        $tableName = 'test_rename';
+        $oldName = 'name';
+        $newName = 'new_name';
+
+        $qb = $this->getQueryBuilder();
+        $oldDefinition = $qb->db->getSchema()->getTableSchema($tableName)->getColumn($oldName);
+        $qb->db->createCommand()->renameColumn($tableName, $oldName, $newName)->execute();
+
+        $qb = $this->getQueryBuilder();
+        $newDefinition = $qb->db->getSchema()->getTableSchema($tableName)->getColumn($newName);
+        $this->assertTrue(!empty($newDefinition));
+        $this->assertTrue($this->compareDefinitions($oldDefinition, $newDefinition, ['name']));
+    }
+
+    /**
+     * Compare columns definition.
+     *
+     * @param \yii\db\ColumnSchema $old the column definition before processing an operation
+     * @param \yii\db\ColumnSchema $new the column definition after processing an operation
+     * @param array $except column names that has to be skipped during comparing
+     * @return bool result of comparing
+     */
+    protected function compareDefinitions($old, $new, $except = [])
+    {
+        $diff = array_diff_assoc((array) $new, (array) $old);
+        foreach ($diff as $k => $v) {
+            if (in_array($k, $except)) {
+                unset($diff[$k]);
+            }
+        }
+        return count($diff) == 0;
+    }
 }

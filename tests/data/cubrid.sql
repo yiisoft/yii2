@@ -15,6 +15,7 @@ DROP TABLE IF EXISTS "profile";
 DROP TABLE IF EXISTS "null_values";
 DROP TABLE IF EXISTS "type";
 DROP TABLE IF EXISTS "constraints";
+DROP TABLE IF EXISTS "test_rename";
 DROP TABLE IF EXISTS "animal";
 DROP TABLE IF EXISTS "default_pk";
 DROP VIEW IF EXISTS "animal_view";
@@ -25,6 +26,10 @@ CREATE TABLE "constraints"
   "field1" varchar(255)
 );
 
+CREATE TABLE "test_rename"
+(
+  "name" varchar(255)
+);
 
 CREATE TABLE "profile" (
   "id" int(11) NOT NULL AUTO_INCREMENT,
