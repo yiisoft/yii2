@@ -430,7 +430,11 @@ class Command extends Component
      * ])->execute();
      * ~~~
      *
+     * The method will properly escape the column names, and quote the values to be inserted.
+     *
      * Note that the values in each row must match the corresponding column names.
+     *
+     * Also note that the created command is not executed until [[execute()]] is called.
      *
      * @param string $table the table that new rows will be inserted into.
      * @param array $columns the column names
