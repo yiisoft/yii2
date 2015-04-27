@@ -171,6 +171,8 @@ class QueryBuilder extends \yii\base\Object
      *
      * Note that the values in each row must match the corresponding column names.
      *
+     * The method will properly escape the column names, and quote the values to be inserted.
+     *
      * @param string $table the table that new rows will be inserted into.
      * @param array $columns the column names
      * @param array $rows the rows to be batch inserted into the table

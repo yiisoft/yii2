@@ -457,7 +457,7 @@ informação de ajuda.
 Essa propriedade especifica a lista de [extensões](structure-extensions.md) que
 estão instaladas e são usadas pela aplicação. Por padrão, ela receberá o array
 retornado pelo arquivo `@vendor/yiisoft/extensions.php`. O arquivo `extensions.php`
-é gerado e mantido automaticamente quando você usa o [Composer](http://getcomposer.org)
+é gerado e mantido automaticamente quando você usa o [Composer](https://getcomposer.org)
 para instalar extensões. Então na maioria dos casos você não precisa configurar
 essa propriedade.
 
@@ -543,7 +543,7 @@ caminho.
 
 #### [[yii\base\Application::vendorPath|vendorPath]] <span id="vendorPath"></span>
 
-Essa propriedade especifica o diretório vendor gerenciado pelo [Composer](http://getcomposer.org).
+Essa propriedade especifica o diretório vendor gerenciado pelo [Composer](https://getcomposer.org).
 Ele contém todas as bibliotecas de terceiros usadas pela sua aplicação, incluindo
 o framework do Yii. O valor padrão é o diretório representado pelo alias `@app/vendor`.
 

@@ -1,7 +1,7 @@
 Instalando o Yii
 ================
 
-Você pode instalar o Yii de duas maneiras, usando o [Composer](http://getcomposer.org/)
+Você pode instalar o Yii de duas maneiras, usando o [Composer](https://getcomposer.org/)
 ou baixando um arquivo compactado. O primeiro modo é o preferido, já que permite
 que você instale novas [extensões](structure-extensions.md) ou atualize o
 Yii simplesmente executando um único comando.
@@ -32,7 +32,7 @@ Se você já não tiver o Composer instalado, você pode fazê-lo seguindo as in
 em [getcomposer.org](https://getcomposer.org/download/). No Linux e no Mac OS X,
 você executará os seguintes comandos:
 
-    curl -s http://getcomposer.org/installer | php
+    curl -sS https://getcomposer.org/installer | php
     mv composer.phar /usr/local/bin/composer
 
 No Windows, você baixará e executará o [Composer-Setup.exe](https://getcomposer.org/Composer-Setup.exe).

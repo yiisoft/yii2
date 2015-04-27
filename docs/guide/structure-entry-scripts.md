@@ -16,7 +16,7 @@ so that users can run console applications through the command `./yii <route> [a
 Entry scripts mainly do the following work:
 
 * Define global constants;
-* Register [Composer autoloader](http://getcomposer.org/doc/01-basic-usage.md#autoloading);
+* Register [Composer autoloader](https://getcomposer.org/doc/01-basic-usage.md#autoloading);
 * Include the [[Yii]] class file;
 * Load application configuration;
 * Create and configure an [application](structure-applications.md) instance;

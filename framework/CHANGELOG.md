@@ -60,6 +60,7 @@ Yii Framework 2 Change Log
 - Enh #8064: Added ability to remove containing menu tag by setting `yii\widgets\Menu::$options['tag']` to `false` (kirsenn, samdark)
 - Enh #8078: 'links' and 'meta' envelope names are now configurable at `yii\rest\Serializer` (arturf)
 - Enh #8171: Allow the user to enforce the fileSize to allow sending files which are not seekable. Needed when using S3 Stream Wrapper (pgaultier)
+- Enh #8179: Added parameter to define whether the comparison of `yii\db\BaseActiveRecord::isAttributeChanged()` method will be made as identical (thiagotalma)
 - Enh: Added `yii\helper\Console::wrapText()` method to wrap indented text by console window width and used it in `yii help` command (cebe)
 - Enh: Implement batchInsert for oci (nineinchnick)
 - Enh: Detecting IntegrityException for oci (nineinchnick)
