@@ -438,8 +438,10 @@ SQL;
         $params = [];
         $returnParams = [];
         $sql = $this->db->getQueryBuilder()->insert($table, $columns, $params);
-        $returnColumns = $this->getTableSchema($table)->primaryKey;
+        $tableSchema = $this->getTableSchema($table);
+        $returnColumns = $tableSchema->primaryKey;
         if (!empty($returnColumns)) {
+            $columnSchemas = $tableSchema->columns;
             $returning = [];
             foreach ((array)$returnColumns as $name) {
                 $phName = QueryBuilder::PARAM_PREFIX . (count($params) + count($returnParams));
@@ -452,6 +454,7 @@ SQL;
                 } else {
                     $returnParams[$phName]['dataType'] = \PDO::PARAM_INT;
                 }
+                $returnParams[$phName]['size'] = isset($columnSchemas[$name]) && isset($columnSchemas[$name]->size) ? $columnSchemas[$name]->size : -1;
                 $returning[] = $this->quoteColumnName($name);
             }
             $sql .= ' RETURNING ' . implode(', ', $returning) . ' INTO ' . implode(', ', array_keys($returnParams));
@@ -461,7 +464,7 @@ SQL;
         $command->prepare(false);
 
         foreach ($returnParams as $name => &$value) {
-            $command->pdoStatement->bindParam($name, $value['value'], $value['dataType']);
+            $command->pdoStatement->bindParam($name, $value['value'], $value['dataType'], $value['size'] );
         }
 
         if (!$command->execute()) {
