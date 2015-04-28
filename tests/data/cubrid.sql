@@ -28,7 +28,7 @@ CREATE TABLE "constraints"
 
 CREATE TABLE "test_rename"
 (
-  "name" varchar(255)
+  "name" varchar(255) DEFAULT 'test'
 );
 
 CREATE TABLE "profile" (

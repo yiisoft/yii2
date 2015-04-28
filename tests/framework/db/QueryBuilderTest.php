@@ -503,8 +503,8 @@ class QueryBuilderTest extends DatabaseTestCase
         $newName = 'new_name';
 
         $qb = $this->getQueryBuilder();
-        $oldDefinition = $qb->db->getSchema()->getTableSchema($tableName)->getColumn($oldName);
         $qb->db->createCommand()->renameColumn($tableName, $oldName, $newName)->execute();
+        $oldDefinition = $qb->db->getSchema()->getTableSchema($tableName)->getColumn($oldName);
 
         $qb = $this->getQueryBuilder();
         $newDefinition = $qb->db->getSchema()->getTableSchema($tableName)->getColumn($newName);
