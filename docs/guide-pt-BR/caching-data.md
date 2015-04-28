@@ -139,133 +139,132 @@ $valor2 = $cache['var2'];  // equivalente a: $valor2 = $cache->get('var2');
 ```
 
 
-### Cache Keys <span id="cache-keys"></span>
+### Chaves de Cache <span id="cache-keys"></span>
 
-Each registro stored in cache is uniquely identified by a key. When you store a registro in cache,
-you have to specify a key for it. Later when you retrieve the registro from cache, you should provide
-the corresponding key.
+Cada registro armazenado no cache é identificado por uma chave única. Quando você armazena um registro em cache,
+você deve especificar uma chave para ele. Mais tarde, quando você quiser recuperar o registro do cache, você deve 
+fornecer a chave correspondente.
 
-You may use a string or an arbitrary value as a cache key. When a key is not a string, it will be automatically
-serialized into a string.
+Você pode usar uma string ou um valor arbitrario como uma chave do cache. Quando a chave não for uma string, ela será
+automaticamente serializada em uma string.
 
-A common strategy of defining a cache key is to include all determining factors in terms of an array.
-For example, [[yii\db\Schema]] uses the following key to cache schema information about a database table:
+Uma estratégia comum ao definir uma chave de cache é incluir todos os fatores determinantes na forma de um array.
+Por exemplo, [[yii\db\Schema]] usa a seguinte chave para armazenar a informação de um esquema de uma tabela do banco
+de dados.
 
 ```php
 [
-    __CLASS__,              // schema class name
-    $this->db->dsn,         // DB connection data source name
-    $this->db->username,    // DB connection login user
-    $name,                  // table name
+    __CLASS__,              // nome da classe do esquema
+    $this->db->dsn,         // nome da fonte de dados da conexão BD
+    $this->db->username,    // usuario da conexão BD
+    $name,                  // nome da tabela
 ];
 ```
 
-As you can see, the key includes all necessary information needed to uniquely specify a database table.
+Como você pode ver, a chave inclui toda a informação necessária para especificar unicamente uma tabela do banco.
 
-When the same cache storage is used by different applications, you should specify a unique cache key prefix
-for each application to avoid conflicts of cache keys. This can be done by configuring the [[yii\caching\Cache::keyPrefix]]
-property. For example, in the application configuration you can write the following code:
+Quando o cache de diferentes aplicações é armazenado no mesmo lugar, é aconselhavel especificar, para cada 
+aplicação, um prefíxo único a chave do cache para evitar conflitos entre elas. Isto pode ser feito ao configurar
+a propriedade [[yii\caching\Cache::keyPrefix]]. Por exemplo, na configuração da aplicação você pode escrever o seguinte código:
 
 ```php
 'components' => [
     'cache' => [
         'class' => 'yii\caching\ApcCache',
-        'keyPrefix' => 'myapp',       // a unique cache key prefix
+        'keyPrefix' => 'minhaapp',       // um prefíxo de chave único
     ],
 ],
 ```
-
+Para assegurar interoperabilidade, apenas caracteres numéricos devem ser usados.
 To ensure interoperability, only alphanumeric characters should be used.
 
 
-### Cache Expiration <span id="cache-expiration"></span>
+### Expiração de Cache <span id="cache-expiration"></span>
 
-A registro stored in a cache will remain there forever unless it is removed because of some caching policy
-enforcement (e.g. caching space is full and the oldest data are removed). To change this behavior, you can provide
-an expiration parameter when calling [[yii\caching\Cache::set()|set()]] to store a registro. The parameter
-indicates for how many seconds the registro can remain valid in the cache. When you call
-[[yii\caching\Cache::get()|get()]] to retrieve the registro, if it has passed the expiration time, the method
-will return `false`, indicating the registro is not found in the cache. For example,
+Um registro armazenado em cache não será apagado a menos que seja removido por alguma política seja aplicada
+(ex. espaço determinado para o cache esteja cheio e os registros mais antigos sejam removidos). Para alterar
+estes comportamente, você pode fornecer um parametro de expiração ao chamar [[yii\caching\Cache::set()|set()]]
+para armazenar um registro. O parametro indica por quantos segundos um registro pode permanecer válidado no cache.
+Quando você chamar [[yii\caching\Cache::get()|get()]] para recuperar um registro, se o tempo de expiração houver passado, o método irá retornar `false`, indicando que o registro não foi encontrado no cache. Por exemplo,
 
 ```php
-// keep the data in cache for at most 45 seconds
-$cache->set($key, $data, 45);
+// Manter o registro em cache por até 45 segundos
+$cache->set($chave, $registro, 45);
 
 sleep(50);
 
-$data = $cache->get($key);
-if ($data === false) {
-    // $data is expired or is not found in the cache
+$data = $cache->get($chave);
+if ($registro === false) {
+    // $registro está expirado ou não foi encontrado no sistema
 }
 ```
 
 
-### Cache Dependencies <span id="cache-dependencies"></span>
+### Dependências de Cache <span id="cache-dependencies"></span>
 
-Besides expiration setting, cached registro may also be invalidated by changes of the so-called *cache dependencies*.
-For example, [[yii\caching\FileDependency]] represents the dependency of a file's modification time.
-When this dependency changes, it means the corresponding file is modified. As a result, any outdated
-file content found in the cache should be invalidated and the [[yii\caching\Cache::get()|get()]] call
-should return `false`.
+Além da definição de expiração, um registro em cache pode também ser invalidado por mudanças nas, então chamadas,
+*dependências de cache*. Por exemplo, [[yii\caching\FileDependency]] representa a dependência na data de modificação
+de um arquivo.
+Quando esta dependência muda, significa que o arquivo correspondente foi mudado. Como um resultado, qualquer 
+arquivo com data ultrapassada encontrado no cache deve ser invalidado e a chamada de [[yii\caching\Cache::get()|get()]]
+retornará `false`.
 
-Cache dependencies are represented as objects of [[yii\caching\Dependency]] descendant classes. When you call
-[[yii\caching\Cache::set()|set()]] to store a registro in the cache, you can pass along an associated cache
-dependency object. For example,
+Dependências de Cache são representadas como objetos de classes dependentes de [[yii\caching\Dependency]]. Quando você chamar [[yii\caching\Cache::set()|set()]] para armazenar um registro em cache, você pode passar um objeto de dependência. Por exemplo,
 
 ```php
-// Create a dependency on the modification time of file example.txt.
-$dependency = new \yii\caching\FileDependency(['fileName' => 'example.txt']);
+// Criar uma dependência sobre a data de modificação do arquivo exemplo.txt.
+$dependencia = new \yii\caching\FileDependency(['fileName' => 'exemplo.txt']);
 
-// The data will expire in 30 seconds.
-// It may also be invalidated earlier if example.txt is modified.
+// O registro irá expirar em 30 segundos.
+// Ele também pode ser invalidado antes, caso o exemplo.txt seja modificado.
 $cache->set($key, $data, 30, $dependency);
 
-// The cache will check if the data has expired.
-// It will also check if the associated dependency was changed.
-// It will return false if any of these conditions is met.
+// O cache irá verificar se o registro expirou.
+// E também irá vefiricar se a dependência associada foi alterada.
+// Ele retornará false se qualquer uma dessas condições seja atingida.
 $data = $cache->get($key);
 ```
+Abaixo um sumário das dependências de cache disponíveis:
 
-Below is a summary of the available cache dependencies:
+- [[yii\caching\ChainedDependency]]: a dependência muda caso alguma das dependencias na cadeia for alterada.
+- [[yii\caching\DbDependency]]: a dependência muda caso o resultado da consulta especificada pela instrução SQL seja
+  alterado.
+- [[yii\caching\ExpressionDependency]]: a dependencia muda se o resultado da expressão PHP especificada for alterado.
+- [[yii\caching\FileDependency]]: A dependencia muda se a data da última alteração do arquivo for alterada.
+- [[yii\caching\TagDependency]]: associa um registro em cache com uma ou múltiplas tags. Você pode invalidar os
+  registros em cache com a tag especificada ao chamar [[yii\caching\TagDependency::invalidate()]].
 
-- [[yii\caching\ChainedDependency]]: the dependency is changed if any of the dependencies on the chain is changed.
-- [[yii\caching\DbDependency]]: the dependency is changed if the query result of the specified SQL statement is changed.
-- [[yii\caching\ExpressionDependency]]: the dependency is changed if the result of the specified PHP expression is changed.
-- [[yii\caching\FileDependency]]: the dependency is changed if the file's last modification time is changed.
-- [[yii\caching\TagDependency]]: associates a cached registro with one or multiple tags. You may invalidate
-  the cached registros with the specified tag(s) by calling [[yii\caching\TagDependency::invalidate()]].
 
+## Cache de Consulta <span id="query-caching"></span>
 
-## Cache De Consulta <span id="query-caching"></span>
+Cache de consulta é uma funcionalidade especial de cache construida com o cache de dados. Ela é fornecida para armazenar em cache consultas ao banco de dados.
 
-Cache de consulta is a special caching feature built on top of data caching. It is provided to cache the result
-of database queries.
-
-Cache de consulta requires a [[yii\db\Connection|DB connection]] and a valid `cache` [application component](#cache-components).
-The basic usage of cache de consulta is as follows, assuming `$db` is a [[yii\db\Connection]] instance:
+O cache de consulta requere uma [[yii\db\Connection|DB connection]] e um [componente de aplicação](#cache-components) de `cache` válido.
+A seguir um usu básico de cache de consulta, assumindo que `$bd` é uma instância de [[yii\db\Connection]]:
 
 ```php
-$result = $db->cache(function ($db) {
-
-    // the result of the SQL query will be served from the cache
-    // if cache de consulta is enabled and the query result is found in the cache
-    return $db->createCommand('SELECT * FROM customer WHERE id=1')->queryOne();
+$resultado = $bd->cache(function ($bd) {
+  
+    // O resultado da consulta SQL será entregue pelo cache
+    // se o cache de consulta estiver sido habilitado e o resultado da consulta for encontrado em cache
+    return $bd->createCommand('SELECT * FROM clientes WHERE id=1')->queryOne();
 
 });
 ```
 
-Cache de consulta can be used for [DAO](db-dao.md) as well as [ActiveRecord](db-active-record.md):
+Cache de consulta pode ser usado pelo [DAO](db-dao.md) da mesma forma que um [ActiveRecord](db-active-record.md):
 
 ```php
-$result = Customer::getDb()->cache(function ($db) {
-    return Customer::find()->where(['id' => 1])->one();
+$resultado = Cliente::getDb()->cache(function ($bd) {
+    return Cliente::find()->where(['id' => 1])->one();
 });
 ```
 
-> Info: Some DBMS (e.g. [MySQL](http://dev.mysql.com/doc/refman/5.1/en/query-cache.html))
-  also support cache de consulta on the DB server side. You may choose to use either cache de consulta mechanism.
-  The cache de consulta described above has the advantage that you may specify flexible cache dependencies
-  and are potentially more efficient.
+> Info: Alguns SGBDs (ex. [MySQL](http://dev.mysql.com/doc/refman/5.1/en/query-cache.html))
+  também suportam o cache de consulta no servidor. Você pode escolher usálo ao invés do mecanismo de cache 
+  de consulta.
+  O cache de consulta descrito acima tem a vantagem de que você pode especificar dependencias de cache flexíveis 
+  e assim sendo potencialmente mais eficiente.
 
 
 ### Configurations <span id="query-caching-configs"></span>
