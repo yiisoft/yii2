@@ -7,6 +7,7 @@
 
 namespace yii\db\cubrid;
 
+use yii\db\Exception;
 use yii\base\InvalidParamException;
 
 /**
@@ -39,6 +40,78 @@ class QueryBuilder extends \yii\db\QueryBuilder
         Schema::TYPE_BOOLEAN => 'smallint',
         Schema::TYPE_MONEY => 'decimal(19,4)',
     ];
+
+    /**
+     * Gets column definition.
+     *
+     * @param string $table table name
+     * @param string $column column name
+     * @return null|string the column definition
+     * @throws Exception in case when table does not contain column
+     */
+    private function getColumnDefinition($table, $column)
+    {
+        $row = $this->db->createCommand('SHOW CREATE TABLE ' . $table)->queryOne();
+        if ($row === false) {
+            throw new Exception("Unable to find column '$column' in table '$table'.");
+        }
+        if (isset($row['Create Table'])) {
+            $sql = $row['Create Table'];
+        } else {
+            $row = array_values($row);
+            $sql = $row[1];
+        }
+        $sql = preg_replace('/^[^(]+\((.*)\).*$/', '\1', $sql);
+        $sql = str_replace(', [', ",\n[", $sql);
+        if (preg_match_all('/^\s*\[(.*?)\]\s+(.*?),?$/m', $sql, $matches)) {
+            foreach ($matches[1] as $i => $c) {
+                if ($c === $column) {
+                    return $matches[2][$i];
+                }
+            }
+        }
+        return null;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function setNotNull($table, $column)
+    {
+        $quotedTable = $this->db->quoteTableName($table);
+        $definition = $this->getColumnDefinition($quotedTable, $column);
+        if (strpos($definition, 'NOT NULL') !== false) {
+            throw new Exception("Column '$column' in table '$table' already has NOT NULL constraint");
+        }
+        $definition = trim(str_replace('DEFAULT NULL', '', $definition));
+        return sprintf(
+            'ALTER TABLE %s CHANGE %s %s %s NOT NULL',
+            $quotedTable,
+            $this->db->quoteColumnName($column),
+            $this->db->quoteColumnName($column),
+            empty($definition) ? '' : ' ' . $definition
+        );
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function dropNotNull($table, $column)
+    {
+        $quotedTable = $this->db->quoteTableName($table);
+        $definition = $this->getColumnDefinition($quotedTable, $column);
+        if (strpos($definition, 'NOT NULL') === false) {
+            throw new Exception("Column '$column' in table '$table' has no NOT NULL constraint");
+        }
+        $definition = trim(str_replace('NOT NULL', '', $definition));
+        return sprintf(
+            'ALTER TABLE %s CHANGE %s %s %s',
+            $quotedTable,
+            $this->db->quoteColumnName($column),
+            $this->db->quoteColumnName($column),
+            empty($definition) ? '' : ' ' . $definition
+        );
+    }
 
 
     /**
