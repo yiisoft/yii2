@@ -1644,7 +1644,9 @@ class BaseHtml
         foreach ($items as $key => $value) {
             if (is_array($value)) {
                 $groupAttrs = isset($groups[$key]) ? $groups[$key] : [];
-                $groupAttrs['label'] = $key;
+                if (!isset($groupAttrs['label'])) {
+                    $groupAttrs['label'] = $key;
+                }
                 $attrs = ['options' => $options, 'groups' => $groups, 'encodeSpaces' => $encodeSpaces, 'encode' => $encode];
                 $content = static::renderSelectOptions($selection, $value, $attrs);
                 $lines[] = static::tag('optgroup', "\n" . $content . "\n", $groupAttrs);
