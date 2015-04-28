@@ -49,6 +49,7 @@ Yii Framework 2 Change Log
 - Enh #7571: HTTP status 500 and "An internal server error occurred." are now returned in case there was an exception in layout and `YII_DEBUG` is false (samdark)
 - Enh #7636: `yii\web\Session::getHasSessionId()` uses a more lenient way to check if session ID is provided in URL (robsch)
 - Enh #7637: Allow `yii\web\Request::validateCsrfToken()` to validate a manually provided token (miraage, qiangxue)
+- Enh #7808: Adjusted Masked input to correctly generate the hash variable to store the plugin options (wbraganca)
 - Enh #7833: Support (materialized) views and foreign tables along normal tables when fetching table schema (nineinchnick)
 - Enh #7850: Added `yii\filters\PageCache::cacheCookies` and `cacheHeaders` to allow selectively caching cookies and HTTP headers (qiangxue)
 - Enh #7867: Implemented findUniqueIndexes for oci and mssql (nineinchnick)
