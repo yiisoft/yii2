@@ -267,55 +267,52 @@ $resultado = Cliente::getDb()->cache(function ($bd) {
   e assim sendo potencialmente mais eficiente.
 
 
-### Configurations <span id="query-caching-configs"></span>
+### Configurações <span id="query-caching-configs"></span>
 
-Cache de consulta has three global configurable options through [[yii\db\Connection]]:
+Cache de consulta tem três opções configuraveis globalmente através de [[yii\db\Connection]]:
 
-* [[yii\db\Connection::enableQueryCache|enableQueryCache]]: whether to turn on or off cache de consulta.
-  It defaults to true. Note that to effectively turn on cache de consulta, you also need to have a valid
-  cache, as specified by [[yii\db\Connection::queryCache|queryCache]].
-* [[yii\db\Connection::queryCacheDuration|queryCacheDuration]]: this represents the number of seconds
-  that a query result can remain valid in the cache. You can use 0 to indicate a query result should
-  remain in the cache forever. This property is the default value used when [[yii\db\Connection::cache()]]
-  is called without specifying a duration.
-* [[yii\db\Connection::queryCache|queryCache]]: this represents the ID of the cache application component.
-  It defaults to `'cache'`. Cache de consulta is enabled only if there is a valid cache application component.
+* [[yii\db\Connection::enableQueryCache|enableQueryCache]]: Configura se o cache de consulta está habilitado.
+  O padrão é true. Note que para ter efetivamente o cache de consulta habilitado, você também deve ter um cache válido como especificado por [[yii\db\Connection::queryCache|queryCache]].
+* [[yii\db\Connection::queryCacheDuration|queryCacheDuration]]: representa o número de segundos que o resultado de uma  
+  consulta pode se manter válido em cache. Você pode usar 0 para indicar que o resultado da consulta deve permancer no
+  cache indefinidamente. Este é o valor padrão usado quando [[yii\db\Connection::cache()]] é chamado sem nenhuma
+  especificação de duração.
+* [[yii\db\Connection::queryCache|queryCache]]: representa a ID do componente de aplicação de cache.
+  Seu padrão é `'cache'`. Cache de consulta é habilitado apenas se houver um componente de aplicacão de cache válido.
 
 
-### Usages <span id="query-caching-usages"></span>
+### Usando o Cache de Consulta <span id="query-caching-usages"></span>
 
-You can use [[yii\db\Connection::cache()]] if you have multiple SQL queries that need to take advantage of
-cache de consulta. The usage is as follows,
+Você pode usar [[yii\db\Connection::cache()]] se tiver múltiplas consultas SQL que precisam ser armazenadas no
+cache de consulta. Use da seguinte maneira,
 
 ```php
-$duration = 60;     // cache query results for 60 seconds.
-$dependency = ...;  // optional dependency
+$duracao = 60;     // armazenar os resultados em cache por 60 segundos
+$dependencia = ...;  // alguma dependencia opcional
 
 $result = $db->cache(function ($db) {
 
-    // ... perform SQL queries here ...
+    // ... executar consultas SQL aqui ...
 
     return $result;
 
-}, $duration, $dependency);
+}, $duracao, $dependencia);
 ```
 
-Any SQL queries in the anonymous function will be cached for the specified duration with the specified dependency.
-If the result of a query is found valid in the cache, the query will be skipped and the result will be served
-from the cache instead. If you do not specify the `$duration` parameter, the value of
-[[yii\db\Connection::queryCacheDuration|queryCacheDuration]] will be used instead.
+Qualquer consulta SQL na função anonima irá ser armazenada em cache pela duração especificada com a dependência informada. Se o resultado da consulta for encontrado em cache e for válido, a consulta não será necessária e o 
+resultado será entregue pelo cache. Se você não especificar o parametro `$duracao`, o valor de 
+[[yii\db\Connection::queryCacheDuration|queryCacheDuration]] será usado.
 
-Sometimes within `cache()`, you may want to disable cache de consulta for some particular queries. You can use
-[[yii\db\Connection::noCache()]] in this case.
+Ocasionalmente em `cache()`, você pode precisar desabilitar o cache de consulta para algumas consultas em particular. Você pode usar [[yii\db\Connection::noCache()]] neste caso.
 
 ```php
 $result = $db->cache(function ($db) {
 
-    // SQL queries that use cache de consulta
+    // consultas SQL que usarão o cache de consulta
 
     $db->noCache(function ($db) {
 
-        // SQL queries that do not use cache de consulta
+        // consultas SQL que não usarão o cache de consulta
 
     });
 
@@ -325,22 +322,22 @@ $result = $db->cache(function ($db) {
 });
 ```
 
-If you just want to use cache de consulta for a single query, you can call [[yii\db\Command::cache()]] when building
-the command. For example,
+Se você apenas deseja usar o cache de consulta para apenas uma consulta, você pode chamar [[yii\db\Command::cache()]]
+ao construir o comando. Por exemplo,
 
 ```php
-// use cache de consulta and set query cache duration to be 60 seconds
+// usar cache de consulta and definir duração do cache para 60 segundos
 $customer = $db->createCommand('SELECT * FROM customer WHERE id=1')->cache(60)->queryOne();
 ```
 
-You can also use [[yii\db\Command::noCache()]] to disable cache de consulta for a single command. For example,
+Você pode também usar [[yii\db\Command::noCache()]] para desabilitar o cache de consulta para um único comando, Por exemplo,
 
 ```php
 $result = $db->cache(function ($db) {
 
-    // SQL queries that use cache de consulta
+    // consultas SQL que usam o cache de consulta
 
-    // do not use cache de consulta for this command
+    // não usar cache de consulta para este comando
     $customer = $db->createCommand('SELECT * FROM customer WHERE id=1')->noCache()->queryOne();
 
     // ...
@@ -350,13 +347,10 @@ $result = $db->cache(function ($db) {
 ```
 
 
-### Limitations <span id="query-caching-limitations"></span>
+### Limitações <span id="query-caching-limitations"></span>
 
-Cache de consulta does not work with query results that contain resource handlers. For example,
-when using the `BLOB` column type in some DBMS, the query result will return a resource
-handler for the column data.
+O cache de consulta não funciona com resultados de consulta que contêm <i>manipuladores de recursos</i>(resource handlers). 
+Por exemplo, ao usar o tipo de coluna `BLOB` em alguns SGBDs, o resultado da consulta irá retornar um <i>manipulador de recurso</i>(resource handler) para o registro na coluna.
 
-Some caching storage has size limitation. For example, memcache limits the maximum size
-of each entry to be 1MB. Therefore, if the size of a query result exceeds this limit,
-the caching will fail.
+Alguns armazenamentos em cache têm limitações de tamanho. Por exemplo, memcache limita o uso máximo de espaço de 1MB para cada registro. Então, se o tamanho do resultado de uma consulta exceder este limite, o cache irá falhar. 
 
