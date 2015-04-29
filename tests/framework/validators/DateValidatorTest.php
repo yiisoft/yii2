@@ -7,6 +7,7 @@ use yii\validators\DateValidator;
 use yiiunit\data\validators\models\FakedValidationModel;
 use yiiunit\framework\i18n\IntlTestHelper;
 use yiiunit\TestCase;
+use IntlDateFormatter;
 
 /**
  * @group validators
@@ -197,5 +198,114 @@ class DateValidatorTest extends TestCase
         $model = FakedValidationModel::createWithAttributes(['attr_date' => '12 мая 2014']);
         $val->validateAttribute($model, 'attr_date');
         $this->assertFalse($model->hasErrors('attr_date'));
+    }
+
+    public function testIntlValidateRange()
+    {
+        $this->testValidateValueRange();
+    }
+
+    public function testValidateValueRange()
+    {
+        $date = '14-09-13';
+        $val = new DateValidator(['format' => 'yyyy-MM-dd']);
+        $this->assertTrue($val->validate($date), "$date is valid");
+
+        $val = new DateValidator(['format' => 'yyyy-MM-dd', 'min' => '1900-01-01']);
+        $date = "1958-01-12";
+        $this->assertTrue($val->validate($date), "$date is valid");
+
+        $val = new DateValidator(['format' => 'yyyy-MM-dd', 'max' => '2000-01-01']);
+        $date = '2014-09-13';
+        $this->assertFalse($val->validate($date), "$date is too big");
+        $date = "1958-01-12";
+        $this->assertTrue($val->validate($date), "$date is valid");
+
+        $val = new DateValidator(['format' => 'yyyy-MM-dd', 'min' => '1900-01-01', 'max' => '2000-01-01']);
+        $this->assertTrue($val->validate('1999-12-31'), "max -1 day is valid");
+        $this->assertTrue($val->validate('2000-01-01'), "max is inside range");
+        $this->assertTrue($val->validate('1900-01-01'), "min is inside range");
+        $this->assertFalse($val->validate('1899-12-31'), "min -1 day is invalid");
+        $this->assertFalse($val->validate('2000-01-02'), "max +1 day is invalid");
+    }
+
+    private function validateModelAttribute($validator, $date, $expected, $message = '')
+    {
+        $model = new FakedValidationModel;
+        $model->attr_date = $date;
+        $validator->validateAttribute($model, 'attr_date');
+        if (!$expected) {
+            $this->assertTrue($model->hasErrors('attr_date'), $message);
+        } else {
+            $this->assertFalse($model->hasErrors('attr_date'), $message);
+        }
+    }
+
+    public function testIntlValidateAttributeRange() {
+        $this->testValidateAttributeRange();
+    }
+
+    public function testValidateAttributeRange()
+    {
+        $val = new DateValidator(['format' => 'yyyy-MM-dd']);
+        $date = '14-09-13';
+        $this->validateModelAttribute($val, $date, true, "$date is valid");
+
+        $val = new DateValidator(['format' => 'yyyy-MM-dd', 'min' => '1900-01-01']);
+        $date = '1958-01-12';
+        $this->validateModelAttribute($val, $date, true, "$date is valid");
+
+        $val = new DateValidator(['format' => 'yyyy-MM-dd', 'max' => '2000-01-01']);
+        $date = '2014-09-13';
+        $this->validateModelAttribute($val, $date, false, "$date is too big");
+        $date = '1958-01-12';
+        $this->validateModelAttribute($val, $date, true, "$date is valid");
+
+        $val = new DateValidator(['format' => 'yyyy-MM-dd', 'min' => '1900-01-01', 'max' => '2000-01-01']);
+        $this->validateModelAttribute($val, '1999-12-31', true, "max -1 day is valid");
+        $this->validateModelAttribute($val, '2000-01-01', true, "max is inside range");
+        $this->validateModelAttribute($val, '1900-01-01', true, "min is inside range");
+        $this->validateModelAttribute($val, '1899-12-31', false, "min -1 day is invalid");
+        $this->validateModelAttribute($val, '2000-01-02', false, "max +1 day is invalid");
+    }
+
+    public function testIntlValidateValueRangeOld()
+    {
+        if ($this->checkOldIcuBug()) {
+            $this->markTestSkipped("ICU is too old.");
+        }
+        $date = '14-09-13';
+        $val = new DateValidator(['format' => 'yyyy-MM-dd', 'min' => '1900-01-01']);
+        $this->assertFalse($val->validate($date), "$date is too small");
+    }
+
+    public function testIntlValidateAttributeRangeOld()
+    {
+        if ($this->checkOldIcuBug()) {
+            $this->markTestSkipped("ICU is too old.");
+        }
+        $date = '14-09-13';
+        $val = new DateValidator(['format' => 'yyyy-MM-dd', 'min' => '1900-01-01']);
+        $this->validateModelAttribute($val, $date, false, "$date is too small");
+    }
+
+    /**
+     * returns true if the version of ICU is old and has a bug that makes it
+     * impossible to parse two digit years properly.
+     * see http://bugs.icu-project.org/trac/ticket/9836
+     * @return boolean
+     */
+    private function checkOldIcuBug()
+    {
+        $date = '14';
+        $formatter = new IntlDateFormatter('en-US', IntlDateFormatter::NONE, IntlDateFormatter::NONE, null, null, 'yyyy');
+        $parsePos = 0;
+        $parsedDate = @$formatter->parse($date, $parsePos);
+
+        if (is_int($parsedDate) && $parsedDate > 0) {
+            return true;
+        }
+
+        return false;
     }
 }
