@@ -5,7 +5,7 @@ Questa guida è rilasciata nei [termini della documentazione di Yii](http://www.
 
 Tutti i diritti riservati.
 
-2014 (c) Yii Software LLC.
+2015 (c) Yii Software LLC.
 
 Traduzione italiana a cura di Lorenzo Milesi ([yetopen.it](http://www.yetopen.it)).
 

@@ -5,7 +5,7 @@ Yii 2.0 決定版ガイド
 
 All Rights Reserved.
 
-2014 (c) Yii Software LLC.
+2015 (c) Yii Software LLC.
 
 
 前書き

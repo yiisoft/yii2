@@ -5,7 +5,7 @@ Ushbu qo'llanma [Yii qo'llanmalarining holati](http://www.yiiframework.com/doc/t
 
 All Rights Reserved.
 
-2014 © Yii Software LLC.
+2015 © Yii Software LLC.
 
 Kirish
 ------

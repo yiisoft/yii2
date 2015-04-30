@@ -5,7 +5,7 @@ Ten poradnik udostępniony jest na [Warunkach dokumentacji Yii](http://www.yiifr
 
 Wszelkie prawa zastrzeżone.
 
-2014 (c) Yii Software LLC.
+2015 (c) Yii Software LLC.
 
 
 Wstęp

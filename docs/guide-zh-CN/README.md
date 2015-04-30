@@ -5,7 +5,7 @@ Yii 2.0 权威指南
 
 版权所有
 
-2014 (c) Yii Software LLC.
+2015 (c) Yii Software LLC.
 
 介绍
 -----

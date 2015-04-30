@@ -5,7 +5,7 @@
 
 All Rights Reserved.
 
-2014 © Yii Software LLC.
+2015 © Yii Software LLC.
 
 
 Введення
