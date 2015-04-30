@@ -5,7 +5,7 @@ This tutorial is released under the [Terms of Yii Documentation](http://www.yiif
 
 All Rights Reserved.
 
-2014 (c) Yii Software LLC.
+2015 (c) Yii Software LLC.
 
 
 Introduction

@@ -5,7 +5,7 @@ Ce guide est soumis aux [Conditions de la Documentation de Yii](http://www.yiifr
 
 Tous droits réservés.
 
-2014 (c) Yii Software LLC.
+2015 (c) Yii Software LLC.
 
 
 Introduction

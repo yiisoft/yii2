@@ -285,7 +285,7 @@ use yii\helpers\Html;
 <?php $this->beginBody() ?>
     <header>Моя компания</header>
     <?= $content ?>
-    <footer>Моя компания &copy; 2014</footer>
+    <footer>Моя компания &copy; 2015</footer>
 <?php $this->endBody() ?>
 </body>
 </html>

@@ -403,7 +403,7 @@ use yii\helpers\Html;
 <?php $this->beginBody() ?>
     <header>My Company</header>
     <?= $content ?>
-    <footer>&copy; 2014 by My Company</footer>
+    <footer>&copy; 2015 by My Company</footer>
 <?php $this->endBody() ?>
 </body>
 </html>
