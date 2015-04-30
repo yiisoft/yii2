@@ -1,93 +1,87 @@
-Fragment Caching
+Cache de Fragmentos
 ================
 
-Fragment caching refers to caching a fragment of a Web page. For example, if a page displays a summary of
-yearly sale in a table, you can store this table in cache to eliminate the time needed to generate this table
-for each request. Fragment caching is built on top of [data caching](caching-data.md).
+Cache de fragmentos é responsável por armazenar em cache um fragmento de uma página web. Por exemplo, se uma
+página exibe o sumario de vendas anuais em uma tabela, você pode armazenar esta tabela em cache para eliminar
+o tempo necessário para gerar esta tabela para em cada requisição. O Cache de Fragmentos é construido a partir 
+do [cache de dados](caching-data.md).
 
-To use fragment caching, use the following construct in a [view](structure-views.md):
+Para usar o cache de fragmentos, use o seguinte modelo em uma [view](structure-views.md):
 
 ```php
 if ($this->beginCache($id)) {
 
-    // ... generate content here ...
+    // ... gere o conteúdo aqui ...
 
     $this->endCache();
 }
 ```
+Ou seja, encapsule a lógica de geração do conteudo entre as chamadas [[yii\base\View::beginCache()|beginCache()]]
+e [[yii\base\View::endCache()|endCache()]]. Se o conteúdo for encontrado em cache, [[yii\base\View::beginCache()|beginCache()]] irá renderizar o conteúdo em cache e retornará falso, e assim não executará a lógica de geração de conteúdo.
+Caso contrário, o conteúdo será gerado, e quando [[yii\base\View::endCache()|endCache()]] for chamado, o conteúdo gerado será capturado e armazenado no cache.
 
-That is, enclose content generation logic in a pair of [[yii\base\View::beginCache()|beginCache()]] and
-[[yii\base\View::endCache()|endCache()]] calls. If the content is found in the cache, [[yii\base\View::beginCache()|beginCache()]]
-will render the cached content and return false, thus skip the content generation logic.
-Otherwise, your content generation logic will be called, and when [[yii\base\View::endCache()|endCache()]]
-is called, the generated content will be captured and stored in the cache.
-
-Like [data caching](caching-data.md), a unique `$id` is needed to identify a content cache.
+Assim como [cache de dados](caching-data.md), uma `$id` única é necessária para identificar um conteúdo no cache.
 
 
-## Caching Options <span id="caching-options"></span>
+## Opções do Cache <span id="caching-options"></span>
 
-You may specify additional options about fragment caching by passing the option array as the second
-parameter to the [[yii\base\View::beginCache()|beginCache()]] method. Behind the scene, this option array
-will be used to configure a [[yii\widgets\FragmentCache]] widget which implements the actual fragment caching
-functionality.
+Você poderá especificar opções adicionais sobre o cache de fragmentos passando um array de opções como o segundo parâmetro do método [[yii\base\View::beginCache()|beginCache()]]. Por trás dos panos, este array de opções será usado para configurar um widget [[yii\widgets\FragmentCache]] que implementa, por sua vez, a funcionalidade de cache de fragmentos.
 
-### Duration <span id="duration"></span>
+### Duração <span id="duration"></span>
 
-Perhaps the most commonly used option of fragment caching is [[yii\widgets\FragmentCache::duration|duration]].
-It specifies for how many seconds the content can remain valid in a cache. The following code
-caches the content fragment for at most one hour:
+Esta talvez a opção mais frequentemente usada com cache de fragmentos seja a 
+[[yii\widgets\FragmentCache::duration|duration]].
+Ela especifica por quantos segundos o conteúdo pode permanecer válido no cache. O código a seguir armazena em cache o fragmento do conteúdo por até uma hora:
 
 ```php
 if ($this->beginCache($id, ['duration' => 3600])) {
 
-    // ... generate content here ...
+    // ... gerar o conteúdo aqui ...
 
     $this->endCache();
 }
 ```
 
-If the option is not set, it will take the default value 60, which means the cached content will expire in 60 seconds.
+Se a opção não for definida, o padrão definido é 60, que significa que o conteúdo em cache expirará em 60 segundosnds.
 
+### Dependências <span id="dependencies"></span>
 
-### Dependencies <span id="dependencies"></span>
+Assim como [cache de dados](caching-data.md#cache-dependencies), o fragmento de conteúdo sendo armazenado em cache pode ter dependencias.
+Por exemplo, o conteúdo de um post sendo exibido depende de ele ter sido ou não modificado.
 
-Like [data caching](caching-data.md#cache-dependencies), content fragment being cached can also have dependencies.
-For example, the content of a post being displayed depends on whether or not the post is modified.
-
-To specify a dependency, set the [[yii\widgets\FragmentCache::dependency|dependency]] option, which can be
-either an [[yii\caching\Dependency]] object or a configuration array for creating a dependency object. The
-following code specifies that the fragment content depends on the change of the `updated_at` column value:
+Para especificar uma dependencia, defina a opção [[yii\widgets\FragmentCache::dependency|dependency]], que pode
+ser um objeto [[yii\caching\Dependency]] ou um array de configuração para criar um objeto de dependência.
+O código a seguir especifica que o conteudo do fragmento depende do valor da coluna `atualizado_em`:
 
 ```php
 $dependency = [
     'class' => 'yii\caching\DbDependency',
-    'sql' => 'SELECT MAX(updated_at) FROM post',
+    'sql' => 'SELECT MAX(atualizado_em) FROM post',
 ];
 
 if ($this->beginCache($id, ['dependency' => $dependency])) {
 
-    // ... generate content here ...
+    // ... gere o conteúdo aqui ...
 
     $this->endCache();
 }
 ```
 
 
-### Variations <span id="variations"></span>
+### Variações <span id="variations"></span>
 
-Content being cached may be variated according to some parameters. For example, for a Web application
-supporting multiple languages, the same piece of view code may generate the content in different languages.
-Therefore, you may want to make the cached content variated according to the current application language.
+O Conteúdo armazenado em cache pode variar de acordo com alguns parâmetros. Por exemplo, para uma aplicação web
+suportando múltiplas linguas, a mesma porção de código de uma view pode gerar conteúdo em diferentes línguagem. 
+Desta forma, você pode desejar que o código em cache exiba um conteúdo diferente para a línguagem exibida na requisição.
 
-To specify cache variations, set the [[yii\widgets\FragmentCache::variations|variations]] option, which
-should be an array of scalar values, each representing a particular variation factor. For example,
-to make the cached content variated by the language, you may use the following code:
+Para especificar variações de cache, defina a opção [[yii\widgets\FragmentCache::variations|variations]],
+que pode ser um array de valores escalares, cada um representando um fator de variação particular.
+Por exemplo, para fazer o conteúdo em cache variar em função da linguagem, você pode usar o seguinte código:
 
 ```php
 if ($this->beginCache($id, ['variations' => [Yii::$app->language]])) {
 
-    // ... generate content here ...
+    // ... gerar o conteúdo aqui ...
 
     $this->endCache();
 }
