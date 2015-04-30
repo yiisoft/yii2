@@ -129,6 +129,7 @@ class UrlManager extends Component
     private $_baseUrl;
     private $_scriptUrl;
     private $_hostInfo;
+    private $_createUrlRuleMatches;
 
 
     /**
@@ -309,18 +310,38 @@ class UrlManager extends Component
         $baseUrl = $this->showScriptName || !$this->enablePrettyUrl ? $this->getScriptUrl() : $this->getBaseUrl();
 
         if ($this->enablePrettyUrl) {
+            $cacheKey = $route . '?' . implode('&', array_keys($params));
+
             /* @var $rule UrlRule */
-            foreach ($this->rules as $rule) {
-                if (($url = $rule->createUrl($this, $route, $params)) !== false) {
-                    if (strpos($url, '://') !== false) {
-                        if ($baseUrl !== '' && ($pos = strpos($url, '/', 8)) !== false) {
-                            return substr($url, 0, $pos) . $baseUrl . substr($url, $pos);
-                        } else {
-                            return $url . $baseUrl . $anchor;
-                        }
-                    } else {
-                        return "$baseUrl/{$url}{$anchor}";
+            $url = false;
+            if (isset($this->_createUrlRuleMatches[$cacheKey])) {
+                foreach ($this->_createUrlRuleMatches[$cacheKey] as $rule) {
+                    if (($url = $rule->createUrl($this, $route, $params)) !== false) {
+                        break;
                     }
+                }
+            } else {
+                $this->_createUrlRuleMatches[$cacheKey] = [];
+            }
+
+            if ($url === false) {
+                foreach ($this->rules as $rule) {
+                    if (($url = $rule->createUrl($this, $route, $params)) !== false) {
+                        $this->_createUrlRuleMatches[$cacheKey][] = $rule;
+                        break;
+                    }
+                }
+            }
+
+            if ($url !== false) {
+                if (strpos($url, '://') !== false) {
+                    if ($baseUrl !== '' && ($pos = strpos($url, '/', 8)) !== false) {
+                        return substr($url, 0, $pos) . $baseUrl . substr($url, $pos);
+                    } else {
+                        return $url . $baseUrl . $anchor;
+                    }
+                } else {
+                    return "$baseUrl/{$url}{$anchor}";
                 }
             }
 
