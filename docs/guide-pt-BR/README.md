@@ -162,7 +162,7 @@ Testes
 Tópicos Especiais
 -----------------
 
-* [Template Avançado de Aplicação](https://github.com/yiisoft/yii2-app-advanced/blob/master/docs/guide-pt-BR/README.md)
+* [Template Avançado de Projetos](https://github.com/yiisoft/yii2-app-advanced/blob/master/docs/guide-pt-BR/README.md)
 * [Construindo uma Aplicação a Partir do Zero](tutorial-start-from-scratch.md)
 * [Comandos de Console](tutorial-console.md)
 * [Ferramentas de Validação Embutidas](tutorial-core-validators.md)

@@ -33,7 +33,7 @@ especificado onde os asset estão localizados, quais arquivos CSS e JavaScript
 possuem e como o bundle depende de outro bundles.
 
 O código a seguir define o asset bundle principal que é usado pelo 
-[template básico de aplicação](start-installation.md):
+[template básico de projetos](start-installation.md):
 
 ```php
 <?php

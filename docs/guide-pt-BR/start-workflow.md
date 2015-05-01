@@ -17,7 +17,7 @@ em geral.
 Funcionalidade <span id="functionality"></span>
 --------------
 
-A aplicação básica instalada contém quatro páginas:
+O template básico de projetos instalado contém quatro páginas:
 
 * A página inicial, exibida quando você acessa a URL `http://hostname/index.php`,
 * a página "About" (Sobre),
