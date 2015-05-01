@@ -1,7 +1,7 @@
 Gerando Código com Gii
 ========================
 
-Essa seção irá descrever como usar o [Gii](tool-gii.md) para automaticamente gerar código que implementa algumas funcionalidades comuns de sites. Usar o Gii para gerar código é simples, trata-se apenas de uma questão de entrar com as informações corretas de acordo com as instruções mostradas nas páginas do Gii.
+Essa seção irá descrever como usar o [Gii](https://github.com/yiisoft/yii2-gii/blob/master/docs/guide-pt-BR/README.md) para automaticamente gerar código que implementa algumas funcionalidades comuns de sites. Usar o Gii para gerar código é simples, trata-se apenas de uma questão de entrar com as informações corretas de acordo com as instruções mostradas nas páginas do Gii.
 
 Através desse tutorial, você irá aprender a:
 
@@ -14,7 +14,7 @@ Através desse tutorial, você irá aprender a:
 Começando a usar o Gii <span id="starting-gii"></span>
 ------------
 
-O [Gii](tool-gii.md) é fornecido com o Yii como um [módulo](structure-modules.md). Você pode habilitar o Gii ao configurá-lo na propriedade [[yii\base\Application::modules|modules]] da aplicação. Dependendo de como você criou sua aplicação, você pode já encontrar o seguinte código no arquivo de configuração `config/web.php`:
+O [Gii](https://github.com/yiisoft/yii2-gii/blob/master/docs/guide-pt-BR/README.md) é fornecido com o Yii como um [módulo](structure-modules.md). Você pode habilitar o Gii ao configurá-lo na propriedade [[yii\base\Application::modules|modules]] da aplicação. Dependendo de como você criou sua aplicação, você pode já encontrar o seguinte código no arquivo de configuração `config/web.php`:
 
 ```php
 $config = [ ... ];
@@ -116,7 +116,7 @@ Essa é uma lista de arquivos gerados pelo Gii, caso você queira investigar com
 * Modelo: `models/Country.php` e `models/CountrySearch.php`
 * Views: `views/country/*.php`
 
-> Informação: o Gii é projetado para ser uma ferramenta altamente adaptável e extensível. Usando-o sabiamente, você irá acelerar o desenvolvimento da sua aplicação. Para mais detalhes, por favor siga para a seção [Gii](tool-gii.md).
+> Informação: o Gii é projetado para ser uma ferramenta altamente adaptável e extensível. Usando-o sabiamente, você irá acelerar o desenvolvimento da sua aplicação. Para mais detalhes, por favor siga para a seção [Gii](https://github.com/yiisoft/yii2-gii/blob/master/docs/guide-pt-BR/README.md).
 
 
 Resumo <span id="summary"></span>
