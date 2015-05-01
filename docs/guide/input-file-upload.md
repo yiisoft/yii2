@@ -168,7 +168,7 @@ public function rules()
 ### Image properties
 
 If you upload an image, [[yii\validators\ImageValidator|ImageValidator]] may come in handy. It verifies if an attribute
-received a valid image that can be then either saved or processed using the [Imagine Extension](https://github.com/yiisoft/yii2/tree/master/extensions/imagine).
+received a valid image that can be then either saved or processed using the [Imagine Extension](https://github.com/yiisoft/yii2-imagine).
 
 Uploading multiple files
 ------------------------
