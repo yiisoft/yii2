@@ -418,7 +418,13 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
      */
     public function hasAttribute($name)
     {
-        return isset($this->_attributes[$name]) || in_array($name, $this->attributes());
+        static $attributes = [];
+
+        if (!array_key_exists($name, $attributes)) {
+            $attributes[$name] = isset($this->_attributes[$name]) || in_array($name, $this->attributes());
+        }
+
+        return $attributes[$name];
     }
 
     /**

@@ -114,7 +114,13 @@ class ActiveRecord extends BaseActiveRecord
      */
     public function loadDefaultValues($skipIfSet = true)
     {
-        foreach ($this->getTableSchema()->columns as $column) {
+        static $columns = null;
+
+        if ($columns === null) {
+            $columns = $this->getTableSchema()->columns;
+        }
+        
+        foreach ($columns as $column) {
             if ($column->defaultValue !== null && (!$skipIfSet || $this->{$column->name} === null)) {
                 $this->{$column->name} = $column->defaultValue;
             }
@@ -281,7 +287,13 @@ class ActiveRecord extends BaseActiveRecord
      */
     public static function tableName()
     {
-        return '{{%' . Inflector::camel2id(StringHelper::basename(get_called_class()), '_') . '}}';
+        static $tableName = null;
+
+        if ($tableName === null) {
+            $tableName = '{{%' . Inflector::camel2id(StringHelper::basename(get_called_class()), '_') . '}}';
+        }
+
+        return $tableName;
     }
 
     /**
@@ -291,12 +303,18 @@ class ActiveRecord extends BaseActiveRecord
      */
     public static function getTableSchema()
     {
-        $schema = static::getDb()->getSchema()->getTableSchema(static::tableName());
-        if ($schema !== null) {
-            return $schema;
-        } else {
-            throw new InvalidConfigException("The table does not exist: " . static::tableName());
+        static $tableSchema = null;
+
+        if ($tableSchema === null) {
+            $schema = static::getDb()->getSchema()->getTableSchema(static::tableName());
+            if ($schema !== null) {
+                $tableSchema = $schema;
+            } else {
+                throw new InvalidConfigException("The table does not exist: " . static::tableName());
+            }
         }
+
+        return $tableSchema;
     }
 
     /**
@@ -314,7 +332,13 @@ class ActiveRecord extends BaseActiveRecord
      */
     public static function primaryKey()
     {
-        return static::getTableSchema()->primaryKey;
+        static $primaryKey = null;
+
+        if ($primaryKey === null) {
+            $primaryKey = static::getTableSchema()->primaryKey;
+        }
+
+        return $primaryKey;
     }
 
     /**
@@ -324,7 +348,13 @@ class ActiveRecord extends BaseActiveRecord
      */
     public function attributes()
     {
-        return array_keys(static::getTableSchema()->columns);
+        static $attributes = null;
+
+        if ($attributes === null) {
+            $attributes = array_keys(static::getTableSchema()->columns);
+        }
+
+        return $attributes;
     }
 
     /**
@@ -364,7 +394,12 @@ class ActiveRecord extends BaseActiveRecord
      */
     public static function populateRecord($record, $row)
     {
-        $columns = static::getTableSchema()->columns;
+        static $columns = null;
+
+        if ($columns === null) {
+            $columns = static::getTableSchema()->columns;
+        }
+        
         foreach ($row as $name => $value) {
             if (isset($columns[$name])) {
                 $row[$name] = $columns[$name]->phpTypecast($value);

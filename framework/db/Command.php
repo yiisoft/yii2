@@ -310,12 +310,14 @@ class Command extends Component
             return $this;
         }
 
+        $schema = $this->db->getSchema();
+
         foreach ($values as $name => $value) {
             if (is_array($value)) {
                 $this->_pendingParams[$name] = $value;
                 $this->params[$name] = $value[0];
             } else {
-                $type = $this->db->getSchema()->getPdoType($value);
+                $type = $schema->getPdoType($value);
                 $this->_pendingParams[$name] = [$value, $type];
                 $this->params[$name] = $value;
             }

@@ -168,6 +168,11 @@ class PostgreSQLActiveRecordTest extends ActiveRecordTest
         $record->save(false);
         $this->assertEquals(5, $record->primaryKey);
     }
+    
+    public function getCustomerClass()
+    {
+        return Customer::className();
+    }
 }
 
 class BoolAR extends ActiveRecord
@@ -195,4 +200,8 @@ class UserAR extends ActiveRecord
             TimestampBehavior::className(),
         ];
     }
+}
+
+class Customer extends \yiiunit\data\ar\Customer
+{
 }
