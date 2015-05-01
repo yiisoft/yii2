@@ -88,17 +88,18 @@ if ($this->beginCache($id, ['variations' => [Yii::$app->language]])) {
 ```
 
 
-### Toggling Caching <span id="toggling-caching"></span>
+### <i>Cache Alternativo</i>(Toggling Caching) <span id="toggling-caching"></span>
 
-Sometimes you may want to enable fragment caching only when certain conditions are met. For example, for a page
-displaying a form, you only want to cache the form when it is initially requested (via GET request). Any
-subsequent display (via POST request) of the form should not be cached because the form may contain user input.
-To do so, you may set the [[yii\widgets\FragmentCache::enabled|enabled]] option, like the following:
+Em alguns casos, você pode precisar habilitar o cache de fragmentos somente quando certas condições se aplicam.
+Por exemplo, para uma página exibindo um formulário, e você deseja armazenar o formulário em cache apenas na
+primeira requisição (via requisição GET). Qualquer exibição subsequente (via requisição POST) ao formulário não
+deve ser armazenada em cache porque o formulário pode conter os dados submetidos pelo usuário. Para assim fazê-lo,
+você pode definir a opção [[yii\widgets\FragmentCache::enabled|enabled]], da seguinte maneira:
 
 ```php
 if ($this->beginCache($id, ['enabled' => Yii::$app->request->isGet])) {
 
-    // ... generate content here ...
+    // ... gerar conteudo aqui ...
 
     $this->endCache();
 }
