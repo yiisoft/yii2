@@ -239,9 +239,15 @@ class Model extends Component implements IteratorAggregate, ArrayAccess, Arrayab
      */
     public function formName()
     {
-        $reflector = new ReflectionClass($this);
+        static $formName = null;
 
-        return $reflector->getShortName();
+        if ($formName === null) {
+            $reflector = new ReflectionClass($this);
+
+            $formName = $reflector->getShortName();
+        }
+
+        return $formName;
     }
 
     /**
@@ -252,15 +258,21 @@ class Model extends Component implements IteratorAggregate, ArrayAccess, Arrayab
      */
     public function attributes()
     {
-        $class = new ReflectionClass($this);
-        $names = [];
-        foreach ($class->getProperties(\ReflectionProperty::IS_PUBLIC) as $property) {
-            if (!$property->isStatic()) {
-                $names[] = $property->getName();
+        static $attributes = null;
+
+        if ($attributes === null) {
+            $class = new ReflectionClass($this);
+            $names = [];
+            foreach ($class->getProperties(\ReflectionProperty::IS_PUBLIC) as $property) {
+                if (!$property->isStatic()) {
+                    $names[] = $property->getName();
+                }
             }
+
+            $attributes = $names;
         }
 
-        return $names;
+        return $attributes;
     }
 
     /**
