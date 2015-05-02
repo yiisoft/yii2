@@ -29,7 +29,7 @@ O trabalho principal dos scripts de entrada é o seguinte:
 
 ## Aplicações Web <span id="web-applications"></span>
 
-Este é o código no script de entrada para o [Modelo Básico de Aplicação Web](start-installation.md).
+Este é o código no script de entrada para o [Template Básico de Projetos](start-installation.md).
 
 ```php
 <?php
