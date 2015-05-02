@@ -242,9 +242,7 @@ This validator checks if the input value is a valid email address.
     ['a1', 'exist', 'allowArray' => true],
 ]
 ```
-
-This validator checks if the input value can be found in a table column. It only works
-with [Active Record](db-active-record.md) model attributes. It supports validation against
+This validator checks if the input value can be found in the table column specified by the [ActiveRecord](db-active-record.md) class $targetClass and the attribute $targetAttribute. The target attributes can only be an [Active Record](db-active-record.md) model attribute. It supports validation against
 either a single column or multiple columns.
 
 - `targetClass`: the name of the [Active Record](db-active-record.md) class that should be used
