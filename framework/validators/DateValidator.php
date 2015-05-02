@@ -132,7 +132,11 @@ class DateValidator extends Validator
         if ($timestamp === false) {
             $this->addError($model, $attribute, $this->message, []);
         } elseif ($this->timestampAttribute !== null) {
-            $model->{$this->timestampAttribute} = $timestamp;
+            if ($this->timestampAttributeFormat === null) {
+                $model->{$this->timestampAttribute} = $timestamp;
+            } else {
+                $model->{$this->timestampAttribute} = $this->formatTimestamp($timestamp, $this->timestampAttributeFormat);
+            }
         }
     }
 
@@ -148,7 +152,7 @@ class DateValidator extends Validator
      * Parses date string into UNIX timestamp
      *
      * @param string $value string representing date
-     * @return integer|string|boolean a UNIX timestamp, a formatted datetime value or `false` on failure.
+     * @return integer|boolean a UNIX timestamp or `false` on failure.
      */
     protected function parseDateValue($value)
     {
@@ -173,7 +177,7 @@ class DateValidator extends Validator
      * Parses a date value using the IntlDateFormatter::parse()
      * @param string $value string representing date
      * @param string $format the expected date format
-     * @return integer|string|boolean a UNIX timestamp, a formatted datetime value or `false` on failure.
+     * @return integer|boolean a UNIX timestamp or `false` on failure.
      */
     private function parseDateValueIntl($value, $format)
     {
@@ -196,23 +200,14 @@ class DateValidator extends Validator
             return false;
         }
 
-        if ($this->timestampAttributeFormat === null) {
-            return $parsedDate;
-        } else {
-            $date = new DateTime();
-            if (!$hasTimeInfo) {
-                $date->setTimezone(new \DateTimeZone('UTC'));
-            }
-            $date->setTimestamp($parsedDate);
-            return $this->formatTimestamp($date, $this->timestampAttributeFormat);
-        }
+        return $parsedDate;
     }
 
     /**
      * Parses a date value using the DateTime::createFromFormat()
      * @param string $value string representing date
      * @param string $format the expected date format
-     * @return integer|string|boolean a UNIX timestamp, a formatted datetime value or `false` on failure.
+     * @return integer|boolean a UNIX timestamp or `false` on failure.
      */
     private function parseDateValuePHP($value, $format)
     {
@@ -228,12 +223,12 @@ class DateValidator extends Validator
         if (!$hasTimeInfo) {
             $date->setTime(0, 0, 0);
         }
-        return $this->timestampAttributeFormat === null ? $date->getTimestamp() : $this->formatTimestamp($date, $this->timestampAttributeFormat);
+        return $date->getTimestamp();
     }
 
     /**
      * Formats a timestamp using the specified format
-     * @param DateTime $timestamp
+     * @param integer $timestamp
      * @param string $format
      * @return string
      */
@@ -244,7 +239,10 @@ class DateValidator extends Validator
         } else {
             $format = FormatConverter::convertDateIcuToPhp($format, 'date');
         }
-        $timestamp->setTimezone(new \DateTimeZone($this->timestampAttributeTimeZone));
-        return $timestamp->format($format);
+
+        $date = new DateTime();
+        $date->setTimestamp($timestamp);
+        $date->setTimezone(new \DateTimeZone($this->timestampAttributeTimeZone));
+        return $date->format($format);
     }
 }
