@@ -37,6 +37,7 @@ class DateValidator extends Validator
      * ```php
      * 'MM/dd/yyyy' // date in ICU format
      * 'php:m/d/Y' // the same date in PHP format
+     * 'MM/dd/yyyy HH:mm' // not only dates but also times can be validated
      * ```
      */
     public $format;
@@ -63,6 +64,7 @@ class DateValidator extends Validator
      * This can be the same attribute as the one being validated. If this is the case,
      * the original value will be overwritten with the timestamp value after successful validation.
      * @see timestampAttributeFormat
+     * @see timestampAttributeTimeZone
      */
     public $timestampAttribute;
     /**
@@ -76,6 +78,18 @@ class DateValidator extends Validator
      * @since 2.0.4
      */
     public $timestampAttributeFormat;
+    /**
+     * @var string the timezone to use when populating the [[timestampAttribute]]. Defaults to `UTC`.
+     *
+     * This can be any value that may be passed to [date_default_timezone_set()](http://www.php.net/manual/en/function.date-default-timezone-set.php)
+     * e.g. `UTC`, `Europe/Berlin` or `America/Chicago`.
+     * Refer to the [php manual](http://www.php.net/manual/en/timezones.php) for available timezones.
+     *
+     * If [[timestampAttributeFormat]] is not set, this property will be ignored.
+     * @see timestampAttributeFormat
+     * @since 2.0.4
+     */
+    public $timestampAttributeTimeZone = 'UTC';
 
     /**
      * @var array map of short format names to IntlDateFormatter constant values.
@@ -184,14 +198,11 @@ class DateValidator extends Validator
 
         if ($this->timestampAttributeFormat === null) {
             return $parsedDate;
-//        } elseif ($hasTimeInfo) {
-//            $date = new DateTime();
-//            $date->setTimezone(new \DateTimeZone('UTC'));
-//            $date->setTimestamp($parsedDate);
-//            return $this->formatTimestamp($date, $this->timestampAttributeFormat);
         } else {
             $date = new DateTime();
-            $date->setTimezone(new \DateTimeZone('UTC'));
+            if (!$hasTimeInfo) {
+                $date->setTimezone(new \DateTimeZone('UTC'));
+            }
             $date->setTimestamp($parsedDate);
             return $this->formatTimestamp($date, $this->timestampAttributeFormat);
         }
@@ -233,6 +244,7 @@ class DateValidator extends Validator
         } else {
             $format = FormatConverter::convertDateIcuToPhp($format, 'date');
         }
+        $timestamp->setTimezone(new \DateTimeZone($this->timestampAttributeTimeZone));
         return $timestamp->format($format);
     }
 }
