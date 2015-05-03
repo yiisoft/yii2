@@ -1,11 +1,12 @@
-Page Caching
+Cache de Página
 ============
 
-Page caching refers to caching the content of a whole page on the server side. Later when the same page
-is requested again, its content will be served from the cache instead of regenerating it from scratch.
+O Cache de página é responsável por armazenar em cache o conteúdo de uma página inteira no servidor. Mais tarde, 
+quando a mesma página é requisitada novamente, seu conteúdo será servido do cache em vez de ela ser gerada novamente
+do zero.
 
-Page caching is supported by [[yii\filters\PageCache]], an [action filter](structure-filters.md).
-It can be used like the following in a controller class:
+O Cache de página é implementado pela classe [[yii\filters\PageCache]], um [filtro de actions](structure-filters.md).
+Esta pode ser usada da seguinte maneira em uma classe de controller:
 
 ```php
 public function behaviors()
@@ -26,15 +27,12 @@ public function behaviors()
     ];
 }
 ```
+O código acima afirma que o cache de página deve ser usado apenas para a action `index`; o conteúdo da página deve 
+ser armazenado em cache por, no máximo, 60 segundos e deve variar de acordo com a linguagem atual da aplicação;
+e esta página em cache deve ser invalidada se o número total de posts for alterado.
 
-The above code states that page caching should be used only for the `index` action; the page content should
-be cached for at most 60 seconds and should be variated by the current application language;
-and the cached page should be invalidated if the total number of posts is changed.
+Como vocế pode ver, o cache de página é bastante similar ao [cache de fragmentos](caching-fragment.md). Ambos suportam opções como `duration`, `dependencies`, `variations`, and `enabled`. Sua principal diferença é que o cache de página implementado como um [filtro de actions](structure-filters.md) enquanto que o cache de fragmentos é um [widget](structure-widgets.md).
 
-As you can see, page caching is very similar to [fragment caching](caching-fragment.md). They both support options such
-as `duration`, `dependencies`, `variations`, and `enabled`. Their main difference is that page caching is
-implemented as an [action filter](structure-filters.md) while fragment caching a [widget](structure-widgets.md).
-
-You can use [fragment caching](caching-fragment.md) as well as [dynamic content](caching-fragment.md#dynamic-content)
-together with page caching.
+Você pode usar o [cache de fragmentos](caching-fragment.md) ou [conteúdo dinâmico](caching-fragment.md#dynamic-content)
+em conjunto com o cache de página.
 

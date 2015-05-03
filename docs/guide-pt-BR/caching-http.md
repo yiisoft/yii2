@@ -1,31 +1,29 @@
-HTTP Caching
+Cache HTTP
 ============
 
-Besides server-side caching that we have described in the previous sections, Web applications may
-also exploit client-side caching to save the time for generating and transmitting the same page content.
+Além do cache no servidor que nós descrevemos nas seções anteriores, aplicações web pode também aproveitar-se
+de cache no cliente para economizar o tempo para gerar e transmitir o mesmo conteúdo de uma página.
 
-To use client-side caching, you may configure [[yii\filters\HttpCache]] as a filter for controller
-actions whose rendering result may be cached on the client side. [[yii\filters\HttpCache|HttpCache]]
-only works for `GET` and `HEAD` requests. It can handle three kinds of cache-related HTTP headers for these requests:
+Para usar o cache no cliente, vocế poderá configurar [[yii\filters\HttpCache] como um filtro para actions de um 
+controller ao qual o resultado de sua renderização possa ser armazenado em cache no navegador do cliente. [[yii\filters\HttpCache|HttpCache]] funciona apenas para requisições `GET` e `HEAD`. Ele pode manipular três tipos de cache relacionados a cabeçalhos HTTP para estas requisições:
 
 * [[yii\filters\HttpCache::lastModified|Last-Modified]]
 * [[yii\filters\HttpCache::etagSeed|Etag]]
 * [[yii\filters\HttpCache::cacheControlHeader|Cache-Control]]
 
 
-## `Last-Modified` Header <span id="last-modified"></span>
+## Cabeçalho de `Última-modificação` <span id="last-modified"></span>
 
-The `Last-Modified` header uses a timestamp to indicate if the page has been modified since the client caches it.
+O cabeçalho de  `Last-Modified` usa uma data(timestamp) para indicar se a página foi modificada desde que o cliente a armazenou em cache.
 
-You may configure the [[yii\filters\HttpCache::lastModified]] property to enable sending
-the `Last-Modified` header. The property should be a PHP callable returning a UNIX timestamp about
-the page modification time. The signature of the PHP callable should be as follows,
+Você pode configurar a propriedade [[yii\filters\HttpCache::lastModified]] para permitir enviar o cabeçalho de `Última-modificação`. A propriedade deve ser um callable PHP retornando uuma data(timestamp) UNIX sobre o tempo de modificação. A declaração do callable PHP deve ser a seguinte,
 
 ```php
 /**
- * @param Action $action the action object that is being handled currently
- * @param array $params the value of the "params" property
- * @return integer a UNIX timestamp representing the page modification time
+ * @param Action $action O Objeto da action que está sendo manipulada no momento
+ * @param array $params o valor da propriedade "params"
+ * @return integer uma data(timestamp) UNIX timestamp representando o tempo da 
+ * última modificação na página
  */
 function ($action, $params)
 ```
