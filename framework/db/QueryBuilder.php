@@ -834,7 +834,7 @@ class QueryBuilder extends \yii\base\Object
             $limit = "$limit";
             
         // Check if limit is unsigned integer
-        return is_numeric($limit) && $limit >= 0;
+        return is_numeric($limit) && ctype_digit("$limit");
     }
 
     /**
@@ -849,7 +849,7 @@ class QueryBuilder extends \yii\base\Object
             $offset = "$offset";
 
         // Check if limit is unsigned integer bigger then 0
-        return is_numeric($offset) && $offset > 0;
+        return is_numeric($offset) && ctype_digit("$offset") && $offset > 0;
     }
 
     /**
