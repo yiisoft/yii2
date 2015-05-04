@@ -67,6 +67,12 @@ class FileCache extends Cache
      * but read-only for other users.
      */
     public $dirMode = 0775;
+    /**
+     * @var integer the level of compression.
+     * This value will be used by PHP gzcompress() function.
+     * Defaults to 0, meaning the compress is disable. Level can be given up to 9 for maximum compression.
+     */
+    public $gzip_compress = 0;
 
 
     /**
@@ -108,7 +114,11 @@ class FileCache extends Cache
     {
         $cacheFile = $this->getCacheFile($key);
         if (@filemtime($cacheFile) > time()) {
-            return @file_get_contents($cacheFile);
+            if($this->gzip_compress) {
+                return @unserialize(gzdecode(file_get_contents($cacheFile)));
+            } else {
+                return @file_get_contents($cacheFile);
+            }
         } else {
             return false;
         }
@@ -128,6 +138,9 @@ class FileCache extends Cache
         $cacheFile = $this->getCacheFile($key);
         if ($this->directoryLevel > 0) {
             @FileHelper::createDirectory(dirname($cacheFile), $this->dirMode, true);
+        }
+        if($this->gzip_compress) {
+            $value=gzencode(serialize($value),$this->gzip_compress);
         }
         if (@file_put_contents($cacheFile, $value, LOCK_EX) !== false) {
             if ($this->fileMode !== null) {
@@ -182,6 +195,9 @@ class FileCache extends Cache
      */
     protected function getCacheFile($key)
     {
+        if($this->gzip_compress) {
+            $this->cacheFileSuffix = '.gz';
+        }
         if ($this->directoryLevel > 0) {
             $base = $this->cachePath;
             for ($i = 0; $i < $this->directoryLevel; ++$i) {
