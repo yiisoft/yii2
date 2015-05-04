@@ -12,11 +12,11 @@ controller ao qual o resultado de sua renderização possa ser armazenado em cac
 * [[yii\filters\HttpCache::cacheControlHeader|Cache-Control]]
 
 
-## Cabeçalho de `Última-modificação` <span id="last-modified"></span>
+## Cabeçalho de `Last-modified` <span id="last-modified"></span>
 
-O cabeçalho de  `Last-Modified` usa uma data(timestamp) para indicar se a página foi modificada desde que o cliente a armazenou em cache.
+O cabeçalho `Last-modified` usa uma data(timestamp) para indicar se a página foi modificada desde que o cliente a armazenou em cache.
 
-Você pode configurar a propriedade [[yii\filters\HttpCache::lastModified]] para permitir enviar o cabeçalho de `Última-modificação`. A propriedade deve ser um callable PHP retornando uuma data(timestamp) UNIX sobre o tempo de modificação. A declaração do callable PHP deve ser a seguinte,
+Você pode configurar a propriedade [[yii\filters\HttpCache::lastModified]] para permitir enviar o cabeçalho de `Last-modified`. A propriedade deve ser um <i>callable</i> PHP retornando uma data(timestamp) UNIX sobre o tempo de modificação. A declaração do <i>callable</i> PHP deve ser a seguinte,
 
 ```php
 /**
@@ -28,7 +28,7 @@ Você pode configurar a propriedade [[yii\filters\HttpCache::lastModified]] para
 function ($action, $params)
 ```
 
-The following is an example of making use of the `Last-Modified` header:
+A seguir um exemplo que faz o uso do cabeçalho `Last-modified`:
 
 ```php
 public function behaviors()
@@ -45,35 +45,33 @@ public function behaviors()
     ];
 }
 ```
+O código acima afirma que o cache HTTP deve ser habilitado apenas para a action `index`. Este deve
+gerar um cabeçalho HTTP `last-modified` baseado na última data de alteração dos posts. Quando um
+navegador visitar a página `index` pela primeira vez, a página irá ser gerada no servidor e enviada para 
+o navegador; Se o navegador visitar a mesma página novamente e não houver modificação dos posts durante este
+período, o servidor não irá re-gerar a página, e o navegador irá usar a versão em cache no cliente.
+Como um resultado a renderização do conteúdo na página não será executada no servidor.
 
-The above code states that HTTP caching should be enabled for the `index` action only. It should
-generate a `Last-Modified` HTTP header based on the last update time of posts. When a browser visits
-the `index` page for the first time, the page will be generated on the server and sent to the browser;
-If the browser visits the same page again and there is no post being modified during the period,
-the server will not re-generate the page, and the browser will use the cached version on the client side.
-As a result, server-side rendering and page content transmission are both skipped.
 
+## Cabeçalho `ETag` <span id="etag"></span>
 
-## `ETag` Header <span id="etag"></span>
+O cabeçalho <i>"Entity Tag"</i> (ou `ETag` abreviado) usa um hash para representar o conteúdo de uma página.
+Se a página for alterada, o hash irá mudar também. Ao comparar o hash mantido no cliente com o hash gerado no
+servidor, o cache pode determinar se a página foi alterada e se deve ser re-transmitida.
 
-The "Entity Tag" (or `ETag` for short) header use a hash to represent the content of a page. If the page
-is changed, the hash will be changed as well. By comparing the hash kept on the client side with the hash
-generated on the server side, the cache may determine whether the page has been changed and should be re-transmitted.
-
-You may configure the [[yii\filters\HttpCache::etagSeed]] property to enable sending the `ETag` header.
-The property should be a PHP callable returning a seed for generating the ETag hash. The signature of the PHP callable
-should be as follows,
+Você pode configurar a propriedade [[yii\filters\HttpCache::etagSeed]] para habilitar o envio do cabeçalho `ETag`.
+A propriedade deve ser um <i>callable</i> PHP retornando a <i>semente(seed)</i> para a geração do hash do Etag. A declaração do <i>callable</i> PHP deve ser como a seguinte,
 
 ```php
 /**
- * @param Action $action the action object that is being handled currently
- * @param array $params the value of the "params" property
- * @return string a string used as the seed for generating an ETag hash
+ * @param Action $action o objeto da action que está sendo manipulada no momento
+ * @param array $params o valor da propriedade "params"
+ * @return string uma string usada como a semente(seed) para gerar um hash ETag
  */
 function ($action, $params)
 ```
 
-The following is an example of making use of the `ETag` header:
+A Seguir um exemplo que faz o uso do cabeçalho `ETag`:
 
 ```php
 public function behaviors()
@@ -91,51 +89,46 @@ public function behaviors()
 }
 ```
 
-The above code states that HTTP caching should be enabled for the `view` action only. It should
-generate an `ETag` HTTP header based on the title and content of the requested post. When a browser visits
-the `view` page for the first time, the page will be generated on the server and sent to the browser;
-If the browser visits the same page again and there is no change to the title and content of the post,
-the server will not re-generate the page, and the browser will use the cached version on the client side.
-As a result, server-side rendering and page content transmission are both skipped.
+O código acima afirma que o cache de HTTP deve ser habilitado apenas para a action `view`. Este deve
+gerar um cabeçalho HTTP `ETag` baseado no titulo e conteúdo do post requisitado. Quando um navegador visitar
+a página `view` pela primeira vez, a página será gerada no servidor e enviada para ele; Se o navegador visitar 
+a mesma página novamente e não houver alteração para o título e o conteúdo do post, o servidor não irá ré-gerar 
+a página, e o navegador irá usar a versão que estiver no cache do cliente. Como um resultado a renderização do 
+conteúdo na página não será executada no servidor.
 
-ETags allow more complex and/or more precise caching strategies than `Last-Modified` headers.
-For instance, an ETag can be invalidated if the site has switched to another theme.
+ETags permite estratégias mais complexas e/ou mais precisas do que o uso do cabeçalho de `Last-modified`.
+Por exemplo, um ETag pode ser invalidado se o site tiver sido alterado para um novo tema.
 
-Expensive ETag generation may defeat the purpose of using `HttpCache` and introduce unnecessary overhead,
-since they need to be re-evaluated on every request. Try to find a simple expression that invalidates
-the cache if the page content has been modified.
+Gerações muito complexas de ETags podem contrariar o propósito de se usar `HttpCache` e introduzir despesas desnecessárias ao processamento, já que eles precisam ser re-avaliados a cada requisição. 
+Tente encontrar uma expressão simples que invalida o cache se o conteúdo da página for modificado.
 
-> Note: In compliance to [RFC 7232](http://tools.ietf.org/html/rfc7232#section-2.4),
-  `HttpCache` will send out both `ETag` and `Last-Modified` headers if they are both configured.
-  And if the client sends both of the `If-None-Match` header and the `If-Modified-Since` header, only the former
-  will be respected.
+> Observação: Em complacência com a [RFC 7232](http://tools.ietf.org/html/rfc7232#section-2.4),
+  `HttpCache` irá enviar os cabeçalhos `ETag` e `Last-Modified` se ambos forem assim configurados.
+  E se o cliente envia ambos o cabeçalhos `If-None-Match` e `If-Modified-Since`, apenas o primeiro será 
+  respeitado.
 
 
-## `Cache-Control` Header <span id="cache-control"></span>
+## Cabeçalho `Cache-Control` <span id="cache-control"></span>
 
-The `Cache-Control` header specifies the general caching policy for pages. You may send it by configuring
-the [[yii\filters\HttpCache::cacheControlHeader]] property with the header value. By default, the following
-header will be sent:
+O cabeçalho `Cache-Control` especifica politicas de cache gerais para as páginas. Você pode enviá-lo configurando a propriedade [[yii\filters\HttpCache::cacheControlHeader]] com o valor do cabeçalho. Por padrão, o seguinte cabeçalho será enviado:
 
 ```
 Cache-Control: public, max-age=3600
 ```
 
-## Session Cache Limiter <span id="session-cache-limiter"></span>
+## Limitador de Cache na Sessão <span id="session-cache-limiter"></span>
 
-When a page uses session, PHP will automatically send some cache-related HTTP headers as specified in
-the `session.cache_limiter` PHP INI setting. These headers may interfere or disable the caching
-that you want from `HttpCache`. To prevent this problem, by default `HttpCache` will disable sending
-these headers automatically. If you want to change this behavior, you should configure the
-[[yii\filters\HttpCache::sessionCacheLimiter]] property. The property can take a string value, including
-`public`, `private`, `private_no_expire`, and `nocache`. Please refer to the PHP manual about
-[session_cache_limiter()](http://www.php.net/manual/en/function.session-cache-limiter.php)
-for explanations about these values.
+Quando uma página usa sessão, o PHP irá automaticamente enviar alguns cabeçalhos HTTP relacionados ao cache
+como especificado na configuração do PHP INI `session.cache_limiter`. Estes cabeçalhos podem inteferirir ou 
+desabilitar o cache que você deseja do `HttpCache`. Para previnir-se deste problema, por padrão `HttpCache`
+irá desabilitar o envio destes cabeçalhos automaticamente. Se você quiser modificar estes comportamente, deve
+configurara a propriedade [[yii\filters\HttpCache::sessionCacheLimiter]]. A propriedade pode receber um valor em uma string, incluindo `public`, `private`, `private_no_expire`, e `nocache`. Por favor referir-se ao manual do 
+PHP sobre [session_cache_limiter()](http://www.php.net/manual/en/function.session-cache-limiter.php)
+para explicações sobre estes valores.
 
 
-## SEO Implications <span id="seo-implications"></span>
+## Implicações para SEO <span id="seo-implications"></span>
 
-Search engine bots tend to respect cache headers. Since some crawlers have a limit on how many pages
-per domain they process within a certain time span, introducing caching headers may help indexing your
-site as they reduce the number of pages that need to be processed.
+Os bots do motor de buscas tendem a respeitar cabeçalhos de cache. Ja que alguns rastreadores têm um limite sobre a quantidade de páginas por dominio que eles processam em um certo espaço de tempo, introduzir cabeçalhos de cache podem 
+ajudar na indexação do seu site já que eles reduzem o número de páginas que precisam ser processadas.
 
