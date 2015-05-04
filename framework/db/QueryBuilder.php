@@ -846,7 +846,7 @@ class QueryBuilder extends \yii\base\Object
     {
         // Check if limit is not object convertable to string
         if(is_object($offset) && method_exists($offset, '__toString'))
-            $limit = "$limit";
+            $offset = "$offset";
 
         // Check if limit is unsigned integer bigger then 0
         return is_numeric($offset) && $offset > 0;
