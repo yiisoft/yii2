@@ -830,7 +830,6 @@ class QueryBuilder extends \yii\base\Object
     protected function hasLimit($limit)
     {
         // Check if limit is not object convertable to string
-        return is_string($limit) && ctype_digit($limit) || is_integer($limit) && $limit >= 0;
         if(is_object($limit) && method_exists($limit, '__toString'))
             $limit = "$limit";
             
