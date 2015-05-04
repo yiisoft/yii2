@@ -2,6 +2,7 @@
 
 namespace yiiunit\framework\console\controllers;
 
+use yii\helpers\FileHelper;
 use yii\helpers\StringHelper;
 use yiiunit\TestCase;
 use yii\console\controllers\AssetController;
@@ -44,9 +45,7 @@ class AssetControllerTest extends TestCase
      */
     protected function createDir($dirName)
     {
-        if (!file_exists($dirName)) {
-            mkdir($dirName, 0777, true);
-        }
+        FileHelper::createDirectory($dirName);
     }
 
     /**
@@ -55,8 +54,8 @@ class AssetControllerTest extends TestCase
      */
     protected function removeDir($dirName)
     {
-        if (!empty($dirName) && file_exists($dirName)) {
-            exec("rm -rf {$dirName}");
+        if (!empty($dirName)) {
+            FileHelper::removeDirectory($dirName);
         }
     }
 
