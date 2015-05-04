@@ -196,7 +196,7 @@ class FileCache extends Cache
     protected function getCacheFile($key)
     {
         if($this->gzip_compress) {
-            $this->cacheFileSuffix .= '.gz';
+            $this->cacheFileSuffix = '.gz';
         }
         if ($this->directoryLevel > 0) {
             $base = $this->cachePath;
