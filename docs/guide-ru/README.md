@@ -89,7 +89,7 @@ All Rights Reserved.
 
 * **TBD** [Создание форм](input-forms.md)
 * [Валидация](input-validation.md)
-* **TBD** [Загрузка файлов](input-file-upload.md)
+* [Загрузка файлов](input-file-upload.md)
 * **TBD** [Работа с несколькими моделями](input-multiple-models.md)
 
 
