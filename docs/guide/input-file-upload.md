@@ -158,7 +158,7 @@ example, `csv` files are detected as `text/plain` instead of `text/csv`. You can
 public function rules()
 {
     return [
-        [['file'], 'file', 'checkExtensionByMimeType' => false, 'extensions' => 'csv', 'mimeTypes' => 'text/csv'],
+        [['file'], 'file', 'checkExtensionByMimeType' => false, 'extensions' => 'csv', 'mimeTypes' => 'text/plain'],
     ];
 }
 ```
