@@ -192,7 +192,7 @@ RESTful веб-сервіси
 Хелпери
 -------
 
-* [Огляд](helper-overview.md)
-* [ArrayHelper](helper-array.md)
-* [Html](helper-html.md)
-* [Url](helper-url.md)
+* **TBD** [Огляд Хелперів](helper-overview.md)
+* **TBD** [ArrayHelper](helper-array.md)
+* **TBD** [Html](helper-html.md)
+* **TBD** [Url](helper-url.md)
