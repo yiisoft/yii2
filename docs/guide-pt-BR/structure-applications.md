@@ -166,7 +166,7 @@ Durante o processo de inicialização, cada componente será instanciado. Se a c
 do componente implementa [[yii\base\BootstrapInterface]], seu método [[yii\base\BootstrapInterface::bootstrap()|bootstrap()]]
 também será chamado.
 
-Outro exemplo prático está na configuração do [Modelo Básico de Aplicação](start-installation.md),
+Outro exemplo prático está na configuração do [Template Básico de Projetos](start-installation.md),
 onde os módulos `debug` e `gii` estão configurados como componentes de inicialização
 quando a aplicação está rodando no ambiente de desenvolvimento,
 

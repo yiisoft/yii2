@@ -55,6 +55,7 @@ class FormatConverterTest extends TestCase
         $formatter = new Formatter(['locale' => 'en-US']);
         $this->assertEquals('24.8.2014', $formatter->asDate('2014-8-24', 'php:d.n.Y'));
         $this->assertEquals('24.8.2014', $formatter->asDate('2014-8-24', 'd.M.yyyy'));
+        $this->assertEquals('24.8.2014', $formatter->asDate('2014-8-24', 'd.L.yyyy'));
     }
 
     public function testOneDigitIcu()
@@ -62,6 +63,7 @@ class FormatConverterTest extends TestCase
         $formatter = new Formatter(['locale' => 'en-US']);
         $this->assertEquals('24.8.2014', $formatter->asDate('2014-8-24', 'php:d.n.Y'));
         $this->assertEquals('24.8.2014', $formatter->asDate('2014-8-24', 'd.M.yyyy'));
+        $this->assertEquals('24.8.2014', $formatter->asDate('2014-8-24', 'd.L.yyyy'));
     }
 
     public function testIntlUtf8Ru()
