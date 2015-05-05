@@ -73,13 +73,16 @@ class m140506_102106_rbac_init extends \yii\db\Migration
         ], $tableOptions);
         $this->createIndex('idx-auth_item-type', $authManager->itemTable, 'type');
         
-        $cascade = $this->isMsSQL ? '' : ' ON DELETE CASCADE ON UPDATE CASCADE';
+        $cascade = $this->isMsSQL ? null : 'CASCADE';
 
         $this->createTable($authManager->itemChildTable, [
-            'parent' => Schema::TYPE_STRING . '(64) NOT NULL CONSTRAINT FK__auth_item__parent REFERENCES ' . $authManager->itemTable . ' (name) ON DELETE CASCADE ON UPDATE CASCADE',
-            'child' => Schema::TYPE_STRING . '(64) NOT NULL CONSTRAINT FK__auth_item__child REFERENCES ' . $authManager->itemTable . ' (name)' . $cascade,
+            'parent' => Schema::TYPE_STRING . '(64) NOT NULL',
+            'child' => Schema::TYPE_STRING . '(64) NOT NULL',
             'PRIMARY KEY (parent, child)',
         ], $tableOptions);
+        
+        $this->addForeignKey('FK__auth_item__parent', $authManager->itemChildTable, 'parent', $authManager->itemTable, 'name', 'CASCADE', 'CASCADE');
+        $this->addForeignKey('FK__auth_item__child', $authManager->itemChildTable, 'child', $authManager->itemTable, 'name', $cascade, $cascade);
 
         $this->createTable($authManager->assignmentTable, [
             'item_name' => Schema::TYPE_STRING . '(64) NOT NULL',
