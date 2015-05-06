@@ -180,7 +180,7 @@ class Request extends \yii\base\Request
         $result = Yii::$app->getUrlManager()->parseRequest($this);
         if ($result !== false) {
             list ($route, $params) = $result;
-            $_GET = array_merge($_GET, $params);
+            $_GET = $params + $_GET; // preserve numeric keys
 
             return [$route, $_GET];
         } else {
