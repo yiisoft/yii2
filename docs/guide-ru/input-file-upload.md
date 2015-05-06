@@ -159,7 +159,7 @@ public function rules()
 public function rules()
 {
     return [
-        [['file'], 'file', 'checkExtensionByMimeType' => false, 'extensions' => 'csv', 'mimeTypes' => 'text/csv'],
+        [['file'], 'file', 'checkExtensionByMimeType' => false, 'extensions' => 'csv', 'mimeTypes' => 'text/plain'],
     ];
 }
 ```
