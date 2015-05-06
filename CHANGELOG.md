@@ -71,6 +71,7 @@ Yii Framework 2 Change Log
 - Enh #8171: Allow the user to enforce the fileSize to allow sending files which are not seekable. Needed when using S3 Stream Wrapper (pgaultier)
 - Enh #8179: Added parameter to define whether the comparison of `yii\db\BaseActiveRecord::isAttributeChanged()` method will be made as identical (thiagotalma)
 - Enh #8194: Caching of the matched rules added to `yii\web\UrlManager::createUrl()` (laszlovl, klimov-paul)
+- Enh #8268: Allow `QueryBuilder` to recognize more variations of `limit` and `offset` values (tino415, qiangxue)
 - Enh: `yii\i18n\Formatter` now shows more information about errors which occured when formatting values (cebe)
 - Enh: Added `yii\helper\Console::wrapText()` method to wrap indented text by console window width and used it in `yii help` command (cebe)
 - Enh: Implement batchInsert for oci (nineinchnick)
