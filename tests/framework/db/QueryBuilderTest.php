@@ -503,15 +503,7 @@ class QueryBuilderTest extends DatabaseTestCase
         $newName = 'new_name';
 
         $qb = $this->getQueryBuilder();
-        $tableSchema = $qb->db->getSchema()->getTableSchema($tableName);
-
-        if (empty($tableSchema)) {
-            $this->markTestSkipped(
-                'This test is only relevant in case when schema of table is not empty.'
-            );
-        }
-
-        $oldDefinition = $tableSchema->getColumn($oldName);
+        $oldDefinition = $qb->db->getSchema()->getTableSchema($tableName)->getColumn($oldName);
         $qb->db->createCommand()->renameColumn($tableName, $oldName, $newName)->execute();
 
         $newDefinition = $qb->db->getSchema()->getTableSchema($tableName, true)->getColumn($newName);

@@ -438,14 +438,23 @@ class Migration extends Component implements MigrationInterface
      * Builds and executes a SQL statement for setting not null constraint on a column.
      * @param string $table the table whose index is to be changed. The name will be properly quoted by the method.
      * @param string $column the name of the column to be changed. The name will be properly quoted by the method.
+     * @param null|string $default
      */
-    public function setNotNull($table, $column)
+    public function setNotNull($table, $column, $default = null)
     {
+        if ($default !== null) {
+            echo "    > set default value for rows with null of column $column in table $table ...";
+            $time = microtime(true);
+            $this->db->createCommand()->update($table, [$column => $default],[$column => null])->execute();
+            echo " done (time: " . sprintf('%.3f', microtime(true) - $time) . "s)\n";
+        }
+
         echo "    > set not null constraint for column $column in table $table ...";
         $time = microtime(true);
         $this->db->createCommand()->setNotNull($table, $column)->execute();
         echo " done (time: " . sprintf('%.3f', microtime(true) - $time) . "s)\n";
     }
+
 
     /**
      * Builds and executes a SQL statement for dropping not null constraint of a column.
@@ -456,7 +465,7 @@ class Migration extends Component implements MigrationInterface
     {
         echo "    > set not null constraint for column $column in table $table ...";
         $time = microtime(true);
-        $this->db->createCommand()->setNotNull($table, $column)->execute();
+        $this->db->createCommand()->dropNotNull($table, $column)->execute();
         echo " done (time: " . sprintf('%.3f', microtime(true) - $time) . "s)\n";
     }
 }

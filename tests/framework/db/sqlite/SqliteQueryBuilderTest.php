@@ -88,6 +88,12 @@ class SqliteQueryBuilderTest extends QueryBuilderTest
         parent::testSetDropNotNull();
     }
 
+    public function testRenameColumn()
+    {
+        $this->markTestSkipped('SQLite does not support this feature.');
+    }
+
+
     public function testBatchInsert()
     {
         $db = $this->getConnection();
