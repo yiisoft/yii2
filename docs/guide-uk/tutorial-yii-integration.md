@@ -83,7 +83,7 @@ Yii::$classMap['Class2'] = 'path/to/Class2.php';
 
 Якщо стороння система використовує управління залежностями Composer, ви можете встановити Yii за допомогою наступних команд:
 
-    composer global require "fxp/composer-asset-plugin:1.0.0"
+    composer global require "fxp/composer-asset-plugin:~1.0.0"
     composer require yiisoft/yii2
     composer install
 
