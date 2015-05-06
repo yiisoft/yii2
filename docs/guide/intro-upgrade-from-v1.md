@@ -108,7 +108,7 @@ $object = Yii::createObject([
 ], [$param1, $param2]);
 ```
 
-More details about configurations can be found in the [Object Configurations](concept-configurations.md) section.
+More details about configurations can be found in the [Configurations](concept-configurations.md) section.
 
 
 Events
