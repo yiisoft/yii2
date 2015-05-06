@@ -537,11 +537,11 @@ User e IdentityInterface
 
 A classe `CWebUser` do 1.1 agora foi substituída pela [[yii\web\User]], e não há
 mais a classe `CUserIdentity`. Ao invés disso, você deve implementar a interface
-[[yii\web\IdentityInterface]] que é muito mais simples de usar. O template de
-aplicação avançado dá um exemplo disso.
+[[yii\web\IdentityInterface]] que é muito mais simples de usar. O template avançado 
+de projetos dá um exemplo disso.
 
 Por favor consulte as seções [Autenticação](security-authentication.md),
-[Autorização](security-authorization.md), e [Template Avançado de Aplicação](tutorial-advanced-app.md)
+[Autorização](security-authorization.md), e [Template Avançado de Projetos](tutorial-advanced-app.md)
 para mais detalhes.
 
 

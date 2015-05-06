@@ -97,12 +97,15 @@ class DevController extends Controller
         $dirs = array_merge($dirs, $this->listSubDirs("$base/apps"));
         asort($dirs);
 
+        $oldcwd = getcwd();
         foreach($dirs as $dir) {
             $displayDir = substr($dir, strlen($base));
             $this->stdout("Running '$command' in $displayDir...\n", Console::BOLD);
+            chdir($dir);
             passthru($command);
             $this->stdout("done.\n", Console::BOLD, Console::FG_GREEN);
         }
+        chdir($oldcwd);
     }
 
     /**

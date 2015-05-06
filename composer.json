@@ -52,10 +52,14 @@
         "source": "https://github.com/yiisoft/yii2"
     },
     "minimum-stability": "dev",
+    "replace": {
+        "yiisoft/yii2": "self.version"
+    },
     "require": {
         "php": ">=5.4.0",
         "ext-mbstring": "*",
         "lib-pcre": "*",
+        "yiisoft/yii2-composer": "*",
         "ezyang/htmlpurifier": "4.6.*",
         "cebe/markdown": "~1.0.0 | ~1.1.0",
         "bower-asset/jquery": "2.1.*@stable | 1.11.*@stable",

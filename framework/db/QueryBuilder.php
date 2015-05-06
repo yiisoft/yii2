@@ -171,6 +171,8 @@ class QueryBuilder extends \yii\base\Object
      *
      * Note that the values in each row must match the corresponding column names.
      *
+     * The method will properly escape the column names, and quote the values to be inserted.
+     *
      * @param string $table the table that new rows will be inserted into.
      * @param array $columns the column names
      * @param array $rows the rows to be batch inserted into the table
@@ -851,7 +853,7 @@ class QueryBuilder extends \yii\base\Object
      */
     protected function hasLimit($limit)
     {
-        return is_string($limit) && ctype_digit($limit) || is_integer($limit) && $limit >= 0;
+        return ctype_digit((string) $limit);
     }
 
     /**
@@ -861,7 +863,8 @@ class QueryBuilder extends \yii\base\Object
      */
     protected function hasOffset($offset)
     {
-        return is_integer($offset) && $offset > 0 || is_string($offset) && ctype_digit($offset) && $offset !== '0';
+        $offset = (string) $offset;
+        return ctype_digit($offset) && $offset !== '0';
     }
 
     /**

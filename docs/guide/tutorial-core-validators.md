@@ -243,9 +243,13 @@ This validator checks if the input value is a valid email address.
 ]
 ```
 
-This validator checks if the input value can be found in a table column. It only works
-with [Active Record](db-active-record.md) model attributes. It supports validation against
-either a single column or multiple columns.
+This validator checks if the input value can be found in a table column represented by 
+an [Active Record](db-active-record.md) attribute. You can use `targetAttribute` to specify the
+[Active Record](db-active-record.md) attribute and `targetClass` the corresponding [Active Record](db-active-record.md)
+class. If you do not specify them, they will take the values of the attribute and the model class being validated.
+
+You can use this validator to validate against a single column or multiple columns (i.e., the combination of
+multiple attribute values should exist).
 
 - `targetClass`: the name of the [Active Record](db-active-record.md) class that should be used
   to look for the input value being validated. If not set, the class of the model currently being validated will be used.

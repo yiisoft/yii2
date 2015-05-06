@@ -1,7 +1,7 @@
 Встановлення Yii
 ================
 
-Ви можете встановити Yii двома шляхами: використовуючи менеджер пакетів [Composer](http://getcomposer.org/) 
+Ви можете встановити Yii двома шляхами: використовуючи менеджер пакетів [Composer](https://getcomposer.org/) 
 або завантаживши архів. Перший варіант э бажанішим, тому що дозволить встановити всі нові 
 [розширення](structure-extensions.md) або оновити Yii однією командою.
 
@@ -14,7 +14,7 @@
 Якщо у вас все ще не вставновлено Composer, то це можна зробити за допомогою інструкції на [getcomposer.org](https://getcomposer.org/download/).
 Користувачам Linux та Mac OS X потрібно виконати наступні команди:
 
-    curl -s http://getcomposer.org/installer | php
+    curl -sS https://getcomposer.org/installer | php
     mv composer.phar /usr/local/bin/composer
 
 При роботі з Windows, необхідно завантажити та запустити [Composer-Setup.exe](https://getcomposer.org/Composer-Setup.exe).
@@ -26,7 +26,7 @@
 
 Після встановлення Composer, встановити Yii можна виконавши наступну команду з директорії, яка доступна через Web:
 
-    composer global require "fxp/composer-asset-plugin:1.0.0"
+    composer global require "fxp/composer-asset-plugin:~1.0.0"
     composer create-project --prefer-dist yiisoft/yii2-app-basic basic
 
 Перша команда встановить [плагін ресурсів composer (composer-asset-plugin)](https://github.com/francoispluchino/composer-asset-plugin/),

@@ -201,6 +201,7 @@ abstract class Schema extends Object
      * @param boolean $refresh whether to fetch the latest available schema names. If this is false,
      * schema names fetched previously (if available) will be returned.
      * @return string[] all schema names in the database, except system schemas.
+     * @since 2.0.4
      */
     public function getSchemaNames($refresh = false)
     {
@@ -293,6 +294,7 @@ abstract class Schema extends Object
      * because the default implementation simply throws an exception.
      * @return array all schema names in the database, except system schemas
      * @throws NotSupportedException if this method is called
+     * @since 2.0.4
      */
     protected function findSchemaNames()
     {
@@ -415,7 +417,7 @@ abstract class Schema extends Object
         $result = [];
         foreach ($tableSchema->primaryKey as $name) {
             if ($tableSchema->columns[$name]->autoIncrement) {
-                $result[$name] = $this->db->getLastInsertID($tableSchema->sequenceName);
+                $result[$name] = $this->getLastInsertID($tableSchema->sequenceName);
                 break;
             } else {
                 $result[$name] = isset($columns[$name]) ? $columns[$name] : $tableSchema->columns[$name]->defaultValue;
