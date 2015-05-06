@@ -829,7 +829,12 @@ class QueryBuilder extends \yii\base\Object
      */
     protected function hasLimit($limit)
     {
-        return is_string($limit) && ctype_digit($limit) || is_integer($limit) && $limit >= 0;
+        // Check if limit is not object convertable to string
+        if(is_object($limit) && method_exists($limit, '__toString'))
+            $limit = "$limit";
+            
+        // Check if limit is unsigned integer
+        return is_numeric($limit) && ctype_digit("$limit");
     }
 
     /**
@@ -839,7 +844,12 @@ class QueryBuilder extends \yii\base\Object
      */
     protected function hasOffset($offset)
     {
-        return is_integer($offset) && $offset > 0 || is_string($offset) && ctype_digit($offset) && $offset !== '0';
+        // Check if limit is not object convertable to string
+        if(is_object($offset) && method_exists($offset, '__toString'))
+            $offset = "$offset";
+
+        // Check if limit is unsigned integer bigger then 0
+        return is_numeric($offset) && ctype_digit("$offset") && $offset > 0;
     }
 
     /**
