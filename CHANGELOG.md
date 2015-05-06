@@ -38,6 +38,7 @@ Yii Framework 2 Change Log
 - Bug #8165: Fixed `yii\db\ActiveRelationTrait::populateRelation()` fails when `link` refers to string convertable object attribute, like `\MongoId` (klimov-paul)
 - Bug #8231: Configuration of GridView and DetailView where not preserved when used multiple times (cebe, idMolotov)
 - Bug #8273: Fixed `yii\widgets\FragmentCache` when `enabled` is false (nkovacs)
+- Bug #8291: Fixed numeric keys in $_GET transformed to 0-based, if 'pretty URL' enabled (quantum13, klimov-paul)
 - Bug #5053: DateValidator is now more robust against different timezone settings (cebe)
 - Enh #1468: Added ability to specify hints for model attributes via `attributeHints()` method (klimov-paul)
 - Enh #3376: Added `yii\validators\EachValidator`, which allows validation of the array attributes (klimov-paul)
