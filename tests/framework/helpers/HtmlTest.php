@@ -4,6 +4,7 @@ namespace yiiunit\framework\helpers;
 
 use Yii;
 use yii\helpers\Html;
+use yiiunit\data\base\Singer;
 use yiiunit\TestCase;
 
 /**
@@ -638,6 +639,15 @@ EOD;
         $this->assertEquals('<link src="xyz" ng-a="1" ng-b="c">', Html::tag('link', '', ['src' => 'xyz', 'ng' => ['a' => 1, 'b' => 'c']]));
         $this->assertEquals('<link src="xyz" data-ng-a="1" data-ng-b="c">', Html::tag('link', '', ['src' => 'xyz', 'data-ng' => ['a' => 1, 'b' => 'c']]));
         $this->assertEquals('<link src=\'{"a":1,"b":"It\\u0027s"}\'>', Html::tag('link', '', ['src' => ['a' => 1, 'b' => "It's"]]));
+    }
+
+    public function testGetInputName()
+    {
+        $model = new Singer();
+
+        $this->assertEquals('Singer[firstName]', Html::getInputName($model, 'firstName'));
+        $this->assertEquals('Singer[firstName][]', Html::getInputName($model, 'firstName[]'));
+        $this->assertEquals('Singer[firstName][1]', Html::getInputName($model, 'firstName[1]'));
     }
 
     protected function getDataItems()
