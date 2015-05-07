@@ -497,12 +497,12 @@ class QueryBuilderTest extends DatabaseTestCase
         $qb->db->createCommand()->dropNotNull($tableName, $column)->execute();
 
         $definitionAfter = $qb->db->getSchema()->getTableSchema($tableName, true)->getColumn($column);
-        $this->assertFalse($definitionAfter->allowNull);
+        $this->assertTrue($definitionAfter->allowNull);
 
         // SET
         $qb->db->createCommand()->setNotNull($tableName, $column)->execute();
         $definitionAfter = $qb->db->getSchema()->getTableSchema($tableName, true)->getColumn($column);
-        $this->assertTrue($definitionAfter->allowNull);
+        $this->assertFalse($definitionAfter->allowNull);
         $this->assertTrue($this->compareDefinitions($definitionBefore, $definitionAfter));
     }
 
