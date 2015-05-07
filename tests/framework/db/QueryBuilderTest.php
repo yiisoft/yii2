@@ -491,7 +491,7 @@ class QueryBuilderTest extends DatabaseTestCase
 
         $tableSchema = $qb->db->getSchema()->getTableSchema($tableName);
         if (empty($tableSchema)) {
-            $this->markTestSkipped('Table schema cannot be an empty for correct testing');
+            $this->markTestSkipped('Table schema must be not an empty for correct testing');
         }
         $definitionBefore = $qb->db->getSchema()->getTableSchema($tableName)->getColumn($column);
         $qb->db->createCommand()->dropNotNull($tableName, $column)->execute();
