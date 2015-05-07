@@ -121,7 +121,7 @@ class IpValidatorTest extends TestCase
         $this->assertTrue($validator->validate('127.0.0.1'));
         $this->assertTrue($validator->validate('10.0.1.28/28'));
         $this->assertFalse($validator->validate('10.2.2.2'));
-        $this->assertTrue($validator->validate('10.0.1.1/22')); // bad test
+        $this->assertFalse($validator->validate('10.0.1.1/22'));
     }
 
     public function testValidateAttribute()
@@ -129,14 +129,37 @@ class IpValidatorTest extends TestCase
         $validator = new IpValidator();
         $model = new FakedValidationModel();
 
+        $validator->subnet = null;
+
+        $model->attr_ip = '8.8.8.8';
+        $validator->validateAttribute($model, 'attr_ip');
+        @file_put_contents('/home/vagrant/trash/error.txt', var_export($validator, true));
+        $this->assertFalse($model->hasErrors('attr_ip'));
+        $this->assertEquals('8.8.8.8', $model->attr_ip);
+
+        $model->attr_ip = '8.8.8.8';
+        $validator->validateAttribute($model, 'attr_ip');
+        @file_put_contents('/home/vagrant/trash/error.txt', var_export($validator, true));
+        $this->assertFalse($model->hasErrors('attr_ip'));
+        $this->assertEquals('8.8.8.8', $model->attr_ip);
+
+        $validator->subnet = false;
+
         $model->attr_ip = '8.8.8.8';
         $validator->validateAttribute($model, 'attr_ip');
         $this->assertFalse($model->hasErrors('attr_ip'));
         $this->assertEquals('8.8.8.8', $model->attr_ip);
 
-        $validator->normalize = true;
-        $validator->subnet = null;
+        $model->attr_ip = '8.8.8.8/24';
+        $validator->validateAttribute($model, 'attr_ip');
+        $this->assertTrue($model->hasErrors('attr_ip'));
+        $this->assertEquals('attr_ip should not be a subnet', $model->getFirstError('attr_ip'));
+        $model->clearErrors();
 
+        $validator->subnet = null;
+        $validator->normalize = true;
+
+        $model->attr_ip = '8.8.8.8';
         $validator->validateAttribute($model, 'attr_ip');
         $this->assertFalse($model->hasErrors('attr_ip'));
         $this->assertEquals('8.8.8.8/32', $model->attr_ip);
