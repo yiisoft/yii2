@@ -488,6 +488,11 @@ class QueryBuilderTest extends DatabaseTestCase
 
         // DROP
         $qb = $this->getQueryBuilder();
+
+        $tableSchema = $qb->db->getSchema()->getTableSchema($tableName);
+        if (empty($tableSchema)) {
+            $this->markTestSkipped('Table schema cannot be an empty for correct testing');
+        }
         $definitionBefore = $qb->db->getSchema()->getTableSchema($tableName)->getColumn($column);
         $qb->db->createCommand()->dropNotNull($tableName, $column)->execute();
 
@@ -508,6 +513,11 @@ class QueryBuilderTest extends DatabaseTestCase
         $newName = 'animal_type';
 
         $qb = $this->getQueryBuilder();
+        $tableSchema = $qb->db->getSchema()->getTableSchema($tableName);
+        if (empty($tableSchema)) {
+            $this->markTestSkipped('Table schema must be not an empty for correct testing');
+        }
+
         $oldDefinition = $qb->db->getSchema()->getTableSchema($tableName)->getColumn($oldName);
         $qb->db->createCommand()->renameColumn($tableName, $oldName, $newName)->execute();
 
