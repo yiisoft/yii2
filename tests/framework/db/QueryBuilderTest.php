@@ -483,19 +483,19 @@ class QueryBuilderTest extends DatabaseTestCase
 
     public function testSetDropNotNull()
     {
-        $tableName = 'constraints';
-        $column = 'field1';
+        $tableName = 'animal';
+        $column = 'type';
 
-        // SET
+        // DROP
         $qb = $this->getQueryBuilder();
         $definitionBefore = $qb->db->getSchema()->getTableSchema($tableName)->getColumn($column);
-        $qb->db->createCommand()->setNotNull($tableName, $column)->execute();
+        $qb->db->createCommand()->dropNotNull($tableName, $column)->execute();
 
         $definitionAfter = $qb->db->getSchema()->getTableSchema($tableName, true)->getColumn($column);
         $this->assertFalse($definitionAfter->allowNull);
 
-        // DROP
-        $qb->db->createCommand()->dropNotNull($tableName, $column)->execute();
+        // SET
+        $qb->db->createCommand()->setNotNull($tableName, $column)->execute();
         $definitionAfter = $qb->db->getSchema()->getTableSchema($tableName, true)->getColumn($column);
         $this->assertTrue($definitionAfter->allowNull);
         $this->assertTrue($this->compareDefinitions($definitionBefore, $definitionAfter));
