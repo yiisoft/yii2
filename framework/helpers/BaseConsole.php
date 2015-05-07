@@ -611,7 +611,7 @@ class BaseConsole
         if (static::isRunningOnWindows()) {
             $output = [];
             exec('mode con', $output);
-            if (isset($output) && strpos($output[1], 'CON') !== false) {
+            if (isset($output, $output[1]) && strpos($output[1], 'CON') !== false) {
                 return $size = [(int) preg_replace('~[^0-9]~', '', $output[3]), (int) preg_replace('~[^0-9]~', '', $output[4])];
             }
         } else {
@@ -633,6 +633,46 @@ class BaseConsole
         }
 
         return $size = false;
+    }
+
+    /**
+     * Word wrap text with indentation to fit the screen size
+     *
+     * If screen size could not be detected, or the indentation is greater than the screen size, the text will not be wrapped.
+     *
+     * The first line will **not** be indented, so `Console::wrapText("Lorem ipsum dolor sit amet.", 4)` will result in the
+     * following output, given the screen width is 16 characters:
+     *
+     * ```
+     * Lorem ipsum
+     *     dolor sit
+     *     amet.
+     * ```
+     *
+     * @param string $text the text to be wrapped
+     * @param integer $indent number of spaces to use for indentation.
+     * @param boolean $refresh whether to force refresh of screen size.
+     * This will be passed to [[getScreenSize()]].
+     * @return string the wrapped text.
+     * @since 2.0.4
+     */
+    public static function wrapText($text, $indent = 0, $refresh = false)
+    {
+        $size = static::getScreenSize($refresh);
+        if ($size === false || $size[0] <= $indent) {
+            return $text;
+        }
+        $pad = str_repeat(' ', $indent);
+        $lines = explode("\n", wordwrap($text, $size[0] - $indent, "\n", true));
+        $first = true;
+        foreach($lines as $i => $line) {
+            if ($first) {
+                $first = false;
+                continue;
+            }
+            $lines[$i] = $pad . $line;
+        }
+        return implode("\n", $lines);
     }
 
     /**

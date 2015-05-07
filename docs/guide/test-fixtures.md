@@ -376,4 +376,4 @@ Auto-generating fixtures
 
 Yii also can auto-generate fixtures for you based on some template. You can generate your fixtures with different data on different languages and formats.
 These feature is done by [Faker](https://github.com/fzaninotto/Faker) library and `yii2-faker` extension.
-See extension [guide](https://github.com/yiisoft/yii2/tree/master/extensions/faker) for more docs.
+See extension [guide](https://github.com/yiisoft/yii2-faker) for more docs.

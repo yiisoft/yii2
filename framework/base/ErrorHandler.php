@@ -107,9 +107,15 @@ abstract class ErrorHandler extends Component
                 } else {
                     echo '<pre>' . htmlspecialchars($msg, ENT_QUOTES, Yii::$app->charset) . '</pre>';
                 }
+            } else {
+                echo 'An internal server error occurred.';
             }
             $msg .= "\n\$_SERVER = " . VarDumper::export($_SERVER);
             error_log($msg);
+
+            if (PHP_SAPI !== 'cli') {
+                http_response_code(500);
+            }
             exit(1);
         }
 

@@ -14,12 +14,12 @@
 
 ### Установка при помощи Composer
 
-Если у вас ещё не установлен [Composer](http://getcomposer.org/), следуйте инструкциям в разделе
+Если у вас ещё не установлен [Composer](https://getcomposer.org/), следуйте инструкциям в разделе
 [установка Yii](start-installation.md#installing-via-composer).
 
 Если Composer установлен, вы можете установить приложение используя следующие команды:
 
-    composer global require "fxp/composer-asset-plugin:1.0.0"
+    composer global require "fxp/composer-asset-plugin:~1.0.0"
     composer create-project --prefer-dist yiisoft/yii2-app-advanced yii-application
 
 Первая команда установит плагин [composer asset plugin](https://github.com/francoispluchino/composer-asset-plugin/),

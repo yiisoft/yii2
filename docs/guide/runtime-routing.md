@@ -10,7 +10,7 @@ and the associated query parameters. When the created URL is later requested, th
 back into the original route and query parameters.
   
 The central piece responsible for routing and URL creation is the [[yii\web\UrlManager|URL manager]],
-which is registered as the `urlManager` application component. The [[yii\web\UrlManager|URL manager]]
+which is registered as the `urlManager` [application component](structure-application-components.md). The [[yii\web\UrlManager|URL manager]]
 provides the [[yii\web\UrlManager::parseRequest()|parseRequest()]] method to parse an incoming request into
 a route and the associated query parameters and the [[yii\web\UrlManager::createUrl()|createUrl()]] method to
 create a URL from a given route and its associated query parameters.
@@ -240,7 +240,7 @@ To use pretty URLs, configure the `urlManager` component in the application conf
         'urlManager' => [
             'enablePrettyUrl' => true,
             'showScriptName' => false,
-            'enableStrictParsing' => true,
+            'enableStrictParsing' => false,
             'rules' => [
                 // ...
             ],

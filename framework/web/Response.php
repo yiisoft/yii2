@@ -103,13 +103,13 @@ class Response extends \yii\base\Response
     public $format = self::FORMAT_HTML;
     /**
      * @var string the MIME type (e.g. `application/json`) from the request ACCEPT header chosen for this response.
-     * This property is mainly set by [\yii\filters\ContentNegotiator]].
+     * This property is mainly set by [[\yii\filters\ContentNegotiator]].
      */
     public $acceptMimeType;
     /**
      * @var array the parameters (e.g. `['q' => 1, 'version' => '1.0']`) associated with the [[acceptMimeType|chosen MIME type]].
      * This is a list of name-value pairs associated with [[acceptMimeType]] from the ACCEPT HTTP header.
-     * This property is mainly set by [\yii\filters\ContentNegotiator]].
+     * This property is mainly set by [[\yii\filters\ContentNegotiator]].
      */
     public $acceptParams = [];
     /**
@@ -252,8 +252,7 @@ class Response extends \yii\base\Response
         if ($this->charset === null) {
             $this->charset = Yii::$app->charset;
         }
-        $formatters = $this->defaultFormatters();
-        $this->formatters = empty($this->formatters) ? $formatters : array_merge($formatters, $this->formatters);
+        $this->formatters = array_merge($this->defaultFormatters(), $this->formatters);
     }
 
     /**
@@ -505,6 +504,9 @@ class Response extends \yii\base\Response
      *  - `mimeType`: the MIME type of the content. Defaults to 'application/octet-stream'.
      *  - `inline`: boolean, whether the browser should open the file within the browser window. Defaults to false,
      *     meaning a download dialog will pop up.
+     *  - `fileSize`: the size of the content to stream this is usefull when size of the content is known
+     *     and the content is not seekable. Defaults to content size using `ftell()`.
+     *     This option is available since version 2.0.4.
      *
      * @return static the response object itself
      * @throws HttpException if the requested range cannot be satisfied.
@@ -512,8 +514,12 @@ class Response extends \yii\base\Response
     public function sendStreamAsFile($handle, $attachmentName, $options = [])
     {
         $headers = $this->getHeaders();
-        fseek($handle, 0, SEEK_END);
-        $fileSize = ftell($handle);
+        if (isset($options['fileSize'])) {
+            $fileSize = $options['fileSize'];
+        } else {
+            fseek($handle, 0, SEEK_END);
+            $fileSize = ftell($handle);
+        }
 
         $range = $this->getHttpRange($fileSize);
         if ($range === false) {

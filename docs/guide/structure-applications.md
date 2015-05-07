@@ -153,7 +153,7 @@ During the bootstrapping process, each component will be instantiated. If the co
 implements [[yii\base\BootstrapInterface]], its [[yii\base\BootstrapInterface::bootstrap()|bootstrap()]] method
 will also be called.
 
-Another practical example is in the application configuration for the [Basic Application Template](start-installation.md),
+Another practical example is in the application configuration for the [Basic Project Template](start-installation.md),
 where the `debug` and `gii` modules are configured as bootstrapping components when the application is running
 in development environment,
 
@@ -404,7 +404,7 @@ without providing any arguments, it will display the help information.
 
 This property specifies the list of [extensions](structure-extensions.md) that are installed and used by the application.
 By default, it will take the array returned by the file `@vendor/yiisoft/extensions.php`. The `extensions.php` file
-is generated and maintained automatically when you use [Composer](http://getcomposer.org) to install extensions.
+is generated and maintained automatically when you use [Composer](https://getcomposer.org) to install extensions.
 So in most cases, you do not need to configure this property.
 
 In the special case when you want to maintain extensions manually, you may configure this property like the following:
@@ -473,7 +473,7 @@ represented by the alias `@app/views`. You may configure it as a directory or a 
 
 #### [[yii\base\Application::vendorPath|vendorPath]] <span id="vendorPath"></span>
 
-This property specifies the vendor directory managed by [Composer](http://getcomposer.org). It contains
+This property specifies the vendor directory managed by [Composer](https://getcomposer.org). It contains
 all third party libraries used by your application, including the Yii framework. The default value is
 the directory represented by the alias `@app/vendor`.
 

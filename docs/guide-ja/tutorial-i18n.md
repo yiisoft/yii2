@@ -517,7 +517,8 @@ use yii\i18n\MissingTranslationEvent;
 
 class TranslationEventHandler
 {
-    public static function handleMissingTranslation(MissingTranslationEvent $event) {
+    public static function handleMissingTranslation(MissingTranslationEvent $event)
+    {
         $event->translatedMessage = "@MISSING: {$event->category}.{$event->message} FOR LANGUAGE {$event->language} @";
     }
 }
@@ -527,6 +528,36 @@ class TranslationEventHandler
 
 > Note|注意: 全てのメッセージソースは、欠落した翻訳をそれぞれ独自に処理します。
 > いくつかのメッセージソースを使っていて、それらが同じ方法で欠落した翻訳を取り扱うようにしたい場合は、対応するイベントハンドラを全てのメッセージソースそれぞれに割り当てなければなりません。
+
+### `message` コマンドを使う <a name="message-command"></a>
+
+翻訳は [[yii\i18n\PhpMessageSource|php ファイル]]、[[yii\i18n\GettextMessageSource|.po ファイル]、または [[yii\i18n\DbMessageSource|database]] に保存することが出来ます。
+追加のオプションについてはそれぞれのクラスを参照してください。
+
+まず最初に、構成情報ファイルを作成する必要があります。
+どこに保存したいかを決めて、次のコマンドを発行してください。
+
+```bash
+./yii message/config path/to/config.php
+```
+
+作成されたファイルを開いて、あなたの要求に合わせてパラメータを修正します。
+特に、下記の項目に注意を払ってください。
+
+* `languages`: あなたのアプリケーションが翻訳されるべき言語を表す配列。
+* `messagePath`: メッセージファイルを保存するパス。
+  これは、アプリケーションの構成情報で記述されている `i18n` の `basePath` と合致しなければなりません。
+
+> エイリアスがここではサポートされていないことに注意してください。
+  構成情報ファイルの位置からの相対パスで記述しなければなりません。
+
+構成情報ファイルの編集が完了すれば、ついに、下記のコマンドを使ってメッセージを抽出することが出来ます。
+
+```bash
+./yii message path/to/config.php
+```
+
+これで、(あなたがファイルベースの翻訳を選択していた場合は) `messagePath` ディレクトリにファイルが出現します。
 
 
 ビュー
@@ -542,7 +573,7 @@ class TranslationEventHandler
 数値と日付の値を書式設定する
 ----------------------------
 
-詳細は [データフォーマッタ](output-formatter.md) の節を参照してください。
+詳細は [データフォーマッタ](output-formatting.md) の節を参照してください。
 
 
 PHP 環境をセットアップする <span id="setup-environment"></span>

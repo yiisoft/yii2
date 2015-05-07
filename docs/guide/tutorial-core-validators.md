@@ -111,14 +111,19 @@ specified via [[yii\validators\DateValidator::timestampAttribute|timestampAttrib
    `Datetime` class. Please refer to <http://php.net/manual/en/datetime.createfromformat.php> on supported formats.
    If this is not set, it will take the value of `Yii::$app->formatter->dateFormat`.
 - `timestampAttribute`: the name of the attribute to which this validator may assign the UNIX timestamp
-  converted from the input date/time.
+  converted from the input date/time. This can be the same attribute as the one being validated. If this is the case,
+  the original value will be overwritten with the timestamp value after validation.
+  See ["Handling date input with the DatePicker"](widget-jui#datepicker-date-input) for a usage example.
 
-In case the input is optional you may also want to add a default value filter in addition to the date validator
+In case the input is optional you may also want to add a [default value filter](#default) in addition to the date validator
 to ensure empty input is stored as `NULL`. Other wise you may end up with dates like `0000-00-00` in your database
 or `1970-01-01` in the input field of a date picker.
 
 ```php
-[['from_date', 'to_date'], 'default', 'value' => null],
+[
+    [['from_date', 'to_date'], 'default', 'value' => null],
+    [['from_date', 'to_date'], 'date'],
+],
 ```
 
 ## [[yii\validators\DefaultValueValidator|default]] <span id="default"></span>
@@ -170,6 +175,30 @@ This validator checks if the input value is a double number. It is equivalent to
 - `min`: the lower limit (inclusive) of the value. If not set, it means the validator does not check the lower limit.
 
 
+## [[yii\validators\EachValidator|each]] <span id="each"></span>
+
+> Info: This validator has been available since version 2.0.4.
+
+```php
+[
+    // checks if every category ID is an integer
+    ['categoryIDs', 'each', 'rule' => ['integer']],
+]
+```
+
+This validator only works with an array attribute. It validates if *every* element of the array can be successfully
+validated by a specified validation rule. In the above example, the `categoryIDs` attribute must take an array value
+and each array element will be validated by the `integer` validation rule.
+
+- `rule`: an array specifying a validation rule. The first element in the array specifies the class name or 
+  the alias of the validator. The rest of the name-value pairs in the array are used to configure the validator object.
+- `allowMessageFromRule`: whether to use the error message returned by the embedded validation rule. Defaults to true.
+  If false, it will use `message` as the error message.
+
+> Note: If the attribute value is not an array, it is considered validation fails and the `message` will be returned
+  as the error message.
+
+
 ## [[yii\validators\EmailValidator|email]] <span id="email"></span>
 
 ```php
@@ -214,9 +243,13 @@ This validator checks if the input value is a valid email address.
 ]
 ```
 
-This validator checks if the input value can be found in a table column. It only works
-with [Active Record](db-active-record.md) model attributes. It supports validation against
-either a single column or multiple columns.
+This validator checks if the input value can be found in a table column represented by 
+an [Active Record](db-active-record.md) attribute. You can use `targetAttribute` to specify the
+[Active Record](db-active-record.md) attribute and `targetClass` the corresponding [Active Record](db-active-record.md)
+class. If you do not specify them, they will take the values of the attribute and the model class being validated.
+
+You can use this validator to validate against a single column or multiple columns (i.e., the combination of
+multiple attribute values should exist).
 
 - `targetClass`: the name of the [Active Record](db-active-record.md) class that should be used
   to look for the input value being validated. If not set, the class of the model currently being validated will be used.

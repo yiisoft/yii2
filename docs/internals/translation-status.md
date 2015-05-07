@@ -43,9 +43,9 @@ concept-autoloading.md              | Yes
 concept-service-locator.md          | Yes
 concept-di-container.md             | Yes
 db-dao.md                           | Yes
-db-query-builder.md                 |
-db-active-record.md                 |
-db-migrations.md                    |
+db-query-builder.md                 | Yes
+db-active-record.md                 | Yes
+db-migrations.md                    | Yes
 db-sphinx.md                        |
 db-redis.md                         |
 db-mongodb.md                       |
@@ -55,13 +55,13 @@ input-validation.md                 | Yes
 input-file-upload.md                |
 input-multiple-models.md            |
 input-tabular-input.md              |
-output-formatter.md                 |
-output-pagination.md                |
-output-sorting.md                   |
-output-data-providers.md            |
+output-formatting.md                |
+output-pagination.md                | Yes
+output-sorting.md                   | Yes
+output-data-providers.md            | Yes
 output-data-widgets.md              |
-output-theming.md                   |
-security-authentication.md          |
+output-theming.md                   | Yes
+security-authentication.md          | Yes
 security-authorization.md           |
 security-passwords.md               |
 security-auth-clients.md            |

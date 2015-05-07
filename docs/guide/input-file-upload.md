@@ -110,7 +110,7 @@ If the validation is successful, then we're saving the file:
 $model->file->saveAs('uploads/' . $model->file->baseName . '.' . $model->file->extension);
 ```
 
-If you're using the "basic" application template, then folder `uploads` should be created under `web`.
+If you're using the "basic" project template, then folder `uploads` should be created under `web`.
 
 That's it. Load the page and try uploading. Uploads should end up in `basic/web/uploads`.
 
@@ -168,7 +168,7 @@ public function rules()
 ### Image properties
 
 If you upload an image, [[yii\validators\ImageValidator|ImageValidator]] may come in handy. It verifies if an attribute
-received a valid image that can be then either saved or processed using the [Imagine Extension](https://github.com/yiisoft/yii2/tree/master/extensions/imagine).
+received a valid image that can be then either saved or processed using the [Imagine Extension](https://github.com/yiisoft/yii2-imagine).
 
 Uploading multiple files
 ------------------------

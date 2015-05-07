@@ -142,7 +142,7 @@ $config = require(__DIR__ . '/../config/web.php');
 ブートストラップの過程で、各コンポーネントのインスタンスが作成されます。
 そして、コンポーネントクラスが [[yii\base\BootstrapInterface]] を実装している場合は、その [[yii\base\BootstrapInterface::bootstrap()|bootstrap()]] メソッドも呼び出されます。
 
-もう一つの実用的な例が [ベーシックアプリケーションテンプレート](start-installation.md) のアプリケーションの構成情報の中にあります。
+もう一つの実用的な例が [ベーシックプロジェクトテンプレート](start-installation.md) のアプリケーションの構成情報の中にあります。
 そこでは、アプリケーションが開発環境で走るときには `debug` モジュールと `gii` モジュールがブートストラップコンポーネントとして構成されています。
 
 ```php
@@ -384,7 +384,7 @@ $width = \Yii::$app->params['thumbnail.size'][0];
 
 このプロパティは、アプリケーションにインストールされて使われている [エクステンション](structure-extensions.md) のリストを指定するものです。
 デフォルトでは、`@vendor/yiisoft/extensions.php` というファイルによって返される配列を取ります。
-`extensions.php` は、[Composer](http://getcomposer.org) を使ってエクステンションをインストールすると、自動的に生成され保守されます。
+`extensions.php` は、[Composer](https://getcomposer.org) を使ってエクステンションをインストールすると、自動的に生成され保守されます。
 ですから、たいていの場合、このプロパティをあなたが構成する必要はありません。
 
 エクステンションを手作業で保守したいという特殊なケースにおいては、次のようにしてこのプロパティを構成することが出来ます。
@@ -453,7 +453,7 @@ $width = \Yii::$app->params['thumbnail.size'][0];
 
 #### [[yii\base\Application::vendorPath|vendorPath]] <span id="vendorPath"></span>
 
-このプロパティは、[Composer](http://getcomposer.org) によって管理される vendor ディレクトリを指定するものです。
+このプロパティは、[Composer](https://getcomposer.org) によって管理される vendor ディレクトリを指定するものです。
 Yii フレームワークを含めて、あなたのアプリケーションによって使われる全てのサードパーティライブラリを格納するディレクトリです。
 デフォルト値は、`@app/vendor` というエイリアスで表現されるディレクトリです。
 

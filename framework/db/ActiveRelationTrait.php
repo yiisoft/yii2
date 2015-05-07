@@ -258,7 +258,7 @@ trait ActiveRelationTrait
                         if (isset($buckets[$key])) {
                             if ($this->indexBy !== null) {
                                 // if indexBy is set, array_merge will cause renumbering of numeric array
-                                foreach($buckets[$key] as $bucketKey => $bucketValue) {
+                                foreach ($buckets[$key] as $bucketKey => $bucketValue) {
                                     $value[$bucketKey] = $bucketValue;
                                 }
                             } else {
@@ -367,7 +367,7 @@ trait ActiveRelationTrait
         $linkKeys = array_keys($link);
 
         if (isset($map)) {
-            foreach ($models as $i => $model) {
+            foreach ($models as $model) {
                 $key = $this->getModelKey($model, $linkKeys);
                 if (isset($map[$key])) {
                     foreach (array_keys($map[$key]) as $key2) {
@@ -376,7 +376,7 @@ trait ActiveRelationTrait
                 }
             }
         } else {
-            foreach ($models as $i => $model) {
+            foreach ($models as $model) {
                 $key = $this->getModelKey($model, $linkKeys);
                 $buckets[$key][] = $model;
             }
@@ -483,19 +483,20 @@ trait ActiveRelationTrait
      */
     private function getModelKey($model, $attributes)
     {
-        if (count($attributes) > 1) {
-            $key = [];
-            foreach ($attributes as $attribute) {
-                $key[] = $model[$attribute];
+        $key = [];
+        foreach ($attributes as $attribute) {
+            $value = $model[$attribute];
+            if (is_object($value) && method_exists($value, '__toString')) {
+                // ensure matching to special objects, which are convertable to string, for cross-DBMS relations, for example: `|MongoId`
+                $value = $value->__toString();
             }
-
-            return serialize($key);
-        } else {
-            $attribute = reset($attributes);
-            $key = $model[$attribute];
-
-            return is_scalar($key) ? $key : serialize($key);
+            $key[] = $value;
         }
+        if (count($key) > 1) {
+            return serialize($key);
+        }
+        $key = reset($key);
+        return is_scalar($key) ? $key : serialize($key);
     }
 
     /**

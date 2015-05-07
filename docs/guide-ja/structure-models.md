@@ -479,7 +479,7 @@ public function fields()
 * モデルを使用するそれぞれの [アプリケーション](structure-applications.md) または [モジュール](structure-modules.md) において、対応する基底モデルクラスから拡張した具体的なモデルクラスを定義します。
   この具体的なモデルクラスが、そのアプリケーションやモジュールに固有の規則やロジックを含むべきです。
 
-例えば、[アドバンストアプリケーションテンプレート](tutorial-advanced-app.md) の中で、基底モデルクラス `common\models\Post` を定義することが出来ます。
+例えば、[アドバンストプロジェクトテンプレート](https://github.com/yiisoft/yii2-app-advanced/blob/master/docs/guide-ja/README.md) の中で、基底モデルクラス `common\models\Post` を定義することが出来ます。
 次に、フロントエンドアプリケーションにおいては、`common\models\Post` から拡張した具体的なモデルクラス `frontend\models\Post` を定義して使います。
 また、バックエンドアプリケーションにおいても、同様に、`backend\models\Post` を定義します。
 この戦略を取ると、`frontend\models\Post` の中のコードはフロントエンドアプリケーション固有のものであると保証することが出来ます。

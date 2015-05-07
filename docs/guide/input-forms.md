@@ -74,7 +74,7 @@ To customize the output, you can chain additional methods of [[yii\widgets\Activ
 ```
 
 This will create all the `<label>`, `<input>` and other tags according to the [[yii\widgets\ActiveField::$template|template]] defined by the form field.
-The name of the input field is determined automatically from the model's [[yii\base\Model::formName()|form name] and the attribute's name.
+The name of the input field is determined automatically from the model's [[yii\base\Model::formName()|form name]] and the attribute's name.
 For example, the name for the input field for the `username` attribute in the above example will be `LoginForm[username]`. This naming rule will result in an array
 of all attributes for the login form to be available in `$_POST['LoginForm']` on the server side.
 
@@ -115,4 +115,4 @@ To read about more complex usage of forms, you may want to check out the followi
 
 - [Collecting tabular input](input-tabular-input.md) for collecting data for multiple models of the same kind.
 - [Complex Forms with Multiple Models](input-multiple-models.md) for handling multiple different models in the same form.
-- [Uploading Files](input-file-upload) on how to use forms for uploading files.
+- [Uploading Files](input-file-upload.md) on how to use forms for uploading files.

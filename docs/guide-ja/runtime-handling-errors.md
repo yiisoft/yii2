@@ -135,7 +135,7 @@ public function actionError()
 * `message`: エラーメッセージ。
 * `exception`: 例外オブジェクト。これを通じて、更に有用な情報、例えば、HTTP ステータスコード、エラーコード、エラーコールスタックなどにアクセスすることが出来ます。
 
-> Info|情報: あなたが [ベーシックアプリケーションテンプレート](start-installation.md) または [アドバンストアプリケーションテンプレート](tutorial-advanced-app.md) を使っている場合は、エラーアクションとエラービューは、既にあなたのために定義されています。
+> Info|情報: あなたが [ベーシックプロジェクトテンプレート](start-installation.md) または [アドバンストプロジェクトテンプレート](https://github.com/yiisoft/yii2-app-advanced/blob/master/docs/guide-ja/README.md) を使っている場合は、エラーアクションとエラービューは、既にあなたのために定義されています。
 
 
 ### エラーのレスポンス形式をカスタマイズする <span id="error-format"></span>

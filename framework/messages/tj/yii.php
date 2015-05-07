@@ -55,7 +55,7 @@ return [
 	'No results found.' => 'Чизе ёфт нашуд.',
 	'Page not found.' => 'Саҳифа ёфт нашуд.',
 	'Please fix the following errors:' => 'Илтимос хатоҳои зеринро ислоҳ кунед:',
-	'Only files with these extensions are allowed: {extensions}.' => 'Танҳо файлҳои бо ин пасванд иҷоза аст: {extentions}.',
+	'Only files with these extensions are allowed: {extensions}.' => 'Танҳо файлҳои бо ин пасванд иҷоза аст: {extensions}.',
 	'Only files with these MIME types are allowed: {mimeTypes}.' => 'Фақат ин намуди файлҳо иҷозат аст: {mimeTypes}.',
 	'The format of {attribute} is invalid.' => 'Формати {attribute} ғалат буд.',	
 	'Please upload a file.' => 'Илтимос файл аплод кунед.',
