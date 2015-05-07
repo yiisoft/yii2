@@ -25,7 +25,8 @@ use yii\db\Query;
  * CREATE TABLE source_message (
  *     id INTEGER PRIMARY KEY AUTO_INCREMENT,
  *     category VARCHAR(32),
- *     message TEXT
+ *     message TEXT,
+ *     INDEX (category)
  * );
  *
  * CREATE TABLE message (
