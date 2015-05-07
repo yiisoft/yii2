@@ -90,7 +90,8 @@ class SqliteQueryBuilderTest extends QueryBuilderTest
 
     public function testRenameColumn()
     {
-        $this->markTestSkipped('SQLite does not support this feature.');
+        $this->setExpectedException('yii\base\NotSupportedException');
+        parent::testRenameColumn();
     }
 
 

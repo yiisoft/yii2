@@ -17,18 +17,12 @@ DROP TABLE IF EXISTS `type` CASCADE;
 DROP TABLE IF EXISTS `constraints` CASCADE;
 DROP TABLE IF EXISTS `animal` CASCADE;
 DROP TABLE IF EXISTS `default_pk` CASCADE;
-DROP TABLE IF EXISTS `test_rename` CASCADE;
 DROP VIEW IF EXISTS `animal_view`;
 
 CREATE TABLE `constraints`
 (
   `id` integer not null,
   `field1` varchar(255)
-);
-
-CREATE TABLE `test_rename`
-(
-  `name` varchar(255) DEFAULT 'test'
 );
 
 CREATE TABLE `profile` (

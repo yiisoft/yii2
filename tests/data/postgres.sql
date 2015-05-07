@@ -16,7 +16,6 @@ DROP TABLE IF EXISTS "profile" CASCADE;
 DROP TABLE IF EXISTS "type" CASCADE;
 DROP TABLE IF EXISTS "null_values" CASCADE;
 DROP TABLE IF EXISTS "constraints" CASCADE;
-DROP TABLE IF EXISTS "test_rename" CASCADE;
 DROP TABLE IF EXISTS "bool_values" CASCADE;
 DROP TABLE IF EXISTS "animal" CASCADE;
 DROP TABLE IF EXISTS "default_pk" CASCADE;
@@ -31,11 +30,6 @@ CREATE TABLE "constraints"
 (
   id integer not null,
   field1 varchar(255)
-);
-
-CREATE TABLE "test_rename"
-(
-  name varchar(255) DEFAULT 'test'
 );
 
 CREATE TABLE "profile" (

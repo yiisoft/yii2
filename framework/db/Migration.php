@@ -435,10 +435,10 @@ class Migration extends Component implements MigrationInterface
     }
 
     /**
-     * Builds and executes a SQL statement for setting not null constraint on a column.
-     * @param string $table the table whose index is to be changed. The name will be properly quoted by the method.
+     * Builds and executes a SQL statement for setting NOT NULL constraint on a column.
+     * @param string $table the table whose column is to be changed. The name will be properly quoted by the method.
      * @param string $column the name of the column to be changed. The name will be properly quoted by the method.
-     * @param null|string $default
+     * @param null|string $default the default value for columns with NULL value
      */
     public function setNotNull($table, $column, $default = null)
     {
@@ -457,8 +457,8 @@ class Migration extends Component implements MigrationInterface
 
 
     /**
-     * Builds and executes a SQL statement for dropping not null constraint of a column.
-     * @param string $table the table whose index is to be changed. The name will be properly quoted by the method.
+     * Builds and executes a SQL statement for dropping NOT NULL constraint of a column.
+     * @param string $table the table whose column is to be changed. The name will be properly quoted by the method.
      * @param string $column the name of the column to be changed. The name will be properly quoted by the method.
      */
     public function dropNotNull($table, $column)

@@ -744,7 +744,7 @@ class Command extends Component
     }
 
     /**
-     * Creates a SQL command for setting not null constraint on a column.
+     * Creates a SQL command for setting NOT NULL constraint on a column.
      * @param string $table the table whose column is to be changed. The table name will be properly quoted by the method.
      * @param string $column the name of the column to be changed. The name will be properly quoted by the method.
      * @return Command the command object itself
@@ -757,7 +757,7 @@ class Command extends Component
     }
 
     /**
-     * Creates a SQL command for dropping not null constraint of a column.
+     * Creates a SQL command for dropping NOT NULL constraint of a column.
      * @param string $table the table whose column is to be changed. The table name will be properly quoted by the method.
      * @param string $column the name of the column to be changed. The name will be properly quoted by the method.
      * @return Command the command object itself

@@ -11,6 +11,7 @@ use yii\db\sqlite\QueryBuilder as SqliteQueryBuilder;
 use yii\db\mssql\QueryBuilder as MssqlQueryBuilder;
 use yii\db\pgsql\QueryBuilder as PgsqlQueryBuilder;
 use yii\db\cubrid\QueryBuilder as CubridQueryBuilder;
+use yii\db\oci\QueryBuilder as OracleQueryBuilder;
 
 /**
  * @group db
@@ -35,6 +36,8 @@ class QueryBuilderTest extends DatabaseTestCase
                 return new PgsqlQueryBuilder($this->getConnection(true, false));
             case 'cubrid':
                 return new CubridQueryBuilder($this->getConnection(true, false));
+            case 'oci':
+                return new OracleQueryBuilder($this->getConnection(true, false));
         }
         throw new \Exception('Test is not implemented for ' . $this->driverName);
     }
@@ -485,22 +488,24 @@ class QueryBuilderTest extends DatabaseTestCase
 
         // SET
         $qb = $this->getQueryBuilder();
+        $definitionBefore = $qb->db->getSchema()->getTableSchema($tableName)->getColumn($column);
         $qb->db->createCommand()->setNotNull($tableName, $column)->execute();
-        $columnSchema = $qb->db->getSchema()->getTableSchema($tableName)->getColumn($column);
-        $this->assertFalse($columnSchema->allowNull);
+
+        $definitionAfter = $qb->db->getSchema()->getTableSchema($tableName, true)->getColumn($column);
+        $this->assertFalse($definitionAfter->allowNull);
 
         // DROP
         $qb->db->createCommand()->dropNotNull($tableName, $column)->execute();
-        $qb = $this->getQueryBuilder(); // resets the schema
-        $columnSchema = $qb->db->getSchema()->getTableSchema($tableName)->getColumn($column);
-        $this->assertTrue($columnSchema->allowNull);
+        $definitionAfter = $qb->db->getSchema()->getTableSchema($tableName, true)->getColumn($column);
+        $this->assertTrue($definitionAfter->allowNull);
+        $this->assertTrue($this->compareDefinitions($definitionBefore, $definitionAfter));
     }
 
     public function testRenameColumn()
     {
-        $tableName = 'test_rename';
-        $oldName = 'name';
-        $newName = 'new_name';
+        $tableName = 'animal';
+        $oldName = 'type';
+        $newName = 'animal_type';
 
         $qb = $this->getQueryBuilder();
         $oldDefinition = $qb->db->getSchema()->getTableSchema($tableName)->getColumn($oldName);
