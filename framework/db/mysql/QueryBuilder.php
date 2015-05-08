@@ -147,6 +147,18 @@ class QueryBuilder extends \yii\db\QueryBuilder
     /**
      * @inheritdoc
      */
+    public function buildFrom($tables, &$params)
+    {
+        if (count($tables) < 2) {
+            return parent::buildFrom($tables, $params);
+        }
+        $tables = $this->quoteTableNames($tables, $params);
+        return 'FROM (' . implode(', ', $tables) . ')';
+    }
+
+    /**
+     * @inheritdoc
+     */
     public function buildLimit($limit, $offset)
     {
         $sql = '';

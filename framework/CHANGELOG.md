@@ -5,6 +5,7 @@ Yii Framework 2 Change Log
 -----------------------
 
 - Bug #5042: Use RETURNING for inserts for pgsql and oci to support PKs with a custom default value expression (nineinchnick, klimov-paul)
+- Bug #6545: Fixed MySQL query syntax for multiple FROM tables and a join (pawzar, cebe)
 - Bug #6642: Fixed the bug that using confirmation dialog via `data-confirm` in an `ActiveForm` may cause the dialog to appear twice (pana1990, qiangxue)
 - Bug #6871: Fixed the bug that using defaults and hostnames in URL rules may cause an out-of-range index issue (qiangxue)
 - Bug #7036: Fixed `yii\helpers\Html::dropDownList()` overrides label specified at 'groups' option (aktec, klimov-paul)

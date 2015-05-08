@@ -707,7 +707,7 @@ class QueryBuilder extends \yii\base\Object
      * @param array $params
      * @return array
      */
-    private function quoteTableNames($tables, &$params)
+    protected function quoteTableNames($tables, &$params)
     {
         foreach ($tables as $i => $table) {
             if ($table instanceof Query) {
