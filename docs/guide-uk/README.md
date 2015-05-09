@@ -166,7 +166,7 @@ RESTful веб-сервіси
 * **TBD** [Створення додатка з нуля](tutorial-start-from-scratch.md)
 * **TBD** [Консольні команди](tutorial-console.md)
 * **TBD** [Основні валідатори](tutorial-core-validators.md)
-* **TBD** [Інтернаціонализація](tutorial-i18n.md)
+* **TBD** [Інтернаціоналізація](tutorial-i18n.md)
 * **TBD** [Робота з поштою](tutorial-mailing.md)
 * **TBD** [Вдосконалення продуктивності](tutorial-performance-tuning.md)
 * **TBD** [Робота на shared хостингу](tutorial-shared-hosting.md)
