@@ -76,9 +76,12 @@ class MessageController extends Controller
      * @param string $configFile the path or alias of the configuration file.
      * You may use the "yii message/config" command to generate
      * this file and then customize it for your needs.
+     * @param string $specifiedLanguage the language code.
+     * This parameter override 'languages' array content
+     * from $configFile with one specified language code.
      * @throws Exception on failure.
      */
-    public function actionExtract($configFile)
+    public function actionExtract($configFile, $specifiedLanguage = NULL)
     {
         $configFile = Yii::getAlias($configFile);
         if (!is_file($configFile)) {
@@ -93,6 +96,9 @@ class MessageController extends Controller
             'format' => 'php',
             'ignoreCategories' => [],
         ], require($configFile));
+        if (!empty($specifiedLanguage)) {
+            $config['languages'] = [ $specifiedLanguage ];
+        }
 
         if (!isset($config['sourcePath'], $config['languages'])) {
             throw new Exception('The configuration file must specify "sourcePath" and "languages".');
