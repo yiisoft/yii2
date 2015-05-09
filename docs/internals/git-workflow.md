@@ -59,13 +59,13 @@ You may limit the tests to a group of tests you are working on e.g. to run only 
 
 ### Extensions
 
-To work on extensions you have clone the extension repository. We have created a command that can do this for you:
+To work on extensions you have to clone the extension repository. We have created a command that can do this for you:
 
     php build/build dev/ext <extension-name>
     
 where `<extension-name>` is the name of the extension, e.g. `redis`.
 
-If you want to test the extension in one of the application templates, just add them to the `composer.json` of the application as you would
+If you want to test the extension in one of the application templates, just add it to the `composer.json` of the application as you would
 normally do e.g. add `"yiisoft/yii2-redis": "*"` to the `require` section of the basic app.
 Running `php build/build dev/app basic` will install the extension and its dependecies and create
 a symlink to `extensions/redis` so you are not working in the composer vendor dir but in the yii2 repository directly.
