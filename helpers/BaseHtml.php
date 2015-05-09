@@ -1106,7 +1106,7 @@ class BaseHtml
      *
      * - header: string, the header HTML for the error summary. If not set, a default prompt string will be used.
      * - footer: string, the footer HTML for the error summary.
-     * - encode: boolean, if set to false then value won't be encoded.
+     * - encode: boolean, if set to false then the error messages won't be encoded.
      *
      * The rest of the options will be rendered as the attributes of the container tag. The values will
      * be HTML-encoded using [[encode()]]. If a value is null, the corresponding attribute will not be rendered.
@@ -1152,7 +1152,7 @@ class BaseHtml
      * The following options are specially handled:
      *
      * - tag: this specifies the tag name. If not set, "div" will be used.
-     * - encode: boolean, if set to false then value won't be encoded.
+     * - encode: boolean, if set to false then the error message won't be encoded.
      *
      * See [[renderTagAttributes()]] for details on how attributes are being rendered.
      *
