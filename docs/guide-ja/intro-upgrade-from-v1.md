@@ -102,7 +102,7 @@ $object = Yii::createObject([
 ], [$param1, $param2]);
 ```
 
-構成情報に関する詳細は、[オブジェクトの構成情報](concept-configurations.md) の節で見ることが出来ます。
+構成情報に関する詳細は、[構成情報](concept-configurations.md) の節で見ることが出来ます。
 
 
 イベント
