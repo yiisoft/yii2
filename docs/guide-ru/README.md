@@ -108,9 +108,9 @@ All Rights Reserved.
 ------------
 
 * [Аутентификация](security-authentication.md)
-* **TBD** [Авторизация](security-authorization.md)
+* [Авторизация](security-authorization.md)
 * **TBD** [Работа с паролями](security-passwords.md)
-* **TBD** [Клиенты авторизации](security-auth-clients.md)
+* [Клиенты авторизации](https://github.com/yiisoft/yii2-authclient/blob/master/docs/guide/README.md)
 * **TBD** [Лучшие практики](security-best-practices.md)
 
 
