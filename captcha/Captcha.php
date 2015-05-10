@@ -128,7 +128,7 @@ class Captcha extends InputWidget
     public function registerClientScript()
     {
         $options = $this->getClientOptions();
-        $options = empty($options) ? '' : Json::encode($options);
+        $options = empty($options) ? '' : Json::htmlEncode($options);
         $id = $this->imageOptions['id'];
         $view = $this->getView();
         CaptchaAsset::register($view);
