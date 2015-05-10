@@ -1711,13 +1711,13 @@ class BaseHtml
                 if (in_array($name, static::$dataAttributes)) {
                     foreach ($value as $n => $v) {
                         if (is_array($v)) {
-                            $html .= " $name-$n='" . Json::encode($v, JSON_HEX_APOS) . "'";
+                            $html .= " $name-$n='" . Json::htmlEncode($v) . "'";
                         } else {
                             $html .= " $name-$n=\"" . static::encode($v) . '"';
                         }
                     }
                 } else {
-                    $html .= " $name='" . Json::encode($value, JSON_HEX_APOS) . "'";
+                    $html .= " $name='" . Json::htmlEncode($value) . "'";
                 }
             } elseif ($value !== null) {
                 $html .= " $name=\"" . static::encode($value) . '"';
