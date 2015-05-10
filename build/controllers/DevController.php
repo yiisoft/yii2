@@ -29,6 +29,7 @@ class DevController extends Controller
     public $apps = [
         'basic' => 'git@github.com:yiisoft/yii2-app-basic.git',
         'advanced' => 'git@github.com:yiisoft/yii2-app-advanced.git',
+        'benchmark' => 'git@github.com:yiisoft/yii2-app-benchmark.git',
     ];
 
     public $extensions = [
