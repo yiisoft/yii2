@@ -111,7 +111,7 @@ All Rights Reserved.
 * **TBD** [Авторизация](security-authorization.md)
 * **TBD** [Работа с паролями](security-passwords.md)
 * **TBD** [Клиенты авторизации](security-auth-clients.md)
-* **TBD** [Лучшие практики](security-best-practices.md)
+* [Лучшие практики](security-best-practices.md)
 
 
 Кеширование
