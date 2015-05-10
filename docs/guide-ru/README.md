@@ -109,7 +109,7 @@ All Rights Reserved.
 
 * [Аутентификация](security-authentication.md)
 * **TBD** [Авторизация](security-authorization.md)
-* **TBD** [Работа с паролями](security-passwords.md)
+* [Работа с паролями](security-passwords.md)
 * **TBD** [Клиенты авторизации](security-auth-clients.md)
 * **TBD** [Лучшие практики](security-best-practices.md)
 
