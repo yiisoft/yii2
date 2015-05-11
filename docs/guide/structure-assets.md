@@ -195,7 +195,7 @@ class FontAwesomeAsset extends AssetBundle
     {
         parent::init();
         $this->publishOptions['beforeCopy'] = function ($from, $to) {
-            $dirname = basename(dirname($from));
+            $dirname = basename($from);
             return $dirname === 'fonts' || $dirname === 'css';
         };
     }
