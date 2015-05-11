@@ -69,7 +69,7 @@ return [
     '{attribute} is not a valid email address.' => 'Значення "{attribute}" не є правильною email адресою.',
     '{attribute} must be "{requiredValue}".' => 'Значення "{attribute}" має бути рівним "{requiredValue}".',
     '{attribute} must be a number.' => 'Значення "{attribute}" має бути числом.',
-    '{attribute} must be a string.' => 'Значення "{attribute}" має бути текстовою стрічкою.',
+    '{attribute} must be a string.' => 'Значення "{attribute}" має бути текстовим рядком.',
     '{attribute} must be an integer.' => 'Значення "{attribute}" має бути цілим числом.',
     '{attribute} must be either "{true}" or "{false}".' => 'Значення "{attribute}" має дорівнювати "{true}" або "{false}".',
     '{attribute} must be greater than "{compareValue}".' => 'Значення "{attribute}" повинно бути більшим значення "{compareValue}".',
