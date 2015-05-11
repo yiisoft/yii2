@@ -202,7 +202,7 @@ $customer = Customer::findOne([
 
 // returns all inactive customers
 // SELECT * FROM `customer` WHERE `status` = 0
-$customer = Customer::findAll([
+$customers = Customer::findAll([
     'status' => Customer::STATUS_INACTIVE,
 ]);
 ```
