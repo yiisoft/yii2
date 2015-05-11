@@ -6,7 +6,7 @@ Ou uma classe extendida. As três características principais que os Componentes
 
 * [Propriedades](concept-properties.md)
 * [Eventos](concept-events.md)
-* [Comportamentos](concept-behaviors.md)
+* [Behaviors (Comportamentos)](concept-behaviors.md)
  
 Separadamente e combinadas, essas características fazem com que as classes no Yii sejam muito mais customizáveis e fáceis de usar. Por Exemplo,
 O include [[yii\jui\DatePicker|date picker widget]], um componete de interface do usuário, pode ser usado na [view (visão)](structure-view.md)
