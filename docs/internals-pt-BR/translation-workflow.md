@@ -90,6 +90,8 @@ Regras e Observações
 - standalone action — ação standalone
 - advanced project template — template avançado de projetos
 - basic project template — template básico de projetos
+- behaviors — behaviors (comportamentos)
+- pretty URL — URL amigável (pretty URL)
 
 ### Termos Sem Tradução
 
@@ -108,3 +110,4 @@ Regras e Observações
 - frontend
 - web service
 - template
+- query string
