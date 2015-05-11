@@ -108,7 +108,7 @@ All Rights Reserved.
 ------------
 
 * [Аутентификация](security-authentication.md)
-* **TBD** [Авторизация](security-authorization.md)
+* [Авторизация](security-authorization.md)
 * **TBD** [Работа с паролями](security-passwords.md)
 * **TBD** [Клиенты авторизации](security-auth-clients.md)
 * [Лучшие практики](security-best-practices.md)

@@ -1,8 +1,14 @@
 Yii Framework 2 Change Log
 ==========================
 
-2.0.4 under development
+2.0.5 under development
 -----------------------
+
+- no changes in this release.
+
+
+2.0.4 May 10, 2015
+------------------
 
 - Bug #5042: Use RETURNING for inserts for pgsql and oci to support PKs with a custom default value expression (nineinchnick, klimov-paul)
 - Bug #6234: Fixed wrong table schema information for MSSQL when using multiple schemas (nineinchnick)
