@@ -9,6 +9,7 @@ Yii Framework 2 Change Log
 - Bug #7374: Use proper INSERT syntax with default values when no values are specified (nineinchnick)
 - Bug #7707: client-side `trim` validator now passes the trimmed value to subsequent validators (nkovacs)
 - Bug #7764: `\yii\helpers\ArrayHelper::toArray()` wasn't passing `$recursive` to `Arrayable::toArray` (brandonkelly)
+- Bug #8161: Fixed active form `data-method` submit bug when client validation is used (vbelogai)
 - Bug #8322: `yii\behaviors\TimestampBehavior::touch()` now throws an exception if owner is new record (klimov-paul)
 - Bug #8451: `yii\i18n\Formatter` did not allow negative unix timestamps as input for date formatting (cebe)
 - Bug #8483: sequence name in `Schema::getLastInsertId()` was not properly quoted (nineinchnick)
