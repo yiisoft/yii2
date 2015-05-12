@@ -204,22 +204,26 @@ yii = (function ($) {
             }
 
             $form.trigger('submit');
-
-            if (oldAction != null) {
-                $form.attr('action', oldAction);
-            }
-            $form.attr('method', oldMethod);
-
-            // remove the temporarily added hidden inputs
-            if (params && $.isPlainObject(params)) {
-                $.each(params, function (idx, obj) {
-                    $('input[name="' + idx + '"]', $form).remove();
-                });
-            }
-
-            if (newForm) {
-                $form.remove();
-            }
+            $.when($form.data('yiiSubmitFinalizePromise')).then( 
+        		function()
+        		{
+		            if (oldAction != null) {
+		                $form.attr('action', oldAction);
+		            }
+		            $form.attr('method', oldMethod);
+		
+		            // remove the temporarily added hidden inputs
+		            if (params && $.isPlainObject(params)) {
+		                $.each(params, function (idx, obj) {
+		                    $('input[name="' + idx + '"]', $form).remove();
+		                });
+		            }
+		
+		            if (newForm) {
+		                $form.remove();
+		            }
+        		}
+            );
         },
 
         getQueryParams: function (url) {
