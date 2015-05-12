@@ -57,7 +57,7 @@ abstract class ErrorHandler extends Component
         if ($this->memoryReserveSize > 0) {
             $this->_memoryReserve = str_repeat('x', $this->memoryReserveSize);
         }
-        register_shutdown_function([$this, 'handleFatalError']);
+        Yii::registerShutdownFunction([$this, 'handleFatalError']);
     }
 
     /**

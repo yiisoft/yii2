@@ -96,7 +96,7 @@ class Session extends Component implements \IteratorAggregate, \ArrayAccess, \Co
     public function init()
     {
         parent::init();
-        register_shutdown_function([$this, 'close']);
+        Yii::registerShutdownFunction([$this, 'close']);
     }
 
     /**
