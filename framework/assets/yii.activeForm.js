@@ -172,8 +172,8 @@
     {
     	if(submitDefer)
     	{
-    		submitDefer.resolve();
-    		submitDefer = undefined;
+            submitDefer.resolve();
+            submitDefer = undefined;
             $form.removeData('yiiSubmitFinalizePromise');
     	}
     };
