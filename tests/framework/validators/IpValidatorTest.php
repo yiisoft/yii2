@@ -27,7 +27,7 @@ class IpValidatorTest extends TestCase
     {
         $val = new IpValidator([
             'allow' => '10.0.0.1',
-            'deny' => ['10.0.0.2']
+            'deny' => '10.0.0.2'
         ]);
         $this->assertTrue(is_array($val->allow));
         $this->assertTrue(is_array($val->deny));
@@ -98,7 +98,7 @@ class IpValidatorTest extends TestCase
     public function testValidateRange()
     {
         $validator = new IpValidator([
-            'allow' => ['10.0.1.0/24'],
+            'allow' => '10.0.1.0/24',
         ]);
         $this->assertTrue($validator->validate('10.0.1.2'));
         $this->assertFalse($validator->validate('192.5.1.1'));
