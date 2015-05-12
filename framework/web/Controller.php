@@ -110,9 +110,9 @@ class Controller extends \yii\base\Controller
                 throw new BadRequestHttpException(Yii::t('yii', 'Unable to verify your data submission.'));
             }
             return true;
-        } else {
-            return false;
         }
+        
+        return false;
     }
 
     /**
