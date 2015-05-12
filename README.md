@@ -42,7 +42,7 @@ Yii 2.0 has a [Definitive Guide](http://www.yiiframework.com/doc-2.0/guide-index
 a [Class Reference](http://www.yiiframework.com/doc-2.0/index.html) which cover every detail of Yii.
 
 There is also a [PDF version](http://stuff.cebe.cc/yii2-guide.pdf) of the Definitive Guide
-and a [Definitive Guide Mirror](http://stuff.cebe.cc/yii2docs/) which update every 15 minutes.
+and a [Definitive Guide Mirror](http://stuff.cebe.cc/yii2docs/) which is updated every 15 minutes.
 
 For 1.1 users, you may refer to [Upgrading from Yii 1.1](docs/guide/intro-upgrade-from-v1.md)
 to have a general idea of what has changed in 2.0.
@@ -55,11 +55,8 @@ HOW TO PARTICIPATE
 
 You may participate in the following ways:
 
-* [Report issues](https://github.com/yiisoft/yii2/issues)
-* [Give us feedback or start a design discussion](http://www.yiiframework.com/forum/index.php/forum/42-design-discussions-for-yii-20/)
-* Fix issues, develop features, write/polish documentation
-    - Before you start, please adopt an existing issue (labelled with "ready for adoption") or start a new one to avoid duplicated efforts.
-    - Please submit a merge request after you finish development.
-
-In order to make it easier we've prepared [special `yii2-dev` Composer package](https://github.com/yiisoft/yii2/blob/master/docs/internals/getting-started.md).
+- [Report an issue](docs/internals/report-an-issue.md)
+- [Translate documentation or messages](docs/internals/translation-workflow.md)
+- [Give us feedback or start a design discussion](http://www.yiiframework.com/forum/index.php/forum/42-general-discussions-for-yii-20/)
+- [Contribute to the core code or fix bugs](docs/internals/git-workflow.md)
 

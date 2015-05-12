@@ -107,11 +107,11 @@ All Rights Reserved.
 Безопасность
 ------------
 
-* **TBD** [Аутентификация](security-authentication.md)
-* **TBD** [Авторизация](security-authorization.md)
+* [Аутентификация](security-authentication.md)
+* [Авторизация](security-authorization.md)
 * **TBD** [Работа с паролями](security-passwords.md)
 * **TBD** [Клиенты авторизации](security-auth-clients.md)
-* **TBD** [Лучшие практики](security-best-practices.md)
+* [Лучшие практики](security-best-practices.md)
 
 
 Кеширование
