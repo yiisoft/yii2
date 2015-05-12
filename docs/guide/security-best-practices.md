@@ -139,10 +139,9 @@ from a user browser are made by the user himself. It could be false.
 For example, `an.example.com` website has `/logout` URL that, when accessed using a simple GET, logs user out. As long
 as it's requested by the user itself everything is OK but one day bad guys are somehow posting
 `<img src="http://an.example.com/logout">` on a forum user visits frequently. Browser doesn't make any difference between
-requesting an image or requesting a page so when user opens a page with such `img` tag he's being logged out from
-`an.example.com`.
+requesting an image or requesting a page so when user opens a page with such `img` tag, the browser will send the GET request to that URL, and the user will be logged out from `an.example.com`. 
 
-That's the basic idea. One can say that logging user out is nothing serious. Well, sending POST isn't much trickier.
+That's the basic idea. One can say that logging user out is nothing serious, but bad guys can do much more, using this idea. Imagine that some website has a URL `http://an.example.com/purse/transfer?to=anotherUser&amout=2000`, visiting which with a GET request, causes transfer of $2000 from authorized user account to user `anotherUser`. We know, that browser will always send GET request to load an image, so we can modify code to accept only POST requests on that URL. Unfortunately, this will not save us, because bad guys can put some JavaScript code instead of `<img>` tag, which allows them to send POST requests on that URL.
 
 In order to avoid CSRF you should always:
 
