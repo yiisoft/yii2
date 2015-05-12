@@ -92,6 +92,7 @@ Regras e Observações
 - basic project template — template básico de projetos
 - behaviors — behaviors (comportamentos)
 - pretty URL — URL amigável (pretty URL)
+- class member variable - atributo da classe
 
 ### Termos Sem Tradução
 
