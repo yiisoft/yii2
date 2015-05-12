@@ -251,6 +251,7 @@ class FileValidator extends Validator
      * This is determined based on three factors:
      *
      * - 'upload_max_filesize' in php.ini
+     * - 'post_max_size' in php.ini
      * - 'MAX_FILE_SIZE' hidden field
      * - [[maxSize]]
      *
@@ -258,7 +259,11 @@ class FileValidator extends Validator
      */
     public function getSizeLimit()
     {
+        $post_limit = $this->sizeToBytes(ini_get('post_max_size'));
         $limit = $this->sizeToBytes(ini_get('upload_max_filesize'));
+        if ($post_limit > 0 && $post_limit < $limit) {
+            $limit = $post_limit;
+        }
         if ($this->maxSize !== null && $limit > 0 && $this->maxSize < $limit) {
             $limit = $this->maxSize;
         }
