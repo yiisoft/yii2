@@ -1165,7 +1165,7 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
 
         if ($relation->via !== null) {
             if ($this->getIsNewRecord() || $model->getIsNewRecord()) {
-                throw new InvalidCallException('Unable to link models: at most one model can be newly created.');
+                throw new InvalidCallException('Unable to link models: the models being linked cannot be newly created.');
             }
             if (is_array($relation->via)) {
                 /* @var $viaRelation ActiveQuery */
