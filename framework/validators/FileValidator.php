@@ -259,7 +259,8 @@ class FileValidator extends Validator
      */
     public function getSizeLimit()
     {
-        $post_limit = $this->sizeToBytes(ini_get('post_max_size'));
+        // Max POST size minus some bytes for form data 
+        $post_limit = $this->sizeToBytes(ini_get('post_max_size')) - 1024;
         $limit = $this->sizeToBytes(ini_get('upload_max_filesize'));
         if ($post_limit > 0 && $post_limit < $limit) {
             $limit = $post_limit;
