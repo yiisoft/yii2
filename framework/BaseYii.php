@@ -533,4 +533,42 @@ class BaseYii
     {
         return get_object_vars($object);
     }
+
+    private static $shutdownHandlers;
+
+    /**
+     * Register a function for execution on PHP script shutdown.
+     * This method should be preferred to the plain `register_shutdown_function()` function.
+     * @param callable $callback the shutdown callback to register.
+     * @param array $parameters additional parameters for the the shutdown callback.
+     * @param integer $priority handler priority: the higher priority - the later callback will be executed,
+     * e.g. if 'callback1' has priority 8 and 'callback2' has priority 7, 'callback2' will be executed first,
+     * callbacks with same priority will be executed in order they been registered.
+     */
+    public static function registerShutdownFunction($callback, array $parameters = [], $priority = 0)
+    {
+        if (!is_array(self::$shutdownHandlers)) {
+            self::$shutdownHandlers = [];
+            register_shutdown_function([__CLASS__, 'shutdown']);
+        }
+        self::$shutdownHandlers[$priority][] = [$callback, $parameters];
+    }
+
+    /**
+     * This function will be automatically invoked on script shutdown in case at least one callback is
+     * registered via [[registerShutdownFunction()]].
+     */
+    public static function shutdown()
+    {
+        if (empty(self::$shutdownHandlers)) {
+            return;
+        }
+        ksort(self::$shutdownHandlers, SORT_NUMERIC);
+        foreach (self::$shutdownHandlers as $shutdownHandlers) {
+            foreach ($shutdownHandlers as $shutdownHandler) {
+                list($callback, $parameters) = $shutdownHandler;
+                call_user_func_array($callback, $parameters);
+            }
+        }
+    }
 }
