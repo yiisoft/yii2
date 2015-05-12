@@ -4,7 +4,7 @@ Yii Framework 2 Change Log
 2.0.5 under development
 -----------------------
 
-- no changes in this release.
+- Ehn #8373: Check also PHP's post_max_size parameter in `yii\validators\FileValidator::getSizeLimit()` (maxxer)
 
 
 2.0.4 May 10, 2015
