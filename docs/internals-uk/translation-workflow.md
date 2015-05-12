@@ -43,23 +43,32 @@ php build translation "../docs/guide" "../docs/guide-uk" "Ukrainian guide transl
 
 Перелік документів, що потребують перекладу, можна знайти за нижченаведеними посиланнями:
 
-- [список документів для guide-uk](https://ethercalc.org/nu30aut5l9);
-- [список документів для internals-uk](https://ethercalc.org/zwzct94knm).
+- [список документів для guide-uk](https://ethercalc.org/yii2.docs.guide-uk);
+- [список документів для internals-uk](https://ethercalc.org/yii2.docs.internals-uk).
 
 Перед тим, як розпочати переклад, переконайтесь, що їм ніхто не займається, та запишіть себе у списку документів.
 
+В залежності від прогресу оберіть відповідний статус перекладу:
+- В роботі — переклад готується перекладачем до відправлення "pull request";
+- Ревізія — відправлений переклад перевіряється ревізором;
+- Перекладено — переклад прийнято до головної (master) гілки проекту.
+
 За додатковою інформацією можете звертатись до учасників української [команди перекладачів](../internals/translation-teams.md).
+
+### Переклад зображень
+
+Зображення до документації знаходяться у вкладеній директорії `images`. Усі вони створенні програмою [yED](http://www.yworks.com/en/products/yfiles/yed/).
+При необхідності перекладу оригінальний файл копіюється в директорію `images` перекладу, перекладається та зберігається у форматі png.
+
+Перелік зображень, що потребують перекладу, можна знайти за нижченаведеним посиланням:
+
+- [список зображень для guide-uk](https://ethercalc.org/yii2.docs.guide-uk.images).
 
 ### Переклад спеціальних повідомлень
 
 - Tip → Підказка
 - Note → Замітка
 - Info → Інформація
-
-### Переклад зображень
-
-Зображення до документації знаходяться у вкладеній директорії `images`. Усі вони створенні програмою [yED](http://www.yworks.com/en/products/yfiles/yed/).
-При необхідності перекладу оригінальний файл копіюється в директорію `images` перекладу, перекладається та зберігається у форматі png.
 
 ### Список термінів
 
@@ -75,8 +84,7 @@ php build translation "../docs/guide" "../docs/guide-uk" "Ukrainian guide transl
 - commit — коміт;
 - configuration — конфігурація;
 - content — зміст;
-- contribution — співпраця;
-- contributor — співучасник;
+- contributor — учасник;
 - controller — контролер;
 - cookies — кукі;
 - customization — (тонке) налаштування;
@@ -101,9 +109,11 @@ php build translation "../docs/guide" "../docs/guide-uk" "Ukrainian guide transl
 - id — ідентифікатор;
 - image — зображення;
 - instance — екземпляр;
+- issue — питання/проблема; // в залежності від контексту
 - lazy loading — відкладене завантаження;
 - log, logging — журнал, журналювання;
 - method — метод (обʼєкта/класу);
+- merge — поєднання;
 - model — модель, модель даних;
 - model form — модель форми;
 - parameter — параметр (методу/функції);
@@ -120,6 +130,7 @@ php build translation "../docs/guide" "../docs/guide-uk" "Ukrainian guide transl
 - route, routing — маршрут, маршрутизація;
 - row (of the table) — рядок (таблиці);
 - setter — сеттер;
+- staging area — буферна зона;
 - string — текстовий рядок;
 - tabular input — табличний ввід;
 - template engine — шаблонізатор;

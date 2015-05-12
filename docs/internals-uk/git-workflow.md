@@ -1,7 +1,7 @@
-Робота з Git для співучасників Yii 2
-====================================
+Робота з Git для учасників Yii 2
+================================
 
-Ви бажаєте прийняти участь в розробці Yii? Чудово! Але, щоб підвищити шанси швидкого прийняття ваших змін, будь ласка,
+Ви бажаєте взяти участь в розробці Yii? Чудово! Але, щоб підвищити шанси швидкого прийняття ваших змін, будь ласка,
 дотримуйтесь наступних кроків. Якщо ви новачок у Git та GitHub, спершу можете ознайомитись із
 [довідкою GitHub](http://help.github.com/), [тренером Git](https://try.github.com)
 або почитати книгу [Магія Git](http://www-cs-students.stanford.edu/~blynn/gitmagic/intl/uk/)
@@ -32,16 +32,16 @@ git remote add upstream git://github.com/yiisoft/yii2.git
 
 ### 3. Підготуйте середовище тестування
 
-Наступні кроки не обов'язкові, якщо ви хочете процювати лише над перекладом або документацією.
+Наступні кроки не обов'язкові, якщо ви хочете працювати лише над перекладом або документацією.
 
 - виконайте `composer update` для встановлення залежностей (припускається, що ви маєте [глобально встановлений composer](https://getcomposer.org/doc/00-intro.md#globally)).
 - виконайте `php build/build dev/app basic` для клонування базового додатку та встановлення його залежностей.
   Ця команда встановить сторонні пакунки composer як завжди, а також створить посилання з репозиторію yii2
   на поточний репозиторій. Таким чином ви будете мати один екземпляр встановленого коду.
-  
-  Якщо необхідно зробіть те ж саме для розширеного додатку: `php build/build dev/app advanced`.
-  
-  Ця команда може використовуватись для оновлення залежностей, вона викликає `composer update` в процесі виконання.
+
+Якщо необхідно зробіть те ж саме для розширеного додатку: `php build/build dev/app advanced`.
+
+Ця команда може використовуватись для оновлення залежностей, вона викликає `composer update` в процесі виконання.
 
 **Тепер ви маєте робочий майданчик для експериментів з Yii 2.**
 
@@ -52,7 +52,7 @@ git remote add upstream git://github.com/yiisoft/yii2.git
 Ви можете виконати модульні тести запустивши `phpunit` у кореневій директорії репозиторію. Якщо у вас phpunit не встановлений глобально,
 ви можете запускати `php vendor/bin/phpunit`.
 
-Деякі тести потребують додатково встановлених та налаштованих баз даних. Ви можете створити `tests/data/config.local.php` для перевизначення
+Деякі тести потребують додатково встановлення та налаштування баз даних. Ви можете створити `tests/data/config.local.php` для перевизначення
 налаштувань сконфігурованих у `tests/data/config.php`.
 
 Можливо обмежити тести групою тестів, що покривають область над якою ви працюєте, наприклад, щоб запустити тести для валідаторів
@@ -64,7 +64,7 @@ git remote add upstream git://github.com/yiisoft/yii2.git
 
 ```
 php build/build dev/ext <extension-name>
-```    
+```
 
 де `<extension-name>` є назвою розширення, наприклад `redis`.
 
@@ -75,122 +75,123 @@ php build/build dev/ext <extension-name>
 а не у специфічній для composer директорії vendor.
 
 
-Working on bugs and features
-----------------------------
+Робота з помилками та функціоналом
+----------------------------------
 
-Having prepared your develop environment as explained above you can now start working on the feature or bugfix.
+Отримавши середовище розробки, як було роз’яснено вище, ви можете розпочати роботу над функціоналом або виправленням помилок.
 
-### 1. Make sure there is an issue created for the thing you are working on if it requires significant effort to fix
+### 1. Переконайтесь, що створено питання стосовно речі, над якою ви працюєте, якщо це потребує багатьох зусиль для виконання
 
-All new features and bug fixes should have an associated issue to provide a single point of reference for discussion
-and documentation. Take a few minutes to look through the existing issue list for one that matches the contribution you
-intend to make. If you find one already on the issue list, then please leave a comment on that issue indicating you
-intend to work on that item. If you do not find an existing issue matching what you intend to work on, please
-[open a new issue](report-an-issue.md) or create a pull request directly if it is straightforward fix. This will allow the team to
-review your suggestion, and provide appropriate feedback along the way.
+Усі нові можливості та виправлення помилок повинні мати пов’язане запитання, яке забезпечує єдину точку посилання для обговорення
+та документації. Витратьте декілька хвилин на перегляд списку створених питань, щоб знайти ті, що стосуються внеску, який ви
+збираєтесь зробити. Якщо знайдете одне у списку запитань, потім, будь ласка, залиште коментар із зазначенням, що ви
+збираєтесь працювати над цим. Якщо не знайшли створеного питання, що стосуються того, над чим ви збираєтесь працювати, будь ласка
+[створіть нове запитання](report-an-issue.md) або відправте "pull request" безпосередньо, якщо це не складне виправлення. Це дозволить команді
+розробників розглянути вашу пропозицію та надавати відповідний зворотний зв’язок протягом шляху.
 
-> For small changes or documentation issues or straightforward fixes, you don't need to create an issue, a pull request is enough in this case.
+> Для невеликих змін, проблем документації або простих виправлень нема потреби створювати питання, достатньо відправити "pull request" у цих випадках.
 
-### 2. Fetch the latest code from the main Yii branch
+### 2. Отримайте останній код з головної гілки Yii
 
 ```
 git fetch upstream
 ```
 
-You should start at this point for every new contribution to make sure you are working on the latest code.
+З цього необхідно розпочинати кожний новий внесок, щоб бути впевненим, що ви працюєте з найновішим кодом.
 
-### 3. Create a new branch for your feature based on the current Yii master branch
+### 3. Створіть нову гілку для вашого внеску на базі поточної основної гілки Yii
 
-> That's very important since you will not be able to submit more than one pull request from your account if you'll
-  use master.
+> Це дуже важливо, тому що ви не зможете відправляти більше, ніж один "pull request" від вашого імені, у разі
+  використання основної (master) гілки.
 
-Each separate bug fix or change should go in its own branch. Branch names should be descriptive and start with
-the number of the issue that your code relates to. If you aren't fixing any particular issue, just skip number.
-For example:
+Кожні окремі виправлення помилок або зміни повинні мати власні гілки. Назви гілок повинні бути наочними та починатись з
+номеру питання, яке пов’язане із вашим кодом. Якщо ви працюєте не над специфічним питанням, просто пропустіть номер.
+Наприклад:
 
 ```
 git checkout upstream/master
 git checkout -b 999-name-of-your-branch-goes-here
 ```
 
-### 4. Do your magic, write your code
+### 4. Робіть вашу магію, пишіть ваш код
 
-Make sure it works :)
+Переконайтесь, що він працює :)
 
-Unit tests are always welcome. Tested and well covered code greatly simplifies the task of checking your contributions.
-Failing unit tests as issue description are also accepted.
+Модульні тести завжди вітаються. Протестований та добре покритий код надзвичайно полегшує перевірку вашого внеску.
+Провальні модульні тести як опис проблеми також приймаються.
 
-### 5. Update the CHANGELOG
+### 5. Оновіть журнал змін (CHANGELOG)
 
-Edit the CHANGELOG file to include your change, you should insert this at the top of the file under the
-"Work in progress" heading, the line in the change log should look like one of the following:
+Додайте до файлу CHANGELOG зроблені вами зміни у верхній частині документу під заголовком
+"Work in progress", запис у журналі змін повинен виглядати подібно до наведеного прикладу:
 
 ```
 Bug #999: a description of the bug fix (Your Name)
 Enh #999: a description of the enhancement (Your Name)
 ```
 
-`#999` is the issue number that the `Bug` or `Enh` is referring to.
-The changelog should be grouped by type (`Bug`,`Enh`) and ordered by issue number.
+`#999` - це номер питання, на яке посилається виправлення помилки (`Bug`) або покращення (`Enh`).
 
-For very small fixes, e.g. typos and documentation changes, there is no need to update the CHANGELOG.
+Записи журналу змін повинні бути згруповані за типом (`Bug`, `Enh`) та сортовані за номером питання.
 
-### 6. Commit your changes
+Для дуже малих виправлень, наприклад, друкарських помилок та змін у документації, нема потреби оновлювати CHANGELOG.
 
-add the files/changes you want to commit to the [staging area](http://gitref.org/basic/#add) with
+### 6. Створіть коміт ваших змін
+
+Додайте файли/зміни, призначені для коміту, в [буферну зону](http://gitref.org/basic/#add) за допомогою команди:
 
 ```
 git add path/to/my/file.php
 ```
 
-You can use the `-p` option to select the changes you want to have in your commit.
+Використовуйте опцію `-p` для відбору змін, які ви бажаєте додати до вашого коміту.
 
-Commit your changes with a descriptive commit message. Make sure to mention the ticket number with `#XXX` so github will
-automatically link your commit with the ticket:
+Створіть коміт з описовим повідомленням. Переконайтесь, що вказали номер питання як `#XXX`, щоб GitHub
+автоматично пов’язав ваш коміт із питанням:
 
 ```
-git commit -m "A brief description of this change which fixes #42 goes here"
+git commit -m "A brief description of this change which fixes #999 goes here"
 ```
 
-### 7. Pull the latest Yii code from upstream into your branch
+### 7. Додайте останній код Yii з upstream до вашої гілки
 
 ```
 git pull upstream master
 ```
 
-This ensures you have the latest code in your branch before you open your pull request. If there are any merge conflicts,
-you should fix them now and commit the changes again. This ensures that it's easy for the Yii team to merge your changes
-with one click.
+Це гарантує, що ви матимете останній код у вашій гілці перед тим, як відправити "pull request". Якщо є будь-які конфлікти поєднання,
+треба виправити їх зараз та знову створити коміт. Це забезпечить команду розробників Yii можливістю легко приєднати ваші зміни
+одним натисканням кнопки.
 
-### 8. Having resolved any conflicts, push your code to github
+### 8. Вирішивши будь-які конфлікти, відправте ваш код до GitHub
 
 ```
 git push -u origin 999-name-of-your-branch-goes-here
 ```
 
-The `-u` parameter ensures that your branch will now automatically push and pull from the github branch. That means
-if you type `git push` the next time it will know where to push to. This is useful if you want to later add more commits
-to the pull request.
+Опція `-u` забезпечує те, що ваша гілка відтепер оброблятиметься автоматично при запитах push та pull до GitHub гілки.
+Це означає, якщо ви виконаєте `git push` наступного разу, програма буде знати куди відправляти. Це корисно, якщо ви
+бажаєте пізніше додавати більше комітів у "pull request".
 
-### 9. Open a [pull request](http://help.github.com/send-pull-requests/) against upstream.
+### 9. Відправте ["pull request"](http://help.github.com/send-pull-requests/) до upstream.
 
-Go to your repository on github and click "Pull Request", choose your branch on the right and enter some more details
-in the comment box. To link the pull request to the issue put anywhere in the pull comment `#999` where 999 is the
-issue number.
+Перейдіть до вашого репозиторію на GitHub та натисніть "Pull Request", оберіть вашу гілку справа та внесіть трохи деталей
+у полі коментарю. Щоб пов’язати "pull request" із запитанням, внесіть десь у коментарі `#999`, де 999 - це номер питання.
 
-> Note that each pull-request should fix a single change. For multiple, unrelated changes, please open multiple pull requests.
+> Зауважте, що кожний "pull request" повинен стосуватись окремої зміни. Для багатьох змін, не пов’язаних між собою,
+  будь ласка, відправляйте "pull request" окремо для кожної.
 
-### 10. Someone will review your code
+### 10. Дехто перевірить ваш код
 
-Someone will review your code, and you might be asked to make some changes, if so go to step #6 (you don't need to open
-another pull request if your current one is still open). If your code is accepted it will be merged into the main branch
-and become part of the next Yii release. If not, don't be disheartened, different people need different features and Yii
-can't be everything to everyone, your code will still be available on github as a reference for people who need it.
+Дехто перевірить ваш код, й можливо вас попросять внести деякі зміни. У цьому випадку перейдіть до кроку #6 (нема потреби
+відправляти інший "pull request", якщо ваш поточний досі відкритий). Якщо ваш код прийнято, то він буде поєднаний з головною гілкою
+та стане частиною наступного релізу Yii. Якщо ж ні, не сумуйте, різні люди потребують різних можливостей, та Yii
+не може бути всім для всіх, ваш код залишатиметься доступним на GitHub для людей, які його потребують.
 
-### 11. Cleaning it up
+### 11. Проведіть чистку
 
-After your code was either accepted or declined you can delete branches you've worked with from your local repository
-and `origin`.
+Після того, як ваш код був прийнятий або відхилений, можете видалити гілки, над якими ви працювали, із локального репозиторію
+та з `origin`.
 
 ```
 git checkout master
@@ -198,20 +199,20 @@ git branch -D 999-name-of-your-branch-goes-here
 git push origin --delete 999-name-of-your-branch-goes-here
 ```
 
-### Note:
+### Примітка:
 
-To detect regressions early every merge to the Yii codebase on github will be picked up by
-[Travis CI](http://travis-ci.org) for an automated testrun. As core team doesn't wish to overtax this service,
-[`[ci skip]`](http://about.travis-ci.org/docs/user/how-to-skip-a-build/) will be included to the merge description if
-the pull request:
+Для виявлення регресу на ранніх стадіях кожне поєднання з кодовою базою Yii на GitHub опрацьовується у
+[Travis CI](http://travis-ci.org) для автоматичного запуску тестів. Оскільки основна команда розробників не бажає
+перевантажувати сервіс, додавайте [`[ci skip]`](http://about.travis-ci.org/docs/user/how-to-skip-a-build/) до
+опису поєднання, якщо ваш "pull request":
 
-* affect javascript, css or image files only,
-* updates the documentation,
-* modify fixed strings only (e.g. translation updates)
+* зачіпає лише файли javascript, css або файли зображень,
+* оновлює документацію,
+* змінює лише фіксовані текстові рядки (наприклад, оновлення перекладу)
 
-Doing so will save travis from commencing testruns on changes that are not covered by tests in the first place.
+Це захистить travis від запуску тестів на змінах, які не покриті тестами.
 
-### Command overview (for advanced contributors)
+### Огляд команд (для просунутих учасників)
 
 ```
 git clone git@github.com:YOUR-GITHUB-USERNAME/yii2.git
@@ -223,10 +224,10 @@ git fetch upstream
 git checkout upstream/master
 git checkout -b 999-name-of-your-branch-goes-here
 
-/* do your magic, update changelog if needed */
+/* робіть вашу магію; оновіть журнал змін, якщо необхідно */
 
 git add path/to/my/file.php
-git commit -m "A brief description of this change which fixes #42 goes here"
+git commit -m "A brief description of this change which fixes #999 goes here"
 git pull upstream master
 git push -u origin 999-name-of-your-branch-goes-here
 ```
