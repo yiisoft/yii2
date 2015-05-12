@@ -55,15 +55,17 @@ git remote add upstream git://github.com/yiisoft/yii2.git
 для переопределения настроек, которые определены в `tests/data/config.php`.
 
 Вы можете ограничить тестирование группой тестов, с которой вы сейчас работаете, например запускать только тесты для
-валидаторов и redis. Вы можете получить список доступных групп выполнив `phpunit --groups`. 
+валидаторов и redis. Вы можете получить список доступных групп выполнив `phpunit --list-groups`. 
 
 ### Расширения
 
 Для работы над расширениями вы можете склонировать репозиторий расширения. Мы сделали команду, которая поможет вам
 сделать это:
 
-    php build/build dev/ext <extension-name>
-    
+```
+php build/build dev/ext <extension-name>
+```
+
 где `<extension-name>` это имя расширения, например `redis`.
 
 Если вы хотите протестировать расширение в одном из шаблонов приложений, просто добавьте его в `composer.json`
@@ -148,7 +150,7 @@ git add path/to/my/file.php
 автоматически свяжет ваш коммит с тикетом:
 
 ```
-git commit -m "A brief description of this change which fixes #42 goes here"
+git commit -m "A brief description of this change which fixes #999 goes here"
 ```
 
 ### 7. Получение последнего кода из апстрима Yii в вашу ветку
@@ -225,7 +227,7 @@ git checkout -b 999-name-of-your-branch-goes-here
 /* ваша магия, обновление changelog если нужно */
 
 git add path/to/my/file.php
-git commit -m "A brief description of this change which fixes #42 goes here"
+git commit -m "A brief description of this change which fixes #999 goes here"
 git pull upstream master
 git push -u origin 999-name-of-your-branch-goes-here
 ```
