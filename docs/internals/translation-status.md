@@ -62,7 +62,7 @@ output-data-providers.md            | Yes
 output-data-widgets.md              |
 output-theming.md                   | Yes
 security-authentication.md          | Yes
-security-authorization.md           |
+security-authorization.md           | Yes
 security-passwords.md               |
 security-auth-clients.md            |
 security-best-practices.md          |
