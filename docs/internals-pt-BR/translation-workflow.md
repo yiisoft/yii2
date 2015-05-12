@@ -111,3 +111,5 @@ Regras e Observações
 - web service
 - template
 - query string
+- case-sensitive
+- case-insensitive
