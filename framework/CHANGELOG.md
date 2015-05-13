@@ -5,6 +5,7 @@ Yii Framework 2 Change Log
 -----------------------
 
 - Bug #8322: `yii\behaviors\TimestampBehavior::touch()` now throws an exception if owner is new record (klimov-paul)
+- Enh #8329: Added ability to extract messages for specified languages via CLI (vchenin)
 
 
 2.0.4 May 10, 2015
