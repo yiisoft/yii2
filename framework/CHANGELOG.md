@@ -7,6 +7,7 @@ Yii Framework 2 Change Log
 - Bug #8322: `yii\behaviors\TimestampBehavior::touch()` now throws an exception if owner is new record (klimov-paul)
 - Enh #8070: `yii\console\controllers\MessageController` now sorts created messages, even if there is no new one, while saving to PHP file (klimov-paul)
 - Enh #8286: `yii\console\controllers\MessageController` improved allowing extraction of nested translator calls (klimov-paul)
+- Enh #8349: Properties `fields` and `expand` added to `yii\rest\Serializer` (klimov-paul)
 
 
 2.0.4 May 10, 2015

@@ -27,6 +27,12 @@ use yii\web\Response;
  * The default implementation handles resources as [[Model]] objects and collections as objects
  * implementing [[DataProviderInterface]]. You may override [[serialize()]] to handle more types.
  *
+ * @property array $fields fields, which should be returned for a [[Model]] object.
+ * If not explicitly set, its value will be extracted from current request using [[fieldsParam]].
+ * If value is empty, the default set of fields as defined by [[Model::fields()]] will be returned.
+ * @property array $expand fields, which should be returned in addition to those listed in [[fields]] for a resource object.
+ * If not explicitly set, its value will be extracted from current request using [[expandParam]].
+ *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */
@@ -34,13 +40,15 @@ class Serializer extends Component
 {
     /**
      * @var string the name of the query parameter containing the information about which fields should be returned
-     * for a [[Model]] object. If the parameter is not provided or empty, the default set of fields as defined
-     * by [[Model::fields()]] will be returned.
+     * for a [[Model]] object. It will be used to determine value of [[fields]], in case it is not set explicitly.
+     * @see fields
      */
     public $fieldsParam = 'fields';
     /**
      * @var string the name of the query parameter containing the information about which fields should be returned
-     * in addition to those listed in [[fieldsParam]] for a resource object.
+     * in addition to those listed in [[fieldsParam]] for a resource object. It will be used to determine value of [[expand]],
+     * in case it is not set explicitly.
+     * @see expand
      */
     public $expandParam = 'expand';
     /**
@@ -110,6 +118,55 @@ class Serializer extends Component
      */
     public $response;
 
+    /**
+     * @var array fields, which should be returned in addition to those listed in [[fields]] for a resource object.
+     */
+    private $_expand;
+    /**
+     * @var array fields, which should be returned for a [[Model]] object.
+     */
+    private $_fields;
+
+
+    /**
+     * @param array $fields fields, which should be returned for a [[Model]] object.
+     */
+    public function setFields($fields)
+    {
+        $this->_fields = $fields;
+    }
+
+    /**
+     * @return array fields, which should be returned for a [[Model]] object.
+     */
+    public function getFields()
+    {
+        if (!is_array($this->_fields)) {
+            $fields = $this->request->get($this->fieldsParam);
+            $this->_fields = preg_split('/\s*,\s*/', $fields, -1, PREG_SPLIT_NO_EMPTY);
+        }
+        return $this->_fields;
+    }
+
+    /**
+     * @param array $expand fields, which should be returned in addition to those listed in [[fields]] for a resource object.
+     */
+    public function setExpand($expand)
+    {
+        $this->_expand = $expand;
+    }
+
+    /**
+     * @return array fields, which should be returned in addition to those listed in [[fields]] for a resource object.
+     */
+    public function getExpand()
+    {
+        if (!is_array($this->_expand)) {
+            $expand = $this->request->get($this->expandParam);
+            $this->_expand = preg_split('/\s*,\s*/', $expand, -1, PREG_SPLIT_NO_EMPTY);
+        }
+        return $this->_expand;
+    }
 
     /**
      * @inheritdoc
@@ -155,12 +212,9 @@ class Serializer extends Component
      */
     protected function getRequestedFields()
     {
-        $fields = $this->request->get($this->fieldsParam);
-        $expand = $this->request->get($this->expandParam);
-
         return [
-            preg_split('/\s*,\s*/', $fields, -1, PREG_SPLIT_NO_EMPTY),
-            preg_split('/\s*,\s*/', $expand, -1, PREG_SPLIT_NO_EMPTY),
+            $this->getFields(),
+            $this->getExpand(),
         ];
     }
 
