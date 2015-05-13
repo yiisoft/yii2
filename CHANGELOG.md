@@ -4,6 +4,7 @@ Yii Framework 2 Change Log
 2.0.5 under development
 -----------------------
 
+- Bug #7707: client-side `trim` validator now passes the trimmed value to subsequent validators (nkovacs)
 - Bug #8322: `yii\behaviors\TimestampBehavior::touch()` now throws an exception if owner is new record (klimov-paul)
 - Enh #8070: `yii\console\controllers\MessageController` now sorts created messages, even if there is no new one, while saving to PHP file (klimov-paul)
 - Enh #8286: `yii\console\controllers\MessageController` improved allowing extraction of nested translator calls (klimov-paul)
