@@ -67,7 +67,7 @@ php build translation "../docs/guide" "../docs/guide-uk" "Ukrainian guide transl
 ### Переклад спеціальних повідомлень
 
 - Tip → Підказка
-- Note → Замітка
+- Note → Примітка
 - Info → Інформація
 
 ### Список термінів
@@ -81,9 +81,9 @@ php build translation "../docs/guide" "../docs/guide-uk" "Ukrainian guide transl
 - cache — кеш;
 - camel case — (не перекладається);
 - column — колонка;
-- commit — коміт;
+- commit — комміт;
 - configuration — конфігурація;
-- content — зміст;
+- content — вміст;
 - contributor — учасник;
 - controller — контролер;
 - cookies — кукі;
