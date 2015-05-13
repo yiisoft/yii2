@@ -4,7 +4,7 @@ Yii Framework 2 Change Log
 2.0.5 under development
 -----------------------
 
-- no changes in this release.
+- Bug #8322: `yii\behaviors\TimestampBehavior::touch()` now throws an exception if owner is new record (klimov-paul)
 
 
 2.0.4 May 10, 2015
