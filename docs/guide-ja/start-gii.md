@@ -15,7 +15,7 @@ Gii を使ってコードを自動生成することは、Gii のウェブペー
 Gii を開始する <span id="starting-gii"></span>
 --------------
 
-[Gii](tool-gii.md) は Yii の [モジュール](structure-modules.md) として提供されています。
+[Gii](https://github.com/yiisoft/yii2-gii/blob/master/docs/guide-ja/README.md) は Yii の [モジュール](structure-modules.md) として提供されています。
 Gii は、アプリケーションの [[yii\base\Application::modules|modules]] プロパティの中で構成することで有効にすることが出来ます。
 アプリケーションを生成した仕方にもよりますが、`config/web.php` の構成情報ファイルの中に、多分、下記のコードが既に提供されているでしょう。
 

@@ -15,7 +15,15 @@ use yii\base\InvalidConfigException;
 use yii\helpers\FormatConverter;
 
 /**
- * DateValidator verifies if the attribute represents a date, time or datetime in a proper format.
+ * DateValidator verifies if the attribute represents a date, time or datetime in a proper [[format]].
+ *
+ * It can also parse internationalized dates in a specific [[locale]] like e.g. `12 мая 2014` when [[format]]
+ * is configured to use a time pattern in ICU format.
+ *
+ * It is further possible to limit the date within a certain range using [[min]] and [[max]].
+ *
+ * Additional to validating the date it can also export the parsed timestamp as a machine readable format
+ * which can be configured using [[timestampAttribute]].
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @author Carsten Brandt <mail@cebe.cc>
@@ -39,6 +47,14 @@ class DateValidator extends Validator
      * 'php:m/d/Y' // the same date in PHP format
      * 'MM/dd/yyyy HH:mm' // not only dates but also times can be validated
      * ```
+     *
+     * **Note:** the underlying date parsers being used vary dependent on the format. If you use the ICU format and
+     * the [PHP intl extension](http://php.net/manual/en/book.intl.php) is installed, the [IntlDateFormatter](http://php.net/manual/en/intldateformatter.parse.php)
+     * is used to parse the input value. In all other cases the PHP [DateTime](http://php.net/manual/en/datetime.createfromformat.php) class
+     * is used. The IntlDateFormatter has the advantage that it can parse international dates like `12. Mai 2015` or `12 мая 2014`, while the
+     * PHP parser is limited to English only. The PHP parser however is more strict about the input format as it will not accept
+     * `12.05.05` for the format `php:d.m.Y`, but the IntlDateFormatter will accept it for the format `dd-MM-yyyy`.
+     * If you need to use the IntlDateFormatter you can avoid this problem by specifying a [[min|minimum date]].
      */
     public $format;
     /**
