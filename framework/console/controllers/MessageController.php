@@ -412,13 +412,15 @@ class MessageController extends Controller
     protected function saveMessagesCategoryToPHP($messages, $fileName, $overwrite, $removeUnused, $sort, $category)
     {
         if (is_file($fileName)) {
-            $existingMessages = require($fileName);
+            $rawExistingMessages = require($fileName);
+            $existingMessages = $rawExistingMessages;
             sort($messages);
             ksort($existingMessages);
-            if (array_keys($existingMessages) == $messages) {
+            if (array_keys($existingMessages) === $messages && (!$sort || array_keys($rawExistingMessages) === $messages)) {
                 $this->stdout("Nothing new in \"$category\" category... Nothing to save.\n\n", Console::FG_GREEN);
                 return;
             }
+            unset($rawExistingMessages);
             $merged = [];
             $untranslated = [];
             foreach ($messages as $message) {
