@@ -114,3 +114,4 @@ Regras e Observações
 - query string
 - case-sensitive
 - case-insensitive
+- callback
