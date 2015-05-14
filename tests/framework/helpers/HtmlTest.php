@@ -79,6 +79,7 @@ class HtmlTest extends TestCase
         $this->assertEquals('<link href="http://example.com" rel="stylesheet">', Html::cssFile('http://example.com'));
         $this->assertEquals('<link href="/test" rel="stylesheet">', Html::cssFile(''));
         $this->assertEquals("<!--[if IE 9]>\n" . '<link href="http://example.com" rel="stylesheet">' . "\n<![endif]-->", Html::cssFile('http://example.com', ['condition' => 'IE 9']));
+        $this->assertEquals("<!--[if (gte IE 9)|(!IE)]><!-->\n" . '<link href="http://example.com" rel="stylesheet">' . "\n<!--<![endif]-->", Html::cssFile('http://example.com', ['condition' => '(gte IE 9)|(!IE)']));
     }
 
     public function testJsFile()
@@ -86,6 +87,7 @@ class HtmlTest extends TestCase
         $this->assertEquals('<script src="http://example.com"></script>', Html::jsFile('http://example.com'));
         $this->assertEquals('<script src="/test"></script>', Html::jsFile(''));
         $this->assertEquals("<!--[if IE 9]>\n" . '<script src="http://example.com"></script>' . "\n<![endif]-->", Html::jsFile('http://example.com', ['condition' => 'IE 9']));
+        $this->assertEquals("<!--[if (gte IE 9)|(!IE)]><!-->\n" . '<script src="http://example.com"></script>' . "\n<!--<![endif]-->", Html::jsFile('http://example.com', ['condition' => '(gte IE 9)|(!IE)']));
     }
 
     public function testBeginForm()
