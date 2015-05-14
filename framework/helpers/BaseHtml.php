@@ -254,7 +254,9 @@ class BaseHtml
         if (isset($options['condition'])) {
             $condition = $options['condition'];
             unset($options['condition']);
-            return "<!--[if $condition]>\n" . static::tag('script', '', $options) . "\n<![endif]-->";
+            return (strpos($condition, '!IE') !== false)
+                ? "<!--[if $condition]><!-->\n" . static::tag('script', '', $options) . "\n<!--<![endif]-->"
+                : "<!--[if $condition]>\n" . static::tag('script', '', $options) . "\n<![endif]-->";
         } else {
             return static::tag('script', '', $options);
         }
