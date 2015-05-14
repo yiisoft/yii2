@@ -82,6 +82,19 @@ class SqliteQueryBuilderTest extends QueryBuilderTest
         parent::testAddDropPrimaryKey();
     }
 
+    public function testSetDropNotNull()
+    {
+        $this->setExpectedException('yii\base\NotSupportedException');
+        parent::testSetDropNotNull();
+    }
+
+    public function testRenameColumn()
+    {
+        $this->setExpectedException('yii\base\NotSupportedException');
+        parent::testRenameColumn();
+    }
+
+
     public function testBatchInsert()
     {
         $db = $this->getConnection();

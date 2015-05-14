@@ -25,7 +25,6 @@ CREATE TABLE "constraints"
   "field1" varchar(255)
 );
 
-
 CREATE TABLE "profile" (
   "id" int(11) NOT NULL AUTO_INCREMENT,
   "description" varchar(128) NOT NULL,

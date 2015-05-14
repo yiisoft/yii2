@@ -11,6 +11,14 @@ IF OBJECT_ID('[dbo].[null_values]', 'U') IS NOT NULL DROP TABLE [dbo].[null_valu
 IF OBJECT_ID('[dbo].[animal]', 'U') IS NOT NULL DROP TABLE [dbo].[animal];
 IF OBJECT_ID('[dbo].[default_pk]', 'U') IS NOT NULL DROP TABLE [dbo].[default_pk];
 IF OBJECT_ID('[dbo].[animal_view]', 'V') IS NOT NULL DROP VIEW [dbo].[animal_view];
+IF OBJECT_ID('[dbo].[constraints]', 'U') IS NOT NULL DROP VIEW [dbo].[constraints];
+
+
+CREATE TABLE [dbo].[constraints] (
+  [id] [int] IDENTITY(1,1) NOT NULL,
+  [field1] [varchar](128)
+);
+
 
 CREATE TABLE [dbo].[profile] (
 	[id] [int] IDENTITY(1,1) NOT NULL,

@@ -553,6 +553,30 @@ class QueryBuilder extends \yii\base\Object
     }
 
     /**
+     * Builds a SQL statement for setting NOT NULL constraint on a column.
+     * @param string $table the table whose column will be changed. The name will be properly quoted by the method.
+     * @param string $column the name of the column to be changed. The name will be properly quoted by the method.
+     * @return string the SQL statement for setting NOT NULL constraint
+     * @throws NotSupportedException if this is not supported by the underlying DBMS
+     */
+    public function setNotNull($table, $column)
+    {
+        throw new NotSupportedException($this->db->getDriverName() . ' does not support setting NOT NULL constraint on a column.');
+    }
+
+    /**
+     * Builds a SQL statement for dropping NOT NULL constraint of a column.
+     * @param string $table the table whose column will be changed. The name will be properly quoted by the method.
+     * @param string $column the name of the column to be changed. The name will be properly quoted by the method.
+     * @return string the SQL statement for dropping NOT NULL constraint
+     * @throws NotSupportedException if this is not supported by the underlying DBMS
+     */
+    public function dropNotNull($table, $column)
+    {
+        throw new NotSupportedException($this->db->getDriverName() . ' does not support deleting NOT NULL constraint on a column.');
+    }
+
+    /**
      * Converts an abstract column type into a physical column type.
      * The conversion is done using the type map specified in [[typeMap]].
      * The following abstract column types are supported (using MySQL as an example to explain the corresponding

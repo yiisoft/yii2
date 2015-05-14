@@ -11,6 +11,7 @@ use yii\db\sqlite\QueryBuilder as SqliteQueryBuilder;
 use yii\db\mssql\QueryBuilder as MssqlQueryBuilder;
 use yii\db\pgsql\QueryBuilder as PgsqlQueryBuilder;
 use yii\db\cubrid\QueryBuilder as CubridQueryBuilder;
+use yii\db\oci\QueryBuilder as OracleQueryBuilder;
 
 /**
  * @group db
@@ -35,6 +36,8 @@ class QueryBuilderTest extends DatabaseTestCase
                 return new PgsqlQueryBuilder($this->getConnection(true, false));
             case 'cubrid':
                 return new CubridQueryBuilder($this->getConnection(true, false));
+            case 'oci':
+                return new OracleQueryBuilder($this->getConnection(true, false));
         }
         throw new \Exception('Test is not implemented for ' . $this->driverName);
     }
@@ -476,5 +479,69 @@ class QueryBuilderTest extends DatabaseTestCase
             ],
         ];
         (new Query())->from('customer')->where($condition)->all($this->getConnection());
+    }
+
+    public function testSetDropNotNull()
+    {
+        $tableName = 'animal';
+        $column = 'type';
+
+        // DROP
+        $qb = $this->getQueryBuilder();
+
+        $tableSchema = $qb->db->getSchema()->getTableSchema($tableName);
+        if (empty($tableSchema)) {
+            $this->markTestSkipped('Table schema must be not an empty for correct testing');
+        }
+        $definitionBefore = $qb->db->getSchema()->getTableSchema($tableName)->getColumn($column);
+        $qb->db->createCommand()->dropNotNull($tableName, $column)->execute();
+
+        $definitionAfter = $qb->db->getSchema()->getTableSchema($tableName, true)->getColumn($column);
+        $this->assertTrue($definitionAfter->allowNull);
+
+        // SET
+        $qb->db->createCommand()->setNotNull($tableName, $column)->execute();
+        $definitionAfter = $qb->db->getSchema()->getTableSchema($tableName, true)->getColumn($column);
+        $this->assertFalse($definitionAfter->allowNull);
+        $this->assertTrue($this->compareDefinitions($definitionBefore, $definitionAfter));
+    }
+
+    public function testRenameColumn()
+    {
+        $tableName = 'animal';
+        $oldName = 'type';
+        $newName = 'animal_type';
+
+        $qb = $this->getQueryBuilder();
+        $tableSchema = $qb->db->getSchema()->getTableSchema($tableName);
+        if (empty($tableSchema)) {
+            $this->markTestSkipped('Table schema must be not an empty for correct testing');
+        }
+
+        $oldDefinition = $qb->db->getSchema()->getTableSchema($tableName)->getColumn($oldName);
+        $qb->db->createCommand()->renameColumn($tableName, $oldName, $newName)->execute();
+
+        $newDefinition = $qb->db->getSchema()->getTableSchema($tableName, true)->getColumn($newName);
+        $this->assertTrue(!empty($newDefinition));
+        $this->assertTrue($this->compareDefinitions($oldDefinition, $newDefinition, ['name']));
+    }
+
+    /**
+     * Compare columns definition.
+     *
+     * @param \yii\db\ColumnSchema $old the column definition before processing an operation
+     * @param \yii\db\ColumnSchema $new the column definition after processing an operation
+     * @param array $except column names that has to be skipped during comparing
+     * @return bool result of comparing
+     */
+    protected function compareDefinitions($old, $new, $except = [])
+    {
+        $diff = array_diff_assoc((array) $new, (array) $old);
+        foreach ($diff as $k => $v) {
+            if (in_array($k, $except)) {
+                unset($diff[$k]);
+            }
+        }
+        return count($diff) == 0;
     }
 }

@@ -104,6 +104,31 @@ EOD;
     }
 
     /**
+     * @inheritdoc
+     */
+    public function setNotNull($table, $column)
+    {
+        return sprintf(
+            'ALTER TABLE %s MODIFY %s NOT NULL',
+            $this->db->quoteTableName($table),
+            $this->db->quoteColumnName($column)
+        );
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function dropNotNull($table, $column)
+    {
+        return sprintf(
+            'ALTER TABLE %s MODIFY %s NULL',
+            $this->db->quoteTableName($table),
+            $this->db->quoteColumnName($column)
+        );
+    }
+
+
+    /**
      * Builds a SQL statement for dropping an index.
      *
      * @param string $name the name of the index to be dropped. The name will be properly quoted by the method.

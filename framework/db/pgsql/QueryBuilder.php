@@ -205,4 +205,30 @@ class QueryBuilder extends \yii\db\QueryBuilder
         return 'INSERT INTO ' . $schema->quoteTableName($table)
         . ' (' . implode(', ', $columns) . ') VALUES ' . implode(', ', $values);
     }
+
+    /**
+     * @inheritdoc
+     */
+    public function setNotNull($table, $column)
+    {
+        return sprintf(
+            'ALTER TABLE %s ALTER COLUMN %s SET NOT NULL',
+            $this->db->quoteTableName($table),
+            $this->db->quoteColumnName($column)
+        );
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function dropNotNull($table, $column)
+    {
+        return sprintf(
+            'ALTER TABLE %s ALTER COLUMN %s DROP NOT NULL',
+            $this->db->quoteTableName($table),
+            $this->db->quoteColumnName($column)
+        );
+    }
+
+
 }

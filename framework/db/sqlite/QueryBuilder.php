@@ -302,6 +302,7 @@ class QueryBuilder extends \yii\db\QueryBuilder
      * @param array $values
      * @param array $params
      * @return string SQL
+     * @throws NotSupportedException
      */
     protected function buildSubqueryInCondition($operator, $columns, $values, &$params)
     {
