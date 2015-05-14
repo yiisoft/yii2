@@ -8,7 +8,7 @@ Yii は電子メールの作成と送信をサポートしています。
 実際のメール送信メカニズムはエクステンションによって提供されなければなりません。
 と言うのは、メール送信はプロジェクトが異なるごとに異なる実装が必要とされるでしょうし、通常、外部のサービスやライブラリに依存するものだからです。
 
-ごく一般的な場合であれば、[yii2-swiftmailer](https://github.com/yiisoft/yii2/tree/master/extensions/swiftmailer) 公式エクステンションを使用することが出来ます。
+ごく一般的な場合であれば、[yii2-swiftmailer](https://github.com/yiisoft/yii2-swiftmailer) 公式エクステンションを使用することが出来ます。
 
 
 構成

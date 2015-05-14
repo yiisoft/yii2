@@ -997,8 +997,11 @@ TODO
 
 被污染属性
 -------------------
+当你调用[[yii\db\ActiveRecord::save()|save()]]用于保存活动记录(Active Record)实例时,只有被污染的属性才会被保存。一个属性是否认定为被污染取决于它的值自从最后一次从数据库加载或者最近一次保存到数据库后到现在是否被修改过。注意:无论活动记录(Active Record)是否有被污染属性，数据验证始终会执行。
 
-TODO
+活动记录(Active Record)会自动维护一个污染数据列表。它的工作方式是通过维护一个较旧属性值版本，并且将它们与最新的进行比较。你可以通过调用[[yii\db\ActiveRecord::getDirtyAttributes()]]来获取当前的污染属性。你也可以调用[[yii\db\ActiveRecord::markAttributeDirty()]]来显示的标记一个属性为污染属性。
+
+如果你对最近一次修改前的属性值感兴趣，你可以调用[[yii\db\ActiveRecord::getOldAttributes()|getOldAttributes()]] 或 [[yii\db\ActiveRecord::getOldAttribute()|getOldAttribute()]]。
 
 另见
 -------------------

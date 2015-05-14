@@ -147,7 +147,7 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
      * @param string|array $condition the conditions that will be put in the WHERE part of the UPDATE SQL.
      * Please refer to [[Query::where()]] on how to specify this parameter.
      * @return integer the number of rows updated
-     * @throws NotSupportedException if not overrided
+     * @throws NotSupportedException if not overridden
      */
     public static function updateAll($attributes, $condition = '')
     {
@@ -513,13 +513,20 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
 
     /**
      * Returns a value indicating whether the named attribute has been changed.
-     * @param string $name the name of the attribute
-     * @return boolean whether the attribute has been changed
+     * @param string $name the name of the attribute.
+     * @param bool $identical whether the comparison of new and old value is made for
+     * identical values using `===`, defaults to `true`. Otherwise `==` is used for comparison.
+     * This parameter is available since version 2.0.4.
+     * @return bool whether the attribute has been changed
      */
-    public function isAttributeChanged($name)
+    public function isAttributeChanged($name, $identical = true)
     {
         if (isset($this->_attributes[$name], $this->_oldAttributes[$name])) {
-            return $this->_attributes[$name] !== $this->_oldAttributes[$name];
+            if ($identical) {
+                return $this->_attributes[$name] !== $this->_oldAttributes[$name];
+            } else {
+                return $this->_attributes[$name] != $this->_oldAttributes[$name];
+            }
         } else {
             return isset($this->_attributes[$name]) || isset($this->_oldAttributes[$name]);
         }
@@ -745,7 +752,11 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
     {
         if ($this->updateAllCounters($counters, $this->getOldPrimaryKey(true)) > 0) {
             foreach ($counters as $name => $value) {
-                $this->_attributes[$name] += $value;
+                if (!isset($this->_attributes[$name])) {
+                    $this->_attributes[$name] = $value;
+                } else {
+                    $this->_attributes[$name] += $value;
+                }
                 $this->_oldAttributes[$name] = $this->_attributes[$name];
             }
             return true;
@@ -1154,7 +1165,7 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
 
         if ($relation->via !== null) {
             if ($this->getIsNewRecord() || $model->getIsNewRecord()) {
-                throw new InvalidCallException('Unable to link models: both models must NOT be newly created.');
+                throw new InvalidCallException('Unable to link models: the models being linked cannot be newly created.');
             }
             if (is_array($relation->via)) {
                 /* @var $viaRelation ActiveQuery */
@@ -1194,7 +1205,7 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
             $p2 = $this->isPrimaryKey(array_values($relation->link));
             if ($p1 && $p2) {
                 if ($this->getIsNewRecord() && $model->getIsNewRecord()) {
-                    throw new InvalidCallException('Unable to link models: both models are newly created.');
+                    throw new InvalidCallException('Unable to link models: at most one model can be newly created.');
                 } elseif ($this->getIsNewRecord()) {
                     $this->bindModels(array_flip($relation->link), $this, $model);
                 } else {
@@ -1205,7 +1216,7 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
             } elseif ($p2) {
                 $this->bindModels($relation->link, $model, $this);
             } else {
-                throw new InvalidCallException('Unable to link models: the link does not involve any primary key.');
+                throw new InvalidCallException('Unable to link models: the link defining the relation does not involve any primary key.');
             }
         }
 
@@ -1452,8 +1463,8 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
 
             $relatedModel = $this;
             foreach ($attributeParts as $relationName) {
-                if (isset($this->_related[$relationName]) && $this->_related[$relationName] instanceof self) {
-                    $relatedModel = $this->_related[$relationName];
+                if ($relatedModel->isRelationPopulated($relationName) && $relatedModel->$relationName instanceof self) {
+                    $relatedModel = $relatedModel->$relationName;
                 } else {
                     try {
                         $relation = $relatedModel->getRelation($relationName);
@@ -1471,6 +1482,45 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
         }
 
         return $this->generateAttributeLabel($attribute);
+    }
+
+    /**
+     * Returns the text hint for the specified attribute.
+     * If the attribute looks like `relatedModel.attribute`, then the attribute will be received from the related model.
+     * @param string $attribute the attribute name
+     * @return string the attribute hint
+     * @see attributeHints()
+     * @since 2.0.4
+     */
+    public function getAttributeHint($attribute)
+    {
+        $hints = $this->attributeHints();
+        if (isset($hints[$attribute])) {
+            return ($hints[$attribute]);
+        } elseif (strpos($attribute, '.')) {
+            $attributeParts = explode('.', $attribute);
+            $neededAttribute = array_pop($attributeParts);
+
+            $relatedModel = $this;
+            foreach ($attributeParts as $relationName) {
+                if ($relatedModel->isRelationPopulated($relationName) && $relatedModel->$relationName instanceof self) {
+                    $relatedModel = $relatedModel->$relationName;
+                } else {
+                    try {
+                        $relation = $relatedModel->getRelation($relationName);
+                    } catch (InvalidParamException $e) {
+                        return '';
+                    }
+                    $relatedModel = new $relation->modelClass;
+                }
+            }
+
+            $hints = $relatedModel->attributeHints();
+            if (isset($hints[$neededAttribute])) {
+                return $hints[$neededAttribute];
+            }
+        }
+        return '';
     }
 
     /**

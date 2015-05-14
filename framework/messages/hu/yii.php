@@ -26,7 +26,7 @@ return array (
   'Home' => 'Főoldal',
   'Invalid data received for parameter "{param}".' => 'Érvénytelen paraméter: {param}.',
   'Login Required' => 'Bejelentkezés szükséges',
-  'Missing required arguments: {params}' => 'Hiányzó argomentumok: {params}',
+  'Missing required arguments: {params}' => 'Hiányzó argumentumok: {params}',
   'Missing required parameters: {params}' => 'Hiányzó paraméterek: {params}',
   'No' => 'Nem',
   'No help for unknown command "{command}".' => 'Nincs súgó az ismeretlen {command} parancshoz.',

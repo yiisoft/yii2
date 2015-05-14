@@ -283,10 +283,13 @@ SQL;
     }
 
     /**
-     * Collects the primary key column details for the given table.
-     * @param TableSchema $table the table metadata
+     * Collects the constraint details for the given table and constraint type.
+     * @param TableSchema $table
+     * @param string $type either PRIMARY KEY or UNIQUE
+     * @return array each entry contains index_name and field_name
+     * @since 2.0.4
      */
-    protected function findPrimaryKeys($table)
+    protected function findTableConstraints($table, $type)
     {
         $keyColumnUsageTableName = 'INFORMATION_SCHEMA.KEY_COLUMN_USAGE';
         $tableConstraintsTableName = 'INFORMATION_SCHEMA.TABLE_CONSTRAINTS';
@@ -299,20 +302,39 @@ SQL;
 
         $sql = <<<SQL
 SELECT
+    [kcu].[constraint_name] AS [index_name],
     [kcu].[column_name] AS [field_name]
 FROM {$keyColumnUsageTableName} AS [kcu]
 LEFT JOIN {$tableConstraintsTableName} AS [tc] ON
+    [kcu].[table_schema] = [tc].[table_schema] AND
     [kcu].[table_name] = [tc].[table_name] AND
     [kcu].[constraint_name] = [tc].[constraint_name]
 WHERE
-    [tc].[constraint_type] = 'PRIMARY KEY' AND
+    [tc].[constraint_type] = :type AND
     [kcu].[table_name] = :tableName AND
     [kcu].[table_schema] = :schemaName
 SQL;
 
-        $table->primaryKey = $this->db
-            ->createCommand($sql, [':tableName' => $table->name, ':schemaName' => $table->schemaName])
-            ->queryColumn();
+        return $this->db
+            ->createCommand($sql, [
+                ':tableName' => $table->name,
+                ':schemaName' => $table->schemaName,
+                ':type' => $type,
+            ])
+            ->queryAll();
+    }
+
+    /**
+     * Collects the primary key column details for the given table.
+     * @param TableSchema $table the table metadata
+     */
+    protected function findPrimaryKeys($table)
+    {
+        $result = [];
+        foreach ($this->findTableConstraints($table, 'PRIMARY KEY') as $row) {
+            $result[] = $row['field_name'];
+        }
+        $table->primaryKey = $result;
     }
 
     /**
@@ -347,10 +369,13 @@ JOIN {$keyColumnUsageTableName} AS [kcu2] ON
     [kcu2].[constraint_schema] = [rc].[constraint_schema] AND
     [kcu2].[constraint_name] = [rc].[unique_constraint_name] AND
     [kcu2].[ordinal_position] = [kcu1].[ordinal_position]
-WHERE [kcu1].[table_name] = :tableName
+WHERE [kcu1].[table_name] = :tableName AND [kcu1].[table_schema] = :schemaName
 SQL;
 
-        $rows = $this->db->createCommand($sql, [':tableName' => $table->name])->queryAll();
+        $rows = $this->db->createCommand($sql, [
+            ':tableName' => $table->name,
+            ':schemaName' => $table->schemaName,
+        ])->queryAll();
         $table->foreignKeys = [];
         foreach ($rows as $row) {
             $table->foreignKeys[] = [$row['uq_table_name'], $row['fk_column_name'] => $row['uq_column_name']];
@@ -371,9 +396,34 @@ SQL;
         $sql = <<<SQL
 SELECT [t].[table_name]
 FROM [INFORMATION_SCHEMA].[TABLES] AS [t]
-WHERE [t].[table_schema] = :schema AND [t].[table_type] = 'BASE TABLE'
+WHERE [t].[table_schema] = :schema AND [t].[table_type] IN ('BASE TABLE', 'VIEW')
+ORDER BY [t].[table_name]
 SQL;
 
         return $this->db->createCommand($sql, [':schema' => $schema])->queryColumn();
+    }
+
+    /**
+     * Returns all unique indexes for the given table.
+     * Each array element is of the following structure:
+     *
+     * ~~~
+     * [
+     *  'IndexName1' => ['col1' [, ...]],
+     *  'IndexName2' => ['col2' [, ...]],
+     * ]
+     * ~~~
+     *
+     * @param TableSchema $table the table metadata
+     * @return array all unique indexes for the given table.
+     * @since 2.0.4
+     */
+    public function findUniqueIndexes($table)
+    {
+        $result = [];
+        foreach ($this->findTableConstraints($table, 'UNIQUE') as $row) {
+            $result[$row['index_name']][] = $row['field_name'];
+        }
+        return $result;
     }
 }

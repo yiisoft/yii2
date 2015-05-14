@@ -17,7 +17,7 @@ deberían ser ejecutables para que los usuarios puedan ejecutar las aplicaciones
 El script de entrada principalmente hace los siguientes trabajos:
 
 * Definir las constantes globales;
-* Registrar el [cargador automático de Composer](http://getcomposer.org/doc/01-basic-usage.md#autoloading);
+* Registrar el [cargador automático de Composer](https://getcomposer.org/doc/01-basic-usage.md#autoloading);
 * Incluir el archivo de clase [[Yii]];
 * Cargar la configuración de la aplicación;
 * Crear y configurar una instancia de [aplicación](structure-applications.md);

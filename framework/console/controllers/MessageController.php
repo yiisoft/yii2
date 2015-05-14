@@ -91,6 +91,7 @@ class MessageController extends Controller
             'removeUnused' => false,
             'sort' => false,
             'format' => 'php',
+            'ignoreCategories' => [],
         ], require($configFile));
 
         if (!isset($config['sourcePath'], $config['languages'])) {
@@ -117,7 +118,7 @@ class MessageController extends Controller
 
         $messages = [];
         foreach ($files as $file) {
-            $messages = array_merge_recursive($messages, $this->extractMessages($file, $config['translator']));
+            $messages = array_merge_recursive($messages, $this->extractMessages($file, $config['translator'], $config['ignoreCategories']));
         }
         if (in_array($config['format'], ['php', 'po'])) {
             foreach ($config['languages'] as $language) {
@@ -202,13 +203,11 @@ class MessageController extends Controller
         foreach ($new as $category => $msgs) {
             foreach ($msgs as $m) {
                 $savedFlag = true;
-
-                $db->createCommand()
-                   ->insert($sourceMessageTable, ['category' => $category, 'message' => $m])->execute();
-                $lastID = $db->getLastInsertID();
+                $lastPk = $db->schema->insert($sourceMessageTable, ['category' => $category, 'message' => $m]);
                 foreach ($languages as $language) {
                     $db->createCommand()
-                       ->insert($messageTable, ['id' => $lastID, 'language' => $language])->execute();
+                       ->insert($messageTable, ['id' => $lastPk['id'], 'language' => $language])
+                       ->execute();
                 }
             }
         }
@@ -221,7 +220,8 @@ class MessageController extends Controller
         } else {
             if ($removeUnused) {
                 $db->createCommand()
-                   ->delete($sourceMessageTable, ['in', 'id', $obsolete])->execute();
+                   ->delete($sourceMessageTable, ['in', 'id', $obsolete])
+                   ->execute();
                 $this->stdout("deleted.\n");
             } else {
                 $db->createCommand()
@@ -240,49 +240,80 @@ class MessageController extends Controller
      *
      * @param string $fileName name of the file to extract messages from
      * @param string $translator name of the function used to translate messages
+     * @param array $ignoreCategories message categories to ignore.
+     * This parameter is available since version 2.0.4.
      * @return array
      */
-    protected function extractMessages($fileName, $translator)
+    protected function extractMessages($fileName, $translator, $ignoreCategories = [])
     {
         $coloredFileName = Console::ansiFormat($fileName, [Console::FG_CYAN]);
         $this->stdout("Extracting messages from $coloredFileName...\n");
+
         $subject = file_get_contents($fileName);
         $messages = [];
         foreach ((array)$translator as $currentTranslator) {
             $translatorTokens = token_get_all('<?php ' . $currentTranslator);
             array_shift($translatorTokens);
-
-            $translatorTokensCount = count($translatorTokens);
-            $matchedTokensCount = 0;
-            $buffer = [];
-
             $tokens = token_get_all($subject);
-            foreach ($tokens as $token) {
-                // finding out translator call
-                if ($matchedTokensCount < $translatorTokensCount) {
-                    if ($this->tokensEqual($token, $translatorTokens[$matchedTokensCount])) {
-                        $matchedTokensCount++;
-                    } else {
-                        $matchedTokensCount = 0;
-                    }
-                } elseif ($matchedTokensCount === $translatorTokensCount) {
-                    // translator found
+            $messages = array_merge_recursive($messages, $this->extractMessagesFromTokens($tokens, $translatorTokens, $ignoreCategories));
+        }
 
-                    // end of translator call or end of something that we can't extract
-                    if ($this->tokensEqual(')', $token)) {
+        $this->stdout("\n");
+
+        return $messages;
+    }
+
+    /**
+     * Extracts messages from a parsed PHP tokens list.
+     * @param array $tokens tokens to be processed.
+     * @param array $translatorTokens translator tokens.
+     * @param array $ignoreCategories message categories to ignore.
+     * @return array messages.
+     */
+    private function extractMessagesFromTokens(array $tokens, array $translatorTokens, array $ignoreCategories)
+    {
+        $messages = [];
+        $translatorTokensCount = count($translatorTokens);
+        $matchedTokensCount = 0;
+        $buffer = [];
+        $pendingParenthesisCount = 0;
+
+        foreach ($tokens as $token) {
+            // finding out translator call
+            if ($matchedTokensCount < $translatorTokensCount) {
+                if ($this->tokensEqual($token, $translatorTokens[$matchedTokensCount])) {
+                    $matchedTokensCount++;
+                } else {
+                    $matchedTokensCount = 0;
+                }
+            } elseif ($matchedTokensCount === $translatorTokensCount) {
+                // translator found
+
+                // end of function call
+                if ($this->tokensEqual(')', $token)) {
+                    $pendingParenthesisCount--;
+
+                    if ($pendingParenthesisCount === 0) {
+                        // end of translator call or end of something that we can't extract
                         if (isset($buffer[0][0], $buffer[1], $buffer[2][0]) && $buffer[0][0] === T_CONSTANT_ENCAPSED_STRING && $buffer[1] === ',' && $buffer[2][0] === T_CONSTANT_ENCAPSED_STRING) {
                             // is valid call we can extract
-
                             $category = stripcslashes($buffer[0][1]);
                             $category = mb_substr($category, 1, mb_strlen($category) - 2);
 
-                            $message = stripcslashes($buffer[2][1]);
-                            $message = mb_substr($message, 1, mb_strlen($message) - 2);
+                            if (!in_array($category, $ignoreCategories, true)) {
+                                $message = stripcslashes($buffer[2][1]);
+                                $message = mb_substr($message, 1, mb_strlen($message) - 2);
 
-                            $messages[$category][] = $message;
+                                $messages[$category][] = $message;
+                            }
+
+                            $nestedTokens = array_slice($buffer, 3);
+                            if (count($nestedTokens) > $translatorTokensCount) {
+                                // search for possible nested translator calls
+                                $messages = array_merge_recursive($messages, $this->extractMessagesFromTokens($nestedTokens, $translatorTokens, $ignoreCategories));
+                            }
                         } else {
                             // invalid call or dynamic call we can't extract
-
                             $line = Console::ansiFormat($this->getLine($buffer), [Console::FG_CYAN]);
                             $skipping = Console::ansiFormat('Skipping line', [Console::FG_YELLOW]);
                             $this->stdout("$skipping $line. Make sure both category and message are static strings.\n");
@@ -290,16 +321,23 @@ class MessageController extends Controller
 
                         // prepare for the next match
                         $matchedTokensCount = 0;
+                        $pendingParenthesisCount = 0;
                         $buffer = [];
-                    } elseif ($token !== '(' && isset($token[0]) && !in_array($token[0], [T_WHITESPACE, T_COMMENT])) {
-                        // ignore comments, whitespaces and beginning of function call
+                    } else {
                         $buffer[] = $token;
                     }
+                } elseif ($this->tokensEqual('(', $token)) {
+                    // count beginning of function call, skipping translator beginning
+                    if ($pendingParenthesisCount > 0) {
+                        $buffer[] = $token;
+                    }
+                    $pendingParenthesisCount++;
+                } elseif (isset($token[0]) && !in_array($token[0], [T_WHITESPACE, T_COMMENT])) {
+                    // ignore comments and whitespaces
+                    $buffer[] = $token;
                 }
             }
         }
-
-        $this->stdout("\n");
 
         return $messages;
     }
@@ -374,13 +412,15 @@ class MessageController extends Controller
     protected function saveMessagesCategoryToPHP($messages, $fileName, $overwrite, $removeUnused, $sort, $category)
     {
         if (is_file($fileName)) {
-            $existingMessages = require($fileName);
+            $rawExistingMessages = require($fileName);
+            $existingMessages = $rawExistingMessages;
             sort($messages);
             ksort($existingMessages);
-            if (array_keys($existingMessages) == $messages) {
+            if (array_keys($existingMessages) === $messages && (!$sort || array_keys($rawExistingMessages) === $messages)) {
                 $this->stdout("Nothing new in \"$category\" category... Nothing to save.\n\n", Console::FG_GREEN);
                 return;
             }
+            unset($rawExistingMessages);
             $merged = [];
             $untranslated = [];
             foreach ($messages as $message) {

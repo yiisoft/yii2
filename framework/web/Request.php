@@ -180,7 +180,7 @@ class Request extends \yii\base\Request
         $result = Yii::$app->getUrlManager()->parseRequest($this);
         if ($result !== false) {
             list ($route, $params) = $result;
-            $_GET = array_merge($_GET, $params);
+            $_GET = $params + $_GET; // preserve numeric keys
 
             return [$route, $_GET];
         } else {
@@ -1261,7 +1261,7 @@ class Request extends \yii\base\Request
             }
             // the mask doesn't need to be very random
             $chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789_-.';
-            $mask = substr(str_shuffle(str_repeat($chars, 5)), 0, self::CSRF_MASK_LENGTH);
+            $mask = substr(str_shuffle(str_repeat($chars, 5)), 0, static::CSRF_MASK_LENGTH);
             // The + sign may be decoded as blank space later, which will fail the validation
             $this->_csrfToken = str_replace('+', '.', base64_encode($mask . $this->xorTokens($token, $mask)));
         }
@@ -1324,7 +1324,7 @@ class Request extends \yii\base\Request
      */
     public function getCsrfTokenFromHeader()
     {
-        $key = 'HTTP_' . str_replace('-', '_', strtoupper(self::CSRF_HEADER));
+        $key = 'HTTP_' . str_replace('-', '_', strtoupper(static::CSRF_HEADER));
         return isset($_SERVER[$key]) ? $_SERVER[$key] : null;
     }
 
@@ -1345,12 +1345,19 @@ class Request extends \yii\base\Request
 
     /**
      * Performs the CSRF validation.
-     * The method will compare the CSRF token obtained from a cookie and from a POST field.
-     * If they are different, a CSRF attack is detected and a 400 HTTP exception will be raised.
-     * This method is called in [[Controller::beforeAction()]].
+     *
+     * This method will validate the user-provided CSRF token by comparing it with the one stored in cookie or session.
+     * This method is mainly called in [[Controller::beforeAction()]].
+     *
+     * Note that the method will NOT perform CSRF validation if [[enableCsrfValidation]] is false or the HTTP method
+     * is among GET, HEAD or OPTIONS.
+     *
+     * @param string $token the user-provided CSRF token to be validated. If null, the token will be retrieved from
+     * the [[csrfParam]] POST field or HTTP header.
+     * This parameter is available since version 2.0.4.
      * @return boolean whether CSRF token is valid. If [[enableCsrfValidation]] is false, this method will return true.
      */
-    public function validateCsrfToken()
+    public function validateCsrfToken($token = null)
     {
         $method = $this->getMethod();
         // only validate CSRF token on non-"safe" methods http://www.w3.org/Protocols/rfc2616/rfc2616-sec9.html#sec9.1.1
@@ -1360,8 +1367,12 @@ class Request extends \yii\base\Request
 
         $trueToken = $this->loadCsrfToken();
 
-        return $this->validateCsrfTokenInternal($this->getBodyParam($this->csrfParam), $trueToken)
-            || $this->validateCsrfTokenInternal($this->getCsrfTokenFromHeader(), $trueToken);
+        if ($token !== null) {
+            return $this->validateCsrfTokenInternal($token, $trueToken);
+        } else {
+            return $this->validateCsrfTokenInternal($this->getBodyParam($this->csrfParam), $trueToken)
+                || $this->validateCsrfTokenInternal($this->getCsrfTokenFromHeader(), $trueToken);
+        }
     }
 
     /**
@@ -1375,11 +1386,11 @@ class Request extends \yii\base\Request
     {
         $token = base64_decode(str_replace('.', '+', $token));
         $n = StringHelper::byteLength($token);
-        if ($n <= self::CSRF_MASK_LENGTH) {
+        if ($n <= static::CSRF_MASK_LENGTH) {
             return false;
         }
-        $mask = StringHelper::byteSubstr($token, 0, self::CSRF_MASK_LENGTH);
-        $token = StringHelper::byteSubstr($token, self::CSRF_MASK_LENGTH, $n - self::CSRF_MASK_LENGTH);
+        $mask = StringHelper::byteSubstr($token, 0, static::CSRF_MASK_LENGTH);
+        $token = StringHelper::byteSubstr($token, static::CSRF_MASK_LENGTH, $n - static::CSRF_MASK_LENGTH);
         $token = $this->xorTokens($mask, $token);
 
         return $token === $trueToken;

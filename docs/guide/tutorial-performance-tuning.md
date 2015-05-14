@@ -247,6 +247,6 @@ right after all jobs before it are done.
 If nothing helps, never assume what may fix performance problem. Always profile your code instead before changing
 anything. The following tools may be helpful:
 
-- [Yii debug toolbar and debugger](tool-debugger.md)
+- [Yii debug toolbar and debugger](https://github.com/yiisoft/yii2-debug/blob/master/docs/guide/README.md)
 - [XDebug profiler](http://xdebug.org/docs/profiler)
 - [XHProf](http://www.php.net/manual/en/book.xhprof.php)

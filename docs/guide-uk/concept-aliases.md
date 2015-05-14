@@ -105,7 +105,7 @@ $cache = new FileCache([
 - `@yii`: директорія, в якій знаходиться файл `BaseYii.php` (директорія фреймворка).
 - `@app`: [[yii\base\Application::basePath|базовий шлях]] поточного додатку.
 - `@runtime`: [[yii\base\Application::runtimePath|директорія runtime]] поточного додатку. За замовчуванням `@app/runtime`.
-- `@webroot`, коренева веб-директорія поточного веб-додатку. Визначається на основі директорії розташування вхідного скрипта.
+- `@webroot`, коренева веб-директорія поточного веб-додатку. Визначається на основі директорії розташування [вхідного скрипта](structure-entry-scripts.md).
 - `@web`, базовий URL поточного додатку. Має таке ж значення, як і [[yii\web\Request::baseUrl]].
 - `@vendor`, [[yii\base\Application::vendorPath|директорія vendor Composer]]. За замовчуванням `@app/vendor`.
 - `@bower`, директорія, що містить [пакети bower](http://bower.io/). За замовчуванням `@vendor/bower`.

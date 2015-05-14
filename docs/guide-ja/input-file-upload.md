@@ -111,7 +111,7 @@ if (!$file instanceof UploadedFile || $file->error == UPLOAD_ERR_NO_FILE) {
 $model->file->saveAs('uploads/' . $model->file->baseName . '.' . $model->file->extension);
 ```
 
-「ベーシック」アプリケーションテンプレートを使っている場合は、`uploads` フォルダを `web` の下に作成しなければなりません。
+「ベーシック」プロジェクトテンプレートを使っている場合は、`uploads` フォルダを `web` の下に作成しなければなりません。
 
 以上です。ページをロードして、アップロードを試して見てください。ファイルは `basic/web/uploads` にアップロードされます。
 
@@ -170,7 +170,7 @@ public function rules()
 
 画像をアップロードするときは、[[yii\validators\ImageValidator|ImageValidator]] が重宝するでしょう。
 このバリデータは、属性が有効な画像を受け取ったか否かを検証します。
-画像は、保存するか、または、[Imagine エクステンション](https://github.com/yiisoft/yii2/tree/master/extensions/imagine) によって処理することが出来ます。
+画像は、保存するか、または、[Imagine エクステンション](https://github.com/yiisoft/yii2-imagine) によって処理することが出来ます。
 
 複数のファイルをアップロードする
 --------------------------------

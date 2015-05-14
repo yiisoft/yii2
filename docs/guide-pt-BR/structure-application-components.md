@@ -114,7 +114,7 @@ se você não especificar sua classe, a padrão será utilizada.
 * [[yii\i18n\Formatter|formatter]]: formata dados quando são exibidos aos
   usuários finais. Por exemplo, um número pode ser exibido com um separador de
   milhares, uma data pode ser formatada em um formato longo. Por favor consulte
-  a seção [Formatação de Dados](output-formatter.md) para mais detalhes.
+  a seção [Formatação de Dados](output-formatting.md) para mais detalhes.
 * [[yii\i18n\I18N|i18n]]: suporta a tradução e formatação de mensagens. Por favor
   consulte a seção [Internacionalização](tutorial-i18n.md) para mais detalhes.
 * [[yii\log\Dispatcher|log]]: gerencia alvos de logs. Por favor consulte a seção

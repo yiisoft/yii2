@@ -160,4 +160,61 @@ EOD;
 
         return $sql;
     }
+
+    /**
+     * Generates a batch INSERT SQL statement.
+     * For example,
+     *
+     * ~~~
+     * $sql = $queryBuilder->batchInsert('user', ['name', 'age'], [
+     *     ['Tom', 30],
+     *     ['Jane', 20],
+     *     ['Linda', 25],
+     * ]);
+     * ~~~
+     *
+     * Note that the values in each row must match the corresponding column names.
+     *
+     * @param string $table the table that new rows will be inserted into.
+     * @param array $columns the column names
+     * @param array $rows the rows to be batch inserted into the table
+     * @return string the batch INSERT SQL statement
+     */
+    public function batchInsert($table, $columns, $rows)
+    {
+        $schema = $this->db->getSchema();
+        if (($tableSchema = $schema->getTableSchema($table)) !== null) {
+            $columnSchemas = $tableSchema->columns;
+        } else {
+            $columnSchemas = [];
+        }
+
+        $values = [];
+        foreach ($rows as $row) {
+            $vs = [];
+            foreach ($row as $i => $value) {
+                if (isset($columns[$i], $columnSchemas[$columns[$i]]) && !is_array($value)) {
+                    $value = $columnSchemas[$columns[$i]]->dbTypecast($value);
+                }
+                if (is_string($value)) {
+                    $value = $schema->quoteValue($value);
+                } elseif ($value === false) {
+                    $value = 0;
+                } elseif ($value === null) {
+                    $value = 'NULL';
+                }
+                $vs[] = $value;
+            }
+            $values[] = '(' . implode(', ', $vs) . ')';
+        }
+
+        foreach ($columns as $i => $name) {
+            $columns[$i] = $schema->quoteColumnName($name);
+        }
+
+        $tableAndColumns = ' INTO ' . $schema->quoteTableName($table)
+        . ' (' . implode(', ', $columns) . ') VALUES ';
+
+        return 'INSERT ALL ' . $tableAndColumns . implode($tableAndColumns, $values) . ' SELECT 1 FROM SYS.DUAL';
+    }
 }

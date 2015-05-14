@@ -20,10 +20,7 @@ matrix:
     - php: 7.0
 
 services:
-  - redis-server
   - memcached
-  - elasticsearch
-  - mongodb
 
 # faster builds on new travis setup not using sudo
 sudo: false
@@ -31,7 +28,7 @@ sudo: false
 # cache vendor dirs
 cache:
   directories:
-#    - cubrid # caching cubrid breaks the build on a regular basis and has nearly no speedup
+#    - cubrid/9.3.0
     - vendor
     - $HOME/.composer/cache
 
@@ -41,32 +38,16 @@ addons:
 
 install:
   - travis_retry composer self-update && composer --version
-  - travis_retry composer global require "fxp/composer-asset-plugin:1.0.0"
+  - travis_retry composer global require "fxp/composer-asset-plugin:~1.0.0"
   - export PATH="$HOME/.composer/vendor/bin:$PATH"
 # core framework:
   - travis_retry composer install --prefer-dist --no-interaction
-  # install php extensions
-  - |
-    if (php --version | grep -i HipHop > /dev/null); then
-      echo "Skipping imagick and gmagick tests on HHVM"
-    else
-      pear config-set preferred_state beta
-      printf "\n" | pecl install imagick
-      # gmagick is not installed on travis currently
-      #printf "\n" | pecl install gmagick
-    fi
-  - tests/unit/data/travis/mongodb-setup.sh
-  - tests/unit/data/travis/apc-setup.sh
-  - tests/unit/data/travis/memcache-setup.sh
-#  - tests/unit/data/travis/cubrid-setup.sh
-# codeception
-  - travis_retry composer global require "codeception/codeception=2.0.*" "codeception/specify=*" "codeception/verify=*"
-# basic and advanced application:
-  - tests/unit/data/travis/setup-apps.sh
+  - tests/data/travis/apc-setup.sh
+  - tests/data/travis/memcache-setup.sh
+#  - tests/data/travis/cubrid-setup.sh
 
 before_script:
   # show some versions and env information
-  - echo 'elasticsearch version ' && curl http://localhost:9200/
   - php -r "echo INTL_ICU_VERSION . \"\n\";"
   - mysql --version
   - psql --version
@@ -74,10 +55,7 @@ before_script:
   # initialize databases
   - mysql -e 'CREATE DATABASE yiitest;';
   - psql -U postgres -c 'CREATE DATABASE yiitest;';
-  - tests/unit/data/travis/sphinx-setup.sh
-  - mongo yii2test --eval 'db.addUser("travis", "test");'
-# basic and advanced application:
-  - tests/unit/data/travis/init-apps.sh
+
   - |
     if [ $TRAVIS_PHP_VERSION = '5.6' ]; then
       PHPUNIT_FLAGS="--coverage-clover=coverage.clover"
@@ -85,30 +63,11 @@ before_script:
 
 
 script:
-  - vendor/bin/phpunit --verbose $PHPUNIT_FLAGS --exclude-group mssql,oci,wincache,xcache,zenddata
-  - |
-    if (php --version | grep -i HipHop > /dev/null); then
-      echo "Skipping basic application tests on HHVM"
-    else
-      cd apps/basic/web
-      php -S localhost:8080 > /dev/null 2>&1 &
-      cd ../tests
-      codecept run
-    fi
-  - |
-    if (php --version | grep -i HipHop > /dev/null); then
-      echo "Skipping advanced application tests on HHVM"
-    else
-      cd apps/advanced
-      php -S localhost:8080 > /dev/null 2>&1 &
-      cd tests
-      codecept run
-    fi
+  - vendor/bin/phpunit --verbose $PHPUNIT_FLAGS --exclude-group mssql,oci,wincache,xcache,zenddata,cubrid
 
 after_script:
   - |
     if [ $TRAVIS_PHP_VERSION = '5.6' ]; then
-      cd ../../.. 
       travis_retry wget https://scrutinizer-ci.com/ocular.phar
       php ocular.phar code-coverage:upload --format=php-clover coverage.clover
     fi

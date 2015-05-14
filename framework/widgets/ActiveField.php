@@ -190,7 +190,7 @@ class ActiveField extends Component
                 $this->parts['{error}'] = Html::error($this->model, $this->attribute, $this->errorOptions);
             }
             if (!isset($this->parts['{hint}'])) {
-                $this->parts['{hint}'] = '';
+                $this->parts['{hint}'] = Html::activeHint($this->model, $this->attribute, $this->hintOptions);
             }
             $content = strtr($this->template, $this->parts);
         } elseif (!is_string($content)) {

@@ -503,7 +503,7 @@ you may take the following strategy:
   define a concrete model class by extending from the corresponding base model class. The concrete model classes
   should contain rules and logic that are specific for that application or module.
 
-For example, in the [Advanced Application Template](tutorial-advanced-app.md), you may define a base model
+For example, in the [Advanced Project Template](https://github.com/yiisoft/yii2-app-advanced/blob/master/docs/guide/README.md), you may define a base model
 class `common\models\Post`. Then for the front end application, you define and use a concrete model class
 `frontend\models\Post` which extends from `common\models\Post`. And similarly for the back end application,
 you define `backend\models\Post`. With this strategy, you will be sure that the code in `frontend\models\Post`

@@ -25,7 +25,7 @@ its corresponding fully qualified PHP class name (without the leading backslash)
 be [autoloadable](concept-autoloading.md). It usually specifies where the assets are located, what CSS and 
 JavaScript files the bundle contains, and how the bundle depends on other bundles.
 
-The following code defines the main asset bundle used by [the basic application template](start-installation.md):
+The following code defines the main asset bundle used by [the basic project template](start-installation.md):
 
 ```php
 <?php
