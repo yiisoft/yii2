@@ -39,6 +39,12 @@ return array(
 		'memo' => 'Required for multibyte encoding string processing.'
 	),
 	array(
+		'name' => 'Ctype extension',
+		'mandatory' => true,
+		'condition' => extension_loaded('ctype'),
+		'by' => '<a href="http://php.net/manual/en/book.ctype.php">Character type checking</a> processing'
+	),
+	array(
 		'name' => 'Intl extension',
 		'mandatory' => false,
 		'condition' => $this->checkPhpExtensionVersion('intl', '1.0.2', '>='),
