@@ -195,7 +195,7 @@ SQL;
             // get the last insert id from the master connection
             $sequenceName = $this->quoteSimpleTableName($sequenceName);
             return $this->db->useMaster(function (Connection $db) use ($sequenceName) {
-                return $db->createCommand("SELECT {$sequenceName}.CURRVAL FROM DUAL")->queryScalar();
+                return $db->createCommand("SELECT LAST_NUMBER FROM USER_SEQUENCES WHERE SEQUENCE_NAME=:sequenceName")->bindValue(':sequenceName', $sequenceName)->queryScalar();
             });
         } else {
             throw new InvalidCallException('DB Connection is not active.');
