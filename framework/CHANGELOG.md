@@ -32,6 +32,7 @@ Yii Framework 2 Change Log
 - Enh #8574: Added `yii\console\controllers\MessageController` support .pot file creation (pgaultier)
 - Chg #6354: `ErrorHandler::logException()` will now log the whole exception object instead of only its string representation (cebe)
 - Chg #8556: Extracted `yii\web\User::getAuthManager()` method (samdark)
+- Enh #8426: `yii\filters\AccessRule` now allows passing GET parameters to the role checking function (fsateler)
 
 
 2.0.4 May 10, 2015

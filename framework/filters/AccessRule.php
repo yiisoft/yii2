@@ -12,6 +12,8 @@ use yii\base\Action;
 use yii\web\User;
 use yii\web\Request;
 use yii\base\Controller;
+use yii\helpers\ArrayHelper;
+use Yii;
 
 /**
  * This class represents an access rule defined by the [[AccessControl]] action filter
@@ -90,6 +92,62 @@ class AccessRule extends Component
      */
     public $denyCallback;
 
+    /** 
+     * @var array a map for passing parameters to the [[User::can()]] function
+     * 
+     * The map indicates query parameters that will be passed when determining
+     * role access.
+     * 
+     * If both a key and a value are passed, then the name of the parameter will
+     * be changed. A value of `['a' => 'b']` will cause [[User::can()]] to be
+     * invoked with the content of the request query parameter 'a' as key 'b'
+     * in the params argument.
+     * If only a value is passed then it is equivalent to passing the same value
+     * as key.
+     * 
+     * The special parameters '{action}' and '{controller}' are bound to the
+     * action and controller ids
+     */
+    public $queryParams = [];
+    
+    /**
+     * @var array the parameters to be passed to [[User::can()]].
+     * 
+     * Do not use directly, use [[getParamsForCan()]] to access it
+     */
+    private $_paramsForCan = null;
+    
+    /**
+     * Gets the parameters to be passed to [[User::can()]].
+     * 
+     * It will parse [[AccessRule::queryParams]] and create the array of
+     * parameters, if it has not been created already.
+     * 
+     * @return array
+     */
+    private function getParamsForCan() {
+        if ($this->_paramsForCan === null) {
+            $newParams = [];
+            $queryParams = ArrayHelper::getValue(Yii::$app->request, 'queryParams', []);
+            foreach($this->queryParams as $key => $value) {
+                if (!is_string($key)) {
+                    $key = $value;
+                }
+                if ($key === '{action}') {
+                    $newParams[$value] = Yii::$app->controller->action->id;
+                }
+                elseif ($key === '{controller}') {
+                    $newParams[$value] = Yii::$app->controller->id;
+                }
+                if (ArrayHelper::keyExists($key, $queryParams)) {
+                    $newParams[$value] = ArrayHelper::getValue($queryParams, $key);
+                }
+            }
+            $this->_paramsForCan = $newParams;
+        }
+        return $this->_paramsForCan;
+    }
+    
 
     /**
      * Checks whether the Web user is allowed to perform the specified action.
@@ -149,7 +207,7 @@ class AccessRule extends Component
                 if (!$user->getIsGuest()) {
                     return true;
                 }
-            } elseif ($user->can($role)) {
+            } elseif ($user->can($role, $this->getParamsForCan())) {
                 return true;
             }
         }
