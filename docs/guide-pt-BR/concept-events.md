@@ -229,7 +229,7 @@ Eventos Globais <span id="global-events"></span>
 Yii suporta o assim chamado *evento global*, que na verdade é um truque com base no mecanismo de eventos acima descrito.
 O evento global requer um *singleton* acessível globalmente, tal como a própria instância [application](structure-applications.md).
 
-Para criar o evento global, um evento *remetente* chama o método singleton `trigger()` para disparar o evento, em vez de chamar o método `trigger()` do * remetente *. Da mesma forma, os manipuladores de eventos são anexados ao evento no *singleton*. Por exemplo:
+Para criar o evento global, um evento *remetente* chama o método singleton `trigger()` para disparar o evento, em vez de chamar o método `trigger()` do *remetente* . Da mesma forma, os manipuladores de eventos são anexados ao evento no *singleton* . Por exemplo:
 
 ```php
 use Yii;
