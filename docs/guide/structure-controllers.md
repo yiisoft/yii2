@@ -127,9 +127,9 @@ Controller class names can be derived from controller IDs according to the follo
 
 1. Turn the first letter in each word separated by hyphens into upper case. Note that if the controller ID
   contains slashes, this rule only applies to the part after the last slash in the ID.
-1. Remove hyphens and replace any forward slashes with backward slashes.
-1. Append the suffix `Controller`.
-1. Prepend the [[yii\base\Application::controllerNamespace|controller namespace]].
+2. Remove hyphens and replace any forward slashes with backward slashes.
+3. Append the suffix `Controller`.
+4. Prepend the [[yii\base\Application::controllerNamespace|controller namespace]].
 
 The following are some examples, assuming the [[yii\base\Application::controllerNamespace|controller namespace]]
 takes the default value `app\controllers`:
@@ -239,8 +239,8 @@ Inline actions refer to the actions that are defined in terms of action methods 
 The names of the action methods are derived from action IDs according to the following procedure:
 
 1. Turn the first letter in each word of the action ID into upper case.
-1. Remove hyphens.
-1. Prepend the prefix `action`.
+2. Remove hyphens.
+3. Prepend the prefix `action`.
 
 For example, `index` becomes `actionIndex`, and `hello-world` becomes `actionHelloWorld`.
 
