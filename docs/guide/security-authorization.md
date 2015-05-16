@@ -100,6 +100,9 @@ empty or not set, it means the rule applies to all controllers.
    Using other role names will trigger the invocation of [[yii\web\User::can()]], which requires enabling RBAC 
    (to be described in the next subsection). If this option is empty or not set, it means this rule applies to all roles.
 
+ * [[yii\filters\AccessRule::queryParams|queryParams]]: specifies the query parameters that will be passed to [[yii\web\User::can()]].
+See the section below describing RBAC rules to see how it can be used. If this option is empty or not set, then no parameters will be passed.
+
  * [[yii\filters\AccessRule::ips|ips]]: specifies which [[yii\web\Request::userIP|client IP addresses]] this rule matches.
 An IP address can contain the wildcard `*` at the end so that it matches IP addresses with the same prefix.
 For example, '192.168.*' matches all IP addresses in the segment '192.168.'. If this option is empty or not set,
@@ -347,6 +350,7 @@ created previously author cannot edit his own post. Let's fix it. First we need 
 namespace app\rbac;
 
 use yii\rbac\Rule;
+use app\models\Post;
 
 /**
  * Checks if authorID matches user passed via params
@@ -363,7 +367,14 @@ class AuthorRule extends Rule
      */
     public function execute($user, $item, $params)
     {
-        return isset($params['post']) ? $params['post']->createdBy == $user : false;
+        if (isset($params['post'])) {
+            $post = $params['post'];
+            if (is_integer($post)) {
+                $post = Post::findOne($post);
+            }
+            return $post->createdBy == $user;
+        }
+        return false;
     }
 }
 ```
@@ -432,6 +443,37 @@ should return `true` from its `execute()` method. The method receives its `$para
 In case of Jane it is a bit simpler since she is an admin:
 
 ![Access check](images/rbac-access-check-3.png "Access check")
+
+You can also use rules from the [[yii\filters\AccessControl|AccessControl]] filter. For that you specify the
+[[yii\filters\AccessRule::queryParams|queryParams]] that you need to pass to the rule:
+
+
+```php
+use yii\filters\AccessControl;
+
+class PostsController extends Controller
+{
+    public function behaviors()
+    {
+        return [
+            'access' => [
+                'class' => AccessControl::className(),
+                'rules' => [
+                    [
+                        'actions' => ['update'],
+                        'roles' => ['updatePost'],
+                        'queryParams' => [
+                            // The id in the url will be passed as 'post'
+                            'id' => 'post',
+                        ],
+                        'allow' => true,
+                    ],
+                ],
+            ],
+        ];
+    }
+}
+```
 
 
 ### Using Default Roles <span id="using-default-roles"></span>
