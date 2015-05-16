@@ -1321,7 +1321,7 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
         } elseif (isset($this->_related[$name])) {
             /* @var $b ActiveRecordInterface */
             foreach ($this->_related[$name] as $a => $b) {
-                if ($model->getPrimaryKey() == $b->getPrimaryKey()) {
+                if ($model->getPrimaryKey() === $b->getPrimaryKey()) {
                     unset($this->_related[$name][$a]);
                 }
             }
