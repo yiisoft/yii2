@@ -575,4 +575,26 @@ class FormatterDateTest extends TestCase
         $this->assertFalse(DateTime::createFromFormat('Y-m-d H:i:s', '2014-05-08'));
     }
 
+    public function testIntlInputFractionSeconds()
+    {
+        $this->testInputFractionSeconds();
+    }
+
+    public function testInputFractionSeconds()
+    {
+        $this->formatter->defaultTimeZone = 'UTC';
+
+        $timeStamp = '2015-04-28 10:06:15.000000';
+        $this->formatter->timeZone = 'UTC';
+        $this->assertEquals('2015-04-28 10:06:15+0000', $this->formatter->asDateTime($timeStamp, 'yyyy-MM-dd HH:mm:ssZ'));
+        $this->formatter->timeZone = 'Europe/Berlin';
+        $this->assertEquals('2015-04-28 12:06:15+0200', $this->formatter->asDateTime($timeStamp, 'yyyy-MM-dd HH:mm:ssZ'));
+
+        $timeStamp = '2015-04-28 10:06:15';
+        $this->formatter->timeZone = 'UTC';
+        $this->assertEquals('2015-04-28 10:06:15+0000', $this->formatter->asDateTime($timeStamp, 'yyyy-MM-dd HH:mm:ssZ'));
+        $this->formatter->timeZone = 'Europe/Berlin';
+        $this->assertEquals('2015-04-28 12:06:15+0200', $this->formatter->asDateTime($timeStamp, 'yyyy-MM-dd HH:mm:ssZ'));
+    }
+
 }
