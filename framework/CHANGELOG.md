@@ -3,7 +3,7 @@ Yii Framework 2 Change Log
 
 2.0.5 under development
 -----------------------
-
+- Chg #8444:  Added `yii\widgets\LinkPager::linkOptions` (zinzinday)
 - Bug #7305: Logging of Exception objects resulted in failure of the logger i.e. no logs being written (cebe)
 - Bug #7707: client-side `trim` validator now passes the trimmed value to subsequent validators (nkovacs)
 - Bug #8322: `yii\behaviors\TimestampBehavior::touch()` now throws an exception if owner is new record (klimov-paul)
