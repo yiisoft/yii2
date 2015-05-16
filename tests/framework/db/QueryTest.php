@@ -216,7 +216,7 @@ class QueryTest extends DatabaseTestCase
         $count = (new Query)->from('customer')->where(['status' => 2])->count('*', $db);
         $this->assertEquals(1, $count);
 
-        $count = (new Query)->select('status, COUNT(id)')->from('customer')->groupBy('status')->count('*', $db);
+        $count = (new Query)->select('[[status]], COUNT([[id]])')->from('customer')->groupBy('status')->count('*', $db);
         $this->assertEquals(2, $count);
     }
 
