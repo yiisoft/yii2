@@ -7,6 +7,7 @@ Yii Framework 2 Change Log
 - Bug #7305: Logging of Exception objects resulted in failure of the logger i.e. no logs being written (cebe)
 - Bug #7707: client-side `trim` validator now passes the trimmed value to subsequent validators (nkovacs)
 - Bug #8322: `yii\behaviors\TimestampBehavior::touch()` now throws an exception if owner is new record (klimov-paul)
+- Bug: Fixed string comparison in `BaseActiveRecord::unlink()` which may result in wrong comparison result for hash valued primary keys starting with `0e` (cebe)
 - Enh #8070: `yii\console\controllers\MessageController` now sorts created messages, even if there is no new one, while saving to PHP file (klimov-paul)
 - Enh #8286: `yii\console\controllers\MessageController` improved allowing extraction of nested translator calls (klimov-paul)
 - Enh #8415: `yii\helpers\Html` allows correct rendering of conditional comments containing `!IE` (salaros, klimov-paul)
