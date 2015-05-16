@@ -54,4 +54,14 @@ class PostgreSQLCommandTest extends CommandTest
         $command = $db->createCommand('SELECT COUNT(*) FROM "bool_values" WHERE bool_col = FALSE;');
         $this->assertEquals(1, $command->queryScalar());
     }
+
+    public function testLastInsertId()
+    {
+        $db = $this->getConnection();
+
+        $sql = 'INSERT INTO {{profile}}([[description]]) VALUES (\'non duplicate\')';
+        $command = $db->createCommand($sql);
+        $command->execute();
+        $this->assertEquals(3, $db->getSchema()->getLastInsertID('profile_id_seq'));
+    }
 }
