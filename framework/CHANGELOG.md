@@ -4,7 +4,14 @@ Yii Framework 2 Change Log
 2.0.5 under development
 -----------------------
 
-- no changes in this release.
+- Bug #7305: Logging of Exception objects resulted in failure of the logger i.e. no logs being written (cebe)
+- Bug #7707: client-side `trim` validator now passes the trimmed value to subsequent validators (nkovacs)
+- Bug #8322: `yii\behaviors\TimestampBehavior::touch()` now throws an exception if owner is new record (klimov-paul)
+- Bug: Fixed string comparison in `BaseActiveRecord::unlink()` which may result in wrong comparison result for hash valued primary keys starting with `0e` (cebe)
+- Enh #8070: `yii\console\controllers\MessageController` now sorts created messages, even if there is no new one, while saving to PHP file (klimov-paul)
+- Enh #8286: `yii\console\controllers\MessageController` improved allowing extraction of nested translator calls (klimov-paul)
+- Enh #8415: `yii\helpers\Html` allows correct rendering of conditional comments containing `!IE` (salaros, klimov-paul)
+- Chg #6354: `ErrorHandler::logException()` will now log the whole exception object instead of only its string representation (cebe)
 
 
 2.0.4 May 10, 2015
@@ -47,7 +54,7 @@ Yii Framework 2 Change Log
 - Bug #8273: Fixed `yii\widgets\FragmentCache` when `enabled` is false (nkovacs)
 - Bug #8291: Fixed numeric keys in $_GET transformed to 0-based, if 'pretty URL' enabled (quantum13, klimov-paul)
 - Bug #5053: DateValidator is now more robust against different timezone settings (cebe)
-- Bug (CVE-2015-3397): Added `Json::htmlEncode()` to support safer JSON data encoding in HTML code (samdark, Tomasz Tokarski)
+- Bug (CVE-2015-3397): Added `Json::htmlEncode()` to support safer JSON data encoding in HTML code (samdark, Wojciech Janusz, Tomasz Tokarski)
 - Enh #1468: Added ability to specify hints for model attributes via `attributeHints()` method (klimov-paul)
 - Enh #3376: Added `yii\validators\EachValidator`, which allows validation of the array attributes (klimov-paul)
 - Enh #5053: Added possibility to specify a format and time zone for the `timestampAttribute` of date validator making it fully usable for validating complete timestamps (cebe)

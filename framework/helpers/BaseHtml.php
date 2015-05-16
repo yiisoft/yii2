@@ -224,7 +224,7 @@ class BaseHtml
         if (isset($options['condition'])) {
             $condition = $options['condition'];
             unset($options['condition']);
-            return "<!--[if $condition]>\n" . static::tag('link', '', $options) . "\n<![endif]-->";
+            return self::wrapIntoCondition(static::tag('link', '', $options), $condition);
         } elseif (isset($options['noscript']) && $options['noscript'] === true) {
             unset($options['noscript']);
             return "<noscript>" . static::tag('link', '', $options) . "</noscript>";
@@ -254,10 +254,24 @@ class BaseHtml
         if (isset($options['condition'])) {
             $condition = $options['condition'];
             unset($options['condition']);
-            return "<!--[if $condition]>\n" . static::tag('script', '', $options) . "\n<![endif]-->";
+            return self::wrapIntoCondition(static::tag('script', '', $options), $condition);
         } else {
             return static::tag('script', '', $options);
         }
+    }
+
+    /**
+     * Wraps given content into conditional comments for IE, e.g., `lt IE 9`.
+     * @param string $content raw HTML content.
+     * @param string $condition condition string.
+     * @return string generated HTML.
+     */
+    private static function wrapIntoCondition($content, $condition)
+    {
+        if (strpos($condition, '!IE') !== false) {
+            return "<!--[if $condition]><!-->\n" . $content . "\n<!--<![endif]-->";
+        }
+        return "<!--[if $condition]>\n" . $content . "\n<![endif]-->";
     }
 
     /**

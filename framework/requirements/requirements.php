@@ -32,6 +32,12 @@ return array(
         'by' => '<a href="http://www.yiiframework.com">Yii Framework</a>',
     ),
     array(
+        'name' => 'Ctype extension',
+        'mandatory' => true,
+        'condition' => extension_loaded('ctype'),
+        'by' => '<a href="http://www.yiiframework.com">Yii Framework</a>'
+    ),
+    array(
         'name' => 'MBString extension',
         'mandatory' => true,
         'condition' => extension_loaded('mbstring'),

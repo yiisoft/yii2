@@ -54,7 +54,7 @@ All Rights Reserved.
 * **TBD** [Відповіді](runtime-responses.md)
 * **TBD** [Сесії та кукі](runtime-sessions-cookies.md)
 * **TBD** [Обробка помилок](runtime-handling-errors.md)
-* **TBD** [Логування](runtime-logging.md)
+* **TBD** [Журналювання](runtime-logging.md)
 
 
 Основні поняття
@@ -88,7 +88,7 @@ All Rights Reserved.
 -------------------------------
 
 * **TBD** [Створення форм](input-forms.md)
-* **TBD** [Валідація вводу](input-validation.md)
+* **TBD** [Перевірка вводу](input-validation.md)
 * **TBD** [Завантаження файлів](input-file-uploading.md)
 * **TBD** [Збір табличного вводу](input-tabular-input.md)
 * **TBD** [Робота з декількома моделями](input-multiple-models.md)
@@ -143,7 +143,7 @@ RESTful веб-сервіси
 Інструменти розробника
 ----------------------
 
-* **TBD** [Відладочна панель та відладчик](https://github.com/yiisoft/yii2-debug/blob/master/docs/guide-uk/README.md)
+* **TBD** [Панель налагодження та відладчик](https://github.com/yiisoft/yii2-debug/blob/master/docs/guide-uk/README.md)
 * **TBD** [Генерація коду з Gii](https://github.com/yiisoft/yii2-gii/blob/master/docs/guide-uk/README.md)
 * [Генератор документації API (en)](https://github.com/yiisoft/yii2-apidoc)
 
@@ -166,7 +166,7 @@ RESTful веб-сервіси
 * **TBD** [Створення додатка з нуля](tutorial-start-from-scratch.md)
 * **TBD** [Консольні команди](tutorial-console.md)
 * **TBD** [Основні валідатори](tutorial-core-validators.md)
-* **TBD** [Інтернаціонализація](tutorial-i18n.md)
+* **TBD** [Інтернаціоналізація](tutorial-i18n.md)
 * **TBD** [Робота з поштою](tutorial-mailing.md)
 * **TBD** [Вдосконалення продуктивності](tutorial-performance-tuning.md)
 * **TBD** [Робота на shared хостингу](tutorial-shared-hosting.md)
@@ -192,7 +192,7 @@ RESTful веб-сервіси
 Хелпери
 -------
 
-* [Огляд](helper-overview.md)
-* [ArrayHelper](helper-array.md)
-* [Html](helper-html.md)
-* [Url](helper-url.md)
+* **TBD** [Огляд хелперів](helper-overview.md)
+* **TBD** [ArrayHelper](helper-array.md)
+* **TBD** [Html](helper-html.md)
+* **TBD** [Url](helper-url.md)
