@@ -82,6 +82,7 @@ php build translation "../docs/guide" "../docs/guide-uk" "Ukrainian guide transl
 - camel case — (не перекладається);
 - column — колонка;
 - commit — комміт;
+- concatenation — конкатенація;
 - configuration — конфігурація;
 - content — вміст;
 - contributor — учасник;
@@ -90,6 +91,7 @@ php build translation "../docs/guide" "../docs/guide-uk" "Ukrainian guide transl
 - customization — (тонке) налаштування;
 - debug mode — режим налагодження (див. production mode);
 - debugger — відладчик;
+- (function) declaration — оголошення (функції);
 - (root) directory — (коренева) директорія;
 - eager loading — жадібне завантаження (див. lazy loading);
 - email address — email адреса;
@@ -112,6 +114,7 @@ php build translation "../docs/guide" "../docs/guide-uk" "Ukrainian guide transl
 - issue — питання/проблема; // в залежності від контексту
 - lazy loading — відкладене завантаження;
 - log, logging — журнал, журналювання;
+- markdown — (не перекладається);
 - method — метод (обʼєкта/класу);
 - merge — поєднання;
 - model — модель, модель даних;
@@ -132,6 +135,7 @@ php build translation "../docs/guide" "../docs/guide-uk" "Ukrainian guide transl
 - setter — сеттер;
 - staging area — буферна зона;
 - string — текстовий рядок;
+- substitution — підставлення/заміщення;
 - tabular input — табличний ввід;
 - template engine — шаблонізатор;
 - theming — темізація;
