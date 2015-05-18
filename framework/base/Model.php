@@ -103,10 +103,10 @@ class Model extends Component implements IteratorAggregate, ArrayAccess, Arrayab
      *
      * where
      *
-     *  - attribute list: required, specifies the attributes array to be validated, for single attribute you can pass string;
+     *  - attribute list: required, specifies the attributes array to be validated, for single attribute you can pass a string;
      *  - validator type: required, specifies the validator to be used. It can be a built-in validator name,
      *    a method name of the model class, an anonymous function, or a validator class name.
-     *  - on: optional, specifies the [[scenario|scenarios]] array when the validation
+     *  - on: optional, specifies the [[scenario|scenarios]] array in which the validation
      *    rule can be applied. If this option is not set, the rule will apply to all scenarios.
      *  - additional name-value pairs can be specified to initialize the corresponding validator properties.
      *    Please refer to individual validator class API for possible properties.
@@ -119,12 +119,12 @@ class Model extends Component implements IteratorAggregate, ArrayAccess, Arrayab
      * function validatorName($attribute, $params)
      * ~~~
      *
-     * In the above `$attribute` refers to currently validated attribute name while `$params` contains an array of
-     * validator configuration options such as `max` in case of `string` validator. Currently validate attribute value
+     * In the above `$attribute` refers to attribute currently being validated while `$params` contains an array of
+     * validator configuration options such as `max` in case of `string` validator. The value of the attribute currently being validated    
      * can be accessed as `$this->[$attribute]`.
      *
      * Yii also provides a set of [[Validator::builtInValidators|built-in validators]].
-     * They each has an alias name which can be used when specifying a validation rule.
+     * Each one has an alias name which can be used when specifying a validation rule.
      *
      * Below are some examples:
      *
