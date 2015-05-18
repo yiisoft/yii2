@@ -119,9 +119,10 @@ class Model extends Component implements IteratorAggregate, ArrayAccess, Arrayab
      * function validatorName($attribute, $params)
      * ~~~
      *
-     * In the above `$attribute` refers to attribute currently being validated while `$params` contains an array of
+     * In the above `$attribute` refers to the attribute currently being validated while `$params` contains an array of
      * validator configuration options such as `max` in case of `string` validator. The value of the attribute currently being validated    
-     * can be accessed as `$this->[$attribute]`.
+     * can be accessed as `$this->$attribute`. Note the `$` before `attribute`; this is taking the value of the variable
+     * `$attribute` and using it as the name of the property to access.
      *
      * Yii also provides a set of [[Validator::builtInValidators|built-in validators]].
      * Each one has an alias name which can be used when specifying a validation rule.
