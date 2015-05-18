@@ -621,6 +621,13 @@ class FormatterDateTest extends TestCase
         $this->formatter->timeZone = 'Europe/Berlin';
         $this->assertEquals('1924-08-17 01:00:00+0100', $this->formatter->asDateTime($timeStamp, 'yyyy-MM-dd HH:mm:ssZ'));
 
+        $this->formatter->defaultTimeZone = 'Europe/Berlin';
+        $timeStamp = -1431907200;
+        $this->formatter->timeZone = 'UTC';
+        $this->assertEquals('1924-08-17 00:00:00+0000', $this->formatter->asDateTime($timeStamp, 'yyyy-MM-dd HH:mm:ssZ'));
+        $this->formatter->timeZone = 'Europe/Berlin';
+        $this->assertEquals('1924-08-17 01:00:00+0100', $this->formatter->asDateTime($timeStamp, 'yyyy-MM-dd HH:mm:ssZ'));
+
     }
 
 }
