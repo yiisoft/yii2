@@ -87,7 +87,7 @@ All Rights Reserved.
 Получение данных от пользователя
 --------------------------------
 
-* **TBD** [Создание форм](input-forms.md)
+* [Создание форм](input-forms.md)
 * [Валидация](input-validation.md)
 * [Загрузка файлов](input-file-upload.md)
 * **TBD** [Работа с несколькими моделями](input-multiple-models.md)
