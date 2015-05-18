@@ -1752,8 +1752,17 @@ class BaseHtml
     }
 
     /**
-     * Adds a CSS class to the specified options.
+     * Adds a CSS class (or several classes) to the specified options.
      * If the CSS class is already in the options, it will not be added again.
+     * If class specification at given options is an array, and some class placed there with the named (string) key,
+     * overriding of such key will have no effect. For example:
+     *
+     * ~~~php
+     * $options = ['class' => ['persistent' => 'initial']];
+     * Html::addCssClass($options, ['persistent' => 'override']);
+     * var_dump($options['class']); // outputs: array('persistent' => 'initial');
+     * ~~~
+     *
      * @param array $options the options to be modified.
      * @param string|array $class the CSS class(es) to be added
      */
@@ -1761,16 +1770,33 @@ class BaseHtml
     {
         if (isset($options['class'])) {
             if (is_array($options['class'])) {
-                $classes = array_merge($options['class'], (array)$class);
-                $options['class'] = array_unique($classes);
+                $options['class'] = self::mergeCssClasses($options['class'], (array)$class);
             } else {
                 $classes = preg_split('/\s+/', $options['class'], -1, PREG_SPLIT_NO_EMPTY);
-                $classes = array_unique(array_merge($classes, (array)$class));
-                $options['class'] = implode(' ', $classes);
+                $options['class'] = implode(' ', self::mergeCssClasses($classes, (array)$class));
             }
         } else {
             $options['class'] = $class;
         }
+    }
+
+    /**
+     * Merges already existing CSS classes with new one.
+     * This method provides the priority for named existing classes over additional.
+     * @param array $existingClasses already existing CSS classes.
+     * @param array $additionalClasses CSS classes to be added.
+     * @return array merge result.
+     */
+    private static function mergeCssClasses(array $existingClasses, array $additionalClasses)
+    {
+        foreach ($additionalClasses as $key => $class) {
+            if (is_int($key) && !in_array($class, $existingClasses)) {
+                $existingClasses[] = $class;
+            } elseif (!isset($existingClasses[$key])) {
+                $existingClasses[$key] = $class;
+            }
+        }
+        return array_unique($existingClasses);
     }
 
     /**
