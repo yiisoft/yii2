@@ -578,6 +578,22 @@ EOD;
         $this->assertEquals(['class' => 'test test1 test2'], $options);
     }
 
+    /**
+     * @depends testAddCssClass
+     */
+    public function testMergeCssClass()
+    {
+        $options = [
+            'class' => [
+                'persistent' => 'test1'
+            ]
+        ];
+        Html::addCssClass($options, ['persistent' => 'test2']);
+        $this->assertEquals(['persistent' => 'test1'], $options['class']);
+        Html::addCssClass($options, ['additional' => 'test2']);
+        $this->assertEquals(['persistent' => 'test1', 'additional' => 'test2'], $options['class']);
+    }
+
     public function testRemoveCssClass()
     {
         $options = ['class' => 'test test2 test3'];
