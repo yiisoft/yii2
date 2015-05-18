@@ -1730,6 +1730,16 @@ class BaseHtml
                             $html .= " $name-$n=\"" . static::encode($v) . '"';
                         }
                     }
+                } elseif ($name === 'class') {
+                    if (empty($value)) {
+                        continue;
+                    }
+                    $html .= " $name=\"" . static::encode(implode(' ', $value)) . '"';
+                } elseif ($name === 'style') {
+                    if (empty($value)) {
+                        continue;
+                    }
+                    $html .= " $name=\"" . static::encode(static::cssStyleFromArray($value)) . '"';
                 } else {
                     $html .= " $name='" . Json::htmlEncode($value) . "'";
                 }
@@ -1745,14 +1755,18 @@ class BaseHtml
      * Adds a CSS class to the specified options.
      * If the CSS class is already in the options, it will not be added again.
      * @param array $options the options to be modified.
-     * @param string $class the CSS class to be added
+     * @param string|array $class the CSS class(es) to be added
      */
     public static function addCssClass(&$options, $class)
     {
         if (isset($options['class'])) {
-            $classes = ' ' . $options['class'] . ' ';
-            if (strpos($classes, ' ' . $class . ' ') === false) {
-                $options['class'] .= ' ' . $class;
+            if (is_array($options['class'])) {
+                $classes = array_merge($options['class'], (array)$class);
+                $options['class'] = array_unique($classes);
+            } else {
+                $classes = preg_split('/\s+/', $options['class'], -1, PREG_SPLIT_NO_EMPTY);
+                $classes = array_unique(array_merge($classes, (array)$class));
+                $options['class'] = implode(' ', $classes);
             }
         } else {
             $options['class'] = $class;
@@ -1762,19 +1776,26 @@ class BaseHtml
     /**
      * Removes a CSS class from the specified options.
      * @param array $options the options to be modified.
-     * @param string $class the CSS class to be removed
+     * @param string|array $class the CSS class(es) to be removed
      */
     public static function removeCssClass(&$options, $class)
     {
         if (isset($options['class'])) {
-            $classes = array_unique(preg_split('/\s+/', $options['class'] . ' ' . $class, -1, PREG_SPLIT_NO_EMPTY));
-            if (($index = array_search($class, $classes)) !== false) {
-                unset($classes[$index]);
-            }
-            if (empty($classes)) {
-                unset($options['class']);
+            if (is_array($options['class'])) {
+                $classes = array_diff($options['class'], (array)$class);
+                if (empty($classes)) {
+                    unset($options['class']);
+                } else {
+                    $options['class'] = $classes;
+                }
             } else {
-                $options['class'] = implode(' ', $classes);
+                $classes = preg_split('/\s+/', $options['class'], -1, PREG_SPLIT_NO_EMPTY);
+                $classes = array_diff($classes, (array)$class);
+                if (empty($classes)) {
+                    unset($options['class']);
+                } else {
+                    $options['class'] = implode(' ', $classes);
+                }
             }
         }
     }
@@ -1804,7 +1825,7 @@ class BaseHtml
     public static function addCssStyle(&$options, $style, $overwrite = true)
     {
         if (!empty($options['style'])) {
-            $oldStyle = static::cssStyleToArray($options['style']);
+            $oldStyle = is_array($options['style']) ? $options['style'] : static::cssStyleToArray($options['style']);
             $newStyle = is_array($style) ? $style : static::cssStyleToArray($style);
             if (!$overwrite) {
                 foreach ($newStyle as $property => $value) {
@@ -1835,7 +1856,7 @@ class BaseHtml
     public static function removeCssStyle(&$options, $properties)
     {
         if (!empty($options['style'])) {
-            $style = static::cssStyleToArray($options['style']);
+            $style = is_array($options['style']) ? $options['style'] : static::cssStyleToArray($options['style']);
             foreach ((array) $properties as $property) {
                 unset($style[$property]);
             }
