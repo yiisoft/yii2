@@ -119,7 +119,7 @@ Por exemplo, você pode usar o `article` como o ID do um controller para tratar
 dados de artigos.
 
 Por padrão, os IDs dos controllers devem conter apenas esses caracteres: 
-letras inglesas em caixa baixa, números, underscores (underline), traços e barras. 
+letras inglesas em caixa baixa, números, underscores (underline), hífens e barras. 
 Por exemplo, `article` e `post-comment` são ambos IDs de controllers válidos,
 enquanto `article?`, `PostComment`, `admin\post` não são.
 
@@ -134,22 +134,22 @@ barras são usadas para separar os níveis dos subdiretórios (por exemplo, `pan
 ### Nomenclatura da Classe do Controller <span id="controller-class-naming"></span>
 
 Os nomes da classes dos controllers podem ser derivadas dos IDs dos controllers 
-de acordo com as seguintes regras:
+de acordo com as seguintes procedimentos:
 
-* Colocar em caixa alta a primeira letra de cada palavra separadas por traço. 
-  Observe que se o ID do controller possuir barras, a regra é aplicada apenas na
-  parte após a última barra no ID.
-* Remover os traços e substituir todas as barras por barras invertidas.
-* Adicionar `Controller` como sufixo.
-* E preceder ao [[yii\base\Application::controllerNamespace|namespace controller]].
+1. Colocar em caixa alta a primeira letra de cada palavra separadas por traço. 
+   Observe que se o ID do controller possuir barras, a regra é aplicada apenas na
+   parte após a última barra no ID.
+2. Remover os traços e substituir todas as barras por barras invertidas.
+3. Adicionar `Controller` como sufixo.
+4. Preceder ao [[yii\base\Application::controllerNamespace|namespace do controller]].
 
 Segue alguns exemplos, assumindo que o [[yii\base\Application::controllerNamespace|namespace do controller]]
 tenha por padrão o valor `app\controllers`:
 
-* `article` deriva-se de `app\controllers\ArticleController`;
-* `post-comment` deriva-se de `app\controllers\PostCommentController`;
-* `admin/post-comment` deriva-se de `app\controllers\admin\PostCommentController`;
-* `adminPanels/post-comment` deriva-se de `app\controllers\adminPanels\PostCommentController`.
+* `article` torna-se `app\controllers\ArticleController`;
+* `post-comment` torna-se `app\controllers\PostCommentController`;
+* `admin/post-comment` torna-se `app\controllers\admin\PostCommentController`;
+* `adminPanels/post-comment` torna-se `app\controllers\adminPanels\PostCommentController`.
 
 As classes dos controllers devem ser [autoloadable](concept-autoloading.md). 
 Por esta razão, nos exemplos anteriores, o controller `article` deve ser salvo 
@@ -165,11 +165,11 @@ categorias e não quiser usar [módulos](structure-modules.md).
 
 Você pode configurar um [[yii\base\Application::controllerMap|mapeamento de controllers]] 
 para superar as barreiras impostas pelos IDs de controllers e pelos nomes de classes
-descritos acima. Isto é útil principalmente quando quiser esconder alguns controllers
+descritos acima. Isto é útil principalmente quando quiser esconder controllers
 de terceiros na qual você não tem controle sobre seus nomes de classes.
 
 Você pode configurar o [[yii\base\Application::controllerMap|mapeamento de controllers]] 
-na [configuração da aplicação](structure-applications.md#application-configurations) como o seguinte exemplo:
+na [configuração da aplicação](structure-applications.md#application-configurations). Por exemplo:
 
 ```php
 [
@@ -194,8 +194,7 @@ Quando uma requisição não especificar uma [rota](#id-da-rota), será utilizad
 rota especificada pela propriedade. 
 Para as [[yii\web\Application|aplicações Web]], este valor é `'site'`, enquanto 
 para as [[yii\console\Application|aplicações console]] é `help`. Portanto, se uma 
-URL `http://hostname/index.php` for usada, significa que o controller `site` será 
-usado nesta requisição.
+URL for `http://hostname/index.php`, o controller `site` será utilizado nesta requisição.
 
 Você pode alterar o controller padrão como a seguinte [configuração da aplicação](structure-applications.md#application-configurations):
 
@@ -240,13 +239,13 @@ um recurso. Por esta razão, os IDs das ações geralmente são verbos, tais com
 
 Por padrão, os IDs das ações devem conter apenas esses caracteres: letras inglesas 
 em caixa baixa, números, underscores (underline) e traços. Os traços em um ID da
-ação são usados para separar palavras. Por exemplo, `view`, `update2`, `comment-post` 
-todos são IDs válidos, enquanto `view?`, `Update` não são.
+ação são usados para separar palavras. Por exemplo, `view`, `update2` e `comment-post` 
+são IDs válidos, enquanto `view?` e `Update` não são.
 
 Você pode criar ações de duas maneiras: ações inline (em sequência) e
 ações standalone (autônomas). Uma ação inline é definida pelo método
 de uma classe controller, enquanto uma ação standalone é uma classe que estende de 
-[[yii\base\Action]] ou de suas classes filhas. As ações inline exigem menos esforço
+[[yii\base\Action]] ou de uma classe-filha. As ações inline exigem menos esforço
 para serem criadas e muitas vezes as preferidas quando não se tem a intenção de 
 reutilizar estas ações. Ações standalone, por outro lado, são criados principalmente 
 para serem utilizados em diferentes controllers ou para serem distribuídos como
@@ -258,11 +257,11 @@ para serem utilizados em diferentes controllers ou para serem distribuídos como
 As ações inline referem-se a os chamados métodos de ação, que foram descritos anteriormente.
 
 Os nomes dos métodos de ações são derivadas dos IDs das ações de acordo com os
-seguintes critérios:
+seguintes procedimentos:
 
-* Colocar em caixa alta a primeira letra de cada palavra do ID da ação;
-* Remover os traços;
-* Adicionar o prefixo `action`.
+1. Colocar em caixa alta a primeira letra de cada palavra do ID da ação;
+2. Remover os traços;
+3. Adicionar o prefixo `action`.
 
 Por exemplo, `index` torna-se `actionIndex` e `hello-world` torna-se `actionHelloWorld`.
 
@@ -280,7 +279,7 @@ lugares ou se deseja distribuir uma ação, deve considerar defini-la como uma *
 ### Ações Standalone <span id="standalone-actions"></span>
 
 Ações standalone são definidas por classes de ações que estendem de [[yii\base\Action]]
-ou de suas classes filhas. 
+ou de uma classe-filha. 
 Por example, nas versões do Yii, existe a [[yii\web\ViewAction]] e a [[yii\web\ErrorAction]], ambas são ações standalone.
 
 Para usar uma ação standalone, você deve *mapear as ações* sobrescrevendo o método
@@ -457,7 +456,7 @@ ao seguinte ciclo de vida para concluir a requisição:
    * Se o ID da ação for encontrada para corresponder a um método de ação, uma ação inline será criada;
    * Caso contrário, uma exceção [[yii\base\InvalidRouteException]] será lançada.
 3. De forma sequencial, o controller chama o método `beforeAction()` da aplicação, o módulo (se o controller pertencer a um módulo) e o controller.
-   * Se uma das chamadas retornar false, o restante dos métodos `beforeAction()` serão ignoradas e a execução da ação será cancelada.
+   * Se uma das chamadas retornar false, o restante dos métodos subsequentes `beforeAction()` serão ignoradas e a execução da ação será cancelada.
    * Por padrão, cada método `beforeAction()` desencadeia a execução de um evento chamado `beforeAction` na qual você pode associar a uma função (handler).
 4. O controller executa a ação:
    * Os parâmetros da ação serão analizados e populados a partir dos dados obtidos pela requisição;
@@ -466,14 +465,14 @@ ao seguinte ciclo de vida para concluir a requisição:
 6. A aplicação obterá o resultado da ação e irá associá-lo na [resposta](runtime-responses.md).
 
 
-## Best Practices <span id="best-practices"></span>
+## Boas Práticas <span id="best-practices"></span>
 
 Em uma aplicação bem projetada, frequentemente os controllers são bem pequenos na 
 qual cada ação possui poucas linhas de códigos.
 Se o controller for um pouco complicado, geralmente indica que terá que refaze-lo 
 e passar algum código para outro classe.
 
-Em resumo, os controllers:
+Segue algumas boas práticas em destaque. Os controllers:
 
 * podem acessar os dados de uma [requisição](runtime-requests.md);
 * podem chamar os métodos dos [models](structure-models.md) e outros componentes
