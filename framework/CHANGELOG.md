@@ -369,6 +369,7 @@ Yii Framework 2 Change Log
 - Bug #6311: Optimistic lock for ActiveRecord does not work as expected (qiangxue)
 - Bug #6367: Added `yii\gii\generators\crud\Generator` to support customizing view path for the generated CRUD controller (qiangxue)
 - Bug #6381: Client-side file validation should be disabled if the browser does not support it (Skysplit)
+- Bug #6545: Fixed MySQL the "Unknown Column in On Clause" error (pawzar)
 - Bug: Gii console command help information does not contain global options (qiangxue)
 - Bug: `yii\web\UrlRule` was unable to create URLs for rules containing unicode characters (samdark)
 - Bug: `yii\web\AssetManager` should not publish disabled asset bundles (qiangxue)

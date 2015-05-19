@@ -164,4 +164,15 @@ class QueryBuilder extends \yii\db\QueryBuilder
 
         return $sql;
     }
+
+    public function buildFrom($tables, &$params)
+    {
+        if (empty($tables)) {
+            return '';
+        }
+
+        $tables = $this->quoteTableNames($tables, $params);
+
+        return 'FROM (' . implode(', ', $tables) . ')';
+    }
 }
