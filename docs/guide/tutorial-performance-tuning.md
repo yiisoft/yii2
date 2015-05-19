@@ -9,18 +9,17 @@ on your application out of the box and can be fine-tuned further for production
 environment. As for the application, we'll provide some of the best practices
 along with examples on how to apply them to Yii.
 
-Preparing environment
----------------------
 
-A well configured environment to run PHP application really matters. In order to get maximum performance:
+## Preparing Environment <span id="preparing-environment"></span>
 
-- Always use the latest stable PHP version. Each major release brings significant performance improvements and reduced
-  memory usage.
-- Use [APC](http://ru2.php.net/apc) for PHP 5.4 and less or [Opcache](http://php.net/opcache) for PHP 5.5 and more. It
-  gives a very good performance boost.
+A well configured environment to run PHP application really matters. In order to get maximum performance,
 
-Preparing framework for production
-----------------------------------
+- Use the latest stable PHP version. Major releases of PHP may bring significant performance improvement.
+- Enable bytecode caching with [Opcache](http://php.net/opcache) (PHP 5.5 or later) or [APC](http://ru2.php.net/apc) 
+  (PHP 5.4 or earlier).
+
+
+## Adjusting Framework Configurations <span id="adjusting-framework"></span>
 
 ### Disabling Debug Mode
 
