@@ -119,20 +119,20 @@ class SiteController extends Controller
 
 ### コントローラクラスの命名規則 <span id="controller-class-naming"></span>
 
-コントローラクラスの名前は下記の規則に従ってコントローラ ID から導出することが出来ます。
+コントローラクラスの名前は下記の手順に従ってコントローラ ID から導出することが出来ます。
 
-* ダッシュで区切られた各単語の最初の文字を大文字に変える。
-  コントローラ ID がスラッシュを含む場合、この規則は ID の最後のスラッシュの後ろの部分にのみ適用されることに注意。
-* ダッシュを削除し、フォワードスラッシュを全てバックワードスラッシュに置き換える。
-* 接尾辞 `Controller` を追加する。
-* そして、[[yii\base\Application::controllerNamespace|コントローラ名前空間]] を頭に付ける。
+1. ハイフンで区切られた各単語の最初の文字を大文字に変える。
+   コントローラ ID がスラッシュを含む場合、この規則は ID の最後のスラッシュの後ろの部分にのみ適用されることに注意。
+2. ハイフンを削除し、フォワードスラッシュを全てバックワードスラッシュに置き換える。
+3. 接尾辞 `Controller` を追加する。
+4. [[yii\base\Application::controllerNamespace|コントローラ名前空間]] を頭に付ける。
 
 以下は、[[yii\base\Application::controllerNamespace|コントローラ名前空間]] がデフォルト値 `app\controllers` を取っていると仮定したときの、いくつかの例です。
 
-* `article` から `app\controllers\ArticleController` が導出される。
-* `post-comment` から `app\controllers\PostCommentController` が導出される。
-* `admin/post-comment` から `app\controllers\admin\PostCommentController` が導出される。
-* `adminPanels/post-comment` から `app\controllers\adminPanels\PostCommentController` が導出される。
+* `article` は `app\controllers\ArticleController` になる。
+* `post-comment` は `app\controllers\PostCommentController` になる。
+* `admin/post-comment` は `app\controllers\admin\PostCommentController` になる。
+* `adminPanels/post-comment` は `app\controllers\adminPanels\PostCommentController` になる。
 
 コントローラクラスは [オートロード可能](concept-autoloading.md) でなければなりません。
 この理由により、上記の例の `aritcle` コントローラクラスは [エイリアス](concept-aliases.md) が `@app/controllers/ArticleController.php` であるファイルに保存されるべきものとなります。
@@ -213,8 +213,8 @@ class SiteController extends Controller
 アクションは、たいてい、あるリソースについて特定の操作を実行するように設計されます。
 この理由により、アクション ID は、通常、`view`、`update` などのような動詞になります。
 
-デフォルトでは、アクション ID は、小文字の英字、数字、アンダースコア、そして、ダッシュのみを含むべきものです。
-アクション ID の中のダッシュは単語を分けるために使われます。
+デフォルトでは、アクション ID は、小文字の英字、数字、アンダースコア、そして、ハイフンのみを含むべきものです。
+アクション ID の中のハイフンは単語を分けるために使われます。
 例えば、`view`、`update2`、`comment-post` は全て有効なアクション ID ですが、`view?`、`Update` はそうではありません。
 
 アクションは二つの方法、すなわち、インラインアクションまたはスタンドアロンアクションとして作成することが出来ます。
@@ -227,11 +227,11 @@ class SiteController extends Controller
 
 インラインアクションは、たった今説明したように、アクションメソッドの形で定義されるアクションを指します。
 
-アクションメソッドの名前は、次の基準に従って、アクション ID から導出されます。
+アクションメソッドの名前は、次の手順に従って、アクション ID から導出されます。
 
-* アクション ID に含まれる各単語の最初の文字を大文字に変換する。
-* ダッシュを削除する。
-* 接頭辞 `action` を付ける。
+1. アクション ID に含まれる各単語の最初の文字を大文字に変換する。
+2. ハイフンを削除する。
+3. 接頭辞 `action` を付ける。
 
 例えば、`index` は `actionIndex` となり、`hello-world` は `actionHelloWorld` となります。
 
@@ -397,10 +397,10 @@ class SiteController extends Controller
    * アクション ID に合致するアクションメソッドが見つかった場合は、インラインアクションが作成される。
    * 上記以外の場合は、[[yii\base\InvalidRouteException]] 例外が投げられる。
 3. コントローラは、アプリケーション、(コントローラがモジュールに属する場合は) モジュール、そしてコントローラの `beforeAction()` メソッドをこの順で呼び出す。
-   * どれか一つの呼び出しが false を返した場合は、残りのまだ呼ばれていない `beforeAction()` はスキップされ、アクションの実行はキャンセルされる。
+   * どれか一つの呼び出しが false を返した場合は、残りのまだ呼ばれていない `beforeAction()` メソッドはスキップされ、アクションの実行はキャンセルされる。
    * デフォルトでは、それぞれの `beforeAction()` メソッドは、ハンドラをアタッチすることが可能な `beforeAction` イベントをトリガする。
 4. コントローラがアクションを実行する。
-   * リクエストデータが解析されて、アクションパラメータにデータが投入される。
+   * アクションパラメータが解析されて、リクエストデータからデータが投入される。
 5. コントローラは、コントローラ、(コントローラがモジュールに属する場合は) モジュール、そしてアプリケーションの `afterAction()` メソッドをこの順で呼び出す。
    * デフォルトでは、それぞれの `afterAction()` メソッドは、ハンドラをアタッチすることが可能な `afterAction` イベントをトリガする。
 6. アプリケーションはアクションの結果を受け取り、それを [レスポンス](runtime-responses.md) に割り当てる。
@@ -411,7 +411,7 @@ class SiteController extends Controller
 良く設計されたアプリケーションでは、コントローラはたいてい非常に軽いものになり、それぞれのアクションは数行のコードしか含まないものになります。
 あなたのコントローラが少々複雑になっている場合、そのことは、通常、コントローラをリファクタして、コードの一部を他のクラスに移動すべきことを示すものです。
 
-要約すると、コントローラは、
+いくつかのベストプラクティスを特に挙げるなら、コントローラは、
 
 * [リクエスト](runtime-requests.md) データにアクセスすることが出来ます。
 * リクエストデータを使って [モデル](structure-models.md) や他のサービスコンポーネントのメソッドを呼ぶことが出来ます。
