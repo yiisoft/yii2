@@ -14,7 +14,7 @@
 
 ### 1. [Форкаем](http://help.github.com/fork-a-repo/) репозиторий Yii на github и клонируйте ваш форк в ваше рабочее окружение.
 
-```mc
+```
 git clone git@github.com:YOUR-GITHUB-USERNAME/yii2.git
 ```
 
