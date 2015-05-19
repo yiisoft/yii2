@@ -62,7 +62,7 @@ public function behaviors()
 
 При создании нового фильтра действия, необходимо наследоваться от [[yii\base\ActionFilter]] и переопределить методы
 [[yii\base\ActionFilter::beforeAction()|beforeAction()]] и/или [[yii\base\ActionFilter::afterAction()|afterAction()]].
-Первый из них будет вызыван перед выполнением действия, а второй после. Возвращаемое
+Первый из них будет вызван перед выполнением действия, а второй после. Возвращаемое
 [[yii\base\ActionFilter::beforeAction()|beforeAction()]] значение определяет, будет ли действие выполняться или нет.
 Если вернётся `false`, то оставшиеся фильтры не будут применены и действие выполнено не будет.
 
@@ -286,7 +286,7 @@ public function behaviors()
 
 Ограничитель количества запросов в единицу времени *(RateLimiter)* реализует алгоритм ограничения запросов, основанный на
 [алгоритме leaky bucket](http://en.wikipedia.org/wiki/Leaky_bucket). В основном, он используется при создании RESTful API.
-Подробнее об использовании данного фильтра пожно прочитать в разделе [Ограничение запросов](rest-rate-limiting.md).
+Подробнее об использовании данного фильтра можно прочитать в разделе [Ограничение запросов](rest-rate-limiting.md).
 
 
 ### [[yii\filters\VerbFilter|VerbFilter]] <span id="verb-filter"></span>
