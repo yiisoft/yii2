@@ -964,6 +964,32 @@ abstract class ActiveRecordTest extends DatabaseTestCase
         $this->assertTrue($orders[1]['customer2']['orders2'][1]['id'] === $orders[1]['id']);
     }
 
+    public function testInverseOfDynamic()
+    {
+        $customer = Customer::findOne(1);
+        
+        // request the inverseOf relation without explicitly (eagerly) loading it
+        $orders2 = $customer->getOrders2()->all();
+        $this->assertSame($customer, $orders2[0]->customer2);
+        
+        $orders2 = $customer->getOrders2()->one();
+        $this->assertSame($customer, $orders2->customer2);
+        
+        // request the inverseOf relation while also explicitly eager loading it (while possible, this is of course redundant)
+        $orders2 = $customer->getOrders2()->with('customer2')->all();
+        $this->assertSame($customer, $orders2[0]->customer2);
+        
+        $orders2 = $customer->getOrders2()->with('customer2')->one();
+        $this->assertSame($customer, $orders2->customer2);
+        
+        // request the inverseOf relation as array
+        $orders2 = $customer->getOrders2()->asArray()->all();
+        $this->assertEquals($customer['id'], $orders2[0]['customer2']['id']);
+        
+        $orders2 = $customer->getOrders2()->asArray()->one();
+        $this->assertEquals($customer['id'], $orders2['customer2']['id']);
+    }
+
     public function testDefaultValues()
     {
         $model = new Type();

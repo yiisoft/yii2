@@ -214,6 +214,11 @@ class ActiveQuery extends Query implements ActiveQueryInterface
         if (!empty($this->with)) {
             $this->findWith($this->with, $models);
         }
+
+        if ($this->inverseOf !== null) {
+            $this->addInverseRelations($models);
+        }
+
         if (!$this->asArray) {
             foreach ($models as $model) {
                 $model->afterFind();
