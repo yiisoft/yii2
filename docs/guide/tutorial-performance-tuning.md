@@ -16,47 +16,43 @@ A well configured environment to run PHP application really matters. In order to
 
 - Use the latest stable PHP version. Major releases of PHP may bring significant performance improvement.
 - Enable bytecode caching with [Opcache](http://php.net/opcache) (PHP 5.5 or later) or [APC](http://ru2.php.net/apc) 
-  (PHP 5.4 or earlier).
+  (PHP 5.4 or earlier). Bytecode caching avoids the time spent in parsing and including PHP scripts for every
+  incoming request.
 
 
 ## Adjusting Framework Configurations <span id="adjusting-framework"></span>
 
-### Disabling Debug Mode
+### Disabling Debug Mode <span id="disable-debug"></span>
 
-First thing you should do before deploying your application to production environment
-is to disable debug mode. A Yii application runs in debug mode if the constant
-`YII_DEBUG` is defined as `true` in `index.php`.
-So, in order to disable debug mode, the following should be in your `index.php`:
+When running an application in production, you should disable the debug mode. Yii uses the value of a constant
+named `YII_DEBUG` to indicate whether the debug mode should be enabled. When the debug mode is enabled, Yii
+will take extra time to generate and record extra debugging information.
+
+You may place the following line of code at the beginning of the [entry script](structure-entry-scripts.md) to
+disable debug mode:
 
 ```php
 defined('YII_DEBUG') or define('YII_DEBUG', false);
 ```
 
-Debug mode is very useful during development stage, but it would impact performance
-because some components cause extra burden in debug mode. For example, the message
-logger may record additional debug information for every message being logged.
+> Info: The default value of `YII_DEBUG` is false. So if you are certain that you do not change its default
+  value somewhere else in your application code, you may simply remove the above line to disable debug mode. 
+  
 
-### Enabling PHP opcode cache
+### Enabling Schema Caching <span id="enable-schema-caching"></span>
 
-Enabling the PHP opcode cache improves any PHP application performance and lowers
-memory usage significantly. Yii is no exception. It was tested with both
-[PHP 5.5 OPcache](http://php.net/manual/en/book.opcache.php) and
-[APC PHP extension](http://php.net/manual/en/book.apc.php). Both cache
-optimize PHP intermediate code and avoid the time spent in parsing PHP
-scripts for every incoming request.
-
-### Turning on ActiveRecord database schema caching
-
-If the application is using Active Record, we should turn on the schema caching
-to save the time of parsing database schema. This can be done by setting the
-`Connection::enableSchemaCache` property to be `true` via application configuration
-`config/web.php`:
+If your application is using [Active Record](db-active-record.md), you should enable the so-called schema caching
+to save the time needed for retrieving database schema information. This can be done by setting 
+[[yii\db\Connection::enableSchemaCache]] to be `true` in the [application configuration](concept-configurations.md):
 
 ```php
 return [
     // ...
     'components' => [
         // ...
+        'cache' => [
+            'class' => 'yii\caching\FileCache',
+        ],
         'db' => [
             'class' => 'yii\db\Connection',
             'dsn' => 'mysql:host=localhost;dbname=mydatabase',
@@ -65,19 +61,18 @@ return [
             'enableSchemaCache' => true,
 
             // Duration of schema cache.
-            // 'schemaCacheDuration' => 3600,
+            'schemaCacheDuration' => 3600,
 
-            // Name of the cache component used. Default is 'cache'.
-            //'schemaCache' => 'cache',
-        ],
-        'cache' => [
-            'class' => 'yii\caching\FileCache',
+            // Name of the cache component used to store schema information
+            'schemaCache' => 'cache',
         ],
     ],
 ];
 ```
 
-Note that the `cache` [application component](structure-application-components.md) should be configured.
+Note that you should have a valid `cache` [application component](structure-application-components.md) to store
+the retrieved database schema information.
+ 
 
 ### Combining and Minimizing Assets
 
