@@ -1206,6 +1206,27 @@ class BaseHtml
     }
 
     /**
+     * If `maxlength` option is set true and the model attribute is validated by a string validator,
+     * the `maxlength` option will take the value of [[\yii\validators\StringValidator::max]].
+     * @param Model $model the model object
+     * @param string $attribute the attribute name or expression.
+     * @param array $options the tag options in terms of name-value pairs.
+     */
+    private static function normalizeMaxLength($model, $attribute, &$options)
+    {
+        if (isset($options['maxlength']) && $options['maxlength'] === true) {
+            unset($options['maxlength']);
+            $attrName = static::getAttributeName($attribute);
+            foreach ($model->getActiveValidators($attrName) as $validator) {
+                if ($validator instanceof StringValidator && $validator->max !== null) {
+                    $options['maxlength'] = $validator->max;
+                    break;
+                }
+            }
+        }
+    }
+
+    /**
      * Generates a text input tag for the given model attribute.
      * This method will generate the "name" and "value" tag attributes automatically for the model attribute
      * unless they are explicitly specified in `$options`.
@@ -1225,16 +1246,7 @@ class BaseHtml
      */
     public static function activeTextInput($model, $attribute, $options = [])
     {
-        if (isset($options['maxlength']) && $options['maxlength'] === true) {
-            unset($options['maxlength']);
-            $attrName = static::getAttributeName($attribute);
-            foreach ($model->getActiveValidators($attrName) as $validator) {
-                if ($validator instanceof StringValidator && $validator->max !== null) {
-                    $options['maxlength'] = $validator->max;
-                    break;
-                }
-            }
-        }
+        self::normalizeMaxLength($model, $attribute, $options);
         return static::activeInput('text', $model, $attribute, $options);
     }
 
@@ -1265,10 +1277,17 @@ class BaseHtml
      * @param array $options the tag options in terms of name-value pairs. These will be rendered as
      * the attributes of the resulting tag. The values will be HTML-encoded using [[encode()]].
      * See [[renderTagAttributes()]] for details on how attributes are being rendered.
+     * The following special options are recognized:
+     *
+     * - maxlength: integer|boolean, when `maxlength` is set true and the model attribute is validated
+     *   by a string validator, the `maxlength` option will take the value of [[\yii\validators\StringValidator::max]].
+     *   This is available since version 2.0.5.
+     *
      * @return string the generated input tag
      */
     public static function activePasswordInput($model, $attribute, $options = [])
     {
+        self::normalizeMaxLength($model, $attribute, $options);
         return static::activeInput('password', $model, $attribute, $options);
     }
 
@@ -1301,6 +1320,12 @@ class BaseHtml
      * @param array $options the tag options in terms of name-value pairs. These will be rendered as
      * the attributes of the resulting tag. The values will be HTML-encoded using [[encode()]].
      * See [[renderTagAttributes()]] for details on how attributes are being rendered.
+     * The following special options are recognized:
+     *
+     * - maxlength: integer|boolean, when `maxlength` is set true and the model attribute is validated
+     *   by a string validator, the `maxlength` option will take the value of [[\yii\validators\StringValidator::max]].
+     *   This is available since version 2.0.5.
+     *
      * @return string the generated textarea tag
      */
     public static function activeTextarea($model, $attribute, $options = [])
@@ -1310,6 +1335,7 @@ class BaseHtml
         if (!array_key_exists('id', $options)) {
             $options['id'] = static::getInputId($model, $attribute);
         }
+        self::normalizeMaxLength($model, $attribute, $options);
         return static::textarea($name, $value, $options);
     }
 
