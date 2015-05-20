@@ -48,11 +48,10 @@ All Rights Reserved.
 ------------------
 
 * [Bootstrapping](runtime-bootstrapping.md)
-* [Роутинг](runtime-routing.md)
+* [Разбор и генерация URL](runtime-routing.md)
 * [Запросы](runtime-requests.md)
 * [Ответы](runtime-responses.md)
 * [Сессии и куки](runtime-sessions-cookies.md)
-* [Разбор и генерация URL](runtime-routing.md)
 * [Обработка ошибок](runtime-handling-errors.md)
 * [Логирование](runtime-logging.md)
 
