@@ -9,6 +9,7 @@ Yii Framework 2 Change Log
 - Bug #8322: `yii\behaviors\TimestampBehavior::touch()` now throws an exception if owner is new record (klimov-paul)
 - Bug #8451: `yii\i18n\Formatter` did not allow negative unix timestamps as input for date formatting (cebe)
 - Bug: Fixed string comparison in `BaseActiveRecord::unlink()` which may result in wrong comparison result for hash valued primary keys starting with `0e` (cebe)
+- Bug #6347: `inverseOf()` not working for dynamic relational queries (laszlovl)
 - Enh #7169: `yii\widgets\ActiveField` now uses corresponding methods for default parts rendering (klimov-paul)
 - Enh #8070: `yii\console\controllers\MessageController` now sorts created messages, even if there is no new one, while saving to PHP file (klimov-paul)
 - Enh #8286: `yii\console\controllers\MessageController` improved allowing extraction of nested translator calls (klimov-paul)

@@ -230,6 +230,8 @@ class ActiveQuery extends Query implements ActiveQueryInterface
             }
         }
 
+        $this->addInverseRelations($models);
+
         return $models;
     }
 
