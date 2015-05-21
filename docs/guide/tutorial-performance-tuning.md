@@ -10,7 +10,7 @@ environment. As for the application, we'll provide some of the best practices
 along with examples on how to apply them to Yii.
 
 
-## Preparing Environment <span id="preparing-environment"></span>
+## Optimizing PHP Environment <span id="optimizing-php"></span>
 
 A well configured environment to run PHP application really matters. In order to get maximum performance,
 
@@ -20,9 +20,7 @@ A well configured environment to run PHP application really matters. In order to
   incoming request.
 
 
-## Adjusting Framework Configurations <span id="adjusting-framework"></span>
-
-### Disabling Debug Mode <span id="disable-debug"></span>
+## Disabling Debug Mode <span id="disable-debug"></span>
 
 When running an application in production, you should disable the debug mode. Yii uses the value of a constant
 named `YII_DEBUG` to indicate whether the debug mode should be enabled. When the debug mode is enabled, Yii
@@ -39,11 +37,24 @@ defined('YII_DEBUG') or define('YII_DEBUG', false);
   value somewhere else in your application code, you may simply remove the above line to disable debug mode. 
   
 
-### Enabling Schema Caching <span id="enable-schema-caching"></span>
+## Using Caching Techniques <span id="using-caching"></span>
 
-If your application is using [Active Record](db-active-record.md), you should enable the so-called schema caching
-to save the time needed for retrieving database schema information. This can be done by setting 
-[[yii\db\Connection::enableSchemaCache]] to be `true` in the [application configuration](concept-configurations.md):
+You can use various caching techniques to significantly improve the performance of your application. For example,
+if your application allows users to enter text in Markdown format, you may consider caching the parsed Markdown
+content to avoid parsing the same Markdown text repeatedly in every request. Please refer to 
+the [Caching](caching-overview.md) section to learn about the caching support provided by Yii.
+
+
+## Enabling Schema Caching <span id="enable-schema-caching"></span>
+
+Schema caching is a special caching feature that should be enabled whenever you are using [Active Record](db-active-record.md).
+As you know, Active Record is intelligent enough to detect schema information (e.g. column names, column types, constraints)
+about a DB table without requiring you to manually describe them. Active Record obtains these information by executing 
+extra SQL queries. By enabling schema caching, the retrieved schema information will be saved in the cache and reused
+in future requests.
+
+To enable schema caching, configure a `cache` [application component](structure-application-components.md) to store
+the schema information and set [[yii\db\Connection::enableSchemaCache]] to be `true` in the [application configuration](concept-configurations.md):
 
 ```php
 return [
@@ -70,18 +81,16 @@ return [
 ];
 ```
 
-Note that you should have a valid `cache` [application component](structure-application-components.md) to store
-the retrieved database schema information.
- 
 
-### Combining and Minimizing Assets
+## Combining and Minimizing Assets <span id="optimizing-assets"></span>
 
-It is possible to combine and minimize assets, typically JavaScript and CSS, in order to slightly improve page load
-time and therefore deliver better experience for end user of your application.
+A complex Web page often includes many CSS and/or JavaScript asset files. To reduce the number of HTTP requests 
+and the overall download size of these assets, you should consider combining them into one single file and
+compressing it. This may greatly improve the page loading time and reduce the server load. For more details,
+please refer to the [Assets](structure-assets.md) section.
 
-In order to learn how it can be achieved, refer to [assets](structure-assets.md) guide section.
 
-### Using better storage for sessions
+## Using better storage for sessions
 
 By default PHP uses files to handle sessions. It is OK for development and
 small projects. But when it comes to handling concurrent requests, it's better to
@@ -112,111 +121,54 @@ be lost, and it would lead to unexpected logouts.
 
 If you have [Redis](http://redis.io/) on your server, it's highly recommended as session storage.
 
-Improving application
----------------------
 
-### Using Serverside Caching Techniques
+## Optimizing Databases <span id="optimizing-databases"></span>
 
-As described in the Caching section, Yii provides several caching solutions that
-may improve the performance of a Web application significantly. If the generation
-of some data takes long time, we can use the data caching approach to reduce the
-data generation frequency; If a portion of page remains relatively static, we
-can use the fragment caching approach to reduce its rendering frequency;
-If a whole page remains relative static, we can use the page caching approach to
-save the rendering cost for the whole page.
+Execute DB queries and fetching data from databases is often the main performance bottleneck in
+a Web application. Although using [data caching](caching-data.md) techniques may alleviate the performance hit,
+it does not fully solve the problem. When the database contains enormous amount of data and the cached data is invalid, 
+fetching the latest data could be prohibitively expensive without proper database and query design.
 
+A general technique to improve the performance of DB queries is to create indices for table columns that
+need to be filtered by. For example, if you need to look for a user record by `username`, you should create an index
+on `username`. Note that while indexing can make SELECT queries much faster, it will slow down INSERT, UPDATE and DELETE queries.
 
-### Leveraging HTTP caching to save processing time and bandwidth
+For complex DB queries, it is recommended that you create database views to save the query parsing and preparation time.
 
-Leveraging HTTP caching saves both processing time, bandwidth and resources significantly. It can be implemented by
-sending either `ETag` or `Last-Modified` header in your application response. If browser is implemented according to
-HTTP specification (most browsers are), content will be fetched only if it is different from what it was prevously.
-
-Forming proper headers is time consuming task so Yii provides a shortcut in form of controller filter
-[[yii\filters\HttpCache]]. Using it is very easy. In a controller you need to implement `behaviors` method like
-the following:
-
-```php
-public function behaviors()
-{
-    return [
-        'httpCache' => [
-            'class' => \yii\filters\HttpCache::className(),
-            'only' => ['list'],
-            'lastModified' => function ($action, $params) {
-                $q = new Query();
-                return strtotime($q->from('users')->max('updated_timestamp'));
-            },
-            // 'etagSeed' => function ($action, $params) {
-                // return // generate etag seed here
-            //}
-        ],
-    ];
-}
-```
-
-In the code above one can use either `etagSeed` or `lastModified`. Implementing both isn't necessary. The goal is to
-determine if content was modified in a way that is cheaper than fetching and rendering that content. `lastModified`
-should return unix timestamp of the last content modification while `etagSeed` should return a string that is then
-used to generate `ETag` header value.
+Last but not least, use `LIMIT` in your `SELECT` queries. This avoids fetching overwhelming amount of data from database
+and exhausting the memory allocated to PHP.
 
 
-### Database Optimization
+## Using Plain Arrays <span id="using-arrays"></span>
 
-Fetching data from database is often the main performance bottleneck in
-a Web application.
-Although using [caching](caching.md#Query-Caching) may alleviate the performance hit,
-it does not fully solve the problem. When the database contains enormous data
-and the cached data is invalid, fetching the latest data could be prohibitively
-expensive without proper database and query design.
-
-Design index wisely in a database. Indexing can make SELECT queries much faster,
-but it may slow down INSERT, UPDATE or DELETE queries.
-
-For complex queries, it is recommended to create a database view for it instead
-of issuing the queries inside the PHP code and asking DBMS to parse them repetitively.
-
-Do not overuse Active Record. Although Active Record is good at modeling data
-in an OOP fashion, it actually degrades performance due to the fact that it needs
-to create one or several objects to represent each row of query result. For data
-intensive applications, using DAO or database APIs at lower level could be
-a better choice.
-
-Last but not least, use `LIMIT` in your `SELECT` queries. This avoids fetching
-overwhelming data from database and exhausting the memory allocated to PHP.
-
-### Using asArray
-
-A good way to save memory and processing time on read-only pages is to use
-ActiveRecord's `asArray` method.
+Although [Active Record](db-active-record.md) is very convenient to use, it is not as efficient as using plain arrays
+when you need to retrieve large amount of data from database. In this case, you may consider calling `asArray()`
+while using Active Record to query data so that the retrieved data are represented as arrays instead of bulky Active
+Record objects. For example,
 
 ```php
 class PostController extends Controller
 {
     public function actionIndex()
     {
-        $posts = Post::find()->orderBy('id DESC')->limit(100)->asArray()->all();
+        $posts = Post::find()->limit(100)->asArray()->all();
+        
         return $this->render('index', ['posts' => $posts]);
     }
 }
 ```
 
-In the view you should access fields of each individual record from `$posts` as array:
+In the above code, `$posts` will be populated as an array of table rows. Each row is a plain array. To access
+the `title` column of the i-th row, you may use the expression `$posts[$i]['title']`.
 
-```php
-foreach ($posts as $post) {
-    echo $post['title'] . "<br>";
-}
-```
+You may also use [DAO](db-dao.md) to build queries and retrieve data in plain arrays. 
 
-Note that you can use array notation even if `asArray` wasn't specified and you're
-working with AR objects.
 
-### Composer autoloader optimization
+## Composer autoloader optimization
 
 In order to improve overall performance you can execute `composer dumpautoload -o` to optimize Composer autoloader.
 
-### Processing data in background
+## Processing data in offline mode
 
 In order to respond to user requests faster you can process heavy parts of the
 request later if there's no need for immediate response.
@@ -236,7 +188,7 @@ In this case instead of writing data to persistent storage you're queueing it vi
 by queue or job server. Processing is often put into job handler class. Job from the queue is executed
 right after all jobs before it are done.
 
-### If nothing helps
+## If nothing helps
 
 If nothing helps, never assume what may fix performance problem. Always profile your code instead before changing
 anything. The following tools may be helpful:
