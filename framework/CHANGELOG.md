@@ -15,7 +15,7 @@ Yii Framework 2 Change Log
 - Enh #8415: `yii\helpers\Html` allows correct rendering of conditional comments containing `!IE` (salaros, klimov-paul)
 - Enh #8444:  Added `yii\widgets\LinkPager::$linkOptions` to allow configuring HTML attributes of the `a` tags (zinzinday)
 - Enh #8486:  Added support to automatically set the `maxlength` attribute for `Html::activeTextArea()` and `Html::activePassword()` (klimov-paul)
-- Enh #2022: `yii\db\QueryTrait` now contains a andFilterCompare() method that allows filtering using operators in the query value (lennartvdd)
+- Enh #8505: `yii\db\QueryTrait` now contains a andFilterCompare() method that allows filtering using operators in the query value (lennartvdd)
 - Chg #6354: `ErrorHandler::logException()` will now log the whole exception object instead of only its string representation (cebe)
 
 
