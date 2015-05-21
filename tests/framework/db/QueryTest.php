@@ -227,26 +227,26 @@ class QueryTest extends DatabaseTestCase
     {
         $query = new Query;
 
-        $query->compare('name', null);
+        $query->andFilterCompare('name', null);
         $this->assertNull($query->where);
 
-        $query->compare('name', '');
+        $query->andFilterCompare('name', '');
         $this->assertNull($query->where);
 
-        $query->compare('name', 'John Doe');
+        $query->andFilterCompare('name', 'John Doe');
         $condition = ['=', 'name', 'John Doe'];
         $this->assertEquals($condition, $query->where);
 
         $condition = ['and', $condition, ['like', 'name', 'Doe']];
-        $query->compare('name', 'Doe', 'like');
+        $query->andFilterCompare('name', 'Doe', 'like');
         $this->assertEquals($condition, $query->where);
 
         $condition = ['and', $condition, ['>', 'rating', '9']];
-        $query->compare('rating', '>9');
+        $query->andFilterCompare('rating', '>9');
         $this->assertEquals($condition, $query->where);
 
         $condition = ['and', $condition, ['<=', 'value', '100']];
-        $query->compare('value', '<=100');
+        $query->andFilterCompare('value', '<=100');
         $this->assertEquals($condition, $query->where);
     }
 
