@@ -377,7 +377,7 @@ trait QueryTrait
     }
 
     /**
-     * Helper for easy querying on gridview filter input allowing the use some common operators
+     * Helper method for easy querying on values containing some common operators.
      *
      * The comparison operator is intelligently determined based on the first few characters in the given value. In particular, it recognizes the following operators if they appear as the leading characters in the given value:
      * <: the column must be less than the given value.
