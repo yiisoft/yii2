@@ -8,6 +8,7 @@ Yii Framework 2 Change Log
 - Bug #7707: client-side `trim` validator now passes the trimmed value to subsequent validators (nkovacs)
 - Bug #8322: `yii\behaviors\TimestampBehavior::touch()` now throws an exception if owner is new record (klimov-paul)
 - Bug #8451: `yii\i18n\Formatter` did not allow negative unix timestamps as input for date formatting (cebe)
+- Bug #8483: sequence name in `Schema::getLastInsertId()` was not properly quoted (nineinchnick)
 - Bug #8506: Cleaning of output buffer in `Widget::run()` conflicts with `Pjax` widget which did the cleanup itself (cebe, joester89)
 - Bug: Fixed string comparison in `BaseActiveRecord::unlink()` which may result in wrong comparison result for hash valued primary keys starting with `0e` (cebe)
 - Enh #7169: `yii\widgets\ActiveField` now uses corresponding methods for default parts rendering (klimov-paul)
