@@ -37,6 +37,11 @@ CREATE TABLE "profile" (
   description varchar(128) NOT NULL
 );
 
+CREATE TABLE "schema1"."profile" (
+  id serial not null primary key,
+  description varchar(128) NOT NULL
+);
+
 CREATE TABLE "customer" (
   id serial not null primary key,
   email varchar(128) NOT NULL,
@@ -150,6 +155,9 @@ INSERT INTO "animal" (type) VALUES ('yiiunit\data\ar\Dog');
 
 INSERT INTO "profile" (description) VALUES ('profile customer 1');
 INSERT INTO "profile" (description) VALUES ('profile customer 3');
+
+INSERT INTO "schema1"."profile" (description) VALUES ('profile customer 1');
+INSERT INTO "schema1"."profile" (description) VALUES ('profile customer 3');
 
 INSERT INTO "customer" (email, name, address, status, bool_status, profile_id) VALUES ('user1@example.com', 'user1', 'address1', 1, true, 1);
 INSERT INTO "customer" (email, name, address, status, bool_status) VALUES ('user2@example.com', 'user2', 'address2', 1, true);
