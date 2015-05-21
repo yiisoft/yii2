@@ -395,7 +395,7 @@ trait QueryTrait
      * @param string $defaultOperator Defaults to =, performing an exact match.
      * For example: use 'like' for partial matching
      */
-    public function compare($name, $value, $defaultOperator = '=')
+    public function andFilterCompare($name, $value, $defaultOperator = '=')
     {
         $matches=[];
         if (preg_match("/^(<>|>=|>|<=|<|=)/", $value, $matches)) {
