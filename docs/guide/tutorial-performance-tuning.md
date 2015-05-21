@@ -3,18 +3,16 @@ Performance Tuning
 
 > Note: This section is under development.
 
-The performance of your web application is based upon two parts. First is the framework performance
-and the second is the application itself. Yii has a pretty low performance impact
-on your application out of the box and can be fine-tuned further for production
-environment. As for the application, we'll provide some of the best practices
-along with examples on how to apply them to Yii.
+The performance of your web application is based on two parts. First is the framework performance
+and the second is the application itself. Yii has a pretty low overhead out of the box and can be fine-tuned further for production environments. As for the application, we'll provide some of the best practices
+along with examples of how to apply them to Yii.
 
 
-## Optimizing PHP Environment <span id="optimizing-php"></span>
+## Optimizing your PHP Environment <span id="optimizing-php"></span>
 
-A well configured environment to run PHP application really matters. In order to get maximum performance,
+A well configured PHP environment is very important. In order to get maximum performance,
 
-- Use the latest stable PHP version. Major releases of PHP may bring significant performance improvement.
+- Use the latest stable PHP version. Major releases of PHP may bring significant performance improvements.
 - Enable bytecode caching with [Opcache](http://php.net/opcache) (PHP 5.5 or later) or [APC](http://ru2.php.net/apc) 
   (PHP 5.4 or earlier). Bytecode caching avoids the time spent in parsing and including PHP scripts for every
   incoming request.
@@ -22,9 +20,9 @@ A well configured environment to run PHP application really matters. In order to
 
 ## Disabling Debug Mode <span id="disable-debug"></span>
 
-When running an application in production, you should disable the debug mode. Yii uses the value of a constant
-named `YII_DEBUG` to indicate whether the debug mode should be enabled. When the debug mode is enabled, Yii
-will take extra time to generate and record extra debugging information.
+When running an application in production, you should disable debug mode. Yii uses the value of a constant
+named `YII_DEBUG` to indicate whether debug mode should be enabled. When debug mode is enabled, Yii
+will take extra time to generate and record debugging information.
 
 You may place the following line of code at the beginning of the [entry script](structure-entry-scripts.md) to
 disable debug mode:
@@ -49,7 +47,7 @@ the [Caching](caching-overview.md) section to learn about the caching support pr
 
 Schema caching is a special caching feature that should be enabled whenever you are using [Active Record](db-active-record.md).
 As you know, Active Record is intelligent enough to detect schema information (e.g. column names, column types, constraints)
-about a DB table without requiring you to manually describe them. Active Record obtains these information by executing 
+about a DB table without requiring you to manually describe them. Active Record obtains this information by executing 
 extra SQL queries. By enabling schema caching, the retrieved schema information will be saved in the cache and reused
 in future requests.
 
@@ -126,7 +124,7 @@ If you have [Redis](http://redis.io/) on your server, it's highly recommended as
 
 Execute DB queries and fetching data from databases is often the main performance bottleneck in
 a Web application. Although using [data caching](caching-data.md) techniques may alleviate the performance hit,
-it does not fully solve the problem. When the database contains enormous amount of data and the cached data is invalid, 
+it does not fully solve the problem. When the database contains enormous amounts of data and the cached data is invalid, 
 fetching the latest data could be prohibitively expensive without proper database and query design.
 
 A general technique to improve the performance of DB queries is to create indices for table columns that
@@ -135,15 +133,15 @@ on `username`. Note that while indexing can make SELECT queries much faster, it 
 
 For complex DB queries, it is recommended that you create database views to save the query parsing and preparation time.
 
-Last but not least, use `LIMIT` in your `SELECT` queries. This avoids fetching overwhelming amount of data from database
+Last but not least, use `LIMIT` in your `SELECT` queries. This avoids fetching an overwhelming amount of data from the database
 and exhausting the memory allocated to PHP.
 
 
 ## Using Plain Arrays <span id="using-arrays"></span>
 
 Although [Active Record](db-active-record.md) is very convenient to use, it is not as efficient as using plain arrays
-when you need to retrieve large amount of data from database. In this case, you may consider calling `asArray()`
-while using Active Record to query data so that the retrieved data are represented as arrays instead of bulky Active
+when you need to retrieve a large amount of data from database. In this case, you may consider calling `asArray()`
+while using Active Record to query data so that the retrieved data is represented as arrays instead of bulky Active
 Record objects. For example,
 
 ```php
@@ -176,21 +174,21 @@ request later if there's no need for immediate response.
 There are two common ways to achieve it: cron job processing and specialized queues.
 
 In the first case we need to save the data that we want to process later to a persistent storage
-such as database. A [console command](tutorial-console.md) that is run regularly via cron job queries
-database and processes data if there's any.
+such as a database. A [console command](tutorial-console.md) that is run regularly via cron job queries the
+database and processes the data if there is any.
 
-The solution is OK for most cases but has one significant drawback. We aren't aware if there's data to
-process before we query database, so we're either querying database quite often or have a slight delay
-between each data processing.
+The above solution is OK for many cases but has one significant drawback. We aren't aware if there's data to be
+processed before we query the database, so we're either querying the database quite often or we have a slight delay
+between data creation and processing.
 
-This issue could be solved by queue and job servers such RabbitMQ, ActiveMQ, Amazon SQS and more.
+This issue could be solved by using a queue and job servers such RabbitMQ, ActiveMQ, Amazon SQS and more.
 In this case instead of writing data to persistent storage you're queueing it via APIs provided
-by queue or job server. Processing is often put into job handler class. Job from the queue is executed
+by the queue or job server. Processing is often put into a job handler class. Jobs from the queue are executed
 right after all jobs before it are done.
 
 ## If nothing helps
 
-If nothing helps, never assume what may fix performance problem. Always profile your code instead before changing
+If nothing helps, never assume what may fix performance problems. Always profile your code instead, before changing
 anything. The following tools may be helpful:
 
 - [Yii debug toolbar and debugger](https://github.com/yiisoft/yii2-debug/blob/master/docs/guide/README.md)
