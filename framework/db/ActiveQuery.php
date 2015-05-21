@@ -201,10 +201,6 @@ class ActiveQuery extends Query implements ActiveQueryInterface
             $this->where = $where;
         }
 
-        if (!empty($this->on)) {
-            $query->andWhere($this->on);
-        }
-
         return $query;
     }
 
