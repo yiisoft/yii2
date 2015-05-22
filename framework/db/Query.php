@@ -845,6 +845,7 @@ class Query extends Component implements QueryInterface
      * @param scalar $value column value
      * @param string $defaultOperator Defaults to =, performing an exact match.
      * For example: use 'like' for partial matching
+     * @return static The query object itself
      */
     public function andFilterCompare($name, $value, $defaultOperator = '=')
     {
