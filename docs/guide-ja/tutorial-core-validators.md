@@ -97,17 +97,22 @@ public function rules()
 ```
 
 このバリデータは、入力値が正しい書式の date、time、または datetime であるかどうかをチェックします。
-オプションとして、入力値を UNIX タイムスタンプに変換して、[[yii\validators\DateValidator::timestampAttribute|timestampAttribute]] によって指定された属性に保存することも出来ます。
+オプションとして、入力値を UNIX タイムスタンプ (または、その他、機械による読み取りが可能な形式) に変換して、[[yii\validators\DateValidator::timestampAttribute|timestampAttribute]] によって指定された属性に保存することも出来ます。
 
 - `format`: 検証される値が従っているべき日付/時刻の書式。
   これには [ICU manual](http://userguide.icu-project.org/formatparse/datetime#TOC-Date-Time-Format-Syntax) で記述されている日付/時刻のパターンを使うことが出来ます。
   あるいは、PHP の `Datetime` クラスによって認識される書式に接頭辞 `php:` を付けた文字列でも構いません。
   サポートされている書式については、<http://php.net/manual/ja/datetime.createfromformat.php> を参照してください。
   このプロパティが設定されていないときは、`Yii::$app->formatter->dateFormat` の値を取ります。
+
 - `timestampAttribute`: このバリデータが、入力された日付/時刻から変換した UNIX タイムスタンプを代入することが出来る属性の名前。
   これは、検証される属性と同じ属性であってもかまいません。
   その場合は、元の値は検証実行後にタイムスタンプで上書きされます。
   [DatePicker で日付の入力を扱う](widget-jui#datepicker-date-input) に使用例がありますので、参照してください。
+
+  バージョン 2.0.4 以降では、[[yii\validators\DateValidator::$timestampAttributeFormat|$timestampAttributeFormat]] と [[yii\validators\DateValidator::$timestampAttributeTimeZone|$timestampAttributeTimeZone]] を使って、この属性に対するフォーマットとタイムゾーンを指定することが出来ます。
+
+- バージョン 2.0.4 以降では、タイムスタンプの [[yii\validators\DateValidator::$min|最小値]] または  [[yii\validators\DateValidator::$max|最大値]] を指定することも出来ます。
 
 入力が必須でない場合には、date バリデータに加えて、default バリデータ (デフォルト値フィルタ) を追加すれば、空の入力値が `NULL` として保存されることを保証することが出来ます。
 そうしないと、データベースに `0000-00-00` という日付が保存されたり、デートピッカーの入力フィールドが `1970-01-01` になったりしてしまいます。
