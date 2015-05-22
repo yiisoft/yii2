@@ -223,11 +223,12 @@ class QueryTest extends DatabaseTestCase
     /**
      * @depends testFilterWhere
      */
-    public function testCompare()
+    public function testAndFilterCompare()
     {
         $query = new Query;
 
-        $query->andFilterCompare('name', null);
+        $result = $query->andFilterCompare('name', null);
+        $this->assertInstanceOf('yii\db\Query', $result);
         $this->assertNull($query->where);
 
         $query->andFilterCompare('name', '');

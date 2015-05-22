@@ -855,6 +855,6 @@ class Query extends Component implements QueryInterface
         } else {
             $op = $defaultOperator;
         }
-        $this->andFilterWhere([$op, $name, $value]);
+        return $this->andFilterWhere([$op, $name, $value]);
     }
 }
