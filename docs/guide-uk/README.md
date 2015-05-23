@@ -20,7 +20,7 @@ All Rights Reserved.
 
 * [Встановлення Yii](start-installation.md)
 * [Запуск додатка](start-workflow.md)
-* [Говоримо «Привіт»](start-hello.md)
+* [Говоримо "Привіт"](start-hello.md)
 * [Робота з формами](start-forms.md)
 * [Робота з базами даних](start-databases.md)
 * [Генерація коду за допомогою Gii](start-gii.md)
@@ -162,14 +162,14 @@ RESTful веб-сервіси
 Спеціальні теми
 ---------------
 
-* **TBD** [Розширений шаблон додатка](https://github.com/yiisoft/yii2-app-advanced/blob/master/docs/guide-uk/README.md)
+* **TBD** [Розширений шаблон проекту](https://github.com/yiisoft/yii2-app-advanced/blob/master/docs/guide-uk/README.md)
 * **TBD** [Створення додатка з нуля](tutorial-start-from-scratch.md)
 * **TBD** [Консольні команди](tutorial-console.md)
 * **TBD** [Основні валідатори](tutorial-core-validators.md)
 * **TBD** [Інтернаціоналізація](tutorial-i18n.md)
 * **TBD** [Робота з поштою](tutorial-mailing.md)
 * **TBD** [Вдосконалення продуктивності](tutorial-performance-tuning.md)
-* **TBD** [Робота на shared хостингу](tutorial-shared-hosting.md)
+* **TBD** [Робота на віртуальному хостингу](tutorial-shared-hosting.md)
 * **TBD** [Шаблонізатори](tutorial-template-engines.md)
 * **TBD** [Робота із стороннім кодом](tutorial-yii-integration.md)
 
