@@ -3,9 +3,9 @@ Performance Tuning
 
 > Note: This section is under development.
 
-The performance of your web application is based on two parts. First is the framework performance
-and the second is the application itself. Yii has a pretty low overhead out of the box and can be fine-tuned further for production environments. As for the application, we'll provide some of the best practices
-along with examples of how to apply them to Yii.
+There are many factors affecting the performance of your Web application. Some are environmental, some are related 
+with your code, while some others are related with Yii itself. In this section, we will enumerate most of these
+factors and explain how you can improve your application performance by adjusting these factors.
 
 
 ## Optimizing your PHP Environment <span id="optimizing-php"></span>
