@@ -317,7 +317,7 @@ class BaseInflector
      */
     public static function camel2words($name, $ucwords = true)
     {
-        $label = trim(strtolower(str_replace([
+        $label = trim(mb_strtolower(str_replace([
             '-',
             '_',
             '.'
