@@ -89,6 +89,37 @@ class BaseHtml
      */
     public static $dataAttributes = ['data', 'data-ng', 'ng'];
 
+    
+    /**
+     * converts UTF-8 encoded string to app charset
+     * if string is UTF8 function returns it w/o modification
+     * @param unknown $utfString
+     * @return unknown|string
+     */
+    protected static function convertToEncoding($utfString)
+    {
+    	$charset = strtoupper(Yii::$app->charset);
+    	if ($charset === 'UTF-8') { //nothing to do
+    		return $utfString;
+    	}
+    	return mb_convert_encoding($utfString, $charset, 'UTF-8');
+    }
+    
+    /**
+     * converts string encoded in app charset to UTF-8
+     * if string is UTF8 function returns it w/o modification
+     * @param unknown $encString
+     * @return unknown|string
+     */
+    protected static function convertToUTF($encString)
+    {
+        $charset = strtoupper(Yii::$app->charset);
+        if ($charset === 'UTF-8') { //nothing to do
+            return $encString;
+        }
+        return mb_convert_encoding($encString, 'UTF-8', $charset);
+    }
+    
 
     /**
      * Encodes special characters into HTML entities.
@@ -1940,8 +1971,10 @@ class BaseHtml
      */
     public static function getAttributeName($attribute)
     {
+    	$attribute = self::convertToUTF($attribute);
+    	
         if (preg_match('/(^|.*\])([\w\.]+)(\[.*|$)/u', $attribute, $matches)) {
-            return $matches[2];
+        	return self::convertToEncoding($matches[2]);
         } else {
             throw new InvalidParamException('Attribute name must contain word characters only.');
         }
@@ -1963,10 +1996,12 @@ class BaseHtml
      */
     public static function getAttributeValue($model, $attribute)
     {
+    	$attribute = self::convertToUTF($attribute);
+
         if (!preg_match('/(^|.*\])([\w\.]+)(\[.*|$)/u', $attribute, $matches)) {
             throw new InvalidParamException('Attribute name must contain word characters only.');
         }
-        $attribute = $matches[2];
+        $attribute = self::convertToEncoding($matches[2]);
         $value = $model->$attribute;
         if ($matches[3] !== '') {
             foreach (explode('][', trim($matches[3], '[]')) as $id) {
@@ -2012,7 +2047,9 @@ class BaseHtml
      */
     public static function getInputName($model, $attribute)
     {
-        $formName = $model->formName();
+    	$attribute = self::convertToUTF($attribute);
+    	$formName = self::convertToUTF($model->formName());
+    	
         if (!preg_match('/(^|.*\])([\w\.]+)(\[.*|$)/u', $attribute, $matches)) {
             throw new InvalidParamException('Attribute name must contain word characters only.');
         }
@@ -2020,9 +2057,9 @@ class BaseHtml
         $attribute = $matches[2];
         $suffix = $matches[3];
         if ($formName === '' && $prefix === '') {
-            return $attribute . $suffix;
+            return self::convertToEncoding($attribute . $suffix);
         } elseif ($formName !== '') {
-            return $formName . $prefix . "[$attribute]" . $suffix;
+            return self::convertToEncoding($formName . $prefix . "[$attribute]" . $suffix);
         } else {
             throw new InvalidParamException(get_class($model) . '::formName() cannot be empty for tabular inputs.');
         }

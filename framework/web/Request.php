@@ -10,6 +10,7 @@ namespace yii\web;
 use Yii;
 use yii\base\InvalidConfigException;
 use yii\helpers\StringHelper;
+use yii\helpers\Html;
 
 /**
  * The web Request class represents an HTTP request
@@ -501,18 +502,11 @@ class Request extends \yii\base\Request
      */
     public function getQueryParam($name, $defaultValue = null)
     {
-    	$is_utf8 = strtoupper(\Yii::$app->charset) === 'UTF-8' ? true : false;
-    	if (!$is_utf8) {
-    		$name = mb_convert_encoding($name, 'UTF-8', \Yii::$app->charset);
-    	}
-    	
+    	$name = Html::convertToUTF($name);
         $params = $this->getQueryParams();
         
         if (isset($params[$name])) {
-        	if (!$is_utf8) {
-        		return mb_convert_encoding($params[$name], \Yii::$app->charset, 'UTF-8');
-        	}
-        	return $params[$name];
+        	return Html::convertToEncoding($params[$name]);
         }
         
         return $defaultValue;
