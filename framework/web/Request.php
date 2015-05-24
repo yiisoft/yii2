@@ -501,9 +501,21 @@ class Request extends \yii\base\Request
      */
     public function getQueryParam($name, $defaultValue = null)
     {
+    	$is_utf8 = strtoupper(\Yii::$app->charset) === 'UTF-8' ? true : false;
+    	if (!$is_utf8) {
+    		$name = mb_convert_encoding($name, 'UTF-8', \Yii::$app->charset);
+    	}
+    	
         $params = $this->getQueryParams();
-
-        return isset($params[$name]) ? $params[$name] : $defaultValue;
+        
+        if (isset($params[$name])) {
+        	if (!$is_utf8) {
+        		return mb_convert_encoding($params[$name], \Yii::$app->charset, 'UTF-8');
+        	}
+        	return $params[$name];
+        }
+        
+        return $defaultValue;
     }
 
     private $_hostInfo;
