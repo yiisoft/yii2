@@ -96,7 +96,7 @@ class BaseHtml
      * @param unknown $utfString
      * @return unknown|string
      */
-    protected static function convertToEncoding($utfString)
+    public static function convertToEncoding($utfString)
     {
     	$charset = strtoupper(Yii::$app->charset);
     	if ($charset === 'UTF-8') { //nothing to do
@@ -111,7 +111,7 @@ class BaseHtml
      * @param unknown $encString
      * @return unknown|string
      */
-    protected static function convertToUTF($encString)
+    public static function convertToUTF($encString)
     {
         $charset = strtoupper(Yii::$app->charset);
         if ($charset === 'UTF-8') { //nothing to do
