@@ -317,12 +317,29 @@ class BaseInflector
      */
     public static function camel2words($name, $ucwords = true)
     {
-        $label = preg_replace('/(?<![A-Z])[A-Z]/', ' \0', $name); // add spaces TODO: unicode?
-        $label = str_replace(['-', '_', '.'], ' ', $label);
-        $label = mb_strtolower($label, Yii::$app->charset);
-        $label = trim($label);
-        
-        return $ucwords ? mb_convert_case($label, MB_CASE_TITLE, Yii::$app->charset) : $label;
+    	$charset = strtoupper(Yii::$app->charset);
+    	$is_utf8 = ($charset === 'UTF-8' ? true : false);
+    	
+    	// UTF-8 zone start -->
+    	if (!$is_utf8) {// conv to utf-8 for preg_match to work. other way?
+    		$name = mb_convert_encoding($name, 'UTF-8', $charset);
+    	}
+    	
+		$label = preg_replace('/(?<![\p{Lu}])[\p{Lu}]/u', ' \0', $name); // add spaces
+		$label = str_replace(['-', '_', '.'], ' ', $label);
+		$label = mb_strtolower($label, 'UTF-8');
+		$label = trim($label);
+
+		if ($ucwords) {
+			$label = mb_convert_case($label, MB_CASE_TITLE, 'UTF-8');
+		}
+		
+		if (!$is_utf8) { // conv back to initial encoding 
+			$label = mb_convert_encoding($label, $charset, 'UTF-8');
+		}
+		// UTF-8 zone end <--
+		
+		return $label;
     }
 
     /**
