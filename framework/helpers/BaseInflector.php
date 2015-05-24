@@ -317,13 +317,12 @@ class BaseInflector
      */
     public static function camel2words($name, $ucwords = true)
     {
-        $label = trim(mb_strtolower(str_replace([
-            '-',
-            '_',
-            '.'
-        ], ' ', preg_replace('/(?<![A-Z])[A-Z]/', ' \0', $name), Yii::$app->charset)));
-
-        return $ucwords ? ucwords($label) : $label;
+        $label = preg_replace('/(?<![A-Z])[A-Z]/', ' \0', $name); // add spaces TODO: unicode?
+        $label = str_replace(['-', '_', '.'], ' ', $label);
+        $label = mb_strtolower($label, Yii::$app->charset);
+        $label = trim($label);
+        
+        return $ucwords ? mb_convert_case($label, MB_CASE_TITLE, Yii::$app->charset) : $label;
     }
 
     /**
