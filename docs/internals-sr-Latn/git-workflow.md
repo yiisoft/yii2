@@ -171,7 +171,7 @@ git branch -D 999-name-of-your-branch-goes-here
 git push origin --delete 999-name-of-your-branch-goes-here
 ```
 
-### Beleška:
+### Napomena:
 
 Kako bi rano otkrili regresije u Yii kodu prilikom svake integracije na GitHub-u pokreće se [Travis CI](http://travis-ci.org) kako bi se radilo testiranje. Pošto Yii tim ne želi da preoptereti ovaj servis,
 [`[ci skip]`](http://about.travis-ci.org/docs/user/how-to-skip-a-build/) će biti uključen prilikom svake integracije ako pull zahtev:
