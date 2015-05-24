@@ -91,6 +91,6 @@ class RegularExpressionValidator extends Validator
 
         ValidationAsset::register($view);
 
-        return 'yii.validation.regularExpression(value, messages, ' . Json::encode($options) . ');';
+        return 'yii.validation.regularExpression(value, messages, ' . Json::htmlEncode($options) . ');';
     }
 }

@@ -19,4 +19,14 @@ class OracleCommandTest extends CommandTest
         $command = $db->createCommand($sql);
         $this->assertEquals('SELECT "id", "t"."name" FROM "customer" t', $command->sql);
     }
+
+    public function testLastInsertId()
+    {
+        $db = $this->getConnection();
+
+        $sql = 'INSERT INTO {{profile}}([[description]]) VALUES (\'non duplicate\')';
+        $command = $db->createCommand($sql);
+        $command->execute();
+        $this->assertEquals(3, $db->getSchema()->getLastInsertID('profile_SEQ'));
+    }
 }

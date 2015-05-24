@@ -3,6 +3,7 @@
 namespace yiiunit\framework\helpers;
 
 use Yii;
+use yii\base\Model;
 use yii\helpers\Html;
 use yiiunit\TestCase;
 
@@ -79,6 +80,7 @@ class HtmlTest extends TestCase
         $this->assertEquals('<link href="http://example.com" rel="stylesheet">', Html::cssFile('http://example.com'));
         $this->assertEquals('<link href="/test" rel="stylesheet">', Html::cssFile(''));
         $this->assertEquals("<!--[if IE 9]>\n" . '<link href="http://example.com" rel="stylesheet">' . "\n<![endif]-->", Html::cssFile('http://example.com', ['condition' => 'IE 9']));
+        $this->assertEquals("<!--[if (gte IE 9)|(!IE)]><!-->\n" . '<link href="http://example.com" rel="stylesheet">' . "\n<!--<![endif]-->", Html::cssFile('http://example.com', ['condition' => '(gte IE 9)|(!IE)']));
     }
 
     public function testJsFile()
@@ -86,6 +88,7 @@ class HtmlTest extends TestCase
         $this->assertEquals('<script src="http://example.com"></script>', Html::jsFile('http://example.com'));
         $this->assertEquals('<script src="/test"></script>', Html::jsFile(''));
         $this->assertEquals("<!--[if IE 9]>\n" . '<script src="http://example.com"></script>' . "\n<![endif]-->", Html::jsFile('http://example.com', ['condition' => 'IE 9']));
+        $this->assertEquals("<!--[if (gte IE 9)|(!IE)]><!-->\n" . '<script src="http://example.com"></script>' . "\n<!--<![endif]-->", Html::jsFile('http://example.com', ['condition' => '(gte IE 9)|(!IE)']));
     }
 
     public function testBeginForm()
@@ -653,6 +656,150 @@ EOD;
         return [
             'value1<>' => 'text1<>',
             'value  2' => 'text  2',
+        ];
+    }
+
+    /**
+     * Data provider for [[testActiveTextInput()]]
+     * @return array test data
+     */
+    public function dataProviderActiveTextInput()
+    {
+        return [
+            [
+                'some text',
+                [],
+                '<input type="text" id="htmltestmodel-name" name="HtmlTestModel[name]" value="some text">',
+            ],
+            [
+                '',
+                [
+                    'maxlength' => true
+                ],
+                '<input type="text" id="htmltestmodel-name" name="HtmlTestModel[name]" value="" maxlength="100">',
+            ],
+            [
+                '',
+                [
+                    'maxlength' => 99
+                ],
+                '<input type="text" id="htmltestmodel-name" name="HtmlTestModel[name]" value="" maxlength="99">',
+            ],
+        ];
+    }
+
+    /**
+     * @dataProvider dataProviderActiveTextInput
+     *
+     * @param string $value
+     * @param array $options
+     * @param string $expectedHtml
+     */
+    public function testActiveTextInput($value, array $options, $expectedHtml)
+    {
+        $model = new HtmlTestModel();
+        $model->name = $value;
+        $this->assertEquals($expectedHtml, Html::activeTextInput($model, 'name', $options));
+    }
+
+    /**
+     * Data provider for [[testActivePasswordInput()]]
+     * @return array test data
+     */
+    public function dataProviderActivePasswordInput()
+    {
+        return [
+            [
+                'some text',
+                [],
+                '<input type="password" id="htmltestmodel-name" name="HtmlTestModel[name]" value="some text">',
+            ],
+            [
+                '',
+                [
+                    'maxlength' => true
+                ],
+                '<input type="password" id="htmltestmodel-name" name="HtmlTestModel[name]" value="" maxlength="100">',
+            ],
+            [
+                '',
+                [
+                    'maxlength' => 99
+                ],
+                '<input type="password" id="htmltestmodel-name" name="HtmlTestModel[name]" value="" maxlength="99">',
+            ],
+        ];
+    }
+
+    /**
+     * @dataProvider dataProviderActivePasswordInput
+     *
+     * @param string $value
+     * @param array $options
+     * @param string $expectedHtml
+     */
+    public function testActivePasswordInput($value, array $options, $expectedHtml)
+    {
+        $model = new HtmlTestModel();
+        $model->name = $value;
+        $this->assertEquals($expectedHtml, Html::activePasswordInput($model, 'name', $options));
+    }
+
+    /**
+     * Data provider for [[testActiveTextArea()]]
+     * @return array test data
+     */
+    public function dataProviderActiveTextArea()
+    {
+        return [
+            [
+                'some text',
+                [],
+                '<textarea id="htmltestmodel-description" name="HtmlTestModel[description]">some text</textarea>',
+            ],
+            [
+                'some text',
+                [
+                    'maxlength' => true
+                ],
+                '<textarea id="htmltestmodel-description" name="HtmlTestModel[description]" maxlength="500">some text</textarea>',
+            ],
+            [
+                'some text',
+                [
+                    'maxlength' => 99
+                ],
+                '<textarea id="htmltestmodel-description" name="HtmlTestModel[description]" maxlength="99">some text</textarea>',
+            ],
+        ];
+    }
+
+    /**
+     * @dataProvider dataProviderActiveTextArea
+     *
+     * @param string $value
+     * @param array $options
+     * @param string $expectedHtml
+     */
+    public function testActiveTextArea($value, array $options, $expectedHtml)
+    {
+        $model = new HtmlTestModel();
+        $model->description = $value;
+        $this->assertEquals($expectedHtml, Html::activeTextArea($model, 'description', $options));
+    }
+}
+
+class HtmlTestModel extends Model
+{
+    public $name;
+    public $description;
+
+    public function rules()
+    {
+        return [
+            ['name', 'required'],
+            ['name', 'string', 'max' => 100],
+            ['description', 'string', 'max' => 500],
         ];
     }
 }

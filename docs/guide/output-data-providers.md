@@ -67,13 +67,13 @@ use yii\data\ActiveDataProvider;
 $query = Post::find()->where(['status' => 1]);
 
 $provider = new ActiveDataProvider([
-    'query' => Post::find(),
+    'query' => $query,
     'pagination' => [
         'pageSize' => 10,
     ],
     'sort' => [
         'defaultOrder' => [
-            'created_at' => SORT_DESC
+            'created_at' => SORT_DESC,
             'title' => SORT_ASC, 
         ]
     ],
@@ -96,7 +96,7 @@ $query = (new Query())->from('post')->where(['status' => 1]);
   and `offset` clauses will be overwritten by the pagination request from end users (through the `pagination` configuration). 
 
 By default, [[yii\data\ActiveDataProvider]] uses the `db` application component as the database connection. You may
-use a different database connection by configuring the [[yii\data\ActiveDataProvider::db]] property. For example,
+use a different database connection by configuring the [[yii\data\ActiveDataProvider::db]] property.
 
 
 ## SQL Data Provider <span id="sql-data-provider"></span>

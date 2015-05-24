@@ -29,6 +29,7 @@ class DevController extends Controller
     public $apps = [
         'basic' => 'git@github.com:yiisoft/yii2-app-basic.git',
         'advanced' => 'git@github.com:yiisoft/yii2-app-advanced.git',
+        'benchmark' => 'git@github.com:yiisoft/yii2-app-benchmark.git',
     ];
 
     public $extensions = [
@@ -97,12 +98,15 @@ class DevController extends Controller
         $dirs = array_merge($dirs, $this->listSubDirs("$base/apps"));
         asort($dirs);
 
+        $oldcwd = getcwd();
         foreach($dirs as $dir) {
             $displayDir = substr($dir, strlen($base));
             $this->stdout("Running '$command' in $displayDir...\n", Console::BOLD);
+            chdir($dir);
             passthru($command);
             $this->stdout("done.\n", Console::BOLD, Console::FG_GREEN);
         }
+        chdir($oldcwd);
     }
 
     /**

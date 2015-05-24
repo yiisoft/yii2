@@ -102,7 +102,7 @@ is as specified by the `operator` property.
 ```
 
 This validator checks if the input value is a date, time or datetime in a proper format.
-Optionally, it can convert the input value into a UNIX timestamp and store it in an attribute
+Optionally, it can convert the input value into a UNIX timestamp or other machine readable format and store it in an attribute
 specified via [[yii\validators\DateValidator::timestampAttribute|timestampAttribute]].
 
 - `format`: the date/time format that the value being validated should be in. 
@@ -110,10 +110,19 @@ specified via [[yii\validators\DateValidator::timestampAttribute|timestampAttrib
    Alternatively this can be a string prefixed with `php:` representing a format that can be recognized by the PHP 
    `Datetime` class. Please refer to <http://php.net/manual/en/datetime.createfromformat.php> on supported formats.
    If this is not set, it will take the value of `Yii::$app->formatter->dateFormat`.
+   See the [[yii\validators\DateValidator::$format|API documentation]] for more details.
+
 - `timestampAttribute`: the name of the attribute to which this validator may assign the UNIX timestamp
   converted from the input date/time. This can be the same attribute as the one being validated. If this is the case,
   the original value will be overwritten with the timestamp value after validation.
   See ["Handling date input with the DatePicker"](widget-jui#datepicker-date-input) for a usage example.
+  
+  Since version 2.0.4, a format and timezone can be specified for this attribute using
+  [[yii\validators\DateValidator::$timestampAttributeFormat|$timestampAttributeFormat]] and
+  [[yii\validators\DateValidator::$timestampAttributeTimeZone|$timestampAttributeTimeZone]].
+
+- Since version 2.0.4 it is also possible to specify a [[yii\validators\DateValidator::$min|minimum]] or
+  [[yii\validators\DateValidator::$max|maximum]] timestamp.
 
 In case the input is optional you may also want to add a [default value filter](#default) in addition to the date validator
 to ensure empty input is stored as `NULL`. Other wise you may end up with dates like `0000-00-00` in your database
@@ -243,9 +252,13 @@ This validator checks if the input value is a valid email address.
 ]
 ```
 
-This validator checks if the input value can be found in a table column. It only works
-with [Active Record](db-active-record.md) model attributes. It supports validation against
-either a single column or multiple columns.
+This validator checks if the input value can be found in a table column represented by 
+an [Active Record](db-active-record.md) attribute. You can use `targetAttribute` to specify the
+[Active Record](db-active-record.md) attribute and `targetClass` the corresponding [Active Record](db-active-record.md)
+class. If you do not specify them, they will take the values of the attribute and the model class being validated.
+
+You can use this validator to validate against a single column or multiple columns (i.e., the combination of
+multiple attribute values should exist).
 
 - `targetClass`: the name of the [Active Record](db-active-record.md) class that should be used
   to look for the input value being validated. If not set, the class of the model currently being validated will be used.

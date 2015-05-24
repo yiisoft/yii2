@@ -59,7 +59,7 @@ interface ActiveQueryInterface extends QueryInterface
      * For example, `orders.address` means the `address` relation defined
      * in the model class corresponding to the `orders` relation.
      *
-     * The followings are some usage examples:
+     * The following are some usage examples:
      *
      * ~~~
      * // find customers together with their orders and country

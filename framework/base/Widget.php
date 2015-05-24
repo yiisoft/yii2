@@ -96,7 +96,10 @@ class Widget extends Component implements ViewContextInterface
             $widget = Yii::createObject($config);
             $out = $widget->run();
         } catch(\Exception $e) {
-            ob_end_clean();
+            // close the output buffer opened above if it has not been closed already
+            if(ob_get_level() > 0) {
+                ob_end_clean();
+            }
             throw $e;
         }
 

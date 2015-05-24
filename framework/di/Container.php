@@ -230,7 +230,7 @@ class Container extends Component
      * You may use [[has()]] to check if a class definition already exists.
      *
      * @param string $class class name, interface name or alias name
-     * @param mixed $definition the definition associated with `$class`. It can be one of the followings:
+     * @param mixed $definition the definition associated with `$class`. It can be one of the following:
      *
      * - a PHP callable: The callable will be executed when [[get()]] is invoked. The signature of the callable
      *   should be `function ($container, $params, $config)`, where `$params` stands for the list of constructor

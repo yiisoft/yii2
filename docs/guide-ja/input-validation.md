@@ -9,10 +9,12 @@
 例えば、
 
 ```php
-$model = new \app\models\ContactForm;
+$model = new \app\models\ContactForm();
 
 // モデルの属性にユーザ入力を投入する
-$model->attributes = \Yii::$app->request->post('ContactForm');
+$model->load(\Yii::$app->request->post());
+// これは次と等価
+// $model->attributes = \Yii::$app->request->post('ContactForm');
 
 if ($model->validate()) {
     // 全ての入力が有効
@@ -440,6 +442,7 @@ class LoginForm extends Model
 
 クライアント側の検証を完全に無効にしたい場合は、[[yii\widgets\ActiveForm::enableClientValidation]] プロパティを false に設定することが出来ます。
 また、個々の入力フィールドごとにクライアント側の検証を無効にしたい場合には、入力フィールドの [[yii\widgets\ActiveField::enableClientValidation]] プロパティを false に設定することが出来ます。
+`eanbleClientValidation` が入力フィールドのレベルとフォームのレベルの両方で構成されている場合は前者が優先されます。
 
 
 ### クライアント側の検証を実装する <span id="implementing-client-side-validation"></span>
@@ -583,16 +586,32 @@ JS;
 このような場合には、AJAX ベースの検証を使うことが出来ます。
 AJAX 検証は、通常のクライアント側での検証と同じユーザ体験を保ちながら、入力値を検証するためにバックグラウンドで AJAX リクエストを発行します。
 
-AJAX 検証をフォーム全体に対して有効にするためには、[[yii\widgets\ActiveForm::enableAjaxValidation]] プロパティを `true` に設定して、`id` にフォームを特定するユニークな ID を設定しなければなりません。
+単一のインプットフィールドに対して AJAX 検証を有効にするためには、そのフィールドの [[yii\widgets\ActiveField::enableAjaxValidation|enableAjaxValidation]] プロパティを true に設定し、フォームに一意の `id` を指定します。
 
 ```php
-<?php $form = yii\widgets\ActiveForm::begin([
-    'id' => 'contact-form',
-    'enableAjaxValidation' => true,
-]); ?>
+use yii\widgets\ActiveForm;
+
+$form = ActiveForm::begin([
+    'id' => 'registration-form',
+]);
+
+echo $form->field($model, 'username', ['enableAjaxValidation' => true]);
+
+// ...
+
+ActiveForm::end();
 ```
 
-個別の入力フィールドについても、[[yii\widgets\ActiveField::enableAjaxValidation]] プロパティを設定して、AJAX 検証を有効にしたり無効にしたりすることが出来ます。
+フォーム全体に対して AJAX 検証を有効にするためには、フォームのレベルで [[yii\widgets\ActiveForm::enableAjaxValidation|enableAjaxValidation]] を true に設定します。
+
+```php
+$form = ActiveForm::begin([
+    'id' => 'contact-form',
+    'enableAjaxValidation' => true,
+]);
+```
+
+> Note|注意: `enableAjaxValidation` プロパティがインプットフィールドのレベルとフォームのレベルの両方で構成された場合は、前者が優先されます。
 
 また、サーバ側では、AJAX 検証のリクエストを処理できるように準備しておく必要があります。
 これは、コントローラのアクションにおいて、次のようなコード断片を使用することで達成できます。

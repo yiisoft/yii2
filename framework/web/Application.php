@@ -75,7 +75,8 @@ class Application extends \yii\base\Application
             list ($route, $params) = $request->resolve();
         } else {
             $route = $this->catchAll[0];
-            $params = array_splice($this->catchAll, 1);
+            $params = $this->catchAll;
+            unset($params[0]);
         }
         try {
             Yii::trace("Route requested: '$route'", __METHOD__);

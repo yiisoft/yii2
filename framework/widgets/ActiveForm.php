@@ -189,8 +189,8 @@ class ActiveForm extends Widget
 
         if ($this->enableClientScript) {
             $id = $this->options['id'];
-            $options = Json::encode($this->getClientOptions());
-            $attributes = Json::encode($this->attributes);
+            $options = Json::htmlEncode($this->getClientOptions());
+            $attributes = Json::htmlEncode($this->attributes);
             $view = $this->getView();
             ActiveFormAsset::register($view);
             $view->registerJs("jQuery('#$id').yiiActiveForm($attributes, $options);");
