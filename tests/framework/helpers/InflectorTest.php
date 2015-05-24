@@ -83,9 +83,40 @@ class InflectorTest extends TestCase
 
     public function testCamel2words()
     {
+    	// default encoding is 'UTF-8'
+    	$this->mockApplication();
+    	// latin, english
         $this->assertEquals('Camel Case', Inflector::camel2words('camelCase'));
         $this->assertEquals('Lower Case', Inflector::camel2words('lower_case'));
         $this->assertEquals('Tricky Stuff It Is Testing', Inflector::camel2words(' tricky_stuff.it-is testing... '));
+        //latin, español
+        $this->assertEquals('Año Año', Inflector::camel2words('añoAño'));
+        $this->assertEquals('Año Año', Inflector::camel2words('año_año'));
+        $this->assertEquals('Añoooo Añooo Añ Añ Añooooo', Inflector::camel2words(' añoooo_añooo.añ-añ añooooo... '));
+        //cyrillic, українська
+        $this->assertEquals('Рік Рік', Inflector::camel2words('рікРік'));
+        $this->assertEquals('Рік Рік', Inflector::camel2words('рік_рік'));
+        $this->assertEquals('Рікккк Ріккк Рі Рі Ріккккк', Inflector::camel2words(' рікккк_ріккк.рі-рі ріккккк... '));
+        $this->destroyApplication();
+
+        // try custom encoding
+        $enc = 'KOI8-U'; // ukrainian
+        $this->mockApplication(['charset' => $enc]);
+        $name_enc = mb_convert_encoding('рікРік', $enc, 'UTF-8');
+        $name_enc_result = mb_convert_encoding('Рік Рік', $enc, 'UTF-8');
+        $this->assertEquals($name_enc_result, Inflector::camel2words($name_enc));
+        $this->destroyApplication();
+
+        $enc = 'ISO-8859-1'; // spanish
+        $this->mockApplication(['charset' => $enc]);
+        $name_enc = mb_convert_encoding('añoAño', $enc, 'UTF-8');
+        $name_enc_result = mb_convert_encoding('Año Año', $enc, 'UTF-8');
+        $this->assertEquals($name_enc_result, Inflector::camel2words($name_enc));
+        $this->destroyApplication();
+        
+        //TODO: test if $ucwords is false
+        $this->mockApplication(['charset' => $enc]);
+        $this->assertEquals('lower case', Inflector::camel2words('lowerCase', false)); //ucwords false
     }
 
     public function testCamel2id()
