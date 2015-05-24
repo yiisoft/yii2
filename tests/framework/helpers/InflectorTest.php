@@ -115,7 +115,7 @@ class InflectorTest extends TestCase
         $this->destroyApplication();
         
         //TODO: test if $ucwords is false
-        $this->mockApplication(['charset' => $enc]);
+        $this->mockApplication();
         $this->assertEquals('lower case', Inflector::camel2words('lowerCase', false)); //ucwords false
     }
 
