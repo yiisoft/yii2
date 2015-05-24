@@ -2040,7 +2040,7 @@ class BaseHtml
      */
     public static function getInputId($model, $attribute)
     {
-        $name = mb_strtolower(static::getInputName($model, $attribute));
+        $name = mb_strtolower(static::getInputName($model, $attribute), Yii::$app->charset);
         return str_replace(['[]', '][', '[', ']', ' ', '.'], ['', '-', '-', '', '-', '-'], $name);
     }
 }
