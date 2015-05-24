@@ -224,7 +224,7 @@ class BaseHtml
         if (isset($options['condition'])) {
             $condition = $options['condition'];
             unset($options['condition']);
-            return "<!--[if $condition]>\n" . static::tag('link', '', $options) . "\n<![endif]-->";
+            return self::wrapIntoCondition(static::tag('link', '', $options), $condition);
         } elseif (isset($options['noscript']) && $options['noscript'] === true) {
             unset($options['noscript']);
             return "<noscript>" . static::tag('link', '', $options) . "</noscript>";
@@ -254,10 +254,24 @@ class BaseHtml
         if (isset($options['condition'])) {
             $condition = $options['condition'];
             unset($options['condition']);
-            return "<!--[if $condition]>\n" . static::tag('script', '', $options) . "\n<![endif]-->";
+            return self::wrapIntoCondition(static::tag('script', '', $options), $condition);
         } else {
             return static::tag('script', '', $options);
         }
+    }
+
+    /**
+     * Wraps given content into conditional comments for IE, e.g., `lt IE 9`.
+     * @param string $content raw HTML content.
+     * @param string $condition condition string.
+     * @return string generated HTML.
+     */
+    private static function wrapIntoCondition($content, $condition)
+    {
+        if (strpos($condition, '!IE') !== false) {
+            return "<!--[if $condition]><!-->\n" . $content . "\n<!--<![endif]-->";
+        }
+        return "<!--[if $condition]>\n" . $content . "\n<![endif]-->";
     }
 
     /**
@@ -1106,7 +1120,7 @@ class BaseHtml
      *
      * - header: string, the header HTML for the error summary. If not set, a default prompt string will be used.
      * - footer: string, the footer HTML for the error summary.
-     * - encode: boolean, if set to false then value won't be encoded.
+     * - encode: boolean, if set to false then the error messages won't be encoded.
      *
      * The rest of the options will be rendered as the attributes of the container tag. The values will
      * be HTML-encoded using [[encode()]]. If a value is null, the corresponding attribute will not be rendered.
@@ -1152,7 +1166,7 @@ class BaseHtml
      * The following options are specially handled:
      *
      * - tag: this specifies the tag name. If not set, "div" will be used.
-     * - encode: boolean, if set to false then value won't be encoded.
+     * - encode: boolean, if set to false then the error message won't be encoded.
      *
      * See [[renderTagAttributes()]] for details on how attributes are being rendered.
      *
@@ -1192,6 +1206,27 @@ class BaseHtml
     }
 
     /**
+     * If `maxlength` option is set true and the model attribute is validated by a string validator,
+     * the `maxlength` option will take the value of [[\yii\validators\StringValidator::max]].
+     * @param Model $model the model object
+     * @param string $attribute the attribute name or expression.
+     * @param array $options the tag options in terms of name-value pairs.
+     */
+    private static function normalizeMaxLength($model, $attribute, &$options)
+    {
+        if (isset($options['maxlength']) && $options['maxlength'] === true) {
+            unset($options['maxlength']);
+            $attrName = static::getAttributeName($attribute);
+            foreach ($model->getActiveValidators($attrName) as $validator) {
+                if ($validator instanceof StringValidator && $validator->max !== null) {
+                    $options['maxlength'] = $validator->max;
+                    break;
+                }
+            }
+        }
+    }
+
+    /**
      * Generates a text input tag for the given model attribute.
      * This method will generate the "name" and "value" tag attributes automatically for the model attribute
      * unless they are explicitly specified in `$options`.
@@ -1211,16 +1246,7 @@ class BaseHtml
      */
     public static function activeTextInput($model, $attribute, $options = [])
     {
-        if (isset($options['maxlength']) && $options['maxlength'] === true) {
-            unset($options['maxlength']);
-            $attrName = static::getAttributeName($attribute);
-            foreach ($model->getActiveValidators($attrName) as $validator) {
-                if ($validator instanceof StringValidator && $validator->max !== null) {
-                    $options['maxlength'] = $validator->max;
-                    break;
-                }
-            }
-        }
+        self::normalizeMaxLength($model, $attribute, $options);
         return static::activeInput('text', $model, $attribute, $options);
     }
 
@@ -1251,10 +1277,17 @@ class BaseHtml
      * @param array $options the tag options in terms of name-value pairs. These will be rendered as
      * the attributes of the resulting tag. The values will be HTML-encoded using [[encode()]].
      * See [[renderTagAttributes()]] for details on how attributes are being rendered.
+     * The following special options are recognized:
+     *
+     * - maxlength: integer|boolean, when `maxlength` is set true and the model attribute is validated
+     *   by a string validator, the `maxlength` option will take the value of [[\yii\validators\StringValidator::max]].
+     *   This is available since version 2.0.5.
+     *
      * @return string the generated input tag
      */
     public static function activePasswordInput($model, $attribute, $options = [])
     {
+        self::normalizeMaxLength($model, $attribute, $options);
         return static::activeInput('password', $model, $attribute, $options);
     }
 
@@ -1287,6 +1320,12 @@ class BaseHtml
      * @param array $options the tag options in terms of name-value pairs. These will be rendered as
      * the attributes of the resulting tag. The values will be HTML-encoded using [[encode()]].
      * See [[renderTagAttributes()]] for details on how attributes are being rendered.
+     * The following special options are recognized:
+     *
+     * - maxlength: integer|boolean, when `maxlength` is set true and the model attribute is validated
+     *   by a string validator, the `maxlength` option will take the value of [[\yii\validators\StringValidator::max]].
+     *   This is available since version 2.0.5.
+     *
      * @return string the generated textarea tag
      */
     public static function activeTextarea($model, $attribute, $options = [])
@@ -1296,6 +1335,7 @@ class BaseHtml
         if (!array_key_exists('id', $options)) {
             $options['id'] = static::getInputId($model, $attribute);
         }
+        self::normalizeMaxLength($model, $attribute, $options);
         return static::textarea($name, $value, $options);
     }
 
@@ -1644,7 +1684,9 @@ class BaseHtml
         foreach ($items as $key => $value) {
             if (is_array($value)) {
                 $groupAttrs = isset($groups[$key]) ? $groups[$key] : [];
-                $groupAttrs['label'] = $key;
+                if (!isset($groupAttrs['label'])) {
+                    $groupAttrs['label'] = $key;
+                }
                 $attrs = ['options' => $options, 'groups' => $groups, 'encodeSpaces' => $encodeSpaces, 'encode' => $encode];
                 $content = static::renderSelectOptions($selection, $value, $attrs);
                 $lines[] = static::tag('optgroup', "\n" . $content . "\n", $groupAttrs);
@@ -1709,13 +1751,13 @@ class BaseHtml
                 if (in_array($name, static::$dataAttributes)) {
                     foreach ($value as $n => $v) {
                         if (is_array($v)) {
-                            $html .= " $name-$n='" . Json::encode($v, JSON_HEX_APOS) . "'";
+                            $html .= " $name-$n='" . Json::htmlEncode($v) . "'";
                         } else {
                             $html .= " $name-$n=\"" . static::encode($v) . '"';
                         }
                     }
                 } else {
-                    $html .= " $name='" . Json::encode($value, JSON_HEX_APOS) . "'";
+                    $html .= " $name='" . Json::htmlEncode($value) . "'";
                 }
             } elseif ($value !== null) {
                 $html .= " $name=\"" . static::encode($value) . '"';

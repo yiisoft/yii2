@@ -110,7 +110,7 @@ return [
     '{attribute} should contain {length, number} {length, plural, one{character} other{characters}}.' => '{attribute} moet precies {min, number} {min, plural, one{karakter} other{karakters}} bevatten.',
     '{delta, plural, =1{a day} other{# days}} ago' => '{delta, plural, =1{een dag} other{# dagen}} geleden',
     '{delta, plural, =1{a minute} other{# minutes}} ago' => '{delta, plural, =1{een minuut} other{# minuten}} geleden',
-    '{delta, plural, =1{a month} other{# months}} ago' => '{delta, plural, =1{a month} other{# months}} geleden',
+    '{delta, plural, =1{a month} other{# months}} ago' => '{delta, plural, =1{een maand} other{# maanden}} geleden',
     '{delta, plural, =1{a second} other{# seconds}} ago' => '{delta, plural, =1{een seconde} other{# seconden}} geleden',
     '{delta, plural, =1{a year} other{# years}} ago' => '{delta, plural, =1{een jaar} other{# jaren}} geleden',
     '{delta, plural, =1{an hour} other{# hours}} ago' => '{delta, plural, =1{een uur} other{# uren}} geleden',
