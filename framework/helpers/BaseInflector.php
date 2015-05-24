@@ -321,7 +321,7 @@ class BaseInflector
             '-',
             '_',
             '.'
-        ], ' ', preg_replace('/(?<![A-Z])[A-Z]/', ' \0', $name)), Yii::$app->charset));
+        ], ' ', preg_replace('/(?<![A-Z])[A-Z]/', ' \0', $name), Yii::$app->charset)));
 
         return $ucwords ? ucwords($label) : $label;
     }
