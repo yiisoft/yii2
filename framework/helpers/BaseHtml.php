@@ -98,11 +98,10 @@ class BaseHtml
      */
     public static function convertToEncoding($utfString)
     {
-    	$charset = strtoupper(Yii::$app->charset);
-    	if ($charset === 'UTF-8') { //nothing to do
+    	if (strcasecmp(Yii::$app->charset, 'UTF-8') === 0) { //nothing to do
     		return $utfString;
     	}
-    	return mb_convert_encoding($utfString, $charset, 'UTF-8');
+    	return mb_convert_encoding($utfString, Yii::$app->charset, 'UTF-8');
     }
     
     /**
@@ -113,11 +112,10 @@ class BaseHtml
      */
     public static function convertToUTF($encString)
     {
-        $charset = strtoupper(Yii::$app->charset);
-        if ($charset === 'UTF-8') { //nothing to do
+        if (strcasecmp(Yii::$app->charset, 'UTF-8') === 0) { //nothing to do
             return $encString;
         }
-        return mb_convert_encoding($encString, 'UTF-8', $charset);
+        return mb_convert_encoding($encString, 'UTF-8', Yii::$app->charset);
     }
     
 
