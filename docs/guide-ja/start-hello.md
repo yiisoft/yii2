@@ -9,7 +9,7 @@
 
 このチュートリアルを通じて、三つのことを学びます。
 
-1. リクエストに応える [アクション](structure-controllers.md) を作成する方法
+1. リクエストに応える [アクション](structure-controllers.md#creating-actions) を作成する方法
 2. レスポンスのコンテントを作成する [ビュー](structure-views.md) を作成する方法
 3. アプリケーションがリクエストを [アクション](structure-controllers.md#creating-actions) に送付する仕組み
 
