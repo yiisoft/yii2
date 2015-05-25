@@ -98,7 +98,7 @@ All Rights Reserved.
 ------------------
 
 * **TBD** [Форматування даних](output-formatting.md)
-* **TBD** [Посторінкове розбиття](output-pagination.md)
+* **TBD** [Розділення на сторінки](output-pagination.md)
 * **TBD** [Сортування](output-sorting.md)
 * **TBD** [Провайдери даних](output-data-providers.md)
 * **TBD** [Віджети даних](output-data-widgets.md)
