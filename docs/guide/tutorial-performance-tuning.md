@@ -1,8 +1,6 @@
 Performance Tuning
 ==================
 
-> Note: This section is under development.
-
 There are many factors affecting the performance of your Web application. Some are environmental, some are related 
 with your code, while some others are related with Yii itself. In this section, we will enumerate most of these
 factors and explain how you can improve your application performance by adjusting these factors.
@@ -88,12 +86,12 @@ compressing it. This may greatly improve the page loading time and reduce the se
 please refer to the [Assets](structure-assets.md) section.
 
 
-## Using better storage for sessions
+## Optimizing Session Storage <span id="optimizing-session"></span>
 
-By default PHP uses files to handle sessions. It is OK for development and
-small projects. But when it comes to handling concurrent requests, it's better to
-switch to another storage such as database. You can do so by configuring your
-application via `config/web.php`:
+By default session data are stored in files. This is fine for development and small projects. But when it comes 
+to handling massive concurrent requests, it is better to use more sophisticated storage, such as database. Yii supports
+a variety of session storage out of box. You can use these storage by configuring the `session` component in the
+[application configuration](concept-configurations.md) like the following,
 
 ```php
 return [
@@ -113,11 +111,25 @@ return [
 ];
 ```
 
-You can use `CacheSession` to store sessions using cache. Note that some
-cache storage such as memcached has no guarantee that session data will not
-be lost, and it would lead to unexpected logouts.
+The above configuration uses a database table to store session data. By default, it will use the `db` application
+component as the database connection and store the session data in the `session` table. You do have to create the
+`session` table as follows in advance, though,
 
-If you have [Redis](http://redis.io/) on your server, it's highly recommended as session storage.
+```sql
+CREATE TABLE session (
+    id CHAR(40) NOT NULL PRIMARY KEY,
+    expire INTEGER,
+    data BLOB
+)
+```
+
+You may also store session data in a cache by using [[yii\web\CacheSession]]. In theory, you can use any supported
+[cache storage](caching-data.md#supported-cache-storage). Note, however, that some cache storage may flush cached data
+when the storage limit is reached. For this reason, you should mainly use those cache storage that do not enforce
+storage limit.
+
+If you have [Redis](http://redis.io/) on your server, it is highly recommended you use it as session storage by using
+[[yii\redis\Session]].
 
 
 ## Optimizing Databases <span id="optimizing-databases"></span>
@@ -162,34 +174,37 @@ the `title` column of the i-th row, you may use the expression `$posts[$i]['titl
 You may also use [DAO](db-dao.md) to build queries and retrieve data in plain arrays. 
 
 
-## Composer autoloader optimization
+## Optimizing Composer Autoloader <span id="optimizing-autoloader"></span>
 
-In order to improve overall performance you can execute `composer dumpautoload -o` to optimize Composer autoloader.
+Because Composer autoloader is used to include most third-party class files, you should consider optimizing it
+by executing the following command:
 
-## Processing data in offline mode
+```
+composer dumpautoload -o
+```
 
-In order to respond to user requests faster you can process heavy parts of the
-request later if there's no need for immediate response.
 
-There are two common ways to achieve it: cron job processing and specialized queues.
+## Processing Data Offline <span id="processing-data-offline"></span>
 
-In the first case we need to save the data that we want to process later to a persistent storage
-such as a database. A [console command](tutorial-console.md) that is run regularly via cron job queries the
-database and processes the data if there is any.
+When a request involves some resource intensive operations, you should think of ways to perform those operations
+in offline mode without having users wait for them to finish.
 
-The above solution is OK for many cases but has one significant drawback. We aren't aware if there's data to be
-processed before we query the database, so we're either querying the database quite often or we have a slight delay
-between data creation and processing.
+There are two methods to process data offline: pull and push. 
 
-This issue could be solved by using a queue and job servers such RabbitMQ, ActiveMQ, Amazon SQS and more.
-In this case instead of writing data to persistent storage you're queueing it via APIs provided
-by the queue or job server. Processing is often put into a job handler class. Jobs from the queue are executed
-right after all jobs before it are done.
+In the pull method, whenever a request involves some complex operation, you create a task and save it in a persistent 
+storage, such as database. You then use a separate process (such as a cron job) to pull the tasks and process them.
+This method is easy to implement, but it has some drawbacks. For example, the task process needs to periodically pull
+from the task storage. If the pull frequency is too low, the tasks may be processed with great delay; but if the frequency
+is too high, it will introduce high overhead.
 
-## If nothing helps
+In the push method, you would use a message queue (e.g. RabbitMQ, ActiveMQ, Amazon SQS, etc.) to manage the tasks. 
+Whenever a new task is put on the queue, it will initiate or notify the task handling process to trigger the task processing.
 
-If nothing helps, never assume what may fix performance problems. Always profile your code instead, before changing
-anything. The following tools may be helpful:
+
+## Performance Profiling <span id="performance-profiling"></span>
+
+You should profile your code to find out the performance bottlenecks and take appropriate measures accordingly.
+The following profiling tools may be useful:
 
 - [Yii debug toolbar and debugger](https://github.com/yiisoft/yii2-debug/blob/master/docs/guide/README.md)
 - [XDebug profiler](http://xdebug.org/docs/profiler)
