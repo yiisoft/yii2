@@ -201,7 +201,7 @@ class I18N extends Component
     }
 
     /**
-     * Normalizes language string to "zh-Hant-CN", "zh-CN" or "CN" format ready
+     * Normalizes locale string to "zh-Hant-CN", "zh-CN" or "CN" format ready
      * to be used to specify translation language.
      *
      * @param string $locale locale string. Could be either:
@@ -236,15 +236,15 @@ class I18N extends Component
     }
 
     /**
-     * Normalizes language string to "zh-Hant-CN", "zh-CN" or "CN" format ready
+     * Normalizes locale string to "zh-Hant-CN", "zh-CN" or "CN" format ready
      * to be used to specify translation language. Doesn't require intl.
      *
-     * @param string $language language string. Could be either:
+     * @param string $locale locale string. Could be either:
      *
      * - Language tag according to https://www.rfc-editor.org/bcp/bcp47.txt
      * - ICU locale string http://userguide.icu-project.org/locale
      *
-     * @return string normalized language ID
+     * @return string normalized locale ID
      */
     private function fallbackNormalizeLocale($locale)
     {
