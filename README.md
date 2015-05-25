@@ -51,7 +51,7 @@ to have a general idea of what has changed in 2.0.
 HOW TO PARTICIPATE
 ------------------
 
-**Your participation to Yii 2 development is very welcome!**
+#### Your participation to Yii 2 development is very welcome!
 
 You may participate in the following ways:
 
@@ -60,3 +60,20 @@ You may participate in the following ways:
 - [Give us feedback or start a design discussion](http://www.yiiframework.com/forum/index.php/forum/42-general-discussions-for-yii-20/)
 - [Contribute to the core code or fix bugs](docs/internals/git-workflow.md)
 
+#### Acknowledging or Citing Yii2
+
+**In Presentations**
+
+If you are giving a presentation or talk featuring work that makes use of Yii2 and would like to acknowledge Yii2, we suggest using our logo on your title slide. [Link to logo](http://www.yiiframework.com/logo/)
+
+**In Projects**
+
+If you are using Yii2 as part of a code project, a useful way to acknowledge your use of Yii is with a badge in your README. We suggest this badge:    
+
+![Yii2 ](https://img.shields.io/badge/Powered_by-Yii_Framework-green.svg?style=flat)
+
+Which is available at the URL https://img.shields.io/badge/Powered_by-Yii_Framework-green.svg?style=flat. If your code is hosted on github, You can place the following in your README.md file to get the badge:
+
+```
+[![Yii2](https://img.shields.io/badge/Powered_by-Yii_Framework-green.svg?style=flat)](http://www.yiiframework.com/)
+```
