@@ -204,12 +204,12 @@ class I18N extends Component
      * Normalizes language string to "zh-Hant-CN", "zh-CN" or "CN" format ready
      * to be used to specify translation language.
      *
-     * @param string $language language string. Could be either:
+     * @param string $locale locale string. Could be either:
      *
      * - Language tag according to https://www.rfc-editor.org/bcp/bcp47.txt
      * - ICU locale string http://userguide.icu-project.org/locale
      *
-     * @return string normalized language ID
+     * @return string normalized locale ID
      *
      * @since 2.0.4
      */
@@ -245,10 +245,8 @@ class I18N extends Component
      * - ICU locale string http://userguide.icu-project.org/locale
      *
      * @return string normalized language ID
-     *
-     * @since 2.0.4
      */
-    protected function fallbackNormalizeLocale($locale)
+    private function fallbackNormalizeLocale($locale)
     {
         $language = null;
         $region = null;
@@ -294,7 +292,7 @@ class I18N extends Component
     {
         $parts = explode('-', $languageId);
 
-        switch(count($parts)) {
+        switch (count($parts)) {
             case 3:
                 return $parts[0] . '-' . $parts[2];
             case 2:

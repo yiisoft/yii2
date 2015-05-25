@@ -8,6 +8,7 @@
 namespace yiiunit\framework\i18n;
 
 use yii\base\Event;
+use yii\i18n\I18N;
 use yii\i18n\PhpMessageSource;
 use yiiunit\TestCase;
 
@@ -19,7 +20,7 @@ use yiiunit\TestCase;
 class I18NTest extends TestCase
 {
     /**
-     * @var ExposedI18N
+     * @var I18N
      */
     public $i18n;
 
@@ -27,7 +28,7 @@ class I18NTest extends TestCase
     {
         parent::setUp();
         $this->mockApplication();
-        $this->i18n = new ExposedI18N([
+        $this->i18n = new I18N([
             'translations' => [
                 'test' => new PhpMessageSource([
                     'basePath' => '@yiiunit/data/i18n/messages',
@@ -55,7 +56,7 @@ class I18NTest extends TestCase
 
     public function testDefaultSource()
     {
-        $i18n = new ExposedI18N([
+        $i18n = new I18N([
             'translations' => [
                 '*' => new PhpMessageSource([
                 'basePath' => '@yiiunit/data/i18n/messages',
@@ -206,7 +207,13 @@ class I18NTest extends TestCase
      */
     public function testFallbackNormalizeLocale($in, $expected)
     {
-        $this->assertEquals($expected, $this->i18n->fallbackNormalizeLocale($in));
+        $classReflection = new \ReflectionClass(get_class($this->i18n));
+        $methodReflection = $classReflection->getMethod('fallbackNormalizeLocale');
+        $methodReflection->setAccessible(true);
+        $actual = $methodReflection->invokeArgs($this->i18n, [$in]);
+        $methodReflection->setAccessible(false);
+
+        $this->assertEquals($expected, $actual);
     }
 
     public function testGetFallbackLanguageId()
