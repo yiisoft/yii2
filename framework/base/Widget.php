@@ -85,6 +85,7 @@ class Widget extends Component implements ViewContextInterface
      * The widget rendering result is returned by this method.
      * @param array $config name-value pairs that will be used to initialize the object properties
      * @return string the rendering result of the widget.
+     * @throws \Exception
      */
     public static function widget($config = [])
     {
