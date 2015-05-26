@@ -16,6 +16,7 @@ DROP TABLE IF EXISTS "type";
 DROP TABLE IF EXISTS "null_values";
 DROP TABLE IF EXISTS "animal";
 DROP TABLE IF EXISTS "default_pk";
+DROP TABLE IF EXISTS "document";
 DROP VIEW IF EXISTS "animal_view";
 
 CREATE TABLE "profile" (
@@ -123,6 +124,14 @@ CREATE TABLE "default_pk" (
   PRIMARY KEY (id)
 );
 
+CREATE TABLE "document" (
+  id INTEGER NOT NULL,
+  title VARCHAR(255) NOT NULL,
+  content text,
+  version INTEGER NOT NULL DEFAULT '0',
+  PRIMARY KEY (id)
+);
+
 CREATE VIEW "animal_view" AS SELECT * FROM "animal";
 
 INSERT INTO "animal" ("type") VALUES ('yiiunit\data\ar\Cat');
@@ -165,6 +174,8 @@ INSERT INTO "order_item_with_null_fk" (order_id, item_id, quantity, subtotal) VA
 INSERT INTO "order_item_with_null_fk" (order_id, item_id, quantity, subtotal) VALUES (2, 5, 1, 15.0);
 INSERT INTO "order_item_with_null_fk" (order_id, item_id, quantity, subtotal) VALUES (2, 3, 1, 8.0);
 INSERT INTO "order_item_with_null_fk" (order_id, item_id, quantity, subtotal) VALUES (3, 2, 1, 40.0);
+
+INSERT INTO "document" (title, content, version) VALUES ('Yii 2.0 guide', 'This is Yii 2.0 guide', 0);
 
 /**
  * (SqLite-)Database Schema for validator tests
