@@ -20,9 +20,11 @@ Yii Framework 2 Change Log
 - Enh #8070: `yii\console\controllers\MessageController` now sorts created messages, even if there is no new one, while saving to PHP file (klimov-paul)
 - Enh #8286: `yii\console\controllers\MessageController` improved allowing extraction of nested translator calls (klimov-paul)
 - Enh #8415: `yii\helpers\Html` allows correct rendering of conditional comments containing `!IE` (salaros, klimov-paul)
-- Enh #8444:  Added `yii\widgets\LinkPager::$linkOptions` to allow configuring HTML attributes of the `a` tags (zinzinday)
-- Enh #8486:  Added support to automatically set the `maxlength` attribute for `Html::activeTextArea()` and `Html::activePassword()` (klimov-paul)
-- Enh #8566:  Added support for 'only' and 'except' options for `yii\web\AssetManager::publish()` (klimov-paul)
+- Enh #8444: Added `yii\widgets\LinkPager::$linkOptions` to allow configuring HTML attributes of the `a` tags (zinzinday)
+- Enh #8486: Added support to automatically set the `maxlength` attribute for `Html::activeTextArea()` and `Html::activePassword()` (klimov-paul)
+- Enh #8537: The identity cookie send when `yii\web\User::$enableAutoLogin` is enabled does now store a timestamp to mitigate cookie reuse attacks (kidol)
+- Enh #8566: Added support for 'only' and 'except' options for `yii\web\AssetManager::publish()` (klimov-paul)
+- Enh: `yii\web\User::$autoRenewCookie` does now support an integer value which is interpreted as an interval in seconds (kidol)
 - Chg #6354: `ErrorHandler::logException()` will now log the whole exception object instead of only its string representation (cebe)
 
 
