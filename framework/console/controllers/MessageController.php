@@ -100,10 +100,10 @@ class MessageController extends Controller
         if (!is_dir($config['sourcePath'])) {
             throw new Exception("The source path {$config['sourcePath']} is not a valid directory.");
         }
-        if (empty($config['format']) || !in_array($config['format'], ['php', 'po', 'db'])) {
-            throw new Exception('Format should be either "php", "po" or "db".');
+        if (empty($config['format']) || !in_array($config['format'], ['php', 'po', 'pot', 'db'])) {
+            throw new Exception('Format should be either "php", "po", "pot" or "db".');
         }
-        if (in_array($config['format'], ['php', 'po'])) {
+        if (in_array($config['format'], ['php', 'po', 'pot'])) {
             if (!isset($config['messagePath'])) {
                 throw new Exception('The configuration file must specify "messagePath".');
             } elseif (!is_dir($config['messagePath'])) {
@@ -133,21 +133,26 @@ class MessageController extends Controller
                     $this->saveMessagesToPHP($messages, $dir, $config['overwrite'], $config['removeUnused'], $config['sort']);
                 }
             }
-        } elseif ($config['format'] === 'db') {
-            $db = \Yii::$app->get(isset($config['db']) ? $config['db'] : 'db');
-            if (!$db instanceof \yii\db\Connection) {
-                throw new Exception('The "db" option must refer to a valid database application component.');
+        } elseif (in_array($config['format'], ['db', 'pot'])) {
+            if ($config['format'] === 'db') {
+                $db = \Yii::$app->get(isset($config['db']) ? $config['db'] : 'db');
+                if (!$db instanceof \yii\db\Connection) {
+                    throw new Exception('The "db" option must refer to a valid database application component.');
+                }
+                $sourceMessageTable = isset($config['sourceMessageTable']) ? $config['sourceMessageTable'] : '{{%source_message}}';
+                $messageTable = isset($config['messageTable']) ? $config['messageTable'] : '{{%message}}';
+                $this->saveMessagesToDb(
+                    $messages,
+                    $db,
+                    $sourceMessageTable,
+                    $messageTable,
+                    $config['removeUnused'],
+                    $config['languages']
+                );
+            } else {
+                $catalog = isset($config['catalog']) ? $config['catalog'] : 'messages';
+                $this->saveMessagesToPOT($messages, $config['messagePath'], $catalog);
             }
-            $sourceMessageTable = isset($config['sourceMessageTable']) ? $config['sourceMessageTable'] : '{{%source_message}}';
-            $messageTable = isset($config['messageTable']) ? $config['messageTable'] : '{{%message}}';
-            $this->saveMessagesToDb(
-                $messages,
-                $db,
-                $sourceMessageTable,
-                $messageTable,
-                $config['removeUnused'],
-                $config['languages']
-            );
         }
     }
 
@@ -576,6 +581,45 @@ EOD;
                 }
                 ksort($merged);
             }
+            $this->stdout("Category \"$category\" merged.\n");
+            $hasSomethingToWrite = true;
+        }
+        if ($hasSomethingToWrite) {
+            $poFile->save($file, $merged);
+            $this->stdout("Translation saved.\n", Console::FG_GREEN);
+        } else {
+            $this->stdout("Nothing to save.\n", Console::FG_GREEN);
+        }
+    }
+
+    /**
+     * Writes messages into POT file
+     *
+     * @param array $messages
+     * @param string $dirName name of the directory to write to
+     * @param boolean $removeUnused if obsolete translations should be removed
+     * @param boolean $sort if translations should be sorted
+     * @param string $catalog message catalog
+     */
+    protected function saveMessagesToPOT($messages, $dirName, $catalog)
+    {
+        $file = str_replace("\\", '/', "$dirName/$catalog.pot");
+        FileHelper::createDirectory(dirname($file));
+        $this->stdout("Saving messages to $file...\n");
+
+        $poFile = new GettextPoFile();
+
+        $merged = [];
+
+        $hasSomethingToWrite = false;
+        foreach ($messages as $category => $msgs) {
+            $msgs = array_values(array_unique($msgs));
+
+            sort($msgs);
+            foreach ($msgs as $message) {
+                $merged[$category . chr(4) . $message] = '';
+            }
+            ksort($merged);
             $this->stdout("Category \"$category\" merged.\n");
             $hasSomethingToWrite = true;
         }
