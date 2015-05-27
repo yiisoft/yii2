@@ -69,57 +69,75 @@ php build translation "../docs/guide" "../docs/guide-uk" "Ukrainian guide transl
 - Tip → Підказка
 - Note → Примітка
 - Info → Інформація
+- Warning → Попередження
 
 ### Список термінів
 
 - action — дія;
 - active record — (не перекладається);
-- (advanced/basic) application — (розширений/базовий) додаток;
+- Advanced/Basic Project Template — Розширений/Базовий шаблон проекту;
+- (Web) application — (веб-)додаток;
 - attach handler — прикріпити обробник;
 - attribute of the model — атрибут моделі;
+- authentication — аутентифікація / установлення справжності;
+- authorization — авторизація/уповноваження;
 - branch — гілка;
+- browser — браузер;
+- (asset) bundle — звʼязка (ресурсів);
 - cache — кеш;
 - camel case — (не перекладається);
 - column — колонка;
 - commit — комміт;
+- concatenation — конкатенація;
 - configuration — конфігурація;
 - content — вміст;
 - contributor — учасник;
-- controller — контролер;
 - cookies — кукі;
 - customization — (тонке) налаштування;
 - debug mode — режим налагодження (див. production mode);
 - debugger — відладчик;
+- (function) declaration — оголошення (функції);
+- definition — визначення;
+- design pattern — шаблон проектування;
+- development mode — режим розробки;
 - (root) directory — (коренева) директорія;
 - eager loading — жадібне завантаження (див. lazy loading);
-- email address — email адреса;
+- email address — адреса e-mail;
 - environment — середовище;
 - exception — виключення;
-- PHP extension — розширення PHP;
+- existing — наявний/присутній; // перекладати як "існуючий" не вірно
+- (PHP) extension — розширення (PHP);
+- Facebook — Фейсбук;
+- folder — папка/каталог;
 - field (of the table) — поле/атрибут (таблиці);
 - fixture — фікстура;
+- footer — футер;
 - fork — форк;
 - framework — фреймворк;
 - front-controller — фронт-контролер;
 - getter — геттер;
 - (event) handler — обробник (події);
 - hash — хеш;
-- help - довідка;
-- helper - хелпер;
+- help — довідка;
+- helper — хелпер;
 - id — ідентифікатор;
 - image — зображення;
 - instance — екземпляр;
 - issue — питання/проблема; // в залежності від контексту
+- layout — макет;
 - lazy loading — відкладене завантаження;
 - log, logging — журнал, журналювання;
+- markdown — (не перекладається);
 - method — метод (обʼєкта/класу);
 - merge — поєднання;
-- model — модель, модель даних;
-- model form — модель форми;
-- parameter — параметр (методу/функції);
+- Model-View-Controller (MVC) — Модель-Представлення-Контролер (MVC);
+- package — пакунок;
+- pagination — розділення на сторінки;
+- parameter — параметр;
 - to parse — обробляти;
 - placeholder — заповнювач;
-- production mode — режим провадження (див. debug mode);
+- plugin — плагін;
+- production mode — робочий режим (див. debug mode);
 - property — властивість (обʼєкта);
 - pull request — (не перекладається);
 - query builder — конструктор запитів;
@@ -130,17 +148,20 @@ php build translation "../docs/guide" "../docs/guide-uk" "Ukrainian guide transl
 - route, routing — маршрут, маршрутизація;
 - row (of the table) — рядок (таблиці);
 - setter — сеттер;
+- shared hosting — віртуальний хостинг;
 - staging area — буферна зона;
 - string — текстовий рядок;
+- sub-directory — під-директорія;
+- substitution — підставлення/заміщення;
 - tabular input — табличний ввід;
 - template engine — шаблонізатор;
 - theming — темізація;
 - trait — трейт;
+- Twitter — Твіттер;
 - unit tests — модульні тести;
 - to validate — перевіряти;
 - valid — коректний;
 - validator — валідатор;
 - validation — перевірка;
 - validator class — клас валідатора;
-- versioning — версіонування;
-- view — представлення.
+- versioning — версіонування.

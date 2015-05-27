@@ -67,7 +67,7 @@ caracteres alfanuméricos ao especificar um ID de aplicação.
 A propriedade [[yii\base\Application::basePath|basePath]] especifica o diretório
 raiz de um sistema. É o diretório que contém todo o código fonte protegido de um
 sistema. Sob este diretório, você normalmente verá subdiretórios tais como
-`models`, `views`, `controllers`, que contém o código fonte correspondente ao
+`models`, `views` e `controllers`, que contém o código fonte correspondente ao
 padrão MVC.
 
 Você pode configurar a propriedade [[yii\base\Application::basePath|basePath]]
@@ -92,7 +92,7 @@ configuradas porque elas variam em diferentes aplicações.
 
 Esta propriedade permite que você defina um conjunto de
 [aliases](concept-aliases.md) em termos de um array. As chaves do array representam
-os nomes de alias, e os valores são as definições correspondentes. Por exemplo,
+os nomes de alias, e os valores são as definições correspondentes. Por exemplo:
 
 ```php
 [
@@ -103,8 +103,8 @@ os nomes de alias, e os valores são as definições correspondentes. Por exempl
 ]
 ```
 
-Essa propriedade está disponível de modo que você possa definir aliases em termos
-de configurações da aplicação ao invés de chamadas ao método [[Yii::setAlias()]].
+Esta propriedade é fornecida para que você possa definir aliases na configuração 
+da aplicação ao invés de chamar o método [[Yii::setAlias()]].
 
 
 #### [[yii\base\Application::bootstrap|bootstrap]] <span id="bootstrap"></span>
@@ -124,7 +124,7 @@ seguintes formatos:
 - um array de configuração.
 - uma função anônima que cria e retorna um componente.
 
-Por exemplo,
+Por exemplo:
 
 ```php
 [
@@ -168,7 +168,7 @@ também será chamado.
 
 Outro exemplo prático está na configuração do [Template Básico de Projetos](start-installation.md),
 onde os módulos `debug` e `gii` estão configurados como componentes de inicialização
-quando a aplicação está rodando no ambiente de desenvolvimento,
+quando a aplicação está rodando no ambiente de desenvolvimento:
 
 ```php
 if (YII_ENV_DEV) {
@@ -196,7 +196,7 @@ em modo de manutenção e precisa tratar todas as requisições através de uma
 
 A configuração é um array, cujo primeiro elemento especifica a rota para a action.
 O restante dos elementos do array (pares de chave-valor) especificam os parâmetros
-que devem ser atrelados à action. Por exemplo,
+que devem ser atrelados à action. Por exemplo:
 
 ```php
 [
@@ -213,7 +213,7 @@ que devem ser atrelados à action. Por exemplo,
 
 Essa é a propriedade mais importante. Ela permite que você registre uma lista
 de componentes chamados [componentes de aplicação](structure-application-components.md)
-que você pode usar em outros lugares. Por exemplo,
+que você pode usar em outros lugares. Por exemplo:
 
 ```php
 [
@@ -284,7 +284,7 @@ diretório correspondente ao namespace. Por exemplo, dado um ID de controller
 
 É importante que as classes completas e qualificadas possam ser [carregadas automaticamente](concept-autoloading.md)
 e que o namespace das suas classes de controller correspondam ao valor dessa
-propriedade. Doutra forma, você receberia um erro "Página Não Encontrada" ao
+propriedade. Doutra forma, você receberia um erro de "Página Não Encontrada" ao
 acessar a aplicação.
 
 Caso você queira quebrar a convenção conforme descrito acima, você pode configurar
@@ -318,7 +318,7 @@ Essa propriedade especifica os [módulos](structure-modules.md) que uma aplicaç
 contém.
 
 A propriedade recebe um array de classes de módulos ou [configurações](concept-configurations.md)
-com as chaves do array sendo os IDs dos módulos. Por exemplo,
+com as chaves do array sendo os IDs dos módulos. Por exemplo:
 
 ```php
 [
@@ -401,7 +401,7 @@ Essa propriedade é disponibilizada como uma maneira alternativa de definir a
 timezone do PHP em tempo de execução. Ao confiugrar essa propriedade, você está
 essencialmente chamando a função
 [date_default_timezone_set()](http://php.net/manual/en/function.date-default-timezone-set.php)
-do PHP. Por exemplo,
+do PHP. Por exemplo:
 
 ```php
 [
@@ -413,8 +413,8 @@ do PHP. Por exemplo,
 #### [[yii\base\Application::version|version]] <span id="version"></span>
 
 Essa propriedade especifica a versão da aplicação. Seu valor padrão é `'1.0'`.
-Você nem sempre precisa configurar essa propriedade se nenhuma parte do seu código
-a está usando.
+Você não precisa configurar esta propriedade se nenhuma parte do seu código
+estiver utilizando-a.
 
 
 ### Propriedades Úteis <span id="useful-properties"></span>
@@ -581,7 +581,7 @@ A sintaxe de uso de `on eventName` é descrita na seção
 
 Alternativamente, você pode vincular manipuladores de evento durante o
 [processo de inicialização](runtime-bootstrapping.md) após a instância da aplicação
-ser criada. Por exemplo,
+ser criada. Por exemplo:
 
 ```php
 \Yii::$app->on(\yii\base\Application::EVENT_BEFORE_REQUEST, function ($event) {
@@ -622,7 +622,7 @@ O nome do evento é `beforeAction`.
 
 O parâmetro do evento é uma instância de [[yii\base\ActionEvent]]. Um manipulador
 de evento pode definir o valor da propriedade [[yii\base\ActionEvent::isValid]]
-como `false` para interromper a execução da action. Por exemplo,
+como `false` para interromper a execução da action. Por exemplo:
 
 ```php
 [
@@ -649,7 +649,7 @@ O nome do evento é `afterAction`.
 
 O parâmetro do evento é uma instância de [[yii\base\ActionEvent]]. Através da
 propriedade [[yii\base\ActionEvent::result]], um manipulador de evento pode
-acessar ou modificar o resultado da action. Por exemplo,
+acessar ou modificar o resultado da action. Por exemplo:
 
 ```php
 [

@@ -721,6 +721,10 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
             throw new StaleObjectException('The object being updated is outdated.');
         }
 
+        if (isset($values[$lock])) {
+            $this->$lock = $values[$lock];
+        }
+
         $changedAttributes = [];
         foreach ($values as $name => $value) {
             $changedAttributes[$name] = isset($this->_oldAttributes[$name]) ? $this->_oldAttributes[$name] : null;
@@ -1321,7 +1325,7 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
         } elseif (isset($this->_related[$name])) {
             /* @var $b ActiveRecordInterface */
             foreach ($this->_related[$name] as $a => $b) {
-                if ($model->getPrimaryKey() == $b->getPrimaryKey()) {
+                if ($model->getPrimaryKey() === $b->getPrimaryKey()) {
                     unset($this->_related[$name][$a]);
                 }
             }
