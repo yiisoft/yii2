@@ -597,8 +597,6 @@ EOD;
      *
      * @param array $messages
      * @param string $dirName name of the directory to write to
-     * @param boolean $removeUnused if obsolete translations should be removed
-     * @param boolean $sort if translations should be sorted
      * @param string $catalog message catalog
      */
     protected function saveMessagesToPOT($messages, $dirName, $catalog)
