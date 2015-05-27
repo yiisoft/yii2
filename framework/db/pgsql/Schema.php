@@ -466,7 +466,6 @@ SQL;
             $column->type = self::TYPE_STRING;
         }
         $column->phpType = $this->getColumnPhpType($column);
-//        Yii::warning($column->name.' : '.$column->type);
 
         return $column;
     }
