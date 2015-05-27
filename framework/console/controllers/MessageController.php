@@ -133,26 +133,24 @@ class MessageController extends Controller
                     $this->saveMessagesToPHP($messages, $dir, $config['overwrite'], $config['removeUnused'], $config['sort']);
                 }
             }
-        } elseif (in_array($config['format'], ['db', 'pot'])) {
-            if ($config['format'] === 'db') {
-                $db = \Yii::$app->get(isset($config['db']) ? $config['db'] : 'db');
-                if (!$db instanceof \yii\db\Connection) {
-                    throw new Exception('The "db" option must refer to a valid database application component.');
-                }
-                $sourceMessageTable = isset($config['sourceMessageTable']) ? $config['sourceMessageTable'] : '{{%source_message}}';
-                $messageTable = isset($config['messageTable']) ? $config['messageTable'] : '{{%message}}';
-                $this->saveMessagesToDb(
-                    $messages,
-                    $db,
-                    $sourceMessageTable,
-                    $messageTable,
-                    $config['removeUnused'],
-                    $config['languages']
-                );
-            } else {
-                $catalog = isset($config['catalog']) ? $config['catalog'] : 'messages';
-                $this->saveMessagesToPOT($messages, $config['messagePath'], $catalog);
+        } elseif ($config['format'] === 'db') {
+            $db = \Yii::$app->get(isset($config['db']) ? $config['db'] : 'db');
+            if (!$db instanceof \yii\db\Connection) {
+                throw new Exception('The "db" option must refer to a valid database application component.');
             }
+            $sourceMessageTable = isset($config['sourceMessageTable']) ? $config['sourceMessageTable'] : '{{%source_message}}';
+            $messageTable = isset($config['messageTable']) ? $config['messageTable'] : '{{%message}}';
+            $this->saveMessagesToDb(
+                $messages,
+                $db,
+                $sourceMessageTable,
+                $messageTable,
+                $config['removeUnused'],
+                $config['languages']
+            );
+        } elseif ($config['format'] === 'pot') {
+            $catalog = isset($config['catalog']) ? $config['catalog'] : 'messages';
+            $this->saveMessagesToPOT($messages, $config['messagePath'], $catalog);
         }
     }
 
