@@ -384,6 +384,9 @@ class AssetManager extends Component
      * @param array $options the options to be applied when publishing a directory.
      * The following options are supported:
      *
+     * - only: array, list of patterns that the file paths should match if they want to be copied.
+     * - except: array, list of patterns that the files or directories should match if they want to be excluded from being copied.
+     * - caseSensitive: boolean, whether patterns specified at "only" or "except" should be case sensitive. Defaults to true.
      * - beforeCopy: callback, a PHP callback that is called before copying each sub-directory or file.
      *   This overrides [[beforeCopy]] if set.
      * - afterCopy: callback, a PHP callback that is called after a sub-directory or file is successfully copied.
@@ -451,6 +454,9 @@ class AssetManager extends Component
      * @param array $options the options to be applied when publishing a directory.
      * The following options are supported:
      *
+     * - only: array, list of patterns that the file paths should match if they want to be copied.
+     * - except: array, list of patterns that the files or directories should match if they want to be excluded from being copied.
+     * - caseSensitive: boolean, whether patterns specified at "only" or "except" should be case sensitive. Defaults to true.
      * - beforeCopy: callback, a PHP callback that is called before copying each sub-directory or file.
      *   This overrides [[beforeCopy]] if set.
      * - afterCopy: callback, a PHP callback that is called after a sub-directory or file is successfully copied.
@@ -471,22 +477,23 @@ class AssetManager extends Component
                 symlink($src, $dstDir);
             }
         } elseif (!empty($options['forceCopy']) || ($this->forceCopy && !isset($options['forceCopy'])) || !is_dir($dstDir)) {
-            $opts = [
-                'dirMode' => $this->dirMode,
-                'fileMode' => $this->fileMode,
-            ];
-            if (isset($options['beforeCopy'])) {
-                $opts['beforeCopy'] = $options['beforeCopy'];
-            } elseif ($this->beforeCopy !== null) {
-                $opts['beforeCopy'] = $this->beforeCopy;
-            } else {
-                $opts['beforeCopy'] = function ($from, $to) {
-                    return strncmp(basename($from), '.', 1) !== 0;
-                };
+            $opts = array_merge(
+                $options,
+                [
+                    'dirMode' => $this->dirMode,
+                    'fileMode' => $this->fileMode,
+                ]
+            );
+            if (!isset($opts['beforeCopy'])) {
+                if ($this->beforeCopy !== null) {
+                    $opts['beforeCopy'] = $this->beforeCopy;
+                } else {
+                    $opts['beforeCopy'] = function ($from, $to) {
+                        return strncmp(basename($from), '.', 1) !== 0;
+                    };
+                }
             }
-            if (isset($options['afterCopy'])) {
-                $opts['afterCopy'] = $options['afterCopy'];
-            } elseif ($this->afterCopy !== null) {
+            if (!isset($opts['afterCopy']) && $this->afterCopy !== null) {
                 $opts['afterCopy'] = $this->afterCopy;
             }
             FileHelper::copyDirectory($src, $dstDir, $opts);
