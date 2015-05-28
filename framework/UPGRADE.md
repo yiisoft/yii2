@@ -8,6 +8,12 @@ if you want to upgrade from version A to version C and there is
 version B between A and C, you need to following the instructions
 for both A and B.
 
+Upgrade from Yii 2.0.4
+----------------------
+
+* The auto-login feature of `yii\web\User` now requires `yii\web\Request::$enableCookieValidation` to be enabled as well. If there is
+  a need for clear-text cookies (that is, no HMAC-hashing of the cookie data), please create a request in the issue tracker.
+
 Upgrade from Yii 2.0.3
 ----------------------
 

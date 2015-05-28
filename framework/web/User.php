@@ -153,8 +153,12 @@ class User extends Component
         if ($this->identityClass === null) {
             throw new InvalidConfigException('User::identityClass must be set.');
         }
-        if ($this->enableAutoLogin && !isset($this->identityCookie['name'])) {
-            throw new InvalidConfigException('User::identityCookie must contain the "name" element.');
+        if ($this->enableAutoLogin) {
+            if (!isset($this->identityCookie['name'])) {
+                throw new InvalidConfigException('User::identityCookie must contain the "name" element.');
+            } elseif (!Yii::$app->getRequest()->enableCookieValidation) {
+                throw new InvalidConfigException('User::enableAutoLogin requires Request::enableCookieValidation to be enabled.');
+            }
         }
     }
 
