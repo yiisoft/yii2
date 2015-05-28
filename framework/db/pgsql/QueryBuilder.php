@@ -8,6 +8,7 @@
 namespace yii\db\pgsql;
 
 use yii\base\InvalidParamException;
+use yii\db\Expression;
 
 /**
  * QueryBuilder is the query builder for PostgreSQL databases.
