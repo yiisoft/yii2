@@ -55,7 +55,7 @@ public function rules()
 - `caseSensitive`: 検証コードの比較で大文字と小文字を区別するかどうか。デフォルト値は false。
 - `captchaAction`: CAPTCHA 画像を表示する [[yii\captcha\CaptchaAction|CAPTCHA アクション]] に対応する [ルート](structure-controllers.md#routes)。デフォルト値は `'site/captcha'`。
 - `skipOnEmpty`: 入力値が空のときに検証をスキップできるかどうか。デフォルト値は false で、入力が必須であることを意味します。
-  
+
 
 ## [[yii\validators\CompareValidator|compare]] <span id="compare"></span>
 
@@ -108,7 +108,7 @@ public function rules()
 - `timestampAttribute`: このバリデータが、入力された日付/時刻から変換した UNIX タイムスタンプを代入することが出来る属性の名前。
   これは、検証される属性と同じ属性であってもかまいません。
   その場合は、元の値は検証実行後にタイムスタンプで上書きされます。
-  [DatePicker で日付の入力を扱う](widget-jui#datepicker-date-input) に使用例がありますので、参照してください。
+  [DatePicker で日付の入力を扱う](https://github.com/yiisoft/yii2-jui/blob/master/docs/guide-ja/topics-date-picker.md) に使用例がありますので、参照してください。
 
   バージョン 2.0.4 以降では、[[yii\validators\DateValidator::$timestampAttributeFormat|$timestampAttributeFormat]] と [[yii\validators\DateValidator::$timestampAttributeTimeZone|$timestampAttributeTimeZone]] を使って、この属性に対するフォーマットとタイムゾーンを指定することが出来ます。
 
@@ -291,6 +291,7 @@ function foo($model, $attribute) {
   リストは、配列、または、空白かカンマで区切られたファイルの MIME タイプからなる文字列 (例えば、"image/jpeg, image/png") で指定することが出来ます。
   MIME タイプ名は大文字と小文字を区別しません。
   デフォルト値は null であり、すべての MIME タイプが許可されることを意味します。
+  MIME タイプの詳細については、[一般的なメディアタイプ](http://en.wikipedia.org/wiki/Internet_media_type#List_of_common_media_types) を参照してください。
 - `minSize`: アップロードされるファイルに要求される最小限のバイト数。
   デフォルト値は null であり、下限値が無いことを意味します。
 - `maxSize`: アップロードされるファイルに許可される最大限のバイト数。
