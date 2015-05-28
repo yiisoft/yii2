@@ -295,6 +295,7 @@ This validator checks if the input is a valid uploaded file.
 - `mimeTypes`: a list of file MIME types that are allowed to be uploaded. This can be either an array
   or a string consisting of file MIME types separated by space or comma (e.g. "image/jpeg, image/png").
   Mime type names are case-insensitive. Defaults to null, meaning all MIME types are allowed.
+  For more details, please refer to [common media types](http://en.wikipedia.org/wiki/Internet_media_type#List_of_common_media_types).
 - `minSize`: the minimum number of bytes required for the uploaded file. Defaults to null, meaning no lower limit.
 - `maxSize`: the maximum number of bytes allowed for the uploaded file. Defaults to null, meaning no upper limit.
 - `maxFiles`: the maximum number of files that the given attribute can hold. Defaults to 1, meaning
