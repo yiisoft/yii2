@@ -147,7 +147,7 @@ CREATE TABLE "default_pk" (
   type varchar(255) not null
 );
 
-CREATE TABLE "animal" (
+CREATE TABLE "document" (
   id serial primary key,
   title varchar(255) not null,
   content text not null,
