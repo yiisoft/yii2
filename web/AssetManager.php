@@ -81,7 +81,8 @@ class AssetManager extends Component
      * the corresponding value will replace the asset and be registered with the view.
      * For example, an asset file `my/path/to/jquery.js` matches a key `jquery.js`.
      *
-     * Note that the target asset files should be either absolute URLs or paths relative to [[baseUrl]] and [[basePath]].
+     * Note that the target asset files should be absolute URLs, domain relative URLs (starting from '/') or paths
+     * relative to [[baseUrl]] and [[basePath]].
      *
      * In the following example, any assets ending with `jquery.min.js` will be replaced with `jquery/dist/jquery.js`
      * which is relative to [[baseUrl]] and [[basePath]].
@@ -89,6 +90,14 @@ class AssetManager extends Component
      * ```php
      * [
      *     'jquery.min.js' => 'jquery/dist/jquery.js',
+     * ]
+     * ```
+     *
+     * You may also use aliases while specifying map value, for example:
+     *
+     * ```php
+     * [
+     *     'jquery.min.js' => '@web/js/jquery/jquery.js',
      * ]
      * ```
      */
@@ -261,15 +270,21 @@ class AssetManager extends Component
     public function getAssetUrl($bundle, $asset)
     {
         if (($actualAsset = $this->resolveAsset($bundle, $asset)) !== false) {
-            $asset = $actualAsset;
-            $basePath = $this->basePath;
-            $baseUrl = $this->baseUrl;
+            if (strncmp($actualAsset, '@web/', 5) === 0) {
+                $asset = substr($actualAsset, 5);
+                $basePath = Yii::getAlias("@webroot");
+                $baseUrl = Yii::getAlias("@web");
+            } else {
+                $asset = Yii::getAlias($actualAsset);
+                $basePath = $this->basePath;
+                $baseUrl = $this->baseUrl;
+            }
         } else {
             $basePath = $bundle->basePath;
             $baseUrl = $bundle->baseUrl;
         }
 
-        if (!Url::isRelative($asset)) {
+        if (!Url::isRelative($asset) || strncmp($asset, '/', 1) === 0) {
             return $asset;
         }
 
