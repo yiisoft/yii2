@@ -64,10 +64,7 @@ trait EncoderTrait
         }
         $data = explode(',', $data);
         foreach ($data as &$item) {
-            // remove double quotes from value
-            if (!empty($item) && $item[0] == '"' && $item[strlen($value) - 1] == '"') {
-                $item = substr($item, 1, -1);
-            }
+            $item = trim($item, '"');
         }
         unset($item);
         return $data;

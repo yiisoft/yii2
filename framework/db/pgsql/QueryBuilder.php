@@ -205,4 +205,67 @@ class QueryBuilder extends \yii\db\QueryBuilder
         return 'INSERT INTO ' . $schema->quoteTableName($table)
         . ' (' . implode(', ', $columns) . ') VALUES ' . implode(', ', $values);
     }
+
+    /**
+     * @inheritdoc
+     */
+    public function insert($table, $columns, &$params)
+    {
+        $schema = $this->db->getSchema();
+        if (($tableSchema = $schema->getTableSchema($table)) !== null) {
+            $columnSchemas = $tableSchema->columns;
+        } else {
+            $columnSchemas = [];
+        }
+        $names = [];
+        $placeholders = [];
+        foreach ($columns as $name => $value) {
+            $names[] = $schema->quoteColumnName($name);
+            if ($value instanceof Expression) {
+                $placeholders[] = $value->expression;
+                foreach ($value->params as $n => $v) {
+                    $params[$n] = $v;
+                }
+            } else {
+                $phName = self::PARAM_PREFIX . count($params);
+                $placeholders[] = $phName;
+                $params[$phName] = isset($columnSchemas[$name]) ? $columnSchemas[$name]->dbTypecast($value) : $value;
+            }
+        }
+
+        return 'INSERT INTO ' . $schema->quoteTableName($table)
+            . (!empty($names) ? ' (' . implode(', ', $names) . ')' : '')
+            . (!empty($placeholders) ? ' VALUES (' . implode(', ', $placeholders) . ')' : ' DEFAULT VALUES');
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function update($table, $columns, $condition, &$params)
+    {
+        if (($tableSchema = $this->db->getTableSchema($table)) !== null) {
+            $columnSchemas = $tableSchema->columns;
+        } else {
+            $columnSchemas = [];
+        }
+
+        $lines = [];
+        foreach ($columns as $name => $value) {
+            if ($value instanceof Expression) {
+                $lines[] = $this->db->quoteColumnName($name) . '=' . $value->expression;
+                foreach ($value->params as $n => $v) {
+                    $params[$n] = $v;
+                }
+            } else {
+                $phName = self::PARAM_PREFIX . count($params);
+                $lines[] = $this->db->quoteColumnName($name) . '=' . $phName;
+                $params[$phName] = isset($columnSchemas[$name]) ? $columnSchemas[$name]->dbTypecast($value) : $value;
+            }
+        }
+
+        $sql = 'UPDATE ' . $this->db->quoteTableName($table) . ' SET ' . implode(', ', $lines);
+        $where = $this->buildWhere($condition, $params);
+
+        return $where === '' ? $sql : $sql . ' ' . $where;
+    }
 }
