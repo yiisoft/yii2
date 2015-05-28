@@ -5,6 +5,7 @@ namespace yiiunit\framework\db;
 use yii\caching\FileCache;
 use yii\db\Connection;
 use yii\db\DataReader;
+use yii\db\Expression;
 
 /**
  * @group db
@@ -258,11 +259,60 @@ SQL;
         $this->assertEquals(2, $command->execute());
     }
 
-    /*
     public function testInsert()
     {
+        $db = $this->getConnection();
+        $db->createCommand('DELETE FROM {{customer}};')->execute();
+
+        $command = $db->createCommand();
+        $command->insert(
+            '{{customer}}',
+            [
+                'email' => 't1@example.com',
+                'name' => 'test',
+                'address' => 'test address',
+            ]
+        )->execute();
+        $this->assertEquals(1, $db->createCommand('SELECT COUNT(*) FROM {{customer}};')->queryScalar());
+        $record = $db->createCommand('SELECT email, name, address FROM {{customer}};')->queryOne();
+        $this->assertEquals([
+            'email' => 't1@example.com',
+            'name' => 'test',
+            'address' => 'test address',
+        ], $record);
     }
 
+    public function testInsertExpression()
+    {
+        $db = $this->getConnection();
+        $db->createCommand('DELETE FROM {{order_with_null_fk}};')->execute();
+
+        switch($this->driverName){
+            case 'pgsql': $expression = "EXTRACT(YEAR FROM TIMESTAMP 'now')"; break;
+            case 'cubrid':
+            case 'mysql': $expression = "YEAR(NOW())"; break;
+            default:
+            case 'sqlite': $expression = "strftime('%Y')"; break;
+        }
+
+        $command = $db->createCommand();
+        $command->insert(
+            '{{order_with_null_fk}}',
+            [
+                'created_at' => new Expression($expression),
+                'total' => 1,
+            ]
+        )->execute();
+        $this->assertEquals(1, $db->createCommand('SELECT COUNT(*) FROM {{order_with_null_fk}};')->queryScalar());
+        $record = $db->createCommand('SELECT created_at FROM {{order_with_null_fk}};')->queryOne();
+        $this->assertEquals([
+            'created_at' => date('Y'),
+        ], $record);
+    }
+
+
+
+    /*
     public function testUpdate()
     {
     }
