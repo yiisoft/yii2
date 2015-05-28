@@ -100,7 +100,7 @@ theme inheritance which is done by mapping a single view path to multiple target
 ]
 ```
 
-In this case, the view `@app/views/site/about.php` would be themed as either `@app/themes/christmas/site/index.php` 
+In this case, the view `@app/views/site/index.php` would be themed as either `@app/themes/christmas/site/index.php` 
 or `@app/themes/basic/site/index.php`, depending on which themed file exists. If both themed files exist, the first
 one will take precedence. In practice, you would keep most themed view files in `@app/themes/basic` and customize
 some of them in `@app/themes/christmas`.

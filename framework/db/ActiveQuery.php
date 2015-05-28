@@ -7,6 +7,8 @@
 
 namespace yii\db;
 
+use yii\base\InvalidConfigException;
+
 /**
  * ActiveQuery represents a DB query associated with an Active Record class.
  *
@@ -235,6 +237,7 @@ class ActiveQuery extends Query implements ActiveQueryInterface
      * Removes duplicated models by checking their primary key values.
      * This method is mainly called when a join query is performed, which may cause duplicated rows being returned.
      * @param array $models the models to be checked
+     * @throws InvalidConfigException if model primary key is empty
      * @return array the distinctive models
      */
     private function removeDuplicatedModels($models)
@@ -257,6 +260,8 @@ class ActiveQuery extends Query implements ActiveQueryInterface
                     $hash[$key] = true;
                 }
             }
+        } elseif (empty($pks)) {
+            throw new InvalidConfigException("Primary key of '{$class}' can not be empty.");
         } else {
             $pk = reset($pks);
             foreach ($models as $i => $model) {

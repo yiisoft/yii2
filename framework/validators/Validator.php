@@ -363,7 +363,7 @@ class Validator extends Component
 
     /**
      * Checks if the given value is empty.
-     * A value is considered empty if it is null, an empty array, or the trimmed result is an empty string.
+     * A value is considered empty if it is null, an empty array, or an empty string.
      * Note that this method is different from PHP empty(). It will return false when the value is 0.
      * @param mixed $value the value to be checked
      * @return boolean whether the value is empty

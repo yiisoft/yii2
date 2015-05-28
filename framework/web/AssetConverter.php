@@ -65,7 +65,7 @@ class AssetConverter extends Component implements AssetConverterInterface
             if (isset($this->commands[$ext])) {
                 list ($ext, $command) = $this->commands[$ext];
                 $result = substr($asset, 0, $pos + 1) . $ext;
-                if ($this->forceConvert || @filemtime("$basePath/$result") < filemtime("$basePath/$asset")) {
+                if ($this->forceConvert || @filemtime("$basePath/$result") < @filemtime("$basePath/$asset")) {
                     $this->runCommand($command, $basePath, $asset, $result);
                 }
 

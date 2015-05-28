@@ -16,6 +16,8 @@ DROP TABLE IF EXISTS `null_values` CASCADE;
 DROP TABLE IF EXISTS `type` CASCADE;
 DROP TABLE IF EXISTS `constraints` CASCADE;
 DROP TABLE IF EXISTS `animal` CASCADE;
+DROP TABLE IF EXISTS `default_pk` CASCADE;
+DROP TABLE IF EXISTS `document` CASCADE;
 DROP VIEW IF EXISTS `animal_view`;
 
 CREATE TABLE `constraints`
@@ -134,6 +136,20 @@ CREATE TABLE `animal` (
   PRIMARY KEY (id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
+CREATE TABLE `default_pk` (
+  `id` INT NOT NULL DEFAULT 5,
+  `type` VARCHAR(255) NOT NULL,
+  PRIMARY KEY (id)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+CREATE TABLE `document` (
+  `id` INT(11) NOT NULL AUTO_INCREMENT,
+  `title` VARCHAR(255) NOT NULL,
+  `content` TEXT,
+  `version` INT(11) NOT NULL DEFAULT 0,
+  PRIMARY KEY (id)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
 CREATE VIEW `animal_view` AS SELECT * FROM `animal`;
 
 INSERT INTO `animal` (`type`) VALUES ('yiiunit\data\ar\Cat');
@@ -176,6 +192,8 @@ INSERT INTO `order_item_with_null_fk` (order_id, item_id, quantity, subtotal) VA
 INSERT INTO `order_item_with_null_fk` (order_id, item_id, quantity, subtotal) VALUES (2, 5, 1, 15.0);
 INSERT INTO `order_item_with_null_fk` (order_id, item_id, quantity, subtotal) VALUES (2, 3, 1, 8.0);
 INSERT INTO `order_item_with_null_fk` (order_id, item_id, quantity, subtotal) VALUES (3, 2, 1, 40.0);
+
+INSERT INTO `document` (title, content, version) VALUES ('Yii 2.0 guide', 'This is Yii 2.0 guide', 0);
 
 
 /**

@@ -26,9 +26,15 @@ class DevController extends Controller
 {
     public $defaultAction = 'all';
 
+    /**
+     * @var bool whether to use HTTP when cloning github repositories
+     */
+    public $useHttp = false;
+
     public $apps = [
         'basic' => 'git@github.com:yiisoft/yii2-app-basic.git',
         'advanced' => 'git@github.com:yiisoft/yii2-app-advanced.git',
+        'benchmark' => 'git@github.com:yiisoft/yii2-app-benchmark.git',
     ];
 
     public $extensions = [
@@ -62,14 +68,14 @@ class DevController extends Controller
         }
 
         foreach($this->extensions as $ext => $repo) {
-            $ret = $this->actionExt($ext, $repo);
+            $ret = $this->actionExt($ext);
             if ($ret !== 0) {
                 return $ret;
             }
         }
 
         foreach($this->apps as $app => $repo) {
-            $ret = $this->actionApp($app, $repo);
+            $ret = $this->actionApp($app);
             if ($ret !== 0) {
                 return $ret;
             }
@@ -97,12 +103,15 @@ class DevController extends Controller
         $dirs = array_merge($dirs, $this->listSubDirs("$base/apps"));
         asort($dirs);
 
+        $oldcwd = getcwd();
         foreach($dirs as $dir) {
             $displayDir = substr($dir, strlen($base));
             $this->stdout("Running '$command' in $displayDir...\n", Console::BOLD);
+            chdir($dir);
             passthru($command);
             $this->stdout("done.\n", Console::BOLD, Console::FG_GREEN);
         }
+        chdir($oldcwd);
     }
 
     /**
@@ -132,6 +141,9 @@ class DevController extends Controller
             if (empty($repo)) {
                 if (isset($this->apps[$app])) {
                     $repo = $this->apps[$app];
+                    if ($this->useHttp) {
+                        $repo = str_replace('git@github.com:', 'https://github.com/', $repo);
+                    }
                 } else {
                     $this->stderr("Repo argument is required for app '$app'.\n", Console::FG_RED);
                     return 1;
@@ -178,6 +190,9 @@ class DevController extends Controller
             if (empty($repo)) {
                 if (isset($this->extensions[$extension])) {
                     $repo = $this->extensions[$extension];
+                    if ($this->useHttp) {
+                        $repo = str_replace('git@github.com:', 'https://github.com/', $repo);
+                    }
                 } else {
                     $this->stderr("Repo argument is required for extension '$extension'.\n", Console::FG_RED);
                     return 1;
@@ -206,6 +221,15 @@ class DevController extends Controller
         $this->stdout("done.\n", Console::BOLD, Console::FG_GREEN);
 
         return 0;
+    }
+
+    public function options($actionID)
+    {
+        $options = parent::options($actionID);
+        if (in_array($actionID, ['ext', 'app', 'all'])) {
+            $options[] = 'useHttp';
+        }
+        return $options;
     }
 
 

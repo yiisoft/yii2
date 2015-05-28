@@ -513,13 +513,20 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
 
     /**
      * Returns a value indicating whether the named attribute has been changed.
-     * @param string $name the name of the attribute
-     * @return boolean whether the attribute has been changed
+     * @param string $name the name of the attribute.
+     * @param bool $identical whether the comparison of new and old value is made for
+     * identical values using `===`, defaults to `true`. Otherwise `==` is used for comparison.
+     * This parameter is available since version 2.0.4.
+     * @return bool whether the attribute has been changed
      */
-    public function isAttributeChanged($name)
+    public function isAttributeChanged($name, $identical = true)
     {
         if (isset($this->_attributes[$name], $this->_oldAttributes[$name])) {
-            return $this->_attributes[$name] !== $this->_oldAttributes[$name];
+            if ($identical) {
+                return $this->_attributes[$name] !== $this->_oldAttributes[$name];
+            } else {
+                return $this->_attributes[$name] != $this->_oldAttributes[$name];
+            }
         } else {
             return isset($this->_attributes[$name]) || isset($this->_oldAttributes[$name]);
         }
@@ -714,6 +721,10 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
             throw new StaleObjectException('The object being updated is outdated.');
         }
 
+        if (isset($values[$lock])) {
+            $this->$lock = $values[$lock];
+        }
+
         $changedAttributes = [];
         foreach ($values as $name => $value) {
             $changedAttributes[$name] = isset($this->_oldAttributes[$name]) ? $this->_oldAttributes[$name] : null;
@@ -745,7 +756,11 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
     {
         if ($this->updateAllCounters($counters, $this->getOldPrimaryKey(true)) > 0) {
             foreach ($counters as $name => $value) {
-                $this->_attributes[$name] += $value;
+                if (!isset($this->_attributes[$name])) {
+                    $this->_attributes[$name] = $value;
+                } else {
+                    $this->_attributes[$name] += $value;
+                }
                 $this->_oldAttributes[$name] = $this->_attributes[$name];
             }
             return true;
@@ -1154,7 +1169,7 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
 
         if ($relation->via !== null) {
             if ($this->getIsNewRecord() || $model->getIsNewRecord()) {
-                throw new InvalidCallException('Unable to link models: at most one model can be newly created.');
+                throw new InvalidCallException('Unable to link models: the models being linked cannot be newly created.');
             }
             if (is_array($relation->via)) {
                 /* @var $viaRelation ActiveQuery */
@@ -1310,7 +1325,7 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
         } elseif (isset($this->_related[$name])) {
             /* @var $b ActiveRecordInterface */
             foreach ($this->_related[$name] as $a => $b) {
-                if ($model->getPrimaryKey() == $b->getPrimaryKey()) {
+                if ($model->getPrimaryKey() === $b->getPrimaryKey()) {
                     unset($this->_related[$name][$a]);
                 }
             }
@@ -1452,8 +1467,8 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
 
             $relatedModel = $this;
             foreach ($attributeParts as $relationName) {
-                if (isset($this->_related[$relationName]) && $this->_related[$relationName] instanceof self) {
-                    $relatedModel = $this->_related[$relationName];
+                if ($relatedModel->isRelationPopulated($relationName) && $relatedModel->$relationName instanceof self) {
+                    $relatedModel = $relatedModel->$relationName;
                 } else {
                     try {
                         $relation = $relatedModel->getRelation($relationName);
@@ -1471,6 +1486,45 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
         }
 
         return $this->generateAttributeLabel($attribute);
+    }
+
+    /**
+     * Returns the text hint for the specified attribute.
+     * If the attribute looks like `relatedModel.attribute`, then the attribute will be received from the related model.
+     * @param string $attribute the attribute name
+     * @return string the attribute hint
+     * @see attributeHints()
+     * @since 2.0.4
+     */
+    public function getAttributeHint($attribute)
+    {
+        $hints = $this->attributeHints();
+        if (isset($hints[$attribute])) {
+            return ($hints[$attribute]);
+        } elseif (strpos($attribute, '.')) {
+            $attributeParts = explode('.', $attribute);
+            $neededAttribute = array_pop($attributeParts);
+
+            $relatedModel = $this;
+            foreach ($attributeParts as $relationName) {
+                if ($relatedModel->isRelationPopulated($relationName) && $relatedModel->$relationName instanceof self) {
+                    $relatedModel = $relatedModel->$relationName;
+                } else {
+                    try {
+                        $relation = $relatedModel->getRelation($relationName);
+                    } catch (InvalidParamException $e) {
+                        return '';
+                    }
+                    $relatedModel = new $relation->modelClass;
+                }
+            }
+
+            $hints = $relatedModel->attributeHints();
+            if (isset($hints[$neededAttribute])) {
+                return $hints[$neededAttribute];
+            }
+        }
+        return '';
     }
 
     /**

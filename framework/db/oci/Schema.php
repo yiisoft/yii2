@@ -354,6 +354,7 @@ SQL;
      *
      * @param TableSchema $table the table metadata
      * @return array all unique indexes for the given table.
+     * @since 2.0.4
      */
     public function findUniqueIndexes($table)
     {
@@ -381,9 +382,12 @@ SQL;
      * Extracts the data types for the given column
      * @param ColumnSchema $column
      * @param string $dbType DB type
-     * @param string $precision total number of digits
-     * @param string $scale number of digits on the right of the decimal separator
-     * @param string $length length for character types
+     * @param string $precision total number of digits.
+     * This parameter is available since version 2.0.4.
+     * @param string $scale number of digits on the right of the decimal separator.
+     * This parameter is available since version 2.0.4.
+     * @param string $length length for character types.
+     * This parameter is available since version 2.0.4.
      */
     protected function extractColumnType($column, $dbType, $precision, $scale, $length)
     {
@@ -412,14 +416,66 @@ SQL;
      * Extracts size, precision and scale information from column's DB type.
      * @param ColumnSchema $column
      * @param string $dbType the column's DB type
-     * @param string $precision total number of digits
-     * @param string $scale number of digits on the right of the decimal separator
-     * @param string $length length for character types
+     * @param string $precision total number of digits.
+     * This parameter is available since version 2.0.4.
+     * @param string $scale number of digits on the right of the decimal separator.
+     * This parameter is available since version 2.0.4.
+     * @param string $length length for character types.
+     * This parameter is available since version 2.0.4.
      */
     protected function extractColumnSize($column, $dbType, $precision, $scale, $length)
     {
         $column->size = trim($length) == '' ? null : (int)$length;
         $column->precision = trim($precision) == '' ? null : (int)$precision;
         $column->scale = trim($scale) == '' ? null : (int)$scale;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function insert($table, $columns)
+    {
+        $params = [];
+        $returnParams = [];
+        $sql = $this->db->getQueryBuilder()->insert($table, $columns, $params);
+        $tableSchema = $this->getTableSchema($table);
+        $returnColumns = $tableSchema->primaryKey;
+        if (!empty($returnColumns)) {
+            $columnSchemas = $tableSchema->columns;
+            $returning = [];
+            foreach ((array)$returnColumns as $name) {
+                $phName = QueryBuilder::PARAM_PREFIX . (count($params) + count($returnParams));
+                $returnParams[$phName] = [
+                    'column' => $name,
+                    'value' => null,
+                ];
+                if (!isset($columnSchemas[$name]) || $columnSchemas[$name]->phpType !== 'integer') {
+                    $returnParams[$phName]['dataType'] = \PDO::PARAM_STR;
+                } else {
+                    $returnParams[$phName]['dataType'] = \PDO::PARAM_INT;
+                }
+                $returnParams[$phName]['size'] = isset($columnSchemas[$name]) && isset($columnSchemas[$name]->size) ? $columnSchemas[$name]->size : -1;
+                $returning[] = $this->quoteColumnName($name);
+            }
+            $sql .= ' RETURNING ' . implode(', ', $returning) . ' INTO ' . implode(', ', array_keys($returnParams));
+        }
+
+        $command = $this->db->createCommand($sql, $params);
+        $command->prepare(false);
+
+        foreach ($returnParams as $name => &$value) {
+            $command->pdoStatement->bindParam($name, $value['value'], $value['dataType'], $value['size'] );
+        }
+
+        if (!$command->execute()) {
+            return false;
+        }
+
+        $result = [];
+        foreach ($returnParams as $value) {
+            $result[$value['column']] = $value['value'];
+        }
+
+        return $result;
     }
 }

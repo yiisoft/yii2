@@ -67,7 +67,6 @@ class ReleaseController extends Controller
     {
         $headline = "\n$version under development\n";
         $headline .= str_repeat('-', strlen($headline) - 2) . "\n\n";
-        $headline .= "- no changes in this release.\n";
         foreach($this->getChangelogs() as $file) {
             $lines = explode("\n", file_get_contents($file));
             $hl = [

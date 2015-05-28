@@ -155,8 +155,8 @@ class FormatterNumberTest extends TestCase
         $this->assertSame("-123,456.123", $this->formatter->asDecimal($value));
 
         // empty input
-        $this->assertSame("0", $this->formatter->asInteger(false));
-        $this->assertSame("0", $this->formatter->asInteger(""));
+        $this->assertSame("0", $this->formatter->asDecimal(false));
+        $this->assertSame("0", $this->formatter->asDecimal(""));
 
         // null display
         $this->assertSame($this->formatter->nullDisplay, $this->formatter->asDecimal(null));
@@ -196,8 +196,8 @@ class FormatterNumberTest extends TestCase
         $this->assertSame("-123,456.123", $this->formatter->asDecimal($value, 3));
 
         // empty input
-        $this->assertSame("0", $this->formatter->asInteger(false));
-        $this->assertSame("0", $this->formatter->asInteger(""));
+        $this->assertSame("0.00", $this->formatter->asDecimal(false));
+        $this->assertSame("0.00", $this->formatter->asDecimal(""));
 
         // null display
         $this->assertSame($this->formatter->nullDisplay, $this->formatter->asDecimal(null));
@@ -218,8 +218,8 @@ class FormatterNumberTest extends TestCase
         $this->assertSame("-1%", $this->formatter->asPercent('-0.009343'));
 
         // empty input
-        $this->assertSame("0", $this->formatter->asInteger(false));
-        $this->assertSame("0", $this->formatter->asInteger(""));
+        $this->assertSame("0%", $this->formatter->asPercent(false));
+        $this->assertSame("0%", $this->formatter->asPercent(""));
 
         // null display
         $this->assertSame($this->formatter->nullDisplay, $this->formatter->asPercent(null));
@@ -250,9 +250,48 @@ class FormatterNumberTest extends TestCase
         $this->formatter->currencyCode = 'EUR';
         $this->assertSame('123,00 €', $this->formatter->asCurrency('123'));
 
+        $this->formatter->locale = 'de-DE';
+        $this->formatter->currencyCode = null;
+        $this->assertSame('123,00 €', $this->formatter->asCurrency('123', 'EUR'));
+        $this->assertSame('123,00 $', $this->formatter->asCurrency('123', 'USD'));
+        $this->formatter->currencyCode = 'USD';
+        $this->assertSame('123,00 €', $this->formatter->asCurrency('123', 'EUR'));
+        $this->assertSame('123,00 $', $this->formatter->asCurrency('123', 'USD'));
+        $this->formatter->currencyCode = 'EUR';
+        $this->assertSame('123,00 €', $this->formatter->asCurrency('123', 'EUR'));
+        $this->assertSame('123,00 $', $this->formatter->asCurrency('123', 'USD'));
+
+        // default russian currency symbol
+        $this->formatter->locale = 'ru-RU';
+        $this->formatter->currencyCode = null;
+        $this->assertSame('123,00 руб.', $this->formatter->asCurrency('123'));
+        $this->formatter->currencyCode = 'RUB';
+        $this->assertSame('123,00 руб.', $this->formatter->asCurrency('123'));
+
+        // custom currency symbol
+        $this->formatter->currencyCode = null;
+        $this->formatter->numberFormatterSymbols = [
+            NumberFormatter::CURRENCY_SYMBOL => '₽',
+        ];
+        $this->assertSame('123,00 ₽', $this->formatter->asCurrency('123'));
+        $this->formatter->numberFormatterSymbols = [
+            NumberFormatter::CURRENCY_SYMBOL => '&#8381;',
+        ];
+        $this->assertSame('123,00 &#8381;', $this->formatter->asCurrency('123'));
+        // setting the currency code overrides the symbol
+        $this->formatter->currencyCode = 'RUB';
+        $this->assertSame('123,00 руб.', $this->formatter->asCurrency('123'));
+        $this->formatter->numberFormatterSymbols = [NumberFormatter::CURRENCY_SYMBOL => '₽'];
+        $this->assertSame('123,00 $', $this->formatter->asCurrency('123', 'USD'));
+        $this->formatter->numberFormatterSymbols = [NumberFormatter::CURRENCY_SYMBOL => '₽'];
+        $this->assertSame('123,00 €', $this->formatter->asCurrency('123', 'EUR'));
+
         // empty input
-        $this->assertSame("0", $this->formatter->asInteger(false));
-        $this->assertSame("0", $this->formatter->asInteger(""));
+        $this->formatter->locale = 'de-DE';
+        $this->formatter->currencyCode = null;
+        $this->formatter->numberFormatterSymbols = [];
+        $this->assertSame("0,00 €", $this->formatter->asCurrency(false));
+        $this->assertSame("0,00 €", $this->formatter->asCurrency(""));
 
         // null display
         $this->assertSame($this->formatter->nullDisplay, $this->formatter->asCurrency(null));
@@ -288,8 +327,10 @@ class FormatterNumberTest extends TestCase
         $this->assertSame('EUR -123.45', $this->formatter->asCurrency(-123.45));
 
         // empty input
-        $this->assertSame("0", $this->formatter->asInteger(false));
-        $this->assertSame("0", $this->formatter->asInteger(""));
+        $this->formatter->currencyCode = 'USD';
+        $this->formatter->numberFormatterSymbols = [];
+        $this->assertSame("USD 0.00", $this->formatter->asCurrency(false));
+        $this->assertSame("USD 0.00", $this->formatter->asCurrency(""));
 
         // null display
         $this->assertSame($this->formatter->nullDisplay, $this->formatter->asCurrency(null));
@@ -305,8 +346,8 @@ class FormatterNumberTest extends TestCase
         $this->assertSame("-1.23456123E5", $this->formatter->asScientific($value));
 
         // empty input
-        $this->assertSame("0", $this->formatter->asInteger(false));
-        $this->assertSame("0", $this->formatter->asInteger(""));
+        $this->assertSame("0E0", $this->formatter->asScientific(false));
+        $this->assertSame("0E0", $this->formatter->asScientific(""));
 
         // null display
         $this->assertSame($this->formatter->nullDisplay, $this->formatter->asScientific(null));
@@ -322,8 +363,8 @@ class FormatterNumberTest extends TestCase
         $this->assertSame("-1.234561E+5", $this->formatter->asScientific($value));
 
         // empty input
-        $this->assertSame("0", $this->formatter->asInteger(false));
-        $this->assertSame("0", $this->formatter->asInteger(""));
+        $this->assertSame("0.000000E+0", $this->formatter->asScientific(false));
+        $this->assertSame("0.000000E+0", $this->formatter->asScientific(""));
 
         // null display
         $this->assertSame($this->formatter->nullDisplay, $this->formatter->asScientific(null));
@@ -374,6 +415,12 @@ class FormatterNumberTest extends TestCase
         $this->assertSame("1 KB", $this->formatter->asShortSize(1000));
         $this->assertSame("1.02 KB", $this->formatter->asShortSize(1023));
         $this->assertNotEquals("3 PB", $this->formatter->asShortSize(3 * 1000 * 1000 * 1000 * 1000 * 1000 * 1000)); // this is 3 EB not 3 PB
+        // string values
+        $this->assertSame("28.41 GB", $this->formatter->asShortSize(28406984038));
+        $this->assertSame("28.41 GB", $this->formatter->asShortSize((string)28406984038));
+        $this->assertSame("56.81 GB", $this->formatter->asShortSize(28406984038 + 28406984038));
+        $this->assertSame("56.81 GB", $this->formatter->asShortSize((string)(28406984038 + 28406984038)));
+
         // tests for base 1024
         $this->formatter->sizeFormatBase = 1024;
         $this->assertSame("1 KiB", $this->formatter->asShortSize(1024));
@@ -406,6 +453,12 @@ class FormatterNumberTest extends TestCase
         $this->assertSame("1.00 KB", $this->formatter->asShortSize(1000));
         $this->assertSame("1.02 KB", $this->formatter->asShortSize(1023));
         $this->assertNotEquals("3 PB", $this->formatter->asShortSize(3 * 1000 * 1000 * 1000 * 1000 * 1000 * 1000)); // this is 3 EB not 3 PB
+        // string values
+        $this->assertSame("28.41 GB", $this->formatter->asShortSize(28406984038));
+        $this->assertSame("28.41 GB", $this->formatter->asShortSize((string)28406984038));
+        $this->assertSame("56.81 GB", $this->formatter->asShortSize(28406984038 + 28406984038));
+        $this->assertSame("56.81 GB", $this->formatter->asShortSize((string)(28406984038 + 28406984038)));
+
         // tests for base 1024
         $this->formatter->sizeFormatBase = 1024;
         $this->assertSame("1.00 KiB", $this->formatter->asShortSize(1024));

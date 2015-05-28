@@ -9,6 +9,8 @@ IF OBJECT_ID('[dbo].[profile]', 'U') IS NOT NULL DROP TABLE [dbo].[profile];
 IF OBJECT_ID('[dbo].[type]', 'U') IS NOT NULL DROP TABLE [dbo].[type];
 IF OBJECT_ID('[dbo].[null_values]', 'U') IS NOT NULL DROP TABLE [dbo].[null_values];
 IF OBJECT_ID('[dbo].[animal]', 'U') IS NOT NULL DROP TABLE [dbo].[animal];
+IF OBJECT_ID('[dbo].[default_pk]', 'U') IS NOT NULL DROP TABLE [dbo].[default_pk];
+IF OBJECT_ID('[dbo].[document]', 'U') IS NOT NULL DROP TABLE [dbo].[document];
 IF OBJECT_ID('[dbo].[animal_view]', 'V') IS NOT NULL DROP VIEW [dbo].[animal_view];
 
 CREATE TABLE [dbo].[profile] (
@@ -115,6 +117,24 @@ CREATE TABLE [dbo].[animal] (
 	) ON [PRIMARY]
 );
 
+CREATE TABLE [dbo].[default_pk] (
+	[id] [int] NOT NULL DEFAULT 5,
+	[type] [varchar](255) NOT NULL,
+	CONSTRAINT [PK_default_pk] PRIMARY KEY CLUSTERED (
+		[id] ASC
+	) ON [PRIMARY]
+);
+
+CREATE TABLE [dbo].[document] (
+	[id] [int] IDENTITY(1,1) NOT NULL,
+	[title] [varchar](255) NOT NULL,
+	[content] [text],
+	[version] [int] NOT NULL DEFAULT 0,
+	CONSTRAINT [PK_default_pk] PRIMARY KEY CLUSTERED (
+		[id] ASC
+	) ON [PRIMARY]
+);
+
 CREATE VIEW [dbo].[animal_view] AS SELECT * FROM [dbo].[animal];
 
 INSERT INTO [dbo].[animal] (type) VALUES ('yiiunit\data\ar\Cat');
@@ -157,3 +177,5 @@ INSERT INTO [dbo].[order_item_with_null_fk] ([order_id], [item_id], [quantity], 
 INSERT INTO [dbo].[order_item_with_null_fk] ([order_id], [item_id], [quantity], [subtotal]) VALUES (2, 5, 1, 15.0);
 INSERT INTO [dbo].[order_item_with_null_fk] ([order_id], [item_id], [quantity], [subtotal]) VALUES (2, 3, 1, 8.0);
 INSERT INTO [dbo].[order_item_with_null_fk] ([order_id], [item_id], [quantity], [subtotal]) VALUES (3, 2, 1, 40.0);
+
+INSERT INTO [dbo].[document] ([title], [content], [version]) VALUES ('Yii 2.0 guide', 'This is Yii 2.0 guide', 0);

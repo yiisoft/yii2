@@ -11,6 +11,7 @@ use yii\db\sqlite\QueryBuilder as SqliteQueryBuilder;
 use yii\db\mssql\QueryBuilder as MssqlQueryBuilder;
 use yii\db\pgsql\QueryBuilder as PgsqlQueryBuilder;
 use yii\db\cubrid\QueryBuilder as CubridQueryBuilder;
+use yii\db\oci\QueryBuilder as OracleQueryBuilder;
 
 /**
  * @group db
@@ -35,6 +36,8 @@ class QueryBuilderTest extends DatabaseTestCase
                 return new PgsqlQueryBuilder($this->getConnection(true, false));
             case 'cubrid':
                 return new CubridQueryBuilder($this->getConnection(true, false));
+            case 'oci':
+                return new OracleQueryBuilder($this->getConnection(true, false));
         }
         throw new \Exception('Test is not implemented for ' . $this->driverName);
     }
@@ -144,7 +147,7 @@ class QueryBuilderTest extends DatabaseTestCase
         foreach ($this->columnTypes() as $item) {
             list ($column, $expected) = $item;
             if (strncmp($column, 'pk', 2) !== 0) {
-                $columns['col' . ++$i] = str_replace('CHECK (value', 'CHECK (col' . $i, $column);
+                $columns['col' . ++$i] = str_replace('CHECK (value', 'CHECK ([[col' . $i . ']]', $column);
             }
         }
         $this->getConnection(false)->createCommand($qb->createTable('column_type_table', $columns))->execute();
