@@ -110,11 +110,14 @@ class User extends Component
      */
     public $absoluteAuthTimeout;
     /**
-     * @var boolean whether to automatically renew the identity cookie each time a page is requested.
+     * @var boolean|integer whether to automatically renew the identity cookie each time a page is requested. Alternatively the renew-interval in seconds.
      * This property is effective only when [[enableAutoLogin]] is true.
      * When this is false, the identity cookie will expire after the specified duration since the user
      * is initially logged in. When this is true, the identity cookie will expire after the specified duration
-     * since the user visits the site the last time.
+     * since the user visits the site the last time. When this is an integer, the value is assumed to be an interval in seconds. The difference to the previous
+     * value of true is that the identity cookie will not be renewed every single request, instead only every given amount of seconds. A useful value might be 600,
+     * which renews the identity cookie no more than every 10 minutes. In worst case that would mean, that the identitiy cookie will expire after the specified
+     * duration minus 10 minutes since the user visits the site the last time. A perfect value depends on the individual use-case.
      * @see enableAutoLogin
      */
     public $autoRenewCookie = true;
@@ -150,8 +153,12 @@ class User extends Component
         if ($this->identityClass === null) {
             throw new InvalidConfigException('User::identityClass must be set.');
         }
-        if ($this->enableAutoLogin && !isset($this->identityCookie['name'])) {
-            throw new InvalidConfigException('User::identityCookie must contain the "name" element.');
+        if ($this->enableAutoLogin) {
+            if (!isset($this->identityCookie['name'])) {
+                throw new InvalidConfigException('User::identityCookie must contain the "name" element.');
+            } elseif (!Yii::$app->getRequest()->enableCookieValidation) {
+                throw new InvalidConfigException('User::enableAutoLogin requires Request::enableCookieValidation to be enabled.');
+            }
         }
     }
 
@@ -285,11 +292,16 @@ class User extends Component
         }
 
         $data = json_decode($value, true);
-        if (count($data) !== 3 || !isset($data[0], $data[1], $data[2])) {
-            return;
+        if (count($data) !== 4 || !isset($data[0], $data[1], $data[2], $data[3])) {
+            // Ensure backward compatibility for cookie without timestamp
+            if (count($data) !== 3 || !isset($data[0], $data[1], $data[2])) {
+                return;
+            } else {
+                $data[3] = time();
+            }
         }
 
-        list ($id, $authKey, $duration) = $data;
+        list ($id, $authKey, $duration, $timestamp) = $data;
         /* @var $class IdentityInterface */
         $class = $this->identityClass;
         $identity = $class::findIdentity($id);
@@ -298,16 +310,19 @@ class User extends Component
         } elseif (!$identity instanceof IdentityInterface) {
             throw new InvalidValueException("$class::findIdentity() must return an object implementing IdentityInterface.");
         }
-
-        if ($identity->validateAuthKey($authKey)) {
+        
+        $ip = Yii::$app->getRequest()->getUserIP();
+        
+        if ($timestamp < time() - $duration) {
+            Yii::warning("Login attempted with expired cookie for user '$id' from $ip.", __METHOD__);
+        } elseif ($identity->validateAuthKey($authKey)) {
             if ($this->beforeLogin($identity, true, $duration)) {
                 $this->switchIdentity($identity, $this->autoRenewCookie ? $duration : 0);
-                $ip = Yii::$app->getRequest()->getUserIP();
                 Yii::info("User '$id' logged in from $ip via cookie.", __METHOD__);
                 $this->afterLogin($identity, true, $duration);
             }
         } else {
-            Yii::warning("Invalid auth key attempted for user '$id': $authKey", __METHOD__);
+            Yii::warning("Invalid auth key attempted for user '$id' from $ip: $authKey", __METHOD__);
         }
     }
 
@@ -517,8 +532,17 @@ class User extends Component
         if ($value !== null) {
             $data = json_decode($value, true);
             if (is_array($data) && isset($data[2])) {
+                if (is_int($this->autoRenewCookie)) {
+                    // Ensure backward compatibility for cookie without timestamp
+                    if (isset($data[3])) {
+                        if ($data[3] >= time() - $this->autoRenewCookie) {
+                            return;
+                        }
+                    }
+                }
+                $data[3] = time();
                 $cookie = new Cookie($this->identityCookie);
-                $cookie->value = $value;
+                $cookie->value = json_encode($data, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
                 $cookie->expire = time() + (int) $data[2];
                 Yii::$app->getResponse()->getCookies()->add($cookie);
             }
@@ -541,6 +565,7 @@ class User extends Component
             $identity->getId(),
             $identity->getAuthKey(),
             $duration,
+            time(),
         ], JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
         $cookie->expire = time() + $duration;
         Yii::$app->getResponse()->getCookies()->add($cookie);
