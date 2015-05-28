@@ -223,9 +223,7 @@ class Model extends Component implements IteratorAggregate, ArrayAccess, Arrayab
             }
         }
         foreach ($scenarios as $scenario => $attributes) {
-            if (empty($attributes) && $scenario !== self::SCENARIO_DEFAULT) {
-                unset($scenarios[$scenario]);
-            } else {
+            if (!empty($attributes)) {
                 $scenarios[$scenario] = [];
                 foreach ($attributes as $attribute => $safe) {
                     $scenarios[$scenario][] = ($safe ? '' : '!') . $attribute;
