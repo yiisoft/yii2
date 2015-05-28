@@ -79,7 +79,8 @@ trait EncoderTrait
      */
     public function arrayNumericEncode($value)
     {
-        foreach ((array)$value as &$item) {
+        $value = (array)$value;
+        foreach ($value as &$item) {
             $item = str_replace(',', '.', $item);
         }
         unset($item);
