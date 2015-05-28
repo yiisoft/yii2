@@ -168,6 +168,64 @@ class PostgreSQLActiveRecordTest extends ActiveRecordTest
         $record->save(false);
         $this->assertEquals(5, $record->primaryKey);
     }
+
+    public function testTextArrayAttribute()
+    {
+        $tags = ['programming', 'OOP'];
+        $question = new \yiiunit\data\ar\Question();
+        $question->title = 'How to write a good code?';
+        $question->tags = $tags;
+        $this->assertTrue($question->save(false));
+        $question->refresh();
+        $this->assertEquals($tags, $question->tags);
+
+        $tags[] = "pattern's";
+        $question->tags = $tags;
+        $this->assertTrue($question->save(false));
+        $question->refresh();
+        $this->assertEquals($tags, $question->tags);
+
+        $tags[] = "lazy loading";
+        $question->tags = $tags;
+        $this->assertTrue($question->save(false));
+        $question->refresh();
+        $this->assertEquals($tags, $question->tags);
+    }
+
+    public function testIntegerArrayAttribute()
+    {
+        // ids of related questions
+        $relatedIds = [];
+        $question = new \yiiunit\data\ar\Question();
+        $question->title = 'How to optimize page loading?';
+        $question->tags = ['html', 'css', 'optimization'];
+        $question->related = $relatedIds;
+        $this->assertTrue($question->save(false));
+        $this->assertEquals($relatedIds, $question->related);
+
+        $relatedIds[] = rand(100, 999);
+        $question->related = $relatedIds;
+        $this->assertTrue($question->save(false));
+        $question->refresh();
+        $this->assertEquals($relatedIds, $question->related);
+    }
+
+    public function testNumericArrayAttribute()
+    {
+        $points = [0.25, 3.8, 4.2];
+        $question = new \yiiunit\data\ar\Question();
+        $question->title = 'How to run unit tests?';
+        $question->points = $points;
+        $this->assertTrue($question->save(false));
+        $question->refresh();
+        $this->assertEquals($points, $question->points);
+
+        array_pop($points);
+        $question->points = $points;
+        $this->assertTrue($question->save(false));
+        $question->refresh();
+        $this->assertEquals($points, $question->points);
+    }
 }
 
 class BoolAR extends ActiveRecord

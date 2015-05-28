@@ -20,6 +20,7 @@ DROP TABLE IF EXISTS "bool_values" CASCADE;
 DROP TABLE IF EXISTS "animal" CASCADE;
 DROP TABLE IF EXISTS "default_pk" CASCADE;
 DROP TABLE IF EXISTS "document" CASCADE;
+DROP TABLE IF EXISTS "question" CASCADE;
 DROP VIEW IF EXISTS "animal_view";
 DROP SCHEMA IF EXISTS "schema1" CASCADE;
 DROP SCHEMA IF EXISTS "schema2" CASCADE;
@@ -231,3 +232,15 @@ INSERT INTO "validator_ref" (id, a_field, ref) VALUES (3, 'ref_to_3', 3);
 INSERT INTO "validator_ref" (id, a_field, ref) VALUES (4, 'ref_to_4', 4);
 INSERT INTO "validator_ref" (id, a_field, ref) VALUES (5, 'ref_to_4', 4);
 INSERT INTO "validator_ref" (id, a_field, ref) VALUES (6, 'ref_to_5', 5);
+
+/**
+ * Tables for testing posgres arrays
+ */
+
+CREATE TABLE "question" (
+  id SERIAL NOT NULL PRIMARY KEY,
+  title CHARACTER VARYING(60),
+  tags text[] NOT NULL DEFAULT '{}'::text[],
+  related integer[] NOT NULL DEFAULT '{}'::integer[],
+  points numeric[] NOT NULL DEFAULT '{}'::numeric[]
+);
