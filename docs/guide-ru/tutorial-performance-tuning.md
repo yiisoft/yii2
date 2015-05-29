@@ -81,10 +81,10 @@ return [
 
 ## Объединение и минимизация ресурсов <span id="optimizing-assets"></span>
 
-A complex Web page often includes many CSS and/or JavaScript asset files. To reduce the number of HTTP requests 
-and the overall download size of these assets, you should consider combining them into one single file and
-compressing it. This may greatly improve the page loading time and reduce the server load. For more details,
-please refer to the [Assets](structure-assets.md) section.
+Сложные веб-страницы часто подключают много CSS и/или JavaScript ресурсных файлов. Для уменьшения числа HTTP запросов
+и общего размера загрузки этих ресурсов, вы должны рассмотреть вопрос об их объединении в один файл и его сжатии.
+Это может сильно улучшить скорость загрузки страницы и уменьшить нагрузку на сервер. Для получения более подробной
+информации обратитесь, пожалуйста, к разделу [Ресурсы](structure-assets.md)
 
 
 ## Оптимизация хранилища сессий <span id="optimizing-session"></span>
