@@ -313,15 +313,17 @@ class BaseInflector
      * For example, 'PostTag' will be converted to 'Post Tag'.
      * @param string $name the string to be converted
      * @param boolean $ucwords whether to capitalize the first letter in each word
+     * @param boolean|string $strict whether to create a space between two consecutive uppercase chars, defaults to false
      * @return string the resulting words
      */
-    public static function camel2words($name, $ucwords = true)
+    public static function camel2words($name, $ucwords = true, $strict = false)
     {
+        $regex = $strict ? '/[A-Z]/' : '/(?<![A-Z])[A-Z]/';
         $label = trim(strtolower(str_replace([
             '-',
             '_',
             '.'
-        ], ' ', preg_replace('/(?<![A-Z])[A-Z]/', ' \0', $name))));
+        ], ' ', preg_replace($regex, ' \0', $name))));
 
         return $ucwords ? ucwords($label) : $label;
     }
