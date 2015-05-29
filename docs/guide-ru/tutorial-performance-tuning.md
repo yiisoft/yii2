@@ -35,10 +35,11 @@ defined('YII_DEBUG') or define('YII_DEBUG', false);
 
 ## Использование техник кеширования <span id="using-caching"></span>
 
-You can use various caching techniques to significantly improve the performance of your application. For example,
-if your application allows users to enter text in Markdown format, you may consider caching the parsed Markdown
-content to avoid parsing the same Markdown text repeatedly in every request. Please refer to 
-the [Caching](caching-overview.md) section to learn about the caching support provided by Yii.
+Вы можете использовать различные техники кеширования чтобы значительно улучшить производительность вашего приложения. 
+Например, если ваше приложение позволяет пользователям вводить текст в формате Markdown, вы можете рассмотреть 
+кэширование разобранного содержимого Markdown, чтобы избежать разбора одной и той же разметки Markdown неоднократно 
+при каждом запросе. Пожалуйста, обратитесь к разделу [Кеширование](caching-overview.md) чтобы узнать о поддержке 
+кеширования, которую предоставляет Yii.
 
 
 ## Включение кеширования *схемы данных* <span id="enable-schema-caching"></span>
@@ -203,9 +204,9 @@ Whenever a new task is put on the queue, it will initiate or notify the task han
 
 ## Профилирование производительности <span id="performance-profiling"></span>
 
-You should profile your code to find out the performance bottlenecks and take appropriate measures accordingly.
-The following profiling tools may be useful:
+Вы должны профилировать код, чтобы определить узкие места в производительности и принять соответствующие меры.
+Следующие инструменты для профилирования могут оказаться полезными:
 
 - [Yii debug toolbar and debugger](https://github.com/yiisoft/yii2-debug/blob/master/docs/guide/README.md)
-- [XDebug profiler](http://xdebug.org/docs/profiler)
+- [Профайлер XDebug](http://xdebug.org/docs/profiler)
 - [XHProf](http://www.php.net/manual/en/book.xhprof.php)
