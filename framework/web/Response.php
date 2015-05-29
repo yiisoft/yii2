@@ -667,6 +667,7 @@ class Response extends \yii\base\Response
      */
     public function xSendFile($filePath, $attachmentName = null, $options = [])
     {
+        $this->format = self::FORMAT_RAW;
         if ($attachmentName === null) {
             $attachmentName = basename($filePath);
         }
