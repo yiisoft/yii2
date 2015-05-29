@@ -687,6 +687,8 @@ class Response extends \yii\base\Response
             ->setDefault('Content-Type', $mimeType)
             ->setDefault('Content-Disposition', "{$disposition}; filename=\"{$attachmentName}\"");
 
+        $this->format = self::FORMAT_RAW;
+
         return $this;
     }
 
