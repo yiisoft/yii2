@@ -29,6 +29,7 @@ Yii Framework 2 Change Log
 - Enh #8522: Added ability to use aliases and domain relative URLs at `yii\web\AssetManager::assetMap` (klimov-paul)
 - Enh #8566: Added support for 'only' and 'except' options for `yii\web\AssetManager::publish()` (klimov-paul)
 - Chg #6354: `ErrorHandler::logException()` will now log the whole exception object instead of only its string representation (cebe)
+- Eng #7911: Auto convert AR arrays to Postgres array (joni-jones)
 
 
 2.0.4 May 10, 2015

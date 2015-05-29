@@ -7,9 +7,10 @@
 
 namespace yii\db\pgsql;
 
+use Yii;
 use yii\db\Expression;
 use yii\db\TableSchema;
-use yii\db\ColumnSchema;
+use yii\db\pgsql\ColumnSchema;
 
 /**
  * Schema is the class for retrieving metadata from a PostgreSQL database
@@ -20,6 +21,10 @@ use yii\db\ColumnSchema;
  */
 class Schema extends \yii\db\Schema
 {
+    const TYPE_INTEGER_ARRAY = 'integer[]';
+    const TYPE_TEXT_ARRAY = 'text[]';
+    const TYPE_NUMERIC_ARRAY = 'numberic[]';
+
     /**
      * @var string the default schema used for the current session.
      */
@@ -104,8 +109,21 @@ class Schema extends \yii\db\Schema
         'uuid' => self::TYPE_STRING,
         'json' => self::TYPE_STRING,
         'jsonb' => self::TYPE_STRING,
-        'xml' => self::TYPE_STRING
+        'xml' => self::TYPE_STRING,
+        
+        '_int4' => self::TYPE_INTEGER_ARRAY,
+        '_int8' => self::TYPE_INTEGER_ARRAY,
+        '_text' => self::TYPE_TEXT_ARRAY,
+        '_numeric' => self::TYPE_NUMERIC_ARRAY,
     ];
+
+    /**
+     * @inheritdoc
+     */
+    protected function createColumnSchema()
+    {
+        return Yii::createObject('yii\db\pgsql\ColumnSchema');
+    }
 
 
     /**
