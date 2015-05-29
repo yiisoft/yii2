@@ -172,7 +172,7 @@ $session = Yii::$app->session;
 
 // Запрос #1
 // установка flash-сообщения с названием "postDeleted"
-$session->setFlash('postDeleted', 'Вы успешно удалил пост.');
+$session->setFlash('postDeleted', 'Вы успешно удалили пост.');
 
 // Запрос #2
 // отображение flash-сообщения "postDeleted"
