@@ -1,9 +1,9 @@
 Оптимизация производительности
 ==================
 
-There are many factors affecting the performance of your Web application. Some are environmental, some are related 
-with your code, while some others are related with Yii itself. In this section, we will enumerate most of these
-factors and explain how you can improve your application performance by adjusting these factors.
+Существует много факторов, влияющих на производительность веб-приложения. *Какие-то относятся к окружению, какие-то 
+к вашему коду, а какие-то к самому Yii*. В этом разделе мы перечислим большинство из этих
+факторов и объясним, как можно улучшить производительность приложения, регулируя эти факторы.
 
 
 ## Оптимизация окружения PHP <span id="optimizing-php"></span>
@@ -17,19 +17,20 @@ factors and explain how you can improve your application performance by adjustin
 
 ## Отключение режима отладки <span id="disable-debug"></span>
 
-When running an application in production, you should disable debug mode. Yii uses the value of a constant
-named `YII_DEBUG` to indicate whether debug mode should be enabled. When debug mode is enabled, Yii
-will take extra time to generate and record debugging information.
+При запуске приложения в *продакшене*, вам нужно отключить режим отладки. Yii использует значение константы
+`YII_DEBUG` чтобы указать, следует ли включить режим отладки. Когда режим отладки включен, Yii
+тратит дополнительное время чтобы создать и записать отладочную информацию.
 
-You may place the following line of code at the beginning of the [entry script](structure-entry-scripts.md) to
-disable debug mode:
+Вы можете разместить следующую строку кода в начале [entry script](structure-entry-scripts.md) чтобы 
+отключить режим отладки:
 
 ```php
 defined('YII_DEBUG') or define('YII_DEBUG', false);
 ```
 
-> Info: The default value of `YII_DEBUG` is false. So if you are certain that you do not change its default
-  value somewhere else in your application code, you may simply remove the above line to disable debug mode. 
+> Info: Значение по умолчанию для константы `YII_DEBUG` -- false. 
+Так что, если вы уверены, что не изменяете значение по умолчанию где-то в коде приложения, вы можете просто удалить эту 
+строку, чтобы отключить режим отладки.
   
 
 ## Использование техник кеширования <span id="using-caching"></span>
