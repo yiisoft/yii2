@@ -2,8 +2,8 @@
 ==================
 
 Существует много факторов, влияющих на производительность веб-приложения. *Какие-то относятся к окружению, какие-то 
-к вашему коду, а какие-то к самому Yii*. В этом разделе мы перечислим большинство из этих
-факторов и объясним, как можно улучшить производительность приложения, регулируя эти факторы.
+к вашему коду, а какие-то к самому Yii*. В этом разделе мы перечислим большинство из них и объясним, как можно улучшить 
+производительность приложения, регулируя эти факторы.
 
 
 ## Оптимизация окружения PHP <span id="optimizing-php"></span>
@@ -12,24 +12,24 @@
 
 - Используйте последнюю стабильную версию PHP. Мажорные релизы PHP могут принести значительные улучшения производительности.
 - Включите кеширование байткода в [Opcache](http://php.net/opcache) (PHP 5.5 и старше) или [APC](http://ru2.php.net/apc) 
-  (PHP 5.4 и более ранние версии). Кеширование байткода позволяет избежать траты времени на обработку и подключение PHP 
+  (PHP 5.4 и более ранние версии). Кеширование байткода позволяет избежать затрат времени на обработку и подключение PHP 
   скриптов при каждом входящем запросе.
 
 ## Отключение режима отладки <span id="disable-debug"></span>
 
-При запуске приложения в *продакшене*, вам нужно отключить режим отладки. Yii использует значение константы
-`YII_DEBUG` чтобы указать, следует ли включить режим отладки. Когда режим отладки включен, Yii
-тратит дополнительное время чтобы создать и записать отладочную информацию.
+При запуске приложения в *производственном режиме*, вам нужно отключить режим отладки. Yii использует значение константы
+`YII_DEBUG` чтобы указать, следует ли включить режим отладки. Когда режим отладки включен, Yii тратит дополнительное 
+время чтобы создать и записать отладочную информацию.
 
-Вы можете разместить следующую строку кода в начале [entry script](structure-entry-scripts.md) чтобы 
+Вы можете разместить следующую строку кода в начале [входного скрипта](structure-entry-scripts.md) чтобы 
 отключить режим отладки:
 
 ```php
 defined('YII_DEBUG') or define('YII_DEBUG', false);
 ```
 
-> Info: Значение по умолчанию для константы `YII_DEBUG` -- false. 
-Так что, если вы уверены, что не изменяете значение по умолчанию где-то в коде приложения, вы можете просто удалить эту 
+> Info: Значение по умолчанию для константы `YII_DEBUG` — false. 
+Так что, если вы уверены, что не изменяете значение по умолчанию где-то в коде приложения, можете просто удалить эту 
 строку, чтобы отключить режим отладки.
   
 
@@ -89,10 +89,11 @@ return [
 
 ## Оптимизация хранилища сессий <span id="optimizing-session"></span>
 
-By default session data are stored in files. This is fine for development and small projects. But when it comes 
-to handling massive concurrent requests, it is better to use more sophisticated storage, such as database. Yii supports
-a variety of session storage out of box. You can use these storage by configuring the `session` component in the
-[application configuration](concept-configurations.md) like the following,
+По умолчанию данные сессий хранятся в файлах. Это удобно для разработки или в маленьких проектах.
+Но когда дело доходит до обработки множества параллельных запросов, то лучше использовать более сложные хранилища, 
+такие как базы данных. Yii поддерживает различные хранилища "из коробки". 
+Вы можете использовать эти хранилища, сконфигурировав компонент `session` в
+[конфигурации приложения](concept-configurations.md) как показано ниже,
 
 ```php
 return [
@@ -124,12 +125,12 @@ CREATE TABLE session (
 )
 ```
 
-You may also store session data in a cache by using [[yii\web\CacheSession]]. In theory, you can use any supported
-[cache storage](caching-data.md#supported-cache-storage). Note, however, that some cache storage may flush cached data
+Вы также можете хранить сессионные данные в кеше с помощью [[yii\web\CacheSession]]. Теоретически, вы можете использовать любое поддерживаемое
+[хранилище кеша](caching-data.md#supported-cache-storage). Note, however, that some cache storage may flush cached data
 when the storage limit is reached. For this reason, you should mainly use those cache storage that do not enforce
 storage limit.
 
-If you have [Redis](http://redis.io/) on your server, it is highly recommended you use it as session storage by using
+Если на вашем сервере установлен [Redis](http://redis.io/), настоятельно рекомендуется использовать его в качестве хранилища сессий *используя*
 [[yii\redis\Session]].
 
 
