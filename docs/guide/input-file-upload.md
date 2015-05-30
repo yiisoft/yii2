@@ -116,53 +116,65 @@ the uploaded file is valid and save the file on the server.
 
 ## Uploading Multiple Files <span id="uploading-multiple-files"></span>
 
-If you need to upload multiple files at once, some adjustments are required.
- 
-Model:
+You can also upload multiple files at once, with some adjustments to the code listed in the previous subsections.
+
+First you should adjust the model class by adding the `maxFiles` option in the `file` validation rule to limit
+the maximum number of files allowed to upload. The `upload()` method should also be updated to save the uploaded files
+one by one.
 
 ```php
+namespace app\models;
+
+use yii\base\Model;
+use yii\web\UploadedFile;
+
 class UploadForm extends Model
 {
     /**
-     * @var UploadedFile|Null file attribute
+     * @var UploadedFile[]
      */
-    public $file;
+    public $imageFiles;
 
-    /**
-     * @return array the validation rules.
-     */
     public function rules()
     {
         return [
-            [['file'], 'file', 'maxFiles' => 10], // <--- here!
+            [['imageFiles'], 'file', 'skipOnEmpty' => false, 'fileExtension' => 'png, jpg', 'maxFiles' => 4],
         ];
+    }
+    
+    public function upload()
+    {
+        if ($this->validate()) { 
+            foreach ($this->imageFiles as $file) {
+                $file->saveAs('uploads/' . $file->baseName . '.' . $file->extension);
+            }
+            return true;
+        } else {
+            return false;
+        }
     }
 }
 ```
 
-View:
-
+In the view file, you should add the `multiple` option to the `fileInput()` call so that the file upload field
+can receive multiple files:
+ 
 ```php
 <?php
 use yii\widgets\ActiveForm;
-
-$form = ActiveForm::begin(['options' => ['enctype' => 'multipart/form-data']]);
 ?>
 
-<?= $form->field($model, 'file[]')->fileInput(['multiple' => true]) ?>
+<?php $form = ActiveForm::begin(['options' => ['enctype' => 'multipart/form-data']]) ?>
+
+    <?= $form->field($model, 'imageFiles')->fileInput(['multiple' => true]) ?>
 
     <button>Submit</button>
 
-<?php ActiveForm::end(); ?>
+<?php ActiveForm::end() ?>
 ```
 
-The difference is the following line:
-
-```php
-<?= $form->field($model, 'file[]')->fileInput(['multiple' => true]) ?>
-```
-
-Controller:
+And finally in the controller action, you should call `UploadedFile::getInstances()` instead of 
+`UploadedFile::getInstance()` to assign an array of `UploadedFile` instances to `UploadForm::imageFiles`. 
 
 ```php
 namespace app\controllers;
@@ -179,12 +191,10 @@ class SiteController extends Controller
         $model = new UploadForm();
 
         if (Yii::$app->request->isPost) {
-            $model->file = UploadedFile::getInstances($model, 'file');
-            
-            if ($model->file && $model->validate()) {
-                foreach ($model->file as $file) {
-                    $file->saveAs('uploads/' . $file->baseName . '.' . $file->extension);
-                }
+            $model->imageFiles = UploadedFile::getInstances($model, 'imageFiles');
+            if ($model->upload()) {
+                // file is uploaded successfully
+                return;
             }
         }
 
@@ -192,7 +202,3 @@ class SiteController extends Controller
     }
 }
 ```
-
-There are two differences from single file upload. First is that `UploadedFile::getInstances($model, 'file');` is used
-instead of `UploadedFile::getInstance($model, 'file');`. The former returns instances for **all** uploaded files while
-the latter gives you only a single instance. The second difference is that we're doing `foreach` and saving each file.
