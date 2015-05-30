@@ -102,19 +102,19 @@ return [
         'session' => [
             'class' => 'yii\web\DbSession',
 
-            // Set the following if you want to use DB component other than
-            // default 'db'.
+            // Установите следующее, если вы хотите использовать компонент БД, с названием
+            // отличным от значения по умолчанию 'db'.
             // 'db' => 'mydb',
 
-            // To override default session table, set the following
+            // Чтобы перезаписать таблицу сессий, заданную по умолчанию, установите
             // 'sessionTable' => 'my_session',
         ],
     ],
 ];
 ```
 
-The above configuration uses a database table to store session data. By default, it will use the `db` application
-component as the database connection and store the session data in the `session` table. You do have to create the
+Приведенная выше конфигурация использует таблицу базы данных для хранения сессионных данных. По умолчанию, используется 
+компонент приложения `db` as the database connection and store the session data in the `session` table. You do have to create the
 `session` table as follows in advance, though,
 
 ```sql
@@ -130,8 +130,8 @@ CREATE TABLE session (
 when the storage limit is reached. For this reason, you should mainly use those cache storage that do not enforce
 storage limit.
 
-Если на вашем сервере установлен [Redis](http://redis.io/), настоятельно рекомендуется использовать его в качестве хранилища сессий *используя*
-[[yii\redis\Session]].
+Если на вашем сервере установлен [Redis](http://redis.io/), настоятельно рекомендуется использовать его в качестве 
+хранилища сессий *используя* [[yii\redis\Session]].
 
 
 ## Оптимизация базы данных <span id="optimizing-databases"></span>
