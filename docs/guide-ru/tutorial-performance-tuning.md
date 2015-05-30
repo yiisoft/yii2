@@ -44,14 +44,14 @@ defined('YII_DEBUG') or define('YII_DEBUG', false);
 
 ## Включение кеширования *схемы данных* <span id="enable-schema-caching"></span>
 
-Schema caching is a special caching feature that should be enabled whenever you are using [Active Record](db-active-record.md).
-As you know, Active Record is intelligent enough to detect schema information (e.g. column names, column types, constraints)
-about a DB table without requiring you to manually describe them. Active Record obtains this information by executing 
-extra SQL queries. By enabling schema caching, the retrieved schema information will be saved in the cache and reused
-in future requests.
+Кэширование схемы - это специальный *тип кеширования*, которая должна быть включена при использовании [Active Record](db-active-record.md).
+Как вы знаете, Active Record достаточно умен, чтобы обнаружить информацию о схеме (например, имена столбцов, типы столбцов, 
+ограничения) таблицы БД без необходимости описывать ее вручную. Active Record получает эту информацию, выполняя 
+дополнительные SQL запросы. При включении кэширования схемы, полученная информация о схеме будет сохранена в кэше и 
+повторно использована при последующих запросах.
 
-To enable schema caching, configure a `cache` [application component](structure-application-components.md) to store
-the schema information and set [[yii\db\Connection::enableSchemaCache]] to be `true` in the [application configuration](concept-configurations.md):
+Чтобы включить кеширование схемы, сконфигурируйте [компонент приложения](structure-application-components.md) `cache` 
+для хранения информации о схеме и установите [[yii\db\Connection::enableSchemaCache]] в `true` в [конфигурации приложения](concept-configurations.md):
 
 ```php
 return [
@@ -68,10 +68,10 @@ return [
             'password' => '',
             'enableSchemaCache' => true,
 
-            // Duration of schema cache.
+            // Продолжительность кеширования схемы.
             'schemaCacheDuration' => 3600,
 
-            // Name of the cache component used to store schema information
+            // Название компонента кеша, используемого для хранения информации о схеме
             'schemaCache' => 'cache',
         ],
     ],
