@@ -29,7 +29,7 @@ Yii Framework 2 Change Log
 - Enh #8566: Added support for 'only' and 'except' options for `yii\web\AssetManager::publish()` (klimov-paul)
 - Enh #8574: Added `yii\console\controllers\MessageController` support .pot file creation (pgaultier)
 - Chg #6354: `ErrorHandler::logException()` will now log the whole exception object instead of only its string representation (cebe)
-
+- Enh #8574: `yii\console\controllers\MessageController` support .pot file creation (pgaultier)
 
 2.0.4 May 10, 2015
 ------------------
