@@ -5,7 +5,7 @@
 
 All Rights Reserved.
 
-2014 © Yii Software LLC.
+2014 (c) Yii Software LLC.
 
 
 Введення
@@ -74,10 +74,10 @@ All Rights Reserved.
 Робота з базами даних
 ---------------------
 
-* **TBD** [Обʼєкти доступу до даних (DAO)](db-dao.md) - Зʼєднання з базою даних, прості запити, транзакції і робота зі схемою
-* **TBD** [Конструктор запитів](db-query-builder.md) - Запити до бази даних через простий шар абстракції
-* **TBD** [Active Record](db-active-record.md) - Отримання обʼєктів AR, робота з ними та визначення звʼязків
-* **TBD** [Міграції](db-migrations.md) - Контроль версій схеми даних при роботі в команді
+* **TBD** [Обʼєкти доступу до даних (DAO)](db-dao.md): Зʼєднання з базою даних, прості запити, транзакції і робота зі схемою
+* **TBD** [Конструктор запитів](db-query-builder.md): Запити до бази даних через простий шар абстракції
+* **TBD** [Active Record](db-active-record.md): Отримання обʼєктів AR, робота з ними та визначення звʼязків
+* **TBD** [Міграції](db-migrations.md): Контроль версій схеми даних при роботі в команді
 * [Sphinx](https://github.com/yiisoft/yii2-sphinx/blob/master/docs/guide/README.md)
 * [Redis](https://github.com/yiisoft/yii2-redis/blob/master/docs/guide/README.md)
 * [MongoDB](https://github.com/yiisoft/yii2-mongodb/blob/master/docs/guide/README.md)
@@ -135,7 +135,7 @@ RESTful веб-сервіси
 * **TBD** [Маршрутизація](rest-routing.md)
 * **TBD** [Форматування відповіді](rest-response-formatting.md)
 * **TBD** [Аутентифікація](rest-authentication.md)
-* **TBD** [Обмеження частоти запитів](rest-rate-limiting.md)
+* [Обмеження частоти запитів](rest-rate-limiting.md)
 * **TBD** [Версіонування](rest-versioning.md)
 * **TBD** [Обробка помилок](rest-error-handling.md)
 
@@ -171,7 +171,7 @@ RESTful веб-сервіси
 * **TBD** [Вдосконалення продуктивності](tutorial-performance-tuning.md)
 * **TBD** [Робота на віртуальному хостингу](tutorial-shared-hosting.md)
 * **TBD** [Шаблонізатори](tutorial-template-engines.md)
-* **TBD** [Робота із стороннім кодом](tutorial-yii-integration.md)
+* [Робота із стороннім кодом](tutorial-yii-integration.md)
 
 
 Віджети
