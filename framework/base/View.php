@@ -52,6 +52,10 @@ class View extends Component
      */
     public $params = [];
     /**
+     * @var array variables that can be put into the views context dynamically
+     */
+    private $_vars = [];
+    /**
      * @var array a list of available renderers indexed by their corresponding supported file extensions.
      * Each renderer may be a view renderer object or the configuration for creating the renderer object.
      * For example, the following configuration enables both Smarty and Twig view renderers:
@@ -117,6 +121,17 @@ class View extends Component
         } elseif (is_string($this->theme)) {
             $this->theme = Yii::createObject($this->theme);
         }
+    }
+
+    /**
+     * add context variable to the view context
+     *
+     * @param string $key
+     * @param mixed $value
+     */
+    public function setVar($key, $value)
+    {
+        $this->_vars[$key] = $value;
     }
 
     /**
@@ -234,6 +249,7 @@ class View extends Component
         $this->_viewFiles[] = $viewFile;
 
         if ($this->beforeRender($viewFile, $params)) {
+            $params = array_merge($this->_vars, $params);
             Yii::trace("Rendering view file: $viewFile", __METHOD__);
             $ext = pathinfo($viewFile, PATHINFO_EXTENSION);
             if (isset($this->renderers[$ext])) {
