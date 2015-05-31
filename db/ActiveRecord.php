@@ -110,7 +110,7 @@ class ActiveRecord extends BaseActiveRecord
      *
      * @param boolean $skipIfSet whether existing value should be preserved.
      * This will only set defaults for attributes that are `null`.
-     * @return static the model instance itself.
+     * @return $this the model instance itself.
      */
     public function loadDefaultValues($skipIfSet = true)
     {
