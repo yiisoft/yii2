@@ -179,6 +179,8 @@ class DevController extends Controller
      *
      * @param string $extension the application name e.g. `basic` or `advanced`.
      * @param string $repo url of the git repo to clone if it does not already exist.
+     *
+     * @return int
      */
     public function actionExt($extension, $repo = null)
     {
@@ -223,16 +225,23 @@ class DevController extends Controller
         return 0;
     }
 
+    /**
+     * @inheritdoc
+     */
     public function options($actionID)
     {
         $options = parent::options($actionID);
-        if (in_array($actionID, ['ext', 'app', 'all'])) {
+        if (in_array($actionID, ['ext', 'app', 'all'], true)) {
             $options[] = 'useHttp';
         }
         return $options;
     }
 
 
+    /**
+     * Remove all symlinks in the vendor subdirectory of the directory specified
+     * @param string $dir base directory
+     */
     protected function cleanupVendorDir($dir)
     {
         if (is_link($link = "$dir/vendor/yiisoft/yii2")) {
@@ -248,6 +257,13 @@ class DevController extends Controller
         }
     }
 
+    /**
+     * Creates symlinks to freamework and extension sources for the application
+     * @param string $dir application directory
+     * @param string $base Yii sources base directory
+     *
+     * @return int
+     */
     protected function linkFrameworkAndExtensions($dir, $base)
     {
         if (is_dir($link = "$dir/vendor/yiisoft/yii2")) {
@@ -287,6 +303,12 @@ class DevController extends Controller
         }
     }
 
+    /**
+     * Get a list of subdirectories for directory specified
+     * @param string $dir directory to read
+     *
+     * @return array list of subdirectories
+     */
     protected function listSubDirs($dir)
     {
         $list = [];
@@ -335,7 +357,7 @@ class DevController extends Controller
         closedir($handle);
 
         foreach($list as $i => $e) {
-            if ($e == 'composer') { // skip composer to not break composer update
+            if ($e === 'composer') { // skip composer to not break composer update
                 unset($list[$i]);
             }
         }
