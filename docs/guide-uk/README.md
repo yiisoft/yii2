@@ -19,7 +19,7 @@ All Rights Reserved.
 ----------------
 
 * [Встановлення Yii](start-installation.md)
-* [Запуск додатка](start-workflow.md)
+* [Запуск додатків](start-workflow.md)
 * [Говоримо "Привіт"](start-hello.md)
 * [Робота з формами](start-forms.md)
 * [Робота з базами даних](start-databases.md)
@@ -48,7 +48,7 @@ All Rights Reserved.
 ---------------
 
 * **TBD** [Огляд](runtime-overview.md)
-* **TBD** [Bootstrapping](runtime-bootstrapping.md)
+* **TBD** [Початкове завантаження](runtime-bootstrapping.md)
 * **TBD** [Маршрутизація та створення URL](runtime-routing.md)
 * **TBD** [Запити](runtime-requests.md)
 * **TBD** [Відповіді](runtime-responses.md)
@@ -67,7 +67,7 @@ All Rights Reserved.
 * **TBD** [Конфігурації](concept-configurations.md)
 * [Псевдоніми](concept-aliases.md)
 * [Автозавантаження класів](concept-autoloading.md)
-* **TBD** [Service Locator](concept-service-locator.md)
+* **TBD** [Локатор служб](concept-service-locator.md)
 * **TBD** [Dependency Injection Container](concept-di-container.md)
 
 
@@ -167,7 +167,7 @@ RESTful веб-сервіси
 * **TBD** [Консольні команди](tutorial-console.md)
 * **TBD** [Основні валідатори](tutorial-core-validators.md)
 * **TBD** [Інтернаціоналізація](tutorial-i18n.md)
-* **TBD** [Робота з поштою](tutorial-mailing.md)
+* **TBD** [Відправлення пошти](tutorial-mailing.md)
 * **TBD** [Вдосконалення продуктивності](tutorial-performance-tuning.md)
 * **TBD** [Робота на віртуальному хостингу](tutorial-shared-hosting.md)
 * **TBD** [Шаблонізатори](tutorial-template-engines.md)

@@ -76,14 +76,17 @@ php build translation "../docs/guide" "../docs/guide-uk" "Ukrainian guide transl
 - action — дія;
 - active record — (не перекладається);
 - Advanced/Basic Project Template — Розширений/Базовий шаблон проекту;
+- alias — псевдонім;
 - (Web) application — (веб-)додаток;
-- attach handler — прикріпити обробник;
+- attach handler — приєднати обробник;
 - attribute of the model — атрибут моделі;
 - authentication — аутентифікація / установлення справжності;
 - authorization — авторизація/уповноваження;
+- autoloader — автозавантажувач;
+- bootstrap, bootstrapping — початкове завантаження;
 - branch — гілка;
 - browser — браузер;
-- (asset) bundle — звʼязка (ресурсів);
+- (asset) bundle — колекція (ресурсів);
 - cache — кеш;
 - camel case — (не перекладається);
 - column — колонка;
@@ -122,7 +125,10 @@ php build translation "../docs/guide" "../docs/guide-uk" "Ukrainian guide transl
 - helper — хелпер;
 - id — ідентифікатор;
 - image — зображення;
+- initialize — ініціалізувати/встановлювати;
+- to initiate — ініціювати/розпочинати;
 - instance — екземпляр;
+- instantiate — створювати екземпляр;
 - issue — питання/проблема; // в залежності від контексту
 - layout — макет;
 - lazy loading — відкладене завантаження;
@@ -131,12 +137,15 @@ php build translation "../docs/guide" "../docs/guide-uk" "Ukrainian guide transl
 - method — метод (обʼєкта/класу);
 - merge — поєднання;
 - Model-View-Controller (MVC) — Модель-Представлення-Контролер (MVC);
+- namespace — простір імен;
 - package — пакунок;
 - pagination — розділення на сторінки;
 - parameter — параметр;
 - to parse — обробляти;
 - placeholder — заповнювач;
 - plugin — плагін;
+- postprocessing — після-обробка;
+- predefined — попередньо визначений;
 - production mode — робочий режим (див. debug mode);
 - property — властивість (обʼєкта);
 - pull request — (не перекладається);
@@ -147,8 +156,10 @@ php build translation "../docs/guide" "../docs/guide-uk" "Ukrainian guide transl
 - resolve request — попередня обробка запиту;
 - route, routing — маршрут, маршрутизація;
 - row (of the table) — рядок (таблиці);
+- Service Locator — Локатор служб;
 - setter — сеттер;
 - shared hosting — віртуальний хостинг;
+- (call) stack — стек (викликів);
 - staging area — буферна зона;
 - string — текстовий рядок;
 - sub-directory — під-директорія;
@@ -156,12 +167,16 @@ php build translation "../docs/guide" "../docs/guide-uk" "Ukrainian guide transl
 - tabular input — табличний ввід;
 - template engine — шаблонізатор;
 - theming — темізація;
+- third party — сторонній;
+- thumbnail — мініатюра;
 - trait — трейт;
 - Twitter — Твіттер;
+- Unicode — Унікод;
 - unit tests — модульні тести;
 - to validate — перевіряти;
 - valid — коректний;
 - validator — валідатор;
 - validation — перевірка;
 - validator class — клас валідатора;
-- versioning — версіонування.
+- versioning — версіонування;
+- widget — віджет.
