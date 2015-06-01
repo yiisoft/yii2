@@ -19,7 +19,7 @@ All Rights Reserved.
 ----------------
 
 * [Встановлення Yii](start-installation.md)
-* [Запуск додатків](start-workflow.md)
+* [Виконання додатків](start-workflow.md)
 * [Говоримо "Привіт"](start-hello.md)
 * [Робота з формами](start-forms.md)
 * [Робота з базами даних](start-databases.md)
@@ -35,7 +35,7 @@ All Rights Reserved.
 * [Додатки](structure-applications.md)
 * [Компоненти додатка](structure-application-components.md)
 * [Контролери](structure-controllers.md)
-* **TBD** [Моделі](structure-models.md)
+* [Моделі](structure-models.md)
 * **TBD** [Представлення](structure-views.md)
 * **TBD** [Модулі](structure-modules.md)
 * **TBD** [Фільтри](structure-filters.md)
@@ -126,7 +126,7 @@ All Rights Reserved.
 * **TBD** [HTTP кешування](caching-http.md)
 
 
-RESTful веб-сервіси
+Веб-сервіси RESTful
 -------------------
 
 * **TBD** [Швидкий старт](rest-quick-start.md)
@@ -167,7 +167,7 @@ RESTful веб-сервіси
 * **TBD** [Консольні команди](tutorial-console.md)
 * **TBD** [Основні валідатори](tutorial-core-validators.md)
 * **TBD** [Інтернаціоналізація](tutorial-i18n.md)
-* **TBD** [Відправлення пошти](tutorial-mailing.md)
+* **TBD** [Робота з поштою](tutorial-mailing.md)
 * **TBD** [Вдосконалення продуктивності](tutorial-performance-tuning.md)
 * **TBD** [Робота на віртуальному хостингу](tutorial-shared-hosting.md)
 * **TBD** [Шаблонізатори](tutorial-template-engines.md)

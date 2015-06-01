@@ -78,17 +78,20 @@ php build translation "../docs/guide" "../docs/guide-uk" "Ukrainian guide transl
 - Advanced/Basic Project Template — Розширений/Базовий шаблон проекту;
 - alias — псевдонім;
 - (Web) application — (веб-)додаток;
+- assignment — призначення;
 - attach handler — приєднати обробник;
 - attribute of the model — атрибут моделі;
 - authentication — аутентифікація / установлення справжності;
 - authorization — авторизація/уповноваження;
 - autoloader — автозавантажувач;
+- back-end — (не перекладається);
 - bootstrap, bootstrapping — початкове завантаження;
 - branch — гілка;
 - browser — браузер;
 - (asset) bundle — колекція (ресурсів);
 - cache — кеш;
 - camel case — (не перекладається);
+- case-sensitive — регістр-залежний;
 - column — колонка;
 - commit — комміт;
 - concatenation — конкатенація;
@@ -111,13 +114,15 @@ php build translation "../docs/guide" "../docs/guide-uk" "Ukrainian guide transl
 - existing — наявний/присутній; // перекладати як "існуючий" не вірно
 - (PHP) extension — розширення (PHP);
 - Facebook — Фейсбук;
-- folder — папка/каталог;
 - field (of the table) — поле/атрибут (таблиці);
 - fixture — фікстура;
+- folder — папка/каталог;
 - footer — футер;
 - fork — форк;
+- formatter — форматтер;
 - framework — фреймворк;
 - front-controller — фронт-контролер;
+- front-end — (не перекладається);
 - getter — геттер;
 - (event) handler — обробник (події);
 - hash — хеш;
@@ -150,8 +155,10 @@ php build translation "../docs/guide" "../docs/guide-uk" "Ukrainian guide transl
 - property — властивість (обʼєкта);
 - pull request — (не перекладається);
 - query builder — конструктор запитів;
+- refactoring — рефакторинг;
 - to render, rendering — формувати, формування;
 - related, relation — повʼязаний, звʼязок;
+- release — реліз;
 - repo, repository — репозиторій;
 - resolve request — попередня обробка запиту;
 - route, routing — маршрут, маршрутизація;
@@ -161,6 +168,7 @@ php build translation "../docs/guide" "../docs/guide-uk" "Ukrainian guide transl
 - shared hosting — віртуальний хостинг;
 - (call) stack — стек (викликів);
 - staging area — буферна зона;
+- standalone — автономний;
 - string — текстовий рядок;
 - sub-directory — під-директорія;
 - substitution — підставлення/заміщення;
