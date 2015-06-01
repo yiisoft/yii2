@@ -28,7 +28,7 @@ class UploadForm extends Model
     public function rules()
     {
         return [
-            [['imageFile'], 'file', 'skipOnEmpty' => false, 'fileExtension' => 'png, jpg'],
+            [['imageFile'], 'file', 'skipOnEmpty' => false, 'extensions' => 'png, jpg'],
         ];
     }
     
@@ -138,7 +138,7 @@ class UploadForm extends Model
     public function rules()
     {
         return [
-            [['imageFiles'], 'file', 'skipOnEmpty' => false, 'fileExtension' => 'png, jpg', 'maxFiles' => 4],
+            [['imageFiles'], 'file', 'skipOnEmpty' => false, 'extensions' => 'png, jpg', 'maxFiles' => 4],
         ];
     }
     
@@ -166,7 +166,7 @@ use yii\widgets\ActiveForm;
 
 <?php $form = ActiveForm::begin(['options' => ['enctype' => 'multipart/form-data']]) ?>
 
-    <?= $form->field($model, 'imageFiles')->fileInput(['multiple' => true]) ?>
+    <?= $form->field($model, 'imageFiles[]')->fileInput(['multiple' => true, 'accept' => 'image/*']) ?>
 
     <button>Submit</button>
 
