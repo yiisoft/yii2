@@ -42,7 +42,7 @@ defined('YII_DEBUG') or define('YII_DEBUG', false);
 кеширования, которую предоставляет Yii.
 
 
-## Включение кеширования *схемы данных* <span id="enable-schema-caching"></span>
+## Включение кеширования схемы <span id="enable-schema-caching"></span>
 
 Кэширование схемы - это специальный *тип кеширования*, которая должна быть включена при использовании [Active Record](db-active-record.md).
 Как вы знаете, Active Record достаточно умен, чтобы обнаружить информацию о схеме (например, имена столбцов, типы столбцов, 
@@ -114,8 +114,8 @@ return [
 ```
 
 Приведенная выше конфигурация использует таблицу базы данных для хранения сессионных данных. По умолчанию, используется 
-компонент приложения `db` as the database connection and store the session data in the `session` table. You do have to create the
-`session` table as follows in advance, though,
+компонент приложения `db` для подключения к базе данных и сохранения сессионных данных в таблице `session`. Вам надо 
+создать таблицу `session` *as follows in advance, though*,
 
 ```sql
 CREATE TABLE session (
@@ -125,9 +125,9 @@ CREATE TABLE session (
 )
 ```
 
-Вы также можете хранить сессионные данные в кеше с помощью [[yii\web\CacheSession]]. Теоретически, вы можете использовать любое поддерживаемое
-[хранилище кеша](caching-data.md#supported-cache-storage). Note, however, that some cache storage may flush cached data
-when the storage limit is reached. For this reason, you should mainly use those cache storage that do not enforce
+Вы также можете хранить сессионные данные в кеше с помощью [[yii\web\CacheSession]]. Теоретически, вы можете использовать 
+любое поддерживаемое [хранилище кеша](caching-data.md#supported-cache-storage). Тем не менее, помните, что некоторые 
+хранилища кеша могут *сбрасывать* закешированные данные when the storage limit is reached. For this reason, you should mainly use those cache storage that do not enforce
 storage limit.
 
 Если на вашем сервере установлен [Redis](http://redis.io/), настоятельно рекомендуется использовать его в качестве 
@@ -170,37 +170,40 @@ class PostController extends Controller
 }
 ```
 
-In the above code, `$posts` will be populated as an array of table rows. Each row is a plain array. To access
-the `title` column of the i-th row, you may use the expression `$posts[$i]['title']`.
+В приведенном выше коде, `$posts` will be populated as an array of table rows. Каждая строка - это обычный массив. Чтобы 
+получить доступ к столбцу `title` в i-й строке, вы можете использовать выражение `$posts[$i]['title']`.
 
 You may also use [DAO](db-dao.md) to build queries and retrieve data in plain arrays. 
 
 
 ## Оптимизация автозагрузчика Composer <span id="optimizing-autoloader"></span>
 
-Because Composer autoloader is used to include most third-party class files, you should consider optimizing it
-by executing the following command:
+
+Потому автозагрузчик Composer'а используется для подключения большого количества файлов сторонних классов, вы должны 
+оптимизировать его, выполнив следующую команду:
 
 ```
 composer dumpautoload -o
 ```
 
 
-## *Фоновая обработка данных* <span id="processing-data-offline"></span>
+## *Обработка данных в offline* <span id="processing-data-offline"></span>
 
-When a request involves some resource intensive operations, you should think of ways to perform those operations
-in offline mode without having users wait for them to finish.
+Когда запрос включает в себя некоторые ресурсоемкие операции, вы должны подумать о том, чтобы выполнить эти операции в
+автономном режиме, не заставляя пользователя ожидать их окончания.
 
-There are two methods to process data offline: pull and push. 
+Существует два метода обработки данных в фоне: pull и push. 
 
-In the pull method, whenever a request involves some complex operation, you create a task and save it in a persistent 
-storage, such as database. You then use a separate process (such as a cron job) to pull the tasks and process them.
-This method is easy to implement, but it has some drawbacks. For example, the task process needs to periodically pull
-from the task storage. If the pull frequency is too low, the tasks may be processed with great delay; but if the frequency
-is too high, it will introduce high overhead.
+В методе pull, всякий раз, когда запрос включает в себя некоторые сложные операции, вы создаете задачу и сохраняете ее в 
+постоянном хранилище, таком как база данных. Затем в отдельном процессе (таком как задание cron) получаете эту задачу и 
+обрабатываете ее.
 
-In the push method, you would use a message queue (e.g. RabbitMQ, ActiveMQ, Amazon SQS, etc.) to manage the tasks. 
-Whenever a new task is put on the queue, it will initiate or notify the task handling process to trigger the task processing.
+Этот метод легко реализовать, но у него есть некоторые недостатки. Например, задачи надо периодически забирать из 
+места их хранения. Если делать это слишком редко, задачи будут обрабатываться с большой задержкой; если слишком часто - 
+это будет создавать большие накладные расходы.
+
+В методе push, вы можете использовать очереди сообщений (например, RabbitMQ, ActiveMQ, Amazon SQS, и т.д.) для управления задачами.
+Всякий раз, когда новая задача попадает в очередь, *процесс ее обработки будет запускаться автоматически*.
 
 
 ## Профилирование производительности <span id="performance-profiling"></span>
