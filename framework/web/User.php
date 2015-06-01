@@ -669,6 +669,9 @@ class User extends Component
 
     /**
      * Returns auth manager associated with the user component.
+     *
+     * By default this is the `authManager` application component.
+     * You may override this method to return a different auth manager instance if needed.
      * @return \yii\rbac\ManagerInterface
      * @since 2.0.5
      */
