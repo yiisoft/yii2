@@ -106,7 +106,7 @@ return [
     '{attribute} must be repeated exactly.' => '{attribute} moet exact herhaald worden.',
     '{attribute} must not be equal to "{compareValue}".' => '{attribute} mag niet gelijk zijn aan "{compareValue}".',
     '{attribute} should contain at least {min, number} {min, plural, one{character} other{characters}}.' => '{attribute} moet minstens {min, number} {min, plural, one{karakter} other{karakters}} bevatten.',
-    '{attribute} should contain at most {max, number} {max, plural, one{character} other{characters}}.' => '{attribute} mag maximaal {min, number} {min, plural, one{karakter} other{karakters}} bevatten.',
+    '{attribute} should contain at most {max, number} {max, plural, one{character} other{characters}}.' => '{attribute} mag maximaal {max, number} {max, plural, one{karakter} other{karakters}} bevatten.',
     '{attribute} should contain {length, number} {length, plural, one{character} other{characters}}.' => '{attribute} moet precies {min, number} {min, plural, one{karakter} other{karakters}} bevatten.',
     '{delta, plural, =1{a day} other{# days}} ago' => '{delta, plural, =1{een dag} other{# dagen}} geleden',
     '{delta, plural, =1{a minute} other{# minutes}} ago' => '{delta, plural, =1{een minuut} other{# minuten}} geleden',
