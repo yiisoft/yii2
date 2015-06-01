@@ -6,6 +6,7 @@ use yii\caching\FileCache;
 use yii\db\Connection;
 use yii\db\DataReader;
 use yii\db\Expression;
+use yii\db\Schema;
 
 /**
  * @group db
@@ -310,16 +311,48 @@ SQL;
         ], $record);
     }
 
+    public function testCreateTable()
+    {
+        $db = $this->getConnection();
+        $db->createCommand("DROP TABLE IF EXISTS testCreateTable;")->execute();
+
+        $db->createCommand()->createTable('testCreateTable', ['id' => Schema::TYPE_PK, 'bar' => Schema::TYPE_INTEGER])->execute();
+        $db->createCommand()->insert('testCreateTable', ['bar' => 1])->execute();
+        $records = $db->createCommand('SELECT [[id]], [[bar]] FROM {{testCreateTable}};')->queryAll();
+        $this->assertEquals([
+            ['id' => 1, 'bar' => 1],
+        ], $records);
+    }
+
+    public function testAlterTable()
+    {
+        if ($this->driverName === 'sqlite'){
+            $this->markTestSkipped('Sqlite does not support alterTable');
+        }
+
+        $db = $this->getConnection();
+        $db->createCommand("DROP TABLE IF EXISTS testAlterTable;")->execute();
+
+        $db->createCommand()->createTable('testAlterTable', ['id' => Schema::TYPE_PK, 'bar' => Schema::TYPE_INTEGER])->execute();
+        $db->createCommand()->insert('testAlterTable', ['bar' => 1])->execute();
+
+        $db->createCommand()->alterColumn('testAlterTable', 'bar', Schema::TYPE_STRING)->execute();
+
+        $db->createCommand()->insert('testAlterTable', ['bar' => 'hello'])->execute();
+        $records = $db->createCommand('SELECT [[id]], [[bar]] FROM {{testAlterTable}};')->queryAll();
+        $this->assertEquals([
+            ['id' => 1, 'bar' => 1],
+            ['id' => 2, 'bar' => 'hello'],
+        ], $records);
+    }
+
+
     /*
     public function testUpdate()
     {
     }
 
     public function testDelete()
-    {
-    }
-
-    public function testCreateTable()
     {
     }
 
@@ -344,10 +377,6 @@ SQL;
     }
 
     public function testRenameColumn()
-    {
-    }
-
-    public function testAlterColumn()
     {
     }
 
