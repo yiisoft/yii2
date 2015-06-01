@@ -106,10 +106,10 @@ you may list its ID as an element in this property.
 
 Each component listed in this property may be specified in one of the following formats:
 
-- an application component ID as specified via [components](#components).
-- a module ID as specified via [modules](#modules).
-- a class name.
-- a configuration array.
+- an application component ID as specified via [components](#components),
+- a module ID as specified via [modules](#modules),
+- a class name,
+- a configuration array,
 - an anonymous function that creates and returns a component.
 
 For example:
@@ -215,7 +215,7 @@ Each application component is specified as a key-value pair in the array. The ke
 while the value represents the component class name or [configuration](concept-configurations.md).
 
 You can register any component with an application, and the component can later be accessed globally
-using the expression `\Yii::$app->ComponentID`.
+using the expression `\Yii::$app->componentID`.
 
 Please read the [Application Components](structure-application-components.md) section for details.
 

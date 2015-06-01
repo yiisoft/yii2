@@ -70,7 +70,7 @@ we suggest using [our logo](http://www.yiiframework.com/logo/) on your title sli
 **In projects**
 
 If you are using Yii 2 as part of an OpenSource project, a way to acknowledge it is to
-[use a special badge](URL https://img.shields.io/badge/Powered_by-Yii_Framework-green.svg?style=flat) in your README:    
+[use a special badge](https://img.shields.io/badge/Powered_by-Yii_Framework-green.svg?style=flat) in your README:    
 
 ![Yii2](https://img.shields.io/badge/Powered_by-Yii_Framework-green.svg?style=flat)
 
