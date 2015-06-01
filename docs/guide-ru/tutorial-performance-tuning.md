@@ -1,8 +1,8 @@
 Оптимизация производительности
 ==================
 
-Существует много факторов, влияющих на производительность веб-приложения. *Какие-то относятся к окружению, какие-то 
-к вашему коду, а какие-то к самому Yii*. В этом разделе мы перечислим большинство из них и объясним, как можно улучшить 
+Существует много факторов, влияющих на производительность веб-приложения. Какие-то относятся к окружению, какие-то 
+к вашему коду, а какие-то к самому Yii. В этом разделе мы перечислим большинство из них и объясним, как можно улучшить 
 производительность приложения, регулируя эти факторы.
 
 
@@ -17,7 +17,7 @@
 
 ## Отключение режима отладки <span id="disable-debug"></span>
 
-При запуске приложения в *производственном режиме*, вам нужно отключить режим отладки. Yii использует значение константы
+При запуске приложения в производственном режиме, вам нужно отключить режим отладки. Yii использует значение константы
 `YII_DEBUG` чтобы указать, следует ли включить режим отладки. Когда режим отладки включен, Yii тратит дополнительное 
 время чтобы создать и записать отладочную информацию.
 
@@ -114,8 +114,8 @@ return [
 ```
 
 Приведенная выше конфигурация использует таблицу базы данных для хранения сессионных данных. По умолчанию, используется 
-компонент приложения `db` для подключения к базе данных и сохранения сессионных данных в таблице `session`. Вам надо 
-создать таблицу `session` *as follows in advance, though*,
+компонент приложения `db` для подключения к базе данных и сохранения сессионных данных в таблице `session`. Вам нужно будет 
+создать таблицу `session` заранее:
 
 ```sql
 CREATE TABLE session (
@@ -127,8 +127,8 @@ CREATE TABLE session (
 
 Вы также можете хранить сессионные данные в кеше с помощью [[yii\web\CacheSession]]. Теоретически, вы можете использовать 
 любое поддерживаемое [хранилище кеша](caching-data.md#supported-cache-storage). Тем не менее, помните, что некоторые 
-хранилища кеша могут *сбрасывать* закешированные данные when the storage limit is reached. For this reason, you should mainly use those cache storage that do not enforce
-storage limit.
+хранилища кеша могут *сбрасывать* закешированные данные при достижении лимитов хранилища. По этой причине, вы должны в 
+основном использовать хранилища кеша, которые не имеют таких лимитов.
 
 Если на вашем сервере установлен [Redis](http://redis.io/), настоятельно рекомендуется использовать его в качестве 
 хранилища сессий *используя* [[yii\redis\Session]].
@@ -136,27 +136,27 @@ storage limit.
 
 ## Оптимизация базы данных <span id="optimizing-databases"></span>
 
-Execute DB queries and fetching data from databases is often the main performance bottleneck in
-a Web application. Although using [data caching](caching-data.md) techniques may alleviate the performance hit,
-it does not fully solve the problem. When the database contains enormous amounts of data and the cached data is invalid, 
-fetching the latest data could be prohibitively expensive without proper database and query design.
+Выполнение запросов к БД и выборки данных часто являются узким местом производительности веб-приложения. 
+Хотя использование техник [кэширования данных](caching-data.md) может *смягчить* снижение производительности, оно не 
+решает проблему полностью. Когда база данных содержит огромное количество данных, и данные в кэше невалидны, получение 
+свежих данных без правильного проектирования базы данных и запросов может быть чрезмерно ресурсоемкой операцией.
 
-A general technique to improve the performance of DB queries is to create indices for table columns that
-need to be filtered by. For example, if you need to look for a user record by `username`, you should create an index
-on `username`. Note that while indexing can make SELECT queries much faster, it will slow down INSERT, UPDATE and DELETE queries.
+Общей методикой для повышения производительности запросов к БД является создание индексов для тех столбцов таблицы, по которым делается выборка.
+Например, если вам нужно найти запись о пользователе по `username`, вам надо создать индекс на `username`. 
+Обратите внимание, что в то время как индексирование может сделать  SELECT запросы намного быстрее, оно будет замедлять INSERT, UPDATE и DELETE запросы.
 
-For complex DB queries, it is recommended that you create database views to save the query parsing and preparation time.
+Для сложных запросов к БД рекомендуется создавать представления базы данных (views), чтобы сэкономить время подготовки и разбора запросов.
 
-Last but not least, use `LIMIT` in your `SELECT` queries. This avoids fetching an overwhelming amount of data from the database
-and exhausting the memory allocated to PHP.
+Последнее, хотя и не менее важное: используйте `LIMIT` в ваших `SELECT` запросах. Это позволяет избежать извлечения 
+большого количество данных из базы данных и исчерпания памяти, выделенной для PHP.
 
 
 ## Использование обычных массивов <span id="using-arrays"></span>
 
-Although [Active Record](db-active-record.md) is very convenient to use, it is not as efficient as using plain arrays
-when you need to retrieve a large amount of data from database. In this case, you may consider calling `asArray()`
+Хотя [Active Record] (db-active-record.md) очень удобно использовать, это не так эффективно, как использование простых 
+массивы, когда вам нужно получить большое количество данных из БД. In this case, you may consider calling `asArray()`
 while using Active Record to query data so that the retrieved data is represented as arrays instead of bulky Active
-Record objects. For example,
+Record objects. Например,
 
 ```php
 class PostController extends Controller
@@ -170,10 +170,10 @@ class PostController extends Controller
 }
 ```
 
-В приведенном выше коде, `$posts` will be populated as an array of table rows. Каждая строка - это обычный массив. Чтобы 
+В приведенном выше коде, `$posts` будет заполнего массивом строк из таблицы. Каждая строка - это обычный массив. Чтобы 
 получить доступ к столбцу `title` в i-й строке, вы можете использовать выражение `$posts[$i]['title']`.
 
-You may also use [DAO](db-dao.md) to build queries and retrieve data in plain arrays. 
+Вы также можете использовать [DAO](db-dao.md) для создания запросов и извлечения данных в виде обычных массивов. 
 
 
 ## Оптимизация автозагрузчика Composer <span id="optimizing-autoloader"></span>
