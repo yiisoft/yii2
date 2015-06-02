@@ -8,6 +8,16 @@ if you want to upgrade from version A to version C and there is
 version B between A and C, you need to following the instructions
 for both A and B.
 
+
+Upgrade from Yii 2.0.4
+----------------------
+  
+* The signature of several `saveMessagesTo...` methods in `yii\console\controllers\MessageController` is changed. They now have an additional parameter named `markUnused`:
+  - `saveMessagesToDb($messages, $db, $sourceMessageTable, $messageTable, $removeUnused, $markUnused, $languages)`
+  - `saveMessagesToPHP($messages, $dirName, $overwrite, $removeUnused, $markUnused, $sort)`
+  - `saveMessagesCategoryToPHP($messages, $fileName, $overwrite, $removeUnused, $markUnused, $sort, $category)`
+  - `saveMessagesToPO($messages, $dirName, $overwrite, $removeUnused, $markUnused, $sort, $catalog)`
+
 Upgrade from Yii 2.0.3
 ----------------------
 
