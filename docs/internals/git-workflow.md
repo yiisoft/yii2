@@ -2,9 +2,9 @@ Git workflow for Yii 2 contributors
 ===================================
 
 So you want to contribute to Yii? Great! But to increase the chances of your changes being accepted quickly, please
-follow the following steps. If you are new to git
-and github, you might want to first check out [github help](http://help.github.com/), [try git](https://try.github.com)
-or learn something about [git internal data model](http://nfarina.com/post/9868516270/git-is-simpler).
+follow the following steps. If you are new to Git
+and GitHub, you might want to first check out [GitHub help](http://help.github.com/), [try Git](https://try.github.com)
+or learn something about [Git internal data model](http://nfarina.com/post/9868516270/git-is-simpler).
 
 Prepare your development environment
 ------------------------------------
@@ -12,14 +12,14 @@ Prepare your development environment
 The following steps will create a development environment for Yii, which you can use to work
 on the core code of Yii framework. These steps only need to be done the first time you contribute.
 
-### 1. [Fork](http://help.github.com/fork-a-repo/) the Yii repository on github and clone your fork to your development environment
+### 1. [Fork](http://help.github.com/fork-a-repo/) the Yii repository on GitHub and clone your fork to your development environment
 
 ```
 git clone git@github.com:YOUR-GITHUB-USERNAME/yii2.git
 ```
 
-If you have trouble setting up GIT with GitHub in Linux, or are getting errors like "Permission Denied (publickey)",
-then you must [setup your GIT installation to work with GitHub](http://help.github.com/linux-set-up-git/)
+If you have trouble setting up Git with GitHub in Linux, or are getting errors like "Permission Denied (publickey)",
+then you must [setup your Git installation to work with GitHub](http://help.github.com/linux-set-up-git/)
 
 ### 2. Add the main Yii repository as an additional git remote called "upstream"
 
@@ -55,14 +55,16 @@ Some tests require additional databases to be set up and configured. You can cre
 settings that are configured in `tests/data/config.php`.
 
 You may limit the tests to a group of tests you are working on e.g. to run only tests for the validators and redis
-`phpunit --group=validators,redis`. You get the list of available groups by running `phpunit --groups`. 
+`phpunit --group=validators,redis`. You get the list of available groups by running `phpunit --list-groups`. 
 
 ### Extensions
 
 To work on extensions you have to clone the extension repository. We have created a command that can do this for you:
 
-    php build/build dev/ext <extension-name>
-    
+```
+php build/build dev/ext <extension-name>
+```
+
 where `<extension-name>` is the name of the extension, e.g. `redis`.
 
 If you want to test the extension in one of the application templates, just add it to the `composer.json` of the application as you would
@@ -141,11 +143,11 @@ git add path/to/my/file.php
 
 You can use the `-p` option to select the changes you want to have in your commit.
 
-Commit your changes with a descriptive commit message. Make sure to mention the ticket number with `#XXX` so github will
+Commit your changes with a descriptive commit message. Make sure to mention the ticket number with `#XXX` so GitHub will
 automatically link your commit with the ticket:
 
 ```
-git commit -m "A brief description of this change which fixes #42 goes here"
+git commit -m "A brief description of this change which fixes #999 goes here"
 ```
 
 ### 7. Pull the latest Yii code from upstream into your branch
@@ -158,19 +160,19 @@ This ensures you have the latest code in your branch before you open your pull r
 you should fix them now and commit the changes again. This ensures that it's easy for the Yii team to merge your changes
 with one click.
 
-### 8. Having resolved any conflicts, push your code to github
+### 8. Having resolved any conflicts, push your code to GitHub
 
 ```
 git push -u origin 999-name-of-your-branch-goes-here
 ```
 
-The `-u` parameter ensures that your branch will now automatically push and pull from the github branch. That means
+The `-u` parameter ensures that your branch will now automatically push and pull from the GitHub branch. That means
 if you type `git push` the next time it will know where to push to. This is useful if you want to later add more commits
 to the pull request.
 
 ### 9. Open a [pull request](http://help.github.com/send-pull-requests/) against upstream.
 
-Go to your repository on github and click "Pull Request", choose your branch on the right and enter some more details
+Go to your repository on GitHub and click "Pull Request", choose your branch on the right and enter some more details
 in the comment box. To link the pull request to the issue put anywhere in the pull comment `#999` where 999 is the
 issue number.
 
@@ -181,7 +183,7 @@ issue number.
 Someone will review your code, and you might be asked to make some changes, if so go to step #6 (you don't need to open
 another pull request if your current one is still open). If your code is accepted it will be merged into the main branch
 and become part of the next Yii release. If not, don't be disheartened, different people need different features and Yii
-can't be everything to everyone, your code will still be available on github as a reference for people who need it.
+can't be everything to everyone, your code will still be available on GitHub as a reference for people who need it.
 
 ### 11. Cleaning it up
 
@@ -196,7 +198,7 @@ git push origin --delete 999-name-of-your-branch-goes-here
 
 ### Note:
 
-To detect regressions early every merge to the Yii codebase on github will be picked up by
+To detect regressions early every merge to the Yii codebase on GitHub will be picked up by
 [Travis CI](http://travis-ci.org) for an automated testrun. As core team doesn't wish to overtax this service,
 [`[ci skip]`](http://about.travis-ci.org/docs/user/how-to-skip-a-build/) will be included to the merge description if
 the pull request:
@@ -222,7 +224,7 @@ git checkout -b 999-name-of-your-branch-goes-here
 /* do your magic, update changelog if needed */
 
 git add path/to/my/file.php
-git commit -m "A brief description of this change which fixes #42 goes here"
+git commit -m "A brief description of this change which fixes #999 goes here"
 git pull upstream master
 git push -u origin 999-name-of-your-branch-goes-here
 ```
