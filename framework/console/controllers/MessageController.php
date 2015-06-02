@@ -89,6 +89,7 @@ class MessageController extends Controller
             'translator' => 'Yii::t',
             'overwrite' => false,
             'removeUnused' => false,
+            'markUnused' => true,
             'sort' => false,
             'format' => 'php',
             'ignoreCategories' => [],
@@ -128,9 +129,9 @@ class MessageController extends Controller
                 }
                 if ($config['format'] === 'po') {
                     $catalog = isset($config['catalog']) ? $config['catalog'] : 'messages';
-                    $this->saveMessagesToPO($messages, $dir, $config['overwrite'], $config['removeUnused'], $config['sort'], $catalog);
+                    $this->saveMessagesToPO($messages, $dir, $config['overwrite'], $config['removeUnused'], $config['markUnused'], $config['sort'], $catalog);
                 } else {
-                    $this->saveMessagesToPHP($messages, $dir, $config['overwrite'], $config['removeUnused'], $config['sort']);
+                    $this->saveMessagesToPHP($messages, $dir, $config['overwrite'], $config['removeUnused'], $config['markUnused'], $config['sort']);
                 }
             }
         } elseif ($config['format'] === 'db') {
@@ -146,6 +147,7 @@ class MessageController extends Controller
                 $sourceMessageTable,
                 $messageTable,
                 $config['removeUnused'],
+                $config['markUnused'],
                 $config['languages']
             );
         } elseif ($config['format'] === 'pot') {
@@ -162,9 +164,10 @@ class MessageController extends Controller
      * @param string $sourceMessageTable
      * @param string $messageTable
      * @param boolean $removeUnused
+     * @param boolean $markUnused
      * @param array $languages
      */
-    protected function saveMessagesToDb($messages, $db, $sourceMessageTable, $messageTable, $removeUnused, $languages)
+    protected function saveMessagesToDb($messages, $db, $sourceMessageTable, $messageTable, $removeUnused, $markUnused, $languages)
     {
         $q = new \yii\db\Query;
         $current = [];
@@ -227,10 +230,14 @@ class MessageController extends Controller
                    ->execute();
                 $this->stdout("deleted.\n");
             } else {
+                $expression = 'message';
+                if ($markUnused) {
+                    $expression = "CONCAT('@@',message,'@@')";
+                }
                 $db->createCommand()
                    ->update(
                        $sourceMessageTable,
-                       ['message' => new \yii\db\Expression("CONCAT('@@',message,'@@')")],
+                       ['message' => new \yii\db\Expression($expression)],
                        ['in', 'id', $obsolete]
                    )->execute();
                 $this->stdout("updated.\n");
@@ -387,9 +394,10 @@ class MessageController extends Controller
      * @param string $dirName name of the directory to write to
      * @param boolean $overwrite if existing file should be overwritten without backup
      * @param boolean $removeUnused if obsolete translations should be removed
+     * @param boolean $markUnused if obsolete translations should be marked
      * @param boolean $sort if translations should be sorted
      */
-    protected function saveMessagesToPHP($messages, $dirName, $overwrite, $removeUnused, $sort)
+    protected function saveMessagesToPHP($messages, $dirName, $overwrite, $removeUnused, $markUnused, $sort)
     {
         foreach ($messages as $category => $msgs) {
             $file = str_replace("\\", '/', "$dirName/$category.php");
@@ -398,7 +406,7 @@ class MessageController extends Controller
             $msgs = array_values(array_unique($msgs));
             $coloredFileName = Console::ansiFormat($file, [Console::FG_CYAN]);
             $this->stdout("Saving messages to $coloredFileName...\n");
-            $this->saveMessagesCategoryToPHP($msgs, $file, $overwrite, $removeUnused, $sort, $category);
+            $this->saveMessagesCategoryToPHP($msgs, $file, $overwrite, $removeUnused, $markUnused, $sort, $category);
         }
     }
 
@@ -409,10 +417,11 @@ class MessageController extends Controller
      * @param string $fileName name of the file to write to
      * @param boolean $overwrite if existing file should be overwritten without backup
      * @param boolean $removeUnused if obsolete translations should be removed
+     * @param boolean $markUnused if obsolete translations should be marked
      * @param boolean $sort if translations should be sorted
      * @param string $category message category
      */
-    protected function saveMessagesCategoryToPHP($messages, $fileName, $overwrite, $removeUnused, $sort, $category)
+    protected function saveMessagesCategoryToPHP($messages, $fileName, $overwrite, $removeUnused, $markUnused, $sort, $category)
     {
         if (is_file($fileName)) {
             $rawExistingMessages = require($fileName);
@@ -442,7 +451,7 @@ class MessageController extends Controller
             ksort($existingMessages);
             foreach ($existingMessages as $message => $translation) {
                 if (!$removeUnused && !isset($merged[$message]) && !isset($todo[$message])) {
-                    if (!empty($translation) && strncmp($translation, '@@', 2) === 0 && substr_compare($translation, '@@', -2, 2) === 0) {
+                    if (!empty($translation) && (!$markUnused || (strncmp($translation, '@@', 2) === 0 && substr_compare($translation, '@@', -2, 2) === 0))) {
                         $todo[$message] = $translation;
                     } else {
                         $todo[$message] = '@@' . $translation . '@@';
@@ -501,10 +510,11 @@ EOD;
      * @param string $dirName name of the directory to write to
      * @param boolean $overwrite if existing file should be overwritten without backup
      * @param boolean $removeUnused if obsolete translations should be removed
+     * @param boolean $markUnused if obsolete translations should be marked
      * @param boolean $sort if translations should be sorted
      * @param string $catalog message catalog
      */
-    protected function saveMessagesToPO($messages, $dirName, $overwrite, $removeUnused, $sort, $catalog)
+    protected function saveMessagesToPO($messages, $dirName, $overwrite, $removeUnused, $markUnused, $sort, $catalog)
     {
         $file = str_replace("\\", '/', "$dirName/$catalog.po");
         FileHelper::createDirectory(dirname($file));
@@ -556,7 +566,7 @@ EOD;
                 // add obsolete unused messages
                 foreach ($existingMessages as $message => $translation) {
                     if (!$removeUnused && !isset($merged[$category . chr(4) . $message]) && !isset($todos[$category . chr(4) . $message])) {
-                        if (!empty($translation) && substr($translation, 0, 2) === '@@' && substr($translation, -2) === '@@') {
+                        if (!empty($translation) && (!$markUnused || (substr($translation, 0, 2) === '@@' && substr($translation, -2) === '@@'))) {
                             $todos[$category . chr(4) . $message] = $translation;
                         } else {
                             $todos[$category . chr(4) . $message] = '@@' . $translation . '@@';
