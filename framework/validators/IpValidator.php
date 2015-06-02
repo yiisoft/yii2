@@ -20,7 +20,7 @@ use yii\web\JsExpression;
  *   boolean - character "!" will be used
  *   string - passed character will be used. May be a regular expression
  * @author SilverFire <d.naumenko.a@gmail.com>
- * @since 2.0.4
+ * @since 2.0.5
  */
 class IpValidator extends Validator
 {
