@@ -460,4 +460,53 @@ SQL;
         $this->assertTrue(isset($rows[0]['CUSTOMER_ID']));
         $this->assertTrue(isset($rows[0]['TOTAL']));
     }
+
+    /**
+     * Data provider for [[testGetRawSql()]]
+     * @return array test data
+     */
+    public function dataProviderGetRawSql()
+    {
+        return [
+            [
+                'SELECT * FROM customer WHERE id = :id',
+                [':id' => 1],
+                'SELECT * FROM customer WHERE id = 1',
+            ],
+            [
+                'SELECT * FROM customer WHERE id = :id',
+                ['id' => 1],
+                'SELECT * FROM customer WHERE id = 1',
+            ],
+            [
+                'SELECT * FROM customer WHERE id = :id',
+                ['id' => null],
+                'SELECT * FROM customer WHERE id = NULL',
+            ],
+            [
+                'SELECT * FROM customer WHERE id = :base OR id = :basePrefix',
+                [
+                    'base' => 1,
+                    'basePrefix' => 2,
+                ],
+                'SELECT * FROM customer WHERE id = 1 OR id = 2',
+            ],
+        ];
+    }
+
+    /**
+     * @see https://github.com/yiisoft/yii2/issues/8592
+     *
+     * @dataProvider dataProviderGetRawSql
+     *
+     * @param string $sql
+     * @param array $params
+     * @param string $expectedRawSql
+     */
+    public function testGetRawSql($sql, array $params, $expectedRawSql)
+    {
+        $db = $this->getConnection(false);
+        $command = $db->createCommand($sql, $params);
+        $this->assertEquals($expectedRawSql, $command->getRawSql());
+    }
 }
