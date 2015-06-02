@@ -311,7 +311,55 @@ yii.validation = (function ($) {
             if (!valid) {
                 pub.addMessage(messages, options.message, value);
             }
-        }
+        },
+
+	    ip: function (value, messages, options) {
+		    var getIpVersion = function (value) {
+			    return value.indexOf(':') == -1 ? 4 : 6;
+		    };
+
+		    var negation = null, cidr = null;
+
+		    if (options.skipOnEmpty && pub.isEmpty(value)) {
+			    return;
+		    }
+
+		    var matches = new RegExp("/^(" + options.negationChar + "?)(.+?)(\/(\d+))?$/").exec(value);
+		    if (matches) {
+			    negation = (matches[1] !== '') ? matches[1] : null;
+			    cidr = (matches[4] !== '') ? matches[4] : null;
+			    value = matches[2];
+		    }
+
+		    if (options.subnet === true && cidr === null) {
+			    pub.addMessage(messages, options.messages.noSubnet, value);
+			    return;
+		    }
+		    if (options.subnet === false && cidr !== null) {
+			    pub.addMessage(messages, options.messages.hasSubnet, value);
+			    return;
+		    }
+		    if (options.negationChar === false && negation !== null) {
+			    pub.addMessage(messages, options.messages.wrongIp, value);
+			    return;
+		    }
+
+		    if (getIpVersion(value) == 6) {
+			    if (!options.ipv6) {
+				    pub.addMessage(messages, options.messages.ipv6NotAllowed, value);
+			    }
+			    if (!(new RegExp(options.ipv6Pattern)).test(value)) {
+				    pub.addMessage(messages, options.messages.wrongIp, value);
+			    }
+		    } else {
+			    if (!options.ipv4) {
+				    pub.addMessage(messages, options.messages.ipv4NotAllowed, value);
+			    }
+			    if (!(new RegExp(options.ipv4Pattern)).test(value)) {
+				    pub.addMessage(messages, options.messages.wrongIp, value);
+			    }
+		    }
+	    }
     };
 
     function getUploadedFiles(attribute, messages, options) {
