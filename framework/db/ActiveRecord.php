@@ -110,7 +110,7 @@ class ActiveRecord extends BaseActiveRecord
      *
      * @param boolean $skipIfSet whether existing value should be preserved.
      * This will only set defaults for attributes that are `null`.
-     * @return static the model instance itself.
+     * @return $this the model instance itself.
      */
     public function loadDefaultValues($skipIfSet = true)
     {
@@ -449,11 +449,6 @@ class ActiveRecord extends BaseActiveRecord
             return false;
         }
         $values = $this->getDirtyAttributes($attributes);
-        if (empty($values)) {
-            foreach ($this->getPrimaryKey(true) as $key => $value) {
-                $values[$key] = $value;
-            }
-        }
         if (($primaryKeys = static::getDb()->schema->insert($this->tableName(), $values)) === false) {
             return false;
         }

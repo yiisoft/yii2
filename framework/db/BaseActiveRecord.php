@@ -534,6 +534,9 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
 
     /**
      * Returns the attribute values that have been modified since they are loaded or saved most recently.
+     *
+     * The comparison of new and old values is made for identical values using `===`.
+     *
      * @param string[]|null $names the names of the attributes whose values may be returned if they are
      * changed recently. If null, [[attributes()]] will be used.
      * @return array the changed attribute values (name-value pairs)
@@ -719,6 +722,10 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
 
         if ($lock !== null && !$rows) {
             throw new StaleObjectException('The object being updated is outdated.');
+        }
+
+        if (isset($values[$lock])) {
+            $this->$lock = $values[$lock];
         }
 
         $changedAttributes = [];
@@ -1321,7 +1328,7 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
         } elseif (isset($this->_related[$name])) {
             /* @var $b ActiveRecordInterface */
             foreach ($this->_related[$name] as $a => $b) {
-                if ($model->getPrimaryKey() == $b->getPrimaryKey()) {
+                if ($model->getPrimaryKey() === $b->getPrimaryKey()) {
                     unset($this->_related[$name][$a]);
                 }
             }

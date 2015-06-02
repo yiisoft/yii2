@@ -526,6 +526,10 @@ Yii 2 の URL 管理は 1.1 のそれと似たようなものです。
 
 詳細については [ルーティングと URL 生成](runtime-routing.md) の節を参照してください。
 
+ルートの命名規約における重要な変更は、コントローラとアクションのキャメルケースの名前が各単語をハイフンで分けた小文字の名前になるようになった、という点です。
+例えば、`CamelCaseController` のコントローラ ID は `camel-case` となります。
+詳細については、[コントローラ ID](structure-controllers.md#controller-ids) と [アクション ID](structure-controllers.md#action-ids) の節を参照してください。
+
 
 Yii 1.1 と 2.x を一緒に使う
 ---------------------------

@@ -377,6 +377,27 @@ abstract class BaseMessageControllerTest extends TestCase
         $this->assertArrayNotHasKey($message3, $messages2, "message3 not found in category2. Command output:\n\n" . $out);
         $this->assertArrayNotHasKey($message2, $messages2, "message2 found in category2. Command output:\n\n" . $out);
     }
+
+    /**
+     * @depends testCreateTranslation
+     *
+     * @see https://github.com/yiisoft/yii2/issues/8286
+     */
+    public function testCreateTranslationFromNested()
+    {
+        $category = 'test.category1';
+        $mainMessage = 'main message';
+        $nestedMessage = 'nested message';
+        $sourceFileContent = "Yii::t('{$category}', '{$mainMessage}', ['param' => Yii::t('{$category}', '{$nestedMessage}')]);";
+        $this->createSourceFile($sourceFileContent);
+
+        $this->saveConfigFile($this->getConfig());
+        $out = $this->runMessageControllerAction('extract', [$this->configFileName]);
+
+        $messages = $this->loadMessages($category);
+        $this->assertArrayHasKey($mainMessage, $messages, "\"$mainMessage\" is missing in translation file. Command output:\n\n" . $out);
+        $this->assertArrayHasKey($nestedMessage, $messages, "\"$nestedMessage\" is missing in translation file. Command output:\n\n" . $out);
+    }
 }
 
 class MessageControllerMock extends MessageController

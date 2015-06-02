@@ -190,7 +190,7 @@ $customer = Customer::findOne([
 
 // アクティブでない全ての顧客を返す
 // SELECT * FROM `customer` WHERE `status` = 0
-$customer = Customer::findAll([
+$customers = Customer::findAll([
     'status' => Customer::STATUS_INACTIVE,
 ]);
 ```

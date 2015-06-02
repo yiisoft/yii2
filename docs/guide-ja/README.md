@@ -192,6 +192,6 @@ RESTful ウェブサービス
 ------
 
 * [概要](helper-overview.md)
-* [ArrayHelper](helper-array.md)
-* [Html](helper-html.md)
-* [Url](helper-url.md)
+* [配列ヘルパ](helper-array.md)
+* [Html ヘルパ](helper-html.md)
+* [Url ヘルパ](helper-url.md)

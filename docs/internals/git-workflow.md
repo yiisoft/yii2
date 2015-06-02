@@ -42,6 +42,9 @@ The following steps are not necessary if you want to work only on translations o
   
   This command will also be used to update dependencies, it runs `composer update` internally.
 
+> Note: The default git repository Urls clone from github via SSH, you may add the `--useHttp` flag to the `build` command
+> to use HTTPs instead.
+
 **Now you have a working playground for hacking on Yii 2.**
 
 The following steps are optional.
@@ -71,6 +74,9 @@ If you want to test the extension in one of the application templates, just add 
 normally do e.g. add `"yiisoft/yii2-redis": "*"` to the `require` section of the basic app.
 Running `php build/build dev/app basic` will install the extension and its dependecies and create
 a symlink to `extensions/redis` so you are not working in the composer vendor dir but in the yii2 repository directly.
+
+> Note: The default git repository Urls clone from github via SSH, you may add the `--useHttp` flag to the `build` command
+> to use HTTPs instead.
 
 
 Working on bugs and features

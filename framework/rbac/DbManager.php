@@ -158,7 +158,7 @@ class DbManager extends BaseManager
 
         if (!empty($this->parents[$itemName])) {
             foreach ($this->parents[$itemName] as $parent) {
-                if ($this->checkAccessRecursive($user, $parent, $params, $assignments)) {
+                if ($this->checkAccessFromCache($user, $parent, $params, $assignments)) {
                     return true;
                 }
             }
