@@ -12,7 +12,7 @@ for both A and B.
 Upgrade from Yii 2.0.4
 ----------------------
   
-* The signature of several `saveMessagesTo...` methods in `yii\console\controllers\MessageController` is changed. They now have an additional parameter named `markUnused`:
+* The signature of the following methods in `yii\console\controllers\MessageController` has changed. They have an extra parameter `$markUnused`.
   - `saveMessagesToDb($messages, $db, $sourceMessageTable, $messageTable, $removeUnused, $markUnused, $languages)`
   - `saveMessagesToPHP($messages, $dirName, $overwrite, $removeUnused, $markUnused, $sort)`
   - `saveMessagesCategoryToPHP($messages, $fileName, $overwrite, $removeUnused, $markUnused, $sort, $category)`
