@@ -75,7 +75,53 @@ echo Html::tag('div', 'Pwede na', $options);
 // <div class="btn btn-success">Pwede na</div>
 ```
 
-In order to do the same with styles for the `style` attribute:
+You may specify multiple CSS classes using array style as well:
+
+```php
+$options = ['class' => ['btn', 'btn-default']];
+
+echo Html::tag('div', 'Save', $options); // renders `class="btn btn-default"`
+```
+
+While adding or removing classes you may use array format as well:
+
+```php
+$options = ['class' => 'btn'];
+
+if ($type === 'success') {
+    Html::addCssClass($options, ['btn-success', 'btn-lg']);
+}
+
+echo Html::tag('div', 'Save', $options); // renders `class="btn btn-success btn-lg"`
+```
+
+`Html::addCssClass()` prevents duplicating classes, so you don't need to worry the same class may appear twice:
+
+```php
+$options = ['class' => 'btn btn-default'];
+
+Html::addCssClass($options, 'btn-default'); // class 'btn-default' is already present
+
+echo Html::tag('div', 'Save', $options); // renders `class="btn btn-default"`
+```
+
+If CSS class option is specified via array format, you may use named key to mark logical purpose of some class.
+In this case, class, which added using array format under the same array key, will be ignored:
+
+```php
+$options = [
+    'class' => [
+        'btn',
+        'theme' => 'btn-default',
+    ]
+];
+
+Html::addCssClass($options, ['theme' => 'btn-success']); // 'theme' key is already taken
+
+echo Html::tag('div', 'Save', $options); // renders `class="btn btn-default"`
+```
+
+CSS styles can be setup in similar way using `style` attribute:
 
 ```php
 $options = ['style' => ['width' => '100px', 'height' => '100px']];

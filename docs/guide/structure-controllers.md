@@ -67,9 +67,9 @@ the `create` view through which users can provide the needed input.
 End users address actions through the so-called *routes*. A route is a string that consists of the following parts:
 
 * a module ID: this exists only if the controller belongs to a non-application [module](structure-modules.md);
-* a controller ID: a string that uniquely identifies the controller among all controllers within the same application
+* a [controller ID](#controller-ids): a string that uniquely identifies the controller among all controllers within the same application
   (or the same module if the controller belongs to a module);
-* an action ID: a string that uniquely identifies the action among all actions within the same controller.
+* an [action ID](#action-ids): a string that uniquely identifies the action among all actions within the same controller.
 
 Routes take the following format:
 

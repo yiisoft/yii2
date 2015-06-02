@@ -62,6 +62,11 @@ class PostgreSQLCommandTest extends CommandTest
         $sql = 'INSERT INTO {{profile}}([[description]]) VALUES (\'non duplicate\')';
         $command = $db->createCommand($sql);
         $command->execute();
-        $this->assertEquals(3, $db->getSchema()->getLastInsertID('profile_id_seq'));
+        $this->assertEquals(3, $db->getSchema()->getLastInsertID('public.profile_id_seq'));
+
+        $sql = 'INSERT INTO {{schema1.profile}}([[description]]) VALUES (\'non duplicate\')';
+        $command = $db->createCommand($sql);
+        $command->execute();
+        $this->assertEquals(3, $db->getSchema()->getLastInsertID('schema1.profile_id_seq'));
     }
 }
