@@ -48,11 +48,10 @@ All Rights Reserved.
 ------------------
 
 * [Bootstrapping](runtime-bootstrapping.md)
-* [Роутинг](runtime-routing.md)
+* [Разбор и генерация URL](runtime-routing.md)
 * [Запросы](runtime-requests.md)
 * [Ответы](runtime-responses.md)
 * [Сессии и куки](runtime-sessions-cookies.md)
-* [Разбор и генерация URL](runtime-routing.md)
 * [Обработка ошибок](runtime-handling-errors.md)
 * [Логирование](runtime-logging.md)
 
@@ -74,8 +73,8 @@ All Rights Reserved.
 Работа с базами данных
 ----------------------
 
-* **TBD** [Объекты доступа к данным (DAO)](db-dao.md) - Соединение с базой данных, простые запросы, транзакции и работа со схемой.
-* **TBD** [Построитель запросов](db-query-builder.md) - Запросы к базе данных через простой слой абстракции.
+* [Объекты доступа к данным (DAO)](db-dao.md) - Соединение с базой данных, простые запросы, транзакции и работа со схемой.
+* [Построитель запросов](db-query-builder.md) - Запросы к базе данных через простой слой абстракции.
 * **TBD** [Active Record](db-active-record.md) - Получение объектов AR, работа с ними и определение связей.
 * [Миграции](db-migrations.md) - Контроль версий схемы данных при работе в команде.
 * **TBD** [Sphinx](db-sphinx.md)
@@ -87,7 +86,7 @@ All Rights Reserved.
 Получение данных от пользователя
 --------------------------------
 
-* **TBD** [Создание форм](input-forms.md)
+* [Создание форм](input-forms.md)
 * [Валидация](input-validation.md)
 * [Загрузка файлов](input-file-upload.md)
 * **TBD** [Работа с несколькими моделями](input-multiple-models.md)
@@ -109,9 +108,9 @@ All Rights Reserved.
 
 * [Аутентификация](security-authentication.md)
 * [Авторизация](security-authorization.md)
-* **TBD** [Работа с паролями](security-passwords.md)
-* [Клиенты авторизации](https://github.com/yiisoft/yii2-authclient/blob/master/docs/guide/README.md)
-* **TBD** [Лучшие практики](security-best-practices.md)
+* [Работа с паролями](security-passwords.md)
+* **TBD** [Клиенты авторизации](security-auth-clients.md)
+* [Лучшие практики](security-best-practices.md)
 
 
 Кеширование

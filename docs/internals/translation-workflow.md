@@ -18,7 +18,7 @@ In order to start with message translation:
    `ru`, `zh-CN`.
 2. Go to `framework` and run `yii message/extract messages/config.php`.
 3. Translate messages in `framework/messages/your_language/yii.php`. Make sure file is saved using UTF-8 encoding.
-4. [Make a pull request](https://github.com/yiisoft/yii2/blob/master/docs/internals/git-workflow.md).
+4. [Make a pull request](git-workflow.md).
 
 In order to keep your translation up to date you may run `yii message/extract messages/config.php` again. It will
 automatically re-extract messages keeping unchanged ones intact.

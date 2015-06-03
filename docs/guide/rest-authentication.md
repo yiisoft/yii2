@@ -37,15 +37,16 @@ is false, the user authentication status will NOT be persisted across requests u
 will be performed for every request, which is accomplished by Step 2 and 3.
 
 > Tip: You may configure [[yii\web\User::enableSession|enableSession]] of the `user` application component
-  in application configurations if you are developing RESTful APIs in terms of an application. If you develop
-  RESTful APIs as a module, you may put the following line in the module's `init()` method, like the following:
+> in application configurations if you are developing RESTful APIs in terms of an application. If you develop
+> RESTful APIs as a module, you may put the following line in the module's `init()` method, like the following:
+>
 > ```php
-public function init()
-{
-    parent::init();
-    \Yii::$app->user->enableSession = false;
-}
-```
+> public function init()
+> {
+>     parent::init();
+>     \Yii::$app->user->enableSession = false;
+> }
+> ```
 
 For example, to use HTTP Basic Auth, you may configure the `authenticator` behavior as follows,
 

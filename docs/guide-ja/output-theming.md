@@ -86,7 +86,7 @@ $file = $theme->getPath('img/logo.gif');
 
 ## テーマの継承 <span id="theme-inheritance"></span>
 
-場合によっては、基本的なルックアンドフィールを含むアプリケーションの基本テーマを定義しておいて、現在の祝日に基づいて少しだけルックアンドフィールを変更したい、ということがあるかもしれません。
+場合によっては、基本的なルックアンドフィールを含むアプリケーションの基本テーマを定義しておいて、現在の祝日に基づいてルックアンドフィールを少し変更したい、ということがあるかもしれません。
 テーマの継承を使ってこの目的を達することが出来ます。
 テーマの継承は、一つのビューパスを複数のターゲットに割り付けることによって設定することが出来ます。
 例えば、
@@ -100,6 +100,6 @@ $file = $theme->getPath('img/logo.gif');
 ]
 ```
 
-この場合、ビュー `@app/views/site/index.php` には、どちらのテーマファイルが存在するかに従って、`@app/themes/christmas/site/index.php` または `@app/themes/basic/site/index.php` というテーマが適用されます。
+この場合、ビュー `@app/views/site/index.php` には、どちらのテーマファイルが存在するかに従って、`@app/themes/christmas/site/index.php` か `@app/themes/basic/site/index.php` か、どちらかのテーマが適用されます。
 テーマファイルが両方とも存在する場合は、最初のものが優先されます。
 実際の場面では、ほとんどのテーマビューファイルを `@app/themes/basic` に保管し、その中のいくつかを `@app/themes/christmas` でカスタマイズすることになるでしょう。
