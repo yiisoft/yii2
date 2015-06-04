@@ -97,7 +97,7 @@ echo Html::tag('div', 'Save', $options);
 // renders '<div class="btn btn-success btn-lg">Save</div>'
 ```
 
-`Html::addCssClass()` prevents duplicating classes, so you don't need to worry if the same class may appear twice:
+`Html::addCssClass()` prevents duplicating classes, so you don't need to worry that the same class may appear twice:
 
 ```php
 $options = ['class' => 'btn btn-default'];
