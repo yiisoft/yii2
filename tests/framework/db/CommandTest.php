@@ -310,8 +310,6 @@ SQL;
         ], $record);
     }
 
-
-
     /*
     public function testUpdate()
     {
@@ -508,5 +506,24 @@ SQL;
         $db = $this->getConnection(false);
         $command = $db->createCommand($sql, $params);
         $this->assertEquals($expectedRawSql, $command->getRawSql());
+    }
+
+    public function testAutoRefreshTableSchema()
+    {
+        $db = $this->getConnection(false);
+        $tableName = 'test';
+
+        $db->createCommand()->createTable($tableName, [
+            'id' => 'pk',
+            'name' => 'string',
+        ])->execute();
+        $initialSchema = $db->getSchema()->getTableSchema($tableName);
+
+        $db->createCommand()->addColumn($tableName, 'value', 'integer')->execute();
+        $newSchema = $db->getSchema()->getTableSchema($tableName);
+        $this->assertNotEquals($initialSchema, $newSchema);
+
+        $db->createCommand()->dropTable($tableName)->execute();
+        $this->assertNull($db->getSchema()->getTableSchema($tableName));
     }
 }

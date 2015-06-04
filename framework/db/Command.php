@@ -93,6 +93,10 @@ class Command extends Component
      * @var string the SQL statement that this command represents
      */
     private $_sql;
+    /**
+     * @var string name of the table, which schema, should be refreshed after command execution.
+     */
+    private $_refreshTableName;
 
 
     /**
@@ -537,6 +541,7 @@ class Command extends Component
     public function renameTable($table, $newName)
     {
         $sql = $this->db->getQueryBuilder()->renameTable($table, $newName);
+        $this->requireTableSchemaRefreshment($table);
 
         return $this->setSql($sql);
     }
@@ -549,6 +554,7 @@ class Command extends Component
     public function dropTable($table)
     {
         $sql = $this->db->getQueryBuilder()->dropTable($table);
+        $this->requireTableSchemaRefreshment($table);
 
         return $this->setSql($sql);
     }
@@ -577,6 +583,7 @@ class Command extends Component
     public function addColumn($table, $column, $type)
     {
         $sql = $this->db->getQueryBuilder()->addColumn($table, $column, $type);
+        $this->requireTableSchemaRefreshment($table);
 
         return $this->setSql($sql);
     }
@@ -590,6 +597,7 @@ class Command extends Component
     public function dropColumn($table, $column)
     {
         $sql = $this->db->getQueryBuilder()->dropColumn($table, $column);
+        $this->requireTableSchemaRefreshment($table);
 
         return $this->setSql($sql);
     }
@@ -604,6 +612,7 @@ class Command extends Component
     public function renameColumn($table, $oldName, $newName)
     {
         $sql = $this->db->getQueryBuilder()->renameColumn($table, $oldName, $newName);
+        $this->requireTableSchemaRefreshment($table);
 
         return $this->setSql($sql);
     }
@@ -620,6 +629,7 @@ class Command extends Component
     public function alterColumn($table, $column, $type)
     {
         $sql = $this->db->getQueryBuilder()->alterColumn($table, $column, $type);
+        $this->requireTableSchemaRefreshment($table);
 
         return $this->setSql($sql);
     }
@@ -635,6 +645,7 @@ class Command extends Component
     public function addPrimaryKey($name, $table, $columns)
     {
         $sql = $this->db->getQueryBuilder()->addPrimaryKey($name, $table, $columns);
+        $this->requireTableSchemaRefreshment($table);
 
         return $this->setSql($sql);
     }
@@ -648,6 +659,7 @@ class Command extends Component
     public function dropPrimaryKey($name, $table)
     {
         $sql = $this->db->getQueryBuilder()->dropPrimaryKey($name, $table);
+        $this->requireTableSchemaRefreshment($table);
 
         return $this->setSql($sql);
     }
@@ -776,6 +788,8 @@ class Command extends Component
 
             Yii::endProfile($token, __METHOD__);
 
+            $this->refreshTableSchema();
+
             return $n;
         } catch (\Exception $e) {
             Yii::endProfile($token, __METHOD__);
@@ -849,5 +863,24 @@ class Command extends Component
         }
 
         return $result;
+    }
+
+    /**
+     * Marks specified table schema to be refreshed after command execution.
+     * @param string $name name of the table, which schema should be refreshed.
+     */
+    protected function requireTableSchemaRefreshment($name)
+    {
+        $this->_refreshTableName = $name;
+    }
+
+    /**
+     * Refreshes table schema, which was marked by [[requireTableSchemaRefreshment()]]
+     */
+    protected function refreshTableSchema()
+    {
+        if ($this->_refreshTableName !== null) {
+            $this->db->getSchema()->refreshTableSchema($this->_refreshTableName);
+        }
     }
 }
