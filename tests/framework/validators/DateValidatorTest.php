@@ -418,11 +418,13 @@ class DateValidatorTest extends TestCase
 
     public function testValidateValueRange()
     {
-        // intl parser allows 14 for yyyy pattern, see the following for more details:
-        // https://github.com/yiisoft/yii2/blob/a003a8fb487dfa60c0f88ecfacf18a7407ced18b/framework/validators/DateValidator.php#L51-L57
-        $date = '14-09-13';
-        $val = new DateValidator(['format' => 'yyyy-MM-dd']);
-        $this->assertTrue($val->validate($date), "$date is valid");
+        if (PHP_INT_SIZE == 8) { // this passes only on 64bit systems
+            // intl parser allows 14 for yyyy pattern, see the following for more details:
+            // https://github.com/yiisoft/yii2/blob/a003a8fb487dfa60c0f88ecfacf18a7407ced18b/framework/validators/DateValidator.php#L51-L57
+            $date = '14-09-13';
+            $val = new DateValidator(['format' => 'yyyy-MM-dd']);
+            $this->assertTrue($val->validate($date), "$date is valid");
+        }
 
         $val = new DateValidator(['format' => 'yyyy-MM-dd', 'min' => '1900-01-01']);
         $date = "1958-01-12";
