@@ -9,6 +9,7 @@ namespace yii\validators;
 
 use Yii;
 use yii\base\InvalidConfigException;
+use yii\helpers\JsHelper;
 use yii\web\JsExpression;
 use yii\helpers\Json;
 
@@ -64,22 +65,10 @@ class RegularExpressionValidator extends Validator
      */
     public function clientValidateAttribute($model, $attribute, $view)
     {
-        $pattern = $this->pattern;
-        $pattern = preg_replace('/\\\\x\{?([0-9a-fA-F]+)\}?/', '\u$1', $pattern);
-        $deliminator = substr($pattern, 0, 1);
-        $pos = strrpos($pattern, $deliminator, 1);
-        $flag = substr($pattern, $pos + 1);
-        if ($deliminator !== '/') {
-            $pattern = '/' . str_replace('/', '\\/', substr($pattern, 1, $pos - 1)) . '/';
-        } else {
-            $pattern = substr($pattern, 0, $pos + 1);
-        }
-        if (!empty($flag)) {
-            $pattern .= preg_replace('/[^igm]/', '', $flag);
-        }
+        $pattern = JsHelper::escapeRegexp($this->pattern);
 
         $options = [
-            'pattern' => new JsExpression($pattern),
+            'pattern' => $pattern,
             'not' => $this->not,
             'message' => Yii::$app->getI18n()->format($this->message, [
                 'attribute' => $model->getAttributeLabel($attribute),
