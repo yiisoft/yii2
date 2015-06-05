@@ -19,7 +19,7 @@ All Rights Reserved.
 ----------------
 
 * [Встановлення Yii](start-installation.md)
-* [Запуск додатка](start-workflow.md)
+* [Виконання додатків](start-workflow.md)
 * [Говоримо "Привіт"](start-hello.md)
 * [Робота з формами](start-forms.md)
 * [Робота з базами даних](start-databases.md)
@@ -35,7 +35,7 @@ All Rights Reserved.
 * [Додатки](structure-applications.md)
 * [Компоненти додатка](structure-application-components.md)
 * [Контролери](structure-controllers.md)
-* **TBD** [Моделі](structure-models.md)
+* [Моделі](structure-models.md)
 * **TBD** [Представлення](structure-views.md)
 * **TBD** [Модулі](structure-modules.md)
 * **TBD** [Фільтри](structure-filters.md)
@@ -48,7 +48,7 @@ All Rights Reserved.
 ---------------
 
 * **TBD** [Огляд](runtime-overview.md)
-* **TBD** [Bootstrapping](runtime-bootstrapping.md)
+* **TBD** [Початкове завантаження](runtime-bootstrapping.md)
 * **TBD** [Маршрутизація та створення URL](runtime-routing.md)
 * **TBD** [Запити](runtime-requests.md)
 * **TBD** [Відповіді](runtime-responses.md)
@@ -67,7 +67,7 @@ All Rights Reserved.
 * **TBD** [Конфігурації](concept-configurations.md)
 * [Псевдоніми](concept-aliases.md)
 * [Автозавантаження класів](concept-autoloading.md)
-* **TBD** [Service Locator](concept-service-locator.md)
+* **TBD** [Локатор служб](concept-service-locator.md)
 * **TBD** [Dependency Injection Container](concept-di-container.md)
 
 
@@ -126,7 +126,7 @@ All Rights Reserved.
 * **TBD** [HTTP кешування](caching-http.md)
 
 
-RESTful веб-сервіси
+Веб-сервіси RESTful
 -------------------
 
 * **TBD** [Швидкий старт](rest-quick-start.md)
