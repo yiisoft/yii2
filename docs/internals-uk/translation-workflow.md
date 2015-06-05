@@ -77,6 +77,7 @@ php build translation "../docs/guide" "../docs/guide-uk" "Ukrainian guide transl
 - active record — (не перекладається);
 - Advanced/Basic Project Template — Розширений/Базовий шаблон проекту;
 - alias — псевдонім;
+- alphanumeric — буквено-цифровий;
 - (Web) application — (веб-)додаток;
 - assignment — призначення;
 - attach handler — приєднати обробник;
@@ -179,7 +180,7 @@ php build translation "../docs/guide" "../docs/guide-uk" "Ukrainian guide transl
 - thumbnail — мініатюра;
 - trait — трейт;
 - Twitter — Твіттер;
-- Unicode — Унікод;
+- Unicode — (не перекладається);
 - unit tests — модульні тести;
 - to validate — перевіряти;
 - valid — коректний;
