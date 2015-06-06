@@ -933,7 +933,7 @@ class Model extends Component implements IteratorAggregate, ArrayAccess, Arrayab
 
     /**
      * Returns an iterator for traversing the attributes in the model.
-     * This method is required by the interface IteratorAggregate.
+     * This method is required by the interface [[\IteratorAggregate]].
      * @return ArrayIterator an iterator for traversing the items in the list.
      */
     public function getIterator()
@@ -944,7 +944,7 @@ class Model extends Component implements IteratorAggregate, ArrayAccess, Arrayab
 
     /**
      * Returns whether there is an element at the specified offset.
-     * This method is required by the SPL interface `ArrayAccess`.
+     * This method is required by the SPL interface [[\ArrayAccess]].
      * It is implicitly called when you use something like `isset($model[$offset])`.
      * @param mixed $offset the offset to check on
      * @return boolean
@@ -956,7 +956,7 @@ class Model extends Component implements IteratorAggregate, ArrayAccess, Arrayab
 
     /**
      * Returns the element at the specified offset.
-     * This method is required by the SPL interface `ArrayAccess`.
+     * This method is required by the SPL interface [[\ArrayAccess]].
      * It is implicitly called when you use something like `$value = $model[$offset];`.
      * @param mixed $offset the offset to retrieve element.
      * @return mixed the element at the offset, null if no element is found at the offset
@@ -968,7 +968,7 @@ class Model extends Component implements IteratorAggregate, ArrayAccess, Arrayab
 
     /**
      * Sets the element at the specified offset.
-     * This method is required by the SPL interface `ArrayAccess`.
+     * This method is required by the SPL interface [[\ArrayAccess]].
      * It is implicitly called when you use something like `$model[$offset] = $item;`.
      * @param integer $offset the offset to set element
      * @param mixed $item the element value
@@ -980,7 +980,7 @@ class Model extends Component implements IteratorAggregate, ArrayAccess, Arrayab
 
     /**
      * Sets the element value at the specified offset to null.
-     * This method is required by the SPL interface `ArrayAccess`.
+     * This method is required by the SPL interface [[\ArrayAccess]].
      * It is implicitly called when you use something like `unset($model[$offset])`.
      * @param mixed $offset the offset to unset element
      */

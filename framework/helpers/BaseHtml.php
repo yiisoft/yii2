@@ -1331,7 +1331,12 @@ class BaseHtml
     public static function activeTextarea($model, $attribute, $options = [])
     {
         $name = isset($options['name']) ? $options['name'] : static::getInputName($model, $attribute);
-        $value = static::getAttributeValue($model, $attribute);
+        if (isset($options['value'])) {
+            $value = $options['value'];
+            unset($options['value']);
+        } else {
+            $value = static::getAttributeValue($model, $attribute);
+        }
         if (!array_key_exists('id', $options)) {
             $options['id'] = static::getInputId($model, $attribute);
         }

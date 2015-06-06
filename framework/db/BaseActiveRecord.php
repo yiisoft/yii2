@@ -8,6 +8,7 @@
 namespace yii\db;
 
 use yii\base\InvalidConfigException;
+use yii\base\Event;
 use yii\base\Model;
 use yii\base\InvalidParamException;
 use yii\base\ModelEvent;
@@ -534,6 +535,9 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
 
     /**
      * Returns the attribute values that have been modified since they are loaded or saved most recently.
+     *
+     * The comparison of new and old values is made for identical values using `===`.
+     *
      * @param string[]|null $names the names of the attributes whose values may be returned if they are
      * changed recently. If null, [[attributes()]] will be used.
      * @return array the changed attribute values (name-value pairs)
@@ -1088,7 +1092,7 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
 
     /**
      * Returns whether there is an element at the specified offset.
-     * This method is required by the interface ArrayAccess.
+     * This method is required by the interface [[\ArrayAccess]].
      * @param mixed $offset the offset to check on
      * @return boolean whether there is an element at the specified offset.
      */
@@ -1156,11 +1160,11 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
      *
      * Note that this method requires that the primary key value is not null.
      *
-     * @param string $name the case sensitive name of the relationship
+     * @param string $name the case sensitive name of the relationship.
      * @param ActiveRecordInterface $model the model to be linked with the current one.
      * @param array $extraColumns additional column values to be saved into the junction table.
      * This parameter is only meaningful for a relationship involving a junction table
-     * (i.e., a relation set with [[ActiveRelationTrait::via()]] or `[[ActiveQuery::viaTable()]]`.)
+     * (i.e., a relation set with [[ActiveRelationTrait::via()]] or [[ActiveQuery::viaTable()]].)
      * @throws InvalidCallException if the method is unable to link two models.
      */
     public function link($name, $model, $extraColumns = [])
@@ -1553,7 +1557,7 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
 
     /**
      * Sets the element value at the specified offset to null.
-     * This method is required by the SPL interface `ArrayAccess`.
+     * This method is required by the SPL interface [[\ArrayAccess]].
      * It is implicitly called when you use something like `unset($model[$offset])`.
      * @param mixed $offset the offset to unset element
      */

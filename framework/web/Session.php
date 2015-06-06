@@ -517,7 +517,7 @@ class Session extends Component implements \IteratorAggregate, \ArrayAccess, \Co
 
     /**
      * Returns an iterator for traversing the session variables.
-     * This method is required by the interface IteratorAggregate.
+     * This method is required by the interface [[\IteratorAggregate]].
      * @return SessionIterator an iterator for traversing the session variables.
      */
     public function getIterator()
@@ -538,7 +538,7 @@ class Session extends Component implements \IteratorAggregate, \ArrayAccess, \Co
 
     /**
      * Returns the number of items in the session.
-     * This method is required by Countable interface.
+     * This method is required by [[\Countable]] interface.
      * @return integer number of items in the session.
      */
     public function count()
@@ -820,7 +820,7 @@ class Session extends Component implements \IteratorAggregate, \ArrayAccess, \Co
     }
 
     /**
-     * This method is required by the interface ArrayAccess.
+     * This method is required by the interface [[\ArrayAccess]].
      * @param mixed $offset the offset to check on
      * @return boolean
      */
@@ -832,7 +832,7 @@ class Session extends Component implements \IteratorAggregate, \ArrayAccess, \Co
     }
 
     /**
-     * This method is required by the interface ArrayAccess.
+     * This method is required by the interface [[\ArrayAccess]].
      * @param integer $offset the offset to retrieve element.
      * @return mixed the element at the offset, null if no element is found at the offset
      */
@@ -844,7 +844,7 @@ class Session extends Component implements \IteratorAggregate, \ArrayAccess, \Co
     }
 
     /**
-     * This method is required by the interface ArrayAccess.
+     * This method is required by the interface [[\ArrayAccess]].
      * @param integer $offset the offset to set element
      * @param mixed $item the element value
      */
@@ -855,7 +855,7 @@ class Session extends Component implements \IteratorAggregate, \ArrayAccess, \Co
     }
 
     /**
-     * This method is required by the interface ArrayAccess.
+     * This method is required by the interface [[\ArrayAccess]].
      * @param mixed $offset the offset to unset element
      */
     public function offsetUnset($offset)
