@@ -146,6 +146,7 @@ class Command extends Component
             $this->_sql = $this->db->quoteSql($sql);
             $this->_pendingParams = [];
             $this->params = [];
+            $this->_refreshTableName = null;
         }
 
         return $this;
@@ -416,7 +417,7 @@ class Command extends Component
      *
      * @param string $table the table that new rows will be inserted into.
      * @param array $columns the column data (name => value) to be inserted into the table.
-     * @return Command the command object itself
+     * @return $this the command object itself
      */
     public function insert($table, $columns)
     {
@@ -447,7 +448,7 @@ class Command extends Component
      * @param string $table the table that new rows will be inserted into.
      * @param array $columns the column names
      * @param array $rows the rows to be batch inserted into the table
-     * @return Command the command object itself
+     * @return $this the command object itself
      */
     public function batchInsert($table, $columns, $rows)
     {
@@ -473,7 +474,7 @@ class Command extends Component
      * @param string|array $condition the condition that will be put in the WHERE part. Please
      * refer to [[Query::where()]] on how to specify condition.
      * @param array $params the parameters to be bound to the command
-     * @return Command the command object itself
+     * @return $this the command object itself
      */
     public function update($table, $columns, $condition = '', $params = [])
     {
@@ -498,7 +499,7 @@ class Command extends Component
      * @param string|array $condition the condition that will be put in the WHERE part. Please
      * refer to [[Query::where()]] on how to specify condition.
      * @param array $params the parameters to be bound to the command
-     * @return Command the command object itself
+     * @return $this the command object itself
      */
     public function delete($table, $condition = '', $params = [])
     {
@@ -523,7 +524,7 @@ class Command extends Component
      * @param string $table the name of the table to be created. The name will be properly quoted by the method.
      * @param array $columns the columns (name => definition) in the new table.
      * @param string $options additional SQL fragment that will be appended to the generated SQL.
-     * @return Command the command object itself
+     * @return $this the command object itself
      */
     public function createTable($table, $columns, $options = null)
     {
@@ -536,33 +537,31 @@ class Command extends Component
      * Creates a SQL command for renaming a DB table.
      * @param string $table the table to be renamed. The name will be properly quoted by the method.
      * @param string $newName the new table name. The name will be properly quoted by the method.
-     * @return Command the command object itself
+     * @return $this the command object itself
      */
     public function renameTable($table, $newName)
     {
         $sql = $this->db->getQueryBuilder()->renameTable($table, $newName);
-        $this->requireTableSchemaRefreshment($table);
 
-        return $this->setSql($sql);
+        return $this->setSql($sql)->requireTableSchemaRefresh($table);
     }
 
     /**
      * Creates a SQL command for dropping a DB table.
      * @param string $table the table to be dropped. The name will be properly quoted by the method.
-     * @return Command the command object itself
+     * @return $this the command object itself
      */
     public function dropTable($table)
     {
         $sql = $this->db->getQueryBuilder()->dropTable($table);
-        $this->requireTableSchemaRefreshment($table);
 
-        return $this->setSql($sql);
+        return $this->setSql($sql)->requireTableSchemaRefresh($table);
     }
 
     /**
      * Creates a SQL command for truncating a DB table.
      * @param string $table the table to be truncated. The name will be properly quoted by the method.
-     * @return Command the command object itself
+     * @return $this the command object itself
      */
     public function truncateTable($table)
     {
@@ -578,28 +577,26 @@ class Command extends Component
      * @param string $type the column type. [[\yii\db\QueryBuilder::getColumnType()]] will be called
      * to convert the give column type to the physical one. For example, `string` will be converted
      * as `varchar(255)`, and `string not null` becomes `varchar(255) not null`.
-     * @return Command the command object itself
+     * @return $this the command object itself
      */
     public function addColumn($table, $column, $type)
     {
         $sql = $this->db->getQueryBuilder()->addColumn($table, $column, $type);
-        $this->requireTableSchemaRefreshment($table);
 
-        return $this->setSql($sql);
+        return $this->setSql($sql)->requireTableSchemaRefresh($table);
     }
 
     /**
      * Creates a SQL command for dropping a DB column.
      * @param string $table the table whose column is to be dropped. The name will be properly quoted by the method.
      * @param string $column the name of the column to be dropped. The name will be properly quoted by the method.
-     * @return Command the command object itself
+     * @return $this the command object itself
      */
     public function dropColumn($table, $column)
     {
         $sql = $this->db->getQueryBuilder()->dropColumn($table, $column);
-        $this->requireTableSchemaRefreshment($table);
 
-        return $this->setSql($sql);
+        return $this->setSql($sql)->requireTableSchemaRefresh($table);
     }
 
     /**
@@ -607,14 +604,13 @@ class Command extends Component
      * @param string $table the table whose column is to be renamed. The name will be properly quoted by the method.
      * @param string $oldName the old name of the column. The name will be properly quoted by the method.
      * @param string $newName the new name of the column. The name will be properly quoted by the method.
-     * @return Command the command object itself
+     * @return $this the command object itself
      */
     public function renameColumn($table, $oldName, $newName)
     {
         $sql = $this->db->getQueryBuilder()->renameColumn($table, $oldName, $newName);
-        $this->requireTableSchemaRefreshment($table);
 
-        return $this->setSql($sql);
+        return $this->setSql($sql)->requireTableSchemaRefresh($table);
     }
 
     /**
@@ -624,14 +620,13 @@ class Command extends Component
      * @param string $type the column type. [[\yii\db\QueryBuilder::getColumnType()]] will be called
      * to convert the give column type to the physical one. For example, `string` will be converted
      * as `varchar(255)`, and `string not null` becomes `varchar(255) not null`.
-     * @return Command the command object itself
+     * @return $this the command object itself
      */
     public function alterColumn($table, $column, $type)
     {
         $sql = $this->db->getQueryBuilder()->alterColumn($table, $column, $type);
-        $this->requireTableSchemaRefreshment($table);
 
-        return $this->setSql($sql);
+        return $this->setSql($sql)->requireTableSchemaRefresh($table);
     }
 
     /**
@@ -640,28 +635,26 @@ class Command extends Component
      * @param string $name the name of the primary key constraint.
      * @param string $table the table that the primary key constraint will be added to.
      * @param string|array $columns comma separated string or array of columns that the primary key will consist of.
-     * @return Command the command object itself.
+     * @return $this the command object itself.
      */
     public function addPrimaryKey($name, $table, $columns)
     {
         $sql = $this->db->getQueryBuilder()->addPrimaryKey($name, $table, $columns);
-        $this->requireTableSchemaRefreshment($table);
 
-        return $this->setSql($sql);
+        return $this->setSql($sql)->requireTableSchemaRefresh($table);
     }
 
     /**
      * Creates a SQL command for removing a primary key constraint to an existing table.
      * @param string $name the name of the primary key constraint to be removed.
      * @param string $table the table that the primary key constraint will be removed from.
-     * @return Command the command object itself
+     * @return $this the command object itself
      */
     public function dropPrimaryKey($name, $table)
     {
         $sql = $this->db->getQueryBuilder()->dropPrimaryKey($name, $table);
-        $this->requireTableSchemaRefreshment($table);
 
-        return $this->setSql($sql);
+        return $this->setSql($sql)->requireTableSchemaRefresh($table);
     }
 
     /**
@@ -674,7 +667,7 @@ class Command extends Component
      * @param string|array $refColumns the name of the column that the foreign key references to. If there are multiple columns, separate them with commas.
      * @param string $delete the ON DELETE option. Most DBMS support these options: RESTRICT, CASCADE, NO ACTION, SET DEFAULT, SET NULL
      * @param string $update the ON UPDATE option. Most DBMS support these options: RESTRICT, CASCADE, NO ACTION, SET DEFAULT, SET NULL
-     * @return Command the command object itself
+     * @return $this the command object itself
      */
     public function addForeignKey($name, $table, $columns, $refTable, $refColumns, $delete = null, $update = null)
     {
@@ -687,7 +680,7 @@ class Command extends Component
      * Creates a SQL command for dropping a foreign key constraint.
      * @param string $name the name of the foreign key constraint to be dropped. The name will be properly quoted by the method.
      * @param string $table the table whose foreign is to be dropped. The name will be properly quoted by the method.
-     * @return Command the command object itself
+     * @return $this the command object itself
      */
     public function dropForeignKey($name, $table)
     {
@@ -703,7 +696,7 @@ class Command extends Component
      * @param string|array $columns the column(s) that should be included in the index. If there are multiple columns, please separate them
      * by commas. The column names will be properly quoted by the method.
      * @param boolean $unique whether to add UNIQUE constraint on the created index.
-     * @return Command the command object itself
+     * @return $this the command object itself
      */
     public function createIndex($name, $table, $columns, $unique = false)
     {
@@ -716,7 +709,7 @@ class Command extends Component
      * Creates a SQL command for dropping an index.
      * @param string $name the name of the index to be dropped. The name will be properly quoted by the method.
      * @param string $table the table whose index is to be dropped. The name will be properly quoted by the method.
-     * @return Command the command object itself
+     * @return $this the command object itself
      */
     public function dropIndex($name, $table)
     {
@@ -732,7 +725,7 @@ class Command extends Component
      * @param string $table the name of the table whose primary key sequence will be reset
      * @param mixed $value the value for the primary key of the next new row inserted. If this is not set,
      * the next new row's primary key will have a value 1.
-     * @return Command the command object itself
+     * @return $this the command object itself
      * @throws NotSupportedException if this is not supported by the underlying DBMS
      */
     public function resetSequence($table, $value = null)
@@ -748,7 +741,7 @@ class Command extends Component
      * @param string $schema the schema name of the tables. Defaults to empty string, meaning the current
      * or default schema.
      * @param string $table the table name.
-     * @return Command the command object itself
+     * @return $this the command object itself
      * @throws NotSupportedException if this is not supported by the underlying DBMS
      */
     public function checkIntegrity($check = true, $schema = '', $table = '')
@@ -868,10 +861,12 @@ class Command extends Component
     /**
      * Marks specified table schema to be refreshed after command execution.
      * @param string $name name of the table, which schema should be refreshed.
+     * @return $this this command instance
      */
-    protected function requireTableSchemaRefreshment($name)
+    protected function requireTableSchemaRefresh($name)
     {
         $this->_refreshTableName = $name;
+        return $this;
     }
 
     /**
