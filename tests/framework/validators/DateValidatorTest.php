@@ -424,9 +424,15 @@ class DateValidatorTest extends TestCase
             $date = '14-09-13';
             $val = new DateValidator(['format' => 'yyyy-MM-dd']);
             $this->assertTrue($val->validate($date), "$date is valid");
+
+            $min = '1900-01-01';
+            $beforeMin = '1899-12-31';
+        } else {
+            $min = '1920-01-01';
+            $beforeMin = '1919-12-31';
         }
 
-        $val = new DateValidator(['format' => 'yyyy-MM-dd', 'min' => '1900-01-01']);
+        $val = new DateValidator(['format' => 'yyyy-MM-dd', 'min' => $min]);
         $date = "1958-01-12";
         $this->assertTrue($val->validate($date), "$date is valid");
 
@@ -436,11 +442,11 @@ class DateValidatorTest extends TestCase
         $date = "1958-01-12";
         $this->assertTrue($val->validate($date), "$date is valid");
 
-        $val = new DateValidator(['format' => 'yyyy-MM-dd', 'min' => '1900-01-01', 'max' => '2000-01-01']);
+        $val = new DateValidator(['format' => 'yyyy-MM-dd', 'min' => $min, 'max' => '2000-01-01']);
         $this->assertTrue($val->validate('1999-12-31'), "max -1 day is valid");
         $this->assertTrue($val->validate('2000-01-01'), "max is inside range");
-        $this->assertTrue($val->validate('1900-01-01'), "min is inside range");
-        $this->assertFalse($val->validate('1899-12-31'), "min -1 day is invalid");
+        $this->assertTrue($val->validate($min), "min is inside range");
+        $this->assertFalse($val->validate($beforeMin), "min -1 day is invalid");
         $this->assertFalse($val->validate('2000-01-02'), "max +1 day is invalid");
     }
 
@@ -468,9 +474,15 @@ class DateValidatorTest extends TestCase
             $val = new DateValidator(['format' => 'yyyy-MM-dd']);
             $date = '14-09-13';
             $this->validateModelAttribute($val, $date, true, "$date is valid");
+
+            $min = '1900-01-01';
+            $beforeMin = '1899-12-31';
+        } else {
+            $min = '1920-01-01';
+            $beforeMin = '1919-12-31';
         }
 
-        $val = new DateValidator(['format' => 'yyyy-MM-dd', 'min' => '1900-01-01']);
+        $val = new DateValidator(['format' => 'yyyy-MM-dd', 'min' => $min]);
         $date = '1958-01-12';
         $this->validateModelAttribute($val, $date, true, "$date is valid");
 
@@ -480,11 +492,11 @@ class DateValidatorTest extends TestCase
         $date = '1958-01-12';
         $this->validateModelAttribute($val, $date, true, "$date is valid");
 
-        $val = new DateValidator(['format' => 'yyyy-MM-dd', 'min' => '1900-01-01', 'max' => '2000-01-01']);
+        $val = new DateValidator(['format' => 'yyyy-MM-dd', 'min' => $min, 'max' => '2000-01-01']);
         $this->validateModelAttribute($val, '1999-12-31', true, "max -1 day is valid");
         $this->validateModelAttribute($val, '2000-01-01', true, "max is inside range");
-        $this->validateModelAttribute($val, '1900-01-01', true, "min is inside range");
-        $this->validateModelAttribute($val, '1899-12-31', false, "min -1 day is invalid");
+        $this->validateModelAttribute($val, $min, true, "min is inside range");
+        $this->validateModelAttribute($val, $beforeMin, false, "min -1 day is invalid");
         $this->validateModelAttribute($val, '2000-01-02', false, "max +1 day is invalid");
     }
 
@@ -494,7 +506,7 @@ class DateValidatorTest extends TestCase
             $this->markTestSkipped("ICU is too old.");
         }
         $date = '14-09-13';
-        $val = new DateValidator(['format' => 'yyyy-MM-dd', 'min' => '1900-01-01']);
+        $val = new DateValidator(['format' => 'yyyy-MM-dd', 'min' => '1920-01-01']);
         $this->assertFalse($val->validate($date), "$date is too small");
     }
 
@@ -504,7 +516,7 @@ class DateValidatorTest extends TestCase
             $this->markTestSkipped("ICU is too old.");
         }
         $date = '14-09-13';
-        $val = new DateValidator(['format' => 'yyyy-MM-dd', 'min' => '1900-01-01']);
+        $val = new DateValidator(['format' => 'yyyy-MM-dd', 'min' => '1920-01-01']);
         $this->validateModelAttribute($val, $date, false, "$date is too small");
     }
 
