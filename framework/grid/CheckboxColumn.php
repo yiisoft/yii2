@@ -10,6 +10,8 @@ namespace yii\grid;
 use Closure;
 use yii\base\InvalidConfigException;
 use yii\helpers\Html;
+use yii\helpers\Json;
+use yii\web\JsExpression;
 
 /**
  * CheckboxColumn displays a column of checkboxes in a grid view.
@@ -67,6 +69,14 @@ class CheckboxColumn extends Column
      */
     public $multiple = true;
 
+    /**
+     * @var string a javascript function that will be invoked after the row selection is changed.
+     * The function signature is <code>function(id, cbox)</code> where 'id' refers to the ID of the grid view
+     * and 'cbox' to the checkbox that changed.
+     * In this function, you may use <code>$(gridID).yiiGridView('getSelectedRows')</code> to get the key values
+     * of the currently selected rows (gridID is the DOM selector of the grid).
+     */
+    public $selectionChanged;
 
     /**
      * @inheritdoc
@@ -93,10 +103,11 @@ class CheckboxColumn extends Column
     {
         $name = rtrim($this->name, '[]') . '_all';
         $id = $this->grid->options['id'];
-        $options = json_encode([
+        $options = Json::htmlEncode([
             'name' => $this->name,
             'multiple' => $this->multiple,
             'checkAll' => $name,
+            "selectionChanged" => empty($this->selectionChanged) ? null : new JsExpression($this->selectionChanged)
         ], JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
         $this->grid->getView()->registerJs("jQuery('#$id').yiiGridView('setSelectionColumn', $options);");
 

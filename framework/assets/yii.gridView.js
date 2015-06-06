@@ -119,18 +119,23 @@
             var $grid = $(this);
             var id = $(this).attr('id');
             gridData[id].selectionColumn = options.name;
-            if (!options.multiple) {
-                return;
-            }
             var checkAll = "#" + id + " input[name='" + options.checkAll + "']";
             var inputs = "#" + id + " input[name='" + options.name + "']";
-            $(document).off('click.yiiGridView', checkAll).on('click.yiiGridView', checkAll, function () {
-                $grid.find("input[name='" + options.name + "']:enabled").prop('checked', this.checked);
-            });
-            $(document).off('click.yiiGridView', inputs + ":enabled").on('click.yiiGridView', inputs + ":enabled", function () {
-                var all = $grid.find("input[name='" + options.name + "']").length == $grid.find("input[name='" + options.name + "']:checked").length;
-                $grid.find("input[name='" + options.checkAll + "']").prop('checked', all);
-            });
+            if (options.multiple) {
+                $(document).off('click.yiiGridView', checkAll).on('click.yiiGridView', checkAll, function () {
+                    $grid.find("input[name='" + options.name + "']:enabled").prop('checked', this.checked);
+                });
+                $(document).off('click.yiiGridView', inputs + ":enabled").on('click.yiiGridView', inputs + ":enabled", function () {
+                    var all = $grid.find("input[name='" + options.name + "']").length === $grid.find("input[name='" + options.name + "']:checked").length;
+                    $grid.find("input[name='" + options.checkAll + "']").prop('checked', all);
+                });
+            }
+            if (options.selectionChanged !== null) {
+                $(document).off('click.yiiGridView', inputs + ":enabled,"+checkAll).on('click.yiiGridView', inputs + ":enabled,"+checkAll, function(){
+                    options.selectionChanged(id, this);
+                });
+            }
+            
         },
 
         getSelectedRows: function () {
