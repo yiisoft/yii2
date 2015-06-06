@@ -285,6 +285,7 @@ abstract class Schema extends Object
      * This method cleans up cached table schema so that it can be re-created later
      * to reflect the database schema change.
      * @param string $name table name.
+     * @since 2.0.5
      */
     public function refreshTableSchema($name)
     {
