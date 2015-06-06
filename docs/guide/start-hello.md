@@ -10,7 +10,7 @@ a [view](structure-views.md):
 
 Through this tutorial, you will learn three things:
 
-1. How to create an [action](structure-controllers.md) to respond to requests,
+1. how to create an [action](structure-controllers.md#creating-actions) to respond to requests,
 2. how to create a [view](structure-views.md) to compose the response's content, and
 3. how an application dispatches requests to [actions](structure-controllers.md#creating-actions).
 

@@ -125,6 +125,7 @@ class FileCache extends Cache
      */
     protected function setValue($key, $value, $duration)
     {
+        $this->gc();
         $cacheFile = $this->getCacheFile($key);
         if ($this->directoryLevel > 0) {
             @FileHelper::createDirectory(dirname($cacheFile), $this->dirMode, true);

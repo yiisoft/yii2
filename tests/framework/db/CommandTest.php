@@ -5,6 +5,7 @@ namespace yiiunit\framework\db;
 use yii\caching\FileCache;
 use yii\db\Connection;
 use yii\db\DataReader;
+use yii\db\Expression;
 
 /**
  * @group db
@@ -258,11 +259,60 @@ SQL;
         $this->assertEquals(2, $command->execute());
     }
 
-    /*
     public function testInsert()
     {
+        $db = $this->getConnection();
+        $db->createCommand('DELETE FROM {{customer}};')->execute();
+
+        $command = $db->createCommand();
+        $command->insert(
+            '{{customer}}',
+            [
+                'email' => 't1@example.com',
+                'name' => 'test',
+                'address' => 'test address',
+            ]
+        )->execute();
+        $this->assertEquals(1, $db->createCommand('SELECT COUNT(*) FROM {{customer}};')->queryScalar());
+        $record = $db->createCommand('SELECT email, name, address FROM {{customer}};')->queryOne();
+        $this->assertEquals([
+            'email' => 't1@example.com',
+            'name' => 'test',
+            'address' => 'test address',
+        ], $record);
     }
 
+    public function testInsertExpression()
+    {
+        $db = $this->getConnection();
+        $db->createCommand('DELETE FROM {{order_with_null_fk}};')->execute();
+
+        switch($this->driverName){
+            case 'pgsql': $expression = "EXTRACT(YEAR FROM TIMESTAMP 'now')"; break;
+            case 'cubrid':
+            case 'mysql': $expression = "YEAR(NOW())"; break;
+            default:
+            case 'sqlite': $expression = "strftime('%Y')"; break;
+        }
+
+        $command = $db->createCommand();
+        $command->insert(
+            '{{order_with_null_fk}}',
+            [
+                'created_at' => new Expression($expression),
+                'total' => 1,
+            ]
+        )->execute();
+        $this->assertEquals(1, $db->createCommand('SELECT COUNT(*) FROM {{order_with_null_fk}};')->queryScalar());
+        $record = $db->createCommand('SELECT created_at FROM {{order_with_null_fk}};')->queryOne();
+        $this->assertEquals([
+            'created_at' => date('Y'),
+        ], $record);
+    }
+
+
+
+    /*
     public function testUpdate()
     {
     }
@@ -332,6 +382,16 @@ SQL;
         $command->execute();
     }
 
+    public function testLastInsertId()
+    {
+        $db = $this->getConnection();
+
+        $sql = 'INSERT INTO {{profile}}([[description]]) VALUES (\'non duplicate\')';
+        $command = $db->createCommand($sql);
+        $command->execute();
+        $this->assertEquals(3, $db->getSchema()->getLastInsertID());
+    }
+
     public function testQueryCache()
     {
         $db = $this->getConnection();
@@ -399,5 +459,54 @@ SQL;
         $this->assertTrue(isset($rows[0]));
         $this->assertTrue(isset($rows[0]['CUSTOMER_ID']));
         $this->assertTrue(isset($rows[0]['TOTAL']));
+    }
+
+    /**
+     * Data provider for [[testGetRawSql()]]
+     * @return array test data
+     */
+    public function dataProviderGetRawSql()
+    {
+        return [
+            [
+                'SELECT * FROM customer WHERE id = :id',
+                [':id' => 1],
+                'SELECT * FROM customer WHERE id = 1',
+            ],
+            [
+                'SELECT * FROM customer WHERE id = :id',
+                ['id' => 1],
+                'SELECT * FROM customer WHERE id = 1',
+            ],
+            [
+                'SELECT * FROM customer WHERE id = :id',
+                ['id' => null],
+                'SELECT * FROM customer WHERE id = NULL',
+            ],
+            [
+                'SELECT * FROM customer WHERE id = :base OR id = :basePrefix',
+                [
+                    'base' => 1,
+                    'basePrefix' => 2,
+                ],
+                'SELECT * FROM customer WHERE id = 1 OR id = 2',
+            ],
+        ];
+    }
+
+    /**
+     * @see https://github.com/yiisoft/yii2/issues/8592
+     *
+     * @dataProvider dataProviderGetRawSql
+     *
+     * @param string $sql
+     * @param array $params
+     * @param string $expectedRawSql
+     */
+    public function testGetRawSql($sql, array $params, $expectedRawSql)
+    {
+        $db = $this->getConnection(false);
+        $command = $db->createCommand($sql, $params);
+        $this->assertEquals($expectedRawSql, $command->getRawSql());
     }
 }

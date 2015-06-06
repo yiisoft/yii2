@@ -44,6 +44,7 @@ return [
     '{n} PB' => '{n} PB',
     '{n} TB' => '{n} TB',
     '(not set)' => '(não definido)',
+    'just now' => 'agora mesmo',
     'An internal server error occurred.' => 'Ocorreu um erro interno do servidor.',
     'Are you sure you want to delete this item?' => 'Confirma a exclusão deste item?',
     'Delete' => 'Excluir',

@@ -100,10 +100,10 @@ class MessageController extends Controller
         if (!is_dir($config['sourcePath'])) {
             throw new Exception("The source path {$config['sourcePath']} is not a valid directory.");
         }
-        if (empty($config['format']) || !in_array($config['format'], ['php', 'po', 'db'])) {
-            throw new Exception('Format should be either "php", "po" or "db".');
+        if (empty($config['format']) || !in_array($config['format'], ['php', 'po', 'pot', 'db'])) {
+            throw new Exception('Format should be either "php", "po", "pot" or "db".');
         }
-        if (in_array($config['format'], ['php', 'po'])) {
+        if (in_array($config['format'], ['php', 'po', 'pot'])) {
             if (!isset($config['messagePath'])) {
                 throw new Exception('The configuration file must specify "messagePath".');
             } elseif (!is_dir($config['messagePath'])) {
@@ -148,6 +148,9 @@ class MessageController extends Controller
                 $config['removeUnused'],
                 $config['languages']
             );
+        } elseif ($config['format'] === 'pot') {
+            $catalog = isset($config['catalog']) ? $config['catalog'] : 'messages';
+            $this->saveMessagesToPOT($messages, $config['messagePath'], $catalog);
         }
     }
 
@@ -576,6 +579,44 @@ EOD;
                 }
                 ksort($merged);
             }
+            $this->stdout("Category \"$category\" merged.\n");
+            $hasSomethingToWrite = true;
+        }
+        if ($hasSomethingToWrite) {
+            $poFile->save($file, $merged);
+            $this->stdout("Translation saved.\n", Console::FG_GREEN);
+        } else {
+            $this->stdout("Nothing to save.\n", Console::FG_GREEN);
+        }
+    }
+
+    /**
+     * Writes messages into POT file
+     *
+     * @param array $messages
+     * @param string $dirName name of the directory to write to
+     * @param string $catalog message catalog
+     * @since 2.0.5
+     */
+    protected function saveMessagesToPOT($messages, $dirName, $catalog)
+    {
+        $file = str_replace("\\", '/', "$dirName/$catalog.pot");
+        FileHelper::createDirectory(dirname($file));
+        $this->stdout("Saving messages to $file...\n");
+
+        $poFile = new GettextPoFile();
+
+        $merged = [];
+
+        $hasSomethingToWrite = false;
+        foreach ($messages as $category => $msgs) {
+            $msgs = array_values(array_unique($msgs));
+
+            sort($msgs);
+            foreach ($msgs as $message) {
+                $merged[$category . chr(4) . $message] = '';
+            }
+            ksort($merged);
             $this->stdout("Category \"$category\" merged.\n");
             $hasSomethingToWrite = true;
         }

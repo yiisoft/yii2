@@ -1,12 +1,12 @@
-ArrayHelper
-===========
+配列ヘルパ
+==========
 
 [PHP の充実した配列関数](http://php.net/manual/ja/book.array.php) への追加として、Yii の配列ヘルパは、配列をさらに効率的に扱うことを可能にするスタティックなメソッドを提供しています。
 
 
 ## 値を取得する <span id="getting-values"></span>
 
-配列、オブジェクト、またはその両方から成る複雑な構造から標準的な PHP を使って値を取得することは、何度も繰り返さねばならない面倒くさい仕事です。
+配列、オブジェクト、またはその両方から成る複雑な構造から標準的な PHP を使って値を取得することは、非常に面倒くさい仕事です。
 最初に `isset` でキーの存在をチェックしなければならず、次に、キーが存在していれば値を取得し、存在していなければ、デフォルト値を提供しなければなりません。
 
 ```php
@@ -264,7 +264,7 @@ $decoded = ArrayHelper::htmlDecode($data);
 
 ```php
 $posts = Post::find()->limit(10)->all();
-$data = ArrayHelper::toArray($post, [
+$data = ArrayHelper::toArray($posts, [
     'app\models\Post' => [
         'id',
         'title',

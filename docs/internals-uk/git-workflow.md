@@ -3,7 +3,7 @@
 
 Ви бажаєте взяти участь в розробці Yii? Чудово! Але, щоб підвищити шанси швидкого прийняття ваших змін, будь ласка,
 дотримуйтесь наступних кроків. Якщо ви новачок у Git та GitHub, спершу можете ознайомитись із
-[довідкою GitHub](http://help.github.com/), [тренером Git](https://try.github.com)
+[довідкою GitHub](http://help.github.com/), [тренером Git](https://try.github.com), [інтерактивним туром Git How To](http://githowto.com/)
 або почитати книгу [Магія Git](http://www-cs-students.stanford.edu/~blynn/gitmagic/intl/uk/)
 чи [Розділ Git у Вікіпідручнику](http://uk.wikibooks.org/wiki/Git), щоб краще зрозуміти внутрішню структуру Git.
 

@@ -34,7 +34,7 @@ trait ActiveQueryTrait
     /**
      * Sets the [[asArray]] property.
      * @param boolean $value whether to return the query results in terms of arrays instead of Active Records.
-     * @return static the query object itself
+     * @return $this the query object itself
      */
     public function asArray($value = true)
     {
@@ -77,7 +77,7 @@ trait ActiveQueryTrait
      * Customer::find()->with('orders')->with('country')->all();
      * ~~~
      *
-     * @return static the query object itself
+     * @return $this the query object itself
      */
     public function with()
     {
