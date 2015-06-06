@@ -862,6 +862,7 @@ class Command extends Component
      * Marks specified table schema to be refreshed after command execution.
      * @param string $name name of the table, which schema should be refreshed.
      * @return $this this command instance
+     * @since 2.0.5
      */
     protected function requireTableSchemaRefresh($name)
     {
@@ -871,6 +872,7 @@ class Command extends Component
 
     /**
      * Refreshes table schema, which was marked by [[requireTableSchemaRefreshment()]]
+     * @since 2.0.5
      */
     protected function refreshTableSchema()
     {
