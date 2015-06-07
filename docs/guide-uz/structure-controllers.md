@@ -5,7 +5,7 @@ Kontrolyor [MVC](https://ru.wikipedia.org/wiki/Model-View-Controller) arxitektur
 
 ## Amallar <span id="actions"></span>
 
-Kontrolyorlar *amallar (action)*dan tashkil topadi, *amallar* asosiy bloklar hisoblanib, foydalanuvchilar bunga murojaat qilishi mumkin va ma'lum amalni bajarib natijani foydalanuvchiga qaytaradi. Bitta kontrolyorda bitta va undan ortiq amal bo'lishi mumkin.
+Kontrolyorlar *amallar (action)*dan tashkil topadi, *amallar* asosiy bloklar hisoblanib, foydalanuvchilar amallarga murojaat qilishi mumkin va ma'lum buyruqlar bajarilib natija hosil qilinadi hamda natija foydalanuvchiga qaytariladi. Bitta kontrolyorda bitta va undan ortiq amal bo'lishi mumkin.
 
 Quyidagi misolda ikkita amaldan (`view` va `create`) tashkil topgan `post` kontrolyori keltirilgan:
 
@@ -45,6 +45,7 @@ class PostController extends Controller
     }
 }
 ```
+
 
 В действии `view` (определенном методом `actionView()`), код сначала загружает [модель](structure-models.md)
 согласно запрошенному ID модели; Если модель успешно загружена, то код отобразит ее с помощью [представления](structure-views.md)
