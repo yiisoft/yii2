@@ -3,12 +3,11 @@ Kontrolyor
 
 Kontrolyor [MVC](https://ru.wikipedia.org/wiki/Model-View-Controller) arxitekturasining bir qismi hisoblanadi. Bu [[yii\base\Controller]] klassidan voris qilib yaratilgan klass obyektlaridir, ushbu obyektlar so'rovlarni (request) qayta ishlash va javoblarni (response) tayyorlash uchun mo'ljallangan. [Ilova (application)](structure-applications.md) so'rovlarni qayta ishlagandan so'ng, so'rovlarga mos kontrolyor obyektlarini yaratadi va bu obyektlar kiruvchi ma'lumotlarni tahlil qiladi hamda ushbu ma'lumotlarni [model](structure-models.md)ga jo'natadi so'ng modeldan olingan natijalarni [namoyish (view)](structure-views.md)ga joylashtiradi va oxirgi natijani hosil qiladi.
 
-## Действия <span id="actions"></span>
+## Amallar <span id="actions"></span>
 
-Контроллеры состоят из *действий*, которые являются основными блоками, к которым может обращаться конечный пользователь и запрашивать исполнение того или иного
-функционала. В контроллере может быть одно или несколько действий.
+Kontrolyorlar *amallar (action)*dan tashkil topadi, *amallar* asosiy bloklar hisoblanib, foydalanuvchilar bunga murojaat qilishi mumkin va ma'lum amalni bajarib natijani foydalanuvchiga qaytaradi. Bitta kontrolyorda bitta va undan ortiq amal bo'lishi mumkin.
 
-Следующий пример показывает `post` контроллер с двумя действиями: `view` и `create`:
+Quyidagi misolda ikkita amaldan (`view` va `create`) tashkil topgan `post` kontrolyori keltirilgan:
 
 ```php
 namespace app\controllers;
