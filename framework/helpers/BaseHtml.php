@@ -1974,6 +1974,28 @@ class BaseHtml
     }
 
     /**
+     * Escapes regular expression to use in JavaScript
+     * @param string $regexp
+     * @return string
+     */
+    public static function escapeJsRegularExpression ($regexp) {
+        $pattern = preg_replace('/\\\\x\{?([0-9a-fA-F]+)\}?/', '\u$1', $regexp);
+        $deliminator = substr($pattern, 0, 1);
+        $pos = strrpos($pattern, $deliminator, 1);
+        $flag = substr($pattern, $pos + 1);
+        if ($deliminator !== '/') {
+            $pattern = '/' . str_replace('/', '\\/', substr($pattern, 1, $pos - 1)) . '/';
+        } else {
+            $pattern = substr($pattern, 0, $pos + 1);
+        }
+        if (!empty($flag)) {
+            $pattern .= preg_replace('/[^igm]/', '', $flag);
+        }
+
+        return new $pattern;
+    }
+
+    /**
      * Returns the real attribute name from the given attribute expression.
      *
      * An attribute expression is an attribute name prefixed and/or suffixed with array indexes.
