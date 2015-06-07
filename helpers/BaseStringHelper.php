@@ -248,13 +248,14 @@ class BaseStringHelper
      * @return array
      * @since 2.0.4
      */
-    public static function explode($string, $delimiter = ',', $trim = true, $skipEmpty = false) {
+    public static function explode($string, $delimiter = ',', $trim = true, $skipEmpty = false)
+    {
         $result = explode($delimiter, $string);
         if ($trim) {
             if ($trim === true) {
                 $trim = 'trim';
             } elseif (!is_callable($trim)) {
-                $trim = function($v) use ($trim) {
+                $trim = function ($v) use ($trim) {
                     return trim($v, $trim);
                 };
             }
