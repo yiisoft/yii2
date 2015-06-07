@@ -560,7 +560,7 @@ class User extends Component
         return null;
      }
 
-     protected function clearIdentityCookie()
+     protected function clearIdentityCookie($identity)
      {
          Yii::$app->getResponse()->getCookies()->remove(new Cookie($this->identityCookie));
      }
