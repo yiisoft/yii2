@@ -199,7 +199,7 @@ class BaseArrayHelper
         }
 
         if (is_object($array)) {
-            return $array->$key;
+            return isset($array->$key) ? $array->$key : $default;
         } elseif (is_array($array)) {
             return array_key_exists($key, $array) ? $array[$key] : $default;
         } else {
