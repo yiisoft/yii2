@@ -148,10 +148,11 @@ All Rights Reserved.
 Тестирование
 ------------
 
-* **TBD** [Обзор](test-overview.md)
-* **TBD** [Модульные тесты](test-unit.md)
-* **TBD** [Функциональные тесты](test-functional.md)
-* **TBD** [Приёмочные тесты](test-acceptance.md)
+* [Обзор](test-overview.md)
+* [Настройка тестового окружения](test-environment-setup.md)
+* [Модульные тесты](test-unit.md)
+* [Функциональные тесты](test-functional.md)
+* [Приёмочные тесты](test-acceptance.md)
 * [Фикстуры](test-fixtures.md)
 
 
