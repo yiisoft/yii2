@@ -165,7 +165,7 @@ class Request extends \yii\base\Request
      */
     private $_cookies;
     /**
-     * @var array the headers in this collection (indexed by the header names)
+     * @var HeaderCollection Collection of request headers.
      */
     private $_headers;
 
