@@ -117,7 +117,7 @@ class User extends Component
      * since the user visits the site the last time.
      * @see enableAutoLogin
      */
-    public $autoRenewCookie = true;
+    public $autoRenewCookie = false;
     /**
      * @var string the session variable name used to store the value of [[id]].
      */
