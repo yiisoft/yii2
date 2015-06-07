@@ -152,7 +152,7 @@ All Rights Reserved.
 * **TBD** [Модульные тесты](test-unit.md)
 * **TBD** [Функциональные тесты](test-functional.md)
 * **TBD** [Приёмочные тесты](test-acceptance.md)
-* **TBD** [Фикстуры](test-fixtures.md)
+* [Фикстуры](test-fixtures.md)
 
 
 Расширение Yii
