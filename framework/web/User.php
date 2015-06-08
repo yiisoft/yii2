@@ -292,8 +292,8 @@ class User extends Component
             $identity = $data['identity'];
             if ($this->beforeLogin($identity, $this->autoRenewCookie ? $duration : 0, true)) {
                 $this->switchIdentity($identity, $this->autoRenewCookie ? $duration : 0, true);
-                    $id = $identity->getId();
-                    $ip = Yii::$app->getRequest()->getUserIP();
+                $id = $identity->getId();
+                $ip = Yii::$app->getRequest()->getUserIP();
                 Yii::info("User '$id' logged in from $ip via cookie.", __METHOD__);
                 $this->afterLogin($identity, $this->autoRenewCookie ? $duration : 0, true);
             }
