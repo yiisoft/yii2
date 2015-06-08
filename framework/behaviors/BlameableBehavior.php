@@ -63,6 +63,10 @@ class BlameableBehavior extends AttributeBehavior
      */
     public $updatedByAttribute = 'updated_by';
     /**
+     * @var integer the value that will be used as a default user.
+     */
+    public $defaultUserId = null;
+    /**
      * @var callable the value that will be assigned to the attributes. This should be a valid
      * PHP callable whose return value will be assigned to the current attribute(s).
      * The signature of the callable should be:
@@ -103,7 +107,7 @@ class BlameableBehavior extends AttributeBehavior
     {
         if ($this->value === null) {
             $user = Yii::$app->get('user', false);
-            return $user && !$user->isGuest ? $user->id : null;
+            return $user && !$user->isGuest ? $user->id : $this->defaultUserId;
         } else {
             return call_user_func($this->value, $event);
         }
