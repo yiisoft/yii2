@@ -8,6 +8,7 @@
 namespace yii\db\mssql;
 
 use yii\base\InvalidParamException;
+use yii\base\NotSupportedException;
 use yii\db\Query;
 
 /**
