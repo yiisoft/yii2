@@ -618,7 +618,7 @@ class Model extends Component implements IteratorAggregate, ArrayAccess, Arrayab
     {
         foreach ($items as $attribute => $errors) {
             if (is_array($errors)) {
-                foreach($errors as $error) {
+                foreach ($errors as $error) {
                     $this->addError($attribute, $error);
                 }
             } else {

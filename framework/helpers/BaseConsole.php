@@ -433,7 +433,7 @@ class BaseConsole
                 }
 
                 $styleString = '';
-                foreach($currentStyle as $name => $value) {
+                foreach ($currentStyle as $name => $value) {
                     if (is_array($value)) {
                         $value = implode(' ', $value);
                     }
@@ -665,7 +665,7 @@ class BaseConsole
         $pad = str_repeat(' ', $indent);
         $lines = explode("\n", wordwrap($text, $size[0] - $indent, "\n", true));
         $first = true;
-        foreach($lines as $i => $line) {
+        foreach ($lines as $i => $line) {
             if ($first) {
                 $first = false;
                 continue;
