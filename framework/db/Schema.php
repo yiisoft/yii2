@@ -281,6 +281,24 @@ abstract class Schema extends Object
     }
 
     /**
+     * Refreshes the particular table schema.
+     * This method cleans up cached table schema so that it can be re-created later
+     * to reflect the database schema change.
+     * @param string $name table name.
+     * @since 2.0.5
+     */
+    public function refreshTableSchema($name)
+    {
+        unset($this->_tables[$name]);
+        $this->_tableNames = [];
+        /* @var $cache Cache */
+        $cache = is_string($this->db->schemaCache) ? Yii::$app->get($this->db->schemaCache, false) : $this->db->schemaCache;
+        if ($this->db->enableSchemaCache && $cache instanceof Cache) {
+            $cache->delete($this->getCacheKey($name));
+        }
+    }
+
+    /**
      * Creates a query builder for the database.
      * This method may be overridden by child classes to create a DBMS-specific query builder.
      * @return QueryBuilder query builder instance
