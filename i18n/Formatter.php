@@ -658,7 +658,7 @@ class Formatter extends Component
             } else {
                 return new DateTime($value, new DateTimeZone($this->defaultTimeZone));
             }
-        } catch(\Exception $e) {
+        } catch (\Exception $e) {
             throw new InvalidParamException("'$value' is not a valid date time value: " . $e->getMessage()
                 . "\n" . print_r(DateTime::getLastErrors(), true), $e->getCode(), $e);
         }
