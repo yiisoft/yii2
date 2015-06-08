@@ -98,7 +98,7 @@ class Widget extends Component implements ViewContextInterface
             $out = $widget->run();
         } catch (\Exception $e) {
             // close the output buffer opened above if it has not been closed already
-            if(ob_get_level() > 0) {
+            if (ob_get_level() > 0) {
                 ob_end_clean();
             }
             throw $e;
