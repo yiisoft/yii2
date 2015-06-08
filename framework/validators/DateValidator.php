@@ -276,7 +276,6 @@ class DateValidator extends Validator
     {
         if (isset($this->_dateFormats[$format])) {
             $formatter = new IntlDateFormatter($this->locale, $this->_dateFormats[$format], IntlDateFormatter::NONE, 'UTC');
-            $hasTimeInfo = false;
         } else {
             // if no time was provided in the format string set time to 0 to get a simple date timestamp
             $hasTimeInfo = (strpbrk($format, 'ahHkKmsSA') !== false);
