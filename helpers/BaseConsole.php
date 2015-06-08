@@ -401,7 +401,7 @@ class BaseConsole
                 }
 
                 $return = '';
-                while($reset && $tags > 0) {
+                while ($reset && $tags > 0) {
                     $return .= '</span>';
                     $tags--;
                 }
@@ -444,7 +444,7 @@ class BaseConsole
             },
             $string
         );
-        while($tags > 0) {
+        while ($tags > 0) {
             $result .= '</span>';
             $tags--;
         }
