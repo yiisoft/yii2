@@ -110,14 +110,19 @@ class User extends Component
      */
     public $absoluteAuthTimeout;
     /**
-     * @var boolean whether to automatically renew the identity cookie each time a page is requested.
-     * This property is effective only when [[enableAutoLogin]] is true.
-     * When this is false, the identity cookie will expire after the specified duration since the user
-     * is initially logged in. When this is true, the identity cookie will expire after the specified duration
-     * since the user visits the site the last time.
-     * @see enableAutoLogin
+     * @var boolean whether to automatically renew the identity cookie.
+     * This property is effective only when [[enableSession]] and [[enableAutoLogin]] are true.
+     * When this is true, the identity cookie will expire based on [[autoRenewCookieEachPage]] setting.
+     * When this is false, the identity cookie will expire after the specified duration since the first login.
      */
     public $autoRenewCookie = true;
+    /**
+     * @var boolean when to automatically renew the identity cookie.
+     * This property is effective only when [[enableSession]], [[enableAutoLogin]], and [[autoRenewCookie]] are all true.
+     * When this is true, the identity cookie will expire after the specified duration since the last visit.
+     * When this is false, the identity cookie will expire after the specified duration since the last login by cookie.
+     */
+    public $autoRenewCookieEachPage = false;
     /**
      * @var string the session variable name used to store the value of [[id]].
      */
@@ -232,17 +237,19 @@ class User extends Component
      */
     public function login(IdentityInterface $identity, $duration = 0)
     {
-        if ($this->beforeLogin($identity, false, $duration)) {
-            $this->switchIdentity($identity, $duration);
+        if ($this->beforeLogin($identity, $duration, false)) {
+            $this->switchIdentity($identity, $duration, false);
             $id = $identity->getId();
             $ip = Yii::$app->getRequest()->getUserIP();
-            if ($this->enableSession) {
+            if (!$this->enableSession) {
+                $log = "User '$id' logged in from $ip. Session not enabled.";
+            } elseif ($this->enableAutoLogin && $duration > 0) {
                 $log = "User '$id' logged in from $ip with duration $duration.";
             } else {
-                $log = "User '$id' logged in from $ip. Session not enabled.";
+                $log = "User '$id' logged in from $ip.  Session enabled.";
             }
             Yii::info($log, __METHOD__);
-            $this->afterLogin($identity, false, $duration);
+            $this->afterLogin($identity, $duration, false);
         }
 
         return !$this->getIsGuest();
@@ -279,36 +286,18 @@ class User extends Component
      */
     protected function loginByCookie()
     {
-        $value = Yii::$app->getRequest()->getCookies()->getValue($this->identityCookie['name']);
-        if ($value === null) {
-            return;
-        }
-
-        $data = json_decode($value, true);
-        if (count($data) !== 3 || !isset($data[0], $data[1], $data[2])) {
-            return;
-        }
-
-        list ($id, $authKey, $duration) = $data;
-        /* @var $class IdentityInterface */
-        $class = $this->identityClass;
-        $identity = $class::findIdentity($id);
-        if ($identity === null) {
-            return;
-        } elseif (!$identity instanceof IdentityInterface) {
-            throw new InvalidValueException("$class::findIdentity() must return an object implementing IdentityInterface.");
-        }
-
-        if ($identity->validateAuthKey($authKey)) {
-            if ($this->beforeLogin($identity, true, $duration)) {
-                $this->switchIdentity($identity, $this->autoRenewCookie ? $duration : 0);
+        $data = $this->validateIdentityCookie();
+        if ($data !== null && isset( $data['duration'] ) && isset( $data['identity'] ) ) {
+            $duration = $data['duration'];
+            $identity = $data['identity'];
+            if ($this->beforeLogin($identity, $this->autoRenewCookie ? $duration : 0, true)) {
+                $this->switchIdentity($identity, $this->autoRenewCookie ? $duration : 0, true);
+                $id = $identity->getId();
                 $ip = Yii::$app->getRequest()->getUserIP();
                 Yii::info("User '$id' logged in from $ip via cookie.", __METHOD__);
-                $this->afterLogin($identity, true, $duration);
+                $this->afterLogin($identity, $this->autoRenewCookie ? $duration : 0, true);
             }
-        } else {
-            Yii::warning("Invalid auth key attempted for user '$id': $authKey", __METHOD__);
-        }
+          }
     }
 
     /**
@@ -437,17 +426,17 @@ class User extends Component
      * If you override this method, make sure you call the parent implementation
      * so that the event is triggered.
      * @param IdentityInterface $identity the user identity information
-     * @param boolean $cookieBased whether the login is cookie-based
      * @param integer $duration number of seconds that the user can remain in logged-in status.
      * If 0, it means login till the user closes the browser or the session is manually destroyed.
+     * @param boolean $cookieBased whether the login is cookie-based
      * @return boolean whether the user should continue to be logged in
      */
-    protected function beforeLogin($identity, $cookieBased, $duration)
+    protected function beforeLogin($identity, $duration, $cookieBased)
     {
         $event = new UserEvent([
             'identity' => $identity,
             'cookieBased' => $cookieBased,
-            'duration' => $duration,
+            'duration' => ( $this->enableSession && $this->enableAutoLogin ? $duration : 0 ) ,
         ]);
         $this->trigger(self::EVENT_BEFORE_LOGIN, $event);
 
@@ -460,16 +449,16 @@ class User extends Component
      * If you override this method, make sure you call the parent implementation
      * so that the event is triggered.
      * @param IdentityInterface $identity the user identity information
-     * @param boolean $cookieBased whether the login is cookie-based
      * @param integer $duration number of seconds that the user can remain in logged-in status.
      * If 0, it means login till the user closes the browser or the session is manually destroyed.
+     * @param boolean $cookieBased whether the login is cookie-based
      */
-    protected function afterLogin($identity, $cookieBased, $duration)
+    protected function afterLogin($identity, $duration, $cookieBased)
     {
         $this->trigger(self::EVENT_AFTER_LOGIN, new UserEvent([
             'identity' => $identity,
             'cookieBased' => $cookieBased,
-            'duration' => $duration,
+            'duration' => ( $this->enableSession && $this->enableAutoLogin ? $duration : 0 ),
         ]));
     }
 
@@ -532,9 +521,10 @@ class User extends Component
      * information in the cookie.
      * @param IdentityInterface $identity
      * @param integer $duration number of seconds that the user can remain in logged-in status.
+     * @param boolean $cookieBased whether the login is cookie-based
      * @see loginByCookie()
      */
-    protected function sendIdentityCookie($identity, $duration)
+    protected function sendIdentityCookie($identity, $duration, $cookieBased)
     {
         $cookie = new Cookie($this->identityCookie);
         $cookie->value = json_encode([
@@ -545,7 +535,51 @@ class User extends Component
         $cookie->expire = time() + $duration;
         Yii::$app->getResponse()->getCookies()->add($cookie);
     }
+    
+     /**
+     * Determines if an identity cookie format is valid and has a valid auth key.
+     * This method is used when [[enableAutoLogin]] is true.
+     * This method attempts to authenticate a user using the information in the identity cookie.
+     * @return array|null Returns an array of 'identity' and 'duration' if valid, otherwise null.
+     * @see loginByCookie()
+     */
+     protected function validateIdentityCookie()
+     {
+        $value = Yii::$app->getRequest()->getCookies()->getValue($this->identityCookie['name']);
+        if ($value === null) {
+            return null;
+        }
 
+        $data = json_decode($value, true);
+        if (count($data) === 3 && isset($data[0], $data[1], $data[2])) {
+           list ($id, $authKey, $duration) = $data;
+           /* @var $class IdentityInterface */
+           $class = $this->identityClass;
+           $identity = $class::findIdentity($id);
+           if ($identity !== null) {
+              if (!$identity instanceof IdentityInterface) {
+                 throw new InvalidValueException("$class::findIdentity() must return an object implementing IdentityInterface.");
+              } elseif (!$identity->validateAuthKey($authKey)) {
+                 Yii::warning("Invalid auth key attempted for user '$id': $authKey", __METHOD__);
+              } else {
+                 return [ 'identity' => $identity, 'duration' => $duration ];
+              }
+           }
+        }
+        Yii::$app->getResponse()->getCookies()->remove(new Cookie($this->identityCookie));
+        return null;
+     }
+     
+    /**
+     * Removes the identity cookie.
+     * This method is used when [[enableAutoLogin]] is true.
+     * @param IdentityInterface $identity
+     */
+     protected function removeIdentityCookie($identity)
+     {
+         Yii::$app->getResponse()->getCookies()->remove(new Cookie($this->identityCookie));
+     }
+    
     /**
      * Switches to a new identity for the current user.
      *
@@ -559,9 +593,13 @@ class User extends Component
      * If null, it means switching the current user to be a guest.
      * @param integer $duration number of seconds that the user can remain in logged-in status.
      * This parameter is used only when `$identity` is not null.
+     * @param boolean $cookieBased whether the login is cookie-based
      */
-    public function switchIdentity($identity, $duration = 0)
+    public function switchIdentity($identity, $duration = 0, $cookieBased = false)
     {
+        if ($this->enableSession && $this->enableAutoLogin && $this->_identity )
+           $this->removeIdentityCookie($this->_identity);
+
         $this->setIdentity($identity);
 
         if (!$this->enableSession) {
@@ -584,10 +622,8 @@ class User extends Component
                 $session->set($this->absoluteAuthTimeoutParam, time() + $this->absoluteAuthTimeout);
             }
             if ($duration > 0 && $this->enableAutoLogin) {
-                $this->sendIdentityCookie($identity, $duration);
+                $this->sendIdentityCookie($identity,$duration,$cookieBased);
             }
-        } elseif ($this->enableAutoLogin) {
-            Yii::$app->getResponse()->getCookies()->remove(new Cookie($this->identityCookie));
         }
     }
 
@@ -629,7 +665,7 @@ class User extends Component
         if ($this->enableAutoLogin) {
             if ($this->getIsGuest()) {
                 $this->loginByCookie();
-            } elseif ($this->autoRenewCookie) {
+            } elseif ($this->autoRenewCookie && $this->autoRenewCookieEachPage) {
                 $this->renewIdentityCookie();
             }
         }
