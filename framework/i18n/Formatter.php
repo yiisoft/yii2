@@ -94,9 +94,9 @@ class Formatter extends Component
      * @var string that set the calendar type.
      * can be "gregorian" or "jalali"
      */
-    public $dateType = 'gregorian';
+    public $calendarType = 'gregorian';
     /**
-     * @var string the default format string to be used to format a [[asDate()|date]] when use gregorian dateType.
+     * @var string the default format string to be used to format a [[asDate()|date]] when use gregorian calendarType.
      * This can be "short", "medium", "long", or "full", which represents a preset format of different lengths.
      *
      * It can also be a custom format as specified in the [ICU manual](http://userguide.icu-project.org/formatparse/datetime#TOC-Date-Time-Format-Syntax).
@@ -112,7 +112,7 @@ class Formatter extends Component
      */
     public $dateFormat = 'medium';
     /**
-     * @var string the default format string to be used to format a [[asDate()|date]] when use jalali dateType.
+     * @var string the default format string to be used to format a [[asDate()|date]] when use jalali calendarType.
      * This can be a merged string for date format. you can see persian doc in: (http://jdf.scr.ir/rahnama/?t=jadvalha)
      */
     public $jalaliDateFormat ='Y F d';
@@ -133,7 +133,7 @@ class Formatter extends Component
      */
     public $timeFormat = 'medium';
     /**
-     * @var string the default format string to be used to format a [[asDatetime()|date and time]] when use gregorian dateType.
+     * @var string the default format string to be used to format a [[asDatetime()|date and time]] when use gregorian calendarType.
      * This can be "short", "medium", "long", or "full", which represents a preset format of different lengths.
      *
      * It can also be a custom format as specified in the [ICU manual](http://userguide.icu-project.org/formatparse/datetime#TOC-Date-Time-Format-Syntax).
@@ -150,7 +150,7 @@ class Formatter extends Component
      */
     public $datetimeFormat = 'medium';
     /**
-     * @var string the default format string to be used to format a [[asDatetime()|date and time]] when use jalali dateType.
+     * @var string the default format string to be used to format a [[asDatetime()|date and time]] when use jalali calendarType.
      * This can be a merged string for date format. you can see persian doc in: (http://jdf.scr.ir/rahnama/?t=jadvalha)
      * 
      */
@@ -475,12 +475,12 @@ class Formatter extends Component
      */
     public function asDate($value, $format = null, $jalaliFormat = null)
     {
-        if($this->dateType == 'gregorian') {
+        if($this->calendarType == 'gregorian') {
             if ($format === null) {
                 $format = $this->dateFormat;
             }
             return $this->formatDateTimeValue($value, $format, 'date');
-        }elseif($this->dateType == 'jalali') {
+        }elseif($this->calendarType == 'jalali') {
             if ($jalaliFormat === null) {
                 $jalaliFormat = $this->jalaliDateFormat;
             }
@@ -548,12 +548,12 @@ class Formatter extends Component
      */
     public function asDatetime($value, $format = null, $jalaliFormat = null)
     {
-        if($this->dateType == 'gregorian') {
+        if($this->calendarType == 'gregorian') {
             if ($format === null) {
                 $format = $this->datetimeFormat;
             }
             return $this->formatDateTimeValue($value, $format, 'datetime');
-        }elseif($this->dateType == 'jalali'){
+        }elseif($this->calendarType == 'jalali'){
             if($jalaliFormat === null){
                 $jalaliFormat = $this->jalaliDatetimeFormat;
             }
