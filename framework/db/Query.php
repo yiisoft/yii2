@@ -759,7 +759,7 @@ class Query extends Component implements QueryInterface
      */
     public function union($sql, $all = false)
     {
-        $this->union[] = [ 'query' => $sql, 'all' => $all ];
+        $this->union[] = ['query' => $sql, 'all' => $all];
         return $this;
     }
 
