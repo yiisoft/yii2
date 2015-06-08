@@ -66,6 +66,7 @@ class Migration extends Component implements MigrationInterface
     {
         parent::init();
         $this->db = Instance::ensure($this->db, Connection::className());
+        $this->db->getSchema()->refresh();
     }
 
     /**
@@ -162,7 +163,6 @@ class Migration extends Component implements MigrationInterface
         $time = microtime(true);
         $this->db->createCommand($sql)->bindValues($params)->execute();
         echo " done (time: " . sprintf('%.3f', microtime(true) - $time) . "s)\n";
-        $this->db->getSchema()->refresh(); // ensure possible schema changes applied
     }
 
     /**
