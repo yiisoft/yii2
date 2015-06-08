@@ -85,12 +85,12 @@ trait ActiveRelationTrait
      * ```php
      * public function getOrders()
      * {
-     *     return $this->hasOne(Order::className(), ['id' => 'order_id']);
+     *     return $this->hasOne(Order::class, ['id' => 'order_id']);
      * }
      *
      * public function getOrderItems()
      * {
-     *     return $this->hasMany(Item::className(), ['id' => 'item_id'])
+     *     return $this->hasMany(Item::class, ['id' => 'item_id'])
      *                 ->via('orders');
      * }
      * ```
@@ -123,7 +123,7 @@ trait ActiveRelationTrait
      * ```php
      * public function getOrders()
      * {
-     *     return $this->hasMany(Order::className(), ['customer_id' => 'id'])->inverseOf('customer');
+     *     return $this->hasMany(Order::class, ['customer_id' => 'id'])->inverseOf('customer');
      * }
      * ```
      *

@@ -22,7 +22,7 @@ use yii\db\Expression;
  * public function behaviors()
  * {
  *     return [
- *         TimestampBehavior::className(),
+ *         TimestampBehavior::class,
  *     ];
  * }
  * ```
@@ -41,7 +41,7 @@ use yii\db\Expression;
  * {
  *     return [
  *         [
- *             'class' => TimestampBehavior::className(),
+ *             'class' => TimestampBehavior::class,
  *             'createdAtAttribute' => 'create_time',
  *             'updatedAtAttribute' => 'update_time',
  *             'value' => new Expression('NOW()'),

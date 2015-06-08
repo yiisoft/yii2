@@ -273,7 +273,7 @@ class CacheController extends Controller
      */
     private function isCacheClass($className)
     {
-        return is_subclass_of($className, Cache::className());
+        return is_subclass_of($className, Cache::class);
     }
 
 }

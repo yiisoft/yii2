@@ -145,7 +145,7 @@ class PageCache extends ActionFilter
             return true;
         }
 
-        $this->cache = Instance::ensure($this->cache, Cache::className());
+        $this->cache = Instance::ensure($this->cache, Cache::class);
 
         $properties = [];
         foreach (['cache', 'duration', 'dependency', 'variations'] as $name) {

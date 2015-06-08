@@ -31,7 +31,7 @@ use yii\web\ForbiddenHttpException;
  * {
  *     return [
  *         'access' => [
- *             'class' => \yii\filters\AccessControl::className(),
+ *             'class' => \yii\filters\AccessControl::class,
  *             'only' => ['create', 'update'],
  *             'rules' => [
  *                 // deny all POST requests
@@ -95,7 +95,7 @@ class AccessControl extends ActionFilter
     public function init()
     {
         parent::init();
-        $this->user = Instance::ensure($this->user, User::className());
+        $this->user = Instance::ensure($this->user, User::class);
         foreach ($this->rules as $i => $rule) {
             if (is_array($rule)) {
                 $this->rules[$i] = Yii::createObject(array_merge($this->ruleConfig, $rule));

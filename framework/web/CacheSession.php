@@ -56,7 +56,7 @@ class CacheSession extends Session
     public function init()
     {
         parent::init();
-        $this->cache = Instance::ensure($this->cache, Cache::className());
+        $this->cache = Instance::ensure($this->cache, Cache::class);
     }
 
     /**

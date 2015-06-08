@@ -91,9 +91,9 @@ class Instance
      * use yii\db\Connection;
      *
      * // returns Yii::$app->db
-     * $db = Instance::ensure('db', Connection::className());
+     * $db = Instance::ensure('db', Connection::class);
      * // returns an instance of Connection using the given configuration
-     * $db = Instance::ensure(['dsn' => 'sqlite:path/to/my.db'], Connection::className());
+     * $db = Instance::ensure(['dsn' => 'sqlite:path/to/my.db'], Connection::class);
      * ```
      *
      * @param object|string|array|static $reference an object or a reference to the desired object.
