@@ -171,12 +171,12 @@ class Application extends \yii\base\Application
     public function coreCommands()
     {
         return [
-            'message' => 'yii\console\controllers\MessageController',
-            'help' => 'yii\console\controllers\HelpController',
-            'migrate' => 'yii\console\controllers\MigrateController',
-            'cache' => 'yii\console\controllers\CacheController',
-            'asset' => 'yii\console\controllers\AssetController',
-            'fixture' => 'yii\console\controllers\FixtureController',
+            'message' => \yii\console\controllers\MessageController::class,
+            'help' => \yii\console\controllers\HelpController::class,
+            'migrate' => \yii\console\controllers\MigrateController::class,
+            'cache' => \yii\console\controllers\CacheController::class,
+            'asset' => \yii\console\controllers\AssetController::class,
+            'fixture' => \yii\console\controllers\FixtureController::class,
         ];
     }
 
@@ -186,9 +186,9 @@ class Application extends \yii\base\Application
     public function coreComponents()
     {
         return array_merge(parent::coreComponents(), [
-            'request' => ['class' => 'yii\console\Request'],
-            'response' => ['class' => 'yii\console\Response'],
-            'errorHandler' => ['class' => 'yii\console\ErrorHandler'],
+            'request' => ['class' => \yii\console\Request::class],
+            'response' => ['class' => \yii\console\Response::class],
+            'errorHandler' => ['class' => \yii\console\ErrorHandler::class],
         ]);
     }
 }

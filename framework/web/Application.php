@@ -147,11 +147,11 @@ class Application extends \yii\base\Application
     public function coreComponents()
     {
         return array_merge(parent::coreComponents(), [
-            'request' => ['class' => 'yii\web\Request'],
-            'response' => ['class' => 'yii\web\Response'],
-            'session' => ['class' => 'yii\web\Session'],
-            'user' => ['class' => 'yii\web\User'],
-            'errorHandler' => ['class' => 'yii\web\ErrorHandler'],
+            'request' => ['class' => \yii\web\Request::class],
+            'response' => ['class' => \yii\web\Response::class],
+            'session' => ['class' => \yii\web\Session::class],
+            'user' => ['class' => \yii\web\User::class],
+            'errorHandler' => ['class' => \yii\web\ErrorHandler::class],
         ]);
     }
 }
