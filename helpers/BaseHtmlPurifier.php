@@ -46,7 +46,7 @@ class BaseHtmlPurifier
     {
         $configInstance = \HTMLPurifier_Config::create($config instanceof \Closure ? null : $config);
         $configInstance->autoFinalize = false;
-        $purifier=\HTMLPurifier::instance($configInstance);
+        $purifier = \HTMLPurifier::instance($configInstance);
         $purifier->config->set('Cache.SerializerPath', \Yii::$app->getRuntimePath());
         
         if ($config instanceof \Closure) {
