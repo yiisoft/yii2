@@ -20,6 +20,7 @@ use yii\base\InvalidParamException;
 use yii\helpers\FormatConverter;
 use yii\helpers\HtmlPurifier;
 use yii\helpers\Html;
+use yii\i18n\Jdf;
 
 /**
  * Formatter provides a set of commonly used data formatting methods.
@@ -89,8 +90,13 @@ class Formatter extends Component
      * @since 2.0.1
      */
     public $defaultTimeZone = 'UTC';
+    /*
+     * @var string that set the calendar type.
+     * can be "gregorian" or "jalali"
+     */
+    public $dateType = 'gregorian';
     /**
-     * @var string the default format string to be used to format a [[asDate()|date]].
+     * @var string the default format string to be used to format a [[asDate()|date]] when use gregorian dateType.
      * This can be "short", "medium", "long", or "full", which represents a preset format of different lengths.
      *
      * It can also be a custom format as specified in the [ICU manual](http://userguide.icu-project.org/formatparse/datetime#TOC-Date-Time-Format-Syntax).
@@ -105,6 +111,11 @@ class Formatter extends Component
      * ```
      */
     public $dateFormat = 'medium';
+    /**
+     * @var string the default format string to be used to format a [[asDate()|date]] when use jalali dateType.
+     * This can be a merged string for date format. you can see persian doc in: (http://jdf.scr.ir/rahnama/?t=jadvalha)
+     */
+    public $jalaliDateFormat ='Y F d';
     /**
      * @var string the default format string to be used to format a [[asTime()|time]].
      * This can be "short", "medium", "long", or "full", which represents a preset format of different lengths.
@@ -122,7 +133,7 @@ class Formatter extends Component
      */
     public $timeFormat = 'medium';
     /**
-     * @var string the default format string to be used to format a [[asDatetime()|date and time]].
+     * @var string the default format string to be used to format a [[asDatetime()|date and time]] when use gregorian dateType.
      * This can be "short", "medium", "long", or "full", which represents a preset format of different lengths.
      *
      * It can also be a custom format as specified in the [ICU manual](http://userguide.icu-project.org/formatparse/datetime#TOC-Date-Time-Format-Syntax).
@@ -138,6 +149,12 @@ class Formatter extends Component
      * ```
      */
     public $datetimeFormat = 'medium';
+    /**
+     * @var string the default format string to be used to format a [[asDatetime()|date and time]] when use jalali dateType.
+     * This can be a merged string for date format. you can see persian doc in: (http://jdf.scr.ir/rahnama/?t=jadvalha)
+     * 
+     */
+    public $jalaliDatetimeFormat = 'Y F d H:i:s';
     /**
      * @var string the character displayed as the decimal point when formatting a number.
      * If not set, the decimal separator corresponding to [[locale]] will be used.
@@ -449,17 +466,26 @@ class Formatter extends Component
      * Alternatively this can be a string prefixed with `php:` representing a format that can be recognized by the
      * PHP [date()](http://php.net/manual/de/function.date.php)-function.
      *
+     * @param string $jalaliFormat used when dateType is jalali.
+     * 
      * @return string the formatted result.
      * @throws InvalidParamException if the input value can not be evaluated as a date value.
      * @throws InvalidConfigException if the date format is invalid.
      * @see dateFormat
      */
-    public function asDate($value, $format = null)
+    public function asDate($value, $format = null, $jalaliFormat = null)
     {
-        if ($format === null) {
-            $format = $this->dateFormat;
+        if($this->dateType == 'gregorian') {
+            if ($format === null) {
+                $format = $this->dateFormat;
+            }
+            return $this->formatDateTimeValue($value, $format, 'date');
+        }elseif($this->dateType == 'jalali') {
+            if ($jalaliFormat === null) {
+                $jalaliFormat = $this->jalaliDateFormat;
+            }
+            return Jdf::jdate($jalaliFormat,$value);
         }
-        return $this->formatDateTimeValue($value, $format, 'date');
     }
 
     /**
@@ -513,17 +539,26 @@ class Formatter extends Component
      * Alternatively this can be a string prefixed with `php:` representing a format that can be recognized by the
      * PHP [date()](http://php.net/manual/de/function.date.php)-function.
      *
+     * @param string $jalaliFormat used when dateType is jalali.
+     * 
      * @return string the formatted result.
      * @throws InvalidParamException if the input value can not be evaluated as a date value.
      * @throws InvalidConfigException if the date format is invalid.
      * @see datetimeFormat
      */
-    public function asDatetime($value, $format = null)
+    public function asDatetime($value, $format = null, $jalaliFormat = null)
     {
-        if ($format === null) {
-            $format = $this->datetimeFormat;
+        if($this->dateType == 'gregorian') {
+            if ($format === null) {
+                $format = $this->datetimeFormat;
+            }
+            return $this->formatDateTimeValue($value, $format, 'datetime');
+        }elseif($this->dateType == 'jalali'){
+            if($jalaliFormat === null){
+                $jalaliFormat = $this->jalaliDatetimeFormat;
+            }
+            return Jdf::jdate($jalaliFormat,$value);
         }
-        return $this->formatDateTimeValue($value, $format, 'datetime');
     }
 
     /**
