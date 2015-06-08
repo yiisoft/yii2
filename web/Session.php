@@ -671,7 +671,7 @@ class Session extends Component implements \IteratorAggregate, \ArrayAccess, \Co
      *
      * ```php
      * <?php
-     * foreach(Yii::$app->session->getAllFlashes() as $key => $message) {
+     * foreach (Yii::$app->session->getAllFlashes() as $key => $message) {
      *     echo '<div class="alert alert-' . $key . '">' . $message . '</div>';
      * } ?>
      * ```
