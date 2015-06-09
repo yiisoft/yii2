@@ -682,7 +682,7 @@ class User extends Component
      */
     public function can($permissionName, $params = [], $allowCaching = true)
     {
-        $auth = Yii::$app->getAuthManager();
+        $auth = $this->getAuthManager();
         if ($allowCaching && empty($params) && isset($this->_access[$permissionName])) {
             return $this->_access[$permissionName];
         }
@@ -692,5 +692,18 @@ class User extends Component
         }
 
         return $access;
+    }
+
+    /**
+     * Returns auth manager associated with the user component.
+     *
+     * By default this is the `authManager` application component.
+     * You may override this method to return a different auth manager instance if needed.
+     * @return \yii\rbac\ManagerInterface
+     * @since 2.0.5
+     */
+    protected function getAuthManager()
+    {
+        return Yii::$app->getAuthManager();
     }
 }
