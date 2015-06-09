@@ -73,6 +73,8 @@ php build translation "../docs/guide" "../docs/guide-uk" "Ukrainian guide transl
 
 ### Список термінів
 
+[Англійсько-українські словники](http://e2u.org.ua)
+
 - action — дія;
 - active record — (не перекладається);
 - Advanced/Basic Project Template — Розширений/Базовий шаблон проекту;
@@ -102,14 +104,14 @@ php build translation "../docs/guide" "../docs/guide-uk" "Ukrainian guide transl
 - cookies — кукі;
 - customization — (тонке) налаштування;
 - debug mode — режим налагодження (див. production mode);
-- debugger — відладчик;
+- debugger — налагоджувач;
 - (function) declaration — оголошення (функції);
 - definition — визначення;
 - design pattern — шаблон проектування;
 - development mode — режим розробки;
 - (root) directory — (коренева) директорія;
 - eager loading — жадібне завантаження (див. lazy loading);
-- email address — адреса e-mail;
+- email address — адреса електронної пошти;
 - environment — середовище;
 - exception — виключення;
 - existing — наявний/присутній; // перекладати як "існуючий" не вірно
@@ -144,6 +146,7 @@ php build translation "../docs/guide" "../docs/guide-uk" "Ukrainian guide transl
 - merge — поєднання;
 - Model-View-Controller (MVC) — Модель-Представлення-Контролер (MVC);
 - namespace — простір імен;
+- out of the box — "з коробки";
 - package — пакунок;
 - pagination — розділення на сторінки;
 - parameter — параметр;
@@ -153,6 +156,7 @@ php build translation "../docs/guide" "../docs/guide-uk" "Ukrainian guide transl
 - postprocessing — після-обробка;
 - predefined — попередньо визначений;
 - production mode — робочий режим (див. debug mode);
+- profiling — профілювання;
 - property — властивість (обʼєкта);
 - pull request — (не перекладається);
 - query builder — конструктор запитів;
@@ -164,6 +168,7 @@ php build translation "../docs/guide" "../docs/guide-uk" "Ukrainian guide transl
 - resolve request — попередня обробка запиту;
 - route, routing — маршрут, маршрутизація;
 - row (of the table) — рядок (таблиці);
+- screenshot — знімок екрану;
 - Service Locator — Локатор служб;
 - setter — сеттер;
 - shared hosting — віртуальний хостинг;
@@ -178,6 +183,7 @@ php build translation "../docs/guide" "../docs/guide-uk" "Ukrainian guide transl
 - theming — темізація;
 - third party — сторонній;
 - thumbnail — мініатюра;
+- tracing — трасування;
 - trait — трейт;
 - Twitter — Твіттер;
 - Unicode — (не перекладається);

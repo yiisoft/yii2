@@ -143,9 +143,9 @@ All Rights Reserved.
 Інструменти розробника
 ----------------------
 
-* **TBD** [Панель налагодження та відладчик](https://github.com/yiisoft/yii2-debug/blob/master/docs/guide-uk/README.md)
-* **TBD** [Генерація коду з Gii](https://github.com/yiisoft/yii2-gii/blob/master/docs/guide-uk/README.md)
-* [Генератор документації API (en)](https://github.com/yiisoft/yii2-apidoc)
+* [Панель налагодження та налагоджувач](https://github.com/yiisoft/yii2-debug/blob/master/docs/guide-uk/README.md)
+* [Генерація коду за допомогою Gii](https://github.com/yiisoft/yii2-gii/blob/master/docs/guide-uk/README.md)
+* **TBD** [Генерація документації API](https://github.com/yiisoft/yii2-apidoc)
 
 
 Тестування
@@ -164,7 +164,7 @@ All Rights Reserved.
 
 * **TBD** [Розширений шаблон проекту](https://github.com/yiisoft/yii2-app-advanced/blob/master/docs/guide-uk/README.md)
 * **TBD** [Створення додатка з нуля](tutorial-start-from-scratch.md)
-* **TBD** [Консольні команди](tutorial-console.md)
+* [Консольні додатки](tutorial-console.md)
 * **TBD** [Основні валідатори](tutorial-core-validators.md)
 * **TBD** [Інтернаціоналізація](tutorial-i18n.md)
 * **TBD** [Робота з поштою](tutorial-mailing.md)
