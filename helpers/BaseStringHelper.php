@@ -161,7 +161,7 @@ class BaseStringHelper
             if ($token instanceof \HTMLPurifier_Token_Start) { //Tag begins
                 $openTokens++;
                 $truncated[] = $token;
-            } else if ($token instanceof \HTMLPurifier_Token_Text && $totalCount <= $count) { //Text
+            } elseif ($token instanceof \HTMLPurifier_Token_Text && $totalCount <= $count) { //Text
                 if (false === $encoding) {
                     $token->data = self::truncateWords($token->data, $count - $totalCount, '');
                     $currentCount = str_word_count($token->data);
@@ -174,10 +174,10 @@ class BaseStringHelper
                     $token->data = ' ' . $token->data;
                 }
                 $truncated[] = $token;
-            } else if ($token instanceof \HTMLPurifier_Token_End) { //Tag ends
+            } elseif ($token instanceof \HTMLPurifier_Token_End) { //Tag ends
                 $openTokens--;
                 $truncated[] = $token;
-            } else if ($token instanceof \HTMLPurifier_Token_Empty) { //Self contained tags, i.e. <img/> etc.
+            } elseif ($token instanceof \HTMLPurifier_Token_Empty) { //Self contained tags, i.e. <img/> etc.
                 $truncated[] = $token;
             }
             if (0 === $openTokens && $totalCount >= $count) {
