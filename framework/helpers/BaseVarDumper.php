@@ -184,7 +184,7 @@ class BaseVarDumper
                 } catch (\Exception $e) {
                     // serialize may fail, for example: if object contains a `\Closure` instance
                     // so we use regular `var_export()` as fallback
-                    $output = var_export($var, true);
+                    $output = \yii\helpers\VarDumper::dumpAsString($var);
                 }
                 self::$_output .= $output;
                 break;
