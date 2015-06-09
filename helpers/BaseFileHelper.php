@@ -461,7 +461,7 @@ class BaseFileHelper
         try {
             $result = mkdir($path, $mode);
             chmod($path, $mode);
-        } catch(\Exception $e) {
+        } catch (\Exception $e) {
             throw new \yii\base\Exception("Failed to create directory '$path': " . $e->getMessage(), $e->getCode(), $e);
         }
 
@@ -602,7 +602,7 @@ class BaseFileHelper
      * @param string $pattern
      * @param boolean $caseSensitive
      * @throws \yii\base\InvalidParamException
-     * @return array with keys: (string) pattern, (int) flags, (int|boolean)firstWildcard
+     * @return array with keys: (string) pattern, (int) flags, (int|boolean) firstWildcard
      */
     private static function parseExcludePattern($pattern, $caseSensitive)
     {
@@ -655,7 +655,7 @@ class BaseFileHelper
         $wildcardSearch = function ($r, $c) use ($pattern) {
             $p = strpos($pattern, $c);
 
-            return $r===false ? $p : ($p===false ? $r : min($r, $p));
+            return $r === false ? $p : ($p === false ? $r : min($r, $p));
         };
 
         return array_reduce($wildcards, $wildcardSearch, false);

@@ -18,6 +18,7 @@ Yii Framework 2 Change Log
 - Bug #8593: Fixed `yii\db\ActiveQuery` produces incorrect SQL for aggregations, when `sql` field is set (klimov-paul)
 - Bug #8595: Fixed `yii\rbac\DbManager::checkAccessFromCache()` to check against auth items loaded in cache recursively (achretien, qiangxue)
 - Bug #8606: Fixed `yii\web\Response::xSendFile()` does not reset format (vyants)
+- Bug #8627: Fixed `yii\db\Migration` produces incorrect results due to table schema caching (klimov-paul)
 - Bug: Fixed string comparison in `BaseActiveRecord::unlink()` which may result in wrong comparison result for hash valued primary keys starting with `0e` (cebe)
 - Bug: Pass correct action name to `yii\console\Controller::options()` when default action was requested (cebe)
 - Bug: Automatic garbage collection in `yii\caching\FileCache` was not triggered (kidol)
