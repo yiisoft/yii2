@@ -254,7 +254,7 @@ class MessageController extends Controller
 
         $subject = file_get_contents($fileName);
         $messages = [];
-        foreach ((array)$translator as $currentTranslator) {
+        foreach ((array) $translator as $currentTranslator) {
             $translatorTokens = token_get_all('<?php ' . $currentTranslator);
             array_shift($translatorTokens);
             $tokens = token_get_all($subject);
