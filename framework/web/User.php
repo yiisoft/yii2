@@ -110,19 +110,14 @@ class User extends Component
      */
     public $absoluteAuthTimeout;
     /**
-     * @var boolean whether to automatically renew the identity cookie.
-     * This property is effective only when [[enableSession]] and [[enableAutoLogin]] are true.
-     * When this is true, the identity cookie will expire based on [[autoRenewCookieEachPage]] setting.
-     * When this is false, the identity cookie will expire after the specified duration since the first login.
+     * @var boolean whether to automatically renew the identity cookie each time a page is requested.
+     * This property is effective only when [[enableAutoLogin]] is true.
+     * When this is false, the identity cookie will expire after the specified duration since the user
+     * is initially logged in. When this is true, the identity cookie will expire after the specified duration
+     * since the user visits the site the last time.
+     * @see enableAutoLogin
      */
     public $autoRenewCookie = true;
-    /**
-     * @var boolean when to automatically renew the identity cookie.
-     * This property is effective only when [[enableSession]], [[enableAutoLogin]], and [[autoRenewCookie]] are all true.
-     * When this is true, the identity cookie will expire after the specified duration since the last visit.
-     * When this is false, the identity cookie will expire after the specified duration since the last login by cookie.
-     */
-    public $autoRenewCookieEachPage = false;
     /**
      * @var string the session variable name used to store the value of [[id]].
      */
@@ -237,19 +232,17 @@ class User extends Component
      */
     public function login(IdentityInterface $identity, $duration = 0)
     {
-        if ($this->beforeLogin($identity, $duration, false)) {
-            $this->switchIdentity($identity, $duration, false);
+        if ($this->beforeLogin($identity, false, $duration)) {
+            $this->switchIdentity($identity, $duration);
             $id = $identity->getId();
             $ip = Yii::$app->getRequest()->getUserIP();
-            if (!$this->enableSession) {
-                $log = "User '$id' logged in from $ip. Session not enabled.";
-            } elseif ($this->enableAutoLogin && $duration > 0) {
+            if ($this->enableSession) {
                 $log = "User '$id' logged in from $ip with duration $duration.";
             } else {
-                $log = "User '$id' logged in from $ip.  Session enabled.";
+                $log = "User '$id' logged in from $ip. Session not enabled.";
             }
             Yii::info($log, __METHOD__);
-            $this->afterLogin($identity, $duration, false);
+            $this->afterLogin($identity, false, $duration);
         }
 
         return !$this->getIsGuest();
@@ -426,17 +419,17 @@ class User extends Component
      * If you override this method, make sure you call the parent implementation
      * so that the event is triggered.
      * @param IdentityInterface $identity the user identity information
+     * @param boolean $cookieBased whether the login is cookie-based
      * @param integer $duration number of seconds that the user can remain in logged-in status.
      * If 0, it means login till the user closes the browser or the session is manually destroyed.
-     * @param boolean $cookieBased whether the login is cookie-based
      * @return boolean whether the user should continue to be logged in
      */
-    protected function beforeLogin($identity, $duration, $cookieBased)
+    protected function beforeLogin($identity, $cookieBased, $duration)
     {
         $event = new UserEvent([
             'identity' => $identity,
             'cookieBased' => $cookieBased,
-            'duration' => ( $this->enableSession && $this->enableAutoLogin ? $duration : 0 ) ,
+            'duration' => $duration,
         ]);
         $this->trigger(self::EVENT_BEFORE_LOGIN, $event);
 
@@ -449,16 +442,16 @@ class User extends Component
      * If you override this method, make sure you call the parent implementation
      * so that the event is triggered.
      * @param IdentityInterface $identity the user identity information
+     * @param boolean $cookieBased whether the login is cookie-based
      * @param integer $duration number of seconds that the user can remain in logged-in status.
      * If 0, it means login till the user closes the browser or the session is manually destroyed.
-     * @param boolean $cookieBased whether the login is cookie-based
      */
-    protected function afterLogin($identity, $duration, $cookieBased)
+    protected function afterLogin($identity, $cookieBased, $duration)
     {
         $this->trigger(self::EVENT_AFTER_LOGIN, new UserEvent([
             'identity' => $identity,
             'cookieBased' => $cookieBased,
-            'duration' => ( $this->enableSession && $this->enableAutoLogin ? $duration : 0 ),
+            'duration' => $duration,
         ]));
     }
 
@@ -521,10 +514,9 @@ class User extends Component
      * information in the cookie.
      * @param IdentityInterface $identity
      * @param integer $duration number of seconds that the user can remain in logged-in status.
-     * @param boolean $cookieBased whether the login is cookie-based
      * @see loginByCookie()
      */
-    protected function sendIdentityCookie($identity, $duration, $cookieBased)
+    protected function sendIdentityCookie($identity, $duration)
     {
         $cookie = new Cookie($this->identityCookie);
         $cookie->value = json_encode([
@@ -535,8 +527,8 @@ class User extends Component
         $cookie->expire = time() + $duration;
         Yii::$app->getResponse()->getCookies()->add($cookie);
     }
-    
-     /**
+
+    /**
      * Determines if an identity cookie format is valid and has a valid auth key.
      * This method is used when [[enableAutoLogin]] is true.
      * This method attempts to authenticate a user using the information in the identity cookie.
@@ -593,11 +585,10 @@ class User extends Component
      * If null, it means switching the current user to be a guest.
      * @param integer $duration number of seconds that the user can remain in logged-in status.
      * This parameter is used only when `$identity` is not null.
-     * @param boolean $cookieBased whether the login is cookie-based
      */
-    public function switchIdentity($identity, $duration = 0, $cookieBased = false)
+    public function switchIdentity($identity, $duration = 0)
     {
-        if ($this->enableSession && $this->enableAutoLogin && $this->_identity )
+        if ($this->enableSession && $this->enableAutoLogin && $this->_identity)
            $this->removeIdentityCookie($this->_identity);
 
         $this->setIdentity($identity);
@@ -622,7 +613,7 @@ class User extends Component
                 $session->set($this->absoluteAuthTimeoutParam, time() + $this->absoluteAuthTimeout);
             }
             if ($duration > 0 && $this->enableAutoLogin) {
-                $this->sendIdentityCookie($identity,$duration,$cookieBased);
+                $this->sendIdentityCookie($identity, $duration);
             }
         }
     }
@@ -665,7 +656,7 @@ class User extends Component
         if ($this->enableAutoLogin) {
             if ($this->getIsGuest()) {
                 $this->loginByCookie();
-            } elseif ($this->autoRenewCookie && $this->autoRenewCookieEachPage) {
+            } elseif ($this->autoRenewCookie) {
                 $this->renewIdentityCookie();
             }
         }
@@ -691,7 +682,7 @@ class User extends Component
      */
     public function can($permissionName, $params = [], $allowCaching = true)
     {
-        $auth = $this->getAuthManager();
+        $auth = Yii::$app->getAuthManager();
         if ($allowCaching && empty($params) && isset($this->_access[$permissionName])) {
             return $this->_access[$permissionName];
         }
@@ -701,18 +692,5 @@ class User extends Component
         }
 
         return $access;
-    }
-
-    /**
-     * Returns auth manager associated with the user component.
-     *
-     * By default this is the `authManager` application component.
-     * You may override this method to return a different auth manager instance if needed.
-     * @return \yii\rbac\ManagerInterface
-     * @since 2.0.5
-     */
-    protected function getAuthManager()
-    {
-        return Yii::$app->getAuthManager();
     }
 }
