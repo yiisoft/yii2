@@ -279,36 +279,18 @@ class User extends Component
      */
     protected function loginByCookie()
     {
-        $value = Yii::$app->getRequest()->getCookies()->getValue($this->identityCookie['name']);
-        if ($value === null) {
-            return;
-        }
-
-        $data = json_decode($value, true);
-        if (count($data) !== 3 || !isset($data[0], $data[1], $data[2])) {
-            return;
-        }
-
-        list ($id, $authKey, $duration) = $data;
-        /* @var $class IdentityInterface */
-        $class = $this->identityClass;
-        $identity = $class::findIdentity($id);
-        if ($identity === null) {
-            return;
-        } elseif (!$identity instanceof IdentityInterface) {
-            throw new InvalidValueException("$class::findIdentity() must return an object implementing IdentityInterface.");
-        }
-
-        if ($identity->validateAuthKey($authKey)) {
-            if ($this->beforeLogin($identity, true, $duration)) {
-                $this->switchIdentity($identity, $this->autoRenewCookie ? $duration : 0);
+        $data = $this->validateIdentityCookie();
+        if ($data !== null && isset( $data['duration'] ) && isset( $data['identity'] ) ) {
+            $duration = $data['duration'];
+            $identity = $data['identity'];
+            if ($this->beforeLogin($identity, $this->autoRenewCookie ? $duration : 0, true)) {
+                $this->switchIdentity($identity, $this->autoRenewCookie ? $duration : 0, true);
+                $id = $identity->getId();
                 $ip = Yii::$app->getRequest()->getUserIP();
                 Yii::info("User '$id' logged in from $ip via cookie.", __METHOD__);
-                $this->afterLogin($identity, true, $duration);
+                $this->afterLogin($identity, $this->autoRenewCookie ? $duration : 0, true);
             }
-        } else {
-            Yii::warning("Invalid auth key attempted for user '$id': $authKey", __METHOD__);
-        }
+          }
     }
 
     /**
@@ -547,6 +529,50 @@ class User extends Component
     }
 
     /**
+     * Determines if an identity cookie format is valid and has a valid auth key.
+     * This method is used when [[enableAutoLogin]] is true.
+     * This method attempts to authenticate a user using the information in the identity cookie.
+     * @return array|null Returns an array of 'identity' and 'duration' if valid, otherwise null.
+     * @see loginByCookie()
+     */
+     protected function validateIdentityCookie()
+     {
+        $value = Yii::$app->getRequest()->getCookies()->getValue($this->identityCookie['name']);
+        if ($value === null) {
+            return null;
+        }
+
+        $data = json_decode($value, true);
+        if (count($data) === 3 && isset($data[0], $data[1], $data[2])) {
+           list ($id, $authKey, $duration) = $data;
+           /* @var $class IdentityInterface */
+           $class = $this->identityClass;
+           $identity = $class::findIdentity($id);
+           if ($identity !== null) {
+              if (!$identity instanceof IdentityInterface) {
+                 throw new InvalidValueException("$class::findIdentity() must return an object implementing IdentityInterface.");
+              } elseif (!$identity->validateAuthKey($authKey)) {
+                 Yii::warning("Invalid auth key attempted for user '$id': $authKey", __METHOD__);
+              } else {
+                 return [ 'identity' => $identity, 'duration' => $duration ];
+              }
+           }
+        }
+        Yii::$app->getResponse()->getCookies()->remove(new Cookie($this->identityCookie));
+        return null;
+     }
+     
+    /**
+     * Removes the identity cookie.
+     * This method is used when [[enableAutoLogin]] is true.
+     * @param IdentityInterface $identity
+     */
+     protected function removeIdentityCookie($identity)
+     {
+         Yii::$app->getResponse()->getCookies()->remove(new Cookie($this->identityCookie));
+     }
+    
+    /**
      * Switches to a new identity for the current user.
      *
      * When [[enableSession]] is true, this method may use session and/or cookie to store the user identity information,
@@ -562,6 +588,9 @@ class User extends Component
      */
     public function switchIdentity($identity, $duration = 0)
     {
+        if ($this->enableSession && $this->enableAutoLogin && $this->_identity)
+           $this->removeIdentityCookie($this->_identity);
+
         $this->setIdentity($identity);
 
         if (!$this->enableSession) {
@@ -586,8 +615,6 @@ class User extends Component
             if ($duration > 0 && $this->enableAutoLogin) {
                 $this->sendIdentityCookie($identity, $duration);
             }
-        } elseif ($this->enableAutoLogin) {
-            Yii::$app->getResponse()->getCookies()->remove(new Cookie($this->identityCookie));
         }
     }
 
