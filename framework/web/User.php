@@ -423,7 +423,7 @@ class User extends Component
             $this->setReturnUrl($request->getUrl());
         }
         if ($this->loginUrl !== null) {
-            $loginUrl = (array)$this->loginUrl;
+            $loginUrl = (array) $this->loginUrl;
             if ($loginUrl[0] !== Yii::$app->requestedRoute) {
                 return Yii::$app->getResponse()->redirect($this->loginUrl);
             }

@@ -127,9 +127,9 @@ class ColumnSchema extends Object
                 }
                 if (is_float($value)) {
                     // ensure type cast always has . as decimal separator in all locales
-                    return str_replace(',', '.', (string)$value);
+                    return str_replace(',', '.', (string) $value);
                 }
-                return (string)$value;
+                return (string) $value;
             case 'integer':
                 return (int) $value;
             case 'boolean':
