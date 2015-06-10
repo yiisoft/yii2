@@ -48,6 +48,11 @@ class Controller extends \yii\base\Controller
      */
     public $color;
 
+    /**
+     * @var array the options passed during execution.
+     */
+    private $_passedOptions = [];
+
 
     /**
      * Returns a value indicating whether ANSI color is enabled.
@@ -81,7 +86,13 @@ class Controller extends \yii\base\Controller
             foreach ($params as $name => $value) {
                 if (in_array($name, $options, true)) {
                     $default = $this->$name;
-                    $this->$name = is_array($default) ? preg_split('/\s*,\s*/', $value) : $value;
+                    if (is_array($default)) {
+                        $this->$name = preg_split('/\s*,\s*/', $value);
+                    } else {
+                        settype($value, gettype($default));
+                        $this->$name = $value;
+                    }
+                    $this->_passedOptions[] = $name;
                     unset($params[$name]);
                 } elseif (!is_int($name)) {
                     throw new Exception(Yii::t('yii', 'Unknown option: --{name}', ['name' => $name]));
@@ -276,6 +287,47 @@ class Controller extends \yii\base\Controller
     {
         // $actionId might be used in subclasses to provide options specific to action id
         return ['color', 'interactive'];
+    }
+
+    /**
+     * Returns the properties corresponding to the options for the action (id)
+     * Child classes may override this method to specify possible properties.
+     *
+     * @param string $actionID the action id of the current request
+     * @return array the properties corresponding to the options for the action
+     */
+    public function optionsValues($actionID)
+    {
+        // $actionId might be used in subclasses to provide properties specific to action id
+        $properties = [];
+        foreach ($this->options($this->action->id) as $property) {
+            $properties[$property] = $this->$property;
+        }
+        return $properties;
+    }
+
+    /**
+     * Returns the names of valid options passed during execution.
+     *
+     * @return array the names of the options passed during execution
+     */
+    public function passedOptions()
+    {
+        return $this->_passedOptions;
+    }
+
+    /**
+     * Returns the properties corresponding to the passed options
+     *
+     * @return array the properties corresponding to the passed options
+     */
+    public function passedOptionsValues()
+    {
+        $properties = [];
+        foreach ($this->_passedOptions as $property) {
+            $properties[$property] = $this->$property;
+        }
+        return $properties;
     }
 
     /**

@@ -42,13 +42,115 @@ class MessageController extends Controller
      */
     public $defaultAction = 'extract';
 
+    /**
+     * @var string required, root directory of all source files.
+     */
+    public $sourcePath = '@yii';
+    /**
+     * @var string required, root directory containing message translations.
+     */
+    public $messagePath = '@yii/messages';
+    /**
+     * @var array required, list of language codes that the extracted messages
+     * should be translated to. For example, ['zh-CN', 'de'].
+     */
+    public $languages = [];
+    /**
+     * @var string the name of the function for translating messages.
+     * Defaults to 'Yii::t'. This is used as a mark to find the messages to be
+     * translated. You may use a string for single function name or an array for
+     * multiple function names.
+     */
+    public $translator = 'Yii::t';
+    /**
+     * @var boolean whether to sort messages by keys when merging new messages
+     * with the existing ones. Defaults to false, which means the new (untranslated)
+     * messages will be separated from the old (translated) ones.
+     */
+    public $sort = false;
+    /**
+     * @var boolean whether the message file should be overwritten with the merged messages
+     */
+    public $overwrite = true;
+    /**
+     * @var boolean whether to remove messages that no longer appear in the source code.
+     * Defaults to false, which means these messages will NOT be removed.
+     */
+    public $removeUnused = false;
+    /**
+     * @var boolean whether to mark messages that no longer appear in the source code.
+     * Defaults to true, which means each of these messages will be enclosed with a pair of '@@' marks.
+     */
+    public $markUnused = true;
+    /**
+     * @var array list of patterns that specify which files/directories should NOT be processed.
+     * If empty or not set, all files/directories will be processed.
+     * A path matches a pattern if it contains the pattern string at its end. For example,
+     * '/a/b' will match all files and directories ending with '/a/b';
+     * the '*.svn' will match all files and directories whose name ends with '.svn'.
+     * and the '.svn' will match all files and directories named exactly '.svn'.
+     * Note, the '/' characters in a pattern matches both '/' and '\'.
+     * See helpers/FileHelper::findFiles() description for more details on pattern matching rules.
+     */
+    public $except = [
+        '.svn',
+        '.git',
+        '.gitignore',
+        '.gitkeep',
+        '.hgignore',
+        '.hgkeep',
+        '/messages',
+        '/BaseYii.php', // contains examples about Yii:t()
+    ];
+    /**
+     * @var array list of patterns that specify which files (not directories) should be processed.
+     * If empty or not set, all files will be processed.
+     * Please refer to "except" for details about the patterns.
+     * If a file/directory matches both a pattern in "only" and "except", it will NOT be processed.
+     */
+    public $only = ['*.php'];
+    /**
+     * @var string generated file format. Can be "php", "db" or "po".
+     */
+    public $format = 'php';
+    /**
+     * @var string connection component ID for "db" format.
+     */
+    public $db = 'db';
+    /**
+     * @var array message categories to ignore.
+     */
+    public $ignoreCategories = [];
+
 
     /**
-     * Creates a configuration file for the "extract" command.
+     * @inheritdoc
+     */
+    public function options($actionID)
+    {
+        return [
+                'sourcePath',
+                'messagePath',
+                'languages',
+                'translator',
+                'sort',
+                'overwrite',
+                'removeUnused',
+                'markUnused',
+                'except',
+                'only',
+                'format',
+                'db',
+                'ignoreCategories'
+        ]; // global for all actions
+    }
+
+    /**
+     * Creates a configuration file for the "extract" command with specified options from command line.
      *
-     * The generated configuration file contains detailed instructions on
-     * how to customize it to fit for your needs. After customization,
-     * you may use this configuration file with the "extract" command.
+     * The generated configuration file contains parameters needed
+     * for messages extraction from source code.
+     * You may use this configuration file with the "extract" command.
      *
      * @param string $filePath output file name or alias.
      * @return integer CLI exit code
@@ -62,9 +164,59 @@ class MessageController extends Controller
                 return self::EXIT_CODE_NORMAL;
             }
         }
-        copy(Yii::getAlias('@yii/views/messageConfig.php'), $filePath);
-        $this->stdout("Configuration file template created at '{$filePath}'.\n\n", Console::FG_GREEN);
-        return self::EXIT_CODE_NORMAL;
+
+        $array = VarDumper::export($this->optionsValues($this->action->id));
+        $content = <<<EOD
+<?php
+/**
+ * Configuration file for 'yii {$this->id}/{$this->defaultAction}' command.
+ *
+ * This file is automatically generated by 'yii {$this->id}/{$this->action->id}' command.
+ * It contains the parameters for messages extraction from source code.
+ * You may modify this file to suit your needs.
+ *
+ * You can use 'yii {$this->id}/{$this->action->id}-template' command to create
+ * template configuration file with detaild description for each parameter.
+ */
+return $array;
+
+EOD;
+
+        if (file_put_contents($filePath, $content) !== false) {
+            $this->stdout("Configuration file created at '{$filePath}'.\n\n", Console::FG_GREEN);
+            return self::EXIT_CODE_NORMAL;
+        } else {
+            $this->stdout("Configuration file was NOT created at '{$filePath}'.\n\n", Console::FG_RED);
+            return self::EXIT_CODE_ERROR;
+        }
+    }
+
+    /**
+     * Creates a configuration file template for the "extract" command.
+     *
+     * The created configuration file contains detailed instructions on
+     * how to customize it to fit for your needs. After customization,
+     * you may use this configuration file with the "extract" command.
+     *
+     * @param string $filePath output file name or alias.
+     * @return integer CLI exit code
+     * @throws Exception on failure.
+     */
+    public function actionConfigTemplate($filePath)
+    {
+        $filePath = Yii::getAlias($filePath);
+        if (file_exists($filePath)) {
+            if (!$this->confirm("File '{$filePath}' already exists. Do you wish to overwrite it?")) {
+                return self::EXIT_CODE_NORMAL;
+            }
+        }
+        if (copy(Yii::getAlias('@yii/views/messageConfig.php'), $filePath)) {
+            $this->stdout("Configuration file template created at '{$filePath}'.\n\n", Console::FG_GREEN);
+            return self::EXIT_CODE_NORMAL;
+        } else {
+            $this->stdout("Configuration file template was NOT created at '{$filePath}'.\n\n", Console::FG_RED);
+            return self::EXIT_CODE_ERROR;
+        }
     }
 
     /**
@@ -78,22 +230,26 @@ class MessageController extends Controller
      * this file and then customize it for your needs.
      * @throws Exception on failure.
      */
-    public function actionExtract($configFile)
+    public function actionExtract($configFile = '')
     {
-        $configFile = Yii::getAlias($configFile);
-        if (!is_file($configFile)) {
-            throw new Exception("The configuration file does not exist: $configFile");
+        if (!empty($configFile)) {
+            $configFile = Yii::getAlias($configFile);
+            if (!is_file($configFile)) {
+                throw new Exception("The configuration file does not exist: $configFile");
+            } else {
+                $configFileContent = require($configFile);
+            }
+        } else {
+            $configFileContent = [];
         }
 
-        $config = array_merge([
-            'translator' => 'Yii::t',
-            'overwrite' => false,
-            'removeUnused' => false,
-            'markUnused' => true,
-            'sort' => false,
-            'format' => 'php',
-            'ignoreCategories' => [],
-        ], require($configFile));
+        $config = array_merge(
+                                $this->optionsValues($this->action->id),
+                                $configFileContent,
+                                $this->passedOptionsValues()
+        );
+        $config['sourcePath'] = Yii::getAlias($config['sourcePath']);
+        $config['messagePath'] = Yii::getAlias($config['messagePath']);
 
         if (!isset($config['sourcePath'], $config['languages'])) {
             throw new Exception('The configuration file must specify "sourcePath" and "languages".');
@@ -477,7 +633,7 @@ class MessageController extends Controller
 /**
  * Message translations.
  *
- * This file is automatically generated by 'yii {$this->id}' command.
+ * This file is automatically generated by 'yii {$this->id}/{$this->action->id}' command.
  * It contains the localizable messages extracted from source code.
  * You may modify this file by translating the extracted messages.
  *
@@ -495,8 +651,13 @@ return $array;
 
 EOD;
 
-        file_put_contents($fileName, $content);
-        $this->stdout("Translation saved.\n\n", Console::FG_GREEN);
+        if (file_put_contents($fileName, $content) !== false) {
+            $this->stdout("Translation saved.\n\n", Console::FG_GREEN);
+            return self::EXIT_CODE_NORMAL;
+        } else {
+            $this->stdout("Translation NOT saved.\n\n", Console::FG_RED);
+            return self::EXIT_CODE_ERROR;
+        }
     }
 
     /**
