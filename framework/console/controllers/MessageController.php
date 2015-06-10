@@ -229,7 +229,7 @@ class MessageController extends Controller
                    ->delete($sourceMessageTable, ['in', 'id', $obsolete])
                    ->execute();
                 $this->stdout("deleted.\n");
-            } else if ($markUnused) {
+            } elseif ($markUnused) {
                 $db->createCommand()
                    ->update(
                        $sourceMessageTable,
