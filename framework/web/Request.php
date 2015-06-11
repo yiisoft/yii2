@@ -10,6 +10,7 @@ namespace yii\web;
 use Yii;
 use yii\base\InvalidConfigException;
 use yii\helpers\StringHelper;
+use yii\helpers\Html;
 
 /**
  * The web Request class represents an HTTP request
@@ -458,10 +459,19 @@ class Request extends \yii\base\Request
     public function getQueryParams()
     {
         if ($this->_queryParams === null) {
-            return $_GET;
+        	if (strcasecmp(\Yii::$app->charset, 'UTF-8') === 0) {
+        		return $_GET;
+        	}
+        	$get = [];
+        	foreach ($_GET as $k=>$v) { //NOT GOOD
+        		$k = mb_convert_encoding($k, Yii::$app->charset, 'UTF-8');
+        		$v = mb_convert_encoding($v, Yii::$app->charset, 'UTF-8');
+        		$get[$k] = $v;
+        	}
+        	return $get;
         }
 
-        return $this->_queryParams;
+        return $this->_queryParams; //never reached
     }
 
     /**
@@ -501,9 +511,13 @@ class Request extends \yii\base\Request
      */
     public function getQueryParam($name, $defaultValue = null)
     {
-        $params = $this->getQueryParams();
-
-        return isset($params[$name]) ? $params[$name] : $defaultValue;
+        $params = $this->getQueryParams(); //REALLY? no setQueryParams() is called!
+        
+        if (isset($params[$name])) {
+        	return $params[$name];
+        }
+        
+        return $defaultValue;
     }
 
     private $_hostInfo;

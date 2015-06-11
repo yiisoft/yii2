@@ -78,4 +78,64 @@ class RequestTest extends TestCase
         $request->acceptableLanguages = ['en-us', 'de'];
         $this->assertEquals('pl', $request->getPreferredLanguage(['pl', 'ru-ru']));
     }
-}
+    
+    
+    
+    public function test_getQueryParam()
+    {
+    	
+    	$this->mockApplication();
+    	$r = new Request();
+    	
+    	$_GET['par1'] = 'val1';
+    	$this->assertEquals('val1', $r->get('par1', 'default'));
+    	
+    	$this->assertEmpty($r->get('par2'));
+    	$this->assertEquals('default', $r->get('par2', 'default'));
+    	// utf-8 non ascii
+    	$_GET['рік-year'] = 'val-рік';
+    	$this->assertEquals('val-рік', $r->get('рік-year', 'default'));
+    	$this->destroyApplication();
+    	
+    	//emulate file encoding
+    	
+    	$_GET['рік-year'] = 'val-рік';
+    	$enc = 'cp1251';
+    	$this->mockApplication(['charset' => $enc]);
+    	$par_enc = mb_convert_encoding('рік-year', $enc, 'UTF-8');
+    	$val_enc = mb_convert_encoding('val-рік', $enc, 'UTF-8');
+    	$this->assertEquals($val_enc, $r->get($par_enc));
+    	$this->destroyApplication();
+    }
+    
+    
+    public function test_getQueryParams()
+    {
+    	unset($_GET);
+    	// setQueryParams() is never called!
+    	$this->mockApplication();
+    	$r = new Request();
+    	$get = [
+    		'year-рік' => 'val-year-рік',
+    		'par2' => 'val2'
+    	];
+    	$_GET = $get;
+    	
+    	$this->assertArraySubset($get, $r->get());
+    	unset($_GET);
+    	$this->destroyApplication();
+    	
+    	//emulate file encoding
+    	$enc = 'cp1251';
+    	$this->mockApplication(['charset' => $enc]);
+    	$_GET = $get;
+    	$get_enc = [
+    		mb_convert_encoding('year-рік', $enc, 'UTF-8') => mb_convert_encoding('val-year-рік', $enc, 'UTF-8'),
+    		mb_convert_encoding('par2', $enc, 'UTF-8') => mb_convert_encoding('val2', $enc, 'UTF-8')
+    	];
+    	
+    	$this->assertArraySubset($get_enc, $r->get());
+    }
+
+    
+} 

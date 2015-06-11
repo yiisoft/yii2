@@ -317,13 +317,18 @@ class BaseInflector
      */
     public static function camel2words($name, $ucwords = true)
     {
-        $label = trim(strtolower(str_replace([
-            '-',
-            '_',
-            '.'
-        ], ' ', preg_replace('/(?<![A-Z])[A-Z]/', ' \0', $name))));
+    	$name = Html::convertToUTF($name);
+    	
+		$label = preg_replace('/(?<![\p{Lu}])[\p{Lu}]/u', ' \0', $name); // add spaces
+		$label = str_replace(['-', '_', '.'], ' ', $label);
+		$label = mb_strtolower($label, 'UTF-8');
+		$label = trim($label);
 
-        return $ucwords ? ucwords($label) : $label;
+		if ($ucwords) {
+			$label = mb_convert_case($label, MB_CASE_TITLE, 'UTF-8');
+		}
+		
+		return Html::convertToEncoding($label);
     }
 
     /**
