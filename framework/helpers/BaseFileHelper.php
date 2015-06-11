@@ -74,9 +74,10 @@ class BaseFileHelper
      * The searching is based on the specified language code. In particular,
      * a file with the same name will be looked for under the subdirectory
      * whose name is the same as the language code. For example, given the file "path/to/view.php"
-     * and language code "zh-CN", the localized file will be looked for as
-     * "path/to/zh-CN/view.php". If the file is not found, it will try a fallback with just a language code that is
-     * "zh" i.e. "path/to/zh/view.php". If it is not found as well the original file will be returned.
+     * and language code "zh-Hant-CN", the localized file will be looked for as
+     * "path/to/zh-Hant-CN/view.php". If the file is not found, it will try a fallback with "zh-CN" and "zh" i.e.
+     * "path/to/zh-CN/view.php" and "path/to/zh/view.php". If none of fallback files found, original
+     * file will be returned.
      *
      * If the target and the source language codes are the same,
      * the original file will be returned.
@@ -97,21 +98,25 @@ class BaseFileHelper
         if ($sourceLanguage === null) {
             $sourceLanguage = Yii::$app->sourceLanguage;
         }
+
+        $i18n = Yii::$app->i18n;
+        $language = $i18n->normalizeLocale($language);
+        $sourceLanguage = $i18n->normalizeLocale($sourceLanguage);
+
         if ($language === $sourceLanguage) {
             return $file;
         }
         $desiredFile = dirname($file) . DIRECTORY_SEPARATOR . $language . DIRECTORY_SEPARATOR . basename($file);
-        if (is_file($desiredFile)) {
-            return $desiredFile;
-        } else {
-            $language = substr($language, 0, 2);
-            if ($language === $sourceLanguage) {
-                return $file;
-            }
-            $desiredFile = dirname($file) . DIRECTORY_SEPARATOR . $language . DIRECTORY_SEPARATOR . basename($file);
 
-            return is_file($desiredFile) ? $desiredFile : $file;
-        }
+        do {
+            if (is_file($desiredFile)) {
+                return $desiredFile;
+            } else {
+                $language = $i18n->getFallbackLanguageId($language);
+            }
+        } while ($language !== null);
+
+        return $file;
     }
 
     /**
