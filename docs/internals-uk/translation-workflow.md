@@ -88,6 +88,7 @@ php build translation "../docs/guide" "../docs/guide-uk" "Ukrainian guide transl
 - authorization — авторизація/уповноваження;
 - autoloader — автозавантажувач;
 - back-end — (не перекладається);
+- backward compatibility / BC — зворотна сумісність;
 - bootstrap, bootstrapping — початкове завантаження;
 - branch — гілка;
 - browser — браузер;
@@ -151,6 +152,7 @@ php build translation "../docs/guide" "../docs/guide-uk" "Ukrainian guide transl
 - pagination — розділення на сторінки;
 - parameter — параметр;
 - to parse — обробляти;
+- (application) performance — швидкодія (додатка);
 - placeholder — заповнювач;
 - plugin — плагін;
 - postprocessing — після-обробка;

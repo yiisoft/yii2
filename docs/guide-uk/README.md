@@ -168,7 +168,7 @@ All Rights Reserved.
 * **TBD** [Основні валідатори](tutorial-core-validators.md)
 * **TBD** [Інтернаціоналізація](tutorial-i18n.md)
 * **TBD** [Робота з поштою](tutorial-mailing.md)
-* **TBD** [Вдосконалення продуктивності](tutorial-performance-tuning.md)
+* **TBD** [Покращення швидкодії](tutorial-performance-tuning.md)
 * **TBD** [Робота на віртуальному хостингу](tutorial-shared-hosting.md)
 * **TBD** [Шаблонізатори](tutorial-template-engines.md)
 * [Робота із стороннім кодом](tutorial-yii-integration.md)
