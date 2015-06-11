@@ -659,11 +659,11 @@ class BaseConsole
     public static function wrapText($text, $indent = 0, $refresh = false)
     {
         $size = static::getScreenSize($refresh);
-        if ($size === false || $size[0] <= $indent) {
+        if ($size === false || $size[1] <= $indent) {
             return $text;
         }
         $pad = str_repeat(' ', $indent);
-        $lines = explode("\n", wordwrap($text, $size[0] - $indent, "\n", true));
+        $lines = explode("\n", wordwrap($text, $size[1] - $indent, "\n", true));
         $first = true;
         foreach ($lines as $i => $line) {
             if ($first) {
