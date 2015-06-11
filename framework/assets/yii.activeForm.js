@@ -97,7 +97,7 @@
          * where
          *  - event: an Event object.
          *  - jqXHR: a jqXHR object
-         *  - settings: the status of the request ("success", "notmodified", "error", "timeout", "abort", or "parsererror").
+         *  - textStatus: the status of the request ("success", "notmodified", "error", "timeout", "abort", or "parsererror").
          */
         ajaxComplete: 'ajaxComplete'
     };
