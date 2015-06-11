@@ -134,7 +134,7 @@ class PostController extends Controller
 ### ルート <span id="routes"></span>
 
 アプリケーションの中のコントローラをアクセスするのと同じように、[ルート](structure-controllers.md#routes) がモジュールの中のコントローラを指し示すために使われます。
-モジュール内のコントローラのルートは、モジュール ID で始まり、コントローラ ID、アクション ID と続くものでなければなりません。
+モジュール内のコントローラのルートは、モジュール ID で始まり、[コントローラ ID](structure-controllers.md#controller-ids)、[アクション ID](structure-controllers.md#action-ids) と続くものでなければなりません。
 例えば、アプリケーションが `forum` という名前のモジュールを使用している場合、`forum/post/index` というルートは、`forum` モジュール内の `post` コントローラの `index` アクションを表します。
 ルートがモジュール ID だけを含む場合は、[[yii\base\Module::defaultRoute]] プロパティ (デフォルト値は `default` です) が、どのコントローラ/アクションが使用されるべきかを決定します。
 これは、`forum` というルートは `forum` モジュール内の `default` コントローラを表すという意味です。

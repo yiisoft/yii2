@@ -34,7 +34,7 @@ trait ActiveQueryTrait
     /**
      * Sets the [[asArray]] property.
      * @param boolean $value whether to return the query results in terms of arrays instead of Active Records.
-     * @return static the query object itself
+     * @return $this the query object itself
      */
     public function asArray($value = true)
     {
@@ -53,7 +53,7 @@ trait ActiveQueryTrait
      * For example, `orders.address` means the `address` relation defined
      * in the model class corresponding to the `orders` relation.
      *
-     * The followings are some usage examples:
+     * The following are some usage examples:
      *
      * ~~~
      * // find customers together with their orders and country
@@ -77,7 +77,7 @@ trait ActiveQueryTrait
      * Customer::find()->with('orders')->with('country')->all();
      * ~~~
      *
-     * @return static the query object itself
+     * @return $this the query object itself
      */
     public function with()
     {

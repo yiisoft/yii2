@@ -4,6 +4,7 @@ namespace yiiunit\framework\db;
 use yiiunit\data\ar\ActiveRecord;
 use yiiunit\data\ar\Category;
 use yiiunit\data\ar\Customer;
+use yiiunit\data\ar\Document;
 use yiiunit\data\ar\NullValues;
 use yiiunit\data\ar\OrderItem;
 use yiiunit\data\ar\Order;
@@ -116,6 +117,19 @@ class ActiveRecordTest extends DatabaseTestCase
         $customer = Customer::findBySql('SELECT * FROM {{customer}} WHERE [[id]]=:id', [':id' => 2])->one();
         $this->assertTrue($customer instanceof Customer);
         $this->assertEquals('user2', $customer->name);
+    }
+
+    /**
+     * @depends testFindBySql
+     *
+     * @see https://github.com/yiisoft/yii2/issues/8593
+     */
+    public function testCountWithFindBySql()
+    {
+        $query = Customer::findBySql('SELECT * FROM {{customer}}');
+        $this->assertEquals(3, $query->count());
+        $query = Customer::findBySql('SELECT * FROM {{customer}} WHERE  [[id]]=:id', [':id' => 2]);
+        $this->assertEquals(1, $query->count());
     }
 
     public function testFindLazyViaTable()
@@ -678,8 +692,16 @@ class ActiveRecordTest extends DatabaseTestCase
         $this->assertEquals(2, count($orders[0]->orderItems));
         $this->assertEquals(3, count($orders[1]->orderItems));
         $this->assertEquals(1, count($orders[2]->orderItems));
+
+        // https://github.com/yiisoft/yii2/issues/8149
+        $model = new Customer();
+        $model->name = 'test';
+        $model->email = 'test';
+        $model->save(false);
+        $model->updateCounters(['status' => 1]);
+        $this->assertEquals(1, $model->status);
     }
-    
+
     public function testPopulateRecordCallWhenQueryingOnParentClass() 
     {
         (new Cat())->save(false);
@@ -690,5 +712,28 @@ class ActiveRecordTest extends DatabaseTestCase
 
         $animal = Animal::find()->where(['type' => Cat::className()])->one();
         $this->assertEquals('meow', $animal->getDoes());
+    }
+
+    public function testSaveEmpty()
+    {
+        $record = new NullValues;
+        $this->assertTrue($record->save(false));
+        $this->assertEquals(1, $record->id);
+    }
+
+    public function testOptimisticLock()
+    {
+        /* @var $record Document */
+
+        $record = Document::findOne(1);
+        $record->content = 'New Content';
+        $record->save(false);
+        $this->assertEquals(1, $record->version);
+
+        $record = Document::findOne(1);
+        $record->content = 'Rewrite attempt content';
+        $record->version = 0;
+        $this->setExpectedException('yii\db\StaleObjectException');
+        $record->save(false);
     }
 }

@@ -97,7 +97,7 @@
          * where
          *  - event: an Event object.
          *  - jqXHR: a jqXHR object
-         *  - settings: the status of the request ("success", "notmodified", "error", "timeout", "abort", or "parsererror").
+         *  - textStatus: the status of the request ("success", "notmodified", "error", "timeout", "abort", or "parsererror").
          */
         ajaxComplete: 'ajaxComplete'
     };
@@ -501,7 +501,7 @@
             if (errorInputs.length) {
                 var top = $form.find(errorInputs.join(',')).first().closest(':visible').offset().top;
                 var wtop = $(window).scrollTop();
-                if (top < wtop || top > wtop + $(window).height) {
+                if (top < wtop || top > wtop + $(window).height()) {
                     $(window).scrollTop(top);
                 }
                 data.submitting = false;

@@ -86,7 +86,7 @@ EOD;
         $this->assertEqualsWithoutLE($expectedValue, $actualValue);
     }
 
-    public function testBeginHasErros()
+    public function testBeginHasErrors()
     {
         $this->helperModel->addError($this->attributeName, "Error Message");
 
@@ -96,7 +96,7 @@ EOD;
         $this->assertEquals($expectedValue, $actualValue);
     }
 
-    public function testBeginAttributeIsRequered()
+    public function testBeginAttributeIsRequired()
     {
         $this->helperModel->addRule($this->attributeName, 'required');
 

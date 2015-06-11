@@ -1,61 +1,59 @@
 Internationalization
 ====================
 
-> Note: This section is under development.
-
 Internationalization (I18N) refers to the process of designing a software application so that it can be adapted to
 various languages and regions without engineering changes. For Web applications, this is of particular importance
-because the potential users may be worldwide.
+because the potential users may be worldwide. Yii offers a full spectrum of I18N features that support message
+translation, view translation, date and number formatting.
 
-Yii offers several tools that help with internationalization of a website such as message translation and
-number- and date-formatting.
 
-Locale and Language
--------------------
+## Locale and Language <span id="locale-language"></span>
 
-There are two languages defined in the Yii application: [[yii\base\Application::$sourceLanguage|source language]] and
-[[yii\base\Application::$language|target language]].
+Locale is a set of parameters that defines the user's language, country and any special variant preferences 
+that the user wants to see in their user interface. It is usually identified by an ID consisting of a language 
+ID and a region ID. For example, the ID `en-US` stands for the locale of English and United States. 
+For consistency, all locale IDs used in Yii applications should be canonicalized to the format of 
+`ll-CC`, where `ll` is a two- or three-letter lowercase language code according to
+[ISO-639](http://www.loc.gov/standards/iso639-2/) and `CC` is a two-letter country code according to
+[ISO-3166](http://www.iso.org/iso/en/prods-services/iso3166ma/02iso-3166-code-lists/list-en1.html).
+More details about locale can be found in check the 
+[documentation of the ICU project](http://userguide.icu-project.org/locale#TOC-The-Locale-Concept).
 
-The source language is the language in which the original application messages are written directly in the code such as:
+In Yii, we often use the term "language" to refer to a locale.
 
-```php
-echo \Yii::t('app', 'I am a message!');
-```
+A Yii application uses two kinds of languages: [[yii\base\Application::$sourceLanguage|source language]] and
+[[yii\base\Application::$language|target language]]. The former refers to the language in which the text messages
+in the source code are written, while the latter is the language that should be used to display content to end users.
+The so-called message translation service mainly translates a text message from source language to target language.
 
-The target language is the language that should be used to display the current page, i.e. the language that original messages need
-to be translated to. It is defined in the application configuration like the following:
+You can configure application languages in the application configuration like the following:
 
 ```php
 return [
-    'id' => 'applicationID',
-    'basePath' => dirname(__DIR__),
-    // ...
-    'language' => 'ru-RU', // <- here!
-    // ...
-]
+    // set target language to be Russian
+    'language' => 'ru-RU',
+    
+    // set source language to be English
+    'sourceLanguage' => 'en-US',
+    
+    ......
+];
 ```
 
-> **Tip**: The default value for the [[yii\base\Application::$sourceLanguage|source language]] is English and it is
-> recommended to keep this value. The reason is that it's easier to find people translating from
-> English to any language than from non-English to non-English.
+The default value for the [[yii\base\Application::$sourceLanguage|source language]] is `en-US`, meaning
+US English. It is recommended that you keep this default value unchanged, because it is usually much easier
+to find people who can translate from English to other languages than from non-English to non-English.
 
-You may set the application language at runtime to the language that the user has chosen.
-This has to be done at a point before any output is generated so that it affects all the output correctly.
-Therefor just change the application property to the desired value:
+You often need to set the [[yii\base\Application::$language|target language]] dynamically based on different 
+factors, such as the language preference of end users. Instead of configuring it in the application configuration,
+you can use the following statement to change the target language:
 
 ```php
+// change target language to Chinese
 \Yii::$app->language = 'zh-CN';
 ```
 
-The format for the language/locale is `ll-CC` where `ll` is a two- or three-letter lowercase code for a language according to
-[ISO-639](http://www.loc.gov/standards/iso639-2/) and `CC` is the country code according to
-[ISO-3166](http://www.iso.org/iso/en/prods-services/iso3166ma/02iso-3166-code-lists/list-en1.html).
-
-> **Note**: For more information on the concept and syntax of locales, check the
-> [documentation of the ICU project](http://userguide.icu-project.org/locale#TOC-The-Locale-Concept).
-
-Message translation
--------------------
+## Message Translation <span id="message-translation"></span>
 
 Message translation is used to translate the messages that are output by an application to different languages
 so that users from different countries can use the application in their native language.
@@ -435,8 +433,8 @@ in case your raw message is a valid verbose text. However, sometimes it is not e
 You may need to perform some custom processing of the situation, when the requested translation is missing from the source.
 This can be achieved using the [[yii\i18n\MessageSource::EVENT_MISSING_TRANSLATION|missingTranslation]]-event of [[yii\i18n\MessageSource]].
 
-For example, let us mark all the missing translations with something notable so that they can be easily found at the page.
-First we need to setup an event handler. This can be done in the application configuration:
+For example, you may want to mark all the missing translations with something notable, so that they can be easily found at the page.
+First you need to setup an event handler. This can be done in the application configuration:
 
 ```php
 'components' => [
@@ -456,7 +454,7 @@ First we need to setup an event handler. This can be done in the application con
 ],
 ```
 
-Now we need to implement our own event handler:
+Now you need to implement your own event handler:
 
 ```php
 <?php
@@ -467,7 +465,8 @@ use yii\i18n\MissingTranslationEvent;
 
 class TranslationEventHandler
 {
-    public static function handleMissingTranslation(MissingTranslationEvent $event) {
+    public static function handleMissingTranslation(MissingTranslationEvent $event)
+    {
         $event->translatedMessage = "@MISSING: {$event->category}.{$event->message} FOR LANGUAGE {$event->language} @";
     }
 }

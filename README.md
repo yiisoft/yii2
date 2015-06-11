@@ -42,7 +42,7 @@ Yii 2.0 has a [Definitive Guide](http://www.yiiframework.com/doc-2.0/guide-index
 a [Class Reference](http://www.yiiframework.com/doc-2.0/index.html) which cover every detail of Yii.
 
 There is also a [PDF version](http://stuff.cebe.cc/yii2-guide.pdf) of the Definitive Guide
-and a [Definitive Guide Mirror](http://stuff.cebe.cc/yii2docs/) which update every 15 minutes.
+and a [Definitive Guide Mirror](http://stuff.cebe.cc/yii2docs/) which is updated every 15 minutes.
 
 For 1.1 users, you may refer to [Upgrading from Yii 1.1](docs/guide/intro-upgrade-from-v1.md)
 to have a general idea of what has changed in 2.0.
@@ -51,15 +51,31 @@ to have a general idea of what has changed in 2.0.
 HOW TO PARTICIPATE
 ------------------
 
-**Your participation to Yii 2 development is very welcome!**
+### Your participation to Yii 2 development is very welcome!
 
 You may participate in the following ways:
 
-* [Report issues](https://github.com/yiisoft/yii2/issues)
-* [Give us feedback or start a design discussion](http://www.yiiframework.com/forum/index.php/forum/42-design-discussions-for-yii-20/)
-* Fix issues, develop features, write/polish documentation
-    - Before you start, please adopt an existing issue (labelled with "ready for adoption") or start a new one to avoid duplicated efforts.
-    - Please submit a merge request after you finish development.
+- [Report an issue](docs/internals/report-an-issue.md)
+- [Translate documentation or messages](docs/internals/translation-workflow.md)
+- [Give us feedback or start a design discussion](http://www.yiiframework.com/forum/index.php/forum/42-general-discussions-for-yii-20/)
+- [Contribute to the core code or fix bugs](docs/internals/git-workflow.md)
 
-In order to make it easier we've prepared [special `yii2-dev` Composer package](https://github.com/yiisoft/yii2/blob/master/docs/internals/getting-started.md).
+### Acknowledging or citing Yii 2
 
+**In presentations**
+
+If you are giving a presentation or talk featuring work that makes use of Yii 2 and would like to acknowledge it,
+we suggest using [our logo](http://www.yiiframework.com/logo/) on your title slide.
+
+**In projects**
+
+If you are using Yii 2 as part of an OpenSource project, a way to acknowledge it is to
+[use a special badge](https://img.shields.io/badge/Powered_by-Yii_Framework-green.svg?style=flat) in your README:    
+
+![Yii2](https://img.shields.io/badge/Powered_by-Yii_Framework-green.svg?style=flat)
+
+If your code is hosted at GitHub, you can place the following in your README.md file to get the badge:
+
+```
+[![Yii2](https://img.shields.io/badge/Powered_by-Yii_Framework-green.svg?style=flat)](http://www.yiiframework.com/)
+```

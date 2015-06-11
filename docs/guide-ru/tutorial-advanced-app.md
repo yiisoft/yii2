@@ -14,12 +14,12 @@
 
 ### Установка при помощи Composer
 
-Если у вас ещё не установлен [Composer](http://getcomposer.org/), следуйте инструкциям в разделе
+Если у вас ещё не установлен [Composer](https://getcomposer.org/), следуйте инструкциям в разделе
 [установка Yii](start-installation.md#installing-via-composer).
 
 Если Composer установлен, вы можете установить приложение используя следующие команды:
 
-    composer global require "fxp/composer-asset-plugin:1.0.0"
+    composer global require "fxp/composer-asset-plugin:~1.0.0"
     composer create-project --prefer-dist yiisoft/yii2-app-advanced yii-application
 
 Первая команда установит плагин [composer asset plugin](https://github.com/francoispluchino/composer-asset-plugin/),
@@ -39,7 +39,7 @@
     php /path/to/yii-application/init
     ```
 
-    Для производственных серверов удобно выполнять данную команду в неинтерактивном режиме.
+    Для производственных серверов удобно выполнять данную команду в не интерактивном режиме.
 
     ```
     php /path/to/yii-application/init --env=Production overwrite=All
@@ -86,7 +86,7 @@
 - `@backend` - директория веб-приложения backend.
 - `@console` - директория console.
 - `@runtime` - директория runtime исполняемого приложения.
-- `@vendor` - директория vendor, содержащая пакеты загруженые Composer'ом.
+- `@vendor` - директория vendor, содержащая пакеты загруженные Composer'ом.
 - `@bower` - директория vendor, содержащая [пакеты bower](http://bower.io/).
 - `@npm` - директория vendor, содержащая [пакеты npm](https://www.npmjs.org/).
 - `@web` - базовый URL исполняемого веб-приложения.
@@ -98,7 +98,7 @@
 Приложения
 ----------
 
-В шаблоне advanced три приложения: frontend, backend и console. Frontend это та часть приложения, которае обеспечивает
+В шаблоне advanced три приложения: frontend, backend и console. Frontend это та часть приложения, которая обеспечивает
 взаимодействие системы с конечным пользователем проекта. Backend это административная панель, аналитика и прочая подобная
 функциональность. Console обычно используется для выполнения заданий по расписанию через cron, низкоуровневого
 управления сервером, при развёртывании приложения, работы с миграциями и ресурсами.

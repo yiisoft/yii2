@@ -2,7 +2,7 @@ Query Builder
 =============
 
 Built on top of [Database Access Objects](db-dao.md), query builder allows you to construct a SQL statement
-in a programmatic and DBMS-agnostic way. Compared to writing raw SQLs, using query builder will help you write 
+in a programmatic and DBMS-agnostic way. Compared to writing raw SQL statements, using query builder will help you write 
 more readable SQL-related code and generate more secure SQL statements.  
 
 Using query builder usually involves two steps:
@@ -61,7 +61,7 @@ $query->select(['id', 'email']);
 $query->select('id, email');
 ```
 
-The column names being selected may include table prefixes and/or column aliases, like you do when writing raw SQLs. 
+The column names being selected may include table prefixes and/or column aliases, like you do when writing raw SQL statements. 
 For example,
 
 ```php
@@ -124,7 +124,7 @@ $query->from('user');
 ```
 
 You can specify the table(s) being selected from in either a string or an array. The table names may contain
-schema prefixes and/or table aliases, like you do when writing raw SQLs. For example,
+schema prefixes and/or table aliases, like you do when writing raw SQL statements. For example,
 
 ```php
 $query->from(['public.user u', 'public.post p']);
@@ -225,7 +225,7 @@ Operator format allows you to specify arbitrary conditions in a programmatic way
 ```
 
 where the operands can each be specified in string format, hash format or operator format recursively, while
-the operator can be one of the followings:
+the operator can be one of the following:
 
 - `and`: the operands should be concatenated together using `AND`. For example,
   `['and', 'id=1', 'id=2']` will generate `id=1 AND id=2`. If an operand is an array,
@@ -353,7 +353,7 @@ In the above code, the array keys are column names while the array values are th
 The PHP constant `SORT_ASC` specifies ascending sort and `SORT_DESC` descending sort.
 
 If `ORDER BY` only involves simple column names, you can specify it using a string, just like you do when writing 
-raw SQLs. For example,
+raw SQL statements. For example,
 
 ```php
 $query->orderBy('id ASC, name DESC');
@@ -380,7 +380,7 @@ $query->groupBy(['id', 'status']);
 ```
 
 If `GROUP BY` only involves simple column names, you can specify it using a string, just like you do when writing 
-raw SQLs. For example,
+raw SQL statements. For example,
 
 ```php
 $query->groupBy('id, status');
@@ -535,7 +535,7 @@ $row = (new \yii\db\Query())
   `(new \yii\db\Query())->from('user')->limit(1)->one()`.
 
 All these query methods take an optional `$db` parameter representing the [[yii\db\Connection|DB connection]] that
-should be used to perform a DB query. If you omit this parameter, the `db` application component will be used
+should be used to perform a DB query. If you omit this parameter, the `db` [application component](structure-application-components.md) will be used
 as the DB connection. Below is another example using the `count()` query method:
 
 ```php
@@ -607,7 +607,7 @@ value which will be used as the index value for the current row.
 
 When working with large amounts of data, methods such as [[yii\db\Query::all()]] are not suitable
 because they require loading all data into the memory. To keep the memory requirement low, Yii
-provides the so-called batch query support. A batch query makes uses of the data cursor and fetches
+provides the so-called batch query support. A batch query makes use of the data cursor and fetches
 data in batches.
 
 Batch query can be used like the following:

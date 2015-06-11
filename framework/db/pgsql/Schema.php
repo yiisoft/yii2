@@ -171,6 +171,7 @@ class Schema extends \yii\db\Schema
      * This method should be overridden by child classes in order to support this feature
      * because the default implementation simply throws an exception.
      * @return array all schema names in the database, except system schemas
+     * @since 2.0.4
      */
     protected function findSchemaNames()
     {
@@ -449,5 +450,28 @@ SQL;
         $column->phpType = $this->getColumnPhpType($column);
 
         return $column;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function insert($table, $columns)
+    {
+        $params = [];
+        $sql = $this->db->getQueryBuilder()->insert($table, $columns, $params);
+        $returnColumns = $this->getTableSchema($table)->primaryKey;
+        if (!empty($returnColumns)) {
+            $returning = [];
+            foreach ((array) $returnColumns as $name) {
+                $returning[] = $this->quoteColumnName($name);
+            }
+            $sql .= ' RETURNING ' . implode(', ', $returning);
+        }
+
+        $command = $this->db->createCommand($sql, $params);
+        $command->prepare(false);
+        $result = $command->queryOne();
+
+        return !$command->pdoStatement->rowCount() ? false : $result;
     }
 }

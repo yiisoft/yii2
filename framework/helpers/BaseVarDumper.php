@@ -179,7 +179,14 @@ class BaseVarDumper
                 }
                 break;
             case 'object':
-                self::$_output .= 'unserialize(' . var_export(serialize($var), true) . ')';
+                try {
+                    $output = 'unserialize(' . var_export(serialize($var), true) . ')';
+                } catch (\Exception $e) {
+                    // serialize may fail, for example: if object contains a `\Closure` instance
+                    // so we use regular `var_export()` as fallback
+                    $output = var_export($var, true);
+                }
+                self::$_output .= $output;
                 break;
             default:
                 self::$_output .= var_export($var, true);

@@ -452,6 +452,7 @@ class BaseFileHelper
      * @param integer $mode the permission to be set for the created directory.
      * @param boolean $recursive whether to create parent directories if they do not exist.
      * @return boolean whether the directory is created successfully
+     * @throws \yii\base\Exception if the directory could not be created.
      */
     public static function createDirectory($path, $mode = 0775, $recursive = true)
     {
@@ -462,8 +463,12 @@ class BaseFileHelper
         if ($recursive && !is_dir($parentDir)) {
             static::createDirectory($parentDir, $mode, true);
         }
-        $result = mkdir($path, $mode);
-        chmod($path, $mode);
+        try {
+            $result = mkdir($path, $mode);
+            chmod($path, $mode);
+        } catch (\Exception $e) {
+            throw new \yii\base\Exception("Failed to create directory '$path': " . $e->getMessage(), $e->getCode(), $e);
+        }
 
         return $result;
     }
@@ -602,7 +607,7 @@ class BaseFileHelper
      * @param string $pattern
      * @param boolean $caseSensitive
      * @throws \yii\base\InvalidParamException
-     * @return array with keys: (string) pattern, (int) flags, (int|boolean)firstWildcard
+     * @return array with keys: (string) pattern, (int) flags, (int|boolean) firstWildcard
      */
     private static function parseExcludePattern($pattern, $caseSensitive)
     {
@@ -655,7 +660,7 @@ class BaseFileHelper
         $wildcardSearch = function ($r, $c) use ($pattern) {
             $p = strpos($pattern, $c);
 
-            return $r===false ? $p : ($p===false ? $r : min($r, $p));
+            return $r === false ? $p : ($p === false ? $r : min($r, $p));
         };
 
         return array_reduce($wildcards, $wildcardSearch, false);
