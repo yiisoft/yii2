@@ -22,6 +22,9 @@ return [
     // boolean, whether to remove messages that no longer appear in the source code.
     // Defaults to false, which means each of these messages will be enclosed with a pair of '@@' marks.
     'removeUnused' => false,
+    // boolean, whether to mark messages that no longer appear in the source code.
+    // Defaults to true, which means each of these messages will be enclosed with a pair of '@@' marks.
+    'markUnused' => true,
     // array, list of patterns that specify which files/directories should NOT be processed.
     // If empty or not set, all files/directories will be processed.
     // A path matches a pattern if it contains the pattern string at its end. For example,

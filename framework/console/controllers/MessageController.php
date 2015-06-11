@@ -118,7 +118,19 @@ class MessageController extends Controller
      */
     public $db = 'db';
     /**
-     * @var array message categories to ignore.
+     * @var string custom name for source message table for "db" format.
+     */
+    public $sourceMessageTable = '{{%source_message}}';
+    /**
+     * @var string custom name for translation message table for "db" format.
+     */
+    public $messageTable = '{{%message}}';
+    /**
+     * @var string name of the file that will be used for translations for "po" format.
+     */
+    public $catalog = 'messages';
+    /**
+     * @var array message categories to ignore. For example, 'yii'.
      */
     public $ignoreCategories = [];
 
@@ -141,6 +153,9 @@ class MessageController extends Controller
                 'only',
                 'format',
                 'db',
+                'sourceMessageTable',
+                'messageTable',
+                'catalog',
                 'ignoreCategories'
         ]; // global for all actions
     }
