@@ -211,7 +211,7 @@ class I18N extends Component
      *
      * @return string normalized locale ID
      *
-     * @since 2.0.4
+     * @since 2.0.5
      */
     public function normalizeLocale($locale)
     {
@@ -283,10 +283,12 @@ class I18N extends Component
     /**
      * Returns fallback language ID
      *
-     * "zh-Hant-CN" ? "zh-CN" ? "zh"
+     * "zh-Hant-CN" -> "zh-CN" -> "zh"
      *
      * @param string $languageId normalized language ID. Either "zh-Hant-CN", "zh-CN" or "CN".
      * @return string fallback language ID or null if there's no fallback
+     *
+     * @since 2.0.5
      */
     public function getFallbackLanguageId($languageId)
     {
