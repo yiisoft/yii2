@@ -66,7 +66,7 @@ abstract class Target extends Component
      * If not set, [[getMessagePrefix()]] will be used, which prefixes the message with context information
      * such as user IP, user ID and session ID.
      *
-     * The signature of the callable should be `function ($message)`.
+     * The signature of the callable should be `function ($message, $target)`.
      */
     public $prefix;
     /**
@@ -269,7 +269,7 @@ abstract class Target extends Component
     public function getMessagePrefix($message)
     {
         if ($this->prefix !== null) {
-            return call_user_func($this->prefix, $message);
+            return call_user_func($this->prefix, $message, $this);
         }
 
         if (Yii::$app === null) {
