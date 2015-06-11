@@ -22,6 +22,7 @@ class FileHelperTest extends TestCase
         if (!file_exists($this->testFilePath)) {
             $this->markTestIncomplete('Unit tests runtime directory should have writable permissions!');
         }
+        $this->mockApplication();
     }
 
     public function tearDown()
@@ -505,6 +506,8 @@ class FileHelperTest extends TestCase
 
     public function testLocalizedDirectory()
     {
+
+
         $this->createFileStructure([
             'views' => [
                 'faq.php' => 'English FAQ',
