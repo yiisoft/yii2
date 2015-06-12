@@ -5,7 +5,7 @@
 
 All Rights Reserved.
 
-2014 © Yii Software LLC.
+2014 (c) Yii Software LLC.
 
 
 Введення
@@ -19,7 +19,7 @@ All Rights Reserved.
 ----------------
 
 * [Встановлення Yii](start-installation.md)
-* [Запуск додатка](start-workflow.md)
+* [Виконання додатків](start-workflow.md)
 * [Говоримо "Привіт"](start-hello.md)
 * [Робота з формами](start-forms.md)
 * [Робота з базами даних](start-databases.md)
@@ -35,7 +35,7 @@ All Rights Reserved.
 * [Додатки](structure-applications.md)
 * [Компоненти додатка](structure-application-components.md)
 * [Контролери](structure-controllers.md)
-* **TBD** [Моделі](structure-models.md)
+* [Моделі](structure-models.md)
 * **TBD** [Представлення](structure-views.md)
 * **TBD** [Модулі](structure-modules.md)
 * **TBD** [Фільтри](structure-filters.md)
@@ -48,7 +48,7 @@ All Rights Reserved.
 ---------------
 
 * **TBD** [Огляд](runtime-overview.md)
-* **TBD** [Bootstrapping](runtime-bootstrapping.md)
+* **TBD** [Початкове завантаження](runtime-bootstrapping.md)
 * **TBD** [Маршрутизація та створення URL](runtime-routing.md)
 * **TBD** [Запити](runtime-requests.md)
 * **TBD** [Відповіді](runtime-responses.md)
@@ -67,17 +67,17 @@ All Rights Reserved.
 * **TBD** [Конфігурації](concept-configurations.md)
 * [Псевдоніми](concept-aliases.md)
 * [Автозавантаження класів](concept-autoloading.md)
-* **TBD** [Service Locator](concept-service-locator.md)
+* **TBD** [Локатор служб](concept-service-locator.md)
 * **TBD** [Dependency Injection Container](concept-di-container.md)
 
 
 Робота з базами даних
 ---------------------
 
-* **TBD** [Обʼєкти доступу до даних (DAO)](db-dao.md) - Зʼєднання з базою даних, прості запити, транзакції і робота зі схемою
-* **TBD** [Конструктор запитів](db-query-builder.md) - Запити до бази даних через простий шар абстракції
-* **TBD** [Active Record](db-active-record.md) - Отримання обʼєктів AR, робота з ними та визначення звʼязків
-* **TBD** [Міграції](db-migrations.md) - Контроль версій схеми даних при роботі в команді
+* **TBD** [Обʼєкти доступу до даних (DAO)](db-dao.md): Зʼєднання з базою даних, прості запити, транзакції і робота зі схемою
+* **TBD** [Конструктор запитів](db-query-builder.md): Запити до бази даних через простий шар абстракції
+* **TBD** [Active Record](db-active-record.md): Отримання обʼєктів AR, робота з ними та визначення звʼязків
+* **TBD** [Міграції](db-migrations.md): Контроль версій схеми даних при роботі в команді
 * [Sphinx](https://github.com/yiisoft/yii2-sphinx/blob/master/docs/guide/README.md)
 * [Redis](https://github.com/yiisoft/yii2-redis/blob/master/docs/guide/README.md)
 * [MongoDB](https://github.com/yiisoft/yii2-mongodb/blob/master/docs/guide/README.md)
@@ -126,7 +126,7 @@ All Rights Reserved.
 * **TBD** [HTTP кешування](caching-http.md)
 
 
-RESTful веб-сервіси
+Веб-сервіси RESTful
 -------------------
 
 * **TBD** [Швидкий старт](rest-quick-start.md)
@@ -135,7 +135,7 @@ RESTful веб-сервіси
 * **TBD** [Маршрутизація](rest-routing.md)
 * **TBD** [Форматування відповіді](rest-response-formatting.md)
 * **TBD** [Аутентифікація](rest-authentication.md)
-* **TBD** [Обмеження частоти запитів](rest-rate-limiting.md)
+* [Обмеження частоти запитів](rest-rate-limiting.md)
 * **TBD** [Версіонування](rest-versioning.md)
 * **TBD** [Обробка помилок](rest-error-handling.md)
 
@@ -171,7 +171,7 @@ RESTful веб-сервіси
 * **TBD** [Вдосконалення продуктивності](tutorial-performance-tuning.md)
 * **TBD** [Робота на віртуальному хостингу](tutorial-shared-hosting.md)
 * **TBD** [Шаблонізатори](tutorial-template-engines.md)
-* **TBD** [Робота із стороннім кодом](tutorial-yii-integration.md)
+* [Робота із стороннім кодом](tutorial-yii-integration.md)
 
 
 Віджети

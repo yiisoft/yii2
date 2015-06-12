@@ -110,7 +110,7 @@ class ActiveRecord extends BaseActiveRecord
      *
      * @param boolean $skipIfSet whether existing value should be preserved.
      * This will only set defaults for attributes that are `null`.
-     * @return static the model instance itself.
+     * @return $this the model instance itself.
      */
     public function loadDefaultValues($skipIfSet = true)
     {
@@ -143,9 +143,9 @@ class ActiveRecord extends BaseActiveRecord
      *
      * Below is an example:
      *
-     * ~~~
+     * ```php
      * $customers = Customer::findBySql('SELECT * FROM customer')->all();
-     * ~~~
+     * ```
      *
      * @param string $sql the SQL statement to be executed
      * @param array $params parameters to be bound to the SQL statement during execution.
@@ -192,9 +192,9 @@ class ActiveRecord extends BaseActiveRecord
      * Updates the whole table using the provided attribute values and conditions.
      * For example, to change the status to be 1 for all customers whose status is 2:
      *
-     * ~~~
+     * ```php
      * Customer::updateAll(['status' => 1], 'status = 2');
-     * ~~~
+     * ```
      *
      * @param array $attributes attribute values (name-value pairs) to be saved into the table
      * @param string|array $condition the conditions that will be put in the WHERE part of the UPDATE SQL.
@@ -214,9 +214,9 @@ class ActiveRecord extends BaseActiveRecord
      * Updates the whole table using the provided counter changes and conditions.
      * For example, to increment all customers' age by 1,
      *
-     * ~~~
+     * ```php
      * Customer::updateAllCounters(['age' => 1]);
-     * ~~~
+     * ```
      *
      * @param array $counters the counters to be updated (attribute name => increment value).
      * Use negative values if you want to decrement the counters.
@@ -245,9 +245,9 @@ class ActiveRecord extends BaseActiveRecord
      *
      * For example, to delete all customers whose status is 3:
      *
-     * ~~~
+     * ```php
      * Customer::deleteAll('status = 3');
-     * ~~~
+     * ```
      *
      * @param string|array $condition the conditions that will be put in the WHERE part of the DELETE SQL.
      * Please refer to [[Query::where()]] on how to specify this parameter.
@@ -337,7 +337,7 @@ class ActiveRecord extends BaseActiveRecord
      * in transactions. You can do so by overriding this method and returning the operations
      * that need to be transactional. For example,
      *
-     * ~~~
+     * ```php
      * return [
      *     'admin' => self::OP_INSERT,
      *     'api' => self::OP_INSERT | self::OP_UPDATE | self::OP_DELETE,
@@ -345,7 +345,7 @@ class ActiveRecord extends BaseActiveRecord
      *     // 'api' => self::OP_ALL,
      *
      * ];
-     * ~~~
+     * ```
      *
      * The above declaration specifies that in the "admin" scenario, the insert operation ([[insert()]])
      * should be done in a transaction; and in the "api" scenario, all the operations should be done
@@ -378,16 +378,17 @@ class ActiveRecord extends BaseActiveRecord
      *
      * This method performs the following steps in order:
      *
-     * 1. call [[beforeValidate()]] when `$runValidation` is true. If validation
-     *    fails, it will skip the rest of the steps;
-     * 2. call [[afterValidate()]] when `$runValidation` is true.
-     * 3. call [[beforeSave()]]. If the method returns false, it will skip the
-     *    rest of the steps;
+     * 1. call [[beforeValidate()]] when `$runValidation` is true. If [[beforeValidate()]]
+     *    returns `false`, the rest of the steps will be skipped;
+     * 2. call [[afterValidate()]] when `$runValidation` is true. If validation
+     *    failed, the rest of the steps will be skipped;
+     * 3. call [[beforeSave()]]. If [[beforeSave()]] returns `false`,
+     *    the rest of the steps will be skipped;
      * 4. insert the record into database. If this fails, it will skip the rest of the steps;
      * 5. call [[afterSave()]];
      *
      * In the above step 1, 2, 3 and 5, events [[EVENT_BEFORE_VALIDATE]],
-     * [[EVENT_BEFORE_INSERT]], [[EVENT_AFTER_INSERT]] and [[EVENT_AFTER_VALIDATE]]
+     * [[EVENT_AFTER_VALIDATE]], [[EVENT_BEFORE_INSERT]], and [[EVENT_AFTER_INSERT]]
      * will be raised by the corresponding methods.
      *
      * Only the [[dirtyAttributes|changed attribute values]] will be inserted into database.
@@ -397,15 +398,16 @@ class ActiveRecord extends BaseActiveRecord
      *
      * For example, to insert a customer record:
      *
-     * ~~~
+     * ```php
      * $customer = new Customer;
      * $customer->name = $name;
      * $customer->email = $email;
      * $customer->insert();
-     * ~~~
+     * ```
      *
-     * @param boolean $runValidation whether to perform validation before saving the record.
-     * If the validation fails, the record will not be inserted into the database.
+     * @param boolean $runValidation whether to perform validation (calling [[validate()]])
+     * before saving the record. Defaults to `true`. If the validation fails, the record
+     * will not be saved to the database and this method will return `false`.
      * @param array $attributes list of attributes that need to be saved. Defaults to null,
      * meaning all attributes that are loaded from DB will be saved.
      * @return boolean whether the attributes are valid and the record is inserted successfully.
@@ -470,43 +472,45 @@ class ActiveRecord extends BaseActiveRecord
      *
      * This method performs the following steps in order:
      *
-     * 1. call [[beforeValidate()]] when `$runValidation` is true. If validation
-     *    fails, it will skip the rest of the steps;
-     * 2. call [[afterValidate()]] when `$runValidation` is true.
-     * 3. call [[beforeSave()]]. If the method returns false, it will skip the
-     *    rest of the steps;
+     * 1. call [[beforeValidate()]] when `$runValidation` is true. If [[beforeValidate()]]
+     *    returns `false`, the rest of the steps will be skipped;
+     * 2. call [[afterValidate()]] when `$runValidation` is true. If validation
+     *    failed, the rest of the steps will be skipped;
+     * 3. call [[beforeSave()]]. If [[beforeSave()]] returns `false`,
+     *    the rest of the steps will be skipped;
      * 4. save the record into database. If this fails, it will skip the rest of the steps;
      * 5. call [[afterSave()]];
      *
      * In the above step 1, 2, 3 and 5, events [[EVENT_BEFORE_VALIDATE]],
-     * [[EVENT_BEFORE_UPDATE]], [[EVENT_AFTER_UPDATE]] and [[EVENT_AFTER_VALIDATE]]
+     * [[EVENT_AFTER_VALIDATE]], [[EVENT_BEFORE_UPDATE]], and [[EVENT_AFTER_UPDATE]]
      * will be raised by the corresponding methods.
      *
      * Only the [[dirtyAttributes|changed attribute values]] will be saved into database.
      *
      * For example, to update a customer record:
      *
-     * ~~~
+     * ```php
      * $customer = Customer::findOne($id);
      * $customer->name = $name;
      * $customer->email = $email;
      * $customer->update();
-     * ~~~
+     * ```
      *
      * Note that it is possible the update does not affect any row in the table.
      * In this case, this method will return 0. For this reason, you should use the following
      * code to check if update() is successful or not:
      *
-     * ~~~
-     * if ($this->update() !== false) {
+     * ```php
+     * if ($customer->update() !== false) {
      *     // update successful
      * } else {
      *     // update failed
      * }
-     * ~~~
+     * ```
      *
-     * @param boolean $runValidation whether to perform validation before saving the record.
-     * If the validation fails, the record will not be inserted into the database.
+     * @param boolean $runValidation whether to perform validation (calling [[validate()]])
+     * before saving the record. Defaults to `true`. If the validation fails, the record
+     * will not be saved to the database and this method will return `false`.
      * @param array $attributeNames list of attributes that need to be saved. Defaults to null,
      * meaning all attributes that are loaded from DB will be saved.
      * @return integer|boolean the number of rows affected, or false if validation fails

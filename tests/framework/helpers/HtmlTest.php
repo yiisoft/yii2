@@ -836,6 +836,13 @@ EOD;
                 ],
                 '<textarea id="htmltestmodel-description" name="HtmlTestModel[description]" maxlength="99">some text</textarea>',
             ],
+            [
+                'some text',
+                [
+                    'value' => 'override text'
+                ],
+                '<textarea id="htmltestmodel-description" name="HtmlTestModel[description]">override text</textarea>',
+            ],
         ];
     }
 

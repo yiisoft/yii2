@@ -119,6 +119,19 @@ class ActiveRecordTest extends DatabaseTestCase
         $this->assertEquals('user2', $customer->name);
     }
 
+    /**
+     * @depends testFindBySql
+     *
+     * @see https://github.com/yiisoft/yii2/issues/8593
+     */
+    public function testCountWithFindBySql()
+    {
+        $query = Customer::findBySql('SELECT * FROM {{customer}}');
+        $this->assertEquals(3, $query->count());
+        $query = Customer::findBySql('SELECT * FROM {{customer}} WHERE  [[id]]=:id', [':id' => 2]);
+        $this->assertEquals(1, $query->count());
+    }
+
     public function testFindLazyViaTable()
     {
         /* @var $order Order */

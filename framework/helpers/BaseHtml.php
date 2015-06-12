@@ -1331,7 +1331,12 @@ class BaseHtml
     public static function activeTextarea($model, $attribute, $options = [])
     {
         $name = isset($options['name']) ? $options['name'] : static::getInputName($model, $attribute);
-        $value = static::getAttributeValue($model, $attribute);
+        if (isset($options['value'])) {
+            $value = $options['value'];
+            unset($options['value']);
+        } else {
+            $value = static::getAttributeValue($model, $attribute);
+        }
         if (!array_key_exists('id', $options)) {
             $options['id'] = static::getInputId($model, $attribute);
         }
@@ -1796,10 +1801,10 @@ class BaseHtml
     {
         if (isset($options['class'])) {
             if (is_array($options['class'])) {
-                $options['class'] = self::mergeCssClasses($options['class'], (array)$class);
+                $options['class'] = self::mergeCssClasses($options['class'], (array) $class);
             } else {
                 $classes = preg_split('/\s+/', $options['class'], -1, PREG_SPLIT_NO_EMPTY);
-                $options['class'] = implode(' ', self::mergeCssClasses($classes, (array)$class));
+                $options['class'] = implode(' ', self::mergeCssClasses($classes, (array) $class));
             }
         } else {
             $options['class'] = $class;
@@ -1834,7 +1839,7 @@ class BaseHtml
     {
         if (isset($options['class'])) {
             if (is_array($options['class'])) {
-                $classes = array_diff($options['class'], (array)$class);
+                $classes = array_diff($options['class'], (array) $class);
                 if (empty($classes)) {
                     unset($options['class']);
                 } else {
@@ -1842,7 +1847,7 @@ class BaseHtml
                 }
             } else {
                 $classes = preg_split('/\s+/', $options['class'], -1, PREG_SPLIT_NO_EMPTY);
-                $classes = array_diff($classes, (array)$class);
+                $classes = array_diff($classes, (array) $class);
                 if (empty($classes)) {
                     unset($options['class']);
                 } else {
