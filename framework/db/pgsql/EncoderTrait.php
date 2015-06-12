@@ -15,6 +15,9 @@ trait EncoderTrait
      */
     public function arrayIntEncode($value)
     {
+        if (is_null($value)) {
+            return null;
+        }
         $data = array_map('intval', (array)$value);
         return '{'.implode(',', $data).'}';
     }
@@ -45,6 +48,9 @@ trait EncoderTrait
      */
     public function arrayTextEncode($value)
     {
+        if (is_null($value)) {
+            return null;
+        }
         return '{'.implode(',', (array)$value).'}';
     }
 
@@ -79,6 +85,9 @@ trait EncoderTrait
      */
     public function arrayNumericEncode($value)
     {
+        if (is_null($value)) {
+            return null;
+        }
         $value = (array)$value;
         foreach ($value as &$item) {
             $item = str_replace(',', '.', $item);

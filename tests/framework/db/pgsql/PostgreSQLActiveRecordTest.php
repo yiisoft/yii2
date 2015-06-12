@@ -190,6 +190,11 @@ class PostgreSQLActiveRecordTest extends ActiveRecordTest
         $this->assertTrue($question->save(false));
         $question->refresh();
         $this->assertEquals($tags, $question->tags);
+
+        $question->tags = null;
+        $this->assertTrue($question->save(false));
+        $question->refresh();
+        $this->assertEmpty($question->tags);
     }
 
     public function testIntegerArrayAttribute()

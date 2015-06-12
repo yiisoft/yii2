@@ -240,7 +240,7 @@ INSERT INTO "validator_ref" (id, a_field, ref) VALUES (6, 'ref_to_5', 5);
 CREATE TABLE "question" (
   id SERIAL NOT NULL PRIMARY KEY,
   title CHARACTER VARYING(60),
-  tags text[] NOT NULL DEFAULT '{}'::text[],
-  related integer[] NOT NULL DEFAULT '{}'::integer[],
-  points numeric[] NOT NULL DEFAULT '{}'::numeric[]
+  tags text[],
+  related integer[],
+  points numeric[]
 );
