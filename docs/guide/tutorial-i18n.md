@@ -55,23 +55,29 @@ you can use the following statement to change the target language:
 
 ## Message Translation <span id="message-translation"></span>
 
-Message translation is used to translate the messages that are output by an application to different languages
-so that users from different countries can use the application in their native language.
+Message translation service translates a text message from one language (usually the [[yii\base\Application::$sourceLanguage|source language]])
+to another (usually the [[yii\base\Application::$language|target language]]). It does the translation by looking
+up the message to be translated in a message source which stores the original messages and the translated messages.
+If the message is found, the corresponding translated message will be returned; otherwise the message will be returned
+untranslated.
 
-The message translation feature in Yii works simply as finding a
-translation of the message from a source language into a target language.
-To use the message translation feature you wrap your original message strings with a call to the [[Yii::t()]] method.
-The first parameter of this method takes a category which helps to distinguish the source of messages in different parts
-of the application and the second parameter is the message itself.
+To use message translation service, you mainly need to do the following work:
+
+* Wrap every text message that needs to be translated in a call to the [[Yii::t()]] method;
+* Configure one or multiple message sources in which the message translation service can look for translated messages;
+* Let the translators to translate messages and store them in the message source(s).
+
+The method [[Yii::t()]] can be used like the following,
 
 ```php
 echo \Yii::t('app', 'This is a string to translate!');
 ```
 
-Yii tries to load an appropriate translation according to the current [[yii\base\Application::$language|application language]]
-from one of the message sources defined in the `i18n` [application component](structure-application-components.md).
-A message source is a set of files or a database that provides translation messages.
-The following configuration example defines a messages source that takes the messages from PHP files:
+where the second parameter refers to the text message to be translated, while the first parameter refers to 
+the name of the category which is used to categorize the message. 
+
+The [[Yii::t()]] method will call the `i18n` [application component](structure-application-components.md) 
+to perform the actual translation work. The component can be configured in the application configuration as follows,
 
 ```php
 'components' => [
@@ -92,22 +98,20 @@ The following configuration example defines a messages source that takes the mes
 ],
 ```
 
-In the above `app*` is a pattern that specifies which categories are handled by the message source. In this case we're
-handling everything that begins with `app`. Message files are located in `@app/messages`, the `messages` directory
-in your application directory. The [[yii\i18n\PhpMessageSource::fileMap|fileMap]] array
-defines which file is to be used for which category.
-Instead of configuring `fileMap` you can rely on the convention which is to use the category name as the file name
-(e.g. category `app/error` will result in the file name `app/error.php` under the [[yii\i18n\PhpMessageSource::basePath|basePath]].
+In the above code, a message source supported by [[yii\i18n\PhpMessageSource]] is being configured. The pattern
+`app*` indicates that all message categories whose names start with `app` should be translated using this
+message source. The [[yii\i18n\PhpMessageSource]] class uses PHP files to store message translations. Each
+PHP file corresponds to the messages of a single category. By default, the file name should be the same as
+the category name. However, you may configure [[yii\i18n\PhpMessageSource::fileMap|fileMap]] to map a category
+to a PHP file with a different naming approach. In the above example, the category `app/error` is mapped to
+the PHP file `@app/messages/ru-RU/error.php` (assuming `ru-RU` is the target language). Without this configuration,
+the category would be mapped to `@app/messages/ru-RU/app/error.php`, instead.
 
-When translating the message for `\Yii::t('app', 'This is a string to translate!')` with the application language being `ru-RU`, Yii
-will first look for a file `@app/messages/ru-RU/app.php` to retrieve the list of available translations.
-If there is no such file under `ru-RU`, it will try `ru` as well before failing.
+Beside storing the messages in PHP files, you may also use the following message sources to store translated messages
+in different storage:
 
-Beside storing the messages in PHP files (using [[yii\i18n\PhpMessageSource|PhpMessageSource]]), Yii provides two other
-classes:
-
-- [[yii\i18n\GettextMessageSource]] that uses GNU Gettext MO or PO files.
-- [[yii\i18n\DbMessageSource]] that uses a database.
+- [[yii\i18n\GettextMessageSource]] uses GNU Gettext MO or PO files to maintain translated messages.
+- [[yii\i18n\DbMessageSource]] uses a database table to store translated messages.
 
 
 ### Named placeholders
