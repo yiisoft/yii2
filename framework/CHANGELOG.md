@@ -45,6 +45,7 @@ Yii Framework 2 Change Log
 - Enh #7566: Improved `\yii\validators\CompareValidator` default messages (slinstj)
 - Enh #7581: Added ability to specify range using anonymous function in `RangeValidator` (RomeroMsk)
 - Enh #8284: Added `\yii\captcha\CaptchaAction::$imageLibrary` property allowing to set image rendering library (AnatolyRugalev)
+- Enh #8329: Added support of options for `message` console command (vchenin)
 - Enh #8613: `yii\widgets\FragmentCache` will not store empty content anymore which fixes some problems related to `yii\filters\PageCache` (kidol)
 - Enh #8649: Added total applied migrations to final report (vernik91)
 - Enh #9282: Improved JSON error handling to support PHP 5.5 error codes (freezy-sk)
