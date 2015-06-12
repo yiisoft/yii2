@@ -26,7 +26,7 @@ Yii Framework 2 Change Log
 - Enh #7169: `yii\widgets\ActiveField` now uses corresponding methods for default parts rendering (klimov-paul)
 - Enh #8070: `yii\console\controllers\MessageController` now sorts created messages, even if there is no new one, while saving to PHP file (klimov-paul)
 - Enh #8286: `yii\console\controllers\MessageController` improved allowing extraction of nested translator calls (klimov-paul)
-- Enh #8329: Added support of console options for `yii\console\controllers\MessageController` (vchenin)
+- Enh #8329: Added support of options for `message` console command (vchenin)
 - Enh #8415: `yii\helpers\Html` allows correct rendering of conditional comments containing `!IE` (salaros, klimov-paul)
 - Enh #8444: Added `yii\widgets\LinkPager::$linkOptions` to allow configuring HTML attributes of the `a` tags (zinzinday)
 - Enh #8486: Added support to automatically set the `maxlength` attribute for `Html::activeTextArea()` and `Html::activePassword()` (klimov-paul)
