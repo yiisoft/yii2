@@ -1,6 +1,8 @@
 <?php
 namespace yii\db\pgsql;
 
+use Yii;
+
 /**
  * Trait contains methods to convert php arrays to PostgreSQL arrays and otherwise
  *
@@ -51,7 +53,13 @@ trait EncoderTrait
         if (is_null($value)) {
             return null;
         }
-        return '{'.implode(',', (array)$value).'}';
+        $value = (array)$value;
+        $schema = Yii::$app->getDb()->getSchema();
+        foreach ($value as &$item) {
+            $item = $schema->quoteValue(addcslashes($item, '{},"\''));
+        }
+        unset($item);
+        return '{'.implode(',', $value).'}';
     }
 
     /*
@@ -68,9 +76,11 @@ trait EncoderTrait
         if (!$data) {
             return [];
         }
-        $data = explode(',', $data);
+        $data = str_getcsv($data);
         foreach ($data as &$item) {
-            $item = trim($item, '"');
+            $item = stripslashes(trim($item, '\'"'));
+            // remove postgres duplicated single quote
+            $item = str_replace("''", "'", $item);
         }
         unset($item);
         return $data;

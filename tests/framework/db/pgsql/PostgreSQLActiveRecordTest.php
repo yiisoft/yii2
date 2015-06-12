@@ -18,6 +18,23 @@ class PostgreSQLActiveRecordTest extends ActiveRecordTest
 {
     protected $driverName = 'pgsql';
 
+    protected function setUp()
+    {
+        parent::setUp();
+        // load config to use db component
+        $config = self::getParam('databases')['pgsql'];
+        $this->mockApplication([
+            'components' => [
+                'db' => [
+                    'class' => '\yii\db\Connection',
+                    'dsn' => $config['dsn'],
+                    'username' => $config['username'],
+                    'password' => $config['password'],
+                ]
+            ]
+        ]);
+    }
+
     public function testBooleanAttribute()
     {
         /* @var $customerClass \yii\db\ActiveRecordInterface */
@@ -179,7 +196,19 @@ class PostgreSQLActiveRecordTest extends ActiveRecordTest
         $question->refresh();
         $this->assertEquals($tags, $question->tags);
 
+        $tags[] = 'creational pattern"s';
+        $question->tags = $tags;
+        $this->assertTrue($question->save(false));
+        $question->refresh();
+        $this->assertEquals($tags, $question->tags);
+
         $tags[] = "pattern's";
+        $question->tags = $tags;
+        $this->assertTrue($question->save(false));
+        $question->refresh();
+        $this->assertEquals($tags, $question->tags);
+
+        $tags[] = "behavioral pattern''s";
         $question->tags = $tags;
         $this->assertTrue($question->save(false));
         $question->refresh();
@@ -195,6 +224,18 @@ class PostgreSQLActiveRecordTest extends ActiveRecordTest
         $this->assertTrue($question->save(false));
         $question->refresh();
         $this->assertEmpty($question->tags);
+
+        $tags[] = "with ,";
+        $question->tags = $tags;
+        $this->assertTrue($question->save(false));
+        $question->refresh();
+        $this->assertEquals($tags, $question->tags);
+
+        $tags[] = "with {}";
+        $question->tags = $tags;
+        $this->assertTrue($question->save(false));
+        $question->refresh();
+        $this->assertEquals($tags, $question->tags);
     }
 
     public function testIntegerArrayAttribute()
@@ -227,6 +268,14 @@ class PostgreSQLActiveRecordTest extends ActiveRecordTest
 
         array_pop($points);
         $question->points = $points;
+        $this->assertTrue($question->save(false));
+        $question->refresh();
+        $this->assertEquals($points, $question->points);
+
+        $points[] = -2.24;
+        $storedPoints = $question->points;
+        $storedPoints[] = '-2,24';
+        $question->points = $storedPoints;
         $this->assertTrue($question->save(false));
         $question->refresh();
         $this->assertEquals($points, $question->points);

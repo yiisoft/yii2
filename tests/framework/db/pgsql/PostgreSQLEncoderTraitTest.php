@@ -12,6 +12,23 @@ class PostgreSQLEncoderTraitTest extends DatabaseTestCase
 {
     public $driverName = 'pgsql';
 
+    protected function setUp()
+    {
+        parent::setUp();
+        // load config to use db component
+        $config = self::getParam('databases')['pgsql'];
+        $this->mockApplication([
+            'components' => [
+                'db' => [
+                    'class' => '\yii\db\Connection',
+                    'dsn' => $config['dsn'],
+                    'username' => $config['username'],
+                    'password' => $config['password'],
+                ]
+            ]
+        ]);
+    }
+
     /**
      * @covers \yii\db\pgsql\EncoderTrait::arrayIntEncode
      */
@@ -36,7 +53,7 @@ class PostgreSQLEncoderTraitTest extends DatabaseTestCase
     public function testArrayTextEncode()
     {
         $schema = new ColumnSchema();
-        $this->assertEquals('{test 1,test2,test_3}', $schema->arrayTextEncode(['test 1', 'test2', 'test_3']));
+        $this->assertEquals("{'test 1','test2','test_3'}", $schema->arrayTextEncode(['test 1', 'test2', 'test_3']));
     }
 
     /**
@@ -45,7 +62,7 @@ class PostgreSQLEncoderTraitTest extends DatabaseTestCase
     public function testArrayTextDecode()
     {
         $schema = new ColumnSchema();
-        $this->assertEquals(['test 1', 'test2', 'test_3'], $schema->arrayTextDecode('{test 1,test2,test_3}'));
+        $this->assertEquals(['test 1', 'test2', 'test_3'], $schema->arrayTextDecode("{'test 1','test2','test_3'}"));
     }
 
     /**
