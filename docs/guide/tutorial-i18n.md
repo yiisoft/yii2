@@ -505,10 +505,10 @@ Once you're done with the config file you can finally extract your messages with
 ./yii message path/to/config.php
 ```
 
-You will then find your files (if you've choosen file based translations) in your `messagePath` directory.
+You will then find your files (if you've chosen file based translations) in your `messagePath` directory.
 
-Views
------
+
+## View Translation <span id="view-translation"></span>
 
 Instead of translating messages as described in the last section,
 you can also use `i18n` in your views to provide support for different languages. For example, if you have a view `views/site/index.php` and
@@ -520,30 +520,26 @@ and fall back to the original view file if none was found.
 > before using original ones.
 
 
-Formatting Number and Date values
----------------------------------
+## Formatting Date and Number Values <span id="date-number"></span>
 
 See the [data formatter section](output-formatting.md) for details.
 
 
-Setting up your PHP environment <span id="setup-environment"></span>
--------------------------------
 
-Yii uses the [PHP intl extension](http://php.net/manual/en/book.intl.php) to provide most of its internationalization features
-such as the number and date formatting of the [[yii\i18n\Formatter]] class and the message formatting using [[yii\i18n\MessageFormatter]].
-Both classes provides a fallback implementation that provides basic functionality in case `intl` is not installed.
-This fallback implementation however only works well for sites in English language and even there can not provide the
-rich set of features that is available with the PHP intl extension, so its installation is highly recommended.
+## Setting Up PHP environment <span id="setup-environment"></span>
+
+Yii uses the [PHP intl extension](http://php.net/manual/en/book.intl.php) to provide most of its I18N features,
+such as the date and number formatting of the [[yii\i18n\Formatter]] class and the message formatting using [[yii\i18n\MessageFormatter]].
+Both classes provide a fallback mechanism when the `intl` extension is not installed. However, the fallback implementation
+only works well for English target language. So it is highly recommended that you install `intl` when I18N is needed.
 
 The [PHP intl extension](http://php.net/manual/en/book.intl.php) is based on the [ICU library](http://site.icu-project.org/) which
-provides the knowledge and formatting rules for all the different locales. According to this fact the formatting of dates and numbers
-and also the supported syntax available for message formatting differs between different versions of the ICU library that is compiled with
-you PHP binary.
+provides the knowledge and formatting rules for all different locales. Different versions of ICU may produce different
+formatting result of date and number values. To ensure your website produces the same results across all environments,
+it is recommended that you install the same version of the `intl` extension (and thus the same version of ICU)
+in all environments.
 
-To ensure your website works with the same output in all environments it is recommended to install the PHP intl extension
-in all environments and verify that the version of the ICU library compiled with PHP is the same.
-
-To find out which version of ICU is used by PHP you can run the following script, which will give you the PHP and ICU version used.
+To find out which version of ICU is used by PHP, you can run the following script, which will give you the PHP and ICU version being used.
 
 ```php
 <?php
@@ -551,10 +547,10 @@ echo "PHP: " . PHP_VERSION . "\n";
 echo "ICU: " . INTL_ICU_VERSION . "\n";
 ```
 
-We recommend an ICU version greater or equal to version ICU 49 to be able to use all the features described in this document.
-One major feature that is missing in Versions below 49 is the `#` placeholder in plural rules.
-See <http://site.icu-project.org/download> for a list of available ICU versions. Note that the version numbering has changed after the
-4.8 release so that the first digits are now merged: the sequence is ICU 4.8, ICU 49, ICU 50.
+It is also recommended that you use an ICU version equal or greater than version 49. This will ensure you can use all the features
+described in this document. For example, an ICU version below 49 does not support using `#` placeholders in plural rules.
+Please refer to <http://site.icu-project.org/download> for a complete list of available ICU versions. Note that the version 
+numbering has changed after the 4.8 release (e.g., ICU 4.8, ICU 49, ICU 50, etc.)
 
 Additionally the information in the time zone database shipped with the ICU library may be outdated. Please refer
 to the [ICU manual](http://userguide.icu-project.org/datetime/timezone#TOC-Updating-the-Time-Zone-Data) for details
