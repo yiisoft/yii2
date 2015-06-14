@@ -408,6 +408,32 @@ class ActiveRecordTest extends DatabaseTestCase
         $this->assertTrue($orders[1]->isRelationPopulated('customer'));
         $this->assertTrue($orders[2]->isRelationPopulated('customer'));
 
+        // join with table alias
+        $orders = Order::find()->joinWith('customer as c')->orderBy('c.id DESC, order.id')->all();
+        $this->assertEquals(3, count($orders));
+        $this->assertEquals(2, $orders[0]->id);
+        $this->assertEquals(3, $orders[1]->id);
+        $this->assertEquals(1, $orders[2]->id);
+        $this->assertTrue($orders[0]->isRelationPopulated('customer'));
+        $this->assertTrue($orders[1]->isRelationPopulated('customer'));
+        $this->assertTrue($orders[2]->isRelationPopulated('customer'));
+
+        // join with table alias sub-relation
+        $orders = Order::find()->innerJoinWith([
+            'items as t' => function ($q) {
+                $q->orderBy('t.id');
+            },
+            'items.category as c' => function ($q) {
+                $q->where('{{c}}.[[id]] = 2');
+            },
+        ])->orderBy('order.id')->all();
+        $this->assertEquals(1, count($orders));
+        $this->assertTrue($orders[0]->isRelationPopulated('items'));
+        $this->assertEquals(2, $orders[0]->id);
+        $this->assertEquals(3, count($orders[0]->items));
+        $this->assertTrue($orders[0]->items[0]->isRelationPopulated('category'));
+        $this->assertEquals(2, $orders[0]->items[0]->category->id);
+
         // join with ON condition
         $orders = Order::find()->joinWith('books2')->orderBy('order.id')->all();
         $this->assertEquals(3, count($orders));

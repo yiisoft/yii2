@@ -394,6 +394,29 @@ class ActiveQuery extends Query implements ActiveQueryInterface
 
         foreach ($this->joinWith as $config) {
             list ($with, $eagerLoading, $joinType) = $config;
+            foreach ($with as $name => $callback) {
+                unset($with[$name]);
+                if (is_integer($name)) {
+                    $name = $callback;
+                    $callback = null;
+                }
+
+                if (preg_match('/^(.*?)(?i:\s+as|)\s+([^ ]+)$/', $name, $matches)) {
+                    list(, $name, $alias) = $matches;
+
+                    $callback = function($relation) use ($callback, $alias) {
+                        if ($callback !== null) {
+                            call_user_func($callback, $relation);
+                        }
+
+                        $modelClass = $relation->modelClass;
+                        $relation->from([$alias => $modelClass::tableName()]);
+                    };
+                }
+
+                $with[$name] = $callback;
+            }
+
             $this->joinWithRelations(new $this->modelClass, $with, $joinType);
 
             if (is_array($eagerLoading)) {
