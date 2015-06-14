@@ -107,6 +107,8 @@ As we described earlier, a fixture may depend on other fixtures. For example, a 
 because the user profile table contains a foreign key pointing to the user table.
 The dependency is specified via the [[yii\test\Fixture::depends]] property, like the following,
 
+如之前所述，一个Fixture可以依赖于其他的Fixture。比如一个`UserProfileFixture`可能需要依赖于`UserFixture`，因为user profile表包括一个指向user表的外键。那么，这个依赖关系可以通过[[yii\test\Fixture::depends]]属性来指定，比如如下：
+
 ```php
 namespace app\tests\fixtures;
 
@@ -123,12 +125,15 @@ The dependency also ensures, that the fixtures are loaded and unloaded in a well
 always be loaded before `UserProfileFixture` to ensure all foreign key references exist and will be unloaded after `UserProfileFixture`
 has been unloaded for the same reason.
 
+依赖关系确保所有的Fixtures能够以正常的顺序被加载和卸载。在以上的例子中，为确保外键存在，`UserFixture`会在`UserProfileFixture`之前加载，同样，也会在其卸载后同步卸载。
+
 In the above, we have shown how to define a fixture about a DB table. To define a fixture not related with DB
 (e.g. a fixture about certain files and directories), you may extend from the more general base class
 [[yii\test\Fixture]] and override the [[yii\test\Fixture::load()|load()]] and [[yii\test\Fixture::unload()|unload()]] methods.
 
+在上面，我们展示了如何定义一个DB表的Fixture。为了定义一个Fixture与DB无关的（比如一个fixture关于文件和路径的），你可以从一个更通用的基类[[yii\test\Fixture]]继承，并重写[[yii\test\Fixture::load()|load()]]和[[yii\test\Fixture::unload()|unload()]]方法。
 
-Using Fixtures
+使用Fixtures
 --------------
 
 If you are using [CodeCeption](http://codeception.com/) to test your code, you should consider using
@@ -136,10 +141,16 @@ the `yii2-codeception` extension which has built-in support for loading and acce
 If you are using other testing frameworks, you may use [[yii\test\FixtureTrait]] in your test cases
 to achieve the same goal.
 
+如果你使用[CodeCeption](http://codeception.com/)作为你的Yii代码测试框架，你同样也需要使用`yii2-codeception`扩展，这个扩展包含内置的机制来支持加载和访问Fixtures。如果你使用其他的测试框架，为了达到加载和访问Fixture的目的，你需要在你的测试用例中使用[[yii\test\FixtureTrait]]。
+
 In the following we will describe how to write a `UserProfile` unit test class using `yii2-codeception`.
+
+在以下示例中，我们会展示如何通过`yii2-codeception`写一个`UserProfile`单元来测试某个class。
 
 In your unit test class extending [[yii\codeception\DbTestCase]] or [[yii\codeception\TestCase]],
 declare which fixtures you want to use in the [[yii\test\FixtureTrait::fixtures()|fixtures()]] method. For example,
+
+在一个继承自[[yii\codeception\DbTestCase]]或者[[yii\codeception\TestCase]]的单元测试类中，在[[yii\test\FixtureTrait::fixtures()|fixtures()]]方法中声明你希望使用哪个Fixture。比如：
 
 ```php
 namespace app\tests\unit\models;
@@ -165,6 +176,8 @@ in the test case and unloaded after finishing every test method. And as we descr
 being loaded, all its dependent fixtures will be automatically loaded first. In the above example, because
 `UserProfileFixture` depends on `UserFixture`, when running any test method in the test class,
 two fixtures will be loaded sequentially: `UserFixture` and `UserProfileFixture`.
+
+在测试用例的每个测试方法运行前`fixtures()`方法列表返回的Fixture会被自动的加载，并在结束后自动的卸载。同样，如前面所述，当一个Fixture被加载之前，所以它的依赖Fixture也会被自动的加载。在上面的例子中，因为`UserProfileFixture`依赖于`UserFixtrue`，当运行测试类中的任意测试方法时，两个Fixture，`UserFixture`和`UserProfileFixture`会被依序加载。
 
 When specifying fixtures in `fixtures()`, you may use either a class name or a configuration array to refer to
 a fixture. The configuration array will let you customize the fixture properties when the fixture is loaded.
