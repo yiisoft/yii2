@@ -394,6 +394,8 @@ class ActiveQuery extends Query implements ActiveQueryInterface
 
         foreach ($this->joinWith as $config) {
             list ($with, $eagerLoading, $joinType) = $config;
+
+            // alias
             foreach ($with as $name => $callback) {
                 unset($with[$name]);
                 if (is_integer($name)) {
