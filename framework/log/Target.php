@@ -9,6 +9,7 @@ namespace yii\log;
 
 use Yii;
 use yii\base\Component;
+use yii\base\ErrorHandler;
 use yii\base\InvalidConfigException;
 use yii\helpers\VarDumper;
 use yii\web\Request;
@@ -238,11 +239,16 @@ abstract class Target extends Component
         list($text, $level, $category, $timestamp) = $message;
         $level = Logger::getLevelName($level);
         if (!is_string($text)) {
-            $text = VarDumper::export($text);
+            // exceptions may not be serializable if in the call stack somewhere is a Closure
+            if ($text instanceof \Exception) {
+                $text = (string) $text;
+            } else {
+                $text = VarDumper::export($text);
+            }
         }
         $traces = [];
         if (isset($message[4])) {
-            foreach($message[4] as $trace) {
+            foreach ($message[4] as $trace) {
                 $traces[] = "in {$trace['file']}:{$trace['line']}";
             }
         }

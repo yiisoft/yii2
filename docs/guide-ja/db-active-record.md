@@ -190,7 +190,7 @@ $customer = Customer::findOne([
 
 // アクティブでない全ての顧客を返す
 // SELECT * FROM `customer` WHERE `status` = 0
-$customer = Customer::findAll([
+$customers = Customer::findAll([
     'status' => Customer::STATUS_INACTIVE,
 ]);
 ```
@@ -409,6 +409,10 @@ $post->updateCounters(['view_count' => 1]);
 
 最新の修正を受ける前の属性値を知りたい場合は、[[yii\db\ActiveRecord::getOldAttributes()|getOldAttributes()]] または [[yii\db\ActiveRecord::getOldAttribute()|getOldAttribute()]] を呼ぶことが出来ます。
 
+> Note|注意: 新旧の値は `===` 演算子を使って比較されるため、同じ値を持っていても型が違うとダーティであると見なされます。
+> このことは、モデルが HTML フォームからユーザの入力を受け取るときにしばしば生じます。
+> HTML フォームでは全ての値が文字列として表現されるからです。
+> 入力値が正しい型、例えば整数値となることを保証するために、`['attributeName', 'filter', 'filter' => 'intval']` のように [検証フィルタ](input-validation.md#data-filtering) を適用することが出来ます。
 
 ### デフォルト属性値 <span id="default-attribute-values"></span>
 

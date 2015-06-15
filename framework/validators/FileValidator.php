@@ -367,49 +367,49 @@ class FileValidator extends Validator
 
         $options['skipOnEmpty'] = $this->skipOnEmpty;
 
-        if ( !$this->skipOnEmpty ) {
+        if (!$this->skipOnEmpty) {
             $options['uploadRequired'] = Yii::$app->getI18n()->format($this->uploadRequired, [
                 'attribute' => $label,
             ], Yii::$app->language);
         }
 
-        if ( $this->mimeTypes !== null ) {
+        if ($this->mimeTypes !== null) {
             $options['mimeTypes'] = $this->mimeTypes;
             $options['wrongMimeType'] = Yii::$app->getI18n()->format($this->wrongMimeType, [
                 'attribute' => $label,
-                'mimeTypes' => join(', ', $this->mimeTypes)
+                'mimeTypes' => join(', ', $this->mimeTypes),
             ], Yii::$app->language);
         }
 
-        if ( $this->extensions !== null ) {
+        if ($this->extensions !== null) {
             $options['extensions'] = $this->extensions;
             $options['wrongExtension'] = Yii::$app->getI18n()->format($this->wrongExtension, [
                 'attribute' => $label,
-                'extensions' => join(', ', $this->extensions)
+                'extensions' => join(', ', $this->extensions),
             ], Yii::$app->language);
         }
 
-        if ( $this->minSize !== null ) {
+        if ($this->minSize !== null) {
             $options['minSize'] = $this->minSize;
             $options['tooSmall'] = Yii::$app->getI18n()->format($this->tooSmall, [
                 'attribute' => $label,
-                'limit' => $this->minSize
+                'limit' => $this->minSize,
             ], Yii::$app->language);
         }
 
-        if ( $this->maxSize !== null ) {
+        if ($this->maxSize !== null) {
             $options['maxSize'] = $this->maxSize;
             $options['tooBig'] = Yii::$app->getI18n()->format($this->tooBig, [
                 'attribute' => $label,
-                'limit' => $this->maxSize
+                'limit' => $this->maxSize,
             ], Yii::$app->language);
         }
 
-        if ( $this->maxFiles !== null ) {
+        if ($this->maxFiles !== null) {
             $options['maxFiles'] = $this->maxFiles;
             $options['tooMany'] = Yii::$app->getI18n()->format($this->tooMany, [
                 'attribute' => $label,
-                'limit' => $this->maxFiles
+                'limit' => $this->maxFiles,
             ], Yii::$app->language);
         }
 

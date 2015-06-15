@@ -50,14 +50,14 @@ $form = ActiveForm::begin([
 <?php ActiveForm::end() ?>
 ```
 
-上記のコードでは、[[yii\widgets\ActiveForm::begin()|ActiveForm::begin()]] がフォームのインスタンスを作成するだけでなく、フォームの開始をマークしています。
+上記のコードでは、[[yii\widgets\ActiveForm::begin()|ActiveForm::begin()]] がフォームのインスタンスを作成するとともに、フォームの開始をマークしています。
 [[yii\widgets\ActiveForm::begin()|ActiveForm::begin()]] と [[yii\widgets\ActiveForm::end()|ActiveForm::end()]] の間に置かれた全てのコンテントが HTML の `<form>` タグによって囲まれます。
 どのウィジェットでも同じですが、ウィジェットをどのように構成すべきかに関するオプションを指定するために、`begin` メソッドに配列を渡すことが出来ます。
 この例では、追加の CSS クラスと要素を特定するための ID が渡されて、`<form>` の開始タグに適用されています。
-利用できるオプションはすべて [[yii\widgets\ActiveForm]] の API ドキュメントに記されていますので参照してください。
+利用できるオプションの全ては [[yii\widgets\ActiveForm]] の API ドキュメントに記されていますので参照してください。
 
 フォームの中では、フォームの要素を作成するために、ActiveForm ウィジェットの [[yii\widgets\ActiveForm::field()|ActiveForm::field()]] メソッドが呼ばれています。
-これは、フォームの要素だけでなく、そのラベルも作成し、適用できる JavaScript の検証メソッドがあれば、それも追加します。
+このメソッドは、フォームの要素だけでなく、そのラベルも作成し、適用できる JavaScript の検証メソッドがあれば、それも追加します。
 [[yii\widgets\ActiveForm::field()|ActiveForm::field()]] メソッドは、[[yii\widgets\ActiveField]] のインスタンスを返します。
 このメソッドの呼び出し結果を直接にエコーすると、結果は通常の (text の) インプットになります。
 このメソッドの呼び出しに追加の [[yii\widgets\ActiveField|ActiveField]] のメソッドをチェーンして、出力結果をカスタマイズすることが出来ます。
@@ -90,7 +90,7 @@ echo $form->field($model, 'items[]')->checkboxList(['a' => 'Item A', 'b' => 'Ite
 フォームに HTML タグを追加するためには、素の HTML を使うか、または、上記の例の [[yii\helpers\Html::submitButton()|Html::submitButton()]] のように、[[yii\helpers\Html|Html]] ヘルパクラスのメソッドを使うことが出来ます。
 
 > Tip|ヒント: あなたのアプリケーションで Twitter Bootstrap CSS を使っている場合は、[[yii\widgets\ActiveForm]] の代りに [[yii\bootstrap\ActiveForm]] を使うのが良いでしょう。
-> これは ActiveForm クラスの拡張であり、bootstrap CSS フレームワークで使用するための追加のスタイルをサポートしています。
+> 後者は前者の拡張であり、bootstrap CSS フレームワークで使用するための追加のスタイルをサポートしています。
 
 > tip|ヒント: 必須フィールドをアスタリスク付きのスタイルにするために、次の CSS を使うことが出来ます。
 >
@@ -106,5 +106,5 @@ echo $form->field($model, 'items[]')->checkboxList(['a' => 'Item A', 'b' => 'Ite
 フォームのもっと複雑な使用方法については、以下の節を読んで下さい。
 
 - [表形式インプットのデータ収集](input-tabular-input.md) - 同じ種類の複数のモデルのデータを収集する。
-- [複数のモデルを持つ複雑なフォーム](input-multiple-models.md) - 同じフォームの中で複数の異なるモデルを扱う。
+- [複数のモデルのデータを取得する](input-multiple-models.md) - 同じフォームの中で複数の異なるモデルを扱う。
 - [ファイルをアップロードする](input-file-upload.md) - フォームを使ってファイルをアップロードする方法。

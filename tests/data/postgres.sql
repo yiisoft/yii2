@@ -19,6 +19,7 @@ DROP TABLE IF EXISTS "constraints" CASCADE;
 DROP TABLE IF EXISTS "bool_values" CASCADE;
 DROP TABLE IF EXISTS "animal" CASCADE;
 DROP TABLE IF EXISTS "default_pk" CASCADE;
+DROP TABLE IF EXISTS "document" CASCADE;
 DROP VIEW IF EXISTS "animal_view";
 DROP SCHEMA IF EXISTS "schema1" CASCADE;
 DROP SCHEMA IF EXISTS "schema2" CASCADE;
@@ -33,6 +34,11 @@ CREATE TABLE "constraints"
 );
 
 CREATE TABLE "profile" (
+  id serial not null primary key,
+  description varchar(128) NOT NULL
+);
+
+CREATE TABLE "schema1"."profile" (
   id serial not null primary key,
   description varchar(128) NOT NULL
 );
@@ -98,7 +104,7 @@ CREATE TABLE "composite_fk" (
 );
 
 CREATE TABLE "null_values" (
-  id INT NOT NULL,
+  id serial NOT NULL,
   var1 INT NULL,
   var2 INT NULL,
   var3 INT DEFAULT NULL,
@@ -131,7 +137,6 @@ CREATE TABLE "bool_values" (
   default_false boolean not null default false
 );
 
-
 CREATE TABLE "animal" (
   id serial primary key,
   type varchar(255) not null
@@ -142,6 +147,13 @@ CREATE TABLE "default_pk" (
   type varchar(255) not null
 );
 
+CREATE TABLE "document" (
+  id serial primary key,
+  title varchar(255) not null,
+  content text not null,
+  version integer not null default 0
+);
+
 CREATE VIEW "animal_view" AS SELECT * FROM "animal";
 
 INSERT INTO "animal" (type) VALUES ('yiiunit\data\ar\Cat');
@@ -150,6 +162,9 @@ INSERT INTO "animal" (type) VALUES ('yiiunit\data\ar\Dog');
 
 INSERT INTO "profile" (description) VALUES ('profile customer 1');
 INSERT INTO "profile" (description) VALUES ('profile customer 3');
+
+INSERT INTO "schema1"."profile" (description) VALUES ('profile customer 1');
+INSERT INTO "schema1"."profile" (description) VALUES ('profile customer 3');
 
 INSERT INTO "customer" (email, name, address, status, bool_status, profile_id) VALUES ('user1@example.com', 'user1', 'address1', 1, true, 1);
 INSERT INTO "customer" (email, name, address, status, bool_status) VALUES ('user2@example.com', 'user2', 'address2', 1, true);
@@ -185,6 +200,8 @@ INSERT INTO "order_item_with_null_fk" (order_id, item_id, quantity, subtotal) VA
 INSERT INTO "order_item_with_null_fk" (order_id, item_id, quantity, subtotal) VALUES (2, 5, 1, 15.0);
 INSERT INTO "order_item_with_null_fk" (order_id, item_id, quantity, subtotal) VALUES (2, 3, 1, 8.0);
 INSERT INTO "order_item_with_null_fk" (order_id, item_id, quantity, subtotal) VALUES (3, 2, 1, 40.0);
+
+INSERT INTO "document" (title, content, version) VALUES ('Yii 2.0 guide', 'This is Yii 2.0 guide', 0);
 
 /**
  * (Postgres-)Database Schema for validator tests

@@ -641,9 +641,9 @@ class Formatter extends Component
         }
         try {
             if (is_numeric($value)) { // process as unix timestamp, which is always in UTC
-                if (($timestamp = DateTime::createFromFormat('U', $value, new DateTimeZone('UTC'))) === false) {
-                    throw new InvalidParamException("Failed to parse '$value' as a UNIX timestamp.");
-                }
+                $timestamp = new DateTime();
+                $timestamp->setTimezone(new DateTimeZone('UTC'));
+                $timestamp->setTimestamp($value);
                 return $checkTimeInfo ? [$timestamp, true] : $timestamp;
             } elseif (($timestamp = DateTime::createFromFormat('Y-m-d', $value, new DateTimeZone($this->defaultTimeZone))) !== false) { // try Y-m-d format (support invalid dates like 2012-13-01)
                 return $checkTimeInfo ? [$timestamp, false] : $timestamp;
@@ -658,7 +658,7 @@ class Formatter extends Component
             } else {
                 return new DateTime($value, new DateTimeZone($this->defaultTimeZone));
             }
-        } catch(\Exception $e) {
+        } catch (\Exception $e) {
             throw new InvalidParamException("'$value' is not a valid date time value: " . $e->getMessage()
                 . "\n" . print_r(DateTime::getLastErrors(), true), $e->getCode(), $e);
         }

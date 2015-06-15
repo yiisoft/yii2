@@ -3,7 +3,7 @@ Scripts de Entrada
 
 Scripts de entrada são o primeiro passo no processo de inicialização da aplicação.
 Uma aplicação (seja uma aplicação Web ou uma aplicação console) possui um único script de
-entrada. Os usuários finais fazem requisições a scripts de entrada que criam
+entrada. Os usuários finais fazem requisições nos scripts de entrada que criam
 as instâncias da aplicação e redirecionam as requisições para elas.
 
 Os scripts de entrada para aplicações Web devem estar armazenados em diretórios

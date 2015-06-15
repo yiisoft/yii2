@@ -10,7 +10,7 @@ to validate its input on the server side (Check the [Validating Input](input-val
 When creating model-based forms, the first step is to define the model itself. The model can be either based upon
 an [Active Record](db-active-record.md) class, representing some data from the database, or a generic Model class
 (extending from [[yii\base\Model]]) to capture arbitrary input, for example a login form.
-In the following example we show, how a generic Model is used for a login form:
+In the following example, we show how a generic model can be used for a login form:
 
 ```php
 <?php
@@ -74,7 +74,7 @@ To customize the output, you can chain additional methods of [[yii\widgets\Activ
 ```
 
 This will create all the `<label>`, `<input>` and other tags according to the [[yii\widgets\ActiveField::$template|template]] defined by the form field.
-The name of the input field is determined automatically from the model's [[yii\base\Model::formName()|form name]] and the attribute's name.
+The name of the input field is determined automatically from the model's [[yii\base\Model::formName()|form name]] and the attribute name.
 For example, the name for the input field for the `username` attribute in the above example will be `LoginForm[username]`. This naming rule will result in an array
 of all attributes for the login form to be available in `$_POST['LoginForm']` on the server side.
 
@@ -95,11 +95,11 @@ class like it is done in the above example with [[yii\helpers\Html::submitButton
 
 
 > Tip: If you are using Twitter Bootstrap CSS in your application you may want to use
-> [[yii\bootstrap\ActiveForm]] instead of [[yii\widgets\ActiveForm]], which is an extension of the
-> ActiveForm class that adds some additional styling that works well with the bootstrap CSS framework.
+> [[yii\bootstrap\ActiveForm]] instead of [[yii\widgets\ActiveForm]]. The former extends from the latter and
+> uses Bootstrap-specific styles when generating form input fields.
 
 
-> Tip: in order to style required fields with asterisk you can use the following CSS:
+> Tip: In order to style required fields with asterisks, you can use the following CSS:
 >
 > ```css
 > div.required label:after {
@@ -113,6 +113,6 @@ side as well as ajax- and client side validation.
 
 To read about more complex usage of forms, you may want to check out the following sections:
 
-- [Collecting tabular input](input-tabular-input.md) for collecting data for multiple models of the same kind.
-- [Complex Forms with Multiple Models](input-multiple-models.md) for handling multiple different models in the same form.
+- [Collecting Tabular Input](input-tabular-input.md) for collecting data for multiple models of the same kind.
+- [Getting Data for Multiple Models](input-multiple-models.md) for handling multiple different models in the same form.
 - [Uploading Files](input-file-upload.md) on how to use forms for uploading files.

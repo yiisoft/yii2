@@ -9,6 +9,7 @@ namespace yii\db\oci;
 
 use yii\base\InvalidCallException;
 use yii\db\Connection;
+use yii\db\Expression;
 use yii\db\TableSchema;
 use yii\db\ColumnSchema;
 
@@ -162,7 +163,7 @@ SQL;
      * Sequence name of table
      *
      * @param $tableName
-     * @internal param \yii\db\TableSchema $table ->name the table schema
+     * @internal param \yii\db\TableSchema $table->name the table schema
      * @return string whether the sequence exists
      */
     protected function getTableSequenceName($tableName)
@@ -425,9 +426,9 @@ SQL;
      */
     protected function extractColumnSize($column, $dbType, $precision, $scale, $length)
     {
-        $column->size = trim($length) == '' ? null : (int)$length;
-        $column->precision = trim($precision) == '' ? null : (int)$precision;
-        $column->scale = trim($scale) == '' ? null : (int)$scale;
+        $column->size = trim($length) == '' ? null : (int) $length;
+        $column->precision = trim($precision) == '' ? null : (int) $precision;
+        $column->scale = trim($scale) == '' ? null : (int) $scale;
     }
 
     /**
@@ -443,7 +444,7 @@ SQL;
         if (!empty($returnColumns)) {
             $columnSchemas = $tableSchema->columns;
             $returning = [];
-            foreach ((array)$returnColumns as $name) {
+            foreach ((array) $returnColumns as $name) {
                 $phName = QueryBuilder::PARAM_PREFIX . (count($params) + count($returnParams));
                 $returnParams[$phName] = [
                     'column' => $name,
@@ -464,7 +465,7 @@ SQL;
         $command->prepare(false);
 
         foreach ($returnParams as $name => &$value) {
-            $command->pdoStatement->bindParam($name, $value['value'], $value['dataType'], $value['size'] );
+            $command->pdoStatement->bindParam($name, $value['value'], $value['dataType'], $value['size']);
         }
 
         if (!$command->execute()) {
