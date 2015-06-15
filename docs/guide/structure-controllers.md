@@ -141,8 +141,8 @@ takes the default value `app\controllers`:
 
 Controller classes must be [autoloadable](concept-autoloading.md). For this reason, in the above examples,
 the `article` controller class should be saved in the file whose [alias](concept-aliases.md)
-is `@app/controllers/ArticleController.php`; while the `admin/post2-comment` controller should be
-in `@app/controllers/admin/Post2CommentController.php`.
+is `@app/controllers/ArticleController.php`; while the `admin/post-comment` controller should be
+in `@app/controllers/admin/PostCommentController.php`.
 
 > Info: The last example `admin/post2-comment` shows how you can put a controller under a sub-directory
   of the [[yii\base\Application::controllerNamespace|controller namespace]]. This is useful when you want
