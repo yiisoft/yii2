@@ -150,7 +150,7 @@ class CacheController extends Controller
         if (!$connection instanceof \yii\db\Connection) {
             $this->stdout("\"$db\" component doesn't inherit \\yii\\db\\Connection.\n", Console::FG_RED);
             return self::EXIT_CODE_ERROR;
-        } else if (!$this->confirm("Flush cache schema for \"$db\" connection?")) {
+        } elseif (!$this->confirm("Flush cache schema for \"$db\" connection?")) {
             return static::EXIT_CODE_NORMAL;
         }
 

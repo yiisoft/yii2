@@ -1,18 +1,13 @@
-Контроллеры
+Kontrolyor
 ===========
 
-Контроллеры являются частью [MVC](https://ru.wikipedia.org/wiki/Model-View-Controller) архитектуры. Это объекты классов, унаследованных
-от [[yii\base\Controller]], отвечающие за обработку запроса и генерирование ответа. В сущности, после обработки запроса [приложениями](structure-applications.md),
-контроллеры проанализируют входные данные, передадут их в [модели](structure-models.md), вставят результаты модели в [представления](structure-views.md),
-и в конечном итоге сгенерируют исходящие ответы.
+Kontrolyor [MVC](https://ru.wikipedia.org/wiki/Model-View-Controller) arxitekturasining bir qismi hisoblanadi. Bu [[yii\base\Controller]] klassidan voris qilib yaratilgan klass obyektlaridir, ushbu obyektlar so'rovlarni (request) qayta ishlash va javoblarni (response) tayyorlash uchun mo'ljallangan. [Ilova (application)](structure-applications.md) so'rovlarni qayta ishlagandan so'ng, so'rovlarga mos kontrolyor obyektlarini yaratadi va bu obyektlar kiruvchi ma'lumotlarni tahlil qiladi hamda ushbu ma'lumotlarni [model](structure-models.md)ga jo'natadi so'ng modeldan olingan natijalarni [namoyish (view)](structure-views.md)ga joylashtiradi va oxirgi natijani hosil qiladi.
 
+## Amallar <span id="actions"></span>
 
-## Действия <span id="actions"></span>
+Kontrolyorlar *amallar (action)*dan tashkil topadi, *amallar* asosiy bloklar hisoblanib, foydalanuvchilar amallarga murojaat qilishi mumkin va ma'lum buyruqlar bajarilib natija hosil qilinadi hamda natija foydalanuvchiga qaytariladi. Bitta kontrolyorda bitta va undan ortiq amal bo'lishi mumkin.
 
-Контроллеры состоят из *действий*, которые являются основными блоками, к которым может обращаться конечный пользователь и запрашивать исполнение того или иного
-функционала. В контроллере может быть одно или несколько действий.
-
-Следующий пример показывает `post` контроллер с двумя действиями: `view` и `create`:
+Quyidagi misolda ikkita amaldan (`view` va `create`) tashkil topgan `post` kontrolyori keltirilgan:
 
 ```php
 namespace app\controllers;
@@ -50,6 +45,7 @@ class PostController extends Controller
     }
 }
 ```
+
 
 В действии `view` (определенном методом `actionView()`), код сначала загружает [модель](structure-models.md)
 согласно запрошенному ID модели; Если модель успешно загружена, то код отобразит ее с помощью [представления](structure-views.md)
@@ -247,7 +243,7 @@ class SiteController extends Controller
 
 
 Встроенные действия в основном используются, потому что для их создания не нужного много усилий. Тем не менее, если вы планируете повторно
-использовать некоторые действия в различных местах, или если вы хотите перераспределить действия, вы должны определить его как *отдельное действие*.
+использовать некоторые действия в различных местах, или если вы хотите перераспределить действия, вы должны определить его как *отдельной действие*.
 
 
 ### Отдельные действия <span id="standalone-actions"></span>

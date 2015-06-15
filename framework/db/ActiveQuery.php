@@ -248,9 +248,14 @@ class ActiveQuery extends Query implements ActiveQueryInterface
         $pks = $class::primaryKey();
 
         if (count($pks) > 1) {
+            // composite primary key
             foreach ($models as $i => $model) {
                 $key = [];
                 foreach ($pks as $pk) {
+                    if (!isset($model[$pk])) {
+                        // do not continue if the primary key is not part of the result set
+                        break 2;
+                    }
                     $key[] = $model[$pk];
                 }
                 $key = serialize($key);
@@ -263,8 +268,13 @@ class ActiveQuery extends Query implements ActiveQueryInterface
         } elseif (empty($pks)) {
             throw new InvalidConfigException("Primary key of '{$class}' can not be empty.");
         } else {
+            // single column primary key
             $pk = reset($pks);
             foreach ($models as $i => $model) {
+                if (!isset($model[$pk])) {
+                    // do not continue if the primary key is not part of the result set
+                    break;
+                }
                 $key = $model[$pk];
                 if (isset($hash[$key])) {
                     unset($models[$i]);

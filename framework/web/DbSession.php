@@ -30,12 +30,13 @@ use yii\di\Instance;
  * ]
  * ~~~
  *
- * @property boolean $useCustomStorage Whether to use custom storage. This property is read-only.
+ * DbSession extends [[MultiFieldSession]], thus it allows saving extra fields into the [[sessionTable]].
+ * Refer to [[MultiFieldSession]] for more details.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */
-class DbSession extends Session
+class DbSession extends MultiFieldSession
 {
     /**
      * @var Connection|array|string the DB connection object or the application component ID of the DB connection.
@@ -86,16 +87,6 @@ class DbSession extends Session
     }
 
     /**
-     * Returns a value indicating whether to use custom session storage.
-     * This method overrides the parent implementation and always returns true.
-     * @return boolean whether to use custom storage.
-     */
-    public function getUseCustomStorage()
-    {
-        return true;
-    }
-
-    /**
      * Updates the current session ID with a newly generated one .
      * Please refer to <http://php.net/session_regenerate_id> for more details.
      * @param boolean $deleteOldSession Whether to delete the old associated session file or not.
@@ -112,7 +103,7 @@ class DbSession extends Session
         parent::regenerateID(false);
         $newID = session_id();
 
-        $query = new Query;
+        $query = new Query();
         $row = $query->from($this->sessionTable)
             ->where(['id' => $oldID])
             ->createCommand($this->db)
@@ -131,10 +122,8 @@ class DbSession extends Session
         } else {
             // shouldn't reach here normally
             $this->db->createCommand()
-                ->insert($this->sessionTable, [
-                    'id' => $newID,
-                    'expire' => time() + $this->getTimeout(),
-                ])->execute();
+                ->insert($this->sessionTable, $this->composeFields($newID, ''))
+                ->execute();
         }
     }
 
@@ -146,13 +135,16 @@ class DbSession extends Session
      */
     public function readSession($id)
     {
-        $query = new Query;
-        $data = $query->select(['data'])
-            ->from($this->sessionTable)
-            ->where('[[expire]]>:expire AND [[id]]=:id', [':expire' => time(), ':id' => $id])
-            ->createCommand($this->db)
-            ->queryScalar();
+        $query = new Query();
+        $query->from($this->sessionTable)
+            ->where('[[expire]]>:expire AND [[id]]=:id', [':expire' => time(), ':id' => $id]);
 
+        if (isset($this->readCallback)) {
+            $fields = $query->one($this->db);
+            return $fields === false ? '' : $this->extractData($fields);
+        }
+
+        $data = $query->select(['data'])->scalar($this->db);
         return $data === false ? '' : $data;
     }
 
@@ -168,23 +160,21 @@ class DbSession extends Session
         // exception must be caught in session write handler
         // http://us.php.net/manual/en/function.session-set-save-handler.php
         try {
-            $expire = time() + $this->getTimeout();
             $query = new Query;
             $exists = $query->select(['id'])
                 ->from($this->sessionTable)
                 ->where(['id' => $id])
                 ->createCommand($this->db)
                 ->queryScalar();
+            $fields = $this->composeFields($id, $data);
             if ($exists === false) {
                 $this->db->createCommand()
-                    ->insert($this->sessionTable, [
-                        'id' => $id,
-                        'data' => $data,
-                        'expire' => $expire,
-                    ])->execute();
+                    ->insert($this->sessionTable, $fields)
+                    ->execute();
             } else {
+                unset($fields['id']);
                 $this->db->createCommand()
-                    ->update($this->sessionTable, ['data' => $data, 'expire' => $expire], ['id' => $id])
+                    ->update($this->sessionTable, $fields, ['id' => $id])
                     ->execute();
             }
         } catch (\Exception $e) {

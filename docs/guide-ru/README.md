@@ -89,7 +89,7 @@ All Rights Reserved.
 * [Создание форм](input-forms.md)
 * [Валидация](input-validation.md)
 * [Загрузка файлов](input-file-upload.md)
-* **TBD** [Работа с несколькими моделями](input-multiple-models.md)
+* [Работа с несколькими моделями](input-multiple-models.md)
 
 
 Отображение данных
@@ -172,10 +172,10 @@ All Rights Reserved.
 
 * [Шаблон приложения advanced](tutorial-advanced-app.md)
 * **TBD** [Создание приложения с нуля](tutorial-start-from-scratch.md)
-* **TBD** [Консольные команды](tutorial-console.md)
+* [Консольные команды](tutorial-console.md)
 * [Интернационализация](tutorial-i18n.md)
 * **TBD** [Отправка почты](tutorial-mailing.md)
-* **TBD** [Улучшение производительности](tutorial-performance-tuning.md)
+* [Оптимизация производительности](tutorial-performance-tuning.md)
 * **TBD** [Работа на shared хостинге](tutorial-shared-hosting.md)
 * **TBD** [Шаблонизаторы](tutorial-template-engines.md)
 
@@ -201,6 +201,6 @@ All Rights Reserved.
 * **TBD** [Обзор](helper-overview.md)
 * [ArrayHelper](helper-array.md)
 * **TBD** [Html](helper-html.md)
-* **TBD** [Url](helper-url.md)
+* [Url хелпер](helper-url.md)
 * **TBD** [Security](helper-security.md)
 

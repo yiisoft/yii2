@@ -364,7 +364,7 @@ class PostSearch extends Post
             'query' => $query,
         ]);
 
-        // load the seach form data and validate
+        // load the search form data and validate
         if (!($this->load($params) && $this->validate())) {
             return $dataProvider;
         }

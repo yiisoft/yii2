@@ -18,6 +18,9 @@ Yii Framework 2 Change Log
 - Bug #8593: Fixed `yii\db\ActiveQuery` produces incorrect SQL for aggregations, when `sql` field is set (klimov-paul)
 - Bug #8595: Fixed `yii\rbac\DbManager::checkAccessFromCache()` to check against auth items loaded in cache recursively (achretien, qiangxue)
 - Bug #8606: Fixed `yii\web\Response::xSendFile()` does not reset format (vyants)
+- Bug #8627: Fixed `yii\db\Migration` produces incorrect results due to table schema caching (klimov-paul)
+- Bug #8661: Fixed `yii.activeForm.js` scrolling to top (nkovacs)
+- Bug #8772: ActiveQuery failed removing duplicate records after join when the resultset did not contain the pk values e.g. after grouping (cebe)
 - Bug: Fixed string comparison in `BaseActiveRecord::unlink()` which may result in wrong comparison result for hash valued primary keys starting with `0e` (cebe)
 - Bug: Pass correct action name to `yii\console\Controller::options()` when default action was requested (cebe)
 - Bug: Automatic garbage collection in `yii\caching\FileCache` was not triggered (kidol)
@@ -30,6 +33,8 @@ Yii Framework 2 Change Log
 - Enh #8486: Added support to automatically set the `maxlength` attribute for `Html::activeTextArea()` and `Html::activePassword()` (klimov-paul)
 - Enh #8566: Added support for 'only' and 'except' options for `yii\web\AssetManager::publish()` (klimov-paul)
 - Enh #8574: Added `yii\console\controllers\MessageController` support .pot file creation (pgaultier)
+- Enh #8625: Added `markUnused` option to `yii\console\controllers\MessageController` (marius7383)
+- Enh #8670: Added support for saving extra fields in session table for `yii\web\DbSession` (klimov-paul)
 - Chg #6354: `ErrorHandler::logException()` will now log the whole exception object instead of only its string representation (cebe)
 - Chg #8556: Extracted `yii\web\User::getAuthManager()` method (samdark)
 
