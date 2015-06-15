@@ -269,7 +269,8 @@ class Connection extends Component
         'mysql' => 'yii\db\mysql\Schema', // MySQL
         'sqlite' => 'yii\db\sqlite\Schema', // sqlite 3
         'sqlite2' => 'yii\db\sqlite\Schema', // sqlite 2
-        'sqlsrv' => 'yii\db\mssql\Schema', // newer MSSQL driver on MS Windows hosts
+        'sqlsrv' => 'yii\db\mssql\Schema', // newer MSSQL driver on MS Windows hosts,
+        'azuresql' => 'yii\db\mssql\AzureSchema', // Subclass of yii\db\mssql\Schema with fixes for Azure SQL DBs
         'oci' => 'yii\db\oci\Schema', // Oracle driver
         'mssql' => 'yii\db\mssql\Schema', // older MSSQL driver on MS Windows hosts
         'dblib' => 'yii\db\mssql\Schema', // dblib drivers on GNU/Linux (and maybe other OSes) hosts
