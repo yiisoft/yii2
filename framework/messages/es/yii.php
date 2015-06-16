@@ -26,6 +26,7 @@ return [
     'Home' => 'Inicio',
     'Invalid data received for parameter "{param}".' => 'Se recibieron datos erróneos para el parámetro "{param}"',
     'Login Required' => 'Login Requerido',
+    'Method Not Allowed. This url can only handle the following request methods: {method}.'=>'Método no permitido. Esta url sólo puede manejar los siguientes métodos de petición: {method}.',
     'Missing required arguments: {params}' => 'Argumentos requeridos ausentes: {params}',
     'Missing required parameters: {params}' => 'Parámetros requeridos ausentes: {params}',
     'No' => 'No',
