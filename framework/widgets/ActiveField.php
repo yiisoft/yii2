@@ -14,6 +14,7 @@ use yii\helpers\ArrayHelper;
 use yii\helpers\Html;
 use yii\base\Model;
 use yii\web\JsExpression;
+use yii\base\InvalidParamException;
 
 /**
  * ActiveField represents a form input field within an [[ActiveForm]].
@@ -176,6 +177,7 @@ class ActiveField extends Component
      * ~~~
      *
      * @return string the rendering result
+     * @throws InvalidParamException if $content is neither a string, a callable or null
      */
     public function render($content = null)
     {
@@ -193,7 +195,12 @@ class ActiveField extends Component
                 $this->hint(null);
             }
             $content = strtr($this->template, $this->parts);
-        } elseif (!is_string($content) && is_callable($content)) {
+        } elseif (!is_string($content)) {
+            if (!is_callable($content)) {
+                throw new InvalidParamException(
+                    'The $content parameter of ' . __METHOD__ . '() MUST be either null, a string or a callable!'
+                );
+            }
             $content = call_user_func($content, $this);
         }
 
