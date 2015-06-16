@@ -97,6 +97,10 @@ class DbManager extends BaseManager
      * @var array auth item parent-child relationships (childName => list of parents)
      */
     protected $parents;
+    /**
+     * @var array auth assignments (userId => list of assignments)
+     */
+    protected $assignments;
 
     /**
      * Initializes the application component.
@@ -619,20 +623,23 @@ class DbManager extends BaseManager
             return [];
         }
 
-        $query = (new Query)
-            ->from($this->assignmentTable)
-            ->where(['user_id' => (string) $userId]);
+        if (!isset($this->assignments[$userId])) {
+            $query = (new Query)
+                ->from($this->assignmentTable)
+                ->where(['user_id' => (string) $userId]);
 
-        $assignments = [];
-        foreach ($query->all($this->db) as $row) {
-            $assignments[$row['item_name']] = new Assignment([
-                'userId' => $row['user_id'],
-                'roleName' => $row['item_name'],
-                'createdAt' => $row['created_at'],
-            ]);
+            $assignments = [];
+            foreach ($query->all($this->db) as $row) {
+                $assignments[$row['item_name']] = new Assignment([
+                    'userId' => $row['user_id'],
+                    'roleName' => $row['item_name'],
+                    'createdAt' => $row['created_at'],
+                ]);
+            }
+            $this->assignments[$userId] = $assignments;
         }
 
-        return $assignments;
+        return $this->assignments[$userId];
     }
 
     /**
