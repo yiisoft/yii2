@@ -1,37 +1,18 @@
 Fixtures
 ========
 
-Fixtures are an important part of testing. Their main purpose is to set up the environment in a fixed/known state
-so that your tests are repeatable and run in an expected way. Yii provides a fixture framework that allows
-you to define your fixtures precisely and use them easily.
-
 Fixtures是测试中非常重要的一部分。它们的主要目的是将测试环境配置成一个已知的状态，这样你的测试可以不断重复，并以一种期望的方式运行。Yii提供一个简单可用的Fixure框架允许你精确的定义你的Fixtures。
 
-A key concept in the Yii fixture framework is the so-called *fixture object*. A fixture object represents
-a particular aspect of a test environment and is an instance of [[yii\test\Fixture]] or its child class. For example,
-you may use `UserFixture` to make sure the user DB table contains a fixed set of data. You load one or multiple
-fixture objects before running a test and unload them when finishing.
+Yii的Fixture框架的核心概念称之为*fixture object*。一个Fixture object 代表一个测试环境的某个特定方面，它是[[yii\test\Fixture]]或者其子类的实例。比如，你可以使用`UserFixture`来确保用户DB表包含固定的数据。你在运行一个测试之前加载一个或者多个fixture object，并在结束后卸载他们。
 
-Yii的fixture框架的核心概念称之为*fixture object*。一个Fixture object 代表一个测试环境的某个特定方面，它是[[yii\test\Fixture]]或者其子类的实例。比如，你可以使用`UserFixture`来确认用户DB表包含固定的数据。你在运行一个测试之前加载一个或者多个fixture object，并在结束后卸载他们。
-
-A fixture may depend on other fixtures, specified via its [[yii\test\Fixture::depends]] property.
-When a fixture is being loaded, the fixtures it depends on will be automatically loaded BEFORE the fixture;
-and when the fixture is being unloaded, the dependent fixtures will be unloaded AFTER the fixture.
-
-一个Fixture可能依赖于其他的Fixtures，通过它的[[yii\test\Fixture::depends]]来指定。当一个Fixture被加载前，它依赖的Fixture会被自动的加载；同样，当某个Fixture被卸载后，它的依赖Fixtures也会被自动的卸载。
+一个Fixture可能依赖于其他的Fixtures，通过它的[[yii\test\Fixture::depends]]来指定。当一个Fixture被加载前，它依赖的Fixture会被自动的加载；同样，当某个Fixture被卸载后，它依赖的Fixtures也会被自动的卸载。
 
 定义一个Fixture
 ------------------
 
-To define a fixture, create a new class by extending [[yii\test\Fixture]] or [[yii\test\ActiveFixture]].
-The former is best suited for general purpose fixtures, while the latter has enhanced features specifically
-designed to work with database and ActiveRecord.
+为了定义一个Fixture，你需要创建一个新的class继承自[[yii\test\Fixture]]或者[[yii\test\ActiveFixture]]。前一个类对于一般用途的Fixture比较适合，而后者则有一些增强功能专用于与数据库和ActiveRecord一起协作。
 
-为了定义一个Fixture，你需要创建一个新的class继承自[[yii\test\Fixture]] or [[yii\test\ActiveFixture]]。前一个类对于一般目的的Fixtures比较适合，而后者则有一些增强功能专用于与数据库和ActiveRecord一起协作。
-
-The following code defines a fixture about the `User` ActiveRecord and the corresponding user table.
-
-下面的代码定义一个关于`User`ActiveRecord的Fixture，并与用户表相关联。
+下面的代码定义一个关于`User`ActiveRecord和相关的用户表的Fixture：
 
 	<?php
 	namespace app\tests\fixtures;
@@ -43,30 +24,12 @@ The following code defines a fixture about the `User` ActiveRecord and the corre
 	    public $modelClass = 'app\models\User';
 	}
 
-
-> Tip: Each `ActiveFixture` is about preparing a DB table for testing purpose. You may specify the table
-> by setting either the [[yii\test\ActiveFixture::tableName]] property or the [[yii\test\ActiveFixture::modelClass]]
-> property. If the latter, the table name will be taken from the `ActiveRecord` class specified by `modelClass`.
-
-> Note: [[yii\test\ActiveFixture]] is only suited for SQL databases. For NoSQL databases, Yii provides the following
-> `ActiveFixture` classes:
->
-> - Mongo DB: [[yii\mongodb\ActiveFixture]]
-> - Elasticsearch: [[yii\elasticsearch\ActiveFixture]] (since version 2.0.2)
-
 > Tip：每个`ActiveFixture`都会准备一个DB表用来测试。你可以通过设置[[yii\test\ActiveFixture::tableName]]或[[yii\test\ActiveFixture::modelClass]]属性来指定具体的表。如果是后者，表名会从`modleClass`指定的`ActiveRecord`中获取。
 
 > Note：[[yii\test\ActiveFixture]]仅限于SQL数据库，对于NoSQL数据库，Yii提供以下`ActiveFixture`类：
 >
 > - Mongo DB: [[yii\mongodb\ActiveFixture]]
 > - Elasticsearch: [[yii\elasticsearch\ActiveFixture]] (since version 2.0.2)
-
-The fixture data for an `ActiveFixture` fixture is usually provided in a file located at `FixturePath/data/TableName.php`,
-where `FixturePath` stands for the directory containing the fixture class file, and `TableName`
-is the name of the table associated with the fixture. In the example above, the file should be
-`@app/tests/fixtures/data/user.php`. The data file should return an array of data rows
-to be inserted into the user table. For example,
-
 
 提供给`ActiveFixture`的fixture data通常放在一个路径为`FixturePath/data/TableName.php`的文件中,其中`FixturePath`代表Fixture类所在的路径，`TableName`则是和Fixture关联的表。在以上的例子中，这个文件应该是`@app/tests/fixtures/data/user.php`。data文件返回一个包含要被插入用户表中的数据文件，比如：
 
@@ -87,210 +50,162 @@ to be inserted into the user table. For example,
 	];
 
 
-You may give an alias to a row so that later in your test, you may refer to the row via the alias. In the above example,
-the two rows are aliased as `user1` and `user2`, respectively.
-
 你可以给某行指定一个alias别名，这样在你以后的测试中，你可以通过别名来确定某行。在上面的例子中，这两行指定别名为`user1`和`user2`。
 
-Also, you do not need to specify the data for auto-incremental columns. Yii will automatically fill the actual
-values into the rows when the fixture is being loaded.
-
 同样，你不需要特别的为自动增长（auto-incremental）的列指定数据，Yii将会在Fixture被加载时自动的填充正确的值到这些行中。
-
-> Tip: You may customize the location of the data file by setting the [[yii\test\ActiveFixture::dataFile]] property.
-> You may also override [[yii\test\ActiveFixture::getData()]] to provide the data.
 
 > Tip：你可以通过设置[[yii\test\ActiveFixture::dataFile]]属性来自定义data文件的位置。
 > 同样，你可以重写[[yii\test\ActiveFixture::getData()]]来提供数据。
 
-As we described earlier, a fixture may depend on other fixtures. For example, a `UserProfileFixture` may need to depends on `UserFixture`
-because the user profile table contains a foreign key pointing to the user table.
-The dependency is specified via the [[yii\test\Fixture::depends]] property, like the following,
-
 如之前所述，一个Fixture可以依赖于其他的Fixture。比如一个`UserProfileFixture`可能需要依赖于`UserFixture`，因为user profile表包括一个指向user表的外键。那么，这个依赖关系可以通过[[yii\test\Fixture::depends]]属性来指定，比如如下：
 
-```php
-namespace app\tests\fixtures;
+	namespace app\tests\fixtures;
+	
+	use yii\test\ActiveFixture;
+	
+	class UserProfileFixture extends ActiveFixture
+	{
+	    public $modelClass = 'app\models\UserProfile';
+	    public $depends = ['app\tests\fixtures\UserFixture'];
+	}
 
-use yii\test\ActiveFixture;
-
-class UserProfileFixture extends ActiveFixture
-{
-    public $modelClass = 'app\models\UserProfile';
-    public $depends = ['app\tests\fixtures\UserFixture'];
-}
-```
-
-The dependency also ensures, that the fixtures are loaded and unloaded in a well defined order. In the above example `UserFixture` will
-always be loaded before `UserProfileFixture` to ensure all foreign key references exist and will be unloaded after `UserProfileFixture`
-has been unloaded for the same reason.
 
 依赖关系确保所有的Fixtures能够以正常的顺序被加载和卸载。在以上的例子中，为确保外键存在，`UserFixture`会在`UserProfileFixture`之前加载，同样，也会在其卸载后同步卸载。
-
-In the above, we have shown how to define a fixture about a DB table. To define a fixture not related with DB
-(e.g. a fixture about certain files and directories), you may extend from the more general base class
-[[yii\test\Fixture]] and override the [[yii\test\Fixture::load()|load()]] and [[yii\test\Fixture::unload()|unload()]] methods.
 
 在上面，我们展示了如何定义一个DB表的Fixture。为了定义一个Fixture与DB无关的（比如一个fixture关于文件和路径的），你可以从一个更通用的基类[[yii\test\Fixture]]继承，并重写[[yii\test\Fixture::load()|load()]]和[[yii\test\Fixture::unload()|unload()]]方法。
 
 使用Fixtures
 --------------
 
-If you are using [CodeCeption](http://codeception.com/) to test your code, you should consider using
-the `yii2-codeception` extension which has built-in support for loading and accessing fixtures.
-If you are using other testing frameworks, you may use [[yii\test\FixtureTrait]] in your test cases
-to achieve the same goal.
-
-如果你使用[CodeCeption](http://codeception.com/)作为你的Yii代码测试框架，你同样也需要使用`yii2-codeception`扩展，这个扩展包含内置的机制来支持加载和访问Fixtures。如果你使用其他的测试框架，为了达到加载和访问Fixture的目的，你需要在你的测试用例中使用[[yii\test\FixtureTrait]]。
-
-In the following we will describe how to write a `UserProfile` unit test class using `yii2-codeception`.
+如果你使用[CodeCeption](http://codeception.com/)作为你的Yii代码测试框架，你需要考虑使用`yii2-codeception`扩展，这个扩展包含内置的机制来支持加载和访问Fixtures。如果你使用其他的测试框架，为了达到加载和访问Fixture的目的，你需要在你的测试用例中使用[[yii\test\FixtureTrait]]。
 
 在以下示例中，我们会展示如何通过`yii2-codeception`写一个`UserProfile`单元来测试某个class。
 
-In your unit test class extending [[yii\codeception\DbTestCase]] or [[yii\codeception\TestCase]],
-declare which fixtures you want to use in the [[yii\test\FixtureTrait::fixtures()|fixtures()]] method. For example,
+在一个继承自[[yii\codeception\DbTestCase]]或者[[yii\codeception\TestCase]]的单元测试类中，你可以在[[yii\test\FixtureTrait::fixtures()|fixtures()]]方法中声明你希望使用哪个Fixture。比如：
 
-在一个继承自[[yii\codeception\DbTestCase]]或者[[yii\codeception\TestCase]]的单元测试类中，在[[yii\test\FixtureTrait::fixtures()|fixtures()]]方法中声明你希望使用哪个Fixture。比如：
+	namespace app\tests\unit\models;
+	
+	use yii\codeception\DbTestCase;
+	use app\tests\fixtures\UserProfileFixture;
+	
+	class UserProfileTest extends DbTestCase
+	{
+	    public function fixtures()
+	    {
+	        return [
+	            'profiles' => UserProfileFixture::className(),
+	        ];
+	    }
+	
+	    // ...test methods...
+	}
 
-```php
-namespace app\tests\unit\models;
+在测试用例的每个测试方法运行前`fixtures()`方法列表返回的Fixture会被自动的加载，并在结束后自动的卸载。同样，如前面所述，当一个Fixture被加载之前，所有它依赖的Fixture也会被自动的加载。在上面的例子中，因为`UserProfileFixture`依赖于`UserFixtrue`，当运行测试类中的任意测试方法时，两个Fixture，`UserFixture`和`UserProfileFixture`会被依序加载。
 
-use yii\codeception\DbTestCase;
-use app\tests\fixtures\UserProfileFixture;
+当我们通过`fixtures()`方法指定需要加载的Fixture时，我们既可以使用一个类名，也可以使用一个配置数组。配置素质可以让你自定义加载的fixture的属性名。
 
-class UserProfileTest extends DbTestCase
-{
-    public function fixtures()
-    {
-        return [
-            'profiles' => UserProfileFixture::className(),
-        ];
-    }
+你同样可以给一个Fixture指定一个别名（alias），在上面的例子中，`UserProfileFixture`的别名为`profiles`。在测试方法中，你可以通过别名来访问一个Fixture对象。比如，`$this->profiles`将会返回`UserProfileFixture`对象。
 
-    // ...test methods...
-}
-```
+因为`UserProfileFixture`从`ActiveFixture`处继承，在后面，你可以通过如下的语法形式来访问Fixture提供的数据：
 
-The fixtures listed in the `fixtures()` method will be automatically loaded before running every test method
-in the test case and unloaded after finishing every test method. And as we described before, when a fixture is
-being loaded, all its dependent fixtures will be automatically loaded first. In the above example, because
-`UserProfileFixture` depends on `UserFixture`, when running any test method in the test class,
-two fixtures will be loaded sequentially: `UserFixture` and `UserProfileFixture`.
+	// returns the data row aliased as 'user1'
+	$row = $this->profiles['user1'];
+	// returns the UserProfile model corresponding to the data row aliased as 'user1'
+	$profile = $this->profiles('user1');
+	// traverse every data row in the fixture
+	foreach ($this->profiles as $row) ...
 
-在测试用例的每个测试方法运行前`fixtures()`方法列表返回的Fixture会被自动的加载，并在结束后自动的卸载。同样，如前面所述，当一个Fixture被加载之前，所以它的依赖Fixture也会被自动的加载。在上面的例子中，因为`UserProfileFixture`依赖于`UserFixtrue`，当运行测试类中的任意测试方法时，两个Fixture，`UserFixture`和`UserProfileFixture`会被依序加载。
-
-When specifying fixtures in `fixtures()`, you may use either a class name or a configuration array to refer to
-a fixture. The configuration array will let you customize the fixture properties when the fixture is loaded.
-
-You may also assign an alias to a fixture. In the above example, the `UserProfileFixture` is aliased as `profiles`.
-In the test methods, you may then access a fixture object using its alias. For example, `$this->profiles` will
-return the `UserProfileFixture` object.
-
-Because `UserProfileFixture` extends from `ActiveFixture`, you may further use the following syntax to access
-the data provided by the fixture:
-
-```php
-// returns the data row aliased as 'user1'
-$row = $this->profiles['user1'];
-// returns the UserProfile model corresponding to the data row aliased as 'user1'
-$profile = $this->profiles('user1');
-// traverse every data row in the fixture
-foreach ($this->profiles as $row) ...
-```
-
-> Info: `$this->profiles` is still of `UserProfileFixture` type. The above access features are implemented
-> through PHP magic methods.
+> 注：`$this->profiles`的类型仍为`UserProfileFixture`，以上的例子是通过PHP魔术方法来实现的。
 
 
-Defining and Using Global Fixtures
+定义和使用全局Fixtures
 ----------------------------------
 
-The fixtures described above are mainly used by individual test cases. In most cases, you also need some global
-fixtures that are applied to ALL or many test cases. An example is [[yii\test\InitDbFixture]] which does
-two things:
+以上示例的Fixture主要用于单个的测试用例，在许多情况下，你需要使用一些全局的Fixture来让所有或者大量的测试用例使用。[[yii\test\InitDbFixture]]就是这样的一个例子，它主要做两个事情：
 
-* Perform some common initialization tasks by executing a script located at `@app/tests/fixtures/initdb.php`;
-* Disable the database integrity check before loading other DB fixtures, and re-enable it after other DB fixtures are unloaded.
+* 它通过执行在`@app/tests/fixtures/initdb.php`里的脚本来做一些通用的初始化任务；
+* 在加载其他的DB Fixture之前禁用数据库完整性校验，同时在其他的DB Fixture卸载后启用数据库完整性校验。
 
-Using global fixtures is similar to using non-global ones. The only difference is that you declare these fixtures
-in [[yii\codeception\TestCase::globalFixtures()]] instead of `fixtures()`. When a test case loads fixtures, it will
-first load global fixtures and then non-global ones.
+全局的Fixture和非全局的用法类似，唯一的区别是你在[[yii\codeception\TestCase::globalFixtures()]]中声明它，而非`fixtures()`。当一个测试用例加载Fixture时，它首先加载全局的Fixture，然后才是非全局的。
 
 By default, [[yii\codeception\DbTestCase]] already declares `InitDbFixture` in its `globalFixtures()` method.
 This means you only need to work with `@app/tests/fixtures/initdb.php` if you want to do some initialization work
 before each test. You may otherwise simply focus on developing each individual test case and the corresponding fixtures.
 
+[[yii\codeception\DbTestCase]]默认已经在其`globalFixtures()`方法中声明了`InitDbFixture`，这意味着如果你想要在每个测试之前执行一些初始化工作，你只需要调整`@app/tests/fixtures/initdb.php`中的代码即可。你只需要简单的集中精力中开发单个的测试用例和相关的Fixture。
 
-Organizing Fixture Classes and Data Files
+
+组织Fixture类和相关的数据文件
 -----------------------------------------
 
-By default, fixture classes look for the corresponding data files under the `data` folder which is a sub-folder
-of the folder containing the fixture class files. You can follow this convention when working with simple projects.
-For big projects, chances are that you often need to switch different data files for the same fixture class for
-different tests. We thus recommend that you organize the data files in a hierarchical way that is similar to
-your class namespaces. For example,
+默认情况下，Fixture类会在其所在的目录下面的`data`子目录寻找相关的数据文件。在一些简单的项目中，你可以遵循此范例。对于一些大项目，你经常性的需要为不同的测试，不同的Fixture切换不同的数据文件。在这种情况下，我们推荐你按照一种类似于命名空间的方式有层次地组织你的数据文件，比如：
 
-```
-# under folder tests\unit\fixtures
+	# under folder tests\unit\fixtures
 
-data\
-    components\
-        fixture_data_file1.php
-        fixture_data_file2.php
-        ...
-        fixture_data_fileN.php
-    models\
-        fixture_data_file1.php
-        fixture_data_file2.php
-        ...
-        fixture_data_fileN.php
-# and so on
-```
-
-In this way you will avoid collision of fixture data files between tests and use them as you need.
-
-> Note: In the example above fixture files are named only for example purpose. In real life you should name them
-> according to which fixture class your fixture classes are extending from. For example, if you are extending
-> from [[yii\test\ActiveFixture]] for DB fixtures, you should use DB table names as the fixture data file names;
-> If you are extending from [[yii\mongodb\ActiveFixture]] for MongoDB fixtures, you should use collection names as the file names.
-
-The similar hierarchy can be used to organize fixture class files. Instead of using `data` as the root directory, you may
-want to use `fixtures` as the root directory to avoid conflict with the data files.
+	data\
+	    components\
+	        fixture_data_file1.php
+	        fixture_data_file2.php
+	        ...
+	        fixture_data_fileN.php
+	    models\
+	        fixture_data_file1.php
+	        fixture_data_file2.php
+	        ...
+	        fixture_data_fileN.php
+	# and so on
 
 
-Summary
+这样，你就可以避免在测试用例之间产生冲突，并根据你的需要使用它们。
+
+> 注意：在以上的例子中，Fixture文件只用于示例目的。在真实的环境下，你需要根据你的Fixture类继承的基类来决定它们的命名。比如，如果你从[[yii\test\ActiveFixture]]继承了一个DB Fixture，你需要用数据库表名字作为Fixture的数据文件名；如果你从[[yii\mongodb\ActiveFixture]]继承了一个MongoDB Fixture，你需要使用collection名作为文件名。
+
+组织Fixuture类名的方式同样可以使用前述的层次组织法，但是，为了避免跟数据文件产生冲突，你需要用`fixtures`作为根目录而非`data`。
+
+总结
 -------
 
-> Note: This section is under development.
+> 注意：本节内容正在开发中。
 
-In the above, we have described how to define and use fixtures. Below we summarize the typical workflow
-of running unit tests related with DB:
 
-1. Use `yii migrate` tool to upgrade your test database to the latest version;
-2. Run a test case:
-   - Load fixtures: clean up the relevant DB tables and populate them with fixture data;
-   - Perform the actual test;
-   - Unload fixtures.
-3. Repeat Step 2 until all tests finish.
+在上面，我们描述了如何定义和使用Fixture，在下面，我们将总结出一个标准地运行与DB有关的单元测试的规范工作流程：
+
+1. 使用`yii migrate`工具来让你的测试数据库更新到最新的版本；
+2. 运行一个测试：
+	- 加载Fixture：清空所有的相关表结构，并用Fixture数据填充
+	- 执行真实的测试用例
+	- 卸载Fixture
+3. 重复步骤2直到所有的测试结束。
 
 
 **To be cleaned up below**
 
-Managing Fixtures
+**以下部分将被清除**
+
+管理Fixture
 =================
 
-> Note: This section is under development.
+> Note: 本章节正在开发中
 >
-> todo: this tutorial may be merged with the above part of test-fixtures.md
+> todo: 以下部分将会与test-fixtures.md合并。
 
 Fixtures are important part of testing. Their main purpose is to populate you with data that needed by testing
 different cases. With this data using your tests becoming more efficient and useful.
+
+Fixture是测试中很很重要的一个部分，它们的主要目的是为你提供不同的测试所需要的数据。因为这些数据，你的测试将会更高效和有用。
 
 Yii supports fixtures via the `yii fixture` command line tool. This tool supports:
 
 * Loading fixtures to different storage such as: RDBMS, NoSQL, etc;
 * Unloading fixtures in different ways (usually it is clearing storage);
 * Auto-generating fixtures and populating it with random data.
+
+Yii通过`yii fixture`命令行工具来支持Fixture，这个工具支持：
+
+* 把Fixture加载到不同的存储工具中，比如：RDBMS，NoSQL等；
+* 以不同的方式卸载Fixture（通常是清空存储）；
+* 自动的生成Fixutre并用随机数据填充。
+
 
 Fixtures format
 ---------------
