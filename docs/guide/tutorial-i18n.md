@@ -55,13 +55,13 @@ you can use the following statement to change the target language:
 
 ## Message Translation <span id="message-translation"></span>
 
-Message translation service translates a text message from one language (usually the [[yii\base\Application::$sourceLanguage|source language]])
+The message translation service translates a text message from one language (usually the [[yii\base\Application::$sourceLanguage|source language]])
 to another (usually the [[yii\base\Application::$language|target language]]). It does the translation by looking
 up the message to be translated in a message source which stores the original messages and the translated messages.
-If the message is found, the corresponding translated message will be returned; otherwise the message will be returned
-untranslated.
+If the message is found, the corresponding translated message will be returned; otherwise the original message will be 
+returned untranslated.
 
-To use message translation service, you mainly need to do the following work:
+To use the message translation service, you mainly need to do the following work:
 
 * Wrap every text message that needs to be translated in a call to the [[Yii::t()]] method;
 * Configure one or multiple message sources in which the message translation service can look for translated messages;
@@ -114,38 +114,82 @@ in different storage:
 - [[yii\i18n\DbMessageSource]] uses a database table to store translated messages.
 
 
-### Named placeholders
+## Message Formatting <span id="message-formatting"></span>
 
-You can add parameters to a translation message that will be substituted with the corresponding value after translation.
-The format for this is to use curly brackets around the parameter name as you can see in the following example:
+When translating a message, you can embed some placeholders and have them replaced by dynamic parameter values.
+You can even use special placeholder syntax to have the parameter values formatted according to the target language.
+In this subsection, we will describe different ways of formatting messages.
+
+### Message Parameters <span id="message-parameters"></span>
+
+In a message to be translated, you can embed one or multiple placeholders so that they can be replaced by the given
+parameter values. By giving different sets of parameter values, you can variate the translated message dynamically.
+In the following example, the placeholder `{username}` in the message `'Hello, {username}!'` will be replaced
+by `'Alexander'` and `'Qiang'`, respectively.
 
 ```php
 $username = 'Alexander';
+// display a translated message with username being "Alexander"
+echo \Yii::t('app', 'Hello, {username}!', [
+    'username' => $username,
+]);
+
+$username = 'Qiang';
+// display a translated message with username being "Qiang"
 echo \Yii::t('app', 'Hello, {username}!', [
     'username' => $username,
 ]);
 ```
 
-Note that the parameter assignment is without the brackets.
+While translating a message containing placeholders, you should leave the placeholders as is. This is because the placeholders
+will be replaced with the actual parameter values when you call `Yii::t()` to translate a message.
 
-### Positional placeholders
+You can use either *named placeholders* or *positional placeholders*, but not both, in a single message.
+ 
+The previous example shows how you can use named placeholders. That is, each placeholder is written in the format of 
+`{ParameterName}`, and you provide the parameters as an associative array whose keys are the parameter names
+(without the curly brackets) and whose values are the corresponding parameter values.
+
+Positional placeholders use zero-based integer sequence as placeholders which are replaced by the parameter values
+according to their positions in the call of `Yii::t()`. In the following example, the positional placeholders
+`{0}`, `{1}` and `{2}` will be replaced by the values of `$price`, `$count` and `$subtotal`, respectively.
 
 ```php
-$sum = 42;
-echo \Yii::t('app', 'Balance: {0}', $sum);
+$price = 100;
+$count = 2;
+$subtotal = 200;
+echo \Yii::t('app', 'Price: {0}, Count: {1}, Subtotal: {2}', $price, $count, $subtotal);
 ```
 
-> **Tip**: Try to keep the message strings meaningful and avoid using too many positional parameters. Remember that
-> the translator has only the source string, so it should be obvious about what will replace each placeholder.
+> Tip: In most cases you should use named placeholders. This is because the parameter names will make the translators
+> understand better the whole messages being translated.
 
-### Advanced placeholder formatting
 
-In order to use the advanced features you need to install and enable the [intl PHP extension](http://www.php.net/manual/en/intro.intl.php).
-After installing and enabling it you will be able to use the extended syntax for placeholders: either the short form
-`{placeholderName, argumentType}` that uses the default style, or the full form `{placeholderName, argumentType, argumentStyle}`
-that allows you to specify the formatting style.
+### Parameter Formatting <span id="parameter-formatting"></span>
 
-A complete reference is available at the [ICU website](http://icu-project.org/apiref/icu4c/classMessageFormat.html) but we will show some examples in the following.
+You can specify additional formatting rules in the placeholders of a message so that the parameter values can be 
+formatted properly before they replace the placeholders. In the following example, the price parameter value will be 
+formatted as currency:
+
+```php
+$price = 100;
+echo \Yii::t('app', 'Price: {0, number, currency}', $price);
+```
+ 
+Parameter formatting requires the installation of the [intl PHP extension](http://www.php.net/manual/en/intro.intl.php).
+
+You can use either the short form or the full form to specify a placeholder with formatting:
+
+```
+short form: {PlaceholderName, ParameterType}
+full form: {PlaceholderName, ParameterType, ParameterStyle}
+```
+
+Please  refer to the [ICU documentation](http://icu-project.org/apiref/icu4c/classMessageFormat.html) for the complete
+instructions on how to specify such placeholders.
+
+In the following we will show some common usages.
+
 
 #### Numbers
 
@@ -264,7 +308,7 @@ Note, that you can not use the Russian example in `Yii::t()` directly if your
 strings should go into message files or message database (in case DB source is used). Yii uses the plural rules of the
 translated language strings and is falling back to the plural rules of the source language if the translation isn't available.
 
-To learn which inflection forms you should specify for your language, you can refeer to the
+To learn which inflection forms you should specify for your language, you can refer to the
 [rules reference at unicode.org](http://unicode.org/repos/cldr-tmp/trunk/diff/supplemental/language_plural_rules.html).
 
 #### Selections
@@ -505,45 +549,42 @@ Once you're done with the config file you can finally extract your messages with
 ./yii message path/to/config.php
 ```
 
-You will then find your files (if you've choosen file based translations) in your `messagePath` directory.
-
-Views
------
-
-Instead of translating messages as described in the last section,
-you can also use `i18n` in your views to provide support for different languages. For example, if you have a view `views/site/index.php` and
-you want to create a special version for the Russian language, you create a `ru-RU` folder under the view path of the current controller/widget and
-put the file for the Russian language as `views/site/ru-RU/index.php`. Yii will then load the file for the current language if it exists
-and fall back to the original view file if none was found.
-
-> **Note**: If language is specified as `en-US` and there are no corresponding views, Yii will try views under `en`
-> before using original ones.
+You will then find your files (if you've chosen file based translations) in your `messagePath` directory.
 
 
-Formatting Number and Date values
----------------------------------
+## View Translation <span id="view-translation"></span>
 
-See the [data formatter section](output-formatting.md) for details.
+Instead of translating individual text messages, sometimes you may want to translate a whole view script.
+To achieve this goal, simply translate the view and save it under a subdirectory whose name is the same as 
+target language. For example, if you want to translate the view script `views/site/index.php` and the target
+language is `ru-RU`, you may translate the view and save it as  the file `views/site/ru-RU/index.php`. Now
+whenever you call [[yii\base\View::renderFile()]] or any method that invoke this method (e.g. [[yii\base\Controller::render()]])
+to render the view `views/site/index.php`, it will end up rendering the translated view `views/site/ru-RU/index.php`, instead. 
+
+> Note: If the [[yii\base\Application::$language|target language]] is the same as [[yii\base\Application::$sourceLanguage|source language]],
+> view translation may still work as long as you provide a translated view. For example, if both languages are `en-US`
+> and you have both `views/site/index.php` and `views/site/en-US/index.php`, then the latter will be rendered.
 
 
-Setting up your PHP environment <span id="setup-environment"></span>
--------------------------------
+## Formatting Date and Number Values <span id="date-number"></span>
 
-Yii uses the [PHP intl extension](http://php.net/manual/en/book.intl.php) to provide most of its internationalization features
-such as the number and date formatting of the [[yii\i18n\Formatter]] class and the message formatting using [[yii\i18n\MessageFormatter]].
-Both classes provides a fallback implementation that provides basic functionality in case `intl` is not installed.
-This fallback implementation however only works well for sites in English language and even there can not provide the
-rich set of features that is available with the PHP intl extension, so its installation is highly recommended.
+See the [Data Formatting](output-formatting.md) section for details.
+
+
+## Setting Up PHP Environment <span id="setup-environment"></span>
+
+Yii uses the [PHP intl extension](http://php.net/manual/en/book.intl.php) to provide most of its I18N features,
+such as the date and number formatting of the [[yii\i18n\Formatter]] class and the message formatting using [[yii\i18n\MessageFormatter]].
+Both classes provide a fallback mechanism when the `intl` extension is not installed. However, the fallback implementation
+only works well for English target language. So it is highly recommended that you install `intl` when I18N is needed.
 
 The [PHP intl extension](http://php.net/manual/en/book.intl.php) is based on the [ICU library](http://site.icu-project.org/) which
-provides the knowledge and formatting rules for all the different locales. According to this fact the formatting of dates and numbers
-and also the supported syntax available for message formatting differs between different versions of the ICU library that is compiled with
-you PHP binary.
+provides the knowledge and formatting rules for all different locales. Different versions of ICU may produce different
+formatting result of date and number values. To ensure your website produces the same results across all environments,
+it is recommended that you install the same version of the `intl` extension (and thus the same version of ICU)
+in all environments.
 
-To ensure your website works with the same output in all environments it is recommended to install the PHP intl extension
-in all environments and verify that the version of the ICU library compiled with PHP is the same.
-
-To find out which version of ICU is used by PHP you can run the following script, which will give you the PHP and ICU version used.
+To find out which version of ICU is used by PHP, you can run the following script, which will give you the PHP and ICU version being used.
 
 ```php
 <?php
@@ -551,10 +592,10 @@ echo "PHP: " . PHP_VERSION . "\n";
 echo "ICU: " . INTL_ICU_VERSION . "\n";
 ```
 
-We recommend an ICU version greater or equal to version ICU 49 to be able to use all the features described in this document.
-One major feature that is missing in Versions below 49 is the `#` placeholder in plural rules.
-See <http://site.icu-project.org/download> for a list of available ICU versions. Note that the version numbering has changed after the
-4.8 release so that the first digits are now merged: the sequence is ICU 4.8, ICU 49, ICU 50.
+It is also recommended that you use an ICU version equal or greater than version 49. This will ensure you can use all the features
+described in this document. For example, an ICU version below 49 does not support using `#` placeholders in plural rules.
+Please refer to <http://site.icu-project.org/download> for a complete list of available ICU versions. Note that the version 
+numbering has changed after the 4.8 release (e.g., ICU 4.8, ICU 49, ICU 50, etc.)
 
 Additionally the information in the time zone database shipped with the ICU library may be outdated. Please refer
 to the [ICU manual](http://userguide.icu-project.org/datetime/timezone#TOC-Updating-the-Time-Zone-Data) for details
