@@ -71,10 +71,33 @@ class QueryBuilder extends \yii\db\QueryBuilder
         }
     }
 
-//	public function resetSequence($table, $value = null)
-//	{
-//		return '';
-//	}
+    /**
+     * Creates a SQL statement for resetting the sequence value of a table's primary key.
+     * The sequence will be reset such that the primary key of the next new row inserted
+     * will have the specified value or 1.
+     * @param string $tableName the name of the table whose primary key sequence will be reset
+     * @param array|string $value the value for the primary key of the next new row inserted. If this is not set,
+     * the next new row's primary key will have a value 1.
+     * @return string the SQL statement for resetting sequence
+     * @throws NotSupportedException if this is not supported by the underlying DBMS
+     */
+    public function resetSequence($tableName, $value = null)
+    {
+        $table = $this->db->getTableSchema($tableName);
+        if ($table !== null) {
+            $tableName = $this->db->quoteTableName($tableName);
+            if ($value === null) {
+                $key = reset($table->primaryKey);
+                $value = $this->db->createCommand("SELECT MAX(`$key`) FROM $tableName")->queryScalar() + 1;
+            } else {
+                $value = (int) $value;
+            }
+
+            return "DBCC CHECKIDENT ($tableName, RESEED, $value)";
+        } else {
+            throw new InvalidParamException("Table not found: $tableName");
+        }
+    }
 
     /**
      * Builds a SQL statement for renaming a DB table.
