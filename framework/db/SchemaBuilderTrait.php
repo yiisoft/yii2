@@ -3,6 +3,9 @@
  * @link http://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
  * @license http://www.yiiframework.com/license/
+ *
+ * @author Vasenin Matvey <vaseninm@gmail.com>
+ * @since 2.0.5
  */
 
 namespace yii\db;
@@ -14,9 +17,9 @@ use yii\di\Instance;
 trait SchemaBuilderTrait
 {
 
-    private static $dbName = 'db';
+    private static $_dbName = 'db';
 
-    private static $schemaBuilderMap = [
+    private static $_schemaBuilderMap = [
         'pgsql' => 'yii\db\pgsql\SchemaBuilder', // PostgreSQL
         'mysqli' => 'yii\db\mysql\SchemaBuilder', // MySQL
         'mysql' => 'yii\db\mysql\SchemaBuilder', // MySQL
@@ -31,7 +34,7 @@ trait SchemaBuilderTrait
 
     public static function setDb($dbName)
     {
-        self::$dbName = $dbName;
+        self::$_dbName = $dbName;
     }
 
     public static function primaryKey($length = null)
@@ -54,7 +57,7 @@ trait SchemaBuilderTrait
         return forward_static_call_array([self::getClass(), __FUNCTION__], func_get_args());
     }
 
-    public static function smallint($length = null)
+    public static function smallInteger($length = null)
     {
         return forward_static_call_array([self::getClass(), __FUNCTION__], func_get_args());
     }
@@ -64,7 +67,7 @@ trait SchemaBuilderTrait
         return forward_static_call_array([self::getClass(), __FUNCTION__], func_get_args());
     }
 
-    public static function bigint($length = null)
+    public static function bigInteger($length = null)
     {
         return forward_static_call_array([self::getClass(), __FUNCTION__], func_get_args());
     }
@@ -84,7 +87,7 @@ trait SchemaBuilderTrait
         return forward_static_call_array([self::getClass(), __FUNCTION__], func_get_args());
     }
 
-    public static function datetime()
+    public static function dateTime()
     {
         return forward_static_call_array([self::getClass(), __FUNCTION__], func_get_args());
     }
@@ -121,8 +124,8 @@ trait SchemaBuilderTrait
 
     private static function getClass()
     {
-        $driverName = Instance::ensure(self::$dbName, Connection::className())->getDriverName();
+        $driverName = Instance::ensure(self::$_dbName, Connection::className())->getDriverName();
 
-        return self::$schemaBuilderMap[$driverName];
+        return self::$_schemaBuilderMap[$driverName];
     }
 }

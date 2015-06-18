@@ -3,6 +3,9 @@
  * @link http://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
  * @license http://www.yiiframework.com/license/
+ *
+ * @author Vasenin Matvey <vaseninm@gmail.com>
+ * @since 2.0.5
  */
 
 namespace yii\db;
@@ -14,7 +17,7 @@ abstract class SchemaBuilder extends Object
 {
     protected $schema = null;
     protected $length = null;
-    protected $isNull = null;
+    protected $isNotNull = null;
     protected $check = null;
     protected $default = null;
 
@@ -38,7 +41,7 @@ abstract class SchemaBuilder extends Object
         return static::createDefault(Schema::TYPE_TEXT, $length);
     }
 
-    public static function smallint($length = null)
+    public static function smallInteger($length = null)
     {
         return static::createDefault(Schema::TYPE_SMALLINT, $length);
     }
@@ -48,7 +51,7 @@ abstract class SchemaBuilder extends Object
         return static::createDefault(Schema::TYPE_INTEGER, $length);
     }
 
-    public static function bigint($length = null)
+    public static function bigInteger($length = null)
     {
         return static::createDefault(Schema::TYPE_BIGINT, $length);
     }
@@ -68,7 +71,7 @@ abstract class SchemaBuilder extends Object
         return static::createNumeric(Schema::TYPE_DECIMAL, $precision, $scale);
     }
 
-    public static function datetime($length = null)
+    public static function dateTime($length = null)
     {
         return static::createDefault(Schema::TYPE_DATETIME, $length);
     }
@@ -105,14 +108,7 @@ abstract class SchemaBuilder extends Object
 
     public function notNull()
     {
-        $this->isNull = false;
-
-        return $this;
-    }
-
-    public function null()
-    {
-        $this->isNull = true;
+        $this->isNotNull = true;
 
         return $this;
     }
@@ -149,7 +145,7 @@ abstract class SchemaBuilder extends Object
 
     protected function getNullString()
     {
-        return ($this->isNull !== null ? ($this->isNull ? ' NULL' : ' NOT NULL') : '');
+        return ($this->isNotNull === true ? ' NOT NULL' : '');
     }
 
     protected function getDefaultString()
