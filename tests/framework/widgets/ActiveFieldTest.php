@@ -309,6 +309,15 @@ EOD;
     }
 
     /**
+     * @see https://github.com/yiisoft/yii2/issues/8779
+     */
+    public function testEnctype()
+    {
+        $this->activeField->fileInput();
+        $this->assertEqualsWithoutLE('multipart/form-data', $this->activeField->form->options['enctype']);
+    }
+
+    /**
      * Helper methods
      */
     protected function getView()
