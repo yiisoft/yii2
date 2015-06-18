@@ -10,7 +10,7 @@ namespace yii\db;
 use Yii;
 use yii\base\Object;
 
-class SchemaBuilder extends Object
+abstract class SchemaBuilder extends Object
 {
     protected $schema = null;
     protected $length = null;
@@ -18,89 +18,89 @@ class SchemaBuilder extends Object
     protected $check = null;
     protected $default = null;
 
-    public static function pk($length = null)
+    public static function primaryKey($length = null)
     {
-        return self::createDefault(Schema::TYPE_PK, $length);
+        return static::createDefault(Schema::TYPE_PK, $length);
     }
 
-    public static function bigPk($length = null)
+    public static function bigPrimaryKey($length = null)
     {
-        return self::createDefault(Schema::TYPE_BIGPK, $length);
+        return static::createDefault(Schema::TYPE_BIGPK, $length);
     }
 
     public static function string($length = null)
     {
-        return self::createDefault(Schema::TYPE_STRING, $length);
+        return static::createDefault(Schema::TYPE_STRING, $length);
     }
 
     public static function text($length = null)
     {
-        return self::createDefault(Schema::TYPE_TEXT, $length);
+        return static::createDefault(Schema::TYPE_TEXT, $length);
     }
 
     public static function smallint($length = null)
     {
-        return self::createDefault(Schema::TYPE_SMALLINT, $length);
+        return static::createDefault(Schema::TYPE_SMALLINT, $length);
     }
 
     public static function integer($length = null)
     {
-        return self::createDefault(Schema::TYPE_INTEGER, $length);
+        return static::createDefault(Schema::TYPE_INTEGER, $length);
     }
 
     public static function bigint($length = null)
     {
-        return self::createDefault(Schema::TYPE_BIGINT, $length);
+        return static::createDefault(Schema::TYPE_BIGINT, $length);
     }
 
     public static function float($precision = null, $scale = null)
     {
-        return self::createNumeric(Schema::TYPE_FLOAT, $precision, $scale);
+        return static::createNumeric(Schema::TYPE_FLOAT, $precision, $scale);
     }
 
     public static function double($precision = null, $scale = null)
     {
-        return self::createNumeric(Schema::TYPE_DOUBLE, $precision, $scale);
+        return static::createNumeric(Schema::TYPE_DOUBLE, $precision, $scale);
     }
 
     public static function decimal($precision = null, $scale = null)
     {
-        return self::createNumeric(Schema::TYPE_DECIMAL, $precision, $scale);
+        return static::createNumeric(Schema::TYPE_DECIMAL, $precision, $scale);
     }
 
-    public static function datetime()
+    public static function datetime($length = null)
     {
-        return self::createDefault(Schema::TYPE_DATETIME);
+        return static::createDefault(Schema::TYPE_DATETIME, $length);
     }
 
-    public static function timestamp()
+    public static function timestamp($length = null)
     {
-        return self::createDefault(Schema::TYPE_TIMESTAMP);
+        return static::createDefault(Schema::TYPE_TIMESTAMP, $length);
     }
 
-    public static function time()
+    public static function time($length = null)
     {
-        return self::createDefault(Schema::TYPE_TIME);
+        return static::createDefault(Schema::TYPE_TIME, $length);
     }
 
-    public static function date()
+    public static function date($length = null)
     {
-        return self::createDefault(Schema::TYPE_DATE);
+        return static::createDefault(Schema::TYPE_DATE, $length);
     }
 
     public static function binary($length = null)
     {
-        return self::createDefault(Schema::TYPE_BINARY, $length);
+        return static::createDefault(Schema::TYPE_BINARY, $length);
     }
 
     public static function boolean($length = null)
     {
-        return self::createDefault(Schema::TYPE_BOOLEAN, $length);
+        return static::createDefault(Schema::TYPE_BOOLEAN, $length);
     }
 
     public static function money($precision = null, $scale = null)
     {
-        return self::createNumeric(Schema::TYPE_MONEY, $precision, $scale);
+        return static::createNumeric(Schema::TYPE_MONEY, $precision, $scale);
     }
 
     public function notNull()
@@ -135,15 +135,53 @@ class SchemaBuilder extends Object
     {
         return
             $this->schema .
-            ($this->length !== null ? "({$this->length})" : '') .
-            ($this->isNull !== null ? ($this->isNull ? ' NULL' : ' NOT NULL') : '') .
-            ($this->default !== null ? ' DEFAULT ' . (is_numeric($this->default) ? $this->default : "'{$this->default}'") : '') .
-            ($this->check !== null ? " CHECK ({$this->check})" : '');
+            $this->getLengthString() .
+            $this->getNullString() .
+            $this->getDefaultString() .
+            $this->getCheckString();
     }
 
-    private static function createDefault($type, $length = null)
+
+    protected function getLengthString()
     {
-        $object = new self();
+        return ($this->length !== null ? "({$this->length})" : '');
+    }
+
+    protected function getNullString()
+    {
+        return ($this->isNull !== null ? ($this->isNull ? ' NULL' : ' NOT NULL') : '');
+    }
+
+    protected function getDefaultString()
+    {
+        $string = '';
+
+        if ($this->default !== null) {
+            $string .= ' DEFAULT ';
+            switch (gettype($this->default)) {
+                case 'integer':
+                case 'double':
+                    $string .= $this->default;
+                    break;
+                case 'boolean':
+                    $string .= $this->default ? 'TRUE' : 'FALSE';
+                    break;
+                default:
+                    $string .= "'{$this->default}'";
+            }
+        }
+
+        return $string;
+    }
+
+    protected function getCheckString()
+    {
+        return ($this->check !== null ? " CHECK ({$this->check})" : '');
+    }
+
+    protected static function createDefault($type, $length = null)
+    {
+        $object = new static;
 
         $object->schema = $type;
         $object->length = $length;
@@ -151,9 +189,9 @@ class SchemaBuilder extends Object
         return $object;
     }
 
-    private static function createNumeric($type, $precision = null, $scale = null)
+    protected static function createNumeric($type, $precision = null, $scale = null)
     {
-        $object = new self();
+        $object = new static;
 
         $object->schema = $type;
 

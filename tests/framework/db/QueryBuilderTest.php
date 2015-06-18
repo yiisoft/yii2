@@ -26,19 +26,23 @@ class QueryBuilderTest extends DatabaseTestCase
      */
     protected function getQueryBuilder()
     {
+        $connection = $this->getConnection(true, false);
+
+        \Yii::$container->set('db', $connection);
+
         switch ($this->driverName) {
             case 'mysql':
-                return new MysqlQueryBuilder($this->getConnection(true, false));
+                return new MysqlQueryBuilder($connection);
             case 'sqlite':
-                return new SqliteQueryBuilder($this->getConnection(true, false));
+                return new SqliteQueryBuilder($connection);
             case 'mssql':
-                return new MssqlQueryBuilder($this->getConnection(true, false));
+                return new MssqlQueryBuilder($connection);
             case 'pgsql':
-                return new PgsqlQueryBuilder($this->getConnection(true, false));
+                return new PgsqlQueryBuilder($connection);
             case 'cubrid':
-                return new CubridQueryBuilder($this->getConnection(true, false));
+                return new CubridQueryBuilder($connection);
             case 'oci':
-                return new OracleQueryBuilder($this->getConnection(true, false));
+                return new OracleQueryBuilder($connection);
         }
         throw new \Exception('Test is not implemented for ' . $this->driverName);
     }
@@ -63,76 +67,78 @@ class QueryBuilderTest extends DatabaseTestCase
     public function columnTypes()
     {
         return [
-            [Schema::TYPE_PK, SchemaBuilder::pk(), 'int(11) NOT NULL AUTO_INCREMENT PRIMARY KEY'],
-            [Schema::TYPE_PK . '(8)', SchemaBuilder::pk(8), 'int(8) NOT NULL AUTO_INCREMENT PRIMARY KEY'],
-            [Schema::TYPE_PK . ' CHECK (value > 5)', SchemaBuilder::pk()->check('value > 5'), 'int(11) NOT NULL AUTO_INCREMENT PRIMARY KEY CHECK (value > 5)'],
-            [Schema::TYPE_PK . '(8) CHECK (value > 5)', SchemaBuilder::pk(8)->check('value > 5'), 'int(8) NOT NULL AUTO_INCREMENT PRIMARY KEY CHECK (value > 5)'],
-            [Schema::TYPE_STRING, SchemaBuilder::string(), 'varchar(255)'],
-            [Schema::TYPE_STRING . '(32)', SchemaBuilder::string(32), 'varchar(32)'],
-            [Schema::TYPE_STRING . ' CHECK (value LIKE "test%")', SchemaBuilder::string()->check('value LIKE "test%"'), 'varchar(255) CHECK (value LIKE "test%")'],
-            [Schema::TYPE_STRING . '(32) CHECK (value LIKE "test%")', SchemaBuilder::string(32)->check('value LIKE "test%"'), 'varchar(32) CHECK (value LIKE "test%")'],
-            [Schema::TYPE_STRING . ' NOT NULL', SchemaBuilder::string()->notNull(), 'varchar(255) NOT NULL'],
-            [Schema::TYPE_TEXT, SchemaBuilder::text(), 'text'],
-            [Schema::TYPE_TEXT . '(255)', SchemaBuilder::text(255), 'text'],
-            [Schema::TYPE_TEXT . ' CHECK (value LIKE "test%")', SchemaBuilder::text()->check('value LIKE "test%"'), 'text CHECK (value LIKE "test%")'],
-            [Schema::TYPE_TEXT . '(255) CHECK (value LIKE "test%")', SchemaBuilder::text(255)->check('value LIKE "test%"'), 'text CHECK (value LIKE "test%")'],
-            [Schema::TYPE_TEXT . ' NOT NULL', SchemaBuilder::text()->notNull(), 'text NOT NULL'],
-            [Schema::TYPE_TEXT . '(255) NOT NULL', SchemaBuilder::text(255)->notNull(), 'text NOT NULL'],
-            [Schema::TYPE_SMALLINT, SchemaBuilder::smallint(), 'smallint(6)'],
-            [Schema::TYPE_SMALLINT . '(8)', SchemaBuilder::smallint(8), 'smallint(8)'],
-            [Schema::TYPE_INTEGER, SchemaBuilder::integer(), 'int(11)'],
-            [Schema::TYPE_INTEGER . '(8)', SchemaBuilder::integer(8), 'int(8)'],
-            [Schema::TYPE_INTEGER . ' CHECK (value > 5)', SchemaBuilder::integer()->check('value > 5'), 'int(11) CHECK (value > 5)'],
-            [Schema::TYPE_INTEGER . '(8) CHECK (value > 5)', SchemaBuilder::integer(8)->check('value > 5'), 'int(8) CHECK (value > 5)'],
-            [Schema::TYPE_INTEGER . ' NOT NULL', SchemaBuilder::integer()->notNull(), 'int(11) NOT NULL'],
-            [Schema::TYPE_BIGINT, SchemaBuilder::bigint(), 'bigint(20)'],
-            [Schema::TYPE_BIGINT . '(8)', SchemaBuilder::bigint(8), 'bigint(8)'],
-            [Schema::TYPE_BIGINT . ' CHECK (value > 5)', SchemaBuilder::bigint()->check('value > 5'), 'bigint(20) CHECK (value > 5)'],
-            [Schema::TYPE_BIGINT . '(8) CHECK (value > 5)', SchemaBuilder::bigint(8)->check('value > 5'), 'bigint(8) CHECK (value > 5)'],
-            [Schema::TYPE_BIGINT . ' NOT NULL', SchemaBuilder::bigint()->notNull(), 'bigint(20) NOT NULL'],
-            [Schema::TYPE_FLOAT, SchemaBuilder::float(), 'float'],
-            [Schema::TYPE_FLOAT . '(16,5)', SchemaBuilder::float(16, 5), 'float'],
-            [Schema::TYPE_FLOAT . ' CHECK (value > 5.6)', SchemaBuilder::float()->check('value > 5.6'), 'float CHECK (value > 5.6)'],
-            [Schema::TYPE_FLOAT . '(16,5) CHECK (value > 5.6)', SchemaBuilder::float(16, 5)->check('value > 5.6'), 'float CHECK (value > 5.6)'],
-            [Schema::TYPE_FLOAT . ' NOT NULL', SchemaBuilder::float()->notNull(), 'float NOT NULL'],
-            [Schema::TYPE_DOUBLE, SchemaBuilder::double(), 'double'],
-            [Schema::TYPE_DOUBLE . '(16,5)', SchemaBuilder::double(16, 5), 'double'],
-            [Schema::TYPE_DOUBLE . ' CHECK (value > 5.6)', SchemaBuilder::double()->check('value > 5.6'), 'double CHECK (value > 5.6)'],
-            [Schema::TYPE_DOUBLE . '(16,5) CHECK (value > 5.6)', SchemaBuilder::double(16, 5)->check('value > 5.6'), 'double CHECK (value > 5.6)'],
-            [Schema::TYPE_DOUBLE . ' NOT NULL', SchemaBuilder::double()->notNull(), 'double NOT NULL'],
-            [Schema::TYPE_DECIMAL, SchemaBuilder::decimal(), 'decimal(10,0)'],
-            [Schema::TYPE_DECIMAL . '(12,4)', SchemaBuilder::decimal(12, 4), 'decimal(12,4)'],
-            [Schema::TYPE_DECIMAL . ' CHECK (value > 5.6)', SchemaBuilder::decimal()->check('value > 5.6'), 'decimal(10,0) CHECK (value > 5.6)'],
-            [Schema::TYPE_DECIMAL . '(12,4) CHECK (value > 5.6)', SchemaBuilder::decimal(12, 4)->check('value > 5.6'), 'decimal(12,4) CHECK (value > 5.6)'],
-            [Schema::TYPE_DECIMAL . ' NOT NULL', SchemaBuilder::decimal()->notNull(), 'decimal(10,0) NOT NULL'],
-            [Schema::TYPE_DATETIME, SchemaBuilder::datetime(), 'datetime'],
-            [Schema::TYPE_DATETIME . " CHECK (value BETWEEN '2011-01-01' AND '2013-01-01')", SchemaBuilder::datetime()->check("value BETWEEN '2011-01-01' AND '2013-01-01'"), "datetime CHECK (value BETWEEN '2011-01-01' AND '2013-01-01')"],
-            [Schema::TYPE_DATETIME . ' NOT NULL', SchemaBuilder::datetime()->notNull(), 'datetime NOT NULL'],
-            [Schema::TYPE_TIMESTAMP, SchemaBuilder::timestamp(), 'timestamp'],
-            [Schema::TYPE_TIMESTAMP . " CHECK (value BETWEEN '2011-01-01' AND '2013-01-01')", SchemaBuilder::timestamp()->check("value BETWEEN '2011-01-01' AND '2013-01-01'"), "timestamp CHECK (value BETWEEN '2011-01-01' AND '2013-01-01')"],
-            [Schema::TYPE_TIMESTAMP . ' NOT NULL', SchemaBuilder::timestamp()->notNull(), 'timestamp NOT NULL'],
-            [Schema::TYPE_TIME, SchemaBuilder::time(), 'time'],
-            [Schema::TYPE_TIME . " CHECK (value BETWEEN '12:00:00' AND '13:01:01')", SchemaBuilder::time()->check("value BETWEEN '12:00:00' AND '13:01:01'"), "time CHECK (value BETWEEN '12:00:00' AND '13:01:01')"],
-            [Schema::TYPE_TIME . ' NOT NULL', SchemaBuilder::time()->notNull(), 'time NOT NULL'],
-            [Schema::TYPE_DATE, SchemaBuilder::date(), 'date'],
-            [Schema::TYPE_DATE . " CHECK (value BETWEEN '2011-01-01' AND '2013-01-01')", SchemaBuilder::date()->check("value BETWEEN '2011-01-01' AND '2013-01-01'"), "date CHECK (value BETWEEN '2011-01-01' AND '2013-01-01')"],
-            [Schema::TYPE_DATE . ' NOT NULL', SchemaBuilder::date()->notNull(), 'date NOT NULL'],
-            [Schema::TYPE_BINARY, SchemaBuilder::binary(), 'blob'],
-            [Schema::TYPE_BOOLEAN, SchemaBuilder::boolean(), 'tinyint(1)'],
-            [Schema::TYPE_BOOLEAN . ' NOT NULL DEFAULT 1', SchemaBuilder::boolean()->notNull()->setDefault('1'), 'tinyint(1) NOT NULL DEFAULT 1'],
-            [Schema::TYPE_MONEY, SchemaBuilder::money(), 'decimal(19,4)'],
-            [Schema::TYPE_MONEY . '(16,2)', SchemaBuilder::money(16, 2), 'decimal(16,2)'],
-            [Schema::TYPE_MONEY . ' CHECK (value > 0.0)', SchemaBuilder::money()->check('value > 0.0'), 'decimal(19,4) CHECK (value > 0.0)'],
-            [Schema::TYPE_MONEY . '(16,2) CHECK (value > 0.0)', SchemaBuilder::money(16, 2)->check('value > 0.0'), 'decimal(16,2) CHECK (value > 0.0)'],
-            [Schema::TYPE_MONEY . ' NOT NULL', SchemaBuilder::money()->notNull(), 'decimal(19,4) NOT NULL'],
+            [Schema::TYPE_PK, Schema::primaryKey(), 'int(11) NOT NULL AUTO_INCREMENT PRIMARY KEY'],
+            [Schema::TYPE_PK . '(8)', Schema::primaryKey(8), 'int(8) NOT NULL AUTO_INCREMENT PRIMARY KEY'],
+            [Schema::TYPE_PK . ' CHECK (value > 5)', Schema::primaryKey()->check('value > 5'), 'int(11) NOT NULL AUTO_INCREMENT PRIMARY KEY CHECK (value > 5)'],
+            [Schema::TYPE_PK . '(8) CHECK (value > 5)', Schema::primaryKey(8)->check('value > 5'), 'int(8) NOT NULL AUTO_INCREMENT PRIMARY KEY CHECK (value > 5)'],
+            [Schema::TYPE_STRING, Schema::string(), 'varchar(255)'],
+            [Schema::TYPE_STRING . '(32)', Schema::string(32), 'varchar(32)'],
+            [Schema::TYPE_STRING . ' CHECK (value LIKE "test%")', Schema::string()->check('value LIKE "test%"'), 'varchar(255) CHECK (value LIKE "test%")'],
+            [Schema::TYPE_STRING . '(32) CHECK (value LIKE "test%")', Schema::string(32)->check('value LIKE "test%"'), 'varchar(32) CHECK (value LIKE "test%")'],
+            [Schema::TYPE_STRING . ' NOT NULL', Schema::string()->notNull(), 'varchar(255) NOT NULL'],
+            [Schema::TYPE_TEXT, Schema::text(), 'text'],
+            [Schema::TYPE_TEXT . '(255)', Schema::text(255), 'text'],
+            [Schema::TYPE_TEXT . ' CHECK (value LIKE "test%")', Schema::text()->check('value LIKE "test%"'), 'text CHECK (value LIKE "test%")'],
+            [Schema::TYPE_TEXT . '(255) CHECK (value LIKE "test%")', Schema::text(255)->check('value LIKE "test%"'), 'text CHECK (value LIKE "test%")'],
+            [Schema::TYPE_TEXT . ' NOT NULL', Schema::text()->notNull(), 'text NOT NULL'],
+            [Schema::TYPE_TEXT . '(255) NOT NULL', Schema::text(255)->notNull(), 'text NOT NULL'],
+            [Schema::TYPE_SMALLINT, Schema::smallint(), 'smallint(6)'],
+            [Schema::TYPE_SMALLINT . '(8)', Schema::smallint(8), 'smallint(8)'],
+            [Schema::TYPE_INTEGER, Schema::integer(), 'int(11)'],
+            [Schema::TYPE_INTEGER . '(8)', Schema::integer(8), 'int(8)'],
+            [Schema::TYPE_INTEGER . ' CHECK (value > 5)', Schema::integer()->check('value > 5'), 'int(11) CHECK (value > 5)'],
+            [Schema::TYPE_INTEGER . '(8) CHECK (value > 5)', Schema::integer(8)->check('value > 5'), 'int(8) CHECK (value > 5)'],
+            [Schema::TYPE_INTEGER . ' NOT NULL', Schema::integer()->notNull(), 'int(11) NOT NULL'],
+            [Schema::TYPE_BIGINT, Schema::bigint(), 'bigint(20)'],
+            [Schema::TYPE_BIGINT . '(8)', Schema::bigint(8), 'bigint(8)'],
+            [Schema::TYPE_BIGINT . ' CHECK (value > 5)', Schema::bigint()->check('value > 5'), 'bigint(20) CHECK (value > 5)'],
+            [Schema::TYPE_BIGINT . '(8) CHECK (value > 5)', Schema::bigint(8)->check('value > 5'), 'bigint(8) CHECK (value > 5)'],
+            [Schema::TYPE_BIGINT . ' NOT NULL', Schema::bigint()->notNull(), 'bigint(20) NOT NULL'],
+            [Schema::TYPE_FLOAT, Schema::float(), 'float'],
+            [Schema::TYPE_FLOAT . '(16,5)', Schema::float(16, 5), 'float'],
+            [Schema::TYPE_FLOAT . ' CHECK (value > 5.6)', Schema::float()->check('value > 5.6'), 'float CHECK (value > 5.6)'],
+            [Schema::TYPE_FLOAT . '(16,5) CHECK (value > 5.6)', Schema::float(16, 5)->check('value > 5.6'), 'float CHECK (value > 5.6)'],
+            [Schema::TYPE_FLOAT . ' NOT NULL', Schema::float()->notNull(), 'float NOT NULL'],
+            [Schema::TYPE_DOUBLE, Schema::double(), 'double'],
+            [Schema::TYPE_DOUBLE . '(16,5)', Schema::double(16, 5), 'double'],
+            [Schema::TYPE_DOUBLE . ' CHECK (value > 5.6)', Schema::double()->check('value > 5.6'), 'double CHECK (value > 5.6)'],
+            [Schema::TYPE_DOUBLE . '(16,5) CHECK (value > 5.6)', Schema::double(16, 5)->check('value > 5.6'), 'double CHECK (value > 5.6)'],
+            [Schema::TYPE_DOUBLE . ' NOT NULL', Schema::double()->notNull(), 'double NOT NULL'],
+            [Schema::TYPE_DECIMAL, Schema::decimal(), 'decimal(10,0)'],
+            [Schema::TYPE_DECIMAL . '(12,4)', Schema::decimal(12, 4), 'decimal(12,4)'],
+            [Schema::TYPE_DECIMAL . ' CHECK (value > 5.6)', Schema::decimal()->check('value > 5.6'), 'decimal(10,0) CHECK (value > 5.6)'],
+            [Schema::TYPE_DECIMAL . '(12,4) CHECK (value > 5.6)', Schema::decimal(12, 4)->check('value > 5.6'), 'decimal(12,4) CHECK (value > 5.6)'],
+            [Schema::TYPE_DECIMAL . ' NOT NULL', Schema::decimal()->notNull(), 'decimal(10,0) NOT NULL'],
+            [Schema::TYPE_DATETIME, Schema::datetime(), 'datetime'],
+            [Schema::TYPE_DATETIME . " CHECK (value BETWEEN '2011-01-01' AND '2013-01-01')", Schema::datetime()->check("value BETWEEN '2011-01-01' AND '2013-01-01'"), "datetime CHECK (value BETWEEN '2011-01-01' AND '2013-01-01')"],
+            [Schema::TYPE_DATETIME . ' NOT NULL', Schema::datetime()->notNull(), 'datetime NOT NULL'],
+            [Schema::TYPE_TIMESTAMP, Schema::timestamp(), 'timestamp'],
+            [Schema::TYPE_TIMESTAMP . " CHECK (value BETWEEN '2011-01-01' AND '2013-01-01')", Schema::timestamp()->check("value BETWEEN '2011-01-01' AND '2013-01-01'"), "timestamp CHECK (value BETWEEN '2011-01-01' AND '2013-01-01')"],
+            [Schema::TYPE_TIMESTAMP . ' NOT NULL', Schema::timestamp()->notNull(), 'timestamp NOT NULL'],
+            [Schema::TYPE_TIME, Schema::time(), 'time'],
+            [Schema::TYPE_TIME . " CHECK (value BETWEEN '12:00:00' AND '13:01:01')", Schema::time()->check("value BETWEEN '12:00:00' AND '13:01:01'"), "time CHECK (value BETWEEN '12:00:00' AND '13:01:01')"],
+            [Schema::TYPE_TIME . ' NOT NULL', Schema::time()->notNull(), 'time NOT NULL'],
+            [Schema::TYPE_DATE, Schema::date(), 'date'],
+            [Schema::TYPE_DATE . " CHECK (value BETWEEN '2011-01-01' AND '2013-01-01')", Schema::date()->check("value BETWEEN '2011-01-01' AND '2013-01-01'"), "date CHECK (value BETWEEN '2011-01-01' AND '2013-01-01')"],
+            [Schema::TYPE_DATE . ' NOT NULL', Schema::date()->notNull(), 'date NOT NULL'],
+            [Schema::TYPE_BINARY, Schema::binary(), 'blob'],
+            [Schema::TYPE_BOOLEAN, Schema::boolean(), 'tinyint(1)'],
+            [Schema::TYPE_BOOLEAN . ' NOT NULL DEFAULT 1', Schema::boolean()->notNull()->setDefault(1), 'tinyint(1) NOT NULL DEFAULT 1'],
+            [Schema::TYPE_MONEY, Schema::money(), 'decimal(19,4)'],
+            [Schema::TYPE_MONEY . '(16,2)', Schema::money(16, 2), 'decimal(16,2)'],
+            [Schema::TYPE_MONEY . ' CHECK (value > 0.0)', Schema::money()->check('value > 0.0'), 'decimal(19,4) CHECK (value > 0.0)'],
+            [Schema::TYPE_MONEY . '(16,2) CHECK (value > 0.0)', Schema::money(16, 2)->check('value > 0.0'), 'decimal(16,2) CHECK (value > 0.0)'],
+            [Schema::TYPE_MONEY . ' NOT NULL', Schema::money()->notNull(), 'decimal(19,4) NOT NULL'],
         ];
     }
 
     public function testGetColumnType()
     {
         $qb = $this->getQueryBuilder();
+
         foreach ($this->columnTypes() as $item) {
             list ($column, $builder, $expected) = $item;
+
             $this->assertEquals($expected, $qb->getColumnType($column));
             $this->assertEquals($expected, $qb->getColumnType($builder));
             $this->assertEquals($builder->__toString(), $column);
