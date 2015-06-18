@@ -122,12 +122,16 @@ class QueryBuilder extends \yii\db\QueryBuilder
      * Builds a SQL statement for enabling or disabling integrity check.
      * @param boolean $check whether to turn on or off the integrity check.
      * @param string $schema the schema of the tables. Defaults to empty string, meaning the current or default schema.
-     * @param string $table the table name. Defaults to empty string, meaning that no table will be changed.
+     * @param string $table the table name. Defaults to empty string, meaning that all tables will be changed.
      * @return string the SQL statement for checking integrity
      * @throws InvalidParamException if the table does not exist or there is no sequence associated with the table.
      */
     public function checkIntegrity($check = true, $schema = '', $table = '')
     {
+        $enable = $check ? 'CHECK' : 'NOCHECK';
+        if ($table === '') {
+    		return "EXEC sp_MSforeachtable 'ALTER TABLE ? {$enable} CONSTRAINT ALL'";
+    	}
         if ($schema !== '') {
             $table = "{$schema}.{$table}";
         }
@@ -135,8 +139,7 @@ class QueryBuilder extends \yii\db\QueryBuilder
         if ($this->db->getTableSchema($table) === null) {
             throw new InvalidParamException("Table not found: $table");
         }
-        $enable = $check ? 'CHECK' : 'NOCHECK';
-
+        
         return "ALTER TABLE {$table} {$enable} CONSTRAINT ALL";
     }
 
