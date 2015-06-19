@@ -263,7 +263,6 @@ LEFT JOIN ALL_CONSTRAINTS E ON E.OWNER = D.R_OWNER AND E.CONSTRAINT_NAME = D.R_C
 LEFT JOIN ALL_CONS_COLUMNS F ON F.OWNER = E.OWNER AND F.CONSTRAINT_NAME = E.CONSTRAINT_NAME AND F.POSITION = C.POSITION
 WHERE C.OWNER = :schemaName
    AND C.TABLE_NAME = :tableName
-   AND D.CONSTRAINT_TYPE = 'R'
 ORDER BY D.CONSTRAINT_NAME, C.POSITION
 SQL;
         $command = $this->db->createCommand($sql, [
@@ -272,6 +271,9 @@ SQL;
         ]);
         $constraints = [];
         foreach ($command->queryAll() as $row) {
+            if ($row['CONSTRAINT_TYPE'] !== 'R') {
+                continue;
+            }
             if ($this->db->slavePdo->getAttribute(\PDO::ATTR_CASE) === \PDO::CASE_LOWER) {
                 $row = array_change_key_case($row, CASE_UPPER);
             }
