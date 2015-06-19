@@ -3,9 +3,6 @@
  * @link http://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
  * @license http://www.yiiframework.com/license/
- *
- * @author Vasenin Matvey <vaseninm@gmail.com>
- * @since 2.0.5
  */
 
 namespace yii\db;
@@ -14,11 +11,22 @@ use Yii;
 use yii\base\Object;
 use yii\di\Instance;
 
+/**
+ * @author Vasenin Matvey <vaseninm@gmail.com>
+ * @since 2.0.5
+ */
 trait SchemaBuilderTrait
 {
-
+    /**
+     * @var string the application component ID of the DB connection
+     */
     private static $_dbName = 'db';
 
+    /**
+     * @var array mapping between PDO driver names and [[SchemaBuilder]] classes.
+     * The keys of the array are PDO driver names while the values the corresponding
+     * SchemaBuilder class name.
+     */
     private static $_schemaBuilderMap = [
         'pgsql' => 'yii\db\pgsql\SchemaBuilder', // PostgreSQL
         'mysqli' => 'yii\db\mysql\SchemaBuilder', // MySQL
@@ -38,6 +46,8 @@ trait SchemaBuilderTrait
     }
 
     /**
+     * Specify type of field as primary key
+     *
      * @param integer $length
      * @return SchemaBuilder
      */
@@ -47,6 +57,8 @@ trait SchemaBuilderTrait
     }
 
     /**
+     * Specify type of field as big primary key
+     *
      * @param integer $length
      * @return SchemaBuilder
      */
@@ -56,6 +68,8 @@ trait SchemaBuilderTrait
     }
 
     /**
+     * Specify type of field as string
+     *
      * @param integer $length
      * @return SchemaBuilder
      */
@@ -65,6 +79,8 @@ trait SchemaBuilderTrait
     }
 
     /**
+     * Specify type of field as text
+     *
      * @param integer $length
      * @return SchemaBuilder
      */
@@ -74,6 +90,8 @@ trait SchemaBuilderTrait
     }
 
     /**
+     * Specify type of field as small integer
+     *
      * @param integer $length
      * @return SchemaBuilder
      */
@@ -83,6 +101,8 @@ trait SchemaBuilderTrait
     }
 
     /**
+     * Specify type of field as integer
+     *
      * @param integer $length
      * @return SchemaBuilder
      */
@@ -92,6 +112,8 @@ trait SchemaBuilderTrait
     }
 
     /**
+     * Specify type of field as big integer
+     *
      * @param integer $length
      * @return SchemaBuilder
      */
@@ -101,6 +123,8 @@ trait SchemaBuilderTrait
     }
 
     /**
+     * Specify type of field as float
+     *
      * @param integer $precision
      * @param integer $scale
      * @return SchemaBuilder
@@ -111,6 +135,8 @@ trait SchemaBuilderTrait
     }
 
     /**
+     * Specify type of field as double
+     *
      * @param integer $precision
      * @param integer $scale
      * @return SchemaBuilder
@@ -121,6 +147,8 @@ trait SchemaBuilderTrait
     }
 
     /**
+     * Specify type of field as decimal
+     *
      * @param integer $precision
      * @param integer $scale
      * @return SchemaBuilder
@@ -131,6 +159,8 @@ trait SchemaBuilderTrait
     }
 
     /**
+     * Specify type of field as datetime
+     *
      * @return SchemaBuilder
      */
     public static function dateTime()
@@ -139,6 +169,8 @@ trait SchemaBuilderTrait
     }
 
     /**
+     * Specify type of field as timestamp
+     *
      * @return SchemaBuilder
      */
     public static function timestamp()
@@ -147,6 +179,8 @@ trait SchemaBuilderTrait
     }
 
     /**
+     * Specify type of field as time
+     *
      * @return SchemaBuilder
      */
     public static function time()
@@ -155,6 +189,8 @@ trait SchemaBuilderTrait
     }
 
     /**
+     * Specify type of field as date
+     *
      * @return SchemaBuilder
      */
     public static function date()
@@ -163,6 +199,8 @@ trait SchemaBuilderTrait
     }
 
     /**
+     * Specify type of field as binary
+     *
      * @param integer $length
      * @return SchemaBuilder
      */
@@ -172,6 +210,8 @@ trait SchemaBuilderTrait
     }
 
     /**
+     * Specify type of field as boolean
+     *
      * @param integer $length
      * @return SchemaBuilder
      */
@@ -181,6 +221,8 @@ trait SchemaBuilderTrait
     }
 
     /**
+     * Specify type of field as money
+     *
      * @param integer $precision
      * @param integer $scale
      * @return SchemaBuilder
@@ -190,6 +232,9 @@ trait SchemaBuilderTrait
         return forward_static_call_array([self::getClass(), __FUNCTION__], func_get_args());
     }
 
+    /**
+     * @return SchemaBuilder
+     */
     private static function getClass()
     {
         $driverName = Instance::ensure(self::$_dbName, Connection::className())->getDriverName();
