@@ -123,7 +123,7 @@ class QueryBuilderTest extends DatabaseTestCase
             [Schema::TYPE_DATE . ' NOT NULL', Schema::date()->notNull(), 'date NOT NULL'],
             [Schema::TYPE_BINARY, Schema::binary(), 'blob'],
             [Schema::TYPE_BOOLEAN, Schema::boolean(), 'tinyint(1)'],
-            [Schema::TYPE_BOOLEAN . ' NOT NULL DEFAULT 1', Schema::boolean()->notNull()->setDefault(1), 'tinyint(1) NOT NULL DEFAULT 1'],
+            [Schema::TYPE_BOOLEAN . ' NOT NULL DEFAULT 1', Schema::boolean()->notNull()->default(1), 'tinyint(1) NOT NULL DEFAULT 1'],
             [Schema::TYPE_MONEY, Schema::money(), 'decimal(19,4)'],
             [Schema::TYPE_MONEY . '(16,2)', Schema::money(16, 2), 'decimal(16,2)'],
             [Schema::TYPE_MONEY . ' CHECK (value > 0.0)', Schema::money()->check('value > 0.0'), 'decimal(19,4) CHECK (value > 0.0)'],

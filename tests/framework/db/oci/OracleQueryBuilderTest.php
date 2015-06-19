@@ -76,7 +76,7 @@ class OracleQueryBuilderTest extends QueryBuilderTest
             [Schema::TYPE_DATE . ' NOT NULL', Schema::date()->notNull(), 'DATE NOT NULL'],
             [Schema::TYPE_BINARY, Schema::binary(), 'BLOB'],
             [Schema::TYPE_BOOLEAN, Schema::boolean(), 'NUMBER(1)'],
-            [Schema::TYPE_BOOLEAN . ' DEFAULT 1 NOT NULL', Schema::boolean()->notNull()->setDefault(1), 'NUMBER(1) DEFAULT 1 NOT NULL'],
+            [Schema::TYPE_BOOLEAN . ' DEFAULT 1 NOT NULL', Schema::boolean()->notNull()->default(1), 'NUMBER(1) DEFAULT 1 NOT NULL'],
             [Schema::TYPE_MONEY, Schema::money(), 'NUMBER(19,4)'],
             [Schema::TYPE_MONEY . '(16,2)', Schema::money(16, 2), 'NUMBER(16,2)'],
             [Schema::TYPE_MONEY . ' CHECK (value > 0.0)', Schema::money()->check('value > 0.0'), 'NUMBER(19,4) CHECK (value > 0.0)'],

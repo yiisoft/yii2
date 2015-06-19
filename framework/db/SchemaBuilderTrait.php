@@ -37,86 +37,154 @@ trait SchemaBuilderTrait
         self::$_dbName = $dbName;
     }
 
+    /**
+     * @param integer $length
+     * @return SchemaBuilder
+     */
     public static function primaryKey($length = null)
     {
         return forward_static_call_array([self::getClass(), __FUNCTION__], func_get_args());
     }
 
+    /**
+     * @param integer $length
+     * @return SchemaBuilder
+     */
     public static function bigPrimaryKey($length = null)
     {
         return forward_static_call_array([self::getClass(), __FUNCTION__], func_get_args());
     }
 
+    /**
+     * @param integer $length
+     * @return SchemaBuilder
+     */
     public static function string($length = null)
     {
         return forward_static_call_array([self::getClass(), __FUNCTION__], func_get_args());
     }
 
+    /**
+     * @param integer $length
+     * @return SchemaBuilder
+     */
     public static function text($length = null)
     {
         return forward_static_call_array([self::getClass(), __FUNCTION__], func_get_args());
     }
 
+    /**
+     * @param integer $length
+     * @return SchemaBuilder
+     */
     public static function smallInteger($length = null)
     {
         return forward_static_call_array([self::getClass(), __FUNCTION__], func_get_args());
     }
 
+    /**
+     * @param integer $length
+     * @return SchemaBuilder
+     */
     public static function integer($length = null)
     {
         return forward_static_call_array([self::getClass(), __FUNCTION__], func_get_args());
     }
 
+    /**
+     * @param integer $length
+     * @return SchemaBuilder
+     */
     public static function bigInteger($length = null)
     {
         return forward_static_call_array([self::getClass(), __FUNCTION__], func_get_args());
     }
 
+    /**
+     * @param integer $precision
+     * @param integer $scale
+     * @return SchemaBuilder
+     */
     public static function float($precision = null, $scale = null)
     {
         return forward_static_call_array([self::getClass(), __FUNCTION__], func_get_args());
     }
 
+    /**
+     * @param integer $precision
+     * @param integer $scale
+     * @return SchemaBuilder
+     */
     public static function double($precision = null, $scale = null)
     {
         return forward_static_call_array([self::getClass(), __FUNCTION__], func_get_args());
     }
 
+    /**
+     * @param integer $precision
+     * @param integer $scale
+     * @return SchemaBuilder
+     */
     public static function decimal($precision = null, $scale = null)
     {
         return forward_static_call_array([self::getClass(), __FUNCTION__], func_get_args());
     }
 
+    /**
+     * @return SchemaBuilder
+     */
     public static function dateTime()
     {
         return forward_static_call_array([self::getClass(), __FUNCTION__], func_get_args());
     }
 
+    /**
+     * @return SchemaBuilder
+     */
     public static function timestamp()
     {
         return forward_static_call_array([self::getClass(), __FUNCTION__], func_get_args());
     }
 
+    /**
+     * @return SchemaBuilder
+     */
     public static function time()
     {
         return forward_static_call_array([self::getClass(), __FUNCTION__], func_get_args());
     }
 
+    /**
+     * @return SchemaBuilder
+     */
     public static function date()
     {
         return forward_static_call_array([self::getClass(), __FUNCTION__], func_get_args());
     }
 
+    /**
+     * @param integer $length
+     * @return SchemaBuilder
+     */
     public static function binary($length = null)
     {
         return forward_static_call_array([self::getClass(), __FUNCTION__], func_get_args());
     }
 
+    /**
+     * @param integer $length
+     * @return SchemaBuilder
+     */
     public static function boolean($length = null)
     {
         return forward_static_call_array([self::getClass(), __FUNCTION__], func_get_args());
     }
 
+    /**
+     * @param integer $precision
+     * @param integer $scale
+     * @return SchemaBuilder
+     */
     public static function money($precision = null, $scale = null)
     {
         return forward_static_call_array([self::getClass(), __FUNCTION__], func_get_args());

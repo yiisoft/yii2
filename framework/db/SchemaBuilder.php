@@ -13,6 +13,9 @@ namespace yii\db;
 use Yii;
 use yii\base\Object;
 
+/**
+ * @method SchemaBuilder default($default = null) see [[SchemaBuilder::_default()]] for more info
+ */
 abstract class SchemaBuilder extends Object
 {
     protected $schema = null;
@@ -113,11 +116,10 @@ abstract class SchemaBuilder extends Object
         return $this;
     }
 
-    public function setDefault($default = null)
-    {
-        $this->default = $default;
-
-        return $this;
+    public function __call($name, $arguments) {
+        if ($name === 'default') {
+            return call_user_func_array(array($this, '_default'), $arguments);
+        }
     }
 
     public function check($check)
@@ -137,6 +139,12 @@ abstract class SchemaBuilder extends Object
             $this->getCheckString();
     }
 
+    protected function _default($default = null)
+    {
+        $this->default = $default;
+
+        return $this;
+    }
 
     protected function getLengthString()
     {
