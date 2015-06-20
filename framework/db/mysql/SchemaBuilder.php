@@ -10,6 +10,8 @@ namespace yii\db\mysql;
 use yii\db\SchemaBuilder as AbstractSchemaBuilder;
 
 /**
+ * SchemaBuilder is the schema builder for MySQL databases.
+ *
  * @author Vasenin Matvey <vaseninm@gmail.com>
  * @since 2.0.5
  */

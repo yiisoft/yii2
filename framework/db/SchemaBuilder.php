@@ -11,29 +11,47 @@ use Yii;
 use yii\base\Object;
 
 /**
+ * SchemaBuilder is the class help to define DB's schema types.
+ *
+ * For example you may use the following code inside your migration files:
+ *
+ * ```php
+ * $this->createTable('{{table}}', [
+ *   'name' => Schema::string(64)->notNull(),
+ *   'type' => Schema::integer()->notNull()->default(10),
+ *   'description' => Schema::text(),
+ *   'rule_name' => Schema::string(64),
+ *   'data' => Schema::text(),
+ *   'created_at' => Schema::integer(),
+ *   'updated_at' => Schema::integer(),
+ *]);
+ * ```
+ *
+ * @method SchemaBuilder default($default = null) see [[SchemaBuilder::_default()]] for more info
+ *
  * @author Vasenin Matvey <vaseninm@gmail.com>
  * @since 2.0.5
  */
 abstract class SchemaBuilder extends Object
 {
     /**
-     * @var string
+     * @var string schema of column
      */
     protected $schema = null;
     /**
-     * @var integer
+     * @var integer size of column
      */
     protected $length = null;
     /**
-     * @var boolean
+     * @var boolean whether may column value be not null
      */
     protected $isNotNull = null;
     /**
-     * @var string
+     * @var string check value of column
      */
     protected $check = null;
     /**
-     * @var string
+     * @var mixed default value of column
      */
     protected $default = null;
 
@@ -225,6 +243,8 @@ abstract class SchemaBuilder extends Object
     }
 
    /**
+    * Specify may column value be not null
+    *
     * @return SchemaBuilder
     */
     public function notNull()
@@ -242,6 +262,8 @@ abstract class SchemaBuilder extends Object
     }
 
     /**
+     * Specify check value for the column
+     *
      * @param string $check
      * @return SchemaBuilder
      */
@@ -263,6 +285,8 @@ abstract class SchemaBuilder extends Object
     }
 
     /**
+     * Specify default value for the column
+     *
      * @param mixed $default
      * @return SchemaBuilder
      */

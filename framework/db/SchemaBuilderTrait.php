@@ -12,13 +12,15 @@ use yii\base\Object;
 use yii\di\Instance;
 
 /**
+ * SchemaBuilderTrait
+ *
  * @author Vasenin Matvey <vaseninm@gmail.com>
  * @since 2.0.5
  */
 trait SchemaBuilderTrait
 {
     /**
-     * @var string the application component ID of the DB connection
+     * @var Connection|array|string the DB connection object or the application component ID of the DB connection
      */
     private static $_dbName = 'db';
 
@@ -51,6 +53,8 @@ trait SchemaBuilderTrait
     }
 
     /**
+     * Determines the SchemaBuilder for the $_dbName value.
+     *
      * @return SchemaBuilder
      */
     private static function getClass()

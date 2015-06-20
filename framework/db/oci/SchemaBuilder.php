@@ -10,6 +10,8 @@ namespace yii\db\oci;
 use yii\db\SchemaBuilder as AbstractSchemaBuilder;
 
 /**
+ * SchemaBuilder is the schema builder for Oracle databases.
+ *
  * @author Vasenin Matvey <vaseninm@gmail.com>
  * @since 2.0.5
  */
