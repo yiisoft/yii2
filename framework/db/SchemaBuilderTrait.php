@@ -24,10 +24,10 @@ use yii\di\Instance;
  * @method SchemaBuilder float(integer $length = null) see [[SchemaBuilder::float()]] for more info
  * @method SchemaBuilder double(integer $precision = null, integer $scale = null) see [[SchemaBuilder::double()]] for more info
  * @method SchemaBuilder decimal(integer $precision = null, integer $scale = null) see [[SchemaBuilder::decimal()]] for more info
- * @method SchemaBuilder dateTime(integer $length = null) see [[SchemaBuilder::dateTime()]] for more info
- * @method SchemaBuilder timestamp(integer $length = null) see [[SchemaBuilder::timestamp()]] for more info
- * @method SchemaBuilder time(integer $length = null) see [[SchemaBuilder::time()]] for more info
- * @method SchemaBuilder date(integer $length = null) see [[SchemaBuilder::date()]] for more info
+ * @method SchemaBuilder dateTime() see [[SchemaBuilder::dateTime()]] for more info
+ * @method SchemaBuilder timestamp() see [[SchemaBuilder::timestamp()]] for more info
+ * @method SchemaBuilder time() see [[SchemaBuilder::time()]] for more info
+ * @method SchemaBuilder date() see [[SchemaBuilder::date()]] for more info
  * @method SchemaBuilder binary(integer $length = null) see [[SchemaBuilder::binary()]] for more info
  * @method SchemaBuilder boolean(integer $length = null) see [[SchemaBuilder::boolean()]] for more info
  * @method SchemaBuilder money(integer $length = null) see [[SchemaBuilder::money()]] for more info

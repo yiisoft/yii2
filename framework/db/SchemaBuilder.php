@@ -173,9 +173,9 @@ abstract class SchemaBuilder extends Object
      *
      * @return SchemaBuilder
      */
-    public static function dateTime($length = null)
+    public static function dateTime()
     {
-        return static::createDefault(Schema::TYPE_DATETIME, $length);
+        return static::createDefault(Schema::TYPE_DATETIME);
     }
 
     /**
@@ -183,9 +183,9 @@ abstract class SchemaBuilder extends Object
      *
      * @return SchemaBuilder
      */
-    public static function timestamp($length = null)
+    public static function timestamp()
     {
-        return static::createDefault(Schema::TYPE_TIMESTAMP, $length);
+        return static::createDefault(Schema::TYPE_TIMESTAMP);
     }
 
     /**
@@ -193,9 +193,9 @@ abstract class SchemaBuilder extends Object
      *
      * @return SchemaBuilder
      */
-    public static function time($length = null)
+    public static function time()
     {
-        return static::createDefault(Schema::TYPE_TIME, $length);
+        return static::createDefault(Schema::TYPE_TIME);
     }
 
     /**
@@ -203,9 +203,9 @@ abstract class SchemaBuilder extends Object
      *
      * @return SchemaBuilder
      */
-    public static function date($length = null)
+    public static function date()
     {
-        return static::createDefault(Schema::TYPE_DATE, $length);
+        return static::createDefault(Schema::TYPE_DATE);
     }
 
     /**
@@ -370,6 +370,8 @@ abstract class SchemaBuilder extends Object
     }
 
     /**
+     * Create schema builder for types with length
+     *
      * @param string $type schema of column
      * @param integer $length length of column
      * @return SchemaBuilder
@@ -385,6 +387,8 @@ abstract class SchemaBuilder extends Object
     }
 
     /**
+     * Create schema builder for numeric types types with precision and scale
+     *
      * @param string $type schema of column
      * @param integer $precision precision of column
      * @param integer $scale scale of column
