@@ -12,7 +12,7 @@ use yii\base\Object;
 use yii\di\Instance;
 
 /**
- * SchemaBuilderTrait
+ * SchemaBuilderTrait build up SchemaBuilder
  *
  * @author Vasenin Matvey <vaseninm@gmail.com>
  * @since 2.0.5
@@ -42,11 +42,25 @@ trait SchemaBuilderTrait
         'cubrid' => 'yii\db\cubrid\SchemaBuilder', // CUBRID
     ];
 
+    /**
+     * Set the database connection used by this class
+     *
+     * @param Connection|array|string $dbName the DB connection object or the application component ID of the DB connection
+     */
     public static function setDb($dbName)
     {
         self::$_dbName = $dbName;
     }
 
+    /**
+     * Calls ethe named static method which is not a class method.
+     *
+     * Do not call this method directly as it is a PHP magic method that
+     * will be implicitly called when an unknown method is being invoked.
+     * @param string $name the static method name
+     * @param array $params static method parameters
+     * @return mixed the static method return value
+     */
     public static function __callStatic($name, $arguments)
     {
         return forward_static_call_array([self::getClass(), $name], $arguments);

@@ -254,6 +254,15 @@ abstract class SchemaBuilder extends Object
         return $this;
     }
 
+    /**
+     * Calls the named method which is not a class method.
+     *
+     * Do not call this method directly as it is a PHP magic method that
+     * will be implicitly called when an unknown method is being invoked.
+     * @param string $name the method name
+     * @param array $params method parameters
+     * @return mixed the method return value
+     */
     public function __call($name, $arguments)
     {
         if ($name === 'default') {
@@ -274,6 +283,11 @@ abstract class SchemaBuilder extends Object
         return $this;
     }
 
+    /**
+     * Build full string for create the column's schema
+     *
+     * @return string
+     */
     public function __toString()
     {
         return
@@ -298,6 +312,8 @@ abstract class SchemaBuilder extends Object
     }
 
     /**
+     * Returns string with length of column
+     *
      * @return string
      */
     protected function getLengthString()
@@ -306,6 +322,9 @@ abstract class SchemaBuilder extends Object
     }
 
     /**
+     * Returns string with NOT NULL if isNotNull is true, otherwise returns
+     * empty string
+     *
      * @return string
      */
     protected function getNullString()
@@ -314,6 +333,8 @@ abstract class SchemaBuilder extends Object
     }
 
     /**
+     * Returns string with default value of column
+     *
      * @return string
      */
     protected function getDefaultString()
@@ -339,6 +360,8 @@ abstract class SchemaBuilder extends Object
     }
 
     /**
+     * Returns check value of column
+     *
      * @return string
      */
     protected function getCheckString()
@@ -347,8 +370,8 @@ abstract class SchemaBuilder extends Object
     }
 
     /**
-     * @param string $type
-     * @param integer $length
+     * @param string $type schema of column
+     * @param integer $length length of column
      * @return SchemaBuilder
      */
     protected static function createDefault($type, $length = null)
@@ -362,9 +385,9 @@ abstract class SchemaBuilder extends Object
     }
 
     /**
-     * @param string $type
-     * @param integer $precision
-     * @param integer $scale
+     * @param string $type schema of column
+     * @param integer $precision precision of column
+     * @param integer $scale scale of column
      * @return SchemaBuilder
      */
     protected static function createNumeric($type, $precision = null, $scale = null)
