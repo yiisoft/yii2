@@ -35,15 +35,15 @@ use yii\base\Object;
 abstract class SchemaBuilder extends Object
 {
     /**
-     * @var string schema of column
+     * @var string column schema
      */
     protected $schema = null;
     /**
-     * @var integer size of column
+     * @var integer column size
      */
     protected $length = null;
     /**
-     * @var boolean whether may column value be not null
+     * @var boolean whether value could be null
      */
     protected $isNotNull = null;
     /**
@@ -56,7 +56,7 @@ abstract class SchemaBuilder extends Object
     protected $default = null;
 
     /**
-     * Specify type of field as primary key
+     * Makes column a primary key
      *
      * @param integer $length
      * @return SchemaBuilder
@@ -67,7 +67,7 @@ abstract class SchemaBuilder extends Object
     }
 
     /**
-     * Specify type of field as big primary key
+     * Makes column a big primary key
      *
      * @param integer $length
      * @return SchemaBuilder
@@ -78,7 +78,7 @@ abstract class SchemaBuilder extends Object
     }
 
     /**
-     * Specify type of field as string
+     * Makes column a string
      *
      * @param integer $length
      * @return SchemaBuilder
@@ -89,7 +89,7 @@ abstract class SchemaBuilder extends Object
     }
 
     /**
-     * Specify type of field as text
+     * Makes column a text
      *
      * @param integer $length
      * @return SchemaBuilder
@@ -100,7 +100,7 @@ abstract class SchemaBuilder extends Object
     }
 
     /**
-     * Specify type of field as smallint
+     * Makes column a smallint
      *
      * @param integer $length
      * @return SchemaBuilder
@@ -111,7 +111,7 @@ abstract class SchemaBuilder extends Object
     }
 
     /**
-     * Specify type of field as integer
+     * Makes column a integer
      *
      * @param integer $length
      * @return SchemaBuilder
@@ -122,7 +122,7 @@ abstract class SchemaBuilder extends Object
     }
 
     /**
-     * Specify type of field as bigint
+     * Makes column a bigint
      *
      * @param integer $length
      * @return SchemaBuilder
@@ -133,7 +133,7 @@ abstract class SchemaBuilder extends Object
     }
 
     /**
-     * Specify type of field as float
+     * Makes column a float
      *
      * @param integer $precision
      * @param integer $scale
@@ -145,7 +145,7 @@ abstract class SchemaBuilder extends Object
     }
 
     /**
-     * Specify type of field as double
+     * Makes column a double
      *
      * @param integer $precision
      * @param integer $scale
@@ -157,7 +157,7 @@ abstract class SchemaBuilder extends Object
     }
 
     /**
-     * Specify type of field as decimal
+     * Makes column a decimal
      *
      * @param integer $precision
      * @param integer $scale
@@ -169,7 +169,7 @@ abstract class SchemaBuilder extends Object
     }
 
     /**
-     * Specify type of field as datetime
+     * Makes column a datetime
      *
      * @return SchemaBuilder
      */
@@ -179,7 +179,7 @@ abstract class SchemaBuilder extends Object
     }
 
     /**
-     * Specify type of field as timestamp
+     * Makes column a timestamp
      *
      * @return SchemaBuilder
      */
@@ -189,7 +189,7 @@ abstract class SchemaBuilder extends Object
     }
 
     /**
-     * Specify type of field as time
+     * Makes column a time
      *
      * @return SchemaBuilder
      */
@@ -199,7 +199,7 @@ abstract class SchemaBuilder extends Object
     }
 
     /**
-     * Specify type of field as date
+     * Makes column a date
      *
      * @return SchemaBuilder
      */
@@ -209,7 +209,7 @@ abstract class SchemaBuilder extends Object
     }
 
     /**
-     * Specify type of field as binary
+     * Makes column a binary
      *
      * @param integer $length
      * @return SchemaBuilder
@@ -220,7 +220,7 @@ abstract class SchemaBuilder extends Object
     }
 
     /**
-     * Specify type of field as boolean
+     * Makes column a boolean
      *
      * @param integer $length
      * @return SchemaBuilder
@@ -231,7 +231,7 @@ abstract class SchemaBuilder extends Object
     }
 
     /**
-     * Specify type of field as money
+     * Makes column a money
      *
      * @param integer $precision
      * @param integer $scale
@@ -243,7 +243,7 @@ abstract class SchemaBuilder extends Object
     }
 
    /**
-    * Specify may column value be not null
+    * Specify value column could be null
     *
     * @return SchemaBuilder
     */
