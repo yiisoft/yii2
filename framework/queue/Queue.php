@@ -18,30 +18,20 @@ use yii\base\Component;
 abstract class Queue extends Component
 {
     /**
-     * Push a new job to the queue.
+     * Push a new message to the queue.
      *
-     * @param string $job
-     * @param mixed|null $data
+     * @param string $message
      * @param string|null $queue
      * @param integer $delay
      */
-    abstract public function push($job, $data = null, $queue = null, $delay = 0);
+    abstract public function push($message, $queue = null, $delay = 0);
 
     /**
-     * Pop the next job off of the queue.
+     * Pop the next message off of the queue.
      *
      * @param string|null $queue
      *
-     * @return Job
+     * @return string
      */
     abstract public function pop($queue = null);
-
-    /**
-     * Return the size (number of pending jobs) of the specified queue.
-     *
-     * @param string|null $queue
-     *
-     * @return integer
-     */
-    abstract public function size($queue = null);
 }
