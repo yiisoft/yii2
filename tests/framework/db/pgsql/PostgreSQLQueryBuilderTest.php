@@ -57,7 +57,7 @@ class PostgreSQLQueryBuilderTest extends QueryBuilderTest
             [Schema::TYPE_TIMESTAMP, Schema::timestamp(), 'timestamp(0)'],
             [Schema::TYPE_TIMESTAMP . " CHECK (value BETWEEN '2011-01-01' AND '2013-01-01')", Schema::timestamp()->check("value BETWEEN '2011-01-01' AND '2013-01-01'"), "timestamp(0) CHECK (value BETWEEN '2011-01-01' AND '2013-01-01')"],
             [Schema::TYPE_TIMESTAMP . ' NOT NULL', Schema::timestamp()->notNull(), 'timestamp(0) NOT NULL'],
-            [Schema::TYPE_TIMESTAMP.'(4)', Schema::timestamp(4), 'timestamp(4)'],
+            [Schema::TYPE_TIMESTAMP . '(4)', Schema::timestamp(4), 'timestamp(4)'],
             [Schema::TYPE_TIME, Schema::time(), 'time(0)'],
             [Schema::TYPE_TIME . " CHECK (value BETWEEN '12:00:00' AND '13:01:01')", Schema::time()->check("value BETWEEN '12:00:00' AND '13:01:01'"), "time(0) CHECK (value BETWEEN '12:00:00' AND '13:01:01')"],
             [Schema::TYPE_TIME . ' NOT NULL', Schema::time()->notNull(), 'time(0) NOT NULL'],

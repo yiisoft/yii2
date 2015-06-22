@@ -171,31 +171,34 @@ abstract class SchemaBuilder extends Object
     /**
      * Makes column a datetime
      *
+     * @param integer $length
      * @return SchemaBuilder
      */
-    public static function dateTime()
+    public static function dateTime($length = null)
     {
-        return static::createDefault(Schema::TYPE_DATETIME);
+        return static::createDefault(Schema::TYPE_DATETIME, $length);
     }
 
     /**
      * Makes column a timestamp
      *
+     * @param integer $length
      * @return SchemaBuilder
      */
-    public static function timestamp()
+    public static function timestamp($length = null)
     {
-        return static::createDefault(Schema::TYPE_TIMESTAMP);
+        return static::createDefault(Schema::TYPE_TIMESTAMP, $length);
     }
 
     /**
      * Makes column a time
      *
+     * @param integer $length
      * @return SchemaBuilder
      */
-    public static function time()
+    public static function time($length = null)
     {
-        return static::createDefault(Schema::TYPE_TIME);
+        return static::createDefault(Schema::TYPE_TIME, $length);
     }
 
     /**
@@ -260,7 +263,7 @@ abstract class SchemaBuilder extends Object
      * Do not call this method directly as it is a PHP magic method that
      * will be implicitly called when an unknown method is being invoked.
      * @param string $name the method name
-     * @param array $params method parameters
+     * @param array $arguments method parameters
      * @return mixed the method return value
      */
     public function __call($name, $arguments)
@@ -268,6 +271,8 @@ abstract class SchemaBuilder extends Object
         if ($name === 'default') {
             return call_user_func_array([$this, '_default'], $arguments);
         }
+
+        return parent::__call($name, $arguments);
     }
 
     /**
@@ -396,14 +401,12 @@ abstract class SchemaBuilder extends Object
      */
     protected static function createNumeric($type, $precision = null, $scale = null)
     {
-        $object = new static;
-
-        $object->schema = $type;
+        $length = null;
 
         if ($precision !== null) {
-            $object->length = $precision . ($scale !== null ? ",$scale" : '');
+            $length = $precision . ($scale !== null ? ",$scale" : '');
         }
 
-        return $object;
+        return self::createDefault($type, $length);
     }
 }
