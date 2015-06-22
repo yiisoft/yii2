@@ -19,6 +19,8 @@ use Yii;
  * @property string $basePath The root directory of the application.
  * @property \yii\caching\Cache $cache The cache application component. Null if the component is not enabled.
  * This property is read-only.
+ * @property \yii\queue\Queue $queue The queue application component. Null if the component is not enabled.
+ * This property is read-only.
  * @property \yii\db\Connection $db The database connection. This property is read-only.
  * @property \yii\web\ErrorHandler|\yii\console\ErrorHandler $errorHandler The error handler application
  * component. This property is read-only.
@@ -516,6 +518,15 @@ abstract class Application extends Module
     public function getCache()
     {
         return $this->get('cache', false);
+    }
+
+    /**
+     * Returns the queue component.
+     * @return \yii\queue\Queue the queue application component. Null if the component is not enabled.
+     */
+    public function getQueue()
+    {
+        return $this->get('queue', false);
     }
 
     /**
