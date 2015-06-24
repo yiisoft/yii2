@@ -14,23 +14,23 @@ use yii\di\Instance;
 /**
  * SchemaBuilderTrait build up SchemaBuilder
  *
- * @method SchemaBuilder primaryKey(integer $length = null) see [[SchemaBuilder::primaryKey()]] for more info
- * @method SchemaBuilder bigPrimaryKey(integer $length = null) see [[SchemaBuilder::bigPrimaryKey()]] for more info
- * @method SchemaBuilder string(integer $length = null) see [[SchemaBuilder::string()]] for more info
- * @method SchemaBuilder text(integer $length = null) see [[SchemaBuilder::text()]] for more info
- * @method SchemaBuilder smallInteger(integer $length = null) see [[SchemaBuilder::smallInteger()]] for more info
- * @method SchemaBuilder integer(integer $length = null) see [[SchemaBuilder::integer()]] for more info
- * @method SchemaBuilder bigInteger(integer $length = null) see [[SchemaBuilder::bigInteger()]] for more info
- * @method SchemaBuilder float(integer $length = null) see [[SchemaBuilder::float()]] for more info
- * @method SchemaBuilder double(integer $precision = null, integer $scale = null) see [[SchemaBuilder::double()]] for more info
- * @method SchemaBuilder decimal(integer $precision = null, integer $scale = null) see [[SchemaBuilder::decimal()]] for more info
- * @method SchemaBuilder dateTime() see [[SchemaBuilder::dateTime()]] for more info
- * @method SchemaBuilder timestamp() see [[SchemaBuilder::timestamp()]] for more info
- * @method SchemaBuilder time() see [[SchemaBuilder::time()]] for more info
- * @method SchemaBuilder date() see [[SchemaBuilder::date()]] for more info
- * @method SchemaBuilder binary(integer $length = null) see [[SchemaBuilder::binary()]] for more info
- * @method SchemaBuilder boolean(integer $length = null) see [[SchemaBuilder::boolean()]] for more info
- * @method SchemaBuilder money(integer $length = null) see [[SchemaBuilder::money()]] for more info
+ * @method static SchemaBuilder primaryKey(integer $length = null) see [[SchemaBuilder::primaryKey()]] for more info
+ * @method static SchemaBuilder bigPrimaryKey(integer $length = null) see [[SchemaBuilder::bigPrimaryKey()]] for more info
+ * @method static SchemaBuilder string(integer $length = null) see [[SchemaBuilder::string()]] for more info
+ * @method static SchemaBuilder text(integer $length = null) see [[SchemaBuilder::text()]] for more info
+ * @method static SchemaBuilder smallInteger(integer $length = null) see [[SchemaBuilder::smallInteger()]] for more info
+ * @method static SchemaBuilder integer(integer $length = null) see [[SchemaBuilder::integer()]] for more info
+ * @method static SchemaBuilder bigInteger(integer $length = null) see [[SchemaBuilder::bigInteger()]] for more info
+ * @method static SchemaBuilder float(integer $length = null) see [[SchemaBuilder::float()]] for more info
+ * @method static SchemaBuilder double(integer $precision = null, integer $scale = null) see [[SchemaBuilder::double()]] for more info
+ * @method static SchemaBuilder decimal(integer $precision = null, integer $scale = null) see [[SchemaBuilder::decimal()]] for more info
+ * @method static SchemaBuilder dateTime(integer $length = null) see [[SchemaBuilder::dateTime()]] for more info
+ * @method static SchemaBuilder timestamp(integer $length = null) see [[SchemaBuilder::timestamp()]] for more info
+ * @method static SchemaBuilder time(integer $length = null) see [[SchemaBuilder::time()]] for more info
+ * @method static SchemaBuilder date() see [[SchemaBuilder::date()]] for more info
+ * @method static SchemaBuilder binary(integer $length = null) see [[SchemaBuilder::binary()]] for more info
+ * @method static SchemaBuilder boolean(integer $length = null) see [[SchemaBuilder::boolean()]] for more info
+ * @method static SchemaBuilder money(integer $length = null) see [[SchemaBuilder::money()]] for more info
  *
  * @author Vasenin Matvey <vaseninm@gmail.com>
  * @since 2.0.5
@@ -71,7 +71,7 @@ trait SchemaBuilderTrait
     }
 
     /**
-     * Calls ethe named static method which is not a class method.
+     * Calls the named static method which is not a class method.
      *
      * Do not call this method directly as it is a PHP magic method that
      * will be implicitly called when an unknown method is being invoked.
