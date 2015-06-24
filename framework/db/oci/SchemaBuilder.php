@@ -23,10 +23,10 @@ class SchemaBuilder extends AbstractSchemaBuilder
     public function __toString()
     {
         return
-            $this->schema .
-            $this->getLengthString() .
-            $this->getDefaultString() .
-            $this->getNullString() .
-            $this->getCheckString();
+            $this->type .
+            $this->buildLengthString() .
+            $this->buildDefaultString() .
+            $this->buildNotNullString() .
+            $this->buildCheckString();
     }
 }

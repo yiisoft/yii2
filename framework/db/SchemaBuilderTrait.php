@@ -71,7 +71,7 @@ trait SchemaBuilderTrait
     }
 
     /**
-     * Calls ethe named static method which is not a class method.
+     * Calls the named static method which is not a class method.
      *
      * Do not call this method directly as it is a PHP magic method that
      * will be implicitly called when an unknown method is being invoked.

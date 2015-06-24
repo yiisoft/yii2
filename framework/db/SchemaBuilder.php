@@ -16,7 +16,7 @@ use yii\base\Object;
  * For example you may use the following code inside your migration files:
  *
  * ```php
- * $this->createTable('{{table}}', [
+ * $this->createTable('table', [
  *   'name' => Schema::string(64)->notNull(),
  *   'type' => Schema::integer()->notNull()->default(10),
  *   'description' => Schema::text(),
@@ -37,7 +37,7 @@ abstract class SchemaBuilder extends Object
     /**
      * @var string column schema
      */
-    protected $schema = null;
+    protected $type = null;
     /**
      * @var integer column size
      */
@@ -45,7 +45,7 @@ abstract class SchemaBuilder extends Object
     /**
      * @var boolean whether value could be null
      */
-    protected $isNotNull = null;
+    protected $isNotNull = false;
     /**
      * @var string check value of column
      */
@@ -63,7 +63,7 @@ abstract class SchemaBuilder extends Object
      */
     public static function primaryKey($length = null)
     {
-        return static::createDefault(Schema::TYPE_PK, $length);
+        return static::create(Schema::TYPE_PK, $length);
     }
 
     /**
@@ -74,7 +74,7 @@ abstract class SchemaBuilder extends Object
      */
     public static function bigPrimaryKey($length = null)
     {
-        return static::createDefault(Schema::TYPE_BIGPK, $length);
+        return static::create(Schema::TYPE_BIGPK, $length);
     }
 
     /**
@@ -85,7 +85,7 @@ abstract class SchemaBuilder extends Object
      */
     public static function string($length = null)
     {
-        return static::createDefault(Schema::TYPE_STRING, $length);
+        return static::create(Schema::TYPE_STRING, $length);
     }
 
     /**
@@ -96,7 +96,7 @@ abstract class SchemaBuilder extends Object
      */
     public static function text($length = null)
     {
-        return static::createDefault(Schema::TYPE_TEXT, $length);
+        return static::create(Schema::TYPE_TEXT, $length);
     }
 
     /**
@@ -107,7 +107,7 @@ abstract class SchemaBuilder extends Object
      */
     public static function smallInteger($length = null)
     {
-        return static::createDefault(Schema::TYPE_SMALLINT, $length);
+        return static::create(Schema::TYPE_SMALLINT, $length);
     }
 
     /**
@@ -118,7 +118,7 @@ abstract class SchemaBuilder extends Object
      */
     public static function integer($length = null)
     {
-        return static::createDefault(Schema::TYPE_INTEGER, $length);
+        return static::create(Schema::TYPE_INTEGER, $length);
     }
 
     /**
@@ -129,7 +129,7 @@ abstract class SchemaBuilder extends Object
      */
     public static function bigInteger($length = null)
     {
-        return static::createDefault(Schema::TYPE_BIGINT, $length);
+        return static::create(Schema::TYPE_BIGINT, $length);
     }
 
     /**
@@ -176,7 +176,7 @@ abstract class SchemaBuilder extends Object
      */
     public static function dateTime($length = null)
     {
-        return static::createDefault(Schema::TYPE_DATETIME, $length);
+        return static::create(Schema::TYPE_DATETIME, $length);
     }
 
     /**
@@ -187,7 +187,7 @@ abstract class SchemaBuilder extends Object
      */
     public static function timestamp($length = null)
     {
-        return static::createDefault(Schema::TYPE_TIMESTAMP, $length);
+        return static::create(Schema::TYPE_TIMESTAMP, $length);
     }
 
     /**
@@ -198,7 +198,7 @@ abstract class SchemaBuilder extends Object
      */
     public static function time($length = null)
     {
-        return static::createDefault(Schema::TYPE_TIME, $length);
+        return static::create(Schema::TYPE_TIME, $length);
     }
 
     /**
@@ -208,7 +208,7 @@ abstract class SchemaBuilder extends Object
      */
     public static function date()
     {
-        return static::createDefault(Schema::TYPE_DATE);
+        return static::create(Schema::TYPE_DATE);
     }
 
     /**
@@ -219,7 +219,7 @@ abstract class SchemaBuilder extends Object
      */
     public static function binary($length = null)
     {
-        return static::createDefault(Schema::TYPE_BINARY, $length);
+        return static::create(Schema::TYPE_BINARY, $length);
     }
 
     /**
@@ -230,7 +230,7 @@ abstract class SchemaBuilder extends Object
      */
     public static function boolean($length = null)
     {
-        return static::createDefault(Schema::TYPE_BOOLEAN, $length);
+        return static::create(Schema::TYPE_BOOLEAN, $length);
     }
 
     /**
@@ -296,11 +296,11 @@ abstract class SchemaBuilder extends Object
     public function __toString()
     {
         return
-            $this->schema .
-            $this->getLengthString() .
-            $this->getNullString() .
-            $this->getDefaultString() .
-            $this->getCheckString();
+            $this->type .
+            $this->buildLengthString() .
+            $this->buildNotNullString() .
+            $this->buildDefaultString() .
+            $this->buildCheckString();
     }
 
     /**
@@ -321,7 +321,7 @@ abstract class SchemaBuilder extends Object
      *
      * @return string
      */
-    protected function getLengthString()
+    protected function buildLengthString()
     {
         return ($this->length !== null ? "({$this->length})" : '');
     }
@@ -332,7 +332,7 @@ abstract class SchemaBuilder extends Object
      *
      * @return string
      */
-    protected function getNullString()
+    protected function buildNotNullString()
     {
         return ($this->isNotNull === true ? ' NOT NULL' : '');
     }
@@ -342,7 +342,7 @@ abstract class SchemaBuilder extends Object
      *
      * @return string
      */
-    protected function getDefaultString()
+    protected function buildDefaultString()
     {
         $string = '';
 
@@ -369,7 +369,7 @@ abstract class SchemaBuilder extends Object
      *
      * @return string
      */
-    protected function getCheckString()
+    protected function buildCheckString()
     {
         return ($this->check !== null ? " CHECK ({$this->check})" : '');
     }
@@ -381,11 +381,11 @@ abstract class SchemaBuilder extends Object
      * @param integer $length length of column
      * @return SchemaBuilder
      */
-    protected static function createDefault($type, $length = null)
+    protected static function create($type, $length = null)
     {
         $object = new static;
 
-        $object->schema = $type;
+        $object->type = $type;
         $object->length = $length;
 
         return $object;
@@ -407,6 +407,6 @@ abstract class SchemaBuilder extends Object
             $length = $precision . ($scale !== null ? ",$scale" : '');
         }
 
-        return self::createDefault($type, $length);
+        return self::create($type, $length);
     }
 }
