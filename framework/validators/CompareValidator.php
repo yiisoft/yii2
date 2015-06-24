@@ -158,24 +158,36 @@ class CompareValidator extends Validator
             return null;
         }
     }
-
+    
     /**
      * Compares two values with the specified operator.
      * @param string $operator the comparison operator
      * @param string $type the type of the values being compared
-     * @param mixed $value the value being compared
-     * @param mixed $compareValue another value being compared
+     * @param mix $value the value being compared
+     * @param mix $compareValue another value being compared
      * @return boolean whether the comparison using the specified operator is true.
      */
-    protected function compareValues($operator, $type, $value, $compareValue)
+    protected function compareValues($operator, $type, $value, $compareValue) 
     {
-        if ($type === 'number') {
-            $value = (float) $value;
-            $compareValue = (float) $compareValue;
-        } else {
-            $value = (string) $value;
-            $compareValue = (string) $compareValue;
+        if($this->type === 'number') {
+            return $this->compareNumbericValues($operator, $type, $value, $compareValue);
         }
+        else return $this->compareStringValues($operator, $type, $value, $compareValue);
+    }
+
+    /**
+     * Compares two numberic values with the specified operator.
+     * @param string $operator the comparison operator
+     * @param string $type the type of the values being compared
+     * @param numberic $value the value being compared
+     * @param numberic $compareValue another value being compared
+     * @return boolean whether the comparison using the specified operator is true.
+     */
+    protected function compareNumbericValues($operator, $type, $value, $compareValue)
+    {
+        $value = (float) $value;
+        $compareValue = (float) $compareValue;
+        
         switch ($operator) {
             case '==':
                 return $value == $compareValue;
@@ -193,6 +205,41 @@ class CompareValidator extends Validator
                 return $value < $compareValue;
             case '<=':
                 return $value <= $compareValue;
+            default:
+                return false;
+        }
+    }
+    
+    /**
+     * Compares two string values with the specified operator.
+     * @param string $operator the comparison operator
+     * @param string $type the type of the values being compared
+     * @param mix $value the value being compared
+     * @param mix $compareValue another value being compared
+     * @return boolean whether the comparison using the specified operator is true.
+     */
+    protected function compareStringValues($operator, $type, $value, $compareValue)
+    {
+        $value = (string) $value;
+        $compareValue = (string) $compareValue;
+
+        switch ($operator) {
+            case '==':
+                return strcmp($value, $compareValue) == 0;
+            case '===':
+                return $value === $compareValue;
+            case '!=':
+                return strcmp($value, $compareValue) != 0;
+            case '!==':
+                return $value !== $compareValue;
+            case '>':
+                return strcmp($value, $compareValue) > 0;
+            case '>=':
+                return strcmp($value, $compareValue) >= 0;
+            case '<':
+                return strcmp($value, $compareValue) < 0;
+            case '<=':
+                return strcmp($value, $compareValue) <= 0;
             default:
                 return false;
         }

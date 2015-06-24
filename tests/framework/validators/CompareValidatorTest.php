@@ -173,4 +173,11 @@ class CompareValidatorTest extends TestCase
         }
         $this->fail('InvalidConfigException expected none received');
     }
+    
+    public function testZeroStrValidate() {
+        $value = '00';
+        $val = new CompareValidator(['type'=>'string','compareValue' => $value]);
+        $this->assertTrue($val->validate($value));
+        $this->assertFalse($val->validate('000'));
+    }
 }
