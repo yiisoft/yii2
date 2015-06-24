@@ -25,7 +25,7 @@ A lista a seguir descrimina os códigos de status HTTP que são usados pelo REST
 * `201`: Um recurso foi criado com êxito em resposta a uma requisição `POST`. O cabeçalho `location` contém a URL que aponta para o recurso recém-criado.
 * `204`: A requisição foi tratada com sucesso e a resposta não contém nenhum conteúdo no corpo (por exemplo uma requisição `DELETE`).
 * `304`: O recurso não foi modificado. Você pode usar a versão em cache.
-* `400`: Requisição ruim. Isto pode ser causado por várias ações por parte do usuário, tais como o fornecimento de um JSON inválido no corpo da requisição, fornecendo parâmetros inválidos, etc.
+* `400`: Requisição malfeita. Isto pode ser causado por várias ações por parte do usuário, tais como o fornecimento de um JSON inválido no corpo da requisição, fornecendo parâmetros inválidos, etc.
 * `401`: Falha de autenticação.
 * `403`: O usuário autenticado não tem permissão para acessar o recurso da API solicitado.
 * `404`: O recurso requisitado não existe.
@@ -80,6 +80,6 @@ return [
 ];
 ```
 
-O código acima formatará a resposta (para ambas as respostas bem-sucedidas e com falha) como explicado quando `suppress_response_code` é passado como um parâmetro `GET`.
+O código acima formatará a resposta (para ambas as respostas, bem-sucedidas e com falha) como explicado quando `suppress_response_code` é passado como um parâmetro `GET`.
 
 
