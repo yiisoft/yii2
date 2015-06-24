@@ -23,7 +23,7 @@ class BaseArrayHelper
 {
     /**
      * Converts an object or an array of objects into an array.
-     * @param object|array $object the object to be converted into an array
+     * @param object|array|string $object the object to be converted into an array
      * @param array $properties a mapping from object class names to the properties that need to put into the resulting arrays.
      * The properties specified for each class is an array of the following format:
      *
