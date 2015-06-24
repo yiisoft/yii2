@@ -35,7 +35,7 @@ use yii\base\Object;
 abstract class SchemaBuilder extends Object
 {
     /**
-     * @var string column schema
+     * @var string column type
      */
     protected $type = null;
     /**
