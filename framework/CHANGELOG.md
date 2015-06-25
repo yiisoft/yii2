@@ -21,6 +21,7 @@ Yii Framework 2 Change Log
 - Bug #8627: Fixed `yii\db\Migration` produces incorrect results due to table schema caching (klimov-paul)
 - Bug #8661: Fixed `yii.activeForm.js` scrolling to top (nkovacs)
 - Bug #8772: ActiveQuery failed removing duplicate records after join when the resultset did not contain the pk values e.g. after grouping (cebe)
+- Bug #8901: Fixed `yii\web\AssetManager` can not get correct published path or URL when only partial published (hightman)
 - Bug: Fixed string comparison in `BaseActiveRecord::unlink()` which may result in wrong comparison result for hash valued primary keys starting with `0e` (cebe)
 - Bug: Pass correct action name to `yii\console\Controller::options()` when default action was requested (cebe)
 - Bug: Automatic garbage collection in `yii\caching\FileCache` was not triggered (kidol)
@@ -37,7 +38,6 @@ Yii Framework 2 Change Log
 - Enh #8670: Added support for saving extra fields in session table for `yii\web\DbSession` (klimov-paul)
 - Chg #6354: `ErrorHandler::logException()` will now log the whole exception object instead of only its string representation (cebe)
 - Chg #8556: Extracted `yii\web\User::getAuthManager()` method (samdark)
-- Bug #8901: Fixed `yii\web\AssetManager` can not get correct published path or URL when only partial published (hightman)
 
 
 2.0.4 May 10, 2015
