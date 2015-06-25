@@ -528,8 +528,8 @@ class AssetManager extends Component
     {
         $path = Yii::getAlias($path);
 
-        if (isset($this->_published[$path])) {
-            return $this->_published[$path][0];
+        if (($published = $this->fetchPublished($path)) !== false) {
+            return $published[0];
         }
         if (is_string($path) && ($path = realpath($path)) !== false) {
             $base = $this->basePath . DIRECTORY_SEPARATOR;
@@ -554,8 +554,8 @@ class AssetManager extends Component
     {
         $path = Yii::getAlias($path);
 
-        if (isset($this->_published[$path])) {
-            return $this->_published[$path][1];
+        if (($published = $this->fetchPublished($path)) !== false) {
+            return $published[1];
         }
         if (is_string($path) && ($path = realpath($path)) !== false) {
             if (is_file($path)) {
@@ -566,6 +566,33 @@ class AssetManager extends Component
         } else {
             return false;
         }
+    }
+
+    /**
+     * Returns published assets with partial support.
+     * @param string $path directory or file path being published
+     * @return array|boolean the path and the URL that the asset is published, or false if the asset not published.
+     */
+    protected function fetchPublished($path)
+    {
+        if (isset($this->_published[$path])) {
+            return $this->_published[$path];
+        }
+
+        $len = strlen($path);
+        while (--$len > 0) {
+            if ($path[$len] !== DIRECTORY_SEPARATOR && $path[$len] !== '/') {
+                continue;
+            }
+            $part = substr($path, 0, $len);
+            if (isset($this->_published[$part])) {
+                $published = $this->_published[$part];
+                $published[0] .= substr($path, $len);
+                $published[1] .= strtr(substr($path, $len), DIRECTORY_SEPARATOR, '/');
+                return $published;
+            }
+        }
+        return false;
     }
 
     /**
