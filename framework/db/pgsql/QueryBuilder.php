@@ -17,6 +17,12 @@ use yii\base\InvalidParamException;
  */
 class QueryBuilder extends \yii\db\QueryBuilder
 {
+    const INDEX_UNIQUE = 'unique';
+    const INDEX_B_TREE = 'btree';
+    const INDEX_R_TREE = 'rtree';
+    const INDEX_HASH = 'hash';
+    const INDEX_GIST = 'gist';
+
     /**
      * @var array mapping from abstract column types (keys) to physical column types (values).
      */
@@ -64,6 +70,27 @@ class QueryBuilder extends \yii\db\QueryBuilder
         'NOT EXISTS' => 'buildExistsCondition',
     ];
 
+    /**
+     * Builds a SQL statement for creating a new index.
+     * @param string $name the name of the index. The name will be properly quoted by the method.
+     * @param string $table the table that the new index will be created for. The table name will be properly quoted by the method.
+     * @param string|array $columns the column(s) that should be included in the index. If there are multiple columns,
+     * separate them with commas or use an array to represent them. Each column name will be properly quoted
+     * by the method, unless a parenthesis is found in the name.
+     * @param boolean|string $index whether to add UNIQUE constraint or create another index.
+     * @return string the SQL statement for creating a new index.
+     */
+    public function createIndex($name, $table, $columns, $index = false)
+    {
+        $unique = $index === true || $index === self::INDEX_UNIQUE;
+        $index = $unique === false && !empty($index) ? $index : false;
+
+        return ($unique ? 'CREATE UNIQUE INDEX ' : 'CREATE INDEX ') .
+        $this->db->quoteTableName($name) . ' ON ' .
+        $this->db->quoteTableName($table) .
+        ($index !== false ? " USING $index" : '') .
+        ' (' . $this->buildColumns($columns) . ')';
+    }
 
     /**
      * Builds a SQL statement for dropping an index.
