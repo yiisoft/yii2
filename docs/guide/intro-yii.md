@@ -20,7 +20,7 @@ How does Yii Compare with Other Frameworks?
 
 If you're already familiar with another framework, you may appreciate knowing how Yii compares:
 
-- Like most PHP frameworks, Yii implements the MVC (Model-View-Controller) design pattern and promotes code
+- Like most PHP frameworks, Yii implements the MVC (Model-View-Controller) architectural pattern and promotes code
   organization based on that pattern.
 - Yii takes the philosophy that code should be written in a simple yet elegant way. Yii will never try to
   over-design things mainly for the purpose of strictly following some design pattern.
