@@ -17,11 +17,15 @@ use yii\base\InvalidParamException;
  */
 class QueryBuilder extends \yii\db\QueryBuilder
 {
+    /**
+     * You can use any of these indexes for the postgresql 8.2+ version
+     * @see http://www.postgresql.org/docs/8.2/static/sql-createindex.html
+     */
     const INDEX_UNIQUE = 'unique';
     const INDEX_B_TREE = 'btree';
-    const INDEX_R_TREE = 'rtree';
     const INDEX_HASH = 'hash';
     const INDEX_GIST = 'gist';
+    const INDEX_GIN = 'gin';
 
     /**
      * @var array mapping from abstract column types (keys) to physical column types (values).
@@ -77,13 +81,18 @@ class QueryBuilder extends \yii\db\QueryBuilder
      * @param string|array $columns the column(s) that should be included in the index. If there are multiple columns,
      * separate them with commas or use an array to represent them. Each column name will be properly quoted
      * by the method, unless a parenthesis is found in the name.
-     * @param boolean|string $index whether to add UNIQUE constraint or create another index.
+     * @param boolean|string $unique whether to add UNIQUE constraint or if is $unique string create some of index.
      * @return string the SQL statement for creating a new index.
      */
-    public function createIndex($name, $table, $columns, $index = false)
+    public function createIndex($name, $table, $columns, $unique = false)
     {
-        $unique = $index === true || $index === self::INDEX_UNIQUE;
-        $index = $unique === false && !empty($index) ? $index : false;
+        if ($unique == self::INDEX_UNIQUE || $unique === true) {
+            $index = false;
+            $unique = true;
+        } else {
+            $index = $unique;
+            $unique = false;
+        }
 
         return ($unique ? 'CREATE UNIQUE INDEX ' : 'CREATE INDEX ') .
         $this->db->quoteTableName($name) . ' ON ' .
