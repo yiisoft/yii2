@@ -213,7 +213,7 @@ class ActiveField extends Component
             }
         }
 
-        $inputID = Html::getInputId($this->model, $this->attribute);
+        $inputID = $this->getInputId();
         $attribute = Html::getAttributeName($this->attribute);
         $options = $this->options;
         $class = isset($options['class']) ? [$options['class']] : [];
@@ -764,7 +764,7 @@ class ActiveField extends Component
 
         $options = [];
 
-        $inputID = Html::getInputId($this->model, $this->attribute);
+        $inputID = $this->getInputId();
         $options['id'] = $inputID;
         $options['name'] = $this->attribute;
 
@@ -799,5 +799,24 @@ class ActiveField extends Component
             'encodeError' => true,
             'error' => '.help-block',
         ]);
+    }
+    
+    /**
+     * Gets the ID for the Input
+     * 
+     * Enables custom IDs for inputs without having to update any $selectors
+     * 
+     * For example:
+     * 
+     * $form->field($model, 'my-attribute',[
+     *      'inputOptions'=>['id'=>'my-custom-id','class' => 'form-control'],
+     * ]); 
+     * 
+     *  
+     * @return string $inputId
+     */
+    public function getInputId()
+    {
+        return isset($this->inputOptions['id']) ?  $this->inputOptions['id'] : Html::getInputId($this->model, $this->attribute);
     }
 }
