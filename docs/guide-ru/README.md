@@ -176,7 +176,7 @@ All Rights Reserved.
 * [Интернационализация](tutorial-i18n.md)
 * **TBD** [Отправка почты](tutorial-mailing.md)
 * [Оптимизация производительности](tutorial-performance-tuning.md)
-* **TBD** [Работа на shared хостинге](tutorial-shared-hosting.md)
+* [Окружение виртуального хостинга](tutorial-shared-hosting.md)
 * **TBD** [Шаблонизаторы](tutorial-template-engines.md)
 
 
