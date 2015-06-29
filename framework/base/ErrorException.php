@@ -17,6 +17,8 @@ use Yii;
  */
 class ErrorException extends \ErrorException
 {
+    const E_HHVM_FATAL_ERROR = 16777217;
+
     /**
      * Constructs the exception.
      * @link http://php.net/manual/en/errorexception.construct.php
@@ -65,7 +67,7 @@ class ErrorException extends \ErrorException
      */
     public static function isFatalError($error)
     {
-        return isset($error['type']) && in_array($error['type'], [E_ERROR, E_PARSE, E_CORE_ERROR, E_CORE_WARNING, E_COMPILE_ERROR, E_COMPILE_WARNING]);
+        return isset($error['type']) && in_array($error['type'], [E_ERROR, E_PARSE, E_CORE_ERROR, E_CORE_WARNING, E_COMPILE_ERROR, E_COMPILE_WARNING, self::E_HHVM_FATAL_ERROR]);
     }
 
     /**
@@ -89,6 +91,7 @@ class ErrorException extends \ErrorException
             E_USER_NOTICE => 'PHP User Notice',
             E_USER_WARNING => 'PHP User Warning',
             E_WARNING => 'PHP Warning',
+            self::E_HHVM_FATAL_ERROR => 'HHVM Fatal Error',
         ];
 
         return isset($names[$this->getCode()]) ? $names[$this->getCode()] : 'Error';
