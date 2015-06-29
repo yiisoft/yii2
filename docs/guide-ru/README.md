@@ -98,7 +98,7 @@ All Rights Reserved.
 * [Форматирование данных](output-formatting.md)
 * [Постраничная разбивка](output-pagination.md)
 * [Сортировка](output-sorting.md)
-* **TBD** [Провайдеры данных](output-data-providers.md)
+* [Провайдеры данных](output-data-providers.md)
 * **TBD** [Виджеты для данных](output-data-widgets.md)
 * [Темизация](output-theming.md)
 
@@ -176,7 +176,7 @@ All Rights Reserved.
 * [Интернационализация](tutorial-i18n.md)
 * **TBD** [Отправка почты](tutorial-mailing.md)
 * [Оптимизация производительности](tutorial-performance-tuning.md)
-* **TBD** [Работа на shared хостинге](tutorial-shared-hosting.md)
+* [Окружение виртуального хостинга](tutorial-shared-hosting.md)
 * **TBD** [Шаблонизаторы](tutorial-template-engines.md)
 
 
