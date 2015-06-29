@@ -98,7 +98,7 @@ All Rights Reserved.
 * [Форматирование данных](output-formatting.md)
 * [Постраничная разбивка](output-pagination.md)
 * [Сортировка](output-sorting.md)
-* **TBD** [Провайдеры данных](output-data-providers.md)
+* [Провайдеры данных](output-data-providers.md)
 * **TBD** [Виджеты для данных](output-data-widgets.md)
 * [Темизация](output-theming.md)
 
