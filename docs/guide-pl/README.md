@@ -31,7 +31,7 @@ Struktura aplikacji
 ---------------------
 
 * [Przegląd](structure-overview.md)
-* [Entry Scripts](structure-entry-scripts.md)
+* [Skrypty wejściowe](structure-entry-scripts.md)
 * [Aplikacje](structure-applications.md)
 * [Komponenty aplikacji](structure-application-components.md)
 * [Kontrolery](structure-controllers.md)
@@ -40,21 +40,21 @@ Struktura aplikacji
 * [Moduły](structure-modules.md)
 * [Filtry](structure-filters.md)
 * [Widżety](structure-widgets.md)
-* [Zasoby(Assets)](structure-assets.md)
+* [Zasoby (Assets)](structure-assets.md)
 * [Rozszerzenia](structure-extensions.md)
 
 
-Handling Requests
+Obsługa żądań
 -----------------
 
-* **TBD** [Bootstrapping](runtime-bootstrapping.md)
-* **TBD** [Routing](runtime-routing.md)
-* **TBD** [Request](runtime-requests.md)
-* **TBD** [Response](runtime-responses.md)
-* **TBD** [Sesje i ciastka(cookies)](runtime-sessions-cookies.md)
+* [Przegląd](runtime-overview.md)
+* [Bootstrapping](runtime-bootstrapping.md)
 * [Parsowanie i generowanie adresów URL](runtime-url-handling.md)
+* [Żądania](runtime-requests.md)
+* [Odpowiedzi](runtime-responses.md)
+* [Sesje i ciasteczka](runtime-sessions-cookies.md)
 * [Obsługa błędów](runtime-handling-errors.md)
-* [Zapis logów](runtime-logging.md)
+* [Logowanie](runtime-logging.md)
 
 
 Kluczowe koncepcje
@@ -62,47 +62,48 @@ Kluczowe koncepcje
 
 * [Komponenty](concept-components.md)
 * [Właściwości](concept-properties.md)
-* [Zdarzenia(Events)](concept-events.md)
-* [Zachowania(Behaviors)](concept-behaviors.md)
+* [Zdarzenia (Events)](concept-events.md)
+* [Zachowania (Behaviors)](concept-behaviors.md)
 * [Konfiguracje](concept-configurations.md)
 * [Aliasy](concept-aliases.md)
 * [Autoładowanie klas](concept-autoloading.md)
 * [Lokator usług](concept-service-locator.md)
-* [Kontener wstrzykiwania zależoności(DI Container)](concept-di-container.md)
+* [Kontener wstrzykiwania zależności (DI Container)](concept-di-container.md)
 
 
 Praca z bazami danych
 ----------------------
 
-* [Obiekt dostępu bazy danych(DAO)](db-dao.md): Łączenie z bazą, podstawowe zapytania, transakcje i manipulacja schematem.
-* [Budowniczy zapytań](db-query-builder.md): Zapytania do bazy danych z użyciem warstwy abstrakcyjnej.
+* [Obiekt dostępu do danych (DAO)](db-dao.md): Łączenie z bazą, podstawowe zapytania, transakcje i manipulacja schematem.
+* [Budowniczy kwerend](db-query-builder.md): Zapytania do bazy danych z użyciem warstwy abstrakcyjnej.
 * [Rekord aktywny](db-active-record.md): ORM Rekordu aktywnego, otrzymywanie i manipulacja rekordami oraz definiowanie relacji.
 * [Migracje](db-migrations.md): Użycie systemu kontroli wersji na twoich bazach danych podczas tworzenia aplikacji w grupie.
-* **TBD** [Sphinx](db-sphinx.md)
-* **TBD** [Redis](db-redis.md)
-* **TBD** [MongoDB](db-mongodb.md)
-* **TBD** [ElasticSearch](db-elastic-search.md)
+* [Sphinx](db-sphinx.md)
+* [Redis](db-redis.md)
+* [MongoDB](db-mongodb.md)
+* [ElasticSearch](db-elastic-search.md)
 
 
-Otrzymywanie danych od użytkowników
+Odbieranie danych od użytkowników
 -----------------------
 
 * [Tworzenie formularzy](input-forms.md)
 * [Walidacja danych wejściowych](input-validation.md)
-* **TBD** [Wysyłanie plików](input-file-upload.md)
-* **TBD** [Otrzymywanie danych z wielu modeli](input-multiple-models.md)
+* [Wysyłanie plików](input-file-upload.md)
+* [Odczytywanie tablicowych danych wejściowych](input-tabular-input.md)
+* [Odbieranie danych z wielu modeli](input-multiple-models.md)
 
 
 Wyświetlanie danych
 ---------------
 
-* **TBD** [Formatowanie danych](output-formatting.md)
-* **TBD** [Stronicowanie](output-pagination.md)
-* **TBD** [Sortowanie](output-sorting.md)
+* [Formatowanie danych](output-formatting.md)
+* [Stronicowanie](output-pagination.md)
+* [Sortowanie](output-sorting.md)
 * [Dostawcy danych](output-data-providers.md)
 * [Widżety danych](output-data-widgets.md)
-* [Working with Client Scripts](output-client-scripts.md)
-* [Tematy](output-theming.md)
+* [Praca ze skryptami po stronie klienta](output-client-scripts.md)
+* [Motywy (Theming)](output-theming.md)
 
 
 Bezpieczeństwo
@@ -111,18 +112,18 @@ Bezpieczeństwo
 * [Uwierzytelnianie](security-authentication.md)
 * [Autoryzacja](security-authorization.md)
 * [Praca z hasłami](security-passwords.md)
-* **TBD** [Auth Clients](security-auth-clients.md)
-* **TBD** [Najlepsze praktyki](security-best-practices.md)
+* [Klienty autoryzacji](security-auth-clients.md)
+* [Najlepsze praktyki](security-best-practices.md)
 
 
-Cache'owanie
+Pamięć podręczna
 -------
 
 * [Przegląd](caching-overview.md)
-* [Cache'owanie danych](caching-data.md)
-* [Cache'owanie fragmentów](caching-fragment.md)
-* [Cache'owanie stron](caching-page.md)
-* [Cache'owanie HTTP](caching-http.md)
+* [Pamięć podręczna danych](caching-data.md)
+* [Pamięć podręczna fragmentów](caching-fragment.md)
+* [Pamięć podręczna stron](caching-page.md)
+* [Pamięć podręczna HTTP](caching-http.md)
 
 
 Webserwisy z wykorzystaniem REST
@@ -143,7 +144,7 @@ Narzędzia wspomagające tworzenie aplikacji
 -----------------
 
 * [Pasek debugowania i debuger](tool-debugger.md)
-* [Generowanie kody przy użyciu Gii](tool-gii.md)
+* [Generowanie kodu przy użyciu Gii](tool-gii.md)
 * **TBD** [Generowanie dokumentacji API](tool-api-doc.md)
 
 
@@ -166,9 +167,9 @@ Tematy specjalne
 * [Komendy konsolowe](tutorial-console.md)
 * [Podstawowe walidatory](tutorial-core-validators.md)
 * [Internacjonalizacja](tutorial-i18n.md)
-* [Mailing](tutorial-mailing.md)
+* [Wysyłanie poczty](tutorial-mailing.md)
 * [Poprawianie wydajności](tutorial-performance-tuning.md)
-* **TBD** [Shared Hosting Environment](tutorial-shared-hosting.md)
+* [Shared Hosting Environment](tutorial-shared-hosting.md)
 * [Silniki szablonów](tutorial-template-engines.md)
 * [Praca z kodem zewnętrznym](tutorial-yii-integration.md)
 
@@ -176,14 +177,14 @@ Tematy specjalne
 Widżety
 -------
 
-* GridView: link to demo page
-* ListView: link to demo page
-* DetailView: link to demo page
-* ActiveForm: link to demo page
-* Pjax: link to demo page
-* Menu: link to demo page
-* LinkPager: link to demo page
-* LinkSorter: link to demo page
+* GridView: **TBD** link to demo page
+* ListView: **TBD** link to demo page
+* DetailView: **TBD** link to demo page
+* ActiveForm: **TBD** link to demo page
+* Pjax: **TBD** link to demo page
+* Menu: **TBD** link to demo page
+* LinkPager: **TBD** link to demo page
+* LinkSorter: **TBD** link to demo page
 * [Bootstrap Widgets](widget-bootstrap.md)
 * [Jquery UI Widgets](widget-jui.md)
 
@@ -192,8 +193,7 @@ Klasy pomocnicze
 -------
 
 * [Przegląd](helper-overview.md)
-* **TBD** [ArrayHelper](helper-array.md)
-* **TBD** [Html](helper-html.md)
-* **TBD** [Url](helper-url.md)
-* **TBD** [Security](helper-security.md)
+* [ArrayHelper](helper-array.md)
+* [Html](helper-html.md)
+* [Url](helper-url.md)
 
