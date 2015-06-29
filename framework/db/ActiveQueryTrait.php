@@ -91,7 +91,7 @@ trait ActiveQueryTrait
             $this->with = $with;
         } elseif (!empty($with)) {
             foreach ($with as $name => $value) {
-                if (is_integer($name)) {
+                if (is_int($name)) {
                     // repeating relation is fine as normalizeRelations() handle it well
                     $this->with[] = $value;
                 } else {
@@ -180,7 +180,7 @@ trait ActiveQueryTrait
     {
         $relations = [];
         foreach ($with as $name => $callback) {
-            if (is_integer($name)) {
+            if (is_int($name)) {
                 $name = $callback;
                 $callback = null;
             }
