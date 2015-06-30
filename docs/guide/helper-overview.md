@@ -28,13 +28,12 @@ The following core helper classes are provided in the Yii releases:
 - [ArrayHelper](helper-array.md)
 - Console
 - FileHelper
+- FormatConverter
 - [Html](helper-html.md)
 - HtmlPurifier
-- Image
 - Inflector
 - Json
 - Markdown
-- Security
 - StringHelper
 - [Url](helper-url.md)
 - VarDumper
