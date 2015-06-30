@@ -119,7 +119,7 @@ class BaseArrayHelper
         while (!empty($args)) {
             $next = array_shift($args);
             foreach ($next as $k => $v) {
-                if (is_integer($k)) {
+                if (is_int($k)) {
                     if (isset($res[$k])) {
                         $res[] = $v;
                     } else {
@@ -577,7 +577,7 @@ class BaseArrayHelper
             return array_keys($array) === range(0, count($array) - 1);
         } else {
             foreach ($array as $key => $value) {
-                if (!is_integer($key)) {
+                if (!is_int($key)) {
                     return false;
                 }
             }
