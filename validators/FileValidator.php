@@ -29,7 +29,7 @@ class FileValidator extends Validator
      * separated by space or comma (e.g. "gif, jpg").
      * Extension names are case-insensitive. Defaults to null, meaning all file name
      * extensions are allowed.
-     * @see wrongType for the customized message for wrong file type.
+     * @see wrongExtension for the customized message for wrong file type.
      */
     public $extensions;
     /**
