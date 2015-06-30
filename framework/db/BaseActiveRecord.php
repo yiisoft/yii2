@@ -7,9 +7,8 @@
 
 namespace yii\db;
 
-use yii\base\InvalidConfigException;
-use yii\base\Event;
 use yii\base\Model;
+use yii\base\InvalidConfigException;
 use yii\base\InvalidParamException;
 use yii\base\ModelEvent;
 use yii\base\NotSupportedException;
