@@ -31,6 +31,7 @@ The following core helper classes are provided in the Yii releases:
 - FormatConverter
 - [Html](helper-html.md)
 - HtmlPurifier
+- Imagine (provided by yii2-imagine extension)
 - Inflector
 - Json
 - Markdown
