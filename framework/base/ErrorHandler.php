@@ -100,6 +100,10 @@ abstract class ErrorHandler extends Component
             }
             $this->renderException($exception);
             if (!YII_ENV_TEST) {
+                \Yii::getLogger()->flush(true);
+                if (defined('HHVM_VERSION')) {
+                    flush();
+                }
                 exit(1);
             }
         } catch (\Exception $e) {
@@ -119,6 +123,9 @@ abstract class ErrorHandler extends Component
             }
             $msg .= "\n\$_SERVER = " . VarDumper::export($_SERVER);
             error_log($msg);
+            if (defined('HHVM_VERSION')) {
+                flush();
+            }
             exit(1);
         }
 
@@ -154,6 +161,9 @@ abstract class ErrorHandler extends Component
             foreach ($trace as $frame) {
                 if ($frame['function'] == '__toString') {
                     $this->handleException($exception);
+                    if (defined('HHVM_VERSION')) {
+                        flush();
+                    }
                     exit(1);
                 }
             }
@@ -191,7 +201,9 @@ abstract class ErrorHandler extends Component
 
             // need to explicitly flush logs because exit() next will terminate the app immediately
             Yii::getLogger()->flush(true);
-
+            if (defined('HHVM_VERSION')) {
+                flush();
+            }
             exit(1);
         }
     }
