@@ -103,7 +103,7 @@ class Security extends Component
     }
 
     /**
-     * Encrypts data using a cryptograhic key.
+     * Encrypts data using a cryptographic key.
      * Derives keys for encryption and authentication from the input key using HKDF and a random salt,
      * which is very fast relative to [[encryptByPassword()]]. The input key must be properly
      * random -- use [[generateRandomKey()]] to generate keys.
