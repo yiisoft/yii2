@@ -104,7 +104,7 @@ abstract class BaseActiveFixture extends DbFixture implements \IteratorAggregate
 	    if ($this->dataClass !== null) {
 		    $activeFixtureData = Yii::createObject($this->dataClass);
 		    if (!is_subclass_of($activeFixtureData, BaseActiveFixtureData::className())) {
-			    throw new InvalidConfigException("{$this->dataClass} is not instance of ActiveFixtureData");
+			    throw new InvalidConfigException("{$this->dataClass} is not instance of BaseActiveFixtureData");
 		    }
 
 		    return $activeFixtureData->getData();
