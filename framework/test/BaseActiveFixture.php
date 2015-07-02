@@ -34,6 +34,12 @@ abstract class BaseActiveFixture extends DbFixture implements \IteratorAggregate
      * to be returned by [[getData()]]. You can set this property to be false to prevent loading any data.
      */
     public $dataFile;
+	/**
+	 * @var string the instance of BaseActiveFixtureData model class that contains the fixture data. If
+	 * this not set [[getData()]] function will use fixture data contains in [[dataFile]] property.
+	 * @see BaseActiveFixtureData
+	 */
+	public $dataClass;
 
     /**
      * @var \yii\db\ActiveRecord[] the loaded AR models
@@ -95,7 +101,16 @@ abstract class BaseActiveFixture extends DbFixture implements \IteratorAggregate
      */
     protected function getData()
     {
-        if ($this->dataFile === false || $this->dataFile === null) {
+	    if ($this->dataClass !== null) {
+		    $activeFixtureData = Yii::createObject($this->dataClass);
+		    if (!is_subclass_of($activeFixtureData, BaseActiveFixtureData::className())) {
+			    throw new InvalidConfigException("{$this->dataClass} is not instance of ActiveFixtureData");
+		    }
+
+		    return $activeFixtureData->getData();
+	    }
+
+	    if ($this->dataFile === false || $this->dataFile === null) {
             return [];
         }
         $dataFile = Yii::getAlias($this->dataFile);
