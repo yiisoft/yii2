@@ -44,17 +44,18 @@ Struktura aplikacji
 * [Rozszerzenia](structure-extensions.md)
 
 
-Handling Requests
+Obsługa żądań
 -----------------
 
-* [Overview](runtime-overview.md)
+* [Przegląd](runtime-overview.md)
 * [Bootstrapping](runtime-bootstrapping.md)
 * [Parsowanie i generowanie adresów URL](runtime-url-handling.md)
-* [Requests](runtime-requests.md)
-* [Responses](runtime-responses.md)
-* [Sessions and Cookies](runtime-sessions-cookies.md)
+* [Żądania](runtime-requests.md)
+* [Odpowiedzi](runtime-responses.md)
+* [Sesje i ciasteczka](runtime-sessions-cookies.md)
 * [Obsługa błędów](runtime-handling-errors.md)
-* [Zapis logów](runtime-logging.md)
+* [Logowanie](runtime-logging.md)
+
 
 Kluczowe koncepcje
 ------------
@@ -89,7 +90,7 @@ Odbieranie danych od użytkowników
 * [Tworzenie formularzy](input-forms.md)
 * [Walidacja danych wejściowych](input-validation.md)
 * [Wysyłanie plików](input-file-upload.md)
-* [Gromadzenie tablicowych danych wejściowych](input-tabular-input.md)
+* [Odczytywanie tablicowych danych wejściowych](input-tabular-input.md)
 * [Odbieranie danych z wielu modeli](input-multiple-models.md)
 
 
@@ -101,8 +102,8 @@ Wyświetlanie danych
 * [Sortowanie](output-sorting.md)
 * [Dostawcy danych](output-data-providers.md)
 * [Widżety danych](output-data-widgets.md)
-* [Working with Client Scripts](output-client-scripts.md)
-* [Tematy](output-theming.md)
+* [Praca ze skryptami po stronie klienta](output-client-scripts.md)
+* [Motywy (Theming)](output-theming.md)
 
 
 Bezpieczeństwo
@@ -111,7 +112,7 @@ Bezpieczeństwo
 * [Uwierzytelnianie](security-authentication.md)
 * [Autoryzacja](security-authorization.md)
 * [Praca z hasłami](security-passwords.md)
-* [Auth Clients](security-auth-clients.md)
+* [Klienty autoryzacji](security-auth-clients.md)
 * [Najlepsze praktyki](security-best-practices.md)
 
 
