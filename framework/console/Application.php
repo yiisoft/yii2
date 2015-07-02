@@ -97,7 +97,7 @@ class Application extends \yii\base\Application
                     if (!empty($path) && is_file($file = Yii::getAlias($path))) {
                         return require($file);
                     } else {
-                        die("The configuration file does not exist: $path\n");
+                        exit("The configuration file does not exist: $path\n");
                     }
                 }
             }

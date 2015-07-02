@@ -63,7 +63,7 @@ basic/                  application base path
 In general, the files in the application can be divided into two types: those under `basic/web` and those
 under other directories. The former can be directly accessed via HTTP (i.e., in a browser), while the latter can not and should not be.
 
-Yii implements the [model-view-controller (MVC)](http://wikipedia.org/wiki/Model-view-controller) design pattern,
+Yii implements the [model-view-controller (MVC)](http://wikipedia.org/wiki/Model-view-controller) architectural pattern,
 which is reflected in the above directory organization. The `models` directory contains all [model classes](structure-models.md),
 the `views` directory contains all [view scripts](structure-views.md), and the `controllers` directory contains
 all [controller classes](structure-controllers.md).

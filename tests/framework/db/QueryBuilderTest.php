@@ -468,6 +468,25 @@ class QueryBuilderTest extends DatabaseTestCase
         $this->assertEmpty($params);
     }
 
+    public function testComplexSelect()
+    {
+        $query = (new Query())
+            ->select([
+                'ID' => 't.id',
+                'gsm.username as GSM',
+                'part.Part',
+                'Part Cost' => 't.Part_Cost',
+                new Expression("case t.Status_Id when 1 then 'Acknowledge' when 2 then 'No Action' else 'Unknown Action' END as [[Next Action]]"),
+            ])
+            ->from('tablename');
+        list ($sql, $params) = $this->getQueryBuilder()->build($query);
+        $expected = $this->replaceQuotes(
+            'SELECT `t`.`id` AS `ID`, `gsm`.`username` AS `GSM`, `part`.`Part`, `t`.`Part_Cost` AS `Part Cost`,'
+            . ' case t.Status_Id when 1 then \'Acknowledge\' when 2 then \'No Action\' else \'Unknown Action\' END as [[Next Action]] FROM `tablename`');
+        $this->assertEquals($expected, $sql);
+        $this->assertEmpty($params);
+    }
+
     public function testCompositeInCondition()
     {
         $condition = [

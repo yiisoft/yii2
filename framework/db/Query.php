@@ -790,7 +790,7 @@ class Query extends Component implements QueryInterface
                 $this->params = $params;
             } else {
                 foreach ($params as $name => $value) {
-                    if (is_integer($name)) {
+                    if (is_int($name)) {
                         $this->params[] = $value;
                     } else {
                         $this->params[$name] = $value;

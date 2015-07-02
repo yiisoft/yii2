@@ -675,7 +675,7 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
     {
         $attrs = [];
         foreach ($attributes as $name => $value) {
-            if (is_integer($name)) {
+            if (is_int($name)) {
                 $attrs[] = $value;
             } else {
                 $this->$name = $value;

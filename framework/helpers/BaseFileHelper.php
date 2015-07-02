@@ -477,7 +477,7 @@ class BaseFileHelper
      * @param string $pattern the pattern that $baseName will be compared against
      * @param integer|boolean $firstWildcard location of first wildcard character in the $pattern
      * @param integer $flags pattern flags
-     * @return boolean wheter the name matches against pattern
+     * @return boolean whether the name matches against pattern
      */
     private static function matchBasename($baseName, $pattern, $firstWildcard, $flags)
     {
@@ -511,7 +511,7 @@ class BaseFileHelper
      * @param string $pattern the pattern that path part will be compared against
      * @param integer|boolean $firstWildcard location of first wildcard character in the $pattern
      * @param integer $flags pattern flags
-     * @return boolean wheter the path part matches against pattern
+     * @return boolean whether the path part matches against pattern
      */
     private static function matchPathname($path, $basePath, $pattern, $firstWildcard, $flags)
     {

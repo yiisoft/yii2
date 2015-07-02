@@ -408,7 +408,7 @@ class ActiveQuery extends Query implements ActiveQueryInterface
 
             if (is_array($eagerLoading)) {
                 foreach ($with as $name => $callback) {
-                    if (is_integer($name)) {
+                    if (is_int($name)) {
                         if (!in_array($callback, $eagerLoading, true)) {
                             unset($with[$name]);
                         }
@@ -463,7 +463,7 @@ class ActiveQuery extends Query implements ActiveQueryInterface
         $relations = [];
 
         foreach ($with as $name => $callback) {
-            if (is_integer($name)) {
+            if (is_int($name)) {
                 $name = $callback;
                 $callback = null;
             }

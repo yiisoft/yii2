@@ -311,7 +311,7 @@ class Menu extends Widget
     protected function isItemActive($item)
     {
         if (isset($item['url']) && is_array($item['url']) && isset($item['url'][0])) {
-            $route = $item['url'][0];
+            $route = Yii::getAlias($item['url'][0]);
             if ($route[0] !== '/' && Yii::$app->controller) {
                 $route = Yii::$app->controller->module->getUniqueId() . '/' . $route;
             }
