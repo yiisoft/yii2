@@ -36,6 +36,7 @@ Yii Framework 2 Change Log
 - Enh #8574: Added `yii\console\controllers\MessageController` support .pot file creation (pgaultier)
 - Enh #8625: Added `markUnused` option to `yii\console\controllers\MessageController` (marius7383)
 - Enh #8670: Added support for saving extra fields in session table for `yii\web\DbSession` (klimov-paul)
+- Enh #8903: PostgreSQL `QueryBuilder::createIndex()` can now specify the index method to use (LAV45)
 - Chg #6354: `ErrorHandler::logException()` will now log the whole exception object instead of only its string representation (cebe)
 - Chg #8556: Extracted `yii\web\User::getAuthManager()` method (samdark)
 
