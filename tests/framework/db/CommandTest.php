@@ -6,6 +6,7 @@ use yii\caching\FileCache;
 use yii\db\Connection;
 use yii\db\DataReader;
 use yii\db\Expression;
+use yii\db\Schema;
 
 /**
  * @group db
@@ -310,6 +311,40 @@ SQL;
         ], $record);
     }
 
+    public function testCreateTable()
+    {
+        $db = $this->getConnection();
+        $db->createCommand("DROP TABLE IF EXISTS testCreateTable;")->execute();
+
+        $db->createCommand()->createTable('testCreateTable', ['id' => Schema::TYPE_PK, 'bar' => Schema::TYPE_INTEGER])->execute();
+        $db->createCommand()->insert('testCreateTable', ['bar' => 1])->execute();
+        $records = $db->createCommand('SELECT [[id]], [[bar]] FROM {{testCreateTable}};')->queryAll();
+        $this->assertEquals([
+            ['id' => 1, 'bar' => 1],
+        ], $records);
+    }
+
+    public function testAlterTable()
+    {
+        if ($this->driverName === 'sqlite'){
+            $this->markTestSkipped('Sqlite does not support alterTable');
+        }
+
+        $db = $this->getConnection();
+        $db->createCommand("DROP TABLE IF EXISTS testAlterTable;")->execute();
+
+        $db->createCommand()->createTable('testAlterTable', ['id' => Schema::TYPE_PK, 'bar' => Schema::TYPE_INTEGER])->execute();
+        $db->createCommand()->insert('testAlterTable', ['bar' => 1])->execute();
+
+        $db->createCommand()->alterColumn('testAlterTable', 'bar', Schema::TYPE_STRING)->execute();
+
+        $db->createCommand()->insert('testAlterTable', ['bar' => 'hello'])->execute();
+        $records = $db->createCommand('SELECT [[id]], [[bar]] FROM {{testAlterTable}};')->queryAll();
+        $this->assertEquals([
+            ['id' => 1, 'bar' => 1],
+            ['id' => 2, 'bar' => 'hello'],
+        ], $records);
+    }
 
 
     /*
@@ -318,10 +353,6 @@ SQL;
     }
 
     public function testDelete()
-    {
-    }
-
-    public function testCreateTable()
     {
     }
 
@@ -346,10 +377,6 @@ SQL;
     }
 
     public function testRenameColumn()
-    {
-    }
-
-    public function testAlterColumn()
     {
     }
 
@@ -459,5 +486,73 @@ SQL;
         $this->assertTrue(isset($rows[0]));
         $this->assertTrue(isset($rows[0]['CUSTOMER_ID']));
         $this->assertTrue(isset($rows[0]['TOTAL']));
+    }
+
+    /**
+     * Data provider for [[testGetRawSql()]]
+     * @return array test data
+     */
+    public function dataProviderGetRawSql()
+    {
+        return [
+            [
+                'SELECT * FROM customer WHERE id = :id',
+                [':id' => 1],
+                'SELECT * FROM customer WHERE id = 1',
+            ],
+            [
+                'SELECT * FROM customer WHERE id = :id',
+                ['id' => 1],
+                'SELECT * FROM customer WHERE id = 1',
+            ],
+            [
+                'SELECT * FROM customer WHERE id = :id',
+                ['id' => null],
+                'SELECT * FROM customer WHERE id = NULL',
+            ],
+            [
+                'SELECT * FROM customer WHERE id = :base OR id = :basePrefix',
+                [
+                    'base' => 1,
+                    'basePrefix' => 2,
+                ],
+                'SELECT * FROM customer WHERE id = 1 OR id = 2',
+            ],
+        ];
+    }
+
+    /**
+     * @see https://github.com/yiisoft/yii2/issues/8592
+     *
+     * @dataProvider dataProviderGetRawSql
+     *
+     * @param string $sql
+     * @param array $params
+     * @param string $expectedRawSql
+     */
+    public function testGetRawSql($sql, array $params, $expectedRawSql)
+    {
+        $db = $this->getConnection(false);
+        $command = $db->createCommand($sql, $params);
+        $this->assertEquals($expectedRawSql, $command->getRawSql());
+    }
+
+    public function testAutoRefreshTableSchema()
+    {
+        $db = $this->getConnection(false);
+        $tableName = 'test';
+
+        $db->createCommand()->createTable($tableName, [
+            'id' => 'pk',
+            'name' => 'string',
+        ])->execute();
+        $initialSchema = $db->getSchema()->getTableSchema($tableName);
+
+        $db->createCommand()->addColumn($tableName, 'value', 'integer')->execute();
+        $newSchema = $db->getSchema()->getTableSchema($tableName);
+        $this->assertNotEquals($initialSchema, $newSchema);
+
+        $db->createCommand()->dropTable($tableName)->execute();
+        $this->assertNull($db->getSchema()->getTableSchema($tableName));
     }
 }

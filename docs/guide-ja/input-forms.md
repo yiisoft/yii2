@@ -106,5 +106,5 @@ echo $form->field($model, 'items[]')->checkboxList(['a' => 'Item A', 'b' => 'Ite
 フォームのもっと複雑な使用方法については、以下の節を読んで下さい。
 
 - [表形式インプットのデータ収集](input-tabular-input.md) - 同じ種類の複数のモデルのデータを収集する。
-- [複数のモデルを持つ複雑なフォーム](input-multiple-models.md) - 同じフォームの中で複数の異なるモデルを扱う。
+- [複数のモデルのデータを取得する](input-multiple-models.md) - 同じフォームの中で複数の異なるモデルを扱う。
 - [ファイルをアップロードする](input-file-upload.md) - フォームを使ってファイルをアップロードする方法。

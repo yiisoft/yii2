@@ -34,7 +34,7 @@ class BaseHtmlPurifier
      *
      *   ~~~
      *   // Allow the HTML5 data attribute `data-type` on `img` elements.
-     *   $content = HtmlPurifier::process($content, function($config) {
+     *   $content = HtmlPurifier::process($content, function ($config) {
      *     $config->getHTMLDefinition(true)
      *            ->addAttribute('img', 'data-type', 'Text');
      *   });
@@ -46,7 +46,7 @@ class BaseHtmlPurifier
     {
         $configInstance = \HTMLPurifier_Config::create($config instanceof \Closure ? null : $config);
         $configInstance->autoFinalize = false;
-        $purifier=\HTMLPurifier::instance($configInstance);
+        $purifier = \HTMLPurifier::instance($configInstance);
         $purifier->config->set('Cache.SerializerPath', \Yii::$app->getRuntimePath());
         
         if ($config instanceof \Closure) {

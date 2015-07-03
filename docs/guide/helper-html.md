@@ -75,15 +75,16 @@ echo Html::tag('div', 'Pwede na', $options);
 // <div class="btn btn-success">Pwede na</div>
 ```
 
-You may specify multiple CSS classes using array style as well:
+You may specify multiple CSS classes using the array style as well:
 
 ```php
 $options = ['class' => ['btn', 'btn-default']];
 
-echo Html::tag('div', 'Save', $options); // renders `class="btn btn-default"`
+echo Html::tag('div', 'Save', $options);
+// renders '<div class="btn btn-default">Save</div>'
 ```
 
-While adding or removing classes you may use array format as well:
+While adding or removing classes you may use the array format as well:
 
 ```php
 $options = ['class' => 'btn'];
@@ -92,21 +93,23 @@ if ($type === 'success') {
     Html::addCssClass($options, ['btn-success', 'btn-lg']);
 }
 
-echo Html::tag('div', 'Save', $options); // renders `class="btn btn-success btn-lg"`
+echo Html::tag('div', 'Save', $options);
+// renders '<div class="btn btn-success btn-lg">Save</div>'
 ```
 
-`Html::addCssClass()` prevents duplicating classes, so you don't need to worry the same class may appear twice:
+`Html::addCssClass()` prevents duplicating classes, so you don't need to worry that the same class may appear twice:
 
 ```php
 $options = ['class' => 'btn btn-default'];
 
 Html::addCssClass($options, 'btn-default'); // class 'btn-default' is already present
 
-echo Html::tag('div', 'Save', $options); // renders `class="btn btn-default"`
+echo Html::tag('div', 'Save', $options);
+// renders '<div class="btn btn-default">Save</div>'
 ```
 
-If CSS class option is specified via array format, you may use named key to mark logical purpose of some class.
-In this case, class, which added using array format under the same array key, will be ignored:
+If the CSS class option is specified via the array format, you may use a named key to mark the logical purpose of the class.
+In this case, a class with the same key in the array format will be ignored in `Html::addCssClass()`:
 
 ```php
 $options = [
@@ -118,7 +121,8 @@ $options = [
 
 Html::addCssClass($options, ['theme' => 'btn-success']); // 'theme' key is already taken
 
-echo Html::tag('div', 'Save', $options); // renders `class="btn btn-default"`
+echo Html::tag('div', 'Save', $options);
+// renders '<div class="btn btn-default">Save</div>'
 ```
 
 CSS styles can be setup in similar way using `style` attribute:

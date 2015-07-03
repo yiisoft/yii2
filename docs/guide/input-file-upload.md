@@ -5,7 +5,7 @@ Uploading files in Yii is usually done with the help of [[yii\web\UploadedFile]]
 file as an `UploadedFile` object. Combined with [[yii\widgets\ActiveForm]] and [models](structure-models.md),
 you can easily implement a secure file uploading mechanism.
 
- 
+
 ## Creating Models <span id="creating-models"></span>
 
 Like working with plain text inputs, to upload a single file you would create a model class and use an attribute
@@ -34,8 +34,8 @@ class UploadForm extends Model
     
     public function upload()
     {
-        if ($this->validate()) {                
-            $this->imageFile->saveAs('uploads/' . $model->imageFile->baseName . '.' . $model->imageFile->extension);
+        if ($this->validate()) {
+            $this->imageFile->saveAs('uploads/' . $this->imageFile->baseName . '.' . $this->imageFile->extension);
             return true;
         } else {
             return false;
@@ -48,13 +48,13 @@ In the code above, the `imageFile` attribute is used to keep the uploaded file i
 a `file` validation rule which uses [[yii\validators\FileValidator]] to ensure a file with extension name `png` or `jpg`
 is uploaded. The `upload()` method will perform the validation and save the uploaded file on the server.
 
-The `file` validator allows you to check file extensions, size, MIME type, etc. For more details, please refer to 
+The `file` validator allows you to check file extensions, size, MIME type, etc. Please refer to
 the [Core Validators](tutorial-core-validators.md#file) section for more details.
 
 > Tip: If you are uploading an image, you may consider using the `image` validator instead. The `image` validator is
   implemented via [[yii\validators\ImageValidator]] which verifies if an attribute has received a valid image 
   that can be then either saved or processed using the [Imagine Extension](https://github.com/yiisoft/yii2-imagine).
-  
+
 
 ## Rendering File Input <span id="rendering-file-input"></span>
 

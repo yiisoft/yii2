@@ -115,5 +115,5 @@ echo $form->field($model, 'items[]')->checkboxList(['a' => 'Item A', 'b' => 'Ite
 Если вы хотите более подробно изучить информацию по использованию форм, то обратитесь к главам:
 
 - [Collecting tabular input](input-tabular-input.md) for collecting data for multiple models of the same kind.
-- [Complex Forms with Multiple Models](input-multiple-models.md) for handling multiple different models in the same form.
+- [Работа с несколькими моделями](input-multiple-models.md) для обработки нескольких разных моеделй в рамках одной формы.
 - [Загрузка файлов](input-file-upload.md) - как использовать формы для загрузки файлов.

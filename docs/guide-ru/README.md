@@ -89,7 +89,7 @@ All Rights Reserved.
 * [Создание форм](input-forms.md)
 * [Валидация](input-validation.md)
 * [Загрузка файлов](input-file-upload.md)
-* **TBD** [Работа с несколькими моделями](input-multiple-models.md)
+* [Работа с несколькими моделями](input-multiple-models.md)
 
 
 Отображение данных
@@ -98,8 +98,8 @@ All Rights Reserved.
 * [Форматирование данных](output-formatting.md)
 * [Постраничная разбивка](output-pagination.md)
 * [Сортировка](output-sorting.md)
-* **TBD** [Провайдеры данных](output-data-providers.md)
-* **TBD** [Виджеты для данных](output-data-widgets.md)
+* [Провайдеры данных](output-data-providers.md)
+* [Виджеты для данных](output-data-widgets.md)
 * [Темизация](output-theming.md)
 
 
@@ -148,11 +148,12 @@ All Rights Reserved.
 Тестирование
 ------------
 
-* **TBD** [Обзор](test-overview.md)
-* **TBD** [Модульные тесты](test-unit.md)
-* **TBD** [Функциональные тесты](test-functional.md)
-* **TBD** [Приёмочные тесты](test-acceptance.md)
-* **TBD** [Фикстуры](test-fixtures.md)
+* [Обзор](test-overview.md)
+* [Настройка тестового окружения](test-environment-setup.md)
+* [Модульные тесты](test-unit.md)
+* [Функциональные тесты](test-functional.md)
+* [Приёмочные тесты](test-acceptance.md)
+* [Фикстуры](test-fixtures.md)
 
 
 Расширение Yii
@@ -171,11 +172,11 @@ All Rights Reserved.
 
 * [Шаблон приложения advanced](tutorial-advanced-app.md)
 * **TBD** [Создание приложения с нуля](tutorial-start-from-scratch.md)
-* **TBD** [Консольные команды](tutorial-console.md)
+* [Консольные команды](tutorial-console.md)
 * [Интернационализация](tutorial-i18n.md)
 * **TBD** [Отправка почты](tutorial-mailing.md)
-* **TBD** [Улучшение производительности](tutorial-performance-tuning.md)
-* **TBD** [Работа на shared хостинге](tutorial-shared-hosting.md)
+* [Оптимизация производительности](tutorial-performance-tuning.md)
+* [Окружение виртуального хостинга](tutorial-shared-hosting.md)
 * **TBD** [Шаблонизаторы](tutorial-template-engines.md)
 
 
@@ -200,6 +201,6 @@ All Rights Reserved.
 * **TBD** [Обзор](helper-overview.md)
 * [ArrayHelper](helper-array.md)
 * **TBD** [Html](helper-html.md)
-* **TBD** [Url](helper-url.md)
+* [Url хелпер](helper-url.md)
 * **TBD** [Security](helper-security.md)
 

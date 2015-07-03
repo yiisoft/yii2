@@ -401,7 +401,7 @@ class BaseConsole
                 }
 
                 $return = '';
-                while($reset && $tags > 0) {
+                while ($reset && $tags > 0) {
                     $return .= '</span>';
                     $tags--;
                 }
@@ -433,7 +433,7 @@ class BaseConsole
                 }
 
                 $styleString = '';
-                foreach($currentStyle as $name => $value) {
+                foreach ($currentStyle as $name => $value) {
                     if (is_array($value)) {
                         $value = implode(' ', $value);
                     }
@@ -444,7 +444,7 @@ class BaseConsole
             },
             $string
         );
-        while($tags > 0) {
+        while ($tags > 0) {
             $result .= '</span>';
             $tags--;
         }
@@ -665,7 +665,7 @@ class BaseConsole
         $pad = str_repeat(' ', $indent);
         $lines = explode("\n", wordwrap($text, $size[0] - $indent, "\n", true));
         $first = true;
-        foreach($lines as $i => $line) {
+        foreach ($lines as $i => $line) {
             if ($first) {
                 $first = false;
                 continue;
@@ -817,11 +817,11 @@ class BaseConsole
                 return $default;
             }
 
-            if (!strcasecmp ($input, 'y') || !strcasecmp ($input, 'yes') ) {
+            if (!strcasecmp($input, 'y') || !strcasecmp($input, 'yes')) {
                 return true;
             }
 
-            if (!strcasecmp ($input, 'n') || !strcasecmp ($input, 'no') ) {
+            if (!strcasecmp($input, 'n') || !strcasecmp($input, 'no')) {
                 return false;
             }
         }

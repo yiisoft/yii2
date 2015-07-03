@@ -53,9 +53,9 @@ db-elasticsearch.md                 |
 input-forms.md                      |
 input-validation.md                 | Yes
 input-file-upload.md                | Yes
-input-multiple-models.md            |
+input-multiple-models.md            | Yes
 input-tabular-input.md              |
-output-formatting.md                |
+output-formatting.md                | Yes
 output-pagination.md                | Yes
 output-sorting.md                   | Yes
 output-data-providers.md            | Yes
