@@ -45,6 +45,10 @@ abstract class ErrorHandler extends Component
      */
     private $_memoryReserve;
 
+    /**
+     * @var \Exception from hhvm error that store backtrace
+     */
+    private $_hhvmException;
 
     /**
      * Register this error handler
@@ -53,7 +57,11 @@ abstract class ErrorHandler extends Component
     {
         ini_set('display_errors', false);
         set_exception_handler([$this, 'handleException']);
-        set_error_handler([$this, 'handleError']);
+        if (defined('HHVM_VERSION')) {
+            set_error_handler([$this, 'handleHhvmError']);
+        } else {
+            set_error_handler([$this, 'handleError']);
+        }
         if ($this->memoryReserveSize > 0) {
             $this->_memoryReserve = str_repeat('x', $this->memoryReserveSize);
         }
@@ -131,6 +139,36 @@ abstract class ErrorHandler extends Component
 
         $this->exception = null;
     }
+    /**
+     * Handles HHVM execution errors such as warnings and notices.
+     *
+     * This method is used as a Hhvm error handler. It will store exception that will
+     * be used in fatal error
+     *
+     * @param integer $code the level of the error raised.
+     * @param string $message the error message.
+     * @param string $file the filename that the error was raised in.
+     * @param integer $line the line number the error was raised at.
+     * @param mixed $context
+     * @param mixed $backtrace trace of error
+     * @return boolean whether the normal error handler continues.
+     *
+     * @throws ErrorException
+     */
+    public function handleHhvmError($code, $message, $file, $line, $context, $backtrace)
+    {
+        if ($this->handleError($code, $message, $file, $line)) {
+            return true;
+        }
+        if (E_ERROR & $code) {
+            $exception = new ErrorException($message, $code, $code, $file, $line);
+            $ref = new \ReflectionProperty(\Exception::class, 'trace');
+            $ref->setAccessible(true);
+            $ref->setValue($exception, $backtrace);
+            $this->_hhvmException = $exception;
+        }
+        return false;
+    }
 
     /**
      * Handles PHP execution errors such as warnings and notices.
@@ -189,7 +227,11 @@ abstract class ErrorHandler extends Component
         $error = error_get_last();
 
         if (ErrorException::isFatalError($error)) {
-            $exception = new ErrorException($error['message'], $error['type'], $error['type'], $error['file'], $error['line']);
+            if (!empty($this->_hhvmException)) {
+                $exception = $this->_hhvmException;
+            } else {
+                $exception = new ErrorException($error['message'], $error['type'], $error['type'], $error['file'], $error['line']);
+            }
             $this->exception = $exception;
 
             $this->logException($exception);
