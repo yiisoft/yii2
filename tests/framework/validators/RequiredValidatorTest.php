@@ -30,7 +30,10 @@ class RequiredValidatorTest extends TestCase
         $val = new RequiredValidator(['requiredValue' => 55]);
         $this->assertTrue($val->validate(55));
         $this->assertTrue($val->validate("55"));
-        $this->assertTrue($val->validate("0x37"));
+        if (defined('HHVM_VERSION') || version_compare(PHP_VERSION, '7.0.0', '<')) {
+            // hex to int conversion of strings is not available in php7 anymore
+            $this->assertTrue($val->validate("0x37"));
+        }
         $this->assertFalse($val->validate("should fail"));
         $this->assertTrue($val->validate(true));
         $val->strict = true;
