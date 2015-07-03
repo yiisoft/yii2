@@ -63,7 +63,8 @@ class FileValidator extends Validator
     /**
      * @var integer the maximum file count the given attribute can hold.
      * It defaults to 1, meaning single file upload. By defining a higher number,
-     * multiple uploads become possible.
+     * multiple uploads become possible. Setting it to 0 means there is no limit on
+     * the amount of files that can be uploaded.
      * @see tooMany for the customized message when too many files are uploaded.
      */
     public $maxFiles = 1;
@@ -168,7 +169,7 @@ class FileValidator extends Validator
      */
     public function validateAttribute($model, $attribute)
     {
-        if ($this->maxFiles > 1) {
+        if ($this->maxFiles != 1) {
             $files = $model->$attribute;
             if (!is_array($files)) {
                 $this->addError($model, $attribute, $this->uploadRequired);
@@ -184,7 +185,7 @@ class FileValidator extends Validator
             if (empty($files)) {
                 $this->addError($model, $attribute, $this->uploadRequired);
             }
-            if (count($files) > $this->maxFiles) {
+            if ($this->maxFiles && count($files) > $this->maxFiles) {
                 $this->addError($model, $attribute, $this->tooMany, ['limit' => $this->maxFiles]);
             } else {
                 foreach ($files as $file) {
