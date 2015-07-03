@@ -162,7 +162,7 @@ abstract class ErrorHandler extends Component
         }
         if (E_ERROR & $code) {
             $exception = new ErrorException($message, $code, $code, $file, $line);
-            $ref = new \ReflectionProperty(\Exception::class, 'trace');
+            $ref = new \ReflectionProperty('\Exception', 'trace');
             $ref->setAccessible(true);
             $ref->setValue($exception, $backtrace);
             $this->_hhvmException = $exception;
