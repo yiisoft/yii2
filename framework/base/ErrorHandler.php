@@ -46,7 +46,7 @@ abstract class ErrorHandler extends Component
     private $_memoryReserve;
 
     /**
-     * @var \Exception from hhvm error that store backtrace
+     * @var \Exception from HHVM error that stores backtrace
      */
     private $_hhvmException;
 
@@ -142,8 +142,8 @@ abstract class ErrorHandler extends Component
     /**
      * Handles HHVM execution errors such as warnings and notices.
      *
-     * This method is used as a Hhvm error handler. It will store exception that will
-     * be used in fatal error
+     * This method is used as a HHVM error handler. It will store exception that will
+     * be used in fatal error handler
      *
      * @param integer $code the level of the error raised.
      * @param string $message the error message.
