@@ -49,7 +49,7 @@
          */
         afterFilter: 'afterFilter'
     };
-    
+
     var methods = {
         init: function (options) {
             return this.each(function () {
@@ -86,12 +86,14 @@
             var settings = gridData[$grid.attr('id')].settings;
             var data = {};
             $.each($(settings.filterSelector).serializeArray(), function () {
-                data[this.name] = this.value;
+                methods.setValue(data, this.name, this.value);
             });
 
             $.each(yii.getQueryParams(settings.filterUrl), function (name, value) {
-                if (data[name] === undefined) {
-                    data[name] = value;
+                var multiSelectName = name.replace('[]', '');
+                if (data[name] === undefined
+                    && data[multiSelectName] === undefined) {
+                    methods.setValue(data, name, value);
                 }
             });
 
@@ -101,9 +103,15 @@
             $grid.find('form.gridview-filter-form').remove();
             var $form = $('<form action="' + url + '" method="get" class="gridview-filter-form" style="display:none" data-pjax></form>').appendTo($grid);
             $.each(data, function (name, value) {
-                $form.append($('<input type="hidden" name="t" value="" />').attr('name', name).val(value));
+                if (Array.isArray(value)) {
+                    $.each(value, function (key, value) {
+                        $form.append($('<input type="hidden" name="t" value="" />').attr('name', name).val(value));
+                    });
+                } else {
+                    $form.append($('<input type="hidden" name="t" value="" />').attr('name', name).val(value));
+                }
             });
-            
+
             event = $.Event(gridEvents.beforeFilter);
             $grid.trigger(event);
             if (event.result === false) {
@@ -111,7 +119,7 @@
             }
 
             $form.submit();
-            
+
             $grid.trigger(gridEvents.afterFilter);
         },
 
@@ -155,6 +163,17 @@
         data: function () {
             var id = $(this).attr('id');
             return gridData[id];
+        },
+
+        setValue: function (data, name, value) {
+            if (name.indexOf('[]') !== -1) {
+                if (!Array.isArray(data[name])) {
+                    data[name] = [];
+                }
+                data[name].push(value);
+            } else {
+                data[name] = value;
+            }
         }
     };
 })(window.jQuery);
