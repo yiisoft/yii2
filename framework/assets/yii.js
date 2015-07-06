@@ -61,14 +61,14 @@ yii = (function ($) {
          * @return string|undefined the CSRF parameter name. Undefined is returned if CSRF validation is not enabled.
          */
         getCsrfParam: function () {
-            return $('meta[name=csrf-param]').prop('content');
+            return $('meta[name=csrf-param]').attr('content');
         },
 
         /**
          * @return string|undefined the CSRF token. Undefined is returned if CSRF validation is not enabled.
          */
         getCsrfToken: function () {
-            return $('meta[name=csrf-token]').prop('content');
+            return $('meta[name=csrf-token]').attr('content');
         },
 
         /**
@@ -78,8 +78,8 @@ yii = (function ($) {
          * @param value the CSRF token value
          */
         setCsrfToken: function (name, value) {
-            $('meta[name=csrf-param]').prop('content', name);
-            $('meta[name=csrf-token]').prop('content', value)
+            $('meta[name=csrf-param]').attr('content', name);
+            $('meta[name=csrf-token]').attr('content', value);
         },
 
         /**
@@ -164,8 +164,8 @@ yii = (function ($) {
                     action = window.location.href;
                 }
                 $form = $('<form method="' + method + '"></form>');
-                $form.prop('action', action);
-                var target = $e.prop('target');
+                $form.attr('action', action);
+                var target = $e.attr('target');
                 if (target) {
                     $form.attr('target', target);
                 }
@@ -195,20 +195,20 @@ yii = (function ($) {
                 });
             }
 
-            var oldMethod = $form.prop('method');
-            $form.prop('method', method);
+            var oldMethod = $form.attr('method');
+            $form.attr('method', method);
             var oldAction = null;
             if (action && action != '#') {
-                oldAction = $form.prop('action');
-                $form.prop('action', action);
+                oldAction = $form.attr('action');
+                $form.attr('action', action);
             }
 
             $form.trigger('submit');
 
             if (oldAction != null) {
-                $form.prop('action', oldAction);
+                $form.attr('action', oldAction);
             }
-            $form.prop('method', oldMethod);
+            $form.attr('method', oldMethod);
 
             // remove the temporarily added hidden inputs
             if (params && $.isPlainObject(params)) {

@@ -447,7 +447,7 @@ Yii поставляется с набором сообщений по умол�
 когда источник не содержит искомой строки. Для этого следует использовать обработку события 
 [[yii\i18n\MessageSource::EVENT_MISSING_TRANSLATION|missingTranslation]] компонента [[yii\i18n\MessageSource]].
 
-Например, чтобы отметить все непереведённые строки, чтобы их было легче находить на странице, необходимо 
+Например, чтобы отметить все не переведённые строки, чтобы их было легче находить на странице, необходимо 
 создать обработчик события. Изменим конфигурацию приложения:
 
 ```php
@@ -479,7 +479,7 @@ use yii\i18n\MissingTranslationEvent;
 
 class TranslationEventHandler
 {
-    public static function(MissingTranslationEvent $event) {
+    public static function handleMissingTranslation(MissingTranslationEvent $event) {
         $event->translatedMessage = "@MISSING: {$event->category}.{$event->message} FOR LANGUAGE {$event->language} @";
     }
 }

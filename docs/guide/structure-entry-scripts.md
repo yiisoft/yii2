@@ -1,7 +1,7 @@
 Entry Scripts
 =============
 
-Entry scripts are the first chain in the application bootstrapping process. An application (either
+Entry scripts are the first step in the application bootstrapping process. An application (either
 Web application or console application) has a single entry script. End users make requests to
 entry scripts which instantiate application instances and forward the requests to them.
 
@@ -16,7 +16,7 @@ so that users can run console applications through the command `./yii <route> [a
 Entry scripts mainly do the following work:
 
 * Define global constants;
-* Register [Composer autoloader](http://getcomposer.org/doc/01-basic-usage.md#autoloading);
+* Register [Composer autoloader](https://getcomposer.org/doc/01-basic-usage.md#autoloading);
 * Include the [[Yii]] class file;
 * Load application configuration;
 * Create and configure an [application](structure-applications.md) instance;
@@ -25,7 +25,7 @@ Entry scripts mainly do the following work:
 
 ## Web Applications <span id="web-applications"></span>
 
-The following is the code in the entry script for the [Basic Web Application Template](start-installation.md).
+The following is the code in the entry script for the [Basic Web Project Template](start-installation.md).
 
 ```php
 <?php

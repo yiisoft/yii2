@@ -401,7 +401,7 @@ class BaseConsole
                 }
 
                 $return = '';
-                while($reset && $tags > 0) {
+                while ($reset && $tags > 0) {
                     $return .= '</span>';
                     $tags--;
                 }
@@ -433,7 +433,7 @@ class BaseConsole
                 }
 
                 $styleString = '';
-                foreach($currentStyle as $name => $value) {
+                foreach ($currentStyle as $name => $value) {
                     if (is_array($value)) {
                         $value = implode(' ', $value);
                     }
@@ -444,7 +444,7 @@ class BaseConsole
             },
             $string
         );
-        while($tags > 0) {
+        while ($tags > 0) {
             $result .= '</span>';
             $tags--;
         }
@@ -611,7 +611,7 @@ class BaseConsole
         if (static::isRunningOnWindows()) {
             $output = [];
             exec('mode con', $output);
-            if (isset($output) && strpos($output[1], 'CON') !== false) {
+            if (isset($output, $output[1]) && strpos($output[1], 'CON') !== false) {
                 return $size = [(int) preg_replace('~[^0-9]~', '', $output[3]), (int) preg_replace('~[^0-9]~', '', $output[4])];
             }
         } else {
@@ -654,7 +654,7 @@ class BaseConsole
      * @param boolean $refresh whether to force refresh of screen size.
      * This will be passed to [[getScreenSize()]].
      * @return string the wrapped text.
-     * @since 2.0.3
+     * @since 2.0.4
      */
     public static function wrapText($text, $indent = 0, $refresh = false)
     {
@@ -665,7 +665,7 @@ class BaseConsole
         $pad = str_repeat(' ', $indent);
         $lines = explode("\n", wordwrap($text, $size[0] - $indent, "\n", true));
         $first = true;
-        foreach($lines as $i => $line) {
+        foreach ($lines as $i => $line) {
             if ($first) {
                 $first = false;
                 continue;
@@ -817,11 +817,11 @@ class BaseConsole
                 return $default;
             }
 
-            if (!strcasecmp ($input, 'y') || !strcasecmp ($input, 'yes') ) {
+            if (!strcasecmp($input, 'y') || !strcasecmp($input, 'yes')) {
                 return true;
             }
 
-            if (!strcasecmp ($input, 'n') || !strcasecmp ($input, 'no') ) {
+            if (!strcasecmp($input, 'n') || !strcasecmp($input, 'no')) {
                 return false;
             }
         }

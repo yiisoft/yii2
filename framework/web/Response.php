@@ -252,8 +252,7 @@ class Response extends \yii\base\Response
         if ($this->charset === null) {
             $this->charset = Yii::$app->charset;
         }
-        $formatters = $this->defaultFormatters();
-        $this->formatters = empty($this->formatters) ? $formatters : array_merge($formatters, $this->formatters);
+        $this->formatters = array_merge($this->defaultFormatters(), $this->formatters);
     }
 
     /**
@@ -429,7 +428,7 @@ class Response extends \yii\base\Response
      *  - `inline`: boolean, whether the browser should open the file within the browser window. Defaults to false,
      *     meaning a download dialog will pop up.
      *
-     * @return static the response object itself
+     * @return $this the response object itself
      */
     public function sendFile($filePath, $attachmentName = null, $options = [])
     {
@@ -459,7 +458,7 @@ class Response extends \yii\base\Response
      *  - `inline`: boolean, whether the browser should open the file within the browser window. Defaults to false,
      *     meaning a download dialog will pop up.
      *
-     * @return static the response object itself
+     * @return $this the response object itself
      * @throws HttpException if the requested range is not satisfiable
      */
     public function sendContentAsFile($content, $attachmentName, $options = [])
@@ -505,15 +504,22 @@ class Response extends \yii\base\Response
      *  - `mimeType`: the MIME type of the content. Defaults to 'application/octet-stream'.
      *  - `inline`: boolean, whether the browser should open the file within the browser window. Defaults to false,
      *     meaning a download dialog will pop up.
+     *  - `fileSize`: the size of the content to stream this is useful when size of the content is known
+     *     and the content is not seekable. Defaults to content size using `ftell()`.
+     *     This option is available since version 2.0.4.
      *
-     * @return static the response object itself
+     * @return $this the response object itself
      * @throws HttpException if the requested range cannot be satisfied.
      */
     public function sendStreamAsFile($handle, $attachmentName, $options = [])
     {
         $headers = $this->getHeaders();
-        fseek($handle, 0, SEEK_END);
-        $fileSize = ftell($handle);
+        if (isset($options['fileSize'])) {
+            $fileSize = $options['fileSize'];
+        } else {
+            fseek($handle, 0, SEEK_END);
+            $fileSize = ftell($handle);
+        }
 
         $range = $this->getHttpRange($fileSize);
         if ($range === false) {
@@ -545,7 +551,7 @@ class Response extends \yii\base\Response
      * @param boolean $inline whether the browser should open the file within the browser window. Defaults to false,
      * meaning a download dialog will pop up.
      * @param integer $contentLength the byte length of the file being downloaded. If null, `Content-Length` header will NOT be set.
-     * @return static the response object itself
+     * @return $this the response object itself
      */
     public function setDownloadHeaders($attachmentName, $mimeType = null, $inline = false, $contentLength = null)
     {
@@ -657,7 +663,7 @@ class Response extends \yii\base\Response
      *     meaning a download dialog will pop up.
      *  - xHeader: string, the name of the x-sendfile header. Defaults to "X-Sendfile".
      *
-     * @return static the response object itself
+     * @return $this the response object itself
      */
     public function xSendFile($filePath, $attachmentName = null, $options = [])
     {
@@ -680,6 +686,8 @@ class Response extends \yii\base\Response
             ->setDefault($xHeader, $filePath)
             ->setDefault('Content-Type', $mimeType)
             ->setDefault('Content-Disposition', "{$disposition}; filename=\"{$attachmentName}\"");
+
+        $this->format = self::FORMAT_RAW;
 
         return $this;
     }
@@ -737,7 +745,7 @@ class Response extends \yii\base\Response
      * meaning if the current request is an AJAX or PJAX request, then calling this method will cause the browser
      * to redirect to the given URL. If this is false, a `Location` header will be sent, which when received as
      * an AJAX/PJAX response, may NOT cause browser redirection.
-     * @return static the response object itself
+     * @return $this the response object itself
      */
     public function redirect($url, $statusCode = 302, $checkAjax = true)
     {

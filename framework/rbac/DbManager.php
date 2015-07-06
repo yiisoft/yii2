@@ -60,7 +60,7 @@ class DbManager extends BaseManager
      */
     public $ruleTable = '{{%auth_rule}}';
     /**
-     * @var Cache|array|string the cache used to improve RBAC performance. This can be one of the followings:
+     * @var Cache|array|string the cache used to improve RBAC performance. This can be one of the following:
      *
      * - an application component ID (e.g. `cache`)
      * - a configuration array
@@ -158,7 +158,7 @@ class DbManager extends BaseManager
 
         if (!empty($this->parents[$itemName])) {
             foreach ($this->parents[$itemName] as $parent) {
-                if ($this->checkAccessRecursive($user, $parent, $params, $assignments)) {
+                if ($this->checkAccessFromCache($user, $parent, $params, $assignments)) {
                     return true;
                 }
             }
@@ -454,7 +454,8 @@ class DbManager extends BaseManager
         $query = (new Query)->select('b.*')
             ->from(['a' => $this->assignmentTable, 'b' => $this->itemTable])
             ->where('{{a}}.[[item_name]]={{b}}.[[name]]')
-            ->andWhere(['a.user_id' => (string) $userId]);
+            ->andWhere(['a.user_id' => (string) $userId])
+            ->andWhere(['b.type' => Item::TYPE_ROLE]);
 
         $roles = [];
         foreach ($query->all($this->db) as $row) {

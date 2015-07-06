@@ -1,7 +1,7 @@
 安装 Yii
 ==============
 
-你可以通过两种方式安装 Yii：使用 [Composer](http://getcomposer.org/) 或下载一个归档文件。推荐使用前者，这样只需执行一条简单的命令就可以安装新的[扩展](structure-extensions.md)或更新 Yii 了。
+你可以通过两种方式安装 Yii：使用 [Composer](https://getcomposer.org/) 或下载一个归档文件。推荐使用前者，这样只需执行一条简单的命令就可以安装新的[扩展](structure-extensions.md)或更新 Yii 了。
 
 > 注意：和 Yii 1 不同，以标准方式安装 Yii 2 时会同时下载并安装框架本身和一个应用程序的基本骨架。
 
@@ -11,7 +11,7 @@
 
 如果还没有安装 Composer，你可以按 [getcomposer.org](https://getcomposer.org/download/) 中的方法安装。在 Linux 和 Mac OS X 中可以运行如下命令：
 
-    curl -s http://getcomposer.org/installer | php
+    curl -sS https://getcomposer.org/installer | php
     mv composer.phar /usr/local/bin/composer
 
 在 Windows 中，你需要下载并运行 [Composer-Setup.exe](https://getcomposer.org/Composer-Setup.exe)。
@@ -22,7 +22,7 @@
 
 Composer 安装后，切换到一个可通过 Web 访问的目录，执行如下命令即可安装 Yii ：
 
-    composer global require "fxp/composer-asset-plugin:1.0.0"
+    composer global require "fxp/composer-asset-plugin:~1.0.0"
     composer create-project --prefer-dist yiisoft/yii2-app-basic basic
 
 第一条命令安装 [Composer asset plugin](https://github.com/francoispluchino/composer-asset-plugin/)，它是通过 Composer 管理 bower 和 npm 包所必须的，此命令全局生效，一劳永逸。

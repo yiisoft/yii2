@@ -163,7 +163,7 @@ class BaseVarDumper
                     self::$_output .= '[]';
                 } else {
                     $keys = array_keys($var);
-                    $outputKeys = ($keys !== range(0, sizeof($var) - 1));
+                    $outputKeys = ($keys !== range(0, count($var) - 1));
                     $spaces = str_repeat(' ', $level * 4);
                     self::$_output .= '[';
                     foreach ($keys as $key) {
@@ -179,7 +179,14 @@ class BaseVarDumper
                 }
                 break;
             case 'object':
-                self::$_output .= 'unserialize(' . var_export(serialize($var), true) . ')';
+                try {
+                    $output = 'unserialize(' . var_export(serialize($var), true) . ')';
+                } catch (\Exception $e) {
+                    // serialize may fail, for example: if object contains a `\Closure` instance
+                    // so we use regular `var_export()` as fallback
+                    $output = var_export($var, true);
+                }
+                self::$_output .= $output;
                 break;
             default:
                 self::$_output .= var_export($var, true);

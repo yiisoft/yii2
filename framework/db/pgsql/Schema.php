@@ -167,6 +167,24 @@ class Schema extends \yii\db\Schema
     }
 
     /**
+     * Returns all schema names in the database, including the default one but not system schemas.
+     * This method should be overridden by child classes in order to support this feature
+     * because the default implementation simply throws an exception.
+     * @return array all schema names in the database, except system schemas
+     * @since 2.0.4
+     */
+    protected function findSchemaNames()
+    {
+        $sql = <<<SQL
+SELECT ns.nspname AS schema_name
+FROM pg_namespace ns
+WHERE ns.nspname != 'information_schema' AND ns.nspname NOT LIKE 'pg_%'
+ORDER BY ns.nspname
+SQL;
+        return $this->db->createCommand($sql)->queryColumn();
+    }
+
+    /**
      * Returns all table names in the database.
      * @param string $schema the schema of the tables. Defaults to empty string, meaning the current or default schema.
      * @return array all table names in the database. The names have NO schema name prefix.
@@ -208,19 +226,21 @@ SQL;
 
         $sql = <<<SQL
 select
+    ct.conname as constraint_name,
     a.attname as column_name,
     fc.relname as foreign_table_name,
     fns.nspname as foreign_table_schema,
     fa.attname as foreign_column_name
 from
-    pg_constraint ct
-    inner join generate_subscripts(ct.conkey, 1) as s on 1=1
+    (SELECT ct.conname, ct.conrelid, ct.confrelid, ct.conkey, ct.contype, ct.confkey, generate_subscripts(ct.conkey, 1) AS s
+       FROM pg_constraint ct
+    ) AS ct
     inner join pg_class c on c.oid=ct.conrelid
     inner join pg_namespace ns on c.relnamespace=ns.oid
-    inner join pg_attribute a on a.attrelid=ct.conrelid and a.attnum = ct.conkey[s]
+    inner join pg_attribute a on a.attrelid=ct.conrelid and a.attnum = ct.conkey[ct.s]
     left join pg_class fc on fc.oid=ct.confrelid
     left join pg_namespace fns on fc.relnamespace=fns.oid
-    left join pg_attribute fa on fa.attrelid=ct.confrelid and fa.attnum = ct.confkey[s]
+    left join pg_attribute fa on fa.attrelid=ct.confrelid and fa.attnum = ct.confkey[ct.s]
 where
     ct.contype='f'
     and c.relname={$tableName}
@@ -236,14 +256,17 @@ SQL;
             } else {
                 $foreignTable = $constraint['foreign_table_name'];
             }
-            $constraints[$foreignTable][$constraint['column_name']] = $constraint['foreign_column_name'];
-        }
-        foreach ($constraints as $foreignTable => $columns) {
-            $citem = [$foreignTable];
-            foreach ($columns as $column => $foreignColumn) {
-                $citem[$column] = $foreignColumn;
+            $name = $constraint['constraint_name'];
+            if (!isset($constraints[$name])) {
+                $constraints[$name] = [
+                    'tableName' => $foreignTable,
+                    'columns' => [],
+                ];
             }
-            $table->foreignKeys[] = $citem;
+            $constraints[$name]['columns'][$constraint['column_name']] = $constraint['foreign_column_name'];
+        }
+        foreach ($constraints as $constraint) {
+            $table->foreignKeys[] = array_merge([$constraint['tableName']], $constraint['columns']);
         }
     }
 
@@ -258,8 +281,10 @@ SQL;
 SELECT
     i.relname as indexname,
     pg_get_indexdef(idx.indexrelid, k + 1, TRUE) AS columnname
-FROM pg_index idx
-INNER JOIN generate_subscripts(idx.indkey, 1) AS k ON 1=1
+FROM (
+  SELECT *, generate_subscripts(indkey, 1) AS k
+  FROM pg_index
+) idx
 INNER JOIN pg_class i ON i.oid = idx.indexrelid
 INNER JOIN pg_class c ON c.oid = idx.indrelid
 INNER JOIN pg_namespace ns ON c.relnamespace = ns.oid
@@ -425,5 +450,28 @@ SQL;
         $column->phpType = $this->getColumnPhpType($column);
 
         return $column;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function insert($table, $columns)
+    {
+        $params = [];
+        $sql = $this->db->getQueryBuilder()->insert($table, $columns, $params);
+        $returnColumns = $this->getTableSchema($table)->primaryKey;
+        if (!empty($returnColumns)) {
+            $returning = [];
+            foreach ((array) $returnColumns as $name) {
+                $returning[] = $this->quoteColumnName($name);
+            }
+            $sql .= ' RETURNING ' . implode(', ', $returning);
+        }
+
+        $command = $this->db->createCommand($sql, $params);
+        $command->prepare(false);
+        $result = $command->queryOne();
+
+        return !$command->pdoStatement->rowCount() ? false : $result;
     }
 }
