@@ -300,6 +300,10 @@ class Request extends \yii\base\Request
 
     /**
      * Returns whether this is an AJAX (XMLHttpRequest) request.
+     *
+     * Note that jQuery doesn't set the header in case of cross domain
+     * requests: https://stackoverflow.com/questions/8163703/cross-domain-ajax-doesnt-send-x-requested-with-header
+     *
      * @return boolean whether this is an AJAX (XMLHttpRequest) request.
      */
     public function getIsAjax()
