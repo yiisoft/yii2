@@ -62,7 +62,7 @@ of the following format:
     // if not given, it means the rule applies to all scenarios
     // You may also configure the "except" option if you want to apply the rule
     // to all scenarios except the listed ones
-    'on' => ['scenario1', 'scenario2', ...],
+    'on' => [self::SCENARIO_DEFAULT, self::SCENARIO_UPDATE, ...],
 
     // optional, specifies additional configurations for the validator object
     'property1' => 'value1', 'property2' => 'value2', ...
