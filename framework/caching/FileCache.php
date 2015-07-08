@@ -111,8 +111,8 @@ class FileCache extends Cache
         if (@filemtime($cacheFile) > time()) {
             $fp = @fopen($cacheFile, "r");
             if ($fp !== false) {
-                @flock($fp, LOCK_EX);
-                $cacheValue = @fread($fp, filesize($cacheFile));
+                @flock($fp, LOCK_SH);
+                $cacheValue = @file_get_contents($cacheFile);
                 @flock($fp, LOCK_UN);
                 @fclose($fp);
                 return $cacheValue;
