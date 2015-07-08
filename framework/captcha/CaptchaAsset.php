@@ -17,11 +17,11 @@ use yii\web\AssetBundle;
  */
 class CaptchaAsset extends AssetBundle
 {
-	public $sourcePath = '@yii/assets';
-	public $js = [
-		'yii.captcha.js',
-	];
-	public $depends = [
-		'yii\web\YiiAsset',
-	];
+    public $sourcePath = '@yii/assets';
+    public $js = [
+        'yii.captcha.js',
+    ];
+    public $depends = [
+        'yii\web\YiiAsset',
+    ];
 }

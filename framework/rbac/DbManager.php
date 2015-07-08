@@ -8,591 +8,908 @@
 namespace yii\rbac;
 
 use Yii;
+use yii\caching\Cache;
 use yii\db\Connection;
 use yii\db\Query;
 use yii\db\Expression;
-use yii\base\Exception;
-use yii\base\InvalidConfigException;
 use yii\base\InvalidCallException;
 use yii\base\InvalidParamException;
+use yii\di\Instance;
 
 /**
  * DbManager represents an authorization manager that stores authorization information in database.
  *
- * The database connection is specified by [[db]]. And the database schema
- * should be as described in "framework/rbac/*.sql". You may change the names of
- * the three tables used to store the authorization data by setting [[itemTable]],
- * [[itemChildTable]] and [[assignmentTable]].
+ * The database connection is specified by [[db]]. The database schema could be initialized by applying migration:
  *
- * @property Item[] $items The authorization items of the specific type. This property is read-only.
+ * ```
+ * yii migrate --migrationPath=@yii/rbac/migrations/
+ * ```
+ *
+ * If you don't want to use migration and need SQL instead, files for all databases are in migrations directory.
+ *
+ * You may change the names of the tables used to store the authorization and rule data by setting [[itemTable]],
+ * [[itemChildTable]], [[assignmentTable]] and [[ruleTable]].
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @author Alexander Kochetov <creocoder@gmail.com>
  * @since 2.0
  */
-class DbManager extends Manager
+class DbManager extends BaseManager
 {
-	/**
-	 * @var Connection|string the DB connection object or the application component ID of the DB connection.
-	 * After the DbManager object is created, if you want to change this property, you should only assign it
-	 * with a DB connection object.
-	 */
-	public $db = 'db';
-	/**
-	 * @var string the name of the table storing authorization items. Defaults to 'tbl_auth_item'.
-	 */
-	public $itemTable = '{{%auth_item}}';
-	/**
-	 * @var string the name of the table storing authorization item hierarchy. Defaults to 'tbl_auth_item_child'.
-	 */
-	public $itemChildTable = '{{%auth_item_child}}';
-	/**
-	 * @var string the name of the table storing authorization item assignments. Defaults to 'tbl_auth_assignment'.
-	 */
-	public $assignmentTable = '{{%auth_assignment}}';
+    /**
+     * @var Connection|array|string the DB connection object or the application component ID of the DB connection.
+     * After the DbManager object is created, if you want to change this property, you should only assign it
+     * with a DB connection object.
+     * Starting from version 2.0.2, this can also be a configuration array for creating the object.
+     */
+    public $db = 'db';
+    /**
+     * @var string the name of the table storing authorization items. Defaults to "auth_item".
+     */
+    public $itemTable = '{{%auth_item}}';
+    /**
+     * @var string the name of the table storing authorization item hierarchy. Defaults to "auth_item_child".
+     */
+    public $itemChildTable = '{{%auth_item_child}}';
+    /**
+     * @var string the name of the table storing authorization item assignments. Defaults to "auth_assignment".
+     */
+    public $assignmentTable = '{{%auth_assignment}}';
+    /**
+     * @var string the name of the table storing rules. Defaults to "auth_rule".
+     */
+    public $ruleTable = '{{%auth_rule}}';
+    /**
+     * @var Cache|array|string the cache used to improve RBAC performance. This can be one of the following:
+     *
+     * - an application component ID (e.g. `cache`)
+     * - a configuration array
+     * - a [[yii\caching\Cache]] object
+     *
+     * When this is not set, it means caching is not enabled.
+     *
+     * Note that by enabling RBAC cache, all auth items, rules and auth item parent-child relationships will
+     * be cached and loaded into memory. This will improve the performance of RBAC permission check. However,
+     * it does require extra memory and as a result may not be appropriate if your RBAC system contains too many
+     * auth items. You should seek other RBAC implementations (e.g. RBAC based on Redis storage) in this case.
+     *
+     * Also note that if you modify RBAC items, rules or parent-child relationships from outside of this component,
+     * you have to manually call [[invalidateCache()]] to ensure data consistency.
+     *
+     * @since 2.0.3
+     */
+    public $cache;
+    /**
+     * @var string the key used to store RBAC data in cache
+     * @see cache
+     * @since 2.0.3
+     */
+    public $cacheKey = 'rbac';
+    /**
+     * @var Item[] all auth items (name => Item)
+     */
+    protected $items;
+    /**
+     * @var Rule[] all auth rules (name => Rule)
+     */
+    protected $rules;
+    /**
+     * @var array auth item parent-child relationships (childName => list of parents)
+     */
+    protected $parents;
 
-	private $_usingSqlite;
+    /**
+     * Initializes the application component.
+     * This method overrides the parent implementation by establishing the database connection.
+     */
+    public function init()
+    {
+        parent::init();
+        $this->db = Instance::ensure($this->db, Connection::className());
+        if ($this->cache !== null) {
+            $this->cache = Instance::ensure($this->cache, Cache::className());
+        }
+    }
 
-	/**
-	 * Initializes the application component.
-	 * This method overrides the parent implementation by establishing the database connection.
-	 */
-	public function init()
-	{
-		if (is_string($this->db)) {
-			$this->db = Yii::$app->getComponent($this->db);
-		}
-		if (!$this->db instanceof Connection) {
-			throw new InvalidConfigException("DbManager::db must be either a DB connection instance or the application component ID of a DB connection.");
-		}
-		$this->_usingSqlite = !strncmp($this->db->getDriverName(), 'sqlite', 6);
-		parent::init();
-	}
+    /**
+     * @inheritdoc
+     */
+    public function checkAccess($userId, $permissionName, $params = [])
+    {
+        $assignments = $this->getAssignments($userId);
+        $this->loadFromCache();
+        if ($this->items !== null) {
+            return $this->checkAccessFromCache($userId, $permissionName, $params, $assignments);
+        } else {
+            return $this->checkAccessRecursive($userId, $permissionName, $params, $assignments);
+        }
+    }
 
-	/**
-	 * Performs access check for the specified user.
-	 * @param mixed $userId the user ID. This should can be either an integer or a string representing
-	 * the unique identifier of a user. See [[User::id]].
-	 * @param string $itemName the name of the operation that need access check
-	 * @param array $params name-value pairs that would be passed to biz rules associated
-	 * with the tasks and roles assigned to the user. A param with name 'userId' is added to this array,
-	 * which holds the value of `$userId`.
-	 * @return boolean whether the operations can be performed by the user.
-	 */
-	public function checkAccess($userId, $itemName, $params = [])
-	{
-		$assignments = $this->getAssignments($userId);
-		return $this->checkAccessRecursive($userId, $itemName, $params, $assignments);
-	}
+    /**
+     * Performs access check for the specified user based on the data loaded from cache.
+     * This method is internally called by [[checkAccess()]] when [[cache]] is enabled.
+     * @param string|integer $user the user ID. This should can be either an integer or a string representing
+     * the unique identifier of a user. See [[\yii\web\User::id]].
+     * @param string $itemName the name of the operation that need access check
+     * @param array $params name-value pairs that would be passed to rules associated
+     * with the tasks and roles assigned to the user. A param with name 'user' is added to this array,
+     * which holds the value of `$userId`.
+     * @param Assignment[] $assignments the assignments to the specified user
+     * @return boolean whether the operations can be performed by the user.
+     * @since 2.0.3
+     */
+    protected function checkAccessFromCache($user, $itemName, $params, $assignments)
+    {
+        if (!isset($this->items[$itemName])) {
+            return false;
+        }
 
-	/**
-	 * Performs access check for the specified user.
-	 * This method is internally called by [[checkAccess()]].
-	 * @param mixed $userId the user ID. This should can be either an integer or a string representing
-	 * the unique identifier of a user. See [[User::id]].
-	 * @param string $itemName the name of the operation that need access check
-	 * @param array $params name-value pairs that would be passed to biz rules associated
-	 * with the tasks and roles assigned to the user. A param with name 'userId' is added to this array,
-	 * which holds the value of `$userId`.
-	 * @param Assignment[] $assignments the assignments to the specified user
-	 * @return boolean whether the operations can be performed by the user.
-	 */
-	protected function checkAccessRecursive($userId, $itemName, $params, $assignments)
-	{
-		if (($item = $this->getItem($itemName)) === null) {
-			return false;
-		}
-		Yii::trace('Checking permission: ' . $item->getName(), __METHOD__);
-		if (!isset($params['userId'])) {
-			$params['userId'] = $userId;
-		}
-		if ($this->executeBizRule($item->bizRule, $params, $item->data)) {
-			if (in_array($itemName, $this->defaultRoles)) {
-				return true;
-			}
-			if (isset($assignments[$itemName])) {
-				$assignment = $assignments[$itemName];
-				if ($this->executeBizRule($assignment->bizRule, $params, $assignment->data)) {
-					return true;
-				}
-			}
-			$query = new Query;
-			$parents = $query->select(['parent'])
-				->from($this->itemChildTable)
-				->where(['child' => $itemName])
-				->createCommand($this->db)
-				->queryColumn();
-			foreach ($parents as $parent) {
-				if ($this->checkAccessRecursive($userId, $parent, $params, $assignments)) {
-					return true;
-				}
-			}
-		}
-		return false;
-	}
+        $item = $this->items[$itemName];
 
-	/**
-	 * Adds an item as a child of another item.
-	 * @param string $itemName the parent item name
-	 * @param string $childName the child item name
-	 * @return boolean whether the item is added successfully
-	 * @throws Exception if either parent or child doesn't exist.
-	 * @throws InvalidCallException if a loop has been detected.
-	 */
-	public function addItemChild($itemName, $childName)
-	{
-		if ($itemName === $childName) {
-			throw new Exception("Cannot add '$itemName' as a child of itself.");
-		}
-		$query = new Query;
-		$rows = $query->from($this->itemTable)
-			->where(['or', 'name=:name1', 'name=:name2'], [':name1' => $itemName, ':name2' => $childName])
-			->createCommand($this->db)
-			->queryAll();
-		if (count($rows) == 2) {
-			if ($rows[0]['name'] === $itemName) {
-				$parentType = $rows[0]['type'];
-				$childType = $rows[1]['type'];
-			} else {
-				$childType = $rows[0]['type'];
-				$parentType = $rows[1]['type'];
-			}
-			$this->checkItemChildType($parentType, $childType);
-			if ($this->detectLoop($itemName, $childName)) {
-				throw new InvalidCallException("Cannot add '$childName' as a child of '$itemName'. A loop has been detected.");
-			}
-			$this->db->createCommand()
-				->insert($this->itemChildTable, ['parent' => $itemName, 'child' => $childName])
-				->execute();
-			return true;
-		} else {
-			throw new Exception("Either '$itemName' or '$childName' does not exist.");
-		}
-	}
+        Yii::trace($item instanceof Role ? "Checking role: $itemName" : "Checking permission: $itemName", __METHOD__);
 
-	/**
-	 * Removes a child from its parent.
-	 * Note, the child item is not deleted. Only the parent-child relationship is removed.
-	 * @param string $itemName the parent item name
-	 * @param string $childName the child item name
-	 * @return boolean whether the removal is successful
-	 */
-	public function removeItemChild($itemName, $childName)
-	{
-		return $this->db->createCommand()
-			->delete($this->itemChildTable, ['parent' => $itemName, 'child' => $childName])
-			->execute() > 0;
-	}
+        if (!$this->executeRule($user, $item, $params)) {
+            return false;
+        }
 
-	/**
-	 * Returns a value indicating whether a child exists within a parent.
-	 * @param string $itemName the parent item name
-	 * @param string $childName the child item name
-	 * @return boolean whether the child exists
-	 */
-	public function hasItemChild($itemName, $childName)
-	{
-		$query = new Query;
-		return $query->select(['parent'])
-			->from($this->itemChildTable)
-			->where(['parent' => $itemName, 'child' => $childName])
-			->createCommand($this->db)
-			->queryScalar() !== false;
-	}
+        if (isset($assignments[$itemName]) || in_array($itemName, $this->defaultRoles)) {
+            return true;
+        }
 
-	/**
-	 * Returns the children of the specified item.
-	 * @param mixed $names the parent item name. This can be either a string or an array.
-	 * The latter represents a list of item names.
-	 * @return Item[] all child items of the parent
-	 */
-	public function getItemChildren($names)
-	{
-		$query = new Query;
-		$rows = $query->select(['name', 'type', 'description', 'biz_rule', 'data'])
-			->from([$this->itemTable, $this->itemChildTable])
-			->where(['parent' => $names, 'name' => new Expression('child')])
-			->createCommand($this->db)
-			->queryAll();
-		$children = [];
-		foreach ($rows as $row) {
-			if (!isset($row['data']) || ($data = @unserialize($row['data'])) === false) {
-				$data = null;
-			}
-			$children[$row['name']] = new Item([
-				'manager' => $this,
-				'name' => $row['name'],
-				'type' => $row['type'],
-				'description' => $row['description'],
-				'bizRule' => $row['biz_rule'],
-				'data' => $data,
-			]);
-		}
-		return $children;
-	}
+        if (!empty($this->parents[$itemName])) {
+            foreach ($this->parents[$itemName] as $parent) {
+                if ($this->checkAccessFromCache($user, $parent, $params, $assignments)) {
+                    return true;
+                }
+            }
+        }
 
-	/**
-	 * Assigns an authorization item to a user.
-	 * @param mixed $userId the user ID (see [[User::id]])
-	 * @param string $itemName the item name
-	 * @param string $bizRule the business rule to be executed when [[checkAccess()]] is called
-	 * for this particular authorization item.
-	 * @param mixed $data additional data associated with this assignment
-	 * @return Assignment the authorization assignment information.
-	 * @throws InvalidParamException if the item does not exist or if the item has already been assigned to the user
-	 */
-	public function assign($userId, $itemName, $bizRule = null, $data = null)
-	{
-		if ($this->usingSqlite() && $this->getItem($itemName) === null) {
-			throw new InvalidParamException("The item '$itemName' does not exist.");
-		}
-		$this->db->createCommand()
-			->insert($this->assignmentTable, [
-				'user_id' => $userId,
-				'item_name' => $itemName,
-				'biz_rule' => $bizRule,
-				'data' => $data === null ? null : serialize($data),
-			])
-			->execute();
-		return new Assignment([
-			'manager' => $this,
-			'userId' => $userId,
-			'itemName' => $itemName,
-			'bizRule' => $bizRule,
-			'data' => $data,
-		]);
-	}
+        return false;
+    }
 
-	/**
-	 * Revokes an authorization assignment from a user.
-	 * @param mixed $userId the user ID (see [[User::id]])
-	 * @param string $itemName the item name
-	 * @return boolean whether removal is successful
-	 */
-	public function revoke($userId, $itemName)
-	{
-		return $this->db->createCommand()
-			->delete($this->assignmentTable, ['user_id' => $userId, 'item_name' => $itemName])
-			->execute() > 0;
-	}
+    /**
+     * Performs access check for the specified user.
+     * This method is internally called by [[checkAccess()]].
+     * @param string|integer $user the user ID. This should can be either an integer or a string representing
+     * the unique identifier of a user. See [[\yii\web\User::id]].
+     * @param string $itemName the name of the operation that need access check
+     * @param array $params name-value pairs that would be passed to rules associated
+     * with the tasks and roles assigned to the user. A param with name 'user' is added to this array,
+     * which holds the value of `$userId`.
+     * @param Assignment[] $assignments the assignments to the specified user
+     * @return boolean whether the operations can be performed by the user.
+     */
+    protected function checkAccessRecursive($user, $itemName, $params, $assignments)
+    {
+        if (($item = $this->getItem($itemName)) === null) {
+            return false;
+        }
 
-	/**
-	 * Revokes all authorization assignments from a user.
-	 * @param mixed $userId the user ID (see [[User::id]])
-	 * @return boolean whether removal is successful
-	 */
-	public function revokeAll($userId)
-	{
-		return $this->db->createCommand()
-						->delete($this->assignmentTable, ['user_id' => $userId])
-						->execute() > 0;
-	}
+        Yii::trace($item instanceof Role ? "Checking role: $itemName" : "Checking permission: $itemName", __METHOD__);
 
-	/**
-	 * Returns a value indicating whether the item has been assigned to the user.
-	 * @param mixed $userId the user ID (see [[User::id]])
-	 * @param string $itemName the item name
-	 * @return boolean whether the item has been assigned to the user.
-	 */
-	public function isAssigned($userId, $itemName)
-	{
-		$query = new Query;
-		return $query->select(['item_name'])
-			->from($this->assignmentTable)
-			->where(['user_id' => $userId, 'item_name' => $itemName])
-			->createCommand($this->db)
-			->queryScalar() !== false;
-	}
+        if (!$this->executeRule($user, $item, $params)) {
+            return false;
+        }
 
-	/**
-	 * Returns the item assignment information.
-	 * @param mixed $userId the user ID (see [[User::id]])
-	 * @param string $itemName the item name
-	 * @return Assignment the item assignment information. Null is returned if
-	 * the item is not assigned to the user.
-	 */
-	public function getAssignment($userId, $itemName)
-	{
-		$query = new Query;
-		$row = $query->from($this->assignmentTable)
-			->where(['user_id' => $userId, 'item_name' => $itemName])
-			->createCommand($this->db)
-			->queryOne();
-		if ($row !== false) {
-			if (!isset($row['data']) || ($data = @unserialize($row['data'])) === false) {
-				$data = null;
-			}
-			return new Assignment([
-				'manager' => $this,
-				'userId' => $row['user_id'],
-				'itemName' => $row['item_name'],
-				'bizRule' => $row['biz_rule'],
-				'data' => $data,
-			]);
-		} else {
-			return null;
-		}
-	}
+        if (isset($assignments[$itemName]) || in_array($itemName, $this->defaultRoles)) {
+            return true;
+        }
 
-	/**
-	 * Returns the item assignments for the specified user.
-	 * @param mixed $userId the user ID (see [[User::id]])
-	 * @return Assignment[] the item assignment information for the user. An empty array will be
-	 * returned if there is no item assigned to the user.
-	 */
-	public function getAssignments($userId)
-	{
-		$query = new Query;
-		$rows = $query->from($this->assignmentTable)
-			->where(['user_id' => $userId])
-			->createCommand($this->db)
-			->queryAll();
-		$assignments = [];
-		foreach ($rows as $row) {
-			if (!isset($row['data']) || ($data = @unserialize($row['data'])) === false) {
-				$data = null;
-			}
-			$assignments[$row['item_name']] = new Assignment([
-				'manager' => $this,
-				'userId' => $row['user_id'],
-				'itemName' => $row['item_name'],
-				'bizRule' => $row['biz_rule'],
-				'data' => $data,
-			]);
-		}
-		return $assignments;
-	}
+        $query = new Query;
+        $parents = $query->select(['parent'])
+            ->from($this->itemChildTable)
+            ->where(['child' => $itemName])
+            ->column($this->db);
+        foreach ($parents as $parent) {
+            if ($this->checkAccessRecursive($user, $parent, $params, $assignments)) {
+                return true;
+            }
+        }
 
-	/**
-	 * Saves the changes to an authorization assignment.
-	 * @param Assignment $assignment the assignment that has been changed.
-	 */
-	public function saveAssignment($assignment)
-	{
-		$this->db->createCommand()
-			->update($this->assignmentTable, [
-				'biz_rule' => $assignment->bizRule,
-				'data' => $assignment->data === null ? null : serialize($assignment->data),
-			], [
-				'user_id' => $assignment->userId,
-				'item_name' => $assignment->itemName,
-			])
-			->execute();
-	}
+        return false;
+    }
 
-	/**
-	 * Returns the authorization items of the specific type and user.
-	 * @param mixed $userId the user ID. Defaults to null, meaning returning all items even if
-	 * they are not assigned to a user.
-	 * @param integer $type the item type (0: operation, 1: task, 2: role). Defaults to null,
-	 * meaning returning all items regardless of their type.
-	 * @return Item[] the authorization items of the specific type.
-	 */
-	public function getItems($userId = null, $type = null)
-	{
-		$query = new Query;
-		if ($userId === null && $type === null) {
-			$command = $query->from($this->itemTable)
-				->createCommand($this->db);
-		} elseif ($userId === null) {
-			$command = $query->from($this->itemTable)
-				->where(['type' => $type])
-				->createCommand($this->db);
-		} elseif ($type === null) {
-			$command = $query->select(['name', 'type', 'description', 't1.biz_rule', 't1.data'])
-				->from([$this->itemTable . ' t1', $this->assignmentTable . ' t2'])
-				->where(['user_id' => $userId, 'name' => new Expression('item_name')])
-				->createCommand($this->db);
-		} else {
-			$command = $query->select(['name', 'type', 'description', 't1.biz_rule', 't1.data'])
-				->from([$this->itemTable . ' t1', $this->assignmentTable . ' t2'])
-				->where(['user_id' => $userId, 'type' => $type, 'name' => new Expression('item_name')])
-				->createCommand($this->db);
-		}
-		$items = [];
-		foreach ($command->queryAll() as $row) {
-			if (!isset($row['data']) || ($data = @unserialize($row['data'])) === false) {
-				$data = null;
-			}
-			$items[$row['name']] = new Item([
-				'manager' => $this,
-				'name' => $row['name'],
-				'type' => $row['type'],
-				'description' => $row['description'],
-				'bizRule' => $row['biz_rule'],
-				'data' => $data,
-			]);
-		}
-		return $items;
-	}
+    /**
+     * @inheritdoc
+     */
+    protected function getItem($name)
+    {
+        if (!empty($this->items[$name])) {
+            return $this->items[$name];
+        }
 
-	/**
-	 * Creates an authorization item.
-	 * An authorization item represents an action permission (e.g. creating a post).
-	 * It has three types: operation, task and role.
-	 * Authorization items form a hierarchy. Higher level items inheirt permissions representing
-	 * by lower level items.
-	 * @param string $name the item name. This must be a unique identifier.
-	 * @param integer $type the item type (0: operation, 1: task, 2: role).
-	 * @param string $description description of the item
-	 * @param string $bizRule business rule associated with the item. This is a piece of
-	 * PHP code that will be executed when [[checkAccess()]] is called for the item.
-	 * @param mixed $data additional data associated with the item.
-	 * @return Item the authorization item
-	 * @throws Exception if an item with the same name already exists
-	 */
-	public function createItem($name, $type, $description = '', $bizRule = null, $data = null)
-	{
-		$this->db->createCommand()
-			->insert($this->itemTable, [
-				'name' => $name,
-				'type' => $type,
-				'description' => $description,
-				'biz_rule' => $bizRule,
-				'data' => $data === null ? null : serialize($data),
-			])
-			->execute();
-		return new Item([
-			'manager' => $this,
-			'name' => $name,
-			'type' => $type,
-			'description' => $description,
-			'bizRule' => $bizRule,
-			'data' => $data,
-		]);
-	}
+        $row = (new Query)->from($this->itemTable)
+            ->where(['name' => $name])
+            ->one($this->db);
 
-	/**
-	 * Removes the specified authorization item.
-	 * @param string $name the name of the item to be removed
-	 * @return boolean whether the item exists in the storage and has been removed
-	 */
-	public function removeItem($name)
-	{
-		if ($this->usingSqlite()) {
-			$this->db->createCommand()
-				->delete($this->itemChildTable, ['or', 'parent=:name', 'child=:name'], [':name' => $name])
-				->execute();
-			$this->db->createCommand()
-				->delete($this->assignmentTable, ['item_name' => $name])
-				->execute();
-		}
-		return $this->db->createCommand()
-			->delete($this->itemTable, ['name' => $name])
-			->execute() > 0;
-	}
+        if ($row === false) {
+            return null;
+        }
 
-	/**
-	 * Returns the authorization item with the specified name.
-	 * @param string $name the name of the item
-	 * @return Item the authorization item. Null if the item cannot be found.
-	 */
-	public function getItem($name)
-	{
-		$query = new Query;
-		$row = $query->from($this->itemTable)
-			->where(['name' => $name])
-			->createCommand($this->db)
-			->queryOne();
+        if (!isset($row['data']) || ($data = @unserialize($row['data'])) === false) {
+            $row['data'] = null;
+        }
 
-		if ($row !== false) {
-			if (!isset($row['data']) || ($data = @unserialize($row['data'])) === false) {
-				$data = null;
-			}
-			return new Item([
-				'manager' => $this,
-				'name' => $row['name'],
-				'type' => $row['type'],
-				'description' => $row['description'],
-				'bizRule' => $row['biz_rule'],
-				'data' => $data,
-			]);
-		} else {
-			return null;
-		}
-	}
+        return $this->populateItem($row);
+    }
 
-	/**
-	 * Saves an authorization item to persistent storage.
-	 * @param Item $item the item to be saved.
-	 * @param string $oldName the old item name. If null, it means the item name is not changed.
-	 */
-	public function saveItem($item, $oldName = null)
-	{
-		if ($this->usingSqlite() && $oldName !== null && $item->getName() !== $oldName) {
-			$this->db->createCommand()
-				->update($this->itemChildTable, ['parent' => $item->getName()], ['parent' => $oldName])
-				->execute();
-			$this->db->createCommand()
-				->update($this->itemChildTable, ['child' => $item->getName()], ['child' => $oldName])
-				->execute();
-			$this->db->createCommand()
-				->update($this->assignmentTable, ['item_name' => $item->getName()], ['item_name' => $oldName])
-				->execute();
-		}
+    /**
+     * Returns a value indicating whether the database supports cascading update and delete.
+     * The default implementation will return false for SQLite database and true for all other databases.
+     * @return boolean whether the database supports cascading update and delete.
+     */
+    protected function supportsCascadeUpdate()
+    {
+        return strncmp($this->db->getDriverName(), 'sqlite', 6) !== 0;
+    }
 
-		$this->db->createCommand()
-			->update($this->itemTable, [
-				'name' => $item->getName(),
-				'type' => $item->type,
-				'description' => $item->description,
-				'biz_rule' => $item->bizRule,
-				'data' => $item->data === null ? null : serialize($item->data),
-			], [
-				'name' => $oldName === null ? $item->getName() : $oldName,
-			])
-			->execute();
-	}
+    /**
+     * @inheritdoc
+     */
+    protected function addItem($item)
+    {
+        $time = time();
+        if ($item->createdAt === null) {
+            $item->createdAt = $time;
+        }
+        if ($item->updatedAt === null) {
+            $item->updatedAt = $time;
+        }
+        $this->db->createCommand()
+            ->insert($this->itemTable, [
+                'name' => $item->name,
+                'type' => $item->type,
+                'description' => $item->description,
+                'rule_name' => $item->ruleName,
+                'data' => $item->data === null ? null : serialize($item->data),
+                'created_at' => $item->createdAt,
+                'updated_at' => $item->updatedAt,
+            ])->execute();
 
-	/**
-	 * Saves the authorization data to persistent storage.
-	 */
-	public function save()
-	{
-	}
+        $this->invalidateCache();
 
-	/**
-	 * Removes all authorization data.
-	 */
-	public function clearAll()
-	{
-		$this->clearAssignments();
-		$this->db->createCommand()->delete($this->itemChildTable)->execute();
-		$this->db->createCommand()->delete($this->itemTable)->execute();
-	}
+        return true;
+    }
 
-	/**
-	 * Removes all authorization assignments.
-	 */
-	public function clearAssignments()
-	{
-		$this->db->createCommand()->delete($this->assignmentTable)->execute();
-	}
+    /**
+     * @inheritdoc
+     */
+    protected function removeItem($item)
+    {
+        if (!$this->supportsCascadeUpdate()) {
+            $this->db->createCommand()
+                ->delete($this->itemChildTable, ['or', '[[parent]]=:name', '[[child]]=:name'], [':name' => $item->name])
+                ->execute();
+            $this->db->createCommand()
+                ->delete($this->assignmentTable, ['item_name' => $item->name])
+                ->execute();
+        }
 
-	/**
-	 * Checks whether there is a loop in the authorization item hierarchy.
-	 * @param string $itemName parent item name
-	 * @param string $childName the name of the child item that is to be added to the hierarchy
-	 * @return boolean whether a loop exists
-	 */
-	protected function detectLoop($itemName, $childName)
-	{
-		if ($childName === $itemName) {
-			return true;
-		}
-		foreach ($this->getItemChildren($childName) as $child) {
-			if ($this->detectLoop($itemName, $child->getName())) {
-				return true;
-			}
-		}
-		return false;
-	}
+        $this->db->createCommand()
+            ->delete($this->itemTable, ['name' => $item->name])
+            ->execute();
 
-	/**
-	 * @return boolean whether the database is a SQLite database
-	 */
-	protected function usingSqlite()
-	{
-		return $this->_usingSqlite;
-	}
+        $this->invalidateCache();
+
+        return true;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    protected function updateItem($name, $item)
+    {
+        if ($item->name !== $name && !$this->supportsCascadeUpdate()) {
+            $this->db->createCommand()
+                ->update($this->itemChildTable, ['parent' => $item->name], ['parent' => $name])
+                ->execute();
+            $this->db->createCommand()
+                ->update($this->itemChildTable, ['child' => $item->name], ['child' => $name])
+                ->execute();
+            $this->db->createCommand()
+                ->update($this->assignmentTable, ['item_name' => $item->name], ['item_name' => $name])
+                ->execute();
+        }
+
+        $item->updatedAt = time();
+
+        $this->db->createCommand()
+            ->update($this->itemTable, [
+                'name' => $item->name,
+                'description' => $item->description,
+                'rule_name' => $item->ruleName,
+                'data' => $item->data === null ? null : serialize($item->data),
+                'updated_at' => $item->updatedAt,
+            ], [
+                'name' => $name,
+            ])->execute();
+
+        $this->invalidateCache();
+
+        return true;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    protected function addRule($rule)
+    {
+        $time = time();
+        if ($rule->createdAt === null) {
+            $rule->createdAt = $time;
+        }
+        if ($rule->updatedAt === null) {
+            $rule->updatedAt = $time;
+        }
+        $this->db->createCommand()
+            ->insert($this->ruleTable, [
+                'name' => $rule->name,
+                'data' => serialize($rule),
+                'created_at' => $rule->createdAt,
+                'updated_at' => $rule->updatedAt,
+            ])->execute();
+
+        $this->invalidateCache();
+
+        return true;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    protected function updateRule($name, $rule)
+    {
+        if ($rule->name !== $name && !$this->supportsCascadeUpdate()) {
+            $this->db->createCommand()
+                ->update($this->itemTable, ['rule_name' => $rule->name], ['rule_name' => $name])
+                ->execute();
+        }
+
+        $rule->updatedAt = time();
+
+        $this->db->createCommand()
+            ->update($this->ruleTable, [
+                'name' => $rule->name,
+                'data' => serialize($rule),
+                'updated_at' => $rule->updatedAt,
+            ], [
+                'name' => $name,
+            ])->execute();
+
+        $this->invalidateCache();
+
+        return true;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    protected function removeRule($rule)
+    {
+        if (!$this->supportsCascadeUpdate()) {
+            $this->db->createCommand()
+                ->update($this->itemTable, ['rule_name' => null], ['rule_name' => $rule->name])
+                ->execute();
+        }
+
+        $this->db->createCommand()
+            ->delete($this->ruleTable, ['name' => $rule->name])
+            ->execute();
+
+        $this->invalidateCache();
+
+        return true;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    protected function getItems($type)
+    {
+        $query = (new Query)
+            ->from($this->itemTable)
+            ->where(['type' => $type]);
+
+        $items = [];
+        foreach ($query->all($this->db) as $row) {
+            $items[$row['name']] = $this->populateItem($row);
+        }
+
+        return $items;
+    }
+
+    /**
+     * Populates an auth item with the data fetched from database
+     * @param array $row the data from the auth item table
+     * @return Item the populated auth item instance (either Role or Permission)
+     */
+    protected function populateItem($row)
+    {
+        $class = $row['type'] == Item::TYPE_PERMISSION ? Permission::className() : Role::className();
+
+        if (!isset($row['data']) || ($data = @unserialize($row['data'])) === false) {
+            $data = null;
+        }
+
+        return new $class([
+            'name' => $row['name'],
+            'type' => $row['type'],
+            'description' => $row['description'],
+            'ruleName' => $row['rule_name'],
+            'data' => $data,
+            'createdAt' => $row['created_at'],
+            'updatedAt' => $row['updated_at'],
+        ]);
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function getRolesByUser($userId)
+    {
+        if (empty($userId)) {
+            return [];
+        }
+
+        $query = (new Query)->select('b.*')
+            ->from(['a' => $this->assignmentTable, 'b' => $this->itemTable])
+            ->where('{{a}}.[[item_name]]={{b}}.[[name]]')
+            ->andWhere(['a.user_id' => (string) $userId])
+            ->andWhere(['b.type' => Item::TYPE_ROLE]);
+
+        $roles = [];
+        foreach ($query->all($this->db) as $row) {
+            $roles[$row['name']] = $this->populateItem($row);
+        }
+        return $roles;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function getPermissionsByRole($roleName)
+    {
+        $childrenList = $this->getChildrenList();
+        $result = [];
+        $this->getChildrenRecursive($roleName, $childrenList, $result);
+        if (empty($result)) {
+            return [];
+        }
+        $query = (new Query)->from($this->itemTable)->where([
+            'type' => Item::TYPE_PERMISSION,
+            'name' => array_keys($result),
+        ]);
+        $permissions = [];
+        foreach ($query->all($this->db) as $row) {
+            $permissions[$row['name']] = $this->populateItem($row);
+        }
+        return $permissions;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function getPermissionsByUser($userId)
+    {
+        if (empty($userId)) {
+            return [];
+        }
+
+        $query = (new Query)->select('item_name')
+            ->from($this->assignmentTable)
+            ->where(['user_id' => (string) $userId]);
+
+        $childrenList = $this->getChildrenList();
+        $result = [];
+        foreach ($query->column($this->db) as $roleName) {
+            $this->getChildrenRecursive($roleName, $childrenList, $result);
+        }
+
+        if (empty($result)) {
+            return [];
+        }
+
+        $query = (new Query)->from($this->itemTable)->where([
+            'type' => Item::TYPE_PERMISSION,
+            'name' => array_keys($result),
+        ]);
+        $permissions = [];
+        foreach ($query->all($this->db) as $row) {
+            $permissions[$row['name']] = $this->populateItem($row);
+        }
+        return $permissions;
+    }
+
+    /**
+     * Returns the children for every parent.
+     * @return array the children list. Each array key is a parent item name,
+     * and the corresponding array value is a list of child item names.
+     */
+    protected function getChildrenList()
+    {
+        $query = (new Query)->from($this->itemChildTable);
+        $parents = [];
+        foreach ($query->all($this->db) as $row) {
+            $parents[$row['parent']][] = $row['child'];
+        }
+        return $parents;
+    }
+
+    /**
+     * Recursively finds all children and grand children of the specified item.
+     * @param string $name the name of the item whose children are to be looked for.
+     * @param array $childrenList the child list built via [[getChildrenList()]]
+     * @param array $result the children and grand children (in array keys)
+     */
+    protected function getChildrenRecursive($name, $childrenList, &$result)
+    {
+        if (isset($childrenList[$name])) {
+            foreach ($childrenList[$name] as $child) {
+                $result[$child] = true;
+                $this->getChildrenRecursive($child, $childrenList, $result);
+            }
+        }
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function getRule($name)
+    {
+        if ($this->rules !== null) {
+            return isset($this->rules[$name]) ? $this->rules[$name] : null;
+        }
+
+        $row = (new Query)->select(['data'])
+            ->from($this->ruleTable)
+            ->where(['name' => $name])
+            ->one($this->db);
+        return $row === false ? null : unserialize($row['data']);
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function getRules()
+    {
+        if ($this->rules !== null) {
+            return $this->rules;
+        }
+
+        $query = (new Query)->from($this->ruleTable);
+
+        $rules = [];
+        foreach ($query->all($this->db) as $row) {
+            $rules[$row['name']] = unserialize($row['data']);
+        }
+
+        return $rules;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function getAssignment($roleName, $userId)
+    {
+        if (empty($userId)) {
+            return null;
+        }
+
+        $row = (new Query)->from($this->assignmentTable)
+            ->where(['user_id' => (string) $userId, 'item_name' => $roleName])
+            ->one($this->db);
+
+        if ($row === false) {
+            return null;
+        }
+
+        return new Assignment([
+            'userId' => $row['user_id'],
+            'roleName' => $row['item_name'],
+            'createdAt' => $row['created_at'],
+        ]);
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function getAssignments($userId)
+    {
+        if (empty($userId)) {
+            return [];
+        }
+
+        $query = (new Query)
+            ->from($this->assignmentTable)
+            ->where(['user_id' => (string) $userId]);
+
+        $assignments = [];
+        foreach ($query->all($this->db) as $row) {
+            $assignments[$row['item_name']] = new Assignment([
+                'userId' => $row['user_id'],
+                'roleName' => $row['item_name'],
+                'createdAt' => $row['created_at'],
+            ]);
+        }
+
+        return $assignments;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function addChild($parent, $child)
+    {
+        if ($parent->name === $child->name) {
+            throw new InvalidParamException("Cannot add '{$parent->name}' as a child of itself.");
+        }
+
+        if ($parent instanceof Permission && $child instanceof Role) {
+            throw new InvalidParamException("Cannot add a role as a child of a permission.");
+        }
+
+        if ($this->detectLoop($parent, $child)) {
+            throw new InvalidCallException("Cannot add '{$child->name}' as a child of '{$parent->name}'. A loop has been detected.");
+        }
+
+        $this->db->createCommand()
+            ->insert($this->itemChildTable, ['parent' => $parent->name, 'child' => $child->name])
+            ->execute();
+
+        $this->invalidateCache();
+
+        return true;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function removeChild($parent, $child)
+    {
+        $result = $this->db->createCommand()
+            ->delete($this->itemChildTable, ['parent' => $parent->name, 'child' => $child->name])
+            ->execute() > 0;
+
+        $this->invalidateCache();
+
+        return $result;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function removeChildren($parent)
+    {
+        $result = $this->db->createCommand()
+            ->delete($this->itemChildTable, ['parent' => $parent->name])
+            ->execute() > 0;
+
+        $this->invalidateCache();
+
+        return $result;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function hasChild($parent, $child)
+    {
+        return (new Query)
+            ->from($this->itemChildTable)
+            ->where(['parent' => $parent->name, 'child' => $child->name])
+            ->one($this->db) !== false;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function getChildren($name)
+    {
+        $query = (new Query)
+            ->select(['name', 'type', 'description', 'rule_name', 'data', 'created_at', 'updated_at'])
+            ->from([$this->itemTable, $this->itemChildTable])
+            ->where(['parent' => $name, 'name' => new Expression('[[child]]')]);
+
+        $children = [];
+        foreach ($query->all($this->db) as $row) {
+            $children[$row['name']] = $this->populateItem($row);
+        }
+
+        return $children;
+    }
+
+    /**
+     * Checks whether there is a loop in the authorization item hierarchy.
+     * @param Item $parent the parent item
+     * @param Item $child the child item to be added to the hierarchy
+     * @return boolean whether a loop exists
+     */
+    protected function detectLoop($parent, $child)
+    {
+        if ($child->name === $parent->name) {
+            return true;
+        }
+        foreach ($this->getChildren($child->name) as $grandchild) {
+            if ($this->detectLoop($parent, $grandchild)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function assign($role, $userId)
+    {
+        $assignment = new Assignment([
+            'userId' => $userId,
+            'roleName' => $role->name,
+            'createdAt' => time(),
+        ]);
+
+        $this->db->createCommand()
+            ->insert($this->assignmentTable, [
+                'user_id' => $assignment->userId,
+                'item_name' => $assignment->roleName,
+                'created_at' => $assignment->createdAt,
+            ])->execute();
+
+        return $assignment;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function revoke($role, $userId)
+    {
+        if (empty($userId)) {
+            return false;
+        }
+
+        return $this->db->createCommand()
+            ->delete($this->assignmentTable, ['user_id' => (string) $userId, 'item_name' => $role->name])
+            ->execute() > 0;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function revokeAll($userId)
+    {
+        if (empty($userId)) {
+            return false;
+        }
+
+        return $this->db->createCommand()
+            ->delete($this->assignmentTable, ['user_id' => (string) $userId])
+            ->execute() > 0;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function removeAll()
+    {
+        $this->removeAllAssignments();
+        $this->db->createCommand()->delete($this->itemChildTable)->execute();
+        $this->db->createCommand()->delete($this->itemTable)->execute();
+        $this->db->createCommand()->delete($this->ruleTable)->execute();
+        $this->invalidateCache();
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function removeAllPermissions()
+    {
+        $this->removeAllItems(Item::TYPE_PERMISSION);
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function removeAllRoles()
+    {
+        $this->removeAllItems(Item::TYPE_ROLE);
+    }
+
+    /**
+     * Removes all auth items of the specified type.
+     * @param integer $type the auth item type (either Item::TYPE_PERMISSION or Item::TYPE_ROLE)
+     */
+    protected function removeAllItems($type)
+    {
+        if (!$this->supportsCascadeUpdate()) {
+            $names = (new Query)
+                ->select(['name'])
+                ->from($this->itemTable)
+                ->where(['type' => $type])
+                ->column($this->db);
+            if (empty($names)) {
+                return;
+            }
+            $key = $type == Item::TYPE_PERMISSION ? 'child' : 'parent';
+            $this->db->createCommand()
+                ->delete($this->itemChildTable, [$key => $names])
+                ->execute();
+            $this->db->createCommand()
+                ->delete($this->assignmentTable, ['item_name' => $names])
+                ->execute();
+        }
+        $this->db->createCommand()
+            ->delete($this->itemTable, ['type' => $type])
+            ->execute();
+
+        $this->invalidateCache();
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function removeAllRules()
+    {
+        if (!$this->supportsCascadeUpdate()) {
+            $this->db->createCommand()
+                ->update($this->itemTable, ['ruleName' => null])
+                ->execute();
+        }
+
+        $this->db->createCommand()->delete($this->ruleTable)->execute();
+
+        $this->invalidateCache();
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function removeAllAssignments()
+    {
+        $this->db->createCommand()->delete($this->assignmentTable)->execute();
+    }
+
+    public function invalidateCache()
+    {
+        if ($this->cache !== null) {
+            $this->cache->delete($this->cacheKey);
+            $this->items = null;
+            $this->rules = null;
+            $this->parents = null;
+        }
+    }
+
+    public function loadFromCache()
+    {
+        if ($this->items !== null || !$this->cache instanceof Cache) {
+            return;
+        }
+
+        $data = $this->cache->get($this->cacheKey);
+        if (is_array($data) && isset($data[0], $data[1], $data[2])) {
+            list ($this->items, $this->rules, $this->parents) = $data;
+            return;
+        }
+
+        $query = (new Query)->from($this->itemTable);
+        $this->items = [];
+        foreach ($query->all($this->db) as $row) {
+            $this->items[$row['name']] = $this->populateItem($row);
+        }
+
+        $query = (new Query)->from($this->ruleTable);
+        $this->rules = [];
+        foreach ($query->all($this->db) as $row) {
+            $this->rules[$row['name']] = unserialize($row['data']);
+        }
+
+        $query = (new Query)->from($this->itemChildTable);
+        $this->parents = [];
+        foreach ($query->all($this->db) as $row) {
+            if (isset($this->items[$row['child']])) {
+                $this->parents[$row['child']][] = $row['parent'];
+            }
+        }
+
+        $this->cache->set($this->cacheKey, [$this->items, $this->rules, $this->parents]);
+    }
 }

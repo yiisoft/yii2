@@ -7,548 +7,768 @@
 
 namespace yii\rbac;
 
-use Yii;
-use yii\base\Exception;
 use yii\base\InvalidCallException;
 use yii\base\InvalidParamException;
+use Yii;
+use yii\helpers\VarDumper;
 
 /**
  * PhpManager represents an authorization manager that stores authorization
  * information in terms of a PHP script file.
  *
- * The authorization data will be saved to and loaded from a file
- * specified by [[authFile]], which defaults to 'protected/data/rbac.php'.
+ * The authorization data will be saved to and loaded from three files
+ * specified by [[itemFile]], [[assignmentFile]] and [[ruleFile]].
  *
  * PhpManager is mainly suitable for authorization data that is not too big
  * (for example, the authorization data for a personal blog system).
  * Use [[DbManager]] for more complex authorization data.
  *
- * @property Item[] $items The authorization items of the specific type. This property is read-only.
+ * Note that PhpManager is not compatible with facebooks [HHVM](http://hhvm.com/) because
+ * it relies on writing php files and including them afterwards which is not supported by HHVM.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @author Alexander Kochetov <creocoder@gmail.com>
+ * @author Christophe Boulain <christophe.boulain@gmail.com>
+ * @author Alexander Makarov <sam@rmcreative.ru>
  * @since 2.0
  */
-class PhpManager extends Manager
+class PhpManager extends BaseManager
 {
-	/**
-	 * @var string the path of the PHP script that contains the authorization data.
-	 * This can be either a file path or a path alias to the file.
-	 * Make sure this file is writable by the Web server process if the authorization needs to be changed online.
-	 * @see loadFromFile()
-	 * @see saveToFile()
-	 */
-	public $authFile = '@app/data/rbac.php';
+    /**
+     * @var string the path of the PHP script that contains the authorization items.
+     * This can be either a file path or a path alias to the file.
+     * Make sure this file is writable by the Web server process if the authorization needs to be changed online.
+     * @see loadFromFile()
+     * @see saveToFile()
+     */
+    public $itemFile = '@app/rbac/items.php';
+    /**
+     * @var string the path of the PHP script that contains the authorization assignments.
+     * This can be either a file path or a path alias to the file.
+     * Make sure this file is writable by the Web server process if the authorization needs to be changed online.
+     * @see loadFromFile()
+     * @see saveToFile()
+     */
+    public $assignmentFile = '@app/rbac/assignments.php';
+    /**
+     * @var string the path of the PHP script that contains the authorization rules.
+     * This can be either a file path or a path alias to the file.
+     * Make sure this file is writable by the Web server process if the authorization needs to be changed online.
+     * @see loadFromFile()
+     * @see saveToFile()
+     */
+    public $ruleFile = '@app/rbac/rules.php';
 
-	private $_items = []; // itemName => item
-	private $_children = []; // itemName, childName => child
-	private $_assignments = []; // userId, itemName => assignment
+    /**
+     * @var Item[]
+     */
+    protected $items = []; // itemName => item
+    /**
+     * @var array
+     */
+    protected $children = []; // itemName, childName => child
+    /**
+     * @var array
+     */
+    protected $assignments = []; // userId, itemName => assignment
+    /**
+     * @var Rule[]
+     */
+    protected $rules = []; // ruleName => rule
 
-	/**
-	 * Initializes the application component.
-	 * This method overrides parent implementation by loading the authorization data
-	 * from PHP script.
-	 */
-	public function init()
-	{
-		parent::init();
-		$this->authFile = Yii::getAlias($this->authFile);
-		$this->load();
-	}
 
-	/**
-	 * Performs access check for the specified user.
-	 * @param mixed $userId the user ID. This can be either an integer or a string representing
-	 * @param string $itemName the name of the operation that need access check
-	 * the unique identifier of a user. See [[User::id]].
-	 * @param array $params name-value pairs that would be passed to biz rules associated
-	 * with the tasks and roles assigned to the user. A param with name 'userId' is added to
-	 * this array, which holds the value of `$userId`.
-	 * @return boolean whether the operations can be performed by the user.
-	 */
-	public function checkAccess($userId, $itemName, $params = [])
-	{
-		if (!isset($this->_items[$itemName])) {
-			return false;
-		}
-		/** @var Item $item */
-		$item = $this->_items[$itemName];
-		Yii::trace('Checking permission: ' . $item->getName(), __METHOD__);
-		if (!isset($params['userId'])) {
-			$params['userId'] = $userId;
-		}
-		if ($this->executeBizRule($item->bizRule, $params, $item->data)) {
-			if (in_array($itemName, $this->defaultRoles)) {
-				return true;
-			}
-			if (isset($this->_assignments[$userId][$itemName])) {
-				/** @var Assignment $assignment */
-				$assignment = $this->_assignments[$userId][$itemName];
-				if ($this->executeBizRule($assignment->bizRule, $params, $assignment->data)) {
-					return true;
-				}
-			}
-			foreach ($this->_children as $parentName => $children) {
-				if (isset($children[$itemName]) && $this->checkAccess($userId, $parentName, $params)) {
-					return true;
-				}
-			}
-		}
-		return false;
-	}
+    /**
+     * Initializes the application component.
+     * This method overrides parent implementation by loading the authorization data
+     * from PHP script.
+     */
+    public function init()
+    {
+        parent::init();
+        $this->itemFile = Yii::getAlias($this->itemFile);
+        $this->assignmentFile = Yii::getAlias($this->assignmentFile);
+        $this->ruleFile = Yii::getAlias($this->ruleFile);
+        $this->load();
+    }
 
-	/**
-	 * Adds an item as a child of another item.
-	 * @param string $itemName the parent item name
-	 * @param string $childName the child item name
-	 * @return boolean whether the item is added successfully
-	 * @throws Exception if either parent or child doesn't exist.
-	 * @throws InvalidCallException if item already has a child with $itemName or if a loop has been detected.
-	 */
-	public function addItemChild($itemName, $childName)
-	{
-		if (!isset($this->_items[$childName], $this->_items[$itemName])) {
-			throw new Exception("Either '$itemName' or '$childName' does not exist.");
-		}
-		/** @var Item $child */
-		$child = $this->_items[$childName];
-		/** @var Item $item */
-		$item = $this->_items[$itemName];
-		$this->checkItemChildType($item->type, $child->type);
-		if ($this->detectLoop($itemName, $childName)) {
-			throw new InvalidCallException("Cannot add '$childName' as a child of '$itemName'. A loop has been detected.");
-		}
-		if (isset($this->_children[$itemName][$childName])) {
-			throw new InvalidCallException("The item '$itemName' already has a child '$childName'.");
-		}
-		$this->_children[$itemName][$childName] = $this->_items[$childName];
-		return true;
-	}
+    /**
+     * @inheritdoc
+     */
+    public function checkAccess($userId, $permissionName, $params = [])
+    {
+        $assignments = $this->getAssignments($userId);
+        return $this->checkAccessRecursive($userId, $permissionName, $params, $assignments);
+    }
 
-	/**
-	 * Removes a child from its parent.
-	 * Note, the child item is not deleted. Only the parent-child relationship is removed.
-	 * @param string $itemName the parent item name
-	 * @param string $childName the child item name
-	 * @return boolean whether the removal is successful
-	 */
-	public function removeItemChild($itemName, $childName)
-	{
-		if (isset($this->_children[$itemName][$childName])) {
-			unset($this->_children[$itemName][$childName]);
-			return true;
-		} else {
-			return false;
-		}
-	}
+    /**
+     * @inheritdoc
+     */
+    public function getAssignments($userId)
+    {
+        return isset($this->assignments[$userId]) ? $this->assignments[$userId] : [];
+    }
 
-	/**
-	 * Returns a value indicating whether a child exists within a parent.
-	 * @param string $itemName the parent item name
-	 * @param string $childName the child item name
-	 * @return boolean whether the child exists
-	 */
-	public function hasItemChild($itemName, $childName)
-	{
-		return isset($this->_children[$itemName][$childName]);
-	}
+    /**
+     * Performs access check for the specified user.
+     * This method is internally called by [[checkAccess()]].
+     *
+     * @param string|integer $user the user ID. This should can be either an integer or a string representing
+     * the unique identifier of a user. See [[\yii\web\User::id]].
+     * @param string $itemName the name of the operation that need access check
+     * @param array $params name-value pairs that would be passed to rules associated
+     * with the tasks and roles assigned to the user. A param with name 'user' is added to this array,
+     * which holds the value of `$userId`.
+     * @param Assignment[] $assignments the assignments to the specified user
+     * @return boolean whether the operations can be performed by the user.
+     */
+    protected function checkAccessRecursive($user, $itemName, $params, $assignments)
+    {
+        if (!isset($this->items[$itemName])) {
+            return false;
+        }
 
-	/**
-	 * Returns the children of the specified item.
-	 * @param mixed $names the parent item name. This can be either a string or an array.
-	 * The latter represents a list of item names.
-	 * @return Item[] all child items of the parent
-	 */
-	public function getItemChildren($names)
-	{
-		if (is_string($names)) {
-			return isset($this->_children[$names]) ? $this->_children[$names] : [];
-		}
+        /* @var $item Item */
+        $item = $this->items[$itemName];
+        Yii::trace($item instanceof Role ? "Checking role: $itemName" : "Checking permission : $itemName", __METHOD__);
 
-		$children = [];
-		foreach ($names as $name) {
-			if (isset($this->_children[$name])) {
-				$children = array_merge($children, $this->_children[$name]);
-			}
-		}
-		return $children;
-	}
+        if (!$this->executeRule($user, $item, $params)) {
+            return false;
+        }
 
-	/**
-	 * Assigns an authorization item to a user.
-	 * @param mixed $userId the user ID (see [[User::id]])
-	 * @param string $itemName the item name
-	 * @param string $bizRule the business rule to be executed when [[checkAccess()]] is called
-	 * for this particular authorization item.
-	 * @param mixed $data additional data associated with this assignment
-	 * @return Assignment the authorization assignment information.
-	 * @throws InvalidParamException if the item does not exist or if the item has already been assigned to the user
-	 */
-	public function assign($userId, $itemName, $bizRule = null, $data = null)
-	{
-		if (!isset($this->_items[$itemName])) {
-			throw new InvalidParamException("Unknown authorization item '$itemName'.");
-		} elseif (isset($this->_assignments[$userId][$itemName])) {
-			throw new InvalidParamException("Authorization item '$itemName' has already been assigned to user '$userId'.");
-		} else {
-			return $this->_assignments[$userId][$itemName] = new Assignment([
-				'manager' => $this,
-				'userId' => $userId,
-				'itemName' => $itemName,
-				'bizRule' => $bizRule,
-				'data' => $data,
-			]);
-		}
-	}
+        if (isset($assignments[$itemName]) || in_array($itemName, $this->defaultRoles)) {
+            return true;
+        }
 
-	/**
-	 * Revokes an authorization assignment from a user.
-	 * @param mixed $userId the user ID (see [[User::id]])
-	 * @param string $itemName the item name
-	 * @return boolean whether removal is successful
-	 */
-	public function revoke($userId, $itemName)
-	{
-		if (isset($this->_assignments[$userId][$itemName])) {
-			unset($this->_assignments[$userId][$itemName]);
-			return true;
-		} else {
-			return false;
-		}
-	}
+        foreach ($this->children as $parentName => $children) {
+            if (isset($children[$itemName]) && $this->checkAccessRecursive($user, $parentName, $params, $assignments)) {
+                return true;
+            }
+        }
 
-	/**
-	 * Revokes all authorization assignments from a user.
-	 * @param mixed $userId the user ID (see [[User::id]])
-	 * @return boolean whether removal is successful
-	 */
-	public function revokeAll($userId)
-	{
-		if (isset($this->_assignments[$userId]) && is_array($this->_assignments[$userId])) {
-			foreach ($this->_assignments[$userId] as $itemName => $value)
-				unset($this->_assignments[$userId][$itemName]);
-			return true;
-		} else {
-			return false;
-		}
-	}
+        return false;
+    }
 
-	/**
-	 * Returns a value indicating whether the item has been assigned to the user.
-	 * @param mixed $userId the user ID (see [[User::id]])
-	 * @param string $itemName the item name
-	 * @return boolean whether the item has been assigned to the user.
-	 */
-	public function isAssigned($userId, $itemName)
-	{
-		return isset($this->_assignments[$userId][$itemName]);
-	}
+    /**
+     * @inheritdoc
+     */
+    public function addChild($parent, $child)
+    {
+        if (!isset($this->items[$parent->name], $this->items[$child->name])) {
+            throw new InvalidParamException("Either '{$parent->name}' or '{$child->name}' does not exist.");
+        }
 
-	/**
-	 * Returns the item assignment information.
-	 * @param mixed $userId the user ID (see [[User::id]])
-	 * @param string $itemName the item name
-	 * @return Assignment the item assignment information. Null is returned if
-	 * the item is not assigned to the user.
-	 */
-	public function getAssignment($userId, $itemName)
-	{
-		return isset($this->_assignments[$userId][$itemName]) ? $this->_assignments[$userId][$itemName] : null;
-	}
+        if ($parent->name == $child->name) {
+            throw new InvalidParamException("Cannot add '{$parent->name} ' as a child of itself.");
+        }
+        if ($parent instanceof Permission && $child instanceof Role) {
+            throw new InvalidParamException("Cannot add a role as a child of a permission.");
+        }
 
-	/**
-	 * Returns the item assignments for the specified user.
-	 * @param mixed $userId the user ID (see [[User::id]])
-	 * @return Assignment[] the item assignment information for the user. An empty array will be
-	 * returned if there is no item assigned to the user.
-	 */
-	public function getAssignments($userId)
-	{
-		return isset($this->_assignments[$userId]) ? $this->_assignments[$userId] : [];
-	}
+        if ($this->detectLoop($parent, $child)) {
+            throw new InvalidCallException("Cannot add '{$child->name}' as a child of '{$parent->name}'. A loop has been detected.");
+        }
+        if (isset($this->children[$parent->name][$child->name])) {
+            throw new InvalidCallException("The item '{$parent->name}' already has a child '{$child->name}'.");
+        }
+        $this->children[$parent->name][$child->name] = $this->items[$child->name];
+        $this->saveItems();
 
-	/**
-	 * Returns the authorization items of the specific type and user.
-	 * @param mixed $userId the user ID. Defaults to null, meaning returning all items even if
-	 * they are not assigned to a user.
-	 * @param integer $type the item type (0: operation, 1: task, 2: role). Defaults to null,
-	 * meaning returning all items regardless of their type.
-	 * @return Item[] the authorization items of the specific type.
-	 */
-	public function getItems($userId = null, $type = null)
-	{
-		if ($userId === null && $type === null) {
-			return $this->_items;
-		}
-		$items = [];
-		if ($userId === null) {
-			foreach ($this->_items as $name => $item) {
-				/** @var Item $item */
-				if ($item->type == $type) {
-					$items[$name] = $item;
-				}
-			}
-		} elseif (isset($this->_assignments[$userId])) {
-			foreach ($this->_assignments[$userId] as $assignment) {
-				/** @var Assignment $assignment */
-				$name = $assignment->itemName;
-				if (isset($this->_items[$name]) && ($type === null || $this->_items[$name]->type == $type)) {
-					$items[$name] = $this->_items[$name];
-				}
-			}
-		}
-		return $items;
-	}
+        return true;
+    }
 
-	/**
-	 * Creates an authorization item.
-	 * An authorization item represents an action permission (e.g. creating a post).
-	 * It has three types: operation, task and role.
-	 * Authorization items form a hierarchy. Higher level items inheirt permissions representing
-	 * by lower level items.
-	 * @param string $name the item name. This must be a unique identifier.
-	 * @param integer $type the item type (0: operation, 1: task, 2: role).
-	 * @param string $description description of the item
-	 * @param string $bizRule business rule associated with the item. This is a piece of
-	 * PHP code that will be executed when [[checkAccess()]] is called for the item.
-	 * @param mixed $data additional data associated with the item.
-	 * @return Item the authorization item
-	 * @throws Exception if an item with the same name already exists
-	 */
-	public function createItem($name, $type, $description = '', $bizRule = null, $data = null)
-	{
-		if (isset($this->_items[$name])) {
-			throw new Exception('Unable to add an item whose name is the same as an existing item.');
-		}
-		return $this->_items[$name] = new Item([
-			'manager' => $this,
-			'name' => $name,
-			'type' => $type,
-			'description' => $description,
-			'bizRule' => $bizRule,
-			'data' => $data,
-		]);
-	}
+    /**
+     * Checks whether there is a loop in the authorization item hierarchy.
+     *
+     * @param Item $parent parent item
+     * @param Item $child the child item that is to be added to the hierarchy
+     * @return boolean whether a loop exists
+     */
+    protected function detectLoop($parent, $child)
+    {
+        if ($child->name === $parent->name) {
+            return true;
+        }
+        if (!isset($this->children[$child->name], $this->items[$parent->name])) {
+            return false;
+        }
+        foreach ($this->children[$child->name] as $grandchild) {
+            /* @var $grandchild Item */
+            if ($this->detectLoop($parent, $grandchild)) {
+                return true;
+            }
+        }
 
-	/**
-	 * Removes the specified authorization item.
-	 * @param string $name the name of the item to be removed
-	 * @return boolean whether the item exists in the storage and has been removed
-	 */
-	public function removeItem($name)
-	{
-		if (isset($this->_items[$name])) {
-			foreach ($this->_children as &$children) {
-				unset($children[$name]);
-			}
-			foreach ($this->_assignments as &$assignments) {
-				unset($assignments[$name]);
-			}
-			unset($this->_items[$name]);
-			return true;
-		} else {
-			return false;
-		}
-	}
+        return false;
+    }
 
-	/**
-	 * Returns the authorization item with the specified name.
-	 * @param string $name the name of the item
-	 * @return Item the authorization item. Null if the item cannot be found.
-	 */
-	public function getItem($name)
-	{
-		return isset($this->_items[$name]) ? $this->_items[$name] : null;
-	}
+    /**
+     * @inheritdoc
+     */
+    public function removeChild($parent, $child)
+    {
+        if (isset($this->children[$parent->name][$child->name])) {
+            unset($this->children[$parent->name][$child->name]);
+            $this->saveItems();
+            return true;
+        } else {
+            return false;
+        }
+    }
 
-	/**
-	 * Saves an authorization item to persistent storage.
-	 * @param Item $item the item to be saved.
-	 * @param string $oldName the old item name. If null, it means the item name is not changed.
-	 * @throws InvalidParamException if an item with the same name already taken
-	 */
-	public function saveItem($item, $oldName = null)
-	{
-		if ($oldName !== null && ($newName = $item->getName()) !== $oldName) { // name changed
-			if (isset($this->_items[$newName])) {
-				throw new InvalidParamException("Unable to change the item name. The name '$newName' is already used by another item.");
-			}
-			if (isset($this->_items[$oldName]) && $this->_items[$oldName] === $item) {
-				unset($this->_items[$oldName]);
-				$this->_items[$newName] = $item;
-				if (isset($this->_children[$oldName])) {
-					$this->_children[$newName] = $this->_children[$oldName];
-					unset($this->_children[$oldName]);
-				}
-				foreach ($this->_children as &$children) {
-					if (isset($children[$oldName])) {
-						$children[$newName] = $children[$oldName];
-						unset($children[$oldName]);
-					}
-				}
-				foreach ($this->_assignments as &$assignments) {
-					if (isset($assignments[$oldName])) {
-						$assignments[$newName] = $assignments[$oldName];
-						unset($assignments[$oldName]);
-					}
-				}
-			}
-		}
-	}
+    /**
+     * @inheritdoc
+     */
+    public function removeChildren($parent)
+    {
+        if (isset($this->children[$parent->name])) {
+            unset($this->children[$parent->name]);
+            $this->saveItems();
+            return true;
+        } else {
+            return false;
+        }
+    }
 
-	/**
-	 * Saves the changes to an authorization assignment.
-	 * @param Assignment $assignment the assignment that has been changed.
-	 */
-	public function saveAssignment($assignment)
-	{
-	}
+    /**
+     * @inheritdoc
+     */
+    public function hasChild($parent, $child)
+    {
+        return isset($this->children[$parent->name][$child->name]);
+    }
 
-	/**
-	 * Saves authorization data into persistent storage.
-	 * If any change is made to the authorization data, please make
-	 * sure you call this method to save the changed data into persistent storage.
-	 */
-	public function save()
-	{
-		$items = [];
-		foreach ($this->_items as $name => $item) {
-			/** @var Item $item */
-			$items[$name] = [
-				'type' => $item->type,
-				'description' => $item->description,
-				'bizRule' => $item->bizRule,
-				'data' => $item->data,
-			];
-			if (isset($this->_children[$name])) {
-				foreach ($this->_children[$name] as $child) {
-					/** @var Item $child */
-					$items[$name]['children'][] = $child->getName();
-				}
-			}
-		}
+    /**
+     * @inheritdoc
+     */
+    public function assign($role, $userId)
+    {
+        if (!isset($this->items[$role->name])) {
+            throw new InvalidParamException("Unknown role '{$role->name}'.");
+        } elseif (isset($this->assignments[$userId][$role->name])) {
+            throw new InvalidParamException("Authorization item '{$role->name}' has already been assigned to user '$userId'.");
+        } else {
+            $this->assignments[$userId][$role->name] = new Assignment([
+                'userId' => $userId,
+                'roleName' => $role->name,
+                'createdAt' => time(),
+            ]);
+            $this->saveAssignments();
+            return $this->assignments[$userId][$role->name];
+        }
+    }
 
-		foreach ($this->_assignments as $userId => $assignments) {
-			foreach ($assignments as $name => $assignment) {
-				/** @var Assignment $assignment */
-				if (isset($items[$name])) {
-					$items[$name]['assignments'][$userId] = [
-						'bizRule' => $assignment->bizRule,
-						'data' => $assignment->data,
-					];
-				}
-			}
-		}
+    /**
+     * @inheritdoc
+     */
+    public function revoke($role, $userId)
+    {
+        if (isset($this->assignments[$userId][$role->name])) {
+            unset($this->assignments[$userId][$role->name]);
+            $this->saveAssignments();
+            return true;
+        } else {
+            return false;
+        }
+    }
 
-		$this->saveToFile($items, $this->authFile);
-	}
+    /**
+     * @inheritdoc
+     */
+    public function revokeAll($userId)
+    {
+        if (isset($this->assignments[$userId]) && is_array($this->assignments[$userId])) {
+            foreach ($this->assignments[$userId] as $itemName => $value) {
+                unset($this->assignments[$userId][$itemName]);
+            }
+            $this->saveAssignments();
+            return true;
+        } else {
+            return false;
+        }
+    }
 
-	/**
-	 * Loads authorization data.
-	 */
-	public function load()
-	{
-		$this->clearAll();
+    /**
+     * @inheritdoc
+     */
+    public function getAssignment($roleName, $userId)
+    {
+        return isset($this->assignments[$userId][$roleName]) ? $this->assignments[$userId][$roleName] : null;
+    }
 
-		$items = $this->loadFromFile($this->authFile);
+    /**
+     * @inheritdoc
+     */
+    public function getItems($type)
+    {
+        $items = [];
 
-		foreach ($items as $name => $item) {
-			$this->_items[$name] = new Item([
-				'manager' => $this,
-				'name' => $name,
-				'type' => $item['type'],
-				'description' => $item['description'],
-				'bizRule' => $item['bizRule'],
-				'data' => $item['data'],
-			]);
-		}
+        foreach ($this->items as $name => $item) {
+            /* @var $item Item */
+            if ($item->type == $type) {
+                $items[$name] = $item;
+            }
+        }
 
-		foreach ($items as $name => $item) {
-			if (isset($item['children'])) {
-				foreach ($item['children'] as $childName) {
-					if (isset($this->_items[$childName])) {
-						$this->_children[$name][$childName] = $this->_items[$childName];
-					}
-				}
-			}
-			if (isset($item['assignments'])) {
-				foreach ($item['assignments'] as $userId => $assignment) {
-					$this->_assignments[$userId][$name] = new Assignment([
-						'manager' => $this,
-						'userId' => $userId,
-						'itemName' => $name,
-						'bizRule' => $assignment['bizRule'],
-						'data' => $assignment['data'],
-					]);
-				}
-			}
-		}
-	}
+        return $items;
+    }
 
-	/**
-	 * Removes all authorization data.
-	 */
-	public function clearAll()
-	{
-		$this->clearAssignments();
-		$this->_children = [];
-		$this->_items = [];
-	}
 
-	/**
-	 * Removes all authorization assignments.
-	 */
-	public function clearAssignments()
-	{
-		$this->_assignments = [];
-	}
+    /**
+     * @inheritdoc
+     */
+    public function removeItem($item)
+    {
+        if (isset($this->items[$item->name])) {
+            foreach ($this->children as &$children) {
+                unset($children[$item->name]);
+            }
+            foreach ($this->assignments as &$assignments) {
+                unset($assignments[$item->name]);
+            }
+            unset($this->items[$item->name]);
+            $this->saveItems();
+            return true;
+        } else {
+            return false;
+        }
+    }
 
-	/**
-	 * Checks whether there is a loop in the authorization item hierarchy.
-	 * @param string $itemName parent item name
-	 * @param string $childName the name of the child item that is to be added to the hierarchy
-	 * @return boolean whether a loop exists
-	 */
-	protected function detectLoop($itemName, $childName)
-	{
-		if ($childName === $itemName) {
-			return true;
-		}
-		if (!isset($this->_children[$childName], $this->_items[$itemName])) {
-			return false;
-		}
-		foreach ($this->_children[$childName] as $child) {
-			/** @var Item $child */
-			if ($this->detectLoop($itemName, $child->getName())) {
-				return true;
-			}
-		}
-		return false;
-	}
+    /**
+     * @inheritdoc
+     */
+    public function getItem($name)
+    {
+        return isset($this->items[$name]) ? $this->items[$name] : null;
+    }
 
-	/**
-	 * Loads the authorization data from a PHP script file.
-	 * @param string $file the file path.
-	 * @return array the authorization data
-	 * @see saveToFile()
-	 */
-	protected function loadFromFile($file)
-	{
-		if (is_file($file)) {
-			return require($file);
-		} else {
-			return [];
-		}
-	}
+    /**
+     * @inheritdoc
+     */
+    public function updateRule($name, $rule)
+    {
+        if ($rule->name !== $name) {
+            unset($this->rules[$name]);
+        }
+        $this->rules[$rule->name] = $rule;
+        $this->saveRules();
+        return true;
+    }
 
-	/**
-	 * Saves the authorization data to a PHP script file.
-	 * @param array $data the authorization data
-	 * @param string $file the file path.
-	 * @see loadFromFile()
-	 */
-	protected function saveToFile($data, $file)
-	{
-		file_put_contents($file, "<?php\nreturn " . var_export($data, true) . ";\n", LOCK_EX);
-	}
+    /**
+     * @inheritdoc
+     */
+    public function getRule($name)
+    {
+        return isset($this->rules[$name]) ? $this->rules[$name] : null;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function getRules()
+    {
+        return $this->rules;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function getRolesByUser($userId)
+    {
+        $roles = [];
+        foreach ($this->getAssignments($userId) as $name => $assignment) {
+            $role = $this->items[$assignment->roleName];
+            if ($role->type === Item::TYPE_ROLE) {
+                $roles[$name] = $role;
+            }
+        }
+
+        return $roles;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function getPermissionsByRole($roleName)
+    {
+        $result = [];
+        $this->getChildrenRecursive($roleName, $result);
+        if (empty($result)) {
+            return [];
+        }
+        $permissions = [];
+        foreach (array_keys($result) as $itemName) {
+            if (isset($this->items[$itemName]) && $this->items[$itemName] instanceof Permission) {
+                $permissions[$itemName] = $this->items[$itemName];
+            }
+        }
+        return $permissions;
+    }
+
+    /**
+     * Recursively finds all children and grand children of the specified item.
+     *
+     * @param string $name the name of the item whose children are to be looked for.
+     * @param array $result the children and grand children (in array keys)
+     */
+    protected function getChildrenRecursive($name, &$result)
+    {
+        if (isset($this->children[$name])) {
+            foreach ($this->children[$name] as $child) {
+                $result[$child->name] = true;
+                $this->getChildrenRecursive($child->name, $result);
+            }
+        }
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function getPermissionsByUser($userId)
+    {
+        $assignments = $this->getAssignments($userId);
+        $result = [];
+        foreach (array_keys($assignments) as $roleName) {
+            $this->getChildrenRecursive($roleName, $result);
+        }
+
+        if (empty($result)) {
+            return [];
+        }
+
+        $permissions = [];
+        foreach (array_keys($result) as $itemName) {
+            if (isset($this->items[$itemName]) && $this->items[$itemName] instanceof Permission) {
+                $permissions[$itemName] = $this->items[$itemName];
+            }
+        }
+        return $permissions;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function getChildren($name)
+    {
+        return isset($this->children[$name]) ? $this->children[$name] : [];
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function removeAll()
+    {
+        $this->children = [];
+        $this->items = [];
+        $this->assignments = [];
+        $this->rules = [];
+        $this->save();
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function removeAllPermissions()
+    {
+        $this->removeAllItems(Item::TYPE_PERMISSION);
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function removeAllRoles()
+    {
+        $this->removeAllItems(Item::TYPE_ROLE);
+    }
+
+    /**
+     * Removes all auth items of the specified type.
+     * @param integer $type the auth item type (either Item::TYPE_PERMISSION or Item::TYPE_ROLE)
+     */
+    protected function removeAllItems($type)
+    {
+        $names = [];
+        foreach ($this->items as $name => $item) {
+            if ($item->type == $type) {
+                unset($this->items[$name]);
+                $names[$name] = true;
+            }
+        }
+        if (empty($names)) {
+            return;
+        }
+
+        foreach ($this->assignments as $i => $assignment) {
+            if (isset($names[$assignment->roleName])) {
+                unset($this->assignments[$i]);
+            }
+        }
+        foreach ($this->children as $name => $children) {
+            if (isset($names[$name])) {
+                unset($this->children[$name]);
+            } else {
+                foreach ($children as $childName => $item) {
+                    if (isset($names[$childName])) {
+                        unset($children[$childName]);
+                    }
+                }
+                $this->children[$name] = $children;
+            }
+        }
+
+        $this->saveItems();
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function removeAllRules()
+    {
+        foreach ($this->items as $item) {
+            $item->ruleName = null;
+        }
+        $this->rules = [];
+        $this->saveRules();
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function removeAllAssignments()
+    {
+        $this->assignments = [];
+        $this->saveAssignments();
+    }
+
+    /**
+     * @inheritdoc
+     */
+    protected function removeRule($rule)
+    {
+        if (isset($this->rules[$rule->name])) {
+            unset($this->rules[$rule->name]);
+            foreach ($this->items as $item) {
+                if ($item->ruleName === $rule->name) {
+                    $item->ruleName = null;
+                }
+            }
+            $this->saveRules();
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    /**
+     * @inheritdoc
+     */
+    protected function addRule($rule)
+    {
+        $this->rules[$rule->name] = $rule;
+        $this->saveRules();
+        return true;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    protected function updateItem($name, $item)
+    {
+        if ($name !== $item->name) {
+            if (isset($this->items[$item->name])) {
+                throw new InvalidParamException("Unable to change the item name. The name '{$item->name}' is already used by another item.");
+            } else {
+                // Remove old item in case of renaming
+                unset($this->items[$name]);
+
+                if (isset($this->children[$name])) {
+                    $this->children[$item->name] = $this->children[$name];
+                    unset($this->children[$name]);
+                }
+                foreach ($this->children as &$children) {
+                    if (isset($children[$name])) {
+                        $children[$item->name] = $children[$name];
+                        unset($children[$name]);
+                    }
+                }
+                foreach ($this->assignments as &$assignments) {
+                    if (isset($assignments[$name])) {
+                        $assignments[$item->name] = $assignments[$name];
+                        unset($assignments[$name]);
+                    }
+                }
+            }
+        }
+
+        $this->items[$item->name] = $item;
+
+        $this->saveItems();
+        return true;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    protected function addItem($item)
+    {
+        $time = time();
+        if ($item->createdAt === null) {
+            $item->createdAt = $time;
+        }
+        if ($item->updatedAt === null) {
+            $item->updatedAt = $time;
+        }
+
+        $this->items[$item->name] = $item;
+
+        $this->saveItems();
+
+        return true;
+
+    }
+
+    /**
+     * Loads authorization data from persistent storage.
+     */
+    protected function load()
+    {
+        $this->children = [];
+        $this->rules = [];
+        $this->assignments = [];
+        $this->items = [];
+
+        $items = $this->loadFromFile($this->itemFile);
+        $itemsMtime = @filemtime($this->itemFile);
+        $assignments = $this->loadFromFile($this->assignmentFile);
+        $assignmentsMtime = @filemtime($this->assignmentFile);
+        $rules = $this->loadFromFile($this->ruleFile);
+
+        foreach ($items as $name => $item) {
+            $class = $item['type'] == Item::TYPE_PERMISSION ? Permission::className() : Role::className();
+
+            $this->items[$name] = new $class([
+                'name' => $name,
+                'description' => isset($item['description']) ? $item['description'] : null,
+                'ruleName' => isset($item['ruleName']) ? $item['ruleName'] : null,
+                'data' => isset($item['data']) ? $item['data'] : null,
+                'createdAt' => $itemsMtime,
+                'updatedAt' => $itemsMtime,
+            ]);
+        }
+
+        foreach ($items as $name => $item) {
+            if (isset($item['children'])) {
+                foreach ($item['children'] as $childName) {
+                    if (isset($this->items[$childName])) {
+                        $this->children[$name][$childName] = $this->items[$childName];
+                    }
+                }
+            }
+        }
+
+        foreach ($assignments as $userId => $roles) {
+            foreach ($roles as $role) {
+                $this->assignments[$userId][$role] = new Assignment([
+                    'userId' => $userId,
+                    'roleName' => $role,
+                    'createdAt' => $assignmentsMtime,
+                ]);
+            }
+        }
+
+        foreach ($rules as $name => $ruleData) {
+            $this->rules[$name] = unserialize($ruleData);
+        }
+    }
+
+    /**
+     * Saves authorization data into persistent storage.
+     */
+    protected function save()
+    {
+        $this->saveItems();
+        $this->saveAssignments();
+        $this->saveRules();
+    }
+
+    /**
+     * Loads the authorization data from a PHP script file.
+     *
+     * @param string $file the file path.
+     * @return array the authorization data
+     * @see saveToFile()
+     */
+    protected function loadFromFile($file)
+    {
+        if (is_file($file)) {
+            return require($file);
+        } else {
+            return [];
+        }
+    }
+
+    /**
+     * Saves the authorization data to a PHP script file.
+     *
+     * @param array $data the authorization data
+     * @param string $file the file path.
+     * @see loadFromFile()
+     */
+    protected function saveToFile($data, $file)
+    {
+        file_put_contents($file, "<?php\nreturn " . VarDumper::export($data) . ";\n", LOCK_EX);
+    }
+
+    /**
+     * Saves items data into persistent storage.
+     */
+    protected function saveItems()
+    {
+        $items = [];
+        foreach ($this->items as $name => $item) {
+            /* @var $item Item */
+            $items[$name] = array_filter(
+                [
+                    'type' => $item->type,
+                    'description' => $item->description,
+                    'ruleName' => $item->ruleName,
+                    'data' => $item->data,
+                ]
+            );
+            if (isset($this->children[$name])) {
+                foreach ($this->children[$name] as $child) {
+                    /* @var $child Item */
+                    $items[$name]['children'][] = $child->name;
+                }
+            }
+        }
+        $this->saveToFile($items, $this->itemFile);
+    }
+
+    /**
+     * Saves assignments data into persistent storage.
+     */
+    protected function saveAssignments()
+    {
+        $assignmentData = [];
+        foreach ($this->assignments as $userId => $assignments) {
+            foreach ($assignments as $name => $assignment) {
+                /* @var $assignment Assignment */
+                $assignmentData[$userId][] = $assignment->roleName;
+            }
+        }
+        $this->saveToFile($assignmentData, $this->assignmentFile);
+    }
+
+    /**
+     * Saves rules data into persistent storage.
+     */
+    protected function saveRules()
+    {
+        $rules = [];
+        foreach ($this->rules as $name => $rule) {
+            $rules[$name] = serialize($rule);
+        }
+        $this->saveToFile($rules, $this->ruleFile);
+    }
 }

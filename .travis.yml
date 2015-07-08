@@ -3,39 +3,71 @@ language: php
 php:
   - 5.4
   - 5.5
-#  - hhvm # commented until composer or hhvm get fixed: https://github.com/facebook/hhvm/issues/1347
+  - 5.6
+  - 7.0
+  - hhvm
+  - hhvm-nightly
+
+env:
+  - CUBRID_VERSION=9.3.0/CUBRID-9.3.0.0206 CUBRID_PDO_VERSION=9.3.0.0001
+
+# run build against hhvm but allow them to fail
+# http://docs.travis-ci.com/user/build-configuration/#Rows-That-are-Allowed-To-Fail
+matrix:
+  fast_finish: true
+  allow_failures:
+    - php: hhvm-nightly
+    - php: 7.0
 
 services:
-  - redis-server
   - memcached
-  - elasticsearch
-  - mongodb
+
+# faster builds on new travis setup not using sudo
+sudo: false
+
+# cache vendor dirs
+cache:
+  directories:
+#    - cubrid/9.3.0
+    - vendor
+    - $HOME/.composer/cache
+
+# try running against postgres 9.3
+addons:
+  postgresql: "9.3"
 
 install:
-  - composer self-update && composer --version
+  - travis_retry composer self-update && composer --version
+  - travis_retry composer global require "fxp/composer-asset-plugin:~1.0.0"
+  - export PATH="$HOME/.composer/vendor/bin:$PATH"
 # core framework:
-#  - composer require satooshi/php-coveralls 0.6.* --dev --prefer-dist
-  - composer install --prefer-dist
-  - tests/unit/data/travis/mongodb-setup.sh
-  - tests/unit/data/travis/apc-setup.sh
-  - tests/unit/data/travis/memcache-setup.sh
-  - tests/unit/data/travis/cubrid-setup.sh
-# basic application:
-  - composer install --dev --prefer-dist -d apps/basic
-  - cd apps/basic && php vendor/bin/codecept build && cd ../..
-  - cd apps && php -S localhost:8080 &
+  - travis_retry composer install --prefer-dist --no-interaction
+  - tests/data/travis/apc-setup.sh
+  - tests/data/travis/memcache-setup.sh
+#  - tests/data/travis/cubrid-setup.sh
 
 before_script:
-  - echo 'elasticsearch version ' && curl http://localhost:9200/
+  # show some versions and env information
+  - php -r "echo INTL_ICU_VERSION . \"\n\";"
+  - mysql --version
+  - psql --version
+
+  # initialize databases
   - mysql -e 'CREATE DATABASE yiitest;';
   - psql -U postgres -c 'CREATE DATABASE yiitest;';
-  - tests/unit/data/travis/sphinx-setup.sh
-  - mongo yii2test --eval 'db.addUser("travis", "test");'
+
+  - |
+    if [ $TRAVIS_PHP_VERSION = '5.6' ]; then
+      PHPUNIT_FLAGS="--coverage-clover=coverage.clover"
+    fi
+
 
 script:
-#  - vendor/bin/phpunit --coverage-clover tests/unit/runtime/coveralls/clover.xml --verbose --exclude-group mssql,oci,wincache,xcache,zenddata,vendor
-  - vendor/bin/phpunit --verbose --exclude-group mssql,oci,wincache,xcache,zenddata,vendor
-  - cd apps/basic && php vendor/bin/codecept run
+  - vendor/bin/phpunit --verbose $PHPUNIT_FLAGS --exclude-group mssql,oci,wincache,xcache,zenddata,cubrid
 
-#after_script:
-#  - php vendor/bin/coveralls
+after_script:
+  - |
+    if [ $TRAVIS_PHP_VERSION = '5.6' ]; then
+      travis_retry wget https://scrutinizer-ci.com/ocular.phar
+      php ocular.phar code-coverage:upload --format=php-clover coverage.clover
+    fi

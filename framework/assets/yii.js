@@ -42,204 +42,307 @@
  * You must call "yii.initModule()" once for the root module of all your modules.
  */
 yii = (function ($) {
-	var pub = {
-		/**
-		 * List of scripts that can be loaded multiple times via AJAX requests. Each script can be represented
-		 * as either an absolute URL or a relative one.
-		 */
-		reloadableScripts: [],
-		/**
-		 * The selector for clickable elements that need to support confirmation and form submission.
-		 */
-		clickableSelector: 'a, button, input[type="submit"], input[type="button"], input[type="reset"], input[type="image"]',
-		/**
-		 * The selector for changeable elements that need to support confirmation and form submission.
-		 */
-		changeableSelector: 'select, input, textarea',
+    var pub = {
+        /**
+         * List of JS or CSS URLs that can be loaded multiple times via AJAX requests. Each script can be represented
+         * as either an absolute URL or a relative one.
+         */
+        reloadableScripts: [],
+        /**
+         * The selector for clickable elements that need to support confirmation and form submission.
+         */
+        clickableSelector: 'a, button, input[type="submit"], input[type="button"], input[type="reset"], input[type="image"]',
+        /**
+         * The selector for changeable elements that need to support confirmation and form submission.
+         */
+        changeableSelector: 'select, input, textarea',
 
-		/**
-		 * @return string|undefined the CSRF variable name. Undefined is returned if CSRF validation is not enabled.
-		 */
-		getCsrfVar: function () {
-			return $('meta[name=csrf-var]').prop('content');
-		},
+        /**
+         * @return string|undefined the CSRF parameter name. Undefined is returned if CSRF validation is not enabled.
+         */
+        getCsrfParam: function () {
+            return $('meta[name=csrf-param]').attr('content');
+        },
 
-		/**
-		 * @return string|undefined the CSRF token. Undefined is returned if CSRF validation is not enabled.
-		 */
-		getCsrfToken: function () {
-			return $('meta[name=csrf-token]').prop('content');
-		},
+        /**
+         * @return string|undefined the CSRF token. Undefined is returned if CSRF validation is not enabled.
+         */
+        getCsrfToken: function () {
+            return $('meta[name=csrf-token]').attr('content');
+        },
 
-		/**
-		 * Displays a confirmation dialog.
-		 * The default implementation simply displays a js confirmation dialog.
-		 * You may override this by setting `yii.confirm`.
-		 * @param message the confirmation message.
-		 * @return boolean whether the user confirms with the message in the dialog
-		 */
-		confirm: function (message) {
-			return confirm(message);
-		},
+        /**
+         * Sets the CSRF token in the meta elements.
+         * This method is provided so that you can update the CSRF token with the latest one you obtain from the server.
+         * @param name the CSRF token name
+         * @param value the CSRF token value
+         */
+        setCsrfToken: function (name, value) {
+            $('meta[name=csrf-param]').attr('content', name);
+            $('meta[name=csrf-token]').attr('content', value);
+        },
 
-		/**
-		 * Returns a value indicating whether to allow executing the action defined for the specified element.
-		 * This method recognizes the `data-confirm` attribute of the element and uses it
-		 * as the message in a confirmation dialog. The method will return true if this special attribute
-		 * is not defined or if the user confirms the message.
-		 * @param $e the jQuery representation of the element
-		 * @return boolean whether to allow executing the action defined for the specified element.
-		 */
-		allowAction: function ($e) {
-			var message = $e.data('confirm');
-			return message === undefined || pub.confirm(message);
-		},
+        /**
+         * Updates all form CSRF input fields with the latest CSRF token.
+         * This method is provided to avoid cached forms containing outdated CSRF tokens.
+         */
+        refreshCsrfToken: function () {
+            var token = pub.getCsrfToken();
+            if (token) {
+                $('form input[name="' + pub.getCsrfParam() + '"]').val(token);
+            }
+        },
 
-		/**
-		 * Handles the action triggered by user.
-		 * This method recognizes the `data-method` attribute of the element. If the attribute exists,
-		 * the method will submit the form containing this element. If there is no containing form, a form
-		 * will be created and submitted using the method given by this attribute value (e.g. "post", "put").
-		 * For hyperlinks, the form action will take the value of the "href" attribute of the link.
-		 * For other elements, either the containing form action or the current page URL will be used
-		 * as the form action URL.
-		 *
-		 * If the `data-method` attribute is not defined, the default element action will be performed.
-		 *
-		 * @param $e the jQuery representation of the element
-		 * @return boolean whether to execute the default action for the element.
-		 */
-		handleAction: function ($e) {
-			var method = $e.data('method');
-			if (method === undefined) {
-				return true;
-			}
+        /**
+         * Displays a confirmation dialog.
+         * The default implementation simply displays a js confirmation dialog.
+         * You may override this by setting `yii.confirm`.
+         * @param message the confirmation message.
+         * @param ok a callback to be called when the user confirms the message
+         * @param cancel a callback to be called when the user cancels the confirmation
+         */
+        confirm: function (message, ok, cancel) {
+            if (confirm(message)) {
+                !ok || ok();
+            } else {
+                !cancel || cancel();
+            }
+        },
 
-			var $form = $e.closest('form');
-			var newForm = !$form.length;
-			if (newForm) {
-				var action = $e.prop('href');
-				if (!action || !action.match(/(^\/|:\/\/)/)) {
-					action = window.location.href;
-				}
-				$form = $('<form method="' + method + '" action="' + action + '"></form>');
-				var target = $e.prop('target');
-				if (target) {
-					$form.attr('target', target);
-				}
-				if (!method.match(/(get|post)/i)) {
-					$form.append('<input name="_method" value="' + method + '" type="hidden">');
-				}
-				var csrfVar = pub.getCsrfVar();
-				if (csrfVar) {
-					$form.append('<input name="' + csrfVar + '" value="' + pub.getCsrfToken() + '" type="hidden">');
-				}
-				$form.hide().appendTo('body');
-			}
+        /**
+         * Handles the action triggered by user.
+         * This method recognizes the `data-method` attribute of the element. If the attribute exists,
+         * the method will submit the form containing this element. If there is no containing form, a form
+         * will be created and submitted using the method given by this attribute value (e.g. "post", "put").
+         * For hyperlinks, the form action will take the value of the "href" attribute of the link.
+         * For other elements, either the containing form action or the current page URL will be used
+         * as the form action URL.
+         *
+         * If the `data-method` attribute is not defined, the `href` attribute (if any) of the element
+         * will be assigned to `window.location`.
+         *
+         * Starting from version 2.0.3, the `data-params` attribute is also recognized when you specify
+         * `data-method`. The value of `data-params` should be a JSON representation of the data (name-value pairs)
+         * that should be submitted as hidden inputs. For example, you may use the following code to generate
+         * such a link:
+         *
+         * ```php
+         * use yii\helpers\Html;
+         * use yii\helpers\Json;
+         *
+         * echo Html::a('submit', ['site/foobar'], [
+         *     'data' => [
+         *         'method' => 'post',
+         *         'params' => [
+         *             'name1' => 'value1',
+         *             'name2' => 'value2',
+         *         ],
+         *     ],
+         * ];
+         * ```
+         *
+         * @param $e the jQuery representation of the element
+         */
+        handleAction: function ($e) {
+            var method = $e.data('method'),
+                $form = $e.closest('form'),
+                action = $e.attr('href'),
+                params = $e.data('params');
 
-			var activeFormData = $form.data('yiiActiveForm');
-			if (activeFormData) {
-				// remember who triggers the form submission. This is used by yii.activeForm.js
-				activeFormData.submitObject = $e;
-			}
+            if (method === undefined) {
+                if (action && action != '#') {
+                    window.location = action;
+                } else if ($e.is(':submit') && $form.length) {
+                    $form.trigger('submit');
+                }
+                return;
+            }
 
-			$form.trigger('submit');
+            var newForm = !$form.length;
+            if (newForm) {
+                if (!action || !action.match(/(^\/|:\/\/)/)) {
+                    action = window.location.href;
+                }
+                $form = $('<form method="' + method + '"></form>');
+                $form.attr('action', action);
+                var target = $e.attr('target');
+                if (target) {
+                    $form.attr('target', target);
+                }
+                if (!method.match(/(get|post)/i)) {
+                    $form.append('<input name="_method" value="' + method + '" type="hidden">');
+                    method = 'POST';
+                }
+                if (!method.match(/(get|head|options)/i)) {
+                    var csrfParam = pub.getCsrfParam();
+                    if (csrfParam) {
+                        $form.append('<input name="' + csrfParam + '" value="' + pub.getCsrfToken() + '" type="hidden">');
+                    }
+                }
+                $form.hide().appendTo('body');
+            }
 
-			if (newForm) {
-				$form.remove();
-			}
+            var activeFormData = $form.data('yiiActiveForm');
+            if (activeFormData) {
+                // remember who triggers the form submission. This is used by yii.activeForm.js
+                activeFormData.submitObject = $e;
+            }
 
-			return false;
-		},
+            // temporarily add hidden inputs according to data-params
+            if (params && $.isPlainObject(params)) {
+                $.each(params, function (idx, obj) {
+                    $form.append('<input name="' + idx + '" value="' + obj + '" type="hidden">');
+                });
+            }
 
-		initModule: function (module) {
-			if (module.isActive === undefined || module.isActive) {
-				if ($.isFunction(module.init)) {
-					module.init();
-				}
-				$.each(module, function () {
-					if ($.isPlainObject(this)) {
-						pub.initModule(this);
-					}
-				});
-			}
-		},
+            var oldMethod = $form.attr('method');
+            $form.attr('method', method);
+            var oldAction = null;
+            if (action && action != '#') {
+                oldAction = $form.attr('action');
+                $form.attr('action', action);
+            }
 
-		init: function () {
-			initCsrfHandler();
-			initRedirectHandler();
-			initScriptFilter();
-			initDataMethods();
-		}
-	};
+            $form.trigger('submit');
 
-	function initRedirectHandler() {
-		// handle AJAX redirection
-		$(document).ajaxComplete(function (event, xhr, settings) {
-			var url = xhr.getResponseHeader('X-Redirect');
-			if (url) {
-				window.location = url;
-			}
-		});
-	}
+            if (oldAction != null) {
+                $form.attr('action', oldAction);
+            }
+            $form.attr('method', oldMethod);
 
-	function initCsrfHandler() {
-		// automatically send CSRF token for all AJAX requests
-		$.ajaxPrefilter(function (options, originalOptions, xhr) {
-			if (!options.crossDomain && pub.getCsrfVar()) {
-				xhr.setRequestHeader('X-CSRF-Token', pub.getCsrfToken());
-			}
-		});
-	}
+            // remove the temporarily added hidden inputs
+            if (params && $.isPlainObject(params)) {
+                $.each(params, function (idx, obj) {
+                    $('input[name="' + idx + '"]', $form).remove();
+                });
+            }
 
-	function initDataMethods() {
-		var $document = $(document);
-		// handle data-confirm and data-method for clickable elements
-		$document.on('click.yii', pub.clickableSelector, function (event) {
-			var $this = $(this);
-			if (pub.allowAction($this)) {
-				return pub.handleAction($this);
-			} else {
-				event.stopImmediatePropagation();
-				return false;
-			}
-		});
+            if (newForm) {
+                $form.remove();
+            }
+        },
 
-		// handle data-confirm and data-method for changeable elements
-		$document.on('change.yii', pub.changeableSelector, function (event) {
-			var $this = $(this);
-			if (pub.allowAction($this)) {
-				return pub.handleAction($this);
-			} else {
-				event.stopImmediatePropagation();
-				return false;
-			}
-		});
-	}
+        getQueryParams: function (url) {
+            var pos = url.indexOf('?');
+            if (pos < 0) {
+                return {};
+            }
+            var qs = url.substring(pos + 1).split('&');
+            for (var i = 0, result = {}; i < qs.length; i++) {
+                qs[i] = qs[i].split('=');
+                result[decodeURIComponent(qs[i][0])] = decodeURIComponent(qs[i][1]);
+            }
+            return result;
+        },
 
-	function initScriptFilter() {
-		var hostInfo = location.protocol + '//' + location.host;
-		var loadedScripts = $('script[src]').map(function () {
-			return this.src.charAt(0) === '/' ? hostInfo + this.src : this.src;
-		}).toArray();
-		$.ajaxPrefilter('script', function (options, originalOptions, xhr) {
-			var url = options.url.charAt(0) === '/' ? hostInfo + options.url : options.url;
-			if ($.inArray(url, loadedScripts) === -1) {
-				loadedScripts.push(url);
-			} else {
-				var found = $.inArray(url, $.map(pub.reloadableScripts, function (script) {
-					return script.charAt(0) === '/' ? hostInfo + script : script;
-				})) !== -1;
-				if (!found) {
-					xhr.abort();
-				}
-			}
-		});
-	}
+        initModule: function (module) {
+            if (module.isActive === undefined || module.isActive) {
+                if ($.isFunction(module.init)) {
+                    module.init();
+                }
+                $.each(module, function () {
+                    if ($.isPlainObject(this)) {
+                        pub.initModule(this);
+                    }
+                });
+            }
+        },
 
-	return pub;
+        init: function () {
+            initCsrfHandler();
+            initRedirectHandler();
+            initScriptFilter();
+            initDataMethods();
+        }
+    };
+
+    function initRedirectHandler() {
+        // handle AJAX redirection
+        $(document).ajaxComplete(function (event, xhr, settings) {
+            var url = xhr.getResponseHeader('X-Redirect');
+            if (url) {
+                window.location = url;
+            }
+        });
+    }
+
+    function initCsrfHandler() {
+        // automatically send CSRF token for all AJAX requests
+        $.ajaxPrefilter(function (options, originalOptions, xhr) {
+            if (!options.crossDomain && pub.getCsrfParam()) {
+                xhr.setRequestHeader('X-CSRF-Token', pub.getCsrfToken());
+            }
+        });
+        pub.refreshCsrfToken();
+    }
+
+    function initDataMethods() {
+        var handler = function (event) {
+            var $this = $(this),
+                method = $this.data('method'),
+                message = $this.data('confirm');
+
+            if (method === undefined && message === undefined) {
+                return true;
+            }
+
+            if (message !== undefined) {
+                pub.confirm(message, function () {
+                    pub.handleAction($this);
+                });
+            } else {
+                pub.handleAction($this);
+            }
+            event.stopImmediatePropagation();
+            return false;
+        };
+
+        // handle data-confirm and data-method for clickable and changeable elements
+        $(document).on('click.yii', pub.clickableSelector, handler)
+            .on('change.yii', pub.changeableSelector, handler);
+    }
+
+    function initScriptFilter() {
+        var hostInfo = location.protocol + '//' + location.host;
+        var loadedScripts = $('script[src]').map(function () {
+            return this.src.charAt(0) === '/' ? hostInfo + this.src : this.src;
+        }).toArray();
+
+        $.ajaxPrefilter('script', function (options, originalOptions, xhr) {
+            if (options.dataType == 'jsonp') {
+                return;
+            }
+            var url = options.url.charAt(0) === '/' ? hostInfo + options.url : options.url;
+            if ($.inArray(url, loadedScripts) === -1) {
+                loadedScripts.push(url);
+            } else {
+                var found = $.inArray(url, $.map(pub.reloadableScripts, function (script) {
+                    return script.charAt(0) === '/' ? hostInfo + script : script;
+                })) !== -1;
+                if (!found) {
+                    xhr.abort();
+                }
+            }
+        });
+
+        $(document).ajaxComplete(function (event, xhr, settings) {
+            var styleSheets = [];
+            $('link[rel=stylesheet]').each(function () {
+                if ($.inArray(this.href, pub.reloadableScripts) !== -1) {
+                    return;
+                }
+                if ($.inArray(this.href, styleSheets) == -1) {
+                    styleSheets.push(this.href)
+                } else {
+                    $(this).remove();
+                }
+            })
+        });
+    }
+
+    return pub;
 })(jQuery);
 
 jQuery(document).ready(function () {
-	yii.initModule(yii);
+    yii.initModule(yii);
 });
