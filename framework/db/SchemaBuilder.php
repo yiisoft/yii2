@@ -37,29 +37,39 @@ abstract class SchemaBuilder extends Object
     /**
      * @var string column type
      */
-    protected $type = null;
+    protected $type;
+
     /**
      * @var integer column size
      */
-    protected $length = null;
+    protected $length;
+
     /**
-     * @var boolean whether value could be null
+     * @var boolean whether value is not nullable
      */
     protected $isNotNull = false;
+
+    /**
+     * @var boolean whether value should be unique
+     */
+    protected $isUnique = false;
+
     /**
      * @var string check value of column
      */
-    protected $check = null;
+    protected $check;
+
     /**
      * @var mixed default value of column
      */
-    protected $default = null;
+    protected $default;
 
     /**
      * Makes column a primary key
      *
      * @param integer $length
-     * @return SchemaBuilder
+     *
+     * @return $this
      */
     public static function primaryKey($length = null)
     {
@@ -70,7 +80,8 @@ abstract class SchemaBuilder extends Object
      * Makes column a big primary key
      *
      * @param integer $length
-     * @return SchemaBuilder
+     *
+     * @return $this
      */
     public static function bigPrimaryKey($length = null)
     {
@@ -81,7 +92,8 @@ abstract class SchemaBuilder extends Object
      * Makes column a string
      *
      * @param integer $length
-     * @return SchemaBuilder
+     *
+     * @return $this
      */
     public static function string($length = null)
     {
@@ -92,7 +104,8 @@ abstract class SchemaBuilder extends Object
      * Makes column a text
      *
      * @param integer $length
-     * @return SchemaBuilder
+     *
+     * @return $this
      */
     public static function text($length = null)
     {
@@ -103,7 +116,8 @@ abstract class SchemaBuilder extends Object
      * Makes column a smallint
      *
      * @param integer $length
-     * @return SchemaBuilder
+     *
+     * @return $this
      */
     public static function smallInteger($length = null)
     {
@@ -114,7 +128,8 @@ abstract class SchemaBuilder extends Object
      * Makes column a integer
      *
      * @param integer $length
-     * @return SchemaBuilder
+     *
+     * @return $this
      */
     public static function integer($length = null)
     {
@@ -125,7 +140,8 @@ abstract class SchemaBuilder extends Object
      * Makes column a bigint
      *
      * @param integer $length
-     * @return SchemaBuilder
+     *
+     * @return $this
      */
     public static function bigInteger($length = null)
     {
@@ -137,7 +153,8 @@ abstract class SchemaBuilder extends Object
      *
      * @param integer $precision
      * @param integer $scale
-     * @return SchemaBuilder
+     *
+     * @return $this
      */
     public static function float($precision = null, $scale = null)
     {
@@ -149,7 +166,8 @@ abstract class SchemaBuilder extends Object
      *
      * @param integer $precision
      * @param integer $scale
-     * @return SchemaBuilder
+     *
+     * @return $this
      */
     public static function double($precision = null, $scale = null)
     {
@@ -161,7 +179,8 @@ abstract class SchemaBuilder extends Object
      *
      * @param integer $precision
      * @param integer $scale
-     * @return SchemaBuilder
+     *
+     * @return $this
      */
     public static function decimal($precision = null, $scale = null)
     {
@@ -172,7 +191,8 @@ abstract class SchemaBuilder extends Object
      * Makes column a datetime
      *
      * @param integer $length
-     * @return SchemaBuilder
+     *
+     * @return $this
      */
     public static function dateTime($length = null)
     {
@@ -183,7 +203,8 @@ abstract class SchemaBuilder extends Object
      * Makes column a timestamp
      *
      * @param integer $length
-     * @return SchemaBuilder
+     *
+     * @return $this
      */
     public static function timestamp($length = null)
     {
@@ -194,7 +215,8 @@ abstract class SchemaBuilder extends Object
      * Makes column a time
      *
      * @param integer $length
-     * @return SchemaBuilder
+     *
+     * @return $this
      */
     public static function time($length = null)
     {
@@ -204,7 +226,7 @@ abstract class SchemaBuilder extends Object
     /**
      * Makes column a date
      *
-     * @return SchemaBuilder
+     * @return $this
      */
     public static function date()
     {
@@ -215,7 +237,8 @@ abstract class SchemaBuilder extends Object
      * Makes column a binary
      *
      * @param integer $length
-     * @return SchemaBuilder
+     *
+     * @return $this
      */
     public static function binary($length = null)
     {
@@ -226,7 +249,8 @@ abstract class SchemaBuilder extends Object
      * Makes column a boolean
      *
      * @param integer $length
-     * @return SchemaBuilder
+     *
+     * @return $this
      */
     public static function boolean($length = null)
     {
@@ -238,21 +262,34 @@ abstract class SchemaBuilder extends Object
      *
      * @param integer $precision
      * @param integer $scale
-     * @return SchemaBuilder
+     *
+     * @return $this
      */
     public static function money($precision = null, $scale = null)
     {
         return static::createNumeric(Schema::TYPE_MONEY, $precision, $scale);
     }
 
-   /**
-    * Specify value column could be null
-    *
-    * @return SchemaBuilder
-    */
+    /**
+     * Makes column not nullable
+     *
+     * @return $this
+     */
     public function notNull()
     {
         $this->isNotNull = true;
+
+        return $this;
+    }
+
+    /**
+     * Makes column unique
+     *
+     * @return $this
+     */
+    public function unique()
+    {
+        $this->isUnique = true;
 
         return $this;
     }
@@ -262,8 +299,10 @@ abstract class SchemaBuilder extends Object
      *
      * Do not call this method directly as it is a PHP magic method that
      * will be implicitly called when an unknown method is being invoked.
+     *
      * @param string $name the method name
      * @param array $arguments method parameters
+     *
      * @return mixed the method return value
      */
     public function __call($name, $arguments)
@@ -279,7 +318,8 @@ abstract class SchemaBuilder extends Object
      * Specify check value for the column
      *
      * @param string $check
-     * @return SchemaBuilder
+     *
+     * @return $this
      */
     public function check($check)
     {
@@ -299,6 +339,7 @@ abstract class SchemaBuilder extends Object
             $this->type .
             $this->buildLengthString() .
             $this->buildNotNullString() .
+            $this->buildUniqueString() .
             $this->buildDefaultString() .
             $this->buildCheckString();
     }
@@ -307,7 +348,8 @@ abstract class SchemaBuilder extends Object
      * Specify default value for the column
      *
      * @param mixed $default
-     * @return SchemaBuilder
+     *
+     * @return $this
      */
     protected function _default($default = null)
     {
@@ -334,7 +376,18 @@ abstract class SchemaBuilder extends Object
      */
     protected function buildNotNullString()
     {
-        return ($this->isNotNull === true ? ' NOT NULL' : '');
+        return $this->isNotNull === true ? ' NOT NULL' : '';
+    }
+
+    /**
+     * Returns string with UNIQUE if isUnique is true, otherwise returns
+     * empty string
+     *
+     * @return string
+     */
+    protected function buildUniqueString()
+    {
+        return $this->isUnique === true ? ' UNIQUE' : '';
     }
 
     /**
@@ -379,7 +432,7 @@ abstract class SchemaBuilder extends Object
      *
      * @param string $type schema of column
      * @param integer $length length of column
-     * @return SchemaBuilder
+     * @return $this
      */
     protected static function create($type, $length = null)
     {
@@ -397,7 +450,7 @@ abstract class SchemaBuilder extends Object
      * @param string $type schema of column
      * @param integer $precision precision of column
      * @param integer $scale scale of column
-     * @return SchemaBuilder
+     * @return $this
      */
     protected static function createNumeric($type, $precision = null, $scale = null)
     {

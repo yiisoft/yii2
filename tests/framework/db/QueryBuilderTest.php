@@ -7,7 +7,6 @@ use yii\db\Query;
 use yii\db\QueryBuilder;
 use yii\db\Schema;
 use yii\db\mysql\QueryBuilder as MysqlQueryBuilder;
-use yii\db\SchemaBuilder;
 use yii\db\sqlite\QueryBuilder as SqliteQueryBuilder;
 use yii\db\mssql\QueryBuilder as MssqlQueryBuilder;
 use yii\db\pgsql\QueryBuilder as PgsqlQueryBuilder;
@@ -54,7 +53,7 @@ class QueryBuilderTest extends DatabaseTestCase
      */
     protected function replaceQuotes($sql)
     {
-        if (!in_array($this->driverName, ['mssql', 'mysql', 'sqlite'])) {
+        if (!in_array($this->driverName, ['mssql', 'mysql', 'sqlite'], true)) {
             return str_replace('`', '"', $sql);
         }
         return $sql;

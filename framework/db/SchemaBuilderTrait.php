@@ -8,7 +8,6 @@
 namespace yii\db;
 
 use Yii;
-use yii\base\Object;
 use yii\di\Instance;
 
 /**
