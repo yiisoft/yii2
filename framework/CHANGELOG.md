@@ -40,7 +40,7 @@ Yii Framework 2 Change Log
 - Chg #6354: `ErrorHandler::logException()` will now log the whole exception object instead of only its string representation (cebe)
 - Chg #8556: Extracted `yii\web\User::getAuthManager()` method (samdark)
 - Enh #9011: Allow `yii\widgets\MaskedInput` to produce an input tag of a custom type (TriAnMan)
-
+- Bug #8549: Fixed `yii\caching\FileCache` doesn't lock cache files when read it (iworker)
 
 2.0.4 May 10, 2015
 ------------------
