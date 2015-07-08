@@ -37,6 +37,8 @@ use yii\caching\TagDependency;
  */
 abstract class Schema extends Object
 {
+    use SchemaBuilderTrait;
+
     /**
      * The following are the supported abstract column data types.
      */

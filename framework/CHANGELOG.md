@@ -25,6 +25,7 @@ Yii Framework 2 Change Log
 - Bug: Fixed string comparison in `BaseActiveRecord::unlink()` which may result in wrong comparison result for hash valued primary keys starting with `0e` (cebe)
 - Bug: Pass correct action name to `yii\console\Controller::options()` when default action was requested (cebe)
 - Bug: Automatic garbage collection in `yii\caching\FileCache` was not triggered (kidol)
+- Enh #3335: Implemented `SchemaBuilder` (pana1990, vaseninm, samdark)
 - Enh #6043: Specification for 'class' and 'style' in array format added to `yii\helpers\Html` (klimov-paul)
 - Enh #7169: `yii\widgets\ActiveField` now uses corresponding methods for default parts rendering (klimov-paul)
 - Enh #8070: `yii\console\controllers\MessageController` now sorts created messages, even if there is no new one, while saving to PHP file (klimov-paul)
@@ -37,9 +38,10 @@ Yii Framework 2 Change Log
 - Enh #8625: Added `markUnused` option to `yii\console\controllers\MessageController` (marius7383)
 - Enh #8670: Added support for saving extra fields in session table for `yii\web\DbSession` (klimov-paul)
 - Enh #8903: PostgreSQL `QueryBuilder::createIndex()` can now specify the index method to use (LAV45)
+- Enh #9011: Allow `yii\widgets\MaskedInput` to produce an input tag of a custom type (TriAnMan)
+- Enh #9038: Write warning to log in case `FileCache` fails to write into file (foccy)
 - Chg #6354: `ErrorHandler::logException()` will now log the whole exception object instead of only its string representation (cebe)
 - Chg #8556: Extracted `yii\web\User::getAuthManager()` method (samdark)
-- Enh #9011: Allow `yii\widgets\MaskedInput` to produce an input tag of a custom type (TriAnMan)
 - Bug #8549: Fixed `yii\caching\FileCache` doesn't lock cache files when read it (iworker)
 
 2.0.4 May 10, 2015

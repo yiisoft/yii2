@@ -148,6 +148,8 @@ class FileCache extends Cache
 
             return @touch($cacheFile, $duration + time());
         } else {
+            $error = error_get_last();
+            Yii::warning("Unable to write cache file '{$cacheFile}': {$error['message']}", __METHOD__);
             return false;
         }
     }
