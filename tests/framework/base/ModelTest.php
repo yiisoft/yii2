@@ -281,12 +281,10 @@ class ModelTest extends TestCase
         $this->assertFalse($singer->isAttributeRequired('firstName'));
         $this->assertTrue($singer->isAttributeRequired('lastName'));
 
-        // attribute is not marked as required when a conditional validation is applied using `$when`.
-        // the condition should not be applied because this info may be retrieved before model is loaded with data
         $singer->firstName = 'qiang';
         $this->assertFalse($singer->isAttributeRequired('test'));
         $singer->firstName = 'cebe';
-        $this->assertFalse($singer->isAttributeRequired('test'));
+        $this->assertTrue($singer->isAttributeRequired('test'));
     }
 
     public function testCreateValidators()
