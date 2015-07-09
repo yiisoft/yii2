@@ -451,6 +451,7 @@ Yii Framework 2 Change Log
 ---------------------
 
 - Bug #4763: Fixed display issue with overlapping call stack item on exception display page (cebe)
+- Enh #9053: Added`yii\grid\ RadioButtonColumn` (darwinisgod)
 - Bug #7305: Logging of Exception objects resulted in failure of the logger i.e. no logs being written (cebe)
 - Bug #7374: Use proper INSERT syntax with default values when no values are specified (nineinchnick)
 - Bug #7707: Client-side `trim` validator now passes the trimmed value to subsequent validators (nkovacs)
