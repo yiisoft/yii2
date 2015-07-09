@@ -411,7 +411,7 @@
         if (attribute.validateOnBlur) {
             $input.on('blur.yiiActiveForm', function () {
                 if (attribute.status == 0 || attribute.status == 1) {
-                    validateAttribute($form, attribute, !attribute.status);
+                    validateAttribute($form, attribute, true);
                 }
             });
         }
