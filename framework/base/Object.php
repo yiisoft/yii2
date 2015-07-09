@@ -130,9 +130,9 @@ class Object implements Configurable
     public function __get($name)
     {
         $getter = 'get' . $name;
-        if (method_exists($this, $getter)) {
+        if (is_callable([$this, $getter])) {
             return $this->$getter();
-        } elseif (method_exists($this, 'set' . $name)) {
+        } elseif (is_callable([$this, 'set' . $name])) {
             throw new InvalidCallException('Getting write-only property: ' . get_class($this) . '::' . $name);
         } else {
             throw new UnknownPropertyException('Getting unknown property: ' . get_class($this) . '::' . $name);
@@ -153,9 +153,9 @@ class Object implements Configurable
     public function __set($name, $value)
     {
         $setter = 'set' . $name;
-        if (method_exists($this, $setter)) {
+        if (is_callable([$this, $setter])) {
             $this->$setter($value);
-        } elseif (method_exists($this, 'get' . $name)) {
+        } elseif (is_callable([$this, 'get' . $name]) {
             throw new InvalidCallException('Setting read-only property: ' . get_class($this) . '::' . $name);
         } else {
             throw new UnknownPropertyException('Setting unknown property: ' . get_class($this) . '::' . $name);
@@ -176,7 +176,7 @@ class Object implements Configurable
     public function __isset($name)
     {
         $getter = 'get' . $name;
-        if (method_exists($this, $getter)) {
+        if (is_callable([$this, $getter])) {
             return $this->$getter() !== null;
         } else {
             return false;
@@ -198,9 +198,9 @@ class Object implements Configurable
     public function __unset($name)
     {
         $setter = 'set' . $name;
-        if (method_exists($this, $setter)) {
+        if (is_callable([$this, $setter]) {
             $this->$setter(null);
-        } elseif (method_exists($this, 'get' . $name)) {
+        } elseif (is_callable([$this, 'get' . $name]) {
             throw new InvalidCallException('Unsetting read-only property: ' . get_class($this) . '::' . $name);
         }
     }
@@ -254,7 +254,7 @@ class Object implements Configurable
      */
     public function canGetProperty($name, $checkVars = true)
     {
-        return method_exists($this, 'get' . $name) || $checkVars && property_exists($this, $name);
+        return is_callable([$this, 'get' . $name]) || $checkVars && property_exists($this, $name);
     }
 
     /**
@@ -272,7 +272,7 @@ class Object implements Configurable
      */
     public function canSetProperty($name, $checkVars = true)
     {
-        return method_exists($this, 'set' . $name) || $checkVars && property_exists($this, $name);
+        return is_callable([$this, 'set' . $name]) || $checkVars && property_exists($this, $name);
     }
 
     /**
@@ -285,6 +285,6 @@ class Object implements Configurable
      */
     public function hasMethod($name)
     {
-        return method_exists($this, $name);
+        return is_callable([$this, $name]);
     }
 }
