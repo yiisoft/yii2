@@ -106,7 +106,8 @@ class RequiredValidator extends Validator
         ], Yii::$app->language);
 
         ValidationAsset::register($view);
-
-        return 'yii.validation.required(value, messages, ' . json_encode($options, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE) . ');';
+        $js = '$(attribute.container).addClass("required");';
+        $js .= 'yii.validation.required(value, messages, ' . json_encode($options, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE) . ');';
+        return $js;
     }
 }

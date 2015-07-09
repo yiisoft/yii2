@@ -455,8 +455,7 @@ class Model extends Component implements IteratorAggregate, ArrayAccess, Arrayab
      *
      * Note that when the validator has a conditional validation applied using
      * [[\yii\validators\RequiredValidator::$when|$when]] this method will return
-     * `false` regardless of the `when` condition because it may be called be
-     * before the model is loaded with data.
+     * `false` or `true` of depending on the result of closure `$when`.
      *
      * @param string $attribute attribute name
      * @return boolean whether the attribute is required
@@ -464,8 +463,11 @@ class Model extends Component implements IteratorAggregate, ArrayAccess, Arrayab
     public function isAttributeRequired($attribute)
     {
         foreach ($this->getActiveValidators($attribute) as $validator) {
-            if ($validator instanceof RequiredValidator && $validator->when === null) {
-                return true;
+            if ($validator instanceof RequiredValidator) {
+                if ($validator->when === null) {
+                    return true;
+                }
+                return call_user_func($validator->when, $this, $attribute);
             }
         }
         return false;
