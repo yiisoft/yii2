@@ -240,7 +240,7 @@ ArrayHelper::merge($a, $b);
 
 ```php
 $posts = Post::find()->limit(10)->all();
-$data = ArrayHelper::toArray($post, [
+$data = ArrayHelper::toArray($posts, [
     'app\models\Post' => [
         'id',
         'title',

@@ -1206,6 +1206,27 @@ class BaseHtml
     }
 
     /**
+     * If `maxlength` option is set true and the model attribute is validated by a string validator,
+     * the `maxlength` option will take the value of [[\yii\validators\StringValidator::max]].
+     * @param Model $model the model object
+     * @param string $attribute the attribute name or expression.
+     * @param array $options the tag options in terms of name-value pairs.
+     */
+    private static function normalizeMaxLength($model, $attribute, &$options)
+    {
+        if (isset($options['maxlength']) && $options['maxlength'] === true) {
+            unset($options['maxlength']);
+            $attrName = static::getAttributeName($attribute);
+            foreach ($model->getActiveValidators($attrName) as $validator) {
+                if ($validator instanceof StringValidator && $validator->max !== null) {
+                    $options['maxlength'] = $validator->max;
+                    break;
+                }
+            }
+        }
+    }
+
+    /**
      * Generates a text input tag for the given model attribute.
      * This method will generate the "name" and "value" tag attributes automatically for the model attribute
      * unless they are explicitly specified in `$options`.
@@ -1225,16 +1246,7 @@ class BaseHtml
      */
     public static function activeTextInput($model, $attribute, $options = [])
     {
-        if (isset($options['maxlength']) && $options['maxlength'] === true) {
-            unset($options['maxlength']);
-            $attrName = static::getAttributeName($attribute);
-            foreach ($model->getActiveValidators($attrName) as $validator) {
-                if ($validator instanceof StringValidator && $validator->max !== null) {
-                    $options['maxlength'] = $validator->max;
-                    break;
-                }
-            }
-        }
+        self::normalizeMaxLength($model, $attribute, $options);
         return static::activeInput('text', $model, $attribute, $options);
     }
 
@@ -1265,10 +1277,17 @@ class BaseHtml
      * @param array $options the tag options in terms of name-value pairs. These will be rendered as
      * the attributes of the resulting tag. The values will be HTML-encoded using [[encode()]].
      * See [[renderTagAttributes()]] for details on how attributes are being rendered.
+     * The following special options are recognized:
+     *
+     * - maxlength: integer|boolean, when `maxlength` is set true and the model attribute is validated
+     *   by a string validator, the `maxlength` option will take the value of [[\yii\validators\StringValidator::max]].
+     *   This is available since version 2.0.5.
+     *
      * @return string the generated input tag
      */
     public static function activePasswordInput($model, $attribute, $options = [])
     {
+        self::normalizeMaxLength($model, $attribute, $options);
         return static::activeInput('password', $model, $attribute, $options);
     }
 
@@ -1301,15 +1320,27 @@ class BaseHtml
      * @param array $options the tag options in terms of name-value pairs. These will be rendered as
      * the attributes of the resulting tag. The values will be HTML-encoded using [[encode()]].
      * See [[renderTagAttributes()]] for details on how attributes are being rendered.
+     * The following special options are recognized:
+     *
+     * - maxlength: integer|boolean, when `maxlength` is set true and the model attribute is validated
+     *   by a string validator, the `maxlength` option will take the value of [[\yii\validators\StringValidator::max]].
+     *   This is available since version 2.0.5.
+     *
      * @return string the generated textarea tag
      */
     public static function activeTextarea($model, $attribute, $options = [])
     {
         $name = isset($options['name']) ? $options['name'] : static::getInputName($model, $attribute);
-        $value = static::getAttributeValue($model, $attribute);
+        if (isset($options['value'])) {
+            $value = $options['value'];
+            unset($options['value']);
+        } else {
+            $value = static::getAttributeValue($model, $attribute);
+        }
         if (!array_key_exists('id', $options)) {
             $options['id'] = static::getInputId($model, $attribute);
         }
+        self::normalizeMaxLength($model, $attribute, $options);
         return static::textarea($name, $value, $options);
     }
 
@@ -1730,6 +1761,16 @@ class BaseHtml
                             $html .= " $name-$n=\"" . static::encode($v) . '"';
                         }
                     }
+                } elseif ($name === 'class') {
+                    if (empty($value)) {
+                        continue;
+                    }
+                    $html .= " $name=\"" . static::encode(implode(' ', $value)) . '"';
+                } elseif ($name === 'style') {
+                    if (empty($value)) {
+                        continue;
+                    }
+                    $html .= " $name=\"" . static::encode(static::cssStyleFromArray($value)) . '"';
                 } else {
                     $html .= " $name='" . Json::htmlEncode($value) . "'";
                 }
@@ -1742,17 +1783,28 @@ class BaseHtml
     }
 
     /**
-     * Adds a CSS class to the specified options.
+     * Adds a CSS class (or several classes) to the specified options.
      * If the CSS class is already in the options, it will not be added again.
+     * If class specification at given options is an array, and some class placed there with the named (string) key,
+     * overriding of such key will have no effect. For example:
+     *
+     * ~~~php
+     * $options = ['class' => ['persistent' => 'initial']];
+     * Html::addCssClass($options, ['persistent' => 'override']);
+     * var_dump($options['class']); // outputs: array('persistent' => 'initial');
+     * ~~~
+     *
      * @param array $options the options to be modified.
-     * @param string $class the CSS class to be added
+     * @param string|array $class the CSS class(es) to be added
      */
     public static function addCssClass(&$options, $class)
     {
         if (isset($options['class'])) {
-            $classes = ' ' . $options['class'] . ' ';
-            if (strpos($classes, ' ' . $class . ' ') === false) {
-                $options['class'] .= ' ' . $class;
+            if (is_array($options['class'])) {
+                $options['class'] = self::mergeCssClasses($options['class'], (array) $class);
+            } else {
+                $classes = preg_split('/\s+/', $options['class'], -1, PREG_SPLIT_NO_EMPTY);
+                $options['class'] = implode(' ', self::mergeCssClasses($classes, (array) $class));
             }
         } else {
             $options['class'] = $class;
@@ -1760,21 +1812,47 @@ class BaseHtml
     }
 
     /**
+     * Merges already existing CSS classes with new one.
+     * This method provides the priority for named existing classes over additional.
+     * @param array $existingClasses already existing CSS classes.
+     * @param array $additionalClasses CSS classes to be added.
+     * @return array merge result.
+     */
+    private static function mergeCssClasses(array $existingClasses, array $additionalClasses)
+    {
+        foreach ($additionalClasses as $key => $class) {
+            if (is_int($key) && !in_array($class, $existingClasses)) {
+                $existingClasses[] = $class;
+            } elseif (!isset($existingClasses[$key])) {
+                $existingClasses[$key] = $class;
+            }
+        }
+        return array_unique($existingClasses);
+    }
+
+    /**
      * Removes a CSS class from the specified options.
      * @param array $options the options to be modified.
-     * @param string $class the CSS class to be removed
+     * @param string|array $class the CSS class(es) to be removed
      */
     public static function removeCssClass(&$options, $class)
     {
         if (isset($options['class'])) {
-            $classes = array_unique(preg_split('/\s+/', $options['class'] . ' ' . $class, -1, PREG_SPLIT_NO_EMPTY));
-            if (($index = array_search($class, $classes)) !== false) {
-                unset($classes[$index]);
-            }
-            if (empty($classes)) {
-                unset($options['class']);
+            if (is_array($options['class'])) {
+                $classes = array_diff($options['class'], (array) $class);
+                if (empty($classes)) {
+                    unset($options['class']);
+                } else {
+                    $options['class'] = $classes;
+                }
             } else {
-                $options['class'] = implode(' ', $classes);
+                $classes = preg_split('/\s+/', $options['class'], -1, PREG_SPLIT_NO_EMPTY);
+                $classes = array_diff($classes, (array) $class);
+                if (empty($classes)) {
+                    unset($options['class']);
+                } else {
+                    $options['class'] = implode(' ', $classes);
+                }
             }
         }
     }
@@ -1804,7 +1882,7 @@ class BaseHtml
     public static function addCssStyle(&$options, $style, $overwrite = true)
     {
         if (!empty($options['style'])) {
-            $oldStyle = static::cssStyleToArray($options['style']);
+            $oldStyle = is_array($options['style']) ? $options['style'] : static::cssStyleToArray($options['style']);
             $newStyle = is_array($style) ? $style : static::cssStyleToArray($style);
             if (!$overwrite) {
                 foreach ($newStyle as $property => $value) {
@@ -1835,7 +1913,7 @@ class BaseHtml
     public static function removeCssStyle(&$options, $properties)
     {
         if (!empty($options['style'])) {
-            $style = static::cssStyleToArray($options['style']);
+            $style = is_array($options['style']) ? $options['style'] : static::cssStyleToArray($options['style']);
             foreach ((array) $properties as $property) {
                 unset($style[$property]);
             }

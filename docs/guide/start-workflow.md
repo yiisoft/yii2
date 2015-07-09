@@ -20,7 +20,7 @@ Functionality <span id="functionality"></span>
 
 The basic application installed contains four pages:
 
-* The homepage, displayed when you access the URL `http://hostname/index.php`,
+* the homepage, displayed when you access the URL `http://hostname/index.php`,
 * the "About" page,
 * the "Contact" page, which displays a contact form that allows end users to contact you via email,
 * and the "Login" page, which displays a login form that can be used to authenticate end users. Try logging in
@@ -30,7 +30,7 @@ These pages share a common header and footer. The header contains a main menu ba
 among different pages.
 
 You should also see a toolbar at the bottom of the browser window.
-This is a useful [debugger tool](tool-debugger.md) provided by Yii to record and display a lot of debugging information, such as log messages, response statuses, the database queries run, and so on.
+This is a useful [debugger tool](https://github.com/yiisoft/yii2-debug/blob/master/docs/guide/README.md) provided by Yii to record and display a lot of debugging information, such as log messages, response statuses, the database queries run, and so on.
 
 Additionally to the web application, there is a console script called `yii`, which is located in the applications base directory.
 This script can be used to run background and maintainance tasks for the application, which are described
@@ -63,7 +63,7 @@ basic/                  application base path
 In general, the files in the application can be divided into two types: those under `basic/web` and those
 under other directories. The former can be directly accessed via HTTP (i.e., in a browser), while the latter can not and should not be.
 
-Yii implements the [model-view-controller (MVC)](http://wikipedia.org/wiki/Model-view-controller) design pattern,
+Yii implements the [model-view-controller (MVC)](http://wikipedia.org/wiki/Model-view-controller) architectural pattern,
 which is reflected in the above directory organization. The `models` directory contains all [model classes](structure-models.md),
 the `views` directory contains all [view scripts](structure-views.md), and the `controllers` directory contains
 all [controller classes](structure-controllers.md).

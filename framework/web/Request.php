@@ -165,7 +165,7 @@ class Request extends \yii\base\Request
      */
     private $_cookies;
     /**
-     * @var array the headers in this collection (indexed by the header names)
+     * @var HeaderCollection Collection of request headers.
      */
     private $_headers;
 
@@ -300,6 +300,10 @@ class Request extends \yii\base\Request
 
     /**
      * Returns whether this is an AJAX (XMLHttpRequest) request.
+     *
+     * Note that jQuery doesn't set the header in case of cross domain
+     * requests: https://stackoverflow.com/questions/8163703/cross-domain-ajax-doesnt-send-x-requested-with-header
+     *
      * @return boolean whether this is an AJAX (XMLHttpRequest) request.
      */
     public function getIsAjax()
@@ -1224,7 +1228,7 @@ class Request extends \yii\base\Request
                     $cookies[$name] = new Cookie([
                         'name' => $name,
                         'value' => $data[1],
-                        'expire'=> null
+                        'expire' => null,
                     ]);
                 }
             }
@@ -1233,7 +1237,7 @@ class Request extends \yii\base\Request
                 $cookies[$name] = new Cookie([
                     'name' => $name,
                     'value' => $value,
-                    'expire'=> null
+                    'expire' => null,
                 ]);
             }
         }

@@ -52,10 +52,10 @@ db-mongodb.md                       |
 db-elasticsearch.md                 |
 input-forms.md                      |
 input-validation.md                 | Yes
-input-file-upload.md                |
-input-multiple-models.md            |
+input-file-upload.md                | Yes
+input-multiple-models.md            | Yes
 input-tabular-input.md              |
-output-formatting.md                |
+output-formatting.md                | Yes
 output-pagination.md                | Yes
 output-sorting.md                   | Yes
 output-data-providers.md            | Yes
@@ -93,7 +93,7 @@ tutorial-start-from-scratch.md      |
 tutorial-console.md                 |
 tutorial-i18n.md                    |
 tutorial-mailing.md                 |
-tutorial-performance-tuning.md      |
+tutorial-performance-tuning.md      | Yes
 tutorial-shared-hosting.md          |
 tutorial-template-engines.md        |
 tutorial-core-validators.md         | Yes

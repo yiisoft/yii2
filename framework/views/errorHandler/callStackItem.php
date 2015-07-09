@@ -7,6 +7,7 @@
 /* @var $lines string[] */
 /* @var $begin integer */
 /* @var $end integer */
+/* @var $args array */
 /* @var $handler \yii\web\ErrorHandler */
 ?>
 <li class="<?php if ($index === 1 || !$handler->isCoreFile($file)) echo 'application'; ?> call-stack-item"

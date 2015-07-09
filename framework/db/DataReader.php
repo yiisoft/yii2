@@ -212,7 +212,7 @@ class DataReader extends \yii\base\Object implements \Iterator, \Countable
 
     /**
      * Resets the iterator to the initial state.
-     * This method is required by the interface Iterator.
+     * This method is required by the interface [[\Iterator]].
      * @throws InvalidCallException if this method is invoked twice
      */
     public function rewind()
@@ -227,7 +227,7 @@ class DataReader extends \yii\base\Object implements \Iterator, \Countable
 
     /**
      * Returns the index of the current row.
-     * This method is required by the interface Iterator.
+     * This method is required by the interface [[\Iterator]].
      * @return integer the index of the current row.
      */
     public function key()
@@ -237,7 +237,7 @@ class DataReader extends \yii\base\Object implements \Iterator, \Countable
 
     /**
      * Returns the current row.
-     * This method is required by the interface Iterator.
+     * This method is required by the interface [[\Iterator]].
      * @return mixed the current row.
      */
     public function current()
@@ -247,7 +247,7 @@ class DataReader extends \yii\base\Object implements \Iterator, \Countable
 
     /**
      * Moves the internal pointer to the next row.
-     * This method is required by the interface Iterator.
+     * This method is required by the interface [[\Iterator]].
      */
     public function next()
     {
@@ -257,7 +257,7 @@ class DataReader extends \yii\base\Object implements \Iterator, \Countable
 
     /**
      * Returns whether there is a row of data at current position.
-     * This method is required by the interface Iterator.
+     * This method is required by the interface [[\Iterator]].
      * @return boolean whether there is a row of data at current position.
      */
     public function valid()

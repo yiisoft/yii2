@@ -69,77 +69,126 @@ php build translation "../docs/guide" "../docs/guide-uk" "Ukrainian guide transl
 - Tip → Підказка
 - Note → Примітка
 - Info → Інформація
+- Warning → Попередження
 
 ### Список термінів
 
+[Англійсько-українські словники](http://e2u.org.ua)
+
 - action — дія;
 - active record — (не перекладається);
-- (advanced/basic) application — (розширений/базовий) додаток;
-- attach handler — прикріпити обробник;
+- Advanced/Basic Project Template — Розширений/Базовий шаблон проекту;
+- alias — псевдонім;
+- alphanumeric — буквено-цифровий;
+- (Web) application — (веб-)додаток;
+- assignment — призначення;
+- attach handler — приєднати обробник;
 - attribute of the model — атрибут моделі;
+- authentication — аутентифікація / установлення справжності;
+- authorization — авторизація/уповноваження;
+- autoloader — автозавантажувач;
+- back-end — (не перекладається);
+- backward compatibility / BC — зворотна сумісність;
+- bootstrap, bootstrapping — початкове завантаження;
 - branch — гілка;
+- browser — браузер;
+- (asset) bundle — колекція (ресурсів);
 - cache — кеш;
 - camel case — (не перекладається);
+- case-sensitive — регістр-залежний;
 - column — колонка;
 - commit — комміт;
 - concatenation — конкатенація;
 - configuration — конфігурація;
 - content — вміст;
 - contributor — учасник;
-- controller — контролер;
 - cookies — кукі;
 - customization — (тонке) налаштування;
 - debug mode — режим налагодження (див. production mode);
-- debugger — відладчик;
+- debugger — налагоджувач;
 - (function) declaration — оголошення (функції);
+- definition — визначення;
+- design pattern — шаблон проектування;
+- development mode — режим розробки;
 - (root) directory — (коренева) директорія;
 - eager loading — жадібне завантаження (див. lazy loading);
-- email address — email адреса;
+- email address — адреса електронної пошти;
 - environment — середовище;
 - exception — виключення;
-- PHP extension — розширення PHP;
+- existing — наявний/присутній; // перекладати як "існуючий" не вірно
+- (PHP) extension — розширення (PHP);
+- Facebook — Фейсбук;
 - field (of the table) — поле/атрибут (таблиці);
 - fixture — фікстура;
+- folder — папка/каталог;
+- footer — футер;
 - fork — форк;
+- formatter — форматтер;
 - framework — фреймворк;
 - front-controller — фронт-контролер;
+- front-end — (не перекладається);
 - getter — геттер;
 - (event) handler — обробник (події);
 - hash — хеш;
-- help - довідка;
-- helper - хелпер;
+- help — довідка;
+- helper — хелпер;
 - id — ідентифікатор;
 - image — зображення;
+- initialize — ініціалізувати/встановлювати;
+- to initiate — ініціювати/розпочинати;
 - instance — екземпляр;
+- instantiate — створювати екземпляр;
 - issue — питання/проблема; // в залежності від контексту
+- layout — макет;
 - lazy loading — відкладене завантаження;
 - log, logging — журнал, журналювання;
 - markdown — (не перекладається);
 - method — метод (обʼєкта/класу);
 - merge — поєднання;
-- model — модель, модель даних;
-- model form — модель форми;
-- parameter — параметр (методу/функції);
+- Model-View-Controller (MVC) — Модель-Представлення-Контролер (MVC);
+- namespace — простір імен;
+- out of the box — "з коробки";
+- package — пакунок;
+- pagination — розділення на сторінки;
+- parameter — параметр;
 - to parse — обробляти;
+- (application) performance — швидкодія (додатка);
 - placeholder — заповнювач;
-- production mode — режим провадження (див. debug mode);
+- plugin — плагін;
+- postprocessing — після-обробка;
+- predefined — попередньо визначений;
+- production mode — робочий режим (див. debug mode);
+- profiling — профілювання;
 - property — властивість (обʼєкта);
 - pull request — (не перекладається);
 - query builder — конструктор запитів;
+- refactoring — рефакторинг;
 - to render, rendering — формувати, формування;
 - related, relation — повʼязаний, звʼязок;
+- release — реліз;
 - repo, repository — репозиторій;
 - resolve request — попередня обробка запиту;
 - route, routing — маршрут, маршрутизація;
 - row (of the table) — рядок (таблиці);
+- screenshot — знімок екрану;
+- Service Locator — Локатор служб;
 - setter — сеттер;
+- shared hosting — віртуальний хостинг;
+- (call) stack — стек (викликів);
 - staging area — буферна зона;
+- standalone — автономний;
 - string — текстовий рядок;
+- sub-directory — під-директорія;
 - substitution — підставлення/заміщення;
 - tabular input — табличний ввід;
 - template engine — шаблонізатор;
 - theming — темізація;
+- third party — сторонній;
+- thumbnail — мініатюра;
+- tracing — трасування;
 - trait — трейт;
+- Twitter — Твіттер;
+- Unicode — (не перекладається);
 - unit tests — модульні тести;
 - to validate — перевіряти;
 - valid — коректний;
@@ -147,4 +196,4 @@ php build translation "../docs/guide" "../docs/guide-uk" "Ukrainian guide transl
 - validation — перевірка;
 - validator class — клас валідатора;
 - versioning — версіонування;
-- view — представлення.
+- widget — віджет.

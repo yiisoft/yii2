@@ -16,8 +16,17 @@ use yii\web\AssetManager;
  */
 class ActiveFieldTest extends \yiiunit\TestCase
 {
+    /**
+     * @var ActiveField
+     */
     private $activeField;
+    /**
+     * @var DynamicModel
+     */
     private $helperModel;
+    /**
+     * @var ActiveForm
+     */
     private $helperForm;
     private $attributeName = 'attributeName';
 
@@ -233,9 +242,33 @@ EOD;
 EOD;
         $this->activeField->listBox(["1" => "Item One", "2" => "Item 2"]);
         $this->assertEqualsWithoutLE($expectedValue, $this->activeField->parts['{input}']);
+
+        // https://github.com/yiisoft/yii2/issues/8848
+        $expectedValue = <<<EOD
+<input type="hidden" name="DynamicModel[attributeName]" value=""><select id="dynamicmodel-attributename" class="form-control" name="DynamicModel[attributeName]" size="4">
+<option value="value1" disabled>Item One</option>
+<option value="value2" label="value 2">Item 2</option>
+</select>
+EOD;
+        $this->activeField->listBox(["value1" => "Item One", "value2" => "Item 2"], ['options' => [
+            'value1' => ['disabled' => true],
+            'value2' => ['label' => 'value 2'],
+        ]]);
+        $this->assertEqualsWithoutLE($expectedValue, $this->activeField->parts['{input}']);
+
+        $expectedValue = <<<EOD
+<input type="hidden" name="DynamicModel[attributeName]" value=""><select id="dynamicmodel-attributename" class="form-control" name="DynamicModel[attributeName]" size="4">
+<option value="value1" disabled>Item One</option>
+<option value="value2" selected label="value 2">Item 2</option>
+</select>
+EOD;
+        $this->activeField->model->{$this->attributeName} = 'value2';
+        $this->activeField->listBox(["value1" => "Item One", "value2" => "Item 2"], ['options' => [
+            'value1' => ['disabled' => true],
+            'value2' => ['label' => 'value 2'],
+        ]]);
+        $this->assertEqualsWithoutLE($expectedValue, $this->activeField->parts['{input}']);
     }
-
-
 
     public function testGetClientOptionsReturnEmpty()
     {

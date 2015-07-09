@@ -248,6 +248,6 @@ http://hostname/index.php?r=country/index&page=2
 この節では、データベースを扱う方法を学びました。
 また、[[yii\data\Pagination]] と [[yii\widgets\LinkPager]] の助けを借りて、ページ付けされたデータを取得し表示する方法も学びました。
 
-次の節では、[Gii](tool-gii.md) と呼ばれる強力なコード生成ツールを使う方法を学びます。
+次の節では、[Gii](https://github.com/yiisoft/yii2-gii/blob/master/docs/guide-ja/README.md) と呼ばれる強力なコード生成ツールを使う方法を学びます。
 このツールは、データベーステーブルのデータを取り扱うための「作成・読出し・更新・削除 (CRUD)」操作のような、通常必要とされることが多いいくつかの機能の迅速な実装を手助けしてくれるものです。
 実際のところ、あなたがたった今書いたばかりのコードは、Gii ツールを使えば、全部、Yii が自動的に生成してくれるものです。

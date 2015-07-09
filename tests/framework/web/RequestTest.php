@@ -78,4 +78,16 @@ class RequestTest extends TestCase
         $request->acceptableLanguages = ['en-us', 'de'];
         $this->assertEquals('pl', $request->getPreferredLanguage(['pl', 'ru-ru']));
     }
+
+    public function testCsrfTokenValidation()
+    {
+        $this->mockWebApplication();
+
+        $request = new Request();
+        $request->enableCsrfCookie = false;
+
+        $token = $request->getCsrfToken();
+
+        $this->assertTrue($request->validateCsrfToken($token));
+    }
 }

@@ -436,6 +436,11 @@ to explicitly mark an attribute as dirty.
 If you are interested in the attribute values prior to their most recent modification, you may call 
 [[yii\db\ActiveRecord::getOldAttributes()|getOldAttributes()]] or [[yii\db\ActiveRecord::getOldAttribute()|getOldAttribute()]].
 
+> Note: The comparison of old and new values will be done using the `===` operator so a value will be considered dirty
+> even if it has the same value but a different type. This is often the case when the model receives user input from
+> HTML forms where every value is represented as a string.
+> To ensure the correct type for e.g. integer values you may apply a [validation filter](input-validation.md#data-filtering):
+> `['attributeName', 'filter', 'filter' => 'intval']`.
 
 ### Default Attribute Values <span id="default-attribute-values"></span>
 
