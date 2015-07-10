@@ -1,16 +1,17 @@
 Instalacja Yii
 ==============
 
-Yii możesz zainstalować na dwa sposoby, korzystając z [Composer] (https://getcomposer.org/) menedżera plików lub pobierając plik archiwum.
+Yii możesz zainstalować na dwa sposoby, korzystając z [Composera] (https://getcomposer.org/) lub pobierając plik archiwum.
 Pierwszy z nich jest najlepszym sposobem, ponieważ pozwala Ci na instalację nowych [rozszerzeń](structure-extensions.md) lub aktualizację Yii przez wywołanie jednej komendy.
 
-You can install Yii in two ways, using the [Composer](https://getcomposer.org/) package manager or by downloading an archive file.
-The former is the preferred way, as it allows you to install new [extensions](structure-extensions.md) or update Yii by simply running a single command.
-
-Standard installations of Yii result in both the framework and a project template being downloaded and installed.
-A project template is a working Yii project implementing some basic features, such as login, contact form, etc. 
-Its code is organized in a recommended way. Therefore, it can serve as a good starting point for your projects.
+Standardowa instalacja Yii skutkuje pobraniem i zainstalowaniem całego framework'a oraz szablonu projektu.
+Szablon projektu jest działającym projektem Yii zawierającym w sobie podstawowe funkcjonalności, takie jak logowanie, formularz kontaktowy itp.
+Jego kod jest zorganizowany w zalecany sposób, dlatego może służyć jako dobry start dla Twojego projektu.
     
+W tej oraz kilku kolejnych sekcjach opiszemy jak zainstalować Yii z tzw. "Podstawowym szablonem projektu" (Basic Project Template) oraz jak zaimplementować nowe funkcjonalności
+w tym szablonie. Yii dostarcza również drugi zaawansowany szablon [Advanced Project Template](https://github.com/yiisoft/yii2-app-advanced/blob/master/docs/guide/README.md), który jest lepszy
+dla programistów do tworzenia wielowarstwowych aplikacji.
+
 In this and the next few sections, we will describe how to install Yii with the so-called *Basic Project Template* and
 how to implement new features on top of this template. Yii also provides another template called
 the [Advanced Project Template](https://github.com/yiisoft/yii2-app-advanced/blob/master/docs/guide/README.md) which is better used in a team development environment
