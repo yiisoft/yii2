@@ -28,6 +28,7 @@ Yii Framework 2 Change Log
 - Bug: Fixed string comparison in `BaseActiveRecord::unlink()` which may result in wrong comparison result for hash valued primary keys starting with `0e` (cebe)
 - Bug: Pass correct action name to `yii\console\Controller::options()` when default action was requested (cebe)
 - Bug: Automatic garbage collection in `yii\caching\FileCache` was not triggered (kidol)
+- Bug: Fixed `yii\filters\PageCache` not setting any duration when caching the response data (kidol)
 - Enh #3335: Implemented `SchemaBuilder` (pana1990, vaseninm, samdark)
 - Enh #6043: Specification for 'class' and 'style' in array format added to `yii\helpers\Html` (klimov-paul)
 - Enh #7169: `yii\widgets\ActiveField` now uses corresponding methods for default parts rendering (klimov-paul)

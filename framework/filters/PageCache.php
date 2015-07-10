@@ -239,7 +239,7 @@ class PageCache extends ActionFilter
             }
             $data['cookies'] = $cookies;
         }
-        $this->cache->set($this->calculateCacheKey(), $data);
+        $this->cache->set($this->calculateCacheKey(), $data, $this->duration);
         echo ob_get_clean();
     }
 
