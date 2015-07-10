@@ -8,124 +8,105 @@ Standardowa instalacja Yii skutkuje pobraniem i zainstalowaniem całego framewor
 Szablon projektu jest działającym projektem Yii zawierającym w sobie podstawowe funkcjonalności, takie jak logowanie, formularz kontaktowy itp.
 Jego kod jest zorganizowany w zalecany sposób, dlatego może służyć jako dobry start dla Twojego projektu.
     
-W tej oraz kilku kolejnych sekcjach opiszemy jak zainstalować Yii z tzw. "Podstawowym szablonem projektu" (Basic Project Template) oraz jak zaimplementować nowe funkcjonalności
-w tym szablonie. Yii dostarcza również drugi zaawansowany szablon [Advanced Project Template](https://github.com/yiisoft/yii2-app-advanced/blob/master/docs/guide/README.md), który jest lepszy
-dla programistów do tworzenia wielowarstwowych aplikacji.
+W tej oraz kilku kolejnych sekcjach opiszemy jak zainstalować Yii z tzw. "podstawowym szablonem projektu" oraz jak zaimplementować w nim nowe funkcjonalności. 
+Yii dostarcza również drugi [zaawansowany szablon projektu](https://github.com/yiisoft/yii2-app-advanced/blob/master/docs/guide/README.md), który jest lepszy
+dla programistów tworzących wielowarstwowe aplikacje.
 
-In this and the next few sections, we will describe how to install Yii with the so-called *Basic Project Template* and
-how to implement new features on top of this template. Yii also provides another template called
-the [Advanced Project Template](https://github.com/yiisoft/yii2-app-advanced/blob/master/docs/guide/README.md) which is better used in a team development environment
-to develop applications with multiple tiers.
+> Info: Podstawowy szablon projektu jest odpowiedni dla 90% aplikacji webowych. Główną różnicą w porównaniu do zaawansowanego szablonu projektu jest organizacja kodu.
+Jeśli dopiero zaczynasz swoją przygodę z Yii, mocno zalecamy trzymać się podstawowego szablonu ze względu na jego prostotę oraz wystarczającą funkcjonalność.
 
-> Info: The Basic Project Template is suitable for developing 90 percent of Web applications. It differs
-  from the Advanced Project Template mainly in how their code is organized. If you are new to Yii, we strongly
-  recommend you stick to the Basic Project Template for its simplicity yet sufficient functionalities.
-
-
-Installing via Composer <span id="installing-via-composer"></span>
+Instalacja przez Composer <span id="installing-via-composer"></span>
 -----------------------
 
-If you do not already have Composer installed, you may do so by following the instructions at
-[getcomposer.org](https://getcomposer.org/download/). On Linux and Mac OS X, you'll run the following commands:
+Jeśli nie posiadasz jeszcze zainstalowanego Composer'a to możesz to zrobić podążając według zamieszczonych na [getcomposer.org](https://getcomposer.org/download/).
+W systemach operacyjnych Linux i Mac OS X należy wywołać następujące komendy:
 
     curl -sS https://getcomposer.org/installer | php
     mv composer.phar /usr/local/bin/composer
 
-On Windows, you'll download and run [Composer-Setup.exe](https://getcomposer.org/Composer-Setup.exe).
+W systemie Windows należy pobrać i uruchomić [Composer-Setup.exe](https://getcomposer.org/Composer-Setup.exe).
 
-Please refer to the [Composer Documentation](https://getcomposer.org/doc/) if you encounter any
-problems or want to learn more about Composer usage.
+W przypadku napotkania jakichkolwiek problemów lub chęci zdobycia większej ilości informacji na temat korzystania z Composer'a zalecamy odniesienie się do [dokumentacji](https://getcomposer.org/doc/)
 
-If you had Composer already installed before, make sure you use an up to date version. You can update Composer
-by running `composer self-update`.
+Jeśli posiadałeś już wcześniej zainstalowanego Composer'a, upewnij się, że jest on zaktualizowany. Composer możesz zaktualizować wywołując komendę 'composer self-update'.
 
-With Composer installed, you can install Yii by running the following commands under a Web-accessible folder:
+Z zainstalowanym Composer'em możesz przejść do instalacji Yii wywołując poniższe komendy w katalogu dostępnym w sieci web:
 
     composer global require "fxp/composer-asset-plugin:~1.0.0"
     composer create-project --prefer-dist yiisoft/yii2-app-basic basic
 
-The first command installs the [composer asset plugin](https://github.com/francoispluchino/composer-asset-plugin/)
-which allows managing bower and npm package dependencies through Composer. You only need to run this command
-once for all. The second command installs Yii in a directory named `basic`. You can choose a different directory name if you want.
+Pierwsza komenda instaluje [wtyczkę zasobów](https://github.com/francoispluchino/composer-asset-plugin/), która pozwala na zarządzanie zasobami [Bower'a](http://bower.io) oraz [paczkami zależności NPM](https://www.npmjs.com/) przez Composer.
+Komendę tą wystarczy wywołać raz, po czym wtyczka będzie już na stałe zainstalowana.
+Druga komenda instaluje Yii w katalogu `basic`. Jeśli chcesz, możesz wybrać katalog o innej nazwie.
 
-> Note: During the installation Composer may ask for your Github login credentials. This is normal because Composer 
-> needs to get enough API rate-limit to retrieve the dependent package information from Github. For more details, 
-> please refer to the [Composer documentation](https://getcomposer.org/doc/articles/troubleshooting.md#api-rate-limit-and-oauth-tokens).
+> Note: Podczas instalacji Composer może zapytać o Twoje dane uwierzytelniające do Github'a. Jest to normalna sytuacja, ponieważ Composer potrzebuje wystarczającego limitu prędkości API 
+> do pobrania informacji o pakiecie zależnym z Github'a. Więcej szczegółów znajdziesz w [dokumentacji Composer'a](https://getcomposer.org/doc/articles/troubleshooting.md#api-rate-limit-and-oauth-tokens).
 
-> Tip: If you want to install the latest development version of Yii, you may use the following command instead,
-> which adds a [stability option](https://getcomposer.org/doc/04-schema.md#minimum-stability):
+> Tip: Jeśli chcesz zainstalować najnowszą wersję deweloperską Yii użyj poniższej komendy, która dodaje [opcję stabilności](https://getcomposer.org/doc/04-schema.md#minimum-stability):
 >
->     composer create-project --prefer-dist --stability=dev yiisoft/yii2-app-basic basic
+>   composer create-project --prefer-dist --stability=dev yiisoft/yii2-app-basic basic
 >
-> Note that the development version of Yii should not be used for production as it may break your running code.
+> Pamiętaj, że wersja deweloperska Yii nie powinna być używana w wersjach produkcyjnych aplikacji, ponieważ mogą wystąpić niespodziewane błędy.
 
-
-Installing from an Archive File <span id="installing-from-archive-file"></span>
+Instalacja z pliku archiwum <span id="installing-from-archive-file"></span>
 -------------------------------
 
-Installing Yii from an archive file involves three steps:
+Instalacja Yii z pliku archiwum dotyczy trzech kroków:
 
-1. Download the archive file from [yiiframework.com](http://www.yiiframework.com/download/).
-2. Unpack the downloaded file to a Web-accessible folder.
-3. Modify the `config/web.php` file by entering a secret key for the `cookieValidationKey` configuration item
-   (this is done automatically if you are installing Yii using Composer):
+1. Pobranie pliku archiwum z [yiiframework.com](http://www.yiiframework.com/download/).
+2. Rozpakowanie pliku archiwum do katalogu dostępnego w sieci web.
+3. Zmodyfikowanie pliku `config/web.php` przez dodanie sekretnego klucza do elementu konfiguracji `cookieValidationKey`
+    (jest to wykonywane automatycznie jeśli instalujesz Yii używając Composer'a):
 
-   ```php
-   // !!! insert a secret key in the following (if it is empty) - this is required by cookie validation
+    ```php
+   // !!! wprowadź sekretny klucz tutaj - jest to wymagane przez walidację ciasteczek
    'cookieValidationKey' => 'enter your secret key here',
    ```
 
-
-Other Installation Options <span id="other-installation-options"></span>
+Inne opcje instalacji <span id="other-installation-options"></span>
 --------------------------
 
-The above installation instructions show how to install Yii, which also creates a basic Web application that works out of the box.
-This approach is a good starting point for most projects, either small or big. It is especially suitable if you just
-start learning Yii.
+Powyższe instrukcje instalacji pokazują jak zainstalować Yii oraz utworzyć podstawową, działającą aplikację Web, która "działa po wyjęciu z pudełka".
+To podejście jest dobrym punktem startowym dla większości projektów, małych bądź dużych. Jest to szczególnie korzystne gdy zaczynasz naukę Yii.
 
-But there are other installation options available:
+Jednak dostępne są również inne opcje instalacji:
 
-* If you only want to install the core framework and would like to build an entire  application from scratch,
-  you may follow the instructions as explained in [Building Application from Scratch](tutorial-start-from-scratch.md).
-* If you want to start with a more sophisticated application, better suited to team development environments,
-  you may consider installing the [Advanced Project Template](https://github.com/yiisoft/yii2-app-advanced/blob/master/docs/guide/README.md).
+* Jeśli chcesz zainstalować wyłącznie framework i sam budować aplikację od podstaw
+* Jeśli chcesz utworzyć bardziej wyrafinowaną aplikację, lepiej nadającą się do zespołu programistycznego, powinienieś rozważyć instalację [zaawansowanego szablonu aplikacji](https://github.com/yiisoft/yii2-app-advanced/blob/master/docs/guide/README.md).
 
 
-Verifying the Installation <span id="verifying-installation"></span>
+Sprawdzenie instalacji <span id="verifying-installation"></span>
 --------------------------
 
-After installation, you can use your browser to access the installed Yii application with the following URL:
+Po instalacji możesz użyć swojej przeglądarki aby uzyskać dostęp do zainstalowanej aplikacji Yii przechodząc pod adres:
 
 ```
 http://localhost/basic/web/index.php
 ```
 
-This URL assumes you have installed Yii in a directory named `basic`, directly under the Web server's document root directory,
-and that the Web server is running on your local machine (`localhost`). You may need to adjust it to your installation environment.
+Ten adres zakłada, że zainstalowałeś Yii w katalogu o nazwie `basic`, bezpośrednio jako dokument katalogu głównym serwera sieci Web, oraz, że serwer jest uruchomiony na Twojej lokalnej maszynie ('localhost').
+Być może będziesz musiał dostosować go do Twojego środowiska instalacyjnego.
 
-![Successful Installation of Yii](images/start-app-installed.png)
+![Pomyślna instalacja Yii](images/start-app-installed.png)
+Na stronie w przeglądarce powinienieś zobaczyć napis "Congratulations!". Jeśli nie, sprawdź czy zainstalowana wersja PHP jest wystarczająca do wymagań Yii.
+Możesz sprawdzić minimalne wymagania na dwa sposoby:
 
-You should see the above "Congratulations!" page in your browser. If not, please check if your PHP installation satisfies
-Yii's requirements. You can check if the minimum requirements are met using one of the following approaches:
+* Używając przeglądarki przejdź pod adres `http://localhost/basic/requirements.php`
+* Wywołaj poniższą komendę:
 
-* Use a browser to access the URL `http://localhost/basic/requirements.php`
-* Run the following commands:
+    ```
+    cd basic
+    php requirements.php
+    ```
 
-  ```
-  cd basic
-  php requirements.php
-  ```
-
-You should configure your PHP installation so that it meets the minimum requirements of Yii. Most importantly, you should have PHP 5.4 or above. You should also install
-the [PDO PHP Extension](http://www.php.net/manual/en/pdo.installation.php) and a corresponding database driver
-(such as `pdo_mysql` for MySQL databases), if your application needs a database.
+Powinienieś skonfigurować swoją instalację PHP tak, aby spełniała minimalne wymogi Yii. Najważniejszym z nich jest posiadanie PHP w wersji 5.4 lub wyżej. Powinienieś również zainstalować 
+[rozszerzenie PDO](http://www.php.net/manual/en/pdo.installation.php) oraz odpowiedni sterownik bazy danych (np. `pdo_mysql` dla bazy danych MySQL) jeśli Twoja aplikacja potrzebuje bazy danych.
 
 
-Configuring Web Servers <span id="configuring-web-servers"></span>
+Konfigurowanie serwerów WWW <span id="configuring-web-servers"></span>
 -----------------------
 
-> Info: You may skip this subsection for now if you are just test driving Yii with no intention
-  of deploying it to a production server.
+> Info: Możesz pominąć tą sekcję jeśli tylko testujesz Yii bez zamiaru zamieszczania aplikacji na serwerze produkcyjnym.
 
 The application installed according to the above instructions should work out of box with either
 an [Apache HTTP server](http://httpd.apache.org/) or an [Nginx HTTP server](http://nginx.org/), on
