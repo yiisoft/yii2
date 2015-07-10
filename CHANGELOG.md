@@ -17,6 +17,7 @@ Yii Framework 2 Change Log
 - Bug #8592: Fixed `yii\db\Command::getRawSql()` unable to parse params specified without colon (':') (klimov-paul)
 - Bug #8593: Fixed `yii\db\ActiveQuery` produces incorrect SQL for aggregations, when `sql` field is set (klimov-paul)
 - Bug #8595: Fixed `yii\rbac\DbManager::checkAccessFromCache()` to check against auth items loaded in cache recursively (achretien, qiangxue)
+- Bug #8549: Fixed `yii\caching\FileCache` doesn't lock cache files when reading (iworker)
 - Bug #8606: Fixed `yii\web\Response::xSendFile()` does not reset format (vyants)
 - Bug #8627: Fixed `yii\db\Migration` produces incorrect results due to table schema caching (klimov-paul)
 - Bug #8661: Fixed `yii.activeForm.js` scrolling to top (nkovacs)
@@ -43,7 +44,6 @@ Yii Framework 2 Change Log
 - Enh #9038: Write warning to log in case `FileCache` fails to write into file (foccy)
 - Chg #6354: `ErrorHandler::logException()` will now log the whole exception object instead of only its string representation (cebe)
 - Chg #8556: Extracted `yii\web\User::getAuthManager()` method (samdark)
-
 
 2.0.4 May 10, 2015
 ------------------
