@@ -81,14 +81,7 @@ class QueryBuilder extends \yii\db\QueryBuilder
     }
 
     /**
-     * Builds a SQL statement for creating a new index.
-     * @param string $name the name of the index. The name will be properly quoted by the method.
-     * @param string $table the table that the new index will be created for. The table name will be properly quoted by the method.
-     * @param string|array $columns the column(s) that should be included in the index. If there are multiple columns,
-     * separate them with commas or use an array to represent them. Each column name will be properly quoted
-     * by the method, unless a parenthesis is found in the name.
-     * @param boolean $unique whether to add UNIQUE constraint on the created index.
-     * @return string the SQL statement for creating a new index.
+     * @inheritdoc
      */
     public function createIndex($name, $table, $columns, $unique = false)
     {
@@ -98,7 +91,7 @@ class QueryBuilder extends \yii\db\QueryBuilder
         . $this->db->quoteTableName($name)
         . ' (' . $this->buildColumns($columns) . ')';
     }
-    
+
     /**
      * Builds a SQL statement for dropping a foreign key constraint.
      * @param string $name the name of the foreign key constraint to be dropped. The name will be properly quoted by the method.
