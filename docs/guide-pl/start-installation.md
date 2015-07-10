@@ -87,7 +87,7 @@ http://localhost/basic/web/index.php
 Adres zakłada, że zainstalowałeś Yii w katalogu o nazwie `basic`, bezpośrednio jako katalog głównego katalogu serwera, oraz, że serwer jest uruchomiony na Twojej lokalnej maszynie ('localhost').
 Być może będziesz musiał dostosować go do Twojego środowiska instalacyjnego.
 
-![Pomyślna instalacja Yii](images/start-app-installed.png)
+![Pomyślna instalacja Yii](../guide/images/start-app-installed.png)
 Na stronie w przeglądarce powinienieś zobaczyć napis "Congratulations!". Jeśli nie, sprawdź czy zainstalowana wersja PHP jest wystarczająca do wymagań Yii.
 Możesz sprawdzić minimalne wymagania na dwa sposoby:
 
