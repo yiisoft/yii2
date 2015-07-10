@@ -9,16 +9,16 @@ Szablon projektu jest działającym projektem Yii zawierającym w sobie podstawo
 Jego kod jest zorganizowany w zalecany sposób, dlatego może służyć jako dobry start dla Twojego projektu.
     
 W tej oraz kilku kolejnych sekcjach opiszemy jak zainstalować Yii z tzw. "podstawowym szablonem projektu" oraz jak zaimplementować w nim nowe funkcjonalności. 
-Yii dostarcza również drugi [zaawansowany szablon projektu](https://github.com/yiisoft/yii2-app-advanced/blob/master/docs/guide/README.md), który jest lepszy
+Yii dostarcza również drugi, [zaawansowany szablon projektu](https://github.com/yiisoft/yii2-app-advanced/blob/master/docs/guide/README.md), który jest lepszy
 dla programistów tworzących wielowarstwowe aplikacje.
 
-> Info: Podstawowy szablon projektu jest odpowiedni dla 90% aplikacji webowych. Główną różnicą w porównaniu do zaawansowanego szablonu projektu jest organizacja kodu.
-Jeśli dopiero zaczynasz swoją przygodę z Yii, mocno zalecamy trzymać się podstawowego szablonu ze względu na jego prostotę oraz wystarczającą funkcjonalność.
+> Info: Podstawowy szablon projektu jest odpowiedni dla 90% aplikacji webowych. Główną różnicą, w porównaniu do zaawansowanego szablonu projektu, jest organizacja kodu.
+Jeśli dopiero zaczynasz swoją przygodę z Yii, mocno zalecamy trzymać się podstawowego szablonu, ze względu na jego prostotę oraz wystarczającą funkcjonalność.
 
 Instalacja przez Composer <span id="installing-via-composer"></span>
 -----------------------
 
-Jeśli nie posiadasz jeszcze zainstalowanego Composer'a to możesz to zrobić podążając według zamieszczonych na [getcomposer.org](https://getcomposer.org/download/).
+Jeśli nie posiadasz jeszcze zainstalowanego Composer'a to możesz to zrobić podążając według zamieszczonych na [getcomposer.org](https://getcomposer.org/download/) instrukcji.
 W systemach operacyjnych Linux i Mac OS X należy wywołać następujące komendy:
 
     curl -sS https://getcomposer.org/installer | php
@@ -78,13 +78,13 @@ Jednak dostępne są również inne opcje instalacji:
 Sprawdzenie instalacji <span id="verifying-installation"></span>
 --------------------------
 
-Po instalacji możesz użyć swojej przeglądarki aby uzyskać dostęp do zainstalowanej aplikacji Yii przechodząc pod adres:
+Po instalacji możesz użyć swojej przeglądarki aby uzyskać dostęp do swojej aplikacji Yii przechodząc pod adres:
 
 ```
 http://localhost/basic/web/index.php
 ```
 
-Ten adres zakłada, że zainstalowałeś Yii w katalogu o nazwie `basic`, bezpośrednio jako dokument katalogu głównym serwera sieci Web, oraz, że serwer jest uruchomiony na Twojej lokalnej maszynie ('localhost').
+Adres zakłada, że zainstalowałeś Yii w katalogu o nazwie `basic`, bezpośrednio jako katalog głównego katalogu serwera, oraz, że serwer jest uruchomiony na Twojej lokalnej maszynie ('localhost').
 Być może będziesz musiał dostosować go do Twojego środowiska instalacyjnego.
 
 ![Pomyślna instalacja Yii](images/start-app-installed.png)
@@ -100,70 +100,60 @@ Możesz sprawdzić minimalne wymagania na dwa sposoby:
     ```
 
 Powinienieś skonfigurować swoją instalację PHP tak, aby spełniała minimalne wymogi Yii. Najważniejszym z nich jest posiadanie PHP w wersji 5.4 lub wyżej. Powinienieś również zainstalować 
-[rozszerzenie PDO](http://www.php.net/manual/en/pdo.installation.php) oraz odpowiedni sterownik bazy danych (np. `pdo_mysql` dla bazy danych MySQL) jeśli Twoja aplikacja potrzebuje bazy danych.
+[rozszerzenie PDO](http://www.php.net/manual/en/pdo.installation.php) oraz odpowiedni sterownik bazy danych (np. `pdo_mysql` dla bazy danych MySQL), jeśli Twoja aplikacja potrzebuje bazy danych.
 
 
 Konfigurowanie serwerów WWW <span id="configuring-web-servers"></span>
 -----------------------
 
-> Info: Możesz pominąć tą sekcję jeśli tylko testujesz Yii bez zamiaru zamieszczania aplikacji na serwerze produkcyjnym.
+> Info: Możesz pominąć tą sekcję jeśli tylko testujesz Yii, bez zamiaru zamieszczania aplikacji na serwerze produkcyjnym.
 
-The application installed according to the above instructions should work out of box with either
-an [Apache HTTP server](http://httpd.apache.org/) or an [Nginx HTTP server](http://nginx.org/), on
-Windows, Mac OS X, or Linux running PHP 5.4 or higher. Yii 2.0 is also compatible with facebook's
-[HHVM](http://hhvm.com/). However, there are some edge cases where HHVM behaves different than native
-PHP, so you have to take some extra care when using HHVM.
+Aplikacja zainstalowana według powyższych instrukcji powinna działać na [serwerze Apache HTTP](http://httpd.apache.org/) oraz [serwerze Nginx HTTP](http://nginx.org/), na systemie operacyjnym Windows, Mac OS X oraz Linux posiadających zainstalowany PHP 5.4 lub wyżej.
+Yii 2.0 jest również kompatybilne z [facebook'owym HHVM](http://hhvm.com/). Są jednak przypadki, gdzie Yii zachowuje się inaczej w HHVM niż w natywnym PHP, dlatego powinieneś zachować szczególną ostrożność używając HHVM.
 
-On a production server, you may want to configure your Web server so that the application can be accessed
-via the URL `http://www.example.com/index.php` instead of `http://www.example.com/basic/web/index.php`. Such configuration
-requires pointing the document root of your Web server to the `basic/web` folder. You may also
-want to hide `index.php` from the URL, as described in the [Routing and URL Creation](runtime-routing.md) section.
-In this subsection, you'll learn how to configure your Apache or Nginx server to achieve these goals.
+Na serwerze produkcyjnym będziesz chciał skonfigurować swój serwer Web tak, aby aplikacja była dostępna pod adresem `http://www.example.com/index.php` zamiast `http://www.example.com/basic/web/index.php`.
+Taka konfiguracja wymaga wskazania głównego katalogu serwera na katalog `basic/web`. Jeśli chcesz ukryć `index.php` z adresu URL skorzystaj z informacji opisanych w [Routing and URL Creation](runtime-routing.md)
+W tej sekcji dowiesz sie jak skonfigurować Twój serwer Apache lub Nginx aby osiągnąć te cele.
 
-> Info: By setting `basic/web` as the document root, you also prevent end users from accessing
-your private application code and sensitive data files that are stored in the sibling directories
-of `basic/web`. Denying access to those other folders is a security improvement.
+> Info: Ustawiając `basic/web` jako główny katalog serwera zapobiegasz niechcianego dostępu użytkowników końcowych do prywatnego kodu oraz wrażliwych plików aplikacji, które są przechowywane w katalogu `basic`. 
+Blokowanie dostępu do tych folderów jest dużą poprawą bezpieczeństwa.
 
-> Info: If your application will run in a shared hosting environment where you do not have permission
-to modify its Web server configuration, you may still adjust the structure of your application for better security. Please refer to
-the [Shared Hosting Environment](tutorial-shared-hosting.md) section for more details.
+> Info: W przypadku, gdy Twoja aplikacja działa na wspólnym środowisku hostingowym, gdzie nie masz dostępu do modyfikowania konfiguracji serwera, nadal możesz zmienić strukturę aplikacji dla lepszej ochrony. 
+Po więcej informacji zajrzyj do działu [wspólne środowisko hostingowe](tutorial-shared-hosting.md)
 
+### Zalecane ustawienia Apache <span id="recommended-apache-configuration"></span>
 
-### Recommended Apache Configuration <span id="recommended-apache-configuration"></span>
-
-Use the following configuration in Apache's `httpd.conf` file or within a virtual host configuration. Note that you
-should replace `path/to/basic/web` with the actual path for `basic/web`.
+Użyj następującej konfiguracji serwera Apache w pliku `httpd.conf` lub w konfiguracji wirtualnego hosta.
+Pamiętaj, że musisz zamienić ścieżkę `path/to/basic/web` na aktualną ścieżkę do `basic/web` Twojej aplikacji.
 
 ```
-# Set document root to be "basic/web"
+# Ustaw główny katalog na "basic/web"
 DocumentRoot "path/to/basic/web"
 
 <Directory "path/to/basic/web">
-    # use mod_rewrite for pretty URL support
+    # użyj mod_rewrite do wsparcia "ładnych URL'i"
     RewriteEngine on
-    # If a directory or a file exists, use the request directly
+    # Jeśli katalog lub plik istnieje, użyj go bezpośrednio
     RewriteCond %{REQUEST_FILENAME} !-f
     RewriteCond %{REQUEST_FILENAME} !-d
-    # Otherwise forward the request to index.php
+    # W innym przypadku przekieruj żądanie na index.php
     RewriteRule . index.php
 
-    # ...other settings...
+    # ...inne ustawienia...
 </Directory>
 ```
 
+### Zalecane ustawienia Nginx <span id="recommended-nginx-configuration"></span>
 
-### Recommended Nginx Configuration <span id="recommended-nginx-configuration"></span>
-
-To use [Nginx](http://wiki.nginx.org/), you should install PHP as an [FPM SAPI](http://php.net/install.fpm).
-You may use the following Nginx configuration, replacing `path/to/basic/web` with the actual path for 
-`basic/web` and `mysite.local` with the actual hostname to serve.
+Aby użyć [Nginx](http://wiki.nginx.org/) powinienieś zainstalować PHP jako [FPM SAPI](http://php.net/install.fpm).
+Możesz użyć przedstawionej poniżej konfiguracji Nginx, zastępując jedynie ścieżkę `path/to/basic/web` na aktualną ścieżkę do `basic/web` Twojej aplikacji oraz `mysite.local` na aktualną nazwę hosta.
 
 ```
 server {
     charset utf-8;
     client_max_body_size 128M;
 
-    listen 80; ## listen for ipv4
+    listen 80; ## nasłuchuj ipv4
     #listen [::]:80 default_server ipv6only=on; ## listen for ipv6
 
     server_name mysite.local;
@@ -174,11 +164,11 @@ server {
     error_log   /path/to/basic/log/error.log;
 
     location / {
-        # Redirect everything that isn't a real file to index.php
+        # Przekieruj wszystko co nie jest prawdziwym plikiem na index.php
         try_files $uri $uri/ /index.php?$args;
     }
 
-    # uncomment to avoid processing of calls to non-existing static files by Yii
+    # odkomentuj aby uniknąć przetwarzania żądań do nieistniejących plików przez Yii
     #location ~ \.(js|css|png|jpg|gif|swf|ico|pdf|mov|fla|zip|rar)$ {
     #    try_files $uri =404;
     #}
@@ -198,8 +188,6 @@ server {
 }
 ```
 
-When using this configuration, you should also set `cgi.fix_pathinfo=0` in the `php.ini` file
-in order to avoid many unnecessary system `stat()` calls.
+W przypadku użycia tej konfiguracji, powinienieś ustawić również `cgi.fix_pathinfo=0` w pliku `php.ini` aby zapobiec wielu zbędnych wywołań 'stat()'.
 
-Also note that when running an HTTPS server, you need to add `fastcgi_param HTTPS on;` so that Yii
-can properly detect if a connection is secure.
+Należy również pamiętać, że podczas pracy na serwerze HTTPS musisz dodać `fastcgi_param HTTPS on;` aby Yii prawidłowo wykrywało, że połączenie jest bezpieczne.
