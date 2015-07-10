@@ -1,6 +1,12 @@
 Yii Framework 2 Change Log
 ==========================
 
+
+2.0.5 
+-----
+
+Bug #9070 (CVE-2015-5467): Fixed `ViewAction::resolveViewName()` not to accept `/../` and `/./` (thejahweh, samdark)
+
 2.0.4 May 10, 2015
 ------------------
 
@@ -41,7 +47,7 @@ Yii Framework 2 Change Log
 - Bug #8273: Fixed `yii\widgets\FragmentCache` when `enabled` is false (nkovacs)
 - Bug #8291: Fixed numeric keys in $_GET transformed to 0-based, if 'pretty URL' enabled (quantum13, klimov-paul)
 - Bug #5053: DateValidator is now more robust against different timezone settings (cebe)
-- Bug (CVE-2015-3397): Added `Json::htmlEncode()` to support safer JSON data encoding in HTML code (samdark, Tomasz Tokarski)
+- Bug (CVE-2015-3397): Added `Json::htmlEncode()` to support safer JSON data encoding in HTML code (samdark, Wojciech Janusz, Tomasz Tokarski)
 - Enh #1468: Added ability to specify hints for model attributes via `attributeHints()` method (klimov-paul)
 - Enh #3376: Added `yii\validators\EachValidator`, which allows validation of the array attributes (klimov-paul)
 - Enh #5053: Added possibility to specify a format and time zone for the `timestampAttribute` of date validator making it fully usable for validating complete timestamps (cebe)
