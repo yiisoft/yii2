@@ -49,7 +49,7 @@ return [
     'Total <b>{count, number}</b> {count, plural, one{item} other{items}}.' => 'Totaal <b>{count, number}</b> {count, plural, one{item} other{items}}.',
     'Unable to verify your data submission.' => 'Het is niet mogelijk uw verstrekte gegevens te verifiëren.',
     'Unknown option: --{name}' => 'Onbekende optie: --{name}',
-    'Update' => 'Update',
+    'Update' => 'Bewerk',
     'View' => 'Bekijk',
     'Yes' => 'Ja',
     'You are not allowed to perform this action.' => 'U bent niet gemachtigd om deze actie uit te voeren.',
