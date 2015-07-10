@@ -24,6 +24,7 @@ Yii Framework 2 Change Log
 - Bug #8772: ActiveQuery failed removing duplicate records after join when the resultset did not contain the pk values e.g. after grouping (cebe)
 - Bug #8900: Fixed determine active menu item with url-alias in route `\yii\widgets\Menu::isItemActive()` (demi)
 - Bug #9046: Fixed problem with endless error loop when an error occurred after sending a stream or file download response to the user (cebe)
+- Bug #9070: Fixed `ViewAction::resolveViewName()` not to accept `/../` and `/./` (thejahweh, samdark) 
 - Bug: Fixed string comparison in `BaseActiveRecord::unlink()` which may result in wrong comparison result for hash valued primary keys starting with `0e` (cebe)
 - Bug: Pass correct action name to `yii\console\Controller::options()` when default action was requested (cebe)
 - Bug: Automatic garbage collection in `yii\caching\FileCache` was not triggered (kidol)
