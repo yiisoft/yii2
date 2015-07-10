@@ -655,11 +655,10 @@ class User extends Component
      */
     public function can($permissionName, $params = [], $allowCaching = true)
     {
-        $auth = $this->getAuthManager();
         if ($allowCaching && empty($params) && isset($this->_access[$permissionName])) {
             return $this->_access[$permissionName];
         }
-        $access = $auth->checkAccess($this->getId(), $permissionName, $params);
+        $access = $this->getAuthManager()->checkAccess($this->getId(), $permissionName, $params);
         if ($allowCaching && empty($params)) {
             $this->_access[$permissionName] = $access;
         }
