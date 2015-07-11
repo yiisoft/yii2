@@ -29,6 +29,7 @@ Yii Framework 2 Change Log
 - Bug: Automatic garbage collection in `yii\caching\FileCache` was not triggered (kidol)
 - Enh #3335: Implemented `SchemaBuilder` (pana1990, vaseninm, samdark)
 - Enh #6043: Specification for 'class' and 'style' in array format added to `yii\helpers\Html` (klimov-paul)
+- Enh #6853: Console application will now register PHP constants for `STDIN`, `STDOUT`, and `STDERR` itself if they are not defined (cebe)
 - Enh #7169: `yii\widgets\ActiveField` now uses corresponding methods for default parts rendering (klimov-paul)
 - Enh #8070: `yii\console\controllers\MessageController` now sorts created messages, even if there is no new one, while saving to PHP file (klimov-paul)
 - Enh #8286: `yii\console\controllers\MessageController` improved allowing extraction of nested translator calls (klimov-paul)
