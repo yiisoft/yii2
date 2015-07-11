@@ -2,8 +2,8 @@ Yii Framework 2 Change Log
 ==========================
 
 
-2.0.5 
------
+2.0.5 July 11, 2015
+-------------------
 
 Bug #9070 (CVE-2015-5467): Fixed `ViewAction::resolveViewName()` not to accept `/../` and `/./` (thejahweh, samdark)
 
