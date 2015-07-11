@@ -154,9 +154,9 @@ tenha por padrão o valor `app\controllers`:
 As classes dos controllers devem ser [autoloadable](concept-autoloading.md). 
 Por esta razão, nos exemplos anteriores, o controller `article` deve ser salvo 
 no arquivo cuja [alias](concept-aliases.md) é `@app/controllers/ArticleController.php`;
-enquanto o controller `admin/post2-comment` deve ser salvo no `@app/controllers/admin/Post2CommentController.php`.
+enquanto o controller `admin/post-comment` deve ser salvo no `@app/controllers/admin/PostCommentController.php`.
 
-> Informação: No último exemplo `admin/post2-comment`, mostra como você pode colocar 
+> Informação: No último exemplo `admin/post-comment`, mostra como você pode colocar 
 um controller em um subdiretório do [[yii\base\Application::controllerNamespace|namespace controller]]. Isto é útil quando você quiser organizar seus controllers em diversas 
 categorias e não quiser usar [módulos](structure-modules.md).
 
