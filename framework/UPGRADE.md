@@ -9,7 +9,7 @@ version B between A and C, you need to following the instructions
 for both A and B.
 
 
-Upgrade from Yii 2.0.4
+Upgrade from Yii 2.0.5
 ----------------------
   
 * The signature of the following methods in `yii\console\controllers\MessageController` has changed. They have an extra parameter `$markUnused`.
@@ -17,6 +17,11 @@ Upgrade from Yii 2.0.4
   - `saveMessagesToPHP($messages, $dirName, $overwrite, $removeUnused, $sort, $markUnused)`
   - `saveMessagesCategoryToPHP($messages, $fileName, $overwrite, $removeUnused, $sort, $category, $markUnused)`
   - `saveMessagesToPO($messages, $dirName, $overwrite, $removeUnused, $sort, $catalog, $markUnused)`
+
+Upgrade from Yii 2.0.4
+----------------------
+
+Upgrading from 2.0.4 to 2.0.5 does not require any changes.
 
 Upgrade from Yii 2.0.3
 ----------------------
