@@ -139,6 +139,33 @@ to `Schema::TYPE_STRING` to specify that the column cannot be null.
 
 > Info: The mapping between abstract types and physical types is specified by 
   the [[yii\db\QueryBuilder::$typeMap|$typeMap]] property in each concrete `QueryBuilder` class.
+  
+Since 2.0.5 schema builder which provides more convenient way defining column schema was introduced so migration above
+could be written like the following:
+
+```php
+
+use yii\db\Schema;
+use yii\db\Migration;
+
+class m150101_185401_create_news_table extends \yii\db\Migration
+{
+    public function up()
+    {
+        $this->createTable('news', [
+            'id' => Schema::primaryKey(),
+            'title' => Schema::string()->notNull(),
+            'content' => Schema::text(),
+        ]);
+    }
+
+    public function down()
+    {
+        $this->dropTable('news');
+    }
+
+}
+```
 
 
 ### Transactional Migrations <span id="transactional-migrations"></span>
@@ -163,9 +190,9 @@ class m150101_185401_create_news_table extends Migration
     public function safeUp()
     {
         $this->createTable('news', [
-            'id' => 'pk',
-            'title' => Schema::TYPE_STRING . ' NOT NULL',
-            'content' => Schema::TYPE_TEXT,
+            'id' => Schema::primaryKey(),,
+            'title' => Schema::string()->notNull(),
+            'content' => Schema::text(),
         ]);
         
         $this->insert('news', [

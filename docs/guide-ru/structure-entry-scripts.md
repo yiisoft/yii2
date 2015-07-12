@@ -64,10 +64,6 @@ $config = require(__DIR__ . '/../config/web.php');
 
 defined('YII_DEBUG') or define('YII_DEBUG', true);
 
-// fcgi не имеет констант STDIN и STDOUT, они определяются по умолчанию
-defined('STDIN') or define('STDIN', fopen('php://stdin', 'r'));
-defined('STDOUT') or define('STDOUT', fopen('php://stdout', 'w'));
-
 // регистрация загрузчика классов Composer
 require(__DIR__ . '/vendor/autoload.php');
 
