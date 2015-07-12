@@ -109,7 +109,7 @@ class FileCache extends Cache
         $cacheFile = $this->getCacheFile($key);
 
         if (@filemtime($cacheFile) > time()) {
-            $fp = @fopen($cacheFile, 'r');
+            $fp = @fopen($cacheFile, "r");
             if ($fp !== false) {
                 @flock($fp, LOCK_SH);
                 $cacheValue = @stream_get_contents($fp);

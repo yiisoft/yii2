@@ -45,7 +45,7 @@ Yii Framework 2 Change Log
 - Enh #9038: Write warning to log in case `FileCache` fails to write into file (foccy)
 - Chg #6354: `ErrorHandler::logException()` will now log the whole exception object instead of only its string representation (cebe)
 - Chg #8556: Extracted `yii\web\User::getAuthManager()` method (samdark)
-
+- Bug #8549: Fixed `yii\caching\FileCache` doesn't lock cache files when read it (iworker)
 
 2.0.5 July 11, 2015
 -------------------
