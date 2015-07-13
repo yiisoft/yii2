@@ -10,7 +10,6 @@ namespace yii\validators;
 use DateTime;
 use IntlDateFormatter;
 use Yii;
-use yii\base\Exception;
 use yii\base\InvalidConfigException;
 use yii\helpers\FormatConverter;
 

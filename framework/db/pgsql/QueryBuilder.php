@@ -18,6 +18,27 @@ use yii\base\InvalidParamException;
 class QueryBuilder extends \yii\db\QueryBuilder
 {
     /**
+     * Defines a UNIQUE index for [[createIndex()]].
+     */
+    const INDEX_UNIQUE = 'unique';
+    /**
+     * Defines a B-tree index for [[createIndex()]].
+     */
+    const INDEX_B_TREE = 'btree';
+    /**
+     * Defines a hash index for [[createIndex()]].
+     */
+    const INDEX_HASH = 'hash';
+    /**
+     * Defines a GiST index for [[createIndex()]].
+     */
+    const INDEX_GIST = 'gist';
+    /**
+     * Defines a GIN index for [[createIndex()]].
+     */
+    const INDEX_GIN = 'gin';
+
+    /**
      * @var array mapping from abstract column types (keys) to physical column types (values).
      */
     public $typeMap = [
@@ -64,6 +85,35 @@ class QueryBuilder extends \yii\db\QueryBuilder
         'NOT EXISTS' => 'buildExistsCondition',
     ];
 
+    /**
+     * Builds a SQL statement for creating a new index.
+     * @param string $name the name of the index. The name will be properly quoted by the method.
+     * @param string $table the table that the new index will be created for. The table name will be properly quoted by the method.
+     * @param string|array $columns the column(s) that should be included in the index. If there are multiple columns,
+     * separate them with commas or use an array to represent them. Each column name will be properly quoted
+     * by the method, unless a parenthesis is found in the name.
+     * @param boolean|string $unique whether to make this a UNIQUE index constraint. You can pass `true` or [[INDEX_UNIQUE]] to create
+     * a unique index, `false` to make a non-unique index using the default index type, or one of the following constants to specify
+     * the index method to use: [[INDEX_B_TREE]], [[INDEX_HASH]], [[INDEX_GIST]], [[INDEX_GIN]].
+     * @return string the SQL statement for creating a new index.
+     * @see http://www.postgresql.org/docs/8.2/static/sql-createindex.html
+     */
+    public function createIndex($name, $table, $columns, $unique = false)
+    {
+        if ($unique == self::INDEX_UNIQUE || $unique === true) {
+            $index = false;
+            $unique = true;
+        } else {
+            $index = $unique;
+            $unique = false;
+        }
+
+        return ($unique ? 'CREATE UNIQUE INDEX ' : 'CREATE INDEX ') .
+        $this->db->quoteTableName($name) . ' ON ' .
+        $this->db->quoteTableName($table) .
+        ($index !== false ? " USING $index" : '') .
+        ' (' . $this->buildColumns($columns) . ')';
+    }
 
     /**
      * Builds a SQL statement for dropping an index.

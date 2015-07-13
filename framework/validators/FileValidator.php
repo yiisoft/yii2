@@ -29,7 +29,7 @@ class FileValidator extends Validator
      * separated by space or comma (e.g. "gif, jpg").
      * Extension names are case-insensitive. Defaults to null, meaning all file name
      * extensions are allowed.
-     * @see wrongType for the customized message for wrong file type.
+     * @see wrongExtension for the customized message for wrong file type.
      */
     public $extensions;
     /**
@@ -370,7 +370,7 @@ class FileValidator extends Validator
             $options['mimeTypes'] = $this->mimeTypes;
             $options['wrongMimeType'] = Yii::$app->getI18n()->format($this->wrongMimeType, [
                 'attribute' => $label,
-                'mimeTypes' => join(', ', $this->mimeTypes),
+                'mimeTypes' => implode(', ', $this->mimeTypes),
             ], Yii::$app->language);
         }
 
@@ -378,7 +378,7 @@ class FileValidator extends Validator
             $options['extensions'] = $this->extensions;
             $options['wrongExtension'] = Yii::$app->getI18n()->format($this->wrongExtension, [
                 'attribute' => $label,
-                'extensions' => join(', ', $this->extensions),
+                'extensions' => implode(', ', $this->extensions),
             ], Yii::$app->language);
         }
 

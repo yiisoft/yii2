@@ -168,15 +168,15 @@ echo \Yii::t('app', 'Price: {0}, Count: {1}, Subtotal: {2}', $price, $count, $su
 ### Parameter Formatting <span id="parameter-formatting"></span>
 
 You can specify additional formatting rules in the placeholders of a message so that the parameter values can be 
-formatted properly before they replace the placeholders. In the following example, the price parameter value will be 
-formatted as currency:
+formatted properly before they replace the placeholders. In the following example, the price parameter value will be
+treated as a number and formatted as a currency value:
 
 ```php
 $price = 100;
 echo \Yii::t('app', 'Price: {0, number, currency}', $price);
 ```
- 
-Parameter formatting requires the installation of the [intl PHP extension](http://www.php.net/manual/en/intro.intl.php).
+
+> Note: Parameter formatting requires the installation of the [intl PHP extension](http://www.php.net/manual/en/intro.intl.php).
 
 You can use either the short form or the full form to specify a placeholder with formatting:
 
@@ -191,21 +191,23 @@ instructions on how to specify such placeholders.
 In the following we will show some common usages.
 
 
-#### Numbers
+#### Number <span id="number"></span>
+
+The parameter value is treated as a number. For example,
 
 ```php
 $sum = 42;
 echo \Yii::t('app', 'Balance: {0, number}', $sum);
 ```
 
-You can specify one of the built-in styles (`integer`, `currency`, `percent`):
+You can specify an optional parameter style as `integer`, `currency`, or `percent`:
 
 ```php
 $sum = 42;
 echo \Yii::t('app', 'Balance: {0, number, currency}', $sum);
 ```
 
-Or specify a custom pattern:
+You can also specify a custom pattern to format the number. For example,
 
 ```php
 $sum = 42;
@@ -214,19 +216,22 @@ echo \Yii::t('app', 'Balance: {0, number, ,000,000000}', $sum);
 
 [Formatting reference](http://icu-project.org/apiref/icu4c/classicu_1_1DecimalFormat.html).
 
-#### Dates
+
+#### Date <span id="date"></span>
+
+The parameter value should be formatted as a date. For example,
 
 ```php
 echo \Yii::t('app', 'Today is {0, date}', time());
 ```
 
-Built in formats are `short`, `medium`, `long`, and `full`:
+You can specify an optional parameter style as `short`, `medium`, `long`, or `full`:
 
 ```php
 echo \Yii::t('app', 'Today is {0, date, short}', time());
 ```
 
-You may also specify a custom pattern:
+You can also specify a custom pattern to format the date value:
 
 ```php
 echo \Yii::t('app', 'Today is {0, date, yyyy-MM-dd}', time());
@@ -234,19 +239,22 @@ echo \Yii::t('app', 'Today is {0, date, yyyy-MM-dd}', time());
 
 [Formatting reference](http://icu-project.org/apiref/icu4c/classicu_1_1SimpleDateFormat.html).
 
-#### Time
+
+#### Time <span id="time"></span>
+
+The parameter value should be formatted as a time. For example,
 
 ```php
 echo \Yii::t('app', 'It is {0, time}', time());
 ```
 
-Built in formats are `short`, `medium`, `long`, and `full`:
+You can specify an optional parameter style as `short`, `medium`, `long`, or `full`:
 
 ```php
 echo \Yii::t('app', 'It is {0, time, short}', time());
 ```
 
-You may also specify a custom pattern:
+You can also specify a custom pattern to format the time value:
 
 ```php
 echo \Yii::t('app', 'It is {0, date, HH:mm}', time());
@@ -255,78 +263,84 @@ echo \Yii::t('app', 'It is {0, date, HH:mm}', time());
 [Formatting reference](http://icu-project.org/apiref/icu4c/classicu_1_1SimpleDateFormat.html).
 
 
-#### Spellout
+#### Spellout <span id="spellout"></span>
+
+The parameter value should be treated as a number and formatted as a spellout. For example,
 
 ```php
+// may produce "42 is spelled as forty-two"
 echo \Yii::t('app', '{n,number} is spelled as {n, spellout}', ['n' => 42]);
 ```
 
-#### Ordinal
+#### Ordinal <span id="ordinal"></span>
+
+The parameter value should be treated as a number and formatted as an ordinal name. For example,
 
 ```php
-echo \Yii::t('app', 'You are {n, ordinal} visitor here!', ['n' => 42]);
+// may produce "You are the 42nd visitor here!"
+echo \Yii::t('app', 'You are the {n, ordinal} visitor here!', ['n' => 42]);
 ```
 
-Will produce "You are 42nd visitor here!".
 
-#### Duration
+#### Duration <span id="duration"></span>
+
+The parameter value should be treated as the number of seconds and formatted as a time duration string. For example,
 
 ```php
+// may produce "You are here for 47 sec. already!"
 echo \Yii::t('app', 'You are here for {n, duration} already!', ['n' => 47]);
 ```
 
-Will produce "You are here for 47 sec. already!".
 
-#### Plurals
+#### Plural <span id="plural"></span>
 
 Different languages have different ways to inflect plurals. Yii provides a convenient way for translating messages in
 different plural forms that works well even for very complex rules. Instead of dealing with the inflection rules directly,
-it is sufficient to provide the translation of inflected words in certain situations only.
+it is sufficient to provide the translation of inflected words in certain situations only. For example,
 
 ```php
+// When $n = 0, it may produce "There are no cats!"
+// When $n = 1, it may produce "There is one cat!"
+// When $n = 42, it may produce "There are 42 cats!"
 echo \Yii::t('app', 'There {n, plural, =0{are no cats} =1{is one cat} other{are # cats}}!', ['n' => $n]);
 ```
 
-Will give us
+In the plural rule arguments above, `=0` means exactly zero, `=1` means exactly one, and `other` is for any other value.
+`#` is replaced with the value of `n`. 
 
-- "There are no cats!" for `$n = 0`,
-- "There is one cat!" for `$n = 1`,
-- and "There are 42 cats!" for `$n = 42`.
-
-In the plural rule arguments above, `=0` means exactly zero, `=1` stands for exactly one, and `other` is for any other number.
-`#` is replaced with the value of `n`. It's not that simple for languages other than English. Here's an example
-for Russian:
+Plural forms can be very complicated in some languages. In the following Russian example, `=1` matches exactly `n = 1` 
+while `one` matches `21` or `101`:
 
 ```
 Здесь {n, plural, =0{котов нет} =1{есть один кот} one{# кот} few{# кота} many{# котов} other{# кота}}!
 ```
 
-In the above it's worth mentioning that `=1` matches exactly `n = 1` while `one` matches `21` or `101`.
+Note that the above message is mainly used as a translated message, not an original message, unless you set
+the [[yii\base\Application::$sourceLanguage|source language]] of your application as `ru-RU`.
 
-Note, that you can not use the Russian example in `Yii::t()` directly if your
-[[yii\base\Application::$sourceLanguage|source language]] isn't set to `ru-RU`. This however is not recommended, instead such
-strings should go into message files or message database (in case DB source is used). Yii uses the plural rules of the
-translated language strings and is falling back to the plural rules of the source language if the translation isn't available.
+When a translation is not found for an original message, the plural rules for the [[yii\base\Application::$sourceLanguage|source language]]
+will be applied to the original message.
 
-To learn which inflection forms you should specify for your language, you can refer to the
+To learn which inflection forms you should specify for a particular language, please refer to the
 [rules reference at unicode.org](http://unicode.org/repos/cldr-tmp/trunk/diff/supplemental/language_plural_rules.html).
 
-#### Selections
 
-You can select phrases based on keywords. The pattern in this case specifies how to map keywords to phrases and
-provides a default phrase.
+#### Selection <span id="selection"></span>
+
+You can use the `select` parameter type to choose a phrase based on the parameter value. For example, 
 
 ```php
+// It may produce "Snoopy is a dog and it loves Yii!"
 echo \Yii::t('app', '{name} is a {gender} and {gender, select, female{she} male{he} other{it}} loves Yii!', [
     'name' => 'Snoopy',
     'gender' => 'dog',
 ]);
 ```
 
-Will produce "Snoopy is a dog and it loves Yii!".
+In the expression above, both `female` and `male` are possible parameter values, while `other` handles values that 
+do not match either one of them. Following each possible parameter value, you should specify a phrase and enclose
+it in a pair of curly brackets.
 
-In the expression above, `female` and `male` are possible values, while `other` handles values that do not match. A string inside
-the brackets is a sub-expression, so it could be a plain string or a string with nested placeholders in it.
 
 ### Specifying default translation
 

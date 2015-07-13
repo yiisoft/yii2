@@ -504,7 +504,7 @@ class Response extends \yii\base\Response
      *  - `mimeType`: the MIME type of the content. Defaults to 'application/octet-stream'.
      *  - `inline`: boolean, whether the browser should open the file within the browser window. Defaults to false,
      *     meaning a download dialog will pop up.
-     *  - `fileSize`: the size of the content to stream this is usefull when size of the content is known
+     *  - `fileSize`: the size of the content to stream this is useful when size of the content is known
      *     and the content is not seekable. Defaults to content size using `ftell()`.
      *     This option is available since version 2.0.4.
      *
