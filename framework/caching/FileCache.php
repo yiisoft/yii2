@@ -112,7 +112,7 @@ class FileCache extends Cache
             $fp = @fopen($cacheFile, 'r');
             if ($fp !== false) {
                 @flock($fp, LOCK_SH);
-                $cacheValue = @file_get_contents($cacheFile);
+                $cacheValue = @stream_get_contents($fp);
                 @flock($fp, LOCK_UN);
                 @fclose($fp);
                 return $cacheValue;

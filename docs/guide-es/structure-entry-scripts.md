@@ -63,10 +63,6 @@ De la misma manera, el siguiente código es el script de entrada para la [aplica
 
 defined('YII_DEBUG') or define('YII_DEBUG', true);
 
-// el fcgi no tiene STDIN y STDOUT definidos por defecto
-defined('STDIN') or define('STDIN', fopen('php://stdin', 'r'));
-defined('STDOUT') or define('STDOUT', fopen('php://stdout', 'w'));
-
 // registrar el cargador automático de Composer
 require(__DIR__ . '/vendor/autoload.php');
 
