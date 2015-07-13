@@ -112,7 +112,7 @@ Aplikacja zainstalowana według powyższych instrukcji powinna działać na [ser
 Yii 2.0 jest również kompatybilne z [facebook'owym HHVM](http://hhvm.com/). Są jednak przypadki, gdzie Yii zachowuje się inaczej w HHVM niż w natywnym PHP, dlatego powinieneś zachować szczególną ostrożność używając HHVM.
 
 Na serwerze produkcyjnym będziesz chciał skonfigurować swój serwer Web tak, aby aplikacja była dostępna pod adresem `http://www.example.com/index.php` zamiast `http://www.example.com/basic/web/index.php`.
-Taka konfiguracja wymaga wskazania głównego katalogu serwera na katalog `basic/web`. Jeśli chcesz ukryć `index.php` z adresu URL skorzystaj z informacji opisanych w [Routing and URL Creation](runtime-routing.md)
+Taka konfiguracja wymaga wskazania głównego katalogu serwera na katalog `basic/web`. Jeśli chcesz ukryć `index.php` z adresu URL skorzystaj z informacji opisanych w dziale [routing i tworzenie adresów URL](runtime-routing.md)
 W tej sekcji dowiesz sie jak skonfigurować Twój serwer Apache lub Nginx aby osiągnąć te cele.
 
 > Info: Ustawiając `basic/web` jako główny katalog serwera zapobiegasz niechcianego dostępu użytkowników końcowych do prywatnego kodu oraz wrażliwych plików aplikacji, które są przechowywane w katalogu `basic`. 
