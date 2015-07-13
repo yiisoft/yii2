@@ -28,6 +28,7 @@ use yii\base\Object;
  * ```
  *
  * @method SchemaBuilder default($default = null) see [[SchemaBuilder::_default()]] for more info
+ * @method SchemaBuilder comment($comment = null) see [[SchemaBuilder::_comment()]] for more info
  *
  * @author Vasenin Matvey <vaseninm@gmail.com>
  * @since 2.0.5
@@ -63,6 +64,11 @@ abstract class SchemaBuilder extends Object
      * @var mixed default value of column
      */
     protected $default;
+
+    /**
+     * @var string comment of column
+     */
+    protected $comment;
 
     /**
      * Makes column a primary key
@@ -310,6 +316,9 @@ abstract class SchemaBuilder extends Object
         if ($name === 'default') {
             return call_user_func_array([$this, '_default'], $arguments);
         }
+        if ($name === 'comment') {
+            return call_user_func_array([$this, '_comment'], $arguments);
+        }
 
         return parent::__call($name, $arguments);
     }
@@ -341,6 +350,7 @@ abstract class SchemaBuilder extends Object
             $this->buildNotNullString() .
             $this->buildUniqueString() .
             $this->buildDefaultString() .
+            $this->buildCommentString() .
             $this->buildCheckString();
     }
 
@@ -354,6 +364,19 @@ abstract class SchemaBuilder extends Object
     protected function _default($default = null)
     {
         $this->default = $default;
+
+        return $this;
+    }
+
+    /**
+     * Specify comment string for the column
+     * @param null|string $comment
+     *
+     * @return $this
+     */
+    protected function _comment($comment = null)
+    {
+        $this->comment = $comment;
 
         return $this;
     }
@@ -415,6 +438,16 @@ abstract class SchemaBuilder extends Object
         }
 
         return $string;
+    }
+
+    /**
+     * Returns string with comment string of column
+     *
+     * @return string
+     */
+    protected function buildCommentString()
+    {
+        return $this->comment === null ? '' : " COMMENT '{$this->comment}'";
     }
 
     /**
