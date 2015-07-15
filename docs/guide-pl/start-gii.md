@@ -27,7 +27,7 @@ if (YII_ENV_DEV) {
 }
 ```
 
-Powyższa konfiguracja sprawdza, czy aplikacja jest w [środowisku rozwojowym](concept-configurations.md#environment-constants), i jeśli tak, dołącza moduł `gii` określając klasę modułu [[yii\gii\Module]].
+Powyższa konfiguracja sprawdza, czy aplikacja jest w [środowisku rozwojowym](concept-configurations.md#environment-constants), jeśli tak, dołącza moduł `gii` określając klasę modułu [[yii\gii\Module]].
 
 Jeśli sprawdzisz [skrypt wejściowy](structure-entry-scripts.md) `web/index.php` Twojej aplikacji, zauważysz linię, która ustawia `YII_ENV` na wartość `dev`.
 
