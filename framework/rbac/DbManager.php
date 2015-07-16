@@ -602,8 +602,9 @@ class DbManager extends BaseManager
         if (empty($userId)) {
             return null;
         }
-        if (isset($this->assignments[$userId], $this->assignments[$userId][$name])) {
-            return $this->assignments[$userId][$name];
+        if ($this->cacheAssignments) {
+            $assignments = $this->getAssignments($userId);
+            return isset($assignments[$roleName]) ? $assignments[$roleName] : null;
         }
 
         $row = (new Query)->from($this->assignmentTable)
@@ -645,6 +646,10 @@ class DbManager extends BaseManager
                 'roleName' => $row['item_name'],
                 'createdAt' => $row['created_at'],
             ]);
+        }
+
+        if ($this->cacheAssignments) {
+            $this->assignments[$userId] = $assignments;
         }
 
         return $assignments;
@@ -770,8 +775,8 @@ class DbManager extends BaseManager
                 'created_at' => $assignment->createdAt,
             ])->execute();
 
-        if ($this->cache !== null && $this->cacheAssignments) {
-            $this->invalidateCache();
+        if ($this->cacheAssignments) {
+            $this->assignments[$userId][$role->name] = $assignment;
         }
 
         return $assignment;
@@ -790,8 +795,8 @@ class DbManager extends BaseManager
             ->delete($this->assignmentTable, ['user_id' => (string) $userId, 'item_name' => $role->name])
             ->execute() > 0;
 
-        if ($this->cache !== null && $this->cacheAssignments) {
-            $this->invalidateCache();
+        if ($this->cacheAssignments) {
+            unset($this->assignments[$userId][$role->name]);
         }
 
         return $result;
@@ -810,8 +815,8 @@ class DbManager extends BaseManager
             ->delete($this->assignmentTable, ['user_id' => (string) $userId])
             ->execute() > 0;
 
-        if ($this->cache !== null && $this->cacheAssignments) {
-            $this->invalidateCache();
+        if ($this->cacheAssignments) {
+            $this->assignments[$userId] = [];
         }
 
         return $result;
@@ -898,8 +903,10 @@ class DbManager extends BaseManager
     {
         $this->db->createCommand()->delete($this->assignmentTable)->execute();
 
-        if ($this->cache !== null && $this->cacheAssignments) {
-            $this->invalidateCache();
+        if ($this->cacheAssignments) {
+            foreach ($this->assignments as $userId => $assignments) {
+                $this->assignments[$userId] = [];
+            }
         }
     }
 
@@ -921,8 +928,8 @@ class DbManager extends BaseManager
         }
 
         $data = $this->cache->get($this->cacheKey);
-        if (is_array($data) && isset($data[0], $data[1], $data[2], $data[3])) {
-            list ($this->items, $this->rules, $this->parents, $this->assignments) = $data;
+        if (is_array($data) && isset($data[0], $data[1], $data[2])) {
+            list ($this->items, $this->rules, $this->parents) = $data;
             return;
         }
 
@@ -946,18 +953,6 @@ class DbManager extends BaseManager
             }
         }
 
-        if ($this->cacheAssignments) {
-            $query = (new Query)->from($this->assignmentTable);
-            $this->assignments = [];
-            foreach ($query->all($this->db) as $row) {
-                $this->assignments[$row['user_id']][$row['item_name']] = new Assignment([
-                    'userId' => $row['user_id'],
-                    'roleName' => $row['item_name'],
-                    'createdAt' => $row['created_at'],
-                ]);
-            }
-        }
-
-        $this->cache->set($this->cacheKey, [$this->items, $this->rules, $this->parents, $this->assignments]);
+        $this->cache->set($this->cacheKey, [$this->items, $this->rules, $this->parents]);
     }
 }
