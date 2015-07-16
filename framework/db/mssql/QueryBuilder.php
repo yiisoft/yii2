@@ -125,7 +125,7 @@ class QueryBuilder extends \yii\db\QueryBuilder
      */
     public function renameTable($table, $newName)
     {
-        return "sp_rename '$table', '$newName'";
+        return 'sp_rename ' . $this->db->quoteTableName($table) . ', ' . $this->db->quoteTableName($newName);
     }
 
     /**
