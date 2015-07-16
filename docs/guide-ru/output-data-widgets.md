@@ -459,10 +459,9 @@ $query->andFilterWhere(['LIKE', 'author.name', $this->getAttribute('author.name'
 ```
 
 > Информация: В коде, что выше, использует такая же строка, как и имя зависимости и псевдонима таблицы. 
-> however, when your alias and relation name
-> differ, you have to pay attention to where you use the alias and where you use the relation name.
-> A simple rule for this is to use the alias in every place that is used to build the database query and the
-> relation name in all other definitions such as `attributes()` and `rules()` etc.
+> Однако, когда ваш псевдоним и имя связи различаются, вы должны обратить внимание, где вы используете псевдоним,
+> а где имя связи. Простым правилом для этого является использование псевдонима в каждом месте, которое используется
+> для построения запроса к базе данных, и имя связи во всех других определениях, таких как `attributes()`, `rules()` и т.д.
 > 
 > Например, если вы используете псевдоним `au` для связи с таблицей автора, то joinWith будет выглядеть так:
 >
