@@ -119,25 +119,28 @@ class QueryBuilder extends \yii\db\QueryBuilder
 
     /**
      * Builds a SQL statement for renaming a DB table.
-     * @param string $table the table to be renamed. The name will be properly quoted by the method.
+     * @param string $oldName the table to be renamed. The name will be properly quoted by the method.
      * @param string $newName the new table name. The name will be properly quoted by the method.
      * @return string the SQL statement for renaming a DB table.
      */
-    public function renameTable($table, $newName)
+    public function renameTable($oldName, $newName)
     {
-        return "sp_rename '$table', '$newName'";
+        return 'sp_rename ' . $this->db->quoteTableName($oldName) . ', ' . $this->db->quoteTableName($newName);
     }
 
     /**
      * Builds a SQL statement for renaming a column.
      * @param string $table the table whose column is to be renamed. The name will be properly quoted by the method.
-     * @param string $name the old name of the column. The name will be properly quoted by the method.
+     * @param string $oldName the old name of the column. The name will be properly quoted by the method.
      * @param string $newName the new name of the column. The name will be properly quoted by the method.
      * @return string the SQL statement for renaming a DB column.
      */
-    public function renameColumn($table, $name, $newName)
+    public function renameColumn($table, $oldName, $newName)
     {
-        return "sp_rename '$table.$name', '$newName', 'COLUMN'";
+        $table = $this->db->quoteTableName($table);
+        $oldName = $this->db->quoteColumnName($oldName);
+        $newName = $this->db->quoteColumnName($newName);
+        return "sp_rename '{$table}.{$oldName}', {$newName}, 'COLUMN'";
     }
 
     /**
