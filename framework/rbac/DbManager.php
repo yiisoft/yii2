@@ -917,7 +917,6 @@ class DbManager extends BaseManager
             $this->items = null;
             $this->rules = null;
             $this->parents = null;
-            $this->assignments = null;
         }
     }
 
