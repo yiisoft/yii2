@@ -407,7 +407,7 @@ class Request extends \yii\base\Request
     {
         $params = $this->getBodyParams();
 
-        return isset($params[$name]) ? $params[$name] : $defaultValue;
+        return array_key_exists($name, $params) ? $params[$name] : $defaultValue;
     }
 
     /**
