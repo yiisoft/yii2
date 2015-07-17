@@ -16,6 +16,7 @@ use yii\base\InvalidRouteException;
  * @property string $homeUrl The homepage URL.
  * @property Session $session The session component. This property is read-only.
  * @property User $user The user component. This property is read-only.
+ * @property Controller $controller
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
