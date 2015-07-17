@@ -81,6 +81,19 @@ class QueryBuilder extends \yii\db\QueryBuilder
     }
 
     /**
+     * @inheritdoc
+     * @see https://bugs.mysql.com/bug.php?id=48875
+     */
+    public function createIndex($name, $table, $columns, $unique = false)
+    {
+        return 'ALTER TABLE '
+        . $this->db->quoteTableName($table)
+        . ($unique ? ' ADD UNIQUE INDEX ' : ' ADD INDEX ')
+        . $this->db->quoteTableName($name)
+        . ' (' . $this->buildColumns($columns) . ')';
+    }
+
+    /**
      * Builds a SQL statement for dropping a foreign key constraint.
      * @param string $name the name of the foreign key constraint to be dropped. The name will be properly quoted by the method.
      * @param string $table the table whose foreign is to be dropped. The name will be properly quoted by the method.
