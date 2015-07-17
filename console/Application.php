@@ -50,6 +50,8 @@ defined('STDERR') or define('STDERR', fopen('php://stderr', 'w'));
  * yii help
  * ~~~
  *
+ * @property Controller $controller
+ *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */
