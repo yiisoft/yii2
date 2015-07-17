@@ -70,11 +70,6 @@ class Application extends \yii\base\Application
      * Defaults to true.
      */
     public $enableCoreCommands = true;
-    /**
-     * @var Controller the currently active controller instance
-     */
-    public $controller;
-
 
     /**
      * @inheritdoc
