@@ -45,11 +45,6 @@ class Application extends \yii\base\Application
      * Defaults to null, meaning catch-all is not used.
      */
     public $catchAll;
-    /**
-     * @var Controller the currently active controller instance
-     */
-    public $controller;
-
 
     /**
      * @inheritdoc
