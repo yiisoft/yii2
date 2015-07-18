@@ -50,8 +50,6 @@ defined('STDERR') or define('STDERR', fopen('php://stderr', 'w'));
  * yii help
  * ~~~
  *
- * @property Controller $controller
- *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */
@@ -72,6 +70,10 @@ class Application extends \yii\base\Application
      * Defaults to true.
      */
     public $enableCoreCommands = true;
+    /**
+     * @var Controller the currently active controller instance
+     */
+    public $controller;
 
     /**
      * @inheritdoc
