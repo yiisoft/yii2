@@ -207,8 +207,8 @@ For example,
 // "db" is a previously registered alias name
 $db = $container->get('db');
 
-// equivalent to: $engine = new \app\components\SearchEngine($apiKey, ['type' => 1]);
-$engine = $container->get('app\components\SearchEngine', $apiKey, ['type' => 1]);
+// equivalent to: $engine = new \app\components\SearchEngine($apiKey, $apiSecret, ['type' => 1]);
+$engine = $container->get('app\components\SearchEngine', [$apiKey, $apiSecret], ['type' => 1]);
 ```
 
 Behind the scene, the DI container does much more work than just creating a new object.
