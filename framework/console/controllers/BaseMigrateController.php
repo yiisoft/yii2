@@ -68,7 +68,7 @@ abstract class BaseMigrateController extends Controller
             $path = Yii::getAlias($this->migrationPath);
             if (!is_dir($path)) {
                 if ($action->id !== 'create') {
-                    throw new Exception('Migration failed. Directory specified in migrationPath doesn\'t exist.');
+                    throw new Exception("Migration failed. Directory specified in migrationPath doesn\'t exist: {$this->migrationPath}");
                 }
                 FileHelper::createDirectory($path);
             }
