@@ -414,6 +414,8 @@ registered on [Packagist](https://packagist.org/) and can be easily installed as
 - [yiisoft/yii2-gii](https://github.com/yiisoft/yii2-gii):
   provides a Web-based code generator that is highly extensible and can be used to quickly generate models,
   forms, modules, CRUD, etc.
+- [yiisoft/yii2-httpclient](https://github.com/yiisoft/yii2-httpclient):
+  provides the HTTP client.
 - [yiisoft/yii2-imagine](https://github.com/yiisoft/yii2-imagine):
   provides commonly used image manipulation functions based on [Imagine](http://imagine.readthedocs.org/).
 - [yiisoft/yii2-jui](https://github.com/yiisoft/yii2-jui):
