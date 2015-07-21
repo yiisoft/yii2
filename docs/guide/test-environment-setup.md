@@ -3,7 +3,7 @@ Testing environment setup
 
 > Note: This section is under development.
 
-Yii2 has officially maintained integration with [`Codeception`](https://github.com/Codeception/Codeception) testing
+Yii 2 has officially maintained integration with [`Codeception`](https://github.com/Codeception/Codeception) testing
 framework that allows you to create the following test types:
 
 - [Unit testing](test-unit.md) - verifies that a single unit of code is working as expected;
