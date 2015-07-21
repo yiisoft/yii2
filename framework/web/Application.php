@@ -50,7 +50,6 @@ class Application extends \yii\base\Application
      */
     public $controller;
 
-
     /**
      * @inheritdoc
      */

@@ -13,7 +13,7 @@ use yii\base\InvalidConfigException;
 /**
  * FileDependency represents a dependency based on a file's last modification time.
  *
- * If th last modification time of the file specified via [[fileName]] is changed,
+ * If the last modification time of the file specified via [[fileName]] is changed,
  * the dependency is considered as changed.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>

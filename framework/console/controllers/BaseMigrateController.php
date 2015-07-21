@@ -68,7 +68,7 @@ abstract class BaseMigrateController extends Controller
             $path = Yii::getAlias($this->migrationPath);
             if (!is_dir($path)) {
                 if ($action->id !== 'create') {
-                    throw new Exception('Migration failed. Directory specified in migrationPath doesn\'t exist.');
+                    throw new Exception("Migration failed. Directory specified in migrationPath doesn't exist: {$this->migrationPath}");
                 }
                 FileHelper::createDirectory($path);
             }
@@ -367,7 +367,7 @@ abstract class BaseMigrateController extends Controller
      * ~~~
      *
      * @param integer $limit the maximum number of migrations to be displayed.
-     * If it is 0, the whole migration history will be displayed.
+     * If it is "all", the whole migration history will be displayed.
      * @throws \yii\console\Exception if invalid limit value passed
      */
     public function actionHistory($limit = 10)
