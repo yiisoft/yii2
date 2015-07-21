@@ -18,7 +18,7 @@
  */
 return [
     '(not set)' => '(ikke angitt)',
-    'An internal server error occurred.' => 'En intern server feil oppstod.',
+    'An internal server error occurred.' => 'En intern serverfeil oppstod.',
     'Are you sure you want to delete this item?' => 'Er du sikker på at du vil slette dette elementet?',
     'Delete' => 'Slett',
     'Error' => 'Feil',
