@@ -140,14 +140,19 @@ abstract class ErrorHandler extends Component
      */
     public function handleError($code, $message, $file, $line)
     {
-        if (error_reporting() & $code) {
-            // load ErrorException manually here because autoloading them will not work
-            // when error occurs while autoloading a class
-            if (!class_exists('yii\\base\\ErrorException', false)) {
-                require_once(__DIR__ . '/ErrorException.php');
-            }
-            $exception = new ErrorException($message, $code, $code, $file, $line);
+        // error suppressed by @ operator, nothing to do
+        if (error_reporting() === 0) {
+            return false;
+        }
 
+        // load ErrorException manually here because autoloading them will not work
+        // when error occurs while autoloading a class
+        if (!class_exists('yii\\base\\ErrorException', false)) {
+            require_once(__DIR__ . '/ErrorException.php');
+        }
+        $exception = new ErrorException($message, $code, $code, $file, $line);
+
+        if (error_reporting() & $code) {
             // in case error appeared in __toString method we can't throw any exception
             $trace = debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS);
             array_shift($trace);
@@ -160,6 +165,10 @@ abstract class ErrorHandler extends Component
 
             throw $exception;
         }
+
+        // log errors missed by error_reporting level
+        $this->logException($exception);
+
         return false;
     }
 

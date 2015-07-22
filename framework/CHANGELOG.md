@@ -47,6 +47,7 @@ Yii Framework 2 Change Log
 - Enh #9011: Allow `yii\widgets\MaskedInput` to produce an input tag of a custom type (TriAnMan)
 - Enh #9038: Write warning to log in case `FileCache` fails to write into file (foccy)
 - Enh #9149: Print directory migrationPath in a `yii migrate` command error. (RusAlex)
+- Enh #9183: `ErrorHandler::handleError()` should log errors not included into error_reporting. (mrsombre)
 - Chg #6354: `ErrorHandler::logException()` will now log the whole exception object instead of only its string representation (cebe)
 - Chg #8556: Extracted `yii\web\User::getAuthManager()` method (samdark)
 
