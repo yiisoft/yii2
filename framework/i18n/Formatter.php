@@ -215,7 +215,7 @@ class Formatter extends Component
      */
     public $currencyCode;
     /**
-     * @var array the base at which a kilobyte is calculated (1000 or 1024 bytes per kilobyte), used by [[asSize]] and [[asShortSize]].
+     * @var integer the base at which a kilobyte is calculated (1000 or 1024 bytes per kilobyte), used by [[asSize]] and [[asShortSize]].
      * Defaults to 1024.
      */
     public $sizeFormatBase = 1024;
