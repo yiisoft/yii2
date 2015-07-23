@@ -79,7 +79,13 @@ class Security extends Component
      * - 'crypt' - use PHP `crypt()` function.
      */
     public $passwordHashStrategy = 'crypt';
-
+    /**
+     * @var integer Default cost used for password hashing.
+     * Allowed value is between 4 and 31.
+     * @see generatePasswordHash()
+     * @since 2.0.6
+     */
+    public $passwordHashCost = 13;
 
     /**
      * Encrypts data using a password.
@@ -540,8 +546,12 @@ class Security extends Component
      * @throws InvalidConfigException when an unsupported password hash strategy is configured.
      * @see validatePassword()
      */
-    public function generatePasswordHash($password, $cost = 13)
+    public function generatePasswordHash($password, $cost = null)
     {
+        if ($cost === null) {
+            $cost = $this->passwordHashCost;
+        }
+
         switch ($this->passwordHashStrategy) {
             case 'password_hash':
                 if (!function_exists('password_hash')) {
