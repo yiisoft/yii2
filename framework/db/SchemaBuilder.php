@@ -67,21 +67,25 @@ abstract class SchemaBuilder extends Object
     /**
      * Makes column a primary key
      *
+     * @param integer $length
+     *
      * @return self
      */
-    public static function primaryKey()
+    public static function primaryKey($length = null)
     {
-        return static::create(Schema::TYPE_PK);
+        return static::create(Schema::TYPE_PK, $length);
     }
 
     /**
      * Makes column a big primary key
      *
+     * @param integer $length
+     *
      * @return self
      */
-    public static function bigPrimaryKey()
+    public static function bigPrimaryKey($length = null)
     {
-        return static::create(Schema::TYPE_BIGPK);
+        return static::create(Schema::TYPE_BIGPK, $length);
     }
 
     /**
@@ -109,31 +113,37 @@ abstract class SchemaBuilder extends Object
     /**
      * Makes column a smallint
      *
+     * @param integer $length
+     *
      * @return self
      */
-    public static function smallInteger()
+    public static function smallInteger($length = null)
     {
-        return static::create(Schema::TYPE_SMALLINT);
+        return static::create(Schema::TYPE_SMALLINT, $length);
     }
 
     /**
      * Makes column a integer
      *
+     * @param integer $length
+     *
      * @return self
      */
-    public static function integer()
+    public static function integer($length = null)
     {
-        return static::create(Schema::TYPE_INTEGER);
+        return static::create(Schema::TYPE_INTEGER, $length);
     }
 
     /**
      * Makes column a bigint
      *
+     * @param integer $length
+     *
      * @return self
      */
-    public static function bigInteger()
+    public static function bigInteger($length = null)
     {
-        return static::create(Schema::TYPE_BIGINT);
+        return static::create(Schema::TYPE_BIGINT, $length);
     }
 
     /**
