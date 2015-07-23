@@ -49,6 +49,7 @@ Yii Framework 2 Change Log
 - Enh #9149: Print directory migrationPath in a `yii migrate` command error. (RusAlex)
 - Chg #6354: `ErrorHandler::logException()` will now log the whole exception object instead of only its string representation (cebe)
 - Chg #8556: Extracted `yii\web\User::getAuthManager()` method (samdark)
+- Enh #8671: Added `yii\helpers\Html::escapeJsRegularExpression` (silverfire, klimov-paul, samdark, qiangxue)
 
 
 2.0.5 July 11, 2015

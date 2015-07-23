@@ -68,17 +68,17 @@ yii.validation = (function ($) {
                 pub.addMessage(messages, options.notEqual, value);
             }
         },
-        
+
         file: function (attribute, messages, options) {
             var files = getUploadedFiles(attribute, messages, options);
             $.each(files, function (i, file) {
                 validateFile(file, messages, options);
             });
         },
-        
+
         image: function (attribute, messages, options, deferred) {
             var files = getUploadedFiles(attribute, messages, options);
-            
+
             $.each(files, function (i, file) {
                 validateFile(file, messages, options);
 
@@ -90,45 +90,45 @@ yii.validation = (function ($) {
                 var def = $.Deferred(),
                     fr = new FileReader(),
                     img = new Image();
-                    
+
                 img.onload = function () {
                     if (options.minWidth && this.width < options.minWidth) {
                         messages.push(options.underWidth.replace(/\{file\}/g, file.name));
                     }
-                    
+
                     if (options.maxWidth && this.width > options.maxWidth) {
                         messages.push(options.overWidth.replace(/\{file\}/g, file.name));
                     }
-                    
+
                     if (options.minHeight && this.height < options.minHeight) {
                         messages.push(options.underHeight.replace(/\{file\}/g, file.name));
                     }
-                    
+
                     if (options.maxHeight && this.height > options.maxHeight) {
                         messages.push(options.overHeight.replace(/\{file\}/g, file.name));
                     }
                     def.resolve();
                 };
-                
+
                 img.onerror = function () {
                     messages.push(options.notImage.replace(/\{file\}/g, file.name));
                     def.resolve();
                 };
-                
+
                 fr.onload = function () {
                     img.src = fr.result;
                 };
-                
+
                 // Resolve deferred if there was error while reading data
                 fr.onerror = function () {
                     def.resolve();
                 };
-                
+
                 fr.readAsDataURL(file);
-                
+
                 deferred.push(def);
             });
-        
+
         },
 
         number: function (value, messages, options) {
@@ -161,7 +161,7 @@ yii.validation = (function ($) {
 
             var inArray = true;
 
-            $.each($.isArray(value) ? value : [value], function(i, v) {
+            $.each($.isArray(value) ? value : [value], function (i, v) {
                 if ($.inArray(v, options.range) == -1) {
                     inArray = false;
                     return false;
@@ -321,7 +321,7 @@ yii.validation = (function ($) {
         if (typeof File === "undefined") {
             return [];
         }
-        
+
         var files = $(attribute.input).get(0).files;
         if (!files) {
             messages.push(options.message);
