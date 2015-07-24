@@ -217,6 +217,21 @@ class UrlRule extends Object implements UrlRuleInterface
 
         $pathInfo = $request->getPathInfo();
         $suffix = (string) ($this->suffix === null ? $manager->suffix : $this->suffix);
+
+        if (!empty($pathInfo)) {
+            if (substr_compare($pathInfo, '/', -1, 1) === 0) {
+                if ($suffix === '') {
+                    Yii::$app->response->redirect('/' . rtrim($pathInfo, '/'), 301);
+                    return false;
+                }
+            } else {
+                if ($suffix === '/') {
+                    Yii::$app->response->redirect('/' . $pathInfo . '/', 301);
+                    return false;
+                }
+            }
+        }
+
         if ($suffix !== '' && $pathInfo !== '') {
             $n = strlen($suffix);
             if (substr_compare($pathInfo, $suffix, -$n, $n) === 0) {
