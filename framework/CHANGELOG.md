@@ -51,6 +51,7 @@ Yii Framework 2 Change Log
 - Enh #9177: Added password hash cost setting to Security component (freezy-sk)
 - Chg #6354: `ErrorHandler::logException()` will now log the whole exception object instead of only its string representation (cebe)
 - Chg #8556: Extracted `yii\web\User::getAuthManager()` method (samdark)
+- Ehn #8373: Check also PHP's post_max_size parameter in `yii\validators\FileValidator::getSizeLimit()` (maxxer)
 
 
 2.0.5 July 11, 2015

@@ -251,6 +251,7 @@ class FileValidator extends Validator
      * This is determined based on three factors:
      *
      * - 'upload_max_filesize' in php.ini
+     * - 'post_max_size' in php.ini
      * - 'MAX_FILE_SIZE' hidden field
      * - [[maxSize]]
      *
@@ -258,7 +259,13 @@ class FileValidator extends Validator
      */
     public function getSizeLimit()
     {
+        // Get the lowest between post_max_size and upload_max_filesize, log a warning if the first is < than the latter
+        $post_limit = $this->sizeToBytes(ini_get('post_max_size'));
         $limit = $this->sizeToBytes(ini_get('upload_max_filesize'));
+        if ($post_limit > 0 && $post_limit < $limit) {
+            Yii::warning('PHP.ini\'s \'post_max_size\' is less than \'upload_max_filesize\'', __METHOD__);
+            $limit = $post_limit;
+        }
         if ($this->maxSize !== null && $limit > 0 && $this->maxSize < $limit) {
             $limit = $this->maxSize;
         }
