@@ -185,9 +185,9 @@ Po wpisaniu prawidłowej nazwy, adresu email oraz kliknięciu przycisku "Wyślij
 
 ### "Wyjaśnienie magii" <span id="magic-explained"></span>
 
-Możesz się zastanawiać, jak działa ten formularz HTML, ponieważ może wydaje się prawie magicznym to, że może wyświetlić etykietę do każdego pola oraz wyświetla komunikat błędu, jeśli wprowadzisz błędne dane, bez przeładowania strony.
+Możesz się zastanawiać, jak działa ten formularz HTML, ponieważ wydaje się prawie magicznym to, że wyświetla etykietę do każdego pola oraz wyświetla komunikat błędu, jeśli wprowadzisz błędne dane, bez przeładowania strony.
 
-Tak, wstępna walidacja jest wykonywana po stronie klienta używając JavaScript'u, kolejnie dopiero po stronie serwera przez PHP.
+Wstępna walidacja jest wykonywana po stronie klienta używając JavaScript'u, kolejnie dopiero po stronie serwera przez PHP.
 [[yii\widgets\ActiveForm]] potrafi wyodrębnić zasady walidacji, które zadeklarowałeś w `EntryForm`, przekształcić je w wykonywalny kod JavaScript oraz użyć go do walidacji danych. 
 Jeśli zablokowałeś JavaScript w swojej przeglądarce, walidacja wciąż będzie wykonywana po stronie serwera, jak pokazano w metodzie `actionEntry()`. 
 Gwarantuje to prawidłowość danych w każdych okolicznościach.
