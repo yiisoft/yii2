@@ -48,6 +48,7 @@ Yii Framework 2 Change Log
 - Enh #8903: PostgreSQL `QueryBuilder::createIndex()` can now specify the index method to use (LAV45)
 - Enh #9011: Allow `yii\widgets\MaskedInput` to produce an input tag of a custom type (TriAnMan)
 - Enh #9038: Write warning to log in case `FileCache` fails to write into file (foccy)
+- Enh #9072: `yii\web\ErrorAction` displays 404 error instead of blank page on direct access (klimov-paul)
 - Enh #9149: Print directory migrationPath in a `yii migrate` command error. (RusAlex)
 - Enh #9177: Added password hash cost setting to Security component (freezy-sk)
 - Chg #6354: `ErrorHandler::logException()` will now log the whole exception object instead of only its string representation (cebe)
