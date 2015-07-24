@@ -69,8 +69,15 @@ class Behavior extends Object
     public function attach($owner)
     {
         $this->owner = $owner;
-        foreach ($this->events() as $event => $handler) {
-            $owner->on($event, is_string($handler) ? [$this, $handler] : $handler);
+        foreach ($this->events() as $event => $handler_data) {
+            if ((is_array($handler_data) && is_array($handler_data[0]) && $handler_data[1])) {
+                $handler = $handler_data[0];
+                $data = $handler_data[1];
+            } else {
+                $handler = $handler_data;
+                $data = null;
+            }
+            $owner->on($event, is_string($handler) ? [$this, $handler] : $handler, $data);
         }
     }
 
