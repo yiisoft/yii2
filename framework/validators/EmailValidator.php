@@ -24,13 +24,30 @@ class EmailValidator extends Validator
      * @var string the regular expression used to validate the attribute value.
      * @see http://www.regular-expressions.info/email.html
      */
-    public $pattern = '/(*UTF8)^[\pL0-9!#$%&\'*+\\/=?^_`{|}~-]+(?:\.[\pL0-9!#$%&\'*+\\/=?^_`{|}~-]+)*@(?:[\pL0-9](?:[\pL0-9-]*[\pL0-9])?\.)+[\pL0-9](?:[\pL0-9-]*[\pL0-9])?$/';
+    public $pattern = '/^[a-zA-Z0-9!#$%&\'*+\\/=?^_`{|}~-]+(?:\.[a-zA-Z0-9!#$%&\'*+\\/=?^_`{|}~-]+)*@(?:[a-zA-Z0-9](?:[a-zA-Z0-9-]*[a-zA-Z0-9])?\.)+[a-zA-Z0-9](?:[a-zA-Z0-9-]*[a-zA-Z0-9])?$/';
+
     /**
      * @var string the regular expression used to validate email addresses with the name part.
      * This property is used only when [[allowName]] is true.
      * @see allowName
      */
-    public $fullPattern = '/(*UTF8)^[^@]*<[\pL0-9!#$%&\'*+\\/=?^_`{|}~-]+(?:\.[\pL0-9!#$%&\'*+\\/=?^_`{|}~-]+)*@(?:[\pL0-9](?:[\pL0-9-]*[\pL0-9])?\.)+[\pL0-9](?:[\pL0-9-]*[\pL0-9])?>$/';
+    public $fullPattern = '/^[^@]*<[a-zA-Z0-9!#$%&\'*+\\/=?^_`{|}~-]+(?:\.[a-zA-Z0-9!#$%&\'*+\\/=?^_`{|}~-]+)*@(?:[a-zA-Z0-9](?:[a-zA-Z0-9-]*[a-zA-Z0-9])?\.)+[a-zA-Z0-9](?:[a-zA-Z0-9-]*[a-zA-Z0-9])?>$/';
+
+    /**
+     * @var string the regular expression used to validate the attribute value when IDN enabled
+     * This property is used only when [[enableIDN]] is true.
+     * @see enableIDN
+     */
+    public $idnPattern = '/^[\pL0-9!#$%&\'*+\\/=?^_`{|}~-]+(?:\.[\pL0-9!#$%&\'*+\\/=?^_`{|}~-]+)*@(?:[\pL0-9](?:[\pL0-9-]*[\pL0-9])?\.)+[\pL0-9](?:[\pL0-9-]*[\pL0-9])?$/u';
+
+    /**
+     * @var string the regular expression used to validate email addresses with the name part.
+     * This property is used only when [[allowName]] and [[enableIDN]] are true.
+     * @see allowName
+     * @see enableIDN
+     */
+    public $idnFullPattern = '/^[^@]*<[\pL0-9!#$%&\'*+\\/=?^_`{|}~-]+(?:\.[\pL0-9!#$%&\'*+\\/=?^_`{|}~-]+)*@(?:[\pL0-9](?:[\pL0-9-]*[\pL0-9])?\.)+[\pL0-9](?:[\pL0-9-]*[\pL0-9])?>$/u';
+
     /**
      * @var boolean whether to allow name in the email address (e.g. "John Smith <john.smith@example.com>"). Defaults to false.
      * @see fullPattern
@@ -78,9 +95,10 @@ class EmailValidator extends Validator
         } else {
             $domain = $matches[3];
             if ($this->enableIDN) {
-                $value = $matches[1] . idn_to_ascii($matches[2]) . '@' . idn_to_ascii($domain) . $matches[4];
+                $valid = preg_match($this->idnPattern, $value) || $this->allowName && preg_match($this->idnFullPattern, $value);
+            }else{
+                $valid = preg_match($this->pattern, $value) || $this->allowName && preg_match($this->fullPattern, $value);
             }
-            $valid = preg_match($this->pattern, $value) || $this->allowName && preg_match($this->fullPattern, $value);
             if ($valid && $this->checkDNS) {
                 $valid = checkdnsrr($domain, 'MX') || checkdnsrr($domain, 'A');
             }
