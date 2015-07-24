@@ -221,6 +221,22 @@ EOD;
 EOD;
         $this->activeField->textInput();
         $this->assertEquals($expectedValue, $this->activeField->parts['{input}']);
+
+        // format decimal
+        $expectedValue = <<<EOD
+<input type="text" id="dynamicmodel-attributename" class="form-control" name="DynamicModel[attributeName]" value="10,000">
+EOD;
+        $this->activeField->model->{$this->attributeName} = 10000;
+        $this->activeField->textInput(['format' => 'decimal']);
+        $this->assertEquals($expectedValue, $this->activeField->parts['{input}']);
+
+        // format percent
+        $expectedValue = <<<EOD
+<input type="text" id="dynamicmodel-attributename" class="form-control" name="DynamicModel[attributeName]" value="42%">
+EOD;
+        $this->activeField->model->{$this->attributeName} = 0.42;
+        $this->activeField->textInput(['format' => 'percent']);
+        $this->assertEquals($expectedValue, $this->activeField->parts['{input}']);
     }
 
     public function testHiddenInput()
@@ -229,6 +245,32 @@ EOD;
 <input type="hidden" id="dynamicmodel-attributename" class="form-control" name="DynamicModel[attributeName]">
 EOD;
         $this->activeField->hiddenInput();
+        $this->assertEquals($expectedValue, $this->activeField->parts['{input}']);
+    }
+
+    public function testTextArea()
+    {
+        $expectedValue = <<<EOD
+<textarea id="dynamicmodel-attributename" class="form-control" name="DynamicModel[attributeName]"></textarea>
+EOD;
+        $this->activeField->textArea();
+        $this->assertEquals($expectedValue, $this->activeField->parts['{input}']);
+
+        // format text
+        $expectedValue = <<<EOD
+<textarea id="dynamicmodel-attributename" class="form-control" name="DynamicModel[attributeName]">&amp;lt;span&amp;gt;Name&amp;lt;/span&amp;gt;</textarea>
+EOD;
+        $this->activeField->model->{$this->attributeName} = '<span>Name</span>';
+        $this->activeField->textArea(['format' => 'text']);
+        $this->assertEquals($expectedValue, $this->activeField->parts['{input}']);
+
+        // format ntext
+        $expectedValue = <<<EOD
+<textarea id="dynamicmodel-attributename" class="form-control" name="DynamicModel[attributeName]">Multiple&lt;br /&gt;
+lines</textarea>
+EOD;
+        $this->activeField->model->{$this->attributeName} = "Multiple\nlines";
+        $this->activeField->textArea(['format' => 'ntext']);
         $this->assertEquals($expectedValue, $this->activeField->parts['{input}']);
     }
 

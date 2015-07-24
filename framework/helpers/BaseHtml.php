@@ -10,6 +10,7 @@ namespace yii\helpers;
 use Yii;
 use yii\base\InvalidParamException;
 use yii\db\ActiveRecordInterface;
+use yii\i18n\Formatter;
 use yii\validators\StringValidator;
 use yii\web\Request;
 use yii\base\Model;
@@ -1204,8 +1205,12 @@ class BaseHtml
      */
     public static function activeInput($type, $model, $attribute, $options = [])
     {
+        $attributeValueOptions = [
+            'format' => ArrayHelper::remove($options, 'format'),
+            'formatter' => ArrayHelper::remove($options, 'formatter'),
+        ];
         $name = isset($options['name']) ? $options['name'] : static::getInputName($model, $attribute);
-        $value = isset($options['value']) ? $options['value'] : static::getAttributeValue($model, $attribute);
+        $value = isset($options['value']) ? $options['value'] : static::getAttributeValue($model, $attribute, $attributeValueOptions);
         if (!array_key_exists('id', $options)) {
             $options['id'] = static::getInputId($model, $attribute);
         }
@@ -1337,12 +1342,16 @@ class BaseHtml
      */
     public static function activeTextarea($model, $attribute, $options = [])
     {
+        $attributeValueOptions = [
+            'format' => ArrayHelper::remove($options, 'format'),
+            'formatter' => ArrayHelper::remove($options, 'formatter'),
+        ];
         $name = isset($options['name']) ? $options['name'] : static::getInputName($model, $attribute);
         if (isset($options['value'])) {
             $value = $options['value'];
             unset($options['value']);
         } else {
-            $value = static::getAttributeValue($model, $attribute);
+            $value = static::getAttributeValue($model, $attribute, $attributeValueOptions);
         }
         if (!array_key_exists('id', $options)) {
             $options['id'] = static::getInputId($model, $attribute);
@@ -2017,10 +2026,11 @@ class BaseHtml
      *
      * @param Model $model the model object
      * @param string $attribute the attribute name or expression
+     * @param array $options
      * @return string|array the corresponding attribute value
      * @throws InvalidParamException if the attribute name contains non-word characters.
      */
-    public static function getAttributeValue($model, $attribute)
+    public static function getAttributeValue($model, $attribute, $options = [])
     {
         if (!preg_match('/(^|.*\])([\w\.]+)(\[.*|$)/', $attribute, $matches)) {
             throw new InvalidParamException('Attribute name must contain word characters only.');
@@ -2049,6 +2059,17 @@ class BaseHtml
             $value = $value->getPrimaryKey(false);
 
             return is_array($value) ? json_encode($value) : $value;
+        }
+
+        // Format value
+        if (!empty($options['format']) && !empty($options['formatter'])) {
+            /** @var Formatter $formatter */
+            $formatter = $options['formatter'];
+            if (!$formatter instanceof Formatter) {
+                throw new InvalidParamException('The "formatter" property must be instance of Formatter.');
+            }
+
+            $value = $formatter->format($value, $options['format']);
         }
 
         return $value;
