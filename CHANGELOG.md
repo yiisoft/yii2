@@ -31,7 +31,6 @@ Yii Framework 2 Change Log
 - Bug: Fixed string comparison in `BaseActiveRecord::unlink()` which may result in wrong comparison result for hash valued primary keys starting with `0e` (cebe)
 - Bug: Pass correct action name to `yii\console\Controller::options()` when default action was requested (cebe)
 - Bug: Automatic garbage collection in `yii\caching\FileCache` was not triggered (kidol)
-- Enh: Add translation for Norwegian Bokmål (atmoz)
 - Enh #3335: Implemented `SchemaBuilder` (pana1990, vaseninm, samdark)
 - Enh #6043: Specification for 'class' and 'style' in array format added to `yii\helpers\Html` (klimov-paul)
 - Enh #6853: Console application will now register PHP constants for `STDIN`, `STDOUT`, and `STDERR` itself if they are not defined (cebe)
@@ -53,6 +52,7 @@ Yii Framework 2 Change Log
 - Enh #9177: Added password hash cost setting to Security component (freezy-sk)
 - Chg #6354: `ErrorHandler::logException()` will now log the whole exception object instead of only its string representation (cebe)
 - Chg #8556: Extracted `yii\web\User::getAuthManager()` method (samdark)
+- Chg #9181: `yii\helpers\BaseStringHelper::truncateHtml()` is now using `runtime` directory for `HTMLPurifier` cache (webdevsega) 
 
 
 2.0.5 July 11, 2015
