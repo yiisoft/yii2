@@ -108,7 +108,7 @@ class UploadedFile extends Object
     public static function getInstanceByName($name)
     {
         $files = self::loadFiles();
-        return isset($files[$name]) ? $files[$name] : null;
+        return isset($files[$name]) ? new static($files[$name]) : null;
     }
 
     /**
@@ -124,12 +124,12 @@ class UploadedFile extends Object
     {
         $files = self::loadFiles();
         if (isset($files[$name])) {
-            return [$files[$name]];
+            return [new static($files[$name])];
         }
         $results = [];
         foreach ($files as $key => $file) {
             if (strpos($key, "{$name}[") === 0) {
-                $results[] = $file;
+                $results[] = new static($file);
             }
         }
         return $results;
@@ -224,13 +224,13 @@ class UploadedFile extends Object
                 self::loadFilesRecursive($key . '[' . $i . ']', $name, $tempNames[$i], $types[$i], $sizes[$i], $errors[$i]);
             }
         } elseif ($errors !== UPLOAD_ERR_NO_FILE) {
-            self::$_files[$key] = new static([
+            self::$_files[$key] = [
                 'name' => $names,
                 'tempName' => $tempNames,
                 'type' => $types,
                 'size' => $sizes,
                 'error' => $errors,
-            ]);
+            ];
         }
     }
 }
