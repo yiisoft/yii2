@@ -52,6 +52,7 @@ Yii Framework 2 Change Log
 - Enh #9177: Added password hash cost setting to Security component (freezy-sk)
 - Chg #6354: `ErrorHandler::logException()` will now log the whole exception object instead of only its string representation (cebe)
 - Chg #8556: Extracted `yii\web\User::getAuthManager()` method (samdark)
+- Enh #8426: `yii\filters\AccessRule` now allows passing GET parameters to the role checking function (fsateler)
 
 
 2.0.5 July 11, 2015
