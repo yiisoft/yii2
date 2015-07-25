@@ -682,21 +682,25 @@ class Model extends Component implements IteratorAggregate, ArrayAccess, Arrayab
      * @param array $values attribute values (name => value) to be assigned to the model.
      * @param boolean $safeOnly whether the assignments should only be done to the safe attributes.
      * A safe attribute is one that is associated with a validation rule in the current [[scenario]].
+     * @return boolean true if at least one of the model fields was assigned a value from provided $values array.
      * @see safeAttributes()
      * @see attributes()
      */
     public function setAttributes($values, $safeOnly = true)
     {
+        $populated = false;
         if (is_array($values)) {
             $attributes = array_flip($safeOnly ? $this->safeAttributes() : $this->attributes());
             foreach ($values as $name => $value) {
                 if (isset($attributes[$name])) {
                     $this->$name = $value;
+                    $populated = true;
                 } elseif ($safeOnly) {
                     $this->onUnsafeAttribute($name, $value);
                 }
             }
         }
+        return $populated;
     }
 
     /**
@@ -788,19 +792,15 @@ class Model extends Component implements IteratorAggregate, ArrayAccess, Arrayab
      * supplied by end user.
      * @param string $formName the form name to be used for loading the data into the model.
      * If not set, [[formName()]] will be used.
-     * @return boolean whether the model is successfully populated with some data.
+     * @return boolean true if at least one of the model fields was populated with a value from provided $values array.
      */
     public function load($data, $formName = null)
     {
         $scope = $formName === null ? $this->formName() : $formName;
         if ($scope === '' && !empty($data)) {
-            $this->setAttributes($data);
-
-            return true;
+            return $this->setAttributes($data);
         } elseif (isset($data[$scope])) {
-            $this->setAttributes($data[$scope]);
-
-            return true;
+            return $this->setAttributes($data[$scope]);
         } else {
             return false;
         }
