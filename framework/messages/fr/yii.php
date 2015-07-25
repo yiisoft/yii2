@@ -17,8 +17,8 @@
  * NOTE: this file must be saved in UTF-8 encoding.
  */
 return [
-    'The requested view "{name}" was not found.' => 'La vue demandée « {nom} » n\'a pas été trouvé.',
-    'just now' => 'juste maintenant',
+    'The requested view "{name}" was not found.' => 'La vue demandée « {name} » n\'a pas été trouvée.',
+    'just now' => 'à l\'instant',
     '{nFormatted} B' => '{nFormatted} o',
     '{nFormatted} GB' => '{nFormatted} Go',
     '{nFormatted} GiB' => '{nFormatted} Gio',
@@ -55,7 +55,7 @@ return [
     'No' => 'Non',
     'No results found.' => 'Aucun résultat trouvé.',
     'Only files with these MIME types are allowed: {mimeTypes}.' => 'Seulement les fichiers ayant ces types MIME sont autorisés : {mimeTypes}.',
-    'Only files with these extensions are allowed: {extensions}.' => 'Les extensions de fichier autorisées sont : {extensions}.',
+    'Only files with these extensions are allowed: {extensions}.' => 'Les extensions de fichiers autorisées sont : {extensions}.',
     'Page not found.' => 'Page non trouvée.',
     'Please fix the following errors:' => 'Veuillez vérifier les erreurs suivantes :',
     'Please upload a file.' => 'Veuillez télécharger un fichier.',
@@ -91,9 +91,9 @@ return [
     '{attribute} is not a valid email address.' => '{attribute} n\'est pas une adresse email valide.',
     '{attribute} must be "{requiredValue}".' => '{attribute} doit êre « {requiredValue} ».',
     '{attribute} must be a number.' => '{attribute} doit être un nombre.',
-    '{attribute} must be a string.' => '{attribute} doit être une chaîne.',
+    '{attribute} must be a string.' => '{attribute} doit être au format texte.',
     '{attribute} must be an integer.' => '{attribute} doit être un entier.',
-    '{attribute} must be either "{true}" or "{false}".' => '{attribute} doit être soit {true} soit {false}.',
+    '{attribute} must be either "{true}" or "{false}".' => '{attribute} doit être soit « {true} » soit « {false} ».',
     '{attribute} must be greater than "{compareValue}".' => '{attribute} doit être supérieur à « {compareValue} ».',
     '{attribute} must be greater than or equal to "{compareValue}".' => '{attribute} doit être supérieur ou égal à « {compareValue} ».',
     '{attribute} must be less than "{compareValue}".' => '{attribute} doit être inférieur à « {compareValue} ».',
