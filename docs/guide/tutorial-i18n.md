@@ -575,9 +575,8 @@ language is `ru-RU`, you may translate the view and save it as  the file `views/
 whenever you call [[yii\base\View::renderFile()]] or any method that invoke this method (e.g. [[yii\base\Controller::render()]])
 to render the view `views/site/index.php`, it will end up rendering the translated view `views/site/ru-RU/index.php`, instead. 
 
-> Note: If the [[yii\base\Application::$language|target language]] is the same as [[yii\base\Application::$sourceLanguage|source language]],
-> view translation may still work as long as you provide a translated view. For example, if both languages are `en-US`
-> and you have both `views/site/index.php` and `views/site/en-US/index.php`, then the latter will be rendered.
+> Note: If the [[yii\base\Application::$language|target language]] is the same as [[yii\base\Application::$sourceLanguage|source language]]
+> original view will be rendered regardless of presence of translated view.
 
 
 ## Formatting Date and Number Values <span id="date-number"></span>

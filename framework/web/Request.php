@@ -180,9 +180,12 @@ class Request extends \yii\base\Request
         $result = Yii::$app->getUrlManager()->parseRequest($this);
         if ($result !== false) {
             list ($route, $params) = $result;
-            $_GET = $params + $_GET; // preserve numeric keys
-
-            return [$route, $_GET];
+            if ($this->_queryParams === null) {
+                $_GET = $params + $_GET; // preserve numeric keys
+            } else {
+                $this->_queryParams = $params + $this->_queryParams;
+            }
+            return [$route, $this->getQueryParams()];
         } else {
             throw new NotFoundHttpException(Yii::t('yii', 'Page not found.'));
         }
@@ -300,6 +303,10 @@ class Request extends \yii\base\Request
 
     /**
      * Returns whether this is an AJAX (XMLHttpRequest) request.
+     *
+     * Note that jQuery doesn't set the header in case of cross domain
+     * requests: https://stackoverflow.com/questions/8163703/cross-domain-ajax-doesnt-send-x-requested-with-header
+     *
      * @return boolean whether this is an AJAX (XMLHttpRequest) request.
      */
     public function getIsAjax()
