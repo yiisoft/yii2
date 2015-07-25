@@ -22,36 +22,37 @@ class EmailValidatorTest extends TestCase
 
         $this->assertTrue($validator->validate('sam@rmcreative.ru'));
         $this->assertTrue($validator->validate('5011@gmail.com'));
+
         $this->assertFalse($validator->validate('rmcreative.ru'));
         $this->assertFalse($validator->validate('Carsten Brandt <mail@cebe.cc>'));
         $this->assertFalse($validator->validate('"Carsten Brandt" <mail@cebe.cc>'));
         $this->assertFalse($validator->validate('<mail@cebe.cc>'));
         $this->assertFalse($validator->validate('info@örtliches.de'));
         $this->assertFalse($validator->validate('sam@рмкреатиф.ru'));
+        $this->assertFalse($validator->validate('üñîçøðé@example.com'));
+        $this->assertFalse($validator->validate('üñîçøðé@üñîçøðé.com'));
 
         $validator->allowName = true;
 
         $this->assertTrue($validator->validate('sam@rmcreative.ru'));
         $this->assertTrue($validator->validate('5011@gmail.com'));
-        $this->assertFalse($validator->validate('rmcreative.ru'));
         $this->assertTrue($validator->validate('Carsten Brandt <mail@cebe.cc>'));
         $this->assertTrue($validator->validate('"Carsten Brandt" <mail@cebe.cc>'));
         $this->assertTrue($validator->validate('<mail@cebe.cc>'));
-        $this->assertFalse($validator->validate('info@örtliches.de'));
-        $this->assertFalse($validator->validate('sam@рмкреатиф.ru'));
-        $this->assertFalse($validator->validate('Informtation info@oertliches.de'));
         $this->assertTrue($validator->validate('test@example.com'));
         $this->assertTrue($validator->validate('John Smith <john.smith@example.com>'));
+
+        $this->assertFalse($validator->validate('sam@рмкреатиф.ru'));
+        $this->assertFalse($validator->validate('rmcreative.ru'));
+        $this->assertFalse($validator->validate('info@örtliches.de'));
         $this->assertFalse($validator->validate('John Smith <example.com>'));
+        $this->assertFalse($validator->validate('Informtation info@oertliches.de'));
+        $this->assertFalse($validator->validate('üñîçøðé@example.com'));
+        $this->assertFalse($validator->validate('üñîçøðé@üñîçøðé.com'));
     }
 
     public function testValidateValueIdn()
     {
-        if (!function_exists('idn_to_ascii')) {
-            $this->markTestSkipped('Intl extension required');
-
-            return;
-        }
         $validator = new EmailValidator();
         $validator->enableIDN = true;
 
@@ -62,26 +63,35 @@ class EmailValidatorTest extends TestCase
         $this->assertTrue($validator->validate('sam@рмкреатиф.ru'));
         $this->assertTrue($validator->validate('sam@rmcreative.ru'));
         $this->assertTrue($validator->validate('5011@gmail.com'));
+        $this->assertTrue($validator->validate('üñîçøðé@example.com'));
+        $this->assertTrue($validator->validate('üñîçøðé@üñîçøðé.com'));
+
         $this->assertFalse($validator->validate('rmcreative.ru'));
         $this->assertFalse($validator->validate('Carsten Brandt <mail@cebe.cc>'));
         $this->assertFalse($validator->validate('"Carsten Brandt" <mail@cebe.cc>'));
         $this->assertFalse($validator->validate('<mail@cebe.cc>'));
 
+
         $validator->allowName = true;
 
         $this->assertTrue($validator->validate('info@örtliches.de'));
         $this->assertTrue($validator->validate('Informtation <info@örtliches.de>'));
-        $this->assertFalse($validator->validate('Informtation info@örtliches.de'));
         $this->assertTrue($validator->validate('sam@рмкреатиф.ru'));
         $this->assertTrue($validator->validate('sam@rmcreative.ru'));
         $this->assertTrue($validator->validate('5011@gmail.com'));
-        $this->assertFalse($validator->validate('rmcreative.ru'));
         $this->assertTrue($validator->validate('Carsten Brandt <mail@cebe.cc>'));
         $this->assertTrue($validator->validate('"Carsten Brandt" <mail@cebe.cc>'));
         $this->assertTrue($validator->validate('<mail@cebe.cc>'));
         $this->assertTrue($validator->validate('test@example.com'));
         $this->assertTrue($validator->validate('John Smith <john.smith@example.com>'));
+        $this->assertTrue($validator->validate('üñîçøðé@example.com'));
+        $this->assertTrue($validator->validate('üñîçøðé@üñîçøðé.com'));
+
+
+        $this->assertFalse($validator->validate('rmcreative.ru'));
         $this->assertFalse($validator->validate('John Smith <example.com>'));
+        $this->assertFalse($validator->validate('Informtation info@örtliches.de'));
+
     }
 
     public function testValidateValueMx()
