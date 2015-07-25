@@ -22,6 +22,7 @@ Yii Framework 2 Change Log
 - Bug #8606: Fixed `yii\web\Response::xSendFile()` does not reset format (vyants)
 - Bug #8627: Fixed `yii\db\Migration` produces incorrect results due to table schema caching (klimov-paul)
 - Bug #8661: Fixed `yii.activeForm.js` scrolling to top (nkovacs)
+- Bug #8684: Formatter ignored explicit decimal number settings when a default value is configured (leandrogehlen, cebe)
 - Bug #8772: ActiveQuery failed removing duplicate records after join when the resultset did not contain the pk values e.g. after grouping (cebe)
 - Bug #8900: Fixed determine active menu item with url-alias in route `\yii\widgets\Menu::isItemActive()` (demi)
 - Bug #9046: Fixed problem with endless error loop when an error occurred after sending a stream or file download response to the user (cebe)
