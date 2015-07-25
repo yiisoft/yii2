@@ -785,10 +785,12 @@ class Model extends Component implements IteratorAggregate, ArrayAccess, Arrayab
      * If [[formName()]] is empty, the whole `$data` array will be used to populate the model.
      * The data being populated is subject to the safety check by [[setAttributes()]].
      * @param array $data the data array. This is usually `$_POST` or `$_GET`, but can also be any valid array
-     * supplied by end user.
+     * supplied by the end user.
      * @param string $formName the form name to be used for loading the data into the model.
      * If not set, [[formName()]] will be used.
-     * @return boolean whether the model is successfully populated with some data.
+     * @return boolean whether `$data` contained some data to populate the models attributes.
+     * This only means that there was some data provided. It does not necessarily mean that any field
+     * was populated, which may be the case if none of the provided fields is safe in the current [[scenario]].
      */
     public function load($data, $formName = null)
     {
