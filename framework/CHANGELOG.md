@@ -47,6 +47,7 @@ Yii Framework 2 Change Log
 - Enh #8574: Added `yii\console\controllers\MessageController` support .pot file creation (pgaultier)
 - Enh #8625: Added `markUnused` option to `yii\console\controllers\MessageController` (marius7383)
 - Enh #8670: Added support for saving extra fields in session table for `yii\web\DbSession` (klimov-paul)
+- Enh #8671: Extracted `yii\helpers\Html::escapeJsRegularExpression()` method from `yii\validators\RegularExpressionValidator` (silverfire, klimov-paul, samdark, qiangxue)
 - Enh #8903: PostgreSQL `QueryBuilder::createIndex()` can now specify the index method to use (LAV45)
 - Enh #9011: Allow `yii\widgets\MaskedInput` to produce an input tag of a custom type (TriAnMan)
 - Enh #9038: Write warning to log in case `FileCache` fails to write into file (foccy)
