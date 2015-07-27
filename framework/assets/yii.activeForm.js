@@ -158,6 +158,27 @@
         value: undefined
     };
 
+
+    var submitDefer;
+    
+    var setSubmitFinalizeDefer = function($form)
+    {
+    	submitDefer = $.Deferred();
+        $form.data('yiiSubmitFinalizePromise', submitDefer.promise());
+    };
+    
+    // finalize yii.js $form.submit
+    var submitFinalize = function($form)
+    {
+    	if(submitDefer)
+    	{
+            submitDefer.resolve();
+            submitDefer = undefined;
+            $form.removeData('yiiSubmitFinalizePromise');
+    	}
+    };
+
+
     var methods = {
         init: function (attributes, options) {
             return this.each(function () {
@@ -273,6 +294,7 @@
                 $form.trigger(event, [messages, deferreds]);
                 if (event.result === false) {
                     data.submitting = false;
+                    submitFinalize($form);
                     return;
                 }
             }
@@ -341,6 +363,7 @@
                         },
                         error: function () {
                             data.submitting = false;
+                            submitFinalize($form);
                         }
                     });
                 } else if (data.submitting) {
@@ -359,15 +382,20 @@
                 data = $form.data('yiiActiveForm');
 
             if (data.validated) {
+                // Second submit's call (from validate/updateInputs)
                 data.submitting = false;
                 var event = $.Event(events.beforeSubmit);
                 $form.trigger(event);
                 if (event.result === false) {
                     data.validated = false;
+                    submitFinalize($form);
                     return false;
                 }
                 return true;   // continue submitting the form since validation passes
             } else {
+            	// First submit's call (from yii.js/handleAction) - execute validating
+            	setSubmitFinalizeDefer($form);
+                
                 if (data.settings.timer !== undefined) {
                     clearTimeout(data.settings.timer);
                 }
@@ -531,6 +559,7 @@
                 }
             });
         }
+        submitFinalize($form);
     };
 
     /**
