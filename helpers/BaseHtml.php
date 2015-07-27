@@ -2118,6 +2118,6 @@ class BaseHtml
             $pattern .= preg_replace('/[^igm]/', '', $flag);
         }
 
-        return new $pattern;
+        return $pattern;
     }
 }
