@@ -36,6 +36,7 @@ class BaseJson
         $expressions = [];
         $value = static::processData($value, $expressions, uniqid());
         $json = json_encode($value, $options);
+        static::handleJsonError(json_last_error());
 
         return empty($expressions) ? $json : strtr($json, $expressions);
     }
@@ -68,7 +69,20 @@ class BaseJson
             throw new InvalidParamException('Invalid JSON data.');
         }
         $decode = json_decode((string) $json, $asArray);
-        switch (json_last_error()) {
+        static::handleJsonError(json_last_error());
+
+        return $decode;
+    }
+
+    /**
+     * Handles json_encode and json_decode errors
+     *
+     * @param $lastError
+     * @throws \yii\base\InvalidParamException
+     */
+    protected static function handleJsonError($lastError)
+    {
+        switch ($lastError) {
             case JSON_ERROR_NONE:
                 break;
             case JSON_ERROR_DEPTH:
@@ -84,8 +98,6 @@ class BaseJson
             default:
                 throw new InvalidParamException('Unknown JSON decoding error.');
         }
-
-        return $decode;
     }
 
     /**
