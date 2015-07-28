@@ -108,7 +108,7 @@ return [
     '{attribute} should contain at least {min, number} {min, plural, one{character} other{characters}}.' => 'Значение «{attribute}» должно содержать минимум {min, number} {min, plural, one{символ} few{символа} many{символов} other{символа}}.',
     '{attribute} should contain at most {max, number} {max, plural, one{character} other{characters}}.' => 'Значение «{attribute}» должно содержать максимум {max, number} {max, plural, one{символ} few{символа} many{символов} other{символа}}.',
     '{attribute} should contain {length, number} {length, plural, one{character} other{characters}}.' => 'Значение «{attribute}» должно содержать {length, number} {length, plural, one{символ} few{символа} many{символов} other{символа}}.',
-    '{delta, plural, =1{a day} other{# days}} ago' => '{delta, plural, =1{день} one{день} few{# дня} many{# дней} other{# дня}} назад',
+    '{delta, plural, =1{a day} other{# days}} ago' => '{delta, plural, =1{день} one{# день} few{# дня} many{# дней} other{# дня}} назад',
     '{delta, plural, =1{a minute} other{# minutes}} ago' => '{delta, plural, =1{минуту} one{# минуту} few{# минуты} many{# минут} other{# минуты}} назад',
     '{delta, plural, =1{a month} other{# months}} ago' => '{delta, plural, =1{месяц} one{# месяц} few{# месяца} many{# месяцев} other{# месяца}} назад',
     '{delta, plural, =1{a second} other{# seconds}} ago' => '{delta, plural, =1{секунду} one{# секунду} few{# секунды} many{# секунд} other{# секунды}} назад',
