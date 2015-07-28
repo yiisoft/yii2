@@ -979,7 +979,8 @@ class BaseHtml
     /**
      * Generates an unordered list.
      * @param array|\Traversable $items the items for generating the list. Each item generates a single list item.
-     * Note that items will be automatically HTML encoded if `$options['encode']` is not set or true.
+     * Note that items will be automatically HTML encoded if `$options['encode']` is not set or true. The same way
+     * supported multidimensional array.
      * @param array $options options (name => config) for the radio button list. The following options are supported:
      *
      * - encode: boolean, whether to HTML-encode the items. Defaults to true.
@@ -994,6 +995,24 @@ class BaseHtml
      *
      *   where $index is the array key corresponding to `$item` in `$items`. The callback should return
      *   the whole list item tag.
+     *
+     * - children: boolean, support multidimensional array. Defaults to false.
+     *   example input array
+     *
+     *   ~~~
+     *   $items = [
+     *       'item1',
+     *       'item2',
+     *       [
+     *           'item2.1',
+     *           'item2.2',
+     *           [
+     *               'item2.2.1',
+     *           ],
+     *       ],
+     *       'item3',
+     *   ];
+     *   ~~~
      *
      * See [[renderTagAttributes()]] for details on how attributes are being rendered.
      *
@@ -1003,29 +1022,50 @@ class BaseHtml
     {
         $tag = isset($options['tag']) ? $options['tag'] : 'ul';
         $encode = !isset($options['encode']) || $options['encode'];
+        $children = isset($options['children']) && $options['children'] === true;
         $formatter = isset($options['item']) ? $options['item'] : null;
         $itemOptions = isset($options['itemOptions']) ? $options['itemOptions'] : [];
-        unset($options['tag'], $options['encode'], $options['item'], $options['itemOptions']);
+        $optionsChildren = $options;
+        unset($options['tag'], $options['encode'], $options['item'], $options['itemOptions'], $options['children']);
 
         if (empty($items)) {
             return static::tag($tag, '', $options);
         }
 
         $results = [];
+        $i = 0;
         foreach ($items as $index => $item) {
             if ($formatter !== null) {
                 $results[] = call_user_func($formatter, $item, $index);
             } else {
-                $results[] = static::tag('li', $encode ? static::encode($item) : $item, $itemOptions);
+                if($children === true) {
+                    if(is_array($item)) {
+                        $results[] = static::ul($item, $optionsChildren);
+                        $i++;
+                        continue;
+                    } else {
+                        if($i !== 0){
+                            $results[] = static::endTag('li');
+                        }
+                    }
+                    $results[] = static::beginTag('li',$itemOptions);
+                    $results[] = $encode ? static::encode($item) : $item;
+
+                } else {
+                    $results[] = static::tag('li', $encode ? static::encode($item) : $item, $itemOptions);
+                }
             }
+            $i++;
         }
+        $results[] = static::endTag('li');
         return static::tag($tag, "\n" . implode("\n", $results) . "\n", $options);
     }
 
     /**
      * Generates an ordered list.
      * @param array|\Traversable $items the items for generating the list. Each item generates a single list item.
-     * Note that items will be automatically HTML encoded if `$options['encode']` is not set or true.
+     * Note that items will be automatically HTML encoded if `$options['encode']` is not set or true. The same way
+     * supported multidimensional array.
      * @param array $options options (name => config) for the radio button list. The following options are supported:
      *
      * - encode: boolean, whether to HTML-encode the items. Defaults to true.
@@ -1040,6 +1080,24 @@ class BaseHtml
      *
      *   where $index is the array key corresponding to `$item` in `$items`. The callback should return
      *   the whole list item tag.
+     *
+     * - children: boolean, support multidimensional array. Defaults to false.
+     *   example input array
+     *
+     *   ~~~
+     *   $items = [
+     *       'item1',
+     *       'item2',
+     *       [
+     *           'item2.1',
+     *           'item2.2',
+     *           [
+     *               'item2.2.1',
+     *           ],
+     *       ],
+     *       'item3',
+     *   ];
+     *   ~~~
      *
      * See [[renderTagAttributes()]] for details on how attributes are being rendered.
      *
