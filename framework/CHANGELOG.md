@@ -58,6 +58,7 @@ Yii Framework 2 Change Log
 - Enh #9177: Added password hash cost setting to Security component (freezy-sk)
 - Enh #9246: Added `yii\web\UrlRule::getParamRules()` (df2)
 - Chg #6354: `ErrorHandler::logException()` will now log the whole exception object instead of only its string representation (cebe)
+- Eng #7911: Auto convert AR arrays to Postgres array (joni-jones)
 - Chg #8556: Extracted `yii\web\User::getAuthManager()` method (samdark)
 - Chg #9181: `yii\helpers\BaseStringHelper::truncateHtml()` is now using `runtime` directory for `HTMLPurifier` cache (webdevsega) 
 
