@@ -91,19 +91,19 @@ class UrlRule extends Object implements UrlRuleInterface
     /**
      * @var string the template for generating a new URL. This is derived from [[pattern]] and is used in generating URL.
      */
-    private $_template;
+    protected $_template;
     /**
      * @var string the regex for matching the route part. This is used in generating URL.
      */
-    private $_routeRule;
+    protected $_routeRule;
     /**
      * @var array list of regex for matching parameters. This is used in generating URL.
      */
-    private $_paramRules = [];
+    protected $_paramRules = [];
     /**
      * @var array list of parameters used in the route.
      */
-    private $_routeParams = [];
+    protected $_routeParams = [];
 
 
     /**
