@@ -885,7 +885,7 @@ class Model extends Component implements IteratorAggregate, ArrayAccess, Arrayab
      * returning the corresponding field value. The signature of the callable should be:
      *
      * ```php
-     * function ($field, $model) {
+     * function ($model, $field) {
      *     // return field value
      * }
      * ```
