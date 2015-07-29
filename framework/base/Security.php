@@ -79,7 +79,13 @@ class Security extends Component
      * - 'crypt' - use PHP `crypt()` function.
      */
     public $passwordHashStrategy = 'crypt';
-
+    /**
+     * @var integer Default cost used for password hashing.
+     * Allowed value is between 4 and 31.
+     * @see generatePasswordHash()
+     * @since 2.0.6
+     */
+    public $passwordHashCost = 13;
 
     /**
      * Encrypts data using a password.
@@ -103,7 +109,7 @@ class Security extends Component
     }
 
     /**
-     * Encrypts data using a cryptograhic key.
+     * Encrypts data using a cryptographic key.
      * Derives keys for encryption and authentication from the input key using HKDF and a random salt,
      * which is very fast relative to [[encryptByPassword()]]. The input key must be properly
      * random -- use [[generateRandomKey()]] to generate keys.
@@ -270,7 +276,7 @@ class Security extends Component
         if (is_string($length) && preg_match('{^\d{1,16}$}', $length)) {
             $length = (int) $length;
         }
-        if (!is_integer($length) || $length < 0 || $length > 255 * $hashLength) {
+        if (!is_int($length) || $length < 0 || $length > 255 * $hashLength) {
             throw new InvalidParamException('Invalid length');
         }
         $blocks = $length !== 0 ? ceil($length / $hashLength) : 1;
@@ -325,13 +331,13 @@ class Security extends Component
         if (is_string($iterations) && preg_match('{^\d{1,16}$}', $iterations)) {
             $iterations = (int) $iterations;
         }
-        if (!is_integer($iterations) || $iterations < 1) {
+        if (!is_int($iterations) || $iterations < 1) {
             throw new InvalidParamException('Invalid iterations');
         }
         if (is_string($length) && preg_match('{^\d{1,16}$}', $length)) {
             $length = (int) $length;
         }
-        if (!is_integer($length) || $length < 0) {
+        if (!is_int($length) || $length < 0) {
             throw new InvalidParamException('Invalid length');
         }
         $hashLength = StringHelper::byteLength($test);
@@ -540,8 +546,12 @@ class Security extends Component
      * @throws InvalidConfigException when an unsupported password hash strategy is configured.
      * @see validatePassword()
      */
-    public function generatePasswordHash($password, $cost = 13)
+    public function generatePasswordHash($password, $cost = null)
     {
+        if ($cost === null) {
+            $cost = $this->passwordHashCost;
+        }
+
         switch ($this->passwordHashStrategy) {
             case 'password_hash':
                 if (!function_exists('password_hash')) {

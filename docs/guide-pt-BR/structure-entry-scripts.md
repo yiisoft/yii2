@@ -69,10 +69,6 @@ do console:
 
 defined('YII_DEBUG') or define('YII_DEBUG', true);
 
-// o fcgi não tem STDIN e STDOUT definidos por padrão
-defined('STDIN') or define('STDIN', fopen('php://stdin', 'r'));
-defined('STDOUT') or define('STDOUT', fopen('php://stdout', 'w'));
-
 // registra o autoloader do Composer
 require(__DIR__ . '/vendor/autoload.php');
 
