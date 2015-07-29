@@ -56,6 +56,7 @@ Yii Framework 2 Change Log
 - Enh #9072: `yii\web\ErrorAction` displays 404 error instead of blank page on direct access (klimov-paul)
 - Enh #9149: Print directory migrationPath in a `yii migrate` command error. (RusAlex)
 - Enh #9177: Added password hash cost setting to Security component (freezy-sk)
+- Enh #9246: Added `yii\web\UrlRule::getParamRules()` (df2)
 - Chg #6354: `ErrorHandler::logException()` will now log the whole exception object instead of only its string representation (cebe)
 - Chg #8556: Extracted `yii\web\User::getAuthManager()` method (samdark)
 - Chg #9181: `yii\helpers\BaseStringHelper::truncateHtml()` is now using `runtime` directory for `HTMLPurifier` cache (webdevsega) 
