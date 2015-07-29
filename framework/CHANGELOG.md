@@ -4,10 +4,12 @@ Yii Framework 2 Change Log
 2.0.6 under development
 -----------------------
 
+- Bug #4763: Fixed display issue with overlapping call stack item on exception display page (cebe)
 - Bug #7305: Logging of Exception objects resulted in failure of the logger i.e. no logs being written (cebe)
 - Bug #7374: Use proper INSERT syntax with default values when no values are specified (nineinchnick)
 - Bug #7707: client-side `trim` validator now passes the trimmed value to subsequent validators (nkovacs)
 - Bug #7764: `\yii\helpers\ArrayHelper::toArray()` wasn't passing `$recursive` to `Arrayable::toArray` (brandonkelly)
+- Bug #8161: Fixed active form `data-method` submit bug when client validation is used (vbelogai)
 - Bug #8322: `yii\behaviors\TimestampBehavior::touch()` now throws an exception if owner is new record (klimov-paul)
 - Bug #8451: `yii\i18n\Formatter` did not allow negative unix timestamps as input for date formatting (cebe)
 - Bug #8483: sequence name in `Schema::getLastInsertId()` was not properly quoted (nineinchnick)
@@ -21,11 +23,15 @@ Yii Framework 2 Change Log
 - Bug #8606: Fixed `yii\web\Response::xSendFile()` does not reset format (vyants)
 - Bug #8627: Fixed `yii\db\Migration` produces incorrect results due to table schema caching (klimov-paul)
 - Bug #8661: Fixed `yii.activeForm.js` scrolling to top (nkovacs)
+- Bug #8684: Formatter ignored explicit decimal number settings when a default value is configured (leandrogehlen, cebe)
 - Bug #8772: ActiveQuery failed removing duplicate records after join when the resultset did not contain the pk values e.g. after grouping (cebe)
+- Bug #8844: Added a workaround for an oracle bug when fetching information about table constraints and filtering by CONSTRAINT_TYPE (nidgetgod)
 - Bug #8900: Fixed determine active menu item with url-alias in route `\yii\widgets\Menu::isItemActive()` (demi)
 - Bug #9046: Fixed problem with endless error loop when an error occurred after sending a stream or file download response to the user (cebe)
+- Bug #9059: Fixed PHP Notice in error handler view (dynasource, andrewnester, samdark)
 - Bug #9063: Workaround for MySQL losing table case when adding index (sebathi)
 - Bug #9127, #9128: Fixed MSSQL `QueryBuilder::renameColumn()` and `QueryBuilder::renameTable()` escaping (sitawit)
+- Bug #9161: Fixed `yii\web\Request` ignore `queryParams` when resolve request (zetamen)
 - Bug: Fixed string comparison in `BaseActiveRecord::unlink()` which may result in wrong comparison result for hash valued primary keys starting with `0e` (cebe)
 - Bug: Pass correct action name to `yii\console\Controller::options()` when default action was requested (cebe)
 - Bug: Automatic garbage collection in `yii\caching\FileCache` was not triggered (kidol)
@@ -42,11 +48,17 @@ Yii Framework 2 Change Log
 - Enh #8574: Added `yii\console\controllers\MessageController` support .pot file creation (pgaultier)
 - Enh #8625: Added `markUnused` option to `yii\console\controllers\MessageController` (marius7383)
 - Enh #8670: Added support for saving extra fields in session table for `yii\web\DbSession` (klimov-paul)
+- Enh #8671: Extracted `yii\helpers\Html::escapeJsRegularExpression()` method from `yii\validators\RegularExpressionValidator` (silverfire, klimov-paul, samdark, qiangxue)
 - Enh #8903: PostgreSQL `QueryBuilder::createIndex()` can now specify the index method to use (LAV45)
+- Enh #8933: Yii is now able to properly handle HHVM fatal errors (dieend, samdark) 
 - Enh #9011: Allow `yii\widgets\MaskedInput` to produce an input tag of a custom type (TriAnMan)
 - Enh #9038: Write warning to log in case `FileCache` fails to write into file (foccy)
+- Enh #9072: `yii\web\ErrorAction` displays 404 error instead of blank page on direct access (klimov-paul)
+- Enh #9149: Print directory migrationPath in a `yii migrate` command error. (RusAlex)
+- Enh #9177: Added password hash cost setting to Security component (freezy-sk)
 - Chg #6354: `ErrorHandler::logException()` will now log the whole exception object instead of only its string representation (cebe)
 - Chg #8556: Extracted `yii\web\User::getAuthManager()` method (samdark)
+- Chg #9181: `yii\helpers\BaseStringHelper::truncateHtml()` is now using `runtime` directory for `HTMLPurifier` cache (webdevsega) 
 
 
 2.0.5 July 11, 2015

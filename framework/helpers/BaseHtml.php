@@ -2095,4 +2095,29 @@ class BaseHtml
         $name = strtolower(static::getInputName($model, $attribute));
         return str_replace(['[]', '][', '[', ']', ' ', '.'], ['', '-', '-', '', '-', '-'], $name);
     }
+
+    /**
+     * Escapes regular expression to use in JavaScript
+     * @param string $regexp
+     * @return string
+     *
+     * @since 2.0.6
+     */
+    public static function escapeJsRegularExpression($regexp)
+    {
+        $pattern = preg_replace('/\\\\x\{?([0-9a-fA-F]+)\}?/', '\u$1', $regexp);
+        $deliminator = substr($pattern, 0, 1);
+        $pos = strrpos($pattern, $deliminator, 1);
+        $flag = substr($pattern, $pos + 1);
+        if ($deliminator !== '/') {
+            $pattern = '/' . str_replace('/', '\\/', substr($pattern, 1, $pos - 1)) . '/';
+        } else {
+            $pattern = substr($pattern, 0, $pos + 1);
+        }
+        if (!empty($flag)) {
+            $pattern .= preg_replace('/[^igm]/', '', $flag);
+        }
+
+        return $pattern;
+    }
 }

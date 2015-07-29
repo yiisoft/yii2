@@ -215,7 +215,7 @@ class Formatter extends Component
      */
     public $currencyCode;
     /**
-     * @var array the base at which a kilobyte is calculated (1000 or 1024 bytes per kilobyte), used by [[asSize]] and [[asShortSize]].
+     * @var integer the base at which a kilobyte is calculated (1000 or 1024 bytes per kilobyte), used by [[asSize]] and [[asShortSize]].
      * Defaults to 1024.
      */
     public $sizeFormatBase = 1024;
@@ -1208,33 +1208,37 @@ class Formatter extends Component
     {
         $formatter = new NumberFormatter($this->locale, $style);
 
-        if ($this->decimalSeparator !== null) {
-            $formatter->setSymbol(NumberFormatter::DECIMAL_SEPARATOR_SYMBOL, $this->decimalSeparator);
-        }
-        if ($this->thousandSeparator !== null) {
-            $formatter->setSymbol(NumberFormatter::GROUPING_SEPARATOR_SYMBOL, $this->thousandSeparator);
-        }
-
-        if ($decimals !== null) {
-            $formatter->setAttribute(NumberFormatter::MAX_FRACTION_DIGITS, $decimals);
-            $formatter->setAttribute(NumberFormatter::MIN_FRACTION_DIGITS, $decimals);
-        }
-
+        // set text attributes
         foreach ($this->numberFormatterTextOptions as $name => $attribute) {
             $formatter->setTextAttribute($name, $attribute);
         }
         foreach ($textOptions as $name => $attribute) {
             $formatter->setTextAttribute($name, $attribute);
         }
+
+        // set attributes
         foreach ($this->numberFormatterOptions as $name => $value) {
             $formatter->setAttribute($name, $value);
         }
         foreach ($options as $name => $value) {
             $formatter->setAttribute($name, $value);
         }
+        if ($decimals !== null) {
+            $formatter->setAttribute(NumberFormatter::MAX_FRACTION_DIGITS, $decimals);
+            $formatter->setAttribute(NumberFormatter::MIN_FRACTION_DIGITS, $decimals);
+        }
+
+        // set symbols
+        if ($this->decimalSeparator !== null) {
+            $formatter->setSymbol(NumberFormatter::DECIMAL_SEPARATOR_SYMBOL, $this->decimalSeparator);
+        }
+        if ($this->thousandSeparator !== null) {
+            $formatter->setSymbol(NumberFormatter::GROUPING_SEPARATOR_SYMBOL, $this->thousandSeparator);
+        }
         foreach ($this->numberFormatterSymbols as $name => $symbol) {
             $formatter->setSymbol($name, $symbol);
         }
+
         return $formatter;
     }
 }
