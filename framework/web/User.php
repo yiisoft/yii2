@@ -255,15 +255,16 @@ class User extends Component
      * If authentication fails or [[login()]] is unsuccessful, it will return null.
      * @param string $token the access token
      * @param mixed $type the type of the token. The value of this parameter depends on the implementation.
+     * @param string $scopes scopes of access token
      * For example, [[\yii\filters\auth\HttpBearerAuth]] will set this parameter to be `yii\filters\auth\HttpBearerAuth`.
      * @return IdentityInterface|null the identity associated with the given access token. Null is returned if
      * the access token is invalid or [[login()]] is unsuccessful.
      */
-    public function loginByAccessToken($token, $type = null)
+    public function loginByAccessToken($token, $type = null, $scopes = null)
     {
         /* @var $class IdentityInterface */
         $class = $this->identityClass;
-        $identity = $class::findIdentityByAccessToken($token, $type);
+        $identity = $class::findIdentityByAccessToken($token, $type, $scopes);
         if ($identity && $this->login($identity)) {
             return $identity;
         } else {

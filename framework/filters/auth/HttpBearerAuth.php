@@ -33,6 +33,10 @@ class HttpBearerAuth extends AuthMethod
      */
     public $realm = 'api';
 
+    /**
+     * @var string|null available scopes
+     */
+    public $scopes = null;
 
     /**
      * @inheritdoc
@@ -41,7 +45,7 @@ class HttpBearerAuth extends AuthMethod
     {
         $authHeader = $request->getHeaders()->get('Authorization');
         if ($authHeader !== null && preg_match("/^Bearer\\s+(.*?)$/", $authHeader, $matches)) {
-            $identity = $user->loginByAccessToken($matches[1], get_class($this));
+            $identity = $user->loginByAccessToken($matches[1], get_class($this), $this->scopes);
             if ($identity === null) {
                 $this->handleFailure($response);
             }

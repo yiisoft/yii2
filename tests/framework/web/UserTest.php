@@ -115,7 +115,7 @@ class UserIdentity extends Component implements IdentityInterface
         }
     }
 
-    public static function findIdentityByAccessToken($token, $type = null)
+    public static function findIdentityByAccessToken($token, $type = null, $scopes = null)
     {
         throw new NotSupportedException();
     }
