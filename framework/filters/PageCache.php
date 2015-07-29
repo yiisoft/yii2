@@ -95,7 +95,7 @@ class PageCache extends ActionFilter
      * ]
      * ~~~
      */
-    public $variations;
+    public $variations = [];
     /**
      * @var boolean whether to enable the page cache. You may use this property to turn on and off
      * the page cache according to specific setting (e.g. enable page cache only for GET requests).
@@ -253,11 +253,7 @@ class PageCache extends ActionFilter
         if ($this->varyByRoute) {
             $key[] = Yii::$app->requestedRoute;
         }
-        if (is_array($this->variations)) {
-            foreach ($this->variations as $value) {
-                $key[] = $value;
-            }
-        }
-        return $key;
+
+        return array_merge($key, $this->variations);
     }
 }
