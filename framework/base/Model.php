@@ -217,9 +217,7 @@ class Model extends Component implements IteratorAggregate, ArrayAccess, Arrayab
         }
 
         foreach ($scenarios as $scenario => $attributes) {
-            if (!empty($attributes)) {
-                $scenarios[$scenario] = array_keys($attributes);
-            }
+            $scenarios[$scenario] = array_keys($attributes);
         }
 
         return $scenarios;
