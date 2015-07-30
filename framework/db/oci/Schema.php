@@ -9,6 +9,7 @@ namespace yii\db\oci;
 
 use yii\base\InvalidCallException;
 use yii\db\Connection;
+use yii\db\Expression;
 use yii\db\TableSchema;
 use yii\db\ColumnSchema;
 
@@ -162,7 +163,7 @@ SQL;
      * Sequence name of table
      *
      * @param $tableName
-     * @internal param \yii\db\TableSchema $table ->name the table schema
+     * @internal param \yii\db\TableSchema $table->name the table schema
      * @return string whether the sequence exists
      */
     protected function getTableSequenceName($tableName)
@@ -253,7 +254,7 @@ SQL;
     protected function findConstraints($table)
     {
         $sql = <<<SQL
-SELECT D.CONSTRAINT_NAME, C.COLUMN_NAME, C.POSITION, D.R_CONSTRAINT_NAME,
+SELECT D.CONSTRAINT_NAME, D.CONSTRAINT_TYPE, C.COLUMN_NAME, C.POSITION, D.R_CONSTRAINT_NAME,
         E.TABLE_NAME AS TABLE_REF, F.COLUMN_NAME AS COLUMN_REF,
         C.TABLE_NAME
 FROM ALL_CONS_COLUMNS C
@@ -262,7 +263,6 @@ LEFT JOIN ALL_CONSTRAINTS E ON E.OWNER = D.R_OWNER AND E.CONSTRAINT_NAME = D.R_C
 LEFT JOIN ALL_CONS_COLUMNS F ON F.OWNER = E.OWNER AND F.CONSTRAINT_NAME = E.CONSTRAINT_NAME AND F.POSITION = C.POSITION
 WHERE C.OWNER = :schemaName
    AND C.TABLE_NAME = :tableName
-   AND D.CONSTRAINT_TYPE = 'R'
 ORDER BY D.CONSTRAINT_NAME, C.POSITION
 SQL;
         $command = $this->db->createCommand($sql, [
@@ -271,6 +271,11 @@ SQL;
         ]);
         $constraints = [];
         foreach ($command->queryAll() as $row) {
+            if ($row['CONSTRAINT_TYPE'] !== 'R') {
+                // this condition is not checked in SQL WHERE because of an Oracle Bug:
+                // see https://github.com/yiisoft/yii2/pull/8844
+                continue;
+            }
             if ($this->db->slavePdo->getAttribute(\PDO::ATTR_CASE) === \PDO::CASE_LOWER) {
                 $row = array_change_key_case($row, CASE_UPPER);
             }
@@ -425,9 +430,9 @@ SQL;
      */
     protected function extractColumnSize($column, $dbType, $precision, $scale, $length)
     {
-        $column->size = trim($length) == '' ? null : (int)$length;
-        $column->precision = trim($precision) == '' ? null : (int)$precision;
-        $column->scale = trim($scale) == '' ? null : (int)$scale;
+        $column->size = trim($length) == '' ? null : (int) $length;
+        $column->precision = trim($precision) == '' ? null : (int) $precision;
+        $column->scale = trim($scale) == '' ? null : (int) $scale;
     }
 
     /**
@@ -443,7 +448,7 @@ SQL;
         if (!empty($returnColumns)) {
             $columnSchemas = $tableSchema->columns;
             $returning = [];
-            foreach ((array)$returnColumns as $name) {
+            foreach ((array) $returnColumns as $name) {
                 $phName = QueryBuilder::PARAM_PREFIX . (count($params) + count($returnParams));
                 $returnParams[$phName] = [
                     'column' => $name,
@@ -464,7 +469,7 @@ SQL;
         $command->prepare(false);
 
         foreach ($returnParams as $name => &$value) {
-            $command->pdoStatement->bindParam($name, $value['value'], $value['dataType'], $value['size'] );
+            $command->pdoStatement->bindParam($name, $value['value'], $value['dataType'], $value['size']);
         }
 
         if (!$command->execute()) {

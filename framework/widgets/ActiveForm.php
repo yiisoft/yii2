@@ -25,7 +25,7 @@ use yii\helpers\Json;
 class ActiveForm extends Widget
 {
     /**
-     * @param array|string $action the form action URL. This parameter will be processed by [[\yii\helpers\Url::to()]].
+     * @var array|string $action the form action URL. This parameter will be processed by [[\yii\helpers\Url::to()]].
      * @see method for specifying the HTTP method for this form.
      */
     public $action = '';
@@ -189,8 +189,8 @@ class ActiveForm extends Widget
 
         if ($this->enableClientScript) {
             $id = $this->options['id'];
-            $options = Json::encode($this->getClientOptions());
-            $attributes = Json::encode($this->attributes);
+            $options = Json::htmlEncode($this->getClientOptions());
+            $attributes = Json::htmlEncode($this->attributes);
             $view = $this->getView();
             ActiveFormAsset::register($view);
             $view->registerJs("jQuery('#$id').yiiActiveForm($attributes, $options);");

@@ -98,7 +98,7 @@ trait ActiveRelationTrait
      * @param string $relationName the relation name. This refers to a relation declared in [[primaryModel]].
      * @param callable $callable a PHP callback for customizing the relation associated with the junction table.
      * Its signature should be `function($query)`, where `$query` is the query to be customized.
-     * @return static the relation object itself.
+     * @return $this the relation object itself.
      */
     public function via($relationName, callable $callable = null)
     {
@@ -128,7 +128,7 @@ trait ActiveRelationTrait
      * ```
      *
      * @param string $relationName the name of the relation that is the inverse of this relation.
-     * @return static the relation object itself.
+     * @return $this the relation object itself.
      */
     public function inverseOf($relationName)
     {
@@ -252,9 +252,7 @@ trait ActiveRelationTrait
                 if ($this->multiple && count($link) == 1 && is_array($keys = $primaryModel[reset($link)])) {
                     $value = [];
                     foreach ($keys as $key) {
-                        if (!is_scalar($key)) {
-                            $key = serialize($key);
-                        }
+                        $key = $this->normalizeModelKey($key);
                         if (isset($buckets[$key])) {
                             if ($this->indexBy !== null) {
                                 // if indexBy is set, array_merge will cause renumbering of numeric array
@@ -485,18 +483,26 @@ trait ActiveRelationTrait
     {
         $key = [];
         foreach ($attributes as $attribute) {
-            $value = $model[$attribute];
-            if (is_object($value) && method_exists($value, '__toString')) {
-                // ensure matching to special objects, which are convertable to string, for cross-DBMS relations, for example: `|MongoId`
-                $value = $value->__toString();
-            }
-            $key[] = $value;
+            $key[] = $this->normalizeModelKey($model[$attribute]);
         }
         if (count($key) > 1) {
             return serialize($key);
         }
         $key = reset($key);
         return is_scalar($key) ? $key : serialize($key);
+    }
+
+    /**
+     * @param mixed $value raw key value.
+     * @return string normalized key value.
+     */
+    private function normalizeModelKey($value)
+    {
+        if (is_object($value) && method_exists($value, '__toString')) {
+            // ensure matching to special objects, which are convertable to string, for cross-DBMS relations, for example: `|MongoId`
+            $value = $value->__toString();
+        }
+        return $value;
     }
 
     /**

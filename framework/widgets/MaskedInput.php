@@ -92,6 +92,11 @@ class MaskedInput extends InputWidget
      * @see \yii\helpers\Html::renderTagAttributes() for details on how attributes are being rendered.
      */
     public $options = ['class' => 'form-control'];
+    /**
+     * @var string the type of the input tag. Currently only 'text' and 'tel' are supported.
+     * @see https://github.com/RobinHerbots/jquery.inputmask
+     */
+    public $type = 'text';
 
     /**
      * @var string the hashed variable to store the pluginOptions
@@ -119,9 +124,9 @@ class MaskedInput extends InputWidget
     {
         $this->registerClientScript();
         if ($this->hasModel()) {
-            echo Html::activeTextInput($this->model, $this->attribute, $this->options);
+            echo Html::activeInput($this->type, $this->model, $this->attribute, $this->options);
         } else {
-            echo Html::textInput($this->name, $this->value, $this->options);
+            echo Html::input($this->type, $this->name, $this->value, $this->options);
         }
     }
 
@@ -137,7 +142,7 @@ class MaskedInput extends InputWidget
      */
     protected function hashPluginOptions($view)
     {
-        $encOptions = empty($this->clientOptions) ? '{}' : Json::encode($this->clientOptions);
+        $encOptions = empty($this->clientOptions) ? '{}' : Json::htmlEncode($this->clientOptions);
         $this->_hashVar = self::PLUGIN_NAME . '_' . hash('crc32', $encOptions);
         $this->options['data-plugin-' . self::PLUGIN_NAME] = $this->_hashVar;
         $view->registerJs("var {$this->_hashVar} = {$encOptions};\n", View::POS_HEAD);
@@ -172,10 +177,10 @@ class MaskedInput extends InputWidget
         }
         $this->hashPluginOptions($view);
         if (is_array($this->definitions) && !empty($this->definitions)) {
-            $js .= '$.extend($.' . self::PLUGIN_NAME . '.defaults.definitions, ' . Json::encode($this->definitions) . ");\n";
+            $js .= '$.extend($.' . self::PLUGIN_NAME . '.defaults.definitions, ' . Json::htmlEncode($this->definitions) . ");\n";
         }
         if (is_array($this->aliases) && !empty($this->aliases)) {
-            $js .= '$.extend($.' . self::PLUGIN_NAME . '.defaults.aliases, ' . Json::encode($this->aliases) . ");\n";
+            $js .= '$.extend($.' . self::PLUGIN_NAME . '.defaults.aliases, ' . Json::htmlEncode($this->aliases) . ");\n";
         }
         $id = $this->options['id'];
         $js .= '$("#' . $id . '").' . self::PLUGIN_NAME . "(" . $this->_hashVar . ");\n";

@@ -1,10 +1,78 @@
 Yii Framework 2 Change Log
 ==========================
 
-2.0.4 under development
+2.0.6 under development
 -----------------------
 
+- Bug #4763: Fixed display issue with overlapping call stack item on exception display page (cebe)
+- Bug #7305: Logging of Exception objects resulted in failure of the logger i.e. no logs being written (cebe)
+- Bug #7374: Use proper INSERT syntax with default values when no values are specified (nineinchnick)
+- Bug #7707: client-side `trim` validator now passes the trimmed value to subsequent validators (nkovacs)
+- Bug #7764: `\yii\helpers\ArrayHelper::toArray()` wasn't passing `$recursive` to `Arrayable::toArray` (brandonkelly)
+- Bug #8161: Fixed active form `data-method` submit bug when client validation is used (vbelogai)
+- Bug #8322: `yii\behaviors\TimestampBehavior::touch()` now throws an exception if owner is new record (klimov-paul)
+- Bug #8451: `yii\i18n\Formatter` did not allow negative unix timestamps as input for date formatting (cebe)
+- Bug #8483: sequence name in `Schema::getLastInsertId()` was not properly quoted (nineinchnick)
+- Bug #8506: Cleaning of output buffer in `Widget::run()` conflicts with `Pjax` widget which did the cleanup itself (cebe, joester89)
+- Bug #8544: Fixed `yii\db\ActiveRecord` does not updates attribute specified at `optimisticLock()` after save (klimov-paul)
+- Bug #8585: Fixed `yii\helpers\Html::activeTextarea()` does not allow value overriding via options (klimov-paul)
+- Bug #8592: Fixed `yii\db\Command::getRawSql()` unable to parse params specified without colon (':') (klimov-paul)
+- Bug #8593: Fixed `yii\db\ActiveQuery` produces incorrect SQL for aggregations, when `sql` field is set (klimov-paul)
+- Bug #8595: Fixed `yii\rbac\DbManager::checkAccessFromCache()` to check against auth items loaded in cache recursively (achretien, qiangxue)
+- Bug #8549: Fixed `yii\caching\FileCache` doesn't lock cache files when reading (iworker)
+- Bug #8606: Fixed `yii\web\Response::xSendFile()` does not reset format (vyants)
+- Bug #8627: Fixed `yii\db\Migration` produces incorrect results due to table schema caching (klimov-paul)
+- Bug #8661: Fixed `yii.activeForm.js` scrolling to top (nkovacs)
+- Bug #8684: Formatter ignored explicit decimal number settings when a default value is configured (leandrogehlen, cebe)
+- Bug #8772: ActiveQuery failed removing duplicate records after join when the resultset did not contain the pk values e.g. after grouping (cebe)
+- Bug #8844: Added a workaround for an oracle bug when fetching information about table constraints and filtering by CONSTRAINT_TYPE (nidgetgod)
+- Bug #8900: Fixed determine active menu item with url-alias in route `\yii\widgets\Menu::isItemActive()` (demi)
+- Bug #9046: Fixed problem with endless error loop when an error occurred after sending a stream or file download response to the user (cebe)
+- Bug #9059: Fixed PHP Notice in error handler view (dynasource, andrewnester, samdark)
+- Bug #9063: Workaround for MySQL losing table case when adding index (sebathi)
+- Bug #9127, #9128: Fixed MSSQL `QueryBuilder::renameColumn()` and `QueryBuilder::renameTable()` escaping (sitawit)
+- Bug #9161: Fixed `yii\web\Request` ignore `queryParams` when resolve request (zetamen)
+- Bug: Fixed string comparison in `BaseActiveRecord::unlink()` which may result in wrong comparison result for hash valued primary keys starting with `0e` (cebe)
+- Bug: Pass correct action name to `yii\console\Controller::options()` when default action was requested (cebe)
+- Bug: Automatic garbage collection in `yii\caching\FileCache` was not triggered (kidol)
+- Enh #3335: Implemented `SchemaBuilder` (pana1990, vaseninm, samdark)
+- Enh #6043: Specification for 'class' and 'style' in array format added to `yii\helpers\Html` (klimov-paul)
+- Enh #6853: Console application will now register PHP constants for `STDIN`, `STDOUT`, and `STDERR` itself if they are not defined (cebe)
+- Enh #7169: `yii\widgets\ActiveField` now uses corresponding methods for default parts rendering (klimov-paul)
+- Enh #8070: `yii\console\controllers\MessageController` now sorts created messages, even if there is no new one, while saving to PHP file (klimov-paul)
+- Enh #8286: `yii\console\controllers\MessageController` improved allowing extraction of nested translator calls (klimov-paul)
+- Enh #8415: `yii\helpers\Html` allows correct rendering of conditional comments containing `!IE` (salaros, klimov-paul)
+- Enh #8444: Added `yii\widgets\LinkPager::$linkOptions` to allow configuring HTML attributes of the `a` tags (zinzinday)
+- Enh #8486: Added support to automatically set the `maxlength` attribute for `Html::activeTextArea()` and `Html::activePassword()` (klimov-paul)
+- Enh #8566: Added support for 'only' and 'except' options for `yii\web\AssetManager::publish()` (klimov-paul)
+- Enh #8574: Added `yii\console\controllers\MessageController` support .pot file creation (pgaultier)
+- Enh #8625: Added `markUnused` option to `yii\console\controllers\MessageController` (marius7383)
+- Enh #8670: Added support for saving extra fields in session table for `yii\web\DbSession` (klimov-paul)
+- Enh #8671: Extracted `yii\helpers\Html::escapeJsRegularExpression()` method from `yii\validators\RegularExpressionValidator` (silverfire, klimov-paul, samdark, qiangxue)
+- Enh #8903: PostgreSQL `QueryBuilder::createIndex()` can now specify the index method to use (LAV45)
+- Enh #8933: Yii is now able to properly handle HHVM fatal errors (dieend, samdark) 
+- Enh #9011: Allow `yii\widgets\MaskedInput` to produce an input tag of a custom type (TriAnMan)
+- Enh #9038: Write warning to log in case `FileCache` fails to write into file (foccy)
+- Enh #9072: `yii\web\ErrorAction` displays 404 error instead of blank page on direct access (klimov-paul)
+- Enh #9149: Print directory migrationPath in a `yii migrate` command error. (RusAlex)
+- Enh #9177: Added password hash cost setting to Security component (freezy-sk)
+- Enh #9246: Added `yii\web\UrlRule::getParamRules()` (df2)
+- Chg #6354: `ErrorHandler::logException()` will now log the whole exception object instead of only its string representation (cebe)
+- Chg #8556: Extracted `yii\web\User::getAuthManager()` method (samdark)
+- Chg #9181: `yii\helpers\BaseStringHelper::truncateHtml()` is now using `runtime` directory for `HTMLPurifier` cache (webdevsega) 
+
+
+2.0.5 July 11, 2015
+-------------------
+
+- Bug #9070 (CVE-2015-5467): Fixed `ViewAction::resolveViewName()` not to accept `/../` and `/./` (thejahweh, samdark)
+
+
+2.0.4 May 10, 2015
+------------------
+
 - Bug #5042: Use RETURNING for inserts for pgsql and oci to support PKs with a custom default value expression (nineinchnick, klimov-paul)
+- Bug #6234: Fixed wrong table schema information for MSSQL when using multiple schemas (nineinchnick)
 - Bug #6642: Fixed the bug that using confirmation dialog via `data-confirm` in an `ActiveForm` may cause the dialog to appear twice (pana1990, qiangxue)
 - Bug #6871: Fixed the bug that using defaults and hostnames in URL rules may cause an out-of-range index issue (qiangxue)
 - Bug #7036: Fixed `yii\helpers\Html::dropDownList()` overrides label specified at 'groups' option (aktec, klimov-paul)
@@ -38,7 +106,9 @@ Yii Framework 2 Change Log
 - Bug #8165: Fixed `yii\db\ActiveRelationTrait::populateRelation()` fails when `link` refers to string convertable object attribute, like `\MongoId` (klimov-paul)
 - Bug #8231: Configuration of GridView and DetailView where not preserved when used multiple times (cebe, idMolotov)
 - Bug #8273: Fixed `yii\widgets\FragmentCache` when `enabled` is false (nkovacs)
+- Bug #8291: Fixed numeric keys in $_GET transformed to 0-based, if 'pretty URL' enabled (quantum13, klimov-paul)
 - Bug #5053: DateValidator is now more robust against different timezone settings (cebe)
+- Bug (CVE-2015-3397): Added `Json::htmlEncode()` to support safer JSON data encoding in HTML code (samdark, Wojciech Janusz, Tomasz Tokarski)
 - Enh #1468: Added ability to specify hints for model attributes via `attributeHints()` method (klimov-paul)
 - Enh #3376: Added `yii\validators\EachValidator`, which allows validation of the array attributes (klimov-paul)
 - Enh #5053: Added possibility to specify a format and time zone for the `timestampAttribute` of date validator making it fully usable for validating complete timestamps (cebe)

@@ -67,6 +67,23 @@ class SchemaTest extends DatabaseTestCase
         $this->assertEquals($noCacheTable, $cachedTable);
     }
 
+    /**
+     * @depends testSchemaCache
+     */
+    public function testRefreshTableSchema()
+    {
+        /* @var $schema Schema */
+        $schema = $this->getConnection()->schema;
+
+        $schema->db->enableSchemaCache = true;
+        $schema->db->schemaCache = new FileCache();
+        $noCacheTable = $schema->getTableSchema('type', true);
+
+        $schema->refreshTableSchema('type');
+        $refreshedTable = $schema->getTableSchema('type', false);
+        $this->assertFalse($noCacheTable === $refreshedTable);
+    }
+
     public function testCompositeFk()
     {
         /* @var $schema Schema */

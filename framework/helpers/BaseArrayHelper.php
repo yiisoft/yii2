@@ -23,7 +23,7 @@ class BaseArrayHelper
 {
     /**
      * Converts an object or an array of objects into an array.
-     * @param object|array $object the object to be converted into an array
+     * @param object|array|string $object the object to be converted into an array
      * @param array $properties a mapping from object class names to the properties that need to put into the resulting arrays.
      * The properties specified for each class is an array of the following format:
      *
@@ -85,7 +85,7 @@ class BaseArrayHelper
                 }
             }
             if ($object instanceof Arrayable) {
-                $result = $object->toArray();
+                $result = $object->toArray([], [], $recursive);
             } else {
                 $result = [];
                 foreach ($object as $key => $value) {
@@ -119,7 +119,7 @@ class BaseArrayHelper
         while (!empty($args)) {
             $next = array_shift($args);
             foreach ($next as $k => $v) {
-                if (is_integer($k)) {
+                if (is_int($k)) {
                     if (isset($res[$k])) {
                         $res[] = $v;
                     } else {
@@ -577,7 +577,7 @@ class BaseArrayHelper
             return array_keys($array) === range(0, count($array) - 1);
         } else {
             foreach ($array as $key => $value) {
-                if (!is_integer($key)) {
+                if (!is_int($key)) {
                     return false;
                 }
             }

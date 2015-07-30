@@ -30,12 +30,14 @@ interface AuthInterface
      * @throws UnauthorizedHttpException if authentication information is provided but is invalid.
      */
     public function authenticate($user, $request, $response);
+
     /**
      * Generates challenges upon authentication failure.
      * For example, some appropriate HTTP headers may be generated.
      * @param Response $response
      */
     public function challenge($response);
+
     /**
      * Handles authentication failure.
      * The implementation should normally throw UnauthorizedHttpException to indicate authentication failure.

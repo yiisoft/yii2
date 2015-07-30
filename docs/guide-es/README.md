@@ -147,7 +147,7 @@ Servicios Web RESTful
 Herramientas de Desarrollo
 --------------------------
 
-* **TBD** [Depurador y Barra de Herramientas de Depuración](tool-debugger.md)
+* [Depurador y Barra de Herramientas de Depuración](https://github.com/yiisoft/yii2-debug/blob/master/docs/guide-es/README.md)
 * **TBD** [Generación de códigos con Gii](tool-gii.md)
 * **TBD** [Generación de documentación de API](tool-api-doc.md)
 
@@ -189,8 +189,8 @@ Widgets
 * Menu: **TBD** link to demo page
 * LinkPager: **TBD** link to demo page
 * LinkSorter: **TBD** link to demo page
-* **TBD** [Bootstrap Widgets](bootstrap-widgets.md)
-* **TBD** [Jquery UI Widgets](jui-widgets.md)
+* [Bootstrap Widgets](https://github.com/yiisoft/yii2-bootstrap/blob/master/docs/guide-es/README.md)
+* [Jquery UI Widgets](https://github.com/yiisoft/yii2-jui/blob/master/docs/guide-es/README.md)
 
 
 Clases auxiliares

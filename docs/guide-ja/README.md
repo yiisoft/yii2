@@ -91,7 +91,7 @@ All Rights Reserved.
 * [入力を検証する](input-validation.md)
 * [ファイルをアップロードする](input-file-upload.md)
 * [表形式インプットのデータ収集](input-tabular-input.md)
-* [複数モデルのデータ取得](input-multiple-models.md)
+* [複数のモデルのデータを取得する](input-multiple-models.md)
 
 
 データの表示
@@ -192,6 +192,6 @@ RESTful ウェブサービス
 ------
 
 * [概要](helper-overview.md)
-* [ArrayHelper](helper-array.md)
-* [Html](helper-html.md)
-* [Url](helper-url.md)
+* [配列ヘルパ](helper-array.md)
+* [Html ヘルパ](helper-html.md)
+* [Url ヘルパ](helper-url.md)

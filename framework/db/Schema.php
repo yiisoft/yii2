@@ -22,6 +22,8 @@ use yii\caching\TagDependency;
  * @property string $lastInsertID The row ID of the last row inserted, or the last value retrieved from the
  * sequence object. This property is read-only.
  * @property QueryBuilder $queryBuilder The query builder for this connection. This property is read-only.
+ * @property string[] $schemaNames All schema names in the database, except system schemas. This property is
+ * read-only.
  * @property string[] $tableNames All table names in the database. This property is read-only.
  * @property TableSchema[] $tableSchemas The metadata for all tables in the database. Each array element is an
  * instance of [[TableSchema]] or its child class. This property is read-only.
@@ -35,6 +37,8 @@ use yii\caching\TagDependency;
  */
 abstract class Schema extends Object
 {
+    use SchemaBuilderTrait;
+
     /**
      * The following are the supported abstract column data types.
      */
@@ -279,6 +283,24 @@ abstract class Schema extends Object
     }
 
     /**
+     * Refreshes the particular table schema.
+     * This method cleans up cached table schema so that it can be re-created later
+     * to reflect the database schema change.
+     * @param string $name table name.
+     * @since 2.0.5
+     */
+    public function refreshTableSchema($name)
+    {
+        unset($this->_tables[$name]);
+        $this->_tableNames = [];
+        /* @var $cache Cache */
+        $cache = is_string($this->db->schemaCache) ? Yii::$app->get($this->db->schemaCache, false) : $this->db->schemaCache;
+        if ($this->db->enableSchemaCache && $cache instanceof Cache) {
+            $cache->delete($this->getCacheKey($name));
+        }
+    }
+
+    /**
      * Creates a query builder for the database.
      * This method may be overridden by child classes to create a DBMS-specific query builder.
      * @return QueryBuilder query builder instance
@@ -346,7 +368,7 @@ abstract class Schema extends Object
     public function getLastInsertID($sequenceName = '')
     {
         if ($this->db->isActive) {
-            return $this->db->pdo->lastInsertId($sequenceName === '' ? null : $this->quoteSimpleTableName($sequenceName));
+            return $this->db->pdo->lastInsertId($sequenceName === '' ? null : $this->quoteTableName($sequenceName));
         } else {
             throw new InvalidCallException('DB Connection is not active.');
         }

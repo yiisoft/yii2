@@ -1,7 +1,7 @@
 Entry Scripts
 =============
 
-Entry scripts are the first chain in the application bootstrapping process. An application (either
+Entry scripts are the first step in the application bootstrapping process. An application (either
 Web application or console application) has a single entry script. End users make requests to
 entry scripts which instantiate application instances and forward the requests to them.
 
@@ -63,10 +63,6 @@ Similarly, the following is the code for the entry script of a console applicati
  */
 
 defined('YII_DEBUG') or define('YII_DEBUG', true);
-
-// fcgi doesn't have STDIN and STDOUT defined by default
-defined('STDIN') or define('STDIN', fopen('php://stdin', 'r'));
-defined('STDOUT') or define('STDOUT', fopen('php://stdout', 'w'));
 
 // register Composer autoloader
 require(__DIR__ . '/vendor/autoload.php');

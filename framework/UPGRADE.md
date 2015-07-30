@@ -5,8 +5,23 @@ Upgrading Instructions for Yii Framework v2
 
 The following upgrading instructions are cumulative. That is,
 if you want to upgrade from version A to version C and there is
-version B between A and C, you need to following the instructions
+version B between A and C, you need to follow the instructions
 for both A and B.
+
+
+Upgrade from Yii 2.0.5
+----------------------
+  
+* The signature of the following methods in `yii\console\controllers\MessageController` has changed. They have an extra parameter `$markUnused`.
+  - `saveMessagesToDb($messages, $db, $sourceMessageTable, $messageTable, $removeUnused, $languages, $markUnused)`
+  - `saveMessagesToPHP($messages, $dirName, $overwrite, $removeUnused, $sort, $markUnused)`
+  - `saveMessagesCategoryToPHP($messages, $fileName, $overwrite, $removeUnused, $sort, $category, $markUnused)`
+  - `saveMessagesToPO($messages, $dirName, $overwrite, $removeUnused, $sort, $catalog, $markUnused)`
+
+Upgrade from Yii 2.0.4
+----------------------
+
+Upgrading from 2.0.4 to 2.0.5 does not require any changes.
 
 Upgrade from Yii 2.0.3
 ----------------------
@@ -82,7 +97,7 @@ Upgrade from Yii 2.0 Beta
   the composer-asset-plugin, *before* you update your project:
 
   ```
-  php composer.phar global require "fxp/composer-asset-plugin:1.0.0"
+  php composer.phar global require "fxp/composer-asset-plugin:~1.0.0"
   ```
 
   You also need to add the following code to your project's `composer.json` file:
