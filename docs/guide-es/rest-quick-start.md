@@ -23,7 +23,7 @@ Supongamos que deseas exponer los datos de los usuarios vía APIs RESTful. Los d
 y ya tienes creado la clase [[yii\db\ActiveRecord|ActiveRecord]] `app\models\User` para acceder a los datos del usuario.
 
 
-## Creando un controlador <a name="creating-controller"></a>
+## Creando un controlador <span id="creating-controller"></span>
 
 Primero, crea una clase controladora `app\controllers\UserController` como la siguiente,
 
@@ -42,7 +42,7 @@ La clase controladora extiende de [[yii\rest\ActiveController]]. Especificado po
 como `app\models\User`, el controlador sabe que modelo puede ser usado para recoger y manipular sus datos.
 
 
-## Configurando las reglas de las URL <a name="configuring-url-rules"></a>
+## Configurando las reglas de las URL <span id="configuring-url-rules"></span>
 
 A continuación, modifica la configuración del componente `urlManager` en la configuración de tu aplicación:
 
@@ -61,7 +61,7 @@ La configuración anterior principalmente añade una regla URL para el controlad
 que los datos de user pueden ser accedidos y manipulados con URLs amigables y verbos HTTP significativos.
 
 
-## Habilitando entradas JSON <a name="enabling-json-input"></a>
+## Habilitando entradas JSON <span id="enabling-json-input"></span>
 
 Para permitir que la API acepte datos de entrada con formato JSON, configura la propiedad [[yii\web\Request::$parsers|parsers]]
 del componente de aplicación `request` para usar [[yii\web\JsonParser]] para entradas JSON:
@@ -78,7 +78,7 @@ del componente de aplicación `request` para usar [[yii\web\JsonParser]] para en
   `application/x-www-form-urlencoded` y `multipart/form-data` como formatos de entrada.
 
 
-## Probándolo <a name="trying-it-out"></a>
+## Probándolo <span id="trying-it-out"></span>
 
 Con la mínima cantidad de esfuerzo, tienes ya finalizado tu tarea de crear las APIs RESTful
 para acceder a los datos de user. Las APIs que tienes creado incluyen:
@@ -188,7 +188,7 @@ Por ejemplo, la URL `http://localhost/users?fields=id,email` sólo devolverá lo
 > Puedes y deberías filtrar estos campos como se describe en la sección [Response Formatting](rest-response-formatting.md).
 
 
-## Resumen <a name="summary"></a>
+## Resumen <span id="summary"></span>
 
 Utilizando el framework Yii API RESTful, implementa un punto final API en términos de una acción de un controlador, y utiliza
 un controlador para organizar las acciones que implementan los puntos finales para un sólo tipo de recurso.

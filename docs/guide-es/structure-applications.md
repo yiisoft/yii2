@@ -14,7 +14,7 @@ Hay dos tipos de aplicaciones: [[yii\web\Application|aplicaciones Web]] y
 Web requests mientras que la última maneja requests (peticiones) de la línea de comandos.
 
 
-## Configuraciones de las Aplicaciones <a name="application-configurations"></a>
+## Configuraciones de las Aplicaciones <span id="application-configurations"></span>
 
 Cuando un [script de entrada](structure-entry-scripts.md) crea una aplicación, cargará
 una [configuración](concept-configurations.md) y la aplicará a la aplicación, como se muestra a continuación:
@@ -36,7 +36,7 @@ suelen ser complejas, son usualmente guardadas en [archivos de configuración](c
 como en el archivo `web.php` del ejemplo anterior.
 
 
-## Propiedades de la Aplicación <a name="application-properties"></a>
+## Propiedades de la Aplicación <span id="application-properties"></span>
 
 Hay muchas propiedades importantes en la aplicación que deberían configurarse en en la configuración de la aplicación.
 Estas propiedades suelen describir el entorno en el cual la aplicación está corriendo.
@@ -44,20 +44,20 @@ Por ejemplo, las aplicaciones necesitan saber cómo cargar [controladores](struc
 dónde guardar archivos temporales, etc. A continuación, resumiremos esas propiedades.
 
 
-### Propiedades Requeridas <a name="required-properties"></a>
+### Propiedades Requeridas <span id="required-properties"></span>
 
 En cualquier aplicación, debes configurar al menos dos propiedades: [[yii\base\Application::id|id]]
 y [[yii\base\Application::basePath|basePath]].
 
 
-#### [[yii\base\Application::id|id]] <a name="id"></a>
+#### [[yii\base\Application::id|id]] <span id="id"></span>
 
 La propiedad [[yii\base\Application::id|id]] especifica un ID único que diferencia una aplicación de otras.
 Es mayormente utilizada a nivel programación. A pesar de que no es un requerimiento, para una mejor interoperabilidad,
 se recomienda utilizar sólo caracteres alfanuméricos.
 
 
-#### [[yii\base\Application::basePath|basePath]] <a name="basePath"></a>
+#### [[yii\base\Application::basePath|basePath]] <span id="basePath"></span>
 
 La propiedad [[yii\base\Application::basePath|basePath]] especifica el directorio raíz de una aplicación.
 Es el directorio que alberga todos los archivos protegidos de un sistema. Bajo este directorio,
@@ -73,13 +73,13 @@ La propiedad [[yii\base\Application::basePath|basePath]] es utilizada a menudo d
 Rutas derivadas pueden ser entonces creadas a partir de este alias (ej. `@app/runtime` para referirse al directorio `runtime`).
 
 
-### Propiedades Importantes <a name="important-properties"></a>
+### Propiedades Importantes <span id="important-properties"></span>
 
 Las propiedades descritas en esta subsección a menudo necesita ser configurada porque difieren entre las
 diferentes aplicaciones.
 
 
-#### [[yii\base\Application::aliases|aliases]] <a name="aliases"></a>
+#### [[yii\base\Application::aliases|aliases]] <span id="aliases"></span>
 
 Esta propiedad te permite definir un grupo de [alias](concept-aliases.md) en términos de un array (matriz).
 Las claves del array son los nombres de los alias, y los valores su correspondiente definición.
@@ -98,7 +98,7 @@ Esta propiedad está provista de tal manera que puedas definir alias en término
 en vez de llamadas al método [[Yii::setAlias()]].
 
 
-#### [[yii\base\Application::bootstrap|bootstrap]] <a name="bootstrap"></a>
+#### [[yii\base\Application::bootstrap|bootstrap]] <span id="bootstrap"></span>
 
 Esta es una propiedad importante. Te permite definir un array de los componentes que deben ejecutarse
 durante el [[yii\base\Application::bootstrap()|proceso de `bootstrapping`]] de la aplicación.
@@ -154,7 +154,7 @@ if (YII_ENV_DEV) {
   por cada request, se necesita correr el mismo grupo de componentes. Por lo tanto, utiliza componentes `bootstrap` con criterio.
 
 
-#### [[yii\web\Application::catchAll|catchAll]] <a name="catchAll"></a>
+#### [[yii\web\Application::catchAll|catchAll]] <span id="catchAll"></span>
 
 Esta propiedad está solamente soportada por [[yii\web\Application|aplicaciones Web]]. Especifica
 la [acción de controlador](structure-controllers.md) que debería manejar todos los requests (peticiones) del usuario.
@@ -176,7 +176,7 @@ Por ejemplo:
 ```
 
 
-#### [[yii\base\Application::components|components]] <a name="components"></a>
+#### [[yii\base\Application::components|components]] <span id="components"></span>
 
 Esta es la propiedad más importante. Te permite registrar una lista de componentes llamados [componentes de aplicación](#structure-application-components.md)
 que puedes utilizar en otras partes de tu aplicación. Por ejemplo:
@@ -204,7 +204,7 @@ la expresión `\Yii::$app->ComponentID`.
 Por favor, lee la sección [Componentes de la Aplicación](structure-application-components.md) para mayor detalle.
 
 
-#### [[yii\base\Application::controllerMap|controllerMap]] <a name="controllerMap"></a>
+#### [[yii\base\Application::controllerMap|controllerMap]] <span id="controllerMap"></span>
 
 Esta propiedad te permite mapear un ID de controlador a una clase de controlador arbitraria. Por defecto, Yii mapea
 ID de controladores a clases de controladores basado en una [convención](#controllerNamespace) (ej. el ID `post` será mapeado
@@ -230,7 +230,7 @@ Las claves de este array representan los ID de los controladores, mientras que l
 los nombres de clase de dichos controladores o una [configuración](concept-configurations.md).
 
 
-#### [[yii\base\Application::controllerNamespace|controllerNamespace]] <a name="controllerNamespace"></a>
+#### [[yii\base\Application::controllerNamespace|controllerNamespace]] <span id="controllerNamespace"></span>
 
 Esta propiedad especifica el `namespace` bajo el cual las clases de los controladores deben ser ubicados. Por defecto es
 `app\controllers`. Si el ID es `post`, por convención el controlador correspondiente (sin
@@ -246,7 +246,7 @@ un error "Page Not Found" ("Página no Encontrada") cuando accedas a la aplicaci
 En caso de que quieras romper con la convención cómo se comenta arriba, puedes configurar la propiedad [controllerMap](#controllerMap).
 
 
-#### [[yii\base\Application::language|language]] <a name="language"></a>
+#### [[yii\base\Application::language|language]] <span id="language"></span>
 
 Esta propiedad especifica el idioma en el cual la aplicación debería mostrar el contenido a los usuarios.
 El valor por defecto de esta propiedad es `en`, referido a English. Deberías configurar esta propiedad
@@ -263,7 +263,7 @@ Por ejemplo, `en` se refiere a English, mientras que `en-US` se refiere a Englis
 Se pueden encontrar más detalles de este aspecto en la sección [Internacionalización](tutorial-i18n.md).
 
 
-#### [[yii\base\Application::modules|modules]] <a name="modules"></a>
+#### [[yii\base\Application::modules|modules]] <span id="modules"></span>
 
 Esta propiedad especifica los [módulos](structure-modules.md) que contiene la aplicación.
 
@@ -288,7 +288,7 @@ los IDs de los módulos. Por ejemplo:
 Por favor consulta la sección [Módulos](structure-modules.md) para más detalles.
 
 
-#### [[yii\base\Application::name|name]] <a name="name"></a>
+#### [[yii\base\Application::name|name]] <span id="name"></span>
 
 Esta propiedad especifica el nombre de la aplicación que será mostrado a los usuarios. Al contrario de
 [[yii\base\Application::id|id]], que debe tomar un valor único, el valor de esta propiedad existe principalmente
@@ -297,7 +297,7 @@ para propósito de visualización y no tiene porqué ser única.
 No siempre necesitas configurar esta propiedad si en tu aplicación no va a ser utilizada.
 
 
-#### [[yii\base\Application::params|params]] <a name="params"></a>
+#### [[yii\base\Application::params|params]] <span id="params"></span>
 
 Esta propiedad especifica un array con parámetros accesibles desde cualquier lugar de tu aplicación.
 En vez de usar números y cadenas fijas por todos lados en tu código, es una buena práctica definirlos como
@@ -323,7 +323,7 @@ Más adelante, si decides cambiar el tamaño de las miniaturas, sólo necesitas 
 sin necesidad de tocar el código que lo utiliza.
 
 
-#### [[yii\base\Application::sourceLanguage|sourceLanguage]] <a name="sourceLanguage"></a>
+#### [[yii\base\Application::sourceLanguage|sourceLanguage]] <span id="sourceLanguage"></span>
 
 Esta propiedad especifica el idioma en el cual la aplicación está escrita. El valor por defecto es `'en-US'`,
 referido a English (United States). Deberías configurar esta propiedad si el contenido de texto en tu código no está en inglés.
@@ -334,7 +334,7 @@ Por ejemplo, `en` se refiere a English, mientras que `en-US` se refiere a Englis
 Puedes encontrar más detalles de esta propiedad en la sección [Internacionalización](tutorial-i18n.md).
 
 
-#### [[yii\base\Application::timeZone|timeZone]] <a name="timeZone"></a>
+#### [[yii\base\Application::timeZone|timeZone]] <span id="timeZone"></span>
 
 Esta propiedad es provista como una forma alternativa de definir el `time zone` de PHP por defecto en tiempo de ejecución.
 Configurando esta propiedad, escencialmente estás llamando a la función de PHP [date_default_timezone_set()](http://php.net/manual/es/function.date-default-timezone-set.php).
@@ -347,25 +347,25 @@ Por ejemplo:
 ```
 
 
-#### [[yii\base\Application::version|version]] <a name="version"></a>
+#### [[yii\base\Application::version|version]] <span id="version"></span>
 
 Esta propiedad especifica la versión de la aplicación. Es por defecto `'1.0'`. No hay total necesidad de configurarla
 si tu no la usarás en tu código.
 
 
-### Propiedades Útiles <a name="useful-properties"></a>
+### Propiedades Útiles <span id="useful-properties"></span>
 
 Las propiedades especificadas en esta sub-sección no son configuradas normalmente ya que sus valores por defecto
 estipulan convenciones comunes. De cualquier modo, aún puedes configurarlas en caso de que quieras romper con la convención.
 
 
-#### [[yii\base\Application::charset|charset]] <a name="charset"></a>
+#### [[yii\base\Application::charset|charset]] <span id="charset"></span>
 
 Esta propiedad especifica el `charset` que la aplicación utiliza. El valor por defecto es `'UTF-8'`, que debería ser mantenido
 tal cual para la mayoría de las aplicaciones a menos que estés trabajando con sistemas legados que utilizan muchos datos no-unicode.
 
 
-#### [[yii\base\Application::defaultRoute|defaultRoute]] <a name="defaultRoute"></a>
+#### [[yii\base\Application::defaultRoute|defaultRoute]] <span id="defaultRoute"></span>
 
 Esta propiedad especifica la [ruta](runtime-routing.md) que una aplicación debería utilizar si el `request`
 no especifica una. La ruta puede consistir el ID de un sub-módulo, el ID de un controlador, y/o el ID de una acción.
@@ -381,12 +381,12 @@ Para [yii\console\Application|aplicaciones de consola], el valor por defecto es 
 sin proveer ningún argumento, mostrará la información de ayuda.
 
 
-#### [[yii\base\Application::extensions|extensions]] <a name="extensions"></a>
+#### [[yii\base\Application::extensions|extensions]] <span id="extensions"></span>
 
 Esta propiedad especifica la lista de [extensiones](structure-extensions.md) que se encuentran instaladas y son utilizadas
 por la aplicación.
 Por defecto, tomará el array devuelto por el archivo `@vendor/yiisoft/extensions.php`. El archivo `extensions.php`
-es generado y mantenido automáticamente cuando utilizas [Composer](http://getcomposer.org) para instalar extensiones.
+es generado y mantenido automáticamente cuando utilizas [Composer](https://getcomposer.org) para instalar extensiones.
 Por lo tanto, en la mayoría de los casos no necesitas configurarla.
 
 En el caso especial de que quieras mantener las extensiones a mano, puedes configurar la propiedad como se muestra a continuación:
@@ -416,7 +416,7 @@ un elemento `bootstrap` puede ser especificado con un nombre de clase o un array
 Una extensión también puede definir algunos [alias](concept-aliases.md).
 
 
-#### [[yii\base\Application::layout|layout]] <a name="layout"></a>
+#### [[yii\base\Application::layout|layout]] <span id="layout"></span>
 
 Esta propiedad especifica el valor del `layout` por defecto que será utilizado al renderizar una [vista](structure-views.md).
 El valor por defecto es `'main'`, y se refiere al archivo `main.php` bajo el [`layout path`](#layoutPath) definido.
@@ -427,7 +427,7 @@ Puedes configurar esta propiedad con el valor `false` si quieres desactivar el `
 caso muy raro.
 
 
-#### [[yii\base\Application::layoutPath|layoutPath]] <a name="layoutPath"></a>
+#### [[yii\base\Application::layoutPath|layoutPath]] <span id="layoutPath"></span>
 
 Esta propiedad especifica el lugar por defecto donde deben buscarse los archivos `layout`. El valor por defecto
 es el sub-directorio `layouts` bajo el [`view path`](#viewPath). Si el [`view path`](#viewPath) usa su valor por defecto,
@@ -436,7 +436,7 @@ el `layout path` puede ser representado con el alias `@app/views/layouts`.
 Puedes configurarlo como un directorio o utilizar un [alias](concept-aliases.md).
 
 
-#### [[yii\base\Application::runtimePath|runtimePath]] <a name="runtimePath"></a>
+#### [[yii\base\Application::runtimePath|runtimePath]] <span id="runtimePath"></span>
 
 Esta propiedad especifica dónde serán guardados los archivos temporales, como archivos de log y de cache, pueden ser generados.
 El valor por defecto de esta propiedad es el alias `@app/runtime`.
@@ -448,15 +448,15 @@ de ser accedido por usuarios finales, ya que los archivos generados pueden tener
 Para simplificar el acceso a este directorio, Yii trae predefinido el alias `@runtime` para él.
 
 
-#### [[yii\base\Application::viewPath|viewPath]] <a name="viewPath"></a>
+#### [[yii\base\Application::viewPath|viewPath]] <span id="viewPath"></span>
 
 Esta propiedad especifica dónde están ubicados los archivos de la vista. El valor por defecto de esta propiedad está
 representado por el alias `@app/views`. Puedes configurarlo como un directorio o utilizar un [alias](concept-aliases.md).
 
 
-#### [[yii\base\Application::vendorPath|vendorPath]] <a name="vendorPath"></a>
+#### [[yii\base\Application::vendorPath|vendorPath]] <span id="vendorPath"></span>
 
-Esta propiedad especifica el directorio `vendor` que maneja [Composer](http://getcomposer.org). Contiene
+Esta propiedad especifica el directorio `vendor` que maneja [Composer](https://getcomposer.org). Contiene
 todas las librerías de terceros utilizadas por tu aplicación, incluyendo el núcleo de Yii. Su valor por defecto
 está representado por el alias `@app/vendor`.
 
@@ -466,14 +466,14 @@ asegúrate de ajustar la configuración de Composer en concordancia.
 Para simplificar el acceso a esta ruta, Yii trae predefinido el alias `@vendor`.
 
 
-#### [[yii\console\Application::enableCoreCommands|enableCoreCommands]] <a name="enableCoreCommands"></a>
+#### [[yii\console\Application::enableCoreCommands|enableCoreCommands]] <span id="enableCoreCommands"></span>
 
 Esta propiedad está sólo soportada por [[yii\console\Application|aplicaciones de consola]].
 Especifica si los comandos de consola incluidos en Yii deberían estar habilitados o no.
 Por defecto está definido como `true`.
 
 
-## Eventos de la Aplicación <a name="application-events"></a>
+## Eventos de la Aplicación <span id="application-events"></span>
 
 Una aplicación dispara varios eventos durante su ciclo de vida al manejar un `request`. Puedes conectar
 manejadores a dichos eventos en la configuración de la aplicación como se muestra a continuación:
@@ -497,7 +497,7 @@ después de que la instancia de la aplicación es creada. Por ejemplo:
 });
 ```
 
-### [[yii\base\Application::EVENT_BEFORE_REQUEST|EVENT_BEFORE_REQUEST]] <a name="beforeRequest"></a>
+### [[yii\base\Application::EVENT_BEFORE_REQUEST|EVENT_BEFORE_REQUEST]] <span id="beforeRequest"></span>
 
 Este evento es disparado *before* (antes) de que la aplicación maneje el `request`. El nombre del evento es `beforeRequest`.
 
@@ -507,7 +507,7 @@ Por ejemplo, en el manejador del evento, podrías definir dinámicamente la prop
 basada en algunos parámetros.
 
 
-### [[yii\base\Application::EVENT_BEFORE_REQUEST|EVENT_AFTER_REQUEST]] <a name="afterRequest"></a>
+### [[yii\base\Application::EVENT_BEFORE_REQUEST|EVENT_AFTER_REQUEST]] <span id="afterRequest"></span>
 
 Este evento es disparado *after* (después) de que una aplicación finaliza el manejo de un `request` pero *before* (antes) de enviar el `response` (respuesta).
 El nombre del evento es `afterRequest`.
@@ -519,7 +519,7 @@ Ten en cuenta que el componente [[yii\web\Response|response]] también dispara a
 a los usuarios finales. Estos eventos son disparados *after* (después) de este evento.
 
 
-### [[yii\base\Application::EVENT_BEFORE_REQUEST|EVENT_BEFORE_ACTION]] <a name="beforeAction"></a>
+### [[yii\base\Application::EVENT_BEFORE_REQUEST|EVENT_BEFORE_ACTION]] <span id="beforeAction"></span>
 
 Este evento es disparado *before* (antes) de ejecutar cualquier [acción de controlador](structure-controllers.md).
 El nombre de este evento es `beforeAction`.
@@ -545,7 +545,7 @@ seguidos por módulos (si los hubiera), y finalmente controladores. Si un maneja
 como `false`, todos los eventos siguientes NO serán disparados.
 
 
-### [[yii\base\Application::EVENT_BEFORE_REQUEST|EVENT_AFTER_ACTION]] <a name="afterAction"></a>
+### [[yii\base\Application::EVENT_BEFORE_REQUEST|EVENT_AFTER_ACTION]] <span id="afterAction"></span>
 
 Este evento es disparado *after* (después) de ejecutar cualquier [acción de controlador](structure-controllers.md).
 El nombre de este evento es `afterAction`.
@@ -571,7 +571,7 @@ que los de `beforeAction`. Esto quiere decir que los controladores son los prime
 seguido por módulos (si los hubiera), y finalmente aplicaciones.
 
 
-## Ciclo de Vida de una Aplicación <a name="application-lifecycle"></a>
+## Ciclo de Vida de una Aplicación <span id="application-lifecycle"></span>
 
 Cuando un [script de entrada](structure-entry-scripts.md) está siendo ejecutado para manejar un `request`,
 una aplicación experimenta el siguiente ciclo de vida:

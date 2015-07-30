@@ -15,7 +15,7 @@ A través de este tutorial, aprenderás
 * Cómo construir un formulario HTML en una [vista](structure-views.md).
 
 
-Creando un Modelo <a name="creating-model"></a>
+Creando un Modelo <span id="creating-model"></span>
 -----------------
 
 Para representar los datos ingresados por un usuario, crea una clase modelo `EntryForm` cómo se muestra abajo y
@@ -60,7 +60,7 @@ de los datos se mostrará en la propiedad [[yii\base\Model::hasErrors|hasErrors]
 [[yii\base\Model::getErrors|errors]] puedes aprender cuales son los errores de validación que tiene el modelo.
 
 
-Creando una Acción <a name="creating-action"></a>
+Creando una Acción <span id="creating-action"></span>
 ------------------
 
 Luego, crea una acción `entry` en el controlador `site`, como lo hiciste en la sección anterior.
@@ -112,7 +112,7 @@ mostrada, y mostrará el formulario HTML junto con los mensajes de error de vali
   En el código de arriba, el componente `request` es utilizado para acceder los datos `$_POST`.
 
 
-Creando Vistas <a name="creating-views"></a>
+Creando Vistas <span id="creating-views"></span>
 --------------
 
 Finalmente, crea dos vistas llamadas `entry-confirm` y `entry` que sean mostradas por la acción `entry`,
@@ -160,7 +160,7 @@ y el segundo del dato "email". Después de los campos de input, el método [[yii
 es llamado para general el botón de submit (enviar).
 
 
-Probándolo <a name="trying-it-out"></a>
+Probándolo <span id="trying-it-out"></span>
 ----------
 
 Para ver cómo funciona, utiliza tu navegador para ir al siguiente URL:
@@ -182,7 +182,7 @@ mostrando los datos que acabas de ingresar.
 
 
 
-### Magia Explicada <a name="magic-explained"></a>
+### Magia Explicada <span id="magic-explained"></span>
 
 Te estarás preguntando cómo funciona toda esa automatización del formulario HTML, porque parece casi mágico que pueda 
 mostrar una etiqueta para cada campo de input y mostrar los mensajes de error si no ingresas los datos correctamente
@@ -208,7 +208,7 @@ el siguiente código:
   código de tus vistas en widgets reutilizables para simplificar el desarrollo de las vistas en un futuro.
 
 
-Resumen <a name="summary"></a>
+Resumen <span id="summary"></span>
 -------
 
 En esta sección, has tocado cada parte del patrón de diseño MVC. Ahora has aprendido

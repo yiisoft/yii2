@@ -1,7 +1,7 @@
 Autocarga de clases
 ===================
 
-Yii depende del [mecanismo de autocarga de clases](http://www.php.net/manual/en/language.oop5.autoload.php) para localizar
+Yii depende del [mecanismo de autocarga de clases](http://www.php.net/manual/es/language.oop5.autoload.php) para localizar
 e incluir los archivos de las clases requiridas. Proporciona un cargador de clases de alto rendimiento que cumple con el
 [estandard PSR-4](https://github.com/php-fig/fig-standards/blob/master/proposed/psr-4-autoloader/psr-4-autoloader.md).
 El cargador se instala cuando incluyes el archivo `Yii.php`.
@@ -10,7 +10,7 @@ El cargador se instala cuando incluyes el archivo `Yii.php`.
   ten en cuenta que el contenido que describimos aquí también se aplica a la autocarga de interfaces y rasgos (Traits).
 
 
-Usando el Autocargador de Yii <a name="using-yii-autoloader"></a>
+Usando el Autocargador de Yii <span id="using-yii-autoloader"></span>
 -----------------------------
 
 Para utilizar el cargador automático de clases de Yii, deberías seguir dos reglas básicas cuando desarrolles y nombres tus
@@ -40,7 +40,7 @@ poner las clases `front-end` bajo el espacio de nombres `frontend` mientras que 
 `backend`. Esto permitirá que estas clases sean automaticamente cargadas por el autocargador de Yii.
 
 
-Mapa de Clases <a name="class-map"></a>
+Mapa de Clases <span id="class-map"></span>
 --------------
 
 El autocargador de clases de Yii soporta el *mapa de clases*, que mapea nombres de clases to sus correpondientes rutas de
@@ -59,7 +59,7 @@ clases en el proceso [bootstrapping](runtime-bootstrapping.md) de la aplicación
 antes de que tus clases sean usadas.
 
 
-Usando otros Autocargadores <a name="using-other-autoloaders"></a>
+Usando otros Autocargadores <span id="using-other-autoloaders"></span>
 ---------------------------
 
 Debido a que Yii incluye Composer como un gestor de dependencias y extensions, es recomendado que también instales el
@@ -85,7 +85,7 @@ ser autocargables.
   incluirlo en tu [script de entrada](structure-entry-scripts.md).
 
 
-Carga Automática de Clases de Extensiones <a name="autoloading-extension-classes"></a>
+Carga Automática de Clases de Extensiones <span id="autoloading-extension-classes"></span>
 -----------------------------------------
 
 El autocargador de Yii es capaz de autocargar clases de [extensiones](structure-extensions.md). El único requirimiento es

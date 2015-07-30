@@ -59,7 +59,7 @@ abstract class BaseMigrateController extends Controller
      * This method is invoked right before an action is to be executed (after all possible filters.)
      * It checks the existence of the [[migrationPath]].
      * @param \yii\base\Action $action the action to be executed.
-     * @throws Exception if db component isn't configured
+     * @throws Exception if directory specified in migrationPath doesn't exist and action isn't "create".
      * @return boolean whether the action should continue to be executed.
      */
     public function beforeAction($action)
@@ -67,6 +67,9 @@ abstract class BaseMigrateController extends Controller
         if (parent::beforeAction($action)) {
             $path = Yii::getAlias($this->migrationPath);
             if (!is_dir($path)) {
+                if ($action->id !== 'create') {
+                    throw new Exception('Migration failed. Directory specified in migrationPath doesn\'t exist.');
+                }
                 FileHelper::createDirectory($path);
             }
             $this->migrationPath = $path;
@@ -615,7 +618,7 @@ abstract class BaseMigrateController extends Controller
                 continue;
             }
             $path = $this->migrationPath . DIRECTORY_SEPARATOR . $file;
-            if (preg_match('/^(m(\d{6}_\d{6})_.*?)\.php$/', $file, $matches) && is_file($path) && !isset($applied[$matches[2]])) {
+            if (preg_match('/^(m(\d{6}_\d{6})_.*?)\.php$/', $file, $matches) && !isset($applied[$matches[2]]) && is_file($path)) {
                 $migrations[] = $matches[1];
             }
         }

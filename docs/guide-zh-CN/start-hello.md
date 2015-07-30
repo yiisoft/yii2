@@ -13,7 +13,7 @@
 3. 以及一个应用如何分派请求给[操作](structure-controllers.md#creating-actions)。
 
 
-创建操作 <a name="creating-action"></a>
+创建操作 <span id="creating-action"></span>
 ------------------
 
 为了 “Hello”，需要创建一个 `say` [操作](structure-controllers.md#creating-actions)，从请求中接收 `message` 参数并显示给最终用户。如果请求没有提供 `message` 参数，操作将显示默认参数 “Hello”。
@@ -49,7 +49,7 @@ class SiteController extends Controller
 在操作方法中，[[yii\web\Controller::render()|render()]] 被用来渲染一个名为 `say` 的[视图](structure-views.md)文件。 `message` 参数也被传入视图，这样就可以在里面使用。操作方法会返回渲染结果。结果会被应用接收并显示给最终用户的浏览器（作为整页 HTML 的一部分）。
 
 
-创建视图 <a name="creating-view"></a>
+创建视图 <span id="creating-view"></span>
 ---------------
 
 [视图](structure-views.md)是你用来生成响应内容的脚本。为了说 “Hello”，你需要创建一个 `say` 视图，以便显示从操作方法中传来的 `message` 参数。
@@ -68,7 +68,7 @@ use yii\helpers\Html;
 当然了，你大概会在 `say` 视图里放入更多内容。内容可以由 HTML 标签，纯文本，甚至 PHP 语句组成。实际上 `say` 视图就是一个由 [[yii\web\Controller::render()|render()]] 执行的 PHP 脚本。视图脚本输出的内容将会作为响应结果返回给应用。应用将依次输出结果给最终用户。
 
 
-试运行 <a name="trying-it-out"></a>
+试运行 <span id="trying-it-out"></span>
 -------------
 
 创建完操作和视图后，你就可以通过下面的 URL 访问新页面了：
@@ -90,7 +90,7 @@ http://hostname/index.php?r=site/say&message=Hello+World
 > 补充：与操作一样，一个应用中控制器同样有唯一的 ID。控制器 ID 和操作 ID 使用同样的命名规则。控制器的类名源自于控制器 ID，移除了连字符，每个单词首字母大写，并加上 `Controller` 后缀。例子：控制器 ID `post-comment` 相当于控制器类名 `PostCommentController`。
 
 
-总结 <a name="summary"></a>
+总结 <span id="summary"></span>
 -------
 
 通过本章节你接触了 MVC 设计模式中的控制器和视图部分。创建了一个操作作为控制器的一部分去处理特定请求。然后又创建了一个视图去构造响应内容。在这个小例子中，没有模型调用，唯一涉及到数据的地方是 `message` 参数。

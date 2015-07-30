@@ -27,6 +27,7 @@ use yii\base\NotSupportedException;
  * - `date`: [[DateValidator]]
  * - `default`: [[DefaultValueValidator]]
  * - `double`: [[NumberValidator]]
+ * - `each`: [[EachValidator]]
  * - `email`: [[EmailValidator]]
  * - `exist`: [[ExistValidator]]
  * - `file`: [[FileValidator]]
@@ -57,6 +58,7 @@ class Validator extends Component
         'date' => 'yii\validators\DateValidator',
         'default' => 'yii\validators\DefaultValueValidator',
         'double' => 'yii\validators\NumberValidator',
+        'each' => 'yii\validators\EachValidator',
         'email' => 'yii\validators\EmailValidator',
         'exist' => 'yii\validators\ExistValidator',
         'file' => 'yii\validators\FileValidator',
@@ -267,14 +269,14 @@ class Validator extends Component
         $result = $this->validateValue($value);
         if (empty($result)) {
             return true;
-        } else {
-            list($message, $params) = $result;
-            $params['attribute'] = Yii::t('yii', 'the input value');
-            $params['value'] = is_array($value) ? 'array()' : $value;
-            $error = Yii::$app->getI18n()->format($message, $params, Yii::$app->language);
-
-            return false;
         }
+
+        list($message, $params) = $result;
+        $params['attribute'] = Yii::t('yii', 'the input value');
+        $params['value'] = is_array($value) ? 'array()' : $value;
+        $error = Yii::$app->getI18n()->format($message, $params, Yii::$app->language);
+
+        return false;
     }
 
     /**
@@ -350,7 +352,7 @@ class Validator extends Component
 
     /**
      * Checks if the given value is empty.
-     * A value is considered empty if it is null, an empty array, or the trimmed result is an empty string.
+     * A value is considered empty if it is null, an empty array, or an empty string.
      * Note that this method is different from PHP empty(). It will return false when the value is 0.
      * @param mixed $value the value to be checked
      * @return boolean whether the value is empty

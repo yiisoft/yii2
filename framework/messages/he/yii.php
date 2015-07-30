@@ -31,7 +31,7 @@ return [
     'No help for unknown command "{command}".' => 'פקודה "{command}" לא מוכרת ואין לה עזרה',
     'No help for unknown sub-command "{command}".' => 'תת-פקודה "{command}" לא מוכרת ואין לה עזרה',
     'No results found.' => 'לא נמצאו תוצאות',
-    'Only files with these extensions are allowed: {extensions}.' => 'רק קבצים עם ההרחבות הבאות מותרים: {extentions}.',
+    'Only files with these extensions are allowed: {extensions}.' => 'רק קבצים עם ההרחבות הבאות מותרים: {extensions}.',
     'Page not found.' => 'דף לא נמצא',
     'Please fix the following errors:' => 'בבקשה, תקן את השגיאות הבאות: ',
     'Please upload a file.' => 'נא העלה קובץ.',

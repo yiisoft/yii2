@@ -25,7 +25,7 @@ algunas de las cuales se describen en detalle en las siguientes secciones:
 * La autorización del usuario de acuerdo a la acción y recurso solicitado.
 
 
-## Creando Clases de Controlador <a name="creating-controller"></a>
+## Creando Clases de Controlador <span id="creating-controller"></span>
 
 Al crear una nueva clase de controlador, una convención para nombrar la clase del controlador es utilizar
 el nombre del tipo de recurso en singular. Por ejemplo, para servir información de usuario,
@@ -45,7 +45,7 @@ public function actionView($id)
 ```
 
 
-## Filtros <a name="filters"></a>
+## Filtros <span id="filters"></span>
 
 La mayoría de las características API REST son proporcionadas por [[yii\rest\Controller]] son implementadas en los términos de [filtros](structure-filters.md).
 En particular, los siguientes filtros se ejecutarán en el orden en que aparecen:
@@ -76,14 +76,14 @@ public function behaviors()
 ```
 
 
-## Extendiendo `ActiveController` <a name="extending-active-controller"></a>
+## Extendiendo `ActiveController` <span id="extending-active-controller"></span>
 
 Si tu clase controlador extiende de [[yii\rest\ActiveController]], debe establecer
 su propiedad [[yii\rest\ActiveController::modelClass||modelClass]] con el nombre de la clase del recurso
 que planeas servir a través de este controlador. La clase debe extender de [[yii\db\ActiveRecord]].
 
 
-### Personalizando Acciones <a name="customizing-actions"></a>
+### Personalizando Acciones <span id="customizing-actions"></span>
 
 Por defecto, [[yii\rest\ActiveController]] provee de las siguientes acciones:
 
@@ -120,7 +120,7 @@ public function prepareDataProvider()
 Por favor, consulta las referencias de clases de acciones individuales para aprender las opciones de configuración disponibles para cada una.
 
 
-### Realizando Comprobación de Acceso <a name="performing-access-check"></a>
+### Realizando Comprobación de Acceso <span id="performing-access-check"></span>
 
 Al exponer los recursos a través de RESTful APIs, a menudo es necesario comprobar si el usuario actual tiene permiso
 para acceder y manipular el/los recurso solicitado/s. Con [[yii\rest\ActiveController]], esto puede lograrse

@@ -7,8 +7,8 @@
 
 namespace yii\db;
 
+use yii\base\Component;
 use yii\di\Instance;
-use \yii\base\Component;
 
 /**
  * Migration is the base class for representing a database migration.
@@ -39,10 +39,13 @@ use \yii\base\Component;
 class Migration extends Component implements MigrationInterface
 {
     /**
-     * @var Connection|string the DB connection object or the application component ID of the DB connection
-     * that this migration should work with. Note that when a Migration object is created by
-     * the `migrate` command, this property will be overwritten by the command. If you do not want to
-     * use the DB connection provided by the command, you may override the [[init()]] method like the following:
+     * @var Connection|array|string the DB connection object or the application component ID of the DB connection
+     * that this migration should work with. Starting from version 2.0.2, this can also be a configuration array
+     * for creating the object.
+     *
+     * Note that when a Migration object is created by the `migrate` command, this property will be overwritten
+     * by the command. If you do not want to use the DB connection provided by the command, you may override
+     * the [[init()]] method like the following:
      *
      * ```php
      * public function init()
@@ -375,9 +378,9 @@ class Migration extends Component implements MigrationInterface
      * The method will properly quote the table and column names.
      * @param string $name the name of the foreign key constraint.
      * @param string $table the table that the foreign key constraint will be added to.
-     * @param string $columns the name of the column to that the constraint will be added on. If there are multiple columns, separate them with commas or use an array.
+     * @param string|array $columns the name of the column to that the constraint will be added on. If there are multiple columns, separate them with commas or use an array.
      * @param string $refTable the table that the foreign key references to.
-     * @param string $refColumns the name of the column that the foreign key references to. If there are multiple columns, separate them with commas or use an array.
+     * @param string|array $refColumns the name of the column that the foreign key references to. If there are multiple columns, separate them with commas or use an array.
      * @param string $delete the ON DELETE option. Most DBMS support these options: RESTRICT, CASCADE, NO ACTION, SET DEFAULT, SET NULL
      * @param string $update the ON UPDATE option. Most DBMS support these options: RESTRICT, CASCADE, NO ACTION, SET DEFAULT, SET NULL
      */

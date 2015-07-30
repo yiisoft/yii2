@@ -60,7 +60,7 @@ return [
     'You can upload at most {limit, number} {limit, plural, one{file} other{files}}.' => 'Możliwe wgranie najwyżej {limit, number} {limit, plural, one{pliku} few{plików} many{plików} other{pliku}}.',
     'in {delta, plural, =1{a day} other{# days}}' => 'za {delta, plural, =1{jeden dzień} other{# dni}}',
     'in {delta, plural, =1{a minute} other{# minutes}}' => 'za {delta, plural, =1{minutę} few{# minuty} many{# minut} other{# minuty}}',
-    'in {delta, plural, =1{a month} other{# months}}' => 'za {delta, plural, =1{miesiąc} few{# miesiące} manu{# miesięcy} other{# miesiąca}}',
+    'in {delta, plural, =1{a month} other{# months}}' => 'za {delta, plural, =1{miesiąc} few{# miesiące} many{# miesięcy} other{# miesiąca}}',
     'in {delta, plural, =1{a second} other{# seconds}}' => 'za {delta, plural, =1{sekundę} few{# sekundy} many{# sekund} other{# sekundy}}',
     'in {delta, plural, =1{a year} other{# years}}' => 'za {delta, plural, =1{rok} few{# lata} many{# lat} other{# dni}}',
     'in {delta, plural, =1{an hour} other{# hours}}' => 'za {delta, plural, =1{godzinę} few{# godziny} many{# godzin} other{# godziny}}',

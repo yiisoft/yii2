@@ -49,11 +49,15 @@ use yii\db\Expression;
  * }
  * ```
  *
+ * In case you use an [[Expression]] object as in the example above, the attribute will not hold the timestamp value, but
+ * the Expression object itself after the record has been saved. If you need the value from DB afterwards you should call
+ * the [[\yii\db\ActiveRecord::refresh()|refresh()]] method of the record.
+ *
  * TimestampBehavior also provides a method named [[touch()]] that allows you to assign the current
  * timestamp to the specified attribute(s) and save them to the database. For example,
  *
  * ```php
- * $this->timestamp->touch('creation_time');
+ * $model->touch('creation_time');
  * ```
  *
  * @author Qiang Xue <qiang.xue@gmail.com>

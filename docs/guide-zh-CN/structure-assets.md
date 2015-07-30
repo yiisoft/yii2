@@ -9,13 +9,13 @@ Yii中的资源是和Web页面相关的文件，可为CSS文件，JavaScript文�
 当你升级小部件时，它会自动使用新版本的资源文件，在本教程中，我们会详述Yii提供的强大的资源管理功能。
 
 
-## 资源包 <a name="asset-bundles"></a>
+## 资源包 <span id="asset-bundles"></span>
 
 Yii在*资源包*中管理资源，资源包简单的说就是放在一个目录下的资源集合，
 当在[视图](structure-views.md)中注册一个资源包，在渲染Web页面时会包含包中的CSS和JavaScript文件。
 
 
-## 定义资源包 <a name="defining-asset-bundles"></a>
+## 定义资源包 <span id="defining-asset-bundles"></span>
 
 资源包指定为继承[[yii\web\AssetBundle]]的PHP类，包名为可[自动加载](concept-autoloading.md)的PHP类名，
 在资源包类中，要指定资源所在位置，包含哪些CSS和JavaScript文件以及和其他包的依赖关系。
@@ -79,7 +79,7 @@ class AppAsset extends AssetBundle
   指定传递到该方法的选项，仅在指定了[[yii\web\AssetBundle::sourcePath|sourcePath]]属性时使用。
 
 
-### 资源位置 <a name="asset-locations"></a>
+### 资源位置 <span id="asset-locations"></span>
 
 资源根据它们的位置可以分为：
 
@@ -103,7 +103,7 @@ class AppAsset extends AssetBundle
   可能会被删除。
 
 
-### 资源依赖 <a name="asset-dependencies"></a>
+### 资源依赖 <span id="asset-dependencies"></span>
 
 当Web页面包含多个CSS或JavaScript文件时，它们有一定的先后顺序以避免属性覆盖，
 例如，Web页面在使用jQuery UI小部件前必须确保jQuery JavaScript文件已经被包含了，
@@ -116,7 +116,7 @@ class AppAsset extends AssetBundle
 资源依赖关系是可传递，也就是人说A依赖B，B依赖C，那么A也依赖C。
 
 
-### 资源选项 <a name="asset-options"></a>
+### 资源选项 <span id="asset-options"></span>
 
 可指定[[yii\web\AssetBundle::cssOptions|cssOptions]] 和 [[yii\web\AssetBundle::jsOptions|jsOptions]]
 属性来自定义页面包含CSS和JavaScript文件的方式，
@@ -153,7 +153,7 @@ public $jsOptions = ['position' => \yii\web\View::POS_HEAD];
 ```
 
 
-### Bower 和 NPM 资源 <a name="bower-npm-assets"></a>
+### Bower 和 NPM 资源 <span id="bower-npm-assets"></span>
 
 大多数 JavaScript/CSS 包通过[Bower](http://bower.io/) 和/或 [NPM](https://www.npmjs.org/)管理，
 如果你的应用或扩展使用这些包，推荐你遵循以下步骤来管理库中的资源：
@@ -168,7 +168,7 @@ public $jsOptions = ['position' => \yii\web\View::POS_HEAD];
   [[yii\web\AssetBundle::sourcePath|sourcePath]]属性值，例如，[[yii\web\JqueryAsset]]使用 `@bower/jquery/dist` 而不是 `@bower/jquery`。
 
 
-## 使用资源包 <a name="using-asset-bundles"></a>
+## 使用资源包 <span id="using-asset-bundles"></span>
 
 为使用资源包，在[视图](structure-views.md)中调用[[yii\web\AssetBundle::register()]]方法先注册资源，
 例如，在视图模板可使用如下代码注册资源包：
@@ -186,7 +186,7 @@ AppAsset::register($this);  // $this 代表视图对象
 这些标签的先后顺序取决于资源包的依赖关系以及在 [[yii\web\AssetBundle::css]]和[[yii\web\AssetBundle::js]] 的列出来的前后顺序。
 
 
-### 自定义资源包 <a name="customizing-asset-bundles"></a>
+### 自定义资源包 <span id="customizing-asset-bundles"></span>
 
 Yii通过名为 `assetManager`的应用组件实现[[yii\web\AssetManager] 来管理应用组件，
 通过配置[[yii\web\AssetManager::bundles]] 属性，可以自定义资源包的行为，
@@ -243,7 +243,7 @@ return [
 可设置[[yii\web\AssetManager::bundles]]为`false`禁用 *所有* 的资源包。
 
 
-### 资源部署 <a name="asset-mapping"></a>
+### 资源部署 <span id="asset-mapping"></span>
 
 有时你想"修复" 多个资源包中资源文件的错误/不兼容，例如包A使用1.11.1版本的`jquery.min.js`，
 包B使用2.1.1版本的`jquery.js`，可自定义每个包来解决这个问题，更好的方式是使用*资源部署*特性来部署不正确的资源为想要的，
@@ -270,7 +270,7 @@ return [
 > 注意: 只有相对相对路径指定的资源对应到资源部署，替换的资源路径可以为绝对路径，也可为和[[yii\web\AssetManager::basePath]]相关的路径。
 
 
-### 资源发布 <a name="asset-publishing"></a>
+### 资源发布 <span id="asset-publishing"></span>
 
 如前所述，如果资源包放在Web不能访问的目录，当视图注册资源时资源会被拷贝到一个Web可访问的目录中，
 这个过程称为*资源发布*，[[yii\web\AssetManager|asset manager]]会自动处理该过程。
@@ -295,7 +295,7 @@ return [
 使用以上配置，资源管理器会创建一个符号链接到要发布的资源包源路径，这比拷贝文件方式快并能确保发布的资源一直为最新的。
 
 
-## 常用资源包 <a name="common-asset-bundles"></a>
+## 常用资源包 <span id="common-asset-bundles"></span>
 
 Yii框架定义许多资源包，如下资源包是最常用，可在你的应用或扩展代码中引用它们。
 
@@ -310,7 +310,7 @@ Yii框架定义许多资源包，如下资源包是最常用，可在你的应�
 如果这些包的默认配置不能满足你的需求，可以自定义配置，详情参考[自定义资源包](#customizing-asset-bundles)。
 
 
-## 资源转换 <a name="asset-conversion"></a>
+## 资源转换 <span id="asset-conversion"></span>
 
 除了直接编写CSS 和/或 JavaScript代码，开发人员经常使用扩展语法来编写，再使用特殊的工具将它们转换成CSS/Javascript。
 例如，对于CSS代码可使用[LESS](http://lesscss.org/) 或 [SCSS](http://sass-lang.com/)，
@@ -375,7 +375,7 @@ return [
   来监控并自动转换扩展语法资源，此时，应使用资源包中编译后的CSS/Javascript文件而不是原始文件。
 
 
-## 合并和压缩资源 <a name="combining-compressing-assets"></a>
+## 合并和压缩资源 <span id="combining-compressing-assets"></span>
 
 一个Web页面可以包含很多CSS 和/或 JavaScript 文件，为减少HTTP 请求和这些下载文件的大小，
 通常的方式是在页面中合并并压缩多个CSS/JavaScript 文件为一个或很少的几个文件，并使用压缩后的文件而不是原始文件。
@@ -396,7 +396,7 @@ return [
 而不是原始文件。
 
 
-### 示例 <a name="example"></a>
+### 示例 <span id="example"></span>
 
 使用一个示例来解释以上这种方式：
 
@@ -458,7 +458,7 @@ return [
 如上所示，在产品上线模式下资源包数组存储在`assets-prod.php`文件中，不是产品上线模式存储在`assets-dev.php`文件中。
 
 
-### 使用 `asset` 命令 <a name="using-asset-command"></a>
+### 使用 `asset` 命令 <span id="using-asset-command"></span>
 
 Yii提供一个名为`asset`控制台命令来使上述操作自动处理。
 

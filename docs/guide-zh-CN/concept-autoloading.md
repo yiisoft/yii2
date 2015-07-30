@@ -6,7 +6,7 @@ Yii 依靠[类自动加载机制](http://www.php.net/manual/en/language.oop5.aut
 > 注意：为了简化叙述，本篇文档中我们只会提及类的自动加载。不过，要记得文中的描述同样也适用于接口和Trait（特质）的自动加载哦。
 
 
-使用 Yii 自动加载器 <a name="using-yii-autoloader"></a>
+使用 Yii 自动加载器 <span id="using-yii-autoloader"></span>
 ------------------------
 
 要使用 Yii  的类自动加载器，你需要在创建和命名类的时候遵循两个简单的规则：
@@ -27,7 +27,7 @@ $classFile = Yii::getAlias('@' . str_replace('\\', '/', $className) . '.php');
 在[高级应用模版](tutorial-advanced-app.md)里，每一逻辑层级会使用他自己的根别名。比如，前端层会使用 `@frontend` 而后端层会使用 `@backend`。因此，你可以把前端的类放在 `frontend` 命名空间，而后端的类放在 `backend`。 这样这些类就可以被 Yii 自动加载了。
 
 
-类映射表（Class Map） <a name="class-map"></a>
+类映射表（Class Map） <span id="class-map"></span>
 ---------
 
 Yii 类自动加载器支持**类映射表**功能，该功能会建立一个从类的名字到类文件路径的映射。当自动加载器加载一个文件时，他首先检查映射表里有没有该类。如果有，对应的文件路径就直接加载了，省掉了进一步的检查。这让类的自动加载变得超级快。事实上所有的 Yii 核心类都是这样加载的。
@@ -41,7 +41,7 @@ Yii::$classMap['foo\bar\MyClass'] = 'path/to/MyClass.php';
 [别名](concept-aliases.md)可以被用于指定类文件的路径。你应该在[引导启动](runtime-bootstrapping.md)的过程中设置类映射表，这样映射表就可以在你使用具体类之前就准备好。
 
 
-用其他自动加载器 <a name="using-other-autoloaders"></a>
+用其他自动加载器 <span id="using-other-autoloaders"></span>
 -----------------------
 
 因为 Yii 完全支持 Composer 管理依赖包，所以推荐你也同时安装 Composer 的自动加载器，如果你用了一些自带自动加载器的第三方类库，你应该也安装下它们。
@@ -58,7 +58,7 @@ require(__DIR__ . '/../vendor/yiisoft/yii2/Yii.php');
 > 补充：若你不想要使用 Yii 的自动加载器，你必须创建一个你自己版本的 `Yii.php` 文件，并把它包含进你的[入口脚本](structure-entry-scripts.md)里。
 
 
-自动加载扩展类 <a name="autoloading-extension-classes"></a>
+自动加载扩展类 <span id="autoloading-extension-classes"></span>
 -----------------------------
 
 Yii 自动加载器支持自动加载[扩展](structure-extensions.md)的类。唯一的要求是它需要在 `composer.json` 

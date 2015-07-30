@@ -53,7 +53,7 @@ trait ActiveQueryTrait
      * For example, `orders.address` means the `address` relation defined
      * in the model class corresponding to the `orders` relation.
      *
-     * The followings are some usage examples:
+     * The following are some usage examples:
      *
      * ~~~
      * // find customers together with their orders and country
@@ -129,13 +129,15 @@ trait ActiveQueryTrait
             if ($this->indexBy === null) {
                 foreach ($rows as $row) {
                     $model = $class::instantiate($row);
-                    $class::populateRecord($model, $row);
+                    $modelClass = get_class($model);
+                    $modelClass::populateRecord($model, $row);
                     $models[] = $model;
                 }
             } else {
                 foreach ($rows as $row) {
                     $model = $class::instantiate($row);
-                    $class::populateRecord($model, $row);
+                    $modelClass = get_class($model);
+                    $modelClass::populateRecord($model, $row);
                     if (is_string($this->indexBy)) {
                         $key = $model->{$this->indexBy};
                     } else {

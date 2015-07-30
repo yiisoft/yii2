@@ -1,7 +1,7 @@
 Uploading Files
 ===============
 
-Uploading files in Yii is done via the a form model, its validation rules and some controller code. Let's review what's
+Uploading files in Yii is done via a form model, its validation rules and some controller code. Let's review what's
 required to handle uploads properly.
 
 
@@ -39,7 +39,7 @@ class UploadForm extends Model
 }
 ```
 
-In the code above, we've created a model `UploadForm` with an attribute `$file` that will become `<input type="file">` in
+In the code above, we've created a model `UploadForm` with an attribute `file` that will become `<input type="file">` in
 the HTML form. The attribute has the validation rule named `file` that uses [[yii\validators\FileValidator|FileValidator]].
 
 ### Form view
@@ -65,7 +65,7 @@ input field.
 
 ### Controller
 
-Now create the controller that connects the form and model together:
+Now create the controller that connects the form and the model together:
 
 ```php
 namespace app\controllers;
@@ -95,19 +95,22 @@ class SiteController extends Controller
 ```
 
 Instead of `model->load(...)`, we are using `UploadedFile::getInstance(...)`. [[\yii\web\UploadedFile|UploadedFile]] 
-does not run the model validation, rather it only provides information about the uploaded file. Therefore, you need to run the validation manually via `$model->validate()` to trigger the [[yii\validators\FileValidator|FileValidator]] that expects a file:
+does not run the model validation, rather it only provides information about the uploaded file. Therefore, you need to run the validation manually via `$model->validate()` to trigger the [[yii\validators\FileValidator|FileValidator]]. The validator expects that
+the attribute is an uploaded file, as you see in the core framework code:
 
 ```php
-$file instanceof UploadedFile || $file->error == UPLOAD_ERR_NO_FILE //in the code framework
+if (!$file instanceof UploadedFile || $file->error == UPLOAD_ERR_NO_FILE) {
+    return [$this->uploadRequired, []];
+}
 ```
 
-If validation is successful, then we're saving the file: 
+If the validation is successful, then we're saving the file: 
 
 ```php
 $model->file->saveAs('uploads/' . $model->file->baseName . '.' . $model->file->extension);
 ```
 
-If you're using the "basic" application template, then folder `uploads` should be created under `web`.
+If you're using the "basic" project template, then folder `uploads` should be created under `web`.
 
 That's it. Load the page and try uploading. Uploads should end up in `basic/web/uploads`.
 
@@ -138,18 +141,24 @@ It is wise to validate the type of file uploaded. FileValidator has the property
 public function rules()
 {
     return [
-        [['file'], 'file', 'extensions' => 'gif, jpg',],
+        [['file'], 'file', 'extensions' => 'gif, jpg'],
     ];
 }
 ```
 
-Keep in mind that only the file extension will be validated, but not the actual file content. In order to validate the content as well, use the `mimeTypes` property of `FileValidator`:
+By default it will validate against file content mime type corresponding to extension specified. For gif it will be
+`image/gif`, for `jpg` it will be `image/jpeg`.
+
+
+Note that some mime types can't be detected properly by PHP's fileinfo extension that is used by `file` validator. For
+example, `csv` files are detected as `text/plain` instead of `text/csv`. You can turn off such behavior by setting
+`checkExtensionByMimeType` to `false` and specifying mime types manually:
 
 ```php
 public function rules()
 {
     return [
-        [['file'], 'file', 'extensions' => 'jpg, png', 'mimeTypes' => 'image/jpeg, image/png',],
+        [['file'], 'file', 'checkExtensionByMimeType' => false, 'extensions' => 'csv', 'mimeTypes' => 'text/plain'],
     ];
 }
 ```
@@ -159,7 +168,7 @@ public function rules()
 ### Image properties
 
 If you upload an image, [[yii\validators\ImageValidator|ImageValidator]] may come in handy. It verifies if an attribute
-received a valid image that can be then either saved or processed using the [Imagine Extension](https://github.com/yiisoft/yii2/tree/master/extensions/imagine).
+received a valid image that can be then either saved or processed using the [Imagine Extension](https://github.com/yiisoft/yii2-imagine).
 
 Uploading multiple files
 ------------------------
@@ -241,6 +250,6 @@ class SiteController extends Controller
 }
 ```
 
-There are two differences from single file upload. First is that `UploadedFile::getInstances($model, 'file');` used
+There are two differences from single file upload. First is that `UploadedFile::getInstances($model, 'file');` is used
 instead of `UploadedFile::getInstance($model, 'file');`. The former returns instances for **all** uploaded files while
 the latter gives you only a single instance. The second difference is that we're doing `foreach` and saving each file.

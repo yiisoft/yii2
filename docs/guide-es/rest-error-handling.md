@@ -40,7 +40,7 @@ La siguiente lista sumariza los códigos de estado HTTP que son usados por el fr
 * `500`: Error interno del servidor. Esto puede estar causado por errores internos del programa.
 
 
-## Personalizando la Respuesta al Error <a name="customizing-error-response"></a>
+## Personalizando la Respuesta al Error <span id="customizing-error-response"></span>
 
 A veces puedes querer personalizar el formato de la respuesta del error por defecto . Por ejemplo, en lugar de depender
 del uso de diferentes estados HTTP para indicar los diferentes errores, puedes querer usar siempre el estado HTTP 200

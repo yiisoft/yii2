@@ -7,7 +7,7 @@
 该组件主要提供通用方法帮助视图构造和渲染，简单起见，我们称视图模板或视图模板文件为视图。
 
 
-## 创建视图 <a name="creating-views"></a>
+## 创建视图 <span id="creating-views"></span>
 
 如前所述，视图为包含HTML和PHP代码的PHP脚本，如下代码为一个登录表单的视图，
 可看到PHP代码用来生成动态内容如页面标题和表单，HTML代码把它组织成一个漂亮的HTML页面。
@@ -42,7 +42,7 @@ $this->title = 'Login';
 > 技巧: 将预定义变量列到视图文件头部注释处，这样可被IDE编辑器识别，也是生成视图文档的好方法。
 
 
-### 安全 <a name="security"></a>
+### 安全 <span id="security"></span>
 
 当创建生成HTML页面的视图时，在显示之前将用户输入数据进行转码和过滤非常重要，
 否则，你的应用可能会被[跨站脚本](http://en.wikipedia.org/wiki/Cross-site_scripting) 攻击。
@@ -75,7 +75,7 @@ use yii\helpers\HtmlPurifier;
   [缓存](caching-overview.md) 过滤后的结果。
 
 
-### 组织视图 <a name="organizing-views"></a>
+### 组织视图 <span id="organizing-views"></span>
 
 与 [控制器](structure-controllers.md) 和 [模型](structure-models.md) 类似，在组织视图上有一些约定：
 
@@ -91,7 +91,7 @@ use yii\helpers\HtmlPurifier;
 可覆盖控制器或小部件的 [[yii\base\ViewContextInterface::getViewPath()]] 方法来自定义视图文件默认目录。
 
 
-## 渲染视图 <a name="rendering-views"></a>
+## 渲染视图 <span id="rendering-views"></span>
 
 可在 [控制器](structure-controllers.md), [小部件](structure-widgets.md), 或其他地方调用渲染视图方法来渲染视图，
 该方法类似以下格式：
@@ -106,7 +106,7 @@ methodName($view, $params = [])
 ```
 
 
-### 控制器中渲染 <a name="rendering-in-controllers"></a>
+### 控制器中渲染 <span id="rendering-in-controllers"></span>
 
 在 [控制器](structure-controllers.md) 中，可调用以下控制器方法来渲染视图：
 
@@ -145,7 +145,7 @@ class PostController extends Controller
 ```
 
 
-### 小部件中渲染 <a name="rendering-in-widgets"></a>
+### 小部件中渲染 <span id="rendering-in-widgets"></span>
 
 在 [小部件](structure-widgets.md) 中，可调用以下小部件方法来渲染视图：
 Within [widgets](structure-widgets.md), you may call the following widget methods to render views.
@@ -176,7 +176,7 @@ class ListWidget extends Widget
 ```
 
 
-### 视图中渲染 <a name="rendering-in-views"></a>
+### 视图中渲染 <span id="rendering-in-views"></span>
 
 可以在视图中渲染另一个视图，可以调用[[yii\base\View|view component]]视图组件提供的以下方法：
 
@@ -193,7 +193,7 @@ class ListWidget extends Widget
 ```
 
 
-### 其他地方渲染 <a name="rendering-in-other-places"></a>
+### 其他地方渲染 <span id="rendering-in-other-places"></span>
 
 在任何地方都可以通过表达式 `Yii::$app->view` 访问 [[yii\base\View|view]] 应用组件，
 调用它的如前所述的方法渲染视图，例如：
@@ -204,7 +204,7 @@ echo \Yii::$app->view->renderFile('@app/views/site/license.php');
 ```
 
 
-### 视图名 <a name="named-views"></a>
+### 视图名 <span id="named-views"></span>
 
 渲染视图时，可指定一个视图名或视图文件路径/别名，大多数情况下使用前者因为前者简洁灵活，
 我们称用名字的视图为 *视图名*.
@@ -231,7 +231,7 @@ echo \Yii::$app->view->renderFile('@app/views/site/license.php');
 会渲染 `@app/views/post/_overview.php` 视图文件。
 
 
-### 视图中访问数据 <a name="accessing-data-in-views"></a>
+### 视图中访问数据 <span id="accessing-data-in-views"></span>
 
 在视图中有两种方式访问数据：推送和拉取。
 
@@ -259,7 +259,7 @@ The controller ID is: <?= $this->context->id ?>
 缺点是需要手动构建数组，有些繁琐，在不同地方渲染时容易出错。
 
 
-### 视图间共享数据 <a name="sharing-data-among-views"></a>
+### 视图间共享数据 <span id="sharing-data-among-views"></span>
 
 [[yii\base\View|view component]]视图组件提供[[yii\base\View::params|params]]参数属性来让不同视图共享数据。
 
@@ -279,14 +279,14 @@ $this->params['breadcrumbs'][] = 'About Us';
 ```
 
 
-## 布局 <a name="layouts"></a>
+## 布局 <span id="layouts"></span>
 
 布局是一种特殊的视图，代表多个视图的公共部分，例如，大多数Web应用共享相同的页头和页尾，
 在每个视图中重复相同的页头和页尾，更好的方式是将这些公共放到一个布局中，
 渲染内容视图后在合适的地方嵌入到布局中。
 
 
-### 创建布局 <a name="creating-layouts"></a>
+### 创建布局 <span id="creating-layouts"></span>
 
 由于布局也是视图，它可像普通视图一样创建，布局默认存储在`@app/views/layouts`路径下，
 [模块](structure-modules.md)中使用的布局应存储在[[yii\base\Module::basePath|module directory]]模块目录
@@ -342,7 +342,7 @@ use yii\helpers\Html;
   会被注册的HTML代码（如JavaScript）在页面主体结尾处替换。
 
 
-### 布局中访问数据 <a name="accessing-data-in-layouts"></a>
+### 布局中访问数据 <span id="accessing-data-in-layouts"></span>
 
 在布局中可访问两个预定义变量：`$this` 和 `$content`，前者对应和普通视图类似的[[yii\base\View|view]] 视图组件
 后者包含调用[[yii\base\Controller::render()|render()]]方法渲染内容视图的结果。
@@ -351,7 +351,7 @@ use yii\helpers\Html;
 如果想从内容视图中传递数据到布局，可使用[视图间共享数据](#sharing-data-among-views)一节中的方法。
 
 
-### 使用布局 <a name="using-layouts"></a>
+### 使用布局 <span id="using-layouts"></span>
 
 如[控制器中渲染](#rendering-in-controllers)一节描述，当控制器调用[[yii\base\Controller::render()|render()]]
 方法渲染视图时，会同时使用布局到渲染结果中，默认会使用`@app/views/layouts/main.php`布局文件。
@@ -399,7 +399,7 @@ class PostController extends Controller
 布局的值没有包含文件扩展名，默认使用 `.php`作为扩展名。
 
 
-### 嵌套布局 <a name="nested-layouts"></a>
+### 嵌套布局 <span id="nested-layouts"></span>
 
 有时候你想嵌套一个布局到另一个，例如，在Web站点不同地方，想使用不同的布局，
 同时这些布局共享相同的生成全局HTML5页面结构的基本布局，可以在子布局中调用
@@ -421,7 +421,7 @@ class PostController extends Controller
 使用以上方式可多层嵌套布局。
 
 
-### 使用数据块 <a name="using-blocks"></a>
+### 使用数据块 <span id="using-blocks"></span>
 
 数据块可以在一个地方指定视图内容在另一个地方显示，通常和布局一起使用，
 例如，可在内容视图中定义数据块在布局中显示它。
@@ -480,7 +480,7 @@ class PostController extends Controller
 ```
 
 
-## 使用视图组件 <a name="using-view-components"></a>
+## 使用视图组件 <span id="using-view-components"></span>
 
 [[yii\base\View|View components]]视图组件提供许多视图相关特性，可创建[[yii\base\View]]或它的子类实例来获取视图组件，
 大多数情况下主要使用 `view` 应用组件，可在[应用配置](structure-applications.md#application-configurations)中配置该组件，
@@ -510,7 +510,7 @@ class PostController extends Controller
 开发Web页面时，也可能频繁使用以下实用的小特性。
 
 
-### 设置页面标题 <a name="setting-page-titles"></a>
+### 设置页面标题 <span id="setting-page-titles"></span>
 
 每个Web页面应有一个标题，正常情况下标题的标签显示在 [布局](#layouts)中，
 但是实际上标题大多由内容视图而不是布局来决定，为解决这个问题， [[yii\web\View]] 提供
@@ -531,7 +531,7 @@ $this->title = 'My page title';
 ```
 
 
-### 注册Meta元标签 <a name="registering-meta-tags"></a>
+### 注册Meta元标签 <span id="registering-meta-tags"></span>
 
 Web页面通常需要生成各种元标签提供给不同的浏览器，如`<head>`中的页面标题，元标签通常在布局中生成。
 
@@ -561,7 +561,7 @@ $this->registerMetaTag(['name' => 'description', 'content' => 'This website is a
 ```
 
 
-### 注册链接标签 <a name="registering-link-tags"></a>
+### 注册链接标签 <span id="registering-link-tags"></span>
 
 和 [Meta标签](#adding-meta-tags) 类似，链接标签有时很实用，如自定义网站图标，指定Rss订阅，或授权OpenID到其他服务器。
 可以和元标签相似的方式调用[[yii\web\View::registerLinkTag()]]，例如，在内容视图中注册链接标签如下所示：
@@ -585,7 +585,7 @@ $this->registerLinkTag([
 调用[[yii\web\View::registerLinkTag()|registerLinkTag()]] 指定键来避免生成重复链接标签。
 
 
-## 视图事件 <a name="view-events"></a>
+## 视图事件 <span id="view-events"></span>
 
 [[yii\base\View|View components]] 视图组件会在视图渲染过程中触发几个事件，
 可以在内容发送给终端用户前，响应这些事件来添加内容到视图中或调整渲染结果。
@@ -608,7 +608,7 @@ $this->registerLinkTag([
 ```
 
 
-## 渲染静态页面 <a name="rendering-static-pages"></a>
+## 渲染静态页面 <span id="rendering-static-pages"></span>
 
 静态页面指的是大部分内容为静态的不需要控制器传递动态数据的Web页面。
 
@@ -655,7 +655,7 @@ http://localhost/index.php?r=site/page&view=about
 修改搜索视图的目录。
 
 
-## 最佳实践 <a name="best-practices"></a>
+## 最佳实践 <span id="best-practices"></span>
 
 视图负责将模型的数据展示用户想要的格式，总之，视图
 

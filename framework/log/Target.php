@@ -213,7 +213,7 @@ abstract class Target extends Component
             if ($matched) {
                 foreach ($except as $category) {
                     $prefix = rtrim($category, '*');
-                    if (strpos($message[2], $prefix) === 0 && ($message[2] === $category || $prefix !== $category)) {
+                    if (($message[2] === $category || $prefix !== $category) && strpos($message[2], $prefix) === 0) {
                         $matched = false;
                         break;
                     }
@@ -264,6 +264,10 @@ abstract class Target extends Component
     {
         if ($this->prefix !== null) {
             return call_user_func($this->prefix, $message);
+        }
+
+        if (Yii::$app === null) {
+            return '';
         }
 
         $request = Yii::$app->getRequest();

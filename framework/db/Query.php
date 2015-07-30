@@ -264,16 +264,32 @@ class Query extends Component implements QueryInterface
      */
     public function column($db = null)
     {
-        return $this->createCommand($db)->queryColumn();
+        if (!is_string($this->indexBy)) {
+            return $this->createCommand($db)->queryColumn();
+        }
+        if (is_array($this->select) && count($this->select) === 1) {
+            $this->select[] = $this->indexBy;
+        }
+        $rows = $this->createCommand($db)->queryAll();
+        $results = [];
+        foreach ($rows as $row) {
+            if (array_key_exists($this->indexBy, $row)) {
+                $results[$row[$this->indexBy]] = reset($row);
+            } else {
+                $results[] = reset($row);
+            }
+        }
+        return $results;
     }
 
     /**
      * Returns the number of records.
      * @param string $q the COUNT expression. Defaults to '*'.
-     * Make sure you properly quote column names in the expression.
+     * Make sure you properly [quote](guide:db-dao#quoting-table-and-column-names) column names in the expression.
      * @param Connection $db the database connection used to generate the SQL statement.
      * If this parameter is not given (or null), the `db` application component will be used.
-     * @return integer number of records
+     * @return integer|string number of records. The result may be a string depending on the
+     * underlying database engine and to support integer values higher than a 32bit PHP integer can handle.
      */
     public function count($q = '*', $db = null)
     {
@@ -283,10 +299,10 @@ class Query extends Component implements QueryInterface
     /**
      * Returns the sum of the specified column values.
      * @param string $q the column name or expression.
-     * Make sure you properly quote column names in the expression.
+     * Make sure you properly [quote](guide:db-dao#quoting-table-and-column-names) column names in the expression.
      * @param Connection $db the database connection used to generate the SQL statement.
      * If this parameter is not given, the `db` application component will be used.
-     * @return mixed the sum of the specified column values
+     * @return mixed the sum of the specified column values.
      */
     public function sum($q, $db = null)
     {
@@ -296,7 +312,7 @@ class Query extends Component implements QueryInterface
     /**
      * Returns the average of the specified column values.
      * @param string $q the column name or expression.
-     * Make sure you properly quote column names in the expression.
+     * Make sure you properly [quote](guide:db-dao#quoting-table-and-column-names) column names in the expression.
      * @param Connection $db the database connection used to generate the SQL statement.
      * If this parameter is not given, the `db` application component will be used.
      * @return mixed the average of the specified column values.
@@ -309,7 +325,7 @@ class Query extends Component implements QueryInterface
     /**
      * Returns the minimum of the specified column values.
      * @param string $q the column name or expression.
-     * Make sure you properly quote column names in the expression.
+     * Make sure you properly [quote](guide:db-dao#quoting-table-and-column-names) column names in the expression.
      * @param Connection $db the database connection used to generate the SQL statement.
      * If this parameter is not given, the `db` application component will be used.
      * @return mixed the minimum of the specified column values.
@@ -322,7 +338,7 @@ class Query extends Component implements QueryInterface
     /**
      * Returns the maximum of the specified column values.
      * @param string $q the column name or expression.
-     * Make sure you properly quote column names in the expression.
+     * Make sure you properly [quote](guide:db-dao#quoting-table-and-column-names) column names in the expression.
      * @param Connection $db the database connection used to generate the SQL statement.
      * If this parameter is not given, the `db` application component will be used.
      * @return mixed the maximum of the specified column values.
@@ -354,7 +370,7 @@ class Query extends Component implements QueryInterface
      * @param Connection|null $db
      * @return bool|string
      */
-    private function queryScalar($selectExpression, $db)
+    protected function queryScalar($selectExpression, $db)
     {
         $select = $this->select;
         $limit = $this->limit;
@@ -369,7 +385,7 @@ class Query extends Component implements QueryInterface
         $this->limit = $limit;
         $this->offset = $offset;
 
-        if (empty($this->groupBy) && empty($this->union) && !$this->distinct) {
+        if (empty($this->groupBy) && empty($this->having) && empty($this->union) && !$this->distinct) {
             return $command->queryScalar();
         } else {
             return (new Query)->select([$selectExpression])
@@ -412,6 +428,14 @@ class Query extends Component implements QueryInterface
 
     /**
      * Add more columns to the SELECT part of the query.
+     *
+     * Note, that if [[select]] has not been specified before, you should include `*` explicitly
+     * if you want to select all remaining columns too:
+     *
+     * ```php
+     * $query->addSelect(["*", "CONCAT(first_name, ' ', last_name) AS full_name"])->one();
+     * ```
+     *
      * @param string|array $columns the columns to add to the select.
      * @return static the query object itself
      * @see select()

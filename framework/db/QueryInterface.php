@@ -44,7 +44,7 @@ interface QueryInterface
      * @param string $q the COUNT expression. Defaults to '*'.
      * @param Connection $db the database connection used to execute the query.
      * If this parameter is not given, the `db` application component will be used.
-     * @return integer number of records
+     * @return integer number of records.
      */
     public function count($q = '*', $db = null);
 
@@ -88,10 +88,10 @@ interface QueryInterface
      *
      * - `['type' => 1, 'status' => 2]` generates `(type = 1) AND (status = 2)`.
      * - `['id' => [1, 2, 3], 'status' => 2]` generates `(id IN (1, 2, 3)) AND (status = 2)`.
-     * - `['status' => null] generates `status IS NULL`.
+     * - `['status' => null]` generates `status IS NULL`.
      *
      * A condition in operator format generates the SQL expression according to the specified operator, which
-     * can be one of the followings:
+     * can be one of the following:
      *
      * - **and**: the operands should be concatenated together using `AND`. For example,
      *   `['and', 'id=1', 'id=2']` will generate `id=1 AND id=2`. If an operand is an array,

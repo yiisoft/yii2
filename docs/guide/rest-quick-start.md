@@ -19,12 +19,12 @@ In particular, Yii supports the following features about RESTful APIs:
 In the following, we use an example to illustrate how you can build a set of RESTful APIs with some minimal coding effort.
 
 Assume you want to expose the user data via RESTful APIs. The user data are stored in the `user` DB table,
-and you have already created the [[yii\db\ActiveRecord|ActiveRecord]] class `app\models\User` to access the user data.
+and you have already created the [active record](db-active-record.md) class `app\models\User` to access the user data.
 
 
-## Creating a Controller <a name="creating-controller"></a>
+## Creating a Controller <span id="creating-controller"></span>
 
-First, create a controller class `app\controllers\UserController` as follows,
+First, create a [controller](structure-controllers.md) class `app\controllers\UserController` as follows,
 
 ```php
 namespace app\controllers;
@@ -37,11 +37,12 @@ class UserController extends ActiveController
 }
 ```
 
-The controller class extends from [[yii\rest\ActiveController]]. By specifying [[yii\rest\ActiveController::modelClass|modelClass]]
-as `app\models\User`, the controller knows what model can be used for fetching and manipulating data.
+The controller class extends from [[yii\rest\ActiveController]], which implements a common set of RESTful actions.
+By specifying [[yii\rest\ActiveController::modelClass|modelClass]]
+as `app\models\User`, the controller knows which model can be used for fetching and manipulating data.
 
 
-## Configuring URL Rules <a name="configuring-url-rules"></a>
+## Configuring URL Rules <span id="configuring-url-rules"></span>
 
 Then, modify the configuration about the `urlManager` component in your application configuration:
 
@@ -60,10 +61,10 @@ The above configuration mainly adds a URL rule for the `user` controller so that
 can be accessed and manipulated with pretty URLs and meaningful HTTP verbs.
 
 
-## Enabling JSON Input <a name="enabling-json-input"></a>
+## Enabling JSON Input <span id="enabling-json-input"></span>
 
 To let the API accept input data in JSON format, configure the [[yii\web\Request::$parsers|parsers]] property of
-the `request` application component to use the [[yii\web\JsonParser]] for JSON input:
+the `request` [application component](structure-application-components.md) to use the [[yii\web\JsonParser]] for JSON input:
 
 ```php
 'request' => [
@@ -77,7 +78,7 @@ the `request` application component to use the [[yii\web\JsonParser]] for JSON i
   `application/x-www-form-urlencoded` and `multipart/form-data` input formats.
 
 
-## Trying it Out <a name="trying-it-out"></a>
+## Trying it Out <span id="trying-it-out"></span>
 
 With the above minimal amount of effort, you have already finished your task of creating the RESTful APIs
 for accessing the user data. The APIs you have created include:
@@ -187,7 +188,7 @@ For example, the URL `http://localhost/users?fields=id,email` will only return t
 > You can and should filter out these fields as described in the [Response Formatting](rest-response-formatting.md) section.
 
 
-## Summary <a name="summary"></a>
+## Summary <span id="summary"></span>
 
 Using the Yii RESTful API framework, you implement an API endpoint in terms of a controller action, and you use
 a controller to organize the actions that implement the endpoints for a single type of resource.

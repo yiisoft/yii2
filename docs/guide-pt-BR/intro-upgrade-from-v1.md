@@ -170,7 +170,7 @@ Framework, você pode definir um path alias `@Zend` que se refere ao diretório
 de instalação desse framework. Uma vez que você tenha feito isso, o Yii também
 poderá carregar automaticamente qualquer classe nessa biblioteca do Zend Framework.
 
-Você pode encontrar mais sobre *path aliases* na seção [Path Aliases](concept-aliases.md).
+Você pode encontrar mais sobre *path aliases* na seção [Aliases](concept-aliases.md).
 
 
 Views (Visões)
@@ -537,11 +537,11 @@ User e IdentityInterface
 
 A classe `CWebUser` do 1.1 agora foi substituída pela [[yii\web\User]], e não há
 mais a classe `CUserIdentity`. Ao invés disso, você deve implementar a interface
-[[yii\web\IdentityInterface]] que é muito mais simples de usar. O template de
-aplicação avançado dá um exemplo disso.
+[[yii\web\IdentityInterface]] que é muito mais simples de usar. O template avançado 
+de projetos dá um exemplo disso.
 
 Por favor consulte as seções [Autenticação](security-authentication.md),
-[Autorização](security-authorization.md), e [Modelo de Aplicação Avançada](tutorial-advanced-app.md)
+[Autorização](security-authorization.md), e [Template Avançado de Projetos](tutorial-advanced-app.md)
 para mais detalhes.
 
 
@@ -562,11 +562,10 @@ regrar para este mesmo fim.
 ]
 ```
 
-Por favor consulte a seção [documentação do url manager](url.md) para mais detalhes.
+Por favor consulte a seção da [documentação de gerenciamento de URL](runtime-routing.md) para mais detalhes.
 
 Utilizando o Yii 1.1 e o 2.x juntos
 -----------------------------------
 
-Se você tem código legado do Yii 1.1 que você quer manter para utilizar com o
-Yii 2.0, por favor consulte a seção [Usando Yii 1.1 e 2.0 juntos](extend-using-v1-v2.md).
-
+Se você tem código legado do Yii 1.1 que você queira manter para utilizar com o
+Yii 2.0, por favor, consulte a seção [Usando Yii 1.1 e 2.0 juntos](tutorial-yii-integration.md).

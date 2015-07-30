@@ -11,7 +11,7 @@
 * 自定义 Gii 生成的代码
 
 
-开始 Gii <a name="starting-gii"></a>
+开始 Gii <span id="starting-gii"></span>
 ------------
 
 [Gii](tool-gii.md) 是 Yii 中的一个[模块](structure-modules.md)。可以通过配置应用的 [[yii\base\Application::modules|modules]] 属性开启它。通常来讲在 `config/web.php` 文件中会有以下配置代码：
@@ -51,7 +51,7 @@ http://hostname/index.php?r=gii
 ![Gii](images/start-gii.png)
 
 
-生成活动记录类 <a name="generating-ar"></a>
+生成活动记录类 <span id="generating-ar"></span>
 ---------------------------------
 
 选择 “Model Generator” （点击 Gii 首页的链接）去生成活动记录类。并像这样填写表单：
@@ -72,7 +72,7 @@ http://hostname/index.php?r=gii
 接下来你会看到一个包含已生成文件的说明页面。如果生成过程中覆写过文件，还会有一条信息说明代码是重新生成覆盖的。
 
 
-生成 CRUD 代码 <a name="generating-crud"></a>
+生成 CRUD 代码 <span id="generating-crud"></span>
 --------------------
 
 CRUD 代表增，查，改，删操作，这是绝大多数 Web 站点常用的数据处理方式。选择 Gii 中的 “CRUD Generator” （点击 Gii 首页的链接）去创建 CRUD 功能。本例 “country” 中需要这样填写表单：
@@ -90,7 +90,7 @@ CRUD 代表增，查，改，删操作，这是绝大多数 Web 站点常用的�
 如果你之前创建过 `controllers/CountryController.php` 和 `views/country/index.php` 文件（在指南的使用数据库章节），选中 “overwrite” 下的复选框覆写它们（之前的文件没能全部支持 CRUD）。
 
 
-试运行 <a name="trying-it-out"></a>
+试运行 <span id="trying-it-out"></span>
 -------------
 
 用浏览器访问下面的 URL 查看生成代码的运行：
@@ -116,7 +116,7 @@ http://hostname/index.php?r=country/index
 > 补充：Gii 被设计成高度可定制和可扩展的代码生成工具。使用它可以大幅提高应用开发速度。请参考 [Gii](tool-gii.md) 章节了解更多内容。
 
 
-总结 <a name="summary"></a>
+总结 <span id="summary"></span>
 -------
 
 本章学习了如何使用 Gii 去生成为数据表中数据实现完整 CRUD 功能的代码。

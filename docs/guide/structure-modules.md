@@ -8,7 +8,7 @@ often viewed as mini-applications. Modules differ from [applications](structure-
 modules cannot be deployed alone and must reside within applications.
 
 
-## Creating Modules <a name="creating-modules"></a>
+## Creating Modules <span id="creating-modules"></span>
 
 A module is organized as a directory which is called the [[yii\base\Module::basePath|base path]] of the module.
 Within the directory, there are sub-directories, such as `controllers`, `models`, `views`, which hold controllers,
@@ -27,7 +27,7 @@ forum/
 ```
 
 
-### Module Classes <a name="module-classes"></a>
+### Module Classes <span id="module-classes"></span>
 
 Each module should have a unique module class which extends from [[yii\base\Module]]. The class should be located
 directly under the module's [[yii\base\Module::basePath|base path]] and should be [autoloadable](concept-autoloading.md).
@@ -80,7 +80,7 @@ return [
 ```
 
 
-### Controllers in Modules <a name="controllers-in-modules"></a>
+### Controllers in Modules <span id="controllers-in-modules"></span>
 
 When creating controllers in a module, a convention is to put the controller classes under the `controllers`
 sub-namespace of the namespace of the module class. This also means the controller class files should be
@@ -104,7 +104,7 @@ property. In case some of the controllers are outside of this namespace, you may
 by configuring the [[yii\base\Module::controllerMap]] property, similar to [what you do in an application](structure-applications.md#controller-map).
 
 
-### Views in Modules <a name="views-in-modules"></a>
+### Views in Modules <span id="views-in-modules"></span>
 
 Views in a module should be put in the `views` directory within the module's [[yii\base\Module::basePath|base path]].
 For views rendered by a controller in the module, they should be put under the directory `views/ControllerID`,
@@ -118,7 +118,7 @@ the [[yii\base\Module::layout]] property to point to the layout name. If you do 
 the application's layout will be used instead.
 
 
-## Using Modules <a name="using-modules"></a>
+## Using Modules <span id="using-modules"></span>
 
 To use a module in an application, simply configure the application by listing the module in
 the [[yii\base\Application::modules|modules]] property of the application. The following code in the
@@ -140,7 +140,7 @@ represents a *module ID* which uniquely identifies the module among all modules 
 array value is a [configuration](concept-configurations.md) for creating the module.
 
 
-### Routes <a name="routes"></a>
+### Routes <span id="routes"></span>
 
 Like accessing controllers in an application, [routes](structure-controllers.md#routes) are used to address
 controllers in a module. A route for a controller within a module must begin with the module ID followed by
@@ -151,7 +151,7 @@ will determine which controller/action should be used. This means a route `forum
 controller in the `forum` module.
 
 
-### Accessing Modules <a name="accessing-modules"></a>
+### Accessing Modules <span id="accessing-modules"></span>
 
 Within a module, you may often need to get the instance of the [module class](#module-classes) so that you can
 access the module ID, module parameters, module components, etc. You can do so by using the following statement:
@@ -190,7 +190,7 @@ $maxPostCount = $module->params['maxPostCount'];
 ```
 
 
-### Bootstrapping Modules <a name="bootstrapping-modules"></a>
+### Bootstrapping Modules <span id="bootstrapping-modules"></span>
 
 Some modules may need to be run for every request. The [[yii\debug\Module|debug]] module is such an example.
 To do so, list the IDs of such modules in the [[yii\base\Application::bootstrap|bootstrap]] property of the application.
@@ -210,7 +210,7 @@ For example, the following application configuration makes sure the `debug` modu
 ```
 
 
-## Nested Modules <a name="nested-modules"></a>
+## Nested Modules <span id="nested-modules"></span>
 
 Modules can be nested in unlimited levels. That is, a module can contain another module which can contain yet
 another module. We call the former *parent module* while the latter *child module*. Child modules must be declared
@@ -244,7 +244,7 @@ to its parent. The [[yii\base\Application::loadedModules]] property keeps a list
 direct children and nested ones, indexed by their class names.
 
 
-## Best Practices <a name="best-practices"></a>
+## Best Practices <span id="best-practices"></span>
 
 Modules are best used in large applications whose features can be divided into several groups, each consisting of
 a set of closely related features. Each such feature group can be developed as a module which is developed and

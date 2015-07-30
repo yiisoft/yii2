@@ -77,6 +77,12 @@ class SluggableBehavior extends AttributeBehavior
      */
     public $value;
     /**
+     * @var boolean whether to generate a new slug if it has already been generated before.
+     * If true, the behavior will not generate a new slug even if [[attribute]] is changed.
+     * @since 2.0.2
+     */
+    public $immutable = false;
+    /**
      * @var boolean whether to ensure generated slug value to be unique among owner class records.
      * If enabled behavior will validate slug uniqueness automatically. If validation fails it will attempt
      * generating unique slug value from based one until success.
@@ -131,12 +137,14 @@ class SluggableBehavior extends AttributeBehavior
             $attributes = (array) $this->attribute;
             /* @var $owner BaseActiveRecord */
             $owner = $this->owner;
-            if (!$owner->getIsNewRecord() && !empty($owner->{$this->slugAttribute})) {
+            if (!empty($owner->{$this->slugAttribute})) {
                 $isNewSlug = false;
-                foreach ($attributes as $attribute) {
-                    if ($owner->isAttributeChanged($attribute)) {
-                        $isNewSlug = true;
-                        break;
+                if (!$this->immutable) {
+                    foreach ($attributes as $attribute) {
+                        if ($owner->isAttributeChanged($attribute)) {
+                            $isNewSlug = true;
+                            break;
+                        }
                     }
                 }
             }

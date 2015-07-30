@@ -102,7 +102,8 @@ php build translation "../docs/guide" "../docs/guide-ru" "Russian guide translat
 - action — действие. 
 - active record — без перевода. 
 - attach handler — «назначить обработчик». 
-- attribute of the model — атрибут модели. 
+- attribute of the model — атрибут модели.
+- cache — кэш.
 - camel case — без перевода. 
 - customization — (тонкая) настройка //Ранее встречался перевод "кастомизация", желательно этот вариант по возможности не использовать. 
 - column — столбец (если речь про БД).

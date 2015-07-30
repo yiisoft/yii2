@@ -17,13 +17,13 @@ deberían ser ejecutables para que los usuarios puedan ejecutar las aplicaciones
 El script de entrada principalmente hace los siguientes trabajos:
 
 * Definir las constantes globales;
-* Registrar el [cargador automático de Composer](http://getcomposer.org/doc/01-basic-usage.md#autoloading);
+* Registrar el [cargador automático de Composer](https://getcomposer.org/doc/01-basic-usage.md#autoloading);
 * Incluir el archivo de clase [[Yii]];
 * Cargar la configuración de la aplicación;
 * Crear y configurar una instancia de [aplicación](structure-applications.md);
 * Llamar a [[yii\base\Application::run()]] para procesar la petición entrante.
 
-## Aplicaciones Web <a name="web-applications"></a>
+## Aplicaciones Web <span id="web-applications"></span>
 
 El siguiente código es el script de entrada para la [Plantilla de Aplicación web Básica](start-installation.md).
 
@@ -46,7 +46,7 @@ $config = require(__DIR__ . '/../config/web.php');
 (new yii\web\Application($config))->run();
 ```
 
-## Aplicaciones de consola <a name="console-applications"></a>
+## Aplicaciones de consola <span id="console-applications"></span>
 
 De la misma manera, el siguiente código es el script de entrada para la [aplicación de consola](tutorial-console.md):
 
@@ -81,7 +81,7 @@ $exitCode = $application->run();
 exit($exitCode);
 ```
 
-## Definición de Constantes <a name="defining-constants"></a>
+## Definición de Constantes <span id="defining-constants"></span>
 
 El script de entrada es el mejor lugar para definir constantes globales. Yii soporta las siguientes tres constantes:
 

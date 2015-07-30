@@ -12,7 +12,7 @@ objects and send them to end users as we will explain in the following.
 In this section, we will describe how to compose and send responses to end users. 
 
 
-## Status Code <a name="status-code"></a>
+## Status Code <span id="status-code"></span>
 
 One of the first things you would do when building a response is to state whether the request is successfully handled.
 This is done by setting the [[yii\web\Response::statusCode]] property which can take one of the valid
@@ -55,7 +55,7 @@ throw new \yii\web\HttpException(402);
 ```
 
 
-## HTTP Headers <a name="http-headers"></a> 
+## HTTP Headers <span id="http-headers"></span> 
 
 You can send HTTP headers by manipulating the [[yii\web\Response::headers|header collection]] in the `response` component.
 For example,
@@ -77,7 +77,7 @@ $values = $headers->remove('Pragma');
   the [[yii\web\Response::send()]] method is called.
 
 
-## Response Body <a name="response-body"></a>
+## Response Body <span id="response-body"></span>
 
 Most responses should have a body which gives the content that you want to show to end users.
 
@@ -157,7 +157,7 @@ public function actionInfo()
   [dependency injection](concept-di-container.md) to apply a common configuration to your new response objects.
 
 
-## Browser Redirection <a name="browser-redirection"></a>
+## Browser Redirection <span id="browser-redirection"></span>
 
 Browser redirection relies on sending a `Location` HTTP header. Because this feature is commonly used, Yii provides
 some special support for it.
@@ -197,7 +197,7 @@ redirect the browser accordingly.
   (by registering the [[yii\web\YiiAsset]] asset bundle), you do not need to write anything to support AJAX redirection.
 
 
-## Sending Files <a name="sending-files"></a>
+## Sending Files <span id="sending-files"></span>
 
 Like browser redirection, file sending is another feature that relies on specific HTTP headers. Yii provides
 a set of methods to support various file sending needs. They all have built-in support for the HTTP range header.
@@ -237,7 +237,7 @@ for some popular Web servers:
 - Cherokee: [X-Sendfile and X-Accel-Redirect](http://www.cherokee-project.com/doc/other_goodies.html#x-sendfile)
 
 
-## Sending Response <a name="sending-response"></a>
+## Sending Response <span id="sending-response"></span>
 
 The content in a response is not sent to the user until the [[yii\web\Response::send()]] method is called.
 By default, this method will be called automatically at the end of [[yii\base\Application::run()]]. You can, however,

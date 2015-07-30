@@ -25,7 +25,7 @@ Yii supports all of the above authentication methods. You can also easily create
 
 To enable authentication for your APIs, do the following steps:
 
-1. Configure the `user` application component:
+1. Configure the `user` [application component](structure-application-components.md):
    - Set the [[yii\web\User::enableSession|enableSession]] property to be `false`.
    - Set the [[yii\web\User::loginUrl|loginUrl]] property to be `null` to show a HTTP 403 error instead of redirecting to the login page. 
 2. Specify which authentication methods you plan to use by configuring the `authenticator` behavior
@@ -115,7 +115,7 @@ If authentication fails, a response with HTTP status 401 will be sent back toget
 (such as a `WWW-Authenticate` header for HTTP Basic Auth).
 
 
-## Authorization <a name="authorization"></a>
+## Authorization <span id="authorization"></span>
 
 After a user is authenticated, you probably want to check if he or she has the permission to perform the requested
 action for the requested resource. This process is called *authorization* which is covered in detail in

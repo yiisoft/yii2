@@ -6,7 +6,7 @@ Estas son el código responsable de presentar los datos al usuario final. En una
 Son manejadas por el componente de la aplicación [[yii\web\View|view]], el cual provee métodos comúnmente utilizados para facilitar la composición y el renderizado de las mismas. Por simplicidad, a menudo las llamamos *templates* o *archivos de templates*.
 
 
-## Creando Vistas <a name="creating-views"></a>
+## Creando Vistas <span id="creating-views"></span>
 
 Como fue mencionado, una vista es simplemente un archivo PHP que mezcla código PHP y HTML. La siguiente es una vista que muestra un formulario de login. Como puedes ver, el código PHP utilizado es para generar contenido dinámico, como el título de la página y el formulario mismo, mientras que el código HTML organiza estos elementos en una página HTML mostrable.
 
@@ -39,7 +39,7 @@ Además de `$this`, puede haber otras variables predefinidas en una vista, como 
 > Tip: La lista de variables predefinidas están listadas en un bloque de comentario al principio de la vista así pueden ser reconocidas por las IDEs. Esto es también una buena manera de documentar tus propias vistas.
 
 
-### Seguridad <a name="security"></a>
+### Seguridad <span id="security"></span>
 
 Al crear vistas que generan páginas HTML, es importante que codifiques (encode) y/o filtres los datos provenientes de los usuarios antes de mostrarlos. De otro modo, tu aplicación puede estar expuesta a ataques tipo [cross-site scripting](http://es.wikipedia.org/wiki/Cross-site_scripting).
 
@@ -70,7 +70,7 @@ use yii\helpers\HtmlPurifier;
 > Tip: Aunque HTMLPurifier hace un excelente trabajo al hacer la salida más segura, no es rápido. Deberías considerar utilizar [caching](caching-overview.md) al resultado de aplicar el filtro si tu aplicación requiere un gran desempeño (performance).
 
 
-### Organizando Vistas <a name="organizing-views"></a>
+### Organizando Vistas <span id="organizing-views"></span>
 
 Así como en [controladores](structure-controllers.md) y [modelos](structure-models.md), existen convenciones para organizar las vistas.
 
@@ -81,7 +81,7 @@ Así como en [controladores](structure-controllers.md) y [modelos](structure-mod
 Puedes personalizar estos directorios por defecto sobrescribiendo el método [[yii\base\ViewContextInterface::getViewPath()]] en el controlador o widget necesario.
 
 
-## Renderizando Vistas <a name="rendering-views"></a>
+## Renderizando Vistas <span id="rendering-views"></span>
 
 Puedes renderizar vistas desde [controllers](structure-controllers.md), [widgets](structure-widgets.md), o cualquier otro lugar llamando a los métodos de renderización de vistas. Estos métodos comparten una firma similar, como se muestra a continuación:
 
@@ -95,7 +95,7 @@ methodName($view, $params = [])
 ```
 
 
-### Renderizando en Controladores <a name="rendering-in-controllers"></a>
+### Renderizando en Controladores <span id="rendering-in-controllers"></span>
 
 Dentro de los [controladores](structure-controllers.md), puedes llamar al siguiente método del controlador para renderizar una vista:
 
@@ -132,7 +132,7 @@ class PostController extends Controller
 ```
 
 
-### Renderizando en Widgets <a name="rendering-in-widgets"></a>
+### Renderizando en Widgets <span id="rendering-in-widgets"></span>
 
 Dentro de [widgets](structure-widgets.md), puedes llamar a cualquier de los siguientes métodos de widget para renderizar una vista.
 
@@ -162,7 +162,7 @@ class ListWidget extends Widget
 ```
 
 
-### Renderizando en Vistas <a name="rendering-in-views"></a>
+### Renderizando en Vistas <span id="rendering-in-views"></span>
 
 Puedes renderizar una vista dentro de otra vista llamando a algunos de los siguientes métodos provistos por el [[yii\base\View|componente view]]:
 
@@ -177,7 +177,7 @@ Por ejemplo, el siguiente código en una vista renderiza el template `_overview.
 ```
 
 
-### Renderizando en Otros Lugares <a name="rendering-in-other-places"></a>
+### Renderizando en Otros Lugares <span id="rendering-in-other-places"></span>
 
 En cualquier lugar, puedes tener acceso al componente [[yii\base\View|view]] utilizando la expresión
 `Yii::$app->view` y entonces llamar a los métodos previamente mencionados para renderizar una vista. Por ejemplo:
@@ -188,7 +188,7 @@ echo \Yii::$app->view->renderFile('@app/views/site/license.php');
 ```
 
 
-### Vistas Nombradas <a name="named-views"></a>
+### Vistas Nombradas <span id="named-views"></span>
 
 Cuando renderizas una vista, puedes especificar el template utilizando tanto el nombre de la vista o la ruta/alias al archivo. En la mayoría de los casos, utilizarías la primera porque es más concisa y flexible. *Vistas nombradas* son vistas especificadas mediante un nombre en vez de una ruta al archivo o alias.
 
@@ -204,7 +204,7 @@ Por ejemplo, `//site/about` será resuelto como `@app/views/site/about.php`.
 
 De acuerdo a las reglas mencionadas, al llamar a `$this->render('view')` en el controlador `app\controllers\PostController` se renderizará el template `@app/views/post/view.php`, mientras que llamando a `$this->render('_overview')` en la vista renderizará el template `@app/views/post/_overview.php`.
 
-### Accediendo a Datos en la Vista <a name="accessing-data-in-views"></a>
+### Accediendo a Datos en la Vista <span id="accessing-data-in-views"></span>
 
 Hay dos modos posibles de acceder a los datos en la vista: push (inyectar) y pull (traer).
 
@@ -226,7 +226,7 @@ El ID del controlador es: <?= $this->context->id ?>
 
 Para acceder a datos en la vista, normalmente se prefiere el modo push, ya que hace a la vista menos dependiente de los objetos del contexto. La contra es que tienes que construir el array manualmente cada vez, lo que podría volverse tedioso y propenso al error si la misma vista es compartida y renderizada desde diferentes lugares.
 
-### Compartiendo Datos Entre las Vistas <a name="sharing-data-among-views"></a>
+### Compartiendo Datos Entre las Vistas <span id="sharing-data-among-views"></span>
 
 El [[yii\base\View|componente view]] provee la propiedad [[yii\base\View::params|params]] para que puedas compartir datos entre diferentes vistas.
 
@@ -245,12 +245,12 @@ Entonces, en el archivo del [layout](#layouts), que es también una vista, puede
 ```
 
 
-## Layouts <a name="layouts"></a>
+## Layouts <span id="layouts"></span>
 
 Los layouts son un tipo especial de vista que representan partes comunes de otras múltiples vistas. Por ejemplo, las páginas de la mayoría de las aplicaciones Web comparten el mismo encabezado y pie de página. Aunque puedes repetirlos en todas y cada una de las vistas, una mejor forma es hacerlo sólo en el layout e incrustar el resultado de la renderización de la vista en un lugar apropiado del mismo.
 
 
-### Creando Layouts <a name="creating-layouts"></a>
+### Creando Layouts <span id="creating-layouts"></span>
 
 Dado que los layouts son también vistas, pueden ser creados de manera similar a las vistas comunes. Por defecto, los layouts son guardados en el directorio `@app/views/layouts`. Para layouts utilizados dentro de un [módulo](structure-modules.md), deberían ser guardados en el directorio `views/layouts` bajo el [[yii\base\Module::basePath|directorio del módulo]]. Puedes personalizar el directorio de layouts por defecto configurando la propiedad [[yii\base\Module::layoutPath]] de la aplicación o módulos.
 
@@ -294,14 +294,14 @@ La mayoría de layouts deberían llamar a los siguientes métodos (como fue most
 - [[yii\base\View::endBody()|endBody()]]: Este método debería llamarse al final de la sección `<body>`. Esto dispara el evento [[yii\web\View::EVENT_END_BODY|EVENT_END_BODY]], que genera un espacio vacío a ser reemplazado por el código HTML registrado (ej. JavaScript) que apunta al final del body.
 
 
-### Accediendo a Datos en Layouts <a name="accessing-data-in-layouts"></a>
+### Accediendo a Datos en Layouts <span id="accessing-data-in-layouts"></span>
 
 Dentro de un layout, tienes acceso a dos variables predefinidas: `$this` y `$content`. La primera se refiere al componente [[yii\base\View|view]], como en cualquier vista, mientras que la última contiene el resultado de la renderización del contenido de la vista que está siendo renderizada all llamar al método [[yii\base\Controller::render()|render()]] en los controladores.
 
 Si quieres acceder a otros datos en los layouts, debes utilizar el modo pull que fue descrito en la sub-sección [Accediendo a Datos en la Vista](#accessing-data-in-views). Si quieres pasar datos desde al contenido de la vista a un layout, puedes utilizar el método descrito en la sub-sección [Compartiendo Datos Entre las Vistas](#sharing-data-among-views).
 
 
-### Utilizando Layouts <a name="using-layouts"></a>
+### Utilizando Layouts <span id="using-layouts"></span>
 
 Como se describe en la sub-sección [Renderizando en Controllers](#rendering-in-controllers), cuando renderizas una vista llamando al método [[yii\base\Controller::render()|render()]] en un controlador, al resultado de dicha renderización le será aplicado un layout. Por defecto, el layout `@app/views/layouts/main.php` será el utilizado. 
 
@@ -339,7 +339,7 @@ En el segundo paso, se determina el archivo de layout actual de acuerdo al valor
 Si el valor de layout no contiene una extensión de tipo de archivo, utilizará por defecto `.php`.
 
 
-### Layouts Anidados <a name="nested-layouts"></a>
+### Layouts Anidados <span id="nested-layouts"></span>
 
 A veces podrías querer anidar un layout dentro de otro. Por ejemplo, en diferentes secciones de un sitio Web, podrías querer utilizar layouts diferentes, mientras que todos esos layouts comparten el mismo layout básico que genera la estructura general de la página en HTML5. Esto es posible llamando a los métodos [[yii\base\View::beginContent()|beginContent()]] y [[yii\base\View::endContent()|endContent()]] en los layouts hijos como se muestra a continuación:
 
@@ -356,7 +356,7 @@ Como se acaba de mostrar, el contenido del layout hijo debe ser encerrado dentro
 Utilizando la forma recién mencionada, puedes anidar layouts en más de un nivel.
 
 
-## Utilizando Componentes de Vista <a name="using-view-components"></a>
+## Utilizando Componentes de Vista <span id="using-view-components"></span>
 
 Los [[yii\base\View|componentes de vista]] proveen características relacionadas a las vistas. Aunque puedes obtener componentes de vista creando instancias individuales de [[yii\base\View]] o sus clases hijas, en la mayoría de los casos utilizarías el componente `view` del a aplicación. Puedes configurar este componente en la [configuración de la aplicación](structure-applications.md#application-configurations) como a continuación:
 
@@ -384,7 +384,7 @@ Los componentes de vista proveen las siguientes características útiles, cada u
 Puedes también utilizar frecuentemente el siguiente menor pero útil grupo de características al desarrollar páginas Web.
 
 
-### Definiendo Títulos de Página <a name="setting-page-titles"></a>
+### Definiendo Títulos de Página <span id="setting-page-titles"></span>
 
 Toda página Web debería tener un título. Normalmente el tag de título es generado en [layout](#layouts). De todos modos, en la práctica el título es determinado en el contenido de las vistas más que en layouts. Para resolver este problema, [[yii\web\View]] provee la propiedad [[yii\web\View::title|title]] para que puedas pasar información del título desde el contenido de la vista a los layouts.
 
@@ -403,7 +403,7 @@ Entonces en el layout, asegúrate de tener el siguiente código en la sección `
 ```
 
 
-### Registrando Meta Tags <a name="registering-meta-tags"></a>
+### Registrando Meta Tags <span id="registering-meta-tags"></span>
 
 Las páginas Web usualmente necesitan generar varios meta tags necesarios por diferentes grupos (ej. Facebook, motores de búsqueda, etc). Cómo los títulos de página, los meta tags aparecen en la sección `<head>` y son usualmente generado en los layouts.
 
@@ -431,7 +431,7 @@ $this->registerMetaTag(['name' => 'description', 'content' => 'Este sitio Web es
 ```
 
 
-### Registrando Link Tags <a name="registering-link-tags"></a>
+### Registrando Link Tags <span id="registering-link-tags"></span>
 
 Tal como los [meta tags](#adding-meta-tags), los link tags son útiles en muchos casos, como personalizar el ícono (favicon) del sitio, apuntar a una fuente de RSS o delegar OpenID a otro servidor. Puedes trabajar con link tags, al igual que con meta tags, utilizando [[yii\web\View::registerLinkTag()]]. Por ejemplo, en el contenido de una vista, puedes registrar un link tag como se muestra a continuación:
 
@@ -453,7 +453,7 @@ El resultado del código es el siguiente:
 Al igual que con [[yii\web\View::registerMetaTag()|registerMetaTags()]], puedes especificar una clave al llamar a [[yii\web\View::registerLinkTag()|registerLinkTag()]] para evitar registrar link tags repetidos.
 
 
-## Eventos de Vistas <a name="view-events"></a>
+## Eventos de Vistas <span id="view-events"></span>
 
 Los [[yii\base\View|componentes de vistas]] disparan varios eventos durante el proceso de renderizado de la vista. Puedes responder a estos eventos para inyectar contenido a la vista o procesar el resultado de la renderización antes de que sea enviada al usuario final.
 
@@ -474,7 +474,7 @@ Por ejemplo, el siguiente código inyecta la fecha actual al final del body de l
 ```
 
 
-## Renderizando Páginas Estáticas <a name="rendering-static-pages"></a>
+## Renderizando Páginas Estáticas <span id="rendering-static-pages"></span>
 
 Con páginas estáticas nos referimos a esas páginas cuyo contenido es mayormente estático y sin necesidad de acceso a datos dinámicos enviados desde los controladores.
 
@@ -516,7 +516,7 @@ http://localhost/index.php?r=site/page&view=about
 El parámetro `GET` `view` le comunica a [[yii\web\ViewAction]] cuál es la vista solicitada. La acción entonces buscará esta vista dentro de `@app/views/site/pages`. Puedes configurar la propiedad [[yii\web\ViewAction::viewPrefix]] para cambiar el directorio en el que se buscarán dichas páginas.
 
 
-## Buenas Prácticas <a name="best-practices"></a>
+## Buenas Prácticas <span id="best-practices"></span>
 
 Las vistas son responsables de la presentación de modelos en el formato que el usuario final desea. En general, las vistas
 
