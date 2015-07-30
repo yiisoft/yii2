@@ -93,6 +93,6 @@ $this->registerCssFile("http://example.com/css/themes/black-and-white.css", [
 
 
 
-
-我们强烈建议使用 [asset bundles](structure-assets.md) 来注册外部CSS文件而非使用 [[yii\web\View::registerCssFile()|registerCssFile()]] 来注册。
+我们强烈建议使用 [asset bundles](structure-assets.md) 来注册外部CSS文件，
+而非使用 [[yii\web\View::registerCssFile()|registerCssFile()]] 来注册。
 使用资源包允许你合并并且压缩多个CSS文件，对于高流量的网站来说，这是比较理想的方式。
