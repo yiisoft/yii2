@@ -133,7 +133,8 @@ class ColumnSchema extends Object
             case 'integer':
                 return (int) $value;
             case 'boolean':
-                return (bool) $value;
+		// bypassing PHP's (bool) which considers both 0x00 and 0x01 as true
+                return ($value === chr(0x01) || $value === chr(0x31));
             case 'double':
                 return (double) $value;
         }
