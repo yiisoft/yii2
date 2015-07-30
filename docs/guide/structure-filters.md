@@ -9,7 +9,7 @@ A filter may consist of a pre-filter (filtering logic applied *before* actions) 
 *after* actions).
 
 
-## Using Filters <a name="using-filters"></a>
+## Using Filters <span id="using-filters"></span>
 
 Filters are essentially a special kind of [behaviors](concept-behaviors.md). Therefore, using filters is the same
 as [using behaviors](concept-behaviors.md#attaching-behaviors). You can declare filters in a controller class
@@ -61,7 +61,7 @@ When multiple filters are configured for a single action, they are applied accor
     - Apply filters declared in the application in the reverse order they are listed in `behaviors()`.
 
 
-## Creating Filters <a name="creating-filters"></a>
+## Creating Filters <span id="creating-filters"></span>
 
 To create a new action filter, extend from [[yii\base\ActionFilter]] and override the
 [[yii\base\ActionFilter::beforeAction()|beforeAction()]] and/or [[yii\base\ActionFilter::afterAction()|afterAction()]]
@@ -97,13 +97,13 @@ class ActionTimeFilter extends ActionFilter
 ```
 
 
-## Core Filters <a name="core-filters"></a>
+## Core Filters <span id="core-filters"></span>
 
 Yii provides a set of commonly used filters, found primarily under the `yii\filters` namespace. In the following,
 we will briefly introduce these filters.
 
 
-### [[yii\filters\AccessControl|AccessControl]] <a name="access-control"></a>
+### [[yii\filters\AccessControl|AccessControl]] <span id="access-control"></span>
 
 AccessControl provides simple access control based on a set of [[yii\filters\AccessControl::rules|rules]].
 In particular, before an action is executed, AccessControl will examine the listed rules and find the first one
@@ -139,7 +139,7 @@ public function behaviors()
 For more details about access control in general, please refer to the [Authorization](security-authorization.md) section.
 
 
-### Authentication Method Filters <a name="auth-method-filters"></a>
+### Authentication Method Filters <span id="auth-method-filters"></span>
 
 Authentication method filters are used to authenticate a user using various methods, such as
 [HTTP Basic Auth](http://en.wikipedia.org/wiki/Basic_access_authentication), [OAuth 2](http://oauth.net/2/).
@@ -167,7 +167,7 @@ Authentication method filters are commonly used in implementing RESTful APIs. Fo
 RESTful [Authentication](rest-authentication.md) section.
 
 
-### [[yii\filters\ContentNegotiator|ContentNegotiator]] <a name="content-negotiator"></a>
+### [[yii\filters\ContentNegotiator|ContentNegotiator]] <span id="content-negotiator"></span>
 
 ContentNegotiator supports response format negotiation and application language negotiation. It will try to
 determine the response format and/or language by examining `GET` parameters and `Accept` HTTP header.
@@ -229,7 +229,7 @@ use yii\web\Response;
 
 
 
-### [[yii\filters\HttpCache|HttpCache]] <a name="http-cache"></a>
+### [[yii\filters\HttpCache|HttpCache]] <span id="http-cache"></span>
 
 HttpCache implements client-side caching by utilizing the `Last-Modified` and `Etag` HTTP headers.
 For example,
@@ -255,7 +255,7 @@ public function behaviors()
 Please refer to the [HTTP Caching](caching-http.md) section for more details about using HttpCache.
 
 
-### [[yii\filters\PageCache|PageCache]] <a name="page-cache"></a>
+### [[yii\filters\PageCache|PageCache]] <span id="page-cache"></span>
 
 PageCache implements server-side caching of whole pages. In the following example, PageCache is applied
 to the `index` action to cache the whole page for maximum 60 seconds or until the count of entries in the `post`
@@ -287,14 +287,14 @@ public function behaviors()
 Please refer to the [Page Caching](caching-page.md) section for more details about using PageCache.
 
 
-### [[yii\filters\RateLimiter|RateLimiter]] <a name="rate-limiter"></a>
+### [[yii\filters\RateLimiter|RateLimiter]] <span id="rate-limiter"></span>
 
 RateLimiter implements a rate limiting algorithm based on the [leaky bucket algorithm](http://en.wikipedia.org/wiki/Leaky_bucket).
 It is primarily used in implementing RESTful APIs. Please refer to the [Rate Limiting](rest-rate-limiting.md) section
 for details about using this filter.
 
 
-### [[yii\filters\VerbFilter|VerbFilter]] <a name="verb-filter"></a>
+### [[yii\filters\VerbFilter|VerbFilter]] <span id="verb-filter"></span>
 
 VerbFilter checks if the HTTP request methods are allowed by the requested actions. If not allowed, it will
 throw an HTTP 405 exception. In the following example, VerbFilter is declared to specify a typical set of allowed
@@ -320,7 +320,7 @@ public function behaviors()
 }
 ```
 
-### [[yii\filters\Cors|Cors]] <a name="cors"></a>
+### [[yii\filters\Cors|Cors]] <span id="cors"></span>
 
 Cross-origin resource sharing [CORS](https://developer.mozilla.org/fr/docs/HTTP/Access_control_CORS) is a mechanism that allows many resources (e.g. fonts, JavaScript, etc.)
 on a Web page to be requested from another domain outside the domain the resource originated from.

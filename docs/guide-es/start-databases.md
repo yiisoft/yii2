@@ -18,7 +18,7 @@ En particular, deberás ser capaz de crear una base de datos y saber ejecutar co
 base de datos.
 
 
-Preparando una Base de Datos <a name="preparing-database"></a>
+Preparando una Base de Datos <span id="preparing-database"></span>
 ----------------------------
 
 Para empezar, crea una base de datos llamada `yii2basic` de la cual tomarás los datos en la aplicación.
@@ -50,7 +50,7 @@ Al final, tendrás una base de datos llamada `yii2basic`, y dentro de esta, una 
 registros en ella.
 
 
-Configurando una conexión a la Base de Datos <a name="configuring-db-connection"></a>
+Configurando una conexión a la Base de Datos <span id="configuring-db-connection"></span>
 --------------------------------------------
 
 Asegúrate de tener instalado la extensión de PHP [PDO](http://www.php.net/manual/es/book.pdo.php) y el driver
@@ -83,7 +83,7 @@ La conexión a la base de datos realizada anteriormente puede ser accedida media
   Para más información, consulta la sección [Configuraciones](concept-configurations.md).
 
 
-Creando un Active Record <a name="creating-active-record"></a>
+Creando un Active Record <span id="creating-active-record"></span>
 ------------------------
 
 Para representar y extraer datos de la tabla `country`, crea una clase [Active Record](db-active-record.md)
@@ -131,7 +131,7 @@ Puedes encontrar información más detallada acerca de [Active Record](db-active
 puedes utilizar un método de acceso de bajo nivel llamado [Data Access Objects](db-dao.md).
 
 
-Creando una Acción <a name="creating-action"></a>
+Creando una Acción <span id="creating-action"></span>
 ------------------
 
 Para mostrar el país a los usuarios, necesitas crear una acción. En vez de hacerlo en el controlador `site`
@@ -188,7 +188,7 @@ Al final, la acción `index` renderiza una vista llamada `index` y le pasa los d
 de paginación relacionada.
 
 
-Creando una Vista <a name="creating-view"></a>
+Creando una Vista <span id="creating-view"></span>
 -----------------
 
 Bajo el directorio `views`, crea primero un sub-directorio llamado `country`. Este será usado para contener
@@ -220,7 +220,7 @@ El widget `LinkPager` muestra una lista de botones que representan las páginas 
 de ellas mostrará los datos de países de la página correspondiente.
 
 
-Probándolo <a name="trying-it-out"></a>
+Probándolo <span id="trying-it-out"></span>
 ----------
 
 Para ver cómo funciona, utiliza a la siguiente URL en tu navegador:
@@ -252,7 +252,7 @@ Entre bastidores, [[yii\data\Pagination|Pagination]] está realizando su magia.
   siguientes cinco países para mostrar.
 
 
-Resumen <a name="summary"></a>
+Resumen <span id="summary"></span>
 -------
 
 En esta sección has aprendido cómo trabajar con una base de datos. También has aprendido cómo traer y mostrar

@@ -60,7 +60,7 @@ When ACF performs authorization check, it will examine the rules one by one from
 a match. The `allow` value of the matching rule will then be used to judge if the user is authorized. If none
 of the rules matches, it means the user is NOT authorized and ACF will stop further action execution.
 
-By default, ACF does only of the followings when it determines a user is not authorized to access the current action:
+By default, ACF does only the following when it determines a user is not authorized to access the current action:
 
 * If the user is a guest, it will call [[yii\web\User::loginRequired()]], which may redirect the browser to the login page.
 * If the user is already authenticated, it will throw a [[yii\web\ForbiddenHttpException]].
@@ -90,11 +90,13 @@ matches. This should be an array of controller IDs. The comparison is case-sensi
 empty or not set, it means the rule applies to all controllers.
 
  * [[yii\filters\AccessRule::roles|roles]]: specifies which user roles that this rule matches.
-Two special roles are recognized, and they are checked via [[yii\web\User::isGuest]]:
+   Two special roles are recognized, and they are checked via [[yii\web\User::isGuest]]:
+
      - `?`: matches a guest user (not authenticated yet)
      - `@`: matches an authenticated user
-Using other role names requires RBAC (to be described in the next section), and [[yii\web\User::can()]] will be called.
-If this option is empty or not set, it means this rule applies to all roles.
+
+   Using other role names requires RBAC (to be described in the next section), and [[yii\web\User::can()]] will be called.
+   If this option is empty or not set, it means this rule applies to all roles.
 
  * [[yii\filters\AccessRule::ips|ips]]: specifies which [[yii\web\Request::userIP|client IP addresses]] this rule matches.
 An IP address can contain the wildcard `*` at the end so that it matches IP addresses with the same prefix.
@@ -150,7 +152,7 @@ Role based access control (RBAC)
 --------------------------------
 
 Role-Based Access Control (RBAC) provides a simple yet powerful centralized access control. Please refer to
-the [Wiki article](http://en.wikipedia.org/wiki/Role-based_access_control) for details about comparing RBAC
+the [Wikipedia](http://en.wikipedia.org/wiki/Role-based_access_control) for details about comparing RBAC
 with other more traditional access control schemes.
 
 Yii implements a General Hierarchical RBAC, following the [NIST RBAC model](http://csrc.nist.gov/rbac/sandhu-ferraiolo-kuhn-00.pdf).
@@ -183,10 +185,12 @@ more special *tree* hierarchy. While a role can contain a permission, it is not 
 Before we set off to define authorization data and perform access checking, we need to configure the
 [[yii\base\Application::authManager|authManager]] application component. Yii provides two types of authorization managers:
 [[yii\rbac\PhpManager]] and [[yii\rbac\DbManager]]. The former uses a PHP script file to store authorization
-data, while the latter stores authorization data in database. You may consider using the former if your application
+data, while the latter stores authorization data in a database. You may consider using the former if your application
 does not require very dynamic role and permission management.
 
-The following code shows how to configure `authManager` in the application configuration:
+#### configuring authManager with `PhpManager`
+
+The following code shows how to configure the `authManager` in the application configuration using the [[yii\rbac\PhpManager]] class:
 
 ```php
 return [
@@ -202,10 +206,37 @@ return [
 
 The `authManager` can now be accessed via `\Yii::$app->authManager`.
 
-> Tip: By default, [[yii\rbac\PhpManager]] stores RBAC data in three files: `@app/rbac/items.php`, `@app/rbac/assignments.php` and `@app/rbac/rules.php`.
-  Make sure these files are writable by the Web server process if the authorization needs to be changed online.
-  Sometimes you will need to create these files manually.
+> Tip: By default, [[yii\rbac\PhpManager]] stores RBAC data in files under `@app/rbac/` directory. Make sure the directory
+  and all the files in it are writable by the Web server process if permissions hierarchy needs to be changed online.
 
+#### configuring authManager with `DbManager`
+
+The following code shows how to configure the `authManager` in the application configuration using the [[yii\rbac\DbManager]] class:
+
+```php
+return [
+    // ...
+    'components' => [
+        'authManager' => [
+            'class' => 'yii\rbac\DbManager',
+        ],
+        // ...
+    ],
+];
+```
+
+`DbManager` uses four database tables to store its data: 
+
+- [[yii\rbac\DbManager::$itemTable|itemTable]]: the table for storing authorization items. Defaults to "auth_item".
+- [[yii\rbac\DbManager::$itemChildTable|itemChildTable]]: the table for storing authorization item hierarchy. Defaults to "auth_item_child".
+- [[yii\rbac\DbManager::$assignmentTable|assignmentTable]]: the table for storing authorization item assignments. Defaults to "auth_assignment".
+- [[yii\rbac\DbManager::$ruleTable|ruleTable]]: the table for storing rules. Defaults to "auth_rule".
+
+Before you can go on you need to create those tables in the database. To do this, you can use the migration stored in `@yii/rbac/migrations`:
+
+`yii migrate --migrationPath=@yii/rbac/migrations`
+
+The `authManager` can now be accessed via `\Yii::$app->authManager`.
 
 ### Building Authorization Data
 
@@ -220,7 +251,7 @@ Building authorization data is all about the following tasks:
 Depending on authorization flexibility requirements the tasks above could be done in different ways.
 
 If your permissions hierarchy doesn't change at all and you have a fixed number of users you can create a
-[console command](tutorial-console.md#create-command) command that will initialize authorization data once via APIs offered by `authManager`:
+[console command](tutorial-console.md#create-command) that will initialize authorization data once via APIs offered by `authManager`:
 
 ```php
 <?php
@@ -272,7 +303,7 @@ After executing the command with `yii rbac/init` we'll get the following hierarc
 Author can create post, admin can update post and do everything author can.
 
 If your application allows user signup you need to assign roles to these new users once. For example, in order for all
-signed up users to become authors you in advanced application template you need to modify `frontend\models\SignupForm::signup()`
+signed up users to become authors in your advanced project template you need to modify `frontend\models\SignupForm::signup()`
 as follows:
 
 ```php
@@ -300,11 +331,6 @@ public function signup()
 
 For applications that require complex access control with dynamically updated authorization data, special user interfaces
 (i.e. admin panel) may need to be developed using APIs offered by `authManager`.
-
-
-> Tip: By default, [[yii\rbac\PhpManager]] stores RBAC data in three files: `@app/rbac/items.php`, `@app/rbac/assignments.php` and `@app/rbac/rules.php`.
-  Make sure these files are writable by the Web server process if the authorization needs to be changed online.
-  Sometimes you will need to create these files manually.
 
 
 ### Using Rules
@@ -416,7 +442,7 @@ assign each user to a RBAC role. Let's use an example to show how this can be do
 
 Assume in the user table, you have a `group` column which uses 1 to represent the administrator group and 2 the author group.
 You plan to have two RBAC roles `admin` and `author` to represent the permissions for these two groups, respectively.
-You can create set up the RBAC data as follows,
+You can set up the RBAC data as follows,
 
 
 ```php

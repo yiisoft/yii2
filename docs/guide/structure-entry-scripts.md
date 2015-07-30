@@ -16,16 +16,16 @@ so that users can run console applications through the command `./yii <route> [a
 Entry scripts mainly do the following work:
 
 * Define global constants;
-* Register [Composer autoloader](http://getcomposer.org/doc/01-basic-usage.md#autoloading);
+* Register [Composer autoloader](https://getcomposer.org/doc/01-basic-usage.md#autoloading);
 * Include the [[Yii]] class file;
 * Load application configuration;
 * Create and configure an [application](structure-applications.md) instance;
 * Call [[yii\base\Application::run()]] to process the incoming request.
 
 
-## Web Applications <a name="web-applications"></a>
+## Web Applications <span id="web-applications"></span>
 
-The following is the code in the entry script for the [Basic Web Application Template](start-installation.md).
+The following is the code in the entry script for the [Basic Web Project Template](start-installation.md).
 
 ```php
 <?php
@@ -47,7 +47,7 @@ $config = require(__DIR__ . '/../config/web.php');
 ```
 
 
-## Console Applications <a name="console-applications"></a>
+## Console Applications <span id="console-applications"></span>
 
 Similarly, the following is the code for the entry script of a console application:
 
@@ -83,7 +83,7 @@ exit($exitCode);
 ```
 
 
-## Defining Constants <a name="defining-constants"></a>
+## Defining Constants <span id="defining-constants"></span>
 
 Entry scripts are the best place for defining global constants. Yii supports the following three constants:
 

@@ -2,11 +2,11 @@
 ==========
 
 アプリケーションに対するリクエストは、リクエストのパラメータ、HTTP ヘッダ、クッキーなどの情報を提供する [[yii\web\Request]] オブジェクトの形で表されます。
-与えられたリクエストに対応するリクエストオブジェクトには、既定では [[yii\web\Request]] のインスタンスである `request` [アプリケーションコンポーネント](structure-application-components.md) を通じてアクセスすることが出来ます。
+与えられたリクエストに対応するリクエストオブジェクトには、デフォルトでは [[yii\web\Request]] のインスタンスである `request` [アプリケーションコンポーネント](structure-application-components.md) を通じてアクセスすることが出来ます。
 この節では、アプリケーションの中でこのコンポーネントをどのように利用できるかを説明します。
 
 
-## リクエストのパラメータ <a name="request-parameters"></a>
+## リクエストのパラメータ <span id="request-parameters"></span>
 
 リクエストのパラメータを取得するためには、`request` コンポーネントの [[yii\web\Request::get()|get()]] および [[yii\web\Request::post()|post()]] メソッドを呼ぶことが出来ます。
 これらは、ぞれぞれ、`$_GET` と `$_POST` の値を返します。例えば、
@@ -55,10 +55,10 @@ $param = $request->getBodyParam('id');
   [[yii\web\Request::parsers]] プロパティを構成することによって、これらのパラメータが解析される方法をカスタマイズすることが出来ます。
 
 
-## リクエストメソッド <a name="request-methods"></a>
+## リクエストメソッド <span id="request-methods"></span>
 
 現在のリクエストに使用された HTTP メソッドは、`Yii::$app->request->method` という式によって取得することが出来ます。
-現在のメソッドが特定のタイプであるかどうかをチェックするための、一連の真偽値のプロパティも提供されています。
+現在のメソッドが特定のタイプであるかどうかをチェックするための、一揃いの真偽値のプロパティも提供されています。
 例えば、
 
 ```php
@@ -70,7 +70,7 @@ if ($request->isPost) { // リクエストメソッドは POST }
 if ($request->isPut)  { // リクエストメソッドは PUT }
 ```
 
-## リクエストの URL <a name="request-urls"></a>
+## リクエストの URL <span id="request-urls"></span>
 
 `request` コンポーネントは現在リクエストされている URL を調べるための方法を数多く提供しています。
 
@@ -80,17 +80,17 @@ if ($request->isPut)  { // リクエストメソッドは PUT }
 * [[yii\web\Request::absoluteUrl|absoluteUrl]]: `http://example.com/admin/index.php/product?id=100` を返します。
   ホスト情報の部分を含んだ URL です。
 * [[yii\web\Request::hostInfo|hostInfo]]: `http://example.com` を返します。URL のホスト情報の部分です。
-* [[yii\web\Request::pathInfo|pathInfo]]: `/product` を返します。エントリスクリプトの後、かつ、クエスチョンマーク (クエリ文字列) の前の部分です。
-* [[yii\web\Request::queryString|queryString]]: `id=100` を返します。クエスチョンマークの後の部分です。
+* [[yii\web\Request::pathInfo|pathInfo]]: `/product` を返します。エントリスクリプトの後、疑問符 (クエリ文字列) の前の部分です。
+* [[yii\web\Request::queryString|queryString]]: `id=100` を返します。疑問符の後の部分です。
 * [[yii\web\Request::baseUrl|baseUrl]]: `/admin` を返します。ホスト情報の後、かつ、エントリスクリプトの前の部分です。
 * [[yii\web\Request::scriptUrl|scriptUrl]]: `/admin/index.php` を返します。パス情報とクエリ文字列を省略した URL です。
 * [[yii\web\Request::serverName|serverName]]: `example.com` を返します。URL の中のホスト名です。
 * [[yii\web\Request::serverPort|serverPort]]: 80 を返します。ウェブサーバによって使用されているポートです。
 
 
-## HTTP ヘッダ <a name="http-headers"></a> 
+## HTTP ヘッダ <span id="http-headers"></span> 
 
- [[yii\web\Request::headers]] プロパティによって返される [[yii\web\HeaderCollection|header コレクション]] を通じて、HTTP ヘッダ情報を取得することが出来ます。例えば、
+[[yii\web\Request::headers]] プロパティによって返される [[yii\web\HeaderCollection|header コレクション]] を通じて、HTTP ヘッダ情報を取得することが出来ます。例えば、
 
 ```php
 // $headers は yii\web\HeaderCollection のオブジェクト
@@ -119,7 +119,7 @@ if ($headers->has('User-Agent')) { // User-Agent ヘッダが在る }
 このフィルタは、上記で説明したプロパティとメソッドの上に、コンテントネゴシエーションを実装しています。
 
 
-## クライアント情報 <a name="client-information"></a>
+## クライアント情報 <span id="client-information"></span>
 
 クライアントマシンのホスト名と IP アドレスを、それぞれ、[[yii\web\Request::userHost|userHost]] と [[yii\web\Request::userIP|userIP]] によって取得することが出来ます。例えば、
 

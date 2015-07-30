@@ -7,7 +7,7 @@
 传送模型结果到[视图](structure-views.md)，最后生成输出响应信息。
 
 
-## 操作 <a name="actions"></a>
+## 操作 <span id="actions"></span>
 
 控制器由 *操作* 组成，它是执行终端用户请求的最基础的单元，一个控制器可有一个或多个操作。
 
@@ -57,7 +57,7 @@ class PostController extends Controller
 然后保存模型，如果两者都成功，会跳转到ID为新创建的模型的`view`操作，否则显示提供用户输入的`create`视图。
 
 
-## 路由 <a name="routes"></a>
+## 路由 <span id="routes"></span>
 
 终端用户通过所谓的*路由*寻找到操作，路由是包含以下部分的字符串：
 
@@ -81,7 +81,7 @@ ModuleID/ControllerID/ActionID
 更多关于处理路由的详情请参阅 [路由](runtime-routing.md) 一节。
 
 
-## 创建控制器 <a name="creating-controllers"></a>
+## 创建控制器 <span id="creating-controllers"></span>
 
 在[[yii\web\Application|Web applications]]网页应用中，控制器应继承[[yii\web\Controller]] 或它的子类。
 同理在[[yii\console\Application|console applications]]控制台应用中，控制器继承[[yii\console\Controller]] 或它的子类。
@@ -98,7 +98,7 @@ class SiteController extends Controller
 ```
 
 
-### 控制器ID <a name="controller-ids"></a>
+### 控制器ID <span id="controller-ids"></span>
 
 通常情况下，控制器用来处理请求有关的资源类型，因此控制器ID通常为和资源有关的名词。
 例如使用`article`作为处理文章的控制器ID。
@@ -111,7 +111,7 @@ class SiteController extends Controller
 子目录前缀可为英文大小写字母、数字、下划线、正斜杠，其中正斜杠用来区分多级子目录(如 `panels/admin`)。
 
 
-### 控制器类命名 <a name="controller-class-naming"></a>
+### 控制器类命名 <span id="controller-class-naming"></span>
 
 控制器ID遵循以下规则衍生控制器类名：
 
@@ -136,7 +136,7 @@ class SiteController extends Controller
   在你不想用 [模块](structure-modules.md) 的情况下给控制器分类，这种方式很有用。
 
 
-### 控制器部署 <a name="controller-map"></a>
+### 控制器部署 <span id="controller-map"></span>
 
 可通过配置 [[yii\base\Application::controllerMap|controller map]] 来强制上述的控制器ID和类名对应，
 通常用在使用第三方不能掌控类名的控制器上。
@@ -160,7 +160,7 @@ class SiteController extends Controller
 ```
 
 
-### 默认控制器 <a name="default-controller"></a>
+### 默认控制器 <span id="default-controller"></span>
 
 每个应用有一个由[[yii\base\Application::defaultRoute]]属性指定的默认控制器；
 当请求没有指定 [路由](#ids-routes)，该属性值作为路由使用。
@@ -177,7 +177,7 @@ class SiteController extends Controller
 ```
 
 
-## 创建操作 <a name="creating-actions"></a>
+## 创建操作 <span id="creating-actions"></span>
 
 创建操作可简单地在控制器类中定义所谓的 *操作方法* 来完成，操作方法必须是以`action`开头的公有方法。
 操作方法的返回值会作为响应数据发送给终端用户，如下代码定义了两个操作 `index` 和 `hello-world`:
@@ -202,7 +202,7 @@ class SiteController extends Controller
 ```
 
 
-### 操作ID <a name="action-ids"></a>
+### 操作ID <span id="action-ids"></span>
 
 操作通常是用来执行资源的特定操作，因此，操作ID通常为动词，如`view`, `update`等。
 
@@ -215,7 +215,7 @@ class SiteController extends Controller
 独立操作相反，主要用于多个控制器重用，或重构为[扩展](structure-extensions.md)。
 
 
-### 内联操作 <a name="inline-actions"></a>
+### 内联操作 <span id="inline-actions"></span>
 
 内联操作指的是根据我们刚描述的操作方法。
 
@@ -235,7 +235,7 @@ class SiteController extends Controller
 或者你想重新分配一个操作，需要考虑定义它为*独立操作*。
 
 
-### 独立操作 <a name="standalone-actions"></a>
+### 独立操作 <span id="standalone-actions"></span>
 
 独立操作通过继承[[yii\base\Action]]或它的子类来定义。
 例如Yii发布的[[yii\web\ViewAction]]和[[yii\web\ErrorAction]]都是独立操作。
@@ -281,7 +281,7 @@ class HelloWorldAction extends Action
 ```
 
 
-### 操作结果 <a name="action-results"></a>
+### 操作结果 <span id="action-results"></span>
 
 操作方法或独立操作的`run()`方法的返回值非常重要，它表示对应操作结果。
 
@@ -304,7 +304,7 @@ public function actionForward()
 ```
 
 
-### 操作参数 <a name="action-parameters"></a>
+### 操作参数 <span id="action-parameters"></span>
 
 内联操作的操作方法和独立操作的 `run()` 方法可以带参数，称为*操作参数*。
 参数值从请求中获取，对于[[yii\web\Application|Web applications]]网页应用，
@@ -352,7 +352,7 @@ public function actionView(array $id, $version = null)
 上述例子主要描述网页应用的操作参数，对于控制台应用，更多详情请参阅[控制台命令](tutorial-console.md)。
 
 
-### 默认操作 <a name="default-action"></a>
+### 默认操作 <span id="default-action"></span>
 
 每个控制器都有一个由 [[yii\base\Controller::defaultAction]] 属性指定的默认操作，
 当[路由](#ids-routes) 只包含控制器ID，会使用所请求的控制器的默认操作。
@@ -376,7 +376,7 @@ class SiteController extends Controller
 ```
 
 
-## 控制器生命周期 <a name="controller-lifecycle"></a>
+## 控制器生命周期 <span id="controller-lifecycle"></span>
 
 处理一个请求时，[应用主体](structure-applications.md) 会根据请求[路由](#routes)创建一个控制器，控制器经过以下生命周期来完成请求：
 
@@ -397,7 +397,7 @@ class SiteController extends Controller
 6. 应用主体获取操作结果并赋值给[响应](runtime-responses.md).
 
 
-## 最佳实践 <a name="best-practices"></a>
+## 最佳实践 <span id="best-practices"></span>
 
 在设计良好的应用中，控制器很精练，包含的操作代码简短；
 如果你的控制器很复杂，通常意味着需要重构，转移一些代码到其他类中。

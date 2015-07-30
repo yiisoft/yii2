@@ -73,7 +73,7 @@ class EmailValidator extends Validator
         // make sure string length is limited to avoid DOS attacks
         if (!is_string($value) || strlen($value) >= 320) {
             $valid = false;
-        } elseif (!preg_match('/^(.*<?)(.*)@(.*)(>?)$/', $value, $matches)) {
+        } elseif (!preg_match('/^(.*<?)(.*)@(.*?)(>?)$/', $value, $matches)) {
             $valid = false;
         } else {
             $domain = $matches[3];
@@ -112,6 +112,6 @@ class EmailValidator extends Validator
             PunycodeAsset::register($view);
         }
 
-        return 'yii.validation.email(value, messages, ' . Json::encode($options) . ');';
+        return 'yii.validation.email(value, messages, ' . Json::htmlEncode($options) . ');';
     }
 }

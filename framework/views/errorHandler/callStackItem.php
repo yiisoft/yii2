@@ -9,7 +9,7 @@
 /* @var $end integer */
 /* @var $handler \yii\web\ErrorHandler */
 ?>
-<li class="<?php if (!$handler->isCoreFile($file) || $index === 1) echo 'application'; ?> call-stack-item"
+<li class="<?php if ($index === 1 || !$handler->isCoreFile($file)) echo 'application'; ?> call-stack-item"
     data-line="<?= (int) ($line - $begin) ?>">
     <div class="element-wrap">
         <div class="element">

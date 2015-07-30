@@ -57,7 +57,8 @@ use yii\web\ForbiddenHttpException;
 class AccessControl extends ActionFilter
 {
     /**
-     * @var User|string the user object representing the authentication status or the ID of the user application component.
+     * @var User|array|string the user object representing the authentication status or the ID of the user application component.
+     * Starting from version 2.0.2, this can also be a configuration array for creating the object.
      */
     public $user = 'user';
     /**

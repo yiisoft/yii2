@@ -17,7 +17,7 @@ Note that in order to finish this section, you should have basic knowledge and e
 In particular, you should know how to create a database, and how to execute SQL statements using a DB client tool.
 
 
-Preparing the Database <a name="preparing-database"></a>
+Preparing the Database <span id="preparing-database"></span>
 ----------------------
 
 To begin, create a database named `yii2basic`, from which you will fetch data in your application.
@@ -46,7 +46,7 @@ INSERT INTO `country` VALUES ('US','United States',278357000);
 
 At this point, you have a database named `yii2basic`, and within it a `country` table with three columns, containing ten rows of data.
 
-Configuring a DB Connection <a name="configuring-db-connection"></a>
+Configuring a DB Connection <span id="configuring-db-connection"></span>
 ---------------------------
 
 Before proceeding, make sure you have installed both the [PDO](http://www.php.net/manual/en/book.pdo.php) PHP extension and
@@ -79,7 +79,7 @@ The DB connection configured above can be accessed in the application code via t
   For more information, please refer to the [Configurations](concept-configurations.md) section.
 
 
-Creating an Active Record <a name="creating-active-record"></a>
+Creating an Active Record <span id="creating-active-record"></span>
 -------------------------
 
 To represent and fetch the data in the `country` table, create an [Active Record](db-active-record.md)-derived
@@ -126,7 +126,7 @@ $country->save();
 You may find more detailed information in the [Active Record](db-active-record.md) section. Alternatively, you may also interact with a database using a lower-level data accessing method called [Data Access Objects](db-dao.md).
 
 
-Creating an Action <a name="creating-action"></a>
+Creating an Action <span id="creating-action"></span>
 ------------------
 
 To expose the country data to end users, you need to create a new action. Instead of placing the new action in the `site`
@@ -182,7 +182,7 @@ At the end of the code, the `index` action renders a view named `index`, and pas
 information to it.
 
 
-Creating a View <a name="creating-view"></a>
+Creating a View <span id="creating-view"></span>
 ---------------
 
 Under the `views` directory, first create a sub-directory named `country`. This folder will be used to hold all the
@@ -213,7 +213,7 @@ The `LinkPager` widget displays a list of page buttons. Clicking on any of them 
 in the corresponding page.
 
 
-Trying it Out <a name="trying-it-out"></a>
+Trying it Out <span id="trying-it-out"></span>
 -------------
 
 To see how all of the above code works, use your browser to access the following URL:
@@ -245,7 +245,7 @@ Behind the scenes, [[yii\data\Pagination|Pagination]] is providing all of the ne
   for display.
 
 
-Summary <a name="summary"></a>
+Summary <span id="summary"></span>
 -------
 
 In this section, you learned how to work with a database. You also learned how to fetch and display

@@ -13,7 +13,7 @@ Yii错误处理器做以下工作来提升错误处理效果：
 可通过在应用的[入口脚本](structure-entry-scripts.md)中定义常量`YII_ENABLE_ERROR_HANDLER`来禁用。
 
 
-## 使用错误处理器 <a name="using-error-handler"></a>
+## 使用错误处理器 <span id="using-error-handler"></span>
 
 [[yii\web\ErrorHandler|error handler]] 注册成一个名称为`errorHandler`[应用组件](structure-application-components.md)， 
 可以在应用配置中配置它类似如下：
@@ -55,7 +55,7 @@ throw new NotFoundHttpException();
 ```
 
 
-## 自定义错误显示 <a name="customizing-error-display"></a>
+## 自定义错误显示 <span id="customizing-error-display"></span>
 
 [[yii\web\ErrorHandler|error handler]]错误处理器根据常量`YII_DEBUG`的值来调整错误显示，
 当`YII_DEBUG` 为 true (表示在调试模式)，错误处理器会显示异常以及详细的函数调用栈和源代码行数来帮助调试，
@@ -74,7 +74,7 @@ throw new NotFoundHttpException();
 使用自定义的错误显示视图。
 
 
-### 使用错误操作 <a name="using-error-actions"></a>
+### 使用错误操作 <span id="using-error-actions"></span>
 
 使用指定的错误[操作](structure-controllers.md) 来自定义错误显示更方便，
 为此，首先配置`errorHandler`组件的 [[yii\web\ErrorHandler::errorAction|errorAction]] 属性，类似如下： 
@@ -138,7 +138,7 @@ public function actionError()
 错误操作和错误视图已经定义好了。
 
 
-### 自定义错误格式 <a name="error-format"></a>
+### 自定义错误格式 <span id="error-format"></span>
 
 错误处理器根据[响应](runtime-responses.md)设置的格式来显示错误，
 如果[[yii\web\Response::format|response format]] 响应格式为`html`, 会使用错误或异常视图来显示错误信息，如上一小节所述。

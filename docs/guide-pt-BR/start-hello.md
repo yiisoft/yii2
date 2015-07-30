@@ -16,7 +16,7 @@ Através deste tutorial, você aprenderá três coisas:
 3. como uma aplicação envia as requisições para as [ações](structure-controllers.md#creating-actions).
 
 
-Criando uma Ação <a name="creating-action"></a>
+Criando uma Ação <span id="creating-action"></span>
 ----------------
 
 Para a tarefa "Hello", você criará uma [ação](structure-controllers.md#creating-actions)
@@ -62,7 +62,7 @@ trata os IDs de ações. Os IDs das ações são sempre referenciados em minúsc
 Se o ID de uma ação necessitar de múltiplas palavras, elas serão concatenadas
 por hífens (por exemplo, `create-comment`). Os nomes de métodos de ações são mapeados
 para os IDs das ações removendo-se os hífens dos IDs, colocando em maiúsculo a
-primeira letra de cada palavra, e prefixando o resultado com `action`. Por exemplo,
+primeira letra de cada palavra, e prefixando o resultado com a palavra `action`. Por exemplo,
 o ID de ação `create-comment` corresponde ao método de ação `actionCreateComment`.
 
 O método de ação em nosso exemplo recebe um parâmetro `$message`, cujo valor
@@ -81,12 +81,12 @@ será recebido pela aplicação, e exibido para o usuário final no navegador (c
 parte de uma págian HTML completa).
 
 
-Criando uma Visão <a name="creating-view"></a>
+Criando uma Visão <span id="creating-view"></span>
 -----------------
 
 As [visões](structure-views.md) são scripts que você escreve para gerar o conteúdo
 de uma resposta. Para a tarefa "Hello", você criará uma visão `say` que imprime o
-parâmetro `message` recebido do método da ação, e passado pela ação para a visão:
+parâmetro `message` recebido do método da ação:
 
 ```php
 <?php
@@ -111,7 +111,7 @@ O conteúdo impresso pelo script da visão será retornado à aplicação como o
 da resposta. A aplicação, por sua vez, retornará este resultado para o usuário final.
 
 
-Testando <a name="trying-it-out"></a>
+Testando <span id="trying-it-out"></span>
 --------
 
 Após criar a ação e a visão, você pode acessar a nova página através da seguinte URL:
@@ -153,7 +153,7 @@ resultado, o método `SiteController::actionSay()` será chamado para tratar a r
   de controlador `PostCommentController`.
 
 
-Resumo <a name="summary"></a>
+Resumo <span id="summary"></span>
 ------
 
 Nesta seção, você tocou as partes do controlador (controller) e da visão (view)

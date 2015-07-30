@@ -18,7 +18,7 @@ En particulier, vous devez savoir créer une base de données, et exécuter des 
 gestion de bases de données.
 
 
-Préparer la Base de Données <a name="preparing-database"></a>
+Préparer la Base de Données <span id="preparing-database"></span>
 --------------------
 
 Pour commencer, créez une base de données appelée `yii2basic`, depuis laquelle vous irez chercher les données dans 
@@ -50,7 +50,7 @@ INSERT INTO `country` VALUES ('US','United States',278357000);
 
 A ce niveau, vous avez une base de données appelée `yii2basic`, et dedans, une table `country` comportant trois colonnes, contenant dix lignes de données.
 
-Configurer une Connexion à la BDD <a name="configuring-db-connection"></a>
+Configurer une Connexion à la BDD <span id="configuring-db-connection"></span>
 ---------------------------
 
 Avant de continuer, assurons nous que vous avez installé à la fois l'extension PHP 
@@ -85,7 +85,7 @@ On peut accéder à connexion à la BDD configurée ci-dessus depuis le code de 
   Pour plus d'informations, merci de vous référer à la section [Configurations](concept-configurations.md).
 
 
-Créer un Active Record <a name="creating-active-record"></a>
+Créer un Active Record <span id="creating-active-record"></span>
 -------------------------
 
 Pour représenter et aller chercher des données dans la table `country`, créez une classe dérivée d'[Active Record](db-active-record.md) appelée `Country`, et enregistrez la dans le fichier `models/Country.php`.
@@ -132,7 +132,7 @@ Vous pouvez trouver plus d'informations dans la section [Active Record](db-activ
 [Data Access Objects](db-dao.md).
 
 
-Créer une Action <a name="creating-action"></a>
+Créer une Action <span id="creating-action"></span>
 ------------------
 
 Pour exposer les données pays aux utilisateurs, vous devez créer une action. Plutôt que de placer la nouvelle action 
@@ -188,7 +188,7 @@ Pour limiter le nombre de pays retournés par chaque requête, la requête est p
 A la fin du code, l'action `index` effectue le rendu d'une vue nommée `index`, et lui transmet les données pays ainsi que les informations de pagination.
 
 
-Créer une Vue <a name="creating-view"></a>
+Créer une Vue <span id="creating-view"></span>
 ---------------
 
 Dans le dossier `views`, commencez par créer un sous-dossier nommé `country`. Ce dossier sera utilisé pour contenir
@@ -219,7 +219,7 @@ Dans la deuxième partie, un widget [[yii\widgets\LinkPager]] est rendu en utili
 Le widget `LinkPager` affiche une liste de boutons de pages. Le fait de cliquer sur l'un deux rafraichit les données pays dans la page correspondante.
 
 
-Essayer <a name="trying-it-out"></a>
+Essayer <span id="trying-it-out"></span>
 -------------
 
 Pour voir comment tout le code ci-dessus fonctionne, utilisez votre navigateur pour accéder à l'URL suivant :
@@ -253,7 +253,7 @@ En coulisse, [[yii\data\Pagination|Pagination]] fournit toutes les fonctionnalit
   affichés.
 
 
-Résumé <a name="summary"></a>
+Résumé <span id="summary"></span>
 -------
 
 Dans cette section, vous avez appris comment travailler avec une base de données. Vous avez également appris comment 

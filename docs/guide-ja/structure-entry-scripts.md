@@ -13,17 +13,17 @@
 
 エントリスクリプトは主として次の仕事をします。
 
-* グローバルな定数を定義する;
-* [Composer のオートローダ](http://getcomposer.org/doc/01-basic-usage.md#autoloading) を登録する。
+* グローバルな定数を定義する。
+* [Composer のオートローダ](https://getcomposer.org/doc/01-basic-usage.md#autoloading) を登録する。
 * [[Yii]] クラスファイルをインクルードする。
 * アプリケーションの構成情報を読み出す。
 * [アプリケーション](structure-applications.md) のインスタンスを生成して構成する。
 * [[yii\base\Application::run()]] を呼んで、受け取ったリクエストを処理する。
 
 
-## ウェブアプリケーション<a name="web-applications"></a>
+## ウェブアプリケーション<span id="web-applications"></span>
 
-次に示すのが、[ベーシックウェブアプリケーションテンプレート](start-installation.md) のエントリスクリプトです。
+次に示すのが、[ベーシックウェブプロジェクトテンプレート](start-installation.md) のエントリスクリプトです。
 
 ```php
 <?php
@@ -45,9 +45,9 @@ $config = require(__DIR__ . '/../config/web.php');
 ```
 
 
-## コンソールアプリケーション<a name="console-applications"></a>
+## コンソールアプリケーション<span id="console-applications"></span>
 
-同様に、下記がコンソールアプリケーションのエントリスクリプトです:le application:
+同様に、下記がコンソールアプリケーションのエントリスクリプトです。
 
 ```php
 #!/usr/bin/env php
@@ -62,7 +62,7 @@ $config = require(__DIR__ . '/../config/web.php');
 
 defined('YII_DEBUG') or define('YII_DEBUG', true);
 
-// fcgi が既定では STDIN と STDOUT を定義していないので
+// デフォルトでは fcgi が STDIN と STDOUT を定義していないので
 defined('STDIN') or define('STDIN', fopen('php://stdin', 'r'));
 defined('STDOUT') or define('STDOUT', fopen('php://stdout', 'w'));
 
@@ -81,20 +81,20 @@ exit($exitCode);
 ```
 
 
-## 定数を定義する<a name="defining-constants"></a>
+## 定数を定義する<span id="defining-constants"></span>
 
 グローバルな定数を定義するには、エントリスクリプトが最善の場所です。
-Yii は下記の三つの定数をサポートしています:
+Yii は下記の三つの定数をサポートしています。
 
-* `YII_DEBUG`: アプリケーションがデバッグモードで走るかどうかを規定します。
+* `YII_DEBUG`: アプリケーションがデバッグモードで走るかどうかを指定します。
   デバッグモードにおいては、アプリケーションはより多くのログ情報を保持し、例外が投げられたときに、より詳細なエラーのコールスタックを表示します。
   この理由により、デバッグモードは主として開発時に使用されるべきものとなります。
-  `YII_DEBUG` の既定値は false です。
-* `YII_ENV`: どういう環境でアプリケーションが走るかを規定します。
-  詳細については、[構成情報](concept-configurations.md#environment-constants) の節で説明されます。
-  `YII_ENV` の既定値は `'prod'` です。これはアプリケーションが実運用環境で走ることを意味します。
-* `YII_ENABLE_ERROR_HANDLER`: Yii によって提供されるエラーハンドラを有効にするかどうかを規定します。
-  この定数の既定値は true です。
+  `YII_DEBUG` のデフォルト値は false です。
+* `YII_ENV`: どういう環境でアプリケーションが走っているかを指定します。
+  詳細は、[構成情報](concept-configurations.md#environment-constants) の節で説明されます。
+  `YII_ENV` のデフォルト値は `'prod'` であり、アプリケーションが本番環境で走っていることを意味します。
+* `YII_ENABLE_ERROR_HANDLER`: Yii によって提供されるエラーハンドラを有効にするかどうかを指定します。
+  この定数のデフォルト値は true です。
 
 定数を定義するときには、しばしば次のようなコードを用います。
 
@@ -112,4 +112,4 @@ if (!defined('YII_DEBUG')) {
 
 明らかに前者の方が簡潔で理解しやすいでしょう。
 
-PHP ファイルがインクルードされる時に定数の効力が生じるようにするために、定数の定義はエントリスクリプトの冒頭でなされるべきです。
+他のPHP ファイルがインクルードされる時に定数の効力が生じるようにするために、定数はエントリスクリプトの冒頭で定義されなければなりません。

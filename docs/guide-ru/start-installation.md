@@ -1,14 +1,14 @@
 Установка Yii
 ==============
 
-Вы можете установить Yii двумя способами: используя [Composer](http://getcomposer.org/) или скачав архив.
+Вы можете установить Yii двумя способами: используя [Composer](https://getcomposer.org/) или скачав архив.
 Первый способ предпочтительнее так как позволяет установить новые [расширения](structure-extensions.md)
 или обновить Yii одной командой.
 
 > Примечание: В отличие от Yii 1, после стандартной установки Yii 2 мы получаем как фреймворк, так и шаблон приложения.
 
 
-Установка при помощи Composer <a name="installing-via-composer"></a>
+Установка при помощи Composer <span id="installing-via-composer"></span>
 -----------------------
 
 Если Composer еще не установлен это можно сделать по инструкции на
@@ -16,7 +16,7 @@
 используйте следующую команду:
 
   ```
-  curl -s http://getcomposer.org/installer | php
+  curl -sS https://getcomposer.org/installer | php
   mv composer.phar /usr/local/bin/composer
   ```
 
@@ -29,7 +29,7 @@
 
 После установки Composer устанавливать Yii можно запустив следующую команду в папке доступной через веб:
 
-    composer global require "fxp/composer-asset-plugin:1.0.0-beta4"
+    composer global require "fxp/composer-asset-plugin:~1.0.0"
     composer create-project --prefer-dist yiisoft/yii2-app-basic basic
 
 Первая команда устанавливает [composer asset plugin](https://github.com/francoispluchino/composer-asset-plugin/),
@@ -52,7 +52,7 @@ Composer установит Yii (шаблонное приложение basic) 
 > Старайтесь не использовать нестабильную версию Yii на рабочих серверах потому как она может внезапно поломать код.
 
 
-Установка из архива <a name="installing-from-archive-file"></a>
+Установка из архива <span id="installing-from-archive-file"></span>
 -------------------------------
 
 Установка Yii из архива состоит из трёх шагов:
@@ -67,7 +67,7 @@ Composer установит Yii (шаблонное приложение basic) 
    'cookieValidationKey' => 'enter your secret key here',
    ```
 
-Другие опции установки <a name="other-installation-options"></a>
+Другие опции установки <span id="other-installation-options"></span>
 --------------------------
 
 Выше приведены инструкции по установке Yii в виде базового приложения готового к работе.
@@ -81,7 +81,7 @@ Composer установит Yii (шаблонное приложение basic) 
 [шаблон приложения advanced](tutorial-advanced-app.md).
 
 
-Проверка установки <a name="verifying-installation"></a>
+Проверка установки <span id="verifying-installation"></span>
 ----------------------
 
 После установки приложение будет доступно по следующему URL:
@@ -111,7 +111,7 @@ http://localhost/basic/web/index.php
 (например, `pdo_mysql` для MySQL).
 
 
-Настройка веб сервера <a name="configuring-web-servers"></a>
+Настройка веб сервера <span id="configuring-web-servers"></span>
 -----------------------
 
 > Информация: можете пропустить этот подраздел если вы только начали знакомиться с фреймворком и пока не разворачиваете
@@ -134,7 +134,7 @@ http://localhost/basic/web/index.php
   приложения как описано в разделе «[Работа на Shared хостинге](tutorial-shared-hosting.md)».
 
 
-### Рекомендуемые настройки Apache <a name="recommended-apache-configuration"></a>
+### Рекомендуемые настройки Apache <span id="recommended-apache-configuration"></span>
 
 Добавьте следующее в `httpd.conf` Apache или в конфигурационный файл виртуального хоста. Не забудьте заменить
 `path/to/basic/web` на корректный путь к `basic/web`.
@@ -157,7 +157,7 @@ DocumentRoot "path/to/basic/web"
 ```
 
 
-### Рекомендуемые настройки Nginx <a name="recommended-nginx-configuration"></a>
+### Рекомендуемые настройки Nginx <span id="recommended-nginx-configuration"></span>
 
 PHP должен быть установлен как [FPM SAPI](http://php.net/manual/ru/install.fpm.php) для [Nginx](http://wiki.nginx.org/).
 Используйте следующие параметры Nginx и не забудьте заменить `path/to/basic/web` на корректный путь к `basic/web` и
@@ -175,7 +175,7 @@ server {
     root        /path/to/basic/web;
     index       index.php;
 
-    access_log  /path/to/project/log/access.log main;
+    access_log  /path/to/project/log/access.log;
     error_log   /path/to/project/log/error.log;
 
     location / {

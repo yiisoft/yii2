@@ -10,6 +10,7 @@ namespace yii\widgets;
 use Yii;
 use yii\base\Widget;
 use yii\base\InvalidConfigException;
+use yii\helpers\ArrayHelper;
 use yii\helpers\Html;
 
 /**
@@ -101,6 +102,15 @@ class Breadcrumbs extends Widget
      * ]
      * ```
      *
+     * Since version 2.0.3 each individual link can override global [[encodeLabels]] param like the following:
+     *
+     * ```php
+     * [
+     *     'label' => '<strong>Hello!</strong>',
+     *     'encode' => false,
+     * ]
+     * ```
+     *
      */
     public $links = [];
     /**
@@ -150,8 +160,9 @@ class Breadcrumbs extends Widget
      */
     protected function renderItem($link, $template)
     {
+        $encodeLabel = $encode = ArrayHelper::remove($link, 'encode', $this->encodeLabels);
         if (array_key_exists('label', $link)) {
-            $label = $this->encodeLabels ? Html::encode($link['label']) : $link['label'];
+            $label = $encodeLabel ? Html::encode($link['label']) : $link['label'];
         } else {
             throw new InvalidConfigException('The "label" element is required for each link.');
         }

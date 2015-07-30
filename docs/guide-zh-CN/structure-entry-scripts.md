@@ -10,14 +10,14 @@ Web 应用的入口脚本必须放在终端用户能够访问的目录下，通�
 入口脚本主要完成以下工作：
 
 * 定义全局常量；
-* 注册 [Composer 自动加载器](http://getcomposer.org/doc/01-basic-usage.md#autoloading)；
+* 注册 [Composer 自动加载器](https://getcomposer.org/doc/01-basic-usage.md#autoloading)；
 * 包含 [[Yii]] 类文件；
 * 加载应用配置；
 * 创建一个[应用](structure-applications.md)实例并配置;
 * 调用 [[yii\base\Application::run()]] 来处理请求。
 
 
-## Web 应用 <a name="web-applications"></a>
+## Web 应用 <span id="web-applications"></span>
 
 以下是[基础应用模版](start-installation.md)入口脚本的代码：
 
@@ -41,7 +41,7 @@ $config = require(__DIR__ . '/../config/web.php');
 ```
 
 
-## 控制台应用 <a name="console-applications"></a>
+## 控制台应用 <span id="console-applications"></span>
 
 以下是一个控制台应用的入口脚本：
 
@@ -77,7 +77,7 @@ exit($exitCode);
 ```
 
 
-## 定义常量 <a name="defining-constants"></a>
+## 定义常量 <span id="defining-constants"></span>
 
 入口脚本是定义全局常量的最好地方，Yii 支持以下三个常量：
 

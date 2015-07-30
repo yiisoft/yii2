@@ -120,7 +120,16 @@ class BaseFormatConverter
             }
         }
         // http://userguide.icu-project.org/formatparse/datetime#TOC-Date-Time-Format-Syntax
-        return strtr($pattern, [
+        // escaped text
+        $escaped = [];
+        if (preg_match_all('/(?<!\')\'(.*?[^\'])\'(?!\')/', $pattern, $matches, PREG_SET_ORDER)) {
+            foreach ($matches as $match) {
+                $match[1] = str_replace('\'\'', '\'', $match[1]);
+                $escaped[$match[0]] = '\\'.implode('\\', preg_split('//u', $match[1], -1, PREG_SPLIT_NO_EMPTY));
+            }
+        }
+        return strtr($pattern, array_merge($escaped, [
+            '\'\'' => '\\\'', // two single quotes produce one
             'G' => '', // era designator like (Anno Domini)
             'Y' => 'o',     // 4digit year of "Week of Year"
             'y' => 'Y',     // 4digit year e.g. 2014
@@ -144,7 +153,7 @@ class BaseFormatConverter
             'MMM' => 'M',   // A short textual representation of a month, three letters
             'MMMM' => 'F',  // A full textual representation of a month, such as January or March
             'MMMMM' => '',  //
-            'L' => 'm',     // Stand alone month in year
+            'L' => 'n',     // Stand alone month in year
             'LL' => 'm',    // Stand alone month in year
             'LLL' => 'M',   // Stand alone month in year
             'LLLL' => 'F',  // Stand alone month in year
@@ -220,7 +229,7 @@ class BaseFormatConverter
             'xxx' => 'P',    // Time Zone: ISO8601 extended hm, without Z, e.g. -08:00
             'xxxx' => '',   // Time Zone: ISO8601 basic hms?, without Z, e.g. -0800, -075258
             'xxxxx' => '',  // Time Zone: ISO8601 extended hms?, without Z, e.g. -08:00, -07:52:58
-        ]);
+        ]));
     }
 
     /**
@@ -323,7 +332,14 @@ class BaseFormatConverter
             }
         }
         // http://userguide.icu-project.org/formatparse/datetime#TOC-Date-Time-Format-Syntax
-        return strtr($pattern, [
+        // escaped text
+        $escaped = [];
+        if (preg_match_all('/(?<!\')\'.*?[^\']\'(?!\')/', $pattern, $matches)) {
+            foreach ($matches[0] as $match) {
+                $escaped[$match] = $match;
+            }
+        }
+        return strtr($pattern, array_merge($escaped, [
             'G' => '',      // era designator like (Anno Domini)
             'Y' => '',      // 4digit year of "Week of Year"
             'y' => 'yy',    // 4digit year e.g. 2014
@@ -347,7 +363,7 @@ class BaseFormatConverter
             'MMM' => 'M',   // A short textual representation of a month, three letters
             'MMMM' => 'MM', // A full textual representation of a month, such as January or March
             'MMMMM' => '',  //
-            'L' => 'mm',     // Stand alone month in year
+            'L' => 'm',     // Stand alone month in year
             'LL' => 'mm',   // Stand alone month in year
             'LLL' => 'M',   // Stand alone month in year
             'LLLL' => 'MM', // Stand alone month in year
@@ -423,7 +439,7 @@ class BaseFormatConverter
             'xxx' => '',    // Time Zone: ISO8601 extended hm, without Z, e.g. -08:00
             'xxxx' => '',   // Time Zone: ISO8601 basic hms?, without Z, e.g. -0800, -075258
             'xxxxx' => '',  // Time Zone: ISO8601 extended hms?, without Z, e.g. -08:00, -07:52:58
-        ]);
+        ]));
     }
 
     /**

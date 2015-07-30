@@ -138,6 +138,6 @@ class UrlValidator extends Validator
             PunycodeAsset::register($view);
         }
 
-        return 'yii.validation.url(value, messages, ' . Json::encode($options) . ');';
+        return 'yii.validation.url(value, messages, ' . Json::htmlEncode($options) . ');';
     }
 }

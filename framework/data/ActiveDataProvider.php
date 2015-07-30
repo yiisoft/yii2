@@ -72,8 +72,9 @@ class ActiveDataProvider extends BaseDataProvider
      */
     public $key;
     /**
-     * @var Connection|string the DB connection object or the application component ID of the DB connection.
+     * @var Connection|array|string the DB connection object or the application component ID of the DB connection.
      * If not set, the default DB connection will be used.
+     * Starting from version 2.0.2, this can also be a configuration array for creating the object.
      */
     public $db;
 
@@ -170,15 +171,23 @@ class ActiveDataProvider extends BaseDataProvider
     public function setSort($value)
     {
         parent::setSort($value);
-        if (($sort = $this->getSort()) !== false && empty($sort->attributes) && $this->query instanceof ActiveQueryInterface) {
+        if (($sort = $this->getSort()) !== false && $this->query instanceof ActiveQueryInterface) {
             /* @var $model Model */
             $model = new $this->query->modelClass;
-            foreach ($model->attributes() as $attribute) {
-                $sort->attributes[$attribute] = [
-                    'asc' => [$attribute => SORT_ASC],
-                    'desc' => [$attribute => SORT_DESC],
-                    'label' => $model->getAttributeLabel($attribute),
-                ];
+            if (empty($sort->attributes)) {
+                foreach ($model->attributes() as $attribute) {
+                    $sort->attributes[$attribute] = [
+                        'asc' => [$attribute => SORT_ASC],
+                        'desc' => [$attribute => SORT_DESC],
+                        'label' => $model->getAttributeLabel($attribute),
+                    ];
+                }
+            } else {
+                foreach($sort->attributes as $attribute => $config) {
+                    if (!isset($config['label'])) {
+                        $sort->attributes[$attribute]['label'] = $model->getAttributeLabel($attribute);
+                    }
+                }
             }
         }
     }

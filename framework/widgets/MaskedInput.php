@@ -29,6 +29,15 @@ use yii\web\View;
  * ]);
  * ```
  *
+ * You can also use this widget in an [[yii\widgets\ActiveForm|ActiveForm]] using the [[yii\widgets\ActiveField::widget()|widget()]]
+ * method, for example like this:
+ *
+ * ```php
+ * <?= $form->field($model, 'from_date')->widget(\yii\widgets\MaskedInput::className(), [
+ *     'mask' => '999-999-9999',
+ * ]) ?>
+ * ```
+ *
  * The masked text field is implemented based on the
  * [jQuery input masked plugin](https://github.com/RobinHerbots/jquery.inputmask).
  *
@@ -108,31 +117,29 @@ class MaskedInput extends InputWidget
      */
     public function run()
     {
+        $this->registerClientScript();
         if ($this->hasModel()) {
             echo Html::activeTextInput($this->model, $this->attribute, $this->options);
         } else {
             echo Html::textInput($this->name, $this->value, $this->options);
         }
-        $this->registerClientScript();
     }
 
     /**
      * Generates a hashed variable to store the plugin `clientOptions`. Helps in reusing the variable for similar
-     * options passed for other widgets on the same page. The following special data attributes will also be
-     * setup for the input widget, that can be accessed through javascript:
+     * options passed for other widgets on the same page. The following special data attribute will also be
+     * added to the input field to allow accessing the client options via javascript:
      *
-     * - 'data-plugin-options' will store the hashed variable storing the plugin options.
-     * - 'data-plugin-name' the name of the plugin
+     * - 'data-plugin-inputmask' will store the hashed variable storing the plugin options.
      *
      * @param View $view the view instance
      * @author [Thiago Talma](https://github.com/thiagotalma)
      */
     protected function hashPluginOptions($view)
     {
-        $encOptions = empty($this->clientOptions) ? '{}' : Json::encode($this->clientOptions);
+        $encOptions = empty($this->clientOptions) ? '{}' : Json::htmlEncode($this->clientOptions);
         $this->_hashVar = self::PLUGIN_NAME . '_' . hash('crc32', $encOptions);
-        $this->options['data-plugin-name'] = self::PLUGIN_NAME;
-        $this->options['data-plugin-options'] = $this->_hashVar;
+        $this->options['data-plugin-' . self::PLUGIN_NAME] = $this->_hashVar;
         $view->registerJs("var {$this->_hashVar} = {$encOptions};\n", View::POS_HEAD);
     }
 
@@ -143,8 +150,8 @@ class MaskedInput extends InputWidget
     {
         $options = $this->clientOptions;
         foreach ($options as $key => $value) {
-            if (in_array($key, ['oncomplete', 'onincomplete', 'oncleared', 'onKeyUp', 'onKeyDown', 'onBeforeMask',
-                    'onBeforePaste', 'onUnMask', 'isComplete', 'determineActiveMasksetIndex']) && !$value instanceof JsExpression
+            if (!$value instanceof JsExpression && in_array($key, ['oncomplete', 'onincomplete', 'oncleared', 'onKeyUp',
+                    'onKeyDown', 'onBeforeMask', 'onBeforePaste', 'onUnMask', 'isComplete', 'determineActiveMasksetIndex'])
             ) {
                 $options[$key] = new JsExpression($value);
             }
@@ -165,10 +172,10 @@ class MaskedInput extends InputWidget
         }
         $this->hashPluginOptions($view);
         if (is_array($this->definitions) && !empty($this->definitions)) {
-            $js .= '$.extend($.' . self::PLUGIN_NAME . '.defaults.definitions, ' . Json::encode($this->definitions) . ");\n";
+            $js .= '$.extend($.' . self::PLUGIN_NAME . '.defaults.definitions, ' . Json::htmlEncode($this->definitions) . ");\n";
         }
         if (is_array($this->aliases) && !empty($this->aliases)) {
-            $js .= '$.extend($.' . self::PLUGIN_NAME . '.defaults.aliases, ' . Json::encode($this->aliases) . ");\n";
+            $js .= '$.extend($.' . self::PLUGIN_NAME . '.defaults.aliases, ' . Json::htmlEncode($this->aliases) . ");\n";
         }
         $id = $this->options['id'];
         $js .= '$("#' . $id . '").' . self::PLUGIN_NAME . "(" . $this->_hashVar . ");\n";

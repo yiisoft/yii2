@@ -74,13 +74,13 @@ Conceptos clave
 Trabajar con bases de datos
 ---------------------------
 
-* [Objeto de acceso a datos](db-dao.md) - Conexión a una base de datos, consultas básicas, transacciones y 
+* [Objeto de acceso a datos](db-dao.md) - Conexión a una base de datos, consultas básicas, transacciones y
   manipulación de esquemas
-* **TBD** [Constructor de consultas](db-query-builder.md) - Consulta de la base de datos utilizando una simple capa de 
+* [Constructor de consultas](db-query-builder.md) - Consulta de la base de datos utilizando una simple capa de
   abstracción
-* **TBD** [Active Record](db-active-record.md) - ORM Active Record, recuperación y manipulación de registros y 
+* **TBD** [Active Record](db-active-record.md) - ORM Active Record, recuperación y manipulación de registros y
   definición de relaciones
-* **TBD** [Migraciones](db-migrations.md) - Control de versiones de bases de datos en el entorno de desarrollo en 
+* **TBD** [Migraciones](db-migrations.md) - Control de versiones de bases de datos en el entorno de desarrollo en
   equipo
 * **TBD** [Sphinx](db-sphinx.md)
 * **TBD** [Redis](db-redis.md)
@@ -94,6 +94,7 @@ Obtener datos de los usuarios
 * **TBD** [Crear formularios](input-forms.md)
 * **TBD** [Validar datos](input-validation.md)
 * **TBD** [Subir archivos](input-file-upload.md)
+* **TBD** [Recogida de tabular input](input-tabular-input.md)
 * **TBD** [Obtener datos para múltiples modelos](input-multiple-models.md)
 
 
@@ -106,7 +107,7 @@ Visualizar datos
 * **TBD** [Proveedores de datos](output-data-providers.md)
 * **TBD** [Widgets de datos](output-data-widgets.md)
 * **TBD** [Trabajar con scripts de cliente](output-client-scripts.md)
-* **TBD** [Utilización de temas](output-theming.md)
+* [Temas](output-theming.md)
 
 
 Seguridad
@@ -168,7 +169,7 @@ Temas especiales
 * **TBD** [Plantilla aplicación avanzada](tutorial-advanced-app.md)
 * **TBD** [Creación de una aplicación desde cero](tutorial-start-from-scratch.md)
 * **TBD** [Comandos de consola](tutorial-console.md)
-* **TBD** [Validadores de base](tutorial-core-validators.md)
+* [Validadores del núcleo](tutorial-core-validators.md)
 * **TBD** [Internacionalización](tutorial-i18n.md)
 * **TBD** [Envío de correos electrónicos](tutorial-mailing.md)
 * **TBD** [Mejora del rendimiento](tutorial-performance-tuning.md)
@@ -180,14 +181,14 @@ Temas especiales
 Widgets
 -------
 
-* GridView: link to demo page
-* ListView: link to demo page
-* DetailView: link to demo page
-* ActiveForm: link to demo page
-* Pjax: link to demo page
-* Menu: link to demo page
-* LinkPager: link to demo page
-* LinkSorter: link to demo page
+* GridView: **TBD** link to demo page
+* ListView: **TBD** link to demo page
+* DetailView: **TBD** link to demo page
+* ActiveForm: **TBD** link to demo page
+* Pjax: **TBD** link to demo page
+* Menu: **TBD** link to demo page
+* LinkPager: **TBD** link to demo page
+* LinkSorter: **TBD** link to demo page
 * **TBD** [Bootstrap Widgets](bootstrap-widgets.md)
 * **TBD** [Jquery UI Widgets](jui-widgets.md)
 
@@ -195,8 +196,7 @@ Widgets
 Clases auxiliares
 -----------------
 
-* **TBD** [Información general](helper-overview.md)
-* **TBD** [ArrayHelper](helper-array.md)
-* **TBD** [Html](helper-html.md)
+* [Información general](helper-overview.md)
+* [ArrayHelper](helper-array.md)
+* [Html](helper-html.md)
 * [Url](helper-url.md)
-* **TBD** [Security](helper-security.md)

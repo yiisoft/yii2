@@ -43,7 +43,7 @@ The following list summarizes the HTTP status code that are used by the Yii REST
 * `500`: Internal server error. This could be caused by internal program errors.
 
 
-## Customizing Error Response <a name="customizing-error-response"></a>
+## Customizing Error Response <span id="customizing-error-response"></span>
 
 Sometimes you may want to customize the default error response format. For example, instead of relying on
 using different HTTP statuses to indicate different errors, you would like to always use 200 as HTTP status
@@ -77,7 +77,7 @@ return [
             'class' => 'yii\web\Response',
             'on beforeSend' => function ($event) {
                 $response = $event->sender;
-                if ($response->data !== null && !empty(Yii::$app->request->get('suppress_response_code'))) {
+                if ($response->data !== null && Yii::$app->request->get('suppress_response_code')) {
                     $response->data = [
                         'success' => $response->isSuccessful,
                         'data' => $response->data,

@@ -33,12 +33,13 @@ use yii\helpers\Inflector;
  * echo DetailView::widget([
  *     'model' => $model,
  *     'attributes' => [
- *         'title',             // title attribute (in plain text)
- *         'description:html',  // description attribute in HTML
- *         [                    // the owner name of the model
+ *         'title',               // title attribute (in plain text)
+ *         'description:html',    // description attribute in HTML
+ *         [                      // the owner name of the model
  *             'label' => 'Owner',
  *             'value' => $model->owner->name,
  *         ],
+ *         'created_at:datetime', // creation date formatted as datetime
  *     ],
  * ]);
  * ~~~
@@ -135,8 +136,9 @@ class DetailView extends Widget
             $rows[] = $this->renderAttribute($attribute, $i++);
         }
 
-        $tag = ArrayHelper::remove($this->options, 'tag', 'table');
-        echo Html::tag($tag, implode("\n", $rows), $this->options);
+        $options = $this->options;
+        $tag = ArrayHelper::remove($options, 'tag', 'table');
+        echo Html::tag($tag, implode("\n", $rows), $options);
     }
 
     /**

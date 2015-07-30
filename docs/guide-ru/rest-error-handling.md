@@ -17,7 +17,6 @@ Transfer-Encoding: chunked
 Content-Type: application/json; charset=UTF-8
 
 {
-    "type": "yii\\web\\NotFoundHttpException",
     "name": "Not Found Exception",
     "message": "The requested resource was not found.",
     "code": 0,
@@ -42,3 +41,52 @@ Content-Type: application/json; charset=UTF-8
 * `422`: Проверка данных завершилась неудачно (в ответе на `POST`-запрос, например). Подробные сообщения об ошибках смотрите в теле ответа.
 * `429`: Слишком много запросов. Запрос отклонен из-за превышения ограничения частоты запросов.
 * `500`: Внутренняя ошибка сервера. Возможная причина — ошибки в самой программе.
+
+## Свой формат ответа с ошибкой <span id="customizing-error-response"></span>
+
+Вам может понадобиться изменить формат ответа с ошибкой. Например, вместо использования разных статусов ответа HTTP
+для разных ошибок, вы можете всегда отавать статус 200, а реальный код статуса отдавать как часть JSON ответа:
+
+```
+HTTP/1.1 200 OK
+Date: Sun, 02 Mar 2014 05:31:43 GMT
+Server: Apache/2.2.26 (Unix) DAV/2 PHP/5.4.20 mod_ssl/2.2.26 OpenSSL/0.9.8y
+Transfer-Encoding: chunked
+Content-Type: application/json; charset=UTF-8
+
+{
+    "success": false,
+    "data": {
+        "name": "Not Found Exception",
+        "message": "The requested resource was not found.",
+        "code": 0,
+        "status": 404
+    }
+}
+```
+
+Для этого можно использовать событие `beforeSend` компонента `response` прямо в конфигурации приложения:
+
+```php
+return [
+    // ...
+    'components' => [
+        'response' => [
+            'class' => 'yii\web\Response',
+            'on beforeSend' => function ($event) {
+                $response = $event->sender;
+                if ($response->data !== null && !empty(Yii::$app->request->get('suppress_response_code'))) {
+                    $response->data = [
+                        'success' => $response->isSuccessful,
+                        'data' => $response->data,
+                    ];
+                    $response->statusCode = 200;
+                }
+            },
+        ],
+    ],
+];
+```
+
+Приведённый выше код изменит формат ответа (как для удачного запроса, так и для ошибок) если передан `GET`-параметр
+`suppress_response_code`.

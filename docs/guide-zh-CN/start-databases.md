@@ -13,7 +13,7 @@
 请注意，为了掌握本章你应该具备最基本的数据库知识和使用经验。尤其是应该知道如何创建数据库，如何通过数据库终端执行 SQL 语句。
 
 
-准备数据库 <a name="preparing-database"></a>
+准备数据库 <span id="preparing-database"></span>
 --------------------
 
 首先创建一个名为 `yii2basic` 的数据库，应用将从这个数据库中读取数据。你可以创建 SQLite，MySQL，PostregSQL，MSSQL 或 Oracle 数据库，Yii 内置多种数据库支持。简单起见，后面的内容将以 MySQL 为例做演示。
@@ -41,7 +41,7 @@ INSERT INTO `country` VALUES ('US','United States',278357000);
 
 此时便有了一个名为 `yii2basic` 的数据库，在这个数据库中有一个包含三个字段的数据表 `country`，表中有十行数据。
 
-配置数据库连接 <a name="configuring-db-connection"></a>
+配置数据库连接 <span id="configuring-db-connection"></span>
 ---------------------------
 
 开始之前，请确保你已经安装了 PHP [PDO](http://www.php.net/manual/en/book.pdo.php) 扩展和你所使用的数据库的 PDO 驱动（例如 MySQL 的 `pdo_mysql`）。对于使用关系型数据库来讲，这是基本要求。
@@ -67,7 +67,7 @@ return [
 > 补充：`config/db.php` 将被包含在应用配置文件 `config/web.php` 中，后者指定了整个[应用](structure-applications.md)如何初始化。请参考[配置](concept-configurations.md)章节了解更多信息。
 
 
-创建活动记录 <a name="creating-active-record"></a>
+创建活动记录 <span id="creating-active-record"></span>
 -------------------------
 
 创建一个继承自[活动记录](db-active-record.md)类的类 `Country`，把它放在 `models/Country.php` 文件，去代表和读取 `country` 表的数据。
@@ -110,7 +110,7 @@ $country->save();
 > 补充：活动记录是面向对象、功能强大的访问和操作数据库数据的方式。你可以在[活动记录](db-active-record.md)章节了解更多信息。除此之外你还可以使用另一种更原生的被称做[数据访问对象](db-dao)的方法操作数据库数据。
 
 
-创建操作 <a name="creating-action"></a>
+创建操作 <span id="creating-action"></span>
 ------------------
 
 为了向最终用户显示国家数据，你需要创建一个操作。相比之前小节掌握的在 `site` 控制器中创建操作，在这里为所有和国家有关的数据新建一个控制器更加合理。新控制器名为 `CountryController`，并在其中创建一个 `index` 操作，如下：
@@ -158,7 +158,7 @@ class CountryController extends Controller
 在代码末尾，`index` 操作渲染一个名为 `index` 的视图，并传递国家数据和分页信息进去。
 
 
-创建视图 <a name="creating-view"></a>
+创建视图 <span id="creating-view"></span>
 ---------------
 
 在 `views` 目录下先创建一个名为 `country` 的子目录。这个目录存储所有由 `country` 控制器渲染的视图。在 `views/country` 目录下创建一个名为 `index.php` 的视图文件，内容如下：
@@ -184,7 +184,7 @@ use yii\widgets\LinkPager;
 这个视图包含两部分用以显示国家数据。第一部分遍历国家数据并以无序 HTML 列表渲染出来。第二部分使用 [[yii\widgets\LinkPager]] 去渲染从操作中传来的分页信息。小部件 `LinkPager` 显示一个分页按钮的列表。点击任何一个按钮都会跳转到对应的分页。
 
 
-试运行 <a name="trying-it-out"></a>
+试运行 <span id="trying-it-out"></span>
 -------------
 
 浏览器访问下面的 URL 看看能否工作：
@@ -207,7 +207,7 @@ http://hostname/index.php?r=country/index&page=2
 * 然后小部件 [[yii\widgets\LinkPager|LinkPager]] 使用 [[yii\data\Pagination::createUrl()|Pagination::createUrl()]] 方法生成的 URL 去渲染翻页按钮。URL 中包含必要的参数 `page` 才能查询不同的页面编号。
 * 如果你点击按钮 “2”，将会发起一个路由为 `country/index` 的新请求。[[yii\data\Pagination|Pagination]] 接收到 URL 中的 `page` 参数把当前的页码设为 2。新的数据库请求将会以 `LIMIT 5 OFFSET 5` 查询并显示。
 
-总结 <a name="summary"></a>
+总结 <span id="summary"></span>
 -------
 
 本章节中你学到了如何使用数据库。你还学到了如何取出并使用 [[yii\data\Pagination]] 和 [[yii\widgets\LinkPager]] 显示数据。

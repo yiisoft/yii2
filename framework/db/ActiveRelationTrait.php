@@ -215,7 +215,7 @@ trait ActiveRelationTrait
             $this->filterByModels($primaryModels);
         }
 
-        if (count($primaryModels) === 1 && !$this->multiple) {
+        if (!$this->multiple && count($primaryModels) === 1) {
             $model = $this->one();
             foreach ($primaryModels as $i => $primaryModel) {
                 if ($primaryModel instanceof ActiveRecordInterface) {
@@ -252,13 +252,11 @@ trait ActiveRelationTrait
                 if ($this->multiple && count($link) == 1 && is_array($keys = $primaryModel[reset($link)])) {
                     $value = [];
                     foreach ($keys as $key) {
-                        if (!is_scalar($key)) {
-                            $key = serialize($key);
-                        }
+                        $key = $this->normalizeModelKey($key);
                         if (isset($buckets[$key])) {
                             if ($this->indexBy !== null) {
                                 // if indexBy is set, array_merge will cause renumbering of numeric array
-                                foreach($buckets[$key] as $bucketKey => $bucketValue) {
+                                foreach ($buckets[$key] as $bucketKey => $bucketValue) {
                                     $value[$bucketKey] = $bucketValue;
                                 }
                             } else {
@@ -367,7 +365,7 @@ trait ActiveRelationTrait
         $linkKeys = array_keys($link);
 
         if (isset($map)) {
-            foreach ($models as $i => $model) {
+            foreach ($models as $model) {
                 $key = $this->getModelKey($model, $linkKeys);
                 if (isset($map[$key])) {
                     foreach (array_keys($map[$key]) as $key2) {
@@ -376,7 +374,7 @@ trait ActiveRelationTrait
                 }
             }
         } else {
-            foreach ($models as $i => $model) {
+            foreach ($models as $model) {
                 $key = $this->getModelKey($model, $linkKeys);
                 $buckets[$key][] = $model;
             }
@@ -483,19 +481,28 @@ trait ActiveRelationTrait
      */
     private function getModelKey($model, $attributes)
     {
-        if (count($attributes) > 1) {
-            $key = [];
-            foreach ($attributes as $attribute) {
-                $key[] = $model[$attribute];
-            }
-
-            return serialize($key);
-        } else {
-            $attribute = reset($attributes);
-            $key = $model[$attribute];
-
-            return is_scalar($key) ? $key : serialize($key);
+        $key = [];
+        foreach ($attributes as $attribute) {
+            $key[] = $this->normalizeModelKey($model[$attribute]);
         }
+        if (count($key) > 1) {
+            return serialize($key);
+        }
+        $key = reset($key);
+        return is_scalar($key) ? $key : serialize($key);
+    }
+
+    /**
+     * @param mixed $value raw key value.
+     * @return string normalized key value.
+     */
+    private function normalizeModelKey($value)
+    {
+        if (is_object($value) && method_exists($value, '__toString')) {
+            // ensure matching to special objects, which are convertable to string, for cross-DBMS relations, for example: `|MongoId`
+            $value = $value->__toString();
+        }
+        return $value;
     }
 
     /**

@@ -2,7 +2,7 @@
 =======
 
 有时显示数据会根据一个或多个属性进行排序。如果你正在使用
-[data provider](output-data-providers.md) 和 [data widgets](output-data-widgets.md) 中之一，排序
+[数据提供者](output-data-providers.md) 和 [数据小部件](output-data-widgets.md) 中之一，排序
 可以为你自动处理。否则，你应该创建一个 [[yii\data\Sort]] 实例，配置好后
 将其应用到查询中。也可以传递给视图，可以在视图中通过某些属性创建链接来排序。
 
@@ -38,11 +38,11 @@ function actionIndex()
 在视图中：
 
 ```php
-// display links leading to sort actions
+// 显示指向排序动作的链接
 echo $sort->link('name') . ' | ' . $sort->link('age');
 
 foreach ($models as $model) {
-    // display $model here
+    // 在这里显示 $model
 }
 ```
 

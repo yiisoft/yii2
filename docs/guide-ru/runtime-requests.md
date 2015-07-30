@@ -4,7 +4,7 @@
 Запросы, сделанные к приложению, представлены в терминах [[yii\web\Request]] объектов, которые предоставляют информацию о параметрах запроса, HTTP заголовках, cookies и т.д. Для получения доступа к текущему запросу вы должны обратиться к объекту `request` [application component](structure-application-components.md), который по умолчанию является экземпляром [[yii\web\Request]].
 
 
-## Параметры запроса <a name="request-parameters"></a>
+## Параметры запроса <span id="request-parameters"></span>
 
 Чтобы получить параметры запроса, вы должны вызвать методы [[yii\web\Request::get()|get()]] и [[yii\web\Request::post()|post()]] компонента `request`. Они возвращают значения переменных `$_GET` и `$_POST` соответственно. Например,
 
@@ -50,7 +50,7 @@ $param = $request->getBodyParam('id');
   Вы можете настроить способ обработки этих параметров через настройку свойства [[yii\web\Request::parsers]].
   
 
-## Методы запроса <a name="request-methods"></a>
+## Методы запроса <span id="request-methods"></span>
 
 Вы можете получить названия HTTP метода, используемого в текущем запросе, обратившись к выражению  `Yii::$app->request->method`.
 Также имеется целый набор логических свойств для проверки соответствует ли текущий метод определённому типу запроса.
@@ -65,7 +65,7 @@ if ($request->isPost) { // является ли текущий запрос POS
 if ($request->isPut)  { // является ли текущий запрос PUT запросом }
 ```
 
-## URL запроса <a name="request-urls"></a>
+## URL запроса <span id="request-urls"></span>
 
 Компонент `request` предоставляет множество способов изучения текущего запрашиваемого URL. 
 
@@ -83,7 +83,7 @@ if ($request->isPut)  { // является ли текущий запрос PUT
 * [[yii\web\Request::serverPort|serverPort]]: вернёт 80, что является адресом порта, который использует веб-сервер.
 
 
-## HTTP заголовки <a name="http-headers"></a> 
+## HTTP заголовки <span id="http-headers"></span> 
 
 Вы можете получить информацию о HTTP заголовках через [[yii\web\HeaderCollection|header collection]], возвращаемыми свойством [[yii\web\Request::headers]]. Например,
 
@@ -115,7 +115,7 @@ if ($headers->has('User-Agent')) { // есть ли в запросе загол
   какой тип содержимого и язык должен использоваться в ответе. Фильтр реализует согласование содержимого на основе свойств и методов, описанных выше.
 
 
-## Информация о клиенте <a name="client-information"></a>
+## Информация о клиенте <span id="client-information"></span>
 
 Вы можете получить имя хоста и IP адрес пользователя через свойства [[yii\web\Request::userHost|userHost]]
 и [[yii\web\Request::userIP|userIP]] соответственно. Например,

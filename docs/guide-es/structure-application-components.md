@@ -48,7 +48,7 @@ Por ejemplo:
   y utilizarlo únicamente cuando sea necesario.
 
 
-## Componentes del Núcleo de la Aplicación <a name="core-application-components"></a>
+## Componentes del Núcleo de la Aplicación <span id="core-application-components"></span>
 
 Yii define un grupo de componentes del *núcleo* con IDs fijos y configuraciones por defecto. Por ejemplo,
 el componente [[yii\web\Application::request|request]] es utilizado para recolectar información acerca

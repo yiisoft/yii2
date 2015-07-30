@@ -94,9 +94,9 @@ interface ActiveRecordInterface
     public static function isPrimaryKey($keys);
 
     /**
-     * Creates an [[ActiveQueryInterface|ActiveQuery]] instance for query purpose.
+     * Creates an [[ActiveQueryInterface]] instance for query purpose.
      *
-     * The returned [[ActiveQueryInterface|ActiveQuery]] instance can be further customized by calling
+     * The returned [[ActiveQueryInterface]] instance can be further customized by calling
      * methods defined in [[ActiveQueryInterface]] before `one()` or `all()` is called to return
      * populated ActiveRecord instances. For example,
      *
@@ -146,7 +146,7 @@ interface ActiveRecordInterface
      * // SELECT FROM customer WHERE age>30
      * $customers = Customer::find()->where('age>30')->all();
      *
-     * @return static|ActiveQueryInterface the newly created [[ActiveQueryInterface|ActiveQuery]] instance.
+     * @return ActiveQueryInterface the newly created [[ActiveQueryInterface]] instance.
      */
     public static function find();
 
@@ -157,11 +157,13 @@ interface ActiveRecordInterface
      *
      *  - a scalar value (integer or string): query by a single primary key value and return the
      *    corresponding record (or null if not found).
-     *  - an array of name-value pairs: query by a set of attribute values and return a single record
-     *    matching all of them (or null if not found).
+     *  - a non-associative array: query by a list of primary key values and return the
+     *    first record (or null if not found).
+     *  - an associative array of name-value pairs: query by a set of attribute values and return a single record
+     *    matching all of them (or null if not found). Note that `['id' => 1, 2]` is treated as a non-associative array.
      *
-     * Note that this method will automatically call the `one()` method and return an
-     * [[ActiveRecordInterface|ActiveRecord]] instance. For example,
+     * That this method will automatically call the `one()` method and return an [[ActiveRecordInterface|ActiveRecord]]
+     * instance. For example,
      *
      * ```php
      * // find a single customer whose primary key value is 10
@@ -178,7 +180,7 @@ interface ActiveRecordInterface
      * ```
      *
      * @param mixed $condition primary key value or a set of column values
-     * @return static ActiveRecord instance matching the condition, or null if nothing matches.
+     * @return static|null ActiveRecord instance matching the condition, or null if nothing matches.
      */
     public static function findOne($condition);
 
@@ -189,15 +191,16 @@ interface ActiveRecordInterface
      *
      *  - a scalar value (integer or string): query by a single primary key value and return an array containing the
      *    corresponding record (or an empty array if not found).
-     *  - an array of scalar values (integer or string): query by a list of primary key values and return the
+     *  - a non-associative array: query by a list of primary key values and return the
      *    corresponding records (or an empty array if none was found).
      *    Note that an empty condition will result in an empty result as it will be interpreted as a search for
      *    primary keys and not an empty `WHERE` condition.
-     *  - an array of name-value pairs: query by a set of attribute values and return an array of records
-     *    matching all of them (or an empty array if none was found).
+     *  - an associative array of name-value pairs: query by a set of attribute values and return an array of records
+     *    matching all of them (or an empty array if none was found). Note that `['id' => 1, 2]` is treated as
+     *    a non-associative array.
      *
-     * Note that this method will automatically call the `all()` method and return an array of
-     * [[ActiveRecordInterface|ActiveRecord]] instances. For example,
+     * This method will automatically call the `all()` method and return an array of [[ActiveRecordInterface|ActiveRecord]]
+     * instances. For example,
      *
      * ```php
      * // find the customers whose primary key value is 10

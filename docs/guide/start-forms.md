@@ -15,7 +15,7 @@ Through this tutorial, you will learn how to:
 * Build an HTML form in a [view](structure-views.md)
 
 
-Creating a Model <a name="creating-model"></a>
+Creating a Model <span id="creating-model"></span>
 ----------------
 
 The data to be requested from the user will be represented by an `EntryForm` model class as shown below and
@@ -27,6 +27,7 @@ section for more details about the class file naming convention.
 
 namespace app\models;
 
+use Yii;
 use yii\base\Model;
 
 class EntryForm extends Model
@@ -76,7 +77,7 @@ if ($model->validate()) {
 ```
 
 
-Creating an Action <a name="creating-action"></a>
+Creating an Action <span id="creating-action"></span>
 ------------------
 
 Next, you'll need to create an `entry` action in the `site` controller that will use the new model. The process
@@ -97,7 +98,7 @@ class SiteController extends Controller
 
     public function actionEntry()
     {
-        $model = new EntryForm;
+        $model = new EntryForm();
 
         if ($model->load(Yii::$app->request->post()) && $model->validate()) {
             // valid data received in $model
@@ -132,7 +133,7 @@ be rendered, wherein the HTML form will be shown, along with any validation erro
   to avoid [form resubmission problems](http://en.wikipedia.org/wiki/Post/Redirect/Get).
 
 
-Creating Views <a name="creating-views"></a>
+Creating Views <span id="creating-views"></span>
 --------------
 
 Finally, create two view files named `entry-confirm` and `entry`. These will be rendered by the `entry` action,
@@ -180,7 +181,7 @@ and the second for the "email" data. After the input fields, the [[yii\helpers\H
 is called to generate a submit button.
 
 
-Trying it Out <a name="trying-it-out"></a>
+Trying it Out <span id="trying-it-out"></span>
 -------------
 
 To see how it works, use your browser to access the following URL:
@@ -201,7 +202,7 @@ displaying the data that you just entered.
 
 
 
-### Magic Explained <a name="magic-explained"></a>
+### Magic Explained <span id="magic-explained"></span>
 
 You may wonder how the HTML form works behind the scene, because it seems almost magical that it can
 display a label for each input field and show error messages if you do not enter the data correctly
@@ -232,7 +233,7 @@ the following code:
   view code into reusable widgets to simplify view development in future.
 
 
-Summary <a name="summary"></a>
+Summary <span id="summary"></span>
 -------
 
 In this section of the guide, you have touched every part in the MVC design pattern. You have learned how

@@ -18,9 +18,9 @@
 多模型实例
 ---------------
 
-> 注意：这部分正在开发中。
+> Note: This section is under development.
 >
-> 还没有内容。
+> It has no content yet.
 
 TBD
 
@@ -28,8 +28,8 @@ Dependend models
 ----------------
 
 
-> 注意：这部分正在开发中。
+> Note: This section is under development.
 >
-> 还没有内容。
+> It has no content yet.
 
 TBD

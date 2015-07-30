@@ -148,7 +148,7 @@
         validationDelay: 500,
         // whether to enable AJAX-based validation.
         enableAjaxValidation: false,
-        // function (attribute, value, messages), the client-side validation function.
+        // function (attribute, value, messages, deferred, $form), the client-side validation function.
         validate: undefined,
         // status of the input field, 0: empty, not entered before, 1: validated, 2: pending validation, 3: validating
         status: 0,
@@ -168,7 +168,7 @@
 
                 var settings = $.extend({}, defaults, options || {});
                 if (settings.validationUrl === undefined) {
-                    settings.validationUrl = $form.prop('action');
+                    settings.validationUrl = $form.attr('action');
                 }
 
                 $.each(attributes, function (i) {
@@ -227,6 +227,14 @@
             return attribute;
         },
 
+        // manually trigger the validation of the attribute with the specified ID
+        validateAttribute: function (id) {
+            var attribute = methods.find.call(this, id);
+            if (attribute != undefined) {
+                validateAttribute($(this), attribute, true);
+            }
+        },
+
         // find an attribute config based on the specified attribute ID
         find: function (id) {
             var attributes = $(this).data('yiiActiveForm').attributes,
@@ -251,6 +259,7 @@
             return this.data('yiiActiveForm');
         },
 
+        // validate all applicable inputs in the form
         validate: function () {
             var $form = $(this),
                 data = $form.data('yiiActiveForm'),
@@ -282,7 +291,7 @@
                     $form.trigger(event, [this, msg, deferreds]);
                     if (event.result !== false) {
                         if (this.validate) {
-                            this.validate(this, getValue($form, this), msg, deferreds);
+                            this.validate(this, getValue($form, this), msg, deferreds, $form);
                         }
                         if (this.enableAjaxValidation) {
                             needAjaxValidation = true;
@@ -303,13 +312,13 @@
                 }
                 if (needAjaxValidation) {
                     var $button = data.submitObject,
-                        extData = '&' + data.settings.ajaxParam + '=' + $form.prop('id');
-                    if ($button && $button.length && $button.prop('name')) {
-                        extData += '&' + $button.prop('name') + '=' + $button.prop('value');
+                        extData = '&' + data.settings.ajaxParam + '=' + $form.attr('id');
+                    if ($button && $button.length && $button.attr('name')) {
+                        extData += '&' + $button.attr('name') + '=' + $button.attr('value');
                     }
                     $.ajax({
                         url: data.settings.validationUrl,
-                        type: $form.prop('method'),
+                        type: $form.attr('method'),
                         data: $form.serialize() + extData,
                         dataType: data.settings.ajaxDataType,
                         complete: function (jqXHR, textStatus) {
@@ -395,7 +404,7 @@
     var watchAttribute = function ($form, attribute) {
         var $input = findInput($form, attribute);
         if (attribute.validateOnChange) {
-            $input.on('change.yiiActiveForm',function () {
+            $input.on('change.yiiActiveForm', function () {
                 validateAttribute($form, attribute, false);
             });
         }
@@ -407,7 +416,10 @@
             });
         }
         if (attribute.validateOnType) {
-            $input.on('keyup.yiiActiveForm', function () {
+            $input.on('keyup.yiiActiveForm', function (e) {
+                if ($.inArray(e.which, [16, 17, 18, 37, 38, 39, 40]) !== -1 ) {
+                    return;
+                }
                 if (attribute.value !== getValue($form, attribute)) {
                     validateAttribute($form, attribute, false, attribute.validationDelay);
                 }
@@ -487,7 +499,7 @@
             updateSummary($form, messages);
 
             if (errorInputs.length) {
-                var top = $form.find(errorInputs.join(',')).first().offset().top;
+                var top = $form.find(errorInputs.join(',')).first().closest(':visible').offset().top;
                 var wtop = $(window).scrollTop();
                 if (top < wtop || top > wtop + $(window).height) {
                     $(window).scrollTop(top);
@@ -497,12 +509,20 @@
                 data.validated = true;
                 var $button = data.submitObject || $form.find(':submit:first');
                 // TODO: if the submission is caused by "change" event, it will not work
-                if ($button.length) {
-                    $button.click();
-                } else {
-                    // no submit button in the form
-                    $form.submit();
+                if ($button.length && $button.attr('type') == 'submit' && $button.attr('name')) {
+                    // simulate button input value
+                    var $hiddenButton = $('input[type="hidden"][name="' + $button.attr('name') + '"]', $form);
+                    if (!$hiddenButton.length) {
+                        $('<input>').attr({
+                            type: 'hidden',
+                            name: $button.attr('name'),
+                            value: $button.attr('value')
+                        }).appendTo($form);
+                    } else {
+                        $hiddenButton.attr('value', $button.attr('value'));
+                    }
                 }
+                $form.submit();
             }
         } else {
             $.each(data.attributes, function () {
@@ -581,11 +601,11 @@
 
     var getValue = function ($form, attribute) {
         var $input = findInput($form, attribute);
-        var type = $input.prop('type');
+        var type = $input.attr('type');
         if (type === 'checkbox' || type === 'radio') {
             var $realInput = $input.filter(':checked');
             if (!$realInput.length) {
-                $realInput = $form.find('input[type=hidden][name="' + $input.prop('name') + '"]');
+                $realInput = $form.find('input[type=hidden][name="' + $input.attr('name') + '"]');
             }
             return $realInput.val();
         } else {

@@ -1,13 +1,11 @@
 Fixtures
 ========
 
-> Note: This section is under development.
-
-Fixtures are important part of testing. Their main purpose is to set up the environment in a fixed/known state
+Fixtures are an important part of testing. Their main purpose is to set up the environment in a fixed/known state
 so that your tests are repeatable and run in an expected way. Yii provides a fixture framework that allows
 you to define your fixtures precisely and use them easily.
 
-A key concept in the Yii fixture framework is the so-called *fixture objects*. A fixture object represents
+A key concept in the Yii fixture framework is the so-called *fixture object*. A fixture object represents
 a particular aspect of a test environment and is an instance of [[yii\test\Fixture]] or its child class. For example,
 you may use `UserFixture` to make sure the user DB table contains a fixed set of data. You load one or multiple
 fixture objects before running a test and unload them when finishing.
@@ -41,6 +39,12 @@ class UserFixture extends ActiveFixture
 > Tip: Each `ActiveFixture` is about preparing a DB table for testing purpose. You may specify the table
 > by setting either the [[yii\test\ActiveFixture::tableName]] property or the [[yii\test\ActiveFixture::modelClass]]
 > property. If the latter, the table name will be taken from the `ActiveRecord` class specified by `modelClass`.
+
+> Note: [[yii\test\ActiveFixture]] is only suited for SQL databases. For NoSQL databases, Yii provides the following
+> `ActiveFixture` classes:
+>
+> - Mongo DB: [[yii\mongodb\ActiveFixture]]
+> - Elasticsearch: [[yii\elasticsearch\ActiveFixture]] (since version 2.0.2)
 
 
 The fixture data for an `ActiveFixture` fixture is usually provided in a file located at `FixturePath/data/TableName.php`,
@@ -76,7 +80,7 @@ values into the rows when the fixture is being loaded.
 > Tip: You may customize the location of the data file by setting the [[yii\test\ActiveFixture::dataFile]] property.
 > You may also override [[yii\test\ActiveFixture::getData()]] to provide the data.
 
-As we described earlier, a fixture may depend on other fixtures. For example, `UserProfileFixture` depends on `UserFixture`
+As we described earlier, a fixture may depend on other fixtures. For example, a `UserProfileFixture` may need to depends on `UserFixture`
 because the user profile table contains a foreign key pointing to the user table.
 The dependency is specified via the [[yii\test\Fixture::depends]] property, like the following,
 
@@ -92,6 +96,10 @@ class UserProfileFixture extends ActiveFixture
 }
 ```
 
+The dependency also ensures, that the fixtures are loaded and unloaded in a well defined order. In the above example `UserFixture` will
+always be loaded before `UserProfileFixture` to ensure all foreign key references exist and will be unloaded after `UserProfileFixture`
+has been unloaded for the same reason.
+
 In the above, we have shown how to define a fixture about a DB table. To define a fixture not related with DB
 (e.g. a fixture about certain files and directories), you may extend from the more general base class
 [[yii\test\Fixture]] and override the [[yii\test\Fixture::load()|load()]] and [[yii\test\Fixture::unload()|unload()]] methods.
@@ -101,7 +109,7 @@ Using Fixtures
 --------------
 
 If you are using [CodeCeption](http://codeception.com/) to test your code, you should consider using
-the `yii2-codeception` extension which has the built-in support for loading and accessing fixtures.
+the `yii2-codeception` extension which has built-in support for loading and accessing fixtures.
 If you are using other testing frameworks, you may use [[yii\test\FixtureTrait]] in your test cases
 to achieve the same goal.
 
@@ -208,7 +216,7 @@ In this way you will avoid collision of fixture data files between tests and use
 > Note: In the example above fixture files are named only for example purpose. In real life you should name them
 > according to which fixture class your fixture classes are extending from. For example, if you are extending
 > from [[yii\test\ActiveFixture]] for DB fixtures, you should use DB table names as the fixture data file names;
-> If you are extending for [[yii\mongodb\ActiveFixture]] for MongoDB fixtures, you should use collection names as the file names.
+> If you are extending from [[yii\mongodb\ActiveFixture]] for MongoDB fixtures, you should use collection names as the file names.
 
 The similar hierarchy can be used to organize fixture class files. Instead of using `data` as the root directory, you may
 want to use `fixtures` as the root directory to avoid conflict with the data files.
@@ -216,6 +224,8 @@ want to use `fixtures` as the root directory to avoid conflict with the data fil
 
 Summary
 -------
+
+> Note: This section is under development.
 
 In the above, we have described how to define and use fixtures. Below we summarize the typical workflow
 of running unit tests related with DB:
@@ -233,7 +243,9 @@ of running unit tests related with DB:
 Managing Fixtures
 =================
 
-// todo: this tutorial may be merged into test-fixture.md
+> Note: This section is under development.
+>
+> todo: this tutorial may be merged with the above part of test-fixtures.md
 
 Fixtures are important part of testing. Their main purpose is to populate you with data that needed by testing
 different cases. With this data using your tests becoming more efficient and useful.
@@ -364,4 +376,4 @@ Auto-generating fixtures
 
 Yii also can auto-generate fixtures for you based on some template. You can generate your fixtures with different data on different languages and formats.
 These feature is done by [Faker](https://github.com/fzaninotto/Faker) library and `yii2-faker` extension.
-See extension [guide](https://github.com/yiisoft/yii2/tree/master/extensions/faker) for more docs.
+See extension [guide](https://github.com/yiisoft/yii2-faker) for more docs.
