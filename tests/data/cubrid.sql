@@ -192,3 +192,15 @@ INSERT INTO "order_item_with_null_fk" (order_id, item_id, quantity, subtotal) VA
 INSERT INTO "order_item_with_null_fk" (order_id, item_id, quantity, subtotal) VALUES (3, 2, 1, 40.0);
 
 INSERT INTO "document" (title, content, version) VALUES ('Yii 2.0 guide', 'This is Yii 2.0 guide', 0);
+
+/* bit test, see https://github.com/yiisoft/yii2/issues/9006 */
+
+DROP TABLE IF EXISTS `bit_values` CASCADE;
+
+CREATE TABLE `bit_values` (
+  `id`      INT(11) NOT NULL AUTO_INCREMENT,
+  `val` bit(1) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+INSERT INTO `bit_values` (id, val) VALUES (1, b'0'), (2, b'1');
