@@ -30,15 +30,17 @@ class BaseJson
      * @param integer $options the encoding options. For more details please refer to
      * <http://www.php.net/manual/en/function.json-encode.php>. Default is `JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE`.
      * @return string the encoding result
+     *
+     * @throws InvalidParamException if there is any encoding error
      */
     public static function encode($value, $options = 320)
     {
         $expressions = [];
-        $value = static::processData($value, $expressions, uniqid());
+        $value = static::processData($value, $expressions, uniqid('', false));
         $json = json_encode($value, $options);
         static::handleJsonError(json_last_error());
 
-        return empty($expressions) ? $json : strtr($json, $expressions);
+        return $expressions === [] ? $json : strtr($json, $expressions);
     }
 
     /**
@@ -50,6 +52,8 @@ class BaseJson
      * @param mixed $value the data to be encoded
      * @return string the encoding result
      * @since 2.0.4
+     *
+     * @throws InvalidParamException if there is any encoding error
      */
     public static function htmlEncode($value)
     {
@@ -65,7 +69,7 @@ class BaseJson
      */
     public static function decode($json, $asArray = true)
     {
-        if (is_array($json)) {
+        if (!is_scalar($json)) {
             throw new InvalidParamException('Invalid JSON data.');
         }
         $decode = json_decode((string) $json, $asArray);
@@ -77,8 +81,10 @@ class BaseJson
     /**
      * Handles json_encode and json_decode errors
      *
-     * @param $lastError
-     * @throws \yii\base\InvalidParamException
+     * @param integer $lastError error code
+     * @throws \yii\base\InvalidParamException if there is any encoding/decoding error
+     *
+     * @since 2.0.6
      */
     protected static function handleJsonError($lastError)
     {
