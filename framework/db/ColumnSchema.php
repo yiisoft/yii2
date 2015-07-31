@@ -133,7 +133,8 @@ class ColumnSchema extends Object
             case 'integer':
                 return (int) $value;
             case 'boolean':
-                return (bool) $value;
+                // https://github.com/yiisoft/yii2/issues/9006
+                return (bool) $value && $value !== "\0";
             case 'double':
                 return (double) $value;
         }

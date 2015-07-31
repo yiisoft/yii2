@@ -27,6 +27,7 @@ Yii Framework 2 Change Log
 - Bug #8772: ActiveQuery failed removing duplicate records after join when the resultset did not contain the pk values e.g. after grouping (cebe)
 - Bug #8844: Added a workaround for an oracle bug when fetching information about table constraints and filtering by CONSTRAINT_TYPE (nidgetgod)
 - Bug #8900: Fixed determine active menu item with url-alias in route `\yii\widgets\Menu::isItemActive()` (demi)
+- Bug #9006: Fixed bit column always returning true using certain version of PDO MySQL (stratoss, RusAlex, mj4444ru, samdark)
 - Bug #9046: Fixed problem with endless error loop when an error occurred after sending a stream or file download response to the user (cebe)
 - Bug #9059: Fixed PHP Notice in error handler view (dynasource, andrewnester, samdark)
 - Bug #9063: Workaround for MySQL losing table case when adding index (sebathi)
