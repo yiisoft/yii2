@@ -3,8 +3,6 @@ ArrayHelper
 
 [丰富设置的PHP](http://php.net/manual/zh/book.array.php)附加的数组函数，Yii 数组辅助函数提供了额外的静态方法让你更有效率的处理数组。
 
-## Getting Values <span id="getting-values"></span>
-
 ## 获取值 <span id="getting-values"></span>
 
 从一个数组中再获得值， 一个对象或者使用标准PHP是完全的反复由一个复杂结构组成.你不得不首先使用`isset`检查key是否存在,然后如果存在你就获取到了它，如果不存在，
@@ -168,7 +166,6 @@ $result = ArrayHelper::map($array, 'id', 'name', 'class');
 
 ## 多维排序 <span id="multidimensional-sorting"></span>
 
-`multisort` method helps to sort an array of objects or nested arrays by one or several keys. For example,
 `multisort` 方法帮助排序一个对象数组或者嵌套的数组,或者几个键名.比如,
 
 ```php
@@ -198,21 +195,14 @@ ArrayHelper::multisort($data, function($item) {
 });
 ```
 
-Third argument is direction. In case of sorting by a single key it could be either `SORT_ASC` or
-`SORT_DESC`. If sorting by multiple values you can sort each value differently by providing an array of
-sort direction.
-
 第三个参数是引导.假设根据一个单一的键名进行排序,它可以是`SORT_ASC`或者`SORT_DESC`中两者之中任一的.
-如果是根据多个值进行排序，你可以排序每一个值通过提供一个排序引导数组。
+如果是根据多个值进行排序，你可以提供一个改变排序引导的数组，排序每一个值.
 
-Last argument is PHP sort flag that could take the same values as the ones passed to
-PHP [sort()](http://php.net/manual/en/function.sort.php).
+最后一个参数是PHP sort flag，你可以通过PHP[sort()](http://php.net/manual/zh/function.sort.php) 中拿相同的值作为其中一个sort flag.
 
+## 检测数组类型 <span id="detecting-array-types"></span> 
 
-## Detecting Array Types <span id="detecting-array-types"></span>
-
-It is handy to know whether an array is indexed or an associative. Here's an example:
-
+这能够方便的知道一个数组是索引数组还是联合数组.这是一个案例:
 ```php
 // no keys specified
 $indexed = ['Qiang', 'Paul'];
@@ -224,20 +214,16 @@ echo ArrayHelper::isAssociative($associative);
 ```
 
 
-## HTML Encoding and Decoding Values <span id="html-encoding-values"></span>
-
-In order to encode or decode special characters in an array of strings into HTML entities you can use the following:
-
+## HTML 编码和解码值 <span id="html-encoding-values"></span>
+为了编码或者解码数组中的特殊字符串变成HTML实体,你可以使用下列:
 ```php
 $encoded = ArrayHelper::htmlEncode($data);
 $decoded = ArrayHelper::htmlDecode($data);
 ```
 
-Only values will be encoded by default. By passing second argument as `false` you can encode array's keys as well.
-Encoding will use application charset and could be changed via third argument.
+只有值将会默认为编码的.通过第二个参数诸如`false`,你也可以同样的编码数组的键名.编码将会使用程序的字符集和也可以通过第三个参数修改字符集.
 
-
-## Merging Arrays <span id="merging-arrays"></span>
+## 合并数组 <span id="merging-arrays"></span>
 
 ```php
   /**
@@ -257,10 +243,9 @@ Encoding will use application charset and could be changed via third argument.
 ```
 
 
-## Converting Objects to Arrays <span id="converting-objects-to-arrays"></span>
+## 对象转换数组 <span id="converting-objects-to-arrays"></span>
 
-Often you need to convert an object or an array of objects into an array. The most common case is converting active record
-models in order to serve data arrays via REST API or use it otherwise. The following code could be used to do it:
+你经常需要将一个对象或者对象数组转换成一个数组.最常见的情况是通过REST API或者在其它方面是为了转换active record模型成服务数据数组.下列的代码可以用来做:
 
 ```php
 $posts = Post::find()->limit(10)->all();
@@ -278,17 +263,16 @@ $data = ArrayHelper::toArray($posts, [
 ]);
 ```
 
-The first argument contains the data we want to convert. In our case we're converting a `Post` AR model.
+这第一个参数包含我们想要转换的数据.在我们的案例中,我们在转换一个`Post` AR model.
 
-The second argument is conversion mapping per class. We're setting a mapping for `Post` model.
-Each mapping array contains a set of mappings. Each mapping could be:
+这第二个参数是转换映射每个类.我们设置了一个`Post` model的映射.
+每个映射数组包含一系列的映射.每个映射可以是:
 
-- A field name to include as is.
-- A key-value pair of desired array key name and model column name to take value from.
-- A key-value pair of desired array key name and a callback which returns value.
+- 一个字段名称来包含它.
+- 一个从哪里拿想要得到的数组名称和模型列的值名称的键-值对
+- 一个键-值对想要获取的数组键名称和一个回调哪些返回值.
 
-The result of conversion above will be:
-
+这上面的转换结果将会是:
 
 ```php
 [
@@ -299,5 +283,4 @@ The result of conversion above will be:
 ]
 ```
 
-It is possible to provide default way of converting object to array for a specific class by implementing
-[[yii\base\Arrayable|Arrayable]] interface in that class.
+它也可能提供对象转换成数组的默认方式是在一个指定类通过继承[[yii\base\Arrayable|Arrayable]]接口.
