@@ -214,6 +214,10 @@ class DbManager extends BaseManager
      */
     protected function getItem($name)
     {
+        if (empty($name)) {
+            return null;
+        }
+        
         if (!empty($this->items[$name])) {
             return $this->items[$name];
         }
