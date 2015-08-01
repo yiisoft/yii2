@@ -32,6 +32,7 @@ class Schema extends \yii\db\Schema
         'ORA-00001: unique constraint' => 'yii\db\IntegrityException',
     ];
 
+
     /**
      * @inheritdoc
      */

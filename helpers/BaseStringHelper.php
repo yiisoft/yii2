@@ -141,7 +141,7 @@ class BaseStringHelper
     
     /**
      * Truncate a string while preserving the HTML.
-     * 
+     *
      * @param string $string The string to truncate
      * @param integer $count
      * @param string $suffix String to append to the end of the truncated string.
