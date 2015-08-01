@@ -14,7 +14,7 @@ Yii的单元测试框架Codeception基于PHPUnit, Codeception建议遵从PHPUnit
 - [PHPUnit docs starting from chapter 2](http://phpunit.de/manual/current/en/writing-tests-for-phpunit.html)。
 - [Codeception Unit Tests](http://codeception.com/docs/05-UnitTests)。
 
-运行基本和高级模板验收测试
+运行基本和高级模板单元测试
 ----------------------------------------------
 
 请参阅`apps/advanced/tests/README.md` 和 `apps/basic/tests/README.md`提供的说明。 
