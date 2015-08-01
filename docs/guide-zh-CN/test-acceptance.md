@@ -8,4 +8,4 @@
 运行基本和高级模板验收测试
 ----------------------------------------------------
 
-请参阅`apps/advanced/tests/README.md` 和 `apps/basic/tests/README.md` 提供的说明 
+请参阅`apps/advanced/tests/README.md` 和 `apps/basic/tests/README.md`提供的说明。 
