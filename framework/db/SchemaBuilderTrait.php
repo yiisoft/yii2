@@ -59,6 +59,7 @@ trait SchemaBuilderTrait
         'cubrid' => 'yii\db\cubrid\SchemaBuilder', // CUBRID
     ];
 
+
     /**
      * Set the database connection used by this class
      *

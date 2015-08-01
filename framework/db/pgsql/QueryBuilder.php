@@ -85,6 +85,7 @@ class QueryBuilder extends \yii\db\QueryBuilder
         'NOT EXISTS' => 'buildExistsCondition',
     ];
 
+
     /**
      * Builds a SQL statement for creating a new index.
      * @param string $name the name of the index. The name will be properly quoted by the method.

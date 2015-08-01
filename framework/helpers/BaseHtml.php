@@ -80,7 +80,6 @@ class BaseHtml
         'rel',
         'media',
     ];
-
     /**
      * @var array list of tag attributes that should be specially handled when their values are of array type.
      * In particular, if the value of the `data` attribute is `['name' => 'xyz', 'age' => 13]`, two attributes

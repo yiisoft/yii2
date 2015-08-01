@@ -24,7 +24,7 @@ use yii\base\Object;
  *   'data' => Schema::text(),
  *   'created_at' => Schema::integer(),
  *   'updated_at' => Schema::integer(),
- *]);
+ * ]);
  * ```
  *
  * @method SchemaBuilder default($default = null) see [[SchemaBuilder::_default()]] for more info
@@ -38,31 +38,27 @@ abstract class SchemaBuilder extends Object
      * @var string column type
      */
     protected $type;
-
     /**
      * @var integer column size
      */
     protected $length;
-
     /**
      * @var boolean whether value is not nullable
      */
     protected $isNotNull = false;
-
     /**
      * @var boolean whether value should be unique
      */
     protected $isUnique = false;
-
     /**
      * @var string check value of column
      */
     protected $check;
-
     /**
      * @var mixed default value of column
      */
     protected $default;
+
 
     /**
      * Makes column a primary key
