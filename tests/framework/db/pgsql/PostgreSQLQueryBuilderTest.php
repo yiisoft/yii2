@@ -66,7 +66,7 @@ class PostgreSQLQueryBuilderTest extends QueryBuilderTest
             [Schema::TYPE_DATE . ' NOT NULL', Schema::date()->notNull(), 'date NOT NULL'],
             [Schema::TYPE_BINARY, Schema::binary(), 'bytea'],
             [Schema::TYPE_BOOLEAN, Schema::boolean(), 'boolean'],
-            [Schema::TYPE_BOOLEAN . ' NOT NULL DEFAULT TRUE', Schema::boolean()->notNull()->default(true), 'boolean NOT NULL DEFAULT TRUE'],
+            [Schema::TYPE_BOOLEAN . ' NOT NULL DEFAULT TRUE', Schema::boolean()->notNull()->defaultValue(true), 'boolean NOT NULL DEFAULT TRUE'],
             [Schema::TYPE_MONEY, Schema::money(), 'numeric(19,4)'],
             [Schema::TYPE_MONEY . '(16,2)', Schema::money(16, 2), 'numeric(16,2)'],
             [Schema::TYPE_MONEY . ' CHECK (value > 0.0)', Schema::money()->check('value > 0.0'), 'numeric(19,4) CHECK (value > 0.0)'],

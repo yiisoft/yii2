@@ -11,14 +11,14 @@ use Yii;
 use yii\base\Object;
 
 /**
- * SchemaBuilder is the class help to define DB's schema types.
+ * SchemaBuilder helps to define database schema types using a PHP interface.
  *
  * For example you may use the following code inside your migration files:
  *
  * ```php
  * $this->createTable('table', [
  *   'name' => Schema::string(64)->notNull(),
- *   'type' => Schema::integer()->notNull()->default(10),
+ *   'type' => Schema::integer()->notNull()->defaultValue(10),
  *   'description' => Schema::text(),
  *   'rule_name' => Schema::string(64),
  *   'data' => Schema::text(),
@@ -26,8 +26,6 @@ use yii\base\Object;
  *   'updated_at' => Schema::integer(),
  * ]);
  * ```
- *
- * @method SchemaBuilder default($default = null) see [[SchemaBuilder::_default()]] for more info
  *
  * @author Vasenin Matvey <vaseninm@gmail.com>
  * @since 2.0.6
@@ -291,26 +289,6 @@ abstract class SchemaBuilder extends Object
     }
 
     /**
-     * Calls the named method which is not a class method.
-     *
-     * Do not call this method directly as it is a PHP magic method that
-     * will be implicitly called when an unknown method is being invoked.
-     *
-     * @param string $name the method name
-     * @param array $arguments method parameters
-     *
-     * @return mixed the method return value
-     */
-    public function __call($name, $arguments)
-    {
-        if ($name === 'default') {
-            return call_user_func_array([$this, '_default'], $arguments);
-        }
-
-        return parent::__call($name, $arguments);
-    }
-
-    /**
      * Specify check value for the column
      *
      * @param string $check
@@ -344,10 +322,9 @@ abstract class SchemaBuilder extends Object
      * Specify default value for the column
      *
      * @param mixed $default
-     *
      * @return $this
      */
-    protected function _default($default = null)
+    protected function defaultValue($default = null)
     {
         $this->default = $default;
 
