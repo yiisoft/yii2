@@ -40,11 +40,12 @@
         /**
          * afterValidate event is triggered after validating the whole form.
          * The signature of the event handler should be:
-         *     function (event, messages)
+         *     function (event, messages, errorAttributes)
          * where
          *  - event: an Event object.
          *  - messages: an associative array with keys being attribute IDs and values being error message arrays
          *    for the corresponding attributes.
+         *  - errorAttributes: an array of attributes that have validation errors. Please refer to attributeDefaults for the structure of this parameter.
          */
         afterValidate: 'afterValidate',
         /**
@@ -514,18 +515,18 @@
         var data = $form.data('yiiActiveForm');
 
         if (submitting) {
-            var errorInputs = [];
+            var errorAttributes = [];
             $.each(data.attributes, function () {
                 if (!this.cancelled && updateInput($form, this, messages)) {
-                    errorInputs.push(this.input);
+                    errorAttributes.push(this);
                 }
             });
 
-            $form.trigger(events.afterValidate, [messages]);
+            $form.trigger(events.afterValidate, [messages, errorAttributes]);
 
             updateSummary($form, messages);
 
-            if (errorInputs.length) {
+            if (errorAttributes.length) {
                 if (data.settings.scrollToError) {
                     var top = $form.find(errorInputs.join(',')).first().closest(':visible').offset().top;
                     var wtop = $(window).scrollTop();
