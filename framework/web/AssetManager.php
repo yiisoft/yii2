@@ -594,7 +594,7 @@ class AssetManager extends Component
      */
     protected function hash($path)
     {
-        if (!empty($this->hashCallback)) {
+        if (is_callable($this->hashCallback)) {
             return call_user_func($this->hashCallback, $path);
         }
         $path = (is_file($path) ? dirname($path) : $path) . filemtime($path);
