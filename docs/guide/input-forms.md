@@ -108,6 +108,55 @@ class like it is done in the above example with [[yii\helpers\Html::submitButton
 > }
 > ```
 
+Creating Dropdown list <span id="creating-activeform-dropdownlist"></span>
+---------------------
+We can use ActiveForm [dropDownList()](http://www.yiiframework.com/doc-2.0/yii-widgets-activefield.html#dropDownList()-detail) method to create a Dropwown list.
+
+### Controller
+In the following controller code we will fetch all product categories and when working with list of data models, we need to convert them into `key/value` pair using [yii\helpers\ArrayHelper::map()](http://www.yiiframework.com/doc-2.0/yii-helpers-basearrayhelper.html#map%28%29-detail).
+
+```php
+<?php
+namespace app\controllers;
+
+use Yii;
+use app\models\Product;
+use app\models\ProductCategory;
+use yii\web\Controller;
+use yii\web\NotFoundHttpException;
+use yii\helpers\ArrayHelper;
+
+class ProductController extends Controller
+{
+    public function actionCreate()
+    {
+        $model = new Product();
+        
+        // fetch all product categories from ProductCategory model
+        $category_list= ArrayHelper::map(ProductCategory::find()->all(),'id','category_name');
+
+        if ($model->load(Yii::$app->request->post()) && $model->save()) {
+            return $this->redirect(['view', 'id' => $model->code]);
+        } else {
+            return $this->render('create', [
+                'model' => $model,
+                'category_list'=>$category_list,
+            ]);
+        }
+    }
+
+}
+```
+
+### Form View
+Next, create a form with dropdownList() and pass in category list along with any options.
+```php
+<?= $form->field($model, 'product_category')->dropdownList($category_list,['prompt'=>'Select Category']) ?>
+```
+
+> Tip: If you are using ActiveForm then value of your model field will be used as the selected value but if using Html helper then [dropDownList](http://www.yiiframework.com/doc-2.0/yii-helpers-basehtml.html#dropDownList%28%29-detail) function accepts another parameter selection as well, in which you can pass the value that you want to mark >as selected.
+
+
 The next section [Validating Input](input-validation.md) handles the validation of the submitted form data on the server
 side as well as ajax- and client side validation.
 
