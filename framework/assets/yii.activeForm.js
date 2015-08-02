@@ -40,12 +40,11 @@
         /**
          * afterValidate event is triggered after validating the whole form.
          * The signature of the event handler should be:
-         *     function (event, messages, errorAttributes)
+         *     function (event, messages)
          * where
          *  - event: an Event object.
          *  - messages: an associative array with keys being attribute IDs and values being error message arrays
          *    for the corresponding attributes.
-         *  - errorAttributes: an array of attributes that have validation errors. Please refer to attributeDefaults for the structure of this parameter.
          */
         afterValidate: 'afterValidate',
         /**
@@ -216,18 +215,6 @@
                     });
                     $form.on('submit.yiiActiveForm', methods.submitForm);
                 }
-                if (settings.scrollToError) {
-                    $form.on('afterValidate.yiiActiveForm', function(event, messages, errorAttributes) {
-                        var top = $form.find($.map(errorAttributes, function(attribute) {
-                            return attribute.input;
-                        }).join(',')).first().closest(':visible').offset().top;
-                        var wtop = $(window).scrollTop();
-                        if (top < wtop || top > wtop + $(window).height()) {
-                            $(window).scrollTop(top);
-                        }
-                    });
-                }
-
             });
         },
 
@@ -527,18 +514,25 @@
         var data = $form.data('yiiActiveForm');
 
         if (submitting) {
-            var errorAttributes = [];
+            var errorInputs = [];
             $.each(data.attributes, function () {
                 if (!this.cancelled && updateInput($form, this, messages)) {
-                    errorAttributes.push(this);
+                    errorInputs.push(this.input);
                 }
             });
 
-            $form.trigger(events.afterValidate, [messages, errorAttributes]);
+            $form.trigger(events.afterValidate, [messages]);
 
             updateSummary($form, messages);
 
-            if (errorAttributes.length) {
+            if (errorInputs.length) {
+                if (data.settings.scrollToError) {
+                    var top = $form.find(errorInputs.join(',')).first().closest(':visible').offset().top;
+                    var wtop = $(window).scrollTop();
+                    if (top < wtop || top > wtop + $(window).height()) {
+                        $(window).scrollTop(top);
+                    }
+                }
                 data.submitting = false;
             } else {
                 data.validated = true;
