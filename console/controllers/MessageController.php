@@ -602,7 +602,7 @@ EOD;
      * @param array $messages
      * @param string $dirName name of the directory to write to
      * @param string $catalog message catalog
-     * @since 2.0.5
+     * @since 2.0.6
      */
     protected function saveMessagesToPOT($messages, $dirName, $catalog)
     {

@@ -30,7 +30,7 @@ use yii\base\Object;
  * @method SchemaBuilder default($default = null) see [[SchemaBuilder::_default()]] for more info
  *
  * @author Vasenin Matvey <vaseninm@gmail.com>
- * @since 2.0.5
+ * @since 2.0.6
  */
 abstract class SchemaBuilder extends Object
 {

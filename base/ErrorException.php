@@ -18,7 +18,9 @@ use Yii;
 class ErrorException extends \ErrorException
 {
     /**
-     * Zend runtime won't call the error handler on fatals, HHVM will, with an error code of 16777217
+     * This constant represents a fatal error in the HHVM engine.
+     *
+     * PHP Zend runtime won't call the error handler on fatals, HHVM will, with an error code of 16777217
      * We will handle fatal error a bit different on HHVM.
      * @see https://github.com/facebook/hhvm/blob/master/hphp/runtime/base/runtime-error.h#L62
      */

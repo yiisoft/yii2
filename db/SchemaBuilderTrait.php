@@ -32,7 +32,7 @@ use yii\di\Instance;
  * @method static SchemaBuilder money(integer $length = null) see [[SchemaBuilder::money()]] for more info
  *
  * @author Vasenin Matvey <vaseninm@gmail.com>
- * @since 2.0.5
+ * @since 2.0.6
  */
 trait SchemaBuilderTrait
 {

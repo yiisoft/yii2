@@ -1280,7 +1280,7 @@ class BaseHtml
      *
      * - maxlength: integer|boolean, when `maxlength` is set true and the model attribute is validated
      *   by a string validator, the `maxlength` option will take the value of [[\yii\validators\StringValidator::max]].
-     *   This is available since version 2.0.5.
+     *   This option is available since version 2.0.6.
      *
      * @return string the generated input tag
      */
@@ -1323,7 +1323,7 @@ class BaseHtml
      *
      * - maxlength: integer|boolean, when `maxlength` is set true and the model attribute is validated
      *   by a string validator, the `maxlength` option will take the value of [[\yii\validators\StringValidator::max]].
-     *   This is available since version 2.0.5.
+     *   This option is available since version 2.0.6.
      *
      * @return string the generated textarea tag
      */
