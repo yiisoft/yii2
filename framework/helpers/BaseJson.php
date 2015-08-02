@@ -69,7 +69,7 @@ class BaseJson
      */
     public static function decode($json, $asArray = true)
     {
-        if (!is_scalar($json)) {
+        if (is_array($json)) {
             throw new InvalidParamException('Invalid JSON data.');
         }
         $decode = json_decode((string) $json, $asArray);
