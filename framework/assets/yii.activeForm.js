@@ -437,9 +437,7 @@
             var $form = $(this);
             var data = $form.data('yiiActiveForm');
             $.each(data.attributes, function () {
-                if (!this.cancelled) {
-                    updateInput($form, this, messages);
-                }
+                updateInput($form, this, messages);
             });
             if (summary) {
                 updateSummary($form, messages);
