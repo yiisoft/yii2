@@ -191,6 +191,8 @@ class AssetManager extends Component
      *     return hash('md4', $path);
      * }
      * ```
+     *
+     * @since 2.0.6
      */
     public $hashCallback;
 
