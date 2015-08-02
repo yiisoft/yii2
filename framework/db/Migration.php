@@ -60,7 +60,7 @@ class Migration extends Component implements MigrationInterface
 
     /**
      * Initializes the migration.
-     * This method will set [[db]] to be the 'db' application component, if it is null.
+     * This method will set [[db]] to be the 'db' application component, if it is `null`.
      */
     public function init()
     {
@@ -411,7 +411,7 @@ class Migration extends Component implements MigrationInterface
      * @param string $name the name of the index. The name will be properly quoted by the method.
      * @param string $table the table that the new index will be created for. The table name will be properly quoted by the method.
      * @param string|array $columns the column(s) that should be included in the index. If there are multiple columns, please separate them
-     * by commas or use an array. Each column name will be properly quoted by the method. Quoting will be escaped for column names that
+     * by commas or use an array. Each column name will be properly quoted by the method. Quoting will be skipped for column names that
      * include a left parenthesis "(".
      * @param boolean $unique whether to add UNIQUE constraint on the created index.
      */
