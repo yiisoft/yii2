@@ -148,7 +148,9 @@ yii = (function ($) {
                 $form = $e.closest('form'),
                 action = $e.attr('href'),
                 params = $e.data('params');
-
+                
+            var newForm = !$form.length;
+            
             if (method === undefined) {
                 if (action && action != '#') {
                     window.location = action;
@@ -156,9 +158,10 @@ yii = (function ($) {
                     $form.trigger('submit');
                 }
                 return;
+            } else if (method.match(/(post)/i) && action && action != '#') {
+                newForm = true;
             }
 
-            var newForm = !$form.length;
             if (newForm) {
                 if (!action || !action.match(/(^\/|:\/\/)/)) {
                     action = window.location.href;
