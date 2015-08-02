@@ -2097,9 +2097,8 @@ class BaseHtml
 
     /**
      * Escapes regular expression to use in JavaScript
-     * @param string $regexp
-     * @return string
-     *
+     * @param string $regexp the regular expression to be escaped.
+     * @return string the escaped result.
      * @since 2.0.6
      */
     public static function escapeJsRegularExpression($regexp)
