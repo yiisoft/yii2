@@ -38,6 +38,7 @@ Yii Framework 2 Change Log
 - Bug: Automatic garbage collection in `yii\caching\FileCache` was not triggered (kidol)
 - Bug: Fixed missing stacktrace items on PHP syntax errors of "unexpected end of file" type (samdark)
 - Enh #3335: Implemented `SchemaBuilder` (pana1990, vaseninm, samdark)
+- Enh #5991: Added `updateMessages()` to `yii.activeForm.js` to support manually updating ActiveForm messages (nkovacs)
 - Enh #6043: Specification for 'class' and 'style' in array format added to `yii\helpers\Html` (klimov-paul)
 - Enh #6853: Console application will now register PHP constants for `STDIN`, `STDOUT`, and `STDERR` itself if they are not defined (cebe)
 - Enh #7169: `yii\widgets\ActiveField` now uses corresponding methods for default parts rendering (klimov-paul)
@@ -53,7 +54,7 @@ Yii Framework 2 Change Log
 - Enh #8670: Added support for saving extra fields in session table for `yii\web\DbSession` (klimov-paul)
 - Enh #8671: Extracted `yii\helpers\Html::escapeJsRegularExpression()` method from `yii\validators\RegularExpressionValidator` (silverfire, klimov-paul, samdark, qiangxue)
 - Enh #8903: PostgreSQL `QueryBuilder::createIndex()` can now specify the index method to use (LAV45)
-- Enh #8933: Yii is now able to properly handle HHVM fatal errors (dieend, samdark) 
+- Enh #8933: Yii is now able to properly handle HHVM fatal errors (dieend, samdark)
 - Enh #9011: Allow `yii\widgets\MaskedInput` to produce an input tag of a custom type (TriAnMan)
 - Enh #9038: Write warning to log in case `FileCache` fails to write into file (foccy)
 - Enh #9072: `yii\web\ErrorAction` displays 404 error instead of blank page on direct access (klimov-paul)
@@ -66,7 +67,7 @@ Yii Framework 2 Change Log
 - Enh #9268: Improved display of boolean parameters in logged SQL queries (arkhamvm, samdark)
 - Chg #6354: `ErrorHandler::logException()` will now log the whole exception object instead of only its string representation (cebe)
 - Chg #8556: Extracted `yii\web\User::getAuthManager()` method (samdark)
-- Chg #9181: `yii\helpers\BaseStringHelper::truncateHtml()` is now using `runtime` directory for `HTMLPurifier` cache (webdevsega) 
+- Chg #9181: `yii\helpers\BaseStringHelper::truncateHtml()` is now using `runtime` directory for `HTMLPurifier` cache (webdevsega)
 
 
 2.0.5 July 11, 2015
