@@ -60,6 +60,7 @@ Yii Framework 2 Change Log
 - Enh #9177: Added password hash cost setting to Security component (freezy-sk)
 - Enh #9239: Better handling of `Json` errors (grzegorzkurtyka, samdark)
 - Enh #9246: Added `yii\web\UrlRule::getParamRules()` (df2)
+- Enh #9263: Avoid extra DB query in RBAC DbManager in case auth item name is empty (samdark)
 - Enh #9268: Improved display of boolean parameters in logged SQL queries (arkhamvm, samdark)
 - Chg #6354: `ErrorHandler::logException()` will now log the whole exception object instead of only its string representation (cebe)
 - Chg #8556: Extracted `yii\web\User::getAuthManager()` method (samdark)
