@@ -597,7 +597,7 @@ class AssetManager extends Component
         if (!empty($this->hashCallback)) {
             return call_user_func($this->hashCallback, $path);
         }
-        $path = (pathinfo($path, PATHINFO_EXTENSION) === '' ? $path : dirname($path)) . filemtime($path);
+        $path = (is_file($path) ? $path : dirname($path)) . filemtime($path);
         return sprintf('%x', crc32($path . Yii::getVersion()));
     }
 }
