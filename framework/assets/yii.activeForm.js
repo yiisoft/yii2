@@ -528,7 +528,9 @@
 
             if (errorAttributes.length) {
                 if (data.settings.scrollToError) {
-                    var top = $form.find(errorInputs.join(',')).first().closest(':visible').offset().top;
+                    var top = $form.find($.map(errorAttributes, function(attribute) {
+                        return attribute.input;
+                    }).join(',')).first().closest(':visible').offset().top;
                     var wtop = $(window).scrollTop();
                     if (top < wtop || top > wtop + $(window).height()) {
                         $(window).scrollTop(top);
