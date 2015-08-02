@@ -430,7 +430,8 @@
 
         /**
          * Updates error messages, input containers, and optionally summary as well.
-         * @param messages array the validation error messages
+         * If an attribute is missing from messages, it is considered valid.
+         * @param messages array the validation error messages, indexed by attribute IDs
          * @param summary whether to update summary as well.
          */
         updateMessages: function (messages, summary) {
@@ -441,6 +442,21 @@
             });
             if (summary) {
                 updateSummary($form, messages);
+            }
+        },
+
+        /**
+         * Updates error messages and input container of a single attribute.
+         * If messages is empty, the attribute is considered valid.
+         * @param id attribute ID
+         * @param messages array with error messages
+         */
+        updateAttribute: function(id, messages) {
+            var attribute = methods.find.call(this, id);
+            if (attribute != undefined) {
+                var msg = {};
+                msg[id] = messages;
+                updateInput($(this), attribute, msg);
             }
         }
 
