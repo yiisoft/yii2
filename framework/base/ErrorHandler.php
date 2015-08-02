@@ -139,6 +139,7 @@ abstract class ErrorHandler extends Component
 
         $this->exception = null;
     }
+
     /**
      * Handles HHVM execution errors such as warnings and notices.
      *
