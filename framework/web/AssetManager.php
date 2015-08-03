@@ -168,6 +168,33 @@ class AssetManager extends Component
      * @since 2.0.3
      */
     public $appendTimestamp = false;
+    /**
+     * @var callable a callback that will be called to produce hash for asset directory generation.
+     * The signature of the callback should be as follows:
+     *
+     * ```
+     * function ($path)
+     * ```
+     *
+     * where `$path` is the asset path. Note that the `$path` can be either directory where the asset
+     * files reside or a single file. For a CSS file that uses relative path in `url()`, the hash
+     * implementation should use the directory path of the file instead of the file path to include 
+     * the relative asset files in the copying.
+     *
+     * If this is not set, the asset manager will use the default CRC32 and filemtime in the `hash`
+     * method.
+     * 
+     * Example of an implementation using MD4 hash:
+     *
+     * ```php
+     * function ($path) {
+     *     return hash('md4', $path);
+     * }
+     * ```
+     *
+     * @since 2.0.6
+     */
+    public $hashCallback;
 
     private $_dummyBundles = [];
 
@@ -440,7 +467,7 @@ class AssetManager extends Component
      */
     protected function publishFile($src)
     {
-        $dir = $this->hash(dirname($src) . filemtime($src));
+        $dir = $this->hash($src);
         $fileName = basename($src);
         $dstDir = $this->basePath . DIRECTORY_SEPARATOR . $dir;
         $dstFile = $dstDir . DIRECTORY_SEPARATOR . $fileName;
@@ -485,7 +512,7 @@ class AssetManager extends Component
      */
     protected function publishDirectory($src, $options)
     {
-        $dir = $this->hash($src . filemtime($src));
+        $dir = $this->hash($src);
         $dstDir = $this->basePath . DIRECTORY_SEPARATOR . $dir;
         if ($this->linkAssets) {
             if (!is_dir($dstDir)) {
@@ -532,12 +559,7 @@ class AssetManager extends Component
             return $this->_published[$path][0];
         }
         if (is_string($path) && ($path = realpath($path)) !== false) {
-            $base = $this->basePath . DIRECTORY_SEPARATOR;
-            if (is_file($path)) {
-                return $base . $this->hash(dirname($path) . filemtime($path)) . DIRECTORY_SEPARATOR . basename($path);
-            } else {
-                return $base . $this->hash($path . filemtime($path));
-            }
+            return $this->basePath . DIRECTORY_SEPARATOR . $this->hash($path) . (is_file($path) ? DIRECTORY_SEPARATOR . basename($path) : '');
         } else {
             return false;
         }
@@ -558,11 +580,7 @@ class AssetManager extends Component
             return $this->_published[$path][1];
         }
         if (is_string($path) && ($path = realpath($path)) !== false) {
-            if (is_file($path)) {
-                return $this->baseUrl . '/' . $this->hash(dirname($path) . filemtime($path)) . '/' . basename($path);
-            } else {
-                return $this->baseUrl . '/' . $this->hash($path . filemtime($path));
-            }
+            return $this->baseUrl . '/' . $this->hash($path) . (is_file($path) ? '/' . basename($path) : '');
         } else {
             return false;
         }
@@ -576,6 +594,10 @@ class AssetManager extends Component
      */
     protected function hash($path)
     {
+        if (is_callable($this->hashCallback)) {
+            return call_user_func($this->hashCallback, $path);
+        }
+        $path = (is_file($path) ? dirname($path) : $path) . filemtime($path);
         return sprintf('%x', crc32($path . Yii::getVersion()));
     }
 }

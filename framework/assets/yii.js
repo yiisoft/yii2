@@ -79,7 +79,7 @@ yii = (function ($) {
          */
         setCsrfToken: function (name, value) {
             $('meta[name=csrf-param]').attr('content', name);
-            $('meta[name=csrf-token]').attr('content', value)
+            $('meta[name=csrf-token]').attr('content', value);
         },
 
         /**
@@ -204,22 +204,25 @@ yii = (function ($) {
             }
 
             $form.trigger('submit');
+            $.when($form.data('yiiSubmitFinalizePromise')).then(
+                function () {
+                    if (oldAction != null) {
+                        $form.attr('action', oldAction);
+                    }
+                    $form.attr('method', oldMethod);
 
-            if (oldAction != null) {
-                $form.attr('action', oldAction);
-            }
-            $form.attr('method', oldMethod);
+                    // remove the temporarily added hidden inputs
+                    if (params && $.isPlainObject(params)) {
+                        $.each(params, function (idx, obj) {
+                            $('input[name="' + idx + '"]', $form).remove();
+                        });
+                    }
 
-            // remove the temporarily added hidden inputs
-            if (params && $.isPlainObject(params)) {
-                $.each(params, function (idx, obj) {
-                    $('input[name="' + idx + '"]', $form).remove();
-                });
-            }
-
-            if (newForm) {
-                $form.remove();
-            }
+                    if (newForm) {
+                        $form.remove();
+                    }
+                }
+            );
         },
 
         getQueryParams: function (url) {

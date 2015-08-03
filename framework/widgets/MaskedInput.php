@@ -92,6 +92,12 @@ class MaskedInput extends InputWidget
      * @see \yii\helpers\Html::renderTagAttributes() for details on how attributes are being rendered.
      */
     public $options = ['class' => 'form-control'];
+    /**
+     * @var string the type of the input tag. Currently only 'text' and 'tel' are supported.
+     * @see https://github.com/RobinHerbots/jquery.inputmask
+     * @since 2.0.6
+     */
+    public $type = 'text';
 
     /**
      * @var string the hashed variable to store the pluginOptions
@@ -119,9 +125,9 @@ class MaskedInput extends InputWidget
     {
         $this->registerClientScript();
         if ($this->hasModel()) {
-            echo Html::activeTextInput($this->model, $this->attribute, $this->options);
+            echo Html::activeInput($this->type, $this->model, $this->attribute, $this->options);
         } else {
-            echo Html::textInput($this->name, $this->value, $this->options);
+            echo Html::input($this->type, $this->name, $this->value, $this->options);
         }
     }
 

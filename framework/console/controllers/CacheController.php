@@ -60,7 +60,7 @@ class CacheController extends Controller
      * # flushes caches specified by their id: "first", "second", "third"
      * yii cache/flush first second third
      * ~~~
-     * 
+     *
      */
     public function actionFlush()
     {
@@ -150,7 +150,7 @@ class CacheController extends Controller
         if (!$connection instanceof \yii\db\Connection) {
             $this->stdout("\"$db\" component doesn't inherit \\yii\\db\\Connection.\n", Console::FG_RED);
             return self::EXIT_CODE_ERROR;
-        } else if (!$this->confirm("Flush cache schema for \"$db\" connection?")) {
+        } elseif (!$this->confirm("Flush cache schema for \"$db\" connection?")) {
             return static::EXIT_CODE_NORMAL;
         }
 
@@ -202,7 +202,7 @@ class CacheController extends Controller
     }
 
     /**
-     * 
+     *
      * @param array $caches
      */
     private function notifyFlushed($caches)
@@ -275,5 +275,4 @@ class CacheController extends Controller
     {
         return is_subclass_of($className, Cache::className());
     }
-
 }

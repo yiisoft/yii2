@@ -37,6 +37,8 @@ use yii\caching\TagDependency;
  */
 abstract class Schema extends Object
 {
+    use SchemaBuilderTrait;
+
     /**
      * The following are the supported abstract column data types.
      */
@@ -278,6 +280,24 @@ abstract class Schema extends Object
         }
         $this->_tableNames = [];
         $this->_tables = [];
+    }
+
+    /**
+     * Refreshes the particular table schema.
+     * This method cleans up cached table schema so that it can be re-created later
+     * to reflect the database schema change.
+     * @param string $name table name.
+     * @since 2.0.6
+     */
+    public function refreshTableSchema($name)
+    {
+        unset($this->_tables[$name]);
+        $this->_tableNames = [];
+        /* @var $cache Cache */
+        $cache = is_string($this->db->schemaCache) ? Yii::$app->get($this->db->schemaCache, false) : $this->db->schemaCache;
+        if ($this->db->enableSchemaCache && $cache instanceof Cache) {
+            $cache->delete($this->getCacheKey($name));
+        }
     }
 
     /**

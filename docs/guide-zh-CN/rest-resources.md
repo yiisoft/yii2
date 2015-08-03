@@ -15,7 +15,7 @@ RESTful 的 API 都是关于访问和操作 *资源*，可将资源看成MVC模�
 继承 [[yii\base\Model]] 会将它所有的公开成员变量返回。
 
 
-## 字段 <a name="fields"></a>
+## 字段 <span id="fields"></span>
 
 当RESTful API响应中包含一个资源时，该资源需要序列化成一个字符串。
 Yii将这个过程分成两步，首先，资源会被[[yii\rest\Serializer]]转换成数组，
@@ -42,7 +42,7 @@ http://localhost/users?fields=id,email&expand=profile
 ```
 
 
-### 覆盖 `fields()` 方法 <a name="overriding-fields"></a>
+### 覆盖 `fields()` 方法 <span id="overriding-fields"></span>
 
 [[yii\base\Model::fields()]] 默认返回模型的所有属性作为字段，
 [[yii\db\ActiveRecord::fields()]] 只返回和数据表关联的属性作为字段。
@@ -83,7 +83,7 @@ public function fields()
 > 应覆盖`fields()`过滤掉，在上述例子中，我们选择过滤掉 `auth_key`, `password_hash` 和 `password_reset_token`.
 
 
-### 覆盖 `extraFields()` 方法 <a name="overriding-extra-fields"></a>
+### 覆盖 `extraFields()` 方法 <span id="overriding-extra-fields"></span>
 
 [[yii\base\Model::extraFields()]] 默认返回空值，[[yii\db\ActiveRecord::extraFields()]] 返回和数据表关联的属性。
 
@@ -119,7 +119,7 @@ public function extraFields()
 ```
 
 
-## 链接 <a name="links"></a>
+## 链接 <span id="links"></span>
 
 [HATEOAS](http://en.wikipedia.org/wiki/HATEOAS), 是Hypermedia as the Engine of Application State的缩写,
 提升RESTful API 应返回允许终端用户访问的资源操作的信息，HATEOAS 的目的是在API中返回包含相关链接信息的资源数据。 
@@ -160,7 +160,7 @@ class User extends ActiveRecord implements Linkable
 ```
 
 
-## 集合 <a name="collections"></a>
+## 集合 <span id="collections"></span>
 
 资源对象可以组成 *集合*，每个集合包含一组相同类型的资源对象。
 

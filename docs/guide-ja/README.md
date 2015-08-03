@@ -91,7 +91,7 @@ All Rights Reserved.
 * [入力を検証する](input-validation.md)
 * [ファイルをアップロードする](input-file-upload.md)
 * [表形式インプットのデータ収集](input-tabular-input.md)
-* [複数モデルのデータ取得](input-multiple-models.md)
+* [複数のモデルのデータを取得する](input-multiple-models.md)
 
 
 データの表示

@@ -120,7 +120,7 @@ class Model extends Component implements IteratorAggregate, ArrayAccess, Arrayab
      * ~~~
      *
      * In the above `$attribute` refers to the attribute currently being validated while `$params` contains an array of
-     * validator configuration options such as `max` in case of `string` validator. The value of the attribute currently being validated    
+     * validator configuration options such as `max` in case of `string` validator. The value of the attribute currently being validated
      * can be accessed as `$this->$attribute`. Note the `$` before `attribute`; this is taking the value of the variable
      * `$attribute` and using it as the name of the property to access.
      *
@@ -618,7 +618,7 @@ class Model extends Component implements IteratorAggregate, ArrayAccess, Arrayab
     {
         foreach ($items as $attribute => $errors) {
             if (is_array($errors)) {
-                foreach($errors as $error) {
+                foreach ($errors as $error) {
                     $this->addError($attribute, $error);
                 }
             } else {
@@ -785,10 +785,12 @@ class Model extends Component implements IteratorAggregate, ArrayAccess, Arrayab
      * If [[formName()]] is empty, the whole `$data` array will be used to populate the model.
      * The data being populated is subject to the safety check by [[setAttributes()]].
      * @param array $data the data array. This is usually `$_POST` or `$_GET`, but can also be any valid array
-     * supplied by end user.
+     * supplied by the end user.
      * @param string $formName the form name to be used for loading the data into the model.
      * If not set, [[formName()]] will be used.
-     * @return boolean whether the model is successfully populated with some data.
+     * @return boolean whether `$data` contained some data to populate the models attributes.
+     * This only means that there was some data provided. It does not necessarily mean that any field
+     * was populated, which may be the case if none of the provided fields is safe in the current [[scenario]].
      */
     public function load($data, $formName = null)
     {
@@ -883,7 +885,7 @@ class Model extends Component implements IteratorAggregate, ArrayAccess, Arrayab
      * returning the corresponding field value. The signature of the callable should be:
      *
      * ```php
-     * function ($field, $model) {
+     * function ($model, $field) {
      *     // return field value
      * }
      * ```
@@ -925,7 +927,7 @@ class Model extends Component implements IteratorAggregate, ArrayAccess, Arrayab
 
     /**
      * Returns an iterator for traversing the attributes in the model.
-     * This method is required by the interface IteratorAggregate.
+     * This method is required by the interface [[\IteratorAggregate]].
      * @return ArrayIterator an iterator for traversing the items in the list.
      */
     public function getIterator()
@@ -936,7 +938,7 @@ class Model extends Component implements IteratorAggregate, ArrayAccess, Arrayab
 
     /**
      * Returns whether there is an element at the specified offset.
-     * This method is required by the SPL interface `ArrayAccess`.
+     * This method is required by the SPL interface [[\ArrayAccess]].
      * It is implicitly called when you use something like `isset($model[$offset])`.
      * @param mixed $offset the offset to check on
      * @return boolean
@@ -948,7 +950,7 @@ class Model extends Component implements IteratorAggregate, ArrayAccess, Arrayab
 
     /**
      * Returns the element at the specified offset.
-     * This method is required by the SPL interface `ArrayAccess`.
+     * This method is required by the SPL interface [[\ArrayAccess]].
      * It is implicitly called when you use something like `$value = $model[$offset];`.
      * @param mixed $offset the offset to retrieve element.
      * @return mixed the element at the offset, null if no element is found at the offset
@@ -960,7 +962,7 @@ class Model extends Component implements IteratorAggregate, ArrayAccess, Arrayab
 
     /**
      * Sets the element at the specified offset.
-     * This method is required by the SPL interface `ArrayAccess`.
+     * This method is required by the SPL interface [[\ArrayAccess]].
      * It is implicitly called when you use something like `$model[$offset] = $item;`.
      * @param integer $offset the offset to set element
      * @param mixed $item the element value
@@ -972,7 +974,7 @@ class Model extends Component implements IteratorAggregate, ArrayAccess, Arrayab
 
     /**
      * Sets the element value at the specified offset to null.
-     * This method is required by the SPL interface `ArrayAccess`.
+     * This method is required by the SPL interface [[\ArrayAccess]].
      * It is implicitly called when you use something like `unset($model[$offset])`.
      * @param mixed $offset the offset to unset element
      */

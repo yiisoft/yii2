@@ -85,6 +85,7 @@ class DbManager extends BaseManager
      * @since 2.0.3
      */
     public $cacheKey = 'rbac';
+
     /**
      * @var Item[] all auth items (name => Item)
      */
@@ -97,6 +98,7 @@ class DbManager extends BaseManager
      * @var array auth item parent-child relationships (childName => list of parents)
      */
     protected $parents;
+
 
     /**
      * Initializes the application component.
@@ -214,6 +216,10 @@ class DbManager extends BaseManager
      */
     protected function getItem($name)
     {
+        if (empty($name)) {
+            return null;
+        }
+
         if (!empty($this->items[$name])) {
             return $this->items[$name];
         }

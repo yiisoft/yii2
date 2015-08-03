@@ -21,7 +21,7 @@ return [
     'components' => [
         'view' => [
             'theme' => [
-                'basePath' => '@app/themes/basic'
+                'basePath' => '@app/themes/basic',
                 'baseUrl' => '@web/themes/basic',
                 'pathMap' => [
                     '@app/views' => '@app/themes/basic',

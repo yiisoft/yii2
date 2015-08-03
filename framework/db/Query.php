@@ -140,7 +140,7 @@ class Query extends Component implements QueryInterface
      * Starts a batch query.
      *
      * A batch query supports fetching data in batches, which can keep the memory usage under a limit.
-     * This method will return a [[BatchQueryResult]] object which implements the `Iterator` interface
+     * This method will return a [[BatchQueryResult]] object which implements the [[\Iterator]] interface
      * and can be traversed to retrieve the data in batches.
      *
      * For example,
@@ -154,7 +154,7 @@ class Query extends Component implements QueryInterface
      *
      * @param integer $batchSize the number of records to be fetched in each batch.
      * @param Connection $db the database connection. If not set, the "db" application component will be used.
-     * @return BatchQueryResult the batch query result. It implements the `Iterator` interface
+     * @return BatchQueryResult the batch query result. It implements the [[\Iterator]] interface
      * and can be traversed to retrieve the data in batches.
      */
     public function batch($batchSize = 100, $db = null)
@@ -181,7 +181,7 @@ class Query extends Component implements QueryInterface
      *
      * @param integer $batchSize the number of records to be fetched in each batch.
      * @param Connection $db the database connection. If not set, the "db" application component will be used.
-     * @return BatchQueryResult the batch query result. It implements the `Iterator` interface
+     * @return BatchQueryResult the batch query result. It implements the [[\Iterator]] interface
      * and can be traversed to retrieve the data in batches.
      */
     public function each($batchSize = 100, $db = null)
@@ -759,7 +759,7 @@ class Query extends Component implements QueryInterface
      */
     public function union($sql, $all = false)
     {
-        $this->union[] = [ 'query' => $sql, 'all' => $all ];
+        $this->union[] = ['query' => $sql, 'all' => $all];
         return $this;
     }
 
@@ -790,7 +790,7 @@ class Query extends Component implements QueryInterface
                 $this->params = $params;
             } else {
                 foreach ($params as $name => $value) {
-                    if (is_integer($name)) {
+                    if (is_int($name)) {
                         $this->params[] = $value;
                     } else {
                         $this->params[$name] = $value;

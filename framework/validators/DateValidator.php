@@ -10,7 +10,6 @@ namespace yii\validators;
 use DateTime;
 use IntlDateFormatter;
 use Yii;
-use yii\base\Exception;
 use yii\base\InvalidConfigException;
 use yii\helpers\FormatConverter;
 
@@ -181,10 +180,10 @@ class DateValidator extends Validator
             $this->tooBig = Yii::t('yii', '{attribute} must be no greater than {max}.');
         }
         if ($this->maxString === null) {
-            $this->maxString = (string)$this->max;
+            $this->maxString = (string) $this->max;
         }
         if ($this->minString === null) {
-            $this->minString = (string)$this->min;
+            $this->minString = (string) $this->min;
         }
         if ($this->max !== null && is_string($this->max)) {
             $timestamp = $this->parseDateValue($this->max);
@@ -276,7 +275,6 @@ class DateValidator extends Validator
     {
         if (isset($this->_dateFormats[$format])) {
             $formatter = new IntlDateFormatter($this->locale, $this->_dateFormats[$format], IntlDateFormatter::NONE, 'UTC');
-            $hasTimeInfo = false;
         } else {
             // if no time was provided in the format string set time to 0 to get a simple date timestamp
             $hasTimeInfo = (strpbrk($format, 'ahHkKmsSA') !== false);

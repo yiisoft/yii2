@@ -80,7 +80,6 @@ class BaseHtml
         'rel',
         'media',
     ];
-
     /**
      * @var array list of tag attributes that should be specially handled when their values are of array type.
      * In particular, if the value of the `data` attribute is `['name' => 'xyz', 'age' => 13]`, two attributes
@@ -458,6 +457,10 @@ class BaseHtml
 
     /**
      * Generates a submit button tag.
+     *
+     * Be careful when naming form elements such as submit buttons. According to the [jQuery documentation](https://api.jquery.com/submit/) there
+     * are some reserved names that can cause conflicts, e.g. `submit`, `length`, or `method`.
+     *
      * @param string $content the content enclosed within the button tag. It will NOT be HTML-encoded.
      * Therefore you can pass in HTML code such as an image tag. If this is is coming from end users,
      * you should consider [[encode()]] it to prevent XSS attacks.
@@ -529,6 +532,10 @@ class BaseHtml
 
     /**
      * Generates a submit input button.
+     *
+     * Be careful when naming form elements such as submit buttons. According to the [jQuery documentation](https://api.jquery.com/submit/) there
+     * are some reserved names that can cause conflicts, e.g. `submit`, `length`, or `method`.
+     *
      * @param string $label the value attribute. If it is null, the value attribute will not be generated.
      * @param array $options the tag options in terms of name-value pairs. These will be rendered as
      * the attributes of the resulting tag. The values will be HTML-encoded using [[encode()]].
@@ -1281,7 +1288,7 @@ class BaseHtml
      *
      * - maxlength: integer|boolean, when `maxlength` is set true and the model attribute is validated
      *   by a string validator, the `maxlength` option will take the value of [[\yii\validators\StringValidator::max]].
-     *   This is available since version 2.0.5.
+     *   This option is available since version 2.0.6.
      *
      * @return string the generated input tag
      */
@@ -1324,7 +1331,7 @@ class BaseHtml
      *
      * - maxlength: integer|boolean, when `maxlength` is set true and the model attribute is validated
      *   by a string validator, the `maxlength` option will take the value of [[\yii\validators\StringValidator::max]].
-     *   This is available since version 2.0.5.
+     *   This option is available since version 2.0.6.
      *
      * @return string the generated textarea tag
      */
@@ -1801,10 +1808,10 @@ class BaseHtml
     {
         if (isset($options['class'])) {
             if (is_array($options['class'])) {
-                $options['class'] = self::mergeCssClasses($options['class'], (array)$class);
+                $options['class'] = self::mergeCssClasses($options['class'], (array) $class);
             } else {
                 $classes = preg_split('/\s+/', $options['class'], -1, PREG_SPLIT_NO_EMPTY);
-                $options['class'] = implode(' ', self::mergeCssClasses($classes, (array)$class));
+                $options['class'] = implode(' ', self::mergeCssClasses($classes, (array) $class));
             }
         } else {
             $options['class'] = $class;
@@ -1839,7 +1846,7 @@ class BaseHtml
     {
         if (isset($options['class'])) {
             if (is_array($options['class'])) {
-                $classes = array_diff($options['class'], (array)$class);
+                $classes = array_diff($options['class'], (array) $class);
                 if (empty($classes)) {
                     unset($options['class']);
                 } else {
@@ -1847,7 +1854,7 @@ class BaseHtml
                 }
             } else {
                 $classes = preg_split('/\s+/', $options['class'], -1, PREG_SPLIT_NO_EMPTY);
-                $classes = array_diff($classes, (array)$class);
+                $classes = array_diff($classes, (array) $class);
                 if (empty($classes)) {
                     unset($options['class']);
                 } else {
@@ -2094,5 +2101,29 @@ class BaseHtml
     {
         $name = strtolower(static::getInputName($model, $attribute));
         return str_replace(['[]', '][', '[', ']', ' ', '.'], ['', '-', '-', '', '-', '-'], $name);
+    }
+
+    /**
+     * Escapes regular expression to use in JavaScript
+     * @param string $regexp the regular expression to be escaped.
+     * @return string the escaped result.
+     * @since 2.0.6
+     */
+    public static function escapeJsRegularExpression($regexp)
+    {
+        $pattern = preg_replace('/\\\\x\{?([0-9a-fA-F]+)\}?/', '\u$1', $regexp);
+        $deliminator = substr($pattern, 0, 1);
+        $pos = strrpos($pattern, $deliminator, 1);
+        $flag = substr($pattern, $pos + 1);
+        if ($deliminator !== '/') {
+            $pattern = '/' . str_replace('/', '\\/', substr($pattern, 1, $pos - 1)) . '/';
+        } else {
+            $pattern = substr($pattern, 0, $pos + 1);
+        }
+        if (!empty($flag)) {
+            $pattern .= preg_replace('/[^igm]/', '', $flag);
+        }
+
+        return $pattern;
     }
 }

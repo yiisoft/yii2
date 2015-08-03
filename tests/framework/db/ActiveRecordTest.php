@@ -2,6 +2,7 @@
 namespace yiiunit\framework\db;
 
 use yiiunit\data\ar\ActiveRecord;
+use yiiunit\data\ar\BitValues;
 use yiiunit\data\ar\Category;
 use yiiunit\data\ar\Customer;
 use yiiunit\data\ar\Document;
@@ -735,5 +736,101 @@ class ActiveRecordTest extends DatabaseTestCase
         $record->version = 0;
         $this->setExpectedException('yii\db\StaleObjectException');
         $record->save(false);
+    }
+
+    public function testPopulateWithoutPk()
+    {
+        // tests with single pk asArray
+        $aggregation = Customer::find()
+            ->select(['{{customer}}.[[status]]', 'SUM({{order}}.[[total]]) AS [[sumtotal]]'])
+            ->joinWith('ordersPlain', false)
+            ->groupBy('{{customer}}.[[status]]')
+            ->orderBy('status')
+            ->asArray()
+            ->all();
+
+        $expected = [
+            [
+                'status' => 1,
+                'sumtotal' => 183,
+            ],
+            [
+                'status' => 2,
+                'sumtotal' => 0,
+            ],
+        ];
+        $this->assertEquals($expected, $aggregation);
+
+        // tests with single pk with Models
+        $aggregation = Customer::find()
+            ->select(['{{customer}}.[[status]]', 'SUM({{order}}.[[total]]) AS [[sumTotal]]'])
+            ->joinWith('ordersPlain', false)
+            ->groupBy('{{customer}}.[[status]]')
+            ->orderBy('status')
+            ->all();
+        $this->assertCount(2, $aggregation);
+        $this->assertContainsOnlyInstancesOf(Customer::className(), $aggregation);
+        foreach($aggregation as $item) {
+            if ($item->status == 1) {
+                $this->assertEquals(183, $item->sumTotal);
+            } elseif ($item->status == 2) {
+                $this->assertEquals(0, $item->sumTotal);
+            }
+        }
+
+        // tests with composite pk asArray
+        $aggregation = OrderItem::find()
+            ->select(['[[order_id]]', 'SUM([[subtotal]]) AS [[subtotal]]'])
+            ->joinWith('order', false)
+            ->groupBy('[[order_id]]')
+            ->orderBy('[[order_id]]')
+            ->asArray()
+            ->all();
+        $expected = [
+            [
+                'order_id' => 1,
+                'subtotal' => 70,
+            ],
+            [
+                'order_id' => 2,
+                'subtotal' => 33,
+            ],
+            [
+                'order_id' => 3,
+                'subtotal' => 40,
+            ],
+        ];
+        $this->assertEquals($expected, $aggregation);
+
+        // tests with composite pk with Models
+        $aggregation = OrderItem::find()
+            ->select(['[[order_id]]', 'SUM([[subtotal]]) AS [[subtotal]]'])
+            ->joinWith('order', false)
+            ->groupBy('[[order_id]]')
+            ->orderBy('[[order_id]]')
+            ->all();
+        $this->assertCount(3, $aggregation);
+        $this->assertContainsOnlyInstancesOf(OrderItem::className(), $aggregation);
+        foreach($aggregation as $item) {
+            if ($item->order_id == 1) {
+                $this->assertEquals(70, $item->subtotal);
+            } elseif ($item->order_id == 2) {
+                $this->assertEquals(33, $item->subtotal);
+            } elseif ($item->order_id == 3) {
+                $this->assertEquals(40, $item->subtotal);
+            }
+        }
+    }
+
+    /**
+     * https://github.com/yiisoft/yii2/issues/9006
+     */
+    public function testBit()
+    {
+        $falseBit = BitValues::findOne(1);
+        $this->assertEquals(false, $falseBit->val);
+
+        $trueBit = BitValues::findOne(2);
+        $this->assertEquals(true, $trueBit->val);
     }
 }

@@ -9,7 +9,6 @@ namespace yii\log;
 
 use Yii;
 use yii\base\Component;
-use yii\base\ErrorHandler;
 use yii\base\InvalidConfigException;
 use yii\helpers\VarDumper;
 use yii\web\Request;
@@ -248,7 +247,7 @@ abstract class Target extends Component
         }
         $traces = [];
         if (isset($message[4])) {
-            foreach($message[4] as $trace) {
+            foreach ($message[4] as $trace) {
                 $traces[] = "in {$trace['file']}:{$trace['line']}";
             }
         }
