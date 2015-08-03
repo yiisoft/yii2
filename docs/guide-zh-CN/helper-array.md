@@ -1,13 +1,12 @@
-ArrayHelper
+ArrayHelper(数组辅助类)
 ===========
 
 除了[PHP中丰富的数组函数集](http://php.net/manual/zh/book.array.php)外，Yii 数组辅助类提供了额外的静态方法，让你更有效率的处理数组。
 
+
 ## 获取值 <span id="getting-values"></span>
 
-用原生PHP从一个对象、数组、或者包含这两者的一个复杂数据结构中获取数据是非常繁琐的.你不得不首先使用`isset`检查key是否存在,然后如果存在你就获取到了它，如果不存在，
-预设默认值
-
+用原生PHP从一个对象、数组、或者包含这两者的一个复杂数据结构中获取数据是非常繁琐的。你首先得使用`isset` 检查key是否存在, 然后如果存在你就获取它，如果不存在，则提供一个默认值：
 
 ```php
 class User
@@ -24,20 +23,19 @@ $array = [
 $value = isset($array['foo']['bar']->name) ? $array['foo']['bar']->name : null;
 ```
 
-Yii 提供了一个非常方便的方法来处理它:
+Yii 提供了一个非常方便的方法来做这件事:
 
 ```php
 $value = ArrayHelper::getValue($array, 'foo.bar.name');
 ```
 
-第一个方法参数是我们从哪里获取值.第二个参数定义如何去获取数据.它可以为一下的其中一个:
+方法的第一个参数是我们从哪里获取值。第二个参数指定了如何获取数据，它可以是下述其中的一个：
 
-- 数组键名或者获得值对象的属性名称
-- 使用点号分割的数组key或者对象的属性名称。这个我们已经在上面的案列使用过了
-- 一个回调函数返回一个值
+- 数组键名或者欲从中取值的对象的属性名称；
+- 以点号分割的数组键名或者对象属性名称组成的串，上例中使用的参数类型；
+- 返回一个值的回调函数。
 
-这个回调函数应该是下列的:
-
+该回调函数如下例所示：
 
 ```php
 $fullName = ArrayHelper::getValue($user, function ($user, $defaultValue) {
@@ -45,26 +43,26 @@ $fullName = ArrayHelper::getValue($user, function ($user, $defaultValue) {
 });
 ```
 
-第三个可选择的参数是默认值，如果没有指定第三个参数，默认值是`null`.也可以使用下列的:
+第三个可选的参数如果没有给值的话，默认为`null` ，如下例所示:
 
 ```php
 $username = ArrayHelper::getValue($comment, 'user.username', 'Unknown');
 ```
 
-
-假设你想要获取值和然后马上从数组中移除它,你可以使用`remove`方法:
+对于取到值后想立即从数组中删除的情况，你可以使用 `remove` 方法：
 
 ```php
 $array = ['type' => 'A', 'options' => [1, 2]];
 $type = ArrayHelper::remove($array, 'type');
 ```
 
-在执行了代码之后,`$array` 将会等于 `['options' => [1, 2]]` 和 `$type` 将会是 `A`.注意这和`getValue`方法不同,`remove`方法只支持简单的键名. 
+执行了上述代码之后， `$array`  将包含 `['options' => [1, 2]]`  并且 `$type` 将会是 `A` 。注意这和 `getValue` 方法不同， `remove` 方法只支持简单的键名。 
 
-## 检查键名存在<span id="checking-existence-of-keys"></span>
 
-`ArrayHelper::keyExists` 工作原理和[array_key_exists](http://php.net/manual/en/function.array-key-exists.php)差不多,除了
-`array_key_exists`同样支持区分大小写键名进行比较.比如:
+## 检查键名的存在<span id="checking-existence-of-keys"></span>
+
+`ArrayHelper::keyExists` 工作原理和[array_key_exists](http://php.net/manual/en/function.array-key-exists.php)差不多，除了
+它还支持大小写不敏感的键名进行比较，比如：
 
 ```php
 $data1 = [
@@ -82,7 +80,7 @@ if (!ArrayHelper::keyExists('username', $data1, false) || !ArrayHelper::keyExist
 
 ## 检索列 <span id="retrieving-columns"></span>
 
-你经常需要从由数据行组成的数组或者对象中获取一列值.通常情况下是根据许多id获取一列数据.
+通常你要从多行数据或者对象构成的数组中获取某列的值，一个普通的例子是获取id值列表。
 
 ```php
 $data = [
@@ -94,7 +92,7 @@ $ids = ArrayHelper::getColumn($array, 'id');
 
 结果将是 `['123', '345']`.
 
-如果额外的数据装换是必须的或者获取数据的方式是复杂的,第二个参数可以是一个匿名函数:
+如果需要额外的转换或者取值的方法比较复杂，第二参数可以指定一个匿名函数：
 
 ```php
 $result = ArrayHelper::getColumn($array, function ($element) {
@@ -103,12 +101,12 @@ $result = ArrayHelper::getColumn($array, function ($element) {
 ```
 
 
-## 数组索引重建
+## 重建数组索引 <span id="reindexing-arrays"></span>
 
-为了索引一个数组是根据一个指定的键名,那`index`方法可以使用.输入的数组应该是多维的或者一个对象数组.这键名可以是每个子数组中的键名,一个对象的属性名,
-或者一个匿名函数返回给定的键值数组元素。
+按一个指定的键名重新索引一个数组，可以用 `index` 方法。输入的数组应该是多维数组或者是一个对象数组。键名（译者注：第二个参数）可以是子数组
+的键名、对象的属性名，也可以是一个返回给定元素数组键值的匿名函数。
 
-如果一个键名的值是null,相应的数组元素将会是丢弃的和不会放入到结果中.例如,
+如果一个键值（译者注：第二个参数对应的键值）是null，相应的数组元素将被丢弃并且不会放入到结果中，例如，
 
 ```php
 $array = [
@@ -129,11 +127,11 @@ $result = ArrayHelper::index($array, function ($element) {
 ```
 
 
-## 建立 Maps <span id="building-maps"></span>
+## 建立哈希表 <span id="building-maps"></span>
 
 
-为了从一个多维数组或者一个对象数组中建立一个map(键值对),你可以使用`map`方法.`$from` 和 `$to` 参数指定键名或者属性名称来组建这个map.
-视需要,一个可以进一步地根据一个分组字段`$group`来分组map.
+为了从一个多维数组或者一个对象数组中建立一个哈希表(键值对)，你可以使用`map`方法.`$from` 和 `$to` 参数分别指定了欲构建的哈希表的键名和属性名。
+根据需要，你可以按照一个分组字段 `$group` 将map进行分组，例如。
 
 ```php
 $array = [
@@ -143,7 +141,7 @@ $array = [
 );
 
 $result = ArrayHelper::map($array, 'id', 'name');
-// the result is:
+// 结果是： 
 // [
 //     '123' => 'aaa',
 //     '124' => 'bbb',
@@ -151,7 +149,7 @@ $result = ArrayHelper::map($array, 'id', 'name');
 // ]
 
 $result = ArrayHelper::map($array, 'id', 'name', 'class');
-// the result is:
+// 结果是：
 // [
 //     'x' => [
 //         '123' => 'aaa',
@@ -166,7 +164,7 @@ $result = ArrayHelper::map($array, 'id', 'name', 'class');
 
 ## 多维排序 <span id="multidimensional-sorting"></span>
 
-`multisort` 方法帮助排序一个对象数组或者嵌套的数组,或者几个键名.比如,
+`multisort` 方法可用来对嵌套数组或者对象数组进行排序，可按一到多个键名排序，比如，
 
 ```php
 $data = [
@@ -177,7 +175,7 @@ $data = [
 ArrayHelper::multisort($data, ['age', 'name'], [SORT_ASC, SORT_DESC]);
 ```
 
-排序之后我们将会在`$data`中获取下列的:
+排序之后我们在 `$data` 中得到的值如下所示：
 
 ```php
 [
@@ -187,7 +185,7 @@ ArrayHelper::multisort($data, ['age', 'name'], [SORT_ASC, SORT_DESC]);
 ];
 ```
 
-第二个参数指定键名来排序,如果它是一个单一的键名,可以是一个字符串,假设很多键名,可以是一个数组,或者一个匿名函数像下列的一个:
+第二个参数指定排序的键名，如果是单键名的话可以是字符串，如果是多键名则是一个数组，或者是如下例所示的一个匿名函数：
 
 ```php
 ArrayHelper::multisort($data, function($item) {
@@ -195,57 +193,59 @@ ArrayHelper::multisort($data, function($item) {
 });
 ```
 
-第三个参数是引导.假设根据一个单一的键名进行排序,它可以是`SORT_ASC`或者`SORT_DESC`中两者之中任一的.
+第三个参数表示顺序。单键排序时，它可以是`SORT_ASC`或者`SORT_DESC`之一。如果是按多个键名排序，你可以用一个数组为各个键指定不同的顺序。
 如果是根据多个值进行排序，你可以提供一个改变排序引导的数组，排序每一个值.
 
-最后一个参数是PHP sort flag，你可以通过PHP[sort()](http://php.net/manual/zh/function.sort.php) 中拿相同的值作为其中一个sort flag.
+最后一个参数（译者注：第四个参数）是PHP的排序标识(sort flag)，可使用的值和调用PHP[sort()](http://php.net/manual/zh/function.sort.php) 函数时传递的值一样。
 
 ## 检测数组类型 <span id="detecting-array-types"></span> 
 
-这能够方便的知道一个数组是索引数组还是联合数组.这是一个案例:
+
+想知道一个数组是索引数组还是联合数组很方便，这有个例子：
+
 ```php
-// no keys specified
+// 不指定键的数组
 $indexed = ['Qiang', 'Paul'];
 echo ArrayHelper::isIndexed($indexed);
 
-// all keys are strings
+// 所有键名都是字符串
 $associative = ['framework' => 'Yii', 'version' => '2.0'];
 echo ArrayHelper::isAssociative($associative);
 ```
 
 
 ## HTML 编码和解码值 <span id="html-encoding-values"></span>
-为了编码或者解码数组中的特殊字符串变成HTML实体,你可以使用下列:
+
+为了将字符串数组中的特殊字符做 HTML 编解码，你可以使用下列方法：
+
 ```php
 $encoded = ArrayHelper::htmlEncode($data);
 $decoded = ArrayHelper::htmlDecode($data);
 ```
 
-只有值将会默认为编码的.通过第二个参数诸如`false`,你也可以同样的编码数组的键名.编码将会使用程序的字符集和也可以通过第三个参数修改字符集.
+默认情况只会对值做编码（译者注：原文中是编码，应为编解码）。通过给第二个参数传 `false` ，你也可以对键名做编码。编码将使用应用程序的字符集，
+你可以通过第三个参数指定该字符集。
 
 ## 合并数组 <span id="merging-arrays"></span>
 
+
 ```php
   /**
-    * Merges two or more arrays into one recursively.
-    * If each array has an element with the same string key value, the latter
-    * will overwrite the former (different from array_merge_recursive).
-    * Recursive merging will be conducted if both arrays have an element of array
-    * type and are having the same key.
-    * For integer-keyed elements, the elements from the latter array will
-    * be appended to the former array.
-    * @param array $a array to be merged to
-    * @param array $b array to be merged from. You can specify additional
-    * arrays via third argument, fourth argument etc.
-    * @return array the merged array (the original arrays are not changed.)
+    * 将两个或者多个数组递归式的合并为要贯彻。
+    * 如果每个数组有一个元素的键名相同，那么后面元素的将覆盖前面的元素（不同于 array_merge_recursive）。
+    * 如果两个数组都有相同键名的数组元素（译者注：嵌套数组）则将引发递归合并。
+    * 对数值型键名的元素，后面数组中的这些元素会被追加到前面数组中。
+    * @param array $a 合并的数组
+    * @param array $b 被合并的数组，你可以在第三、第四个参数中指定另外的被合并数组，等等
+    * @return 合并的结果数组 (原始数组不会被改变)
     */
     public static function merge($a, $b)
 ```
 
 
-## 对象转换数组 <span id="converting-objects-to-arrays"></span>
+## 对象转换为数组 <span id="converting-objects-to-arrays"></span>
 
-你经常需要将一个对象或者对象数组转换成一个数组.最常见的情况是通过REST API或者在其它方面是为了转换active record模型成服务数据数组.下列的代码可以用来做:
+你经常要将一个对象或者对象的数组转换成一个数组，常见的情形是，为了通过REST API提供数据数组或其他使用方式，将AR模型(活动记录模型)转换成数组。如下代码可完成这个工作：
 
 ```php
 $posts = Post::find()->limit(10)->all();
@@ -263,14 +263,14 @@ $data = ArrayHelper::toArray($posts, [
 ]);
 ```
 
-这第一个参数包含我们想要转换的数据.在我们的案例中,我们在转换一个`Post` AR model.
+第一个参数包含我们想要转换的数据，在本例中，我们要转换一个叫 `Post` 的 AR 模型.
 
-这第二个参数是转换映射每个类.我们设置了一个`Post` model的映射.
-每个映射数组包含一系列的映射.每个映射可以是:
+第二个参数是每个类的转换映射表，我们在此设置了一个`Post` 模型的映射.
+每个映射数组包含一组的映射，每个映射可以是:
 
-- 一个字段名称来包含它.
-- 一个从哪里拿想要得到的数组名称和模型列的值名称的键-值对
-- 一个键-值对想要获取的数组键名称和一个回调哪些返回值.
+- 一个要包含的照原样的字段名（和类中属性的名称一致）；
+- 一个由你可随意取名的键名和你想从中取值的模型列名组成的键值对；
+- 一个由你可随意取名的键名和有返回值的回调函数组成的键值对；
 
 这上面的转换结果将会是:
 
@@ -282,5 +282,4 @@ $data = ArrayHelper::toArray($posts, [
     'length' => 301,
 ]
 ```
-
-它也可能提供对象转换成数组的默认方式是在一个指定类通过继承[[yii\base\Arrayable|Arrayable]]接口.
+也可以在一个特定的类中实现[[yii\base\Arrayable|Arrayable]]接口，从而为其对象提供默认的转换成数组的方法。
