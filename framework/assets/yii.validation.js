@@ -317,7 +317,7 @@ yii.validation = (function ($) {
 
         ip: function (value, messages, options) {
             var getIpVersion = function (value) {
-                return value.indexOf(':') == -1 ? 4 : 6;
+                return value.indexOf(':') === -1 ? 4 : 6;
             };
 
             var negation = null, cidr = null;
