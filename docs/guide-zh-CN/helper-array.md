@@ -1,7 +1,7 @@
 ArrayHelper
 ===========
 
-[丰富设置的PHP](http://php.net/manual/zh/book.array.php)附加的数组函数，Yii 数组辅助函数提供了额外的静态方法让你更有效率的处理数组。
+除了[PHP中丰富的数组函数集](http://php.net/manual/zh/book.array.php)外，Yii 数组辅助类提供了额外的静态方法，让你更有效率的处理数组。
 
 ## 获取值 <span id="getting-values"></span>
 
