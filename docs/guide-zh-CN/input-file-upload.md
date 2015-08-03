@@ -1,4 +1,4 @@
-上传文件 //Translated By Dyingmars@github
+文件上传 //Translated By Dyingmars@github
 ============
 
 在Yii里上传文件常常使用[[yii\web\UploadedFile]]。
