@@ -97,13 +97,11 @@ abstract class SchemaBuilder extends Object
     /**
      * Makes column a text
      *
-     * @param integer $length
-     *
      * @return self
      */
-    public static function text($length = null)
+    public static function text()
     {
-        return static::create(Schema::TYPE_TEXT, $length);
+        return static::create(Schema::TYPE_TEXT);
     }
 
     /**
@@ -145,27 +143,21 @@ abstract class SchemaBuilder extends Object
     /**
      * Makes column a float
      *
-     * @param integer $precision
-     * @param integer $scale
-     *
      * @return self
      */
-    public static function float($precision = null, $scale = null)
+    public static function float()
     {
-        return static::createNumeric(Schema::TYPE_FLOAT, $precision, $scale);
+        return static::createNumeric(Schema::TYPE_FLOAT);
     }
 
     /**
      * Makes column a double
      *
-     * @param integer $precision
-     * @param integer $scale
-     *
      * @return self
      */
-    public static function double($precision = null, $scale = null)
+    public static function double()
     {
-        return static::createNumeric(Schema::TYPE_DOUBLE, $precision, $scale);
+        return static::createNumeric(Schema::TYPE_DOUBLE);
     }
 
     /**
@@ -184,37 +176,37 @@ abstract class SchemaBuilder extends Object
     /**
      * Makes column a datetime
      *
-     * @param integer $length
+     * @param integer $precision
      *
      * @return self
      */
-    public static function dateTime($length = null)
+    public static function dateTime($precision = null)
     {
-        return static::create(Schema::TYPE_DATETIME, $length);
+        return static::create(Schema::TYPE_DATETIME, $precision);
     }
 
     /**
      * Makes column a timestamp
      *
-     * @param integer $length
+     * @param integer $precision
      *
      * @return self
      */
-    public static function timestamp($length = null)
+    public static function timestamp($precision = null)
     {
-        return static::create(Schema::TYPE_TIMESTAMP, $length);
+        return static::create(Schema::TYPE_TIMESTAMP, $precision);
     }
 
     /**
      * Makes column a time
      *
-     * @param integer $length
+     * @param integer $precision
      *
      * @return self
      */
-    public static function time($length = null)
+    public static function time($precision = null)
     {
-        return static::create(Schema::TYPE_TIME, $length);
+        return static::create(Schema::TYPE_TIME, $precision);
     }
 
     /**
@@ -230,25 +222,21 @@ abstract class SchemaBuilder extends Object
     /**
      * Makes column a binary
      *
-     * @param integer $length
-     *
      * @return self
      */
-    public static function binary($length = null)
+    public static function binary()
     {
-        return static::create(Schema::TYPE_BINARY, $length);
+        return static::create(Schema::TYPE_BINARY);
     }
 
     /**
      * Makes column a boolean
      *
-     * @param integer $length
-     *
      * @return self
      */
-    public static function boolean($length = null)
+    public static function boolean()
     {
-        return static::create(Schema::TYPE_BOOLEAN, $length);
+        return static::create(Schema::TYPE_BOOLEAN);
     }
 
     /**

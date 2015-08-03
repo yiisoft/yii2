@@ -76,11 +76,11 @@ class QueryBuilderTest extends DatabaseTestCase
             [Schema::TYPE_STRING . '(32) CHECK (value LIKE "test%")', Schema::string(32)->check('value LIKE "test%"'), 'varchar(32) CHECK (value LIKE "test%")'],
             [Schema::TYPE_STRING . ' NOT NULL', Schema::string()->notNull(), 'varchar(255) NOT NULL'],
             [Schema::TYPE_TEXT, Schema::text(), 'text'],
-            [Schema::TYPE_TEXT . '(255)', Schema::text(255), 'text'],
+            [Schema::TYPE_TEXT . '(255)', Schema::text(), 'text', Schema::TYPE_TEXT],
             [Schema::TYPE_TEXT . ' CHECK (value LIKE "test%")', Schema::text()->check('value LIKE "test%"'), 'text CHECK (value LIKE "test%")'],
-            [Schema::TYPE_TEXT . '(255) CHECK (value LIKE "test%")', Schema::text(255)->check('value LIKE "test%"'), 'text CHECK (value LIKE "test%")'],
+            [Schema::TYPE_TEXT . '(255) CHECK (value LIKE "test%")', Schema::text()->check('value LIKE "test%"'), 'text CHECK (value LIKE "test%")', Schema::TYPE_TEXT . ' CHECK (value LIKE "test%")'],
             [Schema::TYPE_TEXT . ' NOT NULL', Schema::text()->notNull(), 'text NOT NULL'],
-            [Schema::TYPE_TEXT . '(255) NOT NULL', Schema::text(255)->notNull(), 'text NOT NULL'],
+            [Schema::TYPE_TEXT . '(255) NOT NULL', Schema::text()->notNull(), 'text NOT NULL', Schema::TYPE_TEXT . ' NOT NULL'],
             [Schema::TYPE_SMALLINT, Schema::smallInteger(), 'smallint(6)'],
             [Schema::TYPE_SMALLINT . '(8)', Schema::smallInteger(8), 'smallint(8)'],
             [Schema::TYPE_INTEGER, Schema::integer(), 'int(11)'],
@@ -94,14 +94,14 @@ class QueryBuilderTest extends DatabaseTestCase
             [Schema::TYPE_BIGINT . '(8) CHECK (value > 5)', Schema::bigInteger(8)->check('value > 5'), 'bigint(8) CHECK (value > 5)'],
             [Schema::TYPE_BIGINT . ' NOT NULL', Schema::bigInteger()->notNull(), 'bigint(20) NOT NULL'],
             [Schema::TYPE_FLOAT, Schema::float(), 'float'],
-            [Schema::TYPE_FLOAT . '(16,5)', Schema::float(16, 5), 'float'],
+            [Schema::TYPE_FLOAT . '(16,5)', Schema::float(), 'float', Schema::TYPE_FLOAT],
             [Schema::TYPE_FLOAT . ' CHECK (value > 5.6)', Schema::float()->check('value > 5.6'), 'float CHECK (value > 5.6)'],
-            [Schema::TYPE_FLOAT . '(16,5) CHECK (value > 5.6)', Schema::float(16, 5)->check('value > 5.6'), 'float CHECK (value > 5.6)'],
+            [Schema::TYPE_FLOAT . '(16,5) CHECK (value > 5.6)', Schema::float()->check('value > 5.6'), 'float CHECK (value > 5.6)', Schema::TYPE_FLOAT . ' CHECK (value > 5.6)'],
             [Schema::TYPE_FLOAT . ' NOT NULL', Schema::float()->notNull(), 'float NOT NULL'],
             [Schema::TYPE_DOUBLE, Schema::double(), 'double'],
-            [Schema::TYPE_DOUBLE . '(16,5)', Schema::double(16, 5), 'double'],
+            [Schema::TYPE_DOUBLE . '(16,5)', Schema::double(), 'double', Schema::TYPE_DOUBLE],
             [Schema::TYPE_DOUBLE . ' CHECK (value > 5.6)', Schema::double()->check('value > 5.6'), 'double CHECK (value > 5.6)'],
-            [Schema::TYPE_DOUBLE . '(16,5) CHECK (value > 5.6)', Schema::double(16, 5)->check('value > 5.6'), 'double CHECK (value > 5.6)'],
+            [Schema::TYPE_DOUBLE . '(16,5) CHECK (value > 5.6)', Schema::double()->check('value > 5.6'), 'double CHECK (value > 5.6)', Schema::TYPE_DOUBLE . ' CHECK (value > 5.6)'],
             [Schema::TYPE_DOUBLE . ' NOT NULL', Schema::double()->notNull(), 'double NOT NULL'],
             [Schema::TYPE_DECIMAL, Schema::decimal(), 'decimal(10,0)'],
             [Schema::TYPE_DECIMAL . '(12,4)', Schema::decimal(12, 4), 'decimal(12,4)'],
@@ -137,10 +137,11 @@ class QueryBuilderTest extends DatabaseTestCase
 
         foreach ($this->columnTypes() as $item) {
             list ($column, $builder, $expected) = $item;
+            $builderColumn = isset($item[3]) ? $item[3] : $column;
 
             $this->assertEquals($expected, $qb->getColumnType($column));
             $this->assertEquals($expected, $qb->getColumnType($builder));
-            $this->assertEquals($builder->__toString(), $column);
+            $this->assertEquals($builder->__toString(), $builderColumn);
         }
     }
 
