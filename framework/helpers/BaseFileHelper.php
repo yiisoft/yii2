@@ -462,9 +462,10 @@ class BaseFileHelper
             $result = mkdir($path, $mode);
             chmod($path, $mode);
         } catch (\Exception $e) {
-            if(!is_dir($path)){
-                throw new \yii\base\Exception("Failed to create directory '$path': " . $e->getMessage(), $e->getCode(), $e);
+            if(is_dir($path)){ // #9288
+                return true;
             }
+            throw new \yii\base\Exception("Failed to create directory '$path': " . $e->getMessage(), $e->getCode(), $e);
         }
 
         return $result;
