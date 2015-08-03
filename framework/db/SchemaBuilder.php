@@ -16,7 +16,8 @@ use yii\base\Object;
  * For example you may use the following code inside your migration files:
  *
  * ```php
- * $this->createTable('table', [
+ * $this->createTable('example_table', [
+ *   'id' => Schema::primaryKey(),
  *   'name' => Schema::string(64)->notNull(),
  *   'type' => Schema::integer()->notNull()->defaultValue(10),
  *   'description' => Schema::text(),
@@ -33,37 +34,37 @@ use yii\base\Object;
 abstract class SchemaBuilder extends Object
 {
     /**
-     * @var string column type
+     * @var string the column type definition such as INTEGER, VARCHAR, DATETIME, etc.
      */
     protected $type;
     /**
-     * @var integer column size
+     * @var integer column size or precision definition. This is what goes into the parenthesis after
+     * the column type.
      */
     protected $length;
     /**
-     * @var boolean whether value is not nullable
+     * @var boolean whether the column is not nullable. If this is `true`, a `NOT NULL` constraint will be added.
      */
     protected $isNotNull = false;
     /**
-     * @var boolean whether value should be unique
+     * @var boolean whether the column values should be unique. If this is `true`, a `UNIQUE` constraint will be added.
      */
     protected $isUnique = false;
     /**
-     * @var string check value of column
+     * @var string the `CHECK` constraint for the column.
      */
     protected $check;
     /**
-     * @var mixed default value of column
+     * @var mixed default value of the column.
      */
     protected $default;
 
 
     /**
-     * Makes column a primary key
-     *
-     * @param integer $length
-     *
-     * @return self
+     * Creates a primary key column.
+     * @param integer $length column size or precision definition.
+     * This parameter will be ignored if not supported by the DBMS.
+     * @return static the column instance which can be further customized.
      */
     public static function primaryKey($length = null)
     {
@@ -71,11 +72,10 @@ abstract class SchemaBuilder extends Object
     }
 
     /**
-     * Makes column a big primary key
-     *
-     * @param integer $length
-     *
-     * @return self
+     * Creates a big primary key column.
+     * @param integer $length column size or precision definition.
+     * This parameter will be ignored if not supported by the DBMS.
+     * @return static the column instance which can be further customized.
      */
     public static function bigPrimaryKey($length = null)
     {
@@ -83,11 +83,10 @@ abstract class SchemaBuilder extends Object
     }
 
     /**
-     * Makes column a string
-     *
-     * @param integer $length
-     *
-     * @return self
+     * Creates a string column.
+     * @param integer $length column size definition i.e. the maximum string length.
+     * This parameter will be ignored if not supported by the DBMS.
+     * @return static the column instance which can be further customized.
      */
     public static function string($length = null)
     {
@@ -95,11 +94,10 @@ abstract class SchemaBuilder extends Object
     }
 
     /**
-     * Makes column a text
-     *
-     * @param integer $length
-     *
-     * @return self
+     * Creates a text column.
+     * @param integer $length column size definition i.e. the maximum text length.
+     * This parameter will be ignored if not supported by the DBMS.
+     * @return static the column instance which can be further customized.
      */
     public static function text($length = null)
     {
@@ -107,11 +105,10 @@ abstract class SchemaBuilder extends Object
     }
 
     /**
-     * Makes column a smallint
-     *
-     * @param integer $length
-     *
-     * @return self
+     * Creates a smallint column.
+     * @param integer $length column size or precision definition.
+     * This parameter will be ignored if not supported by the DBMS.
+     * @return static the column instance which can be further customized.
      */
     public static function smallInteger($length = null)
     {
@@ -119,11 +116,10 @@ abstract class SchemaBuilder extends Object
     }
 
     /**
-     * Makes column a integer
-     *
-     * @param integer $length
-     *
-     * @return self
+     * Creates an integer column.
+     * @param integer $length column size or precision definition.
+     * This parameter will be ignored if not supported by the DBMS.
+     * @return static the column instance which can be further customized.
      */
     public static function integer($length = null)
     {
@@ -131,11 +127,10 @@ abstract class SchemaBuilder extends Object
     }
 
     /**
-     * Makes column a bigint
-     *
-     * @param integer $length
-     *
-     * @return self
+     * Creates a bigint column.
+     * @param integer $length column size or precision definition.
+     * This parameter will be ignored if not supported by the DBMS.
+     * @return static the column instance which can be further customized.
      */
     public static function bigInteger($length = null)
     {
@@ -143,12 +138,11 @@ abstract class SchemaBuilder extends Object
     }
 
     /**
-     * Makes column a float
-     *
-     * @param integer $precision
-     * @param integer $scale
-     *
-     * @return self
+     * Creates a float column.
+     * @param integer $precision TODO
+     * @param integer $scale column size or precision definition.
+     * This parameter will be ignored if not supported by the DBMS.
+     * @return static the column instance which can be further customized.
      */
     public static function float($precision = null, $scale = null)
     {
@@ -156,12 +150,11 @@ abstract class SchemaBuilder extends Object
     }
 
     /**
-     * Makes column a double
-     *
-     * @param integer $precision
-     * @param integer $scale
-     *
-     * @return self
+     * Creates a double column.
+     * @param integer $precision TODO
+     * @param integer $scale column size or precision definition.
+     * This parameter will be ignored if not supported by the DBMS.
+     * @return static the column instance which can be further customized.
      */
     public static function double($precision = null, $scale = null)
     {
@@ -169,12 +162,11 @@ abstract class SchemaBuilder extends Object
     }
 
     /**
-     * Makes column a decimal
-     *
-     * @param integer $precision
-     * @param integer $scale
-     *
-     * @return self
+     * Creates a decimal column.
+     * @param integer $precision TODO
+     * @param integer $scale column size or precision definition.
+     * This parameter will be ignored if not supported by the DBMS.
+     * @return static the column instance which can be further customized.
      */
     public static function decimal($precision = null, $scale = null)
     {
@@ -182,11 +174,10 @@ abstract class SchemaBuilder extends Object
     }
 
     /**
-     * Makes column a datetime
-     *
-     * @param integer $length
-     *
-     * @return self
+     * Creates a datetime column.
+     * @param integer $length column size or precision definition.
+     * This parameter will be ignored if not supported by the DBMS.
+     * @return static the column instance which can be further customized.
      */
     public static function dateTime($length = null)
     {
@@ -194,11 +185,10 @@ abstract class SchemaBuilder extends Object
     }
 
     /**
-     * Makes column a timestamp
-     *
-     * @param integer $length
-     *
-     * @return self
+     * Creates a timestamp column.
+     * @param integer $length column size or precision definition.
+     * This parameter will be ignored if not supported by the DBMS.
+     * @return static the column instance which can be further customized.
      */
     public static function timestamp($length = null)
     {
@@ -206,11 +196,10 @@ abstract class SchemaBuilder extends Object
     }
 
     /**
-     * Makes column a time
-     *
-     * @param integer $length
-     *
-     * @return self
+     * Creates a time column.
+     * @param integer $length column size or precision definition.
+     * This parameter will be ignored if not supported by the DBMS.
+     * @return static the column instance which can be further customized.
      */
     public static function time($length = null)
     {
@@ -218,9 +207,8 @@ abstract class SchemaBuilder extends Object
     }
 
     /**
-     * Makes column a date
-     *
-     * @return self
+     * Creates a date column.
+     * @return static the column instance which can be further customized.
      */
     public static function date()
     {
@@ -228,11 +216,10 @@ abstract class SchemaBuilder extends Object
     }
 
     /**
-     * Makes column a binary
-     *
-     * @param integer $length
-     *
-     * @return self
+     * Creates a binary column.
+     * @param integer $length column size or precision definition.
+     * This parameter will be ignored if not supported by the DBMS.
+     * @return static the column instance which can be further customized.
      */
     public static function binary($length = null)
     {
@@ -240,11 +227,10 @@ abstract class SchemaBuilder extends Object
     }
 
     /**
-     * Makes column a boolean
-     *
-     * @param integer $length
-     *
-     * @return self
+     * Creates a boolean column.
+     * @param integer $length column size or precision definition.
+     * This parameter will be ignored if not supported by the DBMS.
+     * @return static the column instance which can be further customized.
      */
     public static function boolean($length = null)
     {
@@ -252,12 +238,11 @@ abstract class SchemaBuilder extends Object
     }
 
     /**
-     * Makes column a money
-     *
-     * @param integer $precision
-     * @param integer $scale
-     *
-     * @return self
+     * Creates a money column.
+     * @param integer $precision TODO
+     * @param integer $scale column size or precision definition.
+     * This parameter will be ignored if not supported by the DBMS.
+     * @return static the column instance which can be further customized.
      */
     public static function money($precision = null, $scale = null)
     {
@@ -265,46 +250,49 @@ abstract class SchemaBuilder extends Object
     }
 
     /**
-     * Makes column not nullable
-     *
+     * Adds a `NOT NULL` constraint to the column.
      * @return $this
      */
     public function notNull()
     {
         $this->isNotNull = true;
-
         return $this;
     }
 
     /**
-     * Makes column unique
-     *
+     * Adds a `UNIQUE` constraint to the column.
      * @return $this
      */
     public function unique()
     {
         $this->isUnique = true;
-
         return $this;
     }
 
     /**
-     * Specify check value for the column
-     *
-     * @param string $check
-     *
+     * Sets a `CHECK` constraint for the column.
+     * @param string $check the SQL of the `CHECK` constraint to be added.
      * @return $this
      */
     public function check($check)
     {
         $this->check = $check;
+        return $this;
+    }
 
+    /**
+     * Specify the default value for the column.
+     * @param mixed $default the default value.
+     * @return $this
+     */
+    public function defaultValue($default)
+    {
+        $this->default = $default;
         return $this;
     }
 
     /**
      * Build full string for create the column's schema
-     *
      * @return string
      */
     public function __toString()
@@ -319,21 +307,7 @@ abstract class SchemaBuilder extends Object
     }
 
     /**
-     * Specify default value for the column
-     *
-     * @param mixed $default
-     * @return $this
-     */
-    public function defaultValue($default = null)
-    {
-        $this->default = $default;
-
-        return $this;
-    }
-
-    /**
-     * Returns string with length of column
-     *
+     * Builds the length/precision part of the column.
      * @return string
      */
     protected function buildLengthString()
@@ -342,10 +316,8 @@ abstract class SchemaBuilder extends Object
     }
 
     /**
-     * Returns string with NOT NULL if isNotNull is true, otherwise returns
-     * empty string
-     *
-     * @return string
+     * Builds the not null constraint for the column.
+     * @return string returns 'NOT NULL' if [[isNotNull]] is true, otherwise it returns an empty string.
      */
     protected function buildNotNullString()
     {
@@ -353,10 +325,8 @@ abstract class SchemaBuilder extends Object
     }
 
     /**
-     * Returns string with UNIQUE if isUnique is true, otherwise returns
-     * empty string
-     *
-     * @return string
+     * Builds the unique constraint for the column.
+     * @return string returns string 'UNIQUE' if [[isUnique]] is true, otherwise it returns an empty string.
      */
     protected function buildUniqueString()
     {
@@ -364,48 +334,49 @@ abstract class SchemaBuilder extends Object
     }
 
     /**
-     * Returns string with default value of column
-     *
-     * @return string
+     * Builds the default value specification for the column.
+     * @return string string with default value of column.
      */
     protected function buildDefaultString()
     {
-        $string = '';
+        if ($this->default === null) {
+            return '';
+        }
 
-        if ($this->default !== null) {
-            $string .= ' DEFAULT ';
-            switch (gettype($this->default)) {
-                case 'integer':
-                case 'double':
-                    $string .= $this->default;
-                    break;
-                case 'boolean':
-                    $string .= $this->default ? 'TRUE' : 'FALSE';
-                    break;
-                default:
-                    $string .= "'{$this->default}'";
-            }
+        $string = ' DEFAULT ';
+        switch (gettype($this->default)) {
+            case 'integer':
+                $string .= (string) $this->default;
+                break;
+            case 'double':
+                // ensure type cast always has . as decimal separator in all locales
+                $string .= str_replace(',', '.', (string) $this->default);
+                break;
+            case 'boolean':
+                $string .= $this->default ? 'TRUE' : 'FALSE';
+                break;
+            default:
+                $string .= "'{$this->default}'";
         }
 
         return $string;
     }
 
     /**
-     * Returns check value of column
-     *
-     * @return string
+     * Builds the check constraint for the column.
+     * @return string a string containing the CHECK constraint.
      */
     protected function buildCheckString()
     {
-        return ($this->check !== null ? " CHECK ({$this->check})" : '');
+        return $this->check !== null ? " CHECK ({$this->check})" : '';
     }
 
     /**
-     * Create schema builder for types with length
+     * Create schema builder instance for types with length.
      *
-     * @param string $type schema of column
-     * @param integer $length length of column
-     * @return self
+     * @param string $type type of the column. See [[$type]].
+     * @param integer|string $length length or precision of the column. See [[$length]].
+     * @return static
      */
     protected static function create($type, $length = null)
     {
@@ -418,12 +389,12 @@ abstract class SchemaBuilder extends Object
     }
 
     /**
-     * Create schema builder for numeric types types with precision and scale
+     * Create schema builder for numeric types with precision and scale.
      *
-     * @param string $type schema of column
-     * @param integer $precision precision of column
-     * @param integer $scale scale of column
-     * @return self
+     * @param string $type type of the column. See [[$type]].
+     * @param integer $precision precision of the column.
+     * @param integer $scale scale of the column.
+     * @return static
      */
     protected static function createNumeric($type, $precision = null, $scale = null)
     {
@@ -433,6 +404,6 @@ abstract class SchemaBuilder extends Object
             $length = $precision . ($scale !== null ? ",$scale" : '');
         }
 
-        return self::create($type, $length);
+        return static::create($type, $length);
     }
 }
