@@ -324,7 +324,7 @@ abstract class SchemaBuilder extends Object
      * @param mixed $default
      * @return $this
      */
-    protected function defaultValue($default = null)
+    public function defaultValue($default = null)
     {
         $this->default = $default;
 
