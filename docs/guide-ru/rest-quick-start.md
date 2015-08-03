@@ -60,6 +60,23 @@ class UserController extends ActiveController
 Настройки выше добавляют правило для контроллера `user`, которое предоставляет доступ к данным пользователя через красивые
 URL и логичные глаголы HTTP.
 
+
+## Включение JSON на прием данных<span id="enabling-json-input"></span>
+
+Для того чтобы API мог принимать данные в формате JSON, сконфигурируйте [[yii\web\Request::$parsers|parsers]] свойство у компонента `request` [application component](structure-application-components.md) на использование [[yii\web\JsonParser]] JSON данных на входе:
+
+```php
+'request' => [
+    'parsers' => [
+        'application/json' => 'yii\web\JsonParser',
+    ]
+]
+```
+
+> Примечание: Конфигурация, приведенная выше необязательна. Без приведенной выше конфигурации, API сможет определить только
+  `application/x-www-form-urlencoded` и `multipart/form-data` форматы.
+
+
 ## Пробуем <span id="trying-it-out"></span>
 
 Вот так просто мы и создали RESTful API для доступа к данным пользователя. API нашего сервиса сейчас включает в себя:
