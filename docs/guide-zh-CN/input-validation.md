@@ -300,7 +300,7 @@ class MyForm extends Model
             // 以匿名函数形式定义的行内验证器
             ['token', function ($attribute, $params) {
                 if (!ctype_alnum($this->$attribute)) {
-                    $this->addError($attribute, '令牌本身必须包含字母或数字。');
+                    $this->addError($attribute, 'token 本身必须包含字母或数字。');
                 }
             }],
         ];
@@ -308,8 +308,8 @@ class MyForm extends Model
 
     public function validateCountry($attribute, $params)
     {
-        if (!in_array($this->$attribute, ['兲朝', '墙外'])) {
-            $this->addError($attribute, '国家必须为 "兲朝" 或 "墙外" 中的一个。');
+        if (!in_array($this->$attribute, ['USA', 'Web'])) {
+            $this->addError($attribute, 'The country must be either "USA" or "Web".');
         }
     }
 }
@@ -339,8 +339,8 @@ class CountryValidator extends Validator
 {
     public function validateAttribute($model, $attribute)
     {
-        if (!in_array($model->$attribute, ['兲朝', '墙外'])) {
-            $this->addError($attribute, '国家必须为 "兲朝" 或 "墙外" 中的一个。');
+        if (!in_array($model->$attribute, ['USA', 'Web'])) {
+            $this->addError($attribute, 'The country must be either "USA" or "Web".');
         }
     }
 }

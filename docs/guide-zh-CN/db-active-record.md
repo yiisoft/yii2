@@ -16,7 +16,7 @@ Active Record
 
 ```php
 $customer = new Customer();
-$customer->name = '李狗蛋';
+$customer->name = 'Qiang';
 $customer->save();  // 一行新数据插入 customer 表
 ```
 
@@ -25,7 +25,7 @@ $customer->save();  // 一行新数据插入 customer 表
 
 ```php
 $db->createCommand('INSERT INTO customer (name) VALUES (:name)', [
-    ':name' => '李狗蛋',
+    ':name' => 'Qiang',
 ])->execute();
 ```
 
@@ -87,7 +87,7 @@ $email = $customer->email;
 要改变列值，只要给关联属性赋新值并保存对象即可：
 
 ```php
-$customer->email = '哪吒@example.com';
+$customer->email = 'james@example.com';
 $customer->save();
 ```
 
@@ -429,7 +429,7 @@ class Customer extends \yii\db\ActiveRecord
 `hasMany()` 返回 [[yii\db\ActiveQuery]] 对象，该对象允许你通过
 [[yii\db\ActiveQuery]] 方法定制查询。
 
-如上声明后，执行`$customer->bigOrders` 就返回
+如上声明后，执行 `$customer->bigOrders` 就返回
 总额大于100的订单。使用以下代码更改设定值：
 
 ```php
