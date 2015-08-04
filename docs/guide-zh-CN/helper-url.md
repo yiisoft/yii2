@@ -1,16 +1,11 @@
 Url 帮助类
 ==========
 
-Url helper provides a set of static methods for managing URLs.
-
-Url 帮助类提供一系列的静态方法来管理 URL。
+Url 帮助类提供一系列的静态方法来帮助管理 URL。
 
 ## 获得通用 URL <span id="getting-common-urls"></span>
 
-There are two methods you can use to get common URLs: home URL and base URL of the current request. In order to get
-home URL, use the following:
-
-我们提供了两种方法来获取通用 URLS ：当前请求的 home URL 和 base URL 。为了获取 home URL ，使用如下代码：
+有两种获取通用 URLS 的方法 ：当前请求的 home URL 和 base URL 。为了获取 home URL ，使用如下代码：
 
 ```php
 $relativeHomeUrl = Url::home();
@@ -21,9 +16,7 @@ $httpsAbsoluteHomeUrl = Url::home('https');
 If no parameter is passed, the generated URL is relative. You can either pass `true` to get an absolute URL for the current
 schema or specify a schema explicitly (`https`, `http`).
 
-如果没有传递任何参数，将会生成相对 URL 。你可以传 `true` 来获得一个针对当前协议的绝对 URL ；同时，你可以明确的指定具体的协议类型（ `https` , `http` ）
-
-To get the base URL of the current request use the following:
+如果没有传任何参数，这个方法将会生成相对 URL 。你可以传 `true` 来获得一个针对当前协议的绝对 URL ；或者，你可以明确的指定具体的协议类型（ `https` , `http` ）
 
 如下代码可以获得当前请求的 base URL：
 
@@ -34,32 +27,22 @@ $absoluteBaseUrl = Url::base(true);
 $httpsAbsoluteBaseUrl = Url::base('https');
 ```
 
-The only parameter of the method works exactly the same as for `Url::home()`.
-
-这个方法的参数和 `Url::home()` 的完全一样。
+这个方法的调用方式和 `Url::home()` 的完全一样。
 
 ## 创建 URLs <span id="creating-urls"></span>
 
-In order to create a URL to a given route use the `Url::toRoute()` method. The method uses [[\yii\web\UrlManager]] to create
-a URL:
-
-为了创建一个给定路由的 URL 地址，请使用 `Url::toRoute()`方法。 这个方法使用 [[\yii\web\UrlManager]] 来创建一个 URL 地址：
+为了创建一个给定路由的 URL 地址，请使用 `Url::toRoute()`方法。 这个方法使用 [[\yii\web\UrlManager]] 来创建一个 URL ：
 
 ```php
 $url = Url::toRoute(['product/view', 'id' => 42]);
 ```
- 
-You may specify the route as a string, e.g., `site/index`. You may also use an array if you want to specify additional
-query parameters for the URL being created. The array format must be:
 
-你可以用一个字符串来作为路由，比如： `site/index` 。如果想要指定将要被创建的 URL 附加的查询参数，你同样可以使用一个数组来作为路由。数组的格式必须为：
+你可以指定一个字符串来作为路由，如： `site/index` 。如果想要指定将要被创建的 URL 的附加查询参数，你同样可以使用一个数组来作为路由。数组的格式须为：
 
 ```php
 // generates: /index.php?r=site/index&param1=value1&param2=value2
 ['site/index', 'param1' => 'value1', 'param2' => 'value2']
 ```
-
-If you want to create a URL with an anchor, you can use the array format with a `#` parameter. For example,
 
 如果你想要创建一个带有 anchor 的 URL ，你可以使用一个带有 `#` 参数的数组。比如：
 
@@ -67,31 +50,16 @@ If you want to create a URL with an anchor, you can use the array format with a 
 // generates: /index.php?r=site/index&param1=value1#name
 ['site/index', 'param1' => 'value1', '#' => 'name']
 ```
-
-A route may be either absolute or relative. An absolute route has a leading slash (e.g. `/site/index`) while a relative
-route has none (e.g. `site/index` or `index`). A relative route will be converted into an absolute one by the following rules:
-
-- If the route is an empty string, the current [[\yii\web\Controller::route|route]] will be used;
-- If the route contains no slashes at all (e.g. `index`), it is considered to be an action ID of the current controller
-  and will be prepended with [[\yii\web\Controller::uniqueId]];
-- If the route has no leading slash (e.g. `site/index`), it is considered to be a route relative to the current module
-  and will be prepended with the module's [[\yii\base\Module::uniqueId|uniqueId]].
   
-一个路由可以是绝对或者相对的。一个绝对的路由以前导斜杠开头（比如： `/site/index`），而一个相对的路由则没有（比如： `site/index` 或者 `index`）。一个相对的路由将会按照如下规则转换为绝对路由：
+一个路由既可能是绝对的又可能是相对的。一个绝对的路由以前导斜杠开头（如： `/site/index`），而一个相对的路由则没有（比如： `site/index` 或者 `index`）。一个相对的路由将会按照如下规则转换为绝对路由：
 
-- 如果这个路由是一个空的字符串，将会使用当前 [[\yii\web\Controller::route|route]] 作为路由
+- 如果这个路由是一个空的字符串，将会使用当前 [[\yii\web\Controller::route|route]] 作为路由；
 - 如果这个路由不带任何斜杠（比如 `index` ），它会被认为是当前控制器的一个 action ID，然后将会把 [[\yii\web\Controller::uniqueId]] 插入到路由前面。
-- 如果这个路由不带前导斜杠（比如： `site/index` ），它会被认为是相对当前模块的路由，然后将会把 [[\yii\base\Module::uniqueId|uniqueId]] 插入到路由前面。
-
-Starting from version 2.0.2, you may specify a route in terms of an [alias](concept-aliases.md). If this is the case,
-the alias will first be converted into the actual route which will then be turned into an absolute route according
-to the above rules.
+- 如果这个路由不带前导斜杠（比如： `site/index` ），它会被认为是相对当前模块（module）的路由，然后将会把 [[\yii\base\Module::uniqueId|uniqueId]] 插入到路由前面。
 
 从2.0.2版本开始，你可以用 [alias](concept-aliases.md) 来指定一个路由。在这种情况下， alias 将会首先转换为实际的路由，然后会按照上述规则转换为绝对路由。
 
-Below are some examples of using this method:
-
-以下是使用这种方法的一些例子：
+以下是该方法的一些例子：
 
 ```php
 // /index.php?r=site/index
@@ -110,10 +78,9 @@ echo Url::toRoute('site/index', true);
 echo Url::toRoute('site/index', 'https');
 ```
 
-There's another method `Url::to()` that is very similar to [[toRoute()]]. The only difference is that this method
-requires a route to be specified as an array only. If a string is given, it will be treated as a URL.
-
 还有另外一个方法 `Url::to()` 和 [[toRoute()]] 非常类似。这两个方法的唯一区别在于，前者要求一个路由必须用数组来指定。如果传的参数为字符串，它将会被直接当做 URL 。
+
+[aaa](#getting-common-urls)
 
 The first argument could be:
          
@@ -125,9 +92,9 @@ The first argument could be:
 - an empty string: the currently requested URL will be returned;
 - a normal string: it will be returned as is.
 
- `Url::to()` 的第一个参数可以是：
+`Url::to()` 的第一个参数可以是：
 
-- 数组：将会调用 [[toRoute()]] 来生成URL。比如 `['site/index']`, `['post/index', 'page' => 2]` 。更多的用法请参考 [[toRoute()]] 。
+- 数组：将会调用 [[toRoute()]] 来生成URL。比如： `['site/index']`, `['post/index', 'page' => 2]` 。详细用法请参考 [[toRoute()]] 。
 - 带前导 `@` 的字符串：它将会被当做别名，对应的别名字符串将会返回。
 - 空的字符串：当前请求的 URL 将会被返回；
 - 普通的字符串：返回本身。
@@ -187,10 +154,13 @@ echo Url::current(['id' => 100]);
 ```
 
 
-## Remember URLs <span id="remember-urls"></span>
+## 记住 URLs <span id="remember-urls"></span>
 
 There are cases when you need to remember URL and afterwards use it during processing of the one of sequential requests.
 It can be achieved in the following way:
+
+有时，你需要记住一个 URL 并在后续的请求处理中使用它。你可以用以下方式达成这个目的：
+
  
 ```php
 // Remember current URL 
@@ -205,14 +175,18 @@ Url::remember(['product/view', 'id' => 42], 'product');
 
 In the next request we can get URL remembered in the following way:
 
+在后续的请求，我们可以按照如下方式获得记住的 URL：
+
 ```php
 $url = Url::previous();
 $productUrl = Url::previous('product');
 ```
                         
-## Checking Relative URLs <span id="checking-relative-urls"></span>
+## 检查相对 URLs <span id="checking-relative-urls"></span>
 
 To find out if URL is relative i.e. it doesn't have host info part, you can use the following code:
+
+你可以用如下代码检测一个 URL 是否是相对的（比如，包含主机信息部分）。
                              
 ```php
 $isRelative = Url::isRelative('test/it');
