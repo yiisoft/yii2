@@ -1,24 +1,24 @@
 认证
 ==============
 
-认证是对用户权限进行鉴定的过程。它通常使用一个标识符
-（如用户名或电子邮件地址）和一个令牌（比如密码或者 access token）来
+认证是鉴定用户身份的过程。它通常使用一个标识符
+（如用户名或电子邮件地址）和一个加密令牌（比如密码或者存取令牌）来
 鉴别用户身份。认证是登录功能的基础。
 
-Yii提供了一个认证框架，它连接了各个组件支持登录。使用这个框架，
+Yii提供了一个认证框架，它连接了不同的组件以支持登录。欲使用这个框架，
 你主要需要做以下工作：
  
-* 设置用户组件 [[yii\web\User|user]];
-* 创建一个类实现认证接口 [[yii\web\IdentityInterface]]。
+* 设置用户组件 [[yii\web\User|user]] ;
+* 创建一个类实现 [[yii\web\IdentityInterface]] 接口。
 
 
 ## 配置 [[yii\web\User]] <span id="configuring-user"></span>
 
 用户组件 [[yii\web\User|user]] 用来管理用户的认证状态。这需要你
 指定一个含有实际认证逻辑的认证类 [[yii\web\User::identityClass|identity class]]。
-在以下应用配置中，通过选项将用户组件 [[yii\web\User|user]] 的
-认证类 [[yii\web\User::identityClass|identity class]] 指定为已实现认证接口的 
-`app\models\User` 模型类：
+在以下web应用的配置项中，将用户用户组件 [[yii\web\User|user]] 的
+认证类 [[yii\web\User::identityClass|identity class]] 配置成
+模型类 `app\models\User`， 它的实现将在下一节中讲述。 
   
 ```php
 return [
@@ -31,29 +31,29 @@ return [
 ```
 
 
-## 实现接口 [[yii\web\IdentityInterface]] <span id="implementing-identity"></span>
+## 认证接口 [[yii\web\IdentityInterface]] 的实现 <span id="implementing-identity"></span>
 
 认证类 [[yii\web\User::identityClass|identity class]] 必须实现包含以下方法的
 认证接口 [[yii\web\IdentityInterface]]：
 
-* [[yii\web\IdentityInterface::findIdentity()|findIdentity()]]：根据指定的用户ID返回
-  认证模型的实例，当你利用session保持登录状态的时候会用到这个方法。
-* [[yii\web\IdentityInterface::findIdentityByAccessToken()|findIdentityByAccessToken()]]：根据指定的access token返回
-  认证模型的实例，该方法被用在
-  使用单一的令牌认证用户的时候（比如无状态的RESTful应用）。
+* [[yii\web\IdentityInterface::findIdentity()|findIdentity()]]：根据指定的用户ID查找
+  认证模型类的实例，当你需要使用session来维持登录状态的时候会用到这个方法。
+* [[yii\web\IdentityInterface::findIdentityByAccessToken()|findIdentityByAccessToken()]]：根据指定的存取令牌查找
+  认证模型类的实例，该方法用于
+  通过单个加密令牌认证用户的时候（比如无状态的RESTful应用）。
 * [[yii\web\IdentityInterface::getId()|getId()]]：获取该认证实例表示的用户的ID。
 * [[yii\web\IdentityInterface::getAuthKey()|getAuthKey()]]：获取基于 cookie 登录时使用的认证密钥。
-  认证密钥储存在 cookie 里并且会与服务端进行比较以确保
+  认证密钥储存在 cookie 里并且将来会与服务端的版本进行比较以确保
   cookie的有效性。
-* [[yii\web\IdentityInterface::validateAuthKey()|validateAuthKey()]]：验证基于 cookie 登录的
-  认证密钥。
+* [[yii\web\IdentityInterface::validateAuthKey()|validateAuthKey()]] ：是基于 cookie 登录密钥的
+验证的逻辑的实现。
 
-用不到的方法可以空着，例如，你的只是一个
+用不到的方法可以空着，例如，你的项目只是一个
 无状态的 RESTful 应用，只需实现 [[yii\web\IdentityInterface::findIdentityByAccessToken()|findIdentityByAccessToken()]]
-和 [[yii\web\IdentityInterface::getId()|getId()]] ，其他的方法不用写。
+和 [[yii\web\IdentityInterface::getId()|getId()]] ，其他的方法的函数体留空即可。
 
-下面的例子是一个通过关联了 `user` 数据表的 
-AR 模型 [Active Record](db-active-record.md) 实现的认证类 [[yii\web\User::identityClass|identity class]]。
+下面的例子是一个通过结合了 `user` 数据表的 
+AR 模型 [Active Record](db-active-record.md) 实现的一个认证类 [[yii\web\User::identityClass|identity class]]。
 
 ```php
 <?php
@@ -149,7 +149,7 @@ class User extends ActiveRecord implements IdentityInterface
 
 在 `user` 应用组件方面，你主要用到 [[yii\web\User]] 。
 
-你可以使用表达式 `Yii::$app->user->identity` 获取当前用户身份实例。它返回
+你可以使用表达式 `Yii::$app->user->identity` 检测当前用户身份。它返回
 一个表示当前登录用户的认证类 [[yii\web\User::identityClass|identity class]] 的实例，
 未认证用户（游客）则返回 null。下面的代码展示了如何从 [[yii\web\User]] 
 获取其他认证相关信息：
@@ -169,17 +169,17 @@ $isGuest = Yii::$app->user->isGuest;
 
 ```php
 // 使用指定用户名获取用户身份实例。
-// 请注意，如果需要的话您可能要验证密码
+// 请注意，如果需要的话您可能要检验密码
 $identity = User::findOne(['username' => $username]);
 
 // 登录用户
 Yii::$app->user->login($identity);
 ```
 
-[[yii\web\User::login()]] 方法将当前用户的身份登记到 [[yii\web\User]]。如果使用 session 登录
+[[yii\web\User::login()]] 方法将当前用户的身份登记到 [[yii\web\User]]。如果 session 设置为 
 [[yii\web\User::enableSession|enabled]]，则使用 session 记录用户身份，用户的
-认证状态将维持在整个会话中。如果开启自动登录 [[yii\web\User::enableAutoLogin|enabled]] 
-则基于 cookie 登录 （如：记住登录状态），它将使用 cookie 保存用户身份，这样
+认证状态将在整个会话中得以维持。如果开启自动登录 [[yii\web\User::enableAutoLogin|enabled]] 
+则基于 cookie 登录（如：记住登录状态），它将使用 cookie 保存用户身份，这样
 只要 cookie 有效就可以恢复登录状态。
 
 为了使用 cookie 登录，你需要在应用配置文件中将 [[yii\web\User::enableAutoLogin]] 
@@ -199,7 +199,7 @@ Yii::$app->user->logout();
 
 ## 认证事件 <span id="auth-events"></span>
 
-[[yii\web\User]] 类在登录和注销流程预置了一些事件。
+[[yii\web\User]] 类在登录和注销流程引发一些事件。
 
 * [[yii\web\User::EVENT_BEFORE_LOGIN|EVENT_BEFORE_LOGIN]]：在登录 [[yii\web\User::login()]] 时引发。
   如果事件句柄将事件对象的 [[yii\web\UserEvent::isValid|isValid]] 属性设为 false，
