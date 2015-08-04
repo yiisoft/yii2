@@ -26,7 +26,7 @@ $array = [
 $value = isset($array['foo']['bar']->name) ? $array['foo']['bar']->name : null;
 ```
 
-Yii 提供了一个非常方便的方法来做这件事:
+Yii 提供了一个非常方便的方法来做这件事：
 
 ```php
 $value = ArrayHelper::getValue($array, 'foo.bar.name');
