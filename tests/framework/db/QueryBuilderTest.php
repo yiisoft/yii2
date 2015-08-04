@@ -84,11 +84,11 @@ class QueryBuilderTest extends DatabaseTestCase
             [Schema::TYPE_STRING . '(32) CHECK (value LIKE "test%")', $this->string(32)->check('value LIKE "test%"'), 'varchar(32) CHECK (value LIKE "test%")'],
             [Schema::TYPE_STRING . ' NOT NULL', $this->string()->notNull(), 'varchar(255) NOT NULL'],
             [Schema::TYPE_TEXT, $this->text(), 'text'],
-            [Schema::TYPE_TEXT . '(255)', $this->text(255), 'text'],
+            [Schema::TYPE_TEXT . '(255)', $this->text(), 'text', Schema::TYPE_TEXT],
             [Schema::TYPE_TEXT . ' CHECK (value LIKE "test%")', $this->text()->check('value LIKE "test%"'), 'text CHECK (value LIKE "test%")'],
-            [Schema::TYPE_TEXT . '(255) CHECK (value LIKE "test%")', $this->text(255)->check('value LIKE "test%"'), 'text CHECK (value LIKE "test%")'],
+            [Schema::TYPE_TEXT . '(255) CHECK (value LIKE "test%")', $this->text()->check('value LIKE "test%"'), 'text CHECK (value LIKE "test%")', Schema::TYPE_TEXT . ' CHECK (value LIKE "test%")'],
             [Schema::TYPE_TEXT . ' NOT NULL', $this->text()->notNull(), 'text NOT NULL'],
-            [Schema::TYPE_TEXT . '(255) NOT NULL', $this->text(255)->notNull(), 'text NOT NULL'],
+            [Schema::TYPE_TEXT . '(255) NOT NULL', $this->text()->notNull(), 'text NOT NULL', Schema::TYPE_TEXT . ' NOT NULL'],
             [Schema::TYPE_SMALLINT, $this->smallInteger(), 'smallint(6)'],
             [Schema::TYPE_SMALLINT . '(8)', $this->smallInteger(8), 'smallint(8)'],
             [Schema::TYPE_INTEGER, $this->integer(), 'int(11)'],
@@ -145,10 +145,11 @@ class QueryBuilderTest extends DatabaseTestCase
 
         foreach ($this->columnTypes() as $item) {
             list ($column, $builder, $expected) = $item;
+            $builderColumn = isset($item[3]) ? $item[3] : $column;
 
             $this->assertEquals($expected, $qb->getColumnType($column));
             $this->assertEquals($expected, $qb->getColumnType($builder));
-            $this->assertEquals($builder->__toString(), $column);
+            $this->assertEquals($builder->__toString(), $builderColumn);
         }
     }
 
