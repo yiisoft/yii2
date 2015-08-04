@@ -31,7 +31,7 @@ class UserFixture extends ActiveFixture
 }
 ```
 
-> 技巧：每个 `ActiveFixture` 都会准备一张数据库表用于测试。我们可以通过设定 [[yii\test\ActiveFixture::tableName]] 或者 [[yii\test\ActiveFixture::modelClass]] 属性来指定表。 如果是后者，表的名字将从通过 `modelClass` 指定 `ActiveRecord` 类获得。
+> 技巧：每个 `ActiveFixture` 都会准备一张数据库表用于测试。我们可以通过设定 [[yii\test\ActiveFixture::tableName]] 或者 [[yii\test\ActiveFixture::modelClass]] 属性来指定表。 如果是后者，表的名字将从通过 `modelClass` 指定的 `ActiveRecord` 类获得。
 
 > 注意: [[yii\test\ActiveFixture]] 只适用于 SQL 数据库。对于 NoSQL 数据库， Yii 提供了以下`ActiveFixture`类：
 >
