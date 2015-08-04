@@ -243,7 +243,7 @@ class Command extends Component
      * using named placeholders, this will be a parameter name of
      * the form `:name`. For a prepared statement using question mark
      * placeholders, this will be the 1-indexed position of the parameter.
-     * @param mixed $value Name of the PHP variable to bind to the SQL statement parameter
+     * @param mixed $value the PHP variable to bind to the SQL statement parameter (passed by reference)
      * @param integer $dataType SQL data type of the parameter. If null, the type is determined by the PHP type of the value.
      * @param integer $length length of the data type
      * @param mixed $driverOptions the driver-specific options
