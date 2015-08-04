@@ -13,7 +13,7 @@ $absoluteHomeUrl = Url::home(true);
 $httpsAbsoluteHomeUrl = Url::home('https');
 ```
 
-如果没有传任何参数，这个方法将会生成相对 URL 。你可以传 `true` 来获得一个针对当前协议的绝对 URL ；或者，你可以明确的指定具体的协议类型（ `https` , `http` ）
+如果没有传任何参数，这个方法将会生成相对 URL 。你可以传 `true` 来获得一个针对当前协议的绝对 URL ；或者，你可以明确的指定具体的协议类型（ `https` , `http` ）。
 
 如下代码可以获得当前请求的 base URL：
 
@@ -144,7 +144,7 @@ Url::remember(['product/view', 'id' => 42]);
 Url::remember(['product/view', 'id' => 42], 'product');
 ```
 
-在后续的请求处理中，我们可以按照如下方式获得记住的 URL：
+在后续的请求处理中，可以用如下方式获得记住的 URL：
 
 ```php
 $url = Url::previous();
