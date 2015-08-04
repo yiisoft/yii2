@@ -205,7 +205,7 @@ ArrayHelper::multisort($data, function($item) {
 如果是按多个键名排序，你可以用一个数组为各个键指定不同的顺序。
 
 
-最后一个参数（译者注：第四个参数）是PHP的排序标识(sort flag)，可使用的值和调用PHP
+最后一个参数（译者注：第四个参数）是PHP的排序标识（sort flag），可使用的值和调用PHP
 [sort()](http://php.net/manual/zh/function.sort.php) 函数时传递的值一样。
 
 
@@ -287,7 +287,7 @@ $data = ArrayHelper::toArray($posts, [
 - 一个由你可随意取名的键名和你想从中取值的模型列名组成的键值对；
 - 一个由你可随意取名的键名和有返回值的回调函数组成的键值对；
 
-这上面的转换结果将会是:
+这上面的转换结果将会是：
 
 
 ```php
