@@ -1,7 +1,7 @@
-ArrayHelper(数组辅助类)
+数组助手类
 ===========
 
-除了[PHP中丰富的数组函数集](http://php.net/manual/zh/book.array.php)，Yii 数组辅助类提供了额外的静态方法，让你更高效地处理数组。
+除了[PHP中丰富的数组函数集](http://php.net/manual/zh/book.array.php)，Yii 数组助手类提供了额外的静态方法，让你更高效地处理数组。
 
 
 ## 获取值 <span id="getting-values"></span>
@@ -230,7 +230,7 @@ $decoded = ArrayHelper::htmlDecode($data);
 
 ```php
   /**
-    * 将两个或者多个数组递归式的合并为要贯彻。
+    * 将两个或者多个数组递归式的合并为一个数组。
     * 如果每个数组有一个元素的键名相同，那么后面元素的将覆盖前面的元素（不同于 array_merge_recursive）。
     * 如果两个数组都有相同键名的数组元素（译者注：嵌套数组）则将引发递归合并。
     * 对数值型键名的元素，后面数组中的这些元素会被追加到前面数组中。
