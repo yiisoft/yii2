@@ -43,9 +43,9 @@ return [
 请参考PHP manual获取更多有关 DSN 格式信息。
 配置连接组件后可以使用以下语法访问：
 
-```$connection = \Yii::$app->db;```
+`$connection = \Yii::$app->db;`
 
-请参考```[[yii\db\Connection]]```获取可配置的属性列表。
+请参考`[[yii\db\Connection]]`获取可配置的属性列表。
 如果你想通过ODBC连接数据库，则需要配置[[yii\db\Connection::driverName]] 属性，例如:
 
 ```
@@ -129,12 +129,14 @@ $command = $connection->createCommand('SELECT * FROM post');
 $posts = $command->queryAll();
 ```
 返回单行：
+
 ```
 $command = $connection->createCommand('SELECT * FROM post WHERE id=1');
 $post = $command->queryOne();
 ```
 
 查询多行单值：
+
 ```
 $command = $connection->createCommand('SELECT title FROM post');
 $titles = $command->queryColumn();
