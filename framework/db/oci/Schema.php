@@ -71,6 +71,14 @@ class Schema extends \yii\db\Schema
     /**
      * @inheritdoc
      */
+    public function createColumnSchemaBuilder($type, $length = null)
+    {
+        return new ColumnSchemaBuilder($type, $length);
+    }
+
+    /**
+     * @inheritdoc
+     */
     public function loadTableSchema($name)
     {
         $table = new TableSchema();

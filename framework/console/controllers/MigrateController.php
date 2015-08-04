@@ -94,7 +94,6 @@ class MigrateController extends BaseMigrateController
         if (parent::beforeAction($action)) {
             if ($action->id !== 'create') {
                 $this->db = Instance::ensure($this->db, Connection::className());
-                Schema::setDb($this->db);
             }
             return true;
         } else {
