@@ -344,7 +344,7 @@ class IpValidator extends Validator
      * @param string $ip the original IPv6
      * @return string the expanded IPv6
      */
-    public static function expandIPv6($ip)
+    protected function expandIPv6($ip)
     {
         $hex = unpack('H*hex', inet_pton($ip));
         return substr(preg_replace("/([a-f0-9]{4})/i", "$1:", $hex['hex']), 0, -1);
@@ -483,9 +483,9 @@ class IpValidator extends Validator
      * @param string $ip
      * @return string bits as a string
      */
-    public static function ip2bin($ip)
+    protected function ip2bin($ip)
     {
-        if (static::getIpVersion($ip) === 4) {
+        if ($this->getIpVersion($ip) === 4) {
             return str_pad(base_convert(ip2long($ip), 10, 2), static::IPV4_ADDRESS_LENGTH, '0', STR_PAD_LEFT);
         } else {
             $unpack = unpack("A16", inet_pton($ip));
