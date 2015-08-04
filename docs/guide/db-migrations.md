@@ -141,7 +141,7 @@ to `Schema::TYPE_STRING` to specify that the column cannot be null.
 > Info: The mapping between abstract types and physical types is specified by 
   the [[yii\db\QueryBuilder::$typeMap|$typeMap]] property in each concrete `QueryBuilder` class.
   
-Since version 2.0.5 schema builder which provides more convenient way defining column schema was introduced so migration above
+Since version 2.0.6 schema builder which provides more convenient way defining column schema was introduced so migration above
 could be written like the following:
 
 ```php
