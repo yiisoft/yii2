@@ -3,7 +3,7 @@ Url 帮助类
 
 Url 帮助类提供一系列的静态方法来帮助管理 URL。
 
-## 获得通用 URL <span id="getting-common-urls"></span>
+## 获得通用 URL <a name="getting-common-urls"></a>
 
 有两种获取通用 URLS 的方法 ：当前请求的 home URL 和 base URL 。为了获取 home URL ，使用如下代码：
 
