@@ -140,7 +140,7 @@ class ColumnSchemaBuilder extends Object
      */
     protected function buildNotNullString()
     {
-        return $this->isNotNull === true ? ' NOT NULL' : '';
+        return $this->isNotNull ? ' NOT NULL' : '';
     }
 
     /**
@@ -149,7 +149,7 @@ class ColumnSchemaBuilder extends Object
      */
     protected function buildUniqueString()
     {
-        return $this->isUnique === true ? ' UNIQUE' : '';
+        return $this->isUnique ? ' UNIQUE' : '';
     }
 
     /**

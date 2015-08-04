@@ -125,51 +125,35 @@ trait SchemaBuilderTrait
 
     /**
      * Creates a float column.
-     * @param integer $precision column value precision. First parameter passed to the column type, e.g. FLOAT(precision, scale).
-     * This parameter will be ignored if not supported by the DBMS.
-     * @param integer $scale column value scale. Second parameter passed to the column type, e.g. FLOAT(precision, scale).
+     * @param integer $precision column value precision. First parameter passed to the column type, e.g. FLOAT(precision).
      * This parameter will be ignored if not supported by the DBMS.
      * @return ColumnSchemaBuilder the column instance which can be further customized.
      * @since 2.0.6
      */
-    public function float($precision = null, $scale = null)
+    public function float($precision = null)
     {
-        $length = [];
-        if ($precision !== null) {
-            $length[] = $precision;
-        }
-        if ($scale !== null) {
-            $length[] = $scale;
-        }
-        return $this->getDb()->getSchema()->createColumnSchemaBuilder(Schema::TYPE_FLOAT, $length);
+        return $this->getDb()->getSchema()->createColumnSchemaBuilder(Schema::TYPE_FLOAT, $precision);
     }
 
     /**
      * Creates a double column.
-     * @param integer $precision column value precision. First parameter passed to the column type, e.g. DOUBLE(precision, scale).
-     * This parameter will be ignored if not supported by the DBMS.
-     * @param integer $scale column value scale. Second parameter passed to the column type, e.g. DOUBLE(precision, scale).
+     * @param integer $precision column value precision. First parameter passed to the column type, e.g. DOUBLE(precision).
      * This parameter will be ignored if not supported by the DBMS.
      * @return ColumnSchemaBuilder the column instance which can be further customized.
      * @since 2.0.6
      */
-    public function double($precision = null, $scale = null)
+    public function double($precision = null)
     {
-        $length = [];
-        if ($precision !== null) {
-            $length[] = $precision;
-        }
-        if ($scale !== null) {
-            $length[] = $scale;
-        }
-        return $this->getDb()->getSchema()->createColumnSchemaBuilder(Schema::TYPE_DOUBLE, $length);
+        return $this->getDb()->getSchema()->createColumnSchemaBuilder(Schema::TYPE_DOUBLE, $precision);
     }
 
     /**
      * Creates a decimal column.
-     * @param integer $precision column value precision. First parameter passed to the column type, e.g. DECIMAL(precision, scale).
+     * @param integer $precision column value precision, which is usually the total number of digits.
+     * First parameter passed to the column type, e.g. DECIMAL(precision, scale).
      * This parameter will be ignored if not supported by the DBMS.
-     * @param integer $scale column value scale. Second parameter passed to the column type, e.g. DECIMAL(precision, scale).
+     * @param integer $scale column value scale, which is usually the number of digits after the decimal point.
+     * Second parameter passed to the column type, e.g. DECIMAL(precision, scale).
      * This parameter will be ignored if not supported by the DBMS.
      * @return ColumnSchemaBuilder the column instance which can be further customized.
      * @since 2.0.6
@@ -188,38 +172,38 @@ trait SchemaBuilderTrait
 
     /**
      * Creates a datetime column.
-     * @param integer $length column size or precision definition.
+     * @param integer $precision column value precision. First parameter passed to the column type, e.g. DATETIME(precision).
      * This parameter will be ignored if not supported by the DBMS.
      * @return ColumnSchemaBuilder the column instance which can be further customized.
      * @since 2.0.6
      */
-    public function dateTime($length = null)
+    public function dateTime($precision = null)
     {
-        return $this->getDb()->getSchema()->createColumnSchemaBuilder(Schema::TYPE_DATETIME, $length);
+        return $this->getDb()->getSchema()->createColumnSchemaBuilder(Schema::TYPE_DATETIME, $precision);
     }
 
     /**
      * Creates a timestamp column.
-     * @param integer $length column size or precision definition.
+     * @param integer $precision column value precision. First parameter passed to the column type, e.g. TIMESTAMP(precision).
      * This parameter will be ignored if not supported by the DBMS.
      * @return ColumnSchemaBuilder the column instance which can be further customized.
      * @since 2.0.6
      */
-    public function timestamp($length = null)
+    public function timestamp($precision = null)
     {
-        return $this->getDb()->getSchema()->createColumnSchemaBuilder(Schema::TYPE_TIMESTAMP, $length);
+        return $this->getDb()->getSchema()->createColumnSchemaBuilder(Schema::TYPE_TIMESTAMP, $precision);
     }
 
     /**
      * Creates a time column.
-     * @param integer $length column size or precision definition.
+     * @param integer $precision column value precision. First parameter passed to the column type, e.g. TIME(precision).
      * This parameter will be ignored if not supported by the DBMS.
      * @return ColumnSchemaBuilder the column instance which can be further customized.
      * @since 2.0.6
      */
-    public function time($length = null)
+    public function time($precision = null)
     {
-        return $this->getDb()->getSchema()->createColumnSchemaBuilder(Schema::TYPE_TIME, $length);
+        return $this->getDb()->getSchema()->createColumnSchemaBuilder(Schema::TYPE_TIME, $precision);
     }
 
     /**
@@ -246,21 +230,21 @@ trait SchemaBuilderTrait
 
     /**
      * Creates a boolean column.
-     * @param integer $length column size or precision definition.
-     * This parameter will be ignored if not supported by the DBMS.
      * @return ColumnSchemaBuilder the column instance which can be further customized.
      * @since 2.0.6
      */
-    public function boolean($length = null)
+    public function boolean()
     {
-        return $this->getDb()->getSchema()->createColumnSchemaBuilder(Schema::TYPE_BOOLEAN, $length);
+        return $this->getDb()->getSchema()->createColumnSchemaBuilder(Schema::TYPE_BOOLEAN);
     }
 
     /**
      * Creates a money column.
-     * @param integer $precision column value precision. First parameter passed to the column type, e.g. MONEY(precision, scale).
+     * @param integer $precision column value precision, which is usually the total number of digits.
+     * First parameter passed to the column type, e.g. DECIMAL(precision, scale).
      * This parameter will be ignored if not supported by the DBMS.
-     * @param integer $scale column value scale. Second parameter passed to the column type, e.g. MONEY(precision, scale).
+     * @param integer $scale column value scale, which is usually the number of digits after the decimal point.
+     * Second parameter passed to the column type, e.g. DECIMAL(precision, scale).
      * This parameter will be ignored if not supported by the DBMS.
      * @return ColumnSchemaBuilder the column instance which can be further customized.
      * @since 2.0.6
