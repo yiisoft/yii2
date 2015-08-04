@@ -100,6 +100,11 @@ trait ActiveRecordTestTrait
         $this->assertTrue($customer instanceof $customerClass);
         $this->assertEquals(2, $customer->id);
 
+        // find with params
+        $customer = $customerClass::find()->where(['name' => ':user'])->params([':user' => 'user2'])->one();
+        $this->assertTrue($customer instanceof $customerClass);
+        $this->assertEquals(2, $customer->id);
+
         // scope
         $this->assertEquals(2, count($customerClass::find()->active()->all()));
         $this->assertEquals(2, $customerClass::find()->active()->count());
