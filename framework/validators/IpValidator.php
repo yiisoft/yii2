@@ -401,7 +401,7 @@ class IpValidator extends Validator
      * @param string $ip
      * @return integer
      */
-    public static function getIpVersion($ip)
+    protected function getIpVersion($ip)
     {
         return strpos($ip, ":") === false ? 4 : 6;
     }
@@ -451,7 +451,7 @@ class IpValidator extends Validator
      * @param string|array $ranges allowed subnets in CIDR format e.g. `10.0.0.0/8` or `2001:af::/64`
      * @return bool
      */
-    public function inRange($ip, $cidr, $ranges)
+    protected function inRange($ip, $cidr, $ranges)
     {
         $ranges = (array)$ranges;
         $ipVersion = $this->getIpVersion($ip);
