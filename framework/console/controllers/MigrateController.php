@@ -10,7 +10,6 @@ namespace yii\console\controllers;
 use Yii;
 use yii\db\Connection;
 use yii\db\Query;
-use yii\db\Schema;
 use yii\di\Instance;
 use yii\helpers\ArrayHelper;
 use yii\helpers\Console;
