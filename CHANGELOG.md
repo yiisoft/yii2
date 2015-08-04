@@ -40,7 +40,7 @@ Yii Framework 2 Change Log
 - Bug: Pass correct action name to `yii\console\Controller::options()` when default action was requested (cebe)
 - Bug: Automatic garbage collection in `yii\caching\FileCache` was not triggered (kidol)
 - Bug: Fixed missing stacktrace items on PHP syntax errors of "unexpected end of file" type (samdark)
-- Enh #3335: Implemented `SchemaBuilder` (pana1990, vaseninm, samdark)
+- Enh #3335: Implemented `ColumnSchemaBuilder` (pana1990, vaseninm, samdark, cebe)
 - Enh #5991: Added `updateMessages()` to `yii.activeForm.js` to support manually updating ActiveForm messages (nkovacs)
 - Enh #6043: Specification for 'class' and 'style' in array format added to `yii\helpers\Html` (klimov-paul)
 - Enh #6853: Console application will now register PHP constants for `STDIN`, `STDOUT`, and `STDERR` itself if they are not defined (cebe)

@@ -37,8 +37,6 @@ use yii\caching\TagDependency;
  */
 abstract class Schema extends Object
 {
-    use SchemaBuilderTrait;
-
     /**
      * The following are the supported abstract column data types.
      */
@@ -308,6 +306,21 @@ abstract class Schema extends Object
     public function createQueryBuilder()
     {
         return new QueryBuilder($this->db);
+    }
+
+    /**
+     * Create a column schema builder instance giving the type and value precision.
+     *
+     * This method may be overridden by child classes to create a DBMS-specific column schema builder.
+     *
+     * @param string $type type of the column. See [[ColumnSchemaBuilder::$type]].
+     * @param integer|string|array $length length or precision of the column. See [[ColumnSchemaBuilder::$length]].
+     * @return ColumnSchemaBuilder column schema builder instance
+     * @since 2.0.6
+     */
+    public function createColumnSchemaBuilder($type, $length = null)
+    {
+        return new ColumnSchemaBuilder($type, $length);
     }
 
     /**
