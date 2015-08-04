@@ -171,13 +171,14 @@ All Rights Reserved.
 ----------------
 
 * [Шаблон приложения advanced](tutorial-advanced-app.md)
-* **TBD** [Создание приложения с нуля](tutorial-start-from-scratch.md)
+* [Создание приложения с нуля](tutorial-start-from-scratch.md)
 * [Консольные команды](tutorial-console.md)
 * [Интернационализация](tutorial-i18n.md)
-* **TBD** [Отправка почты](tutorial-mailing.md)
+* [Встроенные валидаторы](tutorial-core-validators.md)
+* [Отправка почты](tutorial-mailing.md)
 * [Оптимизация производительности](tutorial-performance-tuning.md)
 * [Окружение виртуального хостинга](tutorial-shared-hosting.md)
-* **TBD** [Шаблонизаторы](tutorial-template-engines.md)
+* [Шаблонизаторы](tutorial-template-engines.md)
 
 
 Виджеты
@@ -198,9 +199,9 @@ All Rights Reserved.
 Хелперы
 -------
 
-* **TBD** [Обзор](helper-overview.md)
+* [Обзор](helper-overview.md)
 * [ArrayHelper](helper-array.md)
-* **TBD** [Html](helper-html.md)
+* [Html](helper-html.md)
 * [Url хелпер](helper-url.md)
 * **TBD** [Security](helper-security.md)
 
