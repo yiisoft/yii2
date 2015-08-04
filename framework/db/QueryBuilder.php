@@ -951,6 +951,8 @@ class QueryBuilder extends \yii\base\Object
                     foreach ($value->params as $n => $v) {
                         $params[$n] = $v;
                     }
+                } elseif (isset($params[$value])) {
+                    $parts[] = "$column=$value";
                 } else {
                     $phName = self::PARAM_PREFIX . count($params);
                     $parts[] = "$column=$phName";
