@@ -8,7 +8,7 @@
 正确性。也就是说，单元测试验证了方法在给定不同的输入参数的情况下，该方法
 是否能够返回预期的结果。单元测试通常由编写待测试类的人开发。
 
-Yii的单元测试框架 Codeception 基于 PHPUnit，Codeception 建议遵从PHPUnit的文档的进行开发：
+Yii的单元测试框架 Codeception 基于 PHPUnit，Codeception 建议遵从 PHPUnit 的文档的进行开发：
 
 - [PHPUnit docs starting from chapter 2](http://phpunit.de/manual/current/en/writing-tests-for-phpunit.html)。
 - [Codeception Unit Tests](http://codeception.com/docs/05-UnitTests)。
@@ -21,5 +21,5 @@ Yii的单元测试框架 Codeception 基于 PHPUnit，Codeception 建议遵从PH
 框架单元测试
 --------------------
 
-如果你想运行Yii框架的单元测试
+如果你想运行 Yii 框架的单元测试
 “[Getting started with Yii 2 development](https://github.com/yiisoft/yii2/blob/master/docs/internals/getting-started.md)”。
