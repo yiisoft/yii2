@@ -3,22 +3,22 @@
 
 Yii提供了一套 [widgets](structure-widgets.md) 小部件，这些小部件可以用于显示数据。
 [DetailView](#detail-view) 小部件能够用于显示一条单记录数据，
-[ListView](#list-view) 和 [GridView](#grid-view) 小部件能够用于显示一个列表或者一个拥有分页，排序和过滤特性的表。
+[ListView](#list-view) 和 [GridView](#grid-view) 小部件能够用于显示一个拥有分页、排序和过滤功能的一个列表或者表格。
 
 
 
 DetailView <a name="detail-view"></a>
 ----------
 
-[[yii\widgets\DetailView|DetailView]] 小部件展示了一个单一数据的详情，这个单一数据是通过 [[yii\widgets\DetailView::$model|model]] 模型设置的。
+[[yii\widgets\DetailView|DetailView]] 小部件显示的是单一 [[yii\widgets\DetailView::$model|model]] 数据的详情。
 
-这非常适用于在正常格式（例如：每个模型的属性作为一行显示在一个表中）中展现一个模型。
-这个模型可以是一个对象或者是 [[\yii\base\Model]] 的子类，诸如一个 [active record](db-active-record.md) 对象或者一个关联数组。
+它非常适合用常规格式显示一个模型（例如在一个表格的一行中显示模型的每个属性）。
+这里说的模型可以是 [[\yii\base\Model]] 或者其子类的一个实例，例如子类 [active record](db-active-record.md)，也可以是一个关联数组。
 
-DetailView使用 [[yii\widgets\DetailView::$attributes|$attributes]] 属性来确定哪个模型属性应该被显示并且它们应该怎样被格式化。
-具体可以查看 [formatter section](output-formatting.md) 中可用的格式化选项。
+DetailView使用 [[yii\widgets\DetailView::$attributes|$attributes]] 属性来决定显示模型哪些属性以及如何格式化。
+可用的格式化选项，见 [formatter section](output-formatting.md) 章节。
 
-一个典型的使用DetailView的方法如下：
+一个典型的DetailView的使用方法如下：
  
 ```php
 echo DetailView::widget([
@@ -38,12 +38,12 @@ echo DetailView::widget([
 ListView <a name="list-view"></a>
 --------
 
-[[yii\widgets\ListView|ListView]] 小部件用于展示从一个 [data provider](output-data-providers.md) 数据提供者得来的数据。
-每个数据模型通过指定 [[yii\widgets\ListView::$itemView|view file]] 被渲染。
-因为它提供了诸如分页、排序以及对一些不确定性因素进行过滤的特性，所以说使用它能够很方便地展示一些信息给终端用户，并且能够创建管理数据的UI界面。
+[[yii\widgets\ListView|ListView]] 小部件用于显示 [data provider](output-data-providers.md) 提供的数据。
+每个数据模型用指定 [[yii\widgets\ListView::$itemView|view file]] 文件来渲染。
+因为它提通过开箱即用式的分页、排序以及过滤这样一些特性，所以它可以很方便地同时为最终用户显示信息和创建数据管理界面。
 
 
-典型的使用方法如下：
+一个典型的用法如下例所示：
 
 ```php
 use yii\widgets\ListView;
@@ -79,10 +79,10 @@ use yii\helpers\HtmlPurifier;
 在上面的视图文件中，当前的数据模型 `$model` 是可用的。另外，下面的这些变量也是可用的：
 
 - `$key`：混合类型，键的值是与数据项相关联的。
-- `$index`：整型，是由数据提供者返回的数组中基于0的索引数据项。
+- `$index`：整型，是由数据提供者返回的数组中基于0的数据项的索引。
 - `$widget`：类型是ListView，是小部件的实例。
 
-假如你需要通过增加数据到每一个视图中，你可以像下面这样通过键值对使用 [[yii\widgets\ListView::$viewParams|$viewParams]] 属性：
+假如你需要传递附加的数据到每一个视图中，你可以像下面这样用 [[yii\widgets\ListView::$viewParams|$viewParams]] 属性传递键值对：
 
 
 ```php
@@ -97,7 +97,7 @@ echo ListView::widget([
 ]);
 ```
 
-在视图中，这些也是可以作为可用变量来使用的。
+在视图中，这些附加数据也是可以作为变量来使用的。
 
 
 GridView <a name="grid-view"></a>
