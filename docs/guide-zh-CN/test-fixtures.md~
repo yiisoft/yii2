@@ -316,6 +316,6 @@ yii fixture/unload "*" -DoNotUnloadThisOne
 自动生成 fixtures
 ------------------------
 
-Yii 还可以为你自动生成一些基于一些模板的 Fixtures。 你能够以不同语言格式用不同的数据生成你的Fixtures.
+Yii 还可以为你自动生成一些基于一些模板的Fixtures。 你能够以不同语言格式用不同的数据生成你的Fixtures.
 这些特征由 [Faker](https://github.com/fzaninotto/Faker) 库和 `yii2-faker` 扩展完成。
 关注 [guide](https://github.com/yiisoft/yii2-faker) 扩展获取更多的文档。
