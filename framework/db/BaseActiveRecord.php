@@ -441,11 +441,13 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
      * @param mixed $value the attribute value.
      * @throws InvalidParamException if the named attribute does not exist.
      * @see hasAttribute()
+     * @return $this the model instance itself.
      */
     public function setAttribute($name, $value)
     {
         if ($this->hasAttribute($name)) {
             $this->_attributes[$name] = $value;
+            return $this;
         } else {
             throw new InvalidParamException(get_class($this) . ' has no attribute named "' . $name . '".');
         }

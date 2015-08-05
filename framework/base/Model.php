@@ -684,6 +684,7 @@ class Model extends Component implements IteratorAggregate, ArrayAccess, Arrayab
      * A safe attribute is one that is associated with a validation rule in the current [[scenario]].
      * @see safeAttributes()
      * @see attributes()
+     * @return $this the model instance itself.
      */
     public function setAttributes($values, $safeOnly = true)
     {
@@ -697,6 +698,7 @@ class Model extends Component implements IteratorAggregate, ArrayAccess, Arrayab
                 }
             }
         }
+        return $this;
     }
 
     /**
