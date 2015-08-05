@@ -39,7 +39,6 @@ Html 帮助类
      `data-params='{"id":1,"name":"yii"}' data-status="ok"`。注意后者 中，一个子数组被输出为 JSON 。
     * 如果这个属性不是一个数据属性，那么值将会被 JSON-encoded。比如：`['params' => ['id' => 1, 'name' => 'yii']` 生成 `params='{"id":1,"name":"yii"}'`。
 
-
 ### 生成 CSS 类和样式 <span id="forming-css"></span>
 
 当开始构造一个 HTML 标签的属性时，我们经常需要对默认的属性进行修改。为了添加或者删除 CSS 类，你可以使用如下代码：
@@ -73,7 +72,6 @@ Html::removeCssStyle($options, ['width', 'height']);
 当使用 [[yii\helpers\Html::addCssStyle()|addCssStyle()]] 方法时，你可以指定一个和 CSS 属性相关的名值对的数组，也可以直接是一个类似 `width: 100px; height: 200px;` 的字符串。这些格式将会自动的被 [[yii\helpers\Html::cssStyleFromArray()|cssStyleFromArray()]] 和
 [[yii\helpers\Html::cssStyleToArray()|cssStyleToArray()]] 方法进行转换。方法 [[yii\helpers\Html::removeCssStyle()|removeCssStyle()]] 接收一个包含要被移除的属性数组作为参数。如果只想移除一个属性，你可以直接传递一个字符串。
 
-
 ### 标签内容的转码和解码 <span id="encoding-and-decoding-content"></span>
 
 为了让内容能够正确安全的显示，一些 HTML 特殊字符应该被转码。在 PHP 中，这个操作由 [htmlspecialchars](http://www.php.net/manual/en/function.htmlspecialchars.php) 和
@@ -92,7 +90,6 @@ $decodedUserName = Html::decode($userName);
 处理表单标签是大量的重复性劳动并且易错。因此，Yii 也提供了一系列的方法来辅助处理表单标签。
 
 > 注意： 考虑在处理 models 以及需要验证的情形下，使用 [[yii\widgets\ActiveForm|ActiveForm]] 组件。
-
 
 ### 创建表单 <span id="creating-forms"></span>
 
@@ -122,7 +119,6 @@ $decodedUserName = Html::decode($userName);
 ```
 
 上述三个方法的第一个参数为按钮的标题，第二个是标签属性。标题默认没有进行转码，如果标题是由终端用输入的，那么请自行用 [[yii\helpers\Html::encode()|Html::encode()]] 方法进行转码。
-
 
 ### 输入栏 <span id="input-fields"></span>
 
@@ -185,7 +181,6 @@ Dropdown list 和 list box 将会如下渲染：
 <?= Html::radioList('roles', [16, 42], ArrayHelper::map($roleModels, 'id', 'name')) ?>
 <?= Html::activeRadioList($user, 'role', ArrayHelper::map($roleModels, 'id', 'name')) ?>
 ```
-
 
 ### Labels 和 Errors <span id="labels-and-errors"></span>
 
@@ -283,7 +278,6 @@ generates
 ```
 
 这个方法的第一个参数同 CSS 一样用于指定外联链接。第二个参数是一个标签属性数组。同 `cssFile` 一样，你可以指定 `condtion` 配置项。
-
 
 ## 超链接 <span id="hyperlinks"></span>
 
