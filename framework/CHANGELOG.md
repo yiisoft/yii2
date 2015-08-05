@@ -1,8 +1,8 @@
 Yii Framework 2 Change Log
 ==========================
 
-2.0.6 under development
------------------------
+2.0.6 August 05, 2015
+---------------------
 
 - Bug #4763: Fixed display issue with overlapping call stack item on exception display page (cebe)
 - Bug #7305: Logging of Exception objects resulted in failure of the logger i.e. no logs being written (cebe)
@@ -15,12 +15,12 @@ Yii Framework 2 Change Log
 - Bug #8483: Sequence name in `Schema::getLastInsertId()` was not properly quoted (nineinchnick)
 - Bug #8506: Cleaning of output buffer in `Widget::run()` conflicts with `Pjax` widget which did the cleanup itself (cebe, joester89)
 - Bug #8544: Fixed `yii\db\ActiveRecord` does not update attribute specified at `optimisticLock()` after save (klimov-paul)
-- Bug #8551: `yii\pgsql\QueryBuilder::batchInsert()` may cause "undefined index" error (arkhamvm) 
+- Bug #8549: Fixed `yii\caching\FileCache` doesn't lock cache files when reading (iworker)
+- Bug #8551: `yii\pgsql\QueryBuilder::batchInsert()` may cause "undefined index" error (arkhamvm)
 - Bug #8585: Fixed `yii\helpers\Html::activeTextarea()` does not allow value overriding via options (klimov-paul)
 - Bug #8592: Fixed `yii\db\Command::getRawSql()` unable to parse params specified without colon (':') (klimov-paul)
 - Bug #8593: Fixed `yii\db\ActiveQuery` produces incorrect SQL for aggregations, when `sql` field is set (klimov-paul)
 - Bug #8595: Fixed `yii\rbac\DbManager::checkAccessFromCache()` to check against auth items loaded in cache recursively (achretien, qiangxue)
-- Bug #8549: Fixed `yii\caching\FileCache` doesn't lock cache files when reading (iworker)
 - Bug #8606: Fixed `yii\web\Response::xSendFile()` does not reset format (vyants)
 - Bug #8627: Fixed `yii\db\Migration` produces incorrect results due to table schema caching (klimov-paul)
 - Bug #8661: Fixed `yii.activeForm.js` scrolling to top (nkovacs)
@@ -48,7 +48,7 @@ Yii Framework 2 Change Log
 - Enh #7259: Added `errorAttributes` parameter to ActiveForm `afterValidate` event. Made scrolling to first error optional (nkovacs)
 - Enh #8070: `yii\console\controllers\MessageController` now sorts created messages, even if there is no new one, while saving to PHP file (klimov-paul)
 - Enh #8286: `yii\console\controllers\MessageController` improved allowing extraction of nested translator calls (klimov-paul)
-- Ehn #8373: Check also `post_max_size` parameter in `yii\validators\FileValidator::getSizeLimit()` (maxxer)
+- Enh #8373: Check also `post_max_size` parameter in `yii\validators\FileValidator::getSizeLimit()` (maxxer)
 - Enh #8415: `yii\helpers\Html` allows correct rendering of conditional comments containing `!IE` (salaros, klimov-paul)
 - Enh #8444: Added `yii\widgets\LinkPager::$linkOptions` to allow configuring HTML attributes of the `a` tags (zinzinday)
 - Enh #8486: Added support to automatically set the `maxlength` attribute for `Html::activeTextArea()` and `Html::activePassword()` (klimov-paul)
