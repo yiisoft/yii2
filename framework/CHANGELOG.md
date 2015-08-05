@@ -69,6 +69,7 @@ Yii Framework 2 Change Log
 - Enh #9249: Added `hashCallback` in `yii\web\AssetManager` to allow custom hash generation for asset directory (petrabarus)
 - Enh #9263: Avoid extra DB query in RBAC DbManager in case auth item name is empty (samdark)
 - Enh #9268: Improved display of boolean parameters in logged SQL queries (arkhamvm, samdark)
+- Enh: Improved Console helper progress bar ETA time estimation, updated only once per second to avoid flapping (cebe)
 - Chg #6354: `ErrorHandler::logException()` will now log the whole exception object instead of only its string representation (cebe)
 - Chg #8556: Extracted `yii\web\User::getAuthManager()` method (samdark)
 - Chg #9181: `yii\helpers\BaseStringHelper::truncateHtml()` is now using `runtime` directory for `HTMLPurifier` cache (webdevsega)
