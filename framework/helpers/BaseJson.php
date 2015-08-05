@@ -98,6 +98,12 @@ class BaseJson
                 throw new InvalidParamException('Invalid or malformed JSON.');
             case JSON_ERROR_UTF8:
                 throw new InvalidParamException('Malformed UTF-8 characters, possibly incorrectly encoded.');
+            case 6: //JSON_ERROR_RECURSION
+                throw new InvalidParamException('One or more recursive references in the value to be encoded.');
+            case 7: //JSON_ERROR_INF_OR_NAN
+                throw new InvalidParamException('One or more NAN or INF values in the value to be encoded.');
+            case 8: //JSON_ERROR_UNSUPPORTED_TYPE
+                throw new InvalidParamException('A value of a type that cannot be encoded was given.');
             default:
                 throw new InvalidParamException('Unknown JSON decoding error.');
         }
