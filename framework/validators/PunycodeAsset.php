@@ -19,6 +19,6 @@ class PunycodeAsset extends AssetBundle
 {
     public $sourcePath = '@bower/punycode';
     public $js = [
-        'punycode.js',
+        'punycode'.( YII_ENV_DEV ? '.js' : '.min.js' ),
     ];
 }
