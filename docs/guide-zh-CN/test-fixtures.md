@@ -109,7 +109,7 @@ class UserProfileTest extends DbTestCase
 
 在测试用例的每个测试方法运行前 `fixtures()` 方法列表返回的 Fixture 会被自动的加载，并在结束后自动的卸载。同样，如前面所述，当一个 Fixture 被加载之前，所有它依赖的 Fixture 也会被自动的加载。在上面的例子中，因为 `UserProfileFixture` 依赖于 `UserFixtrue`，当运行测试类中的任意测试方法时，两个 Fixture，`UserFixture` 和 `UserProfileFixture` 会被依序加载。
 
-当我们通过 `fixtures()` 方法指定需要加载的 Fixture 时，我们既可以使用一个类名，也可以使用一个配置数组。配置素质可以让你自定义加载的 fixture 的属性名。
+当我们通过 `fixtures()` 方法指定需要加载的 Fixture 时，我们既可以使用一个类名，也可以使用一个配置数组。配置数组可以让你自定义加载的 fixture 的属性名。
 
 你同样可以给一个 Fixture 指定一个别名（alias），在上面的例子中，`UserProfileFixture` 的别名为 `profiles` 。在测试方法中，你可以通过别名来访问一个 Fixture 对象。比如，`$this->profiles` 将会返回 `UserProfileFixture` 对象。
 
@@ -236,7 +236,7 @@ fixture，那么这些数据将应用于 `users` mongodb 集合。 为了了解�
 加载 Fixtures
 ----------------
 
-Fixture 类应该以 `Fixture` 类作为后缀。默认的 Fixtures 能在 `tests\unit\fixtures` 命名空间下被搜索到，你可以通过配置和命名行选项来更改这个行为，你能因为加载或者卸载指定它名字前面的`-`来排除一些 Fixtures，像 `-User`。
+Fixture 类应该以 `Fixture` 类作为后缀。默认的 Fixtures 能在 `tests\unit\fixtures` 命名空间下被搜索到，你可以通过配置和命名行选项来更改这个行为，你可以通过加载或者卸载指定它名字前面的`-`来排除一些 Fixtures，像 `-User`。
 
 运行如下命令去加载 Fixture：
 
@@ -316,6 +316,6 @@ yii fixture/unload "*" -DoNotUnloadThisOne
 自动生成 fixtures
 ------------------------
 
-Yii 还可以为你自动生成一些基于一些模板的 Fixtures。 你能够以不同语言格式用不同的数据生成你的Fixtures.
+Yii 还可以为你自动生成一些基于一些模板的 Fixtures。 你能够以不同语言格式用不同的数据生成你的 Fixtures。
 这些特征由 [Faker](https://github.com/fzaninotto/Faker) 库和 `yii2-faker` 扩展完成。
 关注 [guide](https://github.com/yiisoft/yii2-faker) 扩展获取更多的文档。
