@@ -271,7 +271,7 @@ class SchemaTest extends DatabaseTestCase
             'bool_col' => [
                 'type' => 'smallint',
                 'dbType' => 'tinyint(1)',
-                'phpType' => 'integer',
+                'phpType' => 'bool',
                 'allowNull' => false,
                 'autoIncrement' => false,
                 'enumValues' => null,
@@ -283,7 +283,7 @@ class SchemaTest extends DatabaseTestCase
             'bool_col2' => [
                 'type' => 'smallint',
                 'dbType' => 'tinyint(1)',
-                'phpType' => 'integer',
+                'phpType' => 'bool',
                 'allowNull' => true,
                 'autoIncrement' => false,
                 'enumValues' => null,
