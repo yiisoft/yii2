@@ -290,7 +290,7 @@ class SchemaTest extends DatabaseTestCase
                 'size' => 1,
                 'precision' => 1,
                 'scale' => null,
-                'defaultValue' => 1,
+                'defaultValue' => true,
             ],
             'ts_default' => [
                 'type' => 'timestamp',
