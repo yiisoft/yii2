@@ -1,8 +1,8 @@
 数据小部件
 ============
 
-Yii提供了一套 [widgets](structure-widgets.md) 小部件，这些小部件可以用于显示数据。
-[DetailView](#detail-view) 小部件能够用于显示一条单记录数据，
+Yii提供了一套数据小部件 [widgets](structure-widgets.md) ，这些小部件可以用于显示数据。
+[DetailView](#detail-view) 小部件能够用于显示一条记录数据，
 [ListView](#list-view) 和 [GridView](#grid-view) 小部件能够用于显示一个拥有分页、排序和过滤功能的一个列表或者表格。
 
 
@@ -38,9 +38,9 @@ echo DetailView::widget([
 ListView <a name="list-view"></a>
 --------
 
-[[yii\widgets\ListView|ListView]] 小部件用于显示 [data provider](output-data-providers.md) 提供的数据。
-每个数据模型用指定 [[yii\widgets\ListView::$itemView|view file]] 文件来渲染。
-因为它提通过开箱即用式的分页、排序以及过滤这样一些特性，所以它可以很方便地同时为最终用户显示信息和创建数据管理界面。
+[[yii\widgets\ListView|ListView]] 小部件用于显示数据提供者 [data provider](output-data-providers.md) 提供的数据。
+每个数据模型用指定的视图文件 [[yii\widgets\ListView::$itemView|view file]] 来渲染。
+因为它提供开箱即用式的（译者注：封装好的）分页、排序以及过滤这样一些特性，所以它可以很方便地为最终用户显示信息并同时创建数据管理界面。
 
 
 一个典型的用法如下例所示：
@@ -61,7 +61,7 @@ echo ListView::widget([
 ]);
 ```
 
-`_post` 视图文件可能包含如下代码：
+`_post` 视图文件可包含如下代码：
 
 
 ```php
@@ -78,11 +78,11 @@ use yii\helpers\HtmlPurifier;
 
 在上面的视图文件中，当前的数据模型 `$model` 是可用的。另外，下面的这些变量也是可用的：
 
-- `$key`：混合类型，键的值是与数据项相关联的。
-- `$index`：整型，是由数据提供者返回的数组中基于0的数据项的索引。
+- `$key`：混合类型，键的值与数据项相关联。
+- `$index`：整型，是由数据提供者返回的数组中以0起始的数据项的索引。
 - `$widget`：类型是ListView，是小部件的实例。
 
-假如你需要传递附加的数据到每一个视图中，你可以像下面这样用 [[yii\widgets\ListView::$viewParams|$viewParams]] 属性传递键值对：
+假如你需要传递附加数据到每一个视图中，你可以像下面这样用 [[yii\widgets\ListView::$viewParams|$viewParams]] 属性传递键值对：
 
 
 ```php
@@ -97,14 +97,14 @@ echo ListView::widget([
 ]);
 ```
 
-在视图中，这些附加数据也是可以作为变量来使用的。
+在视图中，上述这些附加数据也是可以作为变量来使用的。
 
 
 GridView <a name="grid-view"></a>
 --------
 
-数据网格或者网格视图小部件是Yii中最强大的部件之一。如果你需要快速建立系统的管理部分，这将非常有用。
-数据从 [data provider](output-data-providers.md) 数据提供者中取出来并且使用 [[yii\grid\GridView::columns|columns]] 在一个表格表单中渲染每一行的数据。
+数据网格或者说 GridView 小部件是Yii中最强大的部件之一。如果你需要快速建立系统的管理后台，
+GridView 非常有用。它从数据提供者 [data provider](output-data-providers.md) 中取得数据并使用 [[yii\grid\GridView::columns|columns]] 属性的一组列配置，在一个表格中渲染每一行数据。
 
 
 表中的每一行代表一个数据项的数据，并且一列通常表示该项的属性（某些列可以对应于属性或静态文本的复杂表达式）。
@@ -128,63 +128,63 @@ echo GridView::widget([
 ```
 
 上面的代码首先创建了一个数据提供者，然后使用GridView显示每一行的每个属性，每一行的数据是从数据提供者取来的。
-展现出来的表相当完美地经过排序以及分页功能的包装。
+展现出来的表格封装了排序以及分页功能。
 
 
-### Grid columns
+### 表格列
 
-表格的列是通过 [[yii\grid\Column]] 类来配置的，这个类是在网格视图配置项中的 [[yii\grid\GridView::columns|columns]] 属性配置的。
-根据不同列的类型和设置能够以不同地方式展现数据。对于默认的类 [[yii\grid\DataColumn]]，能够展现一个模型的属性，并且可以被排序和过滤。
-
-
+表格的列是通过 [[yii\grid\Column]] 类来配置的，这个类是通过 GridView 配置项中的 [[yii\grid\GridView::columns|columns]] 
+属性配置的。根据列的类别和设置的不同，各列能够以不同方式展示数据。
+默认的列类是 [[yii\grid\DataColumn]]，用于展现模型的某个属性，
+并且可以排序和过滤。
 
 ```php
 echo GridView::widget([
     'dataProvider' => $dataProvider,
     'columns' => [
         ['class' => 'yii\grid\SerialColumn'],
-        // Simple columns defined by the data contained in $dataProvider.
-        // Data from the model's column will be used.
+        // 数据提供者中所含数据所定义的简单的列
+        // 使用的是模型的列的数据
         'id',
         'username',
-        // More complex one.
+        // 更复杂的列数据
         [
-            'class' => 'yii\grid\DataColumn', // can be omitted, as it is the default
+            'class' => 'yii\grid\DataColumn', //由于是默认类型，可以省略 
             'value' => function ($data) {
-                return $data->name; // $data['name'] for array data, e.g. using SqlDataProvider.
+                return $data->name; // 如果是数组数据则为 $data['name'] ，例如，使用 SqlDataProvider 的情形。
             },
         ],
     ],
 ]);
 ```
 
-大家注意啊，假如说配置中的 [[yii\grid\GridView::columns|columns]] 部分没有被指定，那么Yii会试图展示所有可能的来自数据提供者模型的列。
+请注意，假如配置中没有指定 [[yii\grid\GridView::columns|columns]] 属性，那么Yii会试图显示数据提供者的模型中所有可能的列。
 
 
 
-### Column classes
+### 列类
 
-通过使用不同列对应的类，可以自定义网格列：
+通过使用不同类，网格列可以自定义：
 
 ```php
 echo GridView::widget([
     'dataProvider' => $dataProvider,
     'columns' => [
         [
-            'class' => 'yii\grid\SerialColumn', // <-- here
-            // you may configure additional properties here
+            'class' => 'yii\grid\SerialColumn', // <-- 这里
+            // 你还可以在此配置其他属性
         ],
 ```
 
-接下来我们将回顾一下Yii提供的针对列的类，此外你还可以创建你自己的对应列的类。
+除了我们下面将要展开讨论的Yii自带的列类，你还可以创建你自己的列类。
 
-每个列类是从 [[yii\grid\Column]] 扩展而来，以便于当配置网格列的时候，你可以设置一写公共的选项。
+每个列类是从 [[yii\grid\Column]] 扩展而来，
+从而在配置网格列的时候，你可以设置一些公共的选项。
 
-
-- [[yii\grid\Column::header|header]] 允许为头部的一行设置内容。
-- [[yii\grid\Column::footer|footer]] 允许为尾部的一行设置内容。
-- [[yii\grid\Column::visible|visible]] 定义某个列是否应该可见
-- [[yii\grid\Column::content|content]] 允许你通过一个有效的PHP回调来为一行返回数据，格式如下：
+- [[yii\grid\Column::header|header]] 允许为头部行设置内容。
+- [[yii\grid\Column::footer|footer]] 允许为尾部行设置内容。
+- [[yii\grid\Column::visible|visible]] 定义某个列是否可见
+- [[yii\grid\Column::content|content]] 允许你传递一个有效的PHP回调来为一行返回数据，格式如下：
 
   ```php
   function ($model, $key, $index, $column) {
@@ -192,7 +192,7 @@ echo GridView::widget([
   }
   ```
   
-你可以通过数组来指定各种容器式的HTML选项：
+你可以传递数组来指定各种容器式的HTML选项：
 
 - [[yii\grid\Column::headerOptions|headerOptions]]
 - [[yii\grid\Column::footerOptions|footerOptions]]
@@ -200,12 +200,12 @@ echo GridView::widget([
 - [[yii\grid\Column::contentOptions|contentOptions]]
 
 
-#### Data column <span id="data-column"></span>
+#### 数据列 <span id="data-column"></span>
 
-[[yii\grid\DataColumn|Data column]] 用于显示和排序数据。这是默认的列的类型，所以使用它来指定类的时候可以省略。
+[[yii\grid\DataColumn|Data column]] 用于显示和排序数据。这是默认的列的类型，
+所以在使用 DataColumn 为列类时，可省略类的指定（译者注：不需要'class'选项的意思）。
 
-
-数据列主要通过 [[yii\grid\DataColumn::format|format]] 属性来设置的。它的值对应于 `formatter` [application component](structure-application-components.md) 应用组件里面的一些方法，
+数据列的主要配置项是 [[yii\grid\DataColumn::format|format]] 属性。它的值对应于 `formatter` [application component](structure-application-components.md) 应用组件里面的一些方法，
 默认是使用 [[\yii\i18n\Formatter|Formatter]] 应用组件：
 
 ```php
@@ -224,18 +224,18 @@ echo GridView::widget([
 ```
 
 在上面的代码中，`text` 对应于 [[\yii\i18n\Formatter::asText()]]。列的值作为第一个参数传递。在第二列的定义中，`date` 对应于 [[\yii\i18n\Formatter::asDate()]]。
-当'php:Y-m-d'作为第二个参数值的时候，该列的值也是通过第一个参数来传递的。
+同样地，列值也是通过第一个参数传递的，而 'php:Y-m-d' 用作第二个参数的值。
 
 
-对于一系列可用的格式化组件可以参考 [section about Data Formatting](output-formatting.md)。
+可用的格式化方法列表，请参照 [section about Data Formatting](output-formatting.md)。
 
-对于配置数据列，还有一个快捷的格式化方法，具体已经在 [[yii\grid\GridView::columns|columns]] API文档中有详细描述。
+数据列配置，还有一个”快捷格式化串”的方法，详情见API文档 [[yii\grid\GridView::columns|columns]]。
+（译者注：举例说明， `"name:text:Name"` 快捷格式化串，表示列名为 `name` 格式为 `text` 显示标签是 `Name`） 
 
 
+#### 动作列 
 
-#### Action column
-
-[[yii\grid\ActionColumn|Action column]] 用于显示一些动作按钮诸如每一行的更新、删除操作。
+[[yii\grid\ActionColumn|Action column]] 用于显示一些动作按钮，如每一行的更新、删除操作。
 
 ```php
 echo GridView::widget([
@@ -247,17 +247,17 @@ echo GridView::widget([
         ],
 ```
 
-你可以配置的可用属性如下：
+可配置的属性如下：
 
-- [[yii\grid\ActionColumn::controller|controller]] 是一个应该执行一些动作的控制器的ID。
-  如果没有设置，它将使用当前正在执行的控制器。
-- [[yii\grid\ActionColumn::template|template]] 定义了用于在动作列中构建了每个单元格中的模板。
-  在大括号内的令牌被当做是控制器的动作ID (在动作列的上下文中也称作*button names*)。
-  它们将会被对应的按钮渲染回调做替换，这些回调是在 [[yii\grid\ActionColumn::$buttons|buttons]] 中指定的。
-  例如，令牌 `{view}` 将被 `buttons['view']` 回调的结果所替换。
-  假如说没有回调，令牌将被一个空字符串替换。默认的令牌有 `{view} {update} {delete}`。
-- [[yii\grid\ActionColumn::buttons|buttons]] 是一个按钮渲染回调数组。这些数组的键是按钮的名字（没有花括号），并且值是对应的按钮渲染回调函数。
-  这些回调函数的使用应该像下面这种结构：
+- [[yii\grid\ActionColumn::controller|controller]] 是应该执行这些动作的控制器ID。
+  如果没有设置，它将使用当前控制器。
+- [[yii\grid\ActionColumn::template|template]] 定义在动作列中使用的构建每个单元格的模板。
+  在大括号内括起来的的令牌被当做是控制器的 action 方法ID (在动作列的上下文中也称作*按钮名称*)。
+  它们将会被 [[yii\grid\ActionColumn::$buttons|buttons]] 中指定的对应按钮的关联的渲染回调函数替代。
+  例如，令牌 `{view}` 将被 `buttons['view']` 关联的渲染回调函数的返回结果所替换。
+  如果没有找到回调函数，令牌将被替换成一个空串。默认的令牌有 `{view} {update} {delete}` 。
+- [[yii\grid\ActionColumn::buttons|buttons]] 是一个按钮的渲染回调数数组。数组中的键是按钮的名字（没有花括号），并且值是对应的按钮渲染回调函数。
+  这些回调函数须使用下面这种原型：
 
   ```php
   function ($url, $model, $key) {
@@ -265,19 +265,19 @@ echo GridView::widget([
   }
   ```
 
-  在上面的代码中，`$url` 是列为按钮创建的URL，`$model`是正在为当前行渲染的模型对象，并且 `$key` 是在数据提供者数组中模型的键。
+  在上面的代码中，`$url` 是列为按钮创建的URL，`$model`是当前要渲染的模型对象，并且 `$key` 是在数据提供者数组中模型的键。
 
 
 - [[yii\grid\ActionColumn::urlCreator|urlCreator]] 是使用指定的模型信息来创建一个按钮URL的回调函数。
-  回调的签名应该和 [[yii\grid\ActionColumn::createUrl()]] 是一样的。
-  假如这个属性没有设置，按钮的URLs将使用 [[yii\grid\ActionColumn::createUrl()]] 来创建。
+该回调的原型和 [[yii\grid\ActionColumn::createUrl()]] 是一样的。
+假如这个属性没有设置，按钮的URL将使用 [[yii\grid\ActionColumn::createUrl()]] 来创建。
 
 
-#### Checkbox column
+#### 复选框列 
 
-[[yii\grid\CheckboxColumn|Checkbox column]] 展现一列的复选框。
+[[yii\grid\CheckboxColumn|Checkbox column]] 显示一个复选框列。
 
-为了添加复选框的一列到网格视图中，将它添加到 [[yii\grid\GridView::$columns|columns]] 中的配置如下：
+想要添加一个复选框到网格视图中，将它添加到 [[yii\grid\GridView::$columns|columns]] 的配置中，如下所示：
 
 ```php
 echo GridView::widget([
@@ -286,22 +286,22 @@ echo GridView::widget([
         // ...
         [
             'class' => 'yii\grid\CheckboxColumn',
-            // you may configure additional properties here
+            // 你可以在这配置更多的属性
         ],
     ],
 ```
 
-用户可能通过点击一些复选框来选择网格中的一些行。被选择的行可能通过调用下面的JavaScript代码来获得：
+用户可点击复选框来选择网格中的一些行。被选择的行可通过调用下面的JavaScript代码来获得：
 
 
 ```javascript
 var keys = $('#grid').yiiGridView('getSelectedRows');
-// keys is an array consisting of the keys associated with the selected rows
+// keys 为一个由与被选行相关联的键组成的数组
 ```
 
-#### Serial column
+#### 序号列 
 
-[[yii\grid\SerialColumn|Serial column]] 渲染以 `1` 开头并且靠前的行数。
+[[yii\grid\SerialColumn|Serial column]] 渲染行号，以 `1` 起始并自动增长。
 
 使用方法和下面的例子一样简单：
 
@@ -314,18 +314,18 @@ echo GridView::widget([
 ```
 
 
-### Sorting data
+### 数据排序
 
 > 注意：这部分正在开发中。
 >
 > - https://github.com/yiisoft/yii2/issues/1576
 
-### Filtering data
+### 数据过滤
 
-用于过滤数据的网格视图需要一个有输入表单，过滤表单形式的 [model](structure-models.md) 模型，并且能够调整数据提供者查询方面的搜索条件。
-通常做法是使用 [active records](db-active-record.md) 活动记录来创建一个能够提供所需功能的搜索模型类（可以使用 [Gii](start-gii.md) 来生成）。
-这个类为搜索定义了验证规则并且提供了一个将会返回数据提供者的 `search()` 方法。
-
+为了过滤数据的 GridView 需要一个模型 [model](structure-models.md) 来 从过滤表单接收数据，以及调整数据提供者的查询对象，以满足搜索条件。
+使用活动记录 [active records](db-active-record.md) 时，通常的做法是
+创建一个能够提供所需功能的搜索模型类（可以使用 [Gii](start-gii.md) 来生成）。
+这个类为搜索定义了验证规则并且提供了一个将会返回数据提供者对象的 `search()` 方法。
 
 
 为了给 `Post` 模型增加搜索能力，我们可以像下面的例子一样创建 `PostSearch` 模型：
@@ -343,7 +343,7 @@ class PostSearch extends Post
 {
     public function rules()
     {
-        // only fields in rules() are searchable
+        // 只有在 rules() 函数中声明的字段才可以搜索
         return [
             [['id'], 'integer'],
             [['title', 'creation_date'], 'safe'],
@@ -352,7 +352,7 @@ class PostSearch extends Post
 
     public function scenarios()
     {
-        // bypass scenarios() implementation in the parent class
+        // 旁路在父类中实现的 scenarios() 函数
         return Model::scenarios();
     }
 
@@ -364,12 +364,12 @@ class PostSearch extends Post
             'query' => $query,
         ]);
 
-        // load the search form data and validate
+        // 从参数的数据中加载过滤条件，并验证
         if (!($this->load($params) && $this->validate())) {
             return $dataProvider;
         }
 
-        // adjust the query by adding the filters
+        // 增加过滤条件来调整查询对象
         $query->andFilterWhere(['id' => $this->id]);
         $query->andFilterWhere(['like', 'title', $this->title])
               ->andFilterWhere(['like', 'creation_date', $this->creation_date]);
@@ -380,7 +380,7 @@ class PostSearch extends Post
 
 ```
 
-你可以在控制器中使用这个方法为网格视图获取数据提供者：
+你可以在控制器中使用如下方法为网格视图获取数据提供者：
 
 ```php
 $searchModel = new PostSearch();
@@ -392,7 +392,7 @@ return $this->render('myview', [
 ]);
 ```
 
-然后你在视图中分配 `$dataProvider` 和 `$searchModel` 这两个变量到网格视图小部件中：
+然后你在视图中将 `$dataProvider` 和 `$searchModel` 对象分派给 GridView 小部件：
 
 ```php
 echo GridView::widget([
@@ -405,16 +405,16 @@ echo GridView::widget([
 ```
 
 
-### Working with model relations
+### 处理关系型模型
 
-当我们在一个网格视图中展现活动数据的时候，你可能会遇到这种情况，就是显示关联的列的值，诸如：提交作者的名字而非仅仅是他的 `id`。
-当 `Post` 模型有一个关联的属性名叫 `author` 并且作者模型有一个属性叫 `name`，那么你可以通过在 [[yii\grid\GridView::$columns]] 中定义属性名为 `author.name` 来解决上面的情况。
-网格视图将显示作者名，但是默认是不启用排序和过滤的。
-你不得不调整 `PostSearch` 模型，在最后一节中已经介绍了如何添加此功能。
+当我们在一个网格视图中显示活动数据的时候，你可能会遇到这种情况，就是显示关联表的列的值，例如：发帖者的名字，而不是显示他的 `id`。
+当 `Post` 模型有一个关联的属性名（译者注： `Post` 模型中用 `hasOne` 定义 `getAuthor()` 函数）
+叫 `author` 并且作者模型（译者注：本例的作者模型是 `users` ）有一个属性叫 `name`，那么你可以通过在 [[yii\grid\GridView::$columns]] 
+中定义属性名为 `author.name` 来处理。这时的网格视图能显示作者名了，但是默认是不支持按作者名排序和过滤的。
+你需要调整上个章节介绍的 `PostSearch` 模型，以添加此功能。
 
 
-
-为了使关联列能够排序，你不得不连表，并且添加排序规则到数据提供者的排序组件中：
+为了使关联列能够排序，你需要连接关系表，以及添加排序规则到数据提供者的排序组件中：
 
 
 ```php
@@ -423,10 +423,10 @@ $dataProvider = new ActiveDataProvider([
     'query' => $query,
 ]);
 
-// join with relation `author` that is a relation to the table `users`
-// and set the table alias to be `author`
+// 连接与 `users` 表相关联的 `author` 表
+// 并将 `users` 表的别名设为 `author`
 $query->joinWith(['author' => function($query) { $query->from(['author' => 'users']); }]);
-// enable sorting for the related column
+// 使得关联字段可以排序
 $dataProvider->sort->attributes['author.name'] = [
     'asc' => ['author.name' => SORT_ASC],
     'desc' => ['author.name' => SORT_DESC],
@@ -435,12 +435,12 @@ $dataProvider->sort->attributes['author.name'] = [
 // ...
 ```
 
-过滤也需要像上面一样调用joinWith方法。你也需要在属性中定义可查询的列和规则，就像下面这样：
+过滤也需要像上面一样调用joinWith方法。你也需要在属性和规则中定义该列，就像下面这样：
 
 ```php
 public function attributes()
 {
-    // add related fields to searchable attributes
+    // 添加关联字段到可搜索属性集合
     return array_merge(parent::attributes(), ['author.name']);
 }
 
@@ -453,25 +453,25 @@ public function rules()
 }
 ```
 
-然后在 `search()` 方法中，你仅需要添加另外一个过滤条件：
+然后在 `search()` 方法中，你仅需要添加一个额外过滤条件：
 
 ```php
 $query->andFilterWhere(['LIKE', 'author.name', $this->getAttribute('author.name')]);
 ```
 
-> 信息：在上面的代码中，我们使用相同的字符串作为关联名称和表的别名；
-> 然而，当你的表别名和关联名称不相同的时候，你将不得不注意在哪使用你的别名，在哪使用你的关联名称。
-> 一个简单的规则是在每个地方使用别名来构建数据库查询和所有其他地方定义（诸如：`attributes()` 和 `rules()`）的关联名称。
+> 信息：在上面的代码中，我们使用相同的字符串作为关联名称和表别名；
+> 然而，当你的表别名和关联名称不相同的时候，你得注意在哪使用你的别名，在哪使用你的关联名称。
+> 一个简单的规则是在每个构建数据库查询的地方使用别名，而在所有其他和定义相关的诸如：`attributes()` 和 `rules()` 等地方使用关联名称。
 > 
 >
-> 例如，假如你使用别名 `au` 作为作者关系表，那么联查语句就像下面这样：
+> 例如，你使用 `au` 作为作者关系表的别名，那么联查语句就要写成像下面这样：
 >
 > ```php
 > $query->joinWith(['author' => function($query) { $query->from(['au' => 'users']); }]);
 > ```
-> 当别名已经在关系定义中定义了，也可以直接调用 `$query->joinWith(['author']);`。
+> 当别名已经在关联函数中定义了时，也可以只调用 `$query->joinWith(['author']);`。
 >
-> 在筛选条件中，别名必须使用，但属性名称保持不变：
+> 在过滤条件中，别名必须使用，但属性名称保持不变：
 >
 > ```php
 > $query->andFilterWhere(['LIKE', 'au.name', $this->getAttribute('author.name')]);
@@ -496,10 +496,10 @@ $query->andFilterWhere(['LIKE', 'author.name', $this->getAttribute('author.name'
 > 信息：更多关于 `joinWith` 和在后台执行查询的相关信息，
 > 可以查看 [active record docs on joining with relations](db-active-record.md#joining-with-relations)。
 
-#### Using SQL views for filtering, sorting and displaying data
+#### SQL视图用于过滤、排序和显示数据
 
-还有另外一种方法可以更快、更有用 - SQL 视图。例如，假如我们需要展示网格视图附带着用户和他们的简介，我们可以这样做：
-
+还有另外一种方法可以更快、更有用 - SQL 视图。例如，我们要在 `GridView` 
+中显示用户和他们的简介，可以这样创建 SQL 视图：
 
 ```sql
 CREATE OR REPLACE VIEW vw_user_info AS
@@ -508,7 +508,7 @@ CREATE OR REPLACE VIEW vw_user_info AS
     WHERE user.id = user_profile.user_id
 ```
 
-然后你需要创建活动记录代表这个视图：
+然后你需要创建活动记录模型来代表这个视图：
 
 ```php
 
@@ -538,7 +538,7 @@ class UserView extends ActiveRecord
     public function rules()
     {
         return [
-            // define here your rules
+            // 在这定义你的规则
         ];
     }
 
@@ -548,7 +548,7 @@ class UserView extends ActiveRecord
     public static function attributeLabels()
     {
         return [
-            // define here your attribute labels
+            // 在这定义你的属性标签
         ];
     }
 
@@ -556,26 +556,26 @@ class UserView extends ActiveRecord
 }
 ```
 
-之后你可以使用这个UserView活动记录和搜索模型，没有附加的排序和过滤属性的规范。
-所有属性将很好地工作。请注意，这种方法有利有弊：
+之后你可以使用这个 UserView 活动记录和搜索模型，无需附加的排序和过滤属性的规则。
+所有属性都可开箱即用。请注意，这种方法有利有弊：
 
-- 你不需要指定不同排序和过滤条件。一切都很完美地运转；
+- 你不需要指定不同排序和过滤条件，一切都包装好了；
 - 它可以更快，因为数据的大小，SQL查询的执行（对于每个关联数据你都不需要额外的查询）都得到优化；
-- 因为在SQL视图中这仅仅是一个简单的映射UI，所以在你的实体中，它可能缺乏一些领域的逻辑性，所以，假如你有一些方法诸如 `isActive`、`isDeleted` 或者其他一些影响到UI的方法，
+- 因为在SQL视图中这仅仅是一个简单的映射UI，所以在你的实体中，它可能缺乏某方面的逻辑，所以，假如你有一些诸如 `isActive`、`isDeleted` 或者其他影响到UI的方法，
   你也需要在这个类中复制他们。
 
 
-### Multiple GridViews on one page
+### 单个页面多个网格视图部件
 
-你可以在一个单独页面中使用多个网格视图，但是一些额外的配置还是有必要的，为的就是它们相互之间互不干扰。
-当使用多个网格视图实例的时候，你必须要为生成的排序和分页链接配置不同的参数名，以便于每个网格视图有它们各自独立的排序和分页。
+你可以在一个单独页面中使用多个网格视图，但是一些额外的配置是必须的，为的就是它们相互之间不干扰。
+当使用多个网格视图实例的时候，你必须要为生成的排序和分页对象配置不同的参数名，以便于每个网格视图有它们各自独立的排序和分页。
 你可以通过设置 [[yii\data\Sort::sortParam|sortParam]] 和 [[yii\data\Pagination::pageParam|pageParam]]，对应于数据提供者的
 [[yii\data\BaseDataProvider::$sort|sort]] 和 [[yii\data\BaseDataProvider::$pagination|pagination]] 实例。
 
 
 
 
-假如我们想要列出 `Post` 和 `User模型，这两个模型已经在 `$userProvider` 和 `$postProvider` 这两个数据提供者中准备好，
+假如我们想要同时显示 `Post` 和 `User模型，这两个模型已经在 `$userProvider` 和 `$postProvider` 这两个数据提供者中准备好，
 具体做法如下：
 
 ```php
