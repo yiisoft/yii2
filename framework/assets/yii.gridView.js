@@ -86,11 +86,18 @@
             var settings = gridData[$grid.attr('id')].settings;
             var data = {};
             $.each($(settings.filterSelector).serializeArray(), function () {
-                data[this.name] = this.value;
+                if (this.name.indexOf('[]') < 0) {
+                    data[this.name] = this.value;
+                } else {
+                    if (data[this.name] === undefined) {
+                        data[this.name] = [];
+                    }
+                    data[this.name].push(this.value);
+                }
             });
 
             $.each(yii.getQueryParams(settings.filterUrl), function (name, value) {
-                if (data[name] === undefined) {
+                if (data[name] === undefined && !$.isArray(value)) {
                     data[name] = value;
                 }
             });
@@ -101,7 +108,14 @@
             $grid.find('form.gridview-filter-form').remove();
             var $form = $('<form action="' + url + '" method="get" class="gridview-filter-form" style="display:none" data-pjax></form>').appendTo($grid);
             $.each(data, function (name, value) {
-                $form.append($('<input type="hidden" name="t" value="" />').attr('name', name).val(value));
+                var input = $('<input type="hidden" name="t" value="" />').attr('name', name);
+                if ($.isArray(value)) {
+                    $.each(value, function (index) {
+                        $form.append(input.clone().val(value[index]));
+                    });
+                } else {
+                    $form.append(input.val(value));
+                }
             });
             
             event = $.Event(gridEvents.beforeFilter);
