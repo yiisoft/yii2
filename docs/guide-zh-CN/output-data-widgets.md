@@ -575,7 +575,7 @@ class UserView extends ActiveRecord
 
 
 
-假如我们想要同时显示 `Post` 和 `User模型，这两个模型已经在 `$userProvider` 和 `$postProvider` 这两个数据提供者中准备好，
+假如我们想要同时显示 `Post` 和 `User` 模型，这两个模型已经在 `$userProvider` 和 `$postProvider` 这两个数据提供者中准备好，
 具体做法如下：
 
 ```php
