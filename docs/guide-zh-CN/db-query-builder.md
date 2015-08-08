@@ -2,7 +2,7 @@
 =============
 
 查询构建器建立在 [Database Access Objects](db-dao.md) 基础之上，可让你创建
-程序化的、DBMS无关的SQL语句。相比较于写原生的SQL语句，查询构建器可以帮你
+程序化的、DBMS无关的SQL语句。相比于原生的SQL语句，查询构建器可以帮你
 写出可读性更强的SQL相关的代码，并生成安全性更强的SQL语句。
 
 使用查询构建器通常包含以下两个步骤：
@@ -42,14 +42,14 @@ LIMIT 10
 为了创建一个 [[yii\db\Query]] 对象，你需要调用不同的查询构建方法来代表SQL语句的不同字句。
 这些方法的名称集成了在SQL语句相应字句中使用的关键字。例如，为了指定 SQL 语句当中的
 `FROM` 子句，你应该调用 `from()` 方法。所有的查询构建器方法返回的是查询对象本身，
-也就是说，你可以把多个方法的条用串联起来。
+也就是说，你可以把多个方法的调用串联起来。
 
 接下来，我们会对这些查询构建器方法进行一一讲解：
 
 
 ### [[yii\db\Query::select()|select()]] <span id="select"></span>
 
-[[yii\db\Query::select()|select()]] 方法用来指定 SQL 语句当中的 `SELECT` 字句。
+[[yii\db\Query::select()|select()]] 方法用来指定 SQL 语句当中的 `SELECT` 子句。
 你可以像下面的例子一样使用一个数组或者字符串来定义需要查询的字段。当 SQL 语句
 是由查询对象生成的时候，被查询的字段名称将会自动的被引号括起来。
  
@@ -79,7 +79,7 @@ $query->select('user.id AS user_id, email');
 $query->select(['user_id' => 'user.id', 'email']);
 ```
 
-如果你在组建查询时没有调用 [[yii\db\Query::select()|select()]] 方法，那么选择的是 `*` ，
+如果你在组建查询时没有调用 [[yii\db\Query::select()|select()]] 方法，那么选择的将是 `'*'` ，
 也即选取的是所有的字段。
 
 除了字段名称以外，你还可以选择数据库的表达式。当你使用到包含逗号的数据库表达式的时候，
@@ -99,7 +99,7 @@ $subQuery = (new Query())->select('COUNT(*)')->from('user');
 $query = (new Query())->select(['id', 'count' => $subQuery])->from('post');
 ```
 
-你应该调用 [[yii\db\Query::distinct()|distinct()]] 方法来排除重复行，如下所示：
+你应该调用 [[yii\db\Query::distinct()|distinct()]] 方法来去除重复行，如下所示：
 
 ```php
 // SELECT DISTINCT `user_id` ...
@@ -163,7 +163,7 @@ $query->from(['u' => $subQuery]);
 
 #### 字符串格式 <span id="string-format"></span>
 
-在定义非常简单的查询条件的时候，字符串格式是合适的。它看起来和原生 SQL 语句差不多。例如：
+在定义非常简单的查询条件的时候，字符串格式是最合适的。它看起来和原生 SQL 语句差不多。例如：
 
 ```php
 $query->where('status=1');
@@ -191,7 +191,7 @@ $query->where('status=:status')
 
 #### 哈希格式 <span id="hash-format"></span>
 
-哈希格式最适合用来指定多个 `AND` 串联起来的简单的等于断言子条件。
+哈希格式最适合用来指定多个 `AND` 串联起来的简单的"等于断言"子条件。
 它是以数组的形式来书写的，数组的键表示字段的名称，而数组的值则表示
 这个字段需要匹配的值。例如：
 
@@ -313,7 +313,7 @@ if (!empty($search)) {
 
 #### 过滤条件 <span id="filter-conditions"></span>
 
-当部分 `WHERE` 条件来自于用户的输入时，你通常需要忽略用户输入的空值。
+当 `WHERE` 条件来自于用户的输入时，你通常需要忽略用户输入的空值。
 例如，在一个可以通过用户名或者邮箱搜索的表单当中，用户名或者邮箱
 输入框没有输入任何东西，这种情况下你想要忽略掉对应的搜索条件，
 那么你就可以使用 [[yii\db\Query::filterWhere()|filterWhere()]] 方法来实现这个目的：
@@ -327,7 +327,7 @@ $query->filterWhere([
 ```
 
 [[yii\db\Query::filterWhere()|filterWhere()]] 和 [[yii\db\Query::where()|where()]] 唯一的不同就在于，前者
-将忽略在条件当中的[哈希格式](#hash-format)的空值。所以如果 `$email` 为空而 `$username` 
+将忽略在条件当中的[hash format](#hash-format)的空值。所以如果 `$email` 为空而 `$username` 
 不为空，那么上面的代码最终将生产如下 SQL `...WHERE username=:username`。 
 
 > 提示：当一个值为 null、空数组、空字符串或者一个只包含空白字符时，那么它将被判定为空值。
@@ -576,8 +576,8 @@ $rows = $command->queryAll();
 ### 索引查询结果 <span id="indexing-query-results"></span>
 
 当你在调用 [[yii\db\Query::all()|all()]] 方法时，它将返回一个以连续的整型数值为索引的数组。
-而有时候你可能希望使用一个特定的字段或者表达式的值来作为索引结果集数组。那么你可以在 [[yii\db\Query::all()|all()]] 
-前使用 [[yii\db\Query::indexBy()|indexBy()]] 方法来达到这个目的。
+而有时候你可能希望使用一个特定的字段或者表达式的值来作为索引结果集数组。那么你可以在调用 [[yii\db\Query::all()|all()]] 
+之前使用 [[yii\db\Query::indexBy()|indexBy()]] 方法来达到这个目的。
 例如，
 
 ```php
@@ -599,8 +599,8 @@ $query = (new \yii\db\Query())
     })->all();
 ```
 
-该匿名函数将带有一个包含了当前行的数据的 `$row` 参数，并且返回用作当前航索引的
-标量值（译者注：就是简单的数值或者字符串，或者不是复杂结构如数组等）。
+该匿名函数将带有一个包含了当前行的数据的 `$row` 参数，并且返回用作当前行索引的
+标量值（译者注：就是简单的数值或者字符串，而不是其他复杂结构，例如数组）。
 
 
 ### 批处理查询 <span id="batch-query"></span>
@@ -631,7 +631,7 @@ foreach ($query->each() as $user) {
 
 [[yii\db\Query::batch()]] 和 [[yii\db\Query::each()]] 方法将会返回一个实现了`Iterator` 
 接口 [[yii\db\BatchQueryResult]]  的对象，可以用在 `foreach` 结构当中使用。在第一次迭代取数据的时候，
-数据库会有一个 SQL 查询，然后在剩下的迭代中，将直接从结果集中批量获取数据。默认情况下，
+数据库会执行一次 SQL 查询，然后在剩下的迭代中，将直接从结果集中批量获取数据。默认情况下，
 一批的大小为 100，也就意味着一批获取的数据是 100 行。你可以通过给 `batch()` 
 或者 `each()` 方法的第一个参数传值来改变每批行数的大小。
 
