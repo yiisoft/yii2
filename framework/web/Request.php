@@ -133,6 +133,13 @@ class Request extends \yii\base\Request
      */
     public $cookieValidationKey;
     /**
+     * @var array a list of cookie names which should not be validated in case [[enableCookieValidation]] is enabled.
+     * This feature is useful in case an application depends on cookie validation (eg for auth related cookies), but does not
+     * do so for some specific unsecure cookies: For example, cookies set on the client side via JavaScript.
+     * @since 2.0.7
+     */
+    public $cookieValidationWhitelist = [];
+    /**
      * @var string the name of the POST parameter that is used to indicate if a request is a PUT, PATCH or DELETE
      * request tunneled through POST. Defaults to '_method'.
      * @see getMethod()
@@ -168,7 +175,17 @@ class Request extends \yii\base\Request
      * @var HeaderCollection Collection of request headers.
      */
     private $_headers;
-
+    
+    /**
+     * Initializes the application component.
+     */
+    public function init()
+    {
+        parent::init();
+        if ($this->enableCookieValidation && empty($this->cookieValidationKey)) {
+            throw new InvalidConfigException(sprintf('%1$s::cookieValidationKey must be configured with a secret key because %1$s::enableCookieValidation is enabled.', get_class($this)));
+        }
+    }
 
     /**
      * Resolves the current request into a route and the associated parameters.
@@ -1209,42 +1226,34 @@ class Request extends \yii\base\Request
     /**
      * Converts `$_COOKIE` into an array of [[Cookie]].
      * @return array the cookies obtained from request
-     * @throws InvalidConfigException if [[cookieValidationKey]] is not set when [[enableCookieValidation]] is true
      */
     protected function loadCookies()
     {
         $cookies = [];
-        if ($this->enableCookieValidation) {
-            if ($this->cookieValidationKey == '') {
-                throw new InvalidConfigException(get_class($this) . '::cookieValidationKey must be configured with a secret key.');
-            }
-            foreach ($_COOKIE as $name => $value) {
+        foreach ($_COOKIE as $name => $value) {
+            if ($this->enableCookieValidation && !in_array((string)$name, $this->cookieValidationWhitelist, true)) {
                 if (!is_string($value)) {
                     continue;
                 }
+                
                 $data = Yii::$app->getSecurity()->validateData($value, $this->cookieValidationKey);
                 if ($data === false) {
                     continue;
                 }
+                
                 $data = @unserialize($data);
                 if (is_array($data) && isset($data[0], $data[1]) && $data[0] === $name) {
-                    $cookies[$name] = new Cookie([
-                        'name' => $name,
-                        'value' => $data[1],
-                        'expire' => null,
-                    ]);
+                    $value = $data[1];
                 }
             }
-        } else {
-            foreach ($_COOKIE as $name => $value) {
-                $cookies[$name] = new Cookie([
-                    'name' => $name,
-                    'value' => $value,
-                    'expire' => null,
-                ]);
-            }
+            
+            $cookies[$name] = new Cookie([
+                'name' => $name,
+                'value' => $value,
+                'expire' => null,
+            ]);
         }
-
+        
         return $cookies;
     }
 
