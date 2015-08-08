@@ -555,6 +555,7 @@ class Session extends Component implements \IteratorAggregate, \ArrayAccess, \Co
      */
     public function get($key, $defaultValue = null)
     {
+        if(!$this->getHasSessionId() && !$this->getIsActive()) return $defaultValue;
         $this->open();
         return isset($_SESSION[$key]) ? $_SESSION[$key] : $defaultValue;
     }
@@ -606,6 +607,7 @@ class Session extends Component implements \IteratorAggregate, \ArrayAccess, \Co
      */
     public function has($key)
     {
+        if(!$this->getHasSessionId() && !$this->getIsActive()) return false;
         $this->open();
         return isset($_SESSION[$key]);
     }
