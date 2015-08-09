@@ -36,7 +36,7 @@ class UrlRuleTest extends TestCase
     public function testParseRequest()
     {
         $manager = new UrlManager(['cache' => null]);
-        $request = new Request(['hostInfo' => 'http://en.example.com']);
+        $request = $this->getRequest(['hostInfo' => 'http://en.example.com']);
         $suites = $this->getTestsForParseRequest();
         foreach ($suites as $i => $suite) {
             list ($name, $config, $tests) = $suite;

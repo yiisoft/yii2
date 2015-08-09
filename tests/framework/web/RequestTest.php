@@ -17,7 +17,7 @@ class RequestTest extends TestCase
 {
     public function testParseAcceptHeader()
     {
-        $request = new Request;
+        $request = $this->getRequest();
 
         $this->assertEquals([], $request->parseAcceptHeader(' '));
 
@@ -44,37 +44,37 @@ class RequestTest extends TestCase
             'language' => 'en',
         ]);
 
-        $request = new Request();
+        $request = $this->getRequest();
         $request->acceptableLanguages = [];
         $this->assertEquals('en', $request->getPreferredLanguage());
 
-        $request = new Request();
+        $request = $this->getRequest();
         $request->acceptableLanguages = ['de'];
         $this->assertEquals('en', $request->getPreferredLanguage());
 
-        $request = new Request();
+        $request = $this->getRequest();
         $request->acceptableLanguages = ['en-us', 'de', 'ru-RU'];
         $this->assertEquals('en', $request->getPreferredLanguage(['en']));
 
-        $request = new Request();
+        $request = $this->getRequest();
         $request->acceptableLanguages = ['en-us', 'de', 'ru-RU'];
         $this->assertEquals('de', $request->getPreferredLanguage(['ru', 'de']));
         $this->assertEquals('de-DE', $request->getPreferredLanguage(['ru', 'de-DE']));
 
-        $request = new Request();
+        $request = $this->getRequest();
         $request->acceptableLanguages = ['en-us', 'de', 'ru-RU'];
         $this->assertEquals('de', $request->getPreferredLanguage(['de', 'ru']));
 
-        $request = new Request();
+        $request = $this->getRequest();
         $request->acceptableLanguages = ['en-us', 'de', 'ru-RU'];
         $this->assertEquals('ru-ru', $request->getPreferredLanguage(['ru-ru']));
 
-        $request = new Request();
+        $request = $this->getRequest();
         $request->acceptableLanguages = ['en-us', 'de'];
         $this->assertEquals('ru-ru', $request->getPreferredLanguage(['ru-ru', 'pl']));
         $this->assertEquals('ru-RU', $request->getPreferredLanguage(['ru-RU', 'pl']));
 
-        $request = new Request();
+        $request = $this->getRequest();
         $request->acceptableLanguages = ['en-us', 'de'];
         $this->assertEquals('pl', $request->getPreferredLanguage(['pl', 'ru-ru']));
     }
@@ -83,7 +83,7 @@ class RequestTest extends TestCase
     {
         $this->mockWebApplication();
 
-        $request = new Request();
+        $request = $this->getRequest();
         $request->enableCsrfCookie = false;
 
         $token = $request->getCsrfToken();
@@ -107,7 +107,7 @@ class RequestTest extends TestCase
             ]
         ]);
 
-        $request = new Request();
+        $request = $this->getRequest();
         $request->pathInfo = 'posts';
 
         $_GET['page'] = 1;
@@ -127,7 +127,7 @@ class RequestTest extends TestCase
 
         unset($_GET['page']);
 
-        $request = new Request();
+        $request = $this->getRequest();
         $request->pathInfo = 'post/21';
 
         $this->assertEquals($_GET, []);

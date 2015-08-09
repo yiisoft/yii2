@@ -4,7 +4,7 @@ Yii Framework 2 Change Log
 2.0.7 under development
 -----------------------
 
-
+- Enh #9158: Added `yii\web\Request::$cookieValidationWhitelist` to allow specific unsecure cookies in case cookie validation is enabled (kidol)
 
 2.0.6 August 05, 2015
 ---------------------

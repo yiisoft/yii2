@@ -67,6 +67,11 @@ abstract class TestCase extends \PHPUnit_Framework_TestCase
         ], $config));
     }
 
+    protected function getRequest(array $config = [])
+    {
+        return new \yii\web\Request(array_merge(['cookieValidationKey' => 'dummy'], $config));
+    }
+    
     protected function getVendorPath()
     {
         $vendor = dirname(dirname(__DIR__)) . '/vendor';

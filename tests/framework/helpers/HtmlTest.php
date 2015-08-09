@@ -21,6 +21,7 @@ class HtmlTest extends TestCase
                     'class' => 'yii\web\Request',
                     'url' => '/test',
                     'enableCsrfValidation' => false,
+                    'cookieValidationKey' => 'dummy',
                 ],
                 'response' => [
                     'class' => 'yii\web\Response',

@@ -211,7 +211,7 @@ class UrlManagerTest extends TestCase
     public function testParseRequest()
     {
         $manager = new UrlManager(['cache' => null]);
-        $request = new Request;
+        $request = $this->getRequest();
 
         // default setting without 'r' param
         unset($_GET['r']);
@@ -340,7 +340,7 @@ class UrlManagerTest extends TestCase
 
     public function testParseRESTRequest()
     {
-        $request = new Request;
+        $request = $this->getRequest();
 
         // pretty URL rules
         $manager = new UrlManager([
@@ -380,7 +380,8 @@ class UrlManagerTest extends TestCase
             'components' => [
                 'request' => [
                     'hostInfo' => 'http://localhost/',
-                    'baseUrl' => '/app'
+                    'baseUrl' => '/app',
+                    'cookieValidationKey' => 'dummy',
                 ]
             ]
         ], \yii\web\Application::className());
