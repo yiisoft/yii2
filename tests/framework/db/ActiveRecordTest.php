@@ -2,6 +2,7 @@
 namespace yiiunit\framework\db;
 
 use yiiunit\data\ar\ActiveRecord;
+use yiiunit\data\ar\BitValues;
 use yiiunit\data\ar\Category;
 use yiiunit\data\ar\Customer;
 use yiiunit\data\ar\Document;
@@ -819,5 +820,17 @@ class ActiveRecordTest extends DatabaseTestCase
                 $this->assertEquals(40, $item->subtotal);
             }
         }
+    }
+
+    /**
+     * https://github.com/yiisoft/yii2/issues/9006
+     */
+    public function testBit()
+    {
+        $falseBit = BitValues::findOne(1);
+        $this->assertEquals(false, $falseBit->val);
+
+        $trueBit = BitValues::findOne(2);
+        $this->assertEquals(true, $trueBit->val);
     }
 }

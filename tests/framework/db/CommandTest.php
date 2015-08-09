@@ -518,6 +518,12 @@ SQL;
                 ],
                 'SELECT * FROM customer WHERE id = 1 OR id = 2',
             ],
+            // https://github.com/yiisoft/yii2/issues/9268
+            [
+                'SELECT * FROM customer WHERE active = :active',
+                [':active' => false],
+                'SELECT * FROM customer WHERE active = FALSE',
+            ],
         ];
     }
 
