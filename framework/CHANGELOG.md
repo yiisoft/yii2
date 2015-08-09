@@ -4,6 +4,7 @@ Yii Framework 2 Change Log
 2.0.7 under development
 -----------------------
 
+- Bug #8723: Fixed `yii\helpers\VarDumper::export()` unable to export circle referenced objects with `Closure` (klimov-paul)
 
 
 2.0.6 August 05, 2015
