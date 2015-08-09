@@ -202,7 +202,7 @@ class BaseVarDumper
                             $output = var_export($var->__toString(), true);
                         } else {
                             $outputBackup = self::$_output;
-                            $output = var_export(self::dumpAsString($var, true));
+                            $output = var_export(self::dumpAsString($var), true);
                             self::$_output = $outputBackup;
                         }
                     }
