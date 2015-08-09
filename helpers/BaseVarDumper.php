@@ -199,9 +199,11 @@ class BaseVarDumper
                             self::exportInternal($varAsArray, $level);
                             return;
                         } elseif (method_exists($var, '__toString')) {
-                            $output = $var->__toString();
+                            $output = var_export($var->__toString(), true);
                         } else {
-                            $output = self::dumpAsString($var);
+                            $outputBackup = self::$_output;
+                            $output = var_export(self::dumpAsString($var, true));
+                            self::$_output = $outputBackup;
                         }
                     }
                     self::$_output .= $output;
