@@ -5,7 +5,7 @@ Yii Framework 2 Change Log
 -----------------------
 
 - Bug #8723: Fixed `yii\helpers\VarDumper::export()` unable to export circle referenced objects with `Closure` (klimov-paul)
-
+- Bug #5004: Fixed eager loading with composite viatable relation
 
 2.0.6 August 05, 2015
 ---------------------

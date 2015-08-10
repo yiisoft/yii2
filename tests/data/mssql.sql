@@ -193,3 +193,35 @@ CREATE TABLE [dbo].[bit_values] (
 );
 
 INSERT INTO [dbo].[bit_values] ([id], [val]) VALUES (1, 0), (2, 1);
+
+/* viatable test, see https://github.com/yiisoft/yii2/issues/5004 */
+
+IF OBJECT_ID('[dbo].[collection]', 'U') IS NOT NULL DROP TABLE [dbo].[collection];
+IF OBJECT_ID('[dbo].[collection_item]', 'U') IS NOT NULL DROP TABLE [dbo].[collection_item];
+
+CREATE TABLE [dbo].[collection] (
+	[id] [int] NOT NULL,
+	[version] [int] NOT NULL,
+	CONSTRAINT [PK_collection] PRIMARY KEY CLUSTERED (
+		[id] ASC,
+		[version] ASC
+	) ON [PRIMARY]
+);
+
+INSERT INTO [dbo].[collection] ([id], [version]) VALUES (1, 1);
+
+CREATE TABLE [dbo].[collection_item] (
+	[collection_id] [int] NOT NULL,
+	[collection_version] [int] NOT NULL,
+	[item_id] [int] NOT NULL,
+	CONSTRAINT [PK_collection_item] PRIMARY KEY CLUSTERED (
+		[collection_id] ASC,
+		[collection_version] ASC,
+		[item_id] ASC,
+	) ON [PRIMARY]
+);
+
+INSERT INTO [dbo].[collection_item] ([collection_id], [collection_version], [item_id]) VALUES (1, 1, 1);
+INSERT INTO [dbo].[collection_item] ([collection_id], [collection_version], [item_id]) VALUES (1, 1, 2);
+INSERT INTO [dbo].[collection_item] ([collection_id], [collection_version], [item_id]) VALUES (1, 1, 3);
+

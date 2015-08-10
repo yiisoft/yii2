@@ -242,3 +242,28 @@ CREATE TABLE "bit_values" (
 );
 
 INSERT INTO "bit_values" (id, val) VALUES (1, '0'), (2, '1');
+
+/* viatable test, see https://github.com/yiisoft/yii2/issues/5004 */
+
+DROP TABLE IF EXISTS "collection" CASCADE;
+DROP TABLE IF EXISTS "collection_item" CASCADE;
+
+CREATE TABLE "collection" (
+  id integer NOT NULL,
+  version integer NOT NULL,
+  PRIMARY KEY (id,version)
+);
+
+INSERT INTO "collection" (id, version) VALUES (1, 1);
+
+CREATE TABLE "collection_item" (
+  collection_id integer NOT NULL,
+  collection_version integer NOT NULL,
+  item_id integer NOT NULL,
+  PRIMARY KEY (collection_id,collection_version,item_id)
+);
+
+INSERT INTO "collection_item" (collection_id, collection_version, item_id) VALUES (1, 1, 1);
+INSERT INTO "collection_item" (collection_id, collection_version, item_id) VALUES (1, 1, 2);
+INSERT INTO "collection_item" (collection_id, collection_version, item_id) VALUES (1, 1, 3);
+

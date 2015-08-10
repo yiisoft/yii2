@@ -199,7 +199,8 @@ trait ActiveRelationTrait
             /* @var $viaQuery ActiveRelationTrait */
             $viaQuery = $this->via;
             $viaModels = $viaQuery->findJunctionRows($primaryModels);
-            $this->filterByModels($viaModels);
+            $this->normalizeJunctionRows($viaModels);
+			$this->filterByModels($viaModels);
         } elseif (is_array($this->via)) {
             // via relation
             /* @var $viaQuery ActiveRelationTrait|ActiveQueryTrait */
@@ -524,4 +525,45 @@ trait ActiveRelationTrait
 
         return $this->asArray()->all($primaryModel->getDb());
     }
+	
+	
+    /**
+     * @param array $viaModels
+     */
+    private function normalizeJunctionRows(&$viaModels)
+    {
+        if ($this->asArray) {
+            return;
+        }
+
+        $columnHandler = [];
+
+        $parentClass = $this->via->modelClass;
+        $parentColumns = $parentClass::getTableSchema()->columns;
+
+        foreach($this->via->link as $viaAttribute => $attribute) {
+            if (!isset($columnHandler[$viaAttribute]) && isset($parentColumns[$attribute])) {
+                $columnHandler[$viaAttribute] = $parentColumns[$attribute];
+            }
+        }
+
+        $childClass = $this->modelClass;
+        $childColumns = $childClass::getTableSchema()->columns;
+
+        foreach($this->link as $attribute => $viaAttribute) {
+            if (!isset($columnHandler[$viaAttribute]) && isset($childColumns[$attribute])) {
+                $columnHandler[$viaAttribute] = $childColumns[$attribute];
+            }
+        }
+
+        foreach($viaModels as $i => $viaModel) {
+            foreach($viaModel as $attribute => $value) {
+                if (isset($columnHandler[$attribute])) {
+                    $viaModels[$i][$attribute] = $columnHandler[$attribute]->phpTypecast($value);
+                }
+            }
+        }
+
+    }
+	
 }

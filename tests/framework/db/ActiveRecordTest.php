@@ -19,6 +19,7 @@ use yiiunit\framework\db\cubrid\CubridActiveRecordTest;
 use yiiunit\data\ar\Animal;
 use yiiunit\data\ar\Cat;
 use yiiunit\data\ar\Dog;
+use yiiunit\data\ar\Collection;
 
 /**
  * @group db
@@ -833,4 +834,26 @@ class ActiveRecordTest extends DatabaseTestCase
         $trueBit = BitValues::findOne(2);
         $this->assertEquals(true, $trueBit->val);
     }
+	
+	
+    /**
+     * https://github.com/yiisoft/yii2/issues/5004
+     */
+    public function testCollectionViaTableItems()
+    {
+		$collection = Collection::find()->with('items')->where(['id'=>1,'version'=>1])->one();
+		
+        $this->assertEquals(1, $collection->id);
+        $this->assertEquals(1, $collection->version);
+		$this->assertEquals(3, count($collection->items));
+		$this->assertEquals(1, $collection->items[0]->id);
+		
+		$collection = Collection::find()->with('items')->where(['id'=>1,'version'=>1])->asArray()->one();
+		
+        $this->assertEquals(1, $collection['id']);
+        $this->assertEquals(1, $collection['version']);
+		$this->assertEquals(3, count($collection['items']));
+		$this->assertEquals(1, $collection['items'][0]['id']);
+    }
+	
 }

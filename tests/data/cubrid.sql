@@ -204,3 +204,28 @@ CREATE TABLE `bit_values` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 INSERT INTO `bit_values` (id, val) VALUES (1, b'0'), (2, b'1');
+
+/* viatable test, see https://github.com/yiisoft/yii2/issues/5004 */
+
+DROP TABLE IF EXISTS "collection" CASCADE;
+DROP TABLE IF EXISTS "collection_item" CASCADE;
+
+CREATE TABLE "collection" (
+    "id" int(11) NOT NULL AUTO_INCREMENT,
+    "version"  int(11) NOT NULL,
+    PRIMARY KEY("id","version")
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+INSERT INTO "collection" (id, version) VALUES (1, 1);
+
+CREATE TABLE "collection_item" (
+    "collection_id" int(11) NOT NULL,
+    "collection_version" int(11) NOT NULL,
+    "item_id" int(11) NOT NULL,
+    PRIMARY KEY("collection_id","collection_version","item_id")
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+INSERT INTO "collection_item" (collection_id, collection_version, item_id) VALUES (1, 1, 1);
+INSERT INTO "collection_item" (collection_id, collection_version, item_id) VALUES (1, 1, 2);
+INSERT INTO "collection_item" (collection_id, collection_version, item_id) VALUES (1, 1, 3);
+
