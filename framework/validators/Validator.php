@@ -156,7 +156,8 @@ class Validator extends Component
     /**
      * @var string a JavaScript function name whose return value determines whether this validator should be applied
      * on the client side. The signature of the function should be `function (attribute, value)`, where
-     * `attribute` is the name of the attribute being validated and `value` the current value of the attribute.
+     * `attribute` is an object describing the attribute being validated (see [[clientValidateAttribute()]])
+     * and `value` the current value of the attribute.
      *
      * This property is mainly provided to support conditional validation on the client side.
      * If this property is not set, this validator will be always applied on the client side.
@@ -300,11 +301,19 @@ class Validator extends Component
      *
      * The following JavaScript variables are predefined and can be used in the validation code:
      *
-     * - `attribute`: the name of the attribute being validated.
+     * - `attribute`: an object describing the the attribute being validated.
      * - `value`: the value being validated.
      * - `messages`: an array used to hold the validation error messages for the attribute.
      * - `deferred`: an array used to hold deferred objects for asynchronous validation
+     * - `$form`: a jQuery object containing the form element
      *
+     * The `attribute` object contains the following properties:
+     * - `id`: the ID of the input element
+     * - `name`: the name attribute of the input element
+     * - `container`: the jQuery selector of the container of the input field
+     * - `input`: the jQuery selector of the input field under the context of the container
+     * - `error`: the jQuery selector of the error tag under the context of the container
+     * 
      * @param \yii\base\Model $model the data model being validated
      * @param string $attribute the name of the attribute to be validated.
      * @param \yii\web\View $view the view object that is going to be used to render views or view files
