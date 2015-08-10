@@ -313,6 +313,7 @@ class Validator extends Component
      * - `container`: the jQuery selector of the container of the input field
      * - `input`: the jQuery selector of the input field under the context of the form
      * - `error`: the jQuery selector of the error tag under the context of the container
+     * - `status`: status of the input field, 0: empty, not entered before, 1: validated, 2: pending validation, 3: validating
      *
      * @param \yii\base\Model $model the data model being validated
      * @param string $attribute the name of the attribute to be validated.
