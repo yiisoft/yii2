@@ -311,9 +311,9 @@ class Validator extends Component
      * - `id`: a unique ID identifying the attribute (e.g. "loginform-username") in the form
      * - `name`: attribute name or expression (e.g. "[0]content" for tabular input)
      * - `container`: the jQuery selector of the container of the input field
-     * - `input`: the jQuery selector of the input field under the context of the container
+     * - `input`: the jQuery selector of the input field under the context of the form
      * - `error`: the jQuery selector of the error tag under the context of the container
-     * 
+     *
      * @param \yii\base\Model $model the data model being validated
      * @param string $attribute the name of the attribute to be validated.
      * @param \yii\web\View $view the view object that is going to be used to render views or view files
