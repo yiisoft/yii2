@@ -7,7 +7,7 @@
 
 使用查询构建器通常包含以下两个步骤：
 
-1. 创建一个 [[yii\db\Query]] 对象来代表一条 SELECT SQL 语句的不同字句（例如 `SELECT`, `FROM`）。
+1. 创建一个 [[yii\db\Query]] 对象来代表一条 SELECT SQL 语句的不同子句（例如 `SELECT`, `FROM`）。
 2. 执行 [[yii\db\Query]] 的一个查询方法（例如：`all()`）从数据库当中检索数据。
 
 如下所示代码是查询构造器的一个典型用法：
@@ -39,8 +39,8 @@ LIMIT 10
 
 ## 创建查询 <span id="building-queries"></span>
 
-为了创建一个 [[yii\db\Query]] 对象，你需要调用不同的查询构建方法来代表SQL语句的不同字句。
-这些方法的名称集成了在SQL语句相应字句中使用的关键字。例如，为了指定 SQL 语句当中的
+为了创建一个 [[yii\db\Query]] 对象，你需要调用不同的查询构建方法来代表SQL语句的不同子句。
+这些方法的名称集成了在SQL语句相应子句中使用的关键字。例如，为了指定 SQL 语句当中的
 `FROM` 子句，你应该调用 `from()` 方法。所有的查询构建器方法返回的是查询对象本身，
 也就是说，你可以把多个方法的调用串联起来。
 
@@ -116,7 +116,7 @@ $query->select(['id', 'username'])
 
 ### [[yii\db\Query::from()|from()]] <span id="from"></span>
 
-[[yii\db\Query::from()|from()]] 方法指定了 SQL 语句当中的 `FROM` 字句。例如：
+[[yii\db\Query::from()|from()]] 方法指定了 SQL 语句当中的 `FROM` 子句。例如：
 
 ```php
 // SELECT * FROM `user`
@@ -153,7 +153,7 @@ $query->from(['u' => $subQuery]);
 
 ### [[yii\db\Query::where()|where()]] <span id="where"></span>
 
-[[yii\db\Query::where()|where()]] 方法定义了 SQL 语句当中的 `WHERE` 字句。
+[[yii\db\Query::where()|where()]] 方法定义了 SQL 语句当中的 `WHERE` 子句。
 你可以使用如下三种格式来定义 `WHERE` 条件：
 
 - 字符串格式，例如：`'status=1'`
@@ -339,7 +339,7 @@ $query->filterWhere([
 
 ### [[yii\db\Query::orderBy()|orderBy()]] <span id="order-by"></span>
 
-[[yii\db\Query::orderBy()|orderBy()]] 方法是用来指定 SQL 语句当中的 `ORDER BY` 字句的。例如，
+[[yii\db\Query::orderBy()|orderBy()]] 方法是用来指定 SQL 语句当中的 `ORDER BY` 子句的。例如，
 
 ```php
 // ... ORDER BY `id` ASC, `name` DESC
@@ -361,7 +361,7 @@ $query->orderBy('id ASC, name DESC');
 
 > 注意：当 `ORDER BY` 语句包含一些 DB 表达式的时候，你应该使用数组的格式。
 
-你可以调用 [yii\db\Query::addOrderBy()|addOrderBy()]] 来为 `ORDER BY` 片断添加额外的字句。
+你可以调用 [yii\db\Query::addOrderBy()|addOrderBy()]] 来为 `ORDER BY` 片断添加额外的子句。
 例如，
 
 ```php
@@ -389,7 +389,7 @@ $query->groupBy('id, status');
 > 注意：当 `GROUP BY` 语句包含一些 DB 表达式的时候，你应该使用数组的格式。
 
 你可以调用 [yii\db\Query::addOrderBy()|addOrderBy()]] 来为 `GROUP BY` 
-字句添加额外的字段。例如，
+子句添加额外的字段。例如，
 
 ```php
 $query->groupBy(['id', 'status'])
@@ -399,7 +399,7 @@ $query->groupBy(['id', 'status'])
 
 ### [[yii\db\Query::having()|having()]] <span id="having"></span>
 
-[[yii\db\Query::having()|having()]] 方法是用来指定 SQL 语句当中的 `HAVING` 字句。它带有一个条件，
+[[yii\db\Query::having()|having()]] 方法是用来指定 SQL 语句当中的 `HAVING` 子句。它带有一个条件，
 和 [where()](#where) 中指定条件的方法一样。例如，
 
 ```php
@@ -410,7 +410,7 @@ $query->having(['status' => 1]);
 请查阅 [where()](#where) 的文档来获取更多有关于如何指定一个条件的细节。
 
 你可以调用 [[yii\db\Query::andHaving()|andHaving()]] 或者 [[yii\db\Query::orHaving()|orHaving()]] 
-方法来为 `HAVING` 字句追加额外的条件，例如，
+方法来为 `HAVING` 子句追加额外的条件，例如，
 
 ```php
 // ... HAVING (`status` = 1) AND (`age` > 30)
@@ -422,7 +422,7 @@ $query->having(['status' => 1])
 ### [[yii\db\Query::limit()|limit()]] 和 [[yii\db\Query::offset()|offset()]] <span id="limit-offset"></span>
 
 [[yii\db\Query::limit()|limit()]] 和 [[yii\db\Query::offset()|offset()]] 是用来指定 SQL 语句当中
-的 `LIMIT` 和 `OFFSET` 字句的。例如，
+的 `LIMIT` 和 `OFFSET` 子句的。例如，
  
 ```php
 // ... LIMIT 10 OFFSET 20
@@ -437,7 +437,7 @@ $query->limit(10)->offset(20);
 
 ### [[yii\db\Query::join()|join()]] <span id="join"></span>
 
-[yii\db\Query::join()|join()]] 是用来指定 SQL 语句当中的 `JOIN` 字句的。例如，
+[yii\db\Query::join()|join()]] 是用来指定 SQL 语句当中的 `JOIN` 子句的。例如，
  
 ```php
 // ... LEFT JOIN `post` ON `post`.`user_id` = `user`.`id`
@@ -448,7 +448,7 @@ $query->join('LEFT JOIN', 'post', 'post.user_id = user.id');
  
 - `$type`: 连接类型，例如：`'INNER JOIN'`, `'LEFT JOIN'`。
 - `$table`: 将要连接的表名称。
-- `$on`: 可选参数，连接条件，即 `ON` 字句。请查阅 [where()](#where) 
+- `$on`: 可选参数，连接条件，即 `ON` 子句。请查阅 [where()](#where) 
   获取更多有关于条件定义的细节。
 - `$params`: 可选参数，与连接条件绑定的参数。
 
@@ -479,7 +479,7 @@ $query->leftJoin(['u' => $subQuery], 'u.id = author_id');
 
 ### [[yii\db\Query::union()|union()]] <span id="union"></span>
 
-[[yii\db\Query::union()|union()]] 方法是用来指定 SQL 语句当中的 `UNION` 字句的。例如，
+[[yii\db\Query::union()|union()]] 方法是用来指定 SQL 语句当中的 `UNION` 子句的。例如，
 
 ```php
 $query1 = (new \yii\db\Query())
@@ -495,7 +495,7 @@ $query2 = (new \yii\db\Query())
 $query1->union($query2);
 ```
 
-你可以通过多次调用 [[yii\db\Query::union()|union()]] 方法来追加更多的 `UNION` 字句。
+你可以通过多次调用 [[yii\db\Query::union()|union()]] 方法来追加更多的 `UNION` 子句。
 
 
 ## 查询方法 <span id="query-methods"></span>
