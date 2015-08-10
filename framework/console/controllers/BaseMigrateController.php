@@ -8,8 +8,11 @@
 namespace yii\console\controllers;
 
 use Yii;
+use yii\base\Event;
 use yii\console\Exception;
 use yii\console\Controller;
+use yii\db\ActiveQuery;
+use yii\db\BaseActiveRecord;
 use yii\helpers\Console;
 use yii\helpers\FileHelper;
 
@@ -41,6 +44,41 @@ abstract class BaseMigrateController extends Controller
      * or a file path.
      */
     public $templateFile;
+    /**
+     * @var boolean set to true if you want to use Active record in migrations
+     *
+     * Usage of ActiveRecord produces errors in future migrations because schemes of AR and DB will be different
+     * in future: AR has always the last version of a scheme and DB scheme is evolved by migrations.
+     *
+     * Also we can't test migrations by itself. We think they are valid. In this case AR can manipulate DB data
+     * in unpredictable and non-obvious way by events and other methods. But to have valid migrations
+     * all data manipulations must be clear and obvious.
+     *
+     * @see http://www.yiiframework.com/doc-2.0/guide-db-migrations.html#database-accessing-methods for safe methods
+     * of data manipulation in migrations.
+     */
+    public $prohibitActiveRecord = true;
+
+
+    /**
+     * @inheritdoc
+     */
+    public function init()
+    {
+        parent::init();
+
+        /**
+         * Control usage of ActiveRecord in migrations.
+         */
+        if ($this->prohibitActiveRecord) {
+            Event::on(BaseActiveRecord::class, BaseActiveRecord::EVENT_INIT, function () {
+                throw new Exception('ActiveRecord in migrations is prohibited');
+            });
+            Event::on(ActiveQuery::class, ActiveQuery::EVENT_INIT, function () {
+                throw new Exception('ActiveQuery in migrations is prohibited');
+            });
+        }
+    }
 
 
     /**
