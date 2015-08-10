@@ -308,7 +308,7 @@ class Validator extends Component
      * - `$form`: a jQuery object containing the form element
      *
      * The `attribute` object contains the following properties:
-     * - `id`: the ID of the input element
+     * - `id`: a unique ID identifying an attribute (e.g. "loginform-username") in a form
      * - `name`: the name attribute of the input element
      * - `container`: the jQuery selector of the container of the input field
      * - `input`: the jQuery selector of the input field under the context of the container
