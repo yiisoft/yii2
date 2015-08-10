@@ -14,11 +14,10 @@ use Yii;
  *
  * @property \yii\web\AssetManager $assetManager The asset manager application component. This property is
  * read-only.
- * @property \yii\rbac\ManagerInterface $authManager The auth manager application component. Null is returned
- * if auth manager is not configured. This property is read-only.
+ * @property \yii\rbac\ManagerInterface $authManager The auth manager application component. This property is
+ * read-only.
  * @property string $basePath The root directory of the application.
- * @property \yii\caching\Cache $cache The cache application component. Null if the component is not enabled.
- * This property is read-only.
+ * @property \yii\caching\Cache $cache The cache application component. This property is read-only.
  * @property \yii\db\Connection $db The database connection. This property is read-only.
  * @property \yii\web\ErrorHandler|\yii\console\ErrorHandler $errorHandler The error handler application
  * component. This property is read-only.
@@ -511,11 +510,11 @@ abstract class Application extends Module
 
     /**
      * Returns the cache component.
-     * @return \yii\caching\Cache the cache application component. Null if the component is not enabled.
+     * @return \yii\caching\Cache the cache application component.
      */
     public function getCache()
     {
-        return $this->get('cache', false);
+        return $this->get('cache', true);
     }
 
     /**
@@ -584,11 +583,10 @@ abstract class Application extends Module
     /**
      * Returns the auth manager for this application.
      * @return \yii\rbac\ManagerInterface the auth manager application component.
-     * Null is returned if auth manager is not configured.
      */
     public function getAuthManager()
     {
-        return $this->get('authManager', false);
+        return $this->get('authManager', true);
     }
 
     /**
