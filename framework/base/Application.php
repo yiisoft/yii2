@@ -514,7 +514,7 @@ abstract class Application extends Module
      */
     public function getCache()
     {
-        return $this->get('cache', true);
+        return $this->get('cache');
     }
 
     /**
@@ -586,7 +586,7 @@ abstract class Application extends Module
      */
     public function getAuthManager()
     {
-        return $this->get('authManager', true);
+        return $this->get('authManager');
     }
 
     /**
