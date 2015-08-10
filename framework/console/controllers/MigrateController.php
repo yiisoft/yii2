@@ -69,6 +69,10 @@ class MigrateController extends BaseMigrateController
      * for creating the object.
      */
     public $db = 'db';
+    /**
+     * @var bool will controller refresh the DB schema cache after schema manipulations
+     */
+    public $refreshSchemaCache = true;
 
 
     /**
@@ -98,6 +102,18 @@ class MigrateController extends BaseMigrateController
         } else {
             return false;
         }
+    }
+
+    /**
+     * Refresh schema cache
+     * @inheritdoc
+     */
+    public function afterAction($action, $result)
+    {
+        if ($this->refreshSchemaCache && $this->db instanceof Connection) {
+            $this->db->getSchema()->refresh();
+        }
+        parent::afterAction($action, $result);
     }
 
     /**
