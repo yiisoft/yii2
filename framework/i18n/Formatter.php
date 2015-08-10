@@ -1079,7 +1079,7 @@ class Formatter extends Component
      * @param array $options optional configuration for the number formatter. This parameter will be merged with [[numberFormatterOptions]].
      * @param array $textOptions optional configuration for the number formatter. This parameter will be merged with [[numberFormatterTextOptions]].
      * @return string the formatted result.
-     * @throws InvalidParamException if the input value is not numeric  or the formatting failed.
+     * @throws InvalidParamException if the input value is not numeric or the formatting failed.
      * @see sizeFormat
      * @see asShortSize
      */
@@ -1198,7 +1198,7 @@ class Formatter extends Component
      *
      * @param integer $style the type of the number formatter.
      * Values: NumberFormatter::DECIMAL, ::CURRENCY, ::PERCENT, ::SCIENTIFIC, ::SPELLOUT, ::ORDINAL
-     *          ::DURATION, ::PATTERN_RULEBASED, ::DEFAULT_STYLE, ::IGNORE
+     * ::DURATION, ::PATTERN_RULEBASED, ::DEFAULT_STYLE, ::IGNORE
      * @param integer $decimals the number of digits after the decimal point.
      * @param array $options optional configuration for the number formatter. This parameter will be merged with [[numberFormatterOptions]].
      * @param array $textOptions optional configuration for the number formatter. This parameter will be merged with [[numberFormatterTextOptions]].

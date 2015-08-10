@@ -44,11 +44,11 @@ abstract class ErrorHandler extends Component
      * @var string Used to reserve memory for fatal error handler.
      */
     private $_memoryReserve;
-
     /**
      * @var \Exception from HHVM error that stores backtrace
      */
     private $_hhvmException;
+
 
     /**
      * Register this error handler
@@ -139,6 +139,7 @@ abstract class ErrorHandler extends Component
 
         $this->exception = null;
     }
+
     /**
      * Handles HHVM execution errors such as warnings and notices.
      *

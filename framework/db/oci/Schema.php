@@ -32,6 +32,7 @@ class Schema extends \yii\db\Schema
         'ORA-00001: unique constraint' => 'yii\db\IntegrityException',
     ];
 
+
     /**
      * @inheritdoc
      */
@@ -65,6 +66,14 @@ class Schema extends \yii\db\Schema
     public function createQueryBuilder()
     {
         return new QueryBuilder($this->db);
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function createColumnSchemaBuilder($type, $length = null)
+    {
+        return new ColumnSchemaBuilder($type, $length);
     }
 
     /**
