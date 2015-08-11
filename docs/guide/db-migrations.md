@@ -35,7 +35,7 @@ All these tools are accessible through the command `yii migrate`. In this sectio
 how to accomplish various tasks using these tools. You may also get the usage of each tool via the help
 command `yii help migrate`.
 
-> Note: migrations could affect not only database schema but adjust existing data to fit new schema, create RBAC
+> Tip: migrations could affect not only database schema but adjust existing data to fit new schema, create RBAC
   hierarcy or clean up cache.
 
 
@@ -258,6 +258,13 @@ Below is the list of all these database accessing methods:
 > Info: [[yii\db\Migration]] does not provide a database query method. This is because you normally do not need
   to display extra message about retrieving data from a database. It is also because you can use the powerful
   [Query Builder](db-query-builder.md) to build and run complex queries.
+
+> Note: When manipulating data using a migration you may find that using your [Active Record](db-active-record.md) classes
+> for this might be useful because some of the logic is already implemented there. Keep in mind however, that in contrast
+> to code written in the migrations, who's nature is to stay constant forever, application logic is subject to change.
+> So when using Active Record in migration code, changes to the logic in the Active Record layer may accidentally break
+> existing migrations. For this reason migration code should be kept independent from other application logic such
+> as Active Record classes.
 
 
 ## Applying Migrations <span id="applying-migrations"></span>
