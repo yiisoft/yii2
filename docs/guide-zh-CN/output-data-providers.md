@@ -11,13 +11,13 @@
 
 下面的数据提供者类都包含在Yii的发布版本里面：
 
-* [[yii\data\ActiveDataProvider]]：使用 [[yii\db\Query]] 或者 [[yii\db\ActiveQuery]] 从数据库查询数据并且以数组项的方式返回或者返回
-  [Active Record](db-active-record.md) 实例。
+* [[yii\data\ActiveDataProvider]]：使用 [[yii\db\Query]] 或者 [[yii\db\ActiveQuery]] 从数据库查询数据并且以数组项的方式或者
+  [Active Record](db-active-record.md) 实例的方式返回。
 * [[yii\data\SqlDataProvider]]：执行一段SQL语句并且将数据库数据作为数组返回。
-* [[yii\data\ArrayDataProvider]]：将一个大的数组采用分页和排序的规格返回一部分数据。
+* [[yii\data\ArrayDataProvider]]：将一个大的数组依据分页和排序规格返回一部分数据。
 
 
-所有的这些数据提供者遵守一下的模式：
+所有的这些数据提供者遵守以下模式：
 
 ```php
 // 根据配置的分页以及排序属性来创建一个数据提供者
@@ -54,11 +54,11 @@ echo yii\grid\GridView::widget([
 
 
 
-## 活动数据提供者 <span id="active-data-provider"></span> 
+## 活动数据提供者 <span id="active-data-provider"></span>
 
-为了使用 [[yii\data\ActiveDataProvider]]，你应该配置 [[yii\data\ActiveDataProvider::query|query]] 的属性。
-这将会产生一个 [[yii\db\Query]] 或者 [[yii\db\ActiveQuery]] 对象。假如是前者，返回的数据将是数组；
-如果是后者，返回的数据可能是数组也可能是 [Active Record](db-active-record.md) 对象。
+为了使用 [[yii\data\ActiveDataProvider]]，你应该配置其 [[yii\data\ActiveDataProvider::query|query]] 的属性。
+它既可以是一个 [[yii\db\Query]] 对象，又可以是一个 [[yii\db\ActiveQuery]] 对象。假如是前者，返回的数据将是数组；
+如果是后者，返回的数据可以是数组也可以是 [Active Record](db-active-record.md) 对象。
 例如，
 
 ```php
@@ -74,7 +74,7 @@ $provider = new ActiveDataProvider([
     'sort' => [
         'defaultOrder' => [
             'created_at' => SORT_DESC,
-            'title' => SORT_ASC, 
+            'title' => SORT_ASC,
         ]
     ],
 ]);
@@ -88,7 +88,7 @@ $posts = $provider->getModels();
 ```php
 use yii\db\Query;
 
-$query = (new Query())->from('post')->where(['status' => 1]); 
+$query = (new Query())->from('post')->where(['status' => 1]);
 ```
 
 > 注意：假如查询已经指定了 `orderBy` 从句，则终端用户给定的新的排序说明（通过 `sort` 来配置的）将被添加到已经存在的从句中。
@@ -106,7 +106,7 @@ $query = (new Query())->from('post')->where(['status' => 1]);
 的SQL从句。
 
 
-为了使用 [[yii\data\SqlDataProvider]]，你应该指定 [[yii\data\SqlDataProvider::sql|sql]] 属性以及 
+为了使用 [[yii\data\SqlDataProvider]]，你应该指定 [[yii\data\SqlDataProvider::sql|sql]] 属性以及
 [[yii\data\SqlDataProvider::totalCount|totalCount]] 属性，例如，
 
 ```php
@@ -173,10 +173,10 @@ $provider = new ArrayDataProvider([
 
 // 获取当前请求页的每一行数据
 $rows = $provider->getModels();
-``` 
+```
 
 > 注意：数组数据提供者与 [Active Data Provider](#active-data-provider) 和 [SQL Data Provider](#sql-data-provider) 这两者进行比较的话，
-  会发现数组数据提供者没有后面那两个高效，这是因为数组数据提供者需要加载*所有*的数据到内存中。 
+  会发现数组数据提供者没有后面那两个高效，这是因为数组数据提供者需要加载*所有*的数据到内存中。
 
 
 ## 数据键的使用 <span id="working-with-keys"></span>
@@ -228,10 +228,10 @@ $provider = new ActiveDataProvider([
 
 为了创建自定义的数据提供者类，你应该实现 [[yii\data\DataProviderInterface]] 接口。
 一个简单的方式是从 [[yii\data\BaseDataProvider]] 去扩展，这种方式允许你关注数据提供者的核心逻辑。
-特别是在这几个方面，你主要需要实现下面的一些方法：
+这时，你主要需要实现下面的一些方法：
 
 - [[yii\data\BaseDataProvider::prepareModels()|prepareModels()]]：准备好在当前页面可用的数据模型，并且作为一个数组返回它们。
-                                                   
+
 - [[yii\data\BaseDataProvider::prepareKeys()|prepareKeys()]]：接受一个当前可用的数据模型的数组，并且返回一些与它们相关联的键。
 
 - [[yii\data\BaseDataProvider::prepareTotalCount()|prepareTotalCount]]: 在数据提供者中返回一个标识出数据模型总数的值。
@@ -249,29 +249,29 @@ class CsvDataProvider extends BaseDataProvider
      * @var string name of the CSV file to read
      */
     public $filename;
-    
+
     /**
      * @var string|callable name of the key column or a callable returning it
      */
     public $key;
-    
+
     /**
      * @var SplFileObject
      */
     protected $fileObject; // SplFileObject is very convenient for seeking to particular line in a file
-    
- 
+
+
     /**
      * @inheritdoc
      */
     public function init()
     {
         parent::init();
-        
+
         // open file
         $this->fileObject = new SplFileObject($this->filename);
     }
- 
+
     /**
      * @inheritdoc
      */
@@ -279,7 +279,7 @@ class CsvDataProvider extends BaseDataProvider
     {
         $models = [];
         $pagination = $this->getPagination();
- 
+
         if ($pagination === false) {
             // in case there's no pagination, read all lines
             while (!$this->fileObject->eof()) {
@@ -291,16 +291,16 @@ class CsvDataProvider extends BaseDataProvider
             $pagination->totalCount = $this->getTotalCount();
             $this->fileObject->seek($pagination->getOffset());
             $limit = $pagination->getLimit();
- 
+
             for ($count = 0; $count < $limit; ++$count) {
                 $models[] = $this->fileObject->fgetcsv();
                 $this->fileObject->next();
             }
         }
- 
+
         return $models;
     }
- 
+
     /**
      * @inheritdoc
      */
@@ -308,7 +308,7 @@ class CsvDataProvider extends BaseDataProvider
     {
         if ($this->key !== null) {
             $keys = [];
- 
+
             foreach ($models as $model) {
                 if (is_string($this->key)) {
                     $keys[] = $model[$this->key];
@@ -316,25 +316,25 @@ class CsvDataProvider extends BaseDataProvider
                     $keys[] = call_user_func($this->key, $model);
                 }
             }
- 
+
             return $keys;
         } else {
             return array_keys($models);
         }
     }
- 
+
     /**
      * @inheritdoc
      */
     protected function prepareTotalCount()
     {
         $count = 0;
- 
+
         while (!$this->fileObject->eof()) {
             $this->fileObject->next();
             ++$count;
         }
- 
+
         return $count;
     }
 }
