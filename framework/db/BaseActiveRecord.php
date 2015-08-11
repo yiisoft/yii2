@@ -557,7 +557,7 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
             }
         } else {
             foreach ($this->_attributes as $name => $value) {
-                if (isset($names[$name]) && (!array_key_exists($name, $this->_oldAttributes) || $value !== $this->_oldAttributes[$name])) {
+                if (isset($names[$name]) && (!array_key_exists($name, $this->_oldAttributes) || strcmp($value, $this->_oldAttributes[$name]))) {
                     $attributes[$name] = $value;
                 }
             }
