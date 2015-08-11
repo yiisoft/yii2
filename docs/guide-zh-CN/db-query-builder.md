@@ -640,6 +640,7 @@ foreach ($query->each() as $user) {
 
 如果你通过 [[yii\db\Query::indexBy()]] 方法为查询结果指定了索引字段，那么批处理查询将仍然保持相对应的索引方案，例如，
 
+
 ```php
 $query = (new \yii\db\Query())
     ->from('user')
