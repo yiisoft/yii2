@@ -17,9 +17,6 @@
  * NOTE: this file must be saved in UTF-8 encoding.
  */
 return [
-    'No help for unknown command "{command}".' => '@@უცნობი ბრძანებისთვის "{command}" ცნობარი მიუწვდომელია.@@',
-    'No help for unknown sub-command "{command}".' => '@@უცნობი სუბბრძანებისთვის "{command}" ცნობარი მიუწვდომელია.@@',
-    'Unknown command "{command}".' => '@@უცნობი ბრძანება "{command}".@@',
     '(not set)' => '(არ არის მითითებული)',
     'An internal server error occurred.' => 'წარმოიშვა სერვერის შიდა შეცდომა.',
     'Are you sure you want to delete this item?' => 'დარწმუნებული ხართ, რომ გინდათ ამ ელემენტის წაშლა?',
