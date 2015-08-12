@@ -84,10 +84,10 @@ Com o mínimo de esforço acima, você já terminou sua tarefa de criar as APIs 
 * `HEAD /users/123`: mostra informações gerais do usuário 123;
 * `PATCH /users/123` e `PUT /users/123`: atualiza o usuário 123;
 * `DELETE /users/123`: deleta o usuário 123;
-* `OPTIONS /users`: mostra os métodos suportados em relação ao endpoint `/users`;
-* `OPTIONS /users/123`: mostra os métodos suportados em relação ao endpoint `/users/123`.
+* `OPTIONS /users`: mostra os métodos suportados em relação à URL `/users`;
+* `OPTIONS /users/123`: mostra os métodos suportados em relação à URL `/users/123`.
 
-> Observação: O Yii vai pluralizar automaticamente nomes de controller para uso em endpoints.
+> Observação: O Yii vai pluralizar automaticamente nomes de controllers para uso em URLs (também chamadas *endpoints*).
 > Você pode configurar isso usando a propriedade [[yii\rest\UrlRule::$pluralize]].
 
 Você pode acessar suas APIs com o comando `curl` mostrado abaixo,
@@ -182,11 +182,11 @@ Usando os parâmetros `fields` e `expand`, você também pode especificar os cam
 
 ## Resumo <span id="summary"></span>
 
-Usando o framework API RESTful do Yii, você implementa um endpoint desses campos, conforme descrito na seção a nível de ações do controller e você usa um controller para organizar as ações que implementam os endpoints para um único tipo de recurso.
+Usando o framework API RESTful do Yii, você implementa uma URL desses campos, conforme descrito na seção de ações do controller, um controller para organizar as ações que implementam as URLs para um único tipo de recurso.
 
 Os recursos são representados como modelos de dados, que se estendem a partir da classe [[yii\base\Model]]. Se você estiver trabalhando com bancos de dados (relacional ou NoSQL), é recomendado que você use [[yii\db\ActiveRecord|ActiveRecord]] para representar recursos.
 
-Você pode usar [[yii\rest\UrlRule]] para simplificar o roteamento para seus endpoints API.
+Você pode usar [[yii\rest\UrlRule]] para simplificar o roteamento para suas URLs da API.
 
 
 Embora não seja exigido, é recomendável que você desenvolva suas APIs RESTful  como uma aplicação separada, diferente do seu frontend e backend para facilitar a manutenção.
