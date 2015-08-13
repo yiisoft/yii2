@@ -180,6 +180,7 @@ class Schema extends \yii\db\Schema
         $column = $this->createColumnSchema();
 
         $column->name = $info['column_name'];
+        $column->phpName = $this->getPhpName($info['column_name']);
         $column->allowNull = $info['is_nullable'] == 'YES';
         $column->dbType = $info['data_type'];
         $column->enumValues = []; // mssql has only vague equivalents to enum
@@ -277,6 +278,7 @@ SQL;
                 $table->sequenceName = '';
             }
             $table->columns[$column->name] = $column;
+            $table->phpColumnNames[$column->phpName] = $column->name;
         }
 
         return true;

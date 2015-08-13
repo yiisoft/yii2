@@ -160,6 +160,7 @@ SQL;
             }
             $c = $this->createColumn($column);
             $table->columns[$c->name] = $c;
+            $table->phpColumnNames[$c->phpName] = $c->name;
             if ($c->isPrimaryKey) {
                 $table->primaryKey[] = $c->name;
                 $table->sequenceName = $this->getTableSequenceName($table->name);
@@ -222,6 +223,7 @@ SQL;
     {
         $c = $this->createColumnSchema();
         $c->name = $column['COLUMN_NAME'];
+        $c->phpName = $this->getPhpName($column['COLUMN_NAME']);
         $c->allowNull = $column['NULLABLE'] === 'Y';
         $c->isPrimaryKey = strpos($column['KEY'], 'P') !== false;
         $c->comment = $column['COLUMN_COMMENT'] === null ? '' : $column['COLUMN_COMMENT'];

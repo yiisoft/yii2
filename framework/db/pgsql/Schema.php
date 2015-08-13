@@ -396,6 +396,7 @@ SQL;
         foreach ($columns as $column) {
             $column = $this->loadColumnSchema($column);
             $table->columns[$column->name] = $column;
+            $table->phpColumnNames[$column->phpName] = $column->name;
             if ($column->isPrimaryKey) {
                 $table->primaryKey[] = $column->name;
                 if ($table->sequenceName === null && preg_match("/nextval\\('\"?\\w+\"?\.?\"?\\w+\"?'(::regclass)?\\)/", $column->defaultValue) === 1) {
@@ -439,6 +440,7 @@ SQL;
         $column->unsigned = false; // has no meaning in PG
         $column->isPrimaryKey = $info['is_pkey'];
         $column->name = $info['column_name'];
+        $column->phpName = $this->getPhpName($info['column_name']);
         $column->precision = $info['numeric_precision'];
         $column->scale = $info['numeric_scale'];
         $column->size = $info['size'] === null ? null : (int) $info['size'];
