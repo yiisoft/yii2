@@ -87,7 +87,7 @@ return [
     'in {delta, plural, =1{an hour} other{# hours}}' => 'через {delta, plural, =1{час} one{# час} few{# часа} many{# часов} other{# часа}}',
     'just now' => 'прямо сейчас',
     'the input value' => 'введённое значение',
-    '{attribute} "{value}" has already been taken.' => '{attribute} «{value}» уже занят.',
+    '{attribute} "{value}" has already been taken.' => 'Значение «{value}» для «{attribute}» уже занято.',
     '{attribute} cannot be blank.' => 'Необходимо заполнить «{attribute}».',
     '{attribute} is invalid.' => 'Значение «{attribute}» неверно.',
     '{attribute} is not a valid URL.' => 'Значение «{attribute}» не является правильным URL.',
