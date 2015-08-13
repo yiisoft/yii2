@@ -833,4 +833,47 @@ class ActiveRecordTest extends DatabaseTestCase
         $trueBit = BitValues::findOne(2);
         $this->assertEquals(true, $trueBit->val);
     }
+
+    public function testNameConvert()
+    {
+        ActiveRecord::$db->activeRecordNameConvert = 'variablize';
+        ActiveRecord::$db->getTableSchema('type', true);
+        $model = new Type();
+        $model->intCol = 123;
+        $model->intCol2 = 456;
+        $model->smallintCol = 42;
+        $model->charCol = '1337';
+        $model->charCol2 = 'test';
+        $model->charCol3 = 'test123';
+        $model->floatCol = 3.742;
+        $model->floatCol2 = 42.1337;
+        $model->boolCol = true;
+        $model->boolCol2 = false;
+        $model->save(false);
+    }
+
+    /**
+     * @expectedException        \yii\base\UnknownPropertyException
+     * @expectedExceptionMessage Setting unknown property: yiiunit\data\ar\Type::int_col
+     */
+    public function testAccessToDbAttributesWithNameConvert()
+    {
+        $model = new Type();
+        $model->int_col = 123;
+        $model->int_col2 = 456;
+        $model->smallint_col = 42;
+        $model->char_col = '1337';
+        $model->char_col2 = 'test';
+        $model->char_col3 = 'test123';
+        $model->float_col = 3.742;
+        $model->float_col2 = 42.1337;
+        $model->bool_col = true;
+        $model->bool_col2 = false;
+        $model->save(false);
+
+        ActiveRecord::$db->activeRecordNameConvert = 'variablize';
+        ActiveRecord::$db->getTableSchema('type', true);
+        $model = Type::find()->one();
+        $model->int_col = 123;
+    }
 }

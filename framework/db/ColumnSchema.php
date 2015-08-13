@@ -22,6 +22,10 @@ class ColumnSchema extends Object
      */
     public $name;
     /**
+     * @var string PHP name of this column (without quotes).
+     */
+    public $phpName;
+    /**
      * @var boolean whether this column can be null.
      */
     public $allowNull;

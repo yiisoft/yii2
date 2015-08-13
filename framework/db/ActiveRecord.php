@@ -96,6 +96,7 @@ class ActiveRecord extends BaseActiveRecord
      */
     const OP_ALL = 0x07;
 
+    private $_phpColumnNames;
 
     /**
      * Loads default values from database table schema
@@ -641,5 +642,13 @@ class ActiveRecord extends BaseActiveRecord
         $transactions = $this->transactions();
 
         return isset($transactions[$scenario]) && ($transactions[$scenario] & $operation);
+    }
+
+    public function columnNames()
+    {
+        if (isset($this->_phpColumnNames)) {
+            return $this->_phpColumnNames;
+        }
+        return $this->_phpColumnNames = static::getTableSchema()->phpColumnNames;
     }
 }

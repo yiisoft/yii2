@@ -236,10 +236,14 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
      */
     public function __get($name)
     {
-        if (isset($this->_attributes[$name]) || array_key_exists($name, $this->_attributes)) {
-            return $this->_attributes[$name];
-        } elseif ($this->hasAttribute($name)) {
-            return null;
+        $columnNames = $this->columnNames();
+        if (isset($columnNames[$name])) {
+            $name = $columnNames[$name];
+            if (isset($this->_attributes[$name]) || array_key_exists($name, $this->_attributes)) {
+                return $this->_attributes[$name];
+            } elseif ($this->hasAttribute($name)) {
+                return null;
+            }
         } else {
             if (isset($this->_related[$name]) || array_key_exists($name, $this->_related)) {
                 return $this->_related[$name];
@@ -261,8 +265,12 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
      */
     public function __set($name, $value)
     {
-        if ($this->hasAttribute($name)) {
-            $this->_attributes[$name] = $value;
+        $columnNames = $this->columnNames();
+        if (isset($columnNames[$name])) {
+            $name = $columnNames[$name];
+            if ($this->hasAttribute($name)) {
+                $this->_attributes[$name] = $value;
+            }
         } else {
             parent::__set($name, $value);
         }
@@ -1570,5 +1578,10 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
         } else {
             unset($this->$offset);
         }
+    }
+
+    public function columnNames()
+    {
+        return [];
     }
 }

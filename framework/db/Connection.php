@@ -351,6 +351,15 @@ class Connection extends Component
     public $masterConfig = [];
 
     /**
+     * @var boolean whether to convert ActiveRecord attribute names.
+     * Values:
+     * camelize - convert "variable_name" to "VariableName" format
+     * underscore - convert "VariableName" to "variable_name" format
+     * variablize - convert "variable_name" to "variableName" format
+     */
+    public $activeRecordNameConvert = false;
+
+    /**
      * @var Transaction the currently active transaction
      */
     private $_transaction;

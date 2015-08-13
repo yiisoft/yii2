@@ -7,6 +7,7 @@
 
 namespace yii\db\mysql;
 
+use yii\base\InvalidConfigException;
 use yii\db\Expression;
 use yii\db\TableSchema;
 use yii\db\ColumnSchema;
@@ -130,6 +131,7 @@ class Schema extends \yii\db\Schema
         $column = $this->createColumnSchema();
 
         $column->name = $info['field'];
+        $column->phpName = $this->getPhpName($info['field']);
         $column->allowNull = $info['null'] === 'YES';
         $column->isPrimaryKey = strpos($info['key'], 'PRI') !== false;
         $column->autoIncrement = stripos($info['extra'], 'auto_increment') !== false;
@@ -211,6 +213,7 @@ class Schema extends \yii\db\Schema
             }
             $column = $this->loadColumnSchema($info);
             $table->columns[$column->name] = $column;
+            $table->phpColumnNames[$column->phpName] = $column->name;
             if ($column->isPrimaryKey) {
                 $table->primaryKey[] = $column->name;
                 if ($column->autoIncrement) {

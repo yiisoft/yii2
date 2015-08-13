@@ -136,6 +136,7 @@ class Schema extends \yii\db\Schema
         foreach ($columns as $info) {
             $column = $this->loadColumnSchema($info);
             $table->columns[$column->name] = $column;
+            $table->phpColumnNames[$column->phpName] = $column->name;
         }
 
         $primaryKeys = $pdo->cubrid_schema(\PDO::CUBRID_SCH_PRIMARY_KEY, $table->name);
@@ -174,6 +175,7 @@ class Schema extends \yii\db\Schema
         $column = $this->createColumnSchema();
 
         $column->name = $info['Field'];
+        $column->phpName = $this->getPhpName($info['Field']);
         $column->allowNull = $info['Null'] === 'YES';
         $column->isPrimaryKey = false; // primary key will be set by loadTableSchema() later
         $column->autoIncrement = stripos($info['Extra'], 'auto_increment') !== false;

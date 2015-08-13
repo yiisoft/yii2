@@ -139,6 +139,7 @@ class Schema extends \yii\db\Schema
         foreach ($columns as $info) {
             $column = $this->loadColumnSchema($info);
             $table->columns[$column->name] = $column;
+            $table->phpColumnNames[$column->phpName] = $column->name;
             if ($column->isPrimaryKey) {
                 $table->primaryKey[] = $column->name;
             }
@@ -214,6 +215,7 @@ class Schema extends \yii\db\Schema
     {
         $column = $this->createColumnSchema();
         $column->name = $info['name'];
+        $column->phpName = $this->getPhpName($info['name']);
         $column->allowNull = !$info['notnull'];
         $column->isPrimaryKey = $info['pk'] != 0;
 

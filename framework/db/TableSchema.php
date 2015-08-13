@@ -59,6 +59,7 @@ class TableSchema extends Object
      */
     public $columns = [];
 
+    public $phpColumnNames = [];
 
     /**
      * Gets the named column metadata.

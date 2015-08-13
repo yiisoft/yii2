@@ -8,6 +8,7 @@
 namespace yii\db;
 
 use Yii;
+use yii\base\InvalidConfigException;
 use yii\base\Object;
 use yii\base\NotSupportedException;
 use yii\base\InvalidCallException;
@@ -637,5 +638,17 @@ abstract class Schema extends Object
     {
         $pattern = '/^\s*(SELECT|SHOW|DESCRIBE)\b/i';
         return preg_match($pattern, $sql) > 0;
+    }
+
+    protected function getPhpName($name)
+    {
+        $method = $this->db->activeRecordNameConvert;
+        if ($method === false) {
+            return $name;
+        }
+        if (method_exists('yii\helpers\Inflector', $method)) {
+            return call_user_func(['yii\helpers\Inflector', $method], $name);
+        }
+        throw new InvalidConfigException('Unknown conversion name method.');
     }
 }
