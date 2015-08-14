@@ -119,7 +119,7 @@
             var $grid = $(this);
             var id = $(this).attr('id');
             gridData[id].selectionColumn = options.name;
-            if (!options.multiple) {
+            if (!options.multiple || !options.checkAll) {
                 return;
             }
             var checkAll = "#" + id + " input[name='" + options.checkAll + "']";
