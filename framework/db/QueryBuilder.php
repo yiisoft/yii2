@@ -553,6 +553,54 @@ class QueryBuilder extends \yii\base\Object
     }
 
     /**
+     * Builds a SQL command for adding comment to column
+     *
+     * @param string $table the table whose column is to be commented. The table name will be properly quoted by the method.
+     * @param string $column the name of the column to be commented. The column name will be properly quoted by the method.
+     * @param string $comment the text of the comment to be added. The comment will be properly quoted by the method.
+     * @return $this the command object itself
+     */
+    public function addCommentOnColumn($table, $column, $comment)
+    {
+        return 'COMMENT ON COLUMN ' . $this->db->quoteTableName($table) . '.' . $this->db->quoteColumnName($column) . ' IS ' . $this->db->quoteValue($comment);
+    }
+
+    /**
+     * Builds a SQL command for adding comment to table
+     *
+     * @param string $table the table whose column is to be commented. The table name will be properly quoted by the method.
+     * @param string $comment the text of the comment to be added. The comment will be properly quoted by the method.
+     * @return $this the command object itself
+     */
+    public function addCommentOnTable($table, $comment)
+    {
+        return 'COMMENT ON TABLE ' . $this->db->quoteTableName($table) . ' IS ' . $this->db->quoteValue($comment);
+    }
+
+    /**
+     * Builds a SQL command for adding comment to column
+     *
+     * @param string $table the table whose column is to be commented. The table name will be properly quoted by the method.
+     * @param string $column the name of the column to be commented. The column name will be properly quoted by the method.
+     * @return $this the command object itself
+     */
+    public function dropCommentFromColumn($table, $column)
+    {
+        return 'COMMENT ON COLUMN ' . $this->db->quoteTableName($table) . '.' . $this->db->quoteColumnName($column) . ' IS NULL';
+    }
+
+    /**
+     * Builds a SQL command for adding comment to table
+     *
+     * @param string $table the table whose column is to be commented. The table name will be properly quoted by the method.
+     * @return $this the command object itself
+     */
+    public function dropCommentFromTable($table)
+    {
+        return 'COMMENT ON TABLE ' . $this->db->quoteTableName($table) . ' IS NULL';
+    }
+
+    /**
      * Converts an abstract column type into a physical column type.
      * The conversion is done using the type map specified in [[typeMap]].
      * The following abstract column types are supported (using MySQL as an example to explain the corresponding
