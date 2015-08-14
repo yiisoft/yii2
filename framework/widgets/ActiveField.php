@@ -321,7 +321,13 @@ class ActiveField extends Component
      * @param array $options the tag options in terms of name-value pairs. These will be rendered as
      * the attributes of the resulting tag. The values will be HTML-encoded using [[Html::encode()]].
      *
-     * If you set a custom `id` for the input element, you may need to adjust the [[$selectors]] accordingly.
+     * The following special options are recognized:
+     *
+     * - format: string|array in which format should the value be displayed as (e.g. `"raw"`, `"text"`, `"html"`,
+     *   `['date', 'php:Y-m-d']`)
+     *   This is available since version 2.0.7.
+     *
+     * Note that if you set a custom `id` for the input element, you may need to adjust the value of [[selectors]] accordingly.
      *
      * @return $this the field object itself
      */
@@ -329,6 +335,7 @@ class ActiveField extends Component
     {
         $options = array_merge($this->inputOptions, $options);
         $this->adjustLabelFor($options);
+        $this->adjustFormatter($options);
         $this->parts['{input}'] = Html::activeInput($type, $this->model, $this->attribute, $options);
 
         return $this;
@@ -347,6 +354,10 @@ class ActiveField extends Component
      *   by a string validator, the `maxlength` option will take the value of [[\yii\validators\StringValidator::max]].
      *   This is available since version 2.0.3.
      *
+     * - format: string|array in which format should the value be displayed as (e.g. `"raw"`, `"text"`, `"html"`,
+     *   `['date', 'php:Y-m-d']`)
+     *   This is available since version 2.0.7.
+     *
      * Note that if you set a custom `id` for the input element, you may need to adjust the value of [[selectors]] accordingly.
      *
      * @return $this the field object itself
@@ -355,6 +366,7 @@ class ActiveField extends Component
     {
         $options = array_merge($this->inputOptions, $options);
         $this->adjustLabelFor($options);
+        $this->adjustFormatter($options);
         $this->parts['{input}'] = Html::activeTextInput($this->model, $this->attribute, $options);
 
         return $this;
@@ -434,7 +446,13 @@ class ActiveField extends Component
      * @param array $options the tag options in terms of name-value pairs. These will be rendered as
      * the attributes of the resulting tag. The values will be HTML-encoded using [[Html::encode()]].
      *
-     * If you set a custom `id` for the textarea element, you may need to adjust the [[$selectors]] accordingly.
+     * The following special options are recognized:
+     *
+     * - format: string|array in which format should the value be displayed as (e.g. `"raw"`, `"text"`, `"html"`,
+     *   `['date', 'php:Y-m-d']`)
+     *   This is available since version 2.0.7.
+     *
+     * Note that if you set a custom `id` for the input element, you may need to adjust the value of [[selectors]] accordingly.
      *
      * @return $this the field object itself
      */
@@ -442,6 +460,7 @@ class ActiveField extends Component
     {
         $options = array_merge($this->inputOptions, $options);
         $this->adjustLabelFor($options);
+        $this->adjustFormatter($options);
         $this->parts['{input}'] = Html::activeTextarea($this->model, $this->attribute, $options);
 
         return $this;
@@ -675,6 +694,18 @@ class ActiveField extends Component
     {
         if (isset($options['id']) && !isset($this->labelOptions['for'])) {
             $this->labelOptions['for'] = $options['id'];
+        }
+    }
+
+    /**
+     * Set formatter from related form to options when format is specified
+     * @param array $options the input options
+     * @since 2.0.7
+     */
+    protected function adjustFormatter(&$options)
+    {
+        if (!empty($options['format'])) {
+            $options['formatter'] = $this->form->formatter;
         }
     }
 

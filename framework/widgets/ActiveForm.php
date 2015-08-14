@@ -9,12 +9,14 @@ namespace yii\widgets;
 
 use Yii;
 use yii\base\InvalidCallException;
+use yii\base\InvalidConfigException;
 use yii\base\Widget;
 use yii\base\Model;
 use yii\helpers\ArrayHelper;
 use yii\helpers\Url;
 use yii\helpers\Html;
 use yii\helpers\Json;
+use yii\i18n\Formatter;
 
 /**
  * ActiveForm is a widget that builds an interactive HTML form for one or multiple data models.
@@ -162,6 +164,13 @@ class ActiveForm extends Widget
      * @internal
      */
     public $attributes = [];
+    /**
+     * @var array|Formatter the formatter used to format ActiveField values.
+     * This can be either an instance of [[Formatter]] or an configuration array for creating the [[Formatter]]
+     * instance. If this property is not set, the "formatter" application component will be used.
+     * @since 2.0.7
+     */
+    public $formatter;
 
     /**
      * @var ActiveField[] the ActiveField objects that are currently active
@@ -175,6 +184,15 @@ class ActiveForm extends Widget
      */
     public function init()
     {
+        if ($this->formatter == null) {
+            $this->formatter = Yii::$app->getFormatter();
+        } elseif (is_array($this->formatter)) {
+            $this->formatter = Yii::createObject($this->formatter);
+        }
+        if (!$this->formatter instanceof Formatter) {
+            throw new InvalidConfigException('The "formatter" property must be either a Format object or a configuration array.');
+        }
+
         if (!isset($this->options['id'])) {
             $this->options['id'] = $this->getId();
         }
