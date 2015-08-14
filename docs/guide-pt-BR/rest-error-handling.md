@@ -31,7 +31,7 @@ A lista a seguir descrimina os códigos de status HTTP que são usados pelo fram
 * `404`: O recurso requisitado não existe;
 * `405`: Método não permitido. Favor verificar o cabeçalho `Allow` para conhecer os métodos HTTP permitidos;
 * `415`: Tipo de mídia não suportada. O número de versão ou o content type requisitado são inválidos;
-* `422`: Falha na validação dos dados (na resposta a uma requisição `POST`, por exemplo). Por favor, verifique o corpo da resposta para mensagens de erro detalhadas;
+* `422`: Falha na validação dos dados (na resposta a uma requisição `POST`, por exemplo). Por favor, verifique o corpo da resposta para visualizar a mensagem detalhada do erro;
 * `429`: Excesso de requisições. A requisição foi rejeitada devido a limitação de taxa;
 * `500`: Erro interno do servidor. Isto pode ser causado por erros internos do programa.
 
