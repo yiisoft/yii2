@@ -325,7 +325,7 @@ class ActiveField extends Component
      *
      * - format: string|array in which format should the value be displayed as (e.g. `"raw"`, `"text"`, `"html"`,
      *   `['date', 'php:Y-m-d']`)
-     *   This is available since version 2.0.6.
+     *   This is available since version 2.0.7.
      *
      * Note that if you set a custom `id` for the input element, you may need to adjust the value of [[selectors]] accordingly.
      *
@@ -356,7 +356,7 @@ class ActiveField extends Component
      *
      * - format: string|array in which format should the value be displayed as (e.g. `"raw"`, `"text"`, `"html"`,
      *   `['date', 'php:Y-m-d']`)
-     *   This is available since version 2.0.6.
+     *   This is available since version 2.0.7.
      *
      * Note that if you set a custom `id` for the input element, you may need to adjust the value of [[selectors]] accordingly.
      *
@@ -450,7 +450,7 @@ class ActiveField extends Component
      *
      * - format: string|array in which format should the value be displayed as (e.g. `"raw"`, `"text"`, `"html"`,
      *   `['date', 'php:Y-m-d']`)
-     *   This is available since version 2.0.6.
+     *   This is available since version 2.0.7.
      *
      * Note that if you set a custom `id` for the input element, you may need to adjust the value of [[selectors]] accordingly.
      *
@@ -700,7 +700,7 @@ class ActiveField extends Component
     /**
      * Set formatter from related form to options when format is specified
      * @param array $options the input options
-     * @since 2.0.6
+     * @since 2.0.7
      */
     protected function adjustFormatter(&$options)
     {

@@ -168,6 +168,7 @@ class ActiveForm extends Widget
      * @var array|Formatter the formatter used to format ActiveField values.
      * This can be either an instance of [[Formatter]] or an configuration array for creating the [[Formatter]]
      * instance. If this property is not set, the "formatter" application component will be used.
+     * @since 2.0.7
      */
     public $formatter;
 
