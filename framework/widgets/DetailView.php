@@ -122,6 +122,10 @@ class DetailView extends Widget
             throw new InvalidConfigException('The "formatter" property must be either a Format object or a configuration array.');
         }
         $this->normalizeAttributes();
+
+        if (!isset($this->options['id'])) {
+            $this->options['id'] = $this->getId();
+        }
     }
 
     /**
@@ -136,8 +140,9 @@ class DetailView extends Widget
             $rows[] = $this->renderAttribute($attribute, $i++);
         }
 
-        $tag = ArrayHelper::remove($this->options, 'tag', 'table');
-        echo Html::tag($tag, implode("\n", $rows), $this->options);
+        $options = $this->options;
+        $tag = ArrayHelper::remove($options, 'tag', 'table');
+        echo Html::tag($tag, implode("\n", $rows), $options);
     }
 
     /**

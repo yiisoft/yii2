@@ -132,7 +132,7 @@ Yii::$app->mailer->compose([
 If you specify view name as a scalar string, its rendering result will be used as HTML body, while
 plain text body will be composed by removing all HTML entities from HTML one.
 
-View rendering result can be wrapped into the layout, which an be setup using [[yii\mail\BaseMailer::htmlLayout]]
+View rendering result can be wrapped into the layout, which can be setup using [[yii\mail\BaseMailer::htmlLayout]]
 and [[yii\mail\BaseMailer::textLayout]]. It will work the same way like layouts in regular web application.
 Layout can be used to setup mail CSS styles or other shared content:
 

@@ -1,7 +1,7 @@
 Yii をインストールする
 ======================
 
-Yii は二つの方法でインストールすることが出来ます。すなわち、[Composer](http://getcomposer.org/) を使うか、アーカイブファイルをダウンロードするかです。
+Yii は二つの方法でインストールすることが出来ます。すなわち、[Composer](https://getcomposer.org/) を使うか、アーカイブファイルをダウンロードするかです。
 前者がお薦めの方法です。と言うのは、一つのコマンドを走らせるだけで、新しい [エクステンション](structure-extensions.md) をインストールしたり、Yii をアップデートしたりすることが出来るからです。
 
 Yii の標準的なインストールを実行すると、フレームワークとプロジェクトテンプレートの両方がダウンロードされてインストールされます。
@@ -24,7 +24,7 @@ Composer によるインストール <span id="installing-via-composer"></span>
 まだ Composer をインストールしていない場合は、[getcomposer.org](https://getcomposer.org/download/) の指示に従ってインストールすることが出来ます。
 Linux や Mac OS X では、次のコマンドを実行します。
 
-    curl -s http://getcomposer.org/installer | php
+    curl -sS https://getcomposer.org/installer | php
     mv composer.phar /usr/local/bin/composer
 
 Windows では、[Composer-Setup.exe](https://getcomposer.org/Composer-Setup.exe) をダウンロードして実行します。
@@ -36,7 +36,7 @@ Composer は `composer self-update` コマンドを実行してアップデー�
 
 Composer がインストールされたら、ウェブからアクセスできるフォルダで下記のコマンドを実行することによって Yii をインストールすることが出来ます。
 
-    composer global require "fxp/composer-asset-plugin:1.0.0"
+    composer global require "fxp/composer-asset-plugin:~1.0.0"
     composer create-project --prefer-dist yiisoft/yii2-app-basic basic
 
 最初のコマンドは [composer アセットプラグイン](https://github.com/francoispluchino/composer-asset-plugin/) をインストールします。
@@ -89,7 +89,7 @@ Composer がインストールされたら、ウェブからアクセスでき�
 インストールを検証する <span id="verifying-installation"></span>
 ----------------------
 
-インストール完了後、インストールされた Yii アプリケーションにブラウザを使って下記の URL でアクセスすることが出来ます。
+インストール完了後、下記の URL によって、インストールされた Yii アプリケーションにブラウザを使ってアクセスすることが出来ます。
 
 ```
 http://localhost/basic/web/index.php

@@ -135,7 +135,7 @@ which may reduce the overhead involved in retrieving cached data. The APIs [[yii
 and [[yii\caching\Cache::madd()|madd()]] are provided to exploit this feature. In case the underlying cache storage
 does not support this feature, it will be simulated.
 
-Because [[yii\caching\Cache]] implements `ArrayAccess`, a cache component can be used like an array. The followings
+Because [[yii\caching\Cache]] implements `ArrayAccess`, a cache component can be used like an array. The following
 are some examples:
 
 ```php
@@ -246,7 +246,7 @@ Below is a summary of the available cache dependencies:
 Query caching is a special caching feature built on top of data caching. It is provided to cache the result
 of database queries.
 
-Query caching requires a [[yii\db\Connection|DB connection]] and a valid `cache` application component.
+Query caching requires a [[yii\db\Connection|DB connection]] and a valid `cache` [application component](#cache-components).
 The basic usage of query caching is as follows, assuming `$db` is a [[yii\db\Connection]] instance:
 
 ```php

@@ -12,12 +12,12 @@ Yii は国際的なアプリケーションと開発者にとって役に立つ�
 
 メッセージの翻訳を開始するためには:
 
-1. `framework/messages/config.php` をチェックして、あなたの言語が `languages` のリストに挙っていることを確認してください。
-   もし挙っていなければ、あなたの言語をそこに追加します (リストをアルファベット順に保つことを忘れないでください)。
+1. `framework/messages/config.php` をチェックして、あなたの言語が `languages` のリストに載っていることを確認してください。
+   もし無ければ、あなたの言語をそこに追加します (リストをアルファベット順に保つことを忘れないでください)。
    言語コードの形式は、例えば `ru` や `zh-CN` のように、[IETF言語タグ](http://ja.wikipedia.org/wiki/IETF%E8%A8%80%E8%AA%9E%E3%82%BF%E3%82%B0) に従うべきです。
 2. `framework` に入って、`yii message/extract messages/config.php` を走らせます。
 3. `framework/messages/your_language/yii.php` のメッセージを翻訳します。ファイルは必ず UTF-8 エンコーディングを使って保存してください。
-4. [プルリクエスト](https://github.com/yiisoft/yii2/blob/master/docs/internals/git-workflow.md) をします。
+4. [プルリクエスト](git-workflow.md) をします。
 
 あなたの翻訳を最新状態に保つために、`yii message/extract messages/config.php` を再び走らせることが出来ます。
 このコマンドは、変更のなかった箇所には触れることなく、自動的にメッセージを再抽出してくれます。

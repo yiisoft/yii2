@@ -129,6 +129,7 @@ class UrlManager extends Component
     private $_baseUrl;
     private $_scriptUrl;
     private $_hostInfo;
+    private $_ruleCache;
 
 
     /**
@@ -309,18 +310,45 @@ class UrlManager extends Component
         $baseUrl = $this->showScriptName || !$this->enablePrettyUrl ? $this->getScriptUrl() : $this->getBaseUrl();
 
         if ($this->enablePrettyUrl) {
+            $cacheKey = $route . '?' . implode('&', array_keys($params));
+
             /* @var $rule UrlRule */
-            foreach ($this->rules as $rule) {
-                if (($url = $rule->createUrl($this, $route, $params)) !== false) {
-                    if (strpos($url, '://') !== false) {
-                        if ($baseUrl !== '' && ($pos = strpos($url, '/', 8)) !== false) {
-                            return substr($url, 0, $pos) . $baseUrl . substr($url, $pos);
-                        } else {
-                            return $url . $baseUrl . $anchor;
-                        }
-                    } else {
-                        return "$baseUrl/{$url}{$anchor}";
+            $url = false;
+            if (isset($this->_ruleCache[$cacheKey])) {
+                foreach ($this->_ruleCache[$cacheKey] as $rule) {
+                    if (($url = $rule->createUrl($this, $route, $params)) !== false) {
+                        break;
                     }
+                }
+            } else {
+                $this->_ruleCache[$cacheKey] = [];
+            }
+
+            if ($url === false) {
+                $cacheable = true;
+                foreach ($this->rules as $rule) {
+                    if (!empty($rule->defaults) && $rule->mode !== UrlRule::PARSING_ONLY) {
+                        // if there is a rule with default values involved, the matching result may not be cached
+                        $cacheable = false;
+                    }
+                    if (($url = $rule->createUrl($this, $route, $params)) !== false) {
+                        if ($cacheable) {
+                            $this->_ruleCache[$cacheKey][] = $rule;
+                        }
+                        break;
+                    }
+                }
+            }
+
+            if ($url !== false) {
+                if (strpos($url, '://') !== false) {
+                    if ($baseUrl !== '' && ($pos = strpos($url, '/', 8)) !== false) {
+                        return substr($url, 0, $pos) . $baseUrl . substr($url, $pos);
+                    } else {
+                        return $url . $baseUrl . $anchor;
+                    }
+                } else {
+                    return "$baseUrl/{$url}{$anchor}";
                 }
             }
 

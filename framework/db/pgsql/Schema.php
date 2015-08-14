@@ -171,6 +171,7 @@ class Schema extends \yii\db\Schema
      * This method should be overridden by child classes in order to support this feature
      * because the default implementation simply throws an exception.
      * @return array all schema names in the database, except system schemas
+     * @since 2.0.4
      */
     protected function findSchemaNames()
     {
@@ -225,12 +226,13 @@ SQL;
 
         $sql = <<<SQL
 select
+    ct.conname as constraint_name,
     a.attname as column_name,
     fc.relname as foreign_table_name,
     fns.nspname as foreign_table_schema,
     fa.attname as foreign_column_name
 from
-    (SELECT ct.conrelid, ct.confrelid, ct.conkey, ct.contype, ct.confkey, generate_subscripts(ct.conkey, 1) AS s
+    (SELECT ct.conname, ct.conrelid, ct.confrelid, ct.conkey, ct.contype, ct.confkey, generate_subscripts(ct.conkey, 1) AS s
        FROM pg_constraint ct
     ) AS ct
     inner join pg_class c on c.oid=ct.conrelid
@@ -254,14 +256,17 @@ SQL;
             } else {
                 $foreignTable = $constraint['foreign_table_name'];
             }
-            $constraints[$foreignTable][$constraint['column_name']] = $constraint['foreign_column_name'];
-        }
-        foreach ($constraints as $foreignTable => $columns) {
-            $citem = [$foreignTable];
-            foreach ($columns as $column => $foreignColumn) {
-                $citem[$column] = $foreignColumn;
+            $name = $constraint['constraint_name'];
+            if (!isset($constraints[$name])) {
+                $constraints[$name] = [
+                    'tableName' => $foreignTable,
+                    'columns' => [],
+                ];
             }
-            $table->foreignKeys[] = $citem;
+            $constraints[$name]['columns'][$constraint['column_name']] = $constraint['foreign_column_name'];
+        }
+        foreach ($constraints as $constraint) {
+            $table->foreignKeys[] = array_merge([$constraint['tableName']], $constraint['columns']);
         }
     }
 
@@ -445,5 +450,28 @@ SQL;
         $column->phpType = $this->getColumnPhpType($column);
 
         return $column;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function insert($table, $columns)
+    {
+        $params = [];
+        $sql = $this->db->getQueryBuilder()->insert($table, $columns, $params);
+        $returnColumns = $this->getTableSchema($table)->primaryKey;
+        if (!empty($returnColumns)) {
+            $returning = [];
+            foreach ((array) $returnColumns as $name) {
+                $returning[] = $this->quoteColumnName($name);
+            }
+            $sql .= ' RETURNING ' . implode(', ', $returning);
+        }
+
+        $command = $this->db->createCommand($sql, $params);
+        $command->prepare(false);
+        $result = $command->queryOne();
+
+        return !$command->pdoStatement->rowCount() ? false : $result;
     }
 }

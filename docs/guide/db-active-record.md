@@ -155,7 +155,7 @@ $count = Customer::find()
     ->where(['status' => Customer::STATUS_ACTIVE])
     ->count();
 
-// return all active customers in an array indexed by customer IDs
+// return all customers in an array indexed by customer IDs
 // SELECT * FROM `customer`
 $customers = Customer::find()
     ->indexBy('id')
@@ -202,7 +202,7 @@ $customer = Customer::findOne([
 
 // returns all inactive customers
 // SELECT * FROM `customer` WHERE `status` = 0
-$customer = Customer::findAll([
+$customers = Customer::findAll([
     'status' => Customer::STATUS_INACTIVE,
 ]);
 ```
@@ -249,10 +249,10 @@ named in this way. If you are concerned about code style consistency, you should
 
 ### Data Transformation <span id="data-transformation"></span>
 
-It often happens that the data being entered and/or displayed are in a different format from the one used in
+It often happens that the data being entered and/or displayed are in a format which is different from the one used in
 storing the data in a database. For example, in the database you are storing customers' birthdays as UNIX timestamps
 (which is not a good design, though), while in most cases you would like to manipulate birthdays as strings in
-the format of `'YYYY/MM/DD'`. To achieve this goal, you can define data transformation methods in the `Customer`
+the format of `'YYYY/MM/DD'`. To achieve this goal, you can define *data transformation* methods in the `Customer`
 Active Record class like the following:
 
 ```php
@@ -275,9 +275,9 @@ class Customer extends ActiveRecord
 Now in your PHP code, instead of accessing `$customer->birthday`, you would access `$customer->birthdayText`, which
 will allow you to input and display customer birthdays in the format of `'YYYY/MM/DD'`.
 
-> Tip: the above shows an easy approach to achieve data transformation in general. For date values Yii provides a better
-> way using the [DateValidator](tutorial-core-validators.md#date) and a DatePicker widget, which is described in the
-> [JUI Widgets section](widget-jui#datepicker-date-input).
+> Tip: The above example shows a generic way of transforming data in different formats. If you are working with
+> date values, you may use [DateValidator](tutorial-core-validators.md#date) and [[yii\jui\DatePicker|DatePicker]],
+> which is easier to use and more powerful.
 
 
 ### Retrieving Data in Arrays <span id="data-in-arrays"></span>
@@ -436,6 +436,11 @@ to explicitly mark an attribute as dirty.
 If you are interested in the attribute values prior to their most recent modification, you may call 
 [[yii\db\ActiveRecord::getOldAttributes()|getOldAttributes()]] or [[yii\db\ActiveRecord::getOldAttribute()|getOldAttribute()]].
 
+> Note: The comparison of old and new values will be done using the `===` operator so a value will be considered dirty
+> even if it has the same value but a different type. This is often the case when the model receives user input from
+> HTML forms where every value is represented as a string.
+> To ensure the correct type for e.g. integer values you may apply a [validation filter](input-validation.md#data-filtering):
+> `['attributeName', 'filter', 'filter' => 'intval']`.
 
 ### Default Attribute Values <span id="default-attribute-values"></span>
 
@@ -458,7 +463,7 @@ table rows. To update multiple rows simultaneously, you should call [[yii\db\Act
 which is a static method.
 
 ```php
-// UPDATE `customer` SET `status` = 1 WHERE `email` LIKE `%@example.com`
+// UPDATE `customer` SET `status` = 1 WHERE `email` LIKE `%@example.com%`
 Customer::updateAll(['status' => Customer::STATUS_ACTIVE], ['like', 'email', '@example.com']);
 ```
 
@@ -667,7 +672,7 @@ public function actionUpdate($id)
 
     try {
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            return $this->redirect(['view', <?= $urlParams ?>]);
+            return $this->redirect(['view', 'id' => $model->id]);
         } else {
             return $this->render('update', [
                 'model' => $model,
@@ -730,6 +735,10 @@ While declaring a relation, you should specify the following information:
 - the link between the two types of data: specifies the column(s) through which the two types of data are related.
   The array values are the columns of the primary data (represented by the Active Record class that you are declaring
   relations), while the array keys are the columns of the related data.
+
+  An easy rule to remember this is, as you see in the example above, you write the column that belongs to the related
+  Active Record directly next to it. You see there that `customer_id` is a property of `Order` and `id` is a property
+  of `Customer`.
   
 
 ### Accessing Relational Data <span id="accessing-relational-data"></span>
@@ -748,7 +757,7 @@ $orders = $customer->orders;
 ```
 
 > Info: When you declare a relation named `xyz` via a getter method `getXyz()`, you will be able to access
-  `xyz` like an object [property](concept-properties.md). Note that the name is case sensitive.
+  `xyz` like an [object property](concept-properties.md). Note that the name is case sensitive.
   
 If a relation is declared with [[yii\db\ActiveRecord::hasMany()|hasMany()]], accessing this relation property
 will return an array of the related Active Record instances; if a relation is declared with 
@@ -759,6 +768,18 @@ When you access a relation property for the first time, a SQL statement will be 
 above example. If the same property is accessed again, the previous result will be returned without re-executing
 the SQL statement. To force re-executing the SQL statement, you should unset the relation property
 first: `unset($customer->orders)`.
+
+> Note: While this concept looks similar to the [object property](concept-properties.md) feature, there is an
+> important difference. For normal object properties the property value is of the same type as the defining getter method.
+> A relation method however returns an [[yii\db\ActiveQuery]] instance, while accessing a relation property will either
+> return a [[yii\db\ActiveRecord]] instance or an array of these.
+> 
+> ```php
+> $customer->orders; // is an array of `Order` objects
+> $customer->getOrders(); // returns an ActiveQuery instance
+> ```
+> 
+> This is useful for creating customized queries, which is described in the next section.
 
 
 ### Dynamic Relational Query <span id="dynamic-relational-query"></span>
@@ -776,7 +797,10 @@ $orders = $customer->getOrders()
     ->all();
 ```
 
-Sometimes you may even want to parameterize a relation declaration so that you can more easily perform
+Unlike accessing a relation property, each time you perform a dynamic relational query via a relation method, 
+a SQL statement will be executed, even if the same dynamic relational query was performed before.
+
+Sometimes you may even want to parametrize a relation declaration so that you can more easily perform
 dynamic relational query. For example, you may declare a `bigOrders` relation as follows, 
 
 ```php
@@ -801,13 +825,6 @@ $orders = $customer->getBigOrders(200)->all();
 $orders = $customer->bigOrders;
 ```
 
-> Note: While a relation method returns a [[yii\db\ActiveQuery]] instance, accessing a relation property will either
-  return a [[yii\db\ActiveRecord]] instance or an array of that. This is different from a normal object 
-  [property](concept-properties.md) whose property value is of the same type as the defining getter method.
-  
-Unlike accessing a relation property, each time you perform a dynamic relational query via a relation method, 
-a SQL statement will be executed, even if the same dynamic relational query is performed before.
-  
 
 ### Relations via a Junction Table <span id="junction-table"></span>
 
@@ -944,7 +961,7 @@ $items = $customers[0]->orders[0]->items;
 ```
 
 You can eagerly load deeply nested relations, such as `a.b.c.d`. All parent relations will be eagerly loaded.
-That is, when you call [[yii\db\ActiveQuery::with()|with()]] using `a.b.c.d`, you will be eagerly load
+That is, when you call [[yii\db\ActiveQuery::with()|with()]] using `a.b.c.d`, you will eagerly load
 `a`, `a.b`, `a.b.c` and `a.b.c.d`.  
 
 > Info: In general, when eagerly loading `N` relations among which `M` relations are defined with a 
@@ -1057,9 +1074,9 @@ $customers = Customer::find()->joinWith([
 ```
 
 This above query brings back *all* customers, and for each customer it brings back all active orders.
-Note that this differs from our earlier example which only brings back customers who have at least one active orders.
+Note that this differs from our earlier example which only brings back customers who have at least one active order.
 
-> Info: When [[yii\db\ActiveQuery]] is specified with a condition via [[[[yii\db\ActiveQuery::onCondition()|onCondition()]],
+> Info: When [[yii\db\ActiveQuery]] is specified with a condition via [[yii\db\ActiveQuery::onCondition()|onCondition()]],
   the condition will be put in the `ON` part if the query involves a JOIN query. If the query does not involve
   JOIN, the on-condition will be automatically appended to the `WHERE` part of the query.
 
@@ -1336,3 +1353,72 @@ $customers = Customer::find()->with([
 > Info: In Yii 1.1, there is a concept called *scope*. Scope is no longer directly supported in Yii 2.0,
   and you should use customized query classes and query methods to achieve the same goal.
 
+
+## Selecting extra fields
+
+When Active Record instance is populated from query results, its attributes are filled up by corresponding column
+values from received data set.
+
+You are able to fetch additional columns or values from query and store it inside the Active Record.
+For example, assume we have a table named 'room', which contains information about rooms available in the hotel.
+Each room stores information about its geometrical size using fields 'length', 'width', 'height'.
+Imagine we need to retrieve list of all available rooms with their volume in descendant order.
+So you can not calculate volume using PHP, because we need to sort the records by its value, but you also want 'volume'
+to be displayed in the list.
+To achieve the goal, you need to declare an extra field in your 'Room' Active Record class, which will store 'volume' value:
+
+```php
+class Room extends \yii\db\ActiveRecord
+{
+    public $volume;
+
+    // ...
+}
+```
+
+Then you need to compose a query, which calculates volume of the room and performs the sort:
+
+```php
+$rooms = Room::find()
+    ->select([
+        '{{room}}.*', // select all columns
+        '([[length]] * [[width]].* [[height]]) AS volume', // calculate a volume
+    ])
+    ->orderBy('volume DESC') // apply sort
+    ->all();
+
+foreach ($rooms as $room) {
+    echo $room->volume; // contains value calculated by SQL
+}
+```
+
+Ability to select extra fields can be exceptionally useful for aggregation queries.
+Assume you need to display a list of customers with the count of orders they have made.
+First of all, you need to declare a `Customer` class with 'orders' relation and extra field for count storage:
+
+```php
+class Customer extends \yii\db\ActiveRecord
+{
+    public $ordersCount;
+
+    // ...
+
+    public function getOrders()
+    {
+        return $this->hasMany(Order::className(), ['customer_id' => 'id']);
+    }
+}
+```
+
+Then you can compose a query, which joins the orders and calculates their count:
+
+```php
+$customers = Customer::find()
+    ->select([
+        '{{customer}}.*', // select all customer fields
+        'COUNT({{order}}.id) AS ordersCount' // calculate orders count
+    ])
+    ->joinWith('orders') // ensure table junction
+    ->groupBy('{{customer}}.id') // group the result to ensure aggregation function works
+    ->all();
+```
