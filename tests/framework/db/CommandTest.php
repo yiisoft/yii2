@@ -283,6 +283,51 @@ SQL;
         ], $record);
     }
 
+    public function testInsertSelect()
+    {
+        $db = $this->getConnection();
+        $db->createCommand('DELETE FROM {{customer}};')->execute();
+
+        $command = $db->createCommand();
+        $command->insert(
+            '{{customer}}',
+            [
+                'email' => 't1@example.com',
+                'name' => 'test',
+                'address' => 'test address',
+            ]
+        )->execute();
+
+	$query = new \yii\db\Query();
+	$query->select([
+                '{{customer}}.email as name',
+                'name as email',
+                'address',
+            ]
+	)->from('{{customer}}');
+
+        $command = $db->createCommand();
+        $command->insert(
+            '{{customer}}',
+	    $query
+        )->execute();
+
+        $this->assertEquals(2, $db->createCommand('SELECT COUNT(*) FROM {{customer}};')->queryScalar());
+        $record = $db->createCommand('SELECT email, name, address FROM {{customer}};')->queryAll();
+        $this->assertEquals([
+            [
+		'email' => 't1@example.com',
+		'name' => 'test',
+		'address' => 'test address',
+	    ],
+            [
+		'email' => 'test',
+		'name' => 't1@example.com',
+		'address' => 'test address',
+	    ],
+        ], $record);
+    }
+
     public function testInsertExpression()
     {
         $db = $this->getConnection();

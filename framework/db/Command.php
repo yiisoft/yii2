@@ -418,7 +418,8 @@ class Command extends Component
      * Note that the created command is not executed until [[execute()]] is called.
      *
      * @param string $table the table that new rows will be inserted into.
-     * @param array $columns the column data (name => value) to be inserted into the table.
+     * @param array|\yii\db\Query $columns the column data (name => value) to be inserted into the table or instance
+     * of \yii\db\Query to perform INSERT INTO ... SELECT SQL statement.
      * @return $this the command object itself
      */
     public function insert($table, $columns)

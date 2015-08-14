@@ -192,29 +192,41 @@ class QueryBuilder extends \yii\db\QueryBuilder
         }
         $names = [];
         $placeholders = [];
-        foreach ($columns as $name => $value) {
-            $names[] = $schema->quoteColumnName($name);
-            if ($value instanceof Expression) {
-                $placeholders[] = $value->expression;
-                foreach ($value->params as $n => $v) {
-                    $params[$n] = $v;
-                }
-            } else {
-                $phName = self::PARAM_PREFIX . count($params);
-                $placeholders[] = $phName;
-                $params[$phName] = !is_array($value) && isset($columnSchemas[$name]) ? $columnSchemas[$name]->dbTypecast($value) : $value;
-            }
-        }
-        if (empty($names) && $tableSchema !== null) {
-            $columns = !empty($tableSchema->primaryKey) ? $tableSchema->primaryKey : reset($tableSchema->columns)->name;
-            foreach ($columns as $name) {
-                $names[] = $schema->quoteColumnName($name);
-                $placeholders[] = 'DEFAULT';
-            }
-        }
+	$values = ' DEFAULT VALUES';
+	if (($columns instanceof \yii\db\Query) === true) {
+	    list ($values, $params) = $this->build($columns);
+	    foreach ($columns->select as $field) {
+		if (preg_match('/^(.*?)(?i:\s+as\s+|\s+)([\w\-_\.]+)$/', $field, $matches)) {
+		    $names[] = $schema->quoteColumnName($matches[2]);
+		} else {
+		    $names[] = $schema->quoteColumnName($field);
+		}
+	    }
+	} else {
+	    foreach ($columns as $name => $value) {
+		$names[] = $schema->quoteColumnName($name);
+		if ($value instanceof Expression) {
+		    $placeholders[] = $value->expression;
+		    foreach ($value->params as $n => $v) {
+			$params[$n] = $v;
+		    }
+		} else {
+		    $phName = self::PARAM_PREFIX . count($params);
+		    $placeholders[] = $phName;
+		    $params[$phName] = !is_array($value) && isset($columnSchemas[$name]) ? $columnSchemas[$name]->dbTypecast($value) : $value;
+		}
+	    }
+	    if (empty($names) && $tableSchema !== null) {
+		$columns = !empty($tableSchema->primaryKey) ? $tableSchema->primaryKey : reset($tableSchema->columns)->name;
+		foreach ($columns as $name) {
+		    $names[] = $schema->quoteColumnName($name);
+		    $placeholders[] = 'DEFAULT';
+		}
+	    }
+	}
 
         return 'INSERT INTO ' . $schema->quoteTableName($table)
             . (!empty($names) ? ' (' . implode(', ', $names) . ')' : '')
-            . (!empty($placeholders) ? ' VALUES (' . implode(', ', $placeholders) . ')' : ' DEFAULT VALUES');
+            . (!empty($placeholders) ? ' VALUES (' . implode(', ', $placeholders) . ')' : $values);
     }
 }
