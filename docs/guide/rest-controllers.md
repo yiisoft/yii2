@@ -22,7 +22,7 @@ will be described in detail in the next few sections:
 [[yii\rest\ActiveController]] in addition provides the following features:
 
 * A set of commonly needed actions: `index`, `view`, `create`, `update`, `delete`, `options`;
-* User authorization in regarding to the requested action and resource.
+* User authorization in regard to the requested action and resource.
 
 
 ## Creating Controller Classes <span id="creating-controller"></span>
