@@ -714,7 +714,7 @@ class BaseHtml
             // add a hidden field so that if the checkbox is not selected, it still submits a value
             $uncheck = $options['uncheck'];
             unset($options['uncheck']);
-            $hidden = static::hiddenInput($name, $options['uncheck'],$options);
+            $hidden = static::hiddenInput($name, $uncheck, $options);
         } else {
             $hidden = '';
         }
