@@ -1134,7 +1134,7 @@ class Formatter extends Component
 
         $position = 0;
         do {
-            if ($value < $this->sizeFormatBase) {
+            if (abs($value) < $this->sizeFormatBase) {
                 break;
             }
             $value = $value / $this->sizeFormatBase;
