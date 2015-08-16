@@ -47,7 +47,7 @@ class Pjax extends Widget
      * @var array the HTML attributes for the widget container tag.
      * @see \yii\helpers\Html::renderTagAttributes() for details on how attributes are being rendered.
      */
-    public $options = [];
+    public $options = ['data-pjax-container'=>''];
     /**
      * @var string|false the jQuery selector of the links that should trigger pjax requests.
      * If not set, all links within the enclosed content of Pjax will trigger pjax requests.
