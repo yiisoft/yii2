@@ -18,17 +18,18 @@ use yii\base\InvalidConfigException;
  * The following code is a typical example of using transactions (note that some
  * DBMS may not support transactions):
  *
- * ~~~
+ * ```php
  * $transaction = $connection->beginTransaction();
  * try {
  *     $connection->createCommand($sql1)->execute();
  *     $connection->createCommand($sql2)->execute();
  *     //.... other SQL executions
  *     $transaction->commit();
- * } catch (Exception $e) {
+ * } catch (\Exception $e) {
  *     $transaction->rollBack();
+ *     throw $e;
  * }
- * ~~~
+ * ```
  *
  * @property boolean $isActive Whether this transaction is active. Only an active transaction can [[commit()]]
  * or [[rollBack()]]. This property is read-only.
