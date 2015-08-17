@@ -96,4 +96,10 @@ class SqliteQueryBuilderTest extends QueryBuilderTest
         $sql = $this->getQueryBuilder()->batchInsert('{{customer}} t', ['t.id', 't.name'], [[1, 'a'], [2, 'b']]);
         $this->assertEquals("INSERT INTO {{customer}} t (`t`.`id`, `t`.`name`) SELECT 1, 'a' UNION SELECT 2, 'b'", $sql);
     }
+
+    public function testRenameTable()
+    {
+        $sql = $this->getQueryBuilder()->renameTable('table_from', 'table_to');
+        $this->assertEquals("ALTER TABLE `table_from` RENAME TO `table_to`", $sql);
+    }
 }
