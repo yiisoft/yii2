@@ -77,6 +77,7 @@ class PostgreSQLQueryBuilderTest extends QueryBuilderTest
             [Schema::TYPE_MONEY . ' CHECK (value > 0.0)', $this->money()->check('value > 0.0'), 'numeric(19,4) CHECK (value > 0.0)'],
             [Schema::TYPE_MONEY . '(16,2) CHECK (value > 0.0)', $this->money(16, 2)->check('value > 0.0'), 'numeric(16,2) CHECK (value > 0.0)'],
             [Schema::TYPE_MONEY . ' NOT NULL', $this->money()->notNull(), 'numeric(19,4) NOT NULL'],
+            [Schema::TYPE_MONEY . ' NOT NULL', $this->money()->notNull()->comment('this is money column'), 'numeric(19,4) NOT NULL'],
         ];
     }
 

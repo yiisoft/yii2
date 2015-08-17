@@ -46,6 +46,10 @@ class ColumnSchemaBuilder extends Object
      * @var mixed default value of the column.
      */
     protected $default;
+    /**
+     * @var mixed comment value of the column.
+     */
+    protected $comment;
 
 
     /**
@@ -105,6 +109,17 @@ class ColumnSchemaBuilder extends Object
     }
 
     /**
+     * Specify the comment for the column.
+     * @param $comment the comment
+     * @return $this
+     */
+    public function comment($comment)
+    {
+        $this->comment = $comment;
+        return $this;
+    }
+
+    /**
      * Build full string for create the column's schema
      * @return string
      */
@@ -116,7 +131,8 @@ class ColumnSchemaBuilder extends Object
             $this->buildNotNullString() .
             $this->buildUniqueString() .
             $this->buildDefaultString() .
-            $this->buildCheckString();
+            $this->buildCheckString() .
+            $this->buildCommentString();
     }
 
     /**
@@ -188,5 +204,14 @@ class ColumnSchemaBuilder extends Object
     protected function buildCheckString()
     {
         return $this->check !== null ? " CHECK ({$this->check})" : '';
+    }
+
+    /**
+     * Builds the comment specification for the column.
+     * @return string with comment.
+     */
+    protected function buildCommentString()
+    {
+        return $this->comment !== null ? " COMMENT '{$this->comment}'" : '';
     }
 }

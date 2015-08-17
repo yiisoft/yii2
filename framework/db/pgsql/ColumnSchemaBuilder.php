@@ -5,29 +5,24 @@
  * @license http://www.yiiframework.com/license/
  */
 
-namespace yii\db\oci;
+namespace yii\db\pgsql;
 
 use yii\db\ColumnSchemaBuilder as AbstractColumnSchemaBuilder;
 
 /**
- * ColumnSchemaBuilder is the schema builder for Oracle databases.
+ * ColumnSchemaBuilder is the schema builder for Postgres databases.
  *
  * @author Vasenin Matvey <vaseninm@gmail.com>
  * @since 2.0.6
  */
 class ColumnSchemaBuilder extends AbstractColumnSchemaBuilder
 {
+
     /**
      * @inheritdoc
      */
-    public function __toString()
+    protected function buildCommentString()
     {
-        return
-            $this->type .
-            $this->buildLengthString() .
-            $this->buildDefaultString() .
-            $this->buildNotNullString() .
-            $this->buildCheckString() .
-            $this->buildCommentString();
+        return '';
     }
 }
