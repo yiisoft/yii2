@@ -9,6 +9,7 @@ Yii Framework 2 Change Log
 - Bug #9415: Fixed regression in 2.0.6 where on Oracle DB `PDO::ATTR_CASE = PDO::CASE_LOWER` did not work anymore (cebe)
 - Chg #9369: `Yii::$app->user->can()` now returns `false` instead of erroring in case `authManager` component is not configured (creocoder)
 - Chg #9411: `DetailView` now automatically sets container tag ID in case it's not specified (samdark)
+- Enh #9337: Added defaultExpression() to `ColumnSchemaBuilder` to support DB Expression as default value (kotchuprik)
 
 
 2.0.6 August 05, 2015
