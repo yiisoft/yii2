@@ -49,7 +49,7 @@ class ColumnSchemaBuilder extends Object
     /**
      * @var mixed comment value of the column.
      */
-    protected $comment;
+    public $comment;
 
 
     /**
