@@ -8,6 +8,7 @@
 namespace yii\db;
 
 use yii\base\Component;
+use yii\db\ColumnSchemaBuilder;
 use yii\di\Instance;
 
 /**
@@ -258,6 +259,11 @@ class Migration extends Component implements MigrationInterface
         echo "    > create table $table ...";
         $time = microtime(true);
         $this->db->createCommand()->createTable($table, $columns, $options)->execute();
+        foreach ($columns as $column => $type) {
+            if ($type instanceof ColumnSchemaBuilder && $type->comment !== null) {
+                $this->db->createCommand()->addCommentOnColumn($table, $column, $type->comment)->execute();
+            }
+        }
         echo " done (time: " . sprintf('%.3f', microtime(true) - $time) . "s)\n";
     }
 
@@ -311,6 +317,9 @@ class Migration extends Component implements MigrationInterface
         echo "    > add column $column $type to table $table ...";
         $time = microtime(true);
         $this->db->createCommand()->addColumn($table, $column, $type)->execute();
+        if ($type instanceof ColumnSchemaBuilder && $type->comment !== null) {
+            $this->db->createCommand()->addCommentOnColumn($table, $column, $type->comment)->execute();
+        }
         echo " done (time: " . sprintf('%.3f', microtime(true) - $time) . "s)\n";
     }
 
@@ -354,6 +363,11 @@ class Migration extends Component implements MigrationInterface
         echo "    > alter column $column in table $table to $type ...";
         $time = microtime(true);
         $this->db->createCommand()->alterColumn($table, $column, $type)->execute();
+
+        if ($type instanceof ColumnSchemaBuilder && $type->comment !== null) {
+            $this->db->createCommand()->addCommentOnColumn($table, $column, $type->comment)->execute();
+        }
+
         echo " done (time: " . sprintf('%.3f', microtime(true) - $time) . "s)\n";
     }
 
