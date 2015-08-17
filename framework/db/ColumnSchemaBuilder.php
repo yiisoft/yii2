@@ -110,7 +110,7 @@ class ColumnSchemaBuilder extends Object
 
     /**
      * Specify the comment for the column.
-     * @param $comment the comment
+     * @param string $comment the comment
      * @return $this
      */
     public function comment($comment)

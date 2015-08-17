@@ -87,6 +87,30 @@ class SqliteQueryBuilderTest extends QueryBuilderTest
         parent::testAddDropPrimaryKey();
     }
 
+    public function testCommentOnColumnSchemaBuilder()
+    {
+        $this->setExpectedException('yii\base\NotSupportedException');
+        $this->string()->comment('comment');
+    }
+
+    public function testCommentColumn()
+    {
+        $qb = $this->getQueryBuilder();
+
+        $this->setExpectedException('yii\base\NotSupportedException');
+        $qb->addCommentOnColumn('comment', 'text', 'This is my column.');
+        $qb->dropCommentFromColumn('comment', 'text');
+    }
+
+    public function testCommentTable()
+    {
+        $qb = $this->getQueryBuilder();
+
+        $this->setExpectedException('yii\base\NotSupportedException');
+        $qb->addCommentOnTable('comment', 'This is my table.');
+        $qb->dropCommentFromTable('comment');
+    }
+
     public function testBatchInsert()
     {
         $db = $this->getConnection();
