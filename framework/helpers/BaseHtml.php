@@ -1308,6 +1308,8 @@ class BaseHtml
         }
         if (!array_key_exists('label', $options)) {
             $options['label'] = static::encode($model->getAttributeLabel(static::getAttributeName($attribute)));
+        } else if (false === $options['label']) {
+            unset($options['label']);
         }
 
         $checked = "$value" === "{$options['value']}";
@@ -1359,6 +1361,8 @@ class BaseHtml
         }
         if (!array_key_exists('label', $options)) {
             $options['label'] = static::encode($model->getAttributeLabel(static::getAttributeName($attribute)));
+        } else if (false === $options['label']) {
+            unset($options['label']);
         }
 
         $checked = "$value" === "{$options['value']}";
