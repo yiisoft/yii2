@@ -31,6 +31,11 @@ class ColumnSchemaBuilder extends Object
      */
     protected $length;
     /**
+     * @var boolean|string the column insert position (column name). If this is `true`, a `FIRST` constraint will be
+     * added. If this is a string, a `AFTER [[position]]` constraint will be added.
+     */
+    protected $position;
+    /**
      * @var boolean whether the column is not nullable. If this is `true`, a `NOT NULL` constraint will be added.
      */
     protected $isNotNull = false;
@@ -69,6 +74,27 @@ class ColumnSchemaBuilder extends Object
     public function notNull()
     {
         $this->isNotNull = true;
+        return $this;
+    }
+
+    /**
+     * Adds a `FIRST` constraint to the column.
+     * @return $this
+     */
+    public function first()
+    {
+        $this->position = true;
+        return $this;
+    }
+
+    /**
+     * Sets a `AFTER` constraint for the column.
+     * @param string $column the column name.
+     * @return $this
+     */
+    public function after($column)
+    {
+        $this->position = $column;
         return $this;
     }
 
@@ -116,6 +142,7 @@ class ColumnSchemaBuilder extends Object
             $this->buildNotNullString() .
             $this->buildUniqueString() .
             $this->buildDefaultString() .
+            $this->buildPositionString() .
             $this->buildCheckString();
     }
 
@@ -132,6 +159,22 @@ class ColumnSchemaBuilder extends Object
             $this->length = implode(',', $this->length);
         }
         return "({$this->length})";
+    }
+
+    /**
+     * Builds the column position part of the column.
+     * @return string returns ' FIRST' if [[position]] is true or returns ' AFTER [[position]]', otherwise it
+     * returns an empty string.
+     */
+    protected function buildPositionString()
+    {
+        if ($this->position === true) {
+            return ' FIRST';
+        }
+        if(is_string($this->position)){
+            return " AFTER {$this->position}";
+        }
+        return '';
     }
 
     /**
@@ -165,11 +208,11 @@ class ColumnSchemaBuilder extends Object
         $string = ' DEFAULT ';
         switch (gettype($this->default)) {
             case 'integer':
-                $string .= (string) $this->default;
+                $string .= (string)$this->default;
                 break;
             case 'double':
                 // ensure type cast always has . as decimal separator in all locales
-                $string .= str_replace(',', '.', (string) $this->default);
+                $string .= str_replace(',', '.', (string)$this->default);
                 break;
             case 'boolean':
                 $string .= $this->default ? 'TRUE' : 'FALSE';
