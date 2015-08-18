@@ -12,6 +12,7 @@ Yii Framework 2 Change Log
 - Bug #9288: Fixed `FileHelper::createDirectory` directory creation to be concurrency friendly (dynasource)
 - Bug #9314: Fixed `yii\rbac\DbManager::getPermissionsByUser()` not returning permissions directly assigned to a user (hesna)
 - Bug #9323: Fixed `yii\console\controllers\MessageController` not using database connection specified in config (raccoon69, samdark)
+- Enh #9337: Added `yii\db\ColumnSchemaBuilder::defaultExpression()` to support DB Expression as default value (kotchuprik)
 - Bug #9415: Fixed regression in 2.0.6 where on Oracle DB `PDO::ATTR_CASE = PDO::CASE_LOWER` did not work anymore (cebe)
 - Bug #9442: Fixed `yii\db\Migration::renameTable()` caused fatal error when using SQLite driver (fetus-hina)
 - Bug #9454: Fixed MSSQL MARS wasn't working with transactions (daliran)
