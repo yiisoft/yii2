@@ -1,8 +1,8 @@
-Manipulando Erros
+Tratamento de Erros
 ==============
 
 Ao manusear uma requisição da API RESTful, se existir um erro na requisição do usuário ou se alguma coisa inesperada acontecer no servidor, você pode simplesmente lançar uma exceção para notificar o usuário de que algo deu errado.
-Se você puder identificar a causa do erro (ex., o recurso requisitado não existe), você deve considerar lançar uma exceção juntamente com um código de status HTTP adequado (ex., [[yii\web\NotFoundHttpException]] representa um código de status 404). Yii irá enviar a resposta juntamente com o código e texto do status HTTP correspondente. Yii também incluirá a representação serializada da exceção no corpo da resposta. Por exemplo:
+Se você puder identificar a causa do erro (ex., o recurso requisitado não existe), você deve considerar lançar uma exceção juntamente com um código de status HTTP adequado (ex., [[yii\web\NotFoundHttpException]] representa um código de status 404). O Yii enviará a resposta juntamente com o código e o texto do status HTTP correspondente. O Yii também incluirá a representação serializada da exceção no corpo da resposta. Por exemplo:
 
 ```
 HTTP/1.1 404 Not Found
@@ -19,20 +19,20 @@ Content-Type: application/json; charset=UTF-8
 }
 ```
 
-A lista a seguir descrimina os códigos de status HTTP que são usados pelo REST framework Yii:
+A lista a seguir descrimina os códigos de status HTTP que são usados pelo framework REST do Yii:
 
-* `200`: OK. Tudo funcionou conforme o esperado.
-* `201`: Um recurso foi criado com êxito em resposta a uma requisição `POST`. O cabeçalho `location` contém a URL que aponta para o recurso recém-criado.
-* `204`: A requisição foi tratada com sucesso e a resposta não contém nenhum conteúdo no corpo (por exemplo uma requisição `DELETE`).
-* `304`: O recurso não foi modificado. Você pode usar a versão em cache.
-* `400`: Requisição malfeita. Isto pode ser causado por várias ações por parte do usuário, tais como o fornecimento de um JSON inválido no corpo da requisição, fornecendo parâmetros inválidos, etc.
-* `401`: Falha de autenticação.
-* `403`: O usuário autenticado não tem permissão para acessar o recurso da API solicitado.
-* `404`: O recurso requisitado não existe.
-* `405`: Método não permitido. Favor verificar o cabeçalho `Allow` para conhecer os métodos HTTP permitidos.
-* `415`: Tipo de mídia não suportada. O número de versão ou tipo content type requisitado é inválido.
-* `422`: Falha na validação dos dados (na resposta a uma requisição `POST`, por exemplo). Por favor, verifique o corpo da resposta para mensagens de erro detalhadas.
-* `429`: Excesso de requisições. A requisição foi rejeitada devido a limitação de taxa.
+* `200`: OK. Tudo funcionou conforme o esperado;
+* `201`: Um recurso foi criado com êxito em resposta a uma requisição `POST`. O cabeçalho `location` contém a URL que aponta para o recurso recém-criado;
+* `204`: A requisição foi tratada com sucesso e a resposta não contém nenhum conteúdo no corpo (por exemplo uma requisição `DELETE`);
+* `304`: O recurso não foi modificado. Você pode usar a versão em cache;
+* `400`: Requisição malfeita. Isto pode ser causado por várias ações por parte do usuário, tais como o fornecimento de um JSON inválido no corpo da requisição, fornecendo parâmetros inválidos, etc;
+* `401`: Falha de autenticação;
+* `403`: O usuário autenticado não tem permissão para acessar o recurso da API solicitado;
+* `404`: O recurso requisitado não existe;
+* `405`: Método não permitido. Favor verificar o cabeçalho `Allow` para conhecer os métodos HTTP permitidos;
+* `415`: Tipo de mídia não suportada. O número de versão ou o content type requisitado são inválidos;
+* `422`: Falha na validação dos dados (na resposta a uma requisição `POST`, por exemplo). Por favor, verifique o corpo da resposta para visualizar a mensagem detalhada do erro;
+* `429`: Excesso de requisições. A requisição foi rejeitada devido a limitação de taxa;
 * `500`: Erro interno do servidor. Isto pode ser causado por erros internos do programa.
 
 ## Customizando Resposta de Erro<span id="customizing-error-response"></span>
