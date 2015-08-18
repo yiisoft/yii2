@@ -161,7 +161,7 @@ W powyższych przykładach `$customer` jest obiektem typu `Customer`, a `$custom
 dane pobrane są z tabeli `customer`.
 
 > Info: Dzięki temu, że [[yii\db\ActiveQuery]] rozszerza klasę [[yii\db\Query]], możesz użyć *wszystkich* metod dotyczących kwerend i ich budowania 
-  opisanych w sekcji [Konstruktor kwerend](db-query-builder.md).
+> opisanych w sekcji [Konstruktor kwerend](db-query-builder.md).
 
 Ponieważ zwykle kwerendy korzystają z zapytań zawierających klucz główny lub też zestaw wartości dla kilku kolumn, Yii udostępnia dwie skrótowe metody, 
 pozwalające na szybsze ich użycie:
@@ -203,9 +203,9 @@ $customers = Customer::findAll([
 ]);
 ```
 
-> Uwaga: Ani metoda [[yii\db\ActiveRecord::findOne()]] ani [[yii\db\ActiveQuery::one()]] nie dodaje `LIMIT 1` do wygenerowanej 
-  kwerendy SQL. Jeśli zapytanie może zwrócić więcej niż jeden wiersz danych, należy wywołać bezpośrednio `limit(1)`, w celu zwiększenia 
-  wydajności aplikacji, np. `Customer::find()->limit(1)->one()`.
+> Note: Ani metoda [[yii\db\ActiveRecord::findOne()]] ani [[yii\db\ActiveQuery::one()]] nie dodaje `LIMIT 1` do wygenerowanej 
+> kwerendy SQL. Jeśli zapytanie może zwrócić więcej niż jeden wiersz danych, należy wywołać bezpośrednio `limit(1)`, w celu zwiększenia 
+> wydajności aplikacji, np. `Customer::find()->limit(1)->one()`.
 
 Oprócz korzystania z metod konstruktora kwerend możesz również użyć surowych zapytań SQL w celu pobrania danych do obiektu Active Record za 
 pomocą metody [[yii\db\ActiveRecord::findBySql()]]:
@@ -231,9 +231,9 @@ $id = $customer->id;
 $email = $customer->email;
 ```
 
-> Uwaga: nazwy atrybutów Active Record odpowiadają nazwom powiązanych z nimi kolumn z uwzględnieniem wielkości liter.
-  Yii automatycznie definiuje atrybut Active Record dla każdej kolumny powiązanej tabeli.
-  NIE należy definiować ich własnoręcznie. 
+> Note: nazwy atrybutów Active Record odpowiadają nazwom powiązanych z nimi kolumn z uwzględnieniem wielkości liter.
+> Yii automatycznie definiuje atrybut Active Record dla każdej kolumny powiązanej tabeli.
+> NIE należy definiować ich własnoręcznie. 
 
 Ponieważ atrybuty Active Record nazywane są zgodnie z nazwami kolumn, możesz natknąć się na kod PHP typu 
 `$customer->first_name`, gdzie podkreślniki używane są do oddzielenia poszczególnych słów w nazwach atrybutów, jeśli kolumny tabeli nazywane są 
@@ -268,7 +268,7 @@ class Customer extends ActiveRecord
 Od tego momentu, w kodzie PHP, zamiast odwołać się do `$customer->birthday`, można użyć `$customer->birthdayText`, co pozwala na 
 wprowadzenie i wyświetlenie daty urodzin klienta w formacie `'RRRR/MM/DD'`.
 
-> Wskazówka: Powyższy przykład pokazuje podstawowy sposób transformacji danych. Podczas zwyczajowej pracy z formularzami danych można skorzystać z 
+> Tip: Powyższy przykład pokazuje podstawowy sposób transformacji danych. Podczas zwyczajowej pracy z formularzami danych można skorzystać z 
 > [DateValidator](tutorial-core-validators.md#date) i [[yii\jui\DatePicker|DatePicker]], co jest prostsze w użyciu i posiadające więcej możliwości.
 
 
@@ -286,10 +286,10 @@ $customers = Customer::find()
     ->all();
 ```
 
-> Uwaga: Powyższy sposób zwiększa wydajność aplikacji i pozwala na zmniejszenie zużycia pamięci, ale ponieważ jest on znacznie bliższy niskiej warstwie 
-  abstrakcji DB, traci się większość funkcjonalności Active Record. Bardzo ważną różnicą jest zwracany typ danych dla wartości kolumn. Kiedy dane zwracane 
-  są jako obiekt Active Record, wartości kolumn są automatycznie odpowiednio rzutowane zgodnie z typem kolumny; przy danych zwracanych jako tablice 
-  wartości kolumn są zawsze typu string (jako rezultat zapytania PDO bez żadnego przetworzenia), niezależnie od typu kolumny.
+> Note: Powyższy sposób zwiększa wydajność aplikacji i pozwala na zmniejszenie zużycia pamięci, ale ponieważ jest on znacznie bliższy niskiej warstwie 
+> abstrakcji DB, traci się większość funkcjonalności Active Record. Bardzo ważną różnicą jest zwracany typ danych dla wartości kolumn. Kiedy dane zwracane 
+> są jako obiekt Active Record, wartości kolumn są automatycznie odpowiednio rzutowane zgodnie z typem kolumny; przy danych zwracanych jako tablice 
+> wartości kolumn są zawsze typu string (jako rezultat zapytania PDO bez żadnego przetworzenia), niezależnie od typu kolumny.
    
 
 ### Pobieranie danych seriami <span id="data-in-batches"></span>
@@ -356,29 +356,29 @@ public function save($runValidation = true, $attributeNames = null)
 }
 ```
 
-> Wskazówka: Możesz również wywołać [[yii\db\ActiveRecord::insert()|insert()]] lub [[yii\db\ActiveRecord::update()|update()]] bezpośrednio, aby dodać lub 
-  uaktualnić wiersz.
+> Tip: Możesz również wywołać [[yii\db\ActiveRecord::insert()|insert()]] lub [[yii\db\ActiveRecord::update()|update()]] bezpośrednio, aby dodać lub 
+> uaktualnić wiersz.
   
 
 ### Walidacja danych <span id="data-validation"></span>
 
-Because [[yii\db\ActiveRecord]] extends from [[yii\base\Model]], it shares the same [data validation](input-validation.md) feature.
-You can declare validation rules by overriding the [[yii\db\ActiveRecord::rules()|rules()]] method and perform 
-data validation by calling the [[yii\db\ActiveRecord::validate()|validate()]] method.
+Dzięki temu, że [[yii\db\ActiveRecord]] rozszerza klasę [[yii\base\Model]], korzysta z tych samych mechanizmów [walidacji danych](input-validation.md).
+Możesz definiować zasady walidacji nadpisując metodę [[yii\db\ActiveRecord::rules()|rules()]] i uruchamiać procedurę walidacji wywołując metodę 
+[[yii\db\ActiveRecord::validate()|validate()]].
 
-When you call [[yii\db\ActiveRecord::save()|save()]], by default it will call [[yii\db\ActiveRecord::validate()|validate()]]
-automatically. Only when the validation passes, will it actually save the data; otherwise it will simply return false,
-and you can check the [[yii\db\ActiveRecord::errors|errors]] property to retrieve the validation error messages.  
+Wywołanie [[yii\db\ActiveRecord::save()|save()]] automatycznie wywołuje również [[yii\db\ActiveRecord::validate()|validate()]]. 
+Dopiero po pomyślnym przejściu walidacji rozpocznie się proces zapisywania danych; w przeciwnym wypadku zostanie zwrócona flaga false, a komunikaty o 
+błędach walidacji można odczytać sprawdzając właściwość [[yii\db\ActiveRecord::errors|errors]]. 
 
-> Tip: If you are certain that your data do not need validation (e.g., the data comes from trustable sources),
-  you can call `save(false)` to skip the validation.
+> Tip: Jeśli masz pewność, że dane nie potrzebują przechodzić procesu walidacji (np. pochodzą z zaufanych źródeł), możesz wywołać `save(false)`, 
+> aby go pominąć.
 
 
-### Massive Assignment <span id="massive-assignment"></span>
+### Masowe przypisywanie <span id="massive-assignment"></span>
 
-Like normal [models](structure-models.md), Active Record instances also enjoy the [massive assignment feature](structure-models.md#massive-assignment).
-Using this feature, you can assign values to multiple attributes of an Active Record instance in a single PHP statement,
-like shown below. Do remember that only [safe attributes](structure-models.md#safe-attributes) can be massively assigned, though.
+Tak jak w zwyczajnych [modelach](structure-models.md), instancje Active Record posiadają również mechanizm [masowego przypisywania](structure-models.md#massive-assignment).
+Funkcjonalność ta umożliwia przypisanie wartości wielu atrybutom Active Record za pomocą pojedynczej instrukcji PHP, jak pokazano to poniżej. 
+Należy jednak pamiętać, że w ten sposób mogą być przypisane tylko [bezpieczne atrybuty](structure-models.md#safe-attributes).
 
 ```php
 $values = [
@@ -393,11 +393,11 @@ $customer->save();
 ```
 
 
-### Updating Counters <span id="updating-counters"></span>
+### Aktualizowanie liczników <span id="updating-counters"></span>
 
-It is a common task to increment or decrement a column in a database table. We call such columns as counter columns.
-You can use [[yii\db\ActiveRecord::updateCounters()|updateCounters()]] to update one or multiple counter columns.
-For example,
+Jednym z częstych zadań jest zmniejszanie lub zwiększanie wartości kolumny w tabeli bazy danych. Takie kolumny nazywamy licznikami.
+Metoda [[yii\db\ActiveRecord::updateCounters()|updateCounters()]] służy do aktualizacji jednego lub wielu liczników.
+Przykład:
 
 ```php
 $post = Post::findOne(100);
@@ -406,58 +406,54 @@ $post = Post::findOne(100);
 $post->updateCounters(['view_count' => 1]);
 ```
 
-> Note: If you use [[yii\db\ActiveRecord::save()]] to update a counter column, you may end up with inaccurate result,
-  because it is likely the same counter is being saved by multiple requests which read and write the same counter value.
+> Note: Jeśli używasz [[yii\db\ActiveRecord::save()]] do aktualizacji licznika, możesz otrzymać nieprawidłowe rezultaty, ponieważ jest możliwe, że 
+  ten sam licznik zostanie odczytany i zapisany jednocześnie przez wiele zapytań.
 
 
-### Dirty Attributes <span id="dirty-attributes"></span>
+### Brudne atrybuty <span id="dirty-attributes"></span>
 
-When you call [[yii\db\ActiveRecord::save()|save()]] to save an Active Record instance, only *dirty attributes*
-are being saved. An attribute is considered *dirty* if its value has been modified since it was loaded from DB or
-saved to DB most recently. Note that data validation will be performed regardless if the Active Record 
-instance has dirty attributes or not.
+Kiedy wywołujesz [[yii\db\ActiveRecord::save()|save()]], aby zapisać instancję Active Record, tylko *brudne atrybuty* są zapisywane. 
+Atrybut uznawany jest za *brudny* jeśli jego wartość została zmodyfikowana od momentu pobrania z bazy danych lub ostatniego zapisu. 
+Pamiętaj, że walidacja danych zostanie przeprowadzona niezależnie od tego, czy instancja Active Record zawiera brudne atrybuty czy też nie.
 
-Active Record automatically maintains the list of dirty attributes. It does so by maintaining an older version of
-the attribute values and comparing them with the latest one. You can call [[yii\db\ActiveRecord::getDirtyAttributes()]] 
-to get the attributes that are currently dirty. You can also call [[yii\db\ActiveRecord::markAttributeDirty()]] 
-to explicitly mark an attribute as dirty.
+Active Record automatycznie tworzy listę brudnych atrybutów, poprzez porównanie starej wartości atrybutu do aktualnej. Możesz wywołać metodę 
+[[yii\db\ActiveRecord::getDirtyAttributes()]], aby otrzymać najnowszą listę brudnych atrybutów. Dodatkowo można wywołać 
+[[yii\db\ActiveRecord::markAttributeDirty()]], aby oznaczyć konkretny atrybut jako brudny.
 
-If you are interested in the attribute values prior to their most recent modification, you may call 
-[[yii\db\ActiveRecord::getOldAttributes()|getOldAttributes()]] or [[yii\db\ActiveRecord::getOldAttribute()|getOldAttribute()]].
+Jeśli chcesz sprawdzić wartość atrybutu sprzed ostatniej zmiany, możesz wywołać [[yii\db\ActiveRecord::getOldAttributes()|getOldAttributes()]] lub 
+[[yii\db\ActiveRecord::getOldAttribute()|getOldAttribute()]].
 
-> Note: The comparison of old and new values will be done using the `===` operator so a value will be considered dirty
-> even if it has the same value but a different type. This is often the case when the model receives user input from
-> HTML forms where every value is represented as a string.
-> To ensure the correct type for e.g. integer values you may apply a [validation filter](input-validation.md#data-filtering):
+> Note: Porównanie starej i nowej wartości atrybutu odbywa się za pomocą operatora `===`, zatem atrybut zostanie uznany za brudny nawet jeśli 
+> ma tą samą wartość, ale jest innego typu. Taka sytuacja zdarza się często, kiedy model jest aktualizowany danymi pochodzącymi z formularza 
+> HTML, gdzie każda wartość jest reprezentowana jako string.
+> Aby upewnić się, że wartości będą odpowiednich typów, np. integer, możesz zaaplikować [filtr walidacji](input-validation.md#data-filtering):
 > `['attributeName', 'filter', 'filter' => 'intval']`.
 
-### Default Attribute Values <span id="default-attribute-values"></span>
 
-Some of your table columns may have default values defined in the database. Sometimes, you may want to pre-populate your
-Web form for an Active Record instance with these default values. To avoid writing the same default values again,
-you can call [[yii\db\ActiveRecord::loadDefaultValues()|loadDefaultValues()]] to populate the DB-defined default values
-into the corresponding Active Record attributes:
+### Domyślne wartości atrybutów <span id="default-attribute-values"></span>
+
+Niektóre z kolumn tabeli bazy danych mogą mieć przypisane domyślne wartości w bazie danych. W przypadku, gdy chcesz wypełnić takimi wartościami 
+internetowy formularz dla instancji Active Record, zamiast ponownie ustalać wszystkie domyślne wartości możesz wywołać metodę 
+[[yii\db\ActiveRecord::loadDefaultValues()|loadDefaultValues()]], która przypisze wszystkie domyślne wartości odpowiednim atrybutom:
 
 ```php
 $customer = new Customer();
 $customer->loadDefaultValues();
-// $customer->xyz will be assigned the default value declared when defining the "xyz" column
+// $customer->xyz otrzyma domyślną wartość, zadeklarowaną przy definiowaniu kolumny "xyz"
 ```
 
 
-### Updating Multiple Rows <span id="updating-multiple-rows"></span>
+### Aktualizowanie wielu wierszy jednocześnie <span id="updating-multiple-rows"></span>
 
-The methods described above all work on individual Active Record instances, causing inserting or updating of individual
-table rows. To update multiple rows simultaneously, you should call [[yii\db\ActiveRecord::updateAll()|updateAll()]], instead,
-which is a static method.
+Metody przedstawione powyżej działają na pojedynczych instancjach Active Record, dodając lub aktualizując indywidualne wiersze tabeli. 
+Aby uaktualnić wiele wierszy jednocześnie, należy wywołać statyczną metodę [[yii\db\ActiveRecord::updateAll()|updateAll()]].
 
 ```php
 // UPDATE `customer` SET `status` = 1 WHERE `email` LIKE `%@example.com%`
 Customer::updateAll(['status' => Customer::STATUS_ACTIVE], ['like', 'email', '@example.com']);
 ```
 
-Similarly, you can call [[yii\db\ActiveRecord::updateAllCounters()|updateAllCounters()]] to update counter columns of
-multiple rows at the same time.
+W podobny sposób można wywołać [[yii\db\ActiveRecord::updateAllCounters()|updateAllCounters()]], aby uaktualnić liczniki wielu wierszy w tym samym czasie.
 
 ```php
 // UPDATE `customer` SET `age` = `age` + 1
@@ -465,27 +461,27 @@ Customer::updateAllCounters(['age' => 1]);
 ```
 
 
-## Deleting Data <span id="deleting-data"></span>
+## Usuwanie danych <span id="deleting-data"></span>
 
-To delete a single row of data, first retrieve the Active Record instance corresponding to that row and then call
-the [[yii\db\ActiveRecord::delete()]] method.
+Aby usunąć pojedynczy wiersz danych, utwórz najpierw instancję Active Record odpowiadającą temu wierszowi, a następnie wywołaj metodę 
+[[yii\db\ActiveRecord::delete()]].
 
 ```php
 $customer = Customer::findOne(123);
 $customer->delete();
 ```
 
-You can call [[yii\db\ActiveRecord::deleteAll()]] to delete multiple or all rows of data. For example,
+Możesz również wywołać [[yii\db\ActiveRecord::deleteAll()]], aby usunąć kilka lub wszystkie wiersze danych. Dla przykładu:
 
 ```php
 Customer::deleteAll(['status' => Customer::STATUS_INACTIVE]);
 ```
 
-> Note: Be very careful when calling [[yii\db\ActiveRecord::deleteAll()|deleteAll()]] because it may totally
-  erase all data from your table if you make a mistake in specifying the condition.
+> Note: Należy być bardzo ostrożnym przy wywoływaniu [[yii\db\ActiveRecord::deleteAll()|deleteAll()]], ponieważ w efekcie można całkowicie usunąć 
+> wszystkie dane z tabeli bazy, jeśli popełni się błąd przy ustalaniu warunków dla metody.
 
 
-## Active Record Life Cycles <span id="ar-life-cycles"></span>
+## Cykl życia Active Record <span id="ar-life-cycles"></span>
 
 It is important to understand the life cycles of Active Record when it is used for different purposes.
 During each life cycle, a certain sequence of methods will be invoked, and you can override these methods

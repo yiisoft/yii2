@@ -40,7 +40,7 @@ Struktura aplikacji
 * [Moduły](structure-modules.md)
 * [Filtry](structure-filters.md)
 * [Widżety](structure-widgets.md)
-* [Zasoby (Assets)](structure-assets.md)
+* [Assety (Assets)](structure-assets.md)
 * [Rozszerzenia](structure-extensions.md)
 
 
@@ -63,8 +63,8 @@ Kluczowe koncepcje
 
 * [Komponenty](concept-components.md)
 * [Właściwości](concept-properties.md)
-* [Zdarzenia (Events)](concept-events.md)
-* [Zachowania (Behaviors)](concept-behaviors.md)
+* [Events](concept-events.md)
+* [Behaviors](concept-behaviors.md)
 * [Konfiguracje](concept-configurations.md)
 * [Aliasy](concept-aliases.md)
 * [Autoładowanie klas](concept-autoloading.md)
