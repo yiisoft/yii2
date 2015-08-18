@@ -171,7 +171,7 @@ Tópicos Especiais
 * [Ajustes no Desempenho](tutorial-performance-tuning.md)
 * [Ambiente de Hospedagem Compartilhada](tutorial-shared-hosting.md)
 * [Motor de Template](tutorial-template-engines.md)
-* [Utilização com Códigos de Terceiros](tutorial-yii-integration.md)
+* [Trabalhando com Códigos de Terceiros](tutorial-yii-integration.md)
 
 
 Widgets
