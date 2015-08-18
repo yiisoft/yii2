@@ -7,7 +7,7 @@ w tabeli - *atrybut* obiektu Active Record reprezentuje wartość konkretnej kol
 można skorzystać z atrybutów i metod klasy Active Record.
 
 Dla przykładu, załóżmy, że `Customer` jest klasą Active Record, powiązaną z tabelą `customer` i `name` jest kolumną w tabeli `customer`. 
-Aby dodać nowy wiersz do tabeli `customer`, należy wykonać następujący kod:
+Aby dodać nowy wiersz do tabeli `customer` wystarczy wykonać następujący kod:
 
 ```php
 $customer = new Customer();
@@ -483,69 +483,58 @@ Customer::deleteAll(['status' => Customer::STATUS_INACTIVE]);
 
 ## Cykl życia Active Record <span id="ar-life-cycles"></span>
 
-It is important to understand the life cycles of Active Record when it is used for different purposes.
-During each life cycle, a certain sequence of methods will be invoked, and you can override these methods
-to get a chance to customize the life cycle. You can also respond to certain Active Record events triggered 
-during a life cycle to inject your custom code. These events are especially useful when you are developing 
-Active Record [behaviors](concept-behaviors.md) which need to customize Active Record life cycles.
+Istotnym elementem pracy z Yii jest zrozumienie cyklu życia Active Record w zależności od metodyki jego użycia.
+Podczas każdego cyklu wykonywane są określone sekwencje metod i aby dopasować go do własnych potrzeb, wytarczy je nadpisać. 
+Można również śledzić i odpowiadać na eventy Active Record uruchamiane podczas cyklu życia, aby wstrzyknąć swój własny kod. 
+Takie eventy są szczególnie użyteczne podczas tworzenia wpływających na cykl życia [behaviorów](concept-behaviors.md) Active Record.
 
-In the following, we will summarize various Active Record life cycles and the methods/events that are involved
-in the life cycles.
+Poniżej znajdziesz wyszczególnione cykle życia Active Record wraz z metodami/eventami, które są w nie zaangażowane.
 
 
-### New Instance Life Cycle <span id="new-instance-life-cycle"></span>
+### Cykl życia nowej instancji <span id="new-instance-life-cycle"></span>
 
-When creating a new Active Record instance via the `new` operator, the following life cycle will happen:
+Podczas tworzenia nowej instancji Active Record za pomocą operatora `new`, zachodzi następujący cykl:
 
-1. class constructor;
-2. [[yii\db\ActiveRecord::init()|init()]]: triggers an [[yii\db\ActiveRecord::EVENT_INIT|EVENT_INIT]] event.
-
-
-### Querying Data Life Cycle <span id="querying-data-life-cycle"></span>
-
-When querying data through one of the [querying methods](#querying-data), each newly populated Active Record will
-undergo the following life cycle:
-
-1. class constructor.
-2. [[yii\db\ActiveRecord::init()|init()]]: triggers an [[yii\db\ActiveRecord::EVENT_INIT|EVENT_INIT]] event.
-3. [[yii\db\ActiveRecord::afterFind()|afterFind()]]: triggers an [[yii\db\ActiveRecord::EVENT_AFTER_FIND|EVENT_AFTER_FIND]] event.
+1. Konstruktor klasy.
+2. [[yii\db\ActiveRecord::init()|init()]]: uruchamia event [[yii\db\ActiveRecord::EVENT_INIT|EVENT_INIT]].
 
 
-### Saving Data Life Cycle <span id="saving-data-life-cycle"></span>
+### Cykl życia przy pobieraniu danych <span id="querying-data-life-cycle"></span>
 
-When calling [[yii\db\ActiveRecord::save()|save()]] to insert or update an Active Record instance, the following
-life cycle will happen:
+Podczas pobierania danych za pomocą jednej z [metod kwerendy](#querying-data), każdy świeżo wypełniony obiekt Active Record przechodzi następujący cykl:
 
-1. [[yii\db\ActiveRecord::beforeValidate()|beforeValidate()]]: triggers 
-   an [[yii\db\ActiveRecord::EVENT_BEFORE_VALIDATE|EVENT_BEFORE_VALIDATE]] event. If the method returns false
-   or [[yii\base\ModelEvent::isValid]] is false, the rest of the steps will be skipped.
-2. Performs data validation. If data validation fails, the steps after Step 3 will be skipped. 
-3. [[yii\db\ActiveRecord::afterValidate()|afterValidate()]]: triggers 
-   an [[yii\db\ActiveRecord::EVENT_AFTER_VALIDATE|EVENT_AFTER_VALIDATE]] event.
-4. [[yii\db\ActiveRecord::beforeSave()|beforeSave()]]: triggers 
-   an [[yii\db\ActiveRecord::EVENT_BEFORE_INSERT|EVENT_BEFORE_INSERT]] 
-   or [[yii\db\ActiveRecord::EVENT_BEFORE_UPDATE|EVENT_BEFORE_UPDATE]] event. If the method returns false
-   or [[yii\base\ModelEvent::isValid]] is false, the rest of the steps will be skipped.
-5. Performs the actual data insertion or updating;
-6. [[yii\db\ActiveRecord::afterSave()|afterSave()]]: triggers
-   an [[yii\db\ActiveRecord::EVENT_AFTER_INSERT|EVENT_AFTER_INSERT]] 
-   or [[yii\db\ActiveRecord::EVENT_AFTER_UPDATE|EVENT_AFTER_UPDATE]] event.
+1. Konstruktor klasy.
+2. [[yii\db\ActiveRecord::init()|init()]]: uruchamia event [[yii\db\ActiveRecord::EVENT_INIT|EVENT_INIT]].
+3. [[yii\db\ActiveRecord::afterFind()|afterFind()]]: uruchamia event [[yii\db\ActiveRecord::EVENT_AFTER_FIND|EVENT_AFTER_FIND]].
+
+
+### Cykl życia przy zapisywaniu danych <span id="saving-data-life-cycle"></span>
+
+Podczas wywołania [[yii\db\ActiveRecord::save()|save()]], w celu dodania lub uaktualnienia danych instancji Active Record, zachodzi następujący cykl:
+
+1. [[yii\db\ActiveRecord::beforeValidate()|beforeValidate()]]: uruchamia event [[yii\db\ActiveRecord::EVENT_BEFORE_VALIDATE|EVENT_BEFORE_VALIDATE]]. 
+   Jeśli metoda zwróci false lub właściwość [[yii\base\ModelEvent::isValid]] ma wartość false, kolejne kroki są pomijane.
+2. Proces walidacji danych. Jeśli proces zakończy się niepowodzeniem, kolejne kroki po kroku 3. są pomijane. 
+3. [[yii\db\ActiveRecord::afterValidate()|afterValidate()]]: uruchamia event [[yii\db\ActiveRecord::EVENT_AFTER_VALIDATE|EVENT_AFTER_VALIDATE]].
+4. [[yii\db\ActiveRecord::beforeSave()|beforeSave()]]: uruchamia event [[yii\db\ActiveRecord::EVENT_BEFORE_INSERT|EVENT_BEFORE_INSERT]] lub 
+   [[yii\db\ActiveRecord::EVENT_BEFORE_UPDATE|EVENT_BEFORE_UPDATE]]. Jeśli metoda zwróci false lub właściwość [[yii\base\ModelEvent::isValid]] ma 
+   wartość false, kolejne kroki są pomijane.
+5. Proces właściwego dodawania lub aktulizowania danych.
+6. [[yii\db\ActiveRecord::afterSave()|afterSave()]]: uruchamia event [[yii\db\ActiveRecord::EVENT_AFTER_INSERT|EVENT_AFTER_INSERT]] lub 
+   [[yii\db\ActiveRecord::EVENT_AFTER_UPDATE|EVENT_AFTER_UPDATE]].
    
 
-### Deleting Data Life Cycle <span id="deleting-data-life-cycle"></span>
+### Cykl życia przy usuwaniu danych <span id="deleting-data-life-cycle"></span>
 
-When calling [[yii\db\ActiveRecord::delete()|delete()]] to delete an Active Record instance, the following
-life cycle will happen:
+Podczas wywołania [[yii\db\ActiveRecord::delete()|delete()]], w celu usunięcia danych instancji Active Record instance, zachodzi następujący cykl:
 
-1. [[yii\db\ActiveRecord::beforeDelete()|beforeDelete()]]: triggers
-   an [[yii\db\ActiveRecord::EVENT_BEFORE_DELETE|EVENT_BEFORE_DELETE]] event. If the method returns false
-   or [[yii\base\ModelEvent::isValid]] is false, the rest of the steps will be skipped.
-2. perform the actual data deletion
-3. [[yii\db\ActiveRecord::afterDelete()|afterDelete()]]: triggers
-   an [[yii\db\ActiveRecord::EVENT_AFTER_DELETE|EVENT_AFTER_DELETE]] event.
+1. [[yii\db\ActiveRecord::beforeDelete()|beforeDelete()]]: uruchamia event [[yii\db\ActiveRecord::EVENT_BEFORE_DELETE|EVENT_BEFORE_DELETE]]. 
+   Jeśli metoda zwróci false lub właściwość [[yii\base\ModelEvent::isValid]] ma wartość false, kolejne kroki są pomijane.
+2. Proces właściwego usuwania danych.
+3. [[yii\db\ActiveRecord::afterDelete()|afterDelete()]]: uruchamia event [[yii\db\ActiveRecord::EVENT_AFTER_DELETE|EVENT_AFTER_DELETE]].
 
 
-> Note: Calling any of the following methods will NOT initiate any of the above life cycles:
+> Note: Wywołanie poniższych metod NIE uruchomi żadnego z powyższych cykli:
 >
 > - [[yii\db\ActiveRecord::updateAll()]] 
 > - [[yii\db\ActiveRecord::deleteAll()]]
@@ -553,11 +542,11 @@ life cycle will happen:
 > - [[yii\db\ActiveRecord::updateAllCounters()]] 
 
 
-## Working with Transactions <span id="transactional-operations"></span>
+## Praca z transakcjami <span id="transactional-operations"></span>
 
-There are two ways of using [transactions](db-dao.md#performing-transactions) while working with Active Record. 
+Są dwa sposoby użycia [transakcji](db-dao.md#performing-transactions) podczas pracy z Active Record. 
 
-The first way is to explicitly enclose Active Record method calls in a transactional block, like shown below,
+Pierwszy zakłada bezpośrednie ujęcie wywołań metod Active Record w blok transakcji, jak pokazano to poniżej:
 
 ```php
 $customer = Customer::findOne(123);
@@ -565,16 +554,16 @@ $customer = Customer::findOne(123);
 Customer::getDb()->transaction(function($db) use ($customer) {
     $customer->id = 200;
     $customer->save();
-    // ...other DB operations...
+    // ...inne operacje bazodanowe...
 });
 
-// or alternatively
+// lub alternatywnie
 
 $transaction = Customer::getDb()->beginTransaction();
 try {
     $customer->id = 200;
     $customer->save();
-    // ...other DB operations...
+    // ...inne operacje bazodanowe...
     $transaction->commit();
 } catch(\Exception $e) {
     $transaction->rollBack();
@@ -582,8 +571,8 @@ try {
 }
 ```
 
-The second way is to list the DB operations that require transactional support in the [[yii\db\ActiveRecord::transactions()]]
-method. For example,
+Drugi sposób polega na utworzeniu listy operacji bazodanowych, które wymagają transakcji za pomocą metody [[yii\db\ActiveRecord::transactions()]]. 
+Dla przykładu:
 
 ```php
 class Customer extends ActiveRecord
@@ -593,61 +582,58 @@ class Customer extends ActiveRecord
         return [
             'admin' => self::OP_INSERT,
             'api' => self::OP_INSERT | self::OP_UPDATE | self::OP_DELETE,
-            // the above is equivalent to the following:
+            // powyższy zapis jest odpowiednikiem następującego skróconego:
             // 'api' => self::OP_ALL,
         ];
     }
 }
 ```
 
-The [[yii\db\ActiveRecord::transactions()]] method should return an array whose keys are [scenario](structure-models.md#scenarios)
-names and values the corresponding operations that should be enclosed within transactions. You should use the following
-constants to refer to different DB operations:
+Metoda [[yii\db\ActiveRecord::transactions()]] powinna zwracać tablicę, której klucze są nazwami [scenariuszy](structure-models.md#scenarios) 
+a wartości to operacje bazodanowe, które powinny być objęte transakcją. Używaj następujących stałych do określenia typu operacji:
 
-* [[yii\db\ActiveRecord::OP_INSERT|OP_INSERT]]: insertion operation performed by [[yii\db\ActiveRecord::insert()|insert()]];
-* [[yii\db\ActiveRecord::OP_UPDATE|OP_UPDATE]]: update operation performed by [[yii\db\ActiveRecord::update()|update()]];
-* [[yii\db\ActiveRecord::OP_DELETE|OP_DELETE]]: deletion operation performed by [[yii\db\ActiveRecord::delete()|delete()]].
+* [[yii\db\ActiveRecord::OP_INSERT|OP_INSERT]]: operacja dodawania wykonywana za pomocą [[yii\db\ActiveRecord::insert()|insert()]];
+* [[yii\db\ActiveRecord::OP_UPDATE|OP_UPDATE]]: operacja aktualizacji wykonywana za pomocą [[yii\db\ActiveRecord::update()|update()]];
+* [[yii\db\ActiveRecord::OP_DELETE|OP_DELETE]]: operacja usuwania wykonywana za pomocą [[yii\db\ActiveRecord::delete()|delete()]].
 
-Use `|` operators to concatenate the above constants to indicate multiple operations. You may also use the shortcut
-constant [[yii\db\ActiveRecord::OP_ALL|OP_ALL]] to refer to all three operations above.
+Używaj operatora `|`, aby podać więcej niż jedną operację za pomocą powyższych stałych. Możesz również użyć stałej dla skróconej definicji 
+wszystkich trzech powyższych operacji [[yii\db\ActiveRecord::OP_ALL|OP_ALL]].
 
 
-## Optimistic Locks <span id="optimistic-locks"></span>
+## Optymistyczna blokada <span id="optimistic-locks"></span>
 
-Optimistic locking is a way to prevent conflicts that may occur when a single row of data is being
-updated by multiple users. For example, both user A and user B are editing the same wiki article
-at the same time. After user A saves his edits, user B clicks on the "Save" button in an attempt to
-save his edits as well. Because user B was actually working on an outdated version of the article,
-it would be desirable to have a way to prevent him from saving the article and show him some hint message.
+Optymistyczne blokowanie jest jednym ze sposobów uniknięcia konfliktów, które mogą wystąpić, kiedy pojedynczy wiersz danych jest aktualizowany przez 
+kilku użytkowników. Dla przykładu, użytkownik A i użytkownik B edytują artykuł wiki w tym samym czasie - po tym jak użytkownik A zapisał już swoje 
+zmiany, użytkownik B klika przycisk "Zapisz", aby również wykonać identyczną operację. Ponieważ użytkownik B pracował w rzeczywistości na "starej" wersji 
+artykułu, byłoby wskazane powstrzymać go przed nadpisaniem wersji użytkownika A i wyświelić jakiś komunikat z wyjaśnieniem sytuacji.
 
-Optimistic locking solves the above problem by using a column to record the version number of each row.
-When a row is being saved with an outdated version number, a [[yii\db\StaleObjectException]] exception
-will be thrown, which prevents the row from being saved. Optimistic locking is only supported when you
-update or delete an existing row of data using [[yii\db\ActiveRecord::update()]] or [[yii\db\ActiveRecord::delete()]],
-respectively.
+Optymistyczne blokowanie rozwiązuje ten problem za pomocą dodatkowej kolumny w bazie przechowującej numer wersji każdego wiersza.
+Kiedy taki wiersz jest zapisywany z wcześniejszym numerem wersji niż aktualna rzucany jest wyjątek [[yii\db\StaleObjectException]], który powstrzymuje 
+zapis wiersza. Optymistyczne blokowanie może być użyte tylko przy aktualizacji lub usuwaniu istniejącego wiersza za pomocą odpowiednio 
+[[yii\db\ActiveRecord::update()]] lub [[yii\db\ActiveRecord::delete()]].
 
-To use optimistic locking,
+Aby skorzystać z optymistycznej blokady:
 
-1. Create a column in the DB table associated with the Active Record class to store the version number of each row.
-   The column should be of big integer type (in MySQL it would be `BIGINT DEFAULT 0`).
-2. Override the [[yii\db\ActiveRecord::optimisticLock()]] method to return the name of this column.
-3. In the Web form that takes user inputs, add a hidden field to store the current version number of the row being updated. Be sure your version attribute has input validation rules and validates successfully.
-4. In the controller action that updates the row using Active Record, try and catch the [[yii\db\StaleObjectException]]
-   exception. Implement necessary business logic (e.g. merging the changes, prompting staled data) to resolve the conflict.
+1. Stwórz kolumnę w tabeli bazy danych powiązaną z klasą Active Record do przechowywania numeru wersji każdego wiersza.
+   Kolumna powinna być typu big integer (w MySQL `BIGINT DEFAULT 0`).
+2. Nadpisz metodę [[yii\db\ActiveRecord::optimisticLock()]], aby zwrócić nazwę tej kolumny.
+3. W formularzu pobierającym dane od użytkownika, dodaj ukryte pole, gdzie przechowasz aktualny numer wersji uaktualnianego wiersza. 
+   Upewnij się, że atrybut wersji ma dodaną zasadę walidacji i przechodzi poprawnie proces walidacji.
+4. W akcji kontrolera uaktualniającej wiersz za pomocą Active Record, użyj bloku try-catch, aby wyłapać wyjątek [[yii\db\StaleObjectException]]. 
+   Zaimplemetuj odpowiednią logikę biznesową (np. scalenie zmian, wyświetlenie komunikatu o nieaktualnej wersji, itp.), aby rozwiązać konflikt.
    
-For example, assume the version column is named as `version`. You can implement optimistic locking with the code like
-the following.
+Dla przykładu, załóżmy, że kolumna wersji nazywa się `version`. Implementację optymistycznego blokowania można wykonać za pomocą następującego kodu:
 
 ```php
-// ------ view code -------
+// ------ kod widoku -------
 
 use yii\helpers\Html;
 
-// ...other input fields
+// ...inne pola formularza
 echo Html::activeHiddenInput($model, 'version');
 
 
-// ------ controller code -------
+// ------ kod kontrolera -------
 
 use yii\db\StaleObjectException;
 
@@ -664,7 +650,7 @@ public function actionUpdate($id)
             ]);
         }
     } catch (StaleObjectException $e) {
-        // logic to resolve the conflict
+        // logika rozwiązująca konflikt
     }
 }
 ```
