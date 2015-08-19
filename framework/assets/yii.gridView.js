@@ -85,31 +85,38 @@
             var $grid = $(this), event;
             var settings = gridData[$grid.attr('id')].settings;
             var data = {};
-            $.each($(settings.filterSelector).serializeArray(), function () {
-                methods.setValue(data, this.name, this.value);
+            var dataForm = [];
+
+            // get the query params from the request url
+            $.each(yii.getQueryParams(settings.filterUrl), function (name, value) {
+                data[name] = value;
             });
 
-            $.each(yii.getQueryParams(settings.filterUrl), function (name, value) {
-                var multiSelectName = name.replace('[]', '');
-                if (data[name] === undefined
-                    && data[multiSelectName] === undefined) {
-                    methods.setValue(data, name, value);
+            $.each($(settings.filterSelector).serializeArray(), function () {
+                if (data[this.name] !== undefined) {
+                    //unset all the values that appear on the url to avoid setting them twice.
+                    delete data[this.name];
                 }
+                if (this.value !== '') { // only add to the url values that are not empty strings
+                    dataForm.push([this.name, this.value]);
+                }
+            });
+
+            $.each(data, function (name, value) {
+                // add the values from the url that doesn't appear on the form.
+                dataForm.push([name, value]);
             });
 
             var pos = settings.filterUrl.indexOf('?');
             var url = pos < 0 ? settings.filterUrl : settings.filterUrl.substring(0, pos);
 
             $grid.find('form.gridview-filter-form').remove();
-            var $form = $('<form action="' + url + '" method="get" class="gridview-filter-form" style="display:none" data-pjax></form>').appendTo($grid);
-            $.each(data, function (name, value) {
-                if (Array.isArray(value)) {
-                    $.each(value, function (key, value) {
-                        $form.append($('<input type="hidden" name="t" value="" />').attr('name', name).val(value));
-                    });
-                } else {
-                    $form.append($('<input type="hidden" name="t" value="" />').attr('name', name).val(value));
-                }
+
+            var $form = $('').appendTo($grid);
+
+            $.each(dataForm, function (i, value) {
+                // add the values from dataForm to the form.
+                $form.append($('').attr('name', value[0]).val(value[1]));
             });
 
             event = $.Event(gridEvents.beforeFilter);
