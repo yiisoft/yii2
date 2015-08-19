@@ -8,15 +8,16 @@
 namespace yii\web;
 
 /**
- * MultiDataSession is a base class for the sessions, which are using multi-field data storage, e.g.
- * session data can be split between several fields in the storage record.
- * For example a relational database such as MySQL supports this.
- * Using such storage allows saving particular session data into separated field, which then can be used
- * to manipulate sessions in the way plain PHP does not allows.
- * For example: currently authenticated user ID can be saved as separated column in the MySQL 'session' table,
- * which allows to query all active sessions for particular user or terminate them at will.
+ * MultiFieldSession is the base class for session storage implementations with multi-field data storage support.
  *
- * Customizing of the session writing is performed via [[writeCallback]], reading - via [[readCallback]].
+ * With multi-field data storage, session data can be split between several fields in the storage record.
+ * Using such a storage allows saving particular session data into separated field, which then can be used
+ * to manipulate sessions in the way plain PHP does not allow.
+ *
+ * For example the ID of the authenticated user can be saved as separated column in the MySQL 'session' table,
+ * which allows to query all active sessions for a particular user or terminate them at will.
+ *
+ * Customizing of the session writing is performed via [[writeCallback]], reading via [[readCallback]].
  *
  * While extending this class you should use [[composeFields()]] method - while writing the session data into the storage and
  * [[extractData()]] - while reading session data from the storage.
@@ -24,7 +25,7 @@ namespace yii\web;
  * @property boolean $useCustomStorage Whether to use custom storage. This property is read-only.
  *
  * @author Paul Klimov <klimov.paul@gmail.com>
- * @since 2.0.5
+ * @since 2.0.6
  */
 abstract class MultiFieldSession extends Session
 {

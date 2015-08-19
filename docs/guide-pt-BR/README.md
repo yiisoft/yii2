@@ -165,13 +165,13 @@ Tópicos Especiais
 * [Template Avançado de Projetos](https://github.com/yiisoft/yii2-app-advanced/blob/master/docs/guide-pt-BR/README.md)
 * [Construindo uma Aplicação a Partir do Zero](tutorial-start-from-scratch.md)
 * [Comandos de Console](tutorial-console.md)
-* [Ferramentas de Validação Embutidas](tutorial-core-validators.md)
+* [Validadores Nativos](tutorial-core-validators.md)
 * [Internacionalização](tutorial-i18n.md)
 * [Enviando E-mails](tutorial-mailing.md)
 * [Ajustes no Desempenho](tutorial-performance-tuning.md)
 * [Ambiente de Hospedagem Compartilhada](tutorial-shared-hosting.md)
 * [Motor de Template](tutorial-template-engines.md)
-* [Utilização com Códigos de Terceiros](tutorial-yii-integration.md)
+* [Trabalhando com Códigos de Terceiros](tutorial-yii-integration.md)
 
 
 Widgets

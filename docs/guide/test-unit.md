@@ -22,4 +22,4 @@ Framework unit tests
 --------------------
 
 If you want to run unit tests for Yii framework itself follow
-"[Getting started with Yii2 development](https://github.com/yiisoft/yii2/blob/master/docs/internals/getting-started.md)".
+"[Getting started with Yii 2 development](https://github.com/yiisoft/yii2/blob/master/docs/internals/getting-started.md)".

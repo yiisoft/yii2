@@ -40,6 +40,12 @@ echo Yii::$app->formatter->format('2014-01-01', 'date');
 echo Yii::$app->formatter->format(0.125, ['percent', 2]); 
 ```
 
+> Note: The formatter component is designed to format values to be displayed for the end user. If you want
+> to convert user input into machine readable format, or just format a date in a machine readable format,
+> the formatter is not the right tool for that.
+> To convert user input for date and number values you may use [[yii\validators\DateValidator]] and [[yii\validators\NumberValidator]]
+> respectively. For simple conversion between machine readable date and time formats,
+> the PHP [date()](http://php.net/manual/en/function.date.php)-function is enough.
 
 ## Configuring Formatter <span id="configuring-formatter"></span>
 

@@ -1,5 +1,5 @@
 Przewodnik po Yii 2.0
-===============================
+=====================
 
 Ten poradnik udostępniony jest na [Warunkach dokumentacji Yii](http://www.yiiframework.com/doc/terms/).
 
@@ -9,14 +9,14 @@ Wszelkie prawa zastrzeżone.
 
 
 Wstęp
-------------
+-----
 
 * [O Yii](intro-yii.md)
 * [Aktualizacja z wersji 1.1](intro-upgrade-from-v1.md)
 
 
 Pierwsze kroki
----------------
+--------------
 
 * [Instalacja Yii](start-installation.md)
 * [Uruchamianie aplikacji](start-workflow.md)
@@ -28,7 +28,7 @@ Pierwsze kroki
 
 
 Struktura aplikacji
----------------------
+-------------------
 
 * [Przegląd](structure-overview.md)
 * [Skrypty wejściowe](structure-entry-scripts.md)
@@ -45,7 +45,8 @@ Struktura aplikacji
 
 
 Obsługa żądań
------------------
+-------------
+
 
 * [Przegląd](runtime-overview.md)
 * [Bootstrapping](runtime-bootstrapping.md)
@@ -58,7 +59,7 @@ Obsługa żądań
 
 
 Kluczowe koncepcje
-------------
+------------------
 
 * [Komponenty](concept-components.md)
 * [Właściwości](concept-properties.md)
@@ -72,10 +73,10 @@ Kluczowe koncepcje
 
 
 Praca z bazami danych
-----------------------
+---------------------
 
 * [Obiekt dostępu do danych (DAO)](db-dao.md): Łączenie z bazą, podstawowe zapytania, transakcje i manipulacja schematem.
-* [Budowniczy kwerend](db-query-builder.md): Zapytania do bazy danych z użyciem warstwy abstrakcyjnej.
+* [Konstruktor kwerend](db-query-builder.md): Zapytania do bazy danych z użyciem warstwy abstrakcyjnej.
 * [Rekord aktywny](db-active-record.md): ORM Rekordu aktywnego, otrzymywanie i manipulacja rekordami oraz definiowanie relacji.
 * [Migracje](db-migrations.md): Użycie systemu kontroli wersji na twoich bazach danych podczas tworzenia aplikacji w grupie.
 * [Sphinx](db-sphinx.md)
@@ -85,7 +86,7 @@ Praca z bazami danych
 
 
 Odbieranie danych od użytkowników
------------------------
+---------------------------------
 
 * [Tworzenie formularzy](input-forms.md)
 * [Walidacja danych wejściowych](input-validation.md)
@@ -95,7 +96,7 @@ Odbieranie danych od użytkowników
 
 
 Wyświetlanie danych
----------------
+-------------------
 
 * [Formatowanie danych](output-formatting.md)
 * [Stronicowanie](output-pagination.md)
@@ -103,11 +104,11 @@ Wyświetlanie danych
 * [Dostawcy danych](output-data-providers.md)
 * [Widżety danych](output-data-widgets.md)
 * [Praca ze skryptami po stronie klienta](output-client-scripts.md)
-* [Motywy (Theming)](output-theming.md)
+* [Skórki i motywy (Theming)](output-theming.md)
 
 
 Bezpieczeństwo
---------
+--------------
 
 * [Uwierzytelnianie](security-authentication.md)
 * [Autoryzacja](security-authorization.md)
@@ -117,7 +118,7 @@ Bezpieczeństwo
 
 
 Pamięć podręczna
--------
+----------------
 
 * [Przegląd](caching-overview.md)
 * [Pamięć podręczna danych](caching-data.md)
@@ -127,7 +128,7 @@ Pamięć podręczna
 
 
 Webserwisy z wykorzystaniem REST
---------------------
+--------------------------------
 
 * [Szybki start](rest-quick-start.md)
 * [Zasoby](rest-resources.md)
@@ -141,7 +142,7 @@ Webserwisy z wykorzystaniem REST
 
 
 Narzędzia wspomagające tworzenie aplikacji
------------------
+------------------------------------------
 
 * [Pasek debugowania i debuger](tool-debugger.md)
 * [Generowanie kodu przy użyciu Gii](tool-gii.md)
@@ -149,7 +150,7 @@ Narzędzia wspomagające tworzenie aplikacji
 
 
 Testowanie
--------
+----------
 
 * [Przegląd](test-overview.md)
 * [Ustawienia środowiska testowego](test-endvironment-setup.md)
@@ -160,7 +161,7 @@ Testowanie
 
 
 Tematy specjalne
---------------
+----------------
 
 * [Szablon zaawansowanej aplikacji](tutorial-advanced-app.md)
 * [Tworzenie aplikacji od podstaw](tutorial-start-from-scratch.md)
@@ -169,7 +170,7 @@ Tematy specjalne
 * [Internacjonalizacja](tutorial-i18n.md)
 * [Wysyłanie poczty](tutorial-mailing.md)
 * [Poprawianie wydajności](tutorial-performance-tuning.md)
-* [Shared Hosting Environment](tutorial-shared-hosting.md)
+* [Współdzielone środowisko hostujące](tutorial-shared-hosting.md)
 * [Silniki szablonów](tutorial-template-engines.md)
 * [Praca z kodem zewnętrznym](tutorial-yii-integration.md)
 
@@ -190,10 +191,19 @@ Widżety
 
 
 Klasy pomocnicze
--------
+----------------
 
 * [Przegląd](helper-overview.md)
 * [ArrayHelper](helper-array.md)
 * [Html](helper-html.md)
 * [Url](helper-url.md)
 
+
+Uwagi do polskiego tłumaczenia przewodnika
+------------------------------------------
+
+Niektóre z użytych w tym przewodniku programistycznych nazw zostały celowo spolszczone, w przypadku, gdy 
+w literaturze popularnej nie występują ich polskie odpowiedniki. Mam nadzieję, że czytelnik wybaczy mi okazjonalne 
+"settery", "gettery" i "traity", które umieszczam tutaj licząc na powszechne zrozumienie tych terminów w polskiej 
+społeczności programistycznej. Jednocześnie spolszczenia/tłumaczenia niektórych terminów, jak "Fixtures", odmawiam na razie 
+całkowicie, licząc na to, że język polski w końcu nadgoni lub wchłonie, w ten, czy inny sposób, techniczne nowości.

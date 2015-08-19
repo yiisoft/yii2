@@ -13,7 +13,7 @@ Yii における単体テストは、PHPUnit と Codeception (こちらはオプ
 従って、それらのドキュメントを通読することが推奨されます。
 
 - [PHPUnit のドキュメントの第2章以降](http://phpunit.de/manual/current/en/writing-tests-for-phpunit.html).
-- [Codeception Unit Tests](http://codeception.com/docs/06-UnitTests).
+- [Codeception Unit Tests](http://codeception.com/docs/05-UnitTests).
 
 アプリケーションテンプレートの単体テストを走らせる
 --------------------------------------------------

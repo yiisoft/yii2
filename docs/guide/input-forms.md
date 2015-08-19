@@ -90,6 +90,13 @@ echo $form->field($model, 'uploadFile[]')->fileInput(['multiple'=>'multiple']);
 echo $form->field($model, 'items[]')->checkboxList(['a' => 'Item A', 'b' => 'Item B', 'c' => 'Item C']);
 ```
 
+Be careful when naming form elements such as submit buttons. According to the [jQuery documentation](https://api.jquery.com/submit/) there
+are some reserved names that can cause conflicts:
+
+> Forms and their child elements should not use input names or ids that conflict with properties of a form,
+> such as `submit`, `length`, or `method`. Name conflicts can cause confusing failures.
+> For a complete list of rules and to check your markup for these problems, see [DOMLint](http://kangax.github.io/domlint/). 
+
 Additional HTML tags can be added to the form using plain HTML or using the methods from the [[yii\helpers\Html|Html]]-helper
 class like it is done in the above example with [[yii\helpers\Html::submitButton()|Html::submitButton()]].
 
@@ -107,6 +114,31 @@ class like it is done in the above example with [[yii\helpers\Html::submitButton
 >     color: red;
 > }
 > ```
+
+Creating Dropdown list <span id="creating-activeform-dropdownlist"></span>
+---------------------
+
+We can use ActiveForm [dropDownList()](http://www.yiiframework.com/doc-2.0/yii-widgets-activefield.html#dropDownList()-detail)
+method to create a Dropwown list: 
+
+```php
+use app\models\ProductCategory;
+use yii\helpers\ArrayHelper;
+
+/* @var $this yii\web\View */
+/* @var $form yii\widgets\ActiveForm */
+/* @var $model app\models\Product */
+
+echo $form->field($model, 'product_category')->dropdownList(
+    ProductCategory::find()->select(['category_name', 'id'])->indexBy('id')->column(),
+    ['prompt'=>'Select Category']
+);
+```
+
+The value of your model field will be automatically pre-selected.
+
+Further Reading <span id="further-reading"></span>
+---------------
 
 The next section [Validating Input](input-validation.md) handles the validation of the submitted form data on the server
 side as well as ajax- and client side validation.

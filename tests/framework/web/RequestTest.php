@@ -90,4 +90,60 @@ class RequestTest extends TestCase
 
         $this->assertTrue($request->validateCsrfToken($token));
     }
+
+    public function testResolve()
+    {
+        $this->mockWebApplication([
+            'components' => [
+                'urlManager' => [
+                    'enablePrettyUrl' => true,
+                    'showScriptName' => false,
+                    'cache' => null,
+                    'rules' => [
+                        'posts' => 'post/list',
+                        'post/<id>' => 'post/view',
+                    ],
+                ]
+            ]
+        ]);
+
+        $request = new Request();
+        $request->pathInfo = 'posts';
+
+        $_GET['page'] = 1;
+        $result = $request->resolve();
+        $this->assertEquals(['post/list', ['page' => 1]], $result);
+        $this->assertEquals($_GET, ['page' => 1]);
+
+        $request->setQueryParams(['page' => 5]);
+        $result = $request->resolve();
+        $this->assertEquals(['post/list', ['page' => 5]], $result);
+        $this->assertEquals($_GET, ['page' => 1]);
+
+        $request->setQueryParams(['custom-page' => 5]);
+        $result = $request->resolve();
+        $this->assertEquals(['post/list', ['custom-page' => 5]], $result);
+        $this->assertEquals($_GET, ['page' => 1]);
+
+        unset($_GET['page']);
+
+        $request = new Request();
+        $request->pathInfo = 'post/21';
+
+        $this->assertEquals($_GET, []);
+        $result = $request->resolve();
+        $this->assertEquals(['post/view', ['id' => 21]], $result);
+        $this->assertEquals($_GET, ['id' => 21]);
+
+        $_GET['id'] = 42;
+        $result = $request->resolve();
+        $this->assertEquals(['post/view', ['id' => 21]], $result);
+        $this->assertEquals($_GET, ['id' => 21]);
+
+        $_GET['id'] = 63;
+        $request->setQueryParams(['token' => 'secret']);
+        $result = $request->resolve();
+        $this->assertEquals(['post/view', ['id' => 21, 'token' => 'secret']], $result);
+        $this->assertEquals($_GET, ['id' => 63]);
+    }
 }

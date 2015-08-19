@@ -19,22 +19,27 @@ class QueryBuilder extends \yii\db\QueryBuilder
 {
     /**
      * Defines a UNIQUE index for [[createIndex()]].
+     * @since 2.0.6
      */
     const INDEX_UNIQUE = 'unique';
     /**
      * Defines a B-tree index for [[createIndex()]].
+     * @since 2.0.6
      */
     const INDEX_B_TREE = 'btree';
     /**
      * Defines a hash index for [[createIndex()]].
+     * @since 2.0.6
      */
     const INDEX_HASH = 'hash';
     /**
      * Defines a GiST index for [[createIndex()]].
+     * @since 2.0.6
      */
     const INDEX_GIST = 'gist';
     /**
      * Defines a GIN index for [[createIndex()]].
+     * @since 2.0.6
      */
     const INDEX_GIN = 'gin';
 
@@ -84,6 +89,7 @@ class QueryBuilder extends \yii\db\QueryBuilder
         'EXISTS' => 'buildExistsCondition',
         'NOT EXISTS' => 'buildExistsCondition',
     ];
+
 
     /**
      * Builds a SQL statement for creating a new index.
@@ -231,7 +237,7 @@ class QueryBuilder extends \yii\db\QueryBuilder
         foreach ($rows as $row) {
             $vs = [];
             foreach ($row as $i => $value) {
-                if (!is_array($value) && isset($columnSchemas[$columns[$i]])) {
+                if (isset($columns[$i], $columnSchemas[$columns[$i]]) && !is_array($value)) {
                     $value = $columnSchemas[$columns[$i]]->dbTypecast($value);
                 }
                 if (is_string($value)) {

@@ -35,7 +35,7 @@ All these tools are accessible through the command `yii migrate`. In this sectio
 how to accomplish various tasks using these tools. You may also get the usage of each tool via the help
 command `yii help migrate`.
 
-> Note: migrations could affect not only database schema but adjust existing data to fit new schema, create RBAC
+> Tip: migrations could affect not only database schema but adjust existing data to fit new schema, create RBAC
   hierarcy or clean up cache.
 
 
@@ -94,11 +94,12 @@ when you upgrade the database with this migration, while the `down()` method is 
 The following code shows how you may implement the migration class to create a `news` table: 
 
 ```php
+<?php
 
 use yii\db\Schema;
 use yii\db\Migration;
 
-class m150101_185401_create_news_table extends \yii\db\Migration
+class m150101_185401_create_news_table extends Migration
 {
     public function up()
     {
@@ -139,6 +140,36 @@ to `Schema::TYPE_STRING` to specify that the column cannot be null.
 
 > Info: The mapping between abstract types and physical types is specified by 
   the [[yii\db\QueryBuilder::$typeMap|$typeMap]] property in each concrete `QueryBuilder` class.
+  
+Since version 2.0.6 schema builder which provides more convenient way defining column schema was introduced so migration above
+could be written like the following:
+
+```php
+<?php
+
+use yii\db\Schema;
+use yii\db\Migration;
+
+class m150101_185401_create_news_table extends Migration
+{
+    public function up()
+    {
+        $this->createTable('news', [
+            'id' => $this->primaryKey(),
+            'title' => $this->string()->notNull(),
+            'content' => $this->text(),
+        ]);
+    }
+
+    public function down()
+    {
+        $this->dropTable('news');
+    }
+
+}
+```
+
+A list of all available methods for defining the column types is available in the API documentation of [[yii\db\SchemaBuilderTrait]].
 
 
 ### Transactional Migrations <span id="transactional-migrations"></span>
@@ -163,9 +194,9 @@ class m150101_185401_create_news_table extends Migration
     public function safeUp()
     {
         $this->createTable('news', [
-            'id' => 'pk',
-            'title' => Schema::TYPE_STRING . ' NOT NULL',
-            'content' => Schema::TYPE_TEXT,
+            'id' => $this->primaryKey(),
+            'title' => $this->string()->notNull(),
+            'content' => $this->text(),
         ]);
         
         $this->insert('news', [
@@ -227,6 +258,13 @@ Below is the list of all these database accessing methods:
 > Info: [[yii\db\Migration]] does not provide a database query method. This is because you normally do not need
   to display extra message about retrieving data from a database. It is also because you can use the powerful
   [Query Builder](db-query-builder.md) to build and run complex queries.
+
+> Note: When manipulating data using a migration you may find that using your [Active Record](db-active-record.md) classes
+> for this might be useful because some of the logic is already implemented there. Keep in mind however, that in contrast
+> to code written in the migrations, who's nature is to stay constant forever, application logic is subject to change.
+> So when using Active Record in migration code, changes to the logic in the Active Record layer may accidentally break
+> existing migrations. For this reason migration code should be kept independent from other application logic such
+> as Active Record classes.
 
 
 ## Applying Migrations <span id="applying-migrations"></span>

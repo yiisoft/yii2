@@ -4,11 +4,11 @@ Temas
 Tema é uma forma de substituir um conjunto de [views](structure-views.md) por outras, sem a necessidade de tocar no código de renderização de view original. Você pode usar tema para alterar sistematicamente a aparência de uma aplicação.
  
 Para usar tema, você deve configurar a propriedade [[yii\base\View::theme|theme]] da `view (visão)` da aplicação.
-A propriedade configura um objeto [[yii\base\Theme]] que rege a forma como os arquivos de views são substituídos. Você deve principalmente especificar as seguintes propriedades de [[yii\base\Theme]]:
+A propriedade configura um objeto [[yii\base\Theme]] que rege a forma como os arquivos de views serão substituídos. Você deve principalmente especificar as seguintes propriedades de [[yii\base\Theme]]:
  
 - [[yii\base\Theme::basePath]]: determina o diretório de base que contém os recursos temáticos (CSS, JS, images, etc.)
 - [[yii\base\Theme::baseUrl]]: determina a URL base dos recursos temáticos.
-- [[yii\base\Theme::pathMap]]: determina as regras de substituição dos arquivos de view. Mais detalhes serão dados nas subseções seguintes.
+- [[yii\base\Theme::pathMap]]: determina as regras de substituição dos arquivos de view. Mais detalhes serão mostradas nas subseções logo a seguir.
  
 Por exemplo, se você chama `$this->render('about')` no `SiteController`, você estará renderizando a view
 `@app/views/site/about.php`. Todavia, se você habilitar tema na seguinte configuração da aplicação, a view `@app/themes/basic/site/about.php` será renderizada, no lugar da primeira.
@@ -17,19 +17,19 @@ Por exemplo, se você chama `$this->render('about')` no `SiteController`, você 
 return [
     'components' => [
         'view' => [
-        	'theme' => [
-            	'basePath' => '@app/themes/basic',
+            'theme' => [
+                'basePath' => '@app/themes/basic',
                 'baseUrl' => '@web/themes/basic',
-            	'pathMap' => [
-                	'@app/views' => '@app/themes/basic',
-            	],
-        	],
+                'pathMap' => [
+                    '@app/views' => '@app/themes/basic',
+                ],
+            ],
         ],
     ],
 ];
 ```
  
-> Observação: aliases de caminhos são suportados por temas. Ao fazer substituição de view, aliases de caminho serão transformados nos caminhos ou URLs reais.
+> Observação: Aliases de caminhos são suportados por temas. Ao fazer substituição de view, aliases de caminho serão transformados nos caminhos ou URLs reais.
  
 Você pode acessar o objeto [[yii\base\Theme]] através da propriedade [[yii\base\View::theme]]. Por exemplo, na view, você pode escrever o seguinte código, pois `$this` refere-se ao objeto view:
  
@@ -79,7 +79,7 @@ Isto lhe permitirá tematizar `@app/widgets/currency/views/index.php` com `@app/
  
 ## Herança de Tema <span id="theme-inheritance"></span>
  
-Algumas vezes você pode querer definir um tema que contém um visual básico da aplicação, e em seguida, com base em algum feriado, você pode querer variar o visual levemente. Você pode atingir este objetivo usando herança de tema que é feito através do mapeamento de um único caminho de view para múltiplos alvos. Por exemplo,
+Algumas vezes você pode querer definir um tema que contém um visual básico da aplicação, e em seguida, com base em algum feriado, você pode querer variar o visual levemente. Você pode atingir este objetivo usando herança de tema que é feito através do mapeamento de um único caminho de view para múltiplos alvos. Por exemplo:
  
 ```php
 'pathMap' => [

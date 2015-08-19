@@ -365,7 +365,7 @@ the changes made by the queries prior to that failed query in the transaction.
 ### Specifying Isolation Levels <span id="specifying-isolation-levels"></span>
 
 Yii also supports setting [isolation levels] for your transactions. By default, when starting a new transaction,
-it will use the isolation level set by your database system. You can override the default isolation level as follows,
+it will use the default isolation level set by your database system. You can override the default isolation level as follows,
 
 ```php
 $isolationLevel = \yii\db\Transaction::REPEATABLE_READ;
@@ -429,13 +429,15 @@ try {
     try {
         $db->createCommand($sql2)->execute();
         $innerTransaction->commit();
-    } catch (Exception $e) {
+    } catch (\Exception $e) {
         $innerTransaction->rollBack();
+        throw $e;
     }
 
     $outerTransaction->commit();
-} catch (Exception $e) {
+} catch (\Exception $e) {
     $outerTransaction->rollBack();
+    throw $e;
 }
 ```
 
