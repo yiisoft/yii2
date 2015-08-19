@@ -3,7 +3,7 @@ Testy akceptacyjne
 
 > Uwaga: Ta sekcja jest w trakcie tworzenia.
 
-- http://codeception.com/docs/04-AcceptanceTests
+- http://codeception.com/docs/03-AcceptanceTests
 
 Uruchamianie testów akceptacyjnych dla podstawowego i zaawansowanego szablonu projektu
 --------------------------------------------------------------------------------------
