@@ -93,10 +93,22 @@ class GroupUrlRule extends CompositeUrlRule
         $rules = [];
         foreach ($this->rules as $key => $rule) {
             if (!is_array($rule)) {
+                $verbs = 'GET|HEAD|POST|PUT|PATCH|DELETE|OPTIONS';
+                if (preg_match("/^((?:($verbs),)*($verbs))\\s+(.*)$/", $key, $matches)) {
+                    $verb = explode(',', $matches[1]);
+                    $key = $matches[4];
+                } else {
+                    $verb = null;
+                }
+
                 $rule = [
                     'pattern' => ltrim($this->prefix . '/' . $key, '/'),
                     'route' => ltrim($this->routePrefix . '/' . $rule, '/'),
                 ];
+
+                if ($verb) {
+                    $rule['verb'] = $verb;
+                }
             } elseif (isset($rule['pattern'], $rule['route'])) {
                 $rule['pattern'] = ltrim($this->prefix . '/' . $rule['pattern'], '/');
                 $rule['route'] = ltrim($this->routePrefix . '/' . $rule['route'], '/');
