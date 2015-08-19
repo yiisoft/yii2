@@ -82,6 +82,7 @@ class CubridQueryBuilderTest extends QueryBuilderTest
             [Schema::TYPE_MONEY . ' CHECK (value > 0.0)', $this->money()->check('value > 0.0'), 'decimal(19,4) CHECK (value > 0.0)'],
             [Schema::TYPE_MONEY . '(16,2) CHECK (value > 0.0)', $this->money(16, 2)->check('value > 0.0'), 'decimal(16,2) CHECK (value > 0.0)'],
             [Schema::TYPE_MONEY . ' NOT NULL', $this->money()->notNull(), 'decimal(19,4) NOT NULL'],
+            [Schema::TYPE_MONEY . ' NOT NULL COMMENT \'this is money column\'', $this->money()->notNull()->comment('this is money column'), 'decimal(19,4) NOT NULL COMMENT \'this is money column\''],
         ];
     }
 }
