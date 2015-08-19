@@ -108,7 +108,7 @@ In the above, we have shown how to define a fixture about a DB table. To define 
 Using Fixtures
 --------------
 
-If you are using [CodeCeption](http://codeception.com/) to test your code, you should consider using
+If you are using [Codeception](http://codeception.com/) to test your code, you should consider using
 the `yii2-codeception` extension which has built-in support for loading and accessing fixtures.
 If you are using other testing frameworks, you may use [[yii\test\FixtureTrait]] in your test cases
 to achieve the same goal.
