@@ -39,6 +39,10 @@ class ColumnSchemaBuilder extends Object
      */
     protected $isUnique = false;
     /**
+     * @var boolean check is field unsigned;
+     */
+    protected $isUnsigned = false;
+    /**
      * @var string the `CHECK` constraint for the column.
      */
     protected $check;
@@ -46,6 +50,7 @@ class ColumnSchemaBuilder extends Object
      * @var mixed default value of the column.
      */
     protected $default;
+
 
 
     /**
@@ -83,6 +88,16 @@ class ColumnSchemaBuilder extends Object
     }
 
     /**
+     * Specify column to be unsigned.
+     * @return $this
+     */
+    public function unsigned()
+    {
+        $this->isUnsigned = true;
+        return $this;
+    }
+
+    /**
      * Sets a `CHECK` constraint for the column.
      * @param string $check the SQL of the `CHECK` constraint to be added.
      * @return $this
@@ -113,6 +128,7 @@ class ColumnSchemaBuilder extends Object
         return
             $this->type .
             $this->buildLengthString() .
+            $this->buildUnsignedString() .
             $this->buildNotNullString() .
             $this->buildUniqueString() .
             $this->buildDefaultString() .
@@ -150,6 +166,18 @@ class ColumnSchemaBuilder extends Object
     protected function buildUniqueString()
     {
         return $this->isUnique ? ' UNIQUE' : '';
+    }
+    
+    /**
+     * Builds the unsigned constraint for the column.
+     * @return string returns string 'UNSIGNED' if [[isUnsigned]] is true, otherwise it returns an empty string.
+     */
+    protected function buildUnsignedString()
+    {
+        if (gettype($this->default) == 'string') {
+            return '';
+        }
+        return $this->isUnsigned ? ' UNSIGNED' : '';
     }
 
     /**
