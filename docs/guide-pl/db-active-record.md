@@ -7,7 +7,7 @@ w tabeli - *atrybut* obiektu Active Record reprezentuje wartość konkretnej kol
 można skorzystać z atrybutów i metod klasy Active Record.
 
 Dla przykładu, załóżmy, że `Customer` jest klasą Active Record, powiązaną z tabelą `customer` i `name` jest kolumną w tabeli `customer`. 
-Aby dodać nowy wiersz do tabeli `customer` wystarczy wykonać następujący kod:
+Aby dodać nowy wiersz do tabeli `customer`, wystarczy wykonać następujący kod:
 
 ```php
 $customer = new Customer();
@@ -31,7 +31,7 @@ Yii zapewnia wsparcie Active Record dla następujących typów relacyjnych baz d
 * SQLite 2 i 3: poprzez [[yii\db\ActiveRecord]]
 * Microsoft SQL Server 2008 lub nowszy: poprzez [[yii\db\ActiveRecord]]
 * Oracle: poprzez [[yii\db\ActiveRecord]]
-* CUBRID 9.3 lub nowszy: poprzez [[yii\db\ActiveRecord]] (Zwróć uwagę, że z powodu [błędu](http://jira.cubrid.org/browse/APIS-658) 
+* CUBRID 9.3 lub nowszy: poprzez [[yii\db\ActiveRecord]] (zwróć uwagę, że z powodu [błędu](http://jira.cubrid.org/browse/APIS-658) 
   w rozszerzeniu PDO cubrid, umieszczanie wartości w cudzysłowie nie będzie działać, zatem wymagane jest zainstalowanie CUBRID 9.3 zarówno 
   jako klienta jak i serwer)
 * Sphinx: poprzez [[yii\sphinx\ActiveRecord]], wymaga rozszerzenia `yii2-sphinx`
@@ -82,9 +82,9 @@ takie jak atrybuty, zasady walidacji, serializację danych itd.
 
 ## Łączenie się z bazą danych <span id="db-connection"></span>
 
-Domyślnie Active Record używa [komponentu aplikacji](structure-application-components.md) `db` jako [[yii\db\Connection|łącznika z bazą]], 
-do uzyskania dostępu i manipulowania danymi z bazy danych. Jak zostało to już wyjaśnione w sekcji [Obiekty dostępu do danych (DAO)](db-dao.md), 
-możesz skonfigurować komponent `db` w pliku konfiguracyjnym aplikacji jak poniżej:
+Domyślnie Active Record używa [komponentu aplikacji](structure-application-components.md) `db` jako [[yii\db\Connection|połączenia z bazą danych]], 
+do uzyskania dostępu i manipulowania jej danymi. Jak zostało to już wyjaśnione w sekcji [Obiekty dostępu do danych (DAO)](db-dao.md), 
+komponent `db` można skonfigurować w pliku konfiguracyjnym aplikacji jak poniżej:
 
 ```php
 return [
@@ -178,7 +178,7 @@ Obie metody mogą przyjmować jeden z następujących formatów parametrów:
 - tablica asocjacyjna: klucze tablicy są poszukiwanymi nazwami kolumn a wartości tablicy są odpowiadającymi im wartościami kolumn. Po więcej 
   szczegółów zajrzyj do rozdziału [Format asocjacyjny](db-query-builder.md#hash-format).
   
-Poniższy kod pokazuje jak mogę być użyte opisane metody:
+Poniższy kod pokazuje, jak mogą być użyte opisane metody:
 
 ```php
 // zwraca pojedynczego klienta o ID 123
@@ -236,17 +236,16 @@ $email = $customer->email;
 > NIE należy definiować ich własnoręcznie. 
 
 Ponieważ atrybuty Active Record nazywane są zgodnie z nazwami kolumn, możesz natknąć się na kod PHP typu 
-`$customer->first_name`, gdzie podkreślniki używane są do oddzielenia poszczególnych słów w nazwach atrybutów, jeśli kolumny tabeli nazywane są 
+`$customer->first_name`, gdzie podkreślniki używane są do oddzielenia poszczególnych słów w nazwach atrybutów, w przypadku, gdy kolumny tabeli nazywane są 
 właśnie w ten sposób. Jeśli masz wątpliwości dotyczące spojności takiego stylu programowania, powinieneś zmienić odpowiednio nazwy kolumn tabeli 
-(używając np. camelCase).
+(używając np. formatowania typu "camelCase").
 
 
 ### Transformacja danych <span id="data-transformation"></span>
 
 Często zdarza się, że dane wprowadzane i/lub wyświetlane zapisane są w formacie różniącym się od tego używanego w bazie danych. Dla przykładu, 
 w bazie danych przechowywane są daty urodzin klientów jako uniksowe znaczniki czasu, podczas gdy w większości przypadków pożądana forma zapisu daty 
-to `'RRRR/MM/DD'`. Aby osiągnąć ten cel, można zdefiniować metody *transformujące dane* w klasie `Customer`
-Active Record class like the following:
+to `'RRRR/MM/DD'`. Aby osiągnąć ten format, można zdefiniować metody *transformujące dane* w klasie `Customer`:
 
 ```php
 class Customer extends ActiveRecord
@@ -269,13 +268,13 @@ Od tego momentu, w kodzie PHP, zamiast odwołać się do `$customer->birthday`, 
 wprowadzenie i wyświetlenie daty urodzin klienta w formacie `'RRRR/MM/DD'`.
 
 > Tip: Powyższy przykład pokazuje podstawowy sposób transformacji danych. Podczas zwyczajowej pracy z formularzami danych można skorzystać z 
-> [DateValidator](tutorial-core-validators.md#date) i [[yii\jui\DatePicker|DatePicker]], co jest prostsze w użyciu i posiadające więcej możliwości.
+> [DateValidator](tutorial-core-validators.md#date) i [[yii\jui\DatePicker|DatePicker]], co jest prostsze w użyciu i daje więcej możliwości.
 
 
 ### Pobieranie danych jako tablice <span id="data-in-arrays"></span>
 
 Pobieranie danych jako obiekty Active Record jest wygodne i elastyczne, ale nie zawsze pożądane, zwłaszcza kiedy konieczne jest 
-uzyskanie ogromnej liczby danych, z powodu użycia sporej ilości pamięci. W takim przypadku można pobrać dane jako tablicę PHP wywołując metodę 
+uzyskanie ogromnej liczby danych, z powodu użycia sporej ilości pamięci. W takim przypadku można pobrać dane jako tablicę PHP, wywołując metodę 
 [[yii\db\ActiveQuery::asArray()|asArray()]] przed wykonaniem kwerendy:
 
 ```php
@@ -356,8 +355,8 @@ public function save($runValidation = true, $attributeNames = null)
 }
 ```
 
-> Tip: Możesz również wywołać [[yii\db\ActiveRecord::insert()|insert()]] lub [[yii\db\ActiveRecord::update()|update()]] bezpośrednio, aby dodać lub 
-> uaktualnić wiersz.
+> Tip: Możesz również wywołać [[yii\db\ActiveRecord::insert()|insert()]] lub [[yii\db\ActiveRecord::update()|update()]] bezpośrednio, aby, odpowiednio, 
+> dodać lub uaktualnić wiersz.
   
 
 ### Walidacja danych <span id="data-validation"></span>
@@ -366,9 +365,9 @@ Dzięki temu, że [[yii\db\ActiveRecord]] rozszerza klasę [[yii\base\Model]], k
 Możesz definiować zasady walidacji nadpisując metodę [[yii\db\ActiveRecord::rules()|rules()]] i uruchamiać procedurę walidacji wywołując metodę 
 [[yii\db\ActiveRecord::validate()|validate()]].
 
-Wywołanie [[yii\db\ActiveRecord::save()|save()]] automatycznie wywołuje również [[yii\db\ActiveRecord::validate()|validate()]]. 
-Dopiero po pomyślnym przejściu walidacji rozpocznie się proces zapisywania danych; w przeciwnym wypadku zostanie zwrócona flaga false, a komunikaty o 
-błędach walidacji można odczytać sprawdzając właściwość [[yii\db\ActiveRecord::errors|errors]]. 
+Wywołanie [[yii\db\ActiveRecord::save()|save()]] automatycznie wywołuje również metodę [[yii\db\ActiveRecord::validate()|validate()]]. 
+Dopiero po pomyślnym przejściu walidacji rozpocznie się proces zapisywania danych; w przeciwnym wypadku zostanie zwrócona flaga false - komunikaty z 
+błędami walidacji można odczytać sprawdzając właściwość [[yii\db\ActiveRecord::errors|errors]]. 
 
 > Tip: Jeśli masz pewność, że dane nie potrzebują przechodzić procesu walidacji (np. pochodzą z zaufanych źródeł), możesz wywołać `save(false)`, 
 > aby go pominąć.
@@ -376,8 +375,9 @@ błędach walidacji można odczytać sprawdzając właściwość [[yii\db\Active
 
 ### Masowe przypisywanie <span id="massive-assignment"></span>
 
-Tak jak w zwyczajnych [modelach](structure-models.md), instancje Active Record posiadają również mechanizm [masowego przypisywania](structure-models.md#massive-assignment).
-Funkcjonalność ta umożliwia przypisanie wartości wielu atrybutom Active Record za pomocą pojedynczej instrukcji PHP, jak pokazano to poniżej. 
+Tak jak w zwyczajnych [modelach](structure-models.md), instancje Active Record posiadają również mechanizm 
+[masowego przypisywania](structure-models.md#massive-assignment). Funkcjonalność ta umożliwia przypisanie wartości wielu atrybutom Active Record za 
+pomocą pojedynczej instrukcji PHP, jak pokazano to poniżej. 
 Należy jednak pamiętać, że w ten sposób mogą być przypisane tylko [bezpieczne atrybuty](structure-models.md#safe-attributes).
 
 ```php
@@ -407,7 +407,7 @@ $post->updateCounters(['view_count' => 1]);
 ```
 
 > Note: Jeśli używasz [[yii\db\ActiveRecord::save()]] do aktualizacji licznika, możesz otrzymać nieprawidłowe rezultaty, ponieważ jest możliwe, że 
-  ten sam licznik zostanie odczytany i zapisany jednocześnie przez wiele zapytań.
+> ten sam licznik zostanie odczytany i zapisany jednocześnie przez wiele zapytań.
 
 
 ### Brudne atrybuty <span id="dirty-attributes"></span>
@@ -433,7 +433,7 @@ Jeśli chcesz sprawdzić wartość atrybutu sprzed ostatniej zmiany, możesz wyw
 ### Domyślne wartości atrybutów <span id="default-attribute-values"></span>
 
 Niektóre z kolumn tabeli bazy danych mogą mieć przypisane domyślne wartości w bazie danych. W przypadku, gdy chcesz wypełnić takimi wartościami 
-internetowy formularz dla instancji Active Record, zamiast ponownie ustalać wszystkie domyślne wartości możesz wywołać metodę 
+formularz dla instancji Active Record, zamiast ponownie ustawiać wszystkie domyślne wartości, możesz wywołać metodę 
 [[yii\db\ActiveRecord::loadDefaultValues()|loadDefaultValues()]], która przypisze wszystkie domyślne wartości odpowiednim atrybutom:
 
 ```php
@@ -484,7 +484,7 @@ Customer::deleteAll(['status' => Customer::STATUS_INACTIVE]);
 ## Cykl życia Active Record <span id="ar-life-cycles"></span>
 
 Istotnym elementem pracy z Yii jest zrozumienie cyklu życia Active Record w zależności od metodyki jego użycia.
-Podczas każdego cyklu wykonywane są określone sekwencje metod i aby dopasować go do własnych potrzeb, wytarczy je nadpisać. 
+Podczas każdego cyklu wykonywane są określone sekwencje metod i aby dopasować go do własnych potrzeb, wystarczy je nadpisać. 
 Można również śledzić i odpowiadać na eventy Active Record uruchamiane podczas cyklu życia, aby wstrzyknąć swój własny kod. 
 Takie eventy są szczególnie użyteczne podczas tworzenia wpływających na cykl życia [behaviorów](concept-behaviors.md) Active Record.
 
@@ -526,7 +526,7 @@ Podczas wywołania [[yii\db\ActiveRecord::save()|save()]], w celu dodania lub ua
 
 ### Cykl życia przy usuwaniu danych <span id="deleting-data-life-cycle"></span>
 
-Podczas wywołania [[yii\db\ActiveRecord::delete()|delete()]], w celu usunięcia danych instancji Active Record instance, zachodzi następujący cykl:
+Podczas wywołania [[yii\db\ActiveRecord::delete()|delete()]], w celu usunięcia danych instancji Active Record, zachodzi następujący cykl:
 
 1. [[yii\db\ActiveRecord::beforeDelete()|beforeDelete()]]: uruchamia event [[yii\db\ActiveRecord::EVENT_BEFORE_DELETE|EVENT_BEFORE_DELETE]]. 
    Jeśli metoda zwróci false lub właściwość [[yii\base\ModelEvent::isValid]] ma wartość false, kolejne kroki są pomijane.
@@ -605,7 +605,7 @@ wszystkich trzech powyższych operacji [[yii\db\ActiveRecord::OP_ALL|OP_ALL]].
 Optymistyczne blokowanie jest jednym ze sposobów uniknięcia konfliktów, które mogą wystąpić, kiedy pojedynczy wiersz danych jest aktualizowany przez 
 kilku użytkowników. Dla przykładu, użytkownik A i użytkownik B edytują artykuł wiki w tym samym czasie - po tym jak użytkownik A zapisał już swoje 
 zmiany, użytkownik B klika przycisk "Zapisz", aby również wykonać identyczną operację. Ponieważ użytkownik B pracował w rzeczywistości na "starej" wersji 
-artykułu, byłoby wskazane powstrzymać go przed nadpisaniem wersji użytkownika A i wyświelić jakiś komunikat z wyjaśnieniem sytuacji.
+artykułu, byłoby wskazane powstrzymać go przed nadpisaniem wersji użytkownika A i wyświelić komunikat wyjaśniający sytuację.
 
 Optymistyczne blokowanie rozwiązuje ten problem za pomocą dodatkowej kolumny w bazie przechowującej numer wersji każdego wiersza.
 Kiedy taki wiersz jest zapisywany z wcześniejszym numerem wersji niż aktualna rzucany jest wyjątek [[yii\db\StaleObjectException]], który powstrzymuje 
@@ -615,10 +615,10 @@ zapis wiersza. Optymistyczne blokowanie może być użyte tylko przy aktualizacj
 Aby skorzystać z optymistycznej blokady:
 
 1. Stwórz kolumnę w tabeli bazy danych powiązaną z klasą Active Record do przechowywania numeru wersji każdego wiersza.
-   Kolumna powinna być typu big integer (w MySQL `BIGINT DEFAULT 0`).
+   Kolumna powinna być typu big integer (przykładowo w MySQL `BIGINT DEFAULT 0`).
 2. Nadpisz metodę [[yii\db\ActiveRecord::optimisticLock()]], aby zwrócić nazwę tej kolumny.
 3. W formularzu pobierającym dane od użytkownika, dodaj ukryte pole, gdzie przechowasz aktualny numer wersji uaktualnianego wiersza. 
-   Upewnij się, że atrybut wersji ma dodaną zasadę walidacji i przechodzi poprawnie proces walidacji.
+   Upewnij się, że atrybut wersji ma dodaną zasadę walidacji i przechodzi poprawnie jej proces.
 4. W akcji kontrolera uaktualniającej wiersz za pomocą Active Record, użyj bloku try-catch, aby wyłapać wyjątek [[yii\db\StaleObjectException]]. 
    Zaimplemetuj odpowiednią logikę biznesową (np. scalenie zmian, wyświetlenie komunikatu o nieaktualnej wersji, itp.), aby rozwiązać konflikt.
    
@@ -656,19 +656,18 @@ public function actionUpdate($id)
 ```
 
 
-## Working with Relational Data <span id="relational-data"></span>
+## Praca z danymi relacji <span id="relational-data"></span>
 
-Besides working with individual database tables, Active Record is also capable of bringing together related data,
-making them readily accessible through the primary data. For example, the customer data is related with the order
-data because one customer may have placed one or multiple orders. With appropriate declaration of this relation,
-you may be able to access a customer's order information using the expression `$customer->orders` which gives
-back the customer's order information in terms of an array of `Order` Active Record instances.
+Oprócz korzystania z indywidualnych tabel bazy danych, Active Record umożliwia również na uzyskanie danych relacji, 
+pozwalając na odczytanie ich z poziomu głównego obiektu. Dla przykładu, dane klienta są powiązane relacją z danymi zamówienia, 
+ponieważ jeden klient może złożyć jedno lub wiele zamówień. Odpowiednio deklarując tę relację, można uzyskać dane zamówienia klienta, 
+używając wyrażenia `$customer->orders`, które zwróci informacje o zamówieniu klienta jako tablicę instancji `Order` typu Active Record.
 
 
-### Declaring Relations <span id="declaring-relations"></span>
+### Deklarowanie relacji <span id="declaring-relations"></span>
 
-To work with relational data using Active Record, you first need to declare relations in Active Record classes.
-The task is as simple as declaring a *relation method* for every interested relation, like the following,
+Aby móc pracować z relacjami używając Active Record, najpierw musisz je zadeklarować w obrębie klasy.
+Deklaracja odbywa się za pomocą utworzenia prostej *metody relacyjnej* dla każdej relacji osobno, jak w przykładach poniżej:
 
 ```php
 class Customer extends ActiveRecord
@@ -688,75 +687,70 @@ class Order extends ActiveRecord
 }
 ```
 
-In the above code, we have declared an `orders` relation for the `Customer` class, and a `customer` relation
-for the `Order` class. 
+W powyższym kodzie, zadeklarowano relację `orders` dla klasy `Customer` i relację `customer` dla klasy `Order`. 
 
-Each relation method must be named as `getXyz`. We call `xyz` (the first letter is in lower case) the *relation name*.
-Note that relation names are *case sensitive*.
+Każda metoda relacyjna musi mieć nazwę utworzoną według wzoru `getXyz`. `xyz` (pierwsza litera jest mała) jest *nazwą relacji*.
+Zwróć uwagę na to, że nazwy relacji *uwzględniają wielkość liter*.
 
-While declaring a relation, you should specify the following information:
+Deklarując relację powinno się zwrócić uwagę na następujące dane:
 
-- the multiplicity of the relation: specified by calling either [[yii\db\ActiveRecord::hasMany()|hasMany()]]
-  or [[yii\db\ActiveRecord::hasOne()|hasOne()]]. In the above example you may easily read in the relation 
-  declarations that a customer has many orders while an order only has one customer.
-- the name of the related Active Record class: specified as the first parameter to 
-  either [[yii\db\ActiveRecord::hasMany()|hasMany()]] or [[yii\db\ActiveRecord::hasOne()|hasOne()]].
-  A recommended practice is to call `Xyz::className()` to get the class name string so that you can receive
-  IDE auto-completion support as well as error detection at compiling stage. 
-- the link between the two types of data: specifies the column(s) through which the two types of data are related.
-  The array values are the columns of the primary data (represented by the Active Record class that you are declaring
-  relations), while the array keys are the columns of the related data.
+- mnogość relacji: określona przez wywołanie odpowiednio [[yii\db\ActiveRecord::hasMany()|hasMany()]]
+  lub [[yii\db\ActiveRecord::hasOne()|hasOne()]]. W powyższym przykładzie można łatwo zobaczyć w definicji relacji, że 
+  klient może mieć wiele zamówień, podczas gdy zamówienie ma tylko jednego klienta.
+- nazwę powiązanej klasy Active Record: określoną jako pierwszy argument w [[yii\db\ActiveRecord::hasMany()|hasMany()]] lub 
+  [[yii\db\ActiveRecord::hasOne()|hasOne()]].
+  Rekomendowany sposób uzyskania nazwy klasy to wywołanie `Xyz::className()`, dzięki czemu możemy posiłkować się wsparciem autouzupełniania IDE 
+  i wykrywaniem błędów na poziomie kompilacji. 
+- powiązanie pomiędzy dwoma rodzajami danych: określone jako kolumna(y), poprzez którą dane nawiązują relację.
+  Wartości tablicy są kolumnami głównych danych (reprezentowanymi przez klasę Active Record, w której deklaruje się relacje), a klucze tablicy są 
+  kolumnami danych relacyjnych.
 
-  An easy rule to remember this is, as you see in the example above, you write the column that belongs to the related
-  Active Record directly next to it. You see there that `customer_id` is a property of `Order` and `id` is a property
-  of `Customer`.
+  Aby łatwo opanować technikę deklarowania relacji wystarczy zapamiętać, że kolumnę należącą do relacyjnej klasy Active Record zapisuje się zaraz obok 
+  jej nazwy (jak to widać w przykładzie powyżej - `customer_id` jest właściwością `Order` a `id` jest właściwością `Customer`).
   
 
-### Accessing Relational Data <span id="accessing-relational-data"></span>
+### Uzyskiwanie dostępu do danych relacji <span id="accessing-relational-data"></span>
 
-After declaring relations, you can access relational data through relation names. This is just like accessing
-an object [property](concept-properties.md) defined by the relation method. For this reason, we call it *relation property*.
-For example,
+Po zadeklarowaniu relacji, możesz uzyskać dostęp do danych poprzez jej nazwę. Odbywa się to w taki sam sposób jak uzyskiwanie dostępu do 
+[właściwości](concept-properties.md) obiektu zdefiniowanego w metodzie relacyjnej. Właśnie dlatego też nazywamy je *właściwościami relacji*.
+Przykład:
 
 ```php
 // SELECT * FROM `customer` WHERE `id` = 123
 $customer = Customer::findOne(123);
 
 // SELECT * FROM `order` WHERE `customer_id` = 123
-// $orders is an array of Order objects
+// $orders jest tablicą obiektów typu Order
 $orders = $customer->orders;
 ```
 
-> Info: When you declare a relation named `xyz` via a getter method `getXyz()`, you will be able to access
-  `xyz` like an [object property](concept-properties.md). Note that the name is case sensitive.
+> Info: Deklarując relację o nazwie `xyz` poprzez metodę-getter `getXyz()`, uzyskasz dostęp do `xyz` jak do [właściwości obiektu](concept-properties.md). 
+> Zwróć uwagę na to, że nazwa uwzględnia wielkość liter.
   
-If a relation is declared with [[yii\db\ActiveRecord::hasMany()|hasMany()]], accessing this relation property
-will return an array of the related Active Record instances; if a relation is declared with 
-[[yii\db\ActiveRecord::hasOne()|hasOne()]], accessing the relation property will return the related
-Active Record instance or null if no related data is found.
+Jeśli relacja jest zadeklarowana poprzez [[yii\db\ActiveRecord::hasMany()|hasMany()]], zwraca tablicę powiązanych instancji Active Record; 
+jeśli deklaracja odbywa się poprzez [[yii\db\ActiveRecord::hasOne()|hasOne()]], zwraca pojedynczą powiązaną instancję Active Record lub wartość null, 
+w przypadku, gdy nie znaleziono powiązanych danych.
 
-When you access a relation property for the first time, a SQL statement will be executed, like shown in the
-above example. If the same property is accessed again, the previous result will be returned without re-executing
-the SQL statement. To force re-executing the SQL statement, you should unset the relation property
-first: `unset($customer->orders)`.
+Podczas pierwszego odwołania się do właściwości relacji wykonywana jest kwerenda SQL, tak jak pokazano to w przykładzie powyżej. 
+Odwołanie się do tej samej właściwości kolejny raz zwróci poprzedni wynik, bez wykonywanie ponownie kwerendy. Aby wymusić wykonanie kwerendy w takiej 
+sytuacji, należy najpierw usunąć z pamięci właściwość relacyjną poprzez `unset($customer->orders)`.
 
-> Note: While this concept looks similar to the [object property](concept-properties.md) feature, there is an
-> important difference. For normal object properties the property value is of the same type as the defining getter method.
-> A relation method however returns an [[yii\db\ActiveQuery]] instance, while accessing a relation property will either
-> return a [[yii\db\ActiveRecord]] instance or an array of these.
+> Note: Pomimo podobieństwa mechanizmu relacji do [właściwości obiektu](concept-properties.md), jest tutaj znacząca różnica. 
+> Wartości właściwości zwykłych obiektów są tego samego typu jak definiująca je metoda-getter.
+> Metoda relacyjna zwraca jednak instancję [[yii\db\ActiveQuery]], a właściwości relacji są instancjami [[yii\db\ActiveRecord]] lub tablicą takich obiektów.
 > 
 > ```php
-> $customer->orders; // is an array of `Order` objects
-> $customer->getOrders(); // returns an ActiveQuery instance
+> $customer->orders; // tablica obiektów `Order`
+> $customer->getOrders(); // instancja ActiveQuery
 > ```
 > 
-> This is useful for creating customized queries, which is described in the next section.
+> Taka funkcjonalność jest użyteczna przy tworzeniu kwerend dostosowanych do potrzeb programisty, co opisane jest w następnej sekcji.
 
 
-### Dynamic Relational Query <span id="dynamic-relational-query"></span>
+### Dynamiczne kwerendy relacyjne <span id="dynamic-relational-query"></span>
 
-Because a relation method returns an instance of [[yii\db\ActiveQuery]], you can further build this query
-using query building methods before performing DB query. For example,
+Dzięki temu, że metoda relacyjna zwraca instancję [[yii\db\ActiveQuery]], możliwe jest dalsze rozbudowanie takiej kwerendy korzystając z 
+metod konstruowania kwerend. Dla przykładu:
 
 ```php
 $customer = Customer::findOne(123);
@@ -768,11 +762,11 @@ $orders = $customer->getOrders()
     ->all();
 ```
 
-Unlike accessing a relation property, each time you perform a dynamic relational query via a relation method, 
-a SQL statement will be executed, even if the same dynamic relational query was performed before.
+Inaczej niż w przypadku właściwości relacji, za każdym razem, gdy wywyłujesz dynamiczną kwerendę relacyjną poprzez metodę relacji, wykonywane jest 
+zapytanie do bazy, nawet jeśli identyczna kwerenda została już wywołana wcześniej.
 
-Sometimes you may even want to parametrize a relation declaration so that you can more easily perform
-dynamic relational query. For example, you may declare a `bigOrders` relation as follows, 
+Możliwe jest także sparametryzowanie deklaracji relacji, dzięki czemu można w łatwiejszy sposób wykonywać relacyjne kwerendy. Dla przykładu, możesz 
+zadeklarować relację `bigOrders` jak to pokazano poniżej: 
 
 ```php
 class Customer extends ActiveRecord
@@ -786,7 +780,7 @@ class Customer extends ActiveRecord
 }
 ```
 
-Then you will be able to perform the following relational queries:
+Dzięki czemu możesz wykonać następujące relacyjne kwerendy:
 
 ```php
 // SELECT * FROM `order` WHERE `subtotal` > 200 ORDER BY `id`
@@ -797,17 +791,16 @@ $orders = $customer->bigOrders;
 ```
 
 
-### Relations via a Junction Table <span id="junction-table"></span>
+### Relacje za pomocą tabeli węzła <span id="junction-table"></span>
 
-In database modelling, when the multiplicity between two related tables is many-to-many, 
-a [junction table](https://en.wikipedia.org/wiki/Junction_table) is usually introduced. For example, the `order`
-table and the `item` table may be related via a junction table named `order_item`. One order will then correspond
-to multiple order items, while one product item will also correspond to multiple order items.
+W projekcie bazy danych, kiedy połączenie pomiędzy dwoma relacyjnymi tabelami jest typu wiele-do-wielu, zwykle stosuje się tzw. 
+[tabelę węzła](https://en.wikipedia.org/wiki/Junction_table). Dla przykładu, tabela `order` i tabela `item` mogą być powiązane poprzez węzeł nazwany 
+`order_item`. Jedno zamówienie będzie posiadało wiele produktów zamówienia (pozycji), a każdy indywidualny produkt będzie także powiązany z wieloma 
+pozycjami zamówienia.
 
-When declaring such relations, you would call either [[yii\db\ActiveQuery::via()|via()]] or [[yii\db\ActiveQuery::viaTable()|viaTable()]]
-to specify the junction table. The difference between [[yii\db\ActiveQuery::via()|via()]] and [[yii\db\ActiveQuery::viaTable()|viaTable()]]
-is that the former specifies the junction table in terms of an existing relation name while the latter directly
-the junction table. For example,
+Deklarując takie relacje, możesz wywołać zarówno metodę [[yii\db\ActiveQuery::via()|via()]] jak i [[yii\db\ActiveQuery::viaTable()|viaTable()]], aby 
+określić tabelę węzła. Różnica pomiędzy [[yii\db\ActiveQuery::via()|via()]] i [[yii\db\ActiveQuery::viaTable()|viaTable()]] jest taka, że pierwsza metoda 
+definiuje tabelę węzła dla istniejącej nazwy relacji, podczas gdy druga definiuje bezpośrednio węzeł. Przykład:
 
 ```php
 class Order extends ActiveRecord
@@ -820,7 +813,7 @@ class Order extends ActiveRecord
 }
 ```
 
-or alternatively,
+lub alternatywnie,
 
 ```php
 class Order extends ActiveRecord
@@ -838,7 +831,7 @@ class Order extends ActiveRecord
 }
 ```
 
-The usage of relations declared with a junction table is the same as that of normal relations. For example,
+Sposób użycia relacji zadeklarowanych z pomocą tabeli węzła jest taki sam jak dla zwykłych relacji. Dla przykładu:
 
 ```php
 // SELECT * FROM `order` WHERE `id` = 100
@@ -846,17 +839,17 @@ $order = Order::findOne(100);
 
 // SELECT * FROM `order_item` WHERE `order_id` = 100
 // SELECT * FROM `item` WHERE `item_id` IN (...)
-// returns an array of Item objects
+// zwraca tablicę obiektów Item
 $items = $order->items;
 ```
 
 
-### Lazy Loading and Eager Loading <span id="lazy-eager-loading"></span>
+### Pobieranie leniwe i gorliwe <span id="lazy-eager-loading"></span>
 
-In [Accessing Relational Data](#accessing-relational-data), we explained that you can access a relation property
-of an Active Record instance like accessing a normal object property. A SQL statement will be executed only when
-you access the relation property the first time. We call such relational data accessing method *lazy loading*.
-For example,
+W sekcji [Uzyskiwanie dostępu do danych relacji](#accessing-relational-data) wyjaśniliśmy, że można uzyskać dostęp do właściwości relacji instancji 
+Active Record w identyczny sposób jak w przypadku zwykłych właściwości obiektu. Kwerenda SQL zostanie wykonana tylko w momencie pierwszego 
+odwołania się do właściwości relacji. Taki sposób uzyskiwania relacyjnych danych nazywamy *pobieraniem leniwym*.
+Przykład:
 
 ```php
 // SELECT * FROM `customer` WHERE `id` = 123
@@ -865,13 +858,12 @@ $customer = Customer::findOne(123);
 // SELECT * FROM `order` WHERE `customer_id` = 123
 $orders = $customer->orders;
 
-// no SQL executed
+// bez wykonywania zapytania SQL
 $orders2 = $customer->orders;
 ```
 
-Lazy loading is very convenient to use. However, it may suffer from a performance issue when you need to access
-the same relation property of multiple Active Record instances. Consider the following code example. How many 
-SQL statements will be executed?
+Leniwe pobieranie jest bardzo wygodne w użyciu, może jednak powodować spadek wydajności aplikacji, kiedy konieczne jest uzyskanie dostępu do 
+tej samej relacyjnej właściwości dla wielu instancji Active Record. Rozważmy poniższy przykład - ile zapytań SQL zostanie wykonanych?
 
 ```php
 // SELECT * FROM `customer` LIMIT 100
@@ -883,11 +875,10 @@ foreach ($customers as $customer) {
 }
 ```
 
-As you can see from the code comment above, there are 101 SQL statements being executed! This is because each
-time you access the `orders` relation property of a different `Customer` object in the for-loop, a SQL statement 
-will be executed.
+Jak wynika z opisu powyżej, zostanie wykonanych aż 101 kwerend SQL! Dzieje się tak, ponieważ za każdym razem, gdy uzyskujemy dostęp do właściwości 
+relacyjnej `orders` dla kolejnego obiektu `Customer` w pętli, wykonywane jest nowe zapytanie SQL.
 
-To solve this performance problem, you can use the so-called *eager loading* approach as shown below,
+Aby rozwiązać ten wydajnościowy problem, należy użyć tak zwanego *gorliwego pobierania*, jak w przykładzie poniżej:
 
 ```php
 // SELECT * FROM `customer` LIMIT 100;
@@ -898,52 +889,51 @@ $customers = Customer::find()
     ->all();
 
 foreach ($customers as $customer) {
-    // no SQL executed
+    // kwerenda SQL nie jest wykonywana
     $orders = $customer->orders;
 }
 ```
 
-By calling [[yii\db\ActiveQuery::with()]], you instruct Active Record to bring back the orders for the first 100
-customers in one single SQL statement. As a result, you reduce the number of the executed SQL statements from 101 to 2!
+Wywołanie metody [[yii\db\ActiveQuery::with()]] powoduje pobranie zamówień dla pierwszych 100 klientów w pojedynczej kwerendzie SQL, dzięki czemu 
+redukujemy ilość zapytań ze 101 do 2!
 
-You can eagerly load one or multiple relations. You can even eagerly load *nested relations*. A nested relation is a relation
-that is declared within a related Active Record class. For example, `Customer` is related with `Order` through the `orders`
-relation, and `Order` is related with `Item` through the `items` relation. When querying for `Customer`, you can eagerly
-load `items` using the nested relation notation `orders.items`. 
+Możliwe jest gorliwe pobranie jednej lub wielu relacji, a nawet gorliwe pobranie *zagnieżdżonych relacji*. Zagnieżdżona relacja to taka, która 
+została zadeklarowana w relacyjnej klasie Active Record. Dla przykładu, `Customer` jest powiązany z `Order` poprzez relację `orders`, a `Order` 
+jest powiązany z `Item` poprzez relację `items`. Ładując dane dla `Customer`, możesz gorliwie pobrać `items` używając notacji zagnieżdżonej 
+relacji `orders.items`. 
 
-The following code shows different usage of [[yii\db\ActiveQuery::with()|with()]]. We assume the `Customer` class
-has two relations `orders` and `country`, while the `Order` class has one relation `items`.
+Poniższy kod pokazuje różne sposoby użycia [[yii\db\ActiveQuery::with()|with()]]. Zakładamy, że klasa `Customer` posiada dwie relacje `orders` i 
+`country`, a klasa `Order` jedną relację `items`.
 
 ```php
-// eager loading both "orders" and "country"
+// gorliwe pobieranie "orders" i "country"
 $customers = Customer::find()->with('orders', 'country')->all();
-// equivalent to the array syntax below
+// odpowiednik powyższego w zapisie tablicowym
 $customers = Customer::find()->with(['orders', 'country'])->all();
-// no SQL executed 
+// kwerenda SQL nie jest wykonywana
 $orders= $customers[0]->orders;
-// no SQL executed 
+// kwerenda SQL nie jest wykonywana
 $country = $customers[0]->country;
 
-// eager loading "orders" and the nested relation "orders.items"
+// gorliwe pobieranie "orders" i zagnieżdżonej relacji "orders.items"
 $customers = Customer::find()->with('orders.items')->all();
-// access the items of the first order of the first customer
-// no SQL executed
+// uzyskanie dostępu do produktów pierwszego zamówienia pierwszego klienta
+// kwerenda SQL nie jest wykonywana
 $items = $customers[0]->orders[0]->items;
 ```
 
-You can eagerly load deeply nested relations, such as `a.b.c.d`. All parent relations will be eagerly loaded.
-That is, when you call [[yii\db\ActiveQuery::with()|with()]] using `a.b.c.d`, you will eagerly load
-`a`, `a.b`, `a.b.c` and `a.b.c.d`.  
+Możesz pobrać gorliwie także głęboko zagnieżdżone relacje, jak np. `a.b.c.d`. Każda z kolejnych następujących po sobie relacji zostanie pobrana gorliwie - 
+wywołując [[yii\db\ActiveQuery::with()|with()]] z `a.b.c.d`, pobierzesz `a`, `a.b`, `a.b.c` i `a.b.c.d`.  
 
-> Info: In general, when eagerly loading `N` relations among which `M` relations are defined with a 
-  [junction table](#junction-table), a total number of `N+M+1` SQL statements will be executed.
-  Note that a nested relation `a.b.c.d` counts as 4 relations.
+> Info: Podsumowując, podczas gorliwego pobierania `N` relacji, pośród których `M` relacji jest zdefiniowanych za pomocą 
+> [tabeli węzła](#junction-table), zostanie wykonanych łącznie `N+M+1` kwerend SQL.
+> Zwróć uwagę na to, że zagnieżdżona relacja `a.b.c.d` jest liczona jako 4 relacje.
 
-When eagerly loading a relation, you can customize the corresponding relational query using an anonymous function.
-For example,
+Podczas gorliwego pobierania relacji, możesz dostosować kwerendę do własnych potrzeb korzystając z funkcji anonimowej.
+Przykład:
 
 ```php
-// find customers and bring back together their country and active orders
+// znajdź klientów i pobierz ich kraje zamieszkania i aktywne zamówienia
 // SELECT * FROM `customer`
 // SELECT * FROM `country` WHERE `id` IN (...)
 // SELECT * FROM `order` WHERE `customer_id` IN (...) AND `status` = 1
@@ -955,31 +945,27 @@ $customers = Customer::find()->with([
 ])->all();
 ```
 
-When customizing the relational query for a relation, you should specify the relation name as an array key
-and use an anonymous function as the corresponding array value. The anonymous function will receive a `$query` parameter
-which represents the [[yii\db\ActiveQuery]] object used to perform the relational query for the relation.
-In the code example above, we are modifying the relational query by appending an additional condition about order status.
+Dostosowując relacyjną kwerendę należy podać nazwę relacji jako klucz tablicy i użyć funkcji anonimowej jako odpowiadającej kluczowi wartości. 
+Funkcja anonimowa otrzymuje parametr `$query`, reprezentujący obiekt [[yii\db\ActiveQuery]], służący do wykonania relacyjnej kwerendy.
+W powyższym przykładzie modyfikujemy relacyjną kwerendę dodając warunek ze statusem zamówienia.
 
-> Note: If you call [[yii\db\Query::select()|select()]] while eagerly loading relations, you have to make sure
-> the columns referenced in the relation declarations are being selected. Otherwise, the related models may not 
-> be loaded properly. For example,
+> Note: Wywołując [[yii\db\Query::select()|select()]] podczas gorliwego pobierania relacji, należy upewnić się, że kolumny określone w deklaracji 
+> relacji znajdują się na liście pobieranych. W przeciwnym razie powiązany model może nie zostać poprawnie załadowany. Przykład:
 >
 > ```php
 > $orders = Order::find()->select(['id', 'amount'])->with('customer')->all();
-> // $orders[0]->customer is always null. To fix the problem, you should do the following:
+> // $orders[0]->customer ma zawsze wartość null. Aby rozwiązać ten problem, należy użyć:
 > $orders = Order::find()->select(['id', 'amount', 'customer_id'])->with('customer')->all();
 > ```
 
 
-### Joining with Relations <span id="joining-with-relations"></span>
+### Przyłączanie relacji <span id="joining-with-relations"></span>
 
-> Note: The content described in this subsection is only applicable to relational databases, such as 
-  MySQL, PostgreSQL, etc.
+> Note: Zawartość tej sekcji odnosi się tylko do relacyjnych baz danych, takich jak MySQL, PostgreSQL, itp.
 
-The relational queries that we have described so far only reference the primary table columns when 
-querying for the primary data. In reality we often need to reference columns in the related tables. For example,
-we may want to bring back the customers who have at least one active order. To solve this problem, we can
-build a join query like the following:
+Relacyjne kwerendy opisane do tej pory jedynie nawiązują do głównych kolumn tabeli podczas pobierania danych. W rzeczywistości często musimy 
+odnieść się do kolumn w powiązanych tabelach. Przykładowo chcemy pobrać klientów, którzy złożyli przynajmniej jedno aktywne zamówienie - możemy tego 
+dokonać za pomocą następującej przyłączającej kwerendy:
 
 ```php
 // SELECT `customer`.* FROM `customer`
@@ -995,10 +981,10 @@ $customers = Customer::find()
     ->all();
 ```
 
-> Note: It is important to disambiguate column names when building relational queries involving JOIN SQL statements. 
-  A common practice is to prefix column names with their corresponding table names.
+> Note: Podczas tworzenia relacyjnych kwerend zawierających instrukcję SQL JOIN koniecznym jest ujednoznacznienie nazw kolumn. 
+> Standardową praktyką w takim wypadku jest poprzedzenie nazwy kolumny odpowiadającą jej nazwą tabeli.
 
-However, a better approach is to exploit the existing relation declarations by calling [[yii\db\ActiveQuery::joinWith()]]:
+Jeszcze lepszym rozwiązaniem jest użycie istniejącej deklaracji relacji wywołując metodę [[yii\db\ActiveQuery::joinWith()]]:
 
 ```php
 $customers = Customer::find()
@@ -1007,18 +993,17 @@ $customers = Customer::find()
     ->all();
 ```
 
-Both approaches execute the same set of SQL statements. The latter approach is much cleaner and drier, though. 
+Oba rozwiązania wykonują te same zestawy instrukcji SQL, ale ostatnie jest o wiele schludniejsze. 
 
-By default, [[yii\db\ActiveQuery::joinWith()|joinWith()]] will use `LEFT JOIN` to join the primary table with the 
-related table. You can specify a different join type (e.g. `RIGHT JOIN`) via its third parameter `$joinType`. If
-the join type you want is `INNER JOIN`, you can simply call [[yii\db\ActiveQuery::innerJoinWith()|innerJoinWith()]], instead.
+[[yii\db\ActiveQuery::joinWith()|joinWith()]] domyślnie korzysta z `LEFT JOIN` do przyłączenia głównej tabeli z relacyjną. 
+Możesz określić inny typ przyłączenia (np. `RIGHT JOIN`) podając trzeci parametr `$joinType`. Jeśli chcesz użyć typu przyłączenia `INNER JOIN`, 
+możesz bezpośrednio wywołać metodę [[yii\db\ActiveQuery::innerJoinWith()|innerJoinWith()]].
 
-Calling [[yii\db\ActiveQuery::joinWith()|joinWith()]] will [eagerly load](#lazy-eager-loading) the related data by default.
-If you do not want to bring in the related data, you can specify its second parameter `$eagerLoading` as false. 
+Wywołanie [[yii\db\ActiveQuery::joinWith()|joinWith()]] domyślnie [pobierze gorliwie](#lazy-eager-loading) dane relacyjne.
+Jeśli nie chcesz pobierać danych w ten sposób, możesz ustawić drugi parametr `$eagerLoading` na false. 
 
-Like [[yii\db\ActiveQuery::with()|with()]], you can join with one or multiple relations; you may customize the relation
-queries on-the-fly; you may join with nested relations; and you may mix the use of [[yii\db\ActiveQuery::with()|with()]]
-and [[yii\db\ActiveQuery::joinWith()|joinWith()]]. For example,
+Tak jak w przypadku [[yii\db\ActiveQuery::with()|with()]], możesz przyłączyć jedną lub wiele relacji na raz, dodać do nich dodatkowe warunki, 
+przyłączyć zagnieżdżone relacje i korzystać z zarówno [[yii\db\ActiveQuery::with()|with()]] jak i [[yii\db\ActiveQuery::joinWith()|joinWith()]]. Przykładowo:
 
 ```php
 $customers = Customer::find()->joinWith([
@@ -1029,8 +1014,8 @@ $customers = Customer::find()->joinWith([
     ->all();
 ```
 
-Sometimes when joining two tables, you may need to specify some extra conditions in the `ON` part of the JOIN query.
-This can be done by calling the [[yii\db\ActiveQuery::onCondition()]] method like the following:
+Czasem, przyłączając dwie tabele, musisz sprecyzować dodatkowe warunki dla części `ON` kwerendy JOIN.
+Można to zrobić wywołując metodę [[yii\db\ActiveQuery::onCondition()]] w poniższy sposób:
 
 ```php
 // SELECT `customer`.* FROM `customer`
@@ -1044,18 +1029,18 @@ $customers = Customer::find()->joinWith([
 ])->all();
 ```
 
-This above query brings back *all* customers, and for each customer it brings back all active orders.
-Note that this differs from our earlier example which only brings back customers who have at least one active order.
+Powyższa kwerenda pobiera *wszystkich* klientów i dla każdego z nich pobiera wszystkie aktywne zamówienia.
+Zwróć uwagę na to, że ten przykład różni się od poprzedniego, gdzie pobierani byli tylko klienci posiadający przynajmniej jedno aktywne zamówienie.
 
-> Info: When [[yii\db\ActiveQuery]] is specified with a condition via [[yii\db\ActiveQuery::onCondition()|onCondition()]],
-  the condition will be put in the `ON` part if the query involves a JOIN query. If the query does not involve
-  JOIN, the on-condition will be automatically appended to the `WHERE` part of the query.
+> Info: Jeśli [[yii\db\ActiveQuery]] zawiera warunek podany za pomocą [[yii\db\ActiveQuery::onCondition()|onCondition()]],
+> będzie on umieszczony w części instrukcji `ON` tylko jeśli kwerenda zawiera JOIN. W przeciwnym wypadku warunek ten będzie automatycznie 
+> dodany do części `WHERE`.
 
 
-### Inverse Relations <span id="inverse-relations"></span>
+### Odwrócone relacje <span id="inverse-relations"></span>
 
-Relation declarations are often reciprocal between two Active Record classes. For example, `Customer` is related 
-to `Order` via the `orders` relation, and `Order` is related back to `Customer` via the `customer` relation.
+Deklaracje relacji są zazwyczaj obustronne dla dwóch klas Active Record. Przykładowo `Customer` jest powiązany z `Order` poprzez relację `orders`, 
+a `Order` jest powiązany jednocześnie z `Customer` za pomocą relacji `customer`.
 
 ```php
 class Customer extends ActiveRecord
@@ -1075,7 +1060,7 @@ class Order extends ActiveRecord
 }
 ```
 
-Now consider the following piece of code:
+Rozważmy teraz poniższy kod:
 
 ```php
 // SELECT * FROM `customer` WHERE `id` = 123
@@ -1087,17 +1072,15 @@ $order = $customer->orders[0];
 // SELECT * FROM `customer` WHERE `id` = 123
 $customer2 = $order->customer;
 
-// displays "not the same"
-echo $customer2 === $customer ? 'same' : 'not the same';
+// zwraca "różne"
+echo $customer2 === $customer ? 'takie same' : 'różne';
 ```
 
-We would think `$customer` and `$customer2` are the same, but they are not! Actually they do contain the same
-customer data, but they are different objects. When accessing `$order->customer`, an extra SQL statement
-is executed to populate a new object `$customer2`.
+Wydawałoby się, że `$customer` i `$customer2` powinny być identyczne, ale jednak nie są! W rzeczywistości zawierają takie same dane klienta, ale 
+są różnymi obiektami. Wywołując `$order->customer` wykonywana jest dodatkowa kwerenda SQL do wypełnienia nowego obiektu `$customer2`.
 
-To avoid the redundant execution of the last SQL statement in the above example, we should tell Yii that
-`customer` is an *inverse relation* of `orders` by calling the [[yii\db\ActiveQuery::inverseOf()|inverseOf()]] method
-like shown below:
+Aby uniknąć nadmiarowego wykonywania ostatniej kwerendy SQL w powyższym przykładzie, powinniśmy wskazać Yii, że `customer` jest *odwróconą relacją* 
+`orders` wywołując metodę [[yii\db\ActiveQuery::inverseOf()|inverseOf()]] jak pokazano to poniżej:
 
 ```php
 class Customer extends ActiveRecord
@@ -1109,7 +1092,7 @@ class Customer extends ActiveRecord
 }
 ```
 
-With this modified relation declaration, we will have:
+Z tą dodatkową instrukcją w deklaracji relacji uzyskamy:
 
 ```php
 // SELECT * FROM `customer` WHERE `id` = 123
@@ -1118,23 +1101,22 @@ $customer = Customer::findOne(123);
 // SELECT * FROM `order` WHERE `customer_id` = 123
 $order = $customer->orders[0];
 
-// No SQL will be executed
+// kwerenda SQL nie jest wykonywana
 $customer2 = $order->customer;
 
-// displays "same"
-echo $customer2 === $customer ? 'same' : 'not the same';
+// wyświetla "takie same"
+echo $customer2 === $customer ? 'takie same' : 'różne';
 ```
 
-> Note: Inverse relations cannot be defined for relations involving a [junction table](#junction-table).
-  That is, if a relation is defined with [[yii\db\ActiveQuery::via()|via()]] or [[yii\db\ActiveQuery::viaTable()|viaTable()]],
-  you should not call [[yii\db\ActiveQuery::inverseOf()|inverseOf()]] further.
+> Note: Odwrócone relacje nie mogą być definiowane dla relacji zawierających [tabelę węzła](#junction-table), dlatego też definiując relację z użyciem 
+> [[yii\db\ActiveQuery::via()|via()]] lub [[yii\db\ActiveQuery::viaTable()|viaTable()]] nie powinno się już wywoływać 
+> [[yii\db\ActiveQuery::inverseOf()|inverseOf()]].
 
 
-## Saving Relations <span id="saving-relations"></span>
+## Zapisywanie relacji <span id="saving-relations"></span>
 
-When working with relational data, you often need to establish relationships between different data or destroy
-existing relationships. This requires setting proper values for the columns that define the relations. Using Active Record,
-you may end up writing the code like the following:
+Podczas pracy z danymi relacyjnymi często konieczne jest ustalenie związku pomiędzy różnymi danymi lub też usunięcie istniejącego połączenia. 
+Takie akcje wymagają ustalenia właściwych wartości dla kolumn definiujących relacje. Korzystając z Active Record można użyć następujących instrukcji:
 
 ```php
 $customer = Customer::findOne(123);
@@ -1142,12 +1124,12 @@ $order = new Order();
 $order->subtotal = 100;
 // ...
 
-// setting the attribute that defines the "customer" relation in Order
+// ustawianie wartości dla atrybutu definiującego relację "customer" dla Order
 $order->customer_id = $customer->id;
 $order->save();
 ```
 
-Active Record provides the [[yii\db\ActiveRecord::link()|link()]] method that allows you to accomplish this task more nicely:
+Active Record zawiera metodę [[yii\db\ActiveRecord::link()|link()]], która pozwala na uzyskanie powyższego w efektywniejszy sposób:
 
 ```php
 $customer = Customer::findOne(123);
@@ -1158,53 +1140,47 @@ $order->subtotal = 100;
 $order->link('customer', $customer);
 ```
 
-The [[yii\db\ActiveRecord::link()|link()]] method requires you to specify the relation name and the target Active Record
-instance that the relationship should be established with. The method will modify the values of the attributes that
-link two Active Record instances and save them to the database. In the above example, it will set the `customer_id`
-attribute of the `Order` instance to be the value of the `id` attribute of the `Customer` instance and then save it
-to the database.
+Metoda [[yii\db\ActiveRecord::link()|link()]] wymaga podania konkretnej nazwy relacji i docelowej instancji Active Record, z którą powinna być nawiązany 
+związek. Mechanizm ten zmodyfikuje wartości atrybutów łączących obie instancje Active Record i zapisze je w bazie danych. W powyższym przykładzie 
+atrybut `customer_id` instancji `Order` otrzyma wartość atrybutu `id` instancji `Customer`, a następnie zostanie zapisany w bazie danych.
 
-> Note: You cannot link two newly created Active Record instances.
+> Note: Nie możesz łączyć w ten sposób dwóch świeżo utworzonych instancji Active Record.
 
-The benefit of using [[yii\db\ActiveRecord::link()|link()]] is even more obvious when a relation is defined via
-a [junction table](#junction-table). For example, you may use the following code to link an `Order` instance
-with an `Item` instance:
+Zaleta używania [[yii\db\ActiveRecord::link()|link()]] jest jeszcze bardziej widoczna, jeśli relacja jest zdefiniowana poprzez 
+[tabelę węzła](#junction-table). Przykładowo możesz użyć następującego kodu, aby połączyć instancję `Order` z instancją `Item`:
 
 ```php
 $order->link('items', $item);
 ```
 
-The above code will automatically insert a row in the `order_item` junction table to relate the order with the item.
+Powyższy przykład automatycznie doda nowy wiersz w tabeli węzła `order_item`, aby połączyć zamówienie z produktem.
 
-> Info: The [[yii\db\ActiveRecord::link()|link()]] method will NOT perform any data validation while
-  saving the affected Active Record instance. It is your responsibility to validate any input data before
-  calling this method.
+> Info: Metoda [[yii\db\ActiveRecord::link()|link()]] NIE wykona automatycznie żadnego procesu walidacji danych podczas zapisywania instancji Active Record. 
+> Na Tobie spoczywa obowiązek walidacji wszystkich danych przed wywołaniem tej metody.
 
-The opposite operation to [[yii\db\ActiveRecord::link()|link()]] is [[yii\db\ActiveRecord::unlink()|unlink()]]
-which breaks an existing relationship between two Active Record instances. For example,
+Odwrotną operacją do [[yii\db\ActiveRecord::link()|link()]] jest [[yii\db\ActiveRecord::unlink()|unlink()]], która usuwa istniejący związek pomiędzy 
+dwoma instancjami Active Record. Przykładowo:
 
 ```php
 $customer = Customer::find()->with('orders')->all();
 $customer->unlink('orders', $customer->orders[0]);
 ```
 
-By default, the [[yii\db\ActiveRecord::unlink()|unlink()]] method will set the foreign key value(s) that specify
-the existing relationship to be null. You may, however, choose to delete the table row that contains the foreign key value
-by passing the `$delete` parameter as true to the method.
+Domyślnie metoda [[yii\db\ActiveRecord::unlink()|unlink()]] ustawia wartość klucza(y) obcego, który definiuje istniejącą relację, na null. 
+Można jednak zamiast tego wybrać opcję usuwania wiersza tabeli, który zawiera klucz obcy, ustawiając w metodzie parametr `$delete` na true.
  
-When a junction table is involved in a relation, calling [[yii\db\ActiveRecord::unlink()|unlink()]] will cause
-the foreign keys in the junction table to be cleared, or the deletion of the corresponding row in the junction table
-if `$delete` is true.
+Jeśli w relacji użyty jest węzeł, wywołanie [[yii\db\ActiveRecord::unlink()|unlink()]] spowoduje wyczyszczenie kluczy obcych w tabeli węzła lub też 
+usunięcie odpowiadających im wierszy, jeśli `$delete` jest ustawione na true.
 
 
-## Cross-Database Relations <span id="cross-database-relations"></span> 
+## Relacje międzybazowe <span id="cross-database-relations"></span> 
 
-Active Record allows you to declare relations between Active Record classes that are powered by different databases.
-The databases can be of different types (e.g. MySQL and PostgreSQL, or MS SQL and MongoDB), and they can run on 
-different servers. You can use the same syntax to perform relational queries. For example,
+Active Record pozwala na deklarowanie relacji pomiędzy klasami Active Record zasilanymi przez różne bazy danych.
+Bazy danych mogę być różnych typów (np. MySQL i PostgreSQL lub MS SQL i MongoDB) i mogą pracować na różnych serwerach. 
+Do wykonania relacyjnych zapytań używa się takich samych procedur, jak w przypadku relacji w obrębie jednej bazy danych. Przykład:
 
 ```php
-// Customer is associated with the "customer" table in a relational database (e.g. MySQL)
+// Customer jest powiązany z tabelą "customer" w relacyjnej bazie danych (np. MySQL)
 class Customer extends \yii\db\ActiveRecord
 {
     public static function tableName()
@@ -1214,12 +1190,12 @@ class Customer extends \yii\db\ActiveRecord
 
     public function getComments()
     {
-        // a customer has many comments
+        // klient posiada wiele komentarzy
         return $this->hasMany(Comment::className(), ['customer_id' => 'id']);
     }
 }
 
-// Comment is associated with the "comment" collection in a MongoDB database
+// Comment jest powiązany z kolekcją "comment" w bazie danych MongoDB
 class Comment extends \yii\mongodb\ActiveRecord
 {
     public static function collectionName()
@@ -1229,7 +1205,7 @@ class Comment extends \yii\mongodb\ActiveRecord
 
     public function getCustomer()
     {
-        // a comment has one customer
+        // komentarz jest przypisany do jednego klienta
         return $this->hasOne(Customer::className(), ['id' => 'customer_id']);
     }
 }
@@ -1237,17 +1213,16 @@ class Comment extends \yii\mongodb\ActiveRecord
 $customers = Customer::find()->with('comments')->all();
 ```
 
-You can use most of the relational query features that have been described in this section. 
+Możesz używać większości funkcjonalności dostępnych dla relacyjnych kwerend opisanych w tym rozdziale. 
  
-> Note: Usage of [[yii\db\ActiveQuery::joinWith()|joinWith()]] is limited to databases that allow cross-database JOIN queries.
-  For this reason, you cannot use this method in the above example because MongoDB does not support JOIN.
+> Note: Użycie [[yii\db\ActiveQuery::joinWith()|joinWith()]] jest ograniczone do baz danych pozwalających na międzybazowe kwerendy JOIN, dlatego też 
+> nie możesz użyć tej metody w powyższym przykładzie, ponieważ MongoDB nie wspiera instrukcji JOIN.
 
 
-## Customizing Query Classes <span id="customizing-query-classes"></span>
+## Niestandardowe klasy kwerend <span id="customizing-query-classes"></span>
 
-By default, all Active Record queries are supported by [[yii\db\ActiveQuery]]. To use a customized query class
-in an Active Record class, you should override the [[yii\db\ActiveRecord::find()]] method and return an instance
-of your customized query class. For example,
+Domyślnie wszystkie kwerendy Active Record używają klasy [[yii\db\ActiveQuery]]. Aby użyć niestandardowej klasy kwerend razem z klasą Active Record, 
+należy nadpisać metodę [[yii\db\ActiveRecord::find()]], aby zwracała instancję żądanej klasy kwerend. Przykład:
  
 ```php
 namespace app\models;
@@ -1269,14 +1244,13 @@ class CommentQuery extends ActiveQuery
 }
 ```
 
-Now whenever you are performing a query (e.g. `find()`, `findOne()`) or defining a relation (e.g. `hasOne()`) 
-with `Comment`, you will be working with an instance of `CommentQuery` instead of `ActiveQuery`.
+Od tego momentu, za każdym razem, gdy wykonywana będzie kwerenda (np. `find()`, `findOne()`) lub pobierana relacja  (np. `hasOne()`) klasy `Comment`, 
+praca będzie odbywać się na instancji `CommentQuery` zamiast `ActiveQuery`.
 
-> Tip: In big projects, it is recommended that you use customized query classes to hold most query-related code
-  so that the Active Record classes can be kept clean.
+> Tip: Dla dużych projektów rekomendowane jest, aby używać własnych, odpowiednio dopasowanych do potrzeb, klas kwerend, dzięki czemu klasy Active Record 
+> pozostają przejrzyste.
 
-You can customize a query class in many creative ways to improve your query building experience. For example,
-you can define new query building methods in a customized query class: 
+Możesz dopasować klasę kwerend do własnych potrzeb na wiele kreatywnych sposobów. Przykładowo, możesz zdefiniować nowe metody konstruujące zapytanie: 
 
 ```php
 class CommentQuery extends ActiveQuery
@@ -1288,18 +1262,18 @@ class CommentQuery extends ActiveQuery
 }
 ```
 
-> Note: Instead of calling [[yii\db\ActiveQuery::where()|where()]], you usually should call
-  [[yii\db\ActiveQuery::andWhere()|andWhere()]] or [[yii\db\ActiveQuery::orWhere()|orWhere()]] to append additional
-  conditions when defining new query building methods so that any existing conditions are not overwritten.
+> Note: Zwykle, zamiast wywoływać metodę [[yii\db\ActiveQuery::where()|where()]], powinno się używać metody 
+> [[yii\db\ActiveQuery::andWhere()|andWhere()]] lub [[yii\db\ActiveQuery::orWhere()|orWhere()]], aby dołączać kolejne warunki zapytania w 
+> konstruktorze kwerend, dzięki czemu istniejące warunki nie zostaną nadpisane.
 
-This allows you to write query building code like the following:
+Powyższy przykład pozwala na użycie następującego kodu:
  
 ```php
 $comments = Comment::find()->active()->all();
 $inactiveComments = Comment::find()->active(false)->all();
 ```
 
-You can also use the new query building methods when defining relations about `Comment` or performing relational query:
+Możesz także użyć nowych metod budowania kwerend przy definiowaniu relacji z `Comment` lub wykonywaniu relacyjnych kwerend:
 
 ```php
 class Customer extends \yii\db\ActiveRecord
@@ -1312,7 +1286,7 @@ class Customer extends \yii\db\ActiveRecord
 
 $customers = Customer::find()->with('activeComments')->all();
 
-// or alternatively
+// lub alternatywnie
  
 $customers = Customer::find()->with([
     'comments' => function($q) {
@@ -1321,22 +1295,20 @@ $customers = Customer::find()->with([
 ])->all();
 ```
 
-> Info: In Yii 1.1, there is a concept called *scope*. Scope is no longer directly supported in Yii 2.0,
-  and you should use customized query classes and query methods to achieve the same goal.
+> Info: W Yii 1.1 do tego celu służy mechanizm *podzbiorów (scope)*, nie jest on jednak bezpośrednio wspierany w Yii 2.0, a zamiast tego 
+> powinno się używać dopasowanych do własnych potrzeb klas kwerend.
 
 
-## Selecting extra fields
+## Pobieranie dodatkowych pól
 
-When Active Record instance is populated from query results, its attributes are filled up by corresponding column
-values from received data set.
+W momencie, gdy instancja Active Record pobiera dane z wyniku kwerendy, wartości kolumn przypisywane są do odpowiadających im atrybutów.
 
-You are able to fetch additional columns or values from query and store it inside the Active Record.
-For example, assume we have a table named 'room', which contains information about rooms available in the hotel.
-Each room stores information about its geometrical size using fields 'length', 'width', 'height'.
-Imagine we need to retrieve list of all available rooms with their volume in descendant order.
-So you can not calculate volume using PHP, because we need to sort the records by its value, but you also want 'volume'
-to be displayed in the list.
-To achieve the goal, you need to declare an extra field in your 'Room' Active Record class, which will store 'volume' value:
+Możliwe jest pobranie dodatkowych kolumn lub wartości za pomocą kwerendy i przypisanie ich w Active Record.
+Przykładowo załóżmy, że mamy tabelę 'room', która zawiera informacje o pokojach dostępnych w hotelu. Każdy pokój przechowuje informacje na temat swojej 
+wielkości za pomocą pól 'length', 'width' i 'height'.
+Teraz wyobraźmy sobie, że potrzebujemy pobrać listę wszystkich pokojów posortowaną po ich kubaturze w malejącej kolejności.
+Nie możemy obliczyć kubatury korzystając z PHP, ponieważ zależy nam na szybkim posortowaniu rekordów i dodatkowo chcemy wyświetlić pole 'volume' na liście.
+Aby osiągnąć ten cel, musimy zadeklarować dodatkowe pole w klasie 'Room' rozszerzającej Active Record, które przechowa wartość 'volume':
 
 ```php
 class Room extends \yii\db\ActiveRecord
@@ -1347,25 +1319,25 @@ class Room extends \yii\db\ActiveRecord
 }
 ```
 
-Then you need to compose a query, which calculates volume of the room and performs the sort:
+Następnie należy skonstruować kwerendę, która obliczy kubaturę i wykona sortowanie:
 
 ```php
 $rooms = Room::find()
     ->select([
-        '{{room}}.*', // select all columns
-        '([[length]] * [[width]].* [[height]]) AS volume', // calculate a volume
+        '{{room}}.*', // pobierz wszystkie kolumny
+        '([[length]] * [[width]].* [[height]]) AS volume', // oblicz kubaturę
     ])
-    ->orderBy('volume DESC') // apply sort
+    ->orderBy('volume DESC') // posortuj
     ->all();
 
 foreach ($rooms as $room) {
-    echo $room->volume; // contains value calculated by SQL
+    echo $room->volume; // zawiera wartość obliczoną przez SQL
 }
 ```
 
-Ability to select extra fields can be exceptionally useful for aggregation queries.
-Assume you need to display a list of customers with the count of orders they have made.
-First of all, you need to declare a `Customer` class with 'orders' relation and extra field for count storage:
+Możliwość pobrania dodatkowych pól jest szczególnie pomocna przy kwerendach agregujących.
+Załóżmy, że potrzebujesz wyświetlić listę klientów wraz z liczbą zamówień, których dokonali.
+Najpierw musisz zadeklarować klasę `Customer` wraz z relacją 'orders' i dodatkowym polem przechowującym liczbę zamówień:
 
 ```php
 class Customer extends \yii\db\ActiveRecord
@@ -1381,15 +1353,15 @@ class Customer extends \yii\db\ActiveRecord
 }
 ```
 
-Then you can compose a query, which joins the orders and calculates their count:
+Teraz już możesz skonstruować kwerendę, która przyłączy zamówienia i policzy ich liczbę:
 
 ```php
 $customers = Customer::find()
     ->select([
-        '{{customer}}.*', // select all customer fields
-        'COUNT({{order}}.id) AS ordersCount' // calculate orders count
+        '{{customer}}.*', // pobierz wszystkie kolumny klienta
+        'COUNT({{order}}.id) AS ordersCount' // oblicz ilość zamówień
     ])
-    ->joinWith('orders') // ensure table junction
-    ->groupBy('{{customer}}.id') // group the result to ensure aggregation function works
+    ->joinWith('orders') // przyłącz tabelę węzła
+    ->groupBy('{{customer}}.id') // pogrupuj wyniki dla funkcji agregacyjnej
     ->all();
 ```
