@@ -3,7 +3,7 @@ Testy funkcjonalne
 
 > Uwaga: Ta sekcja jest w trakcie tworzenia.
 
-- http://codeception.com/docs/04-FunctionalTests
+- [Codeception Functional Tests](http://codeception.com/docs/04-FunctionalTests)
 
 Uruchamianie testów funkcjonalnych dla podstawowego i zaawansowanego szablonu projektu
 --------------------------------------------------------------------------------------

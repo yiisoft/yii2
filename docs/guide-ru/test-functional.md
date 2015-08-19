@@ -3,7 +3,7 @@
 
 > Примечание: Данный раздел находится в разработке.
 
-- http://codeception.com/docs/04-FunctionalTests
+- [Codeception Functional Tests](http://codeception.com/docs/04-FunctionalTests)
 
 Запуск функциональных тестов для шаблонов проектов basic и advanced
 -------------------------------------------------------------------
