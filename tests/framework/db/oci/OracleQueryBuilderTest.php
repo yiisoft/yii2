@@ -82,6 +82,33 @@ class OracleQueryBuilderTest extends QueryBuilderTest
             [Schema::TYPE_MONEY . ' CHECK (value > 0.0)', $this->money()->check('value > 0.0'), 'NUMBER(19,4) CHECK (value > 0.0)'],
             [Schema::TYPE_MONEY . '(16,2) CHECK (value > 0.0)', $this->money(16, 2)->check('value > 0.0'), 'NUMBER(16,2) CHECK (value > 0.0)'],
             [Schema::TYPE_MONEY . ' NOT NULL', $this->money()->notNull(), 'NUMBER(19,4) NOT NULL'],
+            [Schema::TYPE_MONEY . ' NOT NULL', $this->money()->notNull()->comment('this is money column'), 'NUMBER(19,4) NOT NULL'],
         ];
+    }
+
+    public function testCommentColumn()
+    {
+        $qb = $this->getQueryBuilder();
+
+        $expected = "COMMENT ON COLUMN \"comment\".\"text\" IS 'This is my column.'";
+        $sql = $qb->addCommentOnColumn('comment', 'text', 'This is my column.');
+        $this->assertEquals($expected, $sql);
+
+        $expected = "COMMENT ON COLUMN \"comment\".\"text\" IS ' '";
+        $sql = $qb->dropCommentFromColumn('comment', 'text');
+        $this->assertEquals($expected, $sql);
+    }
+
+    public function testCommentTable()
+    {
+        $qb = $this->getQueryBuilder();
+
+        $expected = "COMMENT ON TABLE \"comment\" IS 'This is my table.'";
+        $sql = $qb->addCommentOnTable('comment', 'This is my table.');
+        $this->assertEquals($expected, $sql);
+
+        $expected = "COMMENT ON TABLE \"comment\" IS ' '";
+        $sql = $qb->dropCommentFromTable('comment');
+        $this->assertEquals($expected, $sql);
     }
 }
