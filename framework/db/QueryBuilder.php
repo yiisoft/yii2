@@ -734,7 +734,7 @@ class QueryBuilder extends \yii\base\Object
     }
 
     /**
-     * @param string|array $condition
+     * @param string|array|Expression $condition
      * @param array $params the binding parameters to be populated
      * @return string the WHERE clause built from [[Query::$where]].
      */
@@ -755,7 +755,7 @@ class QueryBuilder extends \yii\base\Object
     }
 
     /**
-     * @param string|array $condition
+     * @param string|array|Expression $condition
      * @param array $params the binding parameters to be populated
      * @return string the HAVING clause built from [[Query::$having]].
      */
@@ -900,14 +900,19 @@ class QueryBuilder extends \yii\base\Object
 
     /**
      * Parses the condition specification and generates the corresponding SQL expression.
-     * @param string|array $condition the condition specification. Please refer to [[Query::where()]]
-     * on how to specify a condition.
+     * @param string|array|Expression $condition the condition specification. 
+     * Please refer to [[Query::where()]] on how to specify a condition.
      * @param array $params the binding parameters to be populated
      * @return string the generated SQL expression
      */
     public function buildCondition($condition, &$params)
     {
-        if (!is_array($condition)) {
+        if ($condition instanceof Expression) {
+            foreach ($condition->params as $n => $v) {
+                $params[$n] = $v;
+            }
+            return (string) $condition;
+        } elseif (!is_array($condition)) {
             return (string) $condition;
         } elseif (empty($condition)) {
             return '';
@@ -972,7 +977,7 @@ class QueryBuilder extends \yii\base\Object
     {
         $parts = [];
         foreach ($operands as $operand) {
-            if (is_array($operand)) {
+            if (is_array($operand) || $operand instanceof Expression) {
                 $operand = $this->buildCondition($operand, $params);
             }
             if ($operand !== '') {
@@ -1001,7 +1006,7 @@ class QueryBuilder extends \yii\base\Object
         }
 
         $operand = reset($operands);
-        if (is_array($operand)) {
+        if (is_array($operand) || $operand instanceof Expression) {
             $operand = $this->buildCondition($operand, $params);
         }
         if ($operand === '') {
