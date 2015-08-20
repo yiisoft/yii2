@@ -230,7 +230,7 @@ class ActiveRecord extends BaseActiveRecord
     {
         $n = 0;
         foreach ($counters as $name => $value) {
-            $counters[$name] = new Expression("[[$name]]+:bp{$n}", [":bp{$n}" => $value]);
+            $counters[$name] = new Expression("IFNULL([[$name]], 0)+:bp{$n}", [":bp{$n}" => $value]);
             $n++;
         }
         $command = static::getDb()->createCommand();
