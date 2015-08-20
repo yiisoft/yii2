@@ -7,6 +7,7 @@ use yiiunit\data\ar\Category;
 use yiiunit\data\ar\Customer;
 use yiiunit\data\ar\Document;
 use yiiunit\data\ar\NullValues;
+use yiiunit\data\ar\NullCounters;
 use yiiunit\data\ar\OrderItem;
 use yiiunit\data\ar\Order;
 use yiiunit\data\ar\Item;
@@ -703,7 +704,7 @@ class ActiveRecordTest extends DatabaseTestCase
         $this->assertEquals(1, $model->status);
     }
 
-    public function testPopulateRecordCallWhenQueryingOnParentClass() 
+    public function testPopulateRecordCallWhenQueryingOnParentClass()
     {
         (new Cat())->save(false);
         (new Dog())->save(false);
@@ -833,4 +834,17 @@ class ActiveRecordTest extends DatabaseTestCase
         $trueBit = BitValues::findOne(2);
         $this->assertEquals(true, $trueBit->val);
     }
+
+    /**
+     * https://github.com/yiisoft/yii2/issues/9419
+     */
+    public function testNullCounter()
+    {
+        $model = NullCounters::findOne(1);
+        $this->assertEquals(NULL, $model->status);
+        $this->assertEquals(1, NullCounters::updateAllCounters(['status' => 1]));
+        $this->assertTrue($model->refresh());
+        $this->assertEquals(1, $model->status);
+    }
+
 }
