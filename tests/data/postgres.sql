@@ -242,3 +242,12 @@ CREATE TABLE "bit_values" (
 );
 
 INSERT INTO "bit_values" (id, val) VALUES (1, '0'), (2, '1');
+
+DROP TABLE IF EXISTS "null_counters" CASCADE;
+
+CREATE TABLE "null_counters" (
+  id serial not null primary key,
+  status integer
+);
+
+INSERT INTO "null_counters" (id) VALUES (1);
