@@ -78,6 +78,13 @@ class ActiveDataProvider extends BaseDataProvider
      */
     public $db;
 
+    /**
+     * @var callable customize output of each single model
+     * 
+     * Callable is in the form function($id, $model), where id is the counter of the item
+     * 
+     */ 
+    public $formatModelOutput = null;
 
     /**
      * Initializes the DB connection component.
@@ -91,6 +98,30 @@ class ActiveDataProvider extends BaseDataProvider
             $this->db = Instance::ensure($this->db, Connection::className());
         }
     }
+
+    /**
+     * @inheritdoc
+     */
+	public function getModels()
+	{
+		$models = parent::getModels();
+		$outputModels = [];
+		
+	 	if($this->formatModelOutput != null)
+		{
+			for($k=0;$k<count($models);$k++)
+			{
+			 	$outputModels[] = call_user_func( $this->formatModelOutput, $k , $models[$k]); 
+			}
+		}
+		else
+		{
+			$outputModels = $models;			
+		}
+		
+		
+		return $outputModels;
+	}
 
     /**
      * @inheritdoc
