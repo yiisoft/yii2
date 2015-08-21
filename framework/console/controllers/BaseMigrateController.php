@@ -492,7 +492,7 @@ abstract class BaseMigrateController extends Controller
                     'fields' => $this->fields
                 ]);
             } else {
-                $content = $this->renderFile(Yii::getAlias($this->templateFile), ['className' => $name]);
+                $content = $this->renderFile(Yii::getAlias($this->templateFile), ['className' => $className]);
             }
 
             file_put_contents($file, $content);
