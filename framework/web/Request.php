@@ -1222,7 +1222,7 @@ class Request extends \yii\base\Request
                 if (!is_string($value)) {
                     continue;
                 }
-                $data = Yii::$app->getSecurity()->validateData($value, $this->cookieValidationKey);
+                $data = Yii::$app->getSecurity()->validateData(base64_decode(str_replace('.', '+', $value)), $this->cookieValidationKey);
                 if ($data === false) {
                     continue;
                 }
@@ -1237,6 +1237,13 @@ class Request extends \yii\base\Request
             }
         } else {
             foreach ($_COOKIE as $name => $value) {
+                if (is_array($value)) {
+                    array_walk_recursive($value, function(&$item, $key) {
+                        $item = base64_decode(str_replace('.', '+', $item));
+                    });
+                } elseif ($name!=session_name()) {
+                    $value = base64_decode(str_replace('.', '+', $value));
+                }
                 $cookies[$name] = new Cookie([
                     'name' => $name,
                     'value' => $value,
