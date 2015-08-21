@@ -129,7 +129,7 @@ class Query extends Component implements QueryInterface
      * This method is called by [[QueryBuilder]] when it starts to build SQL from a query object.
      * You may override this method to do some final preparation work when converting a query into a SQL statement.
      * @param QueryBuilder $builder
-     * @return Query a prepared query instance which will be used by [[QueryBuilder]] to build the SQL
+     * @return $this a prepared query instance which will be used by [[QueryBuilder]] to build the SQL
      */
     public function prepare($builder)
     {
@@ -573,7 +573,7 @@ class Query extends Component implements QueryInterface
      * @param string|array $on the join condition that should appear in the ON part.
      * Please refer to [[where()]] on how to specify this parameter.
      * @param array $params the parameters (name => value) to be bound to the query.
-     * @return Query the query object itself
+     * @return $this the query object itself
      */
     public function join($type, $table, $on = '', $params = [])
     {
@@ -597,7 +597,7 @@ class Query extends Component implements QueryInterface
      * @param string|array $on the join condition that should appear in the ON part.
      * Please refer to [[where()]] on how to specify this parameter.
      * @param array $params the parameters (name => value) to be bound to the query.
-     * @return Query the query object itself
+     * @return $this the query object itself
      */
     public function innerJoin($table, $on = '', $params = [])
     {
@@ -621,7 +621,7 @@ class Query extends Component implements QueryInterface
      * @param string|array $on the join condition that should appear in the ON part.
      * Please refer to [[where()]] on how to specify this parameter.
      * @param array $params the parameters (name => value) to be bound to the query
-     * @return Query the query object itself
+     * @return $this the query object itself
      */
     public function leftJoin($table, $on = '', $params = [])
     {
@@ -645,7 +645,7 @@ class Query extends Component implements QueryInterface
      * @param string|array $on the join condition that should appear in the ON part.
      * Please refer to [[where()]] on how to specify this parameter.
      * @param array $params the parameters (name => value) to be bound to the query
-     * @return Query the query object itself
+     * @return $this the query object itself
      */
     public function rightJoin($table, $on = '', $params = [])
     {
