@@ -149,6 +149,94 @@ CODE;
         $this->assertContains($migrationName, basename($files[0]), 'Wrong migration name!');
     }
 
+    public function testGenerateDefaultMigration()
+    {
+        $migrationName = 'DefaultTest';
+        $this->runMigrateControllerAction('create', [$migrationName]);
+        $files = FileHelper::findFiles($this->migrationPath);
+
+        $class = 'm' . gmdate('ymd_His') . '_' . $migrationName;
+        $newLine = '\n';
+        $code = <<<CODE
+<?php
+
+use yii\db\Migration;
+
+class {$class} extends Migration
+{
+
+    public function up()
+    {
+
+    }
+
+    public function down()
+    {
+        echo "{$class} cannot be reverted.{$newLine}";
+
+        return false;
+    }
+
+    /*
+    // Use safeUp/safeDown to run migration code within a transaction
+    public function safeUp()
+    {
+    }
+
+    public function safeDown()
+    {
+    }
+    */
+}
+
+CODE;
+
+        $this->assertEqualsWithoutLE($code, file_get_contents($files[0]));
+    }
+
+    public function testGenerateCreateMigration()
+    {
+        $migrationName = 'CreateTest';
+        $this->runMigrateControllerAction('create', [
+            $migrationName,
+            'fields' => [
+                'title:string(10):notNull',
+                'body:text:notNull',
+                'create_at:dateTime'
+            ]
+        ]);
+        $files = FileHelper::findFiles($this->migrationPath);
+
+        $class = 'm' . gmdate('ymd_His') . '_' . $migrationName;
+        $newLine = '\n';
+        $code = <<<CODE
+<?php
+
+use yii\db\Migration;
+
+class {$class} extends Migration
+{
+
+    public function up()
+    {
+        \$this->createTable('test', [
+        \t'title' => \$this->string(10)->notNull(),
+        \t'body' => \$this->text()->notNull(),
+        \t'create_at' => \$this->dateTime()
+        ]);
+    }
+
+    public function down()
+    {
+        \$this->dropTable('test');
+    }
+}
+
+CODE;
+
+        $this->assertEqualsWithoutLE($code, file_get_contents($files[0]));
+    }
+
     public function testUp()
     {
         $this->createMigration('test1');

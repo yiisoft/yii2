@@ -41,6 +41,16 @@ abstract class BaseMigrateController extends Controller
      * or a file path.
      */
     public $templateFile;
+    /**
+     * @var array the template file for generating migration code automatically.
+     * This can be either a path alias (e.g. "@app/migrations/template.php")
+     * or a file path.
+     */
+    public $templateFileGenerators;
+    /**
+     * @var array the fields
+     */
+    public $fields;
 
 
     /**
@@ -51,7 +61,7 @@ abstract class BaseMigrateController extends Controller
         return array_merge(
             parent::options($actionID),
             ['migrationPath'], // global for all actions
-            ($actionID == 'create') ? ['templateFile'] : [] // action create
+            ($actionID == 'create') ? ['templateFile', 'templateFileGenerators','fields'] : [] // action create
         );
     }
 
@@ -73,6 +83,10 @@ abstract class BaseMigrateController extends Controller
                 FileHelper::createDirectory($path);
             }
             $this->migrationPath = $path;
+
+            if ($this->fields !== null) {
+                $this->formatField();
+            }
 
             $version = Yii::getVersion();
             $this->stdout("Yii Migration Tool (based on Yii v{$version})\n\n");
@@ -465,11 +479,22 @@ abstract class BaseMigrateController extends Controller
             throw new Exception("The migration name should contain letters, digits and/or underscore characters only.");
         }
 
-        $name = 'm' . gmdate('ymd_His') . '_' . $name;
-        $file = $this->migrationPath . DIRECTORY_SEPARATOR . $name . '.php';
+        $option = preg_split('/(?=[A-Z])/', $name);
+
+        $className = 'm' . gmdate('ymd_His') . '_' . $name;
+        $file = $this->migrationPath . DIRECTORY_SEPARATOR . $className . '.php';
 
         if ($this->confirm("Create new migration '$file'?")) {
-            $content = $this->renderFile(Yii::getAlias($this->templateFile), ['className' => $name]);
+            if (preg_match('/^Create(.+)/', $name)) {
+                $content = $this->renderFile(Yii::getAlias($this->templateFileGenerators['create']), [
+                    'className' => $className,
+                    'table' => strtolower(substr($name, 6)),
+                    'fields' => $this->fields
+                ]);
+            } else {
+                $content = $this->renderFile(Yii::getAlias($this->templateFile), ['className' => $name]);
+            }
+
             file_put_contents($file, $content);
             $this->stdout("New migration created successfully.\n", Console::FG_GREEN);
         }
@@ -626,6 +651,21 @@ abstract class BaseMigrateController extends Controller
         sort($migrations);
 
         return $migrations;
+    }
+
+    protected function formatField()
+    {
+        foreach ($this->fields as $index => $field) {
+            $chunks = preg_split('/\s?:\s?/', $field, null);
+            $property = array_shift($chunks);
+
+            foreach ($chunks as &$chunk) {
+                if (!preg_match('/(.+?)\(([^)]+)\)/', $chunk)) {
+                    $chunk = $chunk . '()';
+                }
+            }
+            $this->fields[$index] = ['property' => $property, 'decorators' => implode('->', $chunks)];
+        }
     }
 
     /**
