@@ -12,6 +12,7 @@ use yii\di\Instance;
 use yiiunit\framework\di\stubs\Bar;
 use yiiunit\framework\di\stubs\Foo;
 use yiiunit\framework\di\stubs\Qux;
+use yiiunit\framework\di\stubs\AltQux;
 use yiiunit\TestCase;
 
 
@@ -28,6 +29,7 @@ class ContainerTest extends TestCase
         $Foo = Foo::className();
         $Bar = Bar::className();
         $Qux = Qux::className();
+        $AltQux = AltQux::className();
 
         // automatic wiring
         $container = new Container;
@@ -99,5 +101,16 @@ class ContainerTest extends TestCase
         $this->assertEquals(3, $qux->a);
         $qux = $container->get('qux', [3, ['a' => 4]]);
         $this->assertEquals(4, $qux->a);
+
+        // by context
+        $container = new Container;
+        $container->set($QuxInterface, $Qux);
+        $container->set($QuxInterface, $AltQux, [], $Bar);
+        $foo = $container->get($Foo);
+        $this->assertTrue($foo instanceof $Foo);
+        $this->assertTrue($foo->bar instanceof $Bar);
+        $this->assertTrue($foo->bar->qux instanceof $AltQux);
+        $qux = $container->get($QuxInterface);
+        $this->assertTrue($qux instanceof $Qux);
     }
 }

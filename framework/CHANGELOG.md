@@ -4,6 +4,7 @@ Yii Framework 2 Change Log
 2.0.7 under development
 -----------------------
 
+- Enh #8911: Added contextual binding to `yii\di\Container` (akireikin)
 - Bug #8723: Fixed `yii\helpers\VarDumper::export()` unable to export circle referenced objects with `Closure` (klimov-paul)
 - Bug #9108: Negative number resulted in no formatting when using `Formatter::asSize()` or `Formatter::asShortSize` (nxnx, cebe)
 - Bug #9415: Fixed regression in 2.0.6 where on Oracle DB `PDO::ATTR_CASE = PDO::CASE_LOWER` did not work anymore (cebe)
