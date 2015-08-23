@@ -18,7 +18,7 @@ class <?= $className ?> extends Migration
     public function up()
     {
 <?php foreach ($fields as $field): ?>
-        $this->removeColumn(<?= "'$table', '" . $field['property'] . "'" ?>);
+        $this->dropColumn(<?= "'$table', '" . $field['property'] . "'" ?>);
 <?php endforeach; ?>
     }
 

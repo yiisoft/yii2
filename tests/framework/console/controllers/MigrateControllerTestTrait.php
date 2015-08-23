@@ -309,9 +309,9 @@ class {$class} extends Migration
 
     public function down()
     {
-        \$this->removeColumn('test', 'title');
-        \$this->removeColumn('test', 'body');
-        \$this->removeColumn('test', 'create_at');
+        \$this->dropColumn('test', 'title');
+        \$this->dropColumn('test', 'body');
+        \$this->dropColumn('test', 'create_at');
     }
 }
 
@@ -345,9 +345,9 @@ class {$class} extends Migration
 
     public function up()
     {
-        \$this->removeColumn('test', 'title');
-        \$this->removeColumn('test', 'body');
-        \$this->removeColumn('test', 'create_at');
+        \$this->dropColumn('test', 'title');
+        \$this->dropColumn('test', 'body');
+        \$this->dropColumn('test', 'create_at');
     }
 
     public function down()
