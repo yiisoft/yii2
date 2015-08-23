@@ -51,6 +51,18 @@ abstract class BaseMigrateController extends Controller
      * @var array the fields
      */
     public $fields;
+    /**
+     * @var string the primary key name
+     */
+    public $primaryKey = 'id';
+    /**
+     * @var string
+     */
+    public $createAt = 'create_at';
+    /**
+     * @var string
+     */
+    public $updateAt = 'update_at';
 
 
     /**
@@ -61,7 +73,9 @@ abstract class BaseMigrateController extends Controller
         return array_merge(
             parent::options($actionID),
             ['migrationPath'], // global for all actions
-            ($actionID == 'create') ? ['templateFile', 'templateFileGenerators','fields'] : [] // action create
+            ($actionID == 'create')
+                ? ['templateFile', 'templateFileGenerators', 'fields', 'primaryKey', 'createAt', 'updateAt']
+                : [] // action create
         );
     }
 
@@ -479,16 +493,29 @@ abstract class BaseMigrateController extends Controller
             throw new Exception("The migration name should contain letters, digits and/or underscore characters only.");
         }
 
-        $option = preg_split('/(?=[A-Z])/', $name);
-
         $className = 'm' . gmdate('ymd_His') . '_' . $name;
         $file = $this->migrationPath . DIRECTORY_SEPARATOR . $className . '.php';
 
         if ($this->confirm("Create new migration '$file'?")) {
-            if (preg_match('/^Create(.+)/', $name)) {
-                $content = $this->renderFile(Yii::getAlias($this->templateFileGenerators['create']), [
+            if (preg_match('/^Create(.+)$/', $name, $matches)) {
+                $content = $this->renderFile (Yii::getAlias ($this->templateFileGenerators['create']), [
                     'className' => $className,
-                    'table' => strtolower(substr($name, 6)),
+                    'table' => strtolower($matches[1]),
+                    'fields' => $this->fields,
+                    'primaryKey' => $this->primaryKey,
+                    'createAt' => $this->createAt,
+                    'updateAt' => $this->updateAt
+                ]);
+            } elseif (preg_match('/^Add(.+)To(.+)$/', $name, $matches)) {
+                $content = $this->renderFile (Yii::getAlias ($this->templateFileGenerators['add']), [
+                    'className' => $className,
+                    'table' => strtolower($matches[2]),
+                    'fields' => $this->fields
+                ]);
+            } elseif (preg_match('/^Remove(.+)To(.+)$/', $name, $matches)) {
+                $content = $this->renderFile (Yii::getAlias ($this->templateFileGenerators['remove']), [
+                    'className' => $className,
+                    'table' => strtolower($matches[2]),
                     'fields' => $this->fields
                 ]);
             } else {

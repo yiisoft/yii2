@@ -67,7 +67,9 @@ class MigrateController extends BaseMigrateController
      * @inheritdoc
      */
     public $templateFileGenerators = [
-        'create' => '@yii/views/createMigration.php'
+        'create' => '@yii/views/createMigration.php',
+        'add' => '@yii/views/addMigration.php',
+        'remove' => '@yii/views/removeMigration.php'
     ];
     /**
      * @var Connection|array|string the DB connection object or the application component ID of the DB connection to use

@@ -6,9 +6,6 @@
 /* @var $className string the new migration class name */
 /* @var $table string the name table */
 /* @var $fields array the fields */
-/* @var $primaryKey string the primary key */
-/* @var $createAt string */
-/* @var $updateAt string */
 
 echo "<?php\n";
 ?>
@@ -20,18 +17,15 @@ class <?= $className ?> extends Migration
 
     public function up()
     {
-        $this->createTable('<?= $table ?>', [
-            '<?= $primaryKey ?>' => $this->primaryKey(),
 <?php foreach ($fields as $field): ?>
-            '<?= $field['property'] ?>' => $this-><?= $field['decorators'] . ",\n"?>
+        $this->addColumn(<?= "'$table', '" . $field['property'] . "', \$this->" . $field['decorators'] ?>);
 <?php endforeach; ?>
-            '<?= $createAt ?>' => $this->integer(),
-            '<?= $updateAt ?>' => $this->integer()
-        ]);
     }
 
     public function down()
     {
-        $this->dropTable('<?= $table ?>');
+<?php foreach ($fields as $field): ?>
+        $this->removeColumn(<?= "'$table', '" . $field['property'] . "'" ?>);
+<?php endforeach; ?>
     }
 }

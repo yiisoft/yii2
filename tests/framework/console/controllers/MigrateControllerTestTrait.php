@@ -201,6 +201,89 @@ CODE;
             $migrationName,
             'fields' => [
                 'title:string(10):notNull',
+                'body:text:notNull'
+            ]
+        ]);
+        $files = FileHelper::findFiles($this->migrationPath);
+
+        $class = 'm' . gmdate('ymd_His') . '_' . $migrationName;
+        $newLine = '\n';
+        $code = <<<CODE
+<?php
+
+use yii\db\Migration;
+
+class {$class} extends Migration
+{
+
+    public function up()
+    {
+        \$this->createTable('test', [
+            'id' => \$this->primaryKey(),
+            'title' => \$this->string(10)->notNull(),
+            'body' => \$this->text()->notNull(),
+            'create_at' => \$this->integer(),
+            'update_at' => \$this->integer()
+        ]);
+    }
+
+    public function down()
+    {
+        \$this->dropTable('test');
+    }
+}
+
+CODE;
+
+        $this->assertEqualsWithoutLE($code, file_get_contents($files[0]));
+        $class = 'm' . gmdate('ymd_His') . '_' . $migrationName;
+        $this->runMigrateControllerAction('create', [
+            $migrationName,
+            'fields' => [
+                'body:text:notNull'
+            ],
+            'primaryKey' => 'title',
+            'createAt' => 'create',
+            'updateAt' => 'update'
+
+        ]);
+        $files = FileHelper::findFiles($this->migrationPath);
+        $code = <<<CODE
+<?php
+
+use yii\db\Migration;
+
+class {$class} extends Migration
+{
+
+    public function up()
+    {
+        \$this->createTable('test', [
+            'title' => \$this->primaryKey(),
+            'body' => \$this->text()->notNull(),
+            'create' => \$this->integer(),
+            'update' => \$this->integer()
+        ]);
+    }
+
+    public function down()
+    {
+        \$this->dropTable('test');
+    }
+}
+
+CODE;
+
+        $this->assertEqualsWithoutLE($code, file_get_contents($files[0]));
+    }
+
+    public function testGenerateAddMigration()
+    {
+        $migrationName = 'AddColumnsToTest';
+        $this->runMigrateControllerAction('create', [
+            $migrationName,
+            'fields' => [
+                'title:string(10):notNull',
                 'body:text:notNull',
                 'create_at:dateTime'
             ]
@@ -219,16 +302,59 @@ class {$class} extends Migration
 
     public function up()
     {
-        \$this->createTable('test', [
-        \t'title' => \$this->string(10)->notNull(),
-        \t'body' => \$this->text()->notNull(),
-        \t'create_at' => \$this->dateTime()
-        ]);
+        \$this->addColumn('test', 'title', \$this->string(10)->notNull());
+        \$this->addColumn('test', 'body', \$this->text()->notNull());
+        \$this->addColumn('test', 'create_at', \$this->dateTime());
     }
 
     public function down()
     {
-        \$this->dropTable('test');
+        \$this->removeColumn('test', 'title');
+        \$this->removeColumn('test', 'body');
+        \$this->removeColumn('test', 'create_at');
+    }
+}
+
+CODE;
+
+        $this->assertEqualsWithoutLE($code, file_get_contents($files[0]));
+    }
+
+    public function testGenerateRemoveMigration()
+    {
+        $migrationName = 'RemoveColumnsToTest';
+        $this->runMigrateControllerAction('create', [
+            $migrationName,
+            'fields' => [
+                'title:string(10):notNull',
+                'body:text:notNull',
+                'create_at:dateTime'
+            ]
+        ]);
+        $files = FileHelper::findFiles($this->migrationPath);
+
+        $class = 'm' . gmdate('ymd_His') . '_' . $migrationName;
+        $newLine = '\n';
+        $code = <<<CODE
+<?php
+
+use yii\db\Migration;
+
+class {$class} extends Migration
+{
+
+    public function up()
+    {
+        \$this->removeColumn('test', 'title');
+        \$this->removeColumn('test', 'body');
+        \$this->removeColumn('test', 'create_at');
+    }
+
+    public function down()
+    {
+        \$this->addColumn('test', 'title', \$this->string(10)->notNull());
+        \$this->addColumn('test', 'body', \$this->text()->notNull());
+        \$this->addColumn('test', 'create_at', \$this->dateTime());
     }
 }
 
