@@ -46,13 +46,13 @@ abstract class BaseMigrateController extends Controller
      * This can be either a path alias (e.g. "@app/migrations/template.php")
      * or a file path.
      */
-    public $templateFileGenerators;
+    public $generatorTemplateFile;
     /**
-     * @var array the fields
+     * @var array Fields to be generated
      */
     public $fields;
     /**
-     * @var string the primary key name
+     * @var string the primary key name to be generated
      */
     public $primaryKey = 'id';
     /**
@@ -73,7 +73,7 @@ abstract class BaseMigrateController extends Controller
         return array_merge(
             parent::options($actionID),
             ['migrationPath'], // global for all actions
-            ($actionID == 'create')
+            ($actionID === 'create')
                 ? ['templateFile', 'templateFileGenerators', 'fields', 'primaryKey', 'createAt', 'updateAt']
                 : [] // action create
         );
@@ -498,24 +498,24 @@ abstract class BaseMigrateController extends Controller
 
         if ($this->confirm("Create new migration '$file'?")) {
             if (preg_match('/^Create(.+)$/', $name, $matches)) {
-                $content = $this->renderFile (Yii::getAlias ($this->templateFileGenerators['create']), [
+                $content = $this->renderFile(Yii::getAlias ($this->generatorTemplateFile['create']), [
                     'className' => $className,
-                    'table' => strtolower($matches[1]),
+                    'table' => mb_strtolower($matches[1]),
                     'fields' => $this->fields,
                     'primaryKey' => $this->primaryKey,
                     'createAt' => $this->createAt,
                     'updateAt' => $this->updateAt
                 ]);
             } elseif (preg_match('/^Add(.+)To(.+)$/', $name, $matches)) {
-                $content = $this->renderFile (Yii::getAlias ($this->templateFileGenerators['add']), [
+                $content = $this->renderFile(Yii::getAlias ($this->generatorTemplateFile['add']), [
                     'className' => $className,
-                    'table' => strtolower($matches[2]),
+                    'table' => mb_strtolower($matches[2]),
                     'fields' => $this->fields
                 ]);
             } elseif (preg_match('/^Remove(.+)To(.+)$/', $name, $matches)) {
-                $content = $this->renderFile (Yii::getAlias ($this->templateFileGenerators['remove']), [
+                $content = $this->renderFile(Yii::getAlias ($this->generatorTemplateFile['remove']), [
                     'className' => $className,
-                    'table' => strtolower($matches[2]),
+                    'table' => mb_strtolower($matches[2]),
                     'fields' => $this->fields
                 ]);
             } else {

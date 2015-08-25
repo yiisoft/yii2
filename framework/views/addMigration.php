@@ -14,7 +14,6 @@ use yii\db\Migration;
 
 class <?= $className ?> extends Migration
 {
-
     public function up()
     {
 <?php foreach ($fields as $field): ?>

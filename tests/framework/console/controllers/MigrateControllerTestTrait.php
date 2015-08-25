@@ -164,7 +164,6 @@ use yii\db\Migration;
 
 class {$class} extends Migration
 {
-
     public function up()
     {
 
@@ -215,7 +214,6 @@ use yii\db\Migration;
 
 class {$class} extends Migration
 {
-
     public function up()
     {
         \$this->createTable('test', [
@@ -255,7 +253,6 @@ use yii\db\Migration;
 
 class {$class} extends Migration
 {
-
     public function up()
     {
         \$this->createTable('test', [
@@ -299,7 +296,6 @@ use yii\db\Migration;
 
 class {$class} extends Migration
 {
-
     public function up()
     {
         \$this->addColumn('test', 'title', \$this->string(10)->notNull());
@@ -342,7 +338,6 @@ use yii\db\Migration;
 
 class {$class} extends Migration
 {
-
     public function up()
     {
         \$this->dropColumn('test', 'title');

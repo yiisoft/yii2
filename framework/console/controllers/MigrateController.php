@@ -66,7 +66,7 @@ class MigrateController extends BaseMigrateController
     /**
      * @inheritdoc
      */
-    public $templateFileGenerators = [
+    public $generatorTemplateFile = [
         'create' => '@yii/views/createMigration.php',
         'add' => '@yii/views/addMigration.php',
         'remove' => '@yii/views/removeMigration.php'
