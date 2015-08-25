@@ -351,6 +351,7 @@ class ArrayHelperTest extends TestCase
             ['postObject.empty',null, 'defaultValue'],
             ['postObject.secret','defaultValue', 'defaultValue'],
             ['postObject.title','tt', 'defaultValue'],
+            ['postObject.nonexistent','defaultValue', 'defaultValue'],
         ];
     }
 

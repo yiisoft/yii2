@@ -202,12 +202,12 @@ class BaseArrayHelper
                 return $array->$key;
             }
             $propertyIsPublic = function($object, $propertyName) {
-                $reflect = new ReflectionObject($object);
-                foreach ($reflect->getProperties(ReflectionProperty::IS_PUBLIC) as $property) {
+                $reflect = new \ReflectionObject($object);
+                foreach ($reflect->getProperties(\ReflectionProperty::IS_PUBLIC) as $property) {
                     if($property->getName()===$propertyName) 
                         return true;
                 }
-            }
+            };
             if(property_exists($array, $key) && $propertyIsPublic($array, $key)) {
                 return $array->$key;
             }
