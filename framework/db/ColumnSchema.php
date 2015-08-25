@@ -116,7 +116,7 @@ class ColumnSchema extends Object
         if ($value === '' && $this->type !== Schema::TYPE_TEXT && $this->type !== Schema::TYPE_STRING && $this->type !== Schema::TYPE_BINARY) {
             return null;
         }
-        if ($value === null || gettype($value) === $this->phpType || $value instanceof Expression) {
+        if ($value === null || (gettype($value) === $this->phpType && $this->phpType !== Schema::TYPE_DOUBLE) || $value instanceof Expression) {
             return $value;
         }
         switch ($this->phpType) {
@@ -137,7 +137,7 @@ class ColumnSchema extends Object
                 // https://github.com/yiisoft/yii2/issues/9006
                 return (bool) $value && $value !== "\0";
             case 'double':
-                return (double) $value;
+                return str_replace(',', '.', (string) $value);
         }
 
         return $value;
