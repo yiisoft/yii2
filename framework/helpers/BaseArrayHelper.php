@@ -170,8 +170,7 @@ class BaseArrayHelper
      * or an anonymous function returning the value. The anonymous function signature should be:
      * `function($array, $defaultValue)`.
      * The possibility to pass an array of keys is available since version 2.0.4.
-     * @param mixed $default the default value to be returned if the specified array key does not exist. Not used when
-     * getting value from an object.
+     * @param mixed $default the default value to be returned if the specified array key does not exist. 
      * @return mixed the value of the element if found, default value otherwise
      * @throws InvalidParamException if $array is neither an array nor an object.
      */
@@ -199,7 +198,20 @@ class BaseArrayHelper
         }
 
         if (is_object($array)) {
-            return $array->$key;
+            if(isset($array->$key)) {
+                return $array->$key;
+            }
+            $propertyIsPublic = function($object, $propertyName) {
+                $reflect = new \ReflectionObject($object);
+                foreach ($reflect->getProperties(\ReflectionProperty::IS_PUBLIC) as $property) {
+                    if($property->getName()===$propertyName) 
+                        return true;
+                }
+            };
+            if(property_exists($array, $key) && $propertyIsPublic($array, $key)) {
+                return $array->$key;
+            }
+            return $default;
         } elseif (is_array($array)) {
             return array_key_exists($key, $array) ? $array[$key] : $default;
         } else {

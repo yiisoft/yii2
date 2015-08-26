@@ -11,6 +11,8 @@ class Post1
 {
     public $id = 23;
     public $title = 'tt';
+    private $secret;
+    public $empty;
 }
 
 class Post2 extends Object
@@ -346,6 +348,10 @@ class ArrayHelperTest extends TestCase
             ],
             [['version', '1.0', 'status'], 'released'],
             [['version', '1.0', 'date'], 'defaultValue', 'defaultValue'],
+            ['postObject.empty',null, 'defaultValue'],
+            ['postObject.secret','defaultValue', 'defaultValue'],
+            ['postObject.title','tt', 'defaultValue'],
+            ['postObject.nonexistent','defaultValue', 'defaultValue'],
         ];
     }
 
@@ -380,10 +386,12 @@ class ArrayHelperTest extends TestCase
                     'status' => 'released'
                 ]
             ],
+            'postObject'=> new Post1()
         ];
 
         $this->assertEquals($expected, ArrayHelper::getValue($array, $key, $default));
     }
+    
 
     public function testIsAssociative()
     {
