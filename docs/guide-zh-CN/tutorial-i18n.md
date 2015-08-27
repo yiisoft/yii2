@@ -543,8 +543,8 @@ class TranslationEventHandler
 
 ## 视图的翻译 <span id="view-translation"></span>
 
-有时你可能想要翻译一个完整的视图脚本，而不是翻译单个文本信息。为了实现这一目标，只需简单的翻译视图并在它子目录的下保存一个名称一样的目标语言文件。
-例如，如果你想要翻译的视图脚本 `views/site/index.php` 且目标语言是 `ru-RU`，你可以将视图翻译并保存为 `views/site/ru-RU/index.php`。现在
+有时你可能想要翻译一个完整的视图文件，而不是翻译单条文本消息。为了达到这一目的，只需简单的翻译视图并在它子目录下保存一个名称一样的目标语言文件。
+例如，如果你想要翻译的视图文件为 `views/site/index.php` 且目标语言是 `ru-RU`，你可以将视图翻译并保存为 `views/site/ru-RU/index.php`。现在
 每当你调用 [[yii\base\View::renderFile()]] 或任何其它方法 (如 [[yii\base\Controller::render()]]) 来渲染 `views/site/index.php` 视图，
 它最终会使用所翻译的 `views/site/ru-RU/index.php`。
 
