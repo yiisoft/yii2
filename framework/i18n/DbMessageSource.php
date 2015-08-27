@@ -62,7 +62,7 @@ class DbMessageSource extends MessageSource
     /**
      * @var Cache|array|string the cache object or the application component ID of the cache object.
      * The messages data will be cached using this cache object. Note, this property has meaning only
-     * in case [[cachingDuration]] set to non-zero value.
+     * in case [[enableCaching]] is true.
      * After the DbMessageSource object is created, if you want to change this property, you should only assign
      * it with a cache object.
      * Starting from version 2.0.2, this can also be a configuration array for creating the object.
