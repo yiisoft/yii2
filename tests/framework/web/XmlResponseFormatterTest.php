@@ -69,6 +69,27 @@ class XmlResponseFormatterTest extends FormatterTest
         ]);
     }
 
+    public function formatTraversableObjectDataProvider()
+    {
+        $expectedXmlForStack = '';
+        
+        $postsStack = new \SplStack();
+        
+        $postsStack->push(new Post(915, 'record1'));
+        $expectedXmlForStack = '<Post><id>915</id><title>record1</title></Post>' .
+          $expectedXmlForStack;
+        
+        $postsStack->push(new Post(456, 'record2'));
+        $expectedXmlForStack = '<Post><id>456</id><title>record2</title></Post>' .
+          $expectedXmlForStack;
+        
+        $data = [
+            [$postsStack, "<response>$expectedXmlForStack</response>\n"]
+        ];
+        
+        return $this->addXmlHead($data);
+    }
+
     public function formatObjectDataProvider()
     {
         return $this->addXmlHead([
