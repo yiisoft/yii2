@@ -396,6 +396,33 @@ If you want your validator to support validating a value without a model, you sh
 instead of `validateAttribute()` and `validate()` because by default the latter two methods are implemented
 by calling `validateValue()`.
 
+Here is an example of how you could set up the above within your model
+```php
+namespace app\models;
+
+use Yii;
+use yii\base\Model;
+use app\components\validators\CountryValidator;
+
+class EntryForm extends Model {
+
+    public $name;
+    public $email;
+    public $country;
+
+    public function rules(){
+
+        $r = [
+            [['name', 'email'], 'required'],
+            ['country',CountryValidator::className()],
+            ['email','email'],
+        ];
+        return $r;
+    }
+
+}
+```
+
 
 ## Client-Side Validation <span id="client-side-validation"></span>
 
