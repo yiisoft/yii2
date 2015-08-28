@@ -178,12 +178,12 @@ class AssetManager extends Component
      *
      * where `$path` is the asset path. Note that the `$path` can be either directory where the asset
      * files reside or a single file. For a CSS file that uses relative path in `url()`, the hash
-     * implementation should use the directory path of the file instead of the file path to include 
+     * implementation should use the directory path of the file instead of the file path to include
      * the relative asset files in the copying.
      *
      * If this is not set, the asset manager will use the default CRC32 and filemtime in the `hash`
      * method.
-     * 
+     *
      * Example of an implementation using MD4 hash:
      *
      * ```php

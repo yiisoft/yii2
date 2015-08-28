@@ -7,29 +7,27 @@
 
 namespace yii\db;
 
-use Yii;
-use yii\di\Instance;
-
 /**
- * SchemaBuilderTrait build up SchemaBuilder
+ * SchemaBuilderTrait contains shortcut methods to create instances of [[ColumnSchemaBuilder]].
  *
- * @method static SchemaBuilder primaryKey(integer $length = null) see [[SchemaBuilder::primaryKey()]] for more info
- * @method static SchemaBuilder bigPrimaryKey(integer $length = null) see [[SchemaBuilder::bigPrimaryKey()]] for more info
- * @method static SchemaBuilder string(integer $length = null) see [[SchemaBuilder::string()]] for more info
- * @method static SchemaBuilder text(integer $length = null) see [[SchemaBuilder::text()]] for more info
- * @method static SchemaBuilder smallInteger(integer $length = null) see [[SchemaBuilder::smallInteger()]] for more info
- * @method static SchemaBuilder integer(integer $length = null) see [[SchemaBuilder::integer()]] for more info
- * @method static SchemaBuilder bigInteger(integer $length = null) see [[SchemaBuilder::bigInteger()]] for more info
- * @method static SchemaBuilder float(integer $length = null) see [[SchemaBuilder::float()]] for more info
- * @method static SchemaBuilder double(integer $precision = null, integer $scale = null) see [[SchemaBuilder::double()]] for more info
- * @method static SchemaBuilder decimal(integer $precision = null, integer $scale = null) see [[SchemaBuilder::decimal()]] for more info
- * @method static SchemaBuilder dateTime(integer $length = null) see [[SchemaBuilder::dateTime()]] for more info
- * @method static SchemaBuilder timestamp(integer $length = null) see [[SchemaBuilder::timestamp()]] for more info
- * @method static SchemaBuilder time(integer $length = null) see [[SchemaBuilder::time()]] for more info
- * @method static SchemaBuilder date() see [[SchemaBuilder::date()]] for more info
- * @method static SchemaBuilder binary(integer $length = null) see [[SchemaBuilder::binary()]] for more info
- * @method static SchemaBuilder boolean(integer $length = null) see [[SchemaBuilder::boolean()]] for more info
- * @method static SchemaBuilder money(integer $length = null) see [[SchemaBuilder::money()]] for more info
+ * These can be used in database migrations to define database schema types using a PHP interface.
+ * This is useful to define a schema in a DBMS independent way so that the application may run on
+ * different DBMS the same way.
+ *
+ * For example you may use the following code inside your migration files:
+ *
+ * ```php
+ * $this->createTable('example_table', [
+ *   'id' => $this->primaryKey(),
+ *   'name' => $this->string(64)->notNull(),
+ *   'type' => $this->integer()->notNull()->defaultValue(10),
+ *   'description' => $this->text(),
+ *   'rule_name' => $this->string(64),
+ *   'data' => $this->text(),
+ *   'created_at' => $this->datetime()->notNull(),
+ *   'updated_at' => $this->datetime(),
+ * ]);
+ * ```
  *
  * @author Vasenin Matvey <vaseninm@gmail.com>
  * @since 2.0.6
@@ -37,62 +35,227 @@ use yii\di\Instance;
 trait SchemaBuilderTrait
 {
     /**
-     * @var Connection|array|string the DB connection object or the application component ID of the DB connection
+     * @return Connection the database connection to be used for schema building.
      */
-    private static $_dbName = 'db';
+    protected abstract function getDb();
 
     /**
-     * @var array mapping between PDO driver names and [[SchemaBuilder]] classes.
-     * The keys of the array are PDO driver names while the values the corresponding
-     * SchemaBuilder class name.
+     * Creates a primary key column.
+     * @param integer $length column size or precision definition.
+     * This parameter will be ignored if not supported by the DBMS.
+     * @return ColumnSchemaBuilder the column instance which can be further customized.
+     * @since 2.0.6
      */
-    private static $_schemaBuilderMap = [
-        'pgsql' => 'yii\db\pgsql\SchemaBuilder', // PostgreSQL
-        'mysqli' => 'yii\db\mysql\SchemaBuilder', // MySQL
-        'mysql' => 'yii\db\mysql\SchemaBuilder', // MySQL
-        'sqlite' => 'yii\db\sqlite\SchemaBuilder', // sqlite 3
-        'sqlite2' => 'yii\db\sqlite\SchemaBuilder', // sqlite 2
-        'sqlsrv' => 'yii\db\mssql\SchemaBuilder', // newer MSSQL driver on MS Windows hosts
-        'oci' => 'yii\db\oci\SchemaBuilder', // Oracle driver
-        'mssql' => 'yii\db\mssql\SchemaBuilder', // older MSSQL driver on MS Windows hosts
-        'dblib' => 'yii\db\mssql\SchemaBuilder', // dblib drivers on GNU/Linux (and maybe other OSes) hosts
-        'cubrid' => 'yii\db\cubrid\SchemaBuilder', // CUBRID
-    ];
-
-
-    /**
-     * Set the database connection used by this class
-     *
-     * @param Connection|array|string $dbName the DB connection object or the application component ID of the DB connection
-     */
-    public static function setDb($dbName)
+    public function primaryKey($length = null)
     {
-        self::$_dbName = $dbName;
+        return $this->getDb()->getSchema()->createColumnSchemaBuilder(Schema::TYPE_PK, $length);
     }
 
     /**
-     * Calls the named static method which is not a class method.
-     *
-     * Do not call this method directly as it is a PHP magic method that
-     * will be implicitly called when an unknown method is being invoked.
-     * @param string $name the static method name
-     * @param array $params static method parameters
-     * @return mixed the static method return value
+     * Creates a big primary key column.
+     * @param integer $length column size or precision definition.
+     * This parameter will be ignored if not supported by the DBMS.
+     * @return ColumnSchemaBuilder the column instance which can be further customized.
+     * @since 2.0.6
      */
-    public static function __callStatic($name, $arguments)
+    public function bigPrimaryKey($length = null)
     {
-        return forward_static_call_array([self::getClass(), $name], $arguments);
+        return $this->getDb()->getSchema()->createColumnSchemaBuilder(Schema::TYPE_BIGPK, $length);
     }
 
     /**
-     * Determines the SchemaBuilder for the $_dbName value.
-     *
-     * @return SchemaBuilder
+     * Creates a string column.
+     * @param integer $length column size definition i.e. the maximum string length.
+     * This parameter will be ignored if not supported by the DBMS.
+     * @return ColumnSchemaBuilder the column instance which can be further customized.
+     * @since 2.0.6
      */
-    private static function getClass()
+    public function string($length = null)
     {
-        $driverName = Instance::ensure(self::$_dbName, Connection::className())->getDriverName();
+        return $this->getDb()->getSchema()->createColumnSchemaBuilder(Schema::TYPE_STRING, $length);
+    }
 
-        return self::$_schemaBuilderMap[$driverName];
+    /**
+     * Creates a text column.
+     * @return ColumnSchemaBuilder the column instance which can be further customized.
+     * @since 2.0.6
+     */
+    public function text()
+    {
+        return $this->getDb()->getSchema()->createColumnSchemaBuilder(Schema::TYPE_TEXT);
+    }
+
+    /**
+     * Creates a smallint column.
+     * @param integer $length column size or precision definition.
+     * This parameter will be ignored if not supported by the DBMS.
+     * @return ColumnSchemaBuilder the column instance which can be further customized.
+     * @since 2.0.6
+     */
+    public function smallInteger($length = null)
+    {
+        return $this->getDb()->getSchema()->createColumnSchemaBuilder(Schema::TYPE_SMALLINT, $length);
+    }
+
+    /**
+     * Creates an integer column.
+     * @param integer $length column size or precision definition.
+     * This parameter will be ignored if not supported by the DBMS.
+     * @return ColumnSchemaBuilder the column instance which can be further customized.
+     * @since 2.0.6
+     */
+    public function integer($length = null)
+    {
+        return $this->getDb()->getSchema()->createColumnSchemaBuilder(Schema::TYPE_INTEGER, $length);
+    }
+
+    /**
+     * Creates a bigint column.
+     * @param integer $length column size or precision definition.
+     * This parameter will be ignored if not supported by the DBMS.
+     * @return ColumnSchemaBuilder the column instance which can be further customized.
+     * @since 2.0.6
+     */
+    public function bigInteger($length = null)
+    {
+        return $this->getDb()->getSchema()->createColumnSchemaBuilder(Schema::TYPE_BIGINT, $length);
+    }
+
+    /**
+     * Creates a float column.
+     * @param integer $precision column value precision. First parameter passed to the column type, e.g. FLOAT(precision).
+     * This parameter will be ignored if not supported by the DBMS.
+     * @return ColumnSchemaBuilder the column instance which can be further customized.
+     * @since 2.0.6
+     */
+    public function float($precision = null)
+    {
+        return $this->getDb()->getSchema()->createColumnSchemaBuilder(Schema::TYPE_FLOAT, $precision);
+    }
+
+    /**
+     * Creates a double column.
+     * @param integer $precision column value precision. First parameter passed to the column type, e.g. DOUBLE(precision).
+     * This parameter will be ignored if not supported by the DBMS.
+     * @return ColumnSchemaBuilder the column instance which can be further customized.
+     * @since 2.0.6
+     */
+    public function double($precision = null)
+    {
+        return $this->getDb()->getSchema()->createColumnSchemaBuilder(Schema::TYPE_DOUBLE, $precision);
+    }
+
+    /**
+     * Creates a decimal column.
+     * @param integer $precision column value precision, which is usually the total number of digits.
+     * First parameter passed to the column type, e.g. DECIMAL(precision, scale).
+     * This parameter will be ignored if not supported by the DBMS.
+     * @param integer $scale column value scale, which is usually the number of digits after the decimal point.
+     * Second parameter passed to the column type, e.g. DECIMAL(precision, scale).
+     * This parameter will be ignored if not supported by the DBMS.
+     * @return ColumnSchemaBuilder the column instance which can be further customized.
+     * @since 2.0.6
+     */
+    public function decimal($precision = null, $scale = null)
+    {
+        $length = [];
+        if ($precision !== null) {
+            $length[] = $precision;
+        }
+        if ($scale !== null) {
+            $length[] = $scale;
+        }
+        return $this->getDb()->getSchema()->createColumnSchemaBuilder(Schema::TYPE_DECIMAL, $length);
+    }
+
+    /**
+     * Creates a datetime column.
+     * @param integer $precision column value precision. First parameter passed to the column type, e.g. DATETIME(precision).
+     * This parameter will be ignored if not supported by the DBMS.
+     * @return ColumnSchemaBuilder the column instance which can be further customized.
+     * @since 2.0.6
+     */
+    public function dateTime($precision = null)
+    {
+        return $this->getDb()->getSchema()->createColumnSchemaBuilder(Schema::TYPE_DATETIME, $precision);
+    }
+
+    /**
+     * Creates a timestamp column.
+     * @param integer $precision column value precision. First parameter passed to the column type, e.g. TIMESTAMP(precision).
+     * This parameter will be ignored if not supported by the DBMS.
+     * @return ColumnSchemaBuilder the column instance which can be further customized.
+     * @since 2.0.6
+     */
+    public function timestamp($precision = null)
+    {
+        return $this->getDb()->getSchema()->createColumnSchemaBuilder(Schema::TYPE_TIMESTAMP, $precision);
+    }
+
+    /**
+     * Creates a time column.
+     * @param integer $precision column value precision. First parameter passed to the column type, e.g. TIME(precision).
+     * This parameter will be ignored if not supported by the DBMS.
+     * @return ColumnSchemaBuilder the column instance which can be further customized.
+     * @since 2.0.6
+     */
+    public function time($precision = null)
+    {
+        return $this->getDb()->getSchema()->createColumnSchemaBuilder(Schema::TYPE_TIME, $precision);
+    }
+
+    /**
+     * Creates a date column.
+     * @return ColumnSchemaBuilder the column instance which can be further customized.
+     * @since 2.0.6
+     */
+    public function date()
+    {
+        return $this->getDb()->getSchema()->createColumnSchemaBuilder(Schema::TYPE_DATE);
+    }
+
+    /**
+     * Creates a binary column.
+     * @param integer $length column size or precision definition.
+     * This parameter will be ignored if not supported by the DBMS.
+     * @return ColumnSchemaBuilder the column instance which can be further customized.
+     * @since 2.0.6
+     */
+    public function binary($length = null)
+    {
+        return $this->getDb()->getSchema()->createColumnSchemaBuilder(Schema::TYPE_BINARY, $length);
+    }
+
+    /**
+     * Creates a boolean column.
+     * @return ColumnSchemaBuilder the column instance which can be further customized.
+     * @since 2.0.6
+     */
+    public function boolean()
+    {
+        return $this->getDb()->getSchema()->createColumnSchemaBuilder(Schema::TYPE_BOOLEAN);
+    }
+
+    /**
+     * Creates a money column.
+     * @param integer $precision column value precision, which is usually the total number of digits.
+     * First parameter passed to the column type, e.g. DECIMAL(precision, scale).
+     * This parameter will be ignored if not supported by the DBMS.
+     * @param integer $scale column value scale, which is usually the number of digits after the decimal point.
+     * Second parameter passed to the column type, e.g. DECIMAL(precision, scale).
+     * This parameter will be ignored if not supported by the DBMS.
+     * @return ColumnSchemaBuilder the column instance which can be further customized.
+     * @since 2.0.6
+     */
+    public function money($precision = null, $scale = null)
+    {
+        $length = [];
+        if ($precision !== null) {
+            $length[] = $precision;
+        }
+        if ($scale !== null) {
+            $length[] = $scale;
+        }
+        return $this->getDb()->getSchema()->createColumnSchemaBuilder(Schema::TYPE_MONEY, $length);
     }
 }

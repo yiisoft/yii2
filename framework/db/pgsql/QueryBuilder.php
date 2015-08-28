@@ -19,22 +19,27 @@ class QueryBuilder extends \yii\db\QueryBuilder
 {
     /**
      * Defines a UNIQUE index for [[createIndex()]].
+     * @since 2.0.6
      */
     const INDEX_UNIQUE = 'unique';
     /**
      * Defines a B-tree index for [[createIndex()]].
+     * @since 2.0.6
      */
     const INDEX_B_TREE = 'btree';
     /**
      * Defines a hash index for [[createIndex()]].
+     * @since 2.0.6
      */
     const INDEX_HASH = 'hash';
     /**
      * Defines a GiST index for [[createIndex()]].
+     * @since 2.0.6
      */
     const INDEX_GIST = 'gist';
     /**
      * Defines a GIN index for [[createIndex()]].
+     * @since 2.0.6
      */
     const INDEX_GIN = 'gin';
 

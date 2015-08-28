@@ -3,7 +3,7 @@
 
 > Примечание: Данный раздел находится в разработке.
 
-- http://codeception.com/docs/04-AcceptanceTests
+- [Codeception Acceptance Tests](http://codeception.com/docs/03-AcceptanceTests)
 
 Запуск тестов в шаблонах проектов basic и advanced
 --------------------------------------------------

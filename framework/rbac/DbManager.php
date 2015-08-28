@@ -64,7 +64,7 @@ class DbManager extends BaseManager
      *
      * - an application component ID (e.g. `cache`)
      * - a configuration array
-     * - a [[yii\caching\Cache]] object
+     * - a [[\yii\caching\Cache]] object
      *
      * When this is not set, it means caching is not enabled.
      *
