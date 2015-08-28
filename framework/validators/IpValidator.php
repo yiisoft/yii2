@@ -260,7 +260,7 @@ class IpValidator extends Validator
      *  array  - an error occurred during the validation.
      * Array[0] contains the text of an error, array[1] contains values for the placeholders in the error message
      */
-    protected function validateSubnet($ip)
+    private function validateSubnet($ip)
     {
         if (!is_string($ip)) {
             return [$this->wrongIp, []];
@@ -299,7 +299,7 @@ class IpValidator extends Validator
             if (!$this->ipv6) {
                 return [$this->ipv6NotAllowed, []];
             }
-            if (!$this->validate6($ip)) {
+            if (!$this->validateIPv6($ip)) {
                 return [$this->wrongIp, []];
             }
 
@@ -319,7 +319,7 @@ class IpValidator extends Validator
             if (!$this->ipv4) {
                 return [$this->ipv4NotAllowed, []];
             }
-            if (!$this->validate4($ip)) {
+            if (!$this->validateIPv4($ip)) {
                 return [$this->wrongIp, []];
             }
         }
@@ -344,7 +344,7 @@ class IpValidator extends Validator
      * @param string $ip the original IPv6
      * @return string the expanded IPv6
      */
-    protected function expandIPv6($ip)
+    private function expandIPv6($ip)
     {
         $hex = unpack('H*hex', inet_pton($ip));
         return substr(preg_replace("/([a-f0-9]{4})/i", "$1:", $hex['hex']), 0, -1);
@@ -359,7 +359,7 @@ class IpValidator extends Validator
      * @return boolean
      * @see order
      */
-    protected function isAllowed($ip, $cidr)
+    private function isAllowed($ip, $cidr)
     {
         $denied = false;
         $allowed = true;
@@ -379,7 +379,7 @@ class IpValidator extends Validator
      * @param string $value
      * @return boolean
      */
-    protected function validate4($value)
+    protected function validateIPv4($value)
     {
         return preg_match($this->ipv4Pattern, $value) !== 0;
     }
@@ -390,7 +390,7 @@ class IpValidator extends Validator
      * @param string $value
      * @return boolean
      */
-    protected function validate6($value)
+    protected function validateIPv6($value)
     {
         return preg_match($this->ipv6Pattern, $value) !== 0;
     }
@@ -401,7 +401,7 @@ class IpValidator extends Validator
      * @param string $ip
      * @return integer
      */
-    protected function getIpVersion($ip)
+    private function getIpVersion($ip)
     {
         return strpos($ip, ":") === false ? 4 : 6;
     }
@@ -410,7 +410,7 @@ class IpValidator extends Validator
      * Used to get the Regexp pattern for initial IP address parsing
      * @return string
      */
-    protected function getIpParsePattern()
+    private function getIpParsePattern()
     {
         $negationChar = is_string($this->negationChar) ? $this->negationChar : static::DEFAULT_NEGATION_CHAR;
         return '/^(' . $negationChar . '?)(.+?)(\/(\d+))?$/';
@@ -451,7 +451,7 @@ class IpValidator extends Validator
      * @param string|array $ranges allowed subnets in CIDR format e.g. `10.0.0.0/8` or `2001:af::/64`
      * @return bool
      */
-    protected function inRange($ip, $cidr, $ranges)
+    private function inRange($ip, $cidr, $ranges)
     {
         $ranges = (array)$ranges;
         $ipVersion = $this->getIpVersion($ip);
@@ -483,7 +483,7 @@ class IpValidator extends Validator
      * @param string $ip
      * @return string bits as a string
      */
-    protected function ip2bin($ip)
+    private function ip2bin($ip)
     {
         if ($this->getIpVersion($ip) === 4) {
             return str_pad(base_convert(ip2long($ip), 10, 2), static::IPV4_ADDRESS_LENGTH, '0', STR_PAD_LEFT);
