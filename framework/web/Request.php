@@ -876,7 +876,7 @@ class Request extends \yii\base\Request
      */
     public function getAuthUser()
     {
-        return isset($_SERVER['PHP_AUTH_USER']) ? $_SERVER['PHP_AUTH_USER'] : null;
+        return isset($_SERVER['PHP_AUTH_USER']) && strtolower($_SERVER['PHP_AUTH_USER']) != 'null' ? $_SERVER['PHP_AUTH_USER'] : null;
     }
 
     /**
@@ -884,7 +884,7 @@ class Request extends \yii\base\Request
      */
     public function getAuthPassword()
     {
-        return isset($_SERVER['PHP_AUTH_PW']) ? $_SERVER['PHP_AUTH_PW'] : null;
+        return isset($_SERVER['PHP_AUTH_PW']) && strtolower($_SERVER['PHP_AUTH_PW']) != 'null' ? $_SERVER['PHP_AUTH_PW'] : null;
     }
 
     private $_port;
