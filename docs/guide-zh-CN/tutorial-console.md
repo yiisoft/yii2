@@ -12,7 +12,7 @@
 
 正如你在截图中看到，Yii 中已经定义了一组默认情况下可用的命令：
 
-- [[yii\console\controllers\AssetController|AssetController]] - 允许合并和压缩你的 JavaScript 和 CSS 文件。你也可以在 [资源 - 使用 asset 命令](structure-assets.md#using-the-asset-command) 一节获取等多信息。
+- [[yii\console\controllers\AssetController|AssetController]] - 允许合并和压缩你的 JavaScript 和 CSS 文件。在 [资源 - 使用 asset 命令](structure-assets.md#using-the-asset-command) 一节可获取更多信息。
 - [[yii\console\controllers\CacheController|CacheController]] - 清除应用程序缓存。
 - [[yii\console\controllers\FixtureController|FixtureController]] - 管理用于单元测试 fixture 的加载和卸载。
 这个命令的更多细节在 [Testing Section about Fixtures](test-fixtures.md#managing-fixtures).
