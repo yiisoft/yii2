@@ -1134,7 +1134,7 @@ class Formatter extends Component
 
         $position = 0;
         do {
-            if ($value < $this->sizeFormatBase) {
+            if (abs($value) < $this->sizeFormatBase) {
                 break;
             }
             $value = $value / $this->sizeFormatBase;
@@ -1156,7 +1156,9 @@ class Formatter extends Component
         // format the size value
         $params = [
             // this is the unformatted number used for the plural rule
-            'n' => $value,
+            // abs() to make sure the plural rules work correctly on negative numbers, intl does not cover this
+            // http://english.stackexchange.com/questions/9735/is-1-singular-or-plural
+            'n' => abs($value),
             // this is the formatted number used for display
             'nFormatted' => $this->asDecimal($value, $decimals, $options, $textOptions),
         ];
