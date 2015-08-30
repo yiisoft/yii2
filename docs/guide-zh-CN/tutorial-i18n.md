@@ -18,39 +18,39 @@ Yii 提供的国际化功能支持全方位信息翻译，视图翻译，日期�
 
 在 Yii中，我们经常用 “language” 来代表一个区域。
 
-一个 Yii 应用使用两种语言：[[yii\base\Application::$sourceLanguage|source language]] 和
-[[yii\base\Application::$language|target language]] 。前者指的是写在代码中的语言，后者是向最终用户显示内容的语言。
+一个 Yii 应用使用两种语言：[[yii\base\Application::$sourceLanguage|源语言]] 和
+[[yii\base\Application::$language|目标语言]] 。前者指的是写在代码中的语言，后者是向最终用户显示内容的语言。
 而信息翻译服务主要是将文本消息从原语言翻译到目标语言。
 
 可以用类似下面的应用程序配置来配置应用程序语言：
 
 ```php
 return [
-    // set target language to be Russian
+    // 设置目标语言为俄语
     'language' => 'ru-RU',
     
-    // set source language to be English
+    // 设置源语言为英语
     'sourceLanguage' => 'en-US',
     
     ......
 ];
 ```
 
-默认的 [[yii\base\Application::$sourceLanguage|source language]] 值是 `en-US`，即美国英语。
+默认的 [[yii\base\Application::$sourceLanguage|源语言]] 值是 `en-US`，即美国英语。
 建议你保留此默认值不变，因为通常让人将英语翻译成其它语言要比将其它语言翻译成其它语言容易得多。
 
-你经常需要根据不同的因素来动态地设置 [[yii\base\Application::$language|target language]] ，如最终用户的语言首选项。
+你经常需要根据不同的因素来动态地设置 [[yii\base\Application::$language|目标语言]] ，如最终用户的语言首选项。
 要在应用程序配置中配置它，你可以使用下面的语句来更改目标语言：
 
 ```php
-// change target language to Chinese
+// 改变目标语言为中文
 \Yii::$app->language = 'zh-CN';
 ```
 
 ## 消息翻译 <span id="message-translation"></span>
 
-消息翻译服务用于将一条文本信息从一种语言（通常是 [[yii\base\Application::$sourceLanguage|source language]] ）
-翻译成另一种语言（通常是 [[yii\base\Application::$language|target language]]）。
+消息翻译服务用于将一条文本信息从一种语言（通常是 [[yii\base\Application::$sourceLanguage|源语言]] ）
+翻译成另一种语言（通常是 [[yii\base\Application::$language|目标语言]]）。
 它的翻译原理是通过在语言文件中查找要翻译的信息以及翻译的结果。如果要翻译的信息可以在语言文件中找到，会返回相应的翻译结果；
 否则会返回原始未翻译的信息。
 
@@ -115,13 +115,13 @@ echo \Yii::t('app', 'This is a string to translate!');
 
 ```php
 $username = 'Alexander';
-// display a translated message with username being "Alexander"
+// 输出：“Hello, Alexander”
 echo \Yii::t('app', 'Hello, {username}!', [
     'username' => $username,
 ]);
 
 $username = 'Qiang';
-// display a translated message with username being "Qiang"
+// 输出：“Hello, Qiang”
 echo \Yii::t('app', 'Hello, {username}!', [
     'username' => $username,
 ]);
@@ -249,7 +249,7 @@ echo \Yii::t('app', 'It is {0, date, HH:mm}', time());
 参数值为一个数并被格式化为它的字母拼写形式。 例如，
 
 ```php
-// may produce "42 is spelled as forty-two"
+// 输出："42 is spelled as forty-two"
 echo \Yii::t('app', '{n,number} is spelled as {n, spellout}', ['n' => 42]);
 ```
 
@@ -258,7 +258,7 @@ echo \Yii::t('app', '{n,number} is spelled as {n, spellout}', ['n' => 42]);
 参数值为一个数并被格式化为一个序数词。 例如，
 
 ```php
-// may produce "You are the 42nd visitor here!"
+// 输出："You are the 42nd visitor here!"
 echo \Yii::t('app', 'You are the {n, ordinal} visitor here!', ['n' => 42]);
 ```
 
@@ -268,7 +268,7 @@ echo \Yii::t('app', 'You are the {n, ordinal} visitor here!', ['n' => 42]);
 参数值为秒数并被格式化为持续的时间段。 例如，
 
 ```php
-// may produce "You are here for 47 sec. already!"
+// 输出："You are here for 47 sec. already!"
 echo \Yii::t('app', 'You are here for {n, duration} already!', ['n' => 47]);
 ```
 
@@ -279,9 +279,9 @@ echo \Yii::t('app', 'You are here for {n, duration} already!', ['n' => 47]);
 取之以直接处理词形变化规则，它是足以面对某些词形变化语言的翻译。 例如，
 
 ```php
-// When $n = 0, it may produce "There are no cats!"
-// When $n = 1, it may produce "There is one cat!"
-// When $n = 42, it may produce "There are 42 cats!"
+// 当 $n = 0 时，输出："There are no cats!"
+// 当 $n = 1 时，输出："There is one cat!"
+// 当 $n = 42 时，输出："There are 42 cats!"
 echo \Yii::t('app', 'There {n, plural, =0{are no cats} =1{is one cat} other{are # cats}}!', ['n' => $n]);
 ```
 
@@ -295,9 +295,9 @@ echo \Yii::t('app', 'There {n, plural, =0{are no cats} =1{is one cat} other{are 
 ```
 
 注意，上述信息主要是作为一个翻译的信息，而不是一个原始消息，除非设置应用程序的
-[[yii\base\Application::$sourceLanguage|source language]] 为 `ru-RU`。
+[[yii\base\Application::$sourceLanguage|源语言]] 为 `ru-RU`。
 
-如果没有找到一个翻译的原始消息，复数规则 [[yii\base\Application::$sourceLanguage|source language]] 将被应用到原始消息。
+如果没有找到一个翻译的原始消息，复数规则 [[yii\base\Application::$sourceLanguage|源语言]] 将被应用到原始消息。
 
 要了解词形变化形式，你应该指定一个特定的语言，请参考
 [rules reference at unicode.org](http://unicode.org/repos/cldr-tmp/trunk/diff/supplemental/language_plural_rules.html)。
@@ -308,7 +308,7 @@ echo \Yii::t('app', 'There {n, plural, =0{are no cats} =1{is one cat} other{are 
 可以使用 `select` 参数类型来选择基于参数值的短语。例如，
 
 ```php
-// It may produce "Snoopy is a dog and it loves Yii!"
+// 输出："Snoopy is a dog and it loves Yii!"
 echo \Yii::t('app', '{name} is a {gender} and {gender, select, female{she} male{he} other{it}} loves Yii!', [
     'name' => 'Snoopy',
     'gender' => 'dog',
@@ -325,7 +325,7 @@ echo \Yii::t('app', '{name} is a {gender} and {gender, select, female{she} male{
 为了做到这一点以下内容需要添加到应用程序的配置：
 
 ```php
-//configure i18n component
+//配置 i18n 组件
 
 'i18n' => [
     'translations' => [
@@ -516,7 +516,7 @@ class TranslationEventHandler
 
 ### 使用 `message` 命令 <a name="message-command"></a>
 
-翻译储存在 [[yii\i18n\PhpMessageSource|php files]]，[[yii\i18n\GettextMessageSource|.po files] 或者 [[yii\i18n\DbMessageSource|database]]。
+翻译储存在 [[yii\i18n\PhpMessageSource|php 文件]]，[[yii\i18n\GettextMessageSource|.po 文件] 或者 [[yii\i18n\DbMessageSource|数据库]]。
 具体见类的附加选项。
 
 首先，你需要创建一个配置文件。确定应该保存在哪里，然后执行命令
@@ -548,7 +548,7 @@ class TranslationEventHandler
 每当你调用 [[yii\base\View::renderFile()]] 或任何其它方法 (如 [[yii\base\Controller::render()]]) 来渲染 `views/site/index.php` 视图，
 它最终会使用所翻译的 `views/site/ru-RU/index.php`。
 
-> 注意：如果 [[yii\base\Application::$language|target language]] 跟 [[yii\base\Application::$sourceLanguage|source language]] 相同，
+> 注意：如果 [[yii\base\Application::$language|目标语言]] 跟 [[yii\base\Application::$sourceLanguage|源语言]] 相同，
 在翻译视图的存在下，将呈现原始视图。
 
 
