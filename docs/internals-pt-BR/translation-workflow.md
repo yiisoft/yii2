@@ -93,6 +93,7 @@ Regras e Observações
 - behaviors — behaviors (comportamentos)
 - pretty URL — URL amigável (pretty URL)
 - class member variable - atributo da classe
+- endpoint - URL (também chamadas *endpoints*)
 
 ### Termos Sem Tradução
 

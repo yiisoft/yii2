@@ -5,6 +5,7 @@ Yii Framework 2 Change Log
 -----------------------
 
 - Bug #8723: Fixed `yii\helpers\VarDumper::export()` unable to export circle referenced objects with `Closure` (klimov-paul)
+- Chg #9369: `Yii::$app->user->can()` now returns `false` instead of erroring in case `authManager` component is not configured (creocoder)
 
 
 2.0.6 August 05, 2015
