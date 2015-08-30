@@ -6,7 +6,7 @@
 Yii 支持组成和发送电子邮件。然而，该框架提供的只有内容组成功能和基本接口。实际的邮件发送机制可以通过扩展提供，
 因为不同的项目可能需要不同的实现方式，它通常取决于外部服务和库。
 
-对于最常见的情况下你可以使用 [yii2-swiftmailer](https://github.com/yiisoft/yii2-swiftmailer) 官方扩展。
+大多数情况下你可以使用 [yii2-swiftmailer](https://github.com/yiisoft/yii2-swiftmailer) 官方扩展。
 
 配置
 -------
@@ -98,7 +98,7 @@ use yii\helpers\Url;
 为了通过视图文件撰写正文可传递视图名称到 `compose()` 方法中：
 
 ```php
-Yii::$app->mailer->compose('home-link') // a view rendering result becomes the message body here
+Yii::$app->mailer->compose('home-link') // 渲染一个视图作为邮件内容
     ->setFrom('from@domain.com')
     ->setTo('to@domain.com')
     ->setSubject('Message subject')
@@ -167,10 +167,10 @@ use yii\helpers\Html;
 ```php
 $message = Yii::$app->mailer->compose();
 
-// Attach file from local file system:
+// 附件来自本地文件
 $message->attach('/path/to/source/file.pdf');
 
-// Create attachment on-the-fly
+// 动态创建一个文件附件
 $message->attachContent('Attachment content', ['fileName' => 'attach.txt', 'contentType' => 'text/plain']);
 ```
 
