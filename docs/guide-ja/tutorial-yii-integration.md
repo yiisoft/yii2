@@ -152,7 +152,7 @@ class Yii extends \yii\BaseYii
 }
 
 Yii::$classMap = include($yii2path . '/classes.php');
-// Yii2 オートローダを Yii1 によって登録
+// Yii 2 オートローダを Yii 1 によって登録
 Yii::registerAutoloader(['Yii', 'autoload']);
 // 依存注入コンテナを作成
 Yii::$container = new yii\di\Container;

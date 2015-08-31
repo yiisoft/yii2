@@ -176,7 +176,7 @@ class FontAwesomeAsset extends AssetBundle
             'fonts/',
             'css/',
         ]
-    ],
+    ];
 }  
 ```
 
