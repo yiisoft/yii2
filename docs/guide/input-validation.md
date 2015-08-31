@@ -373,7 +373,7 @@ class MyForm extends Model
 A standalone validator is a class extending [[yii\validators\Validator]] or its child class. You may implement
 its validation logic by overriding the [[yii\validators\Validator::validateAttribute()]] method. If an attribute
 fails the validation, call [[yii\base\Model::addError()]] to save the error message in the model, like you do
-with [inline validators](#inline-validators). For example,
+with [inline validators](#inline-validators). For example you will need to create the above validator into [[components/valdators/CountryValidator]],
 
 ```php
 namespace app\components;
@@ -391,10 +391,39 @@ class CountryValidator extends Validator
 }
 ```
 
+
+
 If you want your validator to support validating a value without a model, you should also override
 [[yii\validators\Validator::validate()]]. You may also override [[yii\validators\Validator::validateValue()]]
 instead of `validateAttribute()` and `validate()` because by default the latter two methods are implemented
 by calling `validateValue()`.
+
+Here is an example of how you could set up the above within your model
+```php
+namespace app\models;
+
+use Yii;
+use yii\base\Model;
+use app\components\validators\CountryValidator;
+
+class EntryForm extends Model {
+
+    public $name;
+    public $email;
+    public $country;
+
+    public function rules(){
+
+        $r = [
+            [['name', 'email'], 'required'],
+            ['country',CountryValidator::className()],
+            ['email','email'],
+        ];
+        return $r;
+    }
+
+}
+```
 
 
 ## Client-Side Validation <span id="client-side-validation"></span>
