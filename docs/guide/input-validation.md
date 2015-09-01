@@ -376,7 +376,7 @@ fails the validation, call [[yii\base\Model::addError()]] to save the error mess
 with [inline validators](#inline-validators).
 
 
-For example the inline validator above could be moved into new [[components/valdators/CountryValidator]] class.
+For example the inline validator above could be moved into new [[components/validators/CountryValidator]] class.
 
 ```php
 namespace app\components;
