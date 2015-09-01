@@ -84,6 +84,13 @@ class Controller extends \yii\base\Controller
                 unset($params[$name]);
             } elseif ($param->isDefaultValueAvailable()) {
                 $args[] = $actionParams[$name] = $param->getDefaultValue();
+            } elseif (($c = $param->getClass()) !== null) {
+                $type = $c->getName();
+                if (Yii::$app->has($name) && ($obj = Yii::$app->get($name)) instanceof $type) {
+                    $args[] = $actionParams[$name] = $obj;
+                }else{
+                    $args[] = $actionParams[$name] = Yii::$container->get($type);
+                }
             } else {
                 $missing[] = $name;
             }
