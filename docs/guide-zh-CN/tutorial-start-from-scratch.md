@@ -1,53 +1,47 @@
-Creating your own Application structure
+创建你自己的应用程序结构
 =======================================
 
-> Note: This section is under development.
+> 注：本章节正在开发中。
 
-While the [basic](https://github.com/yiisoft/yii2-app-basic) and [advanced](https://github.com/yiisoft/yii2-app-advanced)
-project templates are great for most of your needs, you may want to create your own project template with which
-to start your projects.
+虽然 [basic](https://github.com/yiisoft/yii2-app-basic) 和 [advanced](https://github.com/yiisoft/yii2-app-advanced) 项目模板能够满足你的大部分需求，但是，你仍有可能需要创建你自己的项目模板来开始项目。
 
-Project templates in Yii are simply repositories containing a `composer.json` file, and registered as a Composer package.
-Any repository can be identified as a Composer package, making it installable via `create-project` Composer command.
+Yii 的项目模板是一个包含 `composer.json` 文件的仓库，并被注册为一个 Composer package。任何一个仓库都可以被标识为一个 Composer package，只要让其可以通过 `create-project` Composer 命令安装。
 
-Since it's a bit too much to start building your entire template from scratch, it is better to use one of the built-in
-templates as a base. Let's use the basic template here.
+由于完全从新创建一个你自己的模板工作量有点大，最好的方式是以一个内建模板为基础。这里，我们使用基础应用模板。
 
-Clone the Basic Template
+克隆基础模板
 ----------------------------------------
 
-The first step is to clone the basic Yii template's Git repository:
+第一步是从 Git 仓库克隆 Yii 的基础模板：
 
 ```bash
 git clone git@github.com:yiisoft/yii2-app-basic.git
 ```
 
-Then wait for the repository to be downloaded to your computer. Since the changes made to the template won't be pushed back, you can delete the `.git` diretory and all
-of its contents from the download.
+等待仓库下载到你的电脑。因为为调整到你自己的模板所产生的修改不会被 push 回，你可以删除下载下来的 `.git` 目录及其内容。
 
-Modify the Files
+修改文件
 ------------
 
 Next, you'll want to modify the `composer.json` to reflect your template. Change the `name`, `description`, `keywords`, `homepage`, `license`, and `support` values
 to describe your new template. Also adjust the `require`, `require-dev`, `suggest`, and other options to match your template's requirements.
+接下来，你需要修改 `composer.json` 以配置你自己的模板。修改 `name`, `description`, `keywords`, `homepage`, `license`, 和 `support` 的值来描述你自己的模板。同样，调整 `require`, `require-dev`, `suggest` 和其他的参数来匹配你模板的环境需求。
 
-> Note: In the `composer.json` file, use the `writable` parameter under `extra` to specify
-> per file permissions to be set after an application is created using the template.
+> 注意：在 `composer.json` 文件中，使用 `extra` 下的 `writeable` 参数来指定使用模板创建的应用程序后需要设置文件权限的文件列表。
 
-Next, actually modify the structure and contents of the application as you would like the default to be. Finally, update the README file to be applicable to your template.
+接下来，真正的修改你的应用程序默认的目录结构和内容。最后，更新 README 文件以符合你的模板。
 
-Make a Package
+发布一个 Package
 --------------
 
-With the template defined, create a Git repository from it, and push your files there. If you're going to open source your template, [Github](http://github.com) is the best place to host it. If you intend to keep your template non-collaborative, any Git repository site will do.
+模板调整好后，通过其创建一个 Git 仓库并提交你的代码。如果你希望将你的应用程序模板开源，[Github]() 将是最好的托管服务。如果你不喜欢其他的人来跟你一起协作，你可以使用任意的 Git 仓库服务。
 
-Next, you need to register your package for Composer's sake. For public templates, the package should be registered at [Packagist](https://packagist.org/).
-For private templates, it is a bit more tricky to register the package. For instructions, see the [Composer documentation](https://getcomposer.org/doc/05-repositories.md#hosting-your-own).
+接下来，你需要为 Composer 注册你的 package。对于公有的模板，你可以将 package 注册到 [Packagist](https://packagist.org/)。对于私有的模板，注册 package 将会麻烦一点。参考 [Composer documentation](https://getcomposer.org/doc/05-repositories.md#hosting-your-own) 获取更多的指示。
 
-Use the Template
+使用模板
 ------
 
-That's all that's required to create a new Yii project template. Now you can create projects using your template:
+以上就是为了创建一个新的 Yii 项目模板你需要做的事情。现在，你可以使用你自己的模板创建项目了：
 
 ```
 composer global require "fxp/composer-asset-plugin:~1.0.0"
