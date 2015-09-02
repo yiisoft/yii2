@@ -5,7 +5,9 @@ Yii Framework 2 Change Log
 -----------------------
 
 - Bug #8723: Fixed `yii\helpers\VarDumper::export()` unable to export circle referenced objects with `Closure` (klimov-paul)
+- Bug #9108: Negative number resulted in no formatting when using `Formatter::asSize()` or `Formatter::asShortSize` (nxnx, cebe)
 - Bug #9415: Fixed regression in 2.0.6 where on Oracle DB `PDO::ATTR_CASE = PDO::CASE_LOWER` did not work anymore (cebe)
+- Bug #9442: Fixed `yii\db\Migration::renameTable()` caused fatal error when using SQLite driver (fetus-hina)
 - Chg #9369: `Yii::$app->user->can()` now returns `false` instead of erroring in case `authManager` component is not configured (creocoder)
 - Chg #9411: `DetailView` now automatically sets container tag ID in case it's not specified (samdark)
 

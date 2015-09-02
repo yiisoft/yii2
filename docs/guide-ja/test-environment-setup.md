@@ -3,7 +3,7 @@
 
 > Note|注意: この節はまだ執筆中です。
 
-Yii2 は [`Codeception`](https://github.com/Codeception/Codeception) テストフレームワークとの統合を公式にサポートしており、次のタイプのテストを作成することを可能にしています。
+Yii 2 は [`Codeception`](https://github.com/Codeception/Codeception) テストフレームワークとの統合を公式にサポートしており、次のタイプのテストを作成することを可能にしています。
 
 - [単体テスト](test-unit.md) - 一かたまりのコードが期待通りに動くことを検証する。
 - [機能テスト](test-functional.md) - ブラウザのエミュレーションによって、ユーザの視点からシナリオを検証する。

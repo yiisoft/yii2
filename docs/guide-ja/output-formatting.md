@@ -40,6 +40,11 @@ echo Yii::$app->formatter->format('2014-01-01', 'date');
 echo Yii::$app->formatter->format(0.125, ['percent', 2]); 
 ```
 
+> Note|注意: フォーマッタコンポーネントは、エンドユーザへの表示用に値をフォーマットすることを目的に設計されています。
+> ユーザの入力を機械が読み取れる形式にフォーマットしたい場合、また、日付を機械が読み取れる形式にフォーマットしたいだけ、という場合には、
+> フォーマッタは適切なツールではありません。
+> 日付と数値についてユーザ入力を変換するためには、それぞれ、[[yii\validators\DateValidator]] と [[yii\validators\NumberValidator]]
+> を使うことが出来ます。機械が読み取れる日付と時刻のフォーマットの単純な相互変換には、PHP の [date()](http://php.net/manual/ja/function.date.php) 関数で十分です。
 
 ## フォーマッタを構成する <span id="configuring-formater"></span>
 

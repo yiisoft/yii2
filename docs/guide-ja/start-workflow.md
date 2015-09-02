@@ -61,7 +61,7 @@ basic/                  アプリケーションのベースパス
 一般に、アプリケーションのファイルは二種類に分けることが出来ます。すなわち、`basic/web` の下にあるファイルとその他のディレクトリの下にあるファイルです。
 前者は HTTP で (すなわちブラウザで) 直接にアクセスすることが出来ますが、後者は直接のアクセスは出来ませんし、許可すべきでもありません。
 
-Yii は [モデル・ビュー・コントローラ (MVC)](http://wikipedia.org/wiki/Model-view-controller) デザインパターンを実装していますが、それが上記のディレクトリ構成にも反映されています。
+Yii は [モデル・ビュー・コントローラ (MVC)](http://wikipedia.org/wiki/Model-view-controller) アーキテクチャパターンを実装していますが、それが上記のディレクトリ構成にも反映されています。
 `models` ディレクトリが全ての [モデルクラス](structure-models.md) を格納し、`views` ディレクトリが全ての [ビュースクリプト](structure-views.md) を格納し、
 `controllers` ディレクトリが全ての [コントローラクラス](structure-controllers.md) を格納しています。
 
