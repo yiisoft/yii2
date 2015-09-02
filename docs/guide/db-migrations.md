@@ -152,8 +152,8 @@ to `Schema::TYPE_STRING` to specify that the column cannot be null.
 > Info: The mapping between abstract types and physical types is specified by
   the [[yii\db\QueryBuilder::$typeMap|$typeMap]] property in each concrete `QueryBuilder` class.
 
-Since version 2.0.6 schema builder which provides more convenient way defining column schema was introduced so migration above
-could be written like the following:
+Since version 2.0.6, the schema builder provieds more convenient way of defining column schema.
+So the migration above could be written like the following:
 
 ```php
 <?php
@@ -185,7 +185,7 @@ A list of all available methods for defining the column types is available in th
 
 While performing complex DB migrations, it is important to ensure each migration to either succeed or fail as a whole
 so that the database can maintain integrity and consistency. To achieve this goal, it is recommended that you
-enclose the DB operations of each migration in a [transaction](db-dao.md#performing-transactions-).
+enclose the DB operations of each migration in a [transaction](db-dao.md#performing-transactions).
 
 An even easier way of implementing transactional migrations is to put migration code in the `safeUp()` and `safeDown()`
 methods. These two methods differ from `up()` and `down()` in that they are enclosed implicitly in a transaction.
