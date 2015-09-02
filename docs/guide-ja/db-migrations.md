@@ -30,7 +30,7 @@ Yii は一連のマイグレーションコマンドラインツールを提供�
 この節では、これらのツールを使用して、さまざまなタスクをどうやって達成するかを詳細に説明します。
 各ツールの使用方法は、ヘルプコマンド `yii help migrate` によっても知ることが出来ます。
 
-> Note|注意: マイグレーションはデータベーススキーマに影響を及ぼすだけでなく、既存のデータを新しいスキーマに合うように修正したり、RBAC 階層を作成したり、キャッシュをクリーンアップしたりすることも出来ます。
+> Tip|ヒント: マイグレーションはデータベーススキーマに影響を及ぼすだけでなく、既存のデータを新しいスキーマに合うように修正したり、RBAC 階層を作成したり、キャッシュをクリーンアップしたりすることも出来ます。
 
 
 ## マイグレーションを作成する <span id="creating-migrations"></span>
@@ -56,20 +56,32 @@ yii migrate/create create_news_table
 ```php
 <?php
 
-use yii\db\Schema;
 use yii\db\Migration;
 
 class m150101_185401_create_news_table extends Migration
 {
     public function up()
     {
+
     }
 
     public function down()
     {
         echo "m101129_185401_create_news_table cannot be reverted.\n";
+
         return false;
     }
+
+    /*
+    // Use safeUp/safeDown to run migration code within a transaction
+    public function safeUp()
+    {
+    }
+
+    public function safeDown()
+    {
+    }
+    */
 }
 ```
 
@@ -86,11 +98,12 @@ class m150101_185401_create_news_table extends Migration
 下記のコードは、新しい `news` テーブルを作成するマイグレーションクラスをどのようにして実装するかを示すものです。
 
 ```php
+<?php
 
 use yii\db\Schema;
 use yii\db\Migration;
 
-class m150101_185401_create_news_table extends \yii\db\Migration
+class m150101_185401_create_news_table extends Migration
 {
     public function up()
     {
@@ -129,6 +142,32 @@ MySQL の場合は、`TYPE_PK` は `int(11) NOT NULL AUTO_INCREMENT PRIMARY KEY`
 
 > Info|情報: 抽象型と物理型の対応関係は、それぞれの `QueryBuilder` の具象クラスの [[yii\db\QueryBuilder::$typeMap|$typeMap]] プロパティによって定義されています。
 
+バージョン 2.0.6 以降は、スキーマビルダにカラムのスキーマを定義するための更に便利な方法が導入されたため、上記のマイグレーションは次のように書くことが出来るようになっています。
+
+```php
+<?php
+
+use yii\db\Migration;
+
+class m150101_185401_create_news_table extends Migration
+{
+    public function up()
+    {
+        $this->createTable('news', [
+            'id' => $this->primaryKey(),
+            'title' => $this->string()->notNull(),
+            'content' => $this->text(),
+        ]);
+    }
+
+    public function down()
+    {
+        $this->dropTable('news');
+    }
+}
+```
+
+カラムの型を定義するために利用できる全てのメソッドのリストは、[[yii\db\SchemaBuilderTrait]] の API ドキュメントで参照することが出来ます。
 
 
 ### トランザクションを使うマイグレーション <span id="transactional-migrations"></span>
@@ -143,8 +182,8 @@ MySQL の場合は、`TYPE_PK` は `int(11) NOT NULL AUTO_INCREMENT PRIMARY KEY`
 次の例では、`news` テーブルを作成するだけでなく、このテーブルに初期値となる行を挿入しています。
 
 ```php
+<?php
 
-use yii\db\Schema;
 use yii\db\Migration;
 
 class m150101_185401_create_news_table extends Migration
@@ -152,11 +191,11 @@ class m150101_185401_create_news_table extends Migration
     public function safeUp()
     {
         $this->createTable('news', [
-            'id' => 'pk',
-            'title' => Schema::TYPE_STRING . ' NOT NULL',
-            'content' => Schema::TYPE_TEXT,
+            'id' => $this->primaryKey(),
+            'title' => $this->string()->notNull(),
+            'content' => $this->text(),
         ]);
-        
+
         $this->insert('news', [
             'title' => 'test 1',
             'content' => 'content 1',
@@ -212,6 +251,12 @@ class m150101_185401_create_news_table extends Migration
 > Info|情報: [[yii\db\Migration]] は、データベースクエリメソッドを提供しません。
   これは、通常、データベースからのデータ取得については、メッセージを追加して表示する必要がないからです。
   更にまた、複雑なクエリを構築して実行するためには、強力な [クエリビルダ](db-query-builder.md) を使うことが出来るからです。
+
+> Note|注意: マイグレーションを使ってデータを操作する場合に、あなたは、あなたの [アクティブレコード](db-active-record.md) クラスをデータ操作に使えば便利じゃないか、と気付くかもしれません。
+> なぜなら、いくつかのロジックは既にアクティブレコードで実装済みだから、と。
+> しかしながら、マイグレーションの中で書かれるコードが永久に不変であることを本質とするのと対照的に、アプリケーションのロジックは変化にさらされるものであるということを心に留めなければなりません。
+> 従って、マイグレーションのコードでアクティブレコードを使用していると、アクティブレコードのレイヤにおけるロジックの変更が思いがけず既存のマイグレーションを破壊することがあり得ます。
+> このような理由のため、マイグレーションのコードはアクティブレコードのようなアプリケーションの他のロジックから独立を保つべきです。
 
 
 ## マイグレーションを適用する <span id="applying-migrations"></span>
@@ -390,7 +435,8 @@ yii migrate --db=db2
 例えば、次のようにします。
 
 ```php
-use yii\db\Schema;
+<?php
+
 use yii\db\Migration;
 
 class m150101_185401_create_news_table extends Migration
