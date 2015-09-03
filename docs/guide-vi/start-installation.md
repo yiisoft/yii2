@@ -36,7 +36,7 @@ Nếu bạn đã cài Composer rồi, hãy chắc chắn rằng bạn đang sử
 
 Sau khi cài đặt Composer, bạn có thể cài đặt Yii bằng cách chạy lệnh sau ở thư mục Web mà ứng dụng cần chạy:
 
-    composer global require "fxp/composer-asset-plugin:~1.0.0"
+    composer global require "fxp/composer-asset-plugin:~1.0.3"
     composer create-project --prefer-dist yiisoft/yii2-app-basic basic
 
 Câu lệnh đầu tiên sẽ cài đặt [composer asset plugin](https://github.com/francoispluchino/composer-asset-plugin/)
