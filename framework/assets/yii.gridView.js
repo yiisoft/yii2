@@ -89,7 +89,7 @@
 
             // get the query params from the request url
             $.each(yii.getQueryParams(settings.filterUrl), function (name, value) {
-                data[name] = value;
+                data[name.replace(/\[[0-9]+\]/i, '[]')] = value;
             });
 
             $.each($(settings.filterSelector).serializeArray(), function () {
