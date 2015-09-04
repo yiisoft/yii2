@@ -389,4 +389,23 @@ class UrlManagerTest extends TestCase
 
         unset($_SERVER['REQUEST_METHOD']);
     }
+
+    /**
+     * Tests if hash-anchor present for
+     *
+     * https://github.com/yiisoft/yii2/pull/9596
+     */
+    public function testHash()
+    {
+        $manager = new UrlManager([
+            'enablePrettyUrl' => true,
+            'cache' => null,
+            'rules' => [
+            ],
+            'hostInfo' => 'http://example.com',
+            'scriptUrl' => '/test',
+        ]);
+        $url = $manager->createAbsoluteUrl(['site/index', '#' => 'testhash']);
+        $this->assertEquals('http://example.com/test/site/index#testhash', $url);
+    }
 }
