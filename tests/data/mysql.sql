@@ -238,3 +238,12 @@ CREATE TABLE `bit_values` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 INSERT INTO `bit_values` (id, val) VALUES (1, b'0'), (2, b'1');
+
+DROP TABLE IF EXISTS `null_counters` CASCADE;
+
+CREATE TABLE `null_counters` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `status` int (11),
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+INSERT INTO `null_counters` (id) VALUES (1);

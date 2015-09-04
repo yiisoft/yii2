@@ -218,3 +218,13 @@ CREATE TABLE "bit_values" (
 
 INSERT INTO "bit_values" (id, val) VALUES (1, 0);
 INSERT INTO "bit_values" (id, val) VALUES (2, 1);
+
+DROP TABLE IF EXISTS "null_counters";
+
+CREATE TABLE "null_counters" (
+  id INTEGER NOT NULL,
+  status integer,
+  PRIMARY KEY (id)
+);
+
+INSERT INTO "null_counters" (id) VALUES (1);
