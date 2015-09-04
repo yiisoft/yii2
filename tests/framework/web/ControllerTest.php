@@ -9,11 +9,10 @@ namespace yiiunit\framework\web;
 
 use Yii;
 use yiiunit\TestCase;
-use yii\web\Controller;
 use yiiunit\framework\di\stubs\Qux;
-use yiiunit\framework\di\stubs\QuxInterface;
+use yiiunit\framework\web\stubs\Bar;
+use yiiunit\framework\web\stubs\OtherQux;
 use yii\base\InlineAction;
-use yii\base\Object;
 
 /**
  * @group web
@@ -72,40 +71,8 @@ class ControllerTest extends TestCase
 
         $result = $controller->runAction('aksi4', $params);
         $this->assertEquals(['independent', 'other_qux', 'd426'], $result);
-    }
-}
 
-class FakeController extends Controller
-{
-    public $enableCsrfValidation = false;
-    public function actionAksi1(Bar $bar, $fromGet, $other='default')
-    {
-    }
-
-    public function actionAksi2(Bar $barBelongApp, QuxInterface $qux)
-    {
-    }
-
-    public function actionAksi3(QuxInterface $quxApp)
-    {
-    }
-
-    public function actionAksi4(Bar $bar, QuxInterface $quxApp, $q)
-    {
-        return [$bar->foo, $quxApp->quxMethod(), $q];
-    }
-}
-
-class Bar extends Object
-{
-    public $foo;
-}
-
-class OtherQux extends Object implements QuxInterface
-{
-    public $b;
-    public function quxMethod()
-    {
-        return 'other_qux';
+        $result = $controller->runAction('aksi5', $params);
+        $this->assertEquals(['d426', 'independent', 'other_qux'], $result);
     }
 }
