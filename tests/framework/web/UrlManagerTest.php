@@ -391,7 +391,7 @@ class UrlManagerTest extends TestCase
     }
 
     /**
-     * Tests if hash-anchor present for
+     * Tests if hash-anchor present
      *
      * https://github.com/yiisoft/yii2/pull/9596
      */
@@ -401,11 +401,12 @@ class UrlManagerTest extends TestCase
             'enablePrettyUrl' => true,
             'cache' => null,
             'rules' => [
+                'http://example.com/testPage' => 'site/test',
             ],
             'hostInfo' => 'http://example.com',
-            'scriptUrl' => '/test',
+            'scriptUrl' => '/index.php',
         ]);
-        $url = $manager->createAbsoluteUrl(['site/index', '#' => 'testhash']);
-        $this->assertEquals('http://example.com/test/site/index#testhash', $url);
+        $url = $manager->createAbsoluteUrl(['site/test', '#' => 'testhash']);
+        $this->assertEquals('http://example.com/index.php/testPage#testhash', $url);
     }
 }
