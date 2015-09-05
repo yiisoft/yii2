@@ -48,7 +48,7 @@ class ControllerTest extends TestCase
             'foo' => 'independent'
         ]);
         
-        $params = ['fromGet'=>'from query params','q'=>'d426'];
+        $params = ['fromGet'=>'from query params','q'=>'d426','validator'=>'avaliable'];
 
         list($bar, $fromGet, $other) = $controller->bindActionParams($aksi1, $params);
         $this->assertTrue($bar instanceof Bar);
@@ -74,5 +74,8 @@ class ControllerTest extends TestCase
 
         $result = $controller->runAction('aksi5', $params);
         $this->assertEquals(['d426', 'independent', 'other_qux'], $result);
+
+        $result = $controller->runAction('aksi6', $params);
+        $this->assertEquals(['d426', false, true], $result);
     }
 }

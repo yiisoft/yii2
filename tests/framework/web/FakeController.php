@@ -10,6 +10,7 @@ namespace yiiunit\framework\web;
 use yii\web\Controller;
 use yiiunit\framework\di\stubs\QuxInterface;
 use yiiunit\framework\web\stubs\Bar;
+use yii\validators\EmailValidator;
 
 /**
  * @author Misbahul D Munir <misbahuldmunir@gmail.com>
@@ -39,5 +40,10 @@ class FakeController extends Controller
     public function actionAksi5($q, Bar $bar, QuxInterface $quxApp)
     {
         return [$q, $bar->foo, $quxApp->quxMethod()];
+    }
+
+    public function actionAksi6($q, EmailValidator $validator)
+    {
+        return [$q, $validator->validate($q), $validator->validate('misbahuldmunir@gmail.com')];
     }
 }
