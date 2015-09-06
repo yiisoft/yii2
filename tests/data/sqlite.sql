@@ -205,3 +205,16 @@ INSERT INTO "validator_ref" (id, a_field, ref) VALUES (3, 'ref_to_3', 3);
 INSERT INTO "validator_ref" (id, a_field, ref) VALUES (4, 'ref_to_4', 4);
 INSERT INTO "validator_ref" (id, a_field, ref) VALUES (5, 'ref_to_4', 4);
 INSERT INTO "validator_ref" (id, a_field, ref) VALUES (6, 'ref_to_5', 5);
+
+/* bit test, see https://github.com/yiisoft/yii2/issues/9006 */
+
+DROP TABLE IF EXISTS "bit_values";
+
+CREATE TABLE "bit_values" (
+  id INTEGER NOT NULL,
+  val BOOLEAN NOT NULL CHECK (val IN (0,1)),
+  PRIMARY KEY (id)
+);
+
+INSERT INTO "bit_values" (id, val) VALUES (1, 0);
+INSERT INTO "bit_values" (id, val) VALUES (2, 1);

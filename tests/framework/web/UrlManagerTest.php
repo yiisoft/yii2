@@ -125,6 +125,26 @@ class UrlManagerTest extends TestCase
         $this->assertEquals('http://en.example.com/test/post/1/sample+post', $url);
         $url = $manager->createUrl(['post/index', 'page' => 1]);
         $this->assertEquals('/test/post/index?page=1', $url);
+
+        // create url with the same route but different params/defaults
+        $manager = new UrlManager([
+            'enablePrettyUrl' => true,
+            'cache' => null,
+            'rules' => [
+                [
+                    'pattern' => '',
+                    'route' => 'frontend/page/view',
+                    'defaults' => ['slug' => 'index'],
+                ],
+                'page/<slug>' => 'frontend/page/view',
+            ],
+            'baseUrl' => '/test',
+            'scriptUrl' => '/test',
+        ]);
+        $url = $manager->createUrl(['frontend/page/view', 'slug' => 'services']);
+        $this->assertEquals('/test/page/services', $url);
+        $url = $manager->createUrl(['frontend/page/view', 'slug' => 'index']);
+        $this->assertEquals('/test/', $url);
     }
 
     /**
@@ -368,5 +388,25 @@ class UrlManagerTest extends TestCase
         $this->destroyApplication();
 
         unset($_SERVER['REQUEST_METHOD']);
+    }
+
+    /**
+     * Tests if hash-anchor present
+     *
+     * https://github.com/yiisoft/yii2/pull/9596
+     */
+    public function testHash()
+    {
+        $manager = new UrlManager([
+            'enablePrettyUrl' => true,
+            'cache' => null,
+            'rules' => [
+                'http://example.com/testPage' => 'site/test',
+            ],
+            'hostInfo' => 'http://example.com',
+            'scriptUrl' => '/index.php',
+        ]);
+        $url = $manager->createAbsoluteUrl(['site/test', '#' => 'testhash']);
+        $this->assertEquals('http://example.com/index.php/testPage#testhash', $url);
     }
 }

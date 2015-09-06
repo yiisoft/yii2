@@ -1079,7 +1079,7 @@ class Formatter extends Component
      * @param array $options optional configuration for the number formatter. This parameter will be merged with [[numberFormatterOptions]].
      * @param array $textOptions optional configuration for the number formatter. This parameter will be merged with [[numberFormatterTextOptions]].
      * @return string the formatted result.
-     * @throws InvalidParamException if the input value is not numeric  or the formatting failed.
+     * @throws InvalidParamException if the input value is not numeric or the formatting failed.
      * @see sizeFormat
      * @see asShortSize
      */
@@ -1134,7 +1134,7 @@ class Formatter extends Component
 
         $position = 0;
         do {
-            if ($value < $this->sizeFormatBase) {
+            if (abs($value) < $this->sizeFormatBase) {
                 break;
             }
             $value = $value / $this->sizeFormatBase;
@@ -1156,7 +1156,9 @@ class Formatter extends Component
         // format the size value
         $params = [
             // this is the unformatted number used for the plural rule
-            'n' => $value,
+            // abs() to make sure the plural rules work correctly on negative numbers, intl does not cover this
+            // http://english.stackexchange.com/questions/9735/is-1-singular-or-plural
+            'n' => abs($value),
             // this is the formatted number used for display
             'nFormatted' => $this->asDecimal($value, $decimals, $options, $textOptions),
         ];
@@ -1198,7 +1200,7 @@ class Formatter extends Component
      *
      * @param integer $style the type of the number formatter.
      * Values: NumberFormatter::DECIMAL, ::CURRENCY, ::PERCENT, ::SCIENTIFIC, ::SPELLOUT, ::ORDINAL
-     *          ::DURATION, ::PATTERN_RULEBASED, ::DEFAULT_STYLE, ::IGNORE
+     * ::DURATION, ::PATTERN_RULEBASED, ::DEFAULT_STYLE, ::IGNORE
      * @param integer $decimals the number of digits after the decimal point.
      * @param array $options optional configuration for the number formatter. This parameter will be merged with [[numberFormatterOptions]].
      * @param array $textOptions optional configuration for the number formatter. This parameter will be merged with [[numberFormatterTextOptions]].

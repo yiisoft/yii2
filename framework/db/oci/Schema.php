@@ -32,6 +32,7 @@ class Schema extends \yii\db\Schema
         'ORA-00001: unique constraint' => 'yii\db\IntegrityException',
     ];
 
+
     /**
      * @inheritdoc
      */
@@ -65,6 +66,14 @@ class Schema extends \yii\db\Schema
     public function createQueryBuilder()
     {
         return new QueryBuilder($this->db);
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function createColumnSchemaBuilder($type, $length = null)
+    {
+        return new ColumnSchemaBuilder($type, $length);
     }
 
     /**
@@ -271,13 +280,13 @@ SQL;
         ]);
         $constraints = [];
         foreach ($command->queryAll() as $row) {
+            if ($this->db->slavePdo->getAttribute(\PDO::ATTR_CASE) === \PDO::CASE_LOWER) {
+                $row = array_change_key_case($row, CASE_UPPER);
+            }
             if ($row['CONSTRAINT_TYPE'] !== 'R') {
                 // this condition is not checked in SQL WHERE because of an Oracle Bug:
                 // see https://github.com/yiisoft/yii2/pull/8844
                 continue;
-            }
-            if ($this->db->slavePdo->getAttribute(\PDO::ATTR_CASE) === \PDO::CASE_LOWER) {
-                $row = array_change_key_case($row, CASE_UPPER);
             }
             $name = $row['CONSTRAINT_NAME'];
             if (!isset($constraints[$name])) {

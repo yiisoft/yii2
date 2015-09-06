@@ -857,6 +857,9 @@ class BaseConsole
     private static $_progressStart;
     private static $_progressWidth;
     private static $_progressPrefix;
+    private static $_progressEta;
+    private static $_progressEtaLastDone = 0;
+    private static $_progressEtaLastUpdate;
 
     /**
      * Starts display of a progress bar on screen.
@@ -902,6 +905,9 @@ class BaseConsole
         self::$_progressStart = time();
         self::$_progressWidth = $width;
         self::$_progressPrefix = $prefix;
+        self::$_progressEta = null;
+        self::$_progressEtaLastDone = 0;
+        self::$_progressEtaLastUpdate = time();
 
         static::updateProgress($done, $total);
     }
@@ -943,10 +949,21 @@ class BaseConsole
         $info = sprintf("%d%% (%d/%d)", $percent * 100, $done, $total);
 
         if ($done > $total || $done == 0) {
-            $info .= ' ETA: n/a';
+            self::$_progressEta = null;
+            self::$_progressEtaLastUpdate = time();
         } elseif ($done < $total) {
-            $rate = (time() - self::$_progressStart) / $done;
-            $info .= sprintf(' ETA: %d sec.', $rate * ($total - $done));
+            // update ETA once per second to avoid flapping
+            if (time() - self::$_progressEtaLastUpdate > 1) {
+                $rate = (time() - (self::$_progressEtaLastUpdate ?: self::$_progressStart)) / ($done - self::$_progressEtaLastDone);
+                self::$_progressEta = $rate * ($total - $done);
+                self::$_progressEtaLastUpdate = time();
+                self::$_progressEtaLastDone = $done;
+            }
+        }
+        if (self::$_progressEta === null) {
+            $info .= ' ETA: n/a';
+        } else {
+            $info .= sprintf(' ETA: %d sec.', self::$_progressEta);
         }
 
         $width -= 3 + static::ansiStrlen($info);
@@ -996,5 +1013,8 @@ class BaseConsole
         self::$_progressStart = null;
         self::$_progressWidth = null;
         self::$_progressPrefix = '';
+        self::$_progressEta = null;
+        self::$_progressEtaLastDone = 0;
+        self::$_progressEtaLastUpdate = null;
     }
 }

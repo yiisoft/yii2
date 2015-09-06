@@ -95,6 +95,7 @@ class MaskedInput extends InputWidget
     /**
      * @var string the type of the input tag. Currently only 'text' and 'tel' are supported.
      * @see https://github.com/RobinHerbots/jquery.inputmask
+     * @since 2.0.6
      */
     public $type = 'text';
 
