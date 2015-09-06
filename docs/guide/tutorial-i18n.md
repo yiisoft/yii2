@@ -16,7 +16,7 @@ For consistency, all locale IDs used in Yii applications should be canonicalized
 `ll-CC`, where `ll` is a two- or three-letter lowercase language code according to
 [ISO-639](http://www.loc.gov/standards/iso639-2/) and `CC` is a two-letter country code according to
 [ISO-3166](http://www.iso.org/iso/en/prods-services/iso3166ma/02iso-3166-code-lists/list-en1.html).
-More details about locale can be found in check the 
+More details about locale can be found in the 
 [documentation of the ICU project](http://userguide.icu-project.org/locale#TOC-The-Locale-Concept).
 
 In Yii, we often use the term "language" to refer to a locale.
@@ -65,7 +65,7 @@ To use the message translation service, you mainly need to do the following work
 
 * Wrap every text message that needs to be translated in a call to the [[Yii::t()]] method;
 * Configure one or multiple message sources in which the message translation service can look for translated messages;
-* Let the translators to translate messages and store them in the message source(s).
+* Let the translators translate messages and store them in the message source(s).
 
 The method [[Yii::t()]] can be used like the following,
 
@@ -342,7 +342,7 @@ do not match either one of them. Following each possible parameter value, you sh
 it in a pair of curly brackets.
 
 
-### Specifying default translation
+### Specifying default translation <span id="default-translation"></span>
 
 You can specify default translations that will be used as a fallback for categories that don't match any other translation.
 This translation should be marked with `*`. In order to do it add the following to the application config:
@@ -368,7 +368,7 @@ echo Yii::t('not_specified_category', 'message from unspecified category');
 
 The message will be loaded from `@app/messages/<LanguageCode>/not_specified_category.php`.
 
-### Translating module messages
+### Translating module messages <span id="module-translation"></span>
 
 If you want to translate the messages for a module and avoid using a single translation file for all the messages, you can do it like the following:
 
@@ -415,7 +415,7 @@ In the example above we are using wildcard for matching and then filtering each 
 use the convention of the category mapping to the same named file.
 Now you can use `Module::t('validation', 'your custom validation message')` or `Module::t('form', 'some form label')` directly.
 
-### Translating widgets messages
+### Translating widgets messages <span id="widget-translation"></span>
 
 The same rule as applied for Modules above can be applied for widgets too, for example:
 
@@ -468,7 +468,7 @@ Now you can use `Menu::t('messages', 'new messages {messages}', ['{messages}' =>
 > **Note**: For widgets you also can use i18n views, with the same rules as for controllers being applied to them too.
 
 
-### Translating framework messages
+### Translating framework messages <span id="framework-translation"></span>
 
 Yii comes with the default translation messages for validation errors and some other strings. These messages are all
 in the category `yii`. Sometimes you want to correct the default framework message translation for your application.
@@ -488,7 +488,7 @@ In order to do so, configure the `i18n` [application component](structure-applic
 
 Now you can place your adjusted translations to `@app/messages/<language>/yii.php`.
 
-### Handling missing translations
+### Handling missing translations <span id="missing-translations"></span>
 
 Even if the translation is missing from the source, Yii will display the requested message content. Such behavior is very convenient
 in case your raw message is a valid verbose text. However, sometimes it is not enough.
