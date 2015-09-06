@@ -161,7 +161,7 @@ class SchemaTest extends DatabaseTestCase
                 'defaultValue' => 1,
             ],
             'char_col' => [
-                'type' => 'string',
+                'type' => 'char',
                 'dbType' => 'char(100)',
                 'phpType' => 'string',
                 'allowNull' => false,

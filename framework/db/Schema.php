@@ -42,6 +42,7 @@ abstract class Schema extends Object
      */
     const TYPE_PK = 'pk';
     const TYPE_BIGPK = 'bigpk';
+    const TYPE_CHAR = 'char';
     const TYPE_STRING = 'string';
     const TYPE_TEXT = 'text';
     const TYPE_SMALLINT = 'smallint';

@@ -15,6 +15,7 @@ Yii Framework 2 Change Log
 - Bug #9596: Fixed `\yii\web\UrlManager::createAbsoluteUrl(['site/index', '#' => 'testHash'])` losing hash (alchimik, samdark)
 - Chg #9369: `Yii::$app->user->can()` now returns `false` instead of erroring in case `authManager` component is not configured (creocoder)
 - Chg #9411: `DetailView` now automatically sets container tag ID in case it's not specified (samdark)
+- Enh #9562: Adds `char` datatype to framework (df2)
 
 
 2.0.6 August 05, 2015

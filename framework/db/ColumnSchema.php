@@ -27,7 +27,7 @@ class ColumnSchema extends Object
     public $allowNull;
     /**
      * @var string abstract type of this column. Possible abstract types include:
-     * string, text, boolean, smallint, integer, bigint, float, decimal, datetime,
+     * char, string, text, boolean, smallint, integer, bigint, float, decimal, datetime,
      * timestamp, time, date, binary, and money.
      */
     public $type;
