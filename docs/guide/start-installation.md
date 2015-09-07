@@ -95,7 +95,7 @@ After installation is done, either configure your web server (see next section) 
 console command while in the project `web` directory:
  
 ```
-php -S localhost:8000
+php -S localhost:80
 ```
 
 You can use your browser to access the installed Yii application with the following URL:
