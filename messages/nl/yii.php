@@ -59,7 +59,7 @@ return [
     'in {delta, plural, =1{a month} other{# months}}' => 'binnen {delta, plural, =1{een maand} other{# maanden}}',
     'in {delta, plural, =1{a second} other{# seconds}}' => 'binnen {delta, plural, =1{een seconde} other{# seconden}}',
     'in {delta, plural, =1{a year} other{# years}}' => 'binnen {delta, plural, =1{een jaar} other{# jaren}}',
-    'in {delta, plural, =1{an hour} other{# hours}}' => 'binnen {delta, plural, =1{een uur} other{# uren}}',
+    'in {delta, plural, =1{an hour} other{# hours}}' => 'binnen {delta, plural, =1{een uur} other{# uur}}',
     'just now' => 'zojuist',
     'the input value' => 'de invoerwaarde',
     '{attribute} "{value}" has already been taken.' => '{attribute} "{value}" is reeds in gebruik.',
