@@ -19,7 +19,7 @@
 return [
     '(not set)' => '(niet ingesteld)',
     'An internal server error occurred.' => 'Er is een interne serverfout opgetreden.',
-    'Are you sure you want to delete this item?' => 'Ben je zeker dat je dit item wilt verwijderen?',
+    'Are you sure you want to delete this item?' => 'Weet je zeker dat je dit item wilt verwijderen?',
     'Delete' => 'Verwijderen',
     'Error' => 'Fout',
     'File upload failed.' => 'Bestand uploaden mislukt.',
@@ -30,7 +30,7 @@ return [
     'Missing required parameters: {params}' => 'Ontbrekende vereiste parameters: {params}',
     'No' => 'Nee',
     'No results found.' => 'Geen resultaten gevonden',
-    'Only files with these MIME types are allowed: {mimeTypes}.' => 'Alleen bestanden met de volgende MIME types zijn toegelaten: {mimeTypes}',
+    'Only files with these MIME types are allowed: {mimeTypes}.' => 'Alleen bestanden met de volgende MIME types zijn toegestaan: {mimeTypes}',
     'Only files with these extensions are allowed: {extensions}.' => 'Alleen bestanden met de volgende extensies zijn toegestaan: {extensions}.',
     'Page not found.' => 'Pagina niet gevonden.',
     'Please fix the following errors:' => 'Corrigeer de volgende fouten:',
