@@ -90,7 +90,15 @@ But there are other installation options available:
 Verifying the Installation <span id="verifying-installation"></span>
 --------------------------
 
-After installation, you can use your browser to access the installed Yii application with the following URL:
+After installation is done, either configure your web server (see next section) or use
+[built-in PHP web server](https://secure.php.net/manual/en/features.commandline.webserver.php) by running the following
+console command while in the project `web` directory:
+ 
+```
+php -S localhost:8000
+```
+
+You can use your browser to access the installed Yii application with the following URL:
 
 ```
 http://localhost/basic/web/index.php
