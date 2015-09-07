@@ -47,6 +47,7 @@ class Schema extends \yii\db\Schema
 
         'character' => self::TYPE_CHAR,
         'char' => self::TYPE_CHAR,
+        'bpchar' => self::TYPE_CHAR,
         'character varying' => self::TYPE_STRING,
         'varchar' => self::TYPE_STRING,
         'text' => self::TYPE_TEXT,
