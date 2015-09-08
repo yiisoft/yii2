@@ -206,7 +206,6 @@ CODE;
         $files = FileHelper::findFiles($this->migrationPath);
 
         $class = 'm' . gmdate('ymd_His') . '_' . $migrationName;
-        $newLine = '\n';
         $code = <<<CODE
 <?php
 
@@ -219,9 +218,7 @@ class {$class} extends Migration
         \$this->createTable('test', [
             'id' => \$this->primaryKey(),
             'title' => \$this->string(10)->notNull(),
-            'body' => \$this->text()->notNull(),
-            'create_at' => \$this->integer(),
-            'update_at' => \$this->integer()
+            'body' => \$this->text()->notNull()
         ]);
     }
 
@@ -238,11 +235,9 @@ CODE;
         $this->runMigrateControllerAction('create', [
             $migrationName,
             'fields' => [
+                'title:primaryKey',
                 'body:text:notNull'
             ],
-            'primaryKey' => 'title',
-            'createAt' => 'create',
-            'updateAt' => 'update'
 
         ]);
         $files = FileHelper::findFiles($this->migrationPath);
@@ -257,9 +252,7 @@ class {$class} extends Migration
     {
         \$this->createTable('test', [
             'title' => \$this->primaryKey(),
-            'body' => \$this->text()->notNull(),
-            'create' => \$this->integer(),
-            'update' => \$this->integer()
+            'body' => \$this->text()->notNull()
         ]);
     }
 
@@ -288,7 +281,6 @@ CODE;
         $files = FileHelper::findFiles($this->migrationPath);
 
         $class = 'm' . gmdate('ymd_His') . '_' . $migrationName;
-        $newLine = '\n';
         $code = <<<CODE
 <?php
 
@@ -330,7 +322,6 @@ CODE;
         $files = FileHelper::findFiles($this->migrationPath);
 
         $class = 'm' . gmdate('ymd_His') . '_' . $migrationName;
-        $newLine = '\n';
         $code = <<<CODE
 <?php
 

@@ -20,12 +20,13 @@ class <?= $className ?> extends Migration
     public function up()
     {
         $this->createTable('<?= $table ?>', [
-            '<?= $primaryKey ?>' => $this->primaryKey(),
 <?php foreach ($fields as $field): ?>
+<?php if ($field == end($fields)): ?>
+            '<?= $field['property'] ?>' => $this-><?= $field['decorators'] . "\n"?>
+<?php else: ?>
             '<?= $field['property'] ?>' => $this-><?= $field['decorators'] . ",\n"?>
+<?php endif; ?>
 <?php endforeach; ?>
-            '<?= $createAt ?>' => $this->integer(),
-            '<?= $updateAt ?>' => $this->integer()
         ]);
     }
 

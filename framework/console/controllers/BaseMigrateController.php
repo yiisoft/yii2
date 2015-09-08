@@ -51,18 +51,6 @@ abstract class BaseMigrateController extends Controller
      * @var array Fields to be generated
      */
     public $fields;
-    /**
-     * @var string the primary key name to be generated
-     */
-    public $primaryKey = 'id';
-    /**
-     * @var string
-     */
-    public $createAt = 'create_at';
-    /**
-     * @var string
-     */
-    public $updateAt = 'update_at';
 
 
     /**
@@ -498,13 +486,11 @@ abstract class BaseMigrateController extends Controller
 
         if ($this->confirm("Create new migration '$file'?")) {
             if (preg_match('/^Create(.+)$/', $name, $matches)) {
+                $this->checkPrimaryKey();
                 $content = $this->renderFile(Yii::getAlias ($this->generatorTemplateFile['create']), [
                     'className' => $className,
                     'table' => mb_strtolower($matches[1]),
-                    'fields' => $this->fields,
-                    'primaryKey' => $this->primaryKey,
-                    'createAt' => $this->createAt,
-                    'updateAt' => $this->updateAt
+                    'fields' => $this->fields
                 ]);
             } elseif (preg_match('/^Add(.+)To(.+)$/', $name, $matches)) {
                 $content = $this->renderFile(Yii::getAlias ($this->generatorTemplateFile['add']), [
@@ -692,6 +678,19 @@ abstract class BaseMigrateController extends Controller
                 }
             }
             $this->fields[$index] = ['property' => $property, 'decorators' => implode('->', $chunks)];
+        }
+    }
+
+    protected function checkPrimaryKey()
+    {
+        $exitsPk = false;
+        foreach ($this->fields as $field) {
+            if ($field['decorators'] === 'primaryKey()') {
+                $exitsPk = true;
+            }
+        }
+        if (!$exitsPk) {
+            array_unshift($this->fields, ['property' => 'id', 'decorators' => 'primaryKey()']);
         }
     }
 
