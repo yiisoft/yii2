@@ -62,7 +62,7 @@ abstract class BaseMigrateController extends Controller
             parent::options($actionID),
             ['migrationPath'], // global for all actions
             ($actionID === 'create')
-                ? ['templateFile', 'templateFileGenerators', 'fields', 'primaryKey', 'createAt', 'updateAt']
+                ? ['templateFile', 'templateFileGenerators', 'fields']
                 : [] // action create
         );
     }
