@@ -109,14 +109,25 @@ class Controller extends \yii\base\Controller
             $method = new \ReflectionMethod($action, 'run');
         }
 
-        $args = array_values($params);
+        $params = array_values($params);
 
+        $args = [];
         $missing = [];
         foreach ($method->getParameters() as $i => $param) {
-            if ($param->isArray() && isset($args[$i])) {
-                $args[$i] = preg_split('/\s*,\s*/', $args[$i]);
+            if (($class = $param->getClass()) !== null) {
+                $name = $param->getName();
+                $className = $class->getName();
+                if (Yii::$app->has($name) && ($obj = Yii::$app->get($name)) instanceof $className) {
+                    $args[$i] = $obj;
+                } else {
+                    $args[$i] = Yii::$container->get($className);
+                }
+                continue;
             }
-            if (!isset($args[$i])) {
+            $value = array_shift($params);
+            if (isset($value)) {
+                $args[$i] = $param->isArray() ? preg_split('/\s*,\s*/', $value) : $value;
+            } else {
                 if ($param->isDefaultValueAvailable()) {
                     $args[$i] = $param->getDefaultValue();
                 } else {
