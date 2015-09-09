@@ -22,6 +22,7 @@ Yii Framework 2 Change Log
 - Enh #2106: Added Unprocessable Entity HTTP Exception (janfrs)
 - Enh #9476: Added DI injection via controller action method signature (mdmunir)
 - Enh #9635: Added default CSS class for `\yii\grid\ActionColumn` header (arogachev, dynasource)
+- Enh #9643: Added migrations for DB cache (mdmunir)
 - Enh #9711: Added `yii\widgets\LinkPager::$pageCssClass` that allows to set default page class (ShNURoK42)
 
 
