@@ -42,23 +42,11 @@ class m150909_153426_cache_init extends Migration
             $tableOptions = 'CHARACTER SET utf8 COLLATE utf8_unicode_ci ENGINE=InnoDB';
         }
 
-        switch ($this->db->driverName) {
-            case 'mysql':
-                $blob = 'LONGBLOB';
-                break;
-            case 'pgsql':
-                $blob = 'BYTEA';
-                break;
-            default:
-                $blob = 'BLOB';
-                break;
-        }
-
         $this->createTable($cache->cacheTable, [
             'id' => $this->string(128)->notNull(),
             'expire' => $this->integer(),
-            'data' => $blob,
-            'PRIMARY KEY (id)',
+            'data' => $this->binary(),
+            'PRIMARY KEY ([[id]])',
             ], $tableOptions);
     }
 
