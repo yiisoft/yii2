@@ -124,7 +124,8 @@ trait ArrayableTrait
             $data['_links'] = Link::serialize($this->getLinks());
         }
 
-        return $recursive ? ArrayHelper::toArray($data) : $data;
+        $expands = $this->resolveExpand($expand);
+        return $recursive ? ArrayHelper::toArray($data, [], true, $expands) : $data;
     }
 
     /**
@@ -153,15 +154,32 @@ trait ArrayableTrait
             return $result;
         }
 
+        $expands = $this->resolveExpand($expand);
         foreach ($this->extraFields() as $field => $definition) {
             if (is_int($field)) {
                 $field = $definition;
             }
-            if (in_array($field, $expand, true)) {
+            if (isset($expands[$field])) {
                 $result[$field] = $definition;
             }
         }
 
         return $result;
+    }
+
+    /**
+     *
+     * @param array $expand
+     * @return array Description
+     */
+    protected function resolveExpand(array $expand)
+    {
+        $expands = [];
+        foreach ($expand as $field) {
+            $fields = explode('.', $field, 2);
+            $expands[$fields[0]][] = isset($fields[1]) ? $fields[1] : false;
+        }
+        
+        return array_map('array_filter', $expands);
     }
 }

@@ -56,13 +56,20 @@ class BaseArrayHelper
      * @param boolean $recursive whether to recursively converts properties which are objects into arrays.
      * @return array the array representation of the object
      */
-    public static function toArray($object, $properties = [], $recursive = true)
+    public static function toArray($object, $properties = [], $recursive = true, $expands = [])
     {
         if (is_array($object)) {
             if ($recursive) {
                 foreach ($object as $key => $value) {
                     if (is_array($value) || is_object($value)) {
-                        $object[$key] = static::toArray($value, $properties, true);
+                        if (is_int($key)){
+                            $expand = $expands;
+                        } elseif (isset($expands[$key])) {
+                            $expand = $expands[$key];
+                        } else {
+                            $expand = [];
+                        }
+                        $object[$key] = static::toArray($value, $properties, true, $expand);
                     }
                 }
             }
@@ -85,7 +92,7 @@ class BaseArrayHelper
                 }
             }
             if ($object instanceof Arrayable) {
-                $result = $object->toArray([], [], $recursive);
+                $result = $object->toArray([], $expands, $recursive);
             } else {
                 $result = [];
                 foreach ($object as $key => $value) {
@@ -93,7 +100,7 @@ class BaseArrayHelper
                 }
             }
 
-            return $recursive ? static::toArray($result) : $result;
+            return $recursive ? static::toArray($result, [], true, $expands) : $result;
         } else {
             return [$object];
         }
