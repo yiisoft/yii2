@@ -30,6 +30,7 @@ use yii\validators\Validator;
  *
  * Model also raises the following events when performing data validation:
  *
+ * - [[EVENT_AFTER_CREATE_VALIDATORS]]: an event will be called at the end of the first method call [[getValidators()]]
  * - [[EVENT_BEFORE_VALIDATE]]: an event raised at the beginning of [[validate()]]
  * - [[EVENT_AFTER_VALIDATE]]: an event raised at the end of [[validate()]]
  *
@@ -60,6 +61,10 @@ class Model extends Component implements IteratorAggregate, ArrayAccess, Arrayab
      * The name of the default scenario.
      */
     const SCENARIO_DEFAULT = 'default';
+    /**
+     * @event The event will be called at the end of the first method call [[getValidators()]]
+     */
+    const EVENT_AFTER_CREATE_VALIDATORS = 'afterCreateValidators';
     /**
      * @event ModelEvent an event raised at the beginning of [[validate()]]. You may set
      * [[ModelEvent::isValid]] to be false to stop the validation.
@@ -388,10 +393,23 @@ class Model extends Component implements IteratorAggregate, ArrayAccess, Arrayab
     }
 
     /**
+     * This method is invoked after validation ends.
+     * The default implementation raises an `afterCreateValidators` event.
+     * You may override this method to do postprocessing validators.
+     * Make sure the parent implementation is invoked so that the event can be raised.
+     */
+    public function afterCreateValidators()
+    {
+        $this->trigger(self::EVENT_AFTER_CREATE_VALIDATORS);
+    }
+
+    /**
      * Returns all the validators declared in [[rules()]].
      *
      * This method differs from [[getActiveValidators()]] in that the latter
      * only returns the validators applicable to the current [[scenario]].
+     *
+     * This method will be called once [[afterCreateValidators()]] after the actual initialization validators.
      *
      * Because this method returns an ArrayObject object, you may
      * manipulate it by inserting or removing validators (useful in model behaviors).
@@ -407,6 +425,7 @@ class Model extends Component implements IteratorAggregate, ArrayAccess, Arrayab
     {
         if ($this->_validators === null) {
             $this->_validators = $this->createValidators();
+            $this->afterCreateValidators();
         }
         return $this->_validators;
     }
