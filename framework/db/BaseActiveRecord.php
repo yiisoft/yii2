@@ -1228,8 +1228,8 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
 
         // update lazily loaded related objects
         if (!$relation->multiple) {
-            $this->_related[$name] = $model;
-        } elseif (isset($this->_related[$name])) {
+            $this->populateRelation($name, $model);
+        } elseif ($this->isRelationPopulated($name)){
             if ($relation->indexBy !== null) {
                 $indexBy = $relation->indexBy;
                 $this->_related[$name][$model->$indexBy] = $model;
