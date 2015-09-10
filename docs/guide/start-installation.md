@@ -90,21 +90,26 @@ But there are other installation options available:
 Verifying the Installation <span id="verifying-installation"></span>
 --------------------------
 
-After installation, you can use your browser to access the installed Yii application with the following URL:
+After installation is done, either configure your web server (see next section) or use
+[built-in PHP web server](https://secure.php.net/manual/en/features.commandline.webserver.php) by running the following
+console command while in the project `web` directory:
+ 
+```
+php -S localhost:80
+```
+
+You can use your browser to access the installed Yii application with the following URL:
 
 ```
-http://localhost/basic/web/index.php
+http://localhost/
 ```
-
-This URL assumes you have installed Yii in a directory named `basic`, directly under the Web server's document root directory,
-and that the Web server is running on your local machine (`localhost`). You may need to adjust it to your installation environment.
 
 ![Successful Installation of Yii](images/start-app-installed.png)
 
 You should see the above "Congratulations!" page in your browser. If not, please check if your PHP installation satisfies
 Yii's requirements. You can check if the minimum requirements are met using one of the following approaches:
 
-* Use a browser to access the URL `http://localhost/basic/requirements.php`
+* Copy `/requirements.php` to `/web/requirements.php` and then use a browser to access it via `http://localhost/requirements.php`
 * Run the following commands:
 
   ```
@@ -112,9 +117,9 @@ Yii's requirements. You can check if the minimum requirements are met using one 
   php requirements.php
   ```
 
-You should configure your PHP installation so that it meets the minimum requirements of Yii. Most importantly, you should have PHP 5.4 or above. You should also install
-the [PDO PHP Extension](http://www.php.net/manual/en/pdo.installation.php) and a corresponding database driver
-(such as `pdo_mysql` for MySQL databases), if your application needs a database.
+You should configure your PHP installation so that it meets the minimum requirements of Yii. Most importantly, you
+should have PHP 5.4 or above. You should also install the [PDO PHP Extension](http://www.php.net/manual/en/pdo.installation.php)
+and a corresponding database driver (such as `pdo_mysql` for MySQL databases), if your application needs a database.
 
 
 Configuring Web Servers <span id="configuring-web-servers"></span>

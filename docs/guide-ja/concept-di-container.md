@@ -91,7 +91,7 @@ $container->set('Foo', function () {
 $foo = $container->get('Foo');
 ```
 
-新しいオブジェクトを構築するための複雑なロジックを隠蔽するために、PHP コーラブルを返すスタティックなクラスメソッドを使うことが出来ます。
+新しいオブジェクトを構築するための複雑なロジックを隠蔽するために、スタティックなクラスメソッドをコーラブルとして使うことが出来ます。
 例えば、
 
 ```php
@@ -99,20 +99,17 @@ class FooBuilder
 {
     public static function build()
     {
-        return function () {
-            $foo = new Foo(new Bar);
-            // ... その他の初期化 ...
-            return $foo;
-       };
+        $foo = new Foo(new Bar);
+        // ... その他の初期化 ...
+        return $foo;
     }
 }
 
-$container->set('Foo', FooBuilder::build());
+$container->set('Foo', ['app\helper\FooBuilder', 'build']);
 
 $foo = $container->get('Foo');
 ```
 
-ご覧のように、PHP コーラブルが `FooBuilder::build()` メソッドによって返されています。
 このようにすれば、`Foo` クラスを構成しようとする人は、`Foo` がどのように構築されるかを気にする必要はもうなくなります。
 
 
