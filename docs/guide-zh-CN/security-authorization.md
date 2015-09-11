@@ -11,7 +11,7 @@
 非常适用于仅需要简单的存取控制的应用。正如其名称所指，ACF 是一个种行动（action）过滤器
 [filter](structure-filters.md)，可在控制器或者模块中使用。当一个用户请求一个 action 时，
 ACF会检查 [[yii\filters\AccessControl::rules|access rules]] 列表，判断该用户是否允许执
-行所请求的action。（译者注： `ction` 在本文中视情况翻译为`行动`、`操作`、`方法`等）
+行所请求的action。（译者注： `action` 在本文中视情况翻译为`行动`、`操作`、`方法`等）
 
 下述代码展示如何在 `site` 控制器中使用 ACF：
 
@@ -141,7 +141,7 @@ class SiteController extends Controller
         ];
     }
 
-    // 匹配的回调函数被调用了！这个页面只有每年的10月31号能访问（译者注：原文在这里说改方法是回调函数不确切，读者不要和 `matchCallback` 的值即匿名的回调函数混淆理解）。
+    // 匹配的回调函数被调用了！这个页面只有每年的10月31号能访问（译者注：原文在这里说该方法是回调函数不确切，读者不要和 `matchCallback` 的值即匿名的回调函数混淆理解）。
     public function actionSpecialCallback()
     {
         return $this->render('happy-halloween');
