@@ -425,7 +425,7 @@ if (\Yii::$app->user->can('updatePost', ['post' => $post])) {
 
 ![Access check](images/rbac-access-check-2.png "存取权限检查")
 
-我们从图中的 `updatePost` 开始，经过 `iupdateOwnPost`。为通过检查，`Authorrule` 
+我们从图中的 `updatePost` 开始，经过 `updateOwnPost`。为通过检查，`Authorrule` 
 规则的 `execute()` 方法应当返回 `true` 。该方法从 `can()` 方法调用接收到 `$params` 参数，
 因此它的值是 `['post' => $post]` 。如果一切顺利，我们会达到指派给 John 的 `author` 角色。
 
@@ -441,7 +441,7 @@ if (\Yii::$app->user->can('updatePost', ['post' => $post])) {
 
 默认角色通常与一个规则关联，用以检查该角色是否符合被检查的用户。
 
-默认角色常常用于已经确立了一些角色的指派关系的应用（译者注：指派关系值得是应用业务逻辑层面，
+默认角色常常用于已经确立了一些角色的指派关系的应用（译者注：指派关系指的是应用业务逻辑层面，
 并非指授权数据的结构）。比如，一个应用的 user 表中有一个 `group` 字段，代表用户属于哪个特权组。
 如果每个特权组可以映射到 RBAC 的角色，你就可以采用默认角色自动地为每个用户指派一个 RBAC 角色。
 让我们用一个例子展示如何做到这一点。
