@@ -548,8 +548,8 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
         $attributes = [];
         if ($this->_oldAttributes === null) {
             foreach($names as $name) {
-                if ($this->hasAttribute($name)) {
-                    $attributes[$name] = $this->getAttribute($name);
+                if ($this->hasAttribute($name) && null !== $value = $this->getAttribute($name)) {
+                    $attributes[$name] = $value;
                 }
             }
         } else {
