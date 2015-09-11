@@ -208,8 +208,8 @@ return [
 
 现在可以通过 `\Yii::$app->authManager` 访问 `authManager` 。
 
-[[yii\rbac\PhpManager]] 默认将将 RBAC 数据保存在 `@app/rbac` 目录下的文件中。
-如果权限层次数据再运行是会被修改，需确保WEB服务器进程对该目录和其中的文件有写权限。
+[[yii\rbac\PhpManager]] 默认将 RBAC 数据保存在 `@app/rbac` 目录下的文件中。
+如果权限层次数据在运行时会被修改，需确保WEB服务器进程对该目录和其中的文件有写权限。
 
 
 #### 使用 `DbManager` <span id="using-db-manager"></span>
@@ -235,7 +235,7 @@ return [
 - [[yii\rbac\DbManager::$assignmentTable|assignmentTable]]： 该表存放授权条目对用户的指派情况。默认表名为 "auth_assignment"。
 - [[yii\rbac\DbManager::$ruleTable|ruleTable]]： 该表存放规则。默认表名为 "auth_rule"。
 
-继续之前，你需要在数据库中创建这些表。你可以使用存放在 `@yii/rbac/migrations` 目录中的数据库迁移文件来做这件事：
+继续之前，你需要在数据库中创建这些表。你可以使用存放在 `@yii/rbac/migrations` 目录中的数据库迁移文件来做这件事（译者注：根据本人经验，最好是将授权数据初始化命令也写到这个 RBAC 数据库迁移文件中）：
 
 `yii migrate --migrationPath=@yii/rbac/migrations`
 
@@ -306,7 +306,7 @@ class RbacController extends Controller
 
 作者可创建新贴，管理员可编辑帖子以及所有作者可做的事情。
 
-如果你的应用允许用户注册，你需要在给新用户指派一次角色。例如，
+如果你的应用允许用户注册，你需要在注册时给新用户指派一次角色。例如，
 在高级项目模板中，要让所有注册用户成为作者，你需要如下例所示修改
 `frontend\models\SignupForm::signup()` 方法：
 
