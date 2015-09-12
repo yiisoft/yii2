@@ -416,7 +416,7 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
      */
     public function hasAttribute($name)
     {
-        if (!array_key_exists($name, $this->_attributes)) {
+        if (!(isset($this->_attributes[$name]) || array_key_exists($name, $this->_attributes))) {
             return in_array($name, $this->attributes());
         }
 
