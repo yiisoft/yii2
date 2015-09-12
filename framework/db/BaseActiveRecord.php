@@ -236,8 +236,9 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
      */
     public function __get($name)
     {
-        if ($this->hasAttribute($name)) {
-            return $this->getAttribute($name);
+        // getAttribute has better performance than hasAttribute for attributes that are set.
+        if ((null !== $value = $this->getAttribute($name)) || $this->hasAttribute($name)) {
+            return $value;
         } else {
             if (isset($this->_related[$name]) || array_key_exists($name, $this->_related)) {
                 return $this->_related[$name];
@@ -259,9 +260,7 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
      */
     public function __set($name, $value)
     {
-        if ($this->hasAttribute($name)) {
-            $this->setAttribute($name, $value);
-        } else {
+        if (!$this->setAttribute($name, $value, false)) {
             parent::__set($name, $value);
         }
     }
@@ -289,12 +288,12 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
      */
     public function __unset($name)
     {
-        if ($this->hasAttribute($name)) {
-            $this->setAttribute($name, null);
-        } elseif (array_key_exists($name, $this->_related)) {
-            unset($this->_related[$name]);
-        } elseif ($this->getRelation($name, false) === null) {
-            parent::__unset($name);
+        if (!$this->setAttribute($name, null, false)) {
+            if (array_key_exists($name, $this->_related)) {
+                unset($this->_related[$name]);
+            } elseif ($this->getRelation($name, false) === null) {
+                parent::__unset($name);
+            }
         }
     }
 
@@ -417,7 +416,11 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
      */
     public function hasAttribute($name)
     {
-        return isset($this->_attributes[$name]) || in_array($name, $this->attributes());
+        if (!array_key_exists($name, $this->_attributes)) {
+            return in_array($name, $this->attributes());
+        }
+
+        return true;
     }
 
     /**
@@ -437,15 +440,19 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
      * Sets the named attribute value.
      * @param string $name the attribute name
      * @param mixed $value the attribute value.
+     * @param boolean $throw Set to false to not throw an exception (used internally).
      * @throws InvalidParamException if the named attribute does not exist.
      * @see hasAttribute()
      */
-    public function setAttribute($name, $value)
+    public function setAttribute($name, $value, $throw = true)
     {
         if ($this->hasAttribute($name)) {
             $this->_attributes[$name] = $value;
-        } else {
+            return true;
+        } elseif ($throw) {
             throw new InvalidParamException(get_class($this) . ' has no attribute named "' . $name . '".');
+        } else {
+            return false;
         }
     }
 
