@@ -76,8 +76,8 @@ echo \Yii::t('app', 'This is a string to translate!');
 where the second parameter refers to the text message to be translated, while the first parameter refers to 
 the name of the category which is used to categorize the message. 
 
-The [[Yii::t()]] method will call the `i18n` [application component](structure-application-components.md) 
-to perform the actual translation work. The component can be configured in the application configuration as follows,
+The [[Yii::t()]] method will call the `i18n` [application component](structure-application-components.md) `translate`
+method to perform the actual translation work. The component can be configured in the application configuration as follows,
 
 ```php
 'components' => [
@@ -122,8 +122,8 @@ In this subsection, we will describe different ways of formatting messages.
 
 ### Message Parameters <span id="message-parameters"></span>
 
-In a message to be translated, you can embed one or multiple placeholders so that they can be replaced by the given
-parameter values. By giving different sets of parameter values, you can variate the translated message dynamically.
+In a message to be translated, you can embed one or multiple parameters (also called placeholders) so that they can be
+replaced by the given values. By giving different sets of values, you can variate the translated message dynamically.
 In the following example, the placeholder `{username}` in the message `'Hello, {username}!'` will be replaced
 by `'Alexander'` and `'Qiang'`, respectively.
 
@@ -142,15 +142,15 @@ echo \Yii::t('app', 'Hello, {username}!', [
 ```
 
 While translating a message containing placeholders, you should leave the placeholders as is. This is because the placeholders
-will be replaced with the actual parameter values when you call `Yii::t()` to translate a message.
+will be replaced with the actual values when you call `Yii::t()` to translate a message.
 
 You can use either *named placeholders* or *positional placeholders*, but not both, in a single message.
  
 The previous example shows how you can use named placeholders. That is, each placeholder is written in the format of 
-`{ParameterName}`, and you provide the parameters as an associative array whose keys are the parameter names
-(without the curly brackets) and whose values are the corresponding parameter values.
+`{name}`, and you provide an associative array whose keys are the placeholder names
+(without the curly brackets) and whose values are the corresponding values placeholder to be replaced with.
 
-Positional placeholders use zero-based integer sequence as placeholders which are replaced by the parameter values
+Positional placeholders use zero-based integer sequence as names which are replaced by the provided values
 according to their positions in the call of `Yii::t()`. In the following example, the positional placeholders
 `{0}`, `{1}` and `{2}` will be replaced by the values of `$price`, `$count` and `$subtotal`, respectively.
 
@@ -158,10 +158,16 @@ according to their positions in the call of `Yii::t()`. In the following example
 $price = 100;
 $count = 2;
 $subtotal = 200;
-echo \Yii::t('app', 'Price: {0}, Count: {1}, Subtotal: {2}', $price, $count, $subtotal);
+echo \Yii::t('app', 'Price: {0}, Count: {1}, Subtotal: {2}', [$price, $count, $subtotal]);
 ```
 
-> Tip: In most cases you should use named placeholders. This is because the parameter names will make the translators
+In case of a single positional parameter its value could be specified without wrapping it into array:
+
+```php
+echo \Yii::t('app', 'Price: {0}', $price);
+```
+
+> Tip: In most cases you should use named placeholders. This is because the names will make the translators
 > understand better the whole messages being translated.
 
 
@@ -181,13 +187,17 @@ echo \Yii::t('app', 'Price: {0, number, currency}', $price);
 You can use either the short form or the full form to specify a placeholder with formatting:
 
 ```
-short form: {PlaceholderName, ParameterType}
-full form: {PlaceholderName, ParameterType, ParameterStyle}
+short form: {name, type}
+full form: {name, type, style}
 ```
 
-Please  refer to the [ICU documentation](http://icu-project.org/apiref/icu4c/classMessageFormat.html) for the complete
-instructions on how to specify such placeholders.
+> Note: If you need to use special characters such as `{`, `}`, `'`, `#`, wrap them in `'`:
+> 
+```php
+echo Yii::t('app', "Example of string with ''-escaped characters'': '{' '}' '{test}' {count, plural, other{''count'' value is # '#{}'}}", ['count' => 3]);
+```
 
+Complete format is described in the [ICU documentation](http://icu-project.org/apiref/icu4c/classMessageFormat.html).
 In the following we will show some common usages.
 
 
@@ -214,8 +224,14 @@ $sum = 42;
 echo \Yii::t('app', 'Balance: {0, number, ,000,000000}', $sum);
 ```
 
-[Formatting reference](http://icu-project.org/apiref/icu4c/classicu_1_1DecimalFormat.html).
-
+Characters used in the custom format could be found in
+[ICU API reference](http://icu-project.org/apiref/icu4c/classicu_1_1DecimalFormat.html) under "Special Pattern Characters"
+section.
+ 
+ 
+The value is always formatted according to the locale you are translating to i.e. you cannot change decimal or thousands
+separators, currency symbol etc. without changing translation locale. If you need to customize these you can
+use [[yii\i18n\Formatter::asDecimal()]] and [[yii\i18n\Formatter::asCurrency()]].
 
 #### Date <span id="date"></span>
 
@@ -272,6 +288,18 @@ The parameter value should be treated as a number and formatted as a spellout. F
 echo \Yii::t('app', '{n,number} is spelled as {n, spellout}', ['n' => 42]);
 ```
 
+By default the number is spelled out as cardinal. It could be changed:
+
+```php
+// may produce "I am forty-seventh agent"
+echo \Yii::t('app', 'I am {n, spellout,%spellout-ordinal} agent', ['n' => 47]);
+```
+
+Note that there should be no space after `spellout,` and before `%`.
+
+To get a list of options available for locale you're using check 
+"Numbering schemas, Spellout" at [http://intl.rmcreative.ru/](http://intl.rmcreative.ru/).
+
 #### Ordinal <span id="ordinal"></span>
 
 The parameter value should be treated as a number and formatted as an ordinal name. For example,
@@ -281,6 +309,17 @@ The parameter value should be treated as a number and formatted as an ordinal na
 echo \Yii::t('app', 'You are the {n, ordinal} visitor here!', ['n' => 42]);
 ```
 
+Ordinal supports more ways of formatting for languages such as Spanish:
+
+```php
+// may produce 471ª
+echo \Yii::t('app', '{n, ordinal,%digits-ordinal-feminine}', ['n' => 471]);
+```
+
+Note that there should be no space after `ordinal,` and before `%`.
+
+To get a list of options available for locale you're using check 
+"Numbering schemas, Ordinal" at [http://intl.rmcreative.ru/](http://intl.rmcreative.ru/).
 
 #### Duration <span id="duration"></span>
 
@@ -291,6 +330,17 @@ The parameter value should be treated as the number of seconds and formatted as 
 echo \Yii::t('app', 'You are here for {n, duration} already!', ['n' => 47]);
 ```
 
+Duration supports more ways of formatting:
+
+```php
+// may produce 130:53:47
+echo \Yii::t('app', '{n, duration,%in-numerals}', ['n' => 471227]);
+```
+
+Note that there should be no space after `duration,` and before `%`.
+
+To get a list of options available for locale you're using check 
+"Numbering schemas, Duration" at [http://intl.rmcreative.ru/](http://intl.rmcreative.ru/).
 
 #### Plural <span id="plural"></span>
 
@@ -305,8 +355,8 @@ it is sufficient to provide the translation of inflected words in certain situat
 echo \Yii::t('app', 'There {n, plural, =0{are no cats} =1{is one cat} other{are # cats}}!', ['n' => $n]);
 ```
 
-In the plural rule arguments above, `=0` means exactly zero, `=1` means exactly one, and `other` is for any other value.
-`#` is replaced with the value of `n`. 
+In the plural rule arguments above, `=` means explicit value. So `=0` means exactly zero, `=1` means exactly one.
+`other` stands for any other value. `#` is replaced with the value of `n` formatted according to target language.
 
 Plural forms can be very complicated in some languages. In the following Russian example, `=1` matches exactly `n = 1` 
 while `one` matches `21` or `101`:
@@ -315,15 +365,54 @@ while `one` matches `21` or `101`:
 Здесь {n, plural, =0{котов нет} =1{есть один кот} one{# кот} few{# кота} many{# котов} other{# кота}}!
 ```
 
-Note that the above message is mainly used as a translated message, not an original message, unless you set
-the [[yii\base\Application::$sourceLanguage|source language]] of your application as `ru-RU`.
+These `other`, `few`, `many` and other special argument names vary depending on language. To learn which ones you should
+specify for a particular locale, please refer to "Plural Rules, Cardinal" at [http://intl.rmcreative.ru/](http://intl.rmcreative.ru/). 
+Alternatively you can refer to [rules reference at unicode.org](http://unicode.org/repos/cldr-tmp/trunk/diff/supplemental/language_plural_rules.html).
 
-When a translation is not found for an original message, the plural rules for the [[yii\base\Application::$sourceLanguage|source language]]
-will be applied to the original message.
+> Note: The above example Russian message is mainly used as a translated message, not an original message, unless you set
+> the [[yii\base\Application::$sourceLanguage|source language]] of your application as `ru-RU` and translating from Russian.
+>
+> When a translation is not found for an original message specified in `Yii::t()` call, the plural rules for the
+> [[yii\base\Application::$sourceLanguage|source language]] will be applied to the original message.
 
-To learn which inflection forms you should specify for a particular language, please refer to the
-[rules reference at unicode.org](http://unicode.org/repos/cldr-tmp/trunk/diff/supplemental/language_plural_rules.html).
+There's an `offset` parameter for the cases when the string is like the following:
+ 
+```php
+$likeCount = 2;
+echo Yii::t('app', 'You {likeCount, plural,
+    offset: 1
+    =0{did not like this}
+    =1{liked this}
+    one{and one other person liked this}
+    other{and # others liked this}
+}', [
+    'likeCount' => $likeCount
+]);
 
+// You and one other person liked this
+```
+
+#### Ordinal selection <span id="ordinal-selection">
+
+The parameter type of `selectordinal` is meant to choose a string based on language rules for ordinals for the
+locale you are translating to:
+
+```php
+$n = 3;
+echo Yii::t('app', 'You are {n, selectordinal, one{#st} two{#nd} few{#rd} other{#th}} visitor', ['n' => $n]);
+// For English it outputs:
+// You are 3rd visitor
+
+// Translation
+'You are {n, selectordinal, one{#st} two{#nd} few{#rd} other{#th}} visitor' => 'Вы {n, selectordinal, other{#-й}} посетитель',
+
+// For Russian translation it outputs:
+// Вы 3-й посетитель
+```
+
+The format is very close to what's used for plurals. To learn which arguments you should specify for a particular locale,
+please refer to "Plural Rules, Ordinal" at [http://intl.rmcreative.ru/](http://intl.rmcreative.ru/). 
+Alternatively you can refer to [rules reference at unicode.org](http://unicode.org/repos/cldr-tmp/trunk/diff/supplemental/language_plural_rules.html).
 
 #### Selection <span id="selection"></span>
 
