@@ -13,6 +13,7 @@ Yii Framework 2 Change Log
 - Bug #9442: Fixed `yii\db\Migration::renameTable()` caused fatal error when using SQLite driver (fetus-hina)
 - Bug #9591: Fixed `yii.validation.js` code so it is compressable by YUICompressor (samdark, hofrob)
 - Bug #9596: Fixed `\yii\web\UrlManager::createAbsoluteUrl(['site/index', '#' => 'testHash'])` losing hash (alchimik, samdark)
+- Bug #9678: `I18N::format()` wasn't able to handle named placeholder in "selectordinal" (samdark)
 - Chg #9369: `Yii::$app->user->can()` now returns `false` instead of erroring in case `authManager` component is not configured (creocoder)
 - Chg #9411: `DetailView` now automatically sets container tag ID in case it's not specified (samdark)
 - Enh #9635: Added default CSS class for `\yii\grid\ActionColumn` header (arogachev, dynasource)
