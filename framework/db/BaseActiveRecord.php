@@ -260,7 +260,7 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
      */
     public function __set($name, $value)
     {
-        if (!$this->setAttribute($name, $value, false)) {
+        if (!$this->setAttributeInternal($name, $value)) {
             parent::__set($name, $value);
         }
     }
@@ -288,7 +288,7 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
      */
     public function __unset($name)
     {
-        if (!$this->setAttribute($name, null, false)) {
+        if (!$this->setAttributeInternal($name, null)) {
             if (array_key_exists($name, $this->_related)) {
                 unset($this->_related[$name]);
             } elseif ($this->getRelation($name, false) === null) {
@@ -335,6 +335,7 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
         $query->primaryModel = $this;
         $query->link = $link;
         $query->multiple = false;
+
         return $query;
     }
 
@@ -376,6 +377,7 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
         $query->primaryModel = $this;
         $query->link = $link;
         $query->multiple = true;
+
         return $query;
     }
 
@@ -440,21 +442,33 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
      * Sets the named attribute value.
      * @param string $name the attribute name
      * @param mixed $value the attribute value.
-     * @param boolean $throw Set to false to not throw an exception (used internally).
-     * @throws InvalidParamException if the named attribute does not exist.
-     * @see hasAttribute()
+     * @return bool True if the attribute was assigned false otherwise.
      */
-    public function setAttribute($name, $value, $throw = true)
+    protected function setAttributeInternal($name, $value, $check = true)
     {
-        if ($this->hasAttribute($name)) {
+        if (!$check || $this->hasAttribute($name)) {
             $this->_attributes[$name] = $value;
+
             return true;
-        } elseif ($throw) {
-            throw new InvalidParamException(get_class($this) . ' has no attribute named "' . $name . '".');
         } else {
             return false;
         }
     }
+
+    /**
+     * Sets the named attribute value.
+     * @param string $name the attribute name
+     * @param mixed $value the attribute value.
+     * @param boolean $throw Set to false to not throw an exception (used internally).
+     * @see hasAttribute()
+     */
+    public function setAttribute($name, $value)
+    {
+        if (!$this->setAttributeInternal($name, $value)) {
+            throw new InvalidParamException(get_class($this) . ' has no attribute named "' . $name . '".');
+        }
+    }
+
 
     /**
      * Returns the old attribute values.
@@ -769,7 +783,7 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
                 if (null !== $current = $this->getAttribute($name)) {
                     $value += $current;
                 }
-                $this->setAttribute($name, $value);
+                $this->setAttributeInternal($name, $value, false);
                 $this->_oldAttributes[$name] = $current;
             }
             return true;
@@ -965,7 +979,7 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
             return false;
         }
         foreach ($this->attributes() as $name) {
-            $this->setAttribute($name, $record->getAttribute($name));
+            $this->setAttributeInternal($name, $record->getAttribute($name), false);
         }
         $this->_oldAttributes = $this->_attributes;
         $this->_related = [];
@@ -1069,7 +1083,7 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
         $columns = array_flip($record->attributes());
         foreach ($row as $name => $value) {
             if (isset($columns[$name])) {
-                $record->setAttribute($name, $value);
+                $record->setAttributeInternal($name, $value, false);
             } elseif ($record->canSetProperty($name)) {
                 $record->$name = $value;
             }
