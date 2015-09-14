@@ -237,7 +237,7 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
     public function __get($name)
     {
         // getAttribute has better performance than hasAttribute for attributes that are set.
-        if ((null !== $value = $this->getAttribute($name)) || $this->hasAttribute($name)) {
+        if ((($value = $this->getAttribute($name)) !== null) || $this->hasAttribute($name)) {
             return $value;
         } else {
             if (isset($this->_related[$name]) || array_key_exists($name, $this->_related)) {
@@ -541,14 +541,14 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
      */
     public function isAttributeChanged($name, $identical = true)
     {
-        if (isset($this->_oldAttributes[$name]) && (null !== $value = $this->getAttribute($name))) {
+        if (isset($this->_oldAttributes[$name]) && (($value = $this->getAttribute($name)) !== null)) {
             if ($identical) {
                 return $value !== $this->_oldAttributes[$name];
             } else {
                 return $value != $this->_oldAttributes[$name];
             }
         } else {
-            return null !== $this->getAttribute($name) || isset($this->_oldAttributes[$name]);
+            return ($this->getAttribute($name) != null) || isset($this->_oldAttributes[$name]);
         }
     }
 
@@ -569,7 +569,7 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
         $attributes = [];
         if ($this->_oldAttributes === null) {
             foreach($names as $name) {
-                if ($this->hasAttribute($name) && null !== $value = $this->getAttribute($name)) {
+                if ($this->hasAttribute($name) && ($value = $this->getAttribute($name)) !== null) {
                     $attributes[$name] = $value;
                 }
             }
@@ -780,7 +780,7 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
     {
         if ($this->updateAllCounters($counters, $this->getOldPrimaryKey(true)) > 0) {
             foreach ($counters as $name => $value) {
-                if (null !== $current = $this->getAttribute($name)) {
+                if (($current = $this->getAttribute($name)) !== null) {
                     $value += $current;
                 }
                 $this->setAttributeInternal($name, $value, false);
