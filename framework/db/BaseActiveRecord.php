@@ -541,7 +541,7 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
      */
     public function isAttributeChanged($name, $identical = true)
     {
-        if (isset($this->_oldAttributes[$name]) && null !== $value = $this->getAttribute($name)) {
+        if (isset($this->_oldAttributes[$name]) && (null !== $value = $this->getAttribute($name))) {
             if ($identical) {
                 return $value !== $this->_oldAttributes[$name];
             } else {
