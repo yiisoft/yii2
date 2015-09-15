@@ -6,9 +6,6 @@
 /* @var $className string the new migration class name */
 /* @var $table string the name table */
 /* @var $fields array the fields */
-/* @var $primaryKey string the primary key */
-/* @var $createAt string */
-/* @var $updateAt string */
 
 echo "<?php\n";
 ?>
