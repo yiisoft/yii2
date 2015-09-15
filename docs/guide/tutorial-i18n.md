@@ -399,12 +399,12 @@ locale you are translating to:
 
 ```php
 $n = 3;
-echo Yii::t('app', 'You are {n, selectordinal, one{#st} two{#nd} few{#rd} other{#th}} visitor', ['n' => $n]);
+echo Yii::t('app', 'You are the {n, selectordinal, one{#st} two{#nd} few{#rd} other{#th}} visitor', ['n' => $n]);
 // For English it outputs:
-// You are 3rd visitor
+// You are the 3rd visitor
 
 // Translation
-'You are {n, selectordinal, one{#st} two{#nd} few{#rd} other{#th}} visitor' => 'Вы {n, selectordinal, other{#-й}} посетитель',
+'You are the {n, selectordinal, one{#st} two{#nd} few{#rd} other{#th}} visitor' => 'Вы {n, selectordinal, other{#-й}} посетитель',
 
 // For Russian translation it outputs:
 // Вы 3-й посетитель
