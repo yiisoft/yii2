@@ -70,7 +70,8 @@ class MigrateController extends BaseMigrateController
         'create' => '@yii/views/createMigration.php',
         'drop' => '@yii/views/dropMigration.php',
         'add' => '@yii/views/addMigration.php',
-        'remove' => '@yii/views/removeMigration.php'
+        'remove' => '@yii/views/removeMigration.php',
+        'create_join' => '@yii/views/createJoinMigration.php'
     ];
     /**
      * @var Connection|array|string the DB connection object or the application component ID of the DB connection to use

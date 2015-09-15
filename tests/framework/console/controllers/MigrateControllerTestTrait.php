@@ -416,6 +416,42 @@ CODE;
         $this->assertEqualsWithoutLE($code, file_get_contents($files[0]));
     }
 
+    public function testGenerateCreateJoinMigration()
+    {
+        $migrationName = 'CreateJoinPostAndTag';
+        $this->runMigrateControllerAction('create', [
+            $migrationName,
+        ]);
+        $files = FileHelper::findFiles($this->migrationPath);
+
+        $class = 'm' . gmdate('ymd_His') . '_' . $migrationName;
+        $code = <<<CODE
+<?php
+
+use yii\db\Migration;
+
+class {$class} extends Migration
+{
+    public function up()
+    {
+        \$this->createTable('post_tag', [
+            'post_id' => \$this->integer(),
+            'tag_id' => \$this->integer(),
+            'PRIMARY KEY(post_id, tag_id)'
+        ]);
+    }
+
+    public function down()
+    {
+        \$this->dropTable('post_tag');
+    }
+}
+
+CODE;
+
+        $this->assertEqualsWithoutLE($code, file_get_contents($files[0]));
+    }
+
     public function testUp()
     {
         $this->createMigration('test1');

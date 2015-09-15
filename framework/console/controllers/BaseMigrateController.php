@@ -482,7 +482,14 @@ abstract class BaseMigrateController extends Controller
         $file = $this->migrationPath . DIRECTORY_SEPARATOR . $className . '.php';
 
         if ($this->confirm("Create new migration '$file'?")) {
-            if (preg_match('/^Create(.+)$/', $name, $matches)) {
+            if (preg_match('/^CreateJoin(.+)And(.+)$/', $name, $matches)) {
+                $content = $this->renderFile(Yii::getAlias($this->generatorTemplateFile['create_join']), [
+                    'className' => $className,
+                    'table' => mb_strtolower($matches[1]) . '_' . mb_strtolower($matches[2]),
+                    'field_first' => mb_strtolower($matches[1]) . '_id',
+                    'field_second' => mb_strtolower($matches[2]) . '_id',
+                ]);
+            } elseif (preg_match('/^Create(.+)$/', $name, $matches)) {
                 $this->checkPrimaryKey();
                 $content = $this->renderFile(Yii::getAlias ($this->generatorTemplateFile['create']), [
                     'className' => $className,
