@@ -85,10 +85,7 @@ abstract class BaseMigrateController extends Controller
                 FileHelper::createDirectory($path);
             }
             $this->migrationPath = $path;
-
-            if ($this->fields !== null) {
-                $this->formatField();
-            }
+            $this->formatField();
 
             $version = Yii::getVersion();
             $this->stdout("Yii Migration Tool (based on Yii v{$version})\n\n");
@@ -492,6 +489,12 @@ abstract class BaseMigrateController extends Controller
                     'table' => mb_strtolower($matches[1]),
                     'fields' => $this->fields
                 ]);
+            } elseif (preg_match('/^Drop(.+)$/', $name, $matches)) {
+                $content = $this->renderFile(Yii::getAlias ($this->generatorTemplateFile['drop']), [
+                    'className' => $className,
+                    'table' => mb_strtolower($matches[1]),
+                    'fields' => $this->fields
+                ]);
             } elseif (preg_match('/^Add(.+)To(.+)$/', $name, $matches)) {
                 $content = $this->renderFile(Yii::getAlias ($this->generatorTemplateFile['add']), [
                     'className' => $className,
@@ -668,6 +671,10 @@ abstract class BaseMigrateController extends Controller
 
     protected function formatField()
     {
+        if ($this->fields === null) {
+            $this->fields = [];
+        }
+
         foreach ($this->fields as $index => $field) {
             $chunks = preg_split('/\s?:\s?/', $field, null);
             $property = array_shift($chunks);
