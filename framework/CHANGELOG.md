@@ -1,6 +1,8 @@
 Yii Framework 2 Change Log
 ==========================
 
+- Enh: Session is started only when it is necessary (Vatruha)
+
 2.0.7 under development
 -----------------------
 
