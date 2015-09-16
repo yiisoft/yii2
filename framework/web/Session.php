@@ -96,7 +96,24 @@ class Session extends Component implements \IteratorAggregate, \ArrayAccess, \Co
     public function init()
     {
         parent::init();
+        $this->startSessionIfItWasCreatedBefore();
         register_shutdown_function([$this, 'close']);
+    }
+
+    /**
+     * Starts the session which was created in previous requests
+     */
+    protected function startSessionIfItWasCreatedBefore()
+    {
+        // Session has already started
+        if ($this->getIsActive()) {
+            return;
+        }
+
+        // Session was started in previous requests. Now we just open it
+        // If we have no session at all we just create $_SESSION array to make our life easier
+        if ($this->getHasSessionId()) $this->open();
+        elseif (!isset($_SESSION)) $_SESSION = [];
     }
 
     /**
@@ -522,7 +539,6 @@ class Session extends Component implements \IteratorAggregate, \ArrayAccess, \Co
      */
     public function getIterator()
     {
-        $this->open();
         return new SessionIterator;
     }
 
@@ -532,7 +548,6 @@ class Session extends Component implements \IteratorAggregate, \ArrayAccess, \Co
      */
     public function getCount()
     {
-        $this->open();
         return count($_SESSION);
     }
 
@@ -555,7 +570,6 @@ class Session extends Component implements \IteratorAggregate, \ArrayAccess, \Co
      */
     public function get($key, $defaultValue = null)
     {
-        $this->open();
         return isset($_SESSION[$key]) ? $_SESSION[$key] : $defaultValue;
     }
 
@@ -578,7 +592,6 @@ class Session extends Component implements \IteratorAggregate, \ArrayAccess, \Co
      */
     public function remove($key)
     {
-        $this->open();
         if (isset($_SESSION[$key])) {
             $value = $_SESSION[$key];
             unset($_SESSION[$key]);
@@ -594,7 +607,6 @@ class Session extends Component implements \IteratorAggregate, \ArrayAccess, \Co
      */
     public function removeAll()
     {
-        $this->open();
         foreach (array_keys($_SESSION) as $key) {
             unset($_SESSION[$key]);
         }
@@ -606,7 +618,6 @@ class Session extends Component implements \IteratorAggregate, \ArrayAccess, \Co
      */
     public function has($key)
     {
-        $this->open();
         return isset($_SESSION[$key]);
     }
 
@@ -734,6 +745,7 @@ class Session extends Component implements \IteratorAggregate, \ArrayAccess, \Co
      */
     public function setFlash($key, $value = true, $removeAfterAccess = true)
     {
+        $this->open();
         $counters = $this->get($this->flashParam, []);
         $counters[$key] = $removeAfterAccess ? -1 : 0;
         $_SESSION[$key] = $value;
@@ -755,6 +767,7 @@ class Session extends Component implements \IteratorAggregate, \ArrayAccess, \Co
      */
     public function addFlash($key, $value = true, $removeAfterAccess = true)
     {
+        $this->open();
         $counters = $this->get($this->flashParam, []);
         $counters[$key] = $removeAfterAccess ? -1 : 0;
         $_SESSION[$this->flashParam] = $counters;
@@ -826,8 +839,6 @@ class Session extends Component implements \IteratorAggregate, \ArrayAccess, \Co
      */
     public function offsetExists($offset)
     {
-        $this->open();
-
         return isset($_SESSION[$offset]);
     }
 
@@ -838,8 +849,6 @@ class Session extends Component implements \IteratorAggregate, \ArrayAccess, \Co
      */
     public function offsetGet($offset)
     {
-        $this->open();
-
         return isset($_SESSION[$offset]) ? $_SESSION[$offset] : null;
     }
 
@@ -860,7 +869,6 @@ class Session extends Component implements \IteratorAggregate, \ArrayAccess, \Co
      */
     public function offsetUnset($offset)
     {
-        $this->open();
         unset($_SESSION[$offset]);
     }
 }
