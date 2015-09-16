@@ -91,13 +91,13 @@ class Serializer extends Component
     public $collectionEnvelope;
     /**
      * @var string the name of the envelope (e.g. `_links`) for returning the links objects.
-     * It takes effect only, if `collectionEnvelope` is set.
+     * It takes effect only, if `collectionEnvelope` is set and can be disabled by setting it to `false`.
      * @since 2.0.4
      */
     public $linksEnvelope = '_links';
     /**
      * @var string the name of the envelope (e.g. `_meta`) for returning the pagination object.
-     * It takes effect only, if `collectionEnvelope` is set.
+     * It takes effect only, if `collectionEnvelope` is set and can be disabled by setting it to `false`.
      * @since 2.0.4
      */
     public $metaEnvelope = '_meta';
@@ -201,15 +201,19 @@ class Serializer extends Component
      */
     protected function serializePagination($pagination)
     {
-        return [
-            $this->linksEnvelope => Link::serialize($pagination->getLinks(true)),
-            $this->metaEnvelope => [
+        $result = [];
+        if ($this->linksEnvelope !== false ) {
+            $result [$this->linksEnvelope] = Link::serialize($pagination->getLinks(true));
+        }
+        if ($this->metaEnvelope !== false ) {
+            $result [$this->metaEnvelope] = [
                 'totalCount' => $pagination->totalCount,
                 'pageCount' => $pagination->getPageCount(),
                 'currentPage' => $pagination->getPage() + 1,
                 'perPage' => $pagination->getPageSize(),
-            ],
-        ];
+            ];
+        }
+        return $result;
     }
 
     /**
