@@ -90,6 +90,12 @@ class Serializer extends Component
      */
     public $collectionEnvelope;
     /**
+     * @var string the name of the envelope (e.g. `item`) when returning details for a single resource object. 
+     * By default is disabled and the resource array is directly returned without using envelope.
+     * @since 2.0.7
+     */
+    public $singleEnvelope;
+    /**
      * @var string the name of the envelope (e.g. `_links`) for returning the links objects.
      * It takes effect only, if `collectionEnvelope` is set.
      * @since 2.0.4
@@ -242,7 +248,14 @@ class Serializer extends Component
             return null;
         } else {
             list ($fields, $expand) = $this->getRequestedFields();
-            return $model->toArray($fields, $expand);
+            if ($this->singleEnvelope === null) {
+                return $model->toArray($fields, $expand);
+            } else {
+                $result = [
+                    $this->singleEnvelope => $model->toArray($fields, $expand),
+                ];
+                return $result;
+            }
         }
     }
 
