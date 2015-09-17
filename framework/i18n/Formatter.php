@@ -1036,7 +1036,7 @@ class Formatter extends Component
      * @param array $textOptions optional configuration for the number formatter. This parameter will be merged with [[numberFormatterTextOptions]].
      * @return string the formatted result.
      * @throws InvalidParamException if the input value is not numeric or the formatting failed.
-     * @see sizeFormat
+     * @see sizeFormatBase
      * @see asSize
      */
     public function asShortSize($value, $decimals = null, $options = [], $textOptions = [])
@@ -1045,7 +1045,7 @@ class Formatter extends Component
             return $this->nullDisplay;
         }
 
-        list($params, $position) = $this->formatSizeNumber($value, $decimals, $options, $textOptions);
+        list($params, $position) = $this->formatNumber($value, $decimals, 4, $this->sizeFormatBase, $options, $textOptions);
 
         if ($this->sizeFormatBase == 1024) {
             switch ($position) {
@@ -1080,7 +1080,7 @@ class Formatter extends Component
      * @param array $textOptions optional configuration for the number formatter. This parameter will be merged with [[numberFormatterTextOptions]].
      * @return string the formatted result.
      * @throws InvalidParamException if the input value is not numeric or the formatting failed.
-     * @see sizeFormat
+     * @see sizeFormatBase
      * @see asShortSize
      */
     public function asSize($value, $decimals = null, $options = [], $textOptions = [])
@@ -1089,7 +1089,7 @@ class Formatter extends Component
             return $this->nullDisplay;
         }
 
-        list($params, $position) = $this->formatSizeNumber($value, $decimals, $options, $textOptions);
+        list($params, $position) = $this->formatNumber($value, $decimals, 4, $this->sizeFormatBase, $options, $textOptions);
 
         if ($this->sizeFormatBase == 1024) {
             switch ($position) {
@@ -1112,18 +1112,128 @@ class Formatter extends Component
         }
     }
 
+    /**
+     * Formats the value in millimeters as a length in human readable form for example `12 meters`.
+     *
+     * @param integer $value value in millimeters to be formatted.
+     * @param integer $decimals the number of digits after the decimal point.
+     * @param array $options optional configuration for the number formatter. This parameter will be merged with [[numberFormatterOptions]].
+     * @param array $textOptions optional configuration for the number formatter. This parameter will be merged with [[numberFormatterTextOptions]].
+     * @return string the formatted result.
+     * @throws InvalidParamException if the input value is not numeric or the formatting failed.
+     * @see asLength
+     */
+    public function asLength($value, $decimals = null, $options = [], $textOptions = [])
+    {
+        if ($value === null) {
+            return $this->nullDisplay;
+        }
+
+        list($params, $position) = $this->formatNumber($value, $decimals, 2, 1000, $options, $textOptions);
+
+        switch ($position) {
+            case 0:  return Yii::t('yii', '{nFormatted} {n, plural, =1{millimeter} other{millimeters}}', $params, $this->locale);
+            case 1:  return Yii::t('yii', '{nFormatted} {n, plural, =1{meters} meters}}', $params, $this->locale);
+            default: return Yii::t('yii', '{nFormatted} {n, plural, =1{kilometers} kilometers}}', $params, $this->locale);
+        }
+    }
+
+    /**
+     * Formats the value in millimeters as a length in human readable form for example `12 m`.
+     *
+     * This is the short form of [[asLength]].
+     *
+     * @param integer $value value in millimeters to be formatted.
+     * @param integer $decimals the number of digits after the decimal point.
+     * @param array $options optional configuration for the number formatter. This parameter will be merged with [[numberFormatterOptions]].
+     * @param array $textOptions optional configuration for the number formatter. This parameter will be merged with [[numberFormatterTextOptions]].
+     * @return string the formatted result.
+     * @throws InvalidParamException if the input value is not numeric or the formatting failed.
+     * @see asLength
+     */
+    public function asShortLength($value, $decimals = null, $options = [], $textOptions = [])
+    {
+        if ($value === null) {
+            return $this->nullDisplay;
+        }
+
+        list($params, $position) = $this->formatNumber($value, $decimals, 2, 1000, $options, $textOptions);
+
+        switch ($position) {
+            case 0:  return Yii::t('yii', '{nFormatted} mm', $params, $this->locale);
+            case 1:  return Yii::t('yii', '{nFormatted} m', $params, $this->locale);
+            default: return Yii::t('yii', '{nFormatted} km', $params, $this->locale);
+        }
+    }
+
+    /**
+     * Formats the value in grams as a weight in human readable form for example `12 kilograms`.
+     *
+     * @param integer $value value in grams to be formatted.
+     * @param integer $decimals the number of digits after the decimal point.
+     * @param array $options optional configuration for the number formatter. This parameter will be merged with [[numberFormatterOptions]].
+     * @param array $textOptions optional configuration for the number formatter. This parameter will be merged with [[numberFormatterTextOptions]].
+     * @return string the formatted result.
+     * @throws InvalidParamException if the input value is not numeric or the formatting failed.
+     * @see asWeight
+     */
+    public function asWeight($value, $decimals = null, $options = [], $textOptions = [])
+    {
+        if ($value === null) {
+            return $this->nullDisplay;
+        }
+
+        list($params, $position) = $this->formatNumber($value, $decimals, 1, 1000, $options, $textOptions);
+
+        switch ($position) {
+            case 0:  return Yii::t('yii', '{nFormatted} {n, plural, =1{gram} other{grams}}', $params, $this->locale);
+            case 1:  return Yii::t('yii', '{nFormatted} {n, plural, =1{kilogram} other{kilograms}}', $params, $this->locale);
+            default: return Yii::t('yii', '{nFormatted} {n, plural, =1{ton} other{tons}}', $params, $this->locale);
+        }
+    }
+
+    /**
+     * Formats the value in grams as a weight in human readable form for example `12 kg`.
+     *
+     * This is the short form of [[asWeight]].
+     *
+     * @param integer $value value in grams to be formatted.
+     * @param integer $decimals the number of digits after the decimal point.
+     * @param array $options optional configuration for the number formatter. This parameter will be merged with [[numberFormatterOptions]].
+     * @param array $textOptions optional configuration for the number formatter. This parameter will be merged with [[numberFormatterTextOptions]].
+     * @return string the formatted result.
+     * @throws InvalidParamException if the input value is not numeric or the formatting failed.
+     * @see asWeight
+     */
+    public function asShortWeight($value, $decimals = null, $options = [], $textOptions = [])
+    {
+        if ($value === null) {
+            return $this->nullDisplay;
+        }
+
+        list($params, $position) = $this->formatNumber($value, $decimals, 1, 1000, $options, $textOptions);
+
+        switch ($position) {
+            case 0:  return Yii::t('yii', '{nFormatted} g', $params, $this->locale);
+            case 1:  return Yii::t('yii', '{nFormatted} kg', $params, $this->locale);
+            default: return Yii::t('yii', '{nFormatted} t', $params, $this->locale);
+        }
+    }
+
 
     /**
      * Given the value in bytes formats number part of the human readable form.
      *
      * @param string|integer|float $value value in bytes to be formatted.
      * @param integer $decimals the number of digits after the decimal point
+     * @param integer $maxPosition maximum internal position of size unit
+     * @param integer $formatBase the base at which each next unit is calculated, either 1000 or 1024
      * @param array $options optional configuration for the number formatter. This parameter will be merged with [[numberFormatterOptions]].
      * @param array $textOptions optional configuration for the number formatter. This parameter will be merged with [[numberFormatterTextOptions]].
      * @return array [parameters for Yii::t containing formatted number, internal position of size unit]
      * @throws InvalidParamException if the input value is not numeric or the formatting failed.
      */
-    private function formatSizeNumber($value, $decimals, $options, $textOptions)
+    private function formatNumber($value, $decimals, $maxPosition, $formatBase, $options, $textOptions)
     {
         if (is_string($value) && is_numeric($value)) {
             $value = (int) $value;
@@ -1134,12 +1244,12 @@ class Formatter extends Component
 
         $position = 0;
         do {
-            if (abs($value) < $this->sizeFormatBase) {
+            if (abs($value) < $formatBase) {
                 break;
             }
-            $value = $value / $this->sizeFormatBase;
+            $value = $value / $formatBase;
             $position++;
-        } while ($position < 5);
+        } while ($position < $maxPosition + 1);
 
         // no decimals for bytes
         if ($position === 0) {
