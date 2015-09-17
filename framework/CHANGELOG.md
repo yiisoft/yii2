@@ -1,11 +1,10 @@
 Yii Framework 2 Change Log
 ==========================
 
-- Enh: Session is started only when it is necessary (Vatruha)
-
 2.0.7 under development
 -----------------------
 
+- Enh: Session is started only when it is necessary (Vatruha)
 - Bug #8723: Fixed `yii\helpers\VarDumper::export()` unable to export circle referenced objects with `Closure` (klimov-paul)
 - Bug #9108: Negative number resulted in no formatting when using `Formatter::asSize()` or `Formatter::asShortSize` (nxnx, cebe)
 - Bug #9288: Fixed `FileHelper::createDirectory` directory creation to be concurrency friendly (dynasource)
