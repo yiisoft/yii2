@@ -787,6 +787,50 @@ class Formatter extends Component
         }
     }
 
+    /**
+     * Formats the value as a time interval.
+     * @param mixed $value the value to be formatted, in ISO8601 format.
+     * @return string the formatted result.
+     */
+    public function asInterval($value)
+    {
+        if ($value === null) {
+            return $this->nullDisplay;
+        }
+        if ($value instanceof \DateInterval) {
+            $negative = $value->invert;
+            $interval = $value;
+        } else {
+            if (strpos($value, '-') !== false) {
+                $negative = true;
+                $interval = new \DateInterval(str_replace('-', '', $value));
+            } else {
+                $negative = false;
+                $interval = new \DateInterval($value);
+            }
+        }
+        if ($interval->y > 1) {
+            $parts[] = Yii::t('yii', '{delta, plural, =1{a year} other{# years}}', ['delta' => $interval->y], $this->locale);
+        }
+        if ($interval->m > 1) {
+            $parts[] = Yii::t('yii', '{delta, plural, =1{a month} other{# months}}', ['delta' => $interval->m], $this->locale);
+        }
+        if ($interval->d > 1) {
+            $parts[] = Yii::t('yii', '{delta, plural, =1{a day} other{# days}}', ['delta' => $interval->d], $this->locale);
+        }
+        if ($interval->h > 1) {
+            $parts[] = Yii::t('yii', '{delta, plural, =1{an hour} other{# hours}}', ['delta' => $interval->h], $this->locale);
+        }
+        if ($interval->i > 1) {
+            $parts[] = Yii::t('yii', '{delta, plural, =1{a minute} other{# minutes}}', ['delta' => $interval->i], $this->locale);
+        }
+        if ($interval->s > 0) {
+            $parts[] = Yii::t('yii', '{delta, plural, =1{a second} other{# seconds}}', ['delta' => $interval->s], $this->locale);
+        }
+
+        return empty($parts) ? $this->nullDisplay : (($negative ? '-' : '') . implode(', ', $parts));
+    }
+
 
     // number formats
 
