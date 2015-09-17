@@ -208,7 +208,7 @@ class LinkPager extends Widget
      */
     protected function renderPageButton($label, $page, $class, $disabled, $active)
     {
-        $options = ['class' => $class === null ? $this->pageCssClass : $class];
+        $options = ['class' => empty($class) ? $this->pageCssClass : $class];
         if ($active) {
             Html::addCssClass($options, $this->activePageCssClass);
         }
