@@ -12,7 +12,6 @@ use yii\db\Migration;
 
 class <?= $className ?> extends Migration
 {
-
     public function up()
     {
 

@@ -37,7 +37,7 @@
 
 Після встановлення Composer, встановити Yii можна виконавши наступну команду з директорії, яка доступна через Web:
 
-    composer global require "fxp/composer-asset-plugin:~1.0.0"
+    composer global require "fxp/composer-asset-plugin:~1.0.3"
     composer create-project --prefer-dist yiisoft/yii2-app-basic basic
 
 Перша команда встановить [плагін ресурсів composer (composer-asset-plugin)](https://github.com/francoispluchino/composer-asset-plugin/),

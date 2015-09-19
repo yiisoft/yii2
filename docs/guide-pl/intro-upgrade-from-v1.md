@@ -373,15 +373,15 @@ $sql = $command->sql;
 $rows = $command->queryAll();
 ```
 
-Co najlepsze, taki sposób tworzenia kwerend może być również wykorzystany przy pracy z [Rekordem aktywnym](db-active-record.md).
+Co najlepsze, taki sposób tworzenia kwerend może być również wykorzystany przy pracy z [Active Record](db-active-record.md).
 
 Po więcej szczegółów udaj się do sekcji [Konstruktor kwerend](db-query-builder.md).
 
 
-Rekord aktywny
---------------
+Active Record
+-------------
 
-Yii 2.0 wprowadza sporo zmian w [Rekordach aktywnych](db-active-record.md). Dwie najbardziej znaczące to 
+Yii 2.0 wprowadza sporo zmian w mechanizmie [Active Record](db-active-record.md). Dwie najbardziej znaczące to 
 konstruowanie kwerend i obsługa relacji.
 
 Klasa `CDbCriteria` z 1.1 została zastąpiona przez [[yii\db\ActiveQuery]] w Yii 2. Klasa ta rozszerza [[yii\db\Query]], dzięki czemu 
@@ -444,8 +444,8 @@ Zwróć jednak uwagę na to, że przy dodawaniu parametrów do konstruktora moż
 W nowym rekordzie aktywnym znajdziesz wiele innych zmian i udogodnień. Aby zapoznać się z nimi, przejdź do sekcji [Rekord aktywny](db-active-record.md).
 
 
-Zachowania rekordu aktywnego
-----------------------------
+Zachowania Active Record
+------------------------
 
 W 2.0 zrezygnowaliśmy z bazowej klasy zachowania `CActiveRecordBehavior`. Jeśli chcesz stworzyć zachowanie dla rekordu aktywnego, musisz 
 rozszerzyć bezpośrednio klasę `yii\base\Behavior`. Jeśli klasa zachowania ma reagować na zdarzenia, powinna nadpisywać metodę `events()`, jak zaprezentowano poniżej:

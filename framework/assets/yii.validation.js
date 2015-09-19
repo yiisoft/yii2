@@ -36,7 +36,7 @@ yii.validation = (function ($) {
             }
         },
 
-        boolean: function (value, messages, options) {
+        'boolean': function (value, messages, options) {
             if (options.skipOnEmpty && pub.isEmpty(value)) {
                 return;
             }

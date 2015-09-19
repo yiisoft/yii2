@@ -172,7 +172,7 @@ class MessageController extends Controller
         $q = new \yii\db\Query;
         $current = [];
 
-        foreach ($q->select(['id', 'category', 'message'])->from($sourceMessageTable)->all() as $row) {
+        foreach ($q->select(['id', 'category', 'message'])->from($sourceMessageTable)->all($db) as $row) {
             $current[$row['category']][$row['id']] = $row['message'];
         }
 
