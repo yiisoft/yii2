@@ -517,4 +517,37 @@ class QueryBuilderTest extends DatabaseTestCase
         ];
         (new Query())->from('customer')->where($condition)->all($this->getConnection());
     }
+
+    public function testFromSubquery()
+    {
+        // query subquery
+        $subquery = (new Query)->from('user')->where('account_id = accounts.id');
+        $query = (new Query)->from(['activeusers' => $subquery]);
+        // SELECT * FROM (SELECT * FROM `user` WHERE `active` = 1) `activeusers`;
+        list ($sql, $params) = $this->getQueryBuilder()->build($query);
+        $expected = $this->replaceQuotes('SELECT * FROM (SELECT * FROM `user` WHERE account_id = accounts.id) `activeusers`');
+        $this->assertEquals($expected, $sql);
+        $this->assertEmpty($params);
+
+        // query subquery with params
+        $subquery = (new Query)->from('user')->where('account_id = :id', ['id' => 1]);
+        $query = (new Query)->from(['activeusers' => $subquery])->where('abc = :abc', ['abc' => 'abc']);
+        // SELECT * FROM (SELECT * FROM `user` WHERE `active` = 1) `activeusers`;
+        list ($sql, $params) = $this->getQueryBuilder()->build($query);
+        $expected = $this->replaceQuotes('SELECT * FROM (SELECT * FROM `user` WHERE account_id = :id) `activeusers` WHERE abc = :abc');
+        $this->assertEquals($expected, $sql);
+        $this->assertEquals([
+            'id' => 1,
+            'abc' => 'abc',
+        ],$params);
+
+        // simple subquery
+        $subquery = "(SELECT * FROM `user` WHERE account_id = accounts.id)";
+        $query = (new Query)->from(['activeusers' => $subquery]);
+        // SELECT * FROM (SELECT * FROM `user` WHERE `active` = 1) `activeusers`;
+        list ($sql, $params) = $this->getQueryBuilder()->build($query);
+        $expected = $this->replaceQuotes('SELECT * FROM (SELECT * FROM `user` WHERE account_id = accounts.id) `activeusers`');
+        $this->assertEquals($expected, $sql);
+        $this->assertEmpty($params);
+    }
 }
