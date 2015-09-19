@@ -542,11 +542,11 @@ class QueryBuilderTest extends DatabaseTestCase
         ],$params);
 
         // simple subquery
-        $subquery = "(SELECT * FROM `user` WHERE account_id = accounts.id)";
+        $subquery = "(SELECT * FROM user WHERE account_id = accounts.id)";
         $query = (new Query)->from(['activeusers' => $subquery]);
         // SELECT * FROM (SELECT * FROM `user` WHERE `active` = 1) `activeusers`;
         list ($sql, $params) = $this->getQueryBuilder()->build($query);
-        $expected = $this->replaceQuotes('SELECT * FROM (SELECT * FROM `user` WHERE account_id = accounts.id) `activeusers`');
+        $expected = $this->replaceQuotes('SELECT * FROM (SELECT * FROM user WHERE account_id = accounts.id) `activeusers`');
         $this->assertEquals($expected, $sql);
         $this->assertEmpty($params);
     }
