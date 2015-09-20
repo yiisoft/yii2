@@ -1120,7 +1120,7 @@ class Formatter extends Component
     }
 
     /**
-     * Formats the value in millimeters as a length in human readable form for example `12 meters`.
+     * Formats the value as a length in human readable form for example `12 meters`.
      *
      * @param integer $value value to be formatted.
      * @param double $baseUnit unit of value as the multiplier of the smallest unit
@@ -1138,7 +1138,7 @@ class Formatter extends Component
     }
 
     /**
-     * Formats the value in millimeters as a length in human readable form for example `12 m`.
+     * Formats the value as a length in human readable form for example `12 m`.
      *
      * This is the short form of [[asLength]].
      *
@@ -1158,7 +1158,7 @@ class Formatter extends Component
     }
 
     /**
-     * Formats the value in grams as a weight in human readable form for example `12 kilograms`.
+     * Formats the value as a weight in human readable form for example `12 kilograms`.
      *
      * @param integer $value value to be formatted.
      * @param double $baseUnit unit of value as the multiplier of the smallest unit
@@ -1176,7 +1176,7 @@ class Formatter extends Component
     }
 
     /**
-     * Formats the value in grams as a weight in human readable form for example `12 kg`.
+     * Formats the value as a weight in human readable form for example `12 kg`.
      *
      * This is the short form of [[asWeight]].
      *
