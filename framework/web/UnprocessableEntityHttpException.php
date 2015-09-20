@@ -18,7 +18,7 @@ namespace yii\web;
  *
  * @link http://www.webdav.org/specs/rfc2518.html#STATUS_422
  * @author Jan Silva <janfrs3@gmail.com>
- * @since 2.0
+ * @since 2.0.7
  */
 class UnprocessedEntityHttpException extends HttpException
 {
