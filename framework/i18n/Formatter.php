@@ -46,6 +46,9 @@ use yii\helpers\Html;
  */
 class Formatter extends Component
 {
+    const UNIT_SYSTEM_METRIC = 'metric';
+    const UNIT_SYSTEM_IMPERIAL = 'imperial';
+
     /**
      * @var string the text to be displayed when formatting a `null` value.
      * Defaults to `'<span class="not-set">(not set)</span>'`, where `(not set)`
@@ -219,6 +222,10 @@ class Formatter extends Component
      * Defaults to 1024.
      */
     public $sizeFormatBase = 1024;
+    /**
+     * @var string default system of measure units.
+     */
+    public $systemOfUnits = self::UNIT_SYSTEM_METRIC;
 
     /**
      * @var boolean whether the [PHP intl extension](http://php.net/manual/en/book.intl.php) is loaded.
@@ -1115,7 +1122,9 @@ class Formatter extends Component
     /**
      * Formats the value in millimeters as a length in human readable form for example `12 meters`.
      *
-     * @param integer $value value in millimeters to be formatted.
+     * @param integer $value value to be formatted.
+     * @param double $baseUnit unit of value as the multiplier of the smallest unit
+     * @param string $system either self::UNIT_SYSTEM_METRIC or self::UNIT_SYSTEM_IMPERIAL, if null defaults to metric
      * @param integer $decimals the number of digits after the decimal point.
      * @param array $options optional configuration for the number formatter. This parameter will be merged with [[numberFormatterOptions]].
      * @param array $textOptions optional configuration for the number formatter. This parameter will be merged with [[numberFormatterTextOptions]].
@@ -1123,19 +1132,9 @@ class Formatter extends Component
      * @throws InvalidParamException if the input value is not numeric or the formatting failed.
      * @see asLength
      */
-    public function asLength($value, $decimals = null, $options = [], $textOptions = [])
+    public function asLength($value, $baseUnit = null, $system = null, $decimals = null, $options = [], $textOptions = [])
     {
-        if ($value === null) {
-            return $this->nullDisplay;
-        }
-
-        list($params, $position) = $this->formatNumber($value, $decimals, 2, 1000, $options, $textOptions);
-
-        switch ($position) {
-            case 0:  return Yii::t('yii', '{nFormatted} {n, plural, =1{millimeter} other{millimeters}}', $params, $this->locale);
-            case 1:  return Yii::t('yii', '{nFormatted} {n, plural, =1{meters} meters}}', $params, $this->locale);
-            default: return Yii::t('yii', '{nFormatted} {n, plural, =1{kilometers} kilometers}}', $params, $this->locale);
-        }
+        return $this->formatUnit('length', 'long', $value, $baseUnit, $system, $decimals, $options, $textOptions);
     }
 
     /**
@@ -1143,7 +1142,9 @@ class Formatter extends Component
      *
      * This is the short form of [[asLength]].
      *
-     * @param integer $value value in millimeters to be formatted.
+     * @param integer $value value to be formatted.
+     * @param double $baseUnit unit of value as the multiplier of the smallest unit
+     * @param string $system either self::UNIT_SYSTEM_METRIC or self::UNIT_SYSTEM_IMPERIAL, if null defaults to metric
      * @param integer $decimals the number of digits after the decimal point.
      * @param array $options optional configuration for the number formatter. This parameter will be merged with [[numberFormatterOptions]].
      * @param array $textOptions optional configuration for the number formatter. This parameter will be merged with [[numberFormatterTextOptions]].
@@ -1151,25 +1152,17 @@ class Formatter extends Component
      * @throws InvalidParamException if the input value is not numeric or the formatting failed.
      * @see asLength
      */
-    public function asShortLength($value, $decimals = null, $options = [], $textOptions = [])
+    public function asShortLength($value, $baseUnit = null, $system = null, $decimals = null, $options = [], $textOptions = [])
     {
-        if ($value === null) {
-            return $this->nullDisplay;
-        }
-
-        list($params, $position) = $this->formatNumber($value, $decimals, 2, 1000, $options, $textOptions);
-
-        switch ($position) {
-            case 0:  return Yii::t('yii', '{nFormatted} mm', $params, $this->locale);
-            case 1:  return Yii::t('yii', '{nFormatted} m', $params, $this->locale);
-            default: return Yii::t('yii', '{nFormatted} km', $params, $this->locale);
-        }
+        return $this->formatUnit('length', 'short', $value, $baseUnit, $system, $decimals, $options, $textOptions);
     }
 
     /**
      * Formats the value in grams as a weight in human readable form for example `12 kilograms`.
      *
-     * @param integer $value value in grams to be formatted.
+     * @param integer $value value to be formatted.
+     * @param double $baseUnit unit of value as the multiplier of the smallest unit
+     * @param string $system either self::UNIT_SYSTEM_METRIC or self::UNIT_SYSTEM_IMPERIAL, if null defaults to metric
      * @param integer $decimals the number of digits after the decimal point.
      * @param array $options optional configuration for the number formatter. This parameter will be merged with [[numberFormatterOptions]].
      * @param array $textOptions optional configuration for the number formatter. This parameter will be merged with [[numberFormatterTextOptions]].
@@ -1177,19 +1170,9 @@ class Formatter extends Component
      * @throws InvalidParamException if the input value is not numeric or the formatting failed.
      * @see asWeight
      */
-    public function asWeight($value, $decimals = null, $options = [], $textOptions = [])
+    public function asWeight($value, $baseUnit = null, $system = null, $decimals = null, $options = [], $textOptions = [])
     {
-        if ($value === null) {
-            return $this->nullDisplay;
-        }
-
-        list($params, $position) = $this->formatNumber($value, $decimals, 1, 1000, $options, $textOptions);
-
-        switch ($position) {
-            case 0:  return Yii::t('yii', '{nFormatted} {n, plural, =1{gram} other{grams}}', $params, $this->locale);
-            case 1:  return Yii::t('yii', '{nFormatted} {n, plural, =1{kilogram} other{kilograms}}', $params, $this->locale);
-            default: return Yii::t('yii', '{nFormatted} {n, plural, =1{ton} other{tons}}', $params, $this->locale);
-        }
+        return $this->formatUnit('weight', 'long', $value, $baseUnit, $system, $decimals, $options, $textOptions);
     }
 
     /**
@@ -1197,7 +1180,9 @@ class Formatter extends Component
      *
      * This is the short form of [[asWeight]].
      *
-     * @param integer $value value in grams to be formatted.
+     * @param double $value value to be formatted.
+     * @param double $baseUnit unit of value as the multiplier of the smallest unit
+     * @param string $system either self::UNIT_SYSTEM_METRIC or self::UNIT_SYSTEM_IMPERIAL, if null defaults to metric
      * @param integer $decimals the number of digits after the decimal point.
      * @param array $options optional configuration for the number formatter. This parameter will be merged with [[numberFormatterOptions]].
      * @param array $textOptions optional configuration for the number formatter. This parameter will be merged with [[numberFormatterTextOptions]].
@@ -1205,29 +1190,47 @@ class Formatter extends Component
      * @throws InvalidParamException if the input value is not numeric or the formatting failed.
      * @see asWeight
      */
-    public function asShortWeight($value, $decimals = null, $options = [], $textOptions = [])
+    public function asShortWeight($value, $baseUnit = null, $system = null, $decimals = null, $options = [], $textOptions = [])
+    {
+        return $this->formatUnit('weight', 'short', $value, $baseUnit, $system, $decimals, $options, $textOptions);
+    }
+
+    /**
+     * @param string $unit one of: weight, length
+     * @param string $type one of: short, long
+     * @param double $value
+     * @param double $baseUnit
+     * @param string $system
+     * @param integer $decimals
+     * @param $options
+     * @param $textOptions
+     * @return string
+     */
+    private function formatUnit($unit, $type, $value, $baseUnit, $system, $decimals, $options, $textOptions)
     {
         if ($value === null) {
             return $this->nullDisplay;
         }
-
-        list($params, $position) = $this->formatNumber($value, $decimals, 1, 1000, $options, $textOptions);
-
-        switch ($position) {
-            case 0:  return Yii::t('yii', '{nFormatted} g', $params, $this->locale);
-            case 1:  return Yii::t('yii', '{nFormatted} kg', $params, $this->locale);
-            default: return Yii::t('yii', '{nFormatted} t', $params, $this->locale);
+        if ($system === null) {
+            $system = $this->systemOfUnits;
         }
-    }
+        if ($baseUnit === null) {
+            $baseUnit = $this->getBaseMeasureUnit($unit, $system);
+        }
+        $multipliers = $this->getUnitMultipliers($unit, $system);
 
+        list($params, $position) = $this->formatNumber($value / $baseUnit, $decimals, null, $multipliers, $options, $textOptions);
+
+        return $this->getMeasureUnit($unit, $system, 'short', $multipliers[$position], $params);
+    }
 
     /**
      * Given the value in bytes formats number part of the human readable form.
      *
      * @param string|integer|float $value value in bytes to be formatted.
      * @param integer $decimals the number of digits after the decimal point
-     * @param integer $maxPosition maximum internal position of size unit
-     * @param integer $formatBase the base at which each next unit is calculated, either 1000 or 1024
+     * @param integer $maxPosition maximum internal position of size unit, ignored if $formatBase is an array
+     * @param array|integer $formatBase the base at which each next unit is calculated, either 1000 or 1024, or an array
      * @param array $options optional configuration for the number formatter. This parameter will be merged with [[numberFormatterOptions]].
      * @param array $textOptions optional configuration for the number formatter. This parameter will be merged with [[numberFormatterTextOptions]].
      * @return array [parameters for Yii::t containing formatted number, internal position of size unit]
@@ -1243,11 +1246,20 @@ class Formatter extends Component
         }
 
         $position = 0;
+        if (is_array($formatBase)) {
+            $maxPosition = count($formatBase) - 1;
+        }
         do {
-            if (abs($value) < $formatBase) {
-                break;
+            if (is_array($formatBase)) {
+                if (abs($value) < $formatBase[$position]) {
+                    break;
+                }
+            } else {
+                if (abs($value) < $formatBase) {
+                    break;
+                }
+                $value = $value / $formatBase;
             }
-            $value = $value / $formatBase;
             $position++;
         } while ($position < $maxPosition + 1);
 
@@ -1275,6 +1287,133 @@ class Formatter extends Component
         $this->thousandSeparator = $oldThousandSeparator;
 
         return [$params, $position];
+    }
+
+    protected function getBaseMeasureUnit($unit, $system)
+    {
+        switch ($unit) {
+            case 'length':
+                switch ($system) {
+                    case self::UNIT_SYSTEM_IMPERIAL:
+                        return 12; // 1 feet = 12 inches
+                    case self::UNIT_SYSTEM_METRIC:
+                        return 1000; // 1 meter = 1000 millimeters
+                }
+            case 'weight':
+                switch ($system) {
+                    case self::UNIT_SYSTEM_IMPERIAL:
+                        return 7000; // 1 pound = 7000 grains
+                    case self::UNIT_SYSTEM_METRIC:
+                        return 1000; // 1 kilogram = 1000 grams
+                }
+        }
+    }
+
+    protected function getUnitMultipliers($unit, $system)
+    {
+        switch ($unit) {
+            case 'length':
+                switch ($system) {
+                    case self::UNIT_SYSTEM_IMPERIAL:
+                        return [1, 12, 36, 792, 7920, 63360];
+                    case self::UNIT_SYSTEM_METRIC:
+                        return [1, 100, 1000, 1000000];
+                }
+
+            case 'weight':
+                switch ($system) {
+                    case self::UNIT_SYSTEM_IMPERIAL:
+                        return [1, 27.34375, 437.5, 7000, 98000, 196000, 784000, 15680000];
+                    case self::UNIT_SYSTEM_METRIC:
+                        return [1, 1000, 1000000];
+                }
+        }
+    }
+
+    protected function getMeasureUnit($unit, $system, $type, $baseUnit, $params)
+    {
+        switch ($unit) {
+            case 'length':
+                switch ($system) {
+                    case self::UNIT_SYSTEM_IMPERIAL:
+                        if ($type === 'short') {
+                            switch ($baseUnit) {
+                                case 1: return Yii::t('yii', '{nFormatted} in', $params, $this->locale);
+                                case 12: return Yii::t('yii', '{nFormatted} ft', $params, $this->locale);
+                                case 36: return Yii::t('yii', '{nFormatted} yd', $params, $this->locale);
+                                case 792: return Yii::t('yii', '{nFormatted} ch', $params, $this->locale);
+                                case 7920: return Yii::t('yii', '{nFormatted} fur', $params, $this->locale);
+                                case 63360: return Yii::t('yii', '{nFormatted} mi', $params, $this->locale);
+                            }
+                        } else {
+                            switch ($baseUnit) {
+                                case 1: return Yii::t('yii', '{nFormatted} {n, plural, =1{inch} other{inches}', $params, $this->locale);
+                                case 12: return Yii::t('yii', '{nFormatted} {n, plural, =1{foot} other{feet}', $params, $this->locale);
+                                case 36: return Yii::t('yii', '{nFormatted} {n, plural, =1{yard} other{yards}', $params, $this->locale);
+                                case 792: return Yii::t('yii', '{nFormatted} {n, plural, =1{chain} other{chains}', $params, $this->locale);
+                                case 7920: return Yii::t('yii', '{nFormatted} {n, plural, =1{furlong} other{furlongs}', $params, $this->locale);
+                                case 63360: return Yii::t('yii', '{nFormatted} {n, plural, =1{mile} other{miles}', $params, $this->locale);
+                            }
+                        }
+                    case self::UNIT_SYSTEM_METRIC:
+                        if ($type === 'short') {
+                            switch ($baseUnit) {
+                                case 1: return Yii::t('yii', '{nFormatted} mm', $params, $this->locale);
+                                case 100: return Yii::t('yii', '{nFormatted} cm', $params, $this->locale);
+                                case 1000: return Yii::t('yii', '{nFormatted} m', $params, $this->locale);
+                                case 1000000: return Yii::t('yii', '{nFormatted} km', $params, $this->locale);
+                            }
+                        } else {
+                            switch ($baseUnit) {
+                                case 1: return Yii::t('yii', '{nFormatted} {n, plural, =1{millimeter} other{millimeters}', $params, $this->locale);
+                                case 100: return Yii::t('yii', '{nFormatted} {n, plural, =1{centimeter} other{centimeters}', $params, $this->locale);
+                                case 1000: return Yii::t('yii', '{nFormatted} {n, plural, =1{meter} other{meters}', $params, $this->locale);
+                                case 1000000: return Yii::t('yii', '{nFormatted} {n, plural, =1{kilometer} other{kilometers}', $params, $this->locale);
+                            }
+                        }
+                }
+            case 'weight':
+                switch ($system) {
+                    case self::UNIT_SYSTEM_IMPERIAL:
+                        if ($type === 'short') {
+                            switch ($baseUnit) {
+                                case 1: return Yii::t('yii', '{nFormatted} gr', $params, $this->locale);
+                                case 27.34375: return Yii::t('yii', '{nFormatted} dr', $params, $this->locale);
+                                case 437.5: return Yii::t('yii', '{nFormatted} oz', $params, $this->locale);
+                                case 7000: return Yii::t('yii', '{nFormatted} lb', $params, $this->locale);
+                                case 98000: return Yii::t('yii', '{nFormatted} st', $params, $this->locale);
+                                case 196000: return Yii::t('yii', '{nFormatted} qr', $params, $this->locale);
+                                case 784000: return Yii::t('yii', '{nFormatted} cwt', $params, $this->locale);
+                                case 15680000: return Yii::t('yii', '{nFormatted} t', $params, $this->locale);
+                            }
+                        } else {
+                            switch ($baseUnit) {
+                                case 1: return Yii::t('yii', '{nFormatted} {n, plural, =1{grain} other{grains}', $params, $this->locale);
+                                case 27.34375: return Yii::t('yii', '{nFormatted} {n, plural, =1{drachm} other{drachms}', $params, $this->locale);
+                                case 437.5: return Yii::t('yii', '{nFormatted} {n, plural, =1{ounce} other{ounces}', $params, $this->locale);
+                                case 7000: return Yii::t('yii', '{nFormatted} {n, plural, =1{pound} other{pounds}', $params, $this->locale);
+                                case 98000: return Yii::t('yii', '{nFormatted} {n, plural, =1{stone} other{stones}', $params, $this->locale);
+                                case 196000: return Yii::t('yii', '{nFormatted} {n, plural, =1{quarter} other{quarters}', $params, $this->locale);
+                                case 784000: return Yii::t('yii', '{nFormatted} {n, plural, =1{hundredweight} other{hundredweights}', $params, $this->locale);
+                                case 15680000: return Yii::t('yii', '{nFormatted} {n, plural, =1{ton} other{tons}', $params, $this->locale);
+                            }
+                        }
+                    case self::UNIT_SYSTEM_METRIC:
+                        if ($type === 'short') {
+                            switch ($baseUnit) {
+                                case 1: return Yii::t('yii', '{nFormatted} g', $params, $this->locale);
+                                case 1000: return Yii::t('yii', '{nFormatted} kg', $params, $this->locale);
+                                case 1000000: return Yii::t('yii', '{nFormatted} t', $params, $this->locale);
+                            }
+                        } else {
+                            switch ($baseUnit) {
+                                case 1: return Yii::t('yii', '{nFormatted} {n, plural, =1{gram} other{grams}', $params, $this->locale);
+                                case 1000: return Yii::t('yii', '{nFormatted} {n, plural, =1{kilogram} other{kilograms}', $params, $this->locale);
+                                case 1000000: return Yii::t('yii', '{nFormatted} {n, plural, =1{ton} other{tons}', $params, $this->locale);
+                            }
+                        }
+                }
+        }
     }
 
     /**
