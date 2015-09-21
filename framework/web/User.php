@@ -123,6 +123,10 @@ class User extends Component
      */
     public $idParam = '__id';
     /**
+     * @var string the session variable name used to store the value of [[identity::authKey]].
+     */
+    public $authKeyParam = '__authKey';
+    /**
      * @var string the session variable name used to store the value of expiration timestamp of the authenticated state.
      * This is used when [[authTimeout]] is set.
      */
@@ -573,10 +577,12 @@ class User extends Component
             $session->regenerateID(true);
         }
         $session->remove($this->idParam);
+        $session->remove($this->authKeyParam);
         $session->remove($this->authTimeoutParam);
 
         if ($identity) {
             $session->set($this->idParam, $identity->getId());
+            $session->set($this->authKeyParam, $identity->getAuthKey());
             if ($this->authTimeout !== null) {
                 $session->set($this->authTimeoutParam, time() + $this->authTimeout);
             }
@@ -612,6 +618,11 @@ class User extends Component
             /* @var $class IdentityInterface */
             $class = $this->identityClass;
             $identity = $class::findIdentity($id);
+            $authKey = $session->get($this->authKeyParam);
+            if ($authKey !== null && !$identity->validateAuthKey($authKey)) {
+                $identity = null;
+                Yii::warning("Invalid auth key attempted for user '$id': $authKey", __METHOD__);
+            }
         }
 
         $this->setIdentity($identity);
