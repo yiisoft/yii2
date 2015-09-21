@@ -39,8 +39,10 @@ class FormatterUnitTest extends TestCase
 
     public function testAsLength()
     {
-        $this->assertSame("53 milimetry", $this->formatter->asLength(0.053));
-        $this->assertSame("0,99 centrymetra", $this->formatter->asLength(0.099));
-        $this->assertSame("0,12 metra", $this->formatter->asLength(0.123));
+        $this->assertSame("5 milimetrów", $this->formatter->asLength(0.005));
+        $this->assertSame("5.30 centymetra", $this->formatter->asLength(0.053));
+        $this->assertSame("9.90 centymetra", $this->formatter->asLength(0.099));
+        $this->assertSame("10.00 centymetrów", $this->formatter->asLength(0.1));
+        $this->assertSame("1.12 metra", $this->formatter->asLength(1.123));
     }
 }

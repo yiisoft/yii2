@@ -245,7 +245,7 @@ class Formatter extends Component
             ],
             self::UNIT_SYSTEM_METRIC => [
                 'millimeter' => 1,
-                'centimeter' => 100,
+                'centimeter' => 10,
                 'meter' => 1000,
                 'kilometer' => 1000000,
             ],
@@ -286,6 +286,14 @@ class Formatter extends Component
      * @var boolean whether the [PHP intl extension](http://php.net/manual/en/book.intl.php) is loaded.
      */
     private $_intlLoaded = false;
+    /**
+     * @var \ResourceBundle cached ResourceBundle object used to read unit translations
+     */
+    private $_resourceBundle;
+    /**
+     * @var array cached unit translation patterns
+     */
+    private $_unitMessages = [];
 
 
     /**
@@ -1273,14 +1281,35 @@ class Formatter extends Component
             $baseUnit = $this->baseUnits[$unitType][$system];
         }
         $multipliers = array_values($this->measureUnits[$unitType][$system]);
-        $unitNames = array_keys($this->measureUnits[$unitType][$system]);
 
         list($params, $position) = $this->formatNumber($value * $baseUnit, $decimals, null, $multipliers, $options, $textOptions);
 
-        // build the message pattern
-        $resourceBundle = new \ResourceBundle($this->locale, 'ICUDATA-unit');
+        $message = $this->getUnitMessage($unitType, $unitFormat, $system, $position);
+        
+        return (new \MessageFormatter($this->locale, $message))->format([
+            '0' => $params['nFormatted'],
+            'n' => $params['n'],
+        ]);
+    }
+
+    /**
+     * @param string $unitType
+     * @param string $unitFormat
+     * @param string $system
+     * @param integer $position
+     * @return string
+     */
+    private function getUnitMessage($unitType, $unitFormat, $system, $position)
+    {
+        if (isset($this->_unitMessages[$unitType][$system][$position])) {
+            return $this->_unitMessages[$unitType][$system][$position];
+        }
+        if ($this->_resourceBundle === null) {
+            $this->_resourceBundle = new \ResourceBundle($this->locale, 'ICUDATA-unit');
+        }
+        $unitNames = array_keys($this->measureUnits[$unitType][$system]);
         $bundleKey = 'units' . ($unitFormat === self::FORMAT_WIDTH_SHORT ? 'Short' : '');
-        $unitBundle = $resourceBundle[$bundleKey][$unitType][$unitNames[$position]];
+        $unitBundle = $this->_resourceBundle[$bundleKey][$unitType][$unitNames[$position]];
         $message = [];
         foreach ($unitBundle as $key => $value) {
             if ($key === 'dnam') {
@@ -1288,12 +1317,7 @@ class Formatter extends Component
             }
             $message[] = "$key{{$value}}";
         }
-        $message = '{n, plural, '.implode(' ', $message).'}';
-        
-        return (new \MessageFormatter($this->locale, $message))->format([
-            '0' => $params['nFormatted'],
-            'n' => $params['n'],
-        ]);
+        return $this->_unitMessages[$unitType][$system][$position] = '{n, plural, '.implode(' ', $message).'}';
     }
 
     /**
@@ -1334,8 +1358,8 @@ class Formatter extends Component
             }
             $position++;
         } while ($position < $maxPosition + 1);
-        if (is_array($formatBase) && $formatBase[$position - 1] !== 1) {
-            $value /= $formatBase[$position - 1];
+        if (is_array($formatBase) && $position !== 0) {
+            $value /= $formatBase[$position];
         }
 
         // no decimals for smallest unit
