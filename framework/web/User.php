@@ -619,7 +619,7 @@ class User extends Component
             $class = $this->identityClass;
             $identity = $class::findIdentity($id);
             $authKey = $session->get($this->authKeyParam);
-            if ($authKey !== null && !$identity->validateAuthKey($authKey)) {
+            if ($authKey !== null && $identity !== null && !$identity->validateAuthKey($authKey)) {
                 $identity = null;
                 Yii::warning("Invalid auth key attempted for user '$id': $authKey", __METHOD__);
             }
