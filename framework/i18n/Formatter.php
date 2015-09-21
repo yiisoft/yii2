@@ -48,6 +48,10 @@ class Formatter extends Component
 {
     const UNIT_SYSTEM_METRIC = 'metric';
     const UNIT_SYSTEM_IMPERIAL = 'imperial';
+    const FORMAT_WIDTH_LONG = 'long';
+    const FORMAT_WIDTH_SHORT = 'short';
+    const UNIT_LENGTH = 'length';
+    const UNIT_WEIGHT = 'weight';
 
     /**
      * @var string the text to be displayed when formatting a `null` value.
@@ -226,6 +230,57 @@ class Formatter extends Component
      * @var string default system of measure units.
      */
     public $systemOfUnits = self::UNIT_SYSTEM_METRIC;
+    /**
+     * @var array configuration of measure units
+     */
+    public $measureUnits = [
+        self::UNIT_LENGTH => [
+            self::UNIT_SYSTEM_IMPERIAL => [
+                'inch' => 1,
+                'foot' => 12,
+                'yard' => 36,
+                'chain' => 792,
+                'furlong' => 7920,
+                'mile' => 63360,
+            ],
+            self::UNIT_SYSTEM_METRIC => [
+                'millimeter' => 1,
+                'centimeter' => 100,
+                'meter' => 1000,
+                'kilometer' => 1000000,
+            ],
+        ],
+        self::UNIT_WEIGHT => [
+            self::UNIT_SYSTEM_IMPERIAL => [
+                'grain' => 1,
+                'drachm' => 27.34375,
+                'ounce' => 437.5,
+                'pound' => 7000,
+                'stone' => 98000,
+                'quarter' => 196000,
+                'hundredweight' => 784000,
+                'ton' => 15680000,
+            ],
+            self::UNIT_SYSTEM_METRIC => [
+                'gram' => 1,
+                'kilogram' => 1000,
+                'ton' => 1000000,
+            ],
+        ],
+    ];
+    /**
+     * @var array base units as multipliers for smallest possible unit from $measureUnits
+     */
+    public $baseUnits = [
+        self::UNIT_LENGTH => [
+            self::UNIT_SYSTEM_IMPERIAL => 12, // 1 feet = 12 inches
+            self::UNIT_SYSTEM_METRIC => 1000, // 1 meter = 1000 millimeters
+        ],
+        self::UNIT_WEIGHT => [
+            self::UNIT_SYSTEM_IMPERIAL => 7000, // 1 pound = 7000 grains
+            self::UNIT_SYSTEM_METRIC => 1000, // 1 kilogram = 1000 grams
+        ],
+    ];
 
     /**
      * @var boolean whether the [PHP intl extension](http://php.net/manual/en/book.intl.php) is loaded.
@@ -1134,7 +1189,7 @@ class Formatter extends Component
      */
     public function asLength($value, $baseUnit = null, $system = null, $decimals = null, $options = [], $textOptions = [])
     {
-        return $this->formatUnit('length', 'long', $value, $baseUnit, $system, $decimals, $options, $textOptions);
+        return $this->formatUnit(self::UNIT_LENGTH, self::FORMAT_WIDTH_LONG, $value, $baseUnit, $system, $decimals, $options, $textOptions);
     }
 
     /**
@@ -1154,7 +1209,7 @@ class Formatter extends Component
      */
     public function asShortLength($value, $baseUnit = null, $system = null, $decimals = null, $options = [], $textOptions = [])
     {
-        return $this->formatUnit('length', 'short', $value, $baseUnit, $system, $decimals, $options, $textOptions);
+        return $this->formatUnit(self::UNIT_LENGTH, self::FORMAT_WIDTH_SHORT, $value, $baseUnit, $system, $decimals, $options, $textOptions);
     }
 
     /**
@@ -1172,7 +1227,7 @@ class Formatter extends Component
      */
     public function asWeight($value, $baseUnit = null, $system = null, $decimals = null, $options = [], $textOptions = [])
     {
-        return $this->formatUnit('weight', 'long', $value, $baseUnit, $system, $decimals, $options, $textOptions);
+        return $this->formatUnit(self::UNIT_WEIGHT, self::FORMAT_WIDTH_LONG, $value, $baseUnit, $system, $decimals, $options, $textOptions);
     }
 
     /**
@@ -1192,12 +1247,12 @@ class Formatter extends Component
      */
     public function asShortWeight($value, $baseUnit = null, $system = null, $decimals = null, $options = [], $textOptions = [])
     {
-        return $this->formatUnit('weight', 'short', $value, $baseUnit, $system, $decimals, $options, $textOptions);
+        return $this->formatUnit(self::UNIT_WEIGHT, self::FORMAT_WIDTH_SHORT, $value, $baseUnit, $system, $decimals, $options, $textOptions);
     }
 
     /**
-     * @param string $unit one of: weight, length
-     * @param string $type one of: short, long
+     * @param string $unitType one of: weight, length
+     * @param string $unitFormat one of: short, long
      * @param double $value
      * @param double $baseUnit
      * @param string $system
@@ -1206,7 +1261,7 @@ class Formatter extends Component
      * @param $textOptions
      * @return string
      */
-    private function formatUnit($unit, $type, $value, $baseUnit, $system, $decimals, $options, $textOptions)
+    private function formatUnit($unitType, $unitFormat, $value, $baseUnit, $system, $decimals, $options, $textOptions)
     {
         if ($value === null) {
             return $this->nullDisplay;
@@ -1215,13 +1270,30 @@ class Formatter extends Component
             $system = $this->systemOfUnits;
         }
         if ($baseUnit === null) {
-            $baseUnit = $this->getBaseMeasureUnit($unit, $system);
+            $baseUnit = $this->baseUnits[$unitType][$system];
         }
-        $multipliers = $this->getUnitMultipliers($unit, $system);
+        $multipliers = array_values($this->measureUnits[$unitType][$system]);
+        $unitNames = array_keys($this->measureUnits[$unitType][$system]);
 
-        list($params, $position) = $this->formatNumber($value / $baseUnit, $decimals, null, $multipliers, $options, $textOptions);
+        list($params, $position) = $this->formatNumber($value * $baseUnit, $decimals, null, $multipliers, $options, $textOptions);
 
-        return $this->getMeasureUnit($unit, $system, 'short', $multipliers[$position], $params);
+        // build the message pattern
+        $resourceBundle = new \ResourceBundle($this->locale, 'ICUDATA-unit');
+        $bundleKey = 'units' . ($unitFormat === self::FORMAT_WIDTH_SHORT ? 'Short' : '');
+        $unitBundle = $resourceBundle[$bundleKey][$unitType][$unitNames[$position]];
+        $message = [];
+        foreach ($unitBundle as $key => $value) {
+            if ($key === 'dnam') {
+                continue;
+            }
+            $message[] = "$key{{$value}}";
+        }
+        $message = '{n, plural, '.implode(' ', $message).'}';
+        
+        return (new \MessageFormatter($this->locale, $message))->format([
+            '0' => $params['nFormatted'],
+            'n' => $params['n'],
+        ]);
     }
 
     /**
@@ -1251,7 +1323,7 @@ class Formatter extends Component
         }
         do {
             if (is_array($formatBase)) {
-                if (abs($value) < $formatBase[$position]) {
+                if (abs($value) < $formatBase[$position + 1]) {
                     break;
                 }
             } else {
@@ -1262,8 +1334,11 @@ class Formatter extends Component
             }
             $position++;
         } while ($position < $maxPosition + 1);
+        if (is_array($formatBase) && $formatBase[$position - 1] !== 1) {
+            $value /= $formatBase[$position - 1];
+        }
 
-        // no decimals for bytes
+        // no decimals for smallest unit
         if ($position === 0) {
             $decimals = 0;
         } elseif ($decimals !== null) {
@@ -1287,133 +1362,6 @@ class Formatter extends Component
         $this->thousandSeparator = $oldThousandSeparator;
 
         return [$params, $position];
-    }
-
-    protected function getBaseMeasureUnit($unit, $system)
-    {
-        switch ($unit) {
-            case 'length':
-                switch ($system) {
-                    case self::UNIT_SYSTEM_IMPERIAL:
-                        return 12; // 1 feet = 12 inches
-                    case self::UNIT_SYSTEM_METRIC:
-                        return 1000; // 1 meter = 1000 millimeters
-                }
-            case 'weight':
-                switch ($system) {
-                    case self::UNIT_SYSTEM_IMPERIAL:
-                        return 7000; // 1 pound = 7000 grains
-                    case self::UNIT_SYSTEM_METRIC:
-                        return 1000; // 1 kilogram = 1000 grams
-                }
-        }
-    }
-
-    protected function getUnitMultipliers($unit, $system)
-    {
-        switch ($unit) {
-            case 'length':
-                switch ($system) {
-                    case self::UNIT_SYSTEM_IMPERIAL:
-                        return [1, 12, 36, 792, 7920, 63360];
-                    case self::UNIT_SYSTEM_METRIC:
-                        return [1, 100, 1000, 1000000];
-                }
-
-            case 'weight':
-                switch ($system) {
-                    case self::UNIT_SYSTEM_IMPERIAL:
-                        return [1, 27.34375, 437.5, 7000, 98000, 196000, 784000, 15680000];
-                    case self::UNIT_SYSTEM_METRIC:
-                        return [1, 1000, 1000000];
-                }
-        }
-    }
-
-    protected function getMeasureUnit($unit, $system, $type, $baseUnit, $params)
-    {
-        switch ($unit) {
-            case 'length':
-                switch ($system) {
-                    case self::UNIT_SYSTEM_IMPERIAL:
-                        if ($type === 'short') {
-                            switch ($baseUnit) {
-                                case 1: return Yii::t('yii', '{nFormatted} in', $params, $this->locale);
-                                case 12: return Yii::t('yii', '{nFormatted} ft', $params, $this->locale);
-                                case 36: return Yii::t('yii', '{nFormatted} yd', $params, $this->locale);
-                                case 792: return Yii::t('yii', '{nFormatted} ch', $params, $this->locale);
-                                case 7920: return Yii::t('yii', '{nFormatted} fur', $params, $this->locale);
-                                case 63360: return Yii::t('yii', '{nFormatted} mi', $params, $this->locale);
-                            }
-                        } else {
-                            switch ($baseUnit) {
-                                case 1: return Yii::t('yii', '{nFormatted} {n, plural, =1{inch} other{inches}', $params, $this->locale);
-                                case 12: return Yii::t('yii', '{nFormatted} {n, plural, =1{foot} other{feet}', $params, $this->locale);
-                                case 36: return Yii::t('yii', '{nFormatted} {n, plural, =1{yard} other{yards}', $params, $this->locale);
-                                case 792: return Yii::t('yii', '{nFormatted} {n, plural, =1{chain} other{chains}', $params, $this->locale);
-                                case 7920: return Yii::t('yii', '{nFormatted} {n, plural, =1{furlong} other{furlongs}', $params, $this->locale);
-                                case 63360: return Yii::t('yii', '{nFormatted} {n, plural, =1{mile} other{miles}', $params, $this->locale);
-                            }
-                        }
-                    case self::UNIT_SYSTEM_METRIC:
-                        if ($type === 'short') {
-                            switch ($baseUnit) {
-                                case 1: return Yii::t('yii', '{nFormatted} mm', $params, $this->locale);
-                                case 100: return Yii::t('yii', '{nFormatted} cm', $params, $this->locale);
-                                case 1000: return Yii::t('yii', '{nFormatted} m', $params, $this->locale);
-                                case 1000000: return Yii::t('yii', '{nFormatted} km', $params, $this->locale);
-                            }
-                        } else {
-                            switch ($baseUnit) {
-                                case 1: return Yii::t('yii', '{nFormatted} {n, plural, =1{millimeter} other{millimeters}', $params, $this->locale);
-                                case 100: return Yii::t('yii', '{nFormatted} {n, plural, =1{centimeter} other{centimeters}', $params, $this->locale);
-                                case 1000: return Yii::t('yii', '{nFormatted} {n, plural, =1{meter} other{meters}', $params, $this->locale);
-                                case 1000000: return Yii::t('yii', '{nFormatted} {n, plural, =1{kilometer} other{kilometers}', $params, $this->locale);
-                            }
-                        }
-                }
-            case 'weight':
-                switch ($system) {
-                    case self::UNIT_SYSTEM_IMPERIAL:
-                        if ($type === 'short') {
-                            switch ($baseUnit) {
-                                case 1: return Yii::t('yii', '{nFormatted} gr', $params, $this->locale);
-                                case 27.34375: return Yii::t('yii', '{nFormatted} dr', $params, $this->locale);
-                                case 437.5: return Yii::t('yii', '{nFormatted} oz', $params, $this->locale);
-                                case 7000: return Yii::t('yii', '{nFormatted} lb', $params, $this->locale);
-                                case 98000: return Yii::t('yii', '{nFormatted} st', $params, $this->locale);
-                                case 196000: return Yii::t('yii', '{nFormatted} qr', $params, $this->locale);
-                                case 784000: return Yii::t('yii', '{nFormatted} cwt', $params, $this->locale);
-                                case 15680000: return Yii::t('yii', '{nFormatted} t', $params, $this->locale);
-                            }
-                        } else {
-                            switch ($baseUnit) {
-                                case 1: return Yii::t('yii', '{nFormatted} {n, plural, =1{grain} other{grains}', $params, $this->locale);
-                                case 27.34375: return Yii::t('yii', '{nFormatted} {n, plural, =1{drachm} other{drachms}', $params, $this->locale);
-                                case 437.5: return Yii::t('yii', '{nFormatted} {n, plural, =1{ounce} other{ounces}', $params, $this->locale);
-                                case 7000: return Yii::t('yii', '{nFormatted} {n, plural, =1{pound} other{pounds}', $params, $this->locale);
-                                case 98000: return Yii::t('yii', '{nFormatted} {n, plural, =1{stone} other{stones}', $params, $this->locale);
-                                case 196000: return Yii::t('yii', '{nFormatted} {n, plural, =1{quarter} other{quarters}', $params, $this->locale);
-                                case 784000: return Yii::t('yii', '{nFormatted} {n, plural, =1{hundredweight} other{hundredweights}', $params, $this->locale);
-                                case 15680000: return Yii::t('yii', '{nFormatted} {n, plural, =1{ton} other{tons}', $params, $this->locale);
-                            }
-                        }
-                    case self::UNIT_SYSTEM_METRIC:
-                        if ($type === 'short') {
-                            switch ($baseUnit) {
-                                case 1: return Yii::t('yii', '{nFormatted} g', $params, $this->locale);
-                                case 1000: return Yii::t('yii', '{nFormatted} kg', $params, $this->locale);
-                                case 1000000: return Yii::t('yii', '{nFormatted} t', $params, $this->locale);
-                            }
-                        } else {
-                            switch ($baseUnit) {
-                                case 1: return Yii::t('yii', '{nFormatted} {n, plural, =1{gram} other{grams}', $params, $this->locale);
-                                case 1000: return Yii::t('yii', '{nFormatted} {n, plural, =1{kilogram} other{kilograms}', $params, $this->locale);
-                                case 1000000: return Yii::t('yii', '{nFormatted} {n, plural, =1{ton} other{tons}', $params, $this->locale);
-                            }
-                        }
-                }
-        }
     }
 
     /**
