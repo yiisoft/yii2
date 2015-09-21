@@ -12,8 +12,8 @@ namespace yii\web;
  * exception with status code 422.
  *
  * Use this exception to inform that the server understands the content type of
- * the request entity and the syntax of that request entity is correct but was 
- * unable to process the contained instructions. For example, to return form 
+ * the request entity and the syntax of that request entity is correct but server 
+ * was unable to process the contained instructions. For example, to return form 
  * validation errors. 
  *
  * @link http://www.webdav.org/specs/rfc2518.html#STATUS_422

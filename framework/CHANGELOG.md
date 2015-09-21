@@ -4,7 +4,6 @@ Yii Framework 2 Change Log
 2.0.7 under development
 -----------------------
 
-- Enh #2106: Added Unprocessable Entity Http Exception (janfrs)
 - Bug #8723: Fixed `yii\helpers\VarDumper::export()` unable to export circle referenced objects with `Closure` (klimov-paul)
 - Bug #9108: Negative number resulted in no formatting when using `Formatter::asSize()` or `Formatter::asShortSize` (nxnx, cebe)
 - Bug #9288: Fixed `FileHelper::createDirectory` directory creation to be concurrency friendly (dynasource)
@@ -17,6 +16,7 @@ Yii Framework 2 Change Log
 - Bug #9678: `I18N::format()` wasn't able to handle named placeholder in "selectordinal" (samdark)
 - Chg #9369: `Yii::$app->user->can()` now returns `false` instead of erroring in case `authManager` component is not configured (creocoder)
 - Chg #9411: `DetailView` now automatically sets container tag ID in case it's not specified (samdark)
+- Enh #2106: Added Unprocessable Entity Http Exception (janfrs)
 - Enh #9635: Added default CSS class for `\yii\grid\ActionColumn` header (arogachev, dynasource)
 
 
