@@ -296,13 +296,20 @@ class BaseUrl
      * ```php
      * $this->registerLinkTag(['rel' => 'canonical', 'href' => Url::canonical()]);
      * ```
-     *
+     * If you do not want to track some URL parameters in the canonical url, specify them in an array and pass for the
+     * first parameter.
+     * 
+     * @param array $unsetKeys specify the parameters that should not track in the url
      * @return string the canonical URL of the currently requested page
      */
-    public static function canonical()
+    public static function canonical($unsetKeys = [])
     {
         $params = Yii::$app->controller->actionParams;
         $params[0] = Yii::$app->controller->getRoute();
+
+        foreach ($unsetKeys as $key) {
+            unset($params[$key]);
+        }
 
         return Yii::$app->getUrlManager()->createAbsoluteUrl($params);
     }
