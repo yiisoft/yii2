@@ -399,26 +399,59 @@ SQL;
                 $table->primaryKey[] = $column->name;
                 if ($table->sequenceName === null && preg_match("/nextval\\('\"?\\w+\"?\.?\"?\\w+\"?'(::regclass)?\\)/", $column->defaultValue) === 1) {
                     $table->sequenceName = preg_replace(['/nextval/', '/::/', '/regclass/', '/\'\)/', '/\(\'/'], '', $column->defaultValue);
+                    $column->defaultValue = null;
                 }
-                $column->defaultValue = null;
-            } elseif ($column->defaultValue) {
-                if ($column->type === 'timestamp' && $column->defaultValue === 'now()') {
-                    $column->defaultValue = new Expression($column->defaultValue);
-                } elseif ($column->type === 'boolean') {
-                        $column->defaultValue = ($column->defaultValue === 'true');
-                } elseif (stripos($column->dbType, 'bit') === 0 || stripos($column->dbType, 'varbit') === 0) {
-                    $column->defaultValue = bindec(trim($column->defaultValue, 'B\''));
-                } elseif (preg_match("/^'(.*?)'::/", $column->defaultValue, $matches)) {
-                    $column->defaultValue = $matches[1];
-                } elseif (preg_match("/^(.*?)::/", $column->defaultValue, $matches)) {
-                    $column->defaultValue = $column->phpTypecast($matches[1]);
-                } else {
-                    $column->defaultValue = $column->phpTypecast($column->defaultValue);
-                }
+            }
+            if ($column->defaultValue) {
+                $column->defaultValue = $this->getColumnDefaultValue($column, $column->defaultValue);
             }
         }
 
         return true;
+    }
+
+    /**
+     * Extracts column default value.
+     * @param ColumnSchema $column
+     * @param string $value default value expression
+     * @return mixed null value, a number, string or \yii\db\Expression object
+     */
+    private function getColumnDefaultValue($column, $value)
+    {
+        if (!strcasecmp($value, 'null') || $value === '' || $value === null) {
+            return null;
+        }
+        if ($value{0} === '(' && strpos($value, '(', 1) === false) {
+            // trim parenthesis only if there is only a single pair surrounding a literal value,
+            // used for negative numbers
+            $value = trim($value, '()');
+        }
+        $firstChar = strtolower($value{0});
+        $secondChar = strlen($value) > 1 ? strtolower($value{1}) : null;
+        $isQuoted = $firstChar === "'"
+            || ($firstChar === 'x' && $secondChar === "'")
+            || ($firstChar === 'b' && $secondChar === "'");
+        $isNumeric = $firstChar === '.' || ('0' <= $firstChar && $firstChar <= '9')
+            || ($firstChar === '-' && '0' <= $secondChar && $secondChar <= '9');
+        if (!$isQuoted && !$isNumeric && $value !== 'true' && $value !== 'false') {
+            return new Expression($value);
+        }
+        // widechar functions are not required here because only single chars are replaced
+        // ignore type casting
+        if (($pos = strrpos($value, "::")) !== false && (!$isQuoted || $pos > strrpos($value, "'"))) {
+            $value = substr($value, 0, $pos);
+        }
+
+        if ($value === 'true' || $value === 'false') {
+            $value = $value === 'true';
+        } elseif ($firstChar === 'b') {
+            $value = bindec(substr($value, 2, -1));
+        } elseif ($firstChar === 'x') {
+            $value = hex2bin(substr($value, 2, -1));
+        } elseif ($firstChar === "'") {
+            $value = str_replace("''", "'", substr($value, 1, -1));
+        }
+        return $column->phpTypecast($value);
     }
 
     /**

@@ -22,6 +22,7 @@ class PostgreSQLSchemaTest extends SchemaTest
         $columns['int_col']['size'] = null;
         $columns['int_col']['precision'] = 32;
         $columns['int_col']['scale'] = 0;
+        $columns['int_col']['defaultValue'] = new Expression("nextval('type_int_col_seq'::regclass)");
         $columns['int_col2']['dbType'] = 'int4';
         $columns['int_col2']['size'] = null;
         $columns['int_col2']['precision'] = 32;
@@ -38,6 +39,10 @@ class PostgreSQLSchemaTest extends SchemaTest
         $columns['char_col']['precision'] = null;
         $columns['char_col2']['dbType'] = 'varchar';
         $columns['char_col2']['precision'] = null;
+        $columns['escape_col']['defaultValue'] = "foo\\ba'\tr";
+        $columns['func_default']['type'] = 'string';
+        $columns['func_default']['dbType'] = 'varchar';
+        $columns['func_default']['defaultValue'] = new Expression("btrim('xxxbarxxx'::text, 'x'::text)");
         $columns['float_col']['dbType'] = 'float8';
         $columns['float_col']['precision'] = 53;
         $columns['float_col']['scale'] = null;

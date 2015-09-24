@@ -263,23 +263,22 @@ class Schema extends \yii\db\Schema
         }
         $firstChar = strtolower($value{0});
         $secondChar = strlen($value) > 1 ? strtolower($value{1}) : null;
-        // missing unary operators ~ and NOT
-        // also not testing if a literal value is surrounded with parenthesis
-        if (in_array($firstChar, ['+', '-', '.', "'"]) || ('0' <= $firstChar && $firstChar <= '9')
-            || ($firstChar === 'x' && $secondChar === "'")
-        ) {
-            // widechar functions are not required here because only single chars are replaced
-            if ($firstChar === '0' && $secondChar === 'x') {
-                $value = hexdec($value);
-            } elseif ($firstChar === 'x') {
-                $value = hex2bin(substr($value, 2, -1));
-            } elseif ($firstChar === "'") {
-                $value = str_replace("''", "'", substr($value, 1, -1));
-            }
-            return $column->phpTypecast($value);
+        // not testing if a literal value is surrounded with parenthesis
+        $isQuoted = $firstChar === "'" || ($firstChar === 'x' && $secondChar === "'");
+        $isNumeric = $firstChar === '.' || ('0' <= $firstChar && $firstChar <= '9')
+            || ($firstChar === '-' && '0' <= $secondChar && $secondChar <= '9');
+        if (!$isQuoted && !$isNumeric) {
+            return new Expression($value);
         }
-        return new Expression($value);
-
+        // widechar functions are not required here because only single chars are replaced
+        if ($firstChar === '0' && $secondChar === 'x') {
+            $value = hexdec($value);
+        } elseif ($firstChar === 'x') {
+            $value = hex2bin(substr($value, 2, -1));
+        } elseif ($firstChar === "'") {
+            $value = str_replace("''", "'", substr($value, 1, -1));
+        }
+        return $column->phpTypecast($value);
     }
 
     /**

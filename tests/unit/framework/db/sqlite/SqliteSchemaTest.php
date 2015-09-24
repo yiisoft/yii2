@@ -26,16 +26,15 @@ class SqliteSchemaTest extends SchemaTest
         $columns['int_col3']['dbType'] = 'integer';
         $columns['int_col3']['size'] = null;
         $columns['int_col3']['precision'] = null;
-        $columns['escape_col']['defaultValue'] = 'foo\bar';
+        $columns['escape_col']['dbType'] = 'varchar(100)';
+        $columns['escape_col']['precision'] = 100;
+        $columns['escape_col']['defaultValue'] = 'foo\ba\'r';
         $columns['func_default']['defaultValue'] = new \yii\db\Expression("TRIM('xxxbarxxx', 'x')");
         $columns['bool_col']['type'] = 'boolean';
         $columns['bool_col']['phpType'] = 'boolean';
         $columns['bool_col2']['type'] = 'boolean';
         $columns['bool_col2']['phpType'] = 'boolean';
         $columns['bool_col2']['defaultValue'] = true;
-        $columns['date_default']['type'] = 'date';
-        $columns['date_default']['dbType'] = 'date';
-        $columns['date_default']['defaultValue'] = '2015-04-12';
         return $columns;
     }
 
