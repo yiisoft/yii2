@@ -629,9 +629,11 @@ class PhpManager extends BaseManager
                 foreach ($this->assignments as &$assignments) {
                     if (isset($assignments[$name])) {
                         $assignments[$item->name] = $assignments[$name];
+                        $assignments[$item->name]->roleName = $item->name;
                         unset($assignments[$name]);
                     }
                 }
+                $this->saveAssignments();
             }
         }
 
