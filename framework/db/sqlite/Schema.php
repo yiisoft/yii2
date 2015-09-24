@@ -8,9 +8,9 @@
 namespace yii\db\sqlite;
 
 use yii\base\NotSupportedException;
+use yii\db\ColumnSchema;
 use yii\db\Expression;
 use yii\db\TableSchema;
-use yii\db\ColumnSchema;
 use yii\db\Transaction;
 
 /**
@@ -245,19 +245,41 @@ class Schema extends \yii\db\Schema
             }
         }
         $column->phpType = $this->getColumnPhpType($column);
-
-        if (!$column->isPrimaryKey) {
-            if ($info['dflt_value'] === 'null' || $info['dflt_value'] === '' || $info['dflt_value'] === null) {
-                $column->defaultValue = null;
-            } elseif ($column->type === 'timestamp' && $info['dflt_value'] === 'CURRENT_TIMESTAMP') {
-                $column->defaultValue = new Expression('CURRENT_TIMESTAMP');
-            } else {
-                $value = trim($info['dflt_value'], "'\"");
-                $column->defaultValue = $column->phpTypecast($value);
-            }
-        }
+        $column->defaultValue = $this->getColumnDefaultValue($column, $info['dflt_value']);
 
         return $column;
+    }
+
+    /**
+     * Extracts column default value.
+     * @param ColumnSchema $column
+     * @param string $value default value expression
+     * @return mixed null value, a number, string or \yii\db\Expression object
+     */
+    private function getColumnDefaultValue($column, $value)
+    {
+        if (!strcasecmp($value, 'null') || $value === '' || $value === null) {
+            return null;
+        }
+        $firstChar = strtolower($value{0});
+        $secondChar = strlen($value) > 1 ? strtolower($value{1}) : null;
+        // missing unary operators ~ and NOT
+        // also not testing if a literal value is surrounded with parenthesis
+        if (in_array($firstChar, ['+', '-', '.', "'"]) || ('0' <= $firstChar && $firstChar <= '9')
+            || ($firstChar === 'x' && $secondChar === "'")
+        ) {
+            // widechar functions are not required here because only single chars are replaced
+            if ($firstChar === '0' && $secondChar === 'x') {
+                $value = hexdec($value);
+            } elseif ($firstChar === 'x') {
+                $value = hex2bin(substr($value, 2, -1));
+            } elseif ($firstChar === "'") {
+                $value = str_replace("''", "'", substr($value, 1, -1));
+            }
+            return $column->phpTypecast($value);
+        }
+        return new Expression($value);
+
     }
 
     /**
