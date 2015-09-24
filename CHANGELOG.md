@@ -18,7 +18,7 @@ Yii Framework 2 Change Log
 - Chg #9369: `Yii::$app->user->can()` now returns `false` instead of erroring in case `authManager` component is not configured (creocoder)
 - Chg #9411: `DetailView` now automatically sets container tag ID in case it's not specified (samdark)
 - Enh #9635: Added default CSS class for `\yii\grid\ActionColumn` header (arogachev, dynasource)
-
+- Bug #9714: Fixed `yii\rbac\PhpManager::updateItem()` unable to save users assignments (rezident1307)
 
 2.0.6 August 05, 2015
 ---------------------
