@@ -14,7 +14,7 @@ IF OBJECT_ID('[dbo].[animal_view]', 'V') IS NOT NULL DROP VIEW [dbo].[animal_vie
 CREATE TABLE [dbo].[profile] (
 	[id] [int] IDENTITY(1,1) NOT NULL,
 	[description] [varchar](128) NOT NULL,
-	CONSTRAINT [PK_customer] PRIMARY KEY CLUSTERED (
+	CONSTRAINT [PK_profile] PRIMARY KEY CLUSTERED (
 		[id] ASC
 	) ON [PRIMARY]
 );
@@ -74,8 +74,9 @@ CREATE TABLE [dbo].[order_item] (
 		[order_id] ASC,
 		[item_id] ASC
 	) ON [PRIMARY]
+);
 
-);CREATE TABLE [dbo].[order_item_with_null_fk] (
+CREATE TABLE [dbo].[order_item_with_null_fk] (
 	[order_id] [int],
 	[item_id] [int],
 	[quantity] [int] NOT NULL,
@@ -83,8 +84,8 @@ CREATE TABLE [dbo].[order_item] (
 );
 
 CREATE TABLE [dbo].[null_values] (
-  id [int] UNSIGNED NOT NULL,
-  var1 [int] UNSIGNED NULL,
+  id [int] NOT NULL,
+  var1 [int] NULL,
   var2 [int] NULL,
   var3 [int] DEFAULT NULL,
   stringcol [varchar](32) DEFAULT NULL,
@@ -99,7 +100,7 @@ CREATE TABLE [dbo].[type] (
 	[char_col] [char](100) NOT NULL,
 	[char_col2] [varchar](100) DEFAULT 'something',
 	[char_col3] [text],
-  [escape_col] [varchar](100) DEFAULT n'foo\\bar',
+  [escape_col] [varchar](100) DEFAULT 'foo\\ba''r',
   [func_default] [varchar](100) NOT NULL DEFAULT REPLACE('xxxbarxxx','x',''),
 	[float_col] [decimal](4,3) NOT NULL,
 	[float_col2] [float] DEFAULT '1.23',
@@ -110,7 +111,7 @@ CREATE TABLE [dbo].[type] (
 	[bool_col] [tinyint] NOT NULL,
 	[bool_col2] [tinyint] DEFAULT '1',
   [ts_default] [datetime] NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  [date_default] [date] NOT NULL DEFAULT DATE '2015-04-12',
+  [date_default] [date] NOT NULL DEFAULT '2015-04-12',
   [bit_col] [binary](8) NOT NULL DEFAULT 0xf2
 );
 

@@ -213,15 +213,48 @@ class Schema extends \yii\db\Schema
         }
 
         $column->phpType = $this->getColumnPhpType($column);
-
-        if ($info['column_default'] == '(NULL)') {
-            $info['column_default'] = null;
-        }
-        if (!$column->isPrimaryKey && ($column->type !== 'timestamp' || $info['column_default'] !== 'CURRENT_TIMESTAMP')) {
-            $column->defaultValue = $column->phpTypecast($info['column_default']);
-        }
+        $column->defaultValue = $this->getColumnDefaultValue($column, $info['column_default']);
 
         return $column;
+    }
+
+    /**
+     * Extracts column default value.
+     * @param ColumnSchema $column
+     * @param string $value default value expression
+     * @return mixed null value, a number, string or \yii\db\Expression object
+     */
+    private function getColumnDefaultValue($column, $value)
+    {
+        if ($value !== null && strlen($value) > 0 && $value{0} === '(' && strpos($value, '(', 1) === false) {
+            $value = substr($value, 1, -1);
+        }
+
+        if ($value === '' || $value === null) {
+            return null;
+        }
+        if ($value{0} === '(' && strpos($value, '(', 1) === false) {
+            // trim parenthesis only if there is only a single pair surrounding a literal value,
+            // used for negative numbers
+            $value = substr($value, 1, -1);
+        }
+        $firstChar = strtolower($value{0});
+        $secondChar = strlen($value) > 1 ? strtolower($value{1}) : null;
+        $isQuoted = $firstChar === "'"
+            || ($firstChar === 'x' && $secondChar === "'")
+            || ($firstChar === 'b' && $secondChar === "'");
+        $isNumeric = $firstChar === '.' || ('0' <= $firstChar && $firstChar <= '9')
+            || ($firstChar === '-' && '0' <= $secondChar && $secondChar <= '9');
+        if (!$isQuoted && !$isNumeric) {
+            return new \yii\db\Expression($value);
+        }
+        // widechar functions are not required here because only single chars are replaced
+        if ($firstChar === 'x') {
+            $value = hex2bin(substr($value, 2, -1));
+        } elseif ($firstChar === "'") {
+            $value = str_replace("''", "'", substr($value, 1, -1));
+        }
+        return $column->phpTypecast($value);
     }
 
     /**

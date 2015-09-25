@@ -424,7 +424,7 @@ SQL;
         if ($value{0} === '(' && strpos($value, '(', 1) === false) {
             // trim parenthesis only if there is only a single pair surrounding a literal value,
             // used for negative numbers
-            $value = trim($value, '()');
+            $value = substr($value, 1, -1);
         }
         $firstChar = strtolower($value{0});
         $secondChar = strlen($value) > 1 ? strtolower($value{1}) : null;
