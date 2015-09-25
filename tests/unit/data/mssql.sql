@@ -22,10 +22,10 @@ CREATE TABLE [dbo].[profile] (
 CREATE TABLE [dbo].[customer] (
 	[id] [int] IDENTITY(1,1) NOT NULL,
 	[email] [varchar](128) NOT NULL,
-	[name] [varchar](128),
-	[address] [text],
-	[status] [int] DEFAULT 0,
-  [profile_id] [int],
+	[name] [varchar](128) NULL,
+	[address] [text] NULL,
+	[status] [int] DEFAULT 0 NULL,
+  [profile_id] [int] NULL,
 	CONSTRAINT [PK_customer] PRIMARY KEY CLUSTERED (
 		[id] ASC
 	) ON [PRIMARY]
@@ -60,7 +60,7 @@ CREATE TABLE [dbo].[order] (
 
 CREATE TABLE [dbo].[order_with_null_fk] (
 	[id] [int] IDENTITY(1,1) NOT NULL,
-	[customer_id] [int] ,
+	[customer_id] [int] NULL,
 	[created_at] [int] NOT NULL,
 	[total] [decimal](10,0) NOT NULL
 );
@@ -77,8 +77,8 @@ CREATE TABLE [dbo].[order_item] (
 );
 
 CREATE TABLE [dbo].[order_item_with_null_fk] (
-	[order_id] [int],
-	[item_id] [int],
+	[order_id] [int] NULL,
+	[item_id] [int] NULL,
 	[quantity] [int] NOT NULL,
 	[subtotal] [decimal](10,0) NOT NULL
 );
@@ -94,22 +94,22 @@ CREATE TABLE [dbo].[null_values] (
 
 CREATE TABLE [dbo].[type] (
 	[int_col] [int] NOT NULL,
-	[int_col2] [int] DEFAULT '1',
-  [int_col3] [int] DEFAULT -5,
-	[smallint_col] [smallint] DEFAULT '1',
+	[int_col2] [int] DEFAULT '1' NULL,
+  [int_col3] [int] DEFAULT -5 NULL,
+	[smallint_col] [smallint] DEFAULT '1' NULL,
 	[char_col] [char](100) NOT NULL,
-	[char_col2] [varchar](100) DEFAULT 'something',
-	[char_col3] [text],
-  [escape_col] [varchar](100) DEFAULT 'foo\\ba''r',
+	[char_col2] [varchar](100) DEFAULT 'something' NULL,
+	[char_col3] [text] NULL,
+  [escape_col] [varchar](100) DEFAULT 'foo\\ba''r' NULL,
   [func_default] [varchar](100) NOT NULL DEFAULT REPLACE('xxxbarxxx','x',''),
 	[float_col] [decimal](4,3) NOT NULL,
-	[float_col2] [float] DEFAULT '1.23',
-  [float_col3] [float] DEFAULT 1.2E-3,
-	[blob_col] [varbinary](MAX),
-	[numeric_col] [decimal](5,2) DEFAULT '33.22',
+	[float_col2] [float] DEFAULT '1.23' NULL,
+  [float_col3] [float] DEFAULT 1.2E-3 NULL,
+	[blob_col] [varbinary](MAX) NULL,
+	[numeric_col] [decimal](5,2) DEFAULT '33.22' NULL,
 	[time] [datetime] NOT NULL DEFAULT '2002-01-01 00:00:00',
 	[bool_col] [tinyint] NOT NULL,
-	[bool_col2] [tinyint] DEFAULT '1',
+	[bool_col2] [tinyint] DEFAULT '1' NULL,
   [ts_default] [datetime] NOT NULL DEFAULT CURRENT_TIMESTAMP,
   [date_default] [date] NOT NULL DEFAULT '2015-04-12',
   [bit_col] [binary](8) NOT NULL DEFAULT 0xf2
