@@ -22,6 +22,15 @@ class Schema extends \yii\db\Schema
      */
     public $defaultSchema = 'dbo';
     /**
+     * @var array map of DB errors and corresponding exceptions
+     * If left part is found in DB error message exception class from the right part is used.
+     */
+    public $exceptionMap = [
+        'SQLSTATE[23' => 'yii\db\IntegrityException',
+        'SQLSTATE[HY000]: General error: 20018 Violation of PRIMARY KEY constraint' => 'yii\db\IntegrityException',
+        'SQLSTATE[HY000]: General error: 20018 Violation of UNIQUE KEY constraint' => 'yii\db\IntegrityException',
+    ];
+    /**
      * @var array mapping from physical column types (keys) to abstract column types (values)
      */
     public $typeMap = [

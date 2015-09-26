@@ -29,6 +29,7 @@ class QueryBuilderTest extends DatabaseTestCase
                 return new MysqlQueryBuilder($this->getConnection(true, false));
             case 'sqlite':
                 return new SqliteQueryBuilder($this->getConnection(true, false));
+            case 'sqlsrv':
             case 'mssql':
                 return new MssqlQueryBuilder($this->getConnection(true, false));
             case 'pgsql':
@@ -39,6 +40,7 @@ class QueryBuilderTest extends DatabaseTestCase
         throw new \Exception('Test is not implemented for ' . $this->driverName);
     }
 
+
     /**
      * adjust dbms specific escaping
      * @param $sql
@@ -46,10 +48,7 @@ class QueryBuilderTest extends DatabaseTestCase
      */
     protected function replaceQuotes($sql)
     {
-        if (!in_array($this->driverName, ['mssql', 'mysql', 'sqlite'])) {
-            return str_replace('`', '"', $sql);
-        }
-        return $sql;
+        return $this->getConnection(true, false)->quoteSql($sql);
     }
 
     /**
@@ -102,16 +101,16 @@ class QueryBuilderTest extends DatabaseTestCase
             [Schema::TYPE_DECIMAL . '(12,4) CHECK (value > 5.6)', 'decimal(12,4) CHECK (value > 5.6)'],
             [Schema::TYPE_DECIMAL . ' NOT NULL', 'decimal(10,0) NOT NULL'],
             [Schema::TYPE_DATETIME, 'datetime'],
-            [Schema::TYPE_DATETIME . " CHECK(value BETWEEN '2011-01-01' AND '2013-01-01')", "datetime CHECK(value BETWEEN '2011-01-01' AND '2013-01-01')"],
+            [Schema::TYPE_DATETIME . " CHECK (value BETWEEN '2011-01-01' AND '2013-01-01')", "datetime CHECK (value BETWEEN '2011-01-01' AND '2013-01-01')"],
             [Schema::TYPE_DATETIME . ' NOT NULL', 'datetime NOT NULL'],
             [Schema::TYPE_TIMESTAMP, 'timestamp'],
-            [Schema::TYPE_TIMESTAMP . " CHECK(value BETWEEN '2011-01-01' AND '2013-01-01')", "timestamp CHECK(value BETWEEN '2011-01-01' AND '2013-01-01')"],
+            [Schema::TYPE_TIMESTAMP . " CHECK (value BETWEEN '2011-01-01' AND '2013-01-01')", "timestamp CHECK (value BETWEEN '2011-01-01' AND '2013-01-01')"],
             [Schema::TYPE_TIMESTAMP . ' NOT NULL', 'timestamp NOT NULL'],
             [Schema::TYPE_TIME, 'time'],
-            [Schema::TYPE_TIME . " CHECK(value BETWEEN '12:00:00' AND '13:01:01')", "time CHECK(value BETWEEN '12:00:00' AND '13:01:01')"],
+            [Schema::TYPE_TIME . " CHECK (value BETWEEN '12:00:00' AND '13:01:01')", "time CHECK (value BETWEEN '12:00:00' AND '13:01:01')"],
             [Schema::TYPE_TIME . ' NOT NULL', 'time NOT NULL'],
             [Schema::TYPE_DATE, 'date'],
-            [Schema::TYPE_DATE . " CHECK(value BETWEEN '2011-01-01' AND '2013-01-01')", "date CHECK(value BETWEEN '2011-01-01' AND '2013-01-01')"],
+            [Schema::TYPE_DATE . " CHECK (value BETWEEN '2011-01-01' AND '2013-01-01')", "date CHECK (value BETWEEN '2011-01-01' AND '2013-01-01')"],
             [Schema::TYPE_DATE . ' NOT NULL', 'date NOT NULL'],
             [Schema::TYPE_BINARY, 'blob'],
             [Schema::TYPE_BOOLEAN, 'tinyint(1)'],
@@ -160,26 +159,26 @@ class QueryBuilderTest extends DatabaseTestCase
             [ ['or not like', 'name', []], '', [] ],
 
             // simple like
-            [ ['like', 'name', 'heyho'], '`name` LIKE :qp0', [':qp0' => '%heyho%'] ],
-            [ ['not like', 'name', 'heyho'], '`name` NOT LIKE :qp0', [':qp0' => '%heyho%'] ],
-            [ ['or like', 'name', 'heyho'], '`name` LIKE :qp0', [':qp0' => '%heyho%'] ],
-            [ ['or not like', 'name', 'heyho'], '`name` NOT LIKE :qp0', [':qp0' => '%heyho%'] ],
+            [ ['like', 'name', 'heyho'], '[[name]] LIKE :qp0', [':qp0' => '%heyho%'] ],
+            [ ['not like', 'name', 'heyho'], '[[name]] NOT LIKE :qp0', [':qp0' => '%heyho%'] ],
+            [ ['or like', 'name', 'heyho'], '[[name]] LIKE :qp0', [':qp0' => '%heyho%'] ],
+            [ ['or not like', 'name', 'heyho'], '[[name]] NOT LIKE :qp0', [':qp0' => '%heyho%'] ],
 
             // like for many values
-            [ ['like', 'name', ['heyho', 'abc']], '`name` LIKE :qp0 AND `name` LIKE :qp1', [':qp0' => '%heyho%', ':qp1' => '%abc%'] ],
-            [ ['not like', 'name', ['heyho', 'abc']], '`name` NOT LIKE :qp0 AND `name` NOT LIKE :qp1', [':qp0' => '%heyho%', ':qp1' => '%abc%'] ],
-            [ ['or like', 'name', ['heyho', 'abc']], '`name` LIKE :qp0 OR `name` LIKE :qp1', [':qp0' => '%heyho%', ':qp1' => '%abc%'] ],
-            [ ['or not like', 'name', ['heyho', 'abc']], '`name` NOT LIKE :qp0 OR `name` NOT LIKE :qp1', [':qp0' => '%heyho%', ':qp1' => '%abc%'] ],
+            [ ['like', 'name', ['heyho', 'abc']], '[[name]] LIKE :qp0 AND [[name]] LIKE :qp1', [':qp0' => '%heyho%', ':qp1' => '%abc%'] ],
+            [ ['not like', 'name', ['heyho', 'abc']], '[[name]] NOT LIKE :qp0 AND [[name]] NOT LIKE :qp1', [':qp0' => '%heyho%', ':qp1' => '%abc%'] ],
+            [ ['or like', 'name', ['heyho', 'abc']], '[[name]] LIKE :qp0 OR [[name]] LIKE :qp1', [':qp0' => '%heyho%', ':qp1' => '%abc%'] ],
+            [ ['or not like', 'name', ['heyho', 'abc']], '[[name]] NOT LIKE :qp0 OR [[name]] NOT LIKE :qp1', [':qp0' => '%heyho%', ':qp1' => '%abc%'] ],
 
             // like with Expression
-            [ ['like', 'name', new Expression('CONCAT("test", colname, "%")')], '`name` LIKE CONCAT("test", colname, "%")', [] ],
-            [ ['not like', 'name', new Expression('CONCAT("test", colname, "%")')], '`name` NOT LIKE CONCAT("test", colname, "%")', [] ],
-            [ ['or like', 'name', new Expression('CONCAT("test", colname, "%")')], '`name` LIKE CONCAT("test", colname, "%")', [] ],
-            [ ['or not like', 'name', new Expression('CONCAT("test", colname, "%")')], '`name` NOT LIKE CONCAT("test", colname, "%")', [] ],
-            [ ['like', 'name', [new Expression('CONCAT("test", colname, "%")'), 'abc']], '`name` LIKE CONCAT("test", colname, "%") AND `name` LIKE :qp0', [':qp0' => '%abc%'] ],
-            [ ['not like', 'name', [new Expression('CONCAT("test", colname, "%")'), 'abc']], '`name` NOT LIKE CONCAT("test", colname, "%") AND `name` NOT LIKE :qp0', [':qp0' => '%abc%'] ],
-            [ ['or like', 'name', [new Expression('CONCAT("test", colname, "%")'), 'abc']], '`name` LIKE CONCAT("test", colname, "%") OR `name` LIKE :qp0', [':qp0' => '%abc%'] ],
-            [ ['or not like', 'name', [new Expression('CONCAT("test", colname, "%")'), 'abc']], '`name` NOT LIKE CONCAT("test", colname, "%") OR `name` NOT LIKE :qp0', [':qp0' => '%abc%'] ],
+            [ ['like', 'name', new Expression('CONCAT("test", colname, "%")')], '[[name]] LIKE CONCAT("test", colname, "%")', [] ],
+            [ ['not like', 'name', new Expression('CONCAT("test", colname, "%")')], '[[name]] NOT LIKE CONCAT("test", colname, "%")', [] ],
+            [ ['or like', 'name', new Expression('CONCAT("test", colname, "%")')], '[[name]] LIKE CONCAT("test", colname, "%")', [] ],
+            [ ['or not like', 'name', new Expression('CONCAT("test", colname, "%")')], '[[name]] NOT LIKE CONCAT("test", colname, "%")', [] ],
+            [ ['like', 'name', [new Expression('CONCAT("test", colname, "%")'), 'abc']], '[[name]] LIKE CONCAT("test", colname, "%") AND [[name]] LIKE :qp0', [':qp0' => '%abc%'] ],
+            [ ['not like', 'name', [new Expression('CONCAT("test", colname, "%")'), 'abc']], '[[name]] NOT LIKE CONCAT("test", colname, "%") AND [[name]] NOT LIKE :qp0', [':qp0' => '%abc%'] ],
+            [ ['or like', 'name', [new Expression('CONCAT("test", colname, "%")'), 'abc']], '[[name]] LIKE CONCAT("test", colname, "%") OR [[name]] LIKE :qp0', [':qp0' => '%abc%'] ],
+            [ ['or not like', 'name', [new Expression('CONCAT("test", colname, "%")'), 'abc']], '[[name]] NOT LIKE CONCAT("test", colname, "%") OR [[name]] NOT LIKE :qp0', [':qp0' => '%abc%'] ],
 
             // not
             [ ['not', 'name'], 'NOT (name)', [] ],
@@ -193,56 +192,57 @@ class QueryBuilderTest extends DatabaseTestCase
             [ ['or', 'type=1', ['or', 'id=1', 'id=2']], '(type=1) OR ((id=1) OR (id=2))', [] ],
 
             // between
-            [ ['between', 'id', 1, 10], '`id` BETWEEN :qp0 AND :qp1', [':qp0' => 1, ':qp1' => 10] ],
-            [ ['not between', 'id', 1, 10], '`id` NOT BETWEEN :qp0 AND :qp1', [':qp0' => 1, ':qp1' => 10] ],
-            [ ['between', 'date', new Expression('(NOW() - INTERVAL 1 MONTH)'), new Expression('NOW()')], '`date` BETWEEN (NOW() - INTERVAL 1 MONTH) AND NOW()', [] ],
-            [ ['between', 'date', new Expression('(NOW() - INTERVAL 1 MONTH)'), 123], '`date` BETWEEN (NOW() - INTERVAL 1 MONTH) AND :qp0', [':qp0' => 123] ],
-            [ ['not between', 'date', new Expression('(NOW() - INTERVAL 1 MONTH)'), new Expression('NOW()')], '`date` NOT BETWEEN (NOW() - INTERVAL 1 MONTH) AND NOW()', [] ],
-            [ ['not between', 'date', new Expression('(NOW() - INTERVAL 1 MONTH)'), 123], '`date` NOT BETWEEN (NOW() - INTERVAL 1 MONTH) AND :qp0', [':qp0' => 123] ],
+            [ ['between', 'id', 1, 10], '[[id]] BETWEEN :qp0 AND :qp1', [':qp0' => 1, ':qp1' => 10] ],
+            [ ['not between', 'id', 1, 10], '[[id]] NOT BETWEEN :qp0 AND :qp1', [':qp0' => 1, ':qp1' => 10] ],
+            [ ['between', 'date', new Expression('(NOW() - INTERVAL 1 MONTH)'), new Expression('NOW()')], '[[date]] BETWEEN (NOW() - INTERVAL 1 MONTH) AND NOW()', [] ],
+            [ ['between', 'date', new Expression('(NOW() - INTERVAL 1 MONTH)'), 123], '[[date]] BETWEEN (NOW() - INTERVAL 1 MONTH) AND :qp0', [':qp0' => 123] ],
+            [ ['not between', 'date', new Expression('(NOW() - INTERVAL 1 MONTH)'), new Expression('NOW()')], '[[date]] NOT BETWEEN (NOW() - INTERVAL 1 MONTH) AND NOW()', [] ],
+            [ ['not between', 'date', new Expression('(NOW() - INTERVAL 1 MONTH)'), 123], '[[date]] NOT BETWEEN (NOW() - INTERVAL 1 MONTH) AND :qp0', [':qp0' => 123] ],
 
             // in
-            [ ['in', 'id', [1, 2, 3]], '`id` IN (:qp0, :qp1, :qp2)', [':qp0' => 1, ':qp1' => 2, ':qp2' => 3] ],
-            [ ['not in', 'id', [1, 2, 3]], '`id` NOT IN (:qp0, :qp1, :qp2)', [':qp0' => 1, ':qp1' => 2, ':qp2' => 3] ],
-            [ ['in', 'id', (new Query())->select('id')->from('users')->where(['active' => 1])], '`id` IN (SELECT `id` FROM `users` WHERE `active`=:qp0)', [':qp0' => 1] ],
-            [ ['not in', 'id', (new Query())->select('id')->from('users')->where(['active' => 1])], '`id` NOT IN (SELECT `id` FROM `users` WHERE `active`=:qp0)', [':qp0' => 1] ],
+            [ ['in', 'id', [1, 2, 3]], '[[id]] IN (:qp0, :qp1, :qp2)', [':qp0' => 1, ':qp1' => 2, ':qp2' => 3] ],
+            [ ['not in', 'id', [1, 2, 3]], '[[id]] NOT IN (:qp0, :qp1, :qp2)', [':qp0' => 1, ':qp1' => 2, ':qp2' => 3] ],
+            [ ['in', 'id', (new Query())->select('id')->from('users')->where(['active' => 1])], '[[id]] IN (SELECT [[id]] FROM {{users}} WHERE [[active]]=:qp0)', [':qp0' => 1] ],
+            [ ['not in', 'id', (new Query())->select('id')->from('users')->where(['active' => 1])], '[[id]] NOT IN (SELECT [[id]] FROM {{users}} WHERE [[active]]=:qp0)', [':qp0' => 1] ],
 
             // exists
-            [ ['exists', (new Query())->select('id')->from('users')->where(['active' => 1])], 'EXISTS (SELECT `id` FROM `users` WHERE `active`=:qp0)', [':qp0' => 1] ],
-            [ ['not exists', (new Query())->select('id')->from('users')->where(['active' => 1])], 'NOT EXISTS (SELECT `id` FROM `users` WHERE `active`=:qp0)', [':qp0' => 1] ],
+            [ ['exists', (new Query())->select('id')->from('users')->where(['active' => 1])], 'EXISTS (SELECT [[id]] FROM {{users}} WHERE [[active]]=:qp0)', [':qp0' => 1] ],
+            [ ['not exists', (new Query())->select('id')->from('users')->where(['active' => 1])], 'NOT EXISTS (SELECT [[id]] FROM {{users}} WHERE [[active]]=:qp0)', [':qp0' => 1] ],
 
             // simple conditions
-            [ ['=', 'a', 'b'], '`a` = :qp0', [':qp0' => 'b'] ],
-            [ ['>', 'a', 1], '`a` > :qp0', [':qp0' => 1] ],
-            [ ['>=', 'a', 'b'], '`a` >= :qp0', [':qp0' => 'b'] ],
-            [ ['<', 'a', 2], '`a` < :qp0', [':qp0' => 2] ],
-            [ ['<=', 'a', 'b'], '`a` <= :qp0', [':qp0' => 'b'] ],
-            [ ['<>', 'a', 3], '`a` <> :qp0', [':qp0' => 3] ],
-            [ ['!=', 'a', 'b'], '`a` != :qp0', [':qp0' => 'b'] ],
-            [ ['>=', 'date', new Expression('DATE_SUB(NOW(), INTERVAL 1 MONTH)')], '`date` >= DATE_SUB(NOW(), INTERVAL 1 MONTH)', [] ],
-            [ ['>=', 'date', new Expression('DATE_SUB(NOW(), INTERVAL :month MONTH)', [':month' => 2])], '`date` >= DATE_SUB(NOW(), INTERVAL :month MONTH)', [':month' => 2] ],
+            [ ['=', 'a', 'b'], '[[a]] = :qp0', [':qp0' => 'b'] ],
+            [ ['>', 'a', 1], '[[a]] > :qp0', [':qp0' => 1] ],
+            [ ['>=', 'a', 'b'], '[[a]] >= :qp0', [':qp0' => 'b'] ],
+            [ ['<', 'a', 2], '[[a]] < :qp0', [':qp0' => 2] ],
+            [ ['<=', 'a', 'b'], '[[a]] <= :qp0', [':qp0' => 'b'] ],
+            [ ['<>', 'a', 3], '[[a]] <> :qp0', [':qp0' => 3] ],
+            [ ['!=', 'a', 'b'], '[[a]] != :qp0', [':qp0' => 'b'] ],
+            [ ['>=', 'date', new Expression('DATE_SUB(NOW(), INTERVAL 1 MONTH)')], '[[date]] >= DATE_SUB(NOW(), INTERVAL 1 MONTH)', [] ],
+            [ ['>=', 'date', new Expression('DATE_SUB(NOW(), INTERVAL :month MONTH)', [':month' => 2])], '[[date]] >= DATE_SUB(NOW(), INTERVAL :month MONTH)', [':month' => 2] ],
 
             // hash condition
-            [ ['a' => 1, 'b' => 2], '(`a`=:qp0) AND (`b`=:qp1)', [':qp0' => 1, ':qp1' => 2] ],
-            [ ['a' => new Expression('CONCAT(col1, col2)'), 'b' => 2], '(`a`=CONCAT(col1, col2)) AND (`b`=:qp0)', [':qp0' => 2] ],
+            [ ['a' => 1, 'b' => 2], '([[a]]=:qp0) AND ([[b]]=:qp1)', [':qp0' => 1, ':qp1' => 2] ],
+            [ ['a' => new Expression('CONCAT(col1, col2)'), 'b' => 2], '([[a]]=CONCAT(col1, col2)) AND ([[b]]=:qp0)', [':qp0' => 2] ],
 
         ];
 
         switch ($this->driverName) {
+            case 'sqlsrv':
             case 'mssql':
             case 'sqlite':
                 $conditions = array_merge($conditions, [
-                    [ ['in', ['id', 'name'], [['id' => 1, 'name' => 'foo'], ['id' => 2, 'name' => 'bar']]], '((`id` = :qp0 AND `name` = :qp1) OR (`id` = :qp2 AND `name` = :qp3))', [':qp0' => 1, ':qp1' => 'foo', ':qp2' => 2, ':qp3' => 'bar'] ],
-                    [ ['not in', ['id', 'name'], [['id' => 1, 'name' => 'foo'], ['id' => 2, 'name' => 'bar']]], '((`id` != :qp0 OR `name` != :qp1) AND (`id` != :qp2 OR `name` != :qp3))', [':qp0' => 1, ':qp1' => 'foo', ':qp2' => 2, ':qp3' => 'bar'] ],
-                    //[ ['in', ['id', 'name'], (new Query())->select(['id', 'name'])->from('users')->where(['active' => 1])], 'EXISTS (SELECT 1 FROM (SELECT `id`, `name` FROM `users` WHERE `active`=:qp0) AS a WHERE a.`id` = `id AND a.`name` = `name`)', [':qp0' => 1] ],
-                    //[ ['not in', ['id', 'name'], (new Query())->select(['id', 'name'])->from('users')->where(['active' => 1])], 'NOT EXISTS (SELECT 1 FROM (SELECT `id`, `name` FROM `users` WHERE `active`=:qp0) AS a WHERE a.`id` = `id` AND a.`name = `name`)', [':qp0' => 1] ],
+                    [ ['in', ['id', 'name'], [['id' => 1, 'name' => 'foo'], ['id' => 2, 'name' => 'bar']]], '(([[id]] = :qp0 AND [[name]] = :qp1) OR ([[id]] = :qp2 AND [[name]] = :qp3))', [':qp0' => 1, ':qp1' => 'foo', ':qp2' => 2, ':qp3' => 'bar'] ],
+                    [ ['not in', ['id', 'name'], [['id' => 1, 'name' => 'foo'], ['id' => 2, 'name' => 'bar']]], '(([[id]] != :qp0 OR [[name]] != :qp1) AND ([[id]] != :qp2 OR [[name]] != :qp3))', [':qp0' => 1, ':qp1' => 'foo', ':qp2' => 2, ':qp3' => 'bar'] ],
+                    //[ ['in', ['id', 'name'], (new Query())->select(['id', 'name'])->from('users')->where(['active' => 1])], 'EXISTS (SELECT 1 FROM (SELECT `id`, [[name]] FROM `users` WHERE `active`=:qp0) AS a WHERE a.`id` = `id AND a.[[name]] = [[name]])', [':qp0' => 1] ],
+                    //[ ['not in', ['id', 'name'], (new Query())->select(['id', 'name'])->from('users')->where(['active' => 1])], 'NOT EXISTS (SELECT 1 FROM (SELECT `id`, [[name]] FROM `users` WHERE `active`=:qp0) AS a WHERE a.`id` = `id` AND a.`name = [[name]])', [':qp0' => 1] ],
                 ]);
                 break;
             default:
                 $conditions = array_merge($conditions, [
-                    [ ['in', ['id', 'name'], [['id' => 1, 'name' => 'foo'], ['id' => 2, 'name' => 'bar']]], '(`id`, `name`) IN ((:qp0, :qp1), (:qp2, :qp3))', [':qp0' => 1, ':qp1' => 'foo', ':qp2' => 2, ':qp3' => 'bar'] ],
-                    [ ['not in', ['id', 'name'], [['id' => 1, 'name' => 'foo'], ['id' => 2, 'name' => 'bar']]], '(`id`, `name`) NOT IN ((:qp0, :qp1), (:qp2, :qp3))', [':qp0' => 1, ':qp1' => 'foo', ':qp2' => 2, ':qp3' => 'bar'] ],
-                    [ ['in', ['id', 'name'], (new Query())->select(['id', 'name'])->from('users')->where(['active' => 1])], '(`id`, `name`) IN (SELECT `id`, `name` FROM `users` WHERE `active`=:qp0)', [':qp0' => 1] ],
-                    [ ['not in', ['id', 'name'], (new Query())->select(['id', 'name'])->from('users')->where(['active' => 1])], '(`id`, `name`) NOT IN (SELECT `id`, `name` FROM `users` WHERE `active`=:qp0)', [':qp0' => 1] ],
+                    [ ['in', ['id', 'name'], [['id' => 1, 'name' => 'foo'], ['id' => 2, 'name' => 'bar']]], '([[id]], [[name]]) IN ((:qp0, :qp1), (:qp2, :qp3))', [':qp0' => 1, ':qp1' => 'foo', ':qp2' => 2, ':qp3' => 'bar'] ],
+                    [ ['not in', ['id', 'name'], [['id' => 1, 'name' => 'foo'], ['id' => 2, 'name' => 'bar']]], '([[id]], [[name]]) NOT IN ((:qp0, :qp1), (:qp2, :qp3))', [':qp0' => 1, ':qp1' => 'foo', ':qp2' => 2, ':qp3' => 'bar'] ],
+                    [ ['in', ['id', 'name'], (new Query())->select(['id', 'name'])->from('users')->where(['active' => 1])], '([[id]], [[name]]) IN (SELECT [[id]], [[name]] FROM {{users}} WHERE [[active]]=:qp0)', [':qp0' => 1] ],
+                    [ ['not in', ['id', 'name'], (new Query())->select(['id', 'name'])->from('users')->where(['active' => 1])], '([[id]], [[name]]) NOT IN (SELECT [[id]], [[name]] FROM {{users}} WHERE [[active]]=:qp0)', [':qp0' => 1] ],
                 ]);
                 break;
         }
@@ -345,8 +345,8 @@ class QueryBuilderTest extends DatabaseTestCase
     public function existsParamsProvider()
     {
         return [
-            ['exists', $this->replaceQuotes("SELECT `id` FROM `TotalExample` `t` WHERE EXISTS (SELECT `1` FROM `Website` `w`)")],
-            ['not exists', $this->replaceQuotes("SELECT `id` FROM `TotalExample` `t` WHERE NOT EXISTS (SELECT `1` FROM `Website` `w`)")]
+            ['exists', $this->replaceQuotes("SELECT [[id]] FROM {{TotalExample}} {{t}} WHERE EXISTS (SELECT [[1]] FROM {{Website}} {{w}})")],
+            ['not exists', $this->replaceQuotes("SELECT [[id]] FROM {{TotalExample}} {{t}} WHERE NOT EXISTS (SELECT [[1]] FROM {{Website}} {{w}})")],
         ];
     }
 
@@ -374,9 +374,15 @@ class QueryBuilderTest extends DatabaseTestCase
 
     public function testBuildWhereExistsWithParameters()
     {
-        $expectedQuerySql = $this->replaceQuotes(
-            "SELECT `id` FROM `TotalExample` `t` WHERE (EXISTS (SELECT `1` FROM `Website` `w` WHERE (w.id = t.website_id) AND (w.merchant_id = :merchant_id))) AND (t.some_column = :some_value)"
-        );
+        $query = <<<SQL
+SELECT [[id]]
+FROM {{TotalExample}} {{t}}
+WHERE (EXISTS (SELECT [[1]]
+FROM {{Website}} {{w}}
+WHERE (w.id = t.website_id) AND (w.merchant_id = :merchant_id))) AND (t.some_column = :some_value)
+SQL;
+
+        $expectedQuerySql = $this->replaceQuotes(str_replace("\n", ' ', $query));
         $expectedQueryParams = [':some_value' => "asd", ':merchant_id' => 6];
 
         $subQuery = new Query();
@@ -398,9 +404,18 @@ class QueryBuilderTest extends DatabaseTestCase
 
     public function testBuildWhereExistsWithArrayParameters()
     {
-        $expectedQuerySql = $this->replaceQuotes(
-            "SELECT `id` FROM `TotalExample` `t` WHERE (EXISTS (SELECT `1` FROM `Website` `w` WHERE (w.id = t.website_id) AND ((`w`.`merchant_id`=:qp0) AND (`w`.`user_id`=:qp1)))) AND (`t`.`some_column`=:qp2)"
-        );
+        $query = <<<SQL
+SELECT [[id]]
+FROM {{TotalExample}} {{t}}
+WHERE (EXISTS (SELECT [[1]]
+FROM {{Website}} {{w}}
+WHERE (w.id = t.website_id)
+AND (({{w}}.[[merchant_id]]=:qp0)
+AND ({{w}}.[[user_id]]=:qp1))))
+AND ({{t}}.[[some_column]]=:qp2)
+SQL;
+
+        $expectedQuerySql = $this->replaceQuotes(str_replace("\n", ' ', $query));
         $expectedQueryParams = [':qp0' => 6, ':qp1' => 210, ':qp2' => 'asd'];
 
         $subQuery = new Query();
@@ -426,9 +441,14 @@ class QueryBuilderTest extends DatabaseTestCase
      */
     public function testBuildUnion()
     {
-        $expectedQuerySql = $this->replaceQuotes(
-            "(SELECT `id` FROM `TotalExample` `t1` WHERE (w > 0) AND (x < 2)) UNION ( SELECT `id` FROM `TotalTotalExample` `t2` WHERE w > 5 ) UNION ALL ( SELECT `id` FROM `TotalTotalExample` `t3` WHERE w = 3 )"
-        );
+        $query = <<<SQL
+(SELECT [[id]]
+FROM {{TotalExample}} {{t1}}
+WHERE (w > 0) AND (x < 2))
+UNION ( SELECT [[id]] FROM {{TotalTotalExample}} {{t2}} WHERE w > 5 )
+UNION ALL ( SELECT [[id]] FROM {{TotalTotalExample}} {{t3}} WHERE w = 3 )
+SQL;
+        $expectedQuerySql = $this->replaceQuotes(str_replace("\n", ' ', $query));
         $query = new Query();
         $secondQuery = new Query();
         $secondQuery->select('id')
@@ -459,7 +479,7 @@ class QueryBuilderTest extends DatabaseTestCase
             ->from('accounts')
             ->addSelect(['operations_count' => $subquery]);
         list ($sql, $params) = $this->getQueryBuilder()->build($query);
-        $expected = $this->replaceQuotes('SELECT *, (SELECT COUNT(*) FROM `operations` WHERE account_id = accounts.id) AS `operations_count` FROM `accounts`');
+        $expected = $this->replaceQuotes('SELECT *, (SELECT COUNT(*) FROM {{operations}} WHERE account_id = accounts.id) AS [[operations_count]] FROM {{accounts}}');
         $this->assertEquals($expected, $sql);
         $this->assertEmpty($params);
     }

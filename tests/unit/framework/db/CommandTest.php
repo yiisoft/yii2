@@ -326,7 +326,7 @@ SQL;
 
         $db = $this->getConnection();
 
-        $sql = 'INSERT INTO {{profile}}([[id]], [[description]]) VALUES (123, \'duplicate\')';
+        $sql = 'INSERT INTO {{order_item}}([[order_id]], [[item_id]], [[quantity]], [[subtotal]]) VALUES (123, 456, 0, 0)';
         $command = $db->createCommand($sql);
         $command->execute();
         $command->execute();

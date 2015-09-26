@@ -13,11 +13,19 @@ abstract class DatabaseTestCase extends TestCase
      */
     private $_db;
 
+    /**
+     * @inheritdoc
+     */
+    public function __construct($name = NULL, array $data = array(), $dataName = '')
+    {
+        parent::__construct($name, $data, $dataName);
+        $databases = self::getParam('databases');
+        $this->database = $databases[$this->driverName];
+    }
+
     protected function setUp()
     {
         parent::setUp();
-        $databases = self::getParam('databases');
-        $this->database = $databases[$this->driverName];
         $pdo_database = 'pdo_'.$this->driverName;
         if ($this->driverName === 'oci') {
             $pdo_database = 'oci8';

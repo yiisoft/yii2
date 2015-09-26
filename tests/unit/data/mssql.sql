@@ -8,8 +8,15 @@ IF OBJECT_ID('[dbo].[customer]', 'U') IS NOT NULL DROP TABLE [dbo].[customer];
 IF OBJECT_ID('[dbo].[profile]', 'U') IS NOT NULL DROP TABLE [dbo].[profile];
 IF OBJECT_ID('[dbo].[type]', 'U') IS NOT NULL DROP TABLE [dbo].[type];
 IF OBJECT_ID('[dbo].[null_values]', 'U') IS NOT NULL DROP TABLE [dbo].[null_values];
+IF OBJECT_ID('[dbo].[constraints]', 'U') IS NOT NULL DROP TABLE [dbo].[constraints];
+IF OBJECT_ID('[dbo].[bool_values]', 'U') IS NOT NULL DROP TABLE [dbo].[bool_values];
 IF OBJECT_ID('[dbo].[animal]', 'U') IS NOT NULL DROP TABLE [dbo].[animal];
 IF OBJECT_ID('[dbo].[animal_view]', 'V') IS NOT NULL DROP VIEW [dbo].[animal_view];
+
+CREATE TABLE [dbo].[constraints] (
+	[id] [int] NOT NULL,
+	[field1] [varchar](255) NULL
+);
 
 CREATE TABLE [dbo].[profile] (
 	[id] [int] IDENTITY(1,1) NOT NULL,
@@ -62,7 +69,10 @@ CREATE TABLE [dbo].[order_with_null_fk] (
 	[id] [int] IDENTITY(1,1) NOT NULL,
 	[customer_id] [int] NULL,
 	[created_at] [int] NOT NULL,
-	[total] [decimal](10,0) NOT NULL
+	[total] [decimal](10,0) NOT NULL,
+	CONSTRAINT [PK_order_null] PRIMARY KEY CLUSTERED (
+		[id] ASC
+	) ON [PRIMARY]
 );
 
 CREATE TABLE [dbo].[order_item] (
@@ -87,8 +97,8 @@ CREATE TABLE [dbo].[null_values] (
   id [int] NOT NULL,
   var1 [int] NULL,
   var2 [int] NULL,
-  var3 [int] DEFAULT NULL,
-  stringcol [varchar](32) DEFAULT NULL,
+  var3 [int] DEFAULT NULL NULL,
+  stringcol [varchar](32) DEFAULT NULL NULL,
   PRIMARY KEY (id)
 );
 
@@ -113,6 +123,16 @@ CREATE TABLE [dbo].[type] (
   [ts_default] [datetime] NOT NULL DEFAULT CURRENT_TIMESTAMP,
   [date_default] [date] NOT NULL DEFAULT '2015-04-12',
   [bit_col] [binary](8) NOT NULL DEFAULT 0xf2
+);
+
+CREATE TABLE [dbo].[bool_values] (
+	[id] [int] IDENTITY(1,1) NOT NULL,
+  bool_col [bit] NULL,
+  default_true [bit] DEFAULT 1 NOT NULL,
+  default_false [bit] DEFAULT 0 NOT NULL,
+	CONSTRAINT [PK_bool_values] PRIMARY KEY CLUSTERED (
+		[id] ASC
+	) ON [PRIMARY]
 );
 
 CREATE TABLE [dbo].[animal] (

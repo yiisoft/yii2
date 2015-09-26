@@ -8,6 +8,7 @@
 namespace yii\db\mssql;
 
 use yii\base\InvalidParamException;
+use yii\base\NotSupportedException;
 
 /**
  * QueryBuilder is the query builder for MS SQL Server databases (version 2008 and above).

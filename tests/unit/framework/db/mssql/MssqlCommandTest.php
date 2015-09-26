@@ -62,7 +62,7 @@ class MssqlCommandTest extends CommandTest
         $command->bindParam(':bool_col', $boolCol);
         $this->assertEquals(1, $command->execute());
 
-        $sql = 'SELECT int_col, char_col, float_col, CONVERT([nvarchar], blob_col) AS blob_col, numeric_col FROM type';
+        $sql = 'SELECT int_col, char_col, float_col, CONVERT([varchar], blob_col) AS blob_col, numeric_col FROM type';
         $row = $db->createCommand($sql)->queryOne();
         $this->assertEquals($intCol, $row['int_col']);
         $this->assertEquals($charCol, trim($row['char_col']));

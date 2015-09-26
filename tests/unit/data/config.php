@@ -37,6 +37,12 @@ $config = [
             'password' => '',
             'fixture' => __DIR__ . '/mssql.sql',
         ],
+        'oci' => [
+            'dsn' => 'oci:Server=localhost;Database=test',
+            'username' => '',
+            'password' => '',
+            'fixture' => __DIR__ . '/oci.sql',
+        ],
         'pgsql' => [
             'dsn' => 'pgsql:host=localhost;dbname=yiitest;port=5432;',
             'username' => 'postgres',

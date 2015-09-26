@@ -14,8 +14,14 @@ DROP TABLE IF EXISTS "customer";
 DROP TABLE IF EXISTS "profile";
 DROP TABLE IF EXISTS "type";
 DROP TABLE IF EXISTS "null_values";
+DROP TABLE IF EXISTS "constraints";
 DROP TABLE IF EXISTS "animal";
 DROP VIEW IF EXISTS "animal_view";
+
+CREATE TABLE "constraints" (
+  id INTEGER NOT NULL,
+  field1 varchar(255) NOT NULL
+);
 
 CREATE TABLE "profile" (
   id INTEGER NOT NULL,

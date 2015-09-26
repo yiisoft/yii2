@@ -40,9 +40,13 @@ class PostgreSQLSchemaTest extends SchemaTest
         $columns['char_col2']['dbType'] = 'varchar';
         $columns['char_col2']['precision'] = null;
         $columns['escape_col']['defaultValue'] = "foo\\ba'\tr";
+        $columns['escape_col']['dbType'] = 'varchar';
+        $columns['escape_col']['precision'] = null;
         $columns['func_default']['type'] = 'string';
         $columns['func_default']['dbType'] = 'varchar';
         $columns['func_default']['defaultValue'] = new Expression("btrim('xxxbarxxx'::text, 'x'::text)");
+        $columns['func_default']['precision'] = null;
+        $columns['func_default']['size'] = null;
         $columns['float_col']['dbType'] = 'float8';
         $columns['float_col']['precision'] = 53;
         $columns['float_col']['scale'] = null;
