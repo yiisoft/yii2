@@ -12,7 +12,7 @@ namespace yii\web;
  * exception with status code 422.
  *
  * Use this exception to inform that the server understands the content type of
- * the request entity and the syntax of that request entity is correct but server 
+ * the request entity and the syntax of that request entity is correct but the server 
  * was unable to process the contained instructions. For example, to return form 
  * validation errors. 
  *
@@ -20,7 +20,7 @@ namespace yii\web;
  * @author Jan Silva <janfrs3@gmail.com>
  * @since 2.0.7
  */
-class UnprocessedEntityHttpException extends HttpException
+class UnprocessableEntityHttpException extends HttpException
 {
     /**
      * Constructor.
