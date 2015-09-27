@@ -88,7 +88,10 @@ please refer to the [Assets](structure-assets.md) section.
 
 ## Optimizing Session Storage <span id="optimizing-session"></span>
 
-By default session data are stored in files. This is fine for development and small projects. But when it comes 
+By default session data are stored in files. The implementation is locking a file from opening a session to the point it's
+closed either by `session_write_close()` (in Yii it could be done as `Yii::$app->session->close()`) or at the end of request.
+While session file is locked all other requests which are trying to use the same session are blocked i.e. waiting for the
+initial request to release session file. This is fine for development and probably small projects. But when it comes 
 to handling massive concurrent requests, it is better to use more sophisticated storage, such as database. Yii supports
 a variety of session storage out of box. You can use these storage by configuring the `session` component in the
 [application configuration](concept-configurations.md) like the following,

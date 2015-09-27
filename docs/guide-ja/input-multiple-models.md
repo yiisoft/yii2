@@ -34,7 +34,9 @@ class UserController extends Controller
         $profile->scenario = 'update';
         
         if ($user->load(Yii::$app->request->post()) && $profile->load(Yii::$app->request->post())) {
-            if ($user->validate() && $profile->validate()) {
+            $isValid = $user->validate();
+            $isValid = $profile->validate() && $isValid;
+            if ($isValid) {
                 $user->save(false);
                 $profile->save(false);
                 return $this->redirect(['user/view', 'id' => $id]);
