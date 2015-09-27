@@ -96,9 +96,9 @@ CREATE TABLE [dbo].[order_item_with_null_fk] (
 );
 
 CREATE TABLE [dbo].[null_values] (
-  id [int] NOT NULL,
-  var1 [int] NULL,
-  var2 [int] NULL,
+  id [int] DEFAULT 1 NOT NULL,
+  var1 [int] DEFAULT NULL NULL,
+  var2 [int] DEFAULT NULL NULL,
   var3 [int] DEFAULT NULL NULL,
   stringcol [varchar](32) DEFAULT NULL NULL,
   PRIMARY KEY (id)
@@ -158,7 +158,7 @@ CREATE TABLE [dbo].[document] (
 	[title] [varchar](255) NOT NULL,
 	[content] [text],
 	[version] [int] NOT NULL DEFAULT 0,
-	CONSTRAINT [PK_default_pk] PRIMARY KEY CLUSTERED (
+	CONSTRAINT [PK_document] PRIMARY KEY CLUSTERED (
 		[id] ASC
 	) ON [PRIMARY]
 );
@@ -220,4 +220,4 @@ CREATE TABLE [dbo].[bit_values] (
 	) ON [PRIMARY]
 );
 
-INSERT INTO [dbo].[bit_values] ([id], [val]) VALUES (1, 0), (2, 1);
+INSERT INTO [dbo].[bit_values] ([val]) VALUES (0), (1);

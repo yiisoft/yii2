@@ -235,7 +235,7 @@ class Schema extends \yii\db\Schema
      */
     private function getColumnDefaultValue($column, $value)
     {
-        if ($value !== null && strlen($value) > 0 && $value{0} === '(' && strpos($value, '(', 1) === false) {
+        if ($value !== null && strlen($value) > 0 && $value{0} === '(' && strrpos($value, ')') === strlen($value) - 1) {
             $value = substr($value, 1, -1);
         }
 

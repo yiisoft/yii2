@@ -2,6 +2,7 @@
 
 namespace yiiunit\framework\db\mssql;
 
+use yii\db\mssql\Schema;
 use yiiunit\framework\db\CommandTest;
 
 /**
@@ -80,5 +81,36 @@ class MssqlCommandTest extends CommandTest
         $command = $db->createCommand($sql);
         $command->bindValue(':name', 'user5');
         $this->assertEquals('user5@example.com', $command->queryScalar());
+    }
+
+    public function testCreateTable()
+    {
+        $db = $this->getConnection();
+        $db->createCommand("IF OBJECT_ID('[dbo].[testCreateTable]', 'U') IS NOT NULL DROP TABLE [dbo].[testCreateTable];")->execute();
+
+        $db->createCommand()->createTable('testCreateTable', ['id' => Schema::TYPE_PK, 'bar' => Schema::TYPE_INTEGER])->execute();
+        $db->createCommand()->insert('testCreateTable', ['bar' => 1])->execute();
+        $records = $db->createCommand('SELECT [[id]], [[bar]] FROM {{testCreateTable}};')->queryAll();
+        $this->assertEquals([
+            ['id' => 1, 'bar' => 1],
+        ], $records);
+    }
+
+    public function testAlterTable()
+    {
+        $db = $this->getConnection();
+        $db->createCommand("IF OBJECT_ID('[dbo].[testAlterTable]', 'U') IS NOT NULL DROP TABLE [dbo].[testAlterTable];")->execute();
+
+        $db->createCommand()->createTable('testAlterTable', ['id' => Schema::TYPE_PK, 'bar' => Schema::TYPE_INTEGER])->execute();
+        $db->createCommand()->insert('testAlterTable', ['bar' => 1])->execute();
+
+        $db->createCommand()->alterColumn('testAlterTable', 'bar', Schema::TYPE_STRING)->execute();
+
+        $db->createCommand()->insert('testAlterTable', ['bar' => 'hello'])->execute();
+        $records = $db->createCommand('SELECT [[id]], [[bar]] FROM {{testAlterTable}};')->queryAll();
+        $this->assertEquals([
+            ['id' => 1, 'bar' => 1],
+            ['id' => 2, 'bar' => 'hello'],
+        ], $records);
     }
 }

@@ -513,13 +513,13 @@ SQL;
                 'part.Part',
                 'Part Cost' => 't.Part_Cost',
                 'st_x(location::geometry) as lon',
-                new Expression("case t.Status_Id when 1 then 'Acknowledge' when 2 then 'No Action' else 'Unknown Action' END as [[Next Action]]"),
+                new Expression("case t.Status_Id when 1 then 'Acknowledge' when 2 then 'No Action' else 'Unknown Action' END as NextAction"),
             ])
             ->from('tablename');
         list ($sql, $params) = $this->getQueryBuilder()->build($query);
         $expected = $this->replaceQuotes(
-            'SELECT `t`.`id` AS `ID`, `gsm`.`username` AS `GSM`, `part`.`Part`, `t`.`Part_Cost` AS `Part Cost`, st_x(location::geometry) as lon,'
-            . ' case t.Status_Id when 1 then \'Acknowledge\' when 2 then \'No Action\' else \'Unknown Action\' END as [[Next Action]] FROM `tablename`');
+            'SELECT [[t]].[[id]] AS [[ID]], [[gsm]].[[username]] AS [[GSM]], [[part]].[[Part]], [[t]].[[Part_Cost]] AS [[Part Cost]], st_x(location::geometry) as lon,'
+            . " case t.Status_Id when 1 then 'Acknowledge' when 2 then 'No Action' else 'Unknown Action' END as NextAction FROM {{tablename}}");
         $this->assertEquals($expected, $sql);
         $this->assertEmpty($params);
     }
@@ -544,7 +544,7 @@ SQL;
         $query = (new Query)->from(['activeusers' => $subquery]);
         // SELECT * FROM (SELECT * FROM `user` WHERE `active` = 1) `activeusers`;
         list ($sql, $params) = $this->getQueryBuilder()->build($query);
-        $expected = $this->replaceQuotes('SELECT * FROM (SELECT * FROM `user` WHERE account_id = accounts.id) `activeusers`');
+        $expected = $this->replaceQuotes('SELECT * FROM (SELECT * FROM {{user}} WHERE account_id = accounts.id) {{activeusers}}');
         $this->assertEquals($expected, $sql);
         $this->assertEmpty($params);
 
@@ -553,7 +553,7 @@ SQL;
         $query = (new Query)->from(['activeusers' => $subquery])->where('abc = :abc', ['abc' => 'abc']);
         // SELECT * FROM (SELECT * FROM `user` WHERE `active` = 1) `activeusers`;
         list ($sql, $params) = $this->getQueryBuilder()->build($query);
-        $expected = $this->replaceQuotes('SELECT * FROM (SELECT * FROM `user` WHERE account_id = :id) `activeusers` WHERE abc = :abc');
+        $expected = $this->replaceQuotes('SELECT * FROM (SELECT * FROM {{user}} WHERE account_id = :id) {{activeusers}} WHERE abc = :abc');
         $this->assertEquals($expected, $sql);
         $this->assertEquals([
             'id' => 1,
@@ -565,7 +565,7 @@ SQL;
         $query = (new Query)->from(['activeusers' => $subquery]);
         // SELECT * FROM (SELECT * FROM `user` WHERE `active` = 1) `activeusers`;
         list ($sql, $params) = $this->getQueryBuilder()->build($query);
-        $expected = $this->replaceQuotes('SELECT * FROM (SELECT * FROM user WHERE account_id = accounts.id) `activeusers`');
+        $expected = $this->replaceQuotes('SELECT * FROM (SELECT * FROM user WHERE account_id = accounts.id) {{activeusers}}');
         $this->assertEquals($expected, $sql);
         $this->assertEmpty($params);
     }
