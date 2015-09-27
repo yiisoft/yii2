@@ -110,12 +110,15 @@ class ActiveRecord extends BaseActiveRecord
      *
      * @param boolean $skipIfSet whether existing value should be preserved.
      * This will only set defaults for attributes that are `null`.
+     * @param boolean $skipExpressions whether to ignore \yii\db\Expression values.
      * @return $this the model instance itself.
      */
-    public function loadDefaultValues($skipIfSet = true)
+    public function loadDefaultValues($skipIfSet = true, $skipExpressions = true)
     {
         foreach ($this->getTableSchema()->columns as $column) {
-            if ($column->defaultValue !== null && (!$skipIfSet || $this->{$column->name} === null)) {
+            if ($column->defaultValue !== null && ( !$skipIfSet || $this->{$column->name} === null)
+                && (!$skipExpressions || !$column->defaultValue instanceof \yii\db\Expression)
+            ) {
                 $this->{$column->name} = $column->defaultValue;
             }
         }
