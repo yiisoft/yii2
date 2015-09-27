@@ -199,6 +199,9 @@ class Schema extends \yii\db\Schema
         $column->comment = $info['comment'] === null ? '' : $info['comment'];
 
         $column->type = self::TYPE_STRING;
+        $column->precision = $info['numeric_precision'] !== null ? (int)$info['numeric_precision'] : null;
+        $column->scale = !empty($info['numeric_scale']) ? (int)$info['numeric_scale'] : null;
+        $column->size = $info['character_maximum_length'] > 0 ? (int)$info['character_maximum_length'] : null;
         if (preg_match('/^(\w+)(?:\(([^\)]+)\))?/', $column->dbType, $matches)) {
             $type = $matches[1];
             if (isset($this->typeMap[$type])) {
@@ -288,6 +291,7 @@ class Schema extends \yii\db\Schema
         $sql = <<<SQL
 SELECT
     [t1].[column_name], [t1].[is_nullable], [t1].[data_type], [t1].[column_default],
+    [t1].[character_maximum_length], [t1].[numeric_precision], [t1].[numeric_scale],
     COLUMNPROPERTY(OBJECT_ID([t1].[table_schema] + '.' + [t1].[table_name]), [t1].[column_name], 'IsIdentity') AS is_identity,
     CONVERT(VARCHAR, [t2].[value]) AS comment
 FROM {$columnsTableName} AS [t1]
