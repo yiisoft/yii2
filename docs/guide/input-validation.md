@@ -214,7 +214,7 @@ if they are empty. You can do so by using the [default](tutorial-core-validators
 ```
 
 By default, an input is considered empty if its value is an empty string, an empty array or a null.
-You may customize the default empty detection logic by configuring the the [[yii\validators\Validator::isEmpty]] property
+You may customize the default empty detection logic by configuring the [[yii\validators\Validator::isEmpty]] property
 with a PHP callable. For example,
 
 ```php
@@ -373,7 +373,10 @@ class MyForm extends Model
 A standalone validator is a class extending [[yii\validators\Validator]] or its child class. You may implement
 its validation logic by overriding the [[yii\validators\Validator::validateAttribute()]] method. If an attribute
 fails the validation, call [[yii\base\Model::addError()]] to save the error message in the model, like you do
-with [inline validators](#inline-validators). For example,
+with [inline validators](#inline-validators).
+
+
+For example the inline validator above could be moved into new [[components/validators/CountryValidator]] class.
 
 ```php
 namespace app\components;
@@ -395,6 +398,32 @@ If you want your validator to support validating a value without a model, you sh
 [[yii\validators\Validator::validate()]]. You may also override [[yii\validators\Validator::validateValue()]]
 instead of `validateAttribute()` and `validate()` because by default the latter two methods are implemented
 by calling `validateValue()`.
+
+Below is an example of how you could use the above validator class within your model.
+
+```php
+namespace app\models;
+
+use Yii;
+use yii\base\Model;
+use app\components\validators\CountryValidator;
+
+class EntryForm extends Model
+{
+    public $name;
+    public $email;
+    public $country;
+
+    public function rules()
+    {
+        return [
+            [['name', 'email'], 'required'],
+            ['country', CountryValidator::className()],
+            ['email', 'email'],
+        ];
+    }
+}
+```
 
 
 ## Client-Side Validation <span id="client-side-validation"></span>

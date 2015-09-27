@@ -2,7 +2,7 @@ Dependency Injection Container
 ==============================
 
 A dependency injection (DI) container is an object that knows how to instantiate and configure objects and
-all their dependent objects. [Martin's article](http://martinfowler.com/articles/injection.html) has well
+all their dependent objects. [Martin Fowler's article](http://martinfowler.com/articles/injection.html) has well
 explained why DI container is useful. Here we will mainly explain the usage of the DI container provided by Yii.
 
 
@@ -95,29 +95,25 @@ $container->set('Foo', function () {
 $foo = $container->get('Foo');
 ```
 
-To hide the complex logic for building a new object, you may use a static class method to return the PHP
-callable. For example,
+To hide the complex logic for building a new object, you may use a static class method as callable. For example,
 
 ```php
 class FooBuilder
 {
     public static function build()
     {
-        return function () {
-            $foo = new Foo(new Bar);
-            // ... other initializations ...
-            return $foo;
-       };        
+        $foo = new Foo(new Bar);
+        // ... other initializations ...
+        return $foo;
     }
 }
 
-$container->set('Foo', FooBuilder::build());
+$container->set('Foo', ['app\helper\FooBuilder', 'build']);
 
 $foo = $container->get('Foo');
 ```
 
-As you can see, the PHP callable is returned by the `FooBuilder::build()` method. By doing so, the person
-who wants to configure the `Foo` class no longer needs to be aware of how it is built.
+By doing so, the person who wants to configure the `Foo` class no longer needs to be aware of how it is built.
 
 
 Registering Dependencies <span id="registering-dependencies"></span>
@@ -207,8 +203,8 @@ For example,
 // "db" is a previously registered alias name
 $db = $container->get('db');
 
-// equivalent to: $engine = new \app\components\SearchEngine($apiKey, ['type' => 1]);
-$engine = $container->get('app\components\SearchEngine', [$apiKey], ['type' => 1]);
+// equivalent to: $engine = new \app\components\SearchEngine($apiKey, $apiSecret, ['type' => 1]);
+$engine = $container->get('app\components\SearchEngine', [$apiKey, $apiSecret], ['type' => 1]);
 ```
 
 Behind the scene, the DI container does much more work than just creating a new object.
@@ -344,7 +340,7 @@ When to Register Dependencies <span id="when-to-register-dependencies"></span>
 -----------------------------
 
 Because dependencies are needed when new objects are being created, their registration should be done
-as early as possible. The followings are the recommended practices:
+as early as possible. The following are the recommended practices:
 
 * If you are the developer of an application, you can register dependencies in your
   application's [entry script](structure-entry-scripts.md) or in a script that is included by the entry script.

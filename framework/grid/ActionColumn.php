@@ -33,6 +33,10 @@ use yii\helpers\Url;
 class ActionColumn extends Column
 {
     /**
+     * @inheritdoc
+     */
+    public $headerOptions = ['class' => 'action-column'];
+    /**
      * @var string the ID of the controller that should handle the actions specified here.
      * If not set, it will use the currently active controller. This property is mainly used by
      * [[urlCreator]] to create URLs for different actions. The value of this property will be prefixed
@@ -76,7 +80,7 @@ class ActionColumn extends Column
      * [
      *     'update' => function ($url, $model, $key) {
      *         return $model->status === 'editable' ? Html::a('Update', $url) : '';
-     *     };
+     *     },
      * ],
      * ```
      */

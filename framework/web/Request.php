@@ -165,7 +165,7 @@ class Request extends \yii\base\Request
      */
     private $_cookies;
     /**
-     * @var array the headers in this collection (indexed by the header names)
+     * @var HeaderCollection Collection of request headers.
      */
     private $_headers;
 
@@ -180,9 +180,12 @@ class Request extends \yii\base\Request
         $result = Yii::$app->getUrlManager()->parseRequest($this);
         if ($result !== false) {
             list ($route, $params) = $result;
-            $_GET = array_merge($_GET, $params);
-
-            return [$route, $_GET];
+            if ($this->_queryParams === null) {
+                $_GET = $params + $_GET; // preserve numeric keys
+            } else {
+                $this->_queryParams = $params + $this->_queryParams;
+            }
+            return [$route, $this->getQueryParams()];
         } else {
             throw new NotFoundHttpException(Yii::t('yii', 'Page not found.'));
         }
@@ -300,6 +303,10 @@ class Request extends \yii\base\Request
 
     /**
      * Returns whether this is an AJAX (XMLHttpRequest) request.
+     *
+     * Note that jQuery doesn't set the header in case of cross domain
+     * requests: https://stackoverflow.com/questions/8163703/cross-domain-ajax-doesnt-send-x-requested-with-header
+     *
      * @return boolean whether this is an AJAX (XMLHttpRequest) request.
      */
     public function getIsAjax()
@@ -716,7 +723,7 @@ class Request extends \yii\base\Request
             throw new InvalidConfigException('Unable to determine the path info of the current request.');
         }
 
-        if ($pathInfo[0] === '/') {
+        if (substr($pathInfo, 0, 1) === '/') {
             $pathInfo = substr($pathInfo, 1);
         }
 
@@ -1224,7 +1231,7 @@ class Request extends \yii\base\Request
                     $cookies[$name] = new Cookie([
                         'name' => $name,
                         'value' => $data[1],
-                        'expire'=> null
+                        'expire' => null,
                     ]);
                 }
             }
@@ -1233,7 +1240,7 @@ class Request extends \yii\base\Request
                 $cookies[$name] = new Cookie([
                     'name' => $name,
                     'value' => $value,
-                    'expire'=> null
+                    'expire' => null,
                 ]);
             }
         }
@@ -1354,6 +1361,7 @@ class Request extends \yii\base\Request
      *
      * @param string $token the user-provided CSRF token to be validated. If null, the token will be retrieved from
      * the [[csrfParam]] POST field or HTTP header.
+     * This parameter is available since version 2.0.4.
      * @return boolean whether CSRF token is valid. If [[enableCsrfValidation]] is false, this method will return true.
      */
     public function validateCsrfToken($token = null)

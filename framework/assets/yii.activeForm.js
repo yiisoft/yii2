@@ -40,11 +40,12 @@
         /**
          * afterValidate event is triggered after validating the whole form.
          * The signature of the event handler should be:
-         *     function (event, messages)
+         *     function (event, messages, errorAttributes)
          * where
          *  - event: an Event object.
          *  - messages: an associative array with keys being attribute IDs and values being error message arrays
          *    for the corresponding attributes.
+         *  - errorAttributes: an array of attributes that have validation errors. Please refer to attributeDefaults for the structure of this parameter.
          */
         afterValidate: 'afterValidate',
         /**
@@ -97,7 +98,7 @@
          * where
          *  - event: an Event object.
          *  - jqXHR: a jqXHR object
-         *  - settings: the status of the request ("success", "notmodified", "error", "timeout", "abort", or "parsererror").
+         *  - textStatus: the status of the request ("success", "notmodified", "error", "timeout", "abort", or "parsererror").
          */
         ajaxComplete: 'ajaxComplete'
     };
@@ -121,7 +122,9 @@
         // the type of data that you're expecting back from the server
         ajaxDataType: 'json',
         // the URL for performing AJAX-based validation. If not set, it will use the the form's action
-        validationUrl: undefined
+        validationUrl: undefined,
+        // whether to scroll to first visible error after validation.
+        scrollToError: true
     };
 
     // NOTE: If you change any of these defaults, make sure you update yii\widgets\ActiveField::getClientOptions() as well
@@ -132,7 +135,7 @@
         name: undefined,
         // the jQuery selector of the container of the input field
         container: undefined,
-        // the jQuery selector of the input field under the context of the container
+        // the jQuery selector of the input field under the context of the form
         input: undefined,
         // the jQuery selector of the error tag under the context of the container
         error: '.help-block',
@@ -157,6 +160,24 @@
         // the value of the input
         value: undefined
     };
+
+
+    var submitDefer;
+
+    var setSubmitFinalizeDefer = function($form) {
+        submitDefer = $.Deferred();
+        $form.data('yiiSubmitFinalizePromise', submitDefer.promise());
+    };
+
+    // finalize yii.js $form.submit
+    var submitFinalize = function($form) {
+        if(submitDefer) {
+            submitDefer.resolve();
+            submitDefer = undefined;
+            $form.removeData('yiiSubmitFinalizePromise');
+        }
+    };
+
 
     var methods = {
         init: function (attributes, options) {
@@ -273,6 +294,7 @@
                 $form.trigger(event, [messages, deferreds]);
                 if (event.result === false) {
                     data.submitting = false;
+                    submitFinalize($form);
                     return;
                 }
             }
@@ -341,6 +363,7 @@
                         },
                         error: function () {
                             data.submitting = false;
+                            submitFinalize($form);
                         }
                     });
                 } else if (data.submitting) {
@@ -359,15 +382,20 @@
                 data = $form.data('yiiActiveForm');
 
             if (data.validated) {
+                // Second submit's call (from validate/updateInputs)
                 data.submitting = false;
                 var event = $.Event(events.beforeSubmit);
                 $form.trigger(event);
                 if (event.result === false) {
                     data.validated = false;
+                    submitFinalize($form);
                     return false;
                 }
                 return true;   // continue submitting the form since validation passes
             } else {
+                // First submit's call (from yii.js/handleAction) - execute validating
+                setSubmitFinalizeDefer($form);
+
                 if (data.settings.timer !== undefined) {
                     clearTimeout(data.settings.timer);
                 }
@@ -398,7 +426,40 @@
                 });
                 $form.find(data.settings.errorSummary).hide().find('ul').html('');
             }, 1);
+        },
+
+        /**
+         * Updates error messages, input containers, and optionally summary as well.
+         * If an attribute is missing from messages, it is considered valid.
+         * @param messages array the validation error messages, indexed by attribute IDs
+         * @param summary whether to update summary as well.
+         */
+        updateMessages: function (messages, summary) {
+            var $form = $(this);
+            var data = $form.data('yiiActiveForm');
+            $.each(data.attributes, function () {
+                updateInput($form, this, messages);
+            });
+            if (summary) {
+                updateSummary($form, messages);
+            }
+        },
+
+        /**
+         * Updates error messages and input container of a single attribute.
+         * If messages is empty, the attribute is considered valid.
+         * @param id attribute ID
+         * @param messages array with error messages
+         */
+        updateAttribute: function(id, messages) {
+            var attribute = methods.find.call(this, id);
+            if (attribute != undefined) {
+                var msg = {};
+                msg[id] = messages;
+                updateInput($(this), attribute, msg);
+            }
         }
+
     };
 
     var watchAttribute = function ($form, attribute) {
@@ -463,7 +524,7 @@
             methods.validate.call($form);
         }, validationDelay ? validationDelay : 200);
     };
-    
+
     /**
      * Returns an array prototype with a shortcut method for adding a new deferred.
      * The context of the callback will be the deferred object so it can be resolved like ```this.resolve()```
@@ -487,22 +548,26 @@
         var data = $form.data('yiiActiveForm');
 
         if (submitting) {
-            var errorInputs = [];
+            var errorAttributes = [];
             $.each(data.attributes, function () {
                 if (!this.cancelled && updateInput($form, this, messages)) {
-                    errorInputs.push(this.input);
+                    errorAttributes.push(this);
                 }
             });
 
-            $form.trigger(events.afterValidate, [messages]);
+            $form.trigger(events.afterValidate, [messages, errorAttributes]);
 
             updateSummary($form, messages);
 
-            if (errorInputs.length) {
-                var top = $form.find(errorInputs.join(',')).first().closest(':visible').offset().top;
-                var wtop = $(window).scrollTop();
-                if (top < wtop || top > wtop + $(window).height) {
-                    $(window).scrollTop(top);
+            if (errorAttributes.length) {
+                if (data.settings.scrollToError) {
+                    var top = $form.find($.map(errorAttributes, function(attribute) {
+                        return attribute.input;
+                    }).join(',')).first().closest(':visible').offset().top;
+                    var wtop = $(window).scrollTop();
+                    if (top < wtop || top > wtop + $(window).height()) {
+                        $(window).scrollTop(top);
+                    }
                 }
                 data.submitting = false;
             } else {
@@ -531,6 +596,7 @@
                 }
             });
         }
+        submitFinalize($form);
     };
 
     /**

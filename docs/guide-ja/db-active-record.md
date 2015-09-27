@@ -145,7 +145,7 @@ $count = Customer::find()
     ->where(['status' => Customer::STATUS_ACTIVE])
     ->count();
 
-// アクティブな全ての顧客を顧客IDによってインデックスされた配列として返す
+// 全ての顧客を顧客IDによってインデックスされた配列として返す
 // SELECT * FROM `customer`
 $customers = Customer::find()
     ->indexBy('id')
@@ -190,7 +190,7 @@ $customer = Customer::findOne([
 
 // アクティブでない全ての顧客を返す
 // SELECT * FROM `customer` WHERE `status` = 0
-$customer = Customer::findAll([
+$customers = Customer::findAll([
     'status' => Customer::STATUS_INACTIVE,
 ]);
 ```
@@ -409,6 +409,10 @@ $post->updateCounters(['view_count' => 1]);
 
 最新の修正を受ける前の属性値を知りたい場合は、[[yii\db\ActiveRecord::getOldAttributes()|getOldAttributes()]] または [[yii\db\ActiveRecord::getOldAttribute()|getOldAttribute()]] を呼ぶことが出来ます。
 
+> Note|注意: 新旧の値は `===` 演算子を使って比較されるため、同じ値を持っていても型が違うとダーティであると見なされます。
+> このことは、モデルが HTML フォームからユーザの入力を受け取るときにしばしば生じます。
+> HTML フォームでは全ての値が文字列として表現されるからです。
+> 入力値が正しい型、例えば整数値となることを保証するために、`['attributeName', 'filter', 'filter' => 'intval']` のように [検証フィルタ](input-validation.md#data-filtering) を適用することが出来ます。
 
 ### デフォルト属性値 <span id="default-attribute-values"></span>
 
@@ -499,7 +503,7 @@ Customer::deleteAll(['status' => Customer::STATUS_INACTIVE]);
 3. [[yii\db\ActiveRecord::afterValidate()|afterValidate()]]: [[yii\db\ActiveRecord::EVENT_AFTER_VALIDATE|EVENT_AFTER_VALIDATE]] イベントをトリガ。
 4. [[yii\db\ActiveRecord::beforeSave()|beforeSave()]]: [[yii\db\ActiveRecord::EVENT_BEFORE_INSERT|EVENT_BEFORE_INSERT]] または [[yii\db\ActiveRecord::EVENT_BEFORE_UPDATE|EVENT_BEFORE_UPDATE]] イベントをトリガ。
    このメソッドが false を返すか、[[yii\base\ModelEvent::isValid]] が false であった場合、残りのステップはスキップされる。
-5. 実際のデータの挿入または更新を実行する。
+5. 実際のデータの挿入または更新を実行。
 6. [[yii\db\ActiveRecord::afterSave()|afterSave()]]: [[yii\db\ActiveRecord::EVENT_AFTER_INSERT|EVENT_AFTER_INSERT]] または [[yii\db\ActiveRecord::EVENT_AFTER_UPDATE|EVENT_AFTER_UPDATE]] イベントをトリガ。
    
 
@@ -509,7 +513,7 @@ Customer::deleteAll(['status' => Customer::STATUS_INACTIVE]);
 
 1. [[yii\db\ActiveRecord::beforeDelete()|beforeDelete()]]: [[yii\db\ActiveRecord::EVENT_BEFORE_DELETE|EVENT_BEFORE_DELETE]] イベントをトリガ。
    このメソッドが false を返すか、[[yii\base\ModelEvent::isValid]] が false であった場合は、残りのステップはスキップされる。
-2. 実際のデータの削除を実行する。
+2. 実際のデータの削除を実行。
 3. [[yii\db\ActiveRecord::afterDelete()|afterDelete()]]: [[yii\db\ActiveRecord::EVENT_AFTER_DELETE|EVENT_AFTER_DELETE]] イベントをトリガ。
 
 
@@ -695,7 +699,7 @@ $customer = Customer::findOne(123);
 $orders = $customer->orders;
 ```
 
-> Info|情報: `xyz` という名前のリレーションを getter メソッド `getXyz()` によって宣言すると、`xyz` をオブジェクト [プロパティ](concept-properties.md) のようにアクセスすることが出来るようになります。
+> Info|情報: `xyz` という名前のリレーションを getter メソッド `getXyz()` によって宣言すると、`xyz` を [オブジェクトプロパティ](concept-properties.md) のようにアクセスすることが出来るようになります。
   名前は大文字と小文字を区別することに注意してください。
 
 リレーションが [[yii\db\ActiveRecord::hasMany()|hasMany()]] によって宣言されている場合は、このリレーションプロパティにアクセスすると、関連付けられたアクティブレコードインスタンスの配列が返されます。
@@ -705,6 +709,16 @@ $orders = $customer->orders;
 その同じプロパティに再びアクセスしたときは、SQL 文を再実行することなく、以前の結果が返されます。
 SQL 文の再実行を強制するためには、まず、リレーションプロパティの割り当てを解除 (unset) しなければなりません : `unset($customer->orders)`。
 
+> Note|注意: リレーションプロパティの概念は [オブジェクトプロパティ](concept-properties.md) の機能と同一であるように見えますが、一つ、重要な相違点があります。
+> 通常のオブジェクトプロパティでは、プロパティの値はそれを定義する getter メソッドと同じ型を持ちます。
+> しかし、リレーションプロパティにアクセスすると [[yii\db\ActiveRecord]] のインスタンスまたはその配列が返されるのに対して、リレーションメソッドは [[yii\db\ActiveQuery]] のインスタンスを返します。
+> 
+> ```php
+> $customer->orders; // `Order` オブジェクトの配列
+> $customer->getOrders(); // ActiveQuery のインスタンス
+> ```
+> 
+> このことは、次の項で説明するように、カスタマイズしたクエリを作成するのに役に立ちます。
 
 ### 動的なリレーショナルクエリ <span id="dynamic-relational-query"></span>
 
@@ -720,6 +734,8 @@ $orders = $customer->getOrders()
     ->orderBy('id')
     ->all();
 ```
+
+リレーションプロパティにアクセスする場合と違って、リレーションメソッドによって動的なリレーショナルクエリを実行する場合は、同じ動的なリレーショナルクエリが以前に実行されたことがあっても、毎回、SQL 文が実行されます。
 
 さらに進んで、もっと簡単に動的なリレーショナルクエリを実行できるように、リレーションの宣言をパラメータ化したい場合もあるでしょう。
 例えば、`bigOrders` リレーションを下記のように宣言することが出来ます。
@@ -745,11 +761,6 @@ $orders = $customer->getBigOrders(200)->all();
 // SELECT * FROM `order` WHERE `subtotal` > 100 ORDER BY `id`
 $orders = $customer->bigOrders;
 ```
-
-> Note|注意: リレーションメソッドが [[yii\db\ActiveQuery]] インスタンスを返すのに対して、リレーションプロパティにアクセスすると [[yii\db\ActiveRecord]] のインスタンスまたはその配列が返されます。
-  この点で、通常のオブジェクト [プロパティ](concept-properties.md) が、そのプロパティを定義する getter メソッドと同じ型の値を持つのと異なります。
-
-リレーショナルプロパティにアクセスする場合と異なって、リレーショナルメソッドを使って動的なリレーショナルクエリを実行する場合は、前に同じ動的リレーショナルクエリが実行されている場合であっても、毎回、SQL 文が実行されます。
 
 
 ### 中間テーブルによるリレーション <span id="junction-table"></span>
@@ -1253,3 +1264,72 @@ $customers = Customer::find()->with([
 > Info|情報: Yii 1.1 には、*スコープ* と呼ばれる概念がありました。
   Yii 2.0 では、スコープはもはや直接にはサポートされません。
   同じ目的を達するためには、カスタマイズされたクエリクラスとクエリメソッドを使わなければなりません。
+
+
+## 追加のフィールドを選択する
+
+アクティブレコードのインスタンスにクエリ結果からデータが投入されるときは、受け取ったデータセットのカラムの値が対応する属性に入れられます。
+
+クエリ結果から追加のカラムや値を取得して、アクティブレコードの内部に格納することが出来ます。
+例えば、ホテルの客室の情報を含む 'room' という名前のテーブルがあるとしましょう。
+そして、全ての客室のデータは 'length' (長さ)、'width' (幅)、'height' (高さ) というフィールドを使って、部屋の幾何学的なサイズに関する情報を格納しているとします。
+空いている全ての部屋の一覧を容積の降順で取得する必要がある場合を考えて見てください。
+レコードをその値で並べ替える必要があるので、PHP を使って容積を計算することは出来ません。
+しかし、同時に、一覧には 'volume' (容積) も表示したいでしょう。
+目的を達するためには、'Room' アクティブレコードクラスにおいて追加のフィールドを宣言し、'volume' の値を格納する必要があります。
+
+```php
+class Room extends \yii\db\ActiveRecord
+{
+    public $volume;
+
+    // ...
+}
+```
+
+そして、部屋の容積を計算して並べ替えを実行するクエリを構築しなければなりません。
+
+```php
+$rooms = Room::find()
+    ->select([
+        '{{room}}.*', // 全てのカラムを選択
+        '([[length]] * [[width]].* [[height]]) AS volume', // 容積を計算
+    ])
+    ->orderBy('volume DESC') // 並べ替えを適用
+    ->all();
+
+foreach ($rooms as $room) {
+    echo $room->volume; // SQL によって計算された値を含んでいる
+}
+```
+
+追加のフィールドが選択できることは、集計クエリに対して特に有効に機能します。
+注文の数とともに顧客の一覧を表示する必要がある場合を想定してください。
+まず初めに、`Customer` クラスの中で、'orders' リレーションと、注文数を格納するための追加のフィールドを宣言しなければなりません。
+
+```php
+class Customer extends \yii\db\ActiveRecord
+{
+    public $ordersCount;
+
+    // ...
+
+    public function getOrders()
+    {
+        return $this->hasMany(Order::className(), ['customer_id' => 'id']);
+    }
+}
+```
+
+そして、order を結合して注文数を計算するクエリを構築することが出来ます。
+
+```php
+$customers = Customer::find()
+    ->select([
+        '{{customer}}.*', // 顧客の全てのフィールドを選択
+        'COUNT({{order}}.id) AS ordersCount' // 注文数を計算
+    ])
+    ->joinWith('orders') // テーブルの結合を保証する
+    ->groupBy('{{customer}}.id') // 結果をグループ化して、集計関数の動作を保証する
+    ->all();
+```

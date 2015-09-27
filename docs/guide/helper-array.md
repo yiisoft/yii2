@@ -264,7 +264,7 @@ models in order to serve data arrays via REST API or use it otherwise. The follo
 
 ```php
 $posts = Post::find()->limit(10)->all();
-$data = ArrayHelper::toArray($post, [
+$data = ArrayHelper::toArray($posts, [
     'app\models\Post' => [
         'id',
         'title',

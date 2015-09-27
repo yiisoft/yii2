@@ -291,14 +291,13 @@ class Schema extends \yii\db\Schema
      */
     public function setTransactionIsolationLevel($level)
     {
-        switch($level)
-        {
+        switch ($level) {
             case Transaction::SERIALIZABLE:
                 $this->db->createCommand("PRAGMA read_uncommitted = False;")->execute();
-            break;
+                break;
             case Transaction::READ_UNCOMMITTED:
                 $this->db->createCommand("PRAGMA read_uncommitted = True;")->execute();
-            break;
+                break;
             default:
                 throw new NotSupportedException(get_class($this) . ' only supports transaction isolation levels READ UNCOMMITTED and SERIALIZABLE.');
         }

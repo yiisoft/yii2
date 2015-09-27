@@ -22,6 +22,8 @@ use yii\caching\TagDependency;
  * @property string $lastInsertID The row ID of the last row inserted, or the last value retrieved from the
  * sequence object. This property is read-only.
  * @property QueryBuilder $queryBuilder The query builder for this connection. This property is read-only.
+ * @property string[] $schemaNames All schema names in the database, except system schemas. This property is
+ * read-only.
  * @property string[] $tableNames All table names in the database. This property is read-only.
  * @property TableSchema[] $tableSchemas The metadata for all tables in the database. Each array element is an
  * instance of [[TableSchema]] or its child class. This property is read-only.
@@ -36,7 +38,7 @@ use yii\caching\TagDependency;
 abstract class Schema extends Object
 {
     /**
-     * The followings are the supported abstract column data types.
+     * The following are the supported abstract column data types.
      */
     const TYPE_PK = 'pk';
     const TYPE_BIGPK = 'bigpk';
@@ -201,6 +203,7 @@ abstract class Schema extends Object
      * @param boolean $refresh whether to fetch the latest available schema names. If this is false,
      * schema names fetched previously (if available) will be returned.
      * @return string[] all schema names in the database, except system schemas.
+     * @since 2.0.4
      */
     public function getSchemaNames($refresh = false)
     {
@@ -278,6 +281,24 @@ abstract class Schema extends Object
     }
 
     /**
+     * Refreshes the particular table schema.
+     * This method cleans up cached table schema so that it can be re-created later
+     * to reflect the database schema change.
+     * @param string $name table name.
+     * @since 2.0.6
+     */
+    public function refreshTableSchema($name)
+    {
+        unset($this->_tables[$name]);
+        $this->_tableNames = [];
+        /* @var $cache Cache */
+        $cache = is_string($this->db->schemaCache) ? Yii::$app->get($this->db->schemaCache, false) : $this->db->schemaCache;
+        if ($this->db->enableSchemaCache && $cache instanceof Cache) {
+            $cache->delete($this->getCacheKey($name));
+        }
+    }
+
+    /**
      * Creates a query builder for the database.
      * This method may be overridden by child classes to create a DBMS-specific query builder.
      * @return QueryBuilder query builder instance
@@ -288,11 +309,27 @@ abstract class Schema extends Object
     }
 
     /**
+     * Create a column schema builder instance giving the type and value precision.
+     *
+     * This method may be overridden by child classes to create a DBMS-specific column schema builder.
+     *
+     * @param string $type type of the column. See [[ColumnSchemaBuilder::$type]].
+     * @param integer|string|array $length length or precision of the column. See [[ColumnSchemaBuilder::$length]].
+     * @return ColumnSchemaBuilder column schema builder instance
+     * @since 2.0.6
+     */
+    public function createColumnSchemaBuilder($type, $length = null)
+    {
+        return new ColumnSchemaBuilder($type, $length);
+    }
+
+    /**
      * Returns all schema names in the database, including the default one but not system schemas.
      * This method should be overridden by child classes in order to support this feature
      * because the default implementation simply throws an exception.
      * @return array all schema names in the database, except system schemas
      * @throws NotSupportedException if this method is called
+     * @since 2.0.4
      */
     protected function findSchemaNames()
     {
@@ -344,7 +381,7 @@ abstract class Schema extends Object
     public function getLastInsertID($sequenceName = '')
     {
         if ($this->db->isActive) {
-            return $this->db->pdo->lastInsertId($sequenceName === '' ? null : $this->quoteSimpleTableName($sequenceName));
+            return $this->db->pdo->lastInsertId($sequenceName === '' ? null : $this->quoteTableName($sequenceName));
         } else {
             throw new InvalidCallException('DB Connection is not active.');
         }
@@ -396,6 +433,32 @@ abstract class Schema extends Object
     public function setTransactionIsolationLevel($level)
     {
         $this->db->createCommand("SET TRANSACTION ISOLATION LEVEL $level;")->execute();
+    }
+
+    /**
+     * Executes the INSERT command, returning primary key values.
+     * @param string $table the table that new rows will be inserted into.
+     * @param array $columns the column data (name => value) to be inserted into the table.
+     * @return array primary key values or false if the command fails
+     * @since 2.0.4
+     */
+    public function insert($table, $columns)
+    {
+        $command = $this->db->createCommand()->insert($table, $columns);
+        if (!$command->execute()) {
+            return false;
+        }
+        $tableSchema = $this->getTableSchema($table);
+        $result = [];
+        foreach ($tableSchema->primaryKey as $name) {
+            if ($tableSchema->columns[$name]->autoIncrement) {
+                $result[$name] = $this->getLastInsertID($tableSchema->sequenceName);
+                break;
+            } else {
+                $result[$name] = isset($columns[$name]) ? $columns[$name] : $tableSchema->columns[$name]->defaultValue;
+            }
+        }
+        return $result;
     }
 
     /**

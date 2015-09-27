@@ -10,7 +10,7 @@
 1. Tim が新しいマイグレーション (例えば、新しいテーブルを作成したり、カラムの定義を変更したりなど) を作る。
 2. Tim が新しいマイグレーションをソースコントロールシステム (例えば Git や Mercurial) にコミットする。
 3. Doug がソースコントロールシステムから自分のレポジトリを更新して新しいマイグレーションを受け取る。
-4. Doug がマイグレーションを彼のローカルの開発用データベースに適用して、Tim が行った変更を反映するように自分のデータベースの同期を取る。
+4. Doug がマイグレーションを彼のローカルの開発用データベースに適用して、自分のデータベースの同期を取り、Tim が行った変更を反映する。
 
 そして、次の一連のステップは、本番環境でデータベースマイグレーションとともに新しいリリースを配備する方法を示すものです。
 
@@ -18,17 +18,20 @@
 2. Scott は本番サーバでソースコードをリリースタグまで更新する。
 3. Scott は本番のデータベースに対して累積したデータベースマイグレーションを全て適用する。
 
-Yii は一連のマイグレーションコマンドラインツールを提供しており、以下の機能をサポートしています。
+Yii は一連のマイグレーションコマンドラインツールを提供して、以下の機能をサポートします。
 
 * 新しいマイグレーションの作成
 * マイグレーションの適用
 * マイグレーションの取消
 * マイグレーションの再適用
-* マイグレーションの履歴と状態の閲覧
+* マイグレーションの履歴と状態の表示
 
 これらのツールは、全て、`yii migrate` コマンドからアクセスすることが出来ます。
 この節では、これらのツールを使用して、さまざまなタスクをどうやって達成するかを詳細に説明します。
 各ツールの使用方法は、ヘルプコマンド `yii help migrate` によっても知ることが出来ます。
+
+> Tip|ヒント: マイグレーションはデータベーススキーマに影響を及ぼすだけでなく、既存のデータを新しいスキーマに合うように修正したり、RBAC 階層を作成したり、キャッシュをクリーンアップしたりすることも出来ます。
+
 
 ## マイグレーションを作成する <span id="creating-migrations"></span>
 
@@ -48,25 +51,37 @@ yii migrate/create create_news_table
 > Note|注意: この `name` 引数は、生成されるマイグレーションクラス名の一部として使用されますので、アルファベット、数字、および/または、アンダースコアだけを含むものでなければなりません。
 
 上記のコマンドは、`m150101_185401_create_news_table.php` という名前の新しい PHP クラスファイルを `@app/migrations` ディレクトリに作成します。
-このファイルは、主として、`m150101_185401_create_news_table` というマイグレーションクラスを宣言するためのもので、次のようなスケルトンコードを含んでいます。
+このファイルは次のようなコードを含み、主として、スケルトンコードを持った `m150101_185401_create_news_table` というマイグレーションクラスを宣言するためのものす。
 
 ```php
 <?php
 
-use yii\db\Schema;
 use yii\db\Migration;
 
 class m150101_185401_create_news_table extends Migration
 {
     public function up()
     {
+
     }
 
     public function down()
     {
         echo "m101129_185401_create_news_table cannot be reverted.\n";
+
         return false;
     }
+
+    /*
+    // Use safeUp/safeDown to run migration code within a transaction
+    public function safeUp()
+    {
+    }
+
+    public function safeDown()
+    {
+    }
+    */
 }
 ```
 
@@ -83,11 +98,12 @@ class m150101_185401_create_news_table extends Migration
 下記のコードは、新しい `news` テーブルを作成するマイグレーションクラスをどのようにして実装するかを示すものです。
 
 ```php
+<?php
 
 use yii\db\Schema;
 use yii\db\Migration;
 
-class m150101_185401_create_news_table extends \yii\db\Migration
+class m150101_185401_create_news_table extends Migration
 {
     public function up()
     {
@@ -126,6 +142,32 @@ MySQL の場合は、`TYPE_PK` は `int(11) NOT NULL AUTO_INCREMENT PRIMARY KEY`
 
 > Info|情報: 抽象型と物理型の対応関係は、それぞれの `QueryBuilder` の具象クラスの [[yii\db\QueryBuilder::$typeMap|$typeMap]] プロパティによって定義されています。
 
+バージョン 2.0.6 以降は、カラムのスキーマを定義するための更に便利な方法を提供するスキーマビルダが新たに導入されているため、上記のマイグレーションは次のように書くことが出来ます。
+
+```php
+<?php
+
+use yii\db\Migration;
+
+class m150101_185401_create_news_table extends Migration
+{
+    public function up()
+    {
+        $this->createTable('news', [
+            'id' => $this->primaryKey(),
+            'title' => $this->string()->notNull(),
+            'content' => $this->text(),
+        ]);
+    }
+
+    public function down()
+    {
+        $this->dropTable('news');
+    }
+}
+```
+
+カラムの型を定義するために利用できる全てのメソッドのリストは、[[yii\db\SchemaBuilderTrait]] の API ドキュメントで参照することが出来ます。
 
 
 ### トランザクションを使うマイグレーション <span id="transactional-migrations"></span>
@@ -140,8 +182,8 @@ MySQL の場合は、`TYPE_PK` は `int(11) NOT NULL AUTO_INCREMENT PRIMARY KEY`
 次の例では、`news` テーブルを作成するだけでなく、このテーブルに初期値となる行を挿入しています。
 
 ```php
+<?php
 
-use yii\db\Schema;
 use yii\db\Migration;
 
 class m150101_185401_create_news_table extends Migration
@@ -149,11 +191,11 @@ class m150101_185401_create_news_table extends Migration
     public function safeUp()
     {
         $this->createTable('news', [
-            'id' => 'pk',
-            'title' => Schema::TYPE_STRING . ' NOT NULL',
-            'content' => Schema::TYPE_TEXT,
+            'id' => $this->primaryKey(),
+            'title' => $this->string()->notNull(),
+            'content' => $this->text(),
         ]);
-        
+
         $this->insert('news', [
             'title' => 'test 1',
             'content' => 'content 1',
@@ -207,8 +249,14 @@ class m150101_185401_create_news_table extends Migration
 * [[yii\db\Migration::dropIndex()|dropIndex()]]: インデックスを削除
 
 > Info|情報: [[yii\db\Migration]] は、データベースクエリメソッドを提供しません。
-  これは、データベースからデータを取得することについては、通常、追加のメッセージを表示する必要がないからです。
+  これは、通常、データベースからのデータ取得については、メッセージを追加して表示する必要がないからです。
   更にまた、複雑なクエリを構築して実行するためには、強力な [クエリビルダ](db-query-builder.md) を使うことが出来るからです。
+
+> Note|注意: マイグレーションを使ってデータを操作する場合に、あなたは、あなたの [アクティブレコード](db-active-record.md) クラスをデータ操作に使えば便利じゃないか、と気付くかもしれません。
+> なぜなら、いくつかのロジックは既にアクティブレコードで実装済みだから、と。
+> しかしながら、マイグレーションの中で書かれるコードが永久に不変であることを本質とするのと対照的に、アプリケーションのロジックは変化にさらされるものであるということを心に留めなければなりません。
+> 従って、マイグレーションのコードでアクティブレコードを使用していると、アクティブレコードのレイヤにおけるロジックの変更が思いがけず既存のマイグレーションを破壊することがあり得ます。
+> このような理由のため、マイグレーションのコードはアクティブレコードのようなアプリケーションの他のロジックから独立を保つべきです。
 
 
 ## マイグレーションを適用する <span id="applying-migrations"></span>
@@ -231,13 +279,13 @@ yii migrate
 
 時として、利用できる全てのマイグレーションではなく、一つまたは数個の新しいマイグレーションだけを適用したい場合があります。
 コマンドを実行するときに、適用したいマイグレーションの数を指定することによって、そうすることが出来ます。
-例えば、次のコマンドは、利用できるマイグレーションのうち、次の三個を適用しようとするものです。
+例えば、次のコマンドは、次の三個の利用できるマイグレーションを適用しようとするものです。
 
 ```
 yii migrate 3
 ```
 
-また、このマイグレーションまでデータベースに適用したいという特定のマイグレーションを明示的に指定することも出来ます。
+また、そのマイグレーションまでをデータベースに適用するという、特定のマイグレーションを明示的に指定することも出来ます。
 そのためには、`migrate/to` コマンドを、次のどれかの形式で使います。
 
 ```
@@ -258,8 +306,8 @@ yii migrate/to 1392853618                         # UNIX タイムスタンプ�
 
 
 ```
-yii migrate/down     # 最近に適用されたマイグレーションを取り消す
-yii migrate/down 3   # 最近に適用された三個のマイグレーションを取り消す
+yii migrate/down     # 最近に適用されたマイグレーション一個を取り消す
+yii migrate/down 3   # 最近に適用されたマイグレーション三個を取り消す
 ```
 
 > Note|注意: 全てのマイグレーションが取り消せるとは限りません。
@@ -272,13 +320,12 @@ yii migrate/down 3   # 最近に適用された三個のマイグレーション
 これは次のコマンドによって実行することが出来ます。
 
 ```
-yii migrate/redo        # 最後に適用されたマイグレーションを再適用する
+yii migrate/redo        # 最後に適用された一個のマイグレーションを再適用する
 yii migrate/redo 3      # 最後に適用された三個のマイグレーションを再適用する
 ```
 
 > Note|注意: マイグレーションが取り消し不可能な場合は、それを再適用することは出来ません。
 
-[kihara]
 
 ## マイグレーションをリスト表示する <span id="listing-migrations"></span>
 
@@ -298,7 +345,7 @@ yii migrate/new all     # 適用可能な全てのマイグレーションを表
 ## マイグレーション履歴を修正する <span id="modifying-migration-history"></span>
 
 時として、実際にマイグレーションを適用したり取り消したりするのではなく、データベースが特定のマイグレーションまでアップグレードされたとマークしたいだけ、という場合があります。
-このようなことがよく起るのは、データベースを手作業で特定の状態に変更した後に、その変更のための一つまたは複数のマイグレーションを記録はするが適用はしたくない、という場合です。
+このようなことがよく起るのは、データベースを手作業で特定の状態に変更した後に、その変更のための一つまたは複数のマイグレーションを記録はするが再度適用はしたくない、という場合です。
 次のコマンドでこの目的を達することが出来ます。
 
 ```
@@ -388,7 +435,8 @@ yii migrate --db=db2
 例えば、次のようにします。
 
 ```php
-use yii\db\Schema;
+<?php
+
 use yii\db\Migration;
 
 class m150101_185401_create_news_table extends Migration

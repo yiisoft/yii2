@@ -5,7 +5,7 @@
 これは、ビジネスのデータ、規則、ロジックを表現するオブジェクトです。
 
 モデルクラスは、[[yii\base\Model]] またはその子クラスを拡張することによって作成することが出来ます。
-基底クラス [[yii\base\Model]] は、次のように、数多くの有用な機能をサポートしています。
+基底クラス [[yii\base\Model]] は、次のような数多くの有用な機能をサポートしています。
 
 * [属性](#attributes): ビジネスデータを表現します。通常のオブジェクトプロパティや配列要素のようにしてアクセスすることが出来ます。
 * [属性のラベル](#attribute-labels): 属性の表示ラベルを指定します。
@@ -16,7 +16,7 @@
 `Model` クラスは、[アクティブレコード](db-active-record.md) のような、更に高度なモデルの基底クラスでもあります。
 それらの高度なモデルについての詳細は、関連するドキュメントを参照してください。
 
-> Info|情報: あなたのモデルクラスの基底として [[yii\base\Model]] を使うことが要求されている訳ではありません。
+> Info|情報: あなたのモデルクラスの基底クラスとして [[yii\base\Model]] を使うことが要求されている訳ではありません。
   しかしながら、Yii のコンポーネントの多くが [[yii\base\Model]] をサポートするように作られていますので、通常は [[yii\base\Model]] がモデルの基底クラスとして推奨されます。
 
 
@@ -161,10 +161,10 @@ public function attributeLabels()
 ```php
 // シナリオをプロパティとして設定する
 $model = new User;
-$model->scenario = 'login';
+$model->scenario = User::SCENARIO_LOGIN;
 
 // シナリオを設定情報で設定する
-$model = new User(['scenario' => 'login']);
+$model = new User(['scenario' => User::SCENARIO_LOGIN]);
 ```
 
 デフォルトでは、モデルによってサポートされるシナリオは、モデルで宣言されている [検証規則](#validation-rules) によって決定されます。
@@ -177,11 +177,14 @@ use yii\db\ActiveRecord;
 
 class User extends ActiveRecord
 {
+    const SCENARIO_LOGIN = 'login';
+    const SCENARIO_REGISTER = 'register';
+
     public function scenarios()
     {
         return [
-            'login' => ['username', 'password'],
-            'register' => ['username', 'email', 'password'],
+            self::SCENARIO_LOGIN => ['username', 'password'],
+            self::SCENARIO_REGISTER => ['username', 'email', 'password'],
         ];
     }
 }
@@ -207,8 +210,8 @@ class User extends ActiveRecord
     public function scenarios()
     {
         $scenarios = parent::scenarios();
-        $scenarios['login'] = ['username', 'password'];
-        $scenarios['register'] = ['username', 'email', 'password'];
+        $scenarios[self::SCENARIO_LOGIN] = ['username', 'password'];
+        $scenarios[self::SCENARIO_REGISTER] = ['username', 'email', 'password'];
         return $scenarios;
     }
 }
@@ -273,10 +276,10 @@ public function rules()
 {
     return [
         // "register" シナリオでは、username、email、password のすべてが必須
-        [['username', 'email', 'password'], 'required', 'on' => 'register'],
+        [['username', 'email', 'password'], 'required', 'on' => self::SCENARIO_REGISTER],
 
         // "login" シナリオでは、username と password が必須
-        [['username', 'password'], 'required', 'on' => 'login'],
+        [['username', 'password'], 'required', 'on' => self::SCENARIO_LOGIN],
     ];
 }
 ```
@@ -319,8 +322,8 @@ $model->body = isset($data['body']) ? $data['body'] : null;
 public function scenarios()
 {
     return [
-        'login' => ['username', 'password'],
-        'register' => ['username', 'email', 'password'],
+        self::SCENARIO_LOGIN => ['username', 'password'],
+        self::SCENARIO_REGISTER => ['username', 'email', 'password'],
     ];
 }
 ```
@@ -355,7 +358,7 @@ public function rules()
 public function scenarios()
 {
     return [
-        'login' => ['username', 'password', '!secret'],
+        self::SCENARIO_LOGIN => ['username', 'password', '!secret'],
     ];
 }
 ```

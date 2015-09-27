@@ -52,41 +52,26 @@
         "source": "https://github.com/yiisoft/yii2"
     },
     "minimum-stability": "dev",
+    "replace": {
+        "yiisoft/yii2": "self.version"
+    },
     "require": {
         "php": ">=5.4.0",
         "ext-mbstring": "*",
         "lib-pcre": "*",
+        "yiisoft/yii2-composer": "*",
         "ezyang/htmlpurifier": "4.6.*",
         "cebe/markdown": "~1.0.0 | ~1.1.0",
         "bower-asset/jquery": "2.1.*@stable | 1.11.*@stable",
         "bower-asset/jquery.inputmask": "3.1.*",
         "bower-asset/punycode": "1.3.*",
-        "bower-asset/yii2-pjax": "2.0.*",
-        "bower-asset/bootstrap": "3.3.* | 3.2.* | 3.1.*",
-        "bower-asset/jquery-ui": "1.11.*@stable",
-        "bower-asset/typeahead.js": "0.10.*"
+        "bower-asset/yii2-pjax": ">=2.0.1"
     },
     "require-dev": {
-        "phpunit/phpunit": "~4.5",
-        "twig/twig": "*",
-        "smarty/smarty": "~3.1",
-        "imagine/imagine": "0.5.*",
-        "swiftmailer/swiftmailer": "*",
-        "fzaninotto/faker": "*",
+        "phpunit/phpunit": "~4.4",
         "cebe/indent": "*"
     },
     "suggest": {
-        "phpdocumentor/reflection": "required by yii2-apidoc extension",
-        "ext-curl": "required by yii2-elasticsearch extension",
-        "ext-mongo": "required by yii2-mongo extension",
-        "ext-pdo": "required by yii2-sphinx extension",
-        "ext-pdo_mysql": "required by yii2-sphinx extension",
-        "fzaninotto/faker": "required by yii2-faker extension",
-        "imagine/imagine": "required by yii2-imagine extension",
-        "phpspec/php-diff": "required by yii2-gii extension",
-        "smarty/smarty": "required by yii2-smarty extension",
-        "swiftmailer/swiftmailer": "required by yii2-swiftmailer extension",
-        "twig/twig": "required by yii2-twig extension",
         "yiisoft/yii2-coding-standards": "you can use this package to check for code style issues when contributing to yii"
     },
     "autoload": {

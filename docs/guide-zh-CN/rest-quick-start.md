@@ -60,6 +60,23 @@ class UserController extends ActiveController
 用户的数据就能通过美化的 URL 和有意义的 http 动词进行访问和操作。
 
 
+## 启用 JSON 输入 <span id="enabling-json-input"></span>
+
+为了使 API 接收 JSON 格式的输入数据，配置 `request` 应用程序组件的 [[yii\web\Request::$parsers|parsers]]
+属性使用 [[yii\web\JsonParser]] 用于JSON输入： 
+
+```php
+'request' => [
+    'parsers' => [
+        'application/json' => 'yii\web\JsonParser',
+    ]
+]
+```
+
+> 补充：上述配置是可选的。若未按上述配置，API 将仅可以分辨 
+  `application/x-www-form-urlencoded` 和 `multipart/form-data` 输入格式。
+
+
 ## 尝试 <span id="trying-it-out"></span>
 
 随着以上所做的最小的努力，你已经完成了创建用于访问用户数据
@@ -76,16 +93,15 @@ class UserController extends ActiveController
 * `OPTIONS /users/123`: 显示有关末端 `/users/123` 支持的动词
 
 > 补充：Yii 将在末端使用的控制器的名称自动变为复数。（译注：个人感觉这里应该变为注意）
+> 你可以用 [[yii\rest\UrlRule::$pluralize]]-属性来配置此项。
 
-你可以访问你的API用`curl`命令如下，
+你可以访问你的API用 `curl` 命令如下，
 
 ```
 $ curl -i -H "Accept:application/json" "http://localhost/users"
 
 HTTP/1.1 200 OK
-Date: Sun, 02 Mar 2014 05:31:43 GMT
-Server: Apache/2.2.26 (Unix) DAV/2 PHP/5.4.20 mod_ssl/2.2.26 OpenSSL/0.9.8y
-X-Powered-By: PHP/5.4.20
+...
 X-Pagination-Total-Count: 1000
 X-Pagination-Page-Count: 50
 X-Pagination-Current-Page: 1
@@ -109,15 +125,14 @@ Content-Type: application/json; charset=UTF-8
 ]
 ```
 
-试着改变可接受的内容类型为`application/xml`，你会看到结果以 XML 格式返回：
+试着改变可接受的内容类型为`application/xml`，
+你会看到结果以 XML 格式返回：
 
 ```
 $ curl -i -H "Accept:application/xml" "http://localhost/users"
 
 HTTP/1.1 200 OK
-Date: Sun, 02 Mar 2014 05:31:43 GMT
-Server: Apache/2.2.26 (Unix) DAV/2 PHP/5.4.20 mod_ssl/2.2.26 OpenSSL/0.9.8y
-X-Powered-By: PHP/5.4.20
+...
 X-Pagination-Total-Count: 1000
 X-Pagination-Page-Count: 50
 X-Pagination-Current-Page: 1
@@ -140,6 +155,20 @@ Content-Type: application/xml
     </item>
     ...
 </response>
+```
+
+以下命令将创建一个新的用户通过发送JSON格式的用户数据的 POST 请求：
+
+```
+$ curl -i -H "Accept:application/json" -H "Content-Type:application/json" -XPOST "http://localhost/users" -d '{"username": "example", "email": "user@example.com"}'
+
+HTTP/1.1 201 Created
+...
+Location: http://localhost/users/1
+Content-Length: 99
+Content-Type: application/json; charset=UTF-8
+
+{"id":1,"username":"example","email":"user@example.com","created_at":1414674789,"updated_at":1414674789}
 ```
 
 > 技巧：你还可以通过 Web 浏览器中输入 URL `http://localhost/users` 来访问你的 API。
@@ -169,5 +198,6 @@ Content-Type: application/xml
 
 你可以使用 [[yii\rest\UrlRule]] 简化路由到你的 API 末端。
 
-为了方便维护你的WEB前端和后端，建议你开发接口作为一个单独的应用程序，虽然这不是必须的。
+为了方便维护你的WEB前端和后端，建议你开发接口作为一个单独的应用程序，
+虽然这不是必须的。
 

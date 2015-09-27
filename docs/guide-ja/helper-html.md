@@ -74,7 +74,57 @@ echo Html::tag('div', 'Pwede na', $options);
 // <div class="btn btn-success">Pwede na</div>
 ```
 
-同じことを `style` 属性のスタイルについて行うためには、次のようにします。
+配列形式を使って複数の CSS クラスを指定することも出来ます。
+
+```php
+$options = ['class' => ['btn', 'btn-default']];
+
+echo Html::tag('div', 'Save', $options);
+// '<div class="btn btn-default">Save</div>' をレンダリングする
+```
+
+クラスを追加・削除する際にも配列形式を使うことが出来ます。
+
+```php
+$options = ['class' => 'btn'];
+
+if ($type === 'success') {
+    Html::addCssClass($options, ['btn-success', 'btn-lg']);
+}
+
+echo Html::tag('div', 'Save', $options);
+// '<div class="btn btn-success btn-lg">Save</div>' をレンダリングする
+```
+
+`Html::addCssClass()` はクラスの重複を防止しますので、同じクラスが二度出現するかも知れないと心配する必要はありません。
+
+```php
+$options = ['class' => 'btn btn-default'];
+
+Html::addCssClass($options, 'btn-default'); // クラス 'btn-default' は既に存在する
+
+echo Html::tag('div', 'Save', $options);
+// '<div class="btn btn-default">Save</div>' をレンダリングする
+```
+
+CSS のクラスオプションを配列形式で指定する場合には、名前付きのキーを使ってクラスの論理的な目的を示すことが出来ます。
+この場合、`Html::addCssClass()` で同じキーを持つクラスを指定しても無視されます。
+
+```php
+$options = [
+    'class' => [
+        'btn',
+        'theme' => 'btn-default',
+    ]
+];
+
+Html::addCssClass($options, ['theme' => 'btn-success']); // 'theme' キーは既に使用されている
+
+echo Html::tag('div', 'Save', $options);
+// '<div class="btn btn-default">Save</div>' をレンダリングする
+```
+
+CSS のスタイルも `style` 属性を使って、同じように設定することが出来ます。
 
 ```php
 $options = ['style' => ['width' => '100px', 'height' => '100px']];

@@ -25,6 +25,7 @@
 
 namespace app\models;
 
+use Yii;
 use yii\base\Model;
 
 class EntryForm extends Model
@@ -53,7 +54,7 @@ class EntryForm extends Model
 上記で宣言されている検証規則は次のことを述べています。
 
 * `name` と `email` は、ともに値を要求される
-* `email` のデータは構文的に正当なメールアドレスでなければならない
+* `email` のデータは構文的に有効なメールアドレスでなければならない
 
 ユーザによって入力されたデータを `EntryForm` オブジェクトに投入した後、[[yii\base\Model::validate()|validate()]] を呼んでデータ検証ルーチンを始動することが出来ます。
 データ検証が失敗すると [[yii\base\Model::hasErrors|hasErrors]] プロパティが true に設定されます。
@@ -177,7 +178,7 @@ use yii\widgets\ActiveForm;
 試してみる <span id="trying-it-out"></span>
 ----------
 
-どのように動作するかを見るために、ブラウザで下記の URL をアクセスしてください。
+どのように動作するかを見るために、ブラウザで下記の URL にアクセスしてください。
 
 ```
 http://hostname/index.php?r=site/entry
@@ -225,7 +226,7 @@ http://hostname/index.php?r=site/entry
 まとめ <span id="summary"></span>
 ------
 
-ガイドのこの節においては、MVC デザインパターンの全ての部分に触れました。
+ガイドのこの節においては、MVC アーキテクチャパターンの全ての部分に触れました。
 そして、ユーザデータを表現し、当該データを検証するモデルクラスを作成する方法を学びました。
 
 また、ユーザからデータを取得する方法と、ブラウザにデータを表示して返す方法も学びました。

@@ -44,6 +44,10 @@ abstract class ErrorHandler extends Component
      * @var string Used to reserve memory for fatal error handler.
      */
     private $_memoryReserve;
+    /**
+     * @var \Exception from HHVM error that stores backtrace
+     */
+    private $_hhvmException;
 
 
     /**
@@ -53,7 +57,11 @@ abstract class ErrorHandler extends Component
     {
         ini_set('display_errors', false);
         set_exception_handler([$this, 'handleException']);
-        set_error_handler([$this, 'handleError']);
+        if (defined('HHVM_VERSION')) {
+            set_error_handler([$this, 'handleHhvmError']);
+        } else {
+            set_error_handler([$this, 'handleError']);
+        }
         if ($this->memoryReserveSize > 0) {
             $this->_memoryReserve = str_repeat('x', $this->memoryReserveSize);
         }
@@ -87,6 +95,12 @@ abstract class ErrorHandler extends Component
         // disable error capturing to avoid recursive errors while handling exceptions
         $this->unregister();
 
+        // set preventive HTTP status code to 500 in case error handling somehow fails and headers are sent
+        // HTTP exceptions will override this value in renderException()
+        if (PHP_SAPI !== 'cli') {
+            http_response_code(500);
+        }
+
         try {
             $this->logException($exception);
             if ($this->discardExistingOutput) {
@@ -94,11 +108,16 @@ abstract class ErrorHandler extends Component
             }
             $this->renderException($exception);
             if (!YII_ENV_TEST) {
+                \Yii::getLogger()->flush(true);
+                if (defined('HHVM_VERSION')) {
+                    flush();
+                }
                 exit(1);
             }
         } catch (\Exception $e) {
             // an other exception could be thrown while displaying the exception
-            $msg = (string) $e;
+            $msg = "An Error occurred while handling another error:\n";
+            $msg .= (string) $e;
             $msg .= "\nPrevious exception:\n";
             $msg .= (string) $exception;
             if (YII_DEBUG) {
@@ -112,14 +131,45 @@ abstract class ErrorHandler extends Component
             }
             $msg .= "\n\$_SERVER = " . VarDumper::export($_SERVER);
             error_log($msg);
-
-            if (PHP_SAPI !== 'cli') {
-                http_response_code(500);
+            if (defined('HHVM_VERSION')) {
+                flush();
             }
             exit(1);
         }
 
         $this->exception = null;
+    }
+
+    /**
+     * Handles HHVM execution errors such as warnings and notices.
+     *
+     * This method is used as a HHVM error handler. It will store exception that will
+     * be used in fatal error handler
+     *
+     * @param integer $code the level of the error raised.
+     * @param string $message the error message.
+     * @param string $file the filename that the error was raised in.
+     * @param integer $line the line number the error was raised at.
+     * @param mixed $context
+     * @param mixed $backtrace trace of error
+     * @return boolean whether the normal error handler continues.
+     *
+     * @throws ErrorException
+     * @since 2.0.6
+     */
+    public function handleHhvmError($code, $message, $file, $line, $context, $backtrace)
+    {
+        if ($this->handleError($code, $message, $file, $line)) {
+            return true;
+        }
+        if (E_ERROR & $code) {
+            $exception = new ErrorException($message, $code, $code, $file, $line);
+            $ref = new \ReflectionProperty('\Exception', 'trace');
+            $ref->setAccessible(true);
+            $ref->setValue($exception, $backtrace);
+            $this->_hhvmException = $exception;
+        }
+        return false;
     }
 
     /**
@@ -151,6 +201,9 @@ abstract class ErrorHandler extends Component
             foreach ($trace as $frame) {
                 if ($frame['function'] == '__toString') {
                     $this->handleException($exception);
+                    if (defined('HHVM_VERSION')) {
+                        flush();
+                    }
                     exit(1);
                 }
             }
@@ -176,7 +229,11 @@ abstract class ErrorHandler extends Component
         $error = error_get_last();
 
         if (ErrorException::isFatalError($error)) {
-            $exception = new ErrorException($error['message'], $error['type'], $error['type'], $error['file'], $error['line']);
+            if (!empty($this->_hhvmException)) {
+                $exception = $this->_hhvmException;
+            } else {
+                $exception = new ErrorException($error['message'], $error['type'], $error['type'], $error['file'], $error['line']);
+            }
             $this->exception = $exception;
 
             $this->logException($exception);
@@ -188,7 +245,9 @@ abstract class ErrorHandler extends Component
 
             // need to explicitly flush logs because exit() next will terminate the app immediately
             Yii::getLogger()->flush(true);
-
+            if (defined('HHVM_VERSION')) {
+                flush();
+            }
             exit(1);
         }
     }
@@ -212,7 +271,7 @@ abstract class ErrorHandler extends Component
         } elseif ($exception instanceof \ErrorException) {
             $category .= ':' . $exception->getSeverity();
         }
-        Yii::error((string) $exception, $category);
+        Yii::error($exception, $category);
     }
 
     /**

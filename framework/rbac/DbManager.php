@@ -60,11 +60,11 @@ class DbManager extends BaseManager
      */
     public $ruleTable = '{{%auth_rule}}';
     /**
-     * @var Cache|array|string the cache used to improve RBAC performance. This can be one of the followings:
+     * @var Cache|array|string the cache used to improve RBAC performance. This can be one of the following:
      *
      * - an application component ID (e.g. `cache`)
      * - a configuration array
-     * - a [[yii\caching\Cache]] object
+     * - a [[\yii\caching\Cache]] object
      *
      * When this is not set, it means caching is not enabled.
      *
@@ -85,6 +85,7 @@ class DbManager extends BaseManager
      * @since 2.0.3
      */
     public $cacheKey = 'rbac';
+
     /**
      * @var Item[] all auth items (name => Item)
      */
@@ -97,6 +98,7 @@ class DbManager extends BaseManager
      * @var array auth item parent-child relationships (childName => list of parents)
      */
     protected $parents;
+
 
     /**
      * Initializes the application component.
@@ -158,7 +160,7 @@ class DbManager extends BaseManager
 
         if (!empty($this->parents[$itemName])) {
             foreach ($this->parents[$itemName] as $parent) {
-                if ($this->checkAccessRecursive($user, $parent, $params, $assignments)) {
+                if ($this->checkAccessFromCache($user, $parent, $params, $assignments)) {
                     return true;
                 }
             }
@@ -214,6 +216,10 @@ class DbManager extends BaseManager
      */
     protected function getItem($name)
     {
+        if (empty($name)) {
+            return null;
+        }
+
         if (!empty($this->items[$name])) {
             return $this->items[$name];
         }
@@ -454,7 +460,8 @@ class DbManager extends BaseManager
         $query = (new Query)->select('b.*')
             ->from(['a' => $this->assignmentTable, 'b' => $this->itemTable])
             ->where('{{a}}.[[item_name]]={{b}}.[[name]]')
-            ->andWhere(['a.user_id' => (string) $userId]);
+            ->andWhere(['a.user_id' => (string) $userId])
+            ->andWhere(['b.type' => Item::TYPE_ROLE]);
 
         $roles = [];
         foreach ($query->all($this->db) as $row) {
@@ -494,6 +501,43 @@ class DbManager extends BaseManager
             return [];
         }
 
+        $directPermission = $this->getDirectPermissionsByUser($userId);
+        $inheritedPermission = $this->getInheritedPermissionsByUser($userId);
+
+        return array_merge($directPermission, $inheritedPermission);
+    }
+
+    /**
+     * Returns all permissions that are directly assigned to user.
+     * @param string|integer $userId the user ID (see [[\yii\web\User::id]])
+     * @return Permission[] all direct permissions that the user has. The array is indexed by the permission names.
+     *
+     * @since 2.0.7
+     */
+    protected function getDirectPermissionsByUser($userId)
+    {
+        $query = (new Query)->select('b.*')
+            ->from(['a' => $this->assignmentTable, 'b' => $this->itemTable])
+            ->where('{{a}}.[[item_name]]={{b}}.[[name]]')
+            ->andWhere(['a.user_id' => (string) $userId])
+            ->andWhere(['b.type' => Item::TYPE_PERMISSION]);
+
+        $permissions = [];
+        foreach ($query->all($this->db) as $row) {
+            $permissions[$row['name']] = $this->populateItem($row);
+        }
+        return $permissions;
+    }
+
+    /**
+     * Returns all permissions that the user inherits from the roles assigned to him.
+     * @param string|integer $userId the user ID (see [[\yii\web\User::id]])
+     * @return Permission[] all inherited permissions that the user has. The array is indexed by the permission names.
+     *
+     * @since 2.0.7
+     */
+    protected function getInheritedPermissionsByUser($userId)
+    {
         $query = (new Query)->select('item_name')
             ->from($this->assignmentTable)
             ->where(['user_id' => (string) $userId]);

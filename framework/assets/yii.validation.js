@@ -36,7 +36,7 @@ yii.validation = (function ($) {
             }
         },
 
-        boolean: function (value, messages, options) {
+        'boolean': function (value, messages, options) {
             if (options.skipOnEmpty && pub.isEmpty(value)) {
                 return;
             }
@@ -237,8 +237,10 @@ yii.validation = (function ($) {
             var $input = $form.find(attribute.input);
             var value = $input.val();
             if (!options.skipOnEmpty || !pub.isEmpty(value)) {
-                $input.val($.trim(value));
+                value = $.trim(value);
+                $input.val(value);
             }
+            return value;
         },
 
         captcha: function (value, messages, options) {

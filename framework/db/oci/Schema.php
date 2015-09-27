@@ -33,6 +33,7 @@ class Schema extends \yii\db\Schema
         'ORA-00001: unique constraint' => 'yii\db\IntegrityException',
     ];
 
+
     /**
      * @inheritdoc
      */
@@ -66,6 +67,14 @@ class Schema extends \yii\db\Schema
     public function createQueryBuilder()
     {
         return new QueryBuilder($this->db);
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function createColumnSchemaBuilder($type, $length = null)
+    {
+        return new ColumnSchemaBuilder($type, $length);
     }
 
     /**
@@ -195,7 +204,7 @@ SQL;
      * Sequence name of table
      *
      * @param $tableName
-     * @internal param \yii\db\TableSchema $table ->name the table schema
+     * @internal param \yii\db\TableSchema $table->name the table schema
      * @return string whether the sequence exists
      */
     protected function getTableSequenceName($tableName)
@@ -265,7 +274,7 @@ SQL;
     protected function findConstraints($table)
     {
         $sql = <<<SQL
-SELECT D.CONSTRAINT_NAME, C.COLUMN_NAME, C.POSITION, D.R_CONSTRAINT_NAME,
+SELECT D.CONSTRAINT_NAME, D.CONSTRAINT_TYPE, C.COLUMN_NAME, C.POSITION, D.R_CONSTRAINT_NAME,
         E.TABLE_NAME AS TABLE_REF, F.COLUMN_NAME AS COLUMN_REF,
         C.TABLE_NAME
 FROM ALL_CONS_COLUMNS C
@@ -274,7 +283,6 @@ LEFT JOIN ALL_CONSTRAINTS E ON E.OWNER = D.R_OWNER AND E.CONSTRAINT_NAME = D.R_C
 LEFT JOIN ALL_CONS_COLUMNS F ON F.OWNER = E.OWNER AND F.CONSTRAINT_NAME = E.CONSTRAINT_NAME AND F.POSITION = C.POSITION
 WHERE C.OWNER = :schemaName
    AND C.TABLE_NAME = :tableName
-   AND D.CONSTRAINT_TYPE = 'R'
 ORDER BY D.CONSTRAINT_NAME, C.POSITION
 SQL;
         $command = $this->db->createCommand($sql, [
@@ -285,6 +293,11 @@ SQL;
         foreach ($command->queryAll() as $row) {
             if ($this->db->slavePdo->getAttribute(\PDO::ATTR_CASE) === \PDO::CASE_LOWER) {
                 $row = array_change_key_case($row, CASE_UPPER);
+            }
+            if ($row['CONSTRAINT_TYPE'] !== 'R') {
+                // this condition is not checked in SQL WHERE because of an Oracle Bug:
+                // see https://github.com/yiisoft/yii2/pull/8844
+                continue;
             }
             $name = $row['CONSTRAINT_NAME'];
             if (!isset($constraints[$name])) {
@@ -366,6 +379,7 @@ SQL;
      *
      * @param TableSchema $table the table metadata
      * @return array all unique indexes for the given table.
+     * @since 2.0.4
      */
     public function findUniqueIndexes($table)
     {
@@ -393,9 +407,12 @@ SQL;
      * Extracts the data types for the given column
      * @param ColumnSchema $column
      * @param string $dbType DB type
-     * @param string $precision total number of digits
-     * @param string $scale number of digits on the right of the decimal separator
-     * @param string $length length for character types
+     * @param string $precision total number of digits.
+     * This parameter is available since version 2.0.4.
+     * @param string $scale number of digits on the right of the decimal separator.
+     * This parameter is available since version 2.0.4.
+     * @param string $length length for character types.
+     * This parameter is available since version 2.0.4.
      */
     protected function extractColumnType($column, $dbType, $precision, $scale, $length)
     {
@@ -424,14 +441,66 @@ SQL;
      * Extracts size, precision and scale information from column's DB type.
      * @param ColumnSchema $column
      * @param string $dbType the column's DB type
-     * @param string $precision total number of digits
-     * @param string $scale number of digits on the right of the decimal separator
-     * @param string $length length for character types
+     * @param string $precision total number of digits.
+     * This parameter is available since version 2.0.4.
+     * @param string $scale number of digits on the right of the decimal separator.
+     * This parameter is available since version 2.0.4.
+     * @param string $length length for character types.
+     * This parameter is available since version 2.0.4.
      */
     protected function extractColumnSize($column, $dbType, $precision, $scale, $length)
     {
-        $column->size = trim($length) == '' ? null : (int)$length;
-        $column->precision = trim($precision) == '' ? null : (int)$precision;
-        $column->scale = trim($scale) == '' ? null : (int)$scale;
+        $column->size = trim($length) == '' ? null : (int) $length;
+        $column->precision = trim($precision) == '' ? null : (int) $precision;
+        $column->scale = trim($scale) == '' ? null : (int) $scale;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function insert($table, $columns)
+    {
+        $params = [];
+        $returnParams = [];
+        $sql = $this->db->getQueryBuilder()->insert($table, $columns, $params);
+        $tableSchema = $this->getTableSchema($table);
+        $returnColumns = $tableSchema->primaryKey;
+        if (!empty($returnColumns)) {
+            $columnSchemas = $tableSchema->columns;
+            $returning = [];
+            foreach ((array) $returnColumns as $name) {
+                $phName = QueryBuilder::PARAM_PREFIX . (count($params) + count($returnParams));
+                $returnParams[$phName] = [
+                    'column' => $name,
+                    'value' => null,
+                ];
+                if (!isset($columnSchemas[$name]) || $columnSchemas[$name]->phpType !== 'integer') {
+                    $returnParams[$phName]['dataType'] = \PDO::PARAM_STR;
+                } else {
+                    $returnParams[$phName]['dataType'] = \PDO::PARAM_INT;
+                }
+                $returnParams[$phName]['size'] = isset($columnSchemas[$name]) && isset($columnSchemas[$name]->size) ? $columnSchemas[$name]->size : -1;
+                $returning[] = $this->quoteColumnName($name);
+            }
+            $sql .= ' RETURNING ' . implode(', ', $returning) . ' INTO ' . implode(', ', array_keys($returnParams));
+        }
+
+        $command = $this->db->createCommand($sql, $params);
+        $command->prepare(false);
+
+        foreach ($returnParams as $name => &$value) {
+            $command->pdoStatement->bindParam($name, $value['value'], $value['dataType'], $value['size']);
+        }
+
+        if (!$command->execute()) {
+            return false;
+        }
+
+        $result = [];
+        foreach ($returnParams as $value) {
+            $result[$value['column']] = $value['value'];
+        }
+
+        return $result;
     }
 }
