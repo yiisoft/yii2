@@ -191,7 +191,7 @@ class Schema extends \yii\db\Schema
         $column->name = $info['column_name'];
         $column->allowNull = $info['is_nullable'] == 'YES';
         $column->dbType = $info['data_type'];
-        $column->enumValues = []; // mssql has only vague equivalents to enum
+        $column->enumValues = null; // mssql has only vague equivalents to enum
         $column->isPrimaryKey = null; // primary key will be determined in findColumns() method
         $column->autoIncrement = $info['is_identity'] == 1;
         $column->unsigned = stripos($column->dbType, 'unsigned') !== false;

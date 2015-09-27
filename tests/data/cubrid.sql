@@ -109,7 +109,7 @@ CREATE TABLE "type" (
   "char_col" char(100) NOT NULL,
   "char_col2" varchar(100) DEFAULT 'something',
   "char_col3" string,
-  "escape_col" varchar(100) DEFAULT n'foo\\bar',
+  "escape_col" varchar(100) DEFAULT n'fo''''o\\bar',
   "func_default" varchar(255) NOT NULL DEFAULT 'bar',
   "enum_col" enum('a','B'),
   "float_col" double NOT NULL,

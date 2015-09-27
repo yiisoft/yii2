@@ -120,7 +120,7 @@ CREATE TABLE "type" (
   char_col char(100) NOT NULL,
   char_col2 varchar(100) DEFAULT 'something',
   char_col3 text,
-  escape_col varchar(100) DEFAULT E'foo\\ba''\tr',
+  escape_col varchar(100) DEFAULT E'fo''''o\\ba''\tr',
   func_default VARCHAR NOT NULL DEFAULT TRIM(BOTH 'x' FROM 'xxxbarxxx'),
   float_col double precision NOT NULL,
   float_col2 double precision DEFAULT '1.23',

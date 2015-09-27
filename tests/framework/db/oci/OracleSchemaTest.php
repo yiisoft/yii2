@@ -49,7 +49,7 @@ class OracleSchemaTest extends SchemaTest
         $columns['escape_col']['type'] = 'string';
         $columns['escape_col']['dbType'] = 'VARCHAR2';
         $columns['escape_col']['precision'] = null;
-        $columns['escape_col']['defaultValue'] = "foo\\\\ba'r";
+        $columns['escape_col']['defaultValue'] = "fo''o\\\\ba'r";
         $columns['func_default']['type'] = 'string';
         $columns['func_default']['dbType'] = 'VARCHAR2';
         $columns['func_default']['precision'] = null;

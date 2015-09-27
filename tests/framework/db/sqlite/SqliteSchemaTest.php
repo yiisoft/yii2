@@ -28,7 +28,7 @@ class SqliteSchemaTest extends SchemaTest
         $columns['int_col3']['precision'] = null;
         $columns['escape_col']['dbType'] = 'varchar(100)';
         $columns['escape_col']['precision'] = 100;
-        $columns['escape_col']['defaultValue'] = 'foo\ba\'r';
+        $columns['escape_col']['defaultValue'] = 'fo\'\'o\ba\'r';
         $columns['func_default']['type'] = 'text';
         $columns['func_default']['dbType'] = 'text';
         $columns['func_default']['defaultValue'] = new \yii\db\Expression("TRIM('xxxbarxxx', 'x')");

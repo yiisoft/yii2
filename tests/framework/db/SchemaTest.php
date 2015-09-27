@@ -218,7 +218,7 @@ class SchemaTest extends DatabaseTestCase
                 'size' => 100,
                 'precision' => 100,
                 'scale' => null,
-                'defaultValue' => "foo\\ba'r",
+                'defaultValue' => "fo''o\\ba'r",
             ],
             'func_default' => [
                 'type' => 'string',

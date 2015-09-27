@@ -109,7 +109,7 @@ CREATE TABLE "type" (
   char_col char(100) NOT NULL,
   char_col2 varchar(100) DEFAULT 'something',
   char_col3 text,
-  escape_col varchar(100) DEFAULT 'foo\ba''r',
+  escape_col varchar(100) DEFAULT 'fo''''o\ba''r',
   func_default text NOT NULL DEFAULT (TRIM('xxxbarxxx', 'x')),
   float_col double(4,3) NOT NULL,
   float_col2 double DEFAULT '1.23',

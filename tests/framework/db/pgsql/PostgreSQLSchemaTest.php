@@ -39,7 +39,7 @@ class PostgreSQLSchemaTest extends SchemaTest
         $columns['char_col']['precision'] = null;
         $columns['char_col2']['dbType'] = 'varchar';
         $columns['char_col2']['precision'] = null;
-        $columns['escape_col']['defaultValue'] = "foo\\ba'\tr";
+        $columns['escape_col']['defaultValue'] = "fo''o\\ba'\tr";
         $columns['escape_col']['dbType'] = 'varchar';
         $columns['escape_col']['precision'] = null;
         $columns['func_default']['type'] = 'string';

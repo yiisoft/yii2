@@ -141,7 +141,7 @@ CREATE TABLE "type" (
   "char_col" char(100) NOT NULL,
   "char_col2" varchar2(100) DEFAULT 'something',
   "char_col3" varchar2(4000),
-  "escape_col" varchar2(100) DEFAULT n'foo\\ba''r',
+  "escape_col" varchar2(100) DEFAULT n'fo''''o\\ba''r',
   "func_default" varchar2(255) DEFAULT TRIM(BOTH 'x' FROM 'xxxbarxxx') NOT NULL,
   "float_col" double precision NOT NULL,
   "float_col2" double precision DEFAULT 1.23,

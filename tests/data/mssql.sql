@@ -112,7 +112,7 @@ CREATE TABLE [dbo].[type] (
 	[char_col] [char](100) NOT NULL,
 	[char_col2] [varchar](100) DEFAULT 'something' NULL,
 	[char_col3] [text] NULL,
-  [escape_col] [varchar](100) DEFAULT 'foo\\ba''r' NULL,
+  [escape_col] [varchar](100) DEFAULT 'fo''''o\\ba''r' NULL,
   [func_default] [varchar](100) NOT NULL DEFAULT REPLACE('xxxbarxxx','x',''),
 	[float_col] [decimal](4,3) NOT NULL,
 	[float_col2] [float] DEFAULT '1.23' NULL,

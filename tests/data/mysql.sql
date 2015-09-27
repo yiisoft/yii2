@@ -119,7 +119,7 @@ CREATE TABLE `type` (
   `char_col` char(100) NOT NULL,
   `char_col2` varchar(100) DEFAULT 'something',
   `char_col3` text,
-  `escape_col` varchar(100) DEFAULT n'foo\\ba''r',
+  `escape_col` varchar(100) DEFAULT n'fo''''o\\ba''r',
   `func_default` VARCHAR(255) NOT NULL DEFAULT 'bar',
   `enum_col` enum('a', 'B'),
   `float_col` double(4,3) NOT NULL,
