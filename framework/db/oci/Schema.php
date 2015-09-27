@@ -9,6 +9,7 @@ namespace yii\db\oci;
 
 use yii\base\InvalidCallException;
 use yii\db\Connection;
+use yii\db\Expression;
 use yii\db\TableSchema;
 use yii\db\ColumnSchema;
 
@@ -28,6 +29,7 @@ class Schema extends \yii\db\Schema
      * If left part is found in DB error message exception class from the right part is used.
      */
     public $exceptionMap = [
+        'ORA-02291: integrity constraint' => 'yii\db\IntegrityException',
         'ORA-00001: unique constraint' => 'yii\db\IntegrityException',
     ];
 
@@ -154,8 +156,39 @@ SQL;
                 $table->primaryKey[] = $c->name;
                 $table->sequenceName = $this->getTableSequenceName($table->name);
             }
+            $c->defaultValue = $this->getColumnDefaultValue($c, $c->defaultValue);
         }
         return true;
+    }
+
+    /**
+     * Extracts column default value.
+     * @param ColumnSchema $column
+     * @param string $value default value expression
+     * @return mixed null value, a number, string or \yii\db\Expression object
+     */
+    private function getColumnDefaultValue($column, $value)
+    {
+        if (!strcasecmp($value, 'null') || $value === '' || $value === null) {
+            return null;
+        }
+        $firstChar = strtolower($value{0});
+        $secondChar = strlen($value) > 1 ? strtolower($value{1}) : null;
+        $isQuoted = $firstChar === "'" || ($firstChar === 'n' && $secondChar === "'");
+        $isNumeric = $firstChar === '.' || ('0' <= $firstChar && $firstChar <= '9')
+            || (($firstChar === '-' || $firstChar === '+') && '0' <= $secondChar && $secondChar <= '9');
+        //! @todo DATE typecasts should be detected here
+        if (!$isQuoted && !$isNumeric) {
+            return new Expression($value);
+        }
+        // widechar functions are not required here because only single chars are replaced
+
+        if ($firstChar === 'n') {
+            $value = str_replace("''", "'", substr($value, 2, -1));
+        } elseif ($firstChar === "'") {
+            $value = str_replace("''", "'", substr($value, 1, -1));
+        }
+        return $column->phpTypecast($value);
     }
 
     /**
@@ -220,28 +253,7 @@ SQL;
         $this->extractColumnSize($c, $column['DATA_TYPE'], $column['DATA_PRECISION'], $column['DATA_SCALE'], $column['DATA_LENGTH']);
 
         $c->phpType = $this->getColumnPhpType($c);
-
-        if (!$c->isPrimaryKey) {
-            if (stripos($column['DATA_DEFAULT'], 'timestamp') !== false) {
-                $c->defaultValue = null;
-            } else {
-                $defaultValue = $column['DATA_DEFAULT'];
-                if ($c->type === 'timestamp' && $defaultValue === 'CURRENT_TIMESTAMP') {
-                    $c->defaultValue = new Expression('CURRENT_TIMESTAMP');
-                } else {
-                    if ($defaultValue !== null) {
-                        if (($len = strlen($defaultValue)) > 2 && $defaultValue[0] === "'"
-                            && $defaultValue[$len - 1] === "'"
-                        ) {
-                            $defaultValue = substr($column['DATA_DEFAULT'], 1, -1);
-                        } else {
-                            $defaultValue = trim($defaultValue);
-                        }
-                    }
-                    $c->defaultValue = $c->phpTypecast($defaultValue);
-                }
-            }
-        }
+        $c->defaultValue = $column['DATA_DEFAULT'];
 
         return $c;
     }

@@ -51,7 +51,7 @@ class OracleActiveRecordTest extends ActiveRecordTest
         $this->assertEquals('something', $model->char_col2);
         $this->assertEquals(1.23, $model->float_col2);
         $this->assertEquals(33.22, $model->numeric_col);
-        $this->assertEquals(true, $model->bool_col2);
+        $this->assertEquals(true, (bool)$model->bool_col2);
 
         // not testing $model->time, because oci\Schema can't read default value
 

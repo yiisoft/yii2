@@ -38,9 +38,9 @@ $config = [
             'fixture' => __DIR__ . '/mssql.sql',
         ],
         'oci' => [
-            'dsn' => 'oci:Server=localhost;Database=test',
-            'username' => '',
-            'password' => '',
+            'dsn' => 'oci:dbname=(DESCRIPTION=(ADDRESS_LIST=(ADDRESS=(PROTOCOL=TCP)(HOST=localhost)(PORT=1521)))(CONNECT_DATA=(SID=XE)));charset=AL32UTF8;',
+            'username' => 'xe',
+            'password' => 'xe',
             'fixture' => __DIR__ . '/oci.sql',
         ],
         'pgsql' => [

@@ -22,10 +22,15 @@ class OracleSchemaTest extends SchemaTest
         $columns['int_col']['size'] = 22;
         $columns['int_col']['precision'] = null;
         $columns['int_col']['scale'] = 0;
+        $columns['int_col']['autoIncrement'] = false;
         $columns['int_col2']['dbType'] = 'NUMBER';
         $columns['int_col2']['size'] = 22;
         $columns['int_col2']['precision'] = null;
         $columns['int_col2']['scale'] = 0;
+        $columns['int_col3']['dbType'] = 'NUMBER';
+        $columns['int_col3']['size'] = 22;
+        $columns['int_col3']['precision'] = null;
+        $columns['int_col3']['scale'] = 0;
         $columns['smallint_col']['dbType'] = 'NUMBER';
         $columns['smallint_col']['type'] = 'integer';
         $columns['smallint_col']['size'] = 22;
@@ -41,6 +46,14 @@ class OracleSchemaTest extends SchemaTest
         $columns['char_col3']['dbType'] = 'VARCHAR2';
         $columns['char_col3']['precision'] = null;
         $columns['char_col3']['size'] = 4000;
+        $columns['escape_col']['type'] = 'string';
+        $columns['escape_col']['dbType'] = 'VARCHAR2';
+        $columns['escape_col']['precision'] = null;
+        $columns['escape_col']['defaultValue'] = "foo\\\\ba'r";
+        $columns['func_default']['type'] = 'string';
+        $columns['func_default']['dbType'] = 'VARCHAR2';
+        $columns['func_default']['precision'] = null;
+        $columns['func_default']['defaultValue'] = new Expression("TRIM(BOTH 'x' FROM 'xxxbarxxx') ");
         $columns['float_col']['dbType'] = 'FLOAT';
         $columns['float_col']['precision'] = 126;
         $columns['float_col']['scale'] = null;
@@ -49,6 +62,10 @@ class OracleSchemaTest extends SchemaTest
         $columns['float_col2']['precision'] = 126;
         $columns['float_col2']['scale'] = null;
         $columns['float_col2']['size'] = 22;
+        $columns['float_col3']['dbType'] = 'FLOAT';
+        $columns['float_col3']['precision'] = 126;
+        $columns['float_col3']['scale'] = null;
+        $columns['float_col3']['size'] = 22;
         $columns['blob_col']['dbType'] = 'BLOB';
         $columns['blob_col']['phpType'] = 'resource';
         $columns['blob_col']['type'] = 'binary';
@@ -58,7 +75,7 @@ class OracleSchemaTest extends SchemaTest
         $columns['time']['dbType'] = 'TIMESTAMP(6)';
         $columns['time']['size'] = 11;
         $columns['time']['scale'] = 6;
-        $columns['time']['defaultValue'] = null;
+        $columns['time']['defaultValue'] = new Expression("to_timestamp('2002-01-01 00:00:00', 'yyyy-mm-dd hh24:mi:ss') ");
         $columns['bool_col']['type'] = 'string';
         $columns['bool_col']['phpType'] = 'string';
         $columns['bool_col']['dbType'] = 'CHAR';
@@ -69,19 +86,23 @@ class OracleSchemaTest extends SchemaTest
         $columns['bool_col2']['dbType'] = 'CHAR';
         $columns['bool_col2']['size'] = 1;
         $columns['bool_col2']['precision'] = null;
-        $columns['bool_col2']['defaultValue'] = '1';
+        $columns['bool_col2']['defaultValue'] = '1 ';
         $columns['ts_default']['type'] = 'timestamp';
         $columns['ts_default']['phpType'] = 'string';
         $columns['ts_default']['dbType'] = 'TIMESTAMP(6)';
         $columns['ts_default']['scale'] = 6;
         $columns['ts_default']['size'] = 11;
-        $columns['ts_default']['defaultValue'] = null;
+        $columns['ts_default']['defaultValue'] = new Expression("CURRENT_TIMESTAMP ");
+        $columns['date_default']['type'] = 'string';
+        $columns['date_default']['dbType'] = 'DATE';
+        $columns['date_default']['size'] = 7;
+        $columns['date_default']['defaultValue'] = new Expression("DATE '2015-04-12' ");
         $columns['bit_col']['type'] = 'string';
         $columns['bit_col']['phpType'] = 'string';
         $columns['bit_col']['dbType'] = 'CHAR';
         $columns['bit_col']['size'] = 3;
         $columns['bit_col']['precision'] = null;
-        $columns['bit_col']['defaultValue'] = '130';
+        $columns['bit_col']['defaultValue'] = '130 ';
         return $columns;
     }
 
