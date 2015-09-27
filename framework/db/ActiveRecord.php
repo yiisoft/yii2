@@ -116,7 +116,7 @@ class ActiveRecord extends BaseActiveRecord
     public function loadDefaultValues($skipIfSet = true, $skipExpressions = true)
     {
         foreach ($this->getTableSchema()->columns as $column) {
-            if ($column->defaultValue !== null && ( !$skipIfSet || $this->{$column->name} === null)
+            if ($column->defaultValue !== null && (!$skipIfSet || $this->{$column->name} === null)
                 && (!$skipExpressions || !$column->defaultValue instanceof \yii\db\Expression)
             ) {
                 $this->{$column->name} = $column->defaultValue;
