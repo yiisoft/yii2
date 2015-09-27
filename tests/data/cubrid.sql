@@ -13,6 +13,7 @@ DROP TABLE IF EXISTS "category";
 DROP TABLE IF EXISTS "customer";
 DROP TABLE IF EXISTS "profile";
 DROP TABLE IF EXISTS "null_values";
+DROP TABLE IF EXISTS "uuid_pk";
 DROP TABLE IF EXISTS "type";
 DROP TABLE IF EXISTS "constraints";
 DROP TABLE IF EXISTS "animal";
@@ -100,6 +101,11 @@ CREATE TABLE null_values (
   PRIMARY KEY (id)
 );
 
+CREATE TABLE uuid_pk (
+  "id" BINARY(16) NOT NULL,
+  "stringcol" VARCHAR (32) DEFAULT NULL,
+  PRIMARY KEY (id)
+);
 
 CREATE TABLE "type" (
   "int_col" int(11) NOT NULL UNIQUE AUTO_INCREMENT,

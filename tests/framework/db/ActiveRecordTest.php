@@ -7,6 +7,7 @@ use yiiunit\data\ar\Category;
 use yiiunit\data\ar\Customer;
 use yiiunit\data\ar\Document;
 use yiiunit\data\ar\NullValues;
+use yiiunit\data\ar\UuidPk;
 use yiiunit\data\ar\OrderItem;
 use yiiunit\data\ar\Order;
 use yiiunit\data\ar\Item;
@@ -720,6 +721,16 @@ class ActiveRecordTest extends DatabaseTestCase
         $record = new NullValues;
         $this->assertTrue($record->save(false));
         $this->assertEquals(1, $record->id);
+    }
+
+    public function testSaveUuid()
+    {
+        if ($this->driverName === 'mysql' || $this->driverName === 'sqlite' || $this->driverName === 'cubrid') {
+            $this->markTestSkipped('The AR for MySQL, CUBRID and SQLite cannot repopulate the model with a default value set by a trigger or an expression');
+        }
+        $record = new UuidPk;
+        $this->assertTrue($record->save(false));
+        $this->assertNotInstanceOf('\yii\db\Expression', $record->id);
     }
 
     public function testOptimisticLock()

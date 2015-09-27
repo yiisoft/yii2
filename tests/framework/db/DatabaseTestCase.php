@@ -87,7 +87,7 @@ abstract class DatabaseTestCase extends TestCase
                 list($statements, $triggers, $data) = explode('/* TRIGGERS */', $creates, 3);
                 $lines = array_merge(explode('--', $drops), explode(';', $statements), explode('/', $triggers), explode(';', $data));
             } else {
-                $lines = explode(';', file_get_contents($fixture));
+                $lines = explode(";\n", file_get_contents($fixture));
             }
             foreach ($lines as $line) {
                 if (trim($line) !== '') {

@@ -14,6 +14,7 @@ DROP TABLE IF EXISTS "customer";
 DROP TABLE IF EXISTS "profile";
 DROP TABLE IF EXISTS "type";
 DROP TABLE IF EXISTS "null_values";
+DROP TABLE IF EXISTS "uuid_pk";
 DROP TABLE IF EXISTS "constraints";
 DROP TABLE IF EXISTS "animal";
 DROP TABLE IF EXISTS "default_pk";
@@ -98,6 +99,11 @@ CREATE TABLE "null_values" (
   var1 INTEGER UNSIGNED,
   var2 INTEGER,
   var3 INTEGER DEFAULT NULL,
+  stringcol VARCHAR(32) DEFAULT NULL
+);
+
+CREATE TABLE "uuid_pk" (
+  id CHAR(16) PRIMARY KEY NOT NULL DEFAULT (randomblob(16)),
   stringcol VARCHAR(32) DEFAULT NULL
 );
 

@@ -15,6 +15,7 @@ DROP TABLE IF EXISTS "customer" CASCADE;
 DROP TABLE IF EXISTS "profile" CASCADE;
 DROP TABLE IF EXISTS "type" CASCADE;
 DROP TABLE IF EXISTS "null_values" CASCADE;
+DROP TABLE IF EXISTS "uuid_pk" CASCADE;
 DROP TABLE IF EXISTS "constraints" CASCADE;
 DROP TABLE IF EXISTS "bool_values" CASCADE;
 DROP TABLE IF EXISTS "animal" CASCADE;
@@ -108,6 +109,12 @@ CREATE TABLE "null_values" (
   var1 INT NULL,
   var2 INT NULL,
   var3 INT DEFAULT NULL,
+  stringcol VARCHAR(32) DEFAULT NULL,
+  PRIMARY KEY (id)
+);
+
+CREATE TABLE "uuid_pk" (
+  id uuid DEFAULT md5(random()::text || clock_timestamp()::text)::uuid NOT NULL,
   stringcol VARCHAR(32) DEFAULT NULL,
   PRIMARY KEY (id)
 );

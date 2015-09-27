@@ -9,6 +9,7 @@ IF OBJECT_ID('[dbo].[customer]', 'U') IS NOT NULL DROP TABLE [dbo].[customer];
 IF OBJECT_ID('[dbo].[profile]', 'U') IS NOT NULL DROP TABLE [dbo].[profile];
 IF OBJECT_ID('[dbo].[type]', 'U') IS NOT NULL DROP TABLE [dbo].[type];
 IF OBJECT_ID('[dbo].[null_values]', 'U') IS NOT NULL DROP TABLE [dbo].[null_values];
+IF OBJECT_ID('[dbo].[uuid_pk]', 'U') IS NOT NULL DROP TABLE [dbo].[uuid_pk];
 IF OBJECT_ID('[dbo].[constraints]', 'U') IS NOT NULL DROP TABLE [dbo].[constraints];
 IF OBJECT_ID('[dbo].[bool_values]', 'U') IS NOT NULL DROP TABLE [dbo].[bool_values];
 IF OBJECT_ID('[dbo].[animal]', 'U') IS NOT NULL DROP TABLE [dbo].[animal];
@@ -99,7 +100,13 @@ CREATE TABLE [dbo].[null_values] (
   var2 [int] DEFAULT NULL NULL,
   var3 [int] DEFAULT NULL NULL,
   stringcol [varchar](32) DEFAULT NULL NULL,
-  PRIMARY KEY (id)
+	CONSTRAINT [PK_null_values] PRIMARY KEY CLUSTERED (id ASC) ON [PRIMARY]
+);
+
+CREATE TABLE [dbo].[uuid_pk] (
+	id [uniqueidentifier] DEFAULT newid() NOT NULL,
+	stringcol [varchar](32) DEFAULT NULL NULL,
+	CONSTRAINT [PK_uuid_pk] PRIMARY KEY CLUSTERED (id ASC) ON [PRIMARY]
 );
 
 CREATE TABLE [dbo].[type] (

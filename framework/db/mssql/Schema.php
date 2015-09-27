@@ -481,4 +481,19 @@ SQL;
         }
         return $result;
     }
+
+    /**
+     * @inheritdoc
+     */
+    public function insert($table, $columns)
+    {
+        $params = [];
+        $sql = $this->db->getQueryBuilder()->insertWithOutput($table, $columns, $params, $this->getTableSchema($table)->primaryKey);
+
+        $command = $this->db->createCommand($sql, $params);
+        $command->prepare(false);
+        $result = $command->queryOne();
+
+        return !$command->pdoStatement->rowCount() ? false : $result;
+    }
 }
