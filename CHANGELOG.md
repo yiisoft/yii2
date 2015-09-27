@@ -18,14 +18,13 @@ Yii Framework 2 Change Log
 - Bug #9681: `Json::encode()` was erroring under CYGWIN (samdark)
 - Bug #9714: Fixed `yii\rbac\PhpManager::updateItem()` unable to save users assignments (rezident1307)
 - Bug #9754: Fixed `yii\web\Request` error when path info is empty (dynasource)
-- Chg #9369: `Yii::$app->user->can()` now returns `false` instead of erroring in case `authManager` component is not configured (creocoder)
-- Chg #9411: `DetailView` now automatically sets container tag ID in case it's not specified (samdark)
 - Enh #2106: Added Unprocessable Entity HTTP Exception (janfrs)
 - Enh #9476: Added DI injection via controller action method signature (mdmunir)
 - Enh #9635: Added default CSS class for `\yii\grid\ActionColumn` header (arogachev, dynasource)
 - Enh #9643: Added migrations for DB cache (mdmunir)
 - Enh #9711: Added `yii\widgets\LinkPager::$pageCssClass` that allows to set default page class (ShNURoK42)
-
+- Chg #9369: `Yii::$app->user->can()` now returns `false` instead of erroring in case `authManager` component is not configured (creocoder)
+- Chg #9411: `DetailView` now automatically sets container tag ID in case it's not specified (samdark)
 
 2.0.6 August 05, 2015
 ---------------------
