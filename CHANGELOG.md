@@ -14,6 +14,7 @@ Yii Framework 2 Change Log
 - Bug #9591: Fixed `yii.validation.js` code so it is compressable by YUICompressor (samdark, hofrob)
 - Bug #9596: Fixed `\yii\web\UrlManager::createAbsoluteUrl(['site/index', '#' => 'testHash'])` losing hash (alchimik, samdark)
 - Bug #9678: `I18N::format()` wasn't able to handle named placeholder in "selectordinal" (samdark)
+- Bug #9681: `Json::encode()` was erroring under CYGWIN (samdark)
 - Bug #9714: Fixed `yii\rbac\PhpManager::updateItem()` unable to save users assignments (rezident1307)
 - Bug #9754: Fixed `yii\web\Request` error when path info is empty (dynasource)
 - Chg #9369: `Yii::$app->user->can()` now returns `false` instead of erroring in case `authManager` component is not configured (creocoder)
