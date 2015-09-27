@@ -11,6 +11,7 @@ Yii Framework 2 Change Log
 - Bug #9323: Fixed `yii\console\controllers\MessageController` not using database connection specified in config (raccoon69, samdark)
 - Bug #9415: Fixed regression in 2.0.6 where on Oracle DB `PDO::ATTR_CASE = PDO::CASE_LOWER` did not work anymore (cebe)
 - Bug #9442: Fixed `yii\db\Migration::renameTable()` caused fatal error when using SQLite driver (fetus-hina)
+- Bug #9583: Server response on invalid JSON request included a wrong message about "Internal Server Error" with status 500 (cebe)
 - Bug #9591: Fixed `yii.validation.js` code so it is compressable by YUICompressor (samdark, hofrob)
 - Bug #9596: Fixed `\yii\web\UrlManager::createAbsoluteUrl(['site/index', '#' => 'testHash'])` losing hash (alchimik, samdark)
 - Bug #9678: `I18N::format()` wasn't able to handle named placeholder in "selectordinal" (samdark)
