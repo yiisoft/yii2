@@ -263,7 +263,7 @@ SQL;
     public function testInsert()
     {
         $db = $this->getConnection();
-        $db->createCommand('DELETE FROM {{customer}};')->execute();
+        $db->createCommand('DELETE FROM {{customer}}')->execute();
 
         $command = $db->createCommand();
         $command->insert(
@@ -274,8 +274,8 @@ SQL;
                 'address' => 'test address',
             ]
         )->execute();
-        $this->assertEquals(1, $db->createCommand('SELECT COUNT(*) FROM {{customer}};')->queryScalar());
-        $record = $db->createCommand('SELECT email, name, address FROM {{customer}};')->queryOne();
+        $this->assertEquals(1, $db->createCommand('SELECT COUNT(*) FROM {{customer}}')->queryScalar());
+        $record = $db->createCommand('SELECT [[email]], [[name]], [[address]] FROM {{customer}}')->queryOne();
         $this->assertEquals([
             'email' => 't1@example.com',
             'name' => 'test',
@@ -286,7 +286,7 @@ SQL;
     public function testInsertExpression()
     {
         $db = $this->getConnection();
-        $db->createCommand('DELETE FROM {{order_with_null_fk}};')->execute();
+        $db->createCommand('DELETE FROM {{order_with_null_fk}}')->execute();
 
         switch($this->driverName){
             case 'pgsql': $expression = "EXTRACT(YEAR FROM TIMESTAMP 'now')"; break;
@@ -307,8 +307,8 @@ SQL;
                 'total' => 1,
             ]
         )->execute();
-        $this->assertEquals(1, $db->createCommand('SELECT COUNT(*) FROM {{order_with_null_fk}};')->queryScalar());
-        $record = $db->createCommand('SELECT created_at FROM {{order_with_null_fk}};')->queryOne();
+        $this->assertEquals(1, $db->createCommand('SELECT COUNT(*) FROM {{order_with_null_fk}}')->queryScalar());
+        $record = $db->createCommand('SELECT [[created_at]] FROM {{order_with_null_fk}}')->queryOne();
         $this->assertEquals([
             'created_at' => date('Y'),
         ], $record);
@@ -317,11 +317,11 @@ SQL;
     public function testCreateTable()
     {
         $db = $this->getConnection();
-        $db->createCommand("DROP TABLE IF EXISTS testCreateTable;")->execute();
+        $db->createCommand("DROP TABLE IF EXISTS {{testCreateTable}}")->execute();
 
         $db->createCommand()->createTable('testCreateTable', ['id' => Schema::TYPE_PK, 'bar' => Schema::TYPE_INTEGER])->execute();
         $db->createCommand()->insert('testCreateTable', ['bar' => 1])->execute();
-        $records = $db->createCommand('SELECT [[id]], [[bar]] FROM {{testCreateTable}};')->queryAll();
+        $records = $db->createCommand('SELECT [[id]], [[bar]] FROM {{testCreateTable}}')->queryAll();
         $this->assertEquals([
             ['id' => 1, 'bar' => 1],
         ], $records);
@@ -334,7 +334,7 @@ SQL;
         }
 
         $db = $this->getConnection();
-        $db->createCommand("DROP TABLE IF EXISTS testAlterTable;")->execute();
+        $db->createCommand("DROP TABLE IF EXISTS {{testAlterTable}}")->execute();
 
         $db->createCommand()->createTable('testAlterTable', ['id' => Schema::TYPE_PK, 'bar' => Schema::TYPE_INTEGER])->execute();
         $db->createCommand()->insert('testAlterTable', ['bar' => 1])->execute();
@@ -342,7 +342,7 @@ SQL;
         $db->createCommand()->alterColumn('testAlterTable', 'bar', Schema::TYPE_STRING)->execute();
 
         $db->createCommand()->insert('testAlterTable', ['bar' => 'hello'])->execute();
-        $records = $db->createCommand('SELECT [[id]], [[bar]] FROM {{testAlterTable}};')->queryAll();
+        $records = $db->createCommand('SELECT [[id]], [[bar]] FROM {{testAlterTable}}')->queryAll();
         $this->assertEquals([
             ['id' => 1, 'bar' => 1],
             ['id' => 2, 'bar' => 'hello'],

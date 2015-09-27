@@ -23,6 +23,7 @@ BEGIN EXECUTE IMMEDIATE 'DROP TABLE "document"'; EXCEPTION WHEN OTHERS THEN IF S
 BEGIN EXECUTE IMMEDIATE 'DROP VIEW "animal_view"'; EXCEPTION WHEN OTHERS THEN IF SQLCODE != -942 THEN RAISE; END IF; END;--
 BEGIN EXECUTE IMMEDIATE 'DROP TABLE "validator_main"'; EXCEPTION WHEN OTHERS THEN IF SQLCODE != -942 THEN RAISE; END IF; END;--
 BEGIN EXECUTE IMMEDIATE 'DROP TABLE "validator_ref"'; EXCEPTION WHEN OTHERS THEN IF SQLCODE != -942 THEN RAISE; END IF; END;--
+BEGIN EXECUTE IMMEDIATE 'DROP TABLE "bit_values"'; EXCEPTION WHEN OTHERS THEN IF SQLCODE != -942 THEN RAISE; END IF; END;--
 
 BEGIN EXECUTE IMMEDIATE 'DROP SEQUENCE "profile_SEQ"'; EXCEPTION WHEN OTHERS THEN IF SQLCODE != -2289 THEN RAISE; END IF; END;--
 BEGIN EXECUTE IMMEDIATE 'DROP SEQUENCE "customer_SEQ"'; EXCEPTION WHEN OTHERS THEN IF SQLCODE != -2289 THEN RAISE; END IF; END;--
@@ -206,6 +207,15 @@ CREATE TABLE "validator_ref" (
   CONSTRAINT "validator_ref_PK" PRIMARY KEY ("id") ENABLE
 );
 
+
+/* bit test, see https://github.com/yiisoft/yii2/issues/9006 */
+
+CREATE TABLE "bit_values" (
+  "id" integer not null,
+  "val" char(1) NOT NULL CHECK ("val" IN ('1','0')),
+  CONSTRAINT "bit_values_PK" PRIMARY KEY ("id") ENABLE
+);
+
 /* TRIGGERS */
 
 CREATE TRIGGER "profile_TRG" BEFORE INSERT ON "profile" FOR EACH ROW BEGIN <<COLUMN_SEQUENCES>> BEGIN
@@ -298,7 +308,7 @@ INSERT INTO "order_item_with_null_fk" ("order_id", "item_id", "quantity", "subto
 INSERT INTO "order_item_with_null_fk" ("order_id", "item_id", "quantity", "subtotal") VALUES (2, 3, 1, 8.0);
 INSERT INTO "order_item_with_null_fk" ("order_id", "item_id", "quantity", "subtotal") VALUES (3, 2, 1, 40.0);
 
-INSERT INTO "document" ("title", "content", "version") VALUES ('Yii 2.0 guide', 'This is Yii 2.0 guide', 0);
+INSERT INTO "document" ("id", "title", "content", "version") VALUES (1, 'Yii 2.0 guide', 'This is Yii 2.0 guide', 0);
 
 INSERT INTO "validator_main" ("id", "field1") VALUES (1, 'just a string1');
 INSERT INTO "validator_main" ("id", "field1") VALUES (2, 'just a string2');
@@ -311,23 +321,5 @@ INSERT INTO "validator_ref" ("id", "a_field", "ref") VALUES (4, 'ref_to_4', 4);
 INSERT INTO "validator_ref" ("id", "a_field", "ref") VALUES (5, 'ref_to_4', 4);
 INSERT INTO "validator_ref" ("id", "a_field", "ref") VALUES (6, 'ref_to_5', 5);
 
-/* bit test, see https://github.com/yiisoft/yii2/issues/9006 */
-
-BEGIN EXECUTE IMMEDIATE 'DROP TABLE "bit_values"'; EXCEPTION WHEN OTHERS THEN IF SQLCODE != -942 THEN RAISE; END IF; END;--
-
-CREATE TABLE [dbo].[] (
-    [id] [int] IDENTITY(1,1) NOT NULL,
-	[val] [bit] NOT NULL,
-	CONSTRAINT [PK_bit_values] PRIMARY KEY CLUSTERED (
-		[id] ASC
-	) ON [PRIMARY]
-);
-
-CREATE TABLE "bit_values" (
-  "id" integer not null,
-  "val" char(1) NOT NULL,
-  CONSTRAINT "bit_values_PK" PRIMARY KEY ("id") ENABLE,
-  CONSTRAINT "bit_values_val" CHECK (val IN ('1','0'))
-);
-
-INSERT INTO "bit_values" ("id", "val") VALUES (1, '0'), (2, '1');
+INSERT INTO "bit_values" ("id", "val") VALUES (1, '0');
+INSERT INTO "bit_values" ("id", "val") VALUES (2, '1');
