@@ -1,3 +1,4 @@
+IF OBJECT_ID('[dbo].[composite_fk]', 'U') IS NOT NULL DROP TABLE [dbo].[composite_fk];
 IF OBJECT_ID('[dbo].[order_item]', 'U') IS NOT NULL DROP TABLE [dbo].[order_item];
 IF OBJECT_ID('[dbo].[order_item_with_null_fk]', 'U') IS NOT NULL DROP TABLE [dbo].[order_item_with_null_fk];
 IF OBJECT_ID('[dbo].[item]', 'U') IS NOT NULL DROP TABLE [dbo].[item];
@@ -23,9 +24,7 @@ CREATE TABLE [dbo].[constraints] (
 CREATE TABLE [dbo].[profile] (
 	[id] [int] IDENTITY(1,1) NOT NULL,
 	[description] [varchar](128) NOT NULL,
-	CONSTRAINT [PK_profile] PRIMARY KEY CLUSTERED (
-		[id] ASC
-	) ON [PRIMARY]
+	CONSTRAINT [PK_profile] PRIMARY KEY CLUSTERED ([id] ASC) ON [PRIMARY]
 );
 
 CREATE TABLE [dbo].[customer] (
@@ -35,26 +34,21 @@ CREATE TABLE [dbo].[customer] (
 	[address] [text] NULL,
 	[status] [int] DEFAULT 0 NULL,
   [profile_id] [int] NULL,
-	CONSTRAINT [PK_customer] PRIMARY KEY CLUSTERED (
-		[id] ASC
-	) ON [PRIMARY]
+	CONSTRAINT [PK_customer] PRIMARY KEY CLUSTERED ([id] ASC) ON [PRIMARY]
 );
 
 CREATE TABLE [dbo].[category] (
 	[id] [int] IDENTITY(1,1) NOT NULL,
 	[name] [varchar](128) NOT NULL,
-	CONSTRAINT [PK_category] PRIMARY KEY CLUSTERED (
-		[id] ASC
-	) ON [PRIMARY]
+	CONSTRAINT [PK_category] PRIMARY KEY CLUSTERED ([id] ASC) ON [PRIMARY]
 );
 
 CREATE TABLE [dbo].[item] (
 	[id] [int] IDENTITY(1,1) NOT NULL,
 	[name] [varchar](128) NOT NULL,
 	[category_id] [int] NOT NULL,
-	CONSTRAINT [PK_item] PRIMARY KEY CLUSTERED (
-		[id] ASC
-	) ON [PRIMARY]
+	CONSTRAINT [PK_item] PRIMARY KEY CLUSTERED ([id] ASC) ON [PRIMARY],
+	CONSTRAINT [FK_item] FOREIGN KEY ([category_id]) REFERENCES [dbo].[category] ([id]) ON DELETE CASCADE ON UPDATE CASCADE
 );
 
 CREATE TABLE [dbo].[order] (
@@ -62,9 +56,8 @@ CREATE TABLE [dbo].[order] (
 	[customer_id] [int] NOT NULL,
 	[created_at] [int] NOT NULL,
 	[total] [decimal](10,0) NOT NULL,
-	CONSTRAINT [PK_order] PRIMARY KEY CLUSTERED (
-		[id] ASC
-	) ON [PRIMARY]
+	CONSTRAINT [PK_order] PRIMARY KEY CLUSTERED ([id] ASC) ON [PRIMARY],
+	CONSTRAINT [FK_order] FOREIGN KEY ([customer_id]) REFERENCES [dbo].[customer] ([id]) ON DELETE CASCADE ON UPDATE CASCADE
 );
 
 CREATE TABLE [dbo].[order_with_null_fk] (
@@ -72,9 +65,7 @@ CREATE TABLE [dbo].[order_with_null_fk] (
 	[customer_id] [int] NULL,
 	[created_at] [int] NOT NULL,
 	[total] [decimal](10,0) NOT NULL,
-	CONSTRAINT [PK_order_null] PRIMARY KEY CLUSTERED (
-		[id] ASC
-	) ON [PRIMARY]
+	CONSTRAINT [PK_order_null] PRIMARY KEY CLUSTERED ([id] ASC) ON [PRIMARY]
 );
 
 CREATE TABLE [dbo].[order_item] (
@@ -82,10 +73,9 @@ CREATE TABLE [dbo].[order_item] (
 	[item_id] [int] NOT NULL,
 	[quantity] [int] NOT NULL,
 	[subtotal] [decimal](10,0) NOT NULL,
-	CONSTRAINT [PK_order_item] PRIMARY KEY CLUSTERED (
-		[order_id] ASC,
-		[item_id] ASC
-	) ON [PRIMARY]
+	CONSTRAINT [PK_order_item] PRIMARY KEY CLUSTERED ([order_id] ASC, [item_id] ASC) ON [PRIMARY],
+	CONSTRAINT [FK_order_item_order] FOREIGN KEY ([order_id]) REFERENCES [dbo].[order] ([id]) ON DELETE CASCADE ON UPDATE CASCADE,
+	CONSTRAINT [FK_order_item_item] FOREIGN KEY ([item_id]) REFERENCES [dbo].[item] ([id]) ON DELETE CASCADE ON UPDATE CASCADE
 );
 
 CREATE TABLE [dbo].[order_item_with_null_fk] (
@@ -93,6 +83,14 @@ CREATE TABLE [dbo].[order_item_with_null_fk] (
 	[item_id] [int] NULL,
 	[quantity] [int] NOT NULL,
 	[subtotal] [decimal](10,0) NOT NULL
+);
+
+CREATE TABLE [dbo].[composite_fk] (
+  [id] [int] NOT NULL,
+	[order_id] [int] NULL,
+	[item_id] [int] NULL,
+	CONSTRAINT [PK_composite_fk] PRIMARY KEY CLUSTERED ([id] ASC) ON [PRIMARY],
+	CONSTRAINT [FK_composite_fk] FOREIGN KEY ([order_id], [item_id]) REFERENCES [dbo].[order_item] ([order_id], [item_id]) ON DELETE CASCADE ON UPDATE CASCADE
 );
 
 CREATE TABLE [dbo].[null_values] (
@@ -132,25 +130,19 @@ CREATE TABLE [dbo].[bool_values] (
   bool_col [bit] NULL,
   default_true [bit] DEFAULT 1 NOT NULL,
   default_false [bit] DEFAULT 0 NOT NULL,
-	CONSTRAINT [PK_bool_values] PRIMARY KEY CLUSTERED (
-		[id] ASC
-	) ON [PRIMARY]
+	CONSTRAINT [PK_bool_values] PRIMARY KEY CLUSTERED ([id] ASC) ON [PRIMARY]
 );
 
 CREATE TABLE [dbo].[animal] (
 	[id] [int] IDENTITY(1,1) NOT NULL,
 	[type] [varchar](255) NOT NULL,
-	CONSTRAINT [PK_animal] PRIMARY KEY CLUSTERED (
-		[id] ASC
-	) ON [PRIMARY]
+	CONSTRAINT [PK_animal] PRIMARY KEY CLUSTERED ([id] ASC) ON [PRIMARY]
 );
 
 CREATE TABLE [dbo].[default_pk] (
 	[id] [int] NOT NULL DEFAULT 5,
 	[type] [varchar](255) NOT NULL,
-	CONSTRAINT [PK_default_pk] PRIMARY KEY CLUSTERED (
-		[id] ASC
-	) ON [PRIMARY]
+	CONSTRAINT [PK_default_pk] PRIMARY KEY CLUSTERED ([id] ASC) ON [PRIMARY]
 );
 
 CREATE TABLE [dbo].[document] (
@@ -158,9 +150,7 @@ CREATE TABLE [dbo].[document] (
 	[title] [varchar](255) NOT NULL,
 	[content] [text],
 	[version] [int] NOT NULL DEFAULT 0,
-	CONSTRAINT [PK_document] PRIMARY KEY CLUSTERED (
-		[id] ASC
-	) ON [PRIMARY]
+	CONSTRAINT [PK_document] PRIMARY KEY CLUSTERED ([id] ASC) ON [PRIMARY]
 );
 
 CREATE VIEW [dbo].[animal_view] AS SELECT * FROM [dbo].[animal];
@@ -213,11 +203,9 @@ INSERT INTO [dbo].[document] ([title], [content], [version]) VALUES ('Yii 2.0 gu
 IF OBJECT_ID('[dbo].[bit_values]', 'U') IS NOT NULL DROP TABLE [dbo].[bit_values];
 
 CREATE TABLE [dbo].[bit_values] (
-    [id] [int] IDENTITY(1,1) NOT NULL,
+  [id] [int] IDENTITY(1,1) NOT NULL,
 	[val] [bit] NOT NULL,
-	CONSTRAINT [PK_bit_values] PRIMARY KEY CLUSTERED (
-		[id] ASC
-	) ON [PRIMARY]
+	CONSTRAINT [PK_bit_values] PRIMARY KEY CLUSTERED ([id] ASC) ON [PRIMARY]
 );
 
 INSERT INTO [dbo].[bit_values] ([val]) VALUES (0), (1);

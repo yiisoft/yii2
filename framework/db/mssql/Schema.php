@@ -27,6 +27,7 @@ class Schema extends \yii\db\Schema
      */
     public $exceptionMap = [
         'SQLSTATE[23' => 'yii\db\IntegrityException',
+        'SQLSTATE[HY000]: General error: 20018 The INSERT statement conflicted with the FOREIGN KEY constraint' => 'yii\db\IntegrityException',
         'SQLSTATE[HY000]: General error: 20018 Violation of PRIMARY KEY constraint' => 'yii\db\IntegrityException',
         'SQLSTATE[HY000]: General error: 20018 Violation of UNIQUE KEY constraint' => 'yii\db\IntegrityException',
     ];
@@ -398,6 +399,7 @@ SQL;
         // http://msdn2.microsoft.com/en-us/library/aa175805(SQL.80).aspx
         $sql = <<<SQL
 SELECT
+    [kcu1].[constraint_name] AS [constraint_name],
     [kcu1].[column_name] AS [fk_column_name],
     [kcu2].[table_name] AS [uq_table_name],
     [kcu2].[column_name] AS [uq_column_name]
@@ -418,9 +420,20 @@ SQL;
             ':tableName' => $table->name,
             ':schemaName' => $table->schemaName,
         ])->queryAll();
-        $table->foreignKeys = [];
+        $constraints = [];
         foreach ($rows as $row) {
-            $table->foreignKeys[] = [$row['uq_table_name'], $row['fk_column_name'] => $row['uq_column_name']];
+            $name = $row['constraint_name'];
+            if (!isset($constraints[$name])) {
+                $constraints[$name] = [
+                    'tableName' => $row['uq_table_name'],
+                    'columns' => [],
+                ];
+            }
+            $constraints[$name]['columns'][$row['fk_column_name']] = $row['uq_column_name'];
+        }
+        $table->foreignKeys = [];
+        foreach ($constraints as $constraint) {
+            $table->foreignKeys[] = array_merge([$constraint['tableName']], $constraint['columns']);
         }
     }
 
