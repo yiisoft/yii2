@@ -23,7 +23,7 @@ use yii\base\InvalidConfigException;
 class RangeValidator extends Validator
 {
     /**
-     * @var mixed list of valid values that the attribute value should be among or a PHP callable that returns
+     * @var mixed list of valid values that the attribute value should be among or an anonymous function that returns
      * such list. The signature of the PHP callable should be as follows,
      *
      * ```php
