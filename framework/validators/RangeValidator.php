@@ -23,7 +23,15 @@ use yii\base\InvalidConfigException;
 class RangeValidator extends Validator
 {
     /**
-     * @var array list of valid values that the attribute value should be among
+     * @var mixed list of valid values that the attribute value should be among or a PHP callable that returns
+     * such list. The signature of the PHP callable should be as follows,
+     *
+     * ```php
+     * function foo($model, $attribute) {
+     *     // compute range
+     *     return $range;
+     * }
+     * ```
      */
     public $range;
     /**
@@ -47,7 +55,7 @@ class RangeValidator extends Validator
     public function init()
     {
         parent::init();
-        if (!is_array($this->range)) {
+        if (!is_array($this->range) && !($this->range instanceof \Closure)) {
             throw new InvalidConfigException('The "range" property must be set.');
         }
         if ($this->message === null) {
@@ -79,8 +87,24 @@ class RangeValidator extends Validator
     /**
      * @inheritdoc
      */
+    public function validateAttribute($model, $attribute)
+    {
+        if ($this->range instanceof \Closure) {
+            $this->range = call_user_func($this->range, $model, $attribute);
+        }
+
+        parent::validateAttribute($model, $attribute);
+    }
+
+    /**
+     * @inheritdoc
+     */
     public function clientValidateAttribute($model, $attribute, $view)
     {
+        if ($this->range instanceof \Closure) {
+            $this->range = call_user_func($this->range, $model, $attribute);
+        }
+
         $range = [];
         foreach ($this->range as $value) {
             $range[] = (string) $value;
