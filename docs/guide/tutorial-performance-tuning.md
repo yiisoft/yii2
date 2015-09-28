@@ -14,6 +14,7 @@ A well configured PHP environment is very important. In order to get maximum per
 - Enable bytecode caching with [Opcache](http://php.net/opcache) (PHP 5.5 or later) or [APC](http://ru2.php.net/apc) 
   (PHP 5.4 or earlier). Bytecode caching avoids the time spent in parsing and including PHP scripts for every
   incoming request.
+- [Tune `realpath()` cache](https://github.com/samdark/realpath_cache_tuner).
 
 
 ## Disabling Debug Mode <span id="disable-debug"></span>
