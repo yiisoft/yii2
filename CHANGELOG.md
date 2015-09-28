@@ -19,6 +19,7 @@ Yii Framework 2 Change Log
 - Bug #9681: `Json::encode()` was erroring under CYGWIN (samdark)
 - Bug #9714: Fixed `yii\rbac\PhpManager::updateItem()` unable to save users assignments (rezident1307)
 - Bug #9754: Fixed `yii\web\Request` error when path info is empty (dynasource)
+- Enh #7581: Added ability to specify range using anonymous function in `RangeValidator` (RomeroMsk)
 - Enh #8613: `yii\widgets\FragmentCache` will not store empty content anymore which fixes some problems related to `yii\filters\PageCache` (kidol)
 - Enh #9476: Added DI injection via controller action method signature (mdmunir)
 - Enh #9635: Added default CSS class for `\yii\grid\ActionColumn` header (arogachev, dynasource)
