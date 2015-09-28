@@ -9,6 +9,13 @@ version B between A and C, you need to follow the instructions
 for both A and B.
 
 
+Upgrade from Yii 2.0.6
+----------------------
+
+* The signature and behavior of `yii\db\ActiveRecord::loadDefaultValues()` has changed. It has a new argument
+  `$skipExpressions` that defaults to true, meaning all default values that are SQL expressions, not simple literals,
+  are ignored.
+
 Upgrade from Yii 2.0.5
 ----------------------
   

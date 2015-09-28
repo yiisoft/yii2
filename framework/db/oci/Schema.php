@@ -186,12 +186,10 @@ SQL;
         $isQuoted = $firstChar === "'" || ($firstChar === 'n' && $secondChar === "'");
         $isNumeric = $firstChar === '.' || ('0' <= $firstChar && $firstChar <= '9')
             || (($firstChar === '-' || $firstChar === '+') && '0' <= $secondChar && $secondChar <= '9');
-        //! @todo DATE typecasts should be detected here
         if (!$isQuoted && !$isNumeric) {
             return new Expression($value);
         }
         // widechar functions are not required here because only single chars are replaced
-
         if ($firstChar === 'n') {
             $value = str_replace("''", "'", substr($value, 2, -1));
         } elseif ($firstChar === "'") {
