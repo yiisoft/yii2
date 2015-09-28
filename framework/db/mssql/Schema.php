@@ -492,11 +492,17 @@ SQL;
     public function insert($table, $columns)
     {
         $params = [];
-        $sql = $this->db->getQueryBuilder()->insertWithOutput($table, $columns, $params, $this->getTableSchema($table)->primaryKey);
+        $primaryKey = $this->getTableSchema($table)->primaryKey;
+        $sql = $this->db->getQueryBuilder()->insertWithOutput($table, $columns, $params, $primaryKey);
 
         $command = $this->db->createCommand($sql, $params);
-        $command->prepare(false);
-        $result = $command->queryOne();
+        if (empty($primaryKey)) {
+            $command->execute();
+            $result = [];
+        } else {
+            $command->prepare(false);
+            $result = $command->queryOne();
+        }
 
         return !$command->pdoStatement->rowCount() ? false : $result;
     }
