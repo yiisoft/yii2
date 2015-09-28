@@ -19,8 +19,8 @@ namespace yii\validators;
 class DefaultValueValidator extends Validator
 {
     /**
-     * @var mixed the default value or a PHP callable that returns the default value which will
-     * be assigned to the attributes being validated if they are empty. The signature of the PHP callable
+     * @var mixed the default value or an anonymous function that returns the default value which will
+     * be assigned to the attributes being validated if they are empty. The signature of the anonymous function
      * should be as follows,
      *
      * ```php
