@@ -23,11 +23,11 @@ use yii\base\InvalidConfigException;
 class RangeValidator extends Validator
 {
     /**
-     * @var mixed list of valid values that the attribute value should be among or an anonymous function that returns
-     * such list. The signature of the anonymous function should be as follows,
+     * @var array|\Closure a list of valid values that the attribute value should be among or an anonymous function that returns
+     * such a list. The signature of the anonymous function should be as follows,
      *
      * ```php
-     * function foo($model, $attribute) {
+     * function($model, $attribute) {
      *     // compute range
      *     return $range;
      * }
@@ -92,7 +92,6 @@ class RangeValidator extends Validator
         if ($this->range instanceof \Closure) {
             $this->range = call_user_func($this->range, $model, $attribute);
         }
-
         parent::validateAttribute($model, $attribute);
     }
 
