@@ -185,7 +185,7 @@ class Event extends Object
             if (!empty(self::$_events[$name][$class])) {
                 foreach (self::$_events[$name][$class] as $handler) {
                     $event->data = $handler[1];
-                    call_user_func($handler[0], $event);
+                    \Yii::$container->invoke($handler[0], [$event]);
                     if ($event->handled) {
                         return;
                     }

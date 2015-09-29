@@ -7,11 +7,13 @@
 
 namespace yiiunit\framework\di;
 
+use Yii;
 use yii\di\Container;
 use yii\di\Instance;
 use yiiunit\framework\di\stubs\Bar;
 use yiiunit\framework\di\stubs\Foo;
 use yiiunit\framework\di\stubs\Qux;
+use yiiunit\framework\di\stubs\MyModel;
 use yiiunit\TestCase;
 
 
@@ -99,5 +101,47 @@ class ContainerTest extends TestCase
         $this->assertEquals(3, $qux->a);
         $qux = $container->get('qux', [3, ['a' => 4]]);
         $this->assertEquals(4, $qux->a);
+    }
+
+    public function testInvoke()
+    {
+        $this->mockApplication([
+            'components'=>[
+                'qux' => [
+                    'class' => 'yiiunit\framework\di\stubs\Qux',
+                    'a' => 'belongApp',
+                ]
+            ]
+        ]);
+
+        Yii::$container->set('yiiunit\framework\di\stubs\QuxInterface', [
+            'class' => 'yiiunit\framework\di\stubs\Qux',
+            'a' => 'independent',
+        ]);
+        $callback = function($param, stubs\QuxInterface $qux, Bar $bar){
+            return [$param, $qux instanceof Qux, $qux->a, $bar->qux->a];
+        };
+        $result = Yii::$container->invoke($callback, ['D426']);
+        $this->assertEquals(['D426', true, 'belongApp', 'independent'], $result);
+
+
+        $myObj = new MyModel([
+            'name' => 'dee',
+            'email' => 'dee@mdm.com'
+        ]);
+        
+        $useAtEvent = [];
+        $myObj->on('afterValidate', function ($event, stubs\QuxInterface $qux)use(&$useAtEvent){
+            $useAtEvent[0] = $event->name;
+            $useAtEvent[1] = $qux->a;
+        });
+        $myObj->validate();
+        $this->assertEquals([], $myObj->errors);
+        $this->assertEquals(['afterValidate', 'belongApp'], $useAtEvent);
+
+        list($param, $qux, $validator) = Yii::$container->invoke([$myObj, 'test'], ['D426']);
+        $this->assertEquals('D426', $param);
+        $this->assertEquals(Yii::$app->qux, $qux);
+        $this->assertFalse($validator->validate('not_valid_email'));
     }
 }

@@ -538,7 +538,7 @@ class Component extends Object
             $event->name = $name;
             foreach ($this->_events[$name] as $handler) {
                 $event->data = $handler[1];
-                call_user_func($handler[0], $event);
+                Yii::$container->invoke($handler[0], [$event]);
                 // stop further handling if the event is handled
                 if ($event->handled) {
                     return;

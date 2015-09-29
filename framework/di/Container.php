@@ -454,4 +454,45 @@ class Container extends Component
         }
         return $dependencies;
     }
+
+    /**
+     *
+     * @param callable $callback
+     * @param array $params
+     * @return type
+     * @throws InvalidConfigException
+     */
+    public function invoke($callback, $params = [])
+    {
+        if(is_callable($callback)){
+            if(is_array($callback)){
+                $reflection = new \ReflectionMethod($callback[0], $callback[1]);
+            }else{
+                $reflection = new \ReflectionFunction($callback);
+            }
+
+            $parameters = $reflection->getParameters();
+            for ($index = count($params); $index < count($parameters); $index++){
+                $param = $parameters[$index];
+                $name = $param->getName();
+                if ($param->isDefaultValueAvailable()) {
+                    $params[$index] = $param->getDefaultValue();
+                } elseif(($class = $param->getClass()) !== null) {
+                    $className = $class->getName();
+                    if (\Yii::$app->has($name) && ($obj = \Yii::$app->get($name)) instanceof $className) {
+                        $params[$index] = $obj;
+                    }else{
+                        $params[$index] = $this->get($className);
+                    }
+                }else{
+                    $funcName = $reflection->getName();
+                    throw new InvalidConfigException("Missing required parameter \"$name\" when calling \"$funcName\".");
+                }
+            }
+
+            return call_user_func_array($callback, $params);
+        }else{
+            return call_user_func_array($callback, $params);
+        }
+    }
 }
