@@ -19,7 +19,7 @@ use yii\web\JsExpression;
  *
  * @property boolean|string negationChar whether address may have a negation character at the beginning
  *   string - character passed will be used. May be a regular expression
- *   true - character from [[DEFAULT_NEGATION_CHAR]] will be used. Default is ```!```
+ *   true - character from [[DEFAULT_NEGATION_CHAR]] will be used. Default is `!`
  *   false  - negation is not allowed
  *
  * @author SilverFire <d.naumenko.a@gmail.com>
@@ -84,19 +84,19 @@ class IpValidator extends Validator
     /**
      * @var array IPv4 or IPv6 ranges that are allowed or denied.
      *
-     * The array should contain only ```allow``` or/and  ```deny``` keys.
+     * The array should contain only `allow` or/and  `deny` keys.
      * Their order determines the order of checks of the IP address.
      *
-     * When the first is ```allow``` - all the ```allow``` IP addresses will be checked, and at least one must
-     * match or the validation will fail. Then all the ```deny``` (if present) will be checked, if one of them
+     * When the first is `allow` - all the `allow` IP addresses will be checked, and at least one must
+     * match or the validation will fail. Then all the `deny` (if present) will be checked, if one of them
      * matched the validation will fail.
-     * At last, if the IP address is neither on the ```allow`` nor on the ```deny```, the validation will also fail.
+     * At last, if the IP address is neither on the `allow`` nor on the `deny`, the validation will also fail.
      *
-     * When the first is ```deny``` - all the ```deny``` IP addresses will be checked, if one matched the validation
-     * will fail, unless it is also present on the ```allow```.
+     * When the first is `deny` - all the `deny` IP addresses will be checked, if one matched the validation
+     * will fail, unless it is also present on the `allow`.
      * If it is not found on any of the lists the validation will be passed.
      *
-     * Tip: it is useful to set ```deny``` first, when it is necessary to deny a less specific subnet and
+     * Tip: it is useful to set `deny` first, when it is necessary to deny a less specific subnet and
      * to allow a more specific one. The example below will result in passing `192.168.1.1`,
      * but `192.168.2.1` will be denied:
      *
