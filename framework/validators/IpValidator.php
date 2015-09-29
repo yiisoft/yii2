@@ -22,36 +22,36 @@ use yii\web\JsExpression;
  *   true - character from [[DEFAULT_NEGATION_CHAR]] will be used. Default is ```!```
  *   false  - negation is not allowed
  * @author SilverFire <d.naumenko.a@gmail.com>
- * @since 2.0.5
+ * @since 2.0.7
  */
 class IpValidator extends Validator
 {
     /**
-     * @const integer the length of IPv6 address in bits
+     * The length of IPv6 address in bits
      */
     const IPV6_ADDRESS_LENGTH = 128;
 
     /**
-     * @const integer the length of IPv4 address in bits
+     * The length of IPv4 address in bits
      */
     const IPV4_ADDRESS_LENGTH = 32;
 
     /**
-     * @const integer is used to change check order by [[isAllowed]]
+     * Used to change check order by [[isAllowed]]
      * @see isAllowed()
      * @see order
      */
     const ORDER_ALLOW_DENY = 0;
 
     /**
-     * @const integer is used to change check order by [[isAllowed]]
+     * Used to change check order by [[isAllowed]]
      * @see isAllowed()
      * @see order
      */
     const ORDER_DENY_ALLOW = 1;
 
     /**
-     * @const string default negation char when [[negationChar]] is set to `true`
+     * Default negation char when [[negationChar]] is set to `true`
      * @see negationChar
      */
     const DEFAULT_NEGATION_CHAR = '!';
@@ -158,36 +158,36 @@ class IpValidator extends Validator
     /**
      * @var string user-defined error message is used when validation fails due to the disabled IPv6 validation
      */
-    public $ipv6NotAllowed = "{attribute} must not be an IPv6 address";
+    public $ipv6NotAllowed = '{attribute} must not be an IPv6 address';
 
     /**
      * @var string user-defined error message is used when validation fails due to the disabled IPv4 validation
      */
-    public $ipv4NotAllowed = "{attribute} must not be an IPv4 address";
+    public $ipv4NotAllowed = '{attribute} must not be an IPv4 address';
 
     /**
      * @var string user-defined error message is used when validation fails due to the wrong CIDR
      */
-    public $wrongCidr = "{attribute} contains wrong subnet mask";
+    public $wrongCidr = '{attribute} contains wrong subnet mask';
 
     /**
      * @var string user-defined error message is used when validation fails due to the wrong IP address format
      */
-    public $wrongIp = "{attribute} must be a valid IP address";
+    public $wrongIp = '{attribute} must be a valid IP address';
 
     /**
      * @var string user-defined error message is used when validation fails due to subnet [[subnet]] set to 'only',
      * but the CIDR prefix is not set
      * @see subnet
      */
-    public $noSubnet = "{attribute} must be an IP address with specified subnet";
+    public $noSubnet = '{attribute} must be an IP address with specified subnet';
 
     /**
      * @var string user-defined error message is used when validation fails
      * due to [[subnet]] is false, but CIDR prefix is present
      * @see subnet
      */
-    public $hasSubnet = "{attribute} must not be a subnet";
+    public $hasSubnet = '{attribute} must not be a subnet';
 
     /**
      * @var string user-defined error message is used when validation fails due to IP address
@@ -195,7 +195,7 @@ class IpValidator extends Validator
      * @see allow
      * @see deny
      */
-    public $notInRange = "{attribute} is not in the allowed range";
+    public $notInRange = '{attribute} is not in the allowed range';
 
     /**
      * @inheritdoc
@@ -347,7 +347,7 @@ class IpValidator extends Validator
     private function expandIPv6($ip)
     {
         $hex = unpack('H*hex', inet_pton($ip));
-        return substr(preg_replace("/([a-f0-9]{4})/i", "$1:", $hex['hex']), 0, -1);
+        return substr(preg_replace('/([a-f0-9]{4})/i', '$1:', $hex['hex']), 0, -1);
     }
 
     /**
@@ -403,7 +403,7 @@ class IpValidator extends Validator
      */
     private function getIpVersion($ip)
     {
-        return strpos($ip, ":") === false ? 4 : 6;
+        return strpos($ip, ':') === false ? 4 : 6;
     }
 
     /**
@@ -488,12 +488,12 @@ class IpValidator extends Validator
         if ($this->getIpVersion($ip) === 4) {
             return str_pad(base_convert(ip2long($ip), 10, 2), static::IPV4_ADDRESS_LENGTH, '0', STR_PAD_LEFT);
         } else {
-            $unpack = unpack("A16", inet_pton($ip));
+            $unpack = unpack('A16', inet_pton($ip));
             $binStr = array_shift($unpack);
             $bytes = static::IPV6_ADDRESS_LENGTH / 8; // 128 bit / 8 = 16 bytes
             $result = '';
             while ($bytes-- > 0) {
-                $result = sprintf("%08b", isset($binStr[$bytes]) ? ord($binStr[$bytes]) : '0') . $result;
+                $result = sprintf('%08b', isset($binStr[$bytes]) ? ord($binStr[$bytes]) : '0') . $result;
             }
             return $result;
         }
