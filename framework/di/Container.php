@@ -139,11 +139,15 @@ class Container extends Component
      * they appear in the constructor declaration. If you want to skip some parameters, you should index the remaining
      * ones with the integers that represent their positions in the constructor parameter list.
      * @param array $config a list of name-value pairs that will be used to initialize the object properties.
+     * @param string $context. Context where object is about to be created.
      * @return object an instance of the requested class.
      * @throws InvalidConfigException if the class cannot be recognized or correspond to an invalid definition
      */
-    public function get($class, $params = [], $config = [])
+    public function get($class, $params = [], $config = [], $context = '')
     {
+        list(, $caller) = debug_backtrace(false);
+        $class = $this->resolveClassName($class, $context, $caller);
+
         if (isset($this->_singletons[$class])) {
             // singleton
             return $this->_singletons[$class];
@@ -166,7 +170,7 @@ class Container extends Component
             if ($concrete === $class) {
                 $object = $this->build($class, $params, $config);
             } else {
-                $object = $this->get($concrete, $params, $config);
+                $object = $this->get($concrete, $params, $config, $context);
             }
         } elseif (is_object($definition)) {
             return $this->_singletons[$class] = $definition;
@@ -242,10 +246,12 @@ class Container extends Component
      * - a string: a class name, an interface name or an alias name.
      * @param array $params the list of constructor parameters. The parameters will be passed to the class
      * constructor when [[get()]] is called.
+     * @param string $context context of creation. Usually is a class name, where object is about to be created.
      * @return $this the container itself
      */
-    public function set($class, $definition = [], array $params = [])
+    public function set($class, $definition = [], array $params = [], $context = '')
     {
+        $class = $this->concatClassWithContext($class, $context);
         $this->_definitions[$class] = $this->normalizeDefinition($class, $definition);
         $this->_params[$class] = $params;
         unset($this->_singletons[$class]);
@@ -262,11 +268,13 @@ class Container extends Component
      * @param mixed $definition the definition associated with `$class`. See [[set()]] for more details.
      * @param array $params the list of constructor parameters. The parameters will be passed to the class
      * constructor when [[get()]] is called.
+     * @param string $context context of creation. Usually is a class name, where object is about to be created.
      * @return $this the container itself
      * @see set()
      */
-    public function setSingleton($class, $definition = [], array $params = [])
+    public function setSingleton($class, $definition = [], array $params = [], $context = '')
     {
+        $class = $this->concatClassWithContext($class, $context);
         $this->_definitions[$class] = $this->normalizeDefinition($class, $definition);
         $this->_params[$class] = $params;
         $this->_singletons[$class] = null;
@@ -276,11 +284,13 @@ class Container extends Component
     /**
      * Returns a value indicating whether the container has the definition of the specified name.
      * @param string $class class name, interface name or alias name
+     * @param string $context context of creation. Usually is a class name, where object is about to be created.
      * @return boolean whether the container has the definition of the specified name..
      * @see set()
      */
-    public function has($class)
+    public function has($class, $context = '')
     {
+        $class = $this->concatClassWithContext($class, $context);
         return isset($this->_definitions[$class]);
     }
 
@@ -444,7 +454,7 @@ class Container extends Component
         foreach ($dependencies as $index => $dependency) {
             if ($dependency instanceof Instance) {
                 if ($dependency->id !== null) {
-                    $dependencies[$index] = $this->get($dependency->id);
+                    $dependencies[$index] = $this->get($dependency->id, [], [], null === $reflection ? null : $reflection->getName());
                 } elseif ($reflection !== null) {
                     $name = $reflection->getConstructor()->getParameters()[$index]->getName();
                     $class = $reflection->getName();
@@ -453,5 +463,38 @@ class Container extends Component
             }
         }
         return $dependencies;
+    }
+
+    /**
+     * Get string represents class name and its context.
+     * @param string $class
+     * @param string|null $context
+     * @return string
+     */
+    protected function concatClassWithContext($class, $context)
+    {
+        return rtrim($class.'@'.$context, '@');
+    }
+
+    /**
+     * Resolve class name for given context and caller.
+     * @param string $class
+     * @param string $context
+     * @param array  $caller
+     * @return string
+     */
+    protected function resolveClassName($class, $context, $caller)
+    {
+        // if context is not set, grab it from caller
+        if ('' === $context && isset($caller['class'])) {
+            $context = $caller['class'];
+        }
+
+        // if context is set and definition exists, use class name with context
+        if ('' !== $context && $this->has($class, $context)) {
+            $class = $this->concatClassWithContext($class, $context);
+        }
+
+        return $class;
     }
 }
