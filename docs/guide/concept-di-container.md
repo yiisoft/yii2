@@ -120,7 +120,7 @@ By doing so, the person who wants to configure the `Foo` class no longer needs t
 ### Method signature injection <span id="method-signature-injection"></span>
 
 Method signature injection is a special type of DI where dependecies are declared using the type hints of
-method signatures and resolved in the runtime when the method is acturally called. It is particularly useful for keeping
+method signature and resolved in the runtime when the method is acturally called. It is particularly useful for keeping
 the MVC controllers slim and light-weighted since it doesn't require you to configure all the possible dependencies
 of the controller beforehand.
 
