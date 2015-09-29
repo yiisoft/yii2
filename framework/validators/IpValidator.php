@@ -21,6 +21,7 @@ use yii\web\JsExpression;
  *   string - character passed will be used. May be a regular expression
  *   true - character from [[DEFAULT_NEGATION_CHAR]] will be used. Default is ```!```
  *   false  - negation is not allowed
+ *
  * @author SilverFire <d.naumenko.a@gmail.com>
  * @since 2.0.7
  */
@@ -35,20 +36,6 @@ class IpValidator extends Validator
      * The length of IPv4 address in bits
      */
     const IPV4_ADDRESS_LENGTH = 32;
-
-    /**
-     * Used to change check order by [[isAllowed]]
-     * @see isAllowed()
-     * @see order
-     */
-    const ORDER_ALLOW_DENY = 0;
-
-    /**
-     * Used to change check order by [[isAllowed]]
-     * @see isAllowed()
-     * @see order
-     */
-    const ORDER_DENY_ALLOW = 1;
 
     /**
      * Default negation char when [[negationChar]] is set to `true`
@@ -95,55 +82,34 @@ class IpValidator extends Validator
     public $expandIPv6 = false;
 
     /**
-     * The property is used by [[isAllowed]] method to determine the order of checks
-     * of the IP address according to [[deny]] and [[allow]] lists.
+     * @var array IPv4 or IPv6 ranges that are allowed or denied.
      *
-     * When [[order]] is [[ORDER_ALLOW_DENY]] - first all the [[allow]] will be checked, and at least one must
-     * match or the validation will fail. Then all the [[deny]] are checked, if one of them
+     * The array should contain only ```allow``` or/and  ```deny``` keys.
+     * Their order determines the order of checks of the IP address.
+     *
+     * When the first is ```allow``` - all the ```allow``` IP addresses will be checked, and at least one must
+     * match or the validation will fail. Then all the ```deny``` (if present) will be checked, if one of them
      * matched the validation will fail.
-     * At last, if address is not on the [[allow]] nor on the [[deny]] the validation will also fail.
+     * At last, if the IP address is neither on the ```allow`` nor on the ```deny```, the validation will also fail.
      *
-     * When [[order]] is [[ORDER_DENY_ALLOW]] - method [[isAllowed]] checks all the [[deny]] and the [[allow]].
-     * If the value is on the [[deny]] the validation will fail, unless it is also present on the [[allow]].
+     * When the first is ```deny``` - all the ```deny``` IP addresses will be checked, if one matched the validation
+     * will fail, unless it is also present on the ```allow```.
      * If it is not found on any of the lists the validation will be passed.
      *
-     * Tip: it is useful to use [[ORDER_ALLOW_DENY]], when it is necessary to deny a less specific subnet and
+     * Tip: it is useful to set ```deny``` first, when it is necessary to deny a less specific subnet and
      * to allow a more specific one. The example below will result in passing `192.168.1.1`,
      * but `192.168.2.1` will be denied:
      *
      * ```
-     * [
-     *      'deny' => ['192.168.0.0/16'],
-     *      'allow' => ['192.168.1.0/24']
+     * 'ips' => [
+     *     'deny' => ['192.168.0.0/16'],
+     *     'allow' => ['192.168.1.0/24']
      * ]
      * ```
      *
-     * @var int the order of ranges rules. Used by [[isAllowed]]
      * @see isAllowed()
      */
-    public $order = self::ORDER_DENY_ALLOW;
-
-    /**
-     * @var string|array IPv4 or IPv6 ranges that are allowed to use. For example:
-     *
-     * ```
-     * ['10.0.0.0/8', '192.168.1.1', '2001:ab::/64', '2001:ac::2:1']
-     * ```
-     *
-     * @see isAllowed()
-     */
-    public $allow;
-
-    /**
-     * @var string|array IPv4 or IPv6 ranges that are prohibited to use. For example:
-     *
-     * ```
-     * ['10.0.0.0/24', '192.168.2.1', '2001:ab::/32', '2001:ac::1:2']
-     * ```
-     *
-     * @see isAllowed()
-     */
-    public $deny;
+    public $ips = [];
 
     /**
      * @var string Regexp-pattern to validate IPv4 address
@@ -192,8 +158,7 @@ class IpValidator extends Validator
     /**
      * @var string user-defined error message is used when validation fails due to IP address
      * is not on the [[allow]] list, or is on the [[deny]] list
-     * @see allow
-     * @see deny
+     * @see ips
      */
     public $notInRange = '{attribute} is not in the allowed range';
 
@@ -212,12 +177,12 @@ class IpValidator extends Validator
             throw new InvalidConfigException('IPv6 validation can not be used. PHP is compiled without IPv6');
         }
 
-        if (!empty($this->allow) && !is_array($this->allow)) {
-            $this->allow = (array)$this->allow;
+        if (!empty($this->ips['allow']) && !is_array($this->ips['allow'])) {
+            $this->ips['allow'] = (array)$this->ips['allow'];
         }
 
-        if (!empty($this->deny) && !is_array($this->deny)) {
-            $this->deny = (array)$this->deny;
+        if (!empty($this->ips['deny']) && !is_array($this->ips['deny'])) {
+            $this->ips['deny'] = (array)$this->ips['deny'];
         }
     }
 
@@ -351,26 +316,25 @@ class IpValidator extends Validator
     }
 
     /**
-     * The method checks, if the IP address is allowed according to
-     * the [[allow]] and [[deny]] lists, and the [[order]] property.
+     * The method checks whether the IP address is allowed according to the [[ips]] lists
      *
      * @param string $ip
      * @param integer $cidr
      * @return boolean
-     * @see order
+     * @see ips
      */
     private function isAllowed($ip, $cidr)
     {
         $denied = false;
         $allowed = true;
-        if (!empty($this->deny) && $this->inRange($ip, $cidr, $this->deny)) {
+        if (!empty($this->ips['deny']) && $this->inRange($ip, $cidr, $this->ips['deny'])) {
             $denied = true;
         }
-        if (!empty($this->allow) && !$this->inRange($ip, $cidr, $this->allow)) {
+        if (!empty($this->ips['allow']) && !$this->inRange($ip, $cidr, $this->ips['allow'])) {
             $allowed = false;
         }
 
-        return $this->order === self::ORDER_DENY_ALLOW ? (!$denied && $allowed) : (!$denied || $allowed);
+        return current(array_keys($this->ips)) === 'allow' ? (!$denied && $allowed) : (!$denied || $allowed);
     }
 
     /**

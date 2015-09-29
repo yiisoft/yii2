@@ -26,11 +26,43 @@ class IpValidatorTest extends TestCase
     public function testAssureMessageSetOnInit()
     {
         $val = new IpValidator([
-            'allow' => '10.0.0.1',
-            'deny' => '10.0.0.2'
+            'ips' => [
+                'allow' => '10.0.0.1',
+                'deny' => '10.0.0.2'
+            ]
         ]);
-        $this->assertTrue(is_array($val->allow));
-        $this->assertTrue(is_array($val->deny));
+        $this->assertTrue(is_array($val->ips));
+        $this->assertTrue(is_array($val->ips['allow']));
+        $this->assertTrue(is_array($val->ips['deny']));
+    }
+
+    public function testValidateIpsAllowDenyOrder()
+    {
+        $validator = new IpValidator([
+            'ips' => [
+                'deny' => ['192.168.0.0/16'],
+                'allow' => ['192.168.1.0/24'],
+            ]
+        ]);
+
+        $this->assertTrue($validator->validate('192.168.1.2'));
+        $this->assertFalse($validator->validate('192.168.2.2'));
+        $this->assertTrue($validator->validate('192.167.2.2'));
+    }
+
+    public function testValidateIpsDenyAllowOrder()
+    {
+        $validator = new IpValidator([
+            'ips' => [
+                'allow' => ['192.168.1.0/24', '172.20.10.2'],
+                'deny' => ['192.168.0.0/16'],
+            ]
+        ]);
+
+        $this->assertTrue($validator->validate('172.20.10.2'));
+        $this->assertFalse($validator->validate('192.168.1.2'));
+        $this->assertFalse($validator->validate('192.168.2.2'));
+        $this->assertFalse($validator->validate('192.167.2.2'));
     }
 
     public function testValidateValueNotAnIP()
@@ -182,21 +214,24 @@ class IpValidatorTest extends TestCase
     public function testValidateRangeIPv4()
     {
         $validator = new IpValidator([
-            'allow' => '10.0.1.0/24',
+            'ips' => [
+                'allow' => '10.0.1.0/24',
+            ]
         ]);
         $this->assertTrue($validator->validate('10.0.1.2'));
         $this->assertFalse($validator->validate('192.5.1.1'));
 
-        $validator->allow = ['10.0.1.0/24', '127.0.0.1'];
+        $validator->ips['allow'] = ['10.0.1.0/24', '127.0.0.1'];
         $this->assertTrue($validator->validate('10.0.1.2'));
         $this->assertFalse($validator->validate('10.0.3.2'));
 
-        $validator->deny = ['10.0.0.0/8'];
+        $validator->ips['deny'] = ['10.0.0.0/8'];
         $this->assertFalse($validator->validate('10.0.1.2'));
         $this->assertTrue($validator->validate('127.0.0.1'));
 
-        $validator->order = IpValidator::ORDER_ALLOW_DENY;
         $validator->subnet = null;
+        // Change order to deny, allow
+        $validator->ips = array_reverse($validator->ips);
         $this->assertTrue($validator->validate('10.0.1.2'));
         $this->assertTrue($validator->validate('127.0.0.1'));
         $this->assertTrue($validator->validate('10.0.1.28/28'));
@@ -211,19 +246,22 @@ class IpValidatorTest extends TestCase
         }
 
         $validator = new IpValidator([
-            'allow' => '2001:db0:1:1::/64',
+            'ips' => [
+                'allow' => '2001:db0:1:1::/64',
+            ]
         ]);
         $this->assertTrue($validator->validate('2001:db0:1:1::6'));
         $this->assertFalse($validator->validate('2001:db0:1:2::7'));
 
-        $validator->allow = ['2001:db0:1:2::/64'];
+        $validator->ips['allow'] = ['2001:db0:1:2::/64'];
         $this->assertTrue($validator->validate('2001:db0:1:2::7'));
 
-        $validator->deny = ['2001:db0::/32'];
+        $validator->ips['deny'] = ['2001:db0::/32'];
         $this->assertFalse($validator->validate('2001:db0:1:2::7'));
 
-        $validator->order = IpValidator::ORDER_ALLOW_DENY;
         $validator->subnet = null;
+        // Change order to deny, allow
+        $validator->ips = array_reverse($validator->ips);
         $this->assertTrue($validator->validate('2001:db0:1:2::7'));
     }
 
@@ -234,24 +272,27 @@ class IpValidatorTest extends TestCase
         }
 
         $validator = new IpValidator([
-            'allow' => '10.0.1.0/24',
+            'ips' => [
+                'allow' => '10.0.1.0/24',
+            ]
         ]);
         $this->assertTrue($validator->validate('10.0.1.2'));
         $this->assertFalse($validator->validate('192.5.1.1'));
         $this->assertFalse($validator->validate('2001:db0:1:2::7'));
 
-        $validator->allow = ['10.0.1.0/24', '2001:db0:1:2::/64', '127.0.0.1'];
+        $validator->ips['allow'] = ['10.0.1.0/24', '2001:db0:1:2::/64', '127.0.0.1'];
         $this->assertTrue($validator->validate('2001:db0:1:2::7'));
         $this->assertTrue($validator->validate('10.0.1.2'));
         $this->assertFalse($validator->validate('10.0.3.2'));
 
-        $validator->deny = ['10.0.0.0/8', '2001:db0::/32'];
+        $validator->ips['deny'] = ['10.0.0.0/8', '2001:db0::/32'];
         $this->assertFalse($validator->validate('2001:db0:1:2::7'));
         $this->assertFalse($validator->validate('10.0.1.2'));
         $this->assertTrue($validator->validate('127.0.0.1'));
 
-        $validator->order = IpValidator::ORDER_ALLOW_DENY;
         $validator->subnet = null;
+        // Change order to deny, allow
+        $validator->ips = array_reverse($validator->ips);
         $this->assertTrue($validator->validate('10.0.1.2'));
         $this->assertTrue($validator->validate('2001:db0:1:2::7'));
         $this->assertTrue($validator->validate('127.0.0.1'));
@@ -300,7 +341,7 @@ class IpValidatorTest extends TestCase
         if (!defined('AF_INET6')) {
             $this->markTestSkipped('The system does not supports IPv6.');
         }
-        
+
         $validator = new IpValidator();
         $model = new FakedValidationModel();
 
