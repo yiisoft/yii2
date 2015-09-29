@@ -27,6 +27,7 @@ Yii Framework 2 Change Log
 - Enh #9635: Added default CSS class for `\yii\grid\ActionColumn` header (arogachev, dynasource)
 - Enh #9643: Added migrations for DB cache (mdmunir)
 - Enh #9711: Added `yii\widgets\LinkPager::$pageCssClass` that allows to set default page class (ShNURoK42)
+- Enh #9718: The authKey-feature of `yii\web\IdentityInterface` is now also used to validate active sessions (kidol)
 - Enh #9733: Added Unprocessable Entity HTTP Exception (janfrs)
 - Chg #9369: `Yii::$app->user->can()` now returns `false` instead of erroring in case `authManager` component is not configured (creocoder)
 - Chg #9411: `DetailView` now automatically sets container tag ID in case it's not specified (samdark)
