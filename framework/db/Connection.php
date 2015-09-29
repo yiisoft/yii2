@@ -571,8 +571,12 @@ class Connection extends Component
             } elseif (($pos = strpos($this->dsn, ':')) !== false) {
                 $driver = strtolower(substr($this->dsn, 0, $pos));
             }
-            if (isset($driver) && ($driver === 'mssql' || $driver === 'dblib' || $driver === 'sqlsrv')) {
-                $pdoClass = 'yii\db\mssql\PDO';
+            if (isset($driver)) {
+                if ($driver === 'mssql' || $driver === 'dblib') {
+                    $pdoClass = 'yii\db\mssql\PDO';
+                } else if ($driver === 'sqlsrv'){
+                    $pdoClass = 'yii\db\mssql\SqlsrvPDO';
+                }
             }
         }
 
