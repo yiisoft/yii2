@@ -15,7 +15,7 @@ dependency injection:
 * Constructor injection;
 * Setter and property injection;
 * PHP callable injection.
-* Method signiture injection.
+* Controller action injection.
 
 
 ### Constructor Injection <span id="constructor-injection"></span>
@@ -117,10 +117,10 @@ $foo = $container->get('Foo');
 By doing so, the person who wants to configure the `Foo` class no longer needs to be aware of how it is built.
 
 
-### Method signature injection <span id="method-signature-injection"></span>
+### Controller action injection <span id="controller-action-injection"></span>
 
-Method signature injection is a special type of DI where dependecies are declared using the type hints of
-method signature and resolved in the runtime when the method is acturally called. It is particularly useful for keeping
+Controller action injection is a special type of DI where dependecies are declared using the type hints of
+method signature and resolved in the runtime when the action is acturally called. It is useful for keeping
 the MVC controllers slim and light-weighted since it doesn't require you to configure all the possible dependencies
 of the controller beforehand.
 
