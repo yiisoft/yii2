@@ -49,23 +49,30 @@ class DbMessageSource extends MessageSource
 {
     /**
      * Prefix which would be used when generating cache key.
+     * @deprecated This constant has never been used and will be removed in 2.1.0.
      */
     const CACHE_KEY_PREFIX = 'DbMessageSource';
 
     /**
      * @var Connection|array|string the DB connection object or the application component ID of the DB connection.
+     *
      * After the DbMessageSource object is created, if you want to change this property, you should only assign
      * it with a DB connection object.
+     *
      * Starting from version 2.0.2, this can also be a configuration array for creating the object.
      */
     public $db = 'db';
     /**
      * @var Cache|array|string the cache object or the application component ID of the cache object.
-     * The messages data will be cached using this cache object. Note, this property has meaning only
-     * in case [[cachingDuration]] set to non-zero value and [[enableCaching]] is true.
+     * The messages data will be cached using this cache object.
+     * Note, that to enable caching you have to set [[enableCaching]] to `true`, otherwise setting this property has no effect.
+     *
      * After the DbMessageSource object is created, if you want to change this property, you should only assign
      * it with a cache object.
+     *
      * Starting from version 2.0.2, this can also be a configuration array for creating the object.
+     * @see cachingDuration
+     * @see enableCaching
      */
     public $cache = 'cache';
     /**

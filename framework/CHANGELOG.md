@@ -6,12 +6,29 @@ Yii Framework 2 Change Log
 
 - Bug #8723: Fixed `yii\helpers\VarDumper::export()` unable to export circle referenced objects with `Closure` (klimov-paul)
 - Bug #9108: Negative number resulted in no formatting when using `Formatter::asSize()` or `Formatter::asShortSize` (nxnx, cebe)
+- Bug #9288: Fixed `FileHelper::createDirectory` directory creation to be concurrency friendly (dynasource)
+- Bug #9314: Fixed `yii\rbac\DbManager::getPermissionsByUser()` not returning permissions directly assigned to a user (hesna)
+- Bug #9323: Fixed `yii\console\controllers\MessageController` not using database connection specified in config (raccoon69, samdark)
 - Bug #9415: Fixed regression in 2.0.6 where on Oracle DB `PDO::ATTR_CASE = PDO::CASE_LOWER` did not work anymore (cebe)
 - Bug #9442: Fixed `yii\db\Migration::renameTable()` caused fatal error when using SQLite driver (fetus-hina)
+- Bug #9454: Fixed MSSQL MARS wasn't working with transactions (daliran)
+- Bug #9583: Server response on invalid JSON request included a wrong message about "Internal Server Error" with status 500 (cebe)
+- Bug #9591: Fixed `yii.validation.js` code so it is compressable by YUICompressor (samdark, hofrob)
+- Bug #9596: Fixed `\yii\web\UrlManager::createAbsoluteUrl(['site/index', '#' => 'testHash'])` losing hash (alchimik, samdark)
+- Bug #9678: `I18N::format()` wasn't able to handle named placeholder in "selectordinal" (samdark)
+- Bug #9681: `Json::encode()` was erroring under CYGWIN (samdark)
+- Bug #9714: Fixed `yii\rbac\PhpManager::updateItem()` unable to save users assignments (rezident1307)
+- Bug #9754: Fixed `yii\web\Request` error when path info is empty (dynasource)
 - Enh #3506: Added `\yii\validators\IpValidator` to perform validation of IP addresses and subnets (SilverFire, samdark)
+- Enh #7581: Added ability to specify range using anonymous function in `RangeValidator` (RomeroMsk)
+- Enh #8613: `yii\widgets\FragmentCache` will not store empty content anymore which fixes some problems related to `yii\filters\PageCache` (kidol)
+- Enh #9476: Added DI injection via controller action method signature (mdmunir)
+- Enh #9635: Added default CSS class for `\yii\grid\ActionColumn` header (arogachev, dynasource)
+- Enh #9643: Added migrations for DB cache (mdmunir)
+- Enh #9711: Added `yii\widgets\LinkPager::$pageCssClass` that allows to set default page class (ShNURoK42)
+- Enh #9733: Added Unprocessable Entity HTTP Exception (janfrs)
 - Chg #9369: `Yii::$app->user->can()` now returns `false` instead of erroring in case `authManager` component is not configured (creocoder)
 - Chg #9411: `DetailView` now automatically sets container tag ID in case it's not specified (samdark)
-
 
 2.0.6 August 05, 2015
 ---------------------

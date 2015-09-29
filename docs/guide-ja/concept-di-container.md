@@ -2,7 +2,7 @@
 ================
 
 依存注入 (DI) コンテナは、オブジェクトとそれが依存するすべてのブジェクトを、インスタンス化し、設定する方法を知っているオブジェクトです。
-なぜ DI コンテナが便利なのかは、[Martin の記事](http://martinfowler.com/articles/injection.html) の説明がわかりやすいでしょう。
+なぜ DI コンテナが便利なのかは、[Martin Fowler の記事](http://martinfowler.com/articles/injection.html) の説明がわかりやすいでしょう。
 ここでは、主に Yii の提供する DI コンテナの使用方法を説明します。
 
 
@@ -91,7 +91,7 @@ $container->set('Foo', function () {
 $foo = $container->get('Foo');
 ```
 
-新しいオブジェクトを構築するための複雑なロジックを隠蔽するために、PHP コーラブルを返すスタティックなクラスメソッドを使うことが出来ます。
+新しいオブジェクトを構築するための複雑なロジックを隠蔽するために、スタティックなクラスメソッドをコーラブルとして使うことが出来ます。
 例えば、
 
 ```php
@@ -99,20 +99,17 @@ class FooBuilder
 {
     public static function build()
     {
-        return function () {
-            $foo = new Foo(new Bar);
-            // ... その他の初期化 ...
-            return $foo;
-       };
+        $foo = new Foo(new Bar);
+        // ... その他の初期化 ...
+        return $foo;
     }
 }
 
-$container->set('Foo', FooBuilder::build());
+$container->set('Foo', ['app\helper\FooBuilder', 'build']);
 
 $foo = $container->get('Foo');
 ```
 
-ご覧のように、PHP コーラブルが `FooBuilder::build()` メソッドによって返されています。
 このようにすれば、`Foo` クラスを構成しようとする人は、`Foo` がどのように構築されるかを気にする必要はもうなくなります。
 
 
@@ -194,17 +191,17 @@ $container->setSingleton('yii\db\Connection', [
 
 [[yii\di\Container::get()]] を使って、新しいオブジェクトを作成することができます。
 このメソッドは、クラス名、インタフェース名、エイリアス名で指定できる依存の名前を受け取ります。
-依存の名前は、 `set()` や `setSingleton()` を介して登録されていたりされていなかったりする
-可能性があります。オプションで、クラスのコンストラクタのパラメータのリストや、新しく作成された
-オブジェクトを設定するための [設定情報](concept-configurations.md) を渡すことができます。
+依存の名前は、 `set()` や `setSingleton()` を介して登録されている場合もあれば、登録されていない場合もあります。
+オプションで、クラスのコンストラクタのパラメータのリストや、新しく作成されたオブジェクトを設定するための
+[設定情報](concept-configurations.md) を渡すことができます。
 たとえば
 
 ```php
 // "db" は事前に登録されたエイリアス名
 $db = $container->get('db');
 
-// これと同じ意味: $engine = new \app\components\SearchEngine($apiKey, ['type' => 1]);
-$engine = $container->get('app\components\SearchEngine', [$apiKey], ['type' => 1]);
+// これと同じ意味: $engine = new \app\components\SearchEngine($apiKey, $apiSecret, ['type' => 1]);
+$engine = $container->get('app\components\SearchEngine', [$apiKey, $apiSecret], ['type' => 1]);
 ```
 
 見えないところで、DIコンテナは、単に新しいオブジェクトを作成するよりもはるかに多くの作業を行います。

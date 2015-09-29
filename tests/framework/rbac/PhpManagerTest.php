@@ -139,4 +139,16 @@ class PhpManagerTest extends ManagerTestCase
         $permission->name = 'createPost';
         $this->auth->update($name, $permission);
     }
+
+    public function testSaveAssignments()
+    {
+        $this->auth->removeAll();
+        $role = $this->auth->createRole('Admin');
+        $this->auth->add($role);
+        $this->auth->assign($role, 13);
+        $this->assertContains('Admin', file_get_contents($this->getAssignmentFile()));
+        $role->name = 'NewAdmin';
+        $this->auth->update('Admin', $role);
+        $this->assertContains('NewAdmin', file_get_contents($this->getAssignmentFile()));
+    }
 }

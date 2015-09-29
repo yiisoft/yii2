@@ -131,14 +131,14 @@ $config = require(__DIR__ . '/../config/web.php');
 ```
 
 > Info|情報: モジュール ID と同じ ID のアプリケーションコンポーネントがある場合は、ブートストラップの過程ではアプリケーションコンポーネントが使われます。
-  代りにモジュールを使いたいときは、次のように、無名関数を使って指定することが出来ます。
+>  代りにモジュールを使いたいときは、次のように、無名関数を使って指定することが出来ます。
 > ```php
-[
-    function () {
-        return Yii::$app->getModule('user');
-    },
-]
-```
+> [
+>     function () {
+>         return Yii::$app->getModule('user');
+>     },
+> ]
+> ```
 
 ブートストラップの過程で、各コンポーネントのインスタンスが作成されます。
 そして、コンポーネントクラスが [[yii\base\BootstrapInterface]] を実装している場合は、その [[yii\base\BootstrapInterface::bootstrap()|bootstrap()]] メソッドも呼び出されます。
