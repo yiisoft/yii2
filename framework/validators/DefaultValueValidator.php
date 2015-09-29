@@ -24,7 +24,7 @@ class DefaultValueValidator extends Validator
      * should be as follows,
      *
      * ```php
-     * function foo($model, $attribute) {
+     * function($model, $attribute) {
      *     // compute value
      *     return $value;
      * }
