@@ -100,7 +100,7 @@ class IpValidator extends Validator
      * to allow a more specific one. The example below will result in passing `192.168.1.1`,
      * but `192.168.2.1` will be denied:
      *
-     * ```
+     * ```php
      * 'ips' => [
      *     'deny' => ['192.168.0.0/16'],
      *     'allow' => ['192.168.1.0/24']
