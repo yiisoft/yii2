@@ -472,28 +472,25 @@ class Container extends Component
             }
 
             $args = [];
-            $j = 0;
-            foreach ($reflection->getParameters() as $i => $param) {
+            $i = 0;
+            foreach ($reflection->getParameters() as $index => $param) {
                 $name = $param->getName();
                 if (($class = $param->getClass()) !== null) {
                     $className = $class->getName();
-                    if(isset($params[$j]) && $params[$j] instanceof $className){
-                        $args[$i] = $params[$j];
-                        $j++;
+                    if(isset($params[$i]) && $params[$i] instanceof $className){
+                        $args[$index] = $params[$i];
+                        $i++;
                     } elseif (\Yii::$app->has($name) && ($obj = \Yii::$app->get($name)) instanceof $className) {
-                        $args[$i] = $obj;
+                        $args[$index] = $obj;
                     } else {
-                        $args[$i] = $this->get($className);
+                        $args[$index] = $this->get($className);
                     }
-                } elseif(array_key_exists($j, $params)){
-                    $args[$i] = $params[$j];
-                    $j++;
+                } elseif(array_key_exists($i, $params)){
+                    $args[$index] = $params[$i];
+                    $i++;
                 } elseif ($param->isDefaultValueAvailable()) {
-                    $args[$i] = $param->getDefaultValue();
-                } else {
-                    $funcName = $reflection->getName();
-                    throw new InvalidConfigException("Missing required parameter \"$name\" when calling \"$funcName\".");
-                }                
+                    $args[$index] = $param->getDefaultValue();
+                }
             }
 
             return call_user_func_array($callback, $args);

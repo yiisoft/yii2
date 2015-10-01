@@ -15,6 +15,8 @@ use yiiunit\framework\di\stubs\Foo;
 use yiiunit\framework\di\stubs\Qux;
 use yiiunit\framework\di\stubs\MyModel;
 use yiiunit\TestCase;
+use yii\base\DynamicModel;
+use yii\validators\NumberValidator;
 
 
 /**
@@ -156,12 +158,49 @@ class ContainerTest extends TestCase
         $this->assertFalse($myObj->validate());
         $this->assertEquals('Is not string', $myObj->getFirstError('name'));
         $this->assertEquals($myObj->qux->a, 'not_injected');
-
-
-        //*****
+        
         list($param, $qux, $validator) = Yii::$container->invoke([$myObj, 'test'], ['D426']);
         $this->assertEquals('D426', $param);
         $this->assertEquals(Yii::$app->qux, $qux);
         $this->assertFalse($validator->validate('not_valid_email'));
+
+
+        //*****
+        $rules = [
+            [['name'], 'filter', 'filter' => 'trim'],
+            [['number'], 'filter', 'filter' => function($val, NumberValidator $validator){
+                if($validator->validate($val)){
+                    return $val * $val;
+                }else{
+                    return 1;
+                }
+            }]
+        ];
+        $model = DynamicModel::validateData([
+            'name' => '  m. munir ',
+            'number' => 3
+        ], $rules);
+        $this->assertEquals('m. munir', $model->name);
+        $this->assertEquals(9, $model->number);
+
+        $model = DynamicModel::validateData([
+            'name' => 'Dee ',
+            'number' => 'word'
+        ], $rules);
+        $this->assertEquals('Dee', $model->name);
+        $this->assertEquals(1, $model->number);
+
+
+        //*****
+        $myFunc = function ($a, NumberValidator $b, $c='default')
+        {
+            return[$a, get_class($b), $c];
+        };
+
+        $result = Yii::$container->invoke($myFunc,['a']);
+        $this->assertEquals(['a', 'yii\validators\NumberValidator', 'default'], $result);
+        
+        $result = Yii::$container->invoke($myFunc,['ok', 'other']);
+        $this->assertEquals(['ok', 'yii\validators\NumberValidator', 'other'], $result);
     }
 }
