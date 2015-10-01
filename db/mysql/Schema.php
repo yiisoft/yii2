@@ -257,7 +257,8 @@ JOIN information_schema.key_column_usage AS kcu ON
     kcu.constraint_catalog = rc.constraint_catalog AND
     kcu.constraint_schema = rc.constraint_schema AND
     kcu.constraint_name = rc.constraint_name
-WHERE rc.table_name = :tableName
+WHERE rc.constraint_schema = database() AND kcu.table_schema = database()
+AND rc.table_name = :tableName AND kcu.table_name = :tableName
 SQL;
 
         $rows = $this->db->createCommand($sql, [':tableName' => $table->name])->queryAll();
