@@ -125,6 +125,7 @@ class ContainerTest extends TestCase
         $this->assertEquals(['D426', true, 'belongApp', 'independent'], $result);
 
 
+        //*****
         $myObj = new MyModel([
             'name' => 'dee',
             'email' => 'dee@mdm.com'
@@ -135,10 +136,29 @@ class ContainerTest extends TestCase
             $useAtEvent[0] = $event->name;
             $useAtEvent[1] = $qux->a;
         });
+
+        $this->assertEquals([], $useAtEvent);
         $myObj->validate();
         $this->assertEquals([], $myObj->errors);
         $this->assertEquals(['afterValidate', 'belongApp'], $useAtEvent);
+        $this->assertEquals($myObj->qux->a, 'independent');
 
+        //*****
+        $myObj = new MyModel([
+            'name' => 3426,
+            'email' => 'dee@mdm.com',
+            'qux' => new Qux('not_injected')
+        ]);
+
+        $myObj->on('afterValidate', function (stubs\QuxInterface $qux){
+            $this->assertTrue($qux instanceof stubs\QuxInterface);
+        });
+        $this->assertFalse($myObj->validate());
+        $this->assertEquals('Is not string', $myObj->getFirstError('name'));
+        $this->assertEquals($myObj->qux->a, 'not_injected');
+
+
+        //*****
         list($param, $qux, $validator) = Yii::$container->invoke([$myObj, 'test'], ['D426']);
         $this->assertEquals('D426', $param);
         $this->assertEquals(Yii::$app->qux, $qux);
