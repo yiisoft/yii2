@@ -323,7 +323,7 @@ class IpValidatorTest extends TestCase
         $model->attr_ip = '8.8.8.8/24';
         $validator->validateAttribute($model, 'attr_ip');
         $this->assertTrue($model->hasErrors('attr_ip'));
-        $this->assertEquals('attr_ip must not be a subnet', $model->getFirstError('attr_ip'));
+        $this->assertEquals('attr_ip must not be a subnet.', $model->getFirstError('attr_ip'));
         $model->clearErrors();
 
         $validator->subnet = null;
@@ -362,7 +362,7 @@ class IpValidatorTest extends TestCase
         $model->attr_ip = '2001:db0:1:2::7/64';
         $validator->validateAttribute($model, 'attr_ip');
         $this->assertTrue($model->hasErrors('attr_ip'));
-        $this->assertEquals('attr_ip must not be a subnet', $model->getFirstError('attr_ip'));
+        $this->assertEquals('attr_ip must not be a subnet.', $model->getFirstError('attr_ip'));
         $model->clearErrors();
 
         $validator->subnet = null;
@@ -389,6 +389,6 @@ class IpValidatorTest extends TestCase
         $validator->validateAttribute($model, 'attr_ip');
         $this->assertTrue($model->hasErrors('attr_ip'));
         $this->assertEquals('fa01::2/614', $model->attr_ip);
-        $this->assertEquals('attr_ip contains wrong subnet mask', $model->getFirstError('attr_ip'));
+        $this->assertEquals('attr_ip contains wrong subnet mask.', $model->getFirstError('attr_ip'));
     }
 }
