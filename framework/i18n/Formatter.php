@@ -811,22 +811,22 @@ class Formatter extends Component
             $interval = new \DateInterval($value);
         }
         if ($interval->y > 1) {
-            $parts[] = Yii::t('yii', '{delta, plural, =1{a year} other{# years}}', ['delta' => $interval->y], $this->locale);
+            $parts[] = Yii::t('yii', '{delta, plural, =1{1 year} other{# years}}', ['delta' => $interval->y], $this->locale);
         }
         if ($interval->m > 1) {
-            $parts[] = Yii::t('yii', '{delta, plural, =1{a month} other{# months}}', ['delta' => $interval->m], $this->locale);
+            $parts[] = Yii::t('yii', '{delta, plural, =1{1 month} other{# months}}', ['delta' => $interval->m], $this->locale);
         }
         if ($interval->d > 1) {
-            $parts[] = Yii::t('yii', '{delta, plural, =1{a day} other{# days}}', ['delta' => $interval->d], $this->locale);
+            $parts[] = Yii::t('yii', '{delta, plural, =1{1 day} other{# days}}', ['delta' => $interval->d], $this->locale);
         }
         if ($interval->h > 1) {
-            $parts[] = Yii::t('yii', '{delta, plural, =1{an hour} other{# hours}}', ['delta' => $interval->h], $this->locale);
+            $parts[] = Yii::t('yii', '{delta, plural, =1{1 hour} other{# hours}}', ['delta' => $interval->h], $this->locale);
         }
         if ($interval->i > 1) {
-            $parts[] = Yii::t('yii', '{delta, plural, =1{a minute} other{# minutes}}', ['delta' => $interval->i], $this->locale);
+            $parts[] = Yii::t('yii', '{delta, plural, =1{1 minute} other{# minutes}}', ['delta' => $interval->i], $this->locale);
         }
         if ($interval->s > 0) {
-            $parts[] = Yii::t('yii', '{delta, plural, =1{a second} other{# seconds}}', ['delta' => $interval->s], $this->locale);
+            $parts[] = Yii::t('yii', '{delta, plural, =1{1 second} other{# seconds}}', ['delta' => $interval->s], $this->locale);
         }
 
         return empty($parts) ? $this->nullDisplay : (($negative ? '-' : '') . implode(', ', $parts));
