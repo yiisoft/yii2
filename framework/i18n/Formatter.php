@@ -802,7 +802,9 @@ class Formatter extends Component
             $interval = $value;
         } elseif (is_numeric($value)) {
             $negative = $value < 0;
-            $interval = new \DateInterval('PT' . abs($value) . 'S');
+            $zeroDateTime = (new DateTime())->setTimestamp(0);
+            $valueDateTime = (new DateTime())->setTimestamp(abs($value));
+            $interval = $valueDateTime->diff($zeroDateTime);
         } elseif (strpos($value, '-') !== false) {
             $negative = true;
             $interval = new \DateInterval(str_replace('-', '', $value));
