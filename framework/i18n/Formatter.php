@@ -789,7 +789,7 @@ class Formatter extends Component
 
     /**
      * Formats the value as a time interval.
-     * @param \DateInterval|string|integer $value the value to be formatted, in ISO8601 duration format or number of seconds.
+     * @param DateInterval|string|integer $value the value to be formatted, in ISO8601 duration format or number of seconds.
      * @return string the formatted result.
      */
     public function asDuration($value)
@@ -797,7 +797,7 @@ class Formatter extends Component
         if ($value === null) {
             return $this->nullDisplay;
         }
-        if ($value instanceof \DateInterval) {
+        if ($value instanceof DateInterval) {
             $negative = $value->invert;
             $interval = $value;
         } elseif (is_numeric($value)) {
@@ -807,10 +807,10 @@ class Formatter extends Component
             $interval = $valueDateTime->diff($zeroDateTime);
         } elseif (strpos($value, '-') !== false) {
             $negative = true;
-            $interval = new \DateInterval(str_replace('-', '', $value));
+            $interval = new DateInterval(str_replace('-', '', $value));
         } else {
             $negative = false;
-            $interval = new \DateInterval($value);
+            $interval = new DateInterval($value);
         }
         if ($interval->y > 1) {
             $parts[] = Yii::t('yii', '{delta, plural, =1{1 year} other{# years}}', ['delta' => $interval->y], $this->locale);
