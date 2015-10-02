@@ -124,43 +124,43 @@ class IpValidator extends Validator
     /**
      * @var string user-defined error message is used when validation fails due to the disabled IPv6 validation
      */
-    public $ipv6NotAllowed = '{attribute} must not be an IPv6 address';
+    public $ipv6NotAllowed = '{attribute} must not be an IPv6 address.';
 
     /**
      * @var string user-defined error message is used when validation fails due to the disabled IPv4 validation
      */
-    public $ipv4NotAllowed = '{attribute} must not be an IPv4 address';
+    public $ipv4NotAllowed = '{attribute} must not be an IPv4 address.';
 
     /**
      * @var string user-defined error message is used when validation fails due to the wrong CIDR
      */
-    public $wrongCidr = '{attribute} contains wrong subnet mask';
+    public $wrongCidr = '{attribute} contains wrong subnet mask.';
 
     /**
      * @var string user-defined error message is used when validation fails due to the wrong IP address format
      */
-    public $wrongIp = '{attribute} must be a valid IP address';
+    public $wrongIp = '{attribute} must be a valid IP address.';
 
     /**
      * @var string user-defined error message is used when validation fails due to subnet [[subnet]] set to 'only',
      * but the CIDR prefix is not set
      * @see subnet
      */
-    public $noSubnet = '{attribute} must be an IP address with specified subnet';
+    public $noSubnet = '{attribute} must be an IP address with specified subnet.';
 
     /**
      * @var string user-defined error message is used when validation fails
      * due to [[subnet]] is false, but CIDR prefix is present
      * @see subnet
      */
-    public $hasSubnet = '{attribute} must not be a subnet';
+    public $hasSubnet = '{attribute} must not be a subnet.';
 
     /**
      * @var string user-defined error message is used when validation fails due to IP address
      * is not on the [[allow]] list, or is on the [[deny]] list
      * @see ips
      */
-    public $notInRange = '{attribute} is not in the allowed range';
+    public $notInRange = '{attribute} is not in the allowed range.';
 
     /**
      * @inheritdoc
