@@ -789,7 +789,7 @@ class Formatter extends Component
 
     /**
      * Formats the value as a time interval.
-     * @param \DateInterval|string|integer $value the value to be formatted, in ISO8601 format or number of seconds.
+     * @param \DateInterval|string|integer $value the value to be formatted, in ISO8601 duration format or number of seconds.
      * @return string the formatted result.
      */
     public function asDuration($value)
