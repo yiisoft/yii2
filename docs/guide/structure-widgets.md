@@ -114,7 +114,7 @@ use app\components\HelloWidget;
 
 ### Configuring Global Defaults
 
-If you need to configure your widget with global defaults, you can add your widget in `main.php`. Simply define your widget in your config's `main.php` file under the components array.
+If you need to configure your widget with global defaults, you can add your widget in `web.php` (basic) or `main.php` (advanced). Simply define your widget in your config file under the components array.
 
 ```
 'components' => [
@@ -127,7 +127,7 @@ If you need to configure your widget with global defaults, you can add your widg
 
 Now you can access the `message` variable using `Yii::$app->helloWidget->message`. Where `helloWidget` is the same as the key used in the components array.
 
-In our example widget above, we will make minor changes so we can use this default `message` param. If `message` is `null` (because it was not set in the widget), it will fetch the value from your `main.php`.
+Based off the example widget above, make minor changes to use this default `message` param. If `message` is `null` (because it was not set in the widget directly), it will fetch the value from your config `web.php`.
 
 ```
 class HelloWidget extends Widget
@@ -149,15 +149,15 @@ class HelloWidget extends Widget
 }
 ```
 
-Now we can just call our widget without any configurations, and it will use our defaults from `main.php`. You can override them by passing them directly in the widget, if needed.
+Now just call the widget without any configurations, and it will use the defaults from `web.php`. You can override them by passing them directly in the widget, if needed.
 
-In your view, call your widget:
+In your view, call the widget:
 
 ```
 <?= HelloWidget::widget() ?>
 ```
 
-It will print out `My default message`, because it is set in our `main.php` and was not passed via `message` when declaring the widget.
+It will print out `My default message`, because `message` is defined in `web.php` and was not passed via `message` when declaring the widget.
 
 ### Global Defaults using DI
 
