@@ -140,7 +140,6 @@ class Controller extends \yii\base\Controller
             throw new Exception(Yii::t('yii', 'Missing required arguments: {params}', ['params' => implode(', ', $missing)]));
         }
 
-        // #9823
         foreach ($params as $value) {
             $args[] = $value;
         }
