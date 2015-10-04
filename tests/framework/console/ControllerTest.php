@@ -78,9 +78,18 @@ class ControllerTest extends TestCase
         $result = $controller->runAction('aksi6', $params);
         $this->assertEquals(['mdmunir', false, true], $result);
 
+        $params = ['arg1', 'arg2', 'arg3'];
+        $result = $controller->runAction('aksi8', $params);
+        $this->assertEquals($params, $result);
+
+        $params = ['arg1', 'arg2', 'arg3'];
+        $result = $controller->runAction('aksi9', $params);
+        $this->assertEquals(['arg1', 'arg2', Yii::$app->quxApp, 'arg3'], $result);
+
         $params = ['avaliable'];
         $message = Yii::t('yii', 'Missing required arguments: {params}', ['params' => implode(', ', ['missing'])]);
         $this->setExpectedException('yii\console\Exception', $message);
         $result = $controller->runAction('aksi7', $params);
+
     }
 }

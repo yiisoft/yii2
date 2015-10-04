@@ -66,6 +66,7 @@ class ViewAction extends Action
     public function run()
     {
         $viewName = $this->resolveViewName();
+        $this->controller->actionParams[$this->viewParam] = Yii::$app->request->get($this->viewParam);
 
         $controllerLayout = null;
         if ($this->layout !== null) {
