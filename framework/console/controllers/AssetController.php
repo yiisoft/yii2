@@ -190,6 +190,12 @@ class AssetController extends Controller
 
         $targets = $this->adjustDependency($targets, $bundles);
         $this->saveTargets($targets, $bundleFile);
+
+        foreach ($bundles as $bundle) {
+            if ($bundle->sourcePath !== null) {
+                FileHelper::removeDirectory($bundle->basePath);
+            }
+        }
     }
 
     /**

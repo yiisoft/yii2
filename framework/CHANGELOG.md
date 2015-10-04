@@ -27,6 +27,7 @@ Yii Framework 2 Change Log
 - Enh #9476: Added DI injection via controller action method signature (mdmunir)
 - Enh #9635: Added default CSS class for `\yii\grid\ActionColumn` header (arogachev, dynasource)
 - Enh #9643: Added migrations for DB cache (mdmunir)
+- Enh #9708: Added deleting original assets when run asset/compression command (pana1990)
 - Enh #9711: Added `yii\widgets\LinkPager::$pageCssClass` that allows to set default page class (ShNURoK42)
 - Enh #9733: Added Unprocessable Entity HTTP Exception (janfrs)
 - Chg #9369: `Yii::$app->user->can()` now returns `false` instead of erroring in case `authManager` component is not configured (creocoder)
