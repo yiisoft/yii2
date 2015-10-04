@@ -34,10 +34,10 @@ class QueryBuilder extends \yii\db\QueryBuilder
         Schema::TYPE_DOUBLE => 'float',
         Schema::TYPE_DECIMAL => 'decimal',
         Schema::TYPE_DATETIME => 'datetime',
-        Schema::TYPE_TIMESTAMP => 'timestamp',
+        Schema::TYPE_TIMESTAMP => 'datetime',
         Schema::TYPE_TIME => 'time',
         Schema::TYPE_DATE => 'date',
-        Schema::TYPE_BINARY => 'binary(1)',
+        Schema::TYPE_BINARY => 'varbinary(max)',
         Schema::TYPE_BOOLEAN => 'bit',
         Schema::TYPE_MONEY => 'decimal(19,4)',
     ];

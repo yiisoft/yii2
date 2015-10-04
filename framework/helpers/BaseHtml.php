@@ -457,6 +457,10 @@ class BaseHtml
 
     /**
      * Generates a submit button tag.
+     *
+     * Be careful when naming form elements such as submit buttons. According to the [jQuery documentation](https://api.jquery.com/submit/) there
+     * are some reserved names that can cause conflicts, e.g. `submit`, `length`, or `method`.
+     *
      * @param string $content the content enclosed within the button tag. It will NOT be HTML-encoded.
      * Therefore you can pass in HTML code such as an image tag. If this is is coming from end users,
      * you should consider [[encode()]] it to prevent XSS attacks.
@@ -528,6 +532,10 @@ class BaseHtml
 
     /**
      * Generates a submit input button.
+     *
+     * Be careful when naming form elements such as submit buttons. According to the [jQuery documentation](https://api.jquery.com/submit/) there
+     * are some reserved names that can cause conflicts, e.g. `submit`, `length`, or `method`.
+     *
      * @param string $label the value attribute. If it is null, the value attribute will not be generated.
      * @param array $options the tag options in terms of name-value pairs. These will be rendered as
      * the attributes of the resulting tag. The values will be HTML-encoded using [[encode()]].

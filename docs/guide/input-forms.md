@@ -90,6 +90,13 @@ echo $form->field($model, 'uploadFile[]')->fileInput(['multiple'=>'multiple']);
 echo $form->field($model, 'items[]')->checkboxList(['a' => 'Item A', 'b' => 'Item B', 'c' => 'Item C']);
 ```
 
+Be careful when naming form elements such as submit buttons. According to the [jQuery documentation](https://api.jquery.com/submit/) there
+are some reserved names that can cause conflicts:
+
+> Forms and their child elements should not use input names or ids that conflict with properties of a form,
+> such as `submit`, `length`, or `method`. Name conflicts can cause confusing failures.
+> For a complete list of rules and to check your markup for these problems, see [DOMLint](http://kangax.github.io/domlint/). 
+
 Additional HTML tags can be added to the form using plain HTML or using the methods from the [[yii\helpers\Html|Html]]-helper
 class like it is done in the above example with [[yii\helpers\Html::submitButton()|Html::submitButton()]].
 
