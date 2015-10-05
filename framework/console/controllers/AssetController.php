@@ -193,7 +193,10 @@ class AssetController extends Controller
 
         foreach ($bundles as $bundle) {
             if ($bundle->sourcePath !== null) {
-                FileHelper::removeDirectory($bundle->basePath);
+                $files = FileHelper::findFiles($bundle->basePath, ['only' => ['*.js', '*.css']]);
+                foreach ($files as $file) {
+                    @unlink($file);
+                }
             }
         }
     }
