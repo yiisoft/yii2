@@ -447,7 +447,7 @@ class BaseFileHelper
      * @param integer $mode the permission to be set for the created directory.
      * @param boolean $recursive whether to create parent directories if they do not exist.
      * @return boolean whether the directory is created successfully
-     * @throws \yii\base\Exception if the directory could not be created.
+     * @throws \yii\base\Exception if the directory could not be created (i.e. php error due to parallel changes)
      */
     public static function createDirectory($path, $mode = 0775, $recursive = true)
     {
@@ -455,17 +455,24 @@ class BaseFileHelper
             return true;
         }
         $parentDir = dirname($path);
-        if ($recursive && !is_dir($parentDir)) {
+        // recurse if parent dir does not exist and we are not at the root of the file system.
+        if ($recursive && !is_dir($parentDir) && $parentDir !== $path) {
             static::createDirectory($parentDir, $mode, true);
         }
         try {
-            $result = mkdir($path, $mode);
-            chmod($path, $mode);
+            if (!mkdir($path, $mode)) {
+                return false;
+            }
         } catch (\Exception $e) {
-            throw new \yii\base\Exception("Failed to create directory '$path': " . $e->getMessage(), $e->getCode(), $e);
+            if (!is_dir($path)) {// https://github.com/yiisoft/yii2/issues/9288
+                throw new \yii\base\Exception("Failed to create directory \"$path\": " . $e->getMessage(), $e->getCode(), $e);
+            }
         }
-
-        return $result;
+        try {
+            return chmod($path, $mode);
+        } catch (\Exception $e) {
+            throw new \yii\base\Exception("Failed to change permissions for directory \"$path\": " . $e->getMessage(), $e->getCode(), $e);
+        }
     }
 
     /**

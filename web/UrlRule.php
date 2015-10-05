@@ -341,4 +341,15 @@ class UrlRule extends Object implements UrlRuleInterface
 
         return $url;
     }
+
+    /**
+     * Returns list of regex for matching parameter.
+     * @return array parameter keys and regexp rules.
+     *
+     * @since 2.0.6
+     */
+    protected function getParamRules()
+    {
+        return $this->_paramRules;
+    }
 }

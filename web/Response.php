@@ -72,7 +72,6 @@ class Response extends \yii\base\Response
      * You may respond to this event to filter the response content before it is sent to the client.
      */
     const EVENT_AFTER_PREPARE = 'afterPrepare';
-
     const FORMAT_RAW = 'raw';
     const FORMAT_HTML = 'html';
     const FORMAT_JSON = 'json';
@@ -426,7 +425,7 @@ class Response extends \yii\base\Response
      *
      *  - `mimeType`: the MIME type of the content. If not set, it will be guessed based on `$filePath`
      *  - `inline`: boolean, whether the browser should open the file within the browser window. Defaults to false,
-     *     meaning a download dialog will pop up.
+     *    meaning a download dialog will pop up.
      *
      * @return $this the response object itself
      */
@@ -456,7 +455,7 @@ class Response extends \yii\base\Response
      *
      *  - `mimeType`: the MIME type of the content. Defaults to 'application/octet-stream'.
      *  - `inline`: boolean, whether the browser should open the file within the browser window. Defaults to false,
-     *     meaning a download dialog will pop up.
+     *    meaning a download dialog will pop up.
      *
      * @return $this the response object itself
      * @throws HttpException if the requested range is not satisfiable
@@ -503,10 +502,10 @@ class Response extends \yii\base\Response
      *
      *  - `mimeType`: the MIME type of the content. Defaults to 'application/octet-stream'.
      *  - `inline`: boolean, whether the browser should open the file within the browser window. Defaults to false,
-     *     meaning a download dialog will pop up.
+     *    meaning a download dialog will pop up.
      *  - `fileSize`: the size of the content to stream this is useful when size of the content is known
-     *     and the content is not seekable. Defaults to content size using `ftell()`.
-     *     This option is available since version 2.0.4.
+     *    and the content is not seekable. Defaults to content size using `ftell()`.
+     *    This option is available since version 2.0.4.
      *
      * @return $this the response object itself
      * @throws HttpException if the requested range cannot be satisfied.
@@ -660,7 +659,7 @@ class Response extends \yii\base\Response
      *
      *  - `mimeType`: the MIME type of the content. If not set, it will be guessed based on `$filePath`
      *  - `inline`: boolean, whether the browser should open the file within the browser window. Defaults to false,
-     *     meaning a download dialog will pop up.
+     *    meaning a download dialog will pop up.
      *  - xHeader: string, the name of the x-sendfile header. Defaults to "X-Sendfile".
      *
      * @return $this the response object itself

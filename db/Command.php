@@ -170,6 +170,8 @@ class Command extends Component
             }
             if (is_string($value)) {
                 $params[$name] = $this->db->quoteValue($value);
+            } elseif (is_bool($value)) {
+                $params[$name] = ($value ? 'TRUE' : 'FALSE');
             } elseif ($value === null) {
                 $params[$name] = 'NULL';
             } elseif (!is_object($value) && !is_resource($value)) {
@@ -241,7 +243,7 @@ class Command extends Component
      * using named placeholders, this will be a parameter name of
      * the form `:name`. For a prepared statement using question mark
      * placeholders, this will be the 1-indexed position of the parameter.
-     * @param mixed $value Name of the PHP variable to bind to the SQL statement parameter
+     * @param mixed $value the PHP variable to bind to the SQL statement parameter (passed by reference)
      * @param integer $dataType SQL data type of the parameter. If null, the type is determined by the PHP type of the value.
      * @param integer $length length of the data type
      * @param mixed $driverOptions the driver-specific options
@@ -859,10 +861,10 @@ class Command extends Component
     }
 
     /**
-     * Marks specified table schema to be refreshed after command execution.
+     * Marks a specified table schema to be refreshed after command execution.
      * @param string $name name of the table, which schema should be refreshed.
      * @return $this this command instance
-     * @since 2.0.5
+     * @since 2.0.6
      */
     protected function requireTableSchemaRefresh($name)
     {
@@ -871,8 +873,8 @@ class Command extends Component
     }
 
     /**
-     * Refreshes table schema, which was marked by [[requireTableSchemaRefreshment()]]
-     * @since 2.0.5
+     * Refreshes table schema, which was marked by [[requireTableSchemaRefresh()]]
+     * @since 2.0.6
      */
     protected function refreshTableSchema()
     {

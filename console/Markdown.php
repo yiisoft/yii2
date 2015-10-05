@@ -48,10 +48,10 @@ class Markdown extends \cebe\markdown\Parser
      * @param array $block
      * @return string
      */
-   	protected function renderCode($block)
-   	{
+    protected function renderCode($block)
+    {
         return Console::ansiFormat($block['content'], [Console::NEGATIVE]) . "\n\n";
-   	}
+    }
 
     /**
      * @inheritdoc
