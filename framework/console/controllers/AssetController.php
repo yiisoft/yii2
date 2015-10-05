@@ -146,6 +146,7 @@ class AssetController extends Controller
             if (!isset($options['baseUrl'])) {
                 throw new Exception("Please specify 'baseUrl' for the 'assetManager' option.");
             }
+            $options['forceCopy'] = true;
             $this->_assetManager = Yii::createObject($options);
         }
 
