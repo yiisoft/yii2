@@ -350,7 +350,7 @@ class Request extends \yii\base\Request
 
     /**
      * Sets the raw HTTP request body, this method is mainly used by test scripts to simulate raw HTTP requests.
-     * @param $rawBody
+     * @param string $rawBody the request body
      */
     public function setRawBody($rawBody)
     {
