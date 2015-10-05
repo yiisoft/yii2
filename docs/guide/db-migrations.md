@@ -2,9 +2,9 @@ Database Migration
 ==================
 
 During the course of developing and maintaining a database-driven application, the structure of the database
-being used evolves just like the source code does. For example, during the development of an application, 
+being used evolves just like the source code does. For example, during the development of an application,
 a new table may be found necessary; after the application is deployed to production, it may be discovered
-that an index should be created to improve the query performance; and so on. Because a database structure change 
+that an index should be created to improve the query performance; and so on. Because a database structure change
 often requires some source code changes, Yii supports the so-called *database migration* feature that allows
 you to keep track of database changes in terms of *database migrations* which are version-controlled together
 with the source code.
@@ -14,7 +14,7 @@ The following steps show how database migration can be used by a team during dev
 1. Tim creates a new migration (e.g. creates a new table, changes a column definition, etc.).
 2. Tim commits the new migration into the source control system (e.g. Git, Mercurial).
 3. Doug updates his repository from the source control system and receives the new migration.
-4. Doug applies the migration to his local development database, thereby synchronizing his database 
+4. Doug applies the migration to his local development database, thereby synchronizing his database
    to reflect the changes that Tim has made.
 
 And the following steps show how to deploy a new release with database migrations to production:
@@ -35,7 +35,7 @@ All these tools are accessible through the command `yii migrate`. In this sectio
 how to accomplish various tasks using these tools. You may also get the usage of each tool via the help
 command `yii help migrate`.
 
-> Note: migrations could affect not only database schema but adjust existing data to fit new schema, create RBAC
+> Tip: migrations could affect not only database schema but adjust existing data to fit new schema, create RBAC
   hierarcy or clean up cache.
 
 
@@ -47,7 +47,7 @@ To create a new migration, run the following command:
 yii migrate/create <name>
 ```
 
-The required `name` argument gives a brief description about the new migration. For example, if 
+The required `name` argument gives a brief description about the new migration. For example, if
 the migration is about creating a new table named *news*, you may use the name `create_news_table`
 and run the following command:
 
@@ -65,20 +65,32 @@ a migration class `m150101_185401_create_news_table` with the skeleton code:
 ```php
 <?php
 
-use yii\db\Schema;
 use yii\db\Migration;
 
 class m150101_185401_create_news_table extends Migration
 {
     public function up()
     {
+
     }
 
     public function down()
     {
         echo "m101129_185401_create_news_table cannot be reverted.\n";
+
         return false;
     }
+
+    /*
+    // Use safeUp/safeDown to run migration code within a transaction
+    public function safeUp()
+    {
+    }
+
+    public function safeDown()
+    {
+    }
+    */
 }
 ```
 
@@ -91,14 +103,15 @@ class name is automatically generated in the format of `m<YYMMDD_HHMMSS>_<Name>`
 In the migration class, you are expected to write code in the `up()` method that makes changes to the database structure.
 You may also want to write code in the `down()` method to revert the changes made by `up()`. The `up()` method is invoked
 when you upgrade the database with this migration, while the `down()` method is invoked when you downgrade the database.
-The following code shows how you may implement the migration class to create a `news` table: 
+The following code shows how you may implement the migration class to create a `news` table:
 
 ```php
+<?php
 
 use yii\db\Schema;
 use yii\db\Migration;
 
-class m150101_185401_create_news_table extends \yii\db\Migration
+class m150101_185401_create_news_table extends Migration
 {
     public function up()
     {
@@ -113,17 +126,16 @@ class m150101_185401_create_news_table extends \yii\db\Migration
     {
         $this->dropTable('news');
     }
-
 }
 ```
 
 > Info: Not all migrations are reversible. For example, if the `up()` method deletes a row of a table, you may
-  not be able to recover this row in the `down()` method. Sometimes, you may be just too lazy to implement 
+  not be able to recover this row in the `down()` method. Sometimes, you may be just too lazy to implement
   the `down()`, because it is not very common to revert database migrations. In this case, you should return
   `false` in the `down()` method to indicate that the migration is not reversible.
 
 The base migration class [[yii\db\Migration]] exposes a database connection via the [[yii\db\Migration::db|db]]
-property. You can use it to manipulate the database schema using the methods as described in 
+property. You can use it to manipulate the database schema using the methods as described in
 [Working with Database Schema](db-dao.md#working-with-database-schema-).
 
 Rather than using physical types, when creating a table or column you should use *abstract types*
@@ -137,25 +149,25 @@ into `int(11) NOT NULL AUTO_INCREMENT PRIMARY KEY`, while `TYPE_STRING` becomes 
 You can append additional constraints when using abstract types. In the above example, ` NOT NULL` is appended
 to `Schema::TYPE_STRING` to specify that the column cannot be null.
 
-> Info: The mapping between abstract types and physical types is specified by 
+> Info: The mapping between abstract types and physical types is specified by
   the [[yii\db\QueryBuilder::$typeMap|$typeMap]] property in each concrete `QueryBuilder` class.
-  
-Since 2.0.5 schema builder which provides more convenient way defining column schema was introduced so migration above
-could be written like the following:
+
+Since version 2.0.6, you can make use of the newly introduced schema builder which provides more convenient way of defining column schema.
+So the migration above could be written like the following:
 
 ```php
+<?php
 
-use yii\db\Schema;
 use yii\db\Migration;
 
-class m150101_185401_create_news_table extends \yii\db\Migration
+class m150101_185401_create_news_table extends Migration
 {
     public function up()
     {
         $this->createTable('news', [
-            'id' => Schema::primaryKey(),
-            'title' => Schema::string()->notNull(),
-            'content' => Schema::text(),
+            'id' => $this->primaryKey(),
+            'title' => $this->string()->notNull(),
+            'content' => $this->text(),
         ]);
     }
 
@@ -163,26 +175,27 @@ class m150101_185401_create_news_table extends \yii\db\Migration
     {
         $this->dropTable('news');
     }
-
 }
 ```
+
+A list of all available methods for defining the column types is available in the API documentation of [[yii\db\SchemaBuilderTrait]].
 
 
 ### Transactional Migrations <span id="transactional-migrations"></span>
 
 While performing complex DB migrations, it is important to ensure each migration to either succeed or fail as a whole
-so that the database can maintain integrity and consistency. To achieve this goal, it is recommended that you 
-enclose the DB operations of each migration in a [transaction](db-dao.md#performing-transactions-).
- 
-An even easier way of implementing transactional migrations is to put migration code in the `safeUp()` and `safeDown()` 
+so that the database can maintain integrity and consistency. To achieve this goal, it is recommended that you
+enclose the DB operations of each migration in a [transaction](db-dao.md#performing-transactions).
+
+An even easier way of implementing transactional migrations is to put migration code in the `safeUp()` and `safeDown()`
 methods. These two methods differ from `up()` and `down()` in that they are enclosed implicitly in a transaction.
 As a result, if any operation in these methods fails, all prior operations will be rolled back automatically.
 
 In the following example, besides creating the `news` table we also insert an initial row into this table.
 
 ```php
+<?php
 
-use yii\db\Schema;
 use yii\db\Migration;
 
 class m150101_185401_create_news_table extends Migration
@@ -190,11 +203,11 @@ class m150101_185401_create_news_table extends Migration
     public function safeUp()
     {
         $this->createTable('news', [
-            'id' => Schema::primaryKey(),,
-            'title' => Schema::string()->notNull(),
-            'content' => Schema::text(),
+            'id' => $this->primaryKey(),
+            'title' => $this->string()->notNull(),
+            'content' => $this->text(),
         ]);
-        
+
         $this->insert('news', [
             'title' => 'test 1',
             'content' => 'content 1',
@@ -209,7 +222,7 @@ class m150101_185401_create_news_table extends Migration
 }
 ```
 
-Note that usually when you perform multiple DB operations in `safeUp()`, you should reverse their execution order 
+Note that usually when you perform multiple DB operations in `safeUp()`, you should reverse their execution order
 in `safeDown()`. In the above example we first create the table and then insert a row in `safeUp()`; while
 in `safeDown()` we first delete the row and then drop the table.
 
@@ -221,12 +234,12 @@ in `safeDown()` we first delete the row and then drop the table.
 ### Database Accessing Methods <span id="db-accessing-methods"></span>
 
 The base migration class [[yii\db\Migration]] provides a set of methods to let you access and manipulate databases.
-You may find these methods are named similarly as the [DAO methods](db-dao.md) provided by the [[yii\db\Command]] class. 
-For example, the [[yii\db\Migration::createTable()]] method allows you to create a new table, 
-just like [[yii\db\Command::createTable()]] does. 
+You may find these methods are named similarly as the [DAO methods](db-dao.md) provided by the [[yii\db\Command]] class.
+For example, the [[yii\db\Migration::createTable()]] method allows you to create a new table,
+just like [[yii\db\Command::createTable()]] does.
 
-The benefit of using the methods provided by [[yii\db\Migration]] is that you do not need to explicitly 
-create [[yii\db\Command]] instances and the execution of each method will automatically display useful messages 
+The benefit of using the methods provided by [[yii\db\Migration]] is that you do not need to explicitly
+create [[yii\db\Command]] instances and the execution of each method will automatically display useful messages
 telling you what database operations are done and how long they take.
 
 Below is the list of all these database accessing methods:
@@ -255,6 +268,13 @@ Below is the list of all these database accessing methods:
   to display extra message about retrieving data from a database. It is also because you can use the powerful
   [Query Builder](db-query-builder.md) to build and run complex queries.
 
+> Note: When manipulating data using a migration you may find that using your [Active Record](db-active-record.md) classes
+> for this might be useful because some of the logic is already implemented there. Keep in mind however, that in contrast
+> to code written in the migrations, who's nature is to stay constant forever, application logic is subject to change.
+> So when using Active Record in migration code, changes to the logic in the Active Record layer may accidentally break
+> existing migrations. For this reason migration code should be kept independent from other application logic such
+> as Active Record classes.
+
 
 ## Applying Migrations <span id="applying-migrations"></span>
 
@@ -265,18 +285,18 @@ yii migrate
 ```
 
 This command will list all migrations that have not been applied so far. If you confirm that you want to apply
-these migrations, it will run the `up()` or `safeUp()` method in every new migration class, one after another, 
+these migrations, it will run the `up()` or `safeUp()` method in every new migration class, one after another,
 in the order of their timestamp values. If any of the migrations fails, the command will quit without applying
 the rest of the migrations.
 
-For each migration that has been successfully applied, the command will insert a row into a database table named 
+For each migration that has been successfully applied, the command will insert a row into a database table named
 `migration` to record the successful application of the migration. This will allow the migration tool to identify
 which migrations have been applied and which have not.
 
 > Info: The migration tool will automatically create the `migration` table in the database specified by
   the [[yii\console\controllers\MigrateController::db|db]] option of the command. By default, the database
   is specified by the `db` [application component](structure-application-components.md).
-  
+
 Sometimes, you may only want to apply one or a few new migrations, instead of all available migrations.
 You can do so by specifying the number of migrations that you want to apply when running the command.
 For example, the following command will try to apply the next three available migrations:
@@ -320,7 +340,7 @@ Redoing migrations means first reverting the specified migrations and then apply
 as follows:
 
 ```
-yii migrate/redo        # redo the last applied migration 
+yii migrate/redo        # redo the last applied migration
 yii migrate/redo 3      # redo the last 3 applied migrations
 ```
 
@@ -369,12 +389,12 @@ There are several ways to customize the migration command.
 
 The migration command comes with a few command-line options that can be used to customize its behaviors:
 
-* `interactive`: boolean (defaults to true), specifies whether to perform migrations in an interactive mode. 
+* `interactive`: boolean (defaults to true), specifies whether to perform migrations in an interactive mode.
   When this is true, the user will be prompted before the command performs certain actions.
   You may want to set this to false if the command is being used in a background process.
 
-* `migrationPath`: string (defaults to `@app/migrations`), specifies the directory storing all migration 
-  class files. This can be specified as either a directory path or a path [alias](concept-aliases.md). 
+* `migrationPath`: string (defaults to `@app/migrations`), specifies the directory storing all migration
+  class files. This can be specified as either a directory path or a path [alias](concept-aliases.md).
   Note that the directory must exist, or the command may trigger an error.
 
 * `migrationTable`: string (defaults to `migration`), specifies the name of the database table for storing
@@ -438,7 +458,8 @@ database. To achieve this goal, when implementing a migration class you should e
 ID that the migration would use, like the following:
 
 ```php
-use yii\db\Schema;
+<?php
+
 use yii\db\Migration;
 
 class m150101_185401_create_news_table extends Migration

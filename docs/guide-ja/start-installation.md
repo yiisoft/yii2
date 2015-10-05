@@ -36,7 +36,7 @@ Composer は `composer self-update` コマンドを実行してアップデー�
 
 Composer がインストールされたら、ウェブからアクセスできるフォルダで下記のコマンドを実行することによって Yii をインストールすることが出来ます。
 
-    composer global require "fxp/composer-asset-plugin:~1.0.0"
+    composer global require "fxp/composer-asset-plugin:~1.0.3"
     composer create-project --prefer-dist yiisoft/yii2-app-basic basic
 
 最初のコマンドは [composer アセットプラグイン](https://github.com/francoispluchino/composer-asset-plugin/) をインストールします。
@@ -89,10 +89,18 @@ Composer がインストールされたら、ウェブからアクセスでき�
 インストールを検証する <span id="verifying-installation"></span>
 ----------------------
 
-インストール完了後、下記の URL によって、インストールされた Yii アプリケーションにブラウザを使ってアクセスすることが出来ます。
+インストール完了後、あなたのウェブサーバを構成してください (次の説を参照してください)。
+あるいは、プロジェクトの `web` ディレクトリで次のコマンドを実行して、
+[PHP の内蔵ウェブサーバ](https://secure.php.net/manual/ja/features.commandline.webserver.php) を使ってください。
 
 ```
-http://localhost/basic/web/index.php
+php -S localhost:80
+```
+
+下記の URL によって、インストールされた Yii アプリケーションにブラウザを使ってアクセスすることが出来ます。
+
+```
+http://localhost/
 ```
 
 この URL は、あなたが Yii を ウェブサーバのドキュメントルートディレクトリ直下の `basic` という名前のディレクトリにインストールしたこと、
@@ -105,7 +113,7 @@ http://localhost/basic/web/index.php
 もし表示されなかったら、PHP のインストールが Yii の必要条件を満たしているかどうか、チェックしてください。
 最低限の必要条件を満たしているかどうかは、次の方法のどちらかによってチェックすることが出来ます。
 
-* ブラウザを使って URL `http://localhost/basic/requirements.php` にアクセスする。
+* `requirements.php` を `/web/requirements.php` としてコピーし、ブラウザを使って URL `http://localhost/requirements.php` にアクセスする。
 * 次のコマンドを実行する。
 
   ```

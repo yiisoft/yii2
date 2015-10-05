@@ -244,11 +244,14 @@ class Controller extends Component implements ViewContextInterface
      * ```php
      * public function beforeAction($action)
      * {
+     *     // your custom code here, if you want the code to run before action filters,
+     *     // wich are triggered on the [[EVENT_BEFORE_ACTION]] event, e.g. PageCache or AccessControl
+     *
      *     if (!parent::beforeAction($action)) {
      *         return false;
      *     }
      *
-     *     // your custom code here
+     *     // other custom code here
      *
      *     return true; // or false to not run the action
      * }

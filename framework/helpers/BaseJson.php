@@ -26,18 +26,20 @@ class BaseJson
      * The method enhances `json_encode()` by supporting JavaScript expressions.
      * In particular, the method will not encode a JavaScript expression that is
      * represented in terms of a [[JsExpression]] object.
-     * @param mixed $value the data to be encoded
+     * @param mixed $value the data to be encoded.
      * @param integer $options the encoding options. For more details please refer to
      * <http://www.php.net/manual/en/function.json-encode.php>. Default is `JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE`.
-     * @return string the encoding result
+     * @return string the encoding result.
+     * @throws InvalidParamException if there is any encoding error.
      */
     public static function encode($value, $options = 320)
     {
         $expressions = [];
-        $value = static::processData($value, $expressions, uniqid());
+        $value = static::processData($value, $expressions, uniqid('', true));
         $json = json_encode($value, $options);
+        static::handleJsonError(json_last_error());
 
-        return empty($expressions) ? $json : strtr($json, $expressions);
+        return $expressions === [] ? $json : strtr($json, $expressions);
     }
 
     /**
@@ -49,6 +51,7 @@ class BaseJson
      * @param mixed $value the data to be encoded
      * @return string the encoding result
      * @since 2.0.4
+     * @throws InvalidParamException if there is any encoding error
      */
     public static function htmlEncode($value)
     {
@@ -68,7 +71,21 @@ class BaseJson
             throw new InvalidParamException('Invalid JSON data.');
         }
         $decode = json_decode((string) $json, $asArray);
-        switch (json_last_error()) {
+        static::handleJsonError(json_last_error());
+
+        return $decode;
+    }
+
+    /**
+     * Handles [[encode()]] and [[decode()]] errors by throwing exceptions with the respective error message.
+     *
+     * @param integer $lastError error code from [json_last_error()](http://php.net/manual/en/function.json-last-error.php).
+     * @throws \yii\base\InvalidParamException if there is any encoding/decoding error.
+     * @since 2.0.6
+     */
+    protected static function handleJsonError($lastError)
+    {
+        switch ($lastError) {
             case JSON_ERROR_NONE:
                 break;
             case JSON_ERROR_DEPTH:
@@ -84,8 +101,6 @@ class BaseJson
             default:
                 throw new InvalidParamException('Unknown JSON decoding error.');
         }
-
-        return $decode;
     }
 
     /**

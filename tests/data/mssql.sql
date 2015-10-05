@@ -179,3 +179,17 @@ INSERT INTO [dbo].[order_item_with_null_fk] ([order_id], [item_id], [quantity], 
 INSERT INTO [dbo].[order_item_with_null_fk] ([order_id], [item_id], [quantity], [subtotal]) VALUES (3, 2, 1, 40.0);
 
 INSERT INTO [dbo].[document] ([title], [content], [version]) VALUES ('Yii 2.0 guide', 'This is Yii 2.0 guide', 0);
+
+/* bit test, see https://github.com/yiisoft/yii2/issues/9006 */
+
+IF OBJECT_ID('[dbo].[bit_values]', 'U') IS NOT NULL DROP TABLE [dbo].[bit_values];
+
+CREATE TABLE [dbo].[bit_values] (
+    [id] [int] IDENTITY(1,1) NOT NULL,
+	[val] [bit] NOT NULL,
+	CONSTRAINT [PK_bit_values] PRIMARY KEY CLUSTERED (
+		[id] ASC
+	) ON [PRIMARY]
+);
+
+INSERT INTO [dbo].[bit_values] ([id], [val]) VALUES (1, 0), (2, 1);

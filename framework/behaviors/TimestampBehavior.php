@@ -120,14 +120,14 @@ class TimestampBehavior extends AttributeBehavior
      * $model->touch('lastVisit');
      * ```
      * @param string $attribute the name of the attribute to update.
-     * @throws InvalidCallException if owner is a new record.
+     * @throws InvalidCallException if owner is a new record (since version 2.0.6).
      */
     public function touch($attribute)
     {
         /* @var $owner BaseActiveRecord */
         $owner = $this->owner;
         if ($owner->getIsNewRecord()) {
-            throw new InvalidCallException('Timestamp updating is not available for new record.');
+            throw new InvalidCallException('Updating the timestamp is not possible on a new record.');
         }
         $owner->updateAttributes(array_fill_keys((array) $attribute, $this->getValue(null)));
     }

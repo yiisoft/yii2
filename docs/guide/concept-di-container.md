@@ -2,7 +2,7 @@ Dependency Injection Container
 ==============================
 
 A dependency injection (DI) container is an object that knows how to instantiate and configure objects and
-all their dependent objects. [Martin's article](http://martinfowler.com/articles/injection.html) has well
+all their dependent objects. [Martin Fowler's article](http://martinfowler.com/articles/injection.html) has well
 explained why DI container is useful. Here we will mainly explain the usage of the DI container provided by Yii.
 
 
@@ -15,6 +15,7 @@ dependency injection:
 * Constructor injection;
 * Setter and property injection;
 * PHP callable injection.
+* Controller action injection.
 
 
 ### Constructor Injection <span id="constructor-injection"></span>
@@ -95,30 +96,42 @@ $container->set('Foo', function () {
 $foo = $container->get('Foo');
 ```
 
-To hide the complex logic for building a new object, you may use a static class method to return the PHP
-callable. For example,
+To hide the complex logic for building a new object, you may use a static class method as callable. For example,
 
 ```php
 class FooBuilder
 {
     public static function build()
     {
-        return function () {
-            $foo = new Foo(new Bar);
-            // ... other initializations ...
-            return $foo;
-       };        
+        $foo = new Foo(new Bar);
+        // ... other initializations ...
+        return $foo;
     }
 }
 
-$container->set('Foo', FooBuilder::build());
+$container->set('Foo', ['app\helper\FooBuilder', 'build']);
 
 $foo = $container->get('Foo');
 ```
 
-As you can see, the PHP callable is returned by the `FooBuilder::build()` method. By doing so, the person
-who wants to configure the `Foo` class no longer needs to be aware of how it is built.
+By doing so, the person who wants to configure the `Foo` class no longer needs to be aware of how it is built.
 
+
+### Controller action injection <span id="controller-action-injection"></span>
+
+Controller action injection is a special type of DI where dependecies are declared using the type hints of
+method signature and resolved in the runtime when the action is acturally called. It is useful for keeping
+the MVC controllers slim and light-weighted since it doesn't require you to configure all the possible dependencies
+of the controller beforehand.
+
+```php
+public function actionSend($email, EmailValidator $validator)
+{
+    if ($validator->validate($email)) {
+        // ... send email
+    }
+}
+```
 
 Registering Dependencies <span id="registering-dependencies"></span>
 ------------------------

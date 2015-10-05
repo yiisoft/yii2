@@ -36,8 +36,10 @@ class UserController extends Controller
         $user->scenario = 'update';
         $profile->scenario = 'update';
         
-        if (Model::loadMultiple([$user, $profile], Yii::$app->request->post())) {
-            if ($user->validate() && $profile->validate()) {
+        if ($user->load(Yii::$app->request->post()) && $profile->load(Yii::$app->request->post())) {
+            $isValid = $user->validate();
+            $isValid = $profile->validate() && $isValid;
+            if ($isValid) {
                 $user->save(false);
                 $profile->save(false);
                 return $this->redirect(['user/view', 'id' => $id]);
@@ -53,7 +55,7 @@ class UserController extends Controller
 ```
 
 In the `update` action, we first load the `$user` and `$profile` models to be updated from the database. We then call 
-[[yii\base\Model::loadMultiple()]] to populate these two models with the user input. If successful we will validate
+[[yii\base\Model::load()]] to populate these two models with the user input. If successful we will validate
 the two models and save them. Otherwise we will render the `update` view which has the following content:
 
 ```php

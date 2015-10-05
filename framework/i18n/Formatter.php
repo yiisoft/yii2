@@ -95,7 +95,7 @@ class Formatter extends Component
      *
      * It can also be a custom format as specified in the [ICU manual](http://userguide.icu-project.org/formatparse/datetime#TOC-Date-Time-Format-Syntax).
      * Alternatively this can be a string prefixed with `php:` representing a format that can be recognized by the
-     * PHP [date()](http://php.net/manual/de/function.date.php)-function.
+     * PHP [date()](http://php.net/manual/en/function.date.php)-function.
      *
      * For example:
      *
@@ -111,7 +111,7 @@ class Formatter extends Component
      *
      * It can also be a custom format as specified in the [ICU manual](http://userguide.icu-project.org/formatparse/datetime#TOC-Date-Time-Format-Syntax).
      * Alternatively this can be a string prefixed with `php:` representing a format that can be recognized by the
-     * PHP [date()](http://php.net/manual/de/function.date.php)-function.
+     * PHP [date()](http://php.net/manual/en/function.date.php)-function.
      *
      * For example:
      *
@@ -128,7 +128,7 @@ class Formatter extends Component
      * It can also be a custom format as specified in the [ICU manual](http://userguide.icu-project.org/formatparse/datetime#TOC-Date-Time-Format-Syntax).
      *
      * Alternatively this can be a string prefixed with `php:` representing a format that can be recognized by the
-     * PHP [date()](http://php.net/manual/de/function.date.php)-function.
+     * PHP [date()](http://php.net/manual/en/function.date.php)-function.
      *
      * For example:
      *
@@ -196,7 +196,7 @@ class Formatter extends Component
      * Please refer to the [PHP manual](http://php.net/manual/en/class.numberformatter.php#intl.numberformatter-constants.unumberformatsymbol)
      * for the possible options.
      *
-     * For example to choose a custom currency symbol, e.g. [U+20BD](http://unicode-table.com/de/20BD/) instead of `руб.` for Russian Ruble:
+     * For example to choose a custom currency symbol, e.g. [U+20BD](http://unicode-table.com/en/20BD/) instead of `руб.` for Russian Ruble:
      *
      * ```php
      * [
@@ -447,7 +447,7 @@ class Formatter extends Component
      * It can also be a custom format as specified in the [ICU manual](http://userguide.icu-project.org/formatparse/datetime).
      *
      * Alternatively this can be a string prefixed with `php:` representing a format that can be recognized by the
-     * PHP [date()](http://php.net/manual/de/function.date.php)-function.
+     * PHP [date()](http://php.net/manual/en/function.date.php)-function.
      *
      * @return string the formatted result.
      * @throws InvalidParamException if the input value can not be evaluated as a date value.
@@ -479,7 +479,7 @@ class Formatter extends Component
      * It can also be a custom format as specified in the [ICU manual](http://userguide.icu-project.org/formatparse/datetime).
      *
      * Alternatively this can be a string prefixed with `php:` representing a format that can be recognized by the
-     * PHP [date()](http://php.net/manual/de/function.date.php)-function.
+     * PHP [date()](http://php.net/manual/en/function.date.php)-function.
      *
      * @return string the formatted result.
      * @throws InvalidParamException if the input value can not be evaluated as a date value.
@@ -511,7 +511,7 @@ class Formatter extends Component
      * It can also be a custom format as specified in the [ICU manual](http://userguide.icu-project.org/formatparse/datetime).
      *
      * Alternatively this can be a string prefixed with `php:` representing a format that can be recognized by the
-     * PHP [date()](http://php.net/manual/de/function.date.php)-function.
+     * PHP [date()](http://php.net/manual/en/function.date.php)-function.
      *
      * @return string the formatted result.
      * @throws InvalidParamException if the input value can not be evaluated as a date value.
@@ -848,7 +848,7 @@ class Formatter extends Component
             }
             return $result;
         } else {
-            if ($decimals === null){
+            if ($decimals === null) {
                 $decimals = 2;
             }
             return number_format($value, $decimals, $this->decimalSeparator, $this->thousandSeparator);
@@ -880,7 +880,7 @@ class Formatter extends Component
             }
             return $result;
         } else {
-            if ($decimals === null){
+            if ($decimals === null) {
                 $decimals = 0;
             }
             $value = $value * 100;
@@ -905,7 +905,7 @@ class Formatter extends Component
         }
         $value = $this->normalizeNumericValue($value);
 
-        if ($this->_intlLoaded){
+        if ($this->_intlLoaded) {
             $f = $this->createNumberFormatter(NumberFormatter::SCIENTIFIC, $decimals, $options, $textOptions);
             if (($result = $f->format($value)) === false) {
                 throw new InvalidParamException('Formatting scientific number value failed: ' . $f->getErrorCode() . ' ' . $f->getErrorMessage());
@@ -984,7 +984,7 @@ class Formatter extends Component
             return $this->nullDisplay;
         }
         $value = $this->normalizeNumericValue($value);
-        if ($this->_intlLoaded){
+        if ($this->_intlLoaded) {
             $f = $this->createNumberFormatter(NumberFormatter::SPELLOUT);
             if (($result = $f->format($value)) === false) {
                 throw new InvalidParamException('Formatting number as spellout failed: ' . $f->getErrorCode() . ' ' . $f->getErrorMessage());
@@ -1011,7 +1011,7 @@ class Formatter extends Component
             return $this->nullDisplay;
         }
         $value = $this->normalizeNumericValue($value);
-        if ($this->_intlLoaded){
+        if ($this->_intlLoaded) {
             $f = $this->createNumberFormatter(NumberFormatter::ORDINAL);
             if (($result = $f->format($value)) === false) {
                 throw new InvalidParamException('Formatting number as ordinal failed: ' . $f->getErrorCode() . ' ' . $f->getErrorMessage());
@@ -1079,7 +1079,7 @@ class Formatter extends Component
      * @param array $options optional configuration for the number formatter. This parameter will be merged with [[numberFormatterOptions]].
      * @param array $textOptions optional configuration for the number formatter. This parameter will be merged with [[numberFormatterTextOptions]].
      * @return string the formatted result.
-     * @throws InvalidParamException if the input value is not numeric  or the formatting failed.
+     * @throws InvalidParamException if the input value is not numeric or the formatting failed.
      * @see sizeFormat
      * @see asShortSize
      */
@@ -1134,7 +1134,7 @@ class Formatter extends Component
 
         $position = 0;
         do {
-            if ($value < $this->sizeFormatBase) {
+            if (abs($value) < $this->sizeFormatBase) {
                 break;
             }
             $value = $value / $this->sizeFormatBase;
@@ -1156,7 +1156,9 @@ class Formatter extends Component
         // format the size value
         $params = [
             // this is the unformatted number used for the plural rule
-            'n' => $value,
+            // abs() to make sure the plural rules work correctly on negative numbers, intl does not cover this
+            // http://english.stackexchange.com/questions/9735/is-1-singular-or-plural
+            'n' => abs($value),
             // this is the formatted number used for display
             'nFormatted' => $this->asDecimal($value, $decimals, $options, $textOptions),
         ];
@@ -1168,9 +1170,9 @@ class Formatter extends Component
     /**
      * Normalizes a numeric input value
      *
-     * - everything [empty](http://php.net/manual/de/function.empty.php) will result in `0`
-     * - a [numeric](http://php.net/manual/de/function.is-numeric.php) string will be casted to float
-     * - everything else will be returned if it is [numeric](http://php.net/manual/de/function.is-numeric.php),
+     * - everything [empty](http://php.net/manual/en/function.empty.php) will result in `0`
+     * - a [numeric](http://php.net/manual/en/function.is-numeric.php) string will be casted to float
+     * - everything else will be returned if it is [numeric](http://php.net/manual/en/function.is-numeric.php),
      *   otherwise an exception is thrown.
      *
      * @param mixed $value the input value
@@ -1198,7 +1200,7 @@ class Formatter extends Component
      *
      * @param integer $style the type of the number formatter.
      * Values: NumberFormatter::DECIMAL, ::CURRENCY, ::PERCENT, ::SCIENTIFIC, ::SPELLOUT, ::ORDINAL
-     *          ::DURATION, ::PATTERN_RULEBASED, ::DEFAULT_STYLE, ::IGNORE
+     * ::DURATION, ::PATTERN_RULEBASED, ::DEFAULT_STYLE, ::IGNORE
      * @param integer $decimals the number of digits after the decimal point.
      * @param array $options optional configuration for the number formatter. This parameter will be merged with [[numberFormatterOptions]].
      * @param array $textOptions optional configuration for the number formatter. This parameter will be merged with [[numberFormatterTextOptions]].
@@ -1208,33 +1210,37 @@ class Formatter extends Component
     {
         $formatter = new NumberFormatter($this->locale, $style);
 
-        if ($this->decimalSeparator !== null) {
-            $formatter->setSymbol(NumberFormatter::DECIMAL_SEPARATOR_SYMBOL, $this->decimalSeparator);
-        }
-        if ($this->thousandSeparator !== null) {
-            $formatter->setSymbol(NumberFormatter::GROUPING_SEPARATOR_SYMBOL, $this->thousandSeparator);
-        }
-
-        if ($decimals !== null) {
-            $formatter->setAttribute(NumberFormatter::MAX_FRACTION_DIGITS, $decimals);
-            $formatter->setAttribute(NumberFormatter::MIN_FRACTION_DIGITS, $decimals);
-        }
-
+        // set text attributes
         foreach ($this->numberFormatterTextOptions as $name => $attribute) {
             $formatter->setTextAttribute($name, $attribute);
         }
         foreach ($textOptions as $name => $attribute) {
             $formatter->setTextAttribute($name, $attribute);
         }
+
+        // set attributes
         foreach ($this->numberFormatterOptions as $name => $value) {
             $formatter->setAttribute($name, $value);
         }
         foreach ($options as $name => $value) {
             $formatter->setAttribute($name, $value);
         }
+        if ($decimals !== null) {
+            $formatter->setAttribute(NumberFormatter::MAX_FRACTION_DIGITS, $decimals);
+            $formatter->setAttribute(NumberFormatter::MIN_FRACTION_DIGITS, $decimals);
+        }
+
+        // set symbols
+        if ($this->decimalSeparator !== null) {
+            $formatter->setSymbol(NumberFormatter::DECIMAL_SEPARATOR_SYMBOL, $this->decimalSeparator);
+        }
+        if ($this->thousandSeparator !== null) {
+            $formatter->setSymbol(NumberFormatter::GROUPING_SEPARATOR_SYMBOL, $this->thousandSeparator);
+        }
         foreach ($this->numberFormatterSymbols as $name => $symbol) {
             $formatter->setSymbol($name, $symbol);
         }
+
         return $formatter;
     }
 }

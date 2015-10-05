@@ -93,11 +93,9 @@ class MessageFormatter extends Component
             return $this->fallbackFormat($pattern, $params, $language);
         }
 
-        if (version_compare(PHP_VERSION, '5.5.0', '<') || version_compare(INTL_ICU_VERSION, '4.8', '<')) {
-            // replace named arguments
-            $pattern = $this->replaceNamedArguments($pattern, $params, $newParams);
-            $params = $newParams;
-        }
+        // replace named arguments (https://github.com/yiisoft/yii2/issues/9678)
+        $pattern = $this->replaceNamedArguments($pattern, $params, $newParams);
+        $params = $newParams;
 
         $formatter = new \MessageFormatter($language, $pattern);
         if ($formatter === null) {
@@ -369,7 +367,7 @@ class MessageFormatter extends Component
                 if ($message !== false) {
                     return $this->fallbackFormat($message, $args, $locale);
                 }
-            break;
+                break;
             case 'plural':
                 /* http://icu-project.org/apiref/icu4c/classicu_1_1PluralFormat.html
                 pluralStyle = [offsetValue] (selector '{' message '}')+
