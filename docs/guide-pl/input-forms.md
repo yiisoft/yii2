@@ -1,14 +1,14 @@
 Tworzenie formularzy
 ==============
 
-Podstawowym sposobem korzystania z formularzy w Yii jest użycie [[yii\widgets\ActiveForm]]. Ten sposób powinien być używany jeśli formularz jest bazowany na modelu.
+Podstawowym sposobem korzystania z formularzy w Yii jest użycie [[yii\widgets\ActiveForm]]. Ten sposób powinien być używany, jeśli formularz jest bazowany na modelu.
 Dodatkowo, [[yii\helpers\Html]] zawiera sporo użytecznych metod, które zazwyczaj używane są do dodawania przycisków i tekstów pomocniczych do każdego formularza.
 
 Formularz, który jest wyświetlany po stronie klienta, w większości przypadków, posiada odpowiedni [model](structure-models.md), który jest używany do walidacji danych wejściowych po stronie serwera.
 (Sprawdź sekcję [Walidacja danych wejściowych](input-validation.md) aby uzyskać więcej szczegółów).
 Podczas tworzenia formularza na podstawie modelu, pierwszym krokiem jest zdefiniowanie samego modelu. 
 Model może być bazowany na klasie [Active Record](db-active-record.md), reprezentując dane z bazy danych, lub może być też bazowany na klasie generycznej Model ([[yii\base\Model]]) aby przechwytywać dowolne dane wejściowe, np. formularz logowania.
-W poniższym przykładzie pokażemy, jak model generyczny model może być użyty do formularza logowania:
+W poniższym przykładzie pokażemy, jak model generyczny może być użyty do formularza logowania:
 
 ```php
 <?php
