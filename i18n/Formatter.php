@@ -848,7 +848,7 @@ class Formatter extends Component
             }
             return $result;
         } else {
-            if ($decimals === null){
+            if ($decimals === null) {
                 $decimals = 2;
             }
             return number_format($value, $decimals, $this->decimalSeparator, $this->thousandSeparator);
@@ -880,7 +880,7 @@ class Formatter extends Component
             }
             return $result;
         } else {
-            if ($decimals === null){
+            if ($decimals === null) {
                 $decimals = 0;
             }
             $value = $value * 100;
@@ -905,7 +905,7 @@ class Formatter extends Component
         }
         $value = $this->normalizeNumericValue($value);
 
-        if ($this->_intlLoaded){
+        if ($this->_intlLoaded) {
             $f = $this->createNumberFormatter(NumberFormatter::SCIENTIFIC, $decimals, $options, $textOptions);
             if (($result = $f->format($value)) === false) {
                 throw new InvalidParamException('Formatting scientific number value failed: ' . $f->getErrorCode() . ' ' . $f->getErrorMessage());
@@ -984,7 +984,7 @@ class Formatter extends Component
             return $this->nullDisplay;
         }
         $value = $this->normalizeNumericValue($value);
-        if ($this->_intlLoaded){
+        if ($this->_intlLoaded) {
             $f = $this->createNumberFormatter(NumberFormatter::SPELLOUT);
             if (($result = $f->format($value)) === false) {
                 throw new InvalidParamException('Formatting number as spellout failed: ' . $f->getErrorCode() . ' ' . $f->getErrorMessage());
@@ -1011,7 +1011,7 @@ class Formatter extends Component
             return $this->nullDisplay;
         }
         $value = $this->normalizeNumericValue($value);
-        if ($this->_intlLoaded){
+        if ($this->_intlLoaded) {
             $f = $this->createNumberFormatter(NumberFormatter::ORDINAL);
             if (($result = $f->format($value)) === false) {
                 throw new InvalidParamException('Formatting number as ordinal failed: ' . $f->getErrorCode() . ' ' . $f->getErrorMessage());

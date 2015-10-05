@@ -75,7 +75,7 @@ class Controller extends \yii\base\Controller
                 $className = $class->getName();
                 if (Yii::$app->has($name) && ($obj = Yii::$app->get($name)) instanceof $className) {
                     $args[] = $actionParams[$name] = $obj;
-                }else{
+                } else {
                     $args[] = $actionParams[$name] = Yii::$container->get($className);
                 }
             } elseif (array_key_exists($name, $params)) {

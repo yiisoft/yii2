@@ -574,7 +574,7 @@ class Connection extends Component
             if (isset($driver)) {
                 if ($driver === 'mssql' || $driver === 'dblib') {
                     $pdoClass = 'yii\db\mssql\PDO';
-                } else if ($driver === 'sqlsrv'){
+                } elseif ($driver === 'sqlsrv') {
                     $pdoClass = 'yii\db\mssql\SqlsrvPDO';
                 }
             }
