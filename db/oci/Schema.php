@@ -171,9 +171,9 @@ SQL;
     /**
      * Sequence name of table
      *
-     * @param $tableName
+     * @param string $tableName
      * @internal param \yii\db\TableSchema $table->name the table schema
-     * @return string whether the sequence exists
+     * @return string|null whether the sequence exists
      */
     protected function getTableSequenceName($tableName)
     {
