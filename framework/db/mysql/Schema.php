@@ -176,7 +176,7 @@ class Schema extends \yii\db\Schema
             if ($column->type === 'timestamp' && $info['default'] === 'CURRENT_TIMESTAMP') {
                 $column->defaultValue = new Expression('CURRENT_TIMESTAMP');
             } elseif (isset($type) && $type === 'bit') {
-                $column->defaultValue = bindec(trim($info['default'],'b\''));
+                $column->defaultValue = bindec(trim($info['default'], 'b\''));
             } else {
                 $column->defaultValue = $column->phpTypecast($info['default']);
             }

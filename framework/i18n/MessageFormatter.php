@@ -367,7 +367,7 @@ class MessageFormatter extends Component
                 if ($message !== false) {
                     return $this->fallbackFormat($message, $args, $locale);
                 }
-            break;
+                break;
             case 'plural':
                 /* http://icu-project.org/apiref/icu4c/classicu_1_1PluralFormat.html
                 pluralStyle = [offsetValue] (selector '{' message '}')+
