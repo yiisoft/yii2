@@ -218,7 +218,7 @@ abstract class ErrorHandler extends Component
      */
     public function handleFatalError()
     {
-        unset($this->_memoryReserve);
+        $this->_memoryReserve = null;
 
         // load ErrorException manually here because autoloading them will not work
         // when error occurs while autoloading a class

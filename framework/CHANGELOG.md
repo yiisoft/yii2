@@ -22,6 +22,7 @@ Yii Framework 2 Change Log
 - Bug #9754: Fixed `yii\web\Request` error when path info is empty (dynasource)
 - Bug #9791: Fixed endless loop on file creation for non-existing device letters on windows (lukos, cebe)
 - Bug: Fixed generation of canonical URLs for `ViewAction` pages (samdark)
+- Bug: Fixed `yii\base\ErrorHandler` not clearing the preallocated memory reserve (kidol)
 - Enh #7581: Added ability to specify range using anonymous function in `RangeValidator` (RomeroMsk)
 - Enh #8613: `yii\widgets\FragmentCache` will not store empty content anymore which fixes some problems related to `yii\filters\PageCache` (kidol)
 - Enh #9476: Added DI injection via controller action method signature (mdmunir)
