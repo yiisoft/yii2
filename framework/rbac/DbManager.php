@@ -307,13 +307,13 @@ class DbManager extends BaseManager
     {
         if ($item->name !== $name && !$this->supportsCascadeUpdate()) {
             $this->db->createCommand()
-                ->update($this->itemChildTable, ['parent' => $item->name], ['parent' => $name])
+                ->update($this->itemChildTable, ['parent' => $name], ['parent' => $item->name])
                 ->execute();
             $this->db->createCommand()
-                ->update($this->itemChildTable, ['child' => $item->name], ['child' => $name])
+                ->update($this->itemChildTable, ['child' => $name], ['child' => $item->name])
                 ->execute();
             $this->db->createCommand()
-                ->update($this->assignmentTable, ['item_name' => $item->name], ['item_name' => $name])
+                ->update($this->assignmentTable, ['item_name' => $name], ['item_name' => $item->name])
                 ->execute();
         }
 
@@ -321,13 +321,13 @@ class DbManager extends BaseManager
 
         $this->db->createCommand()
             ->update($this->itemTable, [
-                'name' => $item->name,
+                'name' => $name,
                 'description' => $item->description,
                 'rule_name' => $item->ruleName,
                 'data' => $item->data === null ? null : serialize($item->data),
                 'updated_at' => $item->updatedAt,
             ], [
-                'name' => $name,
+                'name' => $item->name,
             ])->execute();
 
         $this->invalidateCache();
