@@ -31,6 +31,7 @@ Yii Framework 2 Change Log
 - Enh #9733: Added Unprocessable Entity HTTP Exception (janfrs)
 - Chg #9369: `Yii::$app->user->can()` now returns `false` instead of erroring in case `authManager` component is not configured (creocoder)
 - Chg #9411: `DetailView` now automatically sets container tag ID in case it's not specified (samdark)
+- Bug #9846 Fixed `yii\web\User::loginRequired()` should throw 401 not 403 (spikyjt)
 
 2.0.6 August 05, 2015
 ---------------------
