@@ -88,7 +88,7 @@ class User extends Component
      * ['site/login', 'ref' => 1]
      * ~~~
      *
-     * If this property is null, a 403 HTTP exception will be raised when [[loginRequired()]] is called.
+     * If this property is null, a 401 HTTP exception will be raised when [[loginRequired()]] is called.
      */
     public $loginUrl = ['site/login'];
     /**
