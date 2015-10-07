@@ -88,7 +88,7 @@ class User extends Component
      * ['site/login', 'ref' => 1]
      * ~~~
      *
-     * If this property is null, a 403 HTTP exception will be raised when [[loginRequired()]] is called.
+     * If this property is null, a 401 HTTP exception will be raised when [[loginRequired()]] is called.
      */
     public $loginUrl = ['site/login'];
     /**
@@ -414,7 +414,7 @@ class User extends Component
      * @param boolean $checkAjax whether to check if the request is an AJAX request. When this is true and the request
      * is an AJAX request, the current URL (for AJAX request) will NOT be set as the return URL.
      * @return Response the redirection response if [[loginUrl]] is set
-     * @throws ForbiddenHttpException the "Access Denied" HTTP exception if [[loginUrl]] is not set
+     * @throws UnauthorizedHttpException the "Unauthorized" HTTP exception if [[loginUrl]] is not set
      */
     public function loginRequired($checkAjax = true)
     {
@@ -428,7 +428,7 @@ class User extends Component
                 return Yii::$app->getResponse()->redirect($this->loginUrl);
             }
         }
-        throw new ForbiddenHttpException(Yii::t('yii', 'Login Required'));
+        throw new UnauthorizedHttpException(Yii::t('yii', 'Login Required'));
     }
 
     /**
