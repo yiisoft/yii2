@@ -130,7 +130,7 @@ use yii\caching\Cache;
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */
-class Connection extends Component
+class Connection extends Component implements ConnectionInterface
 {
     /**
      * @event Event an event that is triggered after a DB connection is established
