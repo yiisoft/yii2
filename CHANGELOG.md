@@ -74,10 +74,12 @@ Yii Framework 2 Change Log
 - Eng #10976: `Inflector::transliterate()` now uses `strtr` instead of `str_replace` (DrDeath72)
 - Enh #11110: Added migrations for DB session (mdmunir)
 - Chg: HTMLPurifier dependency updated to `~4.6` (samdark)
+- Chg #9854: Added `ActiveRecordInterface::populateRelation()` to respect the methods called by the implementation (SamMousa)
 - Chg #10726: Added `yii\rbac\ManagerInterface::canAddChild()` (dkhlystov, samdark)
 - Chg #10921: Inverts responsibility of database specific column schema builder classes (df2)
 - Chg #11071: `yii\helpers\BaseArrayHelper::isIn()` and `isTraversable()` since now throw `\yii\base\InvalidParamException` instead of `\InvalidArgumentException` (nukkumatti)
 - New #8920: Added `yii\mutex\PgsqlMutex` which implements mutex "lock" mechanism via PgSQL locks (nineinchnick, CSharpRU)
+
 
 2.0.7 February 14, 2016
 -----------------------
