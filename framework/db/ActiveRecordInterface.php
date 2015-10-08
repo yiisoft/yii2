@@ -402,4 +402,12 @@ interface ActiveRecordInterface
      * @return mixed the database connection used by this AR class.
      */
     public static function getDb();
+
+    /**
+     * Populates the named relation with the related records.
+     * Note that this method does not check if the relation exists or not.
+     * @param string $name the relation name (case-sensitive)
+     * @param ActiveRecordInterface|array|null $records the related records to be populated into the relation.
+     */
+    public function populateRelation($name, $records);
 }
