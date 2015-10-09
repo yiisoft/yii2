@@ -883,7 +883,7 @@ class Formatter extends Component
             if ($decimals === null) {
                 $decimals = 0;
             }
-            $value = $value * 100;
+            $value *= 100;
             return number_format($value, $decimals, $this->decimalSeparator, $this->thousandSeparator) . '%';
         }
     }
@@ -1137,7 +1137,7 @@ class Formatter extends Component
             if (abs($value) < $this->sizeFormatBase) {
                 break;
             }
-            $value = $value / $this->sizeFormatBase;
+            $value /= $this->sizeFormatBase;
             $position++;
         } while ($position < 5);
 
