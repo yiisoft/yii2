@@ -1392,7 +1392,7 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
         } else {
             /* @var $relatedModel ActiveRecordInterface */
             $relatedModel = $relation->modelClass;
-            if (!$delete && count($relation->link) == 1 && is_array($this->{$b = reset($relation->link)})) {
+            if (!$delete && count($relation->link) === 1 && is_array($this->{$b = reset($relation->link)})) {
                 // relation via array valued attribute
                 $this->$b = [];
                 $this->save(false);

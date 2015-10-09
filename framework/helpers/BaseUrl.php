@@ -216,7 +216,7 @@ class BaseUrl
             return is_string($scheme) ? "$scheme:$url" : $url;
         }
 
-        if (($pos = strpos($url, ':')) == false || !ctype_alpha(substr($url, 0, $pos))) {
+        if (($pos = strpos($url, ':')) === false || !ctype_alpha(substr($url, 0, $pos))) {
             // turn relative URL into absolute
             $url = Yii::$app->getUrlManager()->getHostInfo() . '/' . ltrim($url, '/');
         }

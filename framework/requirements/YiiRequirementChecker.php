@@ -180,7 +180,7 @@ class YiiRequirementChecker
         if (empty($extensionVersion)) {
             return false;
         }
-        if (strncasecmp($extensionVersion, 'PECL-', 5) == 0) {
+        if (strncasecmp($extensionVersion, 'PECL-', 5) === 0) {
             $extensionVersion = substr($extensionVersion, 5);
         }
 
@@ -199,7 +199,7 @@ class YiiRequirementChecker
             return false;
         }
 
-        return ((int) $value == 1 || strtolower($value) == 'on');
+        return ((int) $value === 1 || strtolower($value) === 'on');
     }
 
     /**
@@ -214,7 +214,7 @@ class YiiRequirementChecker
             return true;
         }
 
-        return (strtolower($value) == 'off');
+        return (strtolower($value) === 'off');
     }
 
     /**

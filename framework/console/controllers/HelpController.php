@@ -308,7 +308,7 @@ class HelpController extends Controller
         }
 
         $description = $controller->getActionHelp($action);
-        if ($description != '') {
+        if ($description !== '') {
             $this->stdout("\nDESCRIPTION\n", Console::BOLD);
             $this->stdout("\n$description\n\n");
         }
