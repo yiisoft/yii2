@@ -781,7 +781,7 @@ class BaseConsole
             ? static::input("$text [" . $options['default'] . '] ')
             : static::input("$text ");
 
-        if (!strlen($input)) {
+        if ($input === '') {
             if (isset($options['default'])) {
                 $input = $options['default'];
             } elseif ($options['required']) {
