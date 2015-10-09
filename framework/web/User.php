@@ -88,7 +88,7 @@ class User extends Component
      * ['site/login', 'ref' => 1]
      * ~~~
      *
-     * If this property is null, a 403 HTTP exception will be raised when [[loginRequired()]] is called.
+     * If this property is null, a 401 HTTP exception will be raised when [[loginRequired()]] is called.
      */
     public $loginUrl = ['site/login'];
     /**
@@ -414,7 +414,7 @@ class User extends Component
      * @param boolean $checkAjax whether to check if the request is an AJAX request. When this is true and the request
      * is an AJAX request, the current URL (for AJAX request) will NOT be set as the return URL.
      * @return Response the redirection response if [[loginUrl]] is set
-     * @throws ForbiddenHttpException the "Access Denied" HTTP exception if [[loginUrl]] is not set
+     * @throws UnauthorizedHttpException the "Unauthorized" HTTP exception if [[loginUrl]] is not set
      */
     public function loginRequired($checkAjax = true)
     {
@@ -428,7 +428,7 @@ class User extends Component
                 return Yii::$app->getResponse()->redirect($this->loginUrl);
             }
         }
-        throw new ForbiddenHttpException(Yii::t('yii', 'Login Required'));
+        throw new UnauthorizedHttpException(Yii::t('yii', 'Login Required'));
     }
 
     /**
@@ -639,12 +639,11 @@ class User extends Component
      * Checks if the user can perform the operation as specified by the given permission.
      *
      * Note that you must configure "authManager" application component in order to use this method.
-     * Otherwise an exception will be thrown.
+     * Otherwise it will always return false.
      *
      * @param string $permissionName the name of the permission (e.g. "edit post") that needs access check.
      * @param array $params name-value pairs that would be passed to the rules associated
-     * with the roles and permissions assigned to the user. A param with name 'user' is added to
-     * this array, which holds the value of [[id]].
+     * with the roles and permissions assigned to the user.
      * @param boolean $allowCaching whether to allow caching the result of access check.
      * When this parameter is true (default), if the access check of an operation was performed
      * before, its result will be directly returned when calling this method to check the same

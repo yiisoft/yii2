@@ -6,7 +6,6 @@ php:
   - 5.6
   - 7.0
   - hhvm
-  - hhvm-nightly
 
 env:
   - CUBRID_VERSION=9.3.0/CUBRID-9.3.0.0206 CUBRID_PDO_VERSION=9.3.0.0001
@@ -16,7 +15,6 @@ env:
 matrix:
   fast_finish: true
   allow_failures:
-    - php: hhvm-nightly
     - php: 7.0
 
 services:
@@ -38,7 +36,7 @@ addons:
 
 install:
   - travis_retry composer self-update && composer --version
-  - travis_retry composer global require "fxp/composer-asset-plugin:~1.0.0"
+  - travis_retry composer global require "fxp/composer-asset-plugin:~1.0.3"
   - export PATH="$HOME/.composer/vendor/bin:$PATH"
 # core framework:
   - travis_retry composer install --prefer-dist --no-interaction

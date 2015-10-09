@@ -205,4 +205,13 @@ class UrlTest extends TestCase
         $this->assertEquals('http://example.com/base/index.php?r=page%2Fview&id=10', Url::canonical());
         $this->removeMockedAction();
     }
+
+    public function testIsRelative()
+    {
+        $this->assertTrue(Url::isRelative('/test/index.php'));
+        $this->assertTrue(Url::isRelative('index.php'));
+        $this->assertFalse(Url::isRelative('//example.com/'));
+        $this->assertFalse(Url::isRelative('http://example.com/'));
+        $this->assertFalse(Url::isRelative('https://example.com/'));
+    }
 }

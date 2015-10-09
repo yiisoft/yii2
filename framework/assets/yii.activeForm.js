@@ -135,7 +135,7 @@
         name: undefined,
         // the jQuery selector of the container of the input field
         container: undefined,
-        // the jQuery selector of the input field under the context of the container
+        // the jQuery selector of the input field under the context of the form
         input: undefined,
         // the jQuery selector of the error tag under the context of the container
         error: '.help-block',

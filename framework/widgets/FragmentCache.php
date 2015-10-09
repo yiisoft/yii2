@@ -104,6 +104,9 @@ class FragmentCache extends Widget
             echo $content;
         } elseif ($this->cache instanceof Cache) {
             $content = ob_get_clean();
+            if ($content === false || $content === '') {
+                return;
+            }
             array_pop($this->getView()->cacheStack);
             if (is_array($this->dependency)) {
                 $this->dependency = Yii::createObject($this->dependency);

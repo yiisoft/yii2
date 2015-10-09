@@ -56,7 +56,7 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
      */
     const EVENT_BEFORE_INSERT = 'beforeInsert';
     /**
-     * @event Event an event that is triggered after a record is inserted.
+     * @event AfterSaveEvent an event that is triggered after a record is inserted.
      */
     const EVENT_AFTER_INSERT = 'afterInsert';
     /**
@@ -65,7 +65,7 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
      */
     const EVENT_BEFORE_UPDATE = 'beforeUpdate';
     /**
-     * @event Event an event that is triggered after a record is updated.
+     * @event AfterSaveEvent an event that is triggered after a record is updated.
      */
     const EVENT_AFTER_UPDATE = 'afterUpdate';
     /**
