@@ -82,7 +82,7 @@ class BaseVarDumper
                 self::$_output .= '{resource}';
                 break;
             case 'NULL':
-                self::$_output .= "null";
+                self::$_output .= 'null';
                 break;
             case 'unknown type':
                 self::$_output .= '{unknown}';

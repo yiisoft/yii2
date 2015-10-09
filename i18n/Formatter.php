@@ -915,7 +915,7 @@ class Formatter extends Component
             if ($decimals !== null) {
                 return sprintf("%.{$decimals}E", $value);
             } else {
-                return sprintf("%.E", $value);
+                return sprintf('%.E', $value);
             }
         }
     }

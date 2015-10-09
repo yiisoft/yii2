@@ -89,7 +89,7 @@ class DetailView extends Widget
      * where `$attribute` refer to the specification of the attribute being rendered, `$index` is the zero-based
      * index of the attribute in the [[attributes]] array, and `$widget` refers to this widget instance.
      */
-    public $template = "<tr><th>{label}</th><td>{value}</td></tr>";
+    public $template = '<tr><th>{label}</th><td>{value}</td></tr>';
     /**
      * @var array the HTML attributes for the container tag of this widget. The "tag" option specifies
      * what container tag should be used. It defaults to "table" if not set.

@@ -291,11 +291,11 @@ SQL;
             $name = $row['CONSTRAINT_NAME'];
             if (!isset($constraints[$name])) {
                 $constraints[$name] = [
-                    'tableName' => $row["TABLE_REF"],
+                    'tableName' => $row['TABLE_REF'],
                     'columns' => [],
                 ];
             }
-            $constraints[$name]['columns'][$row["COLUMN_NAME"]] = $row["COLUMN_REF"];
+            $constraints[$name]['columns'][$row['COLUMN_NAME']] = $row['COLUMN_REF'];
         }
         foreach ($constraints as $constraint) {
             $table->foreignKeys[] = array_merge([$constraint['tableName']], $constraint['columns']);

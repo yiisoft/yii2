@@ -307,7 +307,7 @@ class GridView extends BaseListView
     public function renderSection($name)
     {
         switch ($name) {
-            case "{errors}":
+            case '{errors}':
                 return $this->renderErrors();
             default:
                 return parent::renderSection($name);
