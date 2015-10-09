@@ -94,7 +94,7 @@ class FixtureController extends Controller
         if ($fixturesInput === []) {
             $this->stdout($this->getHelpSummary() . "\n");
 
-            $helpCommand = Console::ansiFormat("yii help fixture", [Console::FG_CYAN]);
+            $helpCommand = Console::ansiFormat('yii help fixture', [Console::FG_CYAN]);
             $this->stdout("Use $helpCommand to get usage info.\n");
 
             return self::EXIT_CODE_NORMAL;

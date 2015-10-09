@@ -100,7 +100,7 @@ class MessageFormatter extends Component
         $formatter = new \MessageFormatter($language, $pattern);
         if ($formatter === null) {
             $this->_errorCode = intl_get_error_code();
-            $this->_errorMessage = "Message pattern is invalid: " . intl_get_error_message();
+            $this->_errorMessage = 'Message pattern is invalid: ' . intl_get_error_message();
 
             return false;
         }
@@ -140,7 +140,7 @@ class MessageFormatter extends Component
         // replace named arguments
         if (($tokens = self::tokenizePattern($pattern)) === false) {
             $this->_errorCode = -1;
-            $this->_errorMessage = "Message pattern is invalid.";
+            $this->_errorMessage = 'Message pattern is invalid.';
 
             return false;
         }
@@ -161,7 +161,7 @@ class MessageFormatter extends Component
         $formatter = new \MessageFormatter($language, $pattern);
         if ($formatter === null) {
             $this->_errorCode = -1;
-            $this->_errorMessage = "Message pattern is invalid.";
+            $this->_errorMessage = 'Message padfgttern is invalid.';
 
             return false;
         }
@@ -208,7 +208,7 @@ class MessageFormatter extends Component
                     $resultingParams[$map[$param]] = $givenParams[$param];
                 }
                 $token[0] = $map[$param];
-                $quote = "";
+                $quote = '';
             } else {
                 // quote unused token
                 $quote = "'";
@@ -249,7 +249,7 @@ class MessageFormatter extends Component
     {
         if (($tokens = self::tokenizePattern($pattern)) === false) {
             $this->_errorCode = -1;
-            $this->_errorMessage = "Message pattern is invalid.";
+            $this->_errorMessage = 'Message pattern is invalid.';
 
             return false;
         }
@@ -257,7 +257,7 @@ class MessageFormatter extends Component
             if (is_array($token)) {
                 if (($tokens[$i] = $this->parseToken($token, $args, $locale)) === false) {
                     $this->_errorCode = -1;
-                    $this->_errorMessage = "Message pattern is invalid.";
+                    $this->_errorMessage = 'Message pattern is invalid.';
 
                     return false;
                 }

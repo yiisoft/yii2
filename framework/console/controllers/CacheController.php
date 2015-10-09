@@ -67,7 +67,7 @@ class CacheController extends Controller
         $cachesInput = func_get_args();
         
         if (empty($cachesInput)) {
-            throw new Exception("You should specify cache components names");
+            throw new Exception('You should specify cache components names');
         }
 
         $caches = $this->findCaches($cachesInput);
@@ -210,7 +210,7 @@ class CacheController extends Controller
         $this->stdout("The following cache components were processed:\n\n", Console::FG_YELLOW);
 
         foreach ($caches as $cache) {
-            $this->stdout("\t* " . $cache['name'] ." (" . $cache['class'] . ")", Console::FG_GREEN);
+            $this->stdout("\t* " . $cache['name'] .' (' . $cache['class'] . ')', Console::FG_GREEN);
 
             if (!$cache['is_flushed']) {
                 $this->stdout(" - not flushed\n", Console::FG_RED);

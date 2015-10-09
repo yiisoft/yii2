@@ -248,7 +248,7 @@ class AssetController extends Controller
                 $this->loadDependency($dependencyBundle, $result);
                 $result[$name] = $dependencyBundle;
             } elseif ($result[$name] === false) {
-                throw new Exception("A circular dependency is detected for bundle '{$name}': " . $this->composeCircularDependencyTrace($name, $result) . ".");
+                throw new Exception("A circular dependency is detected for bundle '{$name}': " . $this->composeCircularDependencyTrace($name, $result) . '.');
             }
         }
     }
@@ -425,7 +425,7 @@ class AssetController extends Controller
             unset($registered[$name]);
             $registered[$name] = $bundle;
         } elseif ($registered[$name] === false) {
-            throw new Exception("A circular dependency is detected for target '{$name}': " . $this->composeCircularDependencyTrace($name, $registered) . ".");
+            throw new Exception("A circular dependency is detected for target '{$name}': " . $this->composeCircularDependencyTrace($name, $registered) . '.');
         }
     }
 

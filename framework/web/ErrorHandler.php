@@ -413,7 +413,7 @@ class ErrorHandler extends \yii\base\ErrorHandler
                 $args[$key] = "<span class=\"number\">$key</span> => $args[$key]";
             }
         }
-        $out = implode(", ", $args);
+        $out = implode(', ', $args);
 
         return $out;
     }
