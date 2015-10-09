@@ -521,6 +521,8 @@ class Connection extends Component
 
         if (empty($this->dsn)) {
             throw new InvalidConfigException('Connection::dsn cannot be empty.');
+        } else if (0 === strncmp('sqlite:@', $this->dsn, 8)) {
+            $this->dsn = 'sqlite:' . Yii::getAlias(substr($this->dsn, 7));
         }
         $token = 'Opening DB connection: ' . $this->dsn;
         try {
