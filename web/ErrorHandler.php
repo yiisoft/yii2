@@ -91,7 +91,7 @@ class ErrorHandler extends \yii\base\ErrorHandler
         } elseif ($response->format === Response::FORMAT_HTML) {
             if (YII_ENV_TEST || isset($_SERVER['HTTP_X_REQUESTED_WITH']) && $_SERVER['HTTP_X_REQUESTED_WITH'] === 'XMLHttpRequest') {
                 // AJAX request
-                $response->data = '<pre>' . $this->htmlEncode($this->convertExceptionToString($exception)) . '</pre>';
+                $response->data = '<pre>' . $this->htmlEncode(static::convertExceptionToString($exception)) . '</pre>';
             } else {
                 // if there is an error during error rendering it's useful to
                 // display PHP error in debug mode instead of a blank screen
@@ -104,7 +104,7 @@ class ErrorHandler extends \yii\base\ErrorHandler
                 ]);
             }
         } elseif ($response->format === Response::FORMAT_RAW) {
-            $response->data = $exception;
+            $response->data = static::convertExceptionToString($exception);
         } else {
             $response->data = $this->convertExceptionToArray($exception);
         }
