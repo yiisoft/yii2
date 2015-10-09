@@ -580,7 +580,7 @@ class BaseConsole
      */
     public static function streamSupportsAnsiColors($stream)
     {
-        return DIRECTORY_SEPARATOR == '\\'
+        return DIRECTORY_SEPARATOR === '\\'
             ? getenv('ANSICON') !== false || getenv('ConEmuANSI') === 'ON'
             : function_exists('posix_isatty') && @posix_isatty($stream);
     }
@@ -591,7 +591,7 @@ class BaseConsole
      */
     public static function isRunningOnWindows()
     {
-        return DIRECTORY_SEPARATOR == '\\';
+        return DIRECTORY_SEPARATOR === '\\';
     }
 
     /**

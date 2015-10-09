@@ -996,7 +996,7 @@ class QueryBuilder extends \yii\base\Object
      */
     public function buildNotCondition($operator, $operands, &$params)
     {
-        if (count($operands) != 1) {
+        if (count($operands) !== 1) {
             throw new InvalidParamException("Operator '$operator' requires exactly one operand.");
         }
 

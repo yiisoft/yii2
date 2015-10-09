@@ -372,7 +372,7 @@ class FixtureController extends Controller
      */
     public function needToApplyAll($fixture)
     {
-        return $fixture == '*';
+        return $fixture === '*';
     }
 
     /**
@@ -386,7 +386,7 @@ class FixtureController extends Controller
         $fixturesPath = $this->getFixturePath();
 
         $filesToSearch = ['*Fixture.php'];
-        $findAll = ($fixtures == []);
+        $findAll = ($fixtures === []);
 
         if (!$findAll) {
 

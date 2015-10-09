@@ -247,7 +247,7 @@ class CacheController extends Controller
     {
         $caches = [];
         $components = Yii::$app->getComponents();
-        $findAll = ($cachesNames == []);
+        $findAll = ($cachesNames === []);
 
         foreach ($components as $name => $component) {
             if (!$findAll && !in_array($name, $cachesNames)) {

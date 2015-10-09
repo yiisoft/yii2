@@ -568,7 +568,7 @@ class Formatter extends Component
 
         // intl does not work with dates >=2038 or <=1901 on 32bit machines, fall back to PHP
         $year = $timestamp->format('Y');
-        if ($this->_intlLoaded && !(PHP_INT_SIZE == 4 && ($year <= 1901 || $year >= 2038))) {
+        if ($this->_intlLoaded && !(PHP_INT_SIZE === 4 && ($year <= 1901 || $year >= 2038))) {
             if (strncmp($format, 'php:', 4) === 0) {
                 $format = FormatConverter::convertDatePhpToIcu(substr($format, 4));
             }
