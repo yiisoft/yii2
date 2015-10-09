@@ -160,7 +160,7 @@ class View extends Component
      * @throws InvalidCallException if a relative view name is given while there is no active context to
      * determine the corresponding view file.
      */
-    protected function findViewFile($view, $context = null)
+    public function findViewFile($view, $context = null)
     {
         if (strncmp($view, '@', 1) === 0) {
             // e.g. "@app/views/main"
