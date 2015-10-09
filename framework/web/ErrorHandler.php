@@ -104,7 +104,7 @@ class ErrorHandler extends \yii\base\ErrorHandler
                 ]);
             }
         } elseif ($response->format === Response::FORMAT_RAW) {
-            $response->data = $exception;
+            $response->data = $this->convertExceptionToString($exception);
         } else {
             $response->data = $this->convertExceptionToArray($exception);
         }
