@@ -192,7 +192,7 @@ class CaptchaAction extends Action
         return $valid;
     }
 
-    /**\
+    /**
      * Generates a new verification code.
      * @return string the generated verification code
      */
