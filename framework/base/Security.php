@@ -436,6 +436,10 @@ class Security extends Component
         /*
          * Strategy
          *
+         * In PHP 7+ random_bytes() is very likely to work. If it throws an Exception then proceed
+         * with other tries, of which only OpenSSL is likely to work, but since this branch is very
+         * unlikely, it's not optimized.
+         *
          * The most common platform is Linux, on which /dev/urandom is the best choice. Many other OSs
          * implement a device called /dev/urandom for Linux compat and it is good too. So if there is
          * a /dev/urandom then it is our first choice regardless of OS.
@@ -454,6 +458,15 @@ class Security extends Component
          */
 
         $bytes = '';
+
+        if (function_exists('random_bytes')) {
+            try {
+                $bytes .= random_bytes($length);
+            } catch (\Exception $ignore) {
+                // PHP docs says "If an appropriate source of randomness cannot be found, an Exception
+                // will be thrown." No other error conditions throw \Exception
+            }
+        }
 
         // If we are on Linux or any OS that mimics the Linux /dev/urandom device, e.g. FreeBSD or OS X,
         // then read from /dev/urandom.

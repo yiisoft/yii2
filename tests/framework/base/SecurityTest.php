@@ -831,14 +831,14 @@ TEXT;
     {
         $length = 21;
         $key = $this->security->generateRandomKey($length);
-        $this->assertEquals($length, strlen($key));
+        $this->assertEquals($length, mb_strlen($key, '8bit'));
     }
 
     public function testGenerateRandomString()
     {
         $length = 21;
         $key = $this->security->generateRandomString($length);
-        $this->assertEquals($length, strlen($key));
+        $this->assertEquals($length, mb_strlen($key, '8bit'));
         $this->assertEquals(1, preg_match('/[A-Za-z0-9_-]+/', $key));
     }
 
