@@ -184,7 +184,7 @@ class CaptchaAction extends Action
         $session = Yii::$app->getSession();
         $session->open();
         $name = $this->getSessionKey() . 'count';
-        ++$session[$name];
+        $session[$name] = $session[$name] + 1;
         if ($valid || $session[$name] > $this->testLimit && $this->testLimit > 0) {
             $this->getVerifyCode(true);
         }
@@ -192,7 +192,7 @@ class CaptchaAction extends Action
         return $valid;
     }
 
-    /**
+    /**\
      * Generates a new verification code.
      * @return string the generated verification code
      */
