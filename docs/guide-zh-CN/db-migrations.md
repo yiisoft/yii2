@@ -127,9 +127,9 @@ class m150101_185401_create_news_table extends \yii\db\Migration
     public function up()
     {
         $this->createTable('news', [
-            'id' => Schema::primaryKey(),
-            'title' => Schema::string()->notNull(),
-            'content' => Schema::text(),
+            'id' => $this->primaryKey(),
+            'title' => $this->string()->notNull(),
+            'content' => $this->text(),
         ]);
     }
 
@@ -160,9 +160,9 @@ class m150101_185401_create_news_table extends Migration
     public function safeUp()
     {
         $this->createTable('news', [
-            'id' => Schema::primaryKey(),,
-            'title' => Schema::string()->notNull(),
-            'content' => Schema::text(),
+            'id' => $this->primaryKey(),,
+            'title' => $this->string()->notNull(),
+            'content' => $this->text(),
         ]);
         
         $this->insert('news', [
