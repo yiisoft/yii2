@@ -63,7 +63,7 @@ return [
     'Page not found.' => 'Stranica nije pronađena.',
     'Please fix the following errors:' => 'Molimo vas ispravite sledeće greške:',
     'Please upload a file.' => 'Molimo vas postavite fajl.',
-    'Showing <b>{begin, number}-{end, number}</b> of <b>{totalCount, number}</b> {totalCount, plural, one{item} other{items}}.' => 'Prikazano <b>{begin, number}-{end, number}</b> od <b>{totalCount, plural, =1{# stavke} one{# stavke} few{# stavke} many{# stavki} other{# stavki}}</b>.',
+    'Showing <b>{begin, number}-{end, number}</b> of <b>{totalCount, number}</b> {totalCount, plural, one{item} other{items}}.' => 'Prikazano <b>{begin, number}-{end, number}</b> od <b>{totalCount, number}</b> {totalCount, plural, =1{# stavke} one{# stavke} few{# stavke} many{# stavki} other{# stavki}}.',
     'The file "{file}" is not an image.' => 'Fajl "{file}" nije slika.',
     'The file "{file}" is too big. Its size cannot exceed {limit, number} {limit, plural, one{byte} other{bytes}}.' => 'Fajl "{file}" je prevelik. Veličina ne može biti veća od {limit, number} {limit, plural, one{bajt} few{bajta} other{bajta}}.',
     'The file "{file}" is too small. Its size cannot be smaller than {limit, number} {limit, plural, one{byte} other{bytes}}.' => 'Fajl "{file}" je premali. Veličina ne može biti manja od {limit, number} {limit, plural, one{bajt} few{bajta} other{bajta}}.',
