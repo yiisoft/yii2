@@ -8,6 +8,7 @@
 namespace yii\helpers;
 
 use Yii;
+use yii\base\ErrorException;
 use yii\base\InvalidConfigException;
 use yii\base\InvalidParamException;
 
@@ -293,12 +294,15 @@ class BaseFileHelper
 
     /**
      * Removes a directory (and all its content) recursively.
+     *
      * @param string $dir the directory to be deleted recursively.
      * @param array $options options for directory remove. Valid options are:
      *
      * - traverseSymlinks: boolean, whether symlinks to the directories should be traversed too.
      *   Defaults to `false`, meaning the content of the symlinked directory would not be deleted.
      *   Only symlink would be removed in that default case.
+     *
+     * @throws ErrorException in case of failure
      */
     public static function removeDirectory($dir, $options = [])
     {
@@ -317,7 +321,17 @@ class BaseFileHelper
                 if (is_dir($path)) {
                     static::removeDirectory($path, $options);
                 } else {
-                    unlink($path);
+                    try {
+                        unlink($path);
+                    } catch (ErrorException $e) {
+                        if (DIRECTORY_SEPARATOR === '\\') {
+                            // last resort measure for Windows
+                            $lines = [];
+                            exec("DEL /F/Q \"$path\"", $lines, $deleteError);
+                        } else {
+                            throw $e;
+                        }
+                    }
                 }
             }
             closedir($handle);
