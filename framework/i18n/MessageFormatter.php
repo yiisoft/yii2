@@ -161,7 +161,7 @@ class MessageFormatter extends Component
         $formatter = new \MessageFormatter($language, $pattern);
         if ($formatter === null) {
             $this->_errorCode = -1;
-            $this->_errorMessage = 'Message padfgttern is invalid.';
+            $this->_errorMessage = 'Message pattern is invalid.';
 
             return false;
         }
