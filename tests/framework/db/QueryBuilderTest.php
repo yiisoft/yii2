@@ -505,6 +505,27 @@ class QueryBuilderTest extends DatabaseTestCase
         $this->assertEmpty($params);
     }
 
+    public function testSelectExpression()
+    {
+        $query = (new Query())
+            ->select(new Expression("1 AS ab"))
+            ->from('tablename');
+        list ($sql, $params) = $this->getQueryBuilder()->build($query);
+        $expected = $this->replaceQuotes("SELECT 1 AS ab FROM `tablename`");
+        $this->assertEquals($expected, $sql);
+        $this->assertEmpty($params);
+
+        $query = (new Query())
+            ->select(new Expression("1 AS ab"))
+            ->addSelect(new Expression("2 AS cd"))
+            ->addSelect(['ef' => new Expression("3")])
+            ->from('tablename');
+        list ($sql, $params) = $this->getQueryBuilder()->build($query);
+        $expected = $this->replaceQuotes("SELECT 1 AS ab, 2 AS cd, 3 AS `ef` FROM `tablename`");
+        $this->assertEquals($expected, $sql);
+        $this->assertEmpty($params);
+    }
+
     public function testCompositeInCondition()
     {
         $condition = [
