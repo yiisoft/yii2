@@ -14,6 +14,7 @@ Yii は [[yii\di\Container]] クラスを通して DI コンテナの機能を�
 * コンストラクタ·インジェクション
 * セッター/プロパティ·インジェクション
 * PHP コーラブル·インジェクション
+* コントローラ・アクション・インジェクション
 
 
 ### コンストラクタ·インジェクション <span id="constructor-injection"></span>
@@ -111,6 +112,22 @@ $foo = $container->get('Foo');
 ```
 
 このようにすれば、`Foo` クラスを構成しようとする人は、`Foo` がどのように構築されるかを気にする必要はもうなくなります。
+
+
+### コントローラ・アクション・インジェクション <span id="controller-action-injection"></span>
+
+コントローラ・アクション・インジェクションは、メソッド・シグニチャの型ヒントを使って依存が宣言される特殊な DI です。
+依存は、実行時に、アクションが実際に呼ばれるときに解決されます。
+この場合、必要になるかも知れない依存を前もって構成する必要がありませんので、MVC のコントローラを軽量に保つのに役立ちます。
+
+```php
+public function actionSend($email, EmailValidator $validator)
+{
+    if ($validator->validate($email)) {
+        // ... メールを送信
+    }
+}
+```
 
 
 依存関係の登録 <span id="registering-dependencies"></span>

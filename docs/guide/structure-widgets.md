@@ -69,6 +69,18 @@ Note that unlike [[yii\base\Widget::widget()]] which returns the rendering resul
 [[yii\base\Widget::begin()]] returns an instance of the widget which you can use to build the widget content.
 
 
+### Configuring global defaults
+
+Global defaults for a widget type could be configured via DI container:
+
+```php
+\Yii::$container->set('yii\widgets\LinkPager', ['maxButtonCount' => 5]);
+```
+
+See ["Practical Usage" section in Dependency Injection Container guide](concept-di-container.md#practical-usage) for
+details.
+
+
 ## Creating Widgets <span id="creating-widgets"></span>
 
 To create a widget, extend from [[yii\base\Widget]] and override the [[yii\base\Widget::init()]] and/or

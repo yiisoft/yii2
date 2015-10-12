@@ -73,10 +73,10 @@ class Widget extends Component implements ViewContextInterface
                 echo $widget->run();
                 return $widget;
             } else {
-                throw new InvalidCallException("Expecting end() of " . get_class($widget) . ", found " . get_called_class());
+                throw new InvalidCallException('Expecting end() of ' . get_class($widget) . ', found ' . get_called_class());
             }
         } else {
-            throw new InvalidCallException("Unexpected " . get_called_class() . '::end() call. A matching begin() is not found.');
+            throw new InvalidCallException('Unexpected ' . get_called_class() . '::end() call. A matching begin() is not found.');
         }
     }
 

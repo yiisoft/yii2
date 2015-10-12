@@ -35,7 +35,7 @@ class GettextPoFile extends GettextFile
 
         $messages = [];
         for ($i = 0; $i < $matchCount; ++$i) {
-            if ($matches[2][$i] == $context) {
+            if ($matches[2][$i] === $context) {
                 $id = $this->decode($matches[3][$i]);
                 $message = $this->decode($matches[4][$i]);
                 $messages[$id] = $message;

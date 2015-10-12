@@ -61,7 +61,7 @@ class Schema extends \yii\db\Schema
      */
     public function quoteSimpleTableName($name)
     {
-        return strpos($name, "`") !== false ? $name : "`" . $name . "`";
+        return strpos($name, '`') !== false ? $name : "`$name`";
     }
 
     /**
@@ -72,7 +72,7 @@ class Schema extends \yii\db\Schema
      */
     public function quoteSimpleColumnName($name)
     {
-        return strpos($name, '`') !== false || $name === '*' ? $name : '`' . $name . '`';
+        return strpos($name, '`') !== false || $name === '*' ? $name : "`$name`";
     }
 
     /**
@@ -176,7 +176,7 @@ class Schema extends \yii\db\Schema
             if ($column->type === 'timestamp' && $info['default'] === 'CURRENT_TIMESTAMP') {
                 $column->defaultValue = new Expression('CURRENT_TIMESTAMP');
             } elseif (isset($type) && $type === 'bit') {
-                $column->defaultValue = bindec(trim($info['default'],'b\''));
+                $column->defaultValue = bindec(trim($info['default'], 'b\''));
             } else {
                 $column->defaultValue = $column->phpTypecast($info['default']);
             }
@@ -257,7 +257,8 @@ JOIN information_schema.key_column_usage AS kcu ON
     kcu.constraint_catalog = rc.constraint_catalog AND
     kcu.constraint_schema = rc.constraint_schema AND
     kcu.constraint_name = rc.constraint_name
-WHERE rc.table_name = :tableName
+WHERE rc.constraint_schema = database() AND kcu.table_schema = database()
+AND rc.table_name = :tableName AND kcu.table_name = :tableName
 SQL;
 
         $rows = $this->db->createCommand($sql, [':tableName' => $table->name])->queryAll();

@@ -568,7 +568,7 @@ class Formatter extends Component
 
         // intl does not work with dates >=2038 or <=1901 on 32bit machines, fall back to PHP
         $year = $timestamp->format('Y');
-        if ($this->_intlLoaded && !(PHP_INT_SIZE == 4 && ($year <= 1901 || $year >= 2038))) {
+        if ($this->_intlLoaded && !(PHP_INT_SIZE === 4 && ($year <= 1901 || $year >= 2038))) {
             if (strncmp($format, 'php:', 4) === 0) {
                 $format = FormatConverter::convertDatePhpToIcu(substr($format, 4));
             }
@@ -848,7 +848,7 @@ class Formatter extends Component
             }
             return $result;
         } else {
-            if ($decimals === null){
+            if ($decimals === null) {
                 $decimals = 2;
             }
             return number_format($value, $decimals, $this->decimalSeparator, $this->thousandSeparator);
@@ -880,10 +880,10 @@ class Formatter extends Component
             }
             return $result;
         } else {
-            if ($decimals === null){
+            if ($decimals === null) {
                 $decimals = 0;
             }
-            $value = $value * 100;
+            $value *= 100;
             return number_format($value, $decimals, $this->decimalSeparator, $this->thousandSeparator) . '%';
         }
     }
@@ -905,7 +905,7 @@ class Formatter extends Component
         }
         $value = $this->normalizeNumericValue($value);
 
-        if ($this->_intlLoaded){
+        if ($this->_intlLoaded) {
             $f = $this->createNumberFormatter(NumberFormatter::SCIENTIFIC, $decimals, $options, $textOptions);
             if (($result = $f->format($value)) === false) {
                 throw new InvalidParamException('Formatting scientific number value failed: ' . $f->getErrorCode() . ' ' . $f->getErrorMessage());
@@ -915,7 +915,7 @@ class Formatter extends Component
             if ($decimals !== null) {
                 return sprintf("%.{$decimals}E", $value);
             } else {
-                return sprintf("%.E", $value);
+                return sprintf('%.E', $value);
             }
         }
     }
@@ -984,7 +984,7 @@ class Formatter extends Component
             return $this->nullDisplay;
         }
         $value = $this->normalizeNumericValue($value);
-        if ($this->_intlLoaded){
+        if ($this->_intlLoaded) {
             $f = $this->createNumberFormatter(NumberFormatter::SPELLOUT);
             if (($result = $f->format($value)) === false) {
                 throw new InvalidParamException('Formatting number as spellout failed: ' . $f->getErrorCode() . ' ' . $f->getErrorMessage());
@@ -1011,7 +1011,7 @@ class Formatter extends Component
             return $this->nullDisplay;
         }
         $value = $this->normalizeNumericValue($value);
-        if ($this->_intlLoaded){
+        if ($this->_intlLoaded) {
             $f = $this->createNumberFormatter(NumberFormatter::ORDINAL);
             if (($result = $f->format($value)) === false) {
                 throw new InvalidParamException('Formatting number as ordinal failed: ' . $f->getErrorCode() . ' ' . $f->getErrorMessage());
@@ -1137,7 +1137,7 @@ class Formatter extends Component
             if (abs($value) < $this->sizeFormatBase) {
                 break;
             }
-            $value = $value / $this->sizeFormatBase;
+            $value /= $this->sizeFormatBase;
             $position++;
         } while ($position < 5);
 

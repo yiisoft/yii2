@@ -113,23 +113,23 @@ class Controller extends \yii\base\Controller
 
         $args = [];
         $missing = [];
-        foreach ($method->getParameters() as $i => $param) {
+        foreach ($method->getParameters() as $param) {
             if (($class = $param->getClass()) !== null) {
                 $name = $param->getName();
                 $className = $class->getName();
                 if (Yii::$app->has($name) && ($obj = Yii::$app->get($name)) instanceof $className) {
-                    $args[$i] = $obj;
+                    $args[] = $obj;
                 } else {
-                    $args[$i] = Yii::$container->get($className);
+                    $args[] = Yii::$container->get($className);
                 }
                 continue;
             }
             $value = array_shift($params);
             if (isset($value)) {
-                $args[$i] = $param->isArray() ? preg_split('/\s*,\s*/', $value) : $value;
+                $args[] = $param->isArray() ? preg_split('/\s*,\s*/', $value) : $value;
             } else {
                 if ($param->isDefaultValueAvailable()) {
-                    $args[$i] = $param->getDefaultValue();
+                    $args[] = $param->getDefaultValue();
                 } else {
                     $missing[] = $param->getName();
                 }
@@ -140,6 +140,9 @@ class Controller extends \yii\base\Controller
             throw new Exception(Yii::t('yii', 'Missing required arguments: {params}', ['params' => implode(', ', $missing)]));
         }
 
+        foreach ($params as $value) {
+            $args[] = $value;
+        }
         return $args;
     }
 
@@ -360,7 +363,7 @@ class Controller extends \yii\base\Controller
         foreach ($method->getParameters() as $i => $reflection) {
             $name = $reflection->getName();
             $tag = isset($params[$i]) ? $params[$i] : '';
-            if (preg_match('/^([^\s]+)\s+(\$\w+\s+)?(.*)/s', $tag, $matches)) {
+            if (preg_match('/^(\S+)\s+(\$\w+\s+)?(.*)/s', $tag, $matches)) {
                 $type = $matches[1];
                 $comment = $matches[3];
             } else {
@@ -422,7 +425,7 @@ class Controller extends \yii\base\Controller
                 if (is_array($doc)) {
                     $doc = reset($doc);
                 }
-                if (preg_match('/^([^\s]+)(.*)/s', $doc, $matches)) {
+                if (preg_match('/^(\S+)(.*)/s', $doc, $matches)) {
                     $type = $matches[1];
                     $comment = $matches[2];
                 } else {
