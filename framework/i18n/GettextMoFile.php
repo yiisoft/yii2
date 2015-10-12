@@ -79,7 +79,7 @@ class GettextMoFile extends GettextFile
 
         // revision
         $revision = $this->readInteger($fileHandle);
-        if ($revision != 0) {
+        if ($revision !== 0) {
             throw new Exception('Invalid MO file revision: ' . $revision . '.');
         }
 

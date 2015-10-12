@@ -163,7 +163,7 @@ class QueryBuilder extends \yii\db\QueryBuilder
      */
     public function truncateTable($table)
     {
-        return "DELETE FROM " . $this->db->quoteTableName($table);
+        return 'DELETE FROM ' . $this->db->quoteTableName($table);
     }
 
     /**
@@ -232,6 +232,18 @@ class QueryBuilder extends \yii\db\QueryBuilder
     public function dropForeignKey($name, $table)
     {
         throw new NotSupportedException(__METHOD__ . ' is not supported by SQLite.');
+    }
+
+    /**
+     * Builds a SQL statement for renaming a DB table.
+     *
+     * @param string $table the table to be renamed. The name will be properly quoted by the method.
+     * @param string $newName the new table name. The name will be properly quoted by the method.
+     * @return string the SQL statement for renaming a DB table.
+     */
+    public function renameTable($table, $newName)
+    {
+        return 'ALTER TABLE ' . $this->db->quoteTableName($table) . ' RENAME TO ' . $this->db->quoteTableName($newName);
     }
 
     /**

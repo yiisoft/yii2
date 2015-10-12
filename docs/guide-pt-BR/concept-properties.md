@@ -1,7 +1,7 @@
 Propriedades
 ===========
 
-No PHP, atributos da classe são sempre chamadas de *propriedades*. Esses atributos fazem parte da definição da classe e são usadas para representar o estado de uma instância da classe (para diferenciar uma instância da classe de outra). Na prática, muitas vezes você pode querer lidar com a leitura ou a escrita de propriedades de maneiras especiais. Por Exemplo, você pode querer trimar uma string sempre que for atribuído um valor para a propriedade `label`. Você *poderia* usar o código a seguir para realizar esta tarefa:
+No PHP, atributos da classe são sempre chamadas de *propriedades*. Esses atributos fazem parte da definição da classe e são usadas para representar o estado de uma instância da classe (para diferenciar uma instância da classe de outra). Na prática, muitas vezes você pode querer lidar com a leitura ou a escrita de propriedades de maneiras especiais. Por exemplo, você pode querer trimar uma string sempre que for atribuído um valor para a propriedade `label`. Você *poderia* usar o código a seguir para realizar esta tarefa:
 
 ```php
 $object->label = trim($label);
@@ -9,7 +9,7 @@ $object->label = trim($label);
 
 A desvantagem do código acima é que você teria que chamar `trim ()` em todos os lugares onde você definir a propriedade `label` no seu código. Se, no futuro, a propriedade `label` receber um novo requisito, tais como a primeira letra deve ser capitalizado, você teria que modificar novamente todos os pedaços de código que atribui um valor para a propriedade `label`. A repetição de código leva a erros, e é uma prática que você deve evitar sempre que possível.
 
-Para resolver este problema, Yii introduz uma classe base chamada [[yii\base\Object]] que suporta definições de propriedades baseadas nos métodos *getter* e *setter* da classe. Se uma classe precisa dessa funcionalidade, ela deve estender de [[yii\base\Object]], ou de uma classe-filha.
+Para resolver este problema, o Yii introduz uma classe base chamada [[yii\base\Object]] que suporta definições de propriedades baseadas nos métodos *getter* e *setter* da classe. Se uma classe precisar dessa funcionalidade, ela deve estender a classe [[yii\base\Object]], ou de uma classe-filha.
 
 > Informação: Quase todas as classes nativas (core) do framework Yii estendem de [[yii\base\Object]] ou de uma classe-filha. Isto significa que sempre que você vê um método *getter* ou *setter* em uma classe nativa (core), você pode usá-lo como uma propriedade.
 
@@ -39,7 +39,7 @@ class Foo extends Object
 
 (Para ser claro, os métodos getter e setter criam a propriedade `label`, que neste caso internamente refere-se ao atributo privado chamado `_label`.)
 
-Propriedades definidas por getters e setters podem ser usados como atributos da classe. A principal diferença é que quando tal propriedade é iniciada para leitura, O método getter correspondente será chamado; quando a propriedade é iniciada atribuindo um valor, o método setter correspondente será chamado. Por Exemplo:
+Propriedades definidas por getters e setters podem ser usados como atributos da classe. A principal diferença é que quando tal propriedade é iniciada para leitura, o método getter correspondente será chamado; quando a propriedade é iniciada atribuindo um valor, o método setter correspondente será chamado. Por exemplo:
 
 ```php
 // equivalent to $label = $object->getLabel();
@@ -58,4 +58,4 @@ Existem várias regras especiais para, e limitações sobre, as propriedades def
 * Essas propriedades não suportam visibilidade. Não faz nenhuma diferença para a definição dos métodos getter ou setter se a propriedade é pública, protegida ou privada.
 * As propriedades somente podem ser definidas por getters e/ou setters *não estáticos*. Os métodos estáticos não serão tratados da mesma maneira.
 
-Voltando para o problema descrito no início deste guia, em vez de chamar `trim()` em todos os lugares que um valor for atribuído a `label`, `trim()`Agora, só precisa ser invocado dentro do  setter `setLabel()`.E se uma nova exigência faz com que seja necessário que o 'label' seja inicializado capitalizado, o método `setLabel()` pode rapidamente ser modificado sem tocar em nenhum outro código. Esta única mudança afetará de forma global cada atribuição à propriedade `label`.
+Voltando para o problema descrito no início deste guia, em vez de chamar `trim()` em todos os lugares que um valor for atribuído a `label`, agora o `trim()` só precisa ser invocado dentro do  setter `setLabel()`. E se uma nova exigência faz com que seja necessário que o 'label' seja inicializado capitalizado, o método `setLabel()` pode rapidamente ser modificado sem tocar em nenhum outro código. Esta única mudança afetará de forma global cada atribuição à propriedade `label`.

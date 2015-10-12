@@ -35,7 +35,7 @@ class BaseJson
     public static function encode($value, $options = 320)
     {
         $expressions = [];
-        $value = static::processData($value, $expressions, uniqid('', false));
+        $value = static::processData($value, $expressions, uniqid('', true));
         $json = json_encode($value, $options);
         static::handleJsonError(json_last_error());
 
