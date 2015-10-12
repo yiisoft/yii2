@@ -780,6 +780,12 @@ class Command extends Component
 
             $this->pdoStatement->execute();
             $n = $this->pdoStatement->rowCount();
+            
+            // https://bugs.php.net/bug.php?id=61613
+            // Make sure that supported drivers throw an exception in case a statement of a multi-query failed
+            try {
+                while ($this->pdoStatement->nextRowSet()) {}
+            } catch (\Exception $e) {}
 
             Yii::endProfile($token, __METHOD__);
 
