@@ -82,7 +82,7 @@ class DbManager extends BaseManager
     /**
      * @var bool should assignments be cached
      */
-    public $cacheAssignments = false;
+    public $cacheAssignments = true;
     /**
      * @var string the key used to store RBAC data in cache
      * @see cache
@@ -955,12 +955,14 @@ class DbManager extends BaseManager
 
     public function invalidateCache()
     {
-        if ($this->cache !== null) {
-            $this->cache->delete($this->cacheKey);
-            $this->items = null;
-            $this->rules = null;
-            $this->parents = null;
+        $this->assignments = null;
+        if ($this->cache === null) {
+            return;
         }
+        $this->cache->delete($this->cacheKey);
+        $this->items = null;
+        $this->rules = null;
+        $this->parents = null;
     }
 
     public function loadFromCache()
