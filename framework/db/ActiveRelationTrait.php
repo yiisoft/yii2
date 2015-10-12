@@ -466,7 +466,7 @@ trait ActiveRelationTrait
             foreach ($models as $model) {
                 $v = [];
                 foreach ($this->link as $attribute => $link) {
-                    $v[$attribute] = $model[$link];
+                    $v[($this->prefixKeyColumns([$attribute])[0])] = $model[$link];
                 }
                 $values[] = $v;
             }
