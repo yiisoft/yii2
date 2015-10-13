@@ -231,6 +231,7 @@ class StringHelperTest extends TestCase
     public function testExplode()
     {
         $this->assertEquals(['It', 'is', 'a first', 'test'], StringHelper::explode("It, is, a first, test"));
+        $this->assertEquals(['It', 'is', 'a test with trimmed digits', '0', '1', '2'], StringHelper::explode("It, is, a test with trimmed digits, 0, 1, 2", ',', true, true));
         $this->assertEquals(['It', 'is', 'a second', 'test'], StringHelper::explode("It+ is+ a second+ test", '+'));
         $this->assertEquals(['Save', '', '', 'empty trimmed string'], StringHelper::explode("Save, ,, empty trimmed string", ','));
         $this->assertEquals(['Здесь', 'multibyte', 'строка'], StringHelper::explode("Здесь我 multibyte我 строка", '我'));
@@ -241,6 +242,7 @@ class StringHelperTest extends TestCase
     {
         $this->assertEquals(['It', 'is', 'a', 'first', 'test'], StringHelper::pregExplode("It, is a first, test"));
         $this->assertEquals(['It', 'is', 'a second', 'test'], StringHelper::pregExplode("It) is) a second] test", '/[)}\]]+/'));
+        $this->assertEquals(['It', 'is', 'a test with trimmed digits', '0', '1', '2'], StringHelper::pregExplode("It, is, a test with trimmed digits, 0, 1, 2", '/[,;]+/', true, true));
         $this->assertEquals(['All_that_chars_are_treated', 'as_singe_separator'], StringHelper::pregExplode("All_that_chars_are_treated; ;,; as_singe_separator"));
         $this->assertEquals(['Здесь', 'multibyte', 'строка'], StringHelper::pregExplode("ЗдесьΨ multibyte我 строка", '/(我|Ψ|,)/'));
         $this->assertEquals(['Disable', '  trim  ', 'here but ignore empty'], StringHelper::pregExplode("Disable1  trim  123here but ignore empty", '/\d/', false, true));
