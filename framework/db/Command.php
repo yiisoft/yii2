@@ -783,12 +783,8 @@ class Command extends Component
             
             // https://bugs.php.net/bug.php?id=61613
             // Make sure that supported drivers throw an exception in case a statement of a multi-query failed
-            try {
+            if ($this->db->getSupportsResultSets()) {
                 while ($this->pdoStatement->nextRowSet()) {}
-            } catch (\Exception $e) {
-                if (strpos($e->getMessage(), 'SQLSTATE[IM001]') === false) {
-                    throw $e;
-                }
             }
 
             Yii::endProfile($token, __METHOD__);
