@@ -24,6 +24,7 @@ Yii Framework 2 Change Log
 - Bug #9874: Fixed outputting exception stacktrace in non-debug mode when `Response::FORMAT_RAW` is used (nainoon)
 - Bug #9883: Passing a single `yii\db\Expression` to `Query::select()` or `::addSelect()` was not handled correctly in all cases (cebe)
 - Bug #9906: Fixed PHPUnit test case of date formatting in Russian language (silverfire)
+- Bug #9911: Fixed `yii\helpers\BaseStringHelper::explode()` code so it does not remove items eq to 0 with skip_empty attribute (silverfire, kidol)
 - Bug: Fixed generation of canonical URLs for `ViewAction` pages (samdark)
 - Enh #7581: Added ability to specify range using anonymous function in `RangeValidator` (RomeroMsk)
 - Enh #8613: `yii\widgets\FragmentCache` will not store empty content anymore which fixes some problems related to `yii\filters\PageCache` (kidol)
