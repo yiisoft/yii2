@@ -236,4 +236,13 @@ class StringHelperTest extends TestCase
         $this->assertEquals(['Здесь', 'multibyte', 'строка'], StringHelper::explode("Здесь我 multibyte我 строка", '我'));
         $this->assertEquals(['Disable', '  trim  ', 'here but ignore empty'], StringHelper::explode("Disable,  trim  ,,,here but ignore empty", ',', false, true));
     }
+
+    public function testPregExplode()
+    {
+        $this->assertEquals(['It', 'is', 'a', 'first', 'test'], StringHelper::pregExplode("It, is a first, test"));
+        $this->assertEquals(['It', 'is', 'a second', 'test'], StringHelper::pregExplode("It) is) a second] test", '/[)}\]]+/'));
+        $this->assertEquals(['All_that_chars_are_treated', 'as_singe_separator'], StringHelper::pregExplode("All_that_chars_are_treated; ;,; as_singe_separator"));
+        $this->assertEquals(['Здесь', 'multibyte', 'строка'], StringHelper::pregExplode("ЗдесьΨ multibyte我 строка", '/(我|Ψ|,)/'));
+        $this->assertEquals(['Disable', '  trim  ', 'here but ignore empty'], StringHelper::pregExplode("Disable1  trim  123here but ignore empty", '/\d/', false, true));
+    }
 }
