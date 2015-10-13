@@ -949,12 +949,12 @@ class Response extends \yii\base\Response
         }
 
         if (is_array($this->content)) {
-            throw new InvalidParamException("Response content must not be an array.");
+            throw new InvalidParamException('Response content must not be an array.');
         } elseif (is_object($this->content)) {
             if (method_exists($this->content, '__toString')) {
                 $this->content = $this->content->__toString();
             } else {
-                throw new InvalidParamException("Response content must be a string or an object implementing __toString().");
+                throw new InvalidParamException('Response content must be a string or an object implementing __toString().');
             }
         }
     }

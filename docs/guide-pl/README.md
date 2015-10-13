@@ -92,7 +92,7 @@ Odbieranie danych od użytkowników
 * [Walidacja danych wejściowych](input-validation.md)
 * [Wysyłanie plików](input-file-upload.md)
 * [Odczytywanie tablicowych danych wejściowych](input-tabular-input.md)
-* [Odbieranie danych z wielu modeli](input-multiple-models.md)
+* [Pobieranie danych dla wielu modeli](input-multiple-models.md)
 
 
 Wyświetlanie danych

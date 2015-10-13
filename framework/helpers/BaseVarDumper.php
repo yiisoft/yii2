@@ -82,7 +82,7 @@ class BaseVarDumper
                 self::$_output .= '{resource}';
                 break;
             case 'NULL':
-                self::$_output .= "null";
+                self::$_output .= 'null';
                 break;
             case 'unknown type':
                 self::$_output .= '{unknown}';
@@ -231,7 +231,7 @@ class BaseVarDumper
             return 'function() {/* Error: unable to determine Closure source */}';
         }
 
-        $start = $start - 1;
+        --$start;
 
         $source = implode("\n", array_slice(file($fileName), $start, $end - $start));
         $tokens = token_get_all('<?php ' . $source);

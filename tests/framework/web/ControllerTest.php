@@ -80,9 +80,19 @@ class ControllerTest extends TestCase
 
         $result = $controller->runAction('aksi6', $params);
         $this->assertEquals(['d426', false, true], $result);
-
-
-
+        
+        // Manually inject an instance of \StdClass
+        // In this case we don't want a newly created instance, but use the existing one
+        $stdClass = new \StdClass;
+        $stdClass->test = 'dummy';
+        $result = $controller->runAction('aksi7', array_merge($params, ['validator' => $stdClass]));
+        $this->assertEquals(['d426', 'dummy'], $result);
+        
+        // Manually inject a string instead of an instance of \StdClass
+        // Since this is wrong usage, we expect a new instance of the type hinted \StdClass anyway
+        $stdClass = 'string';
+        $result = $controller->runAction('aksi8', array_merge($params, ['validator' => $stdClass]));
+        $this->assertEquals(['d426', 'object'], $result);
     }
 
     public function getConnection() {
