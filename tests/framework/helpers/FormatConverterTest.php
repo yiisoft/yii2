@@ -72,6 +72,6 @@ class FormatConverterTest extends TestCase
         $this->assertEquals('dd M yy \'г\'.', FormatConverter::convertDateIcuToJui('dd MMM y \'г\'.', 'date', 'ru-RU'));
 
         $formatter = new Formatter(['locale' => 'ru-RU']);
-        $this->assertEquals('24 авг 2014 г.', $formatter->asDate('2014-8-24', 'dd MMM y \'г\'.'));
+        $this->assertEquals('24 авг. 2014 г.', $formatter->asDate('2014-8-24', 'dd MMM y \'г\'.'));
     }
 }
