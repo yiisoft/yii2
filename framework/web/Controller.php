@@ -91,11 +91,11 @@ class Controller extends \yii\base\Controller
                      */
 
                     if (isset($params[$name])) {
-                        if (count($className::primaryKey()) == 1 && is_scalar($params[$name])
+                        if (count($className::primaryKey()) === 1 && is_scalar($params[$name])
                             || (
                                 is_array($params[$name])
-                                && count($className::primaryKey()) == count($params[$name])
-                                && array_diff_key(array_flip($className::primaryKey()), $params[$name]) != []
+                                && count($className::primaryKey()) === count($params[$name])
+                                && array_diff_key(array_flip($className::primaryKey()), $params[$name]) == []
                             )
                         ) {
                             /** @var \yii\db\ActiveQueryInterface $activeQuery */

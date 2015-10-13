@@ -150,7 +150,7 @@ class ControllerTest extends TestCase
         $this->assertNull($customer);
 
         list($customer) = $controller->bindActionParams($showOptionalCustomer, ['customer' => 10]);
-        $this->assertInstanceOf(Customer::className(), $customer);
+        $this->assertNull($customer);
 
     }
 
