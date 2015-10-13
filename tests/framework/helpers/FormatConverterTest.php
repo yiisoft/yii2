@@ -72,6 +72,8 @@ class FormatConverterTest extends TestCase
         $this->assertEquals('dd M yy \'г\'.', FormatConverter::convertDateIcuToJui('dd MMM y \'г\'.', 'date', 'ru-RU'));
 
         $formatter = new Formatter(['locale' => 'ru-RU']);
-        $this->assertEquals('24 авг. 2014 г.', $formatter->asDate('2014-8-24', 'dd MMM y \'г\'.'));
+        // There is a dot after month name in updated ICU. Travis uses old ICU, so we need a regexp trick.
+        // See https://github.com/yiisoft/yii2/issues/9906
+        $this->assertRegExp('/24 авг\.? 2014 г\./', $formatter->asDate('2014-8-24', 'dd MMM y \'г\'.'));
     }
 }
