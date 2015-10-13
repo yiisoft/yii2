@@ -20,13 +20,13 @@ class ColumnSchemaBuilder extends AbstractColumnSchemaBuilder
     /**
      * @inheritdoc
      */
-    public function __toString()
+    public function __toString($alter = false)
     {
         return
             $this->type .
-            $this->buildLengthString() .
-            $this->buildDefaultString() .
-            $this->buildNotNullString() .
-            $this->buildCheckString();
+            $this->buildLengthString($alter) .
+            $this->buildDefaultString($alter) .
+            $this->buildNotNullString($alter) .
+            $this->buildCheckString($alter);
     }
 }

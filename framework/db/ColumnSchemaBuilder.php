@@ -106,24 +106,26 @@ class ColumnSchemaBuilder extends Object
 
     /**
      * Build full string for create the column's schema
+     * @param boolean $alter Whether we need a string for altering.
      * @return string
      */
-    public function __toString()
+    public function __toString($alter = false)
     {
         return
             $this->type .
-            $this->buildLengthString() .
-            $this->buildNotNullString() .
-            $this->buildUniqueString() .
-            $this->buildDefaultString() .
-            $this->buildCheckString();
+            $this->buildLengthString($alter) .
+            $this->buildNotNullString($alter) .
+            $this->buildUniqueString($alter) .
+            $this->buildDefaultString($alter) .
+            $this->buildCheckString($alter);
     }
 
     /**
      * Builds the length/precision part of the column.
+     * @param boolean $alter Whether we need a string for altering.
      * @return string
      */
-    protected function buildLengthString()
+    protected function buildLengthString($alter = false)
     {
         if ($this->length === null || $this->length === []) {
             return '';
@@ -136,27 +138,30 @@ class ColumnSchemaBuilder extends Object
 
     /**
      * Builds the not null constraint for the column.
+     * @param boolean $alter Whether we need a string for altering.
      * @return string returns 'NOT NULL' if [[isNotNull]] is true, otherwise it returns an empty string.
      */
-    protected function buildNotNullString()
+    protected function buildNotNullString($alter = false)
     {
         return $this->isNotNull ? ' NOT NULL' : '';
     }
 
     /**
      * Builds the unique constraint for the column.
+     * @param boolean $alter Whether we need a string for altering.
      * @return string returns string 'UNIQUE' if [[isUnique]] is true, otherwise it returns an empty string.
      */
-    protected function buildUniqueString()
+    protected function buildUniqueString($alter = false)
     {
         return $this->isUnique ? ' UNIQUE' : '';
     }
 
     /**
      * Builds the default value specification for the column.
+     * @param boolean $alter Whether we need a string for altering.
      * @return string string with default value of column.
      */
-    protected function buildDefaultString()
+    protected function buildDefaultString($alter = false)
     {
         if ($this->default === null) {
             return '';
@@ -183,9 +188,10 @@ class ColumnSchemaBuilder extends Object
 
     /**
      * Builds the check constraint for the column.
+     * @param boolean $alter Whether we need a string for altering.
      * @return string a string containing the CHECK constraint.
      */
-    protected function buildCheckString()
+    protected function buildCheckString($alter = false)
     {
         return $this->check !== null ? " CHECK ({$this->check})" : '';
     }

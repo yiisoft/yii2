@@ -587,12 +587,13 @@ class QueryBuilder extends \yii\base\Object
      *
      * If a type cannot be found in [[typeMap]], it will be returned without any change.
      * @param string|ColumnSchemaBuilder $type abstract column type
+     * @param boolean $alter whether column type is needed for altering
      * @return string physical column type.
      */
-    public function getColumnType($type)
+    public function getColumnType($type, $alter = false)
     {
         if ($type instanceof ColumnSchemaBuilder) {
-            $type = $type->__toString();
+            $type = $type->__toString($alter);
         }
 
         if (isset($this->typeMap[$type])) {
