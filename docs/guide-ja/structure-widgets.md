@@ -68,6 +68,17 @@ use yii\helpers\Html;
 返されたウィジェットのインスタンスを使って、ウィジェットのコンテントを構築することが出来ます。
 
 
+### グローバルなデフォルトを構成する
+
+あるタイプのウィジェットのグローバルなデフォルトを DI コンテナによって構成することが出来ます。
+
+```php
+\Yii::$container->set('yii\widgets\LinkPager', ['maxButtonCount' => 5]);
+```
+
+詳細については [依存注入コンテナのガイドの "実際の使いかた" の節](concept-di-container.md#practical-usage) を参照してください。
+
+
 ## ウィジェットを作成する <span id="creating-widgets"></span>
 
 ウィジェットを作成するためには、[[yii\base\Widget]] を拡張して、[[yii\base\Widget::init()]] および/または [[yii\base\Widget::run()]] メソッドをオーバーライドします。
