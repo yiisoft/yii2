@@ -374,7 +374,10 @@ class Connection extends Component
      * @var array query cache parameters for the [[cache()]] calls
      */
     private $_queryCacheInfo = [];
-
+    /**
+     * @var boolean whether the active PDO driver does support result sets
+     */
+    private $_supportsResultSets;
 
     /**
      * Returns a value indicating whether the DB connection is established.
@@ -550,6 +553,7 @@ class Connection extends Component
             $this->pdo = null;
             $this->_schema = null;
             $this->_transaction = null;
+            $this->_supportsResultSets = null;
         }
 
         if ($this->_slave) {
@@ -607,6 +611,7 @@ class Connection extends Component
         if ($this->charset !== null && in_array($this->getDriverName(), ['pgsql', 'mysql', 'mysqli', 'cubrid'])) {
             $this->pdo->exec('SET NAMES ' . $this->pdo->quote($this->charset));
         }
+        $this->getSupportsResultSets();
         $this->trigger(self::EVENT_AFTER_OPEN);
     }
 
@@ -944,5 +949,24 @@ class Connection extends Component
         }
 
         return null;
+    }
+
+    /**
+     * Figures out whether the active PDO driver supports result sets.
+     * This method is used internally by `yii\db\Command` to workaround a known PDO issue.
+     * @return boolean whether the active PDO driver does support result sets
+     */
+    public function getSupportsResultSets()
+    {
+        if ($this->pdo !== null && $this->_supportsResultSets === null) {
+            $this->_supportsResultSets = true;
+            try {
+                $pdoStatement = $this->pdo->prepare('');
+                $pdoStatement->nextRowSet();
+            } catch (\Exception $e) {
+                $this->_supportsResultSets = $e->getCode() !== 'IM001';
+            }
+        }
+        return $this->_supportsResultSets; 
     }
 }
