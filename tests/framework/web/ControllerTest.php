@@ -8,6 +8,9 @@
 namespace yiiunit\framework\web;
 
 use Yii;
+use yiiunit\data\ar\ActiveRecord;
+use yiiunit\data\ar\Customer;
+use yiiunit\data\ar\OrderItem;
 use yiiunit\TestCase;
 use yiiunit\framework\di\stubs\Qux;
 use yiiunit\framework\web\stubs\Bar;
@@ -77,5 +80,124 @@ class ControllerTest extends TestCase
 
         $result = $controller->runAction('aksi6', $params);
         $this->assertEquals(['d426', false, true], $result);
+
+
+
     }
+
+    public function getConnection() {
+        $databases = self::getParam('databases');
+
+        // Try all.
+        foreach($databases as $config) {
+            unset($config['fixture']);
+            if (!isset($config['class'])) {
+                $config['class'] = 'yii\db\Connection';
+            }
+            try {
+                $db = \Yii::createObject($config);
+                $db->open();
+                break;
+            } catch (\Exception $e) {}
+
+        }
+
+        if (!isset($db)) {
+            $this->markTestSkipped("No database available.");
+        }
+        return $db;
+
+
+
+    }
+
+    public function testBindActiveRecord() {
+        $this->mockApplication();
+        ActiveRecord::$db = $this->getConnection();
+
+        $controller = new FakeController('fake', Yii::$app);
+
+
+
+        $showCustomer = new InlineAction('ShowCustomer', $controller, 'actionShowCustomer');
+        /** @var \yiiunit\data\ar\Customer $customer */
+        list($customer) = $controller->bindActionParams($showCustomer, ['customer' => "1"]);
+        $this->assertInstanceOf(Customer::className(), $customer);
+        // Check email to make sure we have actually queried and not just created an object and set the id..
+        $this->assertEquals('user1@example.com', $customer->email);
+
+        $showOrderItem = new InlineAction('ShowOrderItem', $controller, 'actionShowOrderItem');
+
+        /** @var \yiiunit\data\ar\OrderItem $orderItem */
+        list($orderItem) = $controller->bindActionParams($showOrderItem, ['orderItem' => ['order_id' => "1", 'item_id' => "1"]]);
+        $this->assertInstanceOf(OrderItem::className(), $orderItem);
+        // Check subtotal to make sure we have actually queried and not just created an object and set the id..
+        $this->assertEquals(30, $orderItem->subtotal);
+
+
+        $showOptionalCustomer = new InlineAction('ShowOptionalCustomer', $controller, 'actionShowOptionalCustomer');
+        list($customer) = $controller->bindActionParams($showOptionalCustomer, []);
+        $this->assertNull($customer);
+
+        list($customer) = $controller->bindActionParams($showOptionalCustomer, ['customer' => 10]);
+        $this->assertInstanceOf(Customer::className(), $customer);
+
+    }
+
+    /**
+     * @expectedException \yii\web\NotFoundHttpException
+     */
+    public function testBindActiveRecordNotFound1() {
+        $this->mockApplication();
+        ActiveRecord::$db = $this->getConnection();
+
+        $controller = new FakeController('fake', Yii::$app);
+        $showCustomer = new InlineAction('ShowCustomer', $controller, 'actionShowCustomer');
+        $controller->bindActionParams($showCustomer, ['customer' => "10"]);
+
+    }
+
+    /**
+     * @expectedException \yii\web\NotFoundHttpException
+     */
+    public function testBindActiveRecordNotFound2() {
+        $this->mockApplication();
+        ActiveRecord::$db = $this->getConnection();
+
+        $controller = new FakeController('fake', Yii::$app);
+        $showOrderItem = new InlineAction('ShowOrderItem', $controller, 'actionShowOrderItem');
+
+        $controller->bindActionParams($showOrderItem, ['orderItem' => ['order_id' => "1111", 'item_id' => "1"]]);
+
+
+    }
+
+    /**
+     * @expectedException \yii\web\BadRequestHttpException
+     */
+    public function testBindActiveRecordMalformed1() {
+        $this->mockApplication();
+        ActiveRecord::$db = $this->getConnection();
+
+        $controller = new FakeController('fake', Yii::$app);
+        $showCustomer = new InlineAction('ShowCustomer', $controller, 'actionShowCustomer');
+        $controller->bindActionParams($showCustomer, ['customer' => ["test" => "10"]]);
+
+    }
+    /**
+     * @expectedException \yii\web\BadRequestHttpException
+     */
+    public function testBindActiveRecordMalformed2() {
+        $this->mockApplication();
+        ActiveRecord::$db = $this->getConnection();
+
+        $controller = new FakeController('fake', Yii::$app);
+        $showOrderItem = new InlineAction('ShowOrderItem', $controller, 'actionShowOrderItem');
+
+        $controller->bindActionParams($showOrderItem, ['orderItem' => ['order_id' => ["test" => "1"], 'item_id' => "1"]]);
+    }
+
+
+
+
 }

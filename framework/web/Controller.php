@@ -75,6 +75,56 @@ class Controller extends \yii\base\Controller
                 $className = $class->getName();
                 if (Yii::$app->has($name) && ($obj = Yii::$app->get($name)) instanceof $className) {
                     $args[] = $actionParams[$name] = $obj;
+                } elseif (isset(class_implements($className)['yii\db\ActiveRecordInterface'])) {
+                    /**
+                     * This is a pretty complex guard.
+                     * It checks if a request parameter with the same name as the action parameter is set,
+                     * and if the type hint hints to an ActiveRecord class.
+                     * If so, it checks if it the value is a valid / safe for passing into the query.
+                     * (Safe meaning it will only search on columns using the primary key(s))
+                     */
+
+                    if (isset($params[$name])) {
+                        if (count($className::primaryKey()) == 1 && is_scalar($params[$name])
+                            || (
+                                is_array($params[$name])
+                                && count($className::primaryKey()) == count($params[$name])
+                                && empty(array_diff_key(array_flip($className::primaryKey()), $params[$name]))
+                            )
+                        ) {
+                            /** @var \yii\db\ActiveQueryInterface $activeQuery */
+                            if (is_array($params[$name])) {
+                                foreach ($params[$name] as $column => $value) {
+                                    if (!is_scalar($value)) {
+                                        throw new BadRequestHttpException(Yii::t('yii',
+                                            'Invalid data received for parameter "{param}".', [
+                                                'param' => $name . '[' . $column . ']',
+                                            ]));
+                                    }
+                                }
+                            }
+                            if (($model = $className::findOne($params[$name])) !== null) {
+                                $args[] = $actionParams[$name] = $model;
+                            } elseif ($param->isDefaultValueAvailable()) {
+                                // Default value for type hinted parameter is always null.
+                                $args[] = $actionParams[$name] = null;
+                            } else {
+                                throw new NotFoundHttpException(Yii::t('yii', 'Model not found.'));
+                            }
+                        }
+                        else {
+                            throw new BadRequestHttpException(Yii::t('yii',
+                                'Invalid data received for parameter "{param}".', [
+                                    'param' => $name,
+                                ]));
+                        }
+                    } elseif ($param->isDefaultValueAvailable()) {
+                        // Default value for type hinted parameter is always null.
+                        $args[] = $actionParams[$name] = null;
+                    } else {
+                        // We never use DI without parameters for active record classes.
+                        $missing[] = $name;
+                    }
                 } else {
                     $args[] = $actionParams[$name] = Yii::$container->get($className);
                 }
