@@ -95,7 +95,7 @@ class Controller extends \yii\base\Controller
                             || (
                                 is_array($params[$name])
                                 && count($className::primaryKey()) == count($params[$name])
-                                && empty(array_diff_key(array_flip($className::primaryKey()), $params[$name]))
+                                && array_diff_key(array_flip($className::primaryKey()), $params[$name]) != []
                             )
                         ) {
                             /** @var \yii\db\ActiveQueryInterface $activeQuery */
