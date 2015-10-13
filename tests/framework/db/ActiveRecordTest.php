@@ -1,6 +1,7 @@
 <?php
 namespace yiiunit\framework\db;
 
+use yii\db\ActiveQuery;
 use yiiunit\data\ar\ActiveRecord;
 use yiiunit\data\ar\BitValues;
 use yiiunit\data\ar\Category;
@@ -419,6 +420,7 @@ class ActiveRecordTest extends DatabaseTestCase
         // join with table alias sub-relation
         $orders = Order::find()->innerJoinWith([
             'items as t' => function ($q) {
+//                $q->from(['t' => 'item']);
                 $q->orderBy('t.id');
             },
             'items.category as c' => function ($q) {
@@ -548,6 +550,141 @@ class ActiveRecordTest extends DatabaseTestCase
                 $q->orderBy('item.id');
             },
         ])->all();
+    }
+
+    /**
+     * Tests the alias syntax for joinWith: 'alias' => 'relation'
+     */
+    public function testJoinWithAlias()
+    {
+        // left join and eager loading
+        /** @var ActiveQuery $query */
+        $query = Order::find()->joinWith(['customer c']);
+        $orders = $query->orderBy($query->applyRelationAlias('customer', 'id') /* c.id */ . ' DESC, order.id')->all();
+        $this->assertEquals(3, count($orders));
+        $this->assertEquals(2, $orders[0]->id);
+        $this->assertEquals(3, $orders[1]->id);
+        $this->assertEquals(1, $orders[2]->id);
+        $this->assertTrue($orders[0]->isRelationPopulated('customer'));
+        $this->assertTrue($orders[1]->isRelationPopulated('customer'));
+        $this->assertTrue($orders[2]->isRelationPopulated('customer'));
+
+        // inner join filtering and eager loading
+        $orders = Order::find()->innerJoinWith(['customer c'])->where('{{c}}.[[id]]=2')->orderBy('order.id')->all();
+        $this->assertEquals(2, count($orders));
+        $this->assertEquals(2, $orders[0]->id);
+        $this->assertEquals(3, $orders[1]->id);
+        $this->assertTrue($orders[0]->isRelationPopulated('customer'));
+        $this->assertTrue($orders[1]->isRelationPopulated('customer'));
+
+        // inner join filtering without eager loading
+        $orders = Order::find()->innerJoinWith(['customer c'], false)->where('{{c}}.[[id]]=2')->orderBy('order.id')->all();
+        $this->assertEquals(2, count($orders));
+        $this->assertEquals(2, $orders[0]->id);
+        $this->assertEquals(3, $orders[1]->id);
+        $this->assertFalse($orders[0]->isRelationPopulated('customer'));
+        $this->assertFalse($orders[1]->isRelationPopulated('customer'));
+
+        // join with via-relation
+        $query = Order::find()->innerJoinWith(['books b']);
+        $orders = $query->where([$query->getRelationAlias('books') . '.name' => 'Yii 1.1 Application Development Cookbook'])->orderBy($query->applyAlias('order', 'id'))->all();
+        $this->assertEquals(2, count($orders));
+        $this->assertEquals(1, $orders[0]->id);
+        $this->assertEquals(3, $orders[1]->id);
+        $this->assertTrue($orders[0]->isRelationPopulated('books'));
+        $this->assertTrue($orders[1]->isRelationPopulated('books'));
+        $this->assertEquals(2, count($orders[0]->books));
+        $this->assertEquals(1, count($orders[1]->books));
+
+
+        $orders = Order::find()->innerJoinWith([
+            'items i' => function ($q) {
+                /** @var $q ActiveQuery */
+                $q->orderBy($q->applyAlias('item', 'id'));
+            },
+            'items.category c' => function ($q) {
+                    /** @var $q ActiveQuery */
+                    $q->where('{{c}}.[[id]] = 2');
+                },
+        ])->orderBy('i.id')->all();
+
+        $this->assertEquals(1, count($orders));
+        $this->assertTrue($orders[0]->isRelationPopulated('items'));
+        $this->assertEquals(2, $orders[0]->id);
+        $this->assertEquals(3, count($orders[0]->items));
+        $this->assertTrue($orders[0]->items[0]->isRelationPopulated('category'));
+        $this->assertEquals(2, $orders[0]->items[0]->category->id);
+
+        // join with ON condition
+        $orders = Order::find()->joinWith(['books2 b'])->orderBy('order.id')->all();
+        $this->assertEquals(3, count($orders));
+        $this->assertEquals(1, $orders[0]->id);
+        $this->assertEquals(2, $orders[1]->id);
+        $this->assertEquals(3, $orders[2]->id);
+        $this->assertTrue($orders[0]->isRelationPopulated('books2'));
+        $this->assertTrue($orders[1]->isRelationPopulated('books2'));
+        $this->assertTrue($orders[2]->isRelationPopulated('books2'));
+        $this->assertEquals(2, count($orders[0]->books2));
+        $this->assertEquals(0, count($orders[1]->books2));
+        $this->assertEquals(1, count($orders[2]->books2));
+
+        // join with count and query
+        /** @var $query ActiveQuery */
+        $query = Order::find()->joinWith(['customer c']);
+        $count = $query->count('c.id');
+        $this->assertEquals(3, $count);
+        $orders = $query->all();
+        $this->assertEquals(3, count($orders));
+
+        // relational query
+        $order = Order::findOne(1);
+        $customer = $order->getCustomer()->innerJoinWith(['orders o'], false)->where(['o.id' => 1])->one();
+        $this->assertNotNull($customer);
+        $this->assertEquals(1, $customer->id);
+
+        // join with sub-relation called inside Closure
+        $orders = Order::find()->joinWith([
+            'items' => function ($q) {
+                    /** @var $q ActiveQuery */
+                    $q->orderBy('item.id');
+                    $q->joinWith(['category c']);
+                    $q->where('{{c}}.[[id]] = 2');
+            },
+        ])->orderBy('order.id')->all();
+        $this->assertEquals(1, count($orders));
+        $this->assertTrue($orders[0]->isRelationPopulated('items'));
+        $this->assertEquals(2, $orders[0]->id);
+        $this->assertEquals(3, count($orders[0]->items));
+        $this->assertTrue($orders[0]->items[0]->isRelationPopulated('category'));
+        $this->assertEquals(2, $orders[0]->items[0]->category->id);
+
+    }
+
+
+
+    // TODO join a relation twice, once with
+
+
+    public function testRelationAlias()
+    {
+        /** @var $query ActiveQuery */
+        $query = Order::find()->joinWith(['items']);
+        $this->assertEquals('item', $query->getRelationAlias('items'));
+        $this->assertEquals('item.id', $query->applyRelationAlias('items', 'id'));
+
+        /** @var $query ActiveQuery */
+        $query = Order::find()->joinWith(['customer c']);
+        $this->assertEquals('c', $query->getRelationAlias('customer'));
+        $this->assertEquals('c.id', $query->applyRelationAlias('customer', 'id'));
+
+        /** @var $query ActiveQuery */
+        $query = Order::find()->joinWith([
+            'customer' => function ($q) {
+                $q->from('tbl_customer cu');
+            }
+		]);
+        $this->assertEquals('cu', $query->getRelationAlias('customer'));
+        $this->assertEquals('cu.id', $query->applyRelationAlias('customer', 'id'));
     }
 
     public function testInverseOf()

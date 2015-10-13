@@ -111,6 +111,13 @@ class Query extends Component implements QueryInterface
      */
     public $params = [];
 
+    /**
+     * @var array aliases defined for tables used in this query
+     *
+     * tablename => alias
+     */
+    protected $aliases = [];
+
 
     /**
      * Creates a DB command that can be used to execute this query.
@@ -512,6 +519,7 @@ class Query extends Component implements QueryInterface
             $tables = preg_split('/\s*,\s*/', trim($tables), -1, PREG_SPLIT_NO_EMPTY);
         }
         $this->from = $tables;
+        $this->populateAliases($tables); // TODO write test
         return $this;
     }
 
@@ -604,6 +612,7 @@ class Query extends Component implements QueryInterface
     public function join($type, $table, $on = '', $params = [])
     {
         $this->join[] = [$type, $table, $on];
+        $this->populateAliases($table); // TODO add tests
         return $this->addParams($params);
     }
 
@@ -627,7 +636,8 @@ class Query extends Component implements QueryInterface
      */
     public function innerJoin($table, $on = '', $params = [])
     {
-        $this->join[] = ['INNER JOIN', $table, $on];
+        $this->join[] = ['INNER JOIN', $table, $on]; // TODO add tests
+        $this->populateAliases($table);
         return $this->addParams($params);
     }
 
@@ -651,7 +661,8 @@ class Query extends Component implements QueryInterface
      */
     public function leftJoin($table, $on = '', $params = [])
     {
-        $this->join[] = ['LEFT JOIN', $table, $on];
+        $this->join[] = ['LEFT JOIN', $table, $on]; // TODO add tests
+        $this->populateAliases($table);
         return $this->addParams($params);
     }
 
@@ -675,7 +686,8 @@ class Query extends Component implements QueryInterface
      */
     public function rightJoin($table, $on = '', $params = [])
     {
-        $this->join[] = ['RIGHT JOIN', $table, $on];
+        $this->join[] = ['RIGHT JOIN', $table, $on]; // TODO add tests
+        $this->populateAliases($table);
         return $this->addParams($params);
     }
 
@@ -841,6 +853,65 @@ class Query extends Component implements QueryInterface
             }
         }
         return $this;
+    }
+
+    /**
+     *
+     *
+     * @param string|array $tables
+     *
+     * - a simple string: either a simple table name "users" or including alias "users u" or "users AS u"
+     * - an array:
+     *    numeric key, string value == table without alias
+     *    string key, string value == table with alias
+     *    string key, obect value == subquery with alias. This alias will not be populated
+     * @see from()
+     * @see join()
+     */
+    protected function populateAliases($tables)
+    {
+        if (is_string($tables) && preg_match('/^(.*?)(\s+AS\s+|\s+)({{\w+}}|\w+)$/i', $tables, $matches)) {
+            $this->aliases[$matches[1]] = $matches[2];
+        } elseif (is_array($tables)) {
+            foreach ($tables as $alias => $tableName) {
+                if (is_object($tableName)) {
+                    continue;
+                }
+                if (is_string($alias)) {
+                    $this->aliases[$tableName] =  $alias;
+                } elseif (preg_match('/^(.*?)( as |\s+)({{\w+}}|\w+)$/i', $tableName, $matches)) {
+                    $this->aliases[$matches[1]] = $matches[2];
+                }
+            }
+        }
+    }
+
+    /**
+     *
+     * Usage:
+     *
+     * ```php
+     * $query = (new Query)->from(['u' => 'user']);
+     *
+     * echo $query->getAlias('user'); // "u"
+     * $query->andWhere($query->applyAlias('user', 'name') => 'cebe');
+     * // SELECT * FROM user u WHERE u.name = 'cebe';
+     * ```
+     *
+     * @param $table
+     * @return mixed
+     */
+    public function getAlias($table)
+    {
+        if (isset($this->aliases[$table])) {
+            return $this->aliases[$table];
+        }
+        return $table;
+    }
+
+    public function applyAlias($table, $column)
+    {
+        return $this->getAlias($table) . '.' . $column;
     }
 
     /**

@@ -8,6 +8,7 @@
 namespace yii\db;
 
 use yii\base\InvalidConfigException;
+use yii\base\InvalidParamException;
 
 /**
  * ActiveQuery represents a DB query associated with an Active Record class.
@@ -147,7 +148,7 @@ class ActiveQuery extends Query implements ActiveQueryInterface
             $this->joinWith = null;    // clean it up to avoid issue https://github.com/yiisoft/yii2/issues/2687
         }
 
-        if (empty($this->from)) {
+        if (empty($this->from)) { // TODO provide alias() method for convenience
             /* @var $modelClass ActiveRecord */
             $modelClass = $this->modelClass;
             $tableName = $modelClass::tableName();
@@ -347,19 +348,28 @@ class ActiveQuery extends Query implements ActiveQueryInterface
      * Based on the definition of the specified relation(s), the method will append one or multiple
      * JOIN statements to the current query.
      *
-     * If the `$eagerLoading` parameter is true, the method will also eager loading the specified relations,
+     * If the `$eagerLoading` parameter is true, the method will also perform eager loading for the specified relations,
      * which is equivalent to calling [[with()]] using the specified relations.
      *
      * Note that because a JOIN query will be performed, you are responsible to disambiguate column names.
+     * You may specify the table names manually or use the methods [[getRelationAlias()]] or [[applyRelationAlias()]] for this.
      *
      * This method differs from [[with()]] in that it will build up and execute a JOIN SQL statement
      * for the primary table. And when `$eagerLoading` is true, it will call [[with()]] in addition with the specified relations.
      *
-     * @param string|array $with the relations to be joined. Each array element represents a single relation.
-     * The array keys are relation names, and the array values are the corresponding anonymous functions that
-     * can be used to modify the relation queries on-the-fly. If a relation query does not need modification,
-     * you may use the relation name as the array value. Sub-relations can also be specified (see [[with()]]).
-     * For example,
+     * @param string|array $with the relations to be joined. This can either be a string, representing a relation name or
+     * an array with the following semantics:
+     *
+     * - Each array element represents a single relation.
+     * - You may specify the relation name as the array key and provide an anonymous functions that
+     *   can be used to modify the relation queries on-the-fly as the array value.
+     * - If a relation query does not need modification, you may use the relation name as the array value.
+     *
+     * The relation name may optionally contain an alias for the relation table (e.g. `books, b`).
+     *
+     * Sub-relations can also be specified, see [[with()]] for  the syntax.
+     *
+     * In the following you find some examples:
      *
      * ```php
      * // find all orders that contain books, and eager loading "books"
@@ -370,7 +380,11 @@ class ActiveQuery extends Query implements ActiveQueryInterface
      *         $query->orderBy('item.name');
      *     }
      * ])->all();
+     * // find all orders that contain books of the category 'Science fiction', using the alias "b" for the books table
+     * Order::find()->joinWith(['books b'], true, 'INNER JOIN')->where(['b.category' => 'Science fiction'])->all();
      * ```
+     *
+     * The alias syntax is available since version 2.0.7.
      *
      * @param boolean|array $eagerLoading whether to eager load the relations specified in `$with`.
      * When this is a boolean, it applies to all relations specified in `$with`. Use an array
@@ -382,8 +396,42 @@ class ActiveQuery extends Query implements ActiveQueryInterface
      */
     public function joinWith($with, $eagerLoading = true, $joinType = 'LEFT JOIN')
     {
-        $this->joinWith[] = [(array) $with, $eagerLoading, $joinType];
+        $relations = [];
+        foreach((array) $with as $name => $callback) {
+            if (is_int($name)) {
+                $name = $callback;
+                $callback = null;
+            }
 
+            if (preg_match('/^(.*?)(\s+AS\s+|\s+)(\w+)$/i', $name, $matches)) {
+                // relation is defined with an alias, adjust callback to apply alias
+                list(, $relation, , $alias) = $matches;
+                $this->_relationAliases[$relation] = $alias;
+                $name = $relation;
+                $callback = function($query) use ($callback, $alias) {
+                    /** @var $query ActiveQuery */
+                    // apply alias to the query
+                    list($tableName, ) = $this->getQueryTableName($query);
+                    $query->from([$alias => $tableName]);
+
+                    // call callback after applying alias to make sure getAlias() works inside
+                    if ($callback !== null) {
+                        call_user_func($callback, $query);
+                    }
+                };
+            } else {
+                // lookup will be performed lazy in getRelationAlias()
+                $this->_relationAliasesLookup[$name] = false;
+                $this->_relationAliasesCallback[$name] = $callback;
+            }
+
+            if ($callback === null) {
+                $relations[] = $name;
+            } else {
+                $relations[$name] = $callback;
+            }
+        }
+        $this->joinWith[] = [$relations, $eagerLoading, $joinType];
         return $this;
     }
 
@@ -392,9 +440,10 @@ class ActiveQuery extends Query implements ActiveQueryInterface
         $join = $this->join;
         $this->join = [];
 
+        $model = new $this->modelClass;
         foreach ($this->joinWith as $config) {
             list ($with, $eagerLoading, $joinType) = $config;
-            $this->joinWithRelations(new $this->modelClass, $with, $joinType);
+            $this->joinWithRelations($model, $with, $joinType);
 
             if (is_array($eagerLoading)) {
                 foreach ($with as $name => $callback) {
@@ -720,5 +769,80 @@ class ActiveQuery extends Query implements ActiveQueryInterface
         }
 
         return $this;
+    }
+
+    /**
+     * @var array array of aliases explicitly defined in joinWith(). Array keys are
+     * the relation names, values are the table aliases.
+     */
+    private $_relationAliases = [];
+    /**
+     * @var array array of aliases or table names from relations joined by joinWith() for which
+     * we do not have an explicit table alias. Array keys are
+     * the relation names, a value of `false` indicates, that the relation was added by joinWith() but
+     * the alias has not been used before. It will be populated upon a call to [[getRelationAlias()]].
+     */
+    private $_relationAliasesLookup = [];
+    /**
+     * @var array
+     */
+    private $_relationAliasesCallback = [];
+
+    // so tablename of relation does not need to be known
+    /**
+     *
+     * Usage:
+     *
+     * ```php
+     * $query = (new Query)->from(['u' => 'user']);
+     *
+     * echo $query->getAlias('user'); // "u"
+     * $query->andWhere($query->applyAlias('user', 'name') => 'cebe');
+     * // SELECT * FROM user u WHERE u.name = 'cebe';
+     * ```
+     *
+     * @param $table
+     * @return mixed
+     */
+    public function getRelationAlias($relation)
+    {
+        if (isset($this->_relationAliases[$relation])) {
+            return $this->_relationAliases[$relation];
+        }
+        if (isset($this->_relationAliasesLookup[$relation])) {
+            if ($this->_relationAliasesLookup[$relation] !== false) {
+                return $this->_relationAliasesLookup[$relation];
+            }
+            // lookup the alias name defined in the relation query
+            /** @var $primaryModel ActiveRecord */
+            $primaryModel = new $this->modelClass;
+            $name = $relation;
+            while (($pos = strpos($name, '.')) !== false) {
+                $childName = substr($name, $pos + 1);
+                $name = substr($name, 0, $pos);
+                $relationQuery = $primaryModel->getRelation($name);
+                $primaryModel = new $relationQuery->modelClass;
+                $name = $childName;
+            }
+            $relationQuery = $primaryModel->getRelation($name);
+            $callback = $this->_relationAliasesCallback[$relation];
+            if ($callback !== null) {
+                call_user_func($callback, $relationQuery);
+            }
+            list(, $alias) = $this->getQueryTableName($relationQuery);
+            return $this->_relationAliasesLookup[$relation] = $alias;
+        }
+        throw new InvalidParamException("Unable to determine alias for relation '$relation', the relation has not been joined.");
+    }
+
+    public function applyRelationAlias($relation, $column)
+    {
+        return $this->getRelationAlias($relation) . '.' . $column;
+    }
+
+    public function getAlias($table)
+    {
+        // TODO provide aliases for relation table names
+        return parent::getAlias($table);
     }
 }
