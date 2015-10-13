@@ -6,7 +6,9 @@ use yii\caching\FileCache;
 use yii\db\Connection;
 use yii\db\DataReader;
 use yii\db\Expression;
+use yii\db\Query;
 use yii\db\Schema;
+use Yii;
 
 /**
  * @group db
@@ -462,6 +464,40 @@ SQL;
             $this->assertEquals('user11', $command->bindValue(':id', 1)->queryScalar());
             $this->assertEquals('user1', $command->noCache()->bindValue(':id', 1)->queryScalar());
         }, 10);
+    }
+
+    public function testQueryCacheBlob()
+    {
+        $db = $this->getConnection();
+        $db->enableQueryCache = true;
+        $db->queryCache = new FileCache(['cachePath' => '@yiiunit/runtime/cache']);
+
+        $db->createCommand()->delete('type')->execute();
+        $db->createCommand()->insert('type', [
+            'int_col' => $key = 1,
+            'char_col' => '',
+            'char_col2' => '6a3ce1a0bffe8eeb6fa986caf443e24c',
+            'float_col' => 0.0,
+            'blob_col' => 'a:1:{s:13:"template";s:1:"1";}',
+            'bool_col' => true,
+        ])->execute();
+
+        $function = function($db) use ($key){
+            return (new Query())
+                ->select(['blob_col'])
+                ->from('type')
+                ->where(['int_col' => $key])
+                ->createCommand($db)
+                ->queryScalar();
+        };
+
+        // First run return
+        $result = $db->cache($function);
+        $this->assertEquals('a:1:{s:13:"template";s:1:"1";}', $result);
+
+        // After the request has been cached return
+        $result = $db->cache($function);
+        $this->assertEquals('a:1:{s:13:"template";s:1:"1";}', $result);
     }
 
     public function testColumnCase()
