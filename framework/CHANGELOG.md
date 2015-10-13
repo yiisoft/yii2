@@ -33,6 +33,7 @@ Yii Framework 2 Change Log
 - Enh #9733: Added Unprocessable Entity HTTP Exception (janfrs)
 - Enh #9783: jQuery inputmask dependency updated to `~3.2.2` (samdark)
 - Enh #9869: Allow path alias for SQLite database files in DSN config (ASlatius)
+- Enh #9901: Default `Cache.SerializerPermissions` configuration option for `HTMLPurifier` is set to `0775` (klimov-paul)
 - Enh: Added last resort measure for `FileHelper::removeDirectory()` fail to unlink symlinks under Windows (samdark)
 - Chg #9369: `Yii::$app->user->can()` now returns `false` instead of erroring in case `authManager` component is not configured (creocoder)
 - Chg #9411: `DetailView` now automatically sets container tag ID in case it's not specified (samdark)
