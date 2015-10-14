@@ -551,11 +551,12 @@ class Command extends Component
     /**
      * Creates a SQL command for dropping a DB table.
      * @param string $table the table to be dropped. The name will be properly quoted by the method.
+     * @param boolean $ifExists the IF EXISTS option.
      * @return $this the command object itself
      */
-    public function dropTable($table)
+    public function dropTable($table, $ifExists = false)
     {
-        $sql = $this->db->getQueryBuilder()->dropTable($table);
+        $sql = $this->db->getQueryBuilder()->dropTable($table, $ifExists);
 
         return $this->setSql($sql)->requireTableSchemaRefresh($table);
     }
