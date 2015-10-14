@@ -561,4 +561,20 @@ SQL;
         $db->createCommand()->dropTable($tableName)->execute();
         $this->assertNull($db->getSchema()->getTableSchema($tableName));
     }
+    
+    public function testMultiQueryException()
+    {
+        $db = $this->getConnection();
+        
+        if ($this->driverName !== 'mysql' && !$db->getSupportsResultSets()){
+            $this->markTestSkipped("{$this->driverName} does not support result sets.");
+        }
+
+        try {
+            $db->createCommand("UPDATE {{customer}} SET email = 'test@example.com' WHERE id = 1; dummy")->execute();
+        } catch (\yii\db\Exception $e) {}
+        
+        // Expecting syntax error for the second statement
+        $this->assertTrue(isset($e) && $e->getCode() === 42000);
+    }
 }
