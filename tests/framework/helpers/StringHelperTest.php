@@ -236,5 +236,7 @@ class StringHelperTest extends TestCase
         $this->assertEquals(['Save', '', '', 'empty trimmed string'], StringHelper::explode("Save, ,, empty trimmed string", ','));
         $this->assertEquals(['Здесь', 'multibyte', 'строка'], StringHelper::explode("Здесь我 multibyte我 строка", '我'));
         $this->assertEquals(['Disable', '  trim  ', 'here but ignore empty'], StringHelper::explode("Disable,  trim  ,,,here but ignore empty", ',', false, true));
+        $this->assertEquals(['It/', ' is?', ' a', ' test with rtrim'], StringHelper::explode("It/, is?, a , test with rtrim", ',', 'rtrim'));
+        $this->assertEquals(['It', ' is', ' a ', ' test with closure'], StringHelper::explode("It/, is?, a , test with closure", ',', function ($value) { return trim($value, '/?'); }));
     }
 }
