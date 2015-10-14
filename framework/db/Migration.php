@@ -277,12 +277,13 @@ class Migration extends Component implements MigrationInterface
     /**
      * Builds and executes a SQL statement for dropping a DB table.
      * @param string $table the table to be dropped. The name will be properly quoted by the method.
+     * @param boolean $ifExists the IF EXISTS option.
      */
-    public function dropTable($table)
+    public function dropTable($table, $ifExists = false)
     {
         echo "    > drop table $table ...";
         $time = microtime(true);
-        $this->db->createCommand()->dropTable($table)->execute();
+        $this->db->createCommand()->dropTable($table, $ifExists)->execute();
         echo ' done (time: ' . sprintf('%.3f', microtime(true) - $time) . "s)\n";
     }
 

@@ -119,7 +119,7 @@ class PostgreSQLActiveRecordTest extends ActiveRecordTest
         $db = $this->getConnection();
         $db->charset = 'utf8';
 
-        $db->createCommand("DROP TABLE IF EXISTS bool_user;")->execute();
+        $db->createCommand()->dropTable('bool_user', true)->execute();
         $db->createCommand()->createTable('bool_user', [
             'id' => Schema::TYPE_PK,
             'username' => Schema::TYPE_STRING . ' NOT NULL',

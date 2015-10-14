@@ -39,6 +39,7 @@ Yii Framework 2 Change Log
 - Enh: Added last resort measure for `FileHelper::removeDirectory()` fail to unlink symlinks under Windows (samdark)
 - Chg #9369: `Yii::$app->user->can()` now returns `false` instead of erroring in case `authManager` component is not configured (creocoder)
 - Chg #9411: `DetailView` now automatically sets container tag ID in case it's not specified (samdark)
+- Enh: Added `IF EXISTS` option for `DROP TABLE`
 
 2.0.6 August 05, 2015
 ---------------------

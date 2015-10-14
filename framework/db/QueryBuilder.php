@@ -341,11 +341,12 @@ class QueryBuilder extends \yii\base\Object
     /**
      * Builds a SQL statement for dropping a DB table.
      * @param string $table the table to be dropped. The name will be properly quoted by the method.
+     * @param boolean $ifExists the IF EXISTS option.
      * @return string the SQL statement for dropping a DB table.
      */
-    public function dropTable($table)
+    public function dropTable($table, $ifExists = false)
     {
-        return 'DROP TABLE ' . $this->db->quoteTableName($table);
+        return 'DROP TABLE ' . ($ifExists ? 'IF EXISTS ' : '') . $this->db->quoteTableName($table);
     }
 
     /**
