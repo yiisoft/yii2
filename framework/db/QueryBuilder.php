@@ -34,7 +34,7 @@ class QueryBuilder extends \yii\base\Object
      * @var string the separator between different fragments of a SQL statement.
      * Defaults to an empty space. This is mainly used by [[build()]] when generating a SQL statement.
      */
-    public $separator = " ";
+    public $separator = ' ';
     /**
      * @var array the abstract column types mapped to physical column types.
      * This is mainly used to support creating/modifying tables using DB-independent data type specifications.
@@ -322,7 +322,7 @@ class QueryBuilder extends \yii\base\Object
                 $cols[] = "\t" . $type;
             }
         }
-        $sql = "CREATE TABLE " . $this->db->quoteTableName($table) . " (\n" . implode(",\n", $cols) . "\n)";
+        $sql = 'CREATE TABLE ' . $this->db->quoteTableName($table) . " (\n" . implode(",\n", $cols) . "\n)";
 
         return $options === null ? $sql : $sql . ' ' . $options;
     }
@@ -345,7 +345,7 @@ class QueryBuilder extends \yii\base\Object
      */
     public function dropTable($table)
     {
-        return "DROP TABLE " . $this->db->quoteTableName($table);
+        return 'DROP TABLE ' . $this->db->quoteTableName($table);
     }
 
     /**
@@ -389,7 +389,7 @@ class QueryBuilder extends \yii\base\Object
      */
     public function truncateTable($table)
     {
-        return "TRUNCATE TABLE " . $this->db->quoteTableName($table);
+        return 'TRUNCATE TABLE ' . $this->db->quoteTableName($table);
     }
 
     /**
@@ -416,8 +416,8 @@ class QueryBuilder extends \yii\base\Object
      */
     public function dropColumn($table, $column)
     {
-        return "ALTER TABLE " . $this->db->quoteTableName($table)
-            . " DROP COLUMN " . $this->db->quoteColumnName($column);
+        return 'ALTER TABLE ' . $this->db->quoteTableName($table)
+            . ' DROP COLUMN ' . $this->db->quoteColumnName($column);
     }
 
     /**
@@ -429,9 +429,9 @@ class QueryBuilder extends \yii\base\Object
      */
     public function renameColumn($table, $oldName, $newName)
     {
-        return "ALTER TABLE " . $this->db->quoteTableName($table)
-            . " RENAME COLUMN " . $this->db->quoteColumnName($oldName)
-            . " TO " . $this->db->quoteColumnName($newName);
+        return 'ALTER TABLE ' . $this->db->quoteTableName($table)
+            . ' RENAME COLUMN ' . $this->db->quoteColumnName($oldName)
+            . ' TO ' . $this->db->quoteColumnName($newName);
     }
 
     /**
@@ -996,7 +996,7 @@ class QueryBuilder extends \yii\base\Object
      */
     public function buildNotCondition($operator, $operands, &$params)
     {
-        if (count($operands) != 1) {
+        if (count($operands) !== 1) {
             throw new InvalidParamException("Operator '$operator' requires exactly one operand.");
         }
 

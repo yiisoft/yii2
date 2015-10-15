@@ -198,7 +198,7 @@ class BaseArrayHelper
             $key = substr($key, $pos + 1);
         }
 
-        if (is_object($array)) {
+        if (is_object($array) && isset($array->$key)) {
             return $array->$key;
         } elseif (is_array($array)) {
             return array_key_exists($key, $array) ? $array[$key] : $default;

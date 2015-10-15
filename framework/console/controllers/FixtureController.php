@@ -94,7 +94,7 @@ class FixtureController extends Controller
         if ($fixturesInput === []) {
             $this->stdout($this->getHelpSummary() . "\n");
 
-            $helpCommand = Console::ansiFormat("yii help fixture", [Console::FG_CYAN]);
+            $helpCommand = Console::ansiFormat('yii help fixture', [Console::FG_CYAN]);
             $this->stdout("Use $helpCommand to get usage info.\n");
 
             return self::EXIT_CODE_NORMAL;
@@ -372,7 +372,7 @@ class FixtureController extends Controller
      */
     public function needToApplyAll($fixture)
     {
-        return $fixture == '*';
+        return $fixture === '*';
     }
 
     /**
@@ -386,7 +386,7 @@ class FixtureController extends Controller
         $fixturesPath = $this->getFixturePath();
 
         $filesToSearch = ['*Fixture.php'];
-        $findAll = ($fixtures == []);
+        $findAll = ($fixtures === []);
 
         if (!$findAll) {
 

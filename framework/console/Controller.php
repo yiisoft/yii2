@@ -363,7 +363,7 @@ class Controller extends \yii\base\Controller
         foreach ($method->getParameters() as $i => $reflection) {
             $name = $reflection->getName();
             $tag = isset($params[$i]) ? $params[$i] : '';
-            if (preg_match('/^([^\s]+)\s+(\$\w+\s+)?(.*)/s', $tag, $matches)) {
+            if (preg_match('/^(\S+)\s+(\$\w+\s+)?(.*)/s', $tag, $matches)) {
                 $type = $matches[1];
                 $comment = $matches[3];
             } else {
@@ -425,7 +425,7 @@ class Controller extends \yii\base\Controller
                 if (is_array($doc)) {
                     $doc = reset($doc);
                 }
-                if (preg_match('/^([^\s]+)(.*)/s', $doc, $matches)) {
+                if (preg_match('/^(\S+)(.*)/s', $doc, $matches)) {
                     $type = $matches[1];
                     $comment = $matches[2];
                 } else {

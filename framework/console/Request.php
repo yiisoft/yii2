@@ -29,7 +29,7 @@ class Request extends \yii\base\Request
      */
     public function getParams()
     {
-        if (!isset($this->_params)) {
+        if ($this->_params === null) {
             if (isset($_SERVER['argv'])) {
                 $this->_params = $_SERVER['argv'];
                 array_shift($this->_params);
