@@ -611,7 +611,10 @@ class Connection extends Component
         if ($this->charset !== null && in_array($this->getDriverName(), ['pgsql', 'mysql', 'mysqli', 'cubrid'])) {
             $this->pdo->exec('SET NAMES ' . $this->pdo->quote($this->charset));
         }
-        $this->getSupportsResultSets();
+        $this->_supportsResultSets = in_array($this->getDriverName(), [
+            'mysql', 'odbc', 'mssql', 'dblib', 'sybase', // inbuild
+            'sqlsrv', 'cubrid', 'ibm', 'informix', // 3rd party
+        ], true);
         $this->trigger(self::EVENT_AFTER_OPEN);
     }
 
@@ -952,21 +955,12 @@ class Connection extends Component
     }
 
     /**
-     * Figures out whether the active PDO driver supports result sets.
-     * This method is used internally by `yii\db\Command` to workaround a known PDO issue.
+     * Returns whether the active PDO driver supports result sets.
+     * This method is used internally by `yii\db\Command::execute()` to workaround a known PDO issue.
      * @return boolean whether the active PDO driver does support result sets
      */
     public function getSupportsResultSets()
     {
-        if ($this->pdo !== null && $this->_supportsResultSets === null) {
-            $this->_supportsResultSets = true;
-            try {
-                $pdoStatement = $this->pdo->prepare('');
-                $pdoStatement->nextRowSet();
-            } catch (\Exception $e) {
-                $this->_supportsResultSets = $e->getCode() !== 'IM001';
-            }
-        }
         return $this->_supportsResultSets; 
     }
 }
