@@ -400,8 +400,8 @@ class IpValidator extends Validator
      */
     public function setNegationChar($negationChar)
     {
-        if (is_string($this->negationChar)) {
-            $negationChar = preg_quote($this->_negationChar, '/');
+        if (is_string($negationChar)) {
+            $negationChar = preg_quote($negationChar, '/');
         }
         $this->_negationChar = $negationChar;
     }
