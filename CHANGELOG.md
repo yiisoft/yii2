@@ -26,6 +26,7 @@ Yii Framework 2 Change Log
 - Bug #9911: Fixed `yii\helpers\BaseStringHelper::explode()` code so it does not remove items eq to 0 with skip_empty attribute (silverfire, kidol)
 - Bug #9915: `yii\helpers\ArrayHelper::getValue()` was erroring instead of returning `null` for non-existing object properties (totaldev, samdark)
 - Bug: Fixed generation of canonical URLs for `ViewAction` pages (samdark)
+- Enh #7341: Client validation now skips disabled inputs (SamMousa)
 - Enh #7581: Added ability to specify range using anonymous function in `RangeValidator` (RomeroMsk)
 - Enh #8613: `yii\widgets\FragmentCache` will not store empty content anymore which fixes some problems related to `yii\filters\PageCache` (kidol)
 - Enh #9476: Added DI injection via controller action method signature (mdmunir)
