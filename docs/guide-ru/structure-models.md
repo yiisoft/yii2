@@ -136,10 +136,10 @@ public function attributeLabels()
 ```php
 // сценарий задается как свойство
 $model = new User;
-$model->scenario = 'login';
+$model->scenario = User::SCENARIO_LOGIN;
 
 // сценарий задается через конфигурацию
-$model = new User(['scenario' => 'login']);
+$model = new User(['scenario' => User::SCENARIO_LOGIN]);
 ```
 
 По умолчанию сценарии, поддерживаемые моделью, определяются [правилами валидации](#validation-rules) объявленными
@@ -152,11 +152,14 @@ use yii\db\ActiveRecord;
 
 class User extends ActiveRecord
 {
+    const SCENARIO_LOGIN = 'login';
+    const SCENARIO_REGISTER = 'register';
+
     public function scenarios()
     {
         return [
-            'login' => ['username', 'password'],
-            'register' => ['username', 'email', 'password'],
+            self::SCENARIO_LOGIN => ['username', 'password'],
+            self::SCENARIO_REGISTER => ['username', 'email', 'password'],
         ];
     }
 }
@@ -175,11 +178,14 @@ use yii\db\ActiveRecord;
 
 class User extends ActiveRecord
 {
+    const SCENARIO_LOGIN = 'login';
+    const SCENARIO_REGISTER = 'register';
+
     public function scenarios()
     {
         $scenarios = parent::scenarios();
-        $scenarios['login'] = ['username', 'password'];
-        $scenarios['register'] = ['username', 'email', 'password'];
+        $scenarios[self::SCENARIO_LOGIN] = ['username', 'password'];
+        $scenarios[self::SCENARIO_REGISTER] = ['username', 'email', 'password'];
         return $scenarios;
     }
 }
@@ -233,10 +239,10 @@ public function rules()
 {
     return [
         // username, email и password требуются в сценарии "register"
-        [['username', 'email', 'password'], 'required', 'on' => 'register'],
+        [['username', 'email', 'password'], 'required', 'on' => self::SCENARIO_REGISTER],
 
         // username и password требуются в сценарии "login"
-        [['username', 'password'], 'required', 'on' => 'login'],
+        [['username', 'password'], 'required', 'on' => self::SCENARIO_LOGIN],
     ];
 }
 ```
@@ -273,15 +279,15 @@ $model->body = isset($data['body']) ? $data['body'] : null;
 public function scenarios()
 {
     return [
-        'login' => ['username', 'password'],
-        'register' => ['username', 'email', 'password'],
+        self::SCENARIO_LOGIN => ['username', 'password'],
+        self::SCENARIO_REGISTER => ['username', 'email', 'password'],
     ];
 }
 ```
 
 > Для справки: Причиной того, что массовое присвоение атрибутов применяется только к безопасным атрибутам, является то, что необходимо контролировать какие атрибуты могут быть изменены конечными пользователями. Например, если модель `User` имеет атрибут `permission`, который определяет разрешения, назначенные пользователю, то необходимо быть уверенным, что данный атрибут может быть изменён только администраторами через бэкэнд-интерфейс.
 
-По умолчанию реализация [[yii\base\Model::scenarios()]] будет возвращать все сценарии и атрибуты найденные в [[yii\base\Model::rules()]], если не переопределить этот метод, это будет означать, что атрибуты являются безопасными до тех пор пока они не появятся в одном из активных правил проверки.
+По умолчанию реализация [[yii\base\Model::scenarios()]] будет возвращать все сценарии и атрибуты найденные в [[yii\base\Model::rules()]], если не переопределить этот метод, это будет означать, что атрибут является безопасным только в случае, если он участвует в любом из активных правил проверки.
 
 По этой причине существует специальный валидатор с псевдонимом `safe`, он предоставляет возможность объявить атрибут безопасным без фактической его проверки. Например, следующие правила определяют, что оба атрибута `title` и `description` являются безопасными атрибутами.
 
@@ -303,7 +309,7 @@ public function rules()
 public function scenarios()
 {
     return [
-        'login' => ['username', 'password', '!secret'],
+        self::SCENARIO_LOGIN => ['username', 'password', '!secret'],
     ];
 }
 ```
@@ -399,4 +405,4 @@ public function fields()
 * Определить набор базовых классов моделей, которые являются общими для разных [приложений](structure-applications.md) или [модулей](structure-modules.md). Эти классы моделей должны содержать минимальный набор правил и логики, которые являются общими среди всех используемых приложений или модулей.
 * В каждом [приложении](structure-applications.md) или [модуле](structure-modules.md) в котором используется модель, определить конкретный класс модели (или классы моделей), отходящий от соответствующего базового класса модели. Конкретный класс модели должен содержать правила и логику, которые являются специфическими для данного приложения или модуля.
 
-Например, в [Дополнительном Шаблоне Проекта](https://github.com/yiisoft/yii2-app-advanced/blob/master/docs/guide/README.md), Вы можете определить базовым классом модели `common\models\Post`. Тогда для frontend приложения, Вы определяете и используете конкретный класс модели `frontend\models\Post`, который расширяется от `common\models\Post`. И аналогичным образом для backend приложения, Вы определяете `backend\models\Post`. С помощью такой стратегии, можно быть уверенным, что код в `frontend\models\Post` используется только для конкретного frontend приложения, и если делаются любые изменения в нём, то не нужно беспокоиться, что изменения могут сломать backend приложение.
+Например, в [шаблоне приложения advanced](https://github.com/yiisoft/yii2-app-advanced/blob/master/docs/guide/README.md), Вы можете определить базовым классом модели `common\models\Post`. Тогда для frontend приложения, Вы определяете и используете конкретный класс модели `frontend\models\Post`, который расширяется от `common\models\Post`. И аналогичным образом для backend приложения, Вы определяете `backend\models\Post`. С помощью такой стратегии, можно быть уверенным, что код в `frontend\models\Post` используется только для конкретного frontend приложения, и если делаются любые изменения в нём, то не нужно беспокоиться, что изменения могут сломать backend приложение.
