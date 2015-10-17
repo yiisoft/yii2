@@ -109,7 +109,7 @@ class Pjax extends Widget
                 echo Html::tag('title', Html::encode($view->title));
             }
         } else {
-            echo Html::beginTag('div', $this->options);
+            echo Html::beginTag('div', array_merge(['data-pjax-container'=>''],$this->options));
         }
     }
 
