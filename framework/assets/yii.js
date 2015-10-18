@@ -143,7 +143,7 @@ yii = (function ($) {
          *
          * @param $e the jQuery representation of the element
          */
-        handleAction: function ($e,event) {
+        handleAction: function ($e, event) {
             var method = $e.data('method'),
                 $form = $e.closest('form'),
                 action = $e.attr('href'),
@@ -330,10 +330,10 @@ yii = (function ($) {
 
             if (message !== undefined) {
                 pub.confirm(message, function () {
-                    pub.handleAction($this,event);
+                    pub.handleAction($this, event);
                 });
             } else {
-                pub.handleAction($this,event);
+                pub.handleAction($this, event);
             }
             event.stopImmediatePropagation();
             return false;
