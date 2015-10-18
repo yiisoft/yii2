@@ -110,12 +110,12 @@ class Pjax extends Widget
             }
         } else {
             echo Html::beginTag('div', array_merge([
-                'data-pjax-container'=>'',
-                'data-pjax-push-state'=>$this->enablePushState,
-                'data-pjax-replace-state'=>$this->enableReplaceState,
-                'data-pjax-timeout'=>$this->timeout,
-                'data-pjax-scrollto'=>$this->scrollTo,
-                ],$this->options));
+                'data-pjax-container' => '',
+                'data-pjax-push-state' => $this->enablePushState,
+                'data-pjax-replace-state' => $this->enableReplaceState,
+                'data-pjax-timeout' => $this->timeout,
+                'data-pjax-scrollto' => $this->scrollTo,
+                ], $this->options));
         }
     }
 
