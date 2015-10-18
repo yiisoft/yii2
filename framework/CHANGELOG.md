@@ -16,6 +16,7 @@ Yii Framework 2 Change Log
 - Bug #9678: `I18N::format()` wasn't able to handle named placeholder in "selectordinal" (samdark)
 - Chg #9369: `Yii::$app->user->can()` now returns `false` instead of erroring in case `authManager` component is not configured (creocoder)
 - Chg #9411: `DetailView` now automatically sets container tag ID in case it's not specified (samdark)
+- Enh #5146: Added `\yii\i18n\Formatter::asDuration()` method (nineinchnick)
 - Enh #9635: Added default CSS class for `\yii\grid\ActionColumn` header (arogachev, dynasource)
 
 
