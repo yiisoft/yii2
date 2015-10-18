@@ -226,7 +226,7 @@ class BaseHtml
             return self::wrapIntoCondition(static::tag('link', '', $options), $condition);
         } elseif (isset($options['noscript']) && $options['noscript'] === true) {
             unset($options['noscript']);
-            return "<noscript>" . static::tag('link', '', $options) . "</noscript>";
+            return '<noscript>' . static::tag('link', '', $options) . '</noscript>';
         } else {
             return static::tag('link', '', $options);
         }
@@ -1153,10 +1153,10 @@ class BaseHtml
 
         if (empty($lines)) {
             // still render the placeholder for client-side validation use
-            $content = "<ul></ul>";
+            $content = '<ul></ul>';
             $options['style'] = isset($options['style']) ? rtrim($options['style'], ';') . '; display:none' : 'display:none';
         } else {
-            $content = "<ul><li>" . implode("</li>\n<li>", $lines) . "</li></ul>";
+            $content = '<ul><li>' . implode("</li>\n<li>", $lines) . '</li></ul>';
         }
         return Html::tag('div', $header . $content . $footer, $options);
     }

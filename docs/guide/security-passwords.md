@@ -51,7 +51,7 @@ Encryption and Decryption
 -------------------------
 
 Yii provides convenient helper functions that allow you to encrypt/decrypt data using a secret key. The data is passed through the encryption function so that only the person which has the secret key will be able to decrypt it.
-For example, we need to store some information in our database but we need to make sure only the user which has the secret key can view it (even if the application database is compromised):
+For example, we need to store some information in our database but we need to make sure only the user who has the secret key can view it (even if the application database is compromised):
 
 
 ```php

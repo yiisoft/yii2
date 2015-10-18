@@ -71,7 +71,20 @@ class Controller extends \yii\base\Controller
         $actionParams = [];
         foreach ($method->getParameters() as $param) {
             $name = $param->getName();
-            if (array_key_exists($name, $params)) {
+            if (($class = $param->getClass()) !== null) {
+                $className = $class->getName();
+            }
+            // We only enter the class injection code path if:
+            // - A class is hinted in the method signature
+            // - And the param name of hinted class does not exist in existing $params, or the value in existing $params is not an instance of the hinted class
+            // The latter two checks allow us to manually inject classes via $params while ignoring wrongly injected values (no instances of hinted class).
+            if ($class !== null && (!array_key_exists($name, $params) || !$params[$name] instanceof $className)) {
+                if (Yii::$app->has($name) && ($obj = Yii::$app->get($name)) instanceof $className) {
+                    $args[] = $actionParams[$name] = $obj;
+                } else {
+                    $args[] = $actionParams[$name] = Yii::$container->get($className);
+                }
+            } elseif (array_key_exists($name, $params)) {
                 if ($param->isArray()) {
                     $args[] = $actionParams[$name] = (array) $params[$name];
                 } elseif (!is_array($params[$name])) {

@@ -227,7 +227,7 @@ class Schema extends \yii\db\Schema
         ) {
             $column->defaultValue = new Expression($info['Default']);
         } elseif (isset($type) && $type === 'bit') {
-            $column->defaultValue = hexdec(trim($info['Default'],'X\''));
+            $column->defaultValue = hexdec(trim($info['Default'], 'X\''));
         } else {
             $column->defaultValue = $column->phpTypecast($info['Default']);
         }
@@ -243,7 +243,7 @@ class Schema extends \yii\db\Schema
     protected function findTableNames($schema = '')
     {
         $pdo = $this->db->getSlavePdo();
-        $tables =$pdo->cubrid_schema(\PDO::CUBRID_SCH_TABLE);
+        $tables = $pdo->cubrid_schema(\PDO::CUBRID_SCH_TABLE);
         $tableNames = [];
         foreach ($tables as $table) {
             // do not list system tables
