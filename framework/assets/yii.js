@@ -191,7 +191,7 @@ yii = (function ($) {
             // temporarily add hidden inputs according to data-params
             if (params && $.isPlainObject(params)) {
                 $.each(params, function (idx, obj) {
-                    $form.append('<input name="' + idx + '" value="' + obj + '" type="hidden">');
+                    $form.append($('<input>').attr({name: idx, value: obj, type: 'hidden'}));
                 });
             }
 
