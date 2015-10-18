@@ -149,21 +149,23 @@ yii = (function ($) {
                 action = $e.attr('href'),
                 params = $e.data('params'),
                 pjax = $e.data('pjax'),
-                pjaxPushState = $e.data('pjax-push-state')? true : false,
-                pjaxReplaceState = $e.data('pjax-replace-state')? true : false,
-                pjaxTimeout = $e.data('pjax-timeout')? true : false,
-                pjaxScrollTo = $e.data('pjax-scrollto')? true : false,
+                pjaxPushState = !!$e.data('pjax-push-state'),
+                pjaxReplaceState = !!$e.data('pjax-replace-state'),
+                pjaxTimeout = $e.data('pjax-timeout'),
+                pjaxScrollTo = $e.data('pjax-scrollto'),
                 pjaxContainer,
                 pjaxOptions = {};
             
-            if(pjax!==undefined && $.support.pjax) {
-                if($e.data('pjax-container'))
+            if(pjax !== undefined && $.support.pjax) {
+                if($e.data('pjax-container')) {
                     pjaxContainer = $e.data('pjax-container');
-                else
+                } else {
                     pjaxContainer = $e.closest('[data-pjax-container=""]');
+                }
                 // default to body if pjax container not found
-                if(!pjaxContainer.length)
+                if(!pjaxContainer.length) {
                     pjaxContainer = $('body');
+                }
                 pjaxOptions = {
                     container: pjaxContainer,
                     push:pjaxPushState,
