@@ -109,7 +109,13 @@ class Pjax extends Widget
                 echo Html::tag('title', Html::encode($view->title));
             }
         } else {
-            echo Html::beginTag('div', $this->options);
+            echo Html::beginTag('div', array_merge([
+                'data-pjax-container'=>'',
+                'data-pjax-push-state'=>$this->enablePushState,
+                'data-pjax-replace-state'=>$this->enableReplaceState,
+                'data-pjax-timeout'=>$this->timeout,
+                'data-pjax-scrollto'=>$this->scrollTo,
+                ],$this->options));
         }
     }
 
