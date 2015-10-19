@@ -392,10 +392,12 @@ class IpValidatorTest extends TestCase
         $this->assertEquals('attr_ip contains wrong subnet mask.', $model->getFirstError('attr_ip'));
     }
 
-    public function testSetNegationChar()
+    public function testNegationChar()
     {
-        $validator = new IpValidator();
-        $validator->negationChar = '*';
-        $this->assertEquals('\*', $validator->negationChar);
+        $validator = new IpValidator([
+            'negationChar' => '(not!)'
+        ]);
+        $this->assertTrue($validator->validate('(not!)192.168.5.32'));
+        $this->assertFalse($validator->validate('!192.168.5.32'));
     }
 }

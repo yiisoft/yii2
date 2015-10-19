@@ -17,12 +17,7 @@ use yii\web\JsExpression;
  * IpValidator validates that the attribute value is a valid IPv4/IPv6 address or subnet.
  * May change attribute's value if normalization is enabled.
  *
- * @property boolean|string negationChar whether address may have a negation character at the beginning
- *   string - character passed will be used. May be a regular expression
- *   true - character from [[DEFAULT_NEGATION_CHAR]] will be used. Default is `!`
- *   false  - negation is not allowed
- *
- * @author SilverFire <d.naumenko.a@gmail.com>
+ * @author Dmitry Naumenko <d.naumenko.a@gmail.com>
  * @since 2.0.7
  */
 class IpValidator extends Validator
@@ -71,10 +66,13 @@ class IpValidator extends Validator
     public $normalize = false;
 
     /**
-     * @var string|boolean
+     * @var string|boolean whether address may have a negation character at the beginning
+     *   string - character passed will be used. May be a regular expression
+     *   true - character from [[DEFAULT_NEGATION_CHAR]] will be used. Default is `!`
+     *   false  - negation is not allowed
      * @see negationChar
      */
-    public $_negationChar = false;
+    public $negationChar = false;
 
     /**
      * @var boolean whether to expand an IPv6 address to the full notation format
@@ -377,35 +375,8 @@ class IpValidator extends Validator
     private function getIpParsePattern()
     {
         $negationChar = is_string($this->negationChar) ? $this->negationChar : static::DEFAULT_NEGATION_CHAR;
-        return '/^(' . $negationChar . '?)(.+?)(\/(\d+))?$/';
+        return '/^(' . preg_quote($negationChar) . '?)(.+?)(\/(\d+))?$/';
     }
-
-    /**
-     * Method returns current negation character
-     *
-     * @return string
-     * @see _negationChar
-     */
-    public function getNegationChar()
-    {
-        return $this->_negationChar;
-    }
-
-    /**
-     * Setter for [[_negationChar]].
-     * Quotes string to be used in regular expressions
-     *
-     * @param string|boolean $negationChar
-     * @see _negationChar
-     */
-    public function setNegationChar($negationChar)
-    {
-        if (is_string($negationChar)) {
-            $negationChar = preg_quote($negationChar, '/');
-        }
-        $this->_negationChar = $negationChar;
-    }
-
 
     /**
      * Checks whether the IP is in subnet ranges
