@@ -143,16 +143,51 @@ yii = (function ($) {
          *
          * @param $e the jQuery representation of the element
          */
-        handleAction: function ($e) {
+        handleAction: function ($e, event) {
             var method = $e.data('method'),
                 $form = $e.closest('form'),
                 action = $e.attr('href'),
-                params = $e.data('params');
+                params = $e.data('params'),
+                pjax = $e.data('pjax'),
+                pjaxPushState = !!$e.data('pjax-push-state'),
+                pjaxReplaceState = !!$e.data('pjax-replace-state'),
+                pjaxTimeout = $e.data('pjax-timeout'),
+                pjaxScrollTo = $e.data('pjax-scrollto'),
+                pjaxContainer,
+                pjaxOptions = {};
+
+            if (pjax !== undefined && $.support.pjax) {
+                if ($e.data('pjax-container')) {
+                    pjaxContainer = $e.data('pjax-container');
+                } else {
+                    pjaxContainer = $e.closest('[data-pjax-container=""]');
+                }
+                // default to body if pjax container not found
+                if (!pjaxContainer.length) {
+                    pjaxContainer = $('body');
+                }
+                pjaxOptions = {
+                    container: pjaxContainer,
+                    push: pjaxPushState,
+                    replace: pjaxReplaceState,
+                    scrollTo: pjaxScrollTo,
+                    timeout: pjaxTimeout
+                }
+            }
 
             if (method === undefined) {
                 if (action && action != '#') {
-                    window.location = action;
+                    if (pjax !== undefined && $.support.pjax) {
+                        $.pjax.click(event, pjaxOptions);
+                    } else {
+                        window.location = action;
+                    }
                 } else if ($e.is(':submit') && $form.length) {
+                    if (pjax !== undefined && $.support.pjax) {
+                        $form.on('submit',function(e){
+                            $.pjax.submit(e, pjaxOptions);
+                        })
+                    }
                     $form.trigger('submit');
                 }
                 return;
@@ -202,7 +237,11 @@ yii = (function ($) {
                 oldAction = $form.attr('action');
                 $form.attr('action', action);
             }
-
+            if (pjax !== undefined && $.support.pjax) {
+                $form.on('submit',function(e){
+                    $.pjax.submit(e, pjaxOptions);
+                })
+            }
             $form.trigger('submit');
             $.when($form.data('yiiSubmitFinalizePromise')).then(
                 function () {
@@ -291,10 +330,10 @@ yii = (function ($) {
 
             if (message !== undefined) {
                 pub.confirm(message, function () {
-                    pub.handleAction($this);
+                    pub.handleAction($this, event);
                 });
             } else {
-                pub.handleAction($this);
+                pub.handleAction($this, event);
             }
             event.stopImmediatePropagation();
             return false;
