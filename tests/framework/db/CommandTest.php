@@ -314,7 +314,13 @@ SQL;
     public function testCreateTable()
     {
         $db = $this->getConnection();
-        $db->createCommand("DROP TABLE IF EXISTS testCreateTable;")->execute();
+
+        // on the first run the 'testCreateTable' table does not exist
+        try {
+            $db->createCommand()->dropTable('testCreateTable')->execute();
+        } catch (\Exception $ex) {
+            // 'testCreateTable' table does not exist
+        }
 
         $db->createCommand()->createTable('testCreateTable', ['id' => Schema::TYPE_PK, 'bar' => Schema::TYPE_INTEGER])->execute();
         $db->createCommand()->insert('testCreateTable', ['bar' => 1])->execute();
@@ -331,7 +337,13 @@ SQL;
         }
 
         $db = $this->getConnection();
-        $db->createCommand("DROP TABLE IF EXISTS testAlterTable;")->execute();
+
+        // on the first run the 'testAlterTable' table does not exist
+        try {
+            $db->createCommand()->dropTable('testAlterTable')->execute();
+        } catch (\Exception $ex) {
+            // 'testAlterTable' table does not exist
+        }
 
         $db->createCommand()->createTable('testAlterTable', ['id' => Schema::TYPE_PK, 'bar' => Schema::TYPE_INTEGER])->execute();
         $db->createCommand()->insert('testAlterTable', ['bar' => 1])->execute();
