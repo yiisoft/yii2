@@ -62,7 +62,7 @@ class IpValidatorTest extends TestCase
     }
 
     public function provideBadIps() {
-        return ['not.an.ip', ['what an array', '??'], 123456, true, false];
+        return [['not.an.ip'], [['what an array', '??']], [123456], [true], [false]];
     }
 
     /**
