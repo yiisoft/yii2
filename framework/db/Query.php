@@ -106,6 +106,12 @@ class Query extends Component implements QueryInterface
      * For example, `[':name' => 'Dan', ':age' => 31]`.
      */
     public $params = [];
+    /**
+     * @var array PDOstatement attributes (name => value)
+     * [PHP manual](http://www.php.net/manual/en/pdo.constants.php) for details about available attributes.
+     * @see \yii\db\Command::$pdoAttributes
+     */
+    public $pdoAttributes = [];
 
 
     /**
@@ -121,7 +127,7 @@ class Query extends Component implements QueryInterface
         }
         list ($sql, $params) = $db->getQueryBuilder()->build($this);
 
-        return $db->createCommand($sql, $params);
+        return $db->createCommand($sql, $params, $this->pdoAttributes);
     }
 
     /**
@@ -820,6 +826,19 @@ class Query extends Component implements QueryInterface
                 }
             }
         }
+        return $this;
+    }
+
+    /**
+     * Set the PDO statement attributes
+     * @param array $attributes PDOstatement attributes (name => value)
+     * [PHP manual](http://www.php.net/manual/en/pdo.constants.php) for details about available attributes.
+     * @return $this the query object itself
+     * @see \yii\db\Command::$pdoAttributes
+     */
+    public function setPdoAttributes($attributes)
+    {
+        $this->pdoAttributes = $attributes;
         return $this;
     }
 

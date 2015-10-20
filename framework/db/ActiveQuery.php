@@ -327,7 +327,7 @@ class ActiveQuery extends Query implements ActiveQueryInterface
             $params = $this->params;
         }
 
-        return $db->createCommand($sql, $params);
+        return $db->createCommand($sql, $params, $this->pdoAttributes);
     }
 
     /**

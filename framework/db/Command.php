@@ -62,6 +62,11 @@ class Command extends Component
      */
     public $pdoStatement;
     /**
+     * @var array PDOstatement attributes (name => value)
+     * [PHP manual](http://www.php.net/manual/en/pdo.constants.php) for details about available attributes.
+     */
+    public $pdoAttributes = [];
+    /**
      * @var integer the default fetch mode for this command.
      * @see http://www.php.net/manual/en/function.PDOStatement-setFetchMode.php
      */
@@ -219,7 +224,7 @@ class Command extends Component
         }
 
         try {
-            $this->pdoStatement = $pdo->prepare($sql);
+            $this->pdoStatement = $pdo->prepare($sql, $this->pdoAttributes);
             $this->bindPendingParams();
         } catch (\Exception $e) {
             $message = $e->getMessage() . "\nFailed to prepare SQL: $sql";

@@ -613,14 +613,16 @@ class Connection extends Component
     /**
      * Creates a command for execution.
      * @param string $sql the SQL statement to be executed
-     * @param array $params the parameters to be bound to the SQL statement
+	 * @param array $params the parameters to be bound to the SQL statement
+     * @param array $pdoAttributes the attributes for the PDO statement
      * @return Command the DB command
      */
-    public function createCommand($sql = null, $params = [])
+    public function createCommand($sql = null, $params = [], $pdoAttributes = [])
     {
         $command = new Command([
             'db' => $this,
             'sql' => $sql,
+            'pdoAttributes' => $pdoAttributes,
         ]);
 
         return $command->bindValues($params);
