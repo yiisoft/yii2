@@ -28,6 +28,7 @@ Yii Framework 2 Change Log
 - Bug #9911: Fixed `yii\helpers\BaseStringHelper::explode()` code so it does not remove items eq to 0 with skip_empty attribute (silverfire, kidol)
 - Bug #9915: `yii\helpers\ArrayHelper::getValue()` was erroring instead of returning `null` for non-existing object properties (totaldev, samdark)
 - Bug #9924: Fixed `yii.js` handleAction corrupted parameter values containing quote (") character (silverfire)
+- Bug #9984: Fixed wrong captcha color in case Imagick is used (DrDeath72)
 - Bug: Fixed generation of canonical URLs for `ViewAction` pages (samdark)
 - Enh #7341: Client validation now skips disabled inputs (SamMousa)
 - Enh #7581: Added ability to specify range using anonymous function in `RangeValidator` (RomeroMsk)
