@@ -150,6 +150,8 @@ class Validator extends Component
      * }
      * ```
      *
+     * When this property is set while [[whenClient]] is not - the [[clientValidateAttribute()]] will not be called.
+     *
      * @see whenClient
      */
     public $when;
@@ -169,6 +171,8 @@ class Validator extends Component
      *     return $('#country').val() === 'USA';
      * }
      * ```
+     *
+     * When this property is _NOT_ set while [[when]] is set - the [[clientValidateAttribute()]] will not be called.
      *
      * @see when
      */
