@@ -361,6 +361,86 @@ class FormatterDateTest extends TestCase
         $this->assertSame($this->formatter->nullDisplay, $this->formatter->asRelativeTime(null, time()));
     }
 
+    public function testIntlAsDuration()
+    {
+        $this->testAsDuration();
+    }
+
+    public function testAsDuration()
+    {
+        $interval_1_second    = new DateInterval("PT1S");
+        $interval_244_seconds = new DateInterval("PT244S");
+        $interval_1_minute    = new DateInterval("PT1M");
+        $interval_33_minutes  = new DateInterval("PT33M");
+        $interval_1_hour      = new DateInterval("PT1H");
+        $interval_6_hours     = new DateInterval("PT6H");
+        $interval_1_day       = new DateInterval("P1D");
+        $interval_89_days     = new DateInterval("P89D");
+        $interval_1_month     = new DateInterval("P1M");
+        $interval_5_months    = new DateInterval("P5M");
+        $interval_1_year      = new DateInterval("P1Y");
+        $interval_12_years    = new DateInterval("P12Y");
+
+        // Pass a DateInterval
+        $this->assertSame('1 second', $this->formatter->asDuration($interval_1_second));
+        $this->assertSame('244 seconds', $this->formatter->asDuration($interval_244_seconds));
+        $this->assertSame('1 minute', $this->formatter->asDuration($interval_1_minute));
+        $this->assertSame('33 minutes', $this->formatter->asDuration($interval_33_minutes));
+        $this->assertSame('1 hour', $this->formatter->asDuration($interval_1_hour));
+        $this->assertSame('6 hours', $this->formatter->asDuration($interval_6_hours));
+        $this->assertSame('1 day', $this->formatter->asDuration($interval_1_day));
+        $this->assertSame('89 days', $this->formatter->asDuration($interval_89_days));
+        $this->assertSame('1 month', $this->formatter->asDuration($interval_1_month));
+        $this->assertSame('5 months', $this->formatter->asDuration($interval_5_months));
+        $this->assertSame('1 year', $this->formatter->asDuration($interval_1_year));
+        $this->assertSame('12 years', $this->formatter->asDuration($interval_12_years));
+
+        // Pass a DateInterval string
+        $this->assertSame('1 year, 2 months, 10 days, 2 hours, 30 minutes', $this->formatter->asDuration('2007-03-01T13:00:00Z/2008-05-11T15:30:00Z'));
+        $this->assertSame('1 year, 2 months, 10 days, 2 hours, 30 minutes', $this->formatter->asDuration('2007-03-01T13:00:00Z/P1Y2M10DT2H30M'));
+        $this->assertSame('1 year, 2 months, 10 days, 2 hours, 30 minutes', $this->formatter->asDuration('P1Y2M10DT2H30M/2008-05-11T15:30:00Z'));
+        $this->assertSame('1 year, 2 months, 10 days, 2 hours, 30 minutes', $this->formatter->asDuration('P1Y2M10DT2H30M'));
+        $this->assertSame('94 months', $this->formatter->asDuration('P94M'));
+
+        // Invert all the DateIntervals
+        $interval_1_second->invert = true;
+        $interval_244_seconds->invert = true;
+        $interval_1_minute->invert = true;
+        $interval_33_minutes->invert = true;
+        $interval_1_hour->invert = true;
+        $interval_6_hours->invert = true;
+        $interval_1_day->invert = true;
+        $interval_89_days->invert = true;
+        $interval_1_month->invert = true;
+        $interval_5_months->invert = true;
+        $interval_1_year->invert = true;
+        $interval_12_years->invert = true;
+
+        // Pass a inverted DateInterval
+        $this->assertSame('-1 second', $this->formatter->asDuration($interval_1_second));
+        $this->assertSame('-244 seconds', $this->formatter->asDuration($interval_244_seconds));
+        $this->assertSame('-1 minute', $this->formatter->asDuration($interval_1_minute));
+        $this->assertSame('-33 minutes', $this->formatter->asDuration($interval_33_minutes));
+        $this->assertSame('-1 hour', $this->formatter->asDuration($interval_1_hour));
+        $this->assertSame('-6 hours', $this->formatter->asDuration($interval_6_hours));
+        $this->assertSame('-1 day', $this->formatter->asDuration($interval_1_day));
+        $this->assertSame('-89 days', $this->formatter->asDuration($interval_89_days));
+        $this->assertSame('-1 month', $this->formatter->asDuration($interval_1_month));
+        $this->assertSame('-5 months', $this->formatter->asDuration($interval_5_months));
+        $this->assertSame('-1 year', $this->formatter->asDuration($interval_1_year));
+        $this->assertSame('-12 years', $this->formatter->asDuration($interval_12_years));
+
+        // other options
+        $this->assertSame('minus 244 seconds', $this->formatter->asDuration($interval_244_seconds, ' and ', 'minus '));
+        $this->assertSame('minus 4 minutes and 4 seconds', $this->formatter->asDuration(-244, ' and ', 'minus '));
+
+        // Pass a inverted DateInterval string
+        $this->assertSame('-1 year, 2 months, 10 days, 2 hours, 30 minutes', $this->formatter->asDuration('2008-05-11T15:30:00Z/2007-03-01T13:00:00Z'));
+
+        // null display
+        $this->assertSame($this->formatter->nullDisplay, $this->formatter->asDuration(null));
+    }
+
     public function dateInputs()
     {
         return [

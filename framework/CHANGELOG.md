@@ -29,6 +29,7 @@ Yii Framework 2 Change Log
 - Bug #9915: `yii\helpers\ArrayHelper::getValue()` was erroring instead of returning `null` for non-existing object properties (totaldev, samdark)
 - Bug #9924: Fixed `yii.js` handleAction corrupted parameter values containing quote (") character (silverfire)
 - Bug: Fixed generation of canonical URLs for `ViewAction` pages (samdark)
+- Enh #5146: Added `\yii\i18n\Formatter::asDuration()` method (nineinchnick)
 - Enh #7341: Client validation now skips disabled inputs (SamMousa)
 - Enh #7581: Added ability to specify range using anonymous function in `RangeValidator` (RomeroMsk)
 - Enh #8613: `yii\widgets\FragmentCache` will not store empty content anymore which fixes some problems related to `yii\filters\PageCache` (kidol)

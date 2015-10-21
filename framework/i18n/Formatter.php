@@ -787,6 +787,56 @@ class Formatter extends Component
         }
     }
 
+    /**
+     * Formats the value as a time interval.
+     * @param DateInterval|string|integer $value the value to be formatted, in ISO8601 duration format or number of seconds.
+     * @param string $implodeString
+     * @param string $negativeSign
+     * @return string the formatted result.
+     * @since 2.0.7
+     */
+    public function asDuration($value, $implodeString = ', ', $negativeSign = '-')
+    {
+        if ($value === null) {
+            return $this->nullDisplay;
+        }
+        if ($value instanceof DateInterval) {
+            $isNegative = $value->invert;
+            $interval = $value;
+        } elseif (is_numeric($value)) {
+            $isNegative = $value < 0;
+            $zeroDateTime = (new DateTime())->setTimestamp(0);
+            $valueDateTime = (new DateTime())->setTimestamp(abs($value));
+            $interval = $valueDateTime->diff($zeroDateTime);
+        } elseif (strpos($value, 'P-') === 0) {
+            $interval = new DateInterval('P'.substr($value, 2));
+            $isNegative = true;
+        } else {
+            $interval = new DateInterval($value);
+            $isNegative = $interval->invert;
+        }
+        if ($interval->y > 0) {
+            $parts[] = Yii::t('yii', '{delta, plural, =1{1 year} other{# years}}', ['delta' => $interval->y], $this->locale);
+        }
+        if ($interval->m > 0) {
+            $parts[] = Yii::t('yii', '{delta, plural, =1{1 month} other{# months}}', ['delta' => $interval->m], $this->locale);
+        }
+        if ($interval->d > 0) {
+            $parts[] = Yii::t('yii', '{delta, plural, =1{1 day} other{# days}}', ['delta' => $interval->d], $this->locale);
+        }
+        if ($interval->h > 0) {
+            $parts[] = Yii::t('yii', '{delta, plural, =1{1 hour} other{# hours}}', ['delta' => $interval->h], $this->locale);
+        }
+        if ($interval->i > 0) {
+            $parts[] = Yii::t('yii', '{delta, plural, =1{1 minute} other{# minutes}}', ['delta' => $interval->i], $this->locale);
+        }
+        if ($interval->s > 0) {
+            $parts[] = Yii::t('yii', '{delta, plural, =1{1 second} other{# seconds}}', ['delta' => $interval->s], $this->locale);
+        }
+
+        return empty($parts) ? $this->nullDisplay : (($isNegative ? $negativeSign : '') . implode($implodeString, $parts));
+    }
+
 
     // number formats
 
