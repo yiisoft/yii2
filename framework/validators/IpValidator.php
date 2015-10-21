@@ -54,27 +54,31 @@ class IpValidator extends Validator
     const IPV4_ADDRESS_LENGTH = 32;
 
     /**
-     * Default negation char when [[negationChar]] is set to `true`
-     * @see negationChar
+     * Negation char. Used to negate [[ranges]] or [[networks]]
+     * or to negate validating value when [[negation]] is set to `true`
+     * @see negation
+     * @see networks
+     * @see ranges
      */
-    const DEFAULT_NEGATION_CHAR = '!';
+    const NEGATION_CHAR = '!';
 
     /**
      * @var array The network aliases, that can be used in [[ranges]].
      *  - key - alias name
      *  - value - array of strings
      *
-     * When string in array contains another alias, the value will be substituted recursively.
-     * The string can be negated but with [[DEFAULT_NEGATION_CHAR]] _only_.
+     * When $networks contains another alias, the value will be substituted recursively.
+     * The range or alias could be negated with [[NEGATION_CHAR]].
      *
-     * They built-in networks listed as follows:
+     * The following aliases are defined by default:
      *  - `*`: `any`
      *  - `any`: `0.0.0.0/0, ::/0`
      *  - `private`: `10.0.0.0/8, 172.16.0.0/12, 192.168.0.0/16, fd00::/8`
      *  - `multicast`: `224.0.0.0/4, ff00::/8`
      *  - `linklocal`: `169.254.0.0/16, fe80::/10`
-     *  - `localhost`: `127.0.0.0/8', '::1`
-     *  - `system`: `multicast, linklocal, localhost`
+     *  - `localhost`: `127.0.0.0/8', ::1`
+     *  - `documentation`: `192.0.2.0/24, 198.51.100.0/24, 203.0.113.0/24, 2001:db8::/32`
+     *  - `system`: `multicast, linklocal, localhost, documentation`
      *
      */
     public $networks = [
@@ -84,7 +88,8 @@ class IpValidator extends Validator
         'multicast' => ['224.0.0.0/4', 'ff00::/8'],
         'linklocal' => ['169.254.0.0/16', 'fe80::/10'],
         'localhost' => ['127.0.0.0/8', '::1'],
-        'system' => ['multicast', 'linklocal', 'localhost'],
+        'documentation' => ['192.0.2.0/24', '198.51.100.0/24', '203.0.113.0/24', '2001:db8::/32'],
+        'system' => ['multicast', 'linklocal', 'localhost', 'documentation'],
     ];
 
     /**
@@ -115,13 +120,9 @@ class IpValidator extends Validator
     public $normalize = false;
 
     /**
-     * @var string|boolean whether address may have a negation character at the beginning
-     *   string - character passed will be used. May be a regular expression
-     *   true - character from [[DEFAULT_NEGATION_CHAR]] will be used. Default is `!`
-     *   false  - negation is not allowed
-     * @see negationChar
+     * @var boolean whether address may have a [[NEGATION_CHAR]] character at the beginning
      */
-    public $negationChar = false;
+    public $negation = false;
 
     /**
      * @var boolean whether to expand an IPv6 address to the full notation format
@@ -284,7 +285,7 @@ class IpValidator extends Validator
         if ($this->subnet === false && $cidr !== null) {
             return [$this->hasSubnet, []];
         }
-        if ($this->negationChar === false && $negation !== null) {
+        if ($this->negation === false && $negation !== null) {
             return [$this->wrongIp, []];
         }
 
@@ -377,7 +378,7 @@ class IpValidator extends Validator
     }
 
     /**
-     * Parses IP address/range for the negation with [[DEFAULT_NEGATION_CHAR]].
+     * Parses IP address/range for the negation with [[NEGATION_CHAR]].
      *
      * @param $string
      * @return array `[0 => boolean, 1 => string]`
@@ -385,8 +386,8 @@ class IpValidator extends Validator
      *  - string: the string without negation (when the negation were present)
      */
     private function parseNegatedRange ($string) {
-        $isNegated = strpos($string, static::DEFAULT_NEGATION_CHAR) === 0;
-        return [$isNegated, ($isNegated ? substr($string, strlen(static::DEFAULT_NEGATION_CHAR)) : $string)];
+        $isNegated = strpos($string, static::NEGATION_CHAR) === 0;
+        return [$isNegated, ($isNegated ? substr($string, strlen(static::NEGATION_CHAR)) : $string)];
     }
 
     /**
@@ -407,7 +408,7 @@ class IpValidator extends Validator
                 $replacements = $this->prepareRanges($this->networks[$range]);
                 foreach ($replacements as &$replacement) {
                     list($isReplacementNegated, $replacement) = $this->parseNegatedRange($replacement);
-                    $result[] = ($isRangeNegated && !$isReplacementNegated ? static::DEFAULT_NEGATION_CHAR : '') . $replacement;
+                    $result[] = ($isRangeNegated && !$isReplacementNegated ? static::NEGATION_CHAR : '') . $replacement;
                 }
             } else {
                 $result[] = $string;
@@ -455,8 +456,7 @@ class IpValidator extends Validator
      */
     private function getIpParsePattern()
     {
-        $negationChar = is_string($this->negationChar) ? $this->negationChar : static::DEFAULT_NEGATION_CHAR;
-        return '/^(' . preg_quote($negationChar) . '?)(.+?)(\/(\d+))?$/';
+        return '/^(' . preg_quote(static::NEGATION_CHAR) . '?)(.+?)(\/(\d+))?$/';
     }
 
     /**
@@ -538,7 +538,7 @@ class IpValidator extends Validator
             'ipv4' => (boolean)$this->ipv4,
             'ipv6' => (boolean)$this->ipv6,
             'ipParsePattern' => Html::escapeJsRegularExpression($this->getIpParsePattern()),
-            'negationChar' => $this->negationChar,
+            'negation' => $this->negation,
             'subnet' => $this->subnet
         ];
 

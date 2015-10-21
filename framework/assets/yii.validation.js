@@ -341,7 +341,7 @@ yii.validation = (function ($) {
                 pub.addMessage(messages, options.messages.hasSubnet, value);
                 return;
             }
-            if (options.negationChar === false && negation !== null) {
+            if (options.negation === false && negation !== null) {
                 pub.addMessage(messages, options.messages.wrongIp, value);
                 return;
             }

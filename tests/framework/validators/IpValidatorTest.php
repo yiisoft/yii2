@@ -34,7 +34,7 @@ class IpValidatorTest extends TestCase
         return [
             ['192.168.0.32, fa::/32, any', ['192.168.0.32', 'fa::/32', '0.0.0.0/0', '::/0']],
             [['10.0.0.1', '!private'], ['10.0.0.1', '!10.0.0.0/8', '!172.16.0.0/12', '!192.168.0.0/16', '!fd00::/8']],
-            [['private', '!system'], ['10.0.0.0/8', '172.16.0.0/12', '192.168.0.0/16', 'fd00::/8', '!224.0.0.0/4', '!ff00::/8', '!169.254.0.0/16', '!fe80::/10', '!127.0.0.0/8', '!::1']]
+            [['private', '!system'], ['10.0.0.0/8', '172.16.0.0/12', '192.168.0.0/16', 'fd00::/8', '!224.0.0.0/4', '!ff00::/8', '!169.254.0.0/16', '!fe80::/10', '!127.0.0.0/8', '!::1', '!192.0.2.0/24', '!198.51.100.0/24', '!203.0.113.0/24', '!2001:db8::/32']]
         ];
     }
 
@@ -104,7 +104,7 @@ class IpValidatorTest extends TestCase
         $this->assertTrue($validator->validate('10.0.0.1/0'));
         $this->assertFalse($validator->validate('10.0.0.1'));
 
-        $validator->negationChar = true;
+        $validator->negation = true;
         $this->assertTrue($validator->validate('!192.168.5.32/32'));
         $this->assertFalse($validator->validate('!!192.168.5.32/32'));
     }
@@ -113,7 +113,7 @@ class IpValidatorTest extends TestCase
     public function testValidateValueIPv6()
     {
         if (!defined('AF_INET6')) {
-            $this->markTestSkipped('The system does not supports IPv6.');
+            $this->markTestSkipped('The environment does not support IPv6.');
         }
 
         $validator = new IpValidator();
@@ -144,7 +144,7 @@ class IpValidatorTest extends TestCase
         $this->assertTrue($validator->validate('2008:db0::1/64'));
         $this->assertFalse($validator->validate('2008:db0::1'));
 
-        $validator->negationChar = true;
+        $validator->negation = true;
         $this->assertTrue($validator->validate('!2008:fa::0:1/64'));
         $this->assertFalse($validator->validate('!!2008:fa::0:1/64'));
     }
@@ -152,7 +152,7 @@ class IpValidatorTest extends TestCase
     public function testValidateValueIPvBoth()
     {
         if (!defined('AF_INET6')) {
-            $this->markTestSkipped('The system does not supports IPv6.');
+            $this->markTestSkipped('The environment does not support IPv6.');
         }
 
         $validator = new IpValidator();
@@ -201,7 +201,7 @@ class IpValidatorTest extends TestCase
         $this->assertFalse($validator->validate('2008:db0::1'));
         $this->assertFalse($validator->validate('10.0.0.1'));
 
-        $validator->negationChar = true;
+        $validator->negation = true;
 
         $this->assertTrue($validator->validate('!192.168.5.32/32'));
         $this->assertTrue($validator->validate('!2008:fa::0:1/64'));
@@ -237,7 +237,7 @@ class IpValidatorTest extends TestCase
     public function testValidateRangeIPv6()
     {
         if (!defined('AF_INET6')) {
-            $this->markTestSkipped('The system does not supports IPv6.');
+            $this->markTestSkipped('The environment does not support IPv6.');
         }
 
         $validator = new IpValidator([
@@ -260,7 +260,7 @@ class IpValidatorTest extends TestCase
     public function testValidateRangeIPvBoth()
     {
         if (!defined('AF_INET6')) {
-            $this->markTestSkipped('The system does not supports IPv6.');
+            $this->markTestSkipped('The environment does not support IPv6.');
         }
 
         $validator = new IpValidator([
@@ -328,7 +328,7 @@ class IpValidatorTest extends TestCase
     public function testValidateAttributeIPv6()
     {
         if (!defined('AF_INET6')) {
-            $this->markTestSkipped('The system does not supports IPv6.');
+            $this->markTestSkipped('The environment does not support IPv6.');
         }
 
         $validator = new IpValidator();
@@ -379,14 +379,5 @@ class IpValidatorTest extends TestCase
         $this->assertTrue($model->hasErrors('attr_ip'));
         $this->assertEquals('fa01::2/614', $model->attr_ip);
         $this->assertEquals('attr_ip contains wrong subnet mask.', $model->getFirstError('attr_ip'));
-    }
-
-    public function testNegationChar()
-    {
-        $validator = new IpValidator([
-            'negationChar' => '(not!)'
-        ]);
-        $this->assertTrue($validator->validate('(not!)192.168.5.32'));
-        $this->assertFalse($validator->validate('!192.168.5.32'));
     }
 }
