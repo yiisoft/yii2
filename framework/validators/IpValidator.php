@@ -34,6 +34,7 @@ use yii\web\JsExpression;
  *      ]
  * ]
  * ```
+ *
  * In this example, access is allowed for all the IPv4 and IPv6 addresses excluding `192.168.10.0/24` subnet.
  * IPv4 address `192.168.10.128` is also allowed, because is listed above the restriction. *
  * @see isAllowed()
@@ -213,15 +214,12 @@ class IpValidator extends Validator
     }
 
     /**
-     * Passes input data to [[prepareRanges()]], then sets the result to [[_ranges]]
-     * @param array|string $ranges String will be exploded using [[StringHelper::explode()]]
+     * Passes input ranges to [[prepareRanges()]], then sets the result to [[_ranges]]
+     * @param array $ranges
      */
     public function setRanges($ranges)
     {
-        if (is_string($ranges)) {
-            $ranges = StringHelper::explode($ranges);
-        }
-        $this->_ranges = $this->prepareRanges($ranges);
+        $this->_ranges = $this->prepareRanges((array) $ranges);
     }
 
     /**
