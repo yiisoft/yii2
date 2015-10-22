@@ -111,4 +111,12 @@ return [
     '{nFormatted} {n, plural, =1{petabyte} other{petabytes}}' => '{nFormatted} {n, plural, one{петабайт} few{петабайта} many{петабайтів} other{петабайта}}',
     '{nFormatted} {n, plural, =1{tebibyte} other{tebibytes}}' => '{nFormatted} {n, plural, one{тебібайт} few{тебібайта} many{тебібайтів} other{тебібайта}}',
     '{nFormatted} {n, plural, =1{terabyte} other{terabytes}}' => '{nFormatted} {n, plural, one{терабайт} few{терабайта} many{терабайтів} other{терабайта}}',
+    '{attribute} must not be an IPv6 address.' => 'Значення «{attribute}» не повинно бути IPv6 адресою.',
+    '{attribute} must not be an IPv4 address.' => 'Значення «{attribute}» не повинно бути IPv4 адресою.',
+    '{attribute} contains wrong subnet mask.' => 'Значення «{attribute}» містить неправильну маску підмережі.',
+    '{attribute} must be a valid IP address.' => 'Значення «{attribute}» повинно бути правильною IP адресою.',
+    '{attribute} must be an IP address with specified subnet.' => 'Значення «{attribute}» повинно бути IP адресою з підмережею.',
+    '{attribute} must not be a subnet.' => 'Значення «{attribute}» не повинно бути підмережею.',
+    '{attribute} is not in the allowed range.' => 'Значення «{attribute}» не входить в список дозволених діапазонів адрес.',
+
 ];
