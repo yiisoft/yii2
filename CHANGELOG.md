@@ -30,6 +30,7 @@ Yii Framework 2 Change Log
 - Bug #9924: Fixed `yii.js` handleAction corrupted parameter values containing quote (") character (silverfire)
 - Bug #9984: Fixed wrong captcha color in case Imagick is used (DrDeath72)
 - Bug: Fixed generation of canonical URLs for `ViewAction` pages (samdark)
+- Enh #3506: Added `\yii\validators\IpValidator` to perform validation of IP addresses and subnets (SilverFire, samdark)
 - Enh #7341: Client validation now skips disabled inputs (SamMousa)
 - Enh #7581: Added ability to specify range using anonymous function in `RangeValidator` (RomeroMsk)
 - Enh #8613: `yii\widgets\FragmentCache` will not store empty content anymore which fixes some problems related to `yii\filters\PageCache` (kidol)

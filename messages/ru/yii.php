@@ -114,4 +114,11 @@ return [
     '{delta, plural, =1{a second} other{# seconds}} ago' => '{delta, plural, =1{секунду} one{# секунду} few{# секунды} many{# секунд} other{# секунды}} назад',
     '{delta, plural, =1{a year} other{# years}} ago' => '{delta, plural, =1{год} one{# год} few{# года} many{# лет} other{# года}} назад',
     '{delta, plural, =1{an hour} other{# hours}} ago' => '{delta, plural, =1{час} one{# час} few{# часа} many{# часов} other{# часа}} назад',
+    '{attribute} must not be an IPv6 address.' => 'Значение «{attribute}» не должно быть IPv6 адресом.',
+    '{attribute} must not be an IPv4 address.' => 'Значение «{attribute}» не должно быть IPv4 адресом.',
+    '{attribute} contains wrong subnet mask.' => 'Значение «{attribute}» содержит неверную маску подсети.',
+    '{attribute} must be a valid IP address.' => 'Значение «{attribute}» должно быть правильным IP адресом.',
+    '{attribute} must be an IP address with specified subnet.' => 'Значение «{attribute}» должно быть IP адресом с подсетью.',
+    '{attribute} must not be a subnet.' => 'Значение «{attribute}» не должно быть подсетью.',
+    '{attribute} is not in the allowed range.' => 'Значение «{attribute}» не входит в список разрешенных диапазонов адресов.',
 ];
