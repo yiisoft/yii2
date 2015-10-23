@@ -118,6 +118,20 @@ class QueryBuilder extends \yii\db\QueryBuilder
     }
 
     /**
+     * @inheritdoc
+     */
+    public function createTable($table, $columns, $options = null)
+    {
+        foreach ($columns as $name => &$type) {
+            if (!is_string($name)) {
+                $type = $this->replaceCascadeOperations($type);
+            }
+        }
+
+        return parent::createTable($table, $columns, $options);
+    }
+
+    /**
      * Builds a SQL statement for renaming a DB table.
      * @param string $oldName the table to be renamed. The name will be properly quoted by the method.
      * @param string $newName the new table name. The name will be properly quoted by the method.
@@ -160,6 +174,36 @@ class QueryBuilder extends \yii\db\QueryBuilder
             . $this->getColumnType($type);
 
         return $sql;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function addForeignKey($name, $table, $columns, $refTable, $refColumns, $delete = null, $update = null)
+    {
+        if ($delete !== null) {
+            $delete = $this->replaceCascadeOperations($delete);
+        }
+        if ($update !== null) {
+            $update = $this->replaceCascadeOperations($update);
+        }
+
+        return parent::addForeignKey($name, $table, $columns, $refTable, $refColumns, $delete, $update);
+    }
+
+    public static $CASCADE_OPERATIONS_REPLACEMENT = [
+        'RESTRICT' => 'NO ACTION',
+    ];
+
+    /**
+     * Replaces cascade operations
+     * @see https://github.com/yiisoft/yii2/issues/9964
+     * @param $string
+     * @return mixed
+     */
+    protected function replaceCascadeOperations($string)
+    {
+        return str_ireplace(array_keys(self::$CASCADE_OPERATIONS_REPLACEMENT), array_values(self::$CASCADE_OPERATIONS_REPLACEMENT), $string);
     }
 
     /**
