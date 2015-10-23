@@ -101,6 +101,21 @@ class ColumnSchema extends Object
     {
         // the default implementation does the same as casting for PHP, but it should be possible
         // to override this with annotation of explicit PDO type.
+        if ($value instanceof \DateTime) {
+            switch ($this->phpType) {
+                case 'time':
+                    $format = 'H:m:s';
+                    break;
+                case 'date':
+                    $format = 'Y-m-d';
+                    break;
+                case 'datetime':
+                default:
+                    $format = 'Y-m-d H:m:s';
+                    break;
+            }
+            return (string) $value->format($format);
+        }
         return $this->typecast($value);
     }
 
