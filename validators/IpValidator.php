@@ -15,14 +15,14 @@ use yii\helpers\StringHelper;
 use yii\web\JsExpression;
 
 /**
- * IpValidator validates whether the attribute value is a valid IPv4/IPv6 address or subnet.
- * May change attribute's value if normalization is enabled.
+ * The validator checks if the attribute value is a valid IPv4/IPv6 address or subnet.
+ * It also may change attribute's value if normalization or IPv6 expansion is enabled.
  *
- * @property array $ranges IPv4 or IPv6 ranges that are allowed or denied.
+ * @property array $ranges IPv4 or IPv6 ranges that are allowed or forbidden.
  *
- * When the array is empty, all IP addresses are allowed.
- * When the array is not empty, the rules are checked sequentially until the first match is found.
- * IP address is denied, when it did not match any of the rules.
+ * When the array is empty, or the option not set, all IP addresses are allowed.
+ * Otherwise, the rules are checked sequentially until the first match is found.
+ * IP address is forbidden, when it has not matched any of the rules.
  *
  * Example:
  * ```php
@@ -36,7 +36,7 @@ use yii\web\JsExpression;
  * ```
  *
  * In this example, access is allowed for all the IPv4 and IPv6 addresses excluding `192.168.10.0/24` subnet.
- * IPv4 address `192.168.10.128` is also allowed, because is listed above the restriction. *
+ * IPv4 address `192.168.10.128` is also allowed, because it is listed before the restriction.
  * @see isAllowed()
  *
  * @author Dmitry Naumenko <d.naumenko.a@gmail.com>
@@ -66,10 +66,8 @@ class IpValidator extends Validator
     /**
      * @var array The network aliases, that can be used in [[ranges]].
      *  - key - alias name
-     *  - value - array of strings
-     *
-     * When $networks contains another alias, the value will be substituted recursively.
-     * The range or alias could be negated with [[NEGATION_CHAR]].
+     *  - value - array of strings. String can be an IP range, IP address or another alias. String can be
+     * negated with [[NEGATION_CHAR]] (independent of `negation` option).
      *
      * The following aliases are defined by default:
      *  - `*`: `any`
@@ -94,17 +92,17 @@ class IpValidator extends Validator
     ];
 
     /**
-     * @var boolean whether support of IPv6 addresses is enabled
+     * @var boolean whether the validating value can be an IPv6 address. Defaults to true.
      */
     public $ipv6 = true;
 
     /**
-     * @var boolean whether support of IPv4 addresses is enabled
+     * @var boolean whether the validating value can be an IPv4 address. Defaults to true.
      */
     public $ipv4 = true;
 
     /**
-     * @var boolean whether the address can be a CIDR subnet
+     * @var boolean whether the address can be an IP with CIDR subnet, like `192.168.10.0/24`
      *    true - the subnet is required
      *   false - the address can not have the subnet
      *    null - ths subnet is optional
@@ -112,10 +110,11 @@ class IpValidator extends Validator
     public $subnet = false;
 
     /**
-     * @var boolean whether to add the prefix with the smallest length (32 for IPv4 and 128 for IPv6)
-     * to an address without it.
-     * Works only when attribute [[subnet]] is not false.
-     * Example: `10.0.1.5` will normalized to `10.0.1.5/32`, `2008:db0::1` will be normalized to `2008:db0::1/128`
+     * @var boolean whether to add the CIDR prefix with the smallest length (32 for IPv4 and 128 for IPv6) to an
+     * address without it. Works only when `subnet` is not `false`. For example:
+     *  - `10.0.1.5` will normalized to `10.0.1.5/32`
+     *  - `2008:db0::1` will be normalized to `2008:db0::1/128`
+     * Defaults to false.
      * @see subnet
      */
     public $normalize = false;
