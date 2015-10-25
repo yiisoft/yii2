@@ -363,7 +363,7 @@ If it is the first time you release an extension, you should register it on a Co
 on the VCS repository of your extension and notify the Composer repository about the new release. People will
 then be able to find the new release, and install or update the extension through the Composer repository.
 
-In the releases of your extension, besides code files you should also consider including the followings to
+In the releases of your extension, besides code files you should also consider including the following to
 help other people learn about and use your extension:
 
 * A readme file in the package root directory: it describes what your extension does and how to install and use it.

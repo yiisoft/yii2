@@ -90,14 +90,14 @@ Getting Data from Users
 * [Creating Forms](input-forms.md)
 * [Validating Input](input-validation.md)
 * [Uploading Files](input-file-upload.md)
-* [Collecting tabular input](input-tabular-input.md)
+* [Collecting Tabular Input](input-tabular-input.md)
 * [Getting Data for Multiple Models](input-multiple-models.md)
 
 
 Displaying Data
 ---------------
 
-* [Data Formatting](output-formatter.md)
+* [Data Formatting](output-formatting.md)
 * [Pagination](output-pagination.md)
 * [Sorting](output-sorting.md)
 * [Data Providers](output-data-providers.md)
@@ -145,7 +145,7 @@ Development Tools
 
 * [Debug Toolbar and Debugger](https://github.com/yiisoft/yii2-debug/blob/master/docs/guide/README.md)
 * [Generating Code using Gii](https://github.com/yiisoft/yii2-gii/blob/master/docs/guide/README.md)
-* **TBD** [Generating API Documentation](tool-api-doc.md)
+* **TBD** [Generating API Documentation](https://github.com/yiisoft/yii2-apidoc)
 
 
 Testing
@@ -162,7 +162,7 @@ Testing
 Special Topics
 --------------
 
-* [Advanced Application Template](https://github.com/yiisoft/yii2-app-advanced/blob/master/docs/guide/README.md)
+* [Advanced Project Template](https://github.com/yiisoft/yii2-app-advanced/blob/master/docs/guide/README.md)
 * [Building Application from Scratch](tutorial-start-from-scratch.md)
 * [Console Commands](tutorial-console.md)
 * [Core Validators](tutorial-core-validators.md)

@@ -8,7 +8,7 @@ The structure of console applications is very similar to a Yii web application. 
 or more [[yii\console\Controller]] classes, which are often referred to as "commands" in the console environment.
 Each controller can also have one or more actions, just like web controllers.
 
-Both Application templates already have a console application with them.
+Both project templates already have a console application with them.
 You can run it by calling the `yii` script, which is located in the base directory of the repository. 
 This will give you a list of available commands when you run it without any further parameters:
 
@@ -16,16 +16,16 @@ This will give you a list of available commands when you run it without any furt
 
 As you can see in the screenshot, Yii has already defined a set of commands that are available by default:
 
-- [yii\console\controllers\AssetController|AssetController] - Allows you to combine and compress your JavaScript and CSS files.
+- [[yii\console\controllers\AssetController|AssetController]] - Allows you to combine and compress your JavaScript and CSS files.
   You can learn more about this command in the [Assets Section](structure-assets.md#using-the-asset-command).
-- [yii\console\controllers\CacheController|CacheController] - Allows you to flush application caches.
-- [yii\console\controllers\FixtureController|FixtureController] - Manages fixture data loading and unloading for testing purposes.
+- [[yii\console\controllers\CacheController|CacheController]] - Allows you to flush application caches.
+- [[yii\console\controllers\FixtureController|FixtureController]] - Manages fixture data loading and unloading for testing purposes.
   This command is described in more detail in the [Testing Section about Fixtures](test-fixtures.md#managing-fixtures).
-- [yii\console\controllers\HelpController|HelpController] - Provides help information about console commands, this is the default command
+- [[yii\console\controllers\HelpController|HelpController]] - Provides help information about console commands, this is the default command
   and prints what you have seen in the above output.
-- [yii\console\controllers\MessageController|MessageController] - Extracts messages to be translated from source files.
+- [[yii\console\controllers\MessageController|MessageController]] - Extracts messages to be translated from source files.
   To learn more about this command, please refer to the [I18N Section](tutorial-i18n.md#message-command).
-- [yii\console\controllers\MigrateController|MigrateController] - Manages application migrations.
+- [[yii\console\controllers\MigrateController|MigrateController]] - Manages application migrations.
   Database migrations are described in more detail in the [Database Migration Section](db-migrations.md).
 
 
@@ -69,10 +69,6 @@ It contains code like the following:
 
 defined('YII_DEBUG') or define('YII_DEBUG', true);
 
-// fcgi doesn't have STDIN and STDOUT defined by default
-defined('STDIN') or define('STDIN', fopen('php://stdin', 'r'));
-defined('STDOUT') or define('STDOUT', fopen('php://stdout', 'w'));
-
 require(__DIR__ . '/vendor/autoload.php');
 require(__DIR__ . '/vendor/yiisoft/yii2/Yii.php');
 
@@ -95,7 +91,8 @@ As can be seen in the code above, the console application uses its own configura
 you should configure various [application components](structure-application-components.md) and properties for the console application in particular.
 
 If your web application and console application share a lot of configuration parameters and values, you may consider moving the common
-parts into a separate file, and including this file in both of the application configurations (web and console). You can see an example of this in the "advanced" application template.
+parts into a separate file, and including this file in both of the application configurations (web and console).
+You can see an example of this in the "advanced" project template.
 
 > Tip: Sometimes, you may want to run a console command using an application configuration that is different
 > from the one specified in the entry script. For example, you may want to use the `yii migrate` command to

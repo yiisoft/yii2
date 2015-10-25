@@ -16,7 +16,7 @@ use yii\helpers\Json;
  * UrlValidator validates that the attribute value is a valid http or https URL.
  *
  * Note that this validator only checks if the URL scheme and host part are correct.
- * It does not check the rest part of a URL.
+ * It does not check the remaining parts of a URL.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
@@ -124,7 +124,7 @@ class UrlValidator extends Validator
             'message' => Yii::$app->getI18n()->format($this->message, [
                 'attribute' => $model->getAttributeLabel($attribute),
             ], Yii::$app->language),
-            'enableIDN' => (boolean) $this->enableIDN,
+            'enableIDN' => (bool) $this->enableIDN,
         ];
         if ($this->skipOnEmpty) {
             $options['skipOnEmpty'] = 1;
@@ -138,6 +138,6 @@ class UrlValidator extends Validator
             PunycodeAsset::register($view);
         }
 
-        return 'yii.validation.url(value, messages, ' . Json::encode($options) . ');';
+        return 'yii.validation.url(value, messages, ' . Json::htmlEncode($options) . ');';
     }
 }

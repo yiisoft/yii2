@@ -10,10 +10,10 @@ Each time when a Yii application handles a request, it undergoes a similar workf
    the [request](runtime-requests.md) application component.
 4. The application creates a [controller](structure-controllers.md) instance to handle the request.
 5. The controller creates an [action](structure-controllers.md) instance and performs the filters for the action.
-6. If any filter fails, the action is cancelled.
+6. If any [filter](structure-filters.md) fails, the action is cancelled.
 7. If all filters pass, the action is executed.
-8. The action loads a data model, possibly from a database.
-9. The action renders a view, providing it with the data model.
+8. The action loads a data [model](structure-models.md), possibly from a database.
+9. The action renders a [view](structure-views.md), providing it with the data model.
 10. The rendered result is returned to the [response](runtime-responses.md) application component.
 11. The response component sends the rendered result to the user's browser.
 

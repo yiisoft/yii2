@@ -107,7 +107,7 @@ DB と関係しないフィクスチャ (例えば、何らかのファイルや
 フィクスチャを使用する
 ----------------------
 
-[CodeCeption](http://codeception.com/) を使ってコードをテストしている場合は、フィクスチャのローディングとアクセスを内蔵でサポートしている `yii2-codeception` を使用することを検討すべきです。
+[Codeception](http://codeception.com/) を使ってコードをテストしている場合は、フィクスチャのローディングとアクセスを内蔵でサポートしている `yii2-codeception` を使用することを検討すべきです。
 その他のテストフレームワークを使っている場合は、テストケースで [[yii\test\FixtureTrait]] を使って同じ目的を達することが出来ます。
 
 次に `yii2-codeception` を使って `UserProfile` 単体テストを書く方法を説明します。
@@ -373,4 +373,4 @@ Auto-generating fixtures
 
 Yii also can auto-generate fixtures for you based on some template. You can generate your fixtures with different data on different languages and formats.
 These feature is done by [Faker](https://github.com/fzaninotto/Faker) library and `yii2-faker` extension.
-See extension [guide](https://github.com/yiisoft/yii2/tree/master/extensions/faker) for more docs.
+See extension [guide](https://github.com/yiisoft/yii2-faker) for more docs.

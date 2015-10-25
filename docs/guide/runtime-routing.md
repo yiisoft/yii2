@@ -10,7 +10,7 @@ and the associated query parameters. When the created URL is later requested, th
 back into the original route and query parameters.
   
 The central piece responsible for routing and URL creation is the [[yii\web\UrlManager|URL manager]],
-which is registered as the `urlManager` application component. The [[yii\web\UrlManager|URL manager]]
+which is registered as the `urlManager` [application component](structure-application-components.md). The [[yii\web\UrlManager|URL manager]]
 provides the [[yii\web\UrlManager::parseRequest()|parseRequest()]] method to parse an incoming request into
 a route and the associated query parameters and the [[yii\web\UrlManager::createUrl()|createUrl()]] method to
 create a URL from a given route and its associated query parameters.
@@ -58,7 +58,7 @@ property of the [[yii\web\UrlManager|URL manager]] without changing any other ap
 ## Routing <span id="routing"></span>
 
 Routing involves two steps. In the first step, the incoming request is parsed into a route and the associated 
-query parameters. In the second step, a [controller action](structure-controllers.md) corresponding to the parsed route
+query parameters. In the second step, a [controller action](structure-controllers.md#actions) corresponding to the parsed route
 is created to handle the request.
 
 When using the default URL format, parsing a request into a route is as simple as getting the value of a `GET`
@@ -81,11 +81,11 @@ controller and action:
 3. Check if the ID refers to a module listed in the [[yii\base\Module::modules|modules]] property of
    the current module. If so, a module is created according to the configuration found in the module list,
    and Step 2 will be taken to handle the next part of the route under the context of the newly created module.
-4. Treat the ID as a controller ID and create a controller object. Do the next step with the rest part of
+4. Treat the ID as a [controller ID](structure-controllers.md#controller-ids) and create a controller object. Do the next step with the rest part of
    the route.
 5. The controller looks for the current ID in its [[yii\base\Controller::actions()|action map]]. If found,
    it creates an action according to the configuration found in the map. Otherwise, the controller will
-   attempt to create an inline action which is defined by an action method corresponding to the current ID.
+   attempt to create an inline action which is defined by an action method corresponding to the current [action ID](structure-controllers.md#action-ids).
 
 Among the above steps, if any error occurs, a [[yii\web\NotFoundHttpException]] will be thrown, indicating
 the failure of the routing process.

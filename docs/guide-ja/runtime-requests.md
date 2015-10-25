@@ -64,10 +64,10 @@ $param = $request->getBodyParam('id');
 ```php
 $request = Yii::$app->request;
 
-if ($request->isAjax) { // リクエストは AJAX リクエスト }
-if ($request->isGet)  { // リクエストメソッドは GET }
-if ($request->isPost) { // リクエストメソッドは POST }
-if ($request->isPut)  { // リクエストメソッドは PUT }
+if ($request->isAjax) { /* リクエストは AJAX リクエスト */ }
+if ($request->isGet)  { /* リクエストメソッドは GET */ }
+if ($request->isPost) { /* リクエストメソッドは POST */ }
+if ($request->isPut)  { /* リクエストメソッドは PUT */ }
 ```
 
 ## リクエストの URL <span id="request-urls"></span>
@@ -99,7 +99,7 @@ $headers = Yii::$app->request->headers;
 // Accept ヘッダの値を返す
 $accept = $headers->get('Accept');
 
-if ($headers->has('User-Agent')) { // User-Agent ヘッダが在る }
+if ($headers->has('User-Agent')) { /* User-Agent ヘッダが在る */ }
 ```
 
 `request` コンポーネントは、よく使用されるいくつかのヘッダにすばやくアクセスする方法を提供しています。

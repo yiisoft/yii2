@@ -129,7 +129,7 @@ class Query extends Component implements QueryInterface
      * This method is called by [[QueryBuilder]] when it starts to build SQL from a query object.
      * You may override this method to do some final preparation work when converting a query into a SQL statement.
      * @param QueryBuilder $builder
-     * @return Query a prepared query instance which will be used by [[QueryBuilder]] to build the SQL
+     * @return $this a prepared query instance which will be used by [[QueryBuilder]] to build the SQL
      */
     public function prepare($builder)
     {
@@ -140,7 +140,7 @@ class Query extends Component implements QueryInterface
      * Starts a batch query.
      *
      * A batch query supports fetching data in batches, which can keep the memory usage under a limit.
-     * This method will return a [[BatchQueryResult]] object which implements the `Iterator` interface
+     * This method will return a [[BatchQueryResult]] object which implements the [[\Iterator]] interface
      * and can be traversed to retrieve the data in batches.
      *
      * For example,
@@ -154,7 +154,7 @@ class Query extends Component implements QueryInterface
      *
      * @param integer $batchSize the number of records to be fetched in each batch.
      * @param Connection $db the database connection. If not set, the "db" application component will be used.
-     * @return BatchQueryResult the batch query result. It implements the `Iterator` interface
+     * @return BatchQueryResult the batch query result. It implements the [[\Iterator]] interface
      * and can be traversed to retrieve the data in batches.
      */
     public function batch($batchSize = 100, $db = null)
@@ -181,7 +181,7 @@ class Query extends Component implements QueryInterface
      *
      * @param integer $batchSize the number of records to be fetched in each batch.
      * @param Connection $db the database connection. If not set, the "db" application component will be used.
-     * @return BatchQueryResult the batch query result. It implements the `Iterator` interface
+     * @return BatchQueryResult the batch query result. It implements the [[\Iterator]] interface
      * and can be traversed to retrieve the data in batches.
      */
     public function each($batchSize = 100, $db = null)
@@ -264,13 +264,28 @@ class Query extends Component implements QueryInterface
      */
     public function column($db = null)
     {
-        return $this->createCommand($db)->queryColumn();
+        if (!is_string($this->indexBy)) {
+            return $this->createCommand($db)->queryColumn();
+        }
+        if (is_array($this->select) && count($this->select) === 1) {
+            $this->select[] = $this->indexBy;
+        }
+        $rows = $this->createCommand($db)->queryAll();
+        $results = [];
+        foreach ($rows as $row) {
+            if (array_key_exists($this->indexBy, $row)) {
+                $results[$row[$this->indexBy]] = reset($row);
+            } else {
+                $results[] = reset($row);
+            }
+        }
+        return $results;
     }
 
     /**
      * Returns the number of records.
      * @param string $q the COUNT expression. Defaults to '*'.
-     * Make sure you properly quote column names in the expression.
+     * Make sure you properly [quote](guide:db-dao#quoting-table-and-column-names) column names in the expression.
      * @param Connection $db the database connection used to generate the SQL statement.
      * If this parameter is not given (or null), the `db` application component will be used.
      * @return integer|string number of records. The result may be a string depending on the
@@ -284,7 +299,7 @@ class Query extends Component implements QueryInterface
     /**
      * Returns the sum of the specified column values.
      * @param string $q the column name or expression.
-     * Make sure you properly quote column names in the expression.
+     * Make sure you properly [quote](guide:db-dao#quoting-table-and-column-names) column names in the expression.
      * @param Connection $db the database connection used to generate the SQL statement.
      * If this parameter is not given, the `db` application component will be used.
      * @return mixed the sum of the specified column values.
@@ -297,7 +312,7 @@ class Query extends Component implements QueryInterface
     /**
      * Returns the average of the specified column values.
      * @param string $q the column name or expression.
-     * Make sure you properly quote column names in the expression.
+     * Make sure you properly [quote](guide:db-dao#quoting-table-and-column-names) column names in the expression.
      * @param Connection $db the database connection used to generate the SQL statement.
      * If this parameter is not given, the `db` application component will be used.
      * @return mixed the average of the specified column values.
@@ -310,7 +325,7 @@ class Query extends Component implements QueryInterface
     /**
      * Returns the minimum of the specified column values.
      * @param string $q the column name or expression.
-     * Make sure you properly quote column names in the expression.
+     * Make sure you properly [quote](guide:db-dao#quoting-table-and-column-names) column names in the expression.
      * @param Connection $db the database connection used to generate the SQL statement.
      * If this parameter is not given, the `db` application component will be used.
      * @return mixed the minimum of the specified column values.
@@ -323,7 +338,7 @@ class Query extends Component implements QueryInterface
     /**
      * Returns the maximum of the specified column values.
      * @param string $q the column name or expression.
-     * Make sure you properly quote column names in the expression.
+     * Make sure you properly [quote](guide:db-dao#quoting-table-and-column-names) column names in the expression.
      * @param Connection $db the database connection used to generate the SQL statement.
      * If this parameter is not given, the `db` application component will be used.
      * @return mixed the maximum of the specified column values.
@@ -370,7 +385,7 @@ class Query extends Component implements QueryInterface
         $this->limit = $limit;
         $this->offset = $offset;
 
-        if (empty($this->groupBy) && empty($this->union) && !$this->distinct) {
+        if (empty($this->groupBy) && empty($this->having) && empty($this->union) && !$this->distinct) {
             return $command->queryScalar();
         } else {
             return (new Query)->select([$selectExpression])
@@ -382,11 +397,12 @@ class Query extends Component implements QueryInterface
 
     /**
      * Sets the SELECT part of the query.
-     * @param string|array $columns the columns to be selected.
+     * @param string|array|Expression $columns the columns to be selected.
      * Columns can be specified in either a string (e.g. "id, name") or an array (e.g. ['id', 'name']).
      * Columns can be prefixed with table names (e.g. "user.id") and/or contain column aliases (e.g. "user.id AS user_id").
      * The method will automatically quote the column names unless a column contains some parenthesis
-     * (which means the column contains a DB expression).
+     * (which means the column contains a DB expression). A DB expression may also be passed in form of
+     * an [[Expression]] object.
      *
      * Note that if you are selecting an expression like `CONCAT(first_name, ' ', last_name)`, you should
      * use an array to specify the columns. Otherwise, the expression may be incorrectly split into several parts.
@@ -399,11 +415,13 @@ class Query extends Component implements QueryInterface
      *
      * @param string $option additional option that should be appended to the 'SELECT' keyword. For example,
      * in MySQL, the option 'SQL_CALC_FOUND_ROWS' can be used.
-     * @return static the query object itself
+     * @return $this the query object itself
      */
     public function select($columns, $option = null)
     {
-        if (!is_array($columns)) {
+        if ($columns instanceof Expression) {
+            $columns = [$columns];
+        } elseif (!is_array($columns)) {
             $columns = preg_split('/\s*,\s*/', trim($columns), -1, PREG_SPLIT_NO_EMPTY);
         }
         $this->select = $columns;
@@ -413,13 +431,24 @@ class Query extends Component implements QueryInterface
 
     /**
      * Add more columns to the SELECT part of the query.
-     * @param string|array $columns the columns to add to the select.
-     * @return static the query object itself
+     *
+     * Note, that if [[select]] has not been specified before, you should include `*` explicitly
+     * if you want to select all remaining columns too:
+     *
+     * ```php
+     * $query->addSelect(["*", "CONCAT(first_name, ' ', last_name) AS full_name"])->one();
+     * ```
+     *
+     * @param string|array|Expression $columns the columns to add to the select. See [[select()]] for more
+     * details about the format of this parameter.
+     * @return $this the query object itself
      * @see select()
      */
     public function addSelect($columns)
     {
-        if (!is_array($columns)) {
+        if ($columns instanceof Expression) {
+            $columns = [$columns];
+        } elseif (!is_array($columns)) {
             $columns = preg_split('/\s*,\s*/', trim($columns), -1, PREG_SPLIT_NO_EMPTY);
         }
         if ($this->select === null) {
@@ -433,7 +462,7 @@ class Query extends Component implements QueryInterface
     /**
      * Sets the value indicating whether to SELECT DISTINCT or not.
      * @param boolean $value whether to SELECT DISTINCT or not.
-     * @return static the query object itself
+     * @return $this the query object itself
      */
     public function distinct($value = true)
     {
@@ -455,7 +484,23 @@ class Query extends Component implements QueryInterface
      * Use a Query object to represent a sub-query. In this case, the corresponding array key will be used
      * as the alias for the sub-query.
      *
-     * @return static the query object itself
+     * Here are some examples:
+     *
+     * ```php
+     * // SELECT * FROM  `user` `u`, `profile`;
+     * $query = (new \yii\db\Query)->from(['u' => 'user', 'profile']);
+     *
+     * // SELECT * FROM (SELECT * FROM `user` WHERE `active` = 1) `activeusers`;
+     * $subquery = (new \yii\db\Query)->from('user')->where(['active' => true])
+     * $query = (new \yii\db\Query)->from(['activeusers' => $subquery]);
+     *
+     * // subquery can also be a string with plain SQL wrapped in parenthesis
+     * // SELECT * FROM (SELECT * FROM `user` WHERE `active` = 1) `activeusers`;
+     * $subquery = "(SELECT * FROM `user` WHERE `active` = 1)";
+     * $query = (new \yii\db\Query)->from(['activeusers' => $subquery]);
+     * ```
+     *
+     * @return $this the query object itself
      */
     public function from($tables)
     {
@@ -478,7 +523,7 @@ class Query extends Component implements QueryInterface
      *
      * @param string|array $condition the conditions that should be put in the WHERE part.
      * @param array $params the parameters (name => value) to be bound to the query.
-     * @return static the query object itself
+     * @return $this the query object itself
      * @see andWhere()
      * @see orWhere()
      * @see QueryInterface::where()
@@ -496,7 +541,7 @@ class Query extends Component implements QueryInterface
      * @param string|array $condition the new WHERE condition. Please refer to [[where()]]
      * on how to specify this parameter.
      * @param array $params the parameters (name => value) to be bound to the query.
-     * @return static the query object itself
+     * @return $this the query object itself
      * @see where()
      * @see orWhere()
      */
@@ -517,7 +562,7 @@ class Query extends Component implements QueryInterface
      * @param string|array $condition the new WHERE condition. Please refer to [[where()]]
      * on how to specify this parameter.
      * @param array $params the parameters (name => value) to be bound to the query.
-     * @return static the query object itself
+     * @return $this the query object itself
      * @see where()
      * @see andWhere()
      */
@@ -550,7 +595,7 @@ class Query extends Component implements QueryInterface
      * @param string|array $on the join condition that should appear in the ON part.
      * Please refer to [[where()]] on how to specify this parameter.
      * @param array $params the parameters (name => value) to be bound to the query.
-     * @return Query the query object itself
+     * @return $this the query object itself
      */
     public function join($type, $table, $on = '', $params = [])
     {
@@ -574,7 +619,7 @@ class Query extends Component implements QueryInterface
      * @param string|array $on the join condition that should appear in the ON part.
      * Please refer to [[where()]] on how to specify this parameter.
      * @param array $params the parameters (name => value) to be bound to the query.
-     * @return Query the query object itself
+     * @return $this the query object itself
      */
     public function innerJoin($table, $on = '', $params = [])
     {
@@ -598,7 +643,7 @@ class Query extends Component implements QueryInterface
      * @param string|array $on the join condition that should appear in the ON part.
      * Please refer to [[where()]] on how to specify this parameter.
      * @param array $params the parameters (name => value) to be bound to the query
-     * @return Query the query object itself
+     * @return $this the query object itself
      */
     public function leftJoin($table, $on = '', $params = [])
     {
@@ -622,7 +667,7 @@ class Query extends Component implements QueryInterface
      * @param string|array $on the join condition that should appear in the ON part.
      * Please refer to [[where()]] on how to specify this parameter.
      * @param array $params the parameters (name => value) to be bound to the query
-     * @return Query the query object itself
+     * @return $this the query object itself
      */
     public function rightJoin($table, $on = '', $params = [])
     {
@@ -636,7 +681,7 @@ class Query extends Component implements QueryInterface
      * Columns can be specified in either a string (e.g. "id, name") or an array (e.g. ['id', 'name']).
      * The method will automatically quote the column names unless a column contains some parenthesis
      * (which means the column contains a DB expression).
-     * @return static the query object itself
+     * @return $this the query object itself
      * @see addGroupBy()
      */
     public function groupBy($columns)
@@ -654,7 +699,7 @@ class Query extends Component implements QueryInterface
      * Columns can be specified in either a string (e.g. "id, name") or an array (e.g. ['id', 'name']).
      * The method will automatically quote the column names unless a column contains some parenthesis
      * (which means the column contains a DB expression).
-     * @return static the query object itself
+     * @return $this the query object itself
      * @see groupBy()
      */
     public function addGroupBy($columns)
@@ -675,7 +720,7 @@ class Query extends Component implements QueryInterface
      * @param string|array $condition the conditions to be put after HAVING.
      * Please refer to [[where()]] on how to specify this parameter.
      * @param array $params the parameters (name => value) to be bound to the query.
-     * @return static the query object itself
+     * @return $this the query object itself
      * @see andHaving()
      * @see orHaving()
      */
@@ -692,7 +737,7 @@ class Query extends Component implements QueryInterface
      * @param string|array $condition the new HAVING condition. Please refer to [[where()]]
      * on how to specify this parameter.
      * @param array $params the parameters (name => value) to be bound to the query.
-     * @return static the query object itself
+     * @return $this the query object itself
      * @see having()
      * @see orHaving()
      */
@@ -713,7 +758,7 @@ class Query extends Component implements QueryInterface
      * @param string|array $condition the new HAVING condition. Please refer to [[where()]]
      * on how to specify this parameter.
      * @param array $params the parameters (name => value) to be bound to the query.
-     * @return static the query object itself
+     * @return $this the query object itself
      * @see having()
      * @see andHaving()
      */
@@ -732,11 +777,11 @@ class Query extends Component implements QueryInterface
      * Appends a SQL statement using UNION operator.
      * @param string|Query $sql the SQL statement to be appended using UNION
      * @param boolean $all TRUE if using UNION ALL and FALSE if using UNION
-     * @return static the query object itself
+     * @return $this the query object itself
      */
     public function union($sql, $all = false)
     {
-        $this->union[] = [ 'query' => $sql, 'all' => $all ];
+        $this->union[] = ['query' => $sql, 'all' => $all];
         return $this;
     }
 
@@ -744,7 +789,7 @@ class Query extends Component implements QueryInterface
      * Sets the parameters to be bound to the query.
      * @param array $params list of query parameter values indexed by parameter placeholders.
      * For example, `[':name' => 'Dan', ':age' => 31]`.
-     * @return static the query object itself
+     * @return $this the query object itself
      * @see addParams()
      */
     public function params($params)
@@ -757,7 +802,7 @@ class Query extends Component implements QueryInterface
      * Adds additional parameters to be bound to the query.
      * @param array $params list of query parameter values indexed by parameter placeholders.
      * For example, `[':name' => 'Dan', ':age' => 31]`.
-     * @return static the query object itself
+     * @return $this the query object itself
      * @see params()
      */
     public function addParams($params)
@@ -767,7 +812,7 @@ class Query extends Component implements QueryInterface
                 $this->params = $params;
             } else {
                 foreach ($params as $name => $value) {
-                    if (is_integer($name)) {
+                    if (is_int($name)) {
                         $this->params[] = $value;
                     } else {
                         $this->params[$name] = $value;

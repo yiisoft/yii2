@@ -61,14 +61,14 @@ yii = (function ($) {
          * @return string|undefined the CSRF parameter name. Undefined is returned if CSRF validation is not enabled.
          */
         getCsrfParam: function () {
-            return $('meta[name=csrf-param]').prop('content');
+            return $('meta[name=csrf-param]').attr('content');
         },
 
         /**
          * @return string|undefined the CSRF token. Undefined is returned if CSRF validation is not enabled.
          */
         getCsrfToken: function () {
-            return $('meta[name=csrf-token]').prop('content');
+            return $('meta[name=csrf-token]').attr('content');
         },
 
         /**
@@ -78,8 +78,8 @@ yii = (function ($) {
          * @param value the CSRF token value
          */
         setCsrfToken: function (name, value) {
-            $('meta[name=csrf-param]').prop('content', name);
-            $('meta[name=csrf-token]').prop('content', value)
+            $('meta[name=csrf-param]').attr('content', name);
+            $('meta[name=csrf-token]').attr('content', value);
         },
 
         /**
@@ -143,16 +143,51 @@ yii = (function ($) {
          *
          * @param $e the jQuery representation of the element
          */
-        handleAction: function ($e) {
+        handleAction: function ($e, event) {
             var method = $e.data('method'),
                 $form = $e.closest('form'),
                 action = $e.attr('href'),
-                params = $e.data('params');
+                params = $e.data('params'),
+                pjax = $e.data('pjax'),
+                pjaxPushState = !!$e.data('pjax-push-state'),
+                pjaxReplaceState = !!$e.data('pjax-replace-state'),
+                pjaxTimeout = $e.data('pjax-timeout'),
+                pjaxScrollTo = $e.data('pjax-scrollto'),
+                pjaxContainer,
+                pjaxOptions = {};
+
+            if (pjax !== undefined && $.support.pjax) {
+                if ($e.data('pjax-container')) {
+                    pjaxContainer = $e.data('pjax-container');
+                } else {
+                    pjaxContainer = $e.closest('[data-pjax-container=""]');
+                }
+                // default to body if pjax container not found
+                if (!pjaxContainer.length) {
+                    pjaxContainer = $('body');
+                }
+                pjaxOptions = {
+                    container: pjaxContainer,
+                    push: pjaxPushState,
+                    replace: pjaxReplaceState,
+                    scrollTo: pjaxScrollTo,
+                    timeout: pjaxTimeout
+                }
+            }
 
             if (method === undefined) {
                 if (action && action != '#') {
-                    window.location = action;
+                    if (pjax !== undefined && $.support.pjax) {
+                        $.pjax.click(event, pjaxOptions);
+                    } else {
+                        window.location = action;
+                    }
                 } else if ($e.is(':submit') && $form.length) {
+                    if (pjax !== undefined && $.support.pjax) {
+                        $form.on('submit',function(e){
+                            $.pjax.submit(e, pjaxOptions);
+                        })
+                    }
                     $form.trigger('submit');
                 }
                 return;
@@ -164,8 +199,8 @@ yii = (function ($) {
                     action = window.location.href;
                 }
                 $form = $('<form method="' + method + '"></form>');
-                $form.prop('action', action);
-                var target = $e.prop('target');
+                $form.attr('action', action);
+                var target = $e.attr('target');
                 if (target) {
                     $form.attr('target', target);
                 }
@@ -191,35 +226,42 @@ yii = (function ($) {
             // temporarily add hidden inputs according to data-params
             if (params && $.isPlainObject(params)) {
                 $.each(params, function (idx, obj) {
-                    $form.append('<input name="' + idx + '" value="' + obj + '" type="hidden">');
+                    $form.append($('<input>').attr({name: idx, value: obj, type: 'hidden'}));
                 });
             }
 
-            var oldMethod = $form.prop('method');
-            $form.prop('method', method);
+            var oldMethod = $form.attr('method');
+            $form.attr('method', method);
             var oldAction = null;
             if (action && action != '#') {
-                oldAction = $form.prop('action');
-                $form.prop('action', action);
+                oldAction = $form.attr('action');
+                $form.attr('action', action);
             }
-
+            if (pjax !== undefined && $.support.pjax) {
+                $form.on('submit',function(e){
+                    $.pjax.submit(e, pjaxOptions);
+                })
+            }
             $form.trigger('submit');
+            $.when($form.data('yiiSubmitFinalizePromise')).then(
+                function () {
+                    if (oldAction != null) {
+                        $form.attr('action', oldAction);
+                    }
+                    $form.attr('method', oldMethod);
 
-            if (oldAction != null) {
-                $form.prop('action', oldAction);
-            }
-            $form.prop('method', oldMethod);
+                    // remove the temporarily added hidden inputs
+                    if (params && $.isPlainObject(params)) {
+                        $.each(params, function (idx, obj) {
+                            $('input[name="' + idx + '"]', $form).remove();
+                        });
+                    }
 
-            // remove the temporarily added hidden inputs
-            if (params && $.isPlainObject(params)) {
-                $.each(params, function (idx, obj) {
-                    $('input[name="' + idx + '"]', $form).remove();
-                });
-            }
-
-            if (newForm) {
-                $form.remove();
-            }
+                    if (newForm) {
+                        $form.remove();
+                    }
+                }
+            );
         },
 
         getQueryParams: function (url) {
@@ -288,10 +330,10 @@ yii = (function ($) {
 
             if (message !== undefined) {
                 pub.confirm(message, function () {
-                    pub.handleAction($this);
+                    pub.handleAction($this, event);
                 });
             } else {
-                pub.handleAction($this);
+                pub.handleAction($this, event);
             }
             event.stopImmediatePropagation();
             return false;

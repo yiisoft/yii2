@@ -16,7 +16,7 @@ It is best used for displaying a model in a regular format (e.g. each model attr
 The model can be either an instance or subclass of [[\yii\base\Model]] such as an [active record](db-active-record.md) or an associative array.
 
 DetailView uses the [[yii\widgets\DetailView::$attributes|$attributes]] property to determine which model attributes should be displayed and how they
-should be formatted. See the [formatter section](output-formatter.md) for available formatting options.
+should be formatted. See the [formatter section](output-formatting.md) for available formatting options.
 
 A typical usage of DetailView is as follows:
  
@@ -227,7 +227,7 @@ In the above, `text` corresponds to [[\yii\i18n\Formatter::asText()]]. The value
 argument. In the second column definition, `date` corresponds to [[\yii\i18n\Formatter::asDate()]]. The value of the
 column is, again, passed as the first argument while 'php:Y-m-d' is used as the second argument value.
 
-For a list of available formatters see the [section about Data Formatting](output-formatter.md).
+For a list of available formatters see the [section about Data Formatting](output-formatting.md).
 
 For configuring data columns there is also a shortcut format which is described in the 
 API documentation for [[yii\grid\GridView::columns|columns]].
@@ -301,7 +301,7 @@ var keys = $('#grid').yiiGridView('getSelectedRows');
 
 #### Serial column
 
-Serial column renders row numbers starting with `1` and going forward.
+[[yii\grid\SerialColumn|Serial column]] renders row numbers starting with `1` and going forward.
 
 Usage is as simple as the following:
 
@@ -325,7 +325,7 @@ echo GridView::widget([
 For filtering data the GridView needs a [model](structure-models.md) that takes the input from, the filtering
 form and adjusts the query of the dataProvider to respect the search criteria.
 A common practice when using [active records](db-active-record.md) is to create a search Model class
-that provides needed functionality (it can be generated for you by Gii). This class defines the validation 
+that provides needed functionality (it can be generated for you by [Gii](start-gii.md)). This class defines the validation 
 rules for the search and provides a `search()` method that will return the data provider.
 
 To add the search capability for the `Post` model, we can create `PostSearch` like the following example:
@@ -364,7 +364,7 @@ class PostSearch extends Post
             'query' => $query,
         ]);
 
-        // load the seach form data and validate
+        // load the search form data and validate
         if (!($this->load($params) && $this->validate())) {
             return $dataProvider;
         }
@@ -603,3 +603,8 @@ echo GridView::widget([
 > Note: This section is under development.
 
 TBD
+
+Further reading
+---------------
+
+- [Rendering Data in Yii 2 with GridView and ListView](http://www.sitepoint.com/rendering-data-in-yii-2-with-gridview-and-listview/) by Arno Slatius.

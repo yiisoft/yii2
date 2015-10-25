@@ -69,7 +69,12 @@ class ErrorHandler extends \yii\base\ErrorHandler
     {
         if (Yii::$app->has('response')) {
             $response = Yii::$app->getResponse();
+            // reset parameters of response to avoid interference with partially created response data
+            // in case the error occurred while sending the response.
             $response->isSent = false;
+            $response->stream = null;
+            $response->data = null;
+            $response->content = null;
         } else {
             $response = new Response();
         }
@@ -86,7 +91,7 @@ class ErrorHandler extends \yii\base\ErrorHandler
         } elseif ($response->format === Response::FORMAT_HTML) {
             if (YII_ENV_TEST || isset($_SERVER['HTTP_X_REQUESTED_WITH']) && $_SERVER['HTTP_X_REQUESTED_WITH'] === 'XMLHttpRequest') {
                 // AJAX request
-                $response->data = '<pre>' . $this->htmlEncode($this->convertExceptionToString($exception)) . '</pre>';
+                $response->data = '<pre>' . $this->htmlEncode(static::convertExceptionToString($exception)) . '</pre>';
             } else {
                 // if there is an error during error rendering it's useful to
                 // display PHP error in debug mode instead of a blank screen
@@ -99,7 +104,7 @@ class ErrorHandler extends \yii\base\ErrorHandler
                 ]);
             }
         } elseif ($response->format === Response::FORMAT_RAW) {
-            $response->data = $exception;
+            $response->data = static::convertExceptionToString($exception);
         } else {
             $response->data = $this->convertExceptionToArray($exception);
         }
@@ -250,8 +255,8 @@ class ErrorHandler extends \yii\base\ErrorHandler
      * @param integer|null $line number on which call has happened.
      * @param string|null $class called class name.
      * @param string|null $method called function/method name.
-     * @param integer $index number of the call stack element.
      * @param array $args array of method arguments.
+     * @param integer $index number of the call stack element.
      * @return string HTML content of the rendered call stack element.
      */
     public function renderCallStackItem($file, $line, $class, $method, $args, $index)
@@ -261,11 +266,11 @@ class ErrorHandler extends \yii\base\ErrorHandler
         if ($file !== null && $line !== null) {
             $line--; // adjust line number from one-based to zero-based
             $lines = @file($file);
-            if ($line < 0 || $lines === false || ($lineCount = count($lines)) < $line + 1) {
+            if ($line < 0 || $lines === false || ($lineCount = count($lines)) < $line) {
                 return '';
             }
 
-            $half = (int) (($index == 1 ? $this->maxSourceLines : $this->maxTraceSourceLines) / 2);
+            $half = (int) (($index === 1 ? $this->maxSourceLines : $this->maxTraceSourceLines) / 2);
             $begin = $line - $half > 0 ? $line - $half : 0;
             $end = $line + $half < $lineCount ? $line + $half : $lineCount - 1;
         }
@@ -408,7 +413,7 @@ class ErrorHandler extends \yii\base\ErrorHandler
                 $args[$key] = "<span class=\"number\">$key</span> => $args[$key]";
             }
         }
-        $out = implode(", ", $args);
+        $out = implode(', ', $args);
 
         return $out;
     }

@@ -6,7 +6,6 @@ php:
   - 5.6
   - 7.0
   - hhvm
-  - hhvm-nightly
 
 env:
   - CUBRID_VERSION=9.3.0/CUBRID-9.3.0.0206 CUBRID_PDO_VERSION=9.3.0.0001
@@ -16,7 +15,6 @@ env:
 matrix:
   fast_finish: true
   allow_failures:
-    - php: hhvm-nightly
     - php: 7.0
 
 services:
@@ -28,7 +26,7 @@ sudo: false
 # cache vendor dirs
 cache:
   directories:
-    - cubrid/9.3.0
+#    - cubrid/9.3.0
     - vendor
     - $HOME/.composer/cache
 
@@ -38,13 +36,13 @@ addons:
 
 install:
   - travis_retry composer self-update && composer --version
-  - travis_retry composer global require "fxp/composer-asset-plugin:1.0.0"
+  - travis_retry composer global require "fxp/composer-asset-plugin:~1.0.3"
   - export PATH="$HOME/.composer/vendor/bin:$PATH"
 # core framework:
   - travis_retry composer install --prefer-dist --no-interaction
-  - tests/unit/data/travis/apc-setup.sh
-  - tests/unit/data/travis/memcache-setup.sh
-  - tests/unit/data/travis/cubrid-setup.sh
+  - tests/data/travis/apc-setup.sh
+  - tests/data/travis/memcache-setup.sh
+#  - tests/data/travis/cubrid-setup.sh
 
 before_script:
   # show some versions and env information
@@ -63,7 +61,7 @@ before_script:
 
 
 script:
-  - vendor/bin/phpunit --verbose $PHPUNIT_FLAGS --exclude-group mssql,oci,wincache,xcache,zenddata
+  - vendor/bin/phpunit --verbose $PHPUNIT_FLAGS --exclude-group mssql,oci,wincache,xcache,zenddata,cubrid
 
 after_script:
   - |

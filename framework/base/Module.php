@@ -364,7 +364,7 @@ class Module extends ServiceLocator
      * Adds a sub-module to this module.
      * @param string $id module ID
      * @param Module|array|null $module the sub-module to be added to this module. This can
-     * be one of the followings:
+     * be one of the following:
      *
      * - a [[Module]] object
      * - a configuration array: when [[getModule()]] is called initially, the array

@@ -72,15 +72,18 @@ class PageCache extends ActionFilter
      * This can be either a [[Dependency]] object or a configuration array for creating the dependency object.
      * For example,
      *
-     * ~~~
+     * ```php
      * [
      *     'class' => 'yii\caching\DbDependency',
      *     'sql' => 'SELECT MAX(updated_at) FROM post',
      * ]
-     * ~~~
+     * ```
      *
-     * would make the output cache depends on the last modified time of all posts.
+     * would make the output cache depend on the last modified time of all posts.
      * If any post has its modification time changed, the cached content would be invalidated.
+     *
+     * If [[cacheCookies]] or [[cacheHeaders]] is enabled, then [[\yii\caching\Dependency::reusable]] should be enabled as well to save performance.
+     * This is because the cookies and headers are currently stored separately from the actual page content, causing the dependency to be evaluated twice.
      */
     public $dependency;
     /**
@@ -146,6 +149,10 @@ class PageCache extends ActionFilter
         }
 
         $this->cache = Instance::ensure($this->cache, Cache::className());
+
+        if (is_array($this->dependency)) {
+            $this->dependency = Yii::createObject($this->dependency);
+        }
 
         $properties = [];
         foreach (['cache', 'duration', 'dependency', 'variations'] as $name) {
@@ -239,7 +246,7 @@ class PageCache extends ActionFilter
             }
             $data['cookies'] = $cookies;
         }
-        $this->cache->set($this->calculateCacheKey(), $data);
+        $this->cache->set($this->calculateCacheKey(), $data, $this->duration, $this->dependency);
         echo ob_get_clean();
     }
 

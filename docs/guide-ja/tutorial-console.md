@@ -9,7 +9,7 @@
 コントローラはコンソール環境ではしばしば「コマンド」と呼ばれます。
 また、各コントローラは、ウェブのコントローラと全く同じように、一つまたは複数のアクションを持つことが出来ます。
 
-アプリケーションテンプレートは、両方とも、既にコンソールアプリケーションを持っています。
+プロジェクトテンプレートは、両方とも、既にコンソールアプリケーションを持っています。
 レポジトリのベースディレクトリにある `yii` スクリプトを呼び出すことによって、コンソールアプリケーションを実行することが出来ます。
 このスクリプトは、何もパラメータを追加せずに実行すると、利用できるコマンドの一覧を表示します。
 
@@ -17,16 +17,16 @@
 
 スクリーンショットに表示されているように、デフォルトで利用できる一連のコマンドが Yii によって既に定義されています。
 
-- [yii\console\controllers\AssetController|AssetController] - JavaScript と CSS ファイルを結合して圧縮することが出来ます。
+- [[yii\console\controllers\AssetController|AssetController]] - JavaScript と CSS ファイルを結合して圧縮することが出来ます。
   このコマンドについては、[アセットの節](structure-assets.md#using-the-asset-command) でさらに学習することが出来ます。
-- [yii\console\controllers\CacheController|CacheController] - アプリケーションのキャッシュをフラッシュすることが出来ます。
-- [yii\console\controllers\FixtureController|FixtureController] - テストのために、フィクスチャデータのロードとアンロードを管理します。
+- [[yii\console\controllers\CacheController|CacheController]] - アプリケーションのキャッシュをフラッシュすることが出来ます。
+- [[yii\console\controllers\FixtureController|FixtureController]] - テストのために、フィクスチャデータのロードとアンロードを管理します。
   このコマンドについては [テストのフィクスチャの節](test-fixtures.md#managing-fixtures) で詳細に説明されています。
-- [yii\console\controllers\HelpController|HelpController] - コンソールコマンドについてのヘルプ情報を提供します。
+- [[yii\console\controllers\HelpController|HelpController]] - コンソールコマンドについてのヘルプ情報を提供します。
   これがデフォルトのコマンドであり、上のスクリーンショットで見た出力を表示するものです。
-- [yii\console\controllers\MessageController|MessageController] - ソースファイルから翻訳すべきメッセージを抽出します。
+- [[yii\console\controllers\MessageController|MessageController]] - ソースファイルから翻訳すべきメッセージを抽出します。
   このコマンドについてさらに学習するためには、[国際化の節](tutorial-i18n.md#message-command) を参照してください。
-- [yii\console\controllers\MigrateController|MigrateController] - アプリケーションのマイグレーションを管理します。
+- [[yii\console\controllers\MigrateController|MigrateController]] - アプリケーションのマイグレーションを管理します。
   データベースのマイグレーションについては、[データベースのマイグレーションの節](db-migrations.md) で詳しく説明されています。
 
 
@@ -67,10 +67,6 @@ yii migrate/up 5 --migrationTable=migrations
 
 defined('YII_DEBUG') or define('YII_DEBUG', true);
 
-// fcgi では、デフォルトでは、STDIN と STDOUT が定義されていない
-defined('STDIN') or define('STDIN', fopen('php://stdin', 'r'));
-defined('STDOUT') or define('STDOUT', fopen('php://stdout', 'w'));
-
 require(__DIR__ . '/vendor/autoload.php');
 require(__DIR__ . '/vendor/yiisoft/yii2/Yii.php');
 
@@ -84,7 +80,7 @@ exit($exitCode);
 このスクリプトはアプリケーションの一部として生成されるものです。
 あなたの必要を満たすように、自由に編集して構いません。
 エラー発生時にスタックトレースを見たくない、または、全体のパフォーマンスを上げたい、という場合は、`YII_DEBUG` 定数を `false` に設定することが出来ます。
-ベーシックアプリケーションテンプレートでも、アドバンストアプリケーションテンプレートでも、コンソールアプリケーションのエントリスクリプトは、開発者に優しい環境を提供するために、デフォルトでデバッグを有効にしています。
+ベーシックプロジェクトテンプレートでも、アドバンストプロジェクトテンプレートでも、コンソールアプリケーションのエントリスクリプトは、開発者に優しい環境を提供するために、デフォルトでデバッグを有効にしています。
 
 
 構成情報 <span id="configuration"></span>
@@ -94,7 +90,7 @@ exit($exitCode);
 このファイルの中で、さまざまな [アプリケーションコンポーネント](structure-application-components.md)、取り分け、コンソールアプリケーションのためのプロパティを構成しなければなりません。
 
 ウェブアプリケーションとコンソールアプリケーションが構成情報のパラメータと値を数多く共有する場合は、共通の部分を独立したファイルに移動して、そのファイルを両方のアプリケーション (ウェブとコンソール) の構成情報にインクルードすることを検討しても良いでしょう。
-その例を「アドバンスト」アプリケーションテンプレートの中で見ることが出来ます。
+その例を「アドバンスト」プロジェクトテンプレートの中で見ることが出来ます。
 
 > Tip|ヒント: 場合によっては、エントリスクリプトで指定されているのとは異なるアプリケーション構成情報を使ってコンソールコマンドを実行したいことがあります。
 > 例えば、`yii migrate` コマンドを使ってテストのデータベースをアップグレードするとき、データベースが個々のテストスイートの中で構成されているような場合です。

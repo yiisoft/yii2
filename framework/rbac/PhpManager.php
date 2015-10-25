@@ -157,11 +157,11 @@ class PhpManager extends BaseManager
             throw new InvalidParamException("Either '{$parent->name}' or '{$child->name}' does not exist.");
         }
 
-        if ($parent->name == $child->name) {
+        if ($parent->name === $child->name) {
             throw new InvalidParamException("Cannot add '{$parent->name} ' as a child of itself.");
         }
         if ($parent instanceof Permission && $child instanceof Role) {
-            throw new InvalidParamException("Cannot add a role as a child of a permission.");
+            throw new InvalidParamException('Cannot add a role as a child of a permission.');
         }
 
         if ($this->detectLoop($parent, $child)) {
@@ -377,7 +377,10 @@ class PhpManager extends BaseManager
     {
         $roles = [];
         foreach ($this->getAssignments($userId) as $name => $assignment) {
-            $roles[$name] = $this->items[$assignment->roleName];
+            $role = $this->items[$assignment->roleName];
+            if ($role->type === Item::TYPE_ROLE) {
+                $roles[$name] = $role;
+            }
         }
 
         return $roles;
@@ -422,6 +425,41 @@ class PhpManager extends BaseManager
      * @inheritdoc
      */
     public function getPermissionsByUser($userId)
+    {
+        $directPermission = $this->getDirectPermissionsByUser($userId);
+        $inheritedPermission = $this->getInheritedPermissionsByUser($userId);
+
+        return array_merge($directPermission, $inheritedPermission);
+    }
+
+    /**
+     * Returns all permissions that are directly assigned to user.
+     * @param string|integer $userId the user ID (see [[\yii\web\User::id]])
+     * @return Permission[] all direct permissions that the user has. The array is indexed by the permission names.
+     *
+     * @since 2.0.7
+     */
+    protected function getDirectPermissionsByUser($userId)
+    {
+        $permissions = [];
+        foreach ($this->getAssignments($userId) as $name => $assignment) {
+            $permission = $this->items[$assignment->roleName];
+            if ($permission->type === Item::TYPE_PERMISSION) {
+                $permissions[$name] = $permission;
+            }
+        }
+
+        return $permissions;
+    }
+
+    /**
+     * Returns all permissions that the user inherits from the roles assigned to him.
+     * @param string|integer $userId the user ID (see [[\yii\web\User::id]])
+     * @return Permission[] all inherited permissions that the user has. The array is indexed by the permission names.
+     *
+     * @since 2.0.7
+     */
+    protected function getInheritedPermissionsByUser($userId)
     {
         $assignments = $this->getAssignments($userId);
         $result = [];
@@ -571,32 +609,36 @@ class PhpManager extends BaseManager
      */
     protected function updateItem($name, $item)
     {
-        $this->items[$item->name] = $item;
         if ($name !== $item->name) {
             if (isset($this->items[$item->name])) {
                 throw new InvalidParamException("Unable to change the item name. The name '{$item->name}' is already used by another item.");
-            }
-            if (isset($this->items[$name])) {
-                unset ($this->items[$name]);
+            } else {
+                // Remove old item in case of renaming
+                unset($this->items[$name]);
 
                 if (isset($this->children[$name])) {
                     $this->children[$item->name] = $this->children[$name];
-                    unset ($this->children[$name]);
+                    unset($this->children[$name]);
                 }
                 foreach ($this->children as &$children) {
                     if (isset($children[$name])) {
                         $children[$item->name] = $children[$name];
-                        unset ($children[$name]);
+                        unset($children[$name]);
                     }
                 }
                 foreach ($this->assignments as &$assignments) {
                     if (isset($assignments[$name])) {
                         $assignments[$item->name] = $assignments[$name];
+                        $assignments[$item->name]->roleName = $item->name;
                         unset($assignments[$name]);
                     }
                 }
+                $this->saveAssignments();
             }
         }
+
+        $this->items[$item->name] = $item;
+
         $this->saveItems();
         return true;
     }

@@ -1,7 +1,7 @@
 Instalando Yii
 ==============
 
-Yii puede ser instalado de dos maneras, usando [Composer](http://getcomposer.org/) o descargando un archivo comprimido.
+Yii puede ser instalado de dos maneras, usando [Composer](https://getcomposer.org/) o descargando un archivo comprimido.
 Es preferible usar la primera forma, ya que te permite instalar [extensiones](structure-extensions.md) o actualizar Yii ejecutando un simple comando.
 
 > Nota: A diferencia de Yii 1, la instalación estándar de Yii 2 resulta en la descarga e instalación tanto del framework como del esqueleto de la aplicación.
@@ -13,7 +13,7 @@ Instalando a través de Composer <span id="installing-via-composer"></span>
 Si aún no tienes Composer instalado, puedes hacerlo siguiendo las instrucciones que se encuentran en
 [getcomposer.org](https://getcomposer.org/download/). En Linux y Mac OS X, se ejecutan los siguientes comandos:
 
-    curl -s http://getcomposer.org/installer | php
+    curl -sS https://getcomposer.org/installer | php
     mv composer.phar /usr/local/bin/composer
 
 En Windows, tendrás que descargar y ejecutar [Composer-Setup.exe](https://getcomposer.org/Composer-Setup.exe).
@@ -26,7 +26,7 @@ Si ya tienes composer instalado asegurate que esté actualizado ejecutando `comp
 Teniendo Composer instalado, puedes instalar Yii ejecutando los siguientes comandos en un directorio accesible vía Web:
 Nota: es posible que en al ejecutar el primer comando te pida tu username 
 
-    composer global require "fxp/composer-asset-plugin:1.0.0"
+    composer global require "fxp/composer-asset-plugin:~1.0.3"
     composer create-project --prefer-dist yiisoft/yii2-app-basic basic
 
 El comando anterior instala Yii dentro del directorio `basic`.

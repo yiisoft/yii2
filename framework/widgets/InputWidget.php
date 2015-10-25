@@ -20,8 +20,8 @@ use yii\helpers\Html;
  * or a name and a value. If the former, the name and the value will
  * be generated automatically.
  *
- * Classes extending from this widget can be used in an [[yii\widgets\ActiveForm|ActiveForm]]
- * using the [[yii\widgets\ActiveField::widget()|widget()]] method, for example like this:
+ * Classes extending from this widget can be used in an [[\yii\widgets\ActiveForm|ActiveForm]]
+ * using the [[\yii\widgets\ActiveField::widget()|widget()]] method, for example like this:
  *
  * ```php
  * <?= $form->field($model, 'from_date')->widget('WidgetClassName', [

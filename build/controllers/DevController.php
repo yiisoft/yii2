@@ -26,9 +26,15 @@ class DevController extends Controller
 {
     public $defaultAction = 'all';
 
+    /**
+     * @var bool whether to use HTTP when cloning github repositories
+     */
+    public $useHttp = false;
+
     public $apps = [
         'basic' => 'git@github.com:yiisoft/yii2-app-basic.git',
         'advanced' => 'git@github.com:yiisoft/yii2-app-advanced.git',
+        'benchmark' => 'git@github.com:yiisoft/yii2-app-benchmark.git',
     ];
 
     public $extensions = [
@@ -62,14 +68,14 @@ class DevController extends Controller
         }
 
         foreach($this->extensions as $ext => $repo) {
-            $ret = $this->actionExt($ext, $repo);
+            $ret = $this->actionExt($ext);
             if ($ret !== 0) {
                 return $ret;
             }
         }
 
         foreach($this->apps as $app => $repo) {
-            $ret = $this->actionApp($app, $repo);
+            $ret = $this->actionApp($app);
             if ($ret !== 0) {
                 return $ret;
             }
@@ -97,16 +103,19 @@ class DevController extends Controller
         $dirs = array_merge($dirs, $this->listSubDirs("$base/apps"));
         asort($dirs);
 
+        $oldcwd = getcwd();
         foreach($dirs as $dir) {
             $displayDir = substr($dir, strlen($base));
             $this->stdout("Running '$command' in $displayDir...\n", Console::BOLD);
+            chdir($dir);
             passthru($command);
             $this->stdout("done.\n", Console::BOLD, Console::FG_GREEN);
         }
+        chdir($oldcwd);
     }
 
     /**
-     * This command installs an application template in the `apps` directory and links the framework and extensions
+     * This command installs a project template in the `apps` directory and links the framework and extensions
      *
      * It basically runs the following commands in the dev repo root:
      *
@@ -120,6 +129,7 @@ class DevController extends Controller
      *
      * @param string $app the application name e.g. `basic` or `advanced`.
      * @param string $repo url of the git repo to clone if it does not already exist.
+     * @return int return code
      */
     public function actionApp($app, $repo = null)
     {
@@ -131,6 +141,9 @@ class DevController extends Controller
             if (empty($repo)) {
                 if (isset($this->apps[$app])) {
                     $repo = $this->apps[$app];
+                    if ($this->useHttp) {
+                        $repo = str_replace('git@github.com:', 'https://github.com/', $repo);
+                    }
                 } else {
                     $this->stderr("Repo argument is required for app '$app'.\n", Console::FG_RED);
                     return 1;
@@ -166,6 +179,8 @@ class DevController extends Controller
      *
      * @param string $extension the application name e.g. `basic` or `advanced`.
      * @param string $repo url of the git repo to clone if it does not already exist.
+     *
+     * @return int
      */
     public function actionExt($extension, $repo = null)
     {
@@ -177,6 +192,9 @@ class DevController extends Controller
             if (empty($repo)) {
                 if (isset($this->extensions[$extension])) {
                     $repo = $this->extensions[$extension];
+                    if ($this->useHttp) {
+                        $repo = str_replace('git@github.com:', 'https://github.com/', $repo);
+                    }
                 } else {
                     $this->stderr("Repo argument is required for extension '$extension'.\n", Console::FG_RED);
                     return 1;
@@ -207,7 +225,23 @@ class DevController extends Controller
         return 0;
     }
 
+    /**
+     * @inheritdoc
+     */
+    public function options($actionID)
+    {
+        $options = parent::options($actionID);
+        if (in_array($actionID, ['ext', 'app', 'all'], true)) {
+            $options[] = 'useHttp';
+        }
+        return $options;
+    }
 
+
+    /**
+     * Remove all symlinks in the vendor subdirectory of the directory specified
+     * @param string $dir base directory
+     */
     protected function cleanupVendorDir($dir)
     {
         if (is_link($link = "$dir/vendor/yiisoft/yii2")) {
@@ -223,6 +257,13 @@ class DevController extends Controller
         }
     }
 
+    /**
+     * Creates symlinks to freamework and extension sources for the application
+     * @param string $dir application directory
+     * @param string $base Yii sources base directory
+     *
+     * @return int
+     */
     protected function linkFrameworkAndExtensions($dir, $base)
     {
         if (is_dir($link = "$dir/vendor/yiisoft/yii2")) {
@@ -262,6 +303,12 @@ class DevController extends Controller
         }
     }
 
+    /**
+     * Get a list of subdirectories for directory specified
+     * @param string $dir directory to read
+     *
+     * @return array list of subdirectories
+     */
     protected function listSubDirs($dir)
     {
         $list = [];
@@ -310,7 +357,7 @@ class DevController extends Controller
         closedir($handle);
 
         foreach($list as $i => $e) {
-            if ($e == 'composer') { // skip composer to not break composer update
+            if ($e === 'composer') { // skip composer to not break composer update
                 unset($list[$i]);
             }
         }

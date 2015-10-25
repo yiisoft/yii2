@@ -89,6 +89,18 @@ and [[yii\db\Connection::password|password]]. Please refer to [[yii\db\Connectio
 > Info: When you create a DB connection instance, the actual connection to the database is not established until
   you execute the first SQL or you call the [[yii\db\Connection::open()|open()]] method explicitly.
 
+> Tip: Sometimes you may want to execute some queries right after the database connection is established to initialize
+> some environment variables. You can register an event handler for the [[yii\db\Connection::EVENT_AFTER_OPEN|afterOpen]] event
+> of the database connection. You may register the handler directly in the application configuration like so:
+> 
+> ```php
+> 'db' => [
+>     // ...
+>     'on afterOpen' => function($event) {
+>         $event->sender->createCommand("YOUR SQL HERE")->execute();
+>     }
+> ]
+> ```
 
 ## Executing SQL Queries <span id="executing-sql-queries"></span>
 
@@ -353,7 +365,7 @@ the changes made by the queries prior to that failed query in the transaction.
 ### Specifying Isolation Levels <span id="specifying-isolation-levels"></span>
 
 Yii also supports setting [isolation levels] for your transactions. By default, when starting a new transaction,
-it will use the isolation level set by your database system. You can override the default isolation level as follows,
+it will use the default isolation level set by your database system. You can override the default isolation level as follows,
 
 ```php
 $isolationLevel = \yii\db\Transaction::REPEATABLE_READ;
@@ -417,13 +429,15 @@ try {
     try {
         $db->createCommand($sql2)->execute();
         $innerTransaction->commit();
-    } catch (Exception $e) {
+    } catch (\Exception $e) {
         $innerTransaction->rollBack();
+        throw $e;
     }
 
     $outerTransaction->commit();
-} catch (Exception $e) {
+} catch (\Exception $e) {
     $outerTransaction->rollBack();
+    throw $e;
 }
 ```
 
