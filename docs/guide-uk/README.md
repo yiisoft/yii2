@@ -163,14 +163,14 @@ All Rights Reserved.
 ---------------
 
 * **TBD** [Розширений шаблон проекту](https://github.com/yiisoft/yii2-app-advanced/blob/master/docs/guide-uk/README.md)
-* **TBD** [Створення додатка з нуля](tutorial-start-from-scratch.md)
+* [Створення додатка з нуля](tutorial-start-from-scratch.md)
 * [Консольні додатки](tutorial-console.md)
 * **TBD** [Основні валідатори](tutorial-core-validators.md)
 * **TBD** [Інтернаціоналізація](tutorial-i18n.md)
 * **TBD** [Робота з поштою](tutorial-mailing.md)
 * **TBD** [Покращення швидкодії](tutorial-performance-tuning.md)
 * **TBD** [Робота на віртуальному хостингу](tutorial-shared-hosting.md)
-* **TBD** [Шаблонізатори](tutorial-template-engines.md)
+* [Шаблонізатори](tutorial-template-engines.md)
 * [Робота із стороннім кодом](tutorial-yii-integration.md)
 
 
