@@ -277,25 +277,24 @@ SQL;
             }
         } catch (\Exception $e) {
             $previous = $e->getPrevious();
-            if ($previous instanceof \PDOException && strpos($previous->getMessage(), 'SQLSTATE[42S02') !== false) {
-                // table does not exist, try to determine the foreign keys using the table creation sql
-                $sql = $this->getCreateTableSql($table);
-                $regexp = '/FOREIGN KEY\s+\(([^\)]+)\)\s+REFERENCES\s+([^\(^\s]+)\s*\(([^\)]+)\)/mi';
-                if (preg_match_all($regexp, $sql, $matches, PREG_SET_ORDER)) {
-                    foreach ($matches as $match) {
-                        $fks = array_map('trim', explode(',', str_replace('`', '', $match[1])));
-                        $pks = array_map('trim', explode(',', str_replace('`', '', $match[3])));
-                        $constraint = [str_replace('`', '', $match[2])];
-                        foreach ($fks as $k => $name) {
-                            $constraint[$name] = $pks[$k];
-                        }
-                        $table->foreignKeys[md5(serialize($constraint))] = $constraint;
-                    }
-                    $table->foreignKeys = array_values($table->foreignKeys);
-                }
-            }
-            else {
+            if (!$previous instanceof \PDOException || strpos($previous->getMessage(), 'SQLSTATE[42S02') === false) {
                 throw $e;
+            }
+
+            // table does not exist, try to determine the foreign keys using the table creation sql
+            $sql = $this->getCreateTableSql($table);
+            $regexp = '/FOREIGN KEY\s+\(([^\)]+)\)\s+REFERENCES\s+([^\(^\s]+)\s*\(([^\)]+)\)/mi';
+            if (preg_match_all($regexp, $sql, $matches, PREG_SET_ORDER)) {
+                foreach ($matches as $match) {
+                    $fks = array_map('trim', explode(',', str_replace('`', '', $match[1])));
+                    $pks = array_map('trim', explode(',', str_replace('`', '', $match[3])));
+                    $constraint = [str_replace('`', '', $match[2])];
+                    foreach ($fks as $k => $name) {
+                        $constraint[$name] = $pks[$k];
+                    }
+                    $table->foreignKeys[md5(serialize($constraint))] = $constraint;
+                }
+                $table->foreignKeys = array_values($table->foreignKeys);
             }
         }
     }
