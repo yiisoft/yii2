@@ -400,7 +400,9 @@ class FormatterDateTest extends TestCase
         $this->assertSame('1 year, 2 months, 10 days, 2 hours, 30 minutes', $this->formatter->asDuration('2007-03-01T13:00:00Z/P1Y2M10DT2H30M'));
         $this->assertSame('1 year, 2 months, 10 days, 2 hours, 30 minutes', $this->formatter->asDuration('P1Y2M10DT2H30M/2008-05-11T15:30:00Z'));
         $this->assertSame('1 year, 2 months, 10 days, 2 hours, 30 minutes', $this->formatter->asDuration('P1Y2M10DT2H30M'));
+        $this->assertSame('-1 year, 2 months, 10 days, 2 hours, 30 minutes', $this->formatter->asDuration('P-1Y2M10DT2H30M'));
         $this->assertSame('94 months', $this->formatter->asDuration('P94M'));
+        $this->assertSame('-94 months', $this->formatter->asDuration('P-94M'));
 
         // Invert all the DateIntervals
         $interval_1_second->invert = true;

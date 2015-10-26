@@ -788,11 +788,21 @@ class Formatter extends Component
     }
 
     /**
-     * Formats the value as a time interval.
-     * @param DateInterval|string|integer $value the value to be formatted, in ISO8601 duration format or number of seconds.
-     * @param string $implodeString
-     * @param string $negativeSign
-     * @return string the formatted result.
+     * Represents the value as duration in human readable format.
+     *
+     * @param DateInterval|string|integer $value the value to be formatted. Acceptable formats:
+     *  - [DateInterval object](http://php.net/manual/ru/class.dateinterval.php)
+     *  - integer - number of seconds. For example: value `131` represents `2 minutes, 11 seconds`
+     *  - ISO8601 duration format. For example, all of these values represent `1 day, 2 hours, 30 minutes` duration:
+     *    `2015-01-01T13:00:00Z/2015-01-02T13:30:00Z` - between two datetime values
+     *    `2015-01-01T13:00:00Z/P1D2H30M` - time interval after datetime value
+     *    `P1D2H30M/2015-01-02T13:30:00Z` - time interval before datetime value
+     *    `P1D2H30M` - simply a date interval
+     *    `P-1D2H30M` - a negative date interval (`-1 day, 2 hours, 30 minutes`)
+     *
+     * @param string $implodeString will be used to concatenate duration parts. Defaults to `, `.
+     * @param string $negativeSign will be prefixed to the formatted duration, when it is negative. Defaults to `-`.
+     * @return string the formatted duration.
      * @since 2.0.7
      */
     public function asDuration($value, $implodeString = ', ', $negativeSign = '-')
@@ -800,6 +810,7 @@ class Formatter extends Component
         if ($value === null) {
             return $this->nullDisplay;
         }
+
         if ($value instanceof DateInterval) {
             $isNegative = $value->invert;
             $interval = $value;
@@ -815,6 +826,7 @@ class Formatter extends Component
             $interval = new DateInterval($value);
             $isNegative = $interval->invert;
         }
+
         if ($interval->y > 0) {
             $parts[] = Yii::t('yii', '{delta, plural, =1{1 year} other{# years}}', ['delta' => $interval->y], $this->locale);
         }
