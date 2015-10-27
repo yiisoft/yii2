@@ -5,6 +5,8 @@ Yii Framework 2 Change Log
 -----------------------
 
 - Bug #6351: Find MySQL FK constraints from `information_schema` tables instead of `SHOW CREATE TABLE` to improve reliability (nineinchnick)
+- Bug #6363, #8301, #8582, #9566: Fixed data methods and PJAX issues when used together (derekisbusy)
+- Bug #6876: Fixed RBAC migration MSSQL cascade problem (thejahweh)
 - Bug #8723: Fixed `yii\helpers\VarDumper::export()` unable to export circle referenced objects with `Closure` (klimov-paul)
 - Bug #9108: Negative number resulted in no formatting when using `Formatter::asSize()` or `Formatter::asShortSize` (nxnx, cebe)
 - Bug #9288: Fixed `FileHelper::createDirectory` directory creation to be concurrency friendly (dynasource)
@@ -26,7 +28,11 @@ Yii Framework 2 Change Log
 - Bug #9911: Fixed `yii\helpers\BaseStringHelper::explode()` code so it does not remove items eq to 0 with skip_empty attribute (silverfire, kidol)
 - Bug #9915: `yii\helpers\ArrayHelper::getValue()` was erroring instead of returning `null` for non-existing object properties (totaldev, samdark)
 - Bug #9924: Fixed `yii.js` handleAction corrupted parameter values containing quote (") character (silverfire)
+- Bug #9984: Fixed wrong captcha color in case Imagick is used (DrDeath72)
 - Bug: Fixed generation of canonical URLs for `ViewAction` pages (samdark)
+- Enh #8649: Added total applied migrations to final report (vernik91)
+- Enh #3506: Added `\yii\validators\IpValidator` to perform validation of IP addresses and subnets (SilverFire, samdark)
+- Enh #5146: Added `\yii\i18n\Formatter::asDuration()` method (nineinchnick, SilverFire)
 - Enh #7341: Client validation now skips disabled inputs (SamMousa)
 - Enh #7581: Added ability to specify range using anonymous function in `RangeValidator` (RomeroMsk)
 - Enh #8613: `yii\widgets\FragmentCache` will not store empty content anymore which fixes some problems related to `yii\filters\PageCache` (kidol)
@@ -41,6 +47,7 @@ Yii Framework 2 Change Log
 - Enh: Added last resort measure for `FileHelper::removeDirectory()` fail to unlink symlinks under Windows (samdark)
 - Chg #9369: `Yii::$app->user->can()` now returns `false` instead of erroring in case `authManager` component is not configured (creocoder)
 - Chg #9411: `DetailView` now automatically sets container tag ID in case it's not specified (samdark)
+- Chg #9953: `TimestampBehavior::getValue()` changed to make value processing consistent with `AttributeBehavior::getValue()` (silverfire)
 
 2.0.6 August 05, 2015
 ---------------------
