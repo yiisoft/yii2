@@ -118,5 +118,10 @@ return [
     '{attribute} must be an IP address with specified subnet.' => 'Значення «{attribute}» повинно бути IP адресою з підмережею.',
     '{attribute} must not be a subnet.' => 'Значення «{attribute}» не повинно бути підмережею.',
     '{attribute} is not in the allowed range.' => 'Значення «{attribute}» не входить в список дозволених діапазонів адрес.',
-
+    '{delta, plural, =1{1 year} other{# years}}' => '{delta, plural, one{# рік} few{# роки} many{# років} other{# років}}',
+    '{delta, plural, =1{1 month} other{# months}}' => '{delta, plural, one{# місяць} few{# місяця} many{# місяців} other{# місяців}}',
+    '{delta, plural, =1{1 day} other{# days}}' => '{delta, plural, one{# день} few{# дні} many{# днів} other{# днів}}',
+    '{delta, plural, =1{1 hour} other{# hours}}' => '{delta, plural, one{# година} few{# години} many{# годин} other{# годин}}',
+    '{delta, plural, =1{1 minute} other{# minutes}}' => '{delta, plural, one{# хвилина} few{# хвилини} many{# хвилин} other{# хвилин}}',
+    '{delta, plural, =1{1 second} other{# seconds}}' => '{delta, plural, one{# секунда} few{# секунди} many{# секунд} other{# секунд}}',
 ];

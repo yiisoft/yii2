@@ -32,6 +32,7 @@ Yii Framework 2 Change Log
 - Bug: Fixed generation of canonical URLs for `ViewAction` pages (samdark)
 - Enh #8649: Added total applied migrations to final report (vernik91)
 - Enh #3506: Added `\yii\validators\IpValidator` to perform validation of IP addresses and subnets (SilverFire, samdark)
+- Enh #5146: Added `\yii\i18n\Formatter::asDuration()` method (nineinchnick, SilverFire)
 - Enh #7341: Client validation now skips disabled inputs (SamMousa)
 - Enh #7581: Added ability to specify range using anonymous function in `RangeValidator` (RomeroMsk)
 - Enh #8613: `yii\widgets\FragmentCache` will not store empty content anymore which fixes some problems related to `yii\filters\PageCache` (kidol)
