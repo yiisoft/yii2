@@ -125,7 +125,7 @@ class BaseFormatConverter
         if (preg_match_all('/(?<!\')\'(.*?[^\'])\'(?!\')/', $pattern, $matches, PREG_SET_ORDER)) {
             foreach ($matches as $match) {
                 $match[1] = str_replace('\'\'', '\'', $match[1]);
-                $escaped[$match[0]] = '\\'.implode('\\', str_split($match[1]));
+                $escaped[$match[0]] = '\\'.implode('\\', preg_split('//u', $match[1], -1, PREG_SPLIT_NO_EMPTY));
             }
         }
         return strtr($pattern, array_merge($escaped, [
@@ -153,7 +153,7 @@ class BaseFormatConverter
             'MMM' => 'M',   // A short textual representation of a month, three letters
             'MMMM' => 'F',  // A full textual representation of a month, such as January or March
             'MMMMM' => '',  //
-            'L' => 'm',     // Stand alone month in year
+            'L' => 'n',     // Stand alone month in year
             'LL' => 'm',    // Stand alone month in year
             'LLL' => 'M',   // Stand alone month in year
             'LLLL' => 'F',  // Stand alone month in year
@@ -363,7 +363,7 @@ class BaseFormatConverter
             'MMM' => 'M',   // A short textual representation of a month, three letters
             'MMMM' => 'MM', // A full textual representation of a month, such as January or March
             'MMMMM' => '',  //
-            'L' => 'mm',     // Stand alone month in year
+            'L' => 'm',     // Stand alone month in year
             'LL' => 'mm',   // Stand alone month in year
             'LLL' => 'M',   // Stand alone month in year
             'LLLL' => 'MM', // Stand alone month in year

@@ -90,7 +90,7 @@ Yii 2.0 权威指南
 显示数据
 --------
 
-* **编撰中** [格式化输出数据](output-formatter.md)
+* **编撰中** [格式化输出数据](output-formatting.md)
 * **编撰中** [分页（Pagination）](output-pagination.md)
 * **编撰中** [排序（Sorting）](output-sorting.md)
 * **编撰中** [数据提供器](output-data-providers.md)

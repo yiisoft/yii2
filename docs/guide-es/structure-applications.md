@@ -386,7 +386,7 @@ sin proveer ningún argumento, mostrará la información de ayuda.
 Esta propiedad especifica la lista de [extensiones](structure-extensions.md) que se encuentran instaladas y son utilizadas
 por la aplicación.
 Por defecto, tomará el array devuelto por el archivo `@vendor/yiisoft/extensions.php`. El archivo `extensions.php`
-es generado y mantenido automáticamente cuando utilizas [Composer](http://getcomposer.org) para instalar extensiones.
+es generado y mantenido automáticamente cuando utilizas [Composer](https://getcomposer.org) para instalar extensiones.
 Por lo tanto, en la mayoría de los casos no necesitas configurarla.
 
 En el caso especial de que quieras mantener las extensiones a mano, puedes configurar la propiedad como se muestra a continuación:
@@ -456,7 +456,7 @@ representado por el alias `@app/views`. Puedes configurarlo como un directorio o
 
 #### [[yii\base\Application::vendorPath|vendorPath]] <span id="vendorPath"></span>
 
-Esta propiedad especifica el directorio `vendor` que maneja [Composer](http://getcomposer.org). Contiene
+Esta propiedad especifica el directorio `vendor` que maneja [Composer](https://getcomposer.org). Contiene
 todas las librerías de terceros utilizadas por tu aplicación, incluyendo el núcleo de Yii. Su valor por defecto
 está representado por el alias `@app/vendor`.
 

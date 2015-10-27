@@ -2,7 +2,7 @@
 ================
 
 依存注入 (DI) コンテナは、オブジェクトとそれが依存するすべてのブジェクトを、インスタンス化し、設定する方法を知っているオブジェクトです。
-なぜ DI コンテナが便利なのかは、[Martin の記事](http://martinfowler.com/articles/injection.html) の説明がわかりやすいでしょう。
+なぜ DI コンテナが便利なのかは、[Martin Fowler の記事](http://martinfowler.com/articles/injection.html) の説明がわかりやすいでしょう。
 ここでは、主に Yii の提供する DI コンテナの使用方法を説明します。
 
 
@@ -14,6 +14,7 @@ Yii は [[yii\di\Container]] クラスを通して DI コンテナの機能を�
 * コンストラクタ·インジェクション
 * セッター/プロパティ·インジェクション
 * PHP コーラブル·インジェクション
+* コントローラ・アクション・インジェクション
 
 
 ### コンストラクタ·インジェクション <span id="constructor-injection"></span>
@@ -91,7 +92,7 @@ $container->set('Foo', function () {
 $foo = $container->get('Foo');
 ```
 
-新しいオブジェクトを構築するための複雑なロジックを隠蔽するために、PHP コーラブルを返すスタティックなクラスメソッドを使うことが出来ます。
+新しいオブジェクトを構築するための複雑なロジックを隠蔽するために、スタティックなクラスメソッドをコーラブルとして使うことが出来ます。
 例えば、
 
 ```php
@@ -99,21 +100,34 @@ class FooBuilder
 {
     public static function build()
     {
-        return function () {
-            $foo = new Foo(new Bar);
-            // ... その他の初期化 ...
-            return $foo;
-       };
+        $foo = new Foo(new Bar);
+        // ... その他の初期化 ...
+        return $foo;
     }
 }
 
-$container->set('Foo', FooBuilder::build());
+$container->set('Foo', ['app\helper\FooBuilder', 'build']);
 
 $foo = $container->get('Foo');
 ```
 
-ご覧のように、PHP コーラブルが `FooBuilder::build()` メソッドによって返されています。
 このようにすれば、`Foo` クラスを構成しようとする人は、`Foo` がどのように構築されるかを気にする必要はもうなくなります。
+
+
+### コントローラ・アクション・インジェクション <span id="controller-action-injection"></span>
+
+コントローラ・アクション・インジェクションは、メソッド・シグニチャの型ヒントを使って依存が宣言される特殊な DI です。
+依存は、実行時に、アクションが実際に呼ばれるときに解決されます。
+この場合、必要になるかも知れない依存を前もって構成する必要がありませんので、MVC のコントローラを軽量に保つのに役立ちます。
+
+```php
+public function actionSend($email, EmailValidator $validator)
+{
+    if ($validator->validate($email)) {
+        // ... メールを送信
+    }
+}
+```
 
 
 依存関係の登録 <span id="registering-dependencies"></span>
@@ -194,17 +208,17 @@ $container->setSingleton('yii\db\Connection', [
 
 [[yii\di\Container::get()]] を使って、新しいオブジェクトを作成することができます。
 このメソッドは、クラス名、インタフェース名、エイリアス名で指定できる依存の名前を受け取ります。
-依存の名前は、 `set()` や `setSingleton()` を介して登録されていたりされていなかったりする
-可能性があります。オプションで、クラスのコンストラクタのパラメータのリストや、新しく作成された
-オブジェクトを設定するための [設定情報](concept-configurations.md) を渡すことができます。
+依存の名前は、 `set()` や `setSingleton()` を介して登録されている場合もあれば、登録されていない場合もあります。
+オプションで、クラスのコンストラクタのパラメータのリストや、新しく作成されたオブジェクトを設定するための
+[設定情報](concept-configurations.md) を渡すことができます。
 たとえば
 
 ```php
 // "db" は事前に登録されたエイリアス名
 $db = $container->get('db');
 
-// これと同じ意味: $engine = new \app\components\SearchEngine($apiKey, ['type' => 1]);
-$engine = $container->get('app\components\SearchEngine', [$apiKey], ['type' => 1]);
+// これと同じ意味: $engine = new \app\components\SearchEngine($apiKey, $apiSecret, ['type' => 1]);
+$engine = $container->get('app\components\SearchEngine', [$apiKey, $apiSecret], ['type' => 1]);
 ```
 
 見えないところで、DIコンテナは、単に新しいオブジェクトを作成するよりもはるかに多くの作業を行います。
@@ -325,8 +339,8 @@ class HotelController extends Controller
 }
 ```
 
-あなたがブラウザからこのコントローラにアクセスすると、 `BookingInterface` をインスタンス化できませんという
-不具合報告エラーが表示されるでしょう。これは、この依存関係に対処する方法を DI コンテナに教える必要があるからです:
+あなたがブラウザからこのコントローラにアクセスすると、 `BookingInterface` をインスタンス化できない、という不平を言う
+エラーが表示されるでしょう。これは、この依存関係に対処する方法を DI コンテナに教える必要があるからです:
 
 ```php
 \Yii::$container->set('app\components\BookingInterface', 'app\components\BookingService');

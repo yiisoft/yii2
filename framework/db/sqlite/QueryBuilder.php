@@ -11,6 +11,7 @@ use yii\db\Connection;
 use yii\db\Exception;
 use yii\base\InvalidParamException;
 use yii\base\NotSupportedException;
+use yii\db\Query;
 
 /**
  * QueryBuilder is the query builder for SQLite databases.
@@ -162,7 +163,7 @@ class QueryBuilder extends \yii\db\QueryBuilder
      */
     public function truncateTable($table)
     {
-        return "DELETE FROM " . $this->db->quoteTableName($table);
+        return 'DELETE FROM ' . $this->db->quoteTableName($table);
     }
 
     /**
@@ -234,6 +235,18 @@ class QueryBuilder extends \yii\db\QueryBuilder
     }
 
     /**
+     * Builds a SQL statement for renaming a DB table.
+     *
+     * @param string $table the table to be renamed. The name will be properly quoted by the method.
+     * @param string $newName the new table name. The name will be properly quoted by the method.
+     * @return string the SQL statement for renaming a DB table.
+     */
+    public function renameTable($table, $newName)
+    {
+        return 'ALTER TABLE ' . $this->db->quoteTableName($table) . ' RENAME TO ' . $this->db->quoteTableName($newName);
+    }
+
+    /**
      * Builds a SQL statement for changing the definition of a column.
      * @param string $table the table whose column is to be changed. The table name will be properly quoted by the method.
      * @param string $column the name of the column to be changed. The name will be properly quoted by the method.
@@ -299,7 +312,7 @@ class QueryBuilder extends \yii\db\QueryBuilder
      *
      * @param string $operator
      * @param array $columns
-     * @param array $values
+     * @param Query $values
      * @param array $params
      * @return string SQL
      */

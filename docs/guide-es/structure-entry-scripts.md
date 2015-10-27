@@ -17,7 +17,7 @@ deberían ser ejecutables para que los usuarios puedan ejecutar las aplicaciones
 El script de entrada principalmente hace los siguientes trabajos:
 
 * Definir las constantes globales;
-* Registrar el [cargador automático de Composer](http://getcomposer.org/doc/01-basic-usage.md#autoloading);
+* Registrar el [cargador automático de Composer](https://getcomposer.org/doc/01-basic-usage.md#autoloading);
 * Incluir el archivo de clase [[Yii]];
 * Cargar la configuración de la aplicación;
 * Crear y configurar una instancia de [aplicación](structure-applications.md);
@@ -62,10 +62,6 @@ De la misma manera, el siguiente código es el script de entrada para la [aplica
  */
 
 defined('YII_DEBUG') or define('YII_DEBUG', true);
-
-// el fcgi no tiene STDIN y STDOUT definidos por defecto
-defined('STDIN') or define('STDIN', fopen('php://stdin', 'r'));
-defined('STDOUT') or define('STDOUT', fopen('php://stdout', 'w'));
 
 // registrar el cargador automático de Composer
 require(__DIR__ . '/vendor/autoload.php');

@@ -163,7 +163,7 @@ class Object implements Configurable
     }
 
     /**
-     * Checks if the named property is set (not null).
+     * Checks if a property is set, i.e. defined and not null.
      *
      * Do not call this method directly as it is a PHP magic method that
      * will be implicitly called when executing `isset($object->property)`.
@@ -171,6 +171,7 @@ class Object implements Configurable
      * Note that if the property is not defined, false will be returned.
      * @param string $name the property name or the event name
      * @return boolean whether the named property is set (not null).
+     * @see http://php.net/manual/en/function.isset.php
      */
     public function __isset($name)
     {
@@ -192,6 +193,7 @@ class Object implements Configurable
      * If the property is read-only, it will throw an exception.
      * @param string $name the property name
      * @throws InvalidCallException if the property is read only.
+     * @see http://php.net/manual/en/function.unset.php
      */
     public function __unset($name)
     {

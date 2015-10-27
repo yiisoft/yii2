@@ -1,21 +1,21 @@
 Installing Yii
 ==============
 
-You can install Yii in two ways, using [Composer](http://getcomposer.org/) or by downloading an archive file.
+You can install Yii in two ways, using the [Composer](https://getcomposer.org/) package manager or by downloading an archive file.
 The former is the preferred way, as it allows you to install new [extensions](structure-extensions.md) or update Yii by simply running a single command.
 
-Standard installations of Yii result in both the framework and an application template being downloaded and installed.
-An application template is a working Yii application implementing some basic features, such as login, contact form, etc. 
+Standard installations of Yii result in both the framework and a project template being downloaded and installed.
+A project template is a working Yii project implementing some basic features, such as login, contact form, etc. 
 Its code is organized in a recommended way. Therefore, it can serve as a good starting point for your projects.
     
-In this and the next few sections, we will describe how to install Yii with the so-called *Basic Application Template* and
+In this and the next few sections, we will describe how to install Yii with the so-called *Basic Project Template* and
 how to implement new features on top of this template. Yii also provides another template called
-the [Advanced Application Template](tutorial-advanced-app.md) which is better used in a team development environment
+the [Advanced Project Template](https://github.com/yiisoft/yii2-app-advanced/blob/master/docs/guide/README.md) which is better used in a team development environment
 to develop applications with multiple tiers.
 
-> Info: The Basic Application Template is suitable for developing 90 percent of Web applications. It differs
-  from the Advanced Application Template mainly in how their code is organized. If you are new to Yii, we strongly
-  recommend you stick to the Basic Application Template for its simplicity yet sufficient functionalities.
+> Info: The Basic Project Template is suitable for developing 90 percent of Web applications. It differs
+  from the Advanced Project Template mainly in how their code is organized. If you are new to Yii, we strongly
+  recommend you stick to the Basic Project Template for its simplicity yet sufficient functionalities.
 
 
 Installing via Composer <span id="installing-via-composer"></span>
@@ -24,7 +24,7 @@ Installing via Composer <span id="installing-via-composer"></span>
 If you do not already have Composer installed, you may do so by following the instructions at
 [getcomposer.org](https://getcomposer.org/download/). On Linux and Mac OS X, you'll run the following commands:
 
-    curl -s http://getcomposer.org/installer | php
+    curl -sS https://getcomposer.org/installer | php
     mv composer.phar /usr/local/bin/composer
 
 On Windows, you'll download and run [Composer-Setup.exe](https://getcomposer.org/Composer-Setup.exe).
@@ -37,7 +37,7 @@ by running `composer self-update`.
 
 With Composer installed, you can install Yii by running the following commands under a Web-accessible folder:
 
-    composer global require "fxp/composer-asset-plugin:1.0.0"
+    composer global require "fxp/composer-asset-plugin:~1.0.3"
     composer create-project --prefer-dist yiisoft/yii2-app-basic basic
 
 The first command installs the [composer asset plugin](https://github.com/francoispluchino/composer-asset-plugin/)
@@ -84,27 +84,32 @@ But there are other installation options available:
 * If you only want to install the core framework and would like to build an entire  application from scratch,
   you may follow the instructions as explained in [Building Application from Scratch](tutorial-start-from-scratch.md).
 * If you want to start with a more sophisticated application, better suited to team development environments,
-  you may consider installing the [Advanced Application Template](tutorial-advanced-app.md).
+  you may consider installing the [Advanced Project Template](https://github.com/yiisoft/yii2-app-advanced/blob/master/docs/guide/README.md).
 
 
 Verifying the Installation <span id="verifying-installation"></span>
 --------------------------
 
-After installation, you can use your browser to access the installed Yii application with the following URL:
+After installation is done, either configure your web server (see next section) or use
+[built-in PHP web server](https://secure.php.net/manual/en/features.commandline.webserver.php) by running the following
+console command while in the project `web` directory:
+ 
+```
+php -S localhost:80
+```
+
+You can use your browser to access the installed Yii application with the following URL:
 
 ```
-http://localhost/basic/web/index.php
+http://localhost/
 ```
-
-This URL assumes you have installed Yii in a directory named `basic`, directly under the Web server's document root directory,
-and that the Web server is running on your local machine (`localhost`). You may need to adjust it to your installation environment.
 
 ![Successful Installation of Yii](images/start-app-installed.png)
 
 You should see the above "Congratulations!" page in your browser. If not, please check if your PHP installation satisfies
 Yii's requirements. You can check if the minimum requirements are met using one of the following approaches:
 
-* Use a browser to access the URL `http://localhost/basic/requirements.php`
+* Copy `/requirements.php` to `/web/requirements.php` and then use a browser to access it via `http://localhost/requirements.php`
 * Run the following commands:
 
   ```
@@ -112,9 +117,9 @@ Yii's requirements. You can check if the minimum requirements are met using one 
   php requirements.php
   ```
 
-You should configure your PHP installation so that it meets the minimum requirements of Yii. Most importantly, you should have PHP 5.4 or above. You should also install
-the [PDO PHP Extension](http://www.php.net/manual/en/pdo.installation.php) and a corresponding database driver
-(such as `pdo_mysql` for MySQL databases), if your application needs a database.
+You should configure your PHP installation so that it meets the minimum requirements of Yii. Most importantly, you
+should have PHP 5.4 or above. You should also install the [PDO PHP Extension](http://www.php.net/manual/en/pdo.installation.php)
+and a corresponding database driver (such as `pdo_mysql` for MySQL databases), if your application needs a database.
 
 
 Configuring Web Servers <span id="configuring-web-servers"></span>

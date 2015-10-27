@@ -218,6 +218,15 @@ $alerts = $session->getFlash('alerts');
   これは、後者のメソッドが、同じ名前のフラッシュデータを追加できるように、フラッシュデータを自動的に配列に変換するからです。
   その結果、[[yii\web\Session::getFlash()]] を呼び出したとき、この二つのメソッドの呼び出し順によって、あるときは配列を受け取り、あるときは文字列を受け取るということになってしまいます。
 
+> Tip|ヒント: フラッシュメッセージを表示するためには、[[yii\bootstrap\Alert|bootstrap Alert]] ウィジェットを次のように使用することが出来ます。
+>
+> ```php
+> echo Alert::widget([
+>    'options' => ['class' => 'alert-info'],
+>    'body' => Yii::$app->session->getFlash('postDeleted'),
+> ]);
+> ```
+
 
 ## クッキー <span id="cookies"></span>
 

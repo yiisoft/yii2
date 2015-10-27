@@ -87,6 +87,18 @@ ODBC 経由でデータベースに接続しようとする場合は、[[yii\db\
 
 > Info|情報: DB 接続のインスタンスを作成するとき、実際のデータベース接続は、最初の SQL を実行するか、[[yii\db\Connection::open()|open()]] メソッドを明示的に呼ぶかするまでは確立されません。
 
+> Tip|ヒント: 時として、何らかの環境変数を初期化するために、データベース接続を確立した直後に何かクエリを実行したい場合があります。
+> そのためには、データベース接続の [[yii\db\Connection::EVENT_AFTER_OPEN|afterOpen]] イベントに対するイベントハンドラを登録することが出来ます。
+> 以下のように、アプリケーションの構成情報に直接にハンドラを登録してください。
+> 
+> ```php
+> 'db' => [
+>     // ...
+>     'on afterOpen' => function($event) {
+>         $event->sender->createCommand("YOUR SQL HERE")->execute();
+>     }
+> ]
+> ```
 
 ## SQL クエリを実行する <span id="executing-sql-queries"></span>
 
@@ -406,12 +418,12 @@ try {
     try {
         $db->createCommand($sql2)->execute();
         $innerTransaction->commit();
-    } catch (Exception $e) {
+    } catch (\Exception $e) {
         $innerTransaction->rollBack();
     }
 
     $outerTransaction->commit();
-} catch (Exception $e) {
+} catch (\Exception $e) {
     $outerTransaction->rollBack();
 }
 ```

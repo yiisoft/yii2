@@ -31,7 +31,7 @@ return [
     'No help for unknown command "{command}".' => 'פקודה "{command}" לא מוכרת ואין לה עזרה',
     'No help for unknown sub-command "{command}".' => 'תת-פקודה "{command}" לא מוכרת ואין לה עזרה',
     'No results found.' => 'לא נמצאו תוצאות',
-    'Only files with these extensions are allowed: {extensions}.' => 'רק קבצים עם ההרחבות הבאות מותרים: {extentions}.',
+    'Only files with these extensions are allowed: {extensions}.' => 'רק קבצים עם ההרחבות הבאות מותרים: {extensions}.',
     'Page not found.' => 'דף לא נמצא',
     'Please fix the following errors:' => 'בבקשה, תקן את השגיאות הבאות: ',
     'Please upload a file.' => 'נא העלה קובץ.',
@@ -74,6 +74,6 @@ return [
     '{attribute} must be repeated exactly.' => '{attribute} חייב להיות מוחזר בדיוק.',
     '{attribute} must not be equal to "{compareValue}".' => '{attribute} חייב להיות שווה ל "{compareValue}"',
     '{attribute} should contain at least {min, number} {min, plural, one{character} other{characters}}.' => '{attribute} אמור לכלול לפחות {min, number} {min, plural, one{תו} few{תוים} many{תוים}}.',
-    '{attribute} should contain at most {max, number} {max, plural, one{character} other{characters}}.' => '{attribute} אמור לא לכלול יותר מ {max, number} {max, plural, one{תו} few{תוים} many{תוים}}.',
+    '{attribute} should contain at most {max, number} {max, plural, one{character} other{characters}}.' => '{attribute} אמור לא לכלול יותר מ{max, number} {max, plural, one{תו} other{תוים}}.',
     '{attribute} should contain {length, number} {length, plural, one{character} other{characters}}.' => '{attribute}  אמור לכלול {length, number} {length, plural, one{תו} few{תוים} many{תוים}}.',
 ];

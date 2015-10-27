@@ -82,7 +82,7 @@ take two steps: install Yii, and bootstrap Yii.
 If the third-party system uses Composer to manage its dependencies, you can simply run the following commands
 to install Yii:
 
-    composer global require "fxp/composer-asset-plugin:1.0.0"
+    composer global require "fxp/composer-asset-plugin:~1.0.3"
     composer require yiisoft/yii2
     composer install
 
@@ -160,7 +160,7 @@ class Yii extends \yii\BaseYii
 }
 
 Yii::$classMap = include($yii2path . '/classes.php');
-// register Yii2 autoloader via Yii1
+// register Yii 2 autoloader via Yii 1
 Yii::registerAutoloader(['Yii', 'autoload']);
 // create the dependency injection container
 Yii::$container = new yii\di\Container;

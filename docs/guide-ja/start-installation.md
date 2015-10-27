@@ -1,21 +1,21 @@
 Yii をインストールする
 ======================
 
-Yii は二つの方法でインストールすることが出来ます。すなわち、[Composer](http://getcomposer.org/) を使うか、アーカイブファイルをダウンロードするかです。
+Yii は二つの方法でインストールすることが出来ます。すなわち、[Composer](https://getcomposer.org/) を使うか、アーカイブファイルをダウンロードするかです。
 前者がお薦めの方法です。と言うのは、一つのコマンドを走らせるだけで、新しい [エクステンション](structure-extensions.md) をインストールしたり、Yii をアップデートしたりすることが出来るからです。
 
-Yii の標準的なインストールを実行すると、フレームワークとアプリケーションテンプレートの両方がダウンロードされてインストールされます。
-アプリケーションテンプレートは、いくつかの基本的な機能、例えば、ログインやコンタクトフォームなどを実装した、動作する Yii アプリケーションです。
+Yii の標準的なインストールを実行すると、フレームワークとプロジェクトテンプレートの両方がダウンロードされてインストールされます。
+プロジェクトテンプレートは、いくつかの基本的な機能、例えば、ログインやコンタクトフォームなどを実装した、動作する Yii アプリケーションです。
 そのコードは推奨される方法に従って編成されています。
-そのため、アプリケーションテンプレートは、あなたのプロジェクトのための良い開始点としての役割を果たしうるものです。
+そのため、プロジェクトテンプレートは、あなたのプロジェクトのための良い開始点としての役割を果たしうるものです。
 
-この節と後続のいくつかの節においては、いわゆる *ベーシックアプリケーションテンプレート* とともに Yii をインストールする方法、および、このテンプレート上に新しい機能を実装する方法を説明します。
-Yii はもう一つ、[アドバンストアプリケーションテンプレート](tutorial-advanced-app.md) と呼ばれるテンプレートも提供しています。
+この節と後続のいくつかの節においては、いわゆる *ベーシックプロジェクトテンプレート* とともに Yii をインストールする方法、および、このテンプレート上に新しい機能を実装する方法を説明します。
+Yii はもう一つ、[アドバンストプロジェクトテンプレート](https://github.com/yiisoft/yii2-app-advanced/blob/master/docs/guide-ja/README.md) と呼ばれるテンプレートも提供しています。
 こちらは、チーム開発環境において多層構造のアプリケーションを開発するときに使用する方が望ましいものです。
 
-> Info|情報: ベーシックアプリケーションテンプレートは、ウェブアプリケーションの 90 パーセントを開発するのに適したものです。
-  アドバンストアプリケーションテンプレートとの主な違いは、コードがどのように編成されているかという点にあります。
-  あなたが Yii は初めてだという場合は、シンプルでありながら十分な機能を持っているベーシックアプリケーションテンプレートに留まることを強く推奨します。
+> Info|情報: ベーシックプロジェクトテンプレートは、ウェブアプリケーションの 90 パーセントを開発するのに適したものです。
+  アドバンストプロジェクトテンプレートとの主な違いは、コードがどのように編成されているかという点にあります。
+  あなたが Yii は初めてだという場合は、シンプルでありながら十分な機能を持っているベーシックプロジェクトテンプレートに留まることを強く推奨します。
 
 
 Composer によるインストール <span id="installing-via-composer"></span>
@@ -24,7 +24,7 @@ Composer によるインストール <span id="installing-via-composer"></span>
 まだ Composer をインストールしていない場合は、[getcomposer.org](https://getcomposer.org/download/) の指示に従ってインストールすることが出来ます。
 Linux や Mac OS X では、次のコマンドを実行します。
 
-    curl -s http://getcomposer.org/installer | php
+    curl -sS https://getcomposer.org/installer | php
     mv composer.phar /usr/local/bin/composer
 
 Windows では、[Composer-Setup.exe](https://getcomposer.org/Composer-Setup.exe) をダウンロードして実行します。
@@ -36,7 +36,7 @@ Composer は `composer self-update` コマンドを実行してアップデー�
 
 Composer がインストールされたら、ウェブからアクセスできるフォルダで下記のコマンドを実行することによって Yii をインストールすることが出来ます。
 
-    composer global require "fxp/composer-asset-plugin:1.0.0"
+    composer global require "fxp/composer-asset-plugin:~1.0.3"
     composer create-project --prefer-dist yiisoft/yii2-app-basic basic
 
 最初のコマンドは [composer アセットプラグイン](https://github.com/francoispluchino/composer-asset-plugin/) をインストールします。
@@ -83,17 +83,24 @@ Composer がインストールされたら、ウェブからアクセスでき�
 
 * コアフレームワークだけをインストールし、アプリケーション全体を一から構築したい場合は、[アプリケーションを一から構築する](tutorial-start-from-scratch.md)
   で説明されている指示に従うことが出来ます。
-* もっと洗練された、チーム開発環境により適したアプリケーションから開始したい場合は、 [アドバンストアプリケーションテンプレート](tutorial-advanced-app.md)
-  をインストールすることを考慮することが出来ます。
+* もっと洗練された、チーム開発環境により適したアプリケーションから開始したい場合は、 [アドバンストプロジェクトテンプレート](https://github.com/yiisoft/yii2-app-advanced/blob/master/docs/guide-ja/README.md) をインストールすることを考慮することが出来ます。
 
 
 インストールを検証する <span id="verifying-installation"></span>
 ----------------------
 
-インストール完了後、インストールされた Yii アプリケーションにブラウザを使って下記の URL でアクセスすることが出来ます。
+インストール完了後、あなたのウェブサーバを構成してください (次の説を参照してください)。
+あるいは、プロジェクトの `web` ディレクトリで次のコマンドを実行して、
+[PHP の内蔵ウェブサーバ](https://secure.php.net/manual/ja/features.commandline.webserver.php) を使ってください。
 
 ```
-http://localhost/basic/web/index.php
+php -S localhost:80
+```
+
+下記の URL によって、インストールされた Yii アプリケーションにブラウザを使ってアクセスすることが出来ます。
+
+```
+http://localhost/
 ```
 
 この URL は、あなたが Yii を ウェブサーバのドキュメントルートディレクトリ直下の `basic` という名前のディレクトリにインストールしたこと、
@@ -106,7 +113,7 @@ http://localhost/basic/web/index.php
 もし表示されなかったら、PHP のインストールが Yii の必要条件を満たしているかどうか、チェックしてください。
 最低限の必要条件を満たしているかどうかは、次の方法のどちらかによってチェックすることが出来ます。
 
-* ブラウザを使って URL `http://localhost/basic/requirements.php` にアクセスする。
+* `requirements.php` を `/web/requirements.php` としてコピーし、ブラウザを使って URL `http://localhost/requirements.php` にアクセスする。
 * 次のコマンドを実行する。
 
   ```
@@ -181,7 +188,7 @@ server {
     root        /path/to/basic/web;
     index       index.php;
 
-    access_log  /path/to/basic/log/access.log main;
+    access_log  /path/to/basic/log/access.log;
     error_log   /path/to/basic/log/error.log;
 
     location / {

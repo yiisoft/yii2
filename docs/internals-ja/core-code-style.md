@@ -8,6 +8,10 @@ Yii2 コアフレームワークのコードスタイル
 
 なお、CodeSniffer のための設定をここで入手できます: https://github.com/yiisoft/yii2-coding-standards
 
+> Note|注意: 以下では、説明のために、サンプル・コードのドキュメントやコメントを日本語に翻訳しています。
+  しかし、コアコードや公式エクステンションに対して実際に寄稿する場合には、それらを英語で書く必要があります。
+
+
 1. 概要
 -------
 
@@ -252,7 +256,7 @@ if (!$model && null === $event)
     throw new Exception('test');
 ```
 
-そうすることが合理的な場合は、`return` の後の `else` は出来れば避けてください。
+そうしても意味が通じる場合は、`return` の後の `else` は避けてください。
 [ガード条件](http://refactoring.com/catalog/replaceNestedConditionalWithGuardClauses.html) を使用しましょう。
 
 ```php
@@ -358,8 +362,6 @@ $mul = array_reduce($numbers, function($r, $x) use($n) {
     public function getErrors($attribute = null)
   ```
 
->Note|注意: ここでは読みやすさを考慮してドキュメントの内容を日本語に翻訳していますが、コアコードや公式エクステンションに対して寄稿する場合は、当然ながら、コメントには英語だけを使う必要があります。
-
 #### ファイル
 
 ```php
@@ -442,7 +444,7 @@ public function getEventHandlers($name)
 #### コメント
 
 - 一行コメントは `//` で開始されるべきです。`#` は使いません。
-- 一行コメントはそれ自身の行に置くべきです。
+- 一行コメントはそれ自体で一行を占めるべきです。
 
 追加の規則
 ----------

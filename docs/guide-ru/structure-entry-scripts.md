@@ -16,7 +16,7 @@
 Входные скрипты в основном делают следующую работу:
 
 * Объявляют глобальные константы;
-* Регистрируют загрузчик классов [Composer](http://getcomposer.org/doc/01-basic-usage.md#autoloading);
+* Регистрируют загрузчик классов [Composer](https://getcomposer.org/doc/01-basic-usage.md#autoloading);
 * Подключают файл класса [[Yii]];
 * Загружают конфигурацию приложения;
 * Создают и конфигурируют объект [приложения](structure-applications.md);
@@ -63,10 +63,6 @@ $config = require(__DIR__ . '/../config/web.php');
  */
 
 defined('YII_DEBUG') or define('YII_DEBUG', true);
-
-// fcgi не имеет констант STDIN и STDOUT, они определяются по умолчанию
-defined('STDIN') or define('STDIN', fopen('php://stdin', 'r'));
-defined('STDOUT') or define('STDOUT', fopen('php://stdout', 'w'));
 
 // регистрация загрузчика классов Composer
 require(__DIR__ . '/vendor/autoload.php');

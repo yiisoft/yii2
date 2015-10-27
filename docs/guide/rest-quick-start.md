@@ -19,12 +19,12 @@ In particular, Yii supports the following features about RESTful APIs:
 In the following, we use an example to illustrate how you can build a set of RESTful APIs with some minimal coding effort.
 
 Assume you want to expose the user data via RESTful APIs. The user data are stored in the `user` DB table,
-and you have already created the [[yii\db\ActiveRecord|ActiveRecord]] class `app\models\User` to access the user data.
+and you have already created the [active record](db-active-record.md) class `app\models\User` to access the user data.
 
 
 ## Creating a Controller <span id="creating-controller"></span>
 
-First, create a controller class `app\controllers\UserController` as follows,
+First, create a [controller](structure-controllers.md) class `app\controllers\UserController` as follows,
 
 ```php
 namespace app\controllers;
@@ -37,8 +37,9 @@ class UserController extends ActiveController
 }
 ```
 
-The controller class extends from [[yii\rest\ActiveController]]. By specifying [[yii\rest\ActiveController::modelClass|modelClass]]
-as `app\models\User`, the controller knows what model can be used for fetching and manipulating data.
+The controller class extends from [[yii\rest\ActiveController]], which implements a common set of RESTful actions.
+By specifying [[yii\rest\ActiveController::modelClass|modelClass]]
+as `app\models\User`, the controller knows which model can be used for fetching and manipulating data.
 
 
 ## Configuring URL Rules <span id="configuring-url-rules"></span>
@@ -63,7 +64,7 @@ can be accessed and manipulated with pretty URLs and meaningful HTTP verbs.
 ## Enabling JSON Input <span id="enabling-json-input"></span>
 
 To let the API accept input data in JSON format, configure the [[yii\web\Request::$parsers|parsers]] property of
-the `request` application component to use the [[yii\web\JsonParser]] for JSON input:
+the `request` [application component](structure-application-components.md) to use the [[yii\web\JsonParser]] for JSON input:
 
 ```php
 'request' => [
@@ -184,7 +185,7 @@ For example, the URL `http://localhost/users?fields=id,email` will only return t
 
 > Info: You may have noticed that the result of `http://localhost/users` includes some sensitive fields,
 > such as `password_hash`, `auth_key`. You certainly do not want these to appear in your API result.
-> You can and should filter out these fields as described in the [Response Formatting](rest-response-formatting.md) section.
+> You can and should filter out these fields as described in the [Resources](rest-resources.md) section.
 
 
 ## Summary <span id="summary"></span>

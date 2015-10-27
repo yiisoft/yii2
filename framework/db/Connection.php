@@ -80,7 +80,7 @@ use yii\caching\Cache;
  * You also can use shortcut for the above like the following:
  *
  * ~~~
- * $connection->transaction(function() {
+ * $connection->transaction(function () {
  *     $order = new Order($customer);
  *     $order->save();
  *     $order->addItems($items);
@@ -90,7 +90,7 @@ use yii\caching\Cache;
  * If needed you can pass transaction isolation level as a second parameter:
  *
  * ~~~
- * $connection->transaction(function(Connection $db) {
+ * $connection->transaction(function (Connection $db) {
  *     //return $db->...
  * }, Transaction::READ_UNCOMMITTED);
  * ~~~
@@ -153,6 +153,10 @@ class Connection extends Component
      * @var string the Data Source Name, or DSN, contains the information required to connect to the database.
      * Please refer to the [PHP manual](http://www.php.net/manual/en/function.PDO-construct.php) on
      * the format of the DSN string.
+     *
+     * For [SQLite](http://php.net/manual/en/ref.pdo-sqlite.connection.php) you may use a path alias
+     * for specifying the database path, e.g. `sqlite:@app/data/db.sql`.
+     *
      * @see charset
      */
     public $dsn;
@@ -571,12 +575,20 @@ class Connection extends Component
             } elseif (($pos = strpos($this->dsn, ':')) !== false) {
                 $driver = strtolower(substr($this->dsn, 0, $pos));
             }
-            if (isset($driver) && ($driver === 'mssql' || $driver === 'dblib' || $driver === 'sqlsrv')) {
-                $pdoClass = 'yii\db\mssql\PDO';
+            if (isset($driver)) {
+                if ($driver === 'mssql' || $driver === 'dblib') {
+                    $pdoClass = 'yii\db\mssql\PDO';
+                } elseif ($driver === 'sqlsrv') {
+                    $pdoClass = 'yii\db\mssql\SqlsrvPDO';
+                }
             }
         }
 
-        return new $pdoClass($this->dsn, $this->username, $this->password, $this->attributes);
+        $dsn = $this->dsn;
+        if (strncmp('sqlite:@', $dsn, 8) === 0) {
+            $dsn = 'sqlite:' . Yii::getAlias(substr($dsn, 7));
+        }
+        return new $pdoClass($dsn, $this->username, $this->password, $this->attributes);
     }
 
     /**

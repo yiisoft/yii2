@@ -423,7 +423,7 @@ class User extends Component
             $this->setReturnUrl($request->getUrl());
         }
         if ($this->loginUrl !== null) {
-            $loginUrl = (array)$this->loginUrl;
+            $loginUrl = (array) $this->loginUrl;
             if ($loginUrl[0] !== Yii::$app->requestedRoute) {
                 return Yii::$app->getResponse()->redirect($this->loginUrl);
             }
@@ -639,12 +639,11 @@ class User extends Component
      * Checks if the user can perform the operation as specified by the given permission.
      *
      * Note that you must configure "authManager" application component in order to use this method.
-     * Otherwise an exception will be thrown.
+     * Otherwise it will always return false.
      *
      * @param string $permissionName the name of the permission (e.g. "edit post") that needs access check.
      * @param array $params name-value pairs that would be passed to the rules associated
-     * with the roles and permissions assigned to the user. A param with name 'user' is added to
-     * this array, which holds the value of [[id]].
+     * with the roles and permissions assigned to the user.
      * @param boolean $allowCaching whether to allow caching the result of access check.
      * When this parameter is true (default), if the access check of an operation was performed
      * before, its result will be directly returned when calling this method to check the same
@@ -655,15 +654,30 @@ class User extends Component
      */
     public function can($permissionName, $params = [], $allowCaching = true)
     {
-        $auth = Yii::$app->getAuthManager();
         if ($allowCaching && empty($params) && isset($this->_access[$permissionName])) {
             return $this->_access[$permissionName];
         }
-        $access = $auth->checkAccess($this->getId(), $permissionName, $params);
+        if (($manager = $this->getAuthManager()) === null) {
+            return false;
+        }
+        $access = $manager->checkAccess($this->getId(), $permissionName, $params);
         if ($allowCaching && empty($params)) {
             $this->_access[$permissionName] = $access;
         }
 
         return $access;
+    }
+
+    /**
+     * Returns auth manager associated with the user component.
+     *
+     * By default this is the `authManager` application component.
+     * You may override this method to return a different auth manager instance if needed.
+     * @return \yii\rbac\ManagerInterface
+     * @since 2.0.6
+     */
+    protected function getAuthManager()
+    {
+        return Yii::$app->getAuthManager();
     }
 }

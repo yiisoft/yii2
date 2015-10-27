@@ -19,7 +19,7 @@ Yii は上記の全ての認証方法をサポートしています。新しい�
 
 あなたの API に対して認証を有効にするためには、次のステップを実行します。
 
-1. `user` アプリケーションコンポーネントを構成します。
+1. `user` [アプリケーションコンポーネント](structure-application-components.md) を構成します。
    - [[yii\web\User::enableSession|enableSession]] プロパティを `false` に設定します。
    - [[yii\web\User::loginUrl|loginUrl]] プロパティを `null` に設定し、ログインページにリダイレクトする代りに HTTP 403 エラーを表示します。
 2. REST コントローラクラスにおいて、`authenticator` ビヘイビアを構成することによって、どの認証方法を使用するかを指定します。
@@ -29,15 +29,15 @@ Yii は上記の全ての認証方法をサポートしています。新しい�
 [[yii\web\User::enableSession|enableSession]] が false である場合、ユーザの認証ステータスがセッションを使ってリクエストをまたいで存続することはありません。
 その代りに、すべてのリクエストに対して認証が実行されます。このことは、ステップ 2 と 3 によって達成されます。
 
-> Tip|情報: RESTful API をアプリケーションの形式で開発する場合は、アプリケーションの構成情報で `user` アプリケーションコンポーネントの [[yii\web\User::enableSession|enableSession]] プロパティを構成することが出来ます。
-  RESTful API をモジュールとして開発する場合は、次のように、モジュールの `init()` メソッドに一行を追加することが出来ます。
+> Tip|情報: RESTful API をアプリケーションの形式で開発する場合は、アプリケーションの構成情報で `user` アプリケーションコンポーネント(structure-application-components.md) の [[yii\web\User::enableSession|enableSession]] プロパティを構成することが出来ます。
+> RESTful API をモジュールとして開発する場合は、次のように、モジュールの `init()` メソッドに一行を追加することが出来ます。
 > ```php
-public function init()
-{
-    parent::init();
-    \Yii::$app->user->enableSession = false;
-}
-```
+> public function init()
+> {
+>     parent::init();
+>     \Yii::$app->user->enableSession = false;
+> }
+> ```
 
 例えば、HTTP Basic 認証を使う場合は、`authenticator` ビヘイビアを次のように構成することが出来ます。
 

@@ -174,7 +174,7 @@ class UrlRule extends Object implements UrlRuleInterface
                 if (array_key_exists($name, $this->defaults)) {
                     $length = strlen($match[0][0]);
                     $offset = $match[0][1];
-                    if ($offset > 1 && $this->pattern[$offset - 1] === '/' && $this->pattern[$offset + $length] === '/') {
+                    if ($offset > 1 && $this->pattern[$offset - 1] === '/' && (!isset($this->pattern[$offset + $length]) || $this->pattern[$offset + $length] === '/')) {
                         $tr["/<$name>"] = "(/(?P<$name>$pattern))?";
                     } else {
                         $tr["<$name>"] = "(?P<$name>$pattern)?";
@@ -340,5 +340,16 @@ class UrlRule extends Object implements UrlRuleInterface
         }
 
         return $url;
+    }
+
+    /**
+     * Returns list of regex for matching parameter.
+     * @return array parameter keys and regexp rules.
+     *
+     * @since 2.0.6
+     */
+    protected function getParamRules()
+    {
+        return $this->_paramRules;
     }
 }

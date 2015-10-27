@@ -282,7 +282,7 @@ acordo com as seguintes regras:
   da view será formado pelo nome da view (visão) com o 
   [[yii\base\ViewContextInterface::getViewPath()|diretório da view]] do contexto. 
   Isto se aplica principalmente para as views (visões) renderizadas pelos controllers 
-  (controladores) e widgets. Por exemplo, `site/about` corresponderá ao 
+  (controladores) e widgets. Por exemplo, `about` corresponderá ao 
   `@app/views/site/about.php` caso o contexto seja o controller (controlador) 
   `SiteController`.
 * Se uma view (visão) for renderizada por outra view (visão), o diretório desta 

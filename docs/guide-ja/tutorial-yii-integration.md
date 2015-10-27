@@ -77,7 +77,7 @@ Yii は数多くの優れた機能を提供していますので、サードパ�
 
 サードパーティのシステムが Composer を使って依存を管理している場合は、単に下記のコマンドを実行すれば Yii をインストールすることが出来ます。
 
-    composer global require "fxp/composer-asset-plugin:1.0.0"
+    composer global require "fxp/composer-asset-plugin:~1.0.3"
     composer require yiisoft/yii2
     composer install
 
@@ -152,7 +152,7 @@ class Yii extends \yii\BaseYii
 }
 
 Yii::$classMap = include($yii2path . '/classes.php');
-// Yii2 オートローダを Yii1 によって登録
+// Yii 2 オートローダを Yii 1 によって登録
 Yii::registerAutoloader(['Yii', 'autoload']);
 // 依存注入コンテナを作成
 Yii::$container = new yii\di\Container;
