@@ -121,4 +121,10 @@ return [
     '{attribute} must be an IP address with specified subnet.' => 'Значение «{attribute}» должно быть IP адресом с подсетью.',
     '{attribute} must not be a subnet.' => 'Значение «{attribute}» не должно быть подсетью.',
     '{attribute} is not in the allowed range.' => 'Значение «{attribute}» не входит в список разрешенных диапазонов адресов.',
+    '{delta, plural, =1{1 year} other{# years}}' => '{delta, plural, one{# год} few{# года} many{# лет} other{# лет}}',
+    '{delta, plural, =1{1 month} other{# months}}' => '{delta, plural, one{# месяц} few{# месяца} many{# месяцев} other{# месяцев}}',
+    '{delta, plural, =1{1 day} other{# days}}' => '{delta, plural, one{# день} few{# дня} many{# дней} other{# дней}}',
+    '{delta, plural, =1{1 hour} other{# hours}}' => '{delta, plural, one{# час} few{# часа} many{# часов} other{# часов}}',
+    '{delta, plural, =1{1 minute} other{# minutes}}' => '{delta, plural, one{# минута} few{# минуты} many{# минут} other{# минут}}',
+    '{delta, plural, =1{1 second} other{# seconds}}' => '{delta, plural, one{# секунда} few{# секунды} many{# секунд} other{# секунд}}',
 ];
