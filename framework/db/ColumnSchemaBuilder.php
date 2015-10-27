@@ -105,11 +105,19 @@ class ColumnSchemaBuilder extends Object
     }
 
     /**
+     * @return string
+     */
+    public function __toString()
+    {
+        return $this->buildString();
+    }
+
+    /**
      * Build full string for create the column's schema
      * @param boolean $alter Whether we need a string for altering.
      * @return string
      */
-    public function __toString($alter = false)
+    public function buildString($alter = false)
     {
         return
             $this->type .
@@ -119,6 +127,7 @@ class ColumnSchemaBuilder extends Object
             $this->buildDefaultString($alter) .
             $this->buildCheckString($alter);
     }
+
 
     /**
      * Builds the length/precision part of the column.

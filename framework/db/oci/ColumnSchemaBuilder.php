@@ -20,7 +20,7 @@ class ColumnSchemaBuilder extends AbstractColumnSchemaBuilder
     /**
      * @inheritdoc
      */
-    public function __toString($alter = false)
+    public function buildString($alter = false)
     {
         return
             $this->type .

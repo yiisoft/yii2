@@ -99,9 +99,9 @@ EOD;
      */
     public function alterColumn($table, $column, $type)
     {
-        $type = $this->getColumnType($type);
+        $type = $this->getColumnType($type, true);
 
-        return 'ALTER TABLE ' . $this->db->quoteTableName($table) . ' MODIFY ' . $this->db->quoteColumnName($column) . ' ' . $this->getColumnType($type);
+        return 'ALTER TABLE ' . $this->db->quoteTableName($table) . ' MODIFY ' . $this->db->quoteColumnName($column) . ' ' . $this->getColumnType($type, true);
     }
 
     /**

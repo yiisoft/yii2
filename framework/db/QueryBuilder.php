@@ -449,7 +449,7 @@ class QueryBuilder extends \yii\base\Object
         return 'ALTER TABLE ' . $this->db->quoteTableName($table) . ' CHANGE '
             . $this->db->quoteColumnName($column) . ' '
             . $this->db->quoteColumnName($column) . ' '
-            . $this->getColumnType($type);
+            . $this->getColumnType($type, true);
     }
 
     /**
@@ -593,7 +593,7 @@ class QueryBuilder extends \yii\base\Object
     public function getColumnType($type, $alter = false)
     {
         if ($type instanceof ColumnSchemaBuilder) {
-            $type = $type->__toString($alter);
+            $type = $type->buildString($alter);
         }
 
         if (isset($this->typeMap[$type])) {
