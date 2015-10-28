@@ -13,9 +13,30 @@
 * `loadAllowance()`: 許可されているリクエストの残り数と、レート制限が最後にチェックされたときの対応する UNIX タイムスタンプを返します。
 * `saveAllowance()`: 許可されているリクエストの残り数と現在の UNIX タイムスタンプの両方を保存します。
 
-ユーザのテーブルの二つのカラムを追加し、それらを使って、許容されているリクエスト数とタイムスタンプの情報を記録することが出来ます。
+ユーザテーブルに二つのカラムを追加して、許容されているリクエスト数とタイムスタンプの情報を記録することが出来ます。
 それらを定義すれば、`loadAllowance()` と `saveAllowance()` は、認証された現在のユーザに対応する二つのカラムの値を読み書きするものとして実装することが出来ます。
 パフォーマンスを向上させるために、これらの情報をキャッシュや NoSQL ストレージに保存することを検討しても良いでしょう。
+
+`User` モデルにおける実装は次のようなものになります。
+
+```php
+public function getRateLimit($request, $action)
+{
+    return [$this->rateLimit, 1]; // 1秒間に $rateLimit 回数のリクエスト
+}
+
+public function loadAllowance($request, $action)
+{
+    return [$this->allowance, $this->allowance_updated_at];
+}
+
+public function saveAllowance($request, $action, $allowance, $timestamp)
+{
+    $this->allowance = $allowance;
+    $this->allowance_updated_at = $timestamp;
+    $this->save();
+}
+```
 
 アイデンティティのクラスに必要なインタフェイスを実装すると、Yii は [[yii\rest\Controller]] のアクションフィルタとして構成された [[yii\filters\RateLimiter]] を使って、自動的にレート制限のチェックを行うようになります。
 レート制限を超えると、レートリミッタが [[yii\web\TooManyRequestsHttpException]] を投げます。
