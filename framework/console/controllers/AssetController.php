@@ -194,9 +194,15 @@ class AssetController extends Controller
 
         foreach ($bundles as $bundle) {
             if ($bundle->sourcePath !== null) {
-                $files = FileHelper::findFiles($bundle->basePath, ['only' => ['*.js', '*.css']]);
-                foreach ($files as $file) {
-                    @unlink($file);
+                if (!empty($bundle->js)) {
+                    foreach ($bundle->js as $jsFile) {
+                        @unlink($bundle->basePath . DIRECTORY_SEPARATOR . $jsFile);
+                    }
+                }
+                if (!empty($bundle->css)) {
+                    foreach ($bundle->css as $cssFile) {
+                        @unlink($bundle->basePath . DIRECTORY_SEPARATOR . $cssFile);
+                    }
                 }
             }
         }
@@ -258,7 +264,8 @@ class AssetController extends Controller
                 $this->loadDependency($dependencyBundle, $result);
                 $result[$name] = $dependencyBundle;
             } elseif ($result[$name] === false) {
-                throw new Exception("A circular dependency is detected for bundle '{$name}': " . $this->composeCircularDependencyTrace($name, $result) . ".");
+                throw new Exception("A circular dependency is detected for bundle '{$name}': " . $this->composeCircularDependencyTrace($name,
+                        $result) . ".");
             }
         }
     }
@@ -435,7 +442,8 @@ class AssetController extends Controller
             unset($registered[$name]);
             $registered[$name] = $bundle;
         } elseif ($registered[$name] === false) {
-            throw new Exception("A circular dependency is detected for target '{$name}': " . $this->composeCircularDependencyTrace($name, $registered) . ".");
+            throw new Exception("A circular dependency is detected for target '{$name}': " . $this->composeCircularDependencyTrace($name,
+                    $registered) . ".");
         }
     }
 
@@ -601,7 +609,7 @@ EOD;
         $inputFilePathPartsCount = count($inputFilePathParts);
         $outputFilePathParts = explode('/', $outputFilePath);
         $outputFilePathPartsCount = count($outputFilePathParts);
-        for ($i =0; $i < $inputFilePathPartsCount && $i < $outputFilePathPartsCount; $i++) {
+        for ($i = 0; $i < $inputFilePathPartsCount && $i < $outputFilePathPartsCount; $i++) {
             if ($inputFilePathParts[$i] == $outputFilePathParts[$i]) {
                 $sharedPathParts[] = $inputFilePathParts[$i];
             } else {
@@ -627,7 +635,9 @@ EOD;
             $fullMatch = $matches[0];
             $inputUrl = $matches[1];
 
-            if (strpos($inputUrl, '/') === 0 || preg_match('/^https?:\/\//is', $inputUrl) || preg_match('/^data:/is', $inputUrl)) {
+            if (strpos($inputUrl, '/') === 0 || preg_match('/^https?:\/\//is', $inputUrl) || preg_match('/^data:/is',
+                    $inputUrl)
+            ) {
                 return $fullMatch;
             }
             if ($inputFileRelativePathParts === $outputFileRelativePathParts) {
