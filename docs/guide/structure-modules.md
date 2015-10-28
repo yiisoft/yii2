@@ -118,6 +118,31 @@ the [[yii\base\Module::layout]] property to point to the layout name. If you do 
 the application's layout will be used instead.
 
 
+### Console commands in Modules <span id="console-commands-in-modules"></span>
+
+Your module may also declare commands, that will be available through the [Console](tutorial-console.md) mode.
+
+In order for the command line utility to see your commands, you will need to change the [[yii\base\Module::controllerNamespace]]
+property, when Yii is executed in the console mode, and point it to your commands namespace.
+
+One way to achieve that is to test the instance type of the Yii application in the module's `init` method:
+
+```php
+public function init()
+{
+    parent::init();
+    if (Yii::$app instanceof \yii\console\Application) {
+        $this->controllerNamespace = 'app\modules\forum\commands';
+    }
+}
+```
+
+You commands will the be available from the command line using the following route:
+
+```
+yii <module_id>/<command>/<sub_command>
+```
+
 ## Using Modules <span id="using-modules"></span>
 
 To use a module in an application, simply configure the application by listing the module in
