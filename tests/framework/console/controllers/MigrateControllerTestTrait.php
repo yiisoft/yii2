@@ -439,6 +439,12 @@ class {$class} extends Migration
             'tag_id' => \$this->integer(),
             'PRIMARY KEY(post_id, tag_id)'
         ]);
+
+        \$this->createIndex('post_id_index', 'post_tag', 'post_id');
+        \$this->createIndex('tag_id_index', 'post_tag', 'tag_id');
+
+        \$this->addForeignKey('fk_post_tag_post_id', 'post_tag', 'post_id', 'post', 'id', 'CASCADE');
+        \$this->addForeignKey('fk_post_tag_tag_id', 'post_tag', 'tag_id', 'tag', 'id', 'CASCADE');
     }
 
     public function down()

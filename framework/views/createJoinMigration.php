@@ -18,10 +18,16 @@ class <?= $className ?> extends Migration
     public function up()
     {
         $this->createTable('<?= $table ?>', [
-            '<?= $field_first ?>' => $this->integer(),
-            '<?= $field_second ?>' => $this->integer(),
-            'PRIMARY KEY(<?= $field_first ?>, <?= $field_second ?>)'
+            '<?= $field_first ?>_id' => $this->integer(),
+            '<?= $field_second ?>_id' => $this->integer(),
+            'PRIMARY KEY(<?= $field_first ?>_id, <?= $field_second ?>_id)'
         ]);
+
+        $this->createIndex('<?= $field_first ?>_id_index', '<?= $table ?>', '<?= $field_first ?>_id');
+        $this->createIndex('<?= $field_second ?>_id_index', '<?= $table ?>', '<?= $field_second ?>_id');
+
+        $this->addForeignKey('fk_<?= $table . '_' . $field_first ?>_id', '<?= $table ?>', '<?= $field_first ?>_id', '<?= $field_first ?>', 'id', 'CASCADE');
+        $this->addForeignKey('fk_<?= $table . '_' . $field_second ?>_id', '<?= $table ?>', '<?= $field_second ?>_id', '<?= $field_second ?>', 'id', 'CASCADE');
     }
 
     public function down()

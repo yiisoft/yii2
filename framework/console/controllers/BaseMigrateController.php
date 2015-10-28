@@ -85,7 +85,7 @@ abstract class BaseMigrateController extends Controller
                 FileHelper::createDirectory($path);
             }
             $this->migrationPath = $path;
-            $this->formatField();
+            $this->parseField();
 
             $version = Yii::getVersion();
             $this->stdout("Yii Migration Tool (based on Yii v{$version})\n\n");
@@ -486,8 +486,8 @@ abstract class BaseMigrateController extends Controller
                 $content = $this->renderFile(Yii::getAlias($this->generatorTemplateFile['create_join']), [
                     'className' => $className,
                     'table' => mb_strtolower($matches[1]) . '_' . mb_strtolower($matches[2]),
-                    'field_first' => mb_strtolower($matches[1]) . '_id',
-                    'field_second' => mb_strtolower($matches[2]) . '_id',
+                    'field_first' => mb_strtolower($matches[1]),
+                    'field_second' => mb_strtolower($matches[2]),
                 ]);
             } elseif (preg_match('/^Create(.+)$/', $name, $matches)) {
                 $this->checkPrimaryKey();
@@ -676,7 +676,10 @@ abstract class BaseMigrateController extends Controller
         return $migrations;
     }
 
-    protected function formatField()
+    /**
+     * Parse the command line migration fields.
+     */
+    protected function parseField()
     {
         if ($this->fields === null) {
             $this->fields = [];
@@ -695,6 +698,9 @@ abstract class BaseMigrateController extends Controller
         }
     }
 
+    /**
+     * Check fields option contain primaryKey, if fields do not contain primary key it is added
+     */
     protected function checkPrimaryKey()
     {
         $exitsPk = false;
