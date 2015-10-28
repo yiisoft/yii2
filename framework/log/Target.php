@@ -252,8 +252,13 @@ abstract class Target extends Component
             }
         }
 
+        $duration = '-';
+        if (isset($message[5])) {
+            $duration = round(1000 * $message[5]) . 'ms';
+        }
+
         $prefix = $this->getMessagePrefix($message);
-        return date('Y-m-d H:i:s', $timestamp) . " {$prefix}[$level][$category] $text"
+        return date('Y-m-d H:i:s', $timestamp) . " {$prefix}[$level][$duration][$category] $text"
             . (empty($traces) ? '' : "\n    " . implode("\n    ", $traces));
     }
 

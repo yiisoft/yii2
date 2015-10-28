@@ -107,6 +107,18 @@ class Logger extends Component
      * @var Dispatcher the message dispatcher
      */
     public $dispatcher;
+    /**
+     * @var array logged profile beginnings.
+     * Each profile beginning is of the following structure:
+     *
+     * ~~~
+     * [
+     *   [0] => token (string)
+     *   [1] => timestamp (float, obtained by microtime(true))
+     * ]
+     * ~~~
+     */
+    private $_profileBeginnings = [];
 
 
     /**
@@ -139,6 +151,7 @@ class Logger extends Component
     {
         $time = microtime(true);
         $traces = [];
+        $duration = null;
         if ($this->traceLevel > 0) {
             $count = 0;
             $ts = debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS);
@@ -153,7 +166,15 @@ class Logger extends Component
                 }
             }
         }
-        $this->messages[] = [$message, $level, $category, $time, $traces];
+
+        if ($level === Logger::LEVEL_PROFILE_BEGIN) {
+            $this->_profileBeginnings[] = [$message, $time];
+        }
+        if ($level === Logger::LEVEL_PROFILE_END) {
+            $duration = $this->calculateProfileDuration($message, $time);
+        }
+
+        $this->messages[] = [$message, $level, $category, $time, $traces, $duration];
         if ($this->flushInterval > 0 && count($this->messages) >= $this->flushInterval) {
             $this->flush();
         }
@@ -310,5 +331,23 @@ class Logger extends Component
         ];
 
         return isset($levels[$level]) ? $levels[$level] : 'unknown';
+    }
+
+    /**
+     * Calculates the elapsed time for the given profile end token.
+     * @param string $endToken token for the code block.
+     * @param float $time the profile end timestamp.
+     * @return float the elapsed time in seconds.
+     */
+    private function calculateProfileDuration($endToken, $time)
+    {
+        foreach ($this->_profileBeginnings as $i => $beginning) {
+            list($token, $timestamp) = $beginning;
+            if ($endToken === $token) {
+                unset($this->_profileBeginnings[$i]);
+                return $duration = $time - $timestamp;
+            }
+        }
+        return 0.0;
     }
 }
