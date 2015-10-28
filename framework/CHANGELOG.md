@@ -30,6 +30,7 @@ Yii Framework 2 Change Log
 - Bug #9924: Fixed `yii.js` handleAction corrupted parameter values containing quote (") character (silverfire)
 - Bug #9984: Fixed wrong captcha color in case Imagick is used (DrDeath72)
 - Bug: Fixed generation of canonical URLs for `ViewAction` pages (samdark)
+- Enh #9803: Added option to register asset with scheme (vernik91)
 - Enh #8649: Added total applied migrations to final report (vernik91)
 - Enh #3506: Added `\yii\validators\IpValidator` to perform validation of IP addresses and subnets (SilverFire, samdark)
 - Enh #5146: Added `\yii\i18n\Formatter::asDuration()` method (nineinchnick, SilverFire)
