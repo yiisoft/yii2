@@ -559,7 +559,7 @@ $this->registerMetaTag(['name' => 'keywords', 'content' => 'yii, framework, php'
 ある型のメタタグのインスタンスが一つだけになることを保証したい場合は、このメソッドを呼ぶときに第二のパラメータとしてキーを指定することが出来ます。
 例えば、次のコードでは、二つの "description" メタタグを登録していますが、二番目のものだけがレンダリングされることになります。
 
-```html
+```php
 $this->registerMetaTag(['name' => 'description', 'content' => '俺が Yii で作ったクールなウェブサイトだぜぃ!!'], 'description');
 $this->registerMetaTag(['name' => 'description', 'content' => '面白いアライグマに関するウェブサイトです。'], 'description');
 ```
