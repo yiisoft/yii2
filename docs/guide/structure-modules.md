@@ -137,7 +137,7 @@ public function init()
 }
 ```
 
-You commands will the be available from the command line using the following route:
+Your commands will then be available from the command line using the following route:
 
 ```
 yii <module_id>/<command>/<sub_command>
