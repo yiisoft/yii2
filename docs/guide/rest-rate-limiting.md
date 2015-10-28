@@ -18,27 +18,24 @@ then `loadAllowance()` and `saveAllowance()` can be implemented to read and save
 of the two columns corresponding to the current authenticated user. To improve performance, you may also
 consider storing these pieces of information in a cache or NoSQL storage.
 
-Implementation could look like the following:
+Implementation in the `User` model could look like the following:
 
 ```php
 public function getRateLimit($request, $action)
 {
-    $user = User::findOne(Yii::$app->user->id);
-    return [$user->rateLimit, 1]; // $rateLimit requests per second
+    return [$this->rateLimit, 1]; // $rateLimit requests per second
 }
 
 public function loadAllowance($request, $action)
 {
-    $user = User::findOne(Yii::$app->user->id);
-    return [$user->allowance, $user->allowance_updated_at];
+    return [$this->allowance, $this->allowance_updated_at];
 }
 
 public function saveAllowance($request, $action, $allowance, $timestamp)
 {
-    $user = User::findOne(Yii::$app->user->id);
-    $user->allowance = $allowance;
-    $user->allowance_updated_at = $timestamp;
-    $user->save();
+    $this->allowance = $allowance;
+    $this->allowance_updated_at = $timestamp;
+    $this->save();
 }
 ```
 
