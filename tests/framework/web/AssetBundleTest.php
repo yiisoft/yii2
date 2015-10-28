@@ -20,7 +20,15 @@ class AssetBundleTest extends \yiiunit\TestCase
     protected function setUp()
     {
         parent::setUp();
-        $this->mockApplication();
+        $this->mockApplication([
+            'components' => [
+                'urlManager' => [
+                    'class' => 'yii\web\UrlManager',
+                    'baseUrl' => '/',
+                    'hostInfo' => 'http://example.com/',
+                ]
+            ],
+        ]);
 
         Yii::setAlias('@testWeb', '/');
         Yii::setAlias('@testWebRoot', '@yiiunit/data/web');
@@ -43,12 +51,16 @@ class AssetBundleTest extends \yiiunit\TestCase
 
         $this->assertEmpty($view->assetBundles);
         TestSimpleAsset::register($view);
-        $this->assertEquals(1, count($view->assetBundles));
+        TestSimpleSchemeAsset::register($view);
+        $this->assertEquals(2, count($view->assetBundles));
         $this->assertArrayHasKey('yiiunit\\framework\\web\\TestSimpleAsset', $view->assetBundles);
+        $this->assertArrayHasKey('yiiunit\\framework\\web\\TestSimpleSchemeAsset', $view->assetBundles);
         $this->assertTrue($view->assetBundles['yiiunit\\framework\\web\\TestSimpleAsset'] instanceof AssetBundle);
+        $this->assertTrue($view->assetBundles['yiiunit\\framework\\web\\TestSimpleSchemeAsset'] instanceof AssetBundle);
 
         $expected = <<<EOF
-123<script src="/js/jquery.js"></script>4
+123<script src="/js/jquery.js"></script>
+<script src="http://example.com/js/jsFile.js"></script>4
 EOF;
         $this->assertEquals($expected, $view->renderFile('@yiiunit/data/views/rawlayout.php'));
     }
@@ -212,6 +224,16 @@ class TestSimpleAsset extends AssetBundle
     public $baseUrl = '@testWeb/js';
     public $js = [
         'jquery.js',
+    ];
+}
+
+class TestSimpleSchemeAsset extends AssetBundle
+{
+    public $basePath = '@testWebRoot/js';
+    public $baseUrl = '@testWeb/js';
+    public $scheme = true;
+    public $js = [
+        'jsFile.js',
     ];
 }
 
