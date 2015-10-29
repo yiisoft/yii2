@@ -336,7 +336,7 @@ CODE;
 
     public function testGenerateAddMigration()
     {
-        $migrationName = 'add_columns_to_test';
+        $migrationName = 'add_columns_from_test';
         $this->runMigrateControllerAction('create', [
             $migrationName,
             'fields' => [
@@ -377,7 +377,7 @@ CODE;
 
     public function testGenerateRemoveMigration()
     {
-        $migrationName = 'remove_columns_to_test';
+        $migrationName = 'remove_columns_from_test';
         $this->runMigrateControllerAction('create', [
             $migrationName,
             'fields' => [

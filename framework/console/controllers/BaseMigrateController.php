@@ -502,13 +502,13 @@ abstract class BaseMigrateController extends Controller
                     'table' => mb_strtolower($matches[1]),
                     'fields' => $this->fields
                 ]);
-            } elseif (preg_match('/^add_(.+)to_(.+)$/', $name, $matches)) {
+            } elseif (preg_match('/^add_(.+)from_(.+)$/', $name, $matches)) {
                 $content = $this->renderFile(Yii::getAlias($this->generatorTemplateFile['add']), [
                     'className' => $className,
                     'table' => mb_strtolower($matches[2]),
                     'fields' => $this->fields
                 ]);
-            } elseif (preg_match('/^remove_(.+)to_(.+)$/', $name, $matches)) {
+            } elseif (preg_match('/^remove_(.+)from_(.+)$/', $name, $matches)) {
                 $content = $this->renderFile(Yii::getAlias($this->generatorTemplateFile['remove']), [
                     'className' => $className,
                     'table' => mb_strtolower($matches[2]),
