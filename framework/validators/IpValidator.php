@@ -149,44 +149,65 @@ class IpValidator extends Validator
 
     /**
      * @var string user-defined error message is used when validation fails due to the disabled IPv6 validation
+     * You may use the following placeholders in the message:
+     * - `{attribute}`: the label of the attribute being validated
+     * - `{value}`: the value of the attribute being validated
      */
-    public $ipv6NotAllowed = '{attribute} must not be an IPv6 address.';
+    public $ipv6NotAllowed;
 
     /**
      * @var string user-defined error message is used when validation fails due to the disabled IPv4 validation
+     * You may use the following placeholders in the message:
+     * - `{attribute}`: the label of the attribute being validated
+     * - `{value}`: the value of the attribute being validated
      */
-    public $ipv4NotAllowed = '{attribute} must not be an IPv4 address.';
+    public $ipv4NotAllowed;
 
     /**
      * @var string user-defined error message is used when validation fails due to the wrong CIDR
+     * You may use the following placeholders in the message:
+     * - `{attribute}`: the label of the attribute being validated
+     * - `{value}`: the value of the attribute being validated
      */
-    public $wrongCidr = '{attribute} contains wrong subnet mask.';
+    public $wrongCidr;
 
     /**
      * @var string user-defined error message is used when validation fails due to the wrong IP address format
+     * You may use the following placeholders in the message:
+     * - `{attribute}`: the label of the attribute being validated
+     * - `{value}`: the value of the attribute being validated
      */
-    public $wrongIp = '{attribute} must be a valid IP address.';
+    public $wrongIp;
 
     /**
      * @var string user-defined error message is used when validation fails due to subnet [[subnet]] set to 'only',
      * but the CIDR prefix is not set
+     * You may use the following placeholders in the message:
+     * - `{attribute}`: the label of the attribute being validated
+     * - `{value}`: the value of the attribute being validated
      * @see subnet
      */
-    public $noSubnet = '{attribute} must be an IP address with specified subnet.';
+    public $noSubnet;
 
     /**
      * @var string user-defined error message is used when validation fails
      * due to [[subnet]] is false, but CIDR prefix is present
+     * You may use the following placeholders in the message:
+     * - `{attribute}`: the label of the attribute being validated
+     * - `{value}`: the value of the attribute being validated
      * @see subnet
      */
-    public $hasSubnet = '{attribute} must not be a subnet.';
+    public $hasSubnet;
 
     /**
      * @var string user-defined error message is used when validation fails due to IP address
-     * is not on the [[allow]] list, or is on the [[deny]] list
+     * is not not allowed by [[ranges]] check.
+     * You may use the following placeholders in the message:
+     * - `{attribute}`: the label of the attribute being validated
+     * - `{value}`: the value of the attribute being validated
      * @see ranges
      */
-    public $notInRange = '{attribute} is not in the allowed range.';
+    public $notInRange;
 
     /**
      * @inheritdoc
@@ -201,6 +222,28 @@ class IpValidator extends Validator
 
         if (!defined('AF_INET6') && $this->ipv6) {
             throw new InvalidConfigException('IPv6 validation can not be used. PHP is compiled without IPv6');
+        }
+
+        if ($this->ipv6NotAllowed === null) {
+            $this->ipv6NotAllowed = Yii::t('yii', '{attribute} must not be an IPv6 address.');
+        }
+        if ($this->ipv4NotAllowed === null) {
+            $this->ipv4NotAllowed = Yii::t('yii', '{attribute} must not be an IPv4 address.');
+        }
+        if ($this->wrongCidr === null) {
+            $this->wrongCidr = Yii::t('yii', '{attribute} contains wrong subnet mask.');
+        }
+        if ($this->wrongIp === null) {
+            $this->wrongIp = Yii::t('yii', '{attribute} must be a valid IP address.');
+        }
+        if ($this->noSubnet === null) {
+            $this->noSubnet = Yii::t('yii', '{attribute} must be an IP address with specified subnet.');
+        }
+        if ($this->hasSubnet === null) {
+            $this->hasSubnet = Yii::t('yii', '{attribute} must not be a subnet.');
+        }
+        if ($this->notInRange === null) {
+            $this->notInRange = Yii::t('yii', '{attribute} is not in the allowed range.');
         }
     }
 
@@ -520,7 +563,8 @@ class IpValidator extends Validator
             'ipv6NotAllowed' => $this->ipv6NotAllowed,
             'ipv4NotAllowed' => $this->ipv4NotAllowed,
             'wrongIp' => $this->wrongIp,
-            'noSubnet' => $this->noSubnet
+            'noSubnet' => $this->noSubnet,
+            'hasSubnet' => $this->hasSubnet,
         ];
         foreach ($messages as &$message) {
             $message = Yii::$app->getI18n()->format($message, [
