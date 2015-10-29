@@ -152,10 +152,10 @@ CODE;
     public function testGenerateDefaultMigration()
     {
         $migrationName = 'DefaultTest';
+        $class = 'm' . gmdate('ymd_His') . '_' . $migrationName;
         $this->runMigrateControllerAction('create', [$migrationName]);
         $files = FileHelper::findFiles($this->migrationPath);
 
-        $class = 'm' . gmdate('ymd_His') . '_' . $migrationName;
         $newLine = '\n';
         $code = <<<CODE
 <?php
@@ -189,23 +189,22 @@ class {$class} extends Migration
 }
 
 CODE;
-
         $this->assertEqualsWithoutLE($code, file_get_contents($files[0]));
     }
 
     public function testGenerateCreateMigration()
     {
         $migrationName = 'create_test';
+        $class = 'm' . gmdate('ymd_His') . '_' . $migrationName;
         $this->runMigrateControllerAction('create', [
             $migrationName,
             'fields' => [
-                'title:string(10):notNull',
+                'title:string(10):notNull:unique:defaultValue("test")',
                 'body:text:notNull'
             ]
         ]);
         $files = FileHelper::findFiles($this->migrationPath);
 
-        $class = 'm' . gmdate('ymd_His') . '_' . $migrationName;
         $code = <<<CODE
 <?php
 
@@ -217,7 +216,7 @@ class {$class} extends Migration
     {
         \$this->createTable('test', [
             'id' => \$this->primaryKey(),
-            'title' => \$this->string(10)->notNull(),
+            'title' => \$this->string(10)->notNull()->unique()->defaultValue("test"),
             'body' => \$this->text()->notNull()
         ]);
     }
@@ -229,8 +228,8 @@ class {$class} extends Migration
 }
 
 CODE;
-
         $this->assertEqualsWithoutLE($code, file_get_contents($files[0]));
+
         $class = 'm' . gmdate('ymd_His') . '_' . $migrationName;
         $this->runMigrateControllerAction('create', [
             $migrationName,
@@ -263,19 +262,48 @@ class {$class} extends Migration
 }
 
 CODE;
+        $this->assertEqualsWithoutLE($code, file_get_contents($files[0]));
 
+        $class = 'm' . gmdate('ymd_His') . '_' . $migrationName;
+        $this->runMigrateControllerAction('create', [
+            $migrationName,
+            'fields' => [
+            ],
+        ]);
+        $files = FileHelper::findFiles($this->migrationPath);
+        $code = <<<CODE
+<?php
+
+use yii\db\Migration;
+
+class {$class} extends Migration
+{
+    public function up()
+    {
+        \$this->createTable('test', [
+            'id' => \$this->primaryKey()
+        ]);
+    }
+
+    public function down()
+    {
+        \$this->dropTable('test');
+    }
+}
+
+CODE;
         $this->assertEqualsWithoutLE($code, file_get_contents($files[0]));
     }
 
     public function testGenerateDropMigration()
     {
         $migrationName = 'drop_test';
+        $class = 'm' . gmdate('ymd_His') . '_' . $migrationName;
         $this->runMigrateControllerAction('create', [
             $migrationName
         ]);
         $files = FileHelper::findFiles($this->migrationPath);
 
-        $class = 'm' . gmdate('ymd_His') . '_' . $migrationName;
         $code = <<<CODE
 <?php
 
@@ -296,8 +324,8 @@ class {$class} extends Migration
 }
 
 CODE;
-
         $this->assertEqualsWithoutLE($code, file_get_contents($files[0]));
+
         $class = 'm' . gmdate('ymd_His') . '_' . $migrationName;
         $this->runMigrateControllerAction('create', [
             $migrationName,
@@ -330,13 +358,13 @@ class {$class} extends Migration
 }
 
 CODE;
-
         $this->assertEqualsWithoutLE($code, file_get_contents($files[0]));
     }
 
     public function testGenerateAddMigration()
     {
         $migrationName = 'add_columns_from_test';
+        $class = 'm' . gmdate('ymd_His') . '_' . $migrationName;
         $this->runMigrateControllerAction('create', [
             $migrationName,
             'fields' => [
@@ -347,7 +375,6 @@ CODE;
         ]);
         $files = FileHelper::findFiles($this->migrationPath);
 
-        $class = 'm' . gmdate('ymd_His') . '_' . $migrationName;
         $code = <<<CODE
 <?php
 
@@ -371,13 +398,13 @@ class {$class} extends Migration
 }
 
 CODE;
-
         $this->assertEqualsWithoutLE($code, file_get_contents($files[0]));
     }
 
     public function testGenerateRemoveMigration()
     {
         $migrationName = 'remove_columns_from_test';
+        $class = 'm' . gmdate('ymd_His') . '_' . $migrationName;
         $this->runMigrateControllerAction('create', [
             $migrationName,
             'fields' => [
@@ -388,7 +415,6 @@ CODE;
         ]);
         $files = FileHelper::findFiles($this->migrationPath);
 
-        $class = 'm' . gmdate('ymd_His') . '_' . $migrationName;
         $code = <<<CODE
 <?php
 
@@ -412,19 +438,54 @@ class {$class} extends Migration
 }
 
 CODE;
+        $this->assertEqualsWithoutLE($code, file_get_contents($files[0]));
 
+        $class = 'm' . gmdate('ymd_His') . '_' . $migrationName;
+        $this->runMigrateControllerAction('create', [
+            $migrationName,
+            'fields' => [
+                'title:string(10):notNull',
+                'body:text:notNull',
+                'create_at:dateTime'
+            ]
+        ]);
+        $files = FileHelper::findFiles($this->migrationPath);
+
+        $code = <<<CODE
+<?php
+
+use yii\db\Migration;
+
+class {$class} extends Migration
+{
+    public function up()
+    {
+        \$this->dropColumn('test', 'title');
+        \$this->dropColumn('test', 'body');
+        \$this->dropColumn('test', 'create_at');
+    }
+
+    public function down()
+    {
+        \$this->addColumn('test', 'title', \$this->string(10)->notNull());
+        \$this->addColumn('test', 'body', \$this->text()->notNull());
+        \$this->addColumn('test', 'create_at', \$this->dateTime());
+    }
+}
+
+CODE;
         $this->assertEqualsWithoutLE($code, file_get_contents($files[0]));
     }
 
     public function testGenerateCreateJoinMigration()
     {
         $migrationName = 'create_join_post_and_tag';
+        $class = 'm' . gmdate('ymd_His') . '_' . $migrationName;
         $this->runMigrateControllerAction('create', [
             $migrationName,
         ]);
         $files = FileHelper::findFiles($this->migrationPath);
 
-        $class = 'm' . gmdate('ymd_His') . '_' . $migrationName;
         $code = <<<CODE
 <?php
 
@@ -454,7 +515,6 @@ class {$class} extends Migration
 }
 
 CODE;
-
         $this->assertEqualsWithoutLE($code, file_get_contents($files[0]));
     }
 
