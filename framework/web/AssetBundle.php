@@ -59,16 +59,6 @@ class AssetBundle extends Object
      */
     public $baseUrl;
     /**
-     * @var boolean|string the URI scheme to use. If null, it uses [[AssetManager::defaultScheme]].
-     * Possible values:
-     *
-     * - `false`: assets URL without host info.
-     * - `true`: assets URL with an absolute base URL whose scheme is the same as that in [[\yii\web\UrlManager::hostInfo]].
-     * - string: assets URL with an absolute base URL with the specified scheme (either `http` or `https`).
-     * @since 2.0.7
-     */
-    public $scheme;
-    /**
      * @var array list of bundle class names that this bundle depends on.
      *
      * For example:

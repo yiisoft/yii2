@@ -72,15 +72,6 @@ class AssetManager extends Component
      */
     public $baseUrl = '@web/assets';
     /**
-     * @var boolean|string the URI scheme to use. Possible values:
-     *
-     * - `false` (default): assets URL without host info.
-     * - `true`: assets URL with an absolute base URL whose scheme is the same as that in [[\yii\web\UrlManager::hostInfo]].
-     * - string: assets URL with an absolute base URL with the specified scheme (either `http` or `https`).
-     * @since 2.0.7
-     */
-    public $defaultScheme = false;
-    /**
      * @var array mapping from source asset files (keys) to target asset files (values).
      *
      * This property is provided to support fixing incorrect asset file paths in some asset bundles.
@@ -299,7 +290,6 @@ class AssetManager extends Component
     /**
      * Returns the actual URL for the specified asset.
      * The actual URL is obtained by prepending either [[baseUrl]] or [[AssetManager::baseUrl]] to the given asset path.
-     * [[scheme]] or [[AssetManager::defaultScheme]] is used, if specified.
      * @param AssetBundle $bundle the asset bundle which the asset file belongs to
      * @param string $asset the asset path. This should be one of the assets listed in [[js]] or [[css]].
      * @return string the actual URL for the specified asset.
@@ -323,11 +313,6 @@ class AssetManager extends Component
 
         if (!Url::isRelative($asset) || strncmp($asset, '/', 1) === 0) {
             return $asset;
-        }
-
-        $scheme = isset($bundle->scheme) ? $bundle->scheme : $this->defaultScheme;
-        if ($scheme) {
-            $baseUrl = Url::base($scheme) . $baseUrl;
         }
 
         if ($this->appendTimestamp && ($timestamp = @filemtime("$basePath/$asset")) > 0) {
