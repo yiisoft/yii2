@@ -123,6 +123,10 @@ class User extends Component
      */
     public $idParam = '__id';
     /**
+     * @var string the session variable name used to store the value of [[identity::authKey]].
+     */
+    public $authKeyParam = '__authKey';
+    /**
      * @var string the session variable name used to store the value of expiration timestamp of the authenticated state.
      * This is used when [[authTimeout]] is set.
      */
@@ -237,9 +241,9 @@ class User extends Component
             $id = $identity->getId();
             $ip = Yii::$app->getRequest()->getUserIP();
             if ($this->enableSession) {
-                $log = "User '$id' logged in from $ip with duration $duration.";
+                $log = "User '{$id}' logged in from {$ip} with duration {$duration}.";
             } else {
-                $log = "User '$id' logged in from $ip. Session not enabled.";
+                $log = "User '{$id}' logged in from {$ip}. Session not enabled.";
             }
             Yii::info($log, __METHOD__);
             $this->afterLogin($identity, false, $duration);
@@ -298,16 +302,17 @@ class User extends Component
         } elseif (!$identity instanceof IdentityInterface) {
             throw new InvalidValueException("$class::findIdentity() must return an object implementing IdentityInterface.");
         }
+        
+        $ip = Yii::$app->getRequest()->getUserIP();
 
         if ($identity->validateAuthKey($authKey)) {
             if ($this->beforeLogin($identity, true, $duration)) {
                 $this->switchIdentity($identity, $this->autoRenewCookie ? $duration : 0);
-                $ip = Yii::$app->getRequest()->getUserIP();
-                Yii::info("User '$id' logged in from $ip via cookie.", __METHOD__);
+                Yii::info("User '{$id}' logged in from {$ip} via cookie.", __METHOD__);
                 $this->afterLogin($identity, true, $duration);
             }
         } else {
-            Yii::warning("Invalid auth key attempted for user '$id': $authKey", __METHOD__);
+            Yii::warning("Invalid auth key attempted for user '{$id}' from '{$ip}': {$authKey}", __METHOD__);
         }
     }
 
@@ -326,7 +331,7 @@ class User extends Component
             $this->switchIdentity(null);
             $id = $identity->getId();
             $ip = Yii::$app->getRequest()->getUserIP();
-            Yii::info("User '$id' logged out from $ip.", __METHOD__);
+            Yii::info("User '{$id}' logged out from {$ip}.", __METHOD__);
             if ($destroySession && $this->enableSession) {
                 Yii::$app->getSession()->destroy();
             }
@@ -573,10 +578,12 @@ class User extends Component
             $session->regenerateID(true);
         }
         $session->remove($this->idParam);
+        $session->remove($this->authKeyParam);
         $session->remove($this->authTimeoutParam);
 
         if ($identity) {
             $session->set($this->idParam, $identity->getId());
+            $session->set($this->authKeyParam, $identity->getAuthKey());
             if ($this->authTimeout !== null) {
                 $session->set($this->authTimeoutParam, time() + $this->authTimeout);
             }
@@ -612,6 +619,15 @@ class User extends Component
             /* @var $class IdentityInterface */
             $class = $this->identityClass;
             $identity = $class::findIdentity($id);
+        }
+        
+        if ($identity !== null) {
+            $authKey = $session->get($this->authKeyParam);
+            if ($authKey !== null && !$identity->validateAuthKey($authKey)) {
+                $identity = null;
+                $ip = Yii::$app->getRequest()->getUserIP();
+                Yii::warning("Invalid auth key attempted for user '{$id}' from '{$ip}': {$authKey}", __METHOD__);
+            }
         }
 
         $this->setIdentity($identity);

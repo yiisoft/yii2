@@ -8,6 +8,15 @@ if you want to upgrade from version A to version C and there is
 version B between A and C, you need to follow the instructions
 for both A and B.
 
+Upgrade from Yii 2.0.6
+----------------------
+
+* The methods `getAuthKey()` and `validateAuthKey()` of `yii\web\IdentityInterface` are now also used to validate active sessions
+  (previously these methods were only used for cookie-based login). If your identity class does not properly implement these methods yet,
+  you should update it accordingly (an example can be found in the guide under `Security` -> `Authentication`). Alternatively, you can
+  simply return `null` in the `getAuthKey()` method to keep the old behavior (that is, no validation of active sessions). Applications that
+  change the underlying `authKey` of an authenticated identity, should now call `yii\web\User::switchIdentity()` to recreate the active session
+  with the new `authKey`.
 
 Upgrade from Yii 2.0.5
 ----------------------

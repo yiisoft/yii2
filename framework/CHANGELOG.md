@@ -40,6 +40,7 @@ Yii Framework 2 Change Log
 - Enh #9635: Added default CSS class for `\yii\grid\ActionColumn` header (arogachev, dynasource)
 - Enh #9643: Added migrations for DB cache (mdmunir)
 - Enh #9711: Added `yii\widgets\LinkPager::$pageCssClass` that allows to set default page class (ShNURoK42)
+- Enh #9718: The authKey-feature of `yii\web\IdentityInterface` is now also used to validate active sessions (kidol)
 - Enh #9733: Added Unprocessable Entity HTTP Exception (janfrs)
 - Enh #9783: jQuery inputmask dependency updated to `~3.2.2` (samdark)
 - Enh #9869: Allow path alias for SQLite database files in DSN config (ASlatius)
