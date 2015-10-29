@@ -482,34 +482,34 @@ abstract class BaseMigrateController extends Controller
         $file = $this->migrationPath . DIRECTORY_SEPARATOR . $className . '.php';
 
         if ($this->confirm("Create new migration '$file'?")) {
-            if (preg_match('/^CreateJoin(.+)And(.+)$/', $name, $matches)) {
+            if (preg_match('/^create_join_(.+)_and_(.+)$/', $name, $matches)) {
                 $content = $this->renderFile(Yii::getAlias($this->generatorTemplateFile['create_join']), [
                     'className' => $className,
                     'table' => mb_strtolower($matches[1]) . '_' . mb_strtolower($matches[2]),
                     'field_first' => mb_strtolower($matches[1]),
                     'field_second' => mb_strtolower($matches[2]),
                 ]);
-            } elseif (preg_match('/^Create(.+)$/', $name, $matches)) {
+            } elseif (preg_match('/^create_(.+)$/', $name, $matches)) {
                 $this->checkPrimaryKey();
-                $content = $this->renderFile(Yii::getAlias ($this->generatorTemplateFile['create']), [
+                $content = $this->renderFile(Yii::getAlias($this->generatorTemplateFile['create']), [
                     'className' => $className,
                     'table' => mb_strtolower($matches[1]),
                     'fields' => $this->fields
                 ]);
-            } elseif (preg_match('/^Drop(.+)$/', $name, $matches)) {
-                $content = $this->renderFile(Yii::getAlias ($this->generatorTemplateFile['drop']), [
+            } elseif (preg_match('/^drop_(.+)$/', $name, $matches)) {
+                $content = $this->renderFile(Yii::getAlias($this->generatorTemplateFile['drop']), [
                     'className' => $className,
                     'table' => mb_strtolower($matches[1]),
                     'fields' => $this->fields
                 ]);
-            } elseif (preg_match('/^Add(.+)To(.+)$/', $name, $matches)) {
-                $content = $this->renderFile(Yii::getAlias ($this->generatorTemplateFile['add']), [
+            } elseif (preg_match('/^add_(.+)to_(.+)$/', $name, $matches)) {
+                $content = $this->renderFile(Yii::getAlias($this->generatorTemplateFile['add']), [
                     'className' => $className,
                     'table' => mb_strtolower($matches[2]),
                     'fields' => $this->fields
                 ]);
-            } elseif (preg_match('/^Remove(.+)To(.+)$/', $name, $matches)) {
-                $content = $this->renderFile(Yii::getAlias ($this->generatorTemplateFile['remove']), [
+            } elseif (preg_match('/^remove_(.+)to_(.+)$/', $name, $matches)) {
+                $content = $this->renderFile(Yii::getAlias($this->generatorTemplateFile['remove']), [
                     'className' => $className,
                     'table' => mb_strtolower($matches[2]),
                     'fields' => $this->fields

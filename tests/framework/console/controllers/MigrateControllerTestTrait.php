@@ -195,7 +195,7 @@ CODE;
 
     public function testGenerateCreateMigration()
     {
-        $migrationName = 'CreateTest';
+        $migrationName = 'create_test';
         $this->runMigrateControllerAction('create', [
             $migrationName,
             'fields' => [
@@ -269,7 +269,7 @@ CODE;
 
     public function testGenerateDropMigration()
     {
-        $migrationName = 'DropTest';
+        $migrationName = 'drop_test';
         $this->runMigrateControllerAction('create', [
             $migrationName
         ]);
@@ -336,7 +336,7 @@ CODE;
 
     public function testGenerateAddMigration()
     {
-        $migrationName = 'AddColumnsToTest';
+        $migrationName = 'add_columns_to_test';
         $this->runMigrateControllerAction('create', [
             $migrationName,
             'fields' => [
@@ -377,7 +377,7 @@ CODE;
 
     public function testGenerateRemoveMigration()
     {
-        $migrationName = 'RemoveColumnsToTest';
+        $migrationName = 'remove_columns_to_test';
         $this->runMigrateControllerAction('create', [
             $migrationName,
             'fields' => [
@@ -418,7 +418,7 @@ CODE;
 
     public function testGenerateCreateJoinMigration()
     {
-        $migrationName = 'CreateJoinPostAndTag';
+        $migrationName = 'create_join_post_and_tag';
         $this->runMigrateControllerAction('create', [
             $migrationName,
         ]);
