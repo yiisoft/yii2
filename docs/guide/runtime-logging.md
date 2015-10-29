@@ -180,7 +180,7 @@ a log target of the class [[yii\log\FileTarget]], you may find a log message sim
 By default, log messages will be formatted as follows by the [[yii\log\Target::formatMessage()]]:
 
 ```
-Timestamp [IP address][User ID][Session ID][Severity Level][Category] Message Text
+Timestamp [IP address][User ID][Session ID][Severity Level][Duration][Category] Message Text
 ```
 
 You may customize this format by configuring the [[yii\log\Target::prefix]] property which takes a PHP callable

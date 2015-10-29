@@ -68,7 +68,12 @@ class SyslogTarget extends Target
             }
         }
 
+        $duration = '-';
+        if (isset($message[5])) {
+            $duration = round(1000 * $message[5]) . 'ms';
+        }
+
         $prefix = $this->getMessagePrefix($message);
-        return "{$prefix}[$level][$category] $text";
+        return "{$prefix}[$level][$duration][$category] $text";
     }
 }

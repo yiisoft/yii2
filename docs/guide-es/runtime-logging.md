@@ -190,7 +190,7 @@ De forma predeterminada los mensajes de registro se formatearan por [[yii\log\Ta
 siguiente ejemplo:
 
 ```
-Timestamp [IP address][User ID][Session ID][Severity Level][Category] Message Text
+Timestamp [IP address][User ID][Session ID][Severity Level][Duration][Category] Message Text
 ```
 
 Se puede personalizar el formato configurando la propiedad [[yii\log\Target::prefix]] que es un PHP ejecutable y

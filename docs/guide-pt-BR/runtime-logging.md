@@ -140,7 +140,7 @@ Destinos de log exportam as mensagens de logs filtradas em um determinado format
 Por padrão, mensagens de log serão formatadas do seguinte modo pelo [[yii\log\Target::formatMessage()]]:
 
 ```
-Timestamp [IP address][User ID][Session ID][Severity Level][Category] Message Text
+Timestamp [IP address][User ID][Session ID][Severity Level][Duration][Category] Message Text
 ```
 
 Você pode personalizar este formato configurando a propriedade [[yii\log\Target::prefix]] que recebe um PHP callable retornando um prefixo de mensagem personalizado. Por exemplo, o código a seguir configura um destino de log para prefixar cada mensagem de log com o ID do usuário corrente (Endereço IP e ID da sessão são removidos por razões de privacidade).
