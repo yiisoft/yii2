@@ -147,7 +147,6 @@ could be written like the following:
 ```php
 <?php
 
-use yii\db\Schema;
 use yii\db\Migration;
 
 class m150101_185401_create_news_table extends Migration
@@ -170,6 +169,196 @@ class m150101_185401_create_news_table extends Migration
 ```
 
 A list of all available methods for defining the column types is available in the API documentation of [[yii\db\SchemaBuilderTrait]].
+
+
+## Creating Migrations with generators <span id="creating-migrations-with-generators"></span>
+
+Since version 2.0.7 migration console which provides convenient way creating migrations.
+
+If the migration name is of the form "create_xxx" or "drop_xxx" then a migration creating the table xxx with the columns listed will be generated. For example:
+
+```php
+yii migrate/create create_post
+``` 
+
+generates 
+
+```php
+class m150811_220037_create_post extends Migration
+{
+    public function up()
+    {
+        $this->createTable('post', [
+            'id' => $this->primaryKey()
+        ]);
+    }
+
+    public function down()
+    {
+        $this->dropTable('post');
+    }
+}
+```
+
+For create column schema you may use fields option with as follows:
+ 
+```php
+yii migrate/create create_post --fields=title:string,body:text
+``` 
+
+generates 
+
+```php
+class m150811_220037_create_post extends Migration
+{
+    public function up()
+    {
+        $this->createTable('post', [
+            'id' => $this->primaryKey(),
+            'title' => $this->string(),
+            'body' => $this->text()
+        ]);
+    }
+
+    public function down()
+    {
+        $this->dropTable('post');
+    }
+}
+```
+
+You are not limited to one magically generated column. For example:
+
+```php
+yii migrate/create create_post --fields=title:string(12):notNull:unique,body:text
+``` 
+
+generates 
+
+```php
+class m150811_220037_create_post extends Migration
+{
+    public function up()
+    {
+        $this->createTable('post', [
+            'id' => $this->primaryKey(),
+            'title' => $this->string(12)->notNull()->unique(),
+            'body' => $this->text()
+        ]);
+    }
+
+    public function down()
+    {
+        $this->dropTable('post');
+    }
+}
+```
+
+> Note: primary Key is added automatically, if you want to use another name for primary key, you
+may specify in fields options, for example "--fields=name:primaryKey"
+
+Similarly, you can generate a migration to drop table from the command line:
+
+```php
+yii migrate/create drop_post
+``` 
+
+generates 
+
+```php
+class m150811_220037_drop_post extends Migration
+{
+    public function up()
+    {
+        $this->dropTable('post');
+    }
+
+    public function down()
+    {
+        $this->createTable('post', [
+        ]);
+    }
+}
+```
+
+If the migration name is of the form "add_xxx_from_yyy" or "remove_xxx_from_yyy" then a migration containing the appropriate addColumn and dropColumn statements will be created.
+
+```php
+yii migrate/create add_position_from_post --fields=position:integer
+```
+
+generates
+
+```php
+class m150811_220037_add_position_from_post extends Migration
+{
+    public function up()
+    {
+        this->addColumn('post', 'position', this->integer());
+    }
+
+    public function down()
+    {
+        this->dropColumn('post', 'position');
+    }
+}
+```
+
+Similarly, you can generate a migration to remove a column from the command line:
+
+```php
+yii migrate/create remove_position_from_post --fields=position:integer
+```
+
+generates
+
+```php
+class m150811_220037_remove_position_from_post extends Migration
+{
+    public function up()
+    {
+        this->removeColumn('post', 'position');
+    }
+
+    public function down()
+    {
+        this->addColumn('post', 'position', this->integer());
+    }
+}
+```
+
+There is also a generator which will produce join tables If the migration name is of the form "create_join_xxx_and_yyy" 
+
+```php
+yii create/migration create_join_post_and_tag
+```
+
+generates
+
+```php
+class m150811_220037_create_join_post_and_tag  extends Migration
+{
+    public function up()
+    {
+        \$this->createTable('post_tag', [
+            'post_id' => this->integer(),
+            'tag_id' => this->integer(),
+            'PRIMARY KEY(post_id, tag_id)'
+        ]);
+
+        this->createIndex('idx-post_tag-post_id', 'post_tag', 'post_id');
+        this->createIndex('idx-post_tag-tag_id', 'post_tag', 'tag_id');
+
+        this->addForeignKey('fk-post_tag-post_id', 'post_tag', 'post_id', 'post', 'id', 'CASCADE');
+        this->addForeignKey('fk-post_tag-tag_id', 'post_tag', 'tag_id', 'tag', 'id', 'CASCADE');
+    }
+
+    public function down()
+    {
+        \$this->dropTable('post_tag');
+    }
+}
+```
 
 
 ### Transactional Migrations <span id="transactional-migrations"></span>
