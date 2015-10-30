@@ -4,6 +4,7 @@ Yii Framework 2 Change Log
 2.0.7 under development
 -----------------------
 
+- Bug #9133: Fixed optimitic lock doesn't work if the lock field is missing in the input data passed to load() (EvgenyOrekhov)
 - Bug #6351: Find MySQL FK constraints from `information_schema` tables instead of `SHOW CREATE TABLE` to improve reliability (nineinchnick)
 - Bug #6363, #8301, #8582, #9566: Fixed data methods and PJAX issues when used together (derekisbusy)
 - Bug #6876: Fixed RBAC migration MSSQL cascade problem (thejahweh)

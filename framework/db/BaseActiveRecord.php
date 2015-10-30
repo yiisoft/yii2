@@ -1571,4 +1571,20 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
             unset($this->$offset);
         }
     }
+
+    /**
+     * @inheritdoc
+     *
+     * This method sets the optimistic lock value to null before calling
+     * the parent implementation.
+     */
+    public function load($data, $formName = null)
+    {
+        $lock = $this->optimisticLock();
+        if ($lock !== null) {
+            $this->$lock = null;
+        }
+
+        return parent::load($data, $formName);
+    }
 }

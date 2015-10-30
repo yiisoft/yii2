@@ -703,7 +703,7 @@ class ActiveRecordTest extends DatabaseTestCase
         $this->assertEquals(1, $model->status);
     }
 
-    public function testPopulateRecordCallWhenQueryingOnParentClass() 
+    public function testPopulateRecordCallWhenQueryingOnParentClass()
     {
         (new Cat())->save(false);
         (new Dog())->save(false);
@@ -734,6 +734,26 @@ class ActiveRecordTest extends DatabaseTestCase
         $record = Document::findOne(1);
         $record->content = 'Rewrite attempt content';
         $record->version = 0;
+        $this->setExpectedException('yii\db\StaleObjectException');
+        $record->save(false);
+    }
+
+    public function testOptimisticLockAfterLoad()
+    {
+        /* @var $record Document */
+
+        $record = Document::findOne(1);
+        $record->scenario = 'test';
+        $record->load([
+            'content' => 'New Content',
+            'version' => $record->version,
+        ], '');
+        $record->save(false);
+        $this->assertEquals(1, $record->version);
+
+        $record = Document::findOne(1);
+        $record->scenario = 'test';
+        $record->load(['content' => 'Rewrite attempt content'], '');
         $this->setExpectedException('yii\db\StaleObjectException');
         $record->save(false);
     }
