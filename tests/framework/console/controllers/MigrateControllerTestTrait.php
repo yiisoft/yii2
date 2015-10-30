@@ -501,8 +501,8 @@ class {$class} extends Migration
             'PRIMARY KEY(post_id, tag_id)'
         ]);
 
-        \$this->createIndex('post_id_index', 'post_tag', 'post_id');
-        \$this->createIndex('tag_id_index', 'post_tag', 'tag_id');
+        \$this->createIndex('idx-post_tag-post_id', 'post_tag', 'post_id');
+        \$this->createIndex('idx-post_tag-tag_id', 'post_tag', 'tag_id');
 
         \$this->addForeignKey('fk-post_tag-post_id', 'post_tag', 'post_id', 'post', 'id', 'CASCADE');
         \$this->addForeignKey('fk-post_tag-tag_id', 'post_tag', 'tag_id', 'tag', 'id', 'CASCADE');

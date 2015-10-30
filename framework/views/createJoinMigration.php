@@ -23,8 +23,8 @@ class <?= $className ?> extends Migration
             'PRIMARY KEY(<?= $field_first ?>_id, <?= $field_second ?>_id)'
         ]);
 
-        $this->createIndex('<?= $field_first ?>_id_index', '<?= $table ?>', '<?= $field_first ?>_id');
-        $this->createIndex('<?= $field_second ?>_id_index', '<?= $table ?>', '<?= $field_second ?>_id');
+        $this->createIndex('idx-<?= $table . '-' . $field_first ?>_id', '<?= $table ?>', '<?= $field_first ?>_id');
+        $this->createIndex('idx-<?= $table . '-' . $field_second ?>_id', '<?= $table ?>', '<?= $field_second ?>_id');
 
         $this->addForeignKey('fk-<?= $table . '-' . $field_first ?>_id', '<?= $table ?>', '<?= $field_first ?>_id', '<?= $field_first ?>', 'id', 'CASCADE');
         $this->addForeignKey('fk-<?= $table . '-' . $field_second ?>_id', '<?= $table ?>', '<?= $field_second ?>_id', '<?= $field_second ?>', 'id', 'CASCADE');
