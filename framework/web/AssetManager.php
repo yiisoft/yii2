@@ -47,7 +47,7 @@ class AssetManager extends Component
      * The array keys are the asset bundle names, which typically are asset bundle class names without leading backslash.
      * The array values are the corresponding configurations. If a value is false, it means the corresponding asset
      * bundle is disabled and [[getBundle()]] should return null.
-     * You can use '*' to assign following configuration to all included asset bundles.
+     * You can use '*' key to assign following configuration to all included asset bundles.
      *
      * If this property is false, it means the whole asset bundle feature is disabled and [[getBundle()]]
      * will always return null.
