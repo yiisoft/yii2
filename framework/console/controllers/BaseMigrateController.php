@@ -45,10 +45,12 @@ abstract class BaseMigrateController extends Controller
      * @var array the template file for generating migration code automatically.
      * This can be either a path alias (e.g. "@app/migrations/template.php")
      * or a file path.
+     * @since 2.0.7
      */
     public $generatorTemplateFile;
     /**
      * @var array Fields to be generated
+     * @since 2.0.7
      */
     public $fields;
 
@@ -678,6 +680,7 @@ abstract class BaseMigrateController extends Controller
 
     /**
      * Parse the command line migration fields.
+     * @since 2.0.7
      */
     protected function parseField()
     {
@@ -700,6 +703,7 @@ abstract class BaseMigrateController extends Controller
 
     /**
      * Check fields option contain primaryKey, if fields do not contain primary key it is added
+     * @since 2.0.7
      */
     protected function checkPrimaryKey()
     {
