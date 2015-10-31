@@ -171,7 +171,7 @@ class m150101_185401_create_news_table extends Migration
 A list of all available methods for defining the column types is available in the API documentation of [[yii\db\SchemaBuilderTrait]].
 
 
-## Creating Migrations with generators <span id="creating-migrations-with-generators"></span>
+## Creating Migrations with Generators <span id="creating-migrations-with-generators"></span>
 
 Since version 2.0.7 migration console which provides convenient way creating migrations.
 
@@ -588,6 +588,18 @@ The migration command comes with a few command-line options that can be used to 
   that is used for generating skeleton migration class files. This can be specified as either a file path
   or a path [alias](concept-aliases.md). The template file is a PHP script in which you can use a predefined variable
   named `$className` to get the migration class name.
+
+* `generatorTemplateFile`: array (defaults to `[
+        'create' => '@yii/views/createMigration.php',
+        'drop' => '@yii/views/dropMigration.php',
+        'add' => '@yii/views/addMigration.php',
+        'remove' => '@yii/views/removeMigration.php',
+        'create_join' => '@yii/views/createJoinMigration.php'
+  ]`), specifies template files for generating migration code automatically. See [Creating Migrations with Generators](#creating-migrations-with-generators)
+  for more details.
+  
+* `fields`: array (defaults to `[]`), specifies the fields column use to creating migration automatically. The format that it use when declaring any applicable schema it is 
+`COLUMN_NAME:COLUMN_TYPE:COLUMN_DECORATOR`, for example `--fields=name:string(12):notNull`, it specify string column with 12 size and not null.
 
 The following example shows how you can use these options.
 
