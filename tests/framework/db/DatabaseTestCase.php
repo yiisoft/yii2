@@ -78,6 +78,9 @@ abstract class DatabaseTestCase extends TestCase
                 list($drops, $creates) = explode('/* STATEMENTS */', file_get_contents($fixture), 2);
                 list($statements, $triggers, $data) = explode('/* TRIGGERS */', $creates, 3);
                 $lines = array_merge(explode('--', $drops), explode(';', $statements), explode('/', $triggers), explode(';', $data));
+            } else if ($this->driverName === 'ibm') {
+                list($drops, $creates) = explode('/* STATEMENTS */', file_get_contents($fixture), 2);
+                $lines = array_merge(explode('--', $drops), explode(';', $creates));
             } else {
                 $lines = explode(';', file_get_contents($fixture));
             }

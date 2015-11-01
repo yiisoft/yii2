@@ -19,6 +19,7 @@ use yiiunit\framework\db\cubrid\CubridActiveRecordTest;
 use yiiunit\data\ar\Animal;
 use yiiunit\data\ar\Cat;
 use yiiunit\data\ar\Dog;
+use yiiunit\framework\db\ibm\IbmActiveRecordTest;
 
 /**
  * @group db
@@ -66,7 +67,7 @@ class ActiveRecordTest extends DatabaseTestCase
     public function testCustomColumns()
     {
         // find custom column
-        if ($this->driverName === 'oci') {
+        if ($this->driverName === 'oci' || $this->driverName === 'ibm') {
             $customer = Customer::find()->select(['{{customer}}.*', '([[status]]*2) AS [[status2]]'])
                 ->where(['name' => 'user3'])->one();
         } else {
@@ -593,6 +594,8 @@ class ActiveRecordTest extends DatabaseTestCase
         if ($this instanceof CubridActiveRecordTest) {
             // cubrid has non-standard timestamp representation
             $this->assertEquals('12:00:00 AM 01/01/2002', $model->time);
+        } else if ($this instanceof IbmActiveRecordTest) {
+            $this->assertEquals('2002-01-01-00.00.00.000000', $model->time);
         } else {
             $this->assertEquals('2002-01-01 00:00:00', $model->time);
         }
