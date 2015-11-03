@@ -98,13 +98,13 @@
                     delete data[this.name];
                 }
                 if (this.value !== '') { // only add to the url values that are not empty strings
-                    dataForm.push([this.name, this.value]);
+                    dataForm.push({name: this.name, value: this.value});
                 }
             });
 
             $.each(data, function (name, value) {
                 // add the values from the url that doesn't appear on the form.
-                dataForm.push([name, value]);
+                dataForm.push({name: name, value: value});
             });
 
             var pos = settings.filterUrl.indexOf('?');
@@ -114,9 +114,9 @@
 
             var $form = $('<form action="' + url + '" method="get" class="gridview-filter-form" style="display:none" data-pjax></form>').appendTo($grid);
 
-            $.each(dataForm, function (i, value) {
+            $.each(dataForm, function (i, dataFormObj) {
                 // add the values from dataForm to the form.
-                $form.append($('<input type="hidden" name="t" value="" />').attr('name', value[0]).val(value[1]));
+                $form.append($('<input type="hidden" name="t" value="" />').attr('name', dataFormObj.name).val(dataFormObj.value));
             });
 
             event = $.Event(gridEvents.beforeFilter);

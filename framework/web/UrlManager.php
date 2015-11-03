@@ -355,14 +355,14 @@ class UrlManager extends Component
             if ($this->suffix !== null) {
                 $route .= $this->suffix;
             }
-            if (!empty($params) && ($query = http_build_query($params)) !== '') {
+            if (!empty($params) && ($query = $this->custom_http_build_query($params)) !== '') {
                 $route .= '?' . $query;
             }
 
             return "$baseUrl/{$route}{$anchor}";
         } else {
             $url = "$baseUrl?{$this->routeParam}=" . urlencode($route);
-            if (!empty($params) && ($query = http_build_query($params)) !== '') {
+            if (!empty($params) && ($query = $this->custom_http_build_query($params)) !== '') {
                 $url .= '&' . $query;
             }
 
@@ -487,5 +487,17 @@ class UrlManager extends Component
     public function setHostInfo($value)
     {
         $this->_hostInfo = rtrim($value, '/');
+    }
+
+    /**
+     * Remove numeric indexes from the response
+     * @param $params
+     *
+     * @return mixed|string
+     */
+    protected function custom_http_build_query($params) {
+        $request = http_build_query($params);
+        $request = preg_replace('#%5B[0-9]%5D#', '%5B%5D', $request);
+        return $request;
     }
 }

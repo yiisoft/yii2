@@ -335,7 +335,7 @@ class UrlRule extends Object implements UrlRuleInterface
             $url .= ($this->suffix === null ? $manager->suffix : $this->suffix);
         }
 
-        if (!empty($params) && ($query = http_build_query($params)) !== '') {
+        if (!empty($params) && ($query = $this->custom_http_build_query($params)) !== '') {
             $url .= '?' . $query;
         }
 
@@ -351,5 +351,17 @@ class UrlRule extends Object implements UrlRuleInterface
     protected function getParamRules()
     {
         return $this->_paramRules;
+    }
+
+    /**
+     * Remove numeric indexes from the response
+     * @param $params
+     *
+     * @return mixed|string
+     */
+    protected function custom_http_build_query($params) {
+        $request = http_build_query($params);
+        $request = preg_replace('#%5B[0-9]%5D#', '%5B%5D', $request);
+        return $request;
     }
 }
