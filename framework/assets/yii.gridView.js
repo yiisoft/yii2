@@ -96,6 +96,8 @@
                 if (data[this.name] !== undefined) {
                     //unset all the values that appear on the url to avoid setting them twice.
                     delete data[this.name];
+                } else if (data[this.name + '[]'] !== undefined) {
+                    delete data[this.name + '[]'];
                 }
                 if (this.value !== '') { // only add to the url values that are not empty strings
                     dataForm.push({name: this.name, value: this.value});
