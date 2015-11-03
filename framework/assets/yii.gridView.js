@@ -89,7 +89,7 @@
 
             // get the query params from the request url
             $.each(yii.getQueryParams(settings.filterUrl), function (name, value) {
-                data[name.replace(/\[[0-9]+\]/i, '[]')] = value;
+                data[name] = value;
             });
 
             $.each($(settings.filterSelector).serializeArray(), function () {
@@ -171,16 +171,5 @@
             var id = $(this).attr('id');
             return gridData[id];
         },
-
-        setValue: function (data, name, value) {
-            if (name.indexOf('[]') !== -1) {
-                if (!Array.isArray(data[name])) {
-                    data[name] = [];
-                }
-                data[name].push(value);
-            } else {
-                data[name] = value;
-            }
-        }
     };
 })(window.jQuery);
