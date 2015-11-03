@@ -108,7 +108,7 @@ class TimestampBehavior extends AttributeBehavior
     protected function getValue($event)
     {
         if ($this->value === null) {
-            return time();
+            return new Expression('CURRENT_TIMESTAMP'); // ANSI compliant
         }
         return parent::getValue($event);
     }
