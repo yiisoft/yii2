@@ -250,7 +250,8 @@ Using `TimestampBehavior` <span id="using-timestamp-behavior"></span>
 -------------------------
 
 To wrap up, let's take a look at [[yii\behaviors\TimestampBehavior]]. This behavior supports automatically
-updating the timestamp attributes of an [[yii\db\ActiveRecord|Active Record]] model anytime the model is saved (e.g., on insert or update).
+updating the timestamp attributes of an [[yii\db\ActiveRecord|Active Record]] model anytime the model is saved via
+`insert()`, `update()` or `save()` method.
 
 First, attach this behavior to the [[yii\db\ActiveRecord|Active Record]] class that you plan to use:
 
