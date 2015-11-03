@@ -523,7 +523,7 @@ $this->registerMetaTag(['name' => 'keywords', 'content' => 'yii, framework, php'
 параметра при вызове метода.
 К примеру, следующий код регистрирует два мета тэга "description", однако отрендерен будет только второй.
 
-```html
+```php
 $this->registerMetaTag(['name' => 'description', 'content' => 'Мой сайт сделан с помощью Yii!'], 'description');
 $this->registerMetaTag(['name' => 'description', 'content' => 'Это сайт о забавных енотах.'], 'description');
 ```

@@ -76,7 +76,7 @@ php build translation "../docs/guide" "../docs/guide-uk" "Ukrainian guide transl
 [Англійсько-українські словники](http://e2u.org.ua)
 
 - action — дія;
-- active record — (не перекладається);
+- Active Record — (не перекладається);
 - Advanced/Basic Project Template — Розширений/Базовий шаблон проекту;
 - alias — псевдонім;
 - alphanumeric — буквено-цифровий;
@@ -93,7 +93,7 @@ php build translation "../docs/guide" "../docs/guide-uk" "Ukrainian guide transl
 - branch — гілка;
 - browser — браузер;
 - (asset) bundle — колекція (ресурсів);
-- cache — кеш;
+- cache, caching — кеш, кешування;
 - camel case — (не перекладається);
 - case-sensitive — регістр-залежний;
 - column — колонка;
@@ -101,6 +101,7 @@ php build translation "../docs/guide" "../docs/guide-uk" "Ukrainian guide transl
 - concatenation — конкатенація;
 - configuration — конфігурація;
 - content — вміст;
+- content view — вкладене представлення;
 - contributor — учасник;
 - cookies — кукі;
 - customization — (тонке) налаштування;
@@ -130,6 +131,7 @@ php build translation "../docs/guide" "../docs/guide-uk" "Ukrainian guide transl
 - getter — геттер;
 - (event) handler — обробник (події);
 - hash — хеш;
+- header — шапка;
 - help — довідка;
 - helper — хелпер;
 - id — ідентифікатор;
@@ -181,12 +183,14 @@ php build translation "../docs/guide" "../docs/guide-uk" "Ukrainian guide transl
 - sub-directory — під-директорія;
 - substitution — підставлення/заміщення;
 - tabular input — табличний ввід;
+- tag — тег;
 - template engine — шаблонізатор;
 - theming — темізація;
 - third party — сторонній;
 - thumbnail — мініатюра;
 - tracing — трасування;
 - trait — трейт;
+- trigger event — породжувати подію;
 - Twitter — Твіттер;
 - Unicode — (не перекладається);
 - unit tests — модульні тести;

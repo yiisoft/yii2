@@ -295,7 +295,7 @@ class ActiveRecord extends BaseActiveRecord
         if ($schema !== null) {
             return $schema;
         } else {
-            throw new InvalidConfigException("The table does not exist: " . static::tableName());
+            throw new InvalidConfigException('The table does not exist: ' . static::tableName());
         }
     }
 

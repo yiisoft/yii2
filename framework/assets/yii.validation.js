@@ -36,7 +36,7 @@ yii.validation = (function ($) {
             }
         },
 
-        boolean: function (value, messages, options) {
+        'boolean': function (value, messages, options) {
             if (options.skipOnEmpty && pub.isEmpty(value)) {
                 return;
             }
@@ -68,17 +68,17 @@ yii.validation = (function ($) {
                 pub.addMessage(messages, options.notEqual, value);
             }
         },
-        
+
         file: function (attribute, messages, options) {
             var files = getUploadedFiles(attribute, messages, options);
             $.each(files, function (i, file) {
                 validateFile(file, messages, options);
             });
         },
-        
+
         image: function (attribute, messages, options, deferred) {
             var files = getUploadedFiles(attribute, messages, options);
-            
+
             $.each(files, function (i, file) {
                 validateFile(file, messages, options);
 
@@ -90,45 +90,45 @@ yii.validation = (function ($) {
                 var def = $.Deferred(),
                     fr = new FileReader(),
                     img = new Image();
-                    
+
                 img.onload = function () {
                     if (options.minWidth && this.width < options.minWidth) {
                         messages.push(options.underWidth.replace(/\{file\}/g, file.name));
                     }
-                    
+
                     if (options.maxWidth && this.width > options.maxWidth) {
                         messages.push(options.overWidth.replace(/\{file\}/g, file.name));
                     }
-                    
+
                     if (options.minHeight && this.height < options.minHeight) {
                         messages.push(options.underHeight.replace(/\{file\}/g, file.name));
                     }
-                    
+
                     if (options.maxHeight && this.height > options.maxHeight) {
                         messages.push(options.overHeight.replace(/\{file\}/g, file.name));
                     }
                     def.resolve();
                 };
-                
+
                 img.onerror = function () {
                     messages.push(options.notImage.replace(/\{file\}/g, file.name));
                     def.resolve();
                 };
-                
+
                 fr.onload = function () {
                     img.src = fr.result;
                 };
-                
+
                 // Resolve deferred if there was error while reading data
                 fr.onerror = function () {
                     def.resolve();
                 };
-                
+
                 fr.readAsDataURL(file);
-                
+
                 deferred.push(def);
             });
-        
+
         },
 
         number: function (value, messages, options) {
@@ -161,7 +161,7 @@ yii.validation = (function ($) {
 
             var inArray = true;
 
-            $.each($.isArray(value) ? value : [value], function(i, v) {
+            $.each($.isArray(value) ? value : [value], function (i, v) {
                 if ($.inArray(v, options.range) == -1) {
                     inArray = false;
                     return false;
@@ -313,6 +313,54 @@ yii.validation = (function ($) {
             if (!valid) {
                 pub.addMessage(messages, options.message, value);
             }
+        },
+
+        ip: function (value, messages, options) {
+            var getIpVersion = function (value) {
+                return value.indexOf(':') === -1 ? 4 : 6;
+            };
+
+            var negation = null, cidr = null;
+
+            if (options.skipOnEmpty && pub.isEmpty(value)) {
+                return;
+            }
+
+            var matches = new RegExp(options.ipParsePattern).exec(value);
+            if (matches) {
+                negation = (matches[1] !== '') ? matches[1] : null;
+                cidr = (matches[4] !== '') ? matches[4] : null;
+                value = matches[2];
+            }
+
+            if (options.subnet === true && cidr === null) {
+                pub.addMessage(messages, options.messages.noSubnet, value);
+                return;
+            }
+            if (options.subnet === false && cidr !== null) {
+                pub.addMessage(messages, options.messages.hasSubnet, value);
+                return;
+            }
+            if (options.negation === false && negation !== null) {
+                pub.addMessage(messages, options.messages.wrongIp, value);
+                return;
+            }
+
+            if (getIpVersion(value) == 6) {
+                if (!options.ipv6) {
+                    pub.addMessage(messages, options.messages.ipv6NotAllowed, value);
+                }
+                if (!(new RegExp(options.ipv6Pattern)).test(value)) {
+                    pub.addMessage(messages, options.messages.wrongIp, value);
+                }
+            } else {
+                if (!options.ipv4) {
+                    pub.addMessage(messages, options.messages.ipv4NotAllowed, value);
+                }
+                if (!(new RegExp(options.ipv4Pattern)).test(value)) {
+                    pub.addMessage(messages, options.messages.wrongIp, value);
+                }
+            }
         }
     };
 
@@ -321,7 +369,7 @@ yii.validation = (function ($) {
         if (typeof File === "undefined") {
             return [];
         }
-        
+
         var files = $(attribute.input).get(0).files;
         if (!files) {
             messages.push(options.message);

@@ -59,10 +59,10 @@ $param = $request->getBodyParam('id');
 ```php
 $request = Yii::$app->request;
 
-if ($request->isAjax) { // является ли текущий запрос AJAX запросом }
-if ($request->isGet)  { // является ли текущий запрос GET запросом }
-if ($request->isPost) { // является ли текущий запрос POST запросом }
-if ($request->isPut)  { // является ли текущий запрос PUT запросом }
+if ($request->isAjax) { /* текущий запрос является AJAX запросом */ }
+if ($request->isGet)  { /* текущий запрос является GET запросом */ }
+if ($request->isPost) { /* текущий запрос является POST запросом */ }
+if ($request->isPut)  { /* текущий запрос является PUT запросом */ }
 ```
 
 ## URL запроса <span id="request-urls"></span>
@@ -94,7 +94,7 @@ $headers = Yii::$app->request->headers;
 // возвращает значения заголовка Accept
 $accept = $headers->get('Accept');
 
-if ($headers->has('User-Agent')) { // есть ли в запросе заголовок User-Agent }
+if ($headers->has('User-Agent')) { /* в запросе есть заголовок User-Agent */ }
 ```
 
 Компонент `request` также предоставляет доступ к некоторым часто используемым заголовкам, включая

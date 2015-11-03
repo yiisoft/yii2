@@ -299,8 +299,8 @@ class AssetManager extends Component
         if (($actualAsset = $this->resolveAsset($bundle, $asset)) !== false) {
             if (strncmp($actualAsset, '@web/', 5) === 0) {
                 $asset = substr($actualAsset, 5);
-                $basePath = Yii::getAlias("@webroot");
-                $baseUrl = Yii::getAlias("@web");
+                $basePath = Yii::getAlias('@webroot');
+                $baseUrl = Yii::getAlias('@web');
             } else {
                 $asset = Yii::getAlias($actualAsset);
                 $basePath = $this->basePath;

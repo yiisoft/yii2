@@ -349,7 +349,8 @@ class MyForm extends Model
 スタンドアロンバリデータは、[[yii\validators\Validator]] またはその子クラスを拡張するクラスです。
 [[yii\validators\Validator::validateAttribute()]] メソッドをオーバーライドすることによって、その検証ロジックを実装することが出来ます。
 [インラインバリデータ](#inline-validators) でするのと同じように、属性が検証に失敗した場合は、[[yii\base\Model::addError()]] を呼んでエラーメッセージをモデルに保存します。
-例えば、
+
+例えば、上記のインラインバリデータは、新しい [[components/validators/CountryValidator]] クラスに作りかえることが出来ます。
 
 ```php
 namespace app\components;
@@ -372,6 +373,32 @@ class CountryValidator extends Validator
 または、`validateAttribute()` と `validate()` の代りに、[[yii\validators\Validator::validateValue()]] をオーバーライドしても構いません。
 と言うのは、前の二つは、デフォルトでは、`validateValue()` を呼び出すことによって実装されているからです。
 
+
+次の例は、上記のバリデータクラスをあなたのモデルの中でどのように使用することが出来るかを示すものです。
+
+```php
+namespace app\models;
+
+use Yii;
+use yii\base\Model;
+use app\components\validators\CountryValidator;
+
+class EntryForm extends Model
+{
+    public $name;
+    public $email;
+    public $country;
+
+    public function rules()
+    {
+        return [
+            [['name', 'email'], 'required'],
+            ['country', CountryValidator::className()],
+            ['email', 'email'],
+        ];
+    }
+}
+```
 
 ## クライアント側での検証 <span id="client-side-validation"></span>
 
@@ -485,7 +512,7 @@ class StatusValidator extends Validator
         $statuses = json_encode(Status::find()->select('id')->asArray()->column());
         $message = json_encode($this->message, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
         return <<<JS
-if (!$.inArray(value, $statuses)) {
+if ($.inArray(value, $statuses) > -1) {
     messages.push($message);
 }
 JS;

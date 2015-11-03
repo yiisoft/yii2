@@ -163,7 +163,7 @@ class QueryBuilder extends \yii\db\QueryBuilder
      */
     public function truncateTable($table)
     {
-        return "DELETE FROM " . $this->db->quoteTableName($table);
+        return 'DELETE FROM ' . $this->db->quoteTableName($table);
     }
 
     /**

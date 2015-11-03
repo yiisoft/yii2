@@ -343,7 +343,7 @@ class UrlManager extends Component
             if ($url !== false) {
                 if (strpos($url, '://') !== false) {
                     if ($baseUrl !== '' && ($pos = strpos($url, '/', 8)) !== false) {
-                        return substr($url, 0, $pos) . $baseUrl . substr($url, $pos);
+                        return substr($url, 0, $pos) . $baseUrl . substr($url, $pos) . $anchor;
                     } else {
                         return $url . $baseUrl . $anchor;
                     }

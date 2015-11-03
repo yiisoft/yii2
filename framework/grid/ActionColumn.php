@@ -33,6 +33,10 @@ use yii\helpers\Url;
 class ActionColumn extends Column
 {
     /**
+     * @inheritdoc
+     */
+    public $headerOptions = ['class' => 'action-column'];
+    /**
      * @var string the ID of the controller that should handle the actions specified here.
      * If not set, it will use the currently active controller. This property is mainly used by
      * [[urlCreator]] to create URLs for different actions. The value of this property will be prefixed
@@ -153,7 +157,7 @@ class ActionColumn extends Column
      */
     public function createUrl($action, $model, $key, $index)
     {
-        if ($this->urlCreator instanceof Closure) {
+        if (is_callable($this->urlCreator)) {
             return call_user_func($this->urlCreator, $action, $model, $key, $index);
         } else {
             $params = is_array($key) ? $key : ['id' => (string) $key];

@@ -418,12 +418,12 @@ try {
     try {
         $db->createCommand($sql2)->execute();
         $innerTransaction->commit();
-    } catch (Exception $e) {
+    } catch (\Exception $e) {
         $innerTransaction->rollBack();
     }
 
     $outerTransaction->commit();
-} catch (Exception $e) {
+} catch (\Exception $e) {
     $outerTransaction->rollBack();
 }
 ```

@@ -385,6 +385,13 @@ class ArrayHelperTest extends TestCase
         $this->assertEquals($expected, ArrayHelper::getValue($array, $key, $default));
     }
 
+    public function testGetValueObjects()
+    {
+        $object = new Post1();
+        $this->assertEquals(23, ArrayHelper::getValue($object, 'id'));
+        $this->assertEquals(null, ArrayHelper::getValue($object, 'nonExisting'));
+    }
+
     public function testIsAssociative()
     {
         $this->assertFalse(ArrayHelper::isAssociative('test'));
