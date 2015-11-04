@@ -489,5 +489,4 @@ class UrlManager extends Component
     {
         $this->_hostInfo = rtrim($value, '/');
     }
-
 }
