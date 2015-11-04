@@ -8,6 +8,12 @@ if you want to upgrade from version A to version C and there is
 version B between A and C, you need to follow the instructions
 for both A and B.
 
+Make sure you have global install of latest version of composer asset plugin:
+
+```
+php composer.phar global require "fxp/composer-asset-plugin"
+```
+
 
 Upgrade from Yii 2.0.5
 ----------------------
