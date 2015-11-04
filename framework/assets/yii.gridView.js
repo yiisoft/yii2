@@ -172,6 +172,6 @@
         data: function () {
             var id = $(this).attr('id');
             return gridData[id];
-        },
+        }
     };
 })(window.jQuery);

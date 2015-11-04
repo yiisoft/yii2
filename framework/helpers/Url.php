@@ -16,30 +16,37 @@ namespace yii\helpers;
 class Url extends BaseUrl
 {
     /**
-     * @param        $params  Array of values to convert into http query
-     * @param string $keyfather Inheritance of keys
-     * @param string $response
-     * @param bool   $ltrim
+     * Custom function to emulate http_build_query. The goal is to avoid getting numeric values bettween '[]'.
+     * For example:
+     * - http_build_query(['language' => ['en', 'ca']])           -> 'language%5B0%5D=en&language%5B1%5D=en'
+     * - custom_http_build_query(['language' => ['en', 'ca']])    -> 'language%5B%5D=en&language%5B%5D=ca'
      *
-     * @return string
+     * @param array  $params Array of values to convert into http query string
+     * @param string $inheritKey String used when array has more than one dimesion.
+     *                           We pass the our actual key to our child array.
+     * @param array  $response Array of urlencoded values
+     * @param bool $implode Used to return the response as http_build_query would return by default.
+     *                      If set false array is given in response
+     *
+     * @return array|string
      */
-    public static function custom_http_build_query($params, $keyfather = '', $response = '', $ltrim = true) {
+    public static function custom_http_build_query(Array $params, $inheritKey = '', $response = [], $implode = true) {
         foreach($params as $key => $value) {
-            if(!empty($keyfather)) {
+            if(!empty($inheritKey)) {
                 if(is_numeric($key)) {
                     $key = '';
                 }
-                $key = "{$keyfather}[{$key}]";
+                $key = "{$inheritKey}[{$key}]";
             }
             if(is_array($value)) {
                 $response = Url::custom_http_build_query($value, $key, $response, false);
             } else {
                 if(!is_null($value)) {
-                    $response .= "&".urlencode($key)."=".urlencode($value);
+                    $response[] = urlencode($key)."=".urlencode($value);
                 }
             }
         }
 
-        return $ltrim ? ltrim($response, '&') : $response;
+        return $implode ? implode('&', $response) : $response;
     }
 }
