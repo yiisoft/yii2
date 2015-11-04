@@ -14,6 +14,10 @@ Make sure you have global install of latest version of composer asset plugin:
 php composer.phar global require "fxp/composer-asset-plugin"
 ```
 
+Upgrade from Yii 2.0.6
+----------------------
+  
+* The signature of `yii\helpers\BaseInflector::transliterate()` was changed. The method is now public and has an extra optional parameter `$transliterator`.
 
 Upgrade from Yii 2.0.5
 ----------------------
