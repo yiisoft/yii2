@@ -155,8 +155,11 @@ class Serializer extends Component
      */
     protected function getRequestedFields()
     {
-        $fields = $this->request->get($this->fieldsParam);
-        $expand = $this->request->get($this->expandParam);
+        $actionParamsFields = isset(\Yii::$app->controller->actionParams[$this->fieldsParam]) ? \Yii::$app->controller->actionParams[$this->fieldsParam] : null;
+        $actionParamsExpand = isset(\Yii::$app->controller->actionParams[$this->expandParam]) ? \Yii::$app->controller->actionParams[$this->expandParam] : null;
+
+        $fields = $this->request->get($this->fieldsParam, $actionParamsFields);
+        $expand = $this->request->get($this->expandParam, $actionParamsExpand);
 
         return [
             preg_split('/\s*,\s*/', $fields, -1, PREG_SPLIT_NO_EMPTY),
