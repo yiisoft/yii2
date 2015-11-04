@@ -183,6 +183,7 @@ class Application extends \yii\base\Application
             'cache' => 'yii\console\controllers\CacheController',
             'asset' => 'yii\console\controllers\AssetController',
             'fixture' => 'yii\console\controllers\FixtureController',
+            'serve' => 'yii\console\controllers\ServeController',
         ];
     }
 
