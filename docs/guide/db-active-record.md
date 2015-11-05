@@ -1441,11 +1441,11 @@ we can emulate the behavior of a property
 ```php
 class Room extends \yii\db\ActiveRecord
 {
-    private $volume;
+    private $_volume;
     
     public function setVolume($volume)
     {
-        $this->volume = (float) $volume;
+        $this->_volume = (float) $volume;
     }
     
     public function getVolume()
@@ -1454,13 +1454,13 @@ class Room extends \yii\db\ActiveRecord
             return null;
         }
         
-        if ($this->volume === null) {
+        if ($this->_volume === null) {
             $this->setVolume(
                 $this->length * $this->width * $this->height
             );
         }
         
-        return $this->volume;
+        return $this->_volume;
     }
 
     // ...
@@ -1475,11 +1475,11 @@ Similary it can be used on extra fields depending on relational data
 ```php
 class Customer extends \yii\db\ActiveRecord
 {
-    private $ordersCount;
+    private $_ordersCount;
     
     public function setOrdersCount($count)
     {
-        $this->ordersCount = (int) $count;
+        $this->_ordersCount = (int) $count;
     }
     
     public function getOrdersCount()
@@ -1488,11 +1488,11 @@ class Customer extends \yii\db\ActiveRecord
             return null; // This avoid calling a query searching for null primary keys.
         }
         
-        if ($this->ordersCount === null) {
+        if ($this->_ordersCount === null) {
             $this->setOrdersCount(count($this->orders));
         }
 
-        return $this->ordersCount;
+        return $this->_ordersCount;
     }
 
     // ...
