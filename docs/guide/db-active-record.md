@@ -1423,7 +1423,7 @@ $customers = Customer::find()
     ->all();
 ```
 
-A disadvantage of using this method would be that if the information isn't loaded on the sql query it has to be calculated separatedly, which also means that newly saved records won't contain the information from any extra field
+A disadvantage of using this method would be that if the information isn't loaded on the SQL query it has to be calculated separately, which also means that newly saved records won't contain the information from any extra field.
 
 ```php
 $room = new Room();
@@ -1441,7 +1441,7 @@ class Room extends \yii\db\ActiveRecord
 {
     private $_volume;
     
-    public function setVolumen($volume)
+    public function setVolume($volume)
     {
         $this->_volume = (float) $volume;
     }
@@ -1468,7 +1468,7 @@ class Room extends \yii\db\ActiveRecord
 }
 ```
 
-With this if the select query doesn't provide the volume the record will obtain it from its internal value.
+When the select query doesn't provide the volume, the model will be able to calculate it automatically using the attributes in the model.
 
 Similary it can be used on extra fields depending on relational data
 
