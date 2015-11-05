@@ -39,6 +39,10 @@ class ColumnSchemaBuilder extends Object
      */
     protected $isUnique = false;
     /**
+     * @var boolean whether the column values should be unsigned. If this is `true`, a `UNSIGNED` constraint will be added.
+     */
+    protected $isUnsigned = false;
+    /**
      * @var string the `CHECK` constraint for the column.
      */
     protected $check;
@@ -46,17 +50,23 @@ class ColumnSchemaBuilder extends Object
      * @var mixed default value of the column.
      */
     protected $default;
+    /**
+     * @var Schema $schema Used schema
+     */
+    protected $schema;
 
 
     /**
      * Create a column schema builder instance giving the type and value precision.
      *
+     * @param Schema $schema Used schema
      * @param string $type type of the column. See [[$type]].
      * @param integer|string|array $length length or precision of the column. See [[$length]].
      * @param array $config name-value pairs that will be used to initialize the object properties
      */
-    public function __construct($type, $length = null, $config = [])
+    public function __construct(Schema $schema, $type, $length = null, $config = [])
     {
+        $this->schema = $schema;
         $this->type = $type;
         $this->length = $length;
         parent::__construct($config);
@@ -77,6 +87,16 @@ class ColumnSchemaBuilder extends Object
      * @return $this
      */
     public function unique()
+    {
+        $this->isUnique = true;
+        return $this;
+    }
+
+    /**
+     * Adds a `UNSIGNED` constraint to the column.
+     * @return $this
+     */
+    public function unsigned()
     {
         $this->isUnique = true;
         return $this;
@@ -113,6 +133,7 @@ class ColumnSchemaBuilder extends Object
         return
             $this->type .
             $this->buildLengthString() .
+            $this->buildUnsignedString() .
             $this->buildNotNullString() .
             $this->buildUniqueString() .
             $this->buildDefaultString() .
@@ -153,6 +174,15 @@ class ColumnSchemaBuilder extends Object
     }
 
     /**
+     * Builds the unsigned constraint for the column.
+     * @return string returns string 'UNSIGNED' if [[isUnsigned]] is true, otherwise it returns an empty string.
+     */
+    protected function buildUnsignedString()
+    {
+        return $this->isUnsigned && in_array($this->type, $this->schema->unsignedTypes, true) ? ' UNSIGNED' : '';
+    }
+
+    /**
      * Builds the default value specification for the column.
      * @return string string with default value of column.
      */
@@ -175,7 +205,7 @@ class ColumnSchemaBuilder extends Object
                 $string .= $this->default ? 'TRUE' : 'FALSE';
                 break;
             default:
-                $string .= "'{$this->default}'";
+                $string .= $this->schema->quoteValue($this->default);
         }
 
         return $string;
