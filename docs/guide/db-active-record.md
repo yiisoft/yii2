@@ -1457,7 +1457,7 @@ class Room extends \yii\db\ActiveRecord
         
         if ($this->_volume === null) {
             $this->setVolume(
-                $this->height * $this->width * $this->height
+                $this->length * $this->width * $this->height
             );
         }
         
