@@ -1381,8 +1381,8 @@ Then you need to compose a query, which calculates volume of the room and perfor
 ```php
 $rooms = Room::find()
     ->select([
-        '{{room}}.*', // select all columns
-        '([[length]] * [[width]].* [[height]]) AS volume', // calculate a volume
+        Room::tableName() . '.*', // select all columns
+        'volume' => '([[length]] * [[width]] * [[height]])', // calculate a volume
     ])
     ->orderBy('volume DESC') // apply sort
     ->all();
@@ -1413,12 +1413,14 @@ class Customer extends \yii\db\ActiveRecord
 Then you can compose a query, which joins the orders and calculates their count:
 
 ```php
+$customerTable = Customer::tableName();
+$orderTable = Order::tableName();
 $customers = Customer::find()
     ->select([
-        '{{customer}}.*', // select all customer fields
-        'COUNT({{order}}.id) AS ordersCount' // calculate orders count
+        "$customerTable.*", // select all customer fields
+        'ordersCount' => "COUNT($orderTable.id)" // calculate orders count
     ])
     ->joinWith('orders') // ensure table junction
-    ->groupBy('{{customer}}.id') // group the result to ensure aggregation function works
+    ->groupBy("$customerTable.id") // group the result to ensure aggregation function works
     ->all();
 ```
