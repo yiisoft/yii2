@@ -292,6 +292,7 @@ SQL;
             case 'pgsql': $expression = "EXTRACT(YEAR FROM TIMESTAMP 'now')"; break;
             case 'cubrid':
             case 'mysql': $expression = "YEAR(NOW())"; break;
+            case 'ibm': $expression = "YEAR(CURRENT TIMESTAMP)"; break;
             default:
             case 'sqlite': $expression = "strftime('%Y')"; break;
         }

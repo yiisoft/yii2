@@ -13,6 +13,7 @@ use yii\db\mssql\QueryBuilder as MssqlQueryBuilder;
 use yii\db\pgsql\QueryBuilder as PgsqlQueryBuilder;
 use yii\db\cubrid\QueryBuilder as CubridQueryBuilder;
 use yii\db\oci\QueryBuilder as OracleQueryBuilder;
+use yii\db\ibm\QueryBuilder as IbmQueryBuilder;
 
 /**
  * @group db
@@ -50,6 +51,8 @@ class QueryBuilderTest extends DatabaseTestCase
                 return new CubridQueryBuilder($connection);
             case 'oci':
                 return new OracleQueryBuilder($connection);
+            case 'ibm':
+                return new IbmQueryBuilder($connection);
         }
         throw new \Exception('Test is not implemented for ' . $this->driverName);
     }
@@ -256,6 +259,12 @@ class QueryBuilderTest extends DatabaseTestCase
                     [ ['not in', ['id', 'name'], [['id' => 1, 'name' => 'foo'], ['id' => 2, 'name' => 'bar']]], '((`id` != :qp0 OR `name` != :qp1) AND (`id` != :qp2 OR `name` != :qp3))', [':qp0' => 1, ':qp1' => 'foo', ':qp2' => 2, ':qp3' => 'bar'] ],
                     //[ ['in', ['id', 'name'], (new Query())->select(['id', 'name'])->from('users')->where(['active' => 1])], 'EXISTS (SELECT 1 FROM (SELECT `id`, `name` FROM `users` WHERE `active`=:qp0) AS a WHERE a.`id` = `id AND a.`name` = `name`)', [':qp0' => 1] ],
                     //[ ['not in', ['id', 'name'], (new Query())->select(['id', 'name'])->from('users')->where(['active' => 1])], 'NOT EXISTS (SELECT 1 FROM (SELECT `id`, `name` FROM `users` WHERE `active`=:qp0) AS a WHERE a.`id` = `id` AND a.`name = `name`)', [':qp0' => 1] ],
+                ]);
+                break;
+            case 'ibm':
+                $conditions = array_merge($conditions, [
+                    [ ['in', ['id', 'name'], [['id' => 1, 'name' => 'foo'], ['id' => 2, 'name' => 'bar']]], '("id", "name") IN (select :qp0, :qp1 from SYSIBM.SYSDUMMY1 UNION select :qp2, :qp3 from SYSIBM.SYSDUMMY1)', [':qp0' => 1, ':qp1' => 'foo', ':qp2' => 2, ':qp3' => 'bar'] ],
+                    [ ['not in', ['id', 'name'], [['id' => 1, 'name' => 'foo'], ['id' => 2, 'name' => 'bar']]], '("id", "name") NOT IN (select :qp0, :qp1 from SYSIBM.SYSDUMMY1 UNION select :qp2, :qp3 from SYSIBM.SYSDUMMY1)', [':qp0' => 1, ':qp1' => 'foo', ':qp2' => 2, ':qp3' => 'bar'] ],
                 ]);
                 break;
             default:

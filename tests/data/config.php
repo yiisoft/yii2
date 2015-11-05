@@ -43,6 +43,12 @@ $config = [
             'password' => 'postgres',
             'fixture' => __DIR__ . '/postgres.sql',
         ],
+        'ibm' => [
+            'dsn' => 'ibm:DRIVER={IBM DB2 ODBC DRIVER};DATABASE=yiitest;HOSTNAME=localhost;PORT=50000;PROTOCOL=TCPIP',
+            'username' => 'travis',
+            'password' => '',
+            'fixture' => __DIR__ . '/ibm.sql',
+        ]
     ],
 ];
 

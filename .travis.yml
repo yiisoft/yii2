@@ -61,7 +61,7 @@ before_script:
 
 
 script:
-  - vendor/bin/phpunit --verbose $PHPUNIT_FLAGS --exclude-group mssql,oci,wincache,xcache,zenddata,cubrid
+  - vendor/bin/phpunit --verbose $PHPUNIT_FLAGS --exclude-group mssql,oci,wincache,xcache,zenddata,cubrid,ibm
 
 after_script:
   - |

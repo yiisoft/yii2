@@ -278,6 +278,7 @@ class Connection extends Component
         'mssql' => 'yii\db\mssql\Schema', // older MSSQL driver on MS Windows hosts
         'dblib' => 'yii\db\mssql\Schema', // dblib drivers on GNU/Linux (and maybe other OSes) hosts
         'cubrid' => 'yii\db\cubrid\Schema', // CUBRID
+        'ibm' => 'yii\db\ibm\Schema', // DB2
     ];
     /**
      * @var string Custom PDO wrapper class. If not set, it will use "PDO" or "yii\db\mssql\PDO" when MSSQL is used.
@@ -606,6 +607,9 @@ class Connection extends Component
         }
         if ($this->charset !== null && in_array($this->getDriverName(), ['pgsql', 'mysql', 'mysqli', 'cubrid'])) {
             $this->pdo->exec('SET NAMES ' . $this->pdo->quote($this->charset));
+        }
+        if ($this->getDriverName() === 'ibm') {
+            $this->pdo->setAttribute(PDO::ATTR_CASE, PDO::CASE_NATURAL);
         }
         $this->trigger(self::EVENT_AFTER_OPEN);
     }
