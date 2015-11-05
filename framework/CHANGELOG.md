@@ -53,6 +53,7 @@ Yii Framework 2 Change Log
 - Chg #9369: `Yii::$app->user->can()` now returns `false` instead of erroring in case `authManager` component is not configured (creocoder)
 - Chg #9411: `DetailView` now automatically sets container tag ID in case it's not specified (samdark)
 - Chg #9953: `TimestampBehavior::getValue()` changed to make value processing consistent with `AttributeBehavior::getValue()` (silverfire)
+- Bug #10101: Added method call `saveAssignments` to `\yii\rbac\PhpManager::removeItem` (rezident1307)
 
 2.0.6 August 05, 2015
 ---------------------
