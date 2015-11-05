@@ -1422,3 +1422,84 @@ $customers = Customer::find()
     ->groupBy('{{customer}}.id') // group the result to ensure aggregation function works
     ->all();
 ```
+
+A disadvantage of using this method would be that if the information isn't loaded on the SQL query it has to be calculated separately, which also means that newly saved records won't contain the information from any extra field.
+
+```php
+$room = new Room();
+$room->length = 100;
+$room->width = 50;
+$room->height = 2;
+
+$room->volume; // this value will be null since it was not declared yet.
+```
+
+Using the magic methods [[yii\db\BaseActiveRecord::__get()|__get()]] and [[yii\db\BaseActiveRecord::__set()|__set()]] we can emulate the behavior of a property
+
+```php
+class Room extends \yii\db\ActiveRecord
+{
+    private $_volume;
+    
+    public function setVolume($volume)
+    {
+        $this->_volume = (float) $volume;
+    }
+    
+    public function getVolume()
+    {
+        if (empty($this->length)
+            or empty($this->width)
+            or empty($this->height)
+        ) {
+            return null;
+        }
+        
+        if ($this->_volume === null) {
+            $this->setVolume(
+                $this->length * $this->width * $this->height
+            );
+        }
+        
+        return $this->_volume;
+    }
+
+    // ...
+}
+```
+
+When the select query doesn't provide the volume, the model will be able to calculate it automatically using the attributes in the model.
+
+Similary it can be used on extra fields depending on relational data
+
+```php
+class Customer extends \yii\db\ActiveRecord
+{
+    private $_ordersCount;
+    
+    public function setOrdersCount($count)
+    {
+        $this->_ordersCount = (int) $count;
+    }
+    
+    public function getOrdersCount()
+    {
+        if ($this->isNewRecord) {
+            return null; // This avoid calling a query searching for null primary keys.
+        }
+        
+        if ($this->_ordersCount === null) {
+            $this->setOrdersCount(count($this->orders));
+        }
+
+        return $this->_ordersCount;
+    }
+
+    // ...
+
+    public function getOrders()
+    {
+        return $this->hasMany(Order::className(), ['customer_id' => 'id']);
+    }
+}
+```
