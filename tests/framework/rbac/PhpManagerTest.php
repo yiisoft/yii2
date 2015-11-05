@@ -150,5 +150,7 @@ class PhpManagerTest extends ManagerTestCase
         $role->name = 'NewAdmin';
         $this->auth->update('Admin', $role);
         $this->assertContains('NewAdmin', file_get_contents($this->getAssignmentFile()));
+        $this->auth->remove($role);
+        $this->assertNotContains('NewAdmin', file_get_contents($this->getAssignmentFile()));
     }
 }
