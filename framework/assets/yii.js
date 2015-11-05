@@ -329,7 +329,7 @@ yii = (function ($) {
             }
 
             if (message !== undefined) {
-                pub.confirm(message, function () {
+                $.proxy(pub.confirm, this)(message, function () {
                     pub.handleAction($this, event);
                 });
             } else {
