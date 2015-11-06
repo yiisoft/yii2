@@ -3,6 +3,7 @@
 namespace yiiunit\framework\helpers;
 
 use yii\base\Model;
+use yii\helpers\BaseJson;
 use yii\helpers\Json;
 use yiiunit\TestCase;
 use yii\web\JsExpression;
@@ -116,6 +117,31 @@ class JsonTest extends TestCase
         $json = '{"a":1,"b":2';
         $this->setExpectedException('yii\base\InvalidParamException');
         Json::decode($json);
+    }
+
+    public function testHandleJsonError()
+    {
+        // Basic syntax error
+        try {
+            $json = "{'a': '1'}";
+            Json::decode($json);
+        } catch (\yii\base\InvalidParamException $e) {
+            $this->assertSame(BaseJson::$jsonErrorMessages['JSON_ERROR_SYNTAX'], $e->getMessage());
+        }
+
+        // Unsupported type since PHP 5.5
+        try {
+            $fp = fopen('php://stdin', 'r');
+            $data = ['a' => $fp];
+            Json::encode($data);
+            fclose($fp);
+        } catch (\yii\base\InvalidParamException $e) {
+            if (PHP_VERSION_ID >= 50500) {
+                $this->assertSame(BaseJson::$jsonErrorMessages['JSON_ERROR_UNSUPPORTED_TYPE'], $e->getMessage());
+            } else {
+                $this->assertSame(BaseJson::$jsonErrorMessages['JSON_ERROR_SYNTAX'], $e->getMessage());
+            }
+        }
     }
 }
 

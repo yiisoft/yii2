@@ -141,6 +141,50 @@ class CompareValidatorTest extends TestCase
         $this->assertTrue($model->hasErrors('attr_o'));
     }
 
+    public function testAttributeErrorMessages()
+    {
+        $model = FakedValidationModel::createWithAttributes([
+            'attr1' => 1,
+            'attr2' => 2,
+            'attrN' => 2,
+        ]);
+
+        foreach ($this->getTestDataForMessages() as $data) {
+            $model->clearErrors($data[0]);
+            $validator = new CompareValidator();
+            $validator->operator = $data[1];
+            $validator->message = null;
+            $validator->init(); // reload messages
+            $validator->$data[4] = $data[2];
+            $validator->validateAttribute($model, $data[0]);
+            $error = $model->getErrors($data[0])[0];
+            $this->assertEquals($data[3], $error);
+        }
+    }
+
+    protected function getTestDataForMessages()
+    {
+        return [
+            ['attr1', '==', 2, 'attr1 must be equal to "2".', 'compareValue'],
+            ['attr1', '===', 2, 'attr1 must be equal to "2".', 'compareValue'],
+            ['attrN', '!=', 2, 'attrN must not be equal to "2".', 'compareValue'],
+            ['attrN', '!==', 2, 'attrN must not be equal to "2".', 'compareValue'],
+            ['attr1', '>', 2, 'attr1 must be greater than "2".', 'compareValue'],
+            ['attr1', '>=', 2, 'attr1 must be greater than or equal to "2".', 'compareValue'],
+            ['attr2', '<', 1, 'attr2 must be less than "1".', 'compareValue'],
+            ['attr2', '<=', 1, 'attr2 must be less than or equal to "1".', 'compareValue'],
+
+            ['attr1', '==', 'attr2', 'attr1 must be equal to "attr2".', 'compareAttribute'],
+            ['attr1', '===', 'attr2', 'attr1 must be equal to "attr2".', 'compareAttribute'],
+            ['attrN', '!=', 'attr2', 'attrN must not be equal to "attr2".', 'compareAttribute'],
+            ['attrN', '!==', 'attr2', 'attrN must not be equal to "attr2".', 'compareAttribute'],
+            ['attr1', '>', 'attr2', 'attr1 must be greater than "attr2".', 'compareAttribute'],
+            ['attr1', '>=', 'attr2', 'attr1 must be greater than or equal to "attr2".', 'compareAttribute'],
+            ['attr2', '<', 'attr1', 'attr2 must be less than "attr1".', 'compareAttribute'],
+            ['attr2', '<=', 'attr1', 'attr2 must be less than or equal to "attr1".', 'compareAttribute'],
+        ];
+    }
+
     public function testValidateAttributeOperators()
     {
         $value = 55;

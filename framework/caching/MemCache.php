@@ -7,6 +7,7 @@
 
 namespace yii\caching;
 
+use Yii;
 use yii\base\InvalidConfigException;
 
 /**
@@ -288,6 +289,7 @@ class MemCache extends Cache
      */
     protected function setValue($key, $value, $duration)
     {
+        $duration = $this->trimDuration($duration);
         $expire = $duration > 0 ? $duration + time() : 0;
 
         return $this->useMemcached ? $this->_cache->set($key, $value, $expire) : $this->_cache->set($key, $value, 0, $expire);
@@ -301,6 +303,8 @@ class MemCache extends Cache
      */
     protected function setValues($data, $duration)
     {
+        $duration = $this->trimDuration($duration);
+
         if ($this->useMemcached) {
             $this->_cache->setMulti($data, $duration > 0 ? $duration + time() : 0);
 
@@ -321,6 +325,7 @@ class MemCache extends Cache
      */
     protected function addValue($key, $value, $duration)
     {
+        $duration = $this->trimDuration($duration);
         $expire = $duration > 0 ? $duration + time() : 0;
 
         return $this->useMemcached ? $this->_cache->add($key, $value, $expire) : $this->_cache->add($key, $value, 0, $expire);
@@ -345,5 +350,19 @@ class MemCache extends Cache
     protected function flushValues()
     {
         return $this->_cache->flush();
+    }
+
+    /**
+     * Trims duration to 30 days (2592000 seconds).
+     * @param integer $duration the number of seconds
+     * @return int the duration
+     */
+    protected function trimDuration($duration)
+    {
+        if ($duration > 2592000) {
+            Yii::warning('Duration has been truncated to 30 days due to Memcache/Memcached limitation.', __METHOD__);
+            return 2592000;
+        }
+        return $duration;
     }
 }
