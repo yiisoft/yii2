@@ -28,7 +28,7 @@ class ServeController extends Controller
     const EXIT_CODE_ADDRESS_TAKEN_BY_ANOTHER_PROCESS = 5;
 
     /**
-     * @var int port to serve on. Either "host" or "host:port".
+     * @var int port to serve on.
      */
     public $port = 8080;
 
@@ -46,7 +46,7 @@ class ServeController extends Controller
     /**
      * Runs PHP built-in web server
      *
-     * @param string $address address to serve on
+     * @param string $address address to serve on.  Either "host" or "host:port".
      *
      * @return int
      */
