@@ -80,6 +80,7 @@ Yii Framework 2 Change Log
 - Enh #10078: Added `csrf` option to `Html::beginForm()` to allow disabling the hidden csrf field generation (machour)
 - Enh #10086: `yii\base\Controller::viewPath` is now configurable (Sibilino)
 - Enh #10098: Changed `yii.confirm` context to the event's target DOM element which is triggered by clickable or changeable elements (lichunqiang)
+- Enh #10108: Added support for events in interfaces (omnilight)
 - Enh #10118: Allow easy extension of slug generation in `yii\behaviors\SluggableBehavior` (cebe, hesna)
 - Enh #10149: Made `yii\db\Connection` serializable (Sam Mousa)
 - Enh #10154: Implemented support of traversable objects in `RangeValidator::ranges`, added `ArrayHelper::isIn()` and `ArrayHelper::isSubset()` (Sam Mousa)

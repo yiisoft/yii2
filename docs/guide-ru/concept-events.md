@@ -222,6 +222,65 @@ Event::off(Foo::className(), Foo::EVENT_HELLO, $handler);
 Event::off(Foo::className(), Foo::EVENT_HELLO);
 ```
 
+Обработчики событий на уровне интерфейсов <span id="interface-level-event-handlers"></span>
+-------------
+
+Еще более общим случаем, чем обработка событий на уровне класса, является обработка на уровнне *интерфейсов*. Для этого по аналогии с обработчиками событий на уровне классов, необходимо вызвать статический метод [[yii\base\Event::on()]], передав ему в качестве первого параметра имя интерфейса. В этом случае инициализация события для любого класса, реализующего указанный интерфейс, будет приводить к срабатыванию соответствующего обработчика.
+
+Например, имеется следующий интерфейс:
+
+```php
+interface MyInterface
+{
+    const EVENT_HELLO = 'hello';
+}
+```
+
+И классы:
+
+```php
+class MyClass1 extends Component implements MyInterface
+{
+    public function myFunction()
+    {
+        $this->trigger(MyInterface::EVENT_HELLO);
+    }
+}
+
+class MyClass2 extends Component implements MyInterface
+{
+    public function myFunction()
+    {
+        $this->trigger(MyInterface::EVENT_HELLO);
+    }
+}
+```
+
+В этом случае, для того, чтобы подписаться на события в любом из классов `MyClass1` или `MyClass2` достаточно добавить следующий код:
+
+```php
+Event::on('MyInterface', MyInterface::EVENT_HELLO, function ($event) {
+    echo $event->sender; // Выводит MyClass1 или MyClass2 в зависимости от класса, вызвавшего событие
+})
+```
+
+Обратите внимание, что в отличие от событий на *уровне класса*, для событий на *уровне интерфейса* статический вызов метода [[yii\base\Event::trigger()]] невозможен:
+
+```php
+Event::trigger('MyInterface', MyInterface::EVENT_HELLO); // Приведет к ошибке
+
+Event::trigger(MyClass1::className(), MyInterface::EVENT_HELLO); // Корректная запись, обработчик будет вызван
+```
+
+Отсоединить обработчик события на уровне класса можно с помощью метода [[yii\base\Event::off()]]. Например:
+
+```php
+// отсоединение $handler
+Event::off('MyInterface', MyInterface::EVENT_HELLO, $handler);
+
+// отсоединяются все обработчики MyInterface::EVENT_HELLO
+Event::off('MyInterface', MyInterface::EVENT_HELLO);
+```
 
 Глобальные события <span id="global-events"></span>
 -------------
