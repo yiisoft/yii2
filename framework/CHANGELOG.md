@@ -33,6 +33,7 @@ Yii Framework 2 Change Log
 - Bug #9999: Fixed `yii\web\UrlRule` to allow route parameter names with `-`, `_`, `.`characters (silverfire)
 - Bug #10029: Fixed MaskedInput not working with PJAX (martrix78, samdark)
 - Bug: Fixed generation of canonical URLs for `ViewAction` pages (samdark)
+- Bug #10101: Fixed assignments saving on role removing (rezident1307)
 - Enh #3506: Added `\yii\validators\IpValidator` to perform validation of IP addresses and subnets (SilverFire, samdark)
 - Enh #5146: Added `\yii\i18n\Formatter::asDuration()` method (nineinchnick, SilverFire)
 - Enh #7341: Client validation now skips disabled inputs (SamMousa)
@@ -56,7 +57,6 @@ Yii Framework 2 Change Log
 - Chg #9411: `DetailView` now automatically sets container tag ID in case it's not specified (samdark)
 - Chg #9953: `TimestampBehavior::getValue()` changed to make value processing consistent with `AttributeBehavior::getValue()` (silverfire)
 - New #10083: Added wrapper for PHP webserver (samdark)
-- Bug #10101: Fixed assignments saving on role removing (rezident1307)
 
 2.0.6 August 05, 2015
 ---------------------
