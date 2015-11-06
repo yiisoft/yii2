@@ -145,12 +145,20 @@ class Event extends Object
         } else {
             $class = ltrim($class, '\\');
         }
+
+        $baseClass = $class;
+
         do {
             if (!empty(self::$_events[$name][$class])) {
                 return true;
             }
         } while (($class = get_parent_class($class)) !== false);
 
+        foreach (class_implements($baseClass) as $interface) {
+            if (!empty(self::$_events[$name][$interface])) {
+                return true;
+            }
+        }
         return false;
     }
 
@@ -181,16 +189,32 @@ class Event extends Object
         } else {
             $class = ltrim($class, '\\');
         }
-        do {
+
+        $runEvent = function ($class) use ($name, $event) {
             if (!empty(self::$_events[$name][$class])) {
                 foreach (self::$_events[$name][$class] as $handler) {
                     $event->data = $handler[1];
                     call_user_func($handler[0], $event);
                     if ($event->handled) {
-                        return;
+                        return false;
                     }
                 }
             }
+            return true;
+        };
+
+        $baseClass = $class;
+
+        do {
+            if (call_user_func($runEvent, $class) == false) {
+                return;
+            }
         } while (($class = get_parent_class($class)) !== false);
+
+        foreach (class_implements($baseClass) as $interface) {
+            if (call_user_func($runEvent, $interface) == false) {
+                return;
+            }
+        }
     }
 }
