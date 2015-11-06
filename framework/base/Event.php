@@ -190,30 +190,29 @@ class Event extends Object
             $class = ltrim($class, '\\');
         }
 
-        $runEvent = function ($class) use ($name, $event) {
+        $baseClass = $class;
+
+        do {
             if (!empty(self::$_events[$name][$class])) {
                 foreach (self::$_events[$name][$class] as $handler) {
                     $event->data = $handler[1];
                     call_user_func($handler[0], $event);
                     if ($event->handled) {
-                        return false;
+                        return;
                     }
                 }
-            }
-            return true;
-        };
-
-        $baseClass = $class;
-
-        do {
-            if (call_user_func($runEvent, $class) == false) {
-                return;
             }
         } while (($class = get_parent_class($class)) !== false);
 
         foreach (class_implements($baseClass) as $interface) {
-            if (call_user_func($runEvent, $interface) == false) {
-                return;
+            if (!empty(self::$_events[$name][$interface])) {
+                foreach (self::$_events[$name][$interface] as $handler) {
+                    $event->data = $handler[1];
+                    call_user_func($handler[0], $event);
+                    if ($event->handled) {
+                        return;
+                    }
+                }
             }
         }
     }
