@@ -34,6 +34,7 @@ Yii Framework 2 Change Log
 - Bug #10029: Fixed MaskedInput not working with PJAX (martrix78, samdark)
 - Bug #10101: Fixed assignments saving on role removing in `\yii\rbac\PhpManager` (rezident1307)
 - Bug: Fixed generation of canonical URLs for `ViewAction` pages (samdark)
+- Bug #10101: Fixed assignments saving on role removing (rezident1307)
 - Enh #3506: Added `\yii\validators\IpValidator` to perform validation of IP addresses and subnets (SilverFire, samdark)
 - Enh #5146: Added `\yii\i18n\Formatter::asDuration()` method (nineinchnick, SilverFire)
 - Enh #7341: Client validation now skips disabled inputs (SamMousa)
