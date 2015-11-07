@@ -85,6 +85,16 @@ class Menu extends Widget
      */
     public $itemOptions = [];
     /**
+     * @var array list of HTML attributes shared by parent menu [[items]]. If any individual menu item
+     * specifies its `options`, it will be merged with this property before being used to generate the HTML
+     * attributes for the menu item tag. The following special options are recognized:
+     *
+     * - tag: string, defaults to "li", the tag name of the item container tags. Set to false to disable container tag.
+     *
+     * @see \yii\helpers\Html::renderTagAttributes() for details on how attributes are being rendered.
+     */
+    public $parentItemOptions = [];
+    /**
      * @var string the template used to render the body of a menu which is a link.
      * In this template, the token `{url}` will be replaced with the corresponding link URL;
      * while `{label}` will be replaced with the link text.
@@ -195,6 +205,9 @@ class Menu extends Widget
         $lines = [];
         foreach ($items as $i => $item) {
             $options = array_merge($this->itemOptions, ArrayHelper::getValue($item, 'options', []));
+            if (!empty($item['items'])) {
+                $options = array_merge($this->parentItemOptions, ArrayHelper::getValue($item, 'options', []));
+            }
             $tag = ArrayHelper::remove($options, 'tag', 'li');
             $class = [];
             if ($item['active']) {
