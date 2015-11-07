@@ -3,6 +3,7 @@
 namespace yiiunit\framework\base;
 
 use yii\base\Model;
+use yiiunit\data\base\RulesModel;
 use yiiunit\TestCase;
 use yiiunit\data\base\Speaker;
 use yiiunit\data\base\Singer;
@@ -122,6 +123,58 @@ class ModelTest extends TestCase
         $speaker->setScenario('test');
         $this->assertTrue($speaker->isAttributeSafe('firstName'));
 
+    }
+
+    public function testSafeScenarios()
+    {
+        $model = new RulesModel();
+        $model->rules = [
+            // validated and safe on every scenario
+            [['account_id', 'user_id'], 'required'],
+        ];
+        $model->scenario = Model::SCENARIO_DEFAULT;
+        $this->assertEquals(['account_id', 'user_id'], $model->safeAttributes());
+        $this->assertEquals(['account_id', 'user_id'], $model->activeAttributes());
+        $model->scenario = 'update'; // not exsisting scenario
+        $this->assertEquals([], $model->safeAttributes());
+        $this->assertEquals([], $model->activeAttributes());
+
+        $model = new RulesModel();
+        $model->rules = [
+            // validated and safe on every scenario
+            [['account_id', 'user_id'], 'required'],
+            // only in create and update scenario
+            [['user_id'], 'number', 'on' => ['create', 'update']],
+            [['email', 'name'], 'required', 'on' => 'create']
+        ];
+        $model->scenario = Model::SCENARIO_DEFAULT;
+        $this->assertEquals(['account_id', 'user_id'], $model->safeAttributes());
+        $this->assertEquals(['account_id', 'user_id'], $model->activeAttributes());
+        $model->scenario = 'update';
+        $this->assertEquals(['account_id', 'user_id'], $model->safeAttributes());
+        $this->assertEquals(['account_id', 'user_id'], $model->activeAttributes());
+        $model->scenario = 'create';
+        $this->assertEquals(['account_id', 'user_id', 'email', 'name'], $model->safeAttributes());
+        $this->assertEquals(['account_id', 'user_id', 'email', 'name'], $model->activeAttributes());
+
+        $model = new RulesModel();
+        $model->rules = [
+            // validated and safe on every scenario
+            [['account_id', 'user_id'], 'required'],
+            // only in create and update scenario
+            [['user_id'], 'number', 'on' => ['create', 'update']],
+            [['email', 'name'], 'required', 'on' => 'create'],
+            [['email', 'name'], 'required', 'on' => 'update'],
+        ];
+        $model->scenario = Model::SCENARIO_DEFAULT;
+        $this->assertEquals(['account_id', 'user_id'], $model->safeAttributes());
+        $this->assertEquals(['account_id', 'user_id'], $model->activeAttributes());
+        $model->scenario = 'update';
+        $this->assertEquals(['account_id', 'user_id', 'email', 'name'], $model->safeAttributes());
+        $this->assertEquals(['account_id', 'user_id', 'email', 'name'], $model->activeAttributes());
+        $model->scenario = 'create';
+        $this->assertEquals(['account_id', 'user_id', 'email', 'name'], $model->safeAttributes());
+        $this->assertEquals(['account_id', 'user_id', 'email', 'name'], $model->activeAttributes());
     }
 
     public function testErrors()

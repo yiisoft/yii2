@@ -112,7 +112,7 @@ class MessageController extends Controller
             }
         }
         if (empty($config['languages'])) {
-            throw new Exception("Languages cannot be empty.");
+            throw new Exception('Languages cannot be empty.');
         }
 
         $files = FileHelper::findFiles(realpath($config['sourcePath']), $config);
@@ -203,7 +203,7 @@ class MessageController extends Controller
         }
 
         $obsolete = array_keys($obsolete);
-        $this->stdout("Inserting new messages...");
+        $this->stdout('Inserting new messages...');
         $savedFlag = false;
 
         foreach ($new as $category => $msgs) {
@@ -219,7 +219,7 @@ class MessageController extends Controller
         }
 
         $this->stdout($savedFlag ? "saved.\n" : "Nothing new...skipped.\n");
-        $this->stdout($removeUnused ? "Deleting obsoleted messages..." : "Updating obsoleted messages...");
+        $this->stdout($removeUnused ? 'Deleting obsoleted messages...' : 'Updating obsoleted messages...');
 
         if (empty($obsolete)) {
             $this->stdout("Nothing obsoleted...skipped.\n");

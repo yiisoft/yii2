@@ -63,8 +63,8 @@ Kluczowe koncepcje
 
 * [Komponenty](concept-components.md)
 * [Właściwości](concept-properties.md)
-* [Events](concept-events.md)
-* [Behaviors](concept-behaviors.md)
+* [Eventy](concept-events.md)
+* [Behaviory](concept-behaviors.md)
 * [Konfiguracje](concept-configurations.md)
 * [Aliasy](concept-aliases.md)
 * [Autoładowanie klas](concept-autoloading.md)
@@ -92,7 +92,7 @@ Odbieranie danych od użytkowników
 * [Walidacja danych wejściowych](input-validation.md)
 * [Wysyłanie plików](input-file-upload.md)
 * [Odczytywanie tablicowych danych wejściowych](input-tabular-input.md)
-* [Odbieranie danych z wielu modeli](input-multiple-models.md)
+* [Pobieranie danych dla wielu modeli](input-multiple-models.md)
 
 
 Wyświetlanie danych

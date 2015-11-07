@@ -367,6 +367,79 @@ validation purpose:
 - `minHeight`: the minimum height of the image. Defaults to null, meaning no lower limit.
 - `maxHeight`: the maximum height of the image. Defaults to null, meaning no upper limit.
 
+## [[yii\validators\IpValidator|ip]] <span id="ip"></span>
+```php
+[
+    // checks if "ip_address" is a valid IPv4 or IPv6 address
+    ['ip_address', 'ip'],
+
+    // checks if "ip_address" is a valid IPv6 address or subnet,
+    // value will be expanded to full IPv6 notation.
+    ['ip_address', 'ip', 'ipv4' => false, 'subnet' => null, 'expandIPv6' => true],
+
+    // checks if "ip_address" is a valid IPv4 or IPv6 address,
+    // allows negation character `!` at the beginning
+    ['ip_address', 'ip', 'negation' => true],
+]
+```
+
+The validator checks if the attribute value is a valid IPv4/IPv6 address or subnet.
+It also may change attribute's value if normalization or IPv6 expansion is enabled.
+
+The validator has such configuration options:
+
+- `ipv4`: whether the validating value can be an IPv4 address. Defaults to true.
+- `ipv6`: whether the validating value can be an IPv6 address. Defaults to true.
+- `subnet`: whether the address can be an IP with CIDR subnet, like `192.168.10.0/24`
+     * `true` - the subnet is required, addresses without CIDR will be rejected
+     * `false` - the address can not have the CIDR
+     * `null` - the CIDR is optional
+
+    Defaults to false.
+- `normalize`: whether to add the CIDR prefix with the smallest length (32 for IPv4 and 128 for IPv6) to an
+address without it. Works only when `subnet` is not `false`. For example:
+    * `10.0.1.5` will normalized to `10.0.1.5/32`
+    * `2008:db0::1` will be normalized to `2008:db0::1/128`
+
+    Defaults to false.
+- `negation`: whether the validation address can have a negation character `!` at the beginning. Defaults to false.
+- `expandIPv6`: whether to expand an IPv6 address to the full notation format.
+For example, `2008:db0::1` will be expanded to `2008:0db0:0000:0000:0000:0000:0000:0001`. Defaults to false.
+- `ranges`: array of IPv4 or IPv6 ranges that are allowed or forbidden.
+
+    When the array is empty, or the option is not set, all the IP addresses are allowed.
+    Otherwise, the rules are checked sequentially until the first match is found.
+    IP address is forbidden, when it has not matched any of the rules.
+    
+    For example:
+    ```php
+    [
+         'client_ip', 'ip', 'ranges' => [
+             '192.168.10.128'
+             '!192.168.10.0/24',
+             'any' // allows any other IP addresses
+         ]
+    ]
+    ```
+In this example, access is allowed for all the IPv4 and IPv6 addresses excluding `192.168.10.0/24` subnet.
+IPv4 address `192.168.10.128` is also allowed, because it is listed before the restriction.
+- `networks`: array of network aliases, that can be used in `ranges`. Format of array:
+    * key - alias name
+    * value - array of strings. String can be a range, IP address or another alias. String can be
+    negated with `!` (independent of `negation` option).
+
+    The following aliases are defined by default:
+    
+    * `*`: `any`
+    * `any`: `0.0.0.0/0, ::/0`
+    * `private`: `10.0.0.0/8, 172.16.0.0/12, 192.168.0.0/16, fd00::/8`
+    * `multicast`: `224.0.0.0/4, ff00::/8`
+    * `linklocal`: `169.254.0.0/16, fe80::/10`
+    * `localhost`: `127.0.0.0/8', ::1`
+    * `documentation`: `192.0.2.0/24, 198.51.100.0/24, 203.0.113.0/24, 2001:db8::/32`
+    * `system`: `multicast, linklocal, localhost, documentation`
+
+> Info: This validator has been available since version 2.0.7.
 
 ## [[yii\validators\RangeValidator|in]] <span id="in"></span>
 

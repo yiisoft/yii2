@@ -6,7 +6,7 @@
 хранятся в таблице `profile`, и вы можете захотеть обрабатывать входные данные о пользователе через модели `User` и `Profile`.
 Учитывая поддержку Yii моделей и форм, вы можете решить данную задачу способом, не сильно отличающимся от обработки одинарной модели.
 
-Далее мы покажем как можно создать форму, которая позволила бы вам собирать данные для обеих моделей `User` и `Profile`.
+Далее мы покажем, как можно создать форму, которая позволила бы вам собирать данные для обеих моделей `User` и `Profile`.
 
 Действие контроллера для обработки данных пользователя и данных профиля может быть написано следующим образом,
 
@@ -34,8 +34,10 @@ class UserController extends Controller
         $user->scenario = 'update';
         $profile->scenario = 'update';
         
-        if (Model::loadMultiple([$user, $profile], Yii::$app->request->post())) {
-            if ($user->validate() && $profile->validate()) {
+        if ($user->load(Yii::$app->request->post()) && $profile->load(Yii::$app->request->post())) {
+            $isValid = $user->validate();
++           $isValid = $profile->validate() && $isValid;
++           if ($isValid) {
                 $user->save(false);
                 $profile->save(false);
                 return $this->redirect(['user/view', 'id' => $id]);
@@ -50,7 +52,7 @@ class UserController extends Controller
 }
 ```
 
-В действии `update`, мы сначала загружаем из базы модели `$user` and `$profile`. Затем мы вызываем метод [[yii\base\Model::loadMultiple()]] 
+В действии `update`, мы сначала загружаем из базы модели `$user` and `$profile`. Затем мы вызываем метод [[yii\base\Model::load()]] 
 для заполнения этих двух моделей данными, введенными пользователем. В случае успеха мы проверяем модели и сохраняем их. В противном случае 
 мы рендерим представление `update`, которое содержит следующий контент:
 

@@ -171,9 +171,9 @@ SQL;
     /**
      * Sequence name of table
      *
-     * @param $tableName
+     * @param string $tableName
      * @internal param \yii\db\TableSchema $table->name the table schema
-     * @return string whether the sequence exists
+     * @return string|null whether the sequence exists
      */
     protected function getTableSequenceName($tableName)
     {
@@ -291,11 +291,11 @@ SQL;
             $name = $row['CONSTRAINT_NAME'];
             if (!isset($constraints[$name])) {
                 $constraints[$name] = [
-                    'tableName' => $row["TABLE_REF"],
+                    'tableName' => $row['TABLE_REF'],
                     'columns' => [],
                 ];
             }
-            $constraints[$name]['columns'][$row["COLUMN_NAME"]] = $row["COLUMN_REF"];
+            $constraints[$name]['columns'][$row['COLUMN_NAME']] = $row['COLUMN_REF'];
         }
         foreach ($constraints as $constraint) {
             $table->foreignKeys[] = array_merge([$constraint['tableName']], $constraint['columns']);
@@ -409,7 +409,7 @@ SQL;
 
         if (strpos($dbType, 'FLOAT') !== false || strpos($dbType, 'DOUBLE') !== false) {
             $column->type = 'double';
-        } elseif ($dbType == 'NUMBER' || strpos($dbType, 'INTEGER') !== false) {
+        } elseif ($dbType === 'NUMBER' || strpos($dbType, 'INTEGER') !== false) {
             if ($scale !== null && $scale > 0) {
                 $column->type = 'decimal';
             } else {
@@ -439,9 +439,9 @@ SQL;
      */
     protected function extractColumnSize($column, $dbType, $precision, $scale, $length)
     {
-        $column->size = trim($length) == '' ? null : (int) $length;
-        $column->precision = trim($precision) == '' ? null : (int) $precision;
-        $column->scale = trim($scale) == '' ? null : (int) $scale;
+        $column->size = trim($length) === '' ? null : (int) $length;
+        $column->precision = trim($precision) === '' ? null : (int) $precision;
+        $column->scale = trim($scale) === '' ? null : (int) $scale;
     }
 
     /**

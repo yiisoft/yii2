@@ -84,7 +84,7 @@ interface ManagerInterface
      * Returns the roles that are assigned to the user via [[assign()]].
      * Note that child roles that are not assigned directly to the user will not be returned.
      * @param string|integer $userId the user ID (see [[\yii\web\User::id]])
-     * @return Role[] all roles directly or indirectly assigned to the user. The array is indexed by the role names.
+     * @return Role[] all roles directly assigned to the user. The array is indexed by the role names.
      */
     public function getRolesByUser($userId);
 
@@ -195,8 +195,8 @@ interface ManagerInterface
 
     /**
      * Returns the assignment information regarding a role and a user.
-     * @param string|integer $userId the user ID (see [[\yii\web\User::id]])
      * @param string $roleName the role name
+     * @param string|integer $userId the user ID (see [[\yii\web\User::id]])
      * @return null|Assignment the assignment information. Null is returned if
      * the role is not assigned to the user.
      */

@@ -110,6 +110,32 @@ class PostController extends Controller
 `layout` プロパティを構成しない場合は、アプリケーションのレイアウトが代りに使用されます。
 
 
+### モジュール内のコンソールコマンド <span id="console-commands-in-modules"></span>
+
+[コンソール](tutorial-console.md) モードで使用する事が出来るコマンドをmodeコマンドをモジュール内で宣言することも可能です。
+
+あなたのコマンドがコマンドラインユーティリティから見えるようにするためには、Yii がコンソールモードで実行されたときに
+[[yii\base\Module::controllerNamespace]] を変更して、コマンドの名前空間を指し示すようにする必要があります。
+
+それを達成する一つの方法は、モジュールの `init` メソッドの中で Yii アプリケーションのインスタンスの型を調べるという方法です。
+
+```php
+public function init()
+{
+    parent::init();
+    if (Yii::$app instanceof \yii\console\Application) {
+        $this->controllerNamespace = 'app\modules\forum\commands';
+    }
+}
+```
+
+このようにすれば、コマンドラインから次のルートを使ってあなたのコマンドを使用する事が出来るようになります。
+
+```
+yii <module_id>/<command>/<sub_command>
+```
+
+
 ## モジュールを使う <span id="using-modules"></span>
 
 アプリケーションの中でモジュールを使うためには、アプリケーションの [[yii\base\Application::modules|modules]] プロパティのリストにそのモジュールを載せてアプリケーションを構成するだけで大丈夫です。
