@@ -14,6 +14,7 @@ use ArrayIterator;
 use ReflectionClass;
 use IteratorAggregate;
 use yii\helpers\Inflector;
+use yii\helpers\ArrayHelper;
 use yii\validators\RequiredValidator;
 use yii\validators\Validator;
 
@@ -1005,5 +1006,112 @@ class Model extends Component implements IteratorAggregate, ArrayAccess, Arrayab
     public function offsetUnset($offset)
     {
         $this->$offset = null;
+    }
+
+    /**
+     * Defines a list of catalogues to be used for static terminologies on the
+     * class. The structure is `['catalogue' => ['index' => 'term']]`
+     *
+     * Example:
+     *
+     * ```php
+     * class Order extends \yii\base\Model {
+     *     const PAYMENT_PENDING = 0;
+     *     const PAYMENT_REJECTED = 1;
+     *     const PAYMENT_ACCEPTED = 1;
+     *
+     *     public static function catalogues()
+     *     {
+     *         return [
+     *             'payment_index' => [
+     *                 self::PAYMENT_PENDING => Yii::t('app', 'Pending'),
+     *                 self::PAYMENT_REJECTED => Yii::t('app', 'Rejected'),
+     *                 self::PAYMENT_ACCEPTED => Yii::t('app', 'Accepted'),
+     *             ],
+     *         ];
+     *     }
+     *
+     *     public function getPaymentStatus()
+     *     {
+     *         return $this->getAttributeTerminology('payment_index');
+     *     }
+     * }
+     * ```
+     *
+     * Usage
+     *
+     * ```php
+     * $order = Order::findOne($id);
+     * echo $order->paymentStatus; // will print human readable text
+     * ```
+     *
+     * It can also be used on the rules to ensure they attribute is in the
+     * catalogue
+     *
+     * ```php
+     * public function rules()
+     * {
+     *     return [
+     *         [
+     *             ['payment_index'],
+     *             'in',
+     *             'range' => array_keys(self::getCatalogue('payment_index')),
+     *         ],
+     *     ];
+     * }
+     * ```
+     *
+     * @return array
+     */
+    public static function catalogues()
+    {
+        return [];
+    }
+
+    private static $_catalogues;
+
+    /**
+     * Saves the catalogues on a variable to avoid repeating operations like
+     * translations
+     */
+    public static function ensureCatalogues()
+    {
+        if (self::$_catalogues === null) {
+            self::$_catalogues= self::catalogues();
+        }
+
+        return self::$_catalogues;
+    }
+
+    /**
+     * Search the name of a catalogue and returns its indexed terms.
+     *
+     * @param string $name catalogue to find
+     * @return array|null the indexed terms or null if there is no catalogue
+     */
+    public static function getCatalogue($name)
+    {
+        return ArrayHelper::getValue(self::ensureCatalogues(), $name);
+    }
+
+    /**
+     * Gets the terminology of an index inside a catalogue.
+     * @param string $catalogue catalogue where the search is performed
+     * @param string $index the index to find
+     * @return mixed the catalogue defined term or null if not found
+     */
+    public static function getTerminology($catalogue, $index)
+    {
+        return ArrayHelper::getValue(self::getCatalogue($name), $index);
+    }
+
+    /**
+     * Search on the catalogues the terminology of an attribute
+     * @param string $attribute the attribute to find
+     * @return mixed the catalogue defined term or null if not found
+     */
+    public function getAttributeTerminology($attribute)
+    {
+        return static::getTerminology($attribute, $this->$attribute);
     }
 }
