@@ -1316,11 +1316,10 @@ class BaseHtml
      */
     public static function activeFileInput($model, $attribute, $options = [])
     {
-        $hiddenInputOptions = ArrayHelper::remove($options, 'hiddenInputOptions');
         $hiddenInputOptions = ArrayHelper::merge([
             'id' => null,
             'value' => ''
-        ], (!empty($hiddenInputOptions) ? $hiddenInputOptions : []));
+        ], ArrayHelper::remove($options, 'hiddenInputOptions', []));
         // add a hidden field so that if a model only has a file field, we can
         // still use isset($_POST[$modelClass]) to detect if the input is submitted.
         // The hidden input will be assigned its own set of html options via `$hiddenInputOptions`.
