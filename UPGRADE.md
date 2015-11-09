@@ -18,6 +18,11 @@ Upgrade from Yii 2.0.6
 ----------------------
   
 * The signature of `yii\helpers\BaseInflector::transliterate()` was changed. The method is now public and has an extra optional parameter `$transliterator`.
+* If you override `yii\web\UrlRule` you have to know that the `pattern` matching group names are being replaced with the
+placeholders on class initialization to support wider range of allowed characters. If you implement `parseRequest()` or
+`createUrl()` and rely on parameter names, call `substitutePlaceholderNames()` in order to replace temporary IDs with
+parameter names after doing matching.
+
 
 Upgrade from Yii 2.0.5
 ----------------------
