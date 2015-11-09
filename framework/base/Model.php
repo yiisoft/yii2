@@ -1078,7 +1078,7 @@ class Model extends Component implements IteratorAggregate, ArrayAccess, Arrayab
     {
         $class = static::className();
         if (!isset(self::$_catalogues[$class])) {
-            self::$_catalogues[$class] = self::catalogues();
+            self::$_catalogues[$class] = static::catalogues();
         }
 
         return self::$_catalogues[$class];
