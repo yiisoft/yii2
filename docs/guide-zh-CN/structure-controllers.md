@@ -334,7 +334,7 @@ class PostController extends Controller
 * `http://hostname/index.php?r=post/view`: 会抛出[[yii\web\BadRequestHttpException]] 异常
   因为请求没有提供参数给必须赋值参数`$id`；
 * `http://hostname/index.php?r=post/view&id[]=123`: 会抛出[[yii\web\BadRequestHttpException]] 异常
-  因为`$id` 参数收到数字值 `['123']`而不是字符串.
+  因为`$id` 参数收到数组值 `['123']`而不是字符串.
 
 如果想让操作参数接收数组值，需要指定$id为`array`，如下所示：
 
