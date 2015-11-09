@@ -1076,11 +1076,12 @@ class Model extends Component implements IteratorAggregate, ArrayAccess, Arrayab
      */
     public static function ensureCatalogues()
     {
-        if (self::$_catalogues === null) {
-            self::$_catalogues= self::catalogues();
+        $class = static::className();
+        if (!isset(self::$_catalogues[$class])) {
+            self::$_catalogues[$class] = self::catalogues();
         }
 
-        return self::$_catalogues;
+        return self::$_catalogues[$class];
     }
 
     /**
