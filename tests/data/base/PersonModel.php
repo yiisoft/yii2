@@ -28,7 +28,7 @@ class PersonModel extends Model
     // in centimeters
     public $height;
   
-    public function catalogues()
+    public static function catalogues()
     {
         return [
             'gender_index' => [
