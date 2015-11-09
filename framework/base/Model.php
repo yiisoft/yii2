@@ -1090,9 +1090,9 @@ class Model extends Component implements IteratorAggregate, ArrayAccess, Arrayab
      * @param string $name catalogue to find
      * @return array|null the indexed terms or null if there is no catalogue
      */
-    public static function getCatalogue($name)
+    public static function getCatalogue($catalogue)
     {
-        return ArrayHelper::getValue(self::ensureCatalogues(), $name);
+        return ArrayHelper::getValue(self::ensureCatalogues(), $catalogue);
     }
 
     /**
@@ -1103,7 +1103,7 @@ class Model extends Component implements IteratorAggregate, ArrayAccess, Arrayab
      */
     public static function getTerminology($catalogue, $index)
     {
-        return ArrayHelper::getValue(self::getCatalogue($name), $index);
+        return ArrayHelper::getValue(self::getCatalogue($catalogue), $index);
     }
 
     /**
