@@ -4,7 +4,7 @@ use yii\base\Model;
 /**
  * Person
  */
-class Person extends Model
+class PersonModel extends Model
 {
     const GENDER_FEMENINE = F;
     const GENDER_MASCULINE = M;
