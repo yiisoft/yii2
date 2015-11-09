@@ -383,7 +383,7 @@ class ModelTest extends TestCase
         $person->height = 145;
         
         $this->assertTrue($person->validate());
-        $this->assertEquals(Yii::t('yii', 'Femenino'), $person->gender);
+        $this->assertEquals(Yii::t('yii', 'Femenine'), $person->gender);
         $this->assertEquals('#000000', $person->eyecolor);
         $this->assertEquals(Yii::t('yii', 'Petite'), $person->bodyType);
         
