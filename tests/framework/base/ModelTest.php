@@ -372,7 +372,7 @@ class ModelTest extends TestCase
         
         $this->assertNull(PersonModel::getCatalogue('unexistant'));
         
-        $this->assertEquals('#000000',PersonModel::getTerminology('eyecolor_index', 'black');
+        $this->assertEquals('#000000', PersonModel::getTerminology('eyecolor_index', 'black'));
         $this->assertNull(PersonModel::getTerminology('eyecolor_index', 'orange'));
 
         $person = new PersonModel();
