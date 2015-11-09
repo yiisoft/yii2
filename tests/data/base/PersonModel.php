@@ -1,5 +1,7 @@
 <?php
 namespace yiiunit\data\base;
+
+use Yii;
 use yii\base\Model;
 /**
  * Person
