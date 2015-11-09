@@ -2,9 +2,9 @@
 namespace yiiunit\data\base;
 use yii\base\Model;
 /**
- * Speaker
+ * Person
  */
-class Speaker extends Model
+class Person extends Model
 {
     const GENDER_FEMENINE = F;
     const GENDER_MASCULINE = M;
