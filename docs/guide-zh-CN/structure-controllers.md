@@ -61,7 +61,7 @@ class PostController extends Controller
 
 终端用户通过所谓的*路由*寻找到操作，路由是包含以下部分的字符串：
 
-* 模型ID: 仅存在于控制器属于非应用的[模块](structure-modules.md);
+* 模块ID: 仅存在于控制器属于非应用的[模块](structure-modules.md);
 * 控制器ID: 同应用（或同模块如果为模块下的控制器）下唯一标识控制器的字符串;
 * 操作ID: 同控制器下唯一标识操作的字符串。
 
