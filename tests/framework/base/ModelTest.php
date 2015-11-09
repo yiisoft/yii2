@@ -2,6 +2,7 @@
 
 namespace yiiunit\framework\base;
 
+use Yii;
 use yii\base\Model;
 use yiiunit\data\base\RulesModel;
 use yiiunit\TestCase;
