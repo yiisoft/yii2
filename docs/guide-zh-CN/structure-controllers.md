@@ -388,7 +388,6 @@ class SiteController extends Controller
    * 否则会抛出[[yii\base\InvalidRouteException]]异常。
 3. 控制器按顺序调用应用主体、模块（如果控制器属于模块）、控制器的 `beforeAction()` 方法；
    * 如果任意一个调用返回false，后面未调用的`beforeAction()`会跳过并且操作执行会被取消；
-     action execution will be cancelled.
    * 默认情况下每个 `beforeAction()` 方法会触发一个 `beforeAction` 事件，在事件中你可以追加事件处理操作；
 4. 控制器执行操作:
    * 请求数据解析和填入到操作参数；
