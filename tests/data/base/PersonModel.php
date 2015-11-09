@@ -8,8 +8,8 @@ use yii\base\Model;
  */
 class PersonModel extends Model
 {
-    const GENDER_FEMENINE = F;
-    const GENDER_MASCULINE = M;
+    const GENDER_FEMENINE = 'F';
+    const GENDER_MASCULINE = 'M';
   
     const EYECOLOR_BLACK = 'black';
     const EYECOLOR_BLUE = 'blue';
