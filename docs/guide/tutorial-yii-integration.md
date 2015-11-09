@@ -127,25 +127,11 @@ This can be achieved as described below.
 > Note: Yii 2 requires PHP 5.4 or above. You should make sure that both your server and the existing application
 > support this.
 
-First, install Yii 2 in your existing application by following the instructions given in the [last subsection](#using-yii-in-others).
+Yii 1 typically puts its models, controllers, etc. in a folder called `protected` inside the webroot. Yii 2 typically puts these folders one level above the webroot (@webroot), which it calls the application root (or @app, for short). Depending on how you have your Yii 1 application configured, you may need to set up a parent folder to contain your existing Yii 1 application. We will call that parent folder @app. You'll then want to rename your existing Yii 1 folder `public_html` or `web` or the like. This will be your @webroot.
 
-Second, modify the entry script of the application as follows,
+The first step is to [download the latest version](http://www.yiiframework.com/download/) of Yii 2. Download the basic template, not the advanced template. When you download Yii, you get an entire working app, but all you probably want is the vendor folder. Move that folder into your @app folder. While you are at it, inside your @app folder, create a `components` folder and a `config` folder. Now you should have four folders in @app, `components`, `config`, `vendor`, and public_html or web or whatever you named the folder that holds your Yii 1 application.
 
-```php
-// include the customized Yii class described below
-require(__DIR__ . '/../components/Yii.php');
-
-// configuration for Yii 2 application
-$yii2Config = require(__DIR__ . '/../config/yii2/web.php');
-new yii\web\Application($yii2Config); // Do NOT call run()
-
-// configuration for Yii 1 application
-$yii1Config = require(__DIR__ . '/../config/yii1/main.php');
-Yii::createWebApplication($yii1Config)->run();
-```
-
-Because both Yii 1 and Yii 2 have the `Yii` class, you should create a customized version to combine them.
-The above code includes the customized `Yii` class file, which can be created as follows.
+Because both Yii 1 and Yii 2 have the `Yii` class, you need to create a customized class to combine them, which you should put in the @app/components folder you created.
 
 ```php
 $yii2path = '/path/to/yii2';
@@ -156,7 +142,7 @@ require($yii1path . '/YiiBase.php'); // Yii 1.x
 
 class Yii extends \yii\BaseYii
 {
-    // copy-paste the code from YiiBase (1.x) here
+    // copy-paste the code from YiiBase (1.x) here. You want everything inside the YiiBase class, roughly line 56 through line 875. You don't need the code above and below the class itself
 }
 
 Yii::$classMap = include($yii2path . '/classes.php');
@@ -166,6 +152,23 @@ Yii::registerAutoloader(['Yii', 'autoload']);
 Yii::$container = new yii\di\Container;
 ```
 
+You are also going to need some Yii2 config files. You can use the ones from the download. Move them into @app/config. There should be four, console.php, db.php, params.php and web.php. Modify those files to suit your needs.
+
+Now we need to modify the entry script of the Yii application as follows,
+
+```php
+// include the customized Yii class described below
+require(__DIR__ . '/../components/Yii.php');
+
+// configuration for Yii 2 application
+$yii2Config = require(__DIR__ . '/../config/yii2/web.php');
+new yii\web\Application($yii2Config); // Do NOT call run()
+
+// configuration for Yii 1 application
+$yii1Config = require(__DIR__ . '/protected/config/main.php');
+Yii::createWebApplication($yii1Config)->run();
+```
+
 That's all! Now in any part of your code, you can use `Yii::$app` to access the Yii 2 application instance, while
 `Yii::app()` will give you the Yii 1 application instance:
 
@@ -173,3 +176,5 @@ That's all! Now in any part of your code, you can use `Yii::$app` to access the 
 echo get_class(Yii::app()); // outputs 'CWebApplication'
 echo get_class(Yii::$app);  // outputs 'yii\web\Application'
 ```
+
+Note: You may run into an internal server error. If so, commenting out $this->init(); in the Object constructor seems to solve the problem (vendor/yiisoft/yii2/base/Object.php ... around line 107)
