@@ -5,6 +5,7 @@ namespace yiiunit\framework\base;
 use yii\base\Model;
 use yiiunit\data\base\RulesModel;
 use yiiunit\TestCase;
+use yiiunit\data\base\PersonModel;
 use yiiunit\data\base\Speaker;
 use yiiunit\data\base\Singer;
 use yiiunit\data\base\InvalidRulesModel;
@@ -348,6 +349,49 @@ class ModelTest extends TestCase
 
         $invalid = new InvalidRulesModel();
         $invalid->createValidators();
+    }
+    
+    public function testCatalogues()
+    {
+        $this->assertEquals(
+            [
+                'F' => Yii::t('yii', 'Femenine'),
+                'M' => Yii::t('yii', 'Masculine'),
+            ],
+            PersonModel::getCatalogue('gender_index')
+        );
+        
+        $this->assertEquals(
+            [
+                'black' =>  '#000000',
+                'blue' =>  '#0000FF',
+                'green' => '#00FF00',
+            ],
+            PersonModel::getCatalogue('eyecolor_index')
+        );
+        
+        $this->assertNull(PersonModel::getCatalogue('unexistant'));
+        
+        $this->assertEquals('#000000',PersonModel::getTerminology('eyecolor_index', 'black');
+        $this->assertNull(PersonModel::getTerminology('eyecolor_index', 'orange'));
+
+        $person = new PersonModel();
+        
+        $person->gender_index = 'F';
+        $person->eyecolor_index = 'black';
+        $person->height = 145;
+        
+        $this->assertTrue($person->validate());
+        $this->assertEquals(Yii::t('yii', 'Femenino'), $person->gender);
+        $this->assertEquals('#000000', $person->eyecolor);
+        $this->assertEquals(Yii::t('yii', 'Petite'), $person->bodyType);
+        
+        $person->gender_index = 'X';
+        $person->eyecolor_index = 'orange';
+        
+        $this->assertFalse($person->validate());
+        $this->assertNull($person->gender);
+        $this->assertNull($person->eyecolor);
     }
 }
 
