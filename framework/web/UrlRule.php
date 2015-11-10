@@ -44,8 +44,10 @@ class UrlRule extends Object implements UrlRuleInterface
      */
     public $name;
     /**
+     * On the rule initialization, the [[pattern]] matching parameters names will be replaced with [[placeholders]].
      * @var string the pattern used to parse and create the path info part of a URL.
      * @see host
+     * @see placeholders
      */
     public $pattern;
     /**
@@ -88,7 +90,18 @@ class UrlRule extends Object implements UrlRuleInterface
      * @var boolean a value indicating if parameters should be url encoded.
      */
     public $encodeParams = true;
-
+    /**
+     * @var array list of placeholders for matching parameters names. Used in [[parseRequest()]], [[createUrl()]]
+     * On the rule initialization, the [[pattern]] parameters names will be replaced with placeholders.
+     * This array contains relations between the original parameters names and their placeholders.
+     *  key - placeholder
+     *  value - original name
+     *
+     * @see parseRequest()
+     * @see createUrl()
+     * @since 2.0.7
+     */
+    protected $placeholders = [];
     /**
      * @var string the template for generating a new URL. This is derived from [[pattern]] and is used in generating URL.
      */
@@ -105,18 +118,6 @@ class UrlRule extends Object implements UrlRuleInterface
      * @var array list of parameters used in the route.
      */
     private $_routeParams = [];
-    /**
-     * @var array list of placeholders for matching parameters names. Used in [[parseRequest()]], [[createUrl()]]
-     * On the rule initialization, the [[pattern]] parameters names will be replaced with placeholders.
-     * This array contains relations between the original parameters names and their placeholders.
-     *  key - placeholder
-     *  value - original name
-     *
-     * @see parseRequest()
-     * @see createUrl()
-     * @since 2.0.7
-     */
-    private $_placeholders = [];
 
 
     /**
@@ -186,7 +187,7 @@ class UrlRule extends Object implements UrlRuleInterface
                 $name = $match[1][0];
                 $pattern = isset($match[2][0]) ? $match[2][0] : '[^\/]+';
                 $placeholder = 'a' . hash('crc32b', $name); // placeholder must begin with a letter
-                $this->_placeholders[$placeholder] = $name;
+                $this->placeholders[$placeholder] = $name;
                 if (array_key_exists($name, $this->defaults)) {
                     $length = strlen($match[0][0]);
                     $offset = $match[0][1];
@@ -373,17 +374,17 @@ class UrlRule extends Object implements UrlRuleInterface
     }
 
     /**
-     * Iterates over [[_placeholders]] and checks whether each placeholder exists as a key in $matches array.
+     * Iterates over [[placeholders]] and checks whether each placeholder exists as a key in $matches array.
      * When found - replaces this placeholder key with a appropriate name of matching parameter.
      * Used in [[parseRequest()]], [[createUrl()]].
      *
      * @param array $matches result of `preg_match()` call
      * @return array input array with replaced placeholder keys
-     * @see _placeholders
+     * @see placeholders
      * @since 2.0.7
      */
-    private function substitutePlaceholderNames (array $matches) {
-        foreach ($this->_placeholders as $placeholder => $name) {
+     protected function substitutePlaceholderNames (array $matches) {
+        foreach ($this->placeholders as $placeholder => $name) {
             if (isset($matches[$placeholder])) {
                 $matches[$name] = $matches[$placeholder];
                 unset($matches[$placeholder]);

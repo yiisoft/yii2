@@ -70,7 +70,7 @@ return [
     '{attribute} must be greater than or equal to "{compareValue}".' => '{attribute} يجب أن يكون أكبر من أو يساوي  "{compareValue}".',
     '{attribute} must be less than "{compareValue}".' => '{attribute} يجب أن يكون أصغر من "{compareValue}".',
     '{attribute} must be less than or equal to "{compareValue}".' => '{attribute} يجب أن يكون أصغر من أو يساوي "{compareValue}".',
-    '{attribute} must be no greater than {max}.' => '{attribute} يجب أن لا يكون أكبر من "{compareValue}".',
+    '{attribute} must be no greater than {max}.' => '{attribute} يجب أن لا يكون أكبر من "{max}".',
     '{attribute} must be no less than {min}.' => '{attribute} يجب أن لا يكون أصغر من "{min}".',
     '{attribute} must be repeated exactly.' => '{attribute} يجب أن يكون متطابق.',
     '{attribute} must not be equal to "{compareValue}".' => '{attribute} يجب ان لا يساوي "{compareValue}"',
