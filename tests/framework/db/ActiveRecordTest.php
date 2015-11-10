@@ -703,7 +703,7 @@ class ActiveRecordTest extends DatabaseTestCase
         $this->assertEquals(1, $model->status);
     }
 
-    public function testPopulateRecordCallWhenQueryingOnParentClass() 
+    public function testPopulateRecordCallWhenQueryingOnParentClass()
     {
         (new Cat())->save(false);
         (new Dog())->save(false);
@@ -832,5 +832,20 @@ class ActiveRecordTest extends DatabaseTestCase
 
         $trueBit = BitValues::findOne(2);
         $this->assertEquals(true, $trueBit->val);
+    }
+
+    public function testFindAll()
+    {
+        $customers = Customer::findAll();
+        $expected = Customer::find()->all();
+        $this->assertEquals($expected, $customers);
+
+        $customers = Customer::findAll([1, 2]);
+        $expected = Customer::find()->where(['id' => [1, 2]])->all();
+        $this->assertEquals($expected, $customers);
+
+        $customers = Customer::findAll(['name' => 'user1']);
+        $expected = Customer::find()->where(['name' => 'user1'])->all();
+        $this->assertEquals($expected, $customers);
     }
 }

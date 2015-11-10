@@ -189,6 +189,7 @@ interface ActiveRecordInterface
      *
      * The method accepts:
      *
+     *  - a null value (by default): query fetch all records from table.
      *  - a scalar value (integer or string): query by a single primary key value and return an array containing the
      *    corresponding record (or an empty array if not found).
      *  - a non-associative array: query by a list of primary key values and return the
@@ -203,6 +204,9 @@ interface ActiveRecordInterface
      * instances. For example,
      *
      * ```php
+     * // find all the customers
+     * $customers = Customer::findAll();
+     *
      * // find the customers whose primary key value is 10
      * $customers = Customer::findAll(10);
      *
@@ -225,7 +229,7 @@ interface ActiveRecordInterface
      * @param mixed $condition primary key value or a set of column values
      * @return array an array of ActiveRecord instance, or an empty array if nothing matches.
      */
-    public static function findAll($condition);
+    public static function findAll($condition = null);
 
     /**
      * Updates records using the provided attribute values and conditions.
