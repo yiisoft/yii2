@@ -155,7 +155,7 @@ class CompareValidatorTest extends TestCase
             $validator->operator = $data[1];
             $validator->message = null;
             $validator->init(); // reload messages
-            $validator->$data[4] = $data[2];
+            $validator->{$data[4]} = $data[2];
             $validator->validateAttribute($model, $data[0]);
             $error = $model->getErrors($data[0])[0];
             $this->assertEquals($data[3], $error);
