@@ -10,7 +10,7 @@ namespace yii\web;
 use Yii;
 use yii\base\Object;
 use yii\base\InvalidConfigException;
-use yii\helpers\Url;
+use yii\helpers\BaseUrl;
 
 /**
  * UrlRule represents a rule used by [[UrlManager]] for parsing and generating URLs.
@@ -354,7 +354,7 @@ class UrlRule extends Object implements UrlRuleInterface
             $url .= ($this->suffix === null ? $manager->suffix : $this->suffix);
         }
 
-        if (!empty($params) && ($query = Url::custom_http_build_query($params)) !== '') {
+        if (!empty($params) && ($query = BaseUrl::customHttpBuildQuery($params)) !== '') {
             $url .= '?' . $query;
         }
 

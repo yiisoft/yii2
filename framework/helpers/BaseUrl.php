@@ -382,4 +382,39 @@ class BaseUrl
         $route = ArrayHelper::merge($currentParams, $params);
         return static::toRoute($route, $scheme);
     }
+
+    /**
+     * Custom function to emulate http_build_query(). The goal is to avoid getting numeric values bettween '[]'.
+     * For example:
+     * - http_build_query(['language' => ['en', 'ca']])           -> 'language%5B0%5D=en&language%5B1%5D=en'
+     * - customHttpBuildQuery(['language' => ['en', 'ca']])    -> 'language%5B%5D=en&language%5B%5D=ca'
+     *
+     * @param array|object  $params     Array of values to convert into http query string
+     * @param string $inheritKey String used when array has more than one dimesion.
+     *                           We pass the our actual key to our child array.
+     *
+     * @return array
+     */
+    public static function customHttpBuildQuery($params, $inheritKey = '')
+    {
+        $response = [];
+
+        foreach ($params as $key => $value) {
+            if (!empty($inheritKey)) {
+                if (is_numeric($key)) {
+                    $key = '';
+                }
+                $key = "{$inheritKey}[{$key}]";
+            }
+            if (is_array($value) || is_object($value)) {
+                $response[] = BaseUrl::customHttpBuildQuery($value, $key);
+            } else {
+                if (!is_null($value)) {
+                    $response[] = urlencode($key) . "=" . urlencode($value);
+                }
+            }
+        }
+
+        return implode('&', $response);
+    }
 }
