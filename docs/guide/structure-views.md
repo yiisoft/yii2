@@ -11,7 +11,7 @@ as views.
 
 ## Creating Views <span id="creating-views"></span>
 
-As aforementioned, a view is simply a PHP script mixed with HTML and PHP code. The following is the view
+As before mentioned, a view is simply a PHP script mixed with HTML and PHP code. The following is the view
 that presents a login form. As you can see, PHP code is used to generate the dynamic content, such as the
 page title and the form, while HTML code organizes them into a presentable HTML page.
 
