@@ -137,23 +137,23 @@ class FormatterDateTest extends TestCase
     public function testAsDatetime()
     {
         $value = time();
-        $this->assertSame(date('M j, Y g:i:s A', $value), $this->formatter->asDatetime($value));
+        $this->assertRegExp(date('~M j, Y,? g:i:s A~', $value), $this->formatter->asDatetime($value));
         $this->assertSame(date('Y/m/d h:i:s A', $value), $this->formatter->asDatetime($value, 'php:Y/m/d h:i:s A'));
 
         $value = new DateTime();
-        $this->assertSame(date('M j, Y g:i:s A', $value->getTimestamp()), $this->formatter->asDatetime($value));
+        $this->assertRegExp(date('~M j, Y,? g:i:s A~', $value->getTimestamp()), $this->formatter->asDatetime($value));
         $this->assertSame(date('Y/m/d h:i:s A', $value->getTimestamp()), $this->formatter->asDatetime($value, 'php:Y/m/d h:i:s A'));
 
         if (version_compare(PHP_VERSION, '5.5.0', '>=')) {
             $value = new \DateTimeImmutable();
-            $this->assertSame(date('M j, Y g:i:s A', $value->getTimestamp()), $this->formatter->asDatetime($value));
+            $this->assertRegExp(date('~M j, Y,? g:i:s A~', $value->getTimestamp()), $this->formatter->asDatetime($value));
             $this->assertSame(date('Y/m/d h:i:s A', $value->getTimestamp()), $this->formatter->asDatetime($value, 'php:Y/m/d h:i:s A'));
         }
 
         // empty input
-        $this->assertSame('Jan 1, 1970 12:00:00 AM', $this->formatter->asDatetime(''));
-        $this->assertSame('Jan 1, 1970 12:00:00 AM', $this->formatter->asDatetime(0));
-        $this->assertSame('Jan 1, 1970 12:00:00 AM', $this->formatter->asDatetime(false));
+        $this->assertRegExp('~Jan 1, 1970,? 12:00:00 AM~', $this->formatter->asDatetime(''));
+        $this->assertRegExp('~Jan 1, 1970,? 12:00:00 AM~', $this->formatter->asDatetime(0));
+        $this->assertRegExp('~Jan 1, 1970,? 12:00:00 AM~', $this->formatter->asDatetime(false));
         // null display
         $this->assertSame($this->formatter->nullDisplay, $this->formatter->asDatetime(null));
     }
