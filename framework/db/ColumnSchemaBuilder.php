@@ -105,13 +105,13 @@ class ColumnSchemaBuilder extends Object
     }
 
     /**
-     * Specify the default value for the column in terms of a [[Expression|SQL expression]].
-     * @param Expression $default the default value.
+     * Specify the default SQL expression for the column.
+     * @param string $default the default value expression.
      * @return $this
      */
-    public function defaultExpression(Expression $default)
+    public function defaultExpression($default)
     {
-        $this->default = $default;
+        $this->default = new Expression($default);
         return $this;
     }
 
