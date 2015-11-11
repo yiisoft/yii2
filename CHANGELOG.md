@@ -24,6 +24,7 @@ Yii Framework 2 Change Log
 - Bug #9707: Fixed Memcache duration which exceeds 30 days (vernik91)
 - Bug #9714: Fixed `yii\rbac\PhpManager::updateItem()` unable to save users assignments (rezident1307)
 - Bug #9754: Fixed `yii\web\Request` error when path info is empty (dynasource)
+- Bug #9790: Fixed `yii\db\sqlite\QueryBuilder` to generate proper SQL for UNION (romeOz, samdark)
 - Bug #9791: Fixed endless loop on file creation for non-existing device letters on windows (lukos, cebe)
 - Bug #9874: Fixed outputting exception stacktrace in non-debug mode when `Response::FORMAT_RAW` is used (nainoon)
 - Bug #9883: Passing a single `yii\db\Expression` to `Query::select()` or `::addSelect()` was not handled correctly in all cases (cebe)
