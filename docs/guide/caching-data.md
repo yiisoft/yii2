@@ -273,6 +273,20 @@ $result = Customer::getDb()->cache(function ($db) {
   and are potentially more efficient.
 
 
+### Cache Flushing <span id="cache-flushing">
+
+When you need to invalidate all the stored cache data, you can call [[yii\caching\Cache::flush()]].
+
+You can flush the cache from the console by calling `yii cache/flush` as well.
+ - `yii cache`: lists the available caches in application
+ - `yii cache/flush cache1 cache2`: flushes the cache components `cache1`, `cache2` (you can pass multiple component
+ names separated with space)
+ - `yii cache/flush-all`: flushes all cache components in the application
+
+> Info: Console application uses separate configuration file be default. Ensure, that you have the same caching
+components in your web and console application configs to reach the proper effect.
+
+
 ### Configurations <span id="query-caching-configs"></span>
 
 Query caching has three global configurable options through [[yii\db\Connection]]:
