@@ -32,7 +32,7 @@ Jeśli posiadałeś już wcześniej zainstalowanego Composer'a, upewnij się, ż
 
 Z zainstalowanym Composer'em możesz przejść do instalacji Yii wywołując poniższe komendy w katalogu dostępnym w sieci web:
 
-    composer global require "fxp/composer-asset-plugin:~1.0.3"
+    composer global require "fxp/composer-asset-plugin:~1.1.0"
     composer create-project --prefer-dist yiisoft/yii2-app-basic basic
 
 Pierwsza komenda instaluje [wtyczkę zasobów](https://github.com/francoispluchino/composer-asset-plugin/), która pozwala na zarządzanie zasobami [Bower'a](http://bower.io) oraz [paczkami zależności NPM](https://www.npmjs.com/) przez Composer.
