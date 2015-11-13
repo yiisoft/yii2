@@ -12,10 +12,10 @@ env:
 
 # run build against hhvm but allow them to fail
 # http://docs.travis-ci.com/user/build-configuration/#Rows-That-are-Allowed-To-Fail
-matrix:
-  fast_finish: true
-  allow_failures:
-    - php: 7.0
+#matrix:
+#  fast_finish: true
+#  allow_failures:
+#    - php: 7.0
 
 services:
   - memcached
@@ -36,7 +36,7 @@ addons:
 
 install:
   - travis_retry composer self-update && composer --version
-  - travis_retry composer global require "fxp/composer-asset-plugin:~1.0.3"
+  - travis_retry composer global require "fxp/composer-asset-plugin:~1.1.0"
   - export PATH="$HOME/.composer/vendor/bin:$PATH"
 # core framework:
   - travis_retry composer install --prefer-dist --no-interaction

@@ -51,6 +51,6 @@ Użycie szablonu
 Tylko tyle jest wymagane, aby stworzyć nowy szablon projektu Yii. Teraz już możesz rozpocząć pracę nad świeżym projektem, używając swojego szablonu, za pomocą komend:
 
 ```
-composer global require "fxp/composer-asset-plugin:~1.0.3"
+composer global require "fxp/composer-asset-plugin:~1.1.0"
 composer create-project --prefer-dist --stability=dev mojafirma/yii2-app-fajna nowy-projekt
 ```

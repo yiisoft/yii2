@@ -28,14 +28,14 @@ class ServeController extends Controller
     const EXIT_CODE_ADDRESS_TAKEN_BY_ANOTHER_PROCESS = 5;
 
     /**
-     * @var int port to serve on. Either "host" or "host:port".
+     * @var int port to serve on.
      */
     public $port = 8080;
 
     /**
-     * @var string path to directory to serve
+     * @var string path or path alias to directory to serve
      */
-    public $docroot = 'web';
+    public $docroot = '@app/web';
 
     /**
      * @var string path to router script.
@@ -46,14 +46,13 @@ class ServeController extends Controller
     /**
      * Runs PHP built-in web server
      *
-     * @param string $address address to serve on
+     * @param string $address address to serve on.  Either "host" or "host:port".
      *
      * @return int
      */
     public function actionIndex($address = 'localhost')
     {
-        $basePath = Yii::$app->basePath;
-        $documentRoot = $basePath . '/' . $this->docroot;
+        $documentRoot = Yii::getAlias($this->docroot);
 
         if (strpos($address, ':') === false) {
             $address = $address . ':' . $this->port;
