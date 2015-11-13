@@ -192,17 +192,30 @@ yii.validation = (function ($) {
 
             var valid = true;
 
-            if (options.enableIDN) {
-                var regexp = /^(.*<?)(.*)@(.*)(>?)$/,
-                    matches = regexp.exec(value);
-                if (matches === null) {
+
+            var regexp = /^((?:"?([^"]*)"?\s)?)(?:\s+)?(?:(<?)((.+)@([^>]+))(>?))$/,
+                matches = regexp.exec(value);
+
+            if (matches === null) {
+                valid = false
+            } else {
+                if (options.enableIDN) {
+                    matches[5] = punycode.toASCII(matches[5]);
+                    matches[6] = punycode.toASCII(matches[6]);
+
+                    value = matches[1] + matches[3] + matches[5] + '@' + matches[6] + matches[7];
+                }
+
+                if (matches[5].length > 64 || matches[1].length > 64) {
+                    valid = false;
+                } else if ((matches[5] + '@' + matches[6]).length > 254) {
                     valid = false;
                 } else {
-                    value = matches[1] + punycode.toASCII(matches[2]) + '@' + punycode.toASCII(matches[3]) + matches[4];
+                    valid = value.match(options.pattern) || (options.allowName && value.match(options.fullPattern));
                 }
             }
 
-            if (!valid || !(value.match(options.pattern) || (options.allowName && value.match(options.fullPattern)))) {
+            if (!valid) {
                 pub.addMessage(messages, options.message, value);
             }
         },
