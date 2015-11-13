@@ -143,7 +143,11 @@ class ActiveField extends Component
      */
     public $parts = [];
 
-
+    /**
+     * @var callable|null
+     */
+     public $render = null;
+     
     /**
      * PHP magic method that returns the string representation of this object.
      * @return string the string representation of this object.
@@ -153,7 +157,7 @@ class ActiveField extends Component
         // __toString cannot throw exception
         // use trigger_error to bypass this limitation
         try {
-            return $this->render();
+            return $this->render($this->render);
         } catch (\Exception $e) {
             ErrorHandler::convertExceptionToError($e);
             return '';
