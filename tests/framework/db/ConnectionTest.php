@@ -48,6 +48,11 @@ class ConnectionTest extends DatabaseTestCase
         $connection = $this->getConnection(false, false);
         $connection->open();
         $serialized = serialize($connection);
+        $unserialized = unserialize($serialized);
+        $this->assertInstanceOf('yii\db\Connection', $unserialized);
+
+        $connection->createCommand("SELECT * FROM `profile`")->execute();
+
     }
 
     public function testGetDriverName()
