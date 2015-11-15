@@ -13,6 +13,10 @@ class IpValidatorTest extends TestCase
 {
     protected function setUp()
     {
+        if (!defined('AF_INET6')) {
+            $this->markTestSkipped('The environment does not support IPv6.');
+        }
+
         parent::setUp();
         $this->mockApplication();
     }
@@ -107,10 +111,6 @@ class IpValidatorTest extends TestCase
 
     public function testValidateValueIPv6()
     {
-        if (!defined('AF_INET6')) {
-            $this->markTestSkipped('The environment does not support IPv6.');
-        }
-
         $validator = new IpValidator();
 
         $this->assertTrue($validator->validate('2008:fa::1'));
@@ -146,10 +146,6 @@ class IpValidatorTest extends TestCase
 
     public function testValidateValueIPvBoth()
     {
-        if (!defined('AF_INET6')) {
-            $this->markTestSkipped('The environment does not support IPv6.');
-        }
-
         $validator = new IpValidator();
 
         $this->assertTrue($validator->validate('192.168.10.11'));
@@ -231,10 +227,6 @@ class IpValidatorTest extends TestCase
 
     public function testValidateRangeIPv6()
     {
-        if (!defined('AF_INET6')) {
-            $this->markTestSkipped('The environment does not support IPv6.');
-        }
-
         $validator = new IpValidator([
             'ranges' => '2001:db0:1:1::/64'
         ]);
@@ -254,10 +246,6 @@ class IpValidatorTest extends TestCase
 
     public function testValidateRangeIPvBoth()
     {
-        if (!defined('AF_INET6')) {
-            $this->markTestSkipped('The environment does not support IPv6.');
-        }
-
         $validator = new IpValidator([
             'ranges' => '10.0.1.0/24',
         ]);
@@ -322,10 +310,6 @@ class IpValidatorTest extends TestCase
 
     public function testValidateAttributeIPv6()
     {
-        if (!defined('AF_INET6')) {
-            $this->markTestSkipped('The environment does not support IPv6.');
-        }
-
         $validator = new IpValidator();
         $model = new FakedValidationModel();
 

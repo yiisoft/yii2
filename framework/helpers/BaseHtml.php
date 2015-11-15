@@ -1302,7 +1302,7 @@ class BaseHtml
      * Generates a file input tag for the given model attribute.
      * This method will generate the "name" and "value" tag attributes automatically for the model attribute
      * unless they are explicitly specified in `$options`.
-     * Additionally, if a separate set of html options array is defined inside `$options` with a key named `hiddenInputOptions`,
+     * Additionally, if a separate set of html options array is defined inside `$options` with a key named `hiddenOptions`,
      * it will be passed to the `activeHiddenInput` field as its own `$options` parameter.
      * @param Model $model the model object
      * @param string $attribute the attribute name or expression. See [[getAttributeName()]] for the format
@@ -1310,21 +1310,22 @@ class BaseHtml
      * @param array $options the tag options in terms of name-value pairs. These will be rendered as
      * the attributes of the resulting tag. The values will be HTML-encoded using [[encode()]].
      * See [[renderTagAttributes()]] for details on how attributes are being rendered.
-     * If `hiddenInputOptions` parameter which is another set of html options array is defined, it will be extracted 
+     * If `hiddenOptions` parameter which is another set of html options array is defined, it will be extracted 
      * from `$options` to be used for the hidden input.
      * @return string the generated input tag
      */
     public static function activeFileInput($model, $attribute, $options = [])
     {
-        $hiddenInputOptions = ArrayHelper::merge([
-            'id' => null,
-            'value' => ''
-        ], ArrayHelper::remove($options, 'hiddenInputOptions', []));
+        $hiddenOptions = ['id' => null, 'value' => ''];
+        if (isset($options['name'])) {
+            $hiddenOptions['name'] = $options['name'];
+        }
+        $hiddenOptions = ArrayHelper::merge($hiddenOptions, ArrayHelper::remove($options, 'hiddenOptions', []));
         // add a hidden field so that if a model only has a file field, we can
         // still use isset($_POST[$modelClass]) to detect if the input is submitted.
-        // The hidden input will be assigned its own set of html options via `$hiddenInputOptions`.
+        // The hidden input will be assigned its own set of html options via `$hiddenOptions`.
         // This provides the possibility to interact with the hidden field via client script.
-        return static::activeHiddenInput($model, $attribute, $hiddenInputOptions)
+        return static::activeHiddenInput($model, $attribute, $hiddenOptions)
             . static::activeInput('file', $model, $attribute, $options);
     }
 
