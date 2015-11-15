@@ -22,6 +22,9 @@ class EmailValidatorTest extends TestCase
 
         $this->assertTrue($validator->validate('sam@rmcreative.ru'));
         $this->assertTrue($validator->validate('5011@gmail.com'));
+        $this->assertTrue($validator->validate('Abc.123@example.com'));
+        $this->assertTrue($validator->validate('user+mailbox/department=shipping@example.com'));
+        $this->assertTrue($validator->validate('!#$%&\'*+-/=?^_`.{|}~@example.com'));
         $this->assertFalse($validator->validate('rmcreative.ru'));
         $this->assertFalse($validator->validate('Carsten Brandt <mail@cebe.cc>'));
         $this->assertFalse($validator->validate('"Carsten Brandt" <mail@cebe.cc>'));
