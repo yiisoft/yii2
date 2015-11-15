@@ -21,6 +21,7 @@ Yii Framework 2 Change Log
 - Bug #9596: Fixed `\yii\web\UrlManager::createAbsoluteUrl(['site/index', '#' => 'testHash'])` losing hash (alchimik, samdark)
 - Bug #9678: `I18N::format()` wasn't able to handle named placeholder in "selectordinal" (samdark)
 - Bug #9681: `Json::encode()` was erroring under CYGWIN (samdark)
+- Bug #9689: Hidden input on `Html::activeFileInput()` had the wrong name if a name was explicitly given (graphcon, cebe)
 - Bug #9707: Fixed Memcache duration which exceeds 30 days (vernik91)
 - Bug #9714: Fixed `yii\rbac\PhpManager::updateItem()` unable to save users assignments (rezident1307)
 - Bug #9754: Fixed `yii\web\Request` error when path info is empty (dynasource)
