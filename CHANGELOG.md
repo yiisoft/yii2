@@ -36,6 +36,7 @@ Yii Framework 2 Change Log
 - Bug #9999: Fixed `yii\web\UrlRule` to allow route parameter names with `-`, `_`, `.`characters (silverfire)
 - Bug #10029: Fixed MaskedInput not working with PJAX (martrix78, samdark)
 - Bug #10101: Fixed assignments saving on role removing in `\yii\rbac\PhpManager` (rezident1307)
+- Bug #10142: Fixed `yii\validators\EmailValidator` to check the length of email properly (silverfire)
 - Bug: Fixed generation of canonical URLs for `ViewAction` pages (samdark)
 - Enh #3506: Added `\yii\validators\IpValidator` to perform validation of IP addresses and subnets (SilverFire, samdark)
 - Enh #5146: Added `\yii\i18n\Formatter::asDuration()` method (nineinchnick, SilverFire)
