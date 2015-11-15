@@ -64,7 +64,7 @@ return array(
     array(
         'name' => 'ICU version',
         'mandatory' => false,
-        'condition' => version_compare(INTL_ICU_VERSION, '49', '>='),
+        'condition' => defined('INTL_ICU_VERSION') && version_compare(INTL_ICU_VERSION, '49', '>='),
         'by' => '<a href="http://www.php.net/manual/en/book.intl.php">Internationalization</a> support',
         'memo' => 'ICU 49.0 or higher is required when you want to use <code>#</code> placeholder in plural rules
         (for example, plural in
