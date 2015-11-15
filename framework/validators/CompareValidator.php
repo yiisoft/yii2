@@ -87,28 +87,28 @@ class CompareValidator extends Validator
         if ($this->message === null) {
             switch ($this->operator) {
                 case '==':
-                    $this->message = Yii::t('yii', '{attribute} must be equal to "{compareValueOrAttribute}".');
+                    $this->message = Yii::t('yii', '{attribute} must be equal to "{compareValue}".');
                     break;
                 case '===':
-                    $this->message = Yii::t('yii', '{attribute} must be equal to "{compareValueOrAttribute}".');
+                    $this->message = Yii::t('yii', '{attribute} must be equal to "{compareValue}".');
                     break;
                 case '!=':
-                    $this->message = Yii::t('yii', '{attribute} must not be equal to "{compareValueOrAttribute}".');
+                    $this->message = Yii::t('yii', '{attribute} must not be equal to "{compareValue}".');
                     break;
                 case '!==':
-                    $this->message = Yii::t('yii', '{attribute} must not be equal to "{compareValueOrAttribute}".');
+                    $this->message = Yii::t('yii', '{attribute} must not be equal to "{compareValue}".');
                     break;
                 case '>':
-                    $this->message = Yii::t('yii', '{attribute} must be greater than "{compareValueOrAttribute}".');
+                    $this->message = Yii::t('yii', '{attribute} must be greater than "{compareValue}".');
                     break;
                 case '>=':
-                    $this->message = Yii::t('yii', '{attribute} must be greater than or equal to "{compareValueOrAttribute}".');
+                    $this->message = Yii::t('yii', '{attribute} must be greater than or equal to "{compareValue}".');
                     break;
                 case '<':
-                    $this->message = Yii::t('yii', '{attribute} must be less than "{compareValueOrAttribute}".');
+                    $this->message = Yii::t('yii', '{attribute} must be less than "{compareValue}".');
                     break;
                 case '<=':
-                    $this->message = Yii::t('yii', '{attribute} must be less than or equal to "{compareValueOrAttribute}".');
+                    $this->message = Yii::t('yii', '{attribute} must be less than or equal to "{compareValue}".');
                     break;
                 default:
                     throw new InvalidConfigException("Unknown operator: {$this->operator}");
