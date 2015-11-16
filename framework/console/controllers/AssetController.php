@@ -10,6 +10,7 @@ namespace yii\console\controllers;
 use Yii;
 use yii\console\Exception;
 use yii\console\Controller;
+use yii\helpers\ArrayHelper;
 use yii\helpers\Console;
 use yii\helpers\FileHelper;
 use yii\helpers\VarDumper;
@@ -331,7 +332,8 @@ class AssetController extends Controller
             if (isset($bundles[$name])) {
                 if (!$this->isBundleExternal($bundles[$name])) {
                     foreach ($bundles[$name]->$type as $file) {
-                        $inputFiles[] = $bundles[$name]->basePath . '/' . $file;
+                        $file = ArrayHelper::toArray($file);
+                        $inputFiles[] = $bundles[$name]->basePath . '/' . $file[0];
                     }
                 }
             } else {
