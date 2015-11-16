@@ -327,6 +327,7 @@ class PhpManager extends BaseManager
             }
             unset($this->items[$item->name]);
             $this->saveItems();
+            $this->saveAssignments();
             return true;
         } else {
             return false;

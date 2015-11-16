@@ -248,8 +248,8 @@ $component->detachBehaviors();
 -------------------------
 
 しめくくりに、[[yii\behaviors\TimestampBehavior]] を見てみましょう。このビヘイビアは、
-保存時 (つまり挿入や更新) に、[[yii\db\ActiveRecord|アクティブレコード]] モデルの
-タイムスタンプ属性の自動更新をサポートします。
+`insert()`、`update()` または `save()` のメソッドを通じて [[yii\db\ActiveRecord|アクティブレコード]] モデルが保存されるときに、
+タイムスタンプ属性の自動的な更新をサポートします。
 
 まず、使用しようと考えている [[yii\db\ActiveRecord|アクティブレコード]] クラスに、このビヘイビアをアタッチします:
 
@@ -271,6 +271,8 @@ class User extends ActiveRecord
                 'attributes' => [
                     ActiveRecord::EVENT_BEFORE_INSERT => ['created_at', 'updated_at'],
                     ActiveRecord::EVENT_BEFORE_UPDATE => ['updated_at'],
+                    // UNIX タイムスタンプではなく datetime を使う場合は
+                    // 'value' => new Expression('NOW()'),
                 ],
             ],
         ];
@@ -280,11 +282,11 @@ class User extends ActiveRecord
 
 上のビヘイビア構成は、レコードが:
 
-* 挿入されるとき、ビヘイビアは現在のタイムスタンプを `created_at` と `updated_at` 属性に割り当てます
-* 更新されるとき、ビヘイビアは現在のタイムスタンプを `updated_at` 属性に割り当てます
+* 挿入されるとき、ビヘイビアは現在の UNIX タイムスタンプを `created_at` と `updated_at` 属性に割り当てます
+* 更新されるとき、ビヘイビアは現在の UNIX タイムスタンプを `updated_at` 属性に割り当てます
 
-所定の位置にそのコードを使用すると、もし `User` オブジェクトを設け、それを保存しようとしたら、そこで、
-`created_at` と `updated_at` が自動的に現在のタイムスタンプで埋められます。
+このコードが所定の位置にあれば、例えば `User` オブジェクトがあって、それを保存しようとしたら、そこで、
+`created_at` と `updated_at` が自動的に現在の UNIX タイムスタンプで埋められます。
 
 ```php
 $user = new User;
@@ -293,8 +295,8 @@ $user->save();
 echo $user->created_at;  // 現在のタイムスタンプが表示される
 ```
 
-[[yii\behaviors\TimestampBehavior|TimestampBehavior]] は、指定された属性に現在のタイムスタンプを割り当てて
-それをデータベースに保存する、便利なメソッド [[yii\behaviors\TimestampBehavior::touch()|touch()]] を提供します。
+[[yii\behaviors\TimestampBehavior|TimestampBehavior]] は、また、指定された属性に現在のタイムスタンプを割り当てて
+それをデータベースに保存する、便利なメソッド [[yii\behaviors\TimestampBehavior::touch()|touch()]] を提供しています。
 
 ```php
 $user->touch('login_time');

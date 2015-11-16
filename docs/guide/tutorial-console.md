@@ -27,6 +27,7 @@ As you can see in the screenshot, Yii has already defined a set of commands that
   To learn more about this command, please refer to the [I18N Section](tutorial-i18n.md#message-command).
 - [[yii\console\controllers\MigrateController|MigrateController]] - Manages application migrations.
   Database migrations are described in more detail in the [Database Migration Section](db-migrations.md).
+- [[yii\console\controllers\ServeController|ServeController]] - Allows you run PHP built-in web server.
 
 
 Usage <span id="usage"></span>

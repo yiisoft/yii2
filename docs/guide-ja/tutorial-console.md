@@ -28,6 +28,7 @@
   このコマンドについてさらに学習するためには、[国際化の節](tutorial-i18n.md#message-command) を参照してください。
 - [[yii\console\controllers\MigrateController|MigrateController]] - アプリケーションのマイグレーションを管理します。
   データベースのマイグレーションについては、[データベースのマイグレーションの節](db-migrations.md) で詳しく説明されています。
+- [[yii\console\controllers\ServeController|ServeController]] - PHP の内蔵ウェブサーバを走らせることが出来ます。
 
 
 使用方法 <span id="usage"></span>
