@@ -108,6 +108,7 @@ class RangeValidatorTest extends TestCase
 
     public function testValidateSubsetArrayable()
     {
+
         // Test in array, values are arrays. IE: ['a'] in [['a'], ['b']]
         $val = new RangeValidator([
             'range' => [['a'], ['b']],
@@ -130,6 +131,12 @@ class RangeValidatorTest extends TestCase
         $this->assertTrue($val->validate(new \ArrayObject(['a', 'b'])));
 
 
+        // Test range as ArrayObject.
+        $val = new RangeValidator([
+            'range' => new \ArrayObject(['a', 'b']),
+            'allowArray' => false
+        ]);
+        $this->assertTrue($val->validate('a'));
 
 
     }

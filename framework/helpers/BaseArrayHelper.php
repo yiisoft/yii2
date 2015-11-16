@@ -584,4 +584,51 @@ class BaseArrayHelper
             return true;
         }
     }
+
+    /**
+     * Checks if needle is in haystack, supports array-like objects.
+     * @see in_array
+     * @param array|\Traversable $needle
+     * @param array|\Traversable $haystack
+     * @param boolean $strict
+     * @return boolean
+     */
+    public static function in($needle, $haystack, $strict = false)
+    {
+        if ($haystack instanceof \Traversable) {
+            foreach($haystack as $value) {
+                if ($needle == $value && (!$strict || $needle === $haystack)) {
+                    return true;
+                }
+            }
+        } elseif (is_array($haystack)) {
+            return in_array($needle, $haystack, $strict);
+        } else {
+            throw new \InvalidArgumentException("Argument \$haystack must be an array or implement Traversable");
+        }
+
+        return false;
+    }
+
+    /**
+     * Checks if all needles are in haystack, supports array-like objects.
+     * @param array|\Traversable $needles
+     * @param array|\Traversable $haystack
+     * @param boolean $strict
+     * @return boolean
+     */
+    public static function subset($needles, $haystack, $strict = false)
+    {
+        if (is_array($needles) || $needles instanceof \Traversable) {
+            foreach($needles as $needle) {
+                if (!static::in($needle, $haystack, $strict)) {
+                    return false;
+                }
+            }
+            return true;
+        } else {
+            throw new \InvalidArgumentException("Argument \$needles must be an array or implement Traversable");
+        }
+    }
+
 }

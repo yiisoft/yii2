@@ -478,4 +478,23 @@ class ArrayHelperTest extends TestCase
             ]
         ], ArrayHelper::htmlDecode($array, false));
     }
+
+    public function testIn()
+    {
+
+        $this->assertTrue(ArrayHelper::in('a', new \ArrayObject(['a', 'b'])));
+        $this->assertTrue(ArrayHelper::in('a', ['a', 'b']));
+
+        $this->assertTrue(ArrayHelper::in(['a'], new \ArrayObject([['a'], 'b'])));
+        $this->assertFalse(ArrayHelper::in('a', new \ArrayObject([['a'], 'b'])));
+        $this->assertFalse(ArrayHelper::in('a', [['a'], 'b']));
+    }
+
+    public function testSubset()
+    {
+        $this->assertTrue(ArrayHelper::subset(['a'], new \ArrayObject(['a', 'b'])));
+        $this->assertTrue(ArrayHelper::subset(new \ArrayObject(['a']), ['a', 'b']));
+    }
+
+
 }
