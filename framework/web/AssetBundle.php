@@ -152,7 +152,7 @@ class AssetBundle extends Object
             $view->registerJsFile($manager->getAssetUrl($this, $js), $this->jsOptions);
         }
         foreach ($this->css as $css) {
-            $css = ArrayHelper::toArray($css);
+            $css = (array) $css;
             $file = array_shift($css);
             $options = ArrayHelper::merge($this->cssOptions, $css);
             $view->registerCssFile($manager->getAssetUrl($this, $file), $options);
@@ -178,7 +178,7 @@ class AssetBundle extends Object
                 }
             }
             foreach ($this->css as $i => $css) {
-                $css = ArrayHelper::toArray($css);
+                $css = (array) $css;
                 $file = array_shift($css);
                 if (Url::isRelative($file)) {
                     $css = ArrayHelper::merge($this->cssOptions, $css);
