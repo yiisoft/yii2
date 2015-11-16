@@ -204,6 +204,21 @@ EOF;
 EOF;
         $this->assertEquals($expected, $view->renderFile('@yiiunit/data/views/rawlayout.php'));
     }
+
+    public function testCssOptions()
+    {
+        $view = $this->getView();
+
+        $this->assertEmpty($view->assetBundles);
+        TestAssetCssOptions::register($view);
+
+        $expected = <<<EOF
+1<link href="/js/default_options.css" rel="stylesheet" media="screen" hreflang="en">
+<link href="/js/tv.css" rel="stylesheet" media="tv" hreflang="en">
+<link href="/js/screen_and_print.css" rel="stylesheet" media="screen, print" hreflang="en">234
+EOF;
+        $this->assertEquals($expected, $view->renderFile('@yiiunit/data/views/rawlayout.php'));
+    }
 }
 
 class TestSimpleAsset extends AssetBundle
@@ -270,4 +285,16 @@ class TestAssetCircleB extends AssetBundle
     public $depends = [
         'yiiunit\\framework\\web\\TestAssetCircleA'
     ];
+}
+
+class TestAssetCssOptions extends AssetBundle
+{
+    public $basePath = '@testWebRoot/js';
+    public $baseUrl = '@testWeb/js';
+    public $css = [
+        'default_options.css',
+        ['tv.css', 'media' => 'tv'],
+        ['screen_and_print.css', 'media' => 'screen, print']
+    ];
+    public $cssOptions = ['media' => 'screen', 'hreflang' => 'en'];
 }

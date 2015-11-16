@@ -8,6 +8,7 @@
 namespace yii\web;
 
 use yii\base\Object;
+use yii\helpers\ArrayHelper;
 use yii\helpers\Url;
 use Yii;
 
@@ -86,8 +87,12 @@ class AssetBundle extends Object
      */
     public $js = [];
     /**
-     * @var array list of CSS files that this bundle contains. Each CSS file can be specified
-     * in one of the three formats as explained in [[js]].
+     * @var array list of CSS files that this bundle contains. Each CSS file can be specified in one
+     * of the following formats:
+     *
+     * - a string, with an absolute URL or a relative path, as explained in [[js]].
+     * - an array, with a first entry being the URL or relative path, and a list of key => pair values
+     *   that will be used to overwrite [[cssOptions]] settings.
      *
      * Note that only forward slash "/" can be used as directory separator.
      */
@@ -147,7 +152,10 @@ class AssetBundle extends Object
             $view->registerJsFile($manager->getAssetUrl($this, $js), $this->jsOptions);
         }
         foreach ($this->css as $css) {
-            $view->registerCssFile($manager->getAssetUrl($this, $css), $this->cssOptions);
+            $css = ArrayHelper::toArray($css);
+            $file = array_shift($css);
+            $options = ArrayHelper::merge($this->cssOptions, $css);
+            $view->registerCssFile($manager->getAssetUrl($this, $file), $options);
         }
     }
 
@@ -170,8 +178,12 @@ class AssetBundle extends Object
                 }
             }
             foreach ($this->css as $i => $css) {
-                if (Url::isRelative($css)) {
-                    $this->css[$i] = $converter->convert($css, $this->basePath);
+                $css = ArrayHelper::toArray($css);
+                $file = array_shift($css);
+                if (Url::isRelative($file)) {
+                    $css = ArrayHelper::merge($this->cssOptions, $css);
+                    array_unshift($css, $converter->convert($file, $this->basePath));
+                    $this->css[$i] = $css;
                 }
             }
         }
