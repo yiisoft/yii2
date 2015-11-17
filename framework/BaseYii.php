@@ -464,9 +464,13 @@ class BaseYii
      */
     public static function powered()
     {
-        return static::t('yii', 'Powered by {beginLink}Yii Framework{endLink}', [
-            'beginLink' => '<a href="http://www.yiiframework.com/" rel="external">',
-            'endLink' => '</a>'
+        /**
+         * For message extractor:
+         * Yii::t('yii', 'Powered by {yii}');
+         * Yii::t('yii', 'Yii Framework');
+         */
+        return static::t('yii', 'Powered by {yii}', [
+            'yii' => '<a href="http://www.yiiframework.com/" rel="external">' . static::t('yii', 'Yii Framework'). '</a>'
         ]);
     }
 
