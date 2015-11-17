@@ -464,7 +464,10 @@ class BaseYii
      */
     public static function powered()
     {
-        return 'Powered by <a href="http://www.yiiframework.com/" rel="external">Yii Framework</a>';
+        return static::t('yii', 'Powered by {beginLink}Yii Framework{endLink}', [
+            'beginLink' => '<a href="http://www.yiiframework.com/" rel="external">',
+            'endLink' => '</a>'
+        ]);
     }
 
     /**
