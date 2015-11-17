@@ -331,8 +331,11 @@ class AssetController extends Controller
             if (isset($bundles[$name])) {
                 if (!$this->isBundleExternal($bundles[$name])) {
                     foreach ($bundles[$name]->$type as $file) {
-                        $file = (array) $file;
-                        $inputFiles[] = $bundles[$name]->basePath . '/' . $file[0];
+                        if (is_array($file)) {
+                            $inputFiles[] = $bundles[$name]->basePath . '/' . $file[0];
+                        } else {
+                            $inputFiles[] = $bundles[$name]->basePath . '/' . $file;
+                        }
                     }
                 }
             } else {

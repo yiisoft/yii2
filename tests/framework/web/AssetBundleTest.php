@@ -205,17 +205,18 @@ EOF;
         $this->assertEquals($expected, $view->renderFile('@yiiunit/data/views/rawlayout.php'));
     }
 
-    public function testCssOptions()
+    public function testPerFileOptions()
     {
         $view = $this->getView();
 
         $this->assertEmpty($view->assetBundles);
-        TestAssetCssOptions::register($view);
+        TestAssetPerFileOptions::register($view);
 
         $expected = <<<EOF
-1<link href="/js/default_options.css" rel="stylesheet" media="screen" hreflang="en">
-<link href="/js/tv.css" rel="stylesheet" media="tv" hreflang="en">
-<link href="/js/screen_and_print.css" rel="stylesheet" media="screen, print" hreflang="en">234
+1<link href="/default_options.css" rel="stylesheet" media="screen" hreflang="en">
+<link href="/tv.css" rel="stylesheet" media="tv" hreflang="en">
+<link href="/screen_and_print.css" rel="stylesheet" media="screen, print" hreflang="en">23<script src="/normal.js" charset="utf-8"></script>
+<script src="/defered.js" charset="utf-8" defer="defer"></script>4
 EOF;
         $this->assertEquals($expected, $view->renderFile('@yiiunit/data/views/rawlayout.php'));
     }
@@ -287,14 +288,19 @@ class TestAssetCircleB extends AssetBundle
     ];
 }
 
-class TestAssetCssOptions extends AssetBundle
+class TestAssetPerFileOptions extends AssetBundle
 {
-    public $basePath = '@testWebRoot/js';
-    public $baseUrl = '@testWeb/js';
+    public $basePath = '@testWebRoot';
+    public $baseUrl = '@testWeb';
     public $css = [
         'default_options.css',
         ['tv.css', 'media' => 'tv'],
         ['screen_and_print.css', 'media' => 'screen, print']
     ];
+    public $js = [
+        'normal.js',
+        ['defered.js', 'defer' => 'defer'],
+    ];
     public $cssOptions = ['media' => 'screen', 'hreflang' => 'en'];
+    public $jsOptions = ['charset' => 'utf-8'];
 }
