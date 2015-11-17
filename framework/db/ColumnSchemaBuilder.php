@@ -46,7 +46,10 @@ class ColumnSchemaBuilder extends Object
      * @var mixed default value of the column.
      */
     protected $default;
-
+    /**
+     * @var string column comment
+     */
+    protected $column;
 
     /**
      * Create a column schema builder instance giving the type and value precision.
@@ -101,6 +104,17 @@ class ColumnSchemaBuilder extends Object
     public function defaultValue($default)
     {
         $this->default = $default;
+        return $this;
+    }
+
+    /**
+     * Specify the comment for the column.
+     * @param string $comment the comment value.
+     * @return $this
+     */
+    public function comment($comment)
+    {
+        $this->comment = $comment;
         return $this;
     }
 
@@ -202,5 +216,14 @@ class ColumnSchemaBuilder extends Object
     protected function buildCheckString()
     {
         return $this->check !== null ? " CHECK ({$this->check})" : '';
+    }
+
+    /**
+     * Builds the comment for the column.
+     * @return string a string containing the CHECK constraint.
+     */
+    protected function buildCommentString()
+    {
+        return $this->comment !== null ? " COMMENT '{$this->comment}'" : '';
     }
 }
