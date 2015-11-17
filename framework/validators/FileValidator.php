@@ -315,7 +315,7 @@ class FileValidator extends Validator
      */
     protected function validateExtension($file)
     {
-        $extension = mb_strtolower($file->extension, 'utf-8');
+        $extension = mb_strtolower($file->extension, 'UTF-8');
 
         if ($this->checkExtensionByMimeType) {
 
