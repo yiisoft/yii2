@@ -129,9 +129,9 @@ class FormatterDateTest extends TestCase
 
         // empty input
         $this->formatter->locale = 'de-DE';
-        $this->assertSame('01.01.1970 00:00:00', $this->formatter->asDatetime(''));
-        $this->assertSame('01.01.1970 00:00:00', $this->formatter->asDatetime(0));
-        $this->assertSame('01.01.1970 00:00:00', $this->formatter->asDatetime(false));
+        $this->assertRegExp('~01\.01\.1970,? 00:00:00~', $this->formatter->asDatetime(''));
+        $this->assertRegExp('~01\.01\.1970,? 00:00:00~', $this->formatter->asDatetime(0));
+        $this->assertRegExp('~01\.01\.1970,? 00:00:00~', $this->formatter->asDatetime(false));
     }
 
     public function testAsDatetime()
