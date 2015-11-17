@@ -17,12 +17,12 @@
  * NOTE: this file must be saved in UTF-8 encoding.
  */
 return [
-    '{attribute} must be equal to "{compareValueOrAttribute}".' => 'Значение «{attribute}» должно быть равно «{compareValue}».',
+    '{attribute} must be equal to "{compareValueOrAttribute}".' => 'Значение «{attribute}» должно быть равно «{compareValueOrAttribute}».',
     '{attribute} must be greater than "{compareValueOrAttribute}".' => 'Значение «{attribute}» должно быть больше значения «{compareValueOrAttribute}».',
-    '{attribute} must be greater than or equal to "{compareValueOrAttribute}".' => 'Значение «{attribute}» должно быть больше или равно значения «{compareValue}».',
-    '{attribute} must be less than "{compareValueOrAttribute}".' => 'Значение «{attribute}» должно быть меньше значения «{compareValue}».',
-    '{attribute} must be less than or equal to "{compareValueOrAttribute}".' => 'Значение «{attribute}» должно быть меньше или равно значения «{compareValue}».',
-    '{attribute} must not be equal to "{compareValueOrAttribute}".' => 'Значение «{attribute}» не должно быть равно «{compareValue}».',
+    '{attribute} must be greater than or equal to "{compareValueOrAttribute}".' => 'Значение «{attribute}» должно быть больше или равно значения «{compareValueOrAttribute}».',
+    '{attribute} must be less than "{compareValueOrAttribute}".' => 'Значение «{attribute}» должно быть меньше значения «{compareValueOrAttribute}».',
+    '{attribute} must be less than or equal to "{compareValueOrAttribute}".' => 'Значение «{attribute}» должно быть меньше или равно значения «{compareValueOrAttribute}».',
+    '{attribute} must not be equal to "{compareValueOrAttribute}".' => 'Значение «{attribute}» не должно быть равно «{compareValueOrAttribute}».',
     '(not set)' => '(не задано)',
     'An internal server error occurred.' => 'Возникла внутренняя ошибка сервера.',
     'Are you sure you want to delete this item?' => 'Вы уверены, что хотите удалить этот элемент?',
