@@ -945,4 +945,14 @@ class Connection extends Component
 
         return null;
     }
+
+    /**
+     * Close the connection before serializing.
+     * @return array
+     */
+    public function __sleep()
+    {
+        $this->close();
+        return array_keys((array) $this);
+    }
 }
