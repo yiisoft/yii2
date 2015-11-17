@@ -222,6 +222,37 @@ class QueryBuilder extends \yii\db\QueryBuilder
     }
 
     /**
+     * Builds an SQL statement for adding the comment to a column.
+     * The [[createTable()]] method uses this method to place additional statements to the generated SQL.
+     * @param string $table the table whose column is to be changed. The table name will be properly quoted by the method.
+     * @param string $column the name of the column to be changed. The name will be properly quoted by the method.
+     * @param string $comment the new column comment.
+     * @return string the SQL statement for changing the definition of a column.
+     */
+    public function setColumnComment($table, $column, $comment)
+    {
+        if (empty($comment)) {
+            $comment = 'NULL';
+        } else {
+            $comment = $this->db->quoteValue($comment);
+        }
+        return 'COMMENT ON COLUMN ' . $this->db->quoteTableName($table)
+        . '.' . $this->db->quoteColumnName($column) . ' IS ' . $comment;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function createTable($table, $columns, $options = null)
+    {
+        foreach ($columns as $name => $column) {
+            $options .= ";\n" . $this->setColumnComment($table, $name, $column->comment);
+        }
+
+        return parent::createTable($table, $columns, $options);
+    }
+
+    /**
      * @inheritdoc
      */
     public function batchInsert($table, $columns, $rows)
