@@ -62,7 +62,7 @@ Yii Framework 2 Change Log
 - Chg #9411: `DetailView` now automatically sets container tag ID in case it's not specified (samdark)
 - Chg #9953: `TimestampBehavior::getValue()` changed to make value processing consistent with `AttributeBehavior::getValue()` (silverfire)
 - New #10083: Added wrapper for PHP webserver (samdark)
-- Enh #10158: Added the possibility to specify CSS options per file in `AssetBundle::$css` (machour)
+- Enh #10158: Added the possibility to specify CSS and Javascript options per file in `\yii\web\AssetBundle` (machour)
 
 2.0.6 August 05, 2015
 ---------------------
