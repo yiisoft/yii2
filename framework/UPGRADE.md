@@ -25,7 +25,8 @@ initialization to support wider range of allowed characters. Because of this cha
   See the [Cache Flushing Guide](http://www.yiiframework.com/doc-2.0/guide-caching-data.html#cache-flushing)
   - If you implement `parseRequest()` or `createUrl()` and rely on parameter names, call `substitutePlaceholderNames()`
   in order to replace temporary IDs with parameter names after doing matching.
-
+* The context of `yii.confirm` function in `yii.js` was changed to the triggered dom element.
+  - If you rewrited the `yii.confirm` function, you can get the triggered dom element as: `this` or `$(this)` to get jquery object.
 
 Upgrade from Yii 2.0.5
 ----------------------
