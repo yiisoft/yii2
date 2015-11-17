@@ -162,7 +162,7 @@ class ErrorHandler extends \yii\base\ErrorHandler
      */
     public function htmlEncode($text)
     {
-        return htmlspecialchars($text, ENT_QUOTES, Yii::$app->charset);
+        return htmlspecialchars($text, ENT_QUOTES, 'UTF-8');
     }
 
     /**
@@ -391,8 +391,8 @@ class ErrorHandler extends \yii\base\ErrorHandler
                 $args[$key] = '<span class="keyword">' . ($value ? 'true' : 'false') . '</span>';
             } elseif (is_string($value)) {
                 $fullValue = $this->htmlEncode($value);
-                if (mb_strlen($value, Yii::$app->charset) > 32) {
-                    $displayValue = $this->htmlEncode(mb_substr($value, 0, 32, Yii::$app->charset)) . '...';
+                if (mb_strlen($value, 'UTF-8') > 32) {
+                    $displayValue = $this->htmlEncode(mb_substr($value, 0, 32, 'UTF-8')) . '...';
                     $args[$key] = "<span class=\"string\" title=\"$fullValue\">'$displayValue'</span>";
                 } else {
                     $args[$key] = "<span class=\"string\">'$fullValue'</span>";
