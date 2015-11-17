@@ -155,7 +155,7 @@ public $jsOptions = ['position' => \yii\web\View::POS_HEAD];
 
 ### Bower 和 NPM 资源 <span id="bower-npm-assets"></span>
 
-大多数 JavaScript/CSS 包通过[Bower](http://bower.io/) 和/或 [NPM](https://www.npmjs.org/)管理，
+大多数 JavaScript/CSS 包通过[Bower](http://bower.io/) 和(或) [NPM](https://www.npmjs.org/)管理，
 如果你的应用或扩展使用这些包，推荐你遵循以下步骤来管理库中的资源：
 
 1. 修改应用或扩展的 `composer.json` 文件将包列入`require` 中，
@@ -312,7 +312,7 @@ Yii框架定义许多资源包，如下资源包是最常用，可在你的应�
 
 ## 资源转换 <span id="asset-conversion"></span>
 
-除了直接编写CSS 和/或 JavaScript代码，开发人员经常使用扩展语法来编写，再使用特殊的工具将它们转换成CSS/Javascript。
+除了直接编写CSS 和(或) JavaScript代码，开发人员经常使用扩展语法来编写，再使用特殊的工具将它们转换成CSS/Javascript。
 例如，对于CSS代码可使用[LESS](http://lesscss.org/) 或 [SCSS](http://sass-lang.com/)，
 对于JavaScript 可使用 [TypeScript](http://www.typescriptlang.org/)。
 
@@ -377,7 +377,7 @@ return [
 
 ## 合并和压缩资源 <span id="combining-compressing-assets"></span>
 
-一个Web页面可以包含很多CSS 和/或 JavaScript 文件，为减少HTTP 请求和这些下载文件的大小，
+一个Web页面可以包含很多CSS 和(或) JavaScript 文件，为减少HTTP 请求和这些下载文件的大小，
 通常的方式是在页面中合并并压缩多个CSS/JavaScript 文件为一个或很少的几个文件，并使用压缩后的文件而不是原始文件。
  
 > 补充: 合并和压缩资源通常在应用在产品上线模式，在开发模式下使用原始的CSS/JavaScript更方便调试。
