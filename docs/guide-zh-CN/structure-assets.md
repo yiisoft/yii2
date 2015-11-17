@@ -113,7 +113,7 @@ class AppAsset extends AssetBundle
 在`AppAsset` 示例中，资源包依赖其他两个资源包： [[yii\web\YiiAsset]] 和 [[yii\bootstrap\BootstrapAsset]]
 也就是该资源包的CSS和JavaScript文件要在这两个依赖包的文件包含 *之后* 才包含。
 
-资源依赖关系是可传递，也就是人说A依赖B，B依赖C，那么A也依赖C。
+资源依赖关系是可传递，也就是说A依赖B，B依赖C，那么A也依赖C。
 
 
 ### 资源选项 <span id="asset-options"></span>
