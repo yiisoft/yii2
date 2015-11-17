@@ -56,6 +56,7 @@ Yii Framework 2 Change Log
 - Enh #9901: Default `Cache.SerializerPermissions` configuration option for `HTMLPurifier` is set to `0775` (klimov-paul)
 - Enh #10056: Allowed any callable to be passed to `ActionColumn::$urlCreator` (freezy-sk)
 - Enh #10061: `yii\helpers\BaseInflector::transliterate()` is now public. Introduced different levels of transliteration strictness (silverfire)
+- Enh #10098: Changed `yii.confirm` context to the event's target DOM element which is triggered by clickable or changeable elements (lichunqiang)
 - Enh #10118: Allow easy extension of slug generation in `yii\behaviors\SluggableBehavior` (cebe, hesna)
 - Enh #10149: Made `yii\db\Connection` serializable (Sam Mousa)
 - Enh: Added last resort measure for `FileHelper::removeDirectory()` fail to unlink symlinks under Windows (samdark)
@@ -63,7 +64,6 @@ Yii Framework 2 Change Log
 - Chg #9411: `DetailView` now automatically sets container tag ID in case it's not specified (samdark)
 - Chg #9953: `TimestampBehavior::getValue()` changed to make value processing consistent with `AttributeBehavior::getValue()` (silverfire)
 - New #10083: Added wrapper for PHP webserver (samdark)
-- Enh #10098: Changed `yii.confirm` context bind to triggered dom element. (lichunqiang)
 
 2.0.6 August 05, 2015
 ---------------------
