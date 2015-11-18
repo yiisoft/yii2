@@ -34,6 +34,13 @@ abstract class AuthMethod extends ActionFilter implements AuthInterface
      * @var Response the response to be sent. If not set, the `response` application component will be used.
      */
     public $response;
+    /**
+     * @var array list of action IDs that this filter will be applied to, but auth failure will not lead to error.
+     * It may be used for actions, that are allowed for public, but return some additional data for authenticated users.
+     * @see isOptional
+     * @since 2.0.7
+     */
+    public $optional = [];
 
 
     /**
@@ -43,11 +50,19 @@ abstract class AuthMethod extends ActionFilter implements AuthInterface
     {
         $response = $this->response ? : Yii::$app->getResponse();
 
-        $identity = $this->authenticate(
-            $this->user ? : Yii::$app->getUser(),
-            $this->request ? : Yii::$app->getRequest(),
-            $response
-        );
+        try {
+            $identity = $this->authenticate(
+                $this->user ? : Yii::$app->getUser(),
+                $this->request ? : Yii::$app->getRequest(),
+                $response
+            );
+        } catch (UnauthorizedHttpException $e) {
+            if ($this->isOptional($action)) {
+                return true;
+            }
+
+            throw $e;
+        }
 
         if ($identity !== null) {
             return true;
@@ -71,5 +86,26 @@ abstract class AuthMethod extends ActionFilter implements AuthInterface
     public function handleFailure($response)
     {
         throw new UnauthorizedHttpException('You are requesting with an invalid credential.');
+    }
+
+    /**
+     * Checks, whether the $action is optional
+     *
+     * @param $action
+     * @return bool
+     * @see optional
+     * @since 2.0.7
+     */
+    protected function isOptional($action) {
+        $id = $this->getActionId($action);
+        return in_array($id, $this->optional, true);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    protected function isActive($action)
+    {
+        return parent::isActive($action) || $this->isOptional($action);
     }
 }

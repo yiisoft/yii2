@@ -63,7 +63,7 @@ class TestController extends Controller
                 'class' => CompositeAuth::className(),
                 'authMethods' => [
                     TestAuth::className()
-                ]
+                ],
             ],
         ];
     }
