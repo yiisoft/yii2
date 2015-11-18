@@ -66,7 +66,6 @@ Yii Framework 2 Change Log
 - Chg #9953: `TimestampBehavior::getValue()` changed to make value processing consistent with `AttributeBehavior::getValue()` (silverfire)
 - New #10083: Added wrapper for PHP webserver (samdark)
 - Enh #10078: Added `csrf` option to `Html::beginForm()` to allow disabling the hidden csrf field generation. (machour)
-- Enh #10098: Changed `yii.confirm` context bind to triggered dom element. (lichunqiang)
 
 2.0.6 August 05, 2015
 ---------------------
