@@ -300,7 +300,8 @@ class BaseHtml
      * the attributes of the resulting tag. The values will be HTML-encoded using [[encode()]].
      * If a value is null, the corresponding attribute will not be rendered.
      * See [[renderTagAttributes()]] for details on how attributes are being rendered.
-     * The "csrf" special option can be set to FALSE to prevent the form from generating the CSRF hidden field.
+     * Special options:
+     *  - `csrf`: whether to generate the CSRF hidden input. When is not defined, defaults to true.
      * @return string the generated form start tag.
      * @see endForm()
      */
