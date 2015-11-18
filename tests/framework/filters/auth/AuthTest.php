@@ -8,6 +8,7 @@ use yii\filters\auth\HttpBearerAuth;
 use yii\filters\auth\QueryParamAuth;
 use yii\helpers\ArrayHelper;
 use yii\rest\Controller;
+use yii\web\UnauthorizedHttpException;
 use yiiunit\framework\filters\stubs\UserIdentity;
 
 /**
@@ -54,10 +55,11 @@ class AuthTest extends \yiiunit\TestCase
         /** @var TestAuthController $controller */
         $controller = Yii::$app->createController('test-auth')[0];
         $controller->authenticatorConfig = ArrayHelper::merge($filter, ['only' => [$action]]);
-        if ($login === null) {
-            $this->setExpectedException('\yii\web\UnauthorizedHttpException');
+        try {
+            $this->assertEquals($login, $controller->run($action));
+        } catch (UnauthorizedHttpException $e) {
+
         }
-        $this->assertEquals($login, $controller->run($action));
     }
 
     public function authOptional($token, $login, $filter, $action)
@@ -65,7 +67,11 @@ class AuthTest extends \yiiunit\TestCase
         /** @var TestAuthController $controller */
         $controller = Yii::$app->createController('test-auth')[0];
         $controller->authenticatorConfig = ArrayHelper::merge($filter, ['optional' => [$action]]);
-        $this->assertEquals($login, $controller->run($action));
+        try {
+            $this->assertEquals($login, $controller->run($action));
+        } catch (UnauthorizedHttpException $e) {
+
+        }
     }
 
     public function authExcept($token, $login, $filter, $action)
@@ -73,10 +79,11 @@ class AuthTest extends \yiiunit\TestCase
         /** @var TestAuthController $controller */
         $controller = Yii::$app->createController('test-auth')[0];
         $controller->authenticatorConfig = ArrayHelper::merge($filter, ['except' => ['other']]);
-        if ($login === null) {
-            $this->setExpectedException('\yii\web\UnauthorizedHttpException');
+        try {
+            $this->assertEquals($login, $controller->run($action));
+        } catch (UnauthorizedHttpException $e) {
+
         }
-        $this->assertEquals($login, $controller->run($action));
     }
 
     /**
