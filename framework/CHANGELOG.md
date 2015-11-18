@@ -61,12 +61,14 @@ Yii Framework 2 Change Log
 - Enh #10098: Changed `yii.confirm` context to the event's target DOM element which is triggered by clickable or changeable elements (lichunqiang)
 - Enh #10118: Allow easy extension of slug generation in `yii\behaviors\SluggableBehavior` (cebe, hesna)
 - Enh #10149: Made `yii\db\Connection` serializable (Sam Mousa)
+- Enh #10154: Implemeted support of traversable objects in `RangeValidator::ranges`, added `ArrayHelper::in()` and `ArrayHelper::subset()` (Sam Mousa)
 - Enh #10170: `Yii::powered()` now uses `Yii::t()` (SamMousa)
 - Enh: Added last resort measure for `FileHelper::removeDirectory()` fail to unlink symlinks under Windows (samdark)
 - Chg #9369: `Yii::$app->user->can()` now returns `false` instead of erroring in case `authManager` component is not configured (creocoder)
 - Chg #9411: `DetailView` now automatically sets container tag ID in case it's not specified (samdark)
 - Chg #9953: `TimestampBehavior::getValue()` changed to make value processing consistent with `AttributeBehavior::getValue()` (silverfire)
 - New #10083: Added wrapper for PHP webserver (samdark)
+
 
 2.0.6 August 05, 2015
 ---------------------
