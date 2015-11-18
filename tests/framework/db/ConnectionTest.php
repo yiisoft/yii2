@@ -51,7 +51,7 @@ class ConnectionTest extends DatabaseTestCase
         $unserialized = unserialize($serialized);
         $this->assertInstanceOf('yii\db\Connection', $unserialized);
 
-        $this->assertEquals(123, $connection->createCommand("SELECT 123")->queryScalar());
+        $this->assertEquals(123, $unserialized->createCommand("SELECT 123")->queryScalar());
     }
 
     public function testGetDriverName()
