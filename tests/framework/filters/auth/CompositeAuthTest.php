@@ -1,6 +1,6 @@
 <?php
 
-namespace yiiunit\framework\filters;
+namespace yiiunit\framework\filters\auth;
 
 use Yii;
 use yii\filters\auth\AuthMethod;
