@@ -859,6 +859,25 @@ EOD;
         $model->description = $value;
         $this->assertEquals($expectedHtml, Html::activeTextArea($model, 'description', $options));
     }
+
+    /**
+     * Fixes #10078
+     */
+    public function testCsrfDisable()
+    {
+        Yii::$app->request->enableCsrfValidation = true;
+        Yii::$app->request->cookieValidationKey = 'foobar';
+
+        $csrfForm = Html::beginForm('/index.php', 'post', ['id' => 'mycsrfform']);
+        $this->assertEquals(
+            '<form id="mycsrfform" action="/index.php" method="post">'
+            . "\n" . '<input type="hidden" name="_csrf" value="' . Yii::$app->request->getCsrfToken() . '">',
+            $csrfForm
+        );
+
+        $noCsrfForm = Html::beginForm('/index.php', 'post', ['csrf' => false, 'id' => 'myform']);
+        $this->assertEquals('<form id="myform" action="/index.php" method="post">', $noCsrfForm);
+    }
 }
 
 class HtmlTestModel extends Model
