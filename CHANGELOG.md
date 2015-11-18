@@ -61,6 +61,7 @@ Yii Framework 2 Change Log
 - Enh #10098: Changed `yii.confirm` context to the event's target DOM element which is triggered by clickable or changeable elements (lichunqiang)
 - Enh #10118: Allow easy extension of slug generation in `yii\behaviors\SluggableBehavior` (cebe, hesna)
 - Enh #10149: Made `yii\db\Connection` serializable (Sam Mousa)
+- Enh #10170: `Yii::powered()` now uses `Yii::t()` (SamMousa)
 - Enh: Added last resort measure for `FileHelper::removeDirectory()` fail to unlink symlinks under Windows (samdark)
 - Chg #9369: `Yii::$app->user->can()` now returns `false` instead of erroring in case `authManager` component is not configured (creocoder)
 - Chg #9411: `DetailView` now automatically sets container tag ID in case it's not specified (samdark)
