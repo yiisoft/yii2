@@ -648,6 +648,9 @@ class Security extends Component
      */
     public function compareString($expected, $actual)
     {
+        if (function_exists('hash_equals')) {
+            return hash_equals($expected, $actual);
+        }
         $expected .= "\0";
         $actual .= "\0";
         $expectedLength = StringHelper::byteLength($expected);
