@@ -41,6 +41,7 @@ Yii Framework 2 Change Log
 - Bug: Fixed `mb_*` functions calls to use `UTF-8` or `Yii::$app->charset` (silverfire)
 - Enh #3506: Added `\yii\validators\IpValidator` to perform validation of IP addresses and subnets (SilverFire, samdark)
 - Enh #5146: Added `\yii\i18n\Formatter::asDuration()` method (nineinchnick, SilverFire)
+
 - Enh #7341: Client validation now skips disabled inputs (SamMousa)
 - Enh #7566: Improved `\yii\validators\CompareValidator` default messages (slinstj)
 - Enh #7581: Added ability to specify range using anonymous function in `RangeValidator` (RomeroMsk)
@@ -67,6 +68,8 @@ Yii Framework 2 Change Log
 - Chg #9411: `DetailView` now automatically sets container tag ID in case it's not specified (samdark)
 - Chg #9953: `TimestampBehavior::getValue()` changed to make value processing consistent with `AttributeBehavior::getValue()` (silverfire)
 - New #10083: Added wrapper for PHP webserver (samdark)
+- Enh #10170: Add translation support for Yii::powered() (SamMousa)
+- 
 
 2.0.6 August 05, 2015
 ---------------------
