@@ -70,7 +70,7 @@ return array(
         (for example, plural in
         <a href=\"http://www.yiiframework.com/doc-2.0/yii-i18n-formatter.html#asRelativeTime%28%29-detail\">
         Formatter::asRelativeTime()</a>) in the <code>yii\i18n\Formatter</code> class. Your current ICU version is ' .
-        INTL_ICU_VERSION . '.'
+        (defined('INTL_ICU_VERSION') ? INTL_ICU_VERSION : '(ICU is missing)') . '.'
     ),
     array(
         'name' => 'ICU Data version',
@@ -81,7 +81,7 @@ return array(
         (for example, plural in
         <a href=\"http://www.yiiframework.com/doc-2.0/yii-i18n-formatter.html#asRelativeTime%28%29-detail\">
         Formatter::asRelativeTime()</a>) in the <code>yii\i18n\Formatter</code> class. Your current ICU Data version is ' .
-        INTL_ICU_DATA_VERSION . '.'
+        (defined('INTL_ICU_DATA_VERSION') ? INTL_ICU_DATA_VERSION : '(ICU Data is missing)') . '.'
     ),
     array(
         'name' => 'Fileinfo extension',
