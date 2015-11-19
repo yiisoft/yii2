@@ -300,6 +300,8 @@ class BaseHtml
      * the attributes of the resulting tag. The values will be HTML-encoded using [[encode()]].
      * If a value is null, the corresponding attribute will not be rendered.
      * See [[renderTagAttributes()]] for details on how attributes are being rendered.
+     * Special options:
+     *  - `csrf`: whether to generate the CSRF hidden input. When is not defined, defaults to true.
      * @return string the generated form start tag.
      * @see endForm()
      */
@@ -316,7 +318,9 @@ class BaseHtml
                 $hiddenInputs[] = static::hiddenInput($request->methodParam, $method);
                 $method = 'post';
             }
-            if ($request->enableCsrfValidation && !strcasecmp($method, 'post')) {
+            $csrf = ArrayHelper::remove($options, 'csrf', true);
+
+            if ($csrf && $request->enableCsrfValidation && strcasecmp($method, 'post') === 0) {
                 $hiddenInputs[] = static::hiddenInput($request->csrfParam, $request->getCsrfToken());
             }
         }

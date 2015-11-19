@@ -584,4 +584,53 @@ class BaseArrayHelper
             return true;
         }
     }
+
+    /**
+     * Checks if $needle is in $haystack, supports array-like objects.
+     * @see in_array
+     * @param array|\Traversable $needle The value to look for
+     * @param array|\Traversable $haystack The set of value to search
+     * @param boolean $strict Whether to enable strict (===) checking
+     * @return boolean True if $needle is in $haystack, false otherwise.
+     * @throws \InvalidArgumentException if $haystack is not traversable
+     */
+    public static function in($needle, $haystack, $strict = false)
+    {
+        if ($haystack instanceof \Traversable) {
+            foreach($haystack as $value) {
+                if ($needle == $value && (!$strict || $needle === $haystack)) {
+                    return true;
+                }
+            }
+        } elseif (is_array($haystack)) {
+            return in_array($needle, $haystack, $strict);
+        } else {
+            throw new \InvalidArgumentException('Argument $haystack must be an array or implement Traversable');
+        }
+
+        return false;
+    }
+
+    /**
+     * Checks if all $needles are in $haystack, supports array-like objects
+     * @param array|\Traversable $needles The values that must ALL be in $haystack
+     * @param array|\Traversable $haystack The set of value to search
+     * @param boolean $strict Whether to enable strict (===) checking
+     * @throws \InvalidArgumentException if $haystack or $needles is not traversable
+     * @return boolean True if $needles is a subset of $haystack, false otherwise.
+     */
+    public static function subset($needles, $haystack, $strict = false)
+    {
+        if (is_array($needles) || $needles instanceof \Traversable) {
+            foreach($needles as $needle) {
+                if (!static::in($needle, $haystack, $strict)) {
+                    return false;
+                }
+            }
+            return true;
+        } else {
+            throw new \InvalidArgumentException('Argument $needles must be an array or implement Traversable');
+        }
+    }
+
 }
