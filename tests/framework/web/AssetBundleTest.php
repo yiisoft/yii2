@@ -216,7 +216,7 @@ EOF;
 1<link href="/default_options.css" rel="stylesheet" media="screen" hreflang="en">
 <link href="/tv.css" rel="stylesheet" media="tv" hreflang="en">
 <link href="/screen_and_print.css" rel="stylesheet" media="screen, print" hreflang="en">23<script src="/normal.js" charset="utf-8"></script>
-<script src="/defered.js" charset="utf-8" defer="defer"></script>4
+<script src="/defered.js" charset="utf-8" defer></script>4
 EOF;
         $this->assertEquals($expected, $view->renderFile('@yiiunit/data/views/rawlayout.php'));
     }
@@ -299,7 +299,7 @@ class TestAssetPerFileOptions extends AssetBundle
     ];
     public $js = [
         'normal.js',
-        ['defered.js', 'defer' => 'defer'],
+        ['defered.js', 'defer' => true],
     ];
     public $cssOptions = ['media' => 'screen', 'hreflang' => 'en'];
     public $jsOptions = ['charset' => 'utf-8'];

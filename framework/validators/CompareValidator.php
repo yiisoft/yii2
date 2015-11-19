@@ -74,6 +74,7 @@ class CompareValidator extends Validator
      * - `{value}`: the value of the attribute being validated
      * - `{compareValue}`: the value or the attribute label to be compared with
      * - `{compareAttribute}`: the label of the attribute to be compared with
+     * - `{compareValueOrAttribute}`: the value or the attribute label to be compared with
      */
     public $message;
 
@@ -156,6 +157,7 @@ class CompareValidator extends Validator
             return [$this->message, [
                 'compareAttribute' => $this->compareValue,
                 'compareValue' => $this->compareValue,
+                'compareValueOrAttribute' => $this->compareValue,
             ]];
         } else {
             return null;
@@ -213,11 +215,12 @@ class CompareValidator extends Validator
 
         if ($this->compareValue !== null) {
             $options['compareValue'] = $this->compareValue;
-            $compareValue = $this->compareValue;
+            $compareLabel = $compareValue = $compareValueOrAttribute = $this->compareValue;
         } else {
             $compareAttribute = $this->compareAttribute === null ? $attribute . '_repeat' : $this->compareAttribute;
             $compareValue = $model->getAttributeLabel($compareAttribute);
             $options['compareAttribute'] = Html::getInputId($model, $compareAttribute);
+            $compareLabel = $compareValueOrAttribute = $model->getAttributeLabel($compareAttribute);
         }
 
         if ($this->skipOnEmpty) {
@@ -226,8 +229,9 @@ class CompareValidator extends Validator
 
         $options['message'] = Yii::$app->getI18n()->format($this->message, [
             'attribute' => $model->getAttributeLabel($attribute),
-            'compareAttribute' => $compareValue,
+            'compareAttribute' => $compareLabel,
             'compareValue' => $compareValue,
+            'compareValueOrAttribute' => $compareValueOrAttribute,
         ], Yii::$app->language);
 
         ValidationAsset::register($view);
