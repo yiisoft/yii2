@@ -17,6 +17,17 @@ php composer.phar global require "fxp/composer-asset-plugin:~1.1.0"
 Upgrade from Yii 2.0.6
 ----------------------
 
+* Added new requirement: ICU Data version >= 49.1. Please, ensure that your environment has ICU data installed and
+up to date to prevent unexpected behavior or crashes.
+
+ > Tip: The easiet way to check: `php --info | grep ICU`
+
+ > Normal output example (version shoud be >= 49.1):
+   ```
+   $> php --info | grep ICU
+   ICU version => 55.1
+   ICU Data version => 55.1
+   ```
 * The signature of `yii\helpers\BaseInflector::transliterate()` was changed. The method is now public and has an
 extra optional parameter `$transliterator`.
 * In `yii\web\UrlRule` the `pattern` matching group names are being replaced with the placeholders on class
