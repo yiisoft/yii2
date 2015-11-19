@@ -8,6 +8,7 @@
 namespace yii\filters\auth;
 
 use Yii;
+use yii\base\Action;
 use yii\base\ActionFilter;
 use yii\web\UnauthorizedHttpException;
 use yii\web\User;
@@ -64,7 +65,7 @@ abstract class AuthMethod extends ActionFilter implements AuthInterface
             throw $e;
         }
 
-        if ($identity !== null) {
+        if ($identity !== null || $this->isOptional($action)) {
             return true;
         } else {
             $this->challenge($response);
@@ -91,8 +92,8 @@ abstract class AuthMethod extends ActionFilter implements AuthInterface
     /**
      * Checks, whether the $action is optional
      *
-     * @param $action
-     * @return bool
+     * @param Action $action
+     * @return boolean
      * @see optional
      * @since 2.0.7
      */
