@@ -113,6 +113,7 @@ class ActionFilter extends Behavior
      * Returns an $action ID, convert action uniqueId into an ID relative to the module
      * @param Action $action
      * @return string
+     * @since 2.0.7
      */
     protected function getActionId($action) {
         if ($this->owner instanceof Module) {
