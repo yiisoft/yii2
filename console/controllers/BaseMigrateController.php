@@ -42,12 +42,12 @@ abstract class BaseMigrateController extends Controller
      */
     public $templateFile;
     /**
-     * @var array the template file for generating migration code automatically.
-     * This can be either a path alias (e.g. "@app/migrations/template.php")
+     * @var array a set of template files for generating migration code automatically.
+     * Each one can be either a path alias (e.g. "@app/migrations/template.php")
      * or a file path.
      * @since 2.0.7
      */
-    public $generatorTemplateFile;
+    public $generatorTemplateFiles;
     /**
      * @var array Fields to be generated
      * @since 2.0.7
@@ -63,9 +63,7 @@ abstract class BaseMigrateController extends Controller
         return array_merge(
             parent::options($actionID),
             ['migrationPath'], // global for all actions
-            ($actionID === 'create')
-                ? ['templateFile', 'templateFileGenerators', 'fields']
-                : [] // action create
+            $actionID === 'create' ? ['templateFile', 'templateFileGenerators', 'fields'] : [] // action create
         );
     }
 
@@ -87,7 +85,7 @@ abstract class BaseMigrateController extends Controller
                 FileHelper::createDirectory($path);
             }
             $this->migrationPath = $path;
-            $this->parseField();
+            $this->parseFields();
 
             $version = Yii::getVersion();
             $this->stdout("Yii Migration Tool (based on Yii v{$version})\n\n");
@@ -494,36 +492,39 @@ abstract class BaseMigrateController extends Controller
         $file = $this->migrationPath . DIRECTORY_SEPARATOR . $className . '.php';
 
         if ($this->confirm("Create new migration '$file'?")) {
-            if (preg_match('/^create_join_(.+)_and_(.+)$/', $name, $matches)) {
-                $content = $this->renderFile(Yii::getAlias($this->generatorTemplateFile['create_join']), [
+            if (preg_match('/^create_junction_(.+)_and_(.+)$/', $name, $matches)) {
+                $firstTable = mb_strtolower($matches[1], Yii::$app->charset);
+                $secondTable = mb_strtolower($matches[2], Yii::$app->charset);
+
+                $content = $this->renderFile(Yii::getAlias($this->generatorTemplateFiles['create_junction']), [
                     'className' => $className,
-                    'table' => mb_strtolower($matches[1]) . '_' . mb_strtolower($matches[2]),
-                    'field_first' => mb_strtolower($matches[1]),
-                    'field_second' => mb_strtolower($matches[2]),
+                    'table' => $firstTable . '_' . $secondTable,
+                    'field_first' => $firstTable,
+                    'field_second' => $secondTable,
                 ]);
-            } elseif (preg_match('/^add_(.+)from_(.+)$/', $name, $matches)) {
-                $content = $this->renderFile(Yii::getAlias($this->generatorTemplateFile['add']), [
+            } elseif (preg_match('/^add_(.+)_to_(.+)$/', $name, $matches)) {
+                $content = $this->renderFile(Yii::getAlias($this->generatorTemplateFiles['add']), [
                     'className' => $className,
-                    'table' => mb_strtolower($matches[2]),
+                    'table' => mb_strtolower($matches[2], Yii::$app->charset),
                     'fields' => $this->fields
                 ]);
-            } elseif (preg_match('/^drop_(.+)from_(.+)$/', $name, $matches)) {
-                $content = $this->renderFile(Yii::getAlias($this->generatorTemplateFile['remove']), [
+            } elseif (preg_match('/^drop_(.+)_from_(.+)$/', $name, $matches)) {
+                $content = $this->renderFile(Yii::getAlias($this->generatorTemplateFiles['remove']), [
                     'className' => $className,
-                    'table' => mb_strtolower($matches[2]),
+                    'table' => mb_strtolower($matches[2], Yii::$app->charset),
                     'fields' => $this->fields
                 ]);
             } elseif (preg_match('/^create_(.+)$/', $name, $matches)) {
-                $this->checkPrimaryKey();
-                $content = $this->renderFile(Yii::getAlias($this->generatorTemplateFile['create']), [
+                $this->addDefaultPrimaryKey();
+                $content = $this->renderFile(Yii::getAlias($this->generatorTemplateFiles['create']), [
                     'className' => $className,
-                    'table' => mb_strtolower($matches[1]),
+                    'table' => mb_strtolower($matches[1], Yii::$app->charset),
                     'fields' => $this->fields
                 ]);
             } elseif (preg_match('/^drop_(.+)$/', $name, $matches)) {
-                $content = $this->renderFile(Yii::getAlias($this->generatorTemplateFile['drop']), [
+                $content = $this->renderFile(Yii::getAlias($this->generatorTemplateFiles['drop']), [
                     'className' => $className,
-                    'table' => mb_strtolower($matches[1]),
+                    'table' => mb_strtolower($matches[1], Yii::$app->charset),
                     'fields' => $this->fields
                 ]);
             } else {
@@ -689,10 +690,10 @@ abstract class BaseMigrateController extends Controller
     }
 
     /**
-     * Parse the command line migration fields.
+     * Parse the command line migration fields
      * @since 2.0.7
      */
-    protected function parseField()
+    protected function parseFields()
     {
         if ($this->fields === null) {
             $this->fields = [];
@@ -704,7 +705,7 @@ abstract class BaseMigrateController extends Controller
 
             foreach ($chunks as &$chunk) {
                 if (!preg_match('/(.+?)\(([^)]+)\)/', $chunk)) {
-                    $chunk = $chunk . '()';
+                    $chunk .= '()';
                 }
             }
             $this->fields[$index] = ['property' => $property, 'decorators' => implode('->', $chunks)];
@@ -712,20 +713,17 @@ abstract class BaseMigrateController extends Controller
     }
 
     /**
-     * Check fields option contain primaryKey, if fields do not contain primary key it is added
+     * Adds default primary key to fields list if there's no primary key specified
      * @since 2.0.7
      */
-    protected function checkPrimaryKey()
+    protected function addDefaultPrimaryKey()
     {
-        $exitsPk = false;
         foreach ($this->fields as $field) {
             if ($field['decorators'] === 'primaryKey()') {
-                $exitsPk = true;
+                return;
             }
         }
-        if (!$exitsPk) {
-            array_unshift($this->fields, ['property' => 'id', 'decorators' => 'primaryKey()']);
-        }
+        array_unshift($this->fields, ['property' => 'id', 'decorators' => 'primaryKey()']);
     }
 
     /**
