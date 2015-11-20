@@ -42,14 +42,22 @@ abstract class BaseMigrateController extends Controller
      */
     public $templateFile;
     /**
-     * @var array a set of template files for generating migration code automatically.
-     * Each one can be either a path alias (e.g. "@app/migrations/template.php")
-     * or a file path.
+     * @var array a set of template paths for generating migration code automatically.
+     *
+     * The key is the template type, the value is a path or the alias. Supported types are:
+     * - `create`: table creating template
+     * - `drop`: table dropping template
+     * - `add`: adding new column template
+     * - `remove`: dropping column template
+     * - `create_junction`: create junction template
+     *
      * @since 2.0.7
      */
     public $generatorTemplateFiles;
     /**
-     * @var array Fields to be generated
+     * @var array column definition strings used for creating migration code.
+     * The format of each definition is `COLUMN_NAME:COLUMN_TYPE:COLUMN_DECORATOR`.
+     * For example, `--fields=name:string(12):notNull` produces a string column of size 12 which is not null.
      * @since 2.0.7
      */
     public $fields;
@@ -704,7 +712,7 @@ abstract class BaseMigrateController extends Controller
             $property = array_shift($chunks);
 
             foreach ($chunks as &$chunk) {
-                if (!preg_match('/(.+?)\(([^)]+)\)/', $chunk)) {
+                if (!preg_match('/^(.+?)\(([^)]+)\)$/', $chunk)) {
                     $chunk .= '()';
                 }
             }
