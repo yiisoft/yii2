@@ -64,6 +64,16 @@ class MigrateController extends BaseMigrateController
      */
     public $templateFile = '@yii/views/migration.php';
     /**
+     * @inheritdoc
+     */
+    public $generatorTemplateFile = [
+        'create' => '@yii/views/createMigration.php',
+        'drop' => '@yii/views/dropMigration.php',
+        'add' => '@yii/views/addColumnMigration.php',
+        'remove' => '@yii/views/dropColumnMigration.php',
+        'create_join' => '@yii/views/createJoinMigration.php'
+    ];
+    /**
      * @var Connection|array|string the DB connection object or the application component ID of the DB connection to use
      * when applying migrations. Starting from version 2.0.3, this can also be a configuration array
      * for creating the object.

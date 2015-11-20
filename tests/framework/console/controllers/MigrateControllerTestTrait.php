@@ -149,6 +149,375 @@ CODE;
         $this->assertContains($migrationName, basename($files[0]), 'Wrong migration name!');
     }
 
+    public function testGenerateDefaultMigration()
+    {
+        $migrationName = 'DefaultTest';
+        $class = 'm' . gmdate('ymd_His') . '_' . $migrationName;
+        $this->runMigrateControllerAction('create', [$migrationName]);
+        $files = FileHelper::findFiles($this->migrationPath);
+
+        $newLine = '\n';
+        $code = <<<CODE
+<?php
+
+use yii\db\Migration;
+
+class {$class} extends Migration
+{
+    public function up()
+    {
+
+    }
+
+    public function down()
+    {
+        echo "{$class} cannot be reverted.{$newLine}";
+
+        return false;
+    }
+
+    /*
+    // Use safeUp/safeDown to run migration code within a transaction
+    public function safeUp()
+    {
+    }
+
+    public function safeDown()
+    {
+    }
+    */
+}
+
+CODE;
+        $this->assertEqualsWithoutLE($code, file_get_contents($files[0]));
+    }
+
+    public function testGenerateCreateMigration()
+    {
+        $migrationName = 'create_test';
+        $class = 'm' . gmdate('ymd_His') . '_' . $migrationName;
+        $this->runMigrateControllerAction('create', [
+            $migrationName,
+            'fields' => [
+                'title:string(10):notNull:unique:defaultValue("test")',
+                'body:text:notNull'
+            ]
+        ]);
+        $files = FileHelper::findFiles($this->migrationPath);
+
+        $code = <<<CODE
+<?php
+
+use yii\db\Migration;
+
+class {$class} extends Migration
+{
+    public function up()
+    {
+        \$this->createTable('test', [
+            'id' => \$this->primaryKey(),
+            'title' => \$this->string(10)->notNull()->unique()->defaultValue("test"),
+            'body' => \$this->text()->notNull()
+        ]);
+    }
+
+    public function down()
+    {
+        \$this->dropTable('test');
+    }
+}
+
+CODE;
+        $this->assertEqualsWithoutLE($code, file_get_contents($files[0]));
+
+        $class = 'm' . gmdate('ymd_His') . '_' . $migrationName;
+        $this->runMigrateControllerAction('create', [
+            $migrationName,
+            'fields' => [
+                'title:primaryKey',
+                'body:text:notNull'
+            ],
+
+        ]);
+        $files = FileHelper::findFiles($this->migrationPath);
+        $code = <<<CODE
+<?php
+
+use yii\db\Migration;
+
+class {$class} extends Migration
+{
+    public function up()
+    {
+        \$this->createTable('test', [
+            'title' => \$this->primaryKey(),
+            'body' => \$this->text()->notNull()
+        ]);
+    }
+
+    public function down()
+    {
+        \$this->dropTable('test');
+    }
+}
+
+CODE;
+        $this->assertEqualsWithoutLE($code, file_get_contents($files[0]));
+
+        $class = 'm' . gmdate('ymd_His') . '_' . $migrationName;
+        $this->runMigrateControllerAction('create', [
+            $migrationName,
+            'fields' => [
+            ],
+        ]);
+        $files = FileHelper::findFiles($this->migrationPath);
+        $code = <<<CODE
+<?php
+
+use yii\db\Migration;
+
+class {$class} extends Migration
+{
+    public function up()
+    {
+        \$this->createTable('test', [
+            'id' => \$this->primaryKey()
+        ]);
+    }
+
+    public function down()
+    {
+        \$this->dropTable('test');
+    }
+}
+
+CODE;
+        $this->assertEqualsWithoutLE($code, file_get_contents($files[0]));
+    }
+
+    public function testGenerateDropMigration()
+    {
+        $migrationName = 'drop_test';
+        $class = 'm' . gmdate('ymd_His') . '_' . $migrationName;
+        $this->runMigrateControllerAction('create', [
+            $migrationName
+        ]);
+        $files = FileHelper::findFiles($this->migrationPath);
+
+        $code = <<<CODE
+<?php
+
+use yii\db\Migration;
+
+class {$class} extends Migration
+{
+    public function up()
+    {
+        \$this->dropTable('test');
+    }
+
+    public function down()
+    {
+        \$this->createTable('test', [
+        ]);
+    }
+}
+
+CODE;
+        $this->assertEqualsWithoutLE($code, file_get_contents($files[0]));
+
+        $class = 'm' . gmdate('ymd_His') . '_' . $migrationName;
+        $this->runMigrateControllerAction('create', [
+            $migrationName,
+            'fields' => [
+                'title:primaryKey',
+                'body:text:notNull'
+            ],
+
+        ]);
+        $files = FileHelper::findFiles($this->migrationPath);
+        $code = <<<CODE
+<?php
+
+use yii\db\Migration;
+
+class {$class} extends Migration
+{
+    public function up()
+    {
+        \$this->dropTable('test');
+    }
+
+    public function down()
+    {
+        \$this->createTable('test', [
+            'title' => \$this->primaryKey(),
+            'body' => \$this->text()->notNull()
+        ]);
+    }
+}
+
+CODE;
+        $this->assertEqualsWithoutLE($code, file_get_contents($files[0]));
+    }
+
+    public function testGenerateAddColumnMigration()
+    {
+        $migrationName = 'add_columns_from_test';
+        $class = 'm' . gmdate('ymd_His') . '_' . $migrationName;
+        $this->runMigrateControllerAction('create', [
+            $migrationName,
+            'fields' => [
+                'title:string(10):notNull',
+                'body:text:notNull',
+                'create_at:dateTime'
+            ]
+        ]);
+        $files = FileHelper::findFiles($this->migrationPath);
+
+        $code = <<<CODE
+<?php
+
+use yii\db\Migration;
+
+class {$class} extends Migration
+{
+    public function up()
+    {
+        \$this->addColumn('test', 'title', \$this->string(10)->notNull());
+        \$this->addColumn('test', 'body', \$this->text()->notNull());
+        \$this->addColumn('test', 'create_at', \$this->dateTime());
+    }
+
+    public function down()
+    {
+        \$this->dropColumn('test', 'title');
+        \$this->dropColumn('test', 'body');
+        \$this->dropColumn('test', 'create_at');
+    }
+}
+
+CODE;
+        $this->assertEqualsWithoutLE($code, file_get_contents($files[0]));
+    }
+
+    public function testGenerateDropColumnMigration()
+    {
+        $migrationName = 'drop_columns_from_test';
+        $class = 'm' . gmdate('ymd_His') . '_' . $migrationName;
+        $this->runMigrateControllerAction('create', [
+            $migrationName,
+            'fields' => [
+                'title:string(10):notNull',
+                'body:text:notNull',
+                'create_at:dateTime'
+            ]
+        ]);
+        $files = FileHelper::findFiles($this->migrationPath);
+
+        $code = <<<CODE
+<?php
+
+use yii\db\Migration;
+
+class {$class} extends Migration
+{
+    public function up()
+    {
+        \$this->dropColumn('test', 'title');
+        \$this->dropColumn('test', 'body');
+        \$this->dropColumn('test', 'create_at');
+    }
+
+    public function down()
+    {
+        \$this->addColumn('test', 'title', \$this->string(10)->notNull());
+        \$this->addColumn('test', 'body', \$this->text()->notNull());
+        \$this->addColumn('test', 'create_at', \$this->dateTime());
+    }
+}
+
+CODE;
+        $this->assertEqualsWithoutLE($code, file_get_contents($files[0]));
+
+        $class = 'm' . gmdate('ymd_His') . '_' . $migrationName;
+        $this->runMigrateControllerAction('create', [
+            $migrationName,
+            'fields' => [
+                'title:string(10):notNull',
+                'body:text:notNull',
+                'create_at:dateTime'
+            ]
+        ]);
+        $files = FileHelper::findFiles($this->migrationPath);
+
+        $code = <<<CODE
+<?php
+
+use yii\db\Migration;
+
+class {$class} extends Migration
+{
+    public function up()
+    {
+        \$this->dropColumn('test', 'title');
+        \$this->dropColumn('test', 'body');
+        \$this->dropColumn('test', 'create_at');
+    }
+
+    public function down()
+    {
+        \$this->addColumn('test', 'title', \$this->string(10)->notNull());
+        \$this->addColumn('test', 'body', \$this->text()->notNull());
+        \$this->addColumn('test', 'create_at', \$this->dateTime());
+    }
+}
+
+CODE;
+        $this->assertEqualsWithoutLE($code, file_get_contents($files[0]));
+    }
+
+    public function testGenerateCreateJoinMigration()
+    {
+        $migrationName = 'create_join_post_and_tag';
+        $class = 'm' . gmdate('ymd_His') . '_' . $migrationName;
+        $this->runMigrateControllerAction('create', [
+            $migrationName,
+        ]);
+        $files = FileHelper::findFiles($this->migrationPath);
+
+        $code = <<<CODE
+<?php
+
+use yii\db\Migration;
+
+class {$class} extends Migration
+{
+    public function up()
+    {
+        \$this->createTable('post_tag', [
+            'post_id' => \$this->integer(),
+            'tag_id' => \$this->integer(),
+            'PRIMARY KEY(post_id, tag_id)'
+        ]);
+
+        \$this->createIndex('idx-post_tag-post_id', 'post_tag', 'post_id');
+        \$this->createIndex('idx-post_tag-tag_id', 'post_tag', 'tag_id');
+
+        \$this->addForeignKey('fk-post_tag-post_id', 'post_tag', 'post_id', 'post', 'id', 'CASCADE');
+        \$this->addForeignKey('fk-post_tag-tag_id', 'post_tag', 'tag_id', 'tag', 'id', 'CASCADE');
+    }
+
+    public function down()
+    {
+        \$this->dropTable('post_tag');
+    }
+}
+
+CODE;
+        $this->assertEqualsWithoutLE($code, file_get_contents($files[0]));
+    }
+
     public function testUp()
     {
         $this->createMigration('test1');

@@ -41,6 +41,18 @@ abstract class BaseMigrateController extends Controller
      * or a file path.
      */
     public $templateFile;
+    /**
+     * @var array the template file for generating migration code automatically.
+     * This can be either a path alias (e.g. "@app/migrations/template.php")
+     * or a file path.
+     * @since 2.0.7
+     */
+    public $generatorTemplateFile;
+    /**
+     * @var array Fields to be generated
+     * @since 2.0.7
+     */
+    public $fields;
 
 
     /**
@@ -51,7 +63,9 @@ abstract class BaseMigrateController extends Controller
         return array_merge(
             parent::options($actionID),
             ['migrationPath'], // global for all actions
-            ($actionID === 'create') ? ['templateFile'] : [] // action create
+            ($actionID === 'create')
+                ? ['templateFile', 'templateFileGenerators', 'fields']
+                : [] // action create
         );
     }
 
@@ -73,6 +87,7 @@ abstract class BaseMigrateController extends Controller
                 FileHelper::createDirectory($path);
             }
             $this->migrationPath = $path;
+            $this->parseField();
 
             $version = Yii::getVersion();
             $this->stdout("Yii Migration Tool (based on Yii v{$version})\n\n");
@@ -475,11 +490,46 @@ abstract class BaseMigrateController extends Controller
             throw new Exception('The migration name should contain letters, digits and/or underscore characters only.');
         }
 
-        $name = 'm' . gmdate('ymd_His') . '_' . $name;
-        $file = $this->migrationPath . DIRECTORY_SEPARATOR . $name . '.php';
+        $className = 'm' . gmdate('ymd_His') . '_' . $name;
+        $file = $this->migrationPath . DIRECTORY_SEPARATOR . $className . '.php';
 
         if ($this->confirm("Create new migration '$file'?")) {
-            $content = $this->renderFile(Yii::getAlias($this->templateFile), ['className' => $name]);
+            if (preg_match('/^create_join_(.+)_and_(.+)$/', $name, $matches)) {
+                $content = $this->renderFile(Yii::getAlias($this->generatorTemplateFile['create_join']), [
+                    'className' => $className,
+                    'table' => mb_strtolower($matches[1]) . '_' . mb_strtolower($matches[2]),
+                    'field_first' => mb_strtolower($matches[1]),
+                    'field_second' => mb_strtolower($matches[2]),
+                ]);
+            } elseif (preg_match('/^add_(.+)from_(.+)$/', $name, $matches)) {
+                $content = $this->renderFile(Yii::getAlias($this->generatorTemplateFile['add']), [
+                    'className' => $className,
+                    'table' => mb_strtolower($matches[2]),
+                    'fields' => $this->fields
+                ]);
+            } elseif (preg_match('/^drop_(.+)from_(.+)$/', $name, $matches)) {
+                $content = $this->renderFile(Yii::getAlias($this->generatorTemplateFile['remove']), [
+                    'className' => $className,
+                    'table' => mb_strtolower($matches[2]),
+                    'fields' => $this->fields
+                ]);
+            } elseif (preg_match('/^create_(.+)$/', $name, $matches)) {
+                $this->checkPrimaryKey();
+                $content = $this->renderFile(Yii::getAlias($this->generatorTemplateFile['create']), [
+                    'className' => $className,
+                    'table' => mb_strtolower($matches[1]),
+                    'fields' => $this->fields
+                ]);
+            } elseif (preg_match('/^drop_(.+)$/', $name, $matches)) {
+                $content = $this->renderFile(Yii::getAlias($this->generatorTemplateFile['drop']), [
+                    'className' => $className,
+                    'table' => mb_strtolower($matches[1]),
+                    'fields' => $this->fields
+                ]);
+            } else {
+                $content = $this->renderFile(Yii::getAlias($this->templateFile), ['className' => $className]);
+            }
+
             file_put_contents($file, $content);
             $this->stdout("New migration created successfully.\n", Console::FG_GREEN);
         }
@@ -636,6 +686,46 @@ abstract class BaseMigrateController extends Controller
         sort($migrations);
 
         return $migrations;
+    }
+
+    /**
+     * Parse the command line migration fields.
+     * @since 2.0.7
+     */
+    protected function parseField()
+    {
+        if ($this->fields === null) {
+            $this->fields = [];
+        }
+
+        foreach ($this->fields as $index => $field) {
+            $chunks = preg_split('/\s?:\s?/', $field, null);
+            $property = array_shift($chunks);
+
+            foreach ($chunks as &$chunk) {
+                if (!preg_match('/(.+?)\(([^)]+)\)/', $chunk)) {
+                    $chunk = $chunk . '()';
+                }
+            }
+            $this->fields[$index] = ['property' => $property, 'decorators' => implode('->', $chunks)];
+        }
+    }
+
+    /**
+     * Check fields option contain primaryKey, if fields do not contain primary key it is added
+     * @since 2.0.7
+     */
+    protected function checkPrimaryKey()
+    {
+        $exitsPk = false;
+        foreach ($this->fields as $field) {
+            if ($field['decorators'] === 'primaryKey()') {
+                $exitsPk = true;
+            }
+        }
+        if (!$exitsPk) {
+            array_unshift($this->fields, ['property' => 'id', 'decorators' => 'primaryKey()']);
+        }
     }
 
     /**
