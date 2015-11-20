@@ -313,12 +313,12 @@ class m150811_220037_add_position_to_post extends Migration
 {
     public function up()
     {
-        this->addColumn('post', 'position', this->integer());
+        $this->addColumn('post', 'position', $this->integer());
     }
 
     public function down()
     {
-        this->dropColumn('post', 'position');
+        $this->dropColumn('post', 'position');
     }
 }
 ```
@@ -339,12 +339,12 @@ class m150811_220037_remove_position_from_post extends Migration
 {
     public function up()
     {
-        this->dropColumn('post', 'position');
+        $this->dropColumn('post', 'position');
     }
 
     public function down()
     {
-        this->addColumn('post', 'position', this->integer());
+        $this->addColumn('post', 'position', $this->integer());
     }
 }
 ```
@@ -361,26 +361,26 @@ yii create/migration create_junction_post_and_tag
 generates
 
 ```php
-class m150811_220037_create_junction_post_and_tag  extends Migration
+class m150811_220037_create_junction_post_and_tag extends Migration
 {
     public function up()
     {
-        \$this->createTable('post_tag', [
-            'post_id' => this->integer(),
-            'tag_id' => this->integer(),
+        $this->createTable('post_tag', [
+            'post_id' => $this->integer(),
+            'tag_id' => $this->integer(),
             'PRIMARY KEY(post_id, tag_id)'
         ]);
 
-        this->createIndex('idx-post_tag-post_id', 'post_tag', 'post_id');
-        this->createIndex('idx-post_tag-tag_id', 'post_tag', 'tag_id');
+        $this->createIndex('idx-post_tag-post_id', 'post_tag', 'post_id');
+        $this->createIndex('idx-post_tag-tag_id', 'post_tag', 'tag_id');
 
-        this->addForeignKey('fk-post_tag-post_id', 'post_tag', 'post_id', 'post', 'id', 'CASCADE');
-        this->addForeignKey('fk-post_tag-tag_id', 'post_tag', 'tag_id', 'tag', 'id', 'CASCADE');
+        $this->addForeignKey('fk-post_tag-post_id', 'post_tag', 'post_id', 'post', 'id', 'CASCADE');
+        $this->addForeignKey('fk-post_tag-tag_id', 'post_tag', 'tag_id', 'tag', 'id', 'CASCADE');
     }
 
     public function down()
     {
-        \$this->dropTable('post_tag');
+        $this->dropTable('post_tag');
     }
 }
 ```
