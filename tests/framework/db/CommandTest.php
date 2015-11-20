@@ -314,7 +314,10 @@ SQL;
     public function testCreateTable()
     {
         $db = $this->getConnection();
-        $db->createCommand('DROP TABLE IF EXISTS {{testCreateTable}};')->execute();
+
+        if($db->getSchema()->getTableSchema('testCreateTable') !== null){
+            $db->createCommand()->dropTable('testCreateTable')->execute();
+        }
 
         $db->createCommand()->createTable('testCreateTable', ['id' => Schema::TYPE_PK, 'bar' => Schema::TYPE_INTEGER])->execute();
         $db->createCommand()->insert('testCreateTable', ['bar' => 1])->execute();
@@ -331,7 +334,10 @@ SQL;
         }
 
         $db = $this->getConnection();
-        $db->createCommand("DROP TABLE IF EXISTS {{testAlterTable}};")->execute();
+
+        if($db->getSchema()->getTableSchema('testAlterTable') !== null){
+            $db->createCommand()->dropTable('testAlterTable')->execute();
+        }
 
         $db->createCommand()->createTable('testAlterTable', ['id' => Schema::TYPE_PK, 'bar' => Schema::TYPE_INTEGER])->execute();
         $db->createCommand()->insert('testAlterTable', ['bar' => 1])->execute();
@@ -375,7 +381,9 @@ SQL;
         $fromTableName = 'type';
         $toTableName = 'new_type';
 
-        $db->createCommand('DROP TABLE IF EXISTS {{' . $toTableName . '}};')->execute();
+        if($db->getSchema()->getTableSchema($toTableName) !== null){
+            $db->createCommand()->dropTable($toTableName)->execute();
+        }
 
         $this->assertNotNull($db->getSchema()->getTableSchema($fromTableName));
         $this->assertNull($db->getSchema()->getTableSchema($toTableName));
