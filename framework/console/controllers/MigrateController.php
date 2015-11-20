@@ -66,12 +66,12 @@ class MigrateController extends BaseMigrateController
     /**
      * @inheritdoc
      */
-    public $generatorTemplateFile = [
+    public $generatorTemplateFiles = [
         'create' => '@yii/views/createMigration.php',
         'drop' => '@yii/views/dropMigration.php',
         'add' => '@yii/views/addColumnMigration.php',
         'remove' => '@yii/views/dropColumnMigration.php',
-        'create_join' => '@yii/views/createJoinMigration.php'
+        'create_junction' => '@yii/views/createJunctionMigration.php'
     ];
     /**
      * @var Connection|array|string the DB connection object or the application component ID of the DB connection to use

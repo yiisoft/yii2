@@ -48,6 +48,7 @@ Yii Framework 2 Change Log
 - Enh #8649: Added total applied migrations to final report (vernik91)
 - Enh #9282: Improved JSON error handling to support PHP 5.5 error codes (freezy-sk)
 - Enh #9337: Added `yii\db\ColumnSchemaBuilder::defaultExpression()` to support DB Expression as default value (kotchuprik)
+- Enh #9465: ./yii migrate/create now generates code based on migration name and --fields (pana1990)
 - Enh #9476: Added DI injection via controller action method signature (mdmunir)
 - Enh #9635: Added default CSS class for `\yii\grid\ActionColumn` header (arogachev, dynasource)
 - Enh #9643: Added migrations for DB cache (mdmunir)

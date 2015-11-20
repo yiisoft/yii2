@@ -363,14 +363,14 @@ CODE;
 
     public function testGenerateAddColumnMigration()
     {
-        $migrationName = 'add_columns_from_test';
+        $migrationName = 'add_columns_to_test';
         $class = 'm' . gmdate('ymd_His') . '_' . $migrationName;
         $this->runMigrateControllerAction('create', [
             $migrationName,
             'fields' => [
                 'title:string(10):notNull',
                 'body:text:notNull',
-                'create_at:dateTime'
+                'created_at:dateTime'
             ]
         ]);
         $files = FileHelper::findFiles($this->migrationPath);
@@ -386,14 +386,14 @@ class {$class} extends Migration
     {
         \$this->addColumn('test', 'title', \$this->string(10)->notNull());
         \$this->addColumn('test', 'body', \$this->text()->notNull());
-        \$this->addColumn('test', 'create_at', \$this->dateTime());
+        \$this->addColumn('test', 'created_at', \$this->dateTime());
     }
 
     public function down()
     {
         \$this->dropColumn('test', 'title');
         \$this->dropColumn('test', 'body');
-        \$this->dropColumn('test', 'create_at');
+        \$this->dropColumn('test', 'created_at');
     }
 }
 
@@ -410,7 +410,7 @@ CODE;
             'fields' => [
                 'title:string(10):notNull',
                 'body:text:notNull',
-                'create_at:dateTime'
+                'created_at:dateTime'
             ]
         ]);
         $files = FileHelper::findFiles($this->migrationPath);
@@ -426,14 +426,14 @@ class {$class} extends Migration
     {
         \$this->dropColumn('test', 'title');
         \$this->dropColumn('test', 'body');
-        \$this->dropColumn('test', 'create_at');
+        \$this->dropColumn('test', 'created_at');
     }
 
     public function down()
     {
         \$this->addColumn('test', 'title', \$this->string(10)->notNull());
         \$this->addColumn('test', 'body', \$this->text()->notNull());
-        \$this->addColumn('test', 'create_at', \$this->dateTime());
+        \$this->addColumn('test', 'created_at', \$this->dateTime());
     }
 }
 
@@ -446,7 +446,7 @@ CODE;
             'fields' => [
                 'title:string(10):notNull',
                 'body:text:notNull',
-                'create_at:dateTime'
+                'created_at:dateTime'
             ]
         ]);
         $files = FileHelper::findFiles($this->migrationPath);
@@ -462,14 +462,14 @@ class {$class} extends Migration
     {
         \$this->dropColumn('test', 'title');
         \$this->dropColumn('test', 'body');
-        \$this->dropColumn('test', 'create_at');
+        \$this->dropColumn('test', 'created_at');
     }
 
     public function down()
     {
         \$this->addColumn('test', 'title', \$this->string(10)->notNull());
         \$this->addColumn('test', 'body', \$this->text()->notNull());
-        \$this->addColumn('test', 'create_at', \$this->dateTime());
+        \$this->addColumn('test', 'created_at', \$this->dateTime());
     }
 }
 
@@ -477,9 +477,9 @@ CODE;
         $this->assertEqualsWithoutLE($code, file_get_contents($files[0]));
     }
 
-    public function testGenerateCreateJoinMigration()
+    public function testGenerateCreateJunctionMigration()
     {
-        $migrationName = 'create_join_post_and_tag';
+        $migrationName = 'create_junction_post_and_tag';
         $class = 'm' . gmdate('ymd_His') . '_' . $migrationName;
         $this->runMigrateControllerAction('create', [
             $migrationName,
