@@ -549,7 +549,7 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
                 return $value != $this->_oldAttributes[$name];
             }
         } else {
-            return ($this->getAttribute($name) != null) || isset($this->_oldAttributes[$name]);
+            return ($this->getAttribute($name) !== null) || isset($this->_oldAttributes[$name]);
         }
     }
 
