@@ -452,11 +452,10 @@ class Controller extends Component implements ViewContextInterface
      */
     public function getViewPath()
     {
-        if ($this->_viewPath !== null) {
-            return $this->_viewPath;
-        } else {
-            return $this->_viewPath = $this->module->getViewPath() . DIRECTORY_SEPARATOR . $this->id;
+        if ($this->_viewPath === null) {
+            $this->_viewPath = $this->module->getViewPath() . DIRECTORY_SEPARATOR . $this->id;
         }
+        return $this->_viewPath;
     }
 
     /**
