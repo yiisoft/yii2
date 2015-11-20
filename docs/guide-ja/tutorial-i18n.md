@@ -70,7 +70,7 @@ echo \Yii::t('app', 'This is a string to translate!');
 
 ここで、二番目のパラメータが翻訳されるべきテキストメッセージを示し、最初のパラメータはメッセージを分類するのに使用されるカテゴリ名を示します。
 
-[[Yii::t()]] メソッドは `i18n` [アプリケーションコンポーネント](structure-application-components.md) を呼んで実際の翻訳作業を実行します。
+[[Yii::t()]] メソッドは `i18n` [アプリケーションコンポーネント](structure-application-components.md) の `translate` メソッドを呼んで実際の翻訳作業を実行します。
 このコンポーネントはアプリケーションの構成情報の中で次のようにして構成することが出来ます。
 
 ```php
@@ -116,7 +116,7 @@ echo \Yii::t('app', 'This is a string to translate!');
 
 ### メッセージパラメータ <span id="message-parameters"></span>
 
-翻訳対象となるメッセージには、一つまたは複数のプレースホルダを埋め込んで、与えられたパラメータ値で置き換えられるようにすることが出来ます。
+翻訳対象となるメッセージには、一つまたは複数のパラメータ (プレースホルダとも呼びます) を埋め込んで、与えられたパラメータ値で置き換えられるようにすることが出来ます。
 様々なパラメータ値のセットを与えることによって、翻訳されるメッセージを動的に変化させることが出来ます。
 次の例では、`'Hello, {username}!'` というメッセージの中のプレースホルダ `{username}` が `'Alexander'` と `'Qiang'` にそれぞれ置き換えられます。
 
@@ -135,20 +135,19 @@ echo \Yii::t('app', 'Hello, {username}!', [
 ```
 
 プレースホルダを持つメッセージを翻訳する時には、プレースホルダはそのままにしておかなければなりません。
-これは、プレースホルダは `Yii::t()` を呼んでメッセージを翻訳する時に、実際のパラメータ値に置き換えられるものだからです。
+これは、プレースホルダは `Yii::t()` を呼んでメッセージを翻訳する時に、実際の値に置き換えられるものだからです。
 
 ```php
-// 日本語翻訳例: '{username} さん、こんにちは!'
+// 日本語翻訳: '{username} さん、こんにちは!'
 ```
 
 プレースホルダには、*名前付きプレースホルダ* と *序数プレースホルダ* のどちらかを使用する事が出来ます。
 ただし、一つのメッセージに両方を使うことは出来ません。
 
 上記の例は名前付きプレースホルダの使い方を示すものです。
-すなわち、各プレースホルダは `{パラメータ名}` という形式で書かれており、パラメータは連想配列で渡されます。
-このとき、配列のキーが(波括弧なしの)パラメータ名であり、配列の値が対応するパラメータ値です。
+すなわち、各プレースホルダは `{name}` という形式で書かれていますが、それに対して、キーが(波括弧なしの)プレースホルダ名であり、値がそのプレースホルダを置き換える値である連想配列を渡す訳です。
 
-序数プレースホルダは、0 ベースの整数の序数をプレースホルダとして使います。
+序数プレースホルダは、0 ベースの整数の序数をプレースホルダ名として使います。
 このプレースホルダは、`Yii::t()` の呼び出しに出現する順序に従って、パラメータ値によって置き換えられます。
 次の例では、序数プレースホルダ `{0}`、`{1}` および `{2}` は、それぞれ、`$price`、`$count` および `$subtotal` の値によって置き換えられます。
 
@@ -156,11 +155,17 @@ echo \Yii::t('app', 'Hello, {username}!', [
 $price = 100;
 $count = 2;
 $subtotal = 200;
-echo \Yii::t('app', 'Price: {0}, Count: {1}, Subtotal: {2}', $price, $count, $subtotal);
+echo \Yii::t('app', 'Price: {0}, Count: {1}, Subtotal: {2}', [$price, $count, $subtotal]);
 ```
 
 ```php
-// 日本語翻訳例: '価格: {0}, 数量: {1}, 小計: {2}'
+// 日本語翻訳: '価格: {0}, 数量: {1}, 小計: {2}'
+```
+
+序数プレースホルダが一つだけの場合は、値を配列に入れずにそのまま指定することができます。
+
+```php
+echo \Yii::t('app', 'Price: {0}', $price);
 ```
 
 > Tip|ヒント: たいていの場合は名前付きプレースホルダを使うべきです。
@@ -182,9 +187,15 @@ echo \Yii::t('app', 'Price: {0, number, currency}', $price);
 プレースホルダにフォーマット規則を指定するためには、短い構文または完全な構文のどちらかを使うことが出来ます。
 
 ```
-短い形式: {プレースホルダ名, パラメータの型}
-完全な形式: {プレースホルダ名, パラメータの型, パラメータの形式}
+短い形式: {name, type}
+完全な形式: {name, type, style}
 ```
+
+> Note|注意: `{`、`}`、`'`、`#` などの特殊な文字を使用する必要がある場合は、その部分の文字列を `'` で囲んでください。
+> 
+```php
+echo Yii::t('app', "Example of string with ''-escaped characters'': '{' '}' '{test}' {count, plural, other{''count'' value is # '#{}'}}", ['count' => 3]);
++```
 
 このようなプレースホルダを指定する方法についての完全な説明は、[ICU ドキュメント](http://icu-project.org/apiref/icu4c/classMessageFormat.html) を参照してください。
 
@@ -193,34 +204,38 @@ echo \Yii::t('app', 'Price: {0, number, currency}', $price);
 #### 数値 <span id="number"></span>
 
 ```php
-$sum = 42;
+$sum = 12345;
 echo \Yii::t('app', 'Balance: {0, number}', $sum);
 
-// 翻訳: '差引残高: {0, number}'
-// 出力: '差引残高: 12,345'
+// 日本語翻訳: '差引残高: {0, number}'
+// 日本語出力: '差引残高: 12,345'
 ```
 
-オプションで、パラメータの形式として、`integer`、`currency`、`percent` を指定することが出来ます。
+オプションのパラメータとして、`integer`、`currency`、`percent` のスタイルを指定することが出来ます。
 
 ```php
-$sum = 42;
+$sum = 12345;
 echo \Yii::t('app', 'Balance: {0, number, currency}', $sum);
 
-// 翻訳: '差引残高: {0, number, currency}'
-// 出力: '差引残高: &yen; 12,345'
+// 日本語翻訳: '差引残高: {0, number, currency}'
+// 日本語出力: '差引残高: ￥12,345'
 ```
 
 または、数値をフォーマットするカスタムパターンを指定することも出来ます。
 
 ```php
-$sum = 42;
+$sum = 12345;
 echo \Yii::t('app', 'Balance: {0, number, ,000,000000}', $sum);
 
-// 翻訳: '差引残高: {0, number, ,000,000000}'
-// 出力: '差引残高: 000,012345'
+// 日本語翻訳: '差引残高: {0, number, ,000,000000}'
+// 日本語出力: '差引残高: 000,012345'
 ```
 
-[書式のリファレンス](http://icu-project.org/apiref/icu4c/classicu_1_1DecimalFormat.html).
+カスタムフォーマットで使用される文字については、[ICU API リファレンス](http://icu-project.org/apiref/icu4c/classicu_1_1DecimalFormat.html) の "Special Pattern Characters" のセクションに記述されています。
+ 
+数値は常に翻訳先のロケールに従ってフォーマットされます。
+つまり、ロケールを変更せずに、小数点や桁区切りを変更することは出来ません。
+それらをカスタマイズしたい場合は [[yii\i18n\Formatter::asDecimal()]] や [[yii\i18n\Formatter::asCurrency()]] を使うことが出来ます。
 
 #### 日付 <span id="date"></span>
 
@@ -229,17 +244,17 @@ echo \Yii::t('app', 'Balance: {0, number, ,000,000000}', $sum);
 ```php
 echo \Yii::t('app', 'Today is {0, date}', time());
 
-// 翻訳: '今日は {0, date} です。'
-// 出力: '今日は 2015/01/07 です。'
+// 日本語翻訳: '今日は {0, date} です。'
+// 日本語出力: '今日は 2015/01/07 です。'
 ```
 
-オプションで、パラメータの形式として、`short`、`medium`、`long`、そして `full` を指定することが出来ます。
+オプションのパラメータとして、`short`、`medium`、`long`、そして `full` のスタイルを指定することが出来ます。
 
 ```php
 echo \Yii::t('app', 'Today is {0, date, short}', time());
 
-// 翻訳: '今日は {0, date, short} です。'
-// 出力: '今日は 2015/01/07 です。'
+// 日本語翻訳: '今日は {0, date, short} です。'
+// 日本語出力: '今日は 2015/01/07 です。'
 ```
 
 日付の値をフォーマットするカスタムパターンを指定することも出来ます。
@@ -247,8 +262,8 @@ echo \Yii::t('app', 'Today is {0, date, short}', time());
 ```php
 echo \Yii::t('app', 'Today is {0, date, yyyy-MM-dd}', time());
 
-// 翻訳: '今日は {0, date, yyyy-MM-dd} です。'
-// 出力: '今日は 2015-01-07 です。'
+// 日本語翻訳: '今日は {0, date, yyyy-MM-dd} です。'
+// 日本語出力: '今日は 2015-01-07 です。'
 ```
 
 [書式のリファレンス](http://icu-project.org/apiref/icu4c/classicu_1_1SimpleDateFormat.html).
@@ -260,17 +275,17 @@ echo \Yii::t('app', 'Today is {0, date, yyyy-MM-dd}', time());
 ```php
 echo \Yii::t('app', 'It is {0, time}', time());
 
-// 翻訳: '現在 {0, time} です。'
-// 出力: '現在 22:37:47 です。'
+// 日本語翻訳: '現在 {0, time} です。'
+// 日本語出力: '現在 22:37:47 です。'
 ```
 
-オプションで、パラメータの形式として、`short`、`medium`、`long`、そして `full` を指定することが出来ます。
+オプションのパラメータとして、`short`、`medium`、`long`、そして `full` のスタイルを指定することが出来ます。
 
 ```php
 echo \Yii::t('app', 'It is {0, time, short}', time());
 
-// 翻訳: '現在 {0, time, short} です。'
-// 出力: '現在 22:37 です。'
+// 日本語翻訳: '現在 {0, time, short} です。'
+// 日本語出力: '現在 22:37 です。'
 ```
 
 時刻の値をフォーマットするカスタムパターンを指定することも出来ます。
@@ -278,8 +293,8 @@ echo \Yii::t('app', 'It is {0, time, short}', time());
 ```php
 echo \Yii::t('app', 'It is {0, date, HH:mm}', time());
 
-// 翻訳: '現在 {0, time, HH:mm} です。'
-// 出力: '現在 22:37 です。'
+// 日本語翻訳: '現在 {0, time, HH:mm} です。'
+// 日本語出力: '現在 22:37 です。'
 ```
 
 [書式のリファレンス](http://icu-project.org/apiref/icu4c/classicu_1_1SimpleDateFormat.html).
@@ -290,26 +305,52 @@ echo \Yii::t('app', 'It is {0, date, HH:mm}', time());
 パラメータ値は数値として取り扱われ、綴りとしてフォーマットされます。例えば、
 
 ```php
-// 出力例 : "42 is spelled as forty two"
+// 出力例 : "42 is spelled as forty-two"
 echo \Yii::t('app', '{n, number} is spelled as {n, spellout}', ['n' => 42]);
 
-// 翻訳: '{n, number} は、文字で綴ると {n, spellout} です。'
-// 出力: '12,345 は、文字で綴ると 四十二 です。'
+// 日本語翻訳: '{n, number} は、文字で綴ると {n, spellout} です。'
+// 日本語出力: '42 は、文字で綴ると 四十二 です。'
 ```
+
+デフォルトでは、数値は基数として綴られます。それを変更することは可能です。
+
+```php
+// 出力例 : "I am forty-seventh agent"
+echo \Yii::t('app', 'I am {n, spellout,%spellout-ordinal} agent', ['n' => 47]);
+
+// 日本語翻訳: '私は{n, spellout,%spellout-ordinal}の工作員です。'
+// 日本語出力: '私は第四十七の工作員です。'
+```
+
+'spellout,' と '%' の間に空白を入れてはならないことに注意してください。
+
+あなたが使用しているロケールで利用可能なオプションのリストについては、[http://intl.rmcreative.ru/](http://intl.rmcreative.ru/) の "Numbering schemas, Spellout" を参照してください。
+
 
 #### 序数 <span id="ordinal"></span>
 
 パラメータ値は数値として取り扱われ、順序を表す文字列としてフォーマットされます。例えば、
 
 ```php
-// 出力例 : "You are the 42nd visitor here!"
+// 出力: "You are the 42nd visitor here!"
 echo \Yii::t('app', 'You are the {n, ordinal} visitor here!', ['n' => 42]);
 ```
 
-> Note|訳注: 上記のソースメッセージを、プレースホルダの書式指定を守って日本語に翻訳すると、'あなたはこのサイトの {n, ordinal} の訪問者です' となります。
-> しかし、その出力結果は、'あなたはこのサイトの 第42 の訪問者です' となり、意味は通じますが、日本語としては若干不自然なものになります。
+序数については、スペイン語などの言語では、さらに多くのフォーマットがサポートされています。
+
+```php
+// 出力: "471ª"
+echo \Yii::t('app', '{n, ordinal,%digits-ordinal-feminine}', ['n' => 471]);
+```
+
+'ordinal,' と '%' の間に空白を入れてはならないことに注意してください。
+
+あなたが使用しているロケールで利用可能なオプションのリストについては、[http://intl.rmcreative.ru/](http://intl.rmcreative.ru/) の "Numbering schemas, Ordinal" を参照してください。
+
+> Note|訳注: 上記のソースメッセージを、プレースホルダのスタイルを守って日本語に翻訳すると、'あなたはこのサイトの{n, ordinal}の訪問者です' となります。
+> しかし、その出力結果は、'あなたはこのサイトの第42の訪問者です' となり、意味は通じますが、日本語としては若干不自然なものになります。
 >
-> プレースホルダの書式指定自体も、翻訳の対象として、より適切なものに変更することが可能であることに注意してください。
+> プレースホルダのスタイル自体も、翻訳の対象として、より適切なものに変更することが可能であることに注意してください。
 >
 > この場合も、'あなたはこのサイトの{n, plural, =1{最初} other{#番目}}の訪問者です' のように翻訳するほうが適切でしょう。
 
@@ -318,12 +359,24 @@ echo \Yii::t('app', 'You are the {n, ordinal} visitor here!', ['n' => 42]);
 パラメータ値は秒数として取り扱われ、継続時間を表す文字列としてフォーマットされます。例えば、
 
 ```php
-// 出力例 : "You are here for 47 sec. already!"
+// 出力: "You are here for 47 sec. already!"
 echo \Yii::t('app', 'You are here for {n, duration} already!', ['n' => 47]);
 ```
 
-> Note|訳注: このソースメッセージを 'あなたはこのサイトに既に {n, duration} の間滞在しています' と翻訳した場合の出力結果は、'あなたはこのサイトに既に 47 の間滞在しています' となります。
-> ICU ライブラリのバグでしょうか。これも、プレースホルダの書式設定も含めて全体を翻訳し直す方が良いようです。
+継続時間については、さらに多くのフォーマットがサポートされています。
+
+```php
+// 出力: '130:53:47'
+echo \Yii::t('app', '{n, duration,%in-numerals}', ['n' => 471227]);
+```
+
+'duration,' と '%' の間に空白を入れてはならないことに注意してください。
+
+あなたが使用しているロケールで利用可能なオプションのリストについては、[http://intl.rmcreative.ru/](http://intl.rmcreative.ru/) の "Numbering schemas, Duration" を参照してください。
+
+> Note|訳注: このソースメッセージを 'あなたはこのサイトに既に{n, duration}の間滞在しています' と翻訳した場合の出力結果は、'あなたはこのサイトに既に47の間滞在しています' となります。
+> これも、プレースホルダのスタイルも含めて全体を翻訳し直す方が良いでしょう。
+> どうも、ICU ライブラリは、ja_JP の数値関連の書式指定においては、割と貧弱な実装にとどまっている印象です。
 
 
 #### 複数形 <span id="plural"></span>
@@ -334,28 +387,50 @@ Yii は、さまざまな形式の複数形語形変化に対応したメッセ�
 語形変化の規則を直接に処理する代りに、特定の状況における語形変化した言葉の翻訳を提供するだけで十分です。
 
 ```php
-// $n = 0 の場合の出力例 : "There are no cats!"
-// $n = 1 の場合の出力例 : "There is one cat!"
-// $n = 42 の場合の出力例 : "There are 42 cats!"
+// $n = 0 の場合の出力: "There are no cats!"
+// $n = 1 の場合の出力: "There is one cat!"
+// $n = 42 の場合の出: "There are 42 cats!"
 echo \Yii::t('app', 'There {n, plural, =0{are no cats} =1{is one cat} other{are # cats}}!', ['n' => $n]);
 ```
 
-上記の複数形規則の引数において、`=0` はぴったりゼロ、`=1` はぴったり 1、そして `other` はそれ以外の数を表します。
-`#` は `n` の値によって置き換えられます。
+上記の複数形規則の引数において、`=` はぴったりその値であることを意味します。
+従って、`=0` はぴったりゼロ、`=1` はぴったり 1 を表します。
+`other` はそれ以外の数を表します。
+`#` は ターゲット言語に従ってフォーマットされた `n` の値によって置き換えられます。
 
 複数形の規則が非常に複雑な言語もあります。
-例えば、次はロシア語の例では、`=1` が `n = 1` にぴったりと一致するのに対して、`one` が `21` や `101` などに一致します。
+例えば、次のロシア語の例では、`=1` が `n = 1` にぴったりと一致するのに対して、`one` が `21` や `101` などに一致します。
 
 ```
 Здесь {n, plural, =0{котов нет} =1{есть один кот} one{# кот} few{# кота} many{# котов} other{# кота}}!
 ```
 
-注意して欲しいのは、上記のメッセージは主として翻訳メッセージとして使用される、という点です。
-アプリケーションの [[yii\base\Application::$sourceLanguage|ソース言語]] を `ru-RU` に設定しない限り、オリジナルのメッセージには使用されません。
+これら `other`、`few`、`many` などの特別な引数の名前は言語によって異なります。
+特定のロケールに対してどんな引数を指定すべきかを学ぶためには、[http://intl.rmcreative.ru/](http://intl.rmcreative.ru/) の "Plural Rules, Cardinal" を参照してください。
+あるいは、その代りに、[unicode.org の規則のリファレンス](http://unicode.org/repos/cldr-tmp/trunk/diff/supplemental/language_plural_rules.html) を参照することも出来ます。
 
-オリジナルのメッセージに対する翻訳が見つからない場合は、[[yii\base\Application::$sourceLanguage|ソース言語]] の複数形規則がオリジナルのメッセージに対して適用されます。
 
-特定の言語について、どのような語形変化を指定すべきかを学習するためには、[unicode.org にある規則のリファレンス](http://unicode.org/repos/cldr-tmp/trunk/diff/supplemental/language_plural_rules.html) を参照してください。
+> Note|注意: 上記のロシア語のメッセージのサンプルは、主として翻訳メッセージとして使用されるものです。
+> アプリケーションの [[yii\base\Application::$sourceLanguage|ソース言語]] を `ru-RU` にしてロシア語から他の言語に翻訳するという設定にしない限り、オリジナルのメッセージとしては使用されることはありません。
+>
+> `Yii::t()` の呼び出しにおいて、オリジナルのメッセージに対する翻訳が見つからない場合は、[[yii\base\Application::$sourceLanguage|ソース言語]] の複数形規則がオリジナルのメッセージに対して適用されます。
+
+文字列が以下のようなものである場合のために `offset` というパラメータがあります。
+ 
+```php
+$likeCount = 2;
+echo Yii::t('app', 'You {likeCount, plural,
+    offset: 1
+    =0{did not like this}
+    =1{liked this}
+    one{and one other person liked this}
+    other{and # others liked this}
+}', [
+    'likeCount' => $likeCount
+]);
+
+// 出力: 'You and one other person liked this'
+```
 
 > Note|訳注: 上記のソースメッセージの日本語翻訳は以下のようなものになります。
 >
@@ -364,12 +439,35 @@ echo \Yii::t('app', 'There {n, plural, =0{are no cats} =1{is one cat} other{are 
 > 日本語では単数形と複数形を区別しませんので、たいていの場合、`=0` と `other` を指定するだけで事足ります。
 > 横着をして、`{n, plural, ...}` を `{n, number}` に置き換えても、多分、大きな問題は生じないでしょう。
 
-#### 選択肢 <span id="selection"></span>
 
-パラメータの型として `select` を使うと、パラメータ値に基づいて表現を選択することが出来ます。例えば、
+#### 序数選択肢 <span id="ordinal-selection">
+
+パラメータのタイプとして `selectordinal` を使うと、翻訳先ロケールの言語規則に基づいて序数のための文字列を選択することが出来ます。
 
 ```php
-// 出力例 : "Snoopy is a dog and it loves Yii!"
+$n = 3;
+echo Yii::t('app', 'You are {n, selectordinal, one{#st} two{#nd} few{#rd} other{#th}} visitor', ['n' => $n]);
+// 英語の出力
+// You are 3rd visitor
+
+// ロシア語の翻訳
+'You are {n, selectordinal, one{#st} two{#nd} few{#rd} other{#th}} visitor' => 'Вы {n, selectordinal, other{#-й}} посетитель',
+
+// ロシア語の出力
+// Вы 3-й посетитель
+```
+
+フォーマットは複数形で使われるものと非常に近いものです。
+特定のロケールに対してどんな引数を指定すべきかを学ぶためには、[http://intl.rmcreative.ru/](http://intl.rmcreative.ru/) の "Plural Rules, Ordinal" を参照してください。
+あるいは、その代りに、[unicode.org の規則のリファレンス](http://unicode.org/repos/cldr-tmp/trunk/diff/supplemental/language_plural_rules.html) を参照することも出来ます。
+
+
+#### 選択肢 <span id="selection"></span>
+
+パラメータのタイプとして `select` を使うと、パラメータの値に基づいて表現を選択することが出来ます。例えば、
+
+```php
+// 出力: "Snoopy is a dog and it loves Yii!"
 echo \Yii::t('app', '{name} is a {gender} and {gender, select, female{she} male{he} other{it}} loves Yii!', [
     'name' => 'Snoopy',
     'gender' => 'dog',
@@ -379,9 +477,9 @@ echo \Yii::t('app', '{name} is a {gender} and {gender, select, female{she} male{
 上記の式の中で、`female` と `male` が `gender` が取り得る値であり、`other` がそれらに一致しない値を処理します。
 それぞれの取り得る値の後には、波括弧で囲んで対応する表現を指定します。
 
-> Note|訳注: 日本語翻訳例: '{name} は {gender} であり、{gender, select, female{彼女} male{彼} other{それ}}は Yii を愛しています。'
+> Note|訳注: 日本語翻訳: '{name} は {gender} であり、{gender, select, female{彼女} male{彼} other{それ}}は Yii を愛しています。'
 >
-> 日本語出力例: 'Snoopy は dog であり、それは Yii を愛しています。'
+> 日本語出力: 'Snoopy は dog であり、それは Yii を愛しています。'
 
 ### デフォルトの翻訳を指定する <span id="default-translation"></span>
 

@@ -156,7 +156,7 @@ class DbMessageSource extends MessageSource
             ->params([':category' => $category, ':language' => $language]);
 
         $fallbackLanguage = substr($language, 0, 2);
-        if ($fallbackLanguage != $language) {
+        if ($fallbackLanguage !== $language) {
             $fallbackQuery = new Query();
             $fallbackQuery->select(['t1.message message', 't2.translation translation'])
                 ->from(["$this->sourceMessageTable t1", "$this->messageTable t2"])

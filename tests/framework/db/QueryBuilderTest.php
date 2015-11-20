@@ -505,6 +505,27 @@ class QueryBuilderTest extends DatabaseTestCase
         $this->assertEmpty($params);
     }
 
+    public function testSelectExpression()
+    {
+        $query = (new Query())
+            ->select(new Expression("1 AS ab"))
+            ->from('tablename');
+        list ($sql, $params) = $this->getQueryBuilder()->build($query);
+        $expected = $this->replaceQuotes("SELECT 1 AS ab FROM `tablename`");
+        $this->assertEquals($expected, $sql);
+        $this->assertEmpty($params);
+
+        $query = (new Query())
+            ->select(new Expression("1 AS ab"))
+            ->addSelect(new Expression("2 AS cd"))
+            ->addSelect(['ef' => new Expression("3")])
+            ->from('tablename');
+        list ($sql, $params) = $this->getQueryBuilder()->build($query);
+        $expected = $this->replaceQuotes("SELECT 1 AS ab, 2 AS cd, 3 AS `ef` FROM `tablename`");
+        $this->assertEquals($expected, $sql);
+        $this->assertEmpty($params);
+    }
+
     public function testCompositeInCondition()
     {
         $condition = [
@@ -516,5 +537,38 @@ class QueryBuilderTest extends DatabaseTestCase
             ],
         ];
         (new Query())->from('customer')->where($condition)->all($this->getConnection());
+    }
+
+    public function testFromSubquery()
+    {
+        // query subquery
+        $subquery = (new Query)->from('user')->where('account_id = accounts.id');
+        $query = (new Query)->from(['activeusers' => $subquery]);
+        // SELECT * FROM (SELECT * FROM `user` WHERE `active` = 1) `activeusers`;
+        list ($sql, $params) = $this->getQueryBuilder()->build($query);
+        $expected = $this->replaceQuotes('SELECT * FROM (SELECT * FROM `user` WHERE account_id = accounts.id) `activeusers`');
+        $this->assertEquals($expected, $sql);
+        $this->assertEmpty($params);
+
+        // query subquery with params
+        $subquery = (new Query)->from('user')->where('account_id = :id', ['id' => 1]);
+        $query = (new Query)->from(['activeusers' => $subquery])->where('abc = :abc', ['abc' => 'abc']);
+        // SELECT * FROM (SELECT * FROM `user` WHERE `active` = 1) `activeusers`;
+        list ($sql, $params) = $this->getQueryBuilder()->build($query);
+        $expected = $this->replaceQuotes('SELECT * FROM (SELECT * FROM `user` WHERE account_id = :id) `activeusers` WHERE abc = :abc');
+        $this->assertEquals($expected, $sql);
+        $this->assertEquals([
+            'id' => 1,
+            'abc' => 'abc',
+        ],$params);
+
+        // simple subquery
+        $subquery = "(SELECT * FROM user WHERE account_id = accounts.id)";
+        $query = (new Query)->from(['activeusers' => $subquery]);
+        // SELECT * FROM (SELECT * FROM `user` WHERE `active` = 1) `activeusers`;
+        list ($sql, $params) = $this->getQueryBuilder()->build($query);
+        $expected = $this->replaceQuotes('SELECT * FROM (SELECT * FROM user WHERE account_id = accounts.id) `activeusers`');
+        $this->assertEquals($expected, $sql);
+        $this->assertEmpty($params);
     }
 }

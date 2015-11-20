@@ -66,7 +66,7 @@ Como o Yii fornece muitas características excelentes, algumas vezes você pode 
 
 Se o sistema em questão utilizar o Composer para gerenciar suas dependências, você pode simplesmente executar o seguinte comando para instalar o Yii:
 
-   composer global require "fxp/composer-asset-plugin:~1.0.3"
+   composer global require "fxp/composer-asset-plugin:~1.1.0"
    composer require yiisoft/yii2
    composer install
 

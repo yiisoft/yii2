@@ -139,7 +139,7 @@ class DbSession extends MultiFieldSession
         $query->from($this->sessionTable)
             ->where('[[expire]]>:expire AND [[id]]=:id', [':expire' => time(), ':id' => $id]);
 
-        if (isset($this->readCallback)) {
+        if ($this->readCallback !== null) {
             $fields = $query->one($this->db);
             return $fields === false ? '' : $this->extractData($fields);
         }

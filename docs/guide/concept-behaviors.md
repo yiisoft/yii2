@@ -46,7 +46,7 @@ The above code defines the behavior class `app\components\MyBehavior`, with two 
 `prop1` and `prop2`--and one method `foo()`. Note that property `prop2`
 is defined via the getter `getProp2()` and the setter `setProp2()`. This is the case because [[yii\base\Behavior]] extends [[yii\base\Object]] and therefore supports defining [properties](concept-properties.md) via getters and setters.
 
-Because this class is a behavior, when it is attached to a component, that component will then also have the the `prop1` and `prop2` properties and the `foo()` method.
+Because this class is a behavior, when it is attached to a component, that component will then also have the `prop1` and `prop2` properties and the `foo()` method.
 
 > Tip: Within a behavior, you can access the component that the behavior is attached to through the [[yii\base\Behavior::owner]] property.
 
@@ -250,7 +250,8 @@ Using `TimestampBehavior` <span id="using-timestamp-behavior"></span>
 -------------------------
 
 To wrap up, let's take a look at [[yii\behaviors\TimestampBehavior]]. This behavior supports automatically
-updating the timestamp attributes of an [[yii\db\ActiveRecord|Active Record]] model anytime the model is saved (e.g., on insert or update).
+updating the timestamp attributes of an [[yii\db\ActiveRecord|Active Record]] model anytime the model is saved via
+`insert()`, `update()` or `save()` method.
 
 First, attach this behavior to the [[yii\db\ActiveRecord|Active Record]] class that you plan to use:
 
@@ -272,6 +273,8 @@ class User extends ActiveRecord
                 'attributes' => [
                     ActiveRecord::EVENT_BEFORE_INSERT => ['created_at', 'updated_at'],
                     ActiveRecord::EVENT_BEFORE_UPDATE => ['updated_at'],
+                    // if you're using datetime instead of UNIX timestamp:
+                    // 'value' => new Expression('NOW()'),
                 ],
             ],
         ];
@@ -281,12 +284,12 @@ class User extends ActiveRecord
 
 The behavior configuration above specifies that when the record is being:
 
-* inserted, the behavior should assign the current timestamp to
+* inserted, the behavior should assign the current UNIX timestamp to
   the `created_at` and `updated_at` attributes
-* updated, the behavior should assign the current timestamp to the `updated_at` attribute
+* updated, the behavior should assign the current UNIX timestamp to the `updated_at` attribute
 
 With that code in place, if you have a `User` object and try to save it, you will find its `created_at` and `updated_at` are automatically
-filled with the current timestamp:
+filled with the current UNIX timestamp:
 
 ```php
 $user = new User;

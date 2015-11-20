@@ -593,9 +593,9 @@ abstract class Schema extends Object
         ];
         if (isset($typeMap[$column->type])) {
             if ($column->type === 'bigint') {
-                return PHP_INT_SIZE == 8 && !$column->unsigned ? 'integer' : 'string';
+                return PHP_INT_SIZE === 8 && !$column->unsigned ? 'integer' : 'string';
             } elseif ($column->type === 'integer') {
-                return PHP_INT_SIZE == 4 && $column->unsigned ? 'string' : 'integer';
+                return PHP_INT_SIZE === 4 && $column->unsigned ? 'string' : 'integer';
             } else {
                 return $typeMap[$column->type];
             }
