@@ -347,24 +347,51 @@ SQL;
     }
 
 
+    public function testDropTable()
+    {
+        $db = $this->getConnection();
+
+        $tableName = 'type';
+        $this->assertNotNull($db->getSchema()->getTableSchema($tableName));
+        $db->createCommand()->dropTable($tableName)->execute();
+        $this->assertNull($db->getSchema()->getTableSchema($tableName));
+    }
+
+    public function testTruncateTable()
+    {
+        $db = $this->getConnection();
+
+        $rows = $db->createCommand('SELECT * FROM {{animal}}')->queryAll();
+        $this->assertEquals(2, count($rows));
+        $db->createCommand()->truncateTable('animal')->execute();
+        $rows = $db->createCommand('SELECT * FROM {{animal}}')->queryAll();
+        $this->assertEquals(0, count($rows));
+    }
+
+    public function testRenameTable()
+    {
+        $db = $this->getConnection();
+
+        $fromTableName = 'type';
+        $toTableName = 'new_type';
+
+        $db->createCommand('DROP TABLE IF EXISTS {{' . $toTableName . '}};')->execute();
+
+        $this->assertNotNull($db->getSchema()->getTableSchema($fromTableName));
+        $this->assertNull($db->getSchema()->getTableSchema($toTableName));
+
+        $db->createCommand()->renameTable($fromTableName, $toTableName)->execute();
+
+        $this->assertNull($db->getSchema()->getTableSchema($fromTableName, true));
+        $this->assertNotNull($db->getSchema()->getTableSchema($toTableName, true));
+    }
+
     /*
     public function testUpdate()
     {
     }
 
     public function testDelete()
-    {
-    }
-
-    public function testRenameTable()
-    {
-    }
-
-    public function testDropTable()
-    {
-    }
-
-    public function testTruncateTable()
     {
     }
 

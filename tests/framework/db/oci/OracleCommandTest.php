@@ -75,4 +75,27 @@ class OracleCommandTest extends CommandTest
             ['id' => 2, 'bar' => 'hello'],
         ], $records);
     }
+
+    public function testRenameTable()
+    {
+        $db = $this->getConnection();
+
+        $fromTableName = 'type';
+        $toTableName = 'new_type';
+
+        // on the first run the 'new_type' table does not exist
+        try {
+            $db->createCommand()->dropTable($toTableName)->execute();
+        } catch (\Exception $ex) {
+            // 'new_type' table does not exist
+        }
+
+        $this->assertNotNull($db->getSchema()->getTableSchema($fromTableName));
+        $this->assertNull($db->getSchema()->getTableSchema($toTableName));
+
+        $db->createCommand()->renameTable($fromTableName, $toTableName)->execute();
+
+        $this->assertNull($db->getSchema()->getTableSchema($fromTableName, true));
+        $this->assertNotNull($db->getSchema()->getTableSchema($toTableName, true));
+    }
 }
