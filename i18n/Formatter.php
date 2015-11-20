@@ -1188,7 +1188,7 @@ class Formatter extends Component
     private function formatSizeNumber($value, $decimals, $options, $textOptions)
     {
         if (is_string($value) && is_numeric($value)) {
-            $value = (int) $value;
+            $value = (float) $value;
         }
         if (!is_numeric($value)) {
             throw new InvalidParamException("'$value' is not a numeric value.");
