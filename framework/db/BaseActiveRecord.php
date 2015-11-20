@@ -236,10 +236,9 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
      */
     public function __get($name)
     {
-        if (isset($this->_attributes[$name]) || array_key_exists($name, $this->_attributes)) {
-            return $this->_attributes[$name];
-        } elseif ($this->hasAttribute($name)) {
-            return null;
+        // getAttribute has better performance than hasAttribute for attributes that are set.
+        if ((($value = $this->getAttribute($name)) !== null) || $this->hasAttribute($name)) {
+            return $value;
         } else {
             if (isset($this->_related[$name]) || array_key_exists($name, $this->_related)) {
                 return $this->_related[$name];
@@ -261,9 +260,7 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
      */
     public function __set($name, $value)
     {
-        if ($this->hasAttribute($name)) {
-            $this->_attributes[$name] = $value;
-        } else {
+        if (!$this->setAttributeInternal($name, $value)) {
             parent::__set($name, $value);
         }
     }
@@ -291,12 +288,12 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
      */
     public function __unset($name)
     {
-        if ($this->hasAttribute($name)) {
-            unset($this->_attributes[$name]);
-        } elseif (array_key_exists($name, $this->_related)) {
-            unset($this->_related[$name]);
-        } elseif ($this->getRelation($name, false) === null) {
-            parent::__unset($name);
+        if (!$this->setAttributeInternal($name, null)) {
+            if (array_key_exists($name, $this->_related)) {
+                unset($this->_related[$name]);
+            } elseif ($this->getRelation($name, false) === null) {
+                parent::__unset($name);
+            }
         }
     }
 
@@ -338,6 +335,7 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
         $query->primaryModel = $this;
         $query->link = $link;
         $query->multiple = false;
+
         return $query;
     }
 
@@ -379,6 +377,7 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
         $query->primaryModel = $this;
         $query->link = $link;
         $query->multiple = true;
+
         return $query;
     }
 
@@ -419,7 +418,11 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
      */
     public function hasAttribute($name)
     {
-        return isset($this->_attributes[$name]) || in_array($name, $this->attributes());
+        if (!(isset($this->_attributes[$name]) || array_key_exists($name, $this->_attributes))) {
+            return in_array($name, $this->attributes());
+        }
+
+        return true;
     }
 
     /**
@@ -439,17 +442,34 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
      * Sets the named attribute value.
      * @param string $name the attribute name
      * @param mixed $value the attribute value.
-     * @throws InvalidParamException if the named attribute does not exist.
+     * @since 2.0.7
+     * @return bool True if the attribute was assigned false otherwise.
+     */
+    protected function setAttributeInternal($name, $value, $check = true)
+    {
+        if (!$check || $this->hasAttribute($name)) {
+            $this->_attributes[$name] = $value;
+
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    /**
+     * Sets the named attribute value.
+     * @param string $name the attribute name
+     * @param mixed $value the attribute value.
+     * @param boolean $throw Set to false to not throw an exception (used internally).
      * @see hasAttribute()
      */
     public function setAttribute($name, $value)
     {
-        if ($this->hasAttribute($name)) {
-            $this->_attributes[$name] = $value;
-        } else {
+        if (!$this->setAttributeInternal($name, $value)) {
             throw new InvalidParamException(get_class($this) . ' has no attribute named "' . $name . '".');
         }
     }
+
 
     /**
      * Returns the old attribute values.
@@ -522,14 +542,14 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
      */
     public function isAttributeChanged($name, $identical = true)
     {
-        if (isset($this->_attributes[$name], $this->_oldAttributes[$name])) {
+        if (isset($this->_oldAttributes[$name]) && (($value = $this->getAttribute($name)) !== null)) {
             if ($identical) {
-                return $this->_attributes[$name] !== $this->_oldAttributes[$name];
+                return $value !== $this->_oldAttributes[$name];
             } else {
-                return $this->_attributes[$name] != $this->_oldAttributes[$name];
+                return $value != $this->_oldAttributes[$name];
             }
         } else {
-            return isset($this->_attributes[$name]) || isset($this->_oldAttributes[$name]);
+            return ($this->getAttribute($name) !== null) || isset($this->_oldAttributes[$name]);
         }
     }
 
@@ -547,18 +567,17 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
         if ($names === null) {
             $names = $this->attributes();
         }
-        $names = array_flip($names);
         $attributes = [];
         if ($this->_oldAttributes === null) {
-            foreach ($this->_attributes as $name => $value) {
-                if (isset($names[$name])) {
+            foreach($names as $name) {
+                if ($this->hasAttribute($name) && ($value = $this->getAttribute($name)) !== null) {
                     $attributes[$name] = $value;
                 }
             }
         } else {
-            foreach ($this->_attributes as $name => $value) {
-                if (isset($names[$name]) && (!array_key_exists($name, $this->_oldAttributes) || $value !== $this->_oldAttributes[$name])) {
-                    $attributes[$name] = $value;
+            foreach($names as $name) {
+                if ($this->isAttributeChanged($name, true)) {
+                    $attributes[$name] = $this->getAttribute($name);
                 }
             }
         }
@@ -691,7 +710,7 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
         $rows = $this->updateAll($values, $this->getOldPrimaryKey(true));
 
         foreach ($values as $name => $value) {
-            $this->_oldAttributes[$name] = $this->_attributes[$name];
+            $this->_oldAttributes[$name] = $this->getAttribute($name);
         }
 
         return $rows;
@@ -762,12 +781,11 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
     {
         if ($this->updateAllCounters($counters, $this->getOldPrimaryKey(true)) > 0) {
             foreach ($counters as $name => $value) {
-                if (!isset($this->_attributes[$name])) {
-                    $this->_attributes[$name] = $value;
-                } else {
-                    $this->_attributes[$name] += $value;
+                if (($current = $this->getAttribute($name)) !== null) {
+                    $value += $current;
                 }
-                $this->_oldAttributes[$name] = $this->_attributes[$name];
+                $this->setAttributeInternal($name, $value, false);
+                $this->_oldAttributes[$name] = $current;
             }
             return true;
         } else {
@@ -962,7 +980,7 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
             return false;
         }
         foreach ($this->attributes() as $name) {
-            $this->_attributes[$name] = isset($record->_attributes[$name]) ? $record->_attributes[$name] : null;
+            $this->setAttributeInternal($name, $record->getAttribute($name), false);
         }
         $this->_oldAttributes = $this->_attributes;
         $this->_related = [];
@@ -1002,11 +1020,11 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
     {
         $keys = $this->primaryKey();
         if (!$asArray && count($keys) === 1) {
-            return isset($this->_attributes[$keys[0]]) ? $this->_attributes[$keys[0]] : null;
+            return $this->getAttribute($keys[0]);
         } else {
             $values = [];
             foreach ($keys as $name) {
-                $values[$name] = isset($this->_attributes[$name]) ? $this->_attributes[$name] : null;
+                $values[$name] = $this->getAttribute($name);
             }
 
             return $values;
@@ -1066,7 +1084,7 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
         $columns = array_flip($record->attributes());
         foreach ($row as $name => $value) {
             if (isset($columns[$name])) {
-                $record->_attributes[$name] = $value;
+                $record->setAttributeInternal($name, $value, false);
             } elseif ($record->canSetProperty($name)) {
                 $record->$name = $value;
             }
