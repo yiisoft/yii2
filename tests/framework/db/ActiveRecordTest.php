@@ -833,4 +833,15 @@ class ActiveRecordTest extends DatabaseTestCase
         $trueBit = BitValues::findOne(2);
         $this->assertEquals(true, $trueBit->val);
     }
+
+    /**
+     * Test if dirty attributes are tracked properly.
+     * https://github.com/yiisoft/yii2/issues/9656
+     */
+    public function testDirty() {
+        $model = new Customer();
+        $this->assertEmpty($model->getDirtyAttributes());
+        $model->email = 'value';
+        $this->assertEquals($model->getDirtyAttributes(), ['email' => 'value']);
+    }
 }
