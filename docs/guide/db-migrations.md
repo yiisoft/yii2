@@ -291,7 +291,7 @@ class m150811_220037_drop_post extends Migration
 }
 ```
 
-If the migration name is of the form "add_xxx_from_yyy" or "remove_xxx_from_yyy" then a migration containing the appropriate addColumn and dropColumn statements will be created.
+If the migration name is of the form "add_xxx_from_yyy" or "drop_xxx_from_yyy" then a migration containing the appropriate addColumn and dropColumn statements will be created.
 
 ```php
 yii migrate/create add_position_from_post --fields=position:integer
@@ -317,7 +317,7 @@ class m150811_220037_add_position_from_post extends Migration
 Similarly, you can generate a migration to remove a column from the command line:
 
 ```php
-yii migrate/create remove_position_from_post --fields=position:integer
+yii migrate/create drop_position_from_post --fields=position:integer
 ```
 
 generates
@@ -327,7 +327,7 @@ class m150811_220037_remove_position_from_post extends Migration
 {
     public function up()
     {
-        this->removeColumn('post', 'position');
+        this->dropColumn('post', 'position');
     }
 
     public function down()

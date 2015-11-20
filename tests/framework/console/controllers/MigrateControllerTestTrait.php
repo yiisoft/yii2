@@ -361,7 +361,7 @@ CODE;
         $this->assertEqualsWithoutLE($code, file_get_contents($files[0]));
     }
 
-    public function testGenerateAddMigration()
+    public function testGenerateAddColumnMigration()
     {
         $migrationName = 'add_columns_from_test';
         $class = 'm' . gmdate('ymd_His') . '_' . $migrationName;
@@ -401,9 +401,9 @@ CODE;
         $this->assertEqualsWithoutLE($code, file_get_contents($files[0]));
     }
 
-    public function testGenerateRemoveMigration()
+    public function testGenerateDropColumnMigration()
     {
-        $migrationName = 'remove_columns_from_test';
+        $migrationName = 'drop_columns_from_test';
         $class = 'm' . gmdate('ymd_His') . '_' . $migrationName;
         $this->runMigrateControllerAction('create', [
             $migrationName,

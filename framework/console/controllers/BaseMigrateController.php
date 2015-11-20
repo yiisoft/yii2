@@ -501,6 +501,18 @@ abstract class BaseMigrateController extends Controller
                     'field_first' => mb_strtolower($matches[1]),
                     'field_second' => mb_strtolower($matches[2]),
                 ]);
+            } elseif (preg_match('/^add_(.+)from_(.+)$/', $name, $matches)) {
+                $content = $this->renderFile(Yii::getAlias($this->generatorTemplateFile['add']), [
+                    'className' => $className,
+                    'table' => mb_strtolower($matches[2]),
+                    'fields' => $this->fields
+                ]);
+            } elseif (preg_match('/^drop_(.+)from_(.+)$/', $name, $matches)) {
+                $content = $this->renderFile(Yii::getAlias($this->generatorTemplateFile['remove']), [
+                    'className' => $className,
+                    'table' => mb_strtolower($matches[2]),
+                    'fields' => $this->fields
+                ]);
             } elseif (preg_match('/^create_(.+)$/', $name, $matches)) {
                 $this->checkPrimaryKey();
                 $content = $this->renderFile(Yii::getAlias($this->generatorTemplateFile['create']), [
@@ -512,18 +524,6 @@ abstract class BaseMigrateController extends Controller
                 $content = $this->renderFile(Yii::getAlias($this->generatorTemplateFile['drop']), [
                     'className' => $className,
                     'table' => mb_strtolower($matches[1]),
-                    'fields' => $this->fields
-                ]);
-            } elseif (preg_match('/^add_(.+)from_(.+)$/', $name, $matches)) {
-                $content = $this->renderFile(Yii::getAlias($this->generatorTemplateFile['add']), [
-                    'className' => $className,
-                    'table' => mb_strtolower($matches[2]),
-                    'fields' => $this->fields
-                ]);
-            } elseif (preg_match('/^remove_(.+)from_(.+)$/', $name, $matches)) {
-                $content = $this->renderFile(Yii::getAlias($this->generatorTemplateFile['remove']), [
-                    'className' => $className,
-                    'table' => mb_strtolower($matches[2]),
                     'fields' => $this->fields
                 ]);
             } else {
