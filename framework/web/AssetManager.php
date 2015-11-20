@@ -299,8 +299,8 @@ class AssetManager extends Component
         if (($actualAsset = $this->resolveAsset($bundle, $asset)) !== false) {
             if (strncmp($actualAsset, '@web/', 5) === 0) {
                 $asset = substr($actualAsset, 5);
-                $basePath = Yii::getAlias("@webroot");
-                $baseUrl = Yii::getAlias("@web");
+                $basePath = Yii::getAlias('@webroot');
+                $baseUrl = Yii::getAlias('@web');
             } else {
                 $asset = Yii::getAlias($actualAsset);
                 $basePath = $this->basePath;
@@ -351,9 +351,9 @@ class AssetManager extends Component
             $asset = $bundle->sourcePath . '/' . $asset;
         }
 
-        $n = mb_strlen($asset);
+        $n = mb_strlen($asset, Yii::$app->charset);
         foreach ($this->assetMap as $from => $to) {
-            $n2 = mb_strlen($from);
+            $n2 = mb_strlen($from, Yii::$app->charset);
             if ($n2 <= $n && substr_compare($asset, $from, $n - $n2, $n2) === 0) {
                 return $to;
             }

@@ -83,7 +83,7 @@ return [
 Створення Active Record <span id="creating-active-record"></span>
 -----------------------
 
-Для презентування та отримання даних з таблиці `country` створіть похідний від [Active Record](db-active-record.md)
+Для репрезентації та отримання даних з таблиці `country` створіть похідний від [Active Record](db-active-record.md)
 клас з іменем `Country`, і збережіть його в файл `models/Country.php`.
 
 ```php
@@ -251,7 +251,7 @@ http://hostname/index.php?r=country/index&page=2
 В цьому розділі ви дізналися, як працювати з базою даних. Ви також дізналися, як вибирати і відображати дані на сторінках 
 за допомогою [[yii\data\Pagination]] і [[yii\widgets\LinkPager]].
 
-У наступному розділі ви дізнаєтеся, як використовувати потужний інструмент генерації коду, що називається [Gii](https://github.com/yiisoft/yii2-gii/blob/master/docs/guide-uk/README.md), 
+У наступному розділі ви дізнаєтеся, як використовувати потужний інструмент генерування коду, що називається [Gii](https://github.com/yiisoft/yii2-gii/blob/master/docs/guide-uk/README.md), 
 який допоможе вам швидко створювати деякі часто необхідні функції, такі як Create-Read-Update-Delete (CRUD) 
 операції для роботи з даними в таблицях баз даних. Насправді, код, який ви щойно написали,
 в Yii можливо автоматично згенерувати за допомогою інструменту Gii.

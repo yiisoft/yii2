@@ -37,7 +37,7 @@
                 <pre><?php
                     // fill empty lines with a whitespace to avoid rendering problems in opera
                     for ($i = $begin; $i <= $end; ++$i) {
-                        echo (trim($lines[$i]) == '') ? " \n" : $handler->htmlEncode($lines[$i]);
+                        echo (trim($lines[$i]) === '') ? " \n" : $handler->htmlEncode($lines[$i]);
                     }
                 ?></pre>
             </div>

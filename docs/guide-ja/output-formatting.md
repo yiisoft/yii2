@@ -40,6 +40,11 @@ echo Yii::$app->formatter->format('2014-01-01', 'date');
 echo Yii::$app->formatter->format(0.125, ['percent', 2]); 
 ```
 
+> Note|注意: フォーマッタコンポーネントは、エンドユーザへの表示用に値をフォーマットすることを目的に設計されています。
+> ユーザの入力を機械が読み取れる形式にフォーマットしたい場合、また、日付を機械が読み取れる形式にフォーマットしたいだけ、という場合には、
+> フォーマッタは適切なツールではありません。
+> 日付と数値についてユーザ入力を変換するためには、それぞれ、[[yii\validators\DateValidator]] と [[yii\validators\NumberValidator]]
+> を使うことが出来ます。機械が読み取れる日付と時刻のフォーマットの単純な相互変換には、PHP の [date()](http://php.net/manual/ja/function.date.php) 関数で十分です。
 
 ## フォーマッタを構成する <span id="configuring-formater"></span>
 
@@ -72,6 +77,8 @@ return [
 - [[yii\i18n\Formatter::asDatetime()|datetime]] - 値は日付および時刻としてフォーマットされます。例えば `January 01, 2014 14:23`。
 - [[yii\i18n\Formatter::asTimestamp()|timestamp]] - 値は [unix タイムスタンプ](http://en.wikipedia.org/wiki/Unix_time) としてフォーマットされます。例えば `1412609982`。
 - [[yii\i18n\Formatter::asRelativeTime()|relativeTime]] - 値は、その日時と現在との間隔として、人間に分かりやすい言葉でフォーマットされます。例えば `1 hour ago`。
+- [[yii\i18n\Formatter::asDuration()|duration]] - 値は継続時間として、人間に分かりやすい言葉でフォーマットされます。例えば `1 day, 2 minutes`。
+
 
 [[yii\i18n\Formatter::asDate()|date]]、[[yii\i18n\Formatter::asTime()|time]]、[[yii\i18n\Formatter::asDatetime()|datetime]] メソッドに使われるデフォルトの日時書式は、フォーマッタの [[yii\i18n\Formatter::$dateFormat|$dateFormat]]、[[yii\i18n\Formatter::$timeFormat|$timeFormat]]、[[yii\i18n\Formatter::$datetimeFormat|$datetimeFormat]] を構成することで、グローバルにカスタマイズすることが出来ます。
 

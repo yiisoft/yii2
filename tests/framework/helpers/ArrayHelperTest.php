@@ -385,6 +385,13 @@ class ArrayHelperTest extends TestCase
         $this->assertEquals($expected, ArrayHelper::getValue($array, $key, $default));
     }
 
+    public function testGetValueObjects()
+    {
+        $object = new Post1();
+        $this->assertEquals(23, ArrayHelper::getValue($object, 'id'));
+        $this->assertEquals(null, ArrayHelper::getValue($object, 'nonExisting'));
+    }
+
     public function testIsAssociative()
     {
         $this->assertFalse(ArrayHelper::isAssociative('test'));
@@ -471,4 +478,37 @@ class ArrayHelperTest extends TestCase
             ]
         ], ArrayHelper::htmlDecode($array, false));
     }
+
+    public function testIn()
+    {
+
+        $this->assertTrue(ArrayHelper::in('a', new \ArrayObject(['a', 'b'])));
+        $this->assertTrue(ArrayHelper::in('a', ['a', 'b']));
+
+        $this->assertTrue(ArrayHelper::in('1', new \ArrayObject([1, 'b'])));
+        $this->assertTrue(ArrayHelper::in('1', [1, 'b']));
+
+        $this->assertFalse(ArrayHelper::in('1', new \ArrayObject([1, 'b']), true));
+        $this->assertFalse(ArrayHelper::in('1', [1, 'b'], true));
+
+        $this->assertTrue(ArrayHelper::in(['a'], new \ArrayObject([['a'], 'b'])));
+        $this->assertFalse(ArrayHelper::in('a', new \ArrayObject([['a'], 'b'])));
+        $this->assertFalse(ArrayHelper::in('a', [['a'], 'b']));
+    }
+
+    public function testSubset()
+    {
+        $this->assertTrue(ArrayHelper::subset(['a'], new \ArrayObject(['a', 'b'])));
+        $this->assertTrue(ArrayHelper::subset(new \ArrayObject(['a']), ['a', 'b']));
+
+        $this->assertTrue(ArrayHelper::subset([1], new \ArrayObject(['1', 'b'])));
+        $this->assertTrue(ArrayHelper::subset(new \ArrayObject([1]), ['1', 'b']));
+
+        $this->assertFalse(ArrayHelper::subset([1], new \ArrayObject(['1', 'b']), true));
+        $this->assertFalse(ArrayHelper::subset(new \ArrayObject([1]), ['1', 'b'], true));
+
+
+    }
+
+
 }

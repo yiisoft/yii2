@@ -129,7 +129,7 @@ class Query extends Component implements QueryInterface
      * This method is called by [[QueryBuilder]] when it starts to build SQL from a query object.
      * You may override this method to do some final preparation work when converting a query into a SQL statement.
      * @param QueryBuilder $builder
-     * @return Query a prepared query instance which will be used by [[QueryBuilder]] to build the SQL
+     * @return $this a prepared query instance which will be used by [[QueryBuilder]] to build the SQL
      */
     public function prepare($builder)
     {
@@ -397,11 +397,12 @@ class Query extends Component implements QueryInterface
 
     /**
      * Sets the SELECT part of the query.
-     * @param string|array $columns the columns to be selected.
+     * @param string|array|Expression $columns the columns to be selected.
      * Columns can be specified in either a string (e.g. "id, name") or an array (e.g. ['id', 'name']).
      * Columns can be prefixed with table names (e.g. "user.id") and/or contain column aliases (e.g. "user.id AS user_id").
      * The method will automatically quote the column names unless a column contains some parenthesis
-     * (which means the column contains a DB expression).
+     * (which means the column contains a DB expression). A DB expression may also be passed in form of
+     * an [[Expression]] object.
      *
      * Note that if you are selecting an expression like `CONCAT(first_name, ' ', last_name)`, you should
      * use an array to specify the columns. Otherwise, the expression may be incorrectly split into several parts.
@@ -418,7 +419,9 @@ class Query extends Component implements QueryInterface
      */
     public function select($columns, $option = null)
     {
-        if (!is_array($columns)) {
+        if ($columns instanceof Expression) {
+            $columns = [$columns];
+        } elseif (!is_array($columns)) {
             $columns = preg_split('/\s*,\s*/', trim($columns), -1, PREG_SPLIT_NO_EMPTY);
         }
         $this->select = $columns;
@@ -436,13 +439,16 @@ class Query extends Component implements QueryInterface
      * $query->addSelect(["*", "CONCAT(first_name, ' ', last_name) AS full_name"])->one();
      * ```
      *
-     * @param string|array $columns the columns to add to the select.
+     * @param string|array|Expression $columns the columns to add to the select. See [[select()]] for more
+     * details about the format of this parameter.
      * @return $this the query object itself
      * @see select()
      */
     public function addSelect($columns)
     {
-        if (!is_array($columns)) {
+        if ($columns instanceof Expression) {
+            $columns = [$columns];
+        } elseif (!is_array($columns)) {
             $columns = preg_split('/\s*,\s*/', trim($columns), -1, PREG_SPLIT_NO_EMPTY);
         }
         if ($this->select === null) {
@@ -477,6 +483,22 @@ class Query extends Component implements QueryInterface
      *
      * Use a Query object to represent a sub-query. In this case, the corresponding array key will be used
      * as the alias for the sub-query.
+     *
+     * Here are some examples:
+     *
+     * ```php
+     * // SELECT * FROM  `user` `u`, `profile`;
+     * $query = (new \yii\db\Query)->from(['u' => 'user', 'profile']);
+     *
+     * // SELECT * FROM (SELECT * FROM `user` WHERE `active` = 1) `activeusers`;
+     * $subquery = (new \yii\db\Query)->from('user')->where(['active' => true])
+     * $query = (new \yii\db\Query)->from(['activeusers' => $subquery]);
+     *
+     * // subquery can also be a string with plain SQL wrapped in parenthesis
+     * // SELECT * FROM (SELECT * FROM `user` WHERE `active` = 1) `activeusers`;
+     * $subquery = "(SELECT * FROM `user` WHERE `active` = 1)";
+     * $query = (new \yii\db\Query)->from(['activeusers' => $subquery]);
+     * ```
      *
      * @return $this the query object itself
      */
@@ -573,7 +595,7 @@ class Query extends Component implements QueryInterface
      * @param string|array $on the join condition that should appear in the ON part.
      * Please refer to [[where()]] on how to specify this parameter.
      * @param array $params the parameters (name => value) to be bound to the query.
-     * @return Query the query object itself
+     * @return $this the query object itself
      */
     public function join($type, $table, $on = '', $params = [])
     {
@@ -597,7 +619,7 @@ class Query extends Component implements QueryInterface
      * @param string|array $on the join condition that should appear in the ON part.
      * Please refer to [[where()]] on how to specify this parameter.
      * @param array $params the parameters (name => value) to be bound to the query.
-     * @return Query the query object itself
+     * @return $this the query object itself
      */
     public function innerJoin($table, $on = '', $params = [])
     {
@@ -621,7 +643,7 @@ class Query extends Component implements QueryInterface
      * @param string|array $on the join condition that should appear in the ON part.
      * Please refer to [[where()]] on how to specify this parameter.
      * @param array $params the parameters (name => value) to be bound to the query
-     * @return Query the query object itself
+     * @return $this the query object itself
      */
     public function leftJoin($table, $on = '', $params = [])
     {
@@ -645,7 +667,7 @@ class Query extends Component implements QueryInterface
      * @param string|array $on the join condition that should appear in the ON part.
      * Please refer to [[where()]] on how to specify this parameter.
      * @param array $params the parameters (name => value) to be bound to the query
-     * @return Query the query object itself
+     * @return $this the query object itself
      */
     public function rightJoin($table, $on = '', $params = [])
     {

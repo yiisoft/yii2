@@ -17,6 +17,19 @@
  * NOTE: this file must be saved in UTF-8 encoding.
  */
 return [
+    '{attribute} contains wrong subnet mask.' => '{attribute} sisältää väärän aliverkkopeitteen.',
+    '{attribute} is not in the allowed range.' => '{attribute} ei ole sallitulla alueella.',
+    '{attribute} must be a valid IP address.' => '{attribute} täytyy olla kelvollinen IP-osoite.',
+    '{attribute} must be an IP address with specified subnet.' => '{attribute} täytyy olla määritetyllä aliverkolla oleva IP-osoite.',
+    '{attribute} must not be a subnet.' => '{attribute} ei saa olla aliverkko.',
+    '{attribute} must not be an IPv4 address.' => '{attribute} ei saa olla IPv4-osoite.',
+    '{attribute} must not be an IPv6 address.' => '{attribute} ei saa olla IPv6-osoite.',
+    '{delta, plural, =1{1 day} other{# days}}' => '{delta, plural, =1{1 päivä} other{# päivää}}',
+    '{delta, plural, =1{1 hour} other{# hours}}' => '{delta, plural, =1{1 tunti} other{# tuntia}}',
+    '{delta, plural, =1{1 minute} other{# minutes}}' => '{delta, plural, =1{1 minuutti} other{# minuuttia}}',
+    '{delta, plural, =1{1 month} other{# months}}' => '{delta, plural, =1{1 kuukausi} other{# kuukautta}}',
+    '{delta, plural, =1{1 second} other{# seconds}}' => '{delta, plural, =1{1 sekunti} other{# sekuntia}}',
+    '{delta, plural, =1{1 year} other{# years}}' => '{delta, plural, =1{1 vuosi} other{# vuotta}}',
     '(not set)' => '(ei asetettu)',
     'An internal server error occurred.' => 'Sisäinen palvelinvirhe.',
     'Are you sure you want to delete this item?' => 'Haluatko varmasti poistaa tämän?',

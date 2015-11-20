@@ -512,7 +512,7 @@ in the life cycles.
 
 When creating a new Active Record instance via the `new` operator, the following life cycle will happen:
 
-1. class constructor;
+1. Class constructor.
 2. [[yii\db\ActiveRecord::init()|init()]]: triggers an [[yii\db\ActiveRecord::EVENT_INIT|EVENT_INIT]] event.
 
 
@@ -521,7 +521,7 @@ When creating a new Active Record instance via the `new` operator, the following
 When querying data through one of the [querying methods](#querying-data), each newly populated Active Record will
 undergo the following life cycle:
 
-1. class constructor.
+1. Class constructor.
 2. [[yii\db\ActiveRecord::init()|init()]]: triggers an [[yii\db\ActiveRecord::EVENT_INIT|EVENT_INIT]] event.
 3. [[yii\db\ActiveRecord::afterFind()|afterFind()]]: triggers an [[yii\db\ActiveRecord::EVENT_AFTER_FIND|EVENT_AFTER_FIND]] event.
 
@@ -541,7 +541,7 @@ life cycle will happen:
    an [[yii\db\ActiveRecord::EVENT_BEFORE_INSERT|EVENT_BEFORE_INSERT]] 
    or [[yii\db\ActiveRecord::EVENT_BEFORE_UPDATE|EVENT_BEFORE_UPDATE]] event. If the method returns false
    or [[yii\base\ModelEvent::isValid]] is false, the rest of the steps will be skipped.
-5. Performs the actual data insertion or updating;
+5. Performs the actual data insertion or updating.
 6. [[yii\db\ActiveRecord::afterSave()|afterSave()]]: triggers
    an [[yii\db\ActiveRecord::EVENT_AFTER_INSERT|EVENT_AFTER_INSERT]] 
    or [[yii\db\ActiveRecord::EVENT_AFTER_UPDATE|EVENT_AFTER_UPDATE]] event.
@@ -555,7 +555,7 @@ life cycle will happen:
 1. [[yii\db\ActiveRecord::beforeDelete()|beforeDelete()]]: triggers
    an [[yii\db\ActiveRecord::EVENT_BEFORE_DELETE|EVENT_BEFORE_DELETE]] event. If the method returns false
    or [[yii\base\ModelEvent::isValid]] is false, the rest of the steps will be skipped.
-2. perform the actual data deletion
+2. Performs the actual data deletion.
 3. [[yii\db\ActiveRecord::afterDelete()|afterDelete()]]: triggers
    an [[yii\db\ActiveRecord::EVENT_AFTER_DELETE|EVENT_AFTER_DELETE]] event.
 
@@ -1421,4 +1421,85 @@ $customers = Customer::find()
     ->joinWith('orders') // ensure table junction
     ->groupBy('{{customer}}.id') // group the result to ensure aggregation function works
     ->all();
+```
+
+A disadvantage of using this method would be that if the information isn't loaded on the SQL query it has to be calculated
+separately, which also means that newly saved records won't contain the information from any extra field.
+
+```php
+$room = new Room();
+$room->length = 100;
+$room->width = 50;
+$room->height = 2;
+
+$room->volume; // this value will be null since it was not declared yet.
+```
+
+Using the [[yii\db\BaseActiveRecord::__get()|__get()]] and [[yii\db\BaseActiveRecord::__set()|__set()]] magic methods
+we can emulate the behavior of a property
+
+```php
+class Room extends \yii\db\ActiveRecord
+{
+    private $_volume;
+    
+    public function setVolume($volume)
+    {
+        $this->_volume = (float) $volume;
+    }
+    
+    public function getVolume()
+    {
+        if (empty($this->length) || empty($this->width) || empty($this->height)) {
+            return null;
+        }
+        
+        if ($this->_volume === null) {
+            $this->setVolume(
+                $this->length * $this->width * $this->height
+            );
+        }
+        
+        return $this->_volume;
+    }
+
+    // ...
+}
+```
+
+When the select query doesn't provide the volume, the model will be able to calculate it automatically using
+the attributes of the model.
+
+Similary it can be used on extra fields depending on relational data
+
+```php
+class Customer extends \yii\db\ActiveRecord
+{
+    private $_ordersCount;
+    
+    public function setOrdersCount($count)
+    {
+        $this->_ordersCount = (int) $count;
+    }
+    
+    public function getOrdersCount()
+    {
+        if ($this->isNewRecord) {
+            return null; // This avoid calling a query searching for null primary keys.
+        }
+        
+        if ($this->_ordersCount === null) {
+            $this->setOrdersCount(count($this->orders));
+        }
+
+        return $this->_ordersCount;
+    }
+
+    // ...
+
+    public function getOrders()
+    {
+        return $this->hasMany(Order::className(), ['customer_id' => 'id']);
+    }
+}
 ```

@@ -78,6 +78,7 @@ The formatter supports the following output formats that are related with date a
 - [[yii\i18n\Formatter::asTimestamp()|timestamp]]: the value is formatted as a [unix timestamp](http://en.wikipedia.org/wiki/Unix_time), e.g. `1412609982`.
 - [[yii\i18n\Formatter::asRelativeTime()|relativeTime]]: the value is formatted as the time interval between a date
   and now in human readable form e.g. `1 hour ago`.
+- [[yii\i18n\Formatter::asDuration()|duration]]: the value is formatted as a duration in human readable format. e.g. `1 day, 2 minutes`.
 
 The default date and time formats used for the [[yii\i18n\Formatter::asDate()|date]], [[yii\i18n\Formatter::asTime()|time]],
 and [[yii\i18n\Formatter::asDatetime()|datetime]] methods can be customized globally by configuring  
