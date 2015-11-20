@@ -442,6 +442,7 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
      * Sets the named attribute value.
      * @param string $name the attribute name
      * @param mixed $value the attribute value.
+     * @since 2.0.7
      * @return bool True if the attribute was assigned false otherwise.
      */
     protected function setAttributeInternal($name, $value, $check = true)
