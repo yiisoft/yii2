@@ -463,6 +463,7 @@ class Controller extends Component implements ViewContextInterface
      * Sets the directory that contains the view files.
      * @param string $path the root directory of view files.
      * @throws InvalidParamException if the directory is invalid
+     * @since 2.0.7
      */
     public function setViewPath($path)
     {
