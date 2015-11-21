@@ -9,6 +9,7 @@ namespace yii\validators;
 
 use Yii;
 use yii\base\InvalidConfigException;
+use yii\helpers\ArrayHelper;
 
 /**
  * RangeValidator validates that the attribute value is among a list of values.
@@ -23,7 +24,7 @@ use yii\base\InvalidConfigException;
 class RangeValidator extends Validator
 {
     /**
-     * @var array|\Closure a list of valid values that the attribute value should be among or an anonymous function that returns
+     * @var array|\Traversable|\Closure a list of valid values that the attribute value should be among or an anonymous function that returns
      * such a list. The signature of the anonymous function should be as follows,
      *
      * ```php
@@ -55,7 +56,10 @@ class RangeValidator extends Validator
     public function init()
     {
         parent::init();
-        if (!is_array($this->range) && !($this->range instanceof \Closure)) {
+        if (!is_array($this->range)
+            && !($this->range instanceof \Closure)
+            && !($this->range instanceof \Traversable)
+        ) {
             throw new InvalidConfigException('The "range" property must be set.');
         }
         if ($this->message === null) {
@@ -68,17 +72,17 @@ class RangeValidator extends Validator
      */
     protected function validateValue($value)
     {
-        if (!$this->allowArray && is_array($value)) {
-            return [$this->message, []];
+        $in = false;
+
+        if ($this->allowArray
+            && ($value instanceof \Traversable || is_array($value))
+            && ArrayHelper::subset($value, $this->range, $this->strict)
+        ) {
+            $in = true;
         }
 
-        $in = true;
-
-        foreach ((is_array($value) ? $value : [$value]) as $v) {
-            if (!in_array($v, $this->range, $this->strict)) {
-                $in = false;
-                break;
-            }
+        if (!$in && ArrayHelper::in($value, $this->range, $this->strict)) {
+            $in = true;
         }
 
         return $this->not !== $in ? null : [$this->message, []];
