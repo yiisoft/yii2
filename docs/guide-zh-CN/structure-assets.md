@@ -95,7 +95,7 @@ class AppAsset extends AssetBundle
 推荐将资源文件放到Web目录以避免不必要的发布资源过程，这就是之前的例子：指定
 [[yii\web\AssetBundle::basePath|basePath]] 而不是 [[yii\web\AssetBundle::sourcePath|sourcePath]].
 
-对于 [扩展](structure-extensions.md)来说，由于它们的资源和源代码都在Web不能访问的目录下，
+对于 [扩展](structure-extensions.md)来说，由于它们的资源和源代码都在不能Web访问的目录下，
 在定义资源包类时必须指定[[yii\web\AssetBundle::sourcePath|sourcePath]]属性。
 
 > 注意:  [[yii\web\AssetBundle::sourcePath|source path]] 属性不要用`@webroot/assets`，该路径默认为
