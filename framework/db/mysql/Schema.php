@@ -254,7 +254,10 @@ SELECT
     kcu.referenced_column_name
 FROM information_schema.referential_constraints AS rc
 JOIN information_schema.key_column_usage AS kcu ON
-    kcu.constraint_catalog = rc.constraint_catalog AND
+    (
+        kcu.constraint_catalog = rc.constraint_catalog OR
+        (kcu.constraint_catalog IS NULL AND rc.constraint_catalog IS NULL)
+    ) AND
     kcu.constraint_schema = rc.constraint_schema AND
     kcu.constraint_name = rc.constraint_name
 WHERE rc.constraint_schema = database() AND kcu.table_schema = database()
