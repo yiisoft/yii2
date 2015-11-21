@@ -69,7 +69,7 @@ class AppAsset extends AssetBundle
   - 绝对URL地址表示为外部JavaScript文件，如
     `http://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js` 或 
     `//ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js`.
-* [[yii\web\AssetBundle::css|css]]: 一个包含该资源包JavaScript文件的数组，该数组格式和 [[yii\web\AssetBundle::js|js]] 相同。
+* [[yii\web\AssetBundle::css|css]]: 一个包含该资源包CSS文件的数组，该数组格式和 [[yii\web\AssetBundle::js|js]] 相同。
 * [[yii\web\AssetBundle::depends|depends]]: 一个列出该资源包依赖的其他资源包（后两节有详细介绍）。
 * [[yii\web\AssetBundle::jsOptions|jsOptions]]: 当调用[[yii\web\View::registerJsFile()]]注册该包 *每个* JavaScript文件时，
   指定传递到该方法的选项。
