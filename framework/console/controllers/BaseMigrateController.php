@@ -511,13 +511,13 @@ abstract class BaseMigrateController extends Controller
                     'field_second' => $secondTable,
                 ]);
             } elseif (preg_match('/^add_(.+)_to_(.+)$/', $name, $matches)) {
-                $content = $this->renderFile(Yii::getAlias($this->generatorTemplateFiles['add']), [
+                $content = $this->renderFile(Yii::getAlias($this->generatorTemplateFiles['add_column']), [
                     'className' => $className,
                     'table' => mb_strtolower($matches[2], Yii::$app->charset),
                     'fields' => $this->fields
                 ]);
             } elseif (preg_match('/^drop_(.+)_from_(.+)$/', $name, $matches)) {
-                $content = $this->renderFile(Yii::getAlias($this->generatorTemplateFiles['remove']), [
+                $content = $this->renderFile(Yii::getAlias($this->generatorTemplateFiles['drop_column']), [
                     'className' => $className,
                     'table' => mb_strtolower($matches[2], Yii::$app->charset),
                     'fields' => $this->fields
@@ -530,6 +530,7 @@ abstract class BaseMigrateController extends Controller
                     'fields' => $this->fields
                 ]);
             } elseif (preg_match('/^drop_(.+)$/', $name, $matches)) {
+                $this->addDefaultPrimaryKey();
                 $content = $this->renderFile(Yii::getAlias($this->generatorTemplateFiles['drop']), [
                     'className' => $className,
                     'table' => mb_strtolower($matches[1], Yii::$app->charset),

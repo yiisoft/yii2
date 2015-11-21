@@ -319,6 +319,40 @@ class {$class} extends Migration
     public function down()
     {
         \$this->createTable('test', [
+            'id' => \$this->primaryKey()
+        ]);
+    }
+}
+
+CODE;
+        $this->assertEqualsWithoutLE($code, file_get_contents($files[0]));
+
+        $class = 'm' . gmdate('ymd_His') . '_' . $migrationName;
+        $this->runMigrateControllerAction('create', [
+            $migrationName,
+            'fields' => [
+                'body:text:notNull'
+            ],
+
+        ]);
+        $files = FileHelper::findFiles($this->migrationPath);
+        $code = <<<CODE
+<?php
+
+use yii\db\Migration;
+
+class {$class} extends Migration
+{
+    public function up()
+    {
+        \$this->dropTable('test');
+    }
+
+    public function down()
+    {
+        \$this->createTable('test', [
+            'id' => \$this->primaryKey(),
+            'body' => \$this->text()->notNull()
         ]);
     }
 }
