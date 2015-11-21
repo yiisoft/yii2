@@ -335,7 +335,7 @@ yii migrate/create drop_position_from_post --fields=position:integer
 generates
 
 ```php
-class m150811_220037_remove_position_from_post extends Migration
+class m150811_220037_drop_position_from_post extends Migration
 {
     public function up()
     {
