@@ -38,7 +38,6 @@ return [
         '.hgignore',
         '.hgkeep',
         '/messages',
-        '/BaseYii.php', // contains examples about Yii:t()
     ],
     // array, list of patterns that specify which files (not directories) should be processed.
     // If empty or not set, all files will be processed.

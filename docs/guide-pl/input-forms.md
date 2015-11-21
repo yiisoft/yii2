@@ -133,10 +133,10 @@ Wartość z Twojego modelu będzie automatycznie wybrana po wyświetleniu formul
 Dalsza lektura <span id="further-reading"></span>
 ---------------
 
-Następna sekcja [Walidacja danych wejściowych](input-validation.md) dotyczy walidacji przesłanych przed formularz danych po stronie serwera, przy użyciu ajax oraz walidacji po stronie kklienta.
+Następna sekcja [Walidacja danych wejściowych](input-validation.md) dotyczy walidacji przesłanych przed formularz danych po stronie serwera, przy użyciu ajax oraz walidacji po stronie klienta.
 
 Aby przeczytać o bardziej złożonych użyciach formularzy możesz zajrzeć do poniższych sekcji:
 
-- [Odczytywanie tablicowych danych wejściowych](input-tabular-input.md - do pobierania danych dla wielu modeli tego samego rodzaju.
+- [Odczytywanie tablicowych danych wejściowych](input-tabular-input.md) - do pobierania danych dla wielu modeli tego samego rodzaju.
 - [Pobieranie danych dla wielu modeli](input-multiple-models.md) - do obsługi wielu różnych modeli w tym samym formularzu.
 - [Wysyłanie plików](input-file-upload.md) - jak używać formularzy do przesyłania plików.

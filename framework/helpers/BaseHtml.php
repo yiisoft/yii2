@@ -300,6 +300,8 @@ class BaseHtml
      * the attributes of the resulting tag. The values will be HTML-encoded using [[encode()]].
      * If a value is null, the corresponding attribute will not be rendered.
      * See [[renderTagAttributes()]] for details on how attributes are being rendered.
+     * Special options:
+     *  - `csrf`: whether to generate the CSRF hidden input. When is not defined, defaults to true.
      * @return string the generated form start tag.
      * @see endForm()
      */
@@ -316,7 +318,9 @@ class BaseHtml
                 $hiddenInputs[] = static::hiddenInput($request->methodParam, $method);
                 $method = 'post';
             }
-            if ($request->enableCsrfValidation && !strcasecmp($method, 'post')) {
+            $csrf = ArrayHelper::remove($options, 'csrf', true);
+
+            if ($csrf && $request->enableCsrfValidation && strcasecmp($method, 'post') === 0) {
                 $hiddenInputs[] = static::hiddenInput($request->csrfParam, $request->getCsrfToken());
             }
         }
@@ -1314,7 +1318,11 @@ class BaseHtml
     {
         // add a hidden field so that if a model only has a file field, we can
         // still use isset($_POST[$modelClass]) to detect if the input is submitted
-        return static::activeHiddenInput($model, $attribute, ['id' => null, 'value' => ''])
+        $hiddenOptions = ['id' => null, 'value' => ''];
+        if (isset($options['name'])) {
+            $hiddenOptions['name'] = $options['name'];
+        }
+        return static::activeHiddenInput($model, $attribute, $hiddenOptions)
             . static::activeInput('file', $model, $attribute, $options);
     }
 

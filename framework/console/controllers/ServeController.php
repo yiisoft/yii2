@@ -28,14 +28,14 @@ class ServeController extends Controller
     const EXIT_CODE_ADDRESS_TAKEN_BY_ANOTHER_PROCESS = 5;
 
     /**
-     * @var int port to serve on. Either "host" or "host:port".
+     * @var int port to serve on.
      */
     public $port = 8080;
 
     /**
-     * @var string path to directory to serve
+     * @var string path or path alias to directory to serve
      */
-    public $docroot = 'web';
+    public $docroot = '@app/web';
 
     /**
      * @var string path to router script.
@@ -46,14 +46,13 @@ class ServeController extends Controller
     /**
      * Runs PHP built-in web server
      *
-     * @param string $address address to serve on
+     * @param string $address address to serve on.  Either "host" or "host:port".
      *
      * @return int
      */
     public function actionIndex($address = 'localhost')
     {
-        $basePath = Yii::$app->basePath;
-        $documentRoot = $basePath . '/' . $this->docroot;
+        $documentRoot = Yii::getAlias($this->docroot);
 
         if (strpos($address, ':') === false) {
             $address = $address . ':' . $this->port;
@@ -62,11 +61,6 @@ class ServeController extends Controller
         if (!is_dir($documentRoot)) {
             $this->stdout("Document root \"$documentRoot\" does not exist.\n", Console::FG_RED);
             return self::EXIT_CODE_NO_DOCUMENT_ROOT;
-        }
-
-        if ($this->isOtherServerProcessRunning($address)) {
-            $this->stdout("There's another server running on http://$address.\n", Console::FG_RED);
-            return self::EXIT_CODE_ADDRESS_TAKEN_BY_ANOTHER_SERVER;
         }
 
         if ($this->isAddressTaken($address)) {
@@ -86,12 +80,7 @@ class ServeController extends Controller
         }
         $this->stdout("Quit the server with CTRL-C or COMMAND-C.\n");
 
-        $lock = $this->getLockFile($address);
-        touch($lock);
-
         passthru('"' . PHP_BINARY . '"' . " -S {$address} -t \"{$documentRoot}\" $this->router");
-
-        unlink($lock);
     }
 
     /**
@@ -108,15 +97,6 @@ class ServeController extends Controller
 
     /**
      * @param string $address server address
-     * @return string path to pid file
-     */
-    protected function getLockFile($address)
-    {
-        return sys_get_temp_dir() . '/' . strtr($address, '.:', '--') . '.pid';
-    }
-
-    /**
-     * @param string $address server address
      * @return boolean if address is already in use
      */
     protected function isAddressTaken($address)
@@ -128,14 +108,5 @@ class ServeController extends Controller
         }
         fclose($fp);
         return true;
-    }
-
-    /**
-     * @param string $address server address
-     * @return boolean if another server is running at address specified
-     */
-    protected function isOtherServerProcessRunning($address)
-    {
-        return file_exists($this->getLockFile($address));
     }
 }

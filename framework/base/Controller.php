@@ -19,8 +19,7 @@ use Yii;
  * @property string $uniqueId The controller ID that is prefixed with the module ID (if any). This property is
  * read-only.
  * @property View|\yii\web\View $view The view object that can be used to render views or view files.
- * @property string $viewPath The directory containing the view files for this controller. This property is
- * read-only.
+ * @property string $viewPath The directory containing the view files for this controller.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
@@ -67,6 +66,10 @@ class Controller extends Component implements ViewContextInterface
      * @var View the view object that can be used to render views or view files.
      */
     private $_view;
+    /**
+     * @var string the root directory that contains view files for this controller.
+     */
+    private $_viewPath;
 
 
     /**
@@ -449,7 +452,21 @@ class Controller extends Component implements ViewContextInterface
      */
     public function getViewPath()
     {
-        return $this->module->getViewPath() . DIRECTORY_SEPARATOR . $this->id;
+        if ($this->_viewPath === null) {
+            $this->_viewPath = $this->module->getViewPath() . DIRECTORY_SEPARATOR . $this->id;
+        }
+        return $this->_viewPath;
+    }
+
+    /**
+     * Sets the directory that contains the view files.
+     * @param string $path the root directory of view files.
+     * @throws InvalidParamException if the directory is invalid
+     * @since 2.0.7
+     */
+    public function setViewPath($path)
+    {
+        $this->_viewPath = Yii::getAlias($path);
     }
 
     /**

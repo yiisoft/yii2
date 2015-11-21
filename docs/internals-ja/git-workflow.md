@@ -33,7 +33,7 @@ git remote add upstream git://github.com/yiisoft/yii2.git
 
 - `composer update` を実行して、依存パッケージをインストールします ([composer をグローバルにインストール](https://getcomposer.org/doc/00-intro.md#globally) したものと仮定しています)。
 
-> Note|注意: `Problem 1 The requested package bower-asset/jquery could not be found in any version, there may be a typo in the package name.` というようなエラーが生ずる場合は、`composer global require "fxp/composer-asset-plugin:~1.0.3"` を実行する必要があります。
+> Note|注意: `Problem 1 The requested package bower-asset/jquery could not be found in any version, there may be a typo in the package name.` というようなエラーが生ずる場合は、`composer global require "fxp/composer-asset-plugin:~1.1.0"` を実行する必要があります。
 
 - `php build/build dev/app basic` を実行して、ベーシックアプリケーションをクローンし、その依存パッケージをインストールします。
   このコマンドは外部 composer パッケージは通常どおりインストールしますが、yii2 レポジトリは現在チェックアウトされているものをリンクします。
