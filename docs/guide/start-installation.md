@@ -37,7 +37,7 @@ by running `composer self-update`.
 
 With Composer installed, you can install Yii by running the following commands under a Web-accessible folder:
 
-    composer global require "fxp/composer-asset-plugin:~1.0.3"
+    composer global require "fxp/composer-asset-plugin:~1.1.0"
     composer create-project --prefer-dist yiisoft/yii2-app-basic basic
 
 The first command installs the [composer asset plugin](https://github.com/francoispluchino/composer-asset-plugin/)
@@ -95,7 +95,14 @@ After installation is done, either configure your web server (see next section) 
 console command while in the project `web` directory:
  
 ```
-php -S localhost:80
+php yii serve
+```
+
+> Note: By default the HTTP-server will listen to port 8080. However if that port is already in use or you wish to 
+serve multiple applications this way, you might want to specify what port to use. Just add the --port argument:
+
+```
+php yii serve --port=8888
 ```
 
 You can use your browser to access the installed Yii application with the following URL:

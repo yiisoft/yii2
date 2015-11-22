@@ -264,7 +264,9 @@ class BaseStringHelper
         }
         if ($skipEmpty) {
             // Wrapped with array_values to make array keys sequential after empty values removing
-            $result = array_values(array_filter($result));
+            $result = array_values(array_filter($result, function ($value) {
+                return $value !== '';
+            }));
         }
         return $result;
     }

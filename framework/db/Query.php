@@ -397,11 +397,12 @@ class Query extends Component implements QueryInterface
 
     /**
      * Sets the SELECT part of the query.
-     * @param string|array $columns the columns to be selected.
+     * @param string|array|Expression $columns the columns to be selected.
      * Columns can be specified in either a string (e.g. "id, name") or an array (e.g. ['id', 'name']).
      * Columns can be prefixed with table names (e.g. "user.id") and/or contain column aliases (e.g. "user.id AS user_id").
      * The method will automatically quote the column names unless a column contains some parenthesis
-     * (which means the column contains a DB expression).
+     * (which means the column contains a DB expression). A DB expression may also be passed in form of
+     * an [[Expression]] object.
      *
      * Note that if you are selecting an expression like `CONCAT(first_name, ' ', last_name)`, you should
      * use an array to specify the columns. Otherwise, the expression may be incorrectly split into several parts.
@@ -418,7 +419,9 @@ class Query extends Component implements QueryInterface
      */
     public function select($columns, $option = null)
     {
-        if (!is_array($columns)) {
+        if ($columns instanceof Expression) {
+            $columns = [$columns];
+        } elseif (!is_array($columns)) {
             $columns = preg_split('/\s*,\s*/', trim($columns), -1, PREG_SPLIT_NO_EMPTY);
         }
         $this->select = $columns;
@@ -436,13 +439,16 @@ class Query extends Component implements QueryInterface
      * $query->addSelect(["*", "CONCAT(first_name, ' ', last_name) AS full_name"])->one();
      * ```
      *
-     * @param string|array $columns the columns to add to the select.
+     * @param string|array|Expression $columns the columns to add to the select. See [[select()]] for more
+     * details about the format of this parameter.
      * @return $this the query object itself
      * @see select()
      */
     public function addSelect($columns)
     {
-        if (!is_array($columns)) {
+        if ($columns instanceof Expression) {
+            $columns = [$columns];
+        } elseif (!is_array($columns)) {
             $columns = preg_split('/\s*,\s*/', trim($columns), -1, PREG_SPLIT_NO_EMPTY);
         }
         if ($this->select === null) {

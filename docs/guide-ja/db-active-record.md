@@ -1333,3 +1333,82 @@ $customers = Customer::find()
     ->groupBy('{{customer}}.id') // 結果をグループ化して、集計関数の動作を保証する
     ->all();
 ```
+
+この方法を使うことの短所の一つは、情報が SQL クエリでロードされていない場合には、それを別途計算しなければならない、ということです。
+このことは、また、新しく保存したレコードも追加のフィールドについては情報を持っていないことになることを意味します。
+
+```php
+$room = new Room();
+$room->length = 100;
+$room->width = 50;
+$room->height = 2;
+
+$room->volume; // まだ指定されていないため、この値は null になります。
+```
+
+[[yii\db\BaseActiveRecord::__get()|__get()]] と [[yii\db\BaseActiveRecord::__set()|__set()]] のマジックメソッドを使用すれば、プロパティの動作をエミュレートすることが出来ます。
+
+```php
+class Room extends \yii\db\ActiveRecord
+{
+    private $_volume;
+    
+    public function setVolume($volume)
+    {
+        $this->_volume = (float) $volume;
+    }
+    
+    public function getVolume()
+    {
+        if (empty($this->length) || empty($this->width) || empty($this->height)) {
+            return null;
+        }
+        
+        if ($this->_volume === null) {
+            $this->setVolume(
+                $this->length * $this->width * $this->height
+            );
+        }
+        
+        return $this->_volume;
+    }
+
+    // ...
+}
+```
+
+このようにすると、SELECT クエリによって容積が提供されていない場合に、モデルの他の属性を使って容積を自動的に計算することが出来ます。
+
+この手法は、リレーショナルデータに依存する追加のフィールドに対しても、同じように使用する事が出来ます。
+
+```php
+class Customer extends \yii\db\ActiveRecord
+{
+    private $_ordersCount;
+    
+    public function setOrdersCount($count)
+    {
+        $this->_ordersCount = (int) $count;
+    }
+    
+    public function getOrdersCount()
+    {
+        if ($this->isNewRecord) {
+            return null; // プライマリキーが null の場合のリレーショナルクエリを防止
+        }
+        
+        if ($this->_ordersCount === null) {
+            $this->setOrdersCount(count($this->orders));
+        }
+
+        return $this->_ordersCount;
+    }
+
+    // ...
+
+    public function getOrders()
+    {
+        return $this->hasMany(Order::className(), ['customer_id' => 'id']);
+    }
+}
+```

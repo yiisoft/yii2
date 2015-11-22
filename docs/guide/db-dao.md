@@ -113,26 +113,24 @@ Once you have a database connection instance, you can execute a SQL query by tak
 The following example shows various ways of fetching data from a database:
  
 ```php
-$db = new yii\db\Connection(...);
-
 // return a set of rows. each row is an associative array of column names and values.
 // an empty array is returned if no results
-$posts = $db->createCommand('SELECT * FROM post')
+$posts = Yii::$app->db->createCommand('SELECT * FROM post')
             ->queryAll();
 
 // return a single row (the first row)
 // false is returned if no results
-$post = $db->createCommand('SELECT * FROM post WHERE id=1')
+$post = Yii::$app->db->createCommand('SELECT * FROM post WHERE id=1')
            ->queryOne();
 
 // return a single column (the first column)
 // an empty array is returned if no results
-$titles = $db->createCommand('SELECT title FROM post')
+$titles = Yii::$app->db->createCommand('SELECT title FROM post')
              ->queryColumn();
 
 // return a scalar
 // false is returned if no results
-$count = $db->createCommand('SELECT COUNT(*) FROM post')
+$count = Yii::$app->db->createCommand('SELECT COUNT(*) FROM post')
              ->queryScalar();
 ```
 
@@ -167,7 +165,7 @@ When creating a DB command from a SQL with parameters, you should almost always 
 to prevent SQL injection attacks. For example,
 
 ```php
-$post = $db->createCommand('SELECT * FROM post WHERE id=:id AND status=:status')
+$post = Yii::$app->db->createCommand('SELECT * FROM post WHERE id=:id AND status=:status')
            ->bindValue(':id', $_GET['id'])
            ->bindValue(':status', 1)
            ->queryOne();
@@ -187,11 +185,11 @@ The following example shows alternative ways of binding parameters:
 ```php
 $params = [':id' => $_GET['id'], ':status' => 1];
 
-$post = $db->createCommand('SELECT * FROM post WHERE id=:id AND status=:status')
+$post = Yii::$app->db->createCommand('SELECT * FROM post WHERE id=:id AND status=:status')
            ->bindValues($params)
            ->queryOne();
            
-$post = $db->createCommand('SELECT * FROM post WHERE id=:id AND status=:status', $params)
+$post = Yii::$app->db->createCommand('SELECT * FROM post WHERE id=:id AND status=:status', $params)
            ->queryOne();
 ```
 
@@ -200,7 +198,7 @@ Besides preventing SQL injection attacks, it may also improve performance by pre
 executing it multiple times with different parameters. For example,
 
 ```php
-$command = $db->createCommand('SELECT * FROM post WHERE id=:id');
+$command = Yii::$app->db->createCommand('SELECT * FROM post WHERE id=:id');
 
 $post1 = $command->bindValue(':id', 1)->queryOne();
 $post2 = $command->bindValue(':id', 2)->queryOne();
@@ -210,7 +208,7 @@ Because [[yii\db\Command::bindParam()|bindParam()]] supports binding parameters 
 can also be written like the following:
 
 ```php
-$command = $db->createCommand('SELECT * FROM post WHERE id=:id')
+$command = Yii::$app->db->createCommand('SELECT * FROM post WHERE id=:id')
               ->bindParam(':id', $id);
 
 $id = 1;
@@ -231,7 +229,7 @@ The `queryXyz()` methods introduced in the previous sections all deal with SELEC
 For queries that do not bring back data, you should call the [[yii\db\Command::execute()]] method instead. For example,
 
 ```php
-$db->createCommand('UPDATE post SET status=1 WHERE id=1')
+Yii::$app->db->createCommand('UPDATE post SET status=1 WHERE id=1')
    ->execute();
 ```
 
@@ -243,16 +241,16 @@ SQLs. These methods will properly quote table and column names and bind paramete
 
 ```php
 // INSERT (table name, column values)
-$db->createCommand()->insert('user', [
+Yii::$app->db->createCommand()->insert('user', [
     'name' => 'Sam',
     'age' => 30,
 ])->execute();
 
 // UPDATE (table name, column values, condition)
-$db->createCommand()->update('user', ['status' => 1], 'age > 30')->execute();
+Yii::$app->db->createCommand()->update('user', ['status' => 1], 'age > 30')->execute();
 
 // DELETE (table name, condition)
-$db->createCommand()->delete('user', 'status = 0')->execute();
+Yii::$app->db->createCommand()->delete('user', 'status = 0')->execute();
 ```
 
 You may also call [[yii\db\Command::batchInsert()|batchInsert()]] to insert multiple rows in one shot, which is much
@@ -260,7 +258,7 @@ more efficient than inserting one row at a time:
 
 ```php
 // table name, column names, column values
-$db->createCommand()->batchInsert('user', ['name', 'age'], [
+Yii::$app->db->createCommand()->batchInsert('user', ['name', 'age'], [
     ['Tom', 30],
     ['Jane', 20],
     ['Linda', 25],
@@ -282,7 +280,7 @@ For example,
 
 ```php
 // executes this SQL for MySQL: SELECT COUNT(`id`) FROM `employee`
-$count = $db->createCommand("SELECT COUNT([[id]]) FROM {{employee}}")
+$count = Yii::$app->db->createCommand("SELECT COUNT([[id]]) FROM {{employee}}")
             ->queryScalar();
 ```
 
@@ -313,7 +311,7 @@ when configuring the DB connection. For example,
 
 ```php
 // executes this SQL for MySQL: SELECT COUNT(`id`) FROM `tbl_employee`
-$count = $db->createCommand("SELECT COUNT([[id]]) FROM {{%employee}}")
+$count = Yii::$app->db->createCommand("SELECT COUNT([[id]]) FROM {{%employee}}")
             ->queryScalar();
 ```
 
@@ -327,7 +325,7 @@ none of these queries is executed.
 The following code shows a typical way of using transactions:
 
 ```php
-$db->transaction(function($db) {
+Yii::$app->db->transaction(function($db) {
     $db->createCommand($sql1)->execute();
     $db->createCommand($sql2)->execute();
     // ... executing other SQL statements ...
@@ -337,11 +335,11 @@ $db->transaction(function($db) {
 The above code is equivalent to the following:
 
 ```php
-$transaction = $db->beginTransaction();
+$transaction = Yii::$app->db->beginTransaction();
 
 try {
-    $db->createCommand($sql1)->execute();
-    $db->createCommand($sql2)->execute();
+    Yii::$app->db->createCommand($sql1)->execute();
+    Yii::$app->db->createCommand($sql2)->execute();
     // ... executing other SQL statements ...
     
     $transaction->commit();
@@ -370,13 +368,13 @@ it will use the default isolation level set by your database system. You can ove
 ```php
 $isolationLevel = \yii\db\Transaction::REPEATABLE_READ;
 
-$db->transaction(function ($db) {
+Yii::$app->db->transaction(function ($db) {
     ....
 }, $isolationLevel);
  
 // or alternatively
 
-$transaction = $db->beginTransaction($isolationLevel);
+$transaction = Yii::$app->db->beginTransaction($isolationLevel);
 ```
 
 Yii provides four constants for the most common isolation levels:
@@ -409,7 +407,7 @@ You have to call [[yii\db\Transaction::setIsolationLevel()]] in this case after 
 If your DBMS supports Savepoint, you may nest multiple transactions like the following:
 
 ```php
-$db->transaction(function ($db) {
+Yii::$app->db->transaction(function ($db) {
     // outer transaction
     
     $db->transaction(function ($db) {
@@ -421,13 +419,13 @@ $db->transaction(function ($db) {
 Or alternatively,
 
 ```php
-$outerTransaction = $db->beginTransaction();
+$outerTransaction = Yii::$app->db->beginTransaction();
 try {
-    $db->createCommand($sql1)->execute();
+    Yii::$app->db->createCommand($sql1)->execute();
 
-    $innerTransaction = $db->beginTransaction();
+    $innerTransaction = Yii::$app->db->beginTransaction();
     try {
-        $db->createCommand($sql2)->execute();
+        Yii::$app->db->createCommand($sql2)->execute();
         $innerTransaction->commit();
     } catch (\Exception $e) {
         $innerTransaction->rollBack();
@@ -487,18 +485,18 @@ Such read-write splitting is accomplished automatically with this configuration.
 
 ```php
 // create a Connection instance using the above configuration
-$db = Yii::createObject($config);
+Yii::$app->db = Yii::createObject($config);
 
 // query against one of the slaves
-$rows = $db->createCommand('SELECT * FROM user LIMIT 10')->queryAll();
+$rows = Yii::$app->db->createCommand('SELECT * FROM user LIMIT 10')->queryAll();
 
 // query against the master
-$db->createCommand("UPDATE user SET username='demo' WHERE id=1")->execute();
+Yii::$app->db->createCommand("UPDATE user SET username='demo' WHERE id=1")->execute();
 ```
 
 > Info: Queries performed by calling [[yii\db\Command::execute()]] are considered as write queries, while
   all other queries done through one of the "query" methods of [[yii\db\Command]] are read queries.
-  You can get the currently active slave connection via `$db->slave`.
+  You can get the currently active slave connection via `Yii::$app->db->slave`.
 
 The `Connection` component supports load balancing and failover between slaves.
 When performing a read query for the first time, the `Connection` component will randomly pick a slave and
@@ -569,12 +567,12 @@ the master connection. For example,
 
 ```php
 // the transaction is started on the master connection
-$transaction = $db->beginTransaction();
+$transaction = Yii::$app->db->beginTransaction();
 
 try {
     // both queries are performed against the master
-    $rows = $db->createCommand('SELECT * FROM user LIMIT 10')->queryAll();
-    $db->createCommand("UPDATE user SET username='demo' WHERE id=1")->execute();
+    $rows = Yii::$app->db->createCommand('SELECT * FROM user LIMIT 10')->queryAll();
+    Yii::$app->db->createCommand("UPDATE user SET username='demo' WHERE id=1")->execute();
 
     $transaction->commit();
 } catch(\Exception $e) {
@@ -586,19 +584,19 @@ try {
 If you want to start a transaction with the slave connection, you should explicitly do so, like the following:
 
 ```php
-$transaction = $db->slave->beginTransaction();
+$transaction = Yii::$app->db->slave->beginTransaction();
 ```
 
 Sometimes, you may want to force using the master connection to perform a read query. This can be achieved
 with the `useMaster()` method:
 
 ```php
-$rows = $db->useMaster(function ($db) {
+$rows = Yii::$app->db->useMaster(function ($db) {
     return $db->createCommand('SELECT * FROM user LIMIT 10')->queryAll();
 });
 ```
 
-You may also directly set `$db->enableSlaves` to be false to direct all queries to the master connection.
+You may also directly set `Yii::$app->db->enableSlaves` to be false to direct all queries to the master connection.
 
 
 ## Working with Database Schema <span id="database-schema"></span>
@@ -625,7 +623,7 @@ These methods can be used like the following:
 
 ```php
 // CREATE TABLE
-$db->createCommand()->createTable('post', [
+Yii::$app->db->createCommand()->createTable('post', [
     'id' => 'pk',
     'title' => 'string',
     'text' => 'text',
@@ -636,7 +634,7 @@ You can also retrieve the definition information about a table through
 the [[yii\db\Connection::getTableSchema()|getTableSchema()]] method of a DB connection. For example,
 
 ```php
-$table = $db->getTableSchema('post');
+$table = Yii::$app->db->getTableSchema('post');
 ```
 
 The method returns a [[yii\db\TableSchema]] object which contains the information about the table's columns,
