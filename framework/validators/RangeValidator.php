@@ -76,12 +76,12 @@ class RangeValidator extends Validator
 
         if ($this->allowArray
             && ($value instanceof \Traversable || is_array($value))
-            && ArrayHelper::subset($value, $this->range, $this->strict)
+            && ArrayHelper::isSubset($value, $this->range, $this->strict)
         ) {
             $in = true;
         }
 
-        if (!$in && ArrayHelper::in($value, $this->range, $this->strict)) {
+        if (!$in && ArrayHelper::isIn($value, $this->range, $this->strict)) {
             $in = true;
         }
 
