@@ -307,15 +307,16 @@ It is possible to provide default way of converting object to array for a specif
 Often you need to check if an element is in an array or a set of elements is a subset of another.
 While PHP offers `in_array()`, this does not support subsets or `\Traversable` objects.
 
-To aid these kinds of tests, `ArrayHelper` provides `in()` and `subset()` with the same signature as `in_array()`.
+To aid these kinds of tests, [[yii\base\ArrayHelper]] provides [[yii\base\ArrayHelper::isIn()|isIn()]]
+and [[yii\base\ArrayHelper::isSubset()|isSubset()]] with the same signature as [[in_array()]].
 
 ```php
 // true
-ArrayHelper::in('a', ['a']);
+ArrayHelper::isIn('a', ['a']);
 // true
-ArrayHelper::in('a', new(ArrayObject['a']));
+ArrayHelper::isIn('a', new(ArrayObject['a']));
 
 // true 
-ArrayHelper::subset(new(ArrayObject['a', 'c']), new(ArrayObject['a', 'b', 'c'])
+ArrayHelper::isSubset(new(ArrayObject['a', 'c']), new(ArrayObject['a', 'b', 'c'])
 
 ```
