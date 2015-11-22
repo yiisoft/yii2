@@ -524,14 +524,14 @@ abstract class BaseMigrateController extends Controller
                 ]);
             } elseif (preg_match('/^create_(.+)$/', $name, $matches)) {
                 $this->addDefaultPrimaryKey();
-                $content = $this->renderFile(Yii::getAlias($this->generatorTemplateFiles['create']), [
+                $content = $this->renderFile(Yii::getAlias($this->generatorTemplateFiles['create_table']), [
                     'className' => $className,
                     'table' => mb_strtolower($matches[1], Yii::$app->charset),
                     'fields' => $this->fields
                 ]);
             } elseif (preg_match('/^drop_(.+)$/', $name, $matches)) {
                 $this->addDefaultPrimaryKey();
-                $content = $this->renderFile(Yii::getAlias($this->generatorTemplateFiles['drop']), [
+                $content = $this->renderFile(Yii::getAlias($this->generatorTemplateFiles['drop_table']), [
                     'className' => $className,
                     'table' => mb_strtolower($matches[1], Yii::$app->charset),
                     'fields' => $this->fields

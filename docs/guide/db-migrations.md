@@ -617,10 +617,10 @@ The migration command comes with a few command-line options that can be used to 
   named `$className` to get the migration class name.
 
 * `generatorTemplateFiles`: array (defaults to `[
-        'create' => '@yii/views/createMigration.php',
-        'drop' => '@yii/views/dropMigration.php',
-        'add_column' => '@yii/views/addMigration.php',
-        'drop_column' => '@yii/views/removeMigration.php',
+        'create_table' => '@yii/views/createTableMigration.php',
+        'drop_table' => '@yii/views/dropTableMigration.php',
+        'add_column' => '@yii/views/addColumnMigration.php',
+        'drop_column' => '@yii/views/dropColumnMigration.php',
         'create_junction' => '@yii/views/createJunctionMigration.php'
   ]`), specifies template files for generating migration code. See "[Generating Migrations](#generating-migrations)"
   for more details.
