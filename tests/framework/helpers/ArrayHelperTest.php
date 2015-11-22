@@ -482,30 +482,30 @@ class ArrayHelperTest extends TestCase
     public function testIn()
     {
 
-        $this->assertTrue(ArrayHelper::in('a', new \ArrayObject(['a', 'b'])));
-        $this->assertTrue(ArrayHelper::in('a', ['a', 'b']));
+        $this->assertTrue(ArrayHelper::isIn('a', new \ArrayObject(['a', 'b'])));
+        $this->assertTrue(ArrayHelper::isIn('a', ['a', 'b']));
 
-        $this->assertTrue(ArrayHelper::in('1', new \ArrayObject([1, 'b'])));
-        $this->assertTrue(ArrayHelper::in('1', [1, 'b']));
+        $this->assertTrue(ArrayHelper::isIn('1', new \ArrayObject([1, 'b'])));
+        $this->assertTrue(ArrayHelper::isIn('1', [1, 'b']));
 
-        $this->assertFalse(ArrayHelper::in('1', new \ArrayObject([1, 'b']), true));
-        $this->assertFalse(ArrayHelper::in('1', [1, 'b'], true));
+        $this->assertFalse(ArrayHelper::isIn('1', new \ArrayObject([1, 'b']), true));
+        $this->assertFalse(ArrayHelper::isIn('1', [1, 'b'], true));
 
-        $this->assertTrue(ArrayHelper::in(['a'], new \ArrayObject([['a'], 'b'])));
-        $this->assertFalse(ArrayHelper::in('a', new \ArrayObject([['a'], 'b'])));
-        $this->assertFalse(ArrayHelper::in('a', [['a'], 'b']));
+        $this->assertTrue(ArrayHelper::isIn(['a'], new \ArrayObject([['a'], 'b'])));
+        $this->assertFalse(ArrayHelper::isIn('a', new \ArrayObject([['a'], 'b'])));
+        $this->assertFalse(ArrayHelper::isIn('a', [['a'], 'b']));
     }
 
     public function testSubset()
     {
-        $this->assertTrue(ArrayHelper::subset(['a'], new \ArrayObject(['a', 'b'])));
-        $this->assertTrue(ArrayHelper::subset(new \ArrayObject(['a']), ['a', 'b']));
+        $this->assertTrue(ArrayHelper::isSubset(['a'], new \ArrayObject(['a', 'b'])));
+        $this->assertTrue(ArrayHelper::isSubset(new \ArrayObject(['a']), ['a', 'b']));
 
-        $this->assertTrue(ArrayHelper::subset([1], new \ArrayObject(['1', 'b'])));
-        $this->assertTrue(ArrayHelper::subset(new \ArrayObject([1]), ['1', 'b']));
+        $this->assertTrue(ArrayHelper::isSubset([1], new \ArrayObject(['1', 'b'])));
+        $this->assertTrue(ArrayHelper::isSubset(new \ArrayObject([1]), ['1', 'b']));
 
-        $this->assertFalse(ArrayHelper::subset([1], new \ArrayObject(['1', 'b']), true));
-        $this->assertFalse(ArrayHelper::subset(new \ArrayObject([1]), ['1', 'b'], true));
+        $this->assertFalse(ArrayHelper::isSubset([1], new \ArrayObject(['1', 'b']), true));
+        $this->assertFalse(ArrayHelper::isSubset(new \ArrayObject([1]), ['1', 'b'], true));
 
 
     }
