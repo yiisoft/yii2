@@ -65,7 +65,7 @@ Yii Framework 2 Change Log
 - Enh #10098: Changed `yii.confirm` context to the event's target DOM element which is triggered by clickable or changeable elements (lichunqiang)
 - Enh #10118: Allow easy extension of slug generation in `yii\behaviors\SluggableBehavior` (cebe, hesna)
 - Enh #10149: Made `yii\db\Connection` serializable (Sam Mousa)
-- Enh #10154: Implemented support of traversable objects in `RangeValidator::ranges`, added `ArrayHelper::in()` and `ArrayHelper::subset()` (Sam Mousa)
+- Enh #10154: Implemented support of traversable objects in `RangeValidator::ranges`, added `ArrayHelper::isIn()` and `ArrayHelper::isSubset()` (Sam Mousa)
 - Enh #10158: Added the possibility to specify CSS and Javascript options per file in `\yii\web\AssetBundle` (machour)
 - Enh #10170: `Yii::powered()` now uses `Yii::t()` (SamMousa)
 - Enh: Added last resort measure for `FileHelper::removeDirectory()` fail to unlink symlinks under Windows (samdark)
