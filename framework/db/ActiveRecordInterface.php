@@ -47,6 +47,7 @@ interface ActiveRecordInterface
      * Sets the named attribute value.
      * @param string $name the attribute name.
      * @param mixed $value the attribute value.
+     * @return $this
      * @see hasAttribute()
      */
     public function setAttribute($name, $value);
