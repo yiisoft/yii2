@@ -459,6 +459,7 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
      * @param string $name the attribute name
      * @param mixed $value the attribute value.
      * @param boolean $throw Set to false to not throw an exception (used internally).
+     * @return $this
      * @see hasAttribute()
      */
     public function setAttribute($name, $value)
@@ -466,6 +467,8 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
         if (!$this->setAttributeInternal($name, $value)) {
             throw new InvalidParamException(get_class($this) . ' has no attribute named "' . $name . '".');
         }
+
+        return $this;
     }
 
 
@@ -483,10 +486,13 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
      * All existing old attribute values will be discarded.
      * @param array|null $values old attribute values to be set.
      * If set to `null` this record is considered to be [[isNewRecord|new]].
+     * @return $this
      */
     public function setOldAttributes($values)
     {
         $this->_oldAttributes = $values;
+
+        return $this;
     }
 
     /**
@@ -507,6 +513,7 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
      * Sets the old value of the named attribute.
      * @param string $name the attribute name
      * @param mixed $value the old attribute value.
+     * @return $this
      * @throws InvalidParamException if the named attribute does not exist.
      * @see hasAttribute()
      */
@@ -517,6 +524,8 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
         } else {
             throw new InvalidParamException(get_class($this) . ' has no attribute named "' . $name . '".');
         }
+
+        return $this;
     }
 
     /**

@@ -686,6 +686,7 @@ class Model extends Component implements IteratorAggregate, ArrayAccess, Arrayab
      * @param array $values attribute values (name => value) to be assigned to the model.
      * @param boolean $safeOnly whether the assignments should only be done to the safe attributes.
      * A safe attribute is one that is associated with a validation rule in the current [[scenario]].
+     * @return $this
      * @see safeAttributes()
      * @see attributes()
      */
@@ -701,6 +702,8 @@ class Model extends Component implements IteratorAggregate, ArrayAccess, Arrayab
                 }
             }
         }
+
+        return $this;
     }
 
     /**
