@@ -109,6 +109,18 @@ CODE;
     }
 
     /**
+     * Change class name migration to $class
+     * @param string $class name class
+     * @return string content generated class migration
+     * @see https://github.com/yiisoft/yii2/pull/10213
+     */
+    protected function parseNameClassMigration($class)
+    {
+        $files = FileHelper::findFiles($this->migrationPath);
+        return preg_replace('/class (m\d+_\d+) extents Migration {/', "class $class extends Migration {", file_get_contents($files[0]));
+    }
+
+    /**
      * Checks if applied migration history matches expected one.
      * @param array $expectedMigrations migration names in expected order
      * @param string $message failure message
@@ -154,7 +166,7 @@ CODE;
         $migrationName = 'DefaultTest';
         $class = 'm' . gmdate('ymd_His') . '_' . $migrationName;
         $this->runMigrateControllerAction('create', [$migrationName]);
-        $files = FileHelper::findFiles($this->migrationPath);
+        $file = $this->parseNameClassMigration($class);
 
         $newLine = '\n';
         $code = <<<CODE
@@ -189,7 +201,7 @@ class {$class} extends Migration
 }
 
 CODE;
-        $this->assertEqualsWithoutLE($code, file_get_contents($files[0]));
+        $this->assertEqualsWithoutLE($code, $file);
     }
 
     public function testGenerateCreateMigration()
@@ -203,7 +215,7 @@ CODE;
                 'body:text:notNull'
             ]
         ]);
-        $files = FileHelper::findFiles($this->migrationPath);
+        $file = $this->parseNameClassMigration($class);
 
         $code = <<<CODE
 <?php
@@ -228,7 +240,7 @@ class {$class} extends Migration
 }
 
 CODE;
-        $this->assertEqualsWithoutLE($code, file_get_contents($files[0]));
+        $this->assertEqualsWithoutLE($code, $file);
 
         $class = 'm' . gmdate('ymd_His') . '_' . $migrationName;
         $this->runMigrateControllerAction('create', [
@@ -239,7 +251,7 @@ CODE;
             ],
 
         ]);
-        $files = FileHelper::findFiles($this->migrationPath);
+        $file = $this->parseNameClassMigration($class);
         $code = <<<CODE
 <?php
 
@@ -262,7 +274,7 @@ class {$class} extends Migration
 }
 
 CODE;
-        $this->assertEqualsWithoutLE($code, file_get_contents($files[0]));
+        $this->assertEqualsWithoutLE($code, $file);
 
         $class = 'm' . gmdate('ymd_His') . '_' . $migrationName;
         $this->runMigrateControllerAction('create', [
@@ -270,7 +282,7 @@ CODE;
             'fields' => [
             ],
         ]);
-        $files = FileHelper::findFiles($this->migrationPath);
+        $file = $this->parseNameClassMigration($class);
         $code = <<<CODE
 <?php
 
@@ -292,7 +304,7 @@ class {$class} extends Migration
 }
 
 CODE;
-        $this->assertEqualsWithoutLE($code, file_get_contents($files[0]));
+        $this->assertEqualsWithoutLE($code, $file);
     }
 
     public function testGenerateDropMigration()
@@ -302,7 +314,7 @@ CODE;
         $this->runMigrateControllerAction('create', [
             $migrationName
         ]);
-        $files = FileHelper::findFiles($this->migrationPath);
+        $file = $this->parseNameClassMigration($class);
 
         $code = <<<CODE
 <?php
@@ -325,7 +337,7 @@ class {$class} extends Migration
 }
 
 CODE;
-        $this->assertEqualsWithoutLE($code, file_get_contents($files[0]));
+        $this->assertEqualsWithoutLE($code, $file);
 
         $class = 'm' . gmdate('ymd_His') . '_' . $migrationName;
         $this->runMigrateControllerAction('create', [
@@ -335,7 +347,7 @@ CODE;
             ],
 
         ]);
-        $files = FileHelper::findFiles($this->migrationPath);
+        $file = $this->parseNameClassMigration($class);
         $code = <<<CODE
 <?php
 
@@ -358,7 +370,7 @@ class {$class} extends Migration
 }
 
 CODE;
-        $this->assertEqualsWithoutLE($code, file_get_contents($files[0]));
+        $this->assertEqualsWithoutLE($code, $file);
 
         $class = 'm' . gmdate('ymd_His') . '_' . $migrationName;
         $this->runMigrateControllerAction('create', [
@@ -369,7 +381,7 @@ CODE;
             ],
 
         ]);
-        $files = FileHelper::findFiles($this->migrationPath);
+        $file = $this->parseNameClassMigration($class);
         $code = <<<CODE
 <?php
 
@@ -392,7 +404,7 @@ class {$class} extends Migration
 }
 
 CODE;
-        $this->assertEqualsWithoutLE($code, file_get_contents($files[0]));
+        $this->assertEqualsWithoutLE($code, $file);
     }
 
     public function testGenerateAddColumnMigration()
@@ -407,7 +419,7 @@ CODE;
                 'created_at:dateTime'
             ]
         ]);
-        $files = FileHelper::findFiles($this->migrationPath);
+        $file = $this->parseNameClassMigration($class);
 
         $code = <<<CODE
 <?php
@@ -432,7 +444,7 @@ class {$class} extends Migration
 }
 
 CODE;
-        $this->assertEqualsWithoutLE($code, file_get_contents($files[0]));
+        $this->assertEqualsWithoutLE($code, $file);
     }
 
     public function testGenerateDropColumnMigration()
@@ -447,7 +459,7 @@ CODE;
                 'created_at:dateTime'
             ]
         ]);
-        $files = FileHelper::findFiles($this->migrationPath);
+        $file = $this->parseNameClassMigration($class);
 
         $code = <<<CODE
 <?php
@@ -472,7 +484,7 @@ class {$class} extends Migration
 }
 
 CODE;
-        $this->assertEqualsWithoutLE($code, file_get_contents($files[0]));
+        $this->assertEqualsWithoutLE($code, $file);
 
         $class = 'm' . gmdate('ymd_His') . '_' . $migrationName;
         $this->runMigrateControllerAction('create', [
@@ -483,7 +495,7 @@ CODE;
                 'created_at:dateTime'
             ]
         ]);
-        $files = FileHelper::findFiles($this->migrationPath);
+        $file = $this->parseNameClassMigration($class);
 
         $code = <<<CODE
 <?php
@@ -508,7 +520,7 @@ class {$class} extends Migration
 }
 
 CODE;
-        $this->assertEqualsWithoutLE($code, file_get_contents($files[0]));
+        $this->assertEqualsWithoutLE($code, $file);
     }
 
     public function testGenerateCreateJunctionMigration()
@@ -518,7 +530,7 @@ CODE;
         $this->runMigrateControllerAction('create', [
             $migrationName,
         ]);
-        $files = FileHelper::findFiles($this->migrationPath);
+        $file = $this->parseNameClassMigration($class);
 
         $code = <<<CODE
 <?php
@@ -549,7 +561,7 @@ class {$class} extends Migration
 }
 
 CODE;
-        $this->assertEqualsWithoutLE($code, file_get_contents($files[0]));
+        $this->assertEqualsWithoutLE($code, $file);
     }
 
     public function testUp()
