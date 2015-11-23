@@ -98,6 +98,11 @@ class CaptchaAction extends Action
      * If not set, it means the verification code will be randomly generated.
      */
     public $fixedVerifyCode;
+    /**
+     * @var string the rendering library to use. Currently supported only 'gd' and 'imagick'.
+     * If not set, library will be determined automatically.
+     */
+    public $imageLibrary;
 
 
     /**
@@ -236,13 +241,21 @@ class CaptchaAction extends Action
      * Renders the CAPTCHA image.
      * @param string $code the verification code
      * @return string image contents
+     * @throws InvalidConfigException if imageLibrary is not supported
      */
     protected function renderImage($code)
     {
-        if (Captcha::checkRequirements() === 'gd') {
-            return $this->renderImageByGD($code);
+        if (isset($this->imageLibrary)) {
+            $imageLibrary = $this->imageLibrary;
         } else {
+            $imageLibrary = Captcha::checkRequirements();
+        }
+        if ($imageLibrary === 'gd') {
+            return $this->renderImageByGD($code);
+        } elseif ($imageLibrary === 'imagick') {
             return $this->renderImageByImagick($code);
+        } else {
+            throw new InvalidConfigException("Defined library '{$imageLibrary}' is not supported");
         }
     }
 
