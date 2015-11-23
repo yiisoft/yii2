@@ -98,6 +98,11 @@ class CaptchaAction extends Action
      * If not set, it means the verification code will be randomly generated.
      */
     public $fixedVerifyCode;
+    /**
+     * @var string the rendering library to use. Currently supported only 'gd' and 'imagick'.
+     * If not set, library will be determined automatically.
+     */
+    public $imageLibrary;
 
 
     /**
