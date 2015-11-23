@@ -101,6 +101,7 @@ class CaptchaAction extends Action
     /**
      * @var string the rendering library to use. Currently supported only 'gd' and 'imagick'.
      * If not set, library will be determined automatically.
+     * @since 2.0.7
      */
     public $imageLibrary;
 
