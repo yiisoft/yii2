@@ -511,26 +511,27 @@ abstract class BaseMigrateController extends Controller
                     'field_second' => $secondTable,
                 ]);
             } elseif (preg_match('/^add_(.+)_to_(.+)$/', $name, $matches)) {
-                $content = $this->renderFile(Yii::getAlias($this->generatorTemplateFiles['add']), [
+                $content = $this->renderFile(Yii::getAlias($this->generatorTemplateFiles['add_column']), [
                     'className' => $className,
                     'table' => mb_strtolower($matches[2], Yii::$app->charset),
                     'fields' => $this->fields
                 ]);
             } elseif (preg_match('/^drop_(.+)_from_(.+)$/', $name, $matches)) {
-                $content = $this->renderFile(Yii::getAlias($this->generatorTemplateFiles['remove']), [
+                $content = $this->renderFile(Yii::getAlias($this->generatorTemplateFiles['drop_column']), [
                     'className' => $className,
                     'table' => mb_strtolower($matches[2], Yii::$app->charset),
                     'fields' => $this->fields
                 ]);
             } elseif (preg_match('/^create_(.+)$/', $name, $matches)) {
                 $this->addDefaultPrimaryKey();
-                $content = $this->renderFile(Yii::getAlias($this->generatorTemplateFiles['create']), [
+                $content = $this->renderFile(Yii::getAlias($this->generatorTemplateFiles['create_table']), [
                     'className' => $className,
                     'table' => mb_strtolower($matches[1], Yii::$app->charset),
                     'fields' => $this->fields
                 ]);
             } elseif (preg_match('/^drop_(.+)$/', $name, $matches)) {
-                $content = $this->renderFile(Yii::getAlias($this->generatorTemplateFiles['drop']), [
+                $this->addDefaultPrimaryKey();
+                $content = $this->renderFile(Yii::getAlias($this->generatorTemplateFiles['drop_table']), [
                     'className' => $className,
                     'table' => mb_strtolower($matches[1], Yii::$app->charset),
                     'fields' => $this->fields
