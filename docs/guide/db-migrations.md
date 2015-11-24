@@ -274,7 +274,7 @@ class m150811_220037_create_post extends Migration
 ### Drop Table
 
 ```php
-yii migrate/create drop_post
+yii migrate/create drop_post --fields=title:string(12):notNull:unique,body:text
 ``` 
 
 generates 
@@ -290,6 +290,9 @@ class m150811_220037_drop_post extends Migration
     public function down()
     {
         $this->createTable('post', [
+            'id' => $this->primaryKey(),
+            'title' => $this->string(12)->notNull()->unique(),
+            'body' => $this->text()
         ]);
     }
 }
@@ -614,10 +617,10 @@ The migration command comes with a few command-line options that can be used to 
   named `$className` to get the migration class name.
 
 * `generatorTemplateFiles`: array (defaults to `[
-        'create' => '@yii/views/createMigration.php',
-        'drop' => '@yii/views/dropMigration.php',
-        'add' => '@yii/views/addMigration.php',
-        'remove' => '@yii/views/removeMigration.php',
+        'create_table' => '@yii/views/createTableMigration.php',
+        'drop_table' => '@yii/views/dropTableMigration.php',
+        'add_column' => '@yii/views/addColumnMigration.php',
+        'drop_column' => '@yii/views/dropColumnMigration.php',
         'create_junction' => '@yii/views/createJunctionMigration.php'
   ]`), specifies template files for generating migration code. See "[Generating Migrations](#generating-migrations)"
   for more details.

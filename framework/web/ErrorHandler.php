@@ -59,7 +59,14 @@ class ErrorHandler extends \yii\base\ErrorHandler
      * @var string the path of the view file for rendering previous exceptions.
      */
     public $previousExceptionView = '@yii/views/errorHandler/previousException.php';
-
+    /**
+     * @var array list of the PHP predefined variables that should be displayed on the error page.
+     * Note that a variable must be accessible via `$GLOBALS`. Otherwise it won't be displayed.
+     * Defaults to `['_GET', '_POST', '_FILES', '_COOKIE', '_SESSION']`.
+     * @see renderRequest()
+     * @since 2.0.7
+     */
+    public $displayVars = ['_GET', '_POST', '_FILES', '_COOKIE', '_SESSION'];
 
     /**
      * Renders the exception.
@@ -289,13 +296,15 @@ class ErrorHandler extends \yii\base\ErrorHandler
     }
 
     /**
-     * Renders the request information.
+     * Renders the global variables of the request.
+     * List of global variables is defined in [[displayVars]].
      * @return string the rendering result
+     * @see displayVars
      */
     public function renderRequest()
     {
         $request = '';
-        foreach (['_GET', '_POST', '_SERVER', '_FILES', '_COOKIE', '_SESSION', '_ENV'] as $name) {
+        foreach ($this->displayVars as $name) {
             if (!empty($GLOBALS[$name])) {
                 $request .= '$' . $name . ' = ' . VarDumper::export($GLOBALS[$name]) . ";\n\n";
             }
