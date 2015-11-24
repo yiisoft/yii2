@@ -146,7 +146,7 @@ class Event extends Object
 
         $classes = array_merge(
             [$class],
-            class_parents($class. true),
+            class_parents($class, true),
             class_implements($class, true)
         );
 
