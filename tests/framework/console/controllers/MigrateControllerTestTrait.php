@@ -210,10 +210,7 @@ CODE;
         $class = 'm' . gmdate('ymd_His') . '_' . $migrationName;
         $this->runMigrateControllerAction('create', [
             $migrationName,
-            'fields' => [
-                'title:string(10):notNull:unique:defaultValue("test")',
-                'body:text:notNull'
-            ]
+            'fields' => 'title:string(10):notNull:unique:defaultValue("test"),body:text:notNull'
         ]);
         $file = $this->parseNameClassMigration($class);
 
@@ -245,11 +242,7 @@ CODE;
         $class = 'm' . gmdate('ymd_His') . '_' . $migrationName;
         $this->runMigrateControllerAction('create', [
             $migrationName,
-            'fields' => [
-                'title:primaryKey',
-                'body:text:notNull'
-            ],
-
+            'fields' => 'title:primaryKey,body:text:notNull',
         ]);
         $file = $this->parseNameClassMigration($class);
         $code = <<<CODE
@@ -279,8 +272,6 @@ CODE;
         $class = 'm' . gmdate('ymd_His') . '_' . $migrationName;
         $this->runMigrateControllerAction('create', [
             $migrationName,
-            'fields' => [
-            ],
         ]);
         $file = $this->parseNameClassMigration($class);
         $code = <<<CODE
@@ -342,10 +333,7 @@ CODE;
         $class = 'm' . gmdate('ymd_His') . '_' . $migrationName;
         $this->runMigrateControllerAction('create', [
             $migrationName,
-            'fields' => [
-                'body:text:notNull'
-            ],
-
+            'fields' => 'body:text:notNull'
         ]);
         $file = $this->parseNameClassMigration($class);
         $code = <<<CODE
@@ -375,11 +363,7 @@ CODE;
         $class = 'm' . gmdate('ymd_His') . '_' . $migrationName;
         $this->runMigrateControllerAction('create', [
             $migrationName,
-            'fields' => [
-                'title:primaryKey',
-                'body:text:notNull'
-            ],
-
+            'fields' => 'title:primaryKey,body:text:notNull'
         ]);
         $file = $this->parseNameClassMigration($class);
         $code = <<<CODE
@@ -413,11 +397,7 @@ CODE;
         $class = 'm' . gmdate('ymd_His') . '_' . $migrationName;
         $this->runMigrateControllerAction('create', [
             $migrationName,
-            'fields' => [
-                'title:string(10):notNull',
-                'body:text:notNull',
-                'created_at:dateTime'
-            ]
+            'fields' => 'title:string(10):notNull,body:text:notNull,created_at:dateTime'
         ]);
         $file = $this->parseNameClassMigration($class);
 
@@ -453,11 +433,7 @@ CODE;
         $class = 'm' . gmdate('ymd_His') . '_' . $migrationName;
         $this->runMigrateControllerAction('create', [
             $migrationName,
-            'fields' => [
-                'title:string(10):notNull',
-                'body:text:notNull',
-                'created_at:dateTime'
-            ]
+            'fields' => 'title:string(10):notNull,body:text:notNull,created_at:dateTime'
         ]);
         $file = $this->parseNameClassMigration($class);
 
@@ -489,11 +465,7 @@ CODE;
         $class = 'm' . gmdate('ymd_His') . '_' . $migrationName;
         $this->runMigrateControllerAction('create', [
             $migrationName,
-            'fields' => [
-                'title:string(10):notNull',
-                'body:text:notNull',
-                'created_at:dateTime'
-            ]
+            'fields' => 'title:string(10):notNull,body:text:notNull,created_at:dateTime'
         ]);
         $file = $this->parseNameClassMigration($class);
 
