@@ -8,6 +8,7 @@
 namespace yiiunit\framework\console;
 
 use yii\console\Controller;
+use yii\console\Response;
 
 /**
  * @author Misbahul D Munir <misbahuldmunir@gmail.com>
@@ -66,5 +67,17 @@ class FakeController extends Controller
     public function actionAksi6()
     {
         return $this->testArray;
+    }
+
+    public function actionStatus($status = 0)
+    {
+        return $status;
+    }
+
+    public function actionResponse($status = 0)
+    {
+        $response = new Response();
+        $response->exitStatus = (int)$status;
+        return $response;
     }
 }
