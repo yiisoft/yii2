@@ -158,13 +158,14 @@ class Application extends \yii\base\Application
      * If the route is empty, the method will use [[defaultRoute]].
      * @param string $route the route that specifies the action.
      * @param array $params the parameters to be passed to the action
-     * @return integer the status code returned by the action execution. 0 means normal, and other values mean abnormal.
+     * @return integer|Response the result of the action: exit code or Response object.
      * @throws Exception if the route is invalid
      */
     public function runAction($route, $params = [])
     {
         try {
-            return (int)parent::runAction($route, $params);
+            $res = parent::runAction($route, $params);
+            return is_object($res) ? $res : (int)$res;
         } catch (InvalidRouteException $e) {
             throw new Exception("Unknown command \"$route\".", 0, $e);
         }
