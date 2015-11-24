@@ -45,10 +45,10 @@ abstract class BaseMigrateController extends Controller
      * @var array a set of template paths for generating migration code automatically.
      *
      * The key is the template type, the value is a path or the alias. Supported types are:
-     * - `create`: table creating template
-     * - `drop`: table dropping template
-     * - `add`: adding new column template
-     * - `remove`: dropping column template
+     * - `create_table`: table creating template
+     * - `drop_table`: table dropping template
+     * - `add_column`: adding new column template
+     * - `drop_column`: dropping column template
      * - `create_junction`: create junction template
      *
      * @since 2.0.7
