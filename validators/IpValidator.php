@@ -583,6 +583,9 @@ class IpValidator extends Validator
             'negation' => $this->negation,
             'subnet' => $this->subnet
         ];
+        if ($this->skipOnEmpty) {
+            $options['skipOnEmpty'] = 1;
+        }
 
         ValidationAsset::register($view);
 
