@@ -66,6 +66,18 @@ abstract class FormatterTest extends \yiiunit\TestCase
     /**
      * @param mixed  $data the data to be formatted
      * @param string $json the expected JSON body
+     * @dataProvider formatTraversableObjectDataProvider
+     */
+    public function testFormatTraversableObjects($data, $json)
+    {
+        $this->response->data = $data;
+        $this->formatter->format($this->response);
+        $this->assertEquals($json, $this->response->content);
+    }
+
+    /**
+     * @param mixed  $data the data to be formatted
+     * @param string $json the expected JSON body
      * @dataProvider formatObjectDataProvider
      */
     public function testFormatObjects($data, $json)
