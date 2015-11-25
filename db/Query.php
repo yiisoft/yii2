@@ -583,13 +583,13 @@ class Query extends Component implements QueryInterface
      * @param string $type the type of join, such as INNER JOIN, LEFT JOIN.
      * @param string|array $table the table to be joined.
      *
-     * Use string to represent the name of the table to be joined.
-     * Table name can contain schema prefix (e.g. 'public.user') and/or table alias (e.g. 'user u').
+     * Use a string to represent the name of the table to be joined.
+     * The table name can contain a schema prefix (e.g. 'public.user') and/or table alias (e.g. 'user u').
      * The method will automatically quote the table name unless it contains some parenthesis
      * (which means the table is given as a sub-query or DB expression).
      *
-     * Use array to represent joining with a sub-query. The array must contain only one element.
-     * The value must be a Query object representing the sub-query while the corresponding key
+     * Use an array to represent joining with a sub-query. The array must contain only one element.
+     * The value must be a [[Query]] object representing the sub-query while the corresponding key
      * represents the alias for the sub-query.
      *
      * @param string|array $on the join condition that should appear in the ON part.
@@ -607,13 +607,13 @@ class Query extends Component implements QueryInterface
      * Appends an INNER JOIN part to the query.
      * @param string|array $table the table to be joined.
      *
-     * Use string to represent the name of the table to be joined.
-     * Table name can contain schema prefix (e.g. 'public.user') and/or table alias (e.g. 'user u').
+     * Use a string to represent the name of the table to be joined.
+     * The table name can contain a schema prefix (e.g. 'public.user') and/or table alias (e.g. 'user u').
      * The method will automatically quote the table name unless it contains some parenthesis
      * (which means the table is given as a sub-query or DB expression).
      *
-     * Use array to represent joining with a sub-query. The array must contain only one element.
-     * The value must be a Query object representing the sub-query while the corresponding key
+     * Use an array to represent joining with a sub-query. The array must contain only one element.
+     * The value must be a [[Query]] object representing the sub-query while the corresponding key
      * represents the alias for the sub-query.
      *
      * @param string|array $on the join condition that should appear in the ON part.
@@ -631,13 +631,13 @@ class Query extends Component implements QueryInterface
      * Appends a LEFT OUTER JOIN part to the query.
      * @param string|array $table the table to be joined.
      *
-     * Use string to represent the name of the table to be joined.
-     * Table name can contain schema prefix (e.g. 'public.user') and/or table alias (e.g. 'user u').
+     * Use a string to represent the name of the table to be joined.
+     * The table name can contain a schema prefix (e.g. 'public.user') and/or table alias (e.g. 'user u').
      * The method will automatically quote the table name unless it contains some parenthesis
      * (which means the table is given as a sub-query or DB expression).
      *
-     * Use array to represent joining with a sub-query. The array must contain only one element.
-     * The value must be a Query object representing the sub-query while the corresponding key
+     * Use an array to represent joining with a sub-query. The array must contain only one element.
+     * The value must be a [[Query]] object representing the sub-query while the corresponding key
      * represents the alias for the sub-query.
      *
      * @param string|array $on the join condition that should appear in the ON part.
@@ -655,13 +655,13 @@ class Query extends Component implements QueryInterface
      * Appends a RIGHT OUTER JOIN part to the query.
      * @param string|array $table the table to be joined.
      *
-     * Use string to represent the name of the table to be joined.
-     * Table name can contain schema prefix (e.g. 'public.user') and/or table alias (e.g. 'user u').
+     * Use a string to represent the name of the table to be joined.
+     * The table name can contain a schema prefix (e.g. 'public.user') and/or table alias (e.g. 'user u').
      * The method will automatically quote the table name unless it contains some parenthesis
      * (which means the table is given as a sub-query or DB expression).
      *
-     * Use array to represent joining with a sub-query. The array must contain only one element.
-     * The value must be a Query object representing the sub-query while the corresponding key
+     * Use an array to represent joining with a sub-query. The array must contain only one element.
+     * The value must be a [[Query]] object representing the sub-query while the corresponding key
      * represents the alias for the sub-query.
      *
      * @param string|array $on the join condition that should appear in the ON part.
