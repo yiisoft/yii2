@@ -304,13 +304,13 @@ class Controller extends \yii\base\Controller
     }
 
     /**
-     * Returns the properties corresponding to the options for the action (id)
+     * Returns properties corresponding to the options for the action id
      * Child classes may override this method to specify possible properties.
      *
      * @param string $actionID the action id of the current request
-     * @return array the properties corresponding to the options for the action
+     * @return array properties corresponding to the options for the action
      */
-    public function optionsValues($actionID)
+    public function getOptionValues($actionID)
     {
         // $actionId might be used in subclasses to provide properties specific to action id
         $properties = [];
@@ -325,7 +325,7 @@ class Controller extends \yii\base\Controller
      *
      * @return array the names of the options passed during execution
      */
-    public function passedOptions()
+    public function getPassedOptions()
     {
         return $this->_passedOptions;
     }
@@ -335,7 +335,7 @@ class Controller extends \yii\base\Controller
      *
      * @return array the properties corresponding to the passed options
      */
-    public function passedOptionsValues()
+    public function getPassedOptionValues()
     {
         $properties = [];
         foreach ($this->_passedOptions as $property) {
