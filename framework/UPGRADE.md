@@ -34,6 +34,8 @@ initialization to support wider range of allowed characters. Because of this cha
 the event.
   - If you overrode the `yii.confirm` function and accessed the `yii` object through `this`, you must access it
 with global variable `yii` instead.
+* Traversable objects are now formatted as arrays in XML response to support SPL objects and Generators. Previous
+  behavior could be turned on by setting `XmlResponseFormatter::$useTraversableAsArray` to `false`.
 
 Upgrade from Yii 2.0.5
 ----------------------
