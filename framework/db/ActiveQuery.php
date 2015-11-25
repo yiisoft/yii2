@@ -372,6 +372,18 @@ class ActiveQuery extends Query implements ActiveQueryInterface
      * ])->all();
      * ```
      *
+     * Since version 2.0.2 you may also define an alias to use for the joined table using the following syntax:
+     *
+     * ```php
+     * Order::find()->joinWith('books AS b')->all();
+     * // which is equivalent to
+     * Order::find()->joinWith([
+     *     'books' => function ($query) {
+     *         $query->from(Book::tableName() . ' AS b');
+     *     }
+     * ])->all();
+     * ```
+     *
      * @param boolean|array $eagerLoading whether to eager load the relations specified in `$with`.
      * When this is a boolean, it applies to all relations specified in `$with`. Use an array
      * to explicitly list which relations in `$with` need to be eagerly loaded.
@@ -458,6 +470,14 @@ class ActiveQuery extends Query implements ActiveQueryInterface
                 $callback = null;
             }
 
+            // check for table alias e.g. `joinWith('books AS b')`
+            if (($pos = stripos(' AS ', $name)) !== false) {
+                $alias = substr($name, $pos + 4);
+                $name = substr($name, 0, $pos);
+            } else {
+                $alias = null;
+            }
+
             $primaryModel = $model;
             $parent = $this;
             $prefix = '';
@@ -485,6 +505,9 @@ class ActiveQuery extends Query implements ActiveQueryInterface
                 }
                 if (!empty($relation->joinWith)) {
                     $relation->buildJoinWith();
+                }
+                if ($alias !== null) {
+                    $this->setQueryAlias($relation, $alias);
                 }
                 $this->joinWithRelation($parent, $relation, $this->getJoinType($joinType, $fullName));
             }
@@ -535,6 +558,37 @@ class ActiveQuery extends Query implements ActiveQueryInterface
         }
 
         return [$tableName, $alias];
+    }
+
+    /**
+     * Sets a custom table alias for a query.
+     * @param ActiveQuery $query
+     * @param string $alias
+     */
+    private function setQueryAlias($query, $alias)
+    {
+        if (empty($query->from)) {
+            /* @var $modelClass ActiveRecord */
+            $modelClass = $query->modelClass;
+            $tableName = $modelClass::tableName();
+            $query->from = '{{' . $tableName . '}} AS {{' . $alias . '}}';
+        } else {
+            $tableName = '';
+            foreach ($query->from as $alias => $tableName) {
+                if (is_string($alias)) {
+                    // TODO adjust alias
+                    return [$tableName, $alias];
+                } else {
+                    // TODO adjust alias
+                    if (preg_match('/^(.*?)\s+({{\w+}}|\w+)$/', $tableName, $matches)) {
+                        $alias = $matches[2];
+                    } else {
+                        $alias = $tableName;
+                    }
+                }
+                break;
+            }
+        }
     }
 
     /**
