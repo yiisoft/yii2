@@ -626,6 +626,10 @@ class ActiveQuery extends Query implements ActiveQueryInterface
      * }
      * ```
      *
+     * Note that this condition is applied in case of a join as well as when fetching the related records.
+     * Thus only fields of the related table can be used in the condition. Trying to access fields of the primary
+     * record will cause an error in a non-join-query.
+     *
      * @param string|array $condition the ON condition. Please refer to [[Query::where()]] on how to specify this parameter.
      * @param array $params the parameters (name => value) to be bound to the query.
      * @return $this the query object itself
