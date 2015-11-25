@@ -99,7 +99,7 @@
                     if (data[name] === undefined) {
                         data[this.name] = [];
                     }
-                    data[name] = value;
+                    data[name].push(value);
                 }
             });
 
