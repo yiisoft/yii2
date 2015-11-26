@@ -403,9 +403,9 @@ class ActiveQuery extends Query implements ActiveQueryInterface
                 $callback = null;
             }
 
-            if (preg_match('/^(.*?)(\s+AS\s+|\s+)(\w+)$/i', $name, $matches)) {
+            if (preg_match('/^(.*?)(?:\s+AS\s+|\s+)(\w+)$/i', $name, $matches)) {
                 // relation is defined with an alias, adjust callback to apply alias
-                list(, $relation, , $alias) = $matches;
+                list(, $relation, $alias) = $matches;
                 $this->_relationAliases[$relation] = $alias;
                 $name = $relation;
                 $callback = function($query) use ($callback, $alias) {
