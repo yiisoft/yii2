@@ -49,7 +49,7 @@
          */
         afterFilter: 'afterFilter'
     };
-    
+
     var methods = {
         init: function (options) {
             return this.each(function () {
@@ -85,13 +85,21 @@
             var $grid = $(this), event;
             var settings = gridData[$grid.attr('id')].settings;
             var data = {};
+            var keysInFilter = [];
             $.each($(settings.filterSelector).serializeArray(), function () {
-                data[this.name] = this.value;
+                if (data[this.name] === undefined) {
+                    data[this.name] = [];
+                    keysInFilter.push(this.name);
+                }
+                data[this.name].push(this.value);
             });
 
             $.each(yii.getQueryParams(settings.filterUrl), function (name, value) {
-                if (data[name] === undefined) {
-                    data[name] = value;
+                if (keysInFilter.indexOf(name) < 0) {
+                    if (data[name] === undefined) {
+                        data[this.name] = [];
+                    }
+                    data[name].push(value);
                 }
             });
 
@@ -100,10 +108,12 @@
 
             $grid.find('form.gridview-filter-form').remove();
             var $form = $('<form action="' + url + '" method="get" class="gridview-filter-form" style="display:none" data-pjax></form>').appendTo($grid);
-            $.each(data, function (name, value) {
-                $form.append($('<input type="hidden" name="t" value="" />').attr('name', name).val(value));
+            $.each(data, function (name, values) {
+                $.each(values, function (index, value) {
+                    $form.append($('<input type="hidden" name="t" value="" />').attr('name', name).val(value));
+                });
             });
-            
+
             event = $.Event(gridEvents.beforeFilter);
             $grid.trigger(event);
             if (event.result === false) {
@@ -111,7 +121,7 @@
             }
 
             $form.submit();
-            
+
             $grid.trigger(gridEvents.afterFilter);
         },
 
