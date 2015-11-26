@@ -106,7 +106,7 @@ class UniqueValidator extends Validator
             $query->andWhere($this->filter);
         }
 
-        if (!$model instanceof ActiveRecordInterface || $model->getIsNewRecord()) {
+        if (!$model instanceof ActiveRecordInterface || $model->getIsNewRecord() || $model::className() !== $targetClass) {
             // if current $model isn't in the database yet then it's OK just to call exists()
             $exists = $query->exists();
         } else {
