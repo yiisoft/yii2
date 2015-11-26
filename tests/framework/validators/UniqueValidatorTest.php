@@ -5,6 +5,8 @@ namespace yiiunit\framework\validators;
 use yii\validators\UniqueValidator;
 use Yii;
 use yiiunit\data\ar\ActiveRecord;
+use yiiunit\data\ar\Category;
+use yiiunit\data\ar\Item;
 use yiiunit\data\ar\Order;
 use yiiunit\data\ar\OrderItem;
 use yiiunit\data\validators\models\FakedValidationModel;
@@ -135,5 +137,29 @@ class UniqueValidatorTest extends DatabaseTestCase
         $m = new Order(['id' => 10]);
         $val->validateAttribute($m, 'id');
         $this->assertFalse($m->hasErrors('id'));
+    }
+
+    public function testValidateTargetClass()
+    {
+        $val = new UniqueValidator([
+            'targetClass' => Category::className(),
+            'targetAttribute' => ['name'],
+        ]);
+
+        /** @var Item $m */
+        $m = Item::findOne(1);
+        $this->assertEquals('Agile Web Application Development with Yii1.1 and PHP5', $m->name);
+        $val->validateAttribute($m, 'name');
+        $this->assertFalse($m->hasErrors('name'));
+
+        $m->name = 'Movies'; //as INSERT INTO `category` (name) VALUES ('Movies');
+        $val->validateAttribute($m, 'name');
+        $this->assertTrue($m->hasErrors('name'));
+        $m->clearErrors('name');
+
+        // ID Item equal ID Category
+        $m->name = 'Books'; //as INSERT INTO `category` (name) VALUES ('Books');
+        $val->validateAttribute($m, 'name');
+        $this->assertTrue($m->hasErrors('name'));
     }
 }
