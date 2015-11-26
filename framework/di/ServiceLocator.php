@@ -52,11 +52,11 @@ class ServiceLocator extends Component
     /**
      * @var array shared component instances indexed by their IDs
      */
-    private $_components = [];
+    protected $_components = [];
     /**
      * @var array component definitions indexed by their IDs
      */
-    private $_definitions = [];
+    protected $_definitions = [];
 
 
     /**
