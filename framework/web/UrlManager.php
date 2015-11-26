@@ -11,6 +11,7 @@ use Yii;
 use yii\base\Component;
 use yii\base\InvalidConfigException;
 use yii\caching\Cache;
+use yii\helpers\BaseUrl;
 
 /**
  * UrlManager handles HTTP request parsing and creation of URLs based on a set of rules.
@@ -355,14 +356,14 @@ class UrlManager extends Component
             if ($this->suffix !== null) {
                 $route .= $this->suffix;
             }
-            if (!empty($params) && ($query = http_build_query($params)) !== '') {
+            if (!empty($params) && ($query = BaseUrl::customHttpBuildQuery($params)) !== '') {
                 $route .= '?' . $query;
             }
 
             return "$baseUrl/{$route}{$anchor}";
         } else {
             $url = "$baseUrl?{$this->routeParam}=" . urlencode($route);
-            if (!empty($params) && ($query = http_build_query($params)) !== '') {
+            if (!empty($params) && ($query = BaseUrl::customHttpBuildQuery($params)) !== '') {
                 $url .= '&' . $query;
             }
 
