@@ -23,7 +23,8 @@
 
     var defaults = {
         filterUrl: undefined,
-        filterSelector: undefined
+        filterSelector: undefined,
+        delayForMultiple: 600
     };
 
     var gridData = {};
@@ -49,7 +50,7 @@
          */
         afterFilter: 'afterFilter'
     };
-    
+
     var methods = {
         init: function (options) {
             return this.each(function () {
@@ -73,8 +74,16 @@
                                 return;
                             }
                         }
-
-                        methods.applyFilter.apply($e);
+                        if (settings.delayForMultiple > 0 && $(this).attr('multiple')) {
+                            if (settings.timer !== undefined) {
+                                clearTimeout(settings.timer);
+                            }
+                            settings.timer = setTimeout(function() {
+                                methods.applyFilter.apply($e);
+                            }, settings.delayForMultiple);
+                        } else {
+                            methods.applyFilter.apply($e);
+                        }
 
                         return false;
                     });
@@ -86,11 +95,23 @@
             var settings = gridData[$grid.attr('id')].settings;
             var data = {};
             $.each($(settings.filterSelector).serializeArray(), function () {
-                data[this.name] = this.value;
+                if (this.name.indexOf('[]') === this.name.length - 2) {
+                    if (data[this.name] === undefined) {
+                        data[this.name] = [];
+                    }
+                    if ($.inArray(this.value, data[this.name])===-1) {
+                        data[this.name].push(this.value);
+                    }                
+                } else {
+                    data[this.name] = this.value;
+                }
             });
 
             $.each(yii.getQueryParams(settings.filterUrl), function (name, value) {
-                if (data[name] === undefined) {
+                if (
+                    data[name] === undefined &&
+                    (name.indexOf('[]') === name.length - 2 && data[name.substr(0, name.length - 2)] === undefined)
+                ) {
                     data[name] = value;
                 }
             });
@@ -101,9 +122,16 @@
             $grid.find('form.gridview-filter-form').remove();
             var $form = $('<form action="' + url + '" method="get" class="gridview-filter-form" style="display:none" data-pjax></form>').appendTo($grid);
             $.each(data, function (name, value) {
-                $form.append($('<input type="hidden" name="t" value="" />').attr('name', name).val(value));
+                if ($.isArray(value)) {
+                    $.each(value, function (k, v) {
+                        $form.append($('<input type="hidden" name="t" value="" />').attr('name', name).val(v));
+                    })
+                } else {
+                    $form.append($('<input type="hidden" name="t" value="" />').attr('name', name).val(value));
+                }
+
             });
-            
+
             event = $.Event(gridEvents.beforeFilter);
             $grid.trigger(event);
             if (event.result === false) {
@@ -111,7 +139,7 @@
             }
 
             $form.submit();
-            
+
             $grid.trigger(gridEvents.afterFilter);
         },
 
