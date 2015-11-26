@@ -49,7 +49,7 @@
          */
         afterFilter: 'afterFilter'
     };
-    
+
     var methods = {
         init: function (options) {
             return this.each(function () {
@@ -86,12 +86,20 @@
             var settings = gridData[$grid.attr('id')].settings;
             var data = {};
             $.each($(settings.filterSelector).serializeArray(), function () {
-                data[this.name] = this.value;
+                if (!(this.name in data)) {
+                    data[this.name] = [];
+                }
+                data[this.name].push(this.value);
             });
 
+            var namesInFilter = Object.keys(data);
+
             $.each(yii.getQueryParams(settings.filterUrl), function (name, value) {
-                if (data[name] === undefined) {
-                    data[name] = value;
+                if (namesInFilter.indexOf(name) === -1) {
+                    if (!(name in data)) {
+                        data[name] = [];
+                    }
+                    data[name].push(value);
                 }
             });
 
@@ -100,10 +108,12 @@
 
             $grid.find('form.gridview-filter-form').remove();
             var $form = $('<form action="' + url + '" method="get" class="gridview-filter-form" style="display:none" data-pjax></form>').appendTo($grid);
-            $.each(data, function (name, value) {
-                $form.append($('<input type="hidden" name="t" value="" />').attr('name', name).val(value));
+            $.each(data, function (name, values) {
+                $.each(values, function (index, value) {
+                    $form.append($('<input>').attr({type: 'hidden', name: name, value: value}));
+                });
             });
-            
+
             event = $.Event(gridEvents.beforeFilter);
             $grid.trigger(event);
             if (event.result === false) {
@@ -111,7 +121,7 @@
             }
 
             $form.submit();
-            
+
             $grid.trigger(gridEvents.afterFilter);
         },
 

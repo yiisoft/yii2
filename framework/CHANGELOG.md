@@ -68,6 +68,7 @@ Yii Framework 2 Change Log
 - Enh #10154: Implemented support of traversable objects in `RangeValidator::ranges`, added `ArrayHelper::isIn()` and `ArrayHelper::isSubset()` (Sam Mousa)
 - Enh #10158: Added the possibility to specify CSS and Javascript options per file in `\yii\web\AssetBundle` (machour)
 - Enh #10170: `Yii::powered()` now uses `Yii::t()` (SamMousa)
+- Enh #10218: `yii.gridView.js` added support for selectig in filter multiple values with same name (omnilight, silverfire)
 - Enh: Added last resort measure for `FileHelper::removeDirectory()` fail to unlink symlinks under Windows (samdark)
 - Chg #9369: `Yii::$app->user->can()` now returns `false` instead of erroring in case `authManager` component is not configured (creocoder)
 - Chg #9411: `DetailView` now automatically sets container tag ID in case it's not specified (samdark)
