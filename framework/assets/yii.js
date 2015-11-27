@@ -172,7 +172,7 @@ yii = (function ($) {
                     replace: pjaxReplaceState,
                     scrollTo: pjaxScrollTo,
                     timeout: pjaxTimeout,
-                    params: params
+                    originalEvent: event
                 }
             }
 
