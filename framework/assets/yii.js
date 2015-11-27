@@ -177,7 +177,8 @@ yii = (function ($) {
                     pushRedirect: pjaxPushRedirect,
                     replaceRedirect: pjaxReplaceRedirect,
                     pjaxSkipOuterContainers: pjaxSkipOuterContainers,
-                    timeout: pjaxTimeout
+                    timeout: pjaxTimeout,
+                    originalEvent: event
                 }
             }
 
