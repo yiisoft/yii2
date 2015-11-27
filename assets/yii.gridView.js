@@ -107,10 +107,16 @@
             var url = pos < 0 ? settings.filterUrl : settings.filterUrl.substring(0, pos);
 
             $grid.find('form.gridview-filter-form').remove();
-            var $form = $('<form action="' + url + '" method="get" class="gridview-filter-form" style="display:none" data-pjax></form>').appendTo($grid);
+            var $form = $('<form/>', {
+                action: url,
+                method: 'get',
+                class: 'gridview-filter-form',
+                style: 'display:none',
+                'data-pjax': ''
+            }).appendTo($grid);
             $.each(data, function (name, values) {
                 $.each(values, function (index, value) {
-                    $form.append($('<input>').attr({type: 'hidden', name: name, value: value}));
+                    $form.append($('<input/>').attr({type: 'hidden', name: name, value: value}));
                 });
             });
 
