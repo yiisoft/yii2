@@ -204,20 +204,19 @@ yii = (function ($) {
                 if (!action || !action.match(/(^\/|:\/\/)/)) {
                     action = window.location.href;
                 }
-                $form = $('<form method="' + method + '"></form>');
-                $form.attr('action', action);
+                $form = $('<form/>', {method: method, action: action});
                 var target = $e.attr('target');
                 if (target) {
                     $form.attr('target', target);
                 }
                 if (!method.match(/(get|post)/i)) {
-                    $form.append('<input name="_method" value="' + method + '" type="hidden">');
+                    $form.append($('<input/>', {name: '_method', value: method, type: 'hidden'}));
                     method = 'POST';
                 }
                 if (!method.match(/(get|head|options)/i)) {
                     var csrfParam = pub.getCsrfParam();
                     if (csrfParam) {
-                        $form.append('<input name="' + csrfParam + '" value="' + pub.getCsrfToken() + '" type="hidden">');
+                        $form.append($('<input/>', {name: csrfParam, value: pub.getCsrfToken(), type: 'hidden'}));
                     }
                 }
                 $form.hide().appendTo('body');
@@ -232,7 +231,7 @@ yii = (function ($) {
             // temporarily add hidden inputs according to data-params
             if (params && $.isPlainObject(params)) {
                 $.each(params, function (idx, obj) {
-                    $form.append($('<input>').attr({name: idx, value: obj, type: 'hidden'}));
+                    $form.append($('<input/>').attr({name: idx, value: obj, type: 'hidden'}));
                 });
             }
 
