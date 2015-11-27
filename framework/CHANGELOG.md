@@ -3,7 +3,6 @@ Yii Framework 2 Change Log
 
 2.0.7 under development
 -----------------------
-- Bug #10263: Unique validator passed for update-scenario when IDs targetClass and model is same (bupy7, githubjeka)
 - Bug #6351: Find MySQL FK constraints from `information_schema` tables instead of `SHOW CREATE TABLE` to improve reliability (nineinchnick)
 - Bug #6363, #8301, #8582, #9566: Fixed data methods and PJAX issues when used together (derekisbusy)
 - Bug #6876: Fixed RBAC migration MSSQL cascade problem (thejahweh)
@@ -36,6 +35,7 @@ Yii Framework 2 Change Log
 - Bug #10029: Fixed MaskedInput not working with PJAX (martrix78, samdark)
 - Bug #10101: Fixed assignments saving on role removing in `\yii\rbac\PhpManager` (rezident1307)
 - Bug #10142: Fixed `yii\validators\EmailValidator` to check the length of email properly (silverfire)
+- Bug #10263: Unique validator passed for update-scenario when IDs targetClass and model is same (bupy7, githubjeka)
 - Bug: Fixed generation of canonical URLs for `ViewAction` pages (samdark)
 - Bug: Fixed `mb_*` functions calls to use `UTF-8` or `Yii::$app->charset` (silverfire)
 - Enh #3506: Added `\yii\validators\IpValidator` to perform validation of IP addresses and subnets (SilverFire, samdark)
