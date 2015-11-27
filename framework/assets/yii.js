@@ -153,6 +153,9 @@ yii = (function ($) {
                 pjaxReplaceState = !!$e.data('pjax-replace-state'),
                 pjaxTimeout = $e.data('pjax-timeout'),
                 pjaxScrollTo = $e.data('pjax-scrollto'),
+                pjaxPushRedirect = $e.data('pjax-push-redirect'),
+                pjaxReplaceRedirect = $e.data('pjax-replace-redirect'),
+                pjaxSkipOuterContainers = $e.data('pjax-skip-outer-containers'),
                 pjaxContainer,
                 pjaxOptions = {};
 
@@ -171,6 +174,9 @@ yii = (function ($) {
                     push: pjaxPushState,
                     replace: pjaxReplaceState,
                     scrollTo: pjaxScrollTo,
+                    pushRedirect: pjaxPushRedirect,
+                    replaceRedirect: pjaxReplaceRedirect,
+                    pjaxSkipOuterContainers: pjaxSkipOuterContainers,
                     timeout: pjaxTimeout
                 }
             }
