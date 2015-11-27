@@ -5,8 +5,10 @@ namespace yiiunit\framework\validators;
 use yii\validators\UniqueValidator;
 use Yii;
 use yiiunit\data\ar\ActiveRecord;
+use yiiunit\data\ar\Customer;
 use yiiunit\data\ar\Order;
 use yiiunit\data\ar\OrderItem;
+use yiiunit\data\ar\Profile;
 use yiiunit\data\validators\models\FakedValidationModel;
 use yiiunit\data\validators\models\ValidatorTestMainModel;
 use yiiunit\data\validators\models\ValidatorTestRefModel;
@@ -135,5 +137,33 @@ class UniqueValidatorTest extends DatabaseTestCase
         $m = new Order(['id' => 10]);
         $val->validateAttribute($m, 'id');
         $this->assertFalse($m->hasErrors('id'));
+    }
+
+    public function testValidateTargetClass()
+    {
+        // Expect to "Description" and "address" isn't equals
+        $val = new UniqueValidator([
+            'targetClass' => Customer::className(),
+            'targetAttribute' => ['description'=>'address'],
+        ]);
+
+        /** @var Profile $m */
+        $m = Profile::findOne(1);
+        $this->assertEquals('profile customer 1', $m->description);
+        $val->validateAttribute($m, 'description');
+        $this->assertFalse($m->hasErrors('description'));
+
+        // ID Profile not equal ID Customer
+        // (1, description = address2) <=> (2,address = address2)
+        $m->description = 'address2';
+        $val->validateAttribute($m, 'description');
+        $this->assertTrue($m->hasErrors('description'));
+        $m->clearErrors('description');
+
+        // ID Profile(1) equal ID Customer(1)
+        // (1, description = address1) <=> (1,address = address1) BUG #10263
+        $m->description = 'address1';
+        $val->validateAttribute($m, 'description');
+        $this->assertTrue($m->hasErrors('description'));
     }
 }
