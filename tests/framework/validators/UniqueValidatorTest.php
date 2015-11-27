@@ -101,7 +101,7 @@ class UniqueValidatorTest extends DatabaseTestCase
             'targetAttribute' => ['order_id', 'item_id'],
         ]);
         // validate old record
-        /** @var ValidatorTestMainModel $m */
+        /** @var OrderItem $m */
         $m = OrderItem::findOne(['order_id' => 1, 'item_id' => 2]);
         $val->validateAttribute($m, 'order_id');
         $this->assertFalse($m->hasErrors('order_id'));
