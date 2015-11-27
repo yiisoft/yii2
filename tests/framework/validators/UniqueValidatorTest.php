@@ -6,9 +6,11 @@ use yii\validators\UniqueValidator;
 use Yii;
 use yiiunit\data\ar\ActiveRecord;
 use yiiunit\data\ar\Category;
+use yiiunit\data\ar\Customer;
 use yiiunit\data\ar\Item;
 use yiiunit\data\ar\Order;
 use yiiunit\data\ar\OrderItem;
+use yiiunit\data\ar\Profile;
 use yiiunit\data\validators\models\FakedValidationModel;
 use yiiunit\data\validators\models\ValidatorTestMainModel;
 use yiiunit\data\validators\models\ValidatorTestRefModel;
@@ -141,25 +143,29 @@ class UniqueValidatorTest extends DatabaseTestCase
 
     public function testValidateTargetClass()
     {
+        // Expect to "Description" and "address" isn't equals
         $val = new UniqueValidator([
-            'targetClass' => Category::className(),
-            'targetAttribute' => ['name'],
+            'targetClass' => Customer::className(),
+            'targetAttribute' => ['description'=>'address'],
         ]);
 
-        /** @var Item $m */
-        $m = Item::findOne(1);
-        $this->assertEquals('Agile Web Application Development with Yii1.1 and PHP5', $m->name);
-        $val->validateAttribute($m, 'name');
-        $this->assertFalse($m->hasErrors('name'));
+        /** @var Profile $m */
+        $m = Profile::findOne(1);
+        $this->assertEquals('profile customer 1', $m->description);
+        $val->validateAttribute($m, 'description');
+        $this->assertFalse($m->hasErrors('description'));
 
-        $m->name = 'Movies'; //as INSERT INTO `category` (name) VALUES ('Movies');
-        $val->validateAttribute($m, 'name');
-        $this->assertTrue($m->hasErrors('name'));
-        $m->clearErrors('name');
+        // ID Profile not equal ID Customer
+        // (1, description = address2) <=> (2,address = address2)
+        $m->description = 'address2';
+        $val->validateAttribute($m, 'description');
+        $this->assertTrue($m->hasErrors('description'));
+        $m->clearErrors('description');
 
-        // ID Item equal ID Category
-        $m->name = 'Books'; //as INSERT INTO `category` (name) VALUES ('Books');
-        $val->validateAttribute($m, 'name');
-        $this->assertTrue($m->hasErrors('name'));
+        // ID Profile(1) equal ID Customer(1)
+        // (1, description = address1) <=> (1,address = address1) BUG #10263
+        $m->description = 'address1';
+        $val->validateAttribute($m, 'description');
+        $this->assertTrue($m->hasErrors('description'));
     }
 }
