@@ -1089,6 +1089,56 @@ Note that this differs from our earlier example which only brings back customers
 > Info: When [[yii\db\ActiveQuery]] is specified with a condition via [[yii\db\ActiveQuery::onCondition()|onCondition()]],
   the condition will be put in the `ON` part if the query involves a JOIN query. If the query does not involve
   JOIN, the on-condition will be automatically appended to the `WHERE` part of the query.
+  Thus it may only contain conditions including columns of the related table.
+
+#### Relation table aliases <span id="relation-table-aliases"></span>
+
+As noted before, when using JOIN in a query, we need to disambiguate column names. Therefor often an alias is
+defined for a table. Setting an alias for the relational query would be possible by customizing the relation query in the following way:
+
+```php
+$query->joinWith([
+    'orders' => function ($q) {
+        $q->from(['o' => Order::tableName()]);
+    },
+])
+```
+
+This however looks very complicated and involes either hardcoding the related objects tablename or calling `Order::tableName()`.
+Since version 2.0.7, Yii provides a shortcut for this. You may now define and use the alias for the relation table like the following:
+
+```php
+// join the orders relation and sort the result by orders.id
+$query->joinWith(['orders o'])->orderBy('o.id');
+```
+
+If an alias was defined directly in the relation definition, which for example may be necessary if different relations exist to the
+same table, similar methods for column name disambiguation are provided like they exist [for normal tables](db-query-builder.md#aliases).
+Since version 2.0.7, the ActiveQuery class provides the [[yii\db\ActiveQuery::getRelationAlias()]] method to get the alias name
+of a relation table in the query context, and [[yii\db\Query::applyRelationAlias()]] to disambiguate a column.
+
+As an example consider the following relation definitions in the `Order` class:
+
+```php
+public function getCustomer()
+{
+    return $this->hasOne(Customer::className(), ['id' => 'customer_id'])->alias('cu');
+}
+// assume this to be a customer who has recommended the shop to the customer who placed the order
+public function getAffiliate()
+{
+    return $this->hasOne(Customer::className(), ['id' => 'affiliate_id'])->alias('af');
+}
+```
+
+When joining both relations, we can use [[yii\db\Query::applyRelationAlias()|applyRelationAlias()]] to disambiguate
+columns without knowing the alias or table name for the relation:
+
+```php
+Order::find()
+    ->joinWith(['customer', 'affiliate'])
+    ->where([$this->applyRelationAlias('affiliate', 'registration_date') => '2015-01-01']);
+```
 
 
 ### Inverse Relations <span id="inverse-relations"></span>

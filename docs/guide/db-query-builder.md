@@ -620,6 +620,38 @@ $query = (new \yii\db\Query())
 The anonymous function takes a parameter `$row` which contains the current row data and should return a scalar
 value which will be used as the index value for the current row.
 
+## Dealing with table aliases <span id="aliases"></span>
+
+Some use cases of query builder are to create an initial [[yii\db\Query]] object in one place and adjust
+it in other places of the application by adding further conditions or to change the sorting options.
+When more than one tables is used in the query, you may need to disambiguate column names to be explicit about
+which column a condition refers to, e.g. `user.id` vs. `post.id`.
+
+Since version 2.0.7 Yii provides methods that help you with disambiguating column names without the need
+to rely on a specific alias being defined in the original query. You may call the [[yii\db\Query::getAlias()]] method
+to get the alias name of a table in the query context, or [[yii\db\Query::applyAlias()]] to disambiguate a column.
+
+The following example shows how these methods are used:
+
+Consider this method to be defined in the `User` class:
+
+```php
+public static function getActiveUserQuery()
+{
+    return (new \yii\db\Query)->from(['u' => 'user'])->where(['active' => 1]);
+}
+```
+
+The following code, which is located elsewhere in the application, calls this methods and needs to adjust the query.
+
+```php
+$query = User::getActiveUserQuery();
+$query->leftJoin('post', $query->applyAlias('user', 'id') . ' = post.author_id') // LEFT JOIN post ON u.id = post.author_id
+```
+
+By using [[yii\db\Query::applyAlias()|applyAlias()]] here, this code will still work, even when the alias is changed or removed
+inside of the `getActiveUserQuery()` method implementation.
+
 
 ### Batch Query <span id="batch-query"></span>
 
