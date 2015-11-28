@@ -78,7 +78,7 @@ Composer установит Yii (шаблонное приложение basic) 
 * Если вам нужен только сам фреймворк и вы хотели бы создать приложение с нуля, воспользуйтесь инструкцией, описанной в
 разделе «[Создание приложения с нуля](tutorial-start-from-scratch.md)».
 * Если хотите начать с более продвинутого приложения, хорошо подходящего для работы в команде, используйте
-[шаблон приложения advanced](tutorial-advanced-app.md).
+[шаблон приложения advanced](https://github.com/yiisoft/yii2-app-advanced/blob/master/docs/guide/README.md).
 
 
 Проверка установки <span id="verifying-installation"></span>
