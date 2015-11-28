@@ -132,9 +132,7 @@ class BaseJson
      */
     protected static function processData($data, &$expressions, $expPrefix)
     {
-        if ($data instanceof \Traversable) {
-            return $data;
-        } elseif (is_object($data)) {
+        if (is_object($data)) {
             if ($data instanceof JsExpression) {
                 $token = "!{[$expPrefix=" . count($expressions) . ']}!';
                 $expressions['"' . $token . '"'] = $data->expression;
@@ -144,6 +142,8 @@ class BaseJson
                 $data = $data->jsonSerialize();
             } elseif ($data instanceof Arrayable) {
                 $data = $data->toArray();
+            } elseif ($data instanceof \SimpleXMLElement) {
+                $data = (array) $data;
             } else {
                 $result = [];
                 foreach ($data as $name => $value) {
