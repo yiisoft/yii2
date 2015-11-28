@@ -687,6 +687,31 @@ class ActiveRecordTest extends DatabaseTestCase
         $this->assertEquals('cu.id', $query->applyRelationAlias('customer', 'id'));
     }
 
+    public function testAlias()
+    {
+        $query = Order::find();
+        $this->assertNull($query->from);
+        $this->assertEquals(Order::tableName(), $query->getAlias(Order::tableName()));
+
+        $query = Order::find()->alias('o');
+        $this->assertEquals(['o' => Order::tableName()], $query->from);
+        $this->assertEquals('o', $query->getAlias(Order::tableName()));
+
+        $query = Order::find()->alias('o')->alias('ord');
+        $this->assertEquals(['ord' => Order::tableName()], $query->from);
+        $this->assertEquals('ord', $query->getAlias(Order::tableName()));
+
+        $query = Order::find()->from([
+            'users',
+            'o' => Order::tableName(),
+        ])->alias('ord');
+        $this->assertEquals([
+            'users',
+            'ord' => Order::tableName(),
+        ], $query->from);
+        $this->assertEquals('ord', $query->getAlias(Order::tableName()));
+    }
+
     public function testInverseOf()
     {
         // eager loading: find one and all

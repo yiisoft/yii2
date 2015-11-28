@@ -148,7 +148,7 @@ class ActiveQuery extends Query implements ActiveQueryInterface
             $this->joinWith = null;    // clean it up to avoid issue https://github.com/yiisoft/yii2/issues/2687
         }
 
-        if (empty($this->from)) { // TODO provide alias() method for convenience
+        if (empty($this->from)) {
             /* @var $modelClass ActiveRecord */
             $modelClass = $this->modelClass;
             $tableName = $modelClass::tableName();
@@ -768,6 +768,37 @@ class ActiveQuery extends Query implements ActiveQueryInterface
             call_user_func($callable, $relation);
         }
 
+        return $this;
+    }
+
+    /**
+     * Define an alias for the table defined in [[modelClass]].
+     *
+     * This method will adjust [[from]] so that an already defined alias will be overwritten.
+     * If none was defined, [[from]] will be populated with the given alias.
+     *
+     * @param string $alias the table alias.
+     * @return $this the query object itself
+     * @since 2.0.7
+     */
+    public function alias($alias)
+    {
+        if (empty($this->from) || count($this->from) < 2) {
+            list($tableName, ) = $this->getQueryTableName($this);
+            $this->from = [$alias => $tableName];
+        } else {
+            /* @var $modelClass ActiveRecord */
+            $modelClass = $this->modelClass;
+            $tableName = $modelClass::tableName();
+
+            foreach($this->from as $key => $table) {
+                if ($table === $tableName) {
+                    unset($this->from[$key]);
+                    $this->from[$alias] = $tableName;
+                }
+            }
+        }
+        $this->populateAliases($this->from);
         return $this;
     }
 
