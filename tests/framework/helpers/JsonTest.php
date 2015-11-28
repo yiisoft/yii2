@@ -101,6 +101,18 @@ class JsonTest extends TestCase
         // JsonSerializable
         $data = new JsonModel();
         $this->assertSame('{"json":"serializable"}', Json::htmlEncode($data));
+
+        // https://github.com/yiisoft/yii2/issues/10278
+        $xml = '<?xml version="1.0" encoding="UTF-8"?>
+<file>
+  <apiKey>ieu2iqw4o</apiKey>
+  <methodProperties>
+    <FindByString>Kiev</FindByString>
+  </methodProperties>
+</file>';
+
+        $document = simplexml_load_string($xml);
+        $this->assertSame('{"apiKey":"ieu2iqw4o","methodProperties":{"FindByString":"Kiev"}}', Json::encode($document));
     }
 
     public function testDecode()
