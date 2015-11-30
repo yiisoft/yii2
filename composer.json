@@ -42,6 +42,11 @@
             "name": "Paul Klimov",
             "email": "klimov.paul@gmail.com",
             "role": "Core framework development"
+        },
+        {
+            "name": "Dmitry Naumenko",
+            "email": "d.naumenko.a@gmail.com",
+            "role": "Core framework development"
         }
     ],
     "support": {
