@@ -108,7 +108,7 @@ trait ActiveQueryTrait
      * @param array $rows
      * @return array|ActiveRecord[]
      */
-    private function createModels($rows)
+    protected function createModels($rows)
     {
         $models = [];
         if ($this->asArray) {
