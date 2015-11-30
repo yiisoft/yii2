@@ -231,13 +231,13 @@ class Validator extends Component
     public function validateAttributes($model, $attributes = null)
     {
         if (is_array($attributes)) {
-            $attrs = [];
+            $newAttributes = [];
             foreach ($attributes as $attribute) {
                 if(in_array($attribute, $this->attributes) || in_array('!' . $attribute, $this->attributes)){
-                    $attrs[] = $attribute;
+                    $newAttributes[] = $attribute;
                 }
             }
-            $attributes = $attrs;
+            $attributes = $newAttributes;
         } else {
             $attributes = [];
             foreach ($this->attributes as $attribute) {

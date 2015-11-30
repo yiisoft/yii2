@@ -182,7 +182,7 @@ class ModelTest extends TestCase
         ];
         $this->assertEquals(['name'], $model->safeAttributes());
         $this->assertEquals(['name', 'email'], $model->activeAttributes());
-        $model->attributes = ['name'=>'mdmunir', 'email'=>'mdm@mun.com'];
+        $model->attributes = ['name' => 'mdmunir', 'email' => 'mdm@mun.com'];
         $this->assertNull($model->email);
         $this->assertFalse($model->validate());
 
@@ -191,7 +191,7 @@ class ModelTest extends TestCase
             [['name'], 'required'],
             [['!user_id'], 'default', 'value' => '3426'],
         ];
-        $model->attributes = ['name'=>'mdmunir', 'user_id'=>'62792684'];
+        $model->attributes = ['name' => 'mdmunir', 'user_id' => '62792684'];
         $this->assertTrue($model->validate());
         $this->assertEquals('3426', $model->user_id);
 
@@ -201,7 +201,7 @@ class ModelTest extends TestCase
             [['!email'], 'safe']
         ];
         $this->assertEquals(['name'], $model->safeAttributes());
-        $model->attributes = ['name'=>'mdmunir', 'email'=>'m2792684@mdm.com'];
+        $model->attributes = ['name' => 'mdmunir', 'email' => 'm2792684@mdm.com'];
         $this->assertFalse($model->validate());
 
         $model = new RulesModel();
@@ -212,12 +212,12 @@ class ModelTest extends TestCase
         ];
         $model->setScenario(RulesModel::SCENARIO_DEFAULT);
         $this->assertEquals(['name', 'email'], $model->safeAttributes());
-        $model->attributes = ['name'=>'mdmunir', 'email'=>'m2792684@mdm.com'];
+        $model->attributes = ['name' => 'mdmunir', 'email' => 'm2792684@mdm.com'];
         $this->assertTrue($model->validate());
         
         $model->setScenario('update');
         $this->assertEquals(['name'], $model->safeAttributes());
-        $model->attributes = ['name'=>'D426', 'email'=>'d426@mdm.com'];
+        $model->attributes = ['name' => 'D426', 'email' => 'd426@mdm.com'];
         $this->assertNotEquals('d426@mdm.com', $model->email);
     }
 
