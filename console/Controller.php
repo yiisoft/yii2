@@ -88,8 +88,10 @@ class Controller extends \yii\base\Controller
                     $default = $this->$name;
                     if (is_array($default)) {
                         $this->$name = preg_split('/\s*,\s*/', $value);
-                    } else {
+                    } elseif ($default !== null) {
                         settype($value, gettype($default));
+                        $this->$name = $value;
+                    } else {
                         $this->$name = $value;
                     }
                     $this->_passedOptions[] = $name;
