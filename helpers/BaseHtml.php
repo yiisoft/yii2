@@ -884,9 +884,12 @@ class BaseHtml
             $name .= '[]';
         }
 
-        $formatter = isset($options['item']) ? $options['item'] : null;
-        $itemOptions = isset($options['itemOptions']) ? $options['itemOptions'] : [];
-        $encode = !isset($options['encode']) || $options['encode'];
+        $formatter = ArrayHelper::remove($options, 'item', null);
+        $itemOptions = ArrayHelper::remove($options, 'itemOptions', []);
+        $encode = ArrayHelper::remove($options, 'encode', true);
+        $separator = ArrayHelper::remove($options, 'separator', PHP_EOL);
+        $tag = ArrayHelper::remove($options, 'tag', 'div');
+
         $lines = [];
         $index = 0;
         foreach ($items as $value => $label) {
@@ -911,10 +914,8 @@ class BaseHtml
         } else {
             $hidden = '';
         }
-        $separator = isset($options['separator']) ? $options['separator'] : "\n";
 
-        $tag = isset($options['tag']) ? $options['tag'] : 'div';
-        unset($options['tag'], $options['unselect'], $options['encode'], $options['separator'], $options['item'], $options['itemOptions']);
+        unset($options['unselect']);
 
         return $hidden . static::tag($tag, implode($separator, $lines), $options);
     }
@@ -953,9 +954,12 @@ class BaseHtml
      */
     public static function radioList($name, $selection = null, $items = [], $options = [])
     {
-        $encode = !isset($options['encode']) || $options['encode'];
-        $formatter = isset($options['item']) ? $options['item'] : null;
-        $itemOptions = isset($options['itemOptions']) ? $options['itemOptions'] : [];
+        $formatter = ArrayHelper::remove($options, 'item', null);
+        $itemOptions = ArrayHelper::remove($options, 'itemOptions', []);
+        $encode = ArrayHelper::remove($options, 'encode', true);
+        $separator = ArrayHelper::remove($options, 'separator', PHP_EOL);
+        $tag = ArrayHelper::remove($options, 'tag', 'div');
+
         $lines = [];
         $index = 0;
         foreach ($items as $value => $label) {
@@ -973,7 +977,6 @@ class BaseHtml
             $index++;
         }
 
-        $separator = isset($options['separator']) ? $options['separator'] : "\n";
         if (isset($options['unselect'])) {
             // add a hidden field so that if the list box has no option being selected, it still submits a value
             $hidden = static::hiddenInput($name, $options['unselect']);
@@ -981,8 +984,7 @@ class BaseHtml
             $hidden = '';
         }
 
-        $tag = isset($options['tag']) ? $options['tag'] : 'div';
-        unset($options['tag'], $options['unselect'], $options['encode'], $options['separator'], $options['item'], $options['itemOptions']);
+        unset($options['unselect']);
 
         return $hidden . static::tag($tag, implode($separator, $lines), $options);
     }
@@ -1012,11 +1014,10 @@ class BaseHtml
      */
     public static function ul($items, $options = [])
     {
-        $tag = isset($options['tag']) ? $options['tag'] : 'ul';
-        $encode = !isset($options['encode']) || $options['encode'];
-        $formatter = isset($options['item']) ? $options['item'] : null;
-        $itemOptions = isset($options['itemOptions']) ? $options['itemOptions'] : [];
-        unset($options['tag'], $options['encode'], $options['item'], $options['itemOptions']);
+        $tag = ArrayHelper::remove($options, 'tag', 'ul');
+        $encode = ArrayHelper::remove($options, 'encode', true);
+        $formatter = ArrayHelper::remove($options, 'item', null);
+        $itemOptions = ArrayHelper::remove($options, 'itemOptions', []);
 
         if (empty($items)) {
             return static::tag($tag, '', $options);
@@ -1085,8 +1086,8 @@ class BaseHtml
     {
         $for = array_key_exists('for', $options) ? $options['for'] : static::getInputId($model, $attribute);
         $attribute = static::getAttributeName($attribute);
-        $label = isset($options['label']) ? $options['label'] : static::encode($model->getAttributeLabel($attribute));
-        unset($options['label'], $options['for']);
+        $label = ArrayHelper::remove($options, 'label', static::encode($model->getAttributeLabel($attribute)));
+        unset($options['for']);
         return static::label($label, $for, $options);
     }
 
