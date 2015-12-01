@@ -224,7 +224,7 @@ abstract class Cache extends Component implements \ArrayAccess
      * If the cache already contains such a key, the existing value and
      * expiration time will be replaced with the new ones, respectively.
      *
-     * @deprecated This method is alias as [[multiSet()]] and will be removed in 2.1.0.     *
+     * @deprecated This method is alias as [[multiSet()]] and will be removed in 2.1.0.
      * @param array $items the items to be cached, as key-value pairs.
      * @param integer $duration default number of seconds in which the cached values will expire. 0 means never expire.
      * @param Dependency $dependency dependency of the cached items. If the dependency changes,
