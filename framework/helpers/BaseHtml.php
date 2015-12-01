@@ -1031,7 +1031,12 @@ class BaseHtml
                 $results[] = static::tag('li', $encode ? static::encode($item) : $item, $itemOptions);
             }
         }
-        return static::tag($tag, implode($separator, $results), $options);
+
+        return static::tag(
+            $tag,
+            $separator . implode($separator, $results) . $separator,
+            $options
+        );
     }
 
     /**
