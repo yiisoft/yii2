@@ -1114,7 +1114,7 @@ class BaseHtml
     public static function activeHint($model, $attribute, $options = [])
     {
         $attribute = static::getAttributeName($attribute);
-        $hint = $options['hint']) ? $options['hint'] : $model->getAttributeHint($attribute);
+        $hint = isset($options['hint']) ? $options['hint'] : $model->getAttributeHint($attribute);
         if (empty($hint)) {
             return '';
         }
