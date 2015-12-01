@@ -995,6 +995,7 @@ class BaseHtml
      *
      * - encode: boolean, whether to HTML-encode the items. Defaults to true.
      *   This option is ignored if the `item` option is specified.
+     * - separator: string, since 2.0.7 the HTML code that separates items.
      * - itemOptions: array, the HTML attributes for the `li` tags. This option is ignored if the `item` option is specified.
      * - item: callable, a callback that is used to generate each individual list item.
      *   The signature of this callback must be:
@@ -1014,7 +1015,8 @@ class BaseHtml
     {
         $tag = ArrayHelper::remove($options, 'tag', 'ul');
         $encode = ArrayHelper::remove($options, 'encode', true);
-        $formatter = ArrayHelper::remove($options, 'item', null);
+        $formatter = ArrayHelper::remove($options, 'item');
+        $separator = ArrayHelper::remove($options, 'separator', PHP_EOL);
         $itemOptions = ArrayHelper::remove($options, 'itemOptions', []);
 
         if (empty($items)) {
@@ -1029,7 +1031,7 @@ class BaseHtml
                 $results[] = static::tag('li', $encode ? static::encode($item) : $item, $itemOptions);
             }
         }
-        return static::tag($tag, "\n" . implode("\n", $results) . "\n", $options);
+        return static::tag($tag, implode($separator, $results), $options);
     }
 
     /**
@@ -1082,10 +1084,9 @@ class BaseHtml
      */
     public static function activeLabel($model, $attribute, $options = [])
     {
-        $for = array_key_exists('for', $options) ? $options['for'] : static::getInputId($model, $attribute);
+        $for = ArrayHelper::remove($options, 'for', static::getInputId($model, $attribute));
         $attribute = static::getAttributeName($attribute);
         $label = ArrayHelper::remove($options, 'label', static::encode($model->getAttributeLabel($attribute)));
-        unset($options['for']);
         return static::label($label, $for, $options);
     }
 
@@ -1113,7 +1114,7 @@ class BaseHtml
     public static function activeHint($model, $attribute, $options = [])
     {
         $attribute = static::getAttributeName($attribute);
-        $hint = isset($options['hint']) ? $options['hint'] : $model->getAttributeHint($attribute);
+        $hint = $options['hint']) ? $options['hint'] : $model->getAttributeHint($attribute);
         if (empty($hint)) {
             return '';
         }
@@ -1139,9 +1140,9 @@ class BaseHtml
     public static function errorSummary($models, $options = [])
     {
         $header = isset($options['header']) ? $options['header'] : '<p>' . Yii::t('yii', 'Please fix the following errors:') . '</p>';
-        $footer = isset($options['footer']) ? $options['footer'] : '';
-        $encode = !isset($options['encode']) || $options['encode'] !== false;
-        unset($options['header'], $options['footer'], $options['encode']);
+        $footer = ArrayHelper::remove($options, 'footer', '');
+        $encode = ArrayHelper::remove($options, 'encode', true);
+        unset($options['header']);
 
         $lines = [];
         if (!is_array($models)) {
@@ -1186,9 +1187,8 @@ class BaseHtml
     {
         $attribute = static::getAttributeName($attribute);
         $error = $model->getFirstError($attribute);
-        $tag = isset($options['tag']) ? $options['tag'] : 'div';
-        $encode = !isset($options['encode']) || $options['encode'] !== false;
-        unset($options['tag'], $options['encode']);
+        $tag = ArrayHelper::remove($options, 'tag', 'div');
+        $encode = ArrayHelper::remove($options, 'encode', true);
         return Html::tag($tag, $encode ? Html::encode($error) : $error, $options);
     }
 
