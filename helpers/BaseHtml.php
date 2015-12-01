@@ -884,7 +884,7 @@ class BaseHtml
             $name .= '[]';
         }
 
-        $formatter = ArrayHelper::remove($options, 'item', null);
+        $formatter = ArrayHelper::remove($options, 'item');
         $itemOptions = ArrayHelper::remove($options, 'itemOptions', []);
         $encode = ArrayHelper::remove($options, 'encode', true);
         $separator = ArrayHelper::remove($options, 'separator', PHP_EOL);
@@ -911,11 +911,10 @@ class BaseHtml
             // add a hidden field so that if the list box has no option being selected, it still submits a value
             $name2 = substr($name, -2) === '[]' ? substr($name, 0, -2) : $name;
             $hidden = static::hiddenInput($name2, $options['unselect']);
+            unset($options['unselect']);
         } else {
             $hidden = '';
         }
-
-        unset($options['unselect']);
 
         return $hidden . static::tag($tag, implode($separator, $lines), $options);
     }
@@ -954,7 +953,7 @@ class BaseHtml
      */
     public static function radioList($name, $selection = null, $items = [], $options = [])
     {
-        $formatter = ArrayHelper::remove($options, 'item', null);
+        $formatter = ArrayHelper::remove($options, 'item');
         $itemOptions = ArrayHelper::remove($options, 'itemOptions', []);
         $encode = ArrayHelper::remove($options, 'encode', true);
         $separator = ArrayHelper::remove($options, 'separator', PHP_EOL);
@@ -980,11 +979,10 @@ class BaseHtml
         if (isset($options['unselect'])) {
             // add a hidden field so that if the list box has no option being selected, it still submits a value
             $hidden = static::hiddenInput($name, $options['unselect']);
+            unset($options['unselect']);
         } else {
             $hidden = '';
         }
-
-        unset($options['unselect']);
 
         return $hidden . static::tag($tag, implode($separator, $lines), $options);
     }
