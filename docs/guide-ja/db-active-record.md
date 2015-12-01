@@ -299,7 +299,7 @@ foreach (Customer::find()->each(10) as $customer) {
 }
 // イーガーローディングをするバッチクエリ
 foreach (Customer::find()->with('orders')->each() as $customer) {
-    // $customer は Customer オブジェクト
+    // $customer は 'orders' リレーションを投入された Customer オブジェクト
 }
 ```
 
@@ -517,7 +517,8 @@ Customer::deleteAll(['status' => Customer::STATUS_INACTIVE]);
 3. [[yii\db\ActiveRecord::afterDelete()|afterDelete()]]: [[yii\db\ActiveRecord::EVENT_AFTER_DELETE|EVENT_AFTER_DELETE]] イベントをトリガ。
 
 
-> Note|注意: 次のメソッドは、どれを呼んでも、上記のライフサイクルを開始させません。
+> Note|注意: 次のメソッドを呼んだ場合は、いずれの場合も、上記のライフサイクルのどれかを開始させることはありません。
+> これらのメソッドは、レコード単位ではなく、データベース上で直接に動作するためです。
 >
 > - [[yii\db\ActiveRecord::updateAll()]] 
 > - [[yii\db\ActiveRecord::deleteAll()]]
@@ -580,6 +581,9 @@ class Post extends \yii\db\ActiveRecord
 
 複数の操作を示すためには、`|` を使って上記の定数を連結してください。
 ショートカット定数 [[yii\db\ActiveRecord::OP_ALL|OP_ALL]] を使って、上記の三つの操作すべてを示すことも出来ます。
+
+このメソッドを使って生成されたトランザクションは、[[yii\db\ActiveRecord::beforeSave()|beforeSave()]] を呼ぶ前に開始され、
+[[yii\db\ActiveRecord::afterSave()|afterSave()]] を実行した後にコミットされます。
 
 
 ## 楽観的ロック <span id="optimistic-locks"></span>
@@ -651,6 +655,8 @@ public function actionUpdate($id)
 ```php
 class Customer extends ActiveRecord
 {
+    // ...
+
     public function getOrders()
     {
         return $this->hasMany(Order::className(), ['customer_id' => 'id']);
@@ -659,6 +665,8 @@ class Customer extends ActiveRecord
 
 class Order extends ActiveRecord
 {
+    // ...
+
     public function getCustomer()
     {
         return $this->hasOne(Customer::className(), ['id' => 'customer_id']);
@@ -728,7 +736,7 @@ SQL 文の再実行を強制するためには、まず、リレーションプ�
 ```php
 $customer = Customer::findOne(123);
 
-// SELECT * FROM `order` WHERE `subtotal` > 200 ORDER BY `id`
+// SELECT * FROM `order` WHERE `customer_id` = 123 AND `subtotal` > 200 ORDER BY `id`
 $orders = $customer->getOrders()
     ->where(['>', 'subtotal', 200])
     ->orderBy('id')
@@ -755,10 +763,10 @@ class Customer extends ActiveRecord
 これによって、次のようなリレーショナルクエリを実行することが出来るようになります。
 
 ```php
-// SELECT * FROM `order` WHERE `subtotal` > 200 ORDER BY `id`
+// SELECT * FROM `order` WHERE `customer_id` = 123 AND `subtotal` > 200 ORDER BY `id`
 $orders = $customer->getBigOrders(200)->all();
 
-// SELECT * FROM `order` WHERE `subtotal` > 100 ORDER BY `id`
+// SELECT * FROM `order` WHERE `customer_id` = 123 AND `subtotal` > 100 ORDER BY `id`
 $orders = $customer->bigOrders;
 ```
 
