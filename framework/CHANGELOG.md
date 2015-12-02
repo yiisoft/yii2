@@ -211,6 +211,7 @@ Yii Framework 2 Change Log
 - Enh #10255: Added Yii warning to session initialization if session was already started (AnatolyRugalev)
 - Enh #10264: Generation of HTML tags in Yii's JavaScript now uses jQuery style (silverfire)
 - Enh #10267: `yii.js` - added original event passing to `pjaxOptions` for links with `data-method` and `data-pjax` (servocoder, silverfire)
+- Enh #10309: Extracted `yii\web\UrlManager` rule cache key into `$cacheKey` protected property (lordthorzonus)
 - Enh #10319: `yii\helpers\VarDumper::dump()` now respects PHP magic method `__debugInfo()` (klimov-paul)
 - Enh #10359: Support wildcard category name in `yii/console/controllers/MessageController` (rmrevin)
 - Enh #10390: Added ability to disable outer tag for `\yii\helpers\BaseHtml::radiolist()`, `::checkboxList()` (TianJinRong, githubjeka, silverfire)

@@ -126,6 +126,12 @@ class UrlManager extends Component
      */
     public $ruleConfig = ['class' => 'yii\web\UrlRule'];
 
+    /**
+     * @var string the cache key for cached rules
+     * @since 2.0.8
+     */
+    protected $cacheKey = __CLASS__;
+
     private $_baseUrl;
     private $_scriptUrl;
     private $_hostInfo;
@@ -146,7 +152,7 @@ class UrlManager extends Component
             $this->cache = Yii::$app->get($this->cache, false);
         }
         if ($this->cache instanceof Cache) {
-            $cacheKey = __CLASS__;
+            $cacheKey = $this->cacheKey;
             $hash = md5(json_encode($this->rules));
             if (($data = $this->cache->get($cacheKey)) !== false && isset($data[1]) && $data[1] === $hash) {
                 $this->rules = $data[0];
