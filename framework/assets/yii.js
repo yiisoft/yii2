@@ -282,8 +282,8 @@ yii = (function ($) {
                 pair,
                 i;
 
-            for (i = pairs.length; i > 0;) {
-                pair = pairs[--i].split('=');
+            for (i = 0; i < pairs.length; i++) {
+                pair = pairs[i].split('=');
                 var name = decodeURIComponent(pair[0]);
                 var value = decodeURIComponent(pair[1]);
                 if (name.length) {
