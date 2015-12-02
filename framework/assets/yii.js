@@ -288,7 +288,7 @@ yii = (function ($) {
                 var value = decodeURIComponent(pair[1]);
                 if (name.length) {
                     if (params[name] !== undefined) {
-                        if (!params[name].push) {
+                        if (!$.isArray(params[name])) {
                             params[name] = [params[name]];
                         }
                         params[name].push(value || '');
