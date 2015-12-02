@@ -82,6 +82,7 @@ Yii Framework 2 Change Log
 - Chg #9528: Traversable objects are now formatted as arrays in `yii\web\XmlResponseFormatter` to support SPL objects and Generators (MaXL-ru)
 - New #10083: Added wrapper for PHP webserver (samdark)
 - New: Added new requirement: ICU Data version >= 49.1 (SilverFire)
+- Enh: Changed UrlManagers rule cacheKey to be a protected property (lordthorzonus)
 
 
 2.0.6 August 05, 2015
