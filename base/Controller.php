@@ -90,7 +90,7 @@ class Controller extends Component implements ViewContextInterface
      * It should return an array, with array keys being action IDs, and array values the corresponding
      * action class names or action configuration arrays. For example,
      *
-     * ~~~
+     * ```php
      * return [
      *     'action1' => 'app\components\Action1',
      *     'action2' => [
@@ -99,7 +99,7 @@ class Controller extends Component implements ViewContextInterface
      *         'property2' => 'value2',
      *     ],
      * ];
-     * ~~~
+     * ```
      *
      * [[\Yii::createObject()]] will be used later to create the requested action
      * using the configuration provided here.

@@ -20,9 +20,9 @@ use yii\helpers\Console;
  * Users call a console command by specifying the corresponding route which identifies a controller action.
  * The `yii` program is used when calling a console command, like the following:
  *
- * ~~~
+ * ```
  * yii <route> [--param1=value1 --param2 ...]
- * ~~~
+ * ```
  *
  * where `<route>` is a route to a controller action and the params will be populated as properties of a command.
  * See [[options()]] for details.
@@ -166,9 +166,9 @@ class Controller extends \yii\base\Controller
      *
      * Example:
      *
-     * ~~~
+     * ```
      * echo $this->ansiFormat('This will be red and underlined.', Console::FG_RED, Console::UNDERLINE);
-     * ~~~
+     * ```
      *
      * @param string $string the string to be formatted
      * @return string
@@ -191,9 +191,9 @@ class Controller extends \yii\base\Controller
      *
      * Example:
      *
-     * ~~~
+     * ```
      * $this->stdout('This will be red and underlined.', Console::FG_RED, Console::UNDERLINE);
-     * ~~~
+     * ```
      *
      * @param string $string the string to print
      * @return int|boolean Number of bytes printed or false on error
@@ -216,9 +216,9 @@ class Controller extends \yii\base\Controller
      *
      * Example:
      *
-     * ~~~
+     * ```
      * $this->stderr('This will be red and underlined.', Console::FG_RED, Console::UNDERLINE);
-     * ~~~
+     * ```
      *
      * @param string $string the string to print
      * @return int|boolean Number of bytes printed or false on error

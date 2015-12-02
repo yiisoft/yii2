@@ -429,14 +429,14 @@ class BaseYii
      * This has to be matched with a call to [[endProfile]] with the same category name.
      * The begin- and end- calls must also be properly nested. For example,
      *
-     * ~~~
+     * ```php
      * \Yii::beginProfile('block1');
      * // some code to be profiled
      *     \Yii::beginProfile('block2');
      *     // some other code to be profiled
      *     \Yii::endProfile('block2');
      * \Yii::endProfile('block1');
-     * ~~~
+     * ```
      * @param string $token token for the code block
      * @param string $category the category of this log message
      * @see endProfile()

@@ -19,12 +19,12 @@ use Yii;
  * - Each PHP script is saved as a file named as `[[basePath]]/LanguageID/CategoryName.php`;
  * - Within each PHP script, the message translations are returned as an array like the following:
  *
- * ~~~
+ * ```php
  * return [
  *     'original message 1' => 'translated message 1',
  *     'original message 2' => 'translated message 2',
  * ];
- * ~~~
+ * ```
  *
  * You may use [[fileMap]] to customize the association between category names and the file names.
  *
@@ -41,12 +41,12 @@ class PhpMessageSource extends MessageSource
      * @var array mapping between message categories and the corresponding message file paths.
      * The file paths are relative to [[basePath]]. For example,
      *
-     * ~~~
+     * ```php
      * [
      *     'core' => 'core.php',
      *     'ext' => 'extensions.php',
      * ]
-     * ~~~
+     * ```
      */
     public $fileMap;
 

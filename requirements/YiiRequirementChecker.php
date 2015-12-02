@@ -16,7 +16,7 @@ if (version_compare(PHP_VERSION, '4.3', '<')) {
  *
  * Example:
  *
- * ~~~php
+ * ```php
  * require_once('path/to/YiiRequirementChecker.php');
  * $requirementsChecker = new YiiRequirementChecker();
  * $requirements = array(
@@ -29,7 +29,7 @@ if (version_compare(PHP_VERSION, '4.3', '<')) {
  *     ),
  * );
  * $requirementsChecker->checkYii()->check($requirements)->render();
- * ~~~
+ * ```
  *
  * If you wish to render the report with your own representation, use [[getResult()]] instead of [[render()]]
  *
@@ -37,14 +37,14 @@ if (version_compare(PHP_VERSION, '4.3', '<')) {
  * In this case specified PHP expression will be evaluated in the context of this class instance.
  * For example:
  *
- * ~~~
+ * ```php
  * $requirements = array(
  *     array(
  *         'name' => 'Upload max file size',
  *         'condition' => 'eval:$this->checkUploadMaxFileSize("5M")',
  *     ),
  * );
- * ~~~
+ * ```
  *
  * Note: this class definition does not match ordinary Yii style, because it should match PHP 4.3
  * and should not use features from newer PHP versions!

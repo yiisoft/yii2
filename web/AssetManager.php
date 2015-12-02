@@ -54,13 +54,13 @@ class AssetManager extends Component
      * The following example shows how to disable the bootstrap css file used by Bootstrap widgets
      * (because you want to use your own styles):
      *
-     * ~~~
+     * ```php
      * [
      *     'yii\bootstrap\BootstrapAsset' => [
      *         'css' => [],
      *     ],
      * ]
-     * ~~~
+     * ```
      */
     public $bundles = [];
     /**
@@ -115,9 +115,9 @@ class AssetManager extends Component
      * to Web users. For example, for Apache Web server, the following configuration directive should be added
      * for the Web folder:
      *
-     * ~~~
+     * ```apache
      * Options FollowSymLinks
-     * ~~~
+     * ```
      */
     public $linkAssets = false;
     /**

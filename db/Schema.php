@@ -353,12 +353,12 @@ abstract class Schema extends Object
      * Returns all unique indexes for the given table.
      * Each array element is of the following structure:
      *
-     * ~~~
+     * ```php
      * [
      *  'IndexName1' => ['col1' [, ...]],
      *  'IndexName2' => ['col2' [, ...]],
      * ]
-     * ~~~
+     * ```
      *
      * This method should be overridden by child classes in order to support this feature
      * because the default implementation simply throws an exception

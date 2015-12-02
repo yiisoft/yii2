@@ -28,7 +28,7 @@ use yii\base\InvalidConfigException;
  *
  * To use MemCache as the cache application component, configure the application as follows,
  *
- * ~~~
+ * ```php
  * [
  *     'components' => [
  *         'cache' => [
@@ -48,7 +48,7 @@ use yii\base\InvalidConfigException;
  *         ],
  *     ],
  * ]
- * ~~~
+ * ```
  *
  * In the above, two memcache servers are used: server1 and server2. You can configure more properties of
  * each server, such as `persistent`, `weight`, `timeout`. Please see [[MemCacheServer]] for available options.

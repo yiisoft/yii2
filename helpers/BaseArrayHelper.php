@@ -27,7 +27,7 @@ class BaseArrayHelper
      * @param array $properties a mapping from object class names to the properties that need to put into the resulting arrays.
      * The properties specified for each class is an array of the following format:
      *
-     * ~~~
+     * ```php
      * [
      *     'app\models\Post' => [
      *         'id',
@@ -40,18 +40,18 @@ class BaseArrayHelper
      *         },
      *     ],
      * ]
-     * ~~~
+     * ```
      *
      * The result of `ArrayHelper::toArray($post, $properties)` could be like the following:
      *
-     * ~~~
+     * ```php
      * [
      *     'id' => 123,
      *     'title' => 'test',
      *     'createTime' => '2013-01-01 12:00AM',
      *     'length' => 301,
      * ]
-     * ~~~
+     * ```
      *
      * @param boolean $recursive whether to recursively converts properties which are objects into arrays.
      * @return array the array representation of the object
@@ -150,7 +150,7 @@ class BaseArrayHelper
      *
      * Below are some usage examples,
      *
-     * ~~~
+     * ```php
      * // working with array
      * $username = \yii\helpers\ArrayHelper::getValue($_POST, 'username');
      * // working with object
@@ -163,7 +163,7 @@ class BaseArrayHelper
      * $street = \yii\helpers\ArrayHelper::getValue($users, 'address.street');
      * // using an array of keys to retrieve the value
      * $value = \yii\helpers\ArrayHelper::getValue($versions, ['1.0', 'date']);
-     * ~~~
+     * ```
      *
      * @param array|object $array array or object to extract value from
      * @param string|\Closure|array $key key name of the array element, an array of keys or property name of the object,
@@ -213,13 +213,13 @@ class BaseArrayHelper
      *
      * Usage examples,
      *
-     * ~~~
+     * ```php
      * // $array = ['type' => 'A', 'options' => [1, 2]];
      * // working with array
      * $type = \yii\helpers\ArrayHelper::remove($array, 'type');
      * // $array content
      * // $array = ['options' => [1, 2]];
-     * ~~~
+     * ```
      *
      * @param array $array the array to extract value from
      * @param string $key key name of the array element
@@ -249,7 +249,7 @@ class BaseArrayHelper
      *
      * For example,
      *
-     * ~~~
+     * ```php
      * $array = [
      *     ['id' => '123', 'data' => 'abc'],
      *     ['id' => '345', 'data' => 'def'],
@@ -265,7 +265,7 @@ class BaseArrayHelper
      * $result = ArrayHelper::index($array, function ($element) {
      *     return $element['id'];
      * });
-     * ~~~
+     * ```
      *
      * @param array $array the array that needs to be indexed
      * @param string|\Closure $key the column name or anonymous function whose result will be used to index the array
@@ -288,7 +288,7 @@ class BaseArrayHelper
      *
      * For example,
      *
-     * ~~~
+     * ```php
      * $array = [
      *     ['id' => '123', 'data' => 'abc'],
      *     ['id' => '345', 'data' => 'def'],
@@ -300,7 +300,7 @@ class BaseArrayHelper
      * $result = ArrayHelper::getColumn($array, function ($element) {
      *     return $element['id'];
      * });
-     * ~~~
+     * ```
      *
      * @param array $array
      * @param string|\Closure $name
@@ -331,7 +331,7 @@ class BaseArrayHelper
      *
      * For example,
      *
-     * ~~~
+     * ```php
      * $array = [
      *     ['id' => '123', 'name' => 'aaa', 'class' => 'x'],
      *     ['id' => '124', 'name' => 'bbb', 'class' => 'x'],
@@ -357,7 +357,7 @@ class BaseArrayHelper
      * //         '345' => 'ccc',
      * //     ],
      * // ]
-     * ~~~
+     * ```
      *
      * @param array $array
      * @param string|\Closure $from

@@ -60,11 +60,11 @@ class Event extends Object
      * For example, the following code attaches an event handler to `ActiveRecord`'s
      * `afterInsert` event:
      *
-     * ~~~
+     * ```php
      * Event::on(ActiveRecord::className(), ActiveRecord::EVENT_AFTER_INSERT, function ($event) {
      *     Yii::trace(get_class($event->sender) . ' is inserted.');
      * });
-     * ~~~
+     * ```
      *
      * The handler will be invoked for EVERY successful ActiveRecord insertion.
      *

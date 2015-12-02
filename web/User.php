@@ -36,14 +36,14 @@ use yii\base\InvalidValueException;
  * You can modify its configuration by adding an array to your application config under `components`
  * as it is shown in the following example:
  *
- * ~~~
+ * ```php
  * 'user' => [
  *     'identityClass' => 'app\models\User', // User must implement the IdentityInterface
  *     'enableAutoLogin' => true,
  *     // 'loginUrl' => ['user/login'],
  *     // ...
  * ]
- * ~~~
+ * ```
  *
  * @property string|integer $id The unique identifier for the user. If null, it means the user is a guest.
  * This property is read-only.
@@ -84,9 +84,9 @@ class User extends Component
      * The first element of the array should be the route to the login action, and the rest of
      * the name-value pairs are GET parameters used to construct the login URL. For example,
      *
-     * ~~~
+     * ```php
      * ['site/login', 'ref' => 1]
-     * ~~~
+     * ```
      *
      * If this property is null, a 403 HTTP exception will be raised when [[loginRequired()]] is called.
      */
@@ -391,9 +391,9 @@ class User extends Component
      * The first element of the array should be the route, and the rest of
      * the name-value pairs are GET parameters used to construct the URL. For example,
      *
-     * ~~~
+     * ```php
      * ['admin/index', 'ref' => 1]
-     * ~~~
+     * ```
      */
     public function setReturnUrl($url)
     {

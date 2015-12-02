@@ -74,18 +74,18 @@ class Query extends Component implements QueryInterface
      * @var array how to join with other tables. Each array element represents the specification
      * of one join which has the following structure:
      *
-     * ~~~
+     * ```php
      * [$joinType, $tableName, $joinCondition]
-     * ~~~
+     * ```
      *
      * For example,
      *
-     * ~~~
+     * ```php
      * [
      *     ['INNER JOIN', 'user', 'user.id = author_id'],
      *     ['LEFT JOIN', 'team', 'team.id = team_id'],
      * ]
-     * ~~~
+     * ```
      */
     public $join;
     /**

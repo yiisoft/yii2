@@ -16,7 +16,7 @@
  *
  * A module may be structured as follows:
  *
- * ~~~
+ * ```javascript
  * yii.sample = (function($) {
  *     var pub = {
  *         // whether this module is currently active. If false, init() will not be called for this module
@@ -33,7 +33,7 @@
  *
  *     return pub;
  * })(jQuery);
- * ~~~
+ * ```
  *
  * Using this structure, you can define public and private functions/properties for a module.
  * Private functions/properties are only visible within the module, while public functions/properties
