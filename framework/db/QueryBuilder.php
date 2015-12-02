@@ -113,12 +113,12 @@ class QueryBuilder extends \yii\base\Object
      * Creates an INSERT SQL statement.
      * For example,
      *
-     * ~~~
+     * ```php
      * $sql = $queryBuilder->insert('user', [
-     *  'name' => 'Sam',
-     *  'age' => 30,
+     *     'name' => 'Sam',
+     *     'age' => 30,
      * ], $params);
-     * ~~~
+     * ```
      *
      * The method will properly escape the table and column names.
      *
@@ -161,13 +161,13 @@ class QueryBuilder extends \yii\base\Object
      * Generates a batch INSERT SQL statement.
      * For example,
      *
-     * ~~~
+     * ```php
      * $sql = $queryBuilder->batchInsert('user', ['name', 'age'], [
      *     ['Tom', 30],
      *     ['Jane', 20],
      *     ['Linda', 25],
      * ]);
-     * ~~~
+     * ```
      *
      * Note that the values in each row must match the corresponding column names.
      *
@@ -218,10 +218,10 @@ class QueryBuilder extends \yii\base\Object
      * Creates an UPDATE SQL statement.
      * For example,
      *
-     * ~~~
+     * ```php
      * $params = [];
      * $sql = $queryBuilder->update('user', ['status' => 1], 'age > 30', $params);
-     * ~~~
+     * ```
      *
      * The method will properly escape the table and column names.
      *
@@ -265,9 +265,9 @@ class QueryBuilder extends \yii\base\Object
      * Creates a DELETE SQL statement.
      * For example,
      *
-     * ~~~
+     * ```php
      * $sql = $queryBuilder->delete('user', 'status = 0');
-     * ~~~
+     * ```
      *
      * The method will properly escape the table and column names.
      *
@@ -299,13 +299,13 @@ class QueryBuilder extends \yii\base\Object
      *
      * For example,
      *
-     * ~~~
+     * ```php
      * $sql = $queryBuilder->createTable('user', [
      *  'id' => 'pk',
      *  'name' => 'string',
      *  'age' => 'integer',
      * ]);
-     * ~~~
+     * ```
      *
      * @param string $table the name of the table to be created. The name will be properly quoted by the method.
      * @param array $columns the columns (name => definition) in the new table.

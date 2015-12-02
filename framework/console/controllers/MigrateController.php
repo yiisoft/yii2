@@ -30,16 +30,16 @@ use yii\helpers\Console;
  * this command is executed, if it does not exist. You may also manually
  * create it as follows:
  *
- * ~~~
+ * ```sql
  * CREATE TABLE migration (
  *     version varchar(180) PRIMARY KEY,
  *     apply_time integer
  * )
- * ~~~
+ * ```
  *
  * Below are some common usages of this command:
  *
- * ~~~
+ * ```
  * # creates a new migration named 'create_user_table'
  * yii migrate/create create_user_table
  *
@@ -48,7 +48,7 @@ use yii\helpers\Console;
  *
  * # reverts the last applied migration
  * yii migrate/down
- * ~~~
+ * ```
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0

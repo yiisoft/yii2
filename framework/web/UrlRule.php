@@ -17,12 +17,12 @@ use yii\base\InvalidConfigException;
  * To define your own URL parsing and creation logic you can extend from this class
  * and add it to [[UrlManager::rules]] like this:
  *
- * ~~~
+ * ```php
  * 'rules' => [
  *     ['class' => 'MyUrlRule', 'pattern' => '...', 'route' => 'site/index', ...],
  *     // ...
  * ]
- * ~~~
+ * ```
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
