@@ -690,7 +690,7 @@ class TranslationEventHandler
 どこに保存したいかを決めて、次のコマンドを発行してください。
 
 ```bash
-./yii message/config path/to/config.php
+./yii message/config-template path/to/config.php
 ```
 
 作成されたファイルを開いて、あなたの要求に合わせてパラメータを修正します。
@@ -700,12 +700,22 @@ class TranslationEventHandler
 * `messagePath`: メッセージファイルを保存するパス。
   これは、アプリケーションの構成情報で記述されている `i18n` の `basePath` と合致しなければなりません。
 
-> エイリアスがここではサポートされていないことに注意してください。
-  構成情報ファイルの位置からの相対パスで記述しなければなりません。
+'./yii message/config' コマンドを使って、CLI 経由で、指定したオプションを持つ設定ファイルを動的に生成することも可能です。
+例えば、`languages` と `messagePath` のパラメータは、次のようにして設定することが出来ます。
+
+```shell
+./yii message/config --languages=de,ja --messagePath=messages path/to/config.php
+```
+
+利用可能なオプションのリストを取得するためには、次のコマンドを実行します。
+
+```shell
+./yii help message/config
+```
 
 構成情報ファイルの編集が完了すれば、ついに、下記のコマンドを使ってメッセージを抽出することが出来ます。
 
-```bash
+```shell
 ./yii message path/to/config.php
 ```
 

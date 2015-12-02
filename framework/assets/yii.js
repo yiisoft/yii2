@@ -153,6 +153,9 @@ yii = (function ($) {
                 pjaxReplaceState = !!$e.data('pjax-replace-state'),
                 pjaxTimeout = $e.data('pjax-timeout'),
                 pjaxScrollTo = $e.data('pjax-scrollto'),
+                pjaxPushRedirect = $e.data('pjax-push-redirect'),
+                pjaxReplaceRedirect = $e.data('pjax-replace-redirect'),
+                pjaxSkipOuterContainers = $e.data('pjax-skip-outer-containers'),
                 pjaxContainer,
                 pjaxOptions = {};
 
@@ -171,7 +174,12 @@ yii = (function ($) {
                     push: pjaxPushState,
                     replace: pjaxReplaceState,
                     scrollTo: pjaxScrollTo,
-                    timeout: pjaxTimeout
+                    pushRedirect: pjaxPushRedirect,
+                    replaceRedirect: pjaxReplaceRedirect,
+                    pjaxSkipOuterContainers: pjaxSkipOuterContainers,
+                    timeout: pjaxTimeout,
+                    originalEvent: event,
+                    originalTarget: $e
                 }
             }
 
@@ -198,20 +206,19 @@ yii = (function ($) {
                 if (!action || !action.match(/(^\/|:\/\/)/)) {
                     action = window.location.href;
                 }
-                $form = $('<form method="' + method + '"></form>');
-                $form.attr('action', action);
+                $form = $('<form/>', {method: method, action: action});
                 var target = $e.attr('target');
                 if (target) {
                     $form.attr('target', target);
                 }
                 if (!method.match(/(get|post)/i)) {
-                    $form.append('<input name="_method" value="' + method + '" type="hidden">');
+                    $form.append($('<input/>', {name: '_method', value: method, type: 'hidden'}));
                     method = 'POST';
                 }
                 if (!method.match(/(get|head|options)/i)) {
                     var csrfParam = pub.getCsrfParam();
                     if (csrfParam) {
-                        $form.append('<input name="' + csrfParam + '" value="' + pub.getCsrfToken() + '" type="hidden">');
+                        $form.append($('<input/>', {name: csrfParam, value: pub.getCsrfToken(), type: 'hidden'}));
                     }
                 }
                 $form.hide().appendTo('body');
@@ -226,7 +233,7 @@ yii = (function ($) {
             // temporarily add hidden inputs according to data-params
             if (params && $.isPlainObject(params)) {
                 $.each(params, function (idx, obj) {
-                    $form.append($('<input>').attr({name: idx, value: obj, type: 'hidden'}));
+                    $form.append($('<input/>').attr({name: idx, value: obj, type: 'hidden'}));
                 });
             }
 
@@ -346,6 +353,7 @@ yii = (function ($) {
 
     function initScriptFilter() {
         var hostInfo = location.protocol + '//' + location.host;
+
         var loadedScripts = $('script[src]').map(function () {
             return this.src.charAt(0) === '/' ? hostInfo + this.src : this.src;
         }).toArray();
@@ -354,14 +362,15 @@ yii = (function ($) {
             if (options.dataType == 'jsonp') {
                 return;
             }
+
             var url = options.url.charAt(0) === '/' ? hostInfo + options.url : options.url;
             if ($.inArray(url, loadedScripts) === -1) {
                 loadedScripts.push(url);
             } else {
-                var found = $.inArray(url, $.map(pub.reloadableScripts, function (script) {
-                    return script.charAt(0) === '/' ? hostInfo + script : script;
-                })) !== -1;
-                if (!found) {
+                var isReloadable = $.inArray(url, $.map(pub.reloadableScripts, function (script) {
+                        return script.charAt(0) === '/' ? hostInfo + script : script;
+                    })) !== -1;
+                if (!isReloadable) {
                     xhr.abort();
                 }
             }
@@ -388,3 +397,4 @@ yii = (function ($) {
 jQuery(document).ready(function () {
     yii.initModule(yii);
 });
+
