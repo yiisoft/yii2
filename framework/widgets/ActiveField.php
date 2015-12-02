@@ -762,7 +762,7 @@ class ActiveField extends Component
     /**
      * Returns the HTML `id` of the input element of this form field.
      * @return string the input id.
-     * @since 2.0.6
+     * @since 2.0.7
      */
     protected function getInputId()
     {
