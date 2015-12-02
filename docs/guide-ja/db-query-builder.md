@@ -1,7 +1,7 @@
 クエリビルダ
 ============
 
-[データベースアクセスオブジェクト](db-dao.md) の上に構築されているクエリビルダは、SQL 文をプログラム的に、かつ、DBMS の違いを意識せずに作成することを可能にしてくれます。
+[データベースアクセスオブジェクト](db-dao.md) の上に構築されているクエリビルダは、SQL クエリをプログラム的に、かつ、DBMS の違いを意識せずに作成することを可能にしてくれます。
 クエリビルダを使うと、生の SQL 文を書くことに比べて、より読みやすい SQL 関連のコードを書き、より安全な SQL 文を生成することが容易になります。
 
 通常、クエリビルダの使用は、二つのステップから成ります。
@@ -20,7 +20,7 @@ $rows = (new \yii\db\Query())
     ->all();
 ```
 
-上記のコードは、次の SQL 文を生成して実行します。
+上記のコードは、次の SQL クエリを生成して実行します。
 ここでは、`:last_name` パラメータは `'Smith'` という文字列にバインドされています。
 
 ```sql
@@ -36,9 +36,9 @@ LIMIT 10
 
 ## クエリを構築する <span id="building-queries"></span>
 
-[[yii\db\Query]] オブジェクトを構築するために、さまざまなクエリ構築メソッドを呼んで、SQL 文のさまざまな部分を定義します。
+[[yii\db\Query]] オブジェクトを構築するために、さまざまなクエリ構築メソッドを呼んで、SQL クエリのさまざまな部分を定義します。
 これらのメソッドの名前は、SQL 文の対応する部分に使われる SQL キーワードに似たものになっています。
-例えば、SQL 文の `FROM` の部分を定義するためには、`from()` メソッドを呼び出します。
+例えば、SQL クエリの `FROM` の部分を定義するためには、`from()` メソッドを呼び出します。
 クエリ構築メソッドは、すべて、クエリオブジェクトそのものを返しますので、複数の呼び出しをチェーンしてまとめることが出来ます。
 
 以下で、それぞれのクエリ構築メソッドの使用方法を説明しましょう。
@@ -58,7 +58,7 @@ $query->select(['id', 'email']);
 $query->select('id, email');
 ```
 
-選択されるカラム名は、生の SQL 文を書くときにするように、テーブル接頭辞 および/または カラムのエイリアスを含むことが出来ます。
+選択されるカラム名は、生の SQL クエリを書くときにするように、テーブル接頭辞 および/または カラムのエイリアスを含むことが出来ます。
 例えば、
 
 ```php
@@ -145,7 +145,7 @@ $query->from(['u' => $subQuery]);
 
 ### [[yii\db\Query::where()|where()]] <span id="where"></span>
 
-[[yii\db\Query::where()|where()]] メソッドは、SQL 文の `WHERE` 句を定義します。
+[[yii\db\Query::where()|where()]] メソッドは、SQL クエリの `WHERE` 句を定義します。
 `WHERE` の条件を指定するために、次の三つの形式から一つを選んで使うことが出来ます。
 
 - 文字列形式、例えば、`'status=1'`
@@ -289,7 +289,7 @@ if (!empty($search)) {
 }
 ```
 
-`$search` が空でない場合は次の SQL が生成されます。
+`$search` が空でない場合は次の WHERE 条件 が生成されます。
 
 ```sql
 WHERE (`status` = 10) AND (`title` LIKE '%yii%')
@@ -310,7 +310,7 @@ $query->filterWhere([
 ```
 
 [[yii\db\Query::filterWhere()|filterWhere()]] と [[yii\db\Query::where()|where()]] の唯一の違いは、前者は [ハッシュ形式](#hash-format) の条件において提供された空の値を無視する、という点です。
-従って、`$email` が空で `$sername` がそうではない場合は、上記のコードは、結果として `...WHERE username=:username` という SQL になります。
+従って、`$email` が空で `$sername` がそうではない場合は、上記のコードは、結果として `WHERE username=:username` という SQL 条件になります。
 
 > Info|情報: 値が空であると見なされるのは、null、空の配列、空の文字列、または空白のみを含む文字列である場合です。
 
@@ -318,7 +318,7 @@ $query->filterWhere([
 
 ### [[yii\db\Query::orderBy()|orderBy()]] <span id="order-by"></span>
 
-[[yii\db\Query::orderBy()|orderBy()]] メソッドは SQL 文の `ORDER BY` 句を指定します。例えば、
+[[yii\db\Query::orderBy()|orderBy()]] メソッドは SQL クエリの `ORDER BY` 句を指定します。例えば、
 
 
 ```php
@@ -351,7 +351,7 @@ $query->orderBy('id ASC')
 
 ### [[yii\db\Query::groupBy()|groupBy()]] <span id="group-by"></span>
 
-[[yii\db\Query::groupBy()|groupBy()]] メソッドは SQL 文の `GROUP BY` 句を指定します。
+[[yii\db\Query::groupBy()|groupBy()]] メソッドは SQL クエリの `GROUP BY` 句を指定します。
 例えば、
 
 ```php
@@ -379,7 +379,7 @@ $query->groupBy(['id', 'status'])
 
 ### [[yii\db\Query::having()|having()]] <span id="having"></span>
 
-[[yii\db\Query::having()|having()]] メソッドは SQL 文の `HAVING` 句を指定します。
+[[yii\db\Query::having()|having()]] メソッドは SQL クエリの `HAVING` 句を指定します。
 このメソッドが取る条件は、[where()](#where) と同じ方法で指定することが出来ます。
 例えば、
 
@@ -402,7 +402,7 @@ $query->having(['status' => 1])
 
 ### [[yii\db\Query::limit()|limit()]] と [[yii\db\Query::offset()|offset()]] <span id="limit-offset"></span>
 
-[[yii\db\Query::limit()|limit()]] と [[yii\db\Query::offset()|offset()]] のメソッドは、SQL 文の `LIMIT` と `OFFSET` 句を指定します。
+[[yii\db\Query::limit()|limit()]] と [[yii\db\Query::offset()|offset()]] のメソッドは、SQL クエリの `LIMIT` 句と `OFFSET` 句を指定します。
 例えば、
  
 ```php
@@ -417,7 +417,7 @@ $query->limit(10)->offset(20);
 
 ### [[yii\db\Query::join()|join()]] <span id="join"></span>
 
-[[yii\db\Query::join()|join()]] メソッドは SQL 文の `JOIN` 句を指定します。例えば、
+[[yii\db\Query::join()|join()]] メソッドは SQL クエリの `JOIN` 句を指定します。例えば、
  
 ```php
 // ... LEFT JOIN `post` ON `post`.`user_id` = `user`.`id`
@@ -430,6 +430,9 @@ $query->join('LEFT JOIN', 'post', 'post.user_id = user.id');
 - `$table`: 結合されるテーブルの名前。
 - `$on`: オプション。結合条件、すなわち、`ON` 句。
    条件の指定方法の詳細については、[where()](#where) を参照してください。
+   カラムに基づく条件を指定する場合は、配列記法は**使えない**ことに注意してください。
+   例えば、`['user.id' => 'comment.userId']` は、user の id が `'comment.userId'` という文字列でなければならない、という条件に帰結します。
+   配列記法ではなく文字列記法を使って、`'user.id = comment.userId'` という条件を指定しなければなりません。
 - `$params`: オプション。結合条件にバインドされるパラメータ。
 
 `INNER JOIN`、`LEFT JOIN` および `RIGHT JOIN` を指定するためには、それぞれ、次のショートカットメソッドを使うことが出来ます。
@@ -460,7 +463,7 @@ $query->leftJoin(['u' => $subQuery], 'u.id = author_id');
 
 ### [[yii\db\Query::union()|union()]] <span id="union"></span>
 
-[[yii\db\Query::union()|union()]] メソッドは SQL 文の `UNION` 句を指定します。例えば、
+[[yii\db\Query::union()|union()]] メソッドは SQL クエリの `UNION` 句を指定します。例えば、
 
 ```php
 $query1 = (new \yii\db\Query())
@@ -495,7 +498,7 @@ $query1->union($query2);
 
 上記のメソッドの全ては、オプションで、DB クエリの実行に使用されるべき [[yii\db\Connection|DB 接続]] を表す `$db` パラメータを取ることが出来ます。
 このパラメータを省略した場合は、DB 接続として `db` [アプリケーションコンポーネント](structure-application-components.md) が使用されます。
-次に `count()` クエリメソッドを使う例をもう一つ挙げます。
+次に [[yii\db\Query::count()|count()]] クエリメソッドを使う例をもう一つ挙げます。
 
 ```php
 // 実行される SQL: SELECT COUNT(*) FROM `user` WHERE `last_name`=:last_name
@@ -509,7 +512,7 @@ $count = (new \yii\db\Query())
 
 * [[yii\db\QueryBuilder]] を呼んで、[[yii\db\Query]] の現在の構成に基づいた SQL 文を生成する。
 * 生成された SQL 文で [[yii\db\Command]] オブジェクトを作成する。
-* [[yii\db\Command]] のクエリメソッド (例えば `queryAll()`) を呼んで、SQL 文を実行し、データを取得する。
+* [[yii\db\Command]] のクエリメソッド (例えば [[yii\db\Command::queryAll()|queryAll()]]) を呼んで、SQL 文を実行し、データを取得する。
 
 場合によっては、[[yii\db\Query]] オブジェクトから構築された SQL 文を調べたり使ったりしたいことがあるでしょう。
 次のコードを使って、その目的を達することが出来ます。
@@ -610,5 +613,6 @@ foreach ($query->batch() as $users) {
 }
 
 foreach ($query->each() as $username => $user) {
+    // ...
 }
 ```
