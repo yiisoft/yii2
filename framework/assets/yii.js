@@ -280,13 +280,12 @@ yii = (function ($) {
             var pairs = url.substring(pos + 1).split('&'),
                 params = {},
                 pair,
-                d = decodeURIComponent,
                 i;
 
             for (i = pairs.length; i > 0;) {
                 pair = pairs[--i].split('=');
-                var name = d(pair[0]);
-                var value = d(pair[1]);
+                var name = decodeURIComponent(pair[0]);
+                var value = decodeURIComponent(pair[1]);
                 if (name.length) {
                     if (params[name] !== undefined) {
                         if (!params[name].push) {
