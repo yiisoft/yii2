@@ -18,7 +18,10 @@ use yii\base\InvalidConfigException;
  * a valid PHP callback with the following signature:
  *
  * ```php
- * function foo($value) { return $newValue; }
+ * function foo($value) {
+ *     // compute $newValue here
+ *     return $newValue;
+ * }
  * ```
  *
  * Many PHP functions qualify this signature (e.g. `trim()`).
