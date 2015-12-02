@@ -87,6 +87,13 @@ echo $form->field($model, 'uploadFile[]')->fileInput(['multiple'=>'multiple']);
 echo $form->field($model, 'items[]')->checkboxList(['a' => 'Item A', 'b' => 'Item B', 'c' => 'Item C']);
 ```
 
+送信ボタンなどのフォーム要素に名前をつけるときには注意が必要です。
+[jQuery ドキュメント](https://api.jquery.com/submit/) によれば、衝突を生じさせ得る予約された名前がいくつかあります。
+
+> フォームおよびフォームの子要素は、フォームのプロパティと衝突するインプット名や id、たとえば `submit`、`length`、`method` などを使ってはなりません。
+> 名前の衝突は訳の分らない失敗を生じさせることがあります。
+> 命名規則の完全なリストを知り、この問題についてあなたのマークアップをチェックするためには、[DOMLint](http://kangax.github.io/domlint/) を参照してください。
+
 フォームに HTML タグを追加するためには、素の HTML を使うか、または、上記の例の [[yii\helpers\Html::submitButton()|Html::submitButton()]] のように、[[yii\helpers\Html|Html]] ヘルパクラスのメソッドを使うことが出来ます。
 
 > Tip|ヒント: あなたのアプリケーションで Twitter Bootstrap CSS を使っている場合は、[[yii\widgets\ActiveForm]] の代りに [[yii\bootstrap\ActiveForm]] を使うのが良いでしょう。
@@ -94,12 +101,37 @@ echo $form->field($model, 'items[]')->checkboxList(['a' => 'Item A', 'b' => 'Ite
 
 > tip|ヒント: 必須フィールドをアスタリスク付きのスタイルにするために、次の CSS を使うことが出来ます。
 >
->```css
->div.required label:after {
->    content: " *";
->    color: red;
->}
->```
+> ```css
+> div.required label.control-label:after {
+>     content: " *";
+>     color: red;
+> }
+> ```
+
+ドロップダウンリストを作る <span id="creating-activeform-dropdownlist"></span>
+--------------------------
+
+ActiveForm の [dropDownList()](http://www.yiiframework.com/doc-2.0/yii-widgets-activefield.html#dropDownList()-detail)
+メソッドを使ってドロップダウンリストを作ることが出来ます。
+
+```php
+use app\models\ProductCategory;
+use yii\helpers\ArrayHelper;
+
+/* @var $this yii\web\View */
+/* @var $form yii\widgets\ActiveForm */
+/* @var $model app\models\Product */
+
+echo $form->field($model, 'product_category')->dropdownList(
+    ProductCategory::find()->select(['category_name', 'id'])->indexBy('id')->column(),
+    ['prompt'=>'カテゴリを選択してください']
+);
+```
+
+モデルのフィールドの値は、前もって自動的に選択されます。
+
+さらに読むべき文書 <span id="further-reading"></span>
+------------------
 
 次の節 [入力を検証する](input-validation.md) は、送信されたフォームデータのサーバ側でのバリデーションと、ajax バリデーションおよびクライアント側バリデーションを扱います。
 

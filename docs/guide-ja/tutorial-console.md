@@ -28,6 +28,7 @@
   このコマンドについてさらに学習するためには、[国際化の節](tutorial-i18n.md#message-command) を参照してください。
 - [[yii\console\controllers\MigrateController|MigrateController]] - アプリケーションのマイグレーションを管理します。
   データベースのマイグレーションについては、[データベースのマイグレーションの節](db-migrations.md) で詳しく説明されています。
+- [[yii\console\controllers\ServeController|ServeController]] - PHP の内蔵ウェブサーバを走らせることが出来ます。
 
 
 使用方法 <span id="usage"></span>
@@ -66,10 +67,6 @@ yii migrate/up 5 --migrationTable=migrations
  */
 
 defined('YII_DEBUG') or define('YII_DEBUG', true);
-
-// fcgi では、デフォルトでは、STDIN と STDOUT が定義されていない
-defined('STDIN') or define('STDIN', fopen('php://stdin', 'r'));
-defined('STDOUT') or define('STDOUT', fopen('php://stdout', 'w'));
 
 require(__DIR__ . '/vendor/autoload.php');
 require(__DIR__ . '/vendor/yiisoft/yii2/Yii.php');

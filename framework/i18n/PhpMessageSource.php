@@ -67,11 +67,11 @@ class PhpMessageSource extends MessageSource
         $messages = $this->loadMessagesFromFile($messageFile);
 
         $fallbackLanguage = substr($language, 0, 2);
-        if ($fallbackLanguage != $language) {
+        if ($fallbackLanguage !== $language) {
             $fallbackMessageFile = $this->getMessageFilePath($category, $fallbackLanguage);
             $fallbackMessages = $this->loadMessagesFromFile($fallbackMessageFile);
 
-            if ($messages === null && $fallbackMessages === null && $fallbackLanguage != $this->sourceLanguage) {
+            if ($messages === null && $fallbackMessages === null && $fallbackLanguage !== $this->sourceLanguage) {
                 Yii::error("The message file for category '$category' does not exist: $messageFile Fallback file does not exist as well: $fallbackMessageFile", __METHOD__);
             } elseif (empty($messages)) {
                 return $fallbackMessages;
@@ -113,7 +113,7 @@ class PhpMessageSource extends MessageSource
     /**
      * Loads the message translation for the specified language and category or returns null if file doesn't exist.
      *
-     * @param $messageFile string path to message file
+     * @param string $messageFile path to message file
      * @return array|null array of messages or null if file not found
      */
     protected function loadMessagesFromFile($messageFile)

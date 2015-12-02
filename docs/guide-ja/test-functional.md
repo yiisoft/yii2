@@ -3,7 +3,7 @@
 
 > Note|注意: この節はまだ執筆中です。
 
-- http://codeception.com/docs/05-FunctionalTests
+- [Codeception Functional Tests](http://codeception.com/docs/04-FunctionalTests)
 
 アプリケーションテンプレートの機能テストを走らせる
 --------------------------------------------------

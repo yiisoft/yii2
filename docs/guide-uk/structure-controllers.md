@@ -2,7 +2,7 @@
 ==========
 
 Контролери є частиною архітектури [MVC](http://uk.wikipedia.org/wiki/Модель-вид-контролер). Це об’єкти класів,
-успадкованих від [[yii\base\Controller]] та відповідають за обробку запитів і генерацію відповідей.
+успадкованих від [[yii\base\Controller]] та відповідають за обробку запитів і генерування відповідей.
 Зокрема, після отримання контролю від [додатків](structure-applications.md), контролери проаналізують 
 вхідні дані, передадуть їх у [моделі](structure-models.md), додадуть результати моделі у
 [представлення](structure-views.md), і на сам кінець згенерують вихідні відповіді.
@@ -141,10 +141,10 @@ class SiteController extends Controller
 
 Класи контролерів мають бути [автоматично завантаженими](concept-autoloading.md). Саме з цієї причини у вищенаведених прикладах
 контролер `article` має бути збереженим у файл, [псевдонім шляху](concept-aliases.md) якого є
-`@app/controllers/ArticleController.php`; в той час, як контролер `admin/post2-comment` має знаходитись у файлі 
-`@app/controllers/admin/Post2CommentController.php`.
+`@app/controllers/ArticleController.php`; в той час, як контролер `admin/post-comment` має знаходитись у файлі 
+`@app/controllers/admin/PostCommentController.php`.
 
-> Інформація: Останній приклад `admin/post2-comment` показує яким чином ви можете розташувати контролер в під-директорії
+> Інформація: Останній приклад `admin/post-comment` показує яким чином ви можете розташувати контролер в під-директорії
   [[yii\base\Application::controllerNamespace|простору імен контролера]]. Це дуже зручно, коли ви хочете організувати 
   свої контролери у декілька категорій і не хочете використовувати [модулі](structure-modules.md).
 

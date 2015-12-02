@@ -89,7 +89,7 @@ class DetailView extends Widget
      * where `$attribute` refer to the specification of the attribute being rendered, `$index` is the zero-based
      * index of the attribute in the [[attributes]] array, and `$widget` refers to this widget instance.
      */
-    public $template = "<tr><th>{label}</th><td>{value}</td></tr>";
+    public $template = '<tr><th>{label}</th><td>{value}</td></tr>';
     /**
      * @var array the HTML attributes for the container tag of this widget. The "tag" option specifies
      * what container tag should be used. It defaults to "table" if not set.
@@ -113,7 +113,7 @@ class DetailView extends Widget
         if ($this->model === null) {
             throw new InvalidConfigException('Please specify the "model" property.');
         }
-        if ($this->formatter == null) {
+        if ($this->formatter === null) {
             $this->formatter = Yii::$app->getFormatter();
         } elseif (is_array($this->formatter)) {
             $this->formatter = Yii::createObject($this->formatter);
@@ -122,6 +122,10 @@ class DetailView extends Widget
             throw new InvalidConfigException('The "formatter" property must be either a Format object or a configuration array.');
         }
         $this->normalizeAttributes();
+
+        if (!isset($this->options['id'])) {
+            $this->options['id'] = $this->getId();
+        }
     }
 
     /**

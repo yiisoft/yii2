@@ -65,11 +65,11 @@ class GettextMessageSource extends MessageSource
         $messages = $this->loadMessagesFromFile($messageFile, $category);
 
         $fallbackLanguage = substr($language, 0, 2);
-        if ($fallbackLanguage != $language) {
+        if ($fallbackLanguage !== $language) {
             $fallbackMessageFile = $this->getMessageFilePath($fallbackLanguage);
             $fallbackMessages = $this->loadMessagesFromFile($fallbackMessageFile, $category);
 
-            if ($messages === null && $fallbackMessages === null && $fallbackLanguage != $this->sourceLanguage) {
+            if ($messages === null && $fallbackMessages === null && $fallbackLanguage !== $this->sourceLanguage) {
                 Yii::error("The message file for category '$category' does not exist: $messageFile Fallback file does not exist as well: $fallbackMessageFile", __METHOD__);
             } elseif (empty($messages)) {
                 return $fallbackMessages;

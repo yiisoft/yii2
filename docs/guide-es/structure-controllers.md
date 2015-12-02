@@ -112,7 +112,7 @@ Por esta razón, los IDs de controladores son a menudo sustantivos de los tipos 
 Por ejemplo, podrías utilizar `article` como el ID de un controlador que maneja datos de artículos.
 
 Por defecto, los IDs de controladores deberían contener sólo estos caracteres: letras del Inglés en minúscula, dígitos,
-guiones bajos y medios, y barras. Por ejemplo, `article`, `post-comment`, `admin/post2-comment` son todos
+guiones bajos y medios, y barras. Por ejemplo, `article`, `post-comment`, `admin/post-comment` son todos
 IDs de controladores válidos, mientras que `article?`, `PostComment`, `admin\post` no lo son.
 
 Los guiones en un ID de controlador son utilizados para separar palabras, mientras que las barras diagonales lo son para
@@ -134,14 +134,14 @@ toma el valor por defecto: `app\controllers`:
 
 * `article` deriva en `app\controllers\ArticleController`;
 * `post-comment` deriva en `app\controllers\PostCommentController`;
-* `admin/post2-comment` deriva en `app\controllers\admin\Post2CommentController`.
+* `admin/post-comment` deriva en `app\controllers\admin\PostCommentController`.
 
 Las clases de controladores deben ser [autocargables](concept-autoloading.md). Por esta razón, en los ejemplos anteriores,
 la clase del controlador `article` debe ser guardada en un archivo cuyo alias [alias](concept-aliases.md)
-es `@app/controllers/ArticleController.php`; mientras que el controlador `admin/post2-comment` debería estar
-en `@app/controllers/admin/Post2CommentController.php`.
+es `@app/controllers/ArticleController.php`; mientras que el controlador `admin/post-comment` debería estar
+en `@app/controllers/admin/PostCommentController.php`.
 
-> Información: En el último ejemplo, `admin/post2-comment`, demuestra cómo puedes poner un controlador bajo un sub-directorio
+> Información: En el último ejemplo, `admin/post-comment`, demuestra cómo puedes poner un controlador bajo un sub-directorio
   del [[yii\base\Application::controllerNamespace|controller namespace]]. Esto es útil cuando quieres organizar
   tus controladores en varias categorías pero sin utilizar [módulos](structure-modules.md).
 

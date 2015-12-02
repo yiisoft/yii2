@@ -87,6 +87,7 @@ echo Yii::$app->formatter->asDate('2014-01-01'); // выведет: 1 январ
 - [[yii\i18n\Formatter::asTimestamp()|timestamp]] - значение будет отформатировано как [unix timestamp](http://en.wikipedia.org/wiki/Unix_time), например, `1412609982`.
 - [[yii\i18n\Formatter::asRelativeTime()|relativeTime]] - значение будет отформатировано как временной промежуток между заданной датой и
 текущий временем в человеко понятном формате, например: `1 час назад`.
+- [[yii\i18n\Formatter::asDuration()|duration]]: значение будет отформатировано как продолжительность в человеко понятном формате, например `1 день, 2 минуты`.
 
 Форматирование даты и времени для методов [[yii\i18n\Formatter::asDate()|date]], [[yii\i18n\Formatter::asTime()|time]] и 
 [[yii\i18n\Formatter::asDatetime()|datetime]] может быть задано глобально через конфигурацию свойств форматирования [[yii\i18n\Formatter::$dateFormat|$dateFormat]], [[yii\i18n\Formatter::$timeFormat|$timeFormat]] и 

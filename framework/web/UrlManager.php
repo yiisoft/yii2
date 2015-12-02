@@ -325,9 +325,16 @@ class UrlManager extends Component
             }
 
             if ($url === false) {
+                $cacheable = true;
                 foreach ($this->rules as $rule) {
+                    if (!empty($rule->defaults) && $rule->mode !== UrlRule::PARSING_ONLY) {
+                        // if there is a rule with default values involved, the matching result may not be cached
+                        $cacheable = false;
+                    }
                     if (($url = $rule->createUrl($this, $route, $params)) !== false) {
-                        $this->_ruleCache[$cacheKey][] = $rule;
+                        if ($cacheable) {
+                            $this->_ruleCache[$cacheKey][] = $rule;
+                        }
                         break;
                     }
                 }
@@ -336,7 +343,7 @@ class UrlManager extends Component
             if ($url !== false) {
                 if (strpos($url, '://') !== false) {
                     if ($baseUrl !== '' && ($pos = strpos($url, '/', 8)) !== false) {
-                        return substr($url, 0, $pos) . $baseUrl . substr($url, $pos);
+                        return substr($url, 0, $pos) . $baseUrl . substr($url, $pos) . $anchor;
                     } else {
                         return $url . $baseUrl . $anchor;
                     }

@@ -81,6 +81,7 @@ class Theme extends Component
 
     private $_baseUrl;
 
+
     /**
      * @return string the base URL (without ending slash) for this theme. All resources of this theme are considered
      * to be under this base URL.
@@ -91,7 +92,7 @@ class Theme extends Component
     }
 
     /**
-     * @param $url string the base URL or path alias for this theme. All resources of this theme are considered
+     * @param string $url the base URL or path alias for this theme. All resources of this theme are considered
      * to be under this base URL.
      */
     public function setBaseUrl($url)

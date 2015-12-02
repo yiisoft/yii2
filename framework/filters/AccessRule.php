@@ -31,8 +31,8 @@ class AccessRule extends Component
      */
     public $actions;
     /**
-     * @var array list of controller IDs that this rule applies to. The comparison is case-sensitive.
-     * If not set or empty, it means this rule applies to all controllers.
+     * @var array list of the controller IDs that this rule applies to. Each controller ID is prefixed with the module ID (if any).
+     * The comparison is case-sensitive. If not set or empty, it means this rule applies to all controllers.
      */
     public $controllers;
     /**

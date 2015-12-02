@@ -126,9 +126,9 @@ class User extends ActiveRecord implements IdentityInterface
 {
     ......
     
-    public function beforeSend($insert)
+    public function beforeSave($insert)
     {
-        if (parent::beforeSend($insert)) {
+        if (parent::beforeSave($insert)) {
             if ($this->isNewRecord) {
                 $this->auth_key = \Yii::$app->security->generateRandomString();
             }

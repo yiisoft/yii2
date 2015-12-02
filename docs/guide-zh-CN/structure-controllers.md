@@ -129,9 +129,9 @@ class SiteController extends Controller
 
 控制器类必须能被 [自动加载](concept-autoloading.md)，所以在上面的例子中，
 控制器`article` 类应在 [别名](concept-aliases.md) 为`@app/controllers/ArticleController.php`的文件中定义，
-控制器`admin/post2-comment`应在`@app/controllers/admin/Post2CommentController.php`文件中。
+控制器`admin/post-comment`应在`@app/controllers/admin/PostCommentController.php`文件中。
 
-> 补充: 最后一个示例 `admin/post2-comment` 表示你可以将控制器放在
+> 补充: 最后一个示例 `admin/post-comment` 表示你可以将控制器放在
   [[yii\base\Application::controllerNamespace|controller namespace]]控制器命名空间下的子目录中，
   在你不想用 [模块](structure-modules.md) 的情况下给控制器分类，这种方式很有用。
 

@@ -90,9 +90,8 @@ RESULT;
         $expectedResult = "unserialize('" . serialize($var) . "')";
         $data[] = [$var, $expectedResult];
 
-        $var = new \StdClass();
-        $var->testFunction = function () {return 2;};
-        $expectedResult = var_export($var, true);
+        $var = function () {return 2;};
+        $expectedResult = 'function () {return 2;}';
         $data[] = [$var, $expectedResult];
 
         return $data;
@@ -109,5 +108,25 @@ RESULT;
         $exportResult = VarDumper::export($var);
         $this->assertEqualsWithoutLE($expectedResult, $exportResult);
         //$this->assertEquals($var, eval('return ' . $exportResult . ';'));
+    }
+
+    /**
+     * @depends testExport
+     */
+    public function testExportObjectFallback()
+    {
+        $var = new \StdClass();
+        $var->testFunction = function () {return 2;};
+        $exportResult = VarDumper::export($var);
+        $this->assertNotEmpty($exportResult);
+
+        $master = new \StdClass();
+        $slave = new \StdClass();
+        $master->slave = $slave;
+        $slave->master = $master;
+        $master->function = function() {return true;};
+
+        $exportResult = VarDumper::export($master);
+        $this->assertNotEmpty($exportResult);
     }
 }

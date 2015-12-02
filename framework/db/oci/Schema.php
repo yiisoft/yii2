@@ -32,6 +32,7 @@ class Schema extends \yii\db\Schema
         'ORA-00001: unique constraint' => 'yii\db\IntegrityException',
     ];
 
+
     /**
      * @inheritdoc
      */
@@ -65,6 +66,14 @@ class Schema extends \yii\db\Schema
     public function createQueryBuilder()
     {
         return new QueryBuilder($this->db);
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function createColumnSchemaBuilder($type, $length = null)
+    {
+        return new ColumnSchemaBuilder($type, $length);
     }
 
     /**
@@ -162,9 +171,9 @@ SQL;
     /**
      * Sequence name of table
      *
-     * @param $tableName
+     * @param string $tableName
      * @internal param \yii\db\TableSchema $table->name the table schema
-     * @return string whether the sequence exists
+     * @return string|null whether the sequence exists
      */
     protected function getTableSequenceName($tableName)
     {
@@ -254,7 +263,7 @@ SQL;
     protected function findConstraints($table)
     {
         $sql = <<<SQL
-SELECT D.CONSTRAINT_NAME, C.COLUMN_NAME, C.POSITION, D.R_CONSTRAINT_NAME,
+SELECT D.CONSTRAINT_NAME, D.CONSTRAINT_TYPE, C.COLUMN_NAME, C.POSITION, D.R_CONSTRAINT_NAME,
         E.TABLE_NAME AS TABLE_REF, F.COLUMN_NAME AS COLUMN_REF,
         C.TABLE_NAME
 FROM ALL_CONS_COLUMNS C
@@ -263,7 +272,6 @@ LEFT JOIN ALL_CONSTRAINTS E ON E.OWNER = D.R_OWNER AND E.CONSTRAINT_NAME = D.R_C
 LEFT JOIN ALL_CONS_COLUMNS F ON F.OWNER = E.OWNER AND F.CONSTRAINT_NAME = E.CONSTRAINT_NAME AND F.POSITION = C.POSITION
 WHERE C.OWNER = :schemaName
    AND C.TABLE_NAME = :tableName
-   AND D.CONSTRAINT_TYPE = 'R'
 ORDER BY D.CONSTRAINT_NAME, C.POSITION
 SQL;
         $command = $this->db->createCommand($sql, [
@@ -275,14 +283,19 @@ SQL;
             if ($this->db->slavePdo->getAttribute(\PDO::ATTR_CASE) === \PDO::CASE_LOWER) {
                 $row = array_change_key_case($row, CASE_UPPER);
             }
+            if ($row['CONSTRAINT_TYPE'] !== 'R') {
+                // this condition is not checked in SQL WHERE because of an Oracle Bug:
+                // see https://github.com/yiisoft/yii2/pull/8844
+                continue;
+            }
             $name = $row['CONSTRAINT_NAME'];
             if (!isset($constraints[$name])) {
                 $constraints[$name] = [
-                    'tableName' => $row["TABLE_REF"],
+                    'tableName' => $row['TABLE_REF'],
                     'columns' => [],
                 ];
             }
-            $constraints[$name]['columns'][$row["COLUMN_NAME"]] = $row["COLUMN_REF"];
+            $constraints[$name]['columns'][$row['COLUMN_NAME']] = $row['COLUMN_REF'];
         }
         foreach ($constraints as $constraint) {
             $table->foreignKeys[] = array_merge([$constraint['tableName']], $constraint['columns']);
@@ -396,7 +409,7 @@ SQL;
 
         if (strpos($dbType, 'FLOAT') !== false || strpos($dbType, 'DOUBLE') !== false) {
             $column->type = 'double';
-        } elseif ($dbType == 'NUMBER' || strpos($dbType, 'INTEGER') !== false) {
+        } elseif ($dbType === 'NUMBER' || strpos($dbType, 'INTEGER') !== false) {
             if ($scale !== null && $scale > 0) {
                 $column->type = 'decimal';
             } else {
@@ -426,9 +439,9 @@ SQL;
      */
     protected function extractColumnSize($column, $dbType, $precision, $scale, $length)
     {
-        $column->size = trim($length) == '' ? null : (int) $length;
-        $column->precision = trim($precision) == '' ? null : (int) $precision;
-        $column->scale = trim($scale) == '' ? null : (int) $scale;
+        $column->size = trim($length) === '' ? null : (int) $length;
+        $column->precision = trim($precision) === '' ? null : (int) $precision;
+        $column->scale = trim($scale) === '' ? null : (int) $scale;
     }
 
     /**
