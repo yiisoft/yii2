@@ -83,7 +83,7 @@ return array (
   '{attribute} must be repeated exactly.' => '{attribute} skal være gentaget præcist.',
   '{attribute} must not be equal to "{compareValue}".' => '{attribute} må ikke være lig med "{compareValue}".',
   '{attribute} should contain at least {min, number} {min, plural, one{character} other{characters}}.' => '{attribute} skal mindst indeholde {min, number} {min, plural, one{tegn} other{tegn}}.',
-  '{attribute} should contain at most {max, number} {max, plural, one{character} other{characters}}.' => '{attribute} skal højst indeholde {min, number} {min, plural, one{tegn} other{tegn}}.',
+  '{attribute} should contain at most {max, number} {max, plural, one{character} other{characters}}.' => '{attribute} skal højst indeholde {max, number} {max, plural, one{tegn} other{tegn}}.',
   '{attribute} should contain {length, number} {length, plural, one{character} other{characters}}.' => '{attribute} skal indeholde {length, number} {length, plural, one{tegn} other{tegn}}.',
   '{delta, plural, =1{a day} other{# days}} ago' => 'for {delta, plural, =1{en dag} other{# dage}} siden',
   '{delta, plural, =1{a minute} other{# minutes}} ago' => 'for {delta, plural, =1{et minut} other{# minutter}} siden',

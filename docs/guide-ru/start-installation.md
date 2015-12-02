@@ -29,7 +29,7 @@
 
 После установки Composer устанавливать Yii можно запустив следующую команду в папке доступной через веб:
 
-    composer global require "fxp/composer-asset-plugin:~1.0.3"
+    composer global require "fxp/composer-asset-plugin:~1.1.1"
     composer create-project --prefer-dist yiisoft/yii2-app-basic basic
 
 Первая команда устанавливает [composer asset plugin](https://github.com/francoispluchino/composer-asset-plugin/),
@@ -78,7 +78,7 @@ Composer установит Yii (шаблонное приложение basic) 
 * Если вам нужен только сам фреймворк и вы хотели бы создать приложение с нуля, воспользуйтесь инструкцией, описанной в
 разделе «[Создание приложения с нуля](tutorial-start-from-scratch.md)».
 * Если хотите начать с более продвинутого приложения, хорошо подходящего для работы в команде, используйте
-[шаблон приложения advanced](tutorial-advanced-app.md).
+[шаблон приложения advanced](https://github.com/yiisoft/yii2-app-advanced/blob/master/docs/guide/README.md).
 
 
 Проверка установки <span id="verifying-installation"></span>

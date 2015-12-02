@@ -53,4 +53,14 @@ class FakeController extends Controller
     {
         
     }
+
+    public function actionAksi8($arg1, $arg2)
+    {
+        return func_get_args();
+    }
+
+    public function actionAksi9($arg1, $arg2, QuxInterface $quxApp)
+    {
+        return func_get_args();
+    }
 }

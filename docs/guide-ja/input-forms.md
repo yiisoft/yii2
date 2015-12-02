@@ -101,12 +101,12 @@ echo $form->field($model, 'items[]')->checkboxList(['a' => 'Item A', 'b' => 'Ite
 
 > tip|ヒント: 必須フィールドをアスタリスク付きのスタイルにするために、次の CSS を使うことが出来ます。
 >
->```css
->div.required label:after {
->    content: " *";
->    color: red;
->}
->```
+> ```css
+> div.required label.control-label:after {
+>     content: " *";
+>     color: red;
+> }
+> ```
 
 ドロップダウンリストを作る <span id="creating-activeform-dropdownlist"></span>
 --------------------------

@@ -44,6 +44,11 @@ class XmlResponseFormatter extends Component implements ResponseFormatterInterfa
      * @var string the name of the elements that represent the array elements with numeric keys.
      */
     public $itemTag = 'item';
+    /**
+     * @var boolean whether to enable to interpret implemented \Traversable interface objects as array
+     * @since 2.0.7
+     */
+    public $useTraversableAsArray = true;
 
 
     /**
@@ -72,19 +77,7 @@ class XmlResponseFormatter extends Component implements ResponseFormatterInterfa
      */
     protected function buildXml($element, $data)
     {
-        if (is_object($data)) {
-            $child = new DOMElement(StringHelper::basename(get_class($data)));
-            $element->appendChild($child);
-            if ($data instanceof Arrayable) {
-                $this->buildXml($child, $data->toArray());
-            } else {
-                $array = [];
-                foreach ($data as $name => $value) {
-                    $array[$name] = $value;
-                }
-                $this->buildXml($child, $array);
-            }
-        } elseif (is_array($data)) {
+        if (is_array($data) || $data instanceof \Traversable && $this->useTraversableAsArray) {
             foreach ($data as $name => $value) {
                 if (is_int($name) && is_object($value)) {
                     $this->buildXml($element, $value);
@@ -97,6 +90,18 @@ class XmlResponseFormatter extends Component implements ResponseFormatterInterfa
                     $element->appendChild($child);
                     $child->appendChild(new DOMText((string) $value));
                 }
+            }
+        } elseif (is_object($data)) {
+            $child = new DOMElement(StringHelper::basename(get_class($data)));
+            $element->appendChild($child);
+            if ($data instanceof Arrayable) {
+                $this->buildXml($child, $data->toArray());
+            } else {
+                $array = [];
+                foreach ($data as $name => $value) {
+                    $array[$name] = $value;
+                }
+                $this->buildXml($child, $array);
             }
         } else {
             $element->appendChild(new DOMText((string) $data));

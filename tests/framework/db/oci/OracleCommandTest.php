@@ -1,7 +1,7 @@
 <?php
 namespace yiiunit\framework\db\oci;
 
-use yii\db\oci\Schema;
+use yii\db\Schema;
 use yiiunit\framework\db\CommandTest;
 
 /**

@@ -44,6 +44,8 @@ use yii\base\NotSupportedException;
  *
  * To build SELECT SQL statements, please use [[QueryBuilder]] instead.
  *
+ * @see http://www.yiiframework.com/doc-2.0/guide-db-dao.html
+ *
  * @property string $rawSql The raw SQL with parameter values inserted into the corresponding placeholders in
  * [[sql]]. This property is read-only.
  * @property string $sql The SQL statement to be executed.

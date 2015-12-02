@@ -195,8 +195,8 @@ interface ManagerInterface
 
     /**
      * Returns the assignment information regarding a role and a user.
-     * @param string|integer $userId the user ID (see [[\yii\web\User::id]])
      * @param string $roleName the role name
+     * @param string|integer $userId the user ID (see [[\yii\web\User::id]])
      * @return null|Assignment the assignment information. Null is returned if
      * the role is not assigned to the user.
      */

@@ -120,7 +120,7 @@ class AccessControl extends ActionFilter
             } elseif ($allow === false) {
                 if (isset($rule->denyCallback)) {
                     call_user_func($rule->denyCallback, $rule, $action);
-                } elseif (isset($this->denyCallback)) {
+                } elseif ($this->denyCallback !== null) {
                     call_user_func($this->denyCallback, $rule, $action);
                 } else {
                     $this->denyAccess($user);
@@ -128,7 +128,7 @@ class AccessControl extends ActionFilter
                 return false;
             }
         }
-        if (isset($this->denyCallback)) {
+        if ($this->denyCallback !== null) {
             call_user_func($this->denyCallback, null, $action);
         } else {
             $this->denyAccess($user);

@@ -111,26 +111,24 @@ ODBC 経由でデータベースに接続しようとする場合は、[[yii\db\
 次に、データベースからデータを読み出すさまざまな方法を例示します。
 
 ```php
-$db = new yii\db\Connection(...);
-
 // 行のセットを返す。各行は、カラム名と値の連想配列。
 // 結果が無い場合は空の配列が返される。
-$posts = $db->createCommand('SELECT * FROM post')
+$posts = Yii::$app->db->createCommand('SELECT * FROM post')
             ->queryAll();
 
 // 一つの行 (最初の行) を返す。
 // 結果が無い場合は false が返される。
-$post = $db->createCommand('SELECT * FROM post WHERE id=1')
+$post = Yii::$app->db->createCommand('SELECT * FROM post WHERE id=1')
            ->queryOne();
 
 // 一つのカラム (最初のカラム) を返す。
 // 結果が無い場合は空の配列が返される。
-$titles = $db->createCommand('SELECT title FROM post')
+$titles = Yii::$app->db->createCommand('SELECT title FROM post')
              ->queryColumn();
 
 // スカラ値を返す。
 // 結果が無い場合は false が返される。
-$count = $db->createCommand('SELECT COUNT(*) FROM post')
+$count = Yii::$app->db->createCommand('SELECT COUNT(*) FROM post')
              ->queryScalar();
 ```
 
@@ -164,7 +162,7 @@ return [
 例えば、
 
 ```php
-$post = $db->createCommand('SELECT * FROM post WHERE id=:id AND status=:status')
+$post = Yii::$app->db->createCommand('SELECT * FROM post WHERE id=:id AND status=:status')
            ->bindValue(':id', $_GET['id'])
            ->bindValue(':status', 1)
            ->queryOne();
@@ -183,11 +181,11 @@ SQL 文において、一つまたは複数のパラメータプレースホル�
 ```php
 $params = [':id' => $_GET['id'], ':status' => 1];
 
-$post = $db->createCommand('SELECT * FROM post WHERE id=:id AND status=:status')
+$post = Yii::$app->db->createCommand('SELECT * FROM post WHERE id=:id AND status=:status')
            ->bindValues($params)
            ->queryOne();
            
-$post = $db->createCommand('SELECT * FROM post WHERE id=:id AND status=:status', $params)
+$post = Yii::$app->db->createCommand('SELECT * FROM post WHERE id=:id AND status=:status', $params)
            ->queryOne();
 ```
 
@@ -196,7 +194,7 @@ $post = $db->createCommand('SELECT * FROM post WHERE id=:id AND status=:status',
 例えば、
 
 ```php
-$command = $db->createCommand('SELECT * FROM post WHERE id=:id');
+$command = Yii::$app->db->createCommand('SELECT * FROM post WHERE id=:id');
 
 $post1 = $command->bindValue(':id', 1)->queryOne();
 $post2 = $command->bindValue(':id', 2)->queryOne();
@@ -205,7 +203,7 @@ $post2 = $command->bindValue(':id', 2)->queryOne();
 [[yii\db\Command::bindParam()|bindParam()]] はパラメータを参照渡しでバインドすることをサポートしていますので、上記のコードは次のように書くことも出来ます。
 
 ```php
-$command = $db->createCommand('SELECT * FROM post WHERE id=:id')
+$command = Yii::$app->db->createCommand('SELECT * FROM post WHERE id=:id')
               ->bindParam(':id', $id);
 
 $id = 1;
@@ -226,7 +224,7 @@ $post2 = $command->queryOne();
 例えば、
 
 ```php
-$db->createCommand('UPDATE post SET status=1 WHERE id=1')
+Yii::$app->db->createCommand('UPDATE post SET status=1 WHERE id=1')
    ->execute();
 ```
 
@@ -238,16 +236,16 @@ INSERT、UPDATE および DELETE クエリのためには、素の SQL を書く
 
 ```php
 // INSERT (テーブル名, カラムの値)
-$db->createCommand()->insert('user', [
+Yii::$app->db->createCommand()->insert('user', [
     'name' => 'Sam',
     'age' => 30,
 ])->execute();
 
 // UPDATE (テーブル名, カラムの値, 条件)
-$db->createCommand()->update('user', ['status' => 1], 'age > 30')->execute();
+Yii::$app->db->createCommand()->update('user', ['status' => 1], 'age > 30')->execute();
 
 // DELETE (テーブル名, 条件)
-$db->createCommand()->delete('user', 'status = 0')->execute();
+Yii::$app->db->createCommand()->delete('user', 'status = 0')->execute();
 ```
 
 [[yii\db\Command::batchInsert()|batchInsert()]] を呼んで複数の行を一気に挿入することも出来ます。
@@ -255,7 +253,7 @@ $db->createCommand()->delete('user', 'status = 0')->execute();
 
 ```php
 // テーブル名, カラム名, カラムの値
-$db->createCommand()->batchInsert('user', ['name', 'age'], [
+Yii::$app->db->createCommand()->batchInsert('user', ['name', 'age'], [
     ['Tom', 30],
     ['Jane', 20],
     ['Linda', 25],
@@ -276,7 +274,7 @@ Yii DAO は、SQL に含まれるこのような構文を、対応する適切�
 
 ```php
 // MySQL では SELECT COUNT(`id`) FROM `employee` という SQL が実行される
-$count = $db->createCommand("SELECT COUNT([[id]]) FROM {{employee}}")
+$count = Yii::$app->db->createCommand("SELECT COUNT([[id]]) FROM {{employee}}")
             ->queryScalar();
 ```
 
@@ -305,7 +303,7 @@ return [
 
 ```php
 // MySQL では SELECT COUNT(`id`) FROM `tbl_employee` という SQL が実行される
-$count = $db->createCommand("SELECT COUNT([[id]]) FROM {{%employee}}")
+$count = Yii::$app->db->createCommand("SELECT COUNT([[id]]) FROM {{%employee}}")
             ->queryScalar();
 ```
 
@@ -317,7 +315,7 @@ $count = $db->createCommand("SELECT COUNT([[id]]) FROM {{%employee}}")
 次のコードはトランザクションの典型的な使用方法を示すものです。
 
 ```php
-$db->transaction(function($db) {
+Yii::$app->db->transaction(function($db) {
     $db->createCommand($sql1)->execute();
     $db->createCommand($sql2)->execute();
     // ... その他の SQL 文を実行 ...
@@ -327,11 +325,11 @@ $db->transaction(function($db) {
 上記のコードは、次のものと等価です。
 
 ```php
-$transaction = $db->beginTransaction();
+$transaction = Yii::$app->db->beginTransaction();
 
 try {
-    $db->createCommand($sql1)->execute();
-    $db->createCommand($sql2)->execute();
+    Yii::$app->db->createCommand($sql1)->execute();
+    Yii::$app->db->createCommand($sql2)->execute();
     // ... その他の SQL 文を実行 ...
 
     $transaction->commit();
@@ -360,13 +358,13 @@ Yii は、トランザクションの [分離レベル] の設定もサポート
 ```php
 $isolationLevel = \yii\db\Transaction::REPEATABLE_READ;
 
-$db->transaction(function ($db) {
+Yii::$app->db->transaction(function ($db) {
     ....
 }, $isolationLevel);
  
 // あるいは
 
-$transaction = $db->beginTransaction($isolationLevel);
+$transaction = Yii::$app->db->beginTransaction($isolationLevel);
 ```
 
 Yii は、最もよく使われる分離レベルのために、四つの定数を提供しています。
@@ -398,7 +396,7 @@ DBMS によっては、接続全体に対してのみ分離レベルの設定を
 あなたの DBMS が Savepoint をサポートしている場合は、次のように、複数のトランザクションを入れ子にすることが出来ます。
 
 ```php
-$db->transaction(function ($db) {
+Yii::$app->db->transaction(function ($db) {
     // 外側のトランザクション
     
     $db->transaction(function ($db) {
@@ -410,13 +408,13 @@ $db->transaction(function ($db) {
 あるいは、
 
 ```php
-$outerTransaction = $db->beginTransaction();
+$outerTransaction = Yii::$app->db->beginTransaction();
 try {
-    $db->createCommand($sql1)->execute();
+    Yii::$app->db->createCommand($sql1)->execute();
 
-    $innerTransaction = $db->beginTransaction();
+    $innerTransaction = Yii::$app->db->beginTransaction();
     try {
-        $db->createCommand($sql2)->execute();
+        Yii::$app->db->createCommand($sql2)->execute();
         $innerTransaction->commit();
     } catch (\Exception $e) {
         $innerTransaction->rollBack();
@@ -475,14 +473,14 @@ try {
 $db = Yii::createObject($config);
 
 // スレーブの一つに対してクエリを実行する
-$rows = $db->createCommand('SELECT * FROM user LIMIT 10')->queryAll();
+$rows = Yii::$app->db->createCommand('SELECT * FROM user LIMIT 10')->queryAll();
 
 // マスタに対してクエリを実行する
-$db->createCommand("UPDATE user SET username='demo' WHERE id=1")->execute();
+Yii::$app->db->createCommand("UPDATE user SET username='demo' WHERE id=1")->execute();
 ```
 
 > Info|情報: [[yii\db\Command::execute()]] を呼ぶことで実行されるクエリは、書き込みのクエリと見なされ、[[yii\db\Command]] の "query" メソッドのうちの一つによって実行されるその他すべてのクエリは、読み出しクエリと見なされます。
-  現在アクティブなスレーブ接続は `$db->slave` によって取得することが出来ます。
+  現在アクティブなスレーブ接続は `Yii::$app->db->slave` によって取得することが出来ます。
 
 `Connection` コンポーネントは、スレーブ間のロードバランス調整とフェイルオーバーをサポートしています。
 読み出しクエリを最初に実行するときに、`Connection` コンポーネントはランダムにスレーブを選んで接続を試みます。
@@ -548,12 +546,12 @@ $db->createCommand("UPDATE user SET username='demo' WHERE id=1")->execute();
 
 ```php
 // トランザクションはマスタ接続で開始される
-$transaction = $db->beginTransaction();
+$transaction = Yii::$app->db->beginTransaction();
 
 try {
     // クエリは両方ともマスタに対して実行される
-    $rows = $db->createCommand('SELECT * FROM user LIMIT 10')->queryAll();
-    $db->createCommand("UPDATE user SET username='demo' WHERE id=1")->execute();
+    $rows = Yii::$app->db->createCommand('SELECT * FROM user LIMIT 10')->queryAll();
+    Yii::$app->db->createCommand("UPDATE user SET username='demo' WHERE id=1")->execute();
 
     $transaction->commit();
 } catch(\Exception $e) {
@@ -565,19 +563,19 @@ try {
 スレーブ接続を使ってトランザクションを開始したいときは、次のように、明示的にそうする必要があります。
 
 ```php
-$transaction = $db->slave->beginTransaction();
+$transaction = Yii::$app->db->slave->beginTransaction();
 ```
 
 時として、読み出しクエリの実行にマスタ接続を使うことを強制したい場合があります。
 これは、`useMaster()` メソッドを使うによって達成できます。
 
 ```php
-$rows = $db->useMaster(function ($db) {
-    return $db->createCommand('SELECT * FROM user LIMIT 10')->queryAll();
+$rows = Yii::$app->db->useMaster(function ($db) {
+    return Yii::$app->db->createCommand('SELECT * FROM user LIMIT 10')->queryAll();
 });
 ```
 
-直接に `$db->enableSlaves` を false に設定して、全てのクエリをマスタ接続に向けることも出来ます。
+直接に `Yii::$app->db->enableSlaves` を false に設定して、全てのクエリをマスタ接続に向けることも出来ます。
 
 
 ## データベーススキーマを扱う <span id="database-schema"></span>
@@ -604,7 +602,7 @@ Yii DAO は、新しいテーブルを作ったり、テーブルからカラム
 
 ```php
 // CREATE TABLE
-$db->createCommand()->createTable('post', [
+Yii::$app->db->createCommand()->createTable('post', [
     'id' => 'pk',
     'title' => 'string',
     'text' => 'text',
@@ -615,7 +613,7 @@ $db->createCommand()->createTable('post', [
 例えば、
 
 ```php
-$table = $db->getTableSchema('post');
+$table = Yii::$app->db->getTableSchema('post');
 ```
 
 このメソッドは、テーブルのカラム、プライマリキー、外部キーなどの情報を含む [[yii\db\TableSchema]] オブジェクトを返します。

@@ -78,6 +78,12 @@ The DB connection configured above can be accessed in the application code via t
   which specifies how the [application](structure-applications.md) instance should be initialized.
   For more information, please refer to the [Configurations](concept-configurations.md) section.
 
+If you need to work with databases support for which isn't bundled with Yii, check the following extensions:
+
+- [Informix](https://github.com/edgardmessias/yii2-informix)
+- [IBM DB2](https://github.com/edgardmessias/yii2-ibm-db2)
+- [Firebird](https://github.com/edgardmessias/yii2-firebird)
+
 
 Creating an Active Record <span id="creating-active-record"></span>
 -------------------------

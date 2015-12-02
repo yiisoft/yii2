@@ -198,7 +198,7 @@ class BaseArrayHelper
             $key = substr($key, $pos + 1);
         }
 
-        if (is_object($array)) {
+        if (is_object($array) && isset($array->$key)) {
             return $array->$key;
         } elseif (is_array($array)) {
             return array_key_exists($key, $array) ? $array[$key] : $default;
@@ -582,6 +582,60 @@ class BaseArrayHelper
                 }
             }
             return true;
+        }
+    }
+
+    /**
+     * Check whether an array or [[\Traversable]] contains an element.
+     *
+     * This method does the same as the PHP function [in_array()](http://php.net/manual/en/function.in-array.php)
+     * but it does not only work for arrays but also objects that implement the [[\Traversable]] interface.
+     * @param mixed $needle The value to look for.
+     * @param array|\Traversable $haystack The set of values to search.
+     * @param boolean $strict Whether to enable strict (`===`) comparison.
+     * @return boolean `true` if `$needle` was found in `$haystack`, `false` otherwise.
+     * @throws \InvalidArgumentException if `$haystack` is neither traversable nor an array.
+     * @see http://php.net/manual/en/function.in-array.php
+     */
+    public static function isIn($needle, $haystack, $strict = false)
+    {
+        if ($haystack instanceof \Traversable) {
+            foreach($haystack as $value) {
+                if ($needle == $value && (!$strict || $needle === $haystack)) {
+                    return true;
+                }
+            }
+        } elseif (is_array($haystack)) {
+            return in_array($needle, $haystack, $strict);
+        } else {
+            throw new \InvalidArgumentException('Argument $haystack must be an array or implement Traversable');
+        }
+
+        return false;
+    }
+
+    /**
+     * Checks whether an array or [[\Traversable]] is a subset of another array or [[\Traversable]].
+     *
+     * This method will return `true`, if all elements of `$needles` are contained in
+     * `$haystack`. If at least one element is missing, `false` will be returned.
+     * @param array|\Traversable $needles The values that must **all** be in `$haystack`.
+     * @param array|\Traversable $haystack The set of value to search.
+     * @param boolean $strict Whether to enable strict (`===`) comparison.
+     * @throws \InvalidArgumentException if `$haystack` or `$needles` is neither traversable nor an array.
+     * @return boolean `true` if `$needles` is a subset of `$haystack`, `false` otherwise.
+     */
+    public static function isSubset($needles, $haystack, $strict = false)
+    {
+        if (is_array($needles) || $needles instanceof \Traversable) {
+            foreach($needles as $needle) {
+                if (!static::isIn($needle, $haystack, $strict)) {
+                    return false;
+                }
+            }
+            return true;
+        } else {
+            throw new \InvalidArgumentException('Argument $needles must be an array or implement Traversable');
         }
     }
 }
