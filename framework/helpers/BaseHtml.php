@@ -887,7 +887,7 @@ class BaseHtml
         $formatter = ArrayHelper::remove($options, 'item');
         $itemOptions = ArrayHelper::remove($options, 'itemOptions', []);
         $encode = ArrayHelper::remove($options, 'encode', true);
-        $separator = ArrayHelper::remove($options, 'separator', PHP_EOL);
+        $separator = ArrayHelper::remove($options, 'separator', "\n");
         $tag = ArrayHelper::remove($options, 'tag', 'div');
 
         $lines = [];
@@ -956,7 +956,7 @@ class BaseHtml
         $formatter = ArrayHelper::remove($options, 'item');
         $itemOptions = ArrayHelper::remove($options, 'itemOptions', []);
         $encode = ArrayHelper::remove($options, 'encode', true);
-        $separator = ArrayHelper::remove($options, 'separator', PHP_EOL);
+        $separator = ArrayHelper::remove($options, 'separator', "\n");
         $tag = ArrayHelper::remove($options, 'tag', 'div');
 
         $lines = [];
@@ -1016,7 +1016,7 @@ class BaseHtml
         $tag = ArrayHelper::remove($options, 'tag', 'ul');
         $encode = ArrayHelper::remove($options, 'encode', true);
         $formatter = ArrayHelper::remove($options, 'item');
-        $separator = ArrayHelper::remove($options, 'separator', PHP_EOL);
+        $separator = ArrayHelper::remove($options, 'separator', "\n");
         $itemOptions = ArrayHelper::remove($options, 'itemOptions', []);
 
         if (empty($items)) {
