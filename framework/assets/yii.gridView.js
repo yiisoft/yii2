@@ -96,7 +96,7 @@
 
             $.each(yii.getQueryParams(settings.filterUrl), function (name, value) {
                 if (namesInFilter.indexOf(name) === -1 && namesInFilter.indexOf(name.replace(/\[\]$/, '')) === -1) {
-                    if (!value.push) {
+                    if (!$.isArray(value)) {
                         value = [value];
                     }
                     if (!(name in data)) {
