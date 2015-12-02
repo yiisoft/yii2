@@ -276,12 +276,29 @@ yii = (function ($) {
             if (pos < 0) {
                 return {};
             }
-            var qs = url.substring(pos + 1).split('&');
-            for (var i = 0, result = {}; i < qs.length; i++) {
-                qs[i] = qs[i].split('=');
-                result[decodeURIComponent(qs[i][0])] = decodeURIComponent(qs[i][1]);
+
+            var pairs = url.substring(pos + 1).split('&'),
+                params = {},
+                pair,
+                d = decodeURIComponent,
+                i;
+
+            for (i = pairs.length; i > 0;) {
+                pair = pairs[--i].split('=');
+                var name = d(pair[0]);
+                var value = d(pair[1]);
+                if(name.length) {
+                    if (params[name] !== undefined) {
+                        if (!params[name].push) {
+                            params[name] = [params[name]];
+                        }
+                        params[name].push(value || '');
+                    } else {
+                        params[name] = value || '';
+                    }
+                }
             }
-            return result;
+            return params;
         },
 
         initModule: function (module) {
