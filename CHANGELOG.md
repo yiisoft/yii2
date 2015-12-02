@@ -9,6 +9,7 @@ Yii Framework 2 Change Log
 - Bug #6876: Fixed RBAC migration MSSQL cascade problem (thejahweh)
 - Bug #7627: Fixed `yii\widgets\ActiveField` to handle inputs validation with changed ID properly (dynasource, cebe)
 - Bug #8723: Fixed `yii\helpers\VarDumper::export()` unable to export circle referenced objects with `Closure` (klimov-paul)
+- Bug #9061: Fixed `yii.activeForm.js`: input onBlur event forces field validation (githubjeka)
 - Bug #9108: Negative number resulted in no formatting when using `Formatter::asSize()` or `Formatter::asShortSize` (nxnx, cebe)
 - Bug #9288: Fixed `FileHelper::createDirectory` directory creation to be concurrency friendly (dynasource)
 - Bug #9314: Fixed `yii\rbac\DbManager::getPermissionsByUser()` not returning permissions directly assigned to a user (hesna)
