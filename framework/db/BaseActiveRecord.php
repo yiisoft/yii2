@@ -956,13 +956,12 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
      */
     public function refresh()
     {
-        /* @var $record BaseActiveRecord */
-        $record = $this->findOne($this->getPrimaryKey(true));
+        $record = $this->find()->where($this->getPrimaryKey(true))->asArray()->one();
         if ($record === null) {
             return false;
         }
         foreach ($this->attributes() as $name) {
-            $this->_attributes[$name] = isset($record->_attributes[$name]) ? $record->_attributes[$name] : null;
+            $this->_attributes[$name] = isset($record[$name]) ? $record[$name] : null;
         }
         $this->_oldAttributes = $this->_attributes;
         $this->_related = [];
