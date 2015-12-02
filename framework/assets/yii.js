@@ -287,7 +287,7 @@ yii = (function ($) {
                 pair = pairs[--i].split('=');
                 var name = d(pair[0]);
                 var value = d(pair[1]);
-                if(name.length) {
+                if (name.length) {
                     if (params[name] !== undefined) {
                         if (!params[name].push) {
                             params[name] = [params[name]];
