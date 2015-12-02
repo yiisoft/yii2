@@ -96,10 +96,18 @@
 
             $.each(yii.getQueryParams(settings.filterUrl), function (name, value) {
                 if (namesInFilter.indexOf(name) === -1 && namesInFilter.indexOf(name.replace(/\[\]$/, '')) === -1) {
-                    if (!(name in data)) {
-                        data[name] = [];
+                    if (!$.isArray(value)) {
+                        value = [value];
                     }
-                    data[name].push(value);
+                    if (!(name in data)) {
+                        data[name] = value;
+                    } else {
+                        $.each(value, function (i, val) {
+                            if ($.inArray(val, data[name])) {
+                                data[name].push(val);
+                            }
+                        });
+                    }
                 }
             });
 
