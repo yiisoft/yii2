@@ -56,6 +56,7 @@ Yii Framework 2 Change Log
 - Enh #10061: `yii\helpers\BaseInflector::transliterate()` is now public. Introduced different levels of transliteration strictness (silverfire)
 - Enh #10118: Allow easy extension of slug generation in `yii\behaviors\SluggableBehavior` (cebe, hesna)
 - Enh: Added last resort measure for `FileHelper::removeDirectory()` fail to unlink symlinks under Windows (samdark)
+- Enh: #9893: Added support for data-form attribute so links can target specific forms (SamMousa)
 - Chg #9369: `Yii::$app->user->can()` now returns `false` instead of erroring in case `authManager` component is not configured (creocoder)
 - Chg #9411: `DetailView` now automatically sets container tag ID in case it's not specified (samdark)
 - Chg #9953: `TimestampBehavior::getValue()` changed to make value processing consistent with `AttributeBehavior::getValue()` (silverfire)
