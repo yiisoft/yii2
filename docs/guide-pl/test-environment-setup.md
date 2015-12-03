@@ -11,8 +11,8 @@ na utworzenie testów następujących typów:
 - [Testy akceptacyjne](test-acceptance.md) - weryfikujące scenariusze działań z perspektywy użytkownika w przeglądarce.
 
 Yii dostarcza gotowy do użycia zestaw testów wszystkich trzech typów zarówno dla szablonu projektu 
-[`yii2-basic`](https://github.com/yiisoft/yii2/tree/master/apps/basic) jak i 
-[`yii2-advanced`](https://github.com/yiisoft/yii2/tree/master/apps/advanced).
+[`yii2-basic`](https://github.com/yiisoft/yii2-app-basic) jak i 
+[`yii2-advanced`](https://github.com/yiisoft/yii2-app-advanced).
 
 W celu uruchomienia testów koniecznie jest zainstalowanie [Codeception](https://github.com/Codeception/Codeception).
 Instalację można wykonać lokalnie - dla konkretnego pojedynczego projektu - lub globalnie - na komputerze deweloperskim.

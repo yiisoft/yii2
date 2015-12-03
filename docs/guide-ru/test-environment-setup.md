@@ -11,8 +11,8 @@ Yii 2 официально поддерживает интеграцию с фр
 - [Приёмочное тестирование](test-acceptance.md) - проверяет пользовательские сценарии в браузере.
 
 Все три типа тестов представлены в шаблонах проектов
-[`yii2-basic`](https://github.com/yiisoft/yii2/tree/master/apps/basic) и
-[`yii2-advanced`](https://github.com/yiisoft/yii2/tree/master/apps/advanced).
+[`yii2-basic`](https://github.com/yiisoft/yii2-app-basic) и
+[`yii2-advanced`](https://github.com/yiisoft/yii2-app-advanced).
 
 Для того, чтобы запустить тесты необходимо установить [Codeception](https://github.com/Codeception/Codeception).
 Сделать это можно как локально, то есть только для текущего проекта, так и глобально для компьютера разработчика.

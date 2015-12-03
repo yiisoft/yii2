@@ -19,7 +19,7 @@ $db->createCommand('INSERT INTO `customer` (`name`) VALUES (:name)', [
 ])->execute();
 ```
 
-O Yii fornece suporte ao Active Record para os seguintes bancos de dados relacionais:
+O Yii fornece suporte Active Record para os seguintes bancos de dados relacionais:
 
 * MySQL 4.1 ou superior: via [[yii\db\ActiveRecord]]
 * PostgreSQL 7.3 ou superior: via [[yii\db\ActiveRecord]]
@@ -40,7 +40,7 @@ Neste tutorial, vamos principalmente descrever o uso do Active Record para banco
 
 Para começar, declare uma classe Active Record estendendo [[yii\db\ActiveRecord]]. Porque cada classe Active Record é associada a uma tabela do banco de dados, nesta classe você deve sobrescrever o método [[yii\db\ActiveRecord::tableName()|tableName()]] para especificar a tabela que a classe está associada.
 
-No exemplo abaixo, declaramos uma classe Active Record chamada `Customer` para a tabela `customer`.
+No exemplo abaixo, declaramos uma classe Active Record chamada `Customer` para a tabela do banco de dados `customer`.
 
 ```php
 namespace app\models;
@@ -69,7 +69,7 @@ Porque [[yii\db\ActiveRecord]] estende a partir de [[yii\base\Model]], ele herda
 
 ## Conectando ao Banco de Dados <span id="db-connection"></span>
 
-Por padrão, o Active Record usa o [componente de aplicação](structure-application-components.md) `db` com a [[yii\db\Connection|conexão de DB]] para acessar e manipular os dados da base de dados. Como explicado em [Database Access Objects](db-dao.md), você pode configurar o componente `db` na configuração da aplicação como mostrado abaixo,
+Por padrão, o Active Record usa o [componente de aplicação](structure-application-components.md) `db` com a [[yii\db\Connection|DB connection]] para acessar e manipular os dados da base de dados. Como explicado em [Database Access Objects](db-dao.md), você pode configurar o componente `db` na configuração da aplicação como mostrado abaixo,
 
 ```php
 return [
@@ -181,7 +181,7 @@ $customers = Customer::findAll([
 
 > Observação: Nem o [[yii\db\ActiveRecord::findOne()]] ou o [[yii\db\ActiveQuery::one()]] irão adicionar  `LIMIT 1` para a instrução SQL gerada. Se a sua query retornar muitas linhas de dados, você deve chamar `limit(1)` explicitamente para melhorar o desempenho, ex., `Customer::find()->limit(1)->one()`.
 
-Além de usar os métodos do query building, você também pode escrever SQLs `brutos` para pesquisar dados e preencher os objetos Active Record com o resultado. Você pode fazer isso chamando o método [[yii\db\ActiveRecord::findBySql()]]:
+Além de usar os métodos do query building, você também pode escrever SQLs `puros` para pesquisar dados e preencher os objetos Active Record com o resultado. Você pode fazer isso chamando o método [[yii\db\ActiveRecord::findBySql()]]:
 
 ```php
 // retorna todos os customers inatrivos

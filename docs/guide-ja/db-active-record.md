@@ -299,7 +299,7 @@ foreach (Customer::find()->each(10) as $customer) {
 }
 // イーガーローディングをするバッチクエリ
 foreach (Customer::find()->with('orders')->each() as $customer) {
-    // $customer は Customer オブジェクト
+    // $customer は 'orders' リレーションを投入された Customer オブジェクト
 }
 ```
 
@@ -517,7 +517,8 @@ Customer::deleteAll(['status' => Customer::STATUS_INACTIVE]);
 3. [[yii\db\ActiveRecord::afterDelete()|afterDelete()]]: [[yii\db\ActiveRecord::EVENT_AFTER_DELETE|EVENT_AFTER_DELETE]] イベントをトリガ。
 
 
-> Note|注意: 次のメソッドは、どれを呼んでも、上記のライフサイクルを開始させません。
+> Note|注意: 次のメソッドを呼んだ場合は、いずれの場合も、上記のライフサイクルのどれかを開始させることはありません。
+> これらのメソッドは、レコード単位ではなく、データベース上で直接に動作するためです。
 >
 > - [[yii\db\ActiveRecord::updateAll()]] 
 > - [[yii\db\ActiveRecord::deleteAll()]]
@@ -580,6 +581,9 @@ class Post extends \yii\db\ActiveRecord
 
 複数の操作を示すためには、`|` を使って上記の定数を連結してください。
 ショートカット定数 [[yii\db\ActiveRecord::OP_ALL|OP_ALL]] を使って、上記の三つの操作すべてを示すことも出来ます。
+
+このメソッドを使って生成されたトランザクションは、[[yii\db\ActiveRecord::beforeSave()|beforeSave()]] を呼ぶ前に開始され、
+[[yii\db\ActiveRecord::afterSave()|afterSave()]] を実行した後にコミットされます。
 
 
 ## 楽観的ロック <span id="optimistic-locks"></span>
@@ -651,6 +655,8 @@ public function actionUpdate($id)
 ```php
 class Customer extends ActiveRecord
 {
+    // ...
+
     public function getOrders()
     {
         return $this->hasMany(Order::className(), ['customer_id' => 'id']);
@@ -659,6 +665,8 @@ class Customer extends ActiveRecord
 
 class Order extends ActiveRecord
 {
+    // ...
+
     public function getCustomer()
     {
         return $this->hasOne(Customer::className(), ['id' => 'customer_id']);
@@ -728,7 +736,7 @@ SQL 文の再実行を強制するためには、まず、リレーションプ�
 ```php
 $customer = Customer::findOne(123);
 
-// SELECT * FROM `order` WHERE `subtotal` > 200 ORDER BY `id`
+// SELECT * FROM `order` WHERE `customer_id` = 123 AND `subtotal` > 200 ORDER BY `id`
 $orders = $customer->getOrders()
     ->where(['>', 'subtotal', 200])
     ->orderBy('id')
@@ -755,10 +763,10 @@ class Customer extends ActiveRecord
 これによって、次のようなリレーショナルクエリを実行することが出来るようになります。
 
 ```php
-// SELECT * FROM `order` WHERE `subtotal` > 200 ORDER BY `id`
+// SELECT * FROM `order` WHERE `customer_id` = 123 AND `subtotal` > 200 ORDER BY `id`
 $orders = $customer->getBigOrders(200)->all();
 
-// SELECT * FROM `order` WHERE `subtotal` > 100 ORDER BY `id`
+// SELECT * FROM `order` WHERE `customer_id` = 123 AND `subtotal` > 100 ORDER BY `id`
 $orders = $customer->bigOrders;
 ```
 
@@ -1332,4 +1340,83 @@ $customers = Customer::find()
     ->joinWith('orders') // テーブルの結合を保証する
     ->groupBy('{{customer}}.id') // 結果をグループ化して、集計関数の動作を保証する
     ->all();
+```
+
+この方法を使うことの短所の一つは、情報が SQL クエリでロードされていない場合には、それを別途計算しなければならない、ということです。
+このことは、また、新しく保存したレコードも追加のフィールドについては情報を持っていないことになることを意味します。
+
+```php
+$room = new Room();
+$room->length = 100;
+$room->width = 50;
+$room->height = 2;
+
+$room->volume; // まだ指定されていないため、この値は null になります。
+```
+
+[[yii\db\BaseActiveRecord::__get()|__get()]] と [[yii\db\BaseActiveRecord::__set()|__set()]] のマジックメソッドを使用すれば、プロパティの動作をエミュレートすることが出来ます。
+
+```php
+class Room extends \yii\db\ActiveRecord
+{
+    private $_volume;
+    
+    public function setVolume($volume)
+    {
+        $this->_volume = (float) $volume;
+    }
+    
+    public function getVolume()
+    {
+        if (empty($this->length) || empty($this->width) || empty($this->height)) {
+            return null;
+        }
+        
+        if ($this->_volume === null) {
+            $this->setVolume(
+                $this->length * $this->width * $this->height
+            );
+        }
+        
+        return $this->_volume;
+    }
+
+    // ...
+}
+```
+
+このようにすると、SELECT クエリによって容積が提供されていない場合に、モデルの他の属性を使って容積を自動的に計算することが出来ます。
+
+この手法は、リレーショナルデータに依存する追加のフィールドに対しても、同じように使用する事が出来ます。
+
+```php
+class Customer extends \yii\db\ActiveRecord
+{
+    private $_ordersCount;
+    
+    public function setOrdersCount($count)
+    {
+        $this->_ordersCount = (int) $count;
+    }
+    
+    public function getOrdersCount()
+    {
+        if ($this->isNewRecord) {
+            return null; // プライマリキーが null の場合のリレーショナルクエリを防止
+        }
+        
+        if ($this->_ordersCount === null) {
+            $this->setOrdersCount(count($this->orders));
+        }
+
+        return $this->_ordersCount;
+    }
+
+    // ...
+
+    public function getOrders()
+    {
+        return $this->hasMany(Order::className(), ['customer_id' => 'id']);
+    }
+}
 ```

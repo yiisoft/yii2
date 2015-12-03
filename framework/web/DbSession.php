@@ -22,13 +22,13 @@ use yii\di\Instance;
  * The following example shows how you can configure the application to use DbSession:
  * Add the following to your application config under `components`:
  *
- * ~~~
+ * ```php
  * 'session' => [
  *     'class' => 'yii\web\DbSession',
  *     // 'db' => 'mydb',
  *     // 'sessionTable' => 'my_session',
  * ]
- * ~~~
+ * ```
  *
  * DbSession extends [[MultiFieldSession]], thus it allows saving extra fields into the [[sessionTable]].
  * Refer to [[MultiFieldSession]] for more details.
@@ -49,14 +49,14 @@ class DbSession extends MultiFieldSession
      * @var string the name of the DB table that stores the session data.
      * The table should be pre-created as follows:
      *
-     * ~~~
+     * ```sql
      * CREATE TABLE session
      * (
      *     id CHAR(40) NOT NULL PRIMARY KEY,
      *     expire INTEGER,
      *     data BLOB
      * )
-     * ~~~
+     * ```
      *
      * where 'BLOB' refers to the BLOB-type of your preferred DBMS. Below are the BLOB type
      * that can be used for some popular DBMS:
@@ -139,7 +139,7 @@ class DbSession extends MultiFieldSession
         $query->from($this->sessionTable)
             ->where('[[expire]]>:expire AND [[id]]=:id', [':expire' => time(), ':id' => $id]);
 
-        if (isset($this->readCallback)) {
+        if ($this->readCallback !== null) {
             $fields = $query->one($this->db);
             return $fields === false ? '' : $this->extractData($fields);
         }

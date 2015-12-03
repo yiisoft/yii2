@@ -87,75 +87,54 @@ ODBC 経由でデータベースに接続しようとする場合は、[[yii\db\
 
 > Info|情報: DB 接続のインスタンスを作成するとき、実際のデータベース接続は、最初の SQL を実行するか、[[yii\db\Connection::open()|open()]] メソッドを明示的に呼ぶかするまでは確立されません。
 
-> Tip|ヒント: 時として、何らかの環境変数を初期化するために、データベース接続を確立した直後に何かクエリを実行したい場合があります。
-> そのためには、データベース接続の [[yii\db\Connection::EVENT_AFTER_OPEN|afterOpen]] イベントに対するイベントハンドラを登録することが出来ます。
+> Tip|ヒント: 時として、何らかの環境変数を初期化するために、データベース接続を確立した直後に何かクエリを実行したい場合があるでしょう (例えば、タイムゾーンや文字セットを設定するなどです)。
+> そうするために、データベース接続の [[yii\db\Connection::EVENT_AFTER_OPEN|afterOpen]] イベントに対するイベントハンドラを登録することが出来ます。
 > 以下のように、アプリケーションの構成情報に直接にハンドラを登録してください。
 > 
 > ```php
 > 'db' => [
 >     // ...
 >     'on afterOpen' => function($event) {
->         $event->sender->createCommand("YOUR SQL HERE")->execute();
+>         // $event->sender は DB 接続を指す
+>         $event->sender->createCommand("SET time_zone = 'UTC'")->execute();
 >     }
 > ]
 > ```
+
 
 ## SQL クエリを実行する <span id="executing-sql-queries"></span>
 
 いったんデータベース接続のインスタンスを得てしまえば、次の手順に従って SQL クエリを実行することが出来ます。
 
-1. 素の SQL で [[yii\db\Command]] を作成する。
+1. 素の SQL クエリで [[yii\db\Command]] を作成する。
 2. パラメータをバインドする (オプション)。
 3. [[yii\db\Command]] の SQL 実行メソッドの一つを呼ぶ。
 
 次に、データベースからデータを読み出すさまざまな方法を例示します。
 
 ```php
-$db = new yii\db\Connection(...);
-
 // 行のセットを返す。各行は、カラム名と値の連想配列。
-// 結果が無い場合は空の配列が返される。
-$posts = $db->createCommand('SELECT * FROM post')
+// クエリが結果を返さなかった場合は空の配列が返される。
+$posts = Yii::$app->db->createCommand('SELECT * FROM post')
             ->queryAll();
 
 // 一つの行 (最初の行) を返す。
-// 結果が無い場合は false が返される。
-$post = $db->createCommand('SELECT * FROM post WHERE id=1')
+// クエリの結果が無かった場合は false が返される。
+$post = Yii::$app->db->createCommand('SELECT * FROM post WHERE id=1')
            ->queryOne();
 
 // 一つのカラム (最初のカラム) を返す。
-// 結果が無い場合は空の配列が返される。
-$titles = $db->createCommand('SELECT title FROM post')
+// クエリが結果を返さなかった場合は空の配列が返される。
+$titles = Yii::$app->db->createCommand('SELECT title FROM post')
              ->queryColumn();
 
 // スカラ値を返す。
-// 結果が無い場合は false が返される。
-$count = $db->createCommand('SELECT COUNT(*) FROM post')
+// クエリの結果が無かった場合は false が返される。
+$count = Yii::$app->db->createCommand('SELECT COUNT(*) FROM post')
              ->queryScalar();
 ```
 
 > Note|注意: 精度を保つために、対応するデータベースカラムの型が数値である場合でも、データベースから取得されたデータは、全て文字列として表現されます。
-
-> Tip|ヒント: 接続を確立した直後に SQL を実行する必要がある場合 (例えば、タイムゾーンや文字セットを設定したい場合) は、[[yii\db\Connection::EVENT_AFTER_OPEN]] ハンドラの中でそれをすることが出来ます。
-> 例えば、
->
-```php
-return [
-    // ...
-    'components' => [
-        // ...
-        'db' => [
-            'class' => 'yii\db\Connection',
-            // ...
-            'on afterOpen' => function($event) {
-                // $event->sender は DB 接続を指す
-                $event->sender->createCommand("SET time_zone = 'UTC'")->execute();
-            }
-        ],
-    ],
-    // ...
-];
-```
 
 
 ### パラメータをバインドする <span id="binding-parameters"></span>
@@ -164,7 +143,7 @@ return [
 例えば、
 
 ```php
-$post = $db->createCommand('SELECT * FROM post WHERE id=:id AND status=:status')
+$post = Yii::$app->db->createCommand('SELECT * FROM post WHERE id=:id AND status=:status')
            ->bindValue(':id', $_GET['id'])
            ->bindValue(':status', 1)
            ->queryOne();
@@ -183,11 +162,11 @@ SQL 文において、一つまたは複数のパラメータプレースホル�
 ```php
 $params = [':id' => $_GET['id'], ':status' => 1];
 
-$post = $db->createCommand('SELECT * FROM post WHERE id=:id AND status=:status')
+$post = Yii::$app->db->createCommand('SELECT * FROM post WHERE id=:id AND status=:status')
            ->bindValues($params)
            ->queryOne();
            
-$post = $db->createCommand('SELECT * FROM post WHERE id=:id AND status=:status', $params)
+$post = Yii::$app->db->createCommand('SELECT * FROM post WHERE id=:id AND status=:status', $params)
            ->queryOne();
 ```
 
@@ -196,16 +175,17 @@ $post = $db->createCommand('SELECT * FROM post WHERE id=:id AND status=:status',
 例えば、
 
 ```php
-$command = $db->createCommand('SELECT * FROM post WHERE id=:id');
+$command = Yii::$app->db->createCommand('SELECT * FROM post WHERE id=:id');
 
 $post1 = $command->bindValue(':id', 1)->queryOne();
 $post2 = $command->bindValue(':id', 2)->queryOne();
+// ...
 ```
 
 [[yii\db\Command::bindParam()|bindParam()]] はパラメータを参照渡しでバインドすることをサポートしていますので、上記のコードは次のように書くことも出来ます。
 
 ```php
-$command = $db->createCommand('SELECT * FROM post WHERE id=:id')
+$command = Yii::$app->db->createCommand('SELECT * FROM post WHERE id=:id')
               ->bindParam(':id', $id);
 
 $id = 1;
@@ -226,7 +206,7 @@ $post2 = $command->queryOne();
 例えば、
 
 ```php
-$db->createCommand('UPDATE post SET status=1 WHERE id=1')
+Yii::$app->db->createCommand('UPDATE post SET status=1 WHERE id=1')
    ->execute();
 ```
 
@@ -238,16 +218,16 @@ INSERT、UPDATE および DELETE クエリのためには、素の SQL を書く
 
 ```php
 // INSERT (テーブル名, カラムの値)
-$db->createCommand()->insert('user', [
+Yii::$app->db->createCommand()->insert('user', [
     'name' => 'Sam',
     'age' => 30,
 ])->execute();
 
 // UPDATE (テーブル名, カラムの値, 条件)
-$db->createCommand()->update('user', ['status' => 1], 'age > 30')->execute();
+Yii::$app->db->createCommand()->update('user', ['status' => 1], 'age > 30')->execute();
 
 // DELETE (テーブル名, 条件)
-$db->createCommand()->delete('user', 'status = 0')->execute();
+Yii::$app->db->createCommand()->delete('user', 'status = 0')->execute();
 ```
 
 [[yii\db\Command::batchInsert()|batchInsert()]] を呼んで複数の行を一気に挿入することも出来ます。
@@ -255,12 +235,16 @@ $db->createCommand()->delete('user', 'status = 0')->execute();
 
 ```php
 // テーブル名, カラム名, カラムの値
-$db->createCommand()->batchInsert('user', ['name', 'age'], [
+Yii::$app->db->createCommand()->batchInsert('user', ['name', 'age'], [
     ['Tom', 30],
     ['Jane', 20],
     ['Linda', 25],
 ])->execute();
 ```
+
+上述のメソッド群はクエリを生成するだけであり、実際にそれを実行するためには、常に [[yii\db\Command::execute()|execute()]]
+を呼び出す必要があることに注意してください。
+
 
 ## テーブルとカラムの名前を引用符で囲む <span id="quoting-table-and-column-names"></span>
 
@@ -271,18 +255,18 @@ $db->createCommand()->batchInsert('user', ['name', 'age'], [
 * `[[カラム名]]`: 引用符で囲まれるカラム名を二重角括弧で包む。
 * `{{テーブル名}}`: 引用符で囲まれるテーブル名を二重波括弧で包む。
 
-Yii DAO は、SQL に含まれるこのような構文を、対応する適切な引用符で囲まれたカラム名とテーブル名に自動的に変換します。
+Yii DAO は、このような構文を、DBMS 固有の文法に従って、適切な引用符で囲まれたカラム名とテーブル名に自動的に変換します。
 例えば、
 
 ```php
 // MySQL では SELECT COUNT(`id`) FROM `employee` という SQL が実行される
-$count = $db->createCommand("SELECT COUNT([[id]]) FROM {{employee}}")
+$count = Yii::$app->db->createCommand("SELECT COUNT([[id]]) FROM {{employee}}")
             ->queryScalar();
 ```
 
 ### テーブル接頭辞を使う <span id="using-table-prefix"></span>
 
-あなたの DB テーブルのほとんどが何か共通の接頭辞を持っている場合は、Yii DAO によってサポートされているテーブル接頭辞の機能を使うことが出来ます。
+あなたの DB テーブル名のほとんどが何か共通の接頭辞を持っている場合は、Yii DAO によってサポートされているテーブル接頭辞の機能を使うことが出来ます。
 
 最初に、[[yii\db\Connection::tablePrefix]] プロパティによって、テーブル接頭辞を指定します。
 
@@ -305,7 +289,7 @@ return [
 
 ```php
 // MySQL では SELECT COUNT(`id`) FROM `tbl_employee` という SQL が実行される
-$count = $db->createCommand("SELECT COUNT([[id]]) FROM {{%employee}}")
+$count = Yii::$app->db->createCommand("SELECT COUNT([[id]]) FROM {{%employee}}")
             ->queryScalar();
 ```
 
@@ -317,16 +301,17 @@ $count = $db->createCommand("SELECT COUNT([[id]]) FROM {{%employee}}")
 次のコードはトランザクションの典型的な使用方法を示すものです。
 
 ```php
-$db->transaction(function($db) {
+Yii::$app->db->transaction(function($db) {
     $db->createCommand($sql1)->execute();
     $db->createCommand($sql2)->execute();
     // ... その他の SQL 文を実行 ...
 });
 ```
 
-上記のコードは、次のものと等価です。
+上記のコードは、次のものと等価です。こちらの方が、エラー処理のコードをより細かく制御することが出来ます。
 
 ```php
+$db = Yii::$app->db;
 $transaction = $db->beginTransaction();
 
 try {
@@ -344,12 +329,13 @@ try {
 }
 ```
 
-[[yii\db\Connection::beginTransaction()|beginTransaction()]] メソッドを呼んで、新しいトランザクションを開始します。
-トランザクションは、変数 `$transaction` に保存された [[yii\db\Transaction]] オブジェクトとして表現されています。
-そして、実行されるクエリを `try...catch...` ブロックで囲みます。
-全てのクエリの実行が成功した場合には [[yii\db\Transaction::commit()|commit()]] を呼んでトランザクションをコミットします。
-そうでなければ、例外がトリガされてキャッチされ、[[yii\db\Transaction::rollBack()|rollBack()]] が呼ばれて、失敗したクエリに先行するクエリがトランザクションの中で行った変更がロールバックされます。
-
+[[yii\db\Connection::beginTransaction()|beginTransaction()]] メソッドを呼ぶことによって、新しいトランザクションが開始されます。
+トランザクションは、変数 `$transaction` に保存された [[yii\db\Transaction]] オブジェクトとして表現されます。
+そして、実行されるクエリが `try...catch...` ブロックで囲まれます。
+全てのクエリの実行が成功した場合には、トランザクションをコミットするために [[yii\db\Transaction::commit()|commit()]] が呼ばれます。
+そうでなく、例外がトリガされてキャッチされた場合は、[[yii\db\Transaction::rollBack()|rollBack()]]
+が呼ばれて、トランザクションの中で失敗したクエリに先行するクエリによって行なわれた変更が、ロールバックされます。
+そして、`throw $e` が、まるでそれをキャッチしなかったかのように、例外を再スローしますので、通常のエラー処理プロセスがその例外の面倒を見ることになります。
 
 ### 分離レベルを指定する <span id="specifying-isolation-levels"></span>
 
@@ -360,13 +346,13 @@ Yii は、トランザクションの [分離レベル] の設定もサポート
 ```php
 $isolationLevel = \yii\db\Transaction::REPEATABLE_READ;
 
-$db->transaction(function ($db) {
+Yii::$app->db->transaction(function ($db) {
     ....
 }, $isolationLevel);
  
 // あるいは
 
-$transaction = $db->beginTransaction($isolationLevel);
+$transaction = Yii::$app->db->beginTransaction($isolationLevel);
 ```
 
 Yii は、最もよく使われる分離レベルのために、四つの定数を提供しています。
@@ -382,7 +368,7 @@ Yii は、最もよく使われる分離レベルのために、四つの定数�
 DBMS によっては、接続全体に対してのみ分離レベルの設定を許容しているものがあることに注意してください。
 その場合、すべての後続のトランザクションは、指定しなくても、それと同じ分離レベルで実行されます。
 従って、この機能を使用するときは、矛盾する設定を避けるために、全てのトランザクションについて分離レベルを明示的に指定しなければなりません。
-このチュートリアルを書いている時点では、これに該当する DBMS は MSSQL と SQLite だけです。
+このチュートリアルを書いている時点では、この制約の影響を受ける DBMS は MSSQL と SQLite だけです。
 
 > Note|注意: SQLite は、二つの分離レベルしかサポートしていません。すなわち、`READ UNCOMMITTED` と `SERIALIZABLE` しか使えません。
 他のレベルを使おうとすると、例外が投げられます。
@@ -398,7 +384,7 @@ DBMS によっては、接続全体に対してのみ分離レベルの設定を
 あなたの DBMS が Savepoint をサポートしている場合は、次のように、複数のトランザクションを入れ子にすることが出来ます。
 
 ```php
-$db->transaction(function ($db) {
+Yii::$app->db->transaction(function ($db) {
     // 外側のトランザクション
     
     $db->transaction(function ($db) {
@@ -410,6 +396,7 @@ $db->transaction(function ($db) {
 あるいは、
 
 ```php
+$db = Yii::$app->db;
 $outerTransaction = $db->beginTransaction();
 try {
     $db->createCommand($sql1)->execute();
@@ -420,11 +407,13 @@ try {
         $innerTransaction->commit();
     } catch (\Exception $e) {
         $innerTransaction->rollBack();
+        throw $e;
     }
 
     $outerTransaction->commit();
 } catch (\Exception $e) {
     $outerTransaction->rollBack();
+    throw $e;
 }
 ```
 
@@ -475,14 +464,14 @@ try {
 $db = Yii::createObject($config);
 
 // スレーブの一つに対してクエリを実行する
-$rows = $db->createCommand('SELECT * FROM user LIMIT 10')->queryAll();
+$rows = Yii::$app->db->createCommand('SELECT * FROM user LIMIT 10')->queryAll();
 
 // マスタに対してクエリを実行する
-$db->createCommand("UPDATE user SET username='demo' WHERE id=1")->execute();
+Yii::$app->db->createCommand("UPDATE user SET username='demo' WHERE id=1")->execute();
 ```
 
 > Info|情報: [[yii\db\Command::execute()]] を呼ぶことで実行されるクエリは、書き込みのクエリと見なされ、[[yii\db\Command]] の "query" メソッドのうちの一つによって実行されるその他すべてのクエリは、読み出しクエリと見なされます。
-  現在アクティブなスレーブ接続は `$db->slave` によって取得することが出来ます。
+  現在アクティブなスレーブ接続は `Yii::$app->db->slave` によって取得することが出来ます。
 
 `Connection` コンポーネントは、スレーブ間のロードバランス調整とフェイルオーバーをサポートしています。
 読み出しクエリを最初に実行するときに、`Connection` コンポーネントはランダムにスレーブを選んで接続を試みます。
@@ -547,6 +536,7 @@ $db->createCommand("UPDATE user SET username='demo' WHERE id=1")->execute();
 例えば、
 
 ```php
+$db = Yii::$app->db;
 // トランザクションはマスタ接続で開始される
 $transaction = $db->beginTransaction();
 
@@ -565,19 +555,19 @@ try {
 スレーブ接続を使ってトランザクションを開始したいときは、次のように、明示的にそうする必要があります。
 
 ```php
-$transaction = $db->slave->beginTransaction();
+$transaction = Yii::$app->db->slave->beginTransaction();
 ```
 
 時として、読み出しクエリの実行にマスタ接続を使うことを強制したい場合があります。
 これは、`useMaster()` メソッドを使うによって達成できます。
 
 ```php
-$rows = $db->useMaster(function ($db) {
-    return $db->createCommand('SELECT * FROM user LIMIT 10')->queryAll();
+$rows = Yii::$app->db->useMaster(function ($db) {
+    return Yii::$app->db->createCommand('SELECT * FROM user LIMIT 10')->queryAll();
 });
 ```
 
-直接に `$db->enableSlaves` を false に設定して、全てのクエリをマスタ接続に向けることも出来ます。
+直接に `Yii::$app->db->enableSlaves` を false に設定して、全てのクエリをマスタ接続に向けることも出来ます。
 
 
 ## データベーススキーマを扱う <span id="database-schema"></span>
@@ -604,18 +594,23 @@ Yii DAO は、新しいテーブルを作ったり、テーブルからカラム
 
 ```php
 // CREATE TABLE
-$db->createCommand()->createTable('post', [
+Yii::$app->db->createCommand()->createTable('post', [
     'id' => 'pk',
     'title' => 'string',
     'text' => 'text',
 ]);
 ```
 
-テーブルに関する定義情報を DB 接続の [[yii\db\Connection::getTableSchema()|getTableSchema()]] メソッドによって取得することも出来ます。
+上記の配列は、生成されるカラムの名前と型を記述しています。
+Yii はカラムの型のために一連の抽象データ型を提供しているため、データベースの違いを意識せずにスキーマを定義することが可能です。
+これらの抽象データ型は、テーブルが作成されるデータベースに依存する DBMS 固有の型定義に変換されます。
+詳しい情報は [[yii\db\Command::createTable()|createTable()]] メソッドの API ドキュメントを参照してください。
+
+データベースのスキーマを変更するだけでなく、テーブルに関する定義情報を DB 接続の [[yii\db\Connection::getTableSchema()|getTableSchema()]] メソッドによって取得することも出来ます。
 例えば、
 
 ```php
-$table = $db->getTableSchema('post');
+$table = Yii::$app->db->getTableSchema('post');
 ```
 
 このメソッドは、テーブルのカラム、プライマリキー、外部キーなどの情報を含む [[yii\db\TableSchema]] オブジェクトを返します。

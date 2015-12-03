@@ -106,7 +106,7 @@ class QueryBuilder extends \yii\db\QueryBuilder
      */
     public function createIndex($name, $table, $columns, $unique = false)
     {
-        if ($unique == self::INDEX_UNIQUE || $unique === true) {
+        if ($unique === self::INDEX_UNIQUE || $unique === true) {
             $index = false;
             $unique = true;
         } else {

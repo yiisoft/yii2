@@ -301,25 +301,27 @@
 
             // client-side validation
             $.each(data.attributes, function () {
-                this.cancelled = false;
-                // perform validation only if the form is being submitted or if an attribute is pending validation
-                if (data.submitting || this.status === 2 || this.status === 3) {
-                    var msg = messages[this.id];
-                    if (msg === undefined) {
-                        msg = [];
-                        messages[this.id] = msg;
-                    }
-                    var event = $.Event(events.beforeValidateAttribute);
-                    $form.trigger(event, [this, msg, deferreds]);
-                    if (event.result !== false) {
-                        if (this.validate) {
-                            this.validate(this, getValue($form, this), msg, deferreds, $form);
+                if (!$(this.input).is(":disabled")) {
+                    this.cancelled = false;
+                    // perform validation only if the form is being submitted or if an attribute is pending validation
+                    if (data.submitting || this.status === 2 || this.status === 3) {
+                        var msg = messages[this.id];
+                        if (msg === undefined) {
+                            msg = [];
+                            messages[this.id] = msg;
                         }
-                        if (this.enableAjaxValidation) {
-                            needAjaxValidation = true;
+                        var event = $.Event(events.beforeValidateAttribute);
+                        $form.trigger(event, [this, msg, deferreds]);
+                        if (event.result !== false) {
+                            if (this.validate) {
+                                this.validate(this, getValue($form, this), msg, deferreds, $form);
+                            }
+                            if (this.enableAjaxValidation) {
+                                needAjaxValidation = true;
+                            }
+                        } else {
+                            this.cancelled = true;
                         }
-                    } else {
-                        this.cancelled = true;
                     }
                 }
             });
@@ -472,7 +474,7 @@
         if (attribute.validateOnBlur) {
             $input.on('blur.yiiActiveForm', function () {
                 if (attribute.status == 0 || attribute.status == 1) {
-                    validateAttribute($form, attribute, !attribute.status);
+                    validateAttribute($form, attribute, true);
                 }
             });
         }
@@ -550,7 +552,7 @@
         if (submitting) {
             var errorAttributes = [];
             $.each(data.attributes, function () {
-                if (!this.cancelled && updateInput($form, this, messages)) {
+                if (!$(this.input).is(":disabled") && !this.cancelled && updateInput($form, this, messages)) {
                     errorAttributes.push(this);
                 }
             });

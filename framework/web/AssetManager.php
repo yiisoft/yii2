@@ -54,13 +54,13 @@ class AssetManager extends Component
      * The following example shows how to disable the bootstrap css file used by Bootstrap widgets
      * (because you want to use your own styles):
      *
-     * ~~~
+     * ```php
      * [
      *     'yii\bootstrap\BootstrapAsset' => [
      *         'css' => [],
      *     ],
      * ]
-     * ~~~
+     * ```
      */
     public $bundles = [];
     /**
@@ -115,9 +115,9 @@ class AssetManager extends Component
      * to Web users. For example, for Apache Web server, the following configuration directive should be added
      * for the Web folder:
      *
-     * ~~~
+     * ```apache
      * Options FollowSymLinks
-     * ~~~
+     * ```
      */
     public $linkAssets = false;
     /**
@@ -299,8 +299,8 @@ class AssetManager extends Component
         if (($actualAsset = $this->resolveAsset($bundle, $asset)) !== false) {
             if (strncmp($actualAsset, '@web/', 5) === 0) {
                 $asset = substr($actualAsset, 5);
-                $basePath = Yii::getAlias("@webroot");
-                $baseUrl = Yii::getAlias("@web");
+                $basePath = Yii::getAlias('@webroot');
+                $baseUrl = Yii::getAlias('@web');
             } else {
                 $asset = Yii::getAlias($actualAsset);
                 $basePath = $this->basePath;
@@ -351,9 +351,9 @@ class AssetManager extends Component
             $asset = $bundle->sourcePath . '/' . $asset;
         }
 
-        $n = mb_strlen($asset);
+        $n = mb_strlen($asset, Yii::$app->charset);
         foreach ($this->assetMap as $from => $to) {
-            $n2 = mb_strlen($from);
+            $n2 = mb_strlen($from, Yii::$app->charset);
             if ($n2 <= $n && substr_compare($asset, $from, $n - $n2, $n2) === 0) {
                 return $to;
             }

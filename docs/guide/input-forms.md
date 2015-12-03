@@ -109,7 +109,7 @@ class like it is done in the above example with [[yii\helpers\Html::submitButton
 > Tip: In order to style required fields with asterisks, you can use the following CSS:
 >
 > ```css
-> div.required label:after {
+> div.required label.control-label:after {
 >     content: " *";
 >     color: red;
 > }
