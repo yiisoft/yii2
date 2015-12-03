@@ -182,8 +182,8 @@ public function actionIndex()
 
 There are some predefined constants you can use:
 
-- `Controller::EXIT_CODE_NORMAL` with value of `0`;
-- `Controller::EXIT_CODE_ERROR` with value of `1`.
+- [[yii\console\Controller::EXIT_CODE_NORMAL|Controller::EXIT_CODE_NORMAL]] with value of `0`;
+- [[yii\console\Controller::EXIT_CODE_ERROR|Controller::EXIT_CODE_ERROR]] with value of `1`.
 
 It's a good practice to define meaningful constants for your controller in case you have more error code types.
 
@@ -198,7 +198,7 @@ Outputting formatted strings is simple. Here's how to output some bold text:
 $this->stdout("Hello?\n", Console::BOLD);
 ```
 
-If you need to build string dynamically combining multiple styles it's better to use `ansiFormat`:
+If you need to build string dynamically combining multiple styles it's better to use [[yii\helpers\Console::ansiFormat()|ansiFormat()]]:
 
 ```php
 $name = $this->ansiFormat('Alex', Console::FG_YELLOW);
