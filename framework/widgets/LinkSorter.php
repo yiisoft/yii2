@@ -41,7 +41,7 @@ class LinkSorter extends Widget
     /**
      * @var array HTML attributes for the link in a sorter container tag which are passed to [[Sort::link()]].
      * @see \yii\helpers\Html::renderTagAttributes() for details on how attributes are being rendered.
-     * @since 2.0.5
+     * @since 2.0.6
      */
     public $linkOptions = [];
 

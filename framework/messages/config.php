@@ -7,7 +7,7 @@ return [
     'messagePath' => __DIR__,
     // array, required, list of language codes that the extracted messages
     // should be translated to. For example, ['zh-CN', 'de'].
-    'languages' => ['ar', 'az', 'bg', 'bs', 'ca', 'cs', 'da', 'de', 'el', 'es', 'et', 'fa', 'fi', 'fr', 'he', 'hu', 'id', 'it', 'ja', 'kk', 'ko', 'lt', 'lv', 'ms', 'nb-NO', 'nl', 'pl', 'pt', 'pt-BR', 'ro', 'ru', 'sk', 'sl', 'sr', 'sr-Latn', 'sv', 'th', 'tj', 'uk', 'vi', 'zh-CN','zh-TW'],
+    'languages' => ['ar', 'az', 'bg', 'bs', 'ca', 'cs', 'da', 'de', 'el', 'es', 'et', 'fa', 'fi', 'fr', 'he', 'hr', 'hu', 'id', 'it', 'ja', 'ka', 'kk', 'ko', 'lt', 'lv', 'ms', 'nb-NO', 'nl', 'pl', 'pt', 'pt-BR', 'ro', 'ru', 'sk', 'sl', 'sr', 'sr-Latn', 'sv', 'th', 'tj', 'uk', 'vi', 'zh-CN','zh-TW'],
     // string, the name of the function for translating messages.
     // Defaults to 'Yii::t'. This is used as a mark to find the messages to be
     // translated. You may use a string for single function name or an array for
@@ -22,6 +22,9 @@ return [
     // boolean, whether to remove messages that no longer appear in the source code.
     // Defaults to false, which means each of these messages will be enclosed with a pair of '@@' marks.
     'removeUnused' => false,
+    // boolean, whether to mark messages that no longer appear in the source code.
+    // Defaults to true, which means each of these messages will be enclosed with a pair of '@@' marks.
+    'markUnused' => true,
     // array, list of patterns that specify which files/directories should NOT be processed.
     // If empty or not set, all files/directories will be processed.
     // A path matches a pattern if it contains the pattern string at its end. For example,
@@ -38,7 +41,6 @@ return [
         '.hgignore',
         '.hgkeep',
         '/messages',
-        '/BaseYii.php', // contains examples about Yii:t()
     ],
     // array, list of patterns that specify which files (not directories) should be processed.
     // If empty or not set, all files will be processed.

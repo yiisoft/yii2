@@ -63,7 +63,7 @@ class QueryBuilder extends \yii\db\QueryBuilder
                 $value = (int) $value;
             }
 
-            return "ALTER TABLE " . $this->db->schema->quoteTableName($tableName) . " AUTO_INCREMENT=$value;";
+            return 'ALTER TABLE ' . $this->db->schema->quoteTableName($tableName) . " AUTO_INCREMENT=$value;";
         } elseif ($table === null) {
             throw new InvalidParamException("Table not found: $tableName");
         } else {

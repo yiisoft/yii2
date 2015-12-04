@@ -26,7 +26,7 @@ use yii\web\ForbiddenHttpException;
  * For example, the following declarations will allow authenticated users to access the "create"
  * and "update" actions and deny all other users from accessing these two actions.
  *
- * ~~~
+ * ```php
  * public function behaviors()
  * {
  *     return [
@@ -49,7 +49,7 @@ use yii\web\ForbiddenHttpException;
  *         ],
  *     ];
  * }
- * ~~~
+ * ```
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
@@ -67,9 +67,9 @@ class AccessControl extends ActionFilter
      *
      * The signature of the callback should be as follows:
      *
-     * ~~~
+     * ```php
      * function ($rule, $action)
-     * ~~~
+     * ```
      *
      * where `$rule` is the rule that denies the user, and `$action` is the current [[Action|action]] object.
      * `$rule` can be `null` if access is denied because none of the rules matched.
@@ -120,7 +120,7 @@ class AccessControl extends ActionFilter
             } elseif ($allow === false) {
                 if (isset($rule->denyCallback)) {
                     call_user_func($rule->denyCallback, $rule, $action);
-                } elseif (isset($this->denyCallback)) {
+                } elseif ($this->denyCallback !== null) {
                     call_user_func($this->denyCallback, $rule, $action);
                 } else {
                     $this->denyAccess($user);
@@ -128,7 +128,7 @@ class AccessControl extends ActionFilter
                 return false;
             }
         }
-        if (isset($this->denyCallback)) {
+        if ($this->denyCallback !== null) {
             call_user_func($this->denyCallback, null, $action);
         } else {
             $this->denyAccess($user);

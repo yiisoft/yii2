@@ -61,13 +61,13 @@ abstract class BaseMailer extends Component implements MailerInterface, ViewCont
      *
      * For example:
      *
-     * ~~~
+     * ```php
      * [
      *     'charset' => 'UTF-8',
      *     'from' => 'noreply@mydomain.com',
      *     'bcc' => 'developer@mydomain.com',
      * ]
-     * ~~~
+     * ```
      */
     public $messageConfig = [];
     /**
@@ -91,9 +91,9 @@ abstract class BaseMailer extends Component implements MailerInterface, ViewCont
      *
      * The signature of the callback is:
      *
-     * ~~~
+     * ```php
      * function ($mailer, $message)
-     * ~~~
+     * ```
      */
     public $fileTransportCallback;
 

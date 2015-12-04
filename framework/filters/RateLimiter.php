@@ -67,7 +67,7 @@ class RateLimiter extends ActionFilter
      */
     public function beforeAction($action)
     {
-        $user = $this->user ? : Yii::$app->getUser()->getIdentity(false);
+        $user = $this->user ? : (Yii::$app->getUser() ? Yii::$app->getUser()->getIdentity(false) : null);
         if ($user instanceof RateLimitInterface) {
             Yii::trace('Check rate limit', __METHOD__);
             $this->checkRateLimit(

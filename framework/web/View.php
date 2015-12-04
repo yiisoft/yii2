@@ -23,7 +23,7 @@ use yii\base\InvalidConfigException;
  * You can modify its configuration by adding an array to your application config under `components`
  * as it is shown in the following example:
  *
- * ~~~
+ * ```php
  * 'view' => [
  *     'theme' => 'app\themes\MyTheme',
  *     'renderers' => [
@@ -31,7 +31,7 @@ use yii\base\InvalidConfigException;
  *     ]
  *     // ...
  * ]
- * ~~~
+ * ```
  *
  * @property \yii\web\AssetManager $assetManager The asset manager. Defaults to the "assetManager" application
  * component.

@@ -87,6 +87,7 @@ class Security extends Component
      */
     public $passwordHashCost = 13;
 
+
     /**
      * Encrypts data using a password.
      * Derives keys for encryption and authentication from the password using PBKDF2 and a random salt,
@@ -119,8 +120,8 @@ class Security extends Component
      * @param string $inputKey the input to use for encryption and authentication
      * @param string $info optional context and application specific information, see [[hkdf()]]
      * @return string the encrypted data
-     * @see decryptByPassword()
-     * @see encryptByKey()
+     * @see decryptByKey()
+     * @see encryptByPassword()
      */
     public function encryptByKey($data, $inputKey, $info = null)
     {
@@ -519,7 +520,7 @@ class Security extends Component
      * Later when a password needs to be validated, the hash can be fetched and passed
      * to [[validatePassword()]]. For example,
      *
-     * ~~~
+     * ```php
      * // generates the hash (usually done during user registration or when the password is changed)
      * $hash = Yii::$app->getSecurity()->generatePasswordHash($password);
      * // ...save $hash in database...
@@ -530,7 +531,7 @@ class Security extends Component
      * } else {
      *     // password is bad
      * }
-     * ~~~
+     * ```
      *
      * @param string $password The password to be hashed.
      * @param integer $cost Cost parameter used by the Blowfish hash algorithm.

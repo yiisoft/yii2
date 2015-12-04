@@ -41,12 +41,12 @@ class FragmentCache extends Widget
      * This can be either a [[Dependency]] object or a configuration array for creating the dependency object.
      * For example,
      *
-     * ~~~
+     * ```php
      * [
      *     'class' => 'yii\caching\DbDependency',
      *     'sql' => 'SELECT MAX(updated_at) FROM post',
      * ]
-     * ~~~
+     * ```
      *
      * would make the output cache depends on the last modified time of all posts.
      * If any post has its modification time changed, the cached content would be invalidated.
@@ -58,10 +58,11 @@ class FragmentCache extends Widget
      * The following variation setting will cause the content to be cached in different versions
      * according to the current application language:
      *
-     * ~~~
+     * ```php
      * [
      *     Yii::$app->language,
      * ]
+     * ```
      */
     public $variations;
     /**
@@ -104,6 +105,9 @@ class FragmentCache extends Widget
             echo $content;
         } elseif ($this->cache instanceof Cache) {
             $content = ob_get_clean();
+            if ($content === false || $content === '') {
+                return;
+            }
             array_pop($this->getView()->cacheStack);
             if (is_array($this->dependency)) {
                 $this->dependency = Yii::createObject($this->dependency);

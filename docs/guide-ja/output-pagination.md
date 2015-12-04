@@ -31,8 +31,8 @@ $count = $query->count();
 $pagination = new Pagination(['totalCount' => $count]);
 
 // ページネーションを使ってクエリの OFFSET と LIMIT を修正して記事を取得する
-$articles = $query->offset($pages->offset)
-    ->limit($pages->limit)
+$articles = $query->offset($pagination->offset)
+    ->limit($pagination->limit)
     ->all();
 ```
 

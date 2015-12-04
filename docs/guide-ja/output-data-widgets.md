@@ -295,7 +295,7 @@ var keys = $('#grid').yiiGridView('getSelectedRows');
 
 #### シリアルカラム
 
-シリアルカラムは、`1` から始まる行番号を表示します。
+[[yii\grid\SerialColumn|シリアルカラム]] は、`1` から始まる行番号を表示します。
 
 使い方は、次のように、とても簡単です。
 
@@ -317,7 +317,7 @@ echo GridView::widget([
 ### データをフィルタリングする
 
 データをフィルタリングするためには、GridView は、フィルタリングのフォームから入力を受け取り、検索基準に合わせてデータプロバイダのクエリを修正するための [モデル](structure-models.md) を必要とします。
-[アクティブレコード](db-active-record.md) を使用している場合は、必要な機能を提供する検索用のモデルクラスを作成するのが一般的なプラクティスです (あなたに代って Gii が生成してくれます)。
+[アクティブレコード](db-active-record.md) を使用している場合は、必要な機能を提供する検索用のモデルクラスを作成するのが一般的なプラクティスです (あなたに代って [Gii](start-gii.md) が生成してくれます)。
 このクラスは、検索のためのバリデーション規則を定義し、データプロバイダを返す `search()` メソッドを提供するものです。
 
 `Post` モデルに対して検索機能を追加するために、次の例のようにして、`PostSearch` モデルを作成することが出来ます。
@@ -588,3 +588,9 @@ echo GridView::widget([
 >
 
 (内容未定)
+
+
+さらに読むべき文書
+------------------
+
+- Arno Slatius による [Rendering Data in Yii 2 with GridView and ListView](http://www.sitepoint.com/rendering-data-in-yii-2-with-gridview-and-listview/)。

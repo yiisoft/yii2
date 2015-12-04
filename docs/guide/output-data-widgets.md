@@ -603,3 +603,8 @@ echo GridView::widget([
 > Note: This section is under development.
 
 TBD
+
+Further reading
+---------------
+
+- [Rendering Data in Yii 2 with GridView and ListView](http://www.sitepoint.com/rendering-data-in-yii-2-with-gridview-and-listview/) by Arno Slatius.

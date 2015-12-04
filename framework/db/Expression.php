@@ -13,10 +13,10 @@ namespace yii\db;
  * it will be replaced with the [[expression]] property value without any
  * DB escaping or quoting. For example,
  *
- * ~~~
+ * ```php
  * $expression = new Expression('NOW()');
  * $sql = 'SELECT ' . $expression;  // SELECT NOW()
- * ~~~
+ * ```
  *
  * An expression can also be bound with parameters specified via [[params]].
  *

@@ -69,7 +69,7 @@ class AppAsset extends AssetBundle
   - 绝对URL地址表示为外部JavaScript文件，如
     `http://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js` 或 
     `//ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js`.
-* [[yii\web\AssetBundle::css|css]]: 一个包含该资源包JavaScript文件的数组，该数组格式和 [[yii\web\AssetBundle::js|js]] 相同。
+* [[yii\web\AssetBundle::css|css]]: 一个包含该资源包CSS文件的数组，该数组格式和 [[yii\web\AssetBundle::js|js]] 相同。
 * [[yii\web\AssetBundle::depends|depends]]: 一个列出该资源包依赖的其他资源包（后两节有详细介绍）。
 * [[yii\web\AssetBundle::jsOptions|jsOptions]]: 当调用[[yii\web\View::registerJsFile()]]注册该包 *每个* JavaScript文件时，
   指定传递到该方法的选项。
@@ -86,13 +86,13 @@ class AppAsset extends AssetBundle
 * 源资源: 资源文件和PHP源代码放在一起，不能被Web直接访问，为了使用这些源资源，它们要拷贝到一个可Web访问的Web目录中
   成为发布的资源，这个过程称为*发布资源*，随后会详细介绍。
 * 发布资源: 资源文件放在可通过Web直接访问的Web目录中；
-* 外部资源: 资源文件放在你的Web应用不同的Web服务器上；
+* 外部资源: 资源文件放在与你的Web应用不同的Web服务器上；
 
 当定义资源包类时候，如果你指定了[[yii\web\AssetBundle::sourcePath|sourcePath]] 属性，就表示任何使用相对路径的资源会被
 当作源资源；如果没有指定该属性，就表示这些资源为发布资源（因此应指定[[yii\web\AssetBundle::basePath|basePath]] 和
 [[yii\web\AssetBundle::baseUrl|baseUrl]] 让Yii知道它们的位置）。
 
-推荐将资源文件放到Web目录以避免不必要的发布资源过程，这就是之前的例子指定
+推荐将资源文件放到Web目录以避免不必要的发布资源过程，这就是之前的例子：指定
 [[yii\web\AssetBundle::basePath|basePath]] 而不是 [[yii\web\AssetBundle::sourcePath|sourcePath]].
 
 对于 [扩展](structure-extensions.md)来说，由于它们的资源和源代码都在不能Web访问的目录下，
@@ -113,7 +113,7 @@ class AppAsset extends AssetBundle
 在`AppAsset` 示例中，资源包依赖其他两个资源包： [[yii\web\YiiAsset]] 和 [[yii\bootstrap\BootstrapAsset]]
 也就是该资源包的CSS和JavaScript文件要在这两个依赖包的文件包含 *之后* 才包含。
 
-资源依赖关系是可传递，也就是人说A依赖B，B依赖C，那么A也依赖C。
+资源依赖关系是可传递，也就是说A依赖B，B依赖C，那么A也依赖C。
 
 
 ### 资源选项 <span id="asset-options"></span>
@@ -402,7 +402,7 @@ return [
 
 鉴定你的应用有两个页面X 和 Y，页面X使用资源包A，B和C，页面Y使用资源包B，C和D。
 
-有两种方式划分这些资源包，一种使用一个组包含所有资源包，另一种是将（A,B,C）放在组X，（B，C，C）放在组Y，
+有两种方式划分这些资源包，一种使用一个组包含所有资源包，另一种是将（A,B,C）放在组X，（B，C，D）放在组Y，
 哪种方式更好？第一种方式优点是两个页面使用相同的已合并CSS和JavaScript文件使HTTP缓存更高效，另一方面，由于单个组包含所有文件，
 已合并的CSS和Javascipt文件会更大，因此会增加文件传输时间，在这个示例中，我们使用第一种方式，也就是用一个组包含所有包。
 

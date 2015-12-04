@@ -58,13 +58,13 @@ class AssetController extends Controller
      * You can specify the name of the output compressed file using 'css' and 'js' keys:
      * For example:
      *
-     * ~~~
+     * ```php
      * 'app\config\AllAsset' => [
      *     'js' => 'js/all-{hash}.js',
      *     'css' => 'css/all-{hash}.css',
      *     'depends' => [ ... ],
      * ]
-     * ~~~
+     * ```
      *
      * File names can contain placeholder "{hash}", which will be filled by the hash of the resulting file.
      *
@@ -74,7 +74,7 @@ class AssetController extends Controller
      * bundles in this case.
      * For example:
      *
-     * ~~~
+     * ```php
      * 'allShared' => [
      *     'js' => 'js/all-shared-{hash}.js',
      *     'css' => 'css/all-shared-{hash}.css',
@@ -97,7 +97,7 @@ class AssetController extends Controller
      *     'css' => 'css/all-{hash}.css',
      *     'depends' => [], // Include all remaining assets
      * ],
-     * ~~~
+     * ```
      */
     public $targets = [];
     /**
@@ -248,7 +248,7 @@ class AssetController extends Controller
                 $this->loadDependency($dependencyBundle, $result);
                 $result[$name] = $dependencyBundle;
             } elseif ($result[$name] === false) {
-                throw new Exception("A circular dependency is detected for bundle '{$name}': " . $this->composeCircularDependencyTrace($name, $result) . ".");
+                throw new Exception("A circular dependency is detected for bundle '{$name}': " . $this->composeCircularDependencyTrace($name, $result) . '.');
             }
         }
     }
@@ -331,7 +331,11 @@ class AssetController extends Controller
             if (isset($bundles[$name])) {
                 if (!$this->isBundleExternal($bundles[$name])) {
                     foreach ($bundles[$name]->$type as $file) {
-                        $inputFiles[] = $bundles[$name]->basePath . '/' . $file;
+                        if (is_array($file)) {
+                            $inputFiles[] = $bundles[$name]->basePath . '/' . $file[0];
+                        } else {
+                            $inputFiles[] = $bundles[$name]->basePath . '/' . $file;
+                        }
                     }
                 }
             } else {
@@ -425,7 +429,7 @@ class AssetController extends Controller
             unset($registered[$name]);
             $registered[$name] = $bundle;
         } elseif ($registered[$name] === false) {
-            throw new Exception("A circular dependency is detected for target '{$name}': " . $this->composeCircularDependencyTrace($name, $registered) . ".");
+            throw new Exception("A circular dependency is detected for target '{$name}': " . $this->composeCircularDependencyTrace($name, $registered) . '.');
         }
     }
 
@@ -617,7 +621,7 @@ EOD;
             $fullMatch = $matches[0];
             $inputUrl = $matches[1];
 
-            if (strpos($inputUrl, '/') === 0 || preg_match('/^https?:\/\//is', $inputUrl) || preg_match('/^data:/is', $inputUrl)) {
+            if (strpos($inputUrl, '/') === 0 || preg_match('/^https?:\/\//i', $inputUrl) || preg_match('/^data:/i', $inputUrl)) {
                 return $fullMatch;
             }
             if ($inputFileRelativePathParts === $outputFileRelativePathParts) {
@@ -634,7 +638,7 @@ EOD;
             if (strpos($inputUrl, '/') !== false) {
                 $inputUrlParts = explode('/', $inputUrl);
                 foreach ($inputUrlParts as $key => $inputUrlPart) {
-                    if ($inputUrlPart == '..') {
+                    if ($inputUrlPart === '..') {
                         array_pop($outputUrlParts);
                         unset($inputUrlParts[$key]);
                     }
@@ -648,7 +652,7 @@ EOD;
             return str_replace($inputUrl, $outputUrl, $fullMatch);
         };
 
-        $cssContent = preg_replace_callback('/url\(["\']?([^)^"^\']*)["\']?\)/is', $callback, $cssContent);
+        $cssContent = preg_replace_callback('/url\(["\']?([^)^"^\']*)["\']?\)/i', $callback, $cssContent);
 
         return $cssContent;
     }

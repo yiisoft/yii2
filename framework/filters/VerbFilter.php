@@ -23,7 +23,7 @@ use yii\web\MethodNotAllowedHttpException;
  * For example, the following declarations will define a typical set of allowed
  * request methods for REST CRUD actions.
  *
- * ~~~
+ * ```php
  * public function behaviors()
  * {
  *     return [
@@ -39,7 +39,7 @@ use yii\web\MethodNotAllowedHttpException;
  *         ],
  *     ];
  * }
- * ~~~
+ * ```
  *
  * @see http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.7
  * @author Carsten Brandt <mail@cebe.cc>
@@ -59,14 +59,14 @@ class VerbFilter extends Behavior
      *
      * For example,
      *
-     * ~~~
+     * ```php
      * [
      *   'create' => ['get', 'post'],
      *   'update' => ['get', 'put', 'post'],
      *   'delete' => ['post', 'delete'],
      *   '*' => ['get'],
      * ]
-     * ~~~
+     * ```
      */
     public $actions = [];
 

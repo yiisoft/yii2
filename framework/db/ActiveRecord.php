@@ -163,7 +163,7 @@ class ActiveRecord extends BaseActiveRecord
      * Finds ActiveRecord instance(s) by the given condition.
      * This method is internally called by [[findOne()]] and [[findAll()]].
      * @param mixed $condition please refer to [[findOne()]] for the explanation of this parameter
-     * @return ActiveQueryInterface the newly created [[ActiveQueryInterface|ActiveQuery]] instance. 
+     * @return ActiveQueryInterface the newly created [[ActiveQueryInterface|ActiveQuery]] instance.
      * @throws InvalidConfigException if there is no primary key defined
      * @internal
      */
@@ -295,7 +295,7 @@ class ActiveRecord extends BaseActiveRecord
         if ($schema !== null) {
             return $schema;
         } else {
-            throw new InvalidConfigException("The table does not exist: " . static::tableName());
+            throw new InvalidConfigException('The table does not exist: ' . static::tableName());
         }
     }
 

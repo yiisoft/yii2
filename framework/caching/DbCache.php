@@ -47,13 +47,13 @@ class DbCache extends Cache
      * @var string name of the DB table to store cache content.
      * The table should be pre-created as follows:
      *
-     * ~~~
+     * ```php
      * CREATE TABLE cache (
      *     id char(128) NOT NULL PRIMARY KEY,
      *     expire int(11),
      *     data BLOB
      * );
-     * ~~~
+     * ```
      *
      * where 'BLOB' refers to the BLOB-type of your preferred DBMS. Below are the BLOB type
      * that can be used for some popular DBMS:

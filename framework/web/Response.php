@@ -26,13 +26,13 @@ use yii\helpers\StringHelper;
  * You can modify its configuration by adding an array to your application config under `components`
  * as it is shown in the following example:
  *
- * ~~~
+ * ```php
  * 'response' => [
  *     'format' => yii\web\Response::FORMAT_JSON,
  *     'charset' => 'UTF-8',
  *     // ...
  * ]
- * ~~~
+ * ```
  *
  * @property CookieCollection $cookies The cookie collection. This property is read-only.
  * @property string $downloadHeaders The attachment file name. This property is write-only.
@@ -72,7 +72,6 @@ class Response extends \yii\base\Response
      * You may respond to this event to filter the response content before it is sent to the client.
      */
     const EVENT_AFTER_PREPARE = 'afterPrepare';
-
     const FORMAT_RAW = 'raw';
     const FORMAT_HTML = 'html';
     const FORMAT_JSON = 'json';
@@ -426,7 +425,7 @@ class Response extends \yii\base\Response
      *
      *  - `mimeType`: the MIME type of the content. If not set, it will be guessed based on `$filePath`
      *  - `inline`: boolean, whether the browser should open the file within the browser window. Defaults to false,
-     *     meaning a download dialog will pop up.
+     *    meaning a download dialog will pop up.
      *
      * @return $this the response object itself
      */
@@ -456,7 +455,7 @@ class Response extends \yii\base\Response
      *
      *  - `mimeType`: the MIME type of the content. Defaults to 'application/octet-stream'.
      *  - `inline`: boolean, whether the browser should open the file within the browser window. Defaults to false,
-     *     meaning a download dialog will pop up.
+     *    meaning a download dialog will pop up.
      *
      * @return $this the response object itself
      * @throws HttpException if the requested range is not satisfiable
@@ -503,10 +502,10 @@ class Response extends \yii\base\Response
      *
      *  - `mimeType`: the MIME type of the content. Defaults to 'application/octet-stream'.
      *  - `inline`: boolean, whether the browser should open the file within the browser window. Defaults to false,
-     *     meaning a download dialog will pop up.
+     *    meaning a download dialog will pop up.
      *  - `fileSize`: the size of the content to stream this is useful when size of the content is known
-     *     and the content is not seekable. Defaults to content size using `ftell()`.
-     *     This option is available since version 2.0.4.
+     *    and the content is not seekable. Defaults to content size using `ftell()`.
+     *    This option is available since version 2.0.4.
      *
      * @return $this the response object itself
      * @throws HttpException if the requested range cannot be satisfied.
@@ -650,9 +649,9 @@ class Response extends \yii\base\Response
      *
      * **Example**
      *
-     * ~~~
+     * ```php
      * Yii::$app->response->xSendFile('/home/user/Pictures/picture1.jpg');
-     * ~~~
+     * ```
      *
      * @param string $filePath file name with full path
      * @param string $attachmentName file name shown to the user. If null, it will be determined from `$filePath`.
@@ -660,7 +659,7 @@ class Response extends \yii\base\Response
      *
      *  - `mimeType`: the MIME type of the content. If not set, it will be guessed based on `$filePath`
      *  - `inline`: boolean, whether the browser should open the file within the browser window. Defaults to false,
-     *     meaning a download dialog will pop up.
+     *    meaning a download dialog will pop up.
      *  - xHeader: string, the name of the x-sendfile header. Defaults to "X-Sendfile".
      *
      * @return $this the response object itself
@@ -698,17 +697,17 @@ class Response extends \yii\base\Response
      * This method adds a "Location" header to the current response. Note that it does not send out
      * the header until [[send()]] is called. In a controller action you may use this method as follows:
      *
-     * ~~~
+     * ```php
      * return Yii::$app->getResponse()->redirect($url);
-     * ~~~
+     * ```
      *
      * In other places, if you want to send out the "Location" header immediately, you should use
      * the following code:
      *
-     * ~~~
+     * ```php
      * Yii::$app->getResponse()->redirect($url)->send();
      * return;
-     * ~~~
+     * ```
      *
      * In AJAX mode, this normally will not work as expected unless there are some
      * client-side JavaScript code handling the redirection. To help achieve this goal,
@@ -718,14 +717,14 @@ class Response extends \yii\base\Response
      * described above. Otherwise, you should write the following JavaScript code to
      * handle the redirection:
      *
-     * ~~~
+     * ```javascript
      * $document.ajaxComplete(function (event, xhr, settings) {
      *     var url = xhr.getResponseHeader('X-Redirect');
      *     if (url) {
      *         window.location = url;
      *     }
      * });
-     * ~~~
+     * ```
      *
      * @param string|array $url the URL to be redirected to. This can be in one of the following formats:
      *
@@ -782,9 +781,9 @@ class Response extends \yii\base\Response
      *
      * In a controller action you may use this method like this:
      *
-     * ~~~
+     * ```php
      * return Yii::$app->getResponse()->refresh();
-     * ~~~
+     * ```
      *
      * @param string $anchor the anchor that should be appended to the redirection URL.
      * Defaults to empty. Make sure the anchor starts with '#' if you want to specify it.
@@ -801,7 +800,7 @@ class Response extends \yii\base\Response
      * Returns the cookie collection.
      * Through the returned cookie collection, you add or remove cookies as follows,
      *
-     * ~~~
+     * ```php
      * // add a cookie
      * $response->cookies->add(new Cookie([
      *     'name' => $name,
@@ -812,7 +811,7 @@ class Response extends \yii\base\Response
      * $response->cookies->remove('name');
      * // alternatively
      * unset($response->cookies['name']);
-     * ~~~
+     * ```
      *
      * @return CookieCollection the cookie collection.
      */
@@ -950,12 +949,12 @@ class Response extends \yii\base\Response
         }
 
         if (is_array($this->content)) {
-            throw new InvalidParamException("Response content must not be an array.");
+            throw new InvalidParamException('Response content must not be an array.');
         } elseif (is_object($this->content)) {
             if (method_exists($this->content, '__toString')) {
                 $this->content = $this->content->__toString();
             } else {
-                throw new InvalidParamException("Response content must be a string or an object implementing __toString().");
+                throw new InvalidParamException('Response content must be a string or an object implementing __toString().');
             }
         }
     }

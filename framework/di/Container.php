@@ -171,7 +171,7 @@ class Container extends Component
         } elseif (is_object($definition)) {
             return $this->_singletons[$class] = $definition;
         } else {
-            throw new InvalidConfigException("Unexpected object definition type: " . gettype($definition));
+            throw new InvalidConfigException('Unexpected object definition type: ' . gettype($definition));
         }
 
         if (array_key_exists($class, $this->_singletons)) {

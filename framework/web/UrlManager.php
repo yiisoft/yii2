@@ -21,7 +21,7 @@ use yii\caching\Cache;
  * You can modify its configuration by adding an array to your application config under `components`
  * as it is shown in the following example:
  *
- * ~~~
+ * ```php
  * 'urlManager' => [
  *     'enablePrettyUrl' => true,
  *     'rules' => [
@@ -29,7 +29,7 @@ use yii\caching\Cache;
  *     ],
  *     // ...
  * ]
- * ~~~
+ * ```
  *
  * @property string $baseUrl The base URL that is used by [[createUrl()]] to prepend to created URLs.
  * @property string $hostInfo The host info (e.g. "http://www.example.com") that is used by
@@ -79,7 +79,7 @@ class UrlManager extends Component
      *
      * Here is an example configuration for RESTful CRUD controller:
      *
-     * ~~~php
+     * ```php
      * [
      *     'dashboard' => 'site/index',
      *
@@ -90,7 +90,7 @@ class UrlManager extends Component
      *     'DELETE <controller:\w+>/<id:\d+>' => '<controller>/delete',
      *     '<controller:\w+>/<id:\d+>'        => '<controller>/view',
      * ];
-     * ~~~
+     * ```
      *
      * Note that if you modify this property after the UrlManager object is created, make sure
      * you populate the array with rule objects instead of rule configurations.
@@ -325,9 +325,16 @@ class UrlManager extends Component
             }
 
             if ($url === false) {
+                $cacheable = true;
                 foreach ($this->rules as $rule) {
+                    if (!empty($rule->defaults) && $rule->mode !== UrlRule::PARSING_ONLY) {
+                        // if there is a rule with default values involved, the matching result may not be cached
+                        $cacheable = false;
+                    }
                     if (($url = $rule->createUrl($this, $route, $params)) !== false) {
-                        $this->_ruleCache[$cacheKey][] = $rule;
+                        if ($cacheable) {
+                            $this->_ruleCache[$cacheKey][] = $rule;
+                        }
                         break;
                     }
                 }
@@ -336,7 +343,7 @@ class UrlManager extends Component
             if ($url !== false) {
                 if (strpos($url, '://') !== false) {
                     if ($baseUrl !== '' && ($pos = strpos($url, '/', 8)) !== false) {
-                        return substr($url, 0, $pos) . $baseUrl . substr($url, $pos);
+                        return substr($url, 0, $pos) . $baseUrl . substr($url, $pos) . $anchor;
                     } else {
                         return $url . $baseUrl . $anchor;
                     }
