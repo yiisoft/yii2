@@ -407,6 +407,8 @@ EOD;
                        ['in', 'id', $obsolete]
                    )->execute();
                 $this->stdout("updated.\n");
+            } else {
+                $this->stdout("kept untouched.\n");
             }
         }
     }
