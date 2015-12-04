@@ -3,7 +3,7 @@ Functional Tests
 
 > Note: This section is under development.
 
-- http://codeception.com/docs/05-FunctionalTests
+- [Codeception Functional Tests](http://codeception.com/docs/04-FunctionalTests)
 
 Running basic and advanced template functional tests
 ----------------------------------------------------

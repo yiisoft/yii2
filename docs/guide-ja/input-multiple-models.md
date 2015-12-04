@@ -33,8 +33,10 @@ class UserController extends Controller
         $user->scenario = 'update';
         $profile->scenario = 'update';
         
-        if (Model::loadMultiple([$user, $profile], Yii::$app->request->post())) {
-            if ($user->validate() && $profile->validate()) {
+        if ($user->load(Yii::$app->request->post()) && $profile->load(Yii::$app->request->post())) {
+            $isValid = $user->validate();
+            $isValid = $profile->validate() && $isValid;
+            if ($isValid) {
                 $user->save(false);
                 $profile->save(false);
                 return $this->redirect(['user/view', 'id' => $id]);
@@ -50,7 +52,7 @@ class UserController extends Controller
 ```
 
 この `update` アクションでは、最初に、更新の対象になる `$user` と `$profile` のモデルをデータベースからロードします。
-次に [[yii\base\Model::loadMultiple()]] を呼んで、これら二つのモデルにユーザ入力を代入します。
+次に [[yii\base\Model::load()]] を呼んで、これら二つのモデルにユーザ入力を代入します。
 代入が成功すれば、二つのモデルを検証して保存します。
 そうでない場合は、次の内容を持つ `update` ビューをレンダリングします。
 

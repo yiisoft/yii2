@@ -92,14 +92,14 @@ class Model extends Component implements IteratorAggregate, ArrayAccess, Arrayab
      *
      * Each rule is an array with the following structure:
      *
-     * ~~~
+     * ```php
      * [
      *     ['attribute1', 'attribute2'],
      *     'validator type',
      *     'on' => ['scenario1', 'scenario2'],
-     *     ...other parameters...
+     *     //...other parameters...
      * ]
-     * ~~~
+     * ```
      *
      * where
      *
@@ -114,10 +114,10 @@ class Model extends Component implements IteratorAggregate, ArrayAccess, Arrayab
      * A validator can be either an object of a class extending [[Validator]], or a model class method
      * (called *inline validator*) that has the following signature:
      *
-     * ~~~
+     * ```php
      * // $params refers to validation parameters given in the rule
      * function validatorName($attribute, $params)
-     * ~~~
+     * ```
      *
      * In the above `$attribute` refers to the attribute currently being validated while `$params` contains an array of
      * validator configuration options such as `max` in case of `string` validator. The value of the attribute currently being validated
@@ -129,7 +129,7 @@ class Model extends Component implements IteratorAggregate, ArrayAccess, Arrayab
      *
      * Below are some examples:
      *
-     * ~~~
+     * ```php
      * [
      *     // built-in "required" validator
      *     [['username', 'password'], 'required'],
@@ -142,7 +142,7 @@ class Model extends Component implements IteratorAggregate, ArrayAccess, Arrayab
      *     // a validator of class "DateRangeValidator"
      *     ['dateRange', 'DateRangeValidator'],
      * ];
-     * ~~~
+     * ```
      *
      * Note, in order to inherit rules defined in the parent class, a child class needs to
      * merge the parent rules with child rules using functions such as `array_merge()`.
@@ -397,9 +397,9 @@ class Model extends Component implements IteratorAggregate, ArrayAccess, Arrayab
      * manipulate it by inserting or removing validators (useful in model behaviors).
      * For example,
      *
-     * ~~~
+     * ```php
      * $model->validators[] = $newValidator;
-     * ~~~
+     * ```
      *
      * @return ArrayObject|\yii\validators\Validator[] all the validators declared in the model.
      */
@@ -541,7 +541,7 @@ class Model extends Component implements IteratorAggregate, ArrayAccess, Arrayab
      * @return array errors for all attributes or the specified attribute. Empty array is returned if no error.
      * Note that when returning errors for all attributes, the result is a two-dimensional array, like the following:
      *
-     * ~~~
+     * ```php
      * [
      *     'username' => [
      *         'Username is required.',
@@ -551,7 +551,7 @@ class Model extends Component implements IteratorAggregate, ArrayAccess, Arrayab
      *         'Email address is invalid.',
      *     ]
      * ]
-     * ~~~
+     * ```
      *
      * @see getFirstErrors()
      * @see getFirstError()

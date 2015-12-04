@@ -71,7 +71,7 @@ class PostController extends Controller
 
 Маршруты могут иметь следующий формат:
 
-```
+```php
 ControllerID/ActionID
 ```
 

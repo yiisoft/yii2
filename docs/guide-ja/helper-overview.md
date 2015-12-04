@@ -28,13 +28,13 @@ echo Html::encode('Test > test');
 - [配列ヘルパ](helper-array.md)
 - Console
 - FileHelper
+- FormatConverter
 - [Html ヘルパ](helper-html.md)
 - HtmlPurifier
-- Image
+- Imagine (yii2-imagine エクステンションによって提供)
 - Inflector
 - Json
 - Markdown
-- Security
 - StringHelper
 - [Url ヘルパ](helper-url.md)
 - VarDumper

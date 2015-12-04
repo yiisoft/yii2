@@ -185,7 +185,7 @@ Content-Type: application/json; charset=UTF-8
 
 > Info|情報: 気がついたかも知れませんが、`http://localhost/users` の結果は、いくつかの公開すべきでないフィールド、例えば `password_hash` や `auth_key` を含んでいます。
 > 当然ながら、これらが API の結果に出現することは避けたいでしょう。
-> [レスポンス形式の設定](rest-response-formatting.md) の節で説明されているように、これらのフィールドを除外することは出来ますし、また、除外しなければなりません。
+> [リソース](rest-resources.md) の節で説明されているように、これらのフィールドを除外することは出来ますし、また、除外しなければなりません。
 
 
 ## まとめ <span id="summary"></span>

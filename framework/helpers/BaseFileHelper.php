@@ -8,6 +8,7 @@
 namespace yii\helpers;
 
 use Yii;
+use yii\base\ErrorException;
 use yii\base\InvalidConfigException;
 use yii\base\InvalidParamException;
 
@@ -188,7 +189,7 @@ class BaseFileHelper
     public static function getExtensionsByMimeType($mimeType, $magicFile = null)
     {
         $mimeTypes = static::loadMimeTypes($magicFile);
-        return array_keys($mimeTypes, mb_strtolower($mimeType, 'utf-8'), true);
+        return array_keys($mimeTypes, mb_strtolower($mimeType, 'UTF-8'), true);
     }
 
     private static $_mimeTypes = [];
@@ -293,12 +294,15 @@ class BaseFileHelper
 
     /**
      * Removes a directory (and all its content) recursively.
+     *
      * @param string $dir the directory to be deleted recursively.
      * @param array $options options for directory remove. Valid options are:
      *
      * - traverseSymlinks: boolean, whether symlinks to the directories should be traversed too.
      *   Defaults to `false`, meaning the content of the symlinked directory would not be deleted.
      *   Only symlink would be removed in that default case.
+     *
+     * @throws ErrorException in case of failure
      */
     public static function removeDirectory($dir, $options = [])
     {
@@ -317,7 +321,17 @@ class BaseFileHelper
                 if (is_dir($path)) {
                     static::removeDirectory($path, $options);
                 } else {
-                    unlink($path);
+                    try {
+                        unlink($path);
+                    } catch (ErrorException $e) {
+                        if (DIRECTORY_SEPARATOR === '\\') {
+                            // last resort measure for Windows
+                            $lines = [];
+                            exec("DEL /F/Q \"$path\"", $lines, $deleteError);
+                        } else {
+                            throw $e;
+                        }
+                    }
                 }
             }
             closedir($handle);
@@ -447,7 +461,7 @@ class BaseFileHelper
      * @param integer $mode the permission to be set for the created directory.
      * @param boolean $recursive whether to create parent directories if they do not exist.
      * @return boolean whether the directory is created successfully
-     * @throws \yii\base\Exception if the directory could not be created.
+     * @throws \yii\base\Exception if the directory could not be created (i.e. php error due to parallel changes)
      */
     public static function createDirectory($path, $mode = 0775, $recursive = true)
     {
@@ -455,17 +469,24 @@ class BaseFileHelper
             return true;
         }
         $parentDir = dirname($path);
-        if ($recursive && !is_dir($parentDir)) {
+        // recurse if parent dir does not exist and we are not at the root of the file system.
+        if ($recursive && !is_dir($parentDir) && $parentDir !== $path) {
             static::createDirectory($parentDir, $mode, true);
         }
         try {
-            $result = mkdir($path, $mode);
-            chmod($path, $mode);
+            if (!mkdir($path, $mode)) {
+                return false;
+            }
         } catch (\Exception $e) {
-            throw new \yii\base\Exception("Failed to create directory '$path': " . $e->getMessage(), $e->getCode(), $e);
+            if (!is_dir($path)) {// https://github.com/yiisoft/yii2/issues/9288
+                throw new \yii\base\Exception("Failed to create directory \"$path\": " . $e->getMessage(), $e->getCode(), $e);
+            }
         }
-
-        return $result;
+        try {
+            return chmod($path, $mode);
+        } catch (\Exception $e) {
+            throw new \yii\base\Exception("Failed to change permissions for directory \"$path\": " . $e->getMessage(), $e->getCode(), $e);
+        }
     }
 
     /**
@@ -516,7 +537,7 @@ class BaseFileHelper
     private static function matchPathname($path, $basePath, $pattern, $firstWildcard, $flags)
     {
         // match with FNM_PATHNAME; the pattern has base implicitly in front of it.
-        if (isset($pattern[0]) && $pattern[0] == '/') {
+        if (isset($pattern[0]) && $pattern[0] === '/') {
             $pattern = StringHelper::byteSubstr($pattern, 1, StringHelper::byteLength($pattern));
             if ($firstWildcard !== false && $firstWildcard !== 0) {
                 $firstWildcard--;
@@ -624,11 +645,11 @@ class BaseFileHelper
             return $result;
         }
 
-        if ($pattern[0] == '!') {
+        if ($pattern[0] === '!') {
             $result['flags'] |= self::PATTERN_NEGATIVE;
             $pattern = StringHelper::byteSubstr($pattern, 1, StringHelper::byteLength($pattern));
         }
-        if (StringHelper::byteLength($pattern) && StringHelper::byteSubstr($pattern, -1, 1) == '/') {
+        if (StringHelper::byteLength($pattern) && StringHelper::byteSubstr($pattern, -1, 1) === '/') {
             $pattern = StringHelper::byteSubstr($pattern, 0, -1);
             $result['flags'] |= self::PATTERN_MUSTBEDIR;
         }
@@ -636,7 +657,7 @@ class BaseFileHelper
             $result['flags'] |= self::PATTERN_NODIR;
         }
         $result['firstWildcard'] = self::firstWildcardInPattern($pattern);
-        if ($pattern[0] == '*' && self::firstWildcardInPattern(StringHelper::byteSubstr($pattern, 1, StringHelper::byteLength($pattern))) === false) {
+        if ($pattern[0] === '*' && self::firstWildcardInPattern(StringHelper::byteSubstr($pattern, 1, StringHelper::byteLength($pattern))) === false) {
             $result['flags'] |= self::PATTERN_ENDSWITH;
         }
         $result['pattern'] = $pattern;

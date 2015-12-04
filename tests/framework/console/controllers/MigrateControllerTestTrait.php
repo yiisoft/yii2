@@ -109,6 +109,20 @@ CODE;
     }
 
     /**
+     * Change class name migration to $class
+     * @param string $class name class
+     * @return string content generated class migration
+     * @see https://github.com/yiisoft/yii2/pull/10213
+     */
+    protected function parseNameClassMigration($class)
+    {
+        $files = FileHelper::findFiles($this->migrationPath);
+        $file = preg_replace('/class (m\d+_\d+_.*) extends Migration/', "class $class extends Migration", file_get_contents($files[0]));
+        $this->tearDownMigrationPath();
+        return $file;
+    }
+
+    /**
      * Checks if applied migration history matches expected one.
      * @param array $expectedMigrations migration names in expected order
      * @param string $message failure message
@@ -147,6 +161,381 @@ CODE;
         $files = FileHelper::findFiles($this->migrationPath);
         $this->assertCount(1, $files, 'Unable to create new migration!');
         $this->assertContains($migrationName, basename($files[0]), 'Wrong migration name!');
+    }
+
+    public function testGenerateDefaultMigration()
+    {
+        $migrationName = 'DefaultTest';
+        $class = 'm' . gmdate('ymd_His') . '_' . $migrationName;
+        $this->runMigrateControllerAction('create', [$migrationName]);
+        $file = $this->parseNameClassMigration($class);
+
+        $newLine = '\n';
+        $code = <<<CODE
+<?php
+
+use yii\db\Migration;
+
+class {$class} extends Migration
+{
+    public function up()
+    {
+
+    }
+
+    public function down()
+    {
+        echo "{$class} cannot be reverted.{$newLine}";
+
+        return false;
+    }
+
+    /*
+    // Use safeUp/safeDown to run migration code within a transaction
+    public function safeUp()
+    {
+    }
+
+    public function safeDown()
+    {
+    }
+    */
+}
+
+CODE;
+        $this->assertEqualsWithoutLE($code, $file);
+    }
+
+    public function testGenerateCreateMigration()
+    {
+        $migrationName = 'create_test';
+        $class = 'm' . gmdate('ymd_His') . '_' . $migrationName;
+        $this->runMigrateControllerAction('create', [
+            $migrationName,
+            'fields' => 'title:string(10):notNull:unique:defaultValue("test"),body:text:notNull'
+        ]);
+        $file = $this->parseNameClassMigration($class);
+
+        $code = <<<CODE
+<?php
+
+use yii\db\Migration;
+
+class {$class} extends Migration
+{
+    public function up()
+    {
+        \$this->createTable('test', [
+            'id' => \$this->primaryKey(),
+            'title' => \$this->string(10)->notNull()->unique()->defaultValue("test"),
+            'body' => \$this->text()->notNull()
+        ]);
+    }
+
+    public function down()
+    {
+        \$this->dropTable('test');
+    }
+}
+
+CODE;
+        $this->assertEqualsWithoutLE($code, $file);
+
+        $class = 'm' . gmdate('ymd_His') . '_' . $migrationName;
+        $this->runMigrateControllerAction('create', [
+            $migrationName,
+            'fields' => 'title:primaryKey,body:text:notNull',
+        ]);
+        $file = $this->parseNameClassMigration($class);
+        $code = <<<CODE
+<?php
+
+use yii\db\Migration;
+
+class {$class} extends Migration
+{
+    public function up()
+    {
+        \$this->createTable('test', [
+            'title' => \$this->primaryKey(),
+            'body' => \$this->text()->notNull()
+        ]);
+    }
+
+    public function down()
+    {
+        \$this->dropTable('test');
+    }
+}
+
+CODE;
+        $this->assertEqualsWithoutLE($code, $file);
+
+        $class = 'm' . gmdate('ymd_His') . '_' . $migrationName;
+        $this->runMigrateControllerAction('create', [
+            $migrationName,
+        ]);
+        $file = $this->parseNameClassMigration($class);
+        $code = <<<CODE
+<?php
+
+use yii\db\Migration;
+
+class {$class} extends Migration
+{
+    public function up()
+    {
+        \$this->createTable('test', [
+            'id' => \$this->primaryKey()
+        ]);
+    }
+
+    public function down()
+    {
+        \$this->dropTable('test');
+    }
+}
+
+CODE;
+        $this->assertEqualsWithoutLE($code, $file);
+    }
+
+    public function testGenerateDropMigration()
+    {
+        $migrationName = 'drop_test';
+        $class = 'm' . gmdate('ymd_His') . '_' . $migrationName;
+        $this->runMigrateControllerAction('create', [
+            $migrationName
+        ]);
+        $file = $this->parseNameClassMigration($class);
+
+        $code = <<<CODE
+<?php
+
+use yii\db\Migration;
+
+class {$class} extends Migration
+{
+    public function up()
+    {
+        \$this->dropTable('test');
+    }
+
+    public function down()
+    {
+        \$this->createTable('test', [
+            'id' => \$this->primaryKey()
+        ]);
+    }
+}
+
+CODE;
+        $this->assertEqualsWithoutLE($code, $file);
+
+        $class = 'm' . gmdate('ymd_His') . '_' . $migrationName;
+        $this->runMigrateControllerAction('create', [
+            $migrationName,
+            'fields' => 'body:text:notNull'
+        ]);
+        $file = $this->parseNameClassMigration($class);
+        $code = <<<CODE
+<?php
+
+use yii\db\Migration;
+
+class {$class} extends Migration
+{
+    public function up()
+    {
+        \$this->dropTable('test');
+    }
+
+    public function down()
+    {
+        \$this->createTable('test', [
+            'id' => \$this->primaryKey(),
+            'body' => \$this->text()->notNull()
+        ]);
+    }
+}
+
+CODE;
+        $this->assertEqualsWithoutLE($code, $file);
+
+        $class = 'm' . gmdate('ymd_His') . '_' . $migrationName;
+        $this->runMigrateControllerAction('create', [
+            $migrationName,
+            'fields' => 'title:primaryKey,body:text:notNull'
+        ]);
+        $file = $this->parseNameClassMigration($class);
+        $code = <<<CODE
+<?php
+
+use yii\db\Migration;
+
+class {$class} extends Migration
+{
+    public function up()
+    {
+        \$this->dropTable('test');
+    }
+
+    public function down()
+    {
+        \$this->createTable('test', [
+            'title' => \$this->primaryKey(),
+            'body' => \$this->text()->notNull()
+        ]);
+    }
+}
+
+CODE;
+        $this->assertEqualsWithoutLE($code, $file);
+    }
+
+    public function testGenerateAddColumnMigration()
+    {
+        $migrationName = 'add_columns_to_test';
+        $class = 'm' . gmdate('ymd_His') . '_' . $migrationName;
+        $this->runMigrateControllerAction('create', [
+            $migrationName,
+            'fields' => 'title:string(10):notNull,body:text:notNull,created_at:dateTime'
+        ]);
+        $file = $this->parseNameClassMigration($class);
+
+        $code = <<<CODE
+<?php
+
+use yii\db\Migration;
+
+class {$class} extends Migration
+{
+    public function up()
+    {
+        \$this->addColumn('test', 'title', \$this->string(10)->notNull());
+        \$this->addColumn('test', 'body', \$this->text()->notNull());
+        \$this->addColumn('test', 'created_at', \$this->dateTime());
+    }
+
+    public function down()
+    {
+        \$this->dropColumn('test', 'title');
+        \$this->dropColumn('test', 'body');
+        \$this->dropColumn('test', 'created_at');
+    }
+}
+
+CODE;
+        $this->assertEqualsWithoutLE($code, $file);
+    }
+
+    public function testGenerateDropColumnMigration()
+    {
+        $migrationName = 'drop_columns_from_test';
+        $class = 'm' . gmdate('ymd_His') . '_' . $migrationName;
+        $this->runMigrateControllerAction('create', [
+            $migrationName,
+            'fields' => 'title:string(10):notNull,body:text:notNull,created_at:dateTime'
+        ]);
+        $file = $this->parseNameClassMigration($class);
+
+        $code = <<<CODE
+<?php
+
+use yii\db\Migration;
+
+class {$class} extends Migration
+{
+    public function up()
+    {
+        \$this->dropColumn('test', 'title');
+        \$this->dropColumn('test', 'body');
+        \$this->dropColumn('test', 'created_at');
+    }
+
+    public function down()
+    {
+        \$this->addColumn('test', 'title', \$this->string(10)->notNull());
+        \$this->addColumn('test', 'body', \$this->text()->notNull());
+        \$this->addColumn('test', 'created_at', \$this->dateTime());
+    }
+}
+
+CODE;
+        $this->assertEqualsWithoutLE($code, $file);
+
+        $class = 'm' . gmdate('ymd_His') . '_' . $migrationName;
+        $this->runMigrateControllerAction('create', [
+            $migrationName,
+            'fields' => 'title:string(10):notNull,body:text:notNull,created_at:dateTime'
+        ]);
+        $file = $this->parseNameClassMigration($class);
+
+        $code = <<<CODE
+<?php
+
+use yii\db\Migration;
+
+class {$class} extends Migration
+{
+    public function up()
+    {
+        \$this->dropColumn('test', 'title');
+        \$this->dropColumn('test', 'body');
+        \$this->dropColumn('test', 'created_at');
+    }
+
+    public function down()
+    {
+        \$this->addColumn('test', 'title', \$this->string(10)->notNull());
+        \$this->addColumn('test', 'body', \$this->text()->notNull());
+        \$this->addColumn('test', 'created_at', \$this->dateTime());
+    }
+}
+
+CODE;
+        $this->assertEqualsWithoutLE($code, $file);
+    }
+
+    public function testGenerateCreateJunctionMigration()
+    {
+        $migrationName = 'create_junction_post_and_tag';
+        $class = 'm' . gmdate('ymd_His') . '_' . $migrationName;
+        $this->runMigrateControllerAction('create', [
+            $migrationName,
+        ]);
+        $file = $this->parseNameClassMigration($class);
+
+        $code = <<<CODE
+<?php
+
+use yii\db\Migration;
+
+class {$class} extends Migration
+{
+    public function up()
+    {
+        \$this->createTable('post_tag', [
+            'post_id' => \$this->integer(),
+            'tag_id' => \$this->integer(),
+            'PRIMARY KEY(post_id, tag_id)'
+        ]);
+
+        \$this->createIndex('idx-post_tag-post_id', 'post_tag', 'post_id');
+        \$this->createIndex('idx-post_tag-tag_id', 'post_tag', 'tag_id');
+
+        \$this->addForeignKey('fk-post_tag-post_id', 'post_tag', 'post_id', 'post', 'id', 'CASCADE');
+        \$this->addForeignKey('fk-post_tag-tag_id', 'post_tag', 'tag_id', 'tag', 'id', 'CASCADE');
+    }
+
+    public function down()
+    {
+        \$this->dropTable('post_tag');
+    }
+}
+
+CODE;
+        $this->assertEqualsWithoutLE($code, $file);
     }
 
     public function testUp()

@@ -30,7 +30,7 @@ Yii は一連のマイグレーションコマンドラインツールを提供�
 この節では、これらのツールを使用して、さまざまなタスクをどうやって達成するかを詳細に説明します。
 各ツールの使用方法は、ヘルプコマンド `yii help migrate` によっても知ることが出来ます。
 
-> Note|注意: マイグレーションはデータベーススキーマに影響を及ぼすだけでなく、既存のデータを新しいスキーマに合うように修正したり、RBAC 階層を作成したり、キャッシュをクリーンアップしたりすることも出来ます。
+> Tip|ヒント: マイグレーションはデータベーススキーマに影響を及ぼすだけでなく、既存のデータを新しいスキーマに合うように修正したり、RBAC 階層を作成したり、キャッシュをクリーンアップしたりすることも出来ます。
 
 
 ## マイグレーションを作成する <span id="creating-migrations"></span>
@@ -56,20 +56,32 @@ yii migrate/create create_news_table
 ```php
 <?php
 
-use yii\db\Schema;
 use yii\db\Migration;
 
 class m150101_185401_create_news_table extends Migration
 {
     public function up()
     {
+
     }
 
     public function down()
     {
         echo "m101129_185401_create_news_table cannot be reverted.\n";
+
         return false;
     }
+
+    /*
+    // Use safeUp/safeDown to run migration code within a transaction
+    public function safeUp()
+    {
+    }
+
+    public function safeDown()
+    {
+    }
+    */
 }
 ```
 
@@ -86,11 +98,12 @@ class m150101_185401_create_news_table extends Migration
 下記のコードは、新しい `news` テーブルを作成するマイグレーションクラスをどのようにして実装するかを示すものです。
 
 ```php
+<?php
 
 use yii\db\Schema;
 use yii\db\Migration;
 
-class m150101_185401_create_news_table extends \yii\db\Migration
+class m150101_185401_create_news_table extends Migration
 {
     public function up()
     {
@@ -129,6 +142,238 @@ MySQL の場合は、`TYPE_PK` は `int(11) NOT NULL AUTO_INCREMENT PRIMARY KEY`
 
 > Info|情報: 抽象型と物理型の対応関係は、それぞれの `QueryBuilder` の具象クラスの [[yii\db\QueryBuilder::$typeMap|$typeMap]] プロパティによって定義されています。
 
+バージョン 2.0.6 以降は、カラムのスキーマを定義するための更に便利な方法を提供するスキーマビルダが新たに導入されています。
+したがって、上記のマイグレーションは次のように書くことが出来ます。
+
+```php
+<?php
+
+use yii\db\Migration;
+
+class m150101_185401_create_news_table extends Migration
+{
+    public function up()
+    {
+        $this->createTable('news', [
+            'id' => $this->primaryKey(),
+            'title' => $this->string()->notNull(),
+            'content' => $this->text(),
+        ]);
+    }
+
+    public function down()
+    {
+        $this->dropTable('news');
+    }
+}
+```
+
+カラムの型を定義するために利用できる全てのメソッドのリストは、[[yii\db\SchemaBuilderTrait]] の API ドキュメントで参照することが出来ます。
+
+
+## マイグレーションを生成する <span id="generating-migrations"></span>
+
+バージョン 2.0.7 以降では、マイグレーション・コンソールがマイグレーションを生成する便利な方法を提供しています。
+
+マイグレーションの名前が `create_xxx` や `drop_xxx` などの特別な形式である場合は、
+生成されるマイグレーション・ファイルに追加のコードが書き込まれるのです。
+
+### テーブルの作成
+
+```php
+yii migrate/create create_post
+``` 
+
+上記のコマンドは、次のコードを生成します。
+
+```php
+class m150811_220037_create_post extends Migration
+{
+    public function up()
+    {
+        $this->createTable('post', [
+            'id' => $this->primaryKey()
+        ]);
+    }
+
+    public function down()
+    {
+        $this->dropTable('post');
+    }
+}
+```
+
+テーブルのフィールドも直接に生成したい場合は、`--fields` オプションでフィールドを指定します。
+ 
+```php
+yii migrate/create create_post --fields=title:string,body:text
+``` 
+
+これは、次のコードを生成します。
+
+```php
+class m150811_220037_create_post extends Migration
+{
+    public function up()
+    {
+        $this->createTable('post', [
+            'id' => $this->primaryKey(),
+            'title' => $this->string(),
+            'body' => $this->text()
+        ]);
+    }
+
+    public function down()
+    {
+        $this->dropTable('post');
+    }
+}
+```
+
+さらに多くのフィールド・パラメータを指定することも出来ます。
+
+```php
+yii migrate/create create_post --fields=title:string(12):notNull:unique,body:text
+``` 
+
+これは、次のコードを生成します。
+
+```php
+class m150811_220037_create_post extends Migration
+{
+    public function up()
+    {
+        $this->createTable('post', [
+            'id' => $this->primaryKey(),
+            'title' => $this->string(12)->notNull()->unique(),
+            'body' => $this->text()
+        ]);
+    }
+
+    public function down()
+    {
+        $this->dropTable('post');
+    }
+}
+```
+
+> Note|注意: プライマリ・キーが自動的に追加されて、デフォルトでは `id` と名付けられます。
+> 別の名前を使いたい場合は、`--fields=name:primaryKey` のように、明示的に指定してください。
+
+
+### テーブルを削除する
+
+```php
+yii migrate/create drop_post --fields=title:string(12):notNull:unique,body:text
+``` 
+
+これは、次のコードを生成します。
+
+```php
+class m150811_220037_drop_post extends Migration
+{
+    public function up()
+    {
+        $this->dropTable('post');
+    }
+
+    public function down()
+    {
+        $this->createTable('post', [
+            'id' => $this->primaryKey(),
+            'title' => $this->string(12)->notNull()->unique(),
+            'body' => $this->text()
+        ]);
+    }
+}
+```
+
+### カラムを追加する
+
+マイグレーションの名前が `add_xxx_to_yyy` の形式である場合、ファイルの内容は、必要となる `addColumn` と `dropColumn` を含むことになります。
+
+カラムを追加するためには、次のようにします。
+
+```php
+yii migrate/create add_position_to_post --fields=position:integer
+```
+
+これが次のコードを生成します。
+
+```php
+class m150811_220037_add_position_to_post extends Migration
+{
+    public function up()
+    {
+        $this->addColumn('post', 'position', $this->integer());
+    }
+
+    public function down()
+    {
+        $this->dropColumn('post', 'position');
+    }
+}
+```
+
+### カラムを削除する
+
+マイグレーションの名前が `drop_xxx_from_yyy` の形式である場合、ファイルの内容は、必要となる `addColumn` と `dropColumn` を含むことになります。
+
+```php
+yii migrate/create drop_position_from_post --fields=position:integer
+```
+
+これは、次のコードを生成します。
+
+```php
+class m150811_220037_drop_position_from_post extends Migration
+{
+    public function up()
+    {
+        $this->dropColumn('post', 'position');
+    }
+
+    public function down()
+    {
+        $this->addColumn('post', 'position', $this->integer());
+    }
+}
+```
+
+### 中間テーブルを追加する
+
+マイグレーションの名前が `create_junction_xxx_and_yyy` の形式である場合は、中間テーブルを作成するのに必要となるコードが生成されます。
+
+```php
+yii create/migration create_junction_post_and_tag
+```
+
+これは、次のコードを生成します。
+
+```php
+class m150811_220037_create_junction_post_and_tag extends Migration
+{
+    public function up()
+    {
+        $this->createTable('post_tag', [
+            'post_id' => $this->integer(),
+            'tag_id' => $this->integer(),
+            'PRIMARY KEY(post_id, tag_id)'
+        ]);
+
+        $this->createIndex('idx-post_tag-post_id', 'post_tag', 'post_id');
+        $this->createIndex('idx-post_tag-tag_id', 'post_tag', 'tag_id');
+
+        $this->addForeignKey('fk-post_tag-post_id', 'post_tag', 'post_id', 'post', 'id', 'CASCADE');
+        $this->addForeignKey('fk-post_tag-tag_id', 'post_tag', 'tag_id', 'tag', 'id', 'CASCADE');
+    }
+
+    public function down()
+    {
+        $this->dropTable('post_tag');
+    }
+}
+```
 
 
 ### トランザクションを使うマイグレーション <span id="transactional-migrations"></span>
@@ -143,8 +388,8 @@ MySQL の場合は、`TYPE_PK` は `int(11) NOT NULL AUTO_INCREMENT PRIMARY KEY`
 次の例では、`news` テーブルを作成するだけでなく、このテーブルに初期値となる行を挿入しています。
 
 ```php
+<?php
 
-use yii\db\Schema;
 use yii\db\Migration;
 
 class m150101_185401_create_news_table extends Migration
@@ -152,11 +397,11 @@ class m150101_185401_create_news_table extends Migration
     public function safeUp()
     {
         $this->createTable('news', [
-            'id' => 'pk',
-            'title' => Schema::TYPE_STRING . ' NOT NULL',
-            'content' => Schema::TYPE_TEXT,
+            'id' => $this->primaryKey(),
+            'title' => $this->string()->notNull(),
+            'content' => $this->text(),
         ]);
-        
+
         $this->insert('news', [
             'title' => 'test 1',
             'content' => 'content 1',
@@ -176,7 +421,7 @@ class m150101_185401_create_news_table extends Migration
 
 > Note|注意: 全ての DBMS がトランザクションをサポートしている訳ではありません。
   また、トランザクションに入れることが出来ない DB クエリもあります。
-  いくつかの例を [暗黙のコミット](http://dev.mysql.com/doc/refman/5.1/en/implicit-commit.html) で見ることが出来ます。
+  いくつかの例を [暗黙のコミット](http://dev.mysql.com/doc/refman/5.7/en/implicit-commit.html) で見ることが出来ます。
   その場合には、代りに、`up()` と `down()` を実装しなければなりません。
 
 ### データベースアクセスメソッド <span id="db-accessing-methods"></span>
@@ -212,6 +457,12 @@ class m150101_185401_create_news_table extends Migration
 > Info|情報: [[yii\db\Migration]] は、データベースクエリメソッドを提供しません。
   これは、通常、データベースからのデータ取得については、メッセージを追加して表示する必要がないからです。
   更にまた、複雑なクエリを構築して実行するためには、強力な [クエリビルダ](db-query-builder.md) を使うことが出来るからです。
+
+> Note|注意: マイグレーションを使ってデータを操作する場合に、あなたは、あなたの [アクティブレコード](db-active-record.md) クラスをデータ操作に使えば便利じゃないか、と気付くかもしれません。
+> なぜなら、いくつかのロジックは既にアクティブレコードで実装済みだから、と。
+> しかしながら、マイグレーションの中で書かれるコードが永久に不変であることを本質とするのと対照的に、アプリケーションのロジックは変化にさらされるものであるということを心に留めなければなりません。
+> 従って、マイグレーションのコードでアクティブレコードを使用していると、アクティブレコードのレイヤにおけるロジックの変更が思いがけず既存のマイグレーションを破壊することがあり得ます。
+> このような理由のため、マイグレーションのコードはアクティブレコードのようなアプリケーションの他のロジックから独立を保つべきです。
 
 
 ## マイグレーションを適用する <span id="applying-migrations"></span>
@@ -346,6 +597,20 @@ yii migrate/mark 1392853618                         # UNIX タイムスタンプ
   この値は、ファイルパスか、パス [エイリアス](concept-aliases.md) として指定することが出来ます。
   テンプレートファイルは PHP スクリプトであり、その中で、マイグレーションクラスの名前を取得するための `$className` という事前定義された変数を使うことが出来ます。
 
+* `generatorTemplateFiles`: 配列 (デフォルト値は `[
+        'create_table' => '@yii/views/createTableMigration.php',
+        'drop_table' => '@yii/views/dropTableMigration.php',
+        'add_column' => '@yii/views/addColumnMigration.php',
+        'drop_column' => '@yii/views/dropColumnMigration.php',
+        'create_junction' => '@yii/views/createJunctionMigration.php'
+  ]`)。
+  マイグレーション・コードを生成するためのテンプレート・ファイルを指定します。
+  詳細は "[マイグレーションを生成する](#generating-migrations)" を参照してください。
+  
+* `fields`: マイグレーション・コードを生成するためのカラム定義文字列の配列。
+  デフォルト値は `[]`。個々の定義の書式は `COLUMN_NAME:COLUMN_TYPE:COLUMN_DECORATOR` です。
+  例えば、`--fields=name:string(12):notNull` は、サイズが 12 の null でない文字列カラムを作成します。
+
 次の例は、これらのオプションの使い方を示すものです。
 
 例えば、`forum` モジュールにマイグレーションを適用しようとしており、そのマイグレーションファイルがモジュールの `migrations` ディレクトリに配置されている場合、次のコマンドを使うことが出来ます。
@@ -390,7 +655,8 @@ yii migrate --db=db2
 例えば、次のようにします。
 
 ```php
-use yii\db\Schema;
+<?php
+
 use yii\db\Migration;
 
 class m150101_185401_create_news_table extends Migration
