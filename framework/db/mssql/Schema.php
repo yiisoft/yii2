@@ -189,7 +189,7 @@ class Schema extends \yii\db\Schema
         $column->comment = $info['comment'] === null ? '' : $info['comment'];
 
         $column->type = self::TYPE_STRING;
-        $column->size = $info['character_maximum_length'];
+        $column->size = $info['character_maximum_length'] > 0 ? $info['character_maximum_length'] : null;
         if (preg_match('/^(\w+)(?:\(([^\)]+)\))?/', $column->dbType, $matches)) {
             $type = $matches[1];
             if (isset($this->typeMap[$type])) {
