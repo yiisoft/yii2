@@ -246,6 +246,9 @@ class QueryBuilderTest extends DatabaseTestCase
             [ ['a' => 1, 'b' => 2], '(`a`=:qp0) AND (`b`=:qp1)', [':qp0' => 1, ':qp1' => 2] ],
             [ ['a' => new Expression('CONCAT(col1, col2)'), 'b' => 2], '(`a`=CONCAT(col1, col2)) AND (`b`=:qp0)', [':qp0' => 2] ],
 
+            // direct conditions
+            [ 'a = CONCAT(col1, col2)', 'a = CONCAT(col1, col2)', [] ],
+            [ new Expression('a = CONCAT(col1, :param1)', ['param1' => 'value1']), 'a = CONCAT(col1, :param1)', ['param1' => 'value1'] ],
         ];
 
         switch ($this->driverName) {

@@ -16,6 +16,7 @@ Yii Framework 2 Change Log
 - Bug #9323: Fixed `yii\console\controllers\MessageController` not using database connection specified in config (raccoon69, samdark)
 - Bug #9415: Fixed regression in 2.0.6 where on Oracle DB `PDO::ATTR_CASE = PDO::CASE_LOWER` did not work anymore (cebe)
 - Bug #9442: Fixed `yii\db\Migration::renameTable()` caused fatal error when using SQLite driver (fetus-hina)
+- Bug #9452: Fixed `yii\db\Query::where()` does not add params from directly passed `yii\db\Expression` (klimov-paul)
 - Bug #9454: Fixed MSSQL MARS wasn't working with transactions (daliran)
 - Bug #9583: Server response on invalid JSON request included a wrong message about "Internal Server Error" with status 500 (cebe)
 - Bug #9591: Fixed `yii.validation.js` code so it is compressable by YUICompressor (samdark, hofrob)
