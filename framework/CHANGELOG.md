@@ -76,6 +76,7 @@ Yii Framework 2 Change Log
 - Enh #10218: Support for selecting multiple filter values with the same name was added to `yii.gridView.js` (omnilight, silverfire)
 - Enh #10264: Generation of HTML tags in Yii's JavaScript now uses jQuery style (silverfire)
 - Enh #10267: `yii.js` - added original event passing to `pjaxOptions` for links with `data-method` and `data-pjax` (servocoder, silverfire)
+- Enh #10319: `yii\helpers\VarDumper::dump()` now respects PHP magic method `__debugInfo()` (klimov-paul)
 - Enh: Added last resort measure for `FileHelper::removeDirectory()` fail to unlink symlinks under Windows (samdark)
 - Chg #9369: `Yii::$app->user->can()` now returns `false` instead of erroring in case `authManager` component is not configured (creocoder)
 - Chg #9411: `DetailView` now automatically sets container tag ID in case it's not specified (samdark)
