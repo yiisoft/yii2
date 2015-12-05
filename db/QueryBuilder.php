@@ -908,6 +908,12 @@ class QueryBuilder extends \yii\base\Object
     public function buildCondition($condition, &$params)
     {
         if (!is_array($condition)) {
+            if ($condition instanceof Expression) {
+                foreach ($condition->params as $n => $v) {
+                    $params[$n] = $v;
+                }
+                return $condition->expression;
+            }
             return (string) $condition;
         } elseif (empty($condition)) {
             return '';
