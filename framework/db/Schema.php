@@ -75,6 +75,17 @@ abstract class Schema extends Object
     ];
 
     /**
+     * @var array list of types allowed unsigned
+     */
+    public $unsignedTypes = [
+        Schema::TYPE_SMALLINT,
+        Schema::TYPE_INTEGER,
+        Schema::TYPE_BIGINT,
+        Schema::TYPE_DECIMAL,
+        Schema::TYPE_DOUBLE,
+        Schema::TYPE_FLOAT,
+    ];
+    /**
      * @var array list of ALL schema names in the database, except system schemas
      */
     private $_schemaNames;
@@ -320,7 +331,7 @@ abstract class Schema extends Object
      */
     public function createColumnSchemaBuilder($type, $length = null)
     {
-        return new ColumnSchemaBuilder($type, $length);
+        return new ColumnSchemaBuilder($this, $type, $length);
     }
 
     /**
