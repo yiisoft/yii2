@@ -162,6 +162,7 @@ abstract class Cache extends Component implements \ArrayAccess
      * @return array list of cached values corresponding to the specified keys. The array
      * is returned in terms of (key, value) pairs.
      * If a value is not cached or expired, the corresponding array value will be false.
+     * @since 2.0.7
      */
     public function multiGet($keys)
     {
@@ -248,6 +249,7 @@ abstract class Cache extends Component implements \ArrayAccess
      * the corresponding values in the cache will be invalidated when it is fetched via [[get()]].
      * This parameter is ignored if [[serializer]] is false.
      * @return boolean whether the items are successfully stored into cache
+     * @since 2.0.7
      */
     public function multiSet($items, $duration = 0, $dependency = null)
     {
@@ -297,6 +299,7 @@ abstract class Cache extends Component implements \ArrayAccess
      * the corresponding values in the cache will be invalidated when it is fetched via [[get()]].
      * This parameter is ignored if [[serializer]] is false.
      * @return boolean whether the items are successfully stored into cache
+     * @since 2.0.7
      */
     public function multiAdd($items, $duration = 0, $dependency = null)
     {
