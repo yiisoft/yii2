@@ -55,16 +55,20 @@ class FileValidator extends Validator
     /**
      * @var integer the maximum number of bytes required for the uploaded file.
      * Defaults to null, meaning no limit.
-     * Note, the size limit is also affected by 'upload_max_filesize' INI setting
+     * Note, the size limit is also affected by `upload_max_filesize` INI setting
      * and the 'MAX_FILE_SIZE' hidden field value.
+     * @see http://php.net/manual/en/ini.core.php#ini.upload-max-filesize
      * @see tooBig for the customized message for a file that is too big.
      */
     public $maxSize;
     /**
      * @var integer the maximum file count the given attribute can hold.
-     * It defaults to 1, meaning single file upload. By defining a higher number,
-     * multiple uploads become possible. Setting it to 0 means there is no limit on
-     * the amount of files that can be uploaded.
+     * Defaults to 1, meaning single file upload. By defining a higher number,
+     * multiple uploads become possible. Setting it to `0` means there is no limit on
+     * the number of files that can be uploaded simultaneously.
+     * > Note: The maximum number of files allowed to be uploaded simultaneously is
+     * also limited with PHP directive `max_file_uploads`, which defaults to 20.
+     * @see http://php.net/manual/en/ini.core.php#ini.max-file-uploads
      * @see tooMany for the customized message when too many files are uploaded.
      */
     public $maxFiles = 1;
