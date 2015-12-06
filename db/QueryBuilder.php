@@ -900,20 +900,19 @@ class QueryBuilder extends \yii\base\Object
 
     /**
      * Parses the condition specification and generates the corresponding SQL expression.
-     * @param string|array $condition the condition specification. Please refer to [[Query::where()]]
+     * @param string|array|Expression $condition the condition specification. Please refer to [[Query::where()]]
      * on how to specify a condition.
      * @param array $params the binding parameters to be populated
      * @return string the generated SQL expression
      */
     public function buildCondition($condition, &$params)
     {
-        if (!is_array($condition)) {
-            if ($condition instanceof Expression) {
-                foreach ($condition->params as $n => $v) {
-                    $params[$n] = $v;
-                }
-                return $condition->expression;
+        if ($condition instanceof Expression) {
+            foreach ($condition->params as $n => $v) {
+                $params[$n] = $v;
             }
+            return $condition->expression;
+        } elseif (!is_array($condition)) {
             return (string) $condition;
         } elseif (empty($condition)) {
             return '';

@@ -521,7 +521,7 @@ class Query extends Component implements QueryInterface
      *
      * @inheritdoc
      *
-     * @param string|array $condition the conditions that should be put in the WHERE part.
+     * @param string|array|Expression $condition the conditions that should be put in the WHERE part.
      * @param array $params the parameters (name => value) to be bound to the query.
      * @return $this the query object itself
      * @see andWhere()
@@ -538,7 +538,7 @@ class Query extends Component implements QueryInterface
     /**
      * Adds an additional WHERE condition to the existing one.
      * The new condition and the existing one will be joined using the 'AND' operator.
-     * @param string|array $condition the new WHERE condition. Please refer to [[where()]]
+     * @param string|array|Expression $condition the new WHERE condition. Please refer to [[where()]]
      * on how to specify this parameter.
      * @param array $params the parameters (name => value) to be bound to the query.
      * @return $this the query object itself
@@ -559,7 +559,7 @@ class Query extends Component implements QueryInterface
     /**
      * Adds an additional WHERE condition to the existing one.
      * The new condition and the existing one will be joined using the 'OR' operator.
-     * @param string|array $condition the new WHERE condition. Please refer to [[where()]]
+     * @param string|array|Expression $condition the new WHERE condition. Please refer to [[where()]]
      * on how to specify this parameter.
      * @param array $params the parameters (name => value) to be bound to the query.
      * @return $this the query object itself
