@@ -129,11 +129,9 @@ public function rules()
 例えば、
 
 ```php
-[
     ['state', 'required', 'when' => function($model) {
         return $model->country == 'USA';
     }],
-]
 ```
 
 [[yii\validators\Validator::when|when]] プロパティは、次のシグニチャを持つ PHP コーラブルを値として取ります。
@@ -152,13 +150,11 @@ function ($model, $attribute)
 例えば、
 
 ```php
-[
     ['state', 'required', 'when' => function ($model) {
         return $model->country == 'USA';
     }, 'whenClient' => "function (attribute, value) {
         return $('#country').val() == 'USA';
-    }"],
-]
+    }"]
 ```
 
 
@@ -171,10 +167,10 @@ function ($model, $attribute)
 次の例では、入力値の前後にある空白を除去して、空の入力値を null に変換することを、[trim](tutorial-core-validators.md#trim) および [default](tutorial-core-validators.md#default) のコアバリデータで行っています。
 
 ```php
-[
+return [
     [['username', 'email'], 'trim'],
     [['username', 'email'], 'default'],
-]
+];
 ```
 
 もっと汎用的な [filter](tutorial-core-validators.md#filter) バリデータを使って、もっと複雑なデータフィルタリングをすることも出来ます。
@@ -189,13 +185,13 @@ HTML フォームから入力データが送信されたとき、入力値が空
 例えば、
 
 ```php
-[
+return [
     // 空の時は "username" と "email" を null にする
     [['username', 'email'], 'default'],
 
     // 空の時は "level" を 1 にする
     ['level', 'default', 'value' => 1],
-]
+];
 ```
 
 デフォルトでは、入力値が空であると見なされるのは、それが、空文字列であるか、空配列であるか、null であるときです。
@@ -203,11 +199,11 @@ HTML フォームから入力データが送信されたとき、入力値が空
 例えば、
 
 ```php
-[
+return [
     ['agree', 'required', 'isEmpty' => function ($value) {
         return empty($value);
     }],
-]
+];
 ```
 
 > Note|注意: たいていのバリデータは、[[yii\base\Validator::skipOnEmpty]] プロパティがデフォルト値 `true` を取っている場合は、空の入力値を処理しません。

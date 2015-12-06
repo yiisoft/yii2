@@ -130,11 +130,9 @@ public function rules()
 Для проверки атрибутов только при выполнении определенных условий, например если один атрибут зависит от значения другого атрибута можно использовать [[yii\validators\Validator::when|when]] свойство, чтобы определить такие условия. Например:
 
 ```php
-[
     ['state', 'required', 'when' => function($model) {
         return $model->country == 'USA';
     }],
-]
 ```
 
 Это свойство [[yii\validators\Validator::when|when]] принимает PHP callable функцию с следующим описанием:
@@ -153,13 +151,11 @@ function ($model, $attribute)
 функцию, возвращаемое значение определяет, следует ли применять правило или нет. Например:
 
 ```php
-[
     ['state', 'required', 'when' => function ($model) {
         return $model->country == 'USA';
     }, 'whenClient' => "function (attribute, value) {
         return $('#country').val() == 'USA';
-    }"],
-]
+    }"]
 ```
 
 
@@ -174,10 +170,10 @@ function ($model, $attribute)
 [default](tutorial-core-validators.md#default) основного валидатора:
 
 ```php
-[
+return [
     [['username', 'email'], 'trim'],
     [['username', 'email'], 'default'],
-]
+];
 ```
 
 Вы также можете использовать более сложные фильтрации данных с помощью анонимной функции
@@ -194,13 +190,13 @@ function ($model, $attribute)
 валидатора [default](tutorial-core-validators.md#default). Например:
 
 ```php
-[
+return [
     // установим "username" и "email" как NULL, если они пустые
     [['username', 'email'], 'default'],
 
     // установим "level" как 1 если он пустой
     ['level', 'default', 'value' => 1],
-]
+];
 ```
 
 По умолчанию входные данные считаются пустыми, если их значением является пустая строка, пустой массив или null.
@@ -208,11 +204,9 @@ function ($model, $attribute)
 используя анонимную функцию. Например:
 
 ```php
-[
     ['agree', 'required', 'isEmpty' => function ($value) {
         return empty($value);
-    }],
-]
+    }]
 ```
 
 > Примечание: большинство валидаторов не обрабатывает пустые входные данные, если их 
