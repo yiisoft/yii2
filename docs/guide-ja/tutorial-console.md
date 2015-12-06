@@ -177,8 +177,8 @@ public function actionIndex()
 
 いくつか使用できる事前定義された定数があります。
 
-- `Controller::EXIT_CODE_NORMAL` - 値は `0`
-- `Controller::EXIT_CODE_ERROR` - 値は `1`
+- [[yii\console\Controller::EXIT_CODE_NORMAL|Controller::EXIT_CODE_NORMAL]] - 値は `0`
+- [[yii\console\Controller::EXIT_CODE_ERROR|Controller::EXIT_CODE_ERROR]] - 値は `1`
 
 もっと多くのエラーコードの種類がある場合は、コントローラで意味のある定数を定義するのが良いプラクティスです。
 
@@ -194,7 +194,7 @@ Yii のコンソールコマンドは出力の書式設定をサポートして�
 $this->stdout("Hello?\n", Console::BOLD);
 ```
 
-複数のスタイルを動的に結合して文字列を構成する必要がある場合は、`ansiFormat` を使うほうが良いでしょう。
+複数のスタイルを動的に結合して文字列を構成する必要がある場合は、[[yii\helpers\Console::ansiFormat()|ansiFormat()]] を使うほうが良いでしょう。
 
 ```php
 $name = $this->ansiFormat('Alex', Console::FG_YELLOW);
