@@ -1,43 +1,6 @@
 Active Record
 =============
 
-- [Active Record](https://github.com/yiisoft/yii2/blob/master/docs/guide-ru/db-active-record.md#active-record)
-- [Объявление классов Active Record](https://github.com/yiisoft/yii2/blob/master/docs/guide-ru/db-active-record.md#Объявление-классов-active-record-)
-- [Подключение к базам данных](Подключение к базам данных)
-- [Получение данных](https://github.com/yiisoft/yii2/blob/master/docs/guide-ru/db-active-record.md#Получение-данных-)
-- [Доступ к данным](https://github.com/yiisoft/yii2/blob/master/docs/guide-ru/db-active-record.md#Доступ-к-данным-)
-    - [Преобразование данных](https://github.com/yiisoft/yii2/blob/master/docs/guide-ru/db-active-record.md#Преобразование-данных-)
-    - [Получение данных в виде массива](https://github.com/yiisoft/yii2/blob/master/docs/guide-ru/db-active-record.md#Получение-данных-в-виде-массива-)
-    - [Пакетное получение данных](https://github.com/yiisoft/yii2/blob/master/docs/guide-ru/db-active-record.md#Пакетное-получение-данных-)
-- [Сохранение данных](https://github.com/yiisoft/yii2/blob/master/docs/guide-ru/db-active-record.md#Сохранение-данных-)
-    - [Валидация данных](https://github.com/yiisoft/yii2/blob/master/docs/guide-ru/db-active-record.md#Валидация-данных-)
-    - [Массовое присваивание](https://github.com/yiisoft/yii2/blob/master/docs/guide-ru/db-active-record.md#Массовое-присваивание-)
-    - [Обновление счётчиков](https://github.com/yiisoft/yii2/blob/master/docs/guide-ru/db-active-record.md#Обновление-счётчиков-)
-    - [Dirty-атрибуты](https://github.com/yiisoft/yii2/blob/master/docs/guide-ru/db-active-record.md#dirty-атрибуты-)
-    - [Значения атрибутов по умолчанию](https://github.com/yiisoft/yii2/blob/master/docs/guide-ru/db-active-record.md#Значения-атрибутов-по-умолчанию-)
-    - [Обновление нескольких строк данных](https://github.com/yiisoft/yii2/blob/master/docs/guide-ru/db-active-record.md#Обновление-нескольких-строк-данных-)
-- [Удаление данных](https://github.com/yiisoft/yii2/blob/master/docs/guide-ru/db-active-record.md#Удаление-данных-)
-- [Жизненные циклы Active Record](https://github.com/yiisoft/yii2/blob/master/docs/guide-ru/db-active-record.md#Жизненные-циклы-active-record-)
-    - [Жизненный цикл создания нового объекта](https://github.com/yiisoft/yii2/blob/master/docs/guide-ru/db-active-record.md#Жизненный-цикл-создания-нового-объекта-)
-    - [Жизненный цикл получения данных](https://github.com/yiisoft/yii2/blob/master/docs/guide-ru/db-active-record.md#Жизненный-цикл-получения-данных-)
-    - [Жизненный цикл сохранения данных](https://github.com/yiisoft/yii2/blob/master/docs/guide-ru/db-active-record.md#Жизненный-цикл-сохранения-данных-)
-    - [Жизненный цикл удаления данных](https://github.com/yiisoft/yii2/blob/master/docs/guide-ru/db-active-record.md#Жизненный-цикл-удаления-данных-)
-- [Работа с транзакциями](https://github.com/yiisoft/yii2/blob/master/docs/guide-ru/db-active-record.md#Работа-с-транзакциями-)
-- [Оптимистическая блокировка](https://github.com/yiisoft/yii2/blob/master/docs/guide-ru/db-active-record.md#Оптимистическая-блокировка-)
-- [Работа со связными данными](https://github.com/yiisoft/yii2/blob/master/docs/guide-ru/db-active-record.md#Работа-со-связными-данными-)
-    - [Объявление связей](https://github.com/yiisoft/yii2/blob/master/docs/guide-ru/db-active-record.md#Объявление-связей-)
-    - [Доступ к связным данным](https://github.com/yiisoft/yii2/blob/master/docs/guide-ru/db-active-record.md#Доступ-к-связным-данным-)
-    - [Динамические запросы связных данных](https://github.com/yiisoft/yii2/blob/master/docs/guide-ru/db-active-record.md#Динамические-запросы-связных-данных-)
-    - [Связывание посредством промежуточной таблицы](https://github.com/yiisoft/yii2/blob/master/docs/guide-ru/db-active-record.md#Связывание-посредством-промежуточной-таблицы-)
-    - [Отложенная и жадная загрузка](https://github.com/yiisoft/yii2/blob/master/docs/guide-ru/db-active-record.md#Отложенная-и-жадная-загрузка-)
-    - [Использование JOIN со связями](https://github.com/yiisoft/yii2/blob/master/docs/guide-ru/db-active-record.md#Использование-join-со-связями-)
-    - [Обратные связи](https://github.com/yiisoft/yii2/blob/master/docs/guide-ru/db-active-record.md#Обратные-связи-)
-- [Сохранение связных данных](https://github.com/yiisoft/yii2/blob/master/docs/guide-ru/db-active-record.md#Сохранение-связных-данных-)
-- [Связывание объектов из разных баз данных](https://github.com/yiisoft/yii2/blob/master/docs/guide-ru/db-active-record.md#Связывание-объектов-из-разных-баз-данных-)
-- [Тонкая настройка классов Query](https://github.com/yiisoft/yii2/blob/master/docs/guide-ru/db-active-record.md#Тонкая-настройка-классов-query-)
-- [Получение дополнительных атрибутов](https://github.com/yiisoft/yii2/blob/master/docs/guide-ru/db-active-record.md#Получение-дополнительных-атрибутов)
-
-
 [Active Record](http://ru.wikipedia.org/wiki/ActiveRecord) обеспечивает объектно-ориентированный интерфейс для доступа
 и манипулирования данными, хранящимися в базах данных. Класс Active Record соответствует таблице в базе данных, объект
 Active Record соответствует строке этой таблицы, а *атрибут* объекта Active Record представляет собой значение
