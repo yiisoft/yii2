@@ -1,3 +1,21 @@
+- [Миграции Баз Данных](https://github.com/yiisoft/yii2/blob/master/docs/guide-ru/db-migrations.md#Миграции-Баз-Данных)
+    - [Создание миграций](https://github.com/yiisoft/yii2/blob/master/docs/guide-ru/db-migrations.md#Создание-миграций-)
+        - [Транзакции Миграций](https://github.com/yiisoft/yii2/blob/master/docs/guide-ru/db-migrations.md#Транзакции-Миграций-)
+        - [Методы доступа к базе данных](https://github.com/yiisoft/yii2/blob/master/docs/guide-ru/db-migrations.md#Методы-доступа-к-базе-данных-)
+    - [Применение Миграций](https://github.com/yiisoft/yii2/blob/master/docs/guide-ru/db-migrations.md#Применение-Миграций-)
+    - [Отмена Миграций](https://github.com/yiisoft/yii2/blob/master/docs/guide-ru/db-migrations.md#Отмена-Миграций-)
+    - [Перезагрузка Миграций](https://github.com/yiisoft/yii2/blob/master/docs/guide-ru/db-migrations.md#Перезагрузка-Миграций-)
+    - [Список Миграций](https://github.com/yiisoft/yii2/blob/master/docs/guide-ru/db-migrations.md#Список-Миграций-)
+    - [Изменение Истории Миграций](https://github.com/yiisoft/yii2/blob/master/docs/guide-ru/db-migrations.md#Изменение-Истории-Миграций-)
+    - [
+Настройка Миграций](https://github.com/yiisoft/yii2/blob/master/docs/guide-ru/db-migrations.md#Настройка-Миграций-)
+        - [Используя Параметры Командной Строки](https://github.com/yiisoft/yii2/blob/master/docs/guide-ru/db-migrations.md#Используя-Параметры-Командной-Строки)
+        - [Глобальная Настройка Команд](https://github.com/yiisoft/yii2/blob/master/docs/guide-ru/db-migrations.md#Глобальная-Настройка-Команд-)
+    - [Миграции в Несколько Баз Данных](https://github.com/yiisoft/yii2/blob/master/docs/guide-ru/db-migrations.md#Миграции-в-Несколько-Баз-Данных-)
+  
+
+
+
 Миграции Баз Данных
 ==================
 
