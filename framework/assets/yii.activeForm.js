@@ -590,10 +590,10 @@
                     }
                 }
                 var formTarget = $form.attr('target');
-                var buttonTaget = $button.attr('formtarget');
+                var buttonTarget = $button.attr('formtarget');
                 if (data.submitObject && buttonTarget) {
                     // set target attribute to form tag at submit moment
-                    $form.attr('target', buttonTaget);
+                    $form.attr('target', buttonTarget);
                 }
                 $form.submit();
                 if (formTarget) {
