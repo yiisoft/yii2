@@ -202,7 +202,7 @@
                     attributes: attributes,
                     submitting: false,
                     validated: false,
-                    target: data.target === undefined ? null : data.target
+                    target: data.target || null
                 });
 
                 /**
