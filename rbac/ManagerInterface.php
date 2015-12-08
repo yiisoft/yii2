@@ -211,6 +211,13 @@ interface ManagerInterface
     public function getAssignments($userId);
 
     /**
+     * Returns all user IDs assigned to the role specified.
+     * @param string $roleName
+     * @return array array of user ID strings
+     */
+    public function getUserIDsByRole($roleName);
+
+    /**
      * Removes all authorization data, including roles, permissions, rules, and assignments.
      */
     public function removeAll();
