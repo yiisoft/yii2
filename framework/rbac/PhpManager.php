@@ -809,4 +809,20 @@ class PhpManager extends BaseManager
         }
         $this->saveToFile($rules, $this->ruleFile);
     }
+
+    /**
+     * @inheritdoc
+     */
+    public function getUserIDsByRole($roleName)
+    {
+        $result = [];
+        foreach ($this->assignments as $userID => $assignments) {
+            foreach ($assignments as $userAssignment) {
+                if ($userAssignment->roleName === $roleName && $userAssignment->userId === $userID) {
+                    $result[] = (string)$userID;
+                }
+            }
+        }
+        return $result;
+    }
 }
