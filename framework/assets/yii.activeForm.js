@@ -589,7 +589,16 @@
                         $hiddenButton.attr('value', $button.attr('value'));
                     }
                 }
+                var formTarget = $form.attr('target');
+                var buttonTaget = $button.attr('formtarget');
+                if (data.submitObject && buttonTarget) {
+                    // set target attribute to form tag at submit moment
+                    $form.attr('target', buttonTaget);
+                }
                 $form.submit();
+                if (formTarget) {
+                    $form.attr('target', formTarget);
+                }
             }
         } else {
             $.each(data.attributes, function () {
