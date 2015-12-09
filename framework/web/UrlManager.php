@@ -83,12 +83,12 @@ class UrlManager extends Component
      * [
      *     'dashboard' => 'site/index',
      *
-     *     'POST <controller:\w+>s' => '<controller>/create',
-     *     '<controller:\w+>s' => '<controller>/index',
+     *     'POST <controller:[\w-]+>s' => '<controller>/create',
+     *     '<controller:[\w-]+>s' => '<controller>/index',
      *
-     *     'PUT <controller:\w+>/<id:\d+>'    => '<controller>/update',
-     *     'DELETE <controller:\w+>/<id:\d+>' => '<controller>/delete',
-     *     '<controller:\w+>/<id:\d+>'        => '<controller>/view',
+     *     'PUT <controller:[\w-]+>/<id:\d+>'    => '<controller>/update',
+     *     'DELETE <controller:[\w-]+>/<id:\d+>' => '<controller>/delete',
+     *     '<controller:[\w-]+>/<id:\d+>'        => '<controller>/view',
      * ];
      * ```
      *
