@@ -14,7 +14,7 @@ IF OBJECT_ID('[dbo].[document]', 'U') IS NOT NULL DROP TABLE [dbo].[document];
 IF OBJECT_ID('[dbo].[animal_view]', 'V') IS NOT NULL DROP VIEW [dbo].[animal_view];
 
 CREATE TABLE [dbo].[profile] (
-    [id] [int] IDENTITY(1,1) NOT NULL,
+    [id] [int] IDENTITY NOT NULL,
     [description] [varchar](128) NOT NULL,
     CONSTRAINT [PK_profile] PRIMARY KEY CLUSTERED (
         [id] ASC
@@ -22,7 +22,7 @@ CREATE TABLE [dbo].[profile] (
 );
 
 CREATE TABLE [dbo].[customer] (
-    [id] [int] IDENTITY(1,1) NOT NULL,
+    [id] [int] IDENTITY NOT NULL,
     [email] [varchar](128) NOT NULL,
     [name] [varchar](128),
     [address] [text],
@@ -34,7 +34,7 @@ CREATE TABLE [dbo].[customer] (
 );
 
 CREATE TABLE [dbo].[category] (
-    [id] [int] IDENTITY(1,1) NOT NULL,
+    [id] [int] IDENTITY NOT NULL,
     [name] [varchar](128) NOT NULL,
     CONSTRAINT [PK_category] PRIMARY KEY CLUSTERED (
         [id] ASC
@@ -42,7 +42,7 @@ CREATE TABLE [dbo].[category] (
 );
 
 CREATE TABLE [dbo].[item] (
-    [id] [int] IDENTITY(1,1) NOT NULL,
+    [id] [int] IDENTITY NOT NULL,
     [name] [varchar](128) NOT NULL,
     [category_id] [int] NOT NULL,
     CONSTRAINT [PK_item] PRIMARY KEY CLUSTERED (
@@ -51,7 +51,7 @@ CREATE TABLE [dbo].[item] (
 );
 
 CREATE TABLE [dbo].[order] (
-    [id] [int] IDENTITY(1,1) NOT NULL,
+    [id] [int] IDENTITY NOT NULL,
     [customer_id] [int] NOT NULL,
     [created_at] [int] NOT NULL,
     [total] [decimal](10,0) NOT NULL,
@@ -61,10 +61,13 @@ CREATE TABLE [dbo].[order] (
 );
 
 CREATE TABLE [dbo].[order_with_null_fk] (
-    [id] [int] IDENTITY(1,1) NOT NULL,
+    [id] [int] IDENTITY NOT NULL,
     [customer_id] [int] ,
     [created_at] [int] NOT NULL,
-    [total] [decimal](10,0) NOT NULL
+    [total] [decimal](10,0) NOT NULL,
+    CONSTRAINT [PK_order_with_null_fk] PRIMARY KEY CLUSTERED (
+        [id] ASC
+    ) ON [PRIMARY]
 );
 
 CREATE TABLE [dbo].[order_item] (
@@ -85,7 +88,7 @@ CREATE TABLE [dbo].[order_item] (
 );
 
 CREATE TABLE [dbo].[null_values] (
-  id [int] NOT NULL,
+  [id] [int] IDENTITY NOT NULL,
   var1 [int] NULL,
   var2 [int] NULL,
   var3 [int] DEFAULT NULL,
@@ -110,7 +113,7 @@ CREATE TABLE [dbo].[type] (
 );
 
 CREATE TABLE [dbo].[animal] (
-    [id] [int] IDENTITY(1,1) NOT NULL,
+    [id] [int] IDENTITY NOT NULL,
     [type] [varchar](255) NOT NULL,
     CONSTRAINT [PK_animal] PRIMARY KEY CLUSTERED (
         [id] ASC
@@ -126,7 +129,7 @@ CREATE TABLE [dbo].[default_pk] (
 );
 
 CREATE TABLE [dbo].[document] (
-    [id] [int] IDENTITY(1,1) NOT NULL,
+    [id] [int] IDENTITY NOT NULL,
     [title] [varchar](255) NOT NULL,
     [content] [text],
     [version] [int] NOT NULL DEFAULT 0,
@@ -185,7 +188,7 @@ INSERT INTO [dbo].[document] ([title], [content], [version]) VALUES ('Yii 2.0 gu
 IF OBJECT_ID('[dbo].[bit_values]', 'U') IS NOT NULL DROP TABLE [dbo].[bit_values];
 
 CREATE TABLE [dbo].[bit_values] (
-    [id] [int] IDENTITY(1,1) NOT NULL,
+    [id] [int] IDENTITY NOT NULL,
     [val] [bit] NOT NULL,
     CONSTRAINT [PK_bit_values] PRIMARY KEY CLUSTERED (
         [id] ASC
