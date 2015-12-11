@@ -64,7 +64,29 @@ class UrlManagerTest extends TestCase
         $url = $manager->createUrl(['post/view', 'id' => 1, 'title' => 'sample post']);
         $this->assertEquals('/test/index.php/post/view?id=1&title=sample+post', $url);
 
-        // todo: test showScriptName
+        // test showScriptName
+        $manager = new UrlManager([
+            'enablePrettyUrl' => true,
+            'baseUrl' => '/test',
+            'scriptUrl' => '/test/index.php',
+            'showScriptName' => true,
+            'cache' => null,
+        ]);
+        $url = $manager->createUrl(['post/view', 'id' => 1, 'title' => 'sample post']);
+        $this->assertEquals('/test/index.php/post/view?id=1&title=sample+post', $url);
+        $url = $manager->createUrl(['/post/view', 'id' => 1, 'title' => 'sample post']);
+        $this->assertEquals('/test/index.php/post/view?id=1&title=sample+post', $url);
+        $manager = new UrlManager([
+            'enablePrettyUrl' => true,
+            'baseUrl' => '/test',
+            'scriptUrl' => '/test/index.php',
+            'showScriptName' => false,
+            'cache' => null,
+        ]);
+        $url = $manager->createUrl(['post/view', 'id' => 1, 'title' => 'sample post']);
+        $this->assertEquals('/test/post/view?id=1&title=sample+post', $url);
+        $url = $manager->createUrl(['/post/view', 'id' => 1, 'title' => 'sample post']);
+        $this->assertEquals('/test/post/view?id=1&title=sample+post', $url);
 
         // pretty URL with rules
         $manager = new UrlManager([
@@ -388,5 +410,25 @@ class UrlManagerTest extends TestCase
         $this->destroyApplication();
 
         unset($_SERVER['REQUEST_METHOD']);
+    }
+
+    /**
+     * Tests if hash-anchor present
+     *
+     * https://github.com/yiisoft/yii2/pull/9596
+     */
+    public function testHash()
+    {
+        $manager = new UrlManager([
+            'enablePrettyUrl' => true,
+            'cache' => null,
+            'rules' => [
+                'http://example.com/testPage' => 'site/test',
+            ],
+            'hostInfo' => 'http://example.com',
+            'scriptUrl' => '/index.php',
+        ]);
+        $url = $manager->createAbsoluteUrl(['site/test', '#' => 'testhash']);
+        $this->assertEquals('http://example.com/index.php/testPage#testhash', $url);
     }
 }

@@ -330,7 +330,7 @@ class ActiveForm extends Widget
      * For example, you may use the following code in a controller action to respond
      * to an AJAX validation request:
      *
-     * ~~~
+     * ```php
      * $model = new Post;
      * $model->load($_POST);
      * if (Yii::$app->request->isAjax) {
@@ -338,14 +338,14 @@ class ActiveForm extends Widget
      *     return ActiveForm::validate($model);
      * }
      * // ... respond to non-AJAX request ...
-     * ~~~
+     * ```
      *
      * To validate multiple models, simply pass each model as a parameter to this method, like
      * the following:
      *
-     * ~~~
+     * ```php
      * ActiveForm::validate($model1, $model2, ...);
-     * ~~~
+     * ```
      *
      * @param Model $model the model to be validated
      * @param mixed $attributes list of attributes that should be validated.
@@ -385,14 +385,14 @@ class ActiveForm extends Widget
      * For example, you may use the following code in a controller action to respond
      * to an AJAX validation request:
      *
-     * ~~~
+     * ```php
      * // ... load $models ...
      * if (Yii::$app->request->isAjax) {
      *     Yii::$app->response->format = Response::FORMAT_JSON;
      *     return ActiveForm::validateMultiple($models);
      * }
      * // ... respond to non-AJAX request ...
-     * ~~~
+     * ```
      *
      * @param array $models an array of models to be validated.
      * @param mixed $attributes list of attributes that should be validated.

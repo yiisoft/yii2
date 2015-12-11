@@ -22,9 +22,9 @@ use yii\base\NotSupportedException;
  * use [[queryAll()]], [[queryOne()]], [[queryColumn()]], [[queryScalar()]], or [[query()]].
  * For example,
  *
- * ~~~
+ * ```php
  * $users = $connection->createCommand('SELECT * FROM user')->queryAll();
- * ~~~
+ * ```
  *
  * Command supports SQL statement preparation and parameter binding.
  * Call [[bindValue()]] to bind a value to a SQL parameter;
@@ -35,14 +35,16 @@ use yii\base\NotSupportedException;
  * Command also supports building SQL statements by providing methods such as [[insert()]],
  * [[update()]], etc. For example,
  *
- * ~~~
+ * ```php
  * $connection->createCommand()->insert('user', [
  *     'name' => 'Sam',
  *     'age' => 30,
  * ])->execute();
- * ~~~
+ * ```
  *
  * To build SELECT SQL statements, please use [[QueryBuilder]] instead.
+ *
+ * @see http://www.yiiframework.com/doc-2.0/guide-db-dao.html
  *
  * @property string $rawSql The raw SQL with parameter values inserted into the corresponding placeholders in
  * [[sql]]. This property is read-only.
@@ -406,12 +408,12 @@ class Command extends Component
      * Creates an INSERT command.
      * For example,
      *
-     * ~~~
+     * ```php
      * $connection->createCommand()->insert('user', [
      *     'name' => 'Sam',
      *     'age' => 30,
      * ])->execute();
-     * ~~~
+     * ```
      *
      * The method will properly escape the column names, and bind the values to be inserted.
      *
@@ -433,13 +435,13 @@ class Command extends Component
      * Creates a batch INSERT command.
      * For example,
      *
-     * ~~~
+     * ```php
      * $connection->createCommand()->batchInsert('user', ['name', 'age'], [
      *     ['Tom', 30],
      *     ['Jane', 20],
      *     ['Linda', 25],
      * ])->execute();
-     * ~~~
+     * ```
      *
      * The method will properly escape the column names, and quote the values to be inserted.
      *
@@ -463,9 +465,9 @@ class Command extends Component
      * Creates an UPDATE command.
      * For example,
      *
-     * ~~~
+     * ```php
      * $connection->createCommand()->update('user', ['status' => 1], 'age > 30')->execute();
-     * ~~~
+     * ```
      *
      * The method will properly escape the column names and bind the values to be updated.
      *
@@ -489,9 +491,9 @@ class Command extends Component
      * Creates a DELETE command.
      * For example,
      *
-     * ~~~
+     * ```php
      * $connection->createCommand()->delete('user', 'status = 0')->execute();
-     * ~~~
+     * ```
      *
      * The method will properly escape the table and column names.
      *

@@ -25,7 +25,7 @@ use yii\web\Response;
  * cache the whole page for maximum 60 seconds or until the count of entries in the post table changes.
  * It also stores different versions of the page depending on the application language.
  *
- * ~~~
+ * ```php
  * public function behaviors()
  * {
  *     return [
@@ -43,7 +43,7 @@ use yii\web\Response;
  *         ],
  *     ];
  * }
- * ~~~
+ * ```
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
@@ -92,11 +92,11 @@ class PageCache extends ActionFilter
      * The following variation setting will cause the content to be cached in different versions
      * according to the current application language:
      *
-     * ~~~
+     * ```php
      * [
      *     Yii::$app->language,
      * ]
-     * ~~~
+     * ```
      */
     public $variations;
     /**

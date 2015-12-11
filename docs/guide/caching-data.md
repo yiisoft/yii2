@@ -118,9 +118,9 @@ All cache components have the same base class [[yii\caching\Cache]] and thus sup
   value will be returned if the data item is not found in the cache or is expired/invalidated.
 * [[yii\caching\Cache::set()|set()]]: stores a data item identified by a key in cache.
 * [[yii\caching\Cache::add()|add()]]: stores a data item identified by a key in cache if the key is not found in the cache.
-* [[yii\caching\Cache::mget()|mget()]]: retrieves multiple data items from cache with the specified keys.
-* [[yii\caching\Cache::mset()|mset()]]: stores multiple data items in cache. Each item is identified by a key.
-* [[yii\caching\Cache::madd()|madd()]]: stores multiple data items in cache. Each item is identified by a key.
+* [[yii\caching\Cache::multiGet()|multiGet()]]: retrieves multiple data items from cache with the specified keys.
+* [[yii\caching\Cache::multiSet()|multiSet()]]: stores multiple data items in cache. Each item is identified by a key.
+* [[yii\caching\Cache::multiAdd()|multiAdd()]]: stores multiple data items in cache. Each item is identified by a key.
   If a key already exists in the cache, the data item will be skipped.
 * [[yii\caching\Cache::exists()|exists()]]: returns a value indicating whether the specified key is found in the cache.
 * [[yii\caching\Cache::delete()|delete()]]: removes a data item identified by a key from the cache.
@@ -131,8 +131,8 @@ All cache components have the same base class [[yii\caching\Cache]] and thus sup
 this array instead to avoid this problem.
 
 Some cache storage, such as MemCache, APC, support retrieving multiple cached values in a batch mode,
-which may reduce the overhead involved in retrieving cached data. The APIs [[yii\caching\Cache::mget()|mget()]]
-and [[yii\caching\Cache::madd()|madd()]] are provided to exploit this feature. In case the underlying cache storage
+which may reduce the overhead involved in retrieving cached data. The APIs [[yii\caching\Cache::multiGet()|multiGet()]]
+and [[yii\caching\Cache::multiAdd()|multiAdd()]] are provided to exploit this feature. In case the underlying cache storage
 does not support this feature, it will be simulated.
 
 Because [[yii\caching\Cache]] implements `ArrayAccess`, a cache component can be used like an array. The following
@@ -271,6 +271,20 @@ $result = Customer::getDb()->cache(function ($db) {
   also support query caching on the DB server side. You may choose to use either query caching mechanism.
   The query caching described above has the advantage that you may specify flexible cache dependencies
   and are potentially more efficient.
+
+
+### Cache Flushing <span id="cache-flushing">
+
+When you need to invalidate all the stored cache data, you can call [[yii\caching\Cache::flush()]].
+
+You can flush the cache from the console by calling `yii cache/flush` as well.
+ - `yii cache`: lists the available caches in application
+ - `yii cache/flush cache1 cache2`: flushes the cache components `cache1`, `cache2` (you can pass multiple component
+ names separated with space)
+ - `yii cache/flush-all`: flushes all cache components in the application
+
+> Info: Console application uses separate configuration file be default. Ensure, that you have the same caching
+components in your web and console application configs to reach the proper effect.
 
 
 ### Configurations <span id="query-caching-configs"></span>

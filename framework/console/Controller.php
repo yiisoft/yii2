@@ -20,9 +20,9 @@ use yii\helpers\Console;
  * Users call a console command by specifying the corresponding route which identifies a controller action.
  * The `yii` program is used when calling a console command, like the following:
  *
- * ~~~
+ * ```
  * yii <route> [--param1=value1 --param2 ...]
- * ~~~
+ * ```
  *
  * where `<route>` is a route to a controller action and the params will be populated as properties of a command.
  * See [[options()]] for details.
@@ -47,6 +47,11 @@ class Controller extends \yii\base\Controller
      * If not set, ANSI color will only be enabled for terminals that support it.
      */
     public $color;
+
+    /**
+     * @var array the options passed during execution.
+     */
+    private $_passedOptions = [];
 
 
     /**
@@ -81,7 +86,15 @@ class Controller extends \yii\base\Controller
             foreach ($params as $name => $value) {
                 if (in_array($name, $options, true)) {
                     $default = $this->$name;
-                    $this->$name = is_array($default) ? preg_split('/\s*,\s*/', $value) : $value;
+                    if (is_array($default)) {
+                        $this->$name = preg_split('/\s*,\s*/', $value);
+                    } elseif ($default !== null) {
+                        settype($value, gettype($default));
+                        $this->$name = $value;
+                    } else {
+                        $this->$name = $value;
+                    }
+                    $this->_passedOptions[] = $name;
                     unset($params[$name]);
                 } elseif (!is_int($name)) {
                     throw new Exception(Yii::t('yii', 'Unknown option: --{name}', ['name' => $name]));
@@ -109,16 +122,27 @@ class Controller extends \yii\base\Controller
             $method = new \ReflectionMethod($action, 'run');
         }
 
-        $args = array_values($params);
+        $params = array_values($params);
 
+        $args = [];
         $missing = [];
-        foreach ($method->getParameters() as $i => $param) {
-            if ($param->isArray() && isset($args[$i])) {
-                $args[$i] = preg_split('/\s*,\s*/', $args[$i]);
+        foreach ($method->getParameters() as $param) {
+            if (($class = $param->getClass()) !== null) {
+                $name = $param->getName();
+                $className = $class->getName();
+                if (Yii::$app->has($name) && ($obj = Yii::$app->get($name)) instanceof $className) {
+                    $args[] = $obj;
+                } else {
+                    $args[] = Yii::$container->get($className);
+                }
+                continue;
             }
-            if (!isset($args[$i])) {
+            $value = array_shift($params);
+            if (isset($value)) {
+                $args[] = $param->isArray() ? preg_split('/\s*,\s*/', $value) : $value;
+            } else {
                 if ($param->isDefaultValueAvailable()) {
-                    $args[$i] = $param->getDefaultValue();
+                    $args[] = $param->getDefaultValue();
                 } else {
                     $missing[] = $param->getName();
                 }
@@ -129,6 +153,9 @@ class Controller extends \yii\base\Controller
             throw new Exception(Yii::t('yii', 'Missing required arguments: {params}', ['params' => implode(', ', $missing)]));
         }
 
+        foreach ($params as $value) {
+            $args[] = $value;
+        }
         return $args;
     }
 
@@ -139,9 +166,9 @@ class Controller extends \yii\base\Controller
      *
      * Example:
      *
-     * ~~~
+     * ```
      * echo $this->ansiFormat('This will be red and underlined.', Console::FG_RED, Console::UNDERLINE);
-     * ~~~
+     * ```
      *
      * @param string $string the string to be formatted
      * @return string
@@ -164,9 +191,9 @@ class Controller extends \yii\base\Controller
      *
      * Example:
      *
-     * ~~~
+     * ```
      * $this->stdout('This will be red and underlined.', Console::FG_RED, Console::UNDERLINE);
-     * ~~~
+     * ```
      *
      * @param string $string the string to print
      * @return int|boolean Number of bytes printed or false on error
@@ -189,9 +216,9 @@ class Controller extends \yii\base\Controller
      *
      * Example:
      *
-     * ~~~
+     * ```
      * $this->stderr('This will be red and underlined.', Console::FG_RED, Console::UNDERLINE);
-     * ~~~
+     * ```
      *
      * @param string $string the string to print
      * @return int|boolean Number of bytes printed or false on error
@@ -279,6 +306,47 @@ class Controller extends \yii\base\Controller
     }
 
     /**
+     * Returns properties corresponding to the options for the action id
+     * Child classes may override this method to specify possible properties.
+     *
+     * @param string $actionID the action id of the current request
+     * @return array properties corresponding to the options for the action
+     */
+    public function getOptionValues($actionID)
+    {
+        // $actionId might be used in subclasses to provide properties specific to action id
+        $properties = [];
+        foreach ($this->options($this->action->id) as $property) {
+            $properties[$property] = $this->$property;
+        }
+        return $properties;
+    }
+
+    /**
+     * Returns the names of valid options passed during execution.
+     *
+     * @return array the names of the options passed during execution
+     */
+    public function getPassedOptions()
+    {
+        return $this->_passedOptions;
+    }
+
+    /**
+     * Returns the properties corresponding to the passed options
+     *
+     * @return array the properties corresponding to the passed options
+     */
+    public function getPassedOptionValues()
+    {
+        $properties = [];
+        foreach ($this->_passedOptions as $property) {
+            $properties[$property] = $this->$property;
+        }
+        return $properties;
+    }
+
+    /**
      * Returns one-line short summary describing this controller.
      *
      * You may override this method to return customized summary.
@@ -349,7 +417,7 @@ class Controller extends \yii\base\Controller
         foreach ($method->getParameters() as $i => $reflection) {
             $name = $reflection->getName();
             $tag = isset($params[$i]) ? $params[$i] : '';
-            if (preg_match('/^([^\s]+)\s+(\$\w+\s+)?(.*)/s', $tag, $matches)) {
+            if (preg_match('/^(\S+)\s+(\$\w+\s+)?(.*)/s', $tag, $matches)) {
                 $type = $matches[1];
                 $comment = $matches[3];
             } else {
@@ -411,7 +479,7 @@ class Controller extends \yii\base\Controller
                 if (is_array($doc)) {
                     $doc = reset($doc);
                 }
-                if (preg_match('/^([^\s]+)(.*)/s', $doc, $matches)) {
+                if (preg_match('/^(\S+)(.*)/s', $doc, $matches)) {
                     $type = $matches[1];
                     $comment = $matches[2];
                 } else {

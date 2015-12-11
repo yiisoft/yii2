@@ -129,11 +129,9 @@ public function rules()
 例えば、
 
 ```php
-[
     ['state', 'required', 'when' => function($model) {
         return $model->country == 'USA';
     }],
-]
 ```
 
 [[yii\validators\Validator::when|when]] プロパティは、次のシグニチャを持つ PHP コーラブルを値として取ります。
@@ -152,13 +150,11 @@ function ($model, $attribute)
 例えば、
 
 ```php
-[
     ['state', 'required', 'when' => function ($model) {
         return $model->country == 'USA';
     }, 'whenClient' => "function (attribute, value) {
         return $('#country').val() == 'USA';
-    }"],
-]
+    }"]
 ```
 
 
@@ -171,10 +167,10 @@ function ($model, $attribute)
 次の例では、入力値の前後にある空白を除去して、空の入力値を null に変換することを、[trim](tutorial-core-validators.md#trim) および [default](tutorial-core-validators.md#default) のコアバリデータで行っています。
 
 ```php
-[
+return [
     [['username', 'email'], 'trim'],
     [['username', 'email'], 'default'],
-]
+];
 ```
 
 もっと汎用的な [filter](tutorial-core-validators.md#filter) バリデータを使って、もっと複雑なデータフィルタリングをすることも出来ます。
@@ -189,13 +185,13 @@ HTML フォームから入力データが送信されたとき、入力値が空
 例えば、
 
 ```php
-[
+return [
     // 空の時は "username" と "email" を null にする
     [['username', 'email'], 'default'],
 
     // 空の時は "level" を 1 にする
     ['level', 'default', 'value' => 1],
-]
+];
 ```
 
 デフォルトでは、入力値が空であると見なされるのは、それが、空文字列であるか、空配列であるか、null であるときです。
@@ -203,11 +199,11 @@ HTML フォームから入力データが送信されたとき、入力値が空
 例えば、
 
 ```php
-[
+return [
     ['agree', 'required', 'isEmpty' => function ($value) {
         return empty($value);
     }],
-]
+];
 ```
 
 > Note|注意: たいていのバリデータは、[[yii\base\Validator::skipOnEmpty]] プロパティがデフォルト値 `true` を取っている場合は、空の入力値を処理しません。
@@ -349,7 +345,8 @@ class MyForm extends Model
 スタンドアロンバリデータは、[[yii\validators\Validator]] またはその子クラスを拡張するクラスです。
 [[yii\validators\Validator::validateAttribute()]] メソッドをオーバーライドすることによって、その検証ロジックを実装することが出来ます。
 [インラインバリデータ](#inline-validators) でするのと同じように、属性が検証に失敗した場合は、[[yii\base\Model::addError()]] を呼んでエラーメッセージをモデルに保存します。
-例えば、
+
+例えば、上記のインラインバリデータは、新しい [[components/validators/CountryValidator]] クラスに作りかえることが出来ます。
 
 ```php
 namespace app\components;
@@ -372,6 +369,32 @@ class CountryValidator extends Validator
 または、`validateAttribute()` と `validate()` の代りに、[[yii\validators\Validator::validateValue()]] をオーバーライドしても構いません。
 と言うのは、前の二つは、デフォルトでは、`validateValue()` を呼び出すことによって実装されているからです。
 
+
+次の例は、上記のバリデータクラスをあなたのモデルの中でどのように使用することが出来るかを示すものです。
+
+```php
+namespace app\models;
+
+use Yii;
+use yii\base\Model;
+use app\components\validators\CountryValidator;
+
+class EntryForm extends Model
+{
+    public $name;
+    public $email;
+    public $country;
+
+    public function rules()
+    {
+        return [
+            [['name', 'email'], 'required'],
+            ['country', CountryValidator::className()],
+            ['email', 'email'],
+        ];
+    }
+}
+```
 
 ## クライアント側での検証 <span id="client-side-validation"></span>
 
@@ -485,7 +508,7 @@ class StatusValidator extends Validator
         $statuses = json_encode(Status::find()->select('id')->asArray()->column());
         $message = json_encode($this->message, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
         return <<<JS
-if (!$.inArray(value, $statuses)) {
+if ($.inArray(value, $statuses) > -1) {
     messages.push($message);
 }
 JS;

@@ -20,7 +20,7 @@ use yii\base\Action;
  * In the following example the filter will be applied to the `list`-action and
  * the Last-Modified header will contain the date of the last update to the user table in the database.
  *
- * ~~~
+ * ```php
  * public function behaviors()
  * {
  *     return [
@@ -37,7 +37,7 @@ use yii\base\Action;
  *         ],
  *     ];
  * }
- * ~~~
+ * ```
  *
  * @author Da:Sourcerer <webmaster@dasourcerer.net>
  * @author Qiang Xue <qiang.xue@gmail.com>
@@ -49,9 +49,9 @@ class HttpCache extends ActionFilter
      * @var callable a PHP callback that returns the UNIX timestamp of the last modification time.
      * The callback's signature should be:
      *
-     * ~~~
+     * ```php
      * function ($action, $params)
-     * ~~~
+     * ```
      *
      * where `$action` is the [[Action]] object that this filter is currently handling;
      * `$params` takes the value of [[params]]. The callback should return a UNIX timestamp.
@@ -61,9 +61,9 @@ class HttpCache extends ActionFilter
      * @var callable a PHP callback that generates the Etag seed string.
      * The callback's signature should be:
      *
-     * ~~~
+     * ```php
      * function ($action, $params)
-     * ~~~
+     * ```
      *
      * where `$action` is the [[Action]] object that this filter is currently handling;
      * `$params` takes the value of [[params]]. The callback should return a string serving

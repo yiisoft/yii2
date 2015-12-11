@@ -115,11 +115,9 @@ public function rules()
 [[yii\validators\Validator::when|when]] 属性来定义相关条件。举例而言，
 
 ```php
-[
     ['state', 'required', 'when' => function($model) {
         return $model->country == 'USA';
-    }],
-]
+    }]
 ```
 
 [[yii\validators\Validator::when|when]] 属性会读入一个如下所示结构的 PHP callable 函数对象：
@@ -137,13 +135,11 @@ function ($model, $attribute)
 [[yii\validators\Validator::whenClient|whenClient]] 属性，它会读入一条包含有 JavaScript 函数的字符串。这个函数将被用于确定该客户端验证规则是否被启用。比如，
 
 ```php
-[
     ['state', 'required', 'when' => function ($model) {
         return $model->country == 'USA';
     }, 'whenClient' => "function (attribute, value) {
         return $('#country').value == 'USA';
-    }"],
-]
+    }"]
 ```
 
 
@@ -154,10 +150,10 @@ function ($model, $attribute)
 下面的例子展示了如何去掉输入信息的首尾空格，并将空输入返回为 null。具体方法为通过调用 [trim](tutorial-core-validators.md#trim) 和 [default](tutorial-core-validators.md#default) 核心验证器：
 
 ```php
-[
+return [
     [['username', 'email'], 'trim'],
     [['username', 'email'], 'default'],
-]
+];
 ```
 
 也还可以用更加通用的 [filter（滤镜）](tutorial-core-validators.md#filter) 核心验证器来执行更加复杂的数据过滤。
@@ -171,24 +167,22 @@ function ($model, $attribute)
 [default](tutorial-core-validators.md#default) 验证器来实现这一点。举例来说，
 
 ```php
-[
+return [
     // 若 "username" 和 "email" 为空，则设为 null
     [['username', 'email'], 'default'],
 
     // 若 "level" 为空，则设其为 1
     ['level', 'default', 'value' => 1],
-]
+];
 ```
 
 默认情况下，当输入项为空字符串，空数组，或 null 时，会被视为“空值”。你也可以通过配置
 [[yii\validators\Validator::isEmpty]] 属性来自定义空值的判定规则。比如，
 
 ```php
-[
     ['agree', 'required', 'isEmpty' => function ($value) {
         return empty($value);
-    }],
-]
+    }]
 ```
 
 > 注意：对于绝大多数验证器而言，若其 [[yii\base\Validator::skipOnEmpty]] 属性为默认值
