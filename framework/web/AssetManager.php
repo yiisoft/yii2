@@ -66,7 +66,7 @@ class AssetManager extends Component
     /**
      * @var string the root directory storing the published asset files.
      */
-    public $basePath = '@webroot/assets';
+    public $_basePath;
     /**
      * @var string the base URL through which the published asset files can be accessed.
      */
@@ -206,14 +206,6 @@ class AssetManager extends Component
     public function init()
     {
         parent::init();
-        $this->basePath = Yii::getAlias($this->basePath);
-        if (!is_dir($this->basePath)) {
-            throw new InvalidConfigException("The directory does not exist: {$this->basePath}");
-        } elseif (!is_writable($this->basePath)) {
-            throw new InvalidConfigException("The directory is not writable by the Web process: {$this->basePath}");
-        } else {
-            $this->basePath = realpath($this->basePath);
-        }
         $this->baseUrl = rtrim(Yii::getAlias($this->baseUrl), '/');
     }
 
@@ -360,6 +352,34 @@ class AssetManager extends Component
         }
 
         return false;
+    }
+
+    /**
+     * @return string returns the the root directory storing the published asset files.
+     */
+    public function getBasePath() {
+        if ($this->_basePath === null) {
+            $this->setBasePath('@webroot/assets');
+        }
+
+        return $this->_basePath;
+    }
+
+    /**
+     * Sets the root directory storing the published asset files.
+     * @param string $basePath the root directory storing the published asset files.
+     * @throws InvalidConfigException if the directoy does not exists or is not writable.
+     */
+    public function setBasePath($basePath) {
+
+        $this->_basePath = Yii::getAlias($basePath);
+        if (!is_dir($this->_basePath)) {
+            throw new InvalidConfigException("The directory does not exist: {$this->_basePath}");
+        } elseif (!is_writable($this->_basePath)) {
+            throw new InvalidConfigException("The directory is not writable by the Web process: {$this->_basePath}");
+        } else {
+            $this->_basePath = realpath($this->_basePath);
+        }
     }
 
     private $_converter;
