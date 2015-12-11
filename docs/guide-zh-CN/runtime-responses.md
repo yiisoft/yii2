@@ -4,7 +4,7 @@
 当应用完成处理一个[请求](runtime-requests.md)后, 会生成一个[[yii\web\Response|response]]响应对象并发送给终端用户
 响应对象包含的信息有HTTP状态码，HTTP头和主体内容等, 网页应用开发的最终目的本质上就是根据不同的请求构建这些响应对象。
 
-在大多是情况下主要处理继承自 [[yii\web\Response]] 的 `response` [应用组件](structure-application-components.md)，
+在大多数情况下主要处理继承自 [[yii\web\Response]] 的 `response` [应用组件](structure-application-components.md)，
 尽管如此，Yii也允许你创建你自己的响应对象并发送给终端用户，这方面后续会阐述。
 
 在本节，将会描述如何构建响应和发送给终端用户。
