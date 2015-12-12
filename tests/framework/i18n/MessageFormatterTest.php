@@ -46,11 +46,10 @@ class MessageFormatterTest extends TestCase
             ],
 
             [
-                'Here is a big number: {'.self::F.', number}',
-                'Here is a big number: '.self::F,
+                'Here is a big number: {'.self::F.', number}', // pattern
+                'Here is a big number: '.self::F, // expected
                 [ // params
-                    self::N => self::N_VALUE,
-                    self::SUBJECT => self::SUBJECT_VALUE,
+                    self::F => self::F_VALUE
                 ]
             ],
 
