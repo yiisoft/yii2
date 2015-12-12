@@ -341,7 +341,7 @@ class MessageFormatter extends Component
             case 'selectordinal':
                 throw new NotSupportedException("Message format '$type' is not supported. You have to install PHP intl extension to use this feature.");
             case 'number':
-                if (is_int($arg) && (!isset($token[2]) || trim($token[2]) === 'integer')) {
+                if (is_numeric($arg) && (!isset($token[2]) || trim($token[2]) === 'integer')) {
                     return $arg;
                 }
                 throw new NotSupportedException("Message format 'number' is only supported for integer values. You have to install PHP intl extension to use this feature.");
