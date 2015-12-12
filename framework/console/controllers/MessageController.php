@@ -10,6 +10,7 @@ namespace yii\console\controllers;
 use Yii;
 use yii\console\Controller;
 use yii\console\Exception;
+use yii\helpers\ArrayHelper;
 use yii\helpers\Console;
 use yii\helpers\FileHelper;
 use yii\helpers\VarDumper;
@@ -373,7 +374,7 @@ EOD;
         $obsolete = [];
 
         foreach ($messages as $category => $msgs) {
-            $msgs = array_unique($msgs);
+            $msgs = ArrayHelper::unique($msgs);
 
             if (isset($current[$category])) {
                 $new[$category] = array_diff($msgs, $current[$category]);
@@ -626,7 +627,7 @@ EOD;
             $file = str_replace("\\", '/', "$dirName/$category.php");
             $path = dirname($file);
             FileHelper::createDirectory($path);
-            $msgs = array_values(array_unique($msgs));
+            $msgs = ArrayHelper::unique($msgs, false);
             $coloredFileName = Console::ansiFormat($file, [Console::FG_CYAN]);
             $this->stdout("Saving messages to $coloredFileName...\n");
             $this->saveMessagesCategoryToPHP($msgs, $file, $overwrite, $removeUnused, $sort, $category, $markUnused);
@@ -757,7 +758,7 @@ EOD;
         $hasSomethingToWrite = false;
         foreach ($messages as $category => $msgs) {
             $notTranslatedYet = [];
-            $msgs = array_values(array_unique($msgs));
+            $msgs = ArrayHelper::unique($msgs, false);
 
             if (is_file($file)) {
                 $existingMessages = $poFile->load($file, $category);
@@ -848,7 +849,7 @@ EOD;
 
         $hasSomethingToWrite = false;
         foreach ($messages as $category => $msgs) {
-            $msgs = array_values(array_unique($msgs));
+            $msgs = ArrayHelper::unique($msgs, false);
 
             sort($msgs);
             foreach ($msgs as $message) {

@@ -9,6 +9,7 @@ namespace yii\validators;
 
 use Yii;
 use yii\base\InvalidConfigException;
+use yii\helpers\ArrayHelper;
 use yii\helpers\Html;
 use yii\helpers\Json;
 use yii\web\JsExpression;
@@ -484,7 +485,7 @@ class IpValidator extends Validator
                 $result[] = $string;
             }
         }
-        return array_unique($result);
+        return ArrayHelper::unique($result);
     }
 
     /**
