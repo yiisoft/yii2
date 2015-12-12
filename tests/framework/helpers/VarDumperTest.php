@@ -89,6 +89,26 @@ RESULT;
 RESULT;
         $data[] = [$var, $expectedResult];
 
+        $var = [
+            'key1' => [
+                'subkey1' => 'value2',
+            ],
+            'key2' => [
+                'subkey2' => 'value3',
+            ],
+        ];
+        $expectedResult = <<<RESULT
+[
+    'key1' => [
+        'subkey1' => 'value2',
+    ],
+    'key2' => [
+        'subkey2' => 'value3',
+    ],
+]
+RESULT;
+        $data[] = [$var, $expectedResult];
+
         // Objects :
 
         $var = new \StdClass();
