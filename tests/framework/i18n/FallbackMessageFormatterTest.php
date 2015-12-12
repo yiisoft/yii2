@@ -56,7 +56,7 @@ class FallbackMessageFormatterTest extends TestCase
 
             [
                 'Here is a big number: {'.self::F.', number}', // pattern
-                'Here is a big number: '.self::F, // expected
+                'Here is a big number: '.self::F_VALUE, // expected
                 [ // params
                     self::F => self::F_VALUE
                 ]
