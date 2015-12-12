@@ -466,6 +466,21 @@ class BaseArrayHelper
     }
 
     /**
+     * Removes duplicate values from an array
+     * It's often faster than native array_unique
+     *
+     * @param string[]|int[] $array Can be only STRING or INTEGER values!
+     * @param bool $keepKeys Whether to maintain the array keys. If false, the resulting array
+     * @return array
+     */
+    public static function unique($array, $keepKeys = true)
+    {
+        return $keepKeys === true ?
+            array_flip(array_flip($array)) :
+            array_keys(array_flip($array));
+    }
+
+    /**
      * Checks if the given array contains the specified key.
      * This method enhances the `array_key_exists()` function by supporting case-insensitive
      * key comparison.

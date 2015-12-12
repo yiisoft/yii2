@@ -432,6 +432,36 @@ class ArrayHelperTest extends TestCase
         ], $result);
     }
 
+    public function testUnique()
+    {
+        $array = [
+            1 => 'bbb',
+            'label' => 'bbb',
+
+            2 => 'aaa',
+            'name' => 'aaa',
+            '124 ' => 'aaa',
+
+            'id' => 10,
+            3 => 10,
+            4 => '10',
+        ];
+
+        $result = ArrayHelper::unique($array, false);
+        $this->assertEquals([
+            0 => 'bbb',
+            1 => 'aaa',
+            2 => '10',
+        ], $result);
+
+        $result = ArrayHelper::unique($array);
+        $this->assertEquals([
+            'label' => 'bbb',
+            '124 ' => 'aaa',
+            4 => '10',
+        ], $result);
+    }
+
     public function testKeyExists()
     {
         $array = [
