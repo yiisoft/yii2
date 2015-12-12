@@ -703,19 +703,19 @@ class TranslationEventHandler
 './yii message/config' コマンドを使って、CLI 経由で、指定したオプションを持つ設定ファイルを動的に生成することも可能です。
 例えば、`languages` と `messagePath` のパラメータは、次のようにして設定することが出来ます。
 
-```shell
+```bash
 ./yii message/config --languages=de,ja --messagePath=messages path/to/config.php
 ```
 
 利用可能なオプションのリストを取得するためには、次のコマンドを実行します。
 
-```shell
+```bash
 ./yii help message/config
 ```
 
 構成情報ファイルの編集が完了すれば、ついに、下記のコマンドを使ってメッセージを抽出することが出来ます。
 
-```shell
+```bash
 ./yii message path/to/config.php
 ```
 
