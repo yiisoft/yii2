@@ -19,6 +19,8 @@ class FallbackMessageFormatterTest extends TestCase
 {
     const N = 'n';
     const N_VALUE = 42;
+    const F = 'f';
+    const F_VALUE = 2e+8;
     const SUBJECT = 'сабж';
     const SUBJECT_VALUE = 'Answer to the Ultimate Question of Life, the Universe, and Everything';
 
@@ -46,6 +48,15 @@ class FallbackMessageFormatterTest extends TestCase
             [
                 '{'.self::SUBJECT.'} is {'.self::N.', number, integer}', // pattern
                 self::SUBJECT_VALUE.' is '.self::N_VALUE, // expected
+                [ // params
+                    self::N => self::N_VALUE,
+                    self::SUBJECT => self::SUBJECT_VALUE,
+                ]
+            ],
+
+            [
+                'Here is a big number: {'.self::F.', number}',
+                'Here is a big number: '.self::F,
                 [ // params
                     self::N => self::N_VALUE,
                     self::SUBJECT => self::SUBJECT_VALUE,
