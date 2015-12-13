@@ -146,3 +146,4 @@ php build translation "../docs/guide" "../docs/guide-ru" "Russian guide translat
 - validator class — класс валидатора. 
 - view — представление.
 - query builder — конструктор запросов.
+- time zone — часовой пояс.
