@@ -961,6 +961,7 @@ class DbManager extends BaseManager
      * @param string $roleName
      * @return Assignment[] the assignments. An empty array will be
      * returned if role is not assigned to any user.
+     * @since 2.0.7
      */
     public function getUserIDsByRole($roleName)
     {
