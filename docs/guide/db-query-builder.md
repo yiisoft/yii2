@@ -340,7 +340,7 @@ to append additional filter conditions to the existing one.
 ### [[yii\db\Query::orderBy()|orderBy()]] <span id="order-by"></span>
 
 The [[yii\db\Query::orderBy()|orderBy()]] method specifies the `ORDER BY` fragment of a SQL query. For example,
- 
+
 ```php
 // ... ORDER BY `id` ASC, `name` DESC
 $query->orderBy([
@@ -423,7 +423,7 @@ $query->having(['status' => 1])
 
 The [[yii\db\Query::limit()|limit()]] and [[yii\db\Query::offset()|offset()]] methods specify the `LIMIT`
 and `OFFSET` fragments of a SQL query. For example,
- 
+
 ```php
 // ... LIMIT 10 OFFSET 20
 $query->limit(10)->offset(20);
@@ -438,14 +438,14 @@ If you specify an invalid limit or offset (e.g. a negative value), it will be ig
 ### [[yii\db\Query::join()|join()]] <span id="join"></span>
 
 The [[yii\db\Query::join()|join()]] method specifies the `JOIN` fragment of a SQL query. For example,
- 
+
 ```php
 // ... LEFT JOIN `post` ON `post`.`user_id` = `user`.`id`
 $query->join('LEFT JOIN', 'post', 'post.user_id = user.id');
 ```
 
 The [[yii\db\Query::join()|join()]] method takes four parameters:
- 
+
 - `$type`: join type, e.g., `'INNER JOIN'`, `'LEFT JOIN'`.
 - `$table`: the name of the table to be joined.
 - `$on`: optional, the join condition, i.e., the `ON` fragment. Please refer to [where()](#where) for details

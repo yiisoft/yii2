@@ -570,7 +570,7 @@ class UserView extends ActiveRecord
 При использовании нескольких экземпляров GridView вы должны настроить различные имена параметров для сортировки и ссылки
 для разбиения на страницы так, чтобы каждый GridView имел свою индивидуальный сортировку и разбиение на страницы.
 Сделать это возможно через настройку [[yii\data\Sort::sortParam|sortParam]] и [[yii\data\Pagination::pageParam|pageParam]]
-свойств провайдеров данных [[yii\data\BaseDataProvider::$sort|sort]] и [yii\data\BaseDataProvider::$pagination|pagination]]
+свойств провайдеров данных [[yii\data\BaseDataProvider::$sort|sort]] и [[yii\data\BaseDataProvider::$pagination|pagination]]
 
 Допустим мы хотим список моделей `Post` и `User`, для которых мы уже подготовили провайдеры данных `$userProvider` и 
 `$postProvider`, тогда код будет выглядеть следующим образом:

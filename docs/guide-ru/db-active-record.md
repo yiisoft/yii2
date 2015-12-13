@@ -1014,13 +1014,14 @@ $customers = Customer::find()->with([
 данных, наложив на него дополнительное условие выборки статуса заказов.
 
 > Примечание: Если вы вызываете метод [[yii\db\Query::select()|select()]] в процессе жадной загрузки связей, вы должны
-  убедиться, что будут выбраны столбцы, участвующие в объявлении связей. Иначе связные модели будут загружены
-  неправильно. Например:
-  ```php
-  $orders = Order::find()->select(['id', 'amount'])->with('customer')->all();
-  // $orders[0]->customer всегда равно null. Для исправления проблемы вы должны сделать следующее:
-  $orders = Order::find()->select(['id', 'amount', 'customer_id'])->with('customer')->all();
-  ```
+> убедиться, что будут выбраны столбцы, участвующие в объявлении связей. Иначе связные модели будут загружены
+> неправильно. Например:
+>
+> ```php
+> $orders = Order::find()->select(['id', 'amount'])->with('customer')->all();
+> // $orders[0]->customer всегда равно null. Для исправления проблемы вы должны сделать следующее:
+> $orders = Order::find()->select(['id', 'amount', 'customer_id'])->with('customer')->all();
+> ```
 
 
 ### Использование JOIN со связями <span id="joining-with-relations"></span>
