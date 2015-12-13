@@ -15,10 +15,10 @@
 [getcomposer.org](https://getcomposer.org/download/), или одним из нижеперечисленных способов. На Linux или Mac 
 используйте следующую команду:
 
-  ```
-  curl -sS https://getcomposer.org/installer | php
-  mv composer.phar /usr/local/bin/composer
-  ```
+```bash
+curl -sS https://getcomposer.org/installer | php
+mv composer.phar /usr/local/bin/composer
+```
 
 На Windows, скачайте и запустите [Composer-Setup.exe](https://getcomposer.org/Composer-Setup.exe).
 
@@ -29,8 +29,10 @@
 
 После установки Composer устанавливать Yii можно запустив следующую команду в папке доступной через веб:
 
-    composer global require "fxp/composer-asset-plugin:~1.1.1"
-    composer create-project --prefer-dist yiisoft/yii2-app-basic basic
+```bash
+composer global require "fxp/composer-asset-plugin:~1.1.1"
+composer create-project --prefer-dist yiisoft/yii2-app-basic basic
+```
 
 Первая команда устанавливает [composer asset plugin](https://github.com/francoispluchino/composer-asset-plugin/),
 который позволяет управлять зависимостями пакетов bower и npm через Composer. Эту команду достаточно выполнить один раз.
@@ -47,7 +49,9 @@ Composer установит Yii (шаблонное приложение basic) 
 > Подсказка: Если вы хотите установить последнюю нестабильную ревизию Yii, можете использовать следующую команду,
 > в которой присутствует [опция stability](https://getcomposer.org/doc/04-schema.md#minimum-stability):
 >
->     composer create-project --prefer-dist --stability=dev yiisoft/yii2-app-basic basic
+> ```bash
+> composer create-project --prefer-dist --stability=dev yiisoft/yii2-app-basic basic
+> ```
 >
 > Старайтесь не использовать нестабильную версию Yii на рабочих серверах потому как она может внезапно поломать код.
 
@@ -62,10 +66,10 @@ Composer установит Yii (шаблонное приложение basic) 
 3. В файле `config/web.php` добавьте секретный ключ в значение `cookieValidationKey` (при установке через Composer
    это происходит автоматически):
 
-   ```php
-   // !!! insert a secret key in the following (if it is empty) - this is required by cookie validation
-   'cookieValidationKey' => 'enter your secret key here',
-   ```
+```php
+// !!! insert a secret key in the following (if it is empty) - this is required by cookie validation
+'cookieValidationKey' => 'enter your secret key here',
+```
 
 Другие опции установки <span id="other-installation-options"></span>
 --------------------------
@@ -100,10 +104,10 @@ http://localhost/basic/web/index.php
 * Браузером перейдите по адресу `http://localhost/basic/requirements.php`
 * Или выполните команду в консоли: 
 
-  ```
-  cd basic
-  php requirements.php
-  ```
+```bash
+cd basic
+php requirements.php
+```
 
 Для корректной работы фреймворка вам необходима установка PHP, соответствующая его минимальным требованиям. Основное
 требование — PHP версии 5.4 и выше. Если ваше приложение работает с базой данных, необходимо установить

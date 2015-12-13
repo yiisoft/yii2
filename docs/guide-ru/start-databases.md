@@ -68,6 +68,14 @@ return [
   описывающей то, как экземпляр [приложения](structure-applications.md) должен быть инициализирован.
   Для детальной информации, пожалуйста, обратитесь к разделу [Конфигурации](concept-configurations.md).
 
+Если вам необходимо работать с базами данных, поддержка которых не включена непосредственно в фреймворк, стоит обратить
+внимание на следующие расширения:
+
+- [Informix](https://github.com/edgardmessias/yii2-informix)
+- [IBM DB2](https://github.com/edgardmessias/yii2-ibm-db2)
+- [Firebird](https://github.com/edgardmessias/yii2-firebird)
+
+
 Создаём потомка Active Record <span id="creating-active-record"></span>
 -------------------------
 

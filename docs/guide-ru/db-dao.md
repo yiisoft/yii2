@@ -91,14 +91,15 @@ return [
   при выполнении первого SQL запроса или при явном вызове метода [[yii\db\Connection::open()|open()]].
 
 > Подсказка: Иногда может потребоваться выполнить некоторые запросы сразу после соединения с базой данных, для инициализации
-> переменных окружения. Вы можете зарегистрировать обработчик для события [[yii\db\Connection::EVENT_AFTER_OPEN|afterOpen]].
-> Вы можете зарегистрировать обработчик прямо в конфигурации приложения:
+> переменных окружения. Например, чтобы задать часовой пояс или кодировку. Сделать это можно зарегистрировав обработчик
+> для события [[yii\db\Connection::EVENT_AFTER_OPEN|afterOpen]] в конфигурации приложения:
 > 
 > ```php
 > 'db' => [
 >     // ...
 >     'on afterOpen' => function($event) {
->         $event->sender->createCommand("YOUR SQL HERE")->execute();
+>         // $event->sender содержит соединение с базой данных
+>         $event->sender->createCommand("SET time_zone = 'UTC'")->execute();
 >     }
 > ]
 > ```
@@ -107,60 +108,35 @@ return [
 
 После создания экземпляра соединения, вы можете выполнить SQL запрос, выполнив следующие шаги:
  
-1. Создать [[yii\db\Command]] с текстом SQL;
+1. Создать [[yii\db\Command]] из запроса SQL;
 2. Привязать параметры (не обязательно);
 3. Вызвать один из методов выполнения SQL из [[yii\db\Command]].
 
 Следующий пример показывает различные способы получения данных из базы дынных:
  
 ```php
-$db = new yii\db\Connection(...);
-
 // возвращает набор строк. каждая строка - это ассоциативный массив с именами столбцов и значений.
-// если выборка ничего не вернёт, то будет возвращён пустой массив.
-$posts = $db->createCommand('SELECT * FROM post')
+// если выборка ничего не вернёт, то будет получен пустой массив.
+$posts = Yii::$app->db->createCommand('SELECT * FROM post')
             ->queryAll();
 
 // вернёт одну строку (первую строку)
-// ложь, если ничего не будет выбрано
-$post = $db->createCommand('SELECT * FROM post WHERE id=1')
+// false, если ничего не будет выбрано
+$post = Yii::$app->db->createCommand('SELECT * FROM post WHERE id=1')
            ->queryOne();
 
 // вернёт один столбец (первый столбец)
 // пустой массив, при отсутствии результата
-$titles = $db->createCommand('SELECT title FROM post')
+$titles = Yii::$app->db->createCommand('SELECT title FROM post')
              ->queryColumn();
 
-// вернёт значение
-// ложь, при отсутствии результата
-$count = $db->createCommand('SELECT COUNT(*) FROM post')
+// вернёт скалярное значение
+// или false, при отсутствии результата
+$count = Yii::$app->db->createCommand('SELECT COUNT(*) FROM post')
              ->queryScalar();
 ```
 
 > Примечание: Чтобы сохранить точность, данные извлекаются как строки, даже если тип поля в базе данных является числовым.
-
-> Подсказка: Если вам необходимо выполнить SQL запрос сразу после установки соединения (например, для установки
-> временной зоны или кодировки), вы можете сделать это в обработчике события [[yii\db\Connection::EVENT_AFTER_OPEN]].
-> Например,
-
-```php
-return [
-    // ...
-    'components' => [
-        // ...
-        'db' => [
-            'class' => 'yii\db\Connection',
-            // ...
-            'on afterOpen' => function($event) {
-                // $event->sender ссылка на соединение с базой данных
-                $event->sender->createCommand("SET time_zone = 'UTC'")->execute();
-            }
-        ],
-    ],
-    // ...
-];
-```
-
 
 ### Привязка параметров <span id="binding-parameters"></span>
 
@@ -168,7 +144,7 @@ return [
 предотвращения атак через SQL инъекции. Например,
 
 ```php
-$post = $db->createCommand('SELECT * FROM post WHERE id=:id AND status=:status')
+$post = Yii::$app->db->createCommand('SELECT * FROM post WHERE id=:id AND status=:status')
            ->bindValue(':id', $_GET['id'])
            ->bindValue(':status', 1)
            ->queryOne();
@@ -187,11 +163,11 @@ $post = $db->createCommand('SELECT * FROM post WHERE id=:id AND status=:status')
 ```php
 $params = [':id' => $_GET['id'], ':status' => 1];
 
-$post = $db->createCommand('SELECT * FROM post WHERE id=:id AND status=:status')
+$post = Yii::$app->db->createCommand('SELECT * FROM post WHERE id=:id AND status=:status')
            ->bindValues($params)
            ->queryOne();
            
-$post = $db->createCommand('SELECT * FROM post WHERE id=:id AND status=:status', $params)
+$post = Yii::$app->db->createCommand('SELECT * FROM post WHERE id=:id AND status=:status', $params)
            ->queryOne();
 ```
 
@@ -200,17 +176,18 @@ $post = $db->createCommand('SELECT * FROM post WHERE id=:id AND status=:status',
 один раз, а потом выполняется много раз с разными параметрами. Например,
 
 ```php
-$command = $db->createCommand('SELECT * FROM post WHERE id=:id');
+$command = Yii::$app->db->createCommand('SELECT * FROM post WHERE id=:id');
 
 $post1 = $command->bindValue(':id', 1)->queryOne();
 $post2 = $command->bindValue(':id', 2)->queryOne();
+// ...
 ```
 
 Так как [[yii\db\Command::bindParam()|bindParam()]] поддерживает привязку параметров по ссылке, следующий код может
 быть написан следующим образом:
 
 ```php
-$command = $db->createCommand('SELECT * FROM post WHERE id=:id')
+$command = Yii::$app->db->createCommand('SELECT * FROM post WHERE id=:id')
               ->bindParam(':id', $id);
 
 $id = 1;
@@ -218,6 +195,7 @@ $post1 = $command->queryOne();
 
 $id = 2;
 $post2 = $command->queryOne();
+// ...
 ```
 
 Обратите внимание что вы связываете маркер `$id` с переменной перед выполнением запроса, и затем меняете это значение
@@ -230,7 +208,7 @@ $post2 = $command->queryOne();
 Для запросов не возвращающих данные, вы должны использовать метод [[yii\db\Command::execute()]]. Например,
 
 ```php
-$db->createCommand('UPDATE post SET status=1 WHERE id=1')
+Yii::$app->db->createCommand('UPDATE post SET status=1 WHERE id=1')
    ->execute();
 ```
 
@@ -242,16 +220,16 @@ SQL конструкций. Например,
 
 ```php
 // INSERT (table name, column values)
-$db->createCommand()->insert('user', [
+Yii::$app->db->createCommand()->insert('user', [
     'name' => 'Sam',
     'age' => 30,
 ])->execute();
 
 // UPDATE (table name, column values, condition)
-$db->createCommand()->update('user', ['status' => 1], 'age > 30')->execute();
+Yii::$app->db->createCommand()->update('user', ['status' => 1], 'age > 30')->execute();
 
 // DELETE (table name, condition)
-$db->createCommand()->delete('user', 'status = 0')->execute();
+Yii::$app->db->createCommand()->delete('user', 'status = 0')->execute();
 ```
 
 Вы можете также вызвать [[yii\db\Command::batchInsert()|batchInsert()]] для вставки множества строк за один вызов.
@@ -259,12 +237,15 @@ $db->createCommand()->delete('user', 'status = 0')->execute();
 
 ```php
 // table name, column names, column values
-$db->createCommand()->batchInsert('user', ['name', 'age'], [
+Yii::$app->db->createCommand()->batchInsert('user', ['name', 'age'], [
     ['Tom', 30],
     ['Jane', 20],
     ['Linda', 25],
 ])->execute();
 ```
+
+Обратите внимание, что перечисленные методы лишь создают запрос. Чтобы его выполнить нужно вызывать
+[[yii\db\Command::execute()|execute()]].
 
 
 ## Экранирование имён таблиц и столбцов <span id="quoting-table-and-column-names"></span>
@@ -281,7 +262,7 @@ Yii DAO будет автоматический преобразовывать �
 
 ```php
 // executes this SQL for MySQL: SELECT COUNT(`id`) FROM `employee`
-$count = $db->createCommand("SELECT COUNT([[id]]) FROM {{employee}}")
+$count = Yii::$app->db->createCommand("SELECT COUNT([[id]]) FROM {{employee}}")
             ->queryScalar();
 ```
 
@@ -311,7 +292,7 @@ return [
 
 ```php
 // для MySQL будет выполнен следующий SQL: SELECT COUNT(`id`) FROM `tbl_employee`
-$count = $db->createCommand("SELECT COUNT([[id]]) FROM {{%employee}}")
+$count = Yii::$app->db->createCommand("SELECT COUNT([[id]]) FROM {{%employee}}")
             ->queryScalar();
 ```
 
@@ -325,16 +306,18 @@ $count = $db->createCommand("SELECT COUNT([[id]]) FROM {{%employee}}")
 Следующий код показывает типичное использование транзакций:
 
 ```php
-$db->transaction(function($db) {
+Yii::$app->db->transaction(function($db) {
     $db->createCommand($sql1)->execute();
     $db->createCommand($sql2)->execute();
     // ... executing other SQL statements ...
 });
 ```
 
-Код выше эквивалентен следующему:
+Код выше эквивалентен приведённму ниже. Разница в том, что в данном случае мы получаем больше контроля над обработкой
+ошибок:
 
 ```php
+$db = Yii::$app->db;
 $transaction = $db->beginTransaction();
 
 try {
@@ -367,13 +350,13 @@ Yii поддерживает настройку [уровня изоляции] 
 ```php
 $isolationLevel = \yii\db\Transaction::REPEATABLE_READ;
 
-$db->transaction(function ($db) {
+Yii::$app->db->transaction(function ($db) {
     ....
 }, $isolationLevel);
  
 // or alternatively
 
-$transaction = $db->beginTransaction($isolationLevel);
+$transaction = Yii::$app->db->beginTransaction($isolationLevel);
 ```
 
 Yii предоставляет четыре константы для наиболее распространённых уровней изоляции:
@@ -388,8 +371,8 @@ Yii предоставляет четыре константы для наибо
 
 Заметьте что некоторые СУБД допускают настраивать уровень изоляции только для всего соединения. Следующие транзакции
 будут получать тот же уровень изоляции, даже если вы его не укажете. При использовании этой функции может потребоваться
-установить уровень изоляции для всех транзакции, чтоб избежать явно конфликтующих настроек. 
-На момент написания этой статьи страдали от этого только MSSQL и SQLite.
+установить уровень изоляции для всех транзакций, чтоб избежать явно конфликтующих настроек.
+На момент написания этой статьи страдали от этого ограничения только MSSQL и SQLite.
 
 > Примечание: SQLite поддерживает только два уровня изоляции, таким образом вы можете использовать только
 `READ UNCOMMITTED` и `SERIALIZABLE`. Использование других уровней изоляции приведёт к генерации исключения.
@@ -406,7 +389,7 @@ Yii предоставляет четыре константы для наибо
 Если ваша СУБД поддерживает Savepoint, вы можете вкладывать транзакции как показано ниже:
 
 ```php
-$db->transaction(function ($db) {
+Yii::$app->db->transaction(function ($db) {
     // outer transaction
     
     $db->transaction(function ($db) {
@@ -418,6 +401,7 @@ $db->transaction(function ($db) {
 Или так,
 
 ```php
+$db = Yii::$app->db;
 $outerTransaction = $db->beginTransaction();
 try {
     $db->createCommand($sql1)->execute();
@@ -482,13 +466,13 @@ try {
 
 ```php
 // создание экземпляра соединения, использующего вышеуказанную конфигурацию
-$db = Yii::createObject($config);
+Yii::$app->db = Yii::createObject($config);
 
 // запрос к одному из подчинённых
-$rows = $db->createCommand('SELECT * FROM user LIMIT 10')->queryAll();
+$rows = Yii::$app->db->createCommand('SELECT * FROM user LIMIT 10')->queryAll();
 
 // запрос к мастеру
-$db->createCommand("UPDATE user SET username='demo' WHERE id=1")->execute();
+Yii::$app->db->createCommand("UPDATE user SET username='demo' WHERE id=1")->execute();
 ```
 
 > Информация: Запросы выполненные через [[yii\db\Command::execute()]] определяются как запросы на запись, а все
@@ -560,6 +544,7 @@ $db->createCommand("UPDATE user SET username='demo' WHERE id=1")->execute();
 использовать соединение с основным сервером. Например,
 
 ```php
+$db = Yii::$app->db;
 // Транзакция запускается на основном сервере
 $transaction = $db->beginTransaction();
 
@@ -578,14 +563,14 @@ try {
 Если вы хотите запустить транзакцию на подчинённом сервере, вы должны указать это явно, как показано ниже:
 
 ```php
-$transaction = $db->slave->beginTransaction();
+$transaction = Yii::$app->db->slave->beginTransaction();
 ```
 
 Иногда может потребоваться выполнить запрос на чтение через подключение к основному серверу. Это может быть достигнуто
 с использованием метода `useMaster()`:
 
 ```php
-$rows = $db->useMaster(function ($db) {
+$rows = Yii::$app->db->useMaster(function ($db) {
     return $db->createCommand('SELECT * FROM user LIMIT 10')->queryAll();
 });
 ```
@@ -617,7 +602,7 @@ Yii DAO предоставляет целый набор методов для �
 
 ```php
 // CREATE TABLE
-$db->createCommand()->createTable('post', [
+Yii::$app->db->createCommand()->createTable('post', [
     'id' => 'pk',
     'title' => 'string',
     'text' => 'text',
@@ -628,7 +613,7 @@ $db->createCommand()->createTable('post', [
 Например,
 
 ```php
-$table = $db->getTableSchema('post');
+$table = Yii::$app->db->getTableSchema('post');
 ```
 
 Метод вернёт объект [[yii\db\TableSchema]], который содержит информацию о столбцах таблицы, первичных ключах, внешних

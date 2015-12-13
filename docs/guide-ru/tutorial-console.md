@@ -27,6 +27,7 @@
   Больше об этой команде вы можете узнать в [I18N Section](tutorial-i18n.md#message-command).
 - [[yii\console\controllers\MigrateController|MigrateController]] - Управление миграциями приложения.
   Миграции базы данных более детально описаны в [Database Migration Section](db-migrations.md).
+- [[yii\console\controllers\ServeController|ServeController]] - позволяет запускать встроенный вебсервер PHP.
 
 
 Использование <span id="usage"></span>
@@ -184,8 +185,8 @@ public function actionIndex()
 
 Есть несколько предопределённых констант, которые вы можете использовать:
 
-- `Controller::EXIT_CODE_NORMAL` со значением `0`;
-- `Controller::EXIT_CODE_ERROR` со значением `1`.
+- [[yii\console\Controller::EXIT_CODE_NORMAL|Controller::EXIT_CODE_NORMAL]] со значением `0`;
+- [[yii\console\Controller::EXIT_CODE_ERROR|Controller::EXIT_CODE_ERROR]] со значением `1`.
 
 Хорошая практика, определять значимые для вашего контроллера константы в случае, если вы используете больше типов ошибок.
 
@@ -200,7 +201,8 @@ public function actionIndex()
 $this->stdout("Hello?\n", Console::BOLD);
 ```
 
-Если вам нужно собрать строку динамически объединяя несколько стилей, лучше использовать `ansiFormat`:
+Если вам нужно собрать строку динамически объединяя несколько стилей, лучше использовать
+[[yii\helpers\Console::ansiFormat()|ansiFormat()]]:
 
 ```php
 $name = $this->ansiFormat('Alex', Console::FG_YELLOW);
