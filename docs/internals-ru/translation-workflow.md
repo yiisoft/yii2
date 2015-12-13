@@ -123,6 +123,7 @@ php build translation "../docs/guide" "../docs/guide-ru" "Russian guide translat
 - helper - помощник. 
 - id — идентификатор. 
 - instance — экземпляр. 
+- junction table — промежуточная таблица.
 - lazy loading — отложенная загрузка (загрузим как понадобится и не раньше). 
 - method — метод (объекта) //Внимание! У объекта/класса нет функций, есть только методы. 
 - model — модель, модель данных. 
