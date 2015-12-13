@@ -34,6 +34,10 @@ git remote add upstream git://github.com/yiisoft/yii2.git
 Следующие шаги не обязательны, если вы хотите работать только с переводом или документацией.
 
 - выполните `composer update` для установки зависимостей (если [composer у вас установлен глобально](https://getcomposer.org/doc/00-intro.md#globally)).
+
+> Примечание: Если вы видите такие ошибки, как `Problem 1 The requested package bower-asset/jquery could not be found in
+> any version, there may be a typo in the package name.`, необходимо запустить `composer global require "fxp/composer-asset-plugin:~1.1.1"`
+
 - выполните `php build/build dev/app basic` для клонирования базового приложения и установки его зависимостей.
   Эта команда установит сторонние пакеты composer обычным образом, но создаст ссылку с репозитория yii2 на только 
   что загруженный репозиторий. Таким образом у вас будет только один экземпляр кода.
@@ -41,6 +45,9 @@ git remote add upstream git://github.com/yiisoft/yii2.git
   При необходимости делаем тоже самое для приложения advanced: `php build/build dev/app advanced`.
   
   Данная команда также может быть использована для обновления зависимостей, внутри она использует `composer update`.
+
+> Примечание: по умолчанию URL репозиториев git на GitHub работают через SSH. Чтобы использовать HTTPS, добавьте
+> флаг `--useHttp` к команде `build`.
 
 **Теперь у нас есть рабочая площадка для экспериментов с Yii 2.**
 
@@ -73,6 +80,8 @@ php build/build dev/ext <extension-name>
 Запустите `php build/build dev/app basic` для установки расширения и его зависимостей и создания символической
 ссылки на `extensions/redis` так чтоб вы работали не папке вендорных пакетов composer, а напрямую в репозиторий yii2.
 
+> Примечание: по умолчанию URL репозиториев git на GitHub работают через SSH. Чтобы использовать HTTPS, добавьте
+> флаг `--useHttp` к команде `build`.
 
 Работа над багами и новыми функциями
 ------------------------------------
