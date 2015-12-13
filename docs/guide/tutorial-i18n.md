@@ -554,7 +554,7 @@ class Menu extends Widget
 Instead of using `fileMap` you can simply use the convention of the category mapping to the same named file.
 Now you can use `Menu::t('messages', 'new messages {messages}', ['{messages}' => 10])` directly.
 
-> **Note**: For widgets you also can use i18n views, with the same rules as for controllers being applied to them too.
+> Note: For widgets you also can use i18n views, with the same rules as for controllers being applied to them too.
 
 
 ### Translating framework messages <span id="framework-translation"></span>

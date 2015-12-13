@@ -43,3 +43,5 @@ php build translation "../docs/guide" "../docs/guide-ru" "Russian guide translat
 ```
 
 If it will complain about composer, perform `composer install` in the source root dir.
+
+For information on the documentation syntax and style guide, see [documentation_style_guide.md](../documentation_style_guide.md).
