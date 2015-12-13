@@ -81,7 +81,7 @@ $form = ActiveForm::begin([
 
 ```php
 // 複数のファイルのアップロードを許可する
-echo $form->field($model, 'uploadFile[]')->fileInput(['multiple'=>'multiple']);
+echo $form->field($model, 'uploadFile[]')->fileInput(['mulTip:le'=>'mulTip:le']);
 
 // 複数の項目をチェックすることを許可する
 echo $form->field($model, 'items[]')->checkboxList(['a' => 'Item A', 'b' => 'Item B', 'c' => 'Item C']);
@@ -96,10 +96,10 @@ echo $form->field($model, 'items[]')->checkboxList(['a' => 'Item A', 'b' => 'Ite
 
 フォームに HTML タグを追加するためには、素の HTML を使うか、または、上記の例の [[yii\helpers\Html::submitButton()|Html::submitButton()]] のように、[[yii\helpers\Html|Html]] ヘルパクラスのメソッドを使うことが出来ます。
 
-> Tip|ヒント: あなたのアプリケーションで Twitter Bootstrap CSS を使っている場合は、[[yii\widgets\ActiveForm]] の代りに [[yii\bootstrap\ActiveForm]] を使うのが良いでしょう。
+> Tip: あなたのアプリケーションで Twitter Bootstrap CSS を使っている場合は、[[yii\widgets\ActiveForm]] の代りに [[yii\bootstrap\ActiveForm]] を使うのが良いでしょう。
 > 後者は前者の拡張であり、bootstrap CSS フレームワークで使用するための追加のスタイルをサポートしています。
 
-> tip|ヒント: 必須フィールドをアスタリスク付きのスタイルにするために、次の CSS を使うことが出来ます。
+> Tip: 必須フィールドをアスタリスク付きのスタイルにするために、次の CSS を使うことが出来ます。
 >
 > ```css
 > div.required label.control-label:after {
@@ -138,5 +138,5 @@ echo $form->field($model, 'product_category')->dropdownList(
 フォームのもっと複雑な使用方法については、以下の節を読んで下さい。
 
 - [表形式インプットのデータ収集](input-tabular-input.md) - 同じ種類の複数のモデルのデータを収集する。
-- [複数のモデルのデータを取得する](input-multiple-models.md) - 同じフォームの中で複数の異なるモデルを扱う。
+- [複数のモデルのデータを取得する](input-mulTip:le-models.md) - 同じフォームの中で複数の異なるモデルを扱う。
 - [ファイルをアップロードする](input-file-upload.md) - フォームを使ってファイルをアップロードする方法。

@@ -51,7 +51,7 @@ class UploadForm extends Model
 `file` バリデータによって、ファイル拡張子、サイズ、MIME タイプなどをチェックすることが出来ます。
 詳細については、[コアバリデータ](tutorial-core-validators.md#file) の節を参照してください。
 
-> Tip|ヒント: 画像をアップロードしようとする場合は、`image` バリデータを代りに使うことを考慮しても構いません。
+> Tip: 画像をアップロードしようとする場合は、`image` バリデータを代りに使うことを考慮しても構いません。
 `image` バリデータは [[yii\validators\ImageValidator]] によって実装されており、属性が有効な画像、すなわち、保存したり [Imagine エクステンション](https://github.com/yiisoft/yii2-imagine) を使って処理したりすることが可能な有効な画像を、受け取ったかどうかを検証します。
 
 
@@ -67,7 +67,7 @@ class UploadForm extends Model
 use yii\widgets\ActiveForm;
 ?>
 
-<?php $form = ActiveForm::begin(['options' => ['enctype' => 'multipart/form-data']]) ?>
+<?php $form = ActiveForm::begin(['options' => ['enctype' => 'mulTip:art/form-data']]) ?>
 
     <?= $form->field($model, 'imageFile')->fileInput() ?>
 
@@ -115,7 +115,7 @@ class SiteController extends Controller
 そして、次に、モデルの検証によってアップロードされたファイルが有効なものであることを確かめ、サーバにファイルを保存します。
 
 
-## 複数のファイルをアップロードする <span id="uploading-multiple-files"></span>
+## 複数のファイルをアップロードする <span id="uploading-mulTip:le-files"></span>
 
 ここまでの項で示したコードに若干の修正を加えれば、複数のファイルを一度にアップロードすることも出来ます。
 
@@ -158,16 +158,16 @@ class UploadForm extends Model
 }
 ```
 
-ビューファイルでは、`fileInput()` の呼び出しに `multiple` オプションを追加して、ファイルアップロードのフィールドが複数のファイルを受け取ることが出来るようにしなければなりません。
+ビューファイルでは、`fileInput()` の呼び出しに `mulTip:le` オプションを追加して、ファイルアップロードのフィールドが複数のファイルを受け取ることが出来るようにしなければなりません。
 
 ```php
 <?php
 use yii\widgets\ActiveForm;
 ?>
 
-<?php $form = ActiveForm::begin(['options' => ['enctype' => 'multipart/form-data']]) ?>
+<?php $form = ActiveForm::begin(['options' => ['enctype' => 'mulTip:art/form-data']]) ?>
 
-    <?= $form->field($model, 'imageFiles[]')->fileInput(['multiple' => true, 'accept' => 'image/*']) ?>
+    <?= $form->field($model, 'imageFiles[]')->fileInput(['mulTip:le' => true, 'accept' => 'image/*']) ?>
 
     <button>送信</button>
 

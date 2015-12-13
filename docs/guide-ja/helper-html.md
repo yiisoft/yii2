@@ -6,7 +6,7 @@ Html ヘルパ
 Yii はそのような手助けを Html ヘルパの形式で提供します。
 これは、よく使われる HTML タグとそのオプションやコンテントを処理するための一連のスタティックメソッドを提供するものです。
 
-> Note|注意: あなたのマークアップがおおむね静的なものである場合は、HTML を直接に使用する方が適切です。
+> Note: あなたのマークアップがおおむね静的なものである場合は、HTML を直接に使用する方が適切です。
 > 何でもかんでも Html ヘルパの呼び出しでラップする必要はありません。
 
 
@@ -162,7 +162,7 @@ $decodedUserName = Html::decode($userName);
 フォームのマークアップを扱う仕事は、極めて面倒くさく、エラーを生じがちなものです。
 このため、フォームのマークアップの仕事を助けるための一群のメソッドがあります。
 
-> Note|注意: モデルを扱っており、バリデーションが必要である場合は、[[yii\widgets\ActiveForm|ActiveForm]] を使うことを検討してください。
+> Note: モデルを扱っており、バリデーションが必要である場合は、[[yii\widgets\ActiveForm|ActiveForm]] を使うことを検討してください。
 
 
 ### フォームを作成する <span id="creating-forms"></span>
@@ -170,14 +170,14 @@ $decodedUserName = Html::decode($userName);
 フォームを開始するためには、次のように [[yii\helpers\Html::beginForm()|beginForm()]] メソッドを使うことが出来ます。
 
 ```php
-<?= Html::beginForm(['order/update', 'id' => $id], 'post', ['enctype' => 'multipart/form-data']) ?>
+<?= Html::beginForm(['order/update', 'id' => $id], 'post', ['enctype' => 'mulTip:art/form-data']) ?>
 ```
 
 最初の引数は、フォームが送信されることになる URL です。
 これは [[yii\helpers\Url::to()|Url::to()]] によって受け入れられる Yii のルートおよびパラメータの形式で指定することが出来ます。
 第二の引数は使われるメソッドです。`post` がデフォルトです。
 第三の引数はフォームタグのオプションの配列です。
-上記の場合では、POST リクエストにおけるフォームデータのエンコーディング方法を `multipart/form-data` に変更しています。
+上記の場合では、POST リクエストにおけるフォームデータのエンコーディング方法を `mulTip:art/form-data` に変更しています。
 これはファイルをアップロードするために必要とされます。
 
 フォームタグを閉じるのは簡単です。
