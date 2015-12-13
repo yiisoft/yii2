@@ -114,7 +114,7 @@ Para las [extensiones](structure-extensions.md), por el hecho de que sus assets 
 fuente, en directorios que no son accesibles para la Web, se tiene que especificar la propiedad
 [[yii\web\AssetBundle::sourcePath|sourcePath]] cuando se definan clases asset bundle para ellas.
 
-> Nota: No se debe usar `@webroot/assets` como [yii\web\AssetBundle::sourcePath|source path]]. Este directorio se usa
+> Note: No se debe usar `@webroot/assets` como [yii\web\AssetBundle::sourcePath|source path]]. Este directorio se usa
   por defecto por el [[yii\web\AssetManager|asset manager]] para guardar los archivos asset publicados temporalmente y
   pueden ser eliminados.
 
@@ -141,7 +141,7 @@ incluidos en una página. Los valores de estas propiedades serán enviadas a los
 [[yii\web\View::registerCssFile()]] y [[yii\web\View::registerJsFile()]], respectivamente cuando las
 [vistas](structure-views.md) los llamen para incluir los archivos CSS y JavaScript.
 
-> Nota: Las opciones que se especifican en una clase bundle se aplican a *todos* los archivos CSS/JavaScript de un
+> Note: Las opciones que se especifican en una clase bundle se aplican a *todos* los archivos CSS/JavaScript de un
   bundle. Si se quiere usar diferentes opciones para diferentes archivos, se deben crear assets bundles separados y
   usar un conjunto de opciones para cada bundle.
 
@@ -219,7 +219,7 @@ Si tu aplicación o extensión usa estos paquetes, se recomienda seguir los sigu
    `@npm\PackageName`. Esto se debe a que Composer instalará el paquete Bower o NPM en el correspondiente directorio de
     este alias.
 
-> Nota: Algunos paquetes pueden distribuir sus archivos en subdirectorios. Si es el caso, se debe especificar el
+> Note: Algunos paquetes pueden distribuir sus archivos en subdirectorios. Si es el caso, se debe especificar el
   subdirectorio como valor del [[yii\web\AssetBundle::sourcePath|sourcePath]]. Por ejemplo, [[yii\web\JqueryAsset]]
   usa `@bower/jquery/dist` en vez de `@bower/jquery`.
 
@@ -234,7 +234,7 @@ use app\assets\AppAsset;
 AppAsset::register($this);  // $this representa el objeto vista
 ```
 
-> Información: El método [[yii\web\AssetBundle::register()]] devuelve un objeto asset bundle que contiene la
+> Info: El método [[yii\web\AssetBundle::register()]] devuelve un objeto asset bundle que contiene la
   información acerca de los assets publicados, tales como [[yii\web\AssetBundle::basePath|basePath]] o
   [[yii\web\AssetBundle::baseUrl|baseUrl]].
 
@@ -280,7 +280,7 @@ Del mismo modo, se pueden configurar múltiples asset bundles a través de [[yii
 del array deben ser los nombres de clase (sin la primera barra invertida) de los asset bundles, y los valores del array
  deben ser las correspondientes [configuraciones de arrays](concept-configurations.md).
 
-> Consejo: Se puede elegir condicionalmente que assets se van a usar en un asset bundle. El siguiente ejemplo
+> Tip: Se puede elegir condicionalmente que assets se van a usar en un asset bundle. El siguiente ejemplo
 muestra como usar `jquery.js` en el entorno de desarrollo y `jquery.min.js` en los otros casos:
 >
 > ```php
@@ -340,7 +340,7 @@ Si se detecta que alguna de estas claves es la última parte de un archivo asset
 registrado con la vista.
 Por ejemplo, un archivo asset `mi/ruta/a/jquery.js` concuerda con la clave `jquery.js`.
 
-> Nota: Sólo los assets especificados usando rutas relativas están sujetos al mapeo de assets. Y las rutas de los
+> Note: Sólo los assets especificados usando rutas relativas están sujetos al mapeo de assets. Y las rutas de los
 assets destino deben ser tanto URLs absolutas o rutas relativas a [[yii\web\AssetManager::basePath]].
 
 ### Publicación de Asset <span id="asset-publishing"></span>
@@ -459,7 +459,7 @@ los valores del array las extensiones de archivo resultantes y los comandos para
 Los tokens `{from}` y `{to}` en los comandos se reemplazarán por las rutas de origen de los archivos asset y las rutas
 de destino de los archivos asset.
 
-> Información: Hay otras maneras de trabajar con las assets de sintaxis extendidas, además de la descrita
+> Info: Hay otras maneras de trabajar con las assets de sintaxis extendidas, además de la descrita
   anteriormente. Por ejemplo, se pueden usar herramientas generadoras tales como [grunt](http://gruntjs.com/) para
   monitorear y convertir automáticamente los assets de sintaxis extendidas. En este caso, se deben listar los archivos
   CSS/JavaScript resultantes en lugar de los archivos de originales.
@@ -504,7 +504,7 @@ efectiva. Por otra parte, por el hecho de que un único grupo contenga todos los
 más grandes y por tanto incrementan el tiempo de transmisión del archivo inicial. En este ejemplo, se usará la primera
 opción, ej., usar un único grupo que contenga todos los bundles.
 
-> Información: Dividiendo los asset bundles en grupos no es una tarea trivial. Normalmente requiere un análisis de los
+> Info: Dividiendo los asset bundles en grupos no es una tarea trivial. Normalmente requiere un análisis de los
   datos del tráfico real de varios assets en diferentes páginas. Al principio, se puede empezar con un
   único grupo para simplificar.
 
@@ -618,7 +618,7 @@ Se debe modificar este archivo para especificar que bundles plantea combinar en 
 `targets` se debe especificar como se deben dividir entre los grupos. Se puede especificar uno o más grupos,
 como se ha comentado.
 
-> Nota: Debido a que los alias `@webroot` y `@web` no están disponibles en la aplicación de consola, se deben definir
+> Note: Debido a que los alias `@webroot` y `@web` no están disponibles en la aplicación de consola, se deben definir
   explícitamente en la configuración.
 
 Los archivos JavaScript se combinan, comprimen y guardan en `js/all-{hash}.js` donde {hash} se reemplaza con el hash
@@ -640,6 +640,6 @@ yii asset assets.php config/assets-prod.php
 El archivo de configuración generado se puede incluir en la configuración de la aplicación, como se ha descrito en la
 anterior subsección.
 
-> Información: Usar el comando `asset` no es la única opción de automatizar el proceso de combinación y compresión.
+> Info: Usar el comando `asset` no es la única opción de automatizar el proceso de combinación y compresión.
   Se puede usar la excelente herramienta de ejecución de tareas [grunt](http://gruntjs.com/) para lograr el mismo
   objetivo.

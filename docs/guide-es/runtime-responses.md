@@ -74,7 +74,7 @@ $headers->set('Pragma', 'no-cache');
 $values = $headers->remove('Pragma');
 ```
 
-> Información: Los nombres de las cabeceras case insensitive, es decir, no discriminan entre mayúsculas y minúsculas. 
+> Info: Los nombres de las cabeceras case insensitive, es decir, no discriminan entre mayúsculas y minúsculas. 
 Además, las nuevas cabeceras registradas no se enviarán al usuario hasta que se llame al método 
 [[yii\web\Response::send()]].
 
@@ -156,7 +156,7 @@ public function actionInfo()
 }
 ```
 
-> Nota: Si se crea un objeto response propio, no se podrán aprovechar las configuraciones asignadas para el componente 
+> Note: Si se crea un objeto response propio, no se podrán aprovechar las configuraciones asignadas para el componente 
 `response` en la configuración de la aplicación. Sin embargo, se puede usar la 
 [inyección de dependencias](concept-di-container.md) para aplicar la configuración común al nuevo objeto response.
 
@@ -188,7 +188,7 @@ respuesta.
 \Yii::$app->response->redirect('http://example.com/new', 301)->send();
 ```
 
-> Información: De forma predeterminada, el método [[yii\web\Response::redirect()]] asigna el estado de respuesta al 
+> Info: De forma predeterminada, el método [[yii\web\Response::redirect()]] asigna el estado de respuesta al 
 código de estado 302 que indica al navegador que recurso solicitado está *temporalmente* alojado en una URI diferente. 
 Se puede enviar un código de estado 301 para expresar que el recurso se ha movido de forma *permanente*.
 
@@ -197,7 +197,7 @@ redirección del navegador automática. Para resolver este problema, el método 
 una cabecera `X-Redirect` con el valor de la URL de redirección. En el lado del cliente se puede escribir código 
 JavaScript para leer la esta cabecera y redireccionar el navegador como corresponda.
 
-> Información: Yii contiene el archivo JavaScript `yii.js` que proporciona un conjunto de utilidades comunes de 
+> Info: Yii contiene el archivo JavaScript `yii.js` que proporciona un conjunto de utilidades comunes de 
 JavaScript, incluyendo la redirección de navegador basada en la cabecera `X-Redirect`. Por tanto, si se usa este 
 fichero JavaScript (registrándolo *asset bundle* [[yii\web\YiiAsset]]), no se necesitará escribir nada más para tener 
 soporte en redirecciones AJAX.

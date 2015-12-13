@@ -69,7 +69,7 @@ excepciones con una pila detallada de información y con lineas de código fuent
 variable `YII_DEBUG` es `false`, solo se mostrará el mensaje de error para prevenir la revelación de información
 sensible de la aplicación.
 
-> Información: Si una excepción es descendiente de [[yii\base\UserException]], no se mostrará la pila de llamadas
+> Info: Si una excepción es descendiente de [[yii\base\UserException]], no se mostrará la pila de llamadas
   independientemente del valor de `YII_DEBUG`. Esto es debido a que se considera que estas excepciones se deben a
   errores cometidos por los usuarios y los desarrolladores no necesitan corregirlas.
 
@@ -150,7 +150,7 @@ a las siguientes variables si se define el error como un [[yii\web\ErrorAction]]
 * `exception`: el objeto de excepción a través del cual se puede obtener más información útil, tal como el código de
   estado HTTP, el código de error, la pila de llamadas del error, etc.
 
-> Información: Tanto la [plantilla de aplicación básica](start-installation.md) como la
+> Info: Tanto la [plantilla de aplicación básica](start-installation.md) como la
   [plantilla de aplicación avanzada](tutorial-advanced-app.md), ya incorporan la acción de error y la vista de error.
 
 ### Personalizar el Formato de Respuesta de Error <span id="error-format"></span>

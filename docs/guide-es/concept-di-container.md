@@ -135,7 +135,7 @@ $container->set('db', function ($container, $params, $config) {
 $container->set('pageCache', new FileCache);
 ```
 
-> Consejo: Si un nombre de dependencia es el mismo que la definición de dependencia, no es necesario registrarlo con 
+> Tip: Si un nombre de dependencia es el mismo que la definición de dependencia, no es necesario registrarlo con 
   el contenedor de ID.
 
 Una dependencia registrada mediante `set()` generará una instancia cada vez que se necesite la dependencia. Se puede 

@@ -35,7 +35,7 @@ ejemplo registra la huella del mensaje para la categoría `application`:
 Yii::trace('start calculating average revenue');
 ```
 
-> Información: Los mensajes de registro pueden ser tanto cadenas de texto como datos complejos, como arrays u objetos.
+> Info: Los mensajes de registro pueden ser tanto cadenas de texto como datos complejos, como arrays u objetos.
   Es responsabilidad de los [destinos de registros](#log-targets) tratar los mensajes de registro de manera apropiada.
   De forma predeterminada, si un mensaje de registro no es una cadena de texto, se exporta como si fuera un string
   llamando a [[yii\helpers\VarDumper::export()]].
@@ -54,7 +54,7 @@ La constante `__METHOD__` equivale al nombre del método (con el prefijo del nom
 se encuentra la constante. Por ejemplo, es igual a la cadena `'app\controllers\RevenueController::calculate'` si la
 linea anterior de código se llamara dentro de este método.
 
-> Información: Los métodos de registro de anotaciones descritos anteriormente en realidad son accesos directos al
+> Info: Los métodos de registro de anotaciones descritos anteriormente en realidad son accesos directos al
   método [[yii\log\Logger::log()|log()]] del [[yii\log\Logger|logger object]] que es un singleton accesible a través
   de la expresión `Yii::getLogger()`. Cuando se hayan registrado suficientes mensajes o cuando la aplicación haya
   finalizado, el objeto de registro llamará [[yii\log\Dispatcher|message dispatcher]] para enviar los mensajes de
@@ -100,7 +100,7 @@ return [
 ];
 ```
 
-> Nota: El componente `log` debe cargarse durante el proceso de [bootstrapping](runtime-bootstrapping.md) para que
+> Note: El componente `log` debe cargarse durante el proceso de [bootstrapping](runtime-bootstrapping.md) para que
 pueda enviar los mensajes de registro a los destinos inmediatamente. Este es el motivo por el que se lista en el
 array `bootstrap` como se muestra más arriba.
 
@@ -171,7 +171,7 @@ de advertencia de las categorías que coincidan con alguno de los siguientes pat
 ]
 ```
 
-> Información: Cuando se captura una excepción de tipo HTTP por el [gestor de errores](runtime-handling-errors.md), se
+> Info: Cuando se captura una excepción de tipo HTTP por el [gestor de errores](runtime-handling-errors.md), se
   registrará un mensaje de error con el nombre de categoría con formato `yii\web\HttpException:ErrorCode`. Por
   ejemplo, la excepción [[yii\web\NotFoundHttpException]] causará un mensaje de error del tipo
   `yii\web\HttpException:404`.
@@ -250,7 +250,7 @@ La configuración de aplicación anterior establece el [[yii\log\Dispatcher::tra
 mensaje de registro se le añadirán como mucho 3 niveles de la pila de llamadas del mensaje que se este registrando; y
 si `YII_DEBUG` está deshabilitado, no se incluirá información de la pila de llamadas.
 
-> Información: Obtener información de la pila de llamadas no es trivial. Por lo tanto, sólo se debe usar esta
+> Info: Obtener información de la pila de llamadas no es trivial. Por lo tanto, sólo se debe usar esta
   característica durante el desarrollo o cuando se depura la aplicación.
 
 ### Liberación (Flushing) y Exportación de Mensajes <span id="flushing-exporting"></span>
@@ -273,7 +273,7 @@ return [
 ];
 ```
 
-> Información: También se produce la liberación de mensajes cuando la aplicación finaliza, esto asegura que los
+> Info: También se produce la liberación de mensajes cuando la aplicación finaliza, esto asegura que los
   destinos de los registros reciban los mensajes de registro.
 
 Cuando el [[yii\log\Logger|logger object]] libera los mensajes de registro enviándolos a los
@@ -313,7 +313,7 @@ return [
 ];
 ```
 
-> Nota: El uso frecuente de liberación y exportación puede degradar el rendimiento de la aplicación.
+> Note: El uso frecuente de liberación y exportación puede degradar el rendimiento de la aplicación.
 
 ### Conmutación de Destinos de Registros <span id="toggling-log-targets"></span>
 

@@ -45,7 +45,7 @@ Una vez hecho, los filtros serán aplicados a *todas* las acciones de controlado
 aplicación, a menos que las propiedades [[yii\base\ActionFilter::only|only]] y [[yii\base\ActionFilter::except|except]]
  sean configuradas como se ha descrito anteriormente.
 
-> Nota: Cuando se declaran filtros en módulos o aplicaciones, deben usarse [rutas](structure-controllers.md#routes) en 
+> Note: Cuando se declaran filtros en módulos o aplicaciones, deben usarse [rutas](structure-controllers.md#routes) en 
   lugar de IDs de acciones en las propiedades [[yii\base\ActionFilter::only|only]] y 
   [[yii\base\ActionFilter::except|except]]. Esto es debido a que los IDs de acciones no pueden especificar acciones 
   dentro del ámbito de un modulo o una aplicación por si mismos.
@@ -226,7 +226,7 @@ use yii\web\Response;
 ];
 ```
 
-> Información: En el caso que el tipo preferido de contenido y el idioma no puedan ser determinados por una petición, 
+> Info: En el caso que el tipo preferido de contenido y el idioma no puedan ser determinados por una petición, 
   será utilizando el primer elemento de formato e idioma de la lista [[formats]] y [[lenguages]].
 
 

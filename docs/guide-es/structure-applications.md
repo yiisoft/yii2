@@ -6,7 +6,7 @@ hechas en Yii.
 Cada aplicación Yii contiene un objeto `Application` que es creado en el [script de entrada](structure-entry-scripts.md)
 y es globalmente accesible a través de la expresión `\Yii::$app`.
 
-> Información: Dependiendo del contexto, cuando decimos "una aplicación", puede significar tanto un objeto Application
+> Info: Dependiendo del contexto, cuando decimos "una aplicación", puede significar tanto un objeto Application
   o un sistema desarrollado en Yii.
 
 Hay dos tipos de aplicaciones: [[yii\web\Application|aplicaciones Web]] y
@@ -150,7 +150,7 @@ if (YII_ENV_DEV) {
 }
 ```
 
-> Nota: Agregar demasiados componentes `bootstrap` degradará la performance de tu aplicación debido a que
+> Note: Agregar demasiados componentes `bootstrap` degradará la performance de tu aplicación debido a que
   por cada request, se necesita correr el mismo grupo de componentes. Por lo tanto, utiliza componentes `bootstrap` con criterio.
 
 

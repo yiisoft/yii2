@@ -35,7 +35,7 @@ $name = $request->post('name', '');
 // equivalente a: $name = isset($_POST['name']) ? $_POST['name'] : '';
 ```
 
-> Información: En lugar de acceder directamente a `$_GET` y `$_POST` para obtener los parámetros de la petición, es 
+> Info: En lugar de acceder directamente a `$_GET` y `$_POST` para obtener los parámetros de la petición, es 
   recomendable que se obtengan mediante el componente `request` como en el ejemplo anterior. Esto facilitará la 
   creación de tests ya que se puede simular una componente de request con datos de peticiones personalizados.
 
@@ -53,7 +53,7 @@ $params = $request->bodyParams;
 $param = $request->getBodyParam('id');
 ```
 
-> Información: A diferencia de los parámetros `GET`, los parámetros enviados desde el formulario a través de `POST`, 
+> Info: A diferencia de los parámetros `GET`, los parámetros enviados desde el formulario a través de `POST`, 
   `PUT`, `PATCH`, etc. se envían en el cuerpo de la petición. El componente `request` convierte los parámetros cuando 
   se acceda a él a través de los métodos descritos anteriormente. Se puede personalizar la manera en como los 
   parámetros se convierten configurando la propiedad [[yii\web\Request::parsers]].
@@ -126,7 +126,7 @@ puede usar el método de negociación de idioma [[yii\web\Request::getPreferredL
 lista de idiomas soportados por la aplicación, comparados con 
 [[yii\web\Request::acceptableLanguages|acceptableLanguages]], y devuelve el idioma más apropiado.
 
-> Consejo: También se puede usar el filtro [[yii\filters\ContentNegotiator|ContentNegotiator]] para determinar 
+> Tip: También se puede usar el filtro [[yii\filters\ContentNegotiator|ContentNegotiator]] para determinar 
 diatónicamente el content type y el idioma que debe usarse en la respuesta. El filtro implementa la negociación de 
 contenido en la parte superior de las propiedades y métodos descritos anteriormente.
 

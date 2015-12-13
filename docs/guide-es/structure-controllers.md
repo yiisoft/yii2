@@ -141,7 +141,7 @@ la clase del controlador `article` debe ser guardada en un archivo cuyo alias [a
 es `@app/controllers/ArticleController.php`; mientras que el controlador `admin/post-comment` debería estar
 en `@app/controllers/admin/PostCommentController.php`.
 
-> Información: En el último ejemplo, `admin/post-comment`, demuestra cómo puedes poner un controlador bajo un sub-directorio
+> Info: En el último ejemplo, `admin/post-comment`, demuestra cómo puedes poner un controlador bajo un sub-directorio
   del [[yii\base\Application::controllerNamespace|controller namespace]]. Esto es útil cuando quieres organizar
   tus controladores en varias categorías pero sin utilizar [módulos](structure-modules.md).
 
@@ -243,7 +243,7 @@ Los nombre de métodos de acciones derivan de los IDs de acuerdo al siguiente cr
 
 Por ejemplo, `index` se vuelve `actionIndex`, y `hello-world` se vuelve `actionHelloWorld`.
 
-> Nota: Los nombres de los métodos de acción son *case-sensitive* (distinguen entre minúsculas y mayúsculas). Si tienes un
+> Note: Los nombres de los métodos de acción son *case-sensitive* (distinguen entre minúsculas y mayúsculas). Si tienes un
   método llamado `ActionIndex`, no será considerado como un método de acción, y como resultado, solicitar la acción `index`
   resultará en una excepción. También ten en cuenta que los métodos de acción deben ser `public`. Un método `private` o `protected`
   NO define un método de acción.

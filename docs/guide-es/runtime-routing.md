@@ -258,7 +258,7 @@ amigable. El resto de propiedades son opcionales. Sin embargo, la anterior confi
   y crear URLs. Esta es la propiedad principal con la que se debe trabajar para crear URLs que satisfagan el formato 
   de un requerimiento particular de la aplicación.
 
-> Nota: Para ocultar el nombre del script de entrada en las URLs generadas, además de establecer el 
+> Note: Para ocultar el nombre del script de entrada en las URLs generadas, además de establecer el 
   [[yii\web\UrlManager::showScriptName|showScriptName]] a falso, puede ser necesaria la configuración del servidor Web 
   para que identifique correctamente que script PHP debe ejecutarse cuando se solicita una URL que no lo especifique. 
   Si se usa el servidor Web Apache, se puede utilizar la configuración recomendada descrita en la sección de 
@@ -324,7 +324,7 @@ el patrón con el formato `<ParamName:RegExp>`, donde `ParamName` especifica el 
 expresión regular opcional que se usa para encontrar los valores de los parámetros. Si no se especifica `RegExp` 
 significa que el parámetro debe ser una cadena de texto sin ninguna barra.
 
-> Nota: Solo se pueden especificar expresiones regulares para los parámetros. La parte restante del patrón se 
+> Note: Solo se pueden especificar expresiones regulares para los parámetros. La parte restante del patrón se 
   considera texto plano.
 
 Cuando se usa una regla para convertir una URL, esta rellenara los parámetros asociados con los valores que coincidan 
@@ -390,7 +390,7 @@ como `comment/create`.
 Del mismo modo, para crear una URL para una ruta `comment/index`, se aplicará la tercera regla, que crea una URL 
 `/index.php/comments`.
 
-> Información: Mediante la parametrización de rutas es posible reducir el numero de reglas de URL e incrementar 
+> Info: Mediante la parametrización de rutas es posible reducir el numero de reglas de URL e incrementar 
   significativamente el rendimiento del [[yii\web\UrlManager|URL manager]].
 
 De forma predeterminada, todos los parámetros declarados en una regla son requeridos. Si una URL solicitada no 
@@ -447,7 +447,7 @@ ejemplo, la siguiente regla convertirá la URL `http://en.example.com/posts` en 
 ]
 ```
 
-> Nota: Las reglas con nombres de servidor NO deben incluir el subdirectorio del script de entrada (entry script) en 
+> Note: Las reglas con nombres de servidor NO deben incluir el subdirectorio del script de entrada (entry script) en 
   sus patrones. Por ejemplo, is la aplicación se encuentra en `http://www.example.com/sandbox/blog`, entonces se debe 
   usar el patrón `http://www.example.com/posts` en lugar de `http://www.example.com/sandbox/blog/posts`. Esto 
   permitirá que la aplicación se pueda desarrollar en cualquier directorio sin la necesidad de cambiar el código de la 
@@ -479,9 +479,9 @@ propiedad [[yii\web\UrlManager::suffix]] como en el siguiente ejemplo de configu
 La configuración anterior permitirá al [[yii\web\UrlManager|URL manager]] reconocer las URLs solicitadas y a su vez 
 crear URLs con el sufijo `.html`.
 
-> Consejo: Se puede establecer `/` como el prefijo de URL para que las URLs finalicen con una barra.
+> Tip: Se puede establecer `/` como el prefijo de URL para que las URLs finalicen con una barra.
 
-> Nota: Cuando se configura un sufijo de URL, si una URL solicitada no tiene el sufijo, se considerará como una URL 
+> Note: Cuando se configura un sufijo de URL, si una URL solicitada no tiene el sufijo, se considerará como una URL 
   desconocida. Esta es una practica recomendada para SEO (optimización en motores de búsqueda).
 
 A veces, se pueden querer usar sufijos diferentes para URLs diferentes. Esto se puede conseguir configurando la 
@@ -529,10 +529,10 @@ convertirá en `post/view`.
 ]
 ```
 
-> Nota: Si una regla de URL contiene algún método HTTP en su patrón, la regla solo se usará para aplicar conversiones. 
+> Note: Si una regla de URL contiene algún método HTTP en su patrón, la regla solo se usará para aplicar conversiones. 
   Se omitirá cuando se llame a [[yii\web\UrlManager|URL manager]] para crear URLs.
 
-> Consejo: Para simplificar el enrutamiento en APIs RESTful, Yii proporciona una clase de reglas de URL 
+> Tip: Para simplificar el enrutamiento en APIs RESTful, Yii proporciona una clase de reglas de URL 
   [[yii\rest\UrlRule]] especial que es bastante eficiente y soporta ciertas características como pluralización de IDs 
   de controladores. Para conocer más detalles, se puede visitar la sección [Enrutamiento](rest-routing.md) acerca de 
   el desarrollo de APIs RESTful.
@@ -558,7 +558,7 @@ array completo de configuración para especificar una regla. El siguiente ejempl
 ]
 ```
 
-> Información: De forma predeterminada si no se especifica una opción `class` para una configuración de regla, se 
+> Info: De forma predeterminada si no se especifica una opción `class` para una configuración de regla, se 
   usará la clase predeterminada [[yii\web\UrlRule]].
 
 

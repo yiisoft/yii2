@@ -73,7 +73,7 @@ $component = \Yii::createObject([
 ], [1, 2]);
 ```
 
-> Información: Mientras que el enfoque de llamar [[Yii::createObject()]] parece mucho más complicado, es mucho más potente debido al hecho de que se implementa en la parte superior de un [contenedor de inyección de dependencia](concept-di-container.md).
+> Info: Mientras que el enfoque de llamar [[Yii::createObject()]] parece mucho más complicado, es mucho más potente debido al hecho de que se implementa en la parte superior de un [contenedor de inyección de dependencia](concept-di-container.md).
   
 
 La clase [[yii\base\Object]] hace cumplir el siguiente ciclo de vida del objeto:
