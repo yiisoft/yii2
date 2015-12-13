@@ -35,7 +35,7 @@ git remote add upstream git://github.com/yiisoft/yii2.git
 
 - выполните `composer update` для установки зависимостей (если [composer у вас установлен глобально](https://getcomposer.org/doc/00-intro.md#globally)).
 
-> Примечание: Если вы видите такие ошибки, как `Problem 1 The requested package bower-asset/jquery could not be found in
+> Note: Если вы видите такие ошибки, как `Problem 1 The requested package bower-asset/jquery could not be found in
 > any version, there may be a typo in the package name.`, необходимо запустить `composer global require "fxp/composer-asset-plugin:~1.1.1"`
 
 - выполните `php build/build dev/app basic` для клонирования базового приложения и установки его зависимостей.
@@ -46,7 +46,7 @@ git remote add upstream git://github.com/yiisoft/yii2.git
   
   Данная команда также может быть использована для обновления зависимостей, внутри она использует `composer update`.
 
-> Примечание: по умолчанию URL репозиториев git на GitHub работают через SSH. Чтобы использовать HTTPS, добавьте
+> Note: по умолчанию URL репозиториев git на GitHub работают через SSH. Чтобы использовать HTTPS, добавьте
 > флаг `--useHttp` к команде `build`.
 
 **Теперь у нас есть рабочая площадка для экспериментов с Yii 2.**
@@ -80,7 +80,7 @@ php build/build dev/ext <extension-name>
 Запустите `php build/build dev/app basic` для установки расширения и его зависимостей и создания символической
 ссылки на `extensions/redis` так чтоб вы работали не папке вендорных пакетов composer, а напрямую в репозиторий yii2.
 
-> Примечание: по умолчанию URL репозиториев git на GitHub работают через SSH. Чтобы использовать HTTPS, добавьте
+> Note: по умолчанию URL репозиториев git на GitHub работают через SSH. Чтобы использовать HTTPS, добавьте
 > флаг `--useHttp` к команде `build`.
 
 Работа над багами и новыми функциями
@@ -208,7 +208,7 @@ git branch -D 999-name-of-your-branch-goes-here
 git push origin --delete 999-name-of-your-branch-goes-here
 ```
 
-### Примечание:
+### Примечание
 
 Для обнаружения регрессии как можно раньше, каждое слияние кодовой базы Yii на github будет подхвачено
 [Travis CI](http://travis-ci.org) для автоматического запуска тестов. Люди из *core team* не хотят нагружать

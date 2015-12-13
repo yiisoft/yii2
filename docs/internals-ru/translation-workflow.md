@@ -82,10 +82,7 @@ php build translation "../docs/guide" "../docs/guide-ru" "Russian guide translat
  
 ### Перевод специальных сообщений
 
-- Tip: → Подсказка:
-- Note: → Примечание:
-- Info: → Информация:
-- Warning: → Внимание:
+Специальные сообщения `Tip:`, `Note:`, `Info:`, `Warning:` не переводятся.
 
 ### Перевод рисунков
 
