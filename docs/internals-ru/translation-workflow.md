@@ -35,6 +35,8 @@ php build translation "../docs/guide" "../docs/guide-ru" "Russian guide translat
 
 Если ругается на composer, выполните `composer install` в корневой директории.
 
+Информацию о синтаксисе и стиле документации можно найти в [documentation_style_guide.md](../documentation_style_guide.md).
+
 Перед тем, как начать перевод, убедитесь, что никто им ещё не занимается и запишите себя в
 [список всех переводимых документов](https://docs.google.com/spreadsheets/d/1uxV0LwmR-8XXqlT8C6VqWllZjuoyIj-UkYpAQPWyUzE/edit?usp=sharing).
 
@@ -80,9 +82,10 @@ php build translation "../docs/guide" "../docs/guide-ru" "Russian guide translat
  
 ### Перевод специальных сообщений
 
-- Tip → Подсказка 
-- Note → Примечание 
-- Info → Информация 
+- Tip: → Подсказка:
+- Note: → Примечание:
+- Info: → Информация:
+- Warning: → Внимание:
 
 ### Перевод рисунков
 
