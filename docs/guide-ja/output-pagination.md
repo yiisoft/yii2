@@ -70,4 +70,4 @@ echo $pagination->createUrl(100);
 echo $pagination->createUrl(101);
 ```
 
-> Tip|ヒント: `page` クエリパラメータの名前をカスタマイズするためには、ページネーションオブジェクトを作成する際に [[yii\data\Pagination::pageParam|pageParam]] プロパティを構成します。
+> Tip: `page` クエリパラメータの名前をカスタマイズするためには、ページネーションオブジェクトを作成する際に [[yii\data\Pagination::pageParam|pageParam]] プロパティを構成します。

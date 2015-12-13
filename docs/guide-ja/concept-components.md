@@ -77,7 +77,7 @@ $component = \Yii::createObject([
 ], [1, 2]);
 ```
 
-> 補足: [[Yii::createObject()]] を呼び出すアプローチは複雑に見えますが、より強力です。というのも、それが [依存性注入コンテナ](concept-di-container.md) 上に実装されているからです。
+> Note: [[Yii::createObject()]] を呼び出すアプローチは複雑に見えますが、より強力です。というのも、それが [依存性注入コンテナ](concept-di-container.md) 上に実装されているからです。
   
 
 [[yii\base\Object]] クラスには、次のオブジェクトライフサイクルが適用されます:

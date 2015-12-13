@@ -30,7 +30,7 @@ WHERE `last_name` = :last_name
 LIMIT 10
 ```
 
-> Info|情報: 通常は、[[yii\db\QueryBuilder]] ではなく、主として [[yii\db\Query]] を使用します。
+> Info: 通常は、[[yii\db\QueryBuilder]] ではなく、主として [[yii\db\Query]] を使用します。
   前者は、クエリメソッドの一つを呼ぶときに、後者によって黙示的に起動されます。
   [[yii\db\QueryBuilder]] は、DBMS に依存しない [[yii\db\Query]] オブジェクトから、DBMS に依存する SQL 文を生成する (例えば、テーブルやカラムの名前を DBMS ごとに違う方法で引用符で囲む) 役割を負っているクラスです。
 
@@ -253,7 +253,7 @@ $query->where(['id' => $userQuery]);
   `false` または空の配列を使って、値が既にエスケープ済みであり、それ以上エスケープを適用すべきでないことを示すことが出来ます。
   エスケープマッピングを使用する場合 (または第三のオペランドが与えられない場合) は、値が自動的に一組のパーセント記号によって囲まれることに注意してください。
 
-  > Note|注意: PostgreSQL を使っている場合は、`like` の代りに、大文字と小文字を区別しない比較のための [`ilike`](http://www.postgresql.org/docs/8.3/static/functions-matching.html#FUNCTIONS-LIKE) を使うことも出来ます。
+  > Note: PostgreSQL を使っている場合は、`like` の代りに、大文字と小文字を区別しない比較のための [`ilike`](http://www.postgresql.org/docs/8.3/static/functions-matching.html#FUNCTIONS-LIKE) を使うことも出来ます。
 
 - `or like`: オペランド 2 が配列である場合に `LIKE` 述語が `OR` によって結合される以外は、`like` 演算子と同じです。
 
@@ -312,7 +312,7 @@ $query->filterWhere([
 [[yii\db\Query::filterWhere()|filterWhere()]] と [[yii\db\Query::where()|where()]] の唯一の違いは、前者は [ハッシュ形式](#hash-format) の条件において提供された空の値を無視する、という点です。
 従って、`$email` が空で `$sername` がそうではない場合は、上記のコードは、結果として `WHERE username=:username` という SQL 条件になります。
 
-> Info|情報: 値が空であると見なされるのは、null、空の配列、空の文字列、または空白のみを含む文字列である場合です。
+> Info: 値が空であると見なされるのは、null、空の配列、空の文字列、または空白のみを含む文字列である場合です。
 
 [[yii\db\Query::andWhere()|andWhere()]] または [[yii\db\Query::orWhere()|orWhere()]] と同じように、[[yii\db\Query::andFilterWhere()|andFilterWhere()]] または [[yii\db\Query::orFilterWhere()|orFilterWhere()]] を使って、既存の条件に別のフィルタ条件を追加することも出来ます。
 
@@ -339,7 +339,7 @@ PHP の定数 `SORT_ASC` は昇順、`SORT_DESC` は降順を指定するもの�
 $query->orderBy('id ASC, name DESC');
 ```
 
-> Note|注意: `ORDER BY` が何らかの DB 式を含む場合は、配列形式を使わなければなりません。
+> Note: `ORDER BY` が何らかの DB 式を含む場合は、配列形式を使わなければなりません。
 
 [[yii\db\Query::addOrderBy()|addOrderBy()]] を呼んで、`ORDER BY' 句にカラムを追加することが出来ます。
 例えば、
@@ -366,7 +366,7 @@ $query->groupBy(['id', 'status']);
 $query->groupBy('id, status');
 ```
 
-> Note|注意: `GROUP BY` が何らかの DB 式を含む場合は、配列形式を使わなければなりません。
+> Note: `GROUP BY` が何らかの DB 式を含む場合は、配列形式を使わなければなりません。
  
 [[yii\db\Query::addGroupBy()|addGroupBy()]] を呼んで、`GROUP BY` 句にカラムを追加することが出来ます。
 例えば、
@@ -412,7 +412,7 @@ $query->limit(10)->offset(20);
 
 無効な上限やオフセット (例えば、負の数) を指定した場合は、無視されます。
 
-> Info|情報: `LIMIT` と `OFFSET` をサポートしていない DBMS (例えば MSSQL) に対しては、クエリビルダが `LIMIT`/`OFFSET` の振る舞いをエミュレートする SQL 文を生成します。
+> Info: `LIMIT` と `OFFSET` をサポートしていない DBMS (例えば MSSQL) に対しては、クエリビルダが `LIMIT`/`OFFSET` の振る舞いをエミュレートする SQL 文を生成します。
 
 
 ### [[yii\db\Query::join()|join()]] <span id="join"></span>
