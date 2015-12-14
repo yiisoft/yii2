@@ -73,4 +73,15 @@ class JsonResponseFormatterTest extends FormatterTest
             ], '{"0":{"id":123,"title":"<>"},"a":{"id":456,"title":"def"}}'],
         ];
     }
+
+    public function formatTraversableObjectDataProvider()
+    {
+        $postsStack = new \SplStack();
+        $postsStack->push(new Post(915, 'record1'));
+        $postsStack->push(new Post(456, 'record2'));
+
+        return [
+            [$postsStack, '{"1":{"id":456,"title":"record2"},"0":{"id":915,"title":"record1"}}']
+        ];
+    }
 }

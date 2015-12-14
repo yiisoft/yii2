@@ -310,7 +310,7 @@ echo GridView::widget([
 
 ### データを並べ替える
 
-> Note|注意: このセクションはまだ執筆中です。
+> Note: このセクションはまだ執筆中です。
 >
 > - https://github.com/yiisoft/yii2/issues/1576
 
@@ -449,7 +449,7 @@ public function rules()
 $query->andFilterWhere(['LIKE', 'author.name', $this->getAttribute('author.name')]);
 ```
 
-> Info|情報: 上の例では、リレーション名とテーブルエイリアスに同じ文字列を使用しています。
+> Info: 上の例では、リレーション名とテーブルエイリアスに同じ文字列を使用しています。
 > しかし、エイリアスとリレーション名が異なる場合は、どこでエイリアスを使い、どこでリレーション名を使うかに注意を払わなければなりません。
 > これに関する簡単な規則は、データベースクエリを構築するために使われる全ての場所でエイリアスを使い、`attributes()` や `rules()` など、その他の全ての定義においてリレーション名を使う、というものです。
 >
@@ -481,7 +481,7 @@ $query->andFilterWhere(['LIKE', 'author.name', $this->getAttribute('author.name'
 > $dataProvider->sort->defaultOrder = ['author.name' => SORT_ASC];
 > ```
 
-> Info|情報: `joinWith` およびバックグラウンドで実行されるクエリの詳細については、[アクティブレコード - リレーションを使ってテーブルを結合する](db-active-record.md#joining-with-relations) を参照してください。
+> Info: `joinWith` およびバックグラウンドで実行されるクエリの詳細については、[アクティブレコード - リレーションを使ってテーブルを結合する](db-active-record.md#joining-with-relations) を参照してください。
 
 #### SQL ビューを使って、データのフィルタリング・並べ替え・表示をする
 
@@ -584,7 +584,7 @@ echo GridView::widget([
 
 ### GridView を Pjax とともに使う
 
-> Note|注意: このセクションはまだ執筆中です。
+> Note: このセクションはまだ執筆中です。
 >
 
 (内容未定)

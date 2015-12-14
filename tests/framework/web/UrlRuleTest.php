@@ -138,6 +138,30 @@ class UrlRuleTest extends TestCase
                 ],
             ],
             [
+                'multiple params with special chars',
+                [
+                    'pattern' => 'post/<page-number:\d+>/<per_page:\d+>/<author.login>',
+                    'route' => 'post/index',
+                ],
+                [
+                    ['post/index', [], false],
+                    ['post/index', ['page-number' => '1', 'per_page' => '25'], false],
+                    ['post/index', ['page-number' => '1', 'per_page' => '25', 'author.login' => 'yiiuser'], 'post/1/25/yiiuser'],
+                ],
+            ],
+            [
+                'multiple params with leading non-letter chars',
+                [
+                    'pattern' => 'post/<1page-number:\d+>/<-per_page:\d+>/<_author.login>',
+                    'route' => 'post/index',
+                ],
+                [
+                    ['post/index', [], false],
+                    ['post/index', ['1page-number' => '1', '-per_page' => '25'], false],
+                    ['post/index', ['1page-number' => '1', '-per_page' => '25', '_author.login' => 'yiiuser'], 'post/1/25/yiiuser'],
+                ],
+            ],
+            [
                 'with optional param',
                 [
                     'pattern' => 'post/<page:\d+>/<tag>',
@@ -465,6 +489,30 @@ class UrlRuleTest extends TestCase
                     ['post/a', false],
                     ['post/1', false],
                     ['post/1/a', false],
+                ],
+            ],
+            [
+                'multiple params with special chars',
+                [
+                    'pattern' => 'post/<page-number:\d+>/<per_page:\d+>/<author.login>',
+                    'route' => 'post/index',
+                ],
+                [
+                    ['post/1/25/yiiuser', 'post/index', ['page-number' => '1', 'per_page' => '25', 'author.login' => 'yiiuser']],
+                    ['post/1/25', false],
+                    ['post', false],
+                ],
+            ],
+            [
+                'multiple params with special chars',
+                [
+                    'pattern' => 'post/<1page-number:\d+>/<-per_page:\d+>/<_author.login>',
+                    'route' => 'post/index',
+                ],
+                [
+                    ['post/1/25/yiiuser', 'post/index', ['1page-number' => '1', '-per_page' => '25', '_author.login' => 'yiiuser']],
+                    ['post/1/25', false],
+                    ['post', false],
                 ],
             ],
             [

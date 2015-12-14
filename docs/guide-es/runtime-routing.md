@@ -19,7 +19,7 @@ Configurando el componente `urlManager` en la configuración de la aplicación, 
 reconocimiento arbitrario de formatos de URL sin modificar el código de la aplicación existente.  Por ejemplo, se 
 puede usar el siguiente código para crear una URL para la acción `post/view`:
 
-``` php 
+```php
 use yii\helpers\Url;
 
 // Url::to() llama a UrlManager::createUrl() para crear una URL

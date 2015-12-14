@@ -2,6 +2,7 @@
 namespace yiiunit\framework\helpers;
 
 use yii\helpers\VarDumper;
+use yiiunit\data\helpers\CustomDebugInfo;
 use yiiunit\TestCase;
 
 /**
@@ -12,10 +13,15 @@ class VarDumperTest extends TestCase
     public function testDumpObject()
     {
         $obj = new \StdClass();
-        ob_start();
-        VarDumper::dump($obj);
-        $this->assertEquals("stdClass#1\n(\n)", ob_get_contents());
-        ob_end_clean();
+        $this->assertEquals("stdClass#1\n(\n)", VarDumper::dumpAsString($obj));
+
+        $obj = new \StdClass();
+        $obj->name = 'test-name';
+        $obj->price = 19;
+        $dumpResult = VarDumper::dumpAsString($obj);
+        $this->assertContains("stdClass#1\n(", $dumpResult);
+        $this->assertContains("[name] => 'test-name'", $dumpResult);
+        $this->assertContains("[price] => 19", $dumpResult);
     }
 
     /**
@@ -83,6 +89,26 @@ RESULT;
 RESULT;
         $data[] = [$var, $expectedResult];
 
+        $var = [
+            'key1' => [
+                'subkey1' => 'value2',
+            ],
+            'key2' => [
+                'subkey2' => 'value3',
+            ],
+        ];
+        $expectedResult = <<<RESULT
+[
+    'key1' => [
+        'subkey1' => 'value2',
+    ],
+    'key2' => [
+        'subkey2' => 'value3',
+    ],
+]
+RESULT;
+        $data[] = [$var, $expectedResult];
+
         // Objects :
 
         $var = new \StdClass();
@@ -128,5 +154,19 @@ RESULT;
 
         $exportResult = VarDumper::export($master);
         $this->assertNotEmpty($exportResult);
+    }
+
+    /**
+     * @depends testDumpObject
+     */
+    public function testDumpClassWithCustomDebugInfo()
+    {
+        $object = new CustomDebugInfo();
+        $object->volume = 10;
+        $object->unitPrice = 15;
+
+        $dumpResult = VarDumper::dumpAsString($object);
+        $this->assertContains('totalPrice', $dumpResult);
+        $this->assertNotContains('unitPrice', $dumpResult);
     }
 }

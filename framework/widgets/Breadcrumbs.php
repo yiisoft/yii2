@@ -22,7 +22,7 @@ use yii\helpers\Html;
  *
  * To use Breadcrumbs, you need to configure its [[links]] property, which specifies the links to be displayed. For example,
  *
- * ~~~
+ * ```php
  * // $this is the view object currently being used
  * echo Breadcrumbs::widget([
  *     'itemTemplate' => "<li><i>{link}</i></li>\n", // template for all links
@@ -36,18 +36,18 @@ use yii\helpers\Html;
  *         'Edit',
  *     ],
  * ]);
- * ~~~
+ * ```
  *
  * Because breadcrumbs usually appears in nearly every page of a website, you may consider placing it in a layout view.
  * You can use a view parameter (e.g. `$this->params['breadcrumbs']`) to configure the links in different
  * views. In the layout view, you assign this view parameter to the [[links]] property like the following:
  *
- * ~~~
+ * ```php
  * // $this is the view object currently being used
  * echo Breadcrumbs::widget([
  *     'links' => isset($this->params['breadcrumbs']) ? $this->params['breadcrumbs'] : [],
  * ]);
- * ~~~
+ * ```
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0

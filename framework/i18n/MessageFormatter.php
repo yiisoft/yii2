@@ -7,6 +7,7 @@
 
 namespace yii\i18n;
 
+use Yii;
 use yii\base\Component;
 use yii\base\NotSupportedException;
 
@@ -274,19 +275,20 @@ class MessageFormatter extends Component
      */
     private static function tokenizePattern($pattern)
     {
+        $charset = Yii::$app ? Yii::$app->charset : 'UTF-8';
         $depth = 1;
-        if (($start = $pos = mb_strpos($pattern, '{')) === false) {
+        if (($start = $pos = mb_strpos($pattern, '{', 0, $charset)) === false) {
             return [$pattern];
         }
-        $tokens = [mb_substr($pattern, 0, $pos)];
+        $tokens = [mb_substr($pattern, 0, $pos, $charset)];
         while (true) {
-            $open = mb_strpos($pattern, '{', $pos + 1);
-            $close = mb_strpos($pattern, '}', $pos + 1);
+            $open = mb_strpos($pattern, '{', $pos + 1, $charset);
+            $close = mb_strpos($pattern, '}', $pos + 1, $charset);
             if ($open === false && $close === false) {
                 break;
             }
             if ($open === false) {
-                $open = mb_strlen($pattern);
+                $open = mb_strlen($pattern, $charset);
             }
             if ($close > $open) {
                 $depth++;
@@ -296,9 +298,9 @@ class MessageFormatter extends Component
                 $pos = $close;
             }
             if ($depth === 0) {
-                $tokens[] = explode(',', mb_substr($pattern, $start + 1, $pos - $start - 1), 3);
+                $tokens[] = explode(',', mb_substr($pattern, $start + 1, $pos - $start - 1, $charset), 3);
                 $start = $pos + 1;
-                $tokens[] = mb_substr($pattern, $start, $open - $start);
+                $tokens[] = mb_substr($pattern, $start, $open - $start, $charset);
                 $start = $open;
             }
         }
@@ -321,7 +323,7 @@ class MessageFormatter extends Component
     {
         // parsing pattern based on ICU grammar:
         // http://icu-project.org/apiref/icu4c/classMessageFormat.html#details
-
+        $charset = Yii::$app ? Yii::$app->charset : 'UTF-8';
         $param = trim($token[0]);
         if (isset($args[$param])) {
             $arg = $args[$param];
@@ -391,11 +393,11 @@ class MessageFormatter extends Component
                     $selector = trim($plural[$i++]);
 
                     if ($i == 1 && strncmp($selector, 'offset:', 7) === 0) {
-                        $offset = (int) trim(mb_substr($selector, 7, ($pos = mb_strpos(str_replace(["\n", "\r", "\t"], ' ', $selector), ' ', 7)) - 7));
-                        $selector = trim(mb_substr($selector, $pos + 1));
+                        $offset = (int) trim(mb_substr($selector, 7, ($pos = mb_strpos(str_replace(["\n", "\r", "\t"], ' ', $selector), ' ', 7, $charset)) - 7, $charset));
+                        $selector = trim(mb_substr($selector, $pos + 1, null, $charset));
                     }
                     if ($message === false && $selector === 'other' ||
-                        $selector[0] === '=' && (int) mb_substr($selector, 1) === $arg ||
+                        $selector[0] === '=' && (int) mb_substr($selector, 1, null, $charset) === $arg ||
                         $selector === 'one' && $arg - $offset == 1
                     ) {
                         $message = implode(',', str_replace('#', $arg - $offset, $plural[$i]));
