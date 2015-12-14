@@ -1,6 +1,11 @@
 Yii Framework 2 Change Log
 ==========================
 
+2.0.8 under development
+-----------------------
+
+- Enh #10359: Support wildcard category name in `yii/console/controllers/MessageController` (rmrevin)
+
 2.0.7 under development
 -----------------------
 
