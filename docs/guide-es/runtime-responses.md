@@ -1,4 +1,4 @@
-﻿Respuestas
+Respuestas
 ==========
 
 Cuando una aplicación finaliza la gestión de una [petición (request)](runtime-requests.md), genera un objeto 

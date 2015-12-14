@@ -1,4 +1,4 @@
-﻿Contenedor de Inyección de Dependencias
+Contenedor de Inyección de Dependencias
 =======================================
 
 Un contenedor de Inyección de Dependencias (ID), es un objeto que sabe como instancias y configurar objetos y sus 

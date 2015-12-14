@@ -1,4 +1,4 @@
-﻿Assets
+Assets
 ======
 
 Un asset en Yii es un archivo al que se puede hacer referencia en una página Web. Puede ser un archivo CSS, un archivo

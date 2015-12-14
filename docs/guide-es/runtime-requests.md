@@ -1,4 +1,4 @@
-﻿Peticiones
+Peticiones
 ==========
 
 Las peticiones (requests) hechas a una aplicación son representadas como objetos [[yii\web\Request]] que proporcionan 

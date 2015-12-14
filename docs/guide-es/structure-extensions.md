@@ -1,4 +1,4 @@
-﻿Extensiones
+Extensiones
 ===========
 
 Las extensiones son paquetes de software redistribuibles diseñados especialmente para ser usados en aplicaciones Yii y

@@ -1,4 +1,4 @@
-﻿Almacenamiento de Datos en Caché
+Almacenamiento de Datos en Caché
 ================================
 
 El almacenamiento de datos en caché trata del almacenamiento de alguna variable PHP en caché y recuperarla más tarde del mismo. También es la base de algunas de las características avanzadas de almacenamiento en caché, tales como [el almacenamiento en caché de consultas a la base de datos](#query-caching) y [el almacenamiento en caché de contenido](caching-page.md).

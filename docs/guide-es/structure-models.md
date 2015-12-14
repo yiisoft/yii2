@@ -1,4 +1,4 @@
-﻿Modelos
+Modelos
 =======
 
 Los modelos forman parte de la arquitectura 

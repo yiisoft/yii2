@@ -1,4 +1,4 @@
-﻿Registro de anotaciones
+Registro de anotaciones
 =======================
 
 Yii proporciona un poderoso framework dedicado al registro de anotaciones (logging) que es altamente personalizable y

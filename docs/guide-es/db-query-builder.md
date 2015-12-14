@@ -1,4 +1,4 @@
-﻿Constructor de Consultas
+Constructor de Consultas
 ========================
 
 > Note: Esta sección está en desarrollo.

@@ -1,4 +1,4 @@
-﻿Propiedades
+Propiedades
 ===========
 
 En PHP, las variables miembro de clases también llamadas *propiedades*, son parte de la definición de la clase, y se

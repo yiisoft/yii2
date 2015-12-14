@@ -1,4 +1,4 @@
-﻿Enrutamiento y Creación de URLS
+Enrutamiento y Creación de URLS
 ===============================
 
 Cuando una aplicación Yii empieza a procesar una URL solicitada, lo primero que hace es convertir la URL en una 

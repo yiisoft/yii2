@@ -1,4 +1,4 @@
-﻿Gestión de Errores
+Gestión de Errores
 ==================
 
 Yii incluye un [[yii\web\ErrorHandler|error handler]] que permite una gestión de errores mucho más práctica que

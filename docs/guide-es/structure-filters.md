@@ -1,4 +1,4 @@
-﻿Filtros
+Filtros
 =======
 
 Los Filtros (filters) son objetos que se ejecutan antes y/o después de las 

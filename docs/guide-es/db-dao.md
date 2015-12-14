@@ -1,4 +1,4 @@
-﻿Objetos de Acceso a Bases de Datos
+Objetos de Acceso a Bases de Datos
 ==================================
 
 Construido sobre [PDO](http://php.net/manual/es/book.pdo.php), Yii DAO (Objetos de Acceso a Bases de Datos) proporciona una
