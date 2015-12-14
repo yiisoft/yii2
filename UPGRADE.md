@@ -36,7 +36,7 @@ the event.
 with global variable `yii` instead.
 * Traversable objects are now formatted as arrays in XML response to support SPL objects and Generators. Previous
   behavior could be turned on by setting `XmlResponseFormatter::$useTraversableAsArray` to `false`.
-* If you've implemented `yii\rbac\ManagerInterface` you need to implement additional method `getUserIDsByRole($roleName)`.
+* If you've implemented `yii\rbac\ManagerInterface` you need to implement additional method `getUserIdsByRole($roleName)`.
 
 Upgrade from Yii 2.0.5
 ----------------------
