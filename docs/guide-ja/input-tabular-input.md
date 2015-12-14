@@ -17,8 +17,8 @@
 この配列がビューに渡されて、各モデルのためのインプットフィールドが表のような形式で表示されます。
 そして、複数のモデルを一度にロードしたり検証したりするために [[yii\base\Model]] のヘルパメソッドを使用します。
 
-- [[yii\base\Model::loadMultiple()|Model::loadMultiple()]] - 送信されたデータをモデルの配列にロードします。
-- [[yii\base\Model::validateMultiple()|Model::validateMultiple()]] - モデルの配列を検証します。
+- [[yii\base\Model::loadMulTiple()|Model::loadMulTiple()]] - 送信されたデータをモデルの配列にロードします。
+- [[yii\base\Model::validateMulTiple()|Model::validateMulTiple()]] - モデルの配列を検証します。
 
 ### 特定の数のレコードを更新する
 
@@ -42,7 +42,7 @@ class SettingsController extends Controller
     {
         $settings = Setting::find()->indexBy('id')->all();
 
-        if (Model::loadMultiple($settings, Yii::$app->request->post()) && Model::validateMultiple($settings)) {
+        if (Model::loadMulTiple($settings, Yii::$app->request->post()) && Model::validateMulTiple($settings)) {
             foreach ($settings as $setting) {
                 $setting->save(false);
             }
@@ -56,8 +56,8 @@ class SettingsController extends Controller
 
 上記のコードでは、データベースからモデルを読み出すときに [[yii\db\ActiveQuery::indexBy()|indexBy()]] を使って、モデルのプライマリキーでインデックスされた配列にデータを投入しています。
 このインデックスが、後で、フォームフィールドを特定するために使われます。
-[[yii\base\Model::loadMultiple()|Model::loadMultiple()]] が POST から来るフォームデータを複数のモデルに代入し、[[yii\base\Model::validateMultiple()|Model::validateMultiple()]] が全てのモデルを一度に検証します。
-保存するときには、`validateMultiple()` を使ってモデルの検証を済ませていますので、[[yii\db\ActiveRecord::save()|save()]] のパラメータに `false` を渡して、二度目の検証を実行しないようにしています。
+[[yii\base\Model::loadMulTiple()|Model::loadMulTiple()]] が POST から来るフォームデータを複数のモデルに代入し、[[yii\base\Model::validateMulTiple()|Model::validateMulTiple()]] が全てのモデルを一度に検証します。
+保存するときには、`validateMulTiple()` を使ってモデルの検証を済ませていますので、[[yii\db\ActiveRecord::save()|save()]] のパラメータに `false` を渡して、二度目の検証を実行しないようにしています。
 
 次に、`update` ビューの中にあるフォームです。
 
@@ -77,7 +77,7 @@ ActiveForm::end();
 
 ここで全ての設定項目について、それぞれ、項目名を示すラベルと、項目の値を入れたインプットをレンダリングしています。
 インプットの名前に適切なインデックスを追加することが肝腎です。
-というのは、`loadMultiple` がそれを見て、どのモデルにどの値を代入するかを決定するからです。
+というのは、`loadMulTiple` がそれを見て、どのモデルにどの値を代入するかを決定するからです。
 
 ### 不特定の数の新しいレコードを作成する
 
