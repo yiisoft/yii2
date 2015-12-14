@@ -31,7 +31,7 @@ Nota: es posible que en al ejecutar el primer comando te pida tu username
 
 El comando anterior instala Yii dentro del directorio `basic`.
 
-> Tip: Si quieres instalar la última versión de desarrollo de Yii, puedes utilizar el siguiente comando,
+> Tip:Si quieres instalar la última versión de desarrollo de Yii, puedes utilizar el siguiente comando,
 > que añade una [opción de estabilidad mínima](https://getcomposer.org/doc/04-schema.md#minimum-stability):
 >
 >     composer create-project --prefer-dist --stability=dev yiisoft/yii2-app-basic basic

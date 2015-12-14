@@ -36,7 +36,7 @@ Dentro de una vista, puedes acceder a la variable `$this` referida al [[yii\web\
 
 Además de `$this`, puede haber otras variables predefinidas en una vista, como `$form` y `$model` en el ejemplo anterior. Estas variables representan los datos que son *inyectados* a la vista desde el [controlador](structure-controllers.md) o algún otro objeto que dispara la [renderización de la vista](#rendering-views).
 
-> Tip: La lista de variables predefinidas están listadas en un bloque de comentario al principio de la vista así pueden ser reconocidas por las IDEs. Esto es también una buena manera de documentar tus propias vistas.
+> Tip:La lista de variables predefinidas están listadas en un bloque de comentario al principio de la vista así pueden ser reconocidas por las IDEs. Esto es también una buena manera de documentar tus propias vistas.
 
 
 ### Seguridad <span id="security"></span>
@@ -67,7 +67,7 @@ use yii\helpers\HtmlPurifier;
 </div>
 ```
 
-> Tip: Aunque HTMLPurifier hace un excelente trabajo al hacer la salida más segura, no es rápido. Deberías considerar utilizar [caching](caching-overview.md) al resultado de aplicar el filtro si tu aplicación requiere un gran desempeño (performance).
+> Tip:Aunque HTMLPurifier hace un excelente trabajo al hacer la salida más segura, no es rápido. Deberías considerar utilizar [caching](caching-overview.md) al resultado de aplicar el filtro si tu aplicación requiere un gran desempeño (performance).
 
 
 ### Organizando Vistas <span id="organizing-views"></span>

@@ -203,7 +203,7 @@ el siguiente código:
 <?= $form->field($model, 'email')->label('Tu Email') ?>
 ```
 
-> Info: Yii provee muchos widgets para ayudarte a construir rápidamente vistas complejas y dinámicas.
+> Info:Yii provee muchos widgets para ayudarte a construir rápidamente vistas complejas y dinámicas.
   Como aprenderás más adelante, escribir un nuevo  widget es extremadamente fácil. Puedes convertir mucho del
   código de tus vistas en widgets reutilizables para simplificar el desarrollo de las vistas en un futuro.
 

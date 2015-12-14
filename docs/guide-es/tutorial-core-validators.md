@@ -129,7 +129,7 @@ function foo($model, $attribute) {
 }
 ```
 
-> Info: Cómo determinar si un valor está vacío o no, es un tópico separado cubierto en la sección [Valores Vacíos](input-validation.md#handling-empty-inputs) .
+> Info:Cómo determinar si un valor está vacío o no, es un tópico separado cubierto en la sección [Valores Vacíos](input-validation.md#handling-empty-inputs) .
 
 
 ## [[yii\validators\NumberValidator|double]] <span id="double"></span>
@@ -347,7 +347,7 @@ El validador comprueba si el valor de entrada es provisto y no está vacío.
   Cuando `requiredValue` no tiene valor, si esta propiedad es true, el validador comprueba si el valor de entrada no es estrictamente null; si la propiedad es false, el validador puede usar una regla suelta para determinar si el valor está vacío o no.
   Cuando `requiredValue` tiene valor, la comparación entre la entrada y  `requiredValue` comprobará tambien los tipos de los datos si esta propiedad es true.
 
-> Info: Como determinar si un valor está vacío o no es un tópico separado cubierto en la sección [Valores vacíos](input-validation.md#handling-empty-inputs).
+> Info:Como determinar si un valor está vacío o no es un tópico separado cubierto en la sección [Valores vacíos](input-validation.md#handling-empty-inputs).
 
 
 ## [[yii\validators\SafeValidator|safe]] <span id="safe"></span>
