@@ -73,7 +73,7 @@ public function fields()
 }
 ```
 
-> Warning:  Dado que, por defecto, todos los atributos de un modelo pueden ser incluidos en la devolución del API, debes
+> Warning: Dado que, por defecto, todos los atributos de un modelo pueden ser incluidos en la devolución del API, debes
 > examinar tus datos para estar seguro de que no contiene información sensible. Si se da este tipo de información,
 > debes sobreescribir `fields()` para filtrarlos. En el ejemplo anterior, escogemos
 > quitar `auth_key`, `password_hash` y `password_reset_token`.

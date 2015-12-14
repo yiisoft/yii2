@@ -142,7 +142,7 @@ class HelloWidget extends Widget
 Como se puede observar, el búfer de salida PHP es iniciado en 'init()' por tanto cualquier salida entre las llamadas 
 de 'init()' y 'run()' puede ser capturada, procesada y devuelta en 'run()'.
 
-> Info: Cuando se llama a [[yii\base\Widget::begin()]], se creará una nueva instancia del widget y el método 'init()' 
+> Info:Cuando se llama a [[yii\base\Widget::begin()]], se creará una nueva instancia del widget y el método 'init()' 
   será llamado al final del constructor del widget. Cuando se llama [[yii\base\Widget::end()]], el método 'run()' será 
   llamado el resultado que devuelva será escrito por 'end()'.
 

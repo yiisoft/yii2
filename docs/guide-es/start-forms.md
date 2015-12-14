@@ -106,7 +106,7 @@ Si todo está bien, la acción mostrará una vista llamada `entry-confirm` para 
 con el usuario que acepta los datos que ha ingresado. De otra manera, la vista `entry` será
 mostrada, y mostrará el formulario HTML junto con los mensajes de error de validación (si es que hay alguno).
 
-> Info:  La expresión `Yii::$app` representa la instancia de la [aplicación](structure-applications.md)
+> Info: La expresión `Yii::$app` representa la instancia de la [aplicación](structure-applications.md)
   que es un singleton globalmente accesible. También es un [service locator](concept-service-locator.md) (localizador de servicio)
   que provee los componentes, tales como `request`, `response`, `db`, etc. para soportar funcionalidades específicas.
   En el código de arriba, el componente `request` es utilizado para acceder los datos `$_POST`.
@@ -203,7 +203,7 @@ el siguiente código:
 <?= $form->field($model, 'email')->label('Tu Email') ?>
 ```
 
-> Info: Yii provee muchos widgets para ayudarte a construir rápidamente vistas complejas y dinámicas.
+> Info:Yii provee muchos widgets para ayudarte a construir rápidamente vistas complejas y dinámicas.
   Como aprenderás más adelante, escribir un nuevo  widget es extremadamente fácil. Puedes convertir mucho del
   código de tus vistas en widgets reutilizables para simplificar el desarrollo de las vistas en un futuro.
 
