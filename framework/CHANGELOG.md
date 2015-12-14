@@ -77,6 +77,7 @@ Yii Framework 2 Change Log
 - Enh #3506: Added `yii\validators\IpValidator` to perform validation of IP addresses and subnets (SilverFire, samdark)
 - Enh #4972: Added `yii\db\ActiveQuery::alias()` to allow specifying a table alias for the model table without having to know the name (cebe, stepanselyuk)
 - Enh #5146: Added `yii\i18n\Formatter::asDuration()` method (nineinchnick, SilverFire)
+- Enh #5469: Add mimetype validation by mask in FileValidator (kirsenn)
 - Enh #5902: `yii\widgets\Pjax::options` now support special option `tag` to specify tag of container (Alex-Code)
 - Enh #6162, #9198: Added parameter visibleButtons for `yii\grid\ActionColumn` (fornit1917, silverfire)
 - Enh #7341: Client validation now skips disabled inputs (SamMousa)

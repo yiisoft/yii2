@@ -246,7 +246,7 @@ class FileValidator extends Validator
                     ];
                 } elseif (!empty($this->extensions) && !$this->validateExtension($file)) {
                     return [$this->wrongExtension, ['file' => $file->name, 'extensions' => implode(', ', $this->extensions)]];
-                } elseif (!empty($this->mimeTypes) &&  !in_array(FileHelper::getMimeType($file->tempName), $this->mimeTypes, false)) {
+                } elseif (!empty($this->mimeTypes) &&  !$this->validateMimeType($file)) {
                     return [$this->wrongMimeType, ['file' => $file->name, 'mimeTypes' => implode(', ', $this->mimeTypes)]];
                 } else {
                     return null;
@@ -447,5 +447,39 @@ class FileValidator extends Validator
         }
 
         return $options;
+    }
+
+    /**
+     * @param string $mimeType Uploaded file mimeType
+     * @param string $mask mimeType mask
+     * @return bool
+     */
+    protected function validateMimeTypeMask($mimeType, $mask)
+    {
+        $regexp = "/^" . str_replace('\*', '.*', preg_quote($mask, "/")) . "$/";
+        return (bool)preg_match($regexp, $mimeType);
+    }
+
+    /**
+     * Checks file mimeType according validator [[mimeTypes]] property
+     * @param UploadedFile $file
+     * @return bool
+     * @throws \yii\base\InvalidConfigException
+     */
+    protected function validateMimeType($file)
+    {
+        $fileMimeType = FileHelper::getMimeType($file->tempName);
+
+        foreach ($this->mimeTypes as $mimeType) {
+            if ($mimeType === $fileMimeType) {
+                return true;
+            }
+
+            if (strpos($mimeType, '*') !== false && $this->validateMimeTypeMask($fileMimeType, $mimeType)) {
+                return true;
+            }
+        }
+
+        return false;
     }
 }
