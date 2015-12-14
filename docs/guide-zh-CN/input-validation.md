@@ -185,7 +185,7 @@ return [
     }]
 ```
 
-> 注意：对于绝大多数验证器而言，若其 [[yii\base\Validator::skipOnEmpty]] 属性为默认值
+> Note: 对于绝大多数验证器而言，若其 [[yii\base\Validator::skipOnEmpty]] 属性为默认值
 true，则它们不会对空值进行任何处理。也就是当他们的关联特性接收到空值时，相关验证会被直接略过。在
 [核心验证器](tutorial-core-validators.md) 之中，只有 `captcha`（验证码），`default`（默认值），`filter`（滤镜），`required`（必填），以及 `trim`（去首尾空格），这几个验证器会处理空输入。
 
@@ -208,7 +208,7 @@ if ($validator->validate($email, $error)) {
 }
 ```
 
-> 注意：不是所有的验证器都支持这种形式的验证。比如 [unique（唯一性）](tutorial-core-validators.md#unique)核心验证器就就是一个例子，它的设计初衷就是只作用于模型类内部的。
+> Note: 不是所有的验证器都支持这种形式的验证。比如 [unique（唯一性）](tutorial-core-validators.md#unique)核心验证器就就是一个例子，它的设计初衷就是只作用于模型类内部的。
 
 若你需要针对一系列值执行多项验证，你可以使用 [[yii\base\DynamicModel]]
 。它支持即时添加特性和验证规则的定义。它的使用规则是这样的：
@@ -309,7 +309,7 @@ class MyForm extends Model
 }
 ```
 
-> 注意：缺省状态下，行内验证器不会在关联特性的输入值为空或该特性已经在其他验证中失败的情况下起效。若你想要确保该验证器始终启用的话，你可以在定义规则时，酌情将 [[yii\validators\Validator::skipOnEmpty|skipOnEmpty]] 以及 [[yii\validators\Validator::skipOnError|skipOnError]]
+> Note: 缺省状态下，行内验证器不会在关联特性的输入值为空或该特性已经在其他验证中失败的情况下起效。若你想要确保该验证器始终启用的话，你可以在定义规则时，酌情将 [[yii\validators\Validator::skipOnEmpty|skipOnEmpty]] 以及 [[yii\validators\Validator::skipOnError|skipOnError]]
   属性设为 false，比如，
 > ```php
 [
@@ -351,7 +351,7 @@ class CountryValidator extends Validator
 
 当终端用户通过 HTML 表单提供相关输入信息时，我们可能会需要用到基于 JavaScript 的客户端验证。因为，它可以让用户更快速的得到错误信息，也因此可以提供更好的用户体验。你可以使用或自己实现除服务器端验证之外，**还能额外**客户端验证功能的验证器。
 
-> 补充：尽管客户端验证为加分项，但它不是必须项。它存在的主要意义在于给用户提供更好的客户体验。正如“永远不要相信来自终端用户的输入信息”，也同样永远不要相信客户端验证。基于这个理由，你应该始终如前文所描述的那样，通过调用 [[yii\base\Model::validate()]] 方法执行服务器端验证。
+> Info: 尽管客户端验证为加分项，但它不是必须项。它存在的主要意义在于给用户提供更好的客户体验。正如“永远不要相信来自终端用户的输入信息”，也同样永远不要相信客户端验证。基于这个理由，你应该始终如前文所描述的那样，通过调用 [[yii\base\Model::validate()]] 方法执行服务器端验证。
 
 
 ### 使用客户端验证 <span id="using-client-side-validation"></span>
@@ -452,7 +452,7 @@ JS;
 }
 ```
 
-> 技巧：上述代码主要是演示了如何支持客户端验证。在具体实践中，你可以使用 [in](tutorial-core-validators.md#in) 核心验证器来达到同样的目的。比如这样的验证规则：
+> Tip: 上述代码主要是演示了如何支持客户端验证。在具体实践中，你可以使用 [in](tutorial-core-validators.md#in) 核心验证器来达到同样的目的。比如这样的验证规则：
 > ```php
 [
     ['status', 'in', 'range' => Status::find()->select('id')->asArray()->column()],
