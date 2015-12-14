@@ -104,7 +104,7 @@ echo Yii::$app->formatter->asDate('now', 'php:Y-m-d'); // 2014-10-06
 - `long`: `6 October 2014` と `15:58:42 GMT` を出力
 - `full`: `Monday, 6 October 2014` と `15:58:42 GMT` を出力
 
-> Info|訳注: ja_JP ロケールでは、次のようになります。
+> Info: ja_JP ロケールでは、次のようになります。
 > 
 > short: 2014/10/06 と 15:58
 > medium: 2014/10/06 と 15:58:42
@@ -129,7 +129,7 @@ echo Yii::$app->formatter->asTime('2014-10-06 12:41:00'); // 14:41:00
 echo Yii::$app->formatter->asTime('2014-10-06 14:41:00 CEST'); // 14:41:00
 ```
 
-> Info|訳注:
+> Info:
 > ターゲット [[yii\i18n\Formatter::timeZone|タイムゾーン]] が `Asia/Tokyo` である場合は、次のようになります。
 > 
 > ```php
