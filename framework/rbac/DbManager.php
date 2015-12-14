@@ -963,7 +963,7 @@ class DbManager extends BaseManager
      * returned if role is not assigned to any user.
      * @since 2.0.7
      */
-    public function getUserIDsByRole($roleName)
+    public function getUserIdsByRole($roleName)
     {
         if (empty($roleName)) {
             return [];
