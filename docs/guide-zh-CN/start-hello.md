@@ -18,7 +18,7 @@
 
 为了 “Hello”，需要创建一个 `say` [操作](structure-controllers.md#creating-actions)，从请求中接收 `message` 参数并显示给最终用户。如果请求没有提供 `message` 参数，操作将显示默认参数 “Hello”。
 
-> 补充：[操作](structure-controllers.md#creating-actions)是最终用户可以直接访问并执行的对象。操作被组织在[控制器](structure-controllers.md)中。一个操作的执行结果就是最终用户收到的响应内容。
+> Info: [操作](structure-controllers.md#creating-actions)是最终用户可以直接访问并执行的对象。操作被组织在[控制器](structure-controllers.md)中。一个操作的执行结果就是最终用户收到的响应内容。
 
 操作必须声明在[控制器](structure-controllers.md)中。为了简单起见，你可以直接在 `SiteController` 控制器里声明 `say` 操作。这个控制器是由文件 `controllers/SiteController.php` 定义的。以下是一个操作的声明：
 
@@ -83,11 +83,11 @@ http://hostname/index.php?r=site/say&message=Hello+World
 
 如果你省略 URL 中的 `message` 参数，将会看到页面只显示 “Hello”。这是因为 `message` 被作为一个参数传给 `actionSay()` 方法，当省略它时，参数将使用默认的 `“Hello”` 代替。
 
-> 补充：新页面和其它页面使用同样的头部和尾部是因为 [[yii\web\Controller::render()|render()]] 方法会自动把 `say` 视图执行的结果嵌入称为[布局](structure-views.md#layouts)的文件中，本例中是 `views/layouts/main.php`。
+> Info: 新页面和其它页面使用同样的头部和尾部是因为 [[yii\web\Controller::render()|render()]] 方法会自动把 `say` 视图执行的结果嵌入称为[布局](structure-views.md#layouts)的文件中，本例中是 `views/layouts/main.php`。
 
 上面 URL 中的参数 `r` 需要更多解释。它代表[路由](runtime-routing.md)，是整个应用级的，指向特定操作的独立 ID。路由格式是 `控制器 ID/操作 ID`。应用接受请求的时候会检查参数，使用控制器 ID 去确定哪个控制器应该被用来处理请求。然后相应控制器将使用操作 ID 去确定哪个操作方法将被用来做具体工作。上述例子中，路由 `site/say` 将被解析至 `SiteController` 控制器和其中的 `say` 操作。因此 `SiteController::actionSay()` 方法将被调用处理请求。
 
-> 补充：与操作一样，一个应用中控制器同样有唯一的 ID。控制器 ID 和操作 ID 使用同样的命名规则。控制器的类名源自于控制器 ID，移除了连字符，每个单词首字母大写，并加上 `Controller` 后缀。例子：控制器 ID `post-comment` 相当于控制器类名 `PostCommentController`。
+> Info: 与操作一样，一个应用中控制器同样有唯一的 ID。控制器 ID 和操作 ID 使用同样的命名规则。控制器的类名源自于控制器 ID，移除了连字符，每个单词首字母大写，并加上 `Controller` 后缀。例子：控制器 ID `post-comment` 相当于控制器类名 `PostCommentController`。
 
 
 总结 <span id="summary"></span>

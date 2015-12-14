@@ -64,7 +64,7 @@ return [
 
 上面配置的数据库连接可以在应用中通过 `Yii::$app->db` 表达式访问。
 
-> 补充：`config/db.php` 将被包含在应用配置文件 `config/web.php` 中，后者指定了整个[应用](structure-applications.md)如何初始化。请参考[配置](concept-configurations.md)章节了解更多信息。
+> Info: `config/db.php` 将被包含在应用配置文件 `config/web.php` 中，后者指定了整个[应用](structure-applications.md)如何初始化。请参考[配置](concept-configurations.md)章节了解更多信息。
 
 
 创建活动记录 <span id="creating-active-record"></span>
@@ -86,7 +86,7 @@ class Country extends ActiveRecord
 
 这个 `Country` 类继承自 [[yii\db\ActiveRecord]]。你不用在里面写任何代码。只需要像现在这样，Yii 就能根据类名去猜测对应的数据表名。
 
-> 补充：如果类名和数据表名不能直接对应，可以覆写 [[yii\db\ActiveRecord::tableName()|tableName()]] 方法去显式指定相关表名。
+> Info: 如果类名和数据表名不能直接对应，可以覆写 [[yii\db\ActiveRecord::tableName()|tableName()]] 方法去显式指定相关表名。
 
 使用 `Country` 类可以很容易地操作 `country` 表数据，就像这段代码：
 
@@ -107,7 +107,7 @@ $country->name = 'U.S.A.';
 $country->save();
 ```
 
-> 补充：活动记录是面向对象、功能强大的访问和操作数据库数据的方式。你可以在[活动记录](db-active-record.md)章节了解更多信息。除此之外你还可以使用另一种更原生的被称做[数据访问对象](db-dao)的方法操作数据库数据。
+> Info: 活动记录是面向对象、功能强大的访问和操作数据库数据的方式。你可以在[活动记录](db-active-record.md)章节了解更多信息。除此之外你还可以使用另一种更原生的被称做[数据访问对象](db-dao)的方法操作数据库数据。
 
 
 创建操作 <span id="creating-action"></span>
