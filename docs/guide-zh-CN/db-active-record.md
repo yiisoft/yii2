@@ -1,7 +1,7 @@
 Active Record
 =============
 
-> 注意：该章节还在开发中。
+> Note: 该章节还在开发中。
 
 [Active Record](http://zh.wikipedia.org/wiki/Active_Record) （活动记录，以下简称AR）提供了一个面向对象的接口，
 用以访问数据库中的数据。一个 AR 类关联一张数据表，
@@ -166,7 +166,7 @@ $sql = 'SELECT * FROM customer';
 $customers = Customer::findBySql($sql)->all();
 ```
 
-> 小技巧：在上面的代码中，`Customer::STATUS_ACTIVE` 是一个在 `Customer` 类里定义的常量。（译注：这种常量的值一般都是tinyint）相较于直接在代码中写死字符串或数字，使用一个更有意义的常量名称是一种更好的编程习惯。
+> Tip: 在上面的代码中，`Customer::STATUS_ACTIVE` 是一个在 `Customer` 类里定义的常量。（译注：这种常量的值一般都是tinyint）相较于直接在代码中写死字符串或数字，使用一个更有意义的常量名称是一种更好的编程习惯。
 
 有两个快捷方法：`findOne` 和 `findAll()` 用来返回一个或者一组`ActiveRecord`实例。前者返回第一个匹配到的实例，后者返回所有。
 例如：
@@ -436,7 +436,7 @@ class Customer extends \yii\db\ActiveRecord
 $orders = $customer->getBigOrders(200)->all();
 ```
 
->注意：关联查询返回的是 [[yii\db\ActiveQuery]] 的实例，如果像特性（如类属性）那样连接关联数据，
+> Note: 关联查询返回的是 [[yii\db\ActiveQuery]] 的实例，如果像特性（如类属性）那样连接关联数据，
 返回的结果是关联查询的结果，即 [[yii\db\ActiveRecord]] 的实例，
 或者是数组，或者是 null ，取决于关联关系的多样性。如，`$customer->getOrders()` 返回
 `ActiveQuery` 实例，而 `$customer->orders` 返回`Order` 对象数组
@@ -630,7 +630,7 @@ if ($customers[0]->orders[0]->customer === $customers[0]) {
 }
 ```
 
->注意:相对关系不能在包含中间表的关联关系中定义。 即是，如果你的关系是通过[[yii\db\ActiveQuery::via()|via()]] 或 [[yii\db\ActiveQuery::viaTable()|viaTable()]]方法定义的， 就不能调用[[yii\db\ActiveQuery::inverseOf()]]方法了。
+> Note: 相对关系不能在包含中间表的关联关系中定义。 即是，如果你的关系是通过[[yii\db\ActiveQuery::via()|via()]] 或 [[yii\db\ActiveQuery::viaTable()|viaTable()]]方法定义的， 就不能调用[[yii\db\ActiveQuery::inverseOf()]]方法了。
 
 
  JOIN 类型关联查询
