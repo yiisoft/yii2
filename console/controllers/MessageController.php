@@ -130,7 +130,7 @@ class MessageController extends Controller
      */
     public $catalog = 'messages';
     /**
-     * @var array message categories to ignore. For example, 'yii'.
+     * @var array message categories to ignore. For example, 'yii', 'app*', 'widgets/menu', etc.
      */
     public $ignoreCategories = [];
 
@@ -478,7 +478,7 @@ EOD;
                             $category = stripcslashes($buffer[0][1]);
                             $category = mb_substr($category, 1, mb_strlen($category) - 2);
 
-                            if (!in_array($category, $ignoreCategories, true)) {
+                            if (!$this->isIgnoredCategory($category, $ignoreCategories)) {
                                 $message = stripcslashes($buffer[2][1]);
                                 $message = mb_substr($message, 1, mb_strlen($message) - 2);
 
@@ -518,6 +518,31 @@ EOD;
         }
 
         return $messages;
+    }
+
+    /**
+     * @param string $category category that is checked
+     * @param array $ignoreCategories message categories to ignore.
+     * @return bool
+     */
+    protected function isIgnoredCategory($category, array $ignoreCategories)
+    {
+        $result = false;
+
+        if (!empty($ignoreCategories)) {
+            if (in_array($category, $ignoreCategories, true)) {
+                $result = true;
+            } else {
+                foreach ($ignoreCategories as $pattern) {
+                    if (strpos($pattern, '*') > 0 && strpos($category, rtrim($pattern, '*')) === 0) {
+                        $result = true;
+                        break;
+                    }
+                }
+            }
+        }
+
+        return $result;
     }
 
     /**
