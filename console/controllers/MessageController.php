@@ -522,6 +522,12 @@ EOD;
     }
 
     /**
+     * The method checks, whether the $category is ignored according to $ignoreCategories array.
+     * Examples:
+     *
+     * - `myapp` - will be ignored only `myapp` category;
+     * - `myapp*` - will be ignored by all categories beginning with `myapp` (`myapp`, `myapplication`, `myapprove`, `myapp/widgets`, `myapp.widgets`, etc).
+     *
      * @param string $category category that is checked
      * @param array $ignoreCategories message categories to ignore.
      * @return boolean
