@@ -22,7 +22,7 @@ Yii DAO soporta las siguientes bases de datos:
 ## Creando Conexiones DB <span id="creating-db-connections"></span>
 
 Para acceder a una base de datos, primero necesitas conectarte a tu bases de datos mediante la creación
-de una instancia de [yii\db\Connection]]:
+de una instancia de [[yii\db\Connection]]:
 
 ```php
 $db = new yii\db\Connection([

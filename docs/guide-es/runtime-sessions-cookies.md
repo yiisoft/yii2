@@ -185,7 +185,7 @@ $result = $session->hasFlash('postDeleted');
 
 Al igual que los datos de sesión regulares, puede almacenar datos arbitrarios como flash data.
 
-Cuando llamas a [yii\web\Session::setFlash()]], sobrescribirá cualquier Flash data que tenga el mismo nombre.
+Cuando llamas a [[yii\web\Session::setFlash()]], sobrescribirá cualquier Flash data que tenga el mismo nombre.
 Para añadir un nuevo flash data a el/los existes con el mismo nombre, puedes llamar a [[yii\web\Session::addFlash()]].
 Por ejemplo:
 

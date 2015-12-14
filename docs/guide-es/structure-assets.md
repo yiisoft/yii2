@@ -64,7 +64,7 @@ A continuación se explicarán más detalladamente las propiedades del [[yii\web
   propiedad en consecuencia. Se debe establecer esta propiedad si los archivos asset ya se encuentran en un directorio
   Web público y no necesitan ser publicados. Se pueden usar [alias de ruta](concept-aliases.md).
 * [[yii\web\AssetBundle::baseUrl|baseUrl]]: especifica la URL correspondiente al directorio
-  [[yii\web\AssetBundle::basePath|basePath]]. Como en [yii\web\AssetBundle::basePath|basePath]], si se especifica la
+  [[yii\web\AssetBundle::basePath|basePath]]. Como en [[yii\web\AssetBundle::basePath|basePath]], si se especifica la
   propiedad [[yii\web\AssetBundle::sourcePath|sourcePath]], el [gestor de assets](#asset-manager) publicara los assets
   y sobrescribirá esta propiedad en consecuencia. Se pueden usar [alias de ruta](concept-aliases.md).
 * [[yii\web\AssetBundle::js|js]]: un array lista los archivos JavaScript que contiene este bundle. Tenga en cuenta que
@@ -114,7 +114,7 @@ Para las [extensiones](structure-extensions.md), por el hecho de que sus assets 
 fuente, en directorios que no son accesibles para la Web, se tiene que especificar la propiedad
 [[yii\web\AssetBundle::sourcePath|sourcePath]] cuando se definan clases asset bundle para ellas.
 
-> Note: No se debe usar `@webroot/assets` como [yii\web\AssetBundle::sourcePath|source path]]. Este directorio se usa
+> Note: No se debe usar `@webroot/assets` como [[yii\web\AssetBundle::sourcePath|source path]]. Este directorio se usa
   por defecto por el [[yii\web\AssetManager|asset manager]] para guardar los archivos asset publicados temporalmente y
   pueden ser eliminados.
 

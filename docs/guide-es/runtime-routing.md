@@ -12,7 +12,7 @@ convertirla en la ruta original con los parámetros asociados.
 La principal pieza encargada del enrutamiento y de la creación de URLs es [[yii\web\UrlManager|URL manager]], que se 
 registra como el componente de aplicación `urlManager`. El [[yii\web\UrlManager|URL manager]] proporciona el método 
 [[yii\web\UrlManager::parseRequest()|parseRequest()]] para convertir una petición entrante en una ruta y sus 
-parámetros asociados y el método [yii\web\UrlManager::createUrl()|createUrl()]] para crear una URL a partir de una 
+parámetros asociados y el método [[yii\web\UrlManager::createUrl()|createUrl()]] para crear una URL a partir de una 
 ruta dada y sus parámetros asociados.
 
 Configurando el componente `urlManager` en la configuración de la aplicación, se puede dotar a la aplicación de 
@@ -157,7 +157,7 @@ Si habilita el formato de URL amigable, las URLs creadas serán diferentes, de a
 La ruta que se pasa al método [[yii\helpers\Url::to()]] es context sensitive. Esto quiere decir que puede ser una ruta 
 *relativa* o una ruta *absoluta* que serán tipificadas de acuerdo con las siguientes reglas:
 
-- Si una ruta es una cadena vacía, se usará la [yii\web\Controller::route|route]] solicitada actualmente. 
+- Si una ruta es una cadena vacía, se usará la [[yii\web\Controller::route|route]] solicitada actualmente. 
 - Si la ruta no contiene ninguna barra `/`, se considerará que se trata de un ID de acción del controlador actual y se 
   le antepondrá el valor [[\yii\web\Controller::uniqueId|uniqueId]] del controlador actual. 
 - Si la ruta no tiene barra inicial, se considerará que se trata de una ruta relativa al modulo actual y se le 

@@ -372,11 +372,11 @@ no especifica una. La ruta puede consistir el ID de un sub-módulo, el ID de un 
 Por ejemplo, `help`, `post/create`, `admin/post/create`. Si el ID de la acción no se especifica, tomará el valor por defecto
 especificado en [[yii\base\Controller::defaultAction]].
 
-Para [yii\web\Application|aplicaciones Web], el valor por defecto de esta propiedad es `'site'`, lo que significa que el
+Para [[yii\web\Application|aplicaciones Web]], el valor por defecto de esta propiedad es `'site'`, lo que significa que el
 controlador `SiteController` y su acción por defecto serán usados. Como resultado, si accedes a la aplicación sin
 especificar una ruta, mostrará el resultado de `app\controllers\SiteController::actionIndex()`.
 
-Para [yii\console\Application|aplicaciones de consola], el valor por defecto es `'help'`, lo que significa que el comando
+Para [[yii\console\Application|aplicaciones de consola]], el valor por defecto es `'help'`, lo que significa que el comando
 [[yii\console\controllers\HelpController::actionIndex()]] debería ser utilizado. Como resultado, si corres el comando `yii`
 sin proveer ningún argumento, mostrará la información de ayuda.
 
