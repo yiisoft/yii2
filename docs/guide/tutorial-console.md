@@ -50,7 +50,7 @@ and a limit of 5 migrations can be called like so:
 yii migrate/up 5 --migrationTable=migrations
 ```
 
-> **Note**: When using `*` in console, don't forget to quote it as `"*"` in order to avoid executing it as a shell
+> Note: When using `*` in console, don't forget to quote it as `"*"` in order to avoid executing it as a shell
 > glob that will be replaced by all file names of the current directory.
 
 

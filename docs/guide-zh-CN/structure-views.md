@@ -39,7 +39,7 @@ $this->title = 'Login';
 除了 `$this`之外，上述示例中的视图有其他预定义变量如 `$model`，
 这些变量代表从[控制器](structure-controllers.md)或其他触发[视图渲染](#rendering-views)的对象 *传入* 到视图的数据。
 
-> 技巧: 将预定义变量列到视图文件头部注释处，这样可被IDE编辑器识别，也是生成视图文档的好方法。
+> Tip: 将预定义变量列到视图文件头部注释处，这样可被IDE编辑器识别，也是生成视图文档的好方法。
 
 
 ### 安全 <span id="security"></span>
@@ -71,7 +71,7 @@ use yii\helpers\HtmlPurifier;
 </div>
 ```
 
-> 技巧：HTMLPurifier在保证输出数据安全上做的不错，但性能不佳，如果你的应用需要高性能可考虑
+> Tip: HTMLPurifier在保证输出数据安全上做的不错，但性能不佳，如果你的应用需要高性能可考虑
   [缓存](caching-overview.md) 过滤后的结果。
 
 
