@@ -75,7 +75,7 @@ API が JSON 形式で入力データを受け取ることが出来るように�
 ```
 
 > Info: 上記の構成はオプションです。
-  上記のように構成しない場合は、API は `application/x-www-form-urlencoded` と `mulTip:art/form-data` だけを入力形式として認識します。
+  上記のように構成しない場合は、API は `application/x-www-form-urlencoded` と `multipart/form-data` だけを入力形式として認識します。
 
 
 ## 試してみる <span id="trying-it-out"></span>

@@ -639,7 +639,7 @@ return [
 もう、`migrationTable` のコマンドラインオプションを使ってテーブルを指定する必要はなくなります。
 
 
-## 複数のデータベースにマイグレーションを適用する <span id="migrating-mulTip:le-databases"></span>
+## 複数のデータベースにマイグレーションを適用する <span id="migrating-multiple-databases"></span>
 
 デフォルトでは、マイグレーションは `db` [アプリケーションコンポーネント](structure-application-components.md) によって指定された同じデータベースに対して適用されます。
 マイグレーションを別のデータベースに適用したい場合は、次のように、`db` コマンドラインオプションを指定することが出来ます。

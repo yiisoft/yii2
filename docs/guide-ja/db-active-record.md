@@ -427,7 +427,7 @@ $customer->loadDefaultValues();
 ```
 
 
-### 複数の行を更新する <span id="updating-mulTip:le-rows"></span>
+### 複数の行を更新する <span id="updating-multiple-rows"></span>
 
 上述のメソッドは、すべて、個別のアクティブレコードインスタンスに対して作用し、個別のテーブル行を挿入したり更新したりするものです。
 複数の行を同時に更新するためには、代りに、スタティックなメソッドである [[yii\db\ActiveRecord::updateAll()|updateAll()]] を呼ばなければなりません。

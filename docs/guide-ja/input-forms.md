@@ -81,7 +81,7 @@ $form = ActiveForm::begin([
 
 ```php
 // 複数のファイルのアップロードを許可する
-echo $form->field($model, 'uploadFile[]')->fileInput(['mulTip:le'=>'mulTip:le']);
+echo $form->field($model, 'uploadFile[]')->fileInput(['multiple'=>'multiple']);
 
 // 複数の項目をチェックすることを許可する
 echo $form->field($model, 'items[]')->checkboxList(['a' => 'Item A', 'b' => 'Item B', 'c' => 'Item C']);
@@ -138,5 +138,5 @@ echo $form->field($model, 'product_category')->dropdownList(
 フォームのもっと複雑な使用方法については、以下の節を読んで下さい。
 
 - [表形式インプットのデータ収集](input-tabular-input.md) - 同じ種類の複数のモデルのデータを収集する。
-- [複数のモデルのデータを取得する](input-mulTip:le-models.md) - 同じフォームの中で複数の異なるモデルを扱う。
+- [複数のモデルのデータを取得する](input-multiple-models.md) - 同じフォームの中で複数の異なるモデルを扱う。
 - [ファイルをアップロードする](input-file-upload.md) - フォームを使ってファイルをアップロードする方法。

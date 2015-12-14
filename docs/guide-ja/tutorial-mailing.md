@@ -73,7 +73,7 @@ foreach ($users as $user) {
         // ...
         ->setTo($user->email);
 }
-Yii::$app->mailer->sendMulTip:le($messages);
+Yii::$app->mailer->sendMulTiple($messages);
 ```
 
 メールエクステンションの中には、単一のネットワークメッセージを使うなどして、この手法の恩恵を享受することが出来るものもいくつかあるでしょう。
