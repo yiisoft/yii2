@@ -290,8 +290,8 @@ Por favor refiérase a [Caché de Páginas](caching-page.md) para obtener más d
 ### [[yii\filters\RateLimiter|RateLimiter]] <span id="rate-limiter"></span>
 
 RateLimiter implementa un algoritmo de para limitar la tasa de descarga basándose en 
-(leaky bucket algorithm)[http://en.wikipedia.org/wiki/Leaky_bucket]. Este se utiliza sobre todo en la implementación 
-de APIs RESTful. Por favor, refiérase a la sección (limite de tasa)[rest-rate-limiting.md] para obtener más detalles 
+[leaky bucket algorithm](http://en.wikipedia.org/wiki/Leaky_bucket). Este se utiliza sobre todo en la implementación 
+de APIs RESTful. Por favor, refiérase a la sección [limite de tasa](rest-rate-limiting.md) para obtener más detalles 
 acerca de el uso de este filtro.
 
 ### [[yii\filters\VerbFilter|VerbFilter]] <span id="verb-filter"></span>
@@ -322,7 +322,7 @@ public function behaviors()
 
 ### [[yii\filters\Cors|Cors]] <span id="cors"></span>
 
-(CORS)[https://developer.mozilla.org/en-US/docs/Web/HTTP/Access_control_CORS] es un mecanismo que permite a diferentes 
+[CORS](https://developer.mozilla.org/en-US/docs/Web/HTTP/Access_control_CORS) es un mecanismo que permite a diferentes 
 recursos (por ejemplo: fuentes, JavaScript, etc) de una pagina Web ser solicitados por otro dominio diferente al 
 dominio que esta haciendo la petición. En particular las llamadas AJAX de JavaScript pueden utilizar el mecanismo 
 XMLHttpRequest. De otro modo esta petición de dominio cruzado seria prohibida por los navegadores Web, por la misma 
