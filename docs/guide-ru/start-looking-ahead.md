@@ -27,6 +27,7 @@
   которые могут быть легко подключены в ваши приложения и сделать разработку приложений ещё быстрее и проще.
 * Сообщество
     - [Форум](http://www.yiiframework.com/forum/)
+    - [Чат Gitter](https://gitter.im/yiisoft/yii2/rus)
     - [GitHub](https://github.com/yiisoft/yii2)
     - [Facebook](https://www.facebook.com/groups/yiitalk/)
     - [Twitter](https://twitter.com/yiiframework)
