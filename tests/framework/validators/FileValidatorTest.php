@@ -328,6 +328,52 @@ class FileValidatorTest extends TestCase
         $this->assertTrue(stripos(current($m->getErrors('attr_exe')), 'Only files with these extensions ') !== false);
     }
 
+    /**
+     * @param $mimeType
+     * @param $mask
+     * @dataProvider validMimeTypes
+     */
+    public function testValidateMimeTypeMaskValid($mimeType, $mask)
+    {
+        $validator = new FileValidator(['mimeTypes' => $mask]);
+        $file = $this->createTestFiles([['type' => $mimeType]]);
+
+        $this->assertTrue($validator->validate($file));
+    }
+
+    /**
+     * @param $mimeType
+     * @param $mask
+     * @dataProvider invalidMimeTypes
+     */
+    public function testValidateMimeTypeMaskInvalid($mimeType, $mask)
+    {
+        $validator = new FileValidator(['mimeTypes' => $mask]);
+        $file = $this->createTestFiles([['type' => $mimeType]]);
+
+        $this->assertFalse($validator->validate($file));
+    }
+
+    public function validMimeTypes()
+    {
+        return [
+            ['image/jpeg', 'image/*'],
+            ['image/png', 'image/*'],
+            ['text/plain', 'text/*'],
+            ['application/rss+xml', 'application/rss*'],
+            ['application/java-vm', 'application/java-*']
+        ];
+    }
+
+    public function invalidMimeTypes()
+    {
+        return [
+            ['image/png', 'text/*'],
+            ['text', 'text/*'],
+            ['application/x-iso9660-image', 'image/*'],
+        ];
+    }
+
     protected function createModelForAttributeTest()
     {
         return FakedValidationModel::createWithAttributes(

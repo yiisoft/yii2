@@ -422,7 +422,7 @@ yii.validation = (function ($) {
         }
 
         if (options.mimeTypes && options.mimeTypes.length > 0) {
-            if (!checkMimeTypes(options.mimeTypes, file.type)) {
+            if (!validateMimeType(options.mimeTypes, file.type)) {
                 messages.push(options.wrongMimeType.replace(/\{file\}/g, file.name));
             }
         }
@@ -436,10 +436,10 @@ yii.validation = (function ($) {
         }
     }
 
-    function checkMimeTypes(mimeTypes, fileType)
+    function validateMimeType(mimeTypes, fileType)
     {
         for (var i=0; i<mimeTypes.length; i++) {
-            if (mimeTypes[i].indexOf('*') && checkMimeTypeMask(mimeTypes[i], fileType)) {
+            if (mimeTypes[i].indexOf('*') !== -1 && validateMimeTypeMask(mimeTypes[i], fileType)) {
                 return true;
             }
 
@@ -451,7 +451,7 @@ yii.validation = (function ($) {
         return false;
     }
 
-    function checkMimeTypeMask(mimeTypeMask, fileType)
+    function validateMimeTypeMask(mimeTypeMask, fileType)
     {
         var escapedString = escapeRegExp(mimeTypeMask);
         var regexp = new RegExp('^' + escapedString.replace('\\*', '.*') +  '$');
