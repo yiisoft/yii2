@@ -207,6 +207,22 @@ _MSG_
         $result = $formatter->fallbackFormat($pattern, ['begin' => 1, 'end' => 5, 'totalCount' => 10], 'en-US');
         $this->assertEquals('Showing <b>1-5</b> of <b>10</b> items.', $result);
     }
+
+    public function testUnsupportedPercentException()
+    {
+        $pattern = 'Number {'.self::N.', number, percent}';
+        $formatter = new FallbackMessageFormatter();
+        $this->setExpectedException('yii\base\NotSupportedException');
+        $formatter->fallbackFormat($pattern, [self::N => self::N_VALUE], 'en-US');
+    }
+
+    public function testUnsupportedCurrencyException()
+    {
+        $pattern = 'Number {'.self::N.', number, currency}';
+        $formatter = new FallbackMessageFormatter();
+        $this->setExpectedException('yii\base\NotSupportedException');
+        $formatter->fallbackFormat($pattern, [self::N => self::N_VALUE], 'en-US');
+    }
 }
 
 class FallbackMessageFormatter extends MessageFormatter
