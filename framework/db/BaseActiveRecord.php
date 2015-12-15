@@ -239,7 +239,7 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
         if (isset($this->_attributes[$name]) || array_key_exists($name, $this->_attributes)) {
             return $this->_attributes[$name];
         } elseif ($this->hasAttribute($name)) {
-            return null;
+            return parent::__get($name);
         } else {
             if (isset($this->_related[$name]) || array_key_exists($name, $this->_related)) {
                 return $this->_related[$name];
