@@ -399,7 +399,7 @@ class MessageFormatter extends Component
                     $selector = trim($plural[$i++]);
 
                     if ($i == 1 && strncmp($selector, 'offset:', 7) === 0) {
-                        $offset = (int)trim(mb_substr($selector, 7, ($pos = mb_strpos(str_replace(["\n", "\r", "\t"], ' ', $selector), ' ', 7, $charset)) - 7, $charset));
+                        $offset = (int) trim(mb_substr($selector, 7, ($pos = mb_strpos(str_replace(["\n", "\r", "\t"], ' ', $selector), ' ', 7, $charset)) - 7, $charset));
                         $selector = trim(mb_substr($selector, $pos + 1, null, $charset));
                     }
                     if ($message === false && $selector === 'other' ||
