@@ -41,6 +41,7 @@ Yii Framework 2 Change Log
 - Bug #10142: Fixed `yii\validators\EmailValidator` to check the length of email properly (silverfire)
 - Bug #10278: Fixed `yii\helpers\BaseJson` support \SimpleXMLElement data (SilverFire, LAV45)
 - Bug #10302: Fixed JS function `yii.getQueryParams`, which parsed array variables incorrectly (servocoder, silverfire)
+- Bug #10385: Fixed `yii\validators\CaptchaValidator` passed incorrect hashKey to JS validator when `captchaAction` begins with `/` (silverfire)
 - Bug: Fixed generation of canonical URLs for `ViewAction` pages (samdark)
 - Bug: Fixed `mb_*` functions calls to use `UTF-8` or `Yii::$app->charset` (silverfire)
 - Enh #3506: Added `yii\validators\IpValidator` to perform validation of IP addresses and subnets (SilverFire, samdark)
