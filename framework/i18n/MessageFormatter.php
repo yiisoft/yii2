@@ -342,7 +342,7 @@ class MessageFormatter extends Component
                 throw new NotSupportedException("Message format '$type' is not supported. You have to install PHP intl extension to use this feature.");
             case 'number':
                 $format = isset($token[2]) ? trim($token[2]) : null;
-                if (is_numeric($arg) && $format === null || $format === 'integer') {
+                if (is_numeric($arg) && ($format === null || $format === 'integer')) {
                     $number = number_format($arg);
                     if ($format === null && ($pos = strpos($arg, '.')) !== false) {
                         // add decimals with unknown length
