@@ -224,7 +224,7 @@ class FileValidator extends Validator
                     return [$this->tooSmall, ['file' => $file->name, 'limit' => $this->minSize]];
                 } elseif (!empty($this->extensions) && !$this->validateExtension($file)) {
                     return [$this->wrongExtension, ['file' => $file->name, 'extensions' => implode(', ', $this->extensions)]];
-                } elseif (!empty($this->mimeTypes) &&  !$this->validateMimeTypes($file)) {
+                } elseif (!empty($this->mimeTypes) &&  !$this->validateMimeType($file)) {
                     return [$this->wrongMimeType, ['file' => $file->name, 'mimeTypes' => implode(', ', $this->mimeTypes)]];
                 } else {
                     return null;
@@ -426,7 +426,7 @@ class FileValidator extends Validator
      * @param $mask
      * @return bool
      */
-    protected function validateMimeTypeRegExp($mimeType, $mask)
+    protected function validateMimeTypeMask($mimeType, $mask)
     {
         $regexp = "/^" . str_replace('\*', '.*', preg_quote($mimeType, "/")) . "$/";
 
@@ -438,12 +438,12 @@ class FileValidator extends Validator
      * @return bool
      * @throws \yii\base\InvalidConfigException
      */
-    protected function validateMimeTypes($file)
+    protected function validateMimeType($file)
     {
         $fileMimeType = FileHelper::getMimeType($file->tempName);
 
         foreach ($this->mimeTypes as $mimeType) {
-            if (strpos($mimeType, '*') !== false && $this->validateMimeTypeRegExp($fileMimeType, $mimeType)) {
+            if (strpos($mimeType, '*') !== false && $this->validateMimeTypeMask($fileMimeType, $mimeType)) {
                 return true;
             }
 
