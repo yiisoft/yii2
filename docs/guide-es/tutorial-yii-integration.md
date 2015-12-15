@@ -92,7 +92,7 @@ Si estaba usando Yii 1 previamente, es como si tuvieras una aplicación Yii 1 fu
 
 Esto se puede lograr tal y como se describe abajo.
 
-> Nota: Yii 2 requiere PHP 5.4 o superior. Debes de estar seguro que tanto tu servidor como la aplicación existente lo soportan.
+> Note: Yii 2 requiere PHP 5.4 o superior. Debes de estar seguro que tanto tu servidor como la aplicación existente lo soportan.
 
 Primero, instala Yii 2 en tu aplicación siguiendo las instrucciones descritas en la [última subsección](#using-yii-in-others).
 

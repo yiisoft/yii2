@@ -37,7 +37,7 @@ public function behaviors()
 申明之后，过滤器会应用到所属该模块或应用主体的 *所有* 控制器动作，
 除非像上述一样配置过滤器的 [[yii\base\ActionFilter::only|only]] 和 [[yii\base\ActionFilter::except|except]] 属性。
 
-> 补充: 在模块或应用主体中申明过滤器，在[[yii\base\ActionFilter::only|only]] 和 [[yii\base\ActionFilter::except|except]]
+> Info: 在模块或应用主体中申明过滤器，在[[yii\base\ActionFilter::only|only]] 和 [[yii\base\ActionFilter::except|except]]
   属性中使用[路由](structure-controllers.md#routes) 代替动作ID，
   因为在模块或应用主体中只用动作ID并不能唯一指定到具体动作。.
 
@@ -208,7 +208,7 @@ use yii\web\Response;
 ];
 ```
 
-> 补充: 如果请求中没有检测到内容格式和语言，使用[[formats]]和[[languages]]第一个配置项。
+> Info: 如果请求中没有检测到内容格式和语言，使用[[formats]]和[[languages]]第一个配置项。
 
 
 

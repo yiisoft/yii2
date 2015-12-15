@@ -98,7 +98,7 @@ class AppAsset extends AssetBundle
 对于 [扩展](structure-extensions.md)来说，由于它们的资源和源代码都在不能Web访问的目录下，
 在定义资源包类时必须指定[[yii\web\AssetBundle::sourcePath|sourcePath]]属性。
 
-> 注意:  [[yii\web\AssetBundle::sourcePath|source path]] 属性不要用`@webroot/assets`，该路径默认为
+> Note: [[yii\web\AssetBundle::sourcePath|source path]] 属性不要用`@webroot/assets`，该路径默认为
   [[yii\web\AssetManager|asset manager]]资源管理器将源资源发布后存储资源的路径，该路径的所有内容会认为是临时文件，
   可能会被删除。
 
@@ -123,7 +123,7 @@ class AppAsset extends AssetBundle
 这些属性值会分别传递给 [[yii\web\View::registerCssFile()]] 和 [[yii\web\View::registerJsFile()]] 方法，
 在[视图](structure-views.md) 调用这些方法包含CSS和JavaScript文件时。
 
-> 注意: 在资源包类中设置的选项会应用到该包中 *每个* CSS/JavaScript 文件，如果想对每个文件使用不同的选项，
+> Note: 在资源包类中设置的选项会应用到该包中 *每个* CSS/JavaScript 文件，如果想对每个文件使用不同的选项，
   应创建不同的资源包并在每个包中使用一个选项集。
 
 例如，只想IE9或更高的浏览器包含一个CSS文件，可以使用如下选项：
@@ -164,7 +164,7 @@ public $jsOptions = ['position' => \yii\web\View::POS_HEAD];
    应设置 [[yii\web\AssetBundle::sourcePath|sourcePath]] 属性为`@bower/PackageName` 或 `@npm/PackageName`，
    因为根据别名Composer会安装Bower或NPM包到对应的目录下。
 
-> 注意: 一些包会将它们分布式文件放到一个子目录中，对于这种情况，应指定子目录作为
+> Note: 一些包会将它们分布式文件放到一个子目录中，对于这种情况，应指定子目录作为
   [[yii\web\AssetBundle::sourcePath|sourcePath]]属性值，例如，[[yii\web\JqueryAsset]]使用 `@bower/jquery/dist` 而不是 `@bower/jquery`。
 
 
@@ -267,7 +267,7 @@ return [
 如果数组任何键对比为资源文件的最后文件名（如果有的话前缀为 [[yii\web\AssetBundle::sourcePath]]），对应的值为替换原来的资源。
 例如，资源文件`my/path/to/jquery.js` 匹配键 `jquery.js`.
 
-> 注意: 只有相对相对路径指定的资源对应到资源部署，替换的资源路径可以为绝对路径，也可为和[[yii\web\AssetManager::basePath]]相关的路径。
+> Note: 只有相对相对路径指定的资源对应到资源部署，替换的资源路径可以为绝对路径，也可为和[[yii\web\AssetManager::basePath]]相关的路径。
 
 
 ### 资源发布 <span id="asset-publishing"></span>
@@ -371,7 +371,7 @@ return [
 数组的键为文件扩展名（前面不要.），数组的值为目标资源文件扩展名和执行资源转换的命令，
 命令中的标记 `{from}` 和`{to}`会分别被源资源文件路径和目标资源文件路径替代。
 
-> 补充: 除了以上方式，也有其他的方式来处理扩展语法资源，例如，可使用编译工具如[grunt](http://gruntjs.com/)
+> Info: 除了以上方式，也有其他的方式来处理扩展语法资源，例如，可使用编译工具如[grunt](http://gruntjs.com/)
   来监控并自动转换扩展语法资源，此时，应使用资源包中编译后的CSS/Javascript文件而不是原始文件。
 
 
@@ -380,7 +380,7 @@ return [
 一个Web页面可以包含很多CSS 和/或 JavaScript 文件，为减少HTTP 请求和这些下载文件的大小，
 通常的方式是在页面中合并并压缩多个CSS/JavaScript 文件为一个或很少的几个文件，并使用压缩后的文件而不是原始文件。
  
-> 补充: 合并和压缩资源通常在应用在产品上线模式，在开发模式下使用原始的CSS/JavaScript更方便调试。
+> Info: 合并和压缩资源通常在应用在产品上线模式，在开发模式下使用原始的CSS/JavaScript更方便调试。
 
 接下来介绍一种合并和压缩资源文件而不需要修改已有代码的方式：
 
@@ -406,7 +406,7 @@ return [
 哪种方式更好？第一种方式优点是两个页面使用相同的已合并CSS和JavaScript文件使HTTP缓存更高效，另一方面，由于单个组包含所有文件，
 已合并的CSS和Javascipt文件会更大，因此会增加文件传输时间，在这个示例中，我们使用第一种方式，也就是用一个组包含所有包。
 
-> 补充: 将资源包分组并不是无价值的，通常要求分析现实中不同页面各种资源的数据量，开始时为简便使用一个组。
+> Info: 将资源包分组并不是无价值的，通常要求分析现实中不同页面各种资源的数据量，开始时为简便使用一个组。
 
 在所有包中使用工具(例如 [Closure Compiler](https://developers.google.com/closure/compiler/), 
 [YUI Compressor](https://github.com/yui/yuicompressor/)) 来合并和压缩CSS和JavaScript文件，
@@ -506,7 +506,7 @@ return [
 
 应修改该文件的`bundles`的选项指定哪些包你想要合并，在`targets`选项中应指定这些包如何分组，如前述的可以指定一个或多个组。
 
-> 注意: 由于在控制台应用别名 `@webroot` and `@web` 不可用，应在配置中明确指定它们。
+> Note: 由于在控制台应用别名 `@webroot` and `@web` 不可用，应在配置中明确指定它们。
 
 JavaScript文件会被合并压缩后写入到`js/all-{hash}.js`文件，其中 {hash} 会被结果文件的哈希值替换。
 
@@ -525,4 +525,4 @@ yii asset assets.php config/assets-prod.php
 生成的配置文件可以在应用配置中包含，如最后一小节所描述的。
 
 
-> 补充: 使用`asset` 命令并不是唯一一种自动合并和压缩过程的方法，可使用优秀的工具[grunt](http://gruntjs.com/)来完成这个过程。
+> Info: 使用`asset` 命令并不是唯一一种自动合并和压缩过程的方法，可使用优秀的工具[grunt](http://gruntjs.com/)来完成这个过程。

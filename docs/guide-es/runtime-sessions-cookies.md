@@ -64,7 +64,7 @@ foreach ($session as $name => $value) ...
 foreach ($_SESSION as $name => $value) ...
 ```
 
-> Información: Cuando accedas a los datos de sesión a través del componente `session`, una sesión será automáticamente abierta si no lo estaba antes. Esto es diferente accediendo a los datos de sesión a través de `$_SESSION`, el cual requiere llamar explícitamente a `session_start()`.
+> Info: Cuando accedas a los datos de sesión a través del componente `session`, una sesión será automáticamente abierta si no lo estaba antes. Esto es diferente accediendo a los datos de sesión a través de `$_SESSION`, el cual requiere llamar explícitamente a `session_start()`.
 
 Cuando trabajas con datos de sesiones que son arrays, el componte `session` tiene una limitación que te previene directamente de modificar un elemento del array. Por ejemplo,
 
@@ -125,7 +125,7 @@ Por defecto la clase [[yii\web\Session]] almacena los datos de sesión como fich
 
 Todas estas clases de sesión soportan los mismos métodos de la API. Como consecuencia, puedes cambiar el uso de diferentes almacenamientos de sesión sin la necesidad de modificar el código de tu aplicación que usa sesiones.
 
-> Nota: si quieres acceder a los datos de sesión vía `$_SESSION` mientras estás usando un almacenamiento de sesión personalizado, debes asegurar te que la sesión está ya empezada por [[yii\web\Session::open()]]. Esto ocurre porque los manipuladores de almacenamiento de sesión personalizado son registrados sin este método.
+> Note: si quieres acceder a los datos de sesión vía `$_SESSION` mientras estás usando un almacenamiento de sesión personalizado, debes asegurar te que la sesión está ya empezada por [[yii\web\Session::open()]]. Esto ocurre porque los manipuladores de almacenamiento de sesión personalizado son registrados sin este método.
 
 Para aprender como configurar y usar estas clases de componentes, por favor consulte la documentación de la API. Abajo está un ejemplo que muestra como configurar [[yii\web\DbSession]] en la configuración de la aplicación para usar una tabla en la base de datos como almacenamiento de sesión:
 
@@ -158,7 +158,7 @@ donde 'BLOB' se refiere al BLOB-type de tu DBMS preferida. Abajo está el tipo B
 - PostgreSQL: BYTEA
 - MSSQL: BLOB
 
-> Nota: De acuerdo con la configuración de php.ini `session.hash_function`, puedes necesitar ajustar el tamaño de la columna `id`. Por ejemplo, si `session.hash_function=sha256`, deberías usar el tamaño 64 en vez de 40.
+> Note: De acuerdo con la configuración de php.ini `session.hash_function`, puedes necesitar ajustar el tamaño de la columna `id`. Por ejemplo, si `session.hash_function=sha256`, deberías usar el tamaño 64 en vez de 40.
 
 
 ### Flash Data <span id="flash-data"></span>
@@ -185,7 +185,7 @@ $result = $session->hasFlash('postDeleted');
 
 Al igual que los datos de sesión regulares, puede almacenar datos arbitrarios como flash data.
 
-Cuando llamas a [yii\web\Session::setFlash()]], sobrescribirá cualquier Flash data que tenga el mismo nombre.
+Cuando llamas a [[yii\web\Session::setFlash()]], sobrescribirá cualquier Flash data que tenga el mismo nombre.
 Para añadir un nuevo flash data a el/los existes con el mismo nombre, puedes llamar a [[yii\web\Session::addFlash()]].
 Por ejemplo:
 
@@ -203,7 +203,7 @@ $session->addFlash('alerts', 'You are promoted.');
 $alerts = $session->getFlash('alerts');
 ```
 
-> Nota: Intenta no usar a la vez [[yii\web\Session::setFlash()]] con [[yii\web\Session::addFlash()]] para flash data
+> Note: Intenta no usar a la vez [[yii\web\Session::setFlash()]] con [[yii\web\Session::addFlash()]] para flash data
   del mismo nombre. Esto ocurre porque el último método elimina el flash data dentro del array así que puedes añadir un nuevo flash data con el mismo nombre. Como resultado, cuando llamas a [[yii\web\Session::getFlash()]], puedes encontrarte algunas veces que te está devolviendo un array mientras que otras veces te está devolviendo un string, esto depende del orden que invoques a estos dos métodos.
 
 
@@ -262,18 +262,18 @@ unset($cookies['language']);
 
 Además de [[yii\web\Cookie::name|name]], [[yii\web\Cookie::value|value]] las propiedades que se muestran en los anteriores ejemplos, la clase [[yii\web\Cookie]] también define otras propiedades para representar toda la información posible de las cookies, tal como [[yii\web\Cookie::domain|domain]], [[yii\web\Cookie::expire|expire]]. Puedes configurar estas propiedades según sea necesario para preparar una cookie y luego añadirlo a la colección de cookies de la respuesta.
 
-> Nota: Para mayor seguridad, el valor por defecto de [[yii\web\Cookie::httpOnly]] es true. Esto ayuda a mitigar el riesgo del acceso a la cookie protegida por script desde el lado del cliente (si el navegador lo soporta). Puedes leer el [httpOnly wiki article](https://www.owasp.org/index.php/HttpOnly) para más detalles.
+> Note: Para mayor seguridad, el valor por defecto de [[yii\web\Cookie::httpOnly]] es true. Esto ayuda a mitigar el riesgo del acceso a la cookie protegida por script desde el lado del cliente (si el navegador lo soporta). Puedes leer el [httpOnly wiki article](https://www.owasp.org/index.php/HttpOnly) para más detalles.
 
 
 ### Validación de la Cookie <span id="cookie-validation"></span>
 
 Cuando estás leyendo y enviando cookies a través de los componentes `request` y `response` como mostramos en las dos últimas subsecciones, cuentas con el añadido de seguridad de la validación de cookies el cual protege las cookies de ser modificadas en el lado del cliente. Esto se consigue con la firma de cada cookie con una cadena hash, el cual permite a la aplicación saber si una cookie ha sido modificada en el lado del cliente o no. Si es así, la cookie no será accesible a través de [[yii\web\Request::cookies|cookie collection]] del componente `request`.
 
-> Información: Si falla la validación de una cookie, aún puedes acceder a la misma a través de `$_COOKIE`. Esto sucede porque librerías de terceros pueden manipular de forma propia las cookies, lo cual no implica la validación de las mismas.
+> Info: Si falla la validación de una cookie, aún puedes acceder a la misma a través de `$_COOKIE`. Esto sucede porque librerías de terceros pueden manipular de forma propia las cookies, lo cual no implica la validación de las mismas.
 
 La validación de cookies es habilitada por defecto. Puedes desactivar lo ajustando la propiedad [[yii\web\Request::enableCookieValidation]] a false, aunque se recomienda encarecidamente que no lo haga.
 
-> Nota: Las cookies que son directamente leídas/enviadas vía `$_COOKIE` y `setcookie()` no serán validadas.
+> Note: Las cookies que son directamente leídas/enviadas vía `$_COOKIE` y `setcookie()` no serán validadas.
 
 Cuando estás usando la validación de cookie, puedes especificar una [[yii\web\Request::cookieValidationKey]] el cual se usará para generar los strings hash mencionados anteriormente. Puedes hacerlo mediante la configuración del componente `request` en la configuración de la aplicación:
 
@@ -287,5 +287,5 @@ return [
 ];
 ```
 
-> Información: [[yii\web\Request::cookieValidationKey|cookieValidationKey]] es crítico para la seguridad de tu aplicación.
+> Info: [[yii\web\Request::cookieValidationKey|cookieValidationKey]] es crítico para la seguridad de tu aplicación.
   Sólo debería ser conocido por personas de confianza. No lo guardes en sistemas de control de versiones.

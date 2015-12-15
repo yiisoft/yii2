@@ -149,4 +149,4 @@ public function checkAccess($action, $model = null, $params = [])
 El método `checkAccess()` será llamado por defecto en las acciones predeterminadas de [[yii\rest\ActiveController]]. Si creas
 nuevas acciones y también deseas llevar a cabo la comprobación de acceso, debe llamar a este método de forma explícita en las nuevas acciones.
 
-> Consejo: Puedes implementar `checkAccess()` mediante el uso del [Componente Role-Based Access Control (RBAC)](security-authorization.md).
+> Tip: Puedes implementar `checkAccess()` mediante el uso del [Componente Role-Based Access Control (RBAC)](security-authorization.md).

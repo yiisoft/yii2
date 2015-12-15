@@ -40,7 +40,7 @@ echo Yii::$app->formatter->format('2014-01-01', 'date');
 echo Yii::$app->formatter->format(0.125, ['percent', 2]); 
 ```
 
-> Note|注意: フォーマッタコンポーネントは、エンドユーザへの表示用に値をフォーマットすることを目的に設計されています。
+> Note: フォーマッタコンポーネントは、エンドユーザへの表示用に値をフォーマットすることを目的に設計されています。
 > ユーザの入力を機械が読み取れる形式にフォーマットしたい場合、また、日付を機械が読み取れる形式にフォーマットしたいだけ、という場合には、
 > フォーマッタは適切なツールではありません。
 > 日付と数値についてユーザ入力を変換するためには、それぞれ、[[yii\validators\DateValidator]] と [[yii\validators\NumberValidator]]
@@ -104,7 +104,7 @@ echo Yii::$app->formatter->asDate('now', 'php:Y-m-d'); // 2014-10-06
 - `long`: `6 October 2014` と `15:58:42 GMT` を出力
 - `full`: `Monday, 6 October 2014` と `15:58:42 GMT` を出力
 
-> Info|訳注: ja_JP ロケールでは、次のようになります。
+> Info: ja_JP ロケールでは、次のようになります。
 > 
 > short: 2014/10/06 と 15:58
 > medium: 2014/10/06 と 15:58:42
@@ -129,7 +129,7 @@ echo Yii::$app->formatter->asTime('2014-10-06 12:41:00'); // 14:41:00
 echo Yii::$app->formatter->asTime('2014-10-06 14:41:00 CEST'); // 14:41:00
 ```
 
-> Info|訳注:
+> Info:
 > ターゲット [[yii\i18n\Formatter::timeZone|タイムゾーン]] が `Asia/Tokyo` である場合は、次のようになります。
 > 
 > ```php
@@ -138,7 +138,7 @@ echo Yii::$app->formatter->asTime('2014-10-06 14:41:00 CEST'); // 14:41:00
 > echo Yii::$app->formatter->asTime('2014-10-06 21:41:00 JST'); // 21:41:00
 > ```
 
-> Note|注意: タイムゾーンは世界中のさまざまな政府によって作られる規則に従うものであり、頻繁に変更されるものであるため、あなたのシステムにインストールされたタイムゾーンのデータベースが最新の情報を持っていない可能性が大いにあります。
+> Note: タイムゾーンは世界中のさまざまな政府によって作られる規則に従うものであり、頻繁に変更されるものであるため、あなたのシステムにインストールされたタイムゾーンのデータベースが最新の情報を持っていない可能性が大いにあります。
 > タイムゾーンデータベースの更新についての詳細は、[ICU マニュアル](http://userguide.icu-project.org/datetime/timezone#TOC-Updating-the-Time-Zone-Data) で参照することが出来ます。
 > [PHP 環境を国際化のために設定する](tutorial-i18n.md#setup-environment) も参照してください。
 
@@ -218,7 +218,7 @@ echo Yii::$app->formatter->asDate('2014-01-01'); // 出力: 2014/01/01
 デフォルトでは、現在のアクティブな [[yii\i18n\Formatter::locale|locale]] は [[yii\base\Application::language]] の値によって決定されます。
 これは [[yii\i18n\Formatter::locale]] プロパティを明示的に指定することによってオーバーライドすることが出来ます。
 
-> Note|注意: Yii のフォーマッタは、[PHP intl extension](http://php.net/manual/ja/book.intl.php) に依存してデータのフォーマットのローカライズをサポートしています。
+> Note: Yii のフォーマッタは、[PHP intl extension](http://php.net/manual/ja/book.intl.php) に依存してデータのフォーマットのローカライズをサポートしています。
 > PHP にコンパイルされた ICU ライブラリのバージョンによってフォーマットの結果が異なる場合がありますので、あなたの全ての環境で、同じ ICU バージョンを使うことが推奨されます。
 > 詳細については、[PHP 環境を国際化のために設定する](tutorial-i18n.md#setup-environment) を参照してください。
 >
