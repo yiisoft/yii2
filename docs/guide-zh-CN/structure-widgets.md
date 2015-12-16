@@ -135,7 +135,7 @@ class HelloWidget extends Widget
 
 如上所示，PHP输出缓冲在`init()`启动，所有在`init()` 和 `run()`方法之间的输出内容都会被获取，并在`run()`处理和返回。
 
-> 补充: 当你调用 [[yii\base\Widget::begin()]] 时会创建一个新的小部件实例并在构造结束时调用`init()`方法，
+> Info: 当你调用 [[yii\base\Widget::begin()]] 时会创建一个新的小部件实例并在构造结束时调用`init()`方法，
   在`end()`时会调用`run()`方法并输出返回结果。
 
 如下代码显示如何使用这种 `HelloWidget`:

@@ -56,10 +56,10 @@ class CacheController extends Controller
      * Flushes given cache components.
      * For example,
      *
-     * ~~~
+     * ```
      * # flushes caches specified by their id: "first", "second", "third"
      * yii cache/flush first second third
-     * ~~~
+     * ```
      *
      */
     public function actionFlush()
@@ -127,10 +127,10 @@ class CacheController extends Controller
     /**
      * Clears DB schema cache for a given connection component.
      *
-     * ~~~
+     * ```
      * # clears cache schema specified by component id: "db"
      * yii cache/flush-schema db
-     * ~~~
+     * ```
      *
      * @param string $db id connection component
      * @return int exit code

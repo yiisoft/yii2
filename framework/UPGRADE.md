@@ -11,7 +11,7 @@ for both A and B.
 Make sure you have global install of latest version of composer asset plugin:
 
 ```
-php composer.phar global require "fxp/composer-asset-plugin:~1.1.0"
+php composer.phar global require "fxp/composer-asset-plugin:~1.1.1"
 ```
 
 Upgrade from Yii 2.0.6
@@ -34,6 +34,10 @@ initialization to support wider range of allowed characters. Because of this cha
 the event.
   - If you overrode the `yii.confirm` function and accessed the `yii` object through `this`, you must access it
 with global variable `yii` instead.
+* Traversable objects are now formatted as arrays in XML response to support SPL objects and Generators. Previous
+  behavior could be turned on by setting `XmlResponseFormatter::$useTraversableAsArray` to `false`.
+* If you've implemented `yii\rbac\ManagerInterface` you need to implement additional method `getUserIdsByRole($roleName)`.
+* If you're using ApcCache with APCu, set `useApcu` to `true` in the component config.
 
 Upgrade from Yii 2.0.5
 ----------------------

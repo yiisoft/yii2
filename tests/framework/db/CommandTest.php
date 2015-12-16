@@ -289,11 +289,18 @@ SQL;
         $db->createCommand('DELETE FROM {{order_with_null_fk}};')->execute();
 
         switch($this->driverName){
-            case 'pgsql': $expression = "EXTRACT(YEAR FROM TIMESTAMP 'now')"; break;
+            case 'pgsql':
+                $expression = "EXTRACT(YEAR FROM TIMESTAMP 'now')";
+            break;
             case 'cubrid':
-            case 'mysql': $expression = "YEAR(NOW())"; break;
-            default:
-            case 'sqlite': $expression = "strftime('%Y')"; break;
+            case 'mysql':
+                $expression = "YEAR(NOW())";
+            break;
+            case 'sqlite':
+                $expression = "strftime('%Y')";
+            break;
+            case 'sqlsrv':
+                $expression = 'YEAR(GETDATE())';
         }
 
         $command = $db->createCommand();

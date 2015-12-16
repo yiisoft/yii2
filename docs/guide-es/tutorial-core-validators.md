@@ -37,7 +37,7 @@ Este validador comprueba si el valor de la entrada (input) es booleano.
 - `strict`: Si el tipo del valor de la entrada (input) debe corresponder con `trueValue` y `falseValue`. Valor por defecto a `false`.
 
 
-> Nota: Ya que los datos enviados con la entrada, vía formularios HTML,son todos cadenas (strings), usted debe normalmente dejar la propiedad  [[yii\validators\BooleanValidator::strict|strict]] a false.
+> Note: Ya que los datos enviados con la entrada, vía formularios HTML,son todos cadenas (strings), usted debe normalmente dejar la propiedad  [[yii\validators\BooleanValidator::strict|strict]] a false.
 
 
 ## [[yii\captcha\CaptchaValidator|captcha]] <span id="captcha"></span>

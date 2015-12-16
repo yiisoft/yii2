@@ -235,8 +235,6 @@ class ActiveRecordTest extends DatabaseTestCase
         $this->assertNull($record->var3);
         $this->assertNull($record->stringcol);
 
-        $record->id = 1;
-
         $record->var1 = 123;
         $record->var2 = 456;
         $record->var3 = 789;
@@ -280,7 +278,6 @@ class ActiveRecordTest extends DatabaseTestCase
     public function testStoreEmpty()
     {
         $record = new NullValues();
-        $record->id = 1;
 
         // this is to simulate empty html form submission
         $record->var1 = '';
@@ -832,16 +829,5 @@ class ActiveRecordTest extends DatabaseTestCase
 
         $trueBit = BitValues::findOne(2);
         $this->assertEquals(true, $trueBit->val);
-    }
-
-    /**
-     * Test if dirty attributes are tracked properly.
-     * https://github.com/yiisoft/yii2/issues/9656
-     */
-    public function testDirty() {
-        $model = new Customer();
-        $this->assertEmpty($model->getDirtyAttributes());
-        $model->email = 'value';
-        $this->assertEquals($model->getDirtyAttributes(), ['email' => 'value']);
     }
 }

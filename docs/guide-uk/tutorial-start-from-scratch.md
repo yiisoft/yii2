@@ -1,7 +1,7 @@
 Створення своєї власної структури додатку
 =========================================
 
-> Примітка: Цей розділ знаходиться в розробці.
+> Note: Цей розділ знаходиться в розробці.
 
 У той час, як [базовий](https://github.com/yiisoft/yii2-app-basic) і [розширений](https://github.com/yiisoft/yii2-app-advanced)
 шаблони додатків прекрасно підходять для більшості ваших потреб, ви також можете сворити свій власний шаблон додатку, з яким
@@ -33,7 +33,7 @@ git clone git@github.com:yiisoft/yii2-app-basic.git
 Змініть значення `name`, `description`, `keywords`, `homepage`, `license` і `support`, щоб описати ваш новий шаблон.
 Також налаштуйте `require`, `require-dev`, `suggest` та інші параметри відповідно до вимог вашого шаблону.
 
-> Примітка: В файлі `composer.json` використовуйте параметр `writable` в розділі `extra`, щоб
+> Note: В файлі `composer.json` використовуйте параметр `writable` в розділі `extra`, щоб
 > вказати права доступу до файлів, які необхідно встановити після створення додатку з використанням вашого шаблону.
 
 Далі внесіть зміни у структуру та зміст додатку на той, який ви би хотіли бачити за замовчуванням. 
@@ -57,6 +57,6 @@ git clone git@github.com:yiisoft/yii2-app-basic.git
 Тепер ви можете створювати проекти, використовуючи свій шаблон:
 
 ```
-composer global require "fxp/composer-asset-plugin:~1.1.0"
+composer global require "fxp/composer-asset-plugin:~1.1.1"
 composer create-project --prefer-dist --stability=dev mysoft/yii2-app-coolone new-project
 ```

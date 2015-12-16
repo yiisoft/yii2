@@ -45,6 +45,7 @@ class LinkPager extends Widget
     public $linkOptions = [];
     /**
      * @var string the CSS class for the each page button.
+     * @since 2.0.7
      */
     public $pageCssClass = null;
     /**

@@ -1,4 +1,4 @@
-﻿Información General
+Información General
 ===============
 
 Cada vez que una aplicación Yii gestiona una petición, se somete a un flujo de trabajo similar.

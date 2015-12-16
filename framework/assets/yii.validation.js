@@ -341,9 +341,9 @@ yii.validation = (function ($) {
 
             var matches = new RegExp(options.ipParsePattern).exec(value);
             if (matches) {
-                negation = (matches[1] !== '') ? matches[1] : null;
-                cidr = (matches[4] !== '') ? matches[4] : null;
+                negation = matches[1] || null;
                 value = matches[2];
+                cidr = matches[4] || null;
             }
 
             if (options.subnet === true && cidr === null) {

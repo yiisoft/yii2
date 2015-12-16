@@ -25,7 +25,8 @@ Yii поддерживает все выше перечисленные мето
 
 Чтобы включить аутентификацию для ваших API, выполните следующие шаги:
 
-1. У компонента приложения `user` установите свойство [[yii\web\User::enableSession|enableSession]] равным false.
+1. У [компонента приложения](structure-application-components.md) `user` установите свойство
+   [[yii\web\User::enableSession|enableSession]] равным false.
 2. Укажите, какие методы аутентификации вы планируете использовать, настроив поведение `authenticator`
    в ваших классах REST-контроллеров.
 3. Реализуйте метод [[yii\web\IdentityInterface::findIdentityByAccessToken()]] в вашем [[yii\web\User::identityClass|классе UserIdentity]].
@@ -35,16 +36,16 @@ Yii поддерживает все выше перечисленные мето
 аутентификации пользователя НЕ БУДЕТ сохраняться между запросами с использованием сессий. Вместо этого аутентификация
 будет выполняться для каждого запроса, что достигается шагами 2 и 3.
 
-> Подсказка: если вы разрабатываете RESTful API в пределах приложения, вы можете настроить свойство
- [[yii\web\User::enableSession|enableSession]] компонента приложения `user` в конфигурации приложения. Если вы
- разрабатываете RESTful API как модуль, можете добавить следующую строчку в метод `init()` модуля:
+> Tip: если вы разрабатываете RESTful API в пределах приложения, вы можете настроить свойство
+> [[yii\web\User::enableSession|enableSession]] компонента приложения `user` в конфигурации приложения. Если вы
+> разрабатываете RESTful API как модуль, можете добавить следующую строчку в метод `init()` модуля:
 > ```php
-public function init()
-{
-    parent::init();
-    \Yii::$app->user->enableSession = false;
-}
-```
+> public function init()
+> {
+>     parent::init();
+>     \Yii::$app->user->enableSession = false;
+> }
+> ```
 
 Например, для использования HTTP Basic Auth, вы можете настроить свойство `authenticator` следующим образом:
 

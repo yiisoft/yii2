@@ -115,7 +115,7 @@ class Foo
 - クラスのメソッドは常に修飾子 `private`、`protected` または `public` を使って、可視性を宣言すべきです。`var` は許可されません。
 - 関数の開始の中括弧は関数宣言の次の行に置くべきです。
 
-~~~
+```
 /**
  * ドキュメント
  */
@@ -130,7 +130,7 @@ class Foo
         return $value;
     }
 }
-~~~
+```
 
 ### 4.4 Doc ブロック
 
@@ -396,9 +396,9 @@ class Component extends \yii\base\Object
  * 返された [[Vector]] オブジェクトを操作して、ハンドラを追加したり削除したり出来る。
  * 例えば、
  *
- * ~~~
+ * ```
  * $component->getEventHandlers($eventName)->insertAt(0, $eventHandler);
- * ~~~
+ * ```
  *
  * @param string $name イベントの名前
  * @return Vector イベントにアタッチされたハンドラのリスト

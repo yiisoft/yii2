@@ -21,7 +21,7 @@ use yii\base\Event;
  * [[value]] property with a PHP callable whose return value will be used to assign to the current attribute(s).
  * For example,
  *
- * ~~~
+ * ```php
  * use yii\behaviors\AttributeBehavior;
  *
  * public function behaviors()
@@ -39,7 +39,7 @@ use yii\base\Event;
  *         ],
  *     ];
  * }
- * ~~~
+ * ```
  *
  * @author Luciano Baraglia <luciano.baraglia@gmail.com>
  * @author Qiang Xue <qiang.xue@gmail.com>

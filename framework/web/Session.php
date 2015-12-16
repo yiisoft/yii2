@@ -22,14 +22,14 @@ use yii\base\InvalidParamException;
  *
  * Session can be used like an array to set and get session data. For example,
  *
- * ~~~
+ * ```php
  * $session = new Session;
  * $session->open();
  * $value1 = $session['name1'];  // get session variable 'name1'
  * $value2 = $session['name2'];  // get session variable 'name2'
  * foreach ($session as $name => $value) // traverse all session variables
  * $session['name3'] = $value3;  // set session variable 'name3'
- * ~~~
+ * ```
  *
  * Session can be extended to support customized session storage.
  * To do so, override [[useCustomStorage]] so that it returns true, and

@@ -56,12 +56,12 @@ class View extends Component
      * Each renderer may be a view renderer object or the configuration for creating the renderer object.
      * For example, the following configuration enables both Smarty and Twig view renderers:
      *
-     * ~~~
+     * ```php
      * [
      *     'tpl' => ['class' => 'yii\smarty\ViewRenderer'],
      *     'twig' => ['class' => 'yii\twig\ViewRenderer'],
      * ]
-     * ~~~
+     * ```
      *
      * If no renderer is available for the given view file, the view file will be treated as a normal PHP
      * and rendered via [[renderPhpFile()]].
@@ -404,11 +404,11 @@ class View extends Component
      * This method can be used to implement nested layout. For example, a layout can be embedded
      * in another layout file specified as '@app/views/layouts/base.php' like the following:
      *
-     * ~~~
+     * ```php
      * <?php $this->beginContent('@app/views/layouts/base.php'); ?>
-     * ...layout content here...
+     * //...layout content here...
      * <?php $this->endContent(); ?>
-     * ~~~
+     * ```
      *
      * @param string $viewFile the view file that will be used to decorate the content enclosed by this widget.
      * This can be specified as either the view file path or path alias.
@@ -440,12 +440,12 @@ class View extends Component
      * call to end the cache and save the content into cache.
      * A typical usage of fragment caching is as follows,
      *
-     * ~~~
+     * ```php
      * if ($this->beginCache($id)) {
      *     // ...generate content here
      *     $this->endCache();
      * }
-     * ~~~
+     * ```
      *
      * @param string $id a unique ID identifying the fragment to be cached.
      * @param array $properties initial property values for [[FragmentCache]]

@@ -112,7 +112,7 @@ echo \Yii::t('app', 'This is a string to translate!');
 更には、パラメータ値をターゲット言語に応じてフォーマットさせるための特別なプレースホルダの構文を使うことも出来ます。
 この項では、メッセージをフォーマットする様々な方法を説明します。
 
-> Note|訳注: 以下においては、メッセージフォーマットの理解を助けるために、原文にはない日本語への翻訳例 (とその出力結果) をコードサンプルに追加しています。
+> Note: 以下においては、メッセージフォーマットの理解を助けるために、原文にはない日本語への翻訳例 (とその出力結果) をコードサンプルに追加しています。
 
 ### メッセージパラメータ <span id="message-parameters"></span>
 
@@ -168,7 +168,7 @@ echo \Yii::t('app', 'Price: {0}, Count: {1}, Subtotal: {2}', [$price, $count, $s
 echo \Yii::t('app', 'Price: {0}', $price);
 ```
 
-> Tip|ヒント: たいていの場合は名前付きプレースホルダを使うべきです。
+> Tip: たいていの場合は名前付きプレースホルダを使うべきです。
 > と言うのは、翻訳者にとっては、パラメータ名がある方が、翻訳すべきメッセージ全体をより良く理解できるからです。
 
 
@@ -182,7 +182,7 @@ $price = 100;
 echo \Yii::t('app', 'Price: {0, number, currency}', $price);
 ```
 
-> Note|注意: パラメータのフォーマットには、[intl PHP 拡張](http://www.php.net/manual/ja/intro.intl.php) のインストールが必要です。
+> Note: パラメータのフォーマットには、[intl PHP 拡張](http://www.php.net/manual/ja/intro.intl.php) のインストールが必要です。
 
 プレースホルダにフォーマット規則を指定するためには、短い構文または完全な構文のどちらかを使うことが出来ます。
 
@@ -191,7 +191,7 @@ echo \Yii::t('app', 'Price: {0, number, currency}', $price);
 完全な形式: {name, type, style}
 ```
 
-> Note|注意: `{`、`}`、`'`、`#` などの特殊な文字を使用する必要がある場合は、その部分の文字列を `'` で囲んでください。
+> Note: `{`、`}`、`'`、`#` などの特殊な文字を使用する必要がある場合は、その部分の文字列を `'` で囲んでください。
 > 
 ```php
 echo Yii::t('app', "Example of string with ''-escaped characters'': '{' '}' '{test}' {count, plural, other{''count'' value is # '#{}'}}", ['count' => 3]);
@@ -347,7 +347,7 @@ echo \Yii::t('app', '{n, ordinal,%digits-ordinal-feminine}', ['n' => 471]);
 
 あなたが使用しているロケールで利用可能なオプションのリストについては、[http://intl.rmcreative.ru/](http://intl.rmcreative.ru/) の "Numbering schemas, Ordinal" を参照してください。
 
-> Note|訳注: 上記のソースメッセージを、プレースホルダのスタイルを守って日本語に翻訳すると、'あなたはこのサイトの{n, ordinal}の訪問者です' となります。
+> Note: 上記のソースメッセージを、プレースホルダのスタイルを守って日本語に翻訳すると、'あなたはこのサイトの{n, ordinal}の訪問者です' となります。
 > しかし、その出力結果は、'あなたはこのサイトの第42の訪問者です' となり、意味は通じますが、日本語としては若干不自然なものになります。
 >
 > プレースホルダのスタイル自体も、翻訳の対象として、より適切なものに変更することが可能であることに注意してください。
@@ -374,7 +374,7 @@ echo \Yii::t('app', '{n, duration,%in-numerals}', ['n' => 471227]);
 
 あなたが使用しているロケールで利用可能なオプションのリストについては、[http://intl.rmcreative.ru/](http://intl.rmcreative.ru/) の "Numbering schemas, Duration" を参照してください。
 
-> Note|訳注: このソースメッセージを 'あなたはこのサイトに既に{n, duration}の間滞在しています' と翻訳した場合の出力結果は、'あなたはこのサイトに既に47の間滞在しています' となります。
+> Note: このソースメッセージを 'あなたはこのサイトに既に{n, duration}の間滞在しています' と翻訳した場合の出力結果は、'あなたはこのサイトに既に47の間滞在しています' となります。
 > これも、プレースホルダのスタイルも含めて全体を翻訳し直す方が良いでしょう。
 > どうも、ICU ライブラリは、ja_JP の数値関連の書式指定においては、割と貧弱な実装にとどまっている印象です。
 
@@ -410,7 +410,7 @@ echo \Yii::t('app', 'There {n, plural, =0{are no cats} =1{is one cat} other{are 
 あるいは、その代りに、[unicode.org の規則のリファレンス](http://unicode.org/repos/cldr-tmp/trunk/diff/supplemental/language_plural_rules.html) を参照することも出来ます。
 
 
-> Note|注意: 上記のロシア語のメッセージのサンプルは、主として翻訳メッセージとして使用されるものです。
+> Note: 上記のロシア語のメッセージのサンプルは、主として翻訳メッセージとして使用されるものです。
 > アプリケーションの [[yii\base\Application::$sourceLanguage|ソース言語]] を `ru-RU` にしてロシア語から他の言語に翻訳するという設定にしない限り、オリジナルのメッセージとしては使用されることはありません。
 >
 > `Yii::t()` の呼び出しにおいて、オリジナルのメッセージに対する翻訳が見つからない場合は、[[yii\base\Application::$sourceLanguage|ソース言語]] の複数形規則がオリジナルのメッセージに対して適用されます。
@@ -432,7 +432,7 @@ echo Yii::t('app', 'You {likeCount, plural,
 // 出力: 'You and one other person liked this'
 ```
 
-> Note|訳注: 上記のソースメッセージの日本語翻訳は以下のようなものになります。
+> Note: 上記のソースメッセージの日本語翻訳は以下のようなものになります。
 >
 > '猫は{n, plural, =0{いません} other{#匹います}}。'
 >
@@ -477,7 +477,7 @@ echo \Yii::t('app', '{name} is a {gender} and {gender, select, female{she} male{
 上記の式の中で、`female` と `male` が `gender` が取り得る値であり、`other` がそれらに一致しない値を処理します。
 それぞれの取り得る値の後には、波括弧で囲んで対応する表現を指定します。
 
-> Note|訳注: 日本語翻訳: '{name} は {gender} であり、{gender, select, female{彼女} male{彼} other{それ}}は Yii を愛しています。'
+> Note: 日本語翻訳: '{name} は {gender} であり、{gender, select, female{彼女} male{彼} other{それ}}は Yii を愛しています。'
 >
 > 日本語出力: 'Snoopy は dog であり、それは Yii を愛しています。'
 
@@ -605,7 +605,7 @@ class Menu extends Widget
 `fileMap` を使わずに、カテゴリを同じ名前のファイルにマップする規約を使って済ませることも出来ます。
 これで、直接に `Menu::t('messages', 'new messages {messages}', ['{messages}' => 10])` を使用することが出来ます。
 
-> **Note**|注意: ウィジェットのためには i18n ビューも使うことが出来ます。コントローラのための同じ規則がウィジェットにも適用されます。
+> Note: ウィジェットのためには i18n ビューも使うことが出来ます。コントローラのための同じ規則がウィジェットにも適用されます。
 
 
 ### フレームワークメッセージを翻訳する <span id="framework-translation"></span>
@@ -678,7 +678,7 @@ class TranslationEventHandler
 
 このイベントハンドラによって [[yii\i18n\MissingTranslationEvent::translatedMessage]] がセットされた場合は、それが翻訳結果として表示されます。
 
-> Note|注意: 全てのメッセージソースは、欠落した翻訳をそれぞれ独自に処理します。
+> Note: 全てのメッセージソースは、欠落した翻訳をそれぞれ独自に処理します。
 > いくつかのメッセージソースを使っていて、それらが同じ方法で欠落した翻訳を取り扱うようにしたい場合は、対応するイベントハンドラを全てのメッセージソースそれぞれに割り当てなければなりません。
 
 ### `message` コマンドを使う <a name="message-command"></a>
@@ -690,7 +690,7 @@ class TranslationEventHandler
 どこに保存したいかを決めて、次のコマンドを発行してください。
 
 ```bash
-./yii message/config path/to/config.php
+./yii message/config-template path/to/config.php
 ```
 
 作成されたファイルを開いて、あなたの要求に合わせてパラメータを修正します。
@@ -700,8 +700,18 @@ class TranslationEventHandler
 * `messagePath`: メッセージファイルを保存するパス。
   これは、アプリケーションの構成情報で記述されている `i18n` の `basePath` と合致しなければなりません。
 
-> エイリアスがここではサポートされていないことに注意してください。
-  構成情報ファイルの位置からの相対パスで記述しなければなりません。
+'./yii message/config' コマンドを使って、CLI 経由で、指定したオプションを持つ設定ファイルを動的に生成することも可能です。
+例えば、`languages` と `messagePath` のパラメータは、次のようにして設定することが出来ます。
+
+```bash
+./yii message/config --languages=de,ja --messagePath=messages path/to/config.php
+```
+
+利用可能なオプションのリストを取得するためには、次のコマンドを実行します。
+
+```bash
+./yii help message/config
+```
 
 構成情報ファイルの編集が完了すれば、ついに、下記のコマンドを使ってメッセージを抽出することが出来ます。
 
@@ -719,7 +729,7 @@ class TranslationEventHandler
 例えば、`views/site/index.php` というビューをターゲット言語 `ru-RU` に翻訳したい場合は、翻訳したビューを `views/site/ru-RU/index.php` というファイルとして保存します。
 このようにすると、[[yii\base\View::renderFile()]] メソッド、または、このメソッドを呼び出す他のメソッド (例えば [[yii\base\Controller::render()]]) を呼んで `views/site/index.php` をレンダリングするたびに、翻訳された `views/site/ru-RU/index.php` が代りにレンダリングされるようになります。
 
-> **Note**|注意: [[yii\base\Application::$language|ターゲット言語]] が [[yii\base\Application::$sourceLanguage|ソース言語]] と同じ場合は、翻訳されたビューの有無にかかわらず、オリジナルのビューがレンダリングされます。
+> Note: [[yii\base\Application::$language|ターゲット言語]] が [[yii\base\Application::$sourceLanguage|ソース言語]] と同じ場合は、翻訳されたビューの有無にかかわらず、オリジナルのビューがレンダリングされます。
 
 
 ## 数値と日付の値を書式設定する <span id="date-number"></span>

@@ -1,4 +1,4 @@
-﻿Almacenamiento de Datos en Caché
+Almacenamiento de Datos en Caché
 ================================
 
 El almacenamiento de datos en caché trata del almacenamiento de alguna variable PHP en caché y recuperarla más tarde del mismo. También es la base de algunas de las características avanzadas de almacenamiento en caché, tales como [el almacenamiento en caché de consultas a la base de datos](#query-caching) y [el almacenamiento en caché de contenido](caching-page.md).
@@ -64,7 +64,7 @@ el código que utiliza la caché. Por ejemplo, podrías modificar la configuraci
 ],
 ```
 
-> Consejo: Puedes registrar múltiples componentes de aplicación de caché. El componente llamado `cache` es usado por defecto por muchas clases caché-dependiente (ej. [[yii\web\UrlManager]]).
+> Tip: Puedes registrar múltiples componentes de aplicación de caché. El componente llamado `cache` es usado por defecto por muchas clases caché-dependiente (ej. [[yii\web\UrlManager]]).
 
 
 ### Almacenamientos de Caché Soportados <span id="supported-cache-storage"></span>
@@ -82,7 +82,7 @@ se muestra un listado con los componentes de caché disponibles:
 * [[yii\caching\XCache]]: utiliza la extensión de PHP [XCache](http://xcache.lighttpd.net/).
 * [[yii\caching\ZendDataCache]]: utiliza [Zend Data Cache](http://files.zend.com/help/Zend-Server-6/zend-server.htm#data_cache_component.htm) como el medio fundamental de caché.
 
-> Consejo: Puedes utilizar diferentes tipos de almacenamiento de caché en la misma aplicación. Una estrategia común es la de usar almacenamiento de caché en memoria para almacenar datos que son pequeños pero que son utilizados constantemente (ej. datos estadísticos), y utilizar el almacenamiento de caché en archivos o en base de datos para guardar datos que son grandes y utilizados con menor frecuencia (ej. contenido de página).
+> Tip: Puedes utilizar diferentes tipos de almacenamiento de caché en la misma aplicación. Una estrategia común es la de usar almacenamiento de caché en memoria para almacenar datos que son pequeños pero que son utilizados constantemente (ej. datos estadísticos), y utilizar el almacenamiento de caché en archivos o en base de datos para guardar datos que son grandes y utilizados con menor frecuencia (ej. contenido de página).
 
 
 ## API de Caché <span id="cache-apis"></span>
@@ -100,7 +100,7 @@ Todos los componentes de almacenamiento de caché provienen de la misma clase "p
 * [[yii\caching\Cache::delete()|delete()]]: elimina un elemento de datos identificado por una clave de la caché.
 * [[yii\caching\Cache::flush()|flush()]]: elimina todos los elementos de datos de la cache.
 
-> Nota: No Almacenes el valor boolean `false` en caché directamente porque el método [[yii\caching\Cache::get()|get()]] devuelve
+> Note: No Almacenes el valor boolean `false` en caché directamente porque el método [[yii\caching\Cache::get()|get()]] devuelve
 el valor `false` para indicar que el dato no ha sido encontrado en la caché. Puedes poner `false` dentro de un array y cachear
 este array para evitar este problema.
 
@@ -221,7 +221,7 @@ $result = Customer::getDb()->cache(function ($db) {
 });
 ```
 
-> Nota: Algunos DBMS (ej. [MySQL](http://dev.mysql.com/doc/refman/5.1/en/query-cache.html)) también soporta el almacenamiento en caché desde el mismo servidor de la BD. Puedes optar por utilizar cualquiera de los mecanismos de memoria caché. El almacenamiento en caché de consultas previamente descrito tiene la ventaja que de que se puede especificar dependencias de caché de una forma flexible y son potencialmente mucho más eficientes.
+> Note: Algunos DBMS (ej. [MySQL](http://dev.mysql.com/doc/refman/5.1/en/query-cache.html)) también soporta el almacenamiento en caché desde el mismo servidor de la BD. Puedes optar por utilizar cualquiera de los mecanismos de memoria caché. El almacenamiento en caché de consultas previamente descrito tiene la ventaja que de que se puede especificar dependencias de caché de una forma flexible y son potencialmente mucho más eficientes.
 
 
 ### Configuraciones <span id="query-caching-configs"></span>

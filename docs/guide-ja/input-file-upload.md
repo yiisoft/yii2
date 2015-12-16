@@ -51,7 +51,7 @@ class UploadForm extends Model
 `file` バリデータによって、ファイル拡張子、サイズ、MIME タイプなどをチェックすることが出来ます。
 詳細については、[コアバリデータ](tutorial-core-validators.md#file) の節を参照してください。
 
-> Tip|ヒント: 画像をアップロードしようとする場合は、`image` バリデータを代りに使うことを考慮しても構いません。
+> Tip: 画像をアップロードしようとする場合は、`image` バリデータを代りに使うことを考慮しても構いません。
 `image` バリデータは [[yii\validators\ImageValidator]] によって実装されており、属性が有効な画像、すなわち、保存したり [Imagine エクステンション](https://github.com/yiisoft/yii2-imagine) を使って処理したりすることが可能な有効な画像を、受け取ったかどうかを検証します。
 
 
@@ -120,6 +120,8 @@ class SiteController extends Controller
 ここまでの項で示したコードに若干の修正を加えれば、複数のファイルを一度にアップロードすることも出来ます。
 
 最初に、モデルクラスを修正して、`file` 検証規則に `maxFiles` オプションを追加して、アップロードを許可されるファイルの最大数を制限しなければなりません。
+`maxFiles` を `0` に設定することは、同時にアップロード出来るファイル数に制限がないことを意味します。
+同時にアップロードすることを許されるファイルの数は、また、PHP のディレクティブ [`max_file_uploads`](http://php.net/manual/ja/ini.core.php#ini.max-file-uploads) (デフォルト値は 20) によっても制限されます。
 `upload()` メソッドも、アップロードされた複数のファイルを一つずつ保存するように修正しなければなりません。
 
 ```php
