@@ -175,11 +175,11 @@ if (YII_ENV_DEV) {
 #### [[yii\web\Application::catchAll|catchAll]] <span id="catchAll"></span>
 
 Thuộc tính này chỉ được hỗ trợ với [[yii\web\Application| ứng dụng Web]]. Nó mô tả một
- [hành động](structure-controllers.md) which should handle all user requests. This is mainly
-used when the application is in maintenance mode and needs to handle all incoming requests via a single action.
+ [hành động](structure-controllers.md) và nhận xử lý mọi yêu cầu. Thường được sử dụng mỗi khi
+ứng dụng đang ở chế độ bảo trì và cần xử lý mọi yêu cầu được gửi tới.
 
-The configuration is an array whose first element specifies the route of the action.
-The rest of the array elements (key-value pairs) specify the parameters to be bound to the action. For example:
+Thông tin được cấu hình bao gồm mảng và chứa thông tin về router và action.
+Các thông tin mô tả các tham số (thông tin khóa-giá trị) để giới hạn các action. Ví dụ:
 
 ```php
 [
@@ -194,8 +194,8 @@ The rest of the array elements (key-value pairs) specify the parameters to be bo
 
 #### [[yii\base\Application::components|components]] <span id="components"></span>
 
-This is the single most important property. It allows you to register a list of named components
-called [application components](structure-application-components.md) that you can use in other places. For example:
+Đây là thuộc tính quan trọng nhất. Nó cho phép đăng ký danh sách cách component để sử dụng ở các mục khác
+được gọi là [application components](structure-application-components.md). Ví dụ:
 
 ```php
 [
@@ -211,22 +211,22 @@ called [application components](structure-application-components.md) that you ca
 ]
 ```
 
-Each application component is specified as a key-value pair in the array. The key represents the component ID,
-while the value represents the component class name or [configuration](concept-configurations.md).
+Mỗi thành phần ứng dụng đều xác định một mảng các thông tin chứa cặp key-value. Giá trị key đại diện cho định danh của thành phần,
+trong khi đó value đại diện cho tên class hoặc thông tin về [cấu hình](concept-configurations.md).
 
-You can register any component with an application, and the component can later be accessed globally
-using the expression `\Yii::$app->componentID`.
+Bạn có thể đăng ký bất kỳ thành phần nào vào ứng dụng, và các thành phần có thể truy cập ở phạm vi toàn cục
+qua biểu thức `\Yii::$app->componentID`.
 
-Please read the [Application Components](structure-application-components.md) section for details.
+Xem thêm mục [Application Components](structure-application-components.md) để biết thêm thông tin.
 
 
 #### [[yii\base\Application::controllerMap|controllerMap]] <span id="controllerMap"></span>
 
-This property allows you to map a controller ID to an arbitrary controller class. By default, Yii maps
-controller IDs to controller classes based on a [convention](#controllerNamespace) (e.g. the ID `post` would be mapped
-to `app\controllers\PostController`). By configuring this property, you can break the convention for
-specific controllers. In the following example, `account` will be mapped to
-`app\controllers\UserController`, while `article` will be mapped to `app\controllers\PostController`.
+Thuộc tính này cho phép liên kết tới một định danh (ID) tới lớp của trình điều khiển. Mặc định, Yii sẽ liên kết
+ID tới các lớp của trình điều khiển dựa trên [các nguyên tắc](#controllerNamespace) (chẳng hạn định danh ID của trình điều khiển `post` sẽ liên kết
+tới lớp `app\controllers\PostController`). Bằng việc cấu hình những thuộc tính này, bạn có thay đổi các nguyên tắc này cho các trình điều khiển cụ thể
+. Trong ví dụ sau, `account` sẽ được liên kết tới class
+`app\controllers\UserController`, trong khi đó `article` sẽ liên kết tới class `app\controllers\PostController`.
 
 ```php
 [
@@ -242,59 +242,57 @@ specific controllers. In the following example, `account` will be mapped to
 ]
 ```
 
-The array keys of this property represent the controller IDs, while the array values represent the corresponding
-controller class names or [configurations](concept-configurations.md).
+Danh sách khóa của các thuộc tính trên đại diện cho ID của trình điều khiển, giá trị của mỗi khóa sẽ đại diện về thông tin
+tên class của trình điều khiển hoặc [các thông tin về cấu hình](concept-configurations.md).
 
 
 #### [[yii\base\Application::controllerNamespace|controllerNamespace]] <span id="controllerNamespace"></span>
 
-This property specifies the default namespace under which controller classes should be located. It defaults to
-`app\controllers`. If a controller ID is `post`, by convention the corresponding controller class name (without
-namespace) would be `PostController`, and the fully qualified class name would be `app\controllers\PostController`.
+Thuộc tính này xác định các thông tin tên lớp mặc định của trình điều khiển. Mặc định là
+`app\controllers`. Nếu ID của trình điều khiển là `post`, theo quy ước thì tên class của trình điều khiển (không bao gồm
+không gian tên) sẽ là `PostController`, và tên lớp đầy đủ sẽ là `app\controllers\PostController`.
 
-Controller classes may also be located under sub-directories of the directory corresponding to this namespace.
-For example, given a controller ID `admin/post`, the corresponding fully qualified controller class would
-be `app\controllers\admin\PostController`.
+Các lớp trình điều khiển thường được lưu trữ ở thư mục con của thư mục chính các không gian tên.
+Chẳng hạn, với ID của trình điều khiển `admin/post`, tương ứng với tên lớp đầy đủ sẽ là
+ `app\controllers\admin\PostController`.
 
-It is important that the fully qualified controller classes should be [autoloadable](concept-autoloading.md)
-and the actual namespace of your controller classes match the value of this property. Otherwise,
-you will receive a "Page Not Found" error when accessing the application.
+Điều này khá quan trọng vì các lớp điều khiển có thể được [tải tự động](concept-autoloading.md)
+và các không gian tên của các lớp điều khiển sẽ khớp với giá trị của các thuộc tính. Nếu không thì,
+bạn sẽ nhận thông báo lỗi "Không tìm thấy trang" khi truy cập vào ứng dụng.
 
-In case you want to break the convention as described above, you may configure the [controllerMap](#controllerMap)
-property.
+Trong trường hợp khác, nếu bạn muốn bỏ các quy ước này như mổ tả ở trên, bạn có thể tùy chỉnh lại các thuộc tính trong phần [controllerMap](#controllerMap).
 
 
 #### [[yii\base\Application::language|language]] <span id="language"></span>
 
-This property specifies the language in which the application should display content to end users.
-The default value of this property is `en`, meaning English. You should configure this property
-if your application needs to support multiple languages.
+Thuộc tính này mô tả thông tin về ngôn ngữ trong mỗi ứng dụng và nội dung được hiển thị tới user.
+Giá trị mặc định của thuộc tính là `en`, có nghĩa là tiếng Anh. Bạn có thể tùy chỉnh thuộc tính này
+rằng nếu ứng dụng của bạn hỗ trợ đa ngôn ngữ .
 
-The value of this property determines various [internationalization](tutorial-i18n.md) aspects,
-including message translation, date formatting, number formatting, etc. For example, the [[yii\jui\DatePicker]] widget
-will use this property value by default to determine in which language the calendar should be displayed and how
-the date should be formatted.
+Giá trị của thuộc tính được xác định theo chuẩn [quốc tế hóa](tutorial-i18n.md),
+bao gồm các thông tin, định dạng ngày giờ, số, vv. Ví dụ, widget [[yii\jui\DatePicker]] 
+sẽ sử dụng các giá trị thuộc tính qua việc xác định ngôn ngữ nào cần được hiển thị và định dạng ngày giờ như thế nào.
 
-It is recommended that you specify a language in terms of an [IETF language tag](http://en.wikipedia.org/wiki/IETF_language_tag).
-For example, `en` stands for English, while `en-US` stands for English (United States).
+Khuyến khích bạn xác định các ngôn ngữ dựa theo [IETF language tag](http://en.wikipedia.org/wiki/IETF_language_tag).
+Ví dụ, `en` là chuẩn cho tiếng anh, trong khi đó `en-US` chuẩn cho tiếng anh ở Mỹ (United States).
 
-More details about this property can be found in the [Internationalization](tutorial-i18n.md) section.
+Xem thêm thông tin về thuộc tính này tại mục [Internationalization](tutorial-i18n.md).
 
 
 #### [[yii\base\Application::modules|modules]] <span id="modules"></span>
 
-This property specifies the [modules](structure-modules.md) that the application contains.
+Thuộc tính này mô tả các thông tin về [modules](structure-modules.md) được chứa trong ứng dụng.
 
-The property takes an array of module classes or [configurations](concept-configurations.md) with the array keys
-being the module IDs. For example:
+Thuộc tính này chứa mảng các lớp về module hoặc thông tin về [cấu hình](concept-configurations.md) chứa mảng các khóa
+về các định danh của module. Ví dụ:
 
 ```php
 [
     'modules' => [
-        // a "booking" module specified with the module class
+        //  "booking" mô tả tên class
         'booking' => 'app\modules\booking\BookingModule',
 
-        // a "comment" module specified with a configuration array
+        // "comment" được mô tả với mảng cấu hình
         'comment' => [
             'class' => 'app\modules\comment\CommentModule',
             'db' => 'db',
@@ -303,24 +301,24 @@ being the module IDs. For example:
 ]
 ```
 
-Please refer to the [Modules](structure-modules.md) section for more details.
+Tham khảo thêm ở phần [Modules](structure-modules.md) để biết thêm thông tin.
 
 
 #### [[yii\base\Application::name|name]] <span id="name"></span>
 
-This property specifies the application name that may be displayed to end users. Unlike the
-[[yii\base\Application::id|id]] property, which should take a unique value, the value of this property is mainly for
-display purposes; it does not need to be unique.
+Thuộc tính này mô tả tên của ứng dụng và hiển thị tới user. Khác với thuộc tính
+[[yii\base\Application::id|id]], cần phải là tên duy nhất, thì thuộc tính này dùng với mục đích để hiển thị tới user;
+không cần thiết phải là tên duy nhất.
 
-You do not always need to configure this property if none of your code is using it.
+Nếu trong mã nguồn bạn không cần phải dùng tới nó thì bạn không cần phải thiết lập.
 
 
 #### [[yii\base\Application::params|params]] <span id="params"></span>
 
-This property specifies an array of globally accessible application parameters. Instead of using hardcoded
-numbers and strings everywhere in your code, it is a good practice to define them as application parameters
-in a single place and use the parameters in places where needed. For example, you may define the thumbnail
-image size as a parameter like the following:
+Thuộc tính này là mảng chứa các tham số mà có thể truy cập trong ứng dụng ở phạm vi toàn cầu. Thay vì trong mã
+nguồn của bạn cần được mã hóa bởi số và ký tự, đây là cách tốt để định nghĩa các tham số của ứng dụng, định nghĩa một lần 
+và có thể được truy cập ở mọi nơi. Ví dụ, bạn có thể định nghĩa kích thước ảnh thumbnail
+với kích thước như sau:
 
 ```php
 [
@@ -330,34 +328,34 @@ image size as a parameter like the following:
 ]
 ```
 
-Then in your code where you need to use the size value, you can simply use code like the following:
+Bạn có thể thực hiện dòng lệnh sau để lấy tham số về kích thước ảnh thumbnail:
 
 ```php
 $size = \Yii::$app->params['thumbnail.size'];
 $width = \Yii::$app->params['thumbnail.size'][0];
 ```
 
-Later if you decide to change the thumbnail size, you only need to modify it in the application configuration;
-you don't need to touch any dependent code.
+Bạn có thể thay đổi kích thước ảnh thumbnail sau đó, bạn chỉ cần thay đổi vào trong mục cấu hình ứng dụng;
+bạn không cần phải đụng chạm vào mã nguồn của bạn.
 
 
 #### [[yii\base\Application::sourceLanguage|sourceLanguage]] <span id="sourceLanguage"></span>
 
-This property specifies the language that the application code is written in. The default value is `'en-US'`,
-meaning English (United States). You should configure this property if the text content in your code is not in English.
+Thuộc tính mô tả về ngôn ngữ được sử dụng để viết mã nguồn của bạn. Giá trị mặc đinh là `'en-US'`,
+nghĩa là tiếng Anh Mỹ(United States). Bạn nên cấu hình thuộc tính này nếu nội dung trong mã nguồn của bạn không phải là tiếng Anh.
 
-Like the [language](#language) property, you should configure this property in terms of
-an [IETF language tag](http://en.wikipedia.org/wiki/IETF_language_tag). For example, `en` stands for English,
-while `en-US` stands for English (United States).
+Giống như thuộc tính [language](#language), you should configure this property in terms of
+an [IETF language tag](http://en.wikipedia.org/wiki/IETF_language_tag). Ví dụ, `en` chuẩn cho tiếng Anh,
+trong khi `en-US` chuẩn cho tiếng Anh Mỹ (United States).
 
-More details about this property can be found in the [Internationalization](tutorial-i18n.md) section.
+Xem thêm trong phần [Quốc tế hóa](tutorial-i18n.md) để hiểu thêm thuộc tính này.
 
 
 #### [[yii\base\Application::timeZone|timeZone]] <span id="timeZone"></span>
 
-This property is provided as an alternative way of setting the default time zone of the PHP runtime.
-By configuring this property, you are essentially calling the PHP function
-[date_default_timezone_set()](http://php.net/manual/en/function.date-default-timezone-set.php). For example:
+Thuộc tính này cung cấp cách khác để thiết lập time zone trong PHP.
+Qua việc cấu hình thuộc tính này, chủ yếu được gọi qua hàm
+[date_default_timezone_set()](http://php.net/manual/en/function.date-default-timezone-set.php). Ví dụ:
 
 ```php
 [
@@ -368,70 +366,69 @@ By configuring this property, you are essentially calling the PHP function
 
 #### [[yii\base\Application::version|version]] <span id="version"></span>
 
-This property specifies the version of the application. It defaults to `'1.0'`. You do not need to configure
-this property if none of your code is using it.
+Thuộc tính mô tả về phiên bản của ứng dụng. Mặc định là `'1.0'`. Bạn không cần phải thiết lập thuộc tính này nếu như
+trong mã nguồn của bạn không dùng tới.
 
 
-### Useful Properties <span id="useful-properties"></span>
+### Các thuộc tính thông dụng <span id="useful-properties"></span>
 
-The properties described in this subsection are not commonly configured because their default values
-derive from common conventions. However, you may still configure them in case you want to break the conventions.
+Những thuộc tính được mô tả trong phần dưới thường có sự cấu hình khác nhau bởi vì các giá trị thường khác nhau
+. Tuy nhiên, nêu bạn muốn thay đổi giá trị mặc định, bạn có thể cấu hình theo cách của bạn.
 
 
 #### [[yii\base\Application::charset|charset]] <span id="charset"></span>
 
-This property specifies the charset that the application uses. The default value is `'UTF-8'`, which should
-be kept as-is for most applications unless you are working with a legacy system that uses a lot of non-Unicode data.
+Thuộc tính này mô tả các bộ ký tự mà ứng dụng sử dụng. Mặc định là `'UTF-8'`, hầu hết các ứng dụng đều sử dụng.
 
 
 #### [[yii\base\Application::defaultRoute|defaultRoute]] <span id="defaultRoute"></span>
 
-This property specifies the [route](runtime-routing.md) that an application should use when a request
-does not specify one. The route may consist of a child module ID, a controller ID, and/or an action ID.
-For example, `help`, `post/create`, or `admin/post/create`. If an action ID is not given, this property will take
-the default value specified in [[yii\base\Controller::defaultAction]].
+Thuộc tính này mô tả các [route](runtime-routing.md), ứng dụng sẽ dùng route này để thực hiện khi có yêu cầu
+gửi đến mà không được mô tả. Mỗi router gồm có các module ID, a controller ID, hoặc có thể là một action ID.
+Ví dụ, `help`, `post/create`, hoặc `admin/post/create`. Nếu action ID không khai báo, thuộc tính sẽ lấy giá trị mặc định
+được mô tả trong [[yii\base\Controller::defaultAction]].
 
-For [[yii\web\Application|Web applications]], the default value of this property is `'site'`, which means
-the `SiteController` controller and its default action should be used. As a result, if you access
-the application without specifying a route, it will show the result of `app\controllers\SiteController::actionIndex()`.
+Đối với [[yii\web\Application| Ứng dụng Web ]], giá trị mặc định của thuộc tính là `'site'`, nghĩa là
+trình điều khiển `SiteController` được gọi và một hành động mặc định được sử dụng. Như vậy, nếu bạn 
+truy cập vào ứng dụng mà không cung cấp thông tin route, thì ứng dụng mặc định sẽ trả về hành động `app\controllers\SiteController::actionIndex()`.
 
-For [[yii\console\Application|console applications]], the default value is `'help'`, which means the core command
-[[yii\console\controllers\HelpController::actionIndex()]] should be used. As a result, if you run the command `yii`
-without providing any arguments, it will display the help information.
+Đối với [[yii\console\Application| Ứng dụng console]], thì giá trị mặc định là `'help'`, đồng nghĩa hành động
+[[yii\console\controllers\HelpController::actionIndex()]] sẽ được gọi. Như vậy, nếu bạn chạy dòng lệnh `yii`
+mà không cung cấp các tham số nào khác, thì nó sẽ hiển thị lên màn hình trợ giúp tương ứng kết quả của action index của trình điều khiển HelpController.
 
 
 #### [[yii\base\Application::extensions|extensions]] <span id="extensions"></span>
 
-This property specifies the list of [extensions](structure-extensions.md) that are installed and used by the application.
-By default, it will take the array returned by the file `@vendor/yiisoft/extensions.php`. The `extensions.php` file
-is generated and maintained automatically when you use [Composer](https://getcomposer.org) to install extensions.
-So in most cases, you do not need to configure this property.
+Thuộc tính này mô tả về danh sách các [thành phần mở rộng (extensions)](structure-extensions.md) đã được cài và sử dụng trong ứng dụng.
+Mặc định, thuộc tính sẽ nhận mảng được trả về từ file `@vendor/yiisoft/extensions.php`. File `extensions.php` 
+được sinh tự động khi bạn sử dụng [Composer](https://getcomposer.org) để cài các thành phần mở rộng.
+Ở các trường hợp này, thuộc tính này có thể không cần cấu hình.
 
-In the special case when you want to maintain extensions manually, you may configure this property as follows:
+Trong trường hợp, khi bạn muốn cấu hình các extension một cách thủ công, bạn có thể cấu hình thuộc tính như sau:
 
 ```php
 [
     'extensions' => [
         [
-            'name' => 'extension name',
-            'version' => 'version number',
-            'bootstrap' => 'BootstrapClassName',  // optional, may also be a configuration array
-            'alias' => [  // optional
+            'name' => 'tên extension',
+            'version' => 'phiên bản',
+            'bootstrap' => 'BootstrapClassName',  // mặc định, giá trị thường là mảng
+            'alias' => [  // mặc định
                 '@alias1' => 'to/path1',
                 '@alias2' => 'to/path2',
             ],
         ],
 
-        // ... more extensions like the above ...
+        // ... các extensions khác ...
 
     ],
 ]
 ```
 
-As you can see, the property takes an array of extension specifications. Each extension is specified with an array
-consisting of `name` and `version` elements. If an extension needs to run during the [bootstrap](runtime-bootstrapping.md)
-process, a `bootstrap` element may be specified with a bootstrapping class name or a [configuration](concept-configurations.md)
-array. An extension may also define a few [aliases](concept-aliases.md).
+Như bạn thấy ở phần trên, thuộc tính sẽ nhận thông tin bao gồm mảng các cấu hình. Mỗi extension được mô tả là mảng
+bao gồm các thành phần là`name` và `version`. Nêu muốn extension cần được chạy ở tiến trình [bootstrap](runtime-bootstrapping.md)
+, mỗi `bootstrap` cần được mô tả về tên lớp hoặc mảng giá trị về [cấu hình](concept-configurations.md)
+. Mỗi extension có thể định nghĩa thêm các [bí danh (aliases)](concept-aliases.md).
 
 
 #### [[yii\base\Application::layout|layout]] <span id="layout"></span>
