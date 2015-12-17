@@ -66,6 +66,7 @@ Yii Framework 2 Change Log
 - Enh #9643: Added migrations for DB cache (mdmunir)
 - Enh #9711: Added `yii\widgets\LinkPager::$pageCssClass` that allows to set default page class (ShNURoK42)
 - Enh #9733: Added Unprocessable Entity HTTP Exception (janfrs)
+- Enh #9762: Added `JsonResponseFormatter::$encodeOptions` and `::$prettyPrint` for better JSON output formatting (cebe)
 - Enh #9783: jQuery inputmask dependency updated to `~3.2.2` (samdark)
 - Enh #9869: Allow path alias for SQLite database files in DSN config (ASlatius)
 - Enh #9901: Default `Cache.SerializerPermissions` configuration option for `HTMLPurifier` is set to `0775` (klimov-paul)
