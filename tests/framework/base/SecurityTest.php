@@ -801,9 +801,13 @@ TEXT;
     public function testGenerateRandomKey()
     {
         $length = 21;
-        $key = $this->security->generateRandomKey($length);
-        $this->assertInternalType('string', $key);
-        $this->assertEquals($length, strlen($key));
+        $key1 = $this->security->generateRandomKey($length);
+        $this->assertInternalType('string', $key1);
+        $this->assertEquals($length, strlen($key1));
+        $key2 = $this->security->generateRandomKey($length);
+        $this->assertInternalType('string', $key2);
+        $this->assertEquals($length, strlen($key2));
+        $this->assertTrue($key1 != $key2);
     }
 
     public function testGenerateRandomString()
