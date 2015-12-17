@@ -116,6 +116,7 @@ class Response extends \yii\base\Response
      * The array keys are the format names, and the array values are the corresponding configurations
      * for creating the formatter objects.
      * @see format
+     * @see defaultFormatters
      */
     public $formatters = [];
     /**
