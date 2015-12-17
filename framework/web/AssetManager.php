@@ -478,7 +478,14 @@ class AssetManager extends Component
 
         if ($this->linkAssets) {
             if (!is_file($dstFile)) {
-                symlink($src, $dstFile);
+                $symlink= @ symlink($src, $dstFile);
+                if (!$symlink) {
+                    if (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN') {
+                        copy($src, $dstFile);
+                    } else {
+                        symlink($src, $dstFile);
+                    }
+                }
             }
         } elseif (@filemtime($dstFile) < @filemtime($src)) {
             copy($src, $dstFile);
@@ -516,7 +523,14 @@ class AssetManager extends Component
         $dstDir = $this->basePath . DIRECTORY_SEPARATOR . $dir;
         if ($this->linkAssets) {
             if (!is_dir($dstDir)) {
-                symlink($src, $dstDir);
+                $symlink= @ symlink($src, $dstDir);
+                if (!$symlink) {
+                    if (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN') {
+                        exec('mklink /J '.$dstDir.' '.$src);
+                    } else {
+                        symlink($src, $dstDir);
+                    }
+                }
             }
         } elseif (!empty($options['forceCopy']) || ($this->forceCopy && !isset($options['forceCopy'])) || !is_dir($dstDir)) {
             $opts = array_merge(
