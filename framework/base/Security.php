@@ -526,7 +526,7 @@ class Security extends Component
                     $key .= $buffer;
                 } while (StringHelper::byteLength($key) < $length);
 
-                if ($key && StringHelper::byteLength($key) === $length) {
+                if ($key !== null && StringHelper::byteLength($key) === $length) {
                     $this->_randomSource = $urandomFile;
 
                     return $key;
