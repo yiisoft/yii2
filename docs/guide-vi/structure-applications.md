@@ -433,63 +433,63 @@ bao gồm các thành phần là`name` và `version`. Nêu muốn extension cầ
 
 #### [[yii\base\Application::layout|layout]] <span id="layout"></span>
 
-This property specifies the name of the default layout that should be used when rendering a [view](structure-views.md).
-The default value is `'main'`, meaning the layout file `main.php` under the [layout path](#layoutPath) should be used.
-If both of the [layout path](#layoutPath) and the [view path](#viewPath) are taking the default values,
-the default layout file can be represented as the path alias `@app/views/layouts/main.php`.
+Thuộc tính này mô tả vê layout mặc định được dùng mỗi khi render dữ liệu ra [view](structure-views.md).
+Giá trị mặc định là `'main'`, nghĩa là file `main.php` nằm trong [đường dẫn layout](#layoutPath) được dùng.
+Nếu giá trị [layout path](#layoutPath) và [view path](#viewPath) nhận giá trị là mặc định,
+giá trị mặc định của file layout có thể được thay thế qua bí danh `@app/views/layouts/main.php`.
 
-You may configure this property to be `false` if you want to disable layout by default, although this is very rare.
+Bạn có thể cấu hình thuộc tính với giá trị `false` nếu bạn muốn tắt giá trị mặc định của layout.
 
 
 #### [[yii\base\Application::layoutPath|layoutPath]] <span id="layoutPath"></span>
 
-This property specifies the path where layout files should be looked for. The default value is
-the `layouts` sub-directory under the [view path](#viewPath). If the [view path](#viewPath) is taking
-its default value, the default layout path can be represented as the path alias `@app/views/layouts`.
+Thuộc tính mô tả đường dẫn nơi lưu trữ file layout. Giá trị mặc định sẽ là
+`layouts` thư mục con nằm trong [đường dẫn view](#viewPath). Nếu [đường dẫn view](#viewPath) nhận giá trị mặc định
+, giá trị mặc định tới đường dẫn layout được thay thế như một đường dẫn của bí danh `@app/views/layouts`.
 
-You may configure it as a directory or a path [alias](concept-aliases.md).
+Bạn có thể cấu hình như đường dẫn hoặc một [bí danh](concept-aliases.md).
 
 
 #### [[yii\base\Application::runtimePath|runtimePath]] <span id="runtimePath"></span>
 
-This property specifies the path where temporary files, such as log files and cache files, can be generated.
-The default value is the directory represented by the alias `@app/runtime`.
+Đường dẫn chứa đường dẫn tới các file tạm của ứng dụng, như file log và cache, cần được tạo ra.
+Giá trị mặc định của đường dẫn có thể lấy qua bí danh `@app/runtime`.
 
-You may configure it as a directory or a path [alias](concept-aliases.md). Note that the runtime path must
-be writable by the process running the application. And the path should be protected from being accessed
-by end users, because the temporary files under it may contain sensitive information.
+Bạn có thể cấu hình thuộc tính với đường dẫn hoặc một [bí danh](concept-aliases.md). Đường dẫn này cần được quyền ghi đè lên 
+trong quá trình ứng dụng được chạy. Và user không thể truy cập vào đường dẫn
+, bởi vì các tập tin này có thể chứa các thông tin nhạy cảm.
 
-To simplify access to this path, Yii has predefined a path alias named `@runtime` for it.
+Yii cung cấp cách đơn giản nhất để truy cập vào đường dẫn này qua bí danh là `@runtime`.
 
 
 #### [[yii\base\Application::viewPath|viewPath]] <span id="viewPath"></span>
 
-This property specifies the root directory where view files are located. The default value is the directory
-represented by the alias `@app/views`. You may configure it as a directory or a path [alias](concept-aliases.md).
+Thuộc tính này chỉ định thư mục để lưu trữ những file view trong mô hình MVC. Giá trị mặc định là
+là một bí danh `@app/views`. Bạn có thể cấu hình nó với thư mục hoặc đường dẫn [alias](concept-aliases.md).
 
 
 #### [[yii\base\Application::vendorPath|vendorPath]] <span id="vendorPath"></span>
 
-This property specifies the vendor directory managed by [Composer](https://getcomposer.org). It contains
-all third party libraries used by your application, including the Yii framework. The default value is
-the directory represented by the alias `@app/vendor`.
+Thuộc tính này quy định cụ thể về thư mục được quản lý bởi [Composer](https://getcomposer.org). Thư mục này chứa các thư viện
+được cung cấp bởi nhà phát triển và được dùng trong ứng dụng, bao gồm Yii framework. Giá trị mặc định là
+một thư mục được cung cấp bởi bí danh `@app/vendor`.
 
-You may configure this property as a directory or a path [alias](concept-aliases.md). When you modify
-this property, make sure you also adjust the Composer configuration accordingly.
+Thuộc tính có thể được cấu hình là thư mục hoặc là đường dẫn [alias](concept-aliases.md). Mỗi khi bạn thay đổi thuộc tính này
+, bạn cần phải thay đổi thông tin cấu hình Composer cho phù hợp.
 
-To simplify access to this path, Yii has predefined a path alias named `@vendor` for it.
+Yii cung cấp cách thức đơn giản để truy cập vào đường dẫn này qua bí danh là `@vendor`.
 
 
 #### [[yii\console\Application::enableCoreCommands|enableCoreCommands]] <span id="enableCoreCommands"></span>
 
-This property is supported by [[yii\console\Application|console applications]] only. It specifies
-whether the core commands included in the Yii release should be enabled. The default value is `true`.
+Thuộc tính này chỉ được hỗ trợ bởi [[yii\console\Application|ứng dụng console]]. Nó được xác định 
+vị trí các dòng lệnh được kích hoạt lên trong phiên bản Yii. Giá trị mặc định là `true`.
 
 
-## Application Events <span id="application-events"></span>
+## Sự kiện <span id="application-events"></span>
 
-An application triggers several events during the lifecycle of handling a request. You may attach event
-handlers to these events in application configurations as follows:
+Ứng dụng trong chu trình hoạt động sẽ gán một vài sự kiện để nắm bắt các yêu cầu. Bạn cần liên kết tới các sự kiện
+vào trong ứng dụng như sau:
 
 ```php
 [
@@ -499,11 +499,10 @@ handlers to these events in application configurations as follows:
 ]
 ```
 
-The use of the `on eventName` syntax is described in the [Configurations](concept-configurations.md#configuration-format)
-section.
+Các mô tả về cú pháp của các sự kiện `on eventName` được mô tả ở trong mục [Cấu hình](concept-configurations.md#configuration-format).
 
-Alternatively, you may attach event handlers during the [bootstrapping process](runtime-bootstrapping.md)
-after the application instance is created. For example:
+Cách khác, bạn có thể nắm bắt các sự kiện tại [tiến trình bootstrapping](runtime-bootstrapping.md)
+mỗi khi ứng dụng được khởi tạo. Ví dụ:
 
 ```php
 \Yii::$app->on(\yii\base\Application::EVENT_BEFORE_REQUEST, function ($event) {
@@ -513,33 +512,33 @@ after the application instance is created. For example:
 
 ### [[yii\base\Application::EVENT_BEFORE_REQUEST|EVENT_BEFORE_REQUEST]] <span id="beforeRequest"></span>
 
-This event is triggered *before* an application handles a request. The actual event name is `beforeRequest`.
+Sự kiện được gán *trước lúc* ứng dụng nhận các yêu cầu. Tên sự kiện gọi là `beforeRequest`.
 
-When this event is triggered, the application instance has been configured and initialized. So it is a good place
+Mỗi nắm bắt được sự kiện, ứng dụng sẽ tải các thông tin cấu hình và khởi tạo. So it is a good place
 to insert your custom code via the event mechanism to intercept the request handling process. For example,
 in the event handler, you may dynamically set the [[yii\base\Application::language]] property based on some parameters.
 
 
 ### [[yii\base\Application::EVENT_AFTER_REQUEST|EVENT_AFTER_REQUEST]] <span id="afterRequest"></span>
 
-This event is triggered *after* an application finishes handling a request but *before* sending the response.
-The actual event name is `afterRequest`.
+Sự kiện được gán *sau khi* ứng dụng hoàn thành việc xử lý *trước lúc* đưa phản hồi.
+Tên sự kiện là `afterRequest`.
 
-When this event is triggered, the request handling is completed and you may take this chance to do some postprocessing
-of the request or customize the response.
+Mỗi khi sự kiện được gán, việc nắm giữ yêu cầu xử lý thành công thì bạn có thể xử lý sau đó 
+các thông tin về yêu cầu xử lý hoặc nội dung phản hồi.
 
-Note that the [[yii\web\Response|response]] component also triggers some events while it is sending out
-response content to end users. Those events are triggered *after* this event.
+Lưu ý rằng thành phần [[yii\web\Response|response]] luôn được gán một vài sự kiện mỗi lúc gửi nội dung
+tới user. Những sự kiện được gán  *sau* sự kiện này là.
 
 
 ### [[yii\base\Application::EVENT_BEFORE_ACTION|EVENT_BEFORE_ACTION]] <span id="beforeAction"></span>
 
-This event is triggered *before* running every [controller action](structure-controllers.md).
-The actual event name is `beforeAction`.
+Sự kiện sẽ được gán *trước* khi thực hiện chạy một [hành động](structure-controllers.md).
+Tên sự kiện là `beforeAction`.
 
-The event parameter is an instance of [[yii\base\ActionEvent]]. An event handler may set
-the [[yii\base\ActionEvent::isValid]] property to be `false` to stop running the action.
-For example:
+Các tham số của sự kiện được khởi tạo từ [[yii\base\ActionEvent]]. Các sự kiện cần thiết lập thuộc tính
+[[yii\base\ActionEvent::isValid]] về giá trị `false` để tạm ngưng hành động.
+Ví dụ:
 
 ```php
 [
@@ -552,57 +551,57 @@ For example:
 ]
 ```
 
-Note that the same `beforeAction` event is also triggered by [modules](structure-modules.md)
-and [controllers](structure-controllers.md). Application objects are the first ones
-triggering this event, followed by modules (if any), and finally controllers. If an event handler
-sets [[yii\base\ActionEvent::isValid]] to be `false`, all of the subsequent events will NOT be triggered.
+Lưu ý, có một sự kiện tương tự `beforeAction` được gán bởi [modules](structure-modules.md)
+và [controllers](structure-controllers.md). Ứng dụng sẽ nắm bắt sự kiện này trước
+, tiếp sau đó bởi modules (nếu có), và cuối cùng là trình điều khiển. Nếu sự kiện đều thiết lập tham số
+[[yii\base\ActionEvent::isValid]] là `false`, tất cả các yêu cầu nằm trong sự kiện sẽ không được nắm giữ.
 
 
 ### [[yii\base\Application::EVENT_AFTER_ACTION|EVENT_AFTER_ACTION]] <span id="afterAction"></span>
 
-This event is triggered *after* running every [controller action](structure-controllers.md).
-The actual event name is `afterAction`.
+Tương tự, sự kiện này được gán *sau khi* khởi chạy một [hành động](structure-controllers.md).
+Tên sự kiện là `afterAction`.
 
-The event parameter is an instance of [[yii\base\ActionEvent]]. Through
-the [[yii\base\ActionEvent::result]] property, an event handler may access or modify the action result.
-For example:
+Các tham số của sự kiện được khởi tạo từ [[yii\base\ActionEvent]]. Xem thuộc tính
+[[yii\base\ActionEvent::result]], sự kiện này có thể truy cập hoặc chỉnh sửa kết quả trả về.
+Chẳng hạn:
 
 ```php
 [
     'on afterAction' => function ($event) {
-        if (some condition) {
-            // modify $event->result
+        if (điều kiện) {
+            // thay đổi kết quả $event->result
         } else {
         }
     },
 ]
 ```
 
-Note that the same `afterAction` event is also triggered by [modules](structure-modules.md)
-and [controllers](structure-controllers.md). These objects trigger this event in the reverse order
-as for that of `beforeAction`. That is, controllers are the first objects triggering this event,
-followed by modules (if any), and finally applications.
+Lưu ý rằng với sự kiện `afterAction` được gán bởi [modules](structure-modules.md)
+và [controllers](structure-controllers.md). Những đối tượng được gán vào trong sự kiện này được ưu tiên ngược lại
+như sự kiện `beforeAction`. Đó là, trình điều khiển sẽ nắm giữ trước,
+tiếp đến là module modules (nếu có), và cuối cùng là ứng dụng.
 
 
 ## Vòng đời ứng dụng <span id="application-lifecycle"></span>
 
 ![Vòng đời ứng dụng](images/application-lifecycle.png)
 
-When an [entry script](structure-entry-scripts.md) is being executed to handle a request,
-an application will undergo the following lifecycle:
+Khi một [entry script](structure-entry-scripts.md) được gọi và nắm giữ các yêu cầu,
+vòng đời của ứng dụng sẽ được thực hiện như sau:
 
-1. The entry script loads the application configuration as an array.
-2. The entry script creates a new instance of the application:
-  * [[yii\base\Application::preInit()|preInit()]] is called, which configures some high priority
-    application properties, such as [[yii\base\Application::basePath|basePath]].
-  * Register the [[yii\base\Application::errorHandler|error handler]].
-  * Configure application properties.
-  * [[yii\base\Application::init()|init()]] is called which further calls
-    [[yii\base\Application::bootstrap()|bootstrap()]] to run bootstrapping components.
-3. The entry script calls [[yii\base\Application::run()]] to run the application:
-  * Trigger the [[yii\base\Application::EVENT_BEFORE_REQUEST|EVENT_BEFORE_REQUEST]] event.
-  * Handle the request: resolve the request into a [route](runtime-routing.md) and the associated parameters;
-    create the module, controller, and action objects as specified by the route; and run the action.
-  * Trigger the [[yii\base\Application::EVENT_AFTER_REQUEST|EVENT_AFTER_REQUEST]] event.
-  * Send response to the end user.
-4. The entry script receives the exit status from the application and completes the request processing.
+1. Entry script sẽ tải các thông tin cấu hình trong ứng dụng ra một mảng.
+2. Entry script sẽ khởi tạo mới một ứng dụng:
+  * Phương thức [[yii\base\Application::preInit()|preInit()]] sẽ được gọi, nhằm tải các thông tin cấu hình mà có sự ưu tiên cao
+    , như thuộc tính [[yii\base\Application::basePath|basePath]].
+  * Đăng ký một [[yii\base\Application::errorHandler|error handler]].
+  * Cấu hình các thuộc tính trong ứng dụng.
+  * Phương thức [[yii\base\Application::init()|init()]] sẽ được gọi và phương thức
+    [[yii\base\Application::bootstrap()|bootstrap()]] sẽ tải thành phần bootstrapping.
+3. Entry script sẽ gọi phương thức [[yii\base\Application::run()]] để chạy ứng dụng:
+  * Sự kiện [[yii\base\Application::EVENT_BEFORE_REQUEST|EVENT_BEFORE_REQUEST]] sẽ được gán sau đó.
+  * Xử lý các yêu cầu: chuyển các yêu cầu vào [bộ định tuyến (route)](runtime-routing.md) và các tham số liên quan;
+    khởi tạo đối tượng module, controller, và action như phần mô tả ở bộ định tuyến; và khởi chạy action.
+  * Gán sự kiện [[yii\base\Application::EVENT_AFTER_REQUEST|EVENT_AFTER_REQUEST]].
+  * Gửi phản hồi tới user.
+4. Entry script tiếp nhận trạng thái kết thúc từ ứng dụng hoàn tất xử lý tiến trình.
