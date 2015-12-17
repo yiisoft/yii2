@@ -338,8 +338,6 @@ class Response extends \yii\base\Response
         if (headers_sent()) {
             return;
         }
-        $statusCode = $this->getStatusCode();
-        header("HTTP/{$this->version} $statusCode {$this->statusText}");
         if ($this->_headers) {
             $headers = $this->getHeaders();
             foreach ($headers as $name => $values) {
@@ -352,6 +350,8 @@ class Response extends \yii\base\Response
                 }
             }
         }
+        $statusCode = $this->getStatusCode();
+        header("HTTP/{$this->version} {$statusCode} {$this->statusText}");
         $this->sendCookies();
     }
 
