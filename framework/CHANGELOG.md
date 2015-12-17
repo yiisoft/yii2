@@ -89,6 +89,7 @@ Yii Framework 2 Change Log
 - Chg #9953: `TimestampBehavior::getValue()` changed to make value processing consistent with `AttributeBehavior::getValue()` (silverfire)
 - Chg #6419: Added `yii\web\ErrorHandler::displayVars` make list of displayed vars customizable. `$_ENV` and `$_SERVER` are not displayed by default anymore (silverfire)
 - Chg #9528: Traversable objects are now formatted as arrays in `yii\web\XmlResponseFormatter` to support SPL objects and Generators (MaXL-ru)
+- Chg #9878,9879,9880: change `\base\Security` to use LibreSSL, mcrypt, `random_bytes()`, not OpenSSL, and to prefer `password_hash()` over `crypt()`
 - Chg #10296: Methods mset, mget and madd of `\yii\caching\Cache` have been marked as deprecated (trejder, githubjeka)
 - Chg: ApcCache is now able to handle PHP 7 APCu (samdark)
 - New #10083: Added wrapper for PHP webserver (samdark)

@@ -77,8 +77,10 @@ class Security extends Component
      * - 'password_hash' - use of PHP `password_hash()` function with PASSWORD_DEFAULT algorithm.
      *   This option is recommended, but it requires PHP version >= 5.5.0
      * - 'crypt' - use PHP `crypt()` function.
+     * @deprecated Since version 2.0.7, @generatePasswordHash() ignores @passwordHashStrategy and
+     * uses `password_hash()` when available or `crypt()` when not.
      */
-    public $passwordHashStrategy = 'crypt';
+    public $passwordHashStrategy;
     /**
      * @var integer Default cost used for password hashing.
      * Allowed value is between 4 and 31.
@@ -87,6 +89,11 @@ class Security extends Component
      */
     public $passwordHashCost = 13;
 
+    /**
+     * @var resource|string|null Identifies the random source of the last successful call of @generateRandomKey.
+     * Caches the file pointer to /dev/urandom if it was fopened.
+     */
+    private $_randomSource;
 
     /**
      * Encrypts data using a password.
@@ -98,8 +105,10 @@ class Security extends Component
      * to hash input or output data.
      * > Note: Avoid encrypting with passwords wherever possible. Nothing can protect against
      * poor-quality or compromised passwords.
+     *
      * @param string $data the data to encrypt
      * @param string $password the password to use for encryption
+     *
      * @return string the encrypted data
      * @see decryptByPassword()
      * @see encryptByKey()
@@ -116,9 +125,11 @@ class Security extends Component
      * random -- use [[generateRandomKey()]] to generate keys.
      * The encrypted data includes a keyed message authentication code (MAC) so there is no need
      * to hash input or output data.
+     *
      * @param string $data the data to encrypt
      * @param string $inputKey the input to use for encryption and authentication
      * @param string $info optional context and application specific information, see [[hkdf()]]
+     *
      * @return string the encrypted data
      * @see decryptByKey()
      * @see encryptByPassword()
@@ -130,8 +141,10 @@ class Security extends Component
 
     /**
      * Verifies and decrypts data encrypted with [[encryptByPassword()]].
+     *
      * @param string $data the encrypted data to decrypt
      * @param string $password the password to use for decryption
+     *
      * @return bool|string the decrypted data or false on authentication failure
      * @see encryptByPassword()
      */
@@ -142,9 +155,11 @@ class Security extends Component
 
     /**
      * Verifies and decrypts data encrypted with [[encryptByPassword()]].
+     *
      * @param string $data the encrypted data to decrypt
      * @param string $inputKey the input to use for encryption and authentication
      * @param string $info optional context and application specific information, see [[hkdf()]]
+     *
      * @return bool|string the decrypted data or false on authentication failure
      * @see encryptByKey()
      */
@@ -201,6 +216,7 @@ class Security extends Component
          * - MAC: message authentication code, length same as the output of MAC_HASH
          * - IV: initialization vector, length $blockSize
          */
+
         return $keySalt . $hashed;
     }
 
@@ -256,6 +272,7 @@ class Security extends Component
      * Derives a key from the given input key using the standard HKDF algorithm.
      * Implements HKDF specified in [RFC 5869](https://tools.ietf.org/html/rfc5869).
      * Recommend use one of the SHA-2 hash algorithms: sha224, sha256, sha384 or sha512.
+     *
      * @param string $algo a hash algorithm supported by `hash_hmac()`, e.g. 'SHA-256'
      * @param string $inputKey the source key
      * @param string $salt the random salt
@@ -264,6 +281,7 @@ class Security extends Component
      * [RFC 5869](https://tools.ietf.org/html/rfc5869)
      * @param integer $length length of the output key in bytes. If 0, the output key is
      * the length of the hash algorithm output.
+     *
      * @throws InvalidParamException when HMAC generation fails.
      * @return string the derived key
      */
@@ -297,6 +315,7 @@ class Security extends Component
         if ($length !== 0) {
             $outputKey = StringHelper::byteSubstr($outputKey, 0, $length);
         }
+
         return $outputKey;
     }
 
@@ -304,6 +323,7 @@ class Security extends Component
      * Derives a key from the given password using the standard PBKDF2 algorithm.
      * Implements HKDF2 specified in [RFC 2898](http://tools.ietf.org/html/rfc2898#section-5.2)
      * Recommend use one of the SHA-2 hash algorithms: sha224, sha256, sha384 or sha512.
+     *
      * @param string $algo a hash algorithm supported by `hash_hmac()`, e.g. 'SHA-256'
      * @param string $password the source password
      * @param string $salt the random salt
@@ -311,6 +331,7 @@ class Security extends Component
      * possible to hinder dictionary password attacks.
      * @param integer $length length of the output key in bytes. If 0, the output key is
      * the length of the hash algorithm output.
+     *
      * @return string the derived key
      * @throws InvalidParamException when hash generation fails due to invalid params given.
      */
@@ -321,6 +342,7 @@ class Security extends Component
             if ($outputKey === false) {
                 throw new InvalidParamException('Invalid parameters to hash_pbkdf2()');
             }
+
             return $outputKey;
         }
 
@@ -358,6 +380,7 @@ class Security extends Component
         if ($length !== 0) {
             $outputKey = StringHelper::byteSubstr($outputKey, 0, $length);
         }
+
         return $outputKey;
     }
 
@@ -365,11 +388,13 @@ class Security extends Component
      * Prefixes data with a keyed hash value so that it can later be detected if it is tampered.
      * There is no need to hash inputs or outputs of [[encryptByKey()]] or [[encryptByPassword()]]
      * as those methods perform the task.
+     *
      * @param string $data the data to be protected
      * @param string $key the secret key to be used for generating hash. Should be a secure
      * cryptographic key.
      * @param boolean $rawHash whether the generated hash value is in raw binary format. If false, lowercase
      * hex digits will be generated.
+     *
      * @return string the data prefixed with the keyed hash
      * @throws InvalidConfigException when HMAC generation fails.
      * @see validateData()
@@ -383,11 +408,13 @@ class Security extends Component
         if (!$hash) {
             throw new InvalidConfigException('Failed to generate HMAC with hash algorithm: ' . $this->macHash);
         }
+
         return $hash . $data;
     }
 
     /**
      * Validates if the given data is tampered.
+     *
      * @param string $data the data to be validated. The data must be previously
      * generated by [[hashData()]].
      * @param string $key the secret key that was previously used to generate the hash for the data in [[hashData()]].
@@ -397,6 +424,7 @@ class Security extends Component
      * It indicates whether the hash value in the data is in binary format. If false, it means the hash value consists
      * of lowercase hex digits only.
      * hex digits will be generated.
+     *
      * @return string the real data with the hash stripped off. False if the data is tampered.
      * @throws InvalidConfigException when HMAC generation fails.
      * @see hashData()
@@ -418,82 +446,134 @@ class Security extends Component
                 return $pureData;
             }
         }
+
         return false;
     }
 
     /**
      * Generates specified number of random bytes.
      * Note that output may not be ASCII.
+     *
      * @see generateRandomString() if you need a string.
      *
      * @param integer $length the number of bytes to generate
+     *
      * @return string the generated random bytes
      * @throws InvalidConfigException if OpenSSL extension is required (e.g. on Windows) but not installed.
      * @throws Exception on failure.
      */
     public function generateRandomKey($length = 32)
     {
-        /*
-         * Strategy
-         *
-         * The most common platform is Linux, on which /dev/urandom is the best choice. Many other OSs
-         * implement a device called /dev/urandom for Linux compat and it is good too. So if there is
-         * a /dev/urandom then it is our first choice regardless of OS.
-         *
-         * Nearly all other modern Unix-like systems (the BSDs, Unixes and OS X) have a /dev/random
-         * that is a good choice. If we didn't get bytes from /dev/urandom then we try this next but
-         * only if the system is not Linux. Do not try to read /dev/random on Linux.
-         *
-         * Finally, OpenSSL can supply CSPR bytes. It is our last resort. On Windows this reads from
-         * CryptGenRandom, which is the right thing to do. On other systems that don't have a Unix-like
-         * /dev/urandom, it will deliver bytes from its own CSPRNG that is seeded from kernel sources
-         * of randomness. Even though it is fast, we don't generally prefer OpenSSL over /dev/urandom
-         * because an RNG in user space memory is undesirable.
-         *
-         * For background, see http://sockpuppet.org/blog/2014/02/25/safely-generate-random-numbers/
-         */
+        if (function_exists('random_bytes')) {
+            return random_bytes($length);
+        }
 
-        $bytes = '';
+        if (!is_integer($length)) {
+            throw new InvalidParamException('First parameter ($length) must be an integer');
+        }
 
-        // If we are on Linux or any OS that mimics the Linux /dev/urandom device, e.g. FreeBSD or OS X,
-        // then read from /dev/urandom.
-        if (@file_exists('/dev/urandom')) {
-            $handle = fopen('/dev/urandom', 'r');
-            if ($handle !== false) {
-                $bytes .= fread($handle, $length);
-                fclose($handle);
+        if ($length < 1) {
+            throw new InvalidParamException('First parameter ($length) must be greater than 0');
+        }
+
+        // The recent LibreSSL RNGs are faster and better than urandom. OPENSSL_VERSION_NUMBER is no
+        // use for LibreSSL https://bugs.php.net/bug.php?id=71143 so parse the text.
+        if ($this->_randomSource === 'LibreSSL'
+            || ($this->_randomSource === null
+                && defined('OPENSSL_VERSION_TEXT')
+                && preg_match('{^LibreSSL (\d\d?)\.(\d\d?)\.(\d\d?)$}', OPENSSL_VERSION_TEXT, $matches)
+                && (10000 * $matches[1]) + (100 * $matches[2]) + $matches[3] >= 20105)
+        ) {
+            // The $crypto_strong var is irrelevant for for LibreSSL.
+            $key = openssl_random_pseudo_bytes($length);
+            if (StringHelper::byteLength($key) === $length) {
+                $this->_randomSource = 'LibreSSL';
+
+                return $key;
             }
+
+            $this->_randomSource = null;
         }
 
-        if (StringHelper::byteLength($bytes) >= $length) {
-            return StringHelper::byteSubstr($bytes, 0, $length);
-        }
+        // mcrypt_create_iv() does not use libmcrypt. Since 5.3.7 it's the best way to read
+        // CrypGenRandom on Windows and a better way to read /dev/urandom than PHP fread().
+        if ($this->_randomSource === 'mcrypt'
+            || ($this->_randomSource === null
+                && PHP_VERSION_ID >= 50307
+                && function_exists('mcrypt_create_iv'))
+        ) {
+            $key = mcrypt_create_iv($length, MCRYPT_DEV_URANDOM);
+            if (StringHelper::byteLength($key) === $length) {
+                $this->_randomSource = 'mcrypt';
 
-        // If we are not on Linux and there is a /dev/random device then we have a BSD or Unix device
-        // that won't block. It's not safe to read from /dev/random on Linux.
-        if (PHP_OS !== 'Linux' && @file_exists('/dev/random')) {
-            $handle = fopen('/dev/random', 'r');
-            if ($handle !== false) {
-                $bytes .= fread($handle, $length);
-                fclose($handle);
+                return $key;
             }
+
+            $this->_randomSource = null;
         }
 
-        if (StringHelper::byteLength($bytes) >= $length) {
-            return StringHelper::byteSubstr($bytes, 0, $length);
+        // If not on Windows, try reading from /dev/urandom device. If successful, cache
+        // the file pointer in $this->_randomSource.
+        if (is_resource($this->_randomSource)
+            || ($this->_randomSource === null
+                && DIRECTORY_SEPARATOR === '/' && @is_readable('/dev/urandom'))
+        ) {
+            // Either open /dev/urandom or get the cached file pointer.
+            if (is_resource($this->_randomSource)) {
+                $urandomFile = $this->_randomSource;
+            } else {
+                $urandomFile = fopen('/dev/urandom', 'rb');
+                if ($urandomFile) {
+                    // Check the file's inode protection mode is 'character special'.
+                    // NOTE: octal integer literals!
+                    $fstat = fstat($urandomFile);
+                    if (($fstat['mode'] & 0170000) !== 020000) {
+                        fclose($urandomFile);
+                        $urandomFile = null;
+                    }
+                } else {
+                    $urandomFile = null;
+                }
+            }
+
+            if ($urandomFile !== null) {
+                // $length could be large so read using a loop.
+                $key = '';
+                do {
+                    $buffer = fread($urandomFile, $length);
+                    if (!$buffer) {
+                        $key = null;
+                        break;
+                    }
+                    $key .= $buffer;
+                } while (StringHelper::byteLength($key) < $length);
+
+                if ($key && StringHelper::byteLength($key) === $length) {
+                    $this->_randomSource = $urandomFile;
+
+                    return $key;
+                }
+            }
+
+            $this->_randomSource = null;
         }
 
-        if (!extension_loaded('openssl')) {
-            throw new InvalidConfigException('The OpenSSL PHP extension is not installed.');
+        // Since 5.4.0, openssl_random_pseudo_bytes() reads CryptGenRandom on Windows.
+        // Don't use OpenSSL on other platforms.
+        if ($this->_randomSource === 'OpenSSL'
+            || (DIRECTORY_SEPARATOR !== '/' && PHP_VERSION_ID >= 50400)
+        ) {
+            $key = openssl_random_pseudo_bytes($length);
+            if (StringHelper::byteLength($key) === $length) {
+                $this->_randomSource = 'OpenSSL';
+
+                return $key;
+            }
+
+            $this->_randomSource = null;
         }
 
-        $bytes .= openssl_random_pseudo_bytes($length, $cryptoStrong);
-
-        if (StringHelper::byteLength($bytes) < $length || !$cryptoStrong) {
-            throw new Exception('Unable to generate random bytes.');
-        }
-
-        return StringHelper::byteSubstr($bytes, 0, $length);
+        throw new Exception('Unable to generate a random key');
     }
 
     /**
@@ -501,12 +581,21 @@ class Security extends Component
      * The string generated matches [A-Za-z0-9_-]+ and is transparent to URL-encoding.
      *
      * @param integer $length the length of the key in characters
+     *
      * @return string the generated random key
      * @throws InvalidConfigException if OpenSSL extension is needed but not installed.
      * @throws Exception on failure.
      */
     public function generateRandomString($length = 32)
     {
+        if (!is_integer($length)) {
+            throw new InvalidParamException('First parameter ($length) must be an integer');
+        }
+
+        if ($length < 1) {
+            throw new InvalidParamException('First parameter ($length) must be greater than 0');
+        }
+
         $bytes = $this->generateRandomKey($length);
         // '=' character(s) returned by base64_encode() are always discarded because
         // they are guaranteed to be after position $length in the base64_encode() output.
@@ -540,6 +629,7 @@ class Security extends Component
      * therefore slows down a brute-force attack. For best protection against brute-force attacks,
      * set it to the highest value that is tolerable on production servers. The time taken to
      * compute the hash doubles for every increment by one of $cost.
+     *
      * @return string The password hash string. When [[passwordHashStrategy]] is set to 'crypt',
      * the output is always 60 ASCII characters, when set to 'password_hash' the output length
      * might increase in future versions of PHP (http://php.net/manual/en/function.password-hash.php)
@@ -553,30 +643,27 @@ class Security extends Component
             $cost = $this->passwordHashCost;
         }
 
-        switch ($this->passwordHashStrategy) {
-            case 'password_hash':
-                if (!function_exists('password_hash')) {
-                    throw new InvalidConfigException('Password hash key strategy "password_hash" requires PHP >= 5.5.0, either upgrade your environment or use another strategy.');
-                }
-                /** @noinspection PhpUndefinedConstantInspection */
-                return password_hash($password, PASSWORD_DEFAULT, ['cost' => $cost]);
-            case 'crypt':
-                $salt = $this->generateSalt($cost);
-                $hash = crypt($password, $salt);
-                // strlen() is safe since crypt() returns only ascii
-                if (!is_string($hash) || strlen($hash) !== 60) {
-                    throw new Exception('Unknown error occurred while generating hash.');
-                }
-                return $hash;
-            default:
-                throw new InvalidConfigException("Unknown password hash strategy '{$this->passwordHashStrategy}'");
+        if (function_exists('password_hash')) {
+            /** @noinspection PhpUndefinedConstantInspection */
+            return password_hash($password, PASSWORD_DEFAULT, ['cost' => $cost]);
         }
+
+        $salt = $this->generateSalt($cost);
+        $hash = crypt($password, $salt);
+        // strlen() is safe since crypt() returns only ascii
+        if (!is_string($hash) || strlen($hash) !== 60) {
+            throw new Exception('Unknown error occurred while generating hash.');
+        }
+
+        return $hash;
     }
 
     /**
      * Verifies a password against a hash.
+     *
      * @param string $password The password to verify.
      * @param string $hash The hash to verify the password against.
+     *
      * @return boolean whether the password is correct.
      * @throws InvalidParamException on bad password/hash parameters or if crypt() with Blowfish hash is not available.
      * @throws InvalidConfigException when an unsupported password hash strategy is configured.
@@ -588,26 +675,24 @@ class Security extends Component
             throw new InvalidParamException('Password must be a string and cannot be empty.');
         }
 
-        if (!preg_match('/^\$2[axy]\$(\d\d)\$[\.\/0-9A-Za-z]{22}/', $hash, $matches) || $matches[1] < 4 || $matches[1] > 30) {
+        if (!preg_match('/^\$2[axy]\$(\d\d)\$[\.\/0-9A-Za-z]{22}/', $hash, $matches)
+            || $matches[1] < 4
+            || $matches[1] > 30
+        ) {
             throw new InvalidParamException('Hash is invalid.');
         }
 
-        switch ($this->passwordHashStrategy) {
-            case 'password_hash':
-                if (!function_exists('password_verify')) {
-                    throw new InvalidConfigException('Password hash key strategy "password_hash" requires PHP >= 5.5.0, either upgrade your environment or use another strategy.');
-                }
-                return password_verify($password, $hash);
-            case 'crypt':
-                $test = crypt($password, $hash);
-                $n = strlen($test);
-                if ($n !== 60) {
-                    return false;
-                }
-                return $this->compareString($test, $hash);
-            default:
-                throw new InvalidConfigException("Unknown password hash strategy '{$this->passwordHashStrategy}'");
+        if (function_exists('password_verify')) {
+            return password_verify($password, $hash);
         }
+
+        $test = crypt($password, $hash);
+        $n = strlen($test);
+        if ($n !== 60) {
+            return false;
+        }
+
+        return $this->compareString($test, $hash);
     }
 
     /**
@@ -619,6 +704,7 @@ class Security extends Component
      * from the alphabet "./0-9A-Za-z".
      *
      * @param integer $cost the cost parameter
+     *
      * @return string the random salt value.
      * @throws InvalidParamException if the cost parameter is out of the range of 4 to 31.
      */
@@ -641,9 +727,12 @@ class Security extends Component
 
     /**
      * Performs string comparison using timing attack resistant approach.
+     *
      * @see http://codereview.stackexchange.com/questions/13512
+     *
      * @param string $expected string to compare.
      * @param string $actual user-supplied string.
+     *
      * @return boolean whether strings are equal.
      */
     public function compareString($expected, $actual)
@@ -656,6 +745,7 @@ class Security extends Component
         for ($i = 0; $i < $actualLength; $i++) {
             $diff |= (ord($actual[$i]) ^ ord($expected[$i % $expectedLength]));
         }
+
         return $diff === 0;
     }
 }
