@@ -22,11 +22,11 @@ class AssetBundleTest extends \yiiunit\TestCase
         parent::setUp();
         $this->mockApplication();
 
-        Yii::setAlias('@testWeb', '/');
-        Yii::setAlias('@testWebRoot', '@yiiunit/data/web');
-        Yii::setAlias('@testAssetsPath', '@testWebRoot/assets');
-        Yii::setAlias('@testAssetsUrl', '@testWeb/assets');
-        Yii::setAlias('@testSourcePath', '@testWebRoot/assetSources');
+        Yii::setAlias('@web', '/');
+        Yii::setAlias('@webroot', '@yiiunit/data/web');
+        Yii::setAlias('@testAssetsPath', '@webroot/assets');
+        Yii::setAlias('@testAssetsUrl', '@web/assets');
+        Yii::setAlias('@testSourcePath', '@webroot/assetSources');
     }
 
     /**
@@ -340,8 +340,8 @@ EOF;
 
 class TestSimpleAsset extends AssetBundle
 {
-    public $basePath = '@testWebRoot/js';
-    public $baseUrl = '@testWeb/js';
+    public $basePath = '@webroot/js';
+    public $baseUrl = '@web/js';
     public $js = [
         'jquery.js',
     ];
@@ -357,8 +357,8 @@ class TestSourceAsset extends AssetBundle
 
 class TestAssetBundle extends AssetBundle
 {
-    public $basePath = '@testWebRoot/files';
-    public $baseUrl = '@testWeb/files';
+    public $basePath = '@webroot/files';
+    public $baseUrl = '@web/files';
     public $css = [
         'cssFile.css',
     ];
@@ -372,8 +372,8 @@ class TestAssetBundle extends AssetBundle
 
 class TestJqueryAsset extends AssetBundle
 {
-    public $basePath = '@testWebRoot/js';
-    public $baseUrl = '@testWeb/js';
+    public $basePath = '@webroot/js';
+    public $baseUrl = '@web/js';
     public $js = [
         'jquery.js',
     ];
@@ -384,14 +384,14 @@ class TestJqueryAsset extends AssetBundle
 
 class TestAssetLevel3 extends AssetBundle
 {
-    public $basePath = '@testWebRoot/js';
-    public $baseUrl = '@testWeb/js';
+    public $basePath = '@webroot/js';
+    public $baseUrl = '@web/js';
 }
 
 class TestAssetCircleA extends AssetBundle
 {
-    public $basePath = '@testWebRoot/js';
-    public $baseUrl = '@testWeb/js';
+    public $basePath = '@webroot/js';
+    public $baseUrl = '@web/js';
     public $js = [
         'jquery.js',
     ];
@@ -402,8 +402,8 @@ class TestAssetCircleA extends AssetBundle
 
 class TestAssetCircleB extends AssetBundle
 {
-    public $basePath = '@testWebRoot/js';
-    public $baseUrl = '@testWeb/js';
+    public $basePath = '@webroot/js';
+    public $baseUrl = '@web/js';
     public $js = [
         'jquery.js',
     ];
@@ -414,8 +414,8 @@ class TestAssetCircleB extends AssetBundle
 
 class TestAssetPerFileOptions extends AssetBundle
 {
-    public $basePath = '@testWebRoot';
-    public $baseUrl = '@testWeb';
+    public $basePath = '@webroot';
+    public $baseUrl = '@web';
     public $css = [
         'default_options.css',
         ['tv.css', 'media' => 'tv'],
