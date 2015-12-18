@@ -142,4 +142,17 @@ class SqliteConnectionTest extends ConnectionTest
 
         return \Yii::createObject($config);
     }
+
+    public function testAliasDbPath()
+    {
+        $config = [
+            'dsn' => "sqlite:@yiiunit/runtime/yii2aliastest.sq3",
+        ];
+        $connection = new Connection($config);
+        $connection->open();
+        $this->assertTrue($connection->isActive);
+        $this->assertEquals($config['dsn'], $connection->dsn);
+
+        $connection->close();
+    }
 }

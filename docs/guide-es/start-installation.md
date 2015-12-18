@@ -4,7 +4,7 @@ Instalando Yii
 Yii puede ser instalado de dos maneras, usando [Composer](https://getcomposer.org/) o descargando un archivo comprimido.
 Es preferible usar la primera forma, ya que te permite instalar [extensiones](structure-extensions.md) o actualizar Yii ejecutando un simple comando.
 
-> Nota: A diferencia de Yii 1, la instalación estándar de Yii 2 resulta en la descarga e instalación tanto del framework como del esqueleto de la aplicación.
+> Note: A diferencia de Yii 1, la instalación estándar de Yii 2 resulta en la descarga e instalación tanto del framework como del esqueleto de la aplicación.
 
 
 Instalando a través de Composer <span id="installing-via-composer"></span>
@@ -26,7 +26,7 @@ Si ya tienes composer instalado asegurate que esté actualizado ejecutando `comp
 Teniendo Composer instalado, puedes instalar Yii ejecutando los siguientes comandos en un directorio accesible vía Web:
 Nota: es posible que en al ejecutar el primer comando te pida tu username 
 
-    composer global require "fxp/composer-asset-plugin:~1.0.3"
+    composer global require "fxp/composer-asset-plugin:~1.1.1"
     composer create-project --prefer-dist yiisoft/yii2-app-basic basic
 
 El comando anterior instala Yii dentro del directorio `basic`.
@@ -95,7 +95,7 @@ También deberías instalar la [Extensión de PHP PDO](http://www.php.net/manual
 Configurando Servidores Web <span id="configuring-web-servers"></span>
 ---------------------------
 
-> Información: Puedes saltear esta sección por ahora si sólo estás probando Yii sin intención de poner la aplicación en un servidor de producción.
+> Info: Puedes saltear esta sección por ahora si sólo estás probando Yii sin intención de poner la aplicación en un servidor de producción.
 
 La aplicación instalada debería estar lista para usar tanto con un [servidor HTTP Apache](http://httpd.apache.org/) como con un [servidor HTTP Nginx](http://nginx.org/),
 en Windows, Mac OS X, o Linux.
@@ -106,11 +106,11 @@ require apuntar el document root de tu servidor Web al directorio `basic/web`. T
 de la URL, como se describe en la sección [Parseo y Generación de URLs](runtime-url-handling.md).
 En esta sub-sección, aprenderás a configurar tu servidor Apache o Nginx para alcanzar estos objetivos.
 
-> Información: Al definir `basic/web` como document root, también previenes que los usuarios finales accedan
+> Info: Al definir `basic/web` como document root, también previenes que los usuarios finales accedan
 al código privado o archivos con información sensible de tu aplicación que están incluidos en los directorios del mismo nivel
 que `basic/web`. Denegando el acceso es una importante mejora en la seguridad.
 
-> Información: En caso de que tu aplicación corra en un entorno de hosting compartido donde no tienes permisos para modificar
+> Info: En caso de que tu aplicación corra en un entorno de hosting compartido donde no tienes permisos para modificar
 la configuración del servidor Web, aún puedes ajustar la estructura de la aplicación para mayor seguridad. Por favor consulta
 la sección [Entorno de Hosting Compartido](tutorial-shared-hosting.md) para más detalles.
 

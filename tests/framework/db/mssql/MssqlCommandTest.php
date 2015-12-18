@@ -2,6 +2,7 @@
 
 namespace yiiunit\framework\db\mssql;
 
+use yii\db\Schema;
 use yiiunit\framework\db\CommandTest;
 
 /**

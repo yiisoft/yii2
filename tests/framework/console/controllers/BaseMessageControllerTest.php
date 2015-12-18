@@ -155,7 +155,7 @@ abstract class BaseMessageControllerTest extends TestCase
     {
         $category = 'test_category2';
         $message = 'test message';
-        $sourceFileContent = "Yii::t('{$category}', '{$message}')";
+        $sourceFileContent = "Yii::t('{$category}', '{$message}');";
         $this->createSourceFile($sourceFileContent);
 
         $this->saveConfigFile($this->getConfig());
@@ -256,9 +256,9 @@ abstract class BaseMessageControllerTest extends TestCase
         ], $category);
 
         $newMessage = 'test new message';
-        $sourceFileContent = "Yii::t('{$category}', '{$zeroMessage}')";
-        $sourceFileContent .= "Yii::t('{$category}', '{$falseMessage}')";
-        $sourceFileContent .= "Yii::t('{$category}', '{$newMessage}')";
+        $sourceFileContent = "Yii::t('{$category}', '{$zeroMessage}');";
+        $sourceFileContent .= "Yii::t('{$category}', '{$falseMessage}');";
+        $sourceFileContent .= "Yii::t('{$category}', '{$newMessage}');";
         $this->createSourceFile($sourceFileContent);
 
         $this->saveConfigFile($this->getConfig());
@@ -345,25 +345,29 @@ abstract class BaseMessageControllerTest extends TestCase
     {
         $category1 = 'category1';
         $category2 = 'category2';
+        $category3_wildcard = 'category3*';
+        $category3_test = 'category3-test';
 
         $message1 = 'message1';
         $message2 = 'message2';
         $message3 = 'message3';
 
-        $this->saveConfigFile($this->getConfig(['ignoreCategories' => ['category2']]));
+        $this->saveConfigFile($this->getConfig(['ignoreCategories' => [$category2, $category3_wildcard]]));
 
         // Generate initial translation
-        $sourceFileContent = "Yii::t('{$category1}', '{$message1}'); Yii::t('{$category2}', '{$message2}');";
+        $sourceFileContent = "Yii::t('{$category1}', '{$message1}'); Yii::t('{$category2}', '{$message2}'); Yii::t('{$category3_test}', '{$message3}');";
         $source = $this->createSourceFile($sourceFileContent);
         $out = $this->runMessageControllerAction('extract', [$this->configFileName]);
         unlink($source);
 
         $messages1 = $this->loadMessages($category1);
-        $messages2 = $this->loadMessages($category2, false);
+        $messages2 = $this->loadMessages($category2);
+        $messages3 = $this->loadMessages($category3_test);
 
-        $this->assertArrayHasKey($message1, $messages1, "message1 not found in category1. Command output:\n\n" . $out);
-        $this->assertArrayNotHasKey($message2, $messages2, "message2 found in category2. Command output:\n\n" . $out);
-        $this->assertArrayNotHasKey($message3, $messages2, "message3 found in category2. Command output:\n\n" . $out);
+        $this->assertArrayHasKey($message1, $messages1, "{$message1} not found in {$category1}. Command output:\n\n" . $out);
+        $this->assertArrayNotHasKey($message2, $messages2, "{$message2} found in {$category2}. Command output:\n\n" . $out);
+        $this->assertArrayNotHasKey($message3, $messages2, "{$message3} found in {$category2}. Command output:\n\n" . $out);
+        $this->assertArrayNotHasKey($message3, $messages3, "{$message3} found in {$category3_test}. Command output:\n\n" . $out);
 
         // Change source code, run translation again
         $sourceFileContent = "Yii::t('{$category1}', '{$message1}'); Yii::t('{$category2}', '{$message3}');";
@@ -372,10 +376,10 @@ abstract class BaseMessageControllerTest extends TestCase
         unlink($source);
 
         $messages1 = $this->loadMessages($category1);
-        $messages2 = $this->loadMessages($category2, false);
-        $this->assertArrayHasKey($message1, $messages1, "message1 not found in category1. Command output:\n\n" . $out);
-        $this->assertArrayNotHasKey($message3, $messages2, "message3 not found in category2. Command output:\n\n" . $out);
-        $this->assertArrayNotHasKey($message2, $messages2, "message2 found in category2. Command output:\n\n" . $out);
+        $messages2 = $this->loadMessages($category2);
+        $this->assertArrayHasKey($message1, $messages1, "{$message1} not found in {$category1}. Command output:\n\n" . $out);
+        $this->assertArrayNotHasKey($message2, $messages2, "{$message2} found in {$category2}. Command output:\n\n" . $out);
+        $this->assertArrayNotHasKey($message3, $messages2, "{$message3} not found in {$category2}. Command output:\n\n" . $out);
     }
 
     /**

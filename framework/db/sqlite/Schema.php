@@ -67,7 +67,7 @@ class Schema extends \yii\db\Schema
      */
     public function quoteSimpleTableName($name)
     {
-        return strpos($name, "`") !== false ? $name : "`" . $name . "`";
+        return strpos($name, '`') !== false ? $name : "`$name`";
     }
 
     /**
@@ -78,7 +78,7 @@ class Schema extends \yii\db\Schema
      */
     public function quoteSimpleColumnName($name)
     {
-        return strpos($name, '`') !== false || $name === '*' ? $name : '`' . $name . '`';
+        return strpos($name, '`') !== false || $name === '*' ? $name : "`$name`";
     }
 
     /**
@@ -130,7 +130,7 @@ class Schema extends \yii\db\Schema
      */
     protected function findColumns($table)
     {
-        $sql = "PRAGMA table_info(" . $this->quoteSimpleTableName($table->name) . ')';
+        $sql = 'PRAGMA table_info(' . $this->quoteSimpleTableName($table->name) . ')';
         $columns = $this->db->createCommand($sql)->queryAll();
         if (empty($columns)) {
             return false;
@@ -157,7 +157,7 @@ class Schema extends \yii\db\Schema
      */
     protected function findConstraints($table)
     {
-        $sql = "PRAGMA foreign_key_list(" . $this->quoteSimpleTableName($table->name) . ')';
+        $sql = 'PRAGMA foreign_key_list(' . $this->quoteSimpleTableName($table->name) . ')';
         $keys = $this->db->createCommand($sql)->queryAll();
         foreach ($keys as $key) {
             $id = (int) $key['id'];
@@ -174,25 +174,25 @@ class Schema extends \yii\db\Schema
      * Returns all unique indexes for the given table.
      * Each array element is of the following structure:
      *
-     * ~~~
+     * ```php
      * [
-     *  'IndexName1' => ['col1' [, ...]],
-     *  'IndexName2' => ['col2' [, ...]],
+     *     'IndexName1' => ['col1' [, ...]],
+     *     'IndexName2' => ['col2' [, ...]],
      * ]
-     * ~~~
+     * ```
      *
      * @param TableSchema $table the table metadata
      * @return array all unique indexes for the given table.
      */
     public function findUniqueIndexes($table)
     {
-        $sql = "PRAGMA index_list(" . $this->quoteSimpleTableName($table->name) . ')';
+        $sql = 'PRAGMA index_list(' . $this->quoteSimpleTableName($table->name) . ')';
         $indexes = $this->db->createCommand($sql)->queryAll();
         $uniqueIndexes = [];
 
         foreach ($indexes as $index) {
             $indexName = $index['name'];
-            $indexInfo = $this->db->createCommand("PRAGMA index_info(" . $this->quoteValue($index['name']) . ")")->queryAll();
+            $indexInfo = $this->db->createCommand('PRAGMA index_info(' . $this->quoteValue($index['name']) . ')')->queryAll();
 
             if ($index['unique']) {
                 $uniqueIndexes[$indexName] = [];
@@ -272,10 +272,10 @@ class Schema extends \yii\db\Schema
     {
         switch ($level) {
             case Transaction::SERIALIZABLE:
-                $this->db->createCommand("PRAGMA read_uncommitted = False;")->execute();
+                $this->db->createCommand('PRAGMA read_uncommitted = False;')->execute();
                 break;
             case Transaction::READ_UNCOMMITTED:
-                $this->db->createCommand("PRAGMA read_uncommitted = True;")->execute();
+                $this->db->createCommand('PRAGMA read_uncommitted = True;')->execute();
                 break;
             default:
                 throw new NotSupportedException(get_class($this) . ' only supports transaction isolation levels READ UNCOMMITTED and SERIALIZABLE.');

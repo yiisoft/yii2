@@ -62,7 +62,7 @@ throw new NotFoundHttpException();
 `YII_DEBUG` が true である (デバッグモードである) 場合は、エラーハンドラは、デバッグがより容易になるように、例外とともに、詳細なコールスタック情報とソースコード行を表示します。
 そして、`YII_DEBUG` が false のときは、アプリケーションに関する公開できない情報の開示を防ぐために、エラーメッセージだけが表示されます。
 
-> Info|情報: 例外が [[yii\base\UserException]] の子孫である場合は、`YII_DEBUG` の値の如何にかかわらず、コールスタックは表示されません。
+> Info: 例外が [[yii\base\UserException]] の子孫である場合は、`YII_DEBUG` の値の如何にかかわらず、コールスタックは表示されません。
 これは、この種の例外はユーザの誤操作によって引き起こされるものであり、開発者は何も修正する必要がないと考えられるからです。
 
 デフォルトでは、[[yii\web\ErrorHandler|エラーハンドラ]] は二つの [ビュー](structure-views.md) を使ってエラーを表示します。
@@ -135,7 +135,7 @@ public function actionError()
 * `message`: エラーメッセージ。
 * `exception`: 例外オブジェクト。これを通じて、更に有用な情報、例えば、HTTP ステータスコード、エラーコード、エラーコールスタックなどにアクセスすることが出来ます。
 
-> Info|情報: あなたが [ベーシックプロジェクトテンプレート](start-installation.md) または [アドバンストプロジェクトテンプレート](https://github.com/yiisoft/yii2-app-advanced/blob/master/docs/guide-ja/README.md) を使っている場合は、エラーアクションとエラービューは、既にあなたのために定義されています。
+> Info: あなたが [ベーシックプロジェクトテンプレート](start-installation.md) または [アドバンストプロジェクトテンプレート](https://github.com/yiisoft/yii2-app-advanced/blob/master/docs/guide-ja/README.md) を使っている場合は、エラーアクションとエラービューは、既にあなたのために定義されています。
 
 
 ### エラーのレスポンス形式をカスタマイズする <span id="error-format"></span>

@@ -458,7 +458,7 @@ public function rules()
 $query->andFilterWhere(['LIKE', 'author.name', $this->getAttribute('author.name')]);
 ```
 
-> Информация: В коде, что выше, использует такая же строка, как и имя зависимости и псевдонима таблицы. 
+> Info: В коде, что выше, использует такая же строка, как и имя зависимости и псевдонима таблицы.
 > Однако, когда ваш псевдоним и имя связи различаются, вы должны обратить внимание, где вы используете псевдоним,
 > а где имя связи. Простым правилом для этого является использование псевдонима в каждом месте, которое используется
 > для построения запроса к базе данных, и имя связи во всех других определениях, таких как `attributes()`, `rules()` и т.д.
@@ -492,7 +492,7 @@ $query->andFilterWhere(['LIKE', 'author.name', $this->getAttribute('author.name'
 > $dataProvider->sort->defaultOrder = ['author.name' => SORT_ASC];
 > ```
 
-> Информация: Для подробной информации по `joinWith` и запросам, выполняемым в фоновом режиме, обратитесь к
+> Info: Для подробной информации по `joinWith` и запросам, выполняемым в фоновом режиме, обратитесь к
 > [active record документации](db-active-record.md#joining-with-relations).
 
 #### Использование SQL видов для вывода данных, их сортировки и фильтрации.
@@ -570,7 +570,7 @@ class UserView extends ActiveRecord
 При использовании нескольких экземпляров GridView вы должны настроить различные имена параметров для сортировки и ссылки
 для разбиения на страницы так, чтобы каждый GridView имел свою индивидуальный сортировку и разбиение на страницы.
 Сделать это возможно через настройку [[yii\data\Sort::sortParam|sortParam]] и [[yii\data\Pagination::pageParam|pageParam]]
-свойств провайдеров данных [[yii\data\BaseDataProvider::$sort|sort]] и [yii\data\BaseDataProvider::$pagination|pagination]]
+свойств провайдеров данных [[yii\data\BaseDataProvider::$sort|sort]] и [[yii\data\BaseDataProvider::$pagination|pagination]]
 
 Допустим мы хотим список моделей `Post` и `User`, для которых мы уже подготовили провайдеры данных `$userProvider` и 
 `$postProvider`, тогда код будет выглядеть следующим образом:

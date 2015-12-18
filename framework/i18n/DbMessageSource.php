@@ -21,7 +21,7 @@ use yii\db\Query;
  *
  * The database must contain the following two tables:
  *
- * ~~~
+ * ```sql
  * CREATE TABLE source_message (
  *     id INTEGER PRIMARY KEY AUTO_INCREMENT,
  *     category VARCHAR(32),
@@ -36,7 +36,7 @@ use yii\db\Query;
  *     CONSTRAINT fk_message_source_message FOREIGN KEY (id)
  *         REFERENCES source_message (id) ON DELETE CASCADE ON UPDATE RESTRICT
  * );
- * ~~~
+ * ```
  *
  * The `source_message` table stores the messages to be translated, and the `message` table stores
  * the translated messages. The name of these two tables can be customized by setting [[sourceMessageTable]]
@@ -156,7 +156,7 @@ class DbMessageSource extends MessageSource
             ->params([':category' => $category, ':language' => $language]);
 
         $fallbackLanguage = substr($language, 0, 2);
-        if ($fallbackLanguage != $language) {
+        if ($fallbackLanguage !== $language) {
             $fallbackQuery = new Query();
             $fallbackQuery->select(['t1.message message', 't2.translation translation'])
                 ->from(["$this->sourceMessageTable t1", "$this->messageTable t2"])

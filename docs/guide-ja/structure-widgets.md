@@ -68,6 +68,17 @@ use yii\helpers\Html;
 返されたウィジェットのインスタンスを使って、ウィジェットのコンテントを構築することが出来ます。
 
 
+### グローバルなデフォルトを構成する
+
+あるタイプのウィジェットのグローバルなデフォルトを DI コンテナによって構成することが出来ます。
+
+```php
+\Yii::$container->set('yii\widgets\LinkPager', ['maxButtonCount' => 5]);
+```
+
+詳細については [依存注入コンテナのガイドの "実際の使いかた" の節](concept-di-container.md#practical-usage) を参照してください。
+
+
 ## ウィジェットを作成する <span id="creating-widgets"></span>
 
 ウィジェットを作成するためには、[[yii\base\Widget]] を拡張して、[[yii\base\Widget::init()]] および/または [[yii\base\Widget::run()]] メソッドをオーバーライドします。
@@ -137,7 +148,7 @@ class HelloWidget extends Widget
 
 ご覧のように、`init()` の中で PHP の出力バッファが開始され、`init()` と `run()` の呼び出しの間の全ての出力がキャプチャされ、`run()` の中で処理されて返されます。
 
-> Info|情報: [[yii\base\Widget::begin()]] を呼ぶと、ウィジェットの新しいインスタンスが作成され、ウィジェットのコンストラクタの最後で `init()` メソッドが呼ばれます。
+> Info: [[yii\base\Widget::begin()]] を呼ぶと、ウィジェットの新しいインスタンスが作成され、ウィジェットのコンストラクタの最後で `init()` メソッドが呼ばれます。
 [[yii\base\Widget::end()]] を呼ぶと、`run()` メソッドが呼ばれて、その返り値が `end()` によって echo されます。
 
 次のコードは、この `HelloWidget` の新しい変種をどのように使うかを示すものです:
