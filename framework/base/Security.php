@@ -461,9 +461,13 @@ class Security extends Component
                 && preg_match('{^LibreSSL (\d\d?)\.(\d\d?)\.(\d\d?)$}', OPENSSL_VERSION_TEXT, $matches)
                 && (10000 * $matches[1]) + (100 * $matches[2]) + $matches[3] >= 20105)
         ) {
-            // The $crypto_strong var is irrelevant for for LibreSSL.
-            $key = openssl_random_pseudo_bytes($length);
-            if (StringHelper::byteLength($key) === $length) {
+            $key = openssl_random_pseudo_bytes($length, $cryptoStrong);
+            if ($cryptoStrong === false) {
+                throw new ErrorException(
+                    'openssl_random_pseudo_bytes() set $crypto_strong false. Your PHP config is insecure.'
+                );
+            }
+            if ($key !== false && StringHelper::byteLength($key) === $length) {
                 $this->_randomSource = 'LibreSSL';
 
                 return $key;
@@ -541,8 +545,13 @@ class Security extends Component
         if ($this->_randomSource === 'OpenSSL'
             || (DIRECTORY_SEPARATOR !== '/' && PHP_VERSION_ID >= 50400)
         ) {
-            $key = openssl_random_pseudo_bytes($length);
-            if (StringHelper::byteLength($key) === $length) {
+            $key = openssl_random_pseudo_bytes($length, $cryptoStrong);
+            if ($cryptoStrong === false) {
+                throw new ErrorException(
+                    'openssl_random_pseudo_bytes() set $crypto_strong false. Your PHP config is insecure.'
+                );
+            }
+            if ($key !== false && StringHelper::byteLength($key) === $length) {
                 $this->_randomSource = 'OpenSSL';
 
                 return $key;
