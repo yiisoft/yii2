@@ -416,7 +416,7 @@ class View extends \yii\base\View
 
         if (empty($depends)) {
             $url = $this->getAssetManager()->getAssetUrl($bundle, $url);
-            $this->cssFiles[$key] = Html::cssFile($string, $options);
+            $this->cssFiles[$key] = Html::cssFile($url, $options);
         } else {
             $this->getAssetManager()->bundles[$key] = $bundle;
             $this->registerAssetBundle($key);
