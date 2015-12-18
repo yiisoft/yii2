@@ -444,7 +444,7 @@ class Security extends Component
             return random_bytes($length);
         }
 
-        if (!is_integer($length)) {
+        if (!is_int($length)) {
             throw new InvalidParamException('First parameter ($length) must be an integer');
         }
 
@@ -574,7 +574,7 @@ class Security extends Component
      */
     public function generateRandomString($length = 32)
     {
-        if (!is_integer($length)) {
+        if (!is_int($length)) {
             throw new InvalidParamException('First parameter ($length) must be an integer');
         }
 
