@@ -464,7 +464,7 @@ class Security extends Component
             $key = openssl_random_pseudo_bytes($length, $cryptoStrong);
             if ($cryptoStrong === false) {
                 throw new Exception(
-                    'openssl_random_pseudo_bytes() set $crypto_strong false. Your PHP config is insecure.'
+                    'openssl_random_pseudo_bytes() set $crypto_strong false. Your PHP setup is insecure.'
                 );
             }
             if ($key !== false && StringHelper::byteLength($key) === $length) {
@@ -548,7 +548,7 @@ class Security extends Component
             $key = openssl_random_pseudo_bytes($length, $cryptoStrong);
             if ($cryptoStrong === false) {
                 throw new Exception(
-                    'openssl_random_pseudo_bytes() set $crypto_strong false. Your PHP config is insecure.'
+                    'openssl_random_pseudo_bytes() set $crypto_strong false. Your PHP setup is insecure.'
                 );
             }
             if ($key !== false && StringHelper::byteLength($key) === $length) {
