@@ -96,6 +96,7 @@ class Session extends Component implements \IteratorAggregate, \ArrayAccess, \Co
     public function init()
     {
         parent::init();
+        register_shutdown_function([$this, 'close']);
         if ($this->getIsActive()) {
             Yii::warning("Session is already started", __METHOD__);
         }
@@ -131,7 +132,6 @@ class Session extends Component implements \IteratorAggregate, \ArrayAccess, \Co
         if ($this->getIsActive()) {
             Yii::info('Session started', __METHOD__);
             $this->updateFlashCounters();
-            register_shutdown_function([$this, 'close']);
         } else {
             $error = error_get_last();
             $message = isset($error['message']) ? $error['message'] : 'Failed to start session.';
