@@ -884,9 +884,12 @@ class BaseHtml
             $name .= '[]';
         }
 
-        $formatter = isset($options['item']) ? $options['item'] : null;
-        $itemOptions = isset($options['itemOptions']) ? $options['itemOptions'] : [];
-        $encode = !isset($options['encode']) || $options['encode'];
+        $formatter = ArrayHelper::remove($options, 'item');
+        $itemOptions = ArrayHelper::remove($options, 'itemOptions', []);
+        $encode = ArrayHelper::remove($options, 'encode', true);
+        $separator = ArrayHelper::remove($options, 'separator', "\n");
+        $tag = ArrayHelper::remove($options, 'tag', 'div');
+
         $lines = [];
         $index = 0;
         foreach ($items as $value => $label) {
@@ -908,13 +911,10 @@ class BaseHtml
             // add a hidden field so that if the list box has no option being selected, it still submits a value
             $name2 = substr($name, -2) === '[]' ? substr($name, 0, -2) : $name;
             $hidden = static::hiddenInput($name2, $options['unselect']);
+            unset($options['unselect']);
         } else {
             $hidden = '';
         }
-        $separator = isset($options['separator']) ? $options['separator'] : "\n";
-
-        $tag = isset($options['tag']) ? $options['tag'] : 'div';
-        unset($options['tag'], $options['unselect'], $options['encode'], $options['separator'], $options['item'], $options['itemOptions']);
 
         return $hidden . static::tag($tag, implode($separator, $lines), $options);
     }
@@ -953,9 +953,12 @@ class BaseHtml
      */
     public static function radioList($name, $selection = null, $items = [], $options = [])
     {
-        $encode = !isset($options['encode']) || $options['encode'];
-        $formatter = isset($options['item']) ? $options['item'] : null;
-        $itemOptions = isset($options['itemOptions']) ? $options['itemOptions'] : [];
+        $formatter = ArrayHelper::remove($options, 'item');
+        $itemOptions = ArrayHelper::remove($options, 'itemOptions', []);
+        $encode = ArrayHelper::remove($options, 'encode', true);
+        $separator = ArrayHelper::remove($options, 'separator', "\n");
+        $tag = ArrayHelper::remove($options, 'tag', 'div');
+
         $lines = [];
         $index = 0;
         foreach ($items as $value => $label) {
@@ -973,16 +976,13 @@ class BaseHtml
             $index++;
         }
 
-        $separator = isset($options['separator']) ? $options['separator'] : "\n";
         if (isset($options['unselect'])) {
             // add a hidden field so that if the list box has no option being selected, it still submits a value
             $hidden = static::hiddenInput($name, $options['unselect']);
+            unset($options['unselect']);
         } else {
             $hidden = '';
         }
-
-        $tag = isset($options['tag']) ? $options['tag'] : 'div';
-        unset($options['tag'], $options['unselect'], $options['encode'], $options['separator'], $options['item'], $options['itemOptions']);
 
         return $hidden . static::tag($tag, implode($separator, $lines), $options);
     }
@@ -995,6 +995,7 @@ class BaseHtml
      *
      * - encode: boolean, whether to HTML-encode the items. Defaults to true.
      *   This option is ignored if the `item` option is specified.
+     * - separator: string, since 2.0.7 the HTML code that separates items.
      * - itemOptions: array, the HTML attributes for the `li` tags. This option is ignored if the `item` option is specified.
      * - item: callable, a callback that is used to generate each individual list item.
      *   The signature of this callback must be:
@@ -1012,11 +1013,11 @@ class BaseHtml
      */
     public static function ul($items, $options = [])
     {
-        $tag = isset($options['tag']) ? $options['tag'] : 'ul';
-        $encode = !isset($options['encode']) || $options['encode'];
-        $formatter = isset($options['item']) ? $options['item'] : null;
-        $itemOptions = isset($options['itemOptions']) ? $options['itemOptions'] : [];
-        unset($options['tag'], $options['encode'], $options['item'], $options['itemOptions']);
+        $tag = ArrayHelper::remove($options, 'tag', 'ul');
+        $encode = ArrayHelper::remove($options, 'encode', true);
+        $formatter = ArrayHelper::remove($options, 'item');
+        $separator = ArrayHelper::remove($options, 'separator', "\n");
+        $itemOptions = ArrayHelper::remove($options, 'itemOptions', []);
 
         if (empty($items)) {
             return static::tag($tag, '', $options);
@@ -1030,7 +1031,12 @@ class BaseHtml
                 $results[] = static::tag('li', $encode ? static::encode($item) : $item, $itemOptions);
             }
         }
-        return static::tag($tag, "\n" . implode("\n", $results) . "\n", $options);
+
+        return static::tag(
+            $tag,
+            $separator . implode($separator, $results) . $separator,
+            $options
+        );
     }
 
     /**
@@ -1083,10 +1089,9 @@ class BaseHtml
      */
     public static function activeLabel($model, $attribute, $options = [])
     {
-        $for = array_key_exists('for', $options) ? $options['for'] : static::getInputId($model, $attribute);
+        $for = ArrayHelper::remove($options, 'for', static::getInputId($model, $attribute));
         $attribute = static::getAttributeName($attribute);
-        $label = isset($options['label']) ? $options['label'] : static::encode($model->getAttributeLabel($attribute));
-        unset($options['label'], $options['for']);
+        $label = ArrayHelper::remove($options, 'label', static::encode($model->getAttributeLabel($attribute)));
         return static::label($label, $for, $options);
     }
 
@@ -1140,9 +1145,9 @@ class BaseHtml
     public static function errorSummary($models, $options = [])
     {
         $header = isset($options['header']) ? $options['header'] : '<p>' . Yii::t('yii', 'Please fix the following errors:') . '</p>';
-        $footer = isset($options['footer']) ? $options['footer'] : '';
-        $encode = !isset($options['encode']) || $options['encode'] !== false;
-        unset($options['header'], $options['footer'], $options['encode']);
+        $footer = ArrayHelper::remove($options, 'footer', '');
+        $encode = ArrayHelper::remove($options, 'encode', true);
+        unset($options['header']);
 
         $lines = [];
         if (!is_array($models)) {
@@ -1187,9 +1192,8 @@ class BaseHtml
     {
         $attribute = static::getAttributeName($attribute);
         $error = $model->getFirstError($attribute);
-        $tag = isset($options['tag']) ? $options['tag'] : 'div';
-        $encode = !isset($options['encode']) || $options['encode'] !== false;
-        unset($options['tag'], $options['encode']);
+        $tag = ArrayHelper::remove($options, 'tag', 'div');
+        $encode = ArrayHelper::remove($options, 'encode', true);
         return Html::tag($tag, $encode ? Html::encode($error) : $error, $options);
     }
 
