@@ -930,6 +930,7 @@ class BaseHtml
      * The following options are specially handled:
      *
      * - tag: string, the tag name of the container element.
+     * - disableTag: boolean, whether to disable the container of the radio buttons. Defaults to false.
      * - unselect: string, the value that should be submitted when none of the radio buttons is selected.
      *   By setting this option, a hidden input will be generated.
      * - encode: boolean, whether to HTML-encode the checkbox labels. Defaults to true.
@@ -939,9 +940,9 @@ class BaseHtml
      * - item: callable, a callback that can be used to customize the generation of the HTML code
      *   corresponding to a single item in $items. The signature of this callback must be:
      *
-     *   ```php
+     *   ~~~
      *   function ($index, $label, $name, $checked, $value)
-     *   ```
+     *   ~~~
      *
      *   where $index is the zero-based index of the radio button in the whole list; $label
      *   is the label for the radio button; and $name, $value and $checked represent the name,
@@ -981,10 +982,20 @@ class BaseHtml
             $hidden = '';
         }
 
-        $tag = isset($options['tag']) ? $options['tag'] : 'div';
-        unset($options['tag'], $options['unselect'], $options['encode'], $options['separator'], $options['item'], $options['itemOptions']);
+        if (isset($options['disableTag']) && $options['disableTag'] == true) {
+            $tag = '';
+        } else {
+            $tag = isset($options['tag']) ? $options['tag'] : 'div';
+            $tag = json_encode($options['disableTag']);
+        }
 
-        return $hidden . static::tag($tag, implode($separator, $lines), $options);
+        unset($options['tag'], $options['disableTag'], $options['unselect'], $options['encode'], $options['separator'], $options['item'], $options['itemOptions']);
+
+        if ($tag) {
+            return $hidden . static::tag($tag, implode($separator, $lines), $options);
+        } else {
+            return $hidden . implode($separator, $lines);
+        }
     }
 
     /**
