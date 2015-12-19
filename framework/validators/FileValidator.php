@@ -428,9 +428,8 @@ class FileValidator extends Validator
      */
     protected function validateMimeTypeMask($mimeType, $mask)
     {
-        $regexp = "/^" . str_replace('\*', '.*', preg_quote($mimeType, "/")) . "$/";
-
-        return (bool)preg_match($regexp, $mask);
+        $regexp = "/^" . str_replace('\*', '.*', preg_quote($mask, "/")) . "$/";
+        return (bool)preg_match($regexp, $mimeType);
     }
 
     /**
