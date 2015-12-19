@@ -605,7 +605,7 @@ class Menu extends Widget
 `fileMap` を使わずに、カテゴリを同じ名前のファイルにマップする規約を使って済ませることも出来ます。
 これで、直接に `Menu::t('messages', 'new messages {messages}', ['{messages}' => 10])` を使用することが出来ます。
 
-> **Note**|注意: ウィジェットのためには i18n ビューも使うことが出来ます。コントローラのための同じ規則がウィジェットにも適用されます。
+> Note: 注意: ウィジェットのためには i18n ビューも使うことが出来ます。コントローラのための同じ規則がウィジェットにも適用されます。
 
 
 ### フレームワークメッセージを翻訳する <span id="framework-translation"></span>
@@ -703,19 +703,19 @@ class TranslationEventHandler
 './yii message/config' コマンドを使って、CLI 経由で、指定したオプションを持つ設定ファイルを動的に生成することも可能です。
 例えば、`languages` と `messagePath` のパラメータは、次のようにして設定することが出来ます。
 
-```shell
+```bash
 ./yii message/config --languages=de,ja --messagePath=messages path/to/config.php
 ```
 
 利用可能なオプションのリストを取得するためには、次のコマンドを実行します。
 
-```shell
+```bash
 ./yii help message/config
 ```
 
 構成情報ファイルの編集が完了すれば、ついに、下記のコマンドを使ってメッセージを抽出することが出来ます。
 
-```shell
+```bash
 ./yii message path/to/config.php
 ```
 
@@ -729,7 +729,7 @@ class TranslationEventHandler
 例えば、`views/site/index.php` というビューをターゲット言語 `ru-RU` に翻訳したい場合は、翻訳したビューを `views/site/ru-RU/index.php` というファイルとして保存します。
 このようにすると、[[yii\base\View::renderFile()]] メソッド、または、このメソッドを呼び出す他のメソッド (例えば [[yii\base\Controller::render()]]) を呼んで `views/site/index.php` をレンダリングするたびに、翻訳された `views/site/ru-RU/index.php` が代りにレンダリングされるようになります。
 
-> **Note**|注意: [[yii\base\Application::$language|ターゲット言語]] が [[yii\base\Application::$sourceLanguage|ソース言語]] と同じ場合は、翻訳されたビューの有無にかかわらず、オリジナルのビューがレンダリングされます。
+> Note: 注意: [[yii\base\Application::$language|ターゲット言語]] が [[yii\base\Application::$sourceLanguage|ソース言語]] と同じ場合は、翻訳されたビューの有無にかかわらず、オリジナルのビューがレンダリングされます。
 
 
 ## 数値と日付の値を書式設定する <span id="date-number"></span>

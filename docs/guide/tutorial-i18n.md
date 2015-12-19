@@ -554,7 +554,7 @@ class Menu extends Widget
 Instead of using `fileMap` you can simply use the convention of the category mapping to the same named file.
 Now you can use `Menu::t('messages', 'new messages {messages}', ['{messages}' => 10])` directly.
 
-> **Note**: For widgets you also can use i18n views, with the same rules as for controllers being applied to them too.
+> Note: For widgets you also can use i18n views, with the same rules as for controllers being applied to them too.
 
 
 ### Translating framework messages <span id="framework-translation"></span>
@@ -635,7 +635,7 @@ Translations can be stored in [[yii\i18n\PhpMessageSource|php files]], [[yii\i18
 
 First of all you need to create a configuration file. Decide where you want to store it and then issue the command 
 
-```shell
+```bash
 ./yii message/config-template path/to/config.php
 ```
 
@@ -647,19 +647,19 @@ Open the created file and adjust the parameters to fit your needs. Pay special a
 You may also use './yii message/config' command to dynamically generate configuration file with specified options via cli.
 For example, you can set `languages` and `messagePath` parameters like the following:
 
-```shell
+```bash
 ./yii message/config --languages=de,ja --messagePath=messages path/to/config.php
 ```
 
 To get list of available options execute next command:
 
-```shell
+```bash
 ./yii help message/config
 ```
 
 Once you're done with the configuration file you can finally extract your messages with the command:
 
-```shell
+```bash
 ./yii message path/to/config.php
 ```
 
