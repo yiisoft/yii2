@@ -929,8 +929,7 @@ class BaseHtml
      * @param array $options options (name => config) for the radio button list container tag.
      * The following options are specially handled:
      *
-     * - tag: string|false, string is the tag name of the container element. Disable the container of the radio buttons
-     *   if it is false.
+     * - tag: string|false, string is the tag name of the container element. False to render radio buttons without container.
      * - unselect: string, the value that should be submitted when none of the radio buttons is selected.
      *   By setting this option, a hidden input will be generated.
      * - encode: boolean, whether to HTML-encode the checkbox labels. Defaults to true.
@@ -983,6 +982,8 @@ class BaseHtml
             $separator = "\n";
         }
 
+        $contentTag = implode($separator, $lines);
+
         if (isset($options['unselect'])) {
             // add a hidden field so that if the list box has no option being selected, it still submits a value
             $hidden = static::hiddenInput($name, $options['unselect']);
@@ -992,16 +993,16 @@ class BaseHtml
         }
 
         if (!isset($options['tag'])) {
-            return $hidden . static::tag('div', implode($separator, $lines), $options);
+            return $hidden . static::tag('div', $contentTag, $options);
         }
 
-        if ($options['tag'] == false) {
-            return $hidden . implode($separator, $lines);
+        if (false === $options['tag']) {
+            return $hidden . $contentTag;
         }
 
         $tag = $options['tag'];
         unset($options['tag']);
-        return $hidden . static::tag($tag, implode($separator, $lines), $options);
+        return $hidden . static::tag($tag, $contentTag, $options);
     }
 
     /**
