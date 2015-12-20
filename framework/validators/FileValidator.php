@@ -422,8 +422,8 @@ class FileValidator extends Validator
     }
 
     /**
-     * @param $mimeType
-     * @param $mask
+     * @param string $mimeType Uploaded file mimeType
+     * @param string $mask mimeType mask
      * @return bool
      */
     protected function validateMimeTypeMask($mimeType, $mask)
@@ -433,6 +433,7 @@ class FileValidator extends Validator
     }
 
     /**
+     * Checks file mimeType according validator [[mimeTypes]] property
      * @param UploadedFile $file
      * @return bool
      * @throws \yii\base\InvalidConfigException
@@ -442,11 +443,11 @@ class FileValidator extends Validator
         $fileMimeType = FileHelper::getMimeType($file->tempName);
 
         foreach ($this->mimeTypes as $mimeType) {
-            if (strpos($mimeType, '*') !== false && $this->validateMimeTypeMask($fileMimeType, $mimeType)) {
+            if ($mimeType === $fileMimeType) {
                 return true;
             }
 
-            if ($mimeType == $fileMimeType) {
+            if (strpos($mimeType, '*') !== false && $this->validateMimeTypeMask($fileMimeType, $mimeType)) {
                 return true;
             }
         }

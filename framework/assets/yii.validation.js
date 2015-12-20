@@ -438,12 +438,12 @@ yii.validation = (function ($) {
 
     function validateMimeType(mimeTypes, fileType)
     {
-        for (var i=0; i<mimeTypes.length; i++) {
-            if (mimeTypes[i].indexOf('*') !== -1 && validateMimeTypeMask(mimeTypes[i], fileType)) {
+        for (var i=0, len = mimeTypes.length; i<len; i++) {
+            if (mimeTypes[i] === fileType) {
                 return true;
             }
 
-            if (mimeTypes[i] == fileType) {
+            if (mimeTypes[i].indexOf('*') !== -1 && validateMimeTypeMask(mimeTypes[i], fileType)) {
                 return true;
             }
         }
@@ -460,7 +460,7 @@ yii.validation = (function ($) {
     }
 
     function escapeRegExp(str) {
-        return str.replace(/[-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|]/g, "\\$&");
+        return (str+'').replace(/[.?*+^$[\]\\(){}|-]/g, "\\$&");
     }
 
     return pub;
