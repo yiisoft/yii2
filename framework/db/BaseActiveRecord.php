@@ -338,6 +338,7 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
         $query->primaryModel = $this;
         $query->link = $link;
         $query->multiple = false;
+	$query->limit  = 1;
         return $query;
     }
 
