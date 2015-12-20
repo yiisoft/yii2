@@ -810,6 +810,28 @@ TEXT;
         $this->assertTrue($key1 != $key2);
     }
 
+    public function testGenerateRandomKeyURandom()
+    {
+        if (function_exists('random_bytes')) {
+            $this->markTestSkipped('This test can only work on platforms where random_bytes() function does not exist. You may disable it in php.ini for testing. http://php.net/manual/en/ini.core.php#ini.disable-functions');
+        }
+        if (PHP_VERSION_ID >= 50307 && function_exists('mcrypt_create_iv')) {
+            $this->markTestSkipped('This test can only work on platforms where mcrypt_create_iv() function does not exist. You may disable it in php.ini for testing. http://php.net/manual/en/ini.core.php#ini.disable-functions');
+        }
+        if (!@is_readable('/dev/urandom')) {
+            $this->markTestSkipped('/dev/urandom does not seem to exist on your system.');
+        }
+
+        $length = 1024 * 1024;
+        $key1 = $this->security->generateRandomKey($length);
+        $this->assertInternalType('string', $key1);
+        $this->assertEquals($length, strlen($key1));
+        $key2 = $this->security->generateRandomKey($length);
+        $this->assertInternalType('string', $key2);
+        $this->assertEquals($length, strlen($key2));
+        $this->assertTrue($key1 != $key2);
+    }
+
     public function testGenerateRandomString()
     {
         $length = 21;
