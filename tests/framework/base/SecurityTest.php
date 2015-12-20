@@ -41,37 +41,8 @@ class SecurityTest extends TestCase
         $this->assertFalse($this->security->validateData($hashedData, $key));
     }
 
-    /**
-     * Data provider for [[testPasswordHash()]]
-     * @return array test data
-     */
-    public function dataProviderPasswordHash()
+    public function testPasswordHash()
     {
-        return [
-            [
-                'crypt',
-                false
-            ],
-            [
-                'password_hash',
-                !function_exists('password_hash')
-            ],
-        ];
-    }
-
-    /**
-     * @dataProvider dataProviderPasswordHash
-     *
-     * @param string $passwordHashStrategy
-     * @param boolean $isSkipped
-     */
-    public function testPasswordHash($passwordHashStrategy, $isSkipped)
-    {
-        if ($isSkipped) {
-            $this->markTestSkipped("Unable to test '{$passwordHashStrategy}' password hash strategy");
-            return;
-        }
-        $this->security->passwordHashStrategy = $passwordHashStrategy;
         $this->security->passwordHashCost = 4;  // minimum blowfish's value is enough for tests
 
         $password = 'secret';
@@ -128,7 +99,7 @@ class SecurityTest extends TestCase
     public function notestGenerateVectors()
     {
         $bin1024 =
-           'badec0c7d9ca734e161a1df6ca4daa8cdbf6b3bbb60ec404b47a23226ec266b1
+            'badec0c7d9ca734e161a1df6ca4daa8cdbf6b3bbb60ec404b47a23226ec266b1
             3837ffc969e9c23e2bbba72facb491a6a3271193a35026a9ebc93698d689bf7b
             84fc384f544cc5d71c2945c8c48ae6348c753322fcaf75171b7d8f1e178e8545
             3d5c79f03bae6d9705cabbe7004ec81e188812a66313297fcf5d4c61a48614d2
@@ -830,8 +801,13 @@ TEXT;
     public function testGenerateRandomKey()
     {
         $length = 21;
-        $key = $this->security->generateRandomKey($length);
-        $this->assertEquals($length, strlen($key));
+        $key1 = $this->security->generateRandomKey($length);
+        $this->assertInternalType('string', $key1);
+        $this->assertEquals($length, strlen($key1));
+        $key2 = $this->security->generateRandomKey($length);
+        $this->assertInternalType('string', $key2);
+        $this->assertEquals($length, strlen($key2));
+        $this->assertTrue($key1 != $key2);
     }
 
     public function testGenerateRandomString()

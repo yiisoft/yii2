@@ -140,4 +140,4 @@ public function checkAccess($action, $model = null, $params = [])
 `checkAccess()` 方法默认会被[[yii\rest\ActiveController]]默认操作所调用，如果创建新的操作并想执行权限检查，
 应在新的操作中明确调用该方法。
 
-> 提示: 可使用[Role-Based Access Control (RBAC) 基于角色权限控制组件](security-authorization.md)实现`checkAccess()`。
+> Tip: 可使用[Role-Based Access Control (RBAC) 基于角色权限控制组件](security-authorization.md)实现`checkAccess()`。
