@@ -8,6 +8,7 @@ Yii Framework 2 Change Log
 - Bug #6363, #8301, #8582, #9566: Fixed data methods and PJAX issues when used together (derekisbusy)
 - Bug #6876: Fixed RBAC migration MSSQL cascade problem (thejahweh)
 - Bug #7627: Fixed `yii\widgets\ActiveField` to handle inputs validation with changed ID properly (dynasource, cebe)
+- Bug #8466: Fixed `yii\validators\FileValidator` to display error for `tooBig` and `tooSmall` with formatted unit (silverfire)
 - Bug #8723: Fixed `yii\helpers\VarDumper::export()` unable to export circle referenced objects with `Closure` (klimov-paul)
 - Bug #9061: Fixed `yii.activeForm.js`: input onBlur event forces field validation (githubjeka)
 - Bug #9108: Negative number resulted in no formatting when using `Formatter::asSize()` or `Formatter::asShortSize` (nxnx, cebe)
