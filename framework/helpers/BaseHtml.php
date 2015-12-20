@@ -930,7 +930,7 @@ class BaseHtml
      * The following options are specially handled:
      *
      * - tag: string|boolean, the tag name of the container element. Disable the container of the
-     *   radio buttons if it is false or 'false'. The tag would be set to 'div' when it is true.
+     *   radio buttons if it is false.
      * - unselect: string, the value that should be submitted when none of the radio buttons is selected.
      *   By setting this option, a hidden input will be generated.
      * - encode: boolean, whether to HTML-encode the checkbox labels. Defaults to true.
@@ -954,17 +954,9 @@ class BaseHtml
      */
     public static function radioList($name, $selection = null, $items = [], $options = [])
     {
-        // read options
         $encode = !isset($options['encode']) || $options['encode'];
         $formatter = isset($options['item']) ? $options['item'] : null;
         $itemOptions = isset($options['itemOptions']) ? $options['itemOptions'] : [];
-        $separator = isset($options['separator']) ? $options['separator'] : "\n";
-        // add a hidden field so that if the list box has no option being selected, it still submits a value
-        $hidden = isset($options['unselect']) ? static::hiddenInput($name, $options['unselect']) : '';
-        $tag = isset($options['tag']) ? $options['tag'] : 'div';
-
-        unset($options['tag'], $options['unselect'], $options['encode'], $options['separator'], $options['item'], $options['itemOptions']);
-
         $lines = [];
         $index = 0;
         foreach ($items as $value => $label) {
@@ -981,14 +973,28 @@ class BaseHtml
             }
             $index++;
         }
-        $visibleContent = implode($separator, $lines);
 
-        if (false === $tag || 'false' === $tag) {
-            return $hidden . $visibleContent;
+        $separator = isset($options['separator']) ? $options['separator'] : "\n";
+        if (isset($options['unselect'])) {
+            // add a hidden field so that if the list box has no option being selected, it still submits a value
+            $hidden = static::hiddenInput($name, $options['unselect']);
+        } else {
+            $hidden = '';
         }
 
-        // returned the result with visible content contained by container.
-        return $hidden . static::tag($tag, $visibleContent, $options);
+        if (isset($options['tag']) && $options['tag'] == false) {
+            $tag = false;
+        } else {
+            $tag = isset($options['tag']) ? $options['tag'] : 'div';
+        }
+
+        unset($options['tag'], $options['unselect'], $options['encode'], $options['separator'], $options['item'], $options['itemOptions']);
+
+        if ($tag === false) {
+            return $hidden . implode($separator, $lines);
+        } else {
+            return $hidden . static::tag($tag, implode($separator, $lines), $options);
+        }
     }
 
     /**
