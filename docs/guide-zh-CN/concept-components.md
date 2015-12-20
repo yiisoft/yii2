@@ -71,7 +71,7 @@ $component = \Yii::createObject([
 ], [1, 2]);
 ```
 
-> 补充：尽管调用 [[Yii::createObject()]] 的方法看起来更加复杂，但这主要因为它更加灵活强大，它是基于[依赖注入容器](concept-di-container.md)实现的。
+> Info: 尽管调用 [[Yii::createObject()]] 的方法看起来更加复杂，但这主要因为它更加灵活强大，它是基于[依赖注入容器](concept-di-container.md)实现的。
   
 
 [[yii\base\Object]] 类执行时的生命周期如下：

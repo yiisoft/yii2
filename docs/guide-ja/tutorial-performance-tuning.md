@@ -29,7 +29,7 @@ Yii は、`YII_DEBUG` という名前の定数の値を使って、デバッグ�
 defined('YII_DEBUG') or define('YII_DEBUG', false);
 ```
 
-> Info|情報: `YII_DEBUG` のデフォルト値は false です。
+> Info: `YII_DEBUG` のデフォルト値は false です。
   従って、アプリケーションコードの他のどこかでこのデフォルト値を変更していないと確信できるなら、単に上記の行を削除してデバッグモードを無効にしても構いません。
 
 ## キャッシュのテクニックを使う <span id="using-caching"></span>

@@ -1,4 +1,4 @@
-﻿Eventos
+Eventos
 =======
 
 Los eventos permiten inyectar código dentro de otro código existente en ciertos puntos de ejecución. Se pueden adjuntar
@@ -130,7 +130,7 @@ class Foo extends Component
 
 Con el código anterior, cada llamada a `bar()` lanzará un evento llamado `hello`
 
-> Consejo: Se recomienda usar las constantes de clase para representar nombres de eventos. En el anterior ejemplo, la
+> Tip: Se recomienda usar las constantes de clase para representar nombres de eventos. En el anterior ejemplo, la
   constante `EVENT_HELLO` representa el evento `hello`. Este enfoque proporciona tres beneficios. Primero, previene
   errores tipográficos. Segundo, puede hacer que los IDEs reconozcan los eventos en las funciones de auto-completado.
   Tercero, se puede ver que eventos soporta una clase simplemente revisando la declaración de constantes.
@@ -246,7 +246,7 @@ Event::trigger(Foo::className(), Foo::EVENT_HELLO);
 Tenga en cuenta que en este caso, el `$event->sender` hace referencia al nombre de la clase que lanza el evento en
 lugar de a la instancia del objeto.
 
-> Nota: Debido a que los gestores a nivel de clase responderán a los eventos lanzados por cualquier instancia de la
+> Note: Debido a que los gestores a nivel de clase responderán a los eventos lanzados por cualquier instancia de la
 clase, o cualquier clase hija, se debe usar con cuidado, especialmente en las clases de bajo nivel (low-level), tales
 como [[yii\base\Object]].
 

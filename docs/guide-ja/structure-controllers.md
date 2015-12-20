@@ -138,7 +138,7 @@ class SiteController extends Controller
 この理由により、上記の例の `aritcle` コントローラクラスは [エイリアス](concept-aliases.md) が `@app/controllers/ArticleController.php` であるファイルに保存されるべきものとなります。
 一方、`admin/post-comment` コントローラは `@app/controllers/admin/PostCommentController.php` というエイリアスのファイルに保存されるべきものとなります。
 
-> Info|情報: 最後の例である `admin/post-comment` は、どうすれば [[yii\base\Application::controllerNamespace|コントローラ名前空間]] のサブディレクトリにコントローラを置くことが出来るかを示しています。
+> Info: 最後の例である `admin/post-comment` は、どうすれば [[yii\base\Application::controllerNamespace|コントローラ名前空間]] のサブディレクトリにコントローラを置くことが出来るかを示しています。
   この方法は、コントローラをいくつかのカテゴリに分けて編成したい、けれども [モジュール](structure-modules.md) は使いたくない、という場合に役立ちます。
 
 
@@ -235,7 +235,7 @@ class SiteController extends Controller
 
 例えば、`index` は `actionIndex` となり、`hello-world` は `actionHelloWorld` となります。
 
-> Note|注意: アクションメソッドの名前は、*大文字と小文字を区別* します。
+> Note: アクションメソッドの名前は、*大文字と小文字を区別* します。
   `ActionIndex` という名前のメソッドがあっても、それはアクションメソッドとは見なされず、結果として、`index` アクションに対するリクエストは例外に帰結します。
   アクションメソッドが public でなければならない事にも注意してください。
   private や protected なメソッドがインラインアクションを定義することはありません。

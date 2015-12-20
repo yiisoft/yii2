@@ -150,4 +150,4 @@ public function checkAccess($action, $model = null, $params = [])
 Метод `checkAccess()` будет вызван действиями по умолчанию контроллера [[yii\rest\ActiveController]]. Если вы создаёте
 новые действия и хотите в них выполнять контроль доступа, вы должны вызвать этот метод явно в своих новых действиях.
 
-> Подсказка: вы можете реализовать метод `checkAccess()` с помощью ["Контроля доступа на основе ролей" (RBAC)](security-authorization.md).
+> Tip: вы можете реализовать метод `checkAccess()` с помощью ["Контроля доступа на основе ролей" (RBAC)](security-authorization.md).

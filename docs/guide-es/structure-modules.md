@@ -1,4 +1,4 @@
-﻿Módulos
+Módulos
 =======
 Los módulos son unidades de software independientes que consisten en [modelos](structure-models.md), 
 [vistas](structure-views.md), [controladores](structure-controllers.md), y otros componentes de apoyo. Los usuarios 
@@ -160,7 +160,7 @@ Dónde ‘MyModuleClass’ hace referencia al nombre de la clase módulo en la q
 método devolverá nulo. Hay que tener en cuenta que si se crea una nueva instancia del módulo, esta será diferente a la 
 creada por Yii en respuesta a la solicitud.
 
-> Información: Cuando se desarrolla un módulo, no se debe dar por sentado que el módulo usará un ID fijo. Esto se debe 
+> Info: Cuando se desarrolla un módulo, no se debe dar por sentado que el módulo usará un ID fijo. Esto se debe 
   a que un módulo puede asociarse a un ID arbitrario cuando se usa en una aplicación o dentro de otro módulo. Para 
   obtener el ID del módulo, primero se debe usar el código del anterior ejemplo para obtener la instancia y luego el 
   ID mediante ‘$modeule->id’.
@@ -234,7 +234,7 @@ En un controlador dentro de un módulo anidado, la ruta debe incluir el ID de to
 ejemplo, la ruta ‘forum/admin/dashboard/index’ representa la acción ‘index’ del controlador ‘dashboard’ en el módulo 
 ‘admin’ que es el módulo hijo del módulo ‘forum’. 
 
-> Información: El método [[yii\base\Module::getModule()|getModule()]] sólo devuelve el módulo hijo que pertenece 
+> Info: El método [[yii\base\Module::getModule()|getModule()]] sólo devuelve el módulo hijo que pertenece 
 directamente a su padre. La propiedad [[yii\base\Application::loadedModules]] contiene una lista de los módulos 
 cargados, incluyendo los hijos directos y los anidados, indexados por sus nombres de clase.
 
