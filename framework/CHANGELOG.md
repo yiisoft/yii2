@@ -15,6 +15,7 @@ Yii Framework 2 Change Log
 - Bug #9288: Fixed `FileHelper::createDirectory` directory creation to be concurrency friendly (dynasource)
 - Bug #9314: Fixed `yii\rbac\DbManager::getPermissionsByUser()` not returning permissions directly assigned to a user (hesna)
 - Bug #9323: Fixed `yii\console\controllers\MessageController` not using database connection specified in config (raccoon69, samdark)
+- Bug #9333: Fixed `yii\web\AssetManager` to publish bundles using symlink with nested directories in `hash` (silverfire)
 - Bug #9415: Fixed regression in 2.0.6 where on Oracle DB `PDO::ATTR_CASE = PDO::CASE_LOWER` did not work anymore (cebe)
 - Bug #9442: Fixed `yii\db\Migration::renameTable()` caused fatal error when using SQLite driver (fetus-hina)
 - Bug #9452: Fixed `yii\db\Query::where()` does not add params from directly passed `yii\db\Expression` (klimov-paul)
