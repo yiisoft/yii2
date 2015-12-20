@@ -214,7 +214,7 @@ return [
 可通过类似[[yii\web\AssetManager::bundles]]配置多个资源包，数组的键应为资源包的类名（最开头不要反斜杠），
 数组的值为对应的[配置数组](concept-configurations.md).
 
-> 提示: 可以根据条件判断使用哪个资源，如下示例为如何在开发环境用`jquery.js`，否则用`jquery.min.js`：
+> Tip: 可以根据条件判断使用哪个资源，如下示例为如何在开发环境用`jquery.js`，否则用`jquery.min.js`：
 >
 > ```php
 > 'yii\web\JqueryAsset' => [

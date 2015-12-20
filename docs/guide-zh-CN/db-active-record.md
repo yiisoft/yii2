@@ -405,7 +405,7 @@ SELECT * FROM customer WHERE id=1;
 SELECT * FROM order WHERE customer_id=1;
 ```
 
-> 提示:再次用表达式 `$customer->orders`将不会执行第二次 SQL 查询，
+> Tip: 再次用表达式 `$customer->orders`将不会执行第二次 SQL 查询，
 SQL 查询只在该表达式第一次使用时执行。
 数据库访问只返回缓存在内部前一次取回的结果集，如果你想查询新的
 关联数据，先要注销现有结果集：`unset($customer->orders);`。
