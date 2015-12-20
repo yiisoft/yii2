@@ -929,8 +929,8 @@ class BaseHtml
      * @param array $options options (name => config) for the radio button list container tag.
      * The following options are specially handled:
      *
-     * - tag: string|false, the tag name of the container element. Disable the container of the
-     *   radio buttons if it is false.
+     * - tag: string|false, string is the tag name of the container element.
+     *   False to render radio buttons without container.
      * - unselect: string, the value that should be submitted when none of the radio buttons is selected.
      *   By setting this option, a hidden input will be generated.
      * - encode: boolean, whether to HTML-encode the checkbox labels. Defaults to true.
