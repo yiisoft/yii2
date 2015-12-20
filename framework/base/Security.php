@@ -521,14 +521,16 @@ class Security extends Component
             if ($urandomFile !== null) {
                 // $length could be large so read using a loop.
                 $key = '';
+                $bytesLeft = $length;
                 do {
-                    $buffer = fread($urandomFile, $length);
+                    $buffer = fread($urandomFile, min($bytesLeft, 8092));
                     if (!$buffer) {
                         $key = null;
                         break;
                     }
                     $key .= $buffer;
-                } while (StringHelper::byteLength($key) < $length);
+                    $bytesLeft = $length - StringHelper::byteLength($key);
+                } while ($bytesLeft > 0);
 
                 if ($key !== null && StringHelper::byteLength($key) === $length) {
                     $this->_randomSource = $urandomFile;
