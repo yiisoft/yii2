@@ -930,7 +930,7 @@ class BaseHtml
      * The following options are specially handled:
      *
      * - tag: string|false, the tag name of the container element. Disable the container of the
-     *   radio buttons if it is false or 'false'.
+     *   radio buttons if it is false.
      * - unselect: string, the value that should be submitted when none of the radio buttons is selected.
      *   By setting this option, a hidden input will be generated.
      * - encode: boolean, whether to HTML-encode the checkbox labels. Defaults to true.
@@ -954,7 +954,6 @@ class BaseHtml
      */
     public static function radioList($name, $selection = null, $items = [], $options = [])
     {
-        // read options
         $formatter = ArrayHelper::remove($options, 'item');
         $itemOptions = ArrayHelper::remove($options, 'itemOptions', []);
         $encode = ArrayHelper::remove($options, 'encode', true);
@@ -982,11 +981,10 @@ class BaseHtml
         }
         $visibleContent = implode($separator, $lines);
 
-        if (false === $tag || 'false' === $tag) {
+        if (false === $tag) {
             return $hidden . $visibleContent;
         }
 
-        // returned the result with visible content contained by container.
         return $hidden . static::tag($tag, $visibleContent, $options);
     }
 
