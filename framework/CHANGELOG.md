@@ -4,7 +4,6 @@ Yii Framework 2 Change Log
 2.0.7 under development
 -----------------------
 
-- Enh #10390: Add disable tag options in radiolist (TianJinRong)
 - Bug #6351: Find MySQL FK constraints from `information_schema` tables instead of `SHOW CREATE TABLE` to improve reliability (nineinchnick)
 - Bug #6363, #8301, #8582, #9566: Fixed data methods and PJAX issues when used together (derekisbusy)
 - Bug #6876: Fixed RBAC migration MSSQL cascade problem (thejahweh)
@@ -81,6 +80,7 @@ Yii Framework 2 Change Log
 - Enh #10264: Generation of HTML tags in Yii's JavaScript now uses jQuery style (silverfire)
 - Enh #10267: `yii.js` - added original event passing to `pjaxOptions` for links with `data-method` and `data-pjax` (servocoder, silverfire)
 - Enh #10319: `yii\helpers\VarDumper::dump()` now respects PHP magic method `__debugInfo()` (klimov-paul)
+- Enh #10390: Added disable tag options in `\yii\helpers\BaseHtml::radiolist()` (TianJinRong, githubjeka)
 - Enh: Added last resort measure for `FileHelper::removeDirectory()` fail to unlink symlinks under Windows (samdark)
 - Chg #9369: `Yii::$app->user->can()` now returns `false` instead of erroring in case `authManager` component is not configured (creocoder)
 - Chg #9411: `DetailView` now automatically sets container tag ID in case it's not specified (samdark)

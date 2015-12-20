@@ -929,8 +929,7 @@ class BaseHtml
      * @param array $options options (name => config) for the radio button list container tag.
      * The following options are specially handled:
      *
-     * - tag: string|boolean, the tag name of the container element. Disable the container of the
-     *   radio buttons if it is false.
+     * - tag: string|false, string is the tag name of the container element. False to render radio buttons without container.
      * - unselect: string, the value that should be submitted when none of the radio buttons is selected.
      *   By setting this option, a hidden input will be generated.
      * - encode: boolean, whether to HTML-encode the checkbox labels. Defaults to true.
@@ -957,6 +956,8 @@ class BaseHtml
         $encode = !isset($options['encode']) || $options['encode'];
         $formatter = isset($options['item']) ? $options['item'] : null;
         $itemOptions = isset($options['itemOptions']) ? $options['itemOptions'] : [];
+        unset($options['encode'], $options['item'], $options['itemOptions']);
+
         $lines = [];
         $index = 0;
         foreach ($items as $value => $label) {
@@ -974,27 +975,34 @@ class BaseHtml
             $index++;
         }
 
-        $separator = isset($options['separator']) ? $options['separator'] : "\n";
+        if (isset($options['separator'])) {
+            $separator = $options['separator'];
+            unset($options['separator']);
+        } else {
+            $separator = "\n";
+        }
+
+        $contentTag = implode($separator, $lines);
+
         if (isset($options['unselect'])) {
             // add a hidden field so that if the list box has no option being selected, it still submits a value
             $hidden = static::hiddenInput($name, $options['unselect']);
+            unset($options['unselect']);
         } else {
             $hidden = '';
         }
 
-        if (isset($options['tag']) && $options['tag'] == false) {
-            $tag = false;
-        } else {
-            $tag = isset($options['tag']) ? $options['tag'] : 'div';
+        if (!isset($options['tag'])) {
+            return $hidden . static::tag('div', $contentTag, $options);
         }
 
-        unset($options['tag'], $options['unselect'], $options['encode'], $options['separator'], $options['item'], $options['itemOptions']);
-
-        if ($tag === false) {
-            return $hidden . implode($separator, $lines);
-        } else {
-            return $hidden . static::tag($tag, implode($separator, $lines), $options);
+        if (false === $options['tag']) {
+            return $hidden . $contentTag;
         }
+
+        $tag = $options['tag'];
+        unset($options['tag']);
+        return $hidden . static::tag($tag, $contentTag, $options);
     }
 
     /**
