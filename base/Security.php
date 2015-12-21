@@ -500,7 +500,9 @@ class Security extends Component
 
         // If not on Windows, test for a /dev/urandom device.
         if ($this->_randomSource === null && DIRECTORY_SEPARATOR === '/') {
-            // Check it for speacial character device protection mode.
+            // Check it for speacial character device protection mode. Do not follow
+            // symbolic link at '/dev/urandom', as such would be suspicious. With lstat()
+            // (as opposed to stat()) the test fails if it is.
             $lstat = @lstat(self::DEV_URANDOM);
             $urandomDevice = $lstat !== false && ($lstat['mode'] & 0170000) === 020000;
         } else {
