@@ -90,12 +90,6 @@ class Security extends Component
     public $passwordHashCost = 13;
 
     /**
-     * @var resource|string|null Identifies the random source of the last successful call of [[generateRandomKey]].
-     * Caches the file pointer to /dev/urandom if it was fopened.
-     */
-    private $_randomSource;
-
-    /**
      * Encrypts data using a password.
      * Derives keys for encryption and authentication from the password using PBKDF2 and a random salt,
      * which is deliberately slow to protect against dictionary attacks. Use [[encryptByKey()]] to
@@ -428,6 +422,16 @@ class Security extends Component
         return false;
     }
 
+    const DEV_URANDOM = '/dev/urandom';
+    const SOURCE_LIBRE_SSL = 'LibreSSL';
+    const SOURCE_MCRYPT = 'mcrypt';
+    const SOURCE_OPEN_SSL = 'OpenSSL';
+    const SOURCE_URANDOM = 'urandom';
+    /**
+     * @var string|null Identifies the random source of the last successful call of [[generateRandomKey]].
+     */
+    private $_randomSource;
+
     /**
      * Generates specified number of random bytes.
      * Note that output may not be ASCII.
@@ -455,7 +459,7 @@ class Security extends Component
         // The recent LibreSSL RNGs are faster and better than /dev/urandom.
         // Parse OPENSSL_VERSION_TEXT because OPENSSL_VERSION_NUMBER is no use for LibreSSL.
         // https://bugs.php.net/bug.php?id=71143
-        if ($this->_randomSource === 'LibreSSL'
+        if ($this->_randomSource === self::SOURCE_LIBRE_SSL
             || ($this->_randomSource === null
                 && defined('OPENSSL_VERSION_TEXT')
                 && preg_match('{^LibreSSL (\d\d?)\.(\d\d?)\.(\d\d?)$}', OPENSSL_VERSION_TEXT, $matches)
@@ -468,7 +472,7 @@ class Security extends Component
                 );
             }
             if ($key !== false && StringHelper::byteLength($key) === $length) {
-                $this->_randomSource = 'LibreSSL';
+                $this->_randomSource = self::SOURCE_LIBRE_SSL;
 
                 return $key;
             }
@@ -478,14 +482,14 @@ class Security extends Component
 
         // mcrypt_create_iv() does not use libmcrypt. Since PHP 5.3.7 it directly reads
         // CrypGenRandom on Windows. Elsewhere it directly reads /dev/urandom.
-        if ($this->_randomSource === 'mcrypt'
+        if ($this->_randomSource === self::SOURCE_MCRYPT
             || ($this->_randomSource === null
                 && PHP_VERSION_ID >= 50307
                 && function_exists('mcrypt_create_iv'))
         ) {
             $key = mcrypt_create_iv($length, MCRYPT_DEV_URANDOM);
             if (StringHelper::byteLength($key) === $length) {
-                $this->_randomSource = 'mcrypt';
+                $this->_randomSource = self::SOURCE_MCRYPT;
 
                 return $key;
             }
@@ -493,48 +497,23 @@ class Security extends Component
             $this->_randomSource = null;
         }
 
-        // If not on Windows, try reading from /dev/urandom device. If successful, cache
-        // the file pointer in $this->_randomSource.
-        if (is_resource($this->_randomSource)
-            || ($this->_randomSource === null
-                && DIRECTORY_SEPARATOR === '/'
-                && @is_readable('/dev/urandom'))
-        ) {
-            // Either open /dev/urandom or get the cached file pointer.
-            if (is_resource($this->_randomSource)) {
-                $urandomFile = $this->_randomSource;
-            } else {
-                $urandomFile = fopen('/dev/urandom', 'rb');
-                if ($urandomFile) {
-                    // Check the file's inode protection mode is 'character special'.
-                    // NOTE: octal integer literals!
-                    $fstat = fstat($urandomFile);
-                    if (($fstat['mode'] & 0170000) !== 020000) {
-                        fclose($urandomFile);
-                        $urandomFile = null;
-                    }
-                } else {
-                    $urandomFile = null;
-                }
-            }
+        // If not on Windows, test for a /dev/urandom device.
+        if ($this->_randomSource === null && DIRECTORY_SEPARATOR === '/') {
+            // Check it for speacial character device protection mode. Do not follow
+            // symbolic link at '/dev/urandom', as such would be suspicious. With lstat()
+            // (as opposed to stat()) the test fails if it is.
+            $lstat = @lstat(self::DEV_URANDOM);
+            $urandomDevice = $lstat !== false && ($lstat['mode'] & 0170000) === 020000;
+        } else {
+            $urandomDevice = false;
+        }
+        if ($this->_randomSource === self::SOURCE_URANDOM || $urandomDevice) {
+            $key = @file_get_contents(self::DEV_URANDOM, false, null, 0, $length);
 
-            if ($urandomFile !== null) {
-                // $length could be large so read using a loop.
-                $key = '';
-                do {
-                    $buffer = fread($urandomFile, $length);
-                    if (!$buffer) {
-                        $key = null;
-                        break;
-                    }
-                    $key .= $buffer;
-                } while (StringHelper::byteLength($key) < $length);
+            if ($key !== false && StringHelper::byteLength($key) === $length) {
+                $this->_randomSource = self::SOURCE_URANDOM;
 
-                if ($key !== null && StringHelper::byteLength($key) === $length) {
-                    $this->_randomSource = $urandomFile;
-
-                    return $key;
-                }
+                return $key;
             }
 
             $this->_randomSource = null;
@@ -542,7 +521,7 @@ class Security extends Component
 
         // Since 5.4.0, openssl_random_pseudo_bytes() reads from CryptGenRandom on Windows instead
         // of using OpenSSL library. Don't use OpenSSL on other platforms.
-        if ($this->_randomSource === 'OpenSSL'
+        if ($this->_randomSource === self::SOURCE_OPEN_SSL
             || (DIRECTORY_SEPARATOR !== '/' && PHP_VERSION_ID >= 50400)
         ) {
             $key = openssl_random_pseudo_bytes($length, $cryptoStrong);
@@ -552,7 +531,7 @@ class Security extends Component
                 );
             }
             if ($key !== false && StringHelper::byteLength($key) === $length) {
-                $this->_randomSource = 'OpenSSL';
+                $this->_randomSource = self::SOURCE_OPEN_SSL;
 
                 return $key;
             }
