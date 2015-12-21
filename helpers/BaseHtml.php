@@ -856,7 +856,7 @@ class BaseHtml
      * @param array $options options (name => config) for the checkbox list container tag.
      * The following options are specially handled:
      *
-     * - tag: string, the tag name of the container element.
+     * - tag: string|false, the tag name of the container element. False to render radio buttons without container.
      * - unselect: string, the value that should be submitted when none of the checkboxes is selected.
      *   By setting this option, a hidden input will be generated.
      * - encode: boolean, whether to HTML-encode the checkbox labels. Defaults to true.
@@ -916,6 +916,12 @@ class BaseHtml
             $hidden = '';
         }
 
+        $visibleContent = implode($separator, $lines);
+
+        if ($tag === false) {
+            return $hidden . $visibleContent;
+        }
+
         return $hidden . static::tag($tag, implode($separator, $lines), $options);
     }
 
@@ -929,7 +935,7 @@ class BaseHtml
      * @param array $options options (name => config) for the radio button list container tag.
      * The following options are specially handled:
      *
-     * - tag: string, the tag name of the container element.
+     * - tag: string|false, the tag name of the container element. False to render radio buttons without container.
      * - unselect: string, the value that should be submitted when none of the radio buttons is selected.
      *   By setting this option, a hidden input will be generated.
      * - encode: boolean, whether to HTML-encode the checkbox labels. Defaults to true.
@@ -958,6 +964,9 @@ class BaseHtml
         $encode = ArrayHelper::remove($options, 'encode', true);
         $separator = ArrayHelper::remove($options, 'separator', "\n");
         $tag = ArrayHelper::remove($options, 'tag', 'div');
+        // add a hidden field so that if the list box has no option being selected, it still submits a value
+        $hidden = isset($options['unselect']) ? static::hiddenInput($name, $options['unselect']) : '';
+        unset($options['unselect']);
 
         $lines = [];
         $index = 0;
@@ -975,16 +984,13 @@ class BaseHtml
             }
             $index++;
         }
+        $visibleContent = implode($separator, $lines);
 
-        if (isset($options['unselect'])) {
-            // add a hidden field so that if the list box has no option being selected, it still submits a value
-            $hidden = static::hiddenInput($name, $options['unselect']);
-            unset($options['unselect']);
-        } else {
-            $hidden = '';
+        if ($tag === false) {
+            return $hidden . $visibleContent;
         }
 
-        return $hidden . static::tag($tag, implode($separator, $lines), $options);
+        return $hidden . static::tag($tag, $visibleContent, $options);
     }
 
     /**
