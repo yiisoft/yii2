@@ -832,6 +832,69 @@ TEXT;
         $this->assertTrue($key1 != $key2);
     }
 
+    /**
+     * From the dieharder help:
+     *
+     * > NOTE WELL:  The assessment(s) for the rngs may, in fact, be completely
+     * incorrect or misleading.  In particular, 'Weak' pvalues should occur
+     * one test in a hundred, and 'Failed' pvalues should occur one test in
+     * a thousand -- that's what p MEANS.  Use them at your Own Risk!  Be Warned!
+     *
+     * In other words, this unit test should fail from time to time for purely
+     * stsistical reasons. Ths is unavoidable in statistical
+     * hypothesis testing. You can make the failure threshold high so everything
+     * always passes but then you're not really testing very much.
+     *
+     * The test allows two WEAK assessments out of the ten tests.
+     *
+     * @throws \yii\base\Exception
+     */
+    public function testGenerateRandomKeyDiedarder()
+    {
+        $diehard = trim(`which dieharder`);
+        $message = 'This test requires the dieharder external program on the test machine. '
+            . 'https://www.phy.duke.edu/~rgb/General/dieharder.php'
+            . 'http://braumeister.org/formula/dieharder '
+            . 'http://packages.ubuntu.com/search?keywords=dieharder&searchon=names ';
+        if (empty($diehard)) {
+            $this->markTestSkipped($message);
+        }
+
+        exec($diehard . ' -h', $output, $status);
+        if ($status !== 0 || empty($output)) {
+            $this->markTestSkipped($message);
+        }
+
+        // create a large random file
+        $chunkSize = 16 * 1024 * 1024;
+        $chunks = 32;
+        $file = tempnam(sys_get_temp_dir(), 'test_random_key');
+        for ($i = 1; $i < $chunks; $i += 1) {
+            file_put_contents($file, $this->security->generateRandomKey($chunkSize), FILE_APPEND);
+            fwrite(STDERR, ',');
+        }
+
+        // run these relatively fast dieharder tests
+        $tests = [0, 8, 11, 12, 15, 100, 202, 204, 206, 208];
+        $numWeak = 0;
+        foreach ($tests as $test) {
+            // -g 201 means read from a file. -D 256 means output only the 'assessment'
+            $command = "$diehard -d $test -g 201 -D 256 -f '$file'";
+            $line = exec($command, $output, $status);
+            $this->assertEquals(0, $status);
+            $this->assertEquals(1, preg_match('{PASSED|WEAK}i', $line, $match));
+            if (strtoupper($match[0]) === 'WEAK') {
+                $numWeak += 1;
+                fwrite(STDERR, 'W');
+            } else {
+                fwrite(STDERR, ';');
+            }
+        }
+        $this->assertLessThanOrEqual(2, $numWeak);
+
+        unlink($file);
+    }
+
     public function testGenerateRandomString()
     {
         $length = 21;
