@@ -414,6 +414,17 @@ EOD;
                 return $index . Html::label($label . ' ' . Html::radio($name, $checked, ['value' => $value]));
             }
         ]));
+
+        $expected = <<<EOD
+0<label>text1 <input type="radio" name="test" value="value1"></label>
+1<label>text2 <input type="radio" name="test" value="value2" checked></label>
+EOD;
+        $this->assertEqualsWithoutLE($expected, Html::radioList('test', ['value2'], $this->getDataItems(), [
+            'item' => function ($index, $label, $name, $checked, $value) {
+                return $index . Html::label($label . ' ' . Html::radio($name, $checked, ['value' => $value]));
+            },
+            'tag' => false
+        ]));
     }
 
     public function testUl()
