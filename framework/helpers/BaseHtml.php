@@ -981,7 +981,7 @@ class BaseHtml
         }
         $visibleContent = implode($separator, $lines);
 
-        if (false === $tag) {
+        if ($tag === false) {
             return $hidden . $visibleContent;
         }
 
