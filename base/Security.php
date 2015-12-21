@@ -30,11 +30,6 @@ use Yii;
  */
 class Security extends Component
 {
-    const DEV_URANDOM = '/dev/urandom';
-    const SOURCE_MCRYPT = 'mcrypt';
-    const SOURCE_URANDOM = 'urandom';
-    const SOURCE_OPEN_SSL = 'OpenSSL';
-    const SOURCE_LIBRE_SSL = 'LibreSSL';
     /**
      * @var string The cipher to use for encryption and decryption.
      */
@@ -432,6 +427,12 @@ class Security extends Component
         }
         return false;
     }
+
+    const DEV_URANDOM = '/dev/urandom';
+    const SOURCE_LIBRE_SSL = 'LibreSSL';
+    const SOURCE_MCRYPT = 'mcrypt';
+    const SOURCE_OPEN_SSL = 'OpenSSL';
+    const SOURCE_URANDOM = 'urandom';
 
     /**
      * Generates specified number of random bytes.
