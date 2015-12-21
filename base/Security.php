@@ -90,12 +90,6 @@ class Security extends Component
     public $passwordHashCost = 13;
 
     /**
-     * @var resource|string|null Identifies the random source of the last successful call of [[generateRandomKey]].
-     * Caches the file pointer to /dev/urandom if it was fopened.
-     */
-    private $_randomSource;
-
-    /**
      * Encrypts data using a password.
      * Derives keys for encryption and authentication from the password using PBKDF2 and a random salt,
      * which is deliberately slow to protect against dictionary attacks. Use [[encryptByKey()]] to
@@ -433,6 +427,10 @@ class Security extends Component
     const SOURCE_MCRYPT = 'mcrypt';
     const SOURCE_OPEN_SSL = 'OpenSSL';
     const SOURCE_URANDOM = 'urandom';
+    /**
+     * @var string|null Identifies the random source of the last successful call of [[generateRandomKey]].
+     */
+    private $_randomSource;
 
     /**
      * Generates specified number of random bytes.
