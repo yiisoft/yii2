@@ -922,7 +922,7 @@ class BaseHtml
             return $hidden . $visibleContent;
         }
 
-        return $hidden . static::tag($tag, implode($separator, $lines), $options);
+        return $hidden . static::tag($tag, $visibleContent, $options);
     }
 
     /**
