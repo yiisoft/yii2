@@ -178,6 +178,11 @@ class ConnectionTest extends DatabaseTestCase
         $this->assertEquals(1, $profilesCount, 'profile should be inserted in transaction shortcut');
     }
 
+    /**
+     * @see #9851
+     * Tests nested transactions with partial rollback.
+     * @throws \Exception
+     */
     public function testNestedTransaction()
     {
         /** @var Connection $connection */
