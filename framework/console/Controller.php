@@ -414,8 +414,13 @@ class Controller extends \yii\base\Controller
         $params = isset($tags['param']) ? (array) $tags['param'] : [];
 
         $args = [];
+
+        /** @var \ReflectionParameter $reflection */
         foreach ($method->getParameters() as $i => $reflection) {
             $name = $reflection->getName();
+            if ($reflection->getClass() !== null) {
+                continue;
+            }
             $tag = isset($params[$i]) ? $params[$i] : '';
             if (preg_match('/^(\S+)\s+(\$\w+\s+)?(.*)/s', $tag, $matches)) {
                 $type = $matches[1];
