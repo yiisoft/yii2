@@ -178,4 +178,18 @@ class ConnectionTest extends DatabaseTestCase
         $this->assertEquals(1, $profilesCount, 'profile should be inserted in transaction shortcut');
     }
 
+    public function testNestedTransaction()
+    {
+        /** @var Connection $connection */
+        $connection = $this->getConnection(true);
+        $connection->transaction(function(Connection $db) {
+            $this->assertNotNull($db->transaction);
+            $db->transaction(function(Connection $db) {
+                $this->assertNotNull($db->transaction);
+                $db->transaction->rollBack();
+            });
+            $this->assertNotNull($db->transaction);
+        });
+    }
+
 }
