@@ -853,7 +853,7 @@ TEXT;
     {
         $diehard = trim(`which dieharder`);
         $message = 'This test requires the dieharder external program on the test machine. '
-            . 'https://www.phy.duke.edu/~rgb/General/dieharder.php'
+            . 'https://www.phy.duke.edu/~rgb/General/dieharder.php '
             . 'http://braumeister.org/formula/dieharder '
             . 'http://packages.ubuntu.com/search?keywords=dieharder&searchon=names ';
         if (empty($diehard)) {
@@ -890,6 +890,8 @@ TEXT;
                 fwrite(STDERR, ';');
             }
         }
+
+        // Tolerate up to **two** WEAK and **zero** FAILED assessments out of the ten test outcomes.
         $this->assertLessThanOrEqual(2, $numWeak);
 
         unlink($file);
