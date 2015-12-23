@@ -336,6 +336,8 @@ EOD;
 </select>
 EOD;
         $this->assertEqualsWithoutLE($expected, Html::listBox('test', null, [], ['multiple' => true]));
+        $this->assertEqualsWithoutLE($expected, Html::listBox('test[]', null, [], ['multiple' => true]));
+
         $expected = <<<EOD
 <input type="hidden" name="test" value="0"><select name="test" size="4">
 
@@ -353,6 +355,7 @@ EOD;
 <label><input type="checkbox" name="test[]" value="value2" checked> text2</label></div>
 EOD;
         $this->assertEqualsWithoutLE($expected, Html::checkboxList('test', ['value2'], $this->getDataItems()));
+        $this->assertEqualsWithoutLE($expected, Html::checkboxList('test[]', ['value2'], $this->getDataItems()));
 
         $expected = <<<EOD
 <div><label><input type="checkbox" name="test[]" value="value1&lt;&gt;"> text1&lt;&gt;</label>
