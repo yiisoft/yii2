@@ -18,6 +18,11 @@ use yii\base\Object;
  * @author Vasenin Matvey <vaseninm@gmail.com>
  * @since 2.0.6
  */
+
+/**
+ * @method \yii\db\mysql\ColumnSchemaBuilder unsigned()  supports only [MySQL]
+ * @method \yii\db\mysql\ColumnSchemaBuilder comment() supports only [MySQL]
+ */
 class ColumnSchemaBuilder extends Object
 {
     /**

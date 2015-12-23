@@ -85,6 +85,14 @@ class Schema extends \yii\db\Schema
     }
 
     /**
+     * @inheritdoc
+     */
+    public function createColumnSchemaBuilder($type, $length = null)
+    {
+        return new ColumnSchemaBuilder($type, $length);
+    }
+
+    /**
      * Loads the metadata for the specified table.
      * @param string $name table name
      * @return TableSchema driver dependent table metadata. Null if the table does not exist.
