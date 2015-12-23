@@ -107,7 +107,9 @@ class Instance
      */
     public static function ensure($reference, $type = null, $container = null)
     {
-        if ($reference instanceof $type) {
+        if (is_object($reference) && $type === null) {
+            return $reference;
+        } elseif (is_object($reference) && $reference instanceof $type) {
             return $reference;
         } elseif (is_array($reference)) {
             $class = isset($reference['class']) ? $reference['class'] : $type;
@@ -126,7 +128,9 @@ class Instance
 
         if ($reference instanceof self) {
             $component = $reference->get($container);
-            if ($component instanceof $type || $type === null) {
+            if ($type === null) {
+                return $component;
+            } elseif ($component instanceof $type) {
                 return $component;
             } else {
                 throw new InvalidConfigException('"' . $reference->id . '" refers to a ' . get_class($component) . " component. $type is expected.");

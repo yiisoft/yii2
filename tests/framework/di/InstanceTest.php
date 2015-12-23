@@ -7,6 +7,7 @@
 
 namespace yiiunit\framework\di;
 
+use Yii;
 use yii\base\Component;
 use yii\db\Connection;
 use yii\di\Container;
@@ -45,5 +46,30 @@ class InstanceTest extends TestCase
             'class' => 'yii\db\Connection',
             'dsn' => 'test',
         ], 'yii\db\Connection', $container) instanceof Connection);
+    }
+
+    public function testEnsureWithoutType()
+    {
+        $container = new Container;
+        $container->set('db', [
+            'class' => 'yii\db\Connection',
+            'dsn' => 'test',
+        ]);
+
+        $this->assertTrue(Instance::ensure('db', null, $container) instanceof Connection);
+        $this->assertTrue(Instance::ensure(new Connection, null, $container) instanceof Connection);
+        $this->assertTrue(Instance::ensure(['class' => 'yii\db\Connection', 'dsn' => 'test'], null, $container) instanceof Connection);
+    }
+
+    public function testEnsureMinimalSettings()
+    {
+        Yii::$container->set('db', [
+            'class' => 'yii\db\Connection',
+            'dsn' => 'test',
+        ]);
+
+        $this->assertTrue(Instance::ensure('db') instanceof Connection);
+        $this->assertTrue(Instance::ensure(new Connection) instanceof Connection);
+        $this->assertTrue(Instance::ensure(['class' => 'yii\db\Connection', 'dsn' => 'test']) instanceof Connection);
     }
 }
