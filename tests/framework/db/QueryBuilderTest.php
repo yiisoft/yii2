@@ -84,9 +84,9 @@ class QueryBuilderTest extends DatabaseTestCase
     {
         return [
             [Schema::TYPE_PK, $this->primaryKey(), 'int(11) UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY'],
-            [Schema::TYPE_PK . '(8)', $this->primaryKey(8), 'int(8) NOT NULL AUTO_INCREMENT PRIMARY KEY'],
-            [Schema::TYPE_PK . ' CHECK (value > 5)', $this->primaryKey()->check('value > 5'), 'int(11) NOT NULL AUTO_INCREMENT PRIMARY KEY CHECK (value > 5)'],
-            [Schema::TYPE_PK . '(8) CHECK (value > 5)', $this->primaryKey(8)->check('value > 5'), 'int(8) NOT NULL AUTO_INCREMENT PRIMARY KEY CHECK (value > 5)'],
+            [Schema::TYPE_PK . '(8)', $this->primaryKey(8), 'int(8) UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY'],
+            [Schema::TYPE_PK . ' CHECK (value > 5)', $this->primaryKey()->check('value > 5'), 'int(11) UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY CHECK (value > 5)'],
+            [Schema::TYPE_PK . '(8) CHECK (value > 5)', $this->primaryKey(8)->check('value > 5'), 'int(8) UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY CHECK (value > 5)'],
             [Schema::TYPE_STRING, $this->string(), 'varchar(255)'],
             [Schema::TYPE_STRING . '(32)', $this->string(32), 'varchar(32)'],
             [Schema::TYPE_STRING . ' CHECK (value LIKE "test%")', $this->string()->check('value LIKE "test%"'), 'varchar(255) CHECK (value LIKE "test%")'],
