@@ -13,7 +13,6 @@ use yii\db\Connection;
 use yii\di\Container;
 use yii\di\Instance;
 use yiiunit\TestCase;
-use yii\base\InvalidConfigException;
 
 /**
  * @author Qiang Xue <qiang.xue@gmail.com>
@@ -73,7 +72,7 @@ class InstanceTest extends TestCase
         Yii::$container = new Container;
     }
 
-    public function testCheckException()
+    public function testExceptionRefersTo()
     {
         $container = new Container;
         $container->set('db', [
@@ -81,26 +80,22 @@ class InstanceTest extends TestCase
             'dsn' => 'test',
         ]);
 
-        try {
-            Instance::ensure('db', 'yii\base\Widget', $container);
-        } catch (InvalidConfigException $e) {
-            $this->assertEquals('"db" refers to a yii\db\Connection component. yii\base\Widget is expected.', $e->getMessage());
-        }
-        try {
-            Instance::ensure(new Connection, 'yii\base\Widget', $container);
-        } catch (InvalidConfigException $e) {
-            $this->assertEquals('Invalid data type: yii\db\Connection. yii\base\Widget is expected.', $e->getMessage());
-        }
-        try {
-            Instance::ensure(['class' => 'yii\db\Connection', 'dsn' => 'test'], 'yii\base\Widget', $container);
-        } catch (InvalidConfigException $e) {
-            $this->assertEquals('"db" refers to a yii\db\Connection component. yii\base\Widget is expected.', $e->getMessage());
-        }
-        try {
-            Instance::ensure(null, null, $container);
-        } catch (InvalidConfigException $e) {
-            $this->assertEquals('The required component is not specified.', $e->getMessage());
-        }
+        $this->setExpectedException('yii\base\InvalidConfigException', '"db" refers to a yii\db\Connection component. yii\base\Widget is expected.');
+
+        Instance::ensure('db', 'yii\base\Widget', $container);
+        Instance::ensure(['class' => 'yii\db\Connection', 'dsn' => 'test'], 'yii\base\Widget', $container);
+    }
+
+    public function testExceptionInvalidDataType()
+    {
+        $this->setExpectedException('yii\base\InvalidConfigException', 'Invalid data type: yii\db\Connection. yii\base\Widget is expected.');
+        Instance::ensure(new Connection, 'yii\base\Widget');
+    }
+
+    public function testExceptionComponentIsNotSpecified()
+    {
+        $this->setExpectedException('yii\base\InvalidConfigException', 'The required component is not specified.');
+        Instance::ensure('');
     }
 
     public function testGet()
