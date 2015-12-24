@@ -63,6 +63,11 @@ class ArrayDataProvider extends BaseDataProvider
      * The array elements must use zero-based integer keys.
      */
     public $allModels;
+    /**
+     * @var bool If the $allModels need is already part of the data set the value to false
+     * then [[prepareModels]] return all data from the $allModels
+     */
+    public $sliceModels = true;
 
 
     /**
@@ -81,7 +86,7 @@ class ArrayDataProvider extends BaseDataProvider
         if (($pagination = $this->getPagination()) !== false) {
             $pagination->totalCount = $this->getTotalCount();
 
-            if ($pagination->getPageSize() > 0) {
+            if ($pagination->getPageSize() > 0 && $this->sliceModels === true) {
                 $models = array_slice($models, $pagination->getOffset(), $pagination->getLimit(), true);
             }
         }
