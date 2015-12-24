@@ -195,7 +195,7 @@ class BaseArrayHelper
 
         if (($pos = strrpos($key, '.')) !== false) {
             $array = static::getValue($array, substr($key, 0, $pos), $default);
-            $key = substr($key, $pos + 1);
+            $key = (string)substr($key, $pos + 1);
         }
 
         if (is_object($array) && isset($array->$key)) {
