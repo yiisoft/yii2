@@ -59,6 +59,7 @@ Yii Framework 2 Change Log
 - Enh #9893: `yii.js` handleAction enhanced to support for data-form attribute, so links can trigger specific forms (SamMousa)
 - Enh #10322: ActiveForm now respects formtarget attribute of submit button (AnatolyRugalev)
 - Enh #10451: Check of existence of `$_SERVER` in `\yii\web\Request` before using it (quantum13)
+- Enh #10475: Extracted `getUrlFromCache()` and `setRuleToCache()` protected methods from `yii\web\UrlManager::createUrl()` (dmdark)
 - Enh #10487: `yii\helpers\BaseArrayHelper::index()` got a third parameter `$groupBy` to group the input array by the key in one or more dimensions (quantum13, silverfire, samdark)
 - Enh #10610: Added `BaseUrl::$urlManager` to be able to set URL manager used for creating URLs (samdark)
 - Enh #10631: Splitted gettng label and rendering cell in `yii\grid\DataColumn::renderHeaderCellContent()` to make code simpler (t-kanstantsin, samdark)
