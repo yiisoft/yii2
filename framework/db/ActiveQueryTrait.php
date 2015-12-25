@@ -112,21 +112,38 @@ trait ActiveQueryTrait
     {
         $models = [];
         if ($this->asArray) {
-            if ($this->indexBy === null) {
+            if ($this->indexBy === null && $this->indexByDimensions === null) {
                 return $rows;
             }
-            foreach ($rows as $row) {
-                if (is_string($this->indexBy)) {
-                    $key = $row[$this->indexBy];
+            $getValue = function($row, $key) {
+                if (is_string($key)) {
+                    return $row[$key];
                 } else {
-                    $key = call_user_func($this->indexBy, $row);
+                    return call_user_func($key, $row);
                 }
-                $models[$key] = $row;
+            };
+            foreach ($rows as $row) {
+                $lastArray = &$models;
+                if(is_array($this->indexByDimensions)) {
+                    foreach($this->indexByDimensions as $dimension) {
+                        $val = $getValue($row, $dimension);
+                        if(!array_key_exists($val, $lastArray)) {
+                            $lastArray[$val] = [];
+                        }
+                        $lastArray = &$lastArray[$val];
+                    }
+                }
+                if ($this->indexBy === null) {
+                    $lastArray[] = $row;
+                } else {
+                    $lastArray[$getValue($row, $this->indexBy)] = $row;
+                }
+                unset($lastArray);
             }
         } else {
             /* @var $class ActiveRecord */
             $class = $this->modelClass;
-            if ($this->indexBy === null) {
+            if ($this->indexBy === null && $this->indexByDimensions === null) {
                 foreach ($rows as $row) {
                     $model = $class::instantiate($row);
                     $modelClass = get_class($model);
@@ -134,16 +151,34 @@ trait ActiveQueryTrait
                     $models[] = $model;
                 }
             } else {
+                $getValue = function($model, $attr) {
+                    if (is_string($attr)) {
+                        return $model->$attr;
+                    } else {
+                        return call_user_func($attr, $model);
+                    }
+                };
                 foreach ($rows as $row) {
                     $model = $class::instantiate($row);
                     $modelClass = get_class($model);
                     $modelClass::populateRecord($model, $row);
-                    if (is_string($this->indexBy)) {
-                        $key = $model->{$this->indexBy};
-                    } else {
-                        $key = call_user_func($this->indexBy, $model);
+
+                    $lastArray = &$models;
+                    if(is_array($this->indexByDimensions)) {
+                        foreach($this->indexByDimensions as $dimension) {
+                            $val = $getValue($model, $dimension);
+                            if(!array_key_exists($val, $lastArray)) {
+                                $lastArray[$val] = [];
+                            }
+                            $lastArray = &$lastArray[$val];
+                        }
                     }
-                    $models[$key] = $model;
+                    if ($this->indexBy === null) {
+                        $lastArray[] = $model;
+                    } else {
+                        $lastArray[$getValue($model, $this->indexBy)] = $model;
+                    }
+                    unset($lastArray);
                 }
             }
         }

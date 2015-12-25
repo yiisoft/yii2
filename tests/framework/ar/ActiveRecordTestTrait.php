@@ -188,9 +188,62 @@ trait ActiveRecordTestTrait
         $this->assertTrue($customers['1-user1'] instanceof $customerClass);
         $this->assertTrue($customers['2-user2'] instanceof $customerClass);
         $this->assertTrue($customers['3-user3'] instanceof $customerClass);
+
+        //indexBy multi dimension
+        $customers = $customerClass::find()->indexBy(null, ['status'])->orderBy('id')->all();
+        $this->assertEquals(2, count($customers));
+        $this->assertEquals(2, count($customers[1]));
+        $this->assertEquals(1, count($customers[2]));
+        $this->assertTrue($customers[1][0] instanceof $customerClass);
+        $this->assertEquals(1, $customers[1][0]->id);
+        $this->assertTrue($customers[1][1] instanceof $customerClass);
+        $this->assertEquals(2, $customers[1][1]->id);
+        $this->assertTrue($customers[2][0] instanceof $customerClass);
+        $this->assertEquals(3, $customers[2][0]->id);
+
+        //indexBy multi dimension with setting dimension as string
+        $customers2 = $customerClass::find()->indexBy(null, 'status')->orderBy('id')->all();
+        $this->assertEquals($customers, $customers2);
+
+        //indexBy multi dimension with index of leaf arrays
+        $customers = $customerClass::find()->indexBy('name', ['status'])->orderBy('id')->all();
+        $this->assertEquals(2, count($customers));
+        $this->assertEquals(2, count($customers[1]));
+        $this->assertEquals(1, count($customers[2]));
+        $this->assertTrue($customers[1]['user1'] instanceof $customerClass);
+        $this->assertEquals(1, $customers[1]['user1']->id);
+        $this->assertTrue($customers[1]['user2'] instanceof $customerClass);
+        $this->assertEquals(2, $customers[1]['user2']->id);
+        $this->assertTrue($customers[2]['user3'] instanceof $customerClass);
+        $this->assertEquals(3, $customers[2]['user3']->id);
+
+        //indexBy multi dimension with index of leaf arrays with setting dimension as string
+        $customers2 = $customerClass::find()->indexBy('name', 'status')->orderBy('id')->all();
+        $this->assertEquals($customers, $customers2);
+
+        //indexBy multi dimension (2)
+        $customers = $customerClass::find()->indexBy(null, ['status', 'name'])->orderBy('id')->all();
+        $this->assertEquals(2, count($customers));
+        $this->assertEquals(2, count($customers[1]));
+        $this->assertEquals(1, count($customers[2]));
+        $this->assertTrue($customers[1]['user1'][0] instanceof $customerClass);
+        $this->assertTrue($customers[1]['user2'][0] instanceof $customerClass);
+        $this->assertTrue($customers[2]['user3'][0] instanceof $customerClass);
+
+        //indexBy multi dimension (2) with index of leaf arrays
+        $customers = $customerClass::find()->indexBy('id', ['status', 'name'])->orderBy('id')->all();
+        $this->assertEquals(2, count($customers));
+        $this->assertEquals(2, count($customers[1]));
+        $this->assertEquals(1, count($customers[2]));
+        $this->assertTrue($customers[1]['user1'][1] instanceof $customerClass);
+        $this->assertTrue($customers[1]['user2'][2] instanceof $customerClass);
+        $this->assertTrue($customers[2]['user3'][3] instanceof $customerClass);
+
+
+
     }
 
-    public function testFindIndexByAsArray()
+    public function testFindIndexByAsArray()//and there
     {
         /* @var $customerClass \yii\db\ActiveRecordInterface */
         $customerClass = $this->getCustomerClass();

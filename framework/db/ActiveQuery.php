@@ -208,16 +208,19 @@ class ActiveQuery extends Query implements ActiveQueryInterface
         }
 
         $models = $this->createModels($rows);
-        if (!empty($this->join) && $this->indexBy === null) {
+        if (!empty($this->join) && $this->indexBy === null && $this->indexByDimensions === null) {
             $models = $this->removeDuplicatedModels($models);
         }
         if (!empty($this->with)) {
             $this->findWith($this->with, $models);
         }
         if (!$this->asArray) {
-            foreach ($models as $model) {
-                $model->afterFind();
-            }
+            array_walk_recursive(
+                $models,
+                function($model, $key) {
+                    $model->afterFind();
+                }
+            );
         }
 
         return $models;

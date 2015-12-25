@@ -34,6 +34,8 @@ interface ActiveQueryInterface extends QueryInterface
      * @param string|callable $column the name of the column by which the query results should be indexed by.
      * This can also be a callable (e.g. anonymous function) that returns the index value based on the given
      * row or model data. The signature of the callable should be:
+     * @param string|callable|array|null $additionalDimensions todo quant13
+     *
      *
      * ```php
      * // $model is an AR instance when `asArray` is false,
@@ -46,7 +48,7 @@ interface ActiveQueryInterface extends QueryInterface
      *
      * @return $this the query object itself
      */
-    public function indexBy($column);
+    public function indexBy($column, $additionalDimensions = null);
 
     /**
      * Specifies the relations with which this query should be performed.
