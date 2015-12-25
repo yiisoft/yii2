@@ -64,8 +64,10 @@ class ArrayDataProvider extends BaseDataProvider
      */
     public $allModels;
     /**
-     * @var bool If the $allModels need is already part of the data set the value to false
-     * then [[prepareModels]] return all data from the $allModels
+     * @var boolean whether we need to slice [[allModels]] for pagination. Set to `false`,
+     * if [[allModels]] are already paginated. Works only when [[pagination]] is set. Defaults to `true`.
+     * @see pagination
+     * @since 2.0.7
      */
     public $sliceModels = true;
 
