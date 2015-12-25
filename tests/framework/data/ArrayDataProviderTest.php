@@ -179,4 +179,33 @@ class ArrayDataProviderTest extends TestCase
         $dataProvider = new ArrayDataProvider(['allModels' => $mixedArray, 'pagination' => $pagination]);
         $this->assertEquals(['key1', 9], $dataProvider->getKeys());
     }
+
+    public function testSliceModels()
+    {
+        $simpleArray = [
+            ['title'=>'Zabbix', 'license'=>'GPL'],
+            ['title'=>'munin', 'license'=>'GPL'],
+            ['title'=>'Arch Linux', 'license'=>'GPL'],
+            ['title'=>'Nagios', 'license'=>'GPL'],
+            ['title'=>'zend framework', 'license'=>'BSD'],
+        ];
+
+        $dataProvider = new ArrayDataProvider([
+            'allModels' => $simpleArray,
+            'sliceModels' => false,
+            'totalCount' => 100500,
+            'pagination' => [
+                'pageSize' => 20,
+            ],
+        ]);
+
+        $dataProvider->prepare();
+        $this->assertEquals(5025, $dataProvider->pagination->getPageCount());
+
+        $this->assertEquals($simpleArray, $dataProvider->getModels());
+        $dataProvider->pagination->setPage(50);
+        $this->assertEquals($simpleArray, $dataProvider->getModels());
+        $dataProvider->pagination->setPage(5025);
+        $this->assertEquals($simpleArray, $dataProvider->getModels());
+    }
 } 
