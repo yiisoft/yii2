@@ -48,7 +48,7 @@ class m141106_185632_log_init extends Migration
         return $this->dbTargets;
     }
 
-    public function up()
+    public function safeUp()
     {
         $targets = $this->getDbTargets();
         foreach ($targets as $target) {
@@ -74,7 +74,7 @@ class m141106_185632_log_init extends Migration
         }
     }
 
-    public function down()
+    public function safeDown()
     {
         $targets = $this->getDbTargets();
         foreach ($targets as $target) {
