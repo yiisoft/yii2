@@ -124,12 +124,12 @@ class UserTest extends TestCase
         Yii::$app->user->login(UserIdentity::findIdentity('user1'),3600);
         $this->assertFalse(Yii::$app->user->isGuest);
         $this->assertTrue(Yii::$app->user->id == 'user1');
-        $this->assertFalse(empty($mock_cookies->getValue(Yii::$app->user->identityCookie['name'])));
+        $this->assertFalse(strlen($mock_cookies->getValue(Yii::$app->user->identityCookie['name'])) == 0);
 
         Yii::$app->user->login(UserIdentity::findIdentity('user2'),0);
         $this->assertFalse(Yii::$app->user->isGuest);
         $this->assertTrue(Yii::$app->user->id == 'user2');
-        $this->assertTrue(empty($mock_cookies->getValue(Yii::$app->user->identityCookie['name'])));
+        $this->assertTrue(strlen($mock_cookies->getValue(Yii::$app->user->identityCookie['name'])) == 0);
     }
 }
 
