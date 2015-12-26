@@ -474,4 +474,12 @@ SQL;
 
         return !$command->pdoStatement->rowCount() ? false : $result;
     }
+
+    /**
+     * @inheritdoc
+     */
+    public function createColumnSchemaBuilder($type, $length = null)
+    {
+        return new ColumnSchemaBuilder($type, $length);
+    }
 }
