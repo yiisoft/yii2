@@ -341,8 +341,14 @@ class MessageFormatter extends Component
             case 'selectordinal':
                 throw new NotSupportedException("Message format '$type' is not supported. You have to install PHP intl extension to use this feature.");
             case 'number':
-                if (is_int($arg) && (!isset($token[2]) || trim($token[2]) === 'integer')) {
-                    return $arg;
+                $format = isset($token[2]) ? trim($token[2]) : null;
+                if (is_numeric($arg) && ($format === null || $format === 'integer')) {
+                    $number = number_format($arg);
+                    if ($format === null && ($pos = strpos($arg, '.')) !== false) {
+                        // add decimals with unknown length
+                        $number .= '.' . substr($arg, $pos + 1);
+                    }
+                    return $number;
                 }
                 throw new NotSupportedException("Message format 'number' is only supported for integer values. You have to install PHP intl extension to use this feature.");
             case 'none':
