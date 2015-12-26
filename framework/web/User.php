@@ -569,8 +569,9 @@ class User extends Component
         }
 
         /* Ensure any existing identity cookies are removed. */  
-        if ($this->enableAutoLogin)  
+        if ($this->enableAutoLogin) {
             Yii::$app->getResponse()->getCookies()->remove(new Cookie($this->identityCookie));  
+        }
 
         $session = Yii::$app->getSession();
         if (!YII_ENV_TEST) {
