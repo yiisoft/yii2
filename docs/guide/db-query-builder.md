@@ -215,6 +215,9 @@ $userQuery = (new Query())->select('id')->from('user');
 $query->where(['id' => $userQuery]);
 ```
 
+Using the Hash Format, Yii internally uses parameter binding so in contrast to the [string format](#string-format), here
+you do not have to add parameters manually.
+
 
 #### Operator Format <span id="operator-format"></span>
 
@@ -285,6 +288,9 @@ the operator can be one of the following:
 
 - `>`, `<=`, or any other valid DB operator that takes two operands: the first operand must be a column name
   while the second operand a value. For example, `['>', 'age', 10]` will generate `age>10`.
+
+Using the Operator Format, Yii internally uses parameter binding so in contrast to the [string format](#string-format), here
+you do not have to add parameters manually.
 
 
 #### Appending Conditions <span id="appending-conditions"></span>
