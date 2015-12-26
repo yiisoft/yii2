@@ -97,6 +97,9 @@ class Session extends Component implements \IteratorAggregate, \ArrayAccess, \Co
     {
         parent::init();
         register_shutdown_function([$this, 'close']);
+        if ($this->getIsActive()) {
+            Yii::warning("Session is already started", __METHOD__);
+        }
     }
 
     /**
