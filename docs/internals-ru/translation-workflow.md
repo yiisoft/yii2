@@ -147,3 +147,6 @@ php build translation "../docs/guide" "../docs/guide-ru" "Russian guide translat
 - view — представление.
 - query builder — конструктор запросов.
 - time zone — часовой пояс.
+- to trigger — инициализировать
+- event — событие
+- to implement (class implements interface) — реализовывать (класс реализует интерфейс)
