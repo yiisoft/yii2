@@ -225,61 +225,70 @@ Event::off(Foo::className(), Foo::EVENT_HELLO);
 Обработчики событий на уровне интерфейсов <span id="interface-level-event-handlers"></span>
 -------------
 
-Еще более общим случаем, чем обработка событий на уровне класса, является обработка на уровнне *интерфейсов*. Для этого по аналогии с обработчиками событий на уровне классов, необходимо вызвать статический метод [[yii\base\Event::on()]], передав ему в качестве первого параметра имя интерфейса. В этом случае инициализация события для любого класса, реализующего указанный интерфейс, будет приводить к срабатыванию соответствующего обработчика.
+Существует еще более абстрактный способ обработки событий.
+Вы можете создать отдельный интерфейс для общего события и реализовать его в классах, где это необходимо.
 
-Например, имеется следующий интерфейс:
+Например, создадим следующий интерфейс:
 
 ```php
-interface MyInterface
+interface DanceEventInterface
 {
-    const EVENT_HELLO = 'hello';
+    const EVENT_DANCE = 'dance';
 }
 ```
 
-И классы:
+И два класса, которые его реализовывают:
 
 ```php
-class MyClass1 extends Component implements MyInterface
+class Dog extends Component implements DanceEventInterface
 {
-    public function myFunction()
+    public function meetBuddy()
     {
-        $this->trigger(MyInterface::EVENT_HELLO);
+        echo "Woof!";
+        $this->trigger(DanceEventInterface::EVENT_DANCE);
     }
 }
 
-class MyClass2 extends Component implements MyInterface
+class Developer extends Component implements DanceEventInterface
 {
-    public function myFunction()
+    public function testsPassed()
     {
-        $this->trigger(MyInterface::EVENT_HELLO);
+        echo "Yay!";
+        $this->trigger(DanceEventInterface::EVENT_DANCE);
     }
 }
 ```
 
-В этом случае, для того, чтобы подписаться на события в любом из классов `MyClass1` или `MyClass2` достаточно добавить следующий код:
+Для обработки события `EVENT_DANCE`, инициализированного любым из этих классов,
+вызовите [[yii\base\Event::on()|Event:on()]], передав ему в качестве первого параметра имя интерфейса.
 
 ```php
-Event::on('MyInterface', MyInterface::EVENT_HELLO, function ($event) {
-    echo $event->sender; // Выводит MyClass1 или MyClass2 в зависимости от класса, вызвавшего событие
-})
+Event::on('DanceEventInterface', DanceEventInterface::EVENT_DANCE, function ($event) {
+    Yii::trace($event->sender->className . ' just danced'); // Оставит запись в журнале о том, что кто-то танцевал
+});
 ```
 
-Обратите внимание, что в отличие от событий на *уровне класса*, для событий на *уровне интерфейса* статический вызов метода [[yii\base\Event::trigger()]] невозможен:
+Вы можете также инициализировать эти события:
 
 ```php
-Event::trigger('MyInterface', MyInterface::EVENT_HELLO); // Приведет к ошибке
-
-Event::trigger(MyClass1::className(), MyInterface::EVENT_HELLO); // Корректная запись, обработчик будет вызван
+Event::trigger(DanceEventInterface::className(), DanceEventInterface::EVENT_DANCE);
 ```
 
-Отсоединить обработчик события на уровне класса можно с помощью метода [[yii\base\Event::off()]]. Например:
+Однако, невозможно инициализировать событие во всех классах, которые реализуют интерфейс:
 
 ```php
-// отсоединение $handler
-Event::off('MyInterface', MyInterface::EVENT_HELLO, $handler);
+// НЕ БУДЕТ РАБОТАТЬ
+Event::trigger('DanceEventInterface', DanceEventInterface::EVENT_DANCE); // ошибка
+```
 
-// отсоединяются все обработчики MyInterface::EVENT_HELLO
-Event::off('MyInterface', MyInterface::EVENT_HELLO);
+Отсоединить обработчик события можно с помощью метода [[yii\base\Event::off()|Event::off()]]. Например:
+
+```php
+// отсоединяет $handler
+Event::off('DanceEventInterface', DanceEventInterface::EVENT_DANCE, $handler);
+
+// отсоединяются все обработчики DanceEventInterface::EVENT_DANCE
+Event::off('DanceEventInterface', DanceEventInterface::EVENT_DANCE);
 ```
 
 Глобальные события <span id="global-events"></span>
