@@ -632,10 +632,17 @@ class Request extends \yii\base\Request
      * Returns the entry script file path.
      * The default implementation will simply return `$_SERVER['SCRIPT_FILENAME']`.
      * @return string the entry script file path
+     * @throws InvalidConfigException
      */
     public function getScriptFile()
     {
-        return isset($this->_scriptFile) ? $this->_scriptFile : $_SERVER['SCRIPT_FILENAME'];
+        if (isset($this->_scriptFile)) {
+            return $this->_scriptFile;
+        } elseif(isset($_SERVER['SCRIPT_FILENAME'])) {
+            return $_SERVER['SCRIPT_FILENAME'];
+        } else {
+            throw new InvalidConfigException('Unable to determine the entry script file path.');
+        }
     }
 
     /**
