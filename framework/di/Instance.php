@@ -107,11 +107,7 @@ class Instance
      */
     public static function ensure($reference, $type = null, $container = null)
     {
-        if (is_object($reference) && $type === null) {
-            return $reference;
-        } elseif (is_object($reference) && $reference instanceof $type) {
-            return $reference;
-        } elseif (is_array($reference)) {
+        if (is_array($reference)) {
             $class = isset($reference['class']) ? $reference['class'] : $type;
             if (!$container instanceof Container) {
                 $container = Yii::$container;
@@ -124,13 +120,13 @@ class Instance
 
         if (is_string($reference)) {
             $reference = new static($reference);
+        } elseif ($type === null || $reference instanceof $type) {
+            return $reference;
         }
 
         if ($reference instanceof self) {
             $component = $reference->get($container);
-            if ($type === null) {
-                return $component;
-            } elseif ($component instanceof $type) {
+            if ($type === null || $component instanceof $type) {
                 return $component;
             } else {
                 throw new InvalidConfigException('"' . $reference->id . '" refers to a ' . get_class($component) . " component. $type is expected.");
