@@ -28,6 +28,7 @@ class ColumnSchemaBuilder extends AbstractColumnSchemaBuilder
             $this->buildUnsignedString() .
             $this->buildDefaultString() .
             $this->buildNotNullString() .
-            $this->buildCheckString();
+            $this->buildCheckString() .
+            $this->buildAfterString();
     }
 }
