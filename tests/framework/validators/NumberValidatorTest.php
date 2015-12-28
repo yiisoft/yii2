@@ -70,6 +70,21 @@ class NumberValidatorTest extends TestCase
         $this->assertFalse($val->validate('12.23^4'));
     }
 
+    public function testValidateValueWithLocaleWhereDecimalPointIsComma()
+    {
+        $val = new NumberValidator();
+
+        $oldLocale = setlocale(LC_ALL, "0");
+
+        setlocale(LC_ALL, "en_US.UTF-8");
+        $this->assertTrue($val->validate(.5));
+
+        setlocale(LC_ALL, "en_DK.UTF-8"); //decimal point is comma
+        $this->assertTrue($val->validate(.5));
+
+        setlocale(LC_ALL, $oldLocale);
+    }
+
     public function testValidateValueMin()
     {
         $val = new NumberValidator(['min' => 1]);
@@ -150,6 +165,25 @@ class NumberValidatorTest extends TestCase
         $model = FakedValidationModel::createWithAttributes(['attr_num' => [1, 2, 3]]);
         $val->validateAttribute($model, 'attr_num');
         $this->assertTrue($model->hasErrors('attr_num'));
+    }
+
+    public function testValidateAttributeWithLocaleWhereDecimalPointIsComma()
+    {
+        $val = new NumberValidator();
+        $model = new FakedValidationModel();
+        $model->attr_number = 0.5;
+
+        $oldLocale = setlocale(LC_ALL, "0");
+
+        setlocale(LC_ALL, "en_US.UTF-8");
+        $val->validateAttribute($model, 'attr_number');
+        $this->assertFalse($model->hasErrors('attr_number'));
+
+        setlocale(LC_ALL, "en_DK.UTF-8"); //decimal point is comma
+        $val->validateAttribute($model, 'attr_number');
+        $this->assertFalse($model->hasErrors('attr_number'));
+
+        setlocale(LC_ALL, $oldLocale);
     }
 
     public function testEnsureCustomMessageIsSetOnValidateAttribute()
