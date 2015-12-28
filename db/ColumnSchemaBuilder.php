@@ -103,7 +103,7 @@ class ColumnSchemaBuilder extends Object
 
     /**
      * Adds an `AFTER` constraint to the column.
-     * Note: MySQL and Oracle support only
+     * Note: MySQL, Oracle and Cubrid support only.
      * @param string $after the column after which $this column will be added.
      * @return $this
      */
