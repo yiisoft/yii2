@@ -100,7 +100,7 @@ $file = $theme->getPath('img/logo.gif');
 ]
 ```
 
-В этом случае представление `@app/views/site/about.php` темизируется либо в `@app/themes/christmas/site/index.php`, 
+В этом случае представление `@app/views/site/index.php` темизируется либо в `@app/themes/christmas/site/index.php`, 
 либо в `@app/themes/basic/site/index.php` в зависимости от того, в какой из тем есть нужный файл. Если файлы присутствуют
 и там и там, используется первый из них. На практике большинство темизированных файлов будут расположены
 в `@app/themes/basic`, а их версии для праздников в `@app/themes/christmas`.
