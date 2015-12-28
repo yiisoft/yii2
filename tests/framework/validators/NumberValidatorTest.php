@@ -37,7 +37,14 @@ class NumberValidatorTest extends TestCase
         $this->assertTrue($val->validate(-20));
         $this->assertTrue($val->validate('20'));
         $this->assertTrue($val->validate(25.45));
+
+        $oldLocale = setlocale(LC_ALL, "0");
+        setlocale(LC_ALL, "en_US.UTF-8");
         $this->assertFalse($val->validate('25,45'));
+        setlocale(LC_ALL, "en_DK.UTF-8"); //decimal point is comma
+        $this->assertTrue($val->validate('25,45'));
+        setlocale(LC_ALL, $oldLocale);
+
         $this->assertFalse($val->validate('12:45'));
         $val = new NumberValidator(['integerOnly' => true]);
         $this->assertTrue($val->validate(20));
