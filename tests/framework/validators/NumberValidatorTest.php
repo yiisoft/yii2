@@ -37,7 +37,14 @@ class NumberValidatorTest extends TestCase
         $this->assertTrue($val->validate(-20));
         $this->assertTrue($val->validate('20'));
         $this->assertTrue($val->validate(25.45));
+
+        $oldLocale = setlocale(LC_ALL, "0");
+        setlocale(LC_ALL, "en_US.UTF-8");
         $this->assertFalse($val->validate('25,45'));
+        setlocale(LC_ALL, "en_DK.UTF-8"); //decimal point is comma
+        $this->assertTrue($val->validate('25,45'));
+        setlocale(LC_ALL, $oldLocale);
+
         $this->assertFalse($val->validate('12:45'));
         $val = new NumberValidator(['integerOnly' => true]);
         $this->assertTrue($val->validate(20));
@@ -68,6 +75,21 @@ class NumberValidatorTest extends TestCase
         $this->assertFalse($val->validate('-e3'));
         $this->assertFalse($val->validate('-4.534-e-12'));
         $this->assertFalse($val->validate('12.23^4'));
+    }
+
+    public function testValidateValueWithLocaleWhereDecimalPointIsComma()
+    {
+        $val = new NumberValidator();
+
+        $oldLocale = setlocale(LC_ALL, "0");
+
+        setlocale(LC_ALL, "en_US.UTF-8");
+        $this->assertTrue($val->validate(.5));
+
+        setlocale(LC_ALL, "en_DK.UTF-8"); //decimal point is comma
+        $this->assertTrue($val->validate(.5));
+
+        setlocale(LC_ALL, $oldLocale);
     }
 
     public function testValidateValueMin()
@@ -157,6 +179,25 @@ class NumberValidatorTest extends TestCase
         $val->validateAttribute($model, 'attr_number');
         $this->assertTrue($model->hasErrors('attr_number'));
 
+    }
+
+    public function testValidateAttributeWithLocaleWhereDecimalPointIsComma()
+    {
+        $val = new NumberValidator();
+        $model = new FakedValidationModel();
+        $model->attr_number = 0.5;
+
+        $oldLocale = setlocale(LC_ALL, "0");
+
+        setlocale(LC_ALL, "en_US.UTF-8");
+        $val->validateAttribute($model, 'attr_number');
+        $this->assertFalse($model->hasErrors('attr_number'));
+
+        setlocale(LC_ALL, "en_DK.UTF-8"); //decimal point is comma
+        $val->validateAttribute($model, 'attr_number');
+        $this->assertFalse($model->hasErrors('attr_number'));
+
+        setlocale(LC_ALL, $oldLocale);
     }
 
     public function testEnsureCustomMessageIsSetOnValidateAttribute()
