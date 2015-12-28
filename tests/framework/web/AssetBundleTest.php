@@ -134,6 +134,31 @@ class AssetBundleTest extends \yiiunit\TestCase
         $this->assertTrue(rmdir($bundle->basePath));
     }
 
+    public function testSourcesPublish_publishOptions_Only()
+    {
+        $view = $this->getView();
+        $am = $view->assetManager;
+
+        $bundle = new TestSourceAsset([
+            'publishOptions' => [
+                'only' => [
+                    'js/*'
+                ]
+            ],
+        ]);
+        $bundle->publish($am);
+
+        $notNeededFilesDir = $bundle->basePath . DIRECTORY_SEPARATOR . 'css';
+        $this->assertFileNotExists($notNeededFilesDir);
+
+        foreach ($bundle->js as $filename) {
+            $publishedFile = $bundle->basePath . DIRECTORY_SEPARATOR . $filename;
+            $this->assertTrue(unlink($publishedFile));
+        }
+        $this->assertTrue(rmdir($bundle->basePath . DIRECTORY_SEPARATOR . 'js'));
+        $this->assertTrue(rmdir($bundle->basePath));
+    }
+
     /**
      * @param View $view
      * @return AssetBundle
