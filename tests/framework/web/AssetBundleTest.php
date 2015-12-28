@@ -59,7 +59,7 @@ class AssetBundleTest extends \yiiunit\TestCase
         $this->assertTrue(is_dir($bundle->basePath));
         foreach ($bundle->js as $filename) {
             $publishedFile = $bundle->basePath . DIRECTORY_SEPARATOR . $filename;
-            $sourceFile = $bundle->basePath . DIRECTORY_SEPARATOR . $filename;
+            $sourceFile = $bundle->sourcePath . DIRECTORY_SEPARATOR . $filename;
             $this->assertFileExists($publishedFile);
             $this->assertFileEquals($publishedFile, $sourceFile);
             $this->assertTrue(unlink($publishedFile));
