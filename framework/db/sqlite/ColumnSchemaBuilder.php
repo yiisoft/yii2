@@ -5,27 +5,19 @@
  * @license http://www.yiiframework.com/license/
  */
 
-namespace yii\db\mssql;
+namespace yii\db\sqlite;
 
 use yii\db\ColumnSchemaBuilder as AbstractColumnSchemaBuilder;
 
 
 /**
- * ColumnSchemaBuilder is the schema builder for MSSQL databases.
+ * ColumnSchemaBuilder is the schema builder for Sqlite databases.
  *
- * @author Alexander Makarov <sam@rmcreative.ru>
+ * @author Chris Harris <chris@buckshotsoftware.com>
  * @since 2.0.7
  */
 class ColumnSchemaBuilder extends AbstractColumnSchemaBuilder
 {
-    /**
-     * @inheritdoc
-     */
-    protected function buildUnsignedString()
-    {
-        return '';
-    }
-
     /**
      * @inheritdoc
      */
