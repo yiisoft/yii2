@@ -1,4 +1,4 @@
-﻿Scripts de Entrada
+Scripts de Entrada
 ==================
 
 Los scripts de entrada son el primer eslabón en el proceso de arranque de la aplicación. Una aplicación (ya sea una 

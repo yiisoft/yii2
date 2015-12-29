@@ -91,7 +91,7 @@ class CaptchaValidator extends Validator
         $hash = $captcha->generateValidationHash($this->caseSensitive ? $code : strtolower($code));
         $options = [
             'hash' => $hash,
-            'hashKey' => 'yiiCaptcha/' . $this->captchaAction,
+            'hashKey' => 'yiiCaptcha/' . $captcha->getUniqueId(),
             'caseSensitive' => $this->caseSensitive,
             'message' => Yii::$app->getI18n()->format($this->message, [
                 'attribute' => $object->getAttributeLabel($attribute),

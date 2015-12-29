@@ -263,7 +263,7 @@ echo GridView::widget([
 
   上記のコードで、`$url` はカラムがボタンのために生成する URL、`$model` は現在の行に表示されるモデルオブジェクト、そして `$key` はデータプロバイダの配列の中にあるモデルのキーです。
 
-- [yii\grid\ActionColumn::urlCreator|urlCreator]] は、指定されたモデルの情報を使って、ボタンの URL を生成するコールバックです。
+- [[yii\grid\ActionColumn::urlCreator|urlCreator]] は、指定されたモデルの情報を使って、ボタンの URL を生成するコールバックです。
   コールバックのシグニチャは [[yii\grid\ActionColumn::createUrl()]] のそれと同じでなければなりません。
   このプロパティが設定されていないときは、ボタンの URL は [[yii\grid\ActionColumn::createUrl()]] を使って生成されます。
 

@@ -24,17 +24,133 @@ class AssetBundleTest extends \yiiunit\TestCase
 
         Yii::setAlias('@testWeb', '/');
         Yii::setAlias('@testWebRoot', '@yiiunit/data/web');
+        Yii::setAlias('@testAssetsPath', '@testWebRoot/assets');
+        Yii::setAlias('@testAssetsUrl', '@testWeb/assets');
+        Yii::setAlias('@testSourcePath', '@testWebRoot/assetSources');
     }
 
-    protected function getView()
+    /**
+     * Returns View with configured AssetManager
+     *
+     * @param array $config may be used to override default AssetManager config
+     * @return View
+     */
+    protected function getView(array $config = [])
     {
+        $this->mockApplication();
         $view = new View();
-        $view->setAssetManager(new AssetManager([
-            'basePath' => '@testWebRoot/assets',
-            'baseUrl' => '@testWeb/assets',
-        ]));
+        $config = array_merge([
+            'basePath' => '@testAssetsPath',
+            'baseUrl' => '@testAssetsUrl',
+        ], $config);
+        $view->setAssetManager(new AssetManager($config));
 
         return $view;
+    }
+
+    public function testSourcesPublish()
+    {
+        $view = $this->getView();
+        $am = $view->assetManager;
+
+        $bundle = TestSourceAsset::register($view);
+        $bundle->publish($am);
+
+        $this->assertTrue(is_dir($bundle->basePath));
+        foreach ($bundle->js as $filename) {
+            $publishedFile = $bundle->basePath . DIRECTORY_SEPARATOR . $filename;
+            $sourceFile = $bundle->sourcePath . DIRECTORY_SEPARATOR . $filename;
+            $this->assertFileExists($publishedFile);
+            $this->assertFileEquals($publishedFile, $sourceFile);
+            $this->assertTrue(unlink($publishedFile));
+        }
+        $this->assertTrue(rmdir($bundle->basePath . DIRECTORY_SEPARATOR . 'js'));
+
+        $this->assertTrue(rmdir($bundle->basePath));
+    }
+
+    public function testSourcesPublishedBySymlink()
+    {
+        $view = $this->getView(['linkAssets' => true]);
+        $this->verifySourcesPublishedBySymlink($view);
+    }
+
+    public function testSourcesPublishedBySymlink_Issue9333()
+    {
+        $view = $this->getView([
+            'linkAssets' => true,
+            'hashCallback' => function ($path) {
+                return sprintf('%x/%x', crc32($path), crc32(Yii::getVersion()));
+            }
+        ]);
+        $bundle = $this->verifySourcesPublishedBySymlink($view);
+        $this->assertTrue(rmdir(dirname($bundle->basePath)));
+    }
+
+    public function testSourcesPublish_AssetManagerBeforeCopy()
+    {
+        $view = $this->getView([
+            'beforeCopy' => function ($from, $to) {
+                return false;
+            }
+        ]);
+        $am = $view->assetManager;
+
+        $bundle = TestSourceAsset::register($view);
+        $bundle->publish($am);
+
+        $this->assertTrue(is_dir($bundle->basePath));
+        foreach ($bundle->js as $filename) {
+            $publishedFile = $bundle->basePath . DIRECTORY_SEPARATOR . $filename;
+            $this->assertFileNotExists($publishedFile);
+        }
+        $this->assertTrue(rmdir($bundle->basePath));
+    }
+
+    public function testSourcesPublish_AssetBeforeCopy()
+    {
+        $view = $this->getView();
+        $am = $view->assetManager;
+
+        $bundle = new TestSourceAsset();
+        $bundle->publishOptions = [
+            'beforeCopy' => function ($from, $to) {
+                return false;
+            }
+        ];
+        $bundle->publish($am);
+
+        $this->assertTrue(is_dir($bundle->basePath));
+        foreach ($bundle->js as $filename) {
+            $publishedFile = $bundle->basePath . DIRECTORY_SEPARATOR . $filename;
+            $this->assertFileNotExists($publishedFile);
+        }
+        $this->assertTrue(rmdir($bundle->basePath));
+    }
+
+    /**
+     * @param View $view
+     * @return AssetBundle
+     */
+    protected function verifySourcesPublishedBySymlink($view)
+    {
+        $am = $view->assetManager;
+
+        $bundle = TestSourceAsset::register($view);
+        $bundle->publish($am);
+
+        $this->assertTrue(is_dir($bundle->basePath));
+        foreach ($bundle->js as $filename) {
+            $publishedFile = $bundle->basePath . DIRECTORY_SEPARATOR . $filename;
+            $sourceFile = $bundle->basePath . DIRECTORY_SEPARATOR . $filename;
+
+            $this->assertTrue(is_link($bundle->basePath));
+            $this->assertFileExists($publishedFile);
+            $this->assertFileEquals($publishedFile, $sourceFile);
+        }
+
+        $this->assertTrue(unlink($bundle->basePath));
+        return $bundle;
     }
 
     public function testRegister()
@@ -228,6 +344,14 @@ class TestSimpleAsset extends AssetBundle
     public $baseUrl = '@testWeb/js';
     public $js = [
         'jquery.js',
+    ];
+}
+
+class TestSourceAsset extends AssetBundle
+{
+    public $sourcePath = '@testSourcePath';
+    public $js = [
+        'js/jquery.js',
     ];
 }
 

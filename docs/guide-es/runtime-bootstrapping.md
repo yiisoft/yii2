@@ -1,4 +1,4 @@
-﻿Bootstrapping
+Bootstrapping
 =============
 
 El Bootstrapping hace referencia al proceso de preparar el entorno antes de que una aplicación se inicie para resolver y procesar una petición entrante. El se ejecuta en dos lugares: el [script de entrada](structure-entry-scripts.md) y la [aplicación](structure-applications.md).

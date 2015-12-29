@@ -216,7 +216,7 @@ interface ManagerInterface
      * @return array array of user ID strings
      * @since 2.0.7
      */
-    public function getUserIDsByRole($roleName);
+    public function getUserIdsByRole($roleName);
 
     /**
      * Removes all authorization data, including roles, permissions, rules, and assignments.

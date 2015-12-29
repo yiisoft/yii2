@@ -89,6 +89,8 @@ class FileValidator extends Validator
      * - {attribute}: the attribute name
      * - {file}: the uploaded file name
      * - {limit}: the maximum size allowed (see [[getSizeLimit()]])
+     * - {formattedLimit}: the maximum size formatted
+     * with [[\yii\i18n\Formatter::asShortSize()|Formatter::asShortSize()]]
      */
     public $tooBig;
     /**
@@ -98,6 +100,8 @@ class FileValidator extends Validator
      * - {attribute}: the attribute name
      * - {file}: the uploaded file name
      * - {limit}: the value of [[minSize]]
+     * - {formattedLimit}: the value of [[minSize]] formatted
+     * with [[\yii\i18n\Formatter::asShortSize()|Formatter::asShortSize()]
      */
     public $tooSmall;
     /**
@@ -148,10 +152,10 @@ class FileValidator extends Validator
             $this->wrongExtension = Yii::t('yii', 'Only files with these extensions are allowed: {extensions}.');
         }
         if ($this->tooBig === null) {
-            $this->tooBig = Yii::t('yii', 'The file "{file}" is too big. Its size cannot exceed {limit, number} {limit, plural, one{byte} other{bytes}}.');
+            $this->tooBig = Yii::t('yii', 'The file "{file}" is too big. Its size cannot exceed {formattedLimit}.');
         }
         if ($this->tooSmall === null) {
-            $this->tooSmall = Yii::t('yii', 'The file "{file}" is too small. Its size cannot be smaller than {limit, number} {limit, plural, one{byte} other{bytes}}.');
+            $this->tooSmall = Yii::t('yii', 'The file "{file}" is too small. Its size cannot be smaller than {formattedLimit}.');
         }
         if (!is_array($this->extensions)) {
             $this->extensions = preg_split('/[\s,]+/', strtolower($this->extensions), -1, PREG_SPLIT_NO_EMPTY);
@@ -218,10 +222,24 @@ class FileValidator extends Validator
 
         switch ($file->error) {
             case UPLOAD_ERR_OK:
-                if ($this->maxSize !== null && $file->size > $this->maxSize) {
-                    return [$this->tooBig, ['file' => $file->name, 'limit' => $this->getSizeLimit()]];
+                if ($this->maxSize !== null && $file->size > $this->getSizeLimit()) {
+                    return [
+                        $this->tooBig,
+                        [
+                            'file' => $file->name,
+                            'limit' => $this->getSizeLimit(),
+                            'formattedLimit' => Yii::$app->formatter->asShortSize($this->getSizeLimit())
+                        ]
+                    ];
                 } elseif ($this->minSize !== null && $file->size < $this->minSize) {
-                    return [$this->tooSmall, ['file' => $file->name, 'limit' => $this->minSize]];
+                    return [
+                        $this->tooSmall,
+                        [
+                            'file' => $file->name,
+                            'limit' => $this->minSize,
+                            'formattedLimit' => Yii::$app->formatter->asShortSize($this->minSize)
+                        ]
+                    ];
                 } elseif (!empty($this->extensions) && !$this->validateExtension($file)) {
                     return [$this->wrongExtension, ['file' => $file->name, 'extensions' => implode(', ', $this->extensions)]];
                 } elseif (!empty($this->mimeTypes) &&  !in_array(FileHelper::getMimeType($file->tempName), $this->mimeTypes, false)) {
@@ -399,6 +417,7 @@ class FileValidator extends Validator
             $options['tooSmall'] = Yii::$app->getI18n()->format($this->tooSmall, [
                 'attribute' => $label,
                 'limit' => $this->minSize,
+                'formattedLimit' => Yii::$app->formatter->asShortSize($this->minSize),
             ], Yii::$app->language);
         }
 
@@ -406,7 +425,8 @@ class FileValidator extends Validator
             $options['maxSize'] = $this->maxSize;
             $options['tooBig'] = Yii::$app->getI18n()->format($this->tooBig, [
                 'attribute' => $label,
-                'limit' => $this->maxSize,
+                'limit' => $this->getSizeLimit(),
+                'formattedLimit' => Yii::$app->formatter->asShortSize($this->getSizeLimit()),
             ], Yii::$app->language);
         }
 

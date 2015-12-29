@@ -813,7 +813,7 @@ class PhpManager extends BaseManager
     /**
      * @inheritdoc
      */
-    public function getUserIDsByRole($roleName)
+    public function getUserIdsByRole($roleName)
     {
         $result = [];
         foreach ($this->assignments as $userID => $assignments) {

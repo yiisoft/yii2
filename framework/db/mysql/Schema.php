@@ -243,6 +243,7 @@ class Schema extends \yii\db\Schema
     /**
      * Collects the foreign key column details for the given table.
      * @param TableSchema $table the table metadata
+     * @throws \Exception
      */
     protected function findConstraints($table)
     {

@@ -61,7 +61,7 @@ class PostController extends Controller
 
 终端用户通过所谓的*路由*寻找到操作，路由是包含以下部分的字符串：
 
-* 模型ID: 仅存在于控制器属于非应用的[模块](structure-modules.md);
+* 模块ID: 仅存在于控制器属于非应用的[模块](structure-modules.md);
 * 控制器ID: 同应用（或同模块如果为模块下的控制器）下唯一标识控制器的字符串;
 * 操作ID: 同控制器下唯一标识操作的字符串。
 
@@ -131,7 +131,7 @@ class SiteController extends Controller
 控制器`article` 类应在 [别名](concept-aliases.md) 为`@app/controllers/ArticleController.php`的文件中定义，
 控制器`admin/post-comment`应在`@app/controllers/admin/PostCommentController.php`文件中。
 
-> 补充: 最后一个示例 `admin/post-comment` 表示你可以将控制器放在
+> Info: 最后一个示例 `admin/post-comment` 表示你可以将控制器放在
   [[yii\base\Application::controllerNamespace|controller namespace]]控制器命名空间下的子目录中，
   在你不想用 [模块](structure-modules.md) 的情况下给控制器分类，这种方式很有用。
 
@@ -227,7 +227,7 @@ class SiteController extends Controller
 
 例如`index` 转成 `actionIndex`, `hello-world` 转成 `actionHelloWorld`。
 
-> 注意: 操作方法的名字*大小写敏感*，如果方法名称为`ActionIndex`不会认为是操作方法，
+> Note: 操作方法的名字*大小写敏感*，如果方法名称为`ActionIndex`不会认为是操作方法，
   所以请求`index`操作会返回一个异常，也要注意操作方法必须是公有的，私有或者受保护的方法不能定义成内联操作。
 
 

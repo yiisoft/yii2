@@ -1,4 +1,4 @@
-﻿Modelos
+Modelos
 =======
 
 Los modelos forman parte de la arquitectura 
@@ -18,7 +18,7 @@ soporta muchas características útiles:
 
 La clase 'modelo' también es una base para modelos más avanzados, tales como [Active Records](db-active-record.md).
 
-> Información: No es obligatorio basar las clases modelo en [[yii\base\Model]]. Sin embargo, debido a que hay muchos 
+> Info: No es obligatorio basar las clases modelo en [[yii\base\Model]]. Sin embargo, debido a que hay muchos 
   componentes de Yii construidos para dar soporte a [[yii\base\Model]], por lo general, es la clase base preferible 
   para un modelo.
 
@@ -146,7 +146,7 @@ public function attributeLabels()
 Incluso se puede definir etiquetas de atributo condicionales. Por ejemplo, basándose en el [escenario](#scenarios) en 
 que se esta usando el modelo, se pueden devolver diferentes etiquetas para un mismo atributo.
 
-> Información: Estrictamente hablando, los atributos son parte de las [vistas](structure-views.md). Pero declarar las 
+> Info: Estrictamente hablando, los atributos son parte de las [vistas](structure-views.md). Pero declarar las 
   etiquetas en los modelos, a menudo, es muy conveniente y puede generar a un código muy limpio y reutilizable.
 
 ## Escenarios <span id="scenarios"></span>
@@ -190,7 +190,7 @@ class User extends ActiveRecord
 }
 ```
 
-> Información: En el anterior y en los siguientes ejemplos, las clases modelo extienden a [[yii\db\ActiveRecord]] 
+> Info: En el anterior y en los siguientes ejemplos, las clases modelo extienden a [[yii\db\ActiveRecord]] 
   porque el uso de múltiples escenarios normalmente sucede con clases de [Active Records](db-active-record.md).
 
 El método 'scenarios()' devuelve un array cuyas claves son el nombre de escenario y los valores correspondientes a los 
@@ -333,7 +333,7 @@ public function scenarios()
 }
 ```
 
-> Información: La razón de que la asignación masiva sólo se aplique a los atributos seguros es debida a que se quiere 
+> Info: La razón de que la asignación masiva sólo se aplique a los atributos seguros es debida a que se quiere 
 controlar qué atributos pueden ser modificados por los datos del usuario final. Por ejemplo, si el modelo 'User' tiene 
 un atributo 'permission' que determina los permisos asignados al usuario, se quiere que estos atributos sólo sean 
 modificados por administradores desde la interfaz backend.
@@ -459,7 +459,7 @@ public function fields()
 }
 ```
 
-> Atención: debido a que por defecto todos los atributos de un modelo serán incluidos en el array exportado, se debe 
+> Warning: debido a que por defecto todos los atributos de un modelo serán incluidos en el array exportado, se debe 
 examinar los datos para asegurar que no contienen información sensible. Si existe dicha información, se debe 
 sobrescribir 'fields()' para filtrarla. En el anterior ejemplo, se filtra 'aut_key', 'password_hash' y 
 'password_reset_token'.
