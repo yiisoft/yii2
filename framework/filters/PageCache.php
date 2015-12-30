@@ -149,28 +149,16 @@ class PageCache extends ActionFilter
         }
 
         $this->cache = Instance::ensure($this->cache, Cache::className());
-
-        if (is_array($this->dependency)) {
-            $this->dependency = Yii::createObject($this->dependency);
-        }
-
-        $properties = [];
-        foreach (['cache', 'duration', 'dependency', 'variations'] as $name) {
-            $properties[$name] = $this->$name;
-        }
-        $id = $this->varyByRoute ? $action->getUniqueId() : __CLASS__;
         $response = Yii::$app->getResponse();
-        ob_start();
-        ob_implicit_flush(false);
-        if ($this->view->beginCache($id, $properties)) {
+
+        $data = $this->cache->get($this->calculateCacheKey());
+        if ($data === false) {
+            ob_start();
+            ob_implicit_flush(false);
             $response->on(Response::EVENT_AFTER_SEND, [$this, 'cacheResponse']);
             return true;
         } else {
-            $data = $this->cache->get($this->calculateCacheKey());
-            if (is_array($data)) {
-                $this->restoreResponse($response, $data);
-            }
-            $response->content = ob_get_clean();
+            $this->restoreResponse($response, $data[0], $data[1]);
             return false;
         }
     }
@@ -179,9 +167,10 @@ class PageCache extends ActionFilter
      * Restores response properties from the given data
      * @param Response $response the response to be restored
      * @param array $data the response property data
+     * @param string $content
      * @since 2.0.3
      */
-    protected function restoreResponse($response, $data)
+    protected function restoreResponse($response, $data, $content)
     {
         if (isset($data['format'])) {
             $response->format = $data['format'];
@@ -203,6 +192,7 @@ class PageCache extends ActionFilter
             $cookies = $response->getCookies()->toArray();
             $response->getCookies()->fromArray(array_merge($data['cookies'], $cookies));
         }
+        $response->content = $content;
     }
 
     /**
@@ -211,8 +201,8 @@ class PageCache extends ActionFilter
      */
     public function cacheResponse()
     {
-        $this->view->endCache();
         $response = Yii::$app->getResponse();
+        $content = ob_get_clean();
         $data = [
             'format' => $response->format,
             'version' => $response->version,
@@ -246,8 +236,8 @@ class PageCache extends ActionFilter
             }
             $data['cookies'] = $cookies;
         }
-        $this->cache->set($this->calculateCacheKey(), $data, $this->duration, $this->dependency);
-        echo ob_get_clean();
+        $this->cache->set($this->calculateCacheKey(), [$data, $content]);
+        echo $content;
     }
 
     /**
