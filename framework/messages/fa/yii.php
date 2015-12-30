@@ -105,6 +105,7 @@ return [
     '{attribute} must be no greater than {max}.' => '{attribute} نباید بیشتر از "{max}" باشد.',
     '{attribute} must be no less than {min}.' => '{attribute} نباید کمتر از "{min}" باشد.',
     '{attribute} must be repeated exactly.' => '{attribute} عیناً باید تکرار شود.',
+    '{attribute} must be equal to "{compareValueOrAttribute}".' => '"{attribute}" باید عینا  برابر با {compareValueOrAttribute} باشد."',
     '{attribute} must not be equal to "{compareValue}".' => '{attribute} نباید برابر با "{compareValue}" باشد.',
     '{attribute} should contain at least {min, number} {min, plural, one{character} other{characters}}.' => '{attribute} حداقل باید شامل {min, number} کارکتر باشد.',
     '{attribute} should contain at most {max, number} {max, plural, one{character} other{characters}}.' => '{attribute} حداکثر باید شامل {max, number} کارکتر باشد.',
