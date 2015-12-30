@@ -222,6 +222,74 @@ Event::off(Foo::className(), Foo::EVENT_HELLO, $handler);
 Event::off(Foo::className(), Foo::EVENT_HELLO);
 ```
 
+Обработчики событий на уровне интерфейсов <span id="interface-level-event-handlers"></span>
+-------------
+
+Существует еще более абстрактный способ обработки событий.
+Вы можете создать отдельный интерфейс для общего события и реализовать его в классах, где это необходимо.
+
+Например, создадим следующий интерфейс:
+
+```php
+interface DanceEventInterface
+{
+    const EVENT_DANCE = 'dance';
+}
+```
+
+И два класса, которые его реализовывают:
+
+```php
+class Dog extends Component implements DanceEventInterface
+{
+    public function meetBuddy()
+    {
+        echo "Woof!";
+        $this->trigger(DanceEventInterface::EVENT_DANCE);
+    }
+}
+
+class Developer extends Component implements DanceEventInterface
+{
+    public function testsPassed()
+    {
+        echo "Yay!";
+        $this->trigger(DanceEventInterface::EVENT_DANCE);
+    }
+}
+```
+
+Для обработки события `EVENT_DANCE`, инициализированного любым из этих классов,
+вызовите [[yii\base\Event::on()|Event:on()]], передав ему в качестве первого параметра имя интерфейса.
+
+```php
+Event::on('DanceEventInterface', DanceEventInterface::EVENT_DANCE, function ($event) {
+    Yii::trace($event->sender->className . ' just danced'); // Оставит запись в журнале о том, что кто-то танцевал
+});
+```
+
+Вы можете также инициализировать эти события:
+
+```php
+Event::trigger(DanceEventInterface::className(), DanceEventInterface::EVENT_DANCE);
+```
+
+Однако, невозможно инициализировать событие во всех классах, которые реализуют интерфейс:
+
+```php
+// НЕ БУДЕТ РАБОТАТЬ
+Event::trigger('DanceEventInterface', DanceEventInterface::EVENT_DANCE); // ошибка
+```
+
+Отсоединить обработчик события можно с помощью метода [[yii\base\Event::off()|Event::off()]]. Например:
+
+```php
+// отсоединяет $handler
+Event::off('DanceEventInterface', DanceEventInterface::EVENT_DANCE, $handler);
+
+// отсоединяются все обработчики DanceEventInterface::EVENT_DANCE
+Event::off('DanceEventInterface', DanceEventInterface::EVENT_DANCE);
+```
 
 Глобальные события <span id="global-events"></span>
 -------------

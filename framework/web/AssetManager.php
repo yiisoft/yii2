@@ -516,6 +516,7 @@ class AssetManager extends Component
         $dstDir = $this->basePath . DIRECTORY_SEPARATOR . $dir;
         if ($this->linkAssets) {
             if (!is_dir($dstDir)) {
+                FileHelper::createDirectory(dirname($dstDir), $this->dirMode, true);
                 symlink($src, $dstDir);
             }
         } elseif (!empty($options['forceCopy']) || ($this->forceCopy && !isset($options['forceCopy'])) || !is_dir($dstDir)) {
