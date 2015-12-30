@@ -79,7 +79,7 @@ public function behaviors()
 ## Extending `ActiveController` <span id="extending-active-controller"></span>
 
 If your controller class extends from [[yii\rest\ActiveController]], you should set
-its [[yii\rest\ActiveController::modelClass||modelClass]] property to be the name of the resource class
+its [[yii\rest\ActiveController::modelClass|modelClass]] property to be the name of the resource class
 that you plan to serve through this controller. The class must extend from [[yii\db\ActiveRecord]].
 
 
