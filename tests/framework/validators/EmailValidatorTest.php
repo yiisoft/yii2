@@ -22,6 +22,9 @@ class EmailValidatorTest extends TestCase
 
         $this->assertTrue($validator->validate('sam@rmcreative.ru'));
         $this->assertTrue($validator->validate('5011@gmail.com'));
+        $this->assertTrue($validator->validate('Abc.123@example.com'));
+        $this->assertTrue($validator->validate('user+mailbox/department=shipping@example.com'));
+        $this->assertTrue($validator->validate('!#$%&\'*+-/=?^_`.{|}~@example.com'));
         $this->assertFalse($validator->validate('rmcreative.ru'));
         $this->assertFalse($validator->validate('Carsten Brandt <mail@cebe.cc>'));
         $this->assertFalse($validator->validate('"Carsten Brandt" <mail@cebe.cc>'));
@@ -43,6 +46,9 @@ class EmailValidatorTest extends TestCase
         $this->assertTrue($validator->validate('test@example.com'));
         $this->assertTrue($validator->validate('John Smith <john.smith@example.com>'));
         $this->assertFalse($validator->validate('John Smith <example.com>'));
+        $this->assertFalse($validator->validate('Short Name <localPartMoreThan64Characters-blah-blah-blah-blah-blah-blah-blah-blah@example.com>'));
+        $this->assertFalse($validator->validate('Short Name <domainNameIsMoreThan254Characters@example-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah.com>'));
+        $this->assertFalse($validator->validate('"This name is longer than 64 characters. Blah blah blah blah blah" <shortmail@example.com>'));
     }
 
     public function testValidateValueIdn()
@@ -82,6 +88,9 @@ class EmailValidatorTest extends TestCase
         $this->assertTrue($validator->validate('test@example.com'));
         $this->assertTrue($validator->validate('John Smith <john.smith@example.com>'));
         $this->assertFalse($validator->validate('John Smith <example.com>'));
+        $this->assertFalse($validator->validate('Короткое имя <после-преобразования-в-idn-тут-будет-больше-чем-64-символа@пример.com>'));
+        $this->assertFalse($validator->validate('Короткое имя <тест@это-доменное-имя.после-преобразования-в-idn.будет-содержать-больше-254-символов.бла-бла-бла-бла-бла-бла-бла-бла.бла-бла-бла-бла-бла-бла.бла-бла-бла-бла-бла-бла.бла-бла-бла-бла-бла-бла.com>'));
+        $this->assertFalse($validator->validate('"Такое имя достаточно длинное, чтобы не допустить валидацию имейла" <shortmail@example.com>'));
     }
 
     public function testValidateValueMx()

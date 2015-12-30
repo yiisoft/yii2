@@ -1,14 +1,14 @@
-Início Rápido
+Introdução
 ===========
 
-Yii fornece um conjunto de ferramentas para simplificar a tarefa de implementar APIs RESTful Web Service. Em particular, Yii suporta os seguintes recursos sobre APIs RESTful:
+O Yii fornece um conjunto de ferramentas para simplificar a tarefa de implementar APIs RESTful Web Service. Em particular, o Yii suporta os seguintes recursos sobre APIs RESTful:
 
 * Prototipagem rápida com suporte para APIs comuns de [Active Record](db-active-record.md);
 * Negociação de formato do Response (suporte JSON e XML por padrão);
 * Serialização de objeto configurável com suporte a campos de saída selecionáveis;
-*  formatação adequada para data collection e validação de erros;
+* Formatação adequada para a coleção e dados e validação de erros;
 * Suporte a [HATEOAS](http://en.wikipedia.org/wiki/HATEOAS);
-* Roteamento eficiente  com verificação à HTTP verbs (métodos);
+* Roteamento eficiente com verificação dos verbs (métodos) HTTP;
 * Construído com suporte aos métodos `OPTIONS` e `HEAD`;
 * Autenticação e autorização;
 * Data caching e HTTP caching;
@@ -17,12 +17,12 @@ Yii fornece um conjunto de ferramentas para simplificar a tarefa de implementar 
 
 Abaixo, utilizamos um exemplo para ilustrar como você pode construir um conjunto de APIs RESTful com um mínimo de codificação.
 
-Suponha que você deseja expor os dados do usuário via APIs RESTful. Os dados do usuário estão guardados na tabela `user`, e você já criou a classe [active record](db-active-record.md) `app\models\User` para acessar os dados do usuário.
+Suponha que você deseja expor os dados do usuário via APIs RESTful. Os dados do usuário estão guardados na tabela `user` e você já criou a classe [active record](db-active-record.md) `app\models\User` para acessar os dados do usuário.
 
 
-## Criando um Controller (Controlador)<span id="creating-controller"></span>
+## Criando um Controller (Controlador) <span id="creating-controller"></span>
 
-Primeiro, crie uma classe [controller](structure-controllers.md) `app\controllers\UserController` como a seguir,
+Primeiramente, crie uma classe [controller](structure-controllers.md) `app\controllers\UserController` como a seguir,
 
 ```php
 namespace app\controllers;
@@ -39,7 +39,7 @@ A classe controller estende de [[yii\rest\ActiveController]], que implementa um 
 como `app\models\User`, o controller sabe qual o model que pode ser usado para a recuperação e manipulação de dados.
 
 
-## Configurando regras de URL<span id="configuring-url-rules"></span>
+## Configurando Regras de URL <span id="configuring-url-rules"></span>
 
 
 Em seguida, modifique a configuração do componente `urlManager` na configuração da aplicação:
@@ -57,9 +57,10 @@ Em seguida, modifique a configuração do componente `urlManager` na configuraç
 
 A configuração acima primeiramente adiciona uma regra de URL para o controller `user` de modo que os dados do usuário podem ser acessados e manipulados com URLs amigáveis e métodos HTTP significativos.
 
-## Ativando o input via JSON<span id="enabling-json-input"></span>
 
-Para fazer a API aceitar dados no formato JSON, configure a propriedade [[yii\web\Request::$parsers|parsers]] do [application component](structure-application-components.md) `request` para usar o [[yii\web\JsonParser]] para realizar input via JSON:
+## Ativando o Input via JSON <span id="enabling-json-input"></span>
+
+Para fazer a API aceitar dados no formato JSON, configure a propriedade [[yii\web\Request::$parsers|parsers]] do [componente de aplicação](structure-application-components.md) `request` para usar o [[yii\web\JsonParser]] para realizar input via JSON:
 
 ```php
 'request' => [
@@ -69,7 +70,7 @@ Para fazer a API aceitar dados no formato JSON, configure a propriedade [[yii\we
 ]
 ```
 
-> Observação: A configuração acima é opcional. Sem a configuração acima, a API só iria reconhecer os formatos de input `application/x-www-form-urlencoded` e `multipart/form-data`.
+> Observação: A configuração acima é opcional. Sem esta configuração, a API só iria reconhecer os formatos de input `application/x-www-form-urlencoded` e `multipart/form-data`.
 
 
 ## Testando <span id="trying-it-out"></span>
@@ -81,12 +82,12 @@ Com o mínimo de esforço acima, você já terminou sua tarefa de criar as APIs 
 * `POST /users`: criar um novo usuário;
 * `GET /users/123`: retorna detalhes do usuário 123;
 * `HEAD /users/123`: mostra informações gerais do usuário 123;
-* `PATCH /users/123` and `PUT /users/123`: atualiza o usuário 123;
+* `PATCH /users/123` e `PUT /users/123`: atualiza o usuário 123;
 * `DELETE /users/123`: deleta o usuário 123;
-* `OPTIONS /users`: mostra os métodos suportados em relação ao endpoint `/users`;
-* `OPTIONS /users/123`: mostra os métodos suportados em relação ao endpoint `/users/123`.
+* `OPTIONS /users`: mostra os métodos suportados em relação à URL `/users`;
+* `OPTIONS /users/123`: mostra os métodos suportados em relação à URL `/users/123`.
 
-> Observação: Yii vai pluralizar automaticamente nomes de controller para uso em endpoints.
+> Observação: O Yii vai pluralizar automaticamente nomes de controllers para uso em URLs (também chamadas *endpoints*).
 > Você pode configurar isso usando a propriedade [[yii\rest\UrlRule::$pluralize]].
 
 Você pode acessar suas APIs com o comando `curl` mostrado abaixo,
@@ -119,7 +120,7 @@ Content-Type: application/json; charset=UTF-8
 ]
 ```
 
-Tente alterar o tipo de conteúdo para `application/xml`, e você vai ver o resultado retornado em formato XML:
+Tente alterar o tipo de conteúdo para `application/xml` e você vai ver o resultado retornado em formato XML:
 
 ```
 $ curl -i -H "Accept:application/xml" "http://localhost/users"
@@ -164,7 +165,7 @@ Content-Type: application/json; charset=UTF-8
 {"id":1,"username":"example","email":"user@example.com","created_at":1414674789,"updated_at":1414674789}
 ```
 
-> Dica: Você também pode acessar suas APIs via navegador da Web, digitando a URL `http://localhost/users`. No entanto, você pode precisar de alguns plugins do navegador para enviar cabeçalhos de solicitações específicas.
+> Dica: Você também pode acessar suas APIs via navegador, digitando a URL `http://localhost/users`. No entanto, você pode precisar de alguns plugins do navegador para enviar cabeçalhos de solicitações específicas.
 
 Como você pode ver, no cabeçalho da resposta, há informações sobre a contagem total, número de páginas, etc. Há também links que permitem navegar para outras páginas de dados. Por exemplo, `http://localhost/users?page=2` lhe daria a próxima página dos dados de usuário.
 
@@ -175,17 +176,17 @@ Usando os parâmetros `fields` e `expand`, você também pode especificar os cam
 > inclui alguns campos confidenciais,
 > Tal como `password_hash`, `auth_key`. Você certamente não quer que 
 > eles apareçam no resultado da sua API.
-> Você pode e deve filtrar esses campos, conforme descrito na secção 
+> Você pode e deve filtrar esses campos, conforme descrito na seção 
 > [Response Formatting](rest-response-formatting.md).
 
 
 ## Resumo <span id="summary"></span>
 
-Usando o Yii RESTful API framework, você implementa um endpoint desses campos, conforme descrito na secção a nível de ações do controller e você usa um controller para organizar as ações que implementam os endpoints para um único tipo de recurso.
+Usando o framework API RESTful do Yii, você implementa uma URL desses campos, conforme descrito na seção de ações do controller, um controller para organizar as ações que implementam as URLs para um único tipo de recurso.
 
-Os recursos são representados como modelos de dados, que se estendem a partir da classe [[yii\base\Model]]. Se você estiver trabalhando com bancos de dados (relational or NoSQL), é recomendado que você use [[yii\db\ActiveRecord|ActiveRecord]] para representar recursos.
+Os recursos são representados como modelos de dados, que se estendem a partir da classe [[yii\base\Model]]. Se você estiver trabalhando com bancos de dados (relacional ou NoSQL), é recomendado que você use [[yii\db\ActiveRecord|ActiveRecord]] para representar recursos.
 
-Você pode usar [[yii\rest\UrlRule]] para simplificar o roteamento para seus endpoints API.
+Você pode usar [[yii\rest\UrlRule]] para simplificar o roteamento para suas URLs da API.
 
 
 Embora não seja exigido, é recomendável que você desenvolva suas APIs RESTful  como uma aplicação separada, diferente do seu frontend e backend para facilitar a manutenção.

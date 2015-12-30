@@ -165,10 +165,10 @@ setting the scenario of a model:
 ```php
 // scenario is set as a property
 $model = new User;
-$model->scenario = 'login';
+$model->scenario = User::SCENARIO_LOGIN;
 
 // scenario is set through configuration
-$model = new User(['scenario' => 'login']);
+$model = new User(['scenario' => User::SCENARIO_LOGIN]);
 ```
 
 By default, the scenarios supported by a model are determined by the [validation rules](#validation-rules) declared
@@ -182,11 +182,14 @@ use yii\db\ActiveRecord;
 
 class User extends ActiveRecord
 {
+    const SCENARIO_LOGIN = 'login';
+    const SCENARIO_REGISTER = 'register';
+
     public function scenarios()
     {
         return [
-            'login' => ['username', 'password'],
-            'register' => ['username', 'email', 'password'],
+            self::SCENARIO_LOGIN => ['username', 'password'],
+            self::SCENARIO_REGISTER => ['username', 'email', 'password'],
         ];
     }
 }
@@ -211,11 +214,14 @@ use yii\db\ActiveRecord;
 
 class User extends ActiveRecord
 {
+    const SCENARIO_LOGIN = 'login';
+    const SCENARIO_REGISTER = 'register';
+
     public function scenarios()
     {
         $scenarios = parent::scenarios();
-        $scenarios['login'] = ['username', 'password'];
-        $scenarios['register'] = ['username', 'email', 'password'];
+        $scenarios[self::SCENARIO_LOGIN] = ['username', 'password'];
+        $scenarios[self::SCENARIO_REGISTER] = ['username', 'email', 'password'];
         return $scenarios;
     }
 }
@@ -283,10 +289,10 @@ public function rules()
 {
     return [
         // username, email and password are all required in "register" scenario
-        [['username', 'email', 'password'], 'required', 'on' => 'register'],
+        [['username', 'email', 'password'], 'required', 'on' => self::SCENARIO_REGISTER],
 
         // username and password are required in "login" scenario
-        [['username', 'password'], 'required', 'on' => 'login'],
+        [['username', 'password'], 'required', 'on' => self::SCENARIO_LOGIN],
     ];
 }
 ```
@@ -333,8 +339,8 @@ be kept untouched.
 public function scenarios()
 {
     return [
-        'login' => ['username', 'password'],
-        'register' => ['username', 'email', 'password'],
+        self::SCENARIO_LOGIN => ['username', 'password'],
+        self::SCENARIO_REGISTER => ['username', 'email', 'password'],
     ];
 }
 ```
@@ -373,7 +379,7 @@ name when declaring it in `scenarios()`, like the `secret` attribute in the foll
 public function scenarios()
 {
     return [
-        'login' => ['username', 'password', '!secret'],
+        self::SCENARIO_LOGIN => ['username', 'password', '!secret'],
     ];
 }
 ```

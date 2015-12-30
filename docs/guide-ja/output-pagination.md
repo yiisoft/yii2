@@ -31,8 +31,8 @@ $count = $query->count();
 $pagination = new Pagination(['totalCount' => $count]);
 
 // ページネーションを使ってクエリの OFFSET と LIMIT を修正して記事を取得する
-$articles = $query->offset($pages->offset)
-    ->limit($pages->limit)
+$articles = $query->offset($pagination->offset)
+    ->limit($pagination->limit)
     ->all();
 ```
 
@@ -70,4 +70,4 @@ echo $pagination->createUrl(100);
 echo $pagination->createUrl(101);
 ```
 
-> Tip|ヒント: `page` クエリパラメータの名前をカスタマイズするためには、ページネーションオブジェクトを作成する際に [[yii\data\Pagination::pageParam|pageParam]] プロパティを構成します。
+> Tip: `page` クエリパラメータの名前をカスタマイズするためには、ページネーションオブジェクトを作成する際に [[yii\data\Pagination::pageParam|pageParam]] プロパティを構成します。

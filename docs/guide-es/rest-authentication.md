@@ -33,7 +33,7 @@ El paso 1 no es necesario pero sí recomendable para las APIs RESTful, pues son 
 Cuando [[yii\web\User::enableSession|enableSession]] es false, el estado de autenticación del usuario puede NO persistir entre peticiones usando sesiones.
 Si embargo, la autenticación será realizada para cada petición, lo que se consigue en los pasos 2 y 3.
 
-> Tip: Puedes configurar [[yii\web\User::enableSession|enableSession]] del componente de la aplicación `user` en la configuración
+> Tip:Puedes configurar [[yii\web\User::enableSession|enableSession]] del componente de la aplicación `user` en la configuración
   de las aplicaciones si estás desarrollando APIs RESTful en términos de un aplicación. Si desarrollas un módulo de las APIs RESTful,
   puedes poner la siguiente línea en el método del módulo `init()`, tal y como sigue:
 > ```php

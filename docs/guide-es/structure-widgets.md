@@ -1,4 +1,4 @@
-﻿Widgets
+Widgets
 =======
 
 Los Widgets son bloques de código reutilizables utilizados en las [vistas](structure-views.md) para crear elementos de 

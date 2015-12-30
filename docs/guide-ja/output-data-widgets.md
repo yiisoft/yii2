@@ -263,7 +263,7 @@ echo GridView::widget([
 
   上記のコードで、`$url` はカラムがボタンのために生成する URL、`$model` は現在の行に表示されるモデルオブジェクト、そして `$key` はデータプロバイダの配列の中にあるモデルのキーです。
 
-- [yii\grid\ActionColumn::urlCreator|urlCreator]] は、指定されたモデルの情報を使って、ボタンの URL を生成するコールバックです。
+- [[yii\grid\ActionColumn::urlCreator|urlCreator]] は、指定されたモデルの情報を使って、ボタンの URL を生成するコールバックです。
   コールバックのシグニチャは [[yii\grid\ActionColumn::createUrl()]] のそれと同じでなければなりません。
   このプロパティが設定されていないときは、ボタンの URL は [[yii\grid\ActionColumn::createUrl()]] を使って生成されます。
 
@@ -295,7 +295,7 @@ var keys = $('#grid').yiiGridView('getSelectedRows');
 
 #### シリアルカラム
 
-シリアルカラムは、`1` から始まる行番号を表示します。
+[[yii\grid\SerialColumn|シリアルカラム]] は、`1` から始まる行番号を表示します。
 
 使い方は、次のように、とても簡単です。
 
@@ -310,14 +310,14 @@ echo GridView::widget([
 
 ### データを並べ替える
 
-> Note|注意: このセクションはまだ執筆中です。
+> Note: このセクションはまだ執筆中です。
 >
 > - https://github.com/yiisoft/yii2/issues/1576
 
 ### データをフィルタリングする
 
 データをフィルタリングするためには、GridView は、フィルタリングのフォームから入力を受け取り、検索基準に合わせてデータプロバイダのクエリを修正するための [モデル](structure-models.md) を必要とします。
-[アクティブレコード](db-active-record.md) を使用している場合は、必要な機能を提供する検索用のモデルクラスを作成するのが一般的なプラクティスです (あなたに代って Gii が生成してくれます)。
+[アクティブレコード](db-active-record.md) を使用している場合は、必要な機能を提供する検索用のモデルクラスを作成するのが一般的なプラクティスです (あなたに代って [Gii](start-gii.md) が生成してくれます)。
 このクラスは、検索のためのバリデーション規則を定義し、データプロバイダを返す `search()` メソッドを提供するものです。
 
 `Post` モデルに対して検索機能を追加するために、次の例のようにして、`PostSearch` モデルを作成することが出来ます。
@@ -449,7 +449,7 @@ public function rules()
 $query->andFilterWhere(['LIKE', 'author.name', $this->getAttribute('author.name')]);
 ```
 
-> Info|情報: 上の例では、リレーション名とテーブルエイリアスに同じ文字列を使用しています。
+> Info: 上の例では、リレーション名とテーブルエイリアスに同じ文字列を使用しています。
 > しかし、エイリアスとリレーション名が異なる場合は、どこでエイリアスを使い、どこでリレーション名を使うかに注意を払わなければなりません。
 > これに関する簡単な規則は、データベースクエリを構築するために使われる全ての場所でエイリアスを使い、`attributes()` や `rules()` など、その他の全ての定義においてリレーション名を使う、というものです。
 >
@@ -481,7 +481,7 @@ $query->andFilterWhere(['LIKE', 'author.name', $this->getAttribute('author.name'
 > $dataProvider->sort->defaultOrder = ['author.name' => SORT_ASC];
 > ```
 
-> Info|情報: `joinWith` およびバックグラウンドで実行されるクエリの詳細については、[アクティブレコード - リレーションを使ってテーブルを結合する](db-active-record.md#joining-with-relations) を参照してください。
+> Info: `joinWith` およびバックグラウンドで実行されるクエリの詳細については、[アクティブレコード - リレーションを使ってテーブルを結合する](db-active-record.md#joining-with-relations) を参照してください。
 
 #### SQL ビューを使って、データのフィルタリング・並べ替え・表示をする
 
@@ -584,7 +584,13 @@ echo GridView::widget([
 
 ### GridView を Pjax とともに使う
 
-> Note|注意: このセクションはまだ執筆中です。
+> Note: このセクションはまだ執筆中です。
 >
 
 (内容未定)
+
+
+さらに読むべき文書
+------------------
+
+- Arno Slatius による [Rendering Data in Yii 2 with GridView and ListView](http://www.sitepoint.com/rendering-data-in-yii-2-with-gridview-and-listview/)。

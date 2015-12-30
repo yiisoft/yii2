@@ -62,10 +62,6 @@ $config = require(__DIR__ . '/../config/web.php');
 
 defined('YII_DEBUG') or define('YII_DEBUG', true);
 
-// デフォルトでは fcgi が STDIN と STDOUT を定義していないので
-defined('STDIN') or define('STDIN', fopen('php://stdin', 'r'));
-defined('STDOUT') or define('STDOUT', fopen('php://stdout', 'w'));
-
 // Composer のオートローダを登録
 require(__DIR__ . '/vendor/autoload.php');
 

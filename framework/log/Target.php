@@ -9,7 +9,6 @@ namespace yii\log;
 
 use Yii;
 use yii\base\Component;
-use yii\base\ErrorHandler;
 use yii\base\InvalidConfigException;
 use yii\helpers\VarDumper;
 use yii\web\Request;
@@ -153,11 +152,11 @@ abstract class Target extends Component
      *
      * For example,
      *
-     * ~~~
+     * ```php
      * ['error', 'warning']
      * // which is equivalent to:
      * Logger::LEVEL_ERROR | Logger::LEVEL_WARNING
-     * ~~~
+     * ```
      *
      * @param array|integer $levels message levels that this target is interested in.
      * @throws InvalidConfigException if an unknown level name is given

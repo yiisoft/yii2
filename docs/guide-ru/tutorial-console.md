@@ -27,6 +27,7 @@
   Больше об этой команде вы можете узнать в [I18N Section](tutorial-i18n.md#message-command).
 - [[yii\console\controllers\MigrateController|MigrateController]] - Управление миграциями приложения.
   Миграции базы данных более детально описаны в [Database Migration Section](db-migrations.md).
+- [[yii\console\controllers\ServeController|ServeController]] - позволяет запускать встроенный вебсервер PHP.
 
 
 Использование <span id="usage"></span>
@@ -49,7 +50,7 @@ yii <route> [--option1=value1 --option2=value2 ... argument1 argument2 ...]
 yii migrate/up 5 --migrationTable=migrations
 ```
 
-> **Примечание**: При использовании в консоли `*`, не забудьте поместить её в кавычки `"*"` чтобы избежать её интерпретации 
+> Note: При использовании в консоли `*`, не забудьте поместить её в кавычки `"*"` чтобы избежать её интерпретации
 > и замены на все имена файлов в данной директории.
 
 
@@ -68,10 +69,6 @@ yii migrate/up 5 --migrationTable=migrations
  */
 
 defined('YII_DEBUG') or define('YII_DEBUG', true);
-
-// fcgi doesn't have STDIN and STDOUT defined by default
-defined('STDIN') or define('STDIN', fopen('php://stdin', 'r'));
-defined('STDOUT') or define('STDOUT', fopen('php://stdout', 'w'));
 
 require(__DIR__ . '/vendor/autoload.php');
 require(__DIR__ . '/vendor/yiisoft/yii2/Yii.php');
@@ -100,7 +97,7 @@ exit($exitCode);
 отдельный файл, и включить его в оба файла конфигурации (веб и консоль).
 Вы можете посмотреть пример в "продвинутом" шаблоне проекта.
 
-> Подсказка: Иногда, вам может потребоваться запустить консольную команду используя конфигурацию, отличную от той, что
+> Tip: Иногда, вам может потребоваться запустить консольную команду используя конфигурацию, отличную от той, что
 > указано во входном скрипте. Для примера, вы можете использовать команду `yii migrate` для обновления тестовой
 > базы данных, которая настраивается для каждого отдельного набора тестов. Для изменения файла конфигурации,
 > просто укажите свой конфигурационный файл через опцию `appconfig` при запуске команды:
@@ -188,8 +185,8 @@ public function actionIndex()
 
 Есть несколько предопределённых констант, которые вы можете использовать:
 
-- `Controller::EXIT_CODE_NORMAL` со значением `0`;
-- `Controller::EXIT_CODE_ERROR` со значением `1`.
+- [[yii\console\Controller::EXIT_CODE_NORMAL|Controller::EXIT_CODE_NORMAL]] со значением `0`;
+- [[yii\console\Controller::EXIT_CODE_ERROR|Controller::EXIT_CODE_ERROR]] со значением `1`.
 
 Хорошая практика, определять значимые для вашего контроллера константы в случае, если вы используете больше типов ошибок.
 
@@ -204,7 +201,8 @@ public function actionIndex()
 $this->stdout("Hello?\n", Console::BOLD);
 ```
 
-Если вам нужно собрать строку динамически объединяя несколько стилей, лучше использовать `ansiFormat`:
+Если вам нужно собрать строку динамически объединяя несколько стилей, лучше использовать
+[[yii\helpers\Console::ansiFormat()|ansiFormat()]]:
 
 ```php
 $name = $this->ansiFormat('Alex', Console::FG_YELLOW);

@@ -27,7 +27,7 @@ use yii\helpers\Html;
  *
  * The following example shows how to use Menu:
  *
- * ~~~
+ * ```php
  * echo Menu::widget([
  *     'items' => [
  *         // Important: you need to specify url as 'controller/action',
@@ -41,7 +41,7 @@ use yii\helpers\Html;
  *         ['label' => 'Login', 'url' => ['site/login'], 'visible' => Yii::$app->user->isGuest],
  *     ],
  * ]);
- * ~~~
+ * ```
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
@@ -311,7 +311,7 @@ class Menu extends Widget
     protected function isItemActive($item)
     {
         if (isset($item['url']) && is_array($item['url']) && isset($item['url'][0])) {
-            $route = $item['url'][0];
+            $route = Yii::getAlias($item['url'][0]);
             if ($route[0] !== '/' && Yii::$app->controller) {
                 $route = Yii::$app->controller->module->getUniqueId() . '/' . $route;
             }

@@ -19,6 +19,13 @@ class FallbackMessageFormatterTest extends TestCase
 {
     const N = 'n';
     const N_VALUE = 42;
+    const F = 'f';
+    const F_VALUE = 2e+8;
+    const F_VALUE_FORMATTED = "200,000,000";
+    const D = 'd';
+    const D_VALUE = 200000000.101;
+    const D_VALUE_FORMATTED = "200,000,000.101";
+    const D_VALUE_FORMATTED_INTEGER = "200,000,000";
     const SUBJECT = 'сабж';
     const SUBJECT_VALUE = 'Answer to the Ultimate Question of Life, the Universe, and Everything';
 
@@ -49,6 +56,38 @@ class FallbackMessageFormatterTest extends TestCase
                 [ // params
                     self::N => self::N_VALUE,
                     self::SUBJECT => self::SUBJECT_VALUE,
+                ]
+            ],
+
+            [
+                'Here is a big number: {'.self::F.', number}', // pattern
+                'Here is a big number: '.self::F_VALUE_FORMATTED, // expected
+                [ // params
+                    self::F => self::F_VALUE
+                ]
+            ],
+
+            [
+                'Here is a big number: {'.self::F.', number, integer}', // pattern
+                'Here is a big number: '.self::F_VALUE_FORMATTED, // expected
+                [ // params
+                    self::F => self::F_VALUE
+                ]
+            ],
+
+            [
+                'Here is a big number: {'.self::D.', number}', // pattern
+                'Here is a big number: '.self::D_VALUE_FORMATTED, // expected
+                [ // params
+                    self::D => self::D_VALUE
+                ]
+            ],
+
+            [
+                'Here is a big number: {'.self::D.', number, integer}', // pattern
+                'Here is a big number: '.self::D_VALUE_FORMATTED_INTEGER, // expected
+                [ // params
+                    self::D => self::D_VALUE
                 ]
             ],
 
@@ -167,6 +206,22 @@ _MSG_
         $formatter = new FallbackMessageFormatter();
         $result = $formatter->fallbackFormat($pattern, ['begin' => 1, 'end' => 5, 'totalCount' => 10], 'en-US');
         $this->assertEquals('Showing <b>1-5</b> of <b>10</b> items.', $result);
+    }
+
+    public function testUnsupportedPercentException()
+    {
+        $pattern = 'Number {'.self::N.', number, percent}';
+        $formatter = new FallbackMessageFormatter();
+        $this->setExpectedException('yii\base\NotSupportedException');
+        $formatter->fallbackFormat($pattern, [self::N => self::N_VALUE], 'en-US');
+    }
+
+    public function testUnsupportedCurrencyException()
+    {
+        $pattern = 'Number {'.self::N.', number, currency}';
+        $formatter = new FallbackMessageFormatter();
+        $this->setExpectedException('yii\base\NotSupportedException');
+        $formatter->fallbackFormat($pattern, [self::N => self::N_VALUE], 'en-US');
     }
 }
 

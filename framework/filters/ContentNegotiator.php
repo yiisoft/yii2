@@ -220,7 +220,7 @@ class ContentNegotiator extends ActionFilter implements BootstrapInterface
                 return $this->languages[$language];
             }
             foreach ($this->languages as $key => $supported) {
-                if (is_integer($key) && $this->isLanguageSupported($language, $supported)) {
+                if (is_int($key) && $this->isLanguageSupported($language, $supported)) {
                     return $supported;
                 }
             }
@@ -232,7 +232,7 @@ class ContentNegotiator extends ActionFilter implements BootstrapInterface
                 return $this->languages[$language];
             }
             foreach ($this->languages as $key => $supported) {
-                if (is_integer($key) && $this->isLanguageSupported($language, $supported)) {
+                if (is_int($key) && $this->isLanguageSupported($language, $supported)) {
                     return $supported;
                 }
             }

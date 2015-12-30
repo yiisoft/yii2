@@ -305,3 +305,24 @@ INSERT INTO "validator_ref" ("id", "a_field", "ref") VALUES (3, 'ref_to_3', 3);
 INSERT INTO "validator_ref" ("id", "a_field", "ref") VALUES (4, 'ref_to_4', 4);
 INSERT INTO "validator_ref" ("id", "a_field", "ref") VALUES (5, 'ref_to_4', 4);
 INSERT INTO "validator_ref" ("id", "a_field", "ref") VALUES (6, 'ref_to_5', 5);
+
+/* bit test, see https://github.com/yiisoft/yii2/issues/9006 */
+
+BEGIN EXECUTE IMMEDIATE 'DROP TABLE "bit_values"'; EXCEPTION WHEN OTHERS THEN IF SQLCODE != -942 THEN RAISE; END IF; END;--
+
+CREATE TABLE [dbo].[] (
+    [id] [int] IDENTITY(1,1) NOT NULL,
+	[val] [bit] NOT NULL,
+	CONSTRAINT [PK_bit_values] PRIMARY KEY CLUSTERED (
+		[id] ASC
+	) ON [PRIMARY]
+);
+
+CREATE TABLE "bit_values" (
+  "id" integer not null,
+  "val" char(1) NOT NULL,
+  CONSTRAINT "bit_values_PK" PRIMARY KEY ("id") ENABLE,
+  CONSTRAINT "bit_values_val" CHECK (val IN ('1','0'))
+);
+
+INSERT INTO "bit_values" ("id", "val") VALUES (1, '0'), (2, '1');

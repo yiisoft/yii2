@@ -6,7 +6,7 @@ la URL `http://hostname/basic/web/index.php` o `http://hostname/index.php`, depe
 Esta sección será una introducción a la funcionalidad incluida de la aplicación, cómo se organiza el código,
 y cómo la aplicación maneja los requests en general.
 
-> Información: Por simplicidad, en el transcurso de este tutorial "Para Empezar", se asume que has definido `basic/web`
+> Info: Por simplicidad, en el transcurso de este tutorial "Para Empezar", se asume que has definido `basic/web`
   como el document root de tu servidor Web, y configurado la URL de acceso a tu aplicación para que sea `http://hostname/index.php`
   o similar.
   Dependiendo de tus necesidades, por favor ajusta dichas URLs.

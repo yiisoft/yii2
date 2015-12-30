@@ -92,6 +92,12 @@ class MaskedInput extends InputWidget
      * @see \yii\helpers\Html::renderTagAttributes() for details on how attributes are being rendered.
      */
     public $options = ['class' => 'form-control'];
+    /**
+     * @var string the type of the input tag. Currently only 'text' and 'tel' are supported.
+     * @see https://github.com/RobinHerbots/jquery.inputmask
+     * @since 2.0.6
+     */
+    public $type = 'text';
 
     /**
      * @var string the hashed variable to store the pluginOptions
@@ -119,9 +125,9 @@ class MaskedInput extends InputWidget
     {
         $this->registerClientScript();
         if ($this->hasModel()) {
-            echo Html::activeTextInput($this->model, $this->attribute, $this->options);
+            echo Html::activeInput($this->type, $this->model, $this->attribute, $this->options);
         } else {
-            echo Html::textInput($this->name, $this->value, $this->options);
+            echo Html::input($this->type, $this->name, $this->value, $this->options);
         }
     }
 
@@ -140,7 +146,7 @@ class MaskedInput extends InputWidget
         $encOptions = empty($this->clientOptions) ? '{}' : Json::htmlEncode($this->clientOptions);
         $this->_hashVar = self::PLUGIN_NAME . '_' . hash('crc32', $encOptions);
         $this->options['data-plugin-' . self::PLUGIN_NAME] = $this->_hashVar;
-        $view->registerJs("var {$this->_hashVar} = {$encOptions};\n", View::POS_HEAD);
+        $view->registerJs("var {$this->_hashVar} = {$encOptions};", View::POS_READY);
     }
 
     /**
@@ -151,7 +157,7 @@ class MaskedInput extends InputWidget
         $options = $this->clientOptions;
         foreach ($options as $key => $value) {
             if (!$value instanceof JsExpression && in_array($key, ['oncomplete', 'onincomplete', 'oncleared', 'onKeyUp',
-                    'onKeyDown', 'onBeforeMask', 'onBeforePaste', 'onUnMask', 'isComplete', 'determineActiveMasksetIndex'])
+                    'onKeyDown', 'onBeforeMask', 'onBeforePaste', 'onUnMask', 'isComplete', 'determineActiveMasksetIndex'], true)
             ) {
                 $options[$key] = new JsExpression($value);
             }
@@ -172,13 +178,13 @@ class MaskedInput extends InputWidget
         }
         $this->hashPluginOptions($view);
         if (is_array($this->definitions) && !empty($this->definitions)) {
-            $js .= '$.extend($.' . self::PLUGIN_NAME . '.defaults.definitions, ' . Json::htmlEncode($this->definitions) . ");\n";
+            $js .= '$.extend($.' . self::PLUGIN_NAME . '.defaults.definitions, ' . Json::htmlEncode($this->definitions) . ');';
         }
         if (is_array($this->aliases) && !empty($this->aliases)) {
-            $js .= '$.extend($.' . self::PLUGIN_NAME . '.defaults.aliases, ' . Json::htmlEncode($this->aliases) . ");\n";
+            $js .= '$.extend($.' . self::PLUGIN_NAME . '.defaults.aliases, ' . Json::htmlEncode($this->aliases) . ');';
         }
         $id = $this->options['id'];
-        $js .= '$("#' . $id . '").' . self::PLUGIN_NAME . "(" . $this->_hashVar . ");\n";
+        $js .= '$("#' . $id . '").' . self::PLUGIN_NAME . '(' . $this->_hashVar . ');';
         MaskedInputAsset::register($view);
         $view->registerJs($js);
     }

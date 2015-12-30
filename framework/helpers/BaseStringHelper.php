@@ -61,7 +61,7 @@ class BaseStringHelper
      */
     public static function basename($path, $suffix = '')
     {
-        if (($len = mb_strlen($suffix)) > 0 && mb_substr($path, -$len) == $suffix) {
+        if (($len = mb_strlen($suffix)) > 0 && mb_substr($path, -$len) === $suffix) {
             $path = mb_substr($path, 0, -$len);
         }
         $path = rtrim(str_replace('\\', '/', $path), '/\\');
@@ -105,7 +105,7 @@ class BaseStringHelper
     public static function truncate($string, $length, $suffix = '...', $encoding = null, $asHtml = false)
     {
         if ($asHtml) {
-            return self::truncateHtml($string, $length, $suffix, $encoding ?: Yii::$app->charset);
+            return static::truncateHtml($string, $length, $suffix, $encoding ?: Yii::$app->charset);
         }
         
         if (mb_strlen($string, $encoding ?: Yii::$app->charset) > $length) {
@@ -128,7 +128,7 @@ class BaseStringHelper
     public static function truncateWords($string, $count, $suffix = '...', $asHtml = false)
     {
         if ($asHtml) {
-            return self::truncateHtml($string, $count, $suffix);
+            return static::truncateHtml($string, $count, $suffix);
         }
 
         $words = preg_split('/(\s+)/u', trim($string), null, PREG_SPLIT_DELIM_CAPTURE);
@@ -141,7 +141,7 @@ class BaseStringHelper
     
     /**
      * Truncate a string while preserving the HTML.
-     * 
+     *
      * @param string $string The string to truncate
      * @param integer $count
      * @param string $suffix String to append to the end of the truncated string.
@@ -152,6 +152,7 @@ class BaseStringHelper
     protected static function truncateHtml($string, $count, $suffix, $encoding = false)
     {
         $config = \HTMLPurifier_Config::create(null);
+        $config->set('Cache.SerializerPath', \Yii::$app->getRuntimePath());
         $lexer = \HTMLPurifier_Lexer::create($config);
         $tokens = $lexer->tokenizeHTML($string, $config, null);
         $openTokens = 0;
@@ -263,7 +264,9 @@ class BaseStringHelper
         }
         if ($skipEmpty) {
             // Wrapped with array_values to make array keys sequential after empty values removing
-            $result = array_values(array_filter($result));
+            $result = array_values(array_filter($result, function ($value) {
+                return $value !== '';
+            }));
         }
         return $result;
     }

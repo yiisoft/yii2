@@ -56,7 +56,7 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
      */
     const EVENT_BEFORE_INSERT = 'beforeInsert';
     /**
-     * @event Event an event that is triggered after a record is inserted.
+     * @event AfterSaveEvent an event that is triggered after a record is inserted.
      */
     const EVENT_AFTER_INSERT = 'afterInsert';
     /**
@@ -65,7 +65,7 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
      */
     const EVENT_BEFORE_UPDATE = 'beforeUpdate';
     /**
-     * @event Event an event that is triggered after a record is updated.
+     * @event AfterSaveEvent an event that is triggered after a record is updated.
      */
     const EVENT_AFTER_UPDATE = 'afterUpdate';
     /**
@@ -115,7 +115,7 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
      * Finds ActiveRecord instance(s) by the given condition.
      * This method is internally called by [[findOne()]] and [[findAll()]].
      * @param mixed $condition please refer to [[findOne()]] for the explanation of this parameter
-     * @return ActiveQueryInterface the newly created [[ActiveQueryInterface|ActiveQuery]] instance. 
+     * @return ActiveQueryInterface the newly created [[ActiveQueryInterface|ActiveQuery]] instance.
      * @throws InvalidConfigException if there is no primary key defined
      * @internal
      */
@@ -515,10 +515,10 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
     /**
      * Returns a value indicating whether the named attribute has been changed.
      * @param string $name the name of the attribute.
-     * @param bool $identical whether the comparison of new and old value is made for
+     * @param boolean $identical whether the comparison of new and old value is made for
      * identical values using `===`, defaults to `true`. Otherwise `==` is used for comparison.
      * This parameter is available since version 2.0.4.
-     * @return bool whether the attribute has been changed
+     * @return boolean whether the attribute has been changed
      */
     public function isAttributeChanged($name, $identical = true)
     {
@@ -675,7 +675,7 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
     {
         $attrs = [];
         foreach ($attributes as $name => $value) {
-            if (is_integer($name)) {
+            if (is_int($name)) {
                 $attrs[] = $value;
             } else {
                 $this->$name = $value;
@@ -1392,7 +1392,7 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
         } else {
             /* @var $relatedModel ActiveRecordInterface */
             $relatedModel = $relation->modelClass;
-            if (!$delete && count($relation->link) == 1 && is_array($this->{$b = reset($relation->link)})) {
+            if (!$delete && count($relation->link) === 1 && is_array($this->{$b = reset($relation->link)})) {
                 // relation via array valued attribute
                 $this->$b = [];
                 $this->save(false);

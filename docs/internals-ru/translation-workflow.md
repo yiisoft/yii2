@@ -35,6 +35,8 @@ php build translation "../docs/guide" "../docs/guide-ru" "Russian guide translat
 
 Если ругается на composer, выполните `composer install` в корневой директории.
 
+Информацию о синтаксисе и стиле документации можно найти в [documentation_style_guide.md](../documentation_style_guide.md).
+
 Перед тем, как начать перевод, убедитесь, что никто им ещё не занимается и запишите себя в
 [список всех переводимых документов](https://docs.google.com/spreadsheets/d/1uxV0LwmR-8XXqlT8C6VqWllZjuoyIj-UkYpAQPWyUzE/edit?usp=sharing).
 
@@ -80,9 +82,7 @@ php build translation "../docs/guide" "../docs/guide-ru" "Russian guide translat
  
 ### Перевод специальных сообщений
 
-- Tip → Подсказка 
-- Note → Примечание 
-- Info → Информация 
+Специальные сообщения `Tip:`, `Note:`, `Info:`, `Warning:` не переводятся.
 
 ### Перевод рисунков
 
@@ -123,6 +123,7 @@ php build translation "../docs/guide" "../docs/guide-ru" "Russian guide translat
 - helper - помощник. 
 - id — идентификатор. 
 - instance — экземпляр. 
+- junction table — промежуточная таблица.
 - lazy loading — отложенная загрузка (загрузим как понадобится и не раньше). 
 - method — метод (объекта) //Внимание! У объекта/класса нет функций, есть только методы. 
 - model — модель, модель данных. 
@@ -145,3 +146,7 @@ php build translation "../docs/guide" "../docs/guide-ru" "Russian guide translat
 - validator class — класс валидатора. 
 - view — представление.
 - query builder — конструктор запросов.
+- time zone — часовой пояс.
+- to trigger — инициализировать
+- event — событие
+- to implement (class implements interface) — реализовывать (класс реализует интерфейс)

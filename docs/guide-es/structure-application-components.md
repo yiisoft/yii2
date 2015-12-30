@@ -42,7 +42,7 @@ Por ejemplo:
 ]
 ```
 
-> Información: A pesar de que puedes registrar tantos componentes como desees, deberías hacerlo con criterio.
+> Info: A pesar de que puedes registrar tantos componentes como desees, deberías hacerlo con criterio.
   Los componente de la aplicación son como variables globales. Abusando demasiado de ellos puede resultar en
   un código más difícil de mantener y testear. En muchos casos, puedes simplemente crear un componente local
   y utilizarlo únicamente cuando sea necesario.

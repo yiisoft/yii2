@@ -20,6 +20,28 @@
 с данными текущего аутентифицированного пользователя. Для улучшения производительности можно попробовать хранить эту
 информацию в кэше или NoSQL хранилище.
 
+Реализация в модели `User` может быть, например, такой:
+
+```php
+public function getRateLimit($request, $action)
+{
+    return [$this->rateLimit, 1]; // $rateLimit запросов в секунду
+}
+
+public function loadAllowance($request, $action)
+{
+    return [$this->allowance, $this->allowance_updated_at];
+}
+
+public function saveAllowance($request, $action, $allowance, $timestamp)
+{
+    $this->allowance = $allowance;
+    $this->allowance_updated_at = $timestamp;
+    $this->save();
+}
+```
+
+
 Как только соответствующий интерфейс будет реализован в классе identity, Yii начнёт автоматически проверять ограничения
 частоты запросов при помощи [[yii\filters\RateLimiter]], фильтра действий для [[yii\rest\Controller]]. При превышении
 ограничений будет выброшено исключение [[yii\web\TooManyRequestsHttpException]].

@@ -27,6 +27,7 @@ As you can see in the screenshot, Yii has already defined a set of commands that
   To learn more about this command, please refer to the [I18N Section](tutorial-i18n.md#message-command).
 - [[yii\console\controllers\MigrateController|MigrateController]] - Manages application migrations.
   Database migrations are described in more detail in the [Database Migration Section](db-migrations.md).
+- [[yii\console\controllers\ServeController|ServeController]] - Allows you run PHP built-in web server.
 
 
 Usage <span id="usage"></span>
@@ -49,7 +50,7 @@ and a limit of 5 migrations can be called like so:
 yii migrate/up 5 --migrationTable=migrations
 ```
 
-> **Note**: When using `*` in console, don't forget to quote it as `"*"` in order to avoid executing it as a shell
+> Note: When using `*` in console, don't forget to quote it as `"*"` in order to avoid executing it as a shell
 > glob that will be replaced by all file names of the current directory.
 
 
@@ -68,10 +69,6 @@ It contains code like the following:
  */
 
 defined('YII_DEBUG') or define('YII_DEBUG', true);
-
-// fcgi doesn't have STDIN and STDOUT defined by default
-defined('STDIN') or define('STDIN', fopen('php://stdin', 'r'));
-defined('STDOUT') or define('STDOUT', fopen('php://stdout', 'w'));
 
 require(__DIR__ . '/vendor/autoload.php');
 require(__DIR__ . '/vendor/yiisoft/yii2/Yii.php');
@@ -185,8 +182,8 @@ public function actionIndex()
 
 There are some predefined constants you can use:
 
-- `Controller::EXIT_CODE_NORMAL` with value of `0`;
-- `Controller::EXIT_CODE_ERROR` with value of `1`.
+- [[yii\console\Controller::EXIT_CODE_NORMAL|Controller::EXIT_CODE_NORMAL]] with value of `0`;
+- [[yii\console\Controller::EXIT_CODE_ERROR|Controller::EXIT_CODE_ERROR]] with value of `1`.
 
 It's a good practice to define meaningful constants for your controller in case you have more error code types.
 
@@ -201,7 +198,7 @@ Outputting formatted strings is simple. Here's how to output some bold text:
 $this->stdout("Hello?\n", Console::BOLD);
 ```
 
-If you need to build string dynamically combining multiple styles it's better to use `ansiFormat`:
+If you need to build string dynamically combining multiple styles it's better to use [[yii\helpers\Console::ansiFormat()|ansiFormat()]]:
 
 ```php
 $name = $this->ansiFormat('Alex', Console::FG_YELLOW);

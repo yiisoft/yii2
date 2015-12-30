@@ -236,7 +236,7 @@ the following code:
 Summary <span id="summary"></span>
 -------
 
-In this section of the guide, you have touched every part in the MVC design pattern. You have learned how
+In this section of the guide, you have touched every part in the MVC architectural pattern. You have learned how
 to create a model class to represent the user data and validate said data.
 
 You have also learned how to get data from users and how to display data back in the browser. This is a task that
