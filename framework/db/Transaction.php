@@ -211,4 +211,13 @@ class Transaction extends \yii\base\Object
         Yii::trace('Setting transaction isolation level to ' . $level, __METHOD__);
         $this->db->getSchema()->setTransactionIsolationLevel($level);
     }
+
+    /**
+     *
+     * @return int The current nesting level of the transaction.
+     */
+    public function getLevel()
+    {
+        return $this->_level;
+    }
 }
