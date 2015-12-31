@@ -23,6 +23,7 @@ Yii Framework 2 Change Log
 - Bug #9583: Server response on invalid JSON request included a wrong message about "Internal Server Error" with status 500 (cebe)
 - Bug #9591: Fixed `yii.validation.js` code so it is compressable by YUICompressor (samdark, hofrob)
 - Bug #9596: Fixed `\yii\web\UrlManager::createAbsoluteUrl(['site/index', '#' => 'testHash'])` losing hash (alchimik, samdark)
+- Bug #9670: Fixed PJAX redirect in IE. `yii\web\Response::redirect()` - added check for `X-Ie-Redirect-Compatibility` header (silverfire)
 - Bug #9678: `I18N::format()` wasn't able to handle named placeholder in "selectordinal" (samdark)
 - Bug #9681: `Json::encode()` was erroring under CYGWIN (samdark)
 - Bug #9689: Hidden input on `Html::activeFileInput()` had the wrong name if a name was explicitly given (graphcon, cebe)
