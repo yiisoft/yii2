@@ -160,7 +160,7 @@ use app\assets\AppAsset;
 AppAsset::register($this);  // $this - представляет собой объект представления
 ```
 
-> Для справки: Метод [[yii\web\AssetBundle::register()]] возвращает объект комплекта ресурсов, содержащий информацию о публикуемых ресурсах, таких как [[yii\web\AssetBundle::basePath|basePath]] или [[yii\web\AssetBundle::baseUrl|baseUrl]].
+> Info: Метод [[yii\web\AssetBundle::register()]] возвращает объект комплекта ресурсов, содержащий информацию о публикуемых ресурсах, таких как [[yii\web\AssetBundle::basePath|basePath]] или [[yii\web\AssetBundle::baseUrl|baseUrl]].
 
 Если Вы регистрируете комплект ресурсов в других местах (т.е. не в представлении), Вы должны обеспечить необходимый объект представления. Например, при регистрации комплекта ресурсов в классе [widget](structure-widgets.md), Вы можете взять за объект представления `$this->view`.
 
