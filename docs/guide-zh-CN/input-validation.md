@@ -444,7 +444,7 @@ class StatusValidator extends Validator
         $statuses = json_encode(Status::find()->select('id')->asArray()->column());
         $message = json_encode($this->message);
         return <<<JS
-if (!$.inArray(value, $statuses)) {
+if ($.inArray(value, $statuses) === -1) {
     messages.push($message);
 }
 JS;
