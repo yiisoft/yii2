@@ -5,6 +5,7 @@ namespace yiiunit\framework\helpers;
 use Yii;
 use yii\base\Model;
 use yii\helpers\Html;
+use yii\helpers\Url;
 use yiiunit\TestCase;
 
 /**
@@ -20,6 +21,8 @@ class HtmlTest extends TestCase
                 'request' => [
                     'class' => 'yii\web\Request',
                     'url' => '/test',
+                    'scriptUrl' => '/index.php',
+                    'hostInfo' => 'http://www.example.com',
                     'enableCsrfValidation' => false,
                 ],
                 'response' => [
@@ -113,6 +116,7 @@ class HtmlTest extends TestCase
         $this->assertEquals('<a href="/example">something</a>', Html::a('something', '/example'));
         $this->assertEquals('<a href="/test">something</a>', Html::a('something', ''));
         $this->assertEquals('<a href="http://www.быстроном.рф">http://www.быстроном.рф</a>', Html::a('http://www.быстроном.рф', 'http://www.быстроном.рф'));
+        $this->assertEquals('<a href="https://www.example.com/index.php?r=site%2Ftest">Test page</a>', Html::a('Test page',  Url::to(['/site/test'], 'https')));
     }
 
     public function testMailto()
