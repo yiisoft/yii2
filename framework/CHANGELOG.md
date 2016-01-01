@@ -47,7 +47,7 @@ Yii Framework 2 Change Log
 - Bug #10363: Fixed fallback float and integer formatting (AnatolyRugalev, silverfire)
 - Bug #10372: Fixed console controller including DI arguments in help (sammousa)
 - Bug #10385: Fixed `yii\validators\CaptchaValidator` passed incorrect hashKey to JS validator when `captchaAction` begins with `/` (silverfire)
-- Bug #10467: Fixed `yii\di\Instance::ensure()`to work with minimum settings (LAV45)
+- Bug #10467: Fixed `yii\di\Instance::ensure()` to work with minimum settings (LAV45)
 - Bug: Fixed generation of canonical URLs for `ViewAction` pages (samdark)
 - Bug: Fixed `mb_*` functions calls to use `UTF-8` or `Yii::$app->charset` (silverfire)
 - Enh #3506: Added `yii\validators\IpValidator` to perform validation of IP addresses and subnets (SilverFire, samdark)
