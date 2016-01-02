@@ -114,7 +114,7 @@ return [
     '{delta, plural, =1{a month} other{# months}} ago' => '{delta} ماه قبل',
     '{delta, plural, =1{a second} other{# seconds}} ago' => '{delta} ثانیه قبل',
     '{delta, plural, =1{an hour} other{# hours}} ago' => '{delta} ساعت قبل',
-        'Powered by {yii}' => 'طراحی شده توسط {yii}',
+    'Powered by {yii}' => 'طراحی شده توسط {yii}',
     'The file "{file}" is too big. Its size cannot exceed {formattedLimit}.' => 'حجم فایل "{file}" بسیار بیشتر می باشد. حجم آن نمی تواند از {formattedLimit} بیشتر باشد.',
     'The file "{file}" is too small. Its size cannot be smaller than {formattedLimit}.' => 'حجم فایل "{file}" بسیار کم می باشد. حجم آن نمی تواند از {formattedLimit} کمتر باشد.',
     'Yii Framework' => 'فریم ورک یی',
