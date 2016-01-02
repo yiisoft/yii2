@@ -139,6 +139,37 @@ class Formatter extends Component
      */
     public $datetimeFormat = 'medium';
     /**
+     * @var \IntlCalendar|int|null the calendar to be used for date formatting. The value of this property will be directly
+     * passed to the [constructor of the `IntlDateFormatter` class](http://php.net/manual/en/intldateformatter.create.php).
+     *
+     * Defaults to `null`, which means the Gregorian calendar will be used. You may also explicitly pass the constant
+     * `\IntlDateFormatter::GREGORIAN` for Gregorian calendar.
+     *
+     * To use an alternative calendar like for example the [Jalali calendar](https://en.wikipedia.org/wiki/Jalali_calendar),
+     * set this property to `\IntlDateFormatter::TRADITIONAL`.
+     * The calendar must then be specified in the [[locale]], for example for the persian calendar the configuration for the formatter would be:
+     *
+     * ```php
+     * 'formatter' => [
+     *     'locale' => 'fa_IR@calendar=persian',
+     *     'calendar' => \IntlDateFormatter::TRADITIONAL,
+     * ],
+     * ```
+     *
+     * Available calendar names can be found in the [ICU manual](http://userguide.icu-project.org/datetime/calendar).
+     *
+     * Since PHP 5.5 you may also use an instance of the [[\IntlCalendar]] class.
+     * Check the [PHP manual](http://php.net/manual/en/intldateformatter.create.php) for more details.
+     *
+     * If the [PHP intl extension](http://php.net/manual/en/book.intl.php) is not available, setting this property will have no effect.
+     *
+     * @see http://php.net/manual/en/intldateformatter.create.php
+     * @see http://php.net/manual/en/class.intldateformatter.php#intl.intldateformatter-constants.calendartypes
+     * @see http://php.net/manual/en/class.intlcalendar.php
+     * @since 2.0.7
+     */
+    public $calendar;
+    /**
      * @var string the character displayed as the decimal point when formatting a number.
      * If not set, the decimal separator corresponding to [[locale]] will be used.
      * If [PHP intl extension](http://php.net/manual/en/book.intl.php) is not available, the default value is '.'.
@@ -574,14 +605,14 @@ class Formatter extends Component
             }
             if (isset($this->_dateFormats[$format])) {
                 if ($type === 'date') {
-                    $formatter = new IntlDateFormatter($this->locale, $this->_dateFormats[$format], IntlDateFormatter::NONE, $timeZone);
+                    $formatter = new IntlDateFormatter($this->locale, $this->_dateFormats[$format], IntlDateFormatter::NONE, $timeZone, $this->calendar);
                 } elseif ($type === 'time') {
-                    $formatter = new IntlDateFormatter($this->locale, IntlDateFormatter::NONE, $this->_dateFormats[$format], $timeZone);
+                    $formatter = new IntlDateFormatter($this->locale, IntlDateFormatter::NONE, $this->_dateFormats[$format], $timeZone, $this->calendar);
                 } else {
-                    $formatter = new IntlDateFormatter($this->locale, $this->_dateFormats[$format], $this->_dateFormats[$format], $timeZone);
+                    $formatter = new IntlDateFormatter($this->locale, $this->_dateFormats[$format], $this->_dateFormats[$format], $timeZone, $this->calendar);
                 }
             } else {
-                $formatter = new IntlDateFormatter($this->locale, IntlDateFormatter::NONE, IntlDateFormatter::NONE, $timeZone, null, $format);
+                $formatter = new IntlDateFormatter($this->locale, IntlDateFormatter::NONE, IntlDateFormatter::NONE, $timeZone, $this->calendar, $format);
             }
             if ($formatter === null) {
                 throw new InvalidConfigException(intl_get_error_message());
