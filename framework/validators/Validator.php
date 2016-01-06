@@ -156,13 +156,14 @@ class Validator extends Component
      */
     public $when;
     /**
-     * @var string a JavaScript function name whose return value determines whether this validator should be applied
+     * @var string|false a JavaScript function name whose return value determines whether this validator should be applied
      * on the client side. The signature of the function should be `function (attribute, value)`, where
      * `attribute` is an object describing the attribute being validated (see [[clientValidateAttribute()]])
      * and `value` the current value of the attribute.
      *
      * This property is mainly provided to support conditional validation on the client side.
      * If this property is not set, this validator will be always applied on the client side.
+     * If this property is false, client validator will be skipped.
      *
      * The following example will enable the validator only when the country currently selected is USA:
      *
