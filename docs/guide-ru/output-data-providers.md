@@ -171,7 +171,7 @@ $provider = new ArrayDataProvider([
 $rows = $provider->getModels();
 ``` 
 
-> Совет: Сравнивая с [Active Data Provider](#active-data-provider) и [SQL Data Provider](#sql-data-provider),
+> Note: Сравнивая с [Active Data Provider](#active-data-provider) и [SQL Data Provider](#sql-data-provider),
 ArrayDataProvider менее эффективный потому, что требует загрузки *всех* данных в память.
 
 

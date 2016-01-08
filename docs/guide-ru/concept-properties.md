@@ -31,7 +31,7 @@ namespace app\components;
 
 use yii\base\Object;
 
-class Foo extend Object
+class Foo extends Object
 {
     private $_label;
 

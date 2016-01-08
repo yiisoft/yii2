@@ -509,7 +509,7 @@ class StatusValidator extends Validator
         $statuses = json_encode(Status::find()->select('id')->asArray()->column());
         $message = json_encode($this->message, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
         return <<<JS
-if (!$.inArray(value, $statuses) > -1) {
+if ($.inArray(value, $statuses) === -1) {
     messages.push($message);
 }
 JS;
@@ -517,7 +517,7 @@ JS;
 }
 ```
 
-> Совет: приведенный выше код даётся, в основном, чтобы продемонстрировать, как осуществляется 
+> Tip: приведенный выше код даётся, в основном, чтобы продемонстрировать, как осуществляется 
 > поддержка проверки на стороне клиента. На практике вы можете использовать 
 > [in](tutorial-core-validators.md#in) основные валидаторы для достижения той же цели. 
 > Вы можете написать проверку, как правило, например:
