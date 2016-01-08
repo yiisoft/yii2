@@ -761,8 +761,8 @@ class Response extends \yii\base\Response
 
         if ($checkAjax) {
             if (Yii::$app->getRequest()->getIsPjax()) {
-                if (Yii::$app->getRequest()->getHeaders()->get('X-Ie-Redirect-Compatibility') !== null && func_num_args() < 2) {
-                    $statusCode = 200; // override status code for IE, but only, if it is not explicitly passed
+                if (Yii::$app->getRequest()->getHeaders()->get('X-Ie-Redirect-Compatibility') !== null && $statusCode === 302) {
+                    $statusCode = 200; // override status code for IE, but only, if it is not explicitly specified
                 }
                 if (Yii::$app->getRequest()->getIsPjax()) {
                     $this->getHeaders()->set('X-Pjax-Url', $url);
