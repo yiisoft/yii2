@@ -762,7 +762,8 @@ class Response extends \yii\base\Response
         if ($checkAjax) {
             if (Yii::$app->getRequest()->getIsAjax()) {
                 if (Yii::$app->getRequest()->getHeaders()->get('X-Ie-Redirect-Compatibility') !== null && $statusCode === 302) {
-                    $statusCode = 200; // override status code for IE, but only, if it is not explicitly specified
+                    // Ajax 302 redirect in IE does not work. Change status code to 200. See https://github.com/yiisoft/yii2/issues/9670
+                    $statusCode = 200;
                 }
                 if (Yii::$app->getRequest()->getIsPjax()) {
                     $this->getHeaders()->set('X-Pjax-Url', $url);
