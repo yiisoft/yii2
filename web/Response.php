@@ -759,11 +759,17 @@ class Response extends \yii\base\Response
             $url = Yii::$app->getRequest()->getHostInfo() . $url;
         }
 
-        if ($checkAjax && Yii::$app->getRequest()->getHeaders()->get('X-Ie-Redirect-Compatibility') === null) {
-            if (Yii::$app->getRequest()->getIsPjax()) {
-                $this->getHeaders()->set('X-Pjax-Url', $url);
-            } elseif (Yii::$app->getRequest()->getIsAjax()) {
-                $this->getHeaders()->set('X-Redirect', $url);
+        if ($checkAjax) {
+            if (Yii::$app->getRequest()->getIsAjax()) {
+                if (Yii::$app->getRequest()->getHeaders()->get('X-Ie-Redirect-Compatibility') !== null && $statusCode === 302) {
+                    // Ajax 302 redirect in IE does not work. Change status code to 200. See https://github.com/yiisoft/yii2/issues/9670
+                    $statusCode = 200;
+                }
+                if (Yii::$app->getRequest()->getIsPjax()) {
+                    $this->getHeaders()->set('X-Pjax-Url', $url);
+                } else {
+                    $this->getHeaders()->set('X-Redirect', $url);
+                }
             } else {
                 $this->getHeaders()->set('Location', $url);
             }
