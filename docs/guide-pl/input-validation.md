@@ -12,7 +12,7 @@ $model = new \app\models\ContactForm();
 
 // uzupełniamy model danymi od użytkownika
 $model->load(\Yii::$app->request->post());
-// jest to identyczne do poniższej metody
+// ten zapis jest tożsamy z poniższą metodą
 // $model->attributes = \Yii::$app->request->post('ContactForm');
 
 if ($model->validate()) {
