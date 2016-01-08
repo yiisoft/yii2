@@ -760,7 +760,7 @@ class Response extends \yii\base\Response
         }
 
         if ($checkAjax) {
-            if (Yii::$app->getRequest()->getIsPjax()) {
+            if (Yii::$app->getRequest()->getIsAjax()) {
                 if (Yii::$app->getRequest()->getHeaders()->get('X-Ie-Redirect-Compatibility') !== null && $statusCode === 302) {
                     $statusCode = 200; // override status code for IE, but only, if it is not explicitly specified
                 }
