@@ -759,7 +759,7 @@ class Response extends \yii\base\Response
             $url = Yii::$app->getRequest()->getHostInfo() . $url;
         }
 
-        if ($checkAjax && Yii::$app->getRequest()->getHeaders()->get('X-Ie-Redirect-Compatibility') !== null) {
+        if ($checkAjax && Yii::$app->getRequest()->getHeaders()->get('X-Ie-Redirect-Compatibility') === null) {
             if (Yii::$app->getRequest()->getIsPjax()) {
                 $this->getHeaders()->set('X-Pjax-Url', $url);
             } elseif (Yii::$app->getRequest()->getIsAjax()) {
