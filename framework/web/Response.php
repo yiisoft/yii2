@@ -759,11 +759,16 @@ class Response extends \yii\base\Response
             $url = Yii::$app->getRequest()->getHostInfo() . $url;
         }
 
-        if ($checkAjax && Yii::$app->getRequest()->getHeaders()->get('X-Ie-Redirect-Compatibility') === null) {
+        if ($checkAjax) {
             if (Yii::$app->getRequest()->getIsPjax()) {
-                $this->getHeaders()->set('X-Pjax-Url', $url);
-            } elseif (Yii::$app->getRequest()->getIsAjax()) {
-                $this->getHeaders()->set('X-Redirect', $url);
+                if (Yii::$app->getRequest()->getHeaders()->get('X-Ie-Redirect-Compatibility') !== null && func_num_args() < 2) {
+                    $statusCode = 200; // override status code for IE, but only, if it is not explicitly passed
+                }
+                if (Yii::$app->getRequest()->getIsPjax()) {
+                    $this->getHeaders()->set('X-Pjax-Url', $url);
+                } else {
+                    $this->getHeaders()->set('X-Redirect', $url);
+                }
             } else {
                 $this->getHeaders()->set('Location', $url);
             }
