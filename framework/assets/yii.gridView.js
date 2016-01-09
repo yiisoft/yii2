@@ -30,7 +30,7 @@
 
     var gridEvents = {
         /**
-         * beforeFilter event is triggered before filtering the grid.
+         * beforeFilter.yiiGridView event is triggered before filtering the grid.
          * The signature of the event handler should be:
          *     function (event)
          * where
@@ -39,15 +39,15 @@
          * If the handler returns a boolean false, it will stop filter form submission after this event. As
          * a result, afterFilter event will not be triggered.
          */
-        beforeFilter: 'beforeFilter',
+        beforeFilter: 'beforeFilter.yiiGridView',
         /**
-         * afterFilter event is triggered after filtering the grid and filtered results are fetched.
+         * afterFilter.yiiGridView event is triggered after filtering the grid and filtered results are fetched.
          * The signature of the event handler should be:
          *     function (event)
          * where
          *  - event: an Event object.
          */
-        afterFilter: 'afterFilter'
+        afterFilter: 'afterFilter.yiiGridView'
     };
 
     var methods = {

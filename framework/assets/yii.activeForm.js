@@ -24,7 +24,7 @@
 
     var events = {
         /**
-         * beforeValidate event is triggered before validating the whole form.
+         * beforeValidate.yiiActiveForm event is triggered before validating the whole form.
          * The signature of the event handler should be:
          *     function (event, messages, deferreds)
          * where
@@ -36,9 +36,9 @@
          * If the handler returns a boolean false, it will stop further form validation after this event. And as
          * a result, afterValidate event will not be triggered.
          */
-        beforeValidate: 'beforeValidate',
+        beforeValidate: 'beforeValidate.yiiActiveForm',
         /**
-         * afterValidate event is triggered after validating the whole form.
+         * afterValidate.yiiActiveForm event is triggered after validating the whole form.
          * The signature of the event handler should be:
          *     function (event, messages, errorAttributes)
          * where
@@ -47,9 +47,9 @@
          *    for the corresponding attributes.
          *  - errorAttributes: an array of attributes that have validation errors. Please refer to attributeDefaults for the structure of this parameter.
          */
-        afterValidate: 'afterValidate',
+        afterValidate: 'afterValidate.yiiActiveForm',
         /**
-         * beforeValidateAttribute event is triggered before validating an attribute.
+         * beforeValidateAttribute.yiiActiveForm event is triggered before validating an attribute.
          * The signature of the event handler should be:
          *     function (event, attribute, messages, deferreds)
          * where
@@ -61,9 +61,9 @@
          * If the handler returns a boolean false, it will stop further validation of the specified attribute.
          * And as a result, afterValidateAttribute event will not be triggered.
          */
-        beforeValidateAttribute: 'beforeValidateAttribute',
+        beforeValidateAttribute: 'beforeValidateAttribute.yiiActiveForm',
         /**
-         * afterValidateAttribute event is triggered after validating the whole form and each attribute.
+         * afterValidateAttribute.yiiActiveForm event is triggered after validating the whole form and each attribute.
          * The signature of the event handler should be:
          *     function (event, attribute, messages)
          * where
@@ -71,18 +71,18 @@
          *  - attribute: the attribute being validated. Please refer to attributeDefaults for the structure of this parameter.
          *  - messages: an array to which you can add additional validation error messages for the specified attribute.
          */
-        afterValidateAttribute: 'afterValidateAttribute',
+        afterValidateAttribute: 'afterValidateAttribute.yiiActiveForm',
         /**
-         * beforeSubmit event is triggered before submitting the form after all validations have passed.
+         * beforeSubmit.yiiActiveForm event is triggered before submitting the form after all validations have passed.
          * The signature of the event handler should be:
          *     function (event)
          * where event is an Event object.
          *
          * If the handler returns a boolean false, it will stop form submission.
          */
-        beforeSubmit: 'beforeSubmit',
+        beforeSubmit: 'beforeSubmit.yiiActiveForm',
         /**
-         * ajaxBeforeSend event is triggered before sending an AJAX request for AJAX-based validation.
+         * ajaxBeforeSend.yiiActiveForm event is triggered before sending an AJAX request for AJAX-based validation.
          * The signature of the event handler should be:
          *     function (event, jqXHR, settings)
          * where
@@ -90,9 +90,9 @@
          *  - jqXHR: a jqXHR object
          *  - settings: the settings for the AJAX request
          */
-        ajaxBeforeSend: 'ajaxBeforeSend',
+        ajaxBeforeSend: 'ajaxBeforeSend.yiiActiveForm',
         /**
-         * ajaxComplete event is triggered after completing an AJAX request for AJAX-based validation.
+         * ajaxComplete.yiiActiveForm event is triggered after completing an AJAX request for AJAX-based validation.
          * The signature of the event handler should be:
          *     function (event, jqXHR, textStatus)
          * where
@@ -100,7 +100,7 @@
          *  - jqXHR: a jqXHR object
          *  - textStatus: the status of the request ("success", "notmodified", "error", "timeout", "abort", or "parsererror").
          */
-        ajaxComplete: 'ajaxComplete'
+        ajaxComplete: 'ajaxComplete.yiiActiveForm'
     };
 
     // NOTE: If you change any of these defaults, make sure you update yii\widgets\ActiveForm::getClientOptions() as well
