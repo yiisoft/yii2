@@ -142,6 +142,8 @@ class BaseJson
                 $data = $data->jsonSerialize();
             } elseif ($data instanceof Arrayable) {
                 $data = $data->toArray();
+            } elseif ($data instanceof \SimpleXMLElement) {
+                $data = (array) $data;
             } else {
                 $result = [];
                 foreach ($data as $name => $value) {

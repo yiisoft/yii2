@@ -11,6 +11,7 @@ use yii\db\Transaction;
  */
 class ConnectionTest extends DatabaseTestCase
 {
+
     public function testConstruct()
     {
         $connection = $this->getConnection(false);
@@ -40,6 +41,17 @@ class ConnectionTest extends DatabaseTestCase
         $connection->dsn = 'unknown::memory:';
         $this->setExpectedException('yii\db\Exception');
         $connection->open();
+    }
+
+    public function testSerialize()
+    {
+        $connection = $this->getConnection(false, false);
+        $connection->open();
+        $serialized = serialize($connection);
+        $unserialized = unserialize($serialized);
+        $this->assertInstanceOf('yii\db\Connection', $unserialized);
+
+        $this->assertEquals(123, $unserialized->createCommand("SELECT 123")->queryScalar());
     }
 
     public function testGetDriverName()

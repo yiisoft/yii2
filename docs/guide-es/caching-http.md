@@ -110,7 +110,7 @@ La generación de un ETag que requiera muchos recursos puede echar por tierra el
 introducir una sobrecarga innecesaria, ya que debe ser re-evaluada en cada solicitud (request). Trata de encontrar una
 expresión sencilla para invalidar la caché si la página ha sido modificada.
 
-> Nota: En cumplimiento con [RFC 7232](http://tools.ietf.org/html/rfc7232#section-2.4),
+> Note: En cumplimiento con [RFC 7232](http://tools.ietf.org/html/rfc7232#section-2.4),
   `HttpCache` enviará ambas cabeceras `ETag` y `Last-Modified` si ambas están configuradas. Y si el clientes envía tanto la cabecera `If-None-Match` como la cabecera `If-Modified-Since`, solo la primera será respetada.
 
 ## La Cabecera `Cache-Control` <span id="cache-control"></span>

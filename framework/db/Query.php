@@ -74,18 +74,18 @@ class Query extends Component implements QueryInterface
      * @var array how to join with other tables. Each array element represents the specification
      * of one join which has the following structure:
      *
-     * ~~~
+     * ```php
      * [$joinType, $tableName, $joinCondition]
-     * ~~~
+     * ```
      *
      * For example,
      *
-     * ~~~
+     * ```php
      * [
      *     ['INNER JOIN', 'user', 'user.id = author_id'],
      *     ['LEFT JOIN', 'team', 'team.id = team_id'],
      * ]
-     * ~~~
+     * ```
      */
     public $join;
     /**
@@ -521,7 +521,7 @@ class Query extends Component implements QueryInterface
      *
      * @inheritdoc
      *
-     * @param string|array $condition the conditions that should be put in the WHERE part.
+     * @param string|array|Expression $condition the conditions that should be put in the WHERE part.
      * @param array $params the parameters (name => value) to be bound to the query.
      * @return $this the query object itself
      * @see andWhere()
@@ -538,7 +538,7 @@ class Query extends Component implements QueryInterface
     /**
      * Adds an additional WHERE condition to the existing one.
      * The new condition and the existing one will be joined using the 'AND' operator.
-     * @param string|array $condition the new WHERE condition. Please refer to [[where()]]
+     * @param string|array|Expression $condition the new WHERE condition. Please refer to [[where()]]
      * on how to specify this parameter.
      * @param array $params the parameters (name => value) to be bound to the query.
      * @return $this the query object itself
@@ -559,7 +559,7 @@ class Query extends Component implements QueryInterface
     /**
      * Adds an additional WHERE condition to the existing one.
      * The new condition and the existing one will be joined using the 'OR' operator.
-     * @param string|array $condition the new WHERE condition. Please refer to [[where()]]
+     * @param string|array|Expression $condition the new WHERE condition. Please refer to [[where()]]
      * on how to specify this parameter.
      * @param array $params the parameters (name => value) to be bound to the query.
      * @return $this the query object itself
@@ -583,13 +583,13 @@ class Query extends Component implements QueryInterface
      * @param string $type the type of join, such as INNER JOIN, LEFT JOIN.
      * @param string|array $table the table to be joined.
      *
-     * Use string to represent the name of the table to be joined.
-     * Table name can contain schema prefix (e.g. 'public.user') and/or table alias (e.g. 'user u').
+     * Use a string to represent the name of the table to be joined.
+     * The table name can contain a schema prefix (e.g. 'public.user') and/or table alias (e.g. 'user u').
      * The method will automatically quote the table name unless it contains some parenthesis
      * (which means the table is given as a sub-query or DB expression).
      *
-     * Use array to represent joining with a sub-query. The array must contain only one element.
-     * The value must be a Query object representing the sub-query while the corresponding key
+     * Use an array to represent joining with a sub-query. The array must contain only one element.
+     * The value must be a [[Query]] object representing the sub-query while the corresponding key
      * represents the alias for the sub-query.
      *
      * @param string|array $on the join condition that should appear in the ON part.
@@ -607,13 +607,13 @@ class Query extends Component implements QueryInterface
      * Appends an INNER JOIN part to the query.
      * @param string|array $table the table to be joined.
      *
-     * Use string to represent the name of the table to be joined.
-     * Table name can contain schema prefix (e.g. 'public.user') and/or table alias (e.g. 'user u').
+     * Use a string to represent the name of the table to be joined.
+     * The table name can contain a schema prefix (e.g. 'public.user') and/or table alias (e.g. 'user u').
      * The method will automatically quote the table name unless it contains some parenthesis
      * (which means the table is given as a sub-query or DB expression).
      *
-     * Use array to represent joining with a sub-query. The array must contain only one element.
-     * The value must be a Query object representing the sub-query while the corresponding key
+     * Use an array to represent joining with a sub-query. The array must contain only one element.
+     * The value must be a [[Query]] object representing the sub-query while the corresponding key
      * represents the alias for the sub-query.
      *
      * @param string|array $on the join condition that should appear in the ON part.
@@ -631,13 +631,13 @@ class Query extends Component implements QueryInterface
      * Appends a LEFT OUTER JOIN part to the query.
      * @param string|array $table the table to be joined.
      *
-     * Use string to represent the name of the table to be joined.
-     * Table name can contain schema prefix (e.g. 'public.user') and/or table alias (e.g. 'user u').
+     * Use a string to represent the name of the table to be joined.
+     * The table name can contain a schema prefix (e.g. 'public.user') and/or table alias (e.g. 'user u').
      * The method will automatically quote the table name unless it contains some parenthesis
      * (which means the table is given as a sub-query or DB expression).
      *
-     * Use array to represent joining with a sub-query. The array must contain only one element.
-     * The value must be a Query object representing the sub-query while the corresponding key
+     * Use an array to represent joining with a sub-query. The array must contain only one element.
+     * The value must be a [[Query]] object representing the sub-query while the corresponding key
      * represents the alias for the sub-query.
      *
      * @param string|array $on the join condition that should appear in the ON part.
@@ -655,13 +655,13 @@ class Query extends Component implements QueryInterface
      * Appends a RIGHT OUTER JOIN part to the query.
      * @param string|array $table the table to be joined.
      *
-     * Use string to represent the name of the table to be joined.
-     * Table name can contain schema prefix (e.g. 'public.user') and/or table alias (e.g. 'user u').
+     * Use a string to represent the name of the table to be joined.
+     * The table name can contain a schema prefix (e.g. 'public.user') and/or table alias (e.g. 'user u').
      * The method will automatically quote the table name unless it contains some parenthesis
      * (which means the table is given as a sub-query or DB expression).
      *
-     * Use array to represent joining with a sub-query. The array must contain only one element.
-     * The value must be a Query object representing the sub-query while the corresponding key
+     * Use an array to represent joining with a sub-query. The array must contain only one element.
+     * The value must be a [[Query]] object representing the sub-query while the corresponding key
      * represents the alias for the sub-query.
      *
      * @param string|array $on the join condition that should appear in the ON part.

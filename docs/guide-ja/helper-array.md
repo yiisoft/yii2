@@ -301,3 +301,22 @@ $data = ArrayHelper::toArray($posts, [
 ```
 
 特定のクラスについて、配列に変換するデフォルトの方法を提供するためには、そのクラスの [[yii\base\Arrayable|Arrayable]] インタフェイスを実装することが出来ます。
+
+## 配列の中にあるかどうか調べる <span id="testing-arrays"></span>
+
+ある要素が配列の中に存在するかどうか、また、一連の要素が配列のサブセットであるかどうか、ということを調べる必要がある場合がよくあります。
+PHP は `in_array()` を提供していますが、これはサブセットや `\Traversable` なオブジェクトをサポートしていません。
+
+この種のチェックを助けるために、[[yii\base\ArrayHelper]] は [[yii\base\ArrayHelper::isIn()|isIn()]]
+および [[yii\base\ArrayHelper::isSubset()|isSubset()]] を [[in_array()]] と同じシグニチャで提供しています。
+
+```php
+// true
+ArrayHelper::isIn('a', ['a']);
+// true
+ArrayHelper::isIn('a', new(ArrayObject['a']));
+
+// true 
+ArrayHelper::isSubset(new(ArrayObject['a', 'c']), new(ArrayObject['a', 'b', 'c'])
+
+```

@@ -49,13 +49,13 @@ class QueryBuilder extends \yii\db\QueryBuilder
      * Generates a batch INSERT SQL statement.
      * For example,
      *
-     * ~~~
+     * ```php
      * $connection->createCommand()->batchInsert('user', ['name', 'age'], [
      *     ['Tom', 30],
      *     ['Jane', 20],
      *     ['Linda', 25],
      * ])->execute();
-     * ~~~
+     * ```
      *
      * Note that the values in each row must match the corresponding column names.
      *
@@ -315,6 +315,7 @@ class QueryBuilder extends \yii\db\QueryBuilder
      * @param Query $values
      * @param array $params
      * @return string SQL
+     * @throws NotSupportedException
      */
     protected function buildSubqueryInCondition($operator, $columns, $values, &$params)
     {

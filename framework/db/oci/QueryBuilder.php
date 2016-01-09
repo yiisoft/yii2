@@ -205,13 +205,13 @@ EOD;
      * Generates a batch INSERT SQL statement.
      * For example,
      *
-     * ~~~
+     * ```php
      * $sql = $queryBuilder->batchInsert('user', ['name', 'age'], [
      *     ['Tom', 30],
      *     ['Jane', 20],
      *     ['Linda', 25],
      * ]);
-     * ~~~
+     * ```
      *
      * Note that the values in each row must match the corresponding column names.
      *

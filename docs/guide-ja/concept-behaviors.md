@@ -271,9 +271,9 @@ class User extends ActiveRecord
                 'attributes' => [
                     ActiveRecord::EVENT_BEFORE_INSERT => ['created_at', 'updated_at'],
                     ActiveRecord::EVENT_BEFORE_UPDATE => ['updated_at'],
-                    // UNIX タイムスタンプではなく datetime を使う場合は
-                    // 'value' => new Expression('NOW()'),
                 ],
+                // UNIX タイムスタンプではなく datetime を使う場合は
+                // 'value' => new Expression('NOW()'),
             ],
         ];
     }

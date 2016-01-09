@@ -23,9 +23,9 @@ use yii\helpers\Inflector;
  *
  * This command can be used as follows on command line:
  *
- * ~~~
+ * ```
  * yii help [command name]
- * ~~~
+ * ```
  *
  * In the above, if the command name is not provided, all
  * available commands will be displayed.
