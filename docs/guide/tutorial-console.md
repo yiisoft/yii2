@@ -172,7 +172,7 @@ method:
 public function actionIndex()
 {
     if (/* some problem */) {
-        echo "A problem occured!\n";
+        echo "A problem occurred!\n";
         return 1;
     }
     // do something
