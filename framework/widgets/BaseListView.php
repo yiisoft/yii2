@@ -237,7 +237,7 @@ abstract class BaseListView extends Widget
         }
         /* @var $class LinkPager */
         $pager = $this->pager;
-        $class = ArrayHelper::remove($pager, 'class', LinkPager::className());
+        $class = ArrayHelper::remove($pager, 'class', LinkPager::class);
         $pager['pagination'] = $pagination;
         $pager['view'] = $this->getView();
 
@@ -256,7 +256,7 @@ abstract class BaseListView extends Widget
         }
         /* @var $class LinkSorter */
         $sorter = $this->sorter;
-        $class = ArrayHelper::remove($sorter, 'class', LinkSorter::className());
+        $class = ArrayHelper::remove($sorter, 'class', LinkSorter::class);
         $sorter['sort'] = $sort;
         $sorter['view'] = $this->getView();
 

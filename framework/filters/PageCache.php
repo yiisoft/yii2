@@ -148,7 +148,7 @@ class PageCache extends ActionFilter
             return true;
         }
 
-        $this->cache = Instance::ensure($this->cache, Cache::className());
+        $this->cache = Instance::ensure($this->cache, Cache::class);
 
         if (is_array($this->dependency)) {
             $this->dependency = Yii::createObject($this->dependency);

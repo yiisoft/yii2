@@ -616,14 +616,14 @@ abstract class Application extends Module
     public function coreComponents()
     {
         return [
-            'log' => ['class' => 'yii\log\Dispatcher'],
-            'view' => ['class' => 'yii\web\View'],
-            'formatter' => ['class' => 'yii\i18n\Formatter'],
-            'i18n' => ['class' => 'yii\i18n\I18N'],
-            'mailer' => ['class' => 'yii\swiftmailer\Mailer'],
-            'urlManager' => ['class' => 'yii\web\UrlManager'],
-            'assetManager' => ['class' => 'yii\web\AssetManager'],
-            'security' => ['class' => 'yii\base\Security'],
+            'log' => ['class' => \yii\log\Dispatcher::class],
+            'view' => ['class' => \yii\web\View::class],
+            'formatter' => ['class' => \yii\i18n\Formatter::class],
+            'i18n' => ['class' => \yii\i18n\I18N::class],
+            'mailer' => ['class' => \yii\swiftmailer\Mailer::class],
+            'urlManager' => ['class' => \yii\web\UrlManager::class],
+            'assetManager' => ['class' => \yii\web\AssetManager::class],
+            'security' => ['class' => \yii\base\Security::class],
         ];
     }
 

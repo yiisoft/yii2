@@ -23,7 +23,7 @@ use yii\web\TooManyRequestsHttpException;
  * {
  *     return [
  *         'rateLimiter' => [
- *             'class' => \yii\filters\RateLimiter::className(),
+ *             'class' => \yii\filters\RateLimiter::class,
  *         ],
  *     ];
  * }

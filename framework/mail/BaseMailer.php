@@ -140,7 +140,7 @@ abstract class BaseMailer extends Component implements MailerInterface, ViewCont
     protected function createView(array $config)
     {
         if (!array_key_exists('class', $config)) {
-            $config['class'] = View::className();
+            $config['class'] = View::class;
         }
 
         return Yii::createObject($config);
