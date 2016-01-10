@@ -19,7 +19,7 @@ Skrypty wejściowe wykonują głównie następującą pracę:
 * Dołączają plik klasy [[Yii]],
 * Ładują konfigurację aplikacji,
 * Tworzą i konfigurują instancję [aplikacji](structure-applications.md),
-* Wywołują [[yii\base\Application::run()]], aby przetworzyć wysłane żądanie.
+* Wywołują [[yii\base\Application::run()|run()]], aby przetworzyć wysłane żądanie.
 
 
 ## Aplikacje Web <span id="web-applications"></span>
@@ -106,5 +106,4 @@ if (!defined('YII_DEBUG')) {
 
 Jak widać pierwszy sposób jest bardziej zwięzły i łatwiejszy do zrozumienia.
 
-Definiowanie stałych powinno odbyć się na samym początku skryptu wejściowego, aby odniosło skutek podczas dołączania pozostałych 
-plików PHP.
+Definiowanie stałych powinno odbyć się na samym początku skryptu wejściowego, aby odniosło skutek podczas dołączania pozostałych plików PHP.
