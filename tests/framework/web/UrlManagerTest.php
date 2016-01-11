@@ -64,7 +64,29 @@ class UrlManagerTest extends TestCase
         $url = $manager->createUrl(['post/view', 'id' => 1, 'title' => 'sample post']);
         $this->assertEquals('/test/index.php/post/view?id=1&title=sample+post', $url);
 
-        // todo: test showScriptName
+        // test showScriptName
+        $manager = new UrlManager([
+            'enablePrettyUrl' => true,
+            'baseUrl' => '/test',
+            'scriptUrl' => '/test/index.php',
+            'showScriptName' => true,
+            'cache' => null,
+        ]);
+        $url = $manager->createUrl(['post/view', 'id' => 1, 'title' => 'sample post']);
+        $this->assertEquals('/test/index.php/post/view?id=1&title=sample+post', $url);
+        $url = $manager->createUrl(['/post/view', 'id' => 1, 'title' => 'sample post']);
+        $this->assertEquals('/test/index.php/post/view?id=1&title=sample+post', $url);
+        $manager = new UrlManager([
+            'enablePrettyUrl' => true,
+            'baseUrl' => '/test',
+            'scriptUrl' => '/test/index.php',
+            'showScriptName' => false,
+            'cache' => null,
+        ]);
+        $url = $manager->createUrl(['post/view', 'id' => 1, 'title' => 'sample post']);
+        $this->assertEquals('/test/post/view?id=1&title=sample+post', $url);
+        $url = $manager->createUrl(['/post/view', 'id' => 1, 'title' => 'sample post']);
+        $this->assertEquals('/test/post/view?id=1&title=sample+post', $url);
 
         // pretty URL with rules
         $manager = new UrlManager([

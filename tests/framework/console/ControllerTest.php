@@ -92,4 +92,27 @@ class ControllerTest extends TestCase
         $result = $controller->runAction('aksi7', $params);
 
     }
+
+    /**
+     * Tests if action help does not include class-hinted arguments
+     * @see https://github.com/yiisoft/yii2/issues/10372
+     */
+    public function testHelp()
+    {
+        $this->mockApplication([
+            'components' => [
+                'barBelongApp' => [
+                    'class' => Bar::className(),
+                    'foo' => 'belong_app'
+                ],
+                'quxApp' => [
+                    'class' => OtherQux::className(),
+                    'b' => 'belong_app'
+                ]
+            ]
+        ]);
+        $controller = new FakeController('fake', Yii::$app);
+
+        $this->assertArrayNotHasKey('bar', $controller->getActionArgsHelp($controller->createAction('aksi1')));
+    }
 }

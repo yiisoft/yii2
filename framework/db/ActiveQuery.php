@@ -39,6 +39,7 @@ use yii\base\InvalidConfigException;
  * ActiveQuery also provides the following additional query options:
  *
  * - [[with()]]: list of relations that this query should be performed with.
+ * - [[joinWith()]]: reuse a relation query definition to add a join to a query.
  * - [[indexBy()]]: the name of the column by which the query result should be indexed.
  * - [[asArray()]]: whether to return each record as an array.
  *
@@ -154,19 +155,8 @@ class ActiveQuery extends Query implements ActiveQueryInterface
         }
 
         if (empty($this->select) && !empty($this->join)) {
-            foreach ((array) $this->from as $alias => $table) {
-                if (is_string($alias)) {
-                    $this->select = ["$alias.*"];
-                } elseif (is_string($table)) {
-                    if (preg_match('/^(.*?)\s+({{\w+}}|\w+)$/', $table, $matches)) {
-                        $alias = $matches[2];
-                    } else {
-                        $alias = $table;
-                    }
-                    $this->select = ["$alias.*"];
-                }
-                break;
-            }
+            list(, $alias) = $this->getQueryTableName($this);
+            $this->select = ["$alias.*"];
         }
 
         if ($this->primaryModel === null) {
@@ -442,8 +432,8 @@ class ActiveQuery extends Query implements ActiveQueryInterface
      * Inner joins with the specified relations.
      * This is a shortcut method to [[joinWith()]] with the join type set as "INNER JOIN".
      * Please refer to [[joinWith()]] for detailed usage of this method.
-     * @param string|array $with the relations to be joined with
-     * @param boolean|array $eagerLoading whether to eager loading the relations
+     * @param string|array $with the relations to be joined with.
+     * @param boolean|array $eagerLoading whether to eager loading the relations.
      * @return $this the query object itself
      * @see joinWith()
      */
@@ -635,6 +625,10 @@ class ActiveQuery extends Query implements ActiveQueryInterface
      *     return $this->hasMany(User::className(), ['id' => 'user_id'])->onCondition(['active' => true]);
      * }
      * ```
+     *
+     * Note that this condition is applied in case of a join as well as when fetching the related records.
+     * Thus only fields of the related table can be used in the condition. Trying to access fields of the primary
+     * record will cause an error in a non-join-query.
      *
      * @param string|array $condition the ON condition. Please refer to [[Query::where()]] on how to specify this parameter.
      * @param array $params the parameters (name => value) to be bound to the query.

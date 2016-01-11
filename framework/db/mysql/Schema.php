@@ -243,6 +243,7 @@ class Schema extends \yii\db\Schema
     /**
      * Collects the foreign key column details for the given table.
      * @param TableSchema $table the table metadata
+     * @throws \Exception
      */
     protected function findConstraints($table)
     {
@@ -254,7 +255,10 @@ SELECT
     kcu.referenced_column_name
 FROM information_schema.referential_constraints AS rc
 JOIN information_schema.key_column_usage AS kcu ON
-    kcu.constraint_catalog = rc.constraint_catalog AND
+    (
+        kcu.constraint_catalog = rc.constraint_catalog OR
+        (kcu.constraint_catalog IS NULL AND rc.constraint_catalog IS NULL)
+    ) AND
     kcu.constraint_schema = rc.constraint_schema AND
     kcu.constraint_name = rc.constraint_name
 WHERE rc.constraint_schema = database() AND kcu.table_schema = database()
@@ -303,12 +307,12 @@ SQL;
      * Returns all unique indexes for the given table.
      * Each array element is of the following structure:
      *
-     * ~~~
+     * ```php
      * [
-     *  'IndexName1' => ['col1' [, ...]],
-     *  'IndexName2' => ['col2' [, ...]],
+     *     'IndexName1' => ['col1' [, ...]],
+     *     'IndexName2' => ['col2' [, ...]],
      * ]
-     * ~~~
+     * ```
      *
      * @param TableSchema $table the table metadata
      * @return array all unique indexes for the given table.

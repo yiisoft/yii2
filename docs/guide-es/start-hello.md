@@ -22,7 +22,7 @@ Para la tarea "Hola", crearás una [acción](structure-controllers.md#creating-a
 un parámetro `message` de la petición y muestra este mensaje de vuelta al usuario. Si la petición
 no provee un parámetro `message`, la acción mostrará el mensaje por defecto "Hola".
 
-> Información: Las [acciones](structure-controllers.md#creating-actions) son objetos que los usuarios finales pueden utilizar directamente para
+> Info: Las [acciones](structure-controllers.md#creating-actions) son objetos que los usuarios finales pueden utilizar directamente para
   su ejecución. Las acciones están agrupadas por [controladores](structure-controllers.md) (controllers). El resultado de la ejecución de
   una acción es la respuesta que el usuario final recibirá.
 
@@ -111,7 +111,7 @@ Esta URL resultará en una página mostrando "Hello World". La página comparte 
 Si omites el parámetro `message` en el URL, verás que la página muestra sólo "Hola". Esto es porque `message` es pasado como un parámetro al método `actionSay()`, 
 y cuando es omitido, el valor por defecto `"Hola"` será utilizado.
 
-> Información: La nueva página comparte el mismo encabezado y pie de página que otras páginas porque el método [[yii\web\Controller::render()|render()]]
+> Info: La nueva página comparte el mismo encabezado y pie de página que otras páginas porque el método [[yii\web\Controller::render()|render()]]
   automáticamente inyectará el resultado de la vista `say` en el [layout](structure-views.md#layouts), que en este 
   caso está localizada en `views/layouts/main.php`.
 
@@ -122,7 +122,7 @@ la parte `ActionID` para determinar cual acción debe ser inizializada para hace
 En este ejemplo, la ruta  `site/say` será respondida por la clase controlador `SiteController` y la acción `say`. Como resultado, 
 el método `SiteController::actionSay()` será llamado para manejar el requerimiento.
 
-> Información: Al igual que las acciones, los controladores tambien tienen ID únicos que los identifican en una aplicación.
+> Info: Al igual que las acciones, los controladores tambien tienen ID únicos que los identifican en una aplicación.
   Los ID de los Controladores utilizan las mismas reglas de nombrado que los ID de las acciones. Los nombres de las clases de los controladores son derivados de los ID de los controladores removiendo los guiones de los ID, colocando la primera letra en mayúscula en cada palabra, y colocando el sufijo `Controller` al resultado. Por ejemplo, el ID del controlador `post-comentario` corresponde
   al nombre de clase del controlador `PostComentarioController`.
 

@@ -129,11 +129,9 @@ public function rules()
 例えば、
 
 ```php
-[
     ['state', 'required', 'when' => function($model) {
         return $model->country == 'USA';
     }],
-]
 ```
 
 [[yii\validators\Validator::when|when]] プロパティは、次のシグニチャを持つ PHP コーラブルを値として取ります。
@@ -152,13 +150,11 @@ function ($model, $attribute)
 例えば、
 
 ```php
-[
     ['state', 'required', 'when' => function ($model) {
         return $model->country == 'USA';
     }, 'whenClient' => "function (attribute, value) {
         return $('#country').val() == 'USA';
-    }"],
-]
+    }"]
 ```
 
 
@@ -171,10 +167,10 @@ function ($model, $attribute)
 次の例では、入力値の前後にある空白を除去して、空の入力値を null に変換することを、[trim](tutorial-core-validators.md#trim) および [default](tutorial-core-validators.md#default) のコアバリデータで行っています。
 
 ```php
-[
+return [
     [['username', 'email'], 'trim'],
     [['username', 'email'], 'default'],
-]
+];
 ```
 
 もっと汎用的な [filter](tutorial-core-validators.md#filter) バリデータを使って、もっと複雑なデータフィルタリングをすることも出来ます。
@@ -189,13 +185,13 @@ HTML フォームから入力データが送信されたとき、入力値が空
 例えば、
 
 ```php
-[
+return [
     // 空の時は "username" と "email" を null にする
     [['username', 'email'], 'default'],
 
     // 空の時は "level" を 1 にする
     ['level', 'default', 'value' => 1],
-]
+];
 ```
 
 デフォルトでは、入力値が空であると見なされるのは、それが、空文字列であるか、空配列であるか、null であるときです。
@@ -203,14 +199,14 @@ HTML フォームから入力データが送信されたとき、入力値が空
 例えば、
 
 ```php
-[
+return [
     ['agree', 'required', 'isEmpty' => function ($value) {
         return empty($value);
     }],
-]
+];
 ```
 
-> Note|注意: たいていのバリデータは、[[yii\base\Validator::skipOnEmpty]] プロパティがデフォルト値 `true` を取っている場合は、空の入力値を処理しません。
+> Note: たいていのバリデータは、[[yii\base\Validator::skipOnEmpty]] プロパティがデフォルト値 `true` を取っている場合は、空の入力値を処理しません。
   そのようなバリデータは、関連付けられた属性が空の入力値を受け取ったときは、検証の過程ではスキップされるだけになります。
   [コアバリデータ](tutorial-core-validators.md) の中では、`captcha`、`default`、`filter`、`required`、そして `trim` だけが空の入力値を処理します。
 
@@ -232,7 +228,7 @@ if ($validator->validate($email, $error)) {
 }
 ```
 
-> Note|注意: 全てのバリデータがこの種の検証をサポートしている訳ではありません。
+> Note: 全てのバリデータがこの種の検証をサポートしている訳ではありません。
   その一例が [unique](tutorial-core-validators.md#unique) コアバリデータであり、これはモデルとともに使用されることだけを前提にして設計されています。
 
 いくつかの値に対して複数の検証を実行する必要がある場合は、属性と規則の両方をその場で宣言することが出来る [[yii\base\DynamicModel]] を使うことが出来ます。
@@ -333,7 +329,7 @@ class MyForm extends Model
 }
 ```
 
-> Note|注意: デフォルトでは、インラインバリデータは、関連付けられている属性が空の入力値を受け取ったり、既に何らかの検証規則に失敗したりしている場合には、適用されません。
+> Note: デフォルトでは、インラインバリデータは、関連付けられている属性が空の入力値を受け取ったり、既に何らかの検証規則に失敗したりしている場合には、適用されません。
 > 規則が常に適用されることを保証したい場合は、規則の宣言において [[yii\validators\Validator::skipOnEmpty|skipOnEmpty]] および/または [[yii\validators\Validator::skipOnError|skipOnError]] のプロパティを false に設定することが出来ます。
 > 例えば、
 >
@@ -406,7 +402,7 @@ class EntryForm extends Model
 というのは、クライアント側での検証は、ユーザが入力のエラーを早く見つけることが出来るようにすることによって、より良いユーザ体験を提供するものだからです。
 あなたも、サーバ側での検証 *に加えて* クライアント側での検証をサポートするバリデータを使用したり実装したりすることが出来ます。
 
-> Info|情報: クライアント側での検証は望ましいものですが、不可欠なものではありません。
+> Info: クライアント側での検証は望ましいものですが、不可欠なものではありません。
   その主たる目的は、ユーザにより良い体験を提供することにあります。
   エンドユーザから来る入力値と同じように、クライアント側での検証を決して信用してはいけません。
   この理由により、これまでの項で説明したように、常に [[yii\base\Model::validate()]] を呼び出してサーバ側での検証を実行しなければなりません。
@@ -512,7 +508,7 @@ class StatusValidator extends Validator
         $statuses = json_encode(Status::find()->select('id')->asArray()->column());
         $message = json_encode($this->message, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
         return <<<JS
-if ($.inArray(value, $statuses) > -1) {
+if ($.inArray(value, $statuses) === -1) {
     messages.push($message);
 }
 JS;
@@ -520,7 +516,7 @@ JS;
 }
 ```
 
-> Tip|ヒント: 上記のコード例の主たる目的は、クライアント側の検証をサポートする方法を説明することにあります。
+> Tip: 上記のコード例の主たる目的は、クライアント側の検証をサポートする方法を説明することにあります。
 > 実際の仕事では、[in](tutorial-core-validators.md#in) コアバリデータを使って、同じ目的を達することが出来ます。
 > 次のように検証規則を書けばよいのです。
 >
@@ -577,7 +573,7 @@ JS;
 }
 ```
 
-> Note|注意: 属性が検証された後に、`resolve()` メソッドを呼び出さなければなりません。
+> Note: 属性が検証された後に、`resolve()` メソッドを呼び出さなければなりません。
   そうしないと、主たるフォームの検証が完了しません。
 
 簡潔に記述できるように、`deferred` 配列はショートカットメソッド `add()` を装備しており、このメソッドを使うと、自動的に Deferred オブジェクトを作成して `deferred` 配列に追加することが出来ます。
@@ -638,7 +634,7 @@ $form = ActiveForm::begin([
 ]);
 ```
 
-> Note|注意: `enableAjaxValidation` プロパティがインプットフィールドのレベルとフォームのレベルの両方で構成された場合は、前者が優先されます。
+> Note: `enableAjaxValidation` プロパティがインプットフィールドのレベルとフォームのレベルの両方で構成された場合は、前者が優先されます。
 
 また、サーバ側では、AJAX 検証のリクエストを処理できるように準備しておく必要があります。
 これは、コントローラのアクションにおいて、次のようなコード断片を使用することで達成できます。
@@ -653,5 +649,5 @@ if (Yii::$app->request->isAjax && $model->load(Yii::$app->request->post())) {
 上記のコードは、現在のリクエストが AJAX であるかどうかをチェックします。
 もし AJAX であるなら、リクエストに応えて検証を実行し、エラーを JSON 形式で返します。
 
-> Info|情報: AJAX 検証を実行するためには、[Deferred 検証](#deferred-validation) を使うことも出来ます。
+> Info: AJAX 検証を実行するためには、[Deferred 検証](#deferred-validation) を使うことも出来ます。
   しかし、ここで説明された AJAX 検証の機能の方がより体系化されており、コーディングの労力も少なくて済みます。

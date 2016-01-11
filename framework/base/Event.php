@@ -24,6 +24,7 @@ namespace yii\base;
  */
 class Event extends Object
 {
+    private static $_events = [];
     /**
      * @var string the event name. This property is set by [[Component::trigger()]] and [[trigger()]].
      * Event handlers may use this property to check what event it is handling.
@@ -48,9 +49,6 @@ class Event extends Object
      */
     public $data;
 
-    private static $_events = [];
-
-
     /**
      * Attaches an event handler to a class-level event.
      *
@@ -60,11 +58,11 @@ class Event extends Object
      * For example, the following code attaches an event handler to `ActiveRecord`'s
      * `afterInsert` event:
      *
-     * ~~~
+     * ```php
      * Event::on(ActiveRecord::className(), ActiveRecord::EVENT_AFTER_INSERT, function ($event) {
      *     Yii::trace(get_class($event->sender) . ' is inserted.');
      * });
-     * ~~~
+     * ```
      *
      * The handler will be invoked for EVERY successful ActiveRecord insertion.
      *
@@ -145,11 +143,18 @@ class Event extends Object
         } else {
             $class = ltrim($class, '\\');
         }
-        do {
+
+        $classes = array_merge(
+            [$class],
+            class_parents($class, true),
+            class_implements($class, true)
+        );
+
+        foreach ($classes as $class) {
             if (!empty(self::$_events[$name][$class])) {
                 return true;
             }
-        } while (($class = get_parent_class($class)) !== false);
+        }
 
         return false;
     }
@@ -181,7 +186,14 @@ class Event extends Object
         } else {
             $class = ltrim($class, '\\');
         }
-        do {
+
+        $classes = array_merge(
+            [$class],
+            class_parents($class, true),
+            class_implements($class, true)
+        );
+
+        foreach ($classes as $class) {
             if (!empty(self::$_events[$name][$class])) {
                 foreach (self::$_events[$name][$class] as $handler) {
                     $event->data = $handler[1];
@@ -191,6 +203,6 @@ class Event extends Object
                     }
                 }
             }
-        } while (($class = get_parent_class($class)) !== false);
+        }
     }
 }

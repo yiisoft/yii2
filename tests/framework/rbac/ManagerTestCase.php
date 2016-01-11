@@ -298,4 +298,18 @@ abstract class ManagerTestCase extends TestCase
         $this->assertEquals(1, count($this->auth->getAssignments(42)));
         $this->assertEquals(2, count($this->auth->getAssignments(1337)));
     }
+
+    public function testGetAssignmentsByRole()
+    {
+        $this->prepareData();
+        $reader = $this->auth->getRole('reader');
+        $this->auth->assign($reader, 123);
+
+        $this->auth = $this->createManager();
+
+        $this->assertEquals([], $this->auth->getUserIdsByRole('nonexisting'));
+        $this->assertEquals(['reader A', '123'], $this->auth->getUserIdsByRole('reader'), '', 0.0, 10, true);
+        $this->assertEquals(['author B'], $this->auth->getUserIdsByRole('author'));
+        $this->assertEquals(['admin C'], $this->auth->getUserIdsByRole('admin'));
+    }
 }

@@ -574,15 +574,18 @@ class IpValidator extends Validator
         }
 
         $options = [
-            'ipv4Pattern' => new JsExpression($this->ipv4Pattern),
-            'ipv6Pattern' => new JsExpression($this->ipv6Pattern),
+            'ipv4Pattern' => new JsExpression(Html::escapeJsRegularExpression($this->ipv4Pattern)),
+            'ipv6Pattern' => new JsExpression(Html::escapeJsRegularExpression($this->ipv6Pattern)),
             'messages' => $messages,
             'ipv4' => (boolean)$this->ipv4,
             'ipv6' => (boolean)$this->ipv6,
-            'ipParsePattern' => Html::escapeJsRegularExpression($this->getIpParsePattern()),
+            'ipParsePattern' => new JsExpression(Html::escapeJsRegularExpression($this->getIpParsePattern())),
             'negation' => $this->negation,
             'subnet' => $this->subnet
         ];
+        if ($this->skipOnEmpty) {
+            $options['skipOnEmpty'] = 1;
+        }
 
         ValidationAsset::register($view);
 

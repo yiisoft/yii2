@@ -32,13 +32,13 @@ class BaseHtmlPurifier
      *
      *   Here is a usage example of such a function:
      *
-     *   ~~~
+     *   ```php
      *   // Allow the HTML5 data attribute `data-type` on `img` elements.
      *   $content = HtmlPurifier::process($content, function ($config) {
      *     $config->getHTMLDefinition(true)
      *            ->addAttribute('img', 'data-type', 'Text');
      *   });
-     * ~~~
+     * ```
      *
      * @return string the purified HTML content.
      */
