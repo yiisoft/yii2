@@ -366,7 +366,7 @@ class ActiveQuery extends Query implements ActiveQueryInterface
      * Order::find()->joinWith('books', true, 'INNER JOIN')->all();
      * // find all orders, eager loading "books", and sort the orders and books by the book names.
      * Order::find()->joinWith([
-     *     'books' => function ($query) {
+     *     'books' => function (\yii\db\ActiveQuery $query) {
      *         $query->orderBy('item.name');
      *     }
      * ])->all();
@@ -622,7 +622,8 @@ class ActiveQuery extends Query implements ActiveQueryInterface
      * ```php
      * public function getActiveUsers()
      * {
-     *     return $this->hasMany(User::className(), ['id' => 'user_id'])->onCondition(['active' => true]);
+     *     return $this->hasMany(User::className(), ['id' => 'user_id'])
+     *                 ->onCondition(['active' => true]);
      * }
      * ```
      *
