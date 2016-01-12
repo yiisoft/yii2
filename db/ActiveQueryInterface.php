@@ -68,7 +68,7 @@ interface ActiveQueryInterface extends QueryInterface
      * Customer::find()->with('orders.address')->all();
      * // find customers together with their country and orders of status 1
      * Customer::find()->with([
-     *     'orders' => function (\yii\db\ActiveQueryInterface $query) {
+     *     'orders' => function (\yii\db\ActiveQuery $query) {
      *         $query->andWhere('status = 1');
      *     },
      *     'country',
