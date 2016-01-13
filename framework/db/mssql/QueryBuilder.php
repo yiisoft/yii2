@@ -85,17 +85,18 @@ class QueryBuilder extends \yii\db\QueryBuilder
     {
         $table = $this->db->getTableSchema($tableName);
         if ($table !== null) {
-            $tableName = $this->db->quoteTableName($tableName);
+            $quoteTableName = $this->db->quoteTableName($tableName);
             if ($value === null) {
                 $key = reset($table->primaryKey);
-                $value = $this->db->createCommand("SELECT MAX(`$key`) FROM $tableName")->queryScalar() + 1;
+                $value = $this->db->createCommand("SELECT MAX(`$key`) FROM $quoteTableName")->queryScalar() + 1;
             } else {
                 $value = (int) $value;
             }
-            $value = $value - 1;
-            return "DBCC CHECKIDENT ($tableName, RESEED, $value)";
+            
+            $valueMinusOne = $value - 1;
+            return "IF EXISTS (SELECT * FROM sys.identity_columns WHERE OBJECT_NAME(OBJECT_ID) = '$tableName' AND last_value IS NOT NULL) BEGIN DBCC CHECKIDENT ($quoteTableName, RESEED, $valueMinusOne) END ELSE BEGIN DBCC CHECKIDENT ($quoteTableName, RESEED, $value) END";
         } else {
-            throw new InvalidParamException("Table not found: $tableName");
+            throw new InvalidParamException("Table not found: $quoteTableName");
         }
     }
 
