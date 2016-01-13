@@ -72,4 +72,34 @@ class EachValidatorTest extends TestCase
         $validator->validateAttribute($model, 'attr_one');
         $this->assertNotContains('integer', $model->getFirstError('attr_one'));
     }
+
+    public function testWithCompareValidator()
+    {
+        $validModel = FakedValidationModel::createWithAttributes([
+            'attr_foo' => [
+                'text1',
+                'text2',
+                'text3'
+            ],
+            'attr_bar' => 'text'
+        ]);
+
+        $invalidModel = FakedValidationModel::createWithAttributes([
+            'attr_foo' => [
+                'text',
+                'text2',
+                'text3'
+            ],
+            'attr_bar' => 'text'
+        ]);
+
+        // each element in $this->attr_foo[] is not equal to $this->attr_bar
+        $validator = new EachValidator(['rule' => ['compare', 'compareAttribute' => 'attr_bar', 'operator' => '!=']]);
+
+        $validator->validateAttribute($validModel, 'attr_foo');
+        $this->assertEmpty($validModel->getErrors());
+
+        $validator->validateAttribute($invalidModel, 'attr_foo');
+        $this->assertNotEmpty($invalidModel->getErrors());
+    }
 }
