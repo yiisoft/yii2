@@ -79,7 +79,7 @@ public function behaviors()
 ## Extendiendo `ActiveController` <span id="extending-active-controller"></span>
 
 Si tu clase controlador extiende de [[yii\rest\ActiveController]], debe establecer
-su propiedad [[yii\rest\ActiveController::modelClass||modelClass]] con el nombre de la clase del recurso
+su propiedad [[yii\rest\ActiveController::modelClass|modelClass]] con el nombre de la clase del recurso
 que planeas servir a través de este controlador. La clase debe extender de [[yii\db\ActiveRecord]].
 
 
