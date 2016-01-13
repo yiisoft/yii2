@@ -92,7 +92,7 @@ class QueryBuilder extends \yii\db\QueryBuilder
             } else {
                 $value = (int) $value;
             }
-
+            $value = $value - 1;
             return "DBCC CHECKIDENT ($tableName, RESEED, $value)";
         } else {
             throw new InvalidParamException("Table not found: $tableName");
