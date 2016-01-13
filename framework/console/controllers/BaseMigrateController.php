@@ -122,7 +122,7 @@ abstract class BaseMigrateController extends Controller
     {
         $migrations = $this->getNewMigrations();
         if (empty($migrations)) {
-            $this->stdout("No new migration found. Your system is up-to-date.\n", Console::FG_GREEN);
+            $this->stdout("No new migrations found. Your system is up-to-date.\n", Console::FG_GREEN);
 
             return self::EXIT_CODE_NORMAL;
         }
