@@ -80,7 +80,7 @@ public function behaviors()
 ## Наследование от `ActiveController` <span id="extending-active-controller"></span>
 
 Если ваш класс контроллера наследуется от [[yii\rest\ActiveController]], вам следует установить
-значение его свойства [[yii\rest\ActiveController::modelClass||modelClass]] равным имени класса ресурса,
+значение его свойства [[yii\rest\ActiveController::modelClass|modelClass]] равным имени класса ресурса,
 который вы планируете обслуживать с помощью этого контроллера. Класс ресурса должен быть унаследован от [[yii\db\ActiveRecord]].
 
 
