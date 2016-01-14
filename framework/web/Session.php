@@ -182,7 +182,9 @@ class Session extends Component implements \IteratorAggregate, \ArrayAccess, \Co
     {
         if ($this->getIsActive()) {
             @session_unset();
+            $sessionId = session_id();
             @session_destroy();
+            @session_id($sessionId);
         }
     }
 
