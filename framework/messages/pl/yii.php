@@ -75,6 +75,7 @@ return [
     '{attribute} must be a string.' => '{attribute} musi być tekstem.',
     '{attribute} must be an integer.' => '{attribute} musi być liczbą całkowitą.',
     '{attribute} must be either "{true}" or "{false}".' => '{attribute} musi mieć wartość "{true}" lub "{false}".',
+    '{attribute} must be equal to "{compareValueOrAttribute}".' => '{attribute} musi mieć tę samą wartość co "{compareValueOrAttribute}".',
     '{attribute} must be greater than "{compareValue}".' => '{attribute} musi mieć wartość większą od "{compareValue}".',
     '{attribute} must be greater than or equal to "{compareValue}".' => '{attribute} musi mieć wartość większą lub równą "{compareValue}".',
     '{attribute} must be less than "{compareValue}".' => '{attribute} musi mieć wartość mniejszą od "{compareValue}".',
