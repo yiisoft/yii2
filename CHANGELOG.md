@@ -1314,7 +1314,7 @@ Yii Framework 2 Change Log
 - New: Added `HtmlResponseFormatter` and `JsonResponseFormatter` (qiangxue)
 
 
-2.0.0-alpha, December 1, 2013
+2.0.0-alpha December 1, 2013
 -----------------------------
 
 - Initial release.
