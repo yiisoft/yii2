@@ -129,6 +129,7 @@ class ExistValidatorTest extends DatabaseTestCase
     public function testValidateCompositeKeys()
     {
         $val = new ExistValidator([
+            'allowArray' => true,
             'targetClass' => OrderItem::className(),
             'targetAttribute' => ['order_id', 'item_id'],
         ]);
@@ -146,6 +147,7 @@ class ExistValidatorTest extends DatabaseTestCase
         $this->assertTrue($m->hasErrors('order_id'));
 
         $val = new ExistValidator([
+            'allowArray' => true,
             'targetClass' => OrderItem::className(),
             'targetAttribute' => ['id' => 'order_id'],
         ]);
@@ -164,5 +166,22 @@ class ExistValidatorTest extends DatabaseTestCase
         $m = new Order(['id' => 10]);
         $val->validateAttribute($m, 'id');
         $this->assertTrue($m->hasErrors('id'));
+    }
+
+    /**
+     * Check that validator will not use array as targetAttribute if allowArray not set to true
+     *
+     * @expectedException \yii\base\InvalidConfigException
+     * @expectedExceptionMessage The "targetAttribute" property must be configured as a string
+     */
+    public function testValidateCompositeKeysWithoutAllowArraySet()
+    {
+        $validator = new ExistValidator([
+            'targetClass' => OrderItem::className(),
+            'targetAttribute' => ['order_id', 'item_id'],
+        ]);
+
+        $model = OrderItem::findOne(['order_id' => 1, 'item_id' => 2]);
+        $validator->validateAttribute($model, 'order_id');
     }
 }
