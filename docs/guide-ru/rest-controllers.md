@@ -53,7 +53,7 @@ public function actionView($id)
 * [[yii\filters\ContentNegotiator|contentNegotiator]]: обеспечивает согласование содержимого, более подробно описан 
   в разделе [Форматирование ответа](rest-response-formatting.md);
 * [[yii\filters\VerbFilter|verbFilter]]: обеспечивает проверку HTTP-метода;
-* [[yii\filters\AuthMethod|authenticator]]: обеспечивает аутентификацию пользователя, более подробно описан 
+* [[yii\filters\auth\AuthMethod|authenticator]]: обеспечивает аутентификацию пользователя, более подробно описан
   в разделе [Аутентификация](rest-authentication.md);
 * [[yii\filters\RateLimiter|rateLimiter]]: обеспечивает ограничение частоты запросов, более подробно описан 
   в разделе [Ограничение частоты запросов](rest-rate-limiting.md).
