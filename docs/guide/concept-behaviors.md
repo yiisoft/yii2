@@ -50,6 +50,10 @@ Because this class is a behavior, when it is attached to a component, that compo
 
 > Tip: Within a behavior, you can access the component that the behavior is attached to through the [[yii\base\Behavior::owner]] property.
 
+> Note: If a magic method of [[yii\base\Behavior::__get()]] or [[yii\base\Behavior::__set()]] has been overridden in a 
+child behavior then need to override [[yii\base\Behavior::canGetProperty()]] and [[yii\base\Behavior::canSetProperty()]] 
+methods respectively too. This must be done to ensure proper functioning.
+
 Handling Component Events
 ------------------
 
