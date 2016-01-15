@@ -77,7 +77,9 @@ class XmlResponseFormatter extends Component implements ResponseFormatterInterfa
      */
     protected function buildXml($element, $data)
     {
-        if (is_array($data) || $data instanceof \Traversable && $this->useTraversableAsArray) {
+        if (is_array($data) ||
+            ($data instanceof \Traversable && $this->useTraversableAsArray && !$data instanceof Arrayable)
+        ) {
             foreach ($data as $name => $value) {
                 if (is_int($name) && is_object($value)) {
                     $this->buildXml($element, $value);
