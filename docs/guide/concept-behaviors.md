@@ -52,7 +52,7 @@ Because this class is a behavior, when it is attached to a component, that compo
 
 > Note: If magic methods [[yii\base\Behavior::__get()]] and [[yii\base\Behavior::__set()]] has been overridden in a 
 behavior then need to override [[yii\base\Behavior::canGetProperty()]] and [[yii\base\Behavior::canSetProperty()]] 
-methods also. This must be done to ensure proper functioning.
+methods respectively too . This must be done to ensure proper functioning.
 
 Handling Component Events
 ------------------
