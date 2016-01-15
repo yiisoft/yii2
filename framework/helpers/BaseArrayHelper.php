@@ -457,25 +457,23 @@ class BaseArrayHelper
      * @param array $data data to be encoded
      * @param boolean $valuesOnly whether to encode array values only. If false,
      * both the array keys and array values will be encoded.
-     * @param string $charset the charset that the data is using. If not set,
-     * [[\yii\base\Application::charset]] will be used.
+     * @param boolean $doubleEncode whether to encode HTML entities in `$data`. If false,
+     * HTML entities in `$data` will not be further encoded.
      * @return array the encoded data
      * @see http://www.php.net/manual/en/function.htmlspecialchars.php
      */
-    public static function htmlEncode($data, $valuesOnly = true, $charset = null)
+    public static function htmlEncode($data, $valuesOnly = true, $doubleEncode = true)
     {
-        if ($charset === null) {
-            $charset = Yii::$app->charset;
-        }
+        $charset = Yii::$app ? Yii::$app->charset : 'UTF-8';
         $d = [];
         foreach ($data as $key => $value) {
             if (!$valuesOnly && is_string($key)) {
-                $key = htmlspecialchars($key, ENT_QUOTES, $charset);
+                $key = htmlspecialchars($key, ENT_QUOTES | ENT_SUBSTITUTE, $charset, $doubleEncode);
             }
             if (is_string($value)) {
-                $d[$key] = htmlspecialchars($value, ENT_QUOTES, $charset);
+                $d[$key] = htmlspecialchars($value, ENT_QUOTES | ENT_SUBSTITUTE, $charset, $doubleEncode);
             } elseif (is_array($value)) {
-                $d[$key] = static::htmlEncode($value, $valuesOnly, $charset);
+                $d[$key] = static::htmlEncode($value, $valuesOnly, $doubleEncode);
             } else {
                 $d[$key] = $value;
             }
