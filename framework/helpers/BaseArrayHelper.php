@@ -467,15 +467,15 @@ class BaseArrayHelper
     public static function htmlEncode($data, $valuesOnly = true, $charset = null)
     {
         if ($charset === null) {
-            $charset = Yii::$app->charset;
+            $charset = Yii::$app ? Yii::$app->charset : 'UTF-8';
         }
         $d = [];
         foreach ($data as $key => $value) {
             if (!$valuesOnly && is_string($key)) {
-                $key = htmlspecialchars($key, ENT_QUOTES, $charset);
+                $key = htmlspecialchars($key, ENT_QUOTES | ENT_SUBSTITUTE, $charset);
             }
             if (is_string($value)) {
-                $d[$key] = htmlspecialchars($value, ENT_QUOTES, $charset);
+                $d[$key] = htmlspecialchars($value, ENT_QUOTES | ENT_SUBSTITUTE, $charset);
             } elseif (is_array($value)) {
                 $d[$key] = static::htmlEncode($value, $valuesOnly, $charset);
             } else {

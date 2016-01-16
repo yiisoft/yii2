@@ -443,7 +443,8 @@ class ArrayHelperTest extends TestCase
             [
                 '<>' => 'a<>b',
                 '23' => true,
-            ]
+            ],
+            'invalid' => "a\x80b",
         ];
         $this->assertEquals([
             'abc' => '123',
@@ -453,7 +454,8 @@ class ArrayHelperTest extends TestCase
             [
                 '<>' => 'a&lt;&gt;b',
                 '23' => true,
-            ]
+            ],
+            'invalid' => 'a�b',
         ], ArrayHelper::htmlEncode($array));
         $this->assertEquals([
             'abc' => '123',
@@ -463,7 +465,8 @@ class ArrayHelperTest extends TestCase
             [
                 '&lt;&gt;' => 'a&lt;&gt;b',
                 '23' => true,
-            ]
+            ],
+            'invalid' => 'a�b',
         ], ArrayHelper::htmlEncode($array, false));
     }
 
