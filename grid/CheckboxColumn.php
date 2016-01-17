@@ -96,7 +96,7 @@ class CheckboxColumn extends Column
             $name = substr($name, 0, -2);
         }
         if (substr_compare($name, ']', -1, 1) === 0) {
-            $name =  substr($name, 0, -1) . '_all]';
+            $name = substr($name, 0, -1) . '_all]';
         } else {
             $name .= '_all';
         }
