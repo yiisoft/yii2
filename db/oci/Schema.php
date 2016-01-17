@@ -409,12 +409,14 @@ SQL;
 
         if (strpos($dbType, 'FLOAT') !== false || strpos($dbType, 'DOUBLE') !== false) {
             $column->type = 'double';
-        } elseif ($dbType === 'NUMBER' || strpos($dbType, 'INTEGER') !== false) {
-            if ($scale !== null && $scale > 0) {
+        } elseif (strpos($dbType, 'NUMBER') !== false) {
+            if ($scale === null || $scale > 0) {
                 $column->type = 'decimal';
             } else {
                 $column->type = 'integer';
             }
+        } elseif (strpos($dbType, 'INTEGER') !== false) {
+            $column->type = 'integer';
         } elseif (strpos($dbType, 'BLOB') !== false) {
             $column->type = 'binary';
         } elseif (strpos($dbType, 'CLOB') !== false) {
