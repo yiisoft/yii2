@@ -77,7 +77,7 @@ Yii は数多くの優れた機能を提供していますので、サードパ�
 
 サードパーティのシステムが Composer を使って依存を管理している場合は、単に下記のコマンドを実行すれば Yii をインストールすることが出来ます。
 
-    composer global require "fxp/composer-asset-plugin:1.0.0"
+    composer global require "fxp/composer-asset-plugin:~1.1.1"
     composer require yiisoft/yii2
     composer install
 
@@ -116,7 +116,7 @@ Yii 2 を Yii 1 とともに使う <span id="using-both-yii2-yii1"></span>
 アプリケーション全体を Yii 2 で書き直す代りに、Yii 2 でのみ利用できる機能を使ってアプリケーションを機能拡張したいこともあるでしょう。
 このことは、以下に述べるようにして、実現できます。
 
-> Note|注意: Yii 2 は PHP 5.4 以上を必要とします。
+> Note: Yii 2 は PHP 5.4 以上を必要とします。
 > あなたのサーバと既存のアプリケーションが PHP 5.4 以上をサポートしていることを確認しなければなりません。
 
 最初に、[直前の項](#using-yii-in-others) で述べられている指示に従って、Yii 2 を既存のアプリケーションにインストールします。
@@ -152,7 +152,7 @@ class Yii extends \yii\BaseYii
 }
 
 Yii::$classMap = include($yii2path . '/classes.php');
-// Yii2 オートローダを Yii1 によって登録
+// Yii 2 オートローダを Yii 1 によって登録
 Yii::registerAutoloader(['Yii', 'autoload']);
 // 依存注入コンテナを作成
 Yii::$container = new yii\di\Container;

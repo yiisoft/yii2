@@ -6,7 +6,7 @@ Shared hosting environments are often quite limited about configuration and dire
 Deploying a basic application
 ---------------------------
 
-Since in a shared hosting environment there's typically only one webroot, use the basic application template if you can. Refer to the [Installing Yii chapter](start-installation.md) and install the basic application template locally. After you have the application working locally, we'll make some adjustments so it can be hosted on your shared hosting server.
+Since in a shared hosting environment there's typically only one webroot, use the basic project template if you can. Refer to the [Installing Yii chapter](start-installation.md) and install the basic project template locally. After you have the application working locally, we'll make some adjustments so it can be hosted on your shared hosting server.
 
 ### Renaming webroot <span id="renaming-webroot"></span>
 
@@ -20,7 +20,7 @@ www
 
 In the above, `www` is your webserver webroot directory. It could be named differently. Common names are: `www`, `htdocs`, and `public_html`.
 
-The webroot in our basic application template is named `web`. Before uploading the application to your webserver rename your local webroot to match your server, i.e., from `web` to `www`, `public_html` or whatever the name of your hosting webroot.
+The webroot in our basic project template is named `web`. Before uploading the application to your webserver rename your local webroot to match your server, i.e., from `web` to `www`, `public_html` or whatever the name of your hosting webroot.
 
 ### FTP root directory is writeable
 

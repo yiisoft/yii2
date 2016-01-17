@@ -8,10 +8,10 @@ and create a [view](structure-views.md).
 
 Through this tutorial, you will learn how to:
 
-* Configure a DB connection
-* Define an Active Record class
-* Query data using the Active Record class
-* Display data in a view in a paginated fashion
+* configure a DB connection,
+* define an Active Record class,
+* query data using the Active Record class,
+* display data in a view in a paginated fashion.
 
 Note that in order to finish this section, you should have basic knowledge and experience using databases.
 In particular, you should know how to create a database, and how to execute SQL statements using a DB client tool.
@@ -77,6 +77,12 @@ The DB connection configured above can be accessed in the application code via t
 > Info: The `config/db.php` file will be included by the main application configuration `config/web.php`, 
   which specifies how the [application](structure-applications.md) instance should be initialized.
   For more information, please refer to the [Configurations](concept-configurations.md) section.
+
+If you need to work with databases support for which isn't bundled with Yii, check the following extensions:
+
+- [Informix](https://github.com/edgardmessias/yii2-informix)
+- [IBM DB2](https://github.com/edgardmessias/yii2-ibm-db2)
+- [Firebird](https://github.com/edgardmessias/yii2-firebird)
 
 
 Creating an Active Record <span id="creating-active-record"></span>
@@ -251,7 +257,7 @@ Summary <span id="summary"></span>
 In this section, you learned how to work with a database. You also learned how to fetch and display
 data in pages with the help of [[yii\data\Pagination]] and [[yii\widgets\LinkPager]].
 
-In the next section, you will learn how to use the powerful code generation tool, called [Gii](tool-gii.md),
+In the next section, you will learn how to use the powerful code generation tool, called [Gii](https://github.com/yiisoft/yii2-gii/blob/master/docs/guide/README.md),
 to help you rapidly implement some commonly required features, such as the Create-Read-Update-Delete (CRUD)
 operations for working with the data in a database table. As a matter of fact, the code you have just written can all
 be automatically generated in Yii using the Gii tool.

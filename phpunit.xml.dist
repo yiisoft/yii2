@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<phpunit bootstrap="./tests/unit/bootstrap.php"
+<phpunit bootstrap="./tests/bootstrap.php"
 		colors="true"
 		convertErrorsToExceptions="true"
 		convertNoticesToExceptions="true"
@@ -7,7 +7,7 @@
 		stopOnFailure="false">
 		<testsuites>
 			<testsuite name="Yii Test Suite">
-				<directory>./tests/unit</directory>
+				<directory>./tests</directory>
 			</testsuite>
 		</testsuites>
 		<filter>

@@ -23,9 +23,9 @@ use yii\helpers\Inflector;
  *
  * This command can be used as follows on command line:
  *
- * ~~~
+ * ```
  * yii help [command name]
- * ~~~
+ * ```
  *
  * In the above, if the command name is not provided, all
  * available commands will be displayed.
@@ -308,7 +308,7 @@ class HelpController extends Controller
         }
 
         $description = $controller->getActionHelp($action);
-        if ($description != '') {
+        if ($description !== '') {
             $this->stdout("\nDESCRIPTION\n", Console::BOLD);
             $this->stdout("\n$description\n\n");
         }
@@ -397,7 +397,7 @@ class HelpController extends Controller
             } else {
                 $defaultValue = var_export($defaultValue, true);
             }
-            $doc = "$type (defaults to " . $defaultValue . ")";
+            $doc = "$type (defaults to " . $defaultValue . ')';
         } else {
             $doc = $type;
         }
@@ -405,7 +405,7 @@ class HelpController extends Controller
         if ($doc === '') {
             $doc = $comment;
         } elseif ($comment !== '') {
-            $doc .= "\n" . preg_replace("/^/m", "  ", $comment);
+            $doc .= "\n" . preg_replace('/^/m', '  ', $comment);
         }
 
         $name = $required ? "$name (required)" : $name;

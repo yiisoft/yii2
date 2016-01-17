@@ -10,9 +10,9 @@ two [views](structure-views.md), you will also create a [model](structure-models
 
 Through this tutorial, you will learn how to:
 
-* Create a [model](structure-models.md) to represent the data entered by a user through a form
-* Declare rules to validate the data entered
-* Build an HTML form in a [view](structure-views.md)
+* create a [model](structure-models.md) to represent the data entered by a user through a form,
+* declare rules to validate the data entered,
+* build an HTML form in a [view](structure-views.md).
 
 
 Creating a Model <span id="creating-model"></span>
@@ -27,6 +27,7 @@ section for more details about the class file naming convention.
 
 namespace app\models;
 
+use Yii;
 use yii\base\Model;
 
 class EntryForm extends Model
@@ -235,7 +236,7 @@ the following code:
 Summary <span id="summary"></span>
 -------
 
-In this section of the guide, you have touched every part in the MVC design pattern. You have learned how
+In this section of the guide, you have touched every part in the MVC architectural pattern. You have learned how
 to create a model class to represent the user data and validate said data.
 
 You have also learned how to get data from users and how to display data back in the browser. This is a task that

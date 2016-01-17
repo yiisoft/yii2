@@ -44,3 +44,6 @@ not be trivial, but a complete upgrade guide or even script will be available.
 
 It's like 2.0 over 1.0. We expect this only happens every 3 to 5 years, depending on external technology advancement
 (such as PHP upgraded from 5.0 to 5.4).
+
+> Note: Official extensions are following the same versioning policy but could be released independently from
+the framework i.e. version number mismatch between framework and extension is expected.

@@ -73,9 +73,14 @@ return [
 
 上記のようにして構成された DB 接続は、アプリケーションコードの中で `Yii::$app->db` という式でアクセスすることが出来ます。
 
-> Info|情報: `config/db.php` は、メインのアプリケーション構成情報ファイルである `config/web.php` によってインクルードされます。
+> Info: `config/db.php` は、メインのアプリケーション構成情報ファイルである `config/web.php` によってインクルードされます。
   この `config/web.php` が [アプリケーション](structure-applications.md) インスタンスが初期化される仕方を指定するものです。
   詳しい情報については、[構成情報](concept-configurations.md) の節を参照してください。
+Yii がサポートを内蔵していないデータベースを扱う必要がある場合は、以下のエクステンションの利用を検討してください。
+
+- [Informix](https://github.com/edgardmessias/yii2-informix)
+- [IBM DB2](https://github.com/edgardmessias/yii2-ibm-db2)
+- [Firebird](https://github.com/edgardmessias/yii2-firebird)
 
 
 アクティブレコードを作成する <span id="creating-active-record"></span>
@@ -98,7 +103,7 @@ class Country extends ActiveRecord
 `Country` クラスは [[yii\db\ActiveRecord]] を拡張しています。この中には一つもコードを書く必要はありません。
 単に上記のコードだけで、Yii は関連付けられたテーブル名をクラス名から推測します。
 
-> Info|情報: クラス名とテーブル名を直接に合致させることが出来ない場合は、[[yii\db\ActiveRecord::tableName()]] メソッドをオーバーライドして、関連づけられたテーブル名を明示的に指定することが出来ます。
+> Info: クラス名とテーブル名を直接に合致させることが出来ない場合は、[[yii\db\ActiveRecord::tableName()]] メソッドをオーバーライドして、関連づけられたテーブル名を明示的に指定することが出来ます。
 
 `Country` クラスを使うことによって、以下のコード断片で示すように、`country` テーブルの中のデータを簡単に操作することが出来ます。
 
@@ -119,7 +124,7 @@ $country->name = 'U.S.A.';
 $country->save();
 ```
 
-> Info|情報: アクティブレコードは、オブジェクト指向の流儀でデータベースのデータにアクセスし、操作する強力な方法です。
+> Info: アクティブレコードは、オブジェクト指向の流儀でデータベースのデータにアクセスし、操作する強力な方法です。
 [アクティブレコード](db-active-record.md) の節で、詳細な情報を得ることが出来ます。
 もう一つの方法として、[データアクセスオブジェクト](db-dao.md) と呼ばれる、より低レベルなデータアクセス方法を使ってデータベースを操作することも出来ます。
 
@@ -248,6 +253,6 @@ http://hostname/index.php?r=country/index&page=2
 この節では、データベースを扱う方法を学びました。
 また、[[yii\data\Pagination]] と [[yii\widgets\LinkPager]] の助けを借りて、ページ付けされたデータを取得し表示する方法も学びました。
 
-次の節では、[Gii](tool-gii.md) と呼ばれる強力なコード生成ツールを使う方法を学びます。
+次の節では、[Gii](https://github.com/yiisoft/yii2-gii/blob/master/docs/guide-ja/README.md) と呼ばれる強力なコード生成ツールを使う方法を学びます。
 このツールは、データベーステーブルのデータを取り扱うための「作成・読出し・更新・削除 (CRUD)」操作のような、通常必要とされることが多いいくつかの機能の迅速な実装を手助けしてくれるものです。
 実際のところ、あなたがたった今書いたばかりのコードは、Gii ツールを使えば、全部、Yii が自動的に生成してくれるものです。

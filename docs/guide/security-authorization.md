@@ -1,23 +1,22 @@
 Authorization
 =============
 
-> Note: This section is under development.
-
 Authorization is the process of verifying that a user has enough permission to do something. Yii provides two authorization
 methods: Access Control Filter (ACF) and Role-Based Access Control (RBAC).
 
 
-Access Control Filter
----------------------
+## Access Control Filter <span id="access-control-filter"></span>
 
-Access Control Filter (ACF) is a simple authorization method that is best used by applications that only need some
-simple access control. As its name indicates, ACF is an action filter that can be attached to a controller or a module
-as a behavior. ACF will check a set of [[yii\filters\AccessControl::rules|access rules]] to make sure the current user
-can access the requested action.
+Access Control Filter (ACF) is a simple authorization method implemented as [[yii\filters\AccessControl]] which
+is best used by applications that only need some simple access control. As its name indicates, ACF is 
+an action [filter](structure-filters.md) that can be used in a controller or a module. While a user is requesting
+to execute an action, ACF will check a list of [[yii\filters\AccessControl::rules|access rules]] 
+to determine if the user is allowed to access the requested action.
 
-The code below shows how to use ACF which is implemented as [[yii\filters\AccessControl]]:
+The code below shows how to use ACF in the `site` controller:
 
 ```php
+use yii\web\Controller;
 use yii\filters\AccessControl;
 
 class SiteController extends Controller
@@ -48,28 +47,31 @@ class SiteController extends Controller
 ```
 
 In the code above ACF is attached to the `site` controller as a behavior. This is the typical way of using an action
-filter. The `only` option specifies that the ACF should only be applied to `login`, `logout` and `signup` actions.
-The `rules` option specifies the [[yii\filters\AccessRule|access rules]], which reads as follows:
+filter. The `only` option specifies that the ACF should only be applied to the `login`, `logout` and `signup` actions.
+All other actions in the `site` controller are not subject to the access control. The `rules` option lists 
+the [[yii\filters\AccessRule|access rules]], which reads as follows:
 
-- Allow all guest (not yet authenticated) users to access 'login' and 'signup' actions. The `roles` option
-  contains a question mark `?` which is a special token recognized as "guests".
-- Allow authenticated users to access 'logout' action. The `@` character is another special token recognized as
-  authenticated users.
+- Allow all guest (not yet authenticated) users to access the `login` and `signup` actions. The `roles` option
+  contains a question mark `?` which is a special token representing "guest users".
+- Allow authenticated users to access the `logout` action. The `@` character is another special token representing
+  "authenticated users".
 
-When ACF performs authorization check, it will examine the rules one by one from top to bottom until it finds
-a match. The `allow` value of the matching rule will then be used to judge if the user is authorized. If none
-of the rules matches, it means the user is NOT authorized and ACF will stop further action execution.
+ACF performs the authorization check by examining the access rules one by one from top to bottom until it finds
+a rule that matches the current execution context. The `allow` value of the matching rule will then be used to 
+judge if the user is authorized or not. If none of the rules matches, it means the user is NOT authorized,
+and ACF will stop further action execution.
 
-By default, ACF does only of the followings when it determines a user is not authorized to access the current action:
+When ACF determines a user is not authorized to access the current action, it takes the following measure by default:
 
-* If the user is a guest, it will call [[yii\web\User::loginRequired()]], which may redirect the browser to the login page.
+* If the user is a guest, it will call [[yii\web\User::loginRequired()]] to redirect the user browser to the login page.
 * If the user is already authenticated, it will throw a [[yii\web\ForbiddenHttpException]].
 
-You may customize this behavior by configuring the [[yii\filters\AccessControl::denyCallback]] property:
+You may customize this behavior by configuring the [[yii\filters\AccessControl::denyCallback]] property like the following:
 
 ```php
 [
     'class' => AccessControl::className(),
+    ...
     'denyCallback' => function ($rule, $action) {
         throw new \Exception('You are not allowed to access this page');
     }
@@ -86,8 +88,8 @@ be an array of action IDs. The comparison is case-sensitive. If this option is e
 it means the rule applies to all actions.
 
  * [[yii\filters\AccessRule::controllers|controllers]]: specifies which controllers this rule
-matches. This should be an array of controller IDs. The comparison is case-sensitive. If this option is
-empty or not set, it means the rule applies to all controllers.
+matches. This should be an array of controller IDs. Each controller ID is prefixed with the module ID (if any).
+The comparison is case-sensitive. If this option is empty or not set, it means the rule applies to all controllers.
 
  * [[yii\filters\AccessRule::roles|roles]]: specifies which user roles that this rule matches.
    Two special roles are recognized, and they are checked via [[yii\web\User::isGuest]]:
@@ -95,8 +97,8 @@ empty or not set, it means the rule applies to all controllers.
      - `?`: matches a guest user (not authenticated yet)
      - `@`: matches an authenticated user
 
-   Using other role names requires RBAC (to be described in the next section), and [[yii\web\User::can()]] will be called.
-   If this option is empty or not set, it means this rule applies to all roles.
+   Using other role names will trigger the invocation of [[yii\web\User::can()]], which requires enabling RBAC 
+   (to be described in the next subsection). If this option is empty or not set, it means this rule applies to all roles.
 
  * [[yii\filters\AccessRule::ips|ips]]: specifies which [[yii\web\Request::userIP|client IP addresses]] this rule matches.
 An IP address can contain the wildcard `*` at the end so that it matches IP addresses with the same prefix.
@@ -148,8 +150,7 @@ class SiteController extends Controller
 ```
 
 
-Role based access control (RBAC)
---------------------------------
+## Role Based Access Control (RBAC) <span id="rbac"></span>
 
 Role-Based Access Control (RBAC) provides a simple yet powerful centralized access control. Please refer to
 the [Wikipedia](http://en.wikipedia.org/wiki/Role-based_access_control) for details about comparing RBAC
@@ -164,7 +165,7 @@ part is to use the authorization data to perform access check in places where it
 To facilitate our description next, we will first introduce some basic RBAC concepts.
 
 
-### Basic Concepts
+### Basic Concepts <span id="basic-concepts"></span>
 
 A role represents a collection of *permissions* (e.g. creating posts, updating posts). A role may be assigned
 to one or multiple users. To check if a user has a specified permission, we may check if the user is assigned
@@ -180,7 +181,7 @@ and a permission may consist of other permissions. Yii implements a *partial ord
 more special *tree* hierarchy. While a role can contain a permission, it is not true vice versa.
 
 
-### Configuring RBAC Manager
+### Configuring RBAC <span id="configuring-rbac"></span>
 
 Before we set off to define authorization data and perform access checking, we need to configure the
 [[yii\base\Application::authManager|authManager]] application component. Yii provides two types of authorization managers:
@@ -188,7 +189,8 @@ Before we set off to define authorization data and perform access checking, we n
 data, while the latter stores authorization data in a database. You may consider using the former if your application
 does not require very dynamic role and permission management.
 
-#### configuring authManager with `PhpManager`
+
+#### Using `PhpManager` <span id="using-php-manager"></span>
 
 The following code shows how to configure the `authManager` in the application configuration using the [[yii\rbac\PhpManager]] class:
 
@@ -206,10 +208,11 @@ return [
 
 The `authManager` can now be accessed via `\Yii::$app->authManager`.
 
-> Tip: By default, [[yii\rbac\PhpManager]] stores RBAC data in files under `@app/rbac/` directory. Make sure the directory
-  and all the files in it are writable by the Web server process if permissions hierarchy needs to be changed online.
+By default, [[yii\rbac\PhpManager]] stores RBAC data in files under `@app/rbac` directory. Make sure the directory
+and all the files in it are writable by the Web server process if permissions hierarchy needs to be changed online.
 
-#### configuring authManager with `DbManager`
+
+#### Using `DbManager` <span id="using-db-manager"></span>
 
 The following code shows how to configure the `authManager` in the application configuration using the [[yii\rbac\DbManager]] class:
 
@@ -238,7 +241,8 @@ Before you can go on you need to create those tables in the database. To do this
 
 The `authManager` can now be accessed via `\Yii::$app->authManager`.
 
-### Building Authorization Data
+
+### Building Authorization Data <span id="generating-rbac-data"></span>
 
 Building authorization data is all about the following tasks:
 
@@ -303,7 +307,7 @@ After executing the command with `yii rbac/init` we'll get the following hierarc
 Author can create post, admin can update post and do everything author can.
 
 If your application allows user signup you need to assign roles to these new users once. For example, in order for all
-signed up users to become authors in your advanced application template you need to modify `frontend\models\SignupForm::signup()`
+signed up users to become authors in your advanced project template you need to modify `frontend\models\SignupForm::signup()`
 as follows:
 
 ```php
@@ -333,7 +337,7 @@ For applications that require complex access control with dynamically updated au
 (i.e. admin panel) may need to be developed using APIs offered by `authManager`.
 
 
-### Using Rules
+### Using Rules <span id="using-rules"></span>
 
 As aforementioned, rules add additional constraint to roles and permissions. A rule is a class extending
 from [[yii\rbac\Rule]]. It must implement the [[yii\rbac\Rule::execute()|execute()]] method. In the hierarchy we've
@@ -387,11 +391,12 @@ $auth->addChild($updateOwnPost, $updatePost);
 $auth->addChild($author, $updateOwnPost);
 ```
 
-Now we've got the following hierarchy:
+Now we have got the following hierarchy:
 
 ![RBAC hierarchy with a rule](images/rbac-hierarchy-2.png "RBAC hierarchy with a rule")
 
-### Access Check
+
+### Access Check <span id="access-check"></span>
 
 With the authorization data ready, access check is as simple as a call to the [[yii\rbac\ManagerInterface::checkAccess()]]
 method. Because most access check is about the current user, for convenience Yii provides a shortcut method
@@ -403,11 +408,11 @@ if (\Yii::$app->user->can('createPost')) {
 }
 ```
 
-If the current user is Jane with ID=1 we're starting at `createPost` and trying to get to `Jane`:
+If the current user is Jane with `ID=1` we are starting at `createPost` and trying to get to `Jane`:
 
 ![Access check](images/rbac-access-check-1.png "Access check")
 
-In order to check if user can update post we need to pass an extra parameter that is required by the `AuthorRule` described before:
+In order to check if a user can update a post, we need to pass an extra parameter that is required by `AuthorRule` described before:
 
 ```php
 if (\Yii::$app->user->can('updatePost', ['post' => $post])) {
@@ -415,20 +420,21 @@ if (\Yii::$app->user->can('updatePost', ['post' => $post])) {
 }
 ```
 
-Here's what happens if current user is John:
+Here is what happens if the current user is John:
 
 
 ![Access check](images/rbac-access-check-2.png "Access check")
 
-We're starting with the `updatePost` and going through `updateOwnPost`. In order to pass it `AuthorRule` should return
-`true` from its `execute` method. The method receives its `$params` from `can` method call so the value is
-`['post' => $post]`. If everything is OK we're getting to `author` that is assigned to John.
+We are starting with the `updatePost` and going through `updateOwnPost`. In order to pass the access check, `AuthorRule` 
+should return `true` from its `execute()` method. The method receives its `$params` from the `can()` method call so the value is
+`['post' => $post]`. If everything is fine, we will get to `author` which is assigned to John.
 
-In case of Jane it is a bit simpler since she's an admin:
+In case of Jane it is a bit simpler since she is an admin:
 
 ![Access check](images/rbac-access-check-3.png "Access check")
 
-### Using Default Roles
+
+### Using Default Roles <span id="using-default-roles"></span>
 
 A default role is a role that is *implicitly* assigned to *all* users. The call to [[yii\rbac\ManagerInterface::assign()]]
 is not needed, and the authorization data does not contain its assignment information.

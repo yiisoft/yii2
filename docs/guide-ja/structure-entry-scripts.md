@@ -1,7 +1,7 @@
 エントリスクリプト
 ==================
 
-エントリスクリプトは、アプリケーションのブートストラップ過程のチェーンにおける最初の環です。
+エントリスクリプトは、アプリケーションのブートストラップの過程における最初のステップです。
 アプリケーションは (ウェブアプリケーションであれ、コンソールアプリケーションであれ）単一のエントリスクリプトを持ちます。
 エンドユーザはエントリスクリプトに対してリクエストを発行し、エントリスクリプトはアプリケーションのインスタンスを作成して、それにリクエストを送付します。
 
@@ -14,7 +14,7 @@
 エントリスクリプトは主として次の仕事をします。
 
 * グローバルな定数を定義する。
-* [Composer のオートローダ](http://getcomposer.org/doc/01-basic-usage.md#autoloading) を登録する。
+* [Composer のオートローダ](https://getcomposer.org/doc/01-basic-usage.md#autoloading) を登録する。
 * [[Yii]] クラスファイルをインクルードする。
 * アプリケーションの構成情報を読み出す。
 * [アプリケーション](structure-applications.md) のインスタンスを生成して構成する。
@@ -23,7 +23,7 @@
 
 ## ウェブアプリケーション<span id="web-applications"></span>
 
-次に示すのが、[ベーシックウェブアプリケーションテンプレート](start-installation.md) のエントリスクリプトです。
+次に示すのが、[ベーシックウェブプロジェクトテンプレート](start-installation.md) のエントリスクリプトです。
 
 ```php
 <?php
@@ -61,10 +61,6 @@ $config = require(__DIR__ . '/../config/web.php');
  */
 
 defined('YII_DEBUG') or define('YII_DEBUG', true);
-
-// デフォルトでは fcgi が STDIN と STDOUT を定義していないので
-defined('STDIN') or define('STDIN', fopen('php://stdin', 'r'));
-defined('STDOUT') or define('STDOUT', fopen('php://stdout', 'w'));
 
 // Composer のオートローダを登録
 require(__DIR__ . '/vendor/autoload.php');

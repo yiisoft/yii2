@@ -16,8 +16,15 @@ return [
     // messages will be separated from the old (translated) ones.
     'sort' => false,
     // boolean, whether to remove messages that no longer appear in the source code.
-    // Defaults to false, which means each of these messages will be enclosed with a pair of '@@' marks.
+    // Defaults to false, which means these messages will NOT be removed.
     'removeUnused' => false,
+    // boolean, whether to mark messages that no longer appear in the source code.
+    // Defaults to true, which means each of these messages will be enclosed with a pair of '@@' marks.
+    'markUnused' => true,
+    // array, list of patterns that specify which files (not directories) should be processed.
+    // If empty or not set, all files will be processed.
+    // Please refer to "except" for details about the patterns.
+    'only' => ['*.php'],
     // array, list of patterns that specify which files/directories should NOT be processed.
     // If empty or not set, all files/directories will be processed.
     // A path matches a pattern if it contains the pattern string at its end. For example,
@@ -26,10 +33,6 @@ return [
     // and the '.svn' will match all files and directories named exactly '.svn'.
     // Note, the '/' characters in a pattern matches both '/' and '\'.
     // See helpers/FileHelper::findFiles() description for more details on pattern matching rules.
-    'only' => ['*.php'],
-    // array, list of patterns that specify which files (not directories) should be processed.
-    // If empty or not set, all files will be processed.
-    // Please refer to "except" for details about the patterns.
     // If a file/directory matches both a pattern in "only" and "except", it will NOT be processed.
     'except' => [
         '.svn',

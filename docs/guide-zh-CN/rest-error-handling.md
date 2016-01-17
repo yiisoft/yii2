@@ -41,3 +41,54 @@ Content-Type: application/json; charset=UTF-8
 * `422`: 数据验证失败 (例如，响应一个 `POST` 请求)。 请检查响应体内详细的错误消息。
 * `429`: 请求过多。 由于限速请求被拒绝。
 * `500`: 内部服务器错误。 这可能是由于内部程序错误引起的。
+
+
+## 自定义错误响应 <span id="customizing-error-response"></span>
+
+有时你可能想自定义默认的错误响应格式。例如，你想一直使用HTTP状态码200，
+而不是依赖于使用不同的HTTP状态来表示不同的错误，
+并附上实际的HTTP状态代码为JSON结构的一部分的响应，就像以下所示，
+
+```
+HTTP/1.1 200 OK
+Date: Sun, 02 Mar 2014 05:31:43 GMT
+Server: Apache/2.2.26 (Unix) DAV/2 PHP/5.4.20 mod_ssl/2.2.26 OpenSSL/0.9.8y
+Transfer-Encoding: chunked
+Content-Type: application/json; charset=UTF-8
+
+{
+    "success": false,
+    "data": {
+        "name": "Not Found Exception",
+        "message": "The requested resource was not found.",
+        "code": 0,
+        "status": 404
+    }
+}
+```
+
+为了实现这一目的，你可以响应该应用程序配置的 `response` 组件的 `beforeSend` 事件：
+
+```php
+return [
+    // ...
+    'components' => [
+        'response' => [
+            'class' => 'yii\web\Response',
+            'on beforeSend' => function ($event) {
+                $response = $event->sender;
+                if ($response->data !== null && !empty(Yii::$app->request->get('suppress_response_code'))) {
+                    $response->data = [
+                        'success' => $response->isSuccessful,
+                        'data' => $response->data,
+                    ];
+                    $response->statusCode = 200;
+                }
+            },
+        ],
+    ],
+];
+```
+
+当 `suppress_response_code` 作为 `GET` 参数传递时，上面的代码
+将重新按照自己定义的格式响应（无论失败还是成功）。

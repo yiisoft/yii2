@@ -82,7 +82,7 @@ class ArrayDataProvider extends BaseDataProvider
             $pagination->totalCount = $this->getTotalCount();
 
             if ($pagination->getPageSize() > 0) {
-                $models = array_slice($models, $pagination->getOffset(), $pagination->getLimit());
+                $models = array_slice($models, $pagination->getOffset(), $pagination->getLimit(), true);
             }
         }
 

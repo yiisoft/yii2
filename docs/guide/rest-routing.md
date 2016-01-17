@@ -6,8 +6,8 @@ With resource and controller classes ready, you can access the resources using t
 
 In practice, you usually want to enable pretty URLs and take advantage of HTTP verbs.
 For example, a request `POST /users` would mean accessing the `user/create` action.
-This can be done easily by configuring the `urlManager` application component in the application
-configuration like the following:
+This can be done easily by configuring the `urlManager` [application component](structure-application-components.md)
+in the application configuration like the following:
 
 ```php
 'urlManager' => [

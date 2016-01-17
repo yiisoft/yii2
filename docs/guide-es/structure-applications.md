@@ -6,7 +6,7 @@ hechas en Yii.
 Cada aplicación Yii contiene un objeto `Application` que es creado en el [script de entrada](structure-entry-scripts.md)
 y es globalmente accesible a través de la expresión `\Yii::$app`.
 
-> Información: Dependiendo del contexto, cuando decimos "una aplicación", puede significar tanto un objeto Application
+> Info: Dependiendo del contexto, cuando decimos "una aplicación", puede significar tanto un objeto Application
   o un sistema desarrollado en Yii.
 
 Hay dos tipos de aplicaciones: [[yii\web\Application|aplicaciones Web]] y
@@ -150,7 +150,7 @@ if (YII_ENV_DEV) {
 }
 ```
 
-> Nota: Agregar demasiados componentes `bootstrap` degradará la performance de tu aplicación debido a que
+> Note: Agregar demasiados componentes `bootstrap` degradará la performance de tu aplicación debido a que
   por cada request, se necesita correr el mismo grupo de componentes. Por lo tanto, utiliza componentes `bootstrap` con criterio.
 
 
@@ -372,11 +372,11 @@ no especifica una. La ruta puede consistir el ID de un sub-módulo, el ID de un 
 Por ejemplo, `help`, `post/create`, `admin/post/create`. Si el ID de la acción no se especifica, tomará el valor por defecto
 especificado en [[yii\base\Controller::defaultAction]].
 
-Para [yii\web\Application|aplicaciones Web], el valor por defecto de esta propiedad es `'site'`, lo que significa que el
+Para [[yii\web\Application|aplicaciones Web]], el valor por defecto de esta propiedad es `'site'`, lo que significa que el
 controlador `SiteController` y su acción por defecto serán usados. Como resultado, si accedes a la aplicación sin
 especificar una ruta, mostrará el resultado de `app\controllers\SiteController::actionIndex()`.
 
-Para [yii\console\Application|aplicaciones de consola], el valor por defecto es `'help'`, lo que significa que el comando
+Para [[yii\console\Application|aplicaciones de consola]], el valor por defecto es `'help'`, lo que significa que el comando
 [[yii\console\controllers\HelpController::actionIndex()]] debería ser utilizado. Como resultado, si corres el comando `yii`
 sin proveer ningún argumento, mostrará la información de ayuda.
 
@@ -386,7 +386,7 @@ sin proveer ningún argumento, mostrará la información de ayuda.
 Esta propiedad especifica la lista de [extensiones](structure-extensions.md) que se encuentran instaladas y son utilizadas
 por la aplicación.
 Por defecto, tomará el array devuelto por el archivo `@vendor/yiisoft/extensions.php`. El archivo `extensions.php`
-es generado y mantenido automáticamente cuando utilizas [Composer](http://getcomposer.org) para instalar extensiones.
+es generado y mantenido automáticamente cuando utilizas [Composer](https://getcomposer.org) para instalar extensiones.
 Por lo tanto, en la mayoría de los casos no necesitas configurarla.
 
 En el caso especial de que quieras mantener las extensiones a mano, puedes configurar la propiedad como se muestra a continuación:
@@ -456,7 +456,7 @@ representado por el alias `@app/views`. Puedes configurarlo como un directorio o
 
 #### [[yii\base\Application::vendorPath|vendorPath]] <span id="vendorPath"></span>
 
-Esta propiedad especifica el directorio `vendor` que maneja [Composer](http://getcomposer.org). Contiene
+Esta propiedad especifica el directorio `vendor` que maneja [Composer](https://getcomposer.org). Contiene
 todas las librerías de terceros utilizadas por tu aplicación, incluyendo el núcleo de Yii. Su valor por defecto
 está representado por el alias `@app/vendor`.
 

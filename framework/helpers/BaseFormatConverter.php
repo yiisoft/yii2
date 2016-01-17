@@ -153,7 +153,7 @@ class BaseFormatConverter
             'MMM' => 'M',   // A short textual representation of a month, three letters
             'MMMM' => 'F',  // A full textual representation of a month, such as January or March
             'MMMMM' => '',  //
-            'L' => 'm',     // Stand alone month in year
+            'L' => 'n',     // Stand alone month in year
             'LL' => 'm',    // Stand alone month in year
             'LLL' => 'M',   // Stand alone month in year
             'LLLL' => 'F',  // Stand alone month in year
@@ -363,7 +363,7 @@ class BaseFormatConverter
             'MMM' => 'M',   // A short textual representation of a month, three letters
             'MMMM' => 'MM', // A full textual representation of a month, such as January or March
             'MMMMM' => '',  //
-            'L' => 'mm',     // Stand alone month in year
+            'L' => 'm',     // Stand alone month in year
             'LL' => 'mm',   // Stand alone month in year
             'LLL' => 'M',   // Stand alone month in year
             'LLLL' => 'MM', // Stand alone month in year

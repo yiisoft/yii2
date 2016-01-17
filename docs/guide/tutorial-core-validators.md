@@ -58,7 +58,7 @@ to make sure an input is the same as the verification code displayed by [[yii\ca
   [[yii\captcha\CaptchaAction|CAPTCHA action]] that renders the CAPTCHA image. Defaults to `'site/captcha'`.
 - `skipOnEmpty`: whether the validation can be skipped if the input is empty. Defaults to false,
   which means the input is required.
-  
+
 
 ## [[yii\validators\CompareValidator|compare]] <span id="compare"></span>
 
@@ -79,7 +79,7 @@ is as specified by the `operator` property.
   is being used to validate an attribute, the default value of this property would be the name of
   the attribute suffixed with `_repeat`. For example, if the attribute being validated is `password`,
   then this property will default to `password_repeat`.
-- `compareValue`: a constant value that the input value should be compared with. When both 
+- `compareValue`: a constant value that the input value should be compared with. When both
   of this property and `compareAttribute` are specified, this property will take precedence.
 - `operator`: the comparison operator. Defaults to `==`, meaning checking if the input value is equal
   to that of `compareAttribute` or `compareValue`. The following operators are supported:
@@ -102,18 +102,27 @@ is as specified by the `operator` property.
 ```
 
 This validator checks if the input value is a date, time or datetime in a proper format.
-Optionally, it can convert the input value into a UNIX timestamp and store it in an attribute
+Optionally, it can convert the input value into a UNIX timestamp or other machine readable format and store it in an attribute
 specified via [[yii\validators\DateValidator::timestampAttribute|timestampAttribute]].
 
-- `format`: the date/time format that the value being validated should be in. 
+- `format`: the date/time format that the value being validated should be in.
    This can be a date time pattern as described in the [ICU manual](http://userguide.icu-project.org/formatparse/datetime#TOC-Date-Time-Format-Syntax).
-   Alternatively this can be a string prefixed with `php:` representing a format that can be recognized by the PHP 
+   Alternatively this can be a string prefixed with `php:` representing a format that can be recognized by the PHP
    `Datetime` class. Please refer to <http://php.net/manual/en/datetime.createfromformat.php> on supported formats.
    If this is not set, it will take the value of `Yii::$app->formatter->dateFormat`.
+   See the [[yii\validators\DateValidator::$format|API documentation]] for more details.
+
 - `timestampAttribute`: the name of the attribute to which this validator may assign the UNIX timestamp
   converted from the input date/time. This can be the same attribute as the one being validated. If this is the case,
   the original value will be overwritten with the timestamp value after validation.
-  See ["Handling date input with the DatePicker"](widget-jui#datepicker-date-input) for a usage example.
+  See ["Handling date input with the DatePicker"](https://github.com/yiisoft/yii2-jui/blob/master/docs/guide/topics-date-picker.md) for a usage example.
+
+  Since version 2.0.4, a format and timezone can be specified for this attribute using
+  [[yii\validators\DateValidator::$timestampAttributeFormat|$timestampAttributeFormat]] and
+  [[yii\validators\DateValidator::$timestampAttributeTimeZone|$timestampAttributeTimeZone]].
+
+- Since version 2.0.4 it is also possible to specify a [[yii\validators\DateValidator::$min|minimum]] or
+  [[yii\validators\DateValidator::$max|maximum]] timestamp.
 
 In case the input is optional you may also want to add a [default value filter](#default) in addition to the date validator
 to ensure empty input is stored as `NULL`. Other wise you may end up with dates like `0000-00-00` in your database
@@ -175,6 +184,30 @@ This validator checks if the input value is a double number. It is equivalent to
 - `min`: the lower limit (inclusive) of the value. If not set, it means the validator does not check the lower limit.
 
 
+## [[yii\validators\EachValidator|each]] <span id="each"></span>
+
+> Info: This validator has been available since version 2.0.4.
+
+```php
+[
+    // checks if every category ID is an integer
+    ['categoryIDs', 'each', 'rule' => ['integer']],
+]
+```
+
+This validator only works with an array attribute. It validates if *every* element of the array can be successfully
+validated by a specified validation rule. In the above example, the `categoryIDs` attribute must take an array value
+and each array element will be validated by the `integer` validation rule.
+
+- `rule`: an array specifying a validation rule. The first element in the array specifies the class name or
+  the alias of the validator. The rest of the name-value pairs in the array are used to configure the validator object.
+- `allowMessageFromRule`: whether to use the error message returned by the embedded validation rule. Defaults to true.
+  If false, it will use `message` as the error message.
+
+> Note: If the attribute value is not an array, it is considered validation fails and the `message` will be returned
+  as the error message.
+
+
 ## [[yii\validators\EmailValidator|email]] <span id="email"></span>
 
 ```php
@@ -219,9 +252,13 @@ This validator checks if the input value is a valid email address.
 ]
 ```
 
-This validator checks if the input value can be found in a table column. It only works
-with [Active Record](db-active-record.md) model attributes. It supports validation against
-either a single column or multiple columns.
+This validator checks if the input value can be found in a table column represented by
+an [Active Record](db-active-record.md) attribute. You can use `targetAttribute` to specify the
+[Active Record](db-active-record.md) attribute and `targetClass` the corresponding [Active Record](db-active-record.md)
+class. If you do not specify them, they will take the values of the attribute and the model class being validated.
+
+You can use this validator to validate against a single column or multiple columns (i.e., the combination of
+multiple attribute values should exist).
 
 - `targetClass`: the name of the [Active Record](db-active-record.md) class that should be used
   to look for the input value being validated. If not set, the class of the model currently being validated will be used.
@@ -258,6 +295,7 @@ This validator checks if the input is a valid uploaded file.
 - `mimeTypes`: a list of file MIME types that are allowed to be uploaded. This can be either an array
   or a string consisting of file MIME types separated by space or comma (e.g. "image/jpeg, image/png").
   Mime type names are case-insensitive. Defaults to null, meaning all MIME types are allowed.
+  For more details, please refer to [common media types](http://en.wikipedia.org/wiki/Internet_media_type#List_of_common_media_types).
 - `minSize`: the minimum number of bytes required for the uploaded file. Defaults to null, meaning no lower limit.
 - `maxSize`: the maximum number of bytes allowed for the uploaded file. Defaults to null, meaning no upper limit.
 - `maxFiles`: the maximum number of files that the given attribute can hold. Defaults to 1, meaning
@@ -329,6 +367,79 @@ validation purpose:
 - `minHeight`: the minimum height of the image. Defaults to null, meaning no lower limit.
 - `maxHeight`: the maximum height of the image. Defaults to null, meaning no upper limit.
 
+## [[yii\validators\IpValidator|ip]] <span id="ip"></span>
+```php
+[
+    // checks if "ip_address" is a valid IPv4 or IPv6 address
+    ['ip_address', 'ip'],
+
+    // checks if "ip_address" is a valid IPv6 address or subnet,
+    // value will be expanded to full IPv6 notation.
+    ['ip_address', 'ip', 'ipv4' => false, 'subnet' => null, 'expandIPv6' => true],
+
+    // checks if "ip_address" is a valid IPv4 or IPv6 address,
+    // allows negation character `!` at the beginning
+    ['ip_address', 'ip', 'negation' => true],
+]
+```
+
+The validator checks if the attribute value is a valid IPv4/IPv6 address or subnet.
+It also may change attribute's value if normalization or IPv6 expansion is enabled.
+
+The validator has such configuration options:
+
+- `ipv4`: whether the validating value can be an IPv4 address. Defaults to true.
+- `ipv6`: whether the validating value can be an IPv6 address. Defaults to true.
+- `subnet`: whether the address can be an IP with CIDR subnet, like `192.168.10.0/24`
+     * `true` - the subnet is required, addresses without CIDR will be rejected
+     * `false` - the address can not have the CIDR
+     * `null` - the CIDR is optional
+
+    Defaults to false.
+- `normalize`: whether to add the CIDR prefix with the smallest length (32 for IPv4 and 128 for IPv6) to an
+address without it. Works only when `subnet` is not `false`. For example:
+    * `10.0.1.5` will normalized to `10.0.1.5/32`
+    * `2008:db0::1` will be normalized to `2008:db0::1/128`
+
+    Defaults to false.
+- `negation`: whether the validation address can have a negation character `!` at the beginning. Defaults to false.
+- `expandIPv6`: whether to expand an IPv6 address to the full notation format.
+For example, `2008:db0::1` will be expanded to `2008:0db0:0000:0000:0000:0000:0000:0001`. Defaults to false.
+- `ranges`: array of IPv4 or IPv6 ranges that are allowed or forbidden.
+
+    When the array is empty, or the option is not set, all the IP addresses are allowed.
+    Otherwise, the rules are checked sequentially until the first match is found.
+    IP address is forbidden, when it has not matched any of the rules.
+    
+    For example:
+    ```php
+    [
+         'client_ip', 'ip', 'ranges' => [
+             '192.168.10.128'
+             '!192.168.10.0/24',
+             'any' // allows any other IP addresses
+         ]
+    ]
+    ```
+In this example, access is allowed for all the IPv4 and IPv6 addresses excluding `192.168.10.0/24` subnet.
+IPv4 address `192.168.10.128` is also allowed, because it is listed before the restriction.
+- `networks`: array of network aliases, that can be used in `ranges`. Format of array:
+    * key - alias name
+    * value - array of strings. String can be a range, IP address or another alias. String can be
+    negated with `!` (independent of `negation` option).
+
+    The following aliases are defined by default:
+    
+    * `*`: `any`
+    * `any`: `0.0.0.0/0, ::/0`
+    * `private`: `10.0.0.0/8, 172.16.0.0/12, 192.168.0.0/16, fd00::/8`
+    * `multicast`: `224.0.0.0/4, ff00::/8`
+    * `linklocal`: `169.254.0.0/16, fe80::/10`
+    * `localhost`: `127.0.0.0/8', ::1`
+    * `documentation`: `192.0.2.0/24, 198.51.100.0/24, 203.0.113.0/24, 2001:db8::/32`
+    * `system`: `multicast, linklocal, localhost, documentation`
+
+> Info: This validator has been available since version 2.0.7.
 
 ## [[yii\validators\RangeValidator|in]] <span id="in"></span>
 

@@ -19,7 +19,7 @@ Yii::setAlias('@foo', '/path/to/foo');
 Yii::setAlias('@bar', 'http://www.example.com');
 ```
 
-> Nota: Una ruta de archivo o URL en alias NO debe necesariamente referirse a un archivo o recurso existente.
+> Note: Una ruta de archivo o URL en alias NO debe necesariamente referirse a un archivo o recurso existente.
 
 Dado un alias, puedes derivar un nuevo alias (sin necesidad de llamar [[Yii::setAlias()]]) anexando una barra diagonal `/`
 seguida por uno o varios segmentos de la ruta. Llamamos los alias definidos a través de [[Yii::setAlias()]]
@@ -63,7 +63,7 @@ echo Yii::getAlias('@foo/bar/file.php');  // muestra: /path/to/foo/bar/file.php
 La ruta de archivo/URL representado por un alias derivado está determinado por la sustitución de la parte de su alias raíz
 con su correspondiente ruta/Url en el alias derivado.
 
-> Nota: El método [[Yii::getAlias()]] no comprueba si la ruta/URL resultante hacer referencia a un archivo o recurso existente.
+> Note: El método [[Yii::getAlias()]] no comprueba si la ruta/URL resultante hacer referencia a un archivo o recurso existente.
 
 
 Un alias de raíz puede contener carácteres `/`. El método [[Yii::getAlias()]] es lo suficientemente inteligente para saber

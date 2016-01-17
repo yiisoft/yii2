@@ -58,7 +58,7 @@ return [
 ],
 ```
 
-注意:如果需要同时使用多个数据库可以定义 多个 连接组件：
+注意：如果需要同时使用多个数据库可以定义多个连接组件：
 
 ```php
 return [
@@ -293,11 +293,11 @@ Yii 提供了以下常量作为常用的隔离级别
 
 你可以使用以上常量或者使用一个string字符串命令，在对应数据库中执行该命令用以设置隔离级别，比如对于`postgres`有效的命令为`SERIALIZABLE READ ONLY DEFERRABLE`.
 
->注意:某些数据库只能针对连接来设置事务隔离级别，所以你必须要为连接明确制定隔离级别.目前受影响的数据库:`MSSQL SQLite`
+> Note: 某些数据库只能针对连接来设置事务隔离级别，所以你必须要为连接明确制定隔离级别.目前受影响的数据库:`MSSQL SQLite`
 
->注意:SQLite 只支持两种事务隔离级别，所以你只能设置`READ UNCOMMITTED` 和 `SERIALIZABLE`.使用其他隔离级别会抛出异常.
+> Note: SQLite 只支持两种事务隔离级别，所以你只能设置`READ UNCOMMITTED` 和 `SERIALIZABLE`.使用其他隔离级别会抛出异常.
 
->注意:PostgreSQL 不允许在事务开始前设置隔离级别，所以你不能在事务开始时指定隔离级别.你可以在事务开始之后调用[[yii\db\Transaction::setIsolationLevel()]] 来设置.
+> Note: PostgreSQL 不允许在事务开始前设置隔离级别，所以你不能在事务开始时指定隔离级别.你可以在事务开始之后调用[[yii\db\Transaction::setIsolationLevel()]] 来设置.
 
 关于隔离级别[isolation levels]: http://en.wikipedia.org/wiki/Isolation_%28database_systems%29#Isolation_levels
 
@@ -347,11 +347,11 @@ $rows = $db->createCommand('SELECT * FROM user LIMIT 10')->queryAll();
 // 通过主服务器执行更新操作
 $db->createCommand("UPDATE user SET username='demo' WHERE id=1")->execute();
 ```
->注意:通过[[yii\db\Command::execute()]] 执行的查询被认为是写操作，所有使用[[yii\db\Command]]来执行的其他查询方法被认为是读操作.你可以通过`$db->slave`得到当前正在使用能够的从服务器.
+> Note: 通过[[yii\db\Command::execute()]] 执行的查询被认为是写操作，所有使用[[yii\db\Command]]来执行的其他查询方法被认为是读操作.你可以通过`$db->slave`得到当前正在使用能够的从服务器.
 
 `Connection`组件支持从服务器的负载均衡和故障转移，当第一次执行读查询时，会随即选择一个从服务器进行连接，如果连接失败则又选择另一个，如果所有从服务器都不可用，则会连接主服务器。你可以配置[[yii\db\Connection::serverStatusCache|server status cache]]来记住那些不能连接的从服务器，使Yii 在一段时间[[yii\db\Connection::serverRetryInterval].内不会重复尝试连接那些根本不可用的从服务器.
 
->注意:在上述配置中，每个从服务器连接超时时间被指定为10s. 如果在10s内不能连接，则被认为该服务器已经挂掉.你也可以自定义超时参数.
+> Note: 在上述配置中，每个从服务器连接超时时间被指定为10s. 如果在10s内不能连接，则被认为该服务器已经挂掉.你也可以自定义超时参数.
 
 你也可以配置多主多从的结构，例如:
 
@@ -396,7 +396,7 @@ $db->createCommand("UPDATE user SET username='demo' WHERE id=1")->execute();
 ```
 上述配置制定了2个主服务器和4个从服务器.`Connection`组件也支持主服务器的负载均衡和故障转移，与从服务器不同的是，如果所有主服务器都不可用，则会抛出异常.
 
->注意:当你使用[[yii\db\Connection::masters|masters]]来配置一个或多个主服务器时，`Connection`中关于数据库连接的其他属性（例如：`dsn`, `username`, `password`）都会被忽略.
+> Note: 当你使用[[yii\db\Connection::masters|masters]]来配置一个或多个主服务器时，`Connection`中关于数据库连接的其他属性（例如：`dsn`, `username`, `password`）都会被忽略.
 
 事务默认使用主服务器的连接，并且在事务执行中的所有操作都会使用主服务器的连接，例如:
 

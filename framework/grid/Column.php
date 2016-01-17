@@ -32,7 +32,7 @@ class Column extends Object
      */
     public $footer;
     /**
-     * @var callable This is a callable that will be used to generated the content of each cell.
+     * @var callable This is a callable that will be used to generate the content of each cell.
      * The signature of the function should be the following: `function ($model, $key, $index, $column)`.
      * Where `$model`, `$key`, and `$index` refer to the model, key and index of the row currently being rendered
      * and `$column` is a reference to the [[Column]] object.

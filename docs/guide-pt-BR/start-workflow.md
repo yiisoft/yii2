@@ -9,15 +9,19 @@ em geral.
 
 > Info: Por questões de simplicidade, por todo este tutorial de "Primeiros Passos"
   assume-se que você definiu `basic/web` como a raiz de documentos do seu
-  servidor Web, e configurou a URL de acesso de sua aplicação como `http://hostname/index.php`
+  servidor Web e configurou a URL de acesso de sua aplicação como `http://hostname/index.php`
   ou algo semelhantes. Por favor ajuste as URLs em nossas descrições às suas
   necessidades.
+
+Observe que ao contrário do próprio framework, após a instalação de um dos templates 
+de projetos, você está livre para adicionar, remover ou sobrescrever qualquer código
+que precisar.
 
 
 Funcionalidade <span id="functionality"></span>
 --------------
 
-A aplicação básica instalada contém quatro páginas:
+O template básico de projetos instalado contém quatro páginas:
 
 * A página inicial, exibida quando você acessa a URL `http://hostname/index.php`,
 * a página "About" (Sobre),
@@ -38,7 +42,7 @@ status de respostas, as consultas de banco de dados executadas, e assim por dian
 Além da aplicação Web, existe um script console chamado `yii`, que está localizado
 na pasta base da aplicação.
 Este script pode ser usado para executar rotinas em segundo plano e tarefas de
-manutenção da aplicação, descritas na [seção Comandos de Console](tutoral-console.md).
+manutenção da aplicação, descritas na [seção Comandos de Console](tutorial-console.md).
 
 Estrutura da Aplicação <span id="application-structure"></span>
 ----------------------

@@ -62,7 +62,7 @@ trata os IDs de ações. Os IDs das ações são sempre referenciados em minúsc
 Se o ID de uma ação necessitar de múltiplas palavras, elas serão concatenadas
 por hífens (por exemplo, `create-comment`). Os nomes de métodos de ações são mapeados
 para os IDs das ações removendo-se os hífens dos IDs, colocando em maiúsculo a
-primeira letra de cada palavra, e prefixando o resultado com `action`. Por exemplo,
+primeira letra de cada palavra, e prefixando o resultado com a palavra `action`. Por exemplo,
 o ID de ação `create-comment` corresponde ao método de ação `actionCreateComment`.
 
 O método de ação em nosso exemplo recebe um parâmetro `$message`, cujo valor
@@ -86,7 +86,7 @@ Criando uma Visão <span id="creating-view"></span>
 
 As [visões](structure-views.md) são scripts que você escreve para gerar o conteúdo
 de uma resposta. Para a tarefa "Hello", você criará uma visão `say` que imprime o
-parâmetro `message` recebido do método da ação, e passado pela ação para a visão:
+parâmetro `message` recebido do método da ação:
 
 ```php
 <?php

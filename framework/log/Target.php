@@ -152,11 +152,11 @@ abstract class Target extends Component
      *
      * For example,
      *
-     * ~~~
+     * ```php
      * ['error', 'warning']
      * // which is equivalent to:
      * Logger::LEVEL_ERROR | Logger::LEVEL_WARNING
-     * ~~~
+     * ```
      *
      * @param array|integer $levels message levels that this target is interested in.
      * @throws InvalidConfigException if an unknown level name is given
@@ -238,11 +238,16 @@ abstract class Target extends Component
         list($text, $level, $category, $timestamp) = $message;
         $level = Logger::getLevelName($level);
         if (!is_string($text)) {
-            $text = VarDumper::export($text);
+            // exceptions may not be serializable if in the call stack somewhere is a Closure
+            if ($text instanceof \Exception) {
+                $text = (string) $text;
+            } else {
+                $text = VarDumper::export($text);
+            }
         }
         $traces = [];
         if (isset($message[4])) {
-            foreach($message[4] as $trace) {
+            foreach ($message[4] as $trace) {
                 $traces[] = "in {$trace['file']}:{$trace['line']}";
             }
         }

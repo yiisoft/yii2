@@ -38,7 +38,7 @@ public function behaviors()
 コントローラのほかに、[モジュール](structure-modules.md) または [アプリケーション](structure-applications.md) でもフィルタを宣言することが出来ます。
 そのようにした場合、[[yii\base\ActionFilter::only|only]] と [[yii\base\ActionFilter::except|except]] のプロパティを上で説明したように構成しない限り、そのフィルタは、モジュールまたはアプリケーションに属する *全て* のコントローラアクションに適用されます。
 
-> Note|注意: モジュールやアプリケーションでフィルタを宣言する場合、[[yii\base\ActionFilter::only|only]] と [[yii\base\ActionFilter::except|except]] のプロパティでは、アクション ID ではなく、[ルート](structure-controllers.md#routes) を使わなければなりません。
+> Note: モジュールやアプリケーションでフィルタを宣言する場合、[[yii\base\ActionFilter::only|only]] と [[yii\base\ActionFilter::except|except]] のプロパティでは、アクション ID ではなく、[ルート](structure-controllers.md#routes) を使わなければなりません。
 なぜなら、モジュールやアプリケーションのスコープでは、アクション ID だけでは完全にアクションを指定することが出来ないからです。
 
 一つのアクションに複数のフィルタが構成されている場合、フィルタは下記で説明されている規則に従って適用されます。
@@ -211,7 +211,7 @@ use yii\web\Response;
 ];
 ```
 
-> Info|情報: 望ましいコンテントタイプと言語がリクエストから決定できない場合は、[[formats]] および [[languages]] に挙げられている最初の形式と言語が使用されます。
+> Info: 望ましいコンテントタイプと言語がリクエストから決定できない場合は、[[formats]] および [[languages]] に挙げられている最初の形式と言語が使用されます。
 
 
 

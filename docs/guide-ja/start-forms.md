@@ -25,6 +25,7 @@
 
 namespace app\models;
 
+use Yii;
 use yii\base\Model;
 
 class EntryForm extends Model
@@ -45,7 +46,7 @@ class EntryForm extends Model
 このクラスは、Yii によって提供される基底クラス [[yii\base\Model]] を拡張するものです。
 通常、この基底クラスがフォームデータを表現するのに使われます。
 
-> Info|情報: [[yii\base\Model]] はデータベーステーブルと関連*しない*モデルクラスの親として使われます。
+> Info: [[yii\base\Model]] はデータベーステーブルと関連*しない*モデルクラスの親として使われます。
 データベーステーブルと対応するモデルクラスでは、通常は [[yii\db\ActiveRecord]] が親になります。
 
 `EntryForm` クラスは二つのパブリックメンバー、`name` と `email` を持っており、これらがユーザによって入力されるデータを保管するのに使われます。
@@ -53,7 +54,7 @@ class EntryForm extends Model
 上記で宣言されている検証規則は次のことを述べています。
 
 * `name` と `email` は、ともに値を要求される
-* `email` のデータは構文的に正当なメールアドレスでなければならない
+* `email` のデータは構文的に有効なメールアドレスでなければならない
 
 ユーザによって入力されたデータを `EntryForm` オブジェクトに投入した後、[[yii\base\Model::validate()|validate()]] を呼んでデータ検証ルーチンを始動することが出来ます。
 データ検証が失敗すると [[yii\base\Model::hasErrors|hasErrors]] プロパティが true に設定されます。
@@ -115,7 +116,7 @@ class SiteController extends Controller
 次に、モデルに `$_POST` のデータ、Yii においては [[yii\web\Request::post()]] によって提供されるデータを投入しようと試みます。
 モデルへのデータ投入が成功した場合（つまり、ユーザが HTML フォームを送信した場合)、アクションは[[yii\base\Model::validate()|validate()]] を呼んで、入力された値が有効なものであるかどうかを確認します。
 
-> Info|情報: `Yii::$app` という式は [アプリケーション](structure-applications.md) インスタンスを表現します。
+> Info: `Yii::$app` という式は [アプリケーション](structure-applications.md) インスタンスを表現します。
   これはグローバルにアクセス可能なシングルトンです。
   これは、また、特定の機能性をサポートする `request`、`response`、`db` などのコンポーネントを提供する [サービスロケータ](concept-service-locator.md) でもあります。
   上記のコードでは、アプリケーションインスタンスの `request` コンポーネントが `$_POST` データにアクセスするために使われています。
@@ -123,7 +124,7 @@ class SiteController extends Controller
 すべてが適正である場合、アクションは `entry-confirm` という名前のビューを表示して、データの送信が成功したことをユーザに確認させます。
 データが送信されなかったり、データがエラーを含んでいたりする場合は、`entry` ビューが表示され、その中で HTML フォームが (もし有れば) 検証エラーのメッセージとともに表示されます。
 
-> Note|注意: この簡単な例では、有効なデータ送信に対して単純に確認ページを表示しています。
+> Note: この簡単な例では、有効なデータ送信に対して単純に確認ページを表示しています。
   実際の仕事では、[フォーム送信の諸問題](http://en.wikipedia.org/wiki/Post/Redirect/Get) を避けるために、[[yii\web\Controller::refresh()|refresh()]] または [[yii\web\Controller::redirect()|redirect()]] を使うことを考慮すべきです。
 
 
@@ -177,7 +178,7 @@ use yii\widgets\ActiveForm;
 試してみる <span id="trying-it-out"></span>
 ----------
 
-どのように動作するかを見るために、ブラウザで下記の URL をアクセスしてください。
+どのように動作するかを見るために、ブラウザで下記の URL にアクセスしてください。
 
 ```
 http://hostname/index.php?r=site/entry
@@ -204,7 +205,7 @@ http://hostname/index.php?r=site/entry
 ブラウザで JavaScript を無効にした場合でも、`actionEntry()` メソッドで示されているように、サーバ側での検証は引き続き実行されます。
 これにより、どのような状況であっても、データの有効性が保証されます。
 
-> Warning|警告: クライアント側の検証は、ユーザにとってのより良い使い心地のために利便性を提供するものです。
+> Warning: クライアント側の検証は、ユーザにとってのより良い使い心地のために利便性を提供するものです。
   クライアント側の検証の有無にかかわらず、サーバ側の検証は常に必要とされます。
 
 インプットフィールドのラベルは、モデルのプロパティ名を使用して、`field()` メソッドによって生成されます。
@@ -217,7 +218,7 @@ http://hostname/index.php?r=site/entry
 <?= $form->field($model, 'email')->label('メールアドレス') ?>
 ```
 
-> Info|情報: Yii はこのようなウィジェットを数多く提供して、複雑で動的なビューを素速く作成することを手助けしてくれます。
+> Info: Yii はこのようなウィジェットを数多く提供して、複雑で動的なビューを素速く作成することを手助けしてくれます。
   後で学ぶように、新しいウィジェットを書くことも非常に簡単です。
   あなたは、将来のビュー開発を単純化するために、多くのビューコードを再利用可能なウィジェットに変換したいと思うことでしょう。
 
@@ -225,7 +226,7 @@ http://hostname/index.php?r=site/entry
 まとめ <span id="summary"></span>
 ------
 
-ガイドのこの節においては、MVC デザインパターンの全ての部分に触れました。
+ガイドのこの節においては、MVC アーキテクチャパターンの全ての部分に触れました。
 そして、ユーザデータを表現し、当該データを検証するモデルクラスを作成する方法を学びました。
 
 また、ユーザからデータを取得する方法と、ブラウザにデータを表示して返す方法も学びました。
