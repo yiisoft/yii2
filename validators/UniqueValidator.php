@@ -16,7 +16,7 @@ use yii\db\ActiveRecordInterface;
  * UniqueValidator checks if the value being validated is unique in the table column specified by
  * the ActiveRecord class [[targetClass]] and the attribute [[targetAttribute]].
  *
- * The followings are examples of validation rules using this validator:
+ * The following are examples of validation rules using this validator:
  *
  * ```php
  * // a1 needs to be unique
@@ -83,7 +83,7 @@ class UniqueValidator extends Validator
         if (is_array($targetAttribute)) {
             $params = [];
             foreach ($targetAttribute as $k => $v) {
-                $params[$v] = is_integer($k) ? $model->$v : $model->$k;
+                $params[$v] = is_int($k) ? $model->$v : $model->$k;
             }
         } else {
             $params = [$targetAttribute => $model->$attribute];

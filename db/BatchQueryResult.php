@@ -13,7 +13,7 @@ use yii\base\Object;
  * BatchQueryResult represents a batch query from which you can retrieve data in batches.
  *
  * You usually do not instantiate BatchQueryResult directly. Instead, you obtain it by
- * calling [[Query::batch()]] or [[Query::each()]]. Because BatchQueryResult implements the `Iterator` interface,
+ * calling [[Query::batch()]] or [[Query::each()]]. Because BatchQueryResult implements the [[\Iterator]] interface,
  * you can iterate it to obtain a batch of data in each iteration. For example,
  *
  * ```php
@@ -94,7 +94,7 @@ class BatchQueryResult extends Object implements \Iterator
 
     /**
      * Resets the iterator to the initial state.
-     * This method is required by the interface Iterator.
+     * This method is required by the interface [[\Iterator]].
      */
     public function rewind()
     {
@@ -104,7 +104,7 @@ class BatchQueryResult extends Object implements \Iterator
 
     /**
      * Moves the internal pointer to the next dataset.
-     * This method is required by the interface Iterator.
+     * This method is required by the interface [[\Iterator]].
      */
     public function next()
     {
@@ -149,7 +149,7 @@ class BatchQueryResult extends Object implements \Iterator
 
     /**
      * Returns the index of the current dataset.
-     * This method is required by the interface Iterator.
+     * This method is required by the interface [[\Iterator]].
      * @return integer the index of the current row.
      */
     public function key()
@@ -159,7 +159,7 @@ class BatchQueryResult extends Object implements \Iterator
 
     /**
      * Returns the current dataset.
-     * This method is required by the interface Iterator.
+     * This method is required by the interface [[\Iterator]].
      * @return mixed the current dataset.
      */
     public function current()
@@ -169,7 +169,7 @@ class BatchQueryResult extends Object implements \Iterator
 
     /**
      * Returns whether there is a valid dataset at the current position.
-     * This method is required by the interface Iterator.
+     * This method is required by the interface [[\Iterator]].
      * @return boolean whether there is a valid dataset at the current position.
      */
     public function valid()

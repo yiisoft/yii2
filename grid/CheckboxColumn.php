@@ -54,7 +54,7 @@ class CheckboxColumn extends Column
      * you can use this option in the following way (in this example using the `name` attribute of the model):
      *
      * ```php
-     * 'checkboxOptions' => function($model, $key, $index, $column) {
+     * 'checkboxOptions' => function ($model, $key, $index, $column) {
      *     return ['value' => $model->name];
      * }
      * ```

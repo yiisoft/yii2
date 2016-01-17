@@ -26,7 +26,7 @@ use yii\web\Request;
  *
  * Controller action:
  *
- * ~~~
+ * ```php
  * function actionIndex()
  * {
  *     $query = Article::find()->where(['status' => 1]);
@@ -41,11 +41,11 @@ use yii\web\Request;
  *          'pages' => $pages,
  *     ]);
  * }
- * ~~~
+ * ```
  *
  * View:
  *
- * ~~~
+ * ```php
  * foreach ($models as $model) {
  *     // display $model here
  * }
@@ -54,7 +54,7 @@ use yii\web\Request;
  * echo LinkPager::widget([
  *     'pagination' => $pages,
  * ]);
- * ~~~
+ * ```
  *
  * @property integer $limit The limit of the data. This may be used to set the LIMIT value for a SQL statement
  * for fetching the current page of data. Note that if the page size is infinite, a value -1 will be returned.

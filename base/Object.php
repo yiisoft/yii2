@@ -15,7 +15,7 @@ use Yii;
  * A property is defined by a getter method (e.g. `getLabel`), and/or a setter method (e.g. `setLabel`). For example,
  * the following getter and setter methods define a property named `label`:
  *
- * ~~~
+ * ```php
  * private $_label;
  *
  * public function getLabel()
@@ -27,19 +27,19 @@ use Yii;
  * {
  *     $this->_label = $value;
  * }
- * ~~~
+ * ```
  *
  * Property names are *case-insensitive*.
  *
  * A property can be accessed like a member variable of an object. Reading or writing a property will cause the invocation
  * of the corresponding getter or setter method. For example,
  *
- * ~~~
+ * ```php
  * // equivalent to $label = $object->getLabel();
  * $label = $object->label;
  * // equivalent to $object->setLabel('abc');
  * $object->label = 'abc';
- * ~~~
+ * ```
  *
  * If a property has only a getter method and has no setter method, it is considered as *read-only*. In this case, trying
  * to modify the property value will cause an exception.
@@ -60,13 +60,13 @@ use Yii;
  * In order to ensure the above life cycles, if a child class of Object needs to override the constructor,
  * it should be done like the following:
  *
- * ~~~
+ * ```php
  * public function __construct($param1, $param2, ..., $config = [])
  * {
  *     ...
  *     parent::__construct($config);
  * }
- * ~~~
+ * ```
  *
  * That is, a `$config` parameter (defaults to `[]`) should be declared as the last parameter
  * of the constructor, and the parent implementation should be called at the end of the constructor.

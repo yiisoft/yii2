@@ -165,7 +165,7 @@ class Request extends \yii\base\Request
      */
     private $_cookies;
     /**
-     * @var array the headers in this collection (indexed by the header names)
+     * @var HeaderCollection Collection of request headers.
      */
     private $_headers;
 
@@ -180,9 +180,12 @@ class Request extends \yii\base\Request
         $result = Yii::$app->getUrlManager()->parseRequest($this);
         if ($result !== false) {
             list ($route, $params) = $result;
-            $_GET = array_merge($_GET, $params);
-
-            return [$route, $_GET];
+            if ($this->_queryParams === null) {
+                $_GET = $params + $_GET; // preserve numeric keys
+            } else {
+                $this->_queryParams = $params + $this->_queryParams;
+            }
+            return [$route, $this->getQueryParams()];
         } else {
             throw new NotFoundHttpException(Yii::t('yii', 'Page not found.'));
         }
@@ -300,6 +303,10 @@ class Request extends \yii\base\Request
 
     /**
      * Returns whether this is an AJAX (XMLHttpRequest) request.
+     *
+     * Note that jQuery doesn't set the header in case of cross domain
+     * requests: https://stackoverflow.com/questions/8163703/cross-domain-ajax-doesnt-send-x-requested-with-header
+     *
      * @return boolean whether this is an AJAX (XMLHttpRequest) request.
      */
     public function getIsAjax()
@@ -343,7 +350,7 @@ class Request extends \yii\base\Request
 
     /**
      * Sets the raw HTTP request body, this method is mainly used by test scripts to simulate raw HTTP requests.
-     * @param $rawBody
+     * @param string $rawBody the request body
      */
     public function setRawBody($rawBody)
     {
@@ -716,7 +723,7 @@ class Request extends \yii\base\Request
             throw new InvalidConfigException('Unable to determine the path info of the current request.');
         }
 
-        if ($pathInfo[0] === '/') {
+        if (substr($pathInfo, 0, 1) === '/') {
             $pathInfo = substr($pathInfo, 1);
         }
 
@@ -1004,11 +1011,11 @@ class Request extends \yii\base\Request
      */
     public function getContentType()
     {
-        if (isset($_SERVER["CONTENT_TYPE"])) {
-            return $_SERVER["CONTENT_TYPE"];
-        } elseif (isset($_SERVER["HTTP_CONTENT_TYPE"])) {
+        if (isset($_SERVER['CONTENT_TYPE'])) {
+            return $_SERVER['CONTENT_TYPE'];
+        } elseif (isset($_SERVER['HTTP_CONTENT_TYPE'])) {
             //fix bug https://bugs.php.net/bug.php?id=66606
-            return $_SERVER["HTTP_CONTENT_TYPE"];
+            return $_SERVER['HTTP_CONTENT_TYPE'];
         }
 
         return null;
@@ -1176,7 +1183,7 @@ class Request extends \yii\base\Request
      * Returns the cookie collection.
      * Through the returned cookie collection, you may access a cookie using the following syntax:
      *
-     * ~~~
+     * ```php
      * $cookie = $request->cookies['name']
      * if ($cookie !== null) {
      *     $value = $cookie->value;
@@ -1184,7 +1191,7 @@ class Request extends \yii\base\Request
      *
      * // alternatively
      * $value = $request->cookies->getValue('name');
-     * ~~~
+     * ```
      *
      * @return CookieCollection the cookie collection.
      */
@@ -1224,7 +1231,7 @@ class Request extends \yii\base\Request
                     $cookies[$name] = new Cookie([
                         'name' => $name,
                         'value' => $data[1],
-                        'expire'=> null
+                        'expire' => null,
                     ]);
                 }
             }
@@ -1233,7 +1240,7 @@ class Request extends \yii\base\Request
                 $cookies[$name] = new Cookie([
                     'name' => $name,
                     'value' => $value,
-                    'expire'=> null
+                    'expire' => null,
                 ]);
             }
         }
@@ -1261,7 +1268,7 @@ class Request extends \yii\base\Request
             }
             // the mask doesn't need to be very random
             $chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789_-.';
-            $mask = substr(str_shuffle(str_repeat($chars, 5)), 0, self::CSRF_MASK_LENGTH);
+            $mask = substr(str_shuffle(str_repeat($chars, 5)), 0, static::CSRF_MASK_LENGTH);
             // The + sign may be decoded as blank space later, which will fail the validation
             $this->_csrfToken = str_replace('+', '.', base64_encode($mask . $this->xorTokens($token, $mask)));
         }
@@ -1324,7 +1331,7 @@ class Request extends \yii\base\Request
      */
     public function getCsrfTokenFromHeader()
     {
-        $key = 'HTTP_' . str_replace('-', '_', strtoupper(self::CSRF_HEADER));
+        $key = 'HTTP_' . str_replace('-', '_', strtoupper(static::CSRF_HEADER));
         return isset($_SERVER[$key]) ? $_SERVER[$key] : null;
     }
 
@@ -1345,12 +1352,19 @@ class Request extends \yii\base\Request
 
     /**
      * Performs the CSRF validation.
-     * The method will compare the CSRF token obtained from a cookie and from a POST field.
-     * If they are different, a CSRF attack is detected and a 400 HTTP exception will be raised.
-     * This method is called in [[Controller::beforeAction()]].
+     *
+     * This method will validate the user-provided CSRF token by comparing it with the one stored in cookie or session.
+     * This method is mainly called in [[Controller::beforeAction()]].
+     *
+     * Note that the method will NOT perform CSRF validation if [[enableCsrfValidation]] is false or the HTTP method
+     * is among GET, HEAD or OPTIONS.
+     *
+     * @param string $token the user-provided CSRF token to be validated. If null, the token will be retrieved from
+     * the [[csrfParam]] POST field or HTTP header.
+     * This parameter is available since version 2.0.4.
      * @return boolean whether CSRF token is valid. If [[enableCsrfValidation]] is false, this method will return true.
      */
-    public function validateCsrfToken()
+    public function validateCsrfToken($token = null)
     {
         $method = $this->getMethod();
         // only validate CSRF token on non-"safe" methods http://www.w3.org/Protocols/rfc2616/rfc2616-sec9.html#sec9.1.1
@@ -1360,8 +1374,12 @@ class Request extends \yii\base\Request
 
         $trueToken = $this->loadCsrfToken();
 
-        return $this->validateCsrfTokenInternal($this->getBodyParam($this->csrfParam), $trueToken)
-            || $this->validateCsrfTokenInternal($this->getCsrfTokenFromHeader(), $trueToken);
+        if ($token !== null) {
+            return $this->validateCsrfTokenInternal($token, $trueToken);
+        } else {
+            return $this->validateCsrfTokenInternal($this->getBodyParam($this->csrfParam), $trueToken)
+                || $this->validateCsrfTokenInternal($this->getCsrfTokenFromHeader(), $trueToken);
+        }
     }
 
     /**
@@ -1375,11 +1393,11 @@ class Request extends \yii\base\Request
     {
         $token = base64_decode(str_replace('.', '+', $token));
         $n = StringHelper::byteLength($token);
-        if ($n <= self::CSRF_MASK_LENGTH) {
+        if ($n <= static::CSRF_MASK_LENGTH) {
             return false;
         }
-        $mask = StringHelper::byteSubstr($token, 0, self::CSRF_MASK_LENGTH);
-        $token = StringHelper::byteSubstr($token, self::CSRF_MASK_LENGTH, $n - self::CSRF_MASK_LENGTH);
+        $mask = StringHelper::byteSubstr($token, 0, static::CSRF_MASK_LENGTH);
+        $token = StringHelper::byteSubstr($token, static::CSRF_MASK_LENGTH, $n - static::CSRF_MASK_LENGTH);
         $token = $this->xorTokens($mask, $token);
 
         return $token === $trueToken;

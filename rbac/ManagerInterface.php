@@ -70,7 +70,7 @@ interface ManagerInterface
     /**
      * Returns the named role.
      * @param string $name the role name.
-     * @return Role the role corresponding to the specified name. Null is returned if no such role.
+     * @return null|Role the role corresponding to the specified name. Null is returned if no such role.
      */
     public function getRole($name);
 
@@ -84,14 +84,14 @@ interface ManagerInterface
      * Returns the roles that are assigned to the user via [[assign()]].
      * Note that child roles that are not assigned directly to the user will not be returned.
      * @param string|integer $userId the user ID (see [[\yii\web\User::id]])
-     * @return Role[] all roles directly or indirectly assigned to the user. The array is indexed by the role names.
+     * @return Role[] all roles directly assigned to the user. The array is indexed by the role names.
      */
     public function getRolesByUser($userId);
 
     /**
      * Returns the named permission.
      * @param string $name the permission name.
-     * @return Permission the permission corresponding to the specified name. Null is returned if no such permission.
+     * @return null|Permission the permission corresponding to the specified name. Null is returned if no such permission.
      */
     public function getPermission($name);
 
@@ -118,7 +118,7 @@ interface ManagerInterface
     /**
      * Returns the rule of the specified name.
      * @param string $name the rule name
-     * @return Rule the rule object, or null if the specified name does not correspond to a rule.
+     * @return null|Rule the rule object, or null if the specified name does not correspond to a rule.
      */
     public function getRule($name);
 
@@ -132,6 +132,7 @@ interface ManagerInterface
      * Adds an item as a child of another item.
      * @param Item $parent
      * @param Item $child
+     * @return boolean whether the child successfully added
      * @throws \yii\base\Exception if the parent-child relationship already exists or if a loop has been detected.
      */
     public function addChild($parent, $child);
@@ -195,9 +196,9 @@ interface ManagerInterface
 
     /**
      * Returns the assignment information regarding a role and a user.
-     * @param string|integer $userId the user ID (see [[\yii\web\User::id]])
      * @param string $roleName the role name
-     * @return Assignment the assignment information. Null is returned if
+     * @param string|integer $userId the user ID (see [[\yii\web\User::id]])
+     * @return null|Assignment the assignment information. Null is returned if
      * the role is not assigned to the user.
      */
     public function getAssignment($roleName, $userId);
@@ -209,6 +210,14 @@ interface ManagerInterface
      * returned if there is no role assigned to the user.
      */
     public function getAssignments($userId);
+
+    /**
+     * Returns all user IDs assigned to the role specified.
+     * @param string $roleName
+     * @return array array of user ID strings
+     * @since 2.0.7
+     */
+    public function getUserIdsByRole($roleName);
 
     /**
      * Removes all authorization data, including roles, permissions, rules, and assignments.

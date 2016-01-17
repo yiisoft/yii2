@@ -147,7 +147,7 @@ class UrlRule extends CompositeUrlRule
 
         $controllers = [];
         foreach ((array) $this->controller as $urlName => $controller) {
-            if (is_integer($urlName)) {
+            if (is_int($urlName)) {
                 $urlName = $this->pluralize ? Inflector::pluralize($controller) : $controller;
             }
             $controllers[$urlName] = $controller;
@@ -166,7 +166,7 @@ class UrlRule extends CompositeUrlRule
     {
         $only = array_flip($this->only);
         $except = array_flip($this->except);
-        $patterns = array_merge($this->patterns, $this->extraPatterns);
+        $patterns = $this->extraPatterns + $this->patterns;
         $rules = [];
         foreach ($this->controller as $urlName => $controller) {
             $prefix = trim($this->prefix . '/' . $urlName, '/');

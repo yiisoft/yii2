@@ -25,7 +25,7 @@ use yii\di\Instance;
  *
  * SqlDataProvider may be used in the following way:
  *
- * ~~~
+ * ```php
  * $count = Yii::$app->db->createCommand('
  *     SELECT COUNT(*) FROM user WHERE status=:status
  * ', [':status' => 1])->queryScalar();
@@ -52,7 +52,7 @@ use yii\di\Instance;
  *
  * // get the user records in the current page
  * $models = $dataProvider->getModels();
- * ~~~
+ * ```
  *
  * Note: if you want to use the pagination feature, you must configure the [[totalCount]] property
  * to be the total number of rows (without pagination). And if you want to use the sorting feature,

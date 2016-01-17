@@ -9,6 +9,7 @@ namespace yii\db\oci;
 
 use yii\base\InvalidCallException;
 use yii\db\Connection;
+use yii\db\Expression;
 use yii\db\TableSchema;
 use yii\db\ColumnSchema;
 
@@ -23,6 +24,15 @@ use yii\db\ColumnSchema;
  */
 class Schema extends \yii\db\Schema
 {
+    /**
+     * @var array map of DB errors and corresponding exceptions
+     * If left part is found in DB error message exception class from the right part is used.
+     */
+    public $exceptionMap = [
+        'ORA-00001: unique constraint' => 'yii\db\IntegrityException',
+    ];
+
+
     /**
      * @inheritdoc
      */
@@ -56,6 +66,14 @@ class Schema extends \yii\db\Schema
     public function createQueryBuilder()
     {
         return new QueryBuilder($this->db);
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function createColumnSchemaBuilder($type, $length = null)
+    {
+        return new ColumnSchemaBuilder($type, $length);
     }
 
     /**
@@ -102,20 +120,8 @@ class Schema extends \yii\db\Schema
      */
     protected function findColumns($table)
     {
-        $schemaName = $table->schemaName;
-        $tableName = $table->name;
-
-        $sql = <<<EOD
-SELECT a.column_name, a.data_type ||
-    case
-        when data_precision is not null
-            then '(' || a.data_precision ||
-                    case when a.data_scale > 0 then ',' || a.data_scale else '' end
-                || ')'
-        when data_type = 'DATE' then ''
-        when data_type = 'NUMBER' then ''
-        else '(' || to_char(a.data_length) || ')'
-    end as data_type,
+        $sql = <<<SQL
+SELECT a.column_name, a.data_type, a.data_precision, a.data_scale, a.data_length,
     a.nullable, a.data_default,
     (   SELECT D.constraint_type
         FROM ALL_CONS_COLUMNS C
@@ -129,14 +135,17 @@ FROM ALL_TAB_COLUMNS A
 inner join ALL_OBJECTS B ON b.owner = a.owner and ltrim(B.OBJECT_NAME) = ltrim(A.TABLE_NAME)
 LEFT JOIN all_col_comments com ON (A.owner = com.owner AND A.table_name = com.table_name AND A.column_name = com.column_name)
 WHERE
-    a.owner = '{$schemaName}'
-    and (b.object_type = 'TABLE' or b.object_type = 'VIEW')
-    and b.object_name = '{$tableName}'
+    a.owner = :schemaName
+    and b.object_type IN ('TABLE', 'VIEW', 'MATERIALIZED VIEW')
+    and b.object_name = :tableName
 ORDER by a.column_id
-EOD;
+SQL;
 
         try {
-            $columns = $this->db->createCommand($sql)->queryAll();
+            $columns = $this->db->createCommand($sql, [
+                ':tableName' => $table->name,
+                ':schemaName' => $table->schemaName,
+            ])->queryAll();
         } catch (\Exception $e) {
             return false;
         }
@@ -146,12 +155,14 @@ EOD;
         }
 
         foreach ($columns as $column) {
+            if ($this->db->slavePdo->getAttribute(\PDO::ATTR_CASE) === \PDO::CASE_LOWER) {
+                $column = array_change_key_case($column, CASE_UPPER);
+            }
             $c = $this->createColumn($column);
             $table->columns[$c->name] = $c;
             if ($c->isPrimaryKey) {
                 $table->primaryKey[] = $c->name;
                 $table->sequenceName = $this->getTableSequenceName($table->name);
-                $c->autoIncrement = true;
             }
         }
         return true;
@@ -160,19 +171,23 @@ EOD;
     /**
      * Sequence name of table
      *
-     * @param $tablename
-     * @internal param \yii\db\TableSchema $table ->name the table schema
-     * @return string whether the sequence exists
+     * @param string $tableName
+     * @internal param \yii\db\TableSchema $table->name the table schema
+     * @return string|null whether the sequence exists
      */
-    protected function getTableSequenceName($tablename){
+    protected function getTableSequenceName($tableName)
+    {
 
-        $seq_name_sql="select ud.referenced_name as sequence_name
-                        from   user_dependencies ud
-                               join user_triggers ut on (ut.trigger_name = ud.name)
-                        where ut.table_name='{$tablename}'
-                              and ud.type='TRIGGER'
-                              and ud.referenced_type='SEQUENCE'";
-        return $this->db->createCommand($seq_name_sql)->queryScalar();
+        $seq_name_sql = <<<SQL
+SELECT ud.referenced_name as sequence_name
+FROM user_dependencies ud
+JOIN user_triggers ut on (ut.trigger_name = ud.name)
+WHERE ut.table_name = :tableName
+AND ud.type='TRIGGER'
+AND ud.referenced_type='SEQUENCE'
+SQL;
+        $sequenceName = $this->db->createCommand($seq_name_sql, [':tableName' => $tableName])->queryScalar();
+        return $sequenceName === false ? null : $sequenceName;
     }
 
     /**
@@ -188,6 +203,7 @@ EOD;
     {
         if ($this->db->isActive) {
             // get the last insert id from the master connection
+            $sequenceName = $this->quoteSimpleTableName($sequenceName);
             return $this->db->useMaster(function (Connection $db) use ($sequenceName) {
                 return $db->createCommand("SELECT {$sequenceName}.CURRVAL FROM DUAL")->queryScalar();
             });
@@ -210,8 +226,8 @@ EOD;
         $c->isPrimaryKey = strpos($column['KEY'], 'P') !== false;
         $c->comment = $column['COLUMN_COMMENT'] === null ? '' : $column['COLUMN_COMMENT'];
 
-        $this->extractColumnType($c, $column['DATA_TYPE']);
-        $this->extractColumnSize($c, $column['DATA_TYPE']);
+        $this->extractColumnType($c, $column['DATA_TYPE'], $column['DATA_PRECISION'], $column['DATA_SCALE'], $column['DATA_LENGTH']);
+        $this->extractColumnSize($c, $column['DATA_TYPE'], $column['DATA_PRECISION'], $column['DATA_SCALE'], $column['DATA_LENGTH']);
 
         $c->phpType = $this->getColumnPhpType($c);
 
@@ -219,7 +235,21 @@ EOD;
             if (stripos($column['DATA_DEFAULT'], 'timestamp') !== false) {
                 $c->defaultValue = null;
             } else {
-                $c->defaultValue = $c->phpTypecast($column['DATA_DEFAULT']);
+                $defaultValue = $column['DATA_DEFAULT'];
+                if ($c->type === 'timestamp' && $defaultValue === 'CURRENT_TIMESTAMP') {
+                    $c->defaultValue = new Expression('CURRENT_TIMESTAMP');
+                } else {
+                    if ($defaultValue !== null) {
+                        if (($len = strlen($defaultValue)) > 2 && $defaultValue[0] === "'"
+                            && $defaultValue[$len - 1] === "'"
+                        ) {
+                            $defaultValue = substr($column['DATA_DEFAULT'], 1, -1);
+                        } else {
+                            $defaultValue = trim($defaultValue);
+                        }
+                    }
+                    $c->defaultValue = $c->phpTypecast($defaultValue);
+                }
             }
         }
 
@@ -232,26 +262,61 @@ EOD;
      */
     protected function findConstraints($table)
     {
-        $sql = <<<EOD
-        SELECT D.constraint_type as CONSTRAINT_TYPE, C.COLUMN_NAME, C.position, D.r_constraint_name,
-                E.table_name as table_ref, f.column_name as column_ref,
-                C.table_name
-        FROM ALL_CONS_COLUMNS C
-        inner join ALL_constraints D on D.OWNER = C.OWNER and D.constraint_name = C.constraint_name
-        left join ALL_constraints E on E.OWNER = D.r_OWNER and E.constraint_name = D.r_constraint_name
-        left join ALL_cons_columns F on F.OWNER = E.OWNER and F.constraint_name = E.constraint_name and F.position = c.position
-        WHERE C.OWNER = '{$table->schemaName}'
-           and C.table_name = '{$table->name}'
-           and D.constraint_type <> 'P'
-        order by d.constraint_name, c.position
-EOD;
-        $command = $this->db->createCommand($sql);
+        $sql = <<<SQL
+SELECT D.CONSTRAINT_NAME, D.CONSTRAINT_TYPE, C.COLUMN_NAME, C.POSITION, D.R_CONSTRAINT_NAME,
+        E.TABLE_NAME AS TABLE_REF, F.COLUMN_NAME AS COLUMN_REF,
+        C.TABLE_NAME
+FROM ALL_CONS_COLUMNS C
+INNER JOIN ALL_CONSTRAINTS D ON D.OWNER = C.OWNER AND D.CONSTRAINT_NAME = C.CONSTRAINT_NAME
+LEFT JOIN ALL_CONSTRAINTS E ON E.OWNER = D.R_OWNER AND E.CONSTRAINT_NAME = D.R_CONSTRAINT_NAME
+LEFT JOIN ALL_CONS_COLUMNS F ON F.OWNER = E.OWNER AND F.CONSTRAINT_NAME = E.CONSTRAINT_NAME AND F.POSITION = C.POSITION
+WHERE C.OWNER = :schemaName
+   AND C.TABLE_NAME = :tableName
+ORDER BY D.CONSTRAINT_NAME, C.POSITION
+SQL;
+        $command = $this->db->createCommand($sql, [
+            ':tableName' => $table->name,
+            ':schemaName' => $table->schemaName,
+        ]);
+        $constraints = [];
         foreach ($command->queryAll() as $row) {
-            if ($row['CONSTRAINT_TYPE'] === 'R') {
-                $name = $row["COLUMN_NAME"];
-                $table->foreignKeys[$name] = [$row["TABLE_REF"], $row["COLUMN_REF"]];
+            if ($this->db->slavePdo->getAttribute(\PDO::ATTR_CASE) === \PDO::CASE_LOWER) {
+                $row = array_change_key_case($row, CASE_UPPER);
             }
+            if ($row['CONSTRAINT_TYPE'] !== 'R') {
+                // this condition is not checked in SQL WHERE because of an Oracle Bug:
+                // see https://github.com/yiisoft/yii2/pull/8844
+                continue;
+            }
+            $name = $row['CONSTRAINT_NAME'];
+            if (!isset($constraints[$name])) {
+                $constraints[$name] = [
+                    'tableName' => $row['TABLE_REF'],
+                    'columns' => [],
+                ];
+            }
+            $constraints[$name]['columns'][$row['COLUMN_NAME']] = $row['COLUMN_REF'];
         }
+        foreach ($constraints as $constraint) {
+            $table->foreignKeys[] = array_merge([$constraint['tableName']], $constraint['columns']);
+        }
+    }
+
+    /**
+     * @inheritdoc
+     */
+    protected function findSchemaNames()
+    {
+        $sql = <<<SQL
+SELECT username
+  FROM dba_users u
+ WHERE EXISTS (
+    SELECT 1
+      FROM dba_objects o
+     WHERE o.owner = u.username )
+   AND default_tablespace not in ('SYSTEM','SYSAUX')
+SQL;
+        return $this->db->createCommand($sql)->queryColumn();
     }
 
     /**
@@ -260,54 +325,102 @@ EOD;
     protected function findTableNames($schema = '')
     {
         if ($schema === '') {
-            $sql = <<<EOD
-SELECT table_name, '{$schema}' as table_schema FROM user_tables
-EOD;
+            $sql = <<<SQL
+SELECT table_name FROM user_tables
+UNION ALL
+SELECT view_name AS table_name FROM user_views
+UNION ALL
+SELECT mview_name AS table_name FROM user_mviews
+ORDER BY table_name
+SQL;
             $command = $this->db->createCommand($sql);
         } else {
-            $sql = <<<EOD
-SELECT object_name as table_name, owner as table_schema FROM all_objects
-WHERE object_type = 'TABLE' AND owner=:schema
-EOD;
-            $command = $this->db->createCommand($sql);
-            $command->bindParam(':schema', $schema);
+            $sql = <<<SQL
+SELECT object_name AS table_name
+FROM all_objects
+WHERE object_type IN ('TABLE', 'VIEW', 'MATERIALIZED VIEW') AND owner=:schema
+ORDER BY object_name
+SQL;
+            $command = $this->db->createCommand($sql, [':schema' => $schema]);
         }
 
         $rows = $command->queryAll();
         $names = [];
         foreach ($rows as $row) {
+            if ($this->db->slavePdo->getAttribute(\PDO::ATTR_CASE) === \PDO::CASE_LOWER) {
+                $row = array_change_key_case($row, CASE_UPPER);
+            }
             $names[] = $row['TABLE_NAME'];
         }
-
         return $names;
+    }
+
+    /**
+     * Returns all unique indexes for the given table.
+     * Each array element is of the following structure:
+     *
+     * ```php
+     * [
+     *     'IndexName1' => ['col1' [, ...]],
+     *     'IndexName2' => ['col2' [, ...]],
+     * ]
+     * ```
+     *
+     * @param TableSchema $table the table metadata
+     * @return array all unique indexes for the given table.
+     * @since 2.0.4
+     */
+    public function findUniqueIndexes($table)
+    {
+        $query = <<<SQL
+SELECT dic.INDEX_NAME, dic.COLUMN_NAME
+FROM ALL_INDEXES di
+INNER JOIN ALL_IND_COLUMNS dic ON di.TABLE_NAME = dic.TABLE_NAME AND di.INDEX_NAME = dic.INDEX_NAME
+WHERE di.UNIQUENESS = 'UNIQUE'
+AND dic.TABLE_OWNER = :schemaName
+AND dic.TABLE_NAME = :tableName
+ORDER BY dic.TABLE_NAME, dic.INDEX_NAME, dic.COLUMN_POSITION
+SQL;
+        $result = [];
+        $command = $this->db->createCommand($query, [
+            ':tableName' => $table->name,
+            ':schemaName' => $table->schemaName,
+        ]);
+        foreach ($command->queryAll() as $row) {
+            $result[$row['INDEX_NAME']][] = $row['COLUMN_NAME'];
+        }
+        return $result;
     }
 
     /**
      * Extracts the data types for the given column
      * @param ColumnSchema $column
      * @param string $dbType DB type
+     * @param string $precision total number of digits.
+     * This parameter is available since version 2.0.4.
+     * @param string $scale number of digits on the right of the decimal separator.
+     * This parameter is available since version 2.0.4.
+     * @param string $length length for character types.
+     * This parameter is available since version 2.0.4.
      */
-    protected function extractColumnType($column, $dbType)
+    protected function extractColumnType($column, $dbType, $precision, $scale, $length)
     {
         $column->dbType = $dbType;
 
-        if (strpos($dbType, 'FLOAT') !== false) {
+        if (strpos($dbType, 'FLOAT') !== false || strpos($dbType, 'DOUBLE') !== false) {
             $column->type = 'double';
-        } elseif (strpos($dbType, 'NUMBER') !== false || strpos($dbType, 'INTEGER') !== false) {
-            if (strpos($dbType, '(') && preg_match('/\((.*)\)/', $dbType, $matches)) {
-                $values = explode(',', $matches[1]);
-                if (isset($values[1]) && (((int) $values[1]) > 0)) {
-                    $column->type = 'double';
-                } else {
-                    $column->type = 'integer';
-                }
+        } elseif ($dbType === 'NUMBER' || strpos($dbType, 'INTEGER') !== false) {
+            if ($scale !== null && $scale > 0) {
+                $column->type = 'decimal';
             } else {
-                $column->type = 'double';
+                $column->type = 'integer';
             }
         } elseif (strpos($dbType, 'BLOB') !== false) {
             $column->type = 'binary';
         } elseif (strpos($dbType, 'CLOB') !== false) {
             $column->type = 'text';
+        } elseif (strpos($dbType, 'TIMESTAMP') !== false) {
+            $column->type = 'timestamp';
         } else {
             $column->type = 'string';
         }
@@ -317,15 +430,66 @@ EOD;
      * Extracts size, precision and scale information from column's DB type.
      * @param ColumnSchema $column
      * @param string $dbType the column's DB type
+     * @param string $precision total number of digits.
+     * This parameter is available since version 2.0.4.
+     * @param string $scale number of digits on the right of the decimal separator.
+     * This parameter is available since version 2.0.4.
+     * @param string $length length for character types.
+     * This parameter is available since version 2.0.4.
      */
-    protected function extractColumnSize($column, $dbType)
+    protected function extractColumnSize($column, $dbType, $precision, $scale, $length)
     {
-        if (strpos($dbType, '(') && preg_match('/\((.*)\)/', $dbType, $matches)) {
-            $values = explode(',', $matches[1]);
-            $column->size = $column->precision = (int) $values[0];
-            if (isset($values[1])) {
-                $column->scale = (int) $values[1];
+        $column->size = trim($length) === '' ? null : (int) $length;
+        $column->precision = trim($precision) === '' ? null : (int) $precision;
+        $column->scale = trim($scale) === '' ? null : (int) $scale;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function insert($table, $columns)
+    {
+        $params = [];
+        $returnParams = [];
+        $sql = $this->db->getQueryBuilder()->insert($table, $columns, $params);
+        $tableSchema = $this->getTableSchema($table);
+        $returnColumns = $tableSchema->primaryKey;
+        if (!empty($returnColumns)) {
+            $columnSchemas = $tableSchema->columns;
+            $returning = [];
+            foreach ((array) $returnColumns as $name) {
+                $phName = QueryBuilder::PARAM_PREFIX . (count($params) + count($returnParams));
+                $returnParams[$phName] = [
+                    'column' => $name,
+                    'value' => null,
+                ];
+                if (!isset($columnSchemas[$name]) || $columnSchemas[$name]->phpType !== 'integer') {
+                    $returnParams[$phName]['dataType'] = \PDO::PARAM_STR;
+                } else {
+                    $returnParams[$phName]['dataType'] = \PDO::PARAM_INT;
+                }
+                $returnParams[$phName]['size'] = isset($columnSchemas[$name]) && isset($columnSchemas[$name]->size) ? $columnSchemas[$name]->size : -1;
+                $returning[] = $this->quoteColumnName($name);
             }
+            $sql .= ' RETURNING ' . implode(', ', $returning) . ' INTO ' . implode(', ', array_keys($returnParams));
         }
+
+        $command = $this->db->createCommand($sql, $params);
+        $command->prepare(false);
+
+        foreach ($returnParams as $name => &$value) {
+            $command->pdoStatement->bindParam($name, $value['value'], $value['dataType'], $value['size']);
+        }
+
+        if (!$command->execute()) {
+            return false;
+        }
+
+        $result = [];
+        foreach ($returnParams as $value) {
+            $result[$value['column']] = $value['value'];
+        }
+
+        return $result;
     }
 }

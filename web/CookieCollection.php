@@ -49,7 +49,7 @@ class CookieCollection extends Object implements \IteratorAggregate, \ArrayAcces
 
     /**
      * Returns an iterator for traversing the cookies in the collection.
-     * This method is required by the SPL interface `IteratorAggregate`.
+     * This method is required by the SPL interface [[\IteratorAggregate]].
      * It will be implicitly called when you use `foreach` to traverse the collection.
      * @return ArrayIterator an iterator for traversing the cookies in the collection.
      */
@@ -191,7 +191,7 @@ class CookieCollection extends Object implements \IteratorAggregate, \ArrayAcces
 
     /**
      * Returns whether there is a cookie with the specified name.
-     * This method is required by the SPL interface `ArrayAccess`.
+     * This method is required by the SPL interface [[\ArrayAccess]].
      * It is implicitly called when you use something like `isset($collection[$name])`.
      * @param string $name the cookie name
      * @return boolean whether the named cookie exists
@@ -203,7 +203,7 @@ class CookieCollection extends Object implements \IteratorAggregate, \ArrayAcces
 
     /**
      * Returns the cookie with the specified name.
-     * This method is required by the SPL interface `ArrayAccess`.
+     * This method is required by the SPL interface [[\ArrayAccess]].
      * It is implicitly called when you use something like `$cookie = $collection[$name];`.
      * This is equivalent to [[get()]].
      * @param string $name the cookie name
@@ -216,7 +216,7 @@ class CookieCollection extends Object implements \IteratorAggregate, \ArrayAcces
 
     /**
      * Adds the cookie to the collection.
-     * This method is required by the SPL interface `ArrayAccess`.
+     * This method is required by the SPL interface [[\ArrayAccess]].
      * It is implicitly called when you use something like `$collection[$name] = $cookie;`.
      * This is equivalent to [[add()]].
      * @param string $name the cookie name
@@ -229,7 +229,7 @@ class CookieCollection extends Object implements \IteratorAggregate, \ArrayAcces
 
     /**
      * Removes the named cookie.
-     * This method is required by the SPL interface `ArrayAccess`.
+     * This method is required by the SPL interface [[\ArrayAccess]].
      * It is implicitly called when you use something like `unset($collection[$name])`.
      * This is equivalent to [[remove()]].
      * @param string $name the cookie name

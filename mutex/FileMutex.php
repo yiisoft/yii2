@@ -20,7 +20,7 @@ use yii\helpers\FileHelper;
  * ```
  * [
  *     'components' => [
- *         'mutex'=> [
+ *         'mutex' => [
  *             'class' => 'yii\mutex\FileMutex'
  *         ],
  *     ],

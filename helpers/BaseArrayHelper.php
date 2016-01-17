@@ -23,11 +23,11 @@ class BaseArrayHelper
 {
     /**
      * Converts an object or an array of objects into an array.
-     * @param object|array $object the object to be converted into an array
+     * @param object|array|string $object the object to be converted into an array
      * @param array $properties a mapping from object class names to the properties that need to put into the resulting arrays.
      * The properties specified for each class is an array of the following format:
      *
-     * ~~~
+     * ```php
      * [
      *     'app\models\Post' => [
      *         'id',
@@ -40,18 +40,18 @@ class BaseArrayHelper
      *         },
      *     ],
      * ]
-     * ~~~
+     * ```
      *
      * The result of `ArrayHelper::toArray($post, $properties)` could be like the following:
      *
-     * ~~~
+     * ```php
      * [
      *     'id' => 123,
      *     'title' => 'test',
      *     'createTime' => '2013-01-01 12:00AM',
      *     'length' => 301,
      * ]
-     * ~~~
+     * ```
      *
      * @param boolean $recursive whether to recursively converts properties which are objects into arrays.
      * @return array the array representation of the object
@@ -85,7 +85,7 @@ class BaseArrayHelper
                 }
             }
             if ($object instanceof Arrayable) {
-                $result = $object->toArray();
+                $result = $object->toArray([], [], $recursive);
             } else {
                 $result = [];
                 foreach ($object as $key => $value) {
@@ -119,7 +119,7 @@ class BaseArrayHelper
         while (!empty($args)) {
             $next = array_shift($args);
             foreach ($next as $k => $v) {
-                if (is_integer($k)) {
+                if (is_int($k)) {
                     if (isset($res[$k])) {
                         $res[] = $v;
                     } else {
@@ -145,11 +145,12 @@ class BaseArrayHelper
      * be `$array['x']['y']['z']` or `$array->x->y->z` (if `$array` is an object). If `$array['x']`
      * or `$array->x` is neither an array nor an object, the default value will be returned.
      * Note that if the array already has an element `x.y.z`, then its value will be returned
-     * instead of going through the sub-arrays.
+     * instead of going through the sub-arrays. So it is better to be done specifying an array of key names
+     * like `['x', 'y', 'z']`.
      *
      * Below are some usage examples,
      *
-     * ~~~
+     * ```php
      * // working with array
      * $username = \yii\helpers\ArrayHelper::getValue($_POST, 'username');
      * // working with object
@@ -160,12 +161,15 @@ class BaseArrayHelper
      * });
      * // using dot format to retrieve the property of embedded object
      * $street = \yii\helpers\ArrayHelper::getValue($users, 'address.street');
-     * ~~~
+     * // using an array of keys to retrieve the value
+     * $value = \yii\helpers\ArrayHelper::getValue($versions, ['1.0', 'date']);
+     * ```
      *
      * @param array|object $array array or object to extract value from
-     * @param string|\Closure $key key name of the array element, or property name of the object,
+     * @param string|\Closure|array $key key name of the array element, an array of keys or property name of the object,
      * or an anonymous function returning the value. The anonymous function signature should be:
      * `function($array, $defaultValue)`.
+     * The possibility to pass an array of keys is available since version 2.0.4.
      * @param mixed $default the default value to be returned if the specified array key does not exist. Not used when
      * getting value from an object.
      * @return mixed the value of the element if found, default value otherwise
@@ -177,6 +181,14 @@ class BaseArrayHelper
             return $key($array, $default);
         }
 
+        if (is_array($key)) {
+            $lastKey = array_pop($key);
+            foreach ($key as $keyPart) {
+                $array = static::getValue($array, $keyPart);
+            }
+            $key = $lastKey;
+        }
+
         if (is_array($array) && array_key_exists($key, $array)) {
             return $array[$key];
         }
@@ -186,7 +198,7 @@ class BaseArrayHelper
             $key = substr($key, $pos + 1);
         }
 
-        if (is_object($array)) {
+        if (is_object($array) && isset($array->$key)) {
             return $array->$key;
         } elseif (is_array($array)) {
             return array_key_exists($key, $array) ? $array[$key] : $default;
@@ -201,13 +213,13 @@ class BaseArrayHelper
      *
      * Usage examples,
      *
-     * ~~~
+     * ```php
      * // $array = ['type' => 'A', 'options' => [1, 2]];
      * // working with array
      * $type = \yii\helpers\ArrayHelper::remove($array, 'type');
      * // $array content
      * // $array = ['options' => [1, 2]];
-     * ~~~
+     * ```
      *
      * @param array $array the array to extract value from
      * @param string $key key name of the array element
@@ -237,7 +249,7 @@ class BaseArrayHelper
      *
      * For example,
      *
-     * ~~~
+     * ```php
      * $array = [
      *     ['id' => '123', 'data' => 'abc'],
      *     ['id' => '345', 'data' => 'def'],
@@ -253,7 +265,7 @@ class BaseArrayHelper
      * $result = ArrayHelper::index($array, function ($element) {
      *     return $element['id'];
      * });
-     * ~~~
+     * ```
      *
      * @param array $array the array that needs to be indexed
      * @param string|\Closure $key the column name or anonymous function whose result will be used to index the array
@@ -276,7 +288,7 @@ class BaseArrayHelper
      *
      * For example,
      *
-     * ~~~
+     * ```php
      * $array = [
      *     ['id' => '123', 'data' => 'abc'],
      *     ['id' => '345', 'data' => 'def'],
@@ -288,7 +300,7 @@ class BaseArrayHelper
      * $result = ArrayHelper::getColumn($array, function ($element) {
      *     return $element['id'];
      * });
-     * ~~~
+     * ```
      *
      * @param array $array
      * @param string|\Closure $name
@@ -319,7 +331,7 @@ class BaseArrayHelper
      *
      * For example,
      *
-     * ~~~
+     * ```php
      * $array = [
      *     ['id' => '123', 'name' => 'aaa', 'class' => 'x'],
      *     ['id' => '124', 'name' => 'bbb', 'class' => 'x'],
@@ -345,7 +357,7 @@ class BaseArrayHelper
      * //         '345' => 'ccc',
      * //     ],
      * // ]
-     * ~~~
+     * ```
      *
      * @param array $array
      * @param string|\Closure $from
@@ -565,11 +577,65 @@ class BaseArrayHelper
             return array_keys($array) === range(0, count($array) - 1);
         } else {
             foreach ($array as $key => $value) {
-                if (!is_integer($key)) {
+                if (!is_int($key)) {
                     return false;
                 }
             }
             return true;
+        }
+    }
+
+    /**
+     * Check whether an array or [[\Traversable]] contains an element.
+     *
+     * This method does the same as the PHP function [in_array()](http://php.net/manual/en/function.in-array.php)
+     * but it does not only work for arrays but also objects that implement the [[\Traversable]] interface.
+     * @param mixed $needle The value to look for.
+     * @param array|\Traversable $haystack The set of values to search.
+     * @param boolean $strict Whether to enable strict (`===`) comparison.
+     * @return boolean `true` if `$needle` was found in `$haystack`, `false` otherwise.
+     * @throws \InvalidArgumentException if `$haystack` is neither traversable nor an array.
+     * @see http://php.net/manual/en/function.in-array.php
+     */
+    public static function isIn($needle, $haystack, $strict = false)
+    {
+        if ($haystack instanceof \Traversable) {
+            foreach($haystack as $value) {
+                if ($needle == $value && (!$strict || $needle === $haystack)) {
+                    return true;
+                }
+            }
+        } elseif (is_array($haystack)) {
+            return in_array($needle, $haystack, $strict);
+        } else {
+            throw new \InvalidArgumentException('Argument $haystack must be an array or implement Traversable');
+        }
+
+        return false;
+    }
+
+    /**
+     * Checks whether an array or [[\Traversable]] is a subset of another array or [[\Traversable]].
+     *
+     * This method will return `true`, if all elements of `$needles` are contained in
+     * `$haystack`. If at least one element is missing, `false` will be returned.
+     * @param array|\Traversable $needles The values that must **all** be in `$haystack`.
+     * @param array|\Traversable $haystack The set of value to search.
+     * @param boolean $strict Whether to enable strict (`===`) comparison.
+     * @throws \InvalidArgumentException if `$haystack` or `$needles` is neither traversable nor an array.
+     * @return boolean `true` if `$needles` is a subset of `$haystack`, `false` otherwise.
+     */
+    public static function isSubset($needles, $haystack, $strict = false)
+    {
+        if (is_array($needles) || $needles instanceof \Traversable) {
+            foreach($needles as $needle) {
+                if (!static::isIn($needle, $haystack, $strict)) {
+                    return false;
+                }
+            }
+            return true;
+        } else {
+            throw new \InvalidArgumentException('Argument $needles must be an array or implement Traversable');
         }
     }
 }

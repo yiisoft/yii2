@@ -5,13 +5,58 @@ Upgrading Instructions for Yii Framework v2
 
 The following upgrading instructions are cumulative. That is,
 if you want to upgrade from version A to version C and there is
-version B between A and C, you need to following the instructions
+version B between A and C, you need to follow the instructions
 for both A and B.
+
+Make sure you have global install of latest version of composer asset plugin:
+
+```
+php composer.phar global require "fxp/composer-asset-plugin:~1.1.1"
+```
+
+Upgrade from Yii 2.0.6
+----------------------
+
+* Added new requirement: ICU Data version >= 49.1. Please, ensure that your environment has ICU data installed and
+up to date to prevent unexpected behavior or crashes.
+
+ > Tip: Use Yii2 Requirements checker for easy and fast check. Look for `requirements.php` in root of Basic and Advanced
+ templates (howto-comment is in head of the script).
+* The signature of `yii\helpers\BaseInflector::transliterate()` was changed. The method is now public and has an
+extra optional parameter `$transliterator`.
+* In `yii\web\UrlRule` the `pattern` matching group names are being replaced with the placeholders on class
+initialization to support wider range of allowed characters. Because of this change:
+  - You are required to flush your application cache to remove outdated `UrlRule` serialized objects.
+  See the [Cache Flushing Guide](http://www.yiiframework.com/doc-2.0/guide-caching-data.html#cache-flushing)
+  - If you implement `parseRequest()` or `createUrl()` and rely on parameter names, call `substitutePlaceholderNames()`
+  in order to replace temporary IDs with parameter names after doing matching.
+* The context of `yii.confirm` JavaScript function was changed from `yii` object to the DOM element which triggered
+the event.
+  - If you overrode the `yii.confirm` function and accessed the `yii` object through `this`, you must access it
+with global variable `yii` instead.
+* Traversable objects are now formatted as arrays in XML response to support SPL objects and Generators. Previous
+  behavior could be turned on by setting `XmlResponseFormatter::$useTraversableAsArray` to `false`.
+* If you've implemented `yii\rbac\ManagerInterface` you need to implement additional method `getUserIdsByRole($roleName)`.
+* If you're using ApcCache with APCu, set `useApcu` to `true` in the component config.
+
+Upgrade from Yii 2.0.5
+----------------------
+  
+* The signature of the following methods in `yii\console\controllers\MessageController` has changed. They have an extra parameter `$markUnused`.
+  - `saveMessagesToDb($messages, $db, $sourceMessageTable, $messageTable, $removeUnused, $languages, $markUnused)`
+  - `saveMessagesToPHP($messages, $dirName, $overwrite, $removeUnused, $sort, $markUnused)`
+  - `saveMessagesCategoryToPHP($messages, $fileName, $overwrite, $removeUnused, $sort, $category, $markUnused)`
+  - `saveMessagesToPO($messages, $dirName, $overwrite, $removeUnused, $sort, $catalog, $markUnused)`
+
+Upgrade from Yii 2.0.4
+----------------------
+
+Upgrading from 2.0.4 to 2.0.5 does not require any changes.
 
 Upgrade from Yii 2.0.3
 ----------------------
 
-* Updated dependency to `cebe/markdown` to version `1.0.x`.
+* Updated dependency to `cebe/markdown` to version `1.1.x`.
   If you need stick with 1.0.x, you can specify that in your `composer.json` by
   adding the following line in the `require` section:
   
@@ -82,7 +127,7 @@ Upgrade from Yii 2.0 Beta
   the composer-asset-plugin, *before* you update your project:
 
   ```
-  php composer.phar global require "fxp/composer-asset-plugin:1.0.0"
+  php composer.phar global require "fxp/composer-asset-plugin:~1.0.0"
   ```
 
   You also need to add the following code to your project's `composer.json` file:
@@ -184,7 +229,7 @@ Upgrade from Yii 2.0 Beta
   ];
   ```
 
-  > Note: If you are using the `Advanced Application Template` you should not add this configuration to `common/config`
+  > Note: If you are using the `Advanced Project Template` you should not add this configuration to `common/config`
   or `console/config` because the console application doesn't have to deal with CSRF and uses its own request that
   doesn't have `cookieValidationKey` property.
 
