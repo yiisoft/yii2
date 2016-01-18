@@ -40,6 +40,7 @@ Yii Framework 2 Change Log
 - Bug #9984: Fixed wrong captcha color in case Imagick is used (DrDeath72)
 - Bug #9999: Fixed `yii\web\UrlRule` to allow route parameter names with `-`, `_`, `.`characters (silverfire)
 - Bug #10029: Fixed MaskedInput not working with PJAX (martrix78, samdark)
+- Bug #10052: Fixed `yii\i18n\Formatter` to work with huge numbers on 32-bit arch (necrox87, silverfire)
 - Bug #10101: Fixed assignments saving on role removing in `\yii\rbac\PhpManager` (rezident1307)
 - Bug #10142: Fixed `yii\validators\EmailValidator` to check the length of email properly (silverfire)
 - Bug #10263: Fixed `yii\validators\UniqueValidator` to work properly when model is not instance of `targetClass` (bupy7, githubjeka, silverfire)
