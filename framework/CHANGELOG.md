@@ -42,7 +42,7 @@ Yii Framework 2 Change Log
 - Bug #10029: Fixed MaskedInput not working with PJAX (martrix78, samdark)
 - Bug #10101: Fixed assignments saving on role removing in `\yii\rbac\PhpManager` (rezident1307)
 - Bug #10142: Fixed `yii\validators\EmailValidator` to check the length of email properly (silverfire)
-- Bug #10263: Unique validator passed for update-scenario when IDs targetClass and model is same (bupy7, githubjeka)
+- Bug #10263: Fixed `yii\validators\UniqueValidator` to work properly when model is not instance of `targetClass` (bupy7, githubjeka, silverfire)
 - Bug #10278: Fixed `yii\helpers\BaseJson` support \SimpleXMLElement data (SilverFire, LAV45)
 - Bug #10302: Fixed JS function `yii.getQueryParams`, which parsed array variables incorrectly (servocoder, silverfire)
 - Bug #10363: Fixed fallback float and integer formatting (AnatolyRugalev, silverfire)

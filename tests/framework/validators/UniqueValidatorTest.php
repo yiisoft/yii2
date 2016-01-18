@@ -145,7 +145,7 @@ class UniqueValidatorTest extends DatabaseTestCase
 
     public function testValidateTargetClass()
     {
-        // Expect to "Description" and "address" isn't equals
+        // Check whether "Description" and "address" aren't equal
         $val = new UniqueValidator([
             'targetClass' => Customer::className(),
             'targetAttribute' => ['description'=>'address'],
@@ -157,15 +157,16 @@ class UniqueValidatorTest extends DatabaseTestCase
         $val->validateAttribute($m, 'description');
         $this->assertFalse($m->hasErrors('description'));
 
-        // ID Profile not equal ID Customer
-        // (1, description = address2) <=> (2,address = address2)
+        // ID of Profile is not equal to ID of Customer
+        // (1, description = address2) <=> (2, address = address2)
         $m->description = 'address2';
         $val->validateAttribute($m, 'description');
         $this->assertTrue($m->hasErrors('description'));
         $m->clearErrors('description');
 
-        // ID Profile(1) equal ID Customer(1)
-        // (1, description = address1) <=> (1,address = address1) BUG #10263
+        // ID of Profile IS equal to ID of Customer
+        // (1, description = address1) <=> (1, address = address1)
+        // https://github.com/yiisoft/yii2/issues/10263
         $m->description = 'address1';
         $val->validateAttribute($m, 'description');
         $this->assertTrue($m->hasErrors('description'));
