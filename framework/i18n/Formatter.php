@@ -1123,7 +1123,7 @@ class Formatter extends Component
      * If [[sizeFormatBase]] is 1024, [binary prefixes](http://en.wikipedia.org/wiki/Binary_prefix) (e.g. kibibyte/KiB, mebibyte/MiB, ...)
      * are used in the formatting result.
      *
-     * @param integer $value value in bytes to be formatted.
+     * @param string|integer|float $value value in bytes to be formatted.
      * @param integer $decimals the number of digits after the decimal point.
      * @param array $options optional configuration for the number formatter. This parameter will be merged with [[numberFormatterOptions]].
      * @param array $textOptions optional configuration for the number formatter. This parameter will be merged with [[numberFormatterTextOptions]].
@@ -1167,7 +1167,7 @@ class Formatter extends Component
      * If [[sizeFormatBase]] is 1024, [binary prefixes](http://en.wikipedia.org/wiki/Binary_prefix) (e.g. kibibyte/KiB, mebibyte/MiB, ...)
      * are used in the formatting result.
      *
-     * @param integer $value value in bytes to be formatted.
+     * @param string|integer|float $value value in bytes to be formatted.
      * @param integer $decimals the number of digits after the decimal point.
      * @param array $options optional configuration for the number formatter. This parameter will be merged with [[numberFormatterOptions]].
      * @param array $textOptions optional configuration for the number formatter. This parameter will be merged with [[numberFormatterTextOptions]].
@@ -1219,7 +1219,7 @@ class Formatter extends Component
     private function formatSizeNumber($value, $decimals, $options, $textOptions)
     {
         if (is_string($value) && is_numeric($value)) {
-            $value = (int) $value;
+            $value = (float) $value;
         }
         if (!is_numeric($value)) {
             throw new InvalidParamException("'$value' is not a numeric value.");
