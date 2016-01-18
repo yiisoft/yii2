@@ -8,6 +8,7 @@ Yii Framework 2 Change Log
 - Bug #6876: Fixed RBAC migration MSSQL cascade problem (thejahweh)
 - Bug #7627: Fixed `yii\widgets\ActiveField` to handle inputs validation with changed ID properly (dynasource, cebe)
 - Bug #7806: Fixed `yii\grid\CheckboxColumn` fixed `_all` checkbox column name generation (cebe, silverfire)
+- Bug #8348: Fixed `yii\helpers\BaseArrayHelper` fixed PHP Fatal Error: Nesting level too deep - recursive dependency? (andrewnester)
 - Bug #8466: Fixed `yii\validators\FileValidator` to display error for `tooBig` and `tooSmall` with formatted unit (silverfire)
 - Bug #8573: Fixed incorrect data type mapping for NUMBER to INTEGER or DECIMAL in Oracle (vbelogai)
 - Bug #8723: Fixed `yii\helpers\VarDumper::export()` unable to export circle referenced objects with `Closure` (klimov-paul)
