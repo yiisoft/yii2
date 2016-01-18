@@ -3,7 +3,6 @@ Yii Framework 2 Change Log
 
 2.0.7 under development
 -----------------------
-
 - Bug #6351: Find MySQL FK constraints from `information_schema` tables instead of `SHOW CREATE TABLE` to improve reliability (nineinchnick)
 - Bug #6363, #8301, #8582, #9566: Fixed data methods and PJAX issues when used together (derekisbusy)
 - Bug #6876: Fixed RBAC migration MSSQL cascade problem (thejahweh)
@@ -43,6 +42,7 @@ Yii Framework 2 Change Log
 - Bug #10029: Fixed MaskedInput not working with PJAX (martrix78, samdark)
 - Bug #10101: Fixed assignments saving on role removing in `\yii\rbac\PhpManager` (rezident1307)
 - Bug #10142: Fixed `yii\validators\EmailValidator` to check the length of email properly (silverfire)
+- Bug #10263: Unique validator passed for update-scenario when IDs targetClass and model is same (bupy7, githubjeka)
 - Bug #10278: Fixed `yii\helpers\BaseJson` support \SimpleXMLElement data (SilverFire, LAV45)
 - Bug #10302: Fixed JS function `yii.getQueryParams`, which parsed array variables incorrectly (servocoder, silverfire)
 - Bug #10363: Fixed fallback float and integer formatting (AnatolyRugalev, silverfire)
