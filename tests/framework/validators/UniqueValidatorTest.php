@@ -5,8 +5,10 @@ namespace yiiunit\framework\validators;
 use yii\validators\UniqueValidator;
 use Yii;
 use yiiunit\data\ar\ActiveRecord;
+use yiiunit\data\ar\Customer;
 use yiiunit\data\ar\Order;
 use yiiunit\data\ar\OrderItem;
+use yiiunit\data\ar\Profile;
 use yiiunit\data\validators\models\FakedValidationModel;
 use yiiunit\data\validators\models\ValidatorTestMainModel;
 use yiiunit\data\validators\models\ValidatorTestRefModel;
@@ -38,6 +40,7 @@ class UniqueValidatorTest extends DatabaseTestCase
         $m = ValidatorTestMainModel::find()->one();
         $val->validateAttribute($m, 'id');
         $this->assertFalse($m->hasErrors('id'));
+        /** @var ValidatorTestRefModel $m */
         $m = ValidatorTestRefModel::findOne(1);
         $val->validateAttribute($m, 'ref');
         $this->assertTrue($m->hasErrors('ref'));
@@ -73,6 +76,7 @@ class UniqueValidatorTest extends DatabaseTestCase
     public function testValidateNonDatabaseAttribute()
     {
         $val = new UniqueValidator(['targetClass' => ValidatorTestRefModel::className(), 'targetAttribute' => 'ref']);
+        /** @var ValidatorTestMainModel $m */
         $m = ValidatorTestMainModel::findOne(1);
         $val->validateAttribute($m, 'testMainVal');
         $this->assertFalse($m->hasErrors('testMainVal'));
@@ -97,6 +101,7 @@ class UniqueValidatorTest extends DatabaseTestCase
             'targetAttribute' => ['order_id', 'item_id'],
         ]);
         // validate old record
+        /** @var OrderItem $m */
         $m = OrderItem::findOne(['order_id' => 1, 'item_id' => 2]);
         $val->validateAttribute($m, 'order_id');
         $this->assertFalse($m->hasErrors('order_id'));
@@ -117,6 +122,7 @@ class UniqueValidatorTest extends DatabaseTestCase
             'targetAttribute' => ['id' => 'order_id'],
         ]);
         // validate old record
+        /** @var Order $m */
         $m = Order::findOne(1);
         $val->validateAttribute($m, 'id');
         $this->assertTrue($m->hasErrors('id'));
@@ -135,5 +141,34 @@ class UniqueValidatorTest extends DatabaseTestCase
         $m = new Order(['id' => 10]);
         $val->validateAttribute($m, 'id');
         $this->assertFalse($m->hasErrors('id'));
+    }
+
+    public function testValidateTargetClass()
+    {
+        // Check whether "Description" and "address" aren't equal
+        $val = new UniqueValidator([
+            'targetClass' => Customer::className(),
+            'targetAttribute' => ['description'=>'address'],
+        ]);
+
+        /** @var Profile $m */
+        $m = Profile::findOne(1);
+        $this->assertEquals('profile customer 1', $m->description);
+        $val->validateAttribute($m, 'description');
+        $this->assertFalse($m->hasErrors('description'));
+
+        // ID of Profile is not equal to ID of Customer
+        // (1, description = address2) <=> (2, address = address2)
+        $m->description = 'address2';
+        $val->validateAttribute($m, 'description');
+        $this->assertTrue($m->hasErrors('description'));
+        $m->clearErrors('description');
+
+        // ID of Profile IS equal to ID of Customer
+        // (1, description = address1) <=> (1, address = address1)
+        // https://github.com/yiisoft/yii2/issues/10263
+        $m->description = 'address1';
+        $val->validateAttribute($m, 'description');
+        $this->assertTrue($m->hasErrors('description'));
     }
 }
