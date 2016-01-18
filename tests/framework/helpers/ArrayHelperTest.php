@@ -147,6 +147,32 @@ class ArrayHelperTest extends TestCase
         $this->assertEquals(['name' => 'B', 'age' => 4], $array[3]);
     }
 
+    public function testMultisortNestedObjects()
+    {
+        $obj1 = new \stdClass();
+        $obj1->type = "def";
+        $obj1->owner = $obj1;
+
+        $obj2 = new \stdClass();
+        $obj2->type = "abc";
+        $obj2->owner = $obj2;
+
+        $obj3 = new \stdClass();
+        $obj3->type = "abc";
+        $obj3->owner = $obj3;
+
+        $models = [
+            $obj1,
+            $obj2,
+            $obj3
+        ];
+
+        ArrayHelper::multisort($models, 'type', SORT_ASC);
+        $this->assertEquals($obj2, $models[0]);
+        $this->assertEquals($obj3, $models[1]);
+        $this->assertEquals($obj1, $models[2]);
+    }
+
     public function testMultisortUseSort()
     {
         // single key
