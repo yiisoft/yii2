@@ -28,7 +28,7 @@ class UrlValidator extends Validator
      * The pattern may contain a `{schemes}` token that will be replaced
      * by a regular expression which represents the [[validSchemes]].
      */
-    public $pattern = '/^{schemes}:\/\/(([A-Z0-9][A-Z0-9_-]*)(\.[A-Z0-9][A-Z0-9_-]*)+)/i';
+    public $pattern = '/^({schemes}:\\/\\/)(www\\.)?([0-9u0000-uFFFF]*\\.\\-)?([0-9u0000-uFFFF\\-]*)\\.([a-zA-Z]{2,6})?([u0000-uFFFF]{2,6})\\/?([u0000-uFFFF0-9_\\-\\?=\\.\\&])*?/i';
     /**
      * @var array list of URI schemes which should be considered valid. By default, http and https
      * are considered to be valid schemes.
