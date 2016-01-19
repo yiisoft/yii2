@@ -333,9 +333,11 @@ class Component extends Object
      */
     public function canGetProperty($name, $checkVars = true, $checkBehaviors = true)
     {
-        if (method_exists($this, 'get' . $name) || $checkVars && property_exists($this, $name)) {
+        if (parent::canGetProperty($name, $checkVars)) {
             return true;
-        } elseif ($checkBehaviors) {
+        }
+
+        if ($checkBehaviors) {
             $this->ensureBehaviors();
             foreach ($this->_behaviors as $behavior) {
                 if ($behavior->canGetProperty($name, $checkVars)) {
@@ -363,9 +365,11 @@ class Component extends Object
      */
     public function canSetProperty($name, $checkVars = true, $checkBehaviors = true)
     {
-        if (method_exists($this, 'set' . $name) || $checkVars && property_exists($this, $name)) {
+        if (parent::canSetProperty($name, $checkVars)) {
             return true;
-        } elseif ($checkBehaviors) {
+        }
+
+        if ($checkBehaviors) {
             $this->ensureBehaviors();
             foreach ($this->_behaviors as $behavior) {
                 if ($behavior->canSetProperty($name, $checkVars)) {
