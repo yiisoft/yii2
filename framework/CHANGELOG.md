@@ -43,6 +43,7 @@ Yii Framework 2 Change Log
 - Bug #10052: Fixed `yii\i18n\Formatter` to work with huge numbers on 32-bit arch (necrox87, silverfire)
 - Bug #10101: Fixed assignments saving on role removing in `\yii\rbac\PhpManager` (rezident1307)
 - Bug #10142: Fixed `yii\validators\EmailValidator` to check the length of email properly (silverfire)
+- Bug #10218: Fixed Flash messages not showing after logging out a user (andrewnester)
 - Bug #10263: Fixed `yii\validators\UniqueValidator` to work properly when model is not instance of `targetClass` (bupy7, githubjeka, silverfire)
 - Bug #10278: Fixed `yii\helpers\BaseJson` support \SimpleXMLElement data (SilverFire, LAV45)
 - Bug #10302: Fixed JS function `yii.getQueryParams`, which parsed array variables incorrectly (servocoder, silverfire)
