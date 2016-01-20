@@ -552,7 +552,7 @@ class Component extends Object
     /**
      * Returns the named behavior object.
      * @param string $name the behavior name
-     * @return Behavior the behavior object, or null if the behavior does not exist
+     * @return null|Behavior the behavior object, or null if the behavior does not exist
      */
     public function getBehavior($name)
     {
