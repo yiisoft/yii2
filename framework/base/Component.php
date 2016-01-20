@@ -610,7 +610,7 @@ class Component extends Object
      * Detaches a behavior from the component.
      * The behavior's [[Behavior::detach()]] method will be invoked.
      * @param string $name the behavior's name.
-     * @return Behavior the detached behavior. Null if the behavior does not exist.
+     * @return null|Behavior the detached behavior. Null if the behavior does not exist.
      */
     public function detachBehavior($name)
     {
