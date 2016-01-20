@@ -393,6 +393,7 @@
                     submitFinalize($form);
                     return false;
                 }
+                updateHiddenButton($form);
                 return true;   // continue submitting the form since validation passes
             } else {
                 // First submit's call (from yii.js/handleAction) - execute validating
@@ -574,21 +575,6 @@
                 data.submitting = false;
             } else {
                 data.validated = true;
-                var $button = data.submitObject || $form.find(':submit:first');
-                // TODO: if the submission is caused by "change" event, it will not work
-                if ($button.length && $button.attr('type') == 'submit' && $button.attr('name')) {
-                    // simulate button input value
-                    var $hiddenButton = $('input[type="hidden"][name="' + $button.attr('name') + '"]', $form);
-                    if (!$hiddenButton.length) {
-                        $('<input>').attr({
-                            type: 'hidden',
-                            name: $button.attr('name'),
-                            value: $button.attr('value')
-                        }).appendTo($form);
-                    } else {
-                        $hiddenButton.attr('value', $button.attr('value'));
-                    }
-                }
                 $form.submit();
             }
         } else {
@@ -599,6 +585,29 @@
             });
         }
         submitFinalize($form);
+    };
+
+    /**
+     * Updates hidden field that represents clicked submit button.
+     * @param $form the form jQuery object.
+     */
+    var updateHiddenButton = function ($form) {
+        var data = $form.data('yiiActiveForm');
+        var $button = data.submitObject || $form.find(':submit:first');
+        // TODO: if the submission is caused by "change" event, it will not work
+        if ($button.length && $button.attr('type') == 'submit' && $button.attr('name')) {
+            // simulate button input value
+            var $hiddenButton = $('input[type="hidden"][name="' + $button.attr('name') + '"]', $form);
+            if (!$hiddenButton.length) {
+                $('<input>').attr({
+                    type: 'hidden',
+                    name: $button.attr('name'),
+                    value: $button.attr('value')
+                }).appendTo($form);
+            } else {
+                $hiddenButton.attr('value', $button.attr('value'));
+            }
+        }
     };
 
     /**
