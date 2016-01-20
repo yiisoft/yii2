@@ -146,4 +146,59 @@ class RequestTest extends TestCase
         $this->assertEquals(['post/view', ['id' => 21, 'token' => 'secret']], $result);
         $this->assertEquals($_GET, ['id' => 63]);
     }
+
+    public function testGetHostInfo()
+    {
+        $request = new Request();
+
+        unset($_SERVER['SERVER_NAME'], $_SERVER['HTTP_HOST']);
+        $this->assertEquals(null, $request->getHostInfo());
+
+        $request->setHostInfo('http://servername.com:80');
+        $this->assertEquals('http://servername.com:80', $request->getHostInfo());
+    }
+
+    /**
+     * @expectedException \yii\base\InvalidConfigException
+     */
+    public function testGetScriptFileWithEmptyServer()
+    {
+        $request = new Request();
+        $_SERVER = [];
+
+        $request->getScriptFile();
+    }
+
+    /**
+     * @expectedException \yii\base\InvalidConfigException
+     */
+    public function testGetScriptUrlWithEmptyServer()
+    {
+        $request = new Request();
+        $_SERVER = [];
+
+        $request->getScriptUrl();
+    }
+
+    public function testGetServerName()
+    {
+        $request = new Request();
+
+        $_SERVER['SERVER_NAME'] = 'servername';
+        $this->assertEquals('servername', $request->getServerName());
+
+        unset($_SERVER['SERVER_NAME']);
+        $this->assertEquals(null, $request->getServerName());
+    }
+
+    public function testGetServerPort()
+    {
+        $request = new Request();
+
+        $_SERVER['SERVER_PORT'] = 33;
+        $this->assertEquals(33, $request->getServerPort());
+
+        unset($_SERVER['SERVER_PORT']);
+        $this->assertEquals(null, $request->getServerPort());
+    }
 }

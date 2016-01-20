@@ -102,6 +102,8 @@ Yii Framework 2 Change Log
 - Enh #10319: `yii\helpers\VarDumper::dump()` now respects PHP magic method `__debugInfo()` (klimov-paul)
 - Enh #10359: Support wildcard category name in `yii/console/controllers/MessageController` (rmrevin)
 - Enh #10390: Added ability to disable outer tag for `\yii\helpers\BaseHtml::radiolist()`, `::checkboxList()` (TianJinRong, githubjeka, silverfire)
+- Enh #10451: Check of existence of $_SERVER variables in `\yii\web\Request` (in getHostInfo(), getScriptUrl(), getServerName(), getServerPort(), getScriptFile()).
+  Methods getHostInfo(), getServerName(), getServerPort() now can return null, getScriptFile() can throw `\yii\base\InvalidConfigException` (quantum13)
 - Enh: Added last resort measure for `FileHelper::removeDirectory()` fail to unlink symlinks under Windows (samdark)
 - Chg #9369: `Yii::$app->user->can()` now returns `false` instead of erroring in case `authManager` component is not configured (creocoder)
 - Chg #9411: `DetailView` now automatically sets container tag ID in case it's not specified (samdark)
