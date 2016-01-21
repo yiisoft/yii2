@@ -54,6 +54,7 @@ Yii Framework 2 Change Log
 - Bug #10541: Fixed division by zero issue in `Console` helper progress bar (youmad)
 - Bug #10580: Fixed `yii\grid\GridView::guessColumns()` to work with numeric column names (silverfire)
 - Bug #10625: Fixed `activeForm.js` - when submit doesn't reload page, submit button value simulation with hidden input did not work (andrewnester)
+- Bug #10629: Fixed `yii\helpers\BaseStringHelper` - BaseStringHelper::truncateHtml adds suffix regardless of the string length (andrewnester)
 - Bug: Fixed generation of canonical URLs for `ViewAction` pages (samdark)
 - Bug: Fixed `mb_*` functions calls to use `UTF-8` or `Yii::$app->charset` (silverfire)
 - Enh #3506: Added `yii\validators\IpValidator` to perform validation of IP addresses and subnets (SilverFire, samdark)
