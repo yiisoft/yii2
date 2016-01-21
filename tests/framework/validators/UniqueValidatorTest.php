@@ -171,4 +171,44 @@ class UniqueValidatorTest extends DatabaseTestCase
         $val->validateAttribute($m, 'description');
         $this->assertTrue($m->hasErrors('description'));
     }
+
+    public function testValidateScopeNamespaceTargetClassForNewClass()
+    {
+        $validator = new UniqueValidator();
+
+        /** @var Profile $profileModel */
+        $profileModel = new Profile(['description'=>'profile customer 1']);
+        $validator->validateAttribute($profileModel, 'description');
+        $this->assertTrue($profileModel->hasErrors('description'));
+
+        $profileModel->clearErrors();
+        $validator->targetClass = 'yiiunit\data\ar\Profile';
+        $validator->validateAttribute($profileModel, 'description');
+        $this->assertTrue($profileModel->hasErrors('description'));
+
+        $profileModel->clearErrors();
+        $validator->targetClass = '\yiiunit\data\ar\Profile';
+        $validator->validateAttribute($profileModel, 'description');
+        $this->assertTrue($profileModel->hasErrors('description'));
+    }
+
+    public function testValidateScopeNamespaceTargetClass()
+    {
+        $validator = new UniqueValidator();
+
+        /** @var Profile $profileModel */
+        $profileModel = Profile::findOne(1);
+        $validator->validateAttribute($profileModel, 'description');
+        $this->assertFalse($profileModel->hasErrors('description'));
+
+        $profileModel->clearErrors();
+        $validator->targetClass = 'yiiunit\data\ar\Profile';
+        $validator->validateAttribute($profileModel, 'description');
+        $this->assertFalse($profileModel->hasErrors('description'));
+
+        $profileModel->clearErrors();
+        $validator->targetClass = '\yiiunit\data\ar\Profile';
+        $validator->validateAttribute($profileModel, 'description');
+        $this->assertFalse($profileModel->hasErrors('description'));
+    }
 }
