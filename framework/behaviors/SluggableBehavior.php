@@ -150,27 +150,21 @@ class SluggableBehavior extends AttributeBehavior
      */
     protected function isNewSlugNeeded()
     {
-        if ($this->ownersSlugValueIsEmpty())
+        if (empty($this->owner->{$this->slugAttribute})){
             return true;
+        }
 
-        if ($this->immutable)
+        if ($this->immutable){
             return false;
+        }
 
         foreach ((array) $this->attribute as $attribute) {
-            if ($this->owner->isAttributeChanged($attribute))
+            if ($this->owner->isAttributeChanged($attribute)){
                 return true;
+            }
         }
 
         return false;
-    }
-
-    /**
-     * checks if owner model already has a slug value or not.
-     * @return boolean
-     */
-    private function ownersSlugValueIsEmpty()
-    {
-        return empty($this->owner->{$this->slugAttribute});
     }
 
      /**
@@ -250,8 +244,7 @@ class SluggableBehavior extends AttributeBehavior
     {
         if (is_callable($this->uniqueSlugGenerator)) {
             return call_user_func($this->uniqueSlugGenerator, $baseSlug, $iteration, $this->owner);
-        } else {
-            return $baseSlug . '-' . ($iteration + 1);
         }
+        return $baseSlug . '-' . ($iteration + 1);
     }
 }
