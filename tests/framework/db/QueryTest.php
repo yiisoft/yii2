@@ -2,6 +2,7 @@
 
 namespace yiiunit\framework\db;
 
+use yii\db\Expression;
 use yii\db\Query;
 
 /**
@@ -166,6 +167,9 @@ class QueryTest extends DatabaseTestCase
 
         $query->addOrderBy('age ASC, company DESC');
         $this->assertEquals(['team' => SORT_ASC, 'company' => SORT_DESC, 'age' => SORT_ASC], $query->orderBy);
+
+        $query->orderBy(new Expression('CASE WHEN x = y THEN 0 ELSE 1 END DESC'));
+        $this->assertEquals(['CASE WHEN x = y THEN 0 ELSE 1 END' => SORT_DESC], $query->orderBy);
     }
 
     public function testLimitOffset()
