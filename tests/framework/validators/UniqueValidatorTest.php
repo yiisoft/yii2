@@ -34,6 +34,26 @@ class UniqueValidatorTest extends DatabaseTestCase
         $this->assertTrue(is_string($val->message));
     }
 
+    public function testValidateInvalidAttribute()
+    {
+        $validator = new UniqueValidator();
+        $messageError = Yii::t('yii', '{attribute} is invalid.', ['attribute' => 'Name']);
+
+        /** @var Customer $customerModel */
+        $customerModel = Customer::findOne(1);
+        $customerModel->name = ['test array data'];
+        $validator->validateAttribute($customerModel, 'name');
+        $this->assertEquals($messageError, $customerModel->getFirstError('name'));
+
+        $customerModel->clearErrors();
+
+        $customerModel->name = 'test data';
+        $customerModel->email = ['email@mail.com', 'email2@mail.com',];
+        $validator->targetAttribute = ['email', 'name'];
+        $validator->validateAttribute($customerModel, 'name');
+        $this->assertEquals($messageError, $customerModel->getFirstError('name'));
+    }
+
     public function testValidateAttributeDefault()
     {
         $val = new UniqueValidator();
