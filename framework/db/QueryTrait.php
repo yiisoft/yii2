@@ -305,7 +305,11 @@ trait QueryTrait
      */
     public function orderBy($columns)
     {
-        $this->orderBy = $this->normalizeOrderBy($columns);
+        if ($columns instanceof Expression) {
+            $this->orderBy = [$columns];
+        } else {
+            $this->orderBy = $this->normalizeOrderBy($columns);
+        }
         return $this;
     }
 
@@ -321,7 +325,12 @@ trait QueryTrait
      */
     public function addOrderBy($columns)
     {
-        $columns = $this->normalizeOrderBy($columns);
+        if ($columns instanceof Expression) {
+            $columns = [$columns];
+        } else {
+            $columns = $this->normalizeOrderBy($columns);
+        }
+
         if ($this->orderBy === null) {
             $this->orderBy = $columns;
         } else {
@@ -341,7 +350,7 @@ trait QueryTrait
         if (is_array($columns)) {
             return $columns;
         } else {
-            $columns = preg_split('/\s*,(?![^\(]*\))\s*/', trim($columns), -1, PREG_SPLIT_NO_EMPTY);
+            $columns = preg_split('/\s*,\s*/', trim($columns), -1, PREG_SPLIT_NO_EMPTY);
             $result = [];
             foreach ($columns as $column) {
                 if (preg_match('/^(.*?)\s+(asc|desc)$/i', $column, $matches)) {

@@ -583,4 +583,18 @@ class QueryBuilderTest extends DatabaseTestCase
         $this->assertEquals($expected, $sql);
         $this->assertEmpty($params);
     }
+
+    public function testOrderBy()
+    {
+        $query = (new Query())
+            ->select('*')
+            ->from('operations')
+            ->where('account_id = accounts.id')
+            ->orderBy(new Expression('SUBSTR(name, 3, 4) DESC, x ASC'));
+
+        list ($sql, $params) = $this->getQueryBuilder()->build($query);
+        $expected = $this->replaceQuotes('SELECT * FROM [[operations]] WHERE account_id = accounts.id ORDER BY SUBSTR(name, 3, 4) DESC, x ASC');
+        $this->assertEquals($expected, $sql);
+        $this->assertEmpty($params);
+    }
 }
