@@ -168,8 +168,8 @@ class QueryTest extends DatabaseTestCase
         $query->addOrderBy('age ASC, company DESC');
         $this->assertEquals(['team' => SORT_ASC, 'company' => SORT_DESC, 'age' => SORT_ASC], $query->orderBy);
 
-        $query->orderBy(new Expression('CASE WHEN x = y THEN 0 ELSE 1 END DESC, x ASC'));
-        $this->assertEquals(['CASE WHEN x = y THEN 0 ELSE 1 END' => SORT_DESC, 'x' => SORT_ASC], $query->orderBy);
+        $query->orderBy(new Expression('SUBSTR(name, 3, 4) DESC, x ASC'));
+        $this->assertEquals(['SUBSTR(name, 3, 4)' => SORT_DESC, 'x' => SORT_ASC], $query->orderBy);
     }
 
     public function testLimitOffset()

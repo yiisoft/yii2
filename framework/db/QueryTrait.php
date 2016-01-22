@@ -341,7 +341,7 @@ trait QueryTrait
         if (is_array($columns)) {
             return $columns;
         } else {
-            $columns = preg_split('/\s*,\s*/', trim($columns), -1, PREG_SPLIT_NO_EMPTY);
+            $columns = preg_split('/\s*,(?![^\(]*\))\s*/', trim($columns), -1, PREG_SPLIT_NO_EMPTY);
             $result = [];
             foreach ($columns as $column) {
                 if (preg_match('/^(.*?)\s+(asc|desc)$/i', $column, $matches)) {
