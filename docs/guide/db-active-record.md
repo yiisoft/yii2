@@ -1221,7 +1221,7 @@ The opposite operation to [[yii\db\ActiveRecord::link()|link()]] is [[yii\db\Act
 which breaks an existing relationship between two Active Record instances. For example,
 
 ```php
-$customer = Customer::find()->with('orders')->one();
+$customer = Customer::find()->with('orders')->where(['id' => 123])->one();
 $customer->unlink('orders', $customer->orders[0]);
 ```
 

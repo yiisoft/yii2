@@ -1246,7 +1246,7 @@ $order->link('items', $item);
 [[yii\db\ActiveRecord::unlink()|unlink()]], она снимает существующую связь с двух объектов Active Record. Например:
 
 ```php
-$customer = Customer::find()->with('orders')->all();
+$customer = Customer::find()->with('orders')->where(['id' => 123])->one();
 $customer->unlink('orders', $customer->orders[0]);
 ```
 
