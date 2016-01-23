@@ -307,7 +307,11 @@ trait QueryTrait
      */
     public function orderBy($columns)
     {
-        $this->orderBy = $this->normalizeOrderBy($columns);
+        if ($columns instanceof Expression) {
+            $this->orderBy = [$columns];
+        } else {
+            $this->orderBy = $this->normalizeOrderBy($columns);
+        }
         return $this;
     }
 
@@ -325,7 +329,12 @@ trait QueryTrait
      */
     public function addOrderBy($columns)
     {
-        $columns = $this->normalizeOrderBy($columns);
+        if ($columns instanceof Expression) {
+            $columns = [$columns];
+        } else {
+            $columns = $this->normalizeOrderBy($columns);
+        }
+
         if ($this->orderBy === null) {
             $this->orderBy = $columns;
         } else {
