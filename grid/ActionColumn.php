@@ -179,7 +179,7 @@ class ActionColumn extends Column
      */
     public function createUrl($action, $model, $key, $index)
     {
-        if ($this->urlCreator instanceof Closure) {
+        if (is_callable($this->urlCreator)) {
             return call_user_func($this->urlCreator, $action, $model, $key, $index);
         } else {
             $params = is_array($key) ? $key : ['id' => (string) $key];

@@ -33,14 +33,14 @@ use yii\helpers\FileHelper;
  *
  * It is possible to map a single path to multiple paths. For example,
  *
- * ~~~
+ * ```php
  * 'pathMap' => [
  *     '@app/views' => [
  *         '@app/themes/christmas',
  *         '@app/themes/basic',
  *     ],
  * ]
- * ~~~
+ * ```
  *
  * In this case, the themed version could be either `@app/themes/christmas/site/index.php` or
  * `@app/themes/basic/site/index.php`. The former has precedence over the latter if both files exist.
@@ -48,14 +48,14 @@ use yii\helpers\FileHelper;
  * To use a theme, you should configure the [[View::theme|theme]] property of the "view" application
  * component like the following:
  *
- * ~~~
+ * ```php
  * 'view' => [
  *     'theme' => [
  *         'basePath' => '@app/themes/basic',
  *         'baseUrl' => '@web/themes/basic',
  *     ],
  * ],
- * ~~~
+ * ```
  *
  * The above configuration specifies a theme located under the "themes/basic" directory of the Web folder
  * that contains the entry script of the application. If your theme is designed to handle modules,

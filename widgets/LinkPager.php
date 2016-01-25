@@ -16,7 +16,7 @@ use yii\data\Pagination;
 /**
  * LinkPager displays a list of hyperlinks that lead to different pages of target.
  *
- * LinkPager works with a [[Pagination]] object which specifies the totally number
+ * LinkPager works with a [[Pagination]] object which specifies the total number
  * of pages and the current page number.
  *
  * Note that LinkPager only generates the necessary HTML markups. In order for it
@@ -45,6 +45,7 @@ class LinkPager extends Widget
     public $linkOptions = [];
     /**
      * @var string the CSS class for the each page button.
+     * @since 2.0.7
      */
     public $pageCssClass = null;
     /**

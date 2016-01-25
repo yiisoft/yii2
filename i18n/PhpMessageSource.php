@@ -19,12 +19,12 @@ use Yii;
  * - Each PHP script is saved as a file named as `[[basePath]]/LanguageID/CategoryName.php`;
  * - Within each PHP script, the message translations are returned as an array like the following:
  *
- * ~~~
+ * ```php
  * return [
  *     'original message 1' => 'translated message 1',
  *     'original message 2' => 'translated message 2',
  * ];
- * ~~~
+ * ```
  *
  * You may use [[fileMap]] to customize the association between category names and the file names.
  *
@@ -41,12 +41,12 @@ class PhpMessageSource extends MessageSource
      * @var array mapping between message categories and the corresponding message file paths.
      * The file paths are relative to [[basePath]]. For example,
      *
-     * ~~~
+     * ```php
      * [
      *     'core' => 'core.php',
      *     'ext' => 'extensions.php',
      * ]
-     * ~~~
+     * ```
      */
     public $fileMap;
 
@@ -67,11 +67,11 @@ class PhpMessageSource extends MessageSource
         $messages = $this->loadMessagesFromFile($messageFile);
 
         $fallbackLanguage = substr($language, 0, 2);
-        if ($fallbackLanguage != $language) {
+        if ($fallbackLanguage !== $language) {
             $fallbackMessageFile = $this->getMessageFilePath($category, $fallbackLanguage);
             $fallbackMessages = $this->loadMessagesFromFile($fallbackMessageFile);
 
-            if ($messages === null && $fallbackMessages === null && $fallbackLanguage != $this->sourceLanguage) {
+            if ($messages === null && $fallbackMessages === null && $fallbackLanguage !== $this->sourceLanguage) {
                 Yii::error("The message file for category '$category' does not exist: $messageFile Fallback file does not exist as well: $fallbackMessageFile", __METHOD__);
             } elseif (empty($messages)) {
                 return $fallbackMessages;

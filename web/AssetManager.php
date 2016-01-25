@@ -54,13 +54,13 @@ class AssetManager extends Component
      * The following example shows how to disable the bootstrap css file used by Bootstrap widgets
      * (because you want to use your own styles):
      *
-     * ~~~
+     * ```php
      * [
      *     'yii\bootstrap\BootstrapAsset' => [
      *         'css' => [],
      *     ],
      * ]
-     * ~~~
+     * ```
      */
     public $bundles = [];
     /**
@@ -115,9 +115,9 @@ class AssetManager extends Component
      * to Web users. For example, for Apache Web server, the following configuration directive should be added
      * for the Web folder:
      *
-     * ~~~
+     * ```apache
      * Options FollowSymLinks
-     * ~~~
+     * ```
      */
     public $linkAssets = false;
     /**
@@ -299,8 +299,8 @@ class AssetManager extends Component
         if (($actualAsset = $this->resolveAsset($bundle, $asset)) !== false) {
             if (strncmp($actualAsset, '@web/', 5) === 0) {
                 $asset = substr($actualAsset, 5);
-                $basePath = Yii::getAlias("@webroot");
-                $baseUrl = Yii::getAlias("@web");
+                $basePath = Yii::getAlias('@webroot');
+                $baseUrl = Yii::getAlias('@web');
             } else {
                 $asset = Yii::getAlias($actualAsset);
                 $basePath = $this->basePath;
@@ -351,9 +351,9 @@ class AssetManager extends Component
             $asset = $bundle->sourcePath . '/' . $asset;
         }
 
-        $n = mb_strlen($asset);
+        $n = mb_strlen($asset, Yii::$app->charset);
         foreach ($this->assetMap as $from => $to) {
-            $n2 = mb_strlen($from);
+            $n2 = mb_strlen($from, Yii::$app->charset);
             if ($n2 <= $n && substr_compare($asset, $from, $n - $n2, $n2) === 0) {
                 return $to;
             }
@@ -516,6 +516,7 @@ class AssetManager extends Component
         $dstDir = $this->basePath . DIRECTORY_SEPARATOR . $dir;
         if ($this->linkAssets) {
             if (!is_dir($dstDir)) {
+                FileHelper::createDirectory(dirname($dstDir), $this->dirMode, true);
                 symlink($src, $dstDir);
             }
         } elseif (!empty($options['forceCopy']) || ($this->forceCopy && !isset($options['forceCopy'])) || !is_dir($dstDir)) {
@@ -549,7 +550,7 @@ class AssetManager extends Component
      * This method does not perform any publishing. It merely tells you
      * if the file or directory is published, where it will go.
      * @param string $path directory or file path being published
-     * @return string the published file path. False if the file or directory does not exist
+     * @return string|false string the published file path. False if the file or directory does not exist
      */
     public function getPublishedPath($path)
     {
@@ -570,7 +571,7 @@ class AssetManager extends Component
      * This method does not perform any publishing. It merely tells you
      * if the file path is published, what the URL will be to access it.
      * @param string $path directory or file path being published
-     * @return string the published URL for the file or directory. False if the file or directory does not exist.
+     * @return string|false string the published URL for the file or directory. False if the file or directory does not exist.
      */
     public function getPublishedUrl($path)
     {

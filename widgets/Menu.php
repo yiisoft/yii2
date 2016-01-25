@@ -27,7 +27,7 @@ use yii\helpers\Html;
  *
  * The following example shows how to use Menu:
  *
- * ~~~
+ * ```php
  * echo Menu::widget([
  *     'items' => [
  *         // Important: you need to specify url as 'controller/action',
@@ -41,7 +41,7 @@ use yii\helpers\Html;
  *         ['label' => 'Login', 'url' => ['site/login'], 'visible' => Yii::$app->user->isGuest],
  *     ],
  * ]);
- * ~~~
+ * ```
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0

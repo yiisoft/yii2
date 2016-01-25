@@ -61,7 +61,7 @@ class BaseStringHelper
      */
     public static function basename($path, $suffix = '')
     {
-        if (($len = mb_strlen($suffix)) > 0 && mb_substr($path, -$len) == $suffix) {
+        if (($len = mb_strlen($suffix)) > 0 && mb_substr($path, -$len) === $suffix) {
             $path = mb_substr($path, 0, -$len);
         }
         $path = rtrim(str_replace('\\', '/', $path), '/\\');
@@ -187,7 +187,7 @@ class BaseStringHelper
         }
         $context = new \HTMLPurifier_Context();
         $generator = new \HTMLPurifier_Generator($config, $context);
-        return $generator->generateFromTokens($truncated) . $suffix;
+        return $generator->generateFromTokens($truncated) . ($totalCount >= $count ? $suffix : '');
     }
 
     /**
@@ -264,7 +264,9 @@ class BaseStringHelper
         }
         if ($skipEmpty) {
             // Wrapped with array_values to make array keys sequential after empty values removing
-            $result = array_values(array_filter($result));
+            $result = array_values(array_filter($result, function ($value) {
+                return $value !== '';
+            }));
         }
         return $result;
     }

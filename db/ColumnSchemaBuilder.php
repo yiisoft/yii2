@@ -46,6 +46,10 @@ class ColumnSchemaBuilder extends Object
      * @var mixed default value of the column.
      */
     protected $default;
+    /**
+     * @var boolean whether the column values should be unsigned. If this is `true`, an `UNSIGNED` keyword will be added.
+     */
+    protected $isUnsigned = false;
 
 
     /**
@@ -105,6 +109,28 @@ class ColumnSchemaBuilder extends Object
     }
 
     /**
+     * Marks column as unsigned.
+     * @return $this
+     * @since 2.0.7
+     */
+    public function unsigned()
+    {
+        $this->isUnsigned = true;
+        return $this;
+    }
+
+    /**
+     * Specify the default SQL expression for the column.
+     * @param string $default the default value expression.
+     * @return $this
+     */
+    public function defaultExpression($default)
+    {
+        $this->default = new Expression($default);
+        return $this;
+    }
+
+    /**
      * Build full string for create the column's schema
      * @return string
      */
@@ -113,6 +139,7 @@ class ColumnSchemaBuilder extends Object
         return
             $this->type .
             $this->buildLengthString() .
+            $this->buildUnsignedString() .
             $this->buildNotNullString() .
             $this->buildUniqueString() .
             $this->buildDefaultString() .
@@ -174,6 +201,9 @@ class ColumnSchemaBuilder extends Object
             case 'boolean':
                 $string .= $this->default ? 'TRUE' : 'FALSE';
                 break;
+            case 'object':
+                $string .= (string) $this->default;
+                break;
             default:
                 $string .= "'{$this->default}'";
         }
@@ -188,5 +218,14 @@ class ColumnSchemaBuilder extends Object
     protected function buildCheckString()
     {
         return $this->check !== null ? " CHECK ({$this->check})" : '';
+    }
+
+    /**
+     * Builds the unsigned string for column.
+     * @return string a string containing UNSIGNED keyword.
+     */
+    protected function buildUnsignedString()
+    {
+        return $this->isUnsigned ? ' UNSIGNED' : '';
     }
 }

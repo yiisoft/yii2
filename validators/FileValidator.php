@@ -55,15 +55,20 @@ class FileValidator extends Validator
     /**
      * @var integer the maximum number of bytes required for the uploaded file.
      * Defaults to null, meaning no limit.
-     * Note, the size limit is also affected by 'upload_max_filesize' INI setting
+     * Note, the size limit is also affected by `upload_max_filesize` INI setting
      * and the 'MAX_FILE_SIZE' hidden field value.
+     * @see http://php.net/manual/en/ini.core.php#ini.upload-max-filesize
      * @see tooBig for the customized message for a file that is too big.
      */
     public $maxSize;
     /**
      * @var integer the maximum file count the given attribute can hold.
-     * It defaults to 1, meaning single file upload. By defining a higher number,
-     * multiple uploads become possible.
+     * Defaults to 1, meaning single file upload. By defining a higher number,
+     * multiple uploads become possible. Setting it to `0` means there is no limit on
+     * the number of files that can be uploaded simultaneously.
+     * > Note: The maximum number of files allowed to be uploaded simultaneously is
+     * also limited with PHP directive `max_file_uploads`, which defaults to 20.
+     * @see http://php.net/manual/en/ini.core.php#ini.max-file-uploads
      * @see tooMany for the customized message when too many files are uploaded.
      */
     public $maxFiles = 1;
@@ -84,6 +89,8 @@ class FileValidator extends Validator
      * - {attribute}: the attribute name
      * - {file}: the uploaded file name
      * - {limit}: the maximum size allowed (see [[getSizeLimit()]])
+     * - {formattedLimit}: the maximum size formatted
+     * with [[\yii\i18n\Formatter::asShortSize()|Formatter::asShortSize()]]
      */
     public $tooBig;
     /**
@@ -93,6 +100,8 @@ class FileValidator extends Validator
      * - {attribute}: the attribute name
      * - {file}: the uploaded file name
      * - {limit}: the value of [[minSize]]
+     * - {formattedLimit}: the value of [[minSize]] formatted
+     * with [[\yii\i18n\Formatter::asShortSize()|Formatter::asShortSize()]
      */
     public $tooSmall;
     /**
@@ -143,10 +152,10 @@ class FileValidator extends Validator
             $this->wrongExtension = Yii::t('yii', 'Only files with these extensions are allowed: {extensions}.');
         }
         if ($this->tooBig === null) {
-            $this->tooBig = Yii::t('yii', 'The file "{file}" is too big. Its size cannot exceed {limit, number} {limit, plural, one{byte} other{bytes}}.');
+            $this->tooBig = Yii::t('yii', 'The file "{file}" is too big. Its size cannot exceed {formattedLimit}.');
         }
         if ($this->tooSmall === null) {
-            $this->tooSmall = Yii::t('yii', 'The file "{file}" is too small. Its size cannot be smaller than {limit, number} {limit, plural, one{byte} other{bytes}}.');
+            $this->tooSmall = Yii::t('yii', 'The file "{file}" is too small. Its size cannot be smaller than {formattedLimit}.');
         }
         if (!is_array($this->extensions)) {
             $this->extensions = preg_split('/[\s,]+/', strtolower($this->extensions), -1, PREG_SPLIT_NO_EMPTY);
@@ -168,7 +177,7 @@ class FileValidator extends Validator
      */
     public function validateAttribute($model, $attribute)
     {
-        if ($this->maxFiles > 1) {
+        if ($this->maxFiles != 1) {
             $files = $model->$attribute;
             if (!is_array($files)) {
                 $this->addError($model, $attribute, $this->uploadRequired);
@@ -184,7 +193,7 @@ class FileValidator extends Validator
             if (empty($files)) {
                 $this->addError($model, $attribute, $this->uploadRequired);
             }
-            if (count($files) > $this->maxFiles) {
+            if ($this->maxFiles && count($files) > $this->maxFiles) {
                 $this->addError($model, $attribute, $this->tooMany, ['limit' => $this->maxFiles]);
             } else {
                 foreach ($files as $file) {
@@ -213,10 +222,24 @@ class FileValidator extends Validator
 
         switch ($file->error) {
             case UPLOAD_ERR_OK:
-                if ($this->maxSize !== null && $file->size > $this->maxSize) {
-                    return [$this->tooBig, ['file' => $file->name, 'limit' => $this->getSizeLimit()]];
+                if ($this->maxSize !== null && $file->size > $this->getSizeLimit()) {
+                    return [
+                        $this->tooBig,
+                        [
+                            'file' => $file->name,
+                            'limit' => $this->getSizeLimit(),
+                            'formattedLimit' => Yii::$app->formatter->asShortSize($this->getSizeLimit())
+                        ]
+                    ];
                 } elseif ($this->minSize !== null && $file->size < $this->minSize) {
-                    return [$this->tooSmall, ['file' => $file->name, 'limit' => $this->minSize]];
+                    return [
+                        $this->tooSmall,
+                        [
+                            'file' => $file->name,
+                            'limit' => $this->minSize,
+                            'formattedLimit' => Yii::$app->formatter->asShortSize($this->minSize)
+                        ]
+                    ];
                 } elseif (!empty($this->extensions) && !$this->validateExtension($file)) {
                     return [$this->wrongExtension, ['file' => $file->name, 'extensions' => implode(', ', $this->extensions)]];
                 } elseif (!empty($this->mimeTypes) &&  !in_array(FileHelper::getMimeType($file->tempName), $this->mimeTypes, false)) {
@@ -226,7 +249,11 @@ class FileValidator extends Validator
                 }
             case UPLOAD_ERR_INI_SIZE:
             case UPLOAD_ERR_FORM_SIZE:
-                return [$this->tooBig, ['file' => $file->name, 'limit' => $this->getSizeLimit()]];
+                return [$this->tooBig, [
+                    'file' => $file->name,
+                    'limit' => $this->getSizeLimit(),
+                    'formattedLimit' => Yii::$app->formatter->asShortSize($this->minSize)
+                ]];
             case UPLOAD_ERR_PARTIAL:
                 Yii::warning('File was only partially uploaded: ' . $file->name, __METHOD__);
                 break;
@@ -315,7 +342,7 @@ class FileValidator extends Validator
      */
     protected function validateExtension($file)
     {
-        $extension = mb_strtolower($file->extension, 'utf-8');
+        $extension = mb_strtolower($file->extension, 'UTF-8');
 
         if ($this->checkExtensionByMimeType) {
 
@@ -394,6 +421,7 @@ class FileValidator extends Validator
             $options['tooSmall'] = Yii::$app->getI18n()->format($this->tooSmall, [
                 'attribute' => $label,
                 'limit' => $this->minSize,
+                'formattedLimit' => Yii::$app->formatter->asShortSize($this->minSize),
             ], Yii::$app->language);
         }
 
@@ -401,7 +429,8 @@ class FileValidator extends Validator
             $options['maxSize'] = $this->maxSize;
             $options['tooBig'] = Yii::$app->getI18n()->format($this->tooBig, [
                 'attribute' => $label,
-                'limit' => $this->maxSize,
+                'limit' => $this->getSizeLimit(),
+                'formattedLimit' => Yii::$app->formatter->asShortSize($this->getSizeLimit()),
             ], Yii::$app->language);
         }
 

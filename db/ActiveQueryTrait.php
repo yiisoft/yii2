@@ -55,27 +55,27 @@ trait ActiveQueryTrait
      *
      * The following are some usage examples:
      *
-     * ~~~
+     * ```php
      * // find customers together with their orders and country
      * Customer::find()->with('orders', 'country')->all();
      * // find customers together with their orders and the orders' shipping address
      * Customer::find()->with('orders.address')->all();
      * // find customers together with their country and orders of status 1
      * Customer::find()->with([
-     *     'orders' => function ($query) {
+     *     'orders' => function (\yii\db\ActiveQuery $query) {
      *         $query->andWhere('status = 1');
      *     },
      *     'country',
      * ])->all();
-     * ~~~
+     * ```
      *
      * You can call `with()` multiple times. Each call will add relations to the existing ones.
      * For example, the following two statements are equivalent:
      *
-     * ~~~
+     * ```php
      * Customer::find()->with('orders', 'country')->all();
      * Customer::find()->with('orders')->with('country')->all();
-     * ~~~
+     * ```
      *
      * @return $this the query object itself
      */
