@@ -225,7 +225,7 @@ class {$class} extends Migration
 {
     public function up()
     {
-        \$this->createTable('test', [
+        \$this->createTable('{{%test}}', [
             'id' => \$this->primaryKey(),
             'title' => \$this->string(10)->notNull()->unique()->defaultValue("test"),
             'body' => \$this->text()->notNull()
@@ -234,7 +234,7 @@ class {$class} extends Migration
 
     public function down()
     {
-        \$this->dropTable('test');
+        \$this->dropTable('{{%test}}');
     }
 }
 
@@ -256,7 +256,7 @@ class {$class} extends Migration
 {
     public function up()
     {
-        \$this->createTable('test', [
+        \$this->createTable('{{%test}}', [
             'title' => \$this->primaryKey(),
             'body' => \$this->text()->notNull()
         ]);
@@ -264,7 +264,7 @@ class {$class} extends Migration
 
     public function down()
     {
-        \$this->dropTable('test');
+        \$this->dropTable('{{%test}}');
     }
 }
 
@@ -285,14 +285,14 @@ class {$class} extends Migration
 {
     public function up()
     {
-        \$this->createTable('test', [
+        \$this->createTable('{{%test}}', [
             'id' => \$this->primaryKey()
         ]);
     }
 
     public function down()
     {
-        \$this->dropTable('test');
+        \$this->dropTable('{{%test}}');
     }
 }
 
@@ -318,12 +318,12 @@ class {$class} extends Migration
 {
     public function up()
     {
-        \$this->dropTable('test');
+        \$this->dropTable('{{%test}}');
     }
 
     public function down()
     {
-        \$this->createTable('test', [
+        \$this->createTable('{{%test}}', [
             'id' => \$this->primaryKey()
         ]);
     }
@@ -347,12 +347,12 @@ class {$class} extends Migration
 {
     public function up()
     {
-        \$this->dropTable('test');
+        \$this->dropTable('{{%test}}');
     }
 
     public function down()
     {
-        \$this->createTable('test', [
+        \$this->createTable('{{%test}}', [
             'id' => \$this->primaryKey(),
             'body' => \$this->text()->notNull()
         ]);
@@ -377,12 +377,12 @@ class {$class} extends Migration
 {
     public function up()
     {
-        \$this->dropTable('test');
+        \$this->dropTable('{{%test}}');
     }
 
     public function down()
     {
-        \$this->createTable('test', [
+        \$this->createTable('{{%test}}', [
             'title' => \$this->primaryKey(),
             'body' => \$this->text()->notNull()
         ]);
@@ -412,16 +412,16 @@ class {$class} extends Migration
 {
     public function up()
     {
-        \$this->addColumn('test', 'title', \$this->string(10)->notNull());
-        \$this->addColumn('test', 'body', \$this->text()->notNull());
-        \$this->addColumn('test', 'created_at', \$this->dateTime());
+        \$this->addColumn('{{%test}}', 'title', \$this->string(10)->notNull());
+        \$this->addColumn('{{%test}}', 'body', \$this->text()->notNull());
+        \$this->addColumn('{{%test}}', 'created_at', \$this->dateTime());
     }
 
     public function down()
     {
-        \$this->dropColumn('test', 'title');
-        \$this->dropColumn('test', 'body');
-        \$this->dropColumn('test', 'created_at');
+        \$this->dropColumn('{{%test}}', 'title');
+        \$this->dropColumn('{{%test}}', 'body');
+        \$this->dropColumn('{{%test}}', 'created_at');
     }
 }
 
@@ -448,16 +448,16 @@ class {$class} extends Migration
 {
     public function up()
     {
-        \$this->dropColumn('test', 'title');
-        \$this->dropColumn('test', 'body');
-        \$this->dropColumn('test', 'created_at');
+        \$this->dropColumn('{{%test}}', 'title');
+        \$this->dropColumn('{{%test}}', 'body');
+        \$this->dropColumn('{{%test}}', 'created_at');
     }
 
     public function down()
     {
-        \$this->addColumn('test', 'title', \$this->string(10)->notNull());
-        \$this->addColumn('test', 'body', \$this->text()->notNull());
-        \$this->addColumn('test', 'created_at', \$this->dateTime());
+        \$this->addColumn('{{%test}}', 'title', \$this->string(10)->notNull());
+        \$this->addColumn('{{%test}}', 'body', \$this->text()->notNull());
+        \$this->addColumn('{{%test}}', 'created_at', \$this->dateTime());
     }
 }
 
@@ -480,16 +480,16 @@ class {$class} extends Migration
 {
     public function up()
     {
-        \$this->dropColumn('test', 'title');
-        \$this->dropColumn('test', 'body');
-        \$this->dropColumn('test', 'created_at');
+        \$this->dropColumn('{{%test}}', 'title');
+        \$this->dropColumn('{{%test}}', 'body');
+        \$this->dropColumn('{{%test}}', 'created_at');
     }
 
     public function down()
     {
-        \$this->addColumn('test', 'title', \$this->string(10)->notNull());
-        \$this->addColumn('test', 'body', \$this->text()->notNull());
-        \$this->addColumn('test', 'created_at', \$this->dateTime());
+        \$this->addColumn('{{%test}}', 'title', \$this->string(10)->notNull());
+        \$this->addColumn('{{%test}}', 'body', \$this->text()->notNull());
+        \$this->addColumn('{{%test}}', 'created_at', \$this->dateTime());
     }
 }
 
@@ -515,22 +515,22 @@ class {$class} extends Migration
 {
     public function up()
     {
-        \$this->createTable('post_tag', [
+        \$this->createTable('{{%post_tag}}', [
             'post_id' => \$this->integer(),
             'tag_id' => \$this->integer(),
             'PRIMARY KEY(post_id, tag_id)'
         ]);
 
-        \$this->createIndex('idx-post_tag-post_id', 'post_tag', 'post_id');
-        \$this->createIndex('idx-post_tag-tag_id', 'post_tag', 'tag_id');
+        \$this->createIndex('{{%idx-post_tag-post_id}}', '{{%post_tag}}', 'post_id');
+        \$this->createIndex('{{%idx-post_tag-tag_id}}', '{{%post_tag}}', 'tag_id');
 
-        \$this->addForeignKey('fk-post_tag-post_id', 'post_tag', 'post_id', 'post', 'id', 'CASCADE');
-        \$this->addForeignKey('fk-post_tag-tag_id', 'post_tag', 'tag_id', 'tag', 'id', 'CASCADE');
+        \$this->addForeignKey('{{%fk-post_tag-post_id}}', '{{%post_tag}}', 'post_id', '{{%post}}', 'id', 'CASCADE');
+        \$this->addForeignKey('{{%fk-post_tag-tag_id}}', '{{%post_tag}}', 'tag_id', '{{%tag}}', 'id', 'CASCADE');
     }
 
     public function down()
     {
-        \$this->dropTable('post_tag');
+        \$this->dropTable('{{%post_tag}}');
     }
 }
 
