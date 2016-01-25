@@ -32,29 +32,29 @@ class ActionColumnTest extends \yiiunit\TestCase
         $this->assertContains('update_button', $columnContents);
 
         //test visible button
-        $column->buttonsVisible = [
+        $column->visibleButtons = [
             'update' => true
         ];
         $columnContents = $column->renderDataCell(['id' => 1], 1, 0);
         $this->assertContains('update_button', $columnContents);
 
         //test visible button (condition is callback)
-        $column->buttonsVisible = [
-            'update' => function($model){return $model['id'] == 1;}
+        $column->visibleButtons = [
+            'update' => function($model, $key, $index){return $model['id'] == 1;}
         ];
         $columnContents = $column->renderDataCell(['id' => 1], 1, 0);
         $this->assertContains('update_button', $columnContents);
 
         //test invisible button
-        $column->buttonsVisible = [
+        $column->visibleButtons = [
             'update' => false
         ];
         $columnContents = $column->renderDataCell(['id' => 1], 1, 0);
         $this->assertNotContains('update_button', $columnContents);
 
         //test invisible button (condition is callback)
-        $column->buttonsVisible = [
-            'update' => function($model){return $model['id'] != 1;}
+        $column->visibleButtons = [
+            'update' => function($model, $key, $index){return $model['id'] != 1;}
         ];
         $columnContents = $column->renderDataCell(['id' => 1], 1, 0);
         $this->assertNotContains('update_button', $columnContents);
