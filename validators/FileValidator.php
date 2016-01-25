@@ -252,7 +252,7 @@ class FileValidator extends Validator
                 return [$this->tooBig, [
                     'file' => $file->name,
                     'limit' => $this->getSizeLimit(),
-                    'formattedLimit' => Yii::$app->formatter->asShortSize($this->minSize)
+                    'formattedLimit' => Yii::$app->formatter->asShortSize($this->getSizeLimit())
                 ]];
             case UPLOAD_ERR_PARTIAL:
                 Yii::warning('File was only partially uploaded: ' . $file->name, __METHOD__);
