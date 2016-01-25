@@ -429,6 +429,8 @@ EOD;
         $this->stdout("Extracting messages from $coloredFileName...\n");
 
         $subject = file_get_contents($fileName);
+        $subject = preg_replace("/<\?[^a-zA-Z0-9\=]*/", '<?php ', $subject);
+
         $messages = [];
         foreach ((array) $translator as $currentTranslator) {
             $translatorTokens = token_get_all('<?php ' . $currentTranslator);

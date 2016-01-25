@@ -88,6 +88,18 @@ abstract class BaseMessageControllerTest extends TestCase
     }
 
     /**
+     * Creates source file with given content and short tag
+     * @param string $content file content
+     * @return string path to source file
+     */
+    protected function createSourceFileWithShortTag($content)
+    {
+        $fileName = $this->sourcePath . DIRECTORY_SEPARATOR . md5(uniqid()) . '.php';
+        file_put_contents($fileName, "<?\n" . $content);
+        return $fileName;
+    }
+
+    /**
      * Saves messages
      *
      * @param array $messages
@@ -192,6 +204,25 @@ abstract class BaseMessageControllerTest extends TestCase
         $this->assertArrayHasKey($existingMessage, $messages, "Unable to keep existing message: \"$existingMessage\". Command output:\n\n" . $out);
         $this->assertEquals('', $messages[$newMessage], "Wrong new message content. Command output:\n\n" . $out);
         $this->assertEquals($existingMessageTranslation, $messages[$existingMessage], "Unable to keep existing message content. Command output:\n\n" . $out);
+    }
+
+    /**
+     *
+     */
+    public function testExtractShortTag()
+    {
+        $category = 'category';
+        $message = 'message';
+        $sourceFileContent = "Yii::t('{$category}', '{$message}');";
+
+        $this->createSourceFileWithShortTag($sourceFileContent);
+
+        $this->saveConfigFile($this->getConfig());
+        $out = $this->runMessageControllerAction('extract', [$this->configFileName]);
+
+        $messages = $this->loadMessages($category);
+        $this->assertArrayHasKey($message, $messages, "There is no message: \"$message\". Command output:\n\n" . $out);
+        $this->assertEquals('', $messages[$message], "Wrong new message content. Command output:\n\n" . $out);
     }
 
     /**
