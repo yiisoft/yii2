@@ -16,12 +16,12 @@ class <?= $className ?> extends Migration
 {
     public function up()
     {
-        $this->dropTable('<?= $table ?>');
+        $this->dropTable('{{%<?= $table ?>}}');
     }
 
     public function down()
     {
-        $this->createTable('<?= $table ?>', [
+        $this->createTable('{{%<?= $table ?>}}', [
 <?php foreach ($fields as $field): ?>
 <?php if ($field == end($fields)): ?>
             '<?= $field['property'] ?>' => $this-><?= $field['decorators'] . "\n"?>

@@ -17,21 +17,21 @@ class <?= $className ?> extends Migration
 {
     public function up()
     {
-        $this->createTable('<?= $table ?>', [
+        $this->createTable('{{%<?= $table ?>}}', [
             '<?= $field_first ?>_id' => $this->integer(),
             '<?= $field_second ?>_id' => $this->integer(),
             'PRIMARY KEY(<?= $field_first ?>_id, <?= $field_second ?>_id)'
         ]);
 
-        $this->createIndex('idx-<?= $table . '-' . $field_first ?>_id', '<?= $table ?>', '<?= $field_first ?>_id');
-        $this->createIndex('idx-<?= $table . '-' . $field_second ?>_id', '<?= $table ?>', '<?= $field_second ?>_id');
+        $this->createIndex('{{%idx-<?= $table . '-' . $field_first ?>_id}}', '{{%<?= $table ?>}}', '<?= $field_first ?>_id');
+        $this->createIndex('{{%idx-<?= $table . '-' . $field_second ?>_id}}', '{{%<?= $table ?>}}', '<?= $field_second ?>_id');
 
-        $this->addForeignKey('fk-<?= $table . '-' . $field_first ?>_id', '<?= $table ?>', '<?= $field_first ?>_id', '<?= $field_first ?>', 'id', 'CASCADE');
-        $this->addForeignKey('fk-<?= $table . '-' . $field_second ?>_id', '<?= $table ?>', '<?= $field_second ?>_id', '<?= $field_second ?>', 'id', 'CASCADE');
+        $this->addForeignKey('{{%fk-<?= $table . '-' . $field_first ?>_id}}', '{{%<?= $table ?>}}', '<?= $field_first ?>_id', '{{%<?= $field_first ?>}}', 'id', 'CASCADE');
+        $this->addForeignKey('{{%fk-<?= $table . '-' . $field_second ?>_id}}', '{{%<?= $table ?>}}', '<?= $field_second ?>_id', '{{%<?= $field_second ?>}}', 'id', 'CASCADE');
     }
 
     public function down()
     {
-        $this->dropTable('<?= $table ?>');
+        $this->dropTable('{{%<?= $table ?>}}');
     }
 }

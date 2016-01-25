@@ -69,8 +69,8 @@ class m141106_185632_log_init extends Migration
                 'message' => $this->text(),
             ], $tableOptions);
 
-            $this->createIndex('idx_log_level', $target->logTable, 'level');
-            $this->createIndex('idx_log_category', $target->logTable, 'category');
+            $this->createIndex('{{%idx-log-level}}', $target->logTable, 'level');
+            $this->createIndex('{{%idx-log-category}}', $target->logTable, 'category');
         }
     }
 
