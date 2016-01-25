@@ -46,7 +46,7 @@ public function actionView($id)
 * [[yii\filters\ContentNegotiator|contentNegotiator]]: 支持内容协商，在 [响应格式化](rest-response-formatting.md) 一节描述;
 * [[yii\filters\VerbFilter|verbFilter]]: 支持HTTP 方法验证;
   the [Authentication](rest-authentication.md) section;
-* [[yii\filters\AuthMethod|authenticator]]: 支持用户认证，在[认证](rest-authentication.md)一节描述;
+* [[yii\filters\auth\AuthMethod|authenticator]]: 支持用户认证，在[认证](rest-authentication.md)一节描述;
 * [[yii\filters\RateLimiter|rateLimiter]]: 支持频率限制，在[频率限制](rest-rate-limiting.md) 一节描述.
 
 这些过滤器都在[[yii\rest\Controller::behaviors()|behaviors()]]方法中声明，
@@ -69,7 +69,7 @@ public function behaviors()
 
 ## 继承 `ActiveController` <span id="extending-active-controller"></span>
 
-如果你的控制器继承[[yii\rest\ActiveController]]，应设置[[yii\rest\ActiveController::modelClass||modelClass]] 属性
+如果你的控制器继承[[yii\rest\ActiveController]]，应设置[[yii\rest\ActiveController::modelClass|modelClass]] 属性
 为通过该控制器返回给用户的资源类名，该类必须继承[[yii\db\ActiveRecord]].
 
 
@@ -140,4 +140,4 @@ public function checkAccess($action, $model = null, $params = [])
 `checkAccess()` 方法默认会被[[yii\rest\ActiveController]]默认操作所调用，如果创建新的操作并想执行权限检查，
 应在新的操作中明确调用该方法。
 
-> 提示: 可使用[Role-Based Access Control (RBAC) 基于角色权限控制组件](security-authorization.md)实现`checkAccess()`。
+> Tip: 可使用[Role-Based Access Control (RBAC) 基于角色权限控制组件](security-authorization.md)实现`checkAccess()`。

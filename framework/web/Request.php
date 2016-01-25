@@ -1011,11 +1011,11 @@ class Request extends \yii\base\Request
      */
     public function getContentType()
     {
-        if (isset($_SERVER["CONTENT_TYPE"])) {
-            return $_SERVER["CONTENT_TYPE"];
-        } elseif (isset($_SERVER["HTTP_CONTENT_TYPE"])) {
+        if (isset($_SERVER['CONTENT_TYPE'])) {
+            return $_SERVER['CONTENT_TYPE'];
+        } elseif (isset($_SERVER['HTTP_CONTENT_TYPE'])) {
             //fix bug https://bugs.php.net/bug.php?id=66606
-            return $_SERVER["HTTP_CONTENT_TYPE"];
+            return $_SERVER['HTTP_CONTENT_TYPE'];
         }
 
         return null;
@@ -1183,7 +1183,7 @@ class Request extends \yii\base\Request
      * Returns the cookie collection.
      * Through the returned cookie collection, you may access a cookie using the following syntax:
      *
-     * ~~~
+     * ```php
      * $cookie = $request->cookies['name']
      * if ($cookie !== null) {
      *     $value = $cookie->value;
@@ -1191,7 +1191,7 @@ class Request extends \yii\base\Request
      *
      * // alternatively
      * $value = $request->cookies->getValue('name');
-     * ~~~
+     * ```
      *
      * @return CookieCollection the cookie collection.
      */

@@ -79,7 +79,7 @@ public function fields()
 }
 ```
 
-> 警告: 模型的所有属性默认会被包含到API结果中，应检查数据确保没包含敏感数据，如果有敏感数据，
+> Warning: 模型的所有属性默认会被包含到API结果中，应检查数据确保没包含敏感数据，如果有敏感数据，
 > 应覆盖`fields()`过滤掉，在上述例子中，我们选择过滤掉 `auth_key`, `password_hash` 和 `password_reset_token`.
 
 

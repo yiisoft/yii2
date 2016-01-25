@@ -37,7 +37,7 @@ Em particular, os seguintes filtros serão executados na ordem em que estão lis
 
 * [[yii\filters\ContentNegotiator|contentNegotiator]]: suporta a negociação de conteúdo, a ser explicado na seção [Formatação de Resposta](rest-response-formatting.md);
 * [[yii\filters\VerbFilter|verbFilter]]: suporta validação de métodos HTTP;
-* [[yii\filters\AuthMethod|authenticator]]: suporta autenticação de usuários, que será explicado na seção [Autenticação](rest-authentication.md);
+* [[yii\filters\auth\AuthMethod|authenticator]]: suporta autenticação de usuários, que será explicado na seção [Autenticação](rest-authentication.md);
 * [[yii\filters\RateLimiter|rateLimiter]]: suporta limitação de taxa, que será explicado na seção
  [Limitação de taxa](rest-rate-limiting.md).
 

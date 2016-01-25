@@ -319,14 +319,14 @@ foreach (Customer::find()->each(10) as $customer) {
 
 // batch query with eager loading
 foreach (Customer::find()->with('orders')->each() as $customer) {
-    // $customer is a Customer object
+    // $customer is a Customer object with the 'orders' relation populated
 }
 ```
 
 
 ## Saving Data <span id="inserting-updating-data"></span>
 
-Using Active Record, you can easily save data to database by taking the following steps:
+Using Active Record, you can easily save data to the database by taking the following steps:
 
 1. Prepare an Active Record instance
 2. Assign new values to Active Record attributes
@@ -406,7 +406,7 @@ $customer->save();
 
 ### Updating Counters <span id="updating-counters"></span>
 
-It is a common task to increment or decrement a column in a database table. We call such columns as counter columns.
+It is a common task to increment or decrement a column in a database table. We call these columns "counter columns".
 You can use [[yii\db\ActiveRecord::updateCounters()|updateCounters()]] to update one or multiple counter columns.
 For example,
 
@@ -504,7 +504,7 @@ to get a chance to customize the life cycle. You can also respond to certain Act
 during a life cycle to inject your custom code. These events are especially useful when you are developing 
 Active Record [behaviors](concept-behaviors.md) which need to customize Active Record life cycles.
 
-In the following, we will summarize various Active Record life cycles and the methods/events that are involved
+In the following, we will summarize the various Active Record life cycles and the methods/events that are involved
 in the life cycles.
 
 
@@ -560,7 +560,8 @@ life cycle will happen:
    an [[yii\db\ActiveRecord::EVENT_AFTER_DELETE|EVENT_AFTER_DELETE]] event.
 
 
-> Note: Calling any of the following methods will NOT initiate any of the above life cycles:
+> Note: Calling any of the following methods will NOT initiate any of the above life cycles because they work on the
+> database directly and not on a record basis:
 >
 > - [[yii\db\ActiveRecord::updateAll()]] 
 > - [[yii\db\ActiveRecord::deleteAll()]]
@@ -616,16 +617,18 @@ class Customer extends ActiveRecord
 ```
 
 The [[yii\db\ActiveRecord::transactions()]] method should return an array whose keys are [scenario](structure-models.md#scenarios)
-names and values the corresponding operations that should be enclosed within transactions. You should use the following
+names and values are the corresponding operations that should be enclosed within transactions. You should use the following
 constants to refer to different DB operations:
 
 * [[yii\db\ActiveRecord::OP_INSERT|OP_INSERT]]: insertion operation performed by [[yii\db\ActiveRecord::insert()|insert()]];
 * [[yii\db\ActiveRecord::OP_UPDATE|OP_UPDATE]]: update operation performed by [[yii\db\ActiveRecord::update()|update()]];
 * [[yii\db\ActiveRecord::OP_DELETE|OP_DELETE]]: deletion operation performed by [[yii\db\ActiveRecord::delete()|delete()]].
 
-Use `|` operators to concatenate the above constants to indicate multiple operations. You may also use the shortcut
+Use the `|` operators to concatenate the above constants to indicate multiple operations. You may also use the shortcut
 constant [[yii\db\ActiveRecord::OP_ALL|OP_ALL]] to refer to all three operations above.
 
+Transactions that are created using this method will be started before calling [[yii\db\ActiveRecord::beforeSave()|beforeSave()]]
+and will be committed after [[yii\db\ActiveRecord::afterSave()|afterSave()]] has run.
 
 ## Optimistic Locks <span id="optimistic-locks"></span>
 
@@ -646,7 +649,8 @@ To use optimistic locking,
 1. Create a column in the DB table associated with the Active Record class to store the version number of each row.
    The column should be of big integer type (in MySQL it would be `BIGINT DEFAULT 0`).
 2. Override the [[yii\db\ActiveRecord::optimisticLock()]] method to return the name of this column.
-3. In the Web form that takes user inputs, add a hidden field to store the current version number of the row being updated. Be sure your version attribute has input validation rules and validates successfully.
+3. In the Web form that takes user inputs, add a hidden field to store the current version number of the row being updated.
+   Be sure your version attribute has input validation rules and validates successfully.
 4. In the controller action that updates the row using Active Record, try and catch the [[yii\db\StaleObjectException]]
    exception. Implement necessary business logic (e.g. merging the changes, prompting staled data) to resolve the conflict.
    
@@ -690,7 +694,7 @@ public function actionUpdate($id)
 Besides working with individual database tables, Active Record is also capable of bringing together related data,
 making them readily accessible through the primary data. For example, the customer data is related with the order
 data because one customer may have placed one or multiple orders. With appropriate declaration of this relation,
-you may be able to access a customer's order information using the expression `$customer->orders` which gives
+you'll be able to access a customer's order information using the expression `$customer->orders` which gives
 back the customer's order information in terms of an array of `Order` Active Record instances.
 
 
@@ -702,6 +706,8 @@ The task is as simple as declaring a *relation method* for every interested rela
 ```php
 class Customer extends ActiveRecord
 {
+    // ...
+
     public function getOrders()
     {
         return $this->hasMany(Order::className(), ['customer_id' => 'id']);
@@ -710,6 +716,8 @@ class Customer extends ActiveRecord
 
 class Order extends ActiveRecord
 {
+    // ...
+
     public function getCustomer()
     {
         return $this->hasOne(Customer::className(), ['id' => 'customer_id']);
@@ -790,7 +798,7 @@ using query building methods before performing DB query. For example,
 ```php
 $customer = Customer::findOne(123);
 
-// SELECT * FROM `order` WHERE `subtotal` > 200 ORDER BY `id`
+// SELECT * FROM `order` WHERE `customer_id` = 123 AND `subtotal` > 200 ORDER BY `id`
 $orders = $customer->getOrders()
     ->where(['>', 'subtotal', 200])
     ->orderBy('id')
@@ -818,10 +826,10 @@ class Customer extends ActiveRecord
 Then you will be able to perform the following relational queries:
 
 ```php
-// SELECT * FROM `order` WHERE `subtotal` > 200 ORDER BY `id`
+// SELECT * FROM `order` WHERE `customer_id` = 123 AND `subtotal` > 200 ORDER BY `id`
 $orders = $customer->getBigOrders(200)->all();
 
-// SELECT * FROM `order` WHERE `subtotal` > 100 ORDER BY `id`
+// SELECT * FROM `order` WHERE `customer_id` = 123 AND `subtotal` > 100 ORDER BY `id`
 $orders = $customer->bigOrders;
 ```
 
@@ -835,7 +843,7 @@ to multiple order items, while one product item will also correspond to multiple
 
 When declaring such relations, you would call either [[yii\db\ActiveQuery::via()|via()]] or [[yii\db\ActiveQuery::viaTable()|viaTable()]]
 to specify the junction table. The difference between [[yii\db\ActiveQuery::via()|via()]] and [[yii\db\ActiveQuery::viaTable()|viaTable()]]
-is that the former specifies the junction table in terms of an existing relation name while the latter directly
+is that the former specifies the junction table in terms of an existing relation name while the latter directly uses
 the junction table. For example,
 
 ```php
@@ -1024,7 +1032,7 @@ $customers = Customer::find()
     ->all();
 ```
 
-> Note: It is important to disambiguate column names when building relational queries involving JOIN SQL statements. 
+> Note: It is important to disambiguate column names when building relational queries involving JOIN SQL statements.
   A common practice is to prefix column names with their corresponding table names.
 
 However, a better approach is to exploit the existing relation declarations by calling [[yii\db\ActiveQuery::joinWith()]]:
@@ -1213,7 +1221,7 @@ The opposite operation to [[yii\db\ActiveRecord::link()|link()]] is [[yii\db\Act
 which breaks an existing relationship between two Active Record instances. For example,
 
 ```php
-$customer = Customer::find()->with('orders')->all();
+$customer = Customer::find()->with('orders')->where(['id' => 123])->one();
 $customer->unlink('orders', $customer->orders[0]);
 ```
 
@@ -1421,4 +1429,85 @@ $customers = Customer::find()
     ->joinWith('orders') // ensure table junction
     ->groupBy('{{customer}}.id') // group the result to ensure aggregation function works
     ->all();
+```
+
+A disadvantage of using this method would be that if the information isn't loaded on the SQL query it has to be calculated
+separately, which also means that newly saved records won't contain the information from any extra field.
+
+```php
+$room = new Room();
+$room->length = 100;
+$room->width = 50;
+$room->height = 2;
+
+$room->volume; // this value will be null since it was not declared yet.
+```
+
+Using the [[yii\db\BaseActiveRecord::__get()|__get()]] and [[yii\db\BaseActiveRecord::__set()|__set()]] magic methods
+we can emulate the behavior of a property
+
+```php
+class Room extends \yii\db\ActiveRecord
+{
+    private $_volume;
+    
+    public function setVolume($volume)
+    {
+        $this->_volume = (float) $volume;
+    }
+    
+    public function getVolume()
+    {
+        if (empty($this->length) || empty($this->width) || empty($this->height)) {
+            return null;
+        }
+        
+        if ($this->_volume === null) {
+            $this->setVolume(
+                $this->length * $this->width * $this->height
+            );
+        }
+        
+        return $this->_volume;
+    }
+
+    // ...
+}
+```
+
+When the select query doesn't provide the volume, the model will be able to calculate it automatically using
+the attributes of the model.
+
+Similary it can be used on extra fields depending on relational data
+
+```php
+class Customer extends \yii\db\ActiveRecord
+{
+    private $_ordersCount;
+    
+    public function setOrdersCount($count)
+    {
+        $this->_ordersCount = (int) $count;
+    }
+    
+    public function getOrdersCount()
+    {
+        if ($this->isNewRecord) {
+            return null; // This avoid calling a query searching for null primary keys.
+        }
+        
+        if ($this->_ordersCount === null) {
+            $this->setOrdersCount(count($this->orders));
+        }
+
+        return $this->_ordersCount;
+    }
+
+    // ...
+
+    public function getOrders()
+    {
+        return $this->hasMany(Order::className(), ['customer_id' => 'id']);
+    }
+}
 ```

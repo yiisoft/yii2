@@ -688,7 +688,7 @@ class DbManager extends BaseManager
         }
 
         if ($parent instanceof Permission && $child instanceof Role) {
-            throw new InvalidParamException("Cannot add a role as a child of a permission.");
+            throw new InvalidParamException('Cannot add a role as a child of a permission.');
         }
 
         if ($this->detectLoop($parent, $child)) {
@@ -954,5 +954,23 @@ class DbManager extends BaseManager
         }
 
         $this->cache->set($this->cacheKey, [$this->items, $this->rules, $this->parents]);
+    }
+
+    /**
+     * Returns all role assignment information for the specified role.
+     * @param string $roleName
+     * @return Assignment[] the assignments. An empty array will be
+     * returned if role is not assigned to any user.
+     * @since 2.0.7
+     */
+    public function getUserIdsByRole($roleName)
+    {
+        if (empty($roleName)) {
+            return [];
+        }
+
+        return (new Query)->select('[[user_id]]')
+            ->from($this->assignmentTable)
+            ->where(['item_name' => $roleName])->column($this->db);
     }
 }

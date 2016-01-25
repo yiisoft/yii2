@@ -24,17 +24,133 @@ class AssetBundleTest extends \yiiunit\TestCase
 
         Yii::setAlias('@testWeb', '/');
         Yii::setAlias('@testWebRoot', '@yiiunit/data/web');
+        Yii::setAlias('@testAssetsPath', '@testWebRoot/assets');
+        Yii::setAlias('@testAssetsUrl', '@testWeb/assets');
+        Yii::setAlias('@testSourcePath', '@testWebRoot/assetSources');
     }
 
-    protected function getView()
+    /**
+     * Returns View with configured AssetManager
+     *
+     * @param array $config may be used to override default AssetManager config
+     * @return View
+     */
+    protected function getView(array $config = [])
     {
+        $this->mockApplication();
         $view = new View();
-        $view->setAssetManager(new AssetManager([
-            'basePath' => '@testWebRoot/assets',
-            'baseUrl' => '@testWeb/assets',
-        ]));
+        $config = array_merge([
+            'basePath' => '@testAssetsPath',
+            'baseUrl' => '@testAssetsUrl',
+        ], $config);
+        $view->setAssetManager(new AssetManager($config));
 
         return $view;
+    }
+
+    public function testSourcesPublish()
+    {
+        $view = $this->getView();
+        $am = $view->assetManager;
+
+        $bundle = TestSourceAsset::register($view);
+        $bundle->publish($am);
+
+        $this->assertTrue(is_dir($bundle->basePath));
+        foreach ($bundle->js as $filename) {
+            $publishedFile = $bundle->basePath . DIRECTORY_SEPARATOR . $filename;
+            $sourceFile = $bundle->sourcePath . DIRECTORY_SEPARATOR . $filename;
+            $this->assertFileExists($publishedFile);
+            $this->assertFileEquals($publishedFile, $sourceFile);
+            $this->assertTrue(unlink($publishedFile));
+        }
+        $this->assertTrue(rmdir($bundle->basePath . DIRECTORY_SEPARATOR . 'js'));
+
+        $this->assertTrue(rmdir($bundle->basePath));
+    }
+
+    public function testSourcesPublishedBySymlink()
+    {
+        $view = $this->getView(['linkAssets' => true]);
+        $this->verifySourcesPublishedBySymlink($view);
+    }
+
+    public function testSourcesPublishedBySymlink_Issue9333()
+    {
+        $view = $this->getView([
+            'linkAssets' => true,
+            'hashCallback' => function ($path) {
+                return sprintf('%x/%x', crc32($path), crc32(Yii::getVersion()));
+            }
+        ]);
+        $bundle = $this->verifySourcesPublishedBySymlink($view);
+        $this->assertTrue(rmdir(dirname($bundle->basePath)));
+    }
+
+    public function testSourcesPublish_AssetManagerBeforeCopy()
+    {
+        $view = $this->getView([
+            'beforeCopy' => function ($from, $to) {
+                return false;
+            }
+        ]);
+        $am = $view->assetManager;
+
+        $bundle = TestSourceAsset::register($view);
+        $bundle->publish($am);
+
+        $this->assertTrue(is_dir($bundle->basePath));
+        foreach ($bundle->js as $filename) {
+            $publishedFile = $bundle->basePath . DIRECTORY_SEPARATOR . $filename;
+            $this->assertFileNotExists($publishedFile);
+        }
+        $this->assertTrue(rmdir($bundle->basePath));
+    }
+
+    public function testSourcesPublish_AssetBeforeCopy()
+    {
+        $view = $this->getView();
+        $am = $view->assetManager;
+
+        $bundle = new TestSourceAsset();
+        $bundle->publishOptions = [
+            'beforeCopy' => function ($from, $to) {
+                return false;
+            }
+        ];
+        $bundle->publish($am);
+
+        $this->assertTrue(is_dir($bundle->basePath));
+        foreach ($bundle->js as $filename) {
+            $publishedFile = $bundle->basePath . DIRECTORY_SEPARATOR . $filename;
+            $this->assertFileNotExists($publishedFile);
+        }
+        $this->assertTrue(rmdir($bundle->basePath));
+    }
+
+    /**
+     * @param View $view
+     * @return AssetBundle
+     */
+    protected function verifySourcesPublishedBySymlink($view)
+    {
+        $am = $view->assetManager;
+
+        $bundle = TestSourceAsset::register($view);
+        $bundle->publish($am);
+
+        $this->assertTrue(is_dir($bundle->basePath));
+        foreach ($bundle->js as $filename) {
+            $publishedFile = $bundle->basePath . DIRECTORY_SEPARATOR . $filename;
+            $sourceFile = $bundle->basePath . DIRECTORY_SEPARATOR . $filename;
+
+            $this->assertTrue(is_link($bundle->basePath));
+            $this->assertFileExists($publishedFile);
+            $this->assertFileEquals($publishedFile, $sourceFile);
+        }
+
+        $this->assertTrue(unlink($bundle->basePath));
+        return $bundle;
     }
 
     public function testRegister()
@@ -204,6 +320,22 @@ EOF;
 EOF;
         $this->assertEquals($expected, $view->renderFile('@yiiunit/data/views/rawlayout.php'));
     }
+
+    public function testPerFileOptions()
+    {
+        $view = $this->getView();
+
+        $this->assertEmpty($view->assetBundles);
+        TestAssetPerFileOptions::register($view);
+
+        $expected = <<<EOF
+1<link href="/default_options.css" rel="stylesheet" media="screen" hreflang="en">
+<link href="/tv.css" rel="stylesheet" media="tv" hreflang="en">
+<link href="/screen_and_print.css" rel="stylesheet" media="screen, print" hreflang="en">23<script src="/normal.js" charset="utf-8"></script>
+<script src="/defered.js" charset="utf-8" defer></script>4
+EOF;
+        $this->assertEquals($expected, $view->renderFile('@yiiunit/data/views/rawlayout.php'));
+    }
 }
 
 class TestSimpleAsset extends AssetBundle
@@ -212,6 +344,14 @@ class TestSimpleAsset extends AssetBundle
     public $baseUrl = '@testWeb/js';
     public $js = [
         'jquery.js',
+    ];
+}
+
+class TestSourceAsset extends AssetBundle
+{
+    public $sourcePath = '@testSourcePath';
+    public $js = [
+        'js/jquery.js',
     ];
 }
 
@@ -270,4 +410,21 @@ class TestAssetCircleB extends AssetBundle
     public $depends = [
         'yiiunit\\framework\\web\\TestAssetCircleA'
     ];
+}
+
+class TestAssetPerFileOptions extends AssetBundle
+{
+    public $basePath = '@testWebRoot';
+    public $baseUrl = '@testWeb';
+    public $css = [
+        'default_options.css',
+        ['tv.css', 'media' => 'tv'],
+        ['screen_and_print.css', 'media' => 'screen, print']
+    ];
+    public $js = [
+        'normal.js',
+        ['defered.js', 'defer' => true],
+    ];
+    public $cssOptions = ['media' => 'screen', 'hreflang' => 'en'];
+    public $jsOptions = ['charset' => 'utf-8'];
 }

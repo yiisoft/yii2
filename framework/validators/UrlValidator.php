@@ -16,7 +16,7 @@ use yii\helpers\Json;
  * UrlValidator validates that the attribute value is a valid http or https URL.
  *
  * Note that this validator only checks if the URL scheme and host part are correct.
- * It does not check the rest part of a URL.
+ * It does not check the remaining parts of a URL.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0

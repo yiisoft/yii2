@@ -15,6 +15,7 @@ PHP 環境を正しく構成することは非常に重要です。
 使用する PHP のメジャーリリースを上げると、顕著なパフォーマンスの改善がもたらされることがあります。
 - [Opcache](http://php.net/opcache) (PHP 5.5 以降) または [APC](http://ru2.php.net/apc) (PHP 5.4 以前) を使って、バイトコードキャッシュを有効にすること。
   バイトコードキャッシュによって、リクエストが入ってくるたびに PHP スクリプトを解析してインクルードする時間の浪費を避けることが出来ます。
+- [`realpath()` キャッシュをチューニングする](https://github.com/samdark/realpath_cache_tuner).
 
 ## デバッグモードを無効にする <span id="disable-debug"></span>
 
@@ -28,7 +29,7 @@ Yii は、`YII_DEBUG` という名前の定数の値を使って、デバッグ�
 defined('YII_DEBUG') or define('YII_DEBUG', false);
 ```
 
-> Info|情報: `YII_DEBUG` のデフォルト値は false です。
+> Info: `YII_DEBUG` のデフォルト値は false です。
   従って、アプリケーションコードの他のどこかでこのデフォルト値を変更していないと確信できるなら、単に上記の行を削除してデバッグモードを無効にしても構いません。
 
 ## キャッシュのテクニックを使う <span id="using-caching"></span>

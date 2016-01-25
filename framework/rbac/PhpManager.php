@@ -157,11 +157,11 @@ class PhpManager extends BaseManager
             throw new InvalidParamException("Either '{$parent->name}' or '{$child->name}' does not exist.");
         }
 
-        if ($parent->name == $child->name) {
+        if ($parent->name === $child->name) {
             throw new InvalidParamException("Cannot add '{$parent->name} ' as a child of itself.");
         }
         if ($parent instanceof Permission && $child instanceof Role) {
-            throw new InvalidParamException("Cannot add a role as a child of a permission.");
+            throw new InvalidParamException('Cannot add a role as a child of a permission.');
         }
 
         if ($this->detectLoop($parent, $child)) {
@@ -327,6 +327,7 @@ class PhpManager extends BaseManager
             }
             unset($this->items[$item->name]);
             $this->saveItems();
+            $this->saveAssignments();
             return true;
         } else {
             return false;
@@ -807,5 +808,21 @@ class PhpManager extends BaseManager
             $rules[$name] = serialize($rule);
         }
         $this->saveToFile($rules, $this->ruleFile);
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function getUserIdsByRole($roleName)
+    {
+        $result = [];
+        foreach ($this->assignments as $userID => $assignments) {
+            foreach ($assignments as $userAssignment) {
+                if ($userAssignment->roleName === $roleName && $userAssignment->userId === $userID) {
+                    $result[] = (string)$userID;
+                }
+            }
+        }
+        return $result;
     }
 }

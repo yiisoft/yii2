@@ -53,7 +53,7 @@ public function actionView($id)
 * [[yii\filters\ContentNegotiator|contentNegotiator]]: обеспечивает согласование содержимого, более подробно описан 
   в разделе [Форматирование ответа](rest-response-formatting.md);
 * [[yii\filters\VerbFilter|verbFilter]]: обеспечивает проверку HTTP-метода;
-* [[yii\filters\AuthMethod|authenticator]]: обеспечивает аутентификацию пользователя, более подробно описан 
+* [[yii\filters\auth\AuthMethod|authenticator]]: обеспечивает аутентификацию пользователя, более подробно описан
   в разделе [Аутентификация](rest-authentication.md);
 * [[yii\filters\RateLimiter|rateLimiter]]: обеспечивает ограничение частоты запросов, более подробно описан 
   в разделе [Ограничение частоты запросов](rest-rate-limiting.md).
@@ -80,7 +80,7 @@ public function behaviors()
 ## Наследование от `ActiveController` <span id="extending-active-controller"></span>
 
 Если ваш класс контроллера наследуется от [[yii\rest\ActiveController]], вам следует установить
-значение его свойства [[yii\rest\ActiveController::modelClass||modelClass]] равным имени класса ресурса,
+значение его свойства [[yii\rest\ActiveController::modelClass|modelClass]] равным имени класса ресурса,
 который вы планируете обслуживать с помощью этого контроллера. Класс ресурса должен быть унаследован от [[yii\db\ActiveRecord]].
 
 
@@ -150,4 +150,4 @@ public function checkAccess($action, $model = null, $params = [])
 Метод `checkAccess()` будет вызван действиями по умолчанию контроллера [[yii\rest\ActiveController]]. Если вы создаёте
 новые действия и хотите в них выполнять контроль доступа, вы должны вызвать этот метод явно в своих новых действиях.
 
-> Подсказка: вы можете реализовать метод `checkAccess()` с помощью ["Контроля доступа на основе ролей" (RBAC)](security-authorization.md).
+> Tip: вы можете реализовать метод `checkAccess()` с помощью ["Контроля доступа на основе ролей" (RBAC)](security-authorization.md).

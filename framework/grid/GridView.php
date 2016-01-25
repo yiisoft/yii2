@@ -260,7 +260,7 @@ class GridView extends BaseListView
     public function init()
     {
         parent::init();
-        if ($this->formatter == null) {
+        if ($this->formatter === null) {
             $this->formatter = Yii::$app->getFormatter();
         } elseif (is_array($this->formatter)) {
             $this->formatter = Yii::createObject($this->formatter);
@@ -307,7 +307,7 @@ class GridView extends BaseListView
     public function renderSection($name)
     {
         switch ($name) {
-            case "{errors}":
+            case '{errors}':
                 return $this->renderErrors();
             default:
                 return parent::renderSection($name);
@@ -405,9 +405,9 @@ class GridView extends BaseListView
             $cells[] = $column->renderHeaderCell();
         }
         $content = Html::tag('tr', implode('', $cells), $this->headerRowOptions);
-        if ($this->filterPosition == self::FILTER_POS_HEADER) {
+        if ($this->filterPosition === self::FILTER_POS_HEADER) {
             $content = $this->renderFilters() . $content;
-        } elseif ($this->filterPosition == self::FILTER_POS_BODY) {
+        } elseif ($this->filterPosition === self::FILTER_POS_BODY) {
             $content .= $this->renderFilters();
         }
 
@@ -426,7 +426,7 @@ class GridView extends BaseListView
             $cells[] = $column->renderFooterCell();
         }
         $content = Html::tag('tr', implode('', $cells), $this->footerRowOptions);
-        if ($this->filterPosition == self::FILTER_POS_FOOTER) {
+        if ($this->filterPosition === self::FILTER_POS_FOOTER) {
             $content .= $this->renderFilters();
         }
 
@@ -569,7 +569,7 @@ class GridView extends BaseListView
         $model = reset($models);
         if (is_array($model) || is_object($model)) {
             foreach ($model as $name => $value) {
-                $this->columns[] = $name;
+                $this->columns[] = (string) $name;
             }
         }
     }

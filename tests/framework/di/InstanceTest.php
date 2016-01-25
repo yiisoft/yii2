@@ -7,6 +7,7 @@
 
 namespace yiiunit\framework\di;
 
+use Yii;
 use yii\base\Component;
 use yii\db\Connection;
 use yii\di\Container;
@@ -41,9 +42,77 @@ class InstanceTest extends TestCase
 
         $this->assertTrue(Instance::ensure('db', 'yii\db\Connection', $container) instanceof Connection);
         $this->assertTrue(Instance::ensure(new Connection, 'yii\db\Connection', $container) instanceof Connection);
-        $this->assertTrue(Instance::ensure([
+        $this->assertTrue(Instance::ensure(['class' => 'yii\db\Connection', 'dsn' => 'test'], 'yii\db\Connection', $container) instanceof Connection);
+    }
+
+    public function testEnsureWithoutType()
+    {
+        $container = new Container;
+        $container->set('db', [
             'class' => 'yii\db\Connection',
             'dsn' => 'test',
-        ], 'yii\db\Connection', $container) instanceof Connection);
+        ]);
+
+        $this->assertTrue(Instance::ensure('db', null, $container) instanceof Connection);
+        $this->assertTrue(Instance::ensure(new Connection, null, $container) instanceof Connection);
+        $this->assertTrue(Instance::ensure(['class' => 'yii\db\Connection', 'dsn' => 'test'], null, $container) instanceof Connection);
+    }
+
+    public function testEnsureMinimalSettings()
+    {
+        Yii::$container->set('db', [
+            'class' => 'yii\db\Connection',
+            'dsn' => 'test',
+        ]);
+
+        $this->assertTrue(Instance::ensure('db') instanceof Connection);
+        $this->assertTrue(Instance::ensure(new Connection) instanceof Connection);
+        $this->assertTrue(Instance::ensure(['class' => 'yii\db\Connection', 'dsn' => 'test']) instanceof Connection);
+
+        Yii::$container = new Container;
+    }
+
+    public function testExceptionRefersTo()
+    {
+        $container = new Container;
+        $container->set('db', [
+            'class' => 'yii\db\Connection',
+            'dsn' => 'test',
+        ]);
+
+        $this->setExpectedException('yii\base\InvalidConfigException', '"db" refers to a yii\db\Connection component. yii\base\Widget is expected.');
+
+        Instance::ensure('db', 'yii\base\Widget', $container);
+        Instance::ensure(['class' => 'yii\db\Connection', 'dsn' => 'test'], 'yii\base\Widget', $container);
+    }
+
+    public function testExceptionInvalidDataType()
+    {
+        $this->setExpectedException('yii\base\InvalidConfigException', 'Invalid data type: yii\db\Connection. yii\base\Widget is expected.');
+        Instance::ensure(new Connection, 'yii\base\Widget');
+    }
+
+    public function testExceptionComponentIsNotSpecified()
+    {
+        $this->setExpectedException('yii\base\InvalidConfigException', 'The required component is not specified.');
+        Instance::ensure('');
+    }
+
+    public function testGet()
+    {
+        $this->mockApplication([
+            'components' => [
+                'db' => [
+                    'class' => 'yii\db\Connection',
+                    'dsn' => 'test',
+                ]
+            ]
+        ]);
+
+        $container = Instance::of('db');
+
+        $this->assertTrue($container->get() instanceof Connection);
+
+        $this->destroyApplication();
     }
 }

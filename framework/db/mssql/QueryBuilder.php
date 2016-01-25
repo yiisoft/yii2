@@ -54,7 +54,7 @@ class QueryBuilder extends \yii\db\QueryBuilder
         }
 
         if ($this->isOldMssql()) {
-            return $this->oldbuildOrderByAndLimit($sql, $orderBy, $limit, $offset);
+            return $this->oldBuildOrderByAndLimit($sql, $orderBy, $limit, $offset);
         } else {
             return $this->newBuildOrderByAndLimit($sql, $orderBy, $limit, $offset);
         }
@@ -230,6 +230,7 @@ class QueryBuilder extends \yii\db\QueryBuilder
      * @param Query $values
      * @param array $params
      * @return string SQL
+     * @throws NotSupportedException
      */
     protected function buildSubqueryInCondition($operator, $columns, $values, &$params)
     {

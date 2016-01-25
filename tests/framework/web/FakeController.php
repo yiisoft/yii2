@@ -46,4 +46,14 @@ class FakeController extends Controller
     {
         return [$q, $validator->validate($q), $validator->validate('misbahuldmunir@gmail.com')];
     }
+    
+    public function actionAksi7($q, \StdClass $validator)
+    {
+        return [$q, $validator->test];
+    }
+    
+    public function actionAksi8($q, \StdClass $validator)
+    {
+        return [$q, gettype($validator)];
+    }
 }

@@ -14,7 +14,7 @@ dependency injection:
 
 * Constructor injection;
 * Setter and property injection;
-* PHP callable injection.
+* PHP callable injection;
 * Controller action injection.
 
 
@@ -132,6 +132,7 @@ public function actionSend($email, EmailValidator $validator)
     }
 }
 ```
+
 
 Registering Dependencies <span id="registering-dependencies"></span>
 ------------------------

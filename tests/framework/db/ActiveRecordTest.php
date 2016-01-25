@@ -235,8 +235,6 @@ class ActiveRecordTest extends DatabaseTestCase
         $this->assertNull($record->var3);
         $this->assertNull($record->stringcol);
 
-        $record->id = 1;
-
         $record->var1 = 123;
         $record->var2 = 456;
         $record->var3 = 789;
@@ -280,7 +278,6 @@ class ActiveRecordTest extends DatabaseTestCase
     public function testStoreEmpty()
     {
         $record = new NullValues();
-        $record->id = 1;
 
         // this is to simulate empty html form submission
         $record->var1 = '';
