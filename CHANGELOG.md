@@ -180,7 +180,7 @@ Yii Framework 2 Change Log
 - Enh #9072: `yii\web\ErrorAction` displays 404 error instead of blank page on direct access (klimov-paul)
 - Enh #9149: Print directory migrationPath in a `yii migrate` command error. (RusAlex)
 - Enh #9177: Added password hash cost setting to Security component (freezy-sk)
-- Enh #9198: Added parameter buttonsVisible for `yii\grid\ActionColimn` (fornit1917)
+- Enh #9198: Added parameter visibleButtons for `yii\grid\ActionColimn` (fornit1917)
 - Enh #9239: Better handling of `Json` errors (grzegorzkurtyka, samdark)
 - Enh #9246: Added `yii\web\UrlRule::getParamRules()` (df2)
 - Enh #9249: Added `hashCallback` in `yii\web\AssetManager` to allow custom hash generation for asset directory (petrabarus)

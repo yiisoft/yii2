@@ -86,12 +86,13 @@ class ActionColumn extends Column
      */
     public $buttons = [];
     /** @var array visibility conditions for each button. The array keys are the button names (without curly brackets),
-     * and the values are the conditions whether this button is visible.Can be boolean value or callback. Defaults to true.
-     * The callbacks should use the following signature:
+     * and the values are are the boolean true/false or the anonymous function. The button will be shown,
+     * when its name is not specified in this array.
+     * The callbacks must use the following signature:
      *
      * ```php
      * [
-     *     'update' => function ($model) {
+     *     'update' => function ($model, $key, $index) {
      *         return $model->status === 'editable';
      *     },
      * ],
@@ -105,8 +106,7 @@ class ActionColumn extends Column
      * ],
      * ```
      */
-    public $buttonsVisible = [];
-
+    public $visibleButtons = [];
     /**
      * @var callable a callback that creates a button URL using the specified model information.
      * The signature of the callback should be the same as that of [[createUrl()]].
@@ -197,15 +197,15 @@ class ActionColumn extends Column
         return preg_replace_callback('/\\{([\w\-\/]+)\\}/', function ($matches) use ($model, $key, $index) {
             $name = $matches[1];
 
-            if (isset($this->buttonsVisible[$name])) {
-                $visible = is_callable($this->buttonsVisible[$name])
-                    ? call_user_func($this->buttonsVisible[$name], $model)
-                    : $this->buttonsVisible[$name];
+            if (isset($this->visibleButtons[$name])) {
+                $isVisible = $this->visibleButtons[$name] instanceof \Closure
+                    ? call_user_func($this->visibleButtons[$name], $model, $key, $index)
+                    : $this->visibleButtons[$name];
             } else {
-                $visible = true;
+                $isVisible = true;
             }
 
-            if ($visible && isset($this->buttons[$name])) {
+            if ($isVisible && isset($this->buttons[$name])) {
                 $url = $this->createUrl($name, $model, $key, $index);
                 return call_user_func($this->buttons[$name], $url, $model, $key);
             } else {
