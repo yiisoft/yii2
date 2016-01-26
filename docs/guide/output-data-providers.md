@@ -192,7 +192,7 @@ use yii\data\ActiveDataProvider;
 $query = Post::find()->where(['status' => 1]);
 
 $provider = new ActiveDataProvider([
-    'query' => Post::find(),
+    'query' => $query,
 ]);
 
 // returns an array of Post objects
