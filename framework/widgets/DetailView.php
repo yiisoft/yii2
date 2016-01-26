@@ -102,7 +102,17 @@ class DetailView extends Widget
      * instance. If this property is not set, the "formatter" application component will be used.
      */
     public $formatter;
-
+    /**
+     * @var string the caption of the table
+     * @see captionOptions
+     */
+    public $caption;
+    /**
+     * @var array the HTML attributes for the caption element.
+     * @see \yii\helpers\Html::renderTagAttributes() for details on how attributes are being rendered.
+     * @see caption
+     */
+    public $captionOptions = [];
 
     /**
      * Initializes the detail view.
@@ -142,7 +152,13 @@ class DetailView extends Widget
 
         $options = $this->options;
         $tag = ArrayHelper::remove($options, 'tag', 'table');
-        echo Html::tag($tag, implode("\n", $rows), $options);
+        $caption = $this->renderCaption();
+        $tableBody = implode("\n", $rows);
+        $content = array_filter([
+            $caption,
+            $tableBody
+        ]);
+        echo Html::tag($tag, implode("\n", $content), $options);
     }
 
     /**
@@ -160,6 +176,19 @@ class DetailView extends Widget
             ]);
         } else {
             return call_user_func($this->template, $attribute, $index, $this);
+        }
+    }
+
+    /**
+     * Renders the caption element.
+     * @return bool|string the rendered caption element or `false` if no caption element should be rendered.
+     */
+    public function renderCaption()
+    {
+        if (!empty($this->caption)) {
+            return Html::tag('caption', $this->caption, $this->captionOptions);
+        } else {
+            return false;
         }
     }
 
