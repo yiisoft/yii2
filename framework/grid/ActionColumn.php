@@ -86,19 +86,17 @@ class ActionColumn extends Column
      */
     public $buttons = [];
     /** @var array visibility conditions for each button. The array keys are the button names (without curly brackets),
-     * and the values are the boolean true/false or the anonymous function. The button will be shown,
-     * when its name is not specified in this array.
+     * and the values are the boolean true/false or the anonymous function. When the button name is not specified in
+     * this array it will be shown by default.
      * The callbacks must use the following signature:
      *
      * ```php
-     * [
-     *     'update' => function ($model, $key, $index) {
-     *         return $model->status === 'editable';
-     *     },
-     * ],
+     * function ($model, $key, $index) {
+     *     return $model->status === 'editable';
+     * }
      * ```
      *
-     * Or you can pass a boolean expression:
+     * Or you can pass a boolean value:
      *
      * ```php
      * [
