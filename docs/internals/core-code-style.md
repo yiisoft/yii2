@@ -53,7 +53,7 @@ The term "class" refers to all classes and interfaces here.
 - Classes should be named using `CamelCase`.
 - The brace should always be written on the line underneath the class name.
 - Every class must have a documentation block that conforms to the PHPDoc.
-- All code in a class must be indented with a single tab.
+- All code in a class must be indented with 4 spaces.
 - There should be only one class in a single PHP file.
 - All classes should be namespaced.
 - Class name should match file name. Class namespace should match directory structure.
