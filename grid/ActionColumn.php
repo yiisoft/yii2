@@ -52,7 +52,7 @@ class ActionColumn extends Column
      *
      * As an example, to only have the view, and update button you can add the ActionColumn to your GridView columns as follows:
      *
-     * ```
+     * ```php
      * ['class' => 'yii\grid\ActionColumn', 'template' => '{view} {update}'],
      * ```
      *
@@ -103,6 +103,7 @@ class ActionColumn extends Column
      *     'update' => \Yii::$app->user->can('update'),
      * ],
      * ```
+     * @since 2.0.7
      */
     public $visibleButtons = [];
     /**
