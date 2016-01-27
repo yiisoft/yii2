@@ -751,7 +751,21 @@ class QueryBuilder extends \yii\base\Object
      */
     public function buildGroupBy($columns)
     {
-        return empty($columns) ? '' : 'GROUP BY ' . $this->buildColumns($columns);
+        if (empty($columns)) {
+            return '';
+        }
+        foreach ($columns as $i => $column) {
+            if ($column instanceof Expression) {
+                $columns[$i] = $column->expression;
+                // TODO
+//                foreach ($direction->params as $n => $v) {
+//                    $params[$n] = $v;
+//                }
+            } elseif (strpos($column, '(') === false) {
+                $columns[$i] = $this->db->quoteColumnName($column);
+            }
+        }
+        return 'GROUP BY ' . implode(', ', $columns);
     }
 
     /**
@@ -800,6 +814,10 @@ class QueryBuilder extends \yii\base\Object
         foreach ($columns as $name => $direction) {
             if ($direction instanceof Expression) {
                 $orders[] = $direction->expression;
+                // TODO
+//                foreach ($direction->params as $n => $v) {
+//                    $params[$n] = $v;
+//                }
             } else {
                 $orders[] = $this->db->quoteColumnName($name) . ($direction === SORT_DESC ? ' DESC' : '');
             }
