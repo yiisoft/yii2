@@ -51,6 +51,9 @@ class MyBehavior extends Behavior
 
 > Tip: ビヘイビア内から、[[yii\base\Behavior::owner]] プロパティを介して、ビヘイビアをアタッチしたコンポーネントにアクセスすることができます。
 
+> Note: ビヘイビアの [[yii\base\Behavior::__get()]] および/または [[yii\base\Behavior::__set()]] メソッドをオーバーライドする場合は、同時に [[yii\base\Behavior::canGetProperty()]] および/または [[yii\base\Behavior::canSetProperty()]] もオーバーライドする必要があります。
+
+
 コンポーネントイベントのハンドリング
 ------------------
 
