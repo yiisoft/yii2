@@ -677,16 +677,24 @@ class Query extends Component implements QueryInterface
 
     /**
      * Sets the GROUP BY part of the query.
-     * @param string|array $columns the columns to be grouped by.
+     * @param string|array|Expression $columns the columns to be grouped by.
      * Columns can be specified in either a string (e.g. "id, name") or an array (e.g. ['id', 'name']).
      * The method will automatically quote the column names unless a column contains some parenthesis
      * (which means the column contains a DB expression).
+     *
+     * Note that if your group-by is an expression containing commas, you should always use an array
+     * to represent the group-by information. Otherwise, the method will not be able to correctly determine
+     * the group-by columns.
+     *
+     * Since version 2.0.7, an [[Expression]] object can be passed to specify the GROUP BY part explicitly in plain SQL.
      * @return $this the query object itself
      * @see addGroupBy()
      */
     public function groupBy($columns)
     {
-        if (!is_array($columns)) {
+        if ($columns instanceof Expression) {
+            $columns = [$columns];
+        } elseif (!is_array($columns)) {
             $columns = preg_split('/\s*,\s*/', trim($columns), -1, PREG_SPLIT_NO_EMPTY);
         }
         $this->groupBy = $columns;
@@ -699,12 +707,20 @@ class Query extends Component implements QueryInterface
      * Columns can be specified in either a string (e.g. "id, name") or an array (e.g. ['id', 'name']).
      * The method will automatically quote the column names unless a column contains some parenthesis
      * (which means the column contains a DB expression).
+     *
+     * Note that if your group-by is an expression containing commas, you should always use an array
+     * to represent the group-by information. Otherwise, the method will not be able to correctly determine
+     * the group-by columns.
+     *
+     * Since version 2.0.7, an [[Expression]] object can be passed to specify the GROUP BY part explicitly in plain SQL.
      * @return $this the query object itself
      * @see groupBy()
      */
     public function addGroupBy($columns)
     {
-        if (!is_array($columns)) {
+        if ($columns instanceof Expression) {
+            $columns = [$columns];
+        } elseif (!is_array($columns)) {
             $columns = preg_split('/\s*,\s*/', trim($columns), -1, PREG_SPLIT_NO_EMPTY);
         }
         if ($this->groupBy === null) {
@@ -717,7 +733,7 @@ class Query extends Component implements QueryInterface
 
     /**
      * Sets the HAVING part of the query.
-     * @param string|array $condition the conditions to be put after HAVING.
+     * @param string|array|Expression $condition the conditions to be put after HAVING.
      * Please refer to [[where()]] on how to specify this parameter.
      * @param array $params the parameters (name => value) to be bound to the query.
      * @return $this the query object itself
@@ -734,7 +750,7 @@ class Query extends Component implements QueryInterface
     /**
      * Adds an additional HAVING condition to the existing one.
      * The new condition and the existing one will be joined using the 'AND' operator.
-     * @param string|array $condition the new HAVING condition. Please refer to [[where()]]
+     * @param string|array|Expression $condition the new HAVING condition. Please refer to [[where()]]
      * on how to specify this parameter.
      * @param array $params the parameters (name => value) to be bound to the query.
      * @return $this the query object itself
@@ -755,7 +771,7 @@ class Query extends Component implements QueryInterface
     /**
      * Adds an additional HAVING condition to the existing one.
      * The new condition and the existing one will be joined using the 'OR' operator.
-     * @param string|array $condition the new HAVING condition. Please refer to [[where()]]
+     * @param string|array|Expression $condition the new HAVING condition. Please refer to [[where()]]
      * on how to specify this parameter.
      * @param array $params the parameters (name => value) to be bound to the query.
      * @return $this the query object itself
