@@ -101,6 +101,21 @@ class QueryBuilder extends \yii\base\Object
         $sql = implode($this->separator, array_filter($clauses));
         $sql = $this->buildOrderByAndLimit($sql, $query->orderBy, $query->limit, $query->offset);
 
+        if (!empty($query->orderBy)) {
+            foreach ($query->orderBy as $expression) {
+                if ($expression instanceof Expression) {
+                    $params = array_merge($params, $expression->params);
+                }
+            }
+        }
+        if (!empty($query->groupBy)) {
+            foreach ($query->groupBy as $expression) {
+                if ($expression instanceof Expression) {
+                    $params = array_merge($params, $expression->params);
+                }
+            }
+        }
+
         $union = $this->buildUnion($query->union, $params);
         if ($union !== '') {
             $sql = "($sql){$this->separator}$union";
@@ -757,10 +772,6 @@ class QueryBuilder extends \yii\base\Object
         foreach ($columns as $i => $column) {
             if ($column instanceof Expression) {
                 $columns[$i] = $column->expression;
-                // TODO
-//                foreach ($direction->params as $n => $v) {
-//                    $params[$n] = $v;
-//                }
             } elseif (strpos($column, '(') === false) {
                 $columns[$i] = $this->db->quoteColumnName($column);
             }
@@ -814,10 +825,6 @@ class QueryBuilder extends \yii\base\Object
         foreach ($columns as $name => $direction) {
             if ($direction instanceof Expression) {
                 $orders[] = $direction->expression;
-                // TODO
-//                foreach ($direction->params as $n => $v) {
-//                    $params[$n] = $v;
-//                }
             } else {
                 $orders[] = $this->db->quoteColumnName($name) . ($direction === SORT_DESC ? ' DESC' : '');
             }
