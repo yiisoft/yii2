@@ -601,7 +601,7 @@ class QueryBuilderTest extends DatabaseTestCase
             ->from('operations')
             ->orderBy('name ASC, date DESC');
         list ($sql, $params) = $this->getQueryBuilder()->build($query);
-        $expected = $this->replaceQuotes('SELECT * FROM [[operations]] ORDER BY `name`, `date` DESC');
+        $expected = $this->replaceQuotes('SELECT * FROM [[operations]] ORDER BY [[name]], [[date]] DESC');
         $this->assertEquals($expected, $sql);
         $this->assertEmpty($params);
 
@@ -611,7 +611,7 @@ class QueryBuilderTest extends DatabaseTestCase
             ->from('operations')
             ->orderBy(['name' => SORT_ASC, 'date' => SORT_DESC]);
         list ($sql, $params) = $this->getQueryBuilder()->build($query);
-        $expected = $this->replaceQuotes('SELECT * FROM [[operations]] ORDER BY `name`, `date` DESC');
+        $expected = $this->replaceQuotes('SELECT * FROM [[operations]] ORDER BY [[name]], [[date]] DESC');
         $this->assertEquals($expected, $sql);
         $this->assertEmpty($params);
 
@@ -645,7 +645,7 @@ class QueryBuilderTest extends DatabaseTestCase
             ->from('operations')
             ->groupBy('name, date');
         list ($sql, $params) = $this->getQueryBuilder()->build($query);
-        $expected = $this->replaceQuotes('SELECT * FROM [[operations]] GROUP BY `name`, `date`');
+        $expected = $this->replaceQuotes('SELECT * FROM [[operations]] GROUP BY [[name]], [[date]]');
         $this->assertEquals($expected, $sql);
         $this->assertEmpty($params);
 
@@ -655,7 +655,7 @@ class QueryBuilderTest extends DatabaseTestCase
             ->from('operations')
             ->groupBy(['name', 'date']);
         list ($sql, $params) = $this->getQueryBuilder()->build($query);
-        $expected = $this->replaceQuotes('SELECT * FROM [[operations]] GROUP BY `name`, `date`');
+        $expected = $this->replaceQuotes('SELECT * FROM [[operations]] GROUP BY [[name]], [[date]]');
         $this->assertEquals($expected, $sql);
         $this->assertEmpty($params);
 
