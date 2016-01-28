@@ -54,6 +54,7 @@ Yii Framework 2 Change Log
 - Bug #10580: Fixed `yii\grid\GridView::guessColumns()` to work with numeric column names (silverfire)
 - Bug #10625: Fixed `activeForm.js` - when submit doesn't reload page, submit button value simulation with hidden input did not work (andrewnester)
 - Bug #10629: Fixed `yii\helpers\BaseStringHelper` - BaseStringHelper::truncateHtml adds suffix regardless of the string length (andrewnester)
+- Bug #10692: Fixed default value extraction in PostgreSQL Schema for null values (wallysalami, gabrielhomsi)
 - Bug #10739: Fixed `yii\web\UrlManager::parseRequest()` to treat request URL with more than one slash at the end as invalid (andrewnester)
 - Bug #10751: Fixed `yii\validators\UrlValidator` pattern to improve matching (silverfire)
 - Bug: Fixed generation of canonical URLs for `ViewAction` pages (samdark)
