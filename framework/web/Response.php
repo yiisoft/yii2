@@ -336,10 +336,10 @@ class Response extends \yii\base\Response
      */
     protected function sendHeaders()
     {
-        if (headers_sent()) {
-            return;
-        }
         if ($this->_headers) {
+            if (headers_sent()) {
+                throw new InvalidConfigException('The following headers already been sent:' . join(';', headers_list()));
+            }
             $headers = $this->getHeaders();
             foreach ($headers as $name => $values) {
                 $name = str_replace(' ', '-', ucwords(str_replace('-', ' ', $name)));
