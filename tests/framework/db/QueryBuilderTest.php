@@ -368,7 +368,19 @@ class QueryBuilderTest extends DatabaseTestCase
         $tableSchema = $qb->db->getSchema()->getTableSchema($tableName);
         $this->assertEquals(1, count($tableSchema->primaryKey));
 
-        //DROP
+        // DROP
+        $qb->db->createCommand()->dropPrimaryKey($pkeyName, $tableName)->execute();
+        $qb = $this->getQueryBuilder(); // resets the schema
+        $tableSchema = $qb->db->getSchema()->getTableSchema($tableName);
+        $this->assertEquals(0, count($tableSchema->primaryKey));
+
+        // ADD (2 columns)
+        $qb = $this->getQueryBuilder();
+        $qb->db->createCommand()->addPrimaryKey($pkeyName, $tableName, 'id, field1')->execute();
+        $tableSchema = $qb->db->getSchema()->getTableSchema($tableName);
+        $this->assertEquals(1, count($tableSchema->primaryKey));
+
+        // DROP (2 columns)
         $qb->db->createCommand()->dropPrimaryKey($pkeyName, $tableName)->execute();
         $qb = $this->getQueryBuilder(); // resets the schema
         $tableSchema = $qb->db->getSchema()->getTableSchema($tableName);
@@ -680,4 +692,25 @@ class QueryBuilderTest extends DatabaseTestCase
         $this->assertEquals($expected, $sql);
         $this->assertEquals([':to' => 4], $params);
     }
+
+//    public function testInsert()
+//    {
+//        // TODO implement
+//    }
+//
+//    public function testBatchInsert()
+//    {
+//        // TODO implement
+//    }
+//
+//    public function testUpdate()
+//    {
+//        // TODO implement
+//    }
+//
+//    public function testDelete()
+//    {
+//        // TODO implement
+//    }
+
 }
