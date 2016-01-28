@@ -378,7 +378,7 @@ class QueryBuilderTest extends DatabaseTestCase
         $qb = $this->getQueryBuilder();
         $qb->db->createCommand()->addPrimaryKey($pkeyName, $tableName, 'id, field1')->execute();
         $tableSchema = $qb->db->getSchema()->getTableSchema($tableName);
-        $this->assertEquals(1, count($tableSchema->primaryKey));
+        $this->assertEquals(2, count($tableSchema->primaryKey));
 
         // DROP (2 columns)
         $qb->db->createCommand()->dropPrimaryKey($pkeyName, $tableName)->execute();
