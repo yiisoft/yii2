@@ -176,7 +176,7 @@ $query->where('status=1');
 $query->where('status=:status', [':status' => $status]);
 
 // raw SQL using MySQL YEAR() function on a date field
-$query->where('YEAR(somedate) == 2015');
+$query->where('YEAR(somedate) = 2015');
 ```
 
 Do NOT embed variables directly in the condition like the following, especially if the variable values come from 
