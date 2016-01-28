@@ -295,8 +295,10 @@ trait QueryTrait
      * @param string|array|Expression $columns the columns (and the directions) to be ordered by.
      * Columns can be specified in either a string (e.g. `"id ASC, name DESC"`) or an array
      * (e.g. `['id' => SORT_ASC, 'name' => SORT_DESC]`).
+     *
      * The method will automatically quote the column names unless a column contains some parenthesis
      * (which means the column contains a DB expression).
+     *
      * Note that if your order-by is an expression containing commas, you should always use an array
      * to represent the order-by information. Otherwise, the method will not be able to correctly determine
      * the order-by columns.
@@ -316,8 +318,13 @@ trait QueryTrait
      * @param string|array|Expression $columns the columns (and the directions) to be ordered by.
      * Columns can be specified in either a string (e.g. "id ASC, name DESC") or an array
      * (e.g. `['id' => SORT_ASC, 'name' => SORT_DESC]`).
+     *
      * The method will automatically quote the column names unless a column contains some parenthesis
      * (which means the column contains a DB expression).
+     *
+     * Note that if your order-by is an expression containing commas, you should always use an array
+     * to represent the order-by information. Otherwise, the method will not be able to correctly determine
+     * the order-by columns.
      *
      * Since version 2.0.7, an [[Expression]] object can be passed to specify the ORDER BY part explicitly in plain SQL.
      * @return $this the query object itself

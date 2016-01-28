@@ -222,6 +222,33 @@ SQL;
         $this->assertEquals('user5@example.com', $command->queryScalar());
     }
 
+    public function paramsNonWhereProvider()
+    {
+        return[
+            ['SELECT SUBSTR(name, :len) FROM {{customer}} WHERE [[email]] = :email GROUP BY SUBSTR(name, :len)'],
+            ['SELECT SUBSTR(name, :len) FROM {{customer}} WHERE [[email]] = :email ORDER BY SUBSTR(name, :len)'],
+            ['SELECT SUBSTR(name, :len) FROM {{customer}} WHERE [[email]] = :email'],
+        ];
+    }
+
+    /**
+     * Test whether param binding works in other places than WHERE
+     * @dataProvider paramsNonWhereProvider
+     */
+    public function testBindParamsNonWhere($sql)
+    {
+        $db = $this->getConnection();
+
+        $db->createCommand()->insert('customer', ['name' => 'testParams', 'email' => 'testParams@example.com', 'address' => '1'])->execute();
+
+        $params = [
+            ':email' => 'testParams@example.com',
+            ':len' => 5,
+        ];
+        $command = $db->createCommand($sql, $params);
+        $this->assertEquals('Params', $command->queryScalar());
+    }
+
     public function testFetchMode()
     {
         $db = $this->getConnection();
