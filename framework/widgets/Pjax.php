@@ -186,7 +186,7 @@ class Pjax extends Widget
             $js .= "jQuery(document).pjax($linkSelector, \"#$id\", $options);";
         }
         if ($this->formSelector !== false) {
-            $formSelector = Json::htmlEncode($this->formSelector !== null ? $this->formSelector : '#' . $id . ' form[data-pjax]');
+            $formSelector = Json::htmlEncode($this->formSelector !== null ? $this->formSelector : 'form[data-pjax]');
             $js .= "\njQuery(document).on('submit', $formSelector, function (event) {jQuery.pjax.submit(event, '#$id', $options);});";
         }
         $view = $this->getView();
