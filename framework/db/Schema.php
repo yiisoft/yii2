@@ -57,6 +57,45 @@ abstract class Schema extends Object
     const TYPE_BINARY = 'binary';
     const TYPE_BOOLEAN = 'boolean';
     const TYPE_MONEY = 'money';
+    //Postgresql types
+    const TYPE_ABSTIME = 'abstime';
+    const TYPE_ACLITEM = 'aclitem';
+    const TYPE_BIT = 'bit';
+    const TYPE_BIT_VARYING = 'bit varying';
+    const TYPE_BOX = 'box';
+    const TYPE_BYTEA = 'bytea';
+    const TYPE_CID = 'cid';
+    const TYPE_CIDR = 'cidr';
+    const TYPE_CIRCLE = 'circle';
+    const TYPE_DATERANGE = 'daterange';
+    const TYPE_DOUBLE_PRECISION = 'double precision';
+    const TYPE_GTSVECTOR = 'gtsvector';
+    const TYPE_INET = 'inet';
+    const TYPE_INTERVAL = 'interval';
+    const TYPE_JSON = 'json';
+    const TYPE_JSONB = 'jsonb';
+    const TYPE_LINE = 'line';
+    const TYPE_LSEG = 'lseg';
+    const TYPE_MACADDR = 'macaddr';
+    const TYPE_NUMERIC = 'numeric';
+    const TYPE_NUMRANGE = 'numrange';
+    const TYPE_OID = 'oid';
+    const TYPE_OIDVECTOR = 'oidvector';
+    const TYPE_PATH = 'path';
+    const TYPE_POINT = 'point';
+    const TYPE_REAL = 'real';
+    const TYPE_TID = 'tid';
+    const TYPE_TINTERVAL = 'tinterval';
+    const TYPE_TSQUERY = 'tsquery';
+    const TYPE_TIME_WITH_TIME_ZONE = 'time with time zone';
+    const TYPE_TIMESTAMP_WITH_TIME_ZONE = 'timestamp with time zone';
+    const TYPE_TSRANGE = 'tsrange';
+    const TYPE_TSTZRANGE = 'tstzrange';
+    const TYPE_TSVECTOR = 'tsvector';
+    const TYPE_UUID = 'uuid';
+    const TYPE_XML = 'xml';
+
+    
 
     /**
      * @var Connection the database connection

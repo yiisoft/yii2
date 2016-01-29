@@ -708,6 +708,31 @@ class Command extends Component
 
         return $this->setSql($sql);
     }
+    
+    /**
+     * Creates a SQL command for creating a new postgresql index.
+     * @param string $name the name of the index. The name will be properly quoted by the method.
+     * @param string $table the table that the new index will be created for. The table name will be properly quoted by the method.
+     * @param string|array $columns the column(s) that should be included in the index. If there are multiple columns, please separate them
+     * by commas. The column names will be properly quoted by the method.
+     * @param string $method to set access method can be:btree,hash,gist,gin,spgist
+     * @return $this the command object itself
+     * This function can be used only postgresql.
+     */        
+    public function createPgIndex($name, $table, $columns, $method = 'btree')
+    {
+        $sql = $this->db->getQueryBuilder()->createPgIndex($name, $table, $columns, $method);
+
+        return $this->setSql($sql);
+    }
+    
+    
+    public function createPgUnique($name, $table, $columns)
+    {
+        $sql = $this->db->getQueryBuilder()->createPgUnique($name, $table, $columns);
+
+        return $this->setSql($sql);
+    }
 
     /**
      * Creates a SQL command for dropping an index.

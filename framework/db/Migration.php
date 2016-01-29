@@ -433,6 +433,41 @@ class Migration extends Component implements MigrationInterface
         $this->db->createCommand()->createIndex($name, $table, $columns, $unique)->execute();
         echo ' done (time: ' . sprintf('%.3f', microtime(true) - $time) . "s)\n";
     }
+    
+    /**
+     * Builds and executes a SQL statement for creating a new postgresql index.
+     * @param string $name the name of the index. The name will be properly quoted by the method.
+     * @param string $table the table that the new index will be created for. The table name will be properly quoted by the method.
+     * @param string|array $columns the column(s) that should be included in the index. If there are multiple columns, please separate them
+     * by commas. The column names will be properly quoted by the method.
+     * @param string $method to set access method can be:btree,hash,gist,gin,spgist
+     * @return $this the command object itself
+     * This function can be used only postgresql.
+     */  
+    public function createPgIndex($name, $table, $columns, $method = 'btree')
+    {
+        echo '    > create' . " index $name on $table (" . implode(',', (array) $columns) . ') ...';
+        $time = microtime(true);
+        $this->db->createCommand()->createPgIndex($name, $table, $columns, $method)->execute();
+        echo ' done (time: ' . sprintf('%.3f', microtime(true) - $time) . "s)\n";
+    }
+    
+    /**
+     * Builds and executes a SQL statement for creating a new unique constraint index.
+     * @param string $name the name of the index. The name will be properly quoted by the method.
+     * @param string $table the table that the new index will be created for. The table name will be properly quoted by the method.
+     * @param string|array $columns the column(s) that should be included in the index. If there are multiple columns, please separate them
+     * by commas. The column names will be properly quoted by the method.
+     * @return $this the command object itself
+     * This function can be used only postgresql.
+     */  
+    public function createPgUnique($name, $table, $columns)
+    {
+        echo '    > create' . " unique constraint $name on $table (" . implode(',', (array) $columns) . ') ...';
+        $time = microtime(true);
+        $this->db->createCommand()->createPgUnique($name, $table, $columns)->execute();
+        echo ' done (time: ' . sprintf('%.3f', microtime(true) - $time) . "s)\n";
+    }
 
     /**
      * Builds and executes a SQL statement for dropping an index.
