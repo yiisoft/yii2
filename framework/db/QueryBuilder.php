@@ -529,6 +529,42 @@ class QueryBuilder extends \yii\base\Object
     }
 
     /**
+     * Creates a SQL command for creating a new postgresql index.
+     * @param string $name the name of the index. The name will be properly quoted by the method.
+     * @param string $table the table that the new index will be created for. The table name will be properly quoted by the method.
+     * @param string|array $columns the column(s) that should be included in the index. If there are multiple columns, please separate them
+     * by commas. The column names will be properly quoted by the method.
+     * @param string $method to set access method can be:btree,hash,gist,gin,spgist
+     * @return $this the command object itself
+     * This function can be used only postgresql.
+     */  
+    public function createPgIndex($name, $table, $columns, $method = 'btree')
+    {
+        return ('CREATE INDEX ')
+            . $this->db->quoteTableName($name) . ' ON '
+            . $this->db->quoteTableName($table). ' USING '
+            . $this->db->quoteTableName($method)   
+            . ' (' . $this->buildColumns($columns) . ')';
+    }
+    
+    /**
+     * Creates a SQL command for creating a new unique constraint index.
+     * @param string $name the name of the index. The name will be properly quoted by the method.
+     * @param string $table the table that the new index will be created for. The table name will be properly quoted by the method.
+     * @param string|array $columns the column(s) that should be included in the index. If there are multiple columns, please separate them
+     * by commas. The column names will be properly quoted by the method.
+     * @return $this the command object itself
+     * This function can be used only postgresql.
+     */  
+    public function createPgUnique($name, $table, $columns)
+    {
+        return ('ALTER TABLE ')
+            . $this->db->quoteTableName($table). ' ADD CONSTRAINT '
+            . $this->db->quoteTableName($name) . ' UNIQUE '            
+            . ' (' . $this->buildColumns($columns) . ')';
+    }
+    
+    /**
      * Builds a SQL statement for dropping an index.
      * @param string $name the name of the index to be dropped. The name will be properly quoted by the method.
      * @param string $table the table whose index is to be dropped. The name will be properly quoted by the method.

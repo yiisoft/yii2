@@ -50,6 +50,11 @@ class ColumnSchemaBuilder extends Object
      * @var boolean whether the column values should be unsigned. If this is `true`, an `UNSIGNED` keyword will be added.
      */
     protected $isUnsigned = false;
+    
+    /**
+     * @var boolean whether the column is not nullable. If this is `true`, a `[]` constraint will be added.
+     */
+    protected $isArray = false;
 
 
     /**
@@ -94,6 +99,16 @@ class ColumnSchemaBuilder extends Object
     public function check($check)
     {
         $this->check = $check;
+        return $this;
+    }
+    
+    /**
+     * Adds a `[]` constraint to the column.
+     * @return $this
+     */
+    public function arrays()
+    {
+        $this->isArray = true;
         return $this;
     }
 
@@ -143,7 +158,8 @@ class ColumnSchemaBuilder extends Object
             $this->buildNotNullString() .
             $this->buildUniqueString() .
             $this->buildDefaultString() .
-            $this->buildCheckString();
+            $this->buildCheckString().
+            $this->buildArrayType();
     }
 
     /**
@@ -218,6 +234,15 @@ class ColumnSchemaBuilder extends Object
     protected function buildCheckString()
     {
         return $this->check !== null ? " CHECK ({$this->check})" : '';
+    }
+    
+    /**
+     * Builds the arrays for the column.
+     * @return string a string '[]'
+     */
+    protected function buildArrayType()
+    {
+        return $this->isArray ? ' []' : '';
     }
 
     /**

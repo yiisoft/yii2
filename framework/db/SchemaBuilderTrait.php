@@ -258,4 +258,355 @@ trait SchemaBuilderTrait
         }
         return $this->getDb()->getSchema()->createColumnSchemaBuilder(Schema::TYPE_MONEY, $length);
     }
+    
+    /**
+     * Creates a bit column.
+     * @param integer $length column size or precision definition.
+     * This parameter will be ignored if not supported by the DBMS.
+     * @return ColumnSchemaBuilder the column instance which can be further customized.
+     * This function can be used only postgresql.
+     */
+    public function bit($length = null)
+    {
+        return $this->getDb()->getSchema()->createColumnSchemaBuilder(Schema::TYPE_JSONB);
+    }
+    /**
+     * Creates a bit varying column.
+     * @param integer $length column size or precision definition.
+     * This parameter will be ignored if not supported by the DBMS.
+     * @return ColumnSchemaBuilder the column instance which can be further customized.
+     * This function can be used only postgresql.
+     */
+    public function bitVarying($length = null)
+    {
+        return $this->getDb()->getSchema()->createColumnSchemaBuilder(Schema::TYPE_BIT_VARYING);
+    }
+    
+    /**
+     * Creates a binary box column.
+     * @return ColumnSchemaBuilder the column instance which can be further customized.
+     * This function can be used only postgresql.
+     */
+    public function box()
+    {
+        return $this->getDb()->getSchema()->createColumnSchemaBuilder(Schema::TYPE_BOX);
+    }
+    
+    /**
+     * Creates a binary data column.
+     * @return ColumnSchemaBuilder the column instance which can be further customized.
+     * This function can be used only postgresql.
+     */
+    public function bytea()
+    {
+        return $this->getDb()->getSchema()->createColumnSchemaBuilder(Schema::TYPE_BYTEA);
+    }
+    
+    /**
+     * Creates a cid column.
+     * @return ColumnSchemaBuilder the column instance which can be further customized.
+     * This function can be used only postgresql.
+     */
+    public function cid()
+    {
+        return $this->getDb()->getSchema()->createColumnSchemaBuilder(Schema::TYPE_CID);
+    }
+    
+    /**
+     * Creates a cidr column.
+     * @return ColumnSchemaBuilder the column instance which can be further customized.
+     * This function can be used only postgresql.
+     */
+    public function cidr()
+    {
+        return $this->getDb()->getSchema()->createColumnSchemaBuilder(Schema::TYPE_CIDR);
+    }
+    
+    /**
+     * Creates a circle column.
+     * @return ColumnSchemaBuilder the column instance which can be further customized.
+     * This function can be used only postgresql.
+     */
+    public function circle()
+    {
+        return $this->getDb()->getSchema()->createColumnSchemaBuilder(Schema::TYPE_CIRCLE);
+    }
+    
+    /**
+     * Creates a daterange column.
+     * @return ColumnSchemaBuilder the column instance which can be further customized.
+     * This function can be used only postgresql.
+     */
+    public function daterange()
+    {
+        return $this->getDb()->getSchema()->createColumnSchemaBuilder(Schema::TYPE_DATERANGE);
+    }
+    
+    /**
+     * Creates a double precision column.
+     * @return ColumnSchemaBuilder the column instance which can be further customized.
+     * This function can be used only postgresql.
+     */
+    public function doublePrecision()
+    {
+        return $this->getDb()->getSchema()->createColumnSchemaBuilder(Schema::TYPE_DOUBLE_PRECISION);
+    }
+    
+    /**
+     * Creates a gtsvector column.
+     * @return ColumnSchemaBuilder the column instance which can be further customized.
+     * This function can be used only postgresql.
+     */
+    public function gtsvector()
+    {
+        return $this->getDb()->getSchema()->createColumnSchemaBuilder(Schema::TYPE_GTSVECTOR);
+    }
+    
+    /**
+     * Creates a inet column.
+     * @return ColumnSchemaBuilder the column instance which can be further customized.
+     * This function can be used only postgresql.
+     */
+    public function inet()
+    {
+        return $this->getDb()->getSchema()->createColumnSchemaBuilder(Schema::TYPE_INET);
+    }
+    
+    /**
+     * Creates a interval column.
+     * @return ColumnSchemaBuilder the column instance which can be further customized.
+     * This function can be used only postgresql.
+     */
+    public function interval()
+    {
+        return $this->getDb()->getSchema()->createColumnSchemaBuilder(Schema::TYPE_INTERVAL);
+    }  
+    
+    /**
+     * Creates a json column.
+     * @return ColumnSchemaBuilder the column instance which can be further customized.
+     * This function can be used only postgresql.
+     */
+    public function json()
+    {
+        return $this->getDb()->getSchema()->createColumnSchemaBuilder(Schema::TYPE_JSONB);
+    }
+    
+    /**
+     * Creates a binary json column.
+     * @return ColumnSchemaBuilder the column instance which can be further customized.
+     * This function can be used only postgresql.
+     */
+    public function jsonb()
+    {
+        return $this->getDb()->getSchema()->createColumnSchemaBuilder(Schema::TYPE_JSONB);
+    } 
+
+    /**
+     * Creates a line column.
+     * @return ColumnSchemaBuilder the column instance which can be further customized.
+     * This function can be used only postgresql.
+     */
+    public function line()
+    {
+        return $this->getDb()->getSchema()->createColumnSchemaBuilder(Schema::TYPE_LINE);
+    }
+    
+    /**
+     * Creates a lseg column.
+     * @return ColumnSchemaBuilder the column instance which can be further customized.
+     * This function can be used only postgresql.
+     */
+    public function lseg()
+    {
+        return $this->getDb()->getSchema()->createColumnSchemaBuilder(Schema::TYPE_LSEG);
+    }
+    
+    /**
+     * Creates a macaddr column.
+     * @return ColumnSchemaBuilder the column instance which can be further customized.
+     * This function can be used only postgresql.
+     */
+    public function macaddr()
+    {
+        return $this->getDb()->getSchema()->createColumnSchemaBuilder(Schema::TYPE_MACADDR);
+    }
+    
+    /**
+     * Creates a numeric column.
+     * @return ColumnSchemaBuilder the column instance which can be further customized.
+     * This function can be used only postgresql.
+     */
+    public function numeric($precision = null, $scale = null)
+    {
+        $length = [];
+        if ($precision !== null) {
+            $length[] = $precision;
+        }
+        if ($scale !== null) {
+            $length[] = $scale;
+        }
+        return $this->getDb()->getSchema()->createColumnSchemaBuilder(Schema::TYPE_NUMERIC, $length);
+    }
+    
+    /**
+     * Creates a numrange column.
+     * @return ColumnSchemaBuilder the column instance which can be further customized.
+     * This function can be used only postgresql.
+     */
+    public function numrange()
+    {
+        return $this->getDb()->getSchema()->createColumnSchemaBuilder(Schema::TYPE_NUMRANGE);
+    }
+    
+    /**
+     * Creates a oid column.
+     * @return ColumnSchemaBuilder the column instance which can be further customized.
+     * This function can be used only postgresql.
+     */
+    public function oid()
+    {
+        return $this->getDb()->getSchema()->createColumnSchemaBuilder(Schema::TYPE_OID);
+    }
+    
+    /**
+     * Creates a oidvector column.
+     * @return ColumnSchemaBuilder the column instance which can be further customized.
+     * This function can be used only postgresql.
+     */
+    public function oidvector()
+    {
+        return $this->getDb()->getSchema()->createColumnSchemaBuilder(Schema::TYPE_OIDVECTOR);
+    }
+    
+    /**
+     * Creates a path column.
+     * @return ColumnSchemaBuilder the column instance which can be further customized.
+     * This function can be used only postgresql.
+     */
+    public function path()
+    {
+        return $this->getDb()->getSchema()->createColumnSchemaBuilder(Schema::TYPE_PATH);
+    }
+    
+    /**
+     * Creates a point column.
+     * @return ColumnSchemaBuilder the column instance which can be further customized.
+     * This function can be used only postgresql.
+     */
+    public function point()
+    {
+        return $this->getDb()->getSchema()->createColumnSchemaBuilder(Schema::TYPE_POINT);
+    }
+    
+    /**
+     * Creates a real column.
+     * @return ColumnSchemaBuilder the column instance which can be further customized.
+     * This function can be used only postgresql.
+     */
+    public function real()
+    {
+        return $this->getDb()->getSchema()->createColumnSchemaBuilder(Schema::TYPE_REAL);
+    }
+    
+    /**
+     * Creates a tid column.
+     * @return ColumnSchemaBuilder the column instance which can be further customized.
+     * This function can be used only postgresql.
+     */
+    public function tid()
+    {
+        return $this->getDb()->getSchema()->createColumnSchemaBuilder(Schema::TYPE_TID);
+    }
+    
+    /**
+     * Creates a tinterval column.
+     * @return ColumnSchemaBuilder the column instance which can be further customized.
+     * This function can be used only postgresql.
+     */
+    public function tinterval()
+    {
+        return $this->getDb()->getSchema()->createColumnSchemaBuilder(Schema::TYPE_TINTERVAL);
+    }
+    
+    /**
+     * Creates a tsquery column.
+     * @return ColumnSchemaBuilder the column instance which can be further customized.
+     * This function can be used only postgresql.
+     */
+    public function tsquery()
+    {
+        return $this->getDb()->getSchema()->createColumnSchemaBuilder(Schema::TYPE_TSQUERY);
+    }
+    
+    /**
+     * Creates a time with time zone column.
+     * @return ColumnSchemaBuilder the column instance which can be further customized.
+     * This function can be used only postgresql.
+     */
+    public function timeWithTimeZone()
+    {
+        return $this->getDb()->getSchema()->createColumnSchemaBuilder(Schema::TYPE_TIME_WITH_TIME_ZONE);
+    }
+    
+    /**
+     * Creates a timestamp with time zone column.
+     * @return ColumnSchemaBuilder the column instance which can be further customized.
+     * This function can be used only postgresql.
+     */
+    public function timestampWithTimeZone()
+    {
+        return $this->getDb()->getSchema()->createColumnSchemaBuilder(Schema::TYPE_TIMESTAMP_WITH_TIME_ZONE);
+    }
+    
+    /**
+     * Creates a timestamp without time zone range column.
+     * @return ColumnSchemaBuilder the column instance which can be further customized.
+     * This function can be used only postgresql.
+     */
+    public function tsrange()
+    {
+        return $this->getDb()->getSchema()->createColumnSchemaBuilder(Schema::TYPE_TSRANGE);
+    }
+    
+    /**
+     * Creates a timestamp with time zone range column column.
+     * @return ColumnSchemaBuilder the column instance which can be further customized.
+     * This function can be used only postgresql.
+     */
+    public function tstzrange()
+    {
+        return $this->getDb()->getSchema()->createColumnSchemaBuilder(Schema::TYPE_TSTZRANGE);
+    }
+    
+    /**
+     * Creates a tsvector column.
+     * @return ColumnSchemaBuilder the column instance which can be further customized.
+     * This function can be used only postgresql.
+     */
+    public function tsvector()
+    {
+        return $this->getDb()->getSchema()->createColumnSchemaBuilder(Schema::TYPE_TSVECTOR);
+    }
+    
+    /**
+     * Creates a uuid column.
+     * @return ColumnSchemaBuilder the column instance which can be further customized.
+     * This function can be used only postgresql.
+     */
+    public function uuid()
+    {
+        return $this->getDb()->getSchema()->createColumnSchemaBuilder(Schema::TYPE_UUID);
+    }
+    
+    /**
+     * Creates a xml column.
+     * @return ColumnSchemaBuilder the column instance which can be further customized.
+     * This function can be used only postgresql.
+     */
+    public function xml()
+    {
+        return $this->getDb()->getSchema()->createColumnSchemaBuilder(Schema::TYPE_XML);
+    }  
+
 }
