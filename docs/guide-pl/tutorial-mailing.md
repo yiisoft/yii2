@@ -59,7 +59,7 @@ $message->setTo(Yii::$app->params['adminEmail'])
 ```
 
 > Note: każde rozszerzenie mailingowe posiada dwie główne klasy: 'Mailer' oraz 'Message'. Klasa 'Mailer' zawsze posiada nazwę klasy 'Message'.
-Nie próbuj instancjować obiektu 'Message' bezpośrednio - zawsze używaj do tego metody `compose()`.
+> Nie próbuj instancjować obiektu 'Message' bezpośrednio - zawsze używaj do tego metody `compose()`.
 
 Możesz również wysłać wiele wiadomości na raz:
 
@@ -129,7 +129,8 @@ Yii::$app->mailer->compose([
 Jeśli określisz nazwę widoku jako ciąg skalarny, to wynik jego renderowania zostanie użyty jako ciało HTML wiadomości,
 podczas gdy przy użyciu zwykłego teksu zostanie ono utworzone przez usunięcie wszystkich encji HTML z tego widoku. 
 
-Wynik renderowania widoku może zostać opakowany w szablon. Szablon możesz ustawić przez właściwość [[yii\mail\BaseMailer::htmlLayout]] lub [[yii\mail\BaseMailer::textLayout]].
+Wynik renderowania widoku może zostać opakowany w szablon. Szablon możesz ustawić przez właściwość [[yii\mail\BaseMailer::htmlLayout|htmlLayout]] lub 
+[[yii\mail\BaseMailer::textLayout|textLayout]].
 Zadziała to w identyczny sposób co w standardowej aplikacji web.
 Szalony mogą zostać użyte do ustawienia styli CSS, lub innej wspólnej treści:
 
@@ -204,21 +205,22 @@ Testowanie i debugowanie
 ---------------------
 
 Deweloperzy często muszą sprawdzić, czy emaile zostały wysłane przez aplikację lub jaka była ich treść.
-Możesz tego dokonać w łatwy sposób, używając dostarczonej przez Yii funkcjonalności, którą aktywujesz przez parametr `yii\mail\BaseMailer::useFileTransport`.
+Możesz tego dokonać w łatwy sposób, używając dostarczonej przez Yii funkcjonalności, którą aktywujesz przez parametr [[yii\mail\BaseMailer::useFileTransport|useFileTransport]].
 Jeśli zostanie aktywowana, każda wiadomość email będzie zapisywana do lokalnych plików zamiast zostać wysłana. Wszystkie pliki będą zapisane w ścieżce podanej w 
-`yii\mail\BaseMailer::fileTransportPath`, która domyślnie ustawiona jest na '@runtime/mail'.
+[[yii\mail\BaseMailer::fileTransportPath|fileTransportPath]], która domyślnie ustawiona jest na '@runtime/mail'.
 
 > Note: możesz albo zapisywać wiadomości do plików, albo wysyłać je do odbiorców, nie można wykonać tych dwóch czynności na raz.
 
 Plik z wiadomością email może zostać otwarty przez standardowy edytor tekstu, dzięki czemu będziesz mógł przeglądać nagłówki oraz treść wiadomości.
 
-> Note: plik wiadomości jest tworzony przy użyciu metody `\yii\mail\MessageInterface::toString()`, więc jest zależny od aktualnie używanego rozszerzenia mailingowego w Twojej aplikacji.
+> Note: plik wiadomości jest tworzony przy użyciu metody [[yii\mail\MessageInterface::toString()|toString()]], więc jest zależny od aktualnie używanego rozszerzenia mailingowego w 
+> Twojej aplikacji.
 
 Tworzenie własnego rozwiązania mailingowego
 -------------------------------
 
-Aby utworzyć swoje własne rozwiązanie mailingowe, musisz utworzyć 2 klasy: 'Mailer' oraz 'Message'.
-Możesz rozszerzyć klasy `yii\mail\BaseMailer` i `yii\mail\BaseMessage` jako bazowe klasy do tego rozwiązania.
+Aby utworzyć swoje własne rozwiązanie mailingowe, musisz utworzyć dwie klasy: 'Mailer' oraz 'Message'.
+Możesz rozszerzyć klasy [[yii\mail\BaseMailer|BaseMailer]] i [[yii\mail\BaseMessage|BaseMessage]] jako bazowe klasy do tego rozwiązania.
 Zawierają one podstawową logikę mechanizmu mailingu, który został opisany w tej sekcji. 
-Oczywiście ich użycie nie jest obowiązkowe, wystarczy zaimplementowanie interfejsów `yii\mail\MailerInterface` oraz `yii\mail\MessageInterface`.
-Kolejnie musisz zaimplementować wszystkie abstrakcyjne metody do swoich klas.
+Oczywiście ich użycie nie jest obowiązkowe, wystarczy zaimplementowanie interfejsów [[yii\mail\MailerInterface|MailerInterface]] oraz [[yii\mail\MessageInterface|MessageInterface]].
+Następnie musisz zaimplementować wszystkie abstrakcyjne metody do swoich klas.

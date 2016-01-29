@@ -6,8 +6,7 @@ Praca ze skryptami
 ### Rejestrowanie skryptów
 
 Dzięki obiektowi [[yii\web\View|View]] możesz rejestrować skrypty w aplikacji. Przeznaczone są do tego dwie dedykowane metody: 
-[[yii\web\View::registerJs()|registerJs()]] dla skryptów wbudowanych oraz
-[[yii\web\View::registerJsFile()|registerJsFile()]] dla skryptów zewnętrznych.
+[[yii\web\View::registerJs()|registerJs()]] dla skryptów wbudowanych oraz [[yii\web\View::registerJsFile()|registerJsFile()]] dla skryptów zewnętrznych.
 Skrypty wbudowane są przydatne przy konfiguracji oraz dynamicznym generowaniu kodu.
 Możesz dodać je w następujący sposób:
 
@@ -18,11 +17,11 @@ $this->registerJs("var options = " . json_encode($options) . ";", View::POS_END,
 Pierwszy argument przekazywany do metody `registerJs` to kod JavaScript, który chcemy umieścić na stronie. Jako drugi argument wskazujemy miejsce, 
 w którym skrypt ma zostać umieszczony na stronie. Możliwe wartości to:
 
-- [[yii\web\View::POS_HEAD|View::POS_HEAD]] dla sekcji `head`.
-- [[yii\web\View::POS_BEGIN|View::POS_BEGIN]] zaraz po otwarciu tagu `<body>`.
-- [[yii\web\View::POS_END|View::POS_END]] zaraz przed zamknięciem tagu `</body>`.
-- [[yii\web\View::POS_READY|View::POS_READY]] do wywołania kodu z użyciem zdarzenia `ready` na dokumencie. Ta opcja zarejestruje automatycznie [[yii\web\JqueryAsset|jQuery]]
-- [[yii\web\View::POS_LOAD|View::POS_LOAD]] do wywołania kodu z użyciem zdarzenia `load` na dokumencie. Ta opcja zarejestruje automatycznie [[yii\web\JqueryAsset|jQuery]]
+- [[yii\web\View::POS_HEAD|POS_HEAD]] dla sekcji `head`.
+- [[yii\web\View::POS_BEGIN|POS_BEGIN]] zaraz po otwarciu tagu `<body>`.
+- [[yii\web\View::POS_END|POS_END]] zaraz przed zamknięciem tagu `</body>`.
+- [[yii\web\View::POS_READY|POS_READY]] do wywołania kodu z użyciem zdarzenia `ready` na dokumencie. Ta opcja zarejestruje automatycznie [[yii\web\JqueryAsset|jQuery]]
+- [[yii\web\View::POS_LOAD|POS_LOAD]] do wywołania kodu z użyciem zdarzenia `load` na dokumencie. Ta opcja zarejestruje automatycznie [[yii\web\JqueryAsset|jQuery]]
 
 Ostatnim argumentem jest unikalne ID skryptu, które jest używane do zidentyfikowania bloku kodu i zastąpienia go, jeśli taki został już zarejestrowany. 
 Jeśli ten argument nie zostanie podany, kod JavaScript zostanie użyty jako ID.

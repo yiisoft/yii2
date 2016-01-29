@@ -1,7 +1,7 @@
 Skrypty wejściowe
 =================
 
-Skrypty wejściowe są pierwszym krokiem procesu bootstrapowania aplikacji. Aplikacja (zarówno web
+Skrypty wejściowe są pierwszym krokiem procesu bootstrapowania aplikacji. Aplikacja (zarówno Web
 jak i konsolowa) posiada pojedynczy skrypt wejściowy. Użytkownicy końcowi wysyłają żądania do skryptów 
 wejściowych, które inicjują instancje aplikacji i przekazują do nich te żądania.
 
@@ -48,7 +48,7 @@ $config = require(__DIR__ . '/../config/web.php');
 
 ## Aplikacje konsoli <span id="console-applications"></span>
 
-Podobnie, poniżej kod skryptu wejściowego dla aplikacji konsolowej:
+Podobnie poniżej kod skryptu wejściowego dla aplikacji konsolowej:
 
 ```php
 #!/usr/bin/env php

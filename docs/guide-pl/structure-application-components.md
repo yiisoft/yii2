@@ -14,12 +14,13 @@ Możesz dostać się do tego komponentu przez wyrażenie:
 \Yii::$app->componentID
 ```
 
-Dla przykładu, możesz użyć `\Yii::$app->db` do uzyskania [[yii\db\Connection|DB connection]],
-lub `\Yii::$app->cache` do uzyskania [[yii\caching\Cache|podstawowej pamięci podręcznej]] zarejestrowanej w aplikacji.
+Dla przykładu, możesz użyć `\Yii::$app->db` do uzyskania [[yii\db\Connection|połączenia z bazą danych]] lub `\Yii::$app->cache` do uzyskania 
+[[yii\caching\Cache|dostępu do pamięci podręcznej]] zarejestrowanej w aplikacji.
 
 Komponent jest tworzony przy pierwszym jego wywołaniu przez powyższe wyrażenie, każde kolejne wywołanie zwróci tą samą instancję tego komponentu.
 
-Komponentami aplikacji może być każdy objekt. Możesz je zarejestrować przez skonfigurowanie parametru [[yii\base\Application::components]] w [konfiguracji aplikacji](structure-applications.md#application-configurations).
+Komponentami aplikacji może być każdy objekt. Możesz je zarejestrować przez skonfigurowanie parametru [[yii\base\Application::components|components]] w 
+[konfiguracji aplikacji](structure-applications.md#application-configurations).
 Dla przykładu:
 
 ```php
@@ -45,16 +46,16 @@ Dla przykładu:
 ```
 
 > Info: Możesz zarejestrować tak wiele komponentów jak chcesz, jednak powinieneś robić to rozważnie.
-Komponenty aplikacji są podobne do zmiennych globalnych. 
-Używanie zbyt wielu komponentów może potencjalnie uczynić Twój kod trudniejszym do testowania i utrzymania.
-W wielu przypadkach, możesz po prostu utworzyć lokalny komponent i użyć go kiedy potrzebujesz.
+> Komponenty aplikacji są podobne do zmiennych globalnych. 
+> Używanie zbyt wielu komponentów może potencjalnie uczynić Twój kod trudniejszym do testowania i utrzymania.
+> W wielu przypadkach możesz po prostu utworzyć lokalny komponent i użyć go, kiedy jest to konieczne.
 
 
 ## Bootstrapping komponentów <span id="bootstrapping-components"></span>
 
-Tak jak było wspomniane wcześniej, komponent aplikacji zostanie zinstancjowany tylko jeśli zostanie wywołany po raz pierwszy.
-Czasami jednak chcemy aby komponent został zainstancjowany dla każdego żądania, nawet jeśli nie jest bezpośrednio wywoływany.
-Aby to osiągnąć, możesz wylistować ID komponentów w właściwości [[yii\base\Application::bootstrap|bootstrap]] aplikacji.
+Tak, jak było wspomniane wcześniej, komponent aplikacji zostanie zinstancjowany tylko w momencie pierwszego wywołania.
+Czasami jednak chcemy, aby komponent został zainstancjowany dla każdego żądania, nawet jeśli nie jest bezpośrednio wywoływany.
+Aby to osiągnąć, możesz wylistować ID komponentów we właściwości [[yii\base\Application::bootstrap|bootstrap]] aplikacji.
 
 
 Dla przykładu, następująca konfiguracja aplikacji zapewnia załadowanie komponentu `log` przy każdym żądaniu:
@@ -86,32 +87,31 @@ tak jak z normalnymi komponentami. Podczas konfigurowania podstawowych komponent
 zostanie użyta klasa domyślna.
 
 * [[yii\web\AssetManager|assetManager]]: zarządzanie zasobami oraz ich publikacja.
-    Po więcej informacji zajrzyj do sekcji [Assets](structure-assets.md).
-* [[yii\db\Connection|db]]: reprezentuje połączenie z bazą danych, dzięki której możliwe jest wykonywanie zapytań do bazy.
-    Konfigurując ten komponent musisz określić klasę komponentu, tak samo jak inne wymagane właściwości, np. [[yii\db\Connection::dsn]].
-    Po więcej informacji zajrzyj do sekcji [Obiekty dostępu do danych (DAO)](db-dao.md).
+  Po więcej informacji zajrzyj do sekcji [Assets](structure-assets.md).
+* [[yii\db\Connection|db]]: reprezentuje połączenie z bazą danych, dzięki której możliwe jest wykonywanie zapytań.
+  Konfigurując ten komponent musisz określić klasę komponentu, tak samo jak inne wymagane właściwości, np. [[yii\db\Connection::dsn|dsn]].
+  Po więcej informacji zajrzyj do sekcji [Obiekty dostępu do danych (DAO)](db-dao.md).
 * [[yii\base\Application::errorHandler|errorHandler]]: obsługuje błędy oraz wyjątki PHP.
-    Po więcej informacji zajrzyj do sekcji [Obsługa błędów](runtime-handling-errors.md).
-* [[yii\i18n\Formatter|formatter]]: formatuje dane kiedy są wyświetlane użytkownikom. Dla przykładu, 
-    liczba może zostać wyświetlona z separatorem tysięcy. 
-    Po więcej informacji zajrzyj do sekcji [Formatowanie danych](output-formatting.md).
+  Po więcej informacji zajrzyj do sekcji [Obsługa błędów](runtime-handling-errors.md).
+* [[yii\i18n\Formatter|formatter]]: formatuje dane wyświetlane użytkownikom. Dla przykładu liczba może zostać wyświetlona z separatorem tysięcy. 
+  Po więcej informacji zajrzyj do sekcji [Formatowanie danych](output-formatting.md).
 * [[yii\i18n\I18N|i18n]]: wspiera tłumaczenie i formatowanie wiadomości.
-    Po więcej informacji zajrzyj do sekcji [Internacjonalizacja](tutorial-i18n.md).
+  Po więcej informacji zajrzyj do sekcji [Internacjonalizacja](tutorial-i18n.md).
 * [[yii\log\Dispatcher|log]]: zarządza logowaniem informacji oraz błędów
-    Po więcej informacji zajrzyj do sekcji [Logowanie](runtime-logging.md).
+  Po więcej informacji zajrzyj do sekcji [Logowanie](runtime-logging.md).
 * [[yii\swiftmailer\Mailer|mail]]: wspiera tworzenie oraz wysyłanie emaili.
-    Po więcej informacji zajrzyj do sekcji [Wysyłanie poczty](tutorial-mailing.md).
+  Po więcej informacji zajrzyj do sekcji [Wysyłanie poczty](tutorial-mailing.md).
 * [[yii\base\Application::response|response]]: reprezentuje odpowiedź wysyłaną do użytkowników.
-    Po więcej informacji zajrzyj do sekcji [Odpowiedzi](runtime-responses.md).
+  Po więcej informacji zajrzyj do sekcji [Odpowiedzi](runtime-responses.md).
 * [[yii\base\Application::request|request]]: reprezentuje żądanie otrzymane od użytkownika.
-    Po więcej informacji zajrzyj do sekcji [Żądania](runtime-requests.md).
+  Po więcej informacji zajrzyj do sekcji [Żądania](runtime-requests.md).
 * [[yii\web\Session|session]]: reprezentuje informacje przetrzymywane w sesji. Ten komponent jest dostępny 
-    tylko w [[yii\web\Application|aplikacjach WEB]].
-    Po więcej informacji zajrzyj do sekcji [Sesje i ciasteczka](runtime-sessions-cookies.md).
+  tylko w [[yii\web\Application|aplikacjach WEB]].
+  Po więcej informacji zajrzyj do sekcji [Sesje i ciasteczka](runtime-sessions-cookies.md).
 * [[yii\web\UrlManager|urlManager]]: wspiera przetwarzania oraz tworzenie adresów URL.
-    Po więcej informacji zajrzyj do sekcji [Przetwarzanie i tworzenie adresów URL](runtime-routing.md)
+  Po więcej informacji zajrzyj do sekcji [Przetwarzanie i tworzenie adresów URL](runtime-routing.md)
 * [[yii\web\User|user]]: reprezentuje informacje dotyczące uwierzytelniania użytkownika. Ten komponent jest dostępny 
-    tylko w [[yii\web\Application|aplikacjach WEB]].
-    Po więcej informacji zajrzyj do sekcji [Uwierzytelnianie](security-authentication.md).
+  tylko w [[yii\web\Application|aplikacjach WEB]].
+  Po więcej informacji zajrzyj do sekcji [Uwierzytelnianie](security-authentication.md).
 * [[yii\web\View|view]]: wspiera renderowanie widoków.
-    Po więcej informacji zajrzyj do sekcji [Widoki](structure-views.md).
+  Po więcej informacji zajrzyj do sekcji [Widoki](structure-views.md).

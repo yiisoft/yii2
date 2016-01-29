@@ -1,8 +1,8 @@
 Wysyłanie plików
 ===============
 
-Przesyłanie plików w Yii jest zazwyczaj wykonywane przy użyciu klasy [[yii\web\UploadedFile]], która hermetyzuje każdy przesłany plik jako obiekt `UploadedFile`.
-W połączeniu z [[yii\widgets\ActiveForm]] oraz [modelem](structure-models.md), możesz w łatwy sposób zaimplementować bezpieczny mechanizm przesyłania plików.
+Przesyłanie plików w Yii jest zazwyczaj wykonywane przy użyciu klasy [[yii\web\UploadedFile|UploadedFile]], która hermetyzuje każdy przesłany plik jako obiekt `UploadedFile`.
+W połączeniu z [[yii\widgets\ActiveForm|ActiveForm]] oraz [modelem](structure-models.md), możesz w łatwy sposób zaimplementować bezpieczny mechanizm przesyłania plików.
 
 ## Tworzenie modeli <span id="creating-models"></span>
 
@@ -43,14 +43,15 @@ class UploadForm extends Model
 ```
 
 W powyższym kodzie, atrybut `imageFile` zostanie użyty do przechowania instancji przesłanego pliku. Jest połączony z zasadą walidacji `file`, która korzysta z 
-walidatora [[yii\validators\FileValidator]], aby upewnić się, że przesłany plik posiada rozszerzenie `png` lub `jpg`.
+walidatora [[yii\validators\FileValidator|FileValidator]], aby upewnić się, że przesłany plik posiada rozszerzenie `png` lub `jpg`.
 Metoda `upload()` wywoła walidację oraz zapis przesłanego pliku na serwerze.
 
 Walidator `file` pozwala na sprawdzenie rozszerzenia, wielkości, typu MIME, itp. 
 Po więcej szczegółów zajrzyj do sekcji [Podstawowe walidatory](tutorial-core-validators.md#file)
 
 > Tip: Jeśli przesyłasz obrazek, możesz rozważyć użycie walidatora `image`. 
-  Walidator ten jest implementowany przez [[yii\validators\ImageValidator]], który weryfikuje czy atrybut otrzymał prawidłowy obrazek który może być zapisany i przetworzony przez [rozszerzenie Imagine](https://github.com/yiisoft/yii2-imagine).
+> Walidator ten jest implementowany przez [[yii\validators\ImageValidator|ImageValidator]], który weryfikuje czy atrybut otrzymał prawidłowy obrazek który może być 
+> zapisany i przetworzony przez [rozszerzenie Imagine](https://github.com/yiisoft/yii2-imagine).
 
 ## Renderowanie pola wyboru pliku <span id="rendering-file-input"></span>
 
@@ -104,12 +105,12 @@ class SiteController extends Controller
 }
 ```
 
-W powyższym kodzie, kiedy formularz jest wysłany, metoda [[yii\web\UploadedFile::getInstance()]] wywoływana jest do reprezentowania pliku jako instancji `UploadedFile`.
+W powyższym kodzie, kiedy formularz jest wysłany, metoda [[yii\web\UploadedFile::getInstance()|getInstance()]] wywoływana jest do reprezentowania pliku jako instancji `UploadedFile`.
 Następnie przystępujemy do walidacji modelu, aby upewnić się, że przesłany plik jest prawidłowy, po czym zapisujemy go na serwerze.
 
 ## Przesyłanie wielu plików <span id="uploading-multiple-files"></span>
 
-Możesz przesyłać wiele plików za jednym razem modyfikując odrobinę kod wylistowany w powyższych sekcjach.
+Możesz przesyłać wiele plików za jednym razem, modyfikując odrobinę kod wylistowany w powyższych sekcjach.
 
 Najpierw powinieneś dostosować klasę modelu dodając opcję `maxFiles` do zasady walidacji `file`, aby określić dozwoloną maksymalną liczbę przesyłanych plików.
 Metoda `upload()` powinna również zostać zaktualizowana, aby zapisywać pliki jeden po drugim.
@@ -164,7 +165,8 @@ use yii\widgets\ActiveForm;
 <?php ActiveForm::end() ?>
 ```
 
-Na koniec, w akcji kontrolera musimy zmienić wywołanie `UploadedFile::getInstance()` na `UploadedFile::getInstances()`, aby przypisać tablicę instancji `UploadedFile` do `UploadForm::imageFiles`. 
+Na koniec, w akcji kontrolera musimy zmienić wywołanie `UploadedFile::getInstance()` na `UploadedFile::getInstances()`, aby przypisać tablicę instancji `UploadedFile` 
+do `UploadForm::imageFiles`. 
 
 ```php
 namespace app\controllers;
