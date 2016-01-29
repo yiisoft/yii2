@@ -205,7 +205,7 @@ Dla przykładu,
 ]
 ```
 
-> Note: Większość walidatorów nie obsługuje pustych pól, jeśli ich właściwość [[yii\base\Validator::skipOnEmpty|skipOnEmpty] przyjmuje domyślnie wartość `true`.
+> Note: Większość walidatorów nie obsługuje pustych pól, jeśli ich właściwość [[yii\validators\Validator::skipOnEmpty|skipOnEmpty] przyjmuje domyślnie wartość `true`.
 > Zostaną one po prostu pominięte podczas walidacji, jeśli ich powiązany atrybut otrzyma wartość uznawaną za pustą.
 > Wśród [podstawowych walidatorów](tutorial-core-validators.md), tylko walidatory `captcha`, `default`, `filter`, `required` oraz `trim` obsługują puste pola.
 
