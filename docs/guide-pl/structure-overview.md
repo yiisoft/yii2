@@ -20,4 +20,4 @@ Oprócz MVC, w aplikacjach Yii zdefiniowane są następujące struktury:
 
 Poniższy diagram ilustruje statyczną strukturę aplikacji:
 
-![Statyczna struktura aplikacji](images/application-structure.png)
+![Statyczna struktura aplikacji](../guide/images/application-structure.png)

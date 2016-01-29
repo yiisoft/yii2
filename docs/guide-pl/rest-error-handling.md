@@ -3,8 +3,8 @@ Obsługa błędów
 
 Podczas obsługi żądania RESTfulowego API, w przypadku wystąpienia błędu w zapytaniu użytkownika lub gdy stanie się coś nieprzewidywanego 
 z serwerem, możesz po prostu rzucić wyjątkiem, aby powiadomić użytkownika, że coś poszło nieprawidłowo.
-Jeśli możesz zidentyfikować przyczynę błędu (np. żądany zasób nie istnieje), powinieneś rozważyć 
-rzucenie wyjątkiem razem z odpowiednim kodem statusu HTTP (np. [[yii\web\NotFoundHttpException|NotFoundHttpException]] odpowiada statusowi o kodzie 404). 
+Jeśli możesz zidentyfikować przyczynę błędu (np. żądany zasób nie istnieje), powinieneś rozważyć rzucenie wyjątkiem razem z odpowiednim kodem statusu HTTP 
+(np. [[yii\web\NotFoundHttpException|NotFoundHttpException]] odpowiada statusowi o kodzie 404). 
 Yii wyśle odpowiedź razem z odpowiadającym jej kodem i treścią statusu HTTP. Yii dołączy również do samej odpowiedzi zserializowaną reprezentację 
 wyjątku. Przykładowo:
 

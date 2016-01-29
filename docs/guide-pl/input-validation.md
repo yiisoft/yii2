@@ -1,7 +1,7 @@
 Walidacja danych wejściowych
 ================
 
-Jedna z głównych zasad mówi, że nigdy nie powinno ufać się danym otrzymanym od użytkowników oraz zawsze je walidować przez użyciem.
+Jedna z głównych zasad mówi, że nigdy nie powinno ufać się danym otrzymanym od użytkowników oraz zawsze walidować je przez użyciem.
 
 Mamy [model](structure-models.md) wypełniony danymi od użytkownika. Możemy go zwalidować przez wywołanie metody [[yii\base\Model::validate()|validate()]].
 Metoda zwróci wartość `boolean` wskazującą, czy walidacja się powiodła, czy nie. Jeśli nie, możesz pobrać informacje o błędach za pomocą właściwości [[yii\base\Model::errors|errors]].
@@ -205,9 +205,9 @@ Dla przykładu,
 ]
 ```
 
-> Note: Większość walidatorów nie obsługuje pustych pól, jeśli ich właściwość [[yii\base\Validator::skipOnEmpty|skipOnEmpty] przyjmuje domyślnie wartość `true`.
-  Zostaną one po prostu pominięte podczas walidacji, jeśli ich powiązany atrybut otrzyma wartość uznawaną za pustą.
-  Wśród [podstawowych walidatorów](tutorial-core-validators.md), tylko walidatory `captcha`, `default`, `filter`, `required` oraz `trim` obsługują puste pola.
+> Note: Większość walidatorów nie obsługuje pustych pól, jeśli ich właściwość [[yii\validators\Validator::skipOnEmpty|skipOnEmpty] przyjmuje domyślnie wartość `true`.
+> Zostaną one po prostu pominięte podczas walidacji, jeśli ich powiązany atrybut otrzyma wartość uznawaną za pustą.
+> Wśród [podstawowych walidatorów](tutorial-core-validators.md), tylko walidatory `captcha`, `default`, `filter`, `required` oraz `trim` obsługują puste pola.
 
 ## Walidacja "Ad Hoc" <span id="ad-hoc-validation"></span>
 
@@ -227,7 +227,8 @@ if ($validator->validate($email, $error)) {
 }
 ```
 
-> Note: Nie każdy walidator wspiera tego typu walidację. Dla przykładu, podstawowy walidator [unique](tutorial-core-validators.md#unique) został zaprojektowany do pracy wyłącznie z modelami.
+> Note: Nie każdy walidator wspiera tego typu walidację. Dla przykładu, podstawowy walidator [unique](tutorial-core-validators.md#unique) został zaprojektowany do pracy wyłącznie z 
+> modelami.
 
 Jeśli potrzebujesz przeprowadzić wielokrotne walidacje, możesz użyć [[yii\base\DynamicModel|DynamicModel]], który wspiera deklarację atrybutów oraz zasad walidacji "w locie".
 Dla przykładu,
@@ -402,8 +403,8 @@ ponieważ pozwala na szybszą walidację błędów, a tym samym zapewnia lepszą
 klienta *dodatkowo do* walidacji po stronie serwera.
 
 > Info: Walidacja po stronie klienta nie jest wymagana. Głównym jej celem jest poprawa jakości korzystania z formularzy przez użytkowników.
-  Podobnie do danych wejściowych pochodzących od użytkowników, nigdy nie powinieneś ufać walidacji po stronie klienta. Z tego powodu,
-  powinieneś zawsze przeprowadzać walidację po stronie serwera wywołując metodę [[yii\base\Model::validate()|validate()]], tak jak zostało to opisane w poprzednich sekcjach.
+> Podobnie do danych wejściowych pochodzących od użytkowników, nigdy nie powinieneś ufać walidacji po stronie klienta. Z tego powodu,
+> powinieneś zawsze przeprowadzać walidację po stronie serwera wywołując metodę [[yii\base\Model::validate()|validate()]], tak jak zostało to opisane w poprzednich sekcjach.
 
 ### Używanie walidacji po stronie klienta <span id="using-client-side-validation"></span>
 
@@ -631,7 +632,7 @@ $form = ActiveForm::begin([
 ```
 
 > Note: Jeśli właściwość [[yii\widgets\ActiveForm::enableAjaxValidation|enableAjaxValidation]] zostanie skonfigurowana na poziomie pola formularza i jednocześnie w samym formularzu,
-  pierwszeństwo będzie miała opcja określona w formularzu.
+> pierwszeństwo będzie miała opcja określona w formularzu.
 
 
 Musisz również przygotować serwer, aby mógł obsłużyć AJAXowe zapytanie o walidację. Możesz to osiągnąć przez następujący skrawek kodu w akcji kontrolera:
@@ -646,4 +647,4 @@ if (Yii::$app->request->isAjax && $model->load(Yii::$app->request->post())) {
 Powyższy kod sprawdzi, czy zapytanie zostało wysłane przy użyciu AJAXa. Jeśli tak, w odpowiedzi zwróci wynik walidacji w formacie JSON.
 
 > Info: Możesz również użyć [walidacji kolejkowej](#deferred-validation) do wykonania walidacji AJAX, jednakże walidacja AJAXowa opisana w tej sekcji jest bardziej systematyczna i 
-  wymaga mniej wysiłku przy kodowaniu.
+> wymaga mniej wysiłku przy kodowaniu.
