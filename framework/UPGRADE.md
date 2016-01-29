@@ -38,10 +38,21 @@ with global variable `yii` instead.
   behavior could be turned on by setting `XmlResponseFormatter::$useTraversableAsArray` to `false`.
 * If you've implemented `yii\rbac\ManagerInterface` you need to implement additional method `getUserIdsByRole($roleName)`.
 * If you're using ApcCache with APCu, set `useApcu` to `true` in the component config.
+* The `yii\behaviors\SluggableBehavior` class has been refactored to make it more reusable.
+  Added new `protected` methods:
+
+  - `isSlugNeeded()`
+  - `makeUnique()`
+
+  The visibility of the following Methods has changed from `private` to `protected`:
+
+  - `validateSlug()`
+  - `generateUniqueSlug()`
+
 
 Upgrade from Yii 2.0.5
 ----------------------
-  
+
 * The signature of the following methods in `yii\console\controllers\MessageController` has changed. They have an extra parameter `$markUnused`.
   - `saveMessagesToDb($messages, $db, $sourceMessageTable, $messageTable, $removeUnused, $languages, $markUnused)`
   - `saveMessagesToPHP($messages, $dirName, $overwrite, $removeUnused, $sort, $markUnused)`

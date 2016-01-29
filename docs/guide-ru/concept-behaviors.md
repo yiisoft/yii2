@@ -54,6 +54,8 @@ class MyBehavior extends Behavior
 > Tip: Внутри поведения возможно обращаться к компоненту, к которому оно прикреплено, используя свойство
   [[yii\base\Behavior::owner]].
 
+> Note: При переопределении метода поведения [[yii\base\Behavior::__get()]] и/или [[yii\base\Behavior::__set()]] необходимо
+также переопределить [[yii\base\Behavior::canGetProperty()]] и/или [[yii\base\Behavior::canSetProperty()]].
 
 Обработка событий компонента
 -------------------------

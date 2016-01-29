@@ -266,6 +266,25 @@ echo GridView::widget([
 - [[yii\grid\ActionColumn::urlCreator|urlCreator]] は、指定されたモデルの情報を使って、ボタンの URL を生成するコールバックです。
   コールバックのシグニチャは [[yii\grid\ActionColumn::createUrl()]] のそれと同じでなければなりません。
   このプロパティが設定されていないときは、ボタンの URL は [[yii\grid\ActionColumn::createUrl()]] を使って生成されます。
+- [[yii\grid\ActionColumn::visibleButtons|visibleButtons]] は、各ボタンの可視性の条件を定義する配列です。
+  配列のキーはボタンの名前 (波括弧を除く) であり、値は真偽値 true/false または無名関数です。
+  ボタンの名前がこの配列の中で指定されていない場合は、デフォルトで、ボタンが表示されます。
+  コールバックは次のシグニチャを使わなければなりません。
+
+  ```php
+  function ($model, $key, $index) {
+      return $model->status === 'editable';
+  }
+  ```
+
+  または、真偽値を渡すことも出来ます。
+
+  ```php
+  [
+      'update' => \Yii::$app->user->can('update')
+  ]
+  ```
+
 
 #### チェックボックスカラム
 

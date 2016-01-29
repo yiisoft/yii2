@@ -1137,7 +1137,7 @@ $order->link('items', $item);
 例えば、
 
 ```php
-$customer = Customer::find()->with('orders')->all();
+$customer = Customer::find()->with('orders')->where(['id' => 123])->one();
 $customer->unlink('orders', $customer->orders[0]);
 ```
 

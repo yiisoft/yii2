@@ -387,9 +387,31 @@ class ArrayHelperTest extends TestCase
 
     public function testGetValueObjects()
     {
+        $arrayObject = new \ArrayObject(['id' => 23], \ArrayObject::ARRAY_AS_PROPS);
+        $this->assertEquals(23, ArrayHelper::getValue($arrayObject, 'id'));
+
         $object = new Post1();
         $this->assertEquals(23, ArrayHelper::getValue($object, 'id'));
+    }
+
+    /**
+     * This is expected to result in a PHP error
+     * @expectedException \PHPUnit_Framework_Error
+     */
+    public function testGetValueNonexistingProperties1()
+    {
+        $object = new Post1();
         $this->assertEquals(null, ArrayHelper::getValue($object, 'nonExisting'));
+    }
+
+    /**
+     * This is expected to result in a PHP error
+     * @expectedException \PHPUnit_Framework_Error
+     */
+    public function testGetValueNonexistingProperties2()
+    {
+        $arrayObject = new \ArrayObject(['id' => 23], \ArrayObject::ARRAY_AS_PROPS);
+        $this->assertEquals(23, ArrayHelper::getValue($arrayObject, 'nonExisting'));
     }
 
     public function testIsAssociative()
@@ -421,7 +443,8 @@ class ArrayHelperTest extends TestCase
             [
                 '<>' => 'a<>b',
                 '23' => true,
-            ]
+            ],
+            'invalid' => "a\x80b",
         ];
         $this->assertEquals([
             'abc' => '123',
@@ -431,7 +454,8 @@ class ArrayHelperTest extends TestCase
             [
                 '<>' => 'a&lt;&gt;b',
                 '23' => true,
-            ]
+            ],
+            'invalid' => 'a�b',
         ], ArrayHelper::htmlEncode($array));
         $this->assertEquals([
             'abc' => '123',
@@ -441,7 +465,8 @@ class ArrayHelperTest extends TestCase
             [
                 '&lt;&gt;' => 'a&lt;&gt;b',
                 '23' => true,
-            ]
+            ],
+            'invalid' => 'a�b',
         ], ArrayHelper::htmlEncode($array, false));
     }
 

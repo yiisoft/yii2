@@ -3,12 +3,13 @@ Yii Framework 2 Change Log
 
 2.0.7 under development
 -----------------------
-
 - Bug #6351: Find MySQL FK constraints from `information_schema` tables instead of `SHOW CREATE TABLE` to improve reliability (nineinchnick)
 - Bug #6363, #8301, #8582, #9566: Fixed data methods and PJAX issues when used together (derekisbusy)
 - Bug #6876: Fixed RBAC migration MSSQL cascade problem (thejahweh)
 - Bug #7627: Fixed `yii\widgets\ActiveField` to handle inputs validation with changed ID properly (dynasource, cebe)
+- Bug #7806: Fixed `yii\grid\CheckboxColumn` fixed `_all` checkbox column name generation (cebe, silverfire)
 - Bug #8466: Fixed `yii\validators\FileValidator` to display error for `tooBig` and `tooSmall` with formatted unit (silverfire)
+- Bug #8573: Fixed incorrect data type mapping for NUMBER to INTEGER or DECIMAL in Oracle (vbelogai)
 - Bug #8723: Fixed `yii\helpers\VarDumper::export()` unable to export circle referenced objects with `Closure` (klimov-paul)
 - Bug #9061: Fixed `yii.activeForm.js`: input onBlur event forces field validation (githubjeka)
 - Bug #9108: Negative number resulted in no formatting when using `Formatter::asSize()` or `Formatter::asShortSize` (nxnx, cebe)
@@ -35,19 +36,25 @@ Yii Framework 2 Change Log
 - Bug #9874: Fixed outputting exception stacktrace in non-debug mode when `Response::FORMAT_RAW` is used (nainoon)
 - Bug #9883: Passing a single `yii\db\Expression` to `Query::select()` or `::addSelect()` was not handled correctly in all cases (cebe)
 - Bug #9911: Fixed `yii\helpers\BaseStringHelper::explode()` code so it doesn't remove items equal to 0 when `skip_empty` is true (silverfire, kidol)
-- Bug #9915: `yii\helpers\ArrayHelper::getValue()` was erroring instead of returning `null` for non-existing object properties (totaldev, samdark)
 - Bug #9924: Fixed `yii.js` handleAction corrupted parameter values containing quote (") character (silverfire)
 - Bug #9984: Fixed wrong captcha color in case Imagick is used (DrDeath72)
 - Bug #9999: Fixed `yii\web\UrlRule` to allow route parameter names with `-`, `_`, `.`characters (silverfire)
 - Bug #10029: Fixed MaskedInput not working with PJAX (martrix78, samdark)
+- Bug #10052: Fixed `yii\i18n\Formatter` to work with huge numbers on 32-bit arch (necrox87, silverfire)
 - Bug #10101: Fixed assignments saving on role removing in `\yii\rbac\PhpManager` (rezident1307)
 - Bug #10142: Fixed `yii\validators\EmailValidator` to check the length of email properly (silverfire)
+- Bug #10218: Fixed Flash messages not showing after logging out a user (andrewnester)
+- Bug #10263: Fixed `yii\validators\UniqueValidator` to work properly when model is not instance of `targetClass` (bupy7, githubjeka, silverfire)
 - Bug #10278: Fixed `yii\helpers\BaseJson` support \SimpleXMLElement data (SilverFire, LAV45)
 - Bug #10302: Fixed JS function `yii.getQueryParams`, which parsed array variables incorrectly (servocoder, silverfire)
 - Bug #10363: Fixed fallback float and integer formatting (AnatolyRugalev, silverfire)
 - Bug #10372: Fixed console controller including DI arguments in help (sammousa)
 - Bug #10385: Fixed `yii\validators\CaptchaValidator` passed incorrect hashKey to JS validator when `captchaAction` begins with `/` (silverfire)
 - Bug #10467: Fixed `yii\di\Instance::ensure()` to work with minimum settings (LAV45)
+- Bug #10541: Fixed division by zero issue in `Console` helper progress bar (youmad)
+- Bug #10580: Fixed `yii\grid\GridView::guessColumns()` to work with numeric column names (silverfire)
+- Bug #10625: Fixed `activeForm.js` - when submit doesn't reload page, submit button value simulation with hidden input did not work (andrewnester)
+- Bug #10629: Fixed `yii\helpers\BaseStringHelper` - BaseStringHelper::truncateHtml adds suffix regardless of the string length (andrewnester)
 - Bug: Fixed generation of canonical URLs for `ViewAction` pages (samdark)
 - Bug: Fixed `mb_*` functions calls to use `UTF-8` or `Yii::$app->charset` (silverfire)
 - Enh #3506: Added `yii\validators\IpValidator` to perform validation of IP addresses and subnets (SilverFire, samdark)
@@ -62,6 +69,7 @@ Yii Framework 2 Change Log
 - Enh #8613: `yii\widgets\FragmentCache` will not store empty content anymore which fixes some problems related to `yii\filters\PageCache` (kidol)
 - Enh #8649: Added total applied migrations to final report (vernik91)
 - Enh #8687: Added support for non-gregorian calendars, e.g. persian, taiwan, islamic to `yii\i18n\Formatter` (cebe, z-avanes, hooman-pro)
+- Enh #8824: Allow passing a `yii\db\Expression` to `Query::groupBy()` (cebe)
 - Enh #8995: `yii\validators\FileValidator::maxFiles` can be set to `0` to allow unlimited count of files (PowerGamer1, silverfire)
 - Enh #9282: Improved JSON error handling to support PHP 5.5 error codes (freezy-sk)
 - Enh #9337: Added `yii\db\ColumnSchemaBuilder::defaultExpression()` to support DB Expression as default value (kotchuprik)
@@ -84,7 +92,7 @@ Yii Framework 2 Change Log
 - Enh #10086: `yii\base\Controller::viewPath` is now configurable (Sibilino)
 - Enh #10098: Changed `yii.confirm` context to the event's target DOM element which is triggered by clickable or changeable elements (lichunqiang)
 - Enh #10108: Added support for events in interfaces (omnilight)
-- Enh #10118: Allow easy extension of slug generation in `yii\behaviors\SluggableBehavior` (cebe, hesna)
+- Enh #10118: Allow easy extension of slug generation in `yii\behaviors\SluggableBehavior` (cebe, hesna, silverfire)
 - Enh #10149: Made `yii\db\Connection` serializable (Sam Mousa)
 - Enh #10154: Implemented support of traversable objects in `RangeValidator::ranges`, added `ArrayHelper::isIn()` and `ArrayHelper::isSubset()` (Sam Mousa)
 - Enh #10158: Added the possibility to specify CSS and Javascript options per file in `\yii\web\AssetBundle` (machour)
@@ -96,6 +104,7 @@ Yii Framework 2 Change Log
 - Enh #10319: `yii\helpers\VarDumper::dump()` now respects PHP magic method `__debugInfo()` (klimov-paul)
 - Enh #10359: Support wildcard category name in `yii/console/controllers/MessageController` (rmrevin)
 - Enh #10390: Added ability to disable outer tag for `\yii\helpers\BaseHtml::radiolist()`, `::checkboxList()` (TianJinRong, githubjeka, silverfire)
+- Enh #10535: Allow passing a `yii\db\Expression` to `Query::orderBy()` and `Query::groupBy()` (andrewnester, cebe)
 - Enh: Added last resort measure for `FileHelper::removeDirectory()` fail to unlink symlinks under Windows (samdark)
 - Chg #9369: `Yii::$app->user->can()` now returns `false` instead of erroring in case `authManager` component is not configured (creocoder)
 - Chg #9411: `DetailView` now automatically sets container tag ID in case it's not specified (samdark)
@@ -172,6 +181,7 @@ Yii Framework 2 Change Log
 - Enh #9072: `yii\web\ErrorAction` displays 404 error instead of blank page on direct access (klimov-paul)
 - Enh #9149: Print directory migrationPath in a `yii migrate` command error. (RusAlex)
 - Enh #9177: Added password hash cost setting to Security component (freezy-sk)
+- Enh #6162, #9198: Added parameter visibleButtons for `yii\grid\ActionColumn` (fornit1917, silverfire)
 - Enh #9239: Better handling of `Json` errors (grzegorzkurtyka, samdark)
 - Enh #9246: Added `yii\web\UrlRule::getParamRules()` (df2)
 - Enh #9249: Added `hashCallback` in `yii\web\AssetManager` to allow custom hash generation for asset directory (petrabarus)
@@ -1313,7 +1323,7 @@ Yii Framework 2 Change Log
 - New: Added `HtmlResponseFormatter` and `JsonResponseFormatter` (qiangxue)
 
 
-2.0.0-alpha, December 1, 2013
+2.0.0-alpha December 1, 2013
 -----------------------------
 
 - Initial release.

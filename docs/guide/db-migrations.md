@@ -36,7 +36,7 @@ how to accomplish various tasks using these tools. You may also get the usage of
 command `yii help migrate`.
 
 > Tip: migrations could affect not only database schema but adjust existing data to fit new schema, create RBAC
-  hierarcy or clean up cache.
+  hierarchy or clean up cache.
 
 
 ## Creating Migrations <span id="creating-migrations"></span>

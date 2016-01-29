@@ -1162,7 +1162,7 @@ Odwrotną operacją do [[yii\db\ActiveRecord::link()|link()]] jest [[yii\db\Acti
 dwoma instancjami Active Record. Przykładowo:
 
 ```php
-$customer = Customer::find()->with('orders')->all();
+$customer = Customer::find()->with('orders')->where(['id' => 123])->one();
 $customer->unlink('orders', $customer->orders[0]);
 ```
 

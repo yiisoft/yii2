@@ -183,7 +183,7 @@ use yii\data\ActiveDataProvider;
 $query = Post::find()->where(['status' => 1]);
 
 $provider = new ActiveDataProvider([
-    'query' => Post::find(),
+    'query' => $query,
 ]);
 
 // Post オブジェクトの配列を返す

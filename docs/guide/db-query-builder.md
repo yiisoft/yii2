@@ -89,6 +89,9 @@ that contains commas to avoid incorrect automatic name quoting. For example,
 $query->select(["CONCAT(first_name, ' ', last_name) AS full_name", 'email']); 
 ```
 
+As with all places where raw SQL is involved, you may use the [DBMS agnostic quoting syntax](db-dao.md#quoting-table-and-column-names)
+for table and column names when writing DB expressions in select.
+
 Starting from version 2.0.1, you may also select sub-queries. You should specify each sub-query in terms of 
 a [[yii\db\Query]] object. For example,
  
@@ -163,13 +166,17 @@ the three formats to specify a `WHERE` condition:
 
 #### String Format <span id="string-format"></span>
 
-String format is best used to specify very simple conditions. It works as if you are writing a raw SQL. For example,
+String format is best used to specify very simple conditions or if you need to use builtin functions of the DBMS.
+It works as if you are writing a raw SQL. For example,
 
 ```php
 $query->where('status=1');
 
 // or use parameter binding to bind dynamic parameter values
 $query->where('status=:status', [':status' => $status]);
+
+// raw SQL using MySQL YEAR() function on a date field
+$query->where('YEAR(somedate) = 2015');
 ```
 
 Do NOT embed variables directly in the condition like the following, especially if the variable values come from 
@@ -188,6 +195,8 @@ $query->where('status=:status')
     ->addParams([':status' => $status]);
 ```
 
+As with all places where raw SQL is involved, you may use the [DBMS agnostic quoting syntax](db-dao.md#quoting-table-and-column-names)
+for table and column names when writing conditions in string format. 
 
 #### Hash Format <span id="hash-format"></span>
 
