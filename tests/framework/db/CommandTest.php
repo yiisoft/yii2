@@ -290,7 +290,7 @@ SQL;
     public function testInsert()
     {
         $db = $this->getConnection();
-        $db->createCommand('DELETE FROM {{customer}};')->execute();
+        $db->createCommand('DELETE FROM {{customer}}')->execute();
 
         $command = $db->createCommand();
         $command->insert(
@@ -302,7 +302,7 @@ SQL;
             ]
         )->execute();
         $this->assertEquals(1, $db->createCommand('SELECT COUNT(*) FROM {{customer}};')->queryScalar());
-        $record = $db->createCommand('SELECT email, name, address FROM {{customer}};')->queryOne();
+        $record = $db->createCommand('SELECT [[email]], [[name]], [[address]] FROM {{customer}}')->queryOne();
         $this->assertEquals([
             'email' => 't1@example.com',
             'name' => 'test',
@@ -313,7 +313,7 @@ SQL;
     public function testInsertExpression()
     {
         $db = $this->getConnection();
-        $db->createCommand('DELETE FROM {{order_with_null_fk}};')->execute();
+        $db->createCommand('DELETE FROM {{order_with_null_fk}}')->execute();
 
         switch($this->driverName){
             case 'pgsql':
@@ -338,8 +338,8 @@ SQL;
                 'total' => 1,
             ]
         )->execute();
-        $this->assertEquals(1, $db->createCommand('SELECT COUNT(*) FROM {{order_with_null_fk}};')->queryScalar());
-        $record = $db->createCommand('SELECT created_at FROM {{order_with_null_fk}};')->queryOne();
+        $this->assertEquals(1, $db->createCommand('SELECT COUNT(*) FROM {{order_with_null_fk}}')->queryScalar());
+        $record = $db->createCommand('SELECT [[created_at]] FROM {{order_with_null_fk}}')->queryOne();
         $this->assertEquals([
             'created_at' => date('Y'),
         ], $record);
