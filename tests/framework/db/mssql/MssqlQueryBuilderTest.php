@@ -16,8 +16,8 @@ class MssqlQueryBuilderTest extends QueryBuilderTest
 
     public function testOffsetLimit()
     {
-        $expectedQuerySql = 'SELECT [id] FROM [exapmle] OFFSET 5 ROWS FETCH NEXT 10 ROWS ONLY';
-        $expectedQueryParams = null;
+        $expectedQuerySql = 'SELECT [id] FROM [example] ORDER BY (SELECT NULL) OFFSET 5 ROWS FETCH NEXT 10 ROWS ONLY';
+        $expectedQueryParams = [];
 
         $query = new Query();
         $query->select('id')->from('example')->limit(10)->offset(5);
@@ -30,8 +30,8 @@ class MssqlQueryBuilderTest extends QueryBuilderTest
 
     public function testLimit()
     {
-        $expectedQuerySql = 'SELECT [id] FROM [exapmle] OFFSET 0 ROWS FETCH NEXT 10 ROWS ONLY';
-        $expectedQueryParams = null;
+        $expectedQuerySql = 'SELECT [id] FROM [example] ORDER BY (SELECT NULL) OFFSET 0 ROWS FETCH NEXT 10 ROWS ONLY';
+        $expectedQueryParams = [];
 
         $query = new Query();
         $query->select('id')->from('example')->limit(10);
@@ -44,8 +44,8 @@ class MssqlQueryBuilderTest extends QueryBuilderTest
 
     public function testOffset()
     {
-        $expectedQuerySql = 'SELECT [id] FROM [example] OFFSET 10 ROWS';
-        $expectedQueryParams = null;
+        $expectedQuerySql = 'SELECT [id] FROM [example] ORDER BY (SELECT NULL) OFFSET 10 ROWS';
+        $expectedQueryParams = [];
 
         $query = new Query();
         $query->select('id')->from('example')->offset(10);
