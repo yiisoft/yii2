@@ -339,7 +339,7 @@ echo GridView::widget([
 
 ### Filtering data
 
-For filtering data the GridView needs a [model](structure-models.md) that takes the input from, the filtering
+For filtering data the GridView needs a [model](structure-models.md) that takes the input form, the filtering
 form and adjusts the query of the dataProvider to respect the search criteria.
 A common practice when using [active records](db-active-record.md) is to create a search Model class
 that provides needed functionality (it can be generated for you by [Gii](start-gii.md)). This class defines the validation 
