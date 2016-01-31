@@ -309,6 +309,21 @@ to a specified attribute and save it to the database:
 $user->touch('login_time');
 ```
 
+Other behaviors
+---------------
+
+There are several built-in and external behaviors available:
+
+- [[yii\behaviors\BlameableBehavior]] - automatically fills the specified attributes with the current user ID.
+- [[yii\behaviors\SluggableBehavior]] - automatically fills the specified attribute with a value that can be used
+  a slug in a URL.
+- [[yii\behaviors\AttributeBehavior]] - automatically assigns a specified value to one or multiple attributes of
+  an ActiveRecord object when certain events happen.
+- [yii2tech\ar\softdelete\SoftDeleteBehavior](https://github.com/yii2tech/ar-softdelete) - provides methods to soft-delete
+  and soft-restore ActiveRecord i.e. set flag or status which marks record as deleted.
+- [yii2tech\ar\position\PositionBehavior](https://github.com/yii2tech/ar-position) - allows managing records order in an
+  integer field by providing reordering methods.
+
 Comparing Behaviors with Traits <span id="comparison-with-traits"></span>
 ----------------------
 
