@@ -180,7 +180,7 @@ echo \Yii::t('app', 'Today is {0, date, short}', time());
 Используя свой формат:
 
 ```php
-echo \Yii::t('app', 'Today is {0, date, yyyy-MM-dd}', time());
+echo \Yii::t('app', 'Today is {0, date,yyyy-MM-dd}', time());
 ```
 
 [Описание форматирования](http://icu-project.org/apiref/icu4c/classicu_1_1SimpleDateFormat.html).
@@ -200,7 +200,7 @@ echo \Yii::t('app', 'It is {0, time, short}', time());
 Используя свой формат:
 
 ```php
-echo \Yii::t('app', 'It is {0, date, HH:mm}', time());
+echo \Yii::t('app', 'It is {0, date,HH:mm}', time());
 ```
 
 [Описание форматирования](http://icu-project.org/apiref/icu4c/classicu_1_1SimpleDateFormat.html).

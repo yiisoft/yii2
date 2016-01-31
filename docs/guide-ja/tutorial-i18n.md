@@ -260,9 +260,9 @@ echo \Yii::t('app', 'Today is {0, date, short}', time());
 日付の値をフォーマットするカスタムパターンを指定することも出来ます。
 
 ```php
-echo \Yii::t('app', 'Today is {0, date, yyyy-MM-dd}', time());
+echo \Yii::t('app', 'Today is {0, date,yyyy-MM-dd}', time());
 
-// 日本語翻訳: '今日は {0, date, yyyy-MM-dd} です。'
+// 日本語翻訳: '今日は {0, date,yyyy-MM-dd} です。'
 // 日本語出力: '今日は 2015-01-07 です。'
 ```
 
@@ -291,7 +291,7 @@ echo \Yii::t('app', 'It is {0, time, short}', time());
 時刻の値をフォーマットするカスタムパターンを指定することも出来ます。
 
 ```php
-echo \Yii::t('app', 'It is {0, date, HH:mm}', time());
+echo \Yii::t('app', 'It is {0, date,HH:mm}', time());
 
 // 日本語翻訳: '現在 {0, time, HH:mm} です。'
 // 日本語出力: '現在 22:37 です。'
