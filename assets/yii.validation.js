@@ -206,7 +206,7 @@ yii.validation = (function ($) {
                     value = matches[1] + matches[3] + matches[5] + '@' + matches[6] + matches[7];
                 }
 
-                if (matches[5].length > 64 || matches[1].length > 64) {
+                if (matches[5].length > 64) {
                     valid = false;
                 } else if ((matches[5] + '@' + matches[6]).length > 254) {
                     valid = false;
