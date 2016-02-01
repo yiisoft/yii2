@@ -253,7 +253,7 @@ The basic usage of query caching is as follows, assuming `$db` is a [[yii\db\Con
 $result = $db->cache(function ($db) {
 
     // the result of the SQL query will be served from the cache
-    // if query caching is enabled and the query result will be found in the cache
+    // if query caching is enabled and the query result is found in the cache
     return $db->createCommand('SELECT * FROM customer WHERE id=1')->queryOne();
 
 });
