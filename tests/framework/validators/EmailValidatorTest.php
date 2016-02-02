@@ -87,7 +87,7 @@ class EmailValidatorTest extends TestCase
         $this->assertTrue($validator->validate('<mail@cebe.cc>'));
         $this->assertTrue($validator->validate('test@example.com'));
         $this->assertTrue($validator->validate('John Smith <john.smith@example.com>'));
-        $this->assertTrue($validator->validate('"Такое имя достаточно длинное, но оно все равно можнет пройти валидацию" <shortmail@example.com>'));
+        $this->assertTrue($validator->validate('"Такое имя достаточно длинное, но оно все равно может пройти валидацию" <shortmail@example.com>'));
         $this->assertFalse($validator->validate('John Smith <example.com>'));
         $this->assertFalse($validator->validate('Короткое имя <после-преобразования-в-idn-тут-будет-больше-чем-64-символа@пример.com>'));
         $this->assertFalse($validator->validate('Короткое имя <тест@это-доменное-имя.после-преобразования-в-idn.будет-содержать-больше-254-символов.бла-бла-бла-бла-бла-бла-бла-бла.бла-бла-бла-бла-бла-бла.бла-бла-бла-бла-бла-бла.бла-бла-бла-бла-бла-бла.com>'));
