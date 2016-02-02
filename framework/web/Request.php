@@ -169,26 +169,47 @@ class Request extends \yii\base\Request
      */
     private $_headers;
 
-
     /**
      * Resolves the current request into a route and the associated parameters.
      * @return array the first element is the route, and the second is the associated parameters.
+     * @redirect when an unresolved url matches an url with suffix 
      * @throws NotFoundHttpException if the request cannot be resolved.
      */
     public function resolve()
     {
-        $result = Yii::$app->getUrlManager()->parseRequest($this);
+        $currentQueryParams = $this->_queryParams;
+        if($url = $this->resolveRequest($this,$currentQueryParams)){
+            return $url;
+        }else if(isset(Yii::$app->getUrlManager()->suffix)){
+            $request = $this;
+            $request->setPathInfo($request->getPathInfo() . Yii::$app->getUrlManager()->suffix);                
+            if($url = $this->resolveRequest($request,$currentQueryParams)){
+                return Yii::$app->response->redirect($url, 301);
+            }              
+        }        
+        throw new NotFoundHttpException(Yii::t('yii', 'Page not found.'));
+    }
+    
+    /**
+     * Resolves a given $request at its $queryParams into a route and the associated parameters.
+     * @param Request $request, current or custom request
+     * @param array $currentQueryParams of current request
+     * @return array the first element is the route, and the second is the associated parameters.
+     * @return false if the request cannot be resolved.
+     */
+    public function resolveRequest($request,$currentQueryParams)
+    {
+        $result = Yii::$app->getUrlManager()->parseRequest($request);       
         if ($result !== false) {
-            list ($route, $params) = $result;
-            if ($this->_queryParams === null) {
+            list ($route, $params) = $result;            
+            if ($currentQueryParams === null) {
                 $_GET = $params + $_GET; // preserve numeric keys
             } else {
-                $this->_queryParams = $params + $this->_queryParams;
+                $request->setQueryParams($params + $currentQueryParams);
             }
             return [$route, $this->getQueryParams()];
-        } else {
-            throw new NotFoundHttpException(Yii::t('yii', 'Page not found.'));
         }
+        return false;        
     }
 
     /**
