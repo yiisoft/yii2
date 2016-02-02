@@ -181,7 +181,7 @@ class Request extends \yii\base\Request
         if($url = $this->resolveRequest($this,$currentQueryParams)){
             return $url;
         }else if(isset(Yii::$app->getUrlManager()->suffix)){
-            $request = $this;
+            $request = clone $this;
             $request->setPathInfo($request->getPathInfo() . Yii::$app->getUrlManager()->suffix);                
             if($url = $this->resolveRequest($request,$currentQueryParams)){
                 return Yii::$app->response->redirect($url, 301);
@@ -197,7 +197,7 @@ class Request extends \yii\base\Request
      * @return array the first element is the route, and the second is the associated parameters.
      * @return false if the request cannot be resolved.
      */
-    public function resolveRequest($request,$currentQueryParams)
+    private function resolveRequest($request,$currentQueryParams)
     {
         $result = Yii::$app->getUrlManager()->parseRequest($request);       
         if ($result !== false) {
