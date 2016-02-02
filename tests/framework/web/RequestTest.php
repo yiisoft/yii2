@@ -146,4 +146,30 @@ class RequestTest extends TestCase
         $this->assertEquals(['post/view', ['id' => 21, 'token' => 'secret']], $result);
         $this->assertEquals($_GET, ['id' => 63]);
     }
+    
+    public function testResolveUnresolvedUrlBySuffix()
+    {
+        $this->mockWebApplication([
+            'components' => [
+                'request' => [
+                    'class' => 'yii\web\Request',
+                    'hostInfo' => 'http://example.com/',
+                ],                
+                'urlManager' => [
+                    'enablePrettyUrl' => true,
+                    'showScriptName' => false,
+                    'cache' => null,
+                    'suffix' => '/',
+                    'rules' => [
+                        'posts' => 'post/list',
+                    ],
+                ]
+            ]
+        ]);
+
+        $request = new Request();
+        $request->pathInfo = 'posts/list';
+        $result = $request->resolve();
+        $this->assertTrue($result->getHeaders()->get('location') === 'http://example.com/posts/list/' );
+    }       
 }
