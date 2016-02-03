@@ -169,26 +169,46 @@ class Request extends \yii\base\Request
      */
     private $_headers;
 
-
     /**
      * Resolves the current request into a route and the associated parameters.
      * @return array the first element is the route, and the second is the associated parameters.
+     * @return \yii\web\Response when an unresolved url matches an url with suffix.
      * @throws NotFoundHttpException if the request cannot be resolved.
      */
-    public function resolve()
+    public function resolve() 
+    {
+        $currentQueryParams = $this->_queryParams;
+        if ($url = $this->resolveRequest($currentQueryParams)) {
+            return $url;
+        } else if (isset(Yii::$app->getUrlManager()->suffix)) {
+            $request = clone $this;
+            $request->setPathInfo($request->getPathInfo() . Yii::$app->getUrlManager()->suffix);
+            if ($url = $request->resolveRequest($currentQueryParams)) {
+                return Yii::$app->response->redirect($url, 301);
+            }
+        }
+        throw new NotFoundHttpException(Yii::t('yii', 'Page not found.'));
+    }
+
+    /**
+     * Resolves the request into a route and the associated parameters.
+     * @param array $currentQueryParams of current request.
+     * @return array the first element is the route, and the second is the associated parameters.
+     * @return false if the request cannot be resolved.
+     */
+    public function resolveRequest($currentQueryParams) 
     {
         $result = Yii::$app->getUrlManager()->parseRequest($this);
         if ($result !== false) {
             list ($route, $params) = $result;
-            if ($this->_queryParams === null) {
+            if ($currentQueryParams === null) {
                 $_GET = $params + $_GET; // preserve numeric keys
             } else {
-                $this->_queryParams = $params + $this->_queryParams;
+                $this->setQueryParams($params + $currentQueryParams);
             }
             return [$route, $this->getQueryParams()];
-        } else {
-            throw new NotFoundHttpException(Yii::t('yii', 'Page not found.'));
         }
+        return false;
     }
 
     /**
