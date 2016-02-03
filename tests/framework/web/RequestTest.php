@@ -7,6 +7,7 @@
 
 namespace yiiunit\framework\web;
 
+use yii\web\RedirectException;
 use yii\web\Request;
 use yiiunit\TestCase;
 
@@ -145,5 +146,36 @@ class RequestTest extends TestCase
         $result = $request->resolve();
         $this->assertEquals(['post/view', ['id' => 21, 'token' => 'secret']], $result);
         $this->assertEquals($_GET, ['id' => 63]);
+    }
+
+    public function testResolveSuffixRedirect()
+    {
+        $this->mockWebApplication([
+            'components' => [
+                'urlManager' => [
+                    'enablePrettyUrl' => true,
+                    'showScriptName' => false,
+                    'cache' => null,
+                    'suffix' => '/',
+                    'rules' => [
+                        'posts' => 'post/list',
+                    ],
+                ]
+            ]
+        ]);
+
+        $request = new Request();
+        $request->hostInfo = 'http://example.com/';
+        $request->pathInfo = 'posts/list';
+        $request->baseUrl = '';
+
+        try {
+            $request->resolve();
+        } catch (RedirectException $exception) {
+            // catch redirect exception
+        }
+        $this->assertTrue(isset($exception));
+        $this->assertEquals('/posts/list/', $exception->url);
+        $this->assertEquals(301, $exception->statusCode);
     }
 }

@@ -72,7 +72,11 @@ class Application extends \yii\base\Application
     public function handleRequest($request)
     {
         if (empty($this->catchAll)) {
-            list ($route, $params) = $request->resolve();
+            try {
+                list ($route, $params) = $request->resolve();
+            } catch (RedirectException $exception) {
+                return $this->getResponse()->redirect($exception->url, $exception->statusCode);
+            }
         } else {
             $route = $this->catchAll[0];
             $params = $this->catchAll;
@@ -92,8 +96,8 @@ class Application extends \yii\base\Application
 
                 return $response;
             }
-        } catch (InvalidRouteException $e) {
-            throw new NotFoundHttpException(Yii::t('yii', 'Page not found.'), $e->getCode(), $e);
+        } catch (InvalidRouteException $exception) {
+            throw new NotFoundHttpException(Yii::t('yii', 'Page not found.'), $exception->getCode(), $exception);
         }
     }
 

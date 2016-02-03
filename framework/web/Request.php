@@ -173,7 +173,8 @@ class Request extends \yii\base\Request
     /**
      * Resolves the current request into a route and the associated parameters.
      * @return array the first element is the route, and the second is the associated parameters.
-     * @throws NotFoundHttpException if the request cannot be resolved.
+     * @throws NotFoundHttpException
+     * @throws RedirectException in case browser redirection required.
      */
     public function resolve()
     {
@@ -187,6 +188,24 @@ class Request extends \yii\base\Request
             }
             return [$route, $this->getQueryParams()];
         } else {
+            if (Yii::$app->getUrlManager()->enablePrettyUrl && !empty(Yii::$app->getUrlManager()->suffix)) {
+                $pathInfo = $this->getPathInfo();
+                $suffix = Yii::$app->getUrlManager()->suffix;
+                $n = strlen($suffix);
+                if (substr_compare($pathInfo, $suffix, -$n, $n) !== 0) {
+                    $this->setPathInfo($pathInfo . $suffix);
+                    $result = Yii::$app->getUrlManager()->parseRequest($this);
+                    if ($result !== false) {
+                        $url = $this->getBaseUrl() . '/' . $this->getPathInfo();
+                        $queryString = $this->getQueryString();
+                        if (!empty($queryString)) {
+                            $url .= '?' . $queryString;
+                        }
+                        $this->setPathInfo($pathInfo); // restore original state
+                        throw new RedirectException($url, 301);
+                    }
+                }
+            }
             throw new NotFoundHttpException(Yii::t('yii', 'Page not found.'));
         }
     }
