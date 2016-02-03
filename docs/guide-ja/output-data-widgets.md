@@ -416,6 +416,87 @@ echo GridView::widget([
 ```
 
 
+### 独立したフィルタ・フォーム
+
+たいていの場合はグリッドビューのヘッダのフィルタで十分でしょう。
+しかし、独立したフィルタのフォームが必要な場合でも、簡単に追加することができます。
+まず、以下の内容を持つパーシャル・ビュー `_search.php` を作成します。
+
+```php
+<?php
+
+use yii\helpers\Html;
+use yii\widgets\ActiveForm;
+
+/* @var $this yii\web\View */
+/* @var $model app\models\PostSearch */
+/* @var $form yii\widgets\ActiveForm */
+?>
+
+<div class="post-search">
+    <?php $form = ActiveForm::begin([
+        'action' => ['index'],
+        'method' => 'get',
+    ]); ?>
+
+    <?= $form->field($model, 'title') ?>
+
+    <?= $form->field($model, 'creation_date') ?>
+
+    <div class="form-group">
+        <?= Html::submitButton('Search', ['class' => 'btn btn-primary']) ?>
+        <?= Html::submitButton('Reset', ['class' => 'btn btn-default']) ?>
+    </div>
+
+    <?php ActiveForm::end(); ?>
+</div>
+```
+
+そして、これを以下のように `index.php` ビューにインクルードします。
+
+```php
+<?= $this->render('_search', ['model' => $searchModel]) ?>
+```
+
+> Note: Gii を使って CRUD コードを生成する場合、デフォルトで、独立したフィルタ・フォーム (`_search.php`) が生成されます。
+  ただし、`index.php` ビューの中ではコメントアウトされています。
+  コメントを外せば、すぐに使うことが出来ます。
+
+独立したフィルタ・フォームは、グリッドビューに表示されないフィールドによってフィルタをかけたり、
+または日付の範囲のような特殊なフィルタ条件を使う必要があったりする場合に便利です。
+日付の範囲によってフィルタする場合は、DB には存在しない `createdFrom` と `createdTo` という属性を検索用のモデルに追加すること良いでしょう。
+
+```php
+class PostSearch extends Post
+{
+    /**
+     * @var string
+     */
+    public $createdFrom;
+
+    /**
+     * @var string
+     */
+    public $createdTo;
+}
+```
+
+そして、`search()` メソッドでクエリの条件を次のように拡張します。
+
+```php
+$query->andFilterWhere(['>=', 'creation_date', $this->createdFrom])
+      ->andFilterWhere(['<=', 'creation_date', $this->createdTo]);
+```
+
+そして、フィルタ・フォームに、日付の範囲を示すフィールドを追加します。
+
+```php
+<?= $form->field($model, 'creationFrom') ?>
+
+<?= $form->field($model, 'creationTo') ?>
+```
+
+
 ### モデルのリレーションを扱う
 
 GridView でアクティブレコードを表示するときに、リレーションのカラムの値、例えば、単に投稿者の `id` というのではなく、投稿者の名前を表示するという場合に遭遇するかも知れません。
