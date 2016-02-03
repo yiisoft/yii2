@@ -413,6 +413,8 @@ $post->updateCounters(['view_count' => 1]);
 > このことは、モデルが HTML フォームからユーザの入力を受け取るときにしばしば生じます。
 > HTML フォームでは全ての値が文字列として表現されるからです。
 > 入力値が正しい型、例えば整数値となることを保証するために、`['attributeName', 'filter', 'filter' => 'intval']` のように [検証フィルタ](input-validation.md#data-filtering) を適用することが出来ます。
+> このフィルタは、[intval()](http://php.net/manual/ja/function.intval.php), [floatval()](http://php.net/manual/ja/function.floatval.php),
+> [boolval](http://php.net/manual/ja/function.boolval.php) など、PHP の全てのタイプキャスト関数で動作します。
 
 ### デフォルト属性値 <span id="default-attribute-values"></span>
 
