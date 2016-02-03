@@ -129,6 +129,16 @@ interface ManagerInterface
     public function getRules();
 
     /**
+     * Checks the possibility of adding a child to parent
+     * @param Item $parent the parent item
+     * @param Item $child the child item to be added to the hierarchy
+     * @return boolean possibility of adding
+     *
+     * @since 2.0.8
+     */
+    public function canAddChild($parent, $child);
+
+    /**
      * Adds an item as a child of another item.
      * @param Item $parent
      * @param Item $child
