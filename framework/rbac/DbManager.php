@@ -679,30 +679,11 @@ class DbManager extends BaseManager
     }
 
     /**
-     * Return all user assignment information for the specified role
-     * @param string $roleName the role name
-     * @return The assignment information. An empty array will be returned if there is no user assigned to the role.
+     * @inheritdoc
      */
-    public function getRoleAssignments($roleName)
+    public function canAddChild($parent, $child)
     {
-        if (empty($roleName)) {
-            return [];
-        }
-
-        $query = (new Query)
-            ->from($this->assignmentTable)
-            ->where(['item_name' => (string) $roleName]);
-
-        $assignments = [];
-        foreach ($query->all($this->db) as $row) {
-            $assignments[$row['user_id']] = new Assignment([
-                'userId' => $row['user_id'],
-                'roleName' => $row['item_name'],
-                'createdAt' => $row['created_at'],
-            ]);
-        }
-
-        return $assignments;
+        return !$this->detectLoop($parent, $child);
     }
 
     /**
@@ -805,17 +786,6 @@ class DbManager extends BaseManager
             }
         }
         return false;
-    }
-
-    /**
-     * Public wrapper for detectLoop function
-     * @param Item $parent the parent item
-     * @param Item $child the child item to be added to the hierarchy
-     * @return boolean whether a loop exists
-     */
-    public function canAddChild($parent, $child)
-    {
-        return !$this->detectLoop($parent, $child);
     }
 
     /**

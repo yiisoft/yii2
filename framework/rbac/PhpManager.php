@@ -151,6 +151,14 @@ class PhpManager extends BaseManager
     /**
      * @inheritdoc
      */
+    public function canAddChild($parent, $child)
+    {
+        return !$this->detectLoop($parent, $child);
+    }
+
+    /**
+     * @inheritdoc
+     */
     public function addChild($parent, $child)
     {
         if (!isset($this->items[$parent->name], $this->items[$child->name])) {
