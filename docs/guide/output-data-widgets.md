@@ -423,7 +423,7 @@ echo GridView::widget([
 
 ### Separate filter form
 
-Most of the times using GridView filters in table headers is enough, but in case you need a separate filter form,
+Most of the time using GridView filters in table headers is enough, but in case you need a separate filter form,
 you can easily add it as well. You can create partial view `_search.php` with the following contents:
 
 ```php
