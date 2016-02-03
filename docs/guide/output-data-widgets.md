@@ -466,7 +466,7 @@ and include it in `index.php` view like so:
 but is commented in `index.php` view. Uncomment it and it's ready to use!
 
 Separate filter form is useful when you need to filter by fields, that are not displayed in GridView
-or for special filtering conditions, like date range. For filtering by date range we can to add non DB attributes
+or for special filtering conditions, like date range. For filtering by date range we can add non DB attributes
 `createdFrom` and `createdTo` to the search model:
 
 ```php
