@@ -316,7 +316,7 @@ There are several built-in and external behaviors available:
 
 - [[yii\behaviors\BlameableBehavior]] - automatically fills the specified attributes with the current user ID.
 - [[yii\behaviors\SluggableBehavior]] - automatically fills the specified attribute with a value that can be used
-  a slug in a URL.
+  as a slug in a URL.
 - [[yii\behaviors\AttributeBehavior]] - automatically assigns a specified value to one or multiple attributes of
   an ActiveRecord object when certain events happen.
 - [yii2tech\ar\softdelete\SoftDeleteBehavior](https://github.com/yii2tech/ar-softdelete) - provides methods to soft-delete
