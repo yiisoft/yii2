@@ -338,6 +338,12 @@ class Connection extends Component
      */
     public $masters = [];
     /**
+     * @var string the class name of the [[Command]] object.
+     */
+    public $commandClass = 'yii\db\Command';
+
+
+    /**
      * @var array the configuration that should be merged with every master configuration listed in [[masters]].
      * For example,
      *
@@ -618,9 +624,10 @@ class Connection extends Component
      */
     public function createCommand($sql = null, $params = [])
     {
-        $command = new Command([
+        $command = Yii::createObject([
+            'class' => $this->commandClass,
             'db' => $this,
-            'sql' => $sql,
+            'sql' => $sql
         ]);
 
         return $command->bindValues($params);
