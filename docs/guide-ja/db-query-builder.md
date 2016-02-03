@@ -169,7 +169,7 @@ $query->where('status=1');
 $query->where('status=:status', [':status' => $status]);
 
 // date フィールドに対して MySQL の YEAR() 関数を使う生の SQL
-$query->where('YEAR(somedate) == 2015');
+$query->where('YEAR(somedate) = 2015');
 ```
 
 次のように、条件式に変数を直接に埋め込んではいけません。
