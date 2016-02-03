@@ -421,6 +421,86 @@ echo GridView::widget([
 ]);
 ```
 
+### Отдельная форма фильтрации
+
+Фильтров в шапке GridView достаточно для большинства задач, но добавление отдельной формы фильтрации не представляет
+особой сложности. Она бывает полезна в случае необходимости фильтрации по полям, которые не отображаются в GridView
+или особых условий фильтрации, например по диапазону дат.
+
+Создайте частичное представление `_search.php` со следующим содержимым:
+
+```php
+<?php
+
+use yii\helpers\Html;
+use yii\widgets\ActiveForm;
+
+/* @var $this yii\web\View */
+/* @var $model app\models\PostSearch */
+/* @var $form yii\widgets\ActiveForm */
+?>
+
+<div class="post-search">
+    <?php $form = ActiveForm::begin([
+        'action' => ['index'],
+        'method' => 'get',
+    ]); ?>
+
+    <?= $form->field($model, 'title') ?>
+
+    <?= $form->field($model, 'creation_date') ?>
+
+    <div class="form-group">
+        <?= Html::submitButton('Искать', ['class' => 'btn btn-primary']) ?>
+        <?= Html::submitButton('Сбросить', ['class' => 'btn btn-default']) ?>
+    </div>
+
+    <?php ActiveForm::end(); ?>
+</div>
+```
+
+и добавьте его отображение в `index.php` таким образом:
+
+```php
+<?= $this->render('_search', ['model' => $searchModel]) ?>
+```
+
+> Note: если вы используете Gii для генерации CRUD кода, отдельная форма фильтрации (`_search.php`)
+генерируется по умолчанию, но закомментирована в представлении `index.php`. Вам остается только раскомментировать
+эту строку и форма готова к использованию!
+
+Для фильтра по диапазону дат мы можем добавить дополнительные атрибуты `createdFrom` и `createdTo` в поисковую модель
+(их нет в соответствующей таблице модели):
+
+```php
+class PostSearch extends Post
+{
+    /**
+     * @var string
+     */
+    public $createdFrom;
+
+    /**
+     * @var string
+     */
+    public $createdTo;
+}
+```
+
+Расширим условия запроса в методе `search()`:
+
+```php
+$query->andFilterWhere(['>=', 'creation_date', $this->createdFrom])
+      ->andFilterWhere(['<=', 'creation_date', $this->createdTo]);
+```
+
+И добавим соответствующие поля в форму фильтрации:
+
+```php
+<?= $form->field($model, 'creationFrom') ?>
+
+<?= $form->field($model, 'creationTo') ?>
+```
 
 ### Отображение зависимых моделей
 
