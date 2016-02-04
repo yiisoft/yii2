@@ -347,6 +347,12 @@ class Connection extends Component
      */
     public $masters = [];
     /**
+     * @var string the class name of the [[Command]] object.
+     */
+    public $commandClass = 'yii\db\Command';
+
+
+    /**
      * @var array the configuration that should be merged with every master configuration listed in [[masters]].
      * For example,
      *
