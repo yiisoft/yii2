@@ -626,10 +626,10 @@ class Connection extends Component
      */
     public function createCommand($sql = null, $params = [])
     {
-        $command = Yii::createObject([
-            'class' => $this->commandClass,
+        /** @var Command $command */
+        $command = new $this->commandClass([
             'db' => $this,
-            'sql' => $sql
+            'sql' => $sql,
         ]);
 
         return $command->bindValues($params);
