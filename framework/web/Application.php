@@ -72,7 +72,11 @@ class Application extends \yii\base\Application
     public function handleRequest($request)
     {
         if (empty($this->catchAll)) {
-            list ($route, $params) = $request->resolve();
+            try {
+                list ($route, $params) = $request->resolve();
+            } catch (RedirectException $e) {
+                return $this->getResponse()->redirect($e->url, $e->statusCode);
+            }
         } else {
             $route = $this->catchAll[0];
             $params = $this->catchAll;
