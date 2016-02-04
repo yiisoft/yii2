@@ -339,10 +339,9 @@ class Connection extends Component
     public $masters = [];
     /**
      * @var string the class name of the [[Command]] object.
+     * @since 2.0.7
      */
     public $commandClass = 'yii\db\Command';
-
-
     /**
      * @var array the configuration that should be merged with every master configuration listed in [[masters]].
      * For example,
@@ -359,7 +358,6 @@ class Connection extends Component
      * ```
      */
     public $masterConfig = [];
-
     /**
      * @var Transaction the currently active transaction
      */
