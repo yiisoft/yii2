@@ -103,7 +103,7 @@ These are then also available as variables in the view.
 GridView <a name="grid-view"></a>
 --------
 
-Data grid or GridView is one of the most powerful Yii widgets. It is extremely useful if you need to quickly build the admin
+Data grid or [[yii\widgets\GridView|GridView]] is one of the most powerful Yii widgets. It is extremely useful if you need to quickly build the admin
 section of the system. It takes data from a [data provider](output-data-providers.md) and renders each row using a set of [[yii\grid\GridView::columns|columns]]
 presenting data in the form of a table. 
 
