@@ -339,7 +339,7 @@ class Connection extends Component
     public $masters = [];
 
     /**
-     * @var string the class name of the [[command]] object.
+     * @var string the class name of the [[Command]] object.
      */
     public $commandClass = 'yii\db\Command';
 
