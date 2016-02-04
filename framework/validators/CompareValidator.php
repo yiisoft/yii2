@@ -163,16 +163,16 @@ class CompareValidator extends Validator
             return null;
         }
     }
-    
+
     /**
      * Compares two values with the specified operator.
      * @param string $operator the comparison operator
      * @param string $type the type of the values being compared
-     * @param mix $value the value being compared
-     * @param mix $compareValue another value being compared
+     * @param mixed $value the value being compared
+     * @param mixed $compareValue another value being compared
      * @return boolean whether the comparison using the specified operator is true.
      */
-    protected function compareValues($operator, $type, $value, $compareValue) 
+    protected function compareValues($operator, $type, $value, $compareValue)
     {
         if($this->type === 'number') {
             return $this->compareNumbericValues($operator, $type, $value, $compareValue);
