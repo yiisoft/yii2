@@ -98,6 +98,12 @@ class CaptchaAction extends Action
      * If not set, it means the verification code will be randomly generated.
      */
     public $fixedVerifyCode;
+    /**
+     * @var string the rendering library to use. Currently supported only 'gd' and 'imagick'.
+     * If not set, library will be determined automatically.
+     * @since 2.0.7
+     */
+    public $imageLibrary;
 
 
     /**
@@ -236,13 +242,21 @@ class CaptchaAction extends Action
      * Renders the CAPTCHA image.
      * @param string $code the verification code
      * @return string image contents
+     * @throws InvalidConfigException if imageLibrary is not supported
      */
     protected function renderImage($code)
     {
-        if (Captcha::checkRequirements() === 'gd') {
-            return $this->renderImageByGD($code);
+        if (isset($this->imageLibrary)) {
+            $imageLibrary = $this->imageLibrary;
         } else {
+            $imageLibrary = Captcha::checkRequirements();
+        }
+        if ($imageLibrary === 'gd') {
+            return $this->renderImageByGD($code);
+        } elseif ($imageLibrary === 'imagick') {
             return $this->renderImageByImagick($code);
+        } else {
+            throw new InvalidConfigException("Defined library '{$imageLibrary}' is not supported");
         }
     }
 
@@ -306,8 +320,8 @@ class CaptchaAction extends Action
      */
     protected function renderImageByImagick($code)
     {
-        $backColor = $this->transparent ? new \ImagickPixel('transparent') : new \ImagickPixel('#' . dechex($this->backColor));
-        $foreColor = new \ImagickPixel('#' . dechex($this->foreColor));
+        $backColor = $this->transparent ? new \ImagickPixel('transparent') : new \ImagickPixel('#' . str_pad(dechex($this->backColor), 6, 0, STR_PAD_LEFT));
+        $foreColor = new \ImagickPixel('#' . str_pad(dechex($this->foreColor), 6, 0, STR_PAD_LEFT));
 
         $image = new \Imagick();
         $image->newImage($this->width, $this->height, $backColor);

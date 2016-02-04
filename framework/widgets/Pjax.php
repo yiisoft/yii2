@@ -9,6 +9,7 @@ namespace yii\widgets;
 
 use Yii;
 use yii\base\Widget;
+use yii\helpers\ArrayHelper;
 use yii\helpers\Html;
 use yii\helpers\Json;
 use yii\web\Response;
@@ -44,7 +45,10 @@ use yii\web\Response;
 class Pjax extends Widget
 {
     /**
-     * @var array the HTML attributes for the widget container tag.
+     * @var array the HTML attributes for the widget container tag. The following special options are recognized:
+     *
+     * - `tag`: string, the tag name for the container. Defaults to `div`
+     *
      * @see \yii\helpers\Html::renderTagAttributes() for details on how attributes are being rendered.
      */
     public $options = [];
@@ -87,7 +91,6 @@ class Pjax extends Widget
      */
     public $clientOptions;
 
-
     /**
      * @inheritdoc
      */
@@ -109,7 +112,15 @@ class Pjax extends Widget
                 echo Html::tag('title', Html::encode($view->title));
             }
         } else {
-            echo Html::beginTag('div', $this->options);
+            $options = $this->options;
+            $tag = ArrayHelper::remove($options, 'tag', 'div');
+            echo Html::beginTag($tag, array_merge([
+                'data-pjax-container' => '',
+                'data-pjax-push-state' => $this->enablePushState,
+                'data-pjax-replace-state' => $this->enableReplaceState,
+                'data-pjax-timeout' => $this->timeout,
+                'data-pjax-scrollto' => $this->scrollTo,
+            ], $options));
         }
     }
 
@@ -119,7 +130,7 @@ class Pjax extends Widget
     public function run()
     {
         if (!$this->requiresPjax()) {
-            echo Html::endTag('div');
+            echo Html::endTag(ArrayHelper::remove($this->options, 'tag', 'div'));
             $this->registerClientScript();
 
             return;

@@ -53,7 +53,7 @@ The term "class" refers to all classes and interfaces here.
 - Classes should be named using `CamelCase`.
 - The brace should always be written on the line underneath the class name.
 - Every class must have a documentation block that conforms to the PHPDoc.
-- All code in a class must be indented with a single tab.
+- All code in a class must be indented with 4 spaces.
 - There should be only one class in a single PHP file.
 - All classes should be namespaced.
 - Class name should match file name. Class namespace should match directory structure.
@@ -115,7 +115,7 @@ class Foo
   `public` modifiers. `var` is not allowed.
 - Opening brace of a function should be on the line after the function declaration.
 
-~~~
+```
 /**
  * Documentation
  */
@@ -130,7 +130,7 @@ class Foo
         return $value;
     }
 }
-~~~
+```
 
 ### 4.4 Doc blocks
 
@@ -398,9 +398,9 @@ class Component extends \yii\base\Object
  * You may manipulate the returned [[Vector]] object by adding or removing handlers.
  * For example,
  *
- * ~~~
+ * ```
  * $component->getEventHandlers($eventName)->insertAt(0, $eventHandler);
- * ~~~
+ * ```
  *
  * @param string $name the event name
  * @return Vector list of attached event handlers for the event

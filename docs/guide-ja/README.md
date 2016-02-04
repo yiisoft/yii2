@@ -144,7 +144,7 @@ RESTful ウェブサービス
 ----------
 
 * [デバッグツールバーとデバッガ](https://github.com/yiisoft/yii2-debug/blob/master/docs/guide-ja/README.md)
-* [Gii を使ってコードを生成する](https://github.com/yiisoft/yii2-gii/blob/master/docs/guide/README.md)
+* [Gii を使ってコードを生成する](https://github.com/yiisoft/yii2-gii/blob/master/docs/guide-ja/README.md)
 
 
 テスト

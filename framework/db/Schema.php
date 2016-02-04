@@ -37,8 +37,6 @@ use yii\caching\TagDependency;
  */
 abstract class Schema extends Object
 {
-    use SchemaBuilderTrait;
-
     /**
      * The following are the supported abstract column data types.
      */
@@ -106,7 +104,7 @@ abstract class Schema extends Object
     /**
      * Loads the metadata for the specified table.
      * @param string $name table name
-     * @return TableSchema DBMS-dependent table metadata, null if the table does not exist.
+     * @return null|TableSchema DBMS-dependent table metadata, null if the table does not exist.
      */
     abstract protected function loadTableSchema($name);
 
@@ -114,7 +112,7 @@ abstract class Schema extends Object
      * Obtains the metadata for the named table.
      * @param string $name table name. The table name may contain schema name if any. Do not quote the table name.
      * @param boolean $refresh whether to reload the table schema even if it is found in the cache.
-     * @return TableSchema table metadata. Null if the named table does not exist.
+     * @return null|TableSchema table metadata. Null if the named table does not exist.
      */
     public function getTableSchema($name, $refresh = false)
     {
@@ -287,7 +285,7 @@ abstract class Schema extends Object
      * This method cleans up cached table schema so that it can be re-created later
      * to reflect the database schema change.
      * @param string $name table name.
-     * @since 2.0.5
+     * @since 2.0.6
      */
     public function refreshTableSchema($name)
     {
@@ -308,6 +306,21 @@ abstract class Schema extends Object
     public function createQueryBuilder()
     {
         return new QueryBuilder($this->db);
+    }
+
+    /**
+     * Create a column schema builder instance giving the type and value precision.
+     *
+     * This method may be overridden by child classes to create a DBMS-specific column schema builder.
+     *
+     * @param string $type type of the column. See [[ColumnSchemaBuilder::$type]].
+     * @param integer|string|array $length length or precision of the column. See [[ColumnSchemaBuilder::$length]].
+     * @return ColumnSchemaBuilder column schema builder instance
+     * @since 2.0.6
+     */
+    public function createColumnSchemaBuilder($type, $length = null)
+    {
+        return new ColumnSchemaBuilder($type, $length);
     }
 
     /**
@@ -340,12 +353,12 @@ abstract class Schema extends Object
      * Returns all unique indexes for the given table.
      * Each array element is of the following structure:
      *
-     * ~~~
+     * ```php
      * [
      *  'IndexName1' => ['col1' [, ...]],
      *  'IndexName2' => ['col2' [, ...]],
      * ]
-     * ~~~
+     * ```
      *
      * This method should be overridden by child classes in order to support this feature
      * because the default implementation simply throws an exception
@@ -580,9 +593,9 @@ abstract class Schema extends Object
         ];
         if (isset($typeMap[$column->type])) {
             if ($column->type === 'bigint') {
-                return PHP_INT_SIZE == 8 && !$column->unsigned ? 'integer' : 'string';
+                return PHP_INT_SIZE === 8 && !$column->unsigned ? 'integer' : 'string';
             } elseif ($column->type === 'integer') {
-                return PHP_INT_SIZE == 4 && $column->unsigned ? 'string' : 'integer';
+                return PHP_INT_SIZE === 4 && $column->unsigned ? 'string' : 'integer';
             } else {
                 return $typeMap[$column->type];
             }

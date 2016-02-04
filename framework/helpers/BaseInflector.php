@@ -217,7 +217,7 @@ class BaseInflector
         'Yengeese' => 'Yengeese',
     ];
     /**
-     * @var array fallback map for transliteration used by [[slug()]] when intl isn't available.
+     * @var array fallback map for transliteration used by [[transliterate()]] when intl isn't available.
      */
     public static $transliteration = [
         'À' => 'A', 'Á' => 'A', 'Â' => 'A', 'Ã' => 'A', 'Ä' => 'A', 'Å' => 'A', 'Æ' => 'AE', 'Ç' => 'C',
@@ -231,13 +231,54 @@ class BaseInflector
         'ø' => 'o', 'ù' => 'u', 'ú' => 'u', 'û' => 'u', 'ü' => 'u', 'ű' => 'u', 'ý' => 'y', 'þ' => 'th',
         'ÿ' => 'y',
     ];
+
     /**
-     * @var mixed Either a [[Transliterator]] or a string from which a [[Transliterator]]
-     * can be built for transliteration used by [[slug()]] when intl is available.
+     * Shortcut for `Any-Latin; NFKD` transliteration rule. The rule is strict, letters will be transliterated with
+     * the closest sound-representation chars. The result may contain any UTF-8 chars. For example:
+     * `获取到 どちら Українська: ґ,є, Српска: ђ, њ, џ! ¿Español?` will be transliterated to
+     * `huò qǔ dào dochira Ukraí̈nsʹka: g̀,ê, Srpska: đ, n̂, d̂! ¿Español?`
+     *
+     * Used in [[transliterate()]].
+     * For detailed information see [unicode normalization forms](http://unicode.org/reports/tr15/#Normalization_Forms_Table)
+     * @see http://unicode.org/reports/tr15/#Normalization_Forms_Table
+     * @see transliterate()
+     */
+    const TRANSLITERATE_STRICT = 'Any-Latin; NFKD';
+
+    /**
+     * Shortcut for `Any-Latin; Latin-ASCII` transliteration rule. The rule is medium, letters will be
+     * transliterated to characters of Latin-1 (ISO 8859-1) ASCII table. For example:
+     * `获取到 どちら Українська: ґ,є, Српска: ђ, њ, џ! ¿Español?` will be transliterated to
+     * `huo qu dao dochira Ukrainsʹka: g,e, Srpska: d, n, d! ¿Espanol?`
+     *
+     * Used in [[transliterate()]].
+     * For detailed information see [unicode normalization forms](http://unicode.org/reports/tr15/#Normalization_Forms_Table)
+     * @see http://unicode.org/reports/tr15/#Normalization_Forms_Table
+     * @see transliterate()
+     */
+    const TRANSLITERATE_MEDIUM = 'Any-Latin; Latin-ASCII';
+
+    /**
+     * Shortcut for `Any-Latin; Latin-ASCII; [\u0080-\uffff] remove` transliteration rule. The rule is loose,
+     * letters will be transliterated with the characters of Basic Latin Unicode Block.
+     * For example:
+     * `获取到 どちら Українська: ґ,є, Српска: ђ, њ, џ! ¿Español?` will be transliterated to
+     * `huo qu dao dochira Ukrainska: g,e, Srpska: d, n, d! Espanol?`
+     *
+     * Used in [[transliterate()]].
+     * For detailed information see [unicode normalization forms](http://unicode.org/reports/tr15/#Normalization_Forms_Table)
+     * @see http://unicode.org/reports/tr15/#Normalization_Forms_Table
+     * @see transliterate()
+     */
+    const TRANSLITERATE_LOOSE = 'Any-Latin; Latin-ASCII; [\u0080-\uffff] remove';
+
+
+    /**
+     * @var mixed Either a [[\Transliterator]], or a string from which a [[\Transliterator]] can be built
+     * for transliteration. Used by [[transliterate()]] when intl is available. Defaults to [[TRANSLITERATE_LOOSE]]
      * @see http://php.net/manual/en/transliterator.transliterate.php
      */
-    public static $transliterator = 'Any-Latin; NFKD';
-
+    public static $transliterator = self::TRANSLITERATE_LOOSE;
 
     /**
      * Converts a word to its plural form.
@@ -438,12 +479,18 @@ class BaseInflector
      * of the helper.
      *
      * @param string $string input string
+     * @param string|\Transliterator $transliterator either a [[Transliterator]] or a string
+     * from which a [[Transliterator]] can be built.
      * @return string
      */
-    protected static function transliterate($string)
+    public static function transliterate($string, $transliterator = null)
     {
         if (static::hasIntl()) {
-            return transliterator_transliterate(static::$transliterator, $string);
+            if ($transliterator === null) {
+                $transliterator = static::$transliterator;
+            }
+
+            return transliterator_transliterate($transliterator, $string);
         } else {
             return str_replace(array_keys(static::$transliteration), static::$transliteration, $string);
         }

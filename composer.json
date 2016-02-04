@@ -42,6 +42,11 @@
             "name": "Paul Klimov",
             "email": "klimov.paul@gmail.com",
             "role": "Core framework development"
+        },
+        {
+            "name": "Dmitry Naumenko",
+            "email": "d.naumenko.a@gmail.com",
+            "role": "Core framework development"
         }
     ],
     "support": {
@@ -68,7 +73,7 @@
         "bower-asset/yii2-pjax": ">=2.0.1"
     },
     "require-dev": {
-        "phpunit/phpunit": "~4.5",
+        "phpunit/phpunit": "~4.4",
         "cebe/indent": "*"
     },
     "suggest": {

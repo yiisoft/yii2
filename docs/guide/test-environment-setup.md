@@ -3,7 +3,7 @@ Testing environment setup
 
 > Note: This section is under development.
 
-Yii2 has officially maintained integration with [`Codeception`](https://github.com/Codeception/Codeception) testing
+Yii 2 has officially maintained integration with [`Codeception`](https://github.com/Codeception/Codeception) testing
 framework that allows you to create the following test types:
 
 - [Unit testing](test-unit.md) - verifies that a single unit of code is working as expected;
@@ -11,8 +11,8 @@ framework that allows you to create the following test types:
 - [Acceptance testing](test-acceptance.md) - verifies scenarios from a user's perspective in a browser.
 
 Yii provides ready to use test sets for all three test types in both
-[`yii2-basic`](https://github.com/yiisoft/yii2/tree/master/apps/basic) and
-[`yii2-advanced`](https://github.com/yiisoft/yii2/tree/master/apps/advanced) project templates.
+[`yii2-basic`](https://github.com/yiisoft/yii2-app-basic) and
+[`yii2-advanced`](https://github.com/yiisoft/yii2-app-advanced) project templates.
 
 In order to run tests you need to install [Codeception](https://github.com/Codeception/Codeception).
 You can install it either locally - for particular project only, or globally - for your development machine.

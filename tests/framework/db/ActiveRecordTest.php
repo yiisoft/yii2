@@ -2,6 +2,7 @@
 namespace yiiunit\framework\db;
 
 use yiiunit\data\ar\ActiveRecord;
+use yiiunit\data\ar\BitValues;
 use yiiunit\data\ar\Category;
 use yiiunit\data\ar\Customer;
 use yiiunit\data\ar\Document;
@@ -234,8 +235,6 @@ class ActiveRecordTest extends DatabaseTestCase
         $this->assertNull($record->var3);
         $this->assertNull($record->stringcol);
 
-        $record->id = 1;
-
         $record->var1 = 123;
         $record->var2 = 456;
         $record->var3 = 789;
@@ -279,7 +278,6 @@ class ActiveRecordTest extends DatabaseTestCase
     public function testStoreEmpty()
     {
         $record = new NullValues();
-        $record->id = 1;
 
         // this is to simulate empty html form submission
         $record->var1 = '';
@@ -819,5 +817,17 @@ class ActiveRecordTest extends DatabaseTestCase
                 $this->assertEquals(40, $item->subtotal);
             }
         }
+    }
+
+    /**
+     * https://github.com/yiisoft/yii2/issues/9006
+     */
+    public function testBit()
+    {
+        $falseBit = BitValues::findOne(1);
+        $this->assertEquals(false, $falseBit->val);
+
+        $trueBit = BitValues::findOne(2);
+        $this->assertEquals(true, $trueBit->val);
     }
 }

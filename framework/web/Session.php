@@ -22,14 +22,14 @@ use yii\base\InvalidParamException;
  *
  * Session can be used like an array to set and get session data. For example,
  *
- * ~~~
+ * ```php
  * $session = new Session;
  * $session->open();
  * $value1 = $session['name1'];  // get session variable 'name1'
  * $value2 = $session['name2'];  // get session variable 'name2'
  * foreach ($session as $name => $value) // traverse all session variables
  * $session['name3'] = $value3;  // set session variable 'name3'
- * ~~~
+ * ```
  *
  * Session can be extended to support customized session storage.
  * To do so, override [[useCustomStorage]] so that it returns true, and
@@ -97,6 +97,9 @@ class Session extends Component implements \IteratorAggregate, \ArrayAccess, \Co
     {
         parent::init();
         register_shutdown_function([$this, 'close']);
+        if ($this->getIsActive()) {
+            Yii::warning("Session is already started", __METHOD__);
+        }
     }
 
     /**
@@ -179,7 +182,9 @@ class Session extends Component implements \IteratorAggregate, \ArrayAccess, \Co
     {
         if ($this->getIsActive()) {
             @session_unset();
+            $sessionId = session_id();
             @session_destroy();
+            @session_id($sessionId);
         }
     }
 
@@ -678,7 +683,7 @@ class Session extends Component implements \IteratorAggregate, \ArrayAccess, \Co
      *
      * With the above code you can use the [bootstrap alert][] classes such as `success`, `info`, `danger`
      * as the flash message key to influence the color of the div.
-     * 
+     *
      * Note that if you use [[addFlash()]], `$message` will be an array, and you will have to adjust the above code.
      *
      * [bootstrap alert]: http://getbootstrap.com/components/#alerts

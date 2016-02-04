@@ -1,21 +1,23 @@
 Container de Injeção de Dependência 
 ==============================
 
-Um container de injeção de dependência (DI) é um objeto que sabe como instanciar e configurar objetos e todas as suas dependencias. [Martin's article] (http://martinfowler.com/articles/injection.html) explica bem porque o container DI é útil. Aqui vamos explicar principalmente a utilização do container DI fornecido pelo Yii.
+Um container de injeção de dependência (DI) é um objeto que sabe como instanciar e configurar objetos e todas as suas dependências. O [artigo do Martin](http://martinfowler.com/articles/injection.html) explica bem porque o container de DI é útil. Aqui vamos explicar principalmente a utilização do container de DI fornecido pelo Yii.
+
 
 Injeção de Dependência <span id="dependency-injection"></span>
 --------------------
 
-Yii fornece o recurso container DI através da classe [[yii\di\Container]]. Ela suporta os seguintes tipos de injeção de dependência:
+O Yii fornece o recurso container de DI através da classe [[yii\di\Container]]. Ela suporta os seguintes tipos de injeção de dependência:
 
 * Injeção de Construtor;
-* Injeção de Setter e propriedade;
+* Injeção de setter e propriedade;
 * Injeção de PHP callable.
 
-### Injecão de Construtor <span id="constructor-injection"></span>
 
-O container DI suporta injeção de construtor com o auxílio dos type hints identificados nos parâmetros dos construtores. Os type hints informam ao container quais classes ou interfaces são dependentes no momento da criação de um novo objeto.
-O container tentará pegar as instâncias das classes dependentes ou interfaces e depois injetá-las dentro do novo objeto através do construtor. Por exemplo,
+### Injeção de Construtor <span id="constructor-injection"></span>
+
+O container de DI suporta injeção de construtor com o auxílio dos *type hints* identificados nos parâmetros dos construtores. Os type hints informam ao container quais classes ou interfaces são dependentes no momento da criação de um novo objeto.
+O container tentará pegar as instâncias das classes dependentes ou interfaces e depois injetá-las dentro do novo objeto através do construtor. Por exemplo:
 
 ```php
 class Foo
@@ -31,10 +33,11 @@ $foo = new Foo($bar);
 ```
 
 
-### Injeção de Setter e Propriedade<span id="setter-and-property-injection"></span>
-Injeção de Setter e propriedade é suportado através de [configurações](concept-configurations.md).
+### Injeção de Setter e Propriedade <span id="setter-and-property-injection"></span>
+
+A injeção de setter e propriedade é suportado através de [configurações](concept-configurations.md).
 Ao registrar uma dependência ou ao criar um novo objeto, você pode fornecer uma configuração que será utilizada pelo container para injetar as dependências através dos setters ou propriedades correspondentes.
-Por exemplo,
+Por exemplo:
 
 ```php
 use yii\base\Object;
@@ -62,14 +65,14 @@ $container->get('Foo', [], [
 ]);
 ```
 
-> Informação: O método [[yii\di\Container::get()]] recebe no seu terceiro parâmetro um array de configuração que deve ser aplicado ao objecto a ser criado. Se a classe implementa a interface [[yii\base\Configurable]] (por exemplo [[yii\base\Object]]), o array de configuração será passado como o último parâmetro para o construtor da classe; caso contrário, a configuração será aplicada *depois* que o objeto for criado.
+> Informação: O método [[yii\di\Container::get()]] recebe em seu terceiro parâmetro um array de configuração que deve ser aplicado ao objecto a ser criado. Se a classe implementa a interface [[yii\base\Configurable]] (por exemplo, [[yii\base\Object]]), o array de configuração será passado como o último parâmetro para o construtor da classe; caso contrário, a configuração será aplicada *depois* que o objeto for criado.
 
 
 ### Injeção de PHP Callable <span id="php-callable-injection"></span>
 
 Neste caso, o container usará um PHP callable registrado para criar novas instâncias da classe.
-Cada vez que [[yii\di\Container::get()]] é chamado, o callable correspondente será invocado.
-O callable é responsável por resolver as dependências e injetá-las de forma adequada para os objetos recém-criados. Por exemplo,
+Cada vez que [[yii\di\Container::get()]] for chamado, o callable correspondente será invocado.
+O callable é responsável por resolver as dependências e injetá-las de forma adequada para os objetos recém-criados. Por exemplo:
 
 ```php
 $container->set('Foo', function () {
@@ -81,7 +84,7 @@ $container->set('Foo', function () {
 $foo = $container->get('Foo');
 ```
 
-Para ocultar a lógica complexa da construção de um novo objeto você pode usar um método estático de classe para retornar o PHP callable. Por Exemplo,
+Para ocultar a lógica complexa da construção de um novo objeto você pode usar um método estático de classe para retornar o PHP callable. Por exemplo:
 
 ```php
 class FooBuilder
@@ -101,7 +104,7 @@ $container->set('Foo', FooBuilder::build());
 $foo = $container->get('Foo');
 ```
 
-Como você pode ver, o PHP callable é retornado pelo método `FooBuilder::build()`.Ao fazê-lo, quem precisar configurar a classe `Foo` não precisará saber como ele é construído.
+Como você pode ver, o PHP callable é retornado pelo método `FooBuilder::build()`. Ao fazê-lo, quem precisar configurar a classe `Foo` não precisará saber como ele é construído.
 
 
 Registrando Dependências <span id="registering-dependencies"></span>
@@ -154,9 +157,9 @@ $container->set('db', function ($container, $params, $config) {
 $container->set('pageCache', new FileCache);
 ```
 
-> dica: Se um nome de dependência é o mesmo que a definição de dependência correspondente, você não precisa registrá-lo no container DI
+> Dica: Se um nome de dependência é o mesmo que a definição de dependência correspondente, você não precisa registrá-lo no container de DI.
 
-Um registro de dependência através de `set()`irá gerar uma instância a cada vez que a dependência for necessária. Você pode usar [[yii\di\Container::setSingleton()]] para registrar a dependência de forma a gerar apenas uma única instância:
+Um registro de dependência através de `set()` irá gerar uma instância a cada vez que a dependência for necessária. Você pode usar [[yii\di\Container::setSingleton()]] para registrar a dependência de forma a gerar apenas uma única instância:
 
 ```php
 $container->setSingleton('yii\db\Connection', [
@@ -171,12 +174,11 @@ $container->setSingleton('yii\db\Connection', [
 Resolvendo Dependências <span id="resolving-dependencies"></span>
 ----------------------
 
-Depois de registrar as dependências, você pode usar o container DI para criar novos objetos,
-E o container resolverá automaticamente as dependências instanciando e as injetando dentro do novo objeto criado. A resolução de dependência é recursiva, isso significa que
+Depois de registrar as dependências, você pode usar o container de DI para criar novos objetos e o container resolverá automaticamente as dependências instanciando e as injetando dentro do novo objeto criado. A resolução de dependência é recursiva, isso significa que
 se uma dependência tem outras dependências, essas dependências também serão resolvidas automaticamente.
 
-Você pode usar [[yii\di\Container::get()]] para criar novos objetos. O método recebe um nome de dependência, que pode ser um nome de classe, um nome de interface ou um alias. O nome de dependência Pode ou não ser registrado através de `set()` ou `setSingleton()`.Você pode, opcionalmente, fornecer uma lista de parâmetros de construtor de classe e uma [configuração](concept-configurations.md) para configurara o novo objeto criado.
-Por exemplo,
+Você pode usar [[yii\di\Container::get()]] para criar novos objetos. O método recebe um nome de dependência, que pode ser um nome de classe, um nome de interface ou um alias. O nome da dependência pode ou não ser registrado através de `set()` ou `setSingleton()`. Você pode, opcionalmente, fornecer uma lista de parâmetros de construtor de classe e uma [configuração](concept-configurations.md) para configurara o novo objeto criado.
+Por exemplo:
 
 ```php
 // "db" é um alias registrado previamente
@@ -186,9 +188,9 @@ $db = $container->get('db');
 $engine = $container->get('app\components\SearchEngine', [$apiKey], ['type' => 1]);
 ```
 
-Nos bastidores, o container DI faz muito mais do que apenas a criação de um novo objeto.
-O container irá inspecionar o primeiramente o construtor da classe para descobrir classes ou interfaces dependentes e automaticamente resolver estas dependências recursivamente.
-O código abaixo mostra um exemplo mais sofisticado. A classe `UserLister` depende de um objeto que implementa a interface `UserFinderInterface`; A Classe `UserFinder` implementa esta interface e depende do objeto `Connection`. Todas estas dependências são declaradas através de type hinting dos parâmetros do construtor da classe. Com o registro de dependência de propriedade, o container DI é capaz de resolver estas dependências automaticamente e cria uma nova instância de `UserLister` simplesmente com `get('userLister')`.
+Nos bastidores, o container de DI faz muito mais do que apenas a criação de um novo objeto.
+O container irá inspecionar primeiramente o construtor da classe para descobrir classes ou interfaces dependentes e automaticamente resolver estas dependências recursivamente.
+O código abaixo mostra um exemplo mais sofisticado. A classe `UserLister` depende de um objeto que implementa a interface `UserFinderInterface`; A Classe `UserFinder` implementa esta interface e depende do objeto `Connection`. Todas estas dependências são declaradas através de type hint dos parâmetros do construtor da classe. Com o registro de dependência de propriedade, o container de DI é capaz de resolver estas dependências automaticamente e cria uma nova instância de `UserLister` simplesmente com `get('userLister')`.
 
 ```php
 namespace app\models;
@@ -250,8 +252,8 @@ $lister = new UserLister($finder);
 Uso Prático <span id="practical-usage"></span>
 ---------------
 
-Yii cria um container DI quando você inclui o arquivo `Yii.php` no [script de entrada](structure-entry-scripts.md) da sua aplicação. O container DI é acessível através do [[Yii::$container]]. Quando você executa o método [[Yii::createObject()]],  Na verdade o que será realmente executado é o método [[yii\di\Container::get()|get()]] do container para criar um novo objeto.
-Conforme já informado acima, o container DI resolverá automaticamente as dependências (se existir) e as injeta dentro do novo objeto criado. Como Yii utiliza [[Yii::createObject()]] na maior parte do seu código principal para criar novos objetos, isso significa que você pode personalizar os objetos globalmente lidando com [[Yii::$container]].
+O Yii cria um container de DI quando você inclui o arquivo `Yii.php` no [script de entrada](structure-entry-scripts.md) de sua aplicação. O container de DI é acessível através do [[Yii::$container]]. Quando você executa o método [[Yii::createObject()]],  na verdade o que será realmente executado é o método [[yii\di\Container::get()|get()]] do container para criar um novo objeto.
+Conforme já informado acima, o container de DI resolverá automaticamente as dependências (se existir) e as injeta dentro do novo objeto criado. Como o Yii utiliza [[Yii::createObject()]] na maior parte do seu código principal para criar novos objetos, isso significa que você pode personalizar os objetos globalmente lidando com [[Yii::$container]].
 
 Por exemplo, você pode customizar globalmente o número padrão de botões de paginação do [[yii\widgets\LinkPager]]:
 
@@ -264,13 +266,14 @@ Agora, se você usar o widget na view (visão) com o seguinte código, a proprie
 ```php
 echo \yii\widgets\LinkPager::widget();
 ```
-Todavia, você ainda pode substituir o valor definido através container DI:
+
+Todavia, você ainda pode substituir o valor definido através container de DI:
 
 ```php
 echo \yii\widgets\LinkPager::widget(['maxButtonCount' => 20]);
 ```
 
-Outro exemplo é se beneficiar da injecção automática de construtor do container DI. Assumindo que a sua classe controller (controlador) depende de alguns outros objetos, tais como um serviço de reserva de um hotel.
+Outro exemplo é se beneficiar da injeção automática de construtor do container de DI. Assumindo que a sua classe controller (controlador) depende de alguns outros objetos, tais como um serviço de reserva de um hotel.
 
 Você pode declarar a dependência através de um parâmetro de construtor e deixar o container DI resolver isto para você.
 
@@ -292,30 +295,31 @@ class HotelController extends Controller
 }
 ```
 
-Se você acessar este controller(controlador) a partir de um navegador, você vai ver um erro informando que `BookingInterface` não pode ser instanciado. Isso ocorre porque você precisa dizer ao container DI como lidar com esta dependência:
+Se você acessar este controller (controlador) a partir de um navegador, você vai ver um erro informando que `BookingInterface` não pode ser instanciado. Isso ocorre porque você precisa dizer ao container de DI como lidar com esta dependência:
 
 ```php
 \Yii::$container->set('app\components\BookingInterface', 'app\components\BookingService');
 ```
 
-Agora se você acessar o controller(controlador) novamente, uma instância de `app\components\BookingService` será criada e injetada como o terceiro parâmetro do construtor do controller(controlador).
+Agora se você acessar o controller (controlador) novamente, uma instância de `app\components\BookingService` será criada e injetada como o terceiro parâmetro do construtor do controller (controlador).
 
 
-Quando registrar Dependência <span id="when-to-register-dependencies"></span>
+Quando Registrar Dependência <span id="when-to-register-dependencies"></span>
 -----------------------------
 
 Em função de existirem dependências na criação de novos objetos, o seu registo deve ser feito o mais cedo possível. Seguem abaixo algumas práticas recomendadas:
 
 * Se você é o desenvolvedor de uma aplicação, você pode registrar dependências no [script de entrada] (structure-entry-scripts.md) da sua aplicação ou em um script incluído no script de entrada.
- * Se você é um desenvolvedor de [extensão](structure-extensions.md), você pode registrar as dependências no bootstrapping(inicialização) da classe da sua extensão.
+ * Se você é um desenvolvedor de [extensão](structure-extensions.md), você pode registrar as dependências no bootstrapping (inicialização) da classe da sua extensão.
+
 
 Resumo <span id="summary"></span>
 -------
 
-Ambos injeção de dependência e [service locator](concept-service-locator.md) são padrões de projetos conhecidos que permitem a construção de software com alta coesão e baixo acoplamento. É altamente recomendável que você leia
-[Martin's article](http://martinfowler.com/articles/injection.html) para obter uma compreensão mais profunda da injeção de dependência e service locator.
+Ambas as injeção de dependência e [service locator](concept-service-locator.md) são padrões de projetos conhecidos que permitem a construção de software com alta coesão e baixo acoplamento. É altamente recomendável que você leia o
+[Artigo do Martin](http://martinfowler.com/articles/injection.html) para obter uma compreensão mais profunda da injeção de dependência e service locator.
 
-Yii implementa o [service locator](concept-service-locator.md) no topo da injecção dependência container (DI).
-Quando um service locator tenta criar uma nova instância de objeto, ele irá encaminhar a chamada para o container DI.
+O Yii implementa o [service locator](concept-service-locator.md) no topo da injeção dependência container (DI).
+Quando um service locator tenta criar uma nova instância de objeto, ele irá encaminhar a chamada para o container de DI.
 Este último vai resolver as dependências automaticamente tal como descrito acima.
 

@@ -78,7 +78,7 @@ consultas SQL contra la base de datos subyacente.
 
 La conexión a la base de datos realizada anteriormente puede ser accedida mediante `Yii::$app->db`.
 
-> Información: El archivo `config/db.php` será incluido en el archivo principal de configuración `config/web.php`,
+> Info: El archivo `config/db.php` será incluido en el archivo principal de configuración `config/web.php`,
   el cual especifica cómo la instancia de la [aplicación](structure-applications.md) debe ser inicializada.
   Para más información, consulta la sección [Configuraciones](concept-configurations.md).
 
@@ -125,7 +125,7 @@ $country->name = 'U.S.A.';
 $country->save();
 ```
 
-> Información: Active Record es una potente forma de acceder y manipular datos de una base de datos de una manera
+> Info: Active Record es una potente forma de acceder y manipular datos de una base de datos de una manera
 orientada a objetos.
 Puedes encontrar información más detallada acerca de [Active Record](db-active-record.md). Además de Active Record,
 puedes utilizar un método de acceso de bajo nivel llamado [Data Access Objects](db-dao.md).

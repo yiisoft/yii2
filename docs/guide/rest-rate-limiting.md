@@ -13,9 +13,31 @@ This interface requires implementation of three methods:
   when the rate limit was last checked.
 * `saveAllowance()`: saves both the number of remaining requests allowed and the current UNIX timestamp.
 
-You may want to use two columns in the user table to record the allowance and timestamp information. With those defined, then `loadAllowance()` and `saveAllowance()` can be implemented to read and save the values
+You may want to use two columns in the user table to record the allowance and timestamp information. With those defined,
+then `loadAllowance()` and `saveAllowance()` can be implemented to read and save the values
 of the two columns corresponding to the current authenticated user. To improve performance, you may also
 consider storing these pieces of information in a cache or NoSQL storage.
+
+Implementation in the `User` model could look like the following:
+
+```php
+public function getRateLimit($request, $action)
+{
+    return [$this->rateLimit, 1]; // $rateLimit requests per second
+}
+
+public function loadAllowance($request, $action)
+{
+    return [$this->allowance, $this->allowance_updated_at];
+}
+
+public function saveAllowance($request, $action, $allowance, $timestamp)
+{
+    $this->allowance = $allowance;
+    $this->allowance_updated_at = $timestamp;
+    $this->save();
+}
+```
 
 Once the identity class implements the required interface, Yii will automatically use [[yii\filters\RateLimiter]]
 configured as an action filter for [[yii\rest\Controller]] to perform rate limiting check. The rate limiter
