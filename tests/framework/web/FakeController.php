@@ -56,4 +56,18 @@ class FakeController extends Controller
     {
         return [$q, gettype($validator)];
     }
+
+    public function actionShowCustomer(\yiiunit\data\ar\Customer $customer)
+    {
+        return $customer;
+    }
+
+    public function actionShowOrderItem(\yiiunit\data\ar\OrderItem $orderItem)
+    {
+        return $orderItem;
+    }
+
+    public function actionShowOptionalCustomer(\yiiunit\data\ar\Customer $customer = null) {
+        return $customer;
+    }
 }

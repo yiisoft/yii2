@@ -38,7 +38,7 @@ class RequestTest extends TestCase
             text/x-dvi; q=0.8, text/x-c'));
     }
 
-    public function testPrefferedLanguage()
+    public function testPreferredLanguage()
     {
         $this->mockApplication([
             'language' => 'en',
