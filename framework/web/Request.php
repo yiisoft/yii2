@@ -193,15 +193,17 @@ class Request extends \yii\base\Request
                 $suffix = Yii::$app->getUrlManager()->suffix;
                 $n = strlen($suffix);
                 if (substr_compare($pathInfo, $suffix, -$n, $n) !== 0) {
-                    $this->setPathInfo($pathInfo . $suffix);
+                    $suffixedPathInfo = $pathInfo . $suffix;
+                    $this->setPathInfo($suffixedPathInfo);
                     $result = Yii::$app->getUrlManager()->parseRequest($this);
+                    $this->setPathInfo($pathInfo); // restore original state
                     if ($result !== false) {
-                        $url = $this->getBaseUrl() . '/' . $this->getPathInfo();
+                        $baseUrl = Yii::$app->getUrlManager()->showScriptName ? $this->getScriptUrl() : $this->getBaseUrl();
+                        $url = $baseUrl . '/' . $suffixedPathInfo;
                         $queryString = $this->getQueryString();
                         if (!empty($queryString)) {
                             $url .= '?' . $queryString;
                         }
-                        $this->setPathInfo($pathInfo); // restore original state
                         throw new RedirectException($url, 301);
                     }
                 }

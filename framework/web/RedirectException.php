@@ -13,7 +13,7 @@ use yii\base\Exception;
  * RedirectException represents an information for the HTTP location redirect.
  *
  * @author Paul Klimov <klimov.paul@gmail.com>
- * @since 2.0
+ * @since 2.0.7
  */
 class RedirectException extends Exception
 {

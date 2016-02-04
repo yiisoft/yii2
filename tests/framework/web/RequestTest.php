@@ -167,7 +167,7 @@ class RequestTest extends TestCase
         $request = new Request();
         $request->hostInfo = 'http://example.com/';
         $request->pathInfo = 'posts/list';
-        $request->baseUrl = '';
+        $request->scriptUrl = 'index.php';
 
         try {
             $request->resolve();
@@ -176,6 +176,37 @@ class RequestTest extends TestCase
         }
         $this->assertTrue(isset($exception));
         $this->assertEquals('/posts/list/', $exception->url);
+        $this->assertEquals(301, $exception->statusCode);
+    }
+
+    public function testResolveSuffixRedirectWithScriptName()
+    {
+        $this->mockWebApplication([
+            'components' => [
+                'urlManager' => [
+                    'enablePrettyUrl' => true,
+                    'showScriptName' => true,
+                    'cache' => null,
+                    'suffix' => '/',
+                    'rules' => [
+                        'posts' => 'post/list',
+                    ],
+                ]
+            ]
+        ]);
+
+        $request = new Request();
+        $request->hostInfo = 'http://example.com/';
+        $request->pathInfo = 'posts/list';
+        $request->scriptUrl = 'index.php';
+
+        try {
+            $request->resolve();
+        } catch (RedirectException $exception) {
+            // catch redirect exception
+        }
+        $this->assertTrue(isset($exception));
+        $this->assertEquals('/index.php/posts/list/', $exception->url);
         $this->assertEquals(301, $exception->statusCode);
     }
 }
