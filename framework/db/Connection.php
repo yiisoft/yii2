@@ -337,7 +337,6 @@ class Connection extends Component
      * @see masterConfig
      */
     public $masters = [];
-
     /**
      * @var string the class name of the [[Command]] object.
      */
@@ -625,7 +624,7 @@ class Connection extends Component
      */
     public function createCommand($sql = null, $params = [])
     {
-        $command = \Yii::createObject([
+        $command = Yii::createObject([
             'class' => $this->commandClass,
             'db' => $this,
             'sql' => $sql
