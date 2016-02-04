@@ -64,6 +64,7 @@ Yii Framework 2 Change Log
 - Enh #7405: Added `yii\filters\auth\AuthMethod::optional` for optional authentification in all child classes (SilverFire)
 - Enh #7566: Improved `\yii\validators\CompareValidator` default messages (slinstj)
 - Enh #7581: Added ability to specify range using anonymous function in `RangeValidator` (RomeroMsk)
+- Enh #7674: Added `yii\db\Connection::commandClass` to configure a command class that will be used by the connection (sammousa, silverfire)
 - Enh #8284: Added `\yii\captcha\CaptchaAction::$imageLibrary` property allowing to set image rendering library (AnatolyRugalev)
 - Enh #8329: Added support of options for `message` console command (vchenin)
 - Enh #8613: `yii\widgets\FragmentCache` will not store empty content anymore which fixes some problems related to `yii\filters\PageCache` (kidol)
