@@ -242,6 +242,11 @@ class UrlManager extends Component
 
             Yii::trace('No matching URL rules. Using default URL parsing logic.', __METHOD__);
 
+            // Ensure, that $pathInfo does not end with more than one slash.
+            if (strlen($pathInfo) > 1 && substr_compare($pathInfo, '//', -2, 2) === 0) {
+                return false;
+            }
+
             $suffix = (string) $this->suffix;
             if ($suffix !== '' && $pathInfo !== '') {
                 $n = strlen($this->suffix);
