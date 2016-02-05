@@ -3,6 +3,7 @@ Yii Framework 2 Change Log
 
 2.0.7 under development
 -----------------------
+
 - Bug #6351: Find MySQL FK constraints from `information_schema` tables instead of `SHOW CREATE TABLE` to improve reliability (nineinchnick)
 - Bug #6363, #8301, #8582, #9566: Fixed data methods and PJAX issues when used together (derekisbusy)
 - Bug #6876: Fixed RBAC migration MSSQL cascade problem (thejahweh)
@@ -59,6 +60,7 @@ Yii Framework 2 Change Log
 - Bug #10692: Fixed default value extraction in PostgreSQL Schema for null values (wallysalami, gabrielhomsi)
 - Bug #10739: Fixed `yii\web\UrlManager::parseRequest()` to treat request URL with more than one slash at the end as invalid (andrewnester)
 - Bug #10751: Fixed `yii\validators\UrlValidator` pattern to improve matching (silverfire)
+- Bug #10760: `yii\widgets\DetailView::normalizeAttributes()` fixed for arrayable models (boehsermoe)
 - Bug: Fixed generation of canonical URLs for `ViewAction` pages (samdark)
 - Bug: Fixed `mb_*` functions calls to use `UTF-8` or `Yii::$app->charset` (silverfire)
 - Enh #3506: Added `yii\validators\IpValidator` to perform validation of IP addresses and subnets (SilverFire, samdark)
