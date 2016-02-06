@@ -79,7 +79,6 @@ Yii Framework 2 Change Log
 - Enh #9412: `yii\web\Response::sendHeaders()` does now set the status header last which negates certain magic PHP behavior regarding the `header()` function (nd4c, kidol)
 - Enh #9443: Added `unsigned()` to `ColumnSchemaBuilder` (samdark)
 - Enh #9465: ./yii migrate/create now generates code based on migration name and --fields (pana1990)
-- Enh #9476: Added DI injection via controller action method signature (mdmunir)
 - Enh #9573: Added `yii\rbac\ManagerInterface::getUserIdsByRole()` and implementations (samdark)
 - Enh #9635: Added default CSS class for `\yii\grid\ActionColumn` header (arogachev, dynasource)
 - Enh #9643: Added migrations for DB cache (mdmunir)
