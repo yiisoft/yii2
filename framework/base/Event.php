@@ -24,7 +24,6 @@ namespace yii\base;
  */
 class Event extends Object
 {
-    private static $_events = [];
     /**
      * @var string the event name. This property is set by [[Component::trigger()]] and [[trigger()]].
      * Event handlers may use this property to check what event it is handling.
@@ -48,6 +47,12 @@ class Event extends Object
      * Note that this varies according to which event handler is currently executing.
      */
     public $data;
+
+    /**
+     * @var array contains all globally registered event handlers.
+     */
+    private static $_events = [];
+
 
     /**
      * Attaches an event handler to a class-level event.
