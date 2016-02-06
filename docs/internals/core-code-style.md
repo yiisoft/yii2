@@ -87,7 +87,8 @@ class Foo
 - Public and protected variables should be declared at the top of the class before any method declarations.
   Private variables should also be declared at the top of the class but may be added right before the methods
   that are dealing with them in cases where they are only related to a small subset of the class methods.
-- The order of property declaration in a class should be ascending from public over protected to private.
+- The order of property declaration in a class should be ascending based on their visibility: from public over protected to private.
+- There are no strict rules for ordering properties that have the same visibility.
 - For better readability there should be no blank lines between property declarations and two blank lines
   between property and method declaration sections.
 - Private variables should be named like `$_varName`.
