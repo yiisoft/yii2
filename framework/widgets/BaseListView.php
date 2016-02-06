@@ -133,7 +133,7 @@ abstract class BaseListView extends Widget
 
         $options = $this->options;
         $tag = ArrayHelper::remove($options, 'tag', 'div');
-        echo Html::tag($tag, $content, $options);
+        return Html::tag($tag, $content, $options);
     }
 
     /**
