@@ -41,7 +41,6 @@ class MessageController extends Controller
      * @var string controller default action ID.
      */
     public $defaultAction = 'extract';
-
     /**
      * @var string required, root directory of all source files.
      */
@@ -141,7 +140,7 @@ class MessageController extends Controller
      */
     public function options($actionID)
     {
-        return [
+        return array_merge(parent::options($actionID), [
                 'sourcePath',
                 'messagePath',
                 'languages',
@@ -158,7 +157,7 @@ class MessageController extends Controller
                 'messageTable',
                 'catalog',
                 'ignoreCategories'
-        ];
+        ]);
     }
 
     /**
@@ -531,6 +530,7 @@ EOD;
      * @param string $category category that is checked
      * @param array $ignoreCategories message categories to ignore.
      * @return boolean
+     * @since 2.0.7
      */
     protected function isCategoryIgnored($category, array $ignoreCategories)
     {
