@@ -90,7 +90,7 @@ class Foo
 - The order of property declaration in a class should be ascending based on their visibility: from public over protected to private.
 - There are no strict rules for ordering properties that have the same visibility.
 - For better readability there should be no blank lines between property declarations and two blank lines
-  between property and method declaration sections.
+  between property and method declaration sections. One blank line should be added between the different visibility groups.
 - Private variables should be named like `$_varName`.
 - Public class members and standalone variables should be named using `$camelCase`
   with first letter lowercase.
@@ -102,9 +102,17 @@ For example:
 <?php
 class Foo
 {
-    public $publicProp;
+    public $publicProp1;
+    public $publicProp2;
+
     protected $protectedProp;
+
     private $_privateProp;
+    
+    public function someMethod()
+    {
+        // ...
+    }
 }
 ```
 
