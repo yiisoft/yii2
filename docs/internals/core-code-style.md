@@ -108,7 +108,8 @@ class Foo
     protected $protectedProp;
 
     private $_privateProp;
-    
+
+
     public function someMethod()
     {
         // ...
