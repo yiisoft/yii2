@@ -242,6 +242,7 @@ class BaseInflector
      * For detailed information see [unicode normalization forms](http://unicode.org/reports/tr15/#Normalization_Forms_Table)
      * @see http://unicode.org/reports/tr15/#Normalization_Forms_Table
      * @see transliterate()
+     * @since 2.0.7
      */
     const TRANSLITERATE_STRICT = 'Any-Latin; NFKD';
 
@@ -255,6 +256,7 @@ class BaseInflector
      * For detailed information see [unicode normalization forms](http://unicode.org/reports/tr15/#Normalization_Forms_Table)
      * @see http://unicode.org/reports/tr15/#Normalization_Forms_Table
      * @see transliterate()
+     * @since 2.0.7
      */
     const TRANSLITERATE_MEDIUM = 'Any-Latin; Latin-ASCII';
 
@@ -269,6 +271,7 @@ class BaseInflector
      * For detailed information see [unicode normalization forms](http://unicode.org/reports/tr15/#Normalization_Forms_Table)
      * @see http://unicode.org/reports/tr15/#Normalization_Forms_Table
      * @see transliterate()
+     * @since 2.0.7
      */
     const TRANSLITERATE_LOOSE = 'Any-Latin; Latin-ASCII; [\u0080-\uffff] remove';
 
@@ -482,6 +485,7 @@ class BaseInflector
      * @param string|\Transliterator $transliterator either a [[Transliterator]] or a string
      * from which a [[Transliterator]] can be built.
      * @return string
+     * @since 2.0.7 this method is public.
      */
     public static function transliterate($string, $transliterator = null)
     {
