@@ -50,6 +50,8 @@ class HtmlTest extends TestCase
         $this->assertEquals('<div>content</div>', Html::tag('div', 'content'));
         $this->assertEquals('<input type="text" name="test" value="&lt;&gt;">', Html::tag('input', '', ['type' => 'text', 'name' => 'test', 'value' => '<>']));
         $this->assertEquals('<span disabled></span>', Html::tag('span', '', ['disabled' => true]));
+        $this->assertEquals('test', Html::tag(false, 'test'));
+        $this->assertEquals('test', Html::tag(null, 'test'));
     }
 
     public function testBeginTag()
