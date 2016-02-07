@@ -176,11 +176,7 @@ class Menu extends Widget
             $options = $this->options;
             $tag = ArrayHelper::remove($options, 'tag', 'ul');
 
-            if ($tag !== false) {
-                echo Html::tag($tag, $this->renderItems($items), $options);
-            } else {
-                echo $this->renderItems($items);
-            }
+            echo Html::tag($tag, $this->renderItems($items), $options);
         }
     }
 
@@ -221,11 +217,7 @@ class Menu extends Widget
                     '{items}' => $this->renderItems($item['items']),
                 ]);
             }
-            if ($tag === false) {
-                $lines[] = $menu;
-            } else {
-                $lines[] = Html::tag($tag, $menu, $options);
-            }
+            $lines[] = Html::tag($tag, $menu, $options);
         }
 
         return implode("\n", $lines);
