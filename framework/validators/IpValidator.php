@@ -45,7 +45,7 @@ class IpValidator extends Validator
      * @var array The network aliases, that can be used in [[ranges]].
      *  - key - alias name
      *  - value - array of strings. String can be an IP range, IP address or another alias. String can be
-     * negated with [[NEGATION_CHAR]] (independent of `negation` option).
+     *    negated with [[NEGATION_CHAR]] (independent of `negation` option).
      *
      * The following aliases are defined by default:
      *  - `*`: `any`
@@ -90,7 +90,7 @@ class IpValidator extends Validator
      * address without it. Works only when `subnet` is not `false`. For example:
      *  - `10.0.1.5` will normalized to `10.0.1.5/32`
      *  - `2008:db0::1` will be normalized to `2008:db0::1/128`
-     * Defaults to `false`.
+     *    Defaults to `false`.
      * @see subnet
      */
     public $normalize = false;
@@ -153,7 +153,6 @@ class IpValidator extends Validator
      * - `{value}`: the value of the attribute being validated
      */
     public $wrongIp;
-
     /**
      * @var string user-defined error message is used when validation fails due to subnet [[subnet]] set to 'only',
      * but the CIDR prefix is not set.
@@ -315,8 +314,8 @@ class IpValidator extends Validator
      *
      * @param $ip string
      * @return string|array
-     *  string - the validation was successful;
-     *  array  - an error occurred during the validation.
+     * string - the validation was successful;
+     * array  - an error occurred during the validation.
      * Array[0] contains the text of an error, array[1] contains values for the placeholders in the error message
      */
     private function validateSubnet($ip)

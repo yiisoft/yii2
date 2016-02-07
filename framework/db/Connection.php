@@ -362,6 +362,7 @@ class Connection extends Component
      * ```
      */
     public $masterConfig = [];
+
     /**
      * @var Transaction the currently active transaction
      */
