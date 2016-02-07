@@ -3,6 +3,8 @@
 namespace yiiunit\framework\filters\auth;
 
 use Yii;
+use yii\base\Action;
+use yii\filters\auth\AuthMethod;
 use yii\filters\auth\HttpBasicAuth;
 use yii\filters\auth\HttpBearerAuth;
 use yii\filters\auth\QueryParamAuth;
@@ -140,6 +142,65 @@ class AuthTest extends \yiiunit\TestCase
         $this->authOptional($token, $login, $filter, 'bearer-auth');
         $this->authExcept($token, $login, $filter, 'bearer-auth');
     }
+
+    public function authMethodProvider()
+    {
+        return [
+            ['yii\filters\auth\CompositeAuth'],
+            ['yii\filters\auth\HttpBasicAuth'],
+            ['yii\filters\auth\HttpBearerAuth'],
+            ['yii\filters\auth\QueryParamAuth'],
+        ];
+    }
+
+    /**
+     * @dataProvider authMethodProvider
+     */
+    public function testActive($authClass)
+    {
+        /** @var $filter AuthMethod */
+        $filter = new $authClass;
+        $reflection = new \ReflectionClass($filter);
+        $method = $reflection->getMethod('isActive');
+        $method->setAccessible(true);
+
+        $controller = new \yii\web\Controller('test', Yii::$app);
+
+        // active by default
+        $this->assertEquals(true, $method->invokeArgs($filter, [new Action('index', $controller)]));
+        $this->assertEquals(true, $method->invokeArgs($filter, [new Action('view', $controller)]));
+
+        $filter->only = ['index'];
+        $filter->except = [];
+        $filter->optional = [];
+        $this->assertEquals(true, $method->invokeArgs($filter, [new Action('index', $controller)]));
+        $this->assertEquals(false, $method->invokeArgs($filter, [new Action('view', $controller)]));
+
+        $filter->only = ['index'];
+        $filter->except = [];
+        $filter->optional = ['view'];
+        $this->assertEquals(true, $method->invokeArgs($filter, [new Action('index', $controller)]));
+        $this->assertEquals(false, $method->invokeArgs($filter, [new Action('view', $controller)]));
+
+        $filter->only = ['index', 'view'];
+        $filter->except = ['view'];
+        $filter->optional = [];
+        $this->assertEquals(true, $method->invokeArgs($filter, [new Action('index', $controller)]));
+        $this->assertEquals(false, $method->invokeArgs($filter, [new Action('view', $controller)]));
+
+        $filter->only = ['index', 'view'];
+        $filter->except = ['view'];
+        $filter->optional = ['view'];
+        $this->assertEquals(true, $method->invokeArgs($filter, [new Action('index', $controller)]));
+        $this->assertEquals(false, $method->invokeArgs($filter, [new Action('view', $controller)]));
+
+        $filter->only;
+        $filter->except = ['view'];
+        $filter->optional = ['view'];
+        $this->assertEquals(true, $method->invokeArgs($filter, [new Action('index', $controller)]));
+        $this->assertEquals(false, $method->invokeArgs($filter, [new Action('view', $controller)]));
+    }
+
 }
 
 /**
