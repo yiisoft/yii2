@@ -291,15 +291,15 @@ class ActiveRecord extends BaseActiveRecord
      */
     public static function getTableSchema()
     {
-        $schema = static::getDb()
+        $tableSchema = static::getDb()
             ->getSchema()
             ->getTableSchema(static::tableName());
 
-        if ($schema === null) {
+        if ($tableSchema === null) {
             throw new InvalidConfigException('The table does not exist: ' . static::tableName());
         }
 
-        return $schema;
+        return $tableSchema;
     }
 
     /**
