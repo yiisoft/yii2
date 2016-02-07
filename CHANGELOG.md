@@ -86,6 +86,7 @@ Yii Framework 2 Change Log
 - Enh #9733: Added Unprocessable Entity HTTP Exception (janfrs)
 - Enh #9762: Added `JsonResponseFormatter::$encodeOptions` and `::$prettyPrint` for better JSON output formatting (cebe)
 - Enh #9783: jQuery inputmask dependency updated to `~3.2.2` (samdark)
+- Enh #9785: Added ability to invoke callback with dependency resolution to DI container (mdmunir)
 - Enh #9869: Allow path alias for SQLite database files in DSN config (ASlatius)
 - Enh #9901: Default `Cache.SerializerPermissions` configuration option for `HTMLPurifier` is set to `0775` (klimov-paul)
 - Enh #10056: Allowed any callable to be passed to `ActionColumn::$urlCreator` (freezy-sk)

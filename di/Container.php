@@ -454,4 +454,52 @@ class Container extends Component
         }
         return $dependencies;
     }
+
+    /**
+     * Invoke callback with resolved dependecies parameters.
+     * @param callable $callback callable to be invoked.
+     * @param array $params callback paramater.
+     * @return mixed the callback return value.
+     * @throws InvalidConfigException if a dependency cannot be resolved or if a dependency cannot be fulfilled.
+     * @since 2.0.7
+     */
+    public function invoke($callback, $params = [])
+    {
+        if (is_callable($callback)) {
+            if (is_array($callback)) {
+                $reflection = new \ReflectionMethod($callback[0], $callback[1]);
+            } else {
+                $reflection = new \ReflectionFunction($callback);
+            }
+
+            $args = [];
+            foreach ($reflection->getParameters() as $param) {
+                $name = $param->getName();
+                if (($class = $param->getClass()) !== null) {
+                    $className = $class->getName();
+                    if (isset($params[0]) && $params[0] instanceof $className) {
+                        $args[] = array_shift($params);
+                    } elseif (\Yii::$app->has($name) && ($obj = \Yii::$app->get($name)) instanceof $className) {
+                        $args[] = $obj;
+                    } else {
+                        $args[] = $this->get($className);
+                    }
+                } elseif (count($params)) {
+                    $args[] = array_shift($params);
+                } elseif ($param->isDefaultValueAvailable()) {
+                    $args[] = $param->getDefaultValue();
+                } elseif (!$param->isOptional()) {
+                    $funcName = $reflection->getName();
+                    throw new InvalidConfigException("Missing required parameter \"$name\" when calling \"$funcName\".");
+                }
+            }
+
+            foreach ($params as $value) {
+                $args[] = $value;
+            }
+            return call_user_func_array($callback, $args);
+        } else {
+            return call_user_func_array($callback, $params);
+        }
+    }
 }
