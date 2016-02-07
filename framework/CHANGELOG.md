@@ -48,7 +48,6 @@ Yii Framework 2 Change Log
 - Bug #10278: Fixed `yii\helpers\BaseJson` support \SimpleXMLElement data (SilverFire, LAV45)
 - Bug #10302: Fixed JS function `yii.getQueryParams`, which parsed array variables incorrectly (servocoder, silverfire)
 - Bug #10363: Fixed fallback float and integer formatting (AnatolyRugalev, silverfire)
-- Bug #10372: Fixed console controller including DI arguments in help (sammousa)
 - Bug #10385: Fixed `yii\validators\CaptchaValidator` passed incorrect hashKey to JS validator when `captchaAction` begins with `/` (silverfire)
 - Bug #10467: Fixed `yii\di\Instance::ensure()` to work with minimum settings (LAV45)
 - Bug #10541: Fixed division by zero issue in `Console` helper progress bar (youmad)
