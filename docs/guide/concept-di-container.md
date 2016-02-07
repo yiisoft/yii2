@@ -15,7 +15,6 @@ dependency injection:
 * Constructor injection;
 * Setter and property injection;
 * PHP callable injection;
-* Controller action injection.
 
 
 ### Constructor Injection <span id="constructor-injection"></span>
