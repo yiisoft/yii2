@@ -171,7 +171,7 @@ class Container extends Component
         } elseif (is_object($definition)) {
             return $this->_singletons[$class] = $definition;
         } else {
-            throw new InvalidConfigException("Unexpected object definition type: " . gettype($definition));
+            throw new InvalidConfigException('Unexpected object definition type: ' . gettype($definition));
         }
 
         if (array_key_exists($class, $this->_singletons)) {
@@ -230,7 +230,7 @@ class Container extends Component
      * You may use [[has()]] to check if a class definition already exists.
      *
      * @param string $class class name, interface name or alias name
-     * @param mixed $definition the definition associated with `$class`. It can be one of the followings:
+     * @param mixed $definition the definition associated with `$class`. It can be one of the following:
      *
      * - a PHP callable: The callable will be executed when [[get()]] is invoked. The signature of the callable
      *   should be `function ($container, $params, $config)`, where `$params` stands for the list of constructor
@@ -242,7 +242,7 @@ class Container extends Component
      * - a string: a class name, an interface name or an alias name.
      * @param array $params the list of constructor parameters. The parameters will be passed to the class
      * constructor when [[get()]] is called.
-     * @return static the container itself
+     * @return $this the container itself
      */
     public function set($class, $definition = [], array $params = [])
     {
@@ -262,7 +262,7 @@ class Container extends Component
      * @param mixed $definition the definition associated with `$class`. See [[set()]] for more details.
      * @param array $params the list of constructor parameters. The parameters will be passed to the class
      * constructor when [[get()]] is called.
-     * @return static the container itself
+     * @return $this the container itself
      * @see set()
      */
     public function setSingleton($class, $definition = [], array $params = [])
@@ -453,5 +453,53 @@ class Container extends Component
             }
         }
         return $dependencies;
+    }
+
+    /**
+     * Invoke callback with resolved dependecies parameters.
+     * @param callable $callback callable to be invoked.
+     * @param array $params callback paramater.
+     * @return mixed the callback return value.
+     * @throws InvalidConfigException if a dependency cannot be resolved or if a dependency cannot be fulfilled.
+     * @since 2.0.7
+     */
+    public function invoke($callback, $params = [])
+    {
+        if (is_callable($callback)) {
+            if (is_array($callback)) {
+                $reflection = new \ReflectionMethod($callback[0], $callback[1]);
+            } else {
+                $reflection = new \ReflectionFunction($callback);
+            }
+
+            $args = [];
+            foreach ($reflection->getParameters() as $param) {
+                $name = $param->getName();
+                if (($class = $param->getClass()) !== null) {
+                    $className = $class->getName();
+                    if (isset($params[0]) && $params[0] instanceof $className) {
+                        $args[] = array_shift($params);
+                    } elseif (\Yii::$app->has($name) && ($obj = \Yii::$app->get($name)) instanceof $className) {
+                        $args[] = $obj;
+                    } else {
+                        $args[] = $this->get($className);
+                    }
+                } elseif (count($params)) {
+                    $args[] = array_shift($params);
+                } elseif ($param->isDefaultValueAvailable()) {
+                    $args[] = $param->getDefaultValue();
+                } elseif (!$param->isOptional()) {
+                    $funcName = $reflection->getName();
+                    throw new InvalidConfigException("Missing required parameter \"$name\" when calling \"$funcName\".");
+                }
+            }
+
+            foreach ($params as $value) {
+                $args[] = $value;
+            }
+            return call_user_func_array($callback, $args);
+        } else {
+            return call_user_func_array($callback, $params);
+        }
     }
 }

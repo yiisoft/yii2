@@ -1,7 +1,7 @@
 単体テスト
 ==========
 
-> Note|注意: この節はまだ執筆中です。
+> Note: この節はまだ執筆中です。
 
 単体テストは、一かたまりのコードが期待通りに動作することを検証するものです。
 オブジェクト指向プログラミングでは、最も基本的なコードのかたまりはクラスです。
@@ -13,7 +13,7 @@ Yii における単体テストは、PHPUnit と Codeception (こちらはオプ
 従って、それらのドキュメントを通読することが推奨されます。
 
 - [PHPUnit のドキュメントの第2章以降](http://phpunit.de/manual/current/en/writing-tests-for-phpunit.html).
-- [Codeception Unit Tests](http://codeception.com/docs/06-UnitTests).
+- [Codeception Unit Tests](http://codeception.com/docs/05-UnitTests).
 
 アプリケーションテンプレートの単体テストを走らせる
 --------------------------------------------------

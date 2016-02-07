@@ -36,11 +36,11 @@ class UserFixture extends ActiveFixture
 }
 ```
 
-> Tip|ヒント: すべての `ActiveFixture` は、テストの目的のために DB テーブルを準備するものです。
+> Tip: すべての `ActiveFixture` は、テストの目的のために DB テーブルを準備するものです。
 > [[yii\test\ActiveFixture::tableName]] プロパティまたは [[yii\test\ActiveFixture::modelClass]] プロパティを設定することによって、テーブルを指定することが出来ます。
 > 後者を使う場合は、`modelClass` によって指定される `ActiveRecord` クラスからテーブル名が取得されます。
 
-> Note|注意: [[yii\test\ActiveFixture]] は SQL データベースにのみ適しています。
+> Note: [[yii\test\ActiveFixture]] は SQL データベースにのみ適しています。
 > NoSQL データベースのためには、Yii は以下の `ActiveFixture` クラスを提供しています。
 >
 > - Mongo DB: [[yii\mongodb\ActiveFixture]]
@@ -77,7 +77,7 @@ return [
 また、オートインクリメントのカラムに対してはデータを指定する必要はありません。
 フィクスチャがロードされるときに Yii が自動的に実際の値を行に入れます。
 
-> Tip|ヒント: [[yii\test\ActiveFixture::dataFile]] プロパティを設定して、データファイルの所在をカスタマイズすることが出来ます。
+> Tip: [[yii\test\ActiveFixture::dataFile]] プロパティを設定して、データファイルの所在をカスタマイズすることが出来ます。
 > [[yii\test\ActiveFixture::getData()]] をオーバーライドしてデータを提供することも可能です。
 
 前に説明したように、フィクスチャは別のフィクスチャに依存する場合があります。
@@ -107,7 +107,7 @@ DB と関係しないフィクスチャ (例えば、何らかのファイルや
 フィクスチャを使用する
 ----------------------
 
-[CodeCeption](http://codeception.com/) を使ってコードをテストしている場合は、フィクスチャのローディングとアクセスを内蔵でサポートしている `yii2-codeception` を使用することを検討すべきです。
+[Codeception](http://codeception.com/) を使ってコードをテストしている場合は、フィクスチャのローディングとアクセスを内蔵でサポートしている `yii2-codeception` を使用することを検討すべきです。
 その他のテストフレームワークを使っている場合は、テストケースで [[yii\test\FixtureTrait]] を使って同じ目的を達することが出来ます。
 
 次に `yii2-codeception` を使って `UserProfile` 単体テストを書く方法を説明します。
@@ -158,7 +158,7 @@ $profile = $this->profiles('user1');
 foreach ($this->profiles as $row) ...
 ```
 
-> Info|情報: `$this->profiles` は依然として `UserProfileFixture` という型です。
+> Info: `$this->profiles` は依然として `UserProfileFixture` という型です。
 > 上記のアクセス機能は PHP マジックメソッドによって実装されています。
 
 
@@ -210,7 +210,7 @@ data\
 このようにして、テスト間でフィクスチャのデータファイルが衝突するのを回避し、必要に応じてデータファイルを使い分けます。
 
 
-> Note|注意: 上の例では、フィクスチャファイルには例示目的だけの名前が付けられています。
+> Note: 上の例では、フィクスチャファイルには例示目的だけの名前が付けられています。
 > 実際の現場では、フィクスチャクラスの拡張元である基底クラスに従って名前を付けるべきです。
 > 例えば、DB フィクスチャを [[yii\test\ActiveFixture]] から拡張している場合は、DB テーブルの名前をフィクスチャのデータファイル名として使うべきです。
 > MongoDB フィクスチャを [[yii\mongodb\ActiveFixture]] から拡張している場合は、コレクション名をファイル名として使うべきです。
@@ -373,4 +373,4 @@ Auto-generating fixtures
 
 Yii also can auto-generate fixtures for you based on some template. You can generate your fixtures with different data on different languages and formats.
 These feature is done by [Faker](https://github.com/fzaninotto/Faker) library and `yii2-faker` extension.
-See extension [guide](https://github.com/yiisoft/yii2/tree/master/extensions/faker) for more docs.
+See extension [guide](https://github.com/yiisoft/yii2-faker) for more docs.

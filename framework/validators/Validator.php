@@ -27,6 +27,7 @@ use yii\base\NotSupportedException;
  * - `date`: [[DateValidator]]
  * - `default`: [[DefaultValueValidator]]
  * - `double`: [[NumberValidator]]
+ * - `each`: [[EachValidator]]
  * - `email`: [[EmailValidator]]
  * - `exist`: [[ExistValidator]]
  * - `file`: [[FileValidator]]
@@ -41,6 +42,7 @@ use yii\base\NotSupportedException;
  * - `trim`: [[FilterValidator]]
  * - `unique`: [[UniqueValidator]]
  * - `url`: [[UrlValidator]]
+ * - `ip`: [[IpValidator]]
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
@@ -57,6 +59,7 @@ class Validator extends Component
         'date' => 'yii\validators\DateValidator',
         'default' => 'yii\validators\DefaultValueValidator',
         'double' => 'yii\validators\NumberValidator',
+        'each' => 'yii\validators\EachValidator',
         'email' => 'yii\validators\EmailValidator',
         'exist' => 'yii\validators\ExistValidator',
         'file' => 'yii\validators\FileValidator',
@@ -79,6 +82,7 @@ class Validator extends Component
         ],
         'unique' => 'yii\validators\UniqueValidator',
         'url' => 'yii\validators\UrlValidator',
+        'ip' => 'yii\validators\IpValidator',
     ];
     /**
      * @var array|string attributes to be validated by this validator. For multiple attributes,
@@ -154,7 +158,8 @@ class Validator extends Component
     /**
      * @var string a JavaScript function name whose return value determines whether this validator should be applied
      * on the client side. The signature of the function should be `function (attribute, value)`, where
-     * `attribute` is the name of the attribute being validated and `value` the current value of the attribute.
+     * `attribute` is an object describing the attribute being validated (see [[clientValidateAttribute()]])
+     * and `value` the current value of the attribute.
      *
      * This property is mainly provided to support conditional validation on the client side.
      * If this property is not set, this validator will be always applied on the client side.
@@ -163,7 +168,7 @@ class Validator extends Component
      *
      * ```php
      * function (attribute, value) {
-     *     return $('#country').value == 'USA';
+     *     return $('#country').val() === 'USA';
      * }
      * ```
      *
@@ -298,10 +303,19 @@ class Validator extends Component
      *
      * The following JavaScript variables are predefined and can be used in the validation code:
      *
-     * - `attribute`: the name of the attribute being validated.
+     * - `attribute`: an object describing the the attribute being validated.
      * - `value`: the value being validated.
      * - `messages`: an array used to hold the validation error messages for the attribute.
      * - `deferred`: an array used to hold deferred objects for asynchronous validation
+     * - `$form`: a jQuery object containing the form element
+     *
+     * The `attribute` object contains the following properties:
+     * - `id`: a unique ID identifying the attribute (e.g. "loginform-username") in the form
+     * - `name`: attribute name or expression (e.g. "[0]content" for tabular input)
+     * - `container`: the jQuery selector of the container of the input field
+     * - `input`: the jQuery selector of the input field under the context of the form
+     * - `error`: the jQuery selector of the error tag under the context of the container
+     * - `status`: status of the input field, 0: empty, not entered before, 1: validated, 2: pending validation, 3: validating
      *
      * @param \yii\base\Model $model the data model being validated
      * @param string $attribute the name of the attribute to be validated.
@@ -350,7 +364,7 @@ class Validator extends Component
 
     /**
      * Checks if the given value is empty.
-     * A value is considered empty if it is null, an empty array, or the trimmed result is an empty string.
+     * A value is considered empty if it is null, an empty array, or an empty string.
      * Note that this method is different from PHP empty(). It will return false when the value is 0.
      * @param mixed $value the value to be checked
      * @return boolean whether the value is empty

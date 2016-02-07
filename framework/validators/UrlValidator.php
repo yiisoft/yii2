@@ -9,6 +9,7 @@ namespace yii\validators;
 
 use Yii;
 use yii\base\InvalidConfigException;
+use yii\helpers\Html;
 use yii\web\JsExpression;
 use yii\helpers\Json;
 
@@ -16,7 +17,7 @@ use yii\helpers\Json;
  * UrlValidator validates that the attribute value is a valid http or https URL.
  *
  * Note that this validator only checks if the URL scheme and host part are correct.
- * It does not check the rest part of a URL.
+ * It does not check the remaining parts of a URL.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
@@ -28,7 +29,7 @@ class UrlValidator extends Validator
      * The pattern may contain a `{schemes}` token that will be replaced
      * by a regular expression which represents the [[validSchemes]].
      */
-    public $pattern = '/^{schemes}:\/\/(([A-Z0-9][A-Z0-9_-]*)(\.[A-Z0-9][A-Z0-9_-]*)+)/i';
+    public $pattern = '/^{schemes}:\/\/(([A-Z0-9][A-Z0-9_-]*)(\.[A-Z0-9][A-Z0-9_-]*)+)(?::\d{1,5})?(?:$|[?\/#])/i';
     /**
      * @var array list of URI schemes which should be considered valid. By default, http and https
      * are considered to be valid schemes.
@@ -124,7 +125,7 @@ class UrlValidator extends Validator
             'message' => Yii::$app->getI18n()->format($this->message, [
                 'attribute' => $model->getAttributeLabel($attribute),
             ], Yii::$app->language),
-            'enableIDN' => (boolean) $this->enableIDN,
+            'enableIDN' => (bool) $this->enableIDN,
         ];
         if ($this->skipOnEmpty) {
             $options['skipOnEmpty'] = 1;
@@ -138,6 +139,6 @@ class UrlValidator extends Validator
             PunycodeAsset::register($view);
         }
 
-        return 'yii.validation.url(value, messages, ' . Json::encode($options) . ');';
+        return 'yii.validation.url(value, messages, ' . Json::htmlEncode($options) . ');';
     }
 }

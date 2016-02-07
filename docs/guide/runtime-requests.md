@@ -66,10 +66,10 @@ For example,
 ```php
 $request = Yii::$app->request;
 
-if ($request->isAjax) { // the request is an AJAX request }
-if ($request->isGet)  { // the request method is GET }
-if ($request->isPost) { // the request method is POST }
-if ($request->isPut)  { // the request method is PUT }
+if ($request->isAjax) { /* the request is an AJAX request */ }
+if ($request->isGet)  { /* the request method is GET */ }
+if ($request->isPost) { /* the request method is POST */ }
+if ($request->isPut)  { /* the request method is PUT */ }
 ```
 
 ## Request URLs <span id="request-urls"></span>
@@ -105,7 +105,7 @@ $headers = Yii::$app->request->headers;
 // returns the Accept header value
 $accept = $headers->get('Accept');
 
-if ($headers->has('User-Agent')) { // there is User-Agent header }
+if ($headers->has('User-Agent')) { /* there is User-Agent header */ }
 ```
 
 The `request` component also provides support for quickly accessing some commonly used headers, including:

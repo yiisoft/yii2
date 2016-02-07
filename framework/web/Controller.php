@@ -73,7 +73,7 @@ class Controller extends \yii\base\Controller
             $name = $param->getName();
             if (array_key_exists($name, $params)) {
                 if ($param->isArray()) {
-                    $args[] = $actionParams[$name] = (array)$params[$name];
+                    $args[] = $actionParams[$name] = (array) $params[$name];
                 } elseif (!is_array($params[$name])) {
                     $args[] = $actionParams[$name] = $params[$name];
                 } else {
@@ -110,9 +110,9 @@ class Controller extends \yii\base\Controller
                 throw new BadRequestHttpException(Yii::t('yii', 'Unable to verify your data submission.'));
             }
             return true;
-        } else {
-            return false;
         }
+        
+        return false;
     }
 
     /**

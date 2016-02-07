@@ -10,7 +10,8 @@ with response formatting:
    This is done by [[yii\rest\Serializer]].
 3. Convert arrays into a string in the format as determined by the content negotiation step. This is
    done by [[yii\web\ResponseFormatterInterface|response formatters]] registered with
-   the [[yii\web\Response::formatters|response]] application component.
+   the [[yii\web\Response::formatters|formatters]] property of the
+   `response` [application component](structure-application-components.md).
 
 
 ## Content Negotiation <span id="content-negotiation"></span>

@@ -10,7 +10,7 @@ a [view](structure-views.md):
 
 Through this tutorial, you will learn three things:
 
-1. How to create an [action](structure-controllers.md) to respond to requests,
+1. how to create an [action](structure-controllers.md#creating-actions) to respond to requests,
 2. how to create a [view](structure-views.md) to compose the response's content, and
 3. how an application dispatches requests to [actions](structure-controllers.md#creating-actions).
 
@@ -134,7 +134,7 @@ the `SiteController::actionSay()` method will be called to handle the request.
 Summary <span id="summary"></span>
 -------
 
-In this section, you have touched the controller and view parts of the MVC design pattern.
+In this section, you have touched the controller and view parts of the MVC architectural pattern.
 You created an action as part of a controller to handle a specific request. And you also created a view
 to compose the response's content. In this simple example, no model was involved as the only data used was the `message` parameter.
 

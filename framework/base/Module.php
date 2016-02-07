@@ -74,7 +74,7 @@ class Module extends ServiceLocator
      * the controller's fully qualified class name, and the rest of the name-value pairs
      * in the array are used to initialize the corresponding controller properties. For example,
      *
-     * ~~~
+     * ```php
      * [
      *   'account' => 'app\controllers\UserController',
      *   'article' => [
@@ -82,7 +82,7 @@ class Module extends ServiceLocator
      *      'pageTitle' => 'something new',
      *   ],
      * ]
-     * ~~~
+     * ```
      */
     public $controllerMap = [];
     /**
@@ -243,11 +243,10 @@ class Module extends ServiceLocator
      */
     public function getViewPath()
     {
-        if ($this->_viewPath !== null) {
-            return $this->_viewPath;
-        } else {
-            return $this->_viewPath = $this->getBasePath() . DIRECTORY_SEPARATOR . 'views';
+        if ($this->_viewPath === null) {
+            $this->_viewPath = $this->getBasePath() . DIRECTORY_SEPARATOR . 'views';
         }
+        return $this->_viewPath;
     }
 
     /**
@@ -266,11 +265,11 @@ class Module extends ServiceLocator
      */
     public function getLayoutPath()
     {
-        if ($this->_layoutPath !== null) {
-            return $this->_layoutPath;
-        } else {
-            return $this->_layoutPath = $this->getViewPath() . DIRECTORY_SEPARATOR . 'layouts';
+        if ($this->_layoutPath === null) {
+            $this->_layoutPath = $this->getViewPath() . DIRECTORY_SEPARATOR . 'layouts';
         }
+
+        return $this->_layoutPath;
     }
 
     /**
@@ -294,12 +293,12 @@ class Module extends ServiceLocator
      * (must start with '@') and the array values are the corresponding paths or aliases.
      * For example,
      *
-     * ~~~
+     * ```php
      * [
      *     '@models' => '@app/models', // an existing alias
      *     '@backend' => __DIR__ . '/../backend',  // a directory
      * ]
-     * ~~~
+     * ```
      */
     public function setAliases($aliases)
     {
@@ -364,7 +363,7 @@ class Module extends ServiceLocator
      * Adds a sub-module to this module.
      * @param string $id module ID
      * @param Module|array|null $module the sub-module to be added to this module. This can
-     * be one of the followings:
+     * be one of the following:
      *
      * - a [[Module]] object
      * - a configuration array: when [[getModule()]] is called initially, the array
@@ -415,7 +414,7 @@ class Module extends ServiceLocator
      *
      * The following is an example for registering two sub-modules:
      *
-     * ~~~
+     * ```php
      * [
      *     'comment' => [
      *         'class' => 'app\modules\comment\CommentModule',
@@ -423,7 +422,7 @@ class Module extends ServiceLocator
      *     ],
      *     'booking' => ['class' => 'app\modules\booking\BookingModule'],
      * ]
-     * ~~~
+     * ```
      *
      * @param array $modules modules (id => module configuration or instances)
      */
@@ -565,7 +564,8 @@ class Module extends ServiceLocator
         }
 
         if (is_subclass_of($className, 'yii\base\Controller')) {
-            return Yii::createObject($className, [$id, $this]);
+            $controller = Yii::createObject($className, [$id, $this]);
+            return get_class($controller) === $className ? $controller : null;
         } elseif (YII_DEBUG) {
             throw new InvalidConfigException("Controller class must extend from \\yii\\base\\Controller.");
         } else {
@@ -579,17 +579,21 @@ class Module extends ServiceLocator
      * The method will trigger the [[EVENT_BEFORE_ACTION]] event. The return value of the method
      * will determine whether the action should continue to run.
      *
+     * In case the action should not run, the request should be handled inside of the `beforeAction` code
+     * by either providing the necessary output or redirecting the request. Otherwise the response will be empty.
+     *
      * If you override this method, your code should look like the following:
      *
      * ```php
      * public function beforeAction($action)
      * {
-     *     if (parent::beforeAction($action)) {
-     *         // your custom code here
-     *         return true;  // or false if needed
-     *     } else {
+     *     if (!parent::beforeAction($action)) {
      *         return false;
      *     }
+     *
+     *     // your custom code here
+     *
+     *     return true; // or false to not run the action
      * }
      * ```
      *

@@ -5,7 +5,7 @@
 これは、ビジネスのデータ、規則、ロジックを表現するオブジェクトです。
 
 モデルクラスは、[[yii\base\Model]] またはその子クラスを拡張することによって作成することが出来ます。
-基底クラス [[yii\base\Model]] は、次のように、数多くの有用な機能をサポートしています。
+基底クラス [[yii\base\Model]] は、次のような数多くの有用な機能をサポートしています。
 
 * [属性](#attributes): ビジネスデータを表現します。通常のオブジェクトプロパティや配列要素のようにしてアクセスすることが出来ます。
 * [属性のラベル](#attribute-labels): 属性の表示ラベルを指定します。
@@ -16,7 +16,7 @@
 `Model` クラスは、[アクティブレコード](db-active-record.md) のような、更に高度なモデルの基底クラスでもあります。
 それらの高度なモデルについての詳細は、関連するドキュメントを参照してください。
 
-> Info|情報: あなたのモデルクラスの基底として [[yii\base\Model]] を使うことが要求されている訳ではありません。
+> Info: あなたのモデルクラスの基底クラスとして [[yii\base\Model]] を使うことが要求されている訳ではありません。
   しかしながら、Yii のコンポーネントの多くが [[yii\base\Model]] をサポートするように作られていますので、通常は [[yii\base\Model]] がモデルの基底クラスとして推奨されます。
 
 
@@ -143,7 +143,7 @@ public function attributeLabels()
 条件に従って属性のラベルを定義することも出来ます。
 例えば、モデルが使用される [シナリオ](#scenarios) に基づいて、同じ属性に対して違うラベルを返すことことが出来ます。
 
-> Info|情報: 厳密に言えば、属性のラベルは [ビュー](structure-views.md) の一部を成すものです。
+> Info: 厳密に言えば、属性のラベルは [ビュー](structure-views.md) の一部を成すものです。
   しかし、たいていの場合、モデルの中でラベルを宣言する方が便利が良く、結果としてクリーンで再利用可能なコードになります。
 
 
@@ -161,10 +161,10 @@ public function attributeLabels()
 ```php
 // シナリオをプロパティとして設定する
 $model = new User;
-$model->scenario = 'login';
+$model->scenario = User::SCENARIO_LOGIN;
 
 // シナリオを設定情報で設定する
-$model = new User(['scenario' => 'login']);
+$model = new User(['scenario' => User::SCENARIO_LOGIN]);
 ```
 
 デフォルトでは、モデルによってサポートされるシナリオは、モデルで宣言されている [検証規則](#validation-rules) によって決定されます。
@@ -177,17 +177,20 @@ use yii\db\ActiveRecord;
 
 class User extends ActiveRecord
 {
+    const SCENARIO_LOGIN = 'login';
+    const SCENARIO_REGISTER = 'register';
+
     public function scenarios()
     {
         return [
-            'login' => ['username', 'password'],
-            'register' => ['username', 'email', 'password'],
+            self::SCENARIO_LOGIN => ['username', 'password'],
+            self::SCENARIO_REGISTER => ['username', 'email', 'password'],
         ];
     }
 }
 ```
 
-> Info|情報: 上記の例と後続の例では、モデルクラスは [[yii\db\ActiveRecord]] を拡張するものとなっています。
+> Info: 上記の例と後続の例では、モデルクラスは [[yii\db\ActiveRecord]] を拡張するものとなっています。
   というのは、複数のシナリオを使用することは、通常は、[アクティブレコード](db-active-record.md) クラスで発生するからです。
 
 `seanarios()` メソッドは、キーがシナリオの名前であり、値が対応する *アクティブな属性* である配列を返します。
@@ -207,8 +210,8 @@ class User extends ActiveRecord
     public function scenarios()
     {
         $scenarios = parent::scenarios();
-        $scenarios['login'] = ['username', 'password'];
-        $scenarios['register'] = ['username', 'email', 'password'];
+        $scenarios[self::SCENARIO_LOGIN] = ['username', 'password'];
+        $scenarios[self::SCENARIO_REGISTER] = ['username', 'email', 'password'];
         return $scenarios;
     }
 }
@@ -273,10 +276,10 @@ public function rules()
 {
     return [
         // "register" シナリオでは、username、email、password のすべてが必須
-        [['username', 'email', 'password'], 'required', 'on' => 'register'],
+        [['username', 'email', 'password'], 'required', 'on' => self::SCENARIO_REGISTER],
 
         // "login" シナリオでは、username と password が必須
-        [['username', 'password'], 'required', 'on' => 'login'],
+        [['username', 'password'], 'required', 'on' => self::SCENARIO_LOGIN],
     ];
 }
 ```
@@ -319,13 +322,13 @@ $model->body = isset($data['body']) ? $data['body'] : null;
 public function scenarios()
 {
     return [
-        'login' => ['username', 'password'],
-        'register' => ['username', 'email', 'password'],
+        self::SCENARIO_LOGIN => ['username', 'password'],
+        self::SCENARIO_REGISTER => ['username', 'email', 'password'],
     ];
 }
 ```
 
-> Info|情報: 一括代入が安全な属性に対してのみ適用されるのは、エンドユーザの入力データがどの属性を修正することが出来るか、ということを制御する必要があるからです。
+> Info: 一括代入が安全な属性に対してのみ適用されるのは、エンドユーザの入力データがどの属性を修正することが出来るか、ということを制御する必要があるからです。
   例えば、`User` モデルに、ユーザに割り当てられた権限を決定する `permission` という属性がある場合、この属性が修正できるのは、管理者がバックエンドのインターフェイスを通じてする時だけに制限したいでしょう。
 
 [[yii\base\Model::scenarios()]] のデフォルトの実装は [[yii\base\Model::rules()]] に現われる全てのシナリオと属性を返すものです。
@@ -355,7 +358,7 @@ public function rules()
 public function scenarios()
 {
     return [
-        'login' => ['username', 'password', '!secret'],
+        self::SCENARIO_LOGIN => ['username', 'password', '!secret'],
     ];
 }
 ```
@@ -448,7 +451,7 @@ public function fields()
 }
 ```
 
-> Warning|警告: デフォルトではモデルの全ての属性がエクスポートされる配列に含まれるため、データを精査して、公開すべきでない情報が含まれていないことを確認しなければなりません。
+> Warning: デフォルトではモデルの全ての属性がエクスポートされる配列に含まれるため、データを精査して、公開すべきでない情報が含まれていないことを確認しなければなりません。
 > そういう情報がある場合は、`fields()` をオーバーライドして、除外しなければなりません。
 > 上記の例では、`auth_key`、`password_hash` および `password_reset_token` を除外しています。
 
@@ -479,7 +482,7 @@ public function fields()
 * モデルを使用するそれぞれの [アプリケーション](structure-applications.md) または [モジュール](structure-modules.md) において、対応する基底モデルクラスから拡張した具体的なモデルクラスを定義します。
   この具体的なモデルクラスが、そのアプリケーションやモジュールに固有の規則やロジックを含むべきです。
 
-例えば、[アドバンストアプリケーションテンプレート](tutorial-advanced-app.md) の中で、基底モデルクラス `common\models\Post` を定義することが出来ます。
+例えば、[アドバンストプロジェクトテンプレート](https://github.com/yiisoft/yii2-app-advanced/blob/master/docs/guide-ja/README.md) の中で、基底モデルクラス `common\models\Post` を定義することが出来ます。
 次に、フロントエンドアプリケーションにおいては、`common\models\Post` から拡張した具体的なモデルクラス `frontend\models\Post` を定義して使います。
 また、バックエンドアプリケーションにおいても、同様に、`backend\models\Post` を定義します。
 この戦略を取ると、`frontend\models\Post` の中のコードはフロントエンドアプリケーション固有のものであると保証することが出来ます。

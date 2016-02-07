@@ -3,7 +3,7 @@
 
 「はじめよう」の章全体を読み通したなら、いまやあなたは、完全な Yii のアプリケーションを作成したことがある、ということになります。
 その過程で、あなたは必要とされることが多いいくつかの機能、例えば、HTML フォームを通じてユーザからデータを取得することや、データベースからデータを取得すること、また、ページ付けをしてデータを表示することなどを実装する方法を学びました。
-また、[Gii](tool-gii.md) を使ってコードを自動的に生成する方法も学びました。
+また、[Gii](https://github.com/yiisoft/yii2-gii/blob/master/docs/guide-ja/README.md) を使ってコードを自動的に生成する方法も学びました。
 Gii をコード生成に使うと、ウェブ開発のプロセスの大部分が、いくつかのフォームに入力していくだけの簡単な仕事になります。
 
 この節では、Yii フレームワークを使うときの生産性を更に高めるために利用できるリソースについてまとめます。
@@ -27,6 +27,7 @@ Gii をコード生成に使うと、ウェブ開発のプロセスの大部分�
 * コミュニティ
     - フォーラム: <http://www.yiiframework.com/forum/>
     - IRC チャット: freenode ネットワーク (<irc://irc.freenode.net/yii>) の #yii チャンネル
+    - Gitter チャット: <https://gitter.im/yiisoft/yii2>
     - GitHub: <https://github.com/yiisoft/yii2>
     - Facebook: <https://www.facebook.com/groups/yiitalk/>
     - Twitter: <https://twitter.com/yiiframework>

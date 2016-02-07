@@ -96,7 +96,7 @@ if you do not specify its class, the default one will be used.
   Please refer to the [Handling Errors](runtime-handling-errors.md) section for more details.
 * [[yii\i18n\Formatter|formatter]]: formats data when they are displayed to end users. For example, a number
   may be displayed with thousand separator, a date may be formatted in long format.
-  Please refer to the [Data Formatting](output-formatter.md) section for more details.
+  Please refer to the [Data Formatting](output-formatting.md) section for more details.
 * [[yii\i18n\I18N|i18n]]: supports message translation and formatting.
   Please refer to the [Internationalization](tutorial-i18n.md) section for more details.
 * [[yii\log\Dispatcher|log]]: manages log targets.

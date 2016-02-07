@@ -86,7 +86,7 @@ Yii::configure($object, $config);
 [アプリケーション](structure-applications.md) の構成は、おそらく Yii の中で最も複雑な配列のひとつです。
 それは [[yii\web\Application|アプリケーション]] クラスが、設定可能なプロパティとイベントを数多く持つためです。
 さらに重要なことは、その [[yii\web\Application::components|components]] プロパティが、アプリケーションに登録されている
-コンポーネント生成用の構成情報配列を受け取ることができることです。以下は、 [basic application template](start-basic.md)
+コンポーネント生成用の構成情報配列を受け取ることができることです。以下は、 [ベーシックプロジェクトテンプレート](start-basic.md)
 のアプリケーション構成ファイルの概要です。
 
 ```php

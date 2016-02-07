@@ -23,6 +23,7 @@ interface RateLimitInterface
      * and the second element is the size of the window in seconds.
      */
     public function getRateLimit($request, $action);
+
     /**
      * Loads the number of allowed requests and the corresponding timestamp from a persistent storage.
      * @param \yii\web\Request $request the current request
@@ -31,6 +32,7 @@ interface RateLimitInterface
      * and the second element is the corresponding UNIX timestamp.
      */
     public function loadAllowance($request, $action);
+
     /**
      * Saves the number of allowed requests and the corresponding timestamp to a persistent storage.
      * @param \yii\web\Request $request the current request

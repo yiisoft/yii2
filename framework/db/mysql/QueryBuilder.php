@@ -7,8 +7,9 @@
 
 namespace yii\db\mysql;
 
-use yii\db\Exception;
 use yii\base\InvalidParamException;
+use yii\db\Exception;
+use yii\db\Expression;
 
 /**
  * QueryBuilder is the query builder for MySQL databases.
@@ -80,6 +81,19 @@ class QueryBuilder extends \yii\db\QueryBuilder
     }
 
     /**
+     * @inheritdoc
+     * @see https://bugs.mysql.com/bug.php?id=48875
+     */
+    public function createIndex($name, $table, $columns, $unique = false)
+    {
+        return 'ALTER TABLE '
+        . $this->db->quoteTableName($table)
+        . ($unique ? ' ADD UNIQUE INDEX ' : ' ADD INDEX ')
+        . $this->db->quoteTableName($name)
+        . ' (' . $this->buildColumns($columns) . ')';
+    }
+
+    /**
      * Builds a SQL statement for dropping a foreign key constraint.
      * @param string $name the name of the foreign key constraint to be dropped. The name will be properly quoted by the method.
      * @param string $table the table whose foreign is to be dropped. The name will be properly quoted by the method.
@@ -135,8 +149,8 @@ class QueryBuilder extends \yii\db\QueryBuilder
     /**
      * Builds a SQL statement for enabling or disabling integrity check.
      * @param boolean $check whether to turn on or off the integrity check.
-     * @param string $table the table name. Meaningless for MySQL.
      * @param string $schema the schema of the tables. Meaningless for MySQL.
+     * @param string $table the table name. Meaningless for MySQL.
      * @return string the SQL statement for checking integrity
      */
     public function checkIntegrity($check = true, $schema = '', $table = '')
@@ -163,5 +177,44 @@ class QueryBuilder extends \yii\db\QueryBuilder
         }
 
         return $sql;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function insert($table, $columns, &$params)
+    {
+        $schema = $this->db->getSchema();
+        if (($tableSchema = $schema->getTableSchema($table)) !== null) {
+            $columnSchemas = $tableSchema->columns;
+        } else {
+            $columnSchemas = [];
+        }
+        $names = [];
+        $placeholders = [];
+        foreach ($columns as $name => $value) {
+            $names[] = $schema->quoteColumnName($name);
+            if ($value instanceof Expression) {
+                $placeholders[] = $value->expression;
+                foreach ($value->params as $n => $v) {
+                    $params[$n] = $v;
+                }
+            } else {
+                $phName = self::PARAM_PREFIX . count($params);
+                $placeholders[] = $phName;
+                $params[$phName] = !is_array($value) && isset($columnSchemas[$name]) ? $columnSchemas[$name]->dbTypecast($value) : $value;
+            }
+        }
+        if (empty($names) && $tableSchema !== null) {
+            $columns = !empty($tableSchema->primaryKey) ? $tableSchema->primaryKey : reset($tableSchema->columns)->name;
+            foreach ($columns as $name) {
+                $names[] = $schema->quoteColumnName($name);
+                $placeholders[] = 'DEFAULT';
+            }
+        }
+
+        return 'INSERT INTO ' . $schema->quoteTableName($table)
+            . (!empty($names) ? ' (' . implode(', ', $names) . ')' : '')
+            . (!empty($placeholders) ? ' VALUES (' . implode(', ', $placeholders) . ')' : ' DEFAULT VALUES');
     }
 }
