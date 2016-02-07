@@ -167,10 +167,17 @@ class ArrayHelperTest extends TestCase
             $obj3
         ];
 
+        $this->assertEquals($obj2, $obj3);
+
         ArrayHelper::multisort($models, 'type', SORT_ASC);
         $this->assertEquals($obj2, $models[0]);
         $this->assertEquals($obj3, $models[1]);
         $this->assertEquals($obj1, $models[2]);
+
+        ArrayHelper::multisort($models, 'type', SORT_DESC);
+        $this->assertEquals($obj1, $models[0]);
+        $this->assertEquals($obj2, $models[1]);
+        $this->assertEquals($obj3, $models[2]);
     }
 
     public function testMultisortUseSort()
