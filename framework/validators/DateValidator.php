@@ -143,7 +143,15 @@ class DateValidator extends Validator
      * @since 2.0.4
      */
     public $minString;
-
+    /**
+     * @var string type used for defining if short format validation should be on just
+     * date or on datetime. Defaults to 'date'. Possible values are:
+     * - `date`
+     * - `dateTime`
+     * @since 2.0.8
+     */
+    public $type = 'date';
+    
     /**
      * @var array map of short format names to IntlDateFormatter constant values.
      */
@@ -274,7 +282,11 @@ class DateValidator extends Validator
     private function parseDateValueIntl($value, $format)
     {
         if (isset($this->_dateFormats[$format])) {
-            $formatter = new IntlDateFormatter($this->locale, $this->_dateFormats[$format], IntlDateFormatter::NONE, 'UTC');
+            if ($this->type === 'date') {
+                $formatter = new IntlDateFormatter($this->locale, $this->_dateFormats[$format], IntlDateFormatter::NONE, 'UTC');
+            } elseif ($this->type === 'dateTime') {
+                $formatter = new IntlDateFormatter($this->locale, $this->_dateFormats[$format], $this->_dateFormats[$format], 'UTC');
+            }
         } else {
             // if no time was provided in the format string set time to 0 to get a simple date timestamp
             $hasTimeInfo = (strpbrk($format, 'ahHkKmsSA') !== false);
