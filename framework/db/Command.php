@@ -18,8 +18,9 @@ use yii\base\NotSupportedException;
  * The SQL statement it represents can be set via the [[sql]] property.
  *
  * To execute a non-query SQL (such as INSERT, DELETE, UPDATE), call [[execute()]].
- * To execute a SQL statement that returns result data set (such as SELECT),
+ * To execute a SQL statement that returns a result data set (such as SELECT),
  * use [[queryAll()]], [[queryOne()]], [[queryColumn()]], [[queryScalar()]], or [[query()]].
+ *
  * For example,
  *
  * ```php
@@ -33,7 +34,7 @@ use yii\base\NotSupportedException;
  * You may also call [[prepare()]] explicitly to prepare a SQL statement.
  *
  * Command also supports building SQL statements by providing methods such as [[insert()]],
- * [[update()]], etc. For example,
+ * [[update()]], etc. For example, the following code will create and execute an INSERT SQL statement:
  *
  * ```php
  * $connection->createCommand()->insert('user', [
@@ -42,9 +43,9 @@ use yii\base\NotSupportedException;
  * ])->execute();
  * ```
  *
- * To build SELECT SQL statements, please use [[QueryBuilder]] instead.
+ * To build SELECT SQL statements, please use [[Query]] instead.
  *
- * @see http://www.yiiframework.com/doc-2.0/guide-db-dao.html
+ * For more details and usage information on Command, see the [guide article on Database Access Objects](guide:db-dao).
  *
  * @property string $rawSql The raw SQL with parameter values inserted into the corresponding placeholders in
  * [[sql]]. This property is read-only.

@@ -35,6 +35,10 @@ use yii\base\Component;
  * $rows = $command->queryAll();
  * ```
  *
+ * Query internally uses the [[QueryBuilder]] class to generate the SQL statement.
+ *
+ * A more detailed usage guide on how to work with Query can be found in the [guide article on Query Builder](guide:db-query-builder).
+ *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @author Carsten Brandt <mail@cebe.cc>
  * @since 2.0
