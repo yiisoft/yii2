@@ -693,6 +693,20 @@ class QueryBuilderTest extends DatabaseTestCase
         $this->assertEquals([':to' => 4], $params);
     }
 
+    public function testAlias()
+    {
+        /** @var $query Query */
+        $query = (new Query())
+            ->select('{{@user}}.[[name]]')
+            ->from(['u' => 'user'])
+            ->where(['{{@user}}.[[id]]' => 1]);
+
+        $command = $query->createCommand($this->getDb());
+        $expected = $this->replaceQuotes('SELECT [[u]].[[name]] FROM [[user]] [[u]] WHERE [[u]].[[id]]=:qp0');
+        $this->assertEquals($expected, $command->sql);
+        $this->assertEquals([':qp0' => 1], $command->params);
+    }
+
 //    public function testInsert()
 //    {
 //        // TODO implement

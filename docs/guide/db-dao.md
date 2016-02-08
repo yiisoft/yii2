@@ -278,7 +278,7 @@ $count = Yii::$app->db->createCommand("SELECT COUNT([[id]]) FROM {{employee}}")
 If most of your DB tables names share a common prefix, you may use the table prefix feature provided
 by Yii DAO.
 
-First, specify the table prefix via the [[yii\db\Connection::tablePrefix]] property:
+First, specify the table prefix via the [[yii\db\Connection::tablePrefix]] property in the application config:
 
 ```php
 return [

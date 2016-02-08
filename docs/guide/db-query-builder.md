@@ -624,7 +624,7 @@ value which will be used as the index value for the current row.
 
 Some use cases of query builder are to create an initial [[yii\db\Query]] object in one place and adjust
 it in other places of the application by adding further conditions or to change the sorting options.
-When more than one tables is used in the query, you may need to disambiguate column names to be explicit about
+When more than one table is used in the query, you may need to disambiguate column names to be explicit about
 which column a condition refers to, e.g. `user.id` vs. `post.id`.
 
 Since version 2.0.7 Yii provides methods that help you with disambiguating column names without the need
@@ -651,6 +651,21 @@ $query->leftJoin('post', $query->applyAlias('user', 'id') . ' = post.author_id')
 
 By using [[yii\db\Query::applyAlias()|applyAlias()]] here, this code will still work, even when the alias is changed or removed
 inside of the `getActiveUserQuery()` method implementation.
+
+In some situations the alias may not be known at the time the query is created because we allow to change the alias later in the code.
+Therefor a special syntax for referring to a table alias
+can be used which is simlar to the syntax used for [quoting table names](db-dao.md#quoting-table-and-column-names) and
+the [table prefix feature](db-dao.md#using-table-prefix).
+
+To refer to a table alias, the following syntax may be used:
+
+```php
+$query = User::getActiveUserQuery();
+$query->leftJoin('post', '{{@user}}.[[id]] = post.author_id') // LEFT JOIN post ON u.id = post.author_id
+```
+
+In the above code `{{@user}}` will be resolved to the alias used in the query. This works even if the alias will be changed afterwards
+as the evaluation of the expression is made after the SQL query has been created.
 
 
 ### Batch Query <span id="batch-query"></span>
