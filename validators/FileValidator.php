@@ -92,7 +92,7 @@ class FileValidator extends Validator
      * - {file}: the uploaded file name
      * - {limit}: the maximum size allowed (see [[getSizeLimit()]])
      * - {formattedLimit}: the maximum size formatted
-     * with [[\yii\i18n\Formatter::asShortSize()|Formatter::asShortSize()]]
+     *   with [[\yii\i18n\Formatter::asShortSize()|Formatter::asShortSize()]]
      */
     public $tooBig;
     /**
@@ -103,7 +103,7 @@ class FileValidator extends Validator
      * - {file}: the uploaded file name
      * - {limit}: the value of [[minSize]]
      * - {formattedLimit}: the value of [[minSize]] formatted
-     * with [[\yii\i18n\Formatter::asShortSize()|Formatter::asShortSize()]
+     *   with [[\yii\i18n\Formatter::asShortSize()|Formatter::asShortSize()]
      */
     public $tooSmall;
     /**

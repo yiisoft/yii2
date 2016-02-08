@@ -48,6 +48,7 @@ class Pjax extends Widget
      * @var array the HTML attributes for the widget container tag. The following special options are recognized:
      *
      * - `tag`: string, the tag name for the container. Defaults to `div`
+     *   This option is available since version 2.0.7.
      *
      * @see \yii\helpers\Html::renderTagAttributes() for details on how attributes are being rendered.
      */
@@ -90,6 +91,7 @@ class Pjax extends Widget
      * [pjax project page](https://github.com/yiisoft/jquery-pjax) for available options.
      */
     public $clientOptions;
+
 
     /**
      * @inheritdoc
