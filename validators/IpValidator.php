@@ -577,7 +577,7 @@ class IpValidator extends Validator
         $messages = [
             'ipv6NotAllowed' => $this->ipv6NotAllowed,
             'ipv4NotAllowed' => $this->ipv4NotAllowed,
-            'wrongIp' => $this->message,
+            'message' => $this->message,
             'noSubnet' => $this->noSubnet,
             'hasSubnet' => $this->hasSubnet,
         ];
