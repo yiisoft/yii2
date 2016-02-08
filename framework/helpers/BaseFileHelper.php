@@ -145,7 +145,16 @@ class BaseFileHelper
         $info = finfo_open(FILEINFO_MIME_TYPE, $magicFile);
 
         if ($info) {
-            $result = finfo_file($info, $file);
+            
+            if(filter_var($file, FILTER_VALIDATE_URL)){
+
+                $result = finfo_buffer($info, file_get_contents($file));
+            }
+            else {
+
+                $result = finfo_file($info, $file);
+            }
+            
             finfo_close($info);
 
             if ($result !== false) {
