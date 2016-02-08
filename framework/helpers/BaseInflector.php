@@ -231,7 +231,6 @@ class BaseInflector
         'ø' => 'o', 'ù' => 'u', 'ú' => 'u', 'û' => 'u', 'ü' => 'u', 'ű' => 'u', 'ý' => 'y', 'þ' => 'th',
         'ÿ' => 'y',
     ];
-
     /**
      * Shortcut for `Any-Latin; NFKD` transliteration rule. The rule is strict, letters will be transliterated with
      * the closest sound-representation chars. The result may contain any UTF-8 chars. For example:
@@ -245,7 +244,6 @@ class BaseInflector
      * @since 2.0.7
      */
     const TRANSLITERATE_STRICT = 'Any-Latin; NFKD';
-
     /**
      * Shortcut for `Any-Latin; Latin-ASCII` transliteration rule. The rule is medium, letters will be
      * transliterated to characters of Latin-1 (ISO 8859-1) ASCII table. For example:
@@ -259,7 +257,6 @@ class BaseInflector
      * @since 2.0.7
      */
     const TRANSLITERATE_MEDIUM = 'Any-Latin; Latin-ASCII';
-
     /**
      * Shortcut for `Any-Latin; Latin-ASCII; [\u0080-\uffff] remove` transliteration rule. The rule is loose,
      * letters will be transliterated with the characters of Basic Latin Unicode Block.
@@ -275,13 +272,13 @@ class BaseInflector
      */
     const TRANSLITERATE_LOOSE = 'Any-Latin; Latin-ASCII; [\u0080-\uffff] remove';
 
-
     /**
      * @var mixed Either a [[\Transliterator]], or a string from which a [[\Transliterator]] can be built
      * for transliteration. Used by [[transliterate()]] when intl is available. Defaults to [[TRANSLITERATE_LOOSE]]
      * @see http://php.net/manual/en/transliterator.transliterate.php
      */
     public static $transliterator = self::TRANSLITERATE_LOOSE;
+
 
     /**
      * Converts a word to its plural form.

@@ -89,18 +89,19 @@ class UrlRule extends Object implements UrlRuleInterface
      * @var boolean a value indicating if parameters should be url encoded.
      */
     public $encodeParams = true;
+
     /**
-     * @var array list of placeholders for matching parameters names. Used in [[parseRequest()]], [[createUrl()]]
+     * @var array list of placeholders for matching parameters names. Used in [[parseRequest()]], [[createUrl()]].
      * On the rule initialization, the [[pattern]] parameters names will be replaced with placeholders.
      * This array contains relations between the original parameters names and their placeholders.
-     *  key - placeholder
-     *  value - original name
+     * The array keys are the placeholders and the values are the original names.
      *
      * @see parseRequest()
      * @see createUrl()
      * @since 2.0.7
      */
     protected $placeholders = [];
+
     /**
      * @var string the template for generating a new URL. This is derived from [[pattern]] and is used in generating URL.
      */
