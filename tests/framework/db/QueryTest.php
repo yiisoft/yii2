@@ -4,6 +4,8 @@ namespace yiiunit\framework\db;
 
 use yii\db\Expression;
 use yii\db\Query;
+use yii\helpers\Inflector;
+use yii\helpers\StringHelper;
 
 /**
  * @group db
@@ -259,4 +261,167 @@ class QueryTest extends DatabaseTestCase
         $count = (new Query)->from('customer')->having(['status' => 2])->count('*', $db);
         $this->assertEquals(1, $count);
     }
+
+    public function testAliasFrom()
+    {
+        /** @var $query Query */
+        $query = (new Query)->from('user');
+        $this->assertEquals('user', $query->getAlias('user'));
+        // a table that has not been used, will have its name returned
+        $this->assertEquals('test', $query->getAlias('test'));
+
+        $query = (new Query)->from(['user']);
+        $this->assertEquals('user', $query->getAlias('user'));
+
+        $query = (new Query)->from(['u' => 'user']);
+        $this->assertEquals('u', $query->getAlias('user'));
+
+        $query = (new Query)->from('user u');
+        $this->assertEquals('u', $query->getAlias('user'));
+
+        $query = (new Query)->from('user u, test t');
+        $this->assertEquals('u', $query->getAlias('user'));
+        $this->assertEquals('t', $query->getAlias('test'));
+        $this->assertEquals('other', $query->getAlias('other'));
+
+        $query = (new Query)->from('user AS u, test t');
+        $this->assertEquals('u', $query->getAlias('user'));
+        $this->assertEquals('t', $query->getAlias('test'));
+        $this->assertEquals('other', $query->getAlias('other'));
+
+        $query = (new Query)->from('{{user}} AS {{u}}, {{test}} {{t}}');
+        $this->assertEquals('{{u}}', $query->getAlias('user'));
+        $this->assertEquals('{{t}}', $query->getAlias('test'));
+        $this->assertEquals('other', $query->getAlias('other'));
+    }
+
+    public function joinFunctionProvider()
+    {
+        return [
+            ['innerJoin'],
+            ['leftJoin'],
+            ['rightJoin'],
+        ];
+    }
+
+    /**
+     * @dataProvider joinFunctionProvider
+     */
+    public function testAliasJoin($joinMethod)
+    {
+        $method = strtoupper(Inflector::camel2words($joinMethod)); // innerJoin -> INNER JOIN
+
+        // calling $joinMethod
+        /** @var $query Query */
+        $query = (new Query)->from('user')->$joinMethod('book');
+        $this->assertEquals('user', $query->getAlias('user'));
+        $this->assertEquals('book', $query->getAlias('book'));
+        // a table that has not been used, will have its name returned
+        $this->assertEquals('test', $query->getAlias('test'));
+
+        $query = (new Query)->from(['user'])->$joinMethod(['book']);
+        $this->assertEquals('user', $query->getAlias('user'));
+        $this->assertEquals('book', $query->getAlias('book'));
+
+        $query = (new Query)->from(['u' => 'user'])->$joinMethod(['b' => 'book']);
+        $this->assertEquals('u', $query->getAlias('user'));
+        $this->assertEquals('b', $query->getAlias('book'));
+
+        $query = (new Query)->from('user u')->$joinMethod(['book b']);
+        $this->assertEquals('u', $query->getAlias('user'));
+        $this->assertEquals('b', $query->getAlias('book'));
+
+        $query = (new Query)->from('user u, test t')->$joinMethod('book b');
+        $this->assertEquals('u', $query->getAlias('user'));
+        $this->assertEquals('t', $query->getAlias('test'));
+        $this->assertEquals('b', $query->getAlias('book'));
+        $this->assertEquals('other', $query->getAlias('other'));
+
+        $query = (new Query)->from('user AS u, test t')->$joinMethod('book AS b');
+        $this->assertEquals('u', $query->getAlias('user'));
+        $this->assertEquals('t', $query->getAlias('test'));
+        $this->assertEquals('b', $query->getAlias('book'));
+        $this->assertEquals('other', $query->getAlias('other'));
+
+        $query = (new Query)->from('{{user}} AS {{u}}, {{test}} {{t}}')->$joinMethod('{{book}} AS {{b}}')->$joinMethod('{{category}} {{c}}');
+        $this->assertEquals('{{u}}', $query->getAlias('user'));
+        $this->assertEquals('{{t}}', $query->getAlias('test'));
+        $this->assertEquals('{{b}}', $query->getAlias('book'));
+        $this->assertEquals('{{c}}', $query->getAlias('category'));
+        $this->assertEquals('other', $query->getAlias('other'));
+
+        // calling join($method)
+        /** @var $query Query */
+        $query = (new Query)->from('user')->join($method, 'book');
+        $this->assertEquals('user', $query->getAlias('user'));
+        $this->assertEquals('book', $query->getAlias('book'));
+        // a table that has not been used, will have its name returned
+        $this->assertEquals('test', $query->getAlias('test'));
+
+        $query = (new Query)->from(['user'])->join($method, ['book']);
+        $this->assertEquals('user', $query->getAlias('user'));
+        $this->assertEquals('book', $query->getAlias('book'));
+
+        $query = (new Query)->from(['u' => 'user'])->join($method, ['b' => 'book']);
+        $this->assertEquals('u', $query->getAlias('user'));
+        $this->assertEquals('b', $query->getAlias('book'));
+
+        $query = (new Query)->from('user u')->join($method, ['book b']);
+        $this->assertEquals('u', $query->getAlias('user'));
+        $this->assertEquals('b', $query->getAlias('book'));
+
+        $query = (new Query)->from('user u, test t')->join($method, 'book b');
+        $this->assertEquals('u', $query->getAlias('user'));
+        $this->assertEquals('t', $query->getAlias('test'));
+        $this->assertEquals('b', $query->getAlias('book'));
+        $this->assertEquals('other', $query->getAlias('other'));
+
+        $query = (new Query)->from('user AS u, test t')->join($method, 'book AS b');
+        $this->assertEquals('u', $query->getAlias('user'));
+        $this->assertEquals('t', $query->getAlias('test'));
+        $this->assertEquals('b', $query->getAlias('book'));
+        $this->assertEquals('other', $query->getAlias('other'));
+
+        $query = (new Query)->from('{{user}} AS {{u}}, {{test}} {{t}}')->join($method, '{{book}} AS {{b}}')->join($method, '{{category}} {{c}}');
+        $this->assertEquals('{{u}}', $query->getAlias('user'));
+        $this->assertEquals('{{t}}', $query->getAlias('test'));
+        $this->assertEquals('{{b}}', $query->getAlias('book'));
+        $this->assertEquals('{{c}}', $query->getAlias('category'));
+        $this->assertEquals('other', $query->getAlias('other'));
+    }
+
+    public function testApplyAlias()
+    {
+        /** @var $query Query */
+        $query = (new Query)->from('user');
+        $this->assertEquals('user.name', $query->applyAlias('user', 'name'));
+        // a table that has not been used, will have its name returned
+        $this->assertEquals('test.something', $query->applyAlias('test', 'something'));
+
+        $query = (new Query)->from(['u' => 'user']);
+        $this->assertEquals('u.name', $query->applyAlias('user', 'name'));
+        $this->assertEquals('u.[[name space]]', $query->applyAlias('user', '[[name space]]'));
+
+        $query = (new Query)->from('user u');
+        $this->assertEquals('u.name', $query->applyAlias('user', 'name'));
+        $this->assertEquals('u.[[name space]]', $query->applyAlias('user', '[[name space]]'));
+
+
+        $query = (new Query)->from('user u, test t');
+        $this->assertEquals('u.name', $query->applyAlias('user', 'name'));
+        $this->assertEquals('t.x', $query->applyAlias('test', 'x'));
+        $this->assertEquals('u.[[name space]]', $query->applyAlias('user', '[[name space]]'));
+
+        $query = (new Query)->from('user AS u, test t');
+        $this->assertEquals('u.name', $query->applyAlias('user', 'name'));
+        $this->assertEquals('t.x', $query->applyAlias('test', 'x'));
+        $this->assertEquals('u.[[name space]]', $query->applyAlias('user', '[[name space]]'));
+
+        $query = (new Query)->from('{{user}} AS {{u}}, {{test}} {{t}}');
+        $this->assertEquals('{{u}}.name', $query->applyAlias('user', 'name'));
+        $this->assertEquals('{{t}}.x', $query->applyAlias('test', 'x'));
+        $this->assertEquals('{{u}}.[[name space]]', $query->applyAlias('user', '[[name space]]'));
+    }
+
+
 }

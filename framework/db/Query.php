@@ -111,13 +111,6 @@ class Query extends Component implements QueryInterface
      */
     public $params = [];
 
-    /**
-     * @var array aliases defined for tables used in this query
-     *
-     * tablename => alias
-     */
-    protected $aliases = [];
-
 
     /**
      * Creates a DB command that can be used to execute this query.
@@ -519,7 +512,7 @@ class Query extends Component implements QueryInterface
             $tables = preg_split('/\s*,\s*/', trim($tables), -1, PREG_SPLIT_NO_EMPTY);
         }
         $this->from = $tables;
-        $this->populateAliases($tables); // TODO write test
+        $this->populateAliases((array) $tables);
         return $this;
     }
 
@@ -612,7 +605,7 @@ class Query extends Component implements QueryInterface
     public function join($type, $table, $on = '', $params = [])
     {
         $this->join[] = [$type, $table, $on];
-        $this->populateAliases($table); // TODO add tests
+        $this->populateAliases((array) $table);
         return $this->addParams($params);
     }
 
@@ -636,8 +629,8 @@ class Query extends Component implements QueryInterface
      */
     public function innerJoin($table, $on = '', $params = [])
     {
-        $this->join[] = ['INNER JOIN', $table, $on]; // TODO add tests
-        $this->populateAliases($table);
+        $this->join[] = ['INNER JOIN', $table, $on];
+        $this->populateAliases((array) $table);
         return $this->addParams($params);
     }
 
@@ -661,8 +654,8 @@ class Query extends Component implements QueryInterface
      */
     public function leftJoin($table, $on = '', $params = [])
     {
-        $this->join[] = ['LEFT JOIN', $table, $on]; // TODO add tests
-        $this->populateAliases($table);
+        $this->join[] = ['LEFT JOIN', $table, $on];
+        $this->populateAliases((array) $table);
         return $this->addParams($params);
     }
 
@@ -686,8 +679,8 @@ class Query extends Component implements QueryInterface
      */
     public function rightJoin($table, $on = '', $params = [])
     {
-        $this->join[] = ['RIGHT JOIN', $table, $on]; // TODO add tests
-        $this->populateAliases($table);
+        $this->join[] = ['RIGHT JOIN', $table, $on];
+        $this->populateAliases((array) $table);
         return $this->addParams($params);
     }
 
@@ -856,39 +849,50 @@ class Query extends Component implements QueryInterface
     }
 
     /**
+     * @var array aliases defined for tables used in this query. `tablename => alias`.
+     */
+    private $_aliases = [];
+
+    /**
+     * Populate table aliases used in this query.
      *
+     * This function is used by [[from()]] and [[join()]] to make information about
+     * tables aliases available for [[getAlias()]].
      *
-     * @param string|array $tables
+     * @param array $tables array of tables in the format allowed for [[from()]]:
      *
-     * - a simple string: either a simple table name "users" or including alias "users u" or "users AS u"
-     * - an array:
-     *    numeric key, string value == table without alias
-     *    string key, string value == table with alias
-     *    string key, obect value == subquery with alias. This alias will not be populated
+     * - numeric key, string value == table without alias, or table with alias specified after the name, separated by white space.
+     * - string key, string value == table with alias.
+     * - string key, obect value == subquery with alias. This alias will not be populated.
      * @see from()
      * @see join()
+     * @since 2.0.7
      */
     protected function populateAliases($tables)
     {
-        if (is_string($tables) && preg_match('/^(.*?)(\s+AS\s+|\s+)({{\w+}}|\w+)$/i', $tables, $matches)) {
-            $this->aliases[$matches[1]] = $matches[2];
-        } elseif (is_array($tables)) {
-            foreach ($tables as $alias => $tableName) {
-                if (is_object($tableName)) {
-                    continue;
-                }
-                if (is_string($alias)) {
-                    $this->aliases[$tableName] =  $alias;
-                } elseif (preg_match('/^(.*?)( as |\s+)({{\w+}}|\w+)$/i', $tableName, $matches)) {
-                    $this->aliases[$matches[1]] = $matches[2];
-                }
+        foreach ($tables as $alias => $tableName) {
+            if (is_object($tableName)) {
+                continue;
+            }
+            if (is_string($alias)) {
+                $this->_aliases[$tableName] = $alias;
+            } elseif (preg_match('/^(\\{\\{(\w+)\\}\\}|(.*?))(\s+AS\s+|\s+)(\\{\\{\w+\\}\\}|\w+)$/i', $tableName, $matches)) {
+                $this->_aliases[$matches[2] ?: $matches[3]] = $matches[5];
             }
         }
     }
 
     /**
+     * Returns the alias of a table in this query.
      *
-     * Usage:
+     * Aliases are available when a table alias has been specified by calling either [[from()]],
+     * [[join()]] or other join methods. If no alias has been defined, the original table name is
+     * returned without modification.
+     *
+     * Note, that if a table is used multiple times in the query (e.g. self-join situations)
+     * relying on this function may not give the expected result.
+     *
+     * Usage example:
      *
      * ```php
      * $query = (new Query)->from(['u' => 'user']);
@@ -898,17 +902,50 @@ class Query extends Component implements QueryInterface
      * // SELECT * FROM user u WHERE u.name = 'cebe';
      * ```
      *
-     * @param $table
-     * @return mixed
+     * @param string $table the table name.
+     * @return string the table alias.
+     * @see applyAlias() for disambiguating columns.
+     * @since 2.0.7
      */
     public function getAlias($table)
     {
-        if (isset($this->aliases[$table])) {
-            return $this->aliases[$table];
+        if (isset($this->_aliases[$table])) {
+            return $this->_aliases[$table];
         }
         return $table;
     }
 
+    /**
+     * Disambiguate a column name by looking up the table alias.
+     *
+     * This method will look up the alias for a table using [[getAlias()]] and
+     * return the disambiguated column name. e.g. for `applyAlias('user', 'name')`
+     * it will return `u.name` if the table alias was `u`.
+     *
+     * This function can be used to disambiguate column names in situations
+     * where the table alias of the table is unknown, e.g. the query has been
+     * created in a different place and should now be extended by an additional condition.
+     *
+     * Usage example:
+     *
+     * ```php
+     * // a function that adjusts a query by applying an additional check
+     * function addPermissionCheck($query)
+     * {
+     *     $query->andWhere([$query->applyAlias('user', 'isAdmin') => 1]);
+     * }
+     *
+     * $query = (new Query)->from(['u' => 'user']);
+     * addPermissionCheck($query);
+     * // SELECT * FROM user u WHERE u.isAdmin = 1;
+     * ```
+     *
+     * @param string $table the table name.
+     * @param string $column the column name.
+     * @return string the table alias.
+     * @see applyAlias() for disambiguating columns.
+     * @since 2.0.7
+     */
     public function applyAlias($table, $column)
     {
         return $this->getAlias($table) . '.' . $column;
