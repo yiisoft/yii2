@@ -19,6 +19,19 @@ use yii\web\JsExpression;
  *
  * It also may change attribute's value if normalization of IPv6 expansion is enabled.
  *
+ * The following are examples of validation rules using this validator:
+ *
+ * ```php
+ * ['ip_address', 'ip'], // IPv4 or IPv6 address
+ * ['ip_address', 'ip', 'ipv6' => false], // IPv4 address (IPv6 is disabled)
+ * ['ip_address', 'ip', 'subnet' => true], // requires a CIDR prefix (like 10.0.0.1/24) for the IP address
+ * ['ip_address', 'ip', 'subnet' => null], // CIDR prefix is optional
+ * ['ip_address', 'ip', 'subnet' => null, 'normalize' => true], // CIDR prefix is optional and will be added when missing
+ * ['ip_address', 'ip', 'ranges' => ['192.168.0.0/24']], // only IP addresses from the specified subnet are allowed
+ * ['ip_address', 'ip', 'ranges' => ['!192.168.0.0/24', 'any']], // any IP is allowed except IP in the specified subnet
+ * ['ip_address', 'ip', 'expandIPv6' => true], // expands IPv6 address to a full notation format
+ * ```
+ *
  * @author Dmitry Naumenko <d.naumenko.a@gmail.com>
  * @since 2.0.7
  */
