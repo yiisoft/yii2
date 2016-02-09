@@ -355,7 +355,7 @@ yii.validation = (function ($) {
                 return;
             }
             if (options.negation === false && negation !== null) {
-                pub.addMessage(messages, options.messages.wrongIp, value);
+                pub.addMessage(messages, options.messages.message, value);
                 return;
             }
 
@@ -364,14 +364,14 @@ yii.validation = (function ($) {
                     pub.addMessage(messages, options.messages.ipv6NotAllowed, value);
                 }
                 if (!(new RegExp(options.ipv6Pattern)).test(value)) {
-                    pub.addMessage(messages, options.messages.wrongIp, value);
+                    pub.addMessage(messages, options.messages.message, value);
                 }
             } else {
                 if (!options.ipv4) {
                     pub.addMessage(messages, options.messages.ipv4NotAllowed, value);
                 }
                 if (!(new RegExp(options.ipv4Pattern)).test(value)) {
-                    pub.addMessage(messages, options.messages.wrongIp, value);
+                    pub.addMessage(messages, options.messages.message, value);
                 }
             }
         }
