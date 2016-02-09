@@ -146,7 +146,7 @@ class BaseHtml
 
     /**
      * Generates a start tag.
-     * @param string $name the tag name
+     * @param string|boolean|null $name the tag name. If $name is null or false, the corresponding content will be rendered without any tag.
      * @param array $options the tag options in terms of name-value pairs. These will be rendered as
      * the attributes of the resulting tag. The values will be HTML-encoded using [[encode()]].
      * If a value is null, the corresponding attribute will not be rendered.
@@ -157,18 +157,24 @@ class BaseHtml
      */
     public static function beginTag($name, $options = [])
     {
+        if ($name === null || $name === false) {
+            return '';
+        }
         return "<$name" . static::renderTagAttributes($options) . '>';
     }
 
     /**
      * Generates an end tag.
-     * @param string $name the tag name
+     * @param string|boolean|null $name the tag name. If $name is null or false, the corresponding content will be rendered without any tag.
      * @return string the generated end tag
      * @see beginTag()
      * @see tag()
      */
     public static function endTag($name)
     {
+        if ($name === null || $name === false) {
+            return '';
+        }
         return "</$name>";
     }
 
