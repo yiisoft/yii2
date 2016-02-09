@@ -10,6 +10,8 @@ use yii\db\Migration;
 /**
  * Initializes i18n messages tables.
  *
+ *
+ *
  * @author Dmitry Naumenko <d.naumenko.a@gmail.com>
  * @since 2.0.7
  */
