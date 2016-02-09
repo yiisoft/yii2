@@ -28,6 +28,11 @@ class I18NTest extends TestCase
     {
         parent::setUp();
         $this->mockApplication();
+        $this->setI18N();
+    }
+
+    protected function setI18N()
+    {
         $this->i18n = new I18N([
             'translations' => [
                 'test' => new PhpMessageSource([
@@ -42,7 +47,7 @@ class I18NTest extends TestCase
         $msg = 'The dog runs fast.';
 
         // source = target. Should be returned as is.
-        $this->assertEquals('The dog runs fast.', $this->i18n->translate('test', $msg, [], 'en'));
+        $this->assertEquals('The dog runs fast.', $this->i18n->translate('test', $msg, [], 'en-US'));
 
         // exact match
         $this->assertEquals('Der Hund rennt schnell.', $this->i18n->translate('test', $msg, [], 'de-DE'));
@@ -59,7 +64,7 @@ class I18NTest extends TestCase
         $i18n = new I18N([
             'translations' => [
                 '*' => new PhpMessageSource([
-                'basePath' => '@yiiunit/data/i18n/messages',
+                    'basePath' => '@yiiunit/data/i18n/messages',
                     'fileMap' => [
                         'test' => 'test.php',
                         'foo' => 'test.php',
@@ -71,7 +76,7 @@ class I18NTest extends TestCase
         $msg = 'The dog runs fast.';
 
         // source = target. Should be returned as is.
-        $this->assertEquals($msg, $i18n->translate('test', $msg, [], 'en'));
+        $this->assertEquals($msg, $i18n->translate('test', $msg, [], 'en-US'));
 
         // exact match
         $this->assertEquals('Der Hund rennt schnell.', $i18n->translate('test', $msg, [], 'de-DE'));
@@ -83,6 +88,39 @@ class I18NTest extends TestCase
 
         // fallback to just langauge code with present exact match
         $this->assertEquals('Hallo Welt!', $i18n->translate('test', 'Hello world!', [], 'de-DE'));
+    }
+
+    /**
+     * https://github.com/yiisoft/yii2/issues/7964
+     */
+    public function testSourceLanguageFallback()
+    {
+        $i18n = new I18N([
+            'translations' => [
+                '*' => new PhpMessageSource([
+                        'basePath' => '@yiiunit/data/i18n/messages',
+                        'sourceLanguage' => 'de-DE',
+                        'fileMap' => [
+                            'test' => 'test.php',
+                            'foo' => 'test.php',
+                        ],
+                    ]
+                )
+            ]
+        ]);
+
+        $msg = 'The dog runs fast.';
+
+        // source = target. Should be returned as is.
+        $this->assertEquals($msg, $i18n->translate('test', $msg, [], 'de-DE'));
+
+        // target is less specific, than a source. Messages from sourceLanguage file should be loaded as a fallback
+        $this->assertEquals('Der Hund rennt schnell.', $i18n->translate('test', $msg, [], 'de'));
+        $this->assertEquals('Hallo Welt!', $i18n->translate('test', 'Hello world!', [], 'de'));
+
+        // target is a different language than source
+        $this->assertEquals('Собака бегает быстро.', $i18n->translate('test', $msg, [], 'ru-RU'));
+        $this->assertEquals('Собака бегает быстро.', $i18n->translate('test', $msg, [], 'ru'));
     }
 
     public function testTranslateParams()
