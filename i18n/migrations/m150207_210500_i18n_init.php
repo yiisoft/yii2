@@ -30,8 +30,8 @@ class m150207_210500_i18n_init extends Migration
         ], $tableOptions);
 
         $this->createTable('message', [
-            'id' => $this->integer(),
-            'language' => $this->string(16),
+            'id' => $this->integer()->notNull(),
+            'language' => $this->string(16)->notNull(),
             'translation' => $this->text(),
         ], $tableOptions);
 
