@@ -32,6 +32,8 @@ use yii\db\Query;
  * yii migrate --migrationPath=@yii/i18n/migrations/
  * ```
  *
+ * If you don't want to use migration and need SQL instead, files for all databases are in migrations directory.
+ *
  * @author resurtm <resurtm@gmail.com>
  * @since 2.0
  */
