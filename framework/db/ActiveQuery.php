@@ -352,7 +352,8 @@ class ActiveQuery extends Query implements ActiveQueryInterface
      * which is equivalent to calling [[with()]] using the specified relations.
      *
      * Note that because a JOIN query will be performed, you are responsible to disambiguate column names.
-     * You may specify the table names manually or use the methods [[getRelationAlias()]] or [[applyRelationAlias()]] for this.
+     * You may specify the table names manually or use the methods described in the [Guide about alias handling](db-querybuilder#aliases)
+     * for this.
      *
      * This method differs from [[with()]] in that it will build up and execute a JOIN SQL statement
      * for the primary table. And when `$eagerLoading` is true, it will call [[with()]] in addition with the specified relations.
@@ -388,7 +389,7 @@ class ActiveQuery extends Query implements ActiveQueryInterface
      *
      * @param boolean|array $eagerLoading whether to eager load the relations specified in `$with`.
      * When this is a boolean, it applies to all relations specified in `$with`. Use an array
-     * to explicitly list which relations in `$with` need to be eagerly loaded.
+     * to explicitly list which relations in `$with` need to be eagerly loaded. Defaults to `true`.
      * @param string|array $joinType the join type of the relations specified in `$with`.
      * When this is a string, it applies to all relations specified in `$with`. Use an array
      * in the format of `relationName => joinType` to specify different join types for different relations.
@@ -403,9 +404,9 @@ class ActiveQuery extends Query implements ActiveQueryInterface
                 $callback = null;
             }
 
-            if (preg_match('/^(.*?)(?:\s+AS\s+|\s+)(\w+)$/i', $name, $matches)) {
+            if (preg_match('/^.*?(?:\s+AS\s+|\s+)(\w+)$/i', $name, $matches)) {
                 // relation is defined with an alias, adjust callback to apply alias
-                list(, $relation, $alias) = $matches;
+                list($relation, $alias) = $matches;
                 $this->_relationAliases[$relation] = $alias;
                 $name = $relation;
                 $callback = function($query) use ($callback, $alias) {
