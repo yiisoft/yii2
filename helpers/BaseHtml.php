@@ -119,7 +119,7 @@ class BaseHtml
 
     /**
      * Generates a complete HTML tag.
-     * @param string|boolean|null $name the tag name. If $name is null or false, the corresponding content will be rendered without any tag.
+     * @param string|boolean|null $name the tag name. If $name is `null` or `false`, the corresponding content will be rendered without any tag.
      * @param string $content the content to be enclosed between the start and end tags. It will not be HTML-encoded.
      * If this is coming from end users, you should consider [[encode()]] it to prevent XSS attacks.
      * @param array $options the HTML tag attributes (HTML options) in terms of name-value pairs.
@@ -146,7 +146,7 @@ class BaseHtml
 
     /**
      * Generates a start tag.
-     * @param string|boolean|null $name the tag name. If $name is null or false, the corresponding content will be rendered without any tag.
+     * @param string|boolean|null $name the tag name. If $name is `null` or `false`, the corresponding content will be rendered without any tag.
      * @param array $options the tag options in terms of name-value pairs. These will be rendered as
      * the attributes of the resulting tag. The values will be HTML-encoded using [[encode()]].
      * If a value is null, the corresponding attribute will not be rendered.
@@ -165,7 +165,7 @@ class BaseHtml
 
     /**
      * Generates an end tag.
-     * @param string|boolean|null $name the tag name. If $name is null or false, the corresponding content will be rendered without any tag.
+     * @param string|boolean|null $name the tag name. If $name is `null` or `false`, the corresponding content will be rendered without any tag.
      * @return string the generated end tag
      * @see beginTag()
      * @see tag()
