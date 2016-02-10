@@ -300,8 +300,11 @@ class BaseHtml
      * the attributes of the resulting tag. The values will be HTML-encoded using [[encode()]].
      * If a value is null, the corresponding attribute will not be rendered.
      * See [[renderTagAttributes()]] for details on how attributes are being rendered.
+     *
      * Special options:
-     *  - `csrf`: whether to generate the CSRF hidden input. When is not defined, defaults to true.
+     *
+     *  - `csrf`: whether to generate the CSRF hidden input. Defaults to true.
+     *
      * @return string the generated form start tag.
      * @see endForm()
      */
@@ -1001,7 +1004,8 @@ class BaseHtml
      *
      * - encode: boolean, whether to HTML-encode the items. Defaults to true.
      *   This option is ignored if the `item` option is specified.
-     * - separator: string, since 2.0.7 the HTML code that separates items.
+     * - separator: string, the HTML code that separates items. Defaults to a simple newline (`"\n"`).
+     *   This option is available since version 2.0.7.
      * - itemOptions: array, the HTML attributes for the `li` tags. This option is ignored if the `item` option is specified.
      * - item: callable, a callback that is used to generate each individual list item.
      *   The signature of this callback must be:
