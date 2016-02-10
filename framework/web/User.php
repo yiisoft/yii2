@@ -141,6 +141,10 @@ class User extends Component
      * @var string the session variable name used to store the value of [[returnUrl]].
      */
     public $returnUrlParam = '__returnUrl';
+    /**
+     * @var string the session variable name used to store the value of [[returnUrl]].
+     */
+    public $returnHostInfoParam = '__returnHostInfo';
 
     private $_access = [];
 
@@ -372,21 +376,23 @@ class User extends Component
      * @param string|array $defaultUrl the default return URL in case it was not set previously.
      * If this is null and the return URL was not set previously, [[Application::homeUrl]] will be redirected to.
      * Please refer to [[setReturnUrl()]] on accepted format of the URL.
+     * @param string $defaultHostInfo default host info
      * @return string the URL that the user should be redirected to after login.
      * @see loginRequired()
      */
-    public function getReturnUrl($defaultUrl = null)
+    public function getReturnUrl($defaultUrl = null, $defaultHostInfo = '')
     {
         $url = Yii::$app->getSession()->get($this->returnUrlParam, $defaultUrl);
+        $hostInfo = Yii::$app->getSession()->get($this->returnHostInfoParam, $defaultHostInfo);
         if (is_array($url)) {
             if (isset($url[0])) {
-                return Yii::$app->getUrlManager()->createUrl($url);
+                return $hostInfo . Yii::$app->getUrlManager()->createUrl($url);
             } else {
                 $url = null;
             }
         }
 
-        return $url === null ? Yii::$app->getHomeUrl() : $url;
+        return $url === null ? Yii::$app->getHomeUrl() : $hostInfo . $url;
     }
 
     /**
@@ -399,12 +405,14 @@ class User extends Component
      * ```php
      * ['admin/index', 'ref' => 1]
      * ```
+     * @param bool $useAbsoluteUrl whether need to consider the domain when creating links.
+     * For example, if you use a single login to multiple domains.
      */
-    public function setReturnUrl($url)
+    public function setReturnUrl($url, $useAbsoluteUrl = false)
     {
-        if ($this->useAbsoluteUrl) {
+        if ($useAbsoluteUrl) {
             $request = Yii::$app->getRequest();
-            $url = $request->getHostInfo() . $url;
+            Yii::$app->getSession()->set($this->returnHostInfoParam, $request->getHostInfo());
         }
 
         Yii::$app->getSession()->set($this->returnUrlParam, $url);
@@ -430,7 +438,7 @@ class User extends Component
     {
         $request = Yii::$app->getRequest();
         if ($this->enableSession && (!$checkAjax || !$request->getIsAjax())) {
-            $this->setReturnUrl($request->getUrl());
+            $this->setReturnUrl($request->getUrl(), $this->useAbsoluteUrl);
         }
         if ($this->loginUrl !== null) {
             $loginUrl = (array) $this->loginUrl;
