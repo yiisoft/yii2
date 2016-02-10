@@ -116,6 +116,15 @@ class EachValidator extends Validator
     {
         $value = $model->$attribute;
         $validator = $this->getValidator();
+
+        if ($validator instanceof CompareValidator &&
+            $validator->compareValue === null &&
+            $validator->compareAttribute !== null
+        ) {
+            $compareAttribute = $validator->compareAttribute;
+            $validator->compareValue = $model->$compareAttribute;
+        }
+
         if ($validator instanceof FilterValidator && is_array($value)) {
             $filteredValue = [];
             foreach ($value as $k => $v) {
