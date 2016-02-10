@@ -113,6 +113,7 @@ Yii Framework 2 Change Log
 - Enh #10535: Allow passing a `yii\db\Expression` to `Query::orderBy()` and `Query::groupBy()` (andrewnester, cebe)
 - Enh #10545: `yii\web\XMLResponseFormatter` changed to format models in a proper way (andrewnester)
 - Enh #10783: Added migration and unit-tests for `yii\i18n\DbMessageSource` (silverfire)
+- Enh #10797: Cleaned up requirements checker CSS (muhammadcahya)   
 - Enh: Added last resort measure for `FileHelper::removeDirectory()` fail to unlink symlinks under Windows (samdark)
 - Chg #9369: `Yii::$app->user->can()` now returns `false` instead of erroring in case `authManager` component is not configured (creocoder)
 - Chg #9411: `DetailView` now automatically sets container tag ID in case it's not specified (samdark)
