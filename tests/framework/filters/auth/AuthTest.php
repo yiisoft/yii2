@@ -194,7 +194,7 @@ class AuthTest extends \yiiunit\TestCase
         $this->assertEquals(true, $method->invokeArgs($filter, [new Action('index', $controller)]));
         $this->assertEquals(false, $method->invokeArgs($filter, [new Action('view', $controller)]));
 
-        $filter->only;
+        $filter->only = [];
         $filter->except = ['view'];
         $filter->optional = ['view'];
         $this->assertEquals(true, $method->invokeArgs($filter, [new Action('index', $controller)]));
