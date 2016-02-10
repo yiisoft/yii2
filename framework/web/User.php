@@ -79,6 +79,11 @@ class User extends Component
      */
     public $enableSession = true;
     /**
+     * @var boolean whether need to consider the domain when creating links.
+     * For example, if you use a single login to multiple domains.
+     */
+    public $useAbsoluteUrl = false;
+    /**
      * @var string|array the URL for login when [[loginRequired()]] is called.
      * If an array is given, [[UrlManager::createUrl()]] will be called to create the corresponding URL.
      * The first element of the array should be the route to the login action, and the rest of
@@ -397,6 +402,11 @@ class User extends Component
      */
     public function setReturnUrl($url)
     {
+        if ($this->useAbsoluteUrl) {
+            $request = Yii::$app->getRequest();
+            $url = $request->getHostInfo() . $url;
+        }
+
         Yii::$app->getSession()->set($this->returnUrlParam, $url);
     }
 
