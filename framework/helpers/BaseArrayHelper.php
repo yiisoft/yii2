@@ -447,6 +447,13 @@ class BaseArrayHelper
             $args[] = $direction[$i];
             $args[] = $flag;
         }
+
+        // This fix is used for cases when main sorting specified by columns has equal values
+        // Without it it will lead to Fatal Error: Nesting level too deep - recursive dependency?
+        $args[] = range(1, count($array));
+        $args[] = SORT_ASC;
+        $args[] = SORT_NUMERIC;
+
         $args[] = &$array;
         call_user_func_array('array_multisort', $args);
     }
@@ -598,6 +605,7 @@ class BaseArrayHelper
      * @return boolean `true` if `$needle` was found in `$haystack`, `false` otherwise.
      * @throws \InvalidArgumentException if `$haystack` is neither traversable nor an array.
      * @see http://php.net/manual/en/function.in-array.php
+     * @since 2.0.7
      */
     public static function isIn($needle, $haystack, $strict = false)
     {
@@ -626,6 +634,7 @@ class BaseArrayHelper
      * @param boolean $strict Whether to enable strict (`===`) comparison.
      * @throws \InvalidArgumentException if `$haystack` or `$needles` is neither traversable nor an array.
      * @return boolean `true` if `$needles` is a subset of `$haystack`, `false` otherwise.
+     * @since 2.0.7
      */
     public static function isSubset($needles, $haystack, $strict = false)
     {

@@ -437,7 +437,6 @@ class PhpManager extends BaseManager
      * Returns all permissions that are directly assigned to user.
      * @param string|integer $userId the user ID (see [[\yii\web\User::id]])
      * @return Permission[] all direct permissions that the user has. The array is indexed by the permission names.
-     *
      * @since 2.0.7
      */
     protected function getDirectPermissionsByUser($userId)
@@ -457,7 +456,6 @@ class PhpManager extends BaseManager
      * Returns all permissions that the user inherits from the roles assigned to him.
      * @param string|integer $userId the user ID (see [[\yii\web\User::id]])
      * @return Permission[] all inherited permissions that the user has. The array is indexed by the permission names.
-     *
      * @since 2.0.7
      */
     protected function getInheritedPermissionsByUser($userId)
@@ -812,6 +810,7 @@ class PhpManager extends BaseManager
 
     /**
      * @inheritdoc
+     * @since 2.0.7
      */
     public function getUserIdsByRole($roleName)
     {
