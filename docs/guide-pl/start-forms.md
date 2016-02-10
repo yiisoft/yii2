@@ -44,10 +44,10 @@ class EntryForm extends Model
 }
 ```
 
-Klasa `EntryForm` rozszerza [[yii\base\Model]], podstawową klasę dostarczoną przez Yii, głównie używaną do reprezentowania danych z formularzy.
+Klasa `EntryForm` rozszerza [[yii\base\Model|Model]], podstawową klasę dostarczoną przez Yii, głównie używaną do reprezentowania danych z formularzy.
 
-> Info: [[yii\base\Model]] jest używane jako rodzic dla klasy modeli *NIE* powiązanych z tabelą bazy danych.
-[[yii\db\ActiveRecord]] jest rodzicem dla klas modeli powiązanych z tabelami bazy danych.
+> Info: [[yii\base\Model|Model]] jest używane jako rodzic dla klasy modeli *NIE* powiązanych z tabelą bazy danych.
+> [[yii\db\ActiveRecord|ActiveRecord]] jest rodzicem dla klas modeli powiązanych z tabelami bazy danych.
 
 Klasa `EntryForm` zawiera dwa elementy publiczne, `name` oraz `email`, które są używane do przechowania danych wprowadzonych przez użytkownika.
 Zawieta również metodą nazwaną `rules()`, która zwraca zestaw zasad do walidacji wprowadzonych danych. Zadeklarowane zasady oznaczają:
@@ -55,8 +55,10 @@ Zawieta również metodą nazwaną `rules()`, która zwraca zestaw zasad do wali
 * wartości w polach `name` oraz `email są wymagane
 * wartość pola `email` musi być prawidłowym adresem email
 
-Jeśli posiadasz uzupełniony obiekt `EntryForm` danymi wprowadzonymi przez użytkownika, możesz wywołać jego funkcję [[yii\base\Model::validate()|validate()]], aby uruchomić procedurę sprawdzania poprawności danych.
-W przypadku wystąpienia błędów w walidacji, wartość [[yii\base\Model::hasErrors|hasErrors]] zostanie ustawiona na `true`. Możesz zobaczyć jakie błędy wystąpiły za pomocą metody [[yii\base\Model::getErrors|errors]].
+Jeśli posiadasz uzupełniony obiekt `EntryForm` danymi wprowadzonymi przez użytkownika, możesz wywołać jego funkcję [[yii\base\Model::validate()|validate()]], aby uruchomić procedurę 
+sprawdzania poprawności danych.
+W przypadku wystąpienia błędów w walidacji, wartość [[yii\base\Model::hasErrors|hasErrors]] zostanie ustawiona na `true`. Możesz zobaczyć jakie błędy wystąpiły za pomocą metody 
+[[yii\base\Model::getErrors()|getErrors()]].
 
 ```php
 <?php
@@ -75,7 +77,8 @@ if ($model->validate()) {
 Tworzenie akcji <span id="creating-action"></span>
 ------------------
 
-Następnie musisz utworzyć akcję o nazwie `entry` w kontrolerze `site`,  która użyje Twojego nowego modelu. Proces tworzenia i używania akcji był wytłumaczony w sekcji [Witaj świecie](start-hello.md)
+Następnie musisz utworzyć akcję o nazwie `entry` w kontrolerze `site`,  która użyje Twojego nowego modelu. Proces tworzenia i używania akcji był wytłumaczony w sekcji 
+[Witaj świecie](start-hello.md).
 
 ```php
 <?php
@@ -108,23 +111,26 @@ class SiteController extends Controller
 }
 ```
 
-Akcja tworzy na początku obiekt `EntryForm`. Następnie próbuje uzupełnić model danymi ze zmiennej `$_POST`, dostarczanymi w Yii przez metodę [[yii\web\Request::post()]].
-Jeśli model został prawidłowo uzupełniony(np. jeśli użytkownik wysłał formularz HTML), akcja wywoła metodę [[yii\base\Model::validate()|validate()]] aby upewnić się, że wprowadzone dane są prawidłowe.
+Akcja tworzy na początku obiekt `EntryForm`. Następnie próbuje uzupełnić model danymi ze zmiennej `$_POST`, dostarczanymi w Yii przez metodę [[yii\web\Request::post()|post()]].
+Jeśli model został prawidłowo uzupełniony(np. jeśli użytkownik wysłał formularz HTML), akcja wywoła metodę [[yii\base\Model::validate()|validate()]], aby upewnić się, że wprowadzone 
+dane są prawidłowe.
 
 > Info: Wyrażenie `Yii::$app` reprezentuje instancję [aplikacji](structure-applications.md), która jest globalnie dostępnym singletonem.
-Jest również [lokatorem usług](concept-service-locator.md), który dostarcza komponenty takie jak `request`, `response` lub `db` do wsparcia specyficznej funkcjonalności.
-W powyższym kodzie użyty jest komponent `request` aby uzyskać dostęp do danych w zmiennej `$_POST`.
+> Jest również [lokatorem usług](concept-service-locator.md), który dostarcza komponenty takie jak `request`, `response` lub `db` do wsparcia specyficznej funkcjonalności.
+> W powyższym kodzie użyty jest komponent `request` aby uzyskać dostęp do danych w zmiennej `$_POST`.
 
 Jeśli wszystko jest w porządku, akcja wyrenderuje widok o nazwie `entry-confirm` w celu potwierdzenia prawidłowego przesłania danych przez użytkownika.
 Jeśli nie zostały wysłane żadne dane lub dane zawierają błędy, zostanie wyrenderowany widok `entry`, w którym będzie pokazany formularz HTML wraz z wiadomościami błędów walidacji.
 
-> Note: W tym prostym przykładzie po prostu renderujemy stronę z potwierdzeniem prawidłowego przesłania danych. W praktyce powinieneś rozważyć użycie [[yii\web\Controller::refresh()|refresh()]] lub [[yii\web\Controller::redirect()|redirect()]] aby uniknąć [problemów z ponownym przesłaniem formularza](http://en.wikipedia.org/wiki/Post/Redirect/Get).
+> Note: W tym prostym przykładzie po prostu renderujemy stronę z potwierdzeniem prawidłowego przesłania danych. 
+> W praktyce powinieneś rozważyć użycie [[yii\web\Controller::refresh()|refresh()]] lub [[yii\web\Controller::redirect()|redirect()]], aby uniknąć 
+> [problemów z ponownym przesłaniem formularza](http://en.wikipedia.org/wiki/Post/Redirect/Get).
 
 
 Tworzenie widoku <span id="creating-views"></span>
 --------------
 
-Na koniec, utwórz dwa pliki o nazwach `entry-confirm` oraz `entry`. Będą one renderowane przez akcję `entry`, tak jak to przed chwilą opisaliśmy.
+Na koniec utwórz dwa pliki o nazwach `entry-confirm` oraz `entry`. Będą one renderowane przez akcję `entry`, tak jak to przed chwilą opisaliśmy.
 
 Widok `entry-confirm` wyświelta po prostu dane `name` oraz `email`. Powinien być zapisany w pliku `views/site/entry-confirm.php`.
 
@@ -161,20 +167,22 @@ use yii\widgets\ActiveForm;
 ```
 
 Widok używa potężnego [widżetu](structure-widgets.md) nazwanego [[yii\widgets\ActiveForm|ActiveForm]] do budowania formularza HTML.
-Metody `begin()` oraz `end()` renderują odpowiednio otwierające i zamykające tagi formularza. Pomiędzy wywołaniami tych dwóch metod, pola do wprowadzania są tworzone przez metodę [[yii\widgets\ActiveForm::field()|field()]].
-Następnie, po polach do wprowadzania danych, wywoływana jest metoda [[yii\helpers\Html::submitButton()]] do wygenerowania przycisku "Wyślij", który wysyła formularz.
+Metody `begin()` oraz `end()` renderują odpowiednio otwierające i zamykające tagi formularza. Pomiędzy wywołaniami tych dwóch metod, pola do wprowadzania są tworzone przez metodę 
+[[yii\widgets\ActiveForm::field()|field()]].
+Następnie, po polach do wprowadzania danych, wywoływana jest metoda [[yii\helpers\Html::submitButton()|submitButton()]] do wygenerowania przycisku "Wyślij", który wysyła formularz.
 
 
 Próba <span id="trying-it-out"></span>
 -------------
 
-Aby zobaczyć jak to działa, użyj przeglądarki aby przejść pod dany adres:
+Aby zobaczyć jak to działa, użyj przeglądarki i przejdź pod dany adres:
 
 ```
 http://hostname/index.php?r=site/entry
 ```
 
-Zobaczysz stronę wyświetlającą formularz z dwoma polami. Przed każdym polem znajduje się etykieta opisująca to pole. Jeśli klikniesz przycisk "Wyślij" nie wpisując żadnych danych, lub jeśli nie wprowadzisz prawidłowego adresu email, zobaczysz wiadomość błędu wyświeloną pod polem którego ona dotyczy.
+Zobaczysz stronę wyświetlającą formularz z dwoma polami. Przed każdym polem znajduje się etykieta opisująca to pole. Jeśli klikniesz przycisk "Wyślij" nie wpisując żadnych danych, lub 
+jeśli nie wprowadzisz prawidłowego adresu email, zobaczysz wiadomość błędu wyświeloną pod polem którego ona dotyczy.
 
 ![Formularz z błędami walidacji](../guide/images/start-form-validation.png)
 
@@ -185,14 +193,17 @@ Po wpisaniu prawidłowej nazwy, adresu email oraz kliknięciu przycisku "Wyślij
 
 ### "Wyjaśnienie magii" <span id="magic-explained"></span>
 
-Możesz się zastanawiać, jak działa ten formularz HTML, ponieważ wydaje się prawie magicznym to, że wyświetla etykietę do każdego pola oraz wyświetla komunikat błędu, jeśli wprowadzisz błędne dane, bez przeładowania strony.
+Możesz się zastanawiać jak działa ten formularz HTML, ponieważ wydaje się prawie magicznym to, że wyświetla etykietę do każdego pola oraz wyświetla komunikat błędu, jeśli wprowadzisz 
+błędne dane, bez przeładowania strony.
 
-Wstępna walidacja jest wykonywana po stronie klienta używając JavaScript'u, kolejnie dopiero po stronie serwera przez PHP.
-[[yii\widgets\ActiveForm]] potrafi wyodrębnić zasady walidacji, które zadeklarowałeś w `EntryForm`, przekształcić je w wykonywalny kod JavaScript oraz użyć go do walidacji danych. 
+Wstępna walidacja jest wykonywana po stronie klienta używając JavaScriptu, kolejnie dopiero po stronie serwera przez PHP.
+[[yii\widgets\ActiveForm|ActiveForm]] potrafi wyodrębnić zasady walidacji, które zadeklarowałeś w `EntryForm`, przekształcić je w wykonywalny kod JavaScript oraz użyć go do walidacji 
+danych. 
 Jeśli zablokowałeś JavaScript w swojej przeglądarce, walidacja wciąż będzie wykonywana po stronie serwera, jak pokazano w metodzie `actionEntry()`. 
-Gwarantuje to prawidłowość danych w każdych okolicznościach.
+Gwarantuje to poprawność danych w każdych okolicznościach.
 
-> Warning: Walidacja po stronie klienta jest opcją, która zapewnia lepsze doświadczenia dla użytkownika. Walidacja po stronie serwera jest zawsze wymagana, niezależnie czy walidacja po stronie klienta jest włączona, czy nie.
+> Warning: Walidacja po stronie klienta jest opcją, która zapewnia wygodniejszą współpracę aplikacji z użytkownikiem. Walidacja po stronie serwera jest zawsze wymagana, niezależnie, 
+czy walidacja po stronie klienta jest włączona, czy też nie.
 
 Etykiety dla pól w formularzu generowane są przy pomocy metody `field()`, używającej nazw właściwości z modelu.
 Dla przykładu, etykieta `Name` zostanie wygenerowana dla właściwości `name`.
@@ -205,8 +216,8 @@ Możesz dostosowywać etykiety w widoku, używając poniższego kodu:
 ```
 
 > Info: Yii dostarcza wiele podobnych widżetów, które pomogą Ci szybko tworzyć złożone i dynamiczne widoki.
-Tak jak nauczysz się później, pisanie nowego widżetu jest ekstremalnie łatwe. 
-Będziesz mógł przekształcić Twój kod widoku na widżet do wielokrotnego użytku, aby uprościć rozwój swoich widoków w przyszłości.
+> Tak jak nauczysz się później, pisanie nowego widżetu jest ekstremalnie łatwe. 
+> Będziesz mógł przekształcić Twój kod widoku na widżet do wielokrotnego użytku, aby uprościć rozwój swoich widoków w przyszłości.
 
 
 Podsumowanie <span id="summary"></span>

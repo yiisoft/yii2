@@ -8,6 +8,7 @@
 namespace yiiunit\framework\web;
 
 use yii\web\JsonResponseFormatter;
+use yiiunit\framework\web\stubs\ModelStub;
 
 /**
  * @author Alexander Makarov <sam@rmcreative.ru>
@@ -84,6 +85,13 @@ class JsonResponseFormatterTest extends FormatterTest
 
         return [
             [$postsStack, '{"1":{"id":456,"title":"record2"},"0":{"id":915,"title":"record1"}}']
+        ];
+    }
+
+    public function formatModelDataProvider()
+    {
+        return [
+            [new ModelStub(['id' => 123, 'title' => 'abc', 'hidden' => 'hidden']), '{"id":123,"title":"abc"}']
         ];
     }
 

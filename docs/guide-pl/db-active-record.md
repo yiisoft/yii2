@@ -47,7 +47,7 @@ W tej sekcji przewodnika opiszemy sposób użycia Active Record dla baz relacyjn
 
 ## Deklarowanie klas Active Record <span id="declaring-ar-classes"></span>
 
-Na początek zadeklaruj klasę typu Active Record rozszerzając [[yii\db\ActiveRecord]]. Ponieważ każda klasa Active Record 
+Na początek zadeklaruj klasę typu Active Record rozszerzając [[yii\db\ActiveRecord|ActiveRecord]]. Ponieważ każda klasa Active Record 
 jest powiązana z tabelą bazy danych, należy nadpisać metodę [[yii\db\ActiveRecord::tableName()|tableName()]], aby wskazać 
 odpowiednią tabelę.
 
@@ -76,7 +76,7 @@ class Customer extends ActiveRecord
 Instancje Active Record są traktowane jak [modele](structure-models.md). Z tego powodu zwykle dodajemy klasy Active Record 
 do przestrzeni nazw `app\models` (lub innej, przeznaczonej dla klas modeli). 
 
-Dzięki temu, że [[yii\db\ActiveRecord]] rozszerza [[yii\base\Model]], dziedziczy *wszystkie* funkcjonalności [modelu](structure-models.md), 
+Dzięki temu, że [[yii\db\ActiveRecord|ActiveRecord]] rozszerza [[yii\base\Model|Model]], dziedziczy *wszystkie* funkcjonalności [modelu](structure-models.md), 
 takie jak atrybuty, zasady walidacji, serializację danych itd.
 
 
@@ -120,13 +120,13 @@ class Customer extends ActiveRecord
 Po zadeklarowaniu klasy Active Record, możesz użyć jej do pobrania danych z powiązanej tabeli bazy danych.
 Proces ten zwykle sprowadza się do następujących trzech kroków:
 
-1. Stworzenie nowego obiektu kwerendy za pomocą metody [[yii\db\ActiveRecord::find()]];
+1. Stworzenie nowego obiektu kwerendy za pomocą metody [[yii\db\ActiveRecord::find()|find()]];
 2. Zbudowanie obiektu kwerendy za pomocą [metod konstruktora kwerend](db-query-builder.md#building-queries);
 3. Wywołanie [metod kwerendy](db-query-builder.md#query-methods) w celu uzyskania danych jako instancji klasy Active Record.
 
 Jak widać, procedura jest bardzo podobna do tej używanej przy [konstruktorze kwerend](db-query-builder.md). Jedyna różnica jest taka, że 
-zamiast użycia operatora `new` do stworzenia obiektu kwerendy, wywołujemy metodę [[yii\db\ActiveRecord::find()]], która zwraca 
-nowy obiekt kwerendy klasy [[yii\db\ActiveQuery]].
+zamiast użycia operatora `new` do stworzenia obiektu kwerendy, wywołujemy metodę [[yii\db\ActiveRecord::find()|find()]], która zwraca 
+nowy obiekt kwerendy klasy [[yii\db\ActiveQuery|ActiveQuery]].
 
 Poniżej znajdziesz kilka przykładów pokazujących jak używać Active Query do pobierania danych:
 
@@ -160,15 +160,15 @@ $customers = Customer::find()
 W powyższych przykładach `$customer` jest obiektem typu `Customer`, a `$customers` jest tablicą obiektów typu `Customer`. W obu przypadkach 
 dane pobrane są z tabeli `customer`.
 
-> Info: Dzięki temu, że [[yii\db\ActiveQuery]] rozszerza klasę [[yii\db\Query]], możesz użyć *wszystkich* metod dotyczących kwerend i ich budowania 
+> Info: Dzięki temu, że [[yii\db\ActiveQuery|ActiveQuery]] rozszerza klasę [[yii\db\Query|Query]], możesz użyć *wszystkich* metod dotyczących kwerend i ich budowania 
 > opisanych w sekcji [Konstruktor kwerend](db-query-builder.md).
 
 Ponieważ zwykle kwerendy korzystają z zapytań zawierających klucz główny lub też zestaw wartości dla kilku kolumn, Yii udostępnia dwie skrótowe metody, 
 pozwalające na szybsze ich użycie:
 
-- [[yii\db\ActiveRecord::findOne()]]: zwraca pojedynczą instancję klasy Active Record, zawierającą dane z pierwszego pobranego odpowiadającego zapytaniu 
+- [[yii\db\ActiveRecord::findOne()|findOne()]]: zwraca pojedynczą instancję klasy Active Record, zawierającą dane z pierwszego pobranego odpowiadającego zapytaniu 
 wiersza danych.
-- [[yii\db\ActiveRecord::findAll()]]: zwraca tablicę instancji klasy Active Record zawierających *wszystkie* wyniki zapytania.
+- [[yii\db\ActiveRecord::findAll()|findAll()]]: zwraca tablicę instancji klasy Active Record zawierających *wszystkie* wyniki zapytania.
 
 Obie metody mogą przyjmować jeden z następujących formatów parametrów:
 
@@ -203,12 +203,12 @@ $customers = Customer::findAll([
 ]);
 ```
 
-> Note: Ani metoda [[yii\db\ActiveRecord::findOne()]] ani [[yii\db\ActiveQuery::one()]] nie dodaje `LIMIT 1` do wygenerowanej 
+> Note: Ani metoda [[yii\db\ActiveRecord::findOne()|findOne()]] ani [[yii\db\ActiveQuery::one()|one()]] nie dodaje `LIMIT 1` do wygenerowanej 
 > kwerendy SQL. Jeśli zapytanie może zwrócić więcej niż jeden wiersz danych, należy wywołać bezpośrednio `limit(1)`, w celu zwiększenia 
 > wydajności aplikacji, np. `Customer::find()->limit(1)->one()`.
 
 Oprócz korzystania z metod konstruktora kwerend możesz również użyć surowych zapytań SQL w celu pobrania danych do obiektu Active Record za 
-pomocą metody [[yii\db\ActiveRecord::findBySql()]]:
+pomocą metody [[yii\db\ActiveRecord::findBySql()|findBySql()]]:
 
 ```php
 // zwraca wszystkich nieaktywnych klientów
@@ -320,7 +320,7 @@ Używając Active Record możesz w łatwy sposób zapisać dane w bazie, w nast�
 
 1. Przygotowanie instancji Active Record
 2. Przypisanie nowych wartości do atrybutów Active Record
-3. Wywołanie metody [[yii\db\ActiveRecord::save()]] w celu zapisania danych w bazie.
+3. Wywołanie metody [[yii\db\ActiveRecord::save()|save()]] w celu zapisania danych w bazie.
 
 Przykład:
 
@@ -361,7 +361,7 @@ public function save($runValidation = true, $attributeNames = null)
 
 ### Walidacja danych <span id="data-validation"></span>
 
-Dzięki temu, że [[yii\db\ActiveRecord]] rozszerza klasę [[yii\base\Model]], korzysta z tych samych mechanizmów [walidacji danych](input-validation.md).
+Dzięki temu, że [[yii\db\ActiveRecord|ActiveRecord]] rozszerza klasę [[yii\base\Model|Model]], korzysta z tych samych mechanizmów [walidacji danych](input-validation.md).
 Możesz definiować zasady walidacji nadpisując metodę [[yii\db\ActiveRecord::rules()|rules()]] i uruchamiać procedurę walidacji wywołując metodę 
 [[yii\db\ActiveRecord::validate()|validate()]].
 
@@ -406,7 +406,7 @@ $post = Post::findOne(100);
 $post->updateCounters(['view_count' => 1]);
 ```
 
-> Note: Jeśli używasz [[yii\db\ActiveRecord::save()]] do aktualizacji licznika, możesz otrzymać nieprawidłowe rezultaty, ponieważ jest możliwe, że 
+> Note: Jeśli używasz [[yii\db\ActiveRecord::save()|save()]] do aktualizacji licznika, możesz otrzymać nieprawidłowe rezultaty, ponieważ jest możliwe, że 
 > ten sam licznik zostanie odczytany i zapisany jednocześnie przez wiele zapytań.
 
 
@@ -417,8 +417,8 @@ Atrybut uznawany jest za *brudny* jeśli jego wartość została zmodyfikowana o
 Pamiętaj, że walidacja danych zostanie przeprowadzona niezależnie od tego, czy instancja Active Record zawiera brudne atrybuty czy też nie.
 
 Active Record automatycznie tworzy listę brudnych atrybutów, poprzez porównanie starej wartości atrybutu do aktualnej. Możesz wywołać metodę 
-[[yii\db\ActiveRecord::getDirtyAttributes()]], aby otrzymać najnowszą listę brudnych atrybutów. Dodatkowo można wywołać 
-[[yii\db\ActiveRecord::markAttributeDirty()]], aby oznaczyć konkretny atrybut jako brudny.
+[[yii\db\ActiveRecord::getDirtyAttributes()|getDirtyAttributes()]], aby otrzymać najnowszą listę brudnych atrybutów. Dodatkowo można wywołać 
+[[yii\db\ActiveRecord::markAttributeDirty()|markAttributeDirty()]], aby oznaczyć konkretny atrybut jako brudny.
 
 Jeśli chcesz sprawdzić wartość atrybutu sprzed ostatniej zmiany, możesz wywołać [[yii\db\ActiveRecord::getOldAttributes()|getOldAttributes()]] lub 
 [[yii\db\ActiveRecord::getOldAttribute()|getOldAttribute()]].
@@ -427,7 +427,8 @@ Jeśli chcesz sprawdzić wartość atrybutu sprzed ostatniej zmiany, możesz wyw
 > ma tą samą wartość, ale jest innego typu. Taka sytuacja zdarza się często, kiedy model jest aktualizowany danymi pochodzącymi z formularza 
 > HTML, gdzie każda wartość jest reprezentowana jako string.
 > Aby upewnić się, że wartości będą odpowiednich typów, np. integer, możesz zaaplikować [filtr walidacji](input-validation.md#data-filtering):
-> `['attributeName', 'filter', 'filter' => 'intval']`.
+> `['attributeName', 'filter', 'filter' => 'intval']`.  Działa on z wszystkimi funkcjami PHP rzutującymi typy jak [intval()](http://php.net/manual/en/function.intval.php), 
+> [floatval()](http://php.net/manual/en/function.floatval.php), [boolval](http://php.net/manual/en/function.boolval.php), itp...
 
 
 ### Domyślne wartości atrybutów <span id="default-attribute-values"></span>
@@ -464,14 +465,14 @@ Customer::updateAllCounters(['age' => 1]);
 ## Usuwanie danych <span id="deleting-data"></span>
 
 Aby usunąć pojedynczy wiersz danych, utwórz najpierw instancję Active Record odpowiadającą temu wierszowi, a następnie wywołaj metodę 
-[[yii\db\ActiveRecord::delete()]].
+[[yii\db\ActiveRecord::delete()|delete()]].
 
 ```php
 $customer = Customer::findOne(123);
 $customer->delete();
 ```
 
-Możesz również wywołać [[yii\db\ActiveRecord::deleteAll()]], aby usunąć kilka lub wszystkie wiersze danych. Dla przykładu:
+Możesz również wywołać [[yii\db\ActiveRecord::deleteAll()|deleteAll()]], aby usunąć kilka lub wszystkie wiersze danych. Dla przykładu:
 
 ```php
 Customer::deleteAll(['status' => Customer::STATUS_INACTIVE]);
@@ -513,11 +514,11 @@ Podczas pobierania danych za pomocą jednej z [metod kwerendy](#querying-data), 
 Podczas wywołania [[yii\db\ActiveRecord::save()|save()]], w celu dodania lub uaktualnienia danych instancji Active Record, zachodzi następujący cykl:
 
 1. [[yii\db\ActiveRecord::beforeValidate()|beforeValidate()]]: uruchamia event [[yii\db\ActiveRecord::EVENT_BEFORE_VALIDATE|EVENT_BEFORE_VALIDATE]]. 
-   Jeśli metoda zwróci false lub właściwość [[yii\base\ModelEvent::isValid]] ma wartość false, kolejne kroki są pomijane.
+   Jeśli metoda zwróci false lub właściwość [[yii\base\ModelEvent::isValid|isValid]] ma wartość false, kolejne kroki są pomijane.
 2. Proces walidacji danych. Jeśli proces zakończy się niepowodzeniem, kolejne kroki po kroku 3. są pomijane. 
 3. [[yii\db\ActiveRecord::afterValidate()|afterValidate()]]: uruchamia event [[yii\db\ActiveRecord::EVENT_AFTER_VALIDATE|EVENT_AFTER_VALIDATE]].
 4. [[yii\db\ActiveRecord::beforeSave()|beforeSave()]]: uruchamia event [[yii\db\ActiveRecord::EVENT_BEFORE_INSERT|EVENT_BEFORE_INSERT]] lub 
-   [[yii\db\ActiveRecord::EVENT_BEFORE_UPDATE|EVENT_BEFORE_UPDATE]]. Jeśli metoda zwróci false lub właściwość [[yii\base\ModelEvent::isValid]] ma 
+   [[yii\db\ActiveRecord::EVENT_BEFORE_UPDATE|EVENT_BEFORE_UPDATE]]. Jeśli metoda zwróci false lub właściwość [[yii\base\ModelEvent::isValid|isValid]] ma 
    wartość false, kolejne kroki są pomijane.
 5. Proces właściwego dodawania lub aktulizowania danych.
 6. [[yii\db\ActiveRecord::afterSave()|afterSave()]]: uruchamia event [[yii\db\ActiveRecord::EVENT_AFTER_INSERT|EVENT_AFTER_INSERT]] lub 
@@ -529,17 +530,17 @@ Podczas wywołania [[yii\db\ActiveRecord::save()|save()]], w celu dodania lub ua
 Podczas wywołania [[yii\db\ActiveRecord::delete()|delete()]], w celu usunięcia danych instancji Active Record, zachodzi następujący cykl:
 
 1. [[yii\db\ActiveRecord::beforeDelete()|beforeDelete()]]: uruchamia event [[yii\db\ActiveRecord::EVENT_BEFORE_DELETE|EVENT_BEFORE_DELETE]]. 
-   Jeśli metoda zwróci false lub właściwość [[yii\base\ModelEvent::isValid]] ma wartość false, kolejne kroki są pomijane.
+   Jeśli metoda zwróci false lub właściwość [[yii\base\ModelEvent::isValid|isValid]] ma wartość false, kolejne kroki są pomijane.
 2. Proces właściwego usuwania danych.
 3. [[yii\db\ActiveRecord::afterDelete()|afterDelete()]]: uruchamia event [[yii\db\ActiveRecord::EVENT_AFTER_DELETE|EVENT_AFTER_DELETE]].
 
 
 > Note: Wywołanie poniższych metod NIE uruchomi żadnego z powyższych cykli:
 >
-> - [[yii\db\ActiveRecord::updateAll()]] 
-> - [[yii\db\ActiveRecord::deleteAll()]]
-> - [[yii\db\ActiveRecord::updateCounters()]] 
-> - [[yii\db\ActiveRecord::updateAllCounters()]] 
+> - [[yii\db\ActiveRecord::updateAll()|updateAll()]] 
+> - [[yii\db\ActiveRecord::deleteAll()|deleteAll()]]
+> - [[yii\db\ActiveRecord::updateCounters()|updateCounters()]] 
+> - [[yii\db\ActiveRecord::updateAllCounters()|updateAllCounters()]] 
 
 
 ## Praca z transakcjami <span id="transactional-operations"></span>
@@ -571,7 +572,7 @@ try {
 }
 ```
 
-Drugi sposób polega na utworzeniu listy operacji bazodanowych, które wymagają transakcji za pomocą metody [[yii\db\ActiveRecord::transactions()]]. 
+Drugi sposób polega na utworzeniu listy operacji bazodanowych, które wymagają transakcji za pomocą metody [[yii\db\ActiveRecord::transactions()|transactions()]]. 
 Dla przykładu:
 
 ```php
@@ -589,7 +590,7 @@ class Customer extends ActiveRecord
 }
 ```
 
-Metoda [[yii\db\ActiveRecord::transactions()]] powinna zwracać tablicę, której klucze są nazwami [scenariuszy](structure-models.md#scenarios) 
+Metoda [[yii\db\ActiveRecord::transactions()|transactions()]] powinna zwracać tablicę, której klucze są nazwami [scenariuszy](structure-models.md#scenarios), 
 a wartości to operacje bazodanowe, które powinny być objęte transakcją. Używaj następujących stałych do określenia typu operacji:
 
 * [[yii\db\ActiveRecord::OP_INSERT|OP_INSERT]]: operacja dodawania wykonywana za pomocą [[yii\db\ActiveRecord::insert()|insert()]];
@@ -608,18 +609,18 @@ zmiany, użytkownik B klika przycisk "Zapisz", aby również wykonać identyczn�
 artykułu, byłoby wskazane powstrzymać go przed nadpisaniem wersji użytkownika A i wyświelić komunikat wyjaśniający sytuację.
 
 Optymistyczne blokowanie rozwiązuje ten problem za pomocą dodatkowej kolumny w bazie przechowującej numer wersji każdego wiersza.
-Kiedy taki wiersz jest zapisywany z wcześniejszym numerem wersji niż aktualna rzucany jest wyjątek [[yii\db\StaleObjectException]], który powstrzymuje 
+Kiedy taki wiersz jest zapisywany z wcześniejszym numerem wersji niż aktualna rzucany jest wyjątek [[yii\db\StaleObjectException|StaleObjectException]], który powstrzymuje 
 zapis wiersza. Optymistyczne blokowanie może być użyte tylko przy aktualizacji lub usuwaniu istniejącego wiersza za pomocą odpowiednio 
-[[yii\db\ActiveRecord::update()]] lub [[yii\db\ActiveRecord::delete()]].
+[[yii\db\ActiveRecord::update()|update()]] lub [[yii\db\ActiveRecord::delete()|delete()]].
 
 Aby skorzystać z optymistycznej blokady:
 
 1. Stwórz kolumnę w tabeli bazy danych powiązaną z klasą Active Record do przechowywania numeru wersji każdego wiersza.
    Kolumna powinna być typu big integer (przykładowo w MySQL `BIGINT DEFAULT 0`).
-2. Nadpisz metodę [[yii\db\ActiveRecord::optimisticLock()]], aby zwrócić nazwę tej kolumny.
+2. Nadpisz metodę [[yii\db\ActiveRecord::optimisticLock()|optimisticLock()]], aby zwrócić nazwę tej kolumny.
 3. W formularzu pobierającym dane od użytkownika, dodaj ukryte pole, gdzie przechowasz aktualny numer wersji uaktualnianego wiersza. 
    Upewnij się, że atrybut wersji ma dodaną zasadę walidacji i przechodzi poprawnie jej proces.
-4. W akcji kontrolera uaktualniającej wiersz za pomocą Active Record, użyj bloku try-catch, aby wyłapać wyjątek [[yii\db\StaleObjectException]]. 
+4. W akcji kontrolera uaktualniającej wiersz za pomocą Active Record, użyj bloku try-catch, aby wyłapać wyjątek [[yii\db\StaleObjectException|StaleObjectException]]. 
    Zaimplemetuj odpowiednią logikę biznesową (np. scalenie zmian, wyświetlenie komunikatu o nieaktualnej wersji, itp.), aby rozwiązać konflikt.
    
 Dla przykładu, załóżmy, że kolumna wersji nazywa się `version`. Implementację optymistycznego blokowania można wykonać za pomocą następującego kodu:
@@ -737,7 +738,7 @@ sytuacji, należy najpierw usunąć z pamięci właściwość relacyjną poprzez
 
 > Note: Pomimo podobieństwa mechanizmu relacji do [właściwości obiektu](concept-properties.md), jest tutaj znacząca różnica. 
 > Wartości właściwości zwykłych obiektów są tego samego typu jak definiująca je metoda-getter.
-> Metoda relacyjna zwraca jednak instancję [[yii\db\ActiveQuery]], a właściwości relacji są instancjami [[yii\db\ActiveRecord]] lub tablicą takich obiektów.
+> Metoda relacyjna zwraca jednak instancję [[yii\db\ActiveQuery|ActiveQuery]], a właściwości relacji są instancjami [[yii\db\ActiveRecord|ActiveRecord]] lub tablicą takich obiektów.
 > 
 > ```php
 > $customer->orders; // tablica obiektów `Order`
@@ -749,7 +750,7 @@ sytuacji, należy najpierw usunąć z pamięci właściwość relacyjną poprzez
 
 ### Dynamiczne kwerendy relacyjne <span id="dynamic-relational-query"></span>
 
-Dzięki temu, że metoda relacyjna zwraca instancję [[yii\db\ActiveQuery]], możliwe jest dalsze rozbudowanie takiej kwerendy korzystając z 
+Dzięki temu, że metoda relacyjna zwraca instancję [[yii\db\ActiveQuery|ActiveQuery]], możliwe jest dalsze rozbudowanie takiej kwerendy korzystając z 
 metod konstruowania kwerend. Dla przykładu:
 
 ```php
@@ -894,7 +895,7 @@ foreach ($customers as $customer) {
 }
 ```
 
-Wywołanie metody [[yii\db\ActiveQuery::with()]] powoduje pobranie zamówień dla pierwszych 100 klientów w pojedynczej kwerendzie SQL, dzięki czemu 
+Wywołanie metody [[yii\db\ActiveQuery::with()|with()]] powoduje pobranie zamówień dla pierwszych 100 klientów w pojedynczej kwerendzie SQL, dzięki czemu 
 redukujemy ilość zapytań ze 101 do 2!
 
 Możliwe jest gorliwe pobranie jednej lub wielu relacji, a nawet gorliwe pobranie *zagnieżdżonych relacji*. Zagnieżdżona relacja to taka, która 
@@ -946,7 +947,7 @@ $customers = Customer::find()->with([
 ```
 
 Dostosowując relacyjną kwerendę należy podać nazwę relacji jako klucz tablicy i użyć funkcji anonimowej jako odpowiadającej kluczowi wartości. 
-Funkcja anonimowa otrzymuje parametr `$query`, reprezentujący obiekt [[yii\db\ActiveQuery]], służący do wykonania relacyjnej kwerendy.
+Funkcja anonimowa otrzymuje parametr `$query`, reprezentujący obiekt [[yii\db\ActiveQuery|ActiveQuery]], służący do wykonania relacyjnej kwerendy.
 W powyższym przykładzie modyfikujemy relacyjną kwerendę dodając warunek ze statusem zamówienia.
 
 > Note: Wywołując [[yii\db\Query::select()|select()]] podczas gorliwego pobierania relacji, należy upewnić się, że kolumny określone w deklaracji 
@@ -984,7 +985,7 @@ $customers = Customer::find()
 > Note: Podczas tworzenia relacyjnych kwerend zawierających instrukcję SQL JOIN koniecznym jest ujednoznacznienie nazw kolumn. 
 > Standardową praktyką w takim wypadku jest poprzedzenie nazwy kolumny odpowiadającą jej nazwą tabeli.
 
-Jeszcze lepszym rozwiązaniem jest użycie istniejącej deklaracji relacji wywołując metodę [[yii\db\ActiveQuery::joinWith()]]:
+Jeszcze lepszym rozwiązaniem jest użycie istniejącej deklaracji relacji wywołując metodę [[yii\db\ActiveQuery::joinWith()|joinWith()]]:
 
 ```php
 $customers = Customer::find()
@@ -1015,7 +1016,7 @@ $customers = Customer::find()->joinWith([
 ```
 
 Czasem, przyłączając dwie tabele, musisz sprecyzować dodatkowe warunki dla części `ON` kwerendy JOIN.
-Można to zrobić wywołując metodę [[yii\db\ActiveQuery::onCondition()]] w poniższy sposób:
+Można to zrobić wywołując metodę [[yii\db\ActiveQuery::onCondition()|onCondition()]] w poniższy sposób:
 
 ```php
 // SELECT `customer`.* FROM `customer`
@@ -1032,7 +1033,7 @@ $customers = Customer::find()->joinWith([
 Powyższa kwerenda pobiera *wszystkich* klientów i dla każdego z nich pobiera wszystkie aktywne zamówienia.
 Zwróć uwagę na to, że ten przykład różni się od poprzedniego, gdzie pobierani byli tylko klienci posiadający przynajmniej jedno aktywne zamówienie.
 
-> Info: Jeśli [[yii\db\ActiveQuery]] zawiera warunek podany za pomocą [[yii\db\ActiveQuery::onCondition()|onCondition()]],
+> Info: Jeśli [[yii\db\ActiveQuery|ActiveQuery]] zawiera warunek podany za pomocą [[yii\db\ActiveQuery::onCondition()|onCondition()]],
 > będzie on umieszczony w części instrukcji `ON` tylko jeśli kwerenda zawiera JOIN. W przeciwnym wypadku warunek ten będzie automatycznie 
 > dodany do części `WHERE`.
 
@@ -1162,7 +1163,7 @@ Odwrotną operacją do [[yii\db\ActiveRecord::link()|link()]] jest [[yii\db\Acti
 dwoma instancjami Active Record. Przykładowo:
 
 ```php
-$customer = Customer::find()->with('orders')->all();
+$customer = Customer::find()->with('orders')->where(['id' => 123])->one();
 $customer->unlink('orders', $customer->orders[0]);
 ```
 
@@ -1221,8 +1222,8 @@ Możesz używać większości funkcjonalności dostępnych dla relacyjnych kwere
 
 ## Niestandardowe klasy kwerend <span id="customizing-query-classes"></span>
 
-Domyślnie wszystkie kwerendy Active Record używają klasy [[yii\db\ActiveQuery]]. Aby użyć niestandardowej klasy kwerend razem z klasą Active Record, 
-należy nadpisać metodę [[yii\db\ActiveRecord::find()]], aby zwracała instancję żądanej klasy kwerend. Przykład:
+Domyślnie wszystkie kwerendy Active Record używają klasy [[yii\db\ActiveQuery|ActiveQuery]]. Aby użyć niestandardowej klasy kwerend razem z klasą Active Record, 
+należy nadpisać metodę [[yii\db\ActiveRecord::find()|find()]], aby zwracała instancję żądanej klasy kwerend. Przykład:
  
 ```php
 namespace app\models;

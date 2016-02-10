@@ -7,12 +7,14 @@
 
 namespace yiiunit\framework\di;
 
+use Yii;
 use yii\di\Container;
 use yii\di\Instance;
 use yiiunit\framework\di\stubs\Bar;
 use yiiunit\framework\di\stubs\Foo;
 use yiiunit\framework\di\stubs\Qux;
 use yiiunit\TestCase;
+use yii\validators\NumberValidator;
 
 
 /**
@@ -99,5 +101,72 @@ class ContainerTest extends TestCase
         $this->assertEquals(3, $qux->a);
         $qux = $container->get('qux', [3, ['a' => 4]]);
         $this->assertEquals(4, $qux->a);
+    }
+
+    public function testInvoke()
+    {
+        $this->mockApplication([
+            'components' => [
+                'qux' => [
+                    'class' => 'yiiunit\framework\di\stubs\Qux',
+                    'a' => 'belongApp',
+                ],
+                'qux2' => [
+                    'class' => 'yiiunit\framework\di\stubs\Qux',
+                    'a' => 'belongAppQux2',
+                ],
+            ]
+        ]);
+        Yii::$container->set('yiiunit\framework\di\stubs\QuxInterface', [
+            'class' => 'yiiunit\framework\di\stubs\Qux',
+            'a' => 'independent',
+        ]);
+
+        // use component of application
+        $callback = function($param, stubs\QuxInterface $qux, Bar $bar) {
+            return [$param, $qux instanceof Qux, $qux->a, $bar->qux->a];
+        };
+        $result = Yii::$container->invoke($callback, ['D426']);
+        $this->assertEquals(['D426', true, 'belongApp', 'independent'], $result);
+
+        // another component of application
+        $callback = function($param, stubs\QuxInterface $qux2, $other = 'default') {
+            return [$param, $qux2 instanceof Qux, $qux2->a, $other];
+        };
+        $result = Yii::$container->invoke($callback, ['M2792684']);
+        $this->assertEquals(['M2792684', true, 'belongAppQux2', 'default'], $result);
+
+        // component not belong application
+        $callback = function($param, stubs\QuxInterface $notBelongApp, $other) {
+            return [$param, $notBelongApp instanceof Qux, $notBelongApp->a, $other];
+        };
+        $result = Yii::$container->invoke($callback, ['MDM', 'not_default']);
+        $this->assertEquals(['MDM', true, 'independent', 'not_default'], $result);
+
+
+        $myFunc = function ($a, NumberValidator $b, $c = 'default') {
+            return[$a, get_class($b), $c];
+        };
+        $result = Yii::$container->invoke($myFunc, ['a']);
+        $this->assertEquals(['a', 'yii\validators\NumberValidator', 'default'], $result);
+
+        $result = Yii::$container->invoke($myFunc, ['ok', 'value_of_c']);
+        $this->assertEquals(['ok', 'yii\validators\NumberValidator', 'value_of_c'], $result);
+
+        // use native php function
+        $this->assertEquals(Yii::$container->invoke('trim',[' M2792684  ']), 'M2792684');
+
+        // use helper function
+        $array = ['M36', 'D426', 'Y2684'];
+        $this->assertFalse(Yii::$container->invoke(['yii\helpers\ArrayHelper', 'isAssociative'],[$array]));
+
+
+        $myFunc = function (\yii\console\Request $request, \yii\console\Response $response) {
+            return [$request, $response];
+        };
+        list($request, $response) = Yii::$container->invoke($myFunc);
+        $this->assertEquals($request, Yii::$app->request);
+        $this->assertEquals($response, Yii::$app->response);
+
     }
 }

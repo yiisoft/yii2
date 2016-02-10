@@ -745,6 +745,7 @@ class Response extends \yii\base\Response
      * meaning if the current request is an AJAX or PJAX request, then calling this method will cause the browser
      * to redirect to the given URL. If this is false, a `Location` header will be sent, which when received as
      * an AJAX/PJAX response, may NOT cause browser redirection.
+     * Takes effect only when request header `X-Ie-Redirect-Compatibility` is absent.
      * @return $this the response object itself
      */
     public function redirect($url, $statusCode = 302, $checkAjax = true)
@@ -759,10 +760,16 @@ class Response extends \yii\base\Response
         }
 
         if ($checkAjax) {
-            if (Yii::$app->getRequest()->getIsPjax()) {
-                $this->getHeaders()->set('X-Pjax-Url', $url);
-            } elseif (Yii::$app->getRequest()->getIsAjax()) {
-                $this->getHeaders()->set('X-Redirect', $url);
+            if (Yii::$app->getRequest()->getIsAjax()) {
+                if (Yii::$app->getRequest()->getHeaders()->get('X-Ie-Redirect-Compatibility') !== null && $statusCode === 302) {
+                    // Ajax 302 redirect in IE does not work. Change status code to 200. See https://github.com/yiisoft/yii2/issues/9670
+                    $statusCode = 200;
+                }
+                if (Yii::$app->getRequest()->getIsPjax()) {
+                    $this->getHeaders()->set('X-Pjax-Url', $url);
+                } else {
+                    $this->getHeaders()->set('X-Redirect', $url);
+                }
             } else {
                 $this->getHeaders()->set('Location', $url);
             }

@@ -168,7 +168,7 @@ class ExampleController extends \yii\console\Controller
 public function actionIndex()
 {
     if (/* 何らかの問題が発生 */) {
-        echo "問題が生じました!\n";
+        echo "A problem occurred!\n";
         return 1;
     }
     // 何かをする

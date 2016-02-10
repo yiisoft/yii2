@@ -177,12 +177,12 @@ class Application extends \yii\base\Application
     public function coreCommands()
     {
         return [
-            'message' => 'yii\console\controllers\MessageController',
-            'help' => 'yii\console\controllers\HelpController',
-            'migrate' => 'yii\console\controllers\MigrateController',
-            'cache' => 'yii\console\controllers\CacheController',
             'asset' => 'yii\console\controllers\AssetController',
+            'cache' => 'yii\console\controllers\CacheController',
             'fixture' => 'yii\console\controllers\FixtureController',
+            'help' => 'yii\console\controllers\HelpController',
+            'message' => 'yii\console\controllers\MessageController',
+            'migrate' => 'yii\console\controllers\MigrateController',
             'serve' => 'yii\console\controllers\ServeController',
         ];
     }

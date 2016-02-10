@@ -31,22 +31,21 @@ class ServeController extends Controller
      * @var int port to serve on.
      */
     public $port = 8080;
-
     /**
      * @var string path or path alias to directory to serve
      */
     public $docroot = '@app/web';
-
     /**
      * @var string path to router script.
      * See https://secure.php.net/manual/en/features.commandline.webserver.php
      */
     public $router;
 
+
     /**
      * Runs PHP built-in web server
      *
-     * @param string $address address to serve on.  Either "host" or "host:port".
+     * @param string $address address to serve on. Either "host" or "host:port".
      *
      * @return int
      */

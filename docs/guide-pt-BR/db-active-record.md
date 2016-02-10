@@ -997,7 +997,7 @@ O código acima irá inserir automaticamente uma linha na tabela de junção `or
 A operação inversa para [[yii\db\ActiveRecord::link()|link()]] é [[yii\db\ActiveRecord::unlink()|unlink()]] que quebra uma relação existente entre duas instâncias de Active Record. Por exemplo,
 
 ```php
-$customer = Customer::find()->with('orders')->all();
+$customer = Customer::find()->with('orders')->where(['id' => 123])->one();
 $customer->unlink('orders', $customer->orders[0]);
 ```
 

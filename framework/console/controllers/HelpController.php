@@ -397,7 +397,7 @@ class HelpController extends Controller
             } else {
                 $defaultValue = var_export($defaultValue, true);
             }
-            $doc = "$type (defaults to " . $defaultValue . ')';
+            $doc = "$type (defaults to $defaultValue)";
         } else {
             $doc = $type;
         }

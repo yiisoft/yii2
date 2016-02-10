@@ -48,6 +48,7 @@ class ColumnSchemaBuilder extends Object
     protected $default;
     /**
      * @var boolean whether the column values should be unsigned. If this is `true`, an `UNSIGNED` keyword will be added.
+     * @since 2.0.7
      */
     protected $isUnsigned = false;
 
@@ -123,6 +124,7 @@ class ColumnSchemaBuilder extends Object
      * Specify the default SQL expression for the column.
      * @param string $default the default value expression.
      * @return $this
+     * @since 2.0.7
      */
     public function defaultExpression($default)
     {
@@ -223,6 +225,7 @@ class ColumnSchemaBuilder extends Object
     /**
      * Builds the unsigned string for column.
      * @return string a string containing UNSIGNED keyword.
+     * @since 2.0.7
      */
     protected function buildUnsignedString()
     {

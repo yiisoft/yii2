@@ -158,15 +158,13 @@ ID контроллеров также могут содержать префи�
 ```php
 [
     'controllerMap' => [
-        [
-            // объявляет "account" контроллер, используя название класса
-            'account' => 'app\controllers\UserController',
+        // объявляет "account" контроллер, используя название класса
+        'account' => 'app\controllers\UserController',
 
-            // объявляет "article" контроллер, используя массив конфигурации
-            'article' => [
-                'class' => 'app\controllers\PostController',
-                'enableCsrfValidation' => false,
-            ],
+        // объявляет "article" контроллер, используя массив конфигурации
+        'article' => [
+            'class' => 'app\controllers\PostController',
+            'enableCsrfValidation' => false,
         ],
     ],
 ]

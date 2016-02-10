@@ -49,7 +49,7 @@ public function actionView($id)
 * [[yii\filters\ContentNegotiator|contentNegotiator]]: コンテントネゴシエーションをサポート。
   [レスポンス形式の設定](rest-response-formatting.md) の節で説明します。
 * [[yii\filters\VerbFilter|verbFilter]]: HTTP メソッドのバリデーションをサポート。
-* [[yii\filters\AuthMethod|authenticator]]: ユーザ認証をサポート。
+* [[yii\filters\auth\AuthMethod|authenticator]]: ユーザ認証をサポート。
   [認証](rest-authentication.md) の節で説明します。
 * [[yii\filters\RateLimiter|rateLimiter]]: レート制限をサポート。
   [レート制限](rest-rate-limiting.md) の節で説明します。
@@ -74,7 +74,7 @@ public function behaviors()
 
 ## `ActiveController` を拡張する <span id="extending-active-controller"></span>
 
-コントローラを [[yii\rest\ActiveController]] から拡張する場合は、このコントローラを通じて提供しようとしているリソースクラスの名前を [[yii\rest\ActiveController::modelClass||modelClass]] プロパティにセットしなければなりません。
+コントローラを [[yii\rest\ActiveController]] から拡張する場合は、このコントローラを通じて提供しようとしているリソースクラスの名前を [[yii\rest\ActiveController::modelClass|modelClass]] プロパティにセットしなければなりません。
 リソースクラスは [[yii\db\ActiveRecord]] から拡張しなければなりません。
 
 

@@ -87,6 +87,9 @@ $query->select(['user_id' => 'user.id', 'email']);
 $query->select(["CONCAT(first_name, ' ', last_name) AS full_name", 'email']); 
 ```
 
+生の SQL が使われる場所ではどこでもそうですが、セレクトに DB 式を書く場合には、テーブルやカラムの名前を表すために
+[特定のデータベースに依存しない引用符の構文](db-dao.md#quoting-table-and-column-names) を使うことが出来ます。
+
 バージョン 2.0.1 以降では、サブクエリもセレクトすることが出来ます。
 各サブクエリは、[[yii\db\Query]] オブジェクトの形で指定しなければなりません。
 例えば、
@@ -155,7 +158,7 @@ $query->from(['u' => $subQuery]);
 
 #### 文字列形式 <span id="string-format"></span>
 
-文字列形式は、非常に単純な条件を定義する場合に最適です。
+文字列形式は、非常に単純な条件を定義する場合や、DBMS の組み込み関数を使う必要がある場合に最適です。
 これは、生の SQL を書いている場合と同じように動作します。
 例えば、
 
@@ -164,6 +167,9 @@ $query->where('status=1');
 
 // あるいは、パラメータバインディングを使って、動的にパラメータをバインドする
 $query->where('status=:status', [':status' => $status]);
+
+// date フィールドに対して MySQL の YEAR() 関数を使う生の SQL
+$query->where('YEAR(somedate) = 2015');
 ```
 
 次のように、条件式に変数を直接に埋め込んではいけません。
@@ -180,6 +186,9 @@ $query->where("status=$status");
 $query->where('status=:status')
     ->addParams([':status' => $status]);
 ```
+
+生の SQL が使われる場所ではどこでもそうですが、文字列形式で条件を書く場合には、テーブルやカラムの名前を表すために
+[特定のデータベースに依存しない引用符の構文](db-dao.md#quoting-table-and-column-names) を使うことが出来ます。
 
 
 #### ハッシュ形式 <span id="hash-format"></span>
@@ -207,6 +216,10 @@ $userQuery = (new Query())->select('id')->from('user');
 // ...WHERE `id` IN (SELECT `id` FROM `user`)
 $query->where(['id' => $userQuery]);
 ```
+
+ハッシュ形式を使う場合、Yii は内部的にパラメータバインディングを使用します。
+従って、[文字列形式](#string-format) とは対照的に、ここでは手動でパラメータを追加する必要はありません。
+
 
 #### 演算子形式 <span id="operator-format"></span>
 
@@ -268,6 +281,9 @@ $query->where(['id' => $userQuery]);
 
 - `>`、`<=`、その他、二つのオペランドを取る有効な DB 演算子全て: 最初のオペランドはカラム名、第二のオペランドは値でなければなりません。
   例えば、`['>', 'age', 10]` は `age>10` を生成します。
+
+演算子形式を使う場合、Yii は内部的にパラメータバインディングを使用します。
+従って、[文字列形式](#string-format) とは対照的に、ここでは手動でパラメータを追加する必要はありません。
 
 
 #### 条件を追加する <span id="appending-conditions"></span>

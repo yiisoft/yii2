@@ -13,8 +13,9 @@ use yii\base\NotSupportedException;
 /**
  * QueryBuilder builds a SELECT SQL statement based on the specification given as a [[Query]] object.
  *
- * QueryBuilder can also be used to build SQL statements such as INSERT, UPDATE, DELETE, CREATE TABLE,
- * from a [[Query]] object.
+ * SQL statements are created from [[Query]] objects using the [[build()]]-method.
+ *
+ * QueryBuilder is also used by [[Command]] to build SQL statements such as INSERT, UPDATE, DELETE, CREATE TABLE.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
@@ -100,6 +101,21 @@ class QueryBuilder extends \yii\base\Object
 
         $sql = implode($this->separator, array_filter($clauses));
         $sql = $this->buildOrderByAndLimit($sql, $query->orderBy, $query->limit, $query->offset);
+
+        if (!empty($query->orderBy)) {
+            foreach ($query->orderBy as $expression) {
+                if ($expression instanceof Expression) {
+                    $params = array_merge($params, $expression->params);
+                }
+            }
+        }
+        if (!empty($query->groupBy)) {
+            foreach ($query->groupBy as $expression) {
+                if ($expression instanceof Expression) {
+                    $params = array_merge($params, $expression->params);
+                }
+            }
+        }
 
         $union = $this->buildUnion($query->union, $params);
         if ($union !== '') {
@@ -751,7 +767,17 @@ class QueryBuilder extends \yii\base\Object
      */
     public function buildGroupBy($columns)
     {
-        return empty($columns) ? '' : 'GROUP BY ' . $this->buildColumns($columns);
+        if (empty($columns)) {
+            return '';
+        }
+        foreach ($columns as $i => $column) {
+            if ($column instanceof Expression) {
+                $columns[$i] = $column->expression;
+            } elseif (strpos($column, '(') === false) {
+                $columns[$i] = $this->db->quoteColumnName($column);
+            }
+        }
+        return 'GROUP BY ' . implode(', ', $columns);
     }
 
     /**

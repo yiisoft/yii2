@@ -44,8 +44,8 @@ class AppAsset extends AssetBundle
 * [[yii\web\AssetBundle::basePath|basePath]]: задаёт Web доступную директорию, которая содержит файлы ресурсов текущего комплекта. Когда Вы задаёте свойство [[yii\web\AssetBundle::sourcePath|sourcePath]] [Менеджер ресурсов](#asset-manager) опубликует ресурсы текущего комплекта в Web доступную директорию и перезапишет соответственно данное свойство. Вы должны задать данное свойство если Ваши файлы ресурсов уже в Web доступной директории и не нужно опубликовывать ресурсы. Здесь могут быть использованы [псевдонимы путей](concept-aliases.md).
 * [[yii\web\AssetBundle::baseUrl|baseUrl]]: задаёт URL соответствующий директории [[yii\web\AssetBundle::basePath|basePath]]. Также как и для [[yii\web\AssetBundle::basePath|basePath]], если Вы задаёте свойство [[yii\web\AssetBundle::sourcePath|sourcePath]] [Менеджер ресурсов](#asset-manager) опубликует ресурсы и перезапишет это свойство соответственно. Здесь могут быть использованы [псевдонимы путей](concept-aliases.md).
 * [[yii\web\AssetBundle::js|js]]: массив, перечисляющий JavaScript файлы, содержащиеся в данном комплекте. Заметьте, что только прямая косая черта (forward slash - "/") может быть использована, как разделитель директорий. Каждый JavaScript файл может быть задан в одном из следующих форматов:
-- относительный путь, представленный локальным JavaScript файлом (например `js/main.js`). Актуальный путь файла может быть определён путём добавления [[yii\web\AssetManager::basePath]] к относительному пути, и актуальный URL файла может быть определён путём добавления [[yii\web\AssetManager::baseUrl]] к относительному пути.
-- абсолютный URL, представленный внешним JavaScript файлом. Например,
+  - относительный путь, представленный локальным JavaScript файлом (например `js/main.js`). Актуальный путь файла может быть определён путём добавления [[yii\web\AssetManager::basePath]] к относительному пути, и актуальный URL файла может быть определён путём добавления [[yii\web\AssetManager::baseUrl]] к относительному пути.
+  - абсолютный URL, представленный внешним JavaScript файлом. Например,
     `http://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js` или
     `//ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js`.
 * [[yii\web\AssetBundle::css|css]]: массив, перечисляющий CSS файлы, содержащиеся в данном комплекте. Формат этого массива такой же, как и у [[yii\web\AssetBundle::js|js]].
@@ -160,7 +160,7 @@ use app\assets\AppAsset;
 AppAsset::register($this);  // $this - представляет собой объект представления
 ```
 
-> Для справки: Метод [[yii\web\AssetBundle::register()]] возвращает объект комплекта ресурсов, содержащий информацию о публикуемых ресурсах, таких как [[yii\web\AssetBundle::basePath|basePath]] или [[yii\web\AssetBundle::baseUrl|baseUrl]].
+> Info: Метод [[yii\web\AssetBundle::register()]] возвращает объект комплекта ресурсов, содержащий информацию о публикуемых ресурсах, таких как [[yii\web\AssetBundle::basePath|basePath]] или [[yii\web\AssetBundle::baseUrl|baseUrl]].
 
 Если Вы регистрируете комплект ресурсов в других местах (т.е. не в представлении), Вы должны обеспечить необходимый объект представления. Например, при регистрации комплекта ресурсов в классе [widget](structure-widgets.md), Вы можете взять за объект представления `$this->view`.
 

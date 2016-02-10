@@ -954,7 +954,7 @@ class BaseConsole
             self::$_progressEtaLastUpdate = time();
         } elseif ($done < $total) {
             // update ETA once per second to avoid flapping
-            if (time() - self::$_progressEtaLastUpdate > 1) {
+            if (time() - self::$_progressEtaLastUpdate > 1 && $done > self::$_progressEtaLastDone) {
                 $rate = (time() - (self::$_progressEtaLastUpdate ?: self::$_progressStart)) / ($done - self::$_progressEtaLastDone);
                 self::$_progressEta = $rate * ($total - $done);
                 self::$_progressEtaLastUpdate = time();

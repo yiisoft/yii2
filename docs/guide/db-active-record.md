@@ -440,7 +440,9 @@ If you are interested in the attribute values prior to their most recent modific
 > even if it has the same value but a different type. This is often the case when the model receives user input from
 > HTML forms where every value is represented as a string.
 > To ensure the correct type for e.g. integer values you may apply a [validation filter](input-validation.md#data-filtering):
-> `['attributeName', 'filter', 'filter' => 'intval']`.
+> `['attributeName', 'filter', 'filter' => 'intval']`. This works with all the typecasting functions of PHP like
+> [intval()](http://php.net/manual/en/function.intval.php), [floatval()](http://php.net/manual/en/function.floatval.php),
+> [boolval](http://php.net/manual/en/function.boolval.php), etc...
 
 ### Default Attribute Values <span id="default-attribute-values"></span>
 
@@ -1221,7 +1223,7 @@ The opposite operation to [[yii\db\ActiveRecord::link()|link()]] is [[yii\db\Act
 which breaks an existing relationship between two Active Record instances. For example,
 
 ```php
-$customer = Customer::find()->with('orders')->all();
+$customer = Customer::find()->with('orders')->where(['id' => 123])->one();
 $customer->unlink('orders', $customer->orders[0]);
 ```
 

@@ -219,7 +219,7 @@ with a PHP callable. For example,
     }]
 ```
 
-> Note: Most validators do not handle empty inputs if their [[yii\base\Validator::skipOnEmpty]] property takes
+> Note: Most validators do not handle empty inputs if their [[yii\validators\Validator::skipOnEmpty]] property takes
   the default value true. They will simply be skipped during validation if their associated attributes receive empty
   inputs. Among the [core validators](tutorial-core-validators.md), only the `captcha`, `default`, `filter`,
   `required`, and `trim` validators will handle empty inputs.
@@ -538,7 +538,7 @@ class StatusValidator extends Validator
         $statuses = json_encode(Status::find()->select('id')->asArray()->column());
         $message = json_encode($this->message, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
         return <<<JS
-if ($.inArray(value, $statuses) > -1) {
+if ($.inArray(value, $statuses) === -1) {
     messages.push($message);
 }
 JS;

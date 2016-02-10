@@ -42,7 +42,7 @@ Changed current directory to <directory>
 Następnie dodaj `<directory>/vendor/bin` do zmiennej systemowej `PATH`. Od tej pory będziesz mógł użyć `codecept` z linii komend globalnie.
 
 > Uwaga: instalacja globalna Codeception pozwala na użycie go we wszystkich projektach na komputerze deweloperskim oraz na wykonywanie 
-  komendy `codecept` globalnie bez konieczności wskazywania ścieżki. Taka instalacja może jednak nie być pożądana, kiedy, dla przykładu, 
-  dwa różne projekty wymagają różnych wersji Codeception.
-  Dla uproszczenia wszystkie komendy powłoki odnoszące się do uruchamiania testów użyte w tym przewodniku są napisane przy założeniu, że Codeception
-  został zainstalowany globalnie.
+> komendy `codecept` globalnie bez konieczności wskazywania ścieżki. Taka instalacja może jednak nie być pożądana, kiedy, dla przykładu, 
+> dwa różne projekty wymagają różnych wersji Codeception.
+> Dla uproszczenia wszystkie komendy powłoki odnoszące się do uruchamiania testów użyte w tym przewodniku są napisane przy założeniu, że Codeception
+> został zainstalowany globalnie.
