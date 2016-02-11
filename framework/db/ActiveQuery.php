@@ -355,11 +355,19 @@ class ActiveQuery extends Query implements ActiveQueryInterface
      * This method differs from [[with()]] in that it will build up and execute a JOIN SQL statement
      * for the primary table. And when `$eagerLoading` is true, it will call [[with()]] in addition with the specified relations.
      *
-     * @param string|array $with the relations to be joined. Each array element represents a single relation.
-     * The array keys are relation names, and the array values are the corresponding anonymous functions that
-     * can be used to modify the relation queries on-the-fly. If a relation query does not need modification,
-     * you may use the relation name as the array value. Sub-relations can also be specified (see [[with()]]).
-     * For example,
+     * @param string|array $with the relations to be joined. This can either be a string, representing a relation name or
+     * an array with the following semantics:
+     *
+     * - Each array element represents a single relation.
+     * - You may specify the relation name as the array key and provide an anonymous functions that
+     *   can be used to modify the relation queries on-the-fly as the array value.
+     * - If a relation query does not need modification, you may use the relation name as the array value.
+     *
+     * The relation name may optionally contain an alias for the relation table (e.g. `books b`).
+     *
+     * Sub-relations can also be specified, see [[with()]] for the syntax.
+     *
+     * In the following you find some examples:
      *
      * ```php
      * // find all orders that contain books, and eager loading "books"
@@ -370,7 +378,11 @@ class ActiveQuery extends Query implements ActiveQueryInterface
      *         $query->orderBy('item.name');
      *     }
      * ])->all();
+     * // find all orders that contain books of the category 'Science fiction', using the alias "b" for the books table
+     * Order::find()->joinWith(['books b'], true, 'INNER JOIN')->where(['b.category' => 'Science fiction'])->all();
      * ```
+     *
+     * The alias syntax is available since version 2.0.7.
      *
      * @param boolean|array $eagerLoading whether to eager load the relations specified in `$with`.
      * When this is a boolean, it applies to all relations specified in `$with`. Use an array
@@ -382,8 +394,33 @@ class ActiveQuery extends Query implements ActiveQueryInterface
      */
     public function joinWith($with, $eagerLoading = true, $joinType = 'LEFT JOIN')
     {
-        $this->joinWith[] = [(array) $with, $eagerLoading, $joinType];
+        $relations = [];
+        foreach((array) $with as $name => $callback) {
+            if (is_int($name)) {
+                $name = $callback;
+                $callback = null;
+            }
 
+            if (preg_match('/^(.*?)(?:\s+AS\s+|\s+)(\w+)$/i', $name, $matches)) {
+                // relation is defined with an alias, adjust callback to apply alias
+                list(, $relation, $alias) = $matches;
+                $name = $relation;
+                $callback = function($query) use ($callback, $alias) {
+                    /** @var $query ActiveQuery */
+                    $query->alias($alias);
+                    if ($callback !== null) {
+                        call_user_func($callback, $query);
+                    }
+                };
+            }
+
+            if ($callback === null) {
+                $relations[] = $name;
+            } else {
+                $relations[$name] = $callback;
+            }
+        }
+        $this->joinWith[] = [$relations, $eagerLoading, $joinType];
         return $this;
     }
 
