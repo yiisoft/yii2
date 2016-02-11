@@ -48,6 +48,8 @@ with global variable `yii` instead.
 
   - `validateSlug()`
   - `generateUniqueSlug()`
+* The `value` property of `yii\behaviors\TimestampBehavior` does not treat array as a callable format anymore in order
+to be consistent with the parent class behavior. Use anonymous function instead.
 
 
 Upgrade from Yii 2.0.5
