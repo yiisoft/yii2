@@ -191,4 +191,27 @@ class ContainerTest extends TestCase
         $this->assertFalse(Yii::$container->invoke($closure, ['b' => 5, 'a' => 1]));
         $this->assertTrue(Yii::$container->invoke($closure, ['b' => 1, 'a' => 5]));
     }
+
+    public function testResolve()
+    {
+        $this->mockApplication([
+            'components' => [
+                'qux' => [
+                    'class' => 'yiiunit\framework\di\stubs\Qux',
+                    'a' => 'belongApp',
+                ],
+                'qux2' => [
+                    'class' => 'yiiunit\framework\di\stubs\Qux',
+                    'a' => 'belongAppQux2',
+                ],
+            ]
+        ]);
+        $closure = function($a, $b) {
+            return $a > $b;
+        };
+        $this->assertEquals([1, 5], Yii::$container->resolve($closure, ['b' => 5, 'a' => 1]));
+//        $this->assertEquals([1, 5], Yii::$container->resolve($closure, ['a' => 1, 'b' => 5]));
+//        $this->assertEquals([1, 5], Yii::$container->resolve($closure, [1, 5]));
+
+    }
 }

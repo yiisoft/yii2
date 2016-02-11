@@ -482,6 +482,7 @@ class Container extends Component
                 $className = $class->getName();
                 if ($associative && isset($params[$name]) && $params[$name] instanceof $className) {
                     $args[] = $params[$name];
+                    unset($params[$name]);
                 } elseif (!$associative && isset($params[0]) && $params[0] instanceof $className) {
                     $args[] = array_shift($params);
                 } elseif (\Yii::$app->has($name) && ($obj = \Yii::$app->get($name)) instanceof $className) {
@@ -491,6 +492,7 @@ class Container extends Component
                 }
             } elseif ($associative && isset($params[$name])) {
                 $args[] = $params[$name];
+                unset($params[$name]);
             } elseif (!$associative && count($params)) {
                 $args[] = array_shift($params);
             } elseif ($param->isDefaultValueAvailable()) {
