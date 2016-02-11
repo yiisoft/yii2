@@ -347,7 +347,7 @@ class ActiveQuery extends Query implements ActiveQueryInterface
      * Based on the definition of the specified relation(s), the method will append one or multiple
      * JOIN statements to the current query.
      *
-     * If the `$eagerLoading` parameter is true, the method will also eager loading the specified relations,
+     * If the `$eagerLoading` parameter is true, the method will also perform eager loading for the specified relations,
      * which is equivalent to calling [[with()]] using the specified relations.
      *
      * Note that because a JOIN query will be performed, you are responsible to disambiguate column names.
@@ -374,7 +374,7 @@ class ActiveQuery extends Query implements ActiveQueryInterface
      *
      * @param boolean|array $eagerLoading whether to eager load the relations specified in `$with`.
      * When this is a boolean, it applies to all relations specified in `$with`. Use an array
-     * to explicitly list which relations in `$with` need to be eagerly loaded.
+     * to explicitly list which relations in `$with` need to be eagerly loaded. Defaults to `true`.
      * @param string|array $joinType the join type of the relations specified in `$with`.
      * When this is a string, it applies to all relations specified in `$with`. Use an array
      * in the format of `relationName => joinType` to specify different join types for different relations.
@@ -392,9 +392,10 @@ class ActiveQuery extends Query implements ActiveQueryInterface
         $join = $this->join;
         $this->join = [];
 
+        $model = new $this->modelClass;
         foreach ($this->joinWith as $config) {
             list ($with, $eagerLoading, $joinType) = $config;
-            $this->joinWithRelations(new $this->modelClass, $with, $joinType);
+            $this->joinWithRelations($model, $with, $joinType);
 
             if (is_array($eagerLoading)) {
                 foreach ($with as $name => $callback) {
@@ -719,6 +720,36 @@ class ActiveQuery extends Query implements ActiveQueryInterface
             call_user_func($callable, $relation);
         }
 
+        return $this;
+    }
+
+    /**
+     * Define an alias for the table defined in [[modelClass]].
+     *
+     * This method will adjust [[from]] so that an already defined alias will be overwritten.
+     * If none was defined, [[from]] will be populated with the given alias.
+     *
+     * @param string $alias the table alias.
+     * @return $this the query object itself
+     * @since 2.0.7
+     */
+    public function alias($alias)
+    {
+        if (empty($this->from) || count($this->from) < 2) {
+            list($tableName, ) = $this->getQueryTableName($this);
+            $this->from = [$alias => $tableName];
+        } else {
+            /* @var $modelClass ActiveRecord */
+            $modelClass = $this->modelClass;
+            $tableName = $modelClass::tableName();
+
+            foreach ($this->from as $key => $table) {
+                if ($table === $tableName) {
+                    unset($this->from[$key]);
+                    $this->from[$alias] = $tableName;
+                }
+            }
+        }
         return $this;
     }
 }

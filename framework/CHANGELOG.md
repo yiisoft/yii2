@@ -64,6 +64,7 @@ Yii Framework 2 Change Log
 - Bug: Fixed generation of canonical URLs for `ViewAction` pages (samdark)
 - Bug: Fixed `mb_*` functions calls to use `UTF-8` or `Yii::$app->charset` (silverfire)
 - Enh #3506: Added `yii\validators\IpValidator` to perform validation of IP addresses and subnets (SilverFire, samdark)
+- Enh #4972: Added `yii\db\ActiveQuery::alias()` to allow specifying a table alias for the model table without having to know the name (cebe, stepanselyuk)
 - Enh #5146: Added `yii\i18n\Formatter::asDuration()` method (nineinchnick, SilverFire)
 - Enh #5902: `yii\widgets\Pjax::options` now support special option `tag` to specify tag of container (Alex-Code)
 - Enh #6162, #9198: Added parameter visibleButtons for `yii\grid\ActionColumn` (fornit1917, silverfire)

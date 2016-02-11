@@ -1,6 +1,7 @@
 <?php
 namespace yiiunit\framework\db;
 
+use yii\db\ActiveQuery;
 use yiiunit\data\ar\ActiveRecord;
 use yiiunit\data\ar\BitValues;
 use yiiunit\data\ar\Category;
@@ -548,6 +549,27 @@ class ActiveRecordTest extends DatabaseTestCase
                 $q->orderBy('item.id');
             },
         ])->all();
+    }
+
+    public function testAlias()
+    {
+        $query = Order::find();
+        $this->assertNull($query->from);
+
+        $query = Order::find()->alias('o');
+        $this->assertEquals(['o' => Order::tableName()], $query->from);
+
+        $query = Order::find()->alias('o')->alias('ord');
+        $this->assertEquals(['ord' => Order::tableName()], $query->from);
+
+        $query = Order::find()->from([
+            'users',
+            'o' => Order::tableName(),
+        ])->alias('ord');
+        $this->assertEquals([
+            'users',
+            'ord' => Order::tableName(),
+        ], $query->from);
     }
 
     public function testInverseOf()
