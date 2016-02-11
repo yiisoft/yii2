@@ -811,13 +811,16 @@ class Connection extends Component
      */
     public function getDriverName()
     {
-        if ($this->_driverName === null) {
-            if (($pos = strpos($this->dsn, ':')) !== false) {
-                $this->_driverName = strtolower(substr($this->dsn, 0, $pos));
-            } else {
-                $this->_driverName = strtolower($this->getSlavePdo()->getAttribute(PDO::ATTR_DRIVER_NAME));
-            }
+        if ($this->_driverName !== null) {
+            return $this->_driverName;
         }
+
+        $foundDSN = strstr($this->dsn, ':', true);
+        if ($foundDSN !== false) {
+            $foundDSN = $this->getSlavePdo()->getAttribute(PDO::ATTR_DRIVER_NAME);
+        }
+
+        $this->_driverName = strtolower($foundDSN);
         return $this->_driverName;
     }
 
