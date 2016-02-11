@@ -620,6 +620,51 @@ $query = (new \yii\db\Query())
 The anonymous function takes a parameter `$row` which contains the current row data and should return a scalar
 value which will be used as the index value for the current row.
 
+## Dealing with table aliases <span id="aliases"></span>
+
+Some use cases of query builder are to create an initial [[yii\db\Query]] object in one place and adjust
+it in other places of the application by adding further conditions or to change options such as sorting.
+When more than one table is used in the query, you may need to disambiguate column names to be explicit about
+which column a condition refers to, e.g. `user.id` vs `post.id`.
+
+Since version 2.0.7 Yii provides methods that help you with disambiguating column names without the need
+to rely on a specific alias being defined in the original query. You may call the [[yii\db\Query::getAlias()]] method
+to get the alias name of a table in the query context, or [[yii\db\Query::applyAlias()]] to disambiguate a column.
+
+The following example shows how these methods are used:
+
+Consider the following method to be defined in the `User` class:
+
+```php
+public static function getActiveUserQuery()
+{
+    return (new \yii\db\Query)->from(['u' => 'user'])->where(['active' => 1]);
+}
+```
+
+The following code, which is located elsewhere in the application, calls the method above and needs to adjust the query.
+
+```php
+$query = User::getActiveUserQuery();
+$query->leftJoin('post', $query->applyAlias('user', 'id') . ' = post.author_id') // LEFT JOIN post ON u.id = post.author_id
+```
+
+By using [[yii\db\Query::applyAlias()|applyAlias()]] here, this code will still work, even when the alias is changed or removed
+inside of the `getActiveUserQuery()` method implementation.
+
+In some situations the alias may not be known at the time the query is created because we allow to change the alias later in the code.
+Therefor a special syntax for referring to a table alias
+can be used which is simlar to the syntax used for [quoting table names](db-dao.md#quoting-table-and-column-names) and
+the [table prefix feature](db-dao.md#using-table-prefix):
+
+```php
+$query = User::getActiveUserQuery();
+$query->leftJoin('post', '{{@user}}.[[id]] = post.author_id') // LEFT JOIN post ON u.id = post.author_id
+```
+
+In the above code `{{@user}}` will be resolved to the alias used in the query. This works even if the alias will be changed afterwards,
+as the evaluation of the expression is made after the SQL query has been created.
+
 
 ### Batch Query <span id="batch-query"></span>
 

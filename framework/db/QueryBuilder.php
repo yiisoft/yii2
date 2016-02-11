@@ -122,6 +122,15 @@ class QueryBuilder extends \yii\base\Object
             $sql = "($sql){$this->separator}$union";
         }
 
+        // replace aliases with table names
+        $sql = preg_replace_callback(
+            '/\\{\\{@([\w\-\. ]+)\\}\\}/',
+            function ($matches) use ($query) {
+                return '{{' . $query->getAlias($matches[1]) . '}}';
+            },
+            $sql
+        );
+
         return [$sql, $params];
     }
 
