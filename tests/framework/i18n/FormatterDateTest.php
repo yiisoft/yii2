@@ -749,4 +749,41 @@ class FormatterDateTest extends TestCase
 
     }
 
+    public function testDateRange(){
+        $this->assertEquals('11 Feb 2016', $this->formatter->asDateRange("11.02.2016", "11.02.2016"));
+        $this->assertEquals('1 April 2016', $this->formatter->asDateRange(new DateTime("01.04.2016"), new DateTime("01.04.2016"), ['month' => 'F']));
+
+        $this->assertEquals('1 Apr 2016 - 4 May 2017', $this->formatter->asDateRange("01.04.2016", "04.05.2017"));
+        $this->assertEquals('1 Apr 2016 - 1 Apr 2017', $this->formatter->asDateRange("01.04.2016", "01.04.2017"));
+        $this->assertEquals('1 Apr - 4 May 2016', $this->formatter->asDateRange("01.04.2016", "04.05.2016"));
+        $this->assertEquals('1 - 4 Apr 2016', $this->formatter->asDateRange("01.04.2016", "04.04.2016"));
+
+        $this->assertEquals('Oct 4-6, 2016',
+            $this->formatter->asDateRange("04.10.2016", "06.10.2016", ['templates' => ['diffDay' => '{from_month} {from_day}-{to_day}, {from_year}'] ]));
+
+        $this->assertEquals('14 January 2013, 10am - 08pm',
+            $this->formatter->asDateRange('10:00 2013-01-14', '20:00 2013-01-14', [
+                'showTime' => true,
+                'time' => 'ha',
+                'month' => 'F',
+                'templates' => [
+                    'diffTime' => '{day} {month} {year}, {from_time} - {to_time}'
+                ]
+            ])
+        );
+
+        $this->assertEquals('10:00 - 20:00 14 January 2013',
+            $this->formatter->asDateRange('10:00 2013-01-14', '20:00 2013-01-14', [
+                'showTime' => true,
+                'month' => 'F'
+            ])
+        );
+
+        $this->assertEquals('10:00 13 - 20:00 14 Jan 2013',
+            $this->formatter->asDateRange('10:00 2013-01-13', '20:00 2013-01-14', [
+                'showTime' => true
+            ])
+        );
+    }
+
 }

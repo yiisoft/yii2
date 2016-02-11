@@ -19,6 +19,7 @@ use yii\base\InvalidConfigException;
 use yii\base\InvalidParamException;
 use yii\helpers\FormatConverter;
 use yii\helpers\HtmlPurifier;
+use yii\helpers\ArrayHelper;
 use yii\helpers\Html;
 
 /**
@@ -168,6 +169,21 @@ class Formatter extends Component
      * @see http://php.net/manual/en/class.intlcalendar.php
      * @since 2.0.7
      */
+
+    public $dateRangeFormat = [
+                'showTime' => false,
+                'year' => 'Y',
+                'month' => 'M',
+                'day' => 'j',
+                'time' => 'H:i',
+                'templates' => [
+                    'notDiff' => '{from_time} {from_day} {from_month} {from_year}',
+                    'diffYear' => '{from_time} {from_day} {from_month} {from_year} - {to_time} {to_day} {to_month} {to_year}',
+                    'diffMonth' => '{from_time} {from_day} {from_month} - {to_time} {to_day} {to_month} {to_year}',
+                    'diffDay' => '{from_time} {from_day} - {to_time} {to_day} {to_month} {to_year}',
+                    'diffTime' => '{from_time} - {to_time} {to_day} {to_month} {to_year}'
+                ]
+            ];
     public $calendar;
     /**
      * @var string the character displayed as the decimal point when formatting a number.
@@ -640,6 +656,105 @@ class Formatter extends Component
     }
 
     /**
+     * Represent date range in pretty format.
+     *
+     * @param DateTime|string $fromDate start date range.
+     * @param DateTime|string $toDate end date range.
+     * @param array|null $format - variable containing the output formats and templates date range.
+     *  - boolean showTime - set display time in date range. Default: false
+     *  - string year  - php date format to display year. Default: 'Y'
+     *  - string month - php date format to display month. Default: 'M'
+     *  - string day - php date format to dispaly day. Default: 'j'
+     *  - string time - php date format to dispaly time.Default: 'H:i'
+     *  - array templates - array of templates for different by year, month, day
+     *   Elements to replace:
+     *      {from_year}, {from_month}, {from_day}, {from_time} - replace by $fromDate
+     *      {to_year}, {to_month}, {to_day}, {to_time} - replace by $toDate
+     *      {year}, {month}, {day} - replace by coincident in years, months, days.
+     *
+     *   - string notDiff - template is used when $fromDate equals $toDate
+     *     Default: '{from_time} {from_day} {from_month} {from_year}'
+     *     Example: 11 Feb 2016
+     *
+     *   - string diffYear - template is used when dates differ at least a year
+     *     Default: '{from_time} {from_day} {from_month} {from_year} - {to_time} {to_day} {to_month} {to_year}'
+     *     Example: 1 Apr 2016 - 4 May 2017
+     *
+     *   - string diffMonth - template is used when dates differ by month with the same year
+     *     Default: '{from_time} {from_day} {from_month} - {to_time} {to_day} {to_month} {to_year}'
+     *     Example: 1 Apr - 4 May 2016
+     *
+     *   - string diffDay - template is used when dates differ by day. Months and years equal.
+     *     Default: '{from_time} {from_day} - {to_time} {to_day} {to_month} {to_year}'
+     *     Example: 1 - 4 Apr 2016
+     *
+     *   - string diffTime - template is used when dates differ by time. Days, months and years equals.
+     *     Default: '{from_time} - {to_time} {to_day} {to_month} {to_year}'
+     *     Example: 10:00 - 20:00 14 January 2013
+     *
+     * @return string pretty date range.
+     */
+    public function asDateRange($fromDate, $toDate, $format = [])
+    {
+        if( empty($fromDate) || empty($toDate) ){
+            return $this->nullDisplay;
+        }
+
+        $fromDate = $this->normalizeDatetimeValue($fromDate);
+        $toDate = $this->normalizeDatetimeValue($toDate);
+
+        $formatType = "";
+        if($fromDate->format("H:i d.m.Y") == $toDate->format("H:i d.m.Y")){
+            $formatType = 'notDiff';
+        }else{
+            if($fromDate->format("Y") != $toDate->format("Y")){
+                $formatType = 'diffYear';
+            }elseif($fromDate->format("n") != $toDate->format("n")){
+                $formatType = 'diffMonth';
+            }elseif($fromDate->format("j") != $toDate->format("j")){
+                $formatType = 'diffDay';
+            }elseif($fromDate->format("H") != $toDate->format("H")){
+                $formatType = 'diffTime';
+            }
+        }
+
+        $dateRange = str_replace([
+            '{from_day}',
+            '{from_month}',
+            '{from_year}',
+            '{to_day}',
+            '{to_month}',
+            '{to_year}',
+            '{from_time}',
+            '{to_time}',
+            '{day}',
+            '{month}',
+            '{year}'
+        ],[
+            $fromDate->format(ArrayHelper::getValue($format,'day',$this->dateRangeFormat['day'])),
+            $fromDate->format(ArrayHelper::getValue($format,'month',$this->dateRangeFormat['month'])),
+            $fromDate->format(ArrayHelper::getValue($format,'year',$this->dateRangeFormat['year'])),
+            $toDate->format(ArrayHelper::getValue($format,'day',$this->dateRangeFormat['day'])),
+            $toDate->format(ArrayHelper::getValue($format,'month',$this->dateRangeFormat['month'])),
+            $toDate->format(ArrayHelper::getValue($format,'year',$this->dateRangeFormat['year'])),
+            ArrayHelper::getValue($format,'showTime',
+                $this->dateRangeFormat['showTime']) ?
+                $fromDate->format(ArrayHelper::getValue($format,'time',$this->dateRangeFormat['time'])) :
+                '',
+            ArrayHelper::getValue($format,'showTime',
+                $this->dateRangeFormat['showTime']) ?
+                $toDate->format(ArrayHelper::getValue($format,'time',$this->dateRangeFormat['time'])) :
+                '',
+            $toDate->format(ArrayHelper::getValue($format,'day',$this->dateRangeFormat['day'])),
+            $toDate->format(ArrayHelper::getValue($format,'month',$this->dateRangeFormat['month'])),
+            $toDate->format(ArrayHelper::getValue($format,'year',$this->dateRangeFormat['year'])),
+        ], ArrayHelper::getValue($format, 'templates.'.$formatType, $this->dateRangeFormat['templates'][$formatType]) );
+
+        return trim(preg_replace('/\s\s+/', ' ', $dateRange));
+
+    }
+
+    /**
      * Normalizes the given datetime value as a DateTime object that can be taken by various date/time formatting methods.
      *
      * @param integer|string|DateTime $value the datetime value to be normalized. The following
@@ -818,6 +933,7 @@ class Formatter extends Component
         }
     }
 
+
     /**
      * Represents the value as duration in human readable format.
      *
@@ -879,7 +995,6 @@ class Formatter extends Component
 
         return empty($parts) ? $this->nullDisplay : (($isNegative ? $negativeSign : '') . implode($implodeString, $parts));
     }
-
 
     // number formats
 
