@@ -108,6 +108,20 @@ class Order extends ActiveRecord
             ->viaTable('order_item', ['order_id' => 'id']);
     }
 
+    public function getBooksExplicit()
+    {
+        return $this->hasMany(Item::className(), ['id' => 'item_id'])
+            ->onCondition(['category_id' => 1])
+            ->viaTable('order_item', ['order_id' => 'id']);
+    }
+
+    public function getBooksQuerysyntax()
+    {
+        return $this->hasMany(Item::className(), ['id' => 'item_id'])
+            ->onCondition(['{{@books}}.category_id' => 1])
+            ->viaTable('order_item', ['order_id' => 'id']);
+    }
+
     public function beforeSave($insert)
     {
         if (parent::beforeSave($insert)) {
