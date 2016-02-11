@@ -210,8 +210,7 @@ class ContainerTest extends TestCase
             return $a > $b;
         };
         $this->assertEquals([1, 5], Yii::$container->resolve($closure, ['b' => 5, 'a' => 1]));
-//        $this->assertEquals([1, 5], Yii::$container->resolve($closure, ['a' => 1, 'b' => 5]));
-//        $this->assertEquals([1, 5], Yii::$container->resolve($closure, [1, 5]));
-
+        $this->assertEquals([1, 5], Yii::$container->resolve($closure, ['a' => 1, 'b' => 5]));
+        $this->assertEquals([1, 5], Yii::$container->resolve($closure, [1, 5]));
     }
 }

@@ -457,9 +457,9 @@ class Container extends Component
     }
 
     /**
-     * Resolve dependencies for a function, can use either named or numbered $params.
+     * Resolve dependencies for a function.
      * @param callable $callback callable to be invoked.
-     * @param array $params callback paramater.
+     * @param array $params The array of parameters for the function, can be either numeric or associative.
      * @return array The resolved dependencies.
      * @throws InvalidConfigException if a dependency cannot be resolved or if a dependency cannot be fulfilled.
      * @since 2.0.7
@@ -510,9 +510,9 @@ class Container extends Component
     }
 
     /**
-     * Invoke callback with resolved dependecies parameters.
+     * Invoke callback with resolved dependencies parameters.
      * @param callable $callback callable to be invoked.
-     * @param array $params callback paramater.
+     * @param array $params The array of parameters for the function, can be either numeric or associative.
      * @return mixed the callback return value.
      * @throws InvalidConfigException if a dependency cannot be resolved or if a dependency cannot be fulfilled.
      * @since 2.0.7
