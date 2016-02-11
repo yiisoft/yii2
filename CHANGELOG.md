@@ -63,6 +63,7 @@ Yii Framework 2 Change Log
 - Bug #10760: `yii\widgets\DetailView::normalizeAttributes()` fixed for arrayable models (boehsermoe)
 - Bug: Fixed generation of canonical URLs for `ViewAction` pages (samdark)
 - Bug: Fixed `mb_*` functions calls to use `UTF-8` or `Yii::$app->charset` (silverfire)
+- Enh #2377: Allow specifying a table alias when joining relations via `joinWith()` (cebe, nainoon)
 - Enh #3506: Added `yii\validators\IpValidator` to perform validation of IP addresses and subnets (SilverFire, samdark)
 - Enh #4972: Added `yii\db\ActiveQuery::alias()` to allow specifying a table alias for the model table without having to know the name (cebe, stepanselyuk)
 - Enh #5146: Added `yii\i18n\Formatter::asDuration()` method (nineinchnick, SilverFire)
