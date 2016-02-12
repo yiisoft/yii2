@@ -97,7 +97,8 @@ class ErrorHandler extends \yii\base\ErrorHandler
                 $response->data = $result;
             }
         } elseif ($response->format === Response::FORMAT_HTML) {
-            if (YII_ENV_TEST || isset($_SERVER['HTTP_X_REQUESTED_WITH']) && $_SERVER['HTTP_X_REQUESTED_WITH'] === 'XMLHttpRequest') {
+            $headers = Yii::$app->request->getHeaders();
+            if (YII_ENV_TEST || $headers->get('x-requested-with') === 'XMLHttpRequest') {
                 // AJAX request
                 $response->data = '<pre>' . $this->htmlEncode(static::convertExceptionToString($exception)) . '</pre>';
             } else {
@@ -350,11 +351,12 @@ class ErrorHandler extends \yii\base\ErrorHandler
             'http://iis.net/' => ['iis', 'services'],
             'http://php.net/manual/en/features.commandline.webserver.php' => ['development'],
         ];
-        if (isset($_SERVER['SERVER_SOFTWARE'])) {
+        $serverSoftware = Yii::$app->getRequest()->getServerParam('SERVER_SOFTWARE');
+        if ($serverSoftware) {
             foreach ($serverUrls as $url => $keywords) {
                 foreach ($keywords as $keyword) {
-                    if (stripos($_SERVER['SERVER_SOFTWARE'], $keyword) !== false) {
-                        return '<a href="' . $url . '" target="_blank">' . $this->htmlEncode($_SERVER['SERVER_SOFTWARE']) . '</a>';
+                    if (stripos($serverSoftware, $keyword) !== false) {
+                        return '<a href="' . $url . '" target="_blank">' . $this->htmlEncode($serverSoftware) . '</a>';
                     }
                 }
             }

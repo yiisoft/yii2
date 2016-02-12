@@ -131,8 +131,7 @@ class Cors extends ActionFilter
         $headers = [];
         $requestHeaders = array_keys($this->cors);
         foreach ($requestHeaders as $headerField) {
-            $serverField = $this->headerizeToPhp($headerField);
-            $headerData = isset($_SERVER[$serverField]) ? $_SERVER[$serverField] : null;
+            $headerData = Yii::$app->getRequest()->getHeaders()->get($headerField);
             if ($headerData !== null) {
                 $headers[$headerField] = $headerData;
             }
