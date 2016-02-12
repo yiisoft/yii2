@@ -14,6 +14,7 @@ use yii\helpers\FileHelper;
 use yii\i18n\Formatter;
 use yii\web\View;
 use Yii;
+use yiiunit\framework\i18n\IntlTestHelper;
 use yiiunit\TestCase;
 
 /**
@@ -24,6 +25,7 @@ class CheckboxColumnTest extends TestCase
     protected function setUp()
     {
         parent::setUp();
+        IntlTestHelper::resetIntlStatus();
         $this->mockApplication();
         Yii::setAlias('@webroot', '@yiiunit/runtime');
         Yii::setAlias('@web', 'http://localhost/');
