@@ -969,7 +969,7 @@ class Query extends Component implements QueryInterface
      */
     public static function create($from)
     {
-        return new self([
+        $query = new self([
             'where' => $from->where,
             'limit' => $from->limit,
             'offset' => $from->offset,
@@ -985,5 +985,7 @@ class Query extends Component implements QueryInterface
             'union' => $from->union,
             'params' => $from->params,
         ]);
+        $query->_aliases = $from->_aliases;
+        return $query;
     }
 }

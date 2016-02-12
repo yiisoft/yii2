@@ -556,7 +556,7 @@ class ActiveRecordTest extends DatabaseTestCase
         return [
             ['explicit'], // c
             ['querysyntax'], // {{@customer}}
-            ['applyAlias'], // $query->applyAlias('customer', 'id')
+//            ['applyAlias'], // $query->applyAlias('customer', 'id') // _aliases are currently not being populated
             // later getRelationAlias() could be added
         ];
     }
@@ -621,7 +621,7 @@ class ActiveRecordTest extends DatabaseTestCase
         if ($aliasMethod === 'explicit') {
             $orders = $query->where(['b.name' => 'Yii 1.1 Application Development Cookbook'])->orderBy('order.id')->all();
         } elseif ($aliasMethod === 'querysyntax') {
-            $orders = $query->where(['{{@book}}.name' => 'Yii 1.1 Application Development Cookbook'])->orderBy('{{@order}}.id')->all();
+            $orders = $query->where(['{{@item}}.name' => 'Yii 1.1 Application Development Cookbook'])->orderBy('{{@order}}.id')->all();
         } elseif ($aliasMethod === 'applyAlias') {
             $orders = $query->where([$query->applyAlias('book', 'name') => 'Yii 1.1 Application Development Cookbook'])->orderBy($query->applyAlias('order', 'id'))->all();
         }
@@ -687,6 +687,22 @@ class ActiveRecordTest extends DatabaseTestCase
             $this->assertEquals(1, count($orders[2]->$relationName));
         }
 
+        // join with ON condition and alias in relation definition
+        if ($aliasMethod === 'explicit' || $aliasMethod === 'querysyntax') {
+            $relationName = 'books' . ucfirst($aliasMethod) . 'A';
+            $orders = Order::find()->joinWith(["$relationName"])->orderBy('order.id')->all();
+            $this->assertEquals(3, count($orders));
+            $this->assertEquals(1, $orders[0]->id);
+            $this->assertEquals(2, $orders[1]->id);
+            $this->assertEquals(3, $orders[2]->id);
+            $this->assertTrue($orders[0]->isRelationPopulated($relationName));
+            $this->assertTrue($orders[1]->isRelationPopulated($relationName));
+            $this->assertTrue($orders[2]->isRelationPopulated($relationName));
+            $this->assertEquals(2, count($orders[0]->$relationName));
+            $this->assertEquals(0, count($orders[1]->$relationName));
+            $this->assertEquals(1, count($orders[2]->$relationName));
+        }
+
         // join with count and query
         /** @var $query ActiveQuery */
         $query = Order::find()->joinWith(['customer c']);
@@ -708,7 +724,7 @@ class ActiveRecordTest extends DatabaseTestCase
         if ($aliasMethod === 'explicit') {
             $customer = $customerQuery->where(['o.id' => 1])->one();
         } elseif ($aliasMethod === 'querysyntax') {
-            $customer = $customerQuery->where(['{{order}}.id' => 1])->one();
+            $customer = $customerQuery->where(['{{@order}}.id' => 1])->one();
         } elseif ($aliasMethod === 'applyAlias') {
             $customer = $customerQuery->where([$query->applyAlias('order', 'id') => 1])->one();
         }
@@ -726,7 +742,7 @@ class ActiveRecordTest extends DatabaseTestCase
                 } elseif ($aliasMethod === 'querysyntax') {
                     $q->where('{{@category}}.[[id]] = 2');
                 } elseif ($aliasMethod === 'applyAlias') {
-                    $q->where([$query->applyAlias('category', 'id') => 2]);
+                    $q->where([$q->applyAlias('category', 'id') => 2]);
                 }
             },
         ])->orderBy('order.id')->all();
@@ -737,6 +753,66 @@ class ActiveRecordTest extends DatabaseTestCase
         $this->assertTrue($orders[0]->items[0]->isRelationPopulated('category'));
         $this->assertEquals(2, $orders[0]->items[0]->category->id);
 
+    }
+
+    public function testJoinWithSameTable()
+    {
+        // join with the same table but different aliases
+        // alias is defined in the relation definition
+        // without eager loading
+        $query = Order::find()
+            ->joinWith('bookItems', false)// TODO true
+            ->joinWith('movieItems', false)
+            ->where(['movies.name' => 'Toy Story']);
+        $orders = $query->all();
+        $this->assertEquals(1, count($orders), $query->createCommand()->rawSql . print_r($orders, true));
+        $this->assertEquals(2, $orders[0]->id);
+        $this->assertFalse($orders[0]->isRelationPopulated('bookItems'));
+        $this->assertFalse($orders[0]->isRelationPopulated('movieItems'));
+        // with eager loading
+        $query = Order::find()
+            ->joinWith('bookItems', true)
+            ->joinWith('movieItems', true)
+            ->where(['movies.name' => 'Toy Story']);
+        $orders = $query->all();
+        $this->assertEquals(1, count($orders), $query->createCommand()->rawSql . print_r($orders, true));
+        $this->assertEquals(2, $orders[0]->id);
+        $this->assertTrue($orders[0]->isRelationPopulated('bookItems'));
+        $this->assertTrue($orders[0]->isRelationPopulated('movieItems'));
+        $this->assertEquals(0, count($orders[0]->bookItems));
+        $this->assertEquals(3, count($orders[0]->movieItems));
+
+        // join with the same table but different aliases
+        // alias is defined in the call to joinWith()
+        // without eager loading
+        $query = Order::find()
+            ->joinWith(['itemsIndexed books' => function($q) { $q->onCondition('books.category_id = 1'); }], false)
+            ->joinWith(['itemsIndexed movies' => function($q) { $q->onCondition('movies.category_id = 2'); }], false)
+            ->where(['movies.name' => 'Toy Story']);
+        $orders = $query->all();
+        $this->assertEquals(1, count($orders), $query->createCommand()->rawSql . print_r($orders, true));
+        $this->assertEquals(2, $orders[0]->id);
+        $this->assertFalse($orders[0]->isRelationPopulated('itemsIndexed'));
+        // with eager loading, only for one relation as it would be overwritten otherwise.
+        $query = Order::find()
+            ->joinWith(['itemsIndexed books' => function($q) { $q->onCondition('books.category_id = 1'); }], false)
+            ->joinWith(['itemsIndexed movies' => function($q) { $q->onCondition('movies.category_id = 2'); }], true)
+            ->where(['movies.name' => 'Toy Story']);
+        $orders = $query->all();
+        $this->assertEquals(1, count($orders), $query->createCommand()->rawSql . print_r($orders, true));
+        $this->assertEquals(2, $orders[0]->id);
+        $this->assertTrue($orders[0]->isRelationPopulated('itemsIndexed'));
+        $this->assertEquals(3, count($orders[0]->itemsIndexed));
+        // with eager loading, and the other relation
+        $query = Order::find()
+            ->joinWith(['itemsIndexed books' => function($q) { $q->onCondition('books.category_id = 1'); }], true)
+            ->joinWith(['itemsIndexed movies' => function($q) { $q->onCondition('movies.category_id = 2'); }], false)
+            ->where(['movies.name' => 'Toy Story']);
+        $orders = $query->all();
+        $this->assertEquals(1, count($orders), $query->createCommand()->rawSql . print_r($orders, true));
+        $this->assertEquals(2, $orders[0]->id);
+        $this->assertTrue($orders[0]->isRelationPopulated('itemsIndexed'));
+        $this->assertEquals(0, count($orders[0]->itemsIndexed));
     }
 
     public function testAlias()

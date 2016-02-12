@@ -643,6 +643,7 @@ class ActiveQuery extends Query implements ActiveQueryInterface
         if (!empty($child->join)) {
             foreach ($child->join as $join) {
                 $this->join[] = $join;
+                $this->populateAliases((array) $join[1]);
             }
         }
         if (!empty($child->union)) {
