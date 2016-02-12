@@ -816,7 +816,7 @@ class Connection extends Component
         }
 
         $foundDSN = strstr($this->dsn, ':', true);
-        if ($foundDSN !== false) {
+        if ($foundDSN === false) {
             $foundDSN = $this->getSlavePdo()->getAttribute(PDO::ATTR_DRIVER_NAME);
         }
 
