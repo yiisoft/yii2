@@ -61,17 +61,16 @@ class Application extends \yii\base\Application
     const OPTION_APPCONFIG = 'appconfig';
 
     /**
-     * @var string the default route of this application. Defaults to 'help',
-     * meaning the `help` command.
+     * @var string the default route of this application.
      */
-    public $defaultRoute = 'help';
+    public $defaultRoute;
     /**
      * @var boolean whether to enable the commands provided by the core framework.
      * Defaults to true.
      */
     public $enableCoreCommands = true;
     /**
-     * @var Controller the currently active controller instance
+     * @var Controller the currently active controller instance.
      */
     public $controller;
 
@@ -83,6 +82,9 @@ class Application extends \yii\base\Application
     {
         $config = $this->loadConfig($config);
         parent::__construct($config);
+    
+        //Defaults to 'help', meaning the `help` command.
+        $this->defaultRoute = 'help';
     }
 
     /**
