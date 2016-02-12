@@ -102,7 +102,7 @@ echo ListView::widget([
 GridView <a name="grid-view"></a>
 --------
 
-データグリッドすなわち GridView は Yii の最も強力なウィジェットの一つです。
+データグリッドすなわち [[yii\widgets\GridView|GridView]] は Yii の最も強力なウィジェットの一つです。
 これは、システムの管理セクションを素速く作らねばならない時に、この上なく便利なものです。
 このウィジェットは [データプロバイダ](output-data-providers.md) からデータを受けて、テーブルの形式で、行ごとに一組の [[yii\grid\GridView::columns|カラム]] を使ってデータを表示します。
 

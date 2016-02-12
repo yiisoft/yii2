@@ -90,8 +90,10 @@ class Foo
 - Public および protected な変数はクラスの冒頭で、すべてのメソッドの宣言に先立って宣言されるべきです。
   Private な変数もまたクラスの冒頭で宣言されるべきですが、
   変数がクラスのメソッドのごく一部分にのみ関係する場合は、変数を扱う一群のメソッドの直前に追加しても構いません。
-- クラスにおけるプロパティの宣言の順序は public から始まり、protected、private と続くべきです。
+- クラスにおけるプロパティの宣言の順序は、その可視性に基づいて、 public から始まり、protected、private と続くべきです。
+- 同じ可視性を持つプロパティの順序については、厳格な規則はありません。
 - より読みやすいように、プロパティの宣言は空行を挟まずに続け、プロパティ宣言とメソッド宣言のブロック間には2行の空行を挟むべきです。
+  また、異なる可視性のグループの間に、1行の空行を追加するべきです。
 - Private 変数は `$_varName` のように名付けるべきです。
 - Public なクラスメンバとスタンドアロンな変数は、先頭を小文字にした `$camelCase` で名付けるべきです。
 - 説明的な名前を使うこと。`$i` や `$j` のような変数は使わないようにしましょう。
@@ -102,9 +104,18 @@ class Foo
 <?php
 class Foo
 {
-    public $publicProp;
+    public $publicProp1;
+    public $publicProp2;
+
     protected $protectedProp;
+
     private $_privateProp;
+
+
+    public function someMethod()
+    {
+        // ...
+    }
 }
 ```
 
