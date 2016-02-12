@@ -10,6 +10,7 @@ namespace yii\di;
 use ReflectionClass;
 use yii\base\Component;
 use yii\base\InvalidConfigException;
+use yii\helpers\ArrayHelper;
 
 /**
  * Container implements a [dependency injection](http://en.wikipedia.org/wiki/Dependency_injection) container.
@@ -456,48 +457,70 @@ class Container extends Component
     }
 
     /**
-     * Invoke callback with resolved dependecies parameters.
+     * Resolve dependencies for a function.
      * @param callable $callback callable to be invoked.
-     * @param array $params callback paramater.
+     * @param array $params The array of parameters for the function, can be either numeric or associative.
+     * @return array The resolved dependencies.
+     * @throws InvalidConfigException if a dependency cannot be resolved or if a dependency cannot be fulfilled.
+     * @since 2.0.7
+     */
+    public function resolve(callable $callback, $params = [])
+    {
+        if (is_array($callback)) {
+            $reflection = new \ReflectionMethod($callback[0], $callback[1]);
+        } else {
+            $reflection = new \ReflectionFunction($callback);
+        }
+
+        $args = [];
+
+        $associative = ArrayHelper::isAssociative($params);
+
+        foreach ($reflection->getParameters() as $param) {
+            $name = $param->getName();
+            if (($class = $param->getClass()) !== null) {
+                $className = $class->getName();
+                if ($associative && isset($params[$name]) && $params[$name] instanceof $className) {
+                    $args[] = $params[$name];
+                    unset($params[$name]);
+                } elseif (!$associative && isset($params[0]) && $params[0] instanceof $className) {
+                    $args[] = array_shift($params);
+                } elseif (\Yii::$app->has($name) && ($obj = \Yii::$app->get($name)) instanceof $className) {
+                    $args[] = $obj;
+                } else {
+                    $args[] = $this->get($className);
+                }
+            } elseif ($associative && isset($params[$name])) {
+                $args[] = $params[$name];
+                unset($params[$name]);
+            } elseif (!$associative && count($params)) {
+                $args[] = array_shift($params);
+            } elseif ($param->isDefaultValueAvailable()) {
+                $args[] = $param->getDefaultValue();
+            } elseif (!$param->isOptional()) {
+                $funcName = $reflection->getName();
+                throw new InvalidConfigException("Missing required parameter \"$name\" when calling \"$funcName\".");
+            }
+        }
+
+        foreach ($params as $value) {
+            $args[] = $value;
+        }
+        return $args;
+    }
+
+    /**
+     * Invoke callback with resolved dependencies parameters.
+     * @param callable $callback callable to be invoked.
+     * @param array $params The array of parameters for the function, can be either numeric or associative.
      * @return mixed the callback return value.
      * @throws InvalidConfigException if a dependency cannot be resolved or if a dependency cannot be fulfilled.
      * @since 2.0.7
      */
-    public function invoke($callback, $params = [])
+    public function invoke(callable $callback, $params = [])
     {
         if (is_callable($callback)) {
-            if (is_array($callback)) {
-                $reflection = new \ReflectionMethod($callback[0], $callback[1]);
-            } else {
-                $reflection = new \ReflectionFunction($callback);
-            }
-
-            $args = [];
-            foreach ($reflection->getParameters() as $param) {
-                $name = $param->getName();
-                if (($class = $param->getClass()) !== null) {
-                    $className = $class->getName();
-                    if (isset($params[0]) && $params[0] instanceof $className) {
-                        $args[] = array_shift($params);
-                    } elseif (\Yii::$app->has($name) && ($obj = \Yii::$app->get($name)) instanceof $className) {
-                        $args[] = $obj;
-                    } else {
-                        $args[] = $this->get($className);
-                    }
-                } elseif (count($params)) {
-                    $args[] = array_shift($params);
-                } elseif ($param->isDefaultValueAvailable()) {
-                    $args[] = $param->getDefaultValue();
-                } elseif (!$param->isOptional()) {
-                    $funcName = $reflection->getName();
-                    throw new InvalidConfigException("Missing required parameter \"$name\" when calling \"$funcName\".");
-                }
-            }
-
-            foreach ($params as $value) {
-                $args[] = $value;
-            }
-            return call_user_func_array($callback, $args);
+            return call_user_func_array($callback, $this->resolve($callback, $params));
         } else {
             return call_user_func_array($callback, $params);
         }
