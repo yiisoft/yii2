@@ -48,16 +48,16 @@ table td[class*=col-],table th[class*=col-]{position:static;float:none;display:t
 @media (min-width:992px){.container{width:970px}}
 @media (min-width:1200px){.container{width:1170px}}
 @media print{
-	*,:before,:after{background:transparent!important;color:#000!important;box-shadow:none!important;text-shadow:none!important}
-	a,a:visited{text-decoration:underline}
-	a[href]:after{content:" (" attr(href) ")"}
-	abbr[title]:after{content:" (" attr(title) ")"}
-	a[href^="#"]:after,a[href^="javascript:"]:after{content:""}
-	tr{page-break-inside:avoid}
-	p,h3{orphans:3;widows:3}
-	h3{page-break-after:avoid}
-	.table{border-collapse:collapse!important}
-	.table td,.table th{background-color:#fff!important}
-	.table-bordered th,.table-bordered td{border:1px solid #ddd!important}
+    *,:before,:after{background:transparent!important;color:#000!important;box-shadow:none!important;text-shadow:none!important}
+    a,a:visited{text-decoration:underline}
+    a[href]:after{content:" (" attr(href) ")"}
+    abbr[title]:after{content:" (" attr(title) ")"}
+    a[href^="#"]:after,a[href^="javascript:"]:after{content:""}
+    tr{page-break-inside:avoid}
+    p,h3{orphans:3;widows:3}
+    h3{page-break-after:avoid}
+    .table{border-collapse:collapse!important}
+    .table td,.table th{background-color:#fff!important}
+    .table-bordered th,.table-bordered td{border:1px solid #ddd!important}
 }
 </style>

@@ -45,7 +45,8 @@ class XmlResponseFormatter extends Component implements ResponseFormatterInterfa
      */
     public $itemTag = 'item';
     /**
-     * @var boolean whether to enable to interpret implemented \Traversable interface objects as array
+     * @var boolean whether to interpret objects implementing the [[\Traversable]] interface as arrays.
+     * Defaults to `true`.
      * @since 2.0.7
      */
     public $useTraversableAsArray = true;
