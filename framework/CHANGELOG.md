@@ -61,6 +61,7 @@ Yii Framework 2 Change Log
 - Bug #10739: Fixed `yii\web\UrlManager::parseRequest()` to treat request URL with more than one slash at the end as invalid (andrewnester)
 - Bug #10751: Fixed `yii\validators\UrlValidator` pattern to improve matching (silverfire)
 - Bug #10760: `yii\widgets\DetailView::normalizeAttributes()` fixed for arrayable models (boehsermoe)
+- Bug #10825: Fixed `yii\validators\EachValidator` does not respect `skipOnEmpty` rule parameter (klimov-paul)
 - Bug: Fixed generation of canonical URLs for `ViewAction` pages (samdark)
 - Bug: Fixed `mb_*` functions calls to use `UTF-8` or `Yii::$app->charset` (silverfire)
 - Enh #3506: Added `yii\validators\IpValidator` to perform validation of IP addresses and subnets (SilverFire, samdark)
