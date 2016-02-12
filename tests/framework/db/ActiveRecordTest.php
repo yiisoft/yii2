@@ -555,7 +555,7 @@ class ActiveRecordTest extends DatabaseTestCase
     {
         return [
             ['explicit'], // c
-            ['querysyntax'], // {{@customer}}
+//            ['querysyntax'], // {{@customer}}
 //            ['applyAlias'], // $query->applyAlias('customer', 'id') // _aliases are currently not being populated
             // later getRelationAlias() could be added
         ];
@@ -761,7 +761,7 @@ class ActiveRecordTest extends DatabaseTestCase
         // alias is defined in the relation definition
         // without eager loading
         $query = Order::find()
-            ->joinWith('bookItems', false)// TODO true
+            ->joinWith('bookItems', false)
             ->joinWith('movieItems', false)
             ->where(['movies.name' => 'Toy Story']);
         $orders = $query->all();
