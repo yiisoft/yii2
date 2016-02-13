@@ -87,6 +87,8 @@ class BlameableBehavior extends AttributeBehavior
 
     /**
      * @inheritdoc
+     *
+     * In case, when the [[value]] property is `null`, the value of `Yii::$app->user->id` will be used as the value.
      */
     protected function getValue($event)
     {
