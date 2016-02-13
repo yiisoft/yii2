@@ -124,7 +124,17 @@ class Column extends Object
      */
     protected function renderHeaderCellContent()
     {
-        return trim($this->header) !== '' ? $this->header : $this->grid->emptyCell;
+        return trim($this->header) !== '' ? $this->header : $this->getHeaderCellLabel();
+    }
+
+    /**
+     * Returns header cell label.
+     * This method may be overridden to customize the label of the header cell.
+     * @return string label
+     */
+    protected function getHeaderCellLabel()
+    {
+        return $this->grid->emptyCell;
     }
 
     /**
