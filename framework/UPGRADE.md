@@ -58,9 +58,6 @@ Upgrade from Yii 2.0.6
   - `validateSlug()`
   - `generateUniqueSlug()`
 
-* The `value` property of `yii\behaviors\TimestampBehavior` does not treat array as a callable format anymore in order
-  to be consistent with the parent class behavior. Use anonymous function instead.
-
 * The `yii\console\controllers\MessageController` class has been refactored to be better configurable and now also allows
   setting a lot of configuration options via command line. If you extend from this class, make sure it works as expected after
   these changes.

@@ -120,6 +120,7 @@ Yii Framework 2 Change Log
 - Enh #10783: Added migration and unit-tests for `yii\i18n\DbMessageSource` (silverfire)
 - Enh #10797: Cleaned up requirements checker CSS (muhammadcahya)
 - Enh: Added last resort measure for `FileHelper::removeDirectory()` fail to unlink symlinks under Windows (samdark)
+- Enh: `AttributeBehavior::getValue()` now respects the callable in array format (silverfire)
 - Chg #9369: `Yii::$app->user->can()` now returns `false` instead of erroring in case `authManager` component is not configured (creocoder)
 - Chg #9411: `DetailView` now automatically sets container tag ID in case it's not specified (samdark)
 - Chg #9953: `TimestampBehavior::getValue()` changed to make value processing consistent with `AttributeBehavior::getValue()` (silverfire)
@@ -128,6 +129,7 @@ Yii Framework 2 Change Log
 - Chg #9878,9879,9880: Make `\base\Security` use `random_bytes()`, LibreSSL, mcrypt, limit OpenSSL to Windows, and to prefer `password_hash()` over `crypt()` (tom--)
 - Chg #10296: Methods mset, mget and madd of `\yii\caching\Cache` have been marked as deprecated (trejder, githubjeka)
 - Chg: ApcCache is now able to handle PHP 7 APCu (samdark)
+- Chg: `BlameableBehavior::getValue()` changed to make value processing consistent with `AttributeBehavior::getValue()` (silverfire)
 - New #10083: Added wrapper for PHP webserver (samdark)
 - New: Added new requirement: ICU Data version >= 49.1 (SilverFire)
 
