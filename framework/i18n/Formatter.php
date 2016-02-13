@@ -700,6 +700,8 @@ class Formatter extends Component
             return $this->nullDisplay;
         }
 
+        $format = ArrayHelper::merge($this->dateRangeFormat, $format);
+
         $fromDate = $this->normalizeDatetimeValue($fromDate);
         $toDate = $this->normalizeDatetimeValue($toDate);
 
@@ -731,24 +733,18 @@ class Formatter extends Component
             '{month}',
             '{year}'
         ],[
-            $fromDate->format(ArrayHelper::getValue($format,'day',$this->dateRangeFormat['day'])),
-            $fromDate->format(ArrayHelper::getValue($format,'month',$this->dateRangeFormat['month'])),
-            $fromDate->format(ArrayHelper::getValue($format,'year',$this->dateRangeFormat['year'])),
-            $toDate->format(ArrayHelper::getValue($format,'day',$this->dateRangeFormat['day'])),
-            $toDate->format(ArrayHelper::getValue($format,'month',$this->dateRangeFormat['month'])),
-            $toDate->format(ArrayHelper::getValue($format,'year',$this->dateRangeFormat['year'])),
-            ArrayHelper::getValue($format,'showTime',
-                $this->dateRangeFormat['showTime']) ?
-                $fromDate->format(ArrayHelper::getValue($format,'time',$this->dateRangeFormat['time'])) :
-                '',
-            ArrayHelper::getValue($format,'showTime',
-                $this->dateRangeFormat['showTime']) ?
-                $toDate->format(ArrayHelper::getValue($format,'time',$this->dateRangeFormat['time'])) :
-                '',
-            $toDate->format(ArrayHelper::getValue($format,'day',$this->dateRangeFormat['day'])),
-            $toDate->format(ArrayHelper::getValue($format,'month',$this->dateRangeFormat['month'])),
-            $toDate->format(ArrayHelper::getValue($format,'year',$this->dateRangeFormat['year'])),
-        ], ArrayHelper::getValue($format, 'templates.'.$formatType, $this->dateRangeFormat['templates'][$formatType]) );
+            $fromDate->format($format['day']),
+            $fromDate->format($format['month']),
+            $fromDate->format($format['year']),
+            $toDate->format($format['day']),
+            $toDate->format($format['month']),
+            $toDate->format($format['year']),
+            $format['showTime'] ? $fromDate->format($format['time']) : '',
+            $format['showTime'] ? $toDate->format($format['time']) : '',
+            $toDate->format($format['day']),
+            $toDate->format($format['month']),
+            $toDate->format($format['year']),
+        ], $format['templates'][$formatType] );
 
         return trim(preg_replace('/\s\s+/', ' ', $dateRange));
 
