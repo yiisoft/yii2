@@ -108,7 +108,7 @@ Yii Framework 2 Change Log
 - Enh #10154: Implemented support of traversable objects in `RangeValidator::ranges`, added `ArrayHelper::isIn()` and `ArrayHelper::isSubset()` (Sam Mousa)
 - Enh #10158: Added the possibility to specify CSS and Javascript options per file in `\yii\web\AssetBundle` (machour)
 - Enh #10170: `Yii::powered()` now uses `Yii::t()` (SamMousa)
-- Enh #10218: Support for selecting multiple filter values with the same name was added to `yii.gridView.js` (omnilight, silverfire)
+- Enh #10217: Support for selecting multiple filter values with the same name was added to `yii.gridView.js` (omnilight, silverfire)
 - Enh #10255: Added Yii warning to session initialization if session was already started (AnatolyRugalev)
 - Enh #10264: Generation of HTML tags in Yii's JavaScript now uses jQuery style (silverfire)
 - Enh #10267: `yii.js` - added original event passing to `pjaxOptions` for links with `data-method` and `data-pjax` (servocoder, silverfire)
