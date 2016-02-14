@@ -122,9 +122,8 @@ echo Url::to('@web/images/logo.gif', true);
 echo Url::to('@web/images/logo.gif', 'https');
 ```
 
-Starting from version 2.0.3, you may use [[yii\helpers\Url::current()]] to create a URL based on the currently
-requested route and GET parameters. You may modify or remove some of the GET parameters or add new ones by
-passing a `$params` parameter to the method. For example,
+A partir da versão 2.0.3, você pode usar [[yii\helpers\Url::current()]] para criar uma URL base para rota solicitada e parâmetros GET. Você pode modificar ou remover alguns dos parâmetros GET ou adicionar novos por
+passando o parâmetro `$ params` para o método. Por exemplo,
 
 ```php
 // assume $_GET = ['id' => 123, 'src' => 'google'], current route is "post/view"
@@ -139,10 +138,10 @@ echo Url::current(['id' => 100]);
 ```
 
 
-## Remember URLs <span id="remember-urls"></span>
+## Relembrar URLs <span id="remember-urls"></span>
 
-There are cases when you need to remember URL and afterwards use it during processing of the one of sequential requests.
-It can be achieved in the following way:
+Há casos em que você precisa se lembrar URL e depois usá-lo durante o processamento de uma das requisições sequenciais.
+Pode ser conseguida da seguinte forma:
  
 ```php
 // Remember current URL 
@@ -155,16 +154,16 @@ Url::remember(['product/view', 'id' => 42]);
 Url::remember(['product/view', 'id' => 42], 'product');
 ```
 
-In the next request we can get URL remembered in the following way:
+Na próxima requisição, podemos obter URL lembrada da seguinte forma:
 
 ```php
 $url = Url::previous();
 $productUrl = Url::previous('product');
 ```
                         
-## Checking Relative URLs <span id="checking-relative-urls"></span>
+## Verificar URLs relativas <span id="checking-relative-urls"></span>
 
-To find out if URL is relative i.e. it doesn't have host info part, you can use the following code:
+Para saber se a URL é relativa, ou seja, ele não tem informações do host, você pode usar o seguinte código:
                              
 ```php
 $isRelative = Url::isRelative('test/it');
