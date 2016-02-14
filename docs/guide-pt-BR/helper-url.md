@@ -49,20 +49,19 @@ Se você quiser criar uma URL como uma ancôra (anchor), você pode usar no arra
 ['site/index', 'param1' => 'value1', '#' => 'name']
 ```
 
-Uma rota pode ser absoluta ou relativa. An absolute route has a leading slash (e.g. `/site/index`) while a relative
-route has none (e.g. `site/index` or `index`). A relative route will be converted into an absolute one by the following rules:
+Uma rota pode ser absoluta ou relativa. Uma rota absoluta tem uma barra inicial (e.g. `/site/index`) enquanto uma rota relativa não (e.g. `site/index` or `index`). Uma rota relativa pode ser convertida em absoluta seguinda as seguintes regras:
 
-- If the route is an empty string, the current [[\yii\web\Controller::route|route]] will be used;
-- If the route contains no slashes at all (e.g. `index`), it is considered to be an action ID of the current controller
-  and will be prepended with [[\yii\web\Controller::uniqueId]];
-- If the route has no leading slash (e.g. `site/index`), it is considered to be a route relative to the current module
-  and will be prepended with the module's [[\yii\base\Module::uniqueId|uniqueId]].
+- Se a rota é uma string vazia, será usada a corrente rota [[\yii\web\Controller::route|route]];
+- Se a rota não contém nenhuma barra (e.g. `index`), considera-se ser o ID da acão corrente do controlador;
+  e serão precedidas por [[\yii\web\Controller::uniqueId]];
+- Se a rota não tem uma barra inicial (e.g. `site/index`), isto é considerado um URL relativa para para o modulo corrente
+  e será precedido por [[\yii\base\Module::uniqueId|uniqueId]].
   
-Starting from version 2.0.2, you may specify a route in terms of an [alias](concept-aliases.md). If this is the case,
-the alias will first be converted into the actual route which will then be turned into an absolute route according
-to the above rules.
+A partir da versão 2.0.2, você pode espeficiar uma rota como um [alias](concept-aliases.md). Se esse é o caso,
+o alias será primeiro convertido para rota atual que irá então ser transformado em uma rota absoluta de acordo
+às regras acima .
 
-Below are some examples of using this method:
+Abaixo estão alguns exemplos de como usar este método:
 
 ```php
 // /index.php?r=site/index
@@ -81,24 +80,21 @@ echo Url::toRoute('site/index', true);
 echo Url::toRoute('site/index', 'https');
 ```
 
-There's another method `Url::to()` that is very similar to [[toRoute()]]. The only difference is that this method
-requires a route to be specified as an array only. If a string is given, it will be treated as a URL.
+Há um outro método `Url::to()` que é muito semelhante a [[toRoute()]]. A única diferença é que este método requer uma rota a ser especificado como apenas como array. Se for dado uma string, ela será tratada como um URL.
 
-The first argument could be:
+O primeiro argumento poderia ser:
          
-- an array: [[toRoute()]] will be called to generate the URL. For example:
-  `['site/index']`, `['post/index', 'page' => 2]`. Please refer to [[toRoute()]] for more details
-  on how to specify a route.
-- a string with a leading `@`: it is treated as an alias, and the corresponding aliased string
-  will be returned.
-- an empty string: the currently requested URL will be returned;
-- a normal string: it will be returned as is.
+- um array: [[toRoute()]]  irá ser chamado para gerar a URL. Por exemplo:
+  `['site/index']`, `['post/index', 'page' => 2]`. Por favor consulte [[toRoute()]] para mais detalhes de como especificar uma rota.
+- uma string com inicio `@`: ele é tratado como um alias, e as strings correspondentes ao alias serão devolvidos.
+- uma string vazia: A URL da requisição corrente será retornado;
+- uma string normal: será devolvida como ele foi passada (como ela é).
 
-When `$scheme` is specified (either a string or true), an absolute URL with host info (obtained from
-[[\yii\web\UrlManager::hostInfo]]) will be returned. If `$url` is already an absolute URL, its scheme
-will be replaced with the specified one.
+Quando `$scheme` é espefificado (como uma string ou true),uma URL absoluta com informações do host (obtida de
+[[\yii\web\UrlManager::hostInfo]]) será retornada. Se `$url` já é uma URL absoluta, seu scheme
+irá ser substituído pelo o especificado.
 
-Below are some usage examples:
+Abaixo estão alguns exemplos de uso:
 
 ```php
 // /index.php?r=site/index
