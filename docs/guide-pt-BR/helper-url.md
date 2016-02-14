@@ -1,7 +1,7 @@
-Url Helper
+URL Helper
 ==========
 
-Url helper fornece um conjunto de métodos estáticos para o gerenciamento de URLs.
+URL helper fornece um conjunto de métodos estáticos para o gerenciamento de URLs.
 
 
 ## Obtendo URLs comuns <span id="getting-common-urls"></span>
@@ -35,14 +35,14 @@ Afim de criar ma URL para uma rota utilize o metódo `Url::toRoute()`. O metódo
 $url = Url::toRoute(['product/view', 'id' => 42]);
 ```
  
-Você pode especificar uma URL como string, e.g., `site/index`. Você pode também usar um array se você precisa especificar parâmetros adicionais para a URL a ser criada. O formato do array deve ser:
+Você pode especificar uma URL como string, ou seja, `site/index`. Você pode também usar um array se você precisa especificar parâmetros adicionais para a URL a ser criada. O formato do array deve ser:
 
 ```php
 // generates: /index.php?r=site/index&param1=value1&param2=value2
 ['site/index', 'param1' => 'value1', 'param2' => 'value2']
 ```
 
-Se você quiser criar uma URL como uma ancôra (anchor), você pode usar no array com o parâmetro `#`. Por exemplo,
+Se você quiser criar uma URL com uma ancôra (anchor), você pode usar no array o parâmetro `#`. Por exemplo,
 
 ```php
 // generates: /index.php?r=site/index&param1=value1#name
@@ -82,7 +82,7 @@ echo Url::toRoute('site/index', 'https');
 
 Há um outro método `Url::to()` que é muito semelhante a [[toRoute()]]. A única diferença é que este método requer uma rota a ser especificado como apenas como array. Se for dado uma string, ela será tratada como um URL.
 
-O primeiro argumento poderia ser:
+O primeiro argumento pode ser:
          
 - um array: [[toRoute()]]  irá ser chamado para gerar a URL. Por exemplo:
   `['site/index']`, `['post/index', 'page' => 2]`. Por favor consulte [[toRoute()]] para mais detalhes de como especificar uma rota.
