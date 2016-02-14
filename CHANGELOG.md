@@ -1,7 +1,7 @@
 Yii Framework 2 Change Log
 ==========================
 
-2.0.7 under development
+2.0.7 February 14, 2016
 -----------------------
 
 - Bug #6351: Find MySQL FK constraints from `information_schema` tables instead of `SHOW CREATE TABLE` to improve reliability (nineinchnick)
@@ -121,12 +121,12 @@ Yii Framework 2 Change Log
 - Enh #10797: Cleaned up requirements checker CSS (muhammadcahya)
 - Enh: Added last resort measure for `FileHelper::removeDirectory()` fail to unlink symlinks under Windows (samdark)
 - Enh: `AttributeBehavior::getValue()` now respects the callable in array format (silverfire)
+- Chg #6419: Added `yii\web\ErrorHandler::displayVars` make list of displayed vars customizable. `$_ENV` and `$_SERVER` are not displayed by default anymore (silverfire)
 - Chg #9369: `Yii::$app->user->can()` now returns `false` instead of erroring in case `authManager` component is not configured (creocoder)
 - Chg #9411: `DetailView` now automatically sets container tag ID in case it's not specified (samdark)
-- Chg #9953: `TimestampBehavior::getValue()` changed to make value processing consistent with `AttributeBehavior::getValue()` (silverfire)
-- Chg #6419: Added `yii\web\ErrorHandler::displayVars` make list of displayed vars customizable. `$_ENV` and `$_SERVER` are not displayed by default anymore (silverfire)
 - Chg #9528: Traversable objects are now formatted as arrays in `yii\web\XmlResponseFormatter` to support SPL objects and Generators (MaXL-ru)
-- Chg #9878,9879,9880: Make `\base\Security` use `random_bytes()`, LibreSSL, mcrypt, limit OpenSSL to Windows, and to prefer `password_hash()` over `crypt()` (tom--)
+- Chg #9878, #9879, #9880: Make `\base\Security` use `random_bytes()`, LibreSSL, mcrypt, limit OpenSSL to Windows, and to prefer `password_hash()` over `crypt()` (tom--)
+- Chg #9953: `TimestampBehavior::getValue()` changed to make value processing consistent with `AttributeBehavior::getValue()` (silverfire)
 - Chg #10296: Methods mset, mget and madd of `\yii\caching\Cache` have been marked as deprecated (trejder, githubjeka)
 - Chg: ApcCache is now able to handle PHP 7 APCu (samdark)
 - Chg: `BlameableBehavior::getValue()` changed to make value processing consistent with `AttributeBehavior::getValue()` (silverfire)
