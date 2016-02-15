@@ -29,6 +29,10 @@ use yii\helpers\Console;
  *
  * @property string $help This property is read-only.
  * @property string $helpSummary This property is read-only.
+ * @property array $passedOptionValues The properties corresponding to the passed options. This property is
+ * read-only.
+ * @property array $passedOptions The names of the options passed during execution. This property is
+ * read-only.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0

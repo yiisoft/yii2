@@ -173,7 +173,7 @@ class DetailView extends Widget
             if ($this->model instanceof Model) {
                 $this->attributes = $this->model->attributes();
             } elseif (is_object($this->model)) {
-                $this->attributes = $this->model instanceof Arrayable ? $this->model->toArray() : array_keys(get_object_vars($this->model));
+                $this->attributes = $this->model instanceof Arrayable ? array_keys($this->model->toArray()) : array_keys(get_object_vars($this->model));
             } elseif (is_array($this->model)) {
                 $this->attributes = array_keys($this->model);
             } else {

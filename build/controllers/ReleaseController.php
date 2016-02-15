@@ -135,8 +135,8 @@ class ReleaseController extends Controller
 
         $i = 0;
         ArrayHelper::multisort($changelog, function($line) use (&$i) {
-            if (preg_match('/^- (Chg|Enh|Bug)( #\d+(, #\d+)*)?: .+$/', $line, $m)) {
-                $o = ['Bug' => 'C', 'Enh' => 'D', 'Chg' => 'E'];
+            if (preg_match('/^- (Chg|Enh|Bug|New)( #\d+(, #\d+)*)?: .+$/', $line, $m)) {
+                $o = ['Bug' => 'C', 'Enh' => 'D', 'Chg' => 'E', 'New' => 'F'];
                 return $o[$m[1]] . ' ' . (!empty($m[2]) ? $m[2] : 'AAAA' . $i++);
             }
             return 'B' . $i++;

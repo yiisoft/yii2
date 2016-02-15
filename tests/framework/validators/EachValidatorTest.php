@@ -72,4 +72,18 @@ class EachValidatorTest extends TestCase
         $validator->validateAttribute($model, 'attr_one');
         $this->assertNotContains('integer', $model->getFirstError('attr_one'));
     }
+
+    /**
+     * @see https://github.com/yiisoft/yii2/issues/10825
+     *
+     * @depends testValidate
+     */
+    public function testSkipOnEmpty()
+    {
+        $validator = new EachValidator(['rule' => ['integer', 'skipOnEmpty' => true]]);
+        $this->assertTrue($validator->validate(['']));
+
+        $validator = new EachValidator(['rule' => ['integer', 'skipOnEmpty' => false]]);
+        $this->assertFalse($validator->validate(['']));
+    }
 }
