@@ -64,6 +64,18 @@ class Application extends \yii\base\Application
     }
 
     /**
+     * Run the web application, optionally include a ServerRequest
+     * @param null|\Psr\Http\Message\ServerRequestInterface $serverRequest
+     * @return int
+     */
+    public function run($serverRequest = null){
+        if ($serverRequest !== null){
+            $this->getRequest()->setServerRequest($serverRequest);
+        }
+        return parent::run();
+    }
+
+    /**
      * Handles the specified request.
      * @param Request $request the request to be handled
      * @return Response the resulting response

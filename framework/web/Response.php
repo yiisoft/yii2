@@ -243,7 +243,7 @@ class Response extends \yii\base\Response
     public function init()
     {
         if ($this->version === null) {
-            if (isset($_SERVER['SERVER_PROTOCOL']) && $_SERVER['SERVER_PROTOCOL'] === 'HTTP/1.0') {
+            if (Yii::$app->getRequest()->getServerParam('SERVER_PROTOCOL') === 'HTTP/1.0') {
                 $this->version = '1.0';
             } else {
                 $this->version = '1.1';
@@ -582,10 +582,11 @@ class Response extends \yii\base\Response
      */
     protected function getHttpRange($fileSize)
     {
-        if (!isset($_SERVER['HTTP_RANGE']) || $_SERVER['HTTP_RANGE'] === '-') {
+        $range = Yii::$app->getRequest()->getHeaders()->get('range');
+        if (!$range || $range === '-') {
             return [0, $fileSize - 1];
         }
-        if (!preg_match('/^bytes=(\d*)-(\d*)$/', $_SERVER['HTTP_RANGE'], $matches)) {
+        if (!preg_match('/^bytes=(\d*)-(\d*)$/', $range, $matches)) {
             return false;
         }
         if ($matches[1] === '') {
