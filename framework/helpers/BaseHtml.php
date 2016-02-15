@@ -119,7 +119,7 @@ class BaseHtml
 
     /**
      * Generates a complete HTML tag.
-     * @param string $name the tag name
+     * @param string|boolean|null $name the tag name. If $name is `null` or `false`, the corresponding content will be rendered without any tag.
      * @param string $content the content to be enclosed between the start and end tags. It will not be HTML-encoded.
      * If this is coming from end users, you should consider [[encode()]] it to prevent XSS attacks.
      * @param array $options the HTML tag attributes (HTML options) in terms of name-value pairs.
@@ -137,13 +137,16 @@ class BaseHtml
      */
     public static function tag($name, $content = '', $options = [])
     {
+        if ($name === null || $name === false) {
+            return $content;
+        }
         $html = "<$name" . static::renderTagAttributes($options) . '>';
         return isset(static::$voidElements[strtolower($name)]) ? $html : "$html$content</$name>";
     }
 
     /**
      * Generates a start tag.
-     * @param string $name the tag name
+     * @param string|boolean|null $name the tag name. If $name is `null` or `false`, the corresponding content will be rendered without any tag.
      * @param array $options the tag options in terms of name-value pairs. These will be rendered as
      * the attributes of the resulting tag. The values will be HTML-encoded using [[encode()]].
      * If a value is null, the corresponding attribute will not be rendered.
@@ -154,18 +157,24 @@ class BaseHtml
      */
     public static function beginTag($name, $options = [])
     {
+        if ($name === null || $name === false) {
+            return '';
+        }
         return "<$name" . static::renderTagAttributes($options) . '>';
     }
 
     /**
      * Generates an end tag.
-     * @param string $name the tag name
+     * @param string|boolean|null $name the tag name. If $name is `null` or `false`, the corresponding content will be rendered without any tag.
      * @return string the generated end tag
      * @see beginTag()
      * @see tag()
      */
     public static function endTag($name)
     {
+        if ($name === null || $name === false) {
+            return '';
+        }
         return "</$name>";
     }
 
