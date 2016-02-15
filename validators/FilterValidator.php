@@ -38,7 +38,10 @@ class FilterValidator extends Validator
      * The function signature must be as follows,
      *
      * ```php
-     * function foo($value) { return $newValue; }
+     * function foo($value) {
+     *     // compute $newValue here
+     *     return $newValue;
+     * }
      * ```
      */
     public $filter;

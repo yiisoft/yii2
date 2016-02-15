@@ -64,7 +64,7 @@ use yii\helpers\StringHelper;
  * @property array $queryParams The request GET parameter values.
  * @property string $queryString Part of the request URL that is after the question mark. This property is
  * read-only.
- * @property string $rawBody The request body. This property is read-only.
+ * @property string $rawBody The request body.
  * @property string $referrer URL referrer, null if not present. This property is read-only.
  * @property string $scriptFile The entry script file path.
  * @property string $scriptUrl The relative URL of the entry script.

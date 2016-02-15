@@ -141,6 +141,9 @@ class EachValidator extends Validator
 
         $validator = $this->getValidator();
         foreach ($value as $v) {
+            if ($validator->skipOnEmpty && $validator->isEmpty($v)) {
+                continue;
+            }
             $result = $validator->validateValue($v);
             if ($result !== null) {
                 return $this->allowMessageFromRule ? $result : [$this->message, []];
