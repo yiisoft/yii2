@@ -22,6 +22,7 @@ class BaseUrl
 {
     /**
      * @var \yii\web\UrlManager URL manager to use for creating URLs
+     * @since 2.0.8
      */
     public static $urlManager;
 
