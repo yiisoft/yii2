@@ -12,6 +12,7 @@ Yii Framework 2 Change Log
 2.0.7 February 14, 2016
 -----------------------
 
+- Chg #10422: `yii\db\ColumnSchemaBuilder::buildNotNullString` now returns 'NULL' instead of empty string (nevermnd)
 - Bug #6351: Find MySQL FK constraints from `information_schema` tables instead of `SHOW CREATE TABLE` to improve reliability (nineinchnick)
 - Bug #6363, #8301, #8582, #9566: Fixed data methods and PJAX issues when used together (derekisbusy)
 - Bug #6876: Fixed RBAC migration MSSQL cascade problem (thejahweh)
