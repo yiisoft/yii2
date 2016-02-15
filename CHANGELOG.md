@@ -1,13 +1,21 @@
 Yii Framework 2 Change Log
 ==========================
 
-2.0.7 under development
+2.0.8 under development
 -----------------------
+
+- Enh #10764: `yii\helpers\Html::tag()` and `::beginTag()` return content without any HTML when the `$tag` attribute is `false` or `null` (pana1990)
+
+2.0.7 February 14, 2016
+-----------------------
+
 - Bug #6351: Find MySQL FK constraints from `information_schema` tables instead of `SHOW CREATE TABLE` to improve reliability (nineinchnick)
 - Bug #6363, #8301, #8582, #9566: Fixed data methods and PJAX issues when used together (derekisbusy)
 - Bug #6876: Fixed RBAC migration MSSQL cascade problem (thejahweh)
 - Bug #7627: Fixed `yii\widgets\ActiveField` to handle inputs validation with changed ID properly (dynasource, cebe)
 - Bug #7806: Fixed `yii\grid\CheckboxColumn` fixed `_all` checkbox column name generation (cebe, silverfire)
+- Bug #7964: Fixed i18n message sources to load fallback messages in a smarter way (silverfire)
+- Bug #8348: Fixed `yii\helpers\BaseArrayHelper` fixed PHP Fatal Error: Nesting level too deep - recursive dependency? (andrewnester)
 - Bug #8466: Fixed `yii\validators\FileValidator` to display error for `tooBig` and `tooSmall` with formatted unit (silverfire)
 - Bug #8573: Fixed incorrect data type mapping for NUMBER to INTEGER or DECIMAL in Oracle (vbelogai)
 - Bug #8723: Fixed `yii\helpers\VarDumper::export()` unable to export circle referenced objects with `Closure` (klimov-paul)
@@ -54,11 +62,16 @@ Yii Framework 2 Change Log
 - Bug #10580: Fixed `yii\grid\GridView::guessColumns()` to work with numeric column names (silverfire)
 - Bug #10625: Fixed `activeForm.js` - when submit doesn't reload page, submit button value simulation with hidden input did not work (andrewnester)
 - Bug #10629: Fixed `yii\helpers\BaseStringHelper` - BaseStringHelper::truncateHtml adds suffix regardless of the string length (andrewnester)
+- Bug #10692: Fixed default value extraction in PostgreSQL Schema for null values (wallysalami, gabrielhomsi)
 - Bug #10739: Fixed `yii\web\UrlManager::parseRequest()` to treat request URL with more than one slash at the end as invalid (andrewnester)
 - Bug #10751: Fixed `yii\validators\UrlValidator` pattern to improve matching (silverfire)
+- Bug #10760: `yii\widgets\DetailView::normalizeAttributes()` fixed for arrayable models (boehsermoe)
+- Bug #10825: Fixed `yii\validators\EachValidator` does not respect `skipOnEmpty` rule parameter (klimov-paul)
 - Bug: Fixed generation of canonical URLs for `ViewAction` pages (samdark)
 - Bug: Fixed `mb_*` functions calls to use `UTF-8` or `Yii::$app->charset` (silverfire)
+- Enh #2377: Allow specifying a table alias when joining relations via `joinWith()` (cebe, nainoon)
 - Enh #3506: Added `yii\validators\IpValidator` to perform validation of IP addresses and subnets (SilverFire, samdark)
+- Enh #4972: Added `yii\db\ActiveQuery::alias()` to allow specifying a table alias for the model table without having to know the name (cebe, stepanselyuk)
 - Enh #5146: Added `yii\i18n\Formatter::asDuration()` method (nineinchnick, SilverFire)
 - Enh #5902: `yii\widgets\Pjax::options` now support special option `tag` to specify tag of container (Alex-Code)
 - Enh #6162, #9198: Added parameter visibleButtons for `yii\grid\ActionColumn` (fornit1917, silverfire)
@@ -86,7 +99,7 @@ Yii Framework 2 Change Log
 - Enh #9733: Added Unprocessable Entity HTTP Exception (janfrs)
 - Enh #9762: Added `JsonResponseFormatter::$encodeOptions` and `::$prettyPrint` for better JSON output formatting (cebe)
 - Enh #9783: jQuery inputmask dependency updated to `~3.2.2` (samdark)
-- Enh #9785: Added ability to invoke callback with dependency resolution to DI container (mdmunir)
+- Enh #9785: Added ability to invoke callback with dependency resolution to DI container (mdmunir, SamMousa)
 - Enh #9869: Allow path alias for SQLite database files in DSN config (ASlatius)
 - Enh #9901: Default `Cache.SerializerPermissions` configuration option for `HTMLPurifier` is set to `0775` (klimov-paul)
 - Enh #10056: Allowed any callable to be passed to `ActionColumn::$urlCreator` (freezy-sk)
@@ -100,7 +113,7 @@ Yii Framework 2 Change Log
 - Enh #10154: Implemented support of traversable objects in `RangeValidator::ranges`, added `ArrayHelper::isIn()` and `ArrayHelper::isSubset()` (Sam Mousa)
 - Enh #10158: Added the possibility to specify CSS and Javascript options per file in `\yii\web\AssetBundle` (machour)
 - Enh #10170: `Yii::powered()` now uses `Yii::t()` (SamMousa)
-- Enh #10218: Support for selecting multiple filter values with the same name was added to `yii.gridView.js` (omnilight, silverfire)
+- Enh #10217: Support for selecting multiple filter values with the same name was added to `yii.gridView.js` (omnilight, silverfire)
 - Enh #10255: Added Yii warning to session initialization if session was already started (AnatolyRugalev)
 - Enh #10264: Generation of HTML tags in Yii's JavaScript now uses jQuery style (silverfire)
 - Enh #10267: `yii.js` - added original event passing to `pjaxOptions` for links with `data-method` and `data-pjax` (servocoder, silverfire)
@@ -109,15 +122,19 @@ Yii Framework 2 Change Log
 - Enh #10390: Added ability to disable outer tag for `\yii\helpers\BaseHtml::radiolist()`, `::checkboxList()` (TianJinRong, githubjeka, silverfire)
 - Enh #10535: Allow passing a `yii\db\Expression` to `Query::orderBy()` and `Query::groupBy()` (andrewnester, cebe)
 - Enh #10545: `yii\web\XMLResponseFormatter` changed to format models in a proper way (andrewnester)
+- Enh #10783: Added migration and unit-tests for `yii\i18n\DbMessageSource` (silverfire)
+- Enh #10797: Cleaned up requirements checker CSS (muhammadcahya)
 - Enh: Added last resort measure for `FileHelper::removeDirectory()` fail to unlink symlinks under Windows (samdark)
+- Enh: `AttributeBehavior::getValue()` now respects the callable in array format (silverfire)
+- Chg #6419: Added `yii\web\ErrorHandler::displayVars` make list of displayed vars customizable. `$_ENV` and `$_SERVER` are not displayed by default anymore (silverfire)
 - Chg #9369: `Yii::$app->user->can()` now returns `false` instead of erroring in case `authManager` component is not configured (creocoder)
 - Chg #9411: `DetailView` now automatically sets container tag ID in case it's not specified (samdark)
-- Chg #9953: `TimestampBehavior::getValue()` changed to make value processing consistent with `AttributeBehavior::getValue()` (silverfire)
-- Chg #6419: Added `yii\web\ErrorHandler::displayVars` make list of displayed vars customizable. `$_ENV` and `$_SERVER` are not displayed by default anymore (silverfire)
 - Chg #9528: Traversable objects are now formatted as arrays in `yii\web\XmlResponseFormatter` to support SPL objects and Generators (MaXL-ru)
-- Chg #9878,9879,9880: Make `\base\Security` use `random_bytes()`, LibreSSL, mcrypt, limit OpenSSL to Windows, and to prefer `password_hash()` over `crypt()` (tom--)
+- Chg #9878, #9879, #9880: Make `\base\Security` use `random_bytes()`, LibreSSL, mcrypt, limit OpenSSL to Windows, and to prefer `password_hash()` over `crypt()` (tom--)
+- Chg #9953: `TimestampBehavior::getValue()` changed to make value processing consistent with `AttributeBehavior::getValue()` (silverfire)
 - Chg #10296: Methods mset, mget and madd of `\yii\caching\Cache` have been marked as deprecated (trejder, githubjeka)
 - Chg: ApcCache is now able to handle PHP 7 APCu (samdark)
+- Chg: `BlameableBehavior::getValue()` changed to make value processing consistent with `AttributeBehavior::getValue()` (silverfire)
 - New #10083: Added wrapper for PHP webserver (samdark)
 - New: Added new requirement: ICU Data version >= 49.1 (SilverFire)
 
