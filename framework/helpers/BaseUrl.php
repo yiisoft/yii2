@@ -85,15 +85,16 @@ class BaseUrl
      * @return string the generated URL
      * @throws InvalidParamException a relative route is given while there is no active controller
      */
-    public static function toRoute($route, $scheme = false)
+    public static function toRoute($route, $scheme = false, $urlManager = null)
     {
         $route = (array) $route;
         $route[0] = static::normalizeRoute($route[0]);
 
+        $urlManager = $urlManager ?: Yii::$app->getUrlManager();
         if ($scheme) {
-            return Yii::$app->getUrlManager()->createAbsoluteUrl($route, is_string($scheme) ? $scheme : null);
+            return $urlManager->createAbsoluteUrl($route, is_string($scheme) ? $scheme : null);
         } else {
-            return Yii::$app->getUrlManager()->createUrl($route);
+            return $urlManager->createUrl($route);
         }
     }
 
@@ -196,7 +197,7 @@ class BaseUrl
      * @return string the generated URL
      * @throws InvalidParamException a relative route is given while there is no active controller
      */
-    public static function to($url = '', $scheme = false)
+    public static function to($url = '', $scheme = false, $urlManager = null)
     {
         if (is_array($url)) {
             return static::toRoute($url, $scheme);
@@ -218,7 +219,8 @@ class BaseUrl
 
         if (($pos = strpos($url, ':')) === false || !ctype_alpha(substr($url, 0, $pos))) {
             // turn relative URL into absolute
-            $url = Yii::$app->getUrlManager()->getHostInfo() . '/' . ltrim($url, '/');
+            $urlManager = $urlManager ?: Yii::$app->getUrlManager();
+            $url = $urlManager->getHostInfo() . '/' . ltrim($url, '/');
         }
 
         if (is_string($scheme) && ($pos = strpos($url, ':')) !== false) {
