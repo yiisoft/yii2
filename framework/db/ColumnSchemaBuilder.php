@@ -165,13 +165,12 @@ class ColumnSchemaBuilder extends Object
 
     /**
      * Builds the not null constraint for the column.
-     * @return string returns 'NOT NULL' if [[isNotNull]] is true, 'NULL' otherwise.
+     * @return string returns 'NOT NULL' if [[isNotNull]] is true, otherwise it returns an empty string.
      */
     protected function buildNotNullString()
     {
-        return $this->isNotNull ? ' NOT NULL' : ' NULL';
+        return $this->isNotNull ? ' NOT NULL' : '';
     }
-
 
     /**
      * Builds the unique constraint for the column.
