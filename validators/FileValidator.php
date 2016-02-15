@@ -55,9 +55,10 @@ class FileValidator extends Validator
     /**
      * @var integer the maximum number of bytes required for the uploaded file.
      * Defaults to null, meaning no limit.
-     * Note, the size limit is also affected by `upload_max_filesize` INI setting
+     * Note, the size limit is also affected by `upload_max_filesize` and `post_max_size` INI setting
      * and the 'MAX_FILE_SIZE' hidden field value.
      * @see http://php.net/manual/en/ini.core.php#ini.upload-max-filesize
+     * @see http://php.net/post-max-size
      * @see tooBig for the customized message for a file that is too big.
      */
     public $maxSize;
