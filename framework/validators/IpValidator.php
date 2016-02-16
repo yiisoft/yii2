@@ -556,10 +556,7 @@ class IpValidator extends Validator
         }
 
         $binNet = $this->ip2bin($net);
-        if (substr($binIp, 0, $range_cidr) === substr($binNet, 0, $range_cidr) && $cidr >= $range_cidr) {
-            return true;
-        }
-        return false;
+        return substr($binIp, 0, $range_cidr) === substr($binNet, 0, $range_cidr) && $cidr >= $range_cidr;
     }
 
     /**
