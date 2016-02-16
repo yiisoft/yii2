@@ -8,7 +8,6 @@
 namespace yii\behaviors;
 
 use Yii;
-use yii\base\Event;
 use yii\db\BaseActiveRecord;
 
 /**
