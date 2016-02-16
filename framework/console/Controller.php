@@ -87,6 +87,17 @@ class Controller extends \yii\base\Controller
         if (!empty($params)) {
             // populate options here so that they are available in beforeAction().
             $options = $this->options($id === '' ? $this->defaultAction : $id);
+            if (isset($params['alias'])) {
+                $shortCuts = $this->shortCuts();
+                foreach ($params['alias'] as $name => $value) {
+                    if (key_exists($name, $shortCuts)) {
+                        $params[$shortCuts[$name]] = $value;
+                    } else {
+                        throw new Exception(Yii::t('yii', 'Unknown shorcut: -{name}', ['name' => $name]));
+                    }
+                }
+                unset($params['alias']);
+            }
             foreach ($params as $name => $value) {
                 if (in_array($name, $options, true)) {
                     $default = $this->$name;
@@ -293,6 +304,11 @@ class Controller extends \yii\base\Controller
     {
         // $actionId might be used in subclasses to provide options specific to action id
         return ['color', 'interactive'];
+    }
+
+    public function shortCuts()
+    {
+        return [];
     }
 
     /**
