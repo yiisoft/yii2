@@ -688,7 +688,7 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
             return 0;
         }
 
-        $rows = $this->updateAll($values, $this->getOldPrimaryKey(true));
+        $rows = static::updateAll($values, $this->getOldPrimaryKey(true));
 
         foreach ($values as $name => $value) {
             $this->_oldAttributes[$name] = $this->_attributes[$name];
@@ -721,7 +721,7 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
         }
         // We do not check the return value of updateAll() because it's possible
         // that the UPDATE statement doesn't change anything and thus returns 0.
-        $rows = $this->updateAll($values, $condition);
+        $rows = static::updateAll($values, $condition);
 
         if ($lock !== null && !$rows) {
             throw new StaleObjectException('The object being updated is outdated.');
@@ -760,7 +760,7 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
      */
     public function updateCounters($counters)
     {
-        if ($this->updateAllCounters($counters, $this->getOldPrimaryKey(true)) > 0) {
+        if (static::updateAllCounters($counters, $this->getOldPrimaryKey(true)) > 0) {
             foreach ($counters as $name => $value) {
                 if (!isset($this->_attributes[$name])) {
                     $this->_attributes[$name] = $value;
@@ -805,7 +805,7 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
             if ($lock !== null) {
                 $condition[$lock] = $this->$lock;
             }
-            $result = $this->deleteAll($condition);
+            $result = static::deleteAll($condition);
             if ($lock !== null && !$result) {
                 throw new StaleObjectException('The object being deleted is outdated.');
             }
@@ -957,7 +957,7 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
     public function refresh()
     {
         /* @var $record BaseActiveRecord */
-        $record = $this->findOne($this->getPrimaryKey(true));
+        $record = static::findOne($this->getPrimaryKey(true));
         if ($record === null) {
             return false;
         }
@@ -1212,7 +1212,7 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
             }
         } else {
             $p1 = $model->isPrimaryKey(array_keys($relation->link));
-            $p2 = $this->isPrimaryKey(array_values($relation->link));
+            $p2 = static::isPrimaryKey(array_values($relation->link));
             if ($p1 && $p2) {
                 if ($this->getIsNewRecord() && $model->getIsNewRecord()) {
                     throw new InvalidCallException('Unable to link models: at most one model can be newly created.');
@@ -1302,7 +1302,7 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
             }
         } else {
             $p1 = $model->isPrimaryKey(array_keys($relation->link));
-            $p2 = $this->isPrimaryKey(array_values($relation->link));
+            $p2 = static::isPrimaryKey(array_values($relation->link));
             if ($p2) {
                 foreach ($relation->link as $a => $b) {
                     $model->$a = null;
