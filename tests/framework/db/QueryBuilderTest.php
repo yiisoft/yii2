@@ -572,6 +572,26 @@ class QueryBuilderTest extends DatabaseTestCase
         (new Query())->from('customer')->where($condition)->all($this->getConnection());
     }
 
+    /**
+     * https://github.com/yiisoft/yii2/issues/10869
+     */
+    public function testFromIndexHint()
+    {
+        $query = (new Query)->from([new Expression('{{%user}} USE INDEX (primary)')]);
+        list ($sql, $params) = $this->getQueryBuilder()->build($query);
+        $expected = $this->replaceQuotes('SELECT * FROM {{%user}} USE INDEX (primary)');
+        $this->assertEquals($expected, $sql);
+        $this->assertEmpty($params);
+
+        $query = (new Query)
+            ->from([new Expression('`user` `t` FORCE INDEX (primary) IGNORE INDEX FOR ORDER BY (i1)')])
+            ->leftJoin(['p' => 'profile'], 'user.id = profile.user_id USE INDEX (i2)');
+        list ($sql, $params) = $this->getQueryBuilder()->build($query);
+        $expected = $this->replaceQuotes('SELECT * FROM [[user]] [[t]] FORCE INDEX (primary) IGNORE INDEX FOR ORDER BY (i1) LEFT JOIN [[profile]] [[p]] ON user.id = profile.user_id USE INDEX (i2)');
+        $this->assertEquals($expected, $sql);
+        $this->assertEmpty($params);
+    }
+
     public function testFromSubquery()
     {
         // query subquery
