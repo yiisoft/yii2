@@ -71,7 +71,7 @@ class m140506_102106_rbac_init extends \yii\db\Migration
             'FOREIGN KEY (rule_name) REFERENCES ' . $authManager->ruleTable . ' (name)'.
                 ($this->isMSSQL() ? '' : ' ON DELETE SET NULL ON UPDATE CASCADE'),
         ], $tableOptions);
-        $this->createIndex('idx-auth_item-type', $authManager->itemTable, 'type');
+        $this->createIndex('{{%idx-auth_item-type}}', $authManager->itemTable, 'type');
 
         $this->createTable($authManager->itemChildTable, [
             'parent' => $this->string(64)->notNull(),
@@ -92,7 +92,7 @@ class m140506_102106_rbac_init extends \yii\db\Migration
         ], $tableOptions);
 
         if($this->isMsSQL()) {
-            $this->execute("CREATE TRIGGER dbo.trigger_auth_item_child
+            $this->execute("CREATE TRIGGER dbo.trigger_{$authManager->itemChildTable}
             ON dbo.{$authManager->itemTable}
             INSTEAD OF DELETE, UPDATE
             AS
@@ -103,10 +103,10 @@ class m140506_102106_rbac_init extends \yii\db\Migration
                 BEGIN
                     IF @old_name <> @new_name
                     BEGIN
-                        ALTER TABLE auth_item_child NOCHECK CONSTRAINT FK__auth_item__child;
-                        UPDATE auth_item_child SET child = @new_name WHERE child = @old_name;
+                        ALTER TABLE {$authManager->itemChildTable} NOCHECK CONSTRAINT FK__auth_item__child;
+                        UPDATE {$authManager->itemChildTable} SET child = @new_name WHERE child = @old_name;
                     END
-                UPDATE auth_item
+                UPDATE {$authManager->itemTable}
                 SET name = (SELECT name FROM inserted),
                 type = (SELECT type FROM inserted),
                 description = (SELECT description FROM inserted),
@@ -117,7 +117,7 @@ class m140506_102106_rbac_init extends \yii\db\Migration
                 WHERE name IN (SELECT name FROM deleted)
                 IF @old_name <> @new_name
                     BEGIN
-                        ALTER TABLE auth_item_child CHECK CONSTRAINT FK__auth_item__child;
+                        ALTER TABLE {$authManager->itemChildTable} CHECK CONSTRAINT FK__auth_item__child;
                     END
                 END
                 ELSE
@@ -138,7 +138,7 @@ class m140506_102106_rbac_init extends \yii\db\Migration
         $this->db = $authManager->db;
 
         if($this->isMsSQL()) {
-            $this->execute('DROP dbo.trigger_auth_item_child;');
+            $this->execute("DROP dbo.trigger_{$authManager->itemChildTable};");
         }
 
         $this->dropTable($authManager->assignmentTable);

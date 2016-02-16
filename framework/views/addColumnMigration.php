@@ -17,14 +17,14 @@ class <?= $className ?> extends Migration
     public function up()
     {
 <?php foreach ($fields as $field): ?>
-        $this->addColumn(<?= "'$table', '" . $field['property'] . "', \$this->" . $field['decorators'] ?>);
+        $this->addColumn(<?= "'{{%$table}}', '" . $field['property'] . "', \$this->" . $field['decorators'] ?>);
 <?php endforeach; ?>
     }
 
     public function down()
     {
 <?php foreach ($fields as $field): ?>
-        $this->dropColumn(<?= "'$table', '" . $field['property'] . "'" ?>);
+        $this->dropColumn(<?= "'{{%$table}}', '" . $field['property'] . "'" ?>);
 <?php endforeach; ?>
     }
 }
