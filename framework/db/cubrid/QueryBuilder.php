@@ -91,4 +91,13 @@ class QueryBuilder extends \yii\db\QueryBuilder
 
         return $sql;
     }
+
+    /**
+     * @inheritdoc
+     */
+    public function prepareHintIndex($hintIndex)
+    {
+        \Yii::trace('addHintIndex not supported for cubrid driver');
+        return [];
+    }
 }
