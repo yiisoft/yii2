@@ -27,7 +27,7 @@ class FakeController extends Controller
         ]);
     }
 
-    public function shortCuts()
+    public function optionAliases()
     {
         return ['t' => 'test', 'ta' => 'testArray'];
     }
