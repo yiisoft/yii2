@@ -152,7 +152,7 @@ class HttpCache extends ActionFilter
         if (isset($_SERVER['HTTP_IF_NONE_MATCH'])) {
             // HTTP_IF_NONE_MATCH takes precedence over HTTP_IF_MODIFIED_SINCE
             // http://tools.ietf.org/html/rfc7232#section-3.3
-            return $etag !== null && in_array($etag, Yii::$app->request->getEtags(), true);
+            return $etag !== null && in_array($etag, Yii::$app->request->getETags(), true);
         } elseif (isset($_SERVER['HTTP_IF_MODIFIED_SINCE'])) {
             return $lastModified !== null && @strtotime($_SERVER['HTTP_IF_MODIFIED_SINCE']) >= $lastModified;
         } else {
