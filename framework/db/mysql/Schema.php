@@ -129,7 +129,13 @@ class Schema extends \yii\db\Schema
     {
         $column = $this->createColumnSchema();
 
-        $column->name = $info['field'];
+        if ($this->db->attributes[\PDO::ATTR_CASE] == \PDO::CASE_LOWER) {
+            $column->name = strtolower($info['field']);
+        } else if ($this->db->attributes[\PDO::ATTR_CASE] == \PDO::CASE_UPPER) {
+            $column->name = strtoupper($info['field']);
+        } else {
+            $column->name = $info['field'];
+        }
         $column->allowNull = $info['null'] === 'YES';
         $column->isPrimaryKey = strpos($info['key'], 'PRI') !== false;
         $column->autoIncrement = stripos($info['extra'], 'auto_increment') !== false;
