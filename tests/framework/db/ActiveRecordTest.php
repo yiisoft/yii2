@@ -1,6 +1,7 @@
 <?php
 namespace yiiunit\framework\db;
 
+use common\models\User;
 use yii\db\ActiveQuery;
 use yiiunit\data\ar\ActiveRecord;
 use yiiunit\data\ar\BitValues;
@@ -1142,4 +1143,19 @@ class ActiveRecordTest extends DatabaseTestCase
         $trueBit = BitValues::findOne(2);
         $this->assertEquals(true, $trueBit->val);
     }
+
+    public function testHintIndex()
+    {
+        $db = $this->getConnection();
+
+        $query = OrderItem::find()->addHintIndex(['order_item' => [['use', 'index', ['primary']]]]);
+
+        $command = $query->createCommand($db);
+
+        $actual = $command->sql;
+        $expected = "SELECT * FROM `order_item` USE INDEX (primary)";
+
+        $this->assertEquals($expected, $actual);
+    }
+
 }

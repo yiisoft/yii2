@@ -259,4 +259,23 @@ class QueryTest extends DatabaseTestCase
         $count = (new Query)->from('customer')->having(['status' => 2])->count('*', $db);
         $this->assertEquals(1, $count);
     }
+
+    public function testHintIndex()
+    {
+        $db = $this->getConnection();
+
+        $query = (new Query)->from(['t' => 'user'])->addHintIndex(['user' => [
+            ['force', 'index', ['primary']],
+            ['ignore', 'index', 'order by', ['i1']],
+        ]])->leftJoin('profile as p', 'user.id = profile.user_id')->addHintIndex(['profile' => [
+            'use', 'index', ['i2']
+        ]]);
+
+        $command = $query->createCommand($db);
+
+        $actual = $command->sql;
+        $expected = "SELECT * FROM `user` `t` FORCE INDEX (primary) IGNORE INDEX FOR ORDER BY (i1) LEFT JOIN `profile` `p` ON user.id = profile.user_id USE INDEX (i2)";
+
+        $this->assertEquals($expected, $actual);
+    }
 }
