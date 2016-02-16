@@ -48,6 +48,7 @@ Yii Framework 2 Change Log
 - Enh #8779: Automatically set enctype form option when using file input field (pana1990, arogachev)
 - Enh #9340: Adds `after()` and `first()` column schema builder modifiers (df2)
 - Enh #9562: Adds `char` datatype to framework (df2)
+- Enh #9604: `yii\db\BaseActiveRecord` now triggers event `EVENT_AFTER_REFRESH` after a record is refreshed (raoul2000)
 - Enh #9893: `yii.js` handleAction enhanced to support for data-form attribute, so links can trigger specific forms (SamMousa)
 - Enh #10451: Check of existence of `$_SERVER` in `\yii\web\Request` before using it (quantum13)
 - Enh #10487: `yii\helpers\BaseArrayHelper::index()` got a third parameter `$groupBy` to group the input array by the key in one or more dimensions (quantum13, silverfire, samdark)
