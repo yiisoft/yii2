@@ -9,7 +9,6 @@ namespace yiiunit\framework\console;
 
 use Yii;
 use yiiunit\TestCase;
-use yiiunit\framework\di\stubs\Qux;
 use yiiunit\framework\web\stubs\Bar;
 use yiiunit\framework\web\stubs\OtherQux;
 
@@ -38,6 +37,15 @@ class ControllerTest extends TestCase
         $params = ['d426,mdmunir', 'single'];
         $result = $controller->runAction('aksi2', $params);
         $this->assertEquals([['d426', 'mdmunir'], 'single'], $result);
+
+        $params = ['alias' => ['t' => 'test']];
+        $result = $controller->runAction('aksi4', $params);
+        $this->assertEquals('test', $result);
+
+        $params = ['alias' => ['ta' => 'from params,notdefault']];
+        list($fromParam, $other) = $controller->runAction('aksi5', $params);
+        $this->assertEquals('from params', $fromParam);
+        $this->assertEquals('notdefault', $other);
 
         $params = ['avaliable'];
         $message = Yii::t('yii', 'Missing required arguments: {params}', ['params' => implode(', ', ['missing'])]);

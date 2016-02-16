@@ -8,9 +8,6 @@
 namespace yiiunit\framework\console;
 
 use yii\console\Controller;
-use yiiunit\framework\di\stubs\QuxInterface;
-use yiiunit\framework\web\stubs\Bar;
-use yii\validators\EmailValidator;
 
 /**
  * @author Misbahul D Munir <misbahuldmunir@gmail.com>
@@ -18,6 +15,23 @@ use yii\validators\EmailValidator;
  */
 class FakeController extends Controller
 {
+    public $test;
+
+    public $testArray = [];
+
+    public function options($actionID)
+    {
+        return array_merge(parent::options($actionID), [
+            'test',
+            'testArray'
+        ]);
+    }
+
+    public function shortCuts()
+    {
+        return ['t' => 'test', 'ta' => 'testArray'];
+    }
+
 
     public function actionAksi1($fromParam, $other = 'default')
     {
@@ -31,5 +45,15 @@ class FakeController extends Controller
 
     public function actionAksi3($available, $missing)
     {
+    }
+
+    public function actionAksi4()
+    {
+        return $this->test;
+    }
+
+    public function actionAksi5()
+    {
+        return $this->testArray;
     }
 }
