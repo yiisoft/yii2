@@ -546,15 +546,21 @@ class GridView extends BaseListView
      */
     protected function createDataColumn($text)
     {
-        if (!preg_match('/^([^:]+)(:(\w*))?(:(.*))?$/', $text, $matches)) {
+        if (!preg_match('/^([^:]+)(:([\s\w,:\\\\\/-]*\w))?(:(.*))?$/', $text, $matches)) {
             throw new InvalidConfigException('The column must be specified in the format of "attribute", "attribute:format" or "attribute:format:label"');
+        }
+
+        if (isset($matches[3])) {
+            $format = explode(',',$matches[3]);
+        } else {
+            $format = 'text';
         }
 
         return Yii::createObject([
             'class' => $this->dataColumnClass ? : DataColumn::className(),
             'grid' => $this,
             'attribute' => $matches[1],
-            'format' => isset($matches[3]) ? $matches[3] : 'text',
+            'format' => $format,
             'label' => isset($matches[5]) ? $matches[5] : null,
         ]);
     }
