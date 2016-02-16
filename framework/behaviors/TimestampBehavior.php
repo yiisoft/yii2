@@ -7,11 +7,8 @@
 
 namespace yii\behaviors;
 
-use Closure;
-use yii\base\Event;
 use yii\base\InvalidCallException;
 use yii\db\BaseActiveRecord;
-use yii\db\Expression;
 
 /**
  * TimestampBehavior automatically fills the specified attributes with the current timestamp.
