@@ -257,4 +257,13 @@ EOD;
 
         return 'INSERT ALL ' . $tableAndColumns . implode($tableAndColumns, $values) . ' SELECT 1 FROM SYS.DUAL';
     }
+
+    /**
+     * @inheritdoc
+     */
+    public function prepareHintIndex($hintIndex)
+    {
+        \Yii::trace('addHintIndex not supported for oci driver');
+        return [];
+    }
 }

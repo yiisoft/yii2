@@ -86,14 +86,19 @@ class QueryBuilder extends \yii\base\Object
      */
     public function build($query, $params = [])
     {
+        $hintIndex = $query->hintIndex;
+        if (!empty($hintIndex)) {
+            $hintIndex = $this->prepareHintIndex($query->hintIndex);
+        }
+
         $query = $query->prepare($this);
 
         $params = empty($params) ? $query->params : array_merge($params, $query->params);
 
         $clauses = [
             $this->buildSelect($query->select, $params, $query->distinct, $query->selectOption),
-            $this->buildFrom($query->from, $params),
-            $this->buildJoin($query->join, $params),
+            $this->buildFrom($query->from, $params, $hintIndex),
+            $this->buildJoin($query->join, $params, $hintIndex),
             $this->buildWhere($query->where, $params),
             $this->buildGroupBy($query->groupBy),
             $this->buildHaving($query->having, $params),
@@ -673,11 +678,47 @@ class QueryBuilder extends \yii\base\Object
     }
 
     /**
+     * @param array $hintIndex
+     * @return array the hint index built strings.
+     */
+    public function prepareHintIndex($hintIndex)
+    {
+        if (!is_array($hintIndex) || empty($hintIndex)) {
+            return [];
+        }
+
+        foreach($hintIndex as $table => $hints) {
+            foreach($hints as $hintIndexTableIndex => $hint) {
+                $hintIndexStr = '';
+                foreach($hint as $key => $hintPiece) {
+                    if (!empty($hintPiece)) {
+                        if (is_array($hintPiece)) {
+                            $hintIndexStr .= '(' . join(', ', $hintPiece) . ')';
+                            break;
+                        } else {
+                            if ($key == 2) {
+                                $hintIndexStr .= 'FOR ' . strtoupper($hintPiece) . ' ';
+                            } else {
+                                $hintIndexStr .= strtoupper($hintPiece) . ' ';
+                            }
+                        }
+                        continue;
+                    }
+                    break;
+                }
+                $hintIndex[$table][$hintIndexTableIndex] = $hintIndexStr;
+            }
+        }
+        return $hintIndex;
+    }
+
+    /**
      * @param array $tables
      * @param array $params the binding parameters to be populated
+     * @param array $hintIndex the hint index to be append to from clause
      * @return string the FROM clause built from [[Query::$from]].
      */
-    public function buildFrom($tables, &$params)
+    public function buildFrom($tables, &$params, $hintIndex)
     {
         if (empty($tables)) {
             return '';
@@ -685,16 +726,26 @@ class QueryBuilder extends \yii\base\Object
 
         $tables = $this->quoteTableNames($tables, $params);
 
+        if (!empty($hintIndex)) {
+            foreach ($tables as $k => $table) {
+                $tableName = $this->getPlainTableName($table);
+                if (!empty($hintIndex[$tableName])) {
+                    $tables[$k] .= ' ' . join(' ', $hintIndex[$tableName]);
+                }
+            }
+        }
+
         return 'FROM ' . implode(', ', $tables);
     }
 
     /**
      * @param array $joins
      * @param array $params the binding parameters to be populated
+     * @param array $hintIndex the hint index to be append to from clause
      * @return string the JOIN clause built from [[Query::$join]].
      * @throws Exception if the $joins parameter is not in proper format
      */
-    public function buildJoin($joins, &$params)
+    public function buildJoin($joins, &$params, $hintIndex)
     {
         if (empty($joins)) {
             return '';
@@ -715,9 +766,27 @@ class QueryBuilder extends \yii\base\Object
                     $joins[$i] .= ' ON ' . $condition;
                 }
             }
+            $tableName = $this->getPlainTableName($table);
+            if (!empty($hintIndex[$tableName])) {
+                $joins[$i] .= ' ' . join(' ', $hintIndex[$tableName]);
+            }
         }
 
         return implode($this->separator, $joins);
+    }
+
+    /**
+     * @param string $table quoted table name
+     * @return string the original single table name
+     * @throws \Exception if an error occurs
+     */
+    private function getPlainTableName($table)
+    {
+        $tableName = preg_replace('/[`{{%}}]+|\(.+\) | as [^\s]+| .+/ui', '', $table);
+        if (!empty($tableName)) {
+            return $tableName;
+        }
+        throw new \Exception("Unable to get plain table name from $table");
     }
 
     /**

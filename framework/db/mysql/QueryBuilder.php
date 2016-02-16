@@ -217,4 +217,12 @@ class QueryBuilder extends \yii\db\QueryBuilder
             . (!empty($names) ? ' (' . implode(', ', $names) . ')' : '')
             . (!empty($placeholders) ? ' VALUES (' . implode(', ', $placeholders) . ')' : ' DEFAULT VALUES');
     }
+
+    /**
+     * @inheritdoc
+     */
+    public function prepareHintIndex($hintIndex)
+    {
+        return parent::prepareHintIndex($hintIndex);
+    }
 }

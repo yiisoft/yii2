@@ -261,4 +261,13 @@ class QueryBuilder extends \yii\db\QueryBuilder
         return 'INSERT INTO ' . $schema->quoteTableName($table)
         . ' (' . implode(', ', $columns) . ') VALUES ' . implode(', ', $values);
     }
+
+    /**
+     * @inheritdoc
+     */
+    public function prepareHintIndex($hintIndex)
+    {
+        \Yii::trace('addHintIndex not supported for pgsql driver');
+        return [];
+    }
 }

@@ -265,4 +265,13 @@ class QueryBuilder extends \yii\db\QueryBuilder
 
         return '(' . implode($operator === 'IN' ? ' OR ' : ' AND ', $vss) . ')';
     }
+
+    /**
+     * @inheritdoc
+     */
+    public function prepareHintIndex($hintIndex)
+    {
+        \Yii::trace('addHintIndex not supported for mssql driver');
+        return [];
+    }
 }

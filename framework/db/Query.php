@@ -70,6 +70,14 @@ class Query extends Component implements QueryInterface
      */
     public $from;
     /**
+     * @var array hints index tables. For example,
+     * in MySQL, the option `['user' => ['force', 'index', 'orderby', [primary]]]` can be used, resulting in:
+     * ~~~
+     * FROM `user` FORCE INDEX ORDER BY (primary)
+     * ~~~
+     */
+    public $hintIndex = [];
+    /**
      * @var array how to group the query results. For example, `['company', 'department']`.
      * This is used to construct the GROUP BY clause in a SQL statement.
      */
@@ -516,6 +524,39 @@ class Query extends Component implements QueryInterface
     }
 
     /**
+     * Sets hints index associated to a table.
+     * @param array $hintIndexes hints indexes associated to a table.
+     * The param is an assoc array of the hintIndex(s) to be used on the query.
+     * The key is the name of the table to be hinted.
+     * The value is the hint settings or an array of hints settings to apply.
+     * Each hint setting is compose by one to three string values defining the hint and one array defining the index(s)
+     * to hint.
+     * Here are some examples:
+     * ```php
+     * // SELECT * FROM user FORCE INDEX (i1)
+     * User:find()->addHintIndex(['user' => ['force', 'index', [i1]])->all();
+     *
+     * // SELECT * FROM user USE INDEX (i1) IGNORE INDEX FOR ORDER BY (i2) ORDER BY a;
+     * user:find()->addHintIndex(['user' => [['use', 'index', [i1]], ['ignore', 'index', 'order by', [i2]]])->all();
+     *
+     * @param array $hintIndexes
+     * @return $this
+     */
+    public function addHintIndex($hintIndexes = [])
+    {
+        foreach($hintIndexes as $table => $hintIndex) {
+            if (is_array($hintIndex[0])) {
+                foreach($hintIndex as $hint) {
+                    $this->hintIndex[$table][] = $hint;
+                }
+            } else {
+                $this->hintIndex[$table][] = $hintIndex;
+            }
+        }
+        return $this;
+    }
+
+    /**
      * Sets the WHERE part of the query.
      *
      * The method requires a `$condition` parameter, and optionally a `$params` parameter
@@ -861,6 +902,7 @@ class Query extends Component implements QueryInterface
             'selectOption' => $from->selectOption,
             'distinct' => $from->distinct,
             'from' => $from->from,
+            'hintIndex' => $from->hintIndex,
             'groupBy' => $from->groupBy,
             'join' => $from->join,
             'having' => $from->having,
