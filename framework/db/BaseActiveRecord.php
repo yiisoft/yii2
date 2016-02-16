@@ -1466,7 +1466,7 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
     {
         $labels = $this->attributeLabels();
         if (isset($labels[$attribute])) {
-            return ($labels[$attribute]);
+            return $labels[$attribute];
         } elseif (strpos($attribute, '.')) {
             $attributeParts = explode('.', $attribute);
             $neededAttribute = array_pop($attributeParts);
@@ -1506,7 +1506,7 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
     {
         $hints = $this->attributeHints();
         if (isset($hints[$attribute])) {
-            return ($hints[$attribute]);
+            return $hints[$attribute];
         } elseif (strpos($attribute, '.')) {
             $attributeParts = explode('.', $attribute);
             $neededAttribute = array_pop($attributeParts);

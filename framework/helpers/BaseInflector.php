@@ -522,7 +522,7 @@ class BaseInflector
      */
     public static function ordinalize($number)
     {
-        if (in_array(($number % 100), range(11, 13))) {
+        if (in_array($number % 100, range(11, 13))) {
             return $number . 'th';
         }
         switch ($number % 10) {

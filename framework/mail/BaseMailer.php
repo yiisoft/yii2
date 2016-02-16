@@ -320,7 +320,7 @@ abstract class BaseMailer extends Component implements MailerInterface, ViewCont
     protected function saveMessage($message)
     {
         $path = Yii::getAlias($this->fileTransportPath);
-        if (!is_dir(($path))) {
+        if (!is_dir($path)) {
             mkdir($path, 0777, true);
         }
         if ($this->fileTransportCallback !== null) {
