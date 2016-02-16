@@ -358,7 +358,7 @@ class HelpController extends Controller
             $this->stdout("\nOPTIONS\n\n", Console::BOLD);
             foreach ($options as $name => $option) {
                 $this->stdout($this->formatOptionHelp(
-                        $this->ansiFormat('--' . $name, Console::FG_RED, empty($option['required']) ? Console::FG_RED : Console::BOLD),
+                        $this->ansiFormat('--' . $name . $this->formatOptionAliases($controller, $name), Console::FG_RED, empty($option['required']) ? Console::FG_RED : Console::BOLD),
                         !empty($option['required']),
                         $option['type'],
                         $option['default'],
@@ -411,6 +411,22 @@ class HelpController extends Controller
         $name = $required ? "$name (required)" : $name;
 
         return $doc === '' ? $name : "$name: $doc";
+    }
+
+    /**
+     * @param $controller
+     * @param $option
+     * @return string the formatted string for the aliases argument or option
+     */
+    protected function formatOptionAliases($controller, $option)
+    {
+        $aliases = $controller->optionsAliases();
+        foreach ($aliases as $name => $value) {
+            if ($value === $option) {
+                return ', -' . $name;
+            }
+        }
+        return '';
     }
 
     /**
