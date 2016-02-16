@@ -9,15 +9,12 @@ namespace yiiunit\framework\console;
 
 use Yii;
 use yiiunit\TestCase;
-use yiiunit\framework\web\stubs\Bar;
-use yiiunit\framework\web\stubs\OtherQux;
 
 /**
  * @group console
  */
 class ControllerTest extends TestCase
 {
-
     public function testBindActionParams()
     {
         $this->mockApplication([]);
@@ -51,6 +48,5 @@ class ControllerTest extends TestCase
         $message = Yii::t('yii', 'Missing required arguments: {params}', ['params' => implode(', ', ['missing'])]);
         $this->setExpectedException('yii\console\Exception', $message);
         $result = $controller->runAction('aksi3', $params);
-
     }
 }

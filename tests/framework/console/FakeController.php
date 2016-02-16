@@ -32,7 +32,6 @@ class FakeController extends Controller
         return ['t' => 'test', 'ta' => 'testArray'];
     }
 
-
     public function actionAksi1($fromParam, $other = 'default')
     {
         return[$fromParam, $other];
