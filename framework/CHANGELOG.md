@@ -3,7 +3,7 @@ Yii Framework 2 Change Log
 
 2.0.8 under development
 -----------------------
-
+- Enh #9604: `yii\db\BaseActiveRecord` now triggers event `EVENT_AFTER_REFRESH` after a record is refreshed (raoul2000)
 - Bug #9851: Fixed partial commit / rollback in nested transactions (sammousa)
 - Enh #10451: Check of existence of `$_SERVER` in `\yii\web\Request` before using it (quantum13)
 - Enh #10610: Added `BaseUrl::$urlManager` to be able to set URL manager used for creating URLs (samdark)
