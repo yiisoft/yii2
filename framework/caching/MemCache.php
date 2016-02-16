@@ -179,7 +179,7 @@ class MemCache extends Cache
             // $timeout is used for memcache versions that do not have $timeoutms parameter
             $timeout = (int) ($server->timeout / 1000) + (($server->timeout % 1000 > 0) ? 1 : 0);
             if ($paramCount === 9) {
-                $cache->addServer(
+                $cache->addserver(
                     $server->host,
                     $server->port,
                     $server->persistent,
@@ -191,7 +191,7 @@ class MemCache extends Cache
                     $server->timeout
                 );
             } else {
-                $cache->addServer(
+                $cache->addserver(
                     $server->host,
                     $server->port,
                     $server->persistent,
