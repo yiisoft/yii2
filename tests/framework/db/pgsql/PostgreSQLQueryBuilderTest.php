@@ -126,9 +126,4 @@ class PostgreSQLQueryBuilderTest extends QueryBuilderTest
         $sql = $qb->alterColumn('foo1', 'bar', 'reset xyz');
         $this->assertEquals($expected, $sql);
     }
-
-    public function testFromIndexHint()
-    {
-        $this->markTestSkipped('Indices forcing is not supported by PostgreSQL');
-    }
 }

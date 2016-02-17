@@ -584,10 +584,10 @@ class QueryBuilderTest extends DatabaseTestCase
         $this->assertEmpty($params);
 
         $query = (new Query)
-            ->from([new Expression('`user` `t` FORCE INDEX (primary) IGNORE INDEX FOR ORDER BY (i1)')])
+            ->from([new Expression('{{user}} {{t}} FORCE INDEX (primary) IGNORE INDEX FOR ORDER BY (i1)')])
             ->leftJoin(['p' => 'profile'], 'user.id = profile.user_id USE INDEX (i2)');
         list ($sql, $params) = $this->getQueryBuilder()->build($query);
-        $expected = $this->replaceQuotes('SELECT * FROM [[user]] [[t]] FORCE INDEX (primary) IGNORE INDEX FOR ORDER BY (i1) LEFT JOIN [[profile]] [[p]] ON user.id = profile.user_id USE INDEX (i2)');
+        $expected = $this->replaceQuotes('SELECT * FROM {{user}} {{t}} FORCE INDEX (primary) IGNORE INDEX FOR ORDER BY (i1) LEFT JOIN [[profile]] [[p]] ON user.id = profile.user_id USE INDEX (i2)');
         $this->assertEquals($expected, $sql);
         $this->assertEmpty($params);
     }
