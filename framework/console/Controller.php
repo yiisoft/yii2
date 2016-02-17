@@ -307,10 +307,10 @@ class Controller extends \yii\base\Controller
     }
 
     /**
-     * Returns the aliases names of valid options for the action (id).
-     * Child classes may override this method to specify possible aliases options.
+     * Returns option alias names.
+     * Child classes may override this method to specify alias options.
      *
-     * @return array the aliases names of the options valid for the action
+     * @return array the options alias names valid for the action
      */
     public function optionAliases()
     {
