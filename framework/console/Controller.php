@@ -306,6 +306,12 @@ class Controller extends \yii\base\Controller
         return ['color', 'interactive'];
     }
 
+    /**
+     * Returns the aliases names of valid options for the action (id).
+     * Child classes may override this method to specify possible aliases options.
+     *
+     * @return array the aliases names of the options valid for the action
+     */
     public function optionAliases()
     {
         return [];
