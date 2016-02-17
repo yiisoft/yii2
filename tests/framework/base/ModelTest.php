@@ -14,6 +14,7 @@ use yiiunit\data\base\InvalidRulesModel;
  */
 class ModelTest extends TestCase
 {
+
     protected function setUp()
     {
         parent::setUp();
@@ -39,21 +40,21 @@ class ModelTest extends TestCase
             'lastName' => 'Xue',
             'customLabel' => null,
             'underscore_style' => null,
-        ], $speaker->getAttributes());
+            ], $speaker->getAttributes());
 
         $this->assertEquals([
             'firstName' => 'Qiang',
             'lastName' => 'Xue',
-        ], $speaker->getAttributes(['firstName', 'lastName']));
+            ], $speaker->getAttributes(['firstName', 'lastName']));
 
         $this->assertEquals([
             'firstName' => 'Qiang',
             'lastName' => 'Xue',
-        ], $speaker->getAttributes(null, ['customLabel', 'underscore_style']));
+            ], $speaker->getAttributes(null, ['customLabel', 'underscore_style']));
 
         $this->assertEquals([
             'firstName' => 'Qiang',
-        ], $speaker->getAttributes(['firstName', 'lastName'], ['lastName', 'customLabel', 'underscore_style']));
+            ], $speaker->getAttributes(['firstName', 'lastName'], ['lastName', 'customLabel', 'underscore_style']));
     }
 
     public function testSetAttributes()
@@ -122,7 +123,6 @@ class ModelTest extends TestCase
         $speaker = new Speaker();
         $speaker->setScenario('test');
         $this->assertTrue($speaker->isAttributeSafe('firstName'));
-
     }
 
     public function testSafeScenarios()
@@ -211,12 +211,12 @@ class ModelTest extends TestCase
                 'Totally wrong!',
             ],
             'lastName' => ['Another one!'],
-        ], $speaker->getErrors());
+            ], $speaker->getErrors());
 
         $speaker->clearErrors('firstName');
         $this->assertEquals([
             'lastName' => ['Another one!'],
-        ], $speaker->getErrors());
+            ], $speaker->getErrors());
 
         $speaker->clearErrors();
         $this->assertEmpty($speaker->getErrors());
@@ -291,7 +291,7 @@ class ModelTest extends TestCase
             'lastName' => null,
             'customLabel' => null,
             'underscore_style' => null,
-        ], $attributes);
+            ], $attributes);
 
         // unset
         unset($speaker['firstName']);
@@ -348,6 +348,75 @@ class ModelTest extends TestCase
 
         $invalid = new InvalidRulesModel();
         $invalid->createValidators();
+    }
+
+    public function testCreateMultiple()
+    {
+        // $data[User] is null
+        $this->assertFalse(models\User::createMultiple(['Profile' => []]));
+
+        // $data[User] is []
+        $this->assertEquals([], models\User::createMultiple(['User' => []]));
+
+        $post = [
+            ['id' => 1, 'name' => 'Cak Misbah'],
+            ['id' => 2, 'name' => 'Cak Munir'],
+        ];
+        /* @var $users models\User[] */
+        $users = models\User::createMultiple(['User' => $post]);
+        $this->assertEquals(2, count($users));
+        $this->assertTrue($users[0]->isNewRecord); // true means from data post
+        // $formName = ''
+        $users = models\User::createMultiple($post, '');
+        $this->assertEquals(2, count($users));
+        $this->assertTrue($users[0]->isNewRecord);
+
+        // use array index
+        $oldUsers = models\User::findAll([3, 4, 5]);
+        $users = models\User::createMultiple(['User' => $post], null, $oldUsers);
+        $this->assertEquals(2, count($users));
+        $this->assertFalse($users[0]->isNewRecord); // false means from User::findAll()
+        $this->assertEquals($users[0]->attributes, ['id' => 1, 'name' => 'Cak Misbah', 'nik' => 3426]);
+        $this->assertEquals(1, count($oldUsers));
+
+        // use array index indexBy id
+        $post = [
+            2 => ['id' => 11, 'nik' => 123],
+            6 => ['id' => 12, 'nik' => 345],
+        ];
+        $oldUsers = models\User::findAll([2, 5, 7], 'id');
+        $users = models\User::createMultiple(['User' => $post], null, $oldUsers);
+        $this->assertEquals(2, count($users));
+        $this->assertFalse($users[2]->isNewRecord);
+        $this->assertTrue($users[6]->isNewRecord);
+        $this->assertEquals($users[2]->attributes, ['id' => 11, 'name' => 'Mujib Masyhudi', 'nik' => 123]);
+        $this->assertEquals($users[6]->attributes, ['id' => 12, 'name' => null, 'nik' => 345]);
+        $this->assertEquals(2, count($oldUsers));
+        $this->assertEquals([5, 7], array_keys($oldUsers));
+
+        // use keys to checking
+        $post = [
+            ['id' => 4, 'nik' => 3426],
+            ['id' => 8, 'nik' => 6279],
+            ['id' => 11, 'nik' => 1234],
+        ];
+        $oldUsers = models\User::findAll([3, 4, 5, 6, 7, 8, 9]);
+        $users = models\User::createMultiple(['User' => $post], null, $oldUsers, 'id');
+        $this->assertEquals(3, count($users));
+        $this->assertFalse($users[0]->isNewRecord);
+        $this->assertTrue($users[2]->isNewRecord);
+        $this->assertEquals($users[0]->attributes, ['id' => 4, 'name' => 'Hafid Muhlasin', 'nik' => 3426]);
+        $this->assertEquals($users[2]->attributes, ['id' => 11, 'name' => null, 'nik' => 1234]);
+        $this->assertEquals(5, count($oldUsers));
+        $this->assertEquals([3, 5, 6, 7, 9], \yii\helpers\ArrayHelper::getColumn($oldUsers, 'id', false));
+
+        // use scenario
+        $post = [
+            ['id' => 12, 'nik' => 333, 'name' => 'Dee']
+        ];
+        $oldUsers = [];
+        $users = models\User::createMultiple(['User' => $post], null, $oldUsers, null, 'update');
+        $this->assertEquals($users[0]->attributes, ['id' => 12, 'name' => 'Dee', 'nik' => null]);
     }
 }
 

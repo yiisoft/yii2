@@ -1142,4 +1142,40 @@ class ActiveRecordTest extends DatabaseTestCase
         $trueBit = BitValues::findOne(2);
         $this->assertEquals(true, $trueBit->val);
     }
+
+    public function testCreateMultiple()
+    {
+        $post = [
+            ['id' => 1, 'name' => 'Misbah', 'email' => 'misbah@dee.com'],
+            ['id' => 2, 'name' => 'Peter', 'email' => 'peter@dee.com'],
+            ['id' => 6, 'name' => 'Henry', 'email' => 'henry@dee.com'],
+        ];
+        $customers = MyCustomer::createMultiple($post, '');
+        $this->assertEquals(3, count($customers));
+        $this->assertEquals('Peter', $customers[1]->name);
+        $this->assertTrue($customers[0]->isNewRecord);
+
+        $olds = MyCustomer::find()->All();
+        $this->assertEquals(3, count($olds));
+        $customers = MyCustomer::createMultiple($post, '', $olds, MyCustomer::primaryKey());
+        $this->assertEquals(1, count($olds));
+        $this->assertFalse($customers[0]->isNewRecord);
+        $this->assertTrue($customers[2]->isNewRecord);
+        $this->assertEquals('henry@dee.com', $customers[2]->email);
+    }
+}
+
+class MyCustomer extends \yiiunit\data\ar\ActiveRecord
+{
+    public static function tableName()
+    {
+        return 'customer';
+    }
+
+    public function rules()
+    {
+        return[
+            [['name','email'],'safe']
+        ];
+    }
 }
