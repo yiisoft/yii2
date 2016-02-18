@@ -38,6 +38,7 @@ abstract class AuthMethod extends ActionFilter implements AuthInterface
     /**
      * @var array list of action IDs that this filter will be applied to, but auth failure will not lead to error.
      * It may be used for actions, that are allowed for public, but return some additional data for authenticated users.
+     * Defaults to empty, meaning authentication is not optional for any action.
      * @see isOptional
      * @since 2.0.7
      */
@@ -90,23 +91,16 @@ abstract class AuthMethod extends ActionFilter implements AuthInterface
     }
 
     /**
-     * Checks, whether the $action is optional
+     * Checks, whether authentication is optional for the given action.
      *
      * @param Action $action
      * @return boolean
      * @see optional
      * @since 2.0.7
      */
-    protected function isOptional($action) {
+    protected function isOptional($action)
+    {
         $id = $this->getActionId($action);
         return in_array($id, $this->optional, true);
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    protected function isActive($action)
-    {
-        return parent::isActive($action) || $this->isOptional($action);
     }
 }

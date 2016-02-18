@@ -9,6 +9,7 @@ namespace yii\i18n;
 
 use Yii;
 use yii\base\InvalidConfigException;
+use yii\db\Expression;
 use yii\di\Instance;
 use yii\helpers\ArrayHelper;
 use yii\caching\Cache;
@@ -19,28 +20,19 @@ use yii\db\Query;
  * DbMessageSource extends [[MessageSource]] and represents a message source that stores translated
  * messages in database.
  *
- * The database must contain the following two tables:
- *
- * ```sql
- * CREATE TABLE source_message (
- *     id INTEGER PRIMARY KEY AUTO_INCREMENT,
- *     category VARCHAR(32),
- *     message TEXT
- * );
- *
- * CREATE TABLE message (
- *     id INTEGER,
- *     language VARCHAR(16),
- *     translation TEXT,
- *     PRIMARY KEY (id, language),
- *     CONSTRAINT fk_message_source_message FOREIGN KEY (id)
- *         REFERENCES source_message (id) ON DELETE CASCADE ON UPDATE RESTRICT
- * );
- * ```
+ * The database must contain the following two tables: source_message and message.
  *
  * The `source_message` table stores the messages to be translated, and the `message` table stores
  * the translated messages. The name of these two tables can be customized by setting [[sourceMessageTable]]
  * and [[messageTable]], respectively.
+ *
+ * The database connection is specified by [[db]]. Database schema could be initialized by applying migration:
+ *
+ * ```
+ * yii migrate --migrationPath=@yii/i18n/migrations/
+ * ```
+ *
+ * If you don't want to use migration and need SQL instead, files for all databases are in migrations directory.
  *
  * @author resurtm <resurtm@gmail.com>
  * @since 2.0
@@ -149,26 +141,49 @@ class DbMessageSource extends MessageSource
      */
     protected function loadMessagesFromDb($category, $language)
     {
-        $mainQuery = new Query();
-        $mainQuery->select(['t1.message message', 't2.translation translation'])
-            ->from(["$this->sourceMessageTable t1", "$this->messageTable t2"])
-            ->where('t1.id = t2.id AND t1.category = :category AND t2.language = :language')
-            ->params([':category' => $category, ':language' => $language]);
+        $mainQuery = (new Query())->select(['message' => 't1.message', 'translation' => 't2.translation'])
+            ->from(['t1' => $this->sourceMessageTable, 't2' => $this->messageTable])
+            ->where([
+                't1.id' => new Expression('[[t2.id]]'),
+                't1.category' => $category,
+                't2.language' => $language
+            ]);
 
         $fallbackLanguage = substr($language, 0, 2);
-        if ($fallbackLanguage !== $language) {
-            $fallbackQuery = new Query();
-            $fallbackQuery->select(['t1.message message', 't2.translation translation'])
-                ->from(["$this->sourceMessageTable t1", "$this->messageTable t2"])
-                ->where('t1.id = t2.id AND t1.category = :category AND t2.language = :fallbackLanguage')
-                ->andWhere("t2.id NOT IN (SELECT id FROM $this->messageTable WHERE language = :language)")
-                ->params([':category' => $category, ':language' => $language, ':fallbackLanguage' => $fallbackLanguage]);
+        $fallbackSourceLanguage = substr($this->sourceLanguage, 0, 2);
 
-            $mainQuery->union($fallbackQuery, true);
+        if ($fallbackLanguage !== $language) {
+            $mainQuery->union($this->createFallbackQuery($category, $language, $fallbackLanguage), true);
+        } elseif ($language === $fallbackSourceLanguage) {
+            $mainQuery->union($this->createFallbackQuery($category, $language, $fallbackSourceLanguage), true);
         }
 
         $messages = $mainQuery->createCommand($this->db)->queryAll();
 
         return ArrayHelper::map($messages, 'message', 'translation');
+    }
+
+    /**
+     * The method builds the [[Query]] object for the fallback language messages search.
+     * Normally is called from [[loadMessagesFromDb]].
+     *
+     * @param string $category the message category
+     * @param string $language the originally requested language
+     * @param string $fallbackLanguage the target fallback language
+     * @return Query
+     * @see loadMessagesFromDb
+     * @since 2.0.7
+     */
+    protected function createFallbackQuery($category, $language, $fallbackLanguage)
+    {
+        return (new Query())->select(['message' => 't1.message', 'translation' => 't2.translation'])
+            ->from(['t1' => $this->sourceMessageTable, 't2' => $this->messageTable])
+            ->where([
+                't1.id' => new Expression('[[t2.id]]'),
+                't1.category' => $category,
+                't2.language' => $fallbackLanguage
+            ])->andWhere([
+                'NOT IN', 't2.id', (new Query())->select('[[id]]')->from($this->messageTable)->where(['language' => $language])
+            ]);
     }
 }

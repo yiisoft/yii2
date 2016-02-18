@@ -132,6 +132,7 @@ interface ManagerInterface
      * Adds an item as a child of another item.
      * @param Item $parent
      * @param Item $child
+     * @return boolean whether the child successfully added
      * @throws \yii\base\Exception if the parent-child relationship already exists or if a loop has been detected.
      */
     public function addChild($parent, $child);

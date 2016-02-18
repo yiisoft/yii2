@@ -5,6 +5,7 @@ namespace yiiunit\framework\helpers;
 use Yii;
 use yii\base\Model;
 use yii\helpers\Html;
+use yii\helpers\Url;
 use yiiunit\TestCase;
 
 /**
@@ -20,6 +21,8 @@ class HtmlTest extends TestCase
                 'request' => [
                     'class' => 'yii\web\Request',
                     'url' => '/test',
+                    'scriptUrl' => '/index.php',
+                    'hostInfo' => 'http://www.example.com',
                     'enableCsrfValidation' => false,
                 ],
                 'response' => [
@@ -47,18 +50,24 @@ class HtmlTest extends TestCase
         $this->assertEquals('<div>content</div>', Html::tag('div', 'content'));
         $this->assertEquals('<input type="text" name="test" value="&lt;&gt;">', Html::tag('input', '', ['type' => 'text', 'name' => 'test', 'value' => '<>']));
         $this->assertEquals('<span disabled></span>', Html::tag('span', '', ['disabled' => true]));
+        $this->assertEquals('test', Html::tag(false, 'test'));
+        $this->assertEquals('test', Html::tag(null, 'test'));
     }
 
     public function testBeginTag()
     {
         $this->assertEquals('<br>', Html::beginTag('br'));
         $this->assertEquals('<span id="test" class="title">', Html::beginTag('span', ['id' => 'test', 'class' => 'title']));
+        $this->assertEquals('', Html::beginTag(null));
+        $this->assertEquals('', Html::beginTag(false));
     }
 
     public function testEndTag()
     {
         $this->assertEquals('</br>', Html::endTag('br'));
         $this->assertEquals('</span>', Html::endTag('span'));
+        $this->assertEquals('', Html::endTag(null));
+        $this->assertEquals('', Html::endTag(false));
     }
 
     public function testStyle()
@@ -113,6 +122,7 @@ class HtmlTest extends TestCase
         $this->assertEquals('<a href="/example">something</a>', Html::a('something', '/example'));
         $this->assertEquals('<a href="/test">something</a>', Html::a('something', ''));
         $this->assertEquals('<a href="http://www.быстроном.рф">http://www.быстроном.рф</a>', Html::a('http://www.быстроном.рф', 'http://www.быстроном.рф'));
+        $this->assertEquals('<a href="https://www.example.com/index.php?r=site%2Ftest">Test page</a>', Html::a('Test page',  Url::to(['/site/test'], 'https')));
     }
 
     public function testMailto()

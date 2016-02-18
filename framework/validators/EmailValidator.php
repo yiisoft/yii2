@@ -81,7 +81,7 @@ class EmailValidator extends Validator
                 $value = $matches['name'] . $matches['open'] . $matches['local'] . '@' . $matches['domain'] . $matches['close'];
             }
 
-            if (strlen($matches['local']) > 64 || mb_strlen($matches['name'], Yii::$app->charset) > 64) {
+            if (strlen($matches['local']) > 64) {
                 // The maximum total length of a user name or other local-part is 64 octets. RFC 5322 section 4.5.3.1.1
                 // http://tools.ietf.org/html/rfc5321#section-4.5.3.1.1
                 $valid = false;

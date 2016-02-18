@@ -368,7 +368,19 @@ class QueryBuilderTest extends DatabaseTestCase
         $tableSchema = $qb->db->getSchema()->getTableSchema($tableName);
         $this->assertEquals(1, count($tableSchema->primaryKey));
 
-        //DROP
+        // DROP
+        $qb->db->createCommand()->dropPrimaryKey($pkeyName, $tableName)->execute();
+        $qb = $this->getQueryBuilder(); // resets the schema
+        $tableSchema = $qb->db->getSchema()->getTableSchema($tableName);
+        $this->assertEquals(0, count($tableSchema->primaryKey));
+
+        // ADD (2 columns)
+        $qb = $this->getQueryBuilder();
+        $qb->db->createCommand()->addPrimaryKey($pkeyName, $tableName, 'id, field1')->execute();
+        $tableSchema = $qb->db->getSchema()->getTableSchema($tableName);
+        $this->assertEquals(2, count($tableSchema->primaryKey));
+
+        // DROP (2 columns)
         $qb->db->createCommand()->dropPrimaryKey($pkeyName, $tableName)->execute();
         $qb = $this->getQueryBuilder(); // resets the schema
         $tableSchema = $qb->db->getSchema()->getTableSchema($tableName);
@@ -536,6 +548,15 @@ class QueryBuilderTest extends DatabaseTestCase
         $expected = $this->replaceQuotes("SELECT 1 AS ab, 2 AS cd, 3 AS [[ef]] FROM [[tablename]]");
         $this->assertEquals($expected, $sql);
         $this->assertEmpty($params);
+
+        $query = (new Query())
+            ->select(new Expression("SUBSTR(name, 0, :len)", [':len' => 4]))
+            ->from('tablename');
+        list ($sql, $params) = $this->getQueryBuilder()->build($query);
+        $expected = $this->replaceQuotes("SELECT SUBSTR(name, 0, :len) FROM [[tablename]]");
+        $this->assertEquals($expected, $sql);
+        $this->assertEquals([':len' => 4], $params);
+
     }
 
     public function testCompositeInCondition()
@@ -549,6 +570,26 @@ class QueryBuilderTest extends DatabaseTestCase
             ],
         ];
         (new Query())->from('customer')->where($condition)->all($this->getConnection());
+    }
+
+    /**
+     * https://github.com/yiisoft/yii2/issues/10869
+     */
+    public function testFromIndexHint()
+    {
+        $query = (new Query)->from([new Expression('{{%user}} USE INDEX (primary)')]);
+        list ($sql, $params) = $this->getQueryBuilder()->build($query);
+        $expected = $this->replaceQuotes('SELECT * FROM {{%user}} USE INDEX (primary)');
+        $this->assertEquals($expected, $sql);
+        $this->assertEmpty($params);
+
+        $query = (new Query)
+            ->from([new Expression('{{user}} {{t}} FORCE INDEX (primary) IGNORE INDEX FOR ORDER BY (i1)')])
+            ->leftJoin(['p' => 'profile'], 'user.id = profile.user_id USE INDEX (i2)');
+        list ($sql, $params) = $this->getQueryBuilder()->build($query);
+        $expected = $this->replaceQuotes('SELECT * FROM {{user}} {{t}} FORCE INDEX (primary) IGNORE INDEX FOR ORDER BY (i1) LEFT JOIN [[profile]] [[p]] ON user.id = profile.user_id USE INDEX (i2)');
+        $this->assertEquals($expected, $sql);
+        $this->assertEmpty($params);
     }
 
     public function testFromSubquery()
@@ -583,4 +624,113 @@ class QueryBuilderTest extends DatabaseTestCase
         $this->assertEquals($expected, $sql);
         $this->assertEmpty($params);
     }
+
+    public function testOrderBy()
+    {
+        // simple string
+        $query = (new Query())
+            ->select('*')
+            ->from('operations')
+            ->orderBy('name ASC, date DESC');
+        list ($sql, $params) = $this->getQueryBuilder()->build($query);
+        $expected = $this->replaceQuotes('SELECT * FROM [[operations]] ORDER BY [[name]], [[date]] DESC');
+        $this->assertEquals($expected, $sql);
+        $this->assertEmpty($params);
+
+        // array syntax
+        $query = (new Query())
+            ->select('*')
+            ->from('operations')
+            ->orderBy(['name' => SORT_ASC, 'date' => SORT_DESC]);
+        list ($sql, $params) = $this->getQueryBuilder()->build($query);
+        $expected = $this->replaceQuotes('SELECT * FROM [[operations]] ORDER BY [[name]], [[date]] DESC');
+        $this->assertEquals($expected, $sql);
+        $this->assertEmpty($params);
+
+        // expression
+        $query = (new Query())
+            ->select('*')
+            ->from('operations')
+            ->where('account_id = accounts.id')
+            ->orderBy(new Expression('SUBSTR(name, 3, 4) DESC, x ASC'));
+        list ($sql, $params) = $this->getQueryBuilder()->build($query);
+        $expected = $this->replaceQuotes('SELECT * FROM [[operations]] WHERE account_id = accounts.id ORDER BY SUBSTR(name, 3, 4) DESC, x ASC');
+        $this->assertEquals($expected, $sql);
+        $this->assertEmpty($params);
+
+        // expression with params
+        $query = (new Query())
+            ->select('*')
+            ->from('operations')
+            ->orderBy(new Expression('SUBSTR(name, 3, :to) DESC, x ASC', [':to' => 4]));
+        list ($sql, $params) = $this->getQueryBuilder()->build($query);
+        $expected = $this->replaceQuotes('SELECT * FROM [[operations]] ORDER BY SUBSTR(name, 3, :to) DESC, x ASC');
+        $this->assertEquals($expected, $sql);
+        $this->assertEquals([':to' => 4], $params);
+    }
+
+    public function testGroupBy()
+    {
+        // simple string
+        $query = (new Query())
+            ->select('*')
+            ->from('operations')
+            ->groupBy('name, date');
+        list ($sql, $params) = $this->getQueryBuilder()->build($query);
+        $expected = $this->replaceQuotes('SELECT * FROM [[operations]] GROUP BY [[name]], [[date]]');
+        $this->assertEquals($expected, $sql);
+        $this->assertEmpty($params);
+
+        // array syntax
+        $query = (new Query())
+            ->select('*')
+            ->from('operations')
+            ->groupBy(['name', 'date']);
+        list ($sql, $params) = $this->getQueryBuilder()->build($query);
+        $expected = $this->replaceQuotes('SELECT * FROM [[operations]] GROUP BY [[name]], [[date]]');
+        $this->assertEquals($expected, $sql);
+        $this->assertEmpty($params);
+
+        // expression
+        $query = (new Query())
+            ->select('*')
+            ->from('operations')
+            ->where('account_id = accounts.id')
+            ->groupBy(new Expression('SUBSTR(name, 0, 1), x'));
+        list ($sql, $params) = $this->getQueryBuilder()->build($query);
+        $expected = $this->replaceQuotes('SELECT * FROM [[operations]] WHERE account_id = accounts.id GROUP BY SUBSTR(name, 0, 1), x');
+        $this->assertEquals($expected, $sql);
+        $this->assertEmpty($params);
+
+        // expression with params
+        $query = (new Query())
+            ->select('*')
+            ->from('operations')
+            ->groupBy(new Expression('SUBSTR(name, 0, :to), x', [':to' => 4]));
+        list ($sql, $params) = $this->getQueryBuilder()->build($query);
+        $expected = $this->replaceQuotes('SELECT * FROM [[operations]] GROUP BY SUBSTR(name, 0, :to), x');
+        $this->assertEquals($expected, $sql);
+        $this->assertEquals([':to' => 4], $params);
+    }
+
+//    public function testInsert()
+//    {
+//        // TODO implement
+//    }
+//
+//    public function testBatchInsert()
+//    {
+//        // TODO implement
+//    }
+//
+//    public function testUpdate()
+//    {
+//        // TODO implement
+//    }
+//
+//    public function testDelete()
+//    {
+//        // TODO implement
+//    }
+
 }

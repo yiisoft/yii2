@@ -6,6 +6,7 @@
  */
 
 namespace yii\helpers;
+
 use yii\base\Arrayable;
 use yii\base\InvalidValueException;
 

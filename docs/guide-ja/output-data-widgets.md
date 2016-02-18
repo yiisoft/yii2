@@ -102,7 +102,7 @@ echo ListView::widget([
 GridView <a name="grid-view"></a>
 --------
 
-データグリッドすなわち GridView は Yii の最も強力なウィジェットの一つです。
+データグリッドすなわち [[yii\widgets\GridView|GridView]] は Yii の最も強力なウィジェットの一つです。
 これは、システムの管理セクションを素速く作らねばならない時に、この上なく便利なものです。
 このウィジェットは [データプロバイダ](output-data-providers.md) からデータを受けて、テーブルの形式で、行ごとに一組の [[yii\grid\GridView::columns|カラム]] を使ってデータを表示します。
 
@@ -266,6 +266,25 @@ echo GridView::widget([
 - [[yii\grid\ActionColumn::urlCreator|urlCreator]] は、指定されたモデルの情報を使って、ボタンの URL を生成するコールバックです。
   コールバックのシグニチャは [[yii\grid\ActionColumn::createUrl()]] のそれと同じでなければなりません。
   このプロパティが設定されていないときは、ボタンの URL は [[yii\grid\ActionColumn::createUrl()]] を使って生成されます。
+- [[yii\grid\ActionColumn::visibleButtons|visibleButtons]] は、各ボタンの可視性の条件を定義する配列です。
+  配列のキーはボタンの名前 (波括弧を除く) であり、値は真偽値 true/false または無名関数です。
+  ボタンの名前がこの配列の中で指定されていない場合は、デフォルトで、ボタンが表示されます。
+  コールバックは次のシグニチャを使わなければなりません。
+
+  ```php
+  function ($model, $key, $index) {
+      return $model->status === 'editable';
+  }
+  ```
+
+  または、真偽値を渡すことも出来ます。
+
+  ```php
+  [
+      'update' => \Yii::$app->user->can('update')
+  ]
+  ```
+
 
 #### チェックボックスカラム
 
@@ -316,7 +335,7 @@ echo GridView::widget([
 
 ### データをフィルタリングする
 
-データをフィルタリングするためには、GridView は、フィルタリングのフォームから入力を受け取り、検索基準に合わせてデータプロバイダのクエリを修正するための [モデル](structure-models.md) を必要とします。
+データをフィルタリングするためには、GridView は、フィルタリングのフォームから入力を受け取り、検索基準に従ってデータプロバイダのクエリを修正するための [モデル](structure-models.md) を必要とします。
 [アクティブレコード](db-active-record.md) を使用している場合は、必要な機能を提供する検索用のモデルクラスを作成するのが一般的なプラクティスです (あなたに代って [Gii](start-gii.md) が生成してくれます)。
 このクラスは、検索のためのバリデーション規則を定義し、データプロバイダを返す `search()` メソッドを提供するものです。
 
@@ -394,6 +413,87 @@ echo GridView::widget([
         // ...
     ],
 ]);
+```
+
+
+### 独立したフィルタ・フォーム
+
+たいていの場合はグリッドビューのヘッダのフィルタで十分でしょう。
+しかし、独立したフィルタのフォームが必要な場合でも、簡単に追加することができます。
+まず、以下の内容を持つパーシャル・ビュー `_search.php` を作成します。
+
+```php
+<?php
+
+use yii\helpers\Html;
+use yii\widgets\ActiveForm;
+
+/* @var $this yii\web\View */
+/* @var $model app\models\PostSearch */
+/* @var $form yii\widgets\ActiveForm */
+?>
+
+<div class="post-search">
+    <?php $form = ActiveForm::begin([
+        'action' => ['index'],
+        'method' => 'get',
+    ]); ?>
+
+    <?= $form->field($model, 'title') ?>
+
+    <?= $form->field($model, 'creation_date') ?>
+
+    <div class="form-group">
+        <?= Html::submitButton('Search', ['class' => 'btn btn-primary']) ?>
+        <?= Html::submitButton('Reset', ['class' => 'btn btn-default']) ?>
+    </div>
+
+    <?php ActiveForm::end(); ?>
+</div>
+```
+
+そして、これを以下のように `index.php` ビューにインクルードします。
+
+```php
+<?= $this->render('_search', ['model' => $searchModel]) ?>
+```
+
+> Note: Gii を使って CRUD コードを生成する場合、デフォルトで、独立したフィルタ・フォーム (`_search.php`) が生成されます。
+  ただし、`index.php` ビューの中ではコメントアウトされています。
+  コメントを外せば、すぐに使うことが出来ます。
+
+独立したフィルタ・フォームは、グリッドビューに表示されないフィールドによってフィルタをかけたり、
+または日付の範囲のような特殊なフィルタ条件を使う必要があったりする場合に便利です。
+日付の範囲によってフィルタする場合は、DB には存在しない `createdFrom` と `createdTo` という属性を検索用のモデルに追加すること良いでしょう。
+
+```php
+class PostSearch extends Post
+{
+    /**
+     * @var string
+     */
+    public $createdFrom;
+
+    /**
+     * @var string
+     */
+    public $createdTo;
+}
+```
+
+そして、`search()` メソッドでクエリの条件を次のように拡張します。
+
+```php
+$query->andFilterWhere(['>=', 'creation_date', $this->createdFrom])
+      ->andFilterWhere(['<=', 'creation_date', $this->createdTo]);
+```
+
+そして、フィルタ・フォームに、日付の範囲を示すフィールドを追加します。
+
+```php
+<?= $form->field($model, 'creationFrom') ?>
+
+<?= $form->field($model, 'creationTo') ?>
 ```
 
 

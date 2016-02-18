@@ -19,48 +19,17 @@ use yii\validators\EmailValidator;
 class FakeController extends Controller
 {
 
-    public function actionAksi1(Bar $bar, $fromParam, $other = 'default')
+    public function actionAksi1($fromParam, $other = 'default')
     {
-        return[$bar, $fromParam, $other];
+        return[$fromParam, $other];
     }
 
-    public function actionAksi2(Bar $barBelongApp, QuxInterface $qux)
+    public function actionAksi2(array $values, $value)
     {
-        return[$barBelongApp, $qux];
+        return [$values, $value];
     }
 
-    public function actionAksi3(QuxInterface $quxApp)
+    public function actionAksi3($available, $missing)
     {
-        return[$quxApp];
-    }
-
-    public function actionAksi4(Bar $bar, QuxInterface $quxApp, array $values, $value)
-    {
-        return [$bar->foo, $quxApp->quxMethod(), $values, $value];
-    }
-
-    public function actionAksi5($q, Bar $bar, QuxInterface $quxApp)
-    {
-        return [$q, $bar->foo, $quxApp->quxMethod()];
-    }
-
-    public function actionAksi6($q, EmailValidator $validator)
-    {
-        return [$q, $validator->validate($q), $validator->validate('misbahuldmunir@gmail.com')];
-    }
-    
-    public function actionAksi7(Bar $bar, $avaliable, $missing)
-    {
-        
-    }
-
-    public function actionAksi8($arg1, $arg2)
-    {
-        return func_get_args();
-    }
-
-    public function actionAksi9($arg1, $arg2, QuxInterface $quxApp)
-    {
-        return func_get_args();
     }
 }

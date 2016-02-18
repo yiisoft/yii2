@@ -53,7 +53,7 @@ In particular, the following filters will be executed in the order they are list
 * [[yii\filters\ContentNegotiator|contentNegotiator]]: supports content negotiation, to be explained in
   the [Response Formatting](rest-response-formatting.md) section;
 * [[yii\filters\VerbFilter|verbFilter]]: supports HTTP method validation;
-* [[yii\filters\AuthMethod|authenticator]]: supports user authentication, to be explained in
+* [[yii\filters\auth\AuthMethod|authenticator]]: supports user authentication, to be explained in
   the [Authentication](rest-authentication.md) section;
 * [[yii\filters\RateLimiter|rateLimiter]]: supports rate limiting, to be explained in
   the [Rate Limiting](rest-rate-limiting.md) section.
@@ -79,7 +79,7 @@ public function behaviors()
 ## Extending `ActiveController` <span id="extending-active-controller"></span>
 
 If your controller class extends from [[yii\rest\ActiveController]], you should set
-its [[yii\rest\ActiveController::modelClass||modelClass]] property to be the name of the resource class
+its [[yii\rest\ActiveController::modelClass|modelClass]] property to be the name of the resource class
 that you plan to serve through this controller. The class must extend from [[yii\db\ActiveRecord]].
 
 

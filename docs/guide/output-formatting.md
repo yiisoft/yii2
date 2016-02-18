@@ -107,6 +107,9 @@ The following format shortcuts are supported (the examples assume `en_GB` is the
 - `long`: will output `6 October 2014` and `15:58:42 GMT`;
 - `full`: will output `Monday, 6 October 2014` and `15:58:42 GMT`.
 
+Since version 2.0.7 it is also possible to format dates in different calendar systems.
+Please refer to the API documentation of the formatters [[yii\i18n\Formatter::$calendar|$calendar]]-property on how to set a different calendar.
+
 
 ### Time Zones <span id="time-zones"></span>
 

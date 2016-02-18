@@ -29,6 +29,10 @@ use yii\helpers\Console;
  *
  * @property string $help This property is read-only.
  * @property string $helpSummary This property is read-only.
+ * @property array $passedOptionValues The properties corresponding to the passed options. This property is
+ * read-only.
+ * @property array $passedOptions The names of the options passed during execution. This property is
+ * read-only.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
@@ -122,27 +126,16 @@ class Controller extends \yii\base\Controller
             $method = new \ReflectionMethod($action, 'run');
         }
 
-        $params = array_values($params);
+        $args = array_values($params);
 
-        $args = [];
         $missing = [];
-        foreach ($method->getParameters() as $param) {
-            if (($class = $param->getClass()) !== null) {
-                $name = $param->getName();
-                $className = $class->getName();
-                if (Yii::$app->has($name) && ($obj = Yii::$app->get($name)) instanceof $className) {
-                    $args[] = $obj;
-                } else {
-                    $args[] = Yii::$container->get($className);
-                }
-                continue;
+        foreach ($method->getParameters() as $i => $param) {
+            if ($param->isArray() && isset($args[$i])) {
+                $args[$i] = preg_split('/\s*,\s*/', $args[$i]);
             }
-            $value = array_shift($params);
-            if (isset($value)) {
-                $args[] = $param->isArray() ? preg_split('/\s*,\s*/', $value) : $value;
-            } else {
+            if (!isset($args[$i])) {
                 if ($param->isDefaultValueAvailable()) {
-                    $args[] = $param->getDefaultValue();
+                    $args[$i] = $param->getDefaultValue();
                 } else {
                     $missing[] = $param->getName();
                 }
@@ -153,9 +146,6 @@ class Controller extends \yii\base\Controller
             throw new Exception(Yii::t('yii', 'Missing required arguments: {params}', ['params' => implode(', ', $missing)]));
         }
 
-        foreach ($params as $value) {
-            $args[] = $value;
-        }
         return $args;
     }
 
@@ -418,9 +408,6 @@ class Controller extends \yii\base\Controller
         /** @var \ReflectionParameter $reflection */
         foreach ($method->getParameters() as $i => $reflection) {
             $name = $reflection->getName();
-            if ($reflection->getClass() !== null) {
-                continue;
-            }
             $tag = isset($params[$i]) ? $params[$i] : '';
             if (preg_match('/^(\S+)\s+(\$\w+\s+)?(.*)/s', $tag, $matches)) {
                 $type = $matches[1];

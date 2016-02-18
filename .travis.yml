@@ -40,6 +40,7 @@ install:
 before_script:
   # show some versions and env information
   - php -r "echo INTL_ICU_VERSION . \"\n\";"
+  - php -r "echo INTL_ICU_DATA_VERSION . \"\n\";"
   - mysql --version
   - psql --version
 

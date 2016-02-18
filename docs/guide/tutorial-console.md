@@ -2,7 +2,7 @@ Console applications
 ====================
 
 Besides the rich features for building web applications, Yii also has full featured support for console applications
-which are mainly used to create background and maintainance tasks that need to be performed for a website.
+which are mainly used to create background and maintenance tasks that need to be performed for a website.
 
 The structure of console applications is very similar to a Yii web application. It consists of one
 or more [[yii\console\Controller]] classes, which are often referred to as "commands" in the console environment.
@@ -172,7 +172,7 @@ method:
 public function actionIndex()
 {
     if (/* some problem */) {
-        echo "A problem occured!\n";
+        echo "A problem occurred!\n";
         return 1;
     }
     // do something
