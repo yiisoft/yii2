@@ -49,7 +49,7 @@ em um diretório acessível pela Web:
     composer global require "fxp/composer-asset-plugin:~1.1.1"
     composer create-project --prefer-dist yiisoft/yii2-app-basic basic
 
-O primeiro comando instaka o [composer asset plugin](https://github.com/francoispluchino/composer-asset-plugin/)
+O primeiro comando instala o [composer asset plugin](https://github.com/francoispluchino/composer-asset-plugin/)
 o que permite gerenciar dependências via bower e npm package por meio do Composer.
 Você apenas precisa rodar este comando uma vez. O segundo comando instala o Yii
 em um diretório chamado `basic`. Você pode escolher um diretório diferente se quiser.
