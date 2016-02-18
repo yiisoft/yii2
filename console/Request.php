@@ -66,15 +66,15 @@ class Request extends \yii\base\Request
 
         $params = [];
         foreach ($rawParams as $param) {
-            if (preg_match('/^--(\w+)(=(.*))?$/', $param, $matches)) {
+            if (preg_match('/^--(\w+)=(.*)?$/', $param, $matches)) {
                 $name = $matches[1];
                 if ($name !== Application::OPTION_APPCONFIG) {
-                    $params[$name] = isset($matches[3]) ? $matches[3] : true;
+                    $params[$name] = isset($matches[2]) ? $matches[2] : true;
                 }
-            } elseif (preg_match('/^-(\w+)(=(.*))?$/', $param, $matches)) {
+            } elseif (preg_match('/^-(\w+)=(.*)?$/', $param, $matches)) {
                 $name = $matches[1];
                 if ($name !== Application::OPTION_APPCONFIG) {
-                    $params['alias'][$name] = isset($matches[3]) ? $matches[3] : true;
+                    $params['alias'][$name] = isset($matches[2]) ? $matches[2] : true;
                 }
             } else {
                 $params[] = $param;
