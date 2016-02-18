@@ -129,7 +129,7 @@ class HelpController extends Controller
      */
     protected function getModuleCommands($module)
     {
-        $prefix = $module instanceof Application ? '' : $module->getUniqueID() . '/';
+        $prefix = $module instanceof Application ? '' : $module->getUniqueId() . '/';
 
         $commands = [];
         foreach (array_keys($module->controllerMap) as $id) {
@@ -397,7 +397,7 @@ class HelpController extends Controller
             } else {
                 $defaultValue = var_export($defaultValue, true);
             }
-            $doc = "$type (defaults to " . $defaultValue . ')';
+            $doc = "$type (defaults to $defaultValue)";
         } else {
             $doc = $type;
         }

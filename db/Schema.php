@@ -104,7 +104,7 @@ abstract class Schema extends Object
     /**
      * Loads the metadata for the specified table.
      * @param string $name table name
-     * @return TableSchema DBMS-dependent table metadata, null if the table does not exist.
+     * @return null|TableSchema DBMS-dependent table metadata, null if the table does not exist.
      */
     abstract protected function loadTableSchema($name);
 
@@ -112,7 +112,7 @@ abstract class Schema extends Object
      * Obtains the metadata for the named table.
      * @param string $name table name. The table name may contain schema name if any. Do not quote the table name.
      * @param boolean $refresh whether to reload the table schema even if it is found in the cache.
-     * @return TableSchema table metadata. Null if the named table does not exist.
+     * @return null|TableSchema table metadata. Null if the named table does not exist.
      */
     public function getTableSchema($name, $refresh = false)
     {

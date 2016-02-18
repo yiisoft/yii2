@@ -180,6 +180,7 @@ class Connection extends Component
      * This property is mainly managed by [[open()]] and [[close()]] methods.
      * When a DB connection is active, this property will represent a PDO instance;
      * otherwise, it will be null.
+     * @see pdoClass
      */
     public $pdo;
     /**
@@ -280,9 +281,17 @@ class Connection extends Component
         'cubrid' => 'yii\db\cubrid\Schema', // CUBRID
     ];
     /**
-     * @var string Custom PDO wrapper class. If not set, it will use "PDO" or "yii\db\mssql\PDO" when MSSQL is used.
+     * @var string Custom PDO wrapper class. If not set, it will use [[PDO]] or [[yii\db\mssql\PDO]] when MSSQL is used.
+     * @see pdo
      */
     public $pdoClass;
+    /**
+     * @var string the class used to create new database [[Command]] objects. If you want to extend the [[Command]] class,
+     * you may configure this property to use your extended version of the class.
+     * @see createCommand
+     * @since 2.0.7
+     */
+    public $commandClass = 'yii\db\Command';
     /**
      * @var boolean whether to enable [savepoint](http://en.wikipedia.org/wiki/Savepoint).
      * Note that if the underlying DBMS does not support savepoint, setting this property to be true will have no effect.
@@ -618,7 +627,8 @@ class Connection extends Component
      */
     public function createCommand($sql = null, $params = [])
     {
-        $command = new Command([
+        /** @var Command $command */
+        $command = new $this->commandClass([
             'db' => $this,
             'sql' => $sql,
         ]);
@@ -665,14 +675,17 @@ class Connection extends Component
     public function transaction(callable $callback, $isolationLevel = null)
     {
         $transaction = $this->beginTransaction($isolationLevel);
+        $level = $transaction->level;
 
         try {
             $result = call_user_func($callback, $this);
-            if ($transaction->isActive) {
+            if ($transaction->isActive && $transaction->level === $level) {
                 $transaction->commit();
             }
         } catch (\Exception $e) {
-            $transaction->rollBack();
+            if ($transaction->isActive && $transaction->level === $level) {
+                $transaction->rollBack();
+            }
             throw $e;
         }
 

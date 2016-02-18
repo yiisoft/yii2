@@ -89,6 +89,7 @@ class Security extends Component
      */
     public $passwordHashCost = 13;
 
+
     /**
      * Encrypts data using a password.
      * Derives keys for encryption and authentication from the password using PBKDF2 and a random salt,
@@ -439,7 +440,6 @@ class Security extends Component
      *
      * @param integer $length the number of bytes to generate
      * @return string the generated random bytes
-     * @throws InvalidConfigException if OpenSSL extension is required (e.g. on Windows) but not installed.
      * @throws Exception on failure.
      */
     public function generateRandomKey($length = 32)
@@ -548,7 +548,6 @@ class Security extends Component
      *
      * @param integer $length the length of the key in characters
      * @return string the generated random key
-     * @throws InvalidConfigException if OpenSSL extension is needed but not installed.
      * @throws Exception on failure.
      */
     public function generateRandomString($length = 32)
@@ -598,7 +597,6 @@ class Security extends Component
      * the output is always 60 ASCII characters, when set to 'password_hash' the output length
      * might increase in future versions of PHP (http://php.net/manual/en/function.password-hash.php)
      * @throws Exception on bad password parameter or cost parameter.
-     * @throws InvalidConfigException when an unsupported password hash strategy is configured.
      * @see validatePassword()
      */
     public function generatePasswordHash($password, $cost = null)
@@ -628,7 +626,6 @@ class Security extends Component
      * @param string $hash The hash to verify the password against.
      * @return boolean whether the password is correct.
      * @throws InvalidParamException on bad password/hash parameters or if crypt() with Blowfish hash is not available.
-     * @throws InvalidConfigException when an unsupported password hash strategy is configured.
      * @see generatePasswordHash()
      */
     public function validatePassword($password, $hash)

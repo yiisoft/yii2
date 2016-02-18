@@ -55,9 +55,11 @@ class FileValidator extends Validator
     /**
      * @var integer the maximum number of bytes required for the uploaded file.
      * Defaults to null, meaning no limit.
-     * Note, the size limit is also affected by `upload_max_filesize` INI setting
-     * and the 'MAX_FILE_SIZE' hidden field value.
+     * Note, the size limit is also affected by `upload_max_filesize` and `post_max_size` INI setting
+     * and the 'MAX_FILE_SIZE' hidden field value. See [[getSizeLimit()]] for details.
      * @see http://php.net/manual/en/ini.core.php#ini.upload-max-filesize
+     * @see http://php.net/post-max-size
+     * @see getSizeLimit
      * @see tooBig for the customized message for a file that is too big.
      */
     public $maxSize;
@@ -66,8 +68,10 @@ class FileValidator extends Validator
      * Defaults to 1, meaning single file upload. By defining a higher number,
      * multiple uploads become possible. Setting it to `0` means there is no limit on
      * the number of files that can be uploaded simultaneously.
+     *
      * > Note: The maximum number of files allowed to be uploaded simultaneously is
      * also limited with PHP directive `max_file_uploads`, which defaults to 20.
+     *
      * @see http://php.net/manual/en/ini.core.php#ini.max-file-uploads
      * @see tooMany for the customized message when too many files are uploaded.
      */
@@ -90,7 +94,7 @@ class FileValidator extends Validator
      * - {file}: the uploaded file name
      * - {limit}: the maximum size allowed (see [[getSizeLimit()]])
      * - {formattedLimit}: the maximum size formatted
-     * with [[\yii\i18n\Formatter::asShortSize()|Formatter::asShortSize()]]
+     *   with [[\yii\i18n\Formatter::asShortSize()|Formatter::asShortSize()]]
      */
     public $tooBig;
     /**
@@ -101,7 +105,7 @@ class FileValidator extends Validator
      * - {file}: the uploaded file name
      * - {limit}: the value of [[minSize]]
      * - {formattedLimit}: the value of [[minSize]] formatted
-     * with [[\yii\i18n\Formatter::asShortSize()|Formatter::asShortSize()]
+     *   with [[\yii\i18n\Formatter::asShortSize()|Formatter::asShortSize()]
      */
     public $tooSmall;
     /**
@@ -249,7 +253,11 @@ class FileValidator extends Validator
                 }
             case UPLOAD_ERR_INI_SIZE:
             case UPLOAD_ERR_FORM_SIZE:
-                return [$this->tooBig, ['file' => $file->name, 'limit' => $this->getSizeLimit()]];
+                return [$this->tooBig, [
+                    'file' => $file->name,
+                    'limit' => $this->getSizeLimit(),
+                    'formattedLimit' => Yii::$app->formatter->asShortSize($this->getSizeLimit())
+                ]];
             case UPLOAD_ERR_PARTIAL:
                 Yii::warning('File was only partially uploaded: ' . $file->name, __METHOD__);
                 break;

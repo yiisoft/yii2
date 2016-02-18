@@ -7,11 +7,8 @@
 
 namespace yii\behaviors;
 
-use Closure;
-use yii\base\Event;
 use yii\base\InvalidCallException;
 use yii\db\BaseActiveRecord;
-use yii\db\Expression;
 
 /**
  * TimestampBehavior automatically fills the specified attributes with the current timestamp.
@@ -80,8 +77,10 @@ class TimestampBehavior extends AttributeBehavior
      */
     public $updatedAtAttribute = 'updated_at';
     /**
-     * {@inheritdoc}
-     * In case, when the value is null - the [[time()]] function value will be used.
+     * @inheritdoc
+     *
+     * In case, when the value is `null`, the result of the PHP function [time()](http://php.net/manual/en/function.time.php)
+     * will be used as value.
      */
     public $value;
 
@@ -102,8 +101,10 @@ class TimestampBehavior extends AttributeBehavior
     }
 
     /**
-     * {@inheritdoc}
-     * [[time()]] function return value will be used, when [[value]] is null.
+     * @inheritdoc
+     *
+     * In case, when the [[value]] is `null`, the result of the PHP function [time()](http://php.net/manual/en/function.time.php)
+     * will be used as value.
      */
     protected function getValue($event)
     {

@@ -206,7 +206,7 @@ yii.validation = (function ($) {
                     value = matches[1] + matches[3] + matches[5] + '@' + matches[6] + matches[7];
                 }
 
-                if (matches[5].length > 64 || matches[1].length > 64) {
+                if (matches[5].length > 64) {
                     valid = false;
                 } else if ((matches[5] + '@' + matches[6]).length > 254) {
                     valid = false;
@@ -355,7 +355,7 @@ yii.validation = (function ($) {
                 return;
             }
             if (options.negation === false && negation !== null) {
-                pub.addMessage(messages, options.messages.wrongIp, value);
+                pub.addMessage(messages, options.messages.message, value);
                 return;
             }
 
@@ -364,14 +364,14 @@ yii.validation = (function ($) {
                     pub.addMessage(messages, options.messages.ipv6NotAllowed, value);
                 }
                 if (!(new RegExp(options.ipv6Pattern)).test(value)) {
-                    pub.addMessage(messages, options.messages.wrongIp, value);
+                    pub.addMessage(messages, options.messages.message, value);
                 }
             } else {
                 if (!options.ipv4) {
                     pub.addMessage(messages, options.messages.ipv4NotAllowed, value);
                 }
                 if (!(new RegExp(options.ipv4Pattern)).test(value)) {
-                    pub.addMessage(messages, options.messages.wrongIp, value);
+                    pub.addMessage(messages, options.messages.message, value);
                 }
             }
         }
