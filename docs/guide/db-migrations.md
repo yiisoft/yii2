@@ -217,7 +217,7 @@ class m150811_220037_create_post extends Migration
 To create table fields right away, specify them via `--fields` option.
  
 ```php
-yii migrate/create create_post --fields=title:string,body:text
+yii migrate/create create_post --fields='title:string,body:text'
 ``` 
 
 generates
@@ -244,7 +244,7 @@ class m150811_220037_create_post extends Migration
 You can specify more field parameters.
 
 ```php
-yii migrate/create create_post --fields=title:string(12):notNull:unique,body:text
+yii migrate/create create_post --fields='title:string(12):notNull:unique,body:text'
 ``` 
 
 generates 
@@ -269,13 +269,13 @@ class m150811_220037_create_post extends Migration
 ```
 
 > Note: primary key is added automatically and is named `id` by default. If you want to use another name you may
-> specify it explicitly like `--fields=name:primaryKey`.
+> specify it explicitly like `--fields='name:primaryKey'`.
 
 
 ### Drop Table
 
 ```php
-yii migrate/create drop_post --fields=title:string(12):notNull:unique,body:text
+yii migrate/create drop_post --fields='title:string(12):notNull:unique,body:text'
 ``` 
 
 generates 
@@ -307,7 +307,7 @@ statements necessary.
 To add column:
 
 ```php
-yii migrate/create add_position_to_post --fields=position:integer
+yii migrate/create add_position_to_post --fields='position:integer'
 ```
 
 generates
@@ -333,7 +333,7 @@ If the migration name is of the form `drop_xxx_from_yyy` then the file content w
 statements necessary.
 
 ```php
-yii migrate/create drop_position_from_post --fields=position:integer
+yii migrate/create drop_position_from_post --fields='position:integer'
 ```
 
 generates
