@@ -417,6 +417,7 @@ class HelpController extends Controller
      * @param Controller $controller the controller instance
      * @param string $option the option name
      * @return string the formatted string for the alias argument or option
+     * @since 2.0.8
      */
     protected function formatOptionAliases($controller, $option)
     {
