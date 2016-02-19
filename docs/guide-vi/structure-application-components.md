@@ -3,7 +3,7 @@ Các thành phần ứng dụng
 
 Mỗi ứng dụng là hiện thực của [mẫu thiết kế Service Locators](concept-service-locator.md). Mỗi ứng dụng sẽ chứa các thành phần
 được gọi là *thành phần ứng dụng* giúp cung cấp các dịch vụ cho các tiến trình xử lý. Chẳng hạn,
-thành phần `urlManager` đảm nhiệm chức năng cho bộ định tuyến cho các yêu cầu xử lý Web tới các bộ điều khiển;
+thành phần `urlManager` đảm nhiệm chức năng cho bộ định tuyến cho các yêu cầu xử lý tới các bộ điều khiển;
 thành phần `db` cung cấp các dịch vụ để giao tiếp với cơ sở dữ liệu (CSDL); và các thành phần khác.
 
 Mỗi thành phần ứng dụng đều có một định danh ID giúp xác định thành phần duy nhất trong cùng một ứng dụng
@@ -45,7 +45,7 @@ Ví dụ,
 ]
 ```
 
-> Lưu ý: Bạn cần đăngk ý các thành phần ứng dụng một cách cẩn thận.
+> Lưu ý: Bạn cần đăng ký các thành phần ứng dụng một cách cẩn thận.
   Các thành phần ứng dụng cũng như các biến có phạm vi toàn cục. Sử dụng quá nhiều các thành phần ứng dụng có thể khiến mã nguồn
   khó kiểm tra và bảo trì. Cách tốt nhất, bạn nên khởi tạo các thành phần ở phạm vi cục bộ
   và khi cần thiết có thể thêm vào ứng dụng.
