@@ -202,4 +202,29 @@ class AccessRuleTest extends \yiiunit\TestCase
         $this->assertNull($rule->allows($action, $user, $request));
     }
 
+    public function testMatchIPExpandIpv6()
+    {
+        /** @var $action Action */
+        /** @var $user User */
+        /** @var $request Request */
+        list($action, $user, $request) = $this->mockObjects();
+
+        $rule = new AccessRule();
+
+        // match, IPv6
+        $_SERVER['REMOTE_ADDR'] = '2a01:04f8:0120:7202:0000:0000:0000:0002';
+        $rule->ips = ['2a01:4f8:120:7202::2'];
+        $rule->allow = true;
+        $this->assertTrue($rule->allows($action, $user, $request));
+        $rule->allow = false;
+        $this->assertFalse($rule->allows($action, $user, $request));
+
+        $_SERVER['REMOTE_ADDR'] = '2a01:4f8:120:7202:0:0:0:2';
+        $rule->ips = ['2a01:4f8:120:7202::2'];
+        $rule->allow = true;
+        $this->assertTrue($rule->allows($action, $user, $request));
+        $rule->allow = false;
+        $this->assertFalse($rule->allows($action, $user, $request));
+    }
+
 }
