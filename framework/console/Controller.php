@@ -311,6 +311,7 @@ class Controller extends \yii\base\Controller
      * Child classes may override this method to specify alias options.
      *
      * @return array the options alias names valid for the action
+     * @since 2.0.8
      */
     public function optionAliases()
     {
