@@ -127,7 +127,7 @@ Tên lớp của các Controller được khởi tạo từ các định danh Co
 
 1. Chuyển ký tự đầu tiên trong mỗi từ cách nhau bởi dấu gạch nối thành ký tự hoa. Lưu ý rằng nếu các định danh Controller 
   có chứa dấu gạch chéo, thì quy tắc này chỉ được áp dụng ở phần sau dấu gạch chéo cuối cùng trong các định danh.
-2. Xoá các dấu gạch nối và thay thế các dấu gạch chéo xuôi thành dấu gạch chéo ngược.
+2. Xoá các dấu gạch nối và thay thế các dấu gạch chéo xuôi(/) thành dấu gạch chéo ngược (\).
 3. Thêm hậu tố `Controller`.
 4. Thêm [[yii\base\Application::controllerNamespace|controller namespace]].
 
@@ -228,7 +228,7 @@ dấu gạch dưới, và dấu gạch ngang. (Bạn cũng có thể sử dụng
 Có hai cách để tạo mới các action: inline actions và standalone actions. Với inline action được định nghĩa
 như những phương thức trong lớp Controller, trong khi đó standalone action là lớp được kế thừa từ lớp
 [[yii\base\Action]] hoặc là lớp con. Nếu bạn không muốn tái sử dụng các action thì bạn có thể dùng inline actions
-, cách này thường hay được sử dụng hơn. Trong khi đó standalone actions thường được tạo để sử dụng
+, cách này thường hay được sử dụng hơn. Trong khi đó các standalone actions thường được tạo để sử dụng
 ở những Controllers khác nhau và được dùng như [thành phần mở rộng](structure-extensions.md).
 
 
@@ -359,10 +359,10 @@ Các tham số cho action sẽ được dùng như sau và tương ứng với c
    `'123'` và `'2'`.
 * `http://hostname/index.php?r=post/view`: ngoại lệ [[yii\web\BadRequestHttpException]] sẽ được gửi ra
   vì tham số `$id` không được gửi lên.
-* `http://hostname/index.php?r=post/view&id[]=123`: a [[yii\web\BadRequestHttpException]] exception will be thrown
-  because `$id` parameter is receiving an unexpected array value `['123']`.
+* `http://hostname/index.php?r=post/view&id[]=123`: xảy ra ngoại lệ [[yii\web\BadRequestHttpException]] lý do vì
+  tham số `$id` nhận dữ liệu là một mảng do vậy không hợp lệ `['123']`.
 
-If you want an action parameter to accept array values, you should type-hint it with `array`, like the following:
+Nếu bạn muốn tham số của action nhận dữ liệu là một mảng, bạn nên khai báo biên là `array`, như sau:
 
 ```php
 public function actionView(array $id, $version = null)
@@ -371,22 +371,22 @@ public function actionView(array $id, $version = null)
 }
 ```
 
-Now if the request is `http://hostname/index.php?r=post/view&id[]=123`, the `$id` parameter will take the value
-of `['123']`. If the request is `http://hostname/index.php?r=post/view&id=123`, the `$id` parameter will still
-receive the same array value because the scalar value `'123'` will be automatically turned into an array.
+Nếu yêu cầu là `http://hostname/index.php?r=post/view&id[]=123`, thì tham số `$id` sẽ nhận giá trị là
+ `['123']`. Nếu yêu cầu là `http://hostname/index.php?r=post/view&id=123`, tham số `$id` sẽ chỉ nhận
+các giá trị trong mảng là giống nhau bởi vì giá trị `'123'` không là mảng và sẽ tự động chuyển vào mảng.
 
-The above examples mainly show how action parameters work for Web applications. For console applications,
-please refer to the [Console Commands](tutorial-console.md) section for more details.
+Ở ví dụ trên sẽ hướng dẫn các tham số trong mỗi action hoạt động trong ứng dụng Web. Với ứng dụng console,
+vui lòng tham khảo tại mục [Console Commands](tutorial-console.md) để biết thêm thông tin.
 
 
 ### Action mặc định <span id="default-action"></span>
 
-Each controller has a default action specified via the [[yii\base\Controller::defaultAction]] property.
-When a [route](#routes) contains the controller ID only, it implies that the default action of
-the specified controller is requested.
+Mỗi controller đều có các action mặc định và đợc mô tả ở thuộc tính [[yii\base\Controller::defaultAction]].
+Mỗi khi [route](#routes) chỉ nhận giá trị là định danh của controller, router sẽ tự hiểu rằng action mặc định
+của controller sẽ được gọi.
 
-By default, the default action is set as `index`. If you want to change the default value, simply override
-this property in the controller class, like the following:
+Mặc định, action mặc định sẽ là `index`. nếu bạn muốn thay đổi giá trị này, cách đơn giản nhất là ghi đè thuộc tính
+trong lớp controller, như sau:
 
 ```php
 namespace app\controllers;
@@ -407,40 +407,38 @@ class SiteController extends Controller
 
 ## Chu trình Controller <span id="controller-lifecycle"></span>
 
-When processing a request, an [application](structure-applications.md) will create a controller
-based on the requested [route](#routes). The controller will then undergo the following lifecycle
-to fulfill the request:
+Khi xử lý yêu cầu, [ứng dụng](structure-applications.md) sẽ khởi tạo controller
+dựa theo các yêu cầu tại [route](#routes). Controller sẽ được xử lý qua các chu trình sau để xử lý các yêu cầu:
 
-1. The [[yii\base\Controller::init()]] method is called after the controller is created and configured.
-2. The controller creates an action object based on the requested action ID:
-   * If the action ID is not specified, the [[yii\base\Controller::defaultAction|default action ID]] will be used.
-   * If the action ID is found in the [[yii\base\Controller::actions()|action map]], a standalone action
-     will be created;
-   * If the action ID is found to match an action method, an inline action will be created;
-   * Otherwise an [[yii\base\InvalidRouteException]] exception will be thrown.
-3. The controller sequentially calls the `beforeAction()` method of the application, the module (if the controller
-   belongs to a module), and the controller.
-   * If one of the calls returns false, the rest of the uncalled `beforeAction()` methods will be skipped and the
-     action execution will be cancelled.
-   * By default, each `beforeAction()` method call will trigger a `beforeAction` event to which you can attach a handler.
-4. The controller runs the action.
-   * The action parameters will be analyzed and populated from the request data.
-5. The controller sequentially calls the `afterAction()` method of the controller, the module (if the controller
-   belongs to a module), and the application.
-   * By default, each `afterAction()` method call will trigger an `afterAction` event to which you can attach a handler.
-6. The application will take the action result and assign it to the [response](runtime-responses.md).
+1. Phương thức [[yii\base\Controller::init()]] sẽ được gọi sau khi controller được khởi tạo và thiết lập các cấu hình.
+2. Controller sẽ tạo đối tượng action dựa trên các yêu cầu qua các định danh của action:
+   * Nếu định danh của action không được chỉ rõ , thì  [[yii\base\Controller::defaultAction|action mặc định]] sẽ được sử dụng.
+   * Nếu định danh của action được tìm thấy trong phương thức [[yii\base\Controller::actions()|action map]], thì một standalone action
+     sẽ được khởi tạo;
+   * Nếu định danh của action được tìm thấy và khớp với phương thức của action, thì một inline action sẽ được;
+   * Mặt khác hệ thống sẽ gửi ngoại lê [[yii\base\InvalidRouteException]] ra.
+3. Controller sẽ lần lượt được gọi tại phương thức `beforeAction()` trong ứng dụng, trong module (nếu controller
+   thuộc một module), và trong controller.
+   * Nếu một trong các phương thức không đợc gọi, các phần chưa được gọi trong phương thức `beforeAction()` sẽ được bỏ qua
+     và việc thực hiện action sẽ bị huỷ bỏ.
+   * Mặc định, mỗi phương thức `beforeAction()` sẽ được gán vào sự kiện `beforeAction` tới các action mà bạn cần xử lý.
+4. Controller thực hiện chạy action.
+   * Các tham số của action sẽ được phân tích và gán từ các yêu cầu xử lý.
+5. Controller sẽ thực hiện tuần tự gọi phương thức `afterAction()` trong Controller, module (nếu Controller
+   là module), và trong ứng dụng.
+   * Mặc định, mỗi phương thức `afterAction()` sẽ gọi tới một sự kiện `afterAction` tới các action mà bạn cần xử lý.
+6. Ứng dụng sẽ nhận kết quả từ các action và chuyển tới thành phần [response](runtime-responses.md).
 
 
-## Best Practices <span id="best-practices"></span>
+## Thực hành <span id="best-practices"></span>
 
-In a well-designed application, controllers are often very thin, with each action containing only a few lines of code.
-If your controller is rather complicated, it usually indicates that you should refactor it and move some code
-to other classes.
+Với mỗi ứng dụng được thiết kế tốt, thì Controllers thường rất gọn nhẹ, mỗi action chỉ chứa khá ít dòng code.
+Nếu Controller trong ứng dụng của bản khá phức tạp, thì bạn nên cấu trúc lại và chuyển sang một lớp khác.
 
-Here are some specific best practices. Controllers
+Sau đây gợi ý vài thủ thuật. Controllers
 
-* may access the [request](runtime-requests.md) data;
-* may call methods of [models](structure-models.md) and other service components with request data;
-* may use [views](structure-views.md) to compose responses;
-* should NOT process the request data - this should be done in [the model layer](structure-models.md);
-* should avoid embedding HTML or other presentational code - this is better done in [views](structure-views.md).
+* có thể truy cập dữ liệu từ các [request](runtime-requests.md);
+* gọi các phương thức từ [models](structure-models.md) và các thành phần khác cùng với dữ liệu được gửi;
+* dùng thành phần [views](structure-views.md) để gửi phản hồi;
+* KHÔNG NÊN xử lý dữ liệu - nên xử lý ở tầng [model](structure-models.md);
+* không nên nhúng mã HTML vào hoặc đoạn mã khác - mã này nên nhũng ở thành phần [views](structure-views.md).
