@@ -8,6 +8,7 @@ Yii Framework 2 Change Log
 - Enh #10451: Check of existence of `$_SERVER` in `\yii\web\Request` before using it (quantum13)
 - Enh #10610: Added `BaseUrl::$urlManager` to be able to set URL manager used for creating URLs (samdark)
 - Enh #10764: `yii\helpers\Html::tag()` and `::beginTag()` return content without any HTML when the `$tag` attribute is `false` or `null` (pana1990)
+- Chg: HTMLPurifier dependency updated to ~4.7.0 (samdark)
 
 2.0.7 February 14, 2016
 -----------------------
