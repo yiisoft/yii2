@@ -435,10 +435,13 @@ class Model extends Component implements IteratorAggregate, ArrayAccess, Arrayab
      * @return ArrayObject validators
      * @throws InvalidConfigException if any validation rule configuration is invalid
      */
-    public function createValidators()
+    public function createValidators($rules = null)
     {
+        if ($rules === null) {
+            $rules = $this->rules();
+        }
         $validators = new ArrayObject;
-        foreach ($this->rules() as $rule) {
+        foreach ($rules as $rule) {
             if ($rule instanceof Validator) {
                 $validators->append($rule);
             } elseif (is_array($rule) && isset($rule[0], $rule[1])) { // attributes, validator type
