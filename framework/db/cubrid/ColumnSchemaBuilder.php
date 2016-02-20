@@ -5,15 +5,15 @@
  * @license http://www.yiiframework.com/license/
  */
 
-namespace yii\db\oci;
+namespace yii\db\cubrid;
 
 use yii\db\ColumnSchemaBuilder as AbstractColumnSchemaBuilder;
 
 /**
- * ColumnSchemaBuilder is the schema builder for Oracle databases.
+ * ColumnSchemaBuilder is the schema builder for Cubrid databases.
  *
- * @author Vasenin Matvey <vaseninm@gmail.com>
- * @since 2.0.6
+ * @author Chris Harris <chris@buckshotsoftware.com>
+ * @since 2.0.8
  */
 class ColumnSchemaBuilder extends AbstractColumnSchemaBuilder
 {
@@ -51,10 +51,10 @@ class ColumnSchemaBuilder extends AbstractColumnSchemaBuilder
                 $format = '{type}{length}{pos}';
                 break;
             case self::CAT_NUMERIC:
-                $format = '{type}{length}{unsigned}{default}{notnull}{check}{pos}';
+                $format = '{type}{length}{unsigned}{notnull}{unique}{default}{check}{pos}';
                 break;
             default:
-                $format = '{type}{length}{default}{notnull}{check}{pos}';
+                $format = '{type}{length}{notnull}{unique}{default}{check}{pos}';
         }
         return $this->buildCompleteString($format);
     }

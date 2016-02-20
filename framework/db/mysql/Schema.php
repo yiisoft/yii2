@@ -52,6 +52,9 @@ class Schema extends \yii\db\Schema
         'enum' => self::TYPE_STRING,
     ];
 
+    /**
+     * @var array mapping from type groups to
+     */
 
     /**
      * Quotes a table name for use in a query.
@@ -346,5 +349,13 @@ SQL;
         }
 
         return $this->db->createCommand($sql)->queryColumn();
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function createColumnSchemaBuilder($type, $length = null)
+    {
+        return new ColumnSchemaBuilder($type, $length);
     }
 }
