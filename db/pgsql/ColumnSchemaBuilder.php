@@ -25,4 +25,12 @@ class ColumnSchemaBuilder extends AbstractColumnSchemaBuilder
     {
         return '';
     }
+
+    /**
+     * @inheritdoc
+     */
+    protected function buildAfterString()
+    {
+        return '';
+    }
 }

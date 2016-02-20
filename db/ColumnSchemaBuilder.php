@@ -43,6 +43,10 @@ class ColumnSchemaBuilder extends Object
      */
     protected $check;
     /**
+     * @var string the column after which $this column will be added.
+     */
+    protected $after;
+    /**
      * @var mixed default value of the column.
      */
     protected $default;
@@ -99,6 +103,18 @@ class ColumnSchemaBuilder extends Object
     }
 
     /**
+     * Adds an `AFTER` constraint to the column.
+     * Note: MySQL, Oracle and Cubrid support only.
+     * @param string $after the column after which $this column will be added.
+     * @return $this
+     */
+    public function after($after)
+    {
+        $this->after = $after;
+        return $this;
+    }
+
+    /**
      * Specify the default value for the column.
      * @param mixed $default the default value.
      * @return $this
@@ -145,7 +161,8 @@ class ColumnSchemaBuilder extends Object
             $this->buildNotNullString() .
             $this->buildUniqueString() .
             $this->buildDefaultString() .
-            $this->buildCheckString();
+            $this->buildCheckString() .
+            $this->buildAfterString();
     }
 
     /**
@@ -220,6 +237,15 @@ class ColumnSchemaBuilder extends Object
     protected function buildCheckString()
     {
         return $this->check !== null ? " CHECK ({$this->check})" : '';
+    }
+
+    /**
+     * Builds the after constraint for the column.
+     * @return string a string containing the AFTER constraint.
+     */
+    protected function buildAfterString()
+    {
+        return $this->after !== null ? " AFTER ('{$this->after}')" : '';
     }
 
     /**
