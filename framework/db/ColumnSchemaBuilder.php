@@ -25,7 +25,7 @@ class ColumnSchemaBuilder extends Object
      * @since 2.0.8
      */
     const CAT_PK = 'pk';
-    const CAT_TEXT = 'text';
+    const CAT_STRING = 'string';
     const CAT_NUMERIC = 'numeric';
     const CAT_TIME = 'time';
     const CAT_OTHER = 'other';
@@ -72,17 +72,15 @@ class ColumnSchemaBuilder extends Object
      */
     protected $isFirst;
     /**
-     * @var array mapping of abstract column types to
-     *//**
- * @var array mapping from abstract column types (keys) to physical column types (values).
- */
+     * @var array mapping of type categories (keys) to abstract column types (values).
+     */
     public $categoryMap = [
         Schema::TYPE_PK => self::CAT_PK,
         Schema::TYPE_BIGPK => self::CAT_PK,
         Schema::TYPE_UNSIGNEDPK => self::CAT_PK,
-        Schema::TYPE_CHAR => self::CAT_TEXT,
-        Schema::TYPE_STRING => self::CAT_TEXT,
-        Schema::TYPE_TEXT => self::CAT_TEXT,
+        Schema::TYPE_CHAR => self::CAT_STRING,
+        Schema::TYPE_STRING => self::CAT_STRING,
+        Schema::TYPE_TEXT => self::CAT_STRING,
         Schema::TYPE_SMALLINT => self::CAT_NUMERIC,
         Schema::TYPE_INTEGER => self::CAT_NUMERIC,
         Schema::TYPE_BIGINT => self::CAT_NUMERIC,
