@@ -8,12 +8,12 @@ Yii Framework 2 Change Log
 - Enh #10451: Check of existence of `$_SERVER` in `\yii\web\Request` before using it (quantum13)
 - Enh #10610: Added `BaseUrl::$urlManager` to be able to set URL manager used for creating URLs (samdark)
 - Enh #10764: `yii\helpers\Html::tag()` and `::beginTag()` return content without any HTML when the `$tag` attribute is `false` or `null` (pana1990)
-- Enh #10889: Allows unsigned primary key column definitions 
+- Enh #10889: Allows unsigned primary key column definitions (df2)
 - Chg: HTMLPurifier dependency updated to ~4.7.0 (samdark)
-- Chg: Inverts responsibility of database specific column schema builder classes (df2)
+- Chg #10921: Inverts responsibility of database specific column schema builder classes (df2)
 - Enh #9562: Adds `char` datatype to framework (df2)
 - Enh #9340: Adds `after()` and `first()` column schema builder modifiers (df2)
-- Enh: `__toString()` of column schema builder now adapts to column types (df2)
+- Enh #10921: `__toString()` of column schema builder now adapts to column types (df2)
 
 2.0.7 February 14, 2016
 -----------------------
