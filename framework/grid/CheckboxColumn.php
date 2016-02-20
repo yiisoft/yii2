@@ -91,7 +91,16 @@ class CheckboxColumn extends Column
      */
     protected function renderHeaderCellContent()
     {
-        $name = rtrim($this->name, '[]') . '_all';
+        $name = $this->name;
+        if (substr_compare($name, '[]', -2, 2) === 0) {
+            $name = substr($name, 0, -2);
+        }
+        if (substr_compare($name, ']', -1, 1) === 0) {
+            $name = substr($name, 0, -1) . '_all]';
+        } else {
+            $name .= '_all';
+        }
+
         $id = $this->grid->options['id'];
         $options = json_encode([
             'name' => $this->name,
@@ -103,7 +112,7 @@ class CheckboxColumn extends Column
         if ($this->header !== null || !$this->multiple) {
             return parent::renderHeaderCellContent();
         } else {
-            return Html::checkBox($name, false, ['class' => 'select-on-check-all']);
+            return Html::checkbox($name, false, ['class' => 'select-on-check-all']);
         }
     }
 

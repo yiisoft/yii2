@@ -34,9 +34,9 @@ defined('STDERR') or define('STDERR', fopen('php://stderr', 'w'));
  *
  * To run the console application, enter the following on the command line:
  *
- * ~~~
+ * ```
  * yii <route> [--param1=value1 --param2 ...]
- * ~~~
+ * ```
  *
  * where `<route>` refers to a controller route in the form of `ModuleID/ControllerID/ActionID`
  * (e.g. `sitemap/create`), and `param1`, `param2` refers to a set of named parameters that
@@ -46,9 +46,9 @@ defined('STDERR') or define('STDERR', fopen('php://stderr', 'w'));
  * A `help` command is provided by default, which lists available commands and shows their usage.
  * To use this command, simply type:
  *
- * ~~~
+ * ```
  * yii help
- * ~~~
+ * ```
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
@@ -177,12 +177,13 @@ class Application extends \yii\base\Application
     public function coreCommands()
     {
         return [
-            'message' => 'yii\console\controllers\MessageController',
-            'help' => 'yii\console\controllers\HelpController',
-            'migrate' => 'yii\console\controllers\MigrateController',
-            'cache' => 'yii\console\controllers\CacheController',
             'asset' => 'yii\console\controllers\AssetController',
+            'cache' => 'yii\console\controllers\CacheController',
             'fixture' => 'yii\console\controllers\FixtureController',
+            'help' => 'yii\console\controllers\HelpController',
+            'message' => 'yii\console\controllers\MessageController',
+            'migrate' => 'yii\console\controllers\MigrateController',
+            'serve' => 'yii\console\controllers\ServeController',
         ];
     }
 

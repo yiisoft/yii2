@@ -118,6 +118,7 @@ class StringHelperTest extends TestCase
         $this->assertEquals('это тестовая multibyte!!!', StringHelper::truncateWords('это тестовая multibyte строка', 3, '!!!'));
         $this->assertEquals('это строка с          неожиданными...', StringHelper::truncateWords('это строка с          неожиданными пробелами', 4));
 
+        $this->assertEquals('lorem ipsum', StringHelper::truncateWords('lorem ipsum', 3, '...', true));
         // With Html
         $this->assertEquals('<span>This is a test</span>...', StringHelper::truncateWords('<span>This is a test sentance</span>', 4, '...', true));
         $this->assertEquals('<span><img src="image.png" />This is a test</span>...', StringHelper::truncateWords('<span><img src="image.png" />This is a test sentance</span>', 4, '...', true));
@@ -231,9 +232,12 @@ class StringHelperTest extends TestCase
     public function testExplode()
     {
         $this->assertEquals(['It', 'is', 'a first', 'test'], StringHelper::explode("It, is, a first, test"));
+        $this->assertEquals(['It', 'is', 'a test with trimmed digits', '0', '1', '2'], StringHelper::explode("It, is, a test with trimmed digits, 0, 1, 2", ',', true, true));
         $this->assertEquals(['It', 'is', 'a second', 'test'], StringHelper::explode("It+ is+ a second+ test", '+'));
         $this->assertEquals(['Save', '', '', 'empty trimmed string'], StringHelper::explode("Save, ,, empty trimmed string", ','));
         $this->assertEquals(['Здесь', 'multibyte', 'строка'], StringHelper::explode("Здесь我 multibyte我 строка", '我'));
         $this->assertEquals(['Disable', '  trim  ', 'here but ignore empty'], StringHelper::explode("Disable,  trim  ,,,here but ignore empty", ',', false, true));
+        $this->assertEquals(['It/', ' is?', ' a', ' test with rtrim'], StringHelper::explode("It/, is?, a , test with rtrim", ',', 'rtrim'));
+        $this->assertEquals(['It', ' is', ' a ', ' test with closure'], StringHelper::explode("It/, is?, a , test with closure", ',', function ($value) { return trim($value, '/?'); }));
     }
 }

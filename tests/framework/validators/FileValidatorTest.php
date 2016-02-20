@@ -137,6 +137,12 @@ class FileValidatorTest extends TestCase
         $val->validateAttribute($m, 'attr_files');
         $this->assertTrue($m->hasErrors());
         $this->assertTrue(stripos(current($m->getErrors('attr_files')), 'you can upload at most') !== false);
+
+        $val->maxFiles = 0;
+        $m->clearErrors();
+        $val->validateAttribute($m, 'attr_files');
+        $this->assertFalse($m->hasErrors());
+
         $m = FakedValidationModel::createWithAttributes(
             [
                 'attr_images' => $this->createTestFiles(
@@ -152,8 +158,8 @@ class FileValidatorTest extends TestCase
                             'type' => 'image/png'
                         ],
                         [
-                                'name' => 'text.txt',
-                                'size' => 1024
+                            'name' => 'text.txt',
+                            'size' => 1024
                         ],
                     ]
                 )

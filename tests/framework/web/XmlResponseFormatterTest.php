@@ -8,6 +8,7 @@
 namespace yiiunit\framework\web;
 
 use yii\web\XmlResponseFormatter;
+use yiiunit\framework\web\stubs\ModelStub;
 
 /**
  * @author Qiang Xue <qiang.xue@gmail.com>
@@ -69,6 +70,27 @@ class XmlResponseFormatterTest extends FormatterTest
         ]);
     }
 
+    public function formatTraversableObjectDataProvider()
+    {
+        $expectedXmlForStack = '';
+        
+        $postsStack = new \SplStack();
+        
+        $postsStack->push(new Post(915, 'record1'));
+        $expectedXmlForStack = '<Post><id>915</id><title>record1</title></Post>' .
+          $expectedXmlForStack;
+        
+        $postsStack->push(new Post(456, 'record2'));
+        $expectedXmlForStack = '<Post><id>456</id><title>record2</title></Post>' .
+          $expectedXmlForStack;
+        
+        $data = [
+            [$postsStack, "<response>$expectedXmlForStack</response>\n"]
+        ];
+        
+        return $this->addXmlHead($data);
+    }
+
     public function formatObjectDataProvider()
     {
         return $this->addXmlHead([
@@ -81,6 +103,16 @@ class XmlResponseFormatterTest extends FormatterTest
                 new Post(123, '<>'),
                 'a' => new Post(456, 'def'),
             ], "<response><Post><id>123</id><title>&lt;&gt;</title></Post><a><Post><id>456</id><title>def</title></Post></a></response>\n"],
+        ]);
+    }
+
+    public function formatModelDataProvider()
+    {
+        return $this->addXmlHead([
+            [
+                new ModelStub(['id' => 123, 'title' => 'abc', 'hidden' => 'hidden']),
+                "<response><ModelStub><id>123</id><title>abc</title></ModelStub></response>\n"
+            ]
         ]);
     }
 }

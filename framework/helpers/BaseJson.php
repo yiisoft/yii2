@@ -22,6 +22,23 @@ use yii\web\JsExpression;
 class BaseJson
 {
     /**
+     * List of JSON Error messages assigned to constant names for better handling of version differences
+     * @var array
+     * @since 2.0.7
+     */
+    public static $jsonErrorMessages = [
+        'JSON_ERROR_DEPTH' => 'The maximum stack depth has been exceeded.',
+        'JSON_ERROR_STATE_MISMATCH' => 'Invalid or malformed JSON.',
+        'JSON_ERROR_CTRL_CHAR' => 'Control character error, possibly incorrectly encoded.',
+        'JSON_ERROR_SYNTAX' => 'Syntax error.',
+        'JSON_ERROR_UTF8' => 'Malformed UTF-8 characters, possibly incorrectly encoded.', // PHP 5.3.3
+        'JSON_ERROR_RECURSION' => 'One or more recursive references in the value to be encoded.', // PHP 5.5.0
+        'JSON_ERROR_INF_OR_NAN' => 'One or more NAN or INF values in the value to be encoded', // PHP 5.5.0
+        'JSON_ERROR_UNSUPPORTED_TYPE' => 'A value of a type that cannot be encoded was given', // PHP 5.5.0
+    ];
+
+
+    /**
      * Encodes the given value into a JSON string.
      * The method enhances `json_encode()` by supporting JavaScript expressions.
      * In particular, the method will not encode a JavaScript expression that is
@@ -35,8 +52,12 @@ class BaseJson
     public static function encode($value, $options = 320)
     {
         $expressions = [];
-        $value = static::processData($value, $expressions, uniqid('', false));
+        $value = static::processData($value, $expressions, uniqid('', true));
+        set_error_handler(function() {
+            static::handleJsonError(JSON_ERROR_SYNTAX);
+        }, E_WARNING);
         $json = json_encode($value, $options);
+        restore_error_handler();
         static::handleJsonError(json_last_error());
 
         return $expressions === [] ? $json : strtr($json, $expressions);
@@ -85,22 +106,22 @@ class BaseJson
      */
     protected static function handleJsonError($lastError)
     {
-        switch ($lastError) {
-            case JSON_ERROR_NONE:
-                break;
-            case JSON_ERROR_DEPTH:
-                throw new InvalidParamException('The maximum stack depth has been exceeded.');
-            case JSON_ERROR_CTRL_CHAR:
-                throw new InvalidParamException('Control character error, possibly incorrectly encoded.');
-            case JSON_ERROR_SYNTAX:
-                throw new InvalidParamException('Syntax error.');
-            case JSON_ERROR_STATE_MISMATCH:
-                throw new InvalidParamException('Invalid or malformed JSON.');
-            case JSON_ERROR_UTF8:
-                throw new InvalidParamException('Malformed UTF-8 characters, possibly incorrectly encoded.');
-            default:
-                throw new InvalidParamException('Unknown JSON decoding error.');
+        if ($lastError === JSON_ERROR_NONE) {
+            return;
         }
+
+        $availableErrors = [];
+        foreach (static::$jsonErrorMessages as $const => $message) {
+            if (defined($const)) {
+                $availableErrors[constant($const)] = $message;
+            }
+        }
+
+        if (isset($availableErrors[$lastError])) {
+            throw new InvalidParamException($availableErrors[$lastError], $lastError);
+        }
+
+        throw new InvalidParamException('Unknown JSON encoding/decoding error.');
     }
 
     /**
@@ -122,6 +143,8 @@ class BaseJson
                 $data = $data->jsonSerialize();
             } elseif ($data instanceof Arrayable) {
                 $data = $data->toArray();
+            } elseif ($data instanceof \SimpleXMLElement) {
+                $data = (array) $data;
             } else {
                 $result = [];
                 foreach ($data as $name => $value) {

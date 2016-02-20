@@ -9,7 +9,6 @@ namespace yii\behaviors;
 
 use yii\base\InvalidCallException;
 use yii\db\BaseActiveRecord;
-use yii\db\Expression;
 
 /**
  * TimestampBehavior automatically fills the specified attributes with the current timestamp.
@@ -78,10 +77,10 @@ class TimestampBehavior extends AttributeBehavior
      */
     public $updatedAtAttribute = 'updated_at';
     /**
-     * @var callable|Expression The expression that will be used for generating the timestamp.
-     * This can be either an anonymous function that returns the timestamp value,
-     * or an [[Expression]] object representing a DB expression (e.g. `new Expression('NOW()')`).
-     * If not set, it will use the value of `time()` to set the attributes.
+     * @inheritdoc
+     *
+     * In case, when the value is `null`, the result of the PHP function [time()](http://php.net/manual/en/function.time.php)
+     * will be used as value.
      */
     public $value;
 
@@ -103,14 +102,16 @@ class TimestampBehavior extends AttributeBehavior
 
     /**
      * @inheritdoc
+     *
+     * In case, when the [[value]] is `null`, the result of the PHP function [time()](http://php.net/manual/en/function.time.php)
+     * will be used as value.
      */
     protected function getValue($event)
     {
-        if ($this->value instanceof Expression) {
-            return $this->value;
-        } else {
-            return $this->value !== null ? call_user_func($this->value, $event) : time();
+        if ($this->value === null) {
+            return time();
         }
+        return parent::getValue($event);
     }
 
     /**

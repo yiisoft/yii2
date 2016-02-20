@@ -301,3 +301,22 @@ The result of conversion above will be:
 
 It is possible to provide default way of converting object to array for a specific class by implementing
 [[yii\base\Arrayable|Arrayable]] interface in that class.
+
+## Testing against Arrays <span id="testing-arrays"></span>
+
+Often you need to check if an element is in an array or a set of elements is a subset of another.
+While PHP offers `in_array()`, this does not support subsets or `\Traversable` objects.
+
+To aid these kinds of tests, [[yii\base\ArrayHelper]] provides [[yii\base\ArrayHelper::isIn()|isIn()]]
+and [[yii\base\ArrayHelper::isSubset()|isSubset()]] with the same signature as [[in_array()]].
+
+```php
+// true
+ArrayHelper::isIn('a', ['a']);
+// true
+ArrayHelper::isIn('a', new(ArrayObject['a']));
+
+// true 
+ArrayHelper::isSubset(new(ArrayObject['a', 'c']), new(ArrayObject['a', 'b', 'c'])
+
+```

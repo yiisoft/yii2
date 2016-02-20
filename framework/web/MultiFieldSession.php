@@ -98,7 +98,7 @@ abstract class MultiFieldSession extends Session
         $fields = [
             'data' => $data,
         ];
-        if (isset($this->writeCallback)) {
+        if ($this->writeCallback !== null) {
             $fields = array_merge(
                 $fields,
                 call_user_func($this->writeCallback, $this)
@@ -123,7 +123,7 @@ abstract class MultiFieldSession extends Session
      */
     protected function extractData($fields)
     {
-        if (isset($this->readCallback)) {
+        if ($this->readCallback !== null) {
             if (!isset($fields['data'])) {
                 $fields['data'] = '';
             }

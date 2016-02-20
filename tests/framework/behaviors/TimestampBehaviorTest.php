@@ -105,6 +105,9 @@ class TimestampBehaviorTest extends TestCase
         return [
             [function() { return '2015-01-01'; }, '2015-01-01'],
             [new Expression("strftime('%Y')"), date('Y')],
+            ['2015-10-20', '2015-10-20'],
+            [time(), time()],
+            [[$this, 'arrayCallable'], '2015-10-20'],
         ];
     }
 
@@ -129,6 +132,11 @@ class TimestampBehaviorTest extends TestCase
         }
         $this->assertEquals($expected, $model->created_at);
         $this->assertEquals($expected, $model->updated_at);
+    }
+
+    public function arrayCallable($event)
+    {
+        return '2015-10-20';
     }
 
     /**

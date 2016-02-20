@@ -33,14 +33,14 @@ use yii\helpers\FileHelper;
  *
  * It is possible to map a single path to multiple paths. For example,
  *
- * ~~~
+ * ```php
  * 'pathMap' => [
  *     '@app/views' => [
  *         '@app/themes/christmas',
  *         '@app/themes/basic',
  *     ],
  * ]
- * ~~~
+ * ```
  *
  * In this case, the themed version could be either `@app/themes/christmas/site/index.php` or
  * `@app/themes/basic/site/index.php`. The former has precedence over the latter if both files exist.
@@ -48,14 +48,14 @@ use yii\helpers\FileHelper;
  * To use a theme, you should configure the [[View::theme|theme]] property of the "view" application
  * component like the following:
  *
- * ~~~
+ * ```php
  * 'view' => [
  *     'theme' => [
  *         'basePath' => '@app/themes/basic',
  *         'baseUrl' => '@web/themes/basic',
  *     ],
  * ],
- * ~~~
+ * ```
  *
  * The above configuration specifies a theme located under the "themes/basic" directory of the Web folder
  * that contains the entry script of the application. If your theme is designed to handle modules,
@@ -64,7 +64,7 @@ use yii\helpers\FileHelper;
  * @property string $basePath The root path of this theme. All resources of this theme are located under this
  * directory.
  * @property string $baseUrl The base URL (without ending slash) for this theme. All resources of this theme
- * are considered to be under this base URL. This property is read-only.
+ * are considered to be under this base URL.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
@@ -92,7 +92,7 @@ class Theme extends Component
     }
 
     /**
-     * @param $url string the base URL or path alias for this theme. All resources of this theme are considered
+     * @param string $url the base URL or path alias for this theme. All resources of this theme are considered
      * to be under this base URL.
      */
     public function setBaseUrl($url)

@@ -27,7 +27,7 @@ class BaseArrayHelper
      * @param array $properties a mapping from object class names to the properties that need to put into the resulting arrays.
      * The properties specified for each class is an array of the following format:
      *
-     * ~~~
+     * ```php
      * [
      *     'app\models\Post' => [
      *         'id',
@@ -40,18 +40,18 @@ class BaseArrayHelper
      *         },
      *     ],
      * ]
-     * ~~~
+     * ```
      *
      * The result of `ArrayHelper::toArray($post, $properties)` could be like the following:
      *
-     * ~~~
+     * ```php
      * [
      *     'id' => 123,
      *     'title' => 'test',
      *     'createTime' => '2013-01-01 12:00AM',
      *     'length' => 301,
      * ]
-     * ~~~
+     * ```
      *
      * @param boolean $recursive whether to recursively converts properties which are objects into arrays.
      * @return array the array representation of the object
@@ -150,7 +150,7 @@ class BaseArrayHelper
      *
      * Below are some usage examples,
      *
-     * ~~~
+     * ```php
      * // working with array
      * $username = \yii\helpers\ArrayHelper::getValue($_POST, 'username');
      * // working with object
@@ -163,7 +163,7 @@ class BaseArrayHelper
      * $street = \yii\helpers\ArrayHelper::getValue($users, 'address.street');
      * // using an array of keys to retrieve the value
      * $value = \yii\helpers\ArrayHelper::getValue($versions, ['1.0', 'date']);
-     * ~~~
+     * ```
      *
      * @param array|object $array array or object to extract value from
      * @param string|\Closure|array $key key name of the array element, an array of keys or property name of the object,
@@ -199,6 +199,8 @@ class BaseArrayHelper
         }
 
         if (is_object($array)) {
+            // this is expected to fail if the property does not exist, or __get() is not implemented
+            // it is not reliably possible to check whether a property is accessable beforehand
             return $array->$key;
         } elseif (is_array($array)) {
             return array_key_exists($key, $array) ? $array[$key] : $default;
@@ -213,13 +215,13 @@ class BaseArrayHelper
      *
      * Usage examples,
      *
-     * ~~~
+     * ```php
      * // $array = ['type' => 'A', 'options' => [1, 2]];
      * // working with array
      * $type = \yii\helpers\ArrayHelper::remove($array, 'type');
      * // $array content
      * // $array = ['options' => [1, 2]];
-     * ~~~
+     * ```
      *
      * @param array $array the array to extract value from
      * @param string $key key name of the array element
@@ -249,7 +251,7 @@ class BaseArrayHelper
      *
      * For example,
      *
-     * ~~~
+     * ```php
      * $array = [
      *     ['id' => '123', 'data' => 'abc'],
      *     ['id' => '345', 'data' => 'def'],
@@ -265,7 +267,7 @@ class BaseArrayHelper
      * $result = ArrayHelper::index($array, function ($element) {
      *     return $element['id'];
      * });
-     * ~~~
+     * ```
      *
      * @param array $array the array that needs to be indexed
      * @param string|\Closure $key the column name or anonymous function whose result will be used to index the array
@@ -288,7 +290,7 @@ class BaseArrayHelper
      *
      * For example,
      *
-     * ~~~
+     * ```php
      * $array = [
      *     ['id' => '123', 'data' => 'abc'],
      *     ['id' => '345', 'data' => 'def'],
@@ -300,7 +302,7 @@ class BaseArrayHelper
      * $result = ArrayHelper::getColumn($array, function ($element) {
      *     return $element['id'];
      * });
-     * ~~~
+     * ```
      *
      * @param array $array
      * @param string|\Closure $name
@@ -331,7 +333,7 @@ class BaseArrayHelper
      *
      * For example,
      *
-     * ~~~
+     * ```php
      * $array = [
      *     ['id' => '123', 'name' => 'aaa', 'class' => 'x'],
      *     ['id' => '124', 'name' => 'bbb', 'class' => 'x'],
@@ -357,7 +359,7 @@ class BaseArrayHelper
      * //         '345' => 'ccc',
      * //     ],
      * // ]
-     * ~~~
+     * ```
      *
      * @param array $array
      * @param string|\Closure $from
@@ -445,6 +447,13 @@ class BaseArrayHelper
             $args[] = $direction[$i];
             $args[] = $flag;
         }
+
+        // This fix is used for cases when main sorting specified by columns has equal values
+        // Without it it will lead to Fatal Error: Nesting level too deep - recursive dependency?
+        $args[] = range(1, count($array));
+        $args[] = SORT_ASC;
+        $args[] = SORT_NUMERIC;
+
         $args[] = &$array;
         call_user_func_array('array_multisort', $args);
     }
@@ -465,15 +474,15 @@ class BaseArrayHelper
     public static function htmlEncode($data, $valuesOnly = true, $charset = null)
     {
         if ($charset === null) {
-            $charset = Yii::$app->charset;
+            $charset = Yii::$app ? Yii::$app->charset : 'UTF-8';
         }
         $d = [];
         foreach ($data as $key => $value) {
             if (!$valuesOnly && is_string($key)) {
-                $key = htmlspecialchars($key, ENT_QUOTES, $charset);
+                $key = htmlspecialchars($key, ENT_QUOTES | ENT_SUBSTITUTE, $charset);
             }
             if (is_string($value)) {
-                $d[$key] = htmlspecialchars($value, ENT_QUOTES, $charset);
+                $d[$key] = htmlspecialchars($value, ENT_QUOTES | ENT_SUBSTITUTE, $charset);
             } elseif (is_array($value)) {
                 $d[$key] = static::htmlEncode($value, $valuesOnly, $charset);
             } else {
@@ -582,6 +591,62 @@ class BaseArrayHelper
                 }
             }
             return true;
+        }
+    }
+
+    /**
+     * Check whether an array or [[\Traversable]] contains an element.
+     *
+     * This method does the same as the PHP function [in_array()](http://php.net/manual/en/function.in-array.php)
+     * but it does not only work for arrays but also objects that implement the [[\Traversable]] interface.
+     * @param mixed $needle The value to look for.
+     * @param array|\Traversable $haystack The set of values to search.
+     * @param boolean $strict Whether to enable strict (`===`) comparison.
+     * @return boolean `true` if `$needle` was found in `$haystack`, `false` otherwise.
+     * @throws \InvalidArgumentException if `$haystack` is neither traversable nor an array.
+     * @see http://php.net/manual/en/function.in-array.php
+     * @since 2.0.7
+     */
+    public static function isIn($needle, $haystack, $strict = false)
+    {
+        if ($haystack instanceof \Traversable) {
+            foreach($haystack as $value) {
+                if ($needle == $value && (!$strict || $needle === $haystack)) {
+                    return true;
+                }
+            }
+        } elseif (is_array($haystack)) {
+            return in_array($needle, $haystack, $strict);
+        } else {
+            throw new \InvalidArgumentException('Argument $haystack must be an array or implement Traversable');
+        }
+
+        return false;
+    }
+
+    /**
+     * Checks whether an array or [[\Traversable]] is a subset of another array or [[\Traversable]].
+     *
+     * This method will return `true`, if all elements of `$needles` are contained in
+     * `$haystack`. If at least one element is missing, `false` will be returned.
+     * @param array|\Traversable $needles The values that must **all** be in `$haystack`.
+     * @param array|\Traversable $haystack The set of value to search.
+     * @param boolean $strict Whether to enable strict (`===`) comparison.
+     * @throws \InvalidArgumentException if `$haystack` or `$needles` is neither traversable nor an array.
+     * @return boolean `true` if `$needles` is a subset of `$haystack`, `false` otherwise.
+     * @since 2.0.7
+     */
+    public static function isSubset($needles, $haystack, $strict = false)
+    {
+        if (is_array($needles) || $needles instanceof \Traversable) {
+            foreach($needles as $needle) {
+                if (!static::isIn($needle, $haystack, $strict)) {
+                    return false;
+                }
+            }
+            return true;
+        } else {
+            throw new \InvalidArgumentException('Argument $needles must be an array or implement Traversable');
         }
     }
 }

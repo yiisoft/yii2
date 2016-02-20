@@ -110,7 +110,7 @@ class Transaction extends \yii\base\Object
         }
         $this->db->open();
 
-        if ($this->_level == 0) {
+        if ($this->_level === 0) {
             if ($isolationLevel !== null) {
                 $this->db->getSchema()->setTransactionIsolationLevel($isolationLevel);
             }
@@ -144,7 +144,7 @@ class Transaction extends \yii\base\Object
         }
 
         $this->_level--;
-        if ($this->_level == 0) {
+        if ($this->_level === 0) {
             Yii::trace('Commit transaction', __METHOD__);
             $this->db->pdo->commit();
             $this->db->trigger(Connection::EVENT_COMMIT_TRANSACTION);
@@ -173,7 +173,7 @@ class Transaction extends \yii\base\Object
         }
 
         $this->_level--;
-        if ($this->_level == 0) {
+        if ($this->_level === 0) {
             Yii::trace('Roll back transaction', __METHOD__);
             $this->db->pdo->rollBack();
             $this->db->trigger(Connection::EVENT_ROLLBACK_TRANSACTION);
@@ -210,5 +210,14 @@ class Transaction extends \yii\base\Object
         }
         Yii::trace('Setting transaction isolation level to ' . $level, __METHOD__);
         $this->db->getSchema()->setTransactionIsolationLevel($level);
+    }
+
+    /**
+     * @return int The current nesting level of the transaction.
+     * @since 2.0.8
+     */
+    public function getLevel()
+    {
+        return $this->_level;
     }
 }

@@ -52,7 +52,7 @@ Dzięki mechanizmowi ładowania klas Yii możesz użyć dowolnej podstawowej kla
 Komponent i obiekt
 ------------------
 
-Yii 2.0 rozdzielił klasę `CComponent` z 1.1 na dwie: [[yii\base\Object]] i [[yii\base\Component]].
+Yii 2.0 rozdzielił klasę `CComponent` z 1.1 na dwie: [[yii\base\Object|Object]] i [[yii\base\Component|Component]].
 Lekka klasa [[yii\base\Object|Object]] pozwala na zdefiniowanie [właściwości obiektu](concept-properties.md) poprzez gettery i settery. 
 Klasa [[yii\base\Component|Component]] dziedziczy po [[yii\base\Object|Object]] i dodatkowo wspiera obsługę [zdarzeń](concept-events.md) oraz [zachowań](concept-behaviors.md).
 
@@ -132,7 +132,7 @@ Aliasy ścieżek
 Yii 2.0 rozszerza funkcjonalność aliasów ścieżek zarówno na ścieżki plików oraz folderów, jak i adresy URL. Yii 2.0 wymaga teraz też, 
 aby nazwa aliasu zaczynała się znakiem `@` w celu odróżnienia jej od zwyczajnych ścieżek plików/folderów lub URLi.
 Dla przykładu: alias `@yii` odnosi się do folderu instalacji Yii. Aliasy ścieżek są wykorzystywane w większości miejsc w podstawowym 
-kodzie Yii, choćby [[yii\caching\FileCache::cachePath]] - można tu przekazać zarówno zwykłą ścieżkę, jak i alias.
+kodzie Yii, choćby [[yii\caching\FileCache::cachePath|cachePath]] - można tu przekazać zarówno zwykłą ścieżkę, jak i alias.
 
 Alias ścieżki jest mocno powiązany z przestrzenią nazw klasy. Zalecane jest, aby zdefiniować alias dla każdej podstawowej 
 przestrzeni nazw, dzięki czemu mechanizm automatycznego ładowania klas Yii nie będzie wymagał dodatkowej konfiguracji. 
@@ -147,7 +147,7 @@ Widoki
 ------
 
 Najbardziej znaczącą zmianą dotyczącą widoków w Yii 2 jest użycie specjalnej zmiennej `$this`. W widoku nie odnosi się ona już do 
-aktualnego kontrolera lub widżetu, lecz do obiektu *widoku*, nowej koncepcji przedstawionej w 2.0. Obiekt *widoku* jest klasą typu [[yii\web\View]], która 
+aktualnego kontrolera lub widżetu, lecz do obiektu *widoku*, nowej koncepcji przedstawionej w 2.0. Obiekt *widoku* jest klasą typu [[yii\web\View|View]], która 
 reprezentuje część wzorca MVC. Jeśli potrzebujesz odwołać się do kontrolera lub widżetu w widoku, możesz użyć `$this->context`.
 
 Aby zrenderować częściowy widok wewnątrz innego widoku, możesz użyć `$this->render()` zamiast dotychczasowego `$this->renderPartial()`. 
@@ -158,15 +158,15 @@ echo $this->render('_item', ['item' => $item]);
 ```
 
 Oprócz wykorzystania PHP jako podstawowego języka szablonów, Yii 2.0 oficjalnie wspiera dwa popularne silniki szablonów: Smarty i Twig (The Prado nie jest już wspierany).
-Aby użyć któregokolwiek z tych silników, musisz skonfigurować komponent aplikacji `view` poprzez ustawienie właściwości [[yii\base\View::$renderers|View::$renderers]]. 
+Aby użyć któregokolwiek z tych silników, musisz skonfigurować komponent aplikacji `view` poprzez ustawienie właściwości [[yii\base\View::$renderers|$renderers]]. 
 Po więcej szczegółów przejdź do sekcji [Silniki szablonów](tutorial-template-engines.md).
 
 
 Modele
 ------
 
-Yii 2.0 korzysta z [[yii\base\Model]] jako bazowego modelu, podobnie jak `CModel` w 1.1.
-Klasa `CFormModel` została całkowicie usunięta, w Yii 2 należy rozszerzyć [[yii\base\Model]], aby stworzyć klasę modelu formularza.
+Yii 2.0 korzysta z [[yii\base\Model|Model]] jako bazowego modelu, podobnie jak `CModel` w 1.1.
+Klasa `CFormModel` została całkowicie usunięta, w Yii 2 należy rozszerzyć [[yii\base\Model|Model]], aby stworzyć klasę modelu formularza.
 
 Yii 2.0 wprowadza nową metodę [[yii\base\Model::scenarios()|scenarios()]], służącą do deklarowania scenariuszy, jak i do oznaczania, w którym scenariuszu 
 atrybut będzie wymagał walidacji, może być uznany za bezpieczny lub nie itp. Dla przykładu:
@@ -197,8 +197,8 @@ Aby dowiedzieć się więcej o modelach, przejdź do sekcji [Modele](structure-m
 Kontrolery
 ----------
 
-Yii 2.0 używa [[yii\web\Controller]] jako bazowej klasy kontrolera, podobnie do `CController` w Yii 1.1.
-[[yii\base\Action]] jest bazową klasą dla akcji.
+Yii 2.0 używa [[yii\web\Controller|Controller]] jako bazowej klasy kontrolera, podobnie do `CController` w Yii 1.1.
+[[yii\base\Action|Action]] jest bazową klasą dla akcji.
 
 Najbardziej oczywistą implikacją tych zmian jest to, że akcja kontrolera powinna zwracać zawartość, którą chcesz wyświetlić, zamiast wyświetlać ją bezpośrednio:
 
@@ -220,7 +220,7 @@ Przejdź do sekcji [Kontrolery](structure-controllers.md), aby poznać więcej s
 Widżety
 -------
 
-Yii 2.0 korzysta z [[yii\base\Widget]] jako bazowej klasy widżetów, podobnie jak `CWidget` w Yii 1.1.
+Yii 2.0 korzysta z [[yii\base\Widget|Widget]] jako bazowej klasy widżetów, podobnie jak `CWidget` w Yii 1.1.
 
 Dla lepszego wsparcia frameworka w aplikacjach IDE Yii 2.0 wprowadził nową składnię używania widżetów. Używane są teraz metody 
 [[yii\base\Widget::begin()|begin()]], [[yii\base\Widget::end()|end()]] i [[yii\base\Widget::widget()|widget()]] w następujący sposób:
@@ -265,7 +265,7 @@ Aplikacje konsolowe używają teraz kontrolerów tak jak aplikacje webowe. Kontr
 
 Aby uruchomić polecenie konsoli, użyj `yii <route>`, gdzie `<route>` oznacza ścieżkę kontrolera (np. `sitemap/index`). 
 Dodatkowe anonimowe argumenty są przekazywane jako parametry do odpowiedniej metody akcji kontrolera, natomiast nazwane 
-argumenty są przetwarzane według deklaracji zawartych w [[yii\console\Controller::options()]].
+argumenty są przetwarzane według deklaracji zawartych w [[yii\console\Controller::options()|options()]].
 
 Yii 2.0 wspiera automatyczne generowanie informacji pomocy poprzez bloki komentarzy.
 
@@ -286,7 +286,7 @@ W sekcji [Internacjonalizacja](tutorial-i18n.md) znajdziesz więcej szczegółó
 Filtry akcji
 ------------
 
-Filtry akcji są implementowane od teraz za pomocą zachowań (behavior). Aby zdefiniować nowy filtr, należy rozszerzyć klasę [[yii\base\ActionFilter]]. 
+Filtry akcji są implementowane od teraz za pomocą zachowań (behavior). Aby zdefiniować nowy filtr, należy rozszerzyć klasę [[yii\base\ActionFilter|ActionFilter]]. 
 Użycie filtru odbywa się poprzez dołączenie go do kontrolera jako zachowanie. Dla przykładu: aby użyć filtra [[yii\filters\AccessControl]], dodaj poniższy kod w kontrolerze:
 
 ```php
@@ -312,8 +312,8 @@ Zasoby (Assets)
 Yii 2.0 wprowadza nowy mechanizm tzw. *pakietów zasobów*, który zastąpił koncepcję pakietów skryptowych z Yii 1.1.
 
 Pakiet zasobów jest kolekcją plików zasobów (np. plików JavaScript, CSS, obrazków, itd.) zgromadzoną w folderze. 
-Każdy pakiet jest reprezentowany przez klasę rozszerzającą [[yii\web\AssetBundle]]. Zarejestrowanie pakietu poprzez 
-metodę [[yii\web\AssetBundle::register()]] pozwala na udostępnienie go publicznie. W przeciwieństwie do rozwiązania z Yii 1, 
+Każdy pakiet jest reprezentowany przez klasę rozszerzającą [[yii\web\AssetBundle|AssetBundle]]. Zarejestrowanie pakietu poprzez 
+metodę [[yii\web\AssetBundle::register()|register()]] pozwala na udostępnienie go publicznie. W przeciwieństwie do rozwiązania z Yii 1, 
 strona rejestrująca pakiet będzie automatycznie zawierać referencje do plików JavaScript i CSS wymienionych na jego liście.
 
 Sekcja [Zasoby (Assets)](structure-assets.md) zawiera szczegółowe informacje na ten temat.
@@ -324,11 +324,11 @@ Klasy pomocnicze
 
 Yii 2.0 zawiera wiele powszechnie używanych statycznych klas pomocniczych (helperów), takich jak:
 
-* [[yii\helpers\Html]]
-* [[yii\helpers\ArrayHelper]]
-* [[yii\helpers\StringHelper]]
-* [[yii\helpers\FileHelper]]
-* [[yii\helpers\Json]]
+* [[yii\helpers\Html|Html]]
+* [[yii\helpers\ArrayHelper|ArrayHelper]]
+* [[yii\helpers\StringHelper|StringHelper]]
+* [[yii\helpers\FileHelper|FileHelper]]
+* [[yii\helpers\Json|Json]]
 
 W sekcji [Klasy pomocnicze](helper-overview.md) znajdziesz więcej informacji na ten temat.
 
@@ -336,7 +336,7 @@ W sekcji [Klasy pomocnicze](helper-overview.md) znajdziesz więcej informacji na
 Formularze
 ----------
 
-Yii 2.0 wprowadza koncepcję *pola* do budowy formularzy, korzystając z klasy [[yii\widgets\ActiveForm]]. 
+Yii 2.0 wprowadza koncepcję *pola* do budowy formularzy, korzystając z klasy [[yii\widgets\ActiveForm|ActiveForm]]. 
 Pole jest kontenerem składającym się z etykiety, pola wprowadzenia danych formularza, informacji o błędzie i/lub tekstu podpowiedzi, reprezentowanym 
 przez obiekt klasy [[yii\widgets\ActiveField|ActiveField]].
 Używając pól, możesz stworzyć formularz w sposób o wiele prostszy i bardziej przejrzysty niż do tej pory:
@@ -381,11 +381,10 @@ Po więcej szczegółów udaj się do sekcji [Konstruktor kwerend](db-query-buil
 Active Record
 -------------
 
-Yii 2.0 wprowadza sporo zmian w mechanizmie [Active Record](db-active-record.md). Dwie najbardziej znaczące to 
-konstruowanie kwerend i obsługa relacji.
+Yii 2.0 wprowadza sporo zmian w mechanizmie [Active Record](db-active-record.md). Dwie najbardziej znaczące to konstruowanie kwerend i obsługa relacji.
 
-Klasa `CDbCriteria` z 1.1 została zastąpiona przez [[yii\db\ActiveQuery]] w Yii 2. Klasa ta rozszerza [[yii\db\Query]], dzięki czemu 
-dziedziczy wszystkie metody konstruowania kwerend. Aby rozpocząć budowanie kwerendy, wywołaj metodę [[yii\db\ActiveRecord::find()]]:
+Klasa `CDbCriteria` z 1.1 została zastąpiona przez [[yii\db\ActiveQuery|ActiveQuery]] w Yii 2. Klasa ta rozszerza [[yii\db\Query|Query]], dzięki czemu 
+dziedziczy wszystkie metody konstruowania kwerend. Aby rozpocząć budowanie kwerendy, wywołaj metodę [[yii\db\ActiveRecord::find()|find()]]:
 
 ```php
 // Pobranie wszystkich *aktywnych* klientów i posortowanie po ich ID:
@@ -439,7 +438,7 @@ public function init()
 ```
 
 Nadpisywanie konstruktora klasy ActiveRecord w 1.1 wiązało się z pewnymi problemami, co nie występuje już w wersji 2.0. 
-Zwróć jednak uwagę na to, że przy dodawaniu parametrów do konstruktora możesz potrzebować nadpisać metodę [[yii\db\ActiveRecord::instantiate()]].
+Zwróć jednak uwagę na to, że przy dodawaniu parametrów do konstruktora możesz potrzebować nadpisać metodę [[yii\db\ActiveRecord::instantiate()|instantiate()]].
 
 W nowym rekordzie aktywnym znajdziesz wiele innych zmian i udogodnień. Aby zapoznać się z nimi, przejdź do sekcji [Rekord aktywny](db-active-record.md).
 
@@ -448,7 +447,8 @@ Zachowania Active Record
 ------------------------
 
 W 2.0 zrezygnowaliśmy z bazowej klasy zachowania `CActiveRecordBehavior`. Jeśli chcesz stworzyć zachowanie dla rekordu aktywnego, musisz 
-rozszerzyć bezpośrednio klasę `yii\base\Behavior`. Jeśli klasa zachowania ma reagować na zdarzenia, powinna nadpisywać metodę `events()`, jak zaprezentowano poniżej:
+rozszerzyć bezpośrednio klasę [[yii\base\Behavior|Behavior]]. Jeśli klasa zachowania ma reagować na zdarzenia, powinna nadpisywać metodę [[yii\base\Behavior::events()|events()]], 
+jak zaprezentowano poniżej:
 
 ```php
 namespace app\components;
@@ -478,11 +478,12 @@ class MyBehavior extends Behavior
 Klasa User i IdentityInterface
 ------------------------------
 
-Klasa `CWebUser` z 1.1 została zastąpiona przez [[yii\web\User]] i nie ma już klasy `CUserIdentity`. 
-Zamiast tego należy zaimplementować interfejs [[yii\web\IdentityInterface]], który jest znacznie bardziej wygodny i oczywisty w użyciu. 
+Klasa `CWebUser` z 1.1 została zastąpiona przez [[yii\web\User|User]] i nie ma już klasy `CUserIdentity`. 
+Zamiast tego należy zaimplementować interfejs [[yii\web\IdentityInterface|IdentityInterface]], który jest znacznie bardziej wygodny i oczywisty w użyciu. 
 Szablon zaawansowanego projektu zawiera przykład takiego właśnie użycia.
 
-Po więcej szczegółów zajrzyj do sekcji [Uwierzytelnianie](security-authentication.md), [Autoryzacja](security-authorization.md) i [Szablon zaawansowanego projektu](https://github.com/yiisoft/yii2-app-advanced/blob/master/docs/guide/README.md).
+Po więcej szczegółów zajrzyj do sekcji [Uwierzytelnianie](security-authentication.md), [Autoryzacja](security-authorization.md) 
+i [Szablon zaawansowanego projektu](https://github.com/yiisoft/yii2-app-advanced/blob/master/docs/guide/README.md).
 
 
 Zarządzanie adresami URL

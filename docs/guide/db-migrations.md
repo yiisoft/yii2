@@ -36,7 +36,7 @@ how to accomplish various tasks using these tools. You may also get the usage of
 command `yii help migrate`.
 
 > Tip: migrations could affect not only database schema but adjust existing data to fit new schema, create RBAC
-  hierarcy or clean up cache.
+  hierarchy or clean up cache.
 
 
 ## Creating Migrations <span id="creating-migrations"></span>
@@ -181,6 +181,214 @@ class m150101_185401_create_news_table extends Migration
 A list of all available methods for defining the column types is available in the API documentation of [[yii\db\SchemaBuilderTrait]].
 
 
+## Generating Migrations <span id="generating-migrations"></span>
+
+Since version 2.0.7 migration console provides a convenient way to create migrations.
+
+If the migration name is of a special form, for example `create_xxx` or `drop_xxx` then the generated migration 
+file will contain extra code, in this case for creating/dropping tables.
+In the following all variants of this feature are described.
+
+### Create Table
+
+```php
+yii migrate/create create_post
+``` 
+
+generates
+
+```php
+class m150811_220037_create_post extends Migration
+{
+    public function up()
+    {
+        $this->createTable('post', [
+            'id' => $this->primaryKey()
+        ]);
+    }
+
+    public function down()
+    {
+        $this->dropTable('post');
+    }
+}
+```
+
+To create table fields right away, specify them via `--fields` option.
+ 
+```php
+yii migrate/create create_post --fields='title:string,body:text'
+``` 
+
+generates
+
+```php
+class m150811_220037_create_post extends Migration
+{
+    public function up()
+    {
+        $this->createTable('post', [
+            'id' => $this->primaryKey(),
+            'title' => $this->string(),
+            'body' => $this->text()
+        ]);
+    }
+
+    public function down()
+    {
+        $this->dropTable('post');
+    }
+}
+```
+
+You can specify more field parameters.
+
+```php
+yii migrate/create create_post --fields='title:string(12):notNull:unique,body:text'
+``` 
+
+generates 
+
+```php
+class m150811_220037_create_post extends Migration
+{
+    public function up()
+    {
+        $this->createTable('post', [
+            'id' => $this->primaryKey(),
+            'title' => $this->string(12)->notNull()->unique(),
+            'body' => $this->text()
+        ]);
+    }
+
+    public function down()
+    {
+        $this->dropTable('post');
+    }
+}
+```
+
+> Note: primary key is added automatically and is named `id` by default. If you want to use another name you may
+> specify it explicitly like `--fields='name:primaryKey'`.
+
+
+### Drop Table
+
+```php
+yii migrate/create drop_post --fields='title:string(12):notNull:unique,body:text'
+``` 
+
+generates 
+
+```php
+class m150811_220037_drop_post extends Migration
+{
+    public function up()
+    {
+        $this->dropTable('post');
+    }
+
+    public function down()
+    {
+        $this->createTable('post', [
+            'id' => $this->primaryKey(),
+            'title' => $this->string(12)->notNull()->unique(),
+            'body' => $this->text()
+        ]);
+    }
+}
+```
+
+### Add Column
+
+If the migration name is of the form `add_xxx_to_yyy` then the file content would contain `addColumn` and `dropColumn`
+statements necessary.
+
+To add column:
+
+```php
+yii migrate/create add_position_to_post --fields='position:integer'
+```
+
+generates
+
+```php
+class m150811_220037_add_position_to_post extends Migration
+{
+    public function up()
+    {
+        $this->addColumn('post', 'position', $this->integer());
+    }
+
+    public function down()
+    {
+        $this->dropColumn('post', 'position');
+    }
+}
+```
+
+### Drop Column
+
+If the migration name is of the form `drop_xxx_from_yyy` then the file content would contain `addColumn` and `dropColumn`
+statements necessary.
+
+```php
+yii migrate/create drop_position_from_post --fields='position:integer'
+```
+
+generates
+
+```php
+class m150811_220037_drop_position_from_post extends Migration
+{
+    public function up()
+    {
+        $this->dropColumn('post', 'position');
+    }
+
+    public function down()
+    {
+        $this->addColumn('post', 'position', $this->integer());
+    }
+}
+```
+
+### Add Junction Table
+
+If the migration name is in if the form of `create_junction_xxx_and_yyy` then code necessary to create junction table
+will be generated.
+
+```php
+yii create/migration create_junction_post_and_tag
+```
+
+generates
+
+```php
+class m150811_220037_create_junction_post_and_tag extends Migration
+{
+    public function up()
+    {
+        $this->createTable('post_tag', [
+            'post_id' => $this->integer(),
+            'tag_id' => $this->integer(),
+            'PRIMARY KEY(post_id, tag_id)'
+        ]);
+
+        $this->createIndex('idx-post_tag-post_id', 'post_tag', 'post_id');
+        $this->createIndex('idx-post_tag-tag_id', 'post_tag', 'tag_id');
+
+        $this->addForeignKey('fk-post_tag-post_id', 'post_tag', 'post_id', 'post', 'id', 'CASCADE');
+        $this->addForeignKey('fk-post_tag-tag_id', 'post_tag', 'tag_id', 'tag', 'id', 'CASCADE');
+    }
+
+    public function down()
+    {
+        $this->dropTable('post_tag');
+    }
+}
+```
+
 ### Transactional Migrations <span id="transactional-migrations"></span>
 
 While performing complex DB migrations, it is important to ensure each migration to either succeed or fail as a whole
@@ -227,7 +435,7 @@ in `safeDown()`. In the above example we first create the table and then insert 
 in `safeDown()` we first delete the row and then drop the table.
 
 > Note: Not all DBMS support transactions. And some DB queries cannot be put into a transaction. For some examples,
-  please refer to [implicit commit](http://dev.mysql.com/doc/refman/5.1/en/implicit-commit.html). If this is the case,
+  please refer to [implicit commit](http://dev.mysql.com/doc/refman/5.7/en/implicit-commit.html). If this is the case,
   you should still implement `up()` and `down()`, instead.
 
 
@@ -408,6 +616,19 @@ The migration command comes with a few command-line options that can be used to 
   that is used for generating skeleton migration class files. This can be specified as either a file path
   or a path [alias](concept-aliases.md). The template file is a PHP script in which you can use a predefined variable
   named `$className` to get the migration class name.
+
+* `generatorTemplateFiles`: array (defaults to `[
+        'create_table' => '@yii/views/createTableMigration.php',
+        'drop_table' => '@yii/views/dropTableMigration.php',
+        'add_column' => '@yii/views/addColumnMigration.php',
+        'drop_column' => '@yii/views/dropColumnMigration.php',
+        'create_junction' => '@yii/views/createJunctionMigration.php'
+  ]`), specifies template files for generating migration code. See "[Generating Migrations](#generating-migrations)"
+  for more details.
+  
+* `fields`: array of column definition strings used for creating migration code. Defaults to `[]`. The format of each
+  definition is `COLUMN_NAME:COLUMN_TYPE:COLUMN_DECORATOR`. For example, `--fields=name:string(12):notNull` produces
+  a string column of size 12 which is not null.
 
 The following example shows how you can use these options.
 

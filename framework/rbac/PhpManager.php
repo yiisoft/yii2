@@ -157,11 +157,11 @@ class PhpManager extends BaseManager
             throw new InvalidParamException("Either '{$parent->name}' or '{$child->name}' does not exist.");
         }
 
-        if ($parent->name == $child->name) {
+        if ($parent->name === $child->name) {
             throw new InvalidParamException("Cannot add '{$parent->name} ' as a child of itself.");
         }
         if ($parent instanceof Permission && $child instanceof Role) {
-            throw new InvalidParamException("Cannot add a role as a child of a permission.");
+            throw new InvalidParamException('Cannot add a role as a child of a permission.');
         }
 
         if ($this->detectLoop($parent, $child)) {
@@ -327,6 +327,7 @@ class PhpManager extends BaseManager
             }
             unset($this->items[$item->name]);
             $this->saveItems();
+            $this->saveAssignments();
             return true;
         } else {
             return false;
@@ -436,7 +437,6 @@ class PhpManager extends BaseManager
      * Returns all permissions that are directly assigned to user.
      * @param string|integer $userId the user ID (see [[\yii\web\User::id]])
      * @return Permission[] all direct permissions that the user has. The array is indexed by the permission names.
-     *
      * @since 2.0.7
      */
     protected function getDirectPermissionsByUser($userId)
@@ -456,7 +456,6 @@ class PhpManager extends BaseManager
      * Returns all permissions that the user inherits from the roles assigned to him.
      * @param string|integer $userId the user ID (see [[\yii\web\User::id]])
      * @return Permission[] all inherited permissions that the user has. The array is indexed by the permission names.
-     *
      * @since 2.0.7
      */
     protected function getInheritedPermissionsByUser($userId)
@@ -629,9 +628,11 @@ class PhpManager extends BaseManager
                 foreach ($this->assignments as &$assignments) {
                     if (isset($assignments[$name])) {
                         $assignments[$item->name] = $assignments[$name];
+                        $assignments[$item->name]->roleName = $item->name;
                         unset($assignments[$name]);
                     }
                 }
+                $this->saveAssignments();
             }
         }
 
@@ -805,5 +806,22 @@ class PhpManager extends BaseManager
             $rules[$name] = serialize($rule);
         }
         $this->saveToFile($rules, $this->ruleFile);
+    }
+
+    /**
+     * @inheritdoc
+     * @since 2.0.7
+     */
+    public function getUserIdsByRole($roleName)
+    {
+        $result = [];
+        foreach ($this->assignments as $userID => $assignments) {
+            foreach ($assignments as $userAssignment) {
+                if ($userAssignment->roleName === $roleName && $userAssignment->userId === $userID) {
+                    $result[] = (string)$userID;
+                }
+            }
+        }
+        return $result;
     }
 }

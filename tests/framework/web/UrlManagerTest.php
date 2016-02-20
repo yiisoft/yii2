@@ -64,7 +64,29 @@ class UrlManagerTest extends TestCase
         $url = $manager->createUrl(['post/view', 'id' => 1, 'title' => 'sample post']);
         $this->assertEquals('/test/index.php/post/view?id=1&title=sample+post', $url);
 
-        // todo: test showScriptName
+        // test showScriptName
+        $manager = new UrlManager([
+            'enablePrettyUrl' => true,
+            'baseUrl' => '/test',
+            'scriptUrl' => '/test/index.php',
+            'showScriptName' => true,
+            'cache' => null,
+        ]);
+        $url = $manager->createUrl(['post/view', 'id' => 1, 'title' => 'sample post']);
+        $this->assertEquals('/test/index.php/post/view?id=1&title=sample+post', $url);
+        $url = $manager->createUrl(['/post/view', 'id' => 1, 'title' => 'sample post']);
+        $this->assertEquals('/test/index.php/post/view?id=1&title=sample+post', $url);
+        $manager = new UrlManager([
+            'enablePrettyUrl' => true,
+            'baseUrl' => '/test',
+            'scriptUrl' => '/test/index.php',
+            'showScriptName' => false,
+            'cache' => null,
+        ]);
+        $url = $manager->createUrl(['post/view', 'id' => 1, 'title' => 'sample post']);
+        $this->assertEquals('/test/post/view?id=1&title=sample+post', $url);
+        $url = $manager->createUrl(['/post/view', 'id' => 1, 'title' => 'sample post']);
+        $this->assertEquals('/test/post/view?id=1&title=sample+post', $url);
 
         // pretty URL with rules
         $manager = new UrlManager([
@@ -408,5 +430,48 @@ class UrlManagerTest extends TestCase
         ]);
         $url = $manager->createAbsoluteUrl(['site/test', '#' => 'testhash']);
         $this->assertEquals('http://example.com/index.php/testPage#testhash', $url);
+    }
+
+    /**
+     * Tests if multislashes not accepted at the end of URL if PrettyUrl is enabled
+     *
+     * @see https://github.com/yiisoft/yii2/issues/10739
+     */
+    public function testMultiSlashesAtTheEnd()
+    {
+        $manager = new UrlManager([
+            'enablePrettyUrl' => true,
+        ]);
+
+        $request = new Request;
+
+        $request->pathInfo = 'post/multi/slash/';
+        $result = $manager->parseRequest($request);
+        $this->assertEquals(['post/multi/slash/', []], $result);
+
+        $request->pathInfo = 'post/multi/slash//';
+        $result = $manager->parseRequest($request);
+        $this->assertEquals(false, $result);
+
+        $request->pathInfo = 'post/multi/slash////';
+        $result = $manager->parseRequest($request);
+        $this->assertEquals(false, $result);
+
+        $manager = new UrlManager([
+            'enablePrettyUrl' => true,
+            'suffix' => '/'
+        ]);
+
+        $request->pathInfo = 'post/multi/slash/';
+        $result = $manager->parseRequest($request);
+        $this->assertEquals(['post/multi/slash', []], $result);
+
+        $request->pathInfo = 'post/multi/slash//';
+        $result = $manager->parseRequest($request);
+        $this->assertEquals(false, $result);
+
+        $request->pathInfo = 'post/multi/slash///////';
+        $result = $manager->parseRequest($request);
+        $this->assertEquals(false, $result);
     }
 }

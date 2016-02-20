@@ -30,16 +30,16 @@ use yii\helpers\Console;
  * this command is executed, if it does not exist. You may also manually
  * create it as follows:
  *
- * ~~~
+ * ```sql
  * CREATE TABLE migration (
  *     version varchar(180) PRIMARY KEY,
  *     apply_time integer
  * )
- * ~~~
+ * ```
  *
  * Below are some common usages of this command:
  *
- * ~~~
+ * ```
  * # creates a new migration named 'create_user_table'
  * yii migrate/create create_user_table
  *
@@ -48,7 +48,7 @@ use yii\helpers\Console;
  *
  * # reverts the last applied migration
  * yii migrate/down
- * ~~~
+ * ```
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
@@ -63,6 +63,17 @@ class MigrateController extends BaseMigrateController
      * @inheritdoc
      */
     public $templateFile = '@yii/views/migration.php';
+    /**
+     * @inheritdoc
+     * @since 2.0.7
+     */
+    public $generatorTemplateFiles = [
+        'create_table' => '@yii/views/createTableMigration.php',
+        'drop_table' => '@yii/views/dropTableMigration.php',
+        'add_column' => '@yii/views/addColumnMigration.php',
+        'drop_column' => '@yii/views/dropColumnMigration.php',
+        'create_junction' => '@yii/views/createJunctionMigration.php'
+    ];
     /**
      * @var Connection|array|string the DB connection object or the application component ID of the DB connection to use
      * when applying migrations. Starting from version 2.0.3, this can also be a configuration array

@@ -39,7 +39,7 @@ public function rules()
 - `strict`: 入力値の型が `trueValue` と `falseValue` の型と一致しなければならないかどうか。デフォルト値は `false`。
 
 
-> Note|注意: HTML フォームで送信されたデータ入力値は全て文字列であるため、通常は、[[yii\validators\BooleanValidator::strict|strict]] プロパティは false のままにすべきです。
+> Note: HTML フォームで送信されたデータ入力値は全て文字列であるため、通常は、[[yii\validators\BooleanValidator::strict|strict]] プロパティは false のままにすべきです。
 
 
 ## [[yii\captcha\CaptchaValidator|captcha]] <span id="captcha"></span>
@@ -153,7 +153,7 @@ function foo($model, $attribute) {
 }
 ```
 
-> Info|情報: 値が空であるか否かを決定する方法については、独立したトピックとして、[空の入力値を扱う](input-validation.md#handling-empty-inputs) の節でカバーされています。
+> Info: 値が空であるか否かを決定する方法については、独立したトピックとして、[空の入力値を扱う](input-validation.md#handling-empty-inputs) の節でカバーされています。
 
 
 ## [[yii\validators\NumberValidator|double]] <span id="double"></span>
@@ -176,7 +176,7 @@ function foo($model, $attribute) {
 
 ## [[yii\validators\EachValidator|each]] <span id="each"></span>
 
-> Info|情報: このバリデータは、バージョン 2.0.4 以降で利用できます。
+> Info: このバリデータは、バージョン 2.0.4 以降で利用できます。
 
 ```php
 [
@@ -195,7 +195,7 @@ function foo($model, $attribute) {
 - `allowMessageFromRule`: 埋め込まれた検証規則によって返されるエラーメッセージを使うかどうか。
   デフォルト値は true です。これが false の場合は、`message` をエラーメッセージとして使います。
 
-> Note|注意: 属性が配列でない場合は、検証が失敗したと見なされ、`message` がエラーメッセージとして返されます。
+> Note: 属性が配列でない場合は、検証が失敗したと見なされ、`message` がエラーメッセージとして返されます。
 
 
 ## [[yii\validators\EmailValidator|email]] <span id="email"></span>
@@ -334,9 +334,9 @@ function foo($model, $attribute) {
   フィルタが配列の入力を処理できない場合は、このプロパティを true に設定しなければなりません。
   そうしないと、何らかの PHP エラーが生じ得ます。
 
-> Tip|ヒント: 入力値をトリムしたい場合は、[trim](#trim) バリデータを直接使うことが出来ます。
+> Tip: 入力値をトリムしたい場合は、[trim](#trim) バリデータを直接使うことが出来ます。
 
-> Tip|ヒント: `filter` のコールバックに期待されるシグニチャを持つ PHP 関数が多数存在します。
+> Tip: `filter` のコールバックに期待されるシグニチャを持つ PHP 関数が多数存在します。
 > 例えば、([intval](http://php.net/manual/ja/function.intval.php) や [boolval](http://php.net/manual/ja/function.boolval.php) などを使って) 型キャストを適用し、属性が特定の型になるように保証したい場合は、それらの関数をクロージャで包む必要はなく、単にフィルタの関数名を指定するだけで十分です。
 >
 > ```php
@@ -365,6 +365,85 @@ function foo($model, $attribute) {
 - `maxWidth`: 画像の幅の最大値。デフォルト値は null であり、上限値がないことを意味します。
 - `minHeight`: 画像の高さの最小値。デフォルト値は null であり、下限値がないことを意味します。
 - `maxHeight`: 画像の高さの最大値。デフォルト値は null であり、上限値がないことを意味します。
+
+
+## [[yii\validators\IpValidator|ip]] <span id="ip"></span>
+```php
+[
+    // "ip_address" が有効な IPv4 または IPv6 アドレスであることを検証
+    ['ip_address', 'ip'],
+
+    // "ip_address" が有効な IPv6 アドレスまたはサブネットであることを検証
+    // 値は完全な IPv6 記法に展開される
+    ['ip_address', 'ip', 'ipv4' => false, 'subnet' => null, 'expandIPv6' => true],
+
+    // "ip_address" が有効な IPv4 または IPv6 アドレスであることを検証
+    // 先頭に否定文字 `!` を置くことを許可
+    ['ip_address', 'ip', 'negation' => true],
+]
+```
+
+このバリデータは属性の値が有効な IPv4/IPv6 アドレスまたはサブネットであることを検証します。
+正規化または IPv6 展開が有効にされた場合は、属性の値を変更することも出来ます。
+
+バリデータは以下の構成オプションを持っています。
+
+- `ipv4`: 検証の対象となる値が IPv4 アドレスであってよいか否か。デフォルト値は true。
+- `ipv6`: 検証の対象となる値が IPv6 アドレスであってよいか否か。デフォルト値は true。
+- `subnet`: アドレスが `192.168.10.0/24` のような CIDR サブネットを持つ IP であってよいか否か。whether the address can be an IP with CIDR subnet, like `192.168.10.0/24`
+     * `true` - サブネットが必要。CIDR の無いアドレスは却下されます
+     * `false` - アドレスは CIDR を伴ってはいけません
+     * `null` - CIDR は有っても無くても構いません
+
+    デフォルト値は false。
+- `normalize`: CIDR を持たないアドレスに、最も短い (IPv4 では 32、IPv6 では 128) CIDR プレフィクスを追加するか否か。
+`subnet` が `false` 以外の場合にのみ動作します。
+例えば、
+    * `10.0.1.5` は `10.0.1.5/32` に正規化され、
+    * `2008:db0::1` は `2008:db0::1/128` に正規化されます
+
+    デフォルト値は false。
+- `negation`: 検証の対象となるアドレスが先頭に否定文字 `!` を持つことが出来るか否か。
+デフォルト値は false。
+- `expandIPv6`: IPv6 アドレスを完全な記法に展開するか否か。
+例えば、`2008:db0::1` は `2008:0db0:0000:0000:0000:0000:0000:0001` に展開されます。
+デフォルト値は false。
+- `ranges`: 許容または禁止される IPv4 または IPv6 の範囲の配列。
+
+    配列が空の場合、またはこのオプションが設定されていない場合は、全ての IP アドレスが許容されます。
+    そうでない場合は、最初に合致するものが見つかるまで、規則が順番にチェックされます。
+    どの規則にも合致しなかった場合、その IP アドレスは禁止されます。
+    
+    例えば、
+    ```php
+    [
+         'client_ip', 'ip', 'ranges' => [
+             '192.168.10.128'
+             '!192.168.10.0/24',
+             'any' // 他の IP アドレスは全て許容
+         ]
+    ]
+    ```
+この例では、`192.168.10.0/24` のサブネットを除いて、全ての IPv4 および IPv6 アドレスが許容されます。
+IPv4 アドレス `192.168.10.128` も、制約の前にリストされているため、同様に許容されます。
+- `networks`: `ranges` で使用する事が出来るネットワークのエイリアスの配列。
+配列の形式は、
+    * キー - エイリアス名
+    * 値 - 文字列の配列。文字列は、範囲、IP アドレス、または、他のエイリアスとすることが出来ます。
+また、文字列は (`negation` オプションとは独立に) `!` によって否定することが出来ます。
+
+    デフォルトで、次のエイリアスが定義されています。
+    
+    * `*`: `any`
+    * `any`: `0.0.0.0/0, ::/0`
+    * `private`: `10.0.0.0/8, 172.16.0.0/12, 192.168.0.0/16, fd00::/8`
+    * `multicast`: `224.0.0.0/4, ff00::/8`
+    * `linklocal`: `169.254.0.0/16, fe80::/10`
+    * `localhost`: `127.0.0.0/8', ::1`
+    * `documentation`: `192.0.2.0/24, 198.51.100.0/24, 203.0.113.0/24, 2001:db8::/32`
+    * `system`: `multicast, linklocal, localhost, documentation`
+
+> Info: このバリデータは、バージョン 2.0.7 以降で利用することが出来ます。
 
 
 ## [[yii\validators\RangeValidator|in]] <span id="in"></span>
@@ -452,7 +531,7 @@ function foo($model, $attribute) {
   一方、このプロパティが false であるときは、値が空か否かの判断に緩い規則を使います。
   `requiredValue` が設定されている場合、このプロパティが true であるときは、入力値と `requiredValue` を比較するときに型のチェックを行います。
 
-> Info|情報: 値が空であるか否かを決定する方法については、独立したトピックとして、[空の入力値を扱う](input-validation.md#handling-empty-inputs) の節でカバーされています。
+> Info: 値が空であるか否かを決定する方法については、独立したトピックとして、[空の入力値を扱う](input-validation.md#handling-empty-inputs) の節でカバーされています。
 
 
 ## [[yii\validators\SafeValidator|safe]] <span id="safe"></span>

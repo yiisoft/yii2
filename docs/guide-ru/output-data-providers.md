@@ -90,9 +90,9 @@ use yii\db\Query;
 $query = (new Query())->from('post')->where(['status' => 1]); 
 ```
 
-> Совет: Если query содержит условия сортировки в `orderBy`, то новые условия, полученные от конечных пользователей
+> Note: Если query содержит условия сортировки в `orderBy`, то новые условия, полученные от конечных пользователей
  (через настройки `sort`) будут добавлены к существующим условиям в `orderBy`. Любые условия в `limit` и `offset` 
- and `offset` будут переписаны запросом конечного пользователя к различным страницам ( через конфигурацию  `pagination`)
+ будут переписаны запросом конечного пользователя к различным страницам ( через конфигурацию  `pagination`).
 
 По умолчанию, [[yii\data\ActiveDataProvider]] использует компонент приложения `db` для подключения к базе данных. Можно
 использовать разные базы данных, настроив подключение через конфигурацию свойства [[yii\data\ActiveDataProvider::db]].
@@ -171,7 +171,7 @@ $provider = new ArrayDataProvider([
 $rows = $provider->getModels();
 ``` 
 
-> Совет: Сравнивая с [Active Data Provider](#active-data-provider) и [SQL Data Provider](#sql-data-provider),
+> Note: Сравнивая с [Active Data Provider](#active-data-provider) и [SQL Data Provider](#sql-data-provider),
 ArrayDataProvider менее эффективный потому, что требует загрузки *всех* данных в память.
 
 
@@ -188,7 +188,7 @@ use yii\data\ActiveDataProvider;
 $query = Post::find()->where(['status' => 1]);
 
 $provider = new ActiveDataProvider([
-    'query' => Post::find(),
+    'query' => $query,
 ]);
 
 // возвращает массив объектов Post
@@ -198,10 +198,10 @@ $posts = $provider->getModels();
 $ids = $provider->getKeys();
 ```
 
-В выше описанном примере, так как [[yii\data\ActiveDataProvider]] предоставляется один [[yii\db\ActiveQuery]] объект, то
+В вышеописанном примере, так как [[yii\data\ActiveDataProvider]] предоставляется один [[yii\db\ActiveQuery]] объект, то
 в этом случае провайдер достаточно умён, чтобы вернуть значения первичных ключей в качестве идентификатора. Также есть
-возможность настроить способ вычисления значение идентификатора, через настройку [[yii\data\ActiveDataProvider::key]], как
-имя колонки или функция вычисления значений ключа. Например:
+возможность настроить способ вычисления значения идентификатора, через настройку [[yii\data\ActiveDataProvider::key]], как
+имя колонки или функцию вычисления значений ключа. Например:
 
 ```php
 // используется "slug" колонка как ключ

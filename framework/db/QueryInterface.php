@@ -62,12 +62,12 @@ interface QueryInterface
      * This can also be a callable (e.g. anonymous function) that returns the index value based on the given
      * row data. The signature of the callable should be:
      *
-     * ~~~
+     * ```php
      * function ($row)
      * {
      *     // return the index value corresponding to $row
      * }
-     * ~~~
+     * ```
      *
      * @return $this the query object itself
      */

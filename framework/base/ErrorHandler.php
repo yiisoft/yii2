@@ -199,7 +199,7 @@ abstract class ErrorHandler extends Component
             $trace = debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS);
             array_shift($trace);
             foreach ($trace as $frame) {
-                if ($frame['function'] == '__toString') {
+                if ($frame['function'] === '__toString') {
                     $this->handleException($exception);
                     if (defined('HHVM_VERSION')) {
                         flush();

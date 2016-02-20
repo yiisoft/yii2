@@ -36,7 +36,7 @@ public function rules()
 - `strict`：是否要求待测输入必须严格匹配 `trueValue` 或 `falseValue`。默认为 `false`。
 
 
-> 注意：因为通过 HTML 表单传递的输入数据都是字符串类型，所以一般情况下你都需要保持
+> Note: 因为通过 HTML 表单传递的输入数据都是字符串类型，所以一般情况下你都需要保持
   [[yii\validators\BooleanValidator::strict|strict]] 属性为假。
 
 
@@ -126,7 +126,7 @@ function foo($model, $attribute) {
 }
 ```
 
-> 补充：如何判断待测值是否为空，被写在另外一个话题的[处理空输入](input-validation.md#handling-empty-inputs)章节。
+> Info: 如何判断待测值是否为空，被写在另外一个话题的[处理空输入](input-validation.md#handling-empty-inputs)章节。
 
 
 ## [[yii\validators\NumberValidator|double（双精度浮点型）]] <span id="double"></span>
@@ -244,7 +244,7 @@ function foo($model, $attribute) {
 - `filter`：用于定义滤镜的 PHP 回调函数。可以为全局函数名，匿名函数，或其他。该函数的样式必须是 `function ($value) { return $newValue; }`。该属性不能省略，必须设置。
 - `skipOnArray`：是否在输入值为数组时跳过滤镜。默认为 false。请注意如果滤镜不能处理数组输入，你就应该把该属性设为 true。否则可能会导致 PHP Error 的发生。
 
-> 技巧：如果你只是想要用 trim 处理下输入值，你可以直接用 [trim](#trim) 验证器的。
+> Tip: 如果你只是想要用 trim 处理下输入值，你可以直接用 [trim](#trim) 验证器的。
 
 
 ## [[yii\validators\ImageValidator|image（图片）]] <span id="image"></span>
@@ -345,7 +345,7 @@ function foo($model, $attribute) {
 
 当设置了 `requiredValue` 属性时，若该属性为 true，输入值与 `requiredValue` 的比对会同时检查数据类型。
 
-> 补充：如何判断待测值是否为空，被写在另外一个话题的[处理空输入](input-validation.md#handling-empty-inputs)章节。
+> Info: 如何判断待测值是否为空，被写在另外一个话题的[处理空输入](input-validation.md#handling-empty-inputs)章节。
 
 
 ## [[yii\validators\SafeValidator|safe（安全）]] <span id="safe"></span>
