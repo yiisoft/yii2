@@ -426,12 +426,4 @@ SQL;
         }
         return $result;
     }
-
-    /**
-     * @inheritdoc
-     */
-    public function createColumnSchemaBuilder($type, $length = null)
-    {
-        return new ColumnSchemaBuilder($type, $length);
-    }
 }

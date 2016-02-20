@@ -299,4 +299,12 @@ class Schema extends \yii\db\Schema
         }
         parent::setTransactionIsolationLevel($level);
     }
+
+    /**
+     * @inheritdoc
+     */
+    public function createColumnSchemaBuilder($type, $length = null)
+    {
+        return new ColumnSchemaBuilder($type, $length);
+    }
 }

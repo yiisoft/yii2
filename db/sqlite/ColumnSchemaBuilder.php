@@ -14,15 +14,33 @@ use yii\db\ColumnSchemaBuilder as AbstractColumnSchemaBuilder;
  * ColumnSchemaBuilder is the schema builder for Sqlite databases.
  *
  * @author Chris Harris <chris@buckshotsoftware.com>
- * @since 2.0.7
+ * @since 2.0.8
  */
 class ColumnSchemaBuilder extends AbstractColumnSchemaBuilder
 {
     /**
      * @inheritdoc
      */
-    protected function buildAfterString()
+    protected function buildUnsignedString()
     {
-        return '';
+        return $this->isUnsigned ? ' UNSIGNED' : '';
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function __toString()
+    {
+        switch ($this->getTypeCategory()) {
+            case self::CAT_PK:
+                $format = '{type}{length}';
+                break;
+            case self::CAT_NUMERIC:
+                $format = '{type}{length}{unsigned}{notnull}{unique}{check}{default}';
+                break;
+            default:
+                $format = '{type}{length}{notnull}{unique}{check}{default}';
+        }
+        return $this->buildCompleteString($format);
     }
 }
