@@ -53,10 +53,6 @@ class Schema extends \yii\db\Schema
     ];
 
     /**
-     * @var array mapping from type groups to
-     */
-
-    /**
      * Quotes a table name for use in a query.
      * A simple table name has no schema prefix.
      * @param string $name table name
