@@ -152,10 +152,12 @@ class DynamicModel extends Model
      * @param array $options the options (name-value pairs) to be applied to the validator
      * @return $this the model itself
      */
-    public function addRule($attributes, $validator, $options = [])
+    public function addRules($rules = [])
     {
         $validators = $this->getValidators();
-        $validators->append(Validator::createValidator($validator, $this, (array) $attributes, $options));
+        foreach($rules as $rule) {
+            $validators->append(Validator::createValidator($rule[1], $this, (array) $rule[0], array_slice($rule, 2)));
+        }
 
         return $this;
     }
