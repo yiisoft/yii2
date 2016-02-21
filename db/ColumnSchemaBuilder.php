@@ -20,15 +20,14 @@ use yii\base\Object;
  */
 class ColumnSchemaBuilder extends Object
 {
-    /**
-     * The following are the categories of column data types.
-     * @since 2.0.8
-     */
-    const CAT_PK = 'pk';
-    const CAT_STRING = 'string';
-    const CAT_NUMERIC = 'numeric';
-    const CAT_TIME = 'time';
-    const CAT_OTHER = 'other';
+    // Internally used constants representing categories that abstract column types fall under.
+    // See $categoryMap for mappings of column types to category.
+    // @since 2.0.8
+    const CATEGORY_PK = 'pk';
+    const CATEGORY_STRING = 'string';
+    const CATEGORY_NUMERIC = 'numeric';
+    const CATEGORY_TIME = 'time';
+    const CATEGORY_OTHER = 'other';
 
     /**
      * @var string the column type definition such as INTEGER, VARCHAR, DATETIME, etc.
@@ -75,25 +74,25 @@ class ColumnSchemaBuilder extends Object
      * @var array mapping of abstract column types (keys) to type categories (values).
      */
     public $categoryMap = [
-        Schema::TYPE_PK => self::CAT_PK,
-        Schema::TYPE_BIGPK => self::CAT_PK,
-        Schema::TYPE_UNSIGNEDPK => self::CAT_PK,
-        Schema::TYPE_CHAR => self::CAT_STRING,
-        Schema::TYPE_STRING => self::CAT_STRING,
-        Schema::TYPE_TEXT => self::CAT_STRING,
-        Schema::TYPE_SMALLINT => self::CAT_NUMERIC,
-        Schema::TYPE_INTEGER => self::CAT_NUMERIC,
-        Schema::TYPE_BIGINT => self::CAT_NUMERIC,
-        Schema::TYPE_FLOAT => self::CAT_NUMERIC,
-        Schema::TYPE_DOUBLE => self::CAT_NUMERIC,
-        Schema::TYPE_DECIMAL => self::CAT_NUMERIC,
-        Schema::TYPE_DATETIME => self::CAT_TIME,
-        Schema::TYPE_TIMESTAMP => self::CAT_TIME,
-        Schema::TYPE_TIME => self::CAT_TIME,
-        Schema::TYPE_DATE => self::CAT_TIME,
-        Schema::TYPE_BINARY => self::CAT_OTHER,
-        Schema::TYPE_BOOLEAN => self::CAT_NUMERIC,
-        Schema::TYPE_MONEY => self::CAT_NUMERIC,
+        Schema::TYPE_PK => self::CATEGORY_PK,
+        Schema::TYPE_BIGPK => self::CATEGORY_PK,
+        Schema::TYPE_UNSIGNEDPK => self::CATEGORY_PK,
+        Schema::TYPE_CHAR => self::CATEGORY_STRING,
+        Schema::TYPE_STRING => self::CATEGORY_STRING,
+        Schema::TYPE_TEXT => self::CATEGORY_STRING,
+        Schema::TYPE_SMALLINT => self::CATEGORY_NUMERIC,
+        Schema::TYPE_INTEGER => self::CATEGORY_NUMERIC,
+        Schema::TYPE_BIGINT => self::CATEGORY_NUMERIC,
+        Schema::TYPE_FLOAT => self::CATEGORY_NUMERIC,
+        Schema::TYPE_DOUBLE => self::CATEGORY_NUMERIC,
+        Schema::TYPE_DECIMAL => self::CATEGORY_NUMERIC,
+        Schema::TYPE_DATETIME => self::CATEGORY_TIME,
+        Schema::TYPE_TIMESTAMP => self::CATEGORY_TIME,
+        Schema::TYPE_TIME => self::CATEGORY_TIME,
+        Schema::TYPE_DATE => self::CATEGORY_TIME,
+        Schema::TYPE_BINARY => self::CATEGORY_OTHER,
+        Schema::TYPE_BOOLEAN => self::CATEGORY_NUMERIC,
+        Schema::TYPE_MONEY => self::CATEGORY_NUMERIC,
     ];
 
     /**
@@ -207,7 +206,7 @@ class ColumnSchemaBuilder extends Object
     public function __toString()
     {
         switch ($this->getTypeCategory()) {
-            case self::CAT_PK:
+            case self::CATEGORY_PK:
                 $format = '{type}{length}{pos}';
                 break;
             default:

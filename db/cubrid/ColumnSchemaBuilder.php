@@ -47,10 +47,10 @@ class ColumnSchemaBuilder extends AbstractColumnSchemaBuilder
     public function __toString()
     {
         switch ($this->getTypeCategory()) {
-            case self::CAT_PK:
+            case self::CATEGORY_PK:
                 $format = '{type}{length}{pos}';
                 break;
-            case self::CAT_NUMERIC:
+            case self::CATEGORY_NUMERIC:
                 $format = '{type}{length}{unsigned}{notnull}{unique}{default}{check}{pos}';
                 break;
             default:
