@@ -72,7 +72,7 @@ class ColumnSchemaBuilder extends Object
      */
     protected $isFirst;
     /**
-     * @var array mapping of type categories (keys) to abstract column types (values).
+     * @var array mapping of abstract column types (keys) to type categories (values).
      */
     public $categoryMap = [
         Schema::TYPE_PK => self::CAT_PK,
