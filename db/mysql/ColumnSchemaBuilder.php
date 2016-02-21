@@ -7,7 +7,6 @@
 
 namespace yii\db\mysql;
 
-use Yii;
 use yii\db\ColumnSchemaBuilder as AbstractColumnSchemaBuilder;
 
 /**
@@ -32,7 +31,7 @@ class ColumnSchemaBuilder extends AbstractColumnSchemaBuilder
     protected function buildAfterString()
     {
         return $this->after !== null ?
-            ' AFTER (' . Yii::$app->db->quoteColumnName($this->after) . ')' :
+            ' AFTER (' . $this->db->quoteColumnName($this->after) . ')' :
             '';
     }
 

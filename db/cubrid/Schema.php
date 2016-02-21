@@ -305,6 +305,6 @@ class Schema extends \yii\db\Schema
      */
     public function createColumnSchemaBuilder($type, $length = null)
     {
-        return new ColumnSchemaBuilder($type, $length);
+        return new ColumnSchemaBuilder($type, $length, $this->db);
     }
 }
