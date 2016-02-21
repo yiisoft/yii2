@@ -94,18 +94,26 @@ class ColumnSchemaBuilder extends Object
         Schema::TYPE_BOOLEAN => self::CATEGORY_NUMERIC,
         Schema::TYPE_MONEY => self::CATEGORY_NUMERIC,
     ];
+    /**
+     * @var \yii\db\Connection the current database connection. It is used mainly to escape strings
+     * safely when building the final column schema string.
+     * @since 2.0.8
+     */
+    public $db;
 
     /**
      * Create a column schema builder instance giving the type and value precision.
      *
      * @param string $type type of the column. See [[$type]].
      * @param integer|string|array $length length or precision of the column. See [[$length]].
+     * @param \yii\db\Connection $db the current database connection. See [[$db]].
      * @param array $config name-value pairs that will be used to initialize the object properties
      */
-    public function __construct($type, $length = null, $config = [])
+    public function __construct($type, $length = null, $db = null, $config = [])
     {
         $this->type = $type;
         $this->length = $length;
+        $this->db = $db;
         parent::__construct($config);
     }
 
