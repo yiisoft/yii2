@@ -183,7 +183,7 @@ class DynamicModel extends Model
         /* @var $model DynamicModel */
         $model = new static($data);
         if (!empty($rules)) {
-            $this->addRules($rules);
+            $model->addRules($rules);
         }
 
         $model->validate();
