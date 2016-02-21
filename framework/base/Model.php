@@ -454,6 +454,14 @@ class Model extends Component implements IteratorAggregate, ArrayAccess, Arrayab
         return $validators;
     }
 
+    public function addRules($rules = []) {
+        $validators = $this->createValidators($rules);
+        foreach($validators as $validator) {
+            $this->validators[] = $validator;
+        }
+        return $this;
+    }
+
     /**
      * Returns a value indicating whether the attribute is required.
      * This is determined by checking if the attribute is associated with a
