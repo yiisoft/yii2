@@ -489,7 +489,9 @@ class QueryBuilderTest extends DatabaseTestCase
         $i = 0;
         foreach ($this->columnTypes() as $item) {
             list ($column, $builder, $expected) = $item;
-            if (strncmp($column, 'pk', 2) !== 0) {
+            if (!(strncmp($column, 'pk', 2) ||
+                  strncmp($column, 'bigpk', 5) ||
+                  strncmp($column, 'unsignedpk', 10))) {
                 $columns['col' . ++$i] = str_replace('CHECK (value', 'CHECK ([[col' . $i . ']]', $column);
             }
         }
