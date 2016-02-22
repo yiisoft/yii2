@@ -6,6 +6,7 @@ namespace yiiunit\framework\widgets;
 use yii\base\Arrayable;
 use yii\base\ArrayableTrait;
 use yii\base\DynamicModel;
+use yii\base\Object;
 use yii\widgets\ActiveForm;
 use yii\widgets\DetailView;
 
@@ -14,100 +15,135 @@ use yii\widgets\DetailView;
  */
 class DetailViewTest extends \yiiunit\TestCase
 {
-	/** @var DetailView */
-	public $detailView;
+    /** @var DetailView */
+    public $detailView;
 
-	protected function setUp()
-	{
-		parent::setUp();
+    protected function setUp()
+    {
+        parent::setUp();
 
-		$this->mockWebApplication();
-	}
+        $this->mockWebApplication();
+    }
 
-	public function testArrayableModel()
-	{
-		$expectedValue = [
-			[
-				'attribute' => 'id',
-				'format' => 'text',
-				'label' => 'Id',
-				'value' => 1
-			],
-			[
-				'attribute' => 'text',
-				'format' => 'text',
-				'label' => 'Text',
-				'value' => 'I`m arrayable'
-			],
-		];
+    public function testRelationAttribute()
+    {
+        $model = new ObjectMock();
+        $model->id = 'model';
+        $model->related = new ObjectMock();
+        $model->related->id = 'related';
 
-		$model = new ArrayableMock();
-		$model->id = 1;
-		$model->text = 'I`m arrayable';
+        $this->detailView = new PublicDetailView([
+            'model' => $model,
+            'template' => '{label}:{value}',
+            'attributes' => [
+                'id',
+                'related.id',
+            ],
+        ]);
 
-		$this->detailView = new DetailView([
-			'model' => $model,
-		]);
+        $this->assertEquals('Id:model', $this->detailView->renderAttribute($this->detailView->attributes[0], 0));
+        $this->assertEquals('Related Id:related', $this->detailView->renderAttribute($this->detailView->attributes[1], 1));
 
-		$this->assertEquals($expectedValue, $this->detailView->attributes);
-	}
+        // test null relation
+        $model->related = null;
 
-	public function testObjectModel()
-	{
-		$expectedValue = [
-			[
-				'attribute' => 'id',
-				'format' => 'text',
-				'label' => 'Id',
-				'value' => 1
-			],
-			[
-				'attribute' => 'text',
-				'format' => 'text',
-				'label' => 'Text',
-				'value' => 'I`m an object'
-			],
-		];
+        $this->detailView = new PublicDetailView([
+            'model' => $model,
+            'template' => '{label}:{value}',
+            'attributes' => [
+                'id',
+                'related.id',
+            ],
+        ]);
 
-		$model = new ObjectMock();
-		$model->id = 1;
-		$model->text = 'I`m an object';
+        $this->assertEquals('Id:model', $this->detailView->renderAttribute($this->detailView->attributes[0], 0));
+        $this->assertEquals('Related Id:<span class="not-set">(not set)</span>', $this->detailView->renderAttribute($this->detailView->attributes[1], 1));
+    }
 
-		$this->detailView = new DetailView([
-			'model' => $model,
-		]);
+    public function testArrayableModel()
+    {
+        $expectedValue = [
+            [
+                'attribute' => 'id',
+                'format' => 'text',
+                'label' => 'Id',
+                'value' => 1
+            ],
+            [
+                'attribute' => 'text',
+                'format' => 'text',
+                'label' => 'Text',
+                'value' => 'I`m arrayable'
+            ],
+        ];
 
-		$this->assertEquals($expectedValue, $this->detailView->attributes);
-	}
+        $model = new ArrayableMock();
+        $model->id = 1;
+        $model->text = 'I`m arrayable';
 
-	public function testArrayModel()
-	{
-		$expectedValue = [
-			[
-				'attribute' => 'id',
-				'format' => 'text',
-				'label' => 'Id',
-				'value' => 1
-			],
-			[
-				'attribute' => 'text',
-				'format' => 'text',
-				'label' => 'Text',
-				'value' => 'I`m an array'
-			],
-		];
+        $this->detailView = new DetailView([
+            'model' => $model,
+        ]);
 
-		$model = [
-			'id' => 1,
-			'text' => 'I`m an array'
-		];
+        $this->assertEquals($expectedValue, $this->detailView->attributes);
+    }
 
-		$this->detailView = new DetailView([
-			'model' => $model,
-		]);
+    public function testObjectModel()
+    {
+        $expectedValue = [
+            [
+                'attribute' => 'id',
+                'format' => 'text',
+                'label' => 'Id',
+                'value' => 1
+            ],
+            [
+                'attribute' => 'text',
+                'format' => 'text',
+                'label' => 'Text',
+                'value' => 'I`m an object'
+            ],
+        ];
 
-		$this->assertEquals($expectedValue, $this->detailView->attributes);
-	}
+        $model = new ObjectMock();
+        $model->id = 1;
+        $model->text = 'I`m an object';
+
+        $this->detailView = new DetailView([
+            'model' => $model,
+        ]);
+
+        $this->assertEquals($expectedValue, $this->detailView->attributes);
+    }
+
+    public function testArrayModel()
+    {
+        $expectedValue = [
+            [
+                'attribute' => 'id',
+                'format' => 'text',
+                'label' => 'Id',
+                'value' => 1
+            ],
+            [
+                'attribute' => 'text',
+                'format' => 'text',
+                'label' => 'Text',
+                'value' => 'I`m an array'
+            ],
+        ];
+
+        $model = [
+            'id' => 1,
+            'text' => 'I`m an array'
+        ];
+
+        $this->detailView = new DetailView([
+            'model' => $model,
+        ]);
+
+        $this->assertEquals($expectedValue, $this->detailView->attributes);
+    }
 }
 
 /**
@@ -115,19 +151,38 @@ class DetailViewTest extends \yiiunit\TestCase
  */
 class ArrayableMock implements Arrayable
 {
-	use ArrayableTrait;
+    use ArrayableTrait;
 
-	public $id;
+    public $id;
 
-	public $text;
+    public $text;
 }
 
 /**
  * Helper Class
  */
-class ObjectMock
+class ObjectMock extends Object
 {
-	public $id;
+    public $id;
+    public $text;
 
-	public $text;
+    private $_related;
+
+    public function getRelated()
+    {
+        return $this->_related;
+    }
+
+    public function setRelated($related)
+    {
+        $this->_related = $related;
+    }
+}
+
+class PublicDetailView extends DetailView
+{
+    public function renderAttribute($attribute, $index)
+    {
+        return parent::renderAttribute($attribute, $index);
+    }
 }
