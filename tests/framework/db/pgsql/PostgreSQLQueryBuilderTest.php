@@ -95,6 +95,7 @@ class PostgreSQLQueryBuilderTest extends QueryBuilderTest
                 Schema::TYPE_TEXT . '(255)',
                 $this->text(255),
                 'text',
+                Schema::TYPE_TEXT,
             ],
             [
                 Schema::TYPE_TEXT . ' CHECK (value LIKE \'test%\')',
@@ -105,6 +106,7 @@ class PostgreSQLQueryBuilderTest extends QueryBuilderTest
                 Schema::TYPE_TEXT . '(255) CHECK (value LIKE \'test%\')',
                 $this->text(255)->check('value LIKE \'test%\''),
                 'text CHECK (value LIKE \'test%\')',
+                Schema::TYPE_TEXT . ' CHECK (value LIKE \'test%\')',
             ],
             [
                 Schema::TYPE_TEXT . ' NOT NULL',
@@ -115,6 +117,7 @@ class PostgreSQLQueryBuilderTest extends QueryBuilderTest
                 Schema::TYPE_TEXT . '(255) NOT NULL',
                 $this->text(255)->notNull(),
                 'text NOT NULL',
+                Schema::TYPE_TEXT . ' NOT NULL',
             ],
             [
                 Schema::TYPE_SMALLINT,

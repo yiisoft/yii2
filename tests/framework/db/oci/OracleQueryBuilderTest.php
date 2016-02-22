@@ -98,7 +98,8 @@ class OracleQueryBuilderTest extends QueryBuilderTest
             [
                 Schema::TYPE_TEXT . '(255)',
                 $this->text(255),
-                'CLOB'
+                'CLOB',
+                Schema::TYPE_TEXT,
             ],
             [
                 Schema::TYPE_TEXT . ' CHECK (value LIKE \'test%\')',
@@ -109,6 +110,7 @@ class OracleQueryBuilderTest extends QueryBuilderTest
                 Schema::TYPE_TEXT . '(255) CHECK (value LIKE \'test%\')',
                 $this->text(255)->check('value LIKE \'test%\''),
                 'CLOB CHECK (value LIKE \'test%\')',
+                Schema::TYPE_TEXT . ' CHECK (value LIKE \'test%\')',
             ],
             [
                 Schema::TYPE_TEXT . ' NOT NULL',
@@ -119,6 +121,7 @@ class OracleQueryBuilderTest extends QueryBuilderTest
                 Schema::TYPE_TEXT . '(255) NOT NULL',
                 $this->text(255)->notNull(),
                 'CLOB NOT NULL',
+                Schema::TYPE_TEXT . ' NOT NULL',
             ],
             [
                 Schema::TYPE_SMALLINT,
