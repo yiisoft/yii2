@@ -56,6 +56,7 @@ Yii Framework 2 Change Log
 - Enh #10764: `yii\helpers\Html::tag()` and `::beginTag()` return content without any HTML when the `$tag` attribute is `false` or `null` (pana1990)
 - Enh #10840: Added `yii\console\Controller::optionAliases()` method to support aliases for commands (pana1990)
 - Enh #10889: Allows unsigned primary key column definitions (df2)
+- Enh #10908: Added Dependency Injection for Closure configuration (SamMousa)
 - Enh #10921: `__toString()` of column schema builder now adapts to column types (df2)
 - Enh #10937: `yii\web\User` will now confirm the request accepts an HTML response before redirecting to the login page. Added optional `$checkAcceptHeader` to `yii\web\User::loginRequired()` (sammousa)
 - Enh #10941: Added `yii\helpers\ArrayHelper::isTraversable`, added support for traversable selections for dropdownList, radioList and checkboxList in `yii\helpers\Html` (sammousa)
