@@ -140,7 +140,7 @@ class QueryBuilderTest extends DatabaseTestCase
             ],
             [
                 Schema::TYPE_UNSIGNEDPK . '(20)',
-                $this->primaryKey(20),
+                $this->unsignedPrimaryKey(20),
                 'int(20) UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY'
             ],
             [
