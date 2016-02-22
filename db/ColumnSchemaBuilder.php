@@ -21,7 +21,7 @@ use yii\base\Object;
 class ColumnSchemaBuilder extends Object
 {
     // Internally used constants representing categories that abstract column types fall under.
-    // See $categoryMap for mappings of column types to category.
+    // See [[$categoryMap]] for mappings of abstract column types to category.
     // @since 2.0.8
     const CATEGORY_PK = 'pk';
     const CATEGORY_STRING = 'string';
@@ -72,6 +72,7 @@ class ColumnSchemaBuilder extends Object
     protected $isFirst;
     /**
      * @var array mapping of abstract column types (keys) to type categories (values).
+     * @since 2.0.8
      */
     public $categoryMap = [
         Schema::TYPE_PK => self::CATEGORY_PK,
