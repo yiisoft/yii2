@@ -94,7 +94,7 @@ class SqliteQueryBuilderTest extends QueryBuilderTest
             ],
             [
                 Schema::TYPE_TEXT . '(255)',
-                $this->text(),
+                $this->text(255),
                 'text',
             ],
             [
@@ -104,7 +104,7 @@ class SqliteQueryBuilderTest extends QueryBuilderTest
             ],
             [
                 Schema::TYPE_TEXT . '(255) CHECK (value LIKE "test%")',
-                $this->text()->check('value LIKE "test%"'),
+                $this->text(255)->check('value LIKE "test%"'),
                 'text CHECK (value LIKE "test%")',
             ],
             [
@@ -114,7 +114,7 @@ class SqliteQueryBuilderTest extends QueryBuilderTest
             ],
             [
                 Schema::TYPE_TEXT . '(255) NOT NULL',
-                $this->text()->notNull(),
+                $this->text(255)->notNull(),
                 'text NOT NULL',
             ],
             [
