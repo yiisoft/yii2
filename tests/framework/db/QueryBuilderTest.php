@@ -114,12 +114,12 @@ class QueryBuilderTest extends DatabaseTestCase
                 'int(8) NOT NULL AUTO_INCREMENT PRIMARY KEY FIRST'
             ],
             [
-                Schema::TYPE_PK . ' AFTER (\'col_before\')',
+                Schema::TYPE_PK . ' AFTER (`col_before`)',
                 $this->primaryKey()->after('col_before'),
                 'int(11) NOT NULL AUTO_INCREMENT PRIMARY KEY AFTER (`col_before`)'
             ],
             [
-                Schema::TYPE_PK . ' AFTER (\'col_before\')',
+                Schema::TYPE_PK . ' AFTER (`col_before`)',
                 $this->primaryKey(8)->after('col_before'),
                 'int(8) NOT NULL AUTO_INCREMENT PRIMARY KEY AFTER (`col_before`)'
             ],
