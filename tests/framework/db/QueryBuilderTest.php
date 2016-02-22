@@ -428,11 +428,10 @@ class QueryBuilderTest extends DatabaseTestCase
 
         foreach ($this->columnTypes() as $item) {
             list ($column, $builder, $expected) = $item;
-            $expectedColumnSchemaBuilder = isset($item[3]) ? $item[3] : $column;
 
             $this->assertEquals($expected, $qb->getColumnType($column));
             $this->assertEquals($expected, $qb->getColumnType($builder));
-            $this->assertEquals($expectedColumnSchemaBuilder, $builder->__toString());
+            $this->assertEquals($expected, $builder->__toString());
         }
     }
 
