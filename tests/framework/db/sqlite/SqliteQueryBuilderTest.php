@@ -38,6 +38,16 @@ class SqliteQueryBuilderTest extends QueryBuilderTest
                 'integer PRIMARY KEY AUTOINCREMENT NOT NULL CHECK (value > 5)'
             ],
             [
+                Schema::TYPE_PK,
+                $this->primaryKey()->first()->after('col_before'),
+                'int(11) NOT NULL AUTO_INCREMENT PRIMARY KEY'
+            ],
+            [
+                Schema::TYPE_PK . '(8)',
+                $this->primaryKey(8)->first()->after('col_before'),
+                'int(8) NOT NULL AUTO_INCREMENT PRIMARY KEY'
+            ],
+            [
                 Schema::TYPE_CHAR,
                 $this->char(),
                 'char(1)'

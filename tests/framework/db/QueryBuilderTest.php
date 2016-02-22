@@ -104,6 +104,46 @@ class QueryBuilderTest extends DatabaseTestCase
                 'int(8) NOT NULL AUTO_INCREMENT PRIMARY KEY CHECK (value > 5)'
             ],
             [
+                Schema::TYPE_PK . ' FIRST',
+                $this->primaryKey()->first(),
+                'int(11) NOT NULL AUTO_INCREMENT PRIMARY KEY FIRST'
+            ],
+            [
+                Schema::TYPE_PK . '(8) FIRST',
+                $this->primaryKey(8)->first(),
+                'int(8) NOT NULL AUTO_INCREMENT PRIMARY KEY FIRST'
+            ],
+            [
+                Schema::TYPE_PK . ' AFTER (\'col_before\')',
+                $this->primaryKey()->after('col_before'),
+                'int(11) NOT NULL AUTO_INCREMENT PRIMARY KEY AFTER (\'col_before\')'
+            ],
+            [
+                Schema::TYPE_PK . ' AFTER (\'col_before\')',
+                $this->primaryKey(8)->after('col_before'),
+                'int(8) NOT NULL AUTO_INCREMENT PRIMARY KEY AFTER (\'col_before\')'
+            ],
+            [
+                Schema::TYPE_PK . ' FIRST',
+                $this->primaryKey()->first()->after('col_before'),
+                'int(11) NOT NULL AUTO_INCREMENT PRIMARY KEY AFTER (\'col_before\')'
+            ],
+            [
+                Schema::TYPE_PK . '(8) FIRST',
+                $this->primaryKey(8)->first()->after('col_before'),
+                'int(8) NOT NULL AUTO_INCREMENT PRIMARY KEY AFTER (\'col_before\')'
+            ],
+            [
+                Schema::TYPE_UNSIGNEDPK,
+                $this->unsignedPrimaryKey(),
+                'int(11) UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY'
+            ],
+            [
+                Schema::TYPE_UNSIGNEDPK . '(20)',
+                $this->primaryKey(20),
+                'int(20) UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY'
+            ],
+            [
                 Schema::TYPE_CHAR,
                 $this->char(),
                 'char(1)'
