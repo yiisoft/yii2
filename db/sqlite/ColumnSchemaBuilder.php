@@ -33,7 +33,7 @@ class ColumnSchemaBuilder extends AbstractColumnSchemaBuilder
     {
         switch ($this->getTypeCategory()) {
             case self::CATEGORY_PK:
-                $format = '{type}{length}';
+                $format = '{type}{length}{check}';
                 break;
             case self::CATEGORY_NUMERIC:
                 $format = '{type}{length}{unsigned}{notnull}{unique}{check}{default}';

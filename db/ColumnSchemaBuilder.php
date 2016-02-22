@@ -215,7 +215,7 @@ class ColumnSchemaBuilder extends Object
     {
         switch ($this->getTypeCategory()) {
             case self::CATEGORY_PK:
-                $format = '{type}{length}{pos}';
+                $format = '{type}{length}{check}';
                 break;
             default:
                 $format = '{type}{length}{notnull}{unique}{default}{check}';
@@ -357,6 +357,6 @@ class ColumnSchemaBuilder extends Object
                         $this->buildFirstString() :
                             $this->buildAfterString(),
         ];
-        return $text = strtr($format, $placeholderValues);
+        return strtr($format, $placeholderValues);
     }
 }
