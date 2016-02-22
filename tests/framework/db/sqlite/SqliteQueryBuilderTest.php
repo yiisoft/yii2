@@ -40,12 +40,12 @@ class SqliteQueryBuilderTest extends QueryBuilderTest
             [
                 Schema::TYPE_PK,
                 $this->primaryKey()->first()->after('col_before'),
-                'int(11) NOT NULL AUTO_INCREMENT PRIMARY KEY'
+                'integer PRIMARY KEY AUTOINCREMENT NOT NULL'
             ],
             [
                 Schema::TYPE_PK . '(8)',
                 $this->primaryKey(8)->first()->after('col_before'),
-                'int(8) NOT NULL AUTO_INCREMENT PRIMARY KEY'
+                'integer PRIMARY KEY AUTOINCREMENT NOT NULL'
             ],
             [
                 Schema::TYPE_CHAR,

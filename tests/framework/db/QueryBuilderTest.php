@@ -116,22 +116,22 @@ class QueryBuilderTest extends DatabaseTestCase
             [
                 Schema::TYPE_PK . ' AFTER (\'col_before\')',
                 $this->primaryKey()->after('col_before'),
-                'int(11) NOT NULL AUTO_INCREMENT PRIMARY KEY AFTER (\'col_before\')'
+                'int(11) NOT NULL AUTO_INCREMENT PRIMARY KEY AFTER (`col_before`)'
             ],
             [
                 Schema::TYPE_PK . ' AFTER (\'col_before\')',
                 $this->primaryKey(8)->after('col_before'),
-                'int(8) NOT NULL AUTO_INCREMENT PRIMARY KEY AFTER (\'col_before\')'
+                'int(8) NOT NULL AUTO_INCREMENT PRIMARY KEY AFTER (`col_before`)'
             ],
             [
                 Schema::TYPE_PK . ' FIRST',
                 $this->primaryKey()->first()->after('col_before'),
-                'int(11) NOT NULL AUTO_INCREMENT PRIMARY KEY AFTER (\'col_before\')'
+                'int(11) NOT NULL AUTO_INCREMENT PRIMARY KEY FIRST'
             ],
             [
                 Schema::TYPE_PK . '(8) FIRST',
                 $this->primaryKey(8)->first()->after('col_before'),
-                'int(8) NOT NULL AUTO_INCREMENT PRIMARY KEY AFTER (\'col_before\')'
+                'int(8) NOT NULL AUTO_INCREMENT PRIMARY KEY FIRST'
             ],
             [
                 Schema::TYPE_UNSIGNEDPK,
@@ -489,9 +489,9 @@ class QueryBuilderTest extends DatabaseTestCase
         $i = 0;
         foreach ($this->columnTypes() as $item) {
             list ($column, $builder, $expected) = $item;
-            if (!(strncmp($column, 'pk', 2) ||
-                  strncmp($column, 'bigpk', 5) ||
-                  strncmp($column, 'unsignedpk', 10))) {
+            if (!(strncmp($column, 'pk', 2) === 0 ||
+                  strncmp($column, 'bigpk', 5) === 0 ||
+                  strncmp($column, 'unsignedpk', 10) === 0)) {
                 $columns['col' . ++$i] = str_replace('CHECK (value', 'CHECK ([[col' . $i . ']]', $column);
             }
         }
