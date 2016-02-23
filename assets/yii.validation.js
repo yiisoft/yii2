@@ -436,31 +436,14 @@ yii.validation = (function ($) {
         }
     }
 
-    function validateMimeType(mimeTypes, fileType)
-    {
-        for (var i=0, len = mimeTypes.length; i<len; i++) {
-            if (mimeTypes[i] === fileType) {
-                return true;
-            }
-
-            if (mimeTypes[i].indexOf('*') !== -1 && validateMimeTypeMask(mimeTypes[i], fileType)) {
+    function validateMimeType(mimeTypes, fileType) {
+        for (var i = 0, len = mimeTypes.length; i < len; i++) {
+            if (new RegExp(mimeTypes[i]).test(fileType)) {
                 return true;
             }
         }
 
         return false;
-    }
-
-    function validateMimeTypeMask(mimeTypeMask, fileType)
-    {
-        var escapedString = escapeRegExp(mimeTypeMask);
-        var regexp = new RegExp('^' + escapedString.replace('\\*', '.*') +  '$');
-
-        return regexp.test(fileType);
-    }
-
-    function escapeRegExp(str) {
-        return (str+'').replace(/[.?*+^$[\]\\(){}|-]/g, "\\$&");
     }
 
     return pub;

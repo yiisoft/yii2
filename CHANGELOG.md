@@ -5,6 +5,7 @@ Yii Framework 2 Change Log
 -----------------------
 
 - Bug #9851: Fixed partial commit / rollback in nested transactions (sammousa)
+- Enh #5469: Add mimetype validation by mask in FileValidator (kirsenn, samdark, silverfire)
 - Enh #10451: Check of existence of `$_SERVER` in `\yii\web\Request` before using it (quantum13)
 - Enh #10610: Added `BaseUrl::$urlManager` to be able to set URL manager used for creating URLs (samdark)
 - Enh #10764: `yii\helpers\Html::tag()` and `::beginTag()` return content without any HTML when the `$tag` attribute is `false` or `null` (pana1990)
@@ -77,7 +78,6 @@ Yii Framework 2 Change Log
 - Enh #3506: Added `yii\validators\IpValidator` to perform validation of IP addresses and subnets (SilverFire, samdark)
 - Enh #4972: Added `yii\db\ActiveQuery::alias()` to allow specifying a table alias for the model table without having to know the name (cebe, stepanselyuk)
 - Enh #5146: Added `yii\i18n\Formatter::asDuration()` method (nineinchnick, SilverFire)
-- Enh #5469: Add mimetype validation by mask in FileValidator (kirsenn)
 - Enh #5902: `yii\widgets\Pjax::options` now support special option `tag` to specify tag of container (Alex-Code)
 - Enh #6162, #9198: Added parameter visibleButtons for `yii\grid\ActionColumn` (fornit1917, silverfire)
 - Enh #7341: Client validation now skips disabled inputs (SamMousa)
