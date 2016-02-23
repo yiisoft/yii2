@@ -5,6 +5,7 @@ Yii Framework 2 Change Log
 -----------------------
 
 - Bug #9851: Fixed partial commit / rollback in nested transactions (sammousa)
+- Enh #8639: Improve ActiveRecord to not create new instances of classes when objects are available (cebe)
 - Enh #10451: Check of existence of `$_SERVER` in `\yii\web\Request` before using it (quantum13)
 - Enh #10610: Added `BaseUrl::$urlManager` to be able to set URL manager used for creating URLs (samdark)
 - Enh #10764: `yii\helpers\Html::tag()` and `::beginTag()` return content without any HTML when the `$tag` attribute is `false` or `null` (pana1990)
