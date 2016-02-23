@@ -419,7 +419,7 @@ class User extends Component
     public function loginRequired($checkAjax = true)
     {
         $request = Yii::$app->getRequest();
-        if ($this->enableSession && (!$checkAjax || !$request->getIsAjax())) {
+        if ($this->enableSession && $request->getIsGet() && (!$checkAjax || !$request->getIsAjax())) {
             $this->setReturnUrl($request->getUrl());
         }
         if ($this->loginUrl !== null) {
