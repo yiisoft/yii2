@@ -242,16 +242,16 @@ class BaseArrayHelper
 
     /**
      * Indexes and/or groups the array according to a specified key.
-     * The input array should be multidimensional or an array of objects.
+     * The input should be either multidimensional array or an array of objects.
      *
      * The $key can be either a key name of the sub-array, a property name of object, or an anonymous
      * function that must return the value that will be used as a key.
      *
-     * $groupBy is the array of keys, that will be used to group the input array by one or more keys.
+     * $groups is an array of keys, that will be used to group the input array into one or more sub-arrays based
+     * on keys specified.
      *
-     * If the $key attribute or its value for the particular element is null and $groupBy is not defined, the array
-     * element will be discarded. Otherwise, if $groupBy is specified, array element will be added to the result array
-     * without any key.
+     * If the `$key` is specified as `null` or a value of an element corresponding to the key is `null` in addition
+     * to `$groups` not specified then the element is discarded.
      *
      * For example:
      *
@@ -269,24 +269,24 @@ class BaseArrayHelper
      * [
      *     '123' => ['id' => '123', 'data' => 'abc', 'device' => 'laptop'],
      *     '345' => ['id' => '345', 'data' => 'hgi', 'device' => 'smartphone']
-     *     // The second element of the original array is overridden by the last array element with the same key value
+     *     // The second element of an original array is overwritten by the last element because of the same id
      * ]
      * ```
      *
-     * Anonymous function, passed as a $key, gives the same result.
+     * An anonymous function can be used in the grouping array as well.
      * ```php
      * $result = ArrayHelper::index($array, function ($element) {
      *     return $element['id'];
      * });
      * ```
      *
-     * Passing `id` as the third argument will group the $array by the `id` value:
+     * Passing `id` as a third argument will group `$array` by `id`:
      * ```php
      * $result = ArrayHelper::index($array, null, 'id');
      * ```
      *
-     * The result will be a multidimensional array grouped by `id` on the first level and not indexed
-     * on the second level:
+     * The result will be a multidimensional array grouped by `id` on the first level, by `device` on the second level
+     * and indexed by `data` on the third level:
      * ```php
      * [
      *     '123' => [
@@ -328,22 +328,22 @@ class BaseArrayHelper
      *
      * @param array $array the array that needs to be indexed or grouped
      * @param string|\Closure|null $key the column name or anonymous function which result will be used to index the array
-     * @param string|string[]|\Closure[]|null $groupBy the array of keys, that will be used to group the input array
-     * by one or more keys. If the $key attribute or its value for the particular element is null and $groupBy is not
-     * defined, the array element will be discarded. Otherwise, if $groupBy is specified, array element will be added
+     * @param string|string[]|\Closure[]|null $groups the array of keys, that will be used to group the input array
+     * by one or more keys. If the $key attribute or its value for the particular element is null and $groups is not
+     * defined, the array element will be discarded. Otherwise, if $groups is specified, array element will be added
      * to the result array without any key.
      * @return array the indexed and/or grouped array
      */
-    public static function index($array, $key, $groupBy = [])
+    public static function index($array, $key, $groups = [])
     {
         $result = [];
-        $groupBy = (array)$groupBy;
+        $groups = (array)$groups;
 
         foreach ($array as $element) {
             $lastArray = &$result;
 
-            foreach ($groupBy as $groupKey) {
-                $value = static::getValue($element, $groupKey);
+            foreach ($groups as $group) {
+                $value = static::getValue($element, $group);
                 if (!array_key_exists($value, $lastArray)) {
                     $lastArray[$value] = [];
                 }
@@ -351,7 +351,7 @@ class BaseArrayHelper
             }
 
             if ($key === null) {
-                if (!empty($groupBy)) {
+                if (!empty($groups)) {
                     $lastArray[] = $element;
                 }
             } else {
