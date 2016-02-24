@@ -73,7 +73,12 @@ class DbSession extends MultiFieldSession
      * length 64 instead of 40.
      */
     public $sessionTable = '{{%session}}';
-
+    /**
+     * @var boolean whether to encode the session data to base64. Defaults to false.
+     * The parameter can be useful for PgSQL DBMS where serialised session
+     * @since 2.0.8
+     */
+    public $encodeData = false;
 
     /**
      * Initializes the DbSession component.
@@ -145,7 +150,7 @@ class DbSession extends MultiFieldSession
         }
 
         $data = $query->select(['data'])->scalar($this->db);
-        return $data === false ? '' : $data;
+        return $data === false ? '' : $this->encodeData ? base64_decode($data) : $data;
     }
 
     /**
@@ -166,6 +171,7 @@ class DbSession extends MultiFieldSession
                 ->where(['id' => $id])
                 ->createCommand($this->db)
                 ->queryScalar();
+            $data = $this->encodeData ? base64_encode($data) : $data;
             $fields = $this->composeFields($id, $data);
             if ($exists === false) {
                 $this->db->createCommand()

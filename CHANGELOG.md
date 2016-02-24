@@ -4,6 +4,7 @@ Yii Framework 2 Change Log
 2.0.8 under development
 -----------------------
 
+- Bug #6173: Added property `yii\web\DbSession::encodeData` to encode/decode session data in base64 on session read/write (silverfire)
 - Bug #9851: Fixed partial commit / rollback in nested transactions (sammousa)
 - Bug #10946: Fixed parameters binding to the SQL query in `yii\db\mysqlSchema::findConstraints()` (silverfire)
 - Enh #5469: Add mimetype validation by mask in FileValidator (kirsenn, samdark, silverfire)
