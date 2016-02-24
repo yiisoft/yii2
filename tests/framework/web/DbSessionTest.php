@@ -3,6 +3,7 @@
 namespace yiiunit\framework\web;
 
 use Yii;
+use yii\db\ActiveQuery;
 use yii\db\Connection;
 use yii\db\Query;
 use yii\web\DbSession;
@@ -36,6 +37,21 @@ class DbSessionTest extends TestCase
         $session = new DbSession();
 
         $session->writeSession('test', 'session data');
+        $this->assertEquals('session data', $session->readSession('test'));
+        $session->destroySession('test');
+        $this->assertEquals('', $session->readSession('test'));
+    }
+
+    public function testEncodeDataRW()
+    {
+        $session = new DbSession(['encodeData' => true]);
+
+        $session->writeSession('test', 'session data');
+        $session->id;
+
+        $data = (new Query())->select(['data'])->from('session')->where(['id' => 'test'])->scalar();
+        $this->assertNotRegExp('~[^0-9a-zA-Z+/=]~', $data, 'The session data contains non-base64 characters');
+
         $this->assertEquals('session data', $session->readSession('test'));
         $session->destroySession('test');
         $this->assertEquals('', $session->readSession('test'));
