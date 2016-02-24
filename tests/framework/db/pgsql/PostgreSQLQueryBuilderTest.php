@@ -37,6 +37,16 @@ class PostgreSQLQueryBuilderTest extends QueryBuilderTest
                 'serial NOT NULL PRIMARY KEY CHECK (value > 5)'
             ],
             [
+                Schema::TYPE_UNSIGNEDPK,
+                $this->unsignedPrimaryKey(),
+                'serial NOT NULL PRIMARY KEY'
+            ],
+            [
+                Schema::TYPE_UNSIGNEDPK . '(20)',
+                $this->unsignedPrimaryKey(20),
+                'serial NOT NULL PRIMARY KEY'
+            ],
+            [
                 Schema::TYPE_CHAR,
                 $this->char(),
                 'char(1)'
@@ -44,6 +54,11 @@ class PostgreSQLQueryBuilderTest extends QueryBuilderTest
             [
                 Schema::TYPE_CHAR . '(6)',
                 $this->char(6),
+                'char(6)'
+            ],
+            [
+                Schema::TYPE_CHAR . '(6)',
+                $this->char(6)->unsigned(),
                 'char(6)'
             ],
             [
@@ -138,6 +153,11 @@ class PostgreSQLQueryBuilderTest extends QueryBuilderTest
                 Schema::TYPE_INTEGER . '(8)',
                 $this->integer(8),
                 'integer'
+            ],
+            [
+                Schema::TYPE_INTEGER . '(8) UNSIGNED',
+                $this->integer(8)->unsigned(),
+                'integer UNSIGNED'
             ],
             [
                 Schema::TYPE_INTEGER . ' CHECK (value > 5)',
