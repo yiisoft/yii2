@@ -315,7 +315,12 @@ class UrlManager extends Component
         $baseUrl = $this->showScriptName || !$this->enablePrettyUrl ? $this->getScriptUrl() : $this->getBaseUrl();
 
         if ($this->enablePrettyUrl) {
-            $cacheKey = $route . '?' . implode('&', array_keys($params));
+            $cacheKey = $route . '?';
+            foreach($params as $key => $value) {
+                if ($value !== null) {
+                    $cacheKey .= $key . '&';
+                }
+            }
 
             /* @var $rule UrlRule */
             $url = false;
