@@ -247,7 +247,12 @@ class BaseArrayHelper
      * The key can be a key name of the sub-array, a property name of object, or an anonymous
      * function which returns the key value given an array element.
      *
-     * If a key value is null, the corresponding array element will be discarded and not put in the result.
+     * Dimensions is an array of keys, which will be used to produce multidimension result array.
+     * This parameter is useful if indexing by non unique key value is needed.
+     *
+     * If key or a key value is null and dimensions are not specified, the corresponding array element
+     * will be discarded and not put in the result. Otherwise, if dimensions are specified, array element
+     * will be added to the result array without key.
      *
      * For example,
      *
@@ -255,30 +260,80 @@ class BaseArrayHelper
      * $array = [
      *     ['id' => '123', 'data' => 'abc'],
      *     ['id' => '345', 'data' => 'def'],
+     *     ['id' => '345', 'data' => 'hgi'],
      * ];
      * $result = ArrayHelper::index($array, 'id');
      * // the result is:
      * // [
      * //     '123' => ['id' => '123', 'data' => 'abc'],
-     * //     '345' => ['id' => '345', 'data' => 'def'],
+     * //     '345' => ['id' => '345', 'data' => 'hgi'], // will used last array element with the same key value
      * // ]
      *
      * // using anonymous function
      * $result = ArrayHelper::index($array, function ($element) {
      *     return $element['id'];
      * });
+     *
+     * $result = ArrayHelper::index($array, null, ['id']);
+     * // or simple $result = ArrayHelper::index($array, null, 'id');
+     * // the result is:
+     * // [
+     * //     '123' => [
+     * //         ['id' => '123', 'data' => 'abc']
+     * //     ],
+     * //     '345' => [ //all elements with this index are in the result array
+     * //         ['id' => '345', 'data' => 'def'],
+     * //         ['id' => '345', 'data' => 'hgi'],
+     * //     ]
+     * // ]
+     *
+     * $result = ArrayHelper::index($array, 'data', ['id']);
+     * // the result is:
+     * // [
+     * //     '123' => [
+     * //         'abc' => ['id' => '123', 'data' => 'abc']
+     * //     ],
+     * //     '345' => [
+     * //         'def' => ['id' => '345', 'data' => 'def'],
+     * //         'hgi' => ['id' => '345', 'data' => 'hgi'],
+     * //     ]
+     * // ]
+     *
      * ```
      *
      * @param array $array the array that needs to be indexed
-     * @param string|\Closure $key the column name or anonymous function whose result will be used to index the array
+     * @param string|\Closure|null $key the column name or anonymous function whose result will be used to index the array
+     * @param array|string $dimensions
      * @return array the indexed array
      */
-    public static function index($array, $key)
+    public static function index($array, $key, $dimensions = [])
     {
+        if (!is_array($dimensions)) {
+            $dimensions = [$dimensions];
+        }
         $result = [];
         foreach ($array as $element) {
-            $value = static::getValue($element, $key);
-            $result[$value] = $element;
+            $lastArray = &$result;
+
+            foreach ($dimensions as $dimension) {
+                $val = static::getValue($element, $dimension);
+                if (!array_key_exists($val, $lastArray)) {
+                    $lastArray[$val] = [];
+                }
+                $lastArray = &$lastArray[$val];
+            }
+
+            if ($key === null) {
+                if (!empty($dimensions)) {
+                    $lastArray[] = $element;
+                }
+            } else {
+                $value = static::getValue($element, $key);
+                if ($value !== null) {
+                    $lastArray[$value] = $element;
+                }
+            }
+            unset($lastArray);
         }
 
         return $result;
