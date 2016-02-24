@@ -294,6 +294,8 @@ This validator checks if the input is a valid uploaded file.
   extensions are allowed.
 - `mimeTypes`: a list of file MIME types that are allowed to be uploaded. This can be either an array
   or a string consisting of file MIME types separated by space or comma (e.g. "image/jpeg, image/png").
+  The wildcard mask with the special character `*` can be used to match groups of mime types.
+  For example `image/*` will pass all mime types, that begin with `image/` (e.g. `image/jpeg`, `image/png`).
   Mime type names are case-insensitive. Defaults to null, meaning all MIME types are allowed.
   For more details, please refer to [common media types](http://en.wikipedia.org/wiki/Internet_media_type#List_of_common_media_types).
 - `minSize`: the minimum number of bytes required for the uploaded file. Defaults to null, meaning no lower limit.

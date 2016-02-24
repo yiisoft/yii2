@@ -375,6 +375,7 @@ class FileValidatorTest extends TestCase
         return [
             ['test.jpg', 'image/*'],
             ['test.png', 'image/*'],
+            ['test.png', 'IMAGE/*'],
             ['test.txt', 'text/*'],
             ['test.xml', '*/xml'],
             ['test.odt', 'application/vnd*']
