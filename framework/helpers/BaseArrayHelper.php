@@ -241,90 +241,117 @@ class BaseArrayHelper
     }
 
     /**
-     * Indexes an array according to a specified key.
+     * Indexes and/or groups the array according to a specified key.
      * The input array should be multidimensional or an array of objects.
      *
-     * The key can be a key name of the sub-array, a property name of object, or an anonymous
-     * function which returns the key value given an array element.
+     * The $key can be either a key name of the sub-array, a property name of object, or an anonymous
+     * function that must return the value that will be used as a key.
      *
-     * Dimensions is an array of keys, which will be used to produce multidimension result array.
-     * This parameter is useful if indexing by non unique key value is needed.
+     * $groupBy is the array of keys, that will be used to group the input array by one or more keys.
      *
-     * If key or a key value is null and dimensions are not specified, the corresponding array element
-     * will be discarded and not put in the result. Otherwise, if dimensions are specified, array element
-     * will be added to the result array without key.
+     * If the $key attribute or its value for the particular element is null and $groupBy is not defined, the array
+     * element will be discarded. Otherwise, if $groupBy is specified, array element will be added to the result array
+     * without any key.
      *
-     * For example,
+     * For example:
      *
      * ```php
      * $array = [
-     *     ['id' => '123', 'data' => 'abc'],
-     *     ['id' => '345', 'data' => 'def'],
-     *     ['id' => '345', 'data' => 'hgi'],
+     *     ['id' => '123', 'data' => 'abc', 'device' => 'laptop'],
+     *     ['id' => '345', 'data' => 'def', 'device' => 'tablet'],
+     *     ['id' => '345', 'data' => 'hgi', 'device' => 'smartphone'],
      * ];
      * $result = ArrayHelper::index($array, 'id');
-     * // the result is:
-     * // [
-     * //     '123' => ['id' => '123', 'data' => 'abc'],
-     * //     '345' => ['id' => '345', 'data' => 'hgi'], // will used last array element with the same key value
-     * // ]
+     * ```
      *
-     * // using anonymous function
+     * The result will be an associative array, where the key is the value of `id` attribute
+     * ```php
+     * [
+     *     '123' => ['id' => '123', 'data' => 'abc', 'device' => 'laptop'],
+     *     '345' => ['id' => '345', 'data' => 'hgi', 'device' => 'smartphone']
+     *     // The second element of the original array is overridden by the last array element with the same key value
+     * ]
+     * ```
+     *
+     * Anonymous function, passed as a $key, gives the same result.
+     * ```php
      * $result = ArrayHelper::index($array, function ($element) {
      *     return $element['id'];
      * });
-     *
-     * $result = ArrayHelper::index($array, null, ['id']);
-     * // or simple $result = ArrayHelper::index($array, null, 'id');
-     * // the result is:
-     * // [
-     * //     '123' => [
-     * //         ['id' => '123', 'data' => 'abc']
-     * //     ],
-     * //     '345' => [ //all elements with this index are in the result array
-     * //         ['id' => '345', 'data' => 'def'],
-     * //         ['id' => '345', 'data' => 'hgi'],
-     * //     ]
-     * // ]
-     *
-     * $result = ArrayHelper::index($array, 'data', ['id']);
-     * // the result is:
-     * // [
-     * //     '123' => [
-     * //         'abc' => ['id' => '123', 'data' => 'abc']
-     * //     ],
-     * //     '345' => [
-     * //         'def' => ['id' => '345', 'data' => 'def'],
-     * //         'hgi' => ['id' => '345', 'data' => 'hgi'],
-     * //     ]
-     * // ]
-     *
      * ```
      *
-     * @param array $array the array that needs to be indexed
-     * @param string|\Closure|null $key the column name or anonymous function whose result will be used to index the array
-     * @param array|string $dimensions
-     * @return array the indexed array
+     * Passing `id` as the third argument will group the $array by the `id` value:
+     * ```php
+     * $result = ArrayHelper::index($array, null, 'id');
+     * ```
+     *
+     * The result will be a multidimensional array grouped by `id` on the first level and not indexed
+     * on the second level:
+     * ```php
+     * [
+     *     '123' => [
+     *         ['id' => '123', 'data' => 'abc', 'device' => 'laptop']
+     *     ],
+     *     '345' => [ // all elements with this index are present in the result array
+     *         ['id' => '345', 'data' => 'def', 'device' => 'tablet'],
+     *         ['id' => '345', 'data' => 'hgi', 'device' => 'smartphone'],
+     *     ]
+     * ]
+     * ```
+     *
+     * The anonymous function can be used in the array of grouping keys as well:
+     * ```php
+     * $result = ArrayHelper::index($array, 'data', [function ($element) {
+     *     return $element['id'];
+     * }, 'device']);
+     * ```
+     *
+     * The result will be a multidimensional array grouped by `id` on the first level, by the `device` on the second one
+     * and indexed by the `data` on the third level:
+     * ```php
+     * [
+     *     '123' => [
+     *         'laptop' => [
+     *             'abc' => ['id' => '123', 'data' => 'abc', 'device' => 'laptop']
+     *         ]
+     *     ],
+     *     '345' => [
+     *         'tablet' => [
+     *             'def' => ['id' => '345', 'data' => 'def', 'device' => 'tablet']
+     *         ],
+     *         'smartphone' => [
+     *             'hgi' => ['id' => '345', 'data' => 'hgi', 'device' => 'smartphone']
+     *         ]
+     *     ]
+     * ]
+     * ```
+     *
+     * @param array $array the array that needs to be indexed or grouped
+     * @param string|\Closure|null $key the column name or anonymous function which result will be used to index the array
+     * @param string|string[]|\Closure[]|null $groupBy the array of keys, that will be used to group the input array
+     * by one or more keys. If the $key attribute or its value for the particular element is null and $groupBy is not
+     * defined, the array element will be discarded. Otherwise, if $groupBy is specified, array element will be added
+     * to the result array without any key.
+     * @return array the indexed and/or grouped array
      */
-    public static function index($array, $key, $dimensions = [])
+    public static function index($array, $key, $groupBy = [])
     {
-        if (!is_array($dimensions)) {
-            $dimensions = [$dimensions];
-        }
         $result = [];
+        $groupBy = (array)$groupBy;
+
         foreach ($array as $element) {
             $lastArray = &$result;
 
-            foreach ($dimensions as $dimension) {
-                $val = static::getValue($element, $dimension);
-                if (!array_key_exists($val, $lastArray)) {
-                    $lastArray[$val] = [];
+            foreach ($groupBy as $groupKey) {
+                $value = static::getValue($element, $groupKey);
+                if (!array_key_exists($value, $lastArray)) {
+                    $lastArray[$value] = [];
                 }
-                $lastArray = &$lastArray[$val];
+                $lastArray = &$lastArray[$value];
             }
 
             if ($key === null) {
-                if (!empty($dimensions)) {
+                if (!empty($groupBy)) {
                     $lastArray[] = $element;
                 }
             } else {
