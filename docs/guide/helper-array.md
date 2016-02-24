@@ -109,14 +109,15 @@ $result = ArrayHelper::getColumn($array, function ($element) {
 
 ## Re-indexing Arrays <span id="reindexing-arrays"></span>
 
-In order to index an array according to a specified key, the `index` method can be used. The input array should be
-multidimensional or an array of objects. The `$key` can be either a key name of the sub-array, a property name of
+In order to index an array according to a specified key, the `index` method can be used. The input should be either
+multidimensional array or an array of objects. The `$key` can be either a key name of the sub-array, a property name of
 object, or an anonymous function that must return the value that will be used as a key.
 
-The `$groupBy` attribute is the array of keys, that will be used to group the input array by one or more keys.
+The `$groups` attribute is an array of keys, that will be used to group the input array into one or more sub-arrays
+based on keys specified.
 
-If the `$key` attribute or its value for the particular element is null and `$groupBy` is not defined, the array
-element will be discarded. Otherwise, if `$groupBy` is specified, array element will be added to the result array
+If the `$key` attribute or its value for the particular element is null and `$groups` is not defined, the array
+element will be discarded. Otherwise, if `$groups` is specified, array element will be added to the result array
 without any key.
 
 For example:
@@ -135,7 +136,7 @@ The result will be an associative array, where the key is the value of `id` attr
 [
     '123' => ['id' => '123', 'data' => 'abc', 'device' => 'laptop'],
     '345' => ['id' => '345', 'data' => 'hgi', 'device' => 'smartphone']
-    // The second element of the original array is overridden by the last array element with the same key value
+    // The second element of an original array is overwritten by the last element because of the same id
 ]
 ```
 
@@ -146,7 +147,7 @@ $result = ArrayHelper::index($array, function ($element) {
 });
 ```
 
-Passing `id` as the third argument will group the $array by the `id` value:
+Passing `id` as a third argument will group `$array` by `id`:
 ```php
 $result = ArrayHelper::index($array, null, 'id');
 ```
@@ -164,15 +165,15 @@ The result will be a multidimensional array grouped by `id` on the first level a
 ]
 ```
 
-The anonymous function can be used in the array of grouping keys as well:
+An anonymous function can be used in the grouping array as well:
 ```php
 $result = ArrayHelper::index($array, 'data', [function ($element) {
     return $element['id'];
 }, 'device']);
 ```
 
-The result will be a multidimensional array grouped by `id` on the first level, by the `device` on the second one
-and indexed by the `data` on the third level:
+The result will be a multidimensional array grouped by `id` on the first level, by `device` on the second level and
+indexed by `data` on the third level:
 ```php
 [
     '123' => [
