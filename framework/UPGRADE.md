@@ -71,6 +71,9 @@ Upgrade from Yii 2.0.5
   - `saveMessagesToPHP($messages, $dirName, $overwrite, $removeUnused, $sort, $markUnused)`
   - `saveMessagesCategoryToPHP($messages, $fileName, $overwrite, $removeUnused, $sort, $category, $markUnused)`
   - `saveMessagesToPO($messages, $dirName, $overwrite, $removeUnused, $sort, $catalog, $markUnused)`
+  
+* I18N for views now does language normalization and more advanced fallback. Make sure your views are in directory named
+  like `en-US`, not in `en_US`.
 
 Upgrade from Yii 2.0.4
 ----------------------
