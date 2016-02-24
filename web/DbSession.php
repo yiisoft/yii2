@@ -75,7 +75,7 @@ class DbSession extends MultiFieldSession
     public $sessionTable = '{{%session}}';
     /**
      * @var boolean whether to encode the session data to base64. Defaults to false.
-     * The parameter can be useful for PgSQL DBMS where serialised session
+     * The parameter can be useful for PostgreSQL, where serialised object can be saved damaged.
      * @since 2.0.8
      */
     public $encodeData = false;
