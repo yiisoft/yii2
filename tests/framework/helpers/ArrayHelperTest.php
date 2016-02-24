@@ -298,13 +298,20 @@ class ArrayHelperTest extends TestCase
         $this->assertEquals([], $result);
 
         $result = ArrayHelper::index($array, function ($element) {
-            return $element['id']=='345' ? null : $element['id'];
+            return $element['id'] == '345' ? null : $element['id'];
         });
         $this->assertEquals([
             '123' => ['id' => '123', 'data' => 'abc']
         ], $result);
+    }
 
-        //dimensions
+    public function testIndexGroupBy() {
+        $array = [
+            ['id' => '123', 'data' => 'abc'],
+            ['id' => '345', 'data' => 'def'],
+            ['id' => '345', 'data' => 'ghi']
+        ];
+
         $expected = [
             '123' => [
                 ['id' => '123', 'data' => 'abc']
