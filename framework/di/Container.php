@@ -525,7 +525,7 @@ class Container extends Component
                     unset($params[$name]);
                 } elseif (!$associative && isset($params[0]) && $params[0] instanceof $className) {
                     $args[] = array_shift($params);
-                } elseif (Yii::$app instanceof ServiceLocator && Yii::$app->has($name) && ($obj = Yii::$app->get($name)) instanceof $className) {
+                } elseif (Yii::$app->has($name) && ($obj = Yii::$app->get($name)) instanceof $className) {
                     $args[] = $obj;
                 } else {
                     $args[] = $this->get($className);
