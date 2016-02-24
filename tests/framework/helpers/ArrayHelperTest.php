@@ -272,11 +272,12 @@ class ArrayHelperTest extends TestCase
         $array = [
             ['id' => '123', 'data' => 'abc'],
             ['id' => '345', 'data' => 'def'],
+            ['id' => '345', 'data' => 'ghi']
         ];
         $result = ArrayHelper::index($array, 'id');
         $this->assertEquals([
             '123' => ['id' => '123', 'data' => 'abc'],
-            '345' => ['id' => '345', 'data' => 'def'],
+            '345' => ['id' => '345', 'data' => 'ghi'],
         ], $result);
 
         $result = ArrayHelper::index($array, function ($element) {
@@ -285,7 +286,102 @@ class ArrayHelperTest extends TestCase
         $this->assertEquals([
             'abc' => ['id' => '123', 'data' => 'abc'],
             'def' => ['id' => '345', 'data' => 'def'],
+            'ghi' => ['id' => '345', 'data' => 'ghi'],
         ], $result);
+
+        $result = ArrayHelper::index($array, null);
+        $this->assertEquals([], $result);
+
+        $result = ArrayHelper::index($array, function ($element) {
+            return null;
+        });
+        $this->assertEquals([], $result);
+
+        $result = ArrayHelper::index($array, function ($element) {
+            return $element['id'] == '345' ? null : $element['id'];
+        });
+        $this->assertEquals([
+            '123' => ['id' => '123', 'data' => 'abc']
+        ], $result);
+    }
+
+    public function testIndexGroupBy() {
+        $array = [
+            ['id' => '123', 'data' => 'abc'],
+            ['id' => '345', 'data' => 'def'],
+            ['id' => '345', 'data' => 'ghi']
+        ];
+
+        $expected = [
+            '123' => [
+                ['id' => '123', 'data' => 'abc']
+            ],
+            '345' => [
+                ['id' => '345', 'data' => 'def'],
+                ['id' => '345', 'data' => 'ghi']
+            ],
+        ];
+        $result = ArrayHelper::index($array, null, ['id']);
+        $this->assertEquals($expected, $result);
+        $result = ArrayHelper::index($array, null, 'id');
+        $this->assertEquals($expected, $result);
+
+        $result = ArrayHelper::index($array, null, ['id', 'data']);
+        $this->assertEquals([
+            '123' => [
+                'abc' => [
+                    ['id' => '123', 'data' => 'abc']
+                ]
+            ],
+            '345' => [
+                'def' => [
+                    ['id' => '345', 'data' => 'def']
+                ],
+                'ghi' => [
+                    ['id' => '345', 'data' => 'ghi']
+                ]
+            ],
+        ], $result);
+
+        $expected = [
+            '123' => [
+                'abc' => ['id' => '123', 'data' => 'abc']
+            ],
+            '345' => [
+                'def' => ['id' => '345', 'data' => 'def'],
+                'ghi' => ['id' => '345', 'data' => 'ghi']
+            ],
+        ];
+        $result = ArrayHelper::index($array, 'data', ['id']);
+        $this->assertEquals($expected, $result);
+        $result = ArrayHelper::index($array, 'data', 'id');
+        $this->assertEquals($expected, $result);
+        $result = ArrayHelper::index($array, function ($element) {
+            return $element['data'];
+        }, 'id');
+        $this->assertEquals($expected, $result);
+
+        $expected = [
+            '123' => [
+                'abc' => [
+                    'abc' => ['id' => '123', 'data' => 'abc']
+                ]
+            ],
+            '345' => [
+                'def' => [
+                    'def' => ['id' => '345', 'data' => 'def']
+                ],
+                'ghi' => [
+                    'ghi' => ['id' => '345', 'data' => 'ghi']
+                ]
+            ],
+        ];
+        $result = ArrayHelper::index($array, 'data', ['id', 'data']);
+        $this->assertEquals($expected, $result);
+        $result = ArrayHelper::index($array, function ($element) {
+            return $element['data'];
+        }, ['id', 'data']);
+        $this->assertEquals($expected, $result);
     }
 
     public function testGetColumn()

@@ -110,29 +110,86 @@ $result = ArrayHelper::getColumn($array, function ($element) {
 ## Re-indexing Arrays <span id="reindexing-arrays"></span>
 
 In order to index an array according to a specified key, the `index` method can be used. The input array should be
-multidimensional or an array of objects. The key can be a key name of the sub-array, a property name of object, or
-an anonymous function which returns the key value given an array element.
+multidimensional or an array of objects. The `$key` can be either a key name of the sub-array, a property name of
+object, or an anonymous function that must return the value that will be used as a key.
 
-If a key value is null, the corresponding array element will be discarded and not put in the result. For example,
+The `$groupBy` attribute is the array of keys, that will be used to group the input array by one or more keys.
+
+If the `$key` attribute or its value for the particular element is null and `$groupBy` is not defined, the array
+element will be discarded. Otherwise, if `$groupBy` is specified, array element will be added to the result array
+without any key.
+
+For example:
 
 ```php
 $array = [
-    ['id' => '123', 'data' => 'abc'],
-    ['id' => '345', 'data' => 'def'],
+    ['id' => '123', 'data' => 'abc', 'device' => 'laptop'],
+    ['id' => '345', 'data' => 'def', 'device' => 'tablet'],
+    ['id' => '345', 'data' => 'hgi', 'device' => 'smartphone'],
 ];
 $result = ArrayHelper::index($array, 'id');
-// the result is:
-// [
-//     '123' => ['id' => '123', 'data' => 'abc'],
-//     '345' => ['id' => '345', 'data' => 'def'],
-// ]
+```
 
-// using anonymous function
+The result will be an associative array, where the key is the value of `id` attribute
+```php
+[
+    '123' => ['id' => '123', 'data' => 'abc', 'device' => 'laptop'],
+    '345' => ['id' => '345', 'data' => 'hgi', 'device' => 'smartphone']
+    // The second element of the original array is overridden by the last array element with the same key value
+]
+```
+
+Anonymous function, passed as a `$key`, gives the same result.
+```php
 $result = ArrayHelper::index($array, function ($element) {
     return $element['id'];
 });
 ```
 
+Passing `id` as the third argument will group the $array by the `id` value:
+```php
+$result = ArrayHelper::index($array, null, 'id');
+```
+
+The result will be a multidimensional array grouped by `id` on the first level and not indexed on the second level:
+```php
+[
+    '123' => [
+        ['id' => '123', 'data' => 'abc', 'device' => 'laptop']
+    ],
+    '345' => [ // all elements with this index are present in the result array
+        ['id' => '345', 'data' => 'def', 'device' => 'tablet'],
+        ['id' => '345', 'data' => 'hgi', 'device' => 'smartphone'],
+    ]
+]
+```
+
+The anonymous function can be used in the array of grouping keys as well:
+```php
+$result = ArrayHelper::index($array, 'data', [function ($element) {
+    return $element['id'];
+}, 'device']);
+```
+
+The result will be a multidimensional array grouped by `id` on the first level, by the `device` on the second one
+and indexed by the `data` on the third level:
+```php
+[
+    '123' => [
+        'laptop' => [
+            'abc' => ['id' => '123', 'data' => 'abc', 'device' => 'laptop']
+        ]
+    ],
+    '345' => [
+        'tablet' => [
+            'def' => ['id' => '345', 'data' => 'def', 'device' => 'tablet']
+        ],
+        'smartphone' => [
+            'hgi' => ['id' => '345', 'data' => 'hgi', 'device' => 'smartphone']
+        ]
+    ]
+]
+```
 
 ## Building Maps <span id="building-maps"></span>
 
