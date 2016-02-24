@@ -570,11 +570,11 @@ class ArrayHelperTest extends TestCase
 
     public function testIsArray()
     {
-        $this->assertTrue(ArrayHelper::isArray(['a']));
-        $this->assertTrue(ArrayHelper::isArray(new \ArrayObject(['1'])));
-        $this->assertFalse(ArrayHelper::isArray(new \stdClass()));
-        $this->assertFalse(ArrayHelper::isArray("A,B,C"));
-        $this->assertFalse(ArrayHelper::isArray(12));
+        $this->assertTrue(ArrayHelper::isTraversable(['a']));
+        $this->assertTrue(ArrayHelper::isTraversable(new \ArrayObject(['1'])));
+        $this->assertFalse(ArrayHelper::isTraversable(new \stdClass()));
+        $this->assertFalse(ArrayHelper::isTraversable("A,B,C"));
+        $this->assertFalse(ArrayHelper::isTraversable(12));
         $this->assertFalse(false);
     }
 

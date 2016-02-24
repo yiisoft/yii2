@@ -633,7 +633,7 @@ class BaseArrayHelper
      * @return boolean `true` if `$var` has an array-like value.
      * @see http://php.net/manual/en/function.is_array.php
      */
-    public static function isArray($var)
+    public static function isTraversable($var)
     {
         return is_array($var) || $var instanceof \Traversable;
     }
