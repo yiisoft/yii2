@@ -155,9 +155,9 @@ class PostgreSQLQueryBuilderTest extends QueryBuilderTest
                 'integer'
             ],
             [
-                Schema::TYPE_INTEGER . '(8) UNSIGNED',
+                Schema::TYPE_INTEGER . '(8)',
                 $this->integer(8)->unsigned(),
-                'integer UNSIGNED'
+                'integer'
             ],
             [
                 Schema::TYPE_INTEGER . ' CHECK (value > 5)',
