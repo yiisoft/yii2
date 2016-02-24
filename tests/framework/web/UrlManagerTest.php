@@ -167,6 +167,21 @@ class UrlManagerTest extends TestCase
         $this->assertEquals('/test/page/services', $url);
         $url = $manager->createUrl(['frontend/page/view', 'slug' => 'index']);
         $this->assertEquals('/test/', $url);
+
+
+        #10935 - Cache issue when null is passed.
+        $manager = new UrlManager([
+            'rules'=>[
+                '<param1>/<param2>' => 'site/index', //rule1
+                '<param1>' => 'site/index', //rule2
+
+            ],
+            'enablePrettyUrl' => true,
+            'scriptUrl' => '/test',
+
+        ]);
+        $this->assertEquals('/test/111', $manager->createUrl(['site/index','param1' => 111, 'param2' => null]));
+        $this->assertEquals('/test/111/222', $manager->createUrl(['site/index','param1' => 111 ,'param2' => 222]));
     }
 
     /**
