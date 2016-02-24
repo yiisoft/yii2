@@ -710,7 +710,7 @@ class BaseArrayHelper
      * Checks whether a variable is an array or [[\Traversable]].
      *
      * This method does the same as the PHP function [is_array()](http://php.net/manual/en/function.is-array.php)
-     * but additionally works objects that implement the [[\Traversable]] interface.
+     * but additionally works on objects that implement the [[\Traversable]] interface.
      * @param mixed $var The variable being evaluated.
      * @return boolean whether $var is array-like
      * @see http://php.net/manual/en/function.is_array.php
