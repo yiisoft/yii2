@@ -7,10 +7,11 @@ Yii Framework 2 Change Log
 - Bug #9851: Fixed partial commit / rollback in nested transactions (sammousa)
 - Bug #10946: Fixed parameters binding to the SQL query in `yii\db\mysqlSchema::findConstraints()` (silverfire)
 - Enh #5469: Add mimetype validation by mask in FileValidator (kirsenn, samdark, silverfire)
+- Enh #10487: `yii\helpers\BaseArrayHelper::index()` got a third parameter `$groupBy` to group the input array by the key in one or more dimensions (quantum13, silverfire, samdark)
 - Enh #10451: Check of existence of `$_SERVER` in `\yii\web\Request` before using it (quantum13)
 - Enh #10610: Added `BaseUrl::$urlManager` to be able to set URL manager used for creating URLs (samdark)
 - Enh #10764: `yii\helpers\Html::tag()` and `::beginTag()` return content without any HTML when the `$tag` attribute is `false` or `null` (pana1990)
-- Enh #10487: `yii\helpers\BaseArrayHelper::index()` got a third parameter `$groupBy` to group the input array by the key in one or more dimensions (quantum13, silverfire, samdark)
+- Enh #10941: Added `yii\helpers\ArrayHelper::isTraversable`, added support for traversable selections for dropdownList, radioList and checkboxList in `yii\helpers\Html`.
 - Chg: HTMLPurifier dependency updated to `~4.6` (samdark)
 
 2.0.7 February 14, 2016
