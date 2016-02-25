@@ -319,14 +319,14 @@ foreach (Customer::find()->each(10) as $customer) {
 
 // batch query with eager loading
 foreach (Customer::find()->with('orders')->each() as $customer) {
-    // $customer is a Customer object
+    // $customer is a Customer object with the 'orders' relation populated
 }
 ```
 
 
 ## Saving Data <span id="inserting-updating-data"></span>
 
-Using Active Record, you can easily save data to database by taking the following steps:
+Using Active Record, you can easily save data to the database by taking the following steps:
 
 1. Prepare an Active Record instance
 2. Assign new values to Active Record attributes
@@ -406,7 +406,7 @@ $customer->save();
 
 ### Updating Counters <span id="updating-counters"></span>
 
-It is a common task to increment or decrement a column in a database table. We call such columns as counter columns.
+It is a common task to increment or decrement a column in a database table. We call these columns "counter columns".
 You can use [[yii\db\ActiveRecord::updateCounters()|updateCounters()]] to update one or multiple counter columns.
 For example,
 
@@ -440,7 +440,9 @@ If you are interested in the attribute values prior to their most recent modific
 > even if it has the same value but a different type. This is often the case when the model receives user input from
 > HTML forms where every value is represented as a string.
 > To ensure the correct type for e.g. integer values you may apply a [validation filter](input-validation.md#data-filtering):
-> `['attributeName', 'filter', 'filter' => 'intval']`.
+> `['attributeName', 'filter', 'filter' => 'intval']`. This works with all the typecasting functions of PHP like
+> [intval()](http://php.net/manual/en/function.intval.php), [floatval()](http://php.net/manual/en/function.floatval.php),
+> [boolval](http://php.net/manual/en/function.boolval.php), etc...
 
 ### Default Attribute Values <span id="default-attribute-values"></span>
 
@@ -504,7 +506,7 @@ to get a chance to customize the life cycle. You can also respond to certain Act
 during a life cycle to inject your custom code. These events are especially useful when you are developing 
 Active Record [behaviors](concept-behaviors.md) which need to customize Active Record life cycles.
 
-In the following, we will summarize various Active Record life cycles and the methods/events that are involved
+In the following, we will summarize the various Active Record life cycles and the methods/events that are involved
 in the life cycles.
 
 
@@ -560,7 +562,8 @@ life cycle will happen:
    an [[yii\db\ActiveRecord::EVENT_AFTER_DELETE|EVENT_AFTER_DELETE]] event.
 
 
-> Note: Calling any of the following methods will NOT initiate any of the above life cycles:
+> Note: Calling any of the following methods will NOT initiate any of the above life cycles because they work on the
+> database directly and not on a record basis:
 >
 > - [[yii\db\ActiveRecord::updateAll()]] 
 > - [[yii\db\ActiveRecord::deleteAll()]]
@@ -616,16 +619,18 @@ class Customer extends ActiveRecord
 ```
 
 The [[yii\db\ActiveRecord::transactions()]] method should return an array whose keys are [scenario](structure-models.md#scenarios)
-names and values the corresponding operations that should be enclosed within transactions. You should use the following
+names and values are the corresponding operations that should be enclosed within transactions. You should use the following
 constants to refer to different DB operations:
 
 * [[yii\db\ActiveRecord::OP_INSERT|OP_INSERT]]: insertion operation performed by [[yii\db\ActiveRecord::insert()|insert()]];
 * [[yii\db\ActiveRecord::OP_UPDATE|OP_UPDATE]]: update operation performed by [[yii\db\ActiveRecord::update()|update()]];
 * [[yii\db\ActiveRecord::OP_DELETE|OP_DELETE]]: deletion operation performed by [[yii\db\ActiveRecord::delete()|delete()]].
 
-Use `|` operators to concatenate the above constants to indicate multiple operations. You may also use the shortcut
+Use the `|` operators to concatenate the above constants to indicate multiple operations. You may also use the shortcut
 constant [[yii\db\ActiveRecord::OP_ALL|OP_ALL]] to refer to all three operations above.
 
+Transactions that are created using this method will be started before calling [[yii\db\ActiveRecord::beforeSave()|beforeSave()]]
+and will be committed after [[yii\db\ActiveRecord::afterSave()|afterSave()]] has run.
 
 ## Optimistic Locks <span id="optimistic-locks"></span>
 
@@ -646,7 +651,8 @@ To use optimistic locking,
 1. Create a column in the DB table associated with the Active Record class to store the version number of each row.
    The column should be of big integer type (in MySQL it would be `BIGINT DEFAULT 0`).
 2. Override the [[yii\db\ActiveRecord::optimisticLock()]] method to return the name of this column.
-3. In the Web form that takes user inputs, add a hidden field to store the current version number of the row being updated. Be sure your version attribute has input validation rules and validates successfully.
+3. In the Web form that takes user inputs, add a hidden field to store the current version number of the row being updated.
+   Be sure your version attribute has input validation rules and validates successfully.
 4. In the controller action that updates the row using Active Record, try and catch the [[yii\db\StaleObjectException]]
    exception. Implement necessary business logic (e.g. merging the changes, prompting staled data) to resolve the conflict.
    
@@ -690,7 +696,7 @@ public function actionUpdate($id)
 Besides working with individual database tables, Active Record is also capable of bringing together related data,
 making them readily accessible through the primary data. For example, the customer data is related with the order
 data because one customer may have placed one or multiple orders. With appropriate declaration of this relation,
-you may be able to access a customer's order information using the expression `$customer->orders` which gives
+you'll be able to access a customer's order information using the expression `$customer->orders` which gives
 back the customer's order information in terms of an array of `Order` Active Record instances.
 
 
@@ -702,6 +708,8 @@ The task is as simple as declaring a *relation method* for every interested rela
 ```php
 class Customer extends ActiveRecord
 {
+    // ...
+
     public function getOrders()
     {
         return $this->hasMany(Order::className(), ['customer_id' => 'id']);
@@ -710,6 +718,8 @@ class Customer extends ActiveRecord
 
 class Order extends ActiveRecord
 {
+    // ...
+
     public function getCustomer()
     {
         return $this->hasOne(Customer::className(), ['id' => 'customer_id']);
@@ -790,7 +800,7 @@ using query building methods before performing DB query. For example,
 ```php
 $customer = Customer::findOne(123);
 
-// SELECT * FROM `order` WHERE `subtotal` > 200 ORDER BY `id`
+// SELECT * FROM `order` WHERE `customer_id` = 123 AND `subtotal` > 200 ORDER BY `id`
 $orders = $customer->getOrders()
     ->where(['>', 'subtotal', 200])
     ->orderBy('id')
@@ -818,10 +828,10 @@ class Customer extends ActiveRecord
 Then you will be able to perform the following relational queries:
 
 ```php
-// SELECT * FROM `order` WHERE `subtotal` > 200 ORDER BY `id`
+// SELECT * FROM `order` WHERE `customer_id` = 123 AND `subtotal` > 200 ORDER BY `id`
 $orders = $customer->getBigOrders(200)->all();
 
-// SELECT * FROM `order` WHERE `subtotal` > 100 ORDER BY `id`
+// SELECT * FROM `order` WHERE `customer_id` = 123 AND `subtotal` > 100 ORDER BY `id`
 $orders = $customer->bigOrders;
 ```
 
@@ -835,7 +845,7 @@ to multiple order items, while one product item will also correspond to multiple
 
 When declaring such relations, you would call either [[yii\db\ActiveQuery::via()|via()]] or [[yii\db\ActiveQuery::viaTable()|viaTable()]]
 to specify the junction table. The difference between [[yii\db\ActiveQuery::via()|via()]] and [[yii\db\ActiveQuery::viaTable()|viaTable()]]
-is that the former specifies the junction table in terms of an existing relation name while the latter directly
+is that the former specifies the junction table in terms of an existing relation name while the latter directly uses
 the junction table. For example,
 
 ```php
@@ -1024,7 +1034,7 @@ $customers = Customer::find()
     ->all();
 ```
 
-> Note: It is important to disambiguate column names when building relational queries involving JOIN SQL statements. 
+> Note: It is important to disambiguate column names when building relational queries involving JOIN SQL statements.
   A common practice is to prefix column names with their corresponding table names.
 
 However, a better approach is to exploit the existing relation declarations by calling [[yii\db\ActiveQuery::joinWith()]]:
@@ -1079,7 +1089,28 @@ Note that this differs from our earlier example which only brings back customers
 > Info: When [[yii\db\ActiveQuery]] is specified with a condition via [[yii\db\ActiveQuery::onCondition()|onCondition()]],
   the condition will be put in the `ON` part if the query involves a JOIN query. If the query does not involve
   JOIN, the on-condition will be automatically appended to the `WHERE` part of the query.
+  Thus it may only contain conditions including columns of the related table.
 
+#### Relation table aliases <span id="relation-table-aliases"></span>
+
+As noted before, when using JOIN in a query, we need to disambiguate column names. Therefor often an alias is
+defined for a table. Setting an alias for the relational query would be possible by customizing the relation query in the following way:
+
+```php
+$query->joinWith([
+    'orders' => function ($q) {
+        $q->from(['o' => Order::tableName()]);
+    },
+])
+```
+
+This however looks very complicated and involves either hardcoding the related objects table name or calling `Order::tableName()`.
+Since version 2.0.7, Yii provides a shortcut for this. You may now define and use the alias for the relation table like the following:
+
+```php
+// join the orders relation and sort the result by orders.id
+$query->joinWith(['orders o'])->orderBy('o.id');
+```
 
 ### Inverse Relations <span id="inverse-relations"></span>
 
@@ -1213,7 +1244,7 @@ The opposite operation to [[yii\db\ActiveRecord::link()|link()]] is [[yii\db\Act
 which breaks an existing relationship between two Active Record instances. For example,
 
 ```php
-$customer = Customer::find()->with('orders')->all();
+$customer = Customer::find()->with('orders')->where(['id' => 123])->one();
 $customer->unlink('orders', $customer->orders[0]);
 ```
 

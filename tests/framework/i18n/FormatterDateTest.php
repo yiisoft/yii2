@@ -88,6 +88,43 @@ class FormatterDateTest extends TestCase
         $this->assertSame($this->formatter->nullDisplay, $this->formatter->asDate(null));
     }
 
+    public function testIntlAsDateOtherCalendars()
+    {
+        // Persian calendar
+        $this->formatter->locale = 'fa_IR@calendar=persian';
+        $this->formatter->calendar = \IntlDateFormatter::TRADITIONAL;
+        $this->formatter->timeZone = 'UTC';
+
+        $value = 1451606400; // Fri, 01 Jan 2016 00:00:00 (UTC)
+        $this->assertSame('۱۳۹۴', $this->formatter->asDate($value, 'php:Y'));
+
+        $value = new DateTime();
+        $value->setTimestamp(1451606400); // Fri, 01 Jan 2016 00:00:00 (UTC)
+        $this->assertSame('۱۳۹۴', $this->formatter->asDate($value, 'php:Y'));
+
+        if (version_compare(PHP_VERSION, '5.5.0', '>=')) {
+            $value = new \DateTimeImmutable('2016-01-01 00:00:00', new \DateTimeZone('UTC'));
+            $this->assertSame('۱۳۹۴', $this->formatter->asDate($value, 'php:Y'));
+        }
+
+        // Buddhist calendar
+        $this->formatter->locale = 'fr_FR@calendar=buddhist';
+        $this->formatter->calendar = \IntlDateFormatter::TRADITIONAL;
+        $this->formatter->timeZone = 'UTC';
+
+        $value = 1451606400; // Fri, 01 Jan 2016 00:00:00 (UTC)
+        $this->assertSame('2559', $this->formatter->asDate($value, 'php:Y'));
+
+        $value = new DateTime();
+        $value->setTimestamp(1451606400); // Fri, 01 Jan 2016 00:00:00 (UTC)
+        $this->assertSame('2559', $this->formatter->asDate($value, 'php:Y'));
+
+        if (version_compare(PHP_VERSION, '5.5.0', '>=')) {
+            $value = new \DateTimeImmutable('2016-01-01 00:00:00', new \DateTimeZone('UTC'));
+            $this->assertSame('2559', $this->formatter->asDate($value, 'php:Y'));
+        }
+    }
+
     public function testIntlAsTime()
     {
         $this->testAsTime();
@@ -129,9 +166,9 @@ class FormatterDateTest extends TestCase
 
         // empty input
         $this->formatter->locale = 'de-DE';
-        $this->assertSame('01.01.1970 00:00:00', $this->formatter->asDatetime(''));
-        $this->assertSame('01.01.1970 00:00:00', $this->formatter->asDatetime(0));
-        $this->assertSame('01.01.1970 00:00:00', $this->formatter->asDatetime(false));
+        $this->assertRegExp('~01\.01\.1970,? 00:00:00~', $this->formatter->asDatetime(''));
+        $this->assertRegExp('~01\.01\.1970,? 00:00:00~', $this->formatter->asDatetime(0));
+        $this->assertRegExp('~01\.01\.1970,? 00:00:00~', $this->formatter->asDatetime(false));
     }
 
     public function testAsDatetime()

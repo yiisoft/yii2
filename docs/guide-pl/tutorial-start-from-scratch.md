@@ -26,9 +26,9 @@ Po zakończeniu pobierania plików repozytorium, można skasować folder `.git` 
 Modyfikacja plików
 ------------------
 
-Następnie należy zmodyfikować plik `composer.json`, aby opisywał nasz szablon. Zmień wartości `name` (nazwa), `description` (opis), `keywords` (słowa kluczowe), `homepage` (strona domowa), 
-`license` (licencja), i `support` (wsparcie) na takie, które odpowiadają nowemu szablonowi. Zmodyfikuj również `require`, `require-dev`, `suggest` i wszelkie inne opcje zgodnie 
-z wymaganiami.
+Następnie należy zmodyfikować plik `composer.json`, aby opisywał nasz szablon. Zmień wartości `name` (nazwa), `description` (opis), `keywords` (słowa kluczowe), `homepage` 
+(strona domowa), `license` (licencja), i `support` (wsparcie) na takie, które odpowiadają nowemu szablonowi. Zmodyfikuj również `require`, `require-dev`, `suggest` i wszelkie inne opcje 
+zgodnie z wymaganiami.
 
 > Note: W pliku `composer.json` użyj parametru `writable` znajdującego się w elemencie `extra`, aby określić 
 > uprawnienia dla plików, które zostaną ustawione po utworzeniu aplikacji na podstawie szablonu.
@@ -43,7 +43,8 @@ Nowy szablon umieść w odpowiadającym mu repozytorium Git. Jeśli zamierzasz u
 Jeśli jednak nie przewidujesz współpracy z innymi nad swoim szablonem, dowolne repozytorium Git będzie odpowiednie.
 
 Następnie należy zarejestrować swoją paczkę dla Composera. Dla publicznie dostępnych szablonów paczkę należy zarejestrować w serwisie [Packagist](https://packagist.org/).
-Z prywatnymi szablonami sprawa jest trochę bardziej skomplikowana - instrukcję, jak to zrobić, znajdziesz w [dokumentacji Composera](https://getcomposer.org/doc/05-repositories.md#hosting-your-own).
+Z prywatnymi szablonami sprawa jest trochę bardziej skomplikowana - instrukcję, jak to zrobić, znajdziesz w 
+[dokumentacji Composera](https://getcomposer.org/doc/05-repositories.md#hosting-your-own).
 
 Użycie szablonu
 ---------------
@@ -51,6 +52,6 @@ Użycie szablonu
 Tylko tyle jest wymagane, aby stworzyć nowy szablon projektu Yii. Teraz już możesz rozpocząć pracę nad świeżym projektem, używając swojego szablonu, za pomocą komend:
 
 ```
-composer global require "fxp/composer-asset-plugin:~1.1.0"
+composer global require "fxp/composer-asset-plugin:~1.1.1"
 composer create-project --prefer-dist --stability=dev mojafirma/yii2-app-fajna nowy-projekt
 ```

@@ -50,6 +50,9 @@ Because this class is a behavior, when it is attached to a component, that compo
 
 > Tip: Within a behavior, you can access the component that the behavior is attached to through the [[yii\base\Behavior::owner]] property.
 
+> Note: In case [[yii\base\Behavior::__get()]] and/or [[yii\base\Behavior::__set()]] method of behavior is overridden you
+need to override [[yii\base\Behavior::canGetProperty()]] and/or [[yii\base\Behavior::canSetProperty()]] as well.
+
 Handling Component Events
 ------------------
 
@@ -273,9 +276,9 @@ class User extends ActiveRecord
                 'attributes' => [
                     ActiveRecord::EVENT_BEFORE_INSERT => ['created_at', 'updated_at'],
                     ActiveRecord::EVENT_BEFORE_UPDATE => ['updated_at'],
-                    // if you're using datetime instead of UNIX timestamp:
-                    // 'value' => new Expression('NOW()'),
                 ],
+                // if you're using datetime instead of UNIX timestamp:
+                // 'value' => new Expression('NOW()'),
             ],
         ];
     }
@@ -305,6 +308,21 @@ to a specified attribute and save it to the database:
 ```php
 $user->touch('login_time');
 ```
+
+Other behaviors
+---------------
+
+There are several built-in and external behaviors available:
+
+- [[yii\behaviors\BlameableBehavior]] - automatically fills the specified attributes with the current user ID.
+- [[yii\behaviors\SluggableBehavior]] - automatically fills the specified attribute with a value that can be used
+  as a slug in a URL.
+- [[yii\behaviors\AttributeBehavior]] - automatically assigns a specified value to one or multiple attributes of
+  an ActiveRecord object when certain events happen.
+- [yii2tech\ar\softdelete\SoftDeleteBehavior](https://github.com/yii2tech/ar-softdelete) - provides methods to soft-delete
+  and soft-restore ActiveRecord i.e. set flag or status which marks record as deleted.
+- [yii2tech\ar\position\PositionBehavior](https://github.com/yii2tech/ar-position) - allows managing records order in an
+  integer field by providing reordering methods.
 
 Comparing Behaviors with Traits <span id="comparison-with-traits"></span>
 ----------------------

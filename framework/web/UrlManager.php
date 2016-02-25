@@ -21,7 +21,7 @@ use yii\caching\Cache;
  * You can modify its configuration by adding an array to your application config under `components`
  * as it is shown in the following example:
  *
- * ~~~
+ * ```php
  * 'urlManager' => [
  *     'enablePrettyUrl' => true,
  *     'rules' => [
@@ -29,7 +29,7 @@ use yii\caching\Cache;
  *     ],
  *     // ...
  * ]
- * ~~~
+ * ```
  *
  * @property string $baseUrl The base URL that is used by [[createUrl()]] to prepend to created URLs.
  * @property string $hostInfo The host info (e.g. "http://www.example.com") that is used by
@@ -79,18 +79,18 @@ class UrlManager extends Component
      *
      * Here is an example configuration for RESTful CRUD controller:
      *
-     * ~~~php
+     * ```php
      * [
      *     'dashboard' => 'site/index',
      *
-     *     'POST <controller:\w+>s' => '<controller>/create',
-     *     '<controller:\w+>s' => '<controller>/index',
+     *     'POST <controller:[\w-]+>s' => '<controller>/create',
+     *     '<controller:[\w-]+>s' => '<controller>/index',
      *
-     *     'PUT <controller:\w+>/<id:\d+>'    => '<controller>/update',
-     *     'DELETE <controller:\w+>/<id:\d+>' => '<controller>/delete',
-     *     '<controller:\w+>/<id:\d+>'        => '<controller>/view',
+     *     'PUT <controller:[\w-]+>/<id:\d+>'    => '<controller>/update',
+     *     'DELETE <controller:[\w-]+>/<id:\d+>' => '<controller>/delete',
+     *     '<controller:[\w-]+>/<id:\d+>'        => '<controller>/view',
      * ];
-     * ~~~
+     * ```
      *
      * Note that if you modify this property after the UrlManager object is created, make sure
      * you populate the array with rule objects instead of rule configurations.
@@ -241,6 +241,11 @@ class UrlManager extends Component
             }
 
             Yii::trace('No matching URL rules. Using default URL parsing logic.', __METHOD__);
+
+            // Ensure, that $pathInfo does not end with more than one slash.
+            if (strlen($pathInfo) > 1 && substr_compare($pathInfo, '//', -2, 2) === 0) {
+                return false;
+            }
 
             $suffix = (string) $this->suffix;
             if ($suffix !== '' && $pathInfo !== '') {

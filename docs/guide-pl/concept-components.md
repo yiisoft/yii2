@@ -1,7 +1,7 @@
 Komponenty
 ==========
 
-Komponenty są głównym budulcem aplikacji Yii. Komponenty to instancje klasy [[yii\base\Component]] lub jej potomnych. 
+Komponenty są głównym budulcem aplikacji Yii. Komponenty to instancje klasy [[yii\base\Component|Component]] lub jej potomnych. 
 Trzy główne funkcjonalności, które zapewniają komponenty innym klasom to:
 
 * [Właściwości](concept-properties.md)
@@ -24,18 +24,18 @@ echo DatePicker::widget([
 ]);
 ```
 
-Właściwości widżetu są w łatwy sposób konfigurowalne ponieważ jego klasa rozszerza [[yii\base\Component]].
+Właściwości widżetu są w łatwy sposób konfigurowalne ponieważ jego klasa rozszerza [[yii\base\Component|Component]].
 
 Komponenty zapewniają duże możliwości, ale przez to są też bardziej zasobożerne od standardowych obiektów, ponieważ wymagają dodatkowej pamięci i czasu CPU dla wsparcia 
 [eventów](concept-events.md) i [behaviorów](concept-behaviors.md) w szczególności.
-Jeśli komponent nie wymaga tych dwóch funkcjonalności, należy rozważyć rozszerzenie jego klasy z [[yii\base\Object]] zamiast [[yii\base\Component]]. 
+Jeśli komponent nie wymaga tych dwóch funkcjonalności, należy rozważyć rozszerzenie jego klasy z [[yii\base\Object|Object]] zamiast [[yii\base\Component|Component]]. 
 Dzięki temu komponent będzie tak samo wydajny jak standardowy obiekt PHP, ale z dodatkowym wsparciem [właściwości](concept-properties.md).
 
-Rozszerzając klasę [[yii\base\Component]] lub [[yii\base\Object]], zalecane jest aby przestrzegać następującej konwencji:
+Rozszerzając klasę [[yii\base\Component|Component]] lub [[yii\base\Object|Object]], zalecane jest aby przestrzegać następującej konwencji:
 
 - Przeciążając konstruktor, dodaj parametr `$config` jako *ostatni* na liście jego argumentów i przekaż go do konstruktora rodzica.
 - Zawsze wywoływuj konstruktor rodzica *na końcu* przeciążanego konstruktora.
-- Przeciążając metodę [[yii\base\Object::init()]], upewnij się, że wywołujesz metodę `init` rodzica *na początku* własnej implementacji metody `init`.
+- Przeciążając metodę [[yii\base\Object::init()|init()]], upewnij się, że wywołujesz metodę `init` rodzica *na początku* własnej implementacji metody `init`.
 
 Przykład:
 
@@ -83,7 +83,7 @@ $component = \Yii::createObject([
 > [kontener wstrzykiwania zależności](concept-di-container.md).
   
 
-Klasa [[yii\base\Object]] wymusza następujący cykl życia obiektu:
+Klasa [[yii\base\Object|Object]] wymusza następujący cykl życia obiektu:
 
 1. Preinicjalizacja w konstruktorze. W tym miejscu można ustawić domyślne wartości właściwości.
 2. Konfiguracja obiektu poprzez `$config`. Konfiguracja może nadpisać domyślne wartości ustawione w konstruktorze.

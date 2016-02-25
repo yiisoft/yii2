@@ -1,4 +1,4 @@
-﻿Vistas
+Vistas
 ======
 
 Las Vistas (views) son una parte de la arquitectura [MVC](http://es.wikipedia.org/wiki/Modelo%E2%80%93vista%E2%80%93controlador).

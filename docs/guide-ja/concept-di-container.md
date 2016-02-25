@@ -14,7 +14,6 @@ Yii は [[yii\di\Container]] クラスを通して DI コンテナの機能を�
 * コンストラクタ·インジェクション
 * セッター/プロパティ·インジェクション
 * PHP コーラブル·インジェクション
-* コントローラ・アクション・インジェクション
 
 
 ### コンストラクタ·インジェクション <span id="constructor-injection"></span>
@@ -71,7 +70,7 @@ $container->get('Foo', [], [
 ]);
 ```
 
-> Info|情報: [[yii\di\Container::get()]] メソッドは三番目のパラメータを、生成されるオブジェクトに適用されるべき構成情報配列として受け取ります。
+> Info: [[yii\di\Container::get()]] メソッドは三番目のパラメータを、生成されるオブジェクトに適用されるべき構成情報配列として受け取ります。
   クラスが [[yii\base\Configurable]] インタフェイスを実装している場合 (例えば、クラスが [[yii\base\Object]] である場合) には、この構成情報配列がクラスのコンストラクタの最後のパラメータとして渡されます。
   そうでない場合は、構成情報はオブジェクトが生成された *後で* 適用されることになります。
 
@@ -112,22 +111,6 @@ $foo = $container->get('Foo');
 ```
 
 このようにすれば、`Foo` クラスを構成しようとする人は、`Foo` がどのように構築されるかを気にする必要はもうなくなります。
-
-
-### コントローラ・アクション・インジェクション <span id="controller-action-injection"></span>
-
-コントローラ・アクション・インジェクションは、メソッド・シグニチャの型ヒントを使って依存が宣言される特殊な DI です。
-依存は、実行時に、アクションが実際に呼ばれるときに解決されます。
-この場合、必要になるかも知れない依存を前もって構成する必要がありませんので、MVC のコントローラを軽量に保つのに役立ちます。
-
-```php
-public function actionSend($email, EmailValidator $validator)
-{
-    if ($validator->validate($email)) {
-        // ... メールを送信
-    }
-}
-```
 
 
 依存関係の登録 <span id="registering-dependencies"></span>
@@ -183,7 +166,7 @@ $container->set('db', function ($container, $params, $config) {
 $container->set('pageCache', new FileCache);
 ```
 
-> 補足: 依存の名前が対応する依存の定義と同じである場合は、それを DI コンテナに登録する必要はありません。
+> Note: 依存の名前が対応する依存の定義と同じである場合は、それを DI コンテナに登録する必要はありません。
 
 `set()` を介して登録された依存は、依存が必要とされるたびにインスタンスを生成します。
 [[yii\di\Container::setSingleton()]] を使うと、単一のインスタンスしか生成しない依存を登録することができます:

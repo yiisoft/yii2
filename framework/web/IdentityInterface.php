@@ -13,7 +13,7 @@ namespace yii\web;
  * This interface can typically be implemented by a user model class. For example, the following
  * code shows how to implement this interface by a User ActiveRecord class:
  *
- * ~~~
+ * ```php
  * class User extends ActiveRecord implements IdentityInterface
  * {
  *     public static function findIdentity($id)
@@ -41,7 +41,7 @@ namespace yii\web;
  *         return $this->authKey === $authKey;
  *     }
  * }
- * ~~~
+ * ```
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0

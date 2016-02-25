@@ -65,7 +65,7 @@ $articles = Article::find()
   設定されていない場合は、[[yii\helpers\Inflector::camel2words()]] が呼ばれて、属性名からラベルが生成されます。
   ラベルは HTML エンコードされないことに注意してください。
 
-> Info|情報: [[yii\data\Sort::$orders|orders]] の値をデータベースのクエリに直接に供給して、`ORDER BY` 句を構築することが出来ます。
+> Info: [[yii\data\Sort::$orders|orders]] の値をデータベースのクエリに直接に供給して、`ORDER BY` 句を構築することが出来ます。
   データベースのクエリが認識できない合成的な属性が入っている場合があるため、[[yii\data\Sort::$attributeOrders|attributeOrders]] を使ってはいけません。
 
 [[yii\data\Sort::link()]] を呼んでハイパーリンクを生成すれば、それをクリックして、指定した属性によるデータの並べ替えをリクエストすることが出来るようになります。

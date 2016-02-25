@@ -231,10 +231,9 @@ class BaseInflector
         'ø' => 'o', 'ù' => 'u', 'ú' => 'u', 'û' => 'u', 'ü' => 'u', 'ű' => 'u', 'ý' => 'y', 'þ' => 'th',
         'ÿ' => 'y',
     ];
-
     /**
      * Shortcut for `Any-Latin; NFKD` transliteration rule. The rule is strict, letters will be transliterated with
-     * the closest sound-representation chars. The result my contain any UTF-8 chars. For example:
+     * the closest sound-representation chars. The result may contain any UTF-8 chars. For example:
      * `获取到 どちら Українська: ґ,є, Српска: ђ, њ, џ! ¿Español?` will be transliterated to
      * `huò qǔ dào dochira Ukraí̈nsʹka: g̀,ê, Srpska: đ, n̂, d̂! ¿Español?`
      *
@@ -242,12 +241,12 @@ class BaseInflector
      * For detailed information see [unicode normalization forms](http://unicode.org/reports/tr15/#Normalization_Forms_Table)
      * @see http://unicode.org/reports/tr15/#Normalization_Forms_Table
      * @see transliterate()
+     * @since 2.0.7
      */
     const TRANSLITERATE_STRICT = 'Any-Latin; NFKD';
-
     /**
-     * Shortcut for `Any-Latin; Latin-ASCII` transliteration rule. The rule is loose, letters will be
-     * transliterated to characters of Latin-1 ASCII table. For example:
+     * Shortcut for `Any-Latin; Latin-ASCII` transliteration rule. The rule is medium, letters will be
+     * transliterated to characters of Latin-1 (ISO 8859-1) ASCII table. For example:
      * `获取到 どちら Українська: ґ,є, Српска: ђ, њ, џ! ¿Español?` will be transliterated to
      * `huo qu dao dochira Ukrainsʹka: g,e, Srpska: d, n, d! ¿Espanol?`
      *
@@ -255,12 +254,13 @@ class BaseInflector
      * For detailed information see [unicode normalization forms](http://unicode.org/reports/tr15/#Normalization_Forms_Table)
      * @see http://unicode.org/reports/tr15/#Normalization_Forms_Table
      * @see transliterate()
+     * @since 2.0.7
      */
     const TRANSLITERATE_MEDIUM = 'Any-Latin; Latin-ASCII';
-
     /**
-     * Shortcut for `Any-Latin; Latin-ASCII; [\u0080-\uffff] remove` transliteration rule. The rule is strict, letters will be transliterated with
-     * the closest sound-representation chars. The result my contain any UTF-8 chars. For example:
+     * Shortcut for `Any-Latin; Latin-ASCII; [\u0080-\uffff] remove` transliteration rule. The rule is loose,
+     * letters will be transliterated with the characters of Basic Latin Unicode Block.
+     * For example:
      * `获取到 どちら Українська: ґ,є, Српска: ђ, њ, џ! ¿Español?` will be transliterated to
      * `huo qu dao dochira Ukrainska: g,e, Srpska: d, n, d! Espanol?`
      *
@@ -268,9 +268,9 @@ class BaseInflector
      * For detailed information see [unicode normalization forms](http://unicode.org/reports/tr15/#Normalization_Forms_Table)
      * @see http://unicode.org/reports/tr15/#Normalization_Forms_Table
      * @see transliterate()
+     * @since 2.0.7
      */
     const TRANSLITERATE_LOOSE = 'Any-Latin; Latin-ASCII; [\u0080-\uffff] remove';
-
 
     /**
      * @var mixed Either a [[\Transliterator]], or a string from which a [[\Transliterator]] can be built
@@ -278,6 +278,7 @@ class BaseInflector
      * @see http://php.net/manual/en/transliterator.transliterate.php
      */
     public static $transliterator = self::TRANSLITERATE_LOOSE;
+
 
     /**
      * Converts a word to its plural form.
@@ -481,6 +482,7 @@ class BaseInflector
      * @param string|\Transliterator $transliterator either a [[Transliterator]] or a string
      * from which a [[Transliterator]] can be built.
      * @return string
+     * @since 2.0.7 this method is public.
      */
     public static function transliterate($string, $transliterator = null)
     {
@@ -520,7 +522,7 @@ class BaseInflector
      */
     public static function ordinalize($number)
     {
-        if (in_array(($number % 100), range(11, 13))) {
+        if (in_array($number % 100, range(11, 13))) {
             return $number . 'th';
         }
         switch ($number % 10) {

@@ -13,8 +13,9 @@ use yii\base\NotSupportedException;
 /**
  * QueryBuilder builds a SELECT SQL statement based on the specification given as a [[Query]] object.
  *
- * QueryBuilder can also be used to build SQL statements such as INSERT, UPDATE, DELETE, CREATE TABLE,
- * from a [[Query]] object.
+ * SQL statements are created from [[Query]] objects using the [[build()]]-method.
+ *
+ * QueryBuilder is also used by [[Command]] to build SQL statements such as INSERT, UPDATE, DELETE, CREATE TABLE.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
@@ -101,6 +102,21 @@ class QueryBuilder extends \yii\base\Object
         $sql = implode($this->separator, array_filter($clauses));
         $sql = $this->buildOrderByAndLimit($sql, $query->orderBy, $query->limit, $query->offset);
 
+        if (!empty($query->orderBy)) {
+            foreach ($query->orderBy as $expression) {
+                if ($expression instanceof Expression) {
+                    $params = array_merge($params, $expression->params);
+                }
+            }
+        }
+        if (!empty($query->groupBy)) {
+            foreach ($query->groupBy as $expression) {
+                if ($expression instanceof Expression) {
+                    $params = array_merge($params, $expression->params);
+                }
+            }
+        }
+
         $union = $this->buildUnion($query->union, $params);
         if ($union !== '') {
             $sql = "($sql){$this->separator}$union";
@@ -113,12 +129,12 @@ class QueryBuilder extends \yii\base\Object
      * Creates an INSERT SQL statement.
      * For example,
      *
-     * ~~~
+     * ```php
      * $sql = $queryBuilder->insert('user', [
-     *  'name' => 'Sam',
-     *  'age' => 30,
+     *     'name' => 'Sam',
+     *     'age' => 30,
      * ], $params);
-     * ~~~
+     * ```
      *
      * The method will properly escape the table and column names.
      *
@@ -161,13 +177,13 @@ class QueryBuilder extends \yii\base\Object
      * Generates a batch INSERT SQL statement.
      * For example,
      *
-     * ~~~
+     * ```php
      * $sql = $queryBuilder->batchInsert('user', ['name', 'age'], [
      *     ['Tom', 30],
      *     ['Jane', 20],
      *     ['Linda', 25],
      * ]);
-     * ~~~
+     * ```
      *
      * Note that the values in each row must match the corresponding column names.
      *
@@ -218,10 +234,10 @@ class QueryBuilder extends \yii\base\Object
      * Creates an UPDATE SQL statement.
      * For example,
      *
-     * ~~~
+     * ```php
      * $params = [];
      * $sql = $queryBuilder->update('user', ['status' => 1], 'age > 30', $params);
-     * ~~~
+     * ```
      *
      * The method will properly escape the table and column names.
      *
@@ -265,9 +281,9 @@ class QueryBuilder extends \yii\base\Object
      * Creates a DELETE SQL statement.
      * For example,
      *
-     * ~~~
+     * ```php
      * $sql = $queryBuilder->delete('user', 'status = 0');
-     * ~~~
+     * ```
      *
      * The method will properly escape the table and column names.
      *
@@ -299,13 +315,13 @@ class QueryBuilder extends \yii\base\Object
      *
      * For example,
      *
-     * ~~~
+     * ```php
      * $sql = $queryBuilder->createTable('user', [
      *  'id' => 'pk',
      *  'name' => 'string',
      *  'age' => 'integer',
      * ]);
-     * ~~~
+     * ```
      *
      * @param string $table the name of the table to be created. The name will be properly quoted by the method.
      * @param array $columns the columns (name => definition) in the new table.
@@ -751,7 +767,17 @@ class QueryBuilder extends \yii\base\Object
      */
     public function buildGroupBy($columns)
     {
-        return empty($columns) ? '' : 'GROUP BY ' . $this->buildColumns($columns);
+        if (empty($columns)) {
+            return '';
+        }
+        foreach ($columns as $i => $column) {
+            if ($column instanceof Expression) {
+                $columns[$i] = $column->expression;
+            } elseif (strpos($column, '(') === false) {
+                $columns[$i] = $this->db->quoteColumnName($column);
+            }
+        }
+        return 'GROUP BY ' . implode(', ', $columns);
     }
 
     /**
@@ -900,14 +926,19 @@ class QueryBuilder extends \yii\base\Object
 
     /**
      * Parses the condition specification and generates the corresponding SQL expression.
-     * @param string|array $condition the condition specification. Please refer to [[Query::where()]]
+     * @param string|array|Expression $condition the condition specification. Please refer to [[Query::where()]]
      * on how to specify a condition.
      * @param array $params the binding parameters to be populated
      * @return string the generated SQL expression
      */
     public function buildCondition($condition, &$params)
     {
-        if (!is_array($condition)) {
+        if ($condition instanceof Expression) {
+            foreach ($condition->params as $n => $v) {
+                $params[$n] = $v;
+            }
+            return $condition->expression;
+        } elseif (!is_array($condition)) {
             return (string) $condition;
         } elseif (empty($condition)) {
             return '';

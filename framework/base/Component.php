@@ -27,11 +27,11 @@ use Yii;
  *
  * To attach an event handler to an event, call [[on()]]:
  *
- * ~~~
+ * ```php
  * $post->on('update', function ($event) {
  *     // send email notification
  * });
- * ~~~
+ * ```
  *
  * In the above, an anonymous function is attached to the "update" event of the post. You may attach
  * the following types of event handlers:
@@ -43,31 +43,31 @@ use Yii;
  *
  * The signature of an event handler should be like the following:
  *
- * ~~~
+ * ```php
  * function foo($event)
- * ~~~
+ * ```
  *
  * where `$event` is an [[Event]] object which includes parameters associated with the event.
  *
  * You can also attach a handler to an event when configuring a component with a configuration array.
  * The syntax is like the following:
  *
- * ~~~
+ * ```php
  * [
  *     'on add' => function ($event) { ... }
  * ]
- * ~~~
+ * ```
  *
  * where `on add` stands for attaching an event to the `add` event.
  *
  * Sometimes, you may want to associate extra data with an event handler when you attach it to an event
  * and then access it when the handler is invoked. You may do so by
  *
- * ~~~
+ * ```php
  * $post->on('update', function ($event) {
  *     // the data can be accessed via $event->data
  * }, $data);
- * ~~~
+ * ```
  *
  * A behavior is an instance of [[Behavior]] or its child class. A component can be attached with one or multiple
  * behaviors. When a behavior is attached to a component, its public properties and methods can be accessed via the
@@ -79,13 +79,13 @@ use Yii;
  * One can also attach a behavior to a component when configuring it with a configuration array. The syntax is like the
  * following:
  *
- * ~~~
+ * ```php
  * [
  *     'as tree' => [
  *         'class' => 'Tree',
  *     ],
  * ]
- * ~~~
+ * ```
  *
  * where `as tree` stands for attaching a behavior named `tree`, and the array will be passed to [[\Yii::createObject()]]
  * to create the behavior object.
@@ -411,13 +411,13 @@ class Component extends Object
      * indexed by behavior names. A behavior configuration can be either a string specifying
      * the behavior class or an array of the following structure:
      *
-     * ~~~
+     * ```php
      * 'behaviorName' => [
      *     'class' => 'BehaviorClass',
      *     'property1' => 'value1',
      *     'property2' => 'value2',
      * ]
-     * ~~~
+     * ```
      *
      * Note that a behavior class must extend from [[Behavior]]. Behavior names can be strings
      * or integers. If the former, they uniquely identify the behaviors. If the latter, the corresponding
@@ -450,18 +450,18 @@ class Component extends Object
      * The event handler must be a valid PHP callback. The following are
      * some examples:
      *
-     * ~~~
+     * ```
      * function ($event) { ... }         // anonymous function
      * [$object, 'handleClick']          // $object->handleClick()
      * ['Page', 'handleClick']           // Page::handleClick()
      * 'handleClick'                     // global function handleClick()
-     * ~~~
+     * ```
      *
      * The event handler must be defined with the following signature,
      *
-     * ~~~
+     * ```
      * function ($event)
-     * ~~~
+     * ```
      *
      * where `$event` is an [[Event]] object which includes parameters associated with the event.
      *
@@ -552,7 +552,7 @@ class Component extends Object
     /**
      * Returns the named behavior object.
      * @param string $name the behavior name
-     * @return Behavior the behavior object, or null if the behavior does not exist
+     * @return null|Behavior the behavior object, or null if the behavior does not exist
      */
     public function getBehavior($name)
     {
@@ -610,7 +610,7 @@ class Component extends Object
      * Detaches a behavior from the component.
      * The behavior's [[Behavior::detach()]] method will be invoked.
      * @param string $name the behavior's name.
-     * @return Behavior the detached behavior. Null if the behavior does not exist.
+     * @return null|Behavior the detached behavior. Null if the behavior does not exist.
      */
     public function detachBehavior($name)
     {
