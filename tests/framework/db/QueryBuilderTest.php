@@ -258,6 +258,8 @@ class QueryBuilderTest extends DatabaseTestCase
             // direct conditions
             [ 'a = CONCAT(col1, col2)', 'a = CONCAT(col1, col2)', [] ],
             [ new Expression('a = CONCAT(col1, :param1)', ['param1' => 'value1']), 'a = CONCAT(col1, :param1)', ['param1' => 'value1'] ],
+
+            [ ['id' => new \ArrayObject([1, 2])], '[[id]] IN (:qp0, :qp1)', [':qp0' => 1, ':qp1' => 2] ],
         ];
 
         switch ($this->driverName) {
@@ -568,6 +570,16 @@ class QueryBuilderTest extends DatabaseTestCase
                 ['id' => 1, 'name' => 'foo'],
                 ['id' => 2, 'name' => 'bar'],
             ],
+        ];
+        (new Query())->from('customer')->where($condition)->all($this->getConnection());
+
+        $condition = [
+            'in',
+            new \ArrayObject(['id', 'name']),
+            new \ArrayObject([
+                new \ArrayObject(['id' => 1, 'name' => 'foo']),
+                new \ArrayObject(['id' => 2, 'name' => 'bar']),
+            ]),
         ];
         (new Query())->from('customer')->where($condition)->all($this->getConnection());
     }
