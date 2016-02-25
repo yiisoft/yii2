@@ -81,6 +81,8 @@ Yii Framework 2 Change Log
 - Chg #11283: `ActiveRecord::unlink()` is not setting FK to `null` before deleting itself anymore (samdark)
 - Eng #10976: `Inflector::transliterate()` now uses `strtr` instead of `str_replace` (DrDeath72)
 - Enh #11110: Added migrations for DB session (mdmunir)
+- Enh #10941: Added `yii\helpers\ArrayHelper::isTraversable`, added support for traversable selections for dropdownList, radioList and checkboxList in `yii\helpers\Html`.
+- Enh #10954: Query builder now supports `Traversable` objects for use in `in` conditions. (sammousa)
 - Chg: HTMLPurifier dependency updated to `~4.6` (samdark)
 - Chg #9854: Added `ActiveRecordInterface::populateRelation()` to respect the methods called by the implementation (SamMousa)
 - Chg #10726: Added `yii\rbac\ManagerInterface::canAddChild()` (dkhlystov, samdark)
