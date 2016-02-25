@@ -161,6 +161,28 @@ class MessageController extends Controller
     }
 
     /**
+     * @inheritdoc
+     */
+    public function optionsAliases()
+    {
+        return array_merge(parent::optionsAliases(), [
+            'c' => 'catalog',
+            'e' => 'except',
+            'f' => 'format',
+            'i' => 'ignoreCategories',
+            'l' => 'languages',
+            'u' => 'markUnused',
+            'p' => 'messagePath',
+            'o' => 'only',
+            'w' => 'overwrite',
+            'S' => 'sort',
+            't' => 'translator',
+            'm' => 'sourceMessageTable',
+            's' => 'sourcepath'
+        ]);
+    }
+
+    /**
      * Creates a configuration file for the "extract" command using command line options specified
      *
      * The generated configuration file contains parameters required
