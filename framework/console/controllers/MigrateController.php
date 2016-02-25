@@ -94,6 +94,19 @@ class MigrateController extends BaseMigrateController
     }
 
     /**
+     * @inheritdoc
+     */
+    public function optionAliases()
+    {
+        return array_merge(parent::optionAliases(), [
+            'f' => 'fields',
+            'p' => 'migrationPath',
+            't' => 'migrationTable',
+            'F' => 'templateFile'
+        ]);
+    }
+
+    /**
      * This method is invoked right before an action is to be executed (after all possible filters.)
      * It checks the existence of the [[migrationPath]].
      * @param \yii\base\Action $action the action to be executed.
