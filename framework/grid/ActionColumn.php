@@ -114,6 +114,17 @@ class ActionColumn extends Column
     public $urlCreator;
     /**
      * @var array html options to be applied to the [[initDefaultButtons()|default buttons]].
+     * Html options for each button. The array keys are the buttons names without curly brackets,
+     * if the button name is not specified this array will be used to all button as default.
+     *
+     * ```php
+     * [
+     *     'class' => 'btn', // Default for all buttons
+     *     'view' => [ // Only for view button
+     *          'class' => 'btn btn-primary'
+     *     ]         
+     * ],
+     * ```
      * @since 2.0.4
      */
     public $buttonOptions = [];
@@ -139,7 +150,7 @@ class ActionColumn extends Column
                     'title' => Yii::t('yii', 'View'),
                     'aria-label' => Yii::t('yii', 'View'),
                     'data-pjax' => '0',
-                ], $this->buttonOptions);
+                ], isset($this->buttonOptions['view']) ? $this->buttonOptions['view'] : $this->buttonOptions);
                 return Html::a('<span class="glyphicon glyphicon-eye-open"></span>', $url, $options);
             };
         }
@@ -149,7 +160,7 @@ class ActionColumn extends Column
                     'title' => Yii::t('yii', 'Update'),
                     'aria-label' => Yii::t('yii', 'Update'),
                     'data-pjax' => '0',
-                ], $this->buttonOptions);
+                ], isset($this->buttonOptions['update']) ? $this->buttonOptions['update'] : $this->buttonOptions);
                 return Html::a('<span class="glyphicon glyphicon-pencil"></span>', $url, $options);
             };
         }
@@ -161,7 +172,7 @@ class ActionColumn extends Column
                     'data-confirm' => Yii::t('yii', 'Are you sure you want to delete this item?'),
                     'data-method' => 'post',
                     'data-pjax' => '0',
-                ], $this->buttonOptions);
+                ], isset($this->buttonOptions['delete']) ? $this->buttonOptions['delete'] : $this->buttonOptions);
                 return Html::a('<span class="glyphicon glyphicon-trash"></span>', $url, $options);
             };
         }
