@@ -413,6 +413,7 @@ window.onload = function() {
     }
 
     // code block hover line
+    // Does this do anything?
     document.onmousemove = function(e) {
         var event = e || window.event,
             clientY = event.clientY,
