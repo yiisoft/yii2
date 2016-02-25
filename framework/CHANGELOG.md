@@ -7,6 +7,7 @@ Yii Framework 2 Change Log
 - Bug #9851: Fixed partial commit / rollback in nested transactions (sammousa)
 - Bug #10850: Fixed unable to use 'definitions' and 'aliases' at `yii\widgets\MaskedInput` (rahimov, klimov-paul)
 - Bug #10946: Fixed parameters binding to the SQL query in `yii\db\mysqlSchema::findConstraints()` (silverfire)
+- Bug: SQlite querybuilder did not create primary key with bigint for `TYPE_BIGPK` (cebe)
 - Enh #5469: Add mimetype validation by mask in FileValidator (kirsenn, samdark, silverfire)
 - Enh #9893: `yii.js` handleAction enhanced to support for data-form attribute, so links can trigger specific forms (SamMousa)
 - Enh #10487: `yii\helpers\BaseArrayHelper::index()` got a third parameter `$groupBy` to group the input array by the key in one or more dimensions (quantum13, silverfire, samdark)
