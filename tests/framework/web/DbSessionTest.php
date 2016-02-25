@@ -41,21 +41,25 @@ class DbSessionTest extends TestCase
         $this->assertEquals('', $session->readSession('test'));
     }
 
-    public function testEncodeDataRW()
+    /**
+     * @depends testReadWrite
+     */
+    public function testGarbageCollection()
     {
-        $session = new DbSession(['encodeData' => true]);
+        $session = new DbSession();
 
-        $session->writeSession('test', 'session data');
-        $session->id;
+        $session->writeSession('new', 'new data');
+        $session->writeSession('expire', 'expire data');
 
-        $data = (new Query())->select(['data'])->from('session')->where(['id' => 'test'])->scalar();
-        $this->assertNotRegExp('~[^0-9a-zA-Z+/=]~', $data, 'The session data contains non-base64 characters');
+        $session->db->createCommand()
+            ->update('session', ['expire' => time() - 100], 'id = :id', ['id' => 'expire'])
+            ->execute();
+        $session->gcSession(1);
 
-        $this->assertEquals('session data', $session->readSession('test'));
-        $session->destroySession('test');
-        $this->assertEquals('', $session->readSession('test'));
+        $this->assertEquals('', $session->readSession('expire'));
+        $this->assertEquals('new data', $session->readSession('new'));
     }
-    
+
     /**
      * @depends testReadWrite
      */
