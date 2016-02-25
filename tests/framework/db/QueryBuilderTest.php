@@ -13,6 +13,7 @@ use yii\db\mssql\QueryBuilder as MssqlQueryBuilder;
 use yii\db\pgsql\QueryBuilder as PgsqlQueryBuilder;
 use yii\db\cubrid\QueryBuilder as CubridQueryBuilder;
 use yii\db\oci\QueryBuilder as OracleQueryBuilder;
+use yii\test\TraversableObject;
 
 abstract class QueryBuilderTest extends DatabaseTestCase
 {
@@ -1023,6 +1024,29 @@ abstract class QueryBuilderTest extends DatabaseTestCase
             [ ['in', 'id', (new Query())->select('id')->from('users')->where(['active' => 1])], '[[id]] IN (SELECT [[id]] FROM [[users]] WHERE [[active]]=:qp0)', [':qp0' => 1] ],
             [ ['not in', 'id', (new Query())->select('id')->from('users')->where(['active' => 1])], '[[id]] NOT IN (SELECT [[id]] FROM [[users]] WHERE [[active]]=:qp0)', [':qp0' => 1] ],
 
+            [ ['in', 'id', [1]], '[[id]]=:qp0', [':qp0' => 1] ],
+            [ ['in', 'id', new TraversableObject([1])], '[[id]]=:qp0', [':qp0' => 1] ],
+            // composite in
+            [
+                ['in', ['id', 'name'], [['id' =>1, 'name' => 'oy']]],
+                '([[id]], [[name]]) IN ((:qp0, :qp1))',
+                [':qp0' => 1, ':qp1' => 'oy']
+            ],
+
+            // in using array objects.
+            [ ['id' => new TraversableObject([1, 2])], '[[id]] IN (:qp0, :qp1)', [':qp0' => 1, ':qp1' => 2] ],
+
+            [ ['in', 'id', new TraversableObject([1, 2, 3])], '[[id]] IN (:qp0, :qp1, :qp2)', [':qp0' => 1, ':qp1' => 2, ':qp2' => 3] ],
+
+            // composite in using array objects.
+            [
+                ['in', new TraversableObject(['id', 'name']), new TraversableObject([
+                    ['id' => 1, 'name' => 'oy'],
+                    ['id' => 2, 'name' => 'yo'],
+                ])],
+                '([[id]], [[name]]) IN ((:qp0, :qp1))',
+                [':qp0' => 1, ':qp1' => 'oy', ':qp2' => 2, ':qp3' => 'yo']
+            ],
             // exists
             [ ['exists', (new Query())->select('id')->from('users')->where(['active' => 1])], 'EXISTS (SELECT [[id]] FROM [[users]] WHERE [[active]]=:qp0)', [':qp0' => 1] ],
             [ ['not exists', (new Query())->select('id')->from('users')->where(['active' => 1])], 'NOT EXISTS (SELECT [[id]] FROM [[users]] WHERE [[active]]=:qp0)', [':qp0' => 1] ],
@@ -1046,8 +1070,10 @@ abstract class QueryBuilderTest extends DatabaseTestCase
             // direct conditions
             [ 'a = CONCAT(col1, col2)', 'a = CONCAT(col1, col2)', [] ],
             [ new Expression('a = CONCAT(col1, :param1)', ['param1' => 'value1']), 'a = CONCAT(col1, :param1)', ['param1' => 'value1'] ],
-        ];
 
+
+
+        ];
         switch ($this->driverName) {
             case 'sqlsrv':
             case 'sqlite':
@@ -1345,19 +1371,6 @@ abstract class QueryBuilderTest extends DatabaseTestCase
         $this->assertEquals($expected, $sql);
         $this->assertEquals([':len' => 4], $params);
 
-    }
-
-    public function testCompositeInCondition()
-    {
-        $condition = [
-            'in',
-            ['id', 'name'],
-            [
-                ['id' => 1, 'name' => 'foo'],
-                ['id' => 2, 'name' => 'bar'],
-            ],
-        ];
-        (new Query())->from('customer')->where($condition)->all($this->getConnection());
     }
 
     /**
