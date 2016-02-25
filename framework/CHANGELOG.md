@@ -4,6 +4,7 @@ Yii Framework 2 Change Log
 2.0.8 under development
 -----------------------
 
+- Bug #7717: Fixed the bug that `$properties` parameter in `ArrayHelper::toArray()` was not passed to recursive calls (quantum13)
 - Bug #11088: Fixed bug with column name not being quoted correctly, when a quoted table name or a table name in prefix syntax was used (cebe, edgardmessias, Ni-san)
 - Bug #9074: Fixed JS call `$('#grid').yiiGridView('getSelectedRows')` when `GridView::$showHeader` is set to false (NekitoSP, silverfire)
 - Bug #9935: Fixed `yii\validators\EachValidator` does not invoke `validateAttribute()` method of the embedded validator (klimov-paul)
