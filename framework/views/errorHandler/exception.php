@@ -412,37 +412,6 @@ window.onload = function() {
         hljs.highlightBlock(codeBlocks[i], '    ');
     }
 
-    // code block hover line
-    document.onmousemove = function(e) {
-        var event = e || window.event,
-            clientY = event.clientY,
-            lineFound = false,
-            hoverLines = Sizzle('.hover-line');
-
-        for (var i = 0, imax = codeBlocks.length - 1; i < imax; ++i) {
-            var lines = codeBlocks[i].getClientRects();
-            for (var j = 0, jmax = lines.length; j < jmax; ++j) {
-                if (clientY >= lines[j].top && clientY <= lines[j].bottom) {
-                    lineFound = true;
-                    break;
-                }
-            }
-            if (lineFound) {
-                break;
-            }
-        }
-
-        for (var k = 0, kmax = hoverLines.length; k < kmax; ++k) {
-            hoverLines[k].className = 'hover-line';
-        }
-        if (lineFound) {
-            var line = Sizzle('.call-stack-item:eq(' + i + ') .hover-line:eq(' + j + ')')[0];
-            if (line) {
-                line.className = 'hover-line hover';
-            }
-        }
-    };
-
     var refreshCallStackItemCode = function(callStackItem) {
         if (!Sizzle('pre', callStackItem)[0]) {
             return;
