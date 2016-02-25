@@ -93,7 +93,7 @@ class BaseArrayHelper
                 }
             }
 
-            return $recursive ? static::toArray($result) : $result;
+            return $recursive ? static::toArray($result, $properties) : $result;
         } else {
             return [$object];
         }
