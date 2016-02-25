@@ -6,6 +6,7 @@ Yii Framework 2 Change Log
 
 - Bug #9851: Fixed partial commit / rollback in nested transactions (sammousa)
 - Bug #10850: Fixed unable to use 'definitions' and 'aliases' at `yii\widgets\MaskedInput` (rahimov, klimov-paul)
+- Bug #10884: Fixed MessageFormatter for formatting messages when not all parameters are given (laxity7, cebe)
 - Bug #10946: Fixed parameters binding to the SQL query in `yii\db\mysqlSchema::findConstraints()` (silverfire)
 - Bug: SQlite querybuilder did not create primary key with bigint for `TYPE_BIGPK` (cebe)
 - Enh #5469: Add mimetype validation by mask in FileValidator (kirsenn, samdark, silverfire)
