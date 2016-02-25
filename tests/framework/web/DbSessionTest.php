@@ -3,7 +3,6 @@
 namespace yiiunit\framework\web;
 
 use Yii;
-use yii\db\ActiveQuery;
 use yii\db\Connection;
 use yii\db\Query;
 use yii\web\DbSession;
@@ -56,26 +55,7 @@ class DbSessionTest extends TestCase
         $session->destroySession('test');
         $this->assertEquals('', $session->readSession('test'));
     }
-
-    /**
-     * @depends testReadWrite
-     */
-    public function testGarbageCollection()
-    {
-        $session = new DbSession();
-
-        $session->writeSession('new', 'new data');
-        $session->writeSession('expire', 'expire data');
-
-        $session->db->createCommand()
-            ->update('session', ['expire' => time() - 100], 'id = :id', ['id' => 'expire'])
-            ->execute();
-        $session->gcSession(1);
-
-        $this->assertEquals('', $session->readSession('expire'));
-        $this->assertEquals('new data', $session->readSession('new'));
-    }
-
+    
     /**
      * @depends testReadWrite
      */
