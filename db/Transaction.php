@@ -213,7 +213,7 @@ class Transaction extends \yii\base\Object
     }
 
     /**
-     * @return int The current nesting level of the transaction.
+     * @return integer The current nesting level of the transaction.
      * @since 2.0.8
      */
     public function getLevel()

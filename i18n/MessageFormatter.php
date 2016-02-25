@@ -317,7 +317,7 @@ class MessageFormatter extends Component
      * @param array $token the token to parse
      * @param array $args arguments to replace
      * @param string $locale the locale
-     * @return bool|string parsed token or false on failure
+     * @return boolean|string parsed token or false on failure
      * @throws \yii\base\NotSupportedException when unsupported formatting is used.
      */
     private function parseToken($token, $args, $locale)

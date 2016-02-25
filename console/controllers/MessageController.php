@@ -574,7 +574,7 @@ EOD;
      * Finds out a line of the first non-char PHP token found
      *
      * @param array $tokens
-     * @return int|string
+     * @return integer|string
      * @since 2.0.1
      */
     protected function getLine($tokens)

@@ -164,7 +164,7 @@ class HelpController extends Controller
     /**
      * Validates if the given class is a valid console controller class.
      * @param string $controllerClass
-     * @return bool
+     * @return boolean
      */
     protected function validateControllerClass($controllerClass)
     {
