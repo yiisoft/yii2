@@ -671,7 +671,8 @@ class ArrayHelperTest extends TestCase
         $this->assertFalse(ArrayHelper::isTraversable(new \stdClass()));
         $this->assertFalse(ArrayHelper::isTraversable("A,B,C"));
         $this->assertFalse(ArrayHelper::isTraversable(12));
-        $this->assertFalse(false);
+        $this->assertFalse(ArrayHelper::isTraversable(false));
+        $this->assertFalse(ArrayHelper::isTraversable(null));
     }
 
 
