@@ -46,6 +46,11 @@ class ColumnSchemaBuilder extends Object
      * @var mixed default value of the column.
      */
     protected $default;
+    /**
+     * @var boolean whether the column values should be unsigned. If this is `true`, an `UNSIGNED` keyword will be added.
+     * @since 2.0.7
+     */
+    protected $isUnsigned = false;
 
 
     /**
@@ -105,9 +110,21 @@ class ColumnSchemaBuilder extends Object
     }
 
     /**
+     * Marks column as unsigned.
+     * @return $this
+     * @since 2.0.7
+     */
+    public function unsigned()
+    {
+        $this->isUnsigned = true;
+        return $this;
+    }
+
+    /**
      * Specify the default SQL expression for the column.
      * @param string $default the default value expression.
      * @return $this
+     * @since 2.0.7
      */
     public function defaultExpression($default)
     {
@@ -124,6 +141,7 @@ class ColumnSchemaBuilder extends Object
         return
             $this->type .
             $this->buildLengthString() .
+            $this->buildUnsignedString() .
             $this->buildNotNullString() .
             $this->buildUniqueString() .
             $this->buildDefaultString() .
@@ -202,5 +220,15 @@ class ColumnSchemaBuilder extends Object
     protected function buildCheckString()
     {
         return $this->check !== null ? " CHECK ({$this->check})" : '';
+    }
+
+    /**
+     * Builds the unsigned string for column.
+     * @return string a string containing UNSIGNED keyword.
+     * @since 2.0.7
+     */
+    protected function buildUnsignedString()
+    {
+        return $this->isUnsigned ? ' UNSIGNED' : '';
     }
 }

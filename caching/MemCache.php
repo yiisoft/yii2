@@ -28,7 +28,7 @@ use yii\base\InvalidConfigException;
  *
  * To use MemCache as the cache application component, configure the application as follows,
  *
- * ~~~
+ * ```php
  * [
  *     'components' => [
  *         'cache' => [
@@ -48,7 +48,7 @@ use yii\base\InvalidConfigException;
  *         ],
  *     ],
  * ]
- * ~~~
+ * ```
  *
  * In the above, two memcache servers are used: server1 and server2. You can configure more properties of
  * each server, such as `persistent`, `weight`, `timeout`. Please see [[MemCacheServer]] for available options.
@@ -179,7 +179,7 @@ class MemCache extends Cache
             // $timeout is used for memcache versions that do not have $timeoutms parameter
             $timeout = (int) ($server->timeout / 1000) + (($server->timeout % 1000 > 0) ? 1 : 0);
             if ($paramCount === 9) {
-                $cache->addServer(
+                $cache->addserver(
                     $server->host,
                     $server->port,
                     $server->persistent,
@@ -191,7 +191,7 @@ class MemCache extends Cache
                     $server->timeout
                 );
             } else {
-                $cache->addServer(
+                $cache->addserver(
                     $server->host,
                     $server->port,
                     $server->persistent,
@@ -356,6 +356,9 @@ class MemCache extends Cache
      * Trims duration to 30 days (2592000 seconds).
      * @param integer $duration the number of seconds
      * @return int the duration
+     * @since 2.0.7
+     * @see http://php.net/manual/en/memcache.set.php
+     * @see http://php.net/manual/en/memcached.expiration.php
      */
     protected function trimDuration($duration)
     {

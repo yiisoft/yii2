@@ -141,12 +141,30 @@ abstract class Cache extends Component implements \ArrayAccess
      * Some caches (such as memcache, apc) allow retrieving multiple cached values at the same time,
      * which may improve the performance. In case a cache does not support this feature natively,
      * this method will try to simulate it.
+     *
      * @param string[] $keys list of string keys identifying the cached values
      * @return array list of cached values corresponding to the specified keys. The array
      * is returned in terms of (key, value) pairs.
      * If a value is not cached or expired, the corresponding array value will be false.
+     * @deprecated This method is an alias for [[multiGet()]] and will be removed in 2.1.0.
      */
     public function mget($keys)
+    {
+        return $this->multiGet($keys);
+    }
+
+    /**
+     * Retrieves multiple values from cache with the specified keys.
+     * Some caches (such as memcache, apc) allow retrieving multiple cached values at the same time,
+     * which may improve the performance. In case a cache does not support this feature natively,
+     * this method will try to simulate it.
+     * @param string[] $keys list of string keys identifying the cached values
+     * @return array list of cached values corresponding to the specified keys. The array
+     * is returned in terms of (key, value) pairs.
+     * If a value is not cached or expired, the corresponding array value will be false.
+     * @since 2.0.7
+     */
+    public function multiGet($keys)
     {
         $keyMap = [];
         foreach ($keys as $key) {
@@ -213,8 +231,27 @@ abstract class Cache extends Component implements \ArrayAccess
      * the corresponding values in the cache will be invalidated when it is fetched via [[get()]].
      * This parameter is ignored if [[serializer]] is false.
      * @return boolean whether the items are successfully stored into cache
+     * @deprecated This method is an alias for [[multiSet()]] and will be removed in 2.1.0.
      */
     public function mset($items, $duration = 0, $dependency = null)
+    {
+        return $this->multiSet($items, $duration, $dependency);
+    }
+
+    /**
+     * Stores multiple items in cache. Each item contains a value identified by a key.
+     * If the cache already contains such a key, the existing value and
+     * expiration time will be replaced with the new ones, respectively.
+     *
+     * @param array $items the items to be cached, as key-value pairs.
+     * @param integer $duration default number of seconds in which the cached values will expire. 0 means never expire.
+     * @param Dependency $dependency dependency of the cached items. If the dependency changes,
+     * the corresponding values in the cache will be invalidated when it is fetched via [[get()]].
+     * This parameter is ignored if [[serializer]] is false.
+     * @return boolean whether the items are successfully stored into cache
+     * @since 2.0.7
+     */
+    public function multiSet($items, $duration = 0, $dependency = null)
     {
         if ($dependency !== null && $this->serializer !== false) {
             $dependency->evaluateDependency($this);
@@ -245,8 +282,26 @@ abstract class Cache extends Component implements \ArrayAccess
      * the corresponding values in the cache will be invalidated when it is fetched via [[get()]].
      * This parameter is ignored if [[serializer]] is false.
      * @return boolean whether the items are successfully stored into cache
+     * @deprecated This method is an alias for [[multiAdd()]] and will be removed in 2.1.0.
      */
     public function madd($items, $duration = 0, $dependency = null)
+    {
+        return $this->multiAdd($items, $duration, $dependency);
+    }
+
+    /**
+     * Stores multiple items in cache. Each item contains a value identified by a key.
+     * If the cache already contains such a key, the existing value and expiration time will be preserved.
+     *
+     * @param array $items the items to be cached, as key-value pairs.
+     * @param integer $duration default number of seconds in which the cached values will expire. 0 means never expire.
+     * @param Dependency $dependency dependency of the cached items. If the dependency changes,
+     * the corresponding values in the cache will be invalidated when it is fetched via [[get()]].
+     * This parameter is ignored if [[serializer]] is false.
+     * @return boolean whether the items are successfully stored into cache
+     * @since 2.0.7
+     */
+    public function multiAdd($items, $duration = 0, $dependency = null)
     {
         if ($dependency !== null && $this->serializer !== false) {
             $dependency->evaluateDependency($this);

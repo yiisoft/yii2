@@ -7,11 +7,14 @@
 
 namespace yii\caching;
 
+use yii\base\InvalidConfigException;
+
 /**
  * ApcCache provides APC caching in terms of an application component.
  *
  * To use this application component, the [APC PHP extension](http://www.php.net/apc) must be loaded.
- * In order to enable APC for CLI you should add "apc.enable_cli = 1" to your php.ini.
+ * Alternatively [APCu PHP extension](http://www.php.net/apcu) could be used via setting `useApcu` to `true`.
+ * In order to enable APC or APCu for CLI you should add "apc.enable_cli = 1" to your php.ini.
  *
  * See [[Cache]] for common cache operations that ApcCache supports.
  *
@@ -20,6 +23,29 @@ namespace yii\caching;
  */
 class ApcCache extends Cache
 {
+    /**
+     * @var boolean whether to use apcu or apc as the underlying caching extension.
+     * If true, [apcu](http://pecl.php.net/package/apcu) will be used.
+     * If false, [apc](http://pecl.php.net/package/apc) will be used.
+     * Defaults to false.
+     * @since 2.0.7
+     */
+    public $useApcu = false;
+
+
+    /**
+     * Initializes this application component.
+     * It checks if extension required is loaded.
+     */
+    public function init()
+    {
+        parent::init();
+        $extension = $this->useApcu ? 'apcu' : 'apc';
+        if (!extension_loaded($extension)) {
+            throw new InvalidConfigException("ApcCache requires PHP $extension extension to be loaded.");
+        }
+    }
+
     /**
      * Checks whether a specified key exists in the cache.
      * This can be faster than getting the value from the cache if the data is big.
@@ -34,7 +60,7 @@ class ApcCache extends Cache
     {
         $key = $this->buildKey($key);
 
-        return apc_exists($key);
+        return $this->useApcu ? apcu_exists($key) : apc_exists($key);
     }
 
     /**
@@ -45,7 +71,7 @@ class ApcCache extends Cache
      */
     protected function getValue($key)
     {
-        return apc_fetch($key);
+        return $this->useApcu ? apcu_fetch($key) : apc_fetch($key);
     }
 
     /**
@@ -55,7 +81,7 @@ class ApcCache extends Cache
      */
     protected function getValues($keys)
     {
-        $values = apc_fetch($keys);
+        $values = $this->useApcu ? apcu_fetch($keys) : apc_fetch($keys);
         return is_array($values) ? $values : [];
     }
 
@@ -70,7 +96,7 @@ class ApcCache extends Cache
      */
     protected function setValue($key, $value, $duration)
     {
-        return apc_store($key, $value, $duration);
+        return $this->useApcu ? apcu_store($key, $value, $duration) : apc_store($key, $value, $duration);
     }
 
     /**
@@ -81,7 +107,7 @@ class ApcCache extends Cache
      */
     protected function setValues($data, $duration)
     {
-        $result = apc_store($data, null, $duration);
+        $result = $this->useApcu ? apcu_store($data, null, $duration) : apc_store($data, null, $duration);
         return is_array($result) ? array_keys($result) : [];
     }
 
@@ -95,7 +121,7 @@ class ApcCache extends Cache
      */
     protected function addValue($key, $value, $duration)
     {
-        return apc_add($key, $value, $duration);
+        return $this->useApcu ? apcu_add($key, $value, $duration) : apc_add($key, $value, $duration);
     }
 
     /**
@@ -106,7 +132,7 @@ class ApcCache extends Cache
      */
     protected function addValues($data, $duration)
     {
-        $result = apc_add($data, null, $duration);
+        $result = $this->useApcu ? apcu_add($data, null, $duration) : apc_add($data, null, $duration);
         return is_array($result) ? array_keys($result) : [];
     }
 
@@ -118,7 +144,7 @@ class ApcCache extends Cache
      */
     protected function deleteValue($key)
     {
-        return apc_delete($key);
+        return $this->useApcu ? apcu_delete($key) : apc_delete($key);
     }
 
     /**
@@ -128,10 +154,6 @@ class ApcCache extends Cache
      */
     protected function flushValues()
     {
-        if (extension_loaded('apcu')) {
-            return apc_clear_cache();
-        } else {
-            return apc_clear_cache('user');
-        }
+        return $this->useApcu ? apcu_clear_cache() : apc_clear_cache('user');
     }
 }

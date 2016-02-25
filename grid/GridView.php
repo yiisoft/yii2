@@ -569,7 +569,7 @@ class GridView extends BaseListView
         $model = reset($models);
         if (is_array($model) || is_object($model)) {
             foreach ($model as $name => $value) {
-                $this->columns[] = $name;
+                $this->columns[] = (string) $name;
             }
         }
     }

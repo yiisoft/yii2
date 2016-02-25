@@ -17,9 +17,12 @@ use yii\base\InvalidConfigException;
  * and save the processed value back to the attribute. The filter must be
  * a valid PHP callback with the following signature:
  *
- * ~~~
- * function foo($value) {...return $newValue; }
- * ~~~
+ * ```php
+ * function foo($value) {
+ *     // compute $newValue here
+ *     return $newValue;
+ * }
+ * ```
  *
  * Many PHP functions qualify this signature (e.g. `trim()`).
  *
@@ -34,9 +37,12 @@ class FilterValidator extends Validator
      * @var callable the filter. This can be a global function name, anonymous function, etc.
      * The function signature must be as follows,
      *
-     * ~~~
-     * function foo($value) {...return $newValue; }
-     * ~~~
+     * ```php
+     * function foo($value) {
+     *     // compute $newValue here
+     *     return $newValue;
+     * }
+     * ```
      */
     public $filter;
     /**

@@ -187,7 +187,7 @@ class BaseStringHelper
         }
         $context = new \HTMLPurifier_Context();
         $generator = new \HTMLPurifier_Generator($config, $context);
-        return $generator->generateFromTokens($truncated) . $suffix;
+        return $generator->generateFromTokens($truncated) . ($totalCount >= $count ? $suffix : '');
     }
 
     /**
