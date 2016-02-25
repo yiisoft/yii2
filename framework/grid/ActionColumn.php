@@ -183,7 +183,7 @@ class ActionColumn extends Column
 
                 if (isset($this->buttonOptions['delete']))
                     $options = array_merge($options, $this->buttonOptions['delete']);
-
+                
                 return Html::a('<span class="glyphicon glyphicon-trash"></span>', $url, $options);
             };
         }
