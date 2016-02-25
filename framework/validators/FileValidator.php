@@ -8,6 +8,9 @@
 namespace yii\validators;
 
 use Yii;
+use yii\helpers\Html;
+use yii\helpers\Json;
+use yii\web\JsExpression;
 use yii\web\UploadedFile;
 use yii\helpers\FileHelper;
 
@@ -41,8 +44,9 @@ class FileValidator extends Validator
      * @var array|string a list of file MIME types that are allowed to be uploaded.
      * This can be either an array or a string consisting of file MIME types
      * separated by space or comma (e.g. "text/plain, image/png").
-     * Mime type names are case-insensitive. Defaults to null, meaning all MIME types
-     * are allowed.
+     * The mask with the special character `*` can be used to match groups of mime types.
+     * For example `image/*` will pass all mime types, that begin with `image/` (e.g. `image/jpeg`, `image/png`).
+     * Mime type names are case-insensitive. Defaults to null, meaning all MIME types are allowed.
      * @see wrongMimeType for the customized message for wrong MIME type.
      */
     public $mimeTypes;
@@ -127,7 +131,7 @@ class FileValidator extends Validator
     public $wrongExtension;
     /**
      * @var string the error message used when the file has an mime type
-     * that is not listed in [[mimeTypes]].
+     * that is not allowed by [[mimeTypes]] property.
      * You may use the following tokens in the message:
      *
      * - {attribute}: the attribute name
@@ -246,7 +250,7 @@ class FileValidator extends Validator
                     ];
                 } elseif (!empty($this->extensions) && !$this->validateExtension($file)) {
                     return [$this->wrongExtension, ['file' => $file->name, 'extensions' => implode(', ', $this->extensions)]];
-                } elseif (!empty($this->mimeTypes) &&  !in_array(FileHelper::getMimeType($file->tempName), $this->mimeTypes, false)) {
+                } elseif (!empty($this->mimeTypes) &&  !$this->validateMimeType($file)) {
                     return [$this->wrongMimeType, ['file' => $file->name, 'mimeTypes' => implode(', ', $this->mimeTypes)]];
                 } else {
                     return null;
@@ -376,7 +380,7 @@ class FileValidator extends Validator
     {
         ValidationAsset::register($view);
         $options = $this->getClientOptions($model, $attribute);
-        return 'yii.validation.file(attribute, messages, ' . json_encode($options, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE) . ');';
+        return 'yii.validation.file(attribute, messages, ' . Json::encode($options) . ');';
     }
 
     /**
@@ -405,7 +409,11 @@ class FileValidator extends Validator
         }
 
         if ($this->mimeTypes !== null) {
-            $options['mimeTypes'] = $this->mimeTypes;
+            $mimeTypes = [];
+            foreach ($this->mimeTypes as $mimeType) {
+                $mimeTypes[] = new JsExpression(Html::escapeJsRegularExpression($this->buildMimeTypeRegexp($mimeType)));
+            }
+            $options['mimeTypes'] = $mimeTypes;
             $options['wrongMimeType'] = Yii::$app->getI18n()->format($this->wrongMimeType, [
                 'attribute' => $label,
                 'mimeTypes' => implode(', ', $this->mimeTypes),
@@ -447,5 +455,43 @@ class FileValidator extends Validator
         }
 
         return $options;
+    }
+
+    /**
+     * Builds the RegExp from the $mask
+     *
+     * @param string $mask
+     * @return string the regular expression
+     * @see mimeTypes
+     */
+    private function buildMimeTypeRegexp($mask)
+    {
+        return '/^' . str_replace('\*', '.*', preg_quote($mask, '/')) . '$/';
+    }
+
+    /**
+     * Checks the mimeType of the $file against the list in the [[mimeTypes]] property
+     *
+     * @param UploadedFile $file
+     * @return boolean whether the $file mimeType is allowed
+     * @throws \yii\base\InvalidConfigException
+     * @see mimeTypes
+     * @since 2.0.8
+     */
+    protected function validateMimeType($file)
+    {
+        $fileMimeType = FileHelper::getMimeType($file->tempName);
+
+        foreach ($this->mimeTypes as $mimeType) {
+            if ($mimeType === $fileMimeType) {
+                return true;
+            }
+
+            if (strpos($mimeType, '*') !== false && preg_match($this->buildMimeTypeRegexp($mimeType), $fileMimeType)) {
+                return true;
+            }
+        }
+
+        return false;
     }
 }
