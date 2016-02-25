@@ -144,8 +144,8 @@ yii = (function ($) {
          * @param $e the jQuery representation of the element
          */
         handleAction: function ($e, event) {
-            var method = $e.data('method'),
-                $form = $e.closest('form'),
+            var $form = $e.attr('data-form') ? $('#' + $e.attr('data-form')) : $e.closest('form'),
+                method = !$e.data('method') && $form ? $form.attr('method') : $e.data('method'),
                 action = $e.attr('href'),
                 params = $e.data('params'),
                 pjax = $e.data('pjax'),
@@ -345,9 +345,10 @@ yii = (function ($) {
         var handler = function (event) {
             var $this = $(this),
                 method = $this.data('method'),
-                message = $this.data('confirm');
+                message = $this.data('confirm'),
+                form = $this.data('form');
 
-            if (method === undefined && message === undefined) {
+            if (method === undefined && message === undefined && form === undefined) {
                 return true;
             }
 
