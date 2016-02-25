@@ -372,7 +372,7 @@ class Query extends Component implements QueryInterface
      * Restores the value of select to make this query reusable.
      * @param string|Expression $selectExpression
      * @param Connection|null $db
-     * @return bool|string
+     * @return boolean|string
      */
     protected function queryScalar($selectExpression, $db)
     {

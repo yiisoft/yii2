@@ -186,7 +186,7 @@ class Controller extends \yii\base\Controller
      * ```
      *
      * @param string $string the string to print
-     * @return int|boolean Number of bytes printed or false on error
+     * @return integer|boolean Number of bytes printed or false on error
      */
     public function stdout($string)
     {
@@ -211,7 +211,7 @@ class Controller extends \yii\base\Controller
      * ```
      *
      * @param string $string the string to print
-     * @return int|boolean Number of bytes printed or false on error
+     * @return integer|boolean Number of bytes printed or false on error
      */
     public function stderr($string)
     {
