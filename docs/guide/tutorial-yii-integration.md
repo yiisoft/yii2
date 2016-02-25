@@ -89,6 +89,22 @@ to install Yii:
 The first command installs the [composer asset plugin](https://github.com/francoispluchino/composer-asset-plugin/)
 which allows managing bower and npm package dependencies through Composer. Even if you only want to use the database
 layer or other non-asset related features of Yii, this is required to install the Yii composer package.
+
+If you want to use the [Asset publishing feature of Yii](structure-assets.md) you should also add the following configuration
+to the `extra` section in your `composer.json`:
+
+```json
+{
+    ...
+    "extra": {
+        "asset-installer-paths": {
+            "npm-asset-library": "vendor/npm",
+            "bower-asset-library": "vendor/bower"
+        }
+    }
+}
+```
+
 See also the general [section about installing Yii](start-installation.md#installing-via-composer) for more information
 on Composer and solution to possible issues popping up during the installation.
 
