@@ -1105,15 +1105,13 @@ class QueryBuilder extends \yii\base\Object
 
         list($column, $values) = $operands;
 
-        if ($values === [] || $column === []) {
+        if ($column === []) {
             return $operator === 'IN' ? '0=1' : '';
         }
 
         if ($values instanceof Query) {
             return $this->buildSubqueryInCondition($operator, $column, $values, $params);
         }
-
-        $values = ArrayHelper::toArray($values);
 
         if (count($column) > 1) {
             return $this->buildCompositeInCondition($operator, $column, $values, $params);
@@ -1122,32 +1120,38 @@ class QueryBuilder extends \yii\base\Object
         if (is_array($column)) {
             $column = reset($column);
         }
+
+        $sqlValues = [];
         foreach ($values as $i => $value) {
-            if (is_array($value)) {
+            if (is_array($value) || $value instanceof \ArrayAccess) {
                 $value = isset($value[$column]) ? $value[$column] : null;
             }
             if ($value === null) {
-                $values[$i] = 'NULL';
+                $sqlValues[$i] = 'NULL';
             } elseif ($value instanceof Expression) {
-                $values[$i] = $value->expression;
+                $sqlValues[$i] = $value->expression;
                 foreach ($value->params as $n => $v) {
                     $params[$n] = $v;
                 }
             } else {
                 $phName = self::PARAM_PREFIX . count($params);
                 $params[$phName] = $value;
-                $values[$i] = $phName;
+                $sqlValues[$i] = $phName;
             }
         }
+        if (empty($sqlValues)) {
+            return $operator === 'IN' ? '0=1' : '';
+        }
+
         if (strpos($column, '(') === false) {
             $column = $this->db->quoteColumnName($column);
         }
 
         if (count($values) > 1) {
-            return "$column $operator (" . implode(', ', $values) . ')';
+            return "$column $operator (" . implode(', ', $sqlValues) . ')';
         } else {
             $operator = $operator === 'IN' ? '=' : '<>';
-            return $column . $operator . reset($values);
+            return $column . $operator . reset($sqlValues);
         }
     }
 
@@ -1203,6 +1207,10 @@ class QueryBuilder extends \yii\base\Object
             }
             $vss[] = '(' . implode(', ', $vs) . ')';
         }
+
+        if (empty($vss)) {
+            return $operator === 'IN' ? '0=1' : '';
+        };
 
         $sqlColumns = [];
         foreach ($columns as $i => $column) {

@@ -235,6 +235,24 @@ class QueryBuilderTest extends DatabaseTestCase
             [ ['in', 'id', (new Query())->select('id')->from('users')->where(['active' => 1])], '[[id]] IN (SELECT [[id]] FROM [[users]] WHERE [[active]]=:qp0)', [':qp0' => 1] ],
             [ ['not in', 'id', (new Query())->select('id')->from('users')->where(['active' => 1])], '[[id]] NOT IN (SELECT [[id]] FROM [[users]] WHERE [[active]]=:qp0)', [':qp0' => 1] ],
 
+            // composite in
+            [
+                ['in', ['id', 'name'], [['id' =>1, 'name' => 'oy']]],
+                '([[id]], [[name]]) IN ((:qp0, :qp1))',
+                [':qp0' => 1, ':qp1' => 'oy']
+            ],
+
+            // in using array objects.
+            [ ['id' => new \ArrayIterator([1, 2])], '[[id]] IN (:qp0, :qp1)', [':qp0' => 1, ':qp1' => 2] ],
+
+            [ ['in', 'id', new \ArrayIterator([1, 2, 3])], '[[id]] IN (:qp0, :qp1, :qp2)', [':qp0' => 1, ':qp1' => 2, ':qp2' => 3] ],
+
+            // composite in using array objects.
+            [
+                ['in', new \ArrayIterator(['id', 'name']), new \ArrayIterator([['id' => 1, 'name' => 'oy']])],
+                '([[id]], [[name]]) IN ((:qp0, :qp1))',
+                [':qp0' => 1, ':qp1' => 'oy']
+            ],
             // exists
             [ ['exists', (new Query())->select('id')->from('users')->where(['active' => 1])], 'EXISTS (SELECT [[id]] FROM [[users]] WHERE [[active]]=:qp0)', [':qp0' => 1] ],
             [ ['not exists', (new Query())->select('id')->from('users')->where(['active' => 1])], 'NOT EXISTS (SELECT [[id]] FROM [[users]] WHERE [[active]]=:qp0)', [':qp0' => 1] ],
@@ -259,7 +277,10 @@ class QueryBuilderTest extends DatabaseTestCase
             [ 'a = CONCAT(col1, col2)', 'a = CONCAT(col1, col2)', [] ],
             [ new Expression('a = CONCAT(col1, :param1)', ['param1' => 'value1']), 'a = CONCAT(col1, :param1)', ['param1' => 'value1'] ],
 
-            [ ['id' => new \ArrayObject([1, 2])], '[[id]] IN (:qp0, :qp1)', [':qp0' => 1, ':qp1' => 2] ],
+
+
+        //[ ['id' => new \ArrayIterator([1, 2])], '[[id]] IN (:qp0, :qp1)', [':qp0' => 1, ':qp1' => 2] ],
+
         ];
 
         switch ($this->driverName) {
@@ -575,10 +596,10 @@ class QueryBuilderTest extends DatabaseTestCase
 
         $condition = [
             'in',
-            new \ArrayObject(['id', 'name']),
-            new \ArrayObject([
-                new \ArrayObject(['id' => 1, 'name' => 'foo']),
-                new \ArrayObject(['id' => 2, 'name' => 'bar']),
+            new \ArrayIterator(['id', 'name']),
+            new \ArrayIterator([
+                new \ArrayIterator(['id' => 1, 'name' => 'foo']),
+                new \ArrayIterator(['id' => 2, 'name' => 'bar']),
             ]),
         ];
         (new Query())->from('customer')->where($condition)->all($this->getConnection());
