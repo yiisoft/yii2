@@ -212,7 +212,7 @@ CODE;
         $class = 'm' . gmdate('ymd_His') . '_' . $migrationName;
         $this->runMigrateControllerAction('create', [
             $migrationName,
-            'fields' => 'title:string(10):notNull:unique:defaultValue("test"),body:text:notNull'
+            'fields' => 'title:string(10):notNull:unique:defaultValue("test"),body:text:notNull,price:money(11,2):notNull'
         ]);
         $file = $this->parseNameClassMigration($class);
 
@@ -228,7 +228,8 @@ class {$class} extends Migration
         \$this->createTable('test', [
             'id' => \$this->primaryKey(),
             'title' => \$this->string(10)->notNull()->unique()->defaultValue("test"),
-            'body' => \$this->text()->notNull()
+            'body' => \$this->text()->notNull(),
+            'price' => \$this->money(11,2)->notNull()
         ]);
     }
 
@@ -244,7 +245,7 @@ CODE;
         $class = 'm' . gmdate('ymd_His') . '_' . $migrationName;
         $this->runMigrateControllerAction('create', [
             $migrationName,
-            'fields' => 'title:primaryKey,body:text:notNull',
+            'fields' => 'title:primaryKey,body:text:notNull,price:money(11,2)',
         ]);
         $file = $this->parseNameClassMigration($class);
         $code = <<<CODE
@@ -258,7 +259,8 @@ class {$class} extends Migration
     {
         \$this->createTable('test', [
             'title' => \$this->primaryKey(),
-            'body' => \$this->text()->notNull()
+            'body' => \$this->text()->notNull(),
+            'price' => \$this->money(11,2)
         ]);
     }
 
@@ -335,7 +337,7 @@ CODE;
         $class = 'm' . gmdate('ymd_His') . '_' . $migrationName;
         $this->runMigrateControllerAction('create', [
             $migrationName,
-            'fields' => 'body:text:notNull'
+            'fields' => 'body:text:notNull,price:money(11,2)'
         ]);
         $file = $this->parseNameClassMigration($class);
         $code = <<<CODE
@@ -354,37 +356,8 @@ class {$class} extends Migration
     {
         \$this->createTable('test', [
             'id' => \$this->primaryKey(),
-            'body' => \$this->text()->notNull()
-        ]);
-    }
-}
-
-CODE;
-        $this->assertEqualsWithoutLE($code, $file);
-
-        $class = 'm' . gmdate('ymd_His') . '_' . $migrationName;
-        $this->runMigrateControllerAction('create', [
-            $migrationName,
-            'fields' => 'title:primaryKey,body:text:notNull'
-        ]);
-        $file = $this->parseNameClassMigration($class);
-        $code = <<<CODE
-<?php
-
-use yii\db\Migration;
-
-class {$class} extends Migration
-{
-    public function up()
-    {
-        \$this->dropTable('test');
-    }
-
-    public function down()
-    {
-        \$this->createTable('test', [
-            'title' => \$this->primaryKey(),
-            'body' => \$this->text()->notNull()
+            'body' => \$this->text()->notNull(),
+            'price' => \$this->money(11,2)
         ]);
     }
 }
@@ -399,7 +372,7 @@ CODE;
         $class = 'm' . gmdate('ymd_His') . '_' . $migrationName;
         $this->runMigrateControllerAction('create', [
             $migrationName,
-            'fields' => 'title:string(10):notNull,body:text:notNull,created_at:dateTime'
+            'fields' => 'title:string(10):notNull,body:text:notNull,price:money(11,2):notNull,created_at:dateTime'
         ]);
         $file = $this->parseNameClassMigration($class);
 
@@ -414,6 +387,7 @@ class {$class} extends Migration
     {
         \$this->addColumn('test', 'title', \$this->string(10)->notNull());
         \$this->addColumn('test', 'body', \$this->text()->notNull());
+        \$this->addColumn('test', 'price', \$this->money(11,2)->notNull());
         \$this->addColumn('test', 'created_at', \$this->dateTime());
     }
 
@@ -421,6 +395,7 @@ class {$class} extends Migration
     {
         \$this->dropColumn('test', 'title');
         \$this->dropColumn('test', 'body');
+        \$this->dropColumn('test', 'price');
         \$this->dropColumn('test', 'created_at');
     }
 }
@@ -435,7 +410,7 @@ CODE;
         $class = 'm' . gmdate('ymd_His') . '_' . $migrationName;
         $this->runMigrateControllerAction('create', [
             $migrationName,
-            'fields' => 'title:string(10):notNull,body:text:notNull,created_at:dateTime'
+            'fields' => 'title:string(10):notNull,body:text:notNull,price:money(11,2):notNull,created_at:dateTime'
         ]);
         $file = $this->parseNameClassMigration($class);
 
@@ -450,6 +425,7 @@ class {$class} extends Migration
     {
         \$this->dropColumn('test', 'title');
         \$this->dropColumn('test', 'body');
+        \$this->dropColumn('test', 'price');
         \$this->dropColumn('test', 'created_at');
     }
 
@@ -457,38 +433,7 @@ class {$class} extends Migration
     {
         \$this->addColumn('test', 'title', \$this->string(10)->notNull());
         \$this->addColumn('test', 'body', \$this->text()->notNull());
-        \$this->addColumn('test', 'created_at', \$this->dateTime());
-    }
-}
-
-CODE;
-        $this->assertEqualsWithoutLE($code, $file);
-
-        $class = 'm' . gmdate('ymd_His') . '_' . $migrationName;
-        $this->runMigrateControllerAction('create', [
-            $migrationName,
-            'fields' => 'title:string(10):notNull,body:text:notNull,created_at:dateTime'
-        ]);
-        $file = $this->parseNameClassMigration($class);
-
-        $code = <<<CODE
-<?php
-
-use yii\db\Migration;
-
-class {$class} extends Migration
-{
-    public function up()
-    {
-        \$this->dropColumn('test', 'title');
-        \$this->dropColumn('test', 'body');
-        \$this->dropColumn('test', 'created_at');
-    }
-
-    public function down()
-    {
-        \$this->addColumn('test', 'title', \$this->string(10)->notNull());
-        \$this->addColumn('test', 'body', \$this->text()->notNull());
+        \$this->addColumn('test', 'price', \$this->money(11,2)->notNull());
         \$this->addColumn('test', 'created_at', \$this->dateTime());
     }
 }

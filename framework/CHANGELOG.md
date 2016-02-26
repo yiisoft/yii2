@@ -8,6 +8,7 @@ Yii Framework 2 Change Log
 - Bug #10850: Fixed unable to use 'definitions' and 'aliases' at `yii\widgets\MaskedInput` (rahimov, klimov-paul)
 - Bug #10884: Fixed MessageFormatter for formatting messages when not all parameters are given (laxity7, cebe)
 - Bug #10946: Fixed parameters binding to the SQL query in `yii\db\mysqlSchema::findConstraints()` (silverfire)
+- Bug #10969: Fixed generator migration tool with decimal params in column (pana1990)
 - Bug: SQlite querybuilder did not create primary key with bigint for `TYPE_BIGPK` (cebe)
 - Enh #5469: Add mimetype validation by mask in FileValidator (kirsenn, samdark, silverfire)
 - Enh #9893: `yii.js` handleAction enhanced to support for data-form attribute, so links can trigger specific forms (SamMousa)
