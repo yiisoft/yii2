@@ -19,12 +19,12 @@ class OracleQueryBuilderTest extends QueryBuilderTest
      */
     public function columnTypes()
     {
-        return parent::columnTypes() + [
+        return array_merge(parent::columnTypes(), [
             [
                 Schema::TYPE_BOOLEAN . ' DEFAULT 1 NOT NULL',
                 $this->boolean()->notNull()->defaultValue(1),
                 'NUMBER(1) DEFAULT 1 NOT NULL'
             ],
-        ];
+        ]);
     }
 }

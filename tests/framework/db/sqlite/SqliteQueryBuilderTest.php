@@ -16,7 +16,7 @@ class SqliteQueryBuilderTest extends QueryBuilderTest
 
     public function columnTypes()
     {
-        return parent::columnTypes() + [
+        return array_merge(parent::columnTypes(), [
             [
                 Schema::TYPE_PK . '(8)',
                 $this->primaryKey(8)->first()->after('col_before'),
@@ -27,7 +27,7 @@ class SqliteQueryBuilderTest extends QueryBuilderTest
                 $this->primaryKey()->first()->after('col_before'),
                 'integer PRIMARY KEY AUTOINCREMENT NOT NULL'
             ],
-        ];
+        ]);
     }
 
     public function testAddDropPrimaryKey()

@@ -17,7 +17,7 @@ class MysqlQueryBuilderTest extends QueryBuilderTest
      */
     public function columnTypes()
     {
-        return parent::columnTypes() + [
+        return array_merge(parent::columnTypes(), [
         	[
         	    Schema::TYPE_PK . ' AFTER (`col_before`)',
         	    $this->primaryKey()->after('col_before'),
@@ -48,6 +48,6 @@ class MysqlQueryBuilderTest extends QueryBuilderTest
         	    $this->primaryKey(8)->first()->after('col_before'),
         	    'int(8) NOT NULL AUTO_INCREMENT PRIMARY KEY FIRST'
         	],
-        ];
+        ]);
     }
 }

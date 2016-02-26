@@ -19,6 +19,6 @@ class CubridQueryBuilderTest extends QueryBuilderTest
      */
     public function columnTypes()
     {
-        return parent::columnTypes() + [];
+        return array_merge(parent::columnTypes(), []);
     }
 }

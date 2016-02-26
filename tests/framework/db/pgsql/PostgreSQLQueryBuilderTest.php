@@ -15,7 +15,7 @@ class PostgreSQLQueryBuilderTest extends QueryBuilderTest
 
     public function columnTypes()
     {
-        return parent::columnTypes() + [
+        return array_merge(parent::columnTypes(), [
             [
                 Schema::TYPE_BOOLEAN . ' NOT NULL DEFAULT TRUE',
                 $this->boolean()->notNull()->defaultValue(true),
@@ -46,7 +46,7 @@ class PostgreSQLQueryBuilderTest extends QueryBuilderTest
                 $this->timestamp(4),
                 'timestamp(4)'
             ],
-        ];
+        ]);
     }
 
     public function conditionProvider()
