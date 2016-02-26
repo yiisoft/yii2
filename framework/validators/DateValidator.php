@@ -209,6 +209,17 @@ class DateValidator extends Validator
         $value = $model->$attribute;
         $timestamp = $this->parseDateValue($value);
         if ($timestamp === false) {
+            if ($this->timestampAttribute === $attribute) {
+                if ($this->timestampAttributeFormat === null) {
+                    if (ctype_digit($value)) {
+                        return;
+                    }
+                } else {
+                    if ($this->parseDateValueFormat($value, $this->timestampAttributeFormat) !== false) {
+                        return;
+                    }
+                }
+            }
             $this->addError($model, $attribute, $this->message, []);
         } elseif ($this->min !== null && $timestamp < $this->min) {
             $this->addError($model, $attribute, $this->tooSmall, ['min' => $this->minString]);
@@ -248,11 +259,23 @@ class DateValidator extends Validator
      */
     protected function parseDateValue($value)
     {
+        // TODO consider merging these methods into single one at 2.1
+        return $this->parseDateValueFormat($value, $this->format);
+    }
+
+    /**
+     * Parses date string into UNIX timestamp
+     *
+     * @param string $value string representing date
+     * @param string $format expected date format
+     * @return integer|false a UNIX timestamp or `false` on failure.
+     */
+    private function parseDateValueFormat($value, $format)
+    {
         if (is_array($value)) {
             return false;
         }
-        $format = $this->format;
-        if (strncmp($this->format, 'php:', 4) === 0) {
+        if (strncmp($format, 'php:', 4) === 0) {
             $format = substr($format, 4);
         } else {
             if (extension_loaded('intl')) {
