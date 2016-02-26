@@ -493,7 +493,7 @@ class BaseInflector
 
             return transliterator_transliterate($transliterator, $string);
         } else {
-            return str_replace(array_keys(static::$transliteration), static::$transliteration, $string);
+            return strtr($string, static::$transliteration);
         }
     }
 
