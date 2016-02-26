@@ -155,6 +155,13 @@ _MSG_
                 ],
             ],
 
+            // formatting a message that contains params but they are not provided.
+            [
+                'Incorrect password (length must be from {min, number} to {max, number} symbols).',
+                'Incorrect password (length must be from {min, number} to {max, number} symbols).',
+                ['attribute' => 'password'],
+            ],
+
             // some parser specific verifications
             [
                 '{gender} and {gender, select, female{she} male{{he}} other{it}} loves {nr} is {gender}!',

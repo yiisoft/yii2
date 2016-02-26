@@ -2,6 +2,7 @@
 
 namespace yiiunit\framework\db;
 
+use PDO;
 use yii\caching\FileCache;
 use yii\db\Expression;
 use yii\db\Schema;
@@ -12,10 +13,25 @@ use yii\db\Schema;
  */
 class SchemaTest extends DatabaseTestCase
 {
-    public function testGetTableNames()
+    public function pdoAttributesProvider()
     {
+        return [
+            [[PDO::ATTR_EMULATE_PREPARES => true]],
+            [[PDO::ATTR_EMULATE_PREPARES => false]],
+        ];
+    }
+
+    /**
+     * @dataProvider pdoAttributesProvider
+     */
+    public function testGetTableNames($pdoAttributes)
+    {
+        $connection = $this->getConnection();
+        foreach($pdoAttributes as $name => $value) {
+            $connection->pdo->setAttribute($name, $value);
+        }
         /* @var $schema Schema */
-        $schema = $this->getConnection()->schema;
+        $schema = $connection->schema;
 
         $tables = $schema->getTableNames();
         $this->assertTrue(in_array('customer', $tables));
@@ -28,10 +44,17 @@ class SchemaTest extends DatabaseTestCase
         $this->assertTrue(in_array('animal_view', $tables));
     }
 
-    public function testGetTableSchemas()
+    /**
+     * @dataProvider pdoAttributesProvider
+     */
+    public function testGetTableSchemas($pdoAttributes)
     {
+        $connection = $this->getConnection();
+        foreach($pdoAttributes as $name => $value) {
+            $connection->pdo->setAttribute($name, $value);
+        }
         /* @var $schema Schema */
-        $schema = $this->getConnection()->schema;
+        $schema = $connection->schema;
 
         $tables = $schema->getTableSchemas();
         $this->assertEquals(count($schema->getTableNames()), count($tables));

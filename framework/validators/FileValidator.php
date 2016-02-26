@@ -324,7 +324,7 @@ class FileValidator extends Validator
      * Converts php.ini style size to bytes
      *
      * @param string $sizeStr $sizeStr
-     * @return int
+     * @return integer
      */
     private function sizeToBytes($sizeStr)
     {

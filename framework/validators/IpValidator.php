@@ -535,7 +535,7 @@ class IpValidator extends Validator
      * @param string $ip an IPv4 or IPv6 address
      * @param integer $cidr
      * @param string $range subnet in CIDR format e.g. `10.0.0.0/8` or `2001:af::/64`
-     * @return bool
+     * @return boolean
      */
     private function inRange($ip, $cidr, $range)
     {

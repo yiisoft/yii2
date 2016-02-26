@@ -159,7 +159,10 @@ trait ActiveQueryTrait
      */
     public function findWith($with, &$models)
     {
-        $primaryModel = new $this->modelClass;
+        $primaryModel = reset($models);
+        if (!$primaryModel instanceof ActiveRecordInterface) {
+            $primaryModel = new $this->modelClass;
+        }
         $relations = $this->normalizeRelations($primaryModel, $with);
         /* @var $relation ActiveQuery */
         foreach ($relations as $name => $relation) {

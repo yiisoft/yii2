@@ -169,6 +169,13 @@ _MSG_
                 'select format is available in ICU > 4.4'
             ],
 
+            // formatting a message that contains params but they are not provided.
+            [
+                'Incorrect password (length must be from {min, number} to {max, number} symbols).',
+                'Incorrect password (length must be from {min, number} to {max, number} symbols).',
+                ['attribute' => 'password'],
+            ],
+
             // test ICU version compatibility
             [
                 'Showing <b>{begin, number}-{end, number}</b> of <b>{totalCount, number}</b> {totalCount, plural, one{item} other{items}}.',
