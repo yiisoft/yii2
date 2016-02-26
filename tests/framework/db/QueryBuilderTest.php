@@ -82,387 +82,405 @@ class QueryBuilderTest extends DatabaseTestCase
      */
     public function columnTypes()
     {
-        return [
+        $items = [
             [
                 Schema::TYPE_PK,
                 $this->primaryKey(),
-                'int(11) NOT NULL AUTO_INCREMENT PRIMARY KEY'
+                [
+                    'mysql' => 'int(11) NOT NULL AUTO_INCREMENT PRIMARY KEY',
+                ]
             ],
-            [
-                Schema::TYPE_PK . '(8)',
-                $this->primaryKey(8),
-                'int(8) NOT NULL AUTO_INCREMENT PRIMARY KEY'
-            ],
-            [
-                Schema::TYPE_PK . ' CHECK (value > 5)',
-                $this->primaryKey()->check('value > 5'),
-                'int(11) NOT NULL AUTO_INCREMENT PRIMARY KEY CHECK (value > 5)'
-            ],
-            [
-                Schema::TYPE_PK . '(8) CHECK (value > 5)',
-                $this->primaryKey(8)->check('value > 5'),
-                'int(8) NOT NULL AUTO_INCREMENT PRIMARY KEY CHECK (value > 5)'
-            ],
-            [
-                Schema::TYPE_PK . ' FIRST',
-                $this->primaryKey()->first(),
-                'int(11) NOT NULL AUTO_INCREMENT PRIMARY KEY FIRST'
-            ],
-            [
-                Schema::TYPE_PK . '(8) FIRST',
-                $this->primaryKey(8)->first(),
-                'int(8) NOT NULL AUTO_INCREMENT PRIMARY KEY FIRST'
-            ],
-            [
-                Schema::TYPE_PK . ' AFTER (`col_before`)',
-                $this->primaryKey()->after('col_before'),
-                'int(11) NOT NULL AUTO_INCREMENT PRIMARY KEY AFTER (`col_before`)'
-            ],
-            [
-                Schema::TYPE_PK . '(8) AFTER (`col_before`)',
-                $this->primaryKey(8)->after('col_before'),
-                'int(8) NOT NULL AUTO_INCREMENT PRIMARY KEY AFTER (`col_before`)'
-            ],
-            [
-                Schema::TYPE_PK . ' FIRST',
-                $this->primaryKey()->first()->after('col_before'),
-                'int(11) NOT NULL AUTO_INCREMENT PRIMARY KEY FIRST'
-            ],
-            [
-                Schema::TYPE_PK . '(8) FIRST',
-                $this->primaryKey(8)->first()->after('col_before'),
-                'int(8) NOT NULL AUTO_INCREMENT PRIMARY KEY FIRST'
-            ],
+            // [
+            //     Schema.TYPE_PK ~ '(8)',
+            //     @primaryKey(8),
+            //     'int(8) NOT NULL AUTO_INCREMENT PRIMARY KEY'
+            // ],
+            // [
+            //     Schema.TYPE_PK ~ ' CHECK (value > 5)',
+            //     @primaryKey().check('value > 5'),
+            //     'int(11) NOT NULL AUTO_INCREMENT PRIMARY KEY CHECK (value > 5)'
+            // ],
+            // [
+            //     Schema.TYPE_PK ~ '(8) CHECK (value > 5)',
+            //     @primaryKey(8).check('value > 5'),
+            //     'int(8) NOT NULL AUTO_INCREMENT PRIMARY KEY CHECK (value > 5)'
+            // ],
+            // [
+            //     Schema.TYPE_PK ~ ' FIRST',
+            //     @primaryKey().first(),
+            //     'int(11) NOT NULL AUTO_INCREMENT PRIMARY KEY FIRST'
+            // ],
+            // [
+            //     Schema.TYPE_PK ~ '(8) FIRST',
+            //     @primaryKey(8).first(),
+            //     'int(8) NOT NULL AUTO_INCREMENT PRIMARY KEY FIRST'
+            // ],
+            // [
+            //     Schema.TYPE_PK ~ ' AFTER (`col_before`)',
+            //     @primaryKey().after('col_before'),
+            //     'int(11) NOT NULL AUTO_INCREMENT PRIMARY KEY AFTER (`col_before`)'
+            // ],
+            // [
+            //     Schema.TYPE_PK ~ '(8) AFTER (`col_before`)',
+            //     @primaryKey(8).after('col_before'),
+            //     'int(8) NOT NULL AUTO_INCREMENT PRIMARY KEY AFTER (`col_before`)'
+            // ],
+            // [
+            //     Schema.TYPE_PK ~ ' FIRST',
+            //     @primaryKey().first().after('col_before'),
+            //     'int(11) NOT NULL AUTO_INCREMENT PRIMARY KEY FIRST'
+            // ],
+            // [
+            //     Schema.TYPE_PK ~ '(8) FIRST',
+            //     @primaryKey(8).first().after('col_before'),
+            //     'int(8) NOT NULL AUTO_INCREMENT PRIMARY KEY FIRST'
+            // ],
             [
                 Schema::TYPE_UNSIGNEDPK,
                 $this->unsignedPrimaryKey(),
-                'int(11) UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY'
+                [
+                    'mysql' => 'int(11) UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY',
+                ]
             ],
-            [
-                Schema::TYPE_UNSIGNEDPK . '(20)',
-                $this->unsignedPrimaryKey(20),
-                'int(20) UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY'
-            ],
-            [
-                Schema::TYPE_CHAR,
-                $this->char(),
-                'char(1)'
-            ],
+            // [
+            //     Schema.TYPE_UNSIGNEDPK ~ '(20)',
+            //     @unsignedPrimaryKey(20),
+            //     'int(20) UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY'
+            // ],
+            // [
+            //     Schema.TYPE_CHAR,
+            //     @char(),
+            //     'char(1)'
+            // ],
             [
                 Schema::TYPE_CHAR . '(6)',
                 $this->char(6),
-                'char(6)'
+                [
+                    'mysql' => 'char(6)',
+                ]
             ],
-            [
-                Schema::TYPE_CHAR . ' CHECK (value LIKE "test%")',
-                $this->char()->check('value LIKE "test%"'),
-                'char(1) CHECK (value LIKE "test%")'
-            ],
-            [
-                Schema::TYPE_CHAR . '(6) CHECK (value LIKE "test%")',
-                $this->char(6)->check('value LIKE "test%"'),
-                'char(6) CHECK (value LIKE "test%")'
-            ],
-            [
-                Schema::TYPE_CHAR . ' NOT NULL',
-                $this->char()->notNull(),
-                'char(1) NOT NULL'
-            ],
-            [
-                Schema::TYPE_STRING,
-                $this->string(),
-                'varchar(255)'
-            ],
-            [
-                Schema::TYPE_STRING . '(32)',
-                $this->string(32),
-                'varchar(32)'
-            ],
-            [
-                Schema::TYPE_STRING . ' CHECK (value LIKE "test%")',
-                $this->string()->check('value LIKE "test%"'),
-                'varchar(255) CHECK (value LIKE "test%")'
-            ],
-            [
-                Schema::TYPE_STRING . '(32) CHECK (value LIKE "test%")',
-                $this->string(32)->check('value LIKE "test%"'),
-                'varchar(32) CHECK (value LIKE "test%")'
-            ],
-            [
-                Schema::TYPE_STRING . ' NOT NULL',
-                $this->string()->notNull(),
-                'varchar(255) NOT NULL'
-            ],
-            [
-                Schema::TYPE_TEXT,
-                $this->text(),
-                'text'
-            ],
-            [
-                Schema::TYPE_TEXT . '(255)',
-                $this->text(255),
-                'text',
-                Schema::TYPE_TEXT,
-            ],
-            [
-                Schema::TYPE_TEXT . ' CHECK (value LIKE "test%")',
-                $this->text()->check('value LIKE "test%"'),
-                'text CHECK (value LIKE "test%")'
-            ],
-            [
-                Schema::TYPE_TEXT . '(255) CHECK (value LIKE "test%")',
-                $this->text(255)->check('value LIKE "test%"'),
-                'text CHECK (value LIKE "test%")',
-                Schema::TYPE_TEXT . ' CHECK (value LIKE "test%")',
-            ],
-            [
-                Schema::TYPE_TEXT . ' NOT NULL',
-                $this->text()->notNull(),
-                'text NOT NULL'
-            ],
-            [
-                Schema::TYPE_TEXT . '(255) NOT NULL',
-                $this->text(255)->notNull(),
-                'text NOT NULL',
-                Schema::TYPE_TEXT . ' NOT NULL',
-            ],
-            [
-                Schema::TYPE_SMALLINT,
-                $this->smallInteger(),
-                'smallint(6)'
-            ],
-            [
-                Schema::TYPE_SMALLINT . '(8)',
-                $this->smallInteger(8),
-                'smallint(8)'
-            ],
-            [
-                Schema::TYPE_INTEGER,
-                $this->integer(),
-                'int(11)'
-            ],
-            [
-                Schema::TYPE_INTEGER . '(8)',
-                $this->integer(8),
-                'int(8)'
-            ],
-            [
-                Schema::TYPE_INTEGER . ' CHECK (value > 5)',
-                $this->integer()->check('value > 5'),
-                'int(11) CHECK (value > 5)'
-            ],
-            [
-                Schema::TYPE_INTEGER . '(8) CHECK (value > 5)',
-                $this->integer(8)->check('value > 5'),
-                'int(8) CHECK (value > 5)'
-            ],
-            [
-                Schema::TYPE_INTEGER . ' NOT NULL',
-                $this->integer()->notNull(),
-                'int(11) NOT NULL'
-            ],
-            [
-                Schema::TYPE_BIGINT,
-                $this->bigInteger(),
-                'bigint(20)'
-            ],
-            [
-                Schema::TYPE_BIGINT . '(8)',
-                $this->bigInteger(8),
-                'bigint(8)'
-            ],
-            [
-                Schema::TYPE_BIGINT . ' CHECK (value > 5)',
-                $this->bigInteger()->check('value > 5'),
-                'bigint(20) CHECK (value > 5)'
-            ],
-            [
-                Schema::TYPE_BIGINT . '(8) CHECK (value > 5)',
-                $this->bigInteger(8)->check('value > 5'),
-                'bigint(8) CHECK (value > 5)'
-            ],
-            [
-                Schema::TYPE_BIGINT . ' NOT NULL',
-                $this->bigInteger()->notNull(),
-                'bigint(20) NOT NULL'
-            ],
-            [
-                Schema::TYPE_FLOAT,
-                $this->float(),
-                'float'
-            ],
-            [
-                Schema::TYPE_FLOAT . '(16)',
-                $this->float(16),
-                'float'
-            ],
-            [
-                Schema::TYPE_FLOAT . ' CHECK (value > 5.6)',
-                $this->float()->check('value > 5.6'),
-                'float CHECK (value > 5.6)'
-            ],
-            [
-                Schema::TYPE_FLOAT . '(16) CHECK (value > 5.6)',
-                $this->float(16)->check('value > 5.6'),
-                'float CHECK (value > 5.6)'
-            ],
-            [
-                Schema::TYPE_FLOAT . ' NOT NULL',
-                $this->float()->notNull(),
-                'float NOT NULL'
-            ],
-            [
-                Schema::TYPE_DOUBLE,
-                $this->double(),
-                'double'
-            ],
-            [
-                Schema::TYPE_DOUBLE . '(16)',
-                $this->double(16),
-                'double'
-            ],
-            [
-                Schema::TYPE_DOUBLE . ' CHECK (value > 5.6)',
-                $this->double()->check('value > 5.6'),
-                'double CHECK (value > 5.6)'
-            ],
-            [
-                Schema::TYPE_DOUBLE . '(16) CHECK (value > 5.6)',
-                $this->double(16)->check('value > 5.6'),
-                'double CHECK (value > 5.6)'
-            ],
-            [
-                Schema::TYPE_DOUBLE . ' NOT NULL',
-                $this->double()->notNull(),
-                'double NOT NULL'
-            ],
-            [
-                Schema::TYPE_DECIMAL,
-                $this->decimal(),
-                'decimal(10,0)'
-            ],
-            [
-                Schema::TYPE_DECIMAL . '(12,4)',
-                $this->decimal(12, 4),
-                'decimal(12,4)'
+            // [
+            //     Schema.TYPE_CHAR ~ ' CHECK (value LIKE "test%")',
+            //     @char().check('value LIKE "test%"'),
+            //     'char(1) CHECK (value LIKE "test%")'
+            // ],
+            // [
+            //     Schema.TYPE_CHAR ~ '(6) CHECK (value LIKE "test%")',
+            //     @char(6).check('value LIKE "test%"'),
+            //     'char(6) CHECK (value LIKE "test%")'
+            // ],
+            // [
+            //     Schema.TYPE_CHAR ~ ' NOT NULL',
+            //     @char().notNull(),
+            //     'char(1) NOT NULL'
+            // ],
+            // [
+            //     Schema.TYPE_STRING,
+            //     @string(),
+            //     'varchar(255)'
+            // ],
+            // [
+            //     Schema.TYPE_STRING ~ '(32)',
+            //     @string(32),
+            //     'varchar(32)'
+            // ],
+            // [
+            //     Schema.TYPE_STRING ~ ' CHECK (value LIKE "test%")',
+            //     @string().check('value LIKE "test%"'),
+            //     'varchar(255) CHECK (value LIKE "test%")'
+            // ],
+            // [
+            //     Schema.TYPE_STRING ~ '(32) CHECK (value LIKE "test%")',
+            //     @string(32).check('value LIKE "test%"'),
+            //     'varchar(32) CHECK (value LIKE "test%")'
+            // ],
+            // [
+            //     Schema.TYPE_STRING ~ ' NOT NULL',
+            //     @string().notNull(),
+            //     'varchar(255) NOT NULL'
+            // ],
+            // [
+            //     Schema.TYPE_TEXT,
+            //     @text(),
+            //     'text'
+            // ],
+            // [
+            //     Schema.TYPE_TEXT ~ '(255)',
+            //     @text(255),
+            //     'text',
+            //     Schema.TYPE_TEXT,
+            // ],
+            // [
+            //     Schema.TYPE_TEXT ~ ' CHECK (value LIKE "test%")',
+            //     @text().check('value LIKE "test%"'),
+            //     'text CHECK (value LIKE "test%")'
+            // ],
+            // [
+            //     Schema.TYPE_TEXT ~ '(255) CHECK (value LIKE "test%")',
+            //     @text(255).check('value LIKE "test%"'),
+            //     'text CHECK (value LIKE "test%")',
+            //     Schema.TYPE_TEXT ~ ' CHECK (value LIKE "test%")',
+            // ],
+            // [
+            //     Schema.TYPE_TEXT ~ ' NOT NULL',
+            //     @text().notNull(),
+            //     'text NOT NULL'
+            // ],
+            // [
+            //     Schema.TYPE_TEXT ~ '(255) NOT NULL',
+            //     @text(255).notNull(),
+            //     'text NOT NULL',
+            //     Schema.TYPE_TEXT ~ ' NOT NULL',
+            // ],
+            // [
+            //     Schema.TYPE_SMALLINT,
+            //     @smallInteger(),
+            //     'smallint(6)'
+            // ],
+            // [
+            //     Schema.TYPE_SMALLINT ~ '(8)',
+            //     @smallInteger(8),
+            //     'smallint(8)'
+            // ],
+            // [
+            //     Schema.TYPE_INTEGER,
+            //     @integer(),
+            //     'int(11)'
+            // ],
+            // [
+            //     Schema.TYPE_INTEGER ~ '(8)',
+            //     @integer(8),
+            //     'int(8)'
+            // ],
+            // [
+            //     Schema.TYPE_INTEGER ~ ' CHECK (value > 5)',
+            //     @integer().check('value > 5'),
+            //     'int(11) CHECK (value > 5)'
+            // ],
+            // [
+            //     Schema.TYPE_INTEGER ~ '(8) CHECK (value > 5)',
+            //     @integer(8).check('value > 5'),
+            //     'int(8) CHECK (value > 5)'
+            // ],
+            // [
+            //     Schema.TYPE_INTEGER ~ ' NOT NULL',
+            //     @integer().notNull(),
+            //     'int(11) NOT NULL'
+            // ],
+            // [
+            //     Schema.TYPE_BIGINT,
+            //     @bigInteger(),
+            //     'bigint(20)'
+            // ],
+            // [
+            //     Schema.TYPE_BIGINT ~ '(8)',
+            //     @bigInteger(8),
+            //     'bigint(8)'
+            // ],
+            // [
+            //     Schema.TYPE_BIGINT ~ ' CHECK (value > 5)',
+            //     @bigInteger().check('value > 5'),
+            //     'bigint(20) CHECK (value > 5)'
+            // ],
+            // [
+            //     Schema.TYPE_BIGINT ~ '(8) CHECK (value > 5)',
+            //     @bigInteger(8).check('value > 5'),
+            //     'bigint(8) CHECK (value > 5)'
+            // ],
+            // [
+            //     Schema.TYPE_BIGINT ~ ' NOT NULL',
+            //     @bigInteger().notNull(),
+            //     'bigint(20) NOT NULL'
+            // ],
+            // [
+            //     Schema.TYPE_FLOAT,
+            //     @float(),
+            //     'float'
+            // ],
+            // [
+            //     Schema.TYPE_FLOAT ~ '(16)',
+            //     @float(16),
+            //     'float'
+            // ],
+            // [
+            //     Schema.TYPE_FLOAT ~ ' CHECK (value > 5.6)',
+            //     @float().check('value > 5.6'),
+            //     'float CHECK (value > 5.6)'
+            // ],
+            // [
+            //     Schema.TYPE_FLOAT ~ '(16) CHECK (value > 5.6)',
+            //     @float(16).check('value > 5.6'),
+            //     'float CHECK (value > 5.6)'
+            // ],
+            // [
+            //     Schema.TYPE_FLOAT ~ ' NOT NULL',
+            //     @float().notNull(),
+            //     'float NOT NULL'
+            // ],
+            // [
+            //     Schema.TYPE_DOUBLE,
+            //     @double(),
+            //     'double'
+            // ],
+            // [
+            //     Schema.TYPE_DOUBLE ~ '(16)',
+            //     @double(16),
+            //     'double'
+            // ],
+            // [
+            //     Schema.TYPE_DOUBLE ~ ' CHECK (value > 5.6)',
+            //     @double().check('value > 5.6'),
+            //     'double CHECK (value > 5.6)'
+            // ],
+            // [
+            //     Schema.TYPE_DOUBLE ~ '(16) CHECK (value > 5.6)',
+            //     @double(16).check('value > 5.6'),
+            //     'double CHECK (value > 5.6)'
+            // ],
+            // [
+            //     Schema.TYPE_DOUBLE ~ ' NOT NULL',
+            //     @double().notNull(),
+            //     'double NOT NULL'
+            // ],
+            // [
+            //     Schema.TYPE_DECIMAL,
+            //     @decimal(),
+            //     'decimal(10,0)'
+            // ],
+            // [
+            //     Schema.TYPE_DECIMAL ~ '(12,4)',
+            //     @decimal(12, 4),
+            //     'decimal(12,4)'
             
-            ],
-            [
-                Schema::TYPE_DECIMAL . ' CHECK (value > 5.6)',
-                $this->decimal()->check('value > 5.6'),
-                'decimal(10,0) CHECK (value > 5.6)'
-            ],
-            [
-                Schema::TYPE_DECIMAL . '(12,4) CHECK (value > 5.6)',
-                $this->decimal(12, 4)->check('value > 5.6'),
-                'decimal(12,4) CHECK (value > 5.6)'
-            ],
-            [
-                Schema::TYPE_DECIMAL . ' NOT NULL',
-                $this->decimal()->notNull(),
-                'decimal(10,0) NOT NULL'
-            ],
-            [
-                Schema::TYPE_DATETIME,
-                $this->dateTime(),
-                'datetime'
-            ],
-            [
-                Schema::TYPE_DATETIME . " CHECK (value BETWEEN '2011-01-01' AND '2013-01-01')",
-                $this->dateTime()->check("value BETWEEN '2011-01-01' AND '2013-01-01'"),
-                "datetime CHECK (value BETWEEN '2011-01-01' AND '2013-01-01')"
-            ],
-            [
-                Schema::TYPE_DATETIME . ' NOT NULL',
-                $this->dateTime()->notNull(),
-                'datetime NOT NULL'
-            ],
-            [
-                Schema::TYPE_TIMESTAMP,
-                $this->timestamp(),
-                'timestamp'
-            ],
-            [
-                Schema::TYPE_TIMESTAMP . " CHECK (value BETWEEN '2011-01-01' AND '2013-01-01')",
-                $this->timestamp()->check("value BETWEEN '2011-01-01' AND '2013-01-01'"),
-                "timestamp CHECK (value BETWEEN '2011-01-01' AND '2013-01-01')"
-            ],
-            [
-                Schema::TYPE_TIMESTAMP . ' NOT NULL',
-                $this->timestamp()->notNull(),
-                'timestamp NOT NULL'
-            ],
-            [
-                Schema::TYPE_TIME,
-                $this->time(),
-                'time'
-            ],
-            [
-                Schema::TYPE_TIME . " CHECK (value BETWEEN '12:00:00' AND '13:01:01')",
-                $this->time()->check("value BETWEEN '12:00:00' AND '13:01:01'"),
-                "time CHECK (value BETWEEN '12:00:00' AND '13:01:01')"
-            ],
-            [
-                Schema::TYPE_TIME . ' NOT NULL',
-                $this->time()->notNull(),
-                'time NOT NULL'
-            ],
-            [
-                Schema::TYPE_DATE,
-                $this->date(),
-                'date'
-            ],
-            [
-                Schema::TYPE_DATE . " CHECK (value BETWEEN '2011-01-01' AND '2013-01-01')",
-                $this->date()->check("value BETWEEN '2011-01-01' AND '2013-01-01'"),
-                "date CHECK (value BETWEEN '2011-01-01' AND '2013-01-01')"
-            ],
-            [
-                Schema::TYPE_DATE . ' NOT NULL',
-                $this->date()->notNull(),
-                'date NOT NULL'
-            ],
-            [
-                Schema::TYPE_BINARY,
-                $this->binary(),
-                'blob'
-            ],
-            [
-                Schema::TYPE_BOOLEAN,
-                $this->boolean(),
-                'tinyint(1)'
-            ],
-            [
-                Schema::TYPE_BOOLEAN . ' NOT NULL DEFAULT 1',
-                $this->boolean()->notNull()->defaultValue(1),
-                'tinyint(1) NOT NULL DEFAULT 1'
-            ],
-            [
-                Schema::TYPE_MONEY,
-                $this->money(),
-                'decimal(19,4)'
-            ],
-            [
-                Schema::TYPE_MONEY . '(16,2)',
-                $this->money(16, 2),
-                'decimal(16,2)'
-            ],
-            [
-                Schema::TYPE_MONEY . ' CHECK (value > 0.0)',
-                $this->money()->check('value > 0.0'),
-                'decimal(19,4) CHECK (value > 0.0)'
-            ],
-            [
-                Schema::TYPE_MONEY . '(16,2) CHECK (value > 0.0)',
-                $this->money(16, 2)->check('value > 0.0'),
-                'decimal(16,2) CHECK (value > 0.0)'
-            ],
-            [
-                Schema::TYPE_MONEY . ' NOT NULL',
-                $this->money()->notNull(),
-                'decimal(19,4) NOT NULL'
-            ],
+            // ],
+            // [
+            //     Schema.TYPE_DECIMAL ~ ' CHECK (value > 5.6)',
+            //     @decimal().check('value > 5.6'),
+            //     'decimal(10,0) CHECK (value > 5.6)'
+            // ],
+            // [
+            //     Schema.TYPE_DECIMAL ~ '(12,4) CHECK (value > 5.6)',
+            //     @decimal(12, 4).check('value > 5.6'),
+            //     'decimal(12,4) CHECK (value > 5.6)'
+            // ],
+            // [
+            //     Schema.TYPE_DECIMAL ~ ' NOT NULL',
+            //     @decimal().notNull(),
+            //     'decimal(10,0) NOT NULL'
+            // ],
+            // [
+            //     Schema.TYPE_DATETIME,
+            //     @dateTime(),
+            //     'datetime'
+            // ],
+            // [
+            //     Schema.TYPE_DATETIME ~ " CHECK (value BETWEEN '2011-01-01' AND '2013-01-01')",
+            //     @dateTime().check("value BETWEEN '2011-01-01' AND '2013-01-01'"),
+            //     "datetime CHECK (value BETWEEN '2011-01-01' AND '2013-01-01')"
+            // ],
+            // [
+            //     Schema.TYPE_DATETIME ~ ' NOT NULL',
+            //     @dateTime().notNull(),
+            //     'datetime NOT NULL'
+            // ],
+            // [
+            //     Schema.TYPE_TIMESTAMP,
+            //     @timestamp(),
+            //     'timestamp'
+            // ],
+            // [
+            //     Schema.TYPE_TIMESTAMP ~ " CHECK (value BETWEEN '2011-01-01' AND '2013-01-01')",
+            //     @timestamp().check("value BETWEEN '2011-01-01' AND '2013-01-01'"),
+            //     "timestamp CHECK (value BETWEEN '2011-01-01' AND '2013-01-01')"
+            // ],
+            // [
+            //     Schema.TYPE_TIMESTAMP ~ ' NOT NULL',
+            //     @timestamp().notNull(),
+            //     'timestamp NOT NULL'
+            // ],
+            // [
+            //     Schema.TYPE_TIME,
+            //     @time(),
+            //     'time'
+            // ],
+            // [
+            //     Schema.TYPE_TIME ~ " CHECK (value BETWEEN '12:00:00' AND '13:01:01')",
+            //     @time().check("value BETWEEN '12:00:00' AND '13:01:01'"),
+            //     "time CHECK (value BETWEEN '12:00:00' AND '13:01:01')"
+            // ],
+            // [
+            //     Schema.TYPE_TIME ~ ' NOT NULL',
+            //     @time().notNull(),
+            //     'time NOT NULL'
+            // ],
+            // [
+            //     Schema.TYPE_DATE,
+            //     @date(),
+            //     'date'
+            // ],
+            // [
+            //     Schema.TYPE_DATE ~ " CHECK (value BETWEEN '2011-01-01' AND '2013-01-01')",
+            //     @date().check("value BETWEEN '2011-01-01' AND '2013-01-01'"),
+            //     "date CHECK (value BETWEEN '2011-01-01' AND '2013-01-01')"
+            // ],
+            // [
+            //     Schema.TYPE_DATE ~ ' NOT NULL',
+            //     @date().notNull(),
+            //     'date NOT NULL'
+            // ],
+            // [
+            //     Schema.TYPE_BINARY,
+            //     @binary(),
+            //     'blob'
+            // ],
+            // [
+            //     Schema.TYPE_BOOLEAN,
+            //     @boolean(),
+            //     'tinyint(1)'
+            // ],
+            // [
+            //     Schema.TYPE_BOOLEAN ~ ' NOT NULL DEFAULT 1',
+            //     @boolean().notNull().defaultValue(1),
+            //     'tinyint(1) NOT NULL DEFAULT 1'
+            // ],
+            // [
+            //     Schema.TYPE_MONEY,
+            //     @money(),
+            //     'decimal(19,4)'
+            // ],
+            // [
+            //     Schema.TYPE_MONEY ~ '(16,2)',
+            //     @money(16, 2),
+            //     'decimal(16,2)'
+            // ],
+            // [
+            //     Schema.TYPE_MONEY ~ ' CHECK (value > 0.0)',
+            //     @money().check('value > 0.0'),
+            //     'decimal(19,4) CHECK (value > 0.0)'
+            // ],
+            // [
+            //     Schema.TYPE_MONEY ~ '(16,2) CHECK (value > 0.0)',
+            //     @money(16, 2).check('value > 0.0'),
+            //     'decimal(16,2) CHECK (value > 0.0)'
+            // ],
+            // [
+            //     Schema.TYPE_MONEY ~ ' NOT NULL',
+            //     @money().notNull(),
+            //     'decimal(19,4) NOT NULL'
+            // ],
         ];
+
+        foreach ($items as $i => $item) {
+            if (array_key_exists($this->driverName, $item[2])) {
+                $item[2] = $item[2][$this->driverName];
+                $items[$i] = $item;
+            }
+            else {
+                unset($items[$i]);
+            }
+        }
+
+        return array_values($items);
     }
 
     public function testGetColumnType()
