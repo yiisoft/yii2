@@ -300,6 +300,38 @@ class {$class} extends Migration
 
 CODE;
         $this->assertEqualsWithoutLE($code, $file);
+
+        $class = 'm' . gmdate('ymd_His') . '_' . $migrationName;
+        $this->runMigrateControllerAction('create', [
+            $migrationName,
+            'fields' => 'id:primaryKey,address:string,address2:string,email:string',
+        ]);
+        $file = $this->parseNameClassMigration($class);
+        $code = <<<CODE
+<?php
+
+use yii\db\Migration;
+
+class {$class} extends Migration
+{
+    public function up()
+    {
+        \$this->createTable('test', [
+            'id' => \$this->primaryKey(),
+            'address' => \$this->string(),
+            'address2' => \$this->string(),
+            'email' => \$this->string()
+        ]);
+    }
+
+    public function down()
+    {
+        \$this->dropTable('test');
+    }
+}
+
+CODE;
+        $this->assertEqualsWithoutLE($code, $file);
     }
 
     public function testGenerateDropMigration()
