@@ -920,22 +920,22 @@ abstract class QueryBuilderTest extends DatabaseTestCase
                     'postgres' => 'serial NOT NULL PRIMARY KEY',
                 ],
             ],
-            [
-                Schema::TYPE_UNSIGNEDPK,
-                $this->primaryKey()->unsigned(),
-                [
-                    'mysql' => 'int(11) UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY',
-                    'postgres' => 'serial NOT NULL PRIMARY KEY',
-                ],
-            ],
-            [
-                Schema::TYPE_UNSIGNEDPK,
-                $this->primaryKey(6)->unsigned(),
-                [
-                    'mysql' => 'int(6) UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY',
-                    'postgres' => 'serial NOT NULL PRIMARY KEY',
-                ],
-            ],
+            // [
+            //     Schema::TYPE_UNSIGNEDPK,
+            //     $this->primaryKey()->unsigned(),
+            //     [
+            //         'mysql' => 'int(11) UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY',
+            //         'postgres' => 'serial NOT NULL PRIMARY KEY',
+            //     ],
+            // ],
+            // [
+            //     Schema::TYPE_UNSIGNEDPK,
+            //     $this->primaryKey(6)->unsigned(),
+            //     [
+            //         'mysql' => 'int(6) UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY',
+            //         'postgres' => 'serial NOT NULL PRIMARY KEY',
+            //     ],
+            // ],
         ];
 
         foreach ($items as $i => $item) {
