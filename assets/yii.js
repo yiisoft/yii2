@@ -324,7 +324,7 @@ yii = (function ($) {
     function initRedirectHandler() {
         // handle AJAX redirection
         $(document).ajaxComplete(function (event, xhr, settings) {
-            var url = xhr.getResponseHeader('X-Redirect');
+            var url = xhr && xhr.getResponseHeader('X-Redirect');
             if (url) {
                 window.location = url;
             }
