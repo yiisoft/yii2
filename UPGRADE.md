@@ -14,6 +14,13 @@ Make sure you have global install of latest version of composer asset plugin:
 php composer.phar global require "fxp/composer-asset-plugin:~1.1.1"
 ```
 
+Upgrade from Yii 2.0.7
+______________________
+
+* The signature of `yii\helpers\BaseArrayHelper::index()` was changed. The method has got an extra optional parameter
+  `$groupBy`.
+
+
 Upgrade from Yii 2.0.6
 ----------------------
 

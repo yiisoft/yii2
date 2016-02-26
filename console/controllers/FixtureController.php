@@ -368,7 +368,7 @@ class FixtureController extends Controller
     /**
      * Checks if needed to apply all fixtures.
      * @param string $fixture
-     * @return bool
+     * @return boolean
      */
     public function needToApplyAll($fixture)
     {

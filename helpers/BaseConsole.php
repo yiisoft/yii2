@@ -587,7 +587,7 @@ class BaseConsole
 
     /**
      * Returns true if the console is running on windows
-     * @return bool
+     * @return boolean
      */
     public static function isRunningOnWindows()
     {
@@ -691,7 +691,7 @@ class BaseConsole
      * Prints a string to STDOUT.
      *
      * @param string $string the string to print
-     * @return int|boolean Number of bytes printed or false on error
+     * @return integer|boolean Number of bytes printed or false on error
      */
     public static function stdout($string)
     {
@@ -702,7 +702,7 @@ class BaseConsole
      * Prints a string to STDERR.
      *
      * @param string $string the string to print
-     * @return int|boolean Number of bytes printed or false on error
+     * @return integer|boolean Number of bytes printed or false on error
      */
     public static function stderr($string)
     {
