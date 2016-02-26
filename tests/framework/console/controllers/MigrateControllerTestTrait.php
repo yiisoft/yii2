@@ -117,7 +117,10 @@ CODE;
     protected function parseNameClassMigration($class)
     {
         $files = FileHelper::findFiles($this->migrationPath);
-        $file = preg_replace('/class (m\d+_\d+_.*) extends Migration/', "class $class extends Migration", file_get_contents($files[0]));
+        $file = file_get_contents($files[0]);
+        if (preg_match('/class (m\d+_\d+_.*) extends Migration/', $file, $match)) {
+            $file = str_replace($match[1], $class, $file);
+        }
         $this->tearDownMigrationPath();
         return $file;
     }
