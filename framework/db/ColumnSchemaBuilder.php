@@ -167,16 +167,16 @@ class ColumnSchemaBuilder extends Object
      */
     public function unsigned()
     {
-        // switch ($this->type) {
-        //     case self::TYPE_PK:
-        //         $this->type = self::TYPE_UNSIGNEDPK;
-        //         break;
-        //     case self::TYPE_BIGPK:
-        //         if (null === $this->length)
-        //             $this->length = 20;
-        //         $this->type = self::TYPE_UNSIGNEDPK;
-        //         break;
-        // }
+        switch ($this->type) {
+            case Schema::TYPE_PK:
+                $this->type = Schema::TYPE_UNSIGNEDPK;
+                break;
+            case Schema::TYPE_BIGPK:
+                if (null === $this->length)
+                    $this->length = 20;
+                $this->type = Schema::TYPE_UNSIGNEDPK;
+                break;
+        }
         $this->isUnsigned = true;
         return $this;
     }
