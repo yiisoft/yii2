@@ -1113,7 +1113,7 @@ class QueryBuilder extends \yii\base\Object
             return $this->buildSubqueryInCondition($operator, $column, $values, $params);
         }
 
-        if (count($column) > 1) {
+        if ($column instanceof  \Traversable || count($column) > 1) {
             return $this->buildCompositeInCondition($operator, $column, $values, $params);
         }
 
@@ -1139,6 +1139,7 @@ class QueryBuilder extends \yii\base\Object
                 $sqlValues[$i] = $phName;
             }
         }
+
         if (empty($sqlValues)) {
             return $operator === 'IN' ? '0=1' : '';
         }
@@ -1147,7 +1148,7 @@ class QueryBuilder extends \yii\base\Object
             $column = $this->db->quoteColumnName($column);
         }
 
-        if (count($values) > 1) {
+        if (count($sqlValues) > 1) {
             return "$column $operator (" . implode(', ', $sqlValues) . ')';
         } else {
             $operator = $operator === 'IN' ? '=' : '<>';
@@ -1195,6 +1196,12 @@ class QueryBuilder extends \yii\base\Object
     {
         $vss = [];
         foreach ($values as $value) {
+            if ($value instanceof \Traversable) {
+                var_dump($values);
+                die();
+            }
+
+
             $vs = [];
             foreach ($columns as $column) {
                 if (isset($value[$column])) {

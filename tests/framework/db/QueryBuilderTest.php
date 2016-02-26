@@ -13,6 +13,7 @@ use yii\db\mssql\QueryBuilder as MssqlQueryBuilder;
 use yii\db\pgsql\QueryBuilder as PgsqlQueryBuilder;
 use yii\db\cubrid\QueryBuilder as CubridQueryBuilder;
 use yii\db\oci\QueryBuilder as OracleQueryBuilder;
+use yii\test\TraversableObject;
 
 /**
  * @group db
@@ -235,6 +236,8 @@ class QueryBuilderTest extends DatabaseTestCase
             [ ['in', 'id', (new Query())->select('id')->from('users')->where(['active' => 1])], '[[id]] IN (SELECT [[id]] FROM [[users]] WHERE [[active]]=:qp0)', [':qp0' => 1] ],
             [ ['not in', 'id', (new Query())->select('id')->from('users')->where(['active' => 1])], '[[id]] NOT IN (SELECT [[id]] FROM [[users]] WHERE [[active]]=:qp0)', [':qp0' => 1] ],
 
+            [ ['in', 'id', [1]], '[[id]]=:qp0', [':qp0' => 1] ],
+            [ ['in', 'id', new TraversableObject([1])], '[[id]]=:qp0', [':qp0' => 1] ],
             // composite in
             [
                 ['in', ['id', 'name'], [['id' =>1, 'name' => 'oy']]],
@@ -243,13 +246,13 @@ class QueryBuilderTest extends DatabaseTestCase
             ],
 
             // in using array objects.
-            [ ['id' => new \ArrayIterator([1, 2])], '[[id]] IN (:qp0, :qp1)', [':qp0' => 1, ':qp1' => 2] ],
+            [ ['id' => new TraversableObject([1, 2])], '[[id]] IN (:qp0, :qp1)', [':qp0' => 1, ':qp1' => 2] ],
 
-            [ ['in', 'id', new \ArrayIterator([1, 2, 3])], '[[id]] IN (:qp0, :qp1, :qp2)', [':qp0' => 1, ':qp1' => 2, ':qp2' => 3] ],
+            [ ['in', 'id', new TraversableObject([1, 2, 3])], '[[id]] IN (:qp0, :qp1, :qp2)', [':qp0' => 1, ':qp1' => 2, ':qp2' => 3] ],
 
             // composite in using array objects.
             [
-                ['in', new \ArrayIterator(['id', 'name']), new \ArrayIterator([['id' => 1, 'name' => 'oy']])],
+                ['in', new TraversableObject(['id', 'name']), new TraversableObject([['id' => 1, 'name' => 'oy']])],
                 '([[id]], [[name]]) IN ((:qp0, :qp1))',
                 [':qp0' => 1, ':qp1' => 'oy']
             ],
@@ -279,10 +282,7 @@ class QueryBuilderTest extends DatabaseTestCase
 
 
 
-        //[ ['id' => new \ArrayIterator([1, 2])], '[[id]] IN (:qp0, :qp1)', [':qp0' => 1, ':qp1' => 2] ],
-
         ];
-
         switch ($this->driverName) {
             case 'sqlsrv':
             case 'sqlite':
@@ -580,29 +580,6 @@ class QueryBuilderTest extends DatabaseTestCase
         $this->assertEquals($expected, $sql);
         $this->assertEquals([':len' => 4], $params);
 
-    }
-
-    public function testCompositeInCondition()
-    {
-        $condition = [
-            'in',
-            ['id', 'name'],
-            [
-                ['id' => 1, 'name' => 'foo'],
-                ['id' => 2, 'name' => 'bar'],
-            ],
-        ];
-        (new Query())->from('customer')->where($condition)->all($this->getConnection());
-
-        $condition = [
-            'in',
-            new \ArrayIterator(['id', 'name']),
-            new \ArrayIterator([
-                new \ArrayIterator(['id' => 1, 'name' => 'foo']),
-                new \ArrayIterator(['id' => 2, 'name' => 'bar']),
-            ]),
-        ];
-        (new Query())->from('customer')->where($condition)->all($this->getConnection());
     }
 
     /**
