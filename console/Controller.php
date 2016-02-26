@@ -91,7 +91,7 @@ class Controller extends \yii\base\Controller
                 if (in_array($name, $options, true)) {
                     $default = $this->$name;
                     if (is_array($default)) {
-                        $this->$name = preg_split('/\s*,\s*/', $value);
+                        $this->$name = preg_split('/(?!\(\d+)\s*,\s*(?!\d+\))/', $value);
                     } elseif ($default !== null) {
                         settype($value, gettype($default));
                         $this->$name = $value;
