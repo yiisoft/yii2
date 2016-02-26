@@ -14,11 +14,7 @@ use yii\db\pgsql\QueryBuilder as PgsqlQueryBuilder;
 use yii\db\cubrid\QueryBuilder as CubridQueryBuilder;
 use yii\db\oci\QueryBuilder as OracleQueryBuilder;
 
-/**
- * @group db
- * @group mysql
- */
-class QueryBuilderTest extends DatabaseTestCase
+abstract class QueryBuilderTest extends DatabaseTestCase
 {
     use SchemaBuilderTrait;
 
