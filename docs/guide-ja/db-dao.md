@@ -268,7 +268,7 @@ $count = Yii::$app->db->createCommand("SELECT COUNT([[id]]) FROM {{employee}}")
 
 あなたの DB テーブル名のほとんどが何か共通の接頭辞を持っている場合は、Yii DAO によってサポートされているテーブル接頭辞の機能を使うことが出来ます。
 
-最初に、[[yii\db\Connection::tablePrefix]] プロパティによって、テーブル接頭辞を指定します。
+最初に、アプリケーションの構成情報で、[[yii\db\Connection::tablePrefix]] プロパティによって、テーブル接頭辞を指定します。
 
 ```php
 return [

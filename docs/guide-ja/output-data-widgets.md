@@ -335,9 +335,10 @@ echo GridView::widget([
 
 ### データをフィルタリングする
 
-データをフィルタリングするためには、GridView は、フィルタリングのフォームから入力を受け取り、検索基準に従ってデータプロバイダのクエリを修正するための [モデル](structure-models.md) を必要とします。
+データをフィルタリングするためには、GridView は検索基準を表す [モデル](structure-models.md) を必要とします。
+検索基準は、通常は、グリッドビューのテーブルのフィルタのフィールドから取得されます。
 [アクティブレコード](db-active-record.md) を使用している場合は、必要な機能を提供する検索用のモデルクラスを作成するのが一般的なプラクティスです (あなたに代って [Gii](start-gii.md) が生成してくれます)。
-このクラスは、検索のためのバリデーション規則を定義し、データプロバイダを返す `search()` メソッドを提供するものです。
+このクラスは、検索のためのバリデーション規則を定義し、検索基準に従って修正されたクエリを持つデータプロバイダを返す `search()` メソッドを提供するものです。
 
 `Post` モデルに対して検索機能を追加するために、次の例のようにして、`PostSearch` モデルを作成することが出来ます。
 
@@ -516,6 +517,7 @@ $dataProvider = new ActiveDataProvider([
 // リレーション `author` を結合します。これはテーブル `users` に対するリレーションであり、
 // テーブルエイリアスを `author` とします。
 $query->joinWith(['author' => function($query) { $query->from(['author' => 'users']); }]);
+// バージョン 2.0.7 以降では、上の行は $query->joinWith('author AS author'); として単純化することが出来ます。
 // リレーションのカラムによる並べ替えを有効にします。
 $dataProvider->sort->attributes['author.name'] = [
     'asc' => ['author.name' => SORT_ASC],
@@ -556,8 +558,9 @@ $query->andFilterWhere(['LIKE', 'author.name', $this->getAttribute('author.name'
 > 例えば、投稿者のリレーションテーブルに `au` というエイリアスを使う場合は、joinWith の文は以下のようになります。
 >
 > ```php
-> $query->joinWith(['author' => function($query) { $query->from(['au' => 'users']); }]);
+> $query->joinWith(['author au']);
 > ```
+>
 > リレーションの定義においてエイリアスが定義されている場合は、単に `$query->joinWith(['author']);` として呼び出すことも可能です。
 >
 > フィルタ条件においてはエイリアスが使われなければなりませんが、属性の名前はリレーション名のままで変りません。
