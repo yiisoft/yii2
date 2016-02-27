@@ -76,8 +76,9 @@ class ColumnSchemaBuilder extends Object
      */
     public $categoryMap = [
         Schema::TYPE_PK => self::CATEGORY_PK,
+        Schema::TYPE_UPK => self::CATEGORY_PK,
         Schema::TYPE_BIGPK => self::CATEGORY_PK,
-        Schema::TYPE_UNSIGNEDPK => self::CATEGORY_PK,
+        Schema::TYPE_UBIGPK => self::CATEGORY_PK,
         Schema::TYPE_CHAR => self::CATEGORY_STRING,
         Schema::TYPE_STRING => self::CATEGORY_STRING,
         Schema::TYPE_TEXT => self::CATEGORY_STRING,
@@ -169,13 +170,11 @@ class ColumnSchemaBuilder extends Object
     {
         switch ($this->type) {
             case Schema::TYPE_PK:
-                $this->type = Schema::TYPE_UNSIGNEDPK;
-                break;
+                $this->type = Schema::TYPE_UPK;
+                return $this;
             case Schema::TYPE_BIGPK:
-                if (null === $this->length)
-                    $this->length = 20;
-                $this->type = Schema::TYPE_UNSIGNEDPK;
-                break;
+                $this->type = Schema::TYPE_UBIGPK;
+                return $this;
         }
         $this->isUnsigned = true;
         return $this;
