@@ -905,23 +905,7 @@ abstract class QueryBuilderTest extends DatabaseTestCase
                 ],
             ],
             [
-                Schema::TYPE_UNSIGNEDPK . '(20)',
-                $this->unsignedPrimaryKey(20),
-                [
-                    'mysql' => 'int(20) UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY',
-                    'postgres' => 'serial NOT NULL PRIMARY KEY',
-                ],
-            ],
-            [
-                Schema::TYPE_UNSIGNEDPK,
-                $this->unsignedPrimaryKey(),
-                [
-                    'mysql' => 'int(11) UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY',
-                    'postgres' => 'serial NOT NULL PRIMARY KEY',
-                ],
-            ],
-            [
-                Schema::TYPE_UNSIGNEDPK,
+                Schema::TYPE_UPK,
                 $this->primaryKey()->unsigned(),
                 [
                     'mysql' => 'int(11) UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY',
@@ -929,11 +913,11 @@ abstract class QueryBuilderTest extends DatabaseTestCase
                 ],
             ],
             [
-                Schema::TYPE_UNSIGNEDPK,
-                $this->primaryKey(6)->unsigned(),
+                Schema::TYPE_UBIGPK,
+                $this->bigPrimaryKey()->unsigned(),
                 [
-                    'mysql' => 'int(6) UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY',
-                    'postgres' => 'serial NOT NULL PRIMARY KEY',
+                    'mysql' => 'bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY',
+                    'postgres' => 'bigserial NOT NULL PRIMARY KEY',
                 ],
             ],
         ];

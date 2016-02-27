@@ -64,18 +64,6 @@ trait SchemaBuilderTrait
     }
 
     /**
-     * Creates an unsigned primary key column.
-     * @param integer $length column size or precision definition.
-     * This parameter will be ignored if not supported by the DBMS.
-     * @return ColumnSchemaBuilder the column instance which can be further customized.
-     * @since 2.0.8
-     */
-    public function unsignedPrimaryKey($length = null)
-    {
-        return $this->getDb()->getSchema()->createColumnSchemaBuilder(Schema::TYPE_UNSIGNEDPK, $length);
-    }
-
-    /**
      * Creates a char column.
      * @param integer $length column size definition i.e. the maximum string length.
      * This parameter will be ignored if not supported by the DBMS.
