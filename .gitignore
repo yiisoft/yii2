@@ -10,7 +10,8 @@ nbproject
 .settings
 
 # sublime text project / workspace files
-*.sublime*
+*.sublime-project
+*.sublime-workspace
 
 # windows thumbnail cache
 Thumbs.db
@@ -37,6 +38,3 @@ phpunit.phar
 # ignore sub directory for dev installed apps and extensions
 /apps
 /extensions
-
-# ladyphp source files
-*.lady
