@@ -87,16 +87,16 @@ class Controller extends \yii\base\Controller
         if (!empty($params)) {
             // populate options here so that they are available in beforeAction().
             $options = $this->options($id === '' ? $this->defaultAction : $id);
-            if (isset($params['alias'])) {
+            if (isset($params['_aliases'])) {
                 $optionAliases = $this->optionAliases();
-                foreach ($params['alias'] as $name => $value) {
+                foreach ($params['_aliases'] as $name => $value) {
                     if (array_key_exists($name, $optionAliases)) {
                         $params[$optionAliases[$name]] = $value;
                     } else {
                         throw new Exception(Yii::t('yii', 'Unknown alias: -{name}', ['name' => $name]));
                     }
                 }
-                unset($params['alias']);
+                unset($params['_aliases']);
             }
             foreach ($params as $name => $value) {
                 if (in_array($name, $options, true)) {
