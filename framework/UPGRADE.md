@@ -20,8 +20,7 @@ ______________________
 * The signature of `yii\helpers\BaseArrayHelper::index()` was changed. The method has got an extra optional parameter
   `$groupBy`.
 
-* The signature of `yii\db\ColumnSchemaBuilder::__construct()` was changed. The method has got an extra optional parameter
-  `$db`.
+* The signature of `yii\db\ColumnSchemaBuilder::__construct()` was changed. The method has got an extra optional parameter `$db`.
 
 * String types in the MySQL column schema map were upgraded to unicode storage types.
 
