@@ -19,17 +19,24 @@ class FakeController extends Controller
 
     public $testArray = [];
 
+    public $alias;
+
     public function options($actionID)
     {
         return array_merge(parent::options($actionID), [
             'test',
-            'testArray'
+            'testArray',
+            'alias'
         ]);
     }
 
     public function optionAliases()
     {
-        return ['t' => 'test', 'ta' => 'testArray'];
+        return [
+            't' => 'test',
+            'ta' => 'testArray',
+            'a' => 'alias'
+        ];
     }
 
     public function actionAksi1($fromParam, $other = 'default')
@@ -52,6 +59,11 @@ class FakeController extends Controller
     }
 
     public function actionAksi5()
+    {
+        return $this->alias;
+    }
+
+    public function actionAksi6()
     {
         return $this->testArray;
     }
