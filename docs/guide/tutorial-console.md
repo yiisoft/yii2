@@ -129,6 +129,46 @@ This will assign `OptionValue` to the `OptionName` property of the controller cl
 If the default value of an option is of an array type and you set this option while running the command,
 the option value will be converted into an array by splitting the input string on any commas.
 
+### Options Aliases
+
+Since version 2.0.8 console command provides [[yii\console\Controller::optionAliases()]] method to add
+aliases for commands.
+
+To define a alias, override [[yii\console\Controller::optionAliases()]] in your controller, for example:
+
+```php
+
+namespace app\commands;
+use yii\console\Controller;
+
+class HelloController extends Controller
+{
+    public $message;
+    
+    public function options()
+    {
+        return ['message'];
+    }
+    
+    public function optionAliases()
+    {
+        return ['m' => 'message'];
+    }
+    
+    public function actionIndex()
+    {
+        echo $message . "\n";
+    }
+    
+}
+```
+
+Now, you can use the following syntax to run command:
+
+```
+php yii hello -m=hola
+```
+
 ### Arguments
 
 Besides options, a command can also receive arguments. The arguments will be passed as the parameters to the action
