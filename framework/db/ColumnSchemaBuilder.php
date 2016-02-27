@@ -171,10 +171,10 @@ class ColumnSchemaBuilder extends Object
         switch ($this->type) {
             case Schema::TYPE_PK:
                 $this->type = Schema::TYPE_UPK;
-                return $this;
+                break;
             case Schema::TYPE_BIGPK:
                 $this->type = Schema::TYPE_UBIGPK;
-                return $this;
+                break;
         }
         $this->isUnsigned = true;
         return $this;
