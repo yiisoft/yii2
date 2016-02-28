@@ -134,11 +134,11 @@ the option value will be converted into an array by splitting the input string o
 Since version 2.0.8 console command provides [[yii\console\Controller::optionAliases()]] method to add
 aliases for commands.
 
-To define a alias, override [[yii\console\Controller::optionAliases()]] in your controller, for example:
+To define an alias, override [[yii\console\Controller::optionAliases()]] in your controller, for example:
 
 ```php
-
 namespace app\commands;
+
 use yii\console\Controller;
 
 class HelloController extends Controller
@@ -159,14 +159,13 @@ class HelloController extends Controller
     {
         echo $message . "\n";
     }
-    
 }
 ```
 
-Now, you can use the following syntax to run command:
+Now, you can use the following syntax to run the command:
 
 ```
-php yii hello -m=hola
+./yii hello -m=hola
 ```
 
 ### Arguments
