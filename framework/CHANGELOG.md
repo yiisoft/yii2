@@ -21,6 +21,7 @@ Yii Framework 2 Change Log
 - Enh #10764: `yii\helpers\Html::tag()` and `::beginTag()` return content without any HTML when the `$tag` attribute is `false` or `null` (pana1990)
 - Enh #10941: Added `yii\helpers\ArrayHelper::isTraversable`, added support for traversable selections for dropdownList, radioList and checkboxList in `yii\helpers\Html`.
 - Chg: HTMLPurifier dependency updated to `~4.6` (samdark)
+- Enh #10980: Add $assignmentsCache to `yii\rbac\DbManager` at `getAssignments($userId) to reduce database call` (ryusoft)
 
 2.0.7 February 14, 2016
 -----------------------
