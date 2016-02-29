@@ -211,7 +211,7 @@ class DateValidator extends Validator
         if ($timestamp === false) {
             if ($this->timestampAttribute === $attribute) {
                 if ($this->timestampAttributeFormat === null) {
-                    if (ctype_digit($value)) {
+                    if (is_int($value)) {
                         return;
                     }
                 } else {
