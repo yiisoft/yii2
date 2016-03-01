@@ -254,7 +254,7 @@ class Object implements Configurable
      */
     public function canGetProperty($name, $checkVars = true)
     {
-        return method_exists($this, 'get' . $name) && is_callable([$this, 'get' . $name]) || $checkVars && property_exists($this, $name) && array_key_exist($name, Yii::getObjectVars($this));
+        return method_exists($this, 'get' . $name) && is_callable([$this, 'get' . $name]) || $checkVars && array_key_exist($name, Yii::getObjectVars($this));
     }
 
     /**
@@ -272,7 +272,7 @@ class Object implements Configurable
      */
     public function canSetProperty($name, $checkVars = true)
     {
-        return method_exists($this, 'set' . $name) && is_callable([$this, 'set' . $name]) || $checkVars && property_exists($this, $name) && array_key_exist($name, Yii::getObjectVars($this));
+        return method_exists($this, 'set' . $name) && is_callable([$this, 'set' . $name]) || $checkVars && array_key_exist($name, Yii::getObjectVars($this));
     }
 
     /**
