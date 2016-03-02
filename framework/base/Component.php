@@ -132,7 +132,7 @@ class Component extends Object
             // behavior property
             $this->ensureBehaviors();
             foreach ($this->_behaviors as $behavior) {
-                if ($behavior->canGetProperty($name)) {
+                if ($behavior->global && $behavior->canGetProperty($name)) {
                     return $behavior->$name;
                 }
             }
@@ -184,7 +184,7 @@ class Component extends Object
             // behavior property
             $this->ensureBehaviors();
             foreach ($this->_behaviors as $behavior) {
-                if ($behavior->canSetProperty($name)) {
+                if ($behavior->global && $behavior->canSetProperty($name)) {
                     $behavior->$name = $value;
 
                     return;
@@ -221,7 +221,7 @@ class Component extends Object
             // behavior property
             $this->ensureBehaviors();
             foreach ($this->_behaviors as $behavior) {
-                if ($behavior->canGetProperty($name)) {
+                if ($behavior->global && $behavior->canGetProperty($name)) {
                     return $behavior->$name !== null;
                 }
             }
@@ -252,7 +252,7 @@ class Component extends Object
             // behavior property
             $this->ensureBehaviors();
             foreach ($this->_behaviors as $behavior) {
-                if ($behavior->canSetProperty($name)) {
+                if ($behavior->global && $behavior->canSetProperty($name)) {
                     $behavior->$name = null;
                     return;
                 }
@@ -278,7 +278,7 @@ class Component extends Object
     {
         $this->ensureBehaviors();
         foreach ($this->_behaviors as $object) {
-            if ($object->hasMethod($name)) {
+            if ($object->global && $object->hasMethod($name)) {
                 return call_user_func_array([$object, $name], $params);
             }
         }
@@ -338,7 +338,7 @@ class Component extends Object
         } elseif ($checkBehaviors) {
             $this->ensureBehaviors();
             foreach ($this->_behaviors as $behavior) {
-                if ($behavior->canGetProperty($name, $checkVars)) {
+                if ($behavior->global && $behavior->canGetProperty($name, $checkVars)) {
                     return true;
                 }
             }
@@ -368,7 +368,7 @@ class Component extends Object
         } elseif ($checkBehaviors) {
             $this->ensureBehaviors();
             foreach ($this->_behaviors as $behavior) {
-                if ($behavior->canSetProperty($name, $checkVars)) {
+                if ($behavior->global && $behavior->canSetProperty($name, $checkVars)) {
                     return true;
                 }
             }
@@ -394,7 +394,7 @@ class Component extends Object
         } elseif ($checkBehaviors) {
             $this->ensureBehaviors();
             foreach ($this->_behaviors as $behavior) {
-                if ($behavior->hasMethod($name)) {
+                if ($behavior->global && $behavior->hasMethod($name)) {
                     return true;
                 }
             }
