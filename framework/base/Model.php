@@ -14,6 +14,7 @@ use ArrayIterator;
 use ReflectionClass;
 use IteratorAggregate;
 use yii\helpers\Inflector;
+use yii\helpers\ArrayHelper;
 use yii\validators\RequiredValidator;
 use yii\validators\Validator;
 
@@ -83,6 +84,42 @@ class Model extends Component implements IteratorAggregate, ArrayAccess, Arrayab
      */
     private $_scenario = self::SCENARIO_DEFAULT;
 
+    /**
+     * PHP getter magic method.
+     * Add dot format support to retrieve the property of embedded object.
+     *
+     * @param string $name property name
+     * @throws \yii\base\InvalidParamException if relation name is wrong
+     * @return mixed property value
+     * @see ArrayHelper::getValue()
+     */
+    public function __get($name)
+    {
+        if (strpos($name, '.')) {
+            return ArrayHelper::getValue($this, $name);
+        }
+        return parent::__get($name);
+    }
+
+    /**
+     * PHP setter magic method.
+     * Add dot format support to set the property of embedded object.
+     *
+     * @param string $name property name
+     * @param mixed $value property value
+     */
+    public function __set($name, $value)
+    {
+        if (($pos = strrpos($name, '.')) !== false) {
+            $newName = substr($name, 0, $pos);
+            $model = ArrayHelper::getValue($this, $newName);
+            $attribute = substr($name, $pos + 1);
+            $model->$attribute = $value;
+            $name = $newName;
+            $value = $model;
+        }
+        parent::__set($name, $value);
+    }
 
     /**
      * Returns the validation rules for attributes.

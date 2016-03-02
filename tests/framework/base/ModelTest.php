@@ -7,6 +7,7 @@ use yiiunit\data\base\RulesModel;
 use yiiunit\TestCase;
 use yiiunit\data\base\Speaker;
 use yiiunit\data\base\Singer;
+use yiiunit\data\base\Embed;
 use yiiunit\data\base\InvalidRulesModel;
 
 /**
@@ -348,6 +349,24 @@ class ModelTest extends TestCase
 
         $invalid = new InvalidRulesModel();
         $invalid->createValidators();
+    }
+
+    public function testSerializeLOBAttribute() {
+        $embed = new Embed;
+
+        $this->assertEquals('Option First Name', $embed->getAttributeLabel('options.firstName'));
+        $this->assertTrue($embed->isAttributeRequired('options.firstName'));
+
+        $attribute = 'options.firstName';
+        $embed->$attribute = 'abc';
+        $this->assertEquals('abc', $embed->options->firstName);
+
+        $attribute = 'options.lastName';
+        $this->assertEquals('Lennon', $embed->$attribute);
+
+        $embed->options = ['firstName' => 'abc', 'lastName' => 'cba'];
+        $this->assertEquals('abc', $embed->options->firstName);
+        $this->assertEquals('cba', $embed->options->lastName);
     }
 }
 
