@@ -1,6 +1,7 @@
 Yii Framework 2 smarty extension Change Log
 ===========================================
 
+<<<<<<< HEAD
 2.0.4 under development
 -----------------------
 
@@ -20,6 +21,8 @@ Yii Framework 2 smarty extension Change Log
 - no changes in this release.
 
 
+=======
+>>>>>>> yiichina/master
 2.0.1 December 07, 2014
 -----------------------
 

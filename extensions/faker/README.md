@@ -3,9 +3,12 @@ Faker Extension for Yii 2
 
 This extension provides a [`Faker`](https://github.com/fzaninotto/Faker) fixture command for Yii 2.
 
+<<<<<<< HEAD
 This repository is a git submodule of <https://github.com/yiisoft/yii2>.
 Please submit issue reports and pull requests to the main repository.
 For license information check the [LICENSE](LICENSE.md)-file.
+=======
+>>>>>>> yiichina/master
 
 Installation
 ------------
@@ -15,13 +18,21 @@ The preferred way to install this extension is through [composer](http://getcomp
 Either run
 
 ```
+<<<<<<< HEAD
 php composer.phar require --prefer-dist yiisoft/yii2-faker
+=======
+php composer.phar require --prefer-dist yiisoft/yii2-faker "*"
+>>>>>>> yiichina/master
 ```
 
 or add
 
 ```json
+<<<<<<< HEAD
 "yiisoft/yii2-faker": "~2.0.0"
+=======
+"yiisoft/yii2-faker": "*"
+>>>>>>> yiichina/master
 ```
 
 to the require section of your composer.json.

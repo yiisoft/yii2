@@ -38,10 +38,16 @@ use yii\di\Instance;
 class Session extends \yii\web\Session
 {
     /**
+<<<<<<< HEAD
      * @var Connection|array|string the MongoDB connection object or the application component ID of the MongoDB connection.
      * After the Session object is created, if you want to change this property, you should only assign it
      * with a MongoDB connection object.
      * Starting from version 2.0.2, this can also be a configuration array for creating the object.
+=======
+     * @var Connection|string the MongoDB connection object or the application component ID of the MongoDB connection.
+     * After the Session object is created, if you want to change this property, you should only assign it
+     * with a MongoDB connection object.
+>>>>>>> yiichina/master
      */
     public $db = 'mongodb';
     /**

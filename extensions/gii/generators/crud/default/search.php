@@ -69,11 +69,15 @@ class <?= $searchModelClass ?> extends <?= isset($modelAlias) ? $modelAlias : $m
             'query' => $query,
         ]);
 
+<<<<<<< HEAD
         $this->load($params);
 
         if (!$this->validate()) {
             // uncomment the following line if you do not want to any records when validation fails
             // $query->where('0=1');
+=======
+        if (!($this->load($params) && $this->validate())) {
+>>>>>>> yiichina/master
             return $dataProvider;
         }
 

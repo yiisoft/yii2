@@ -236,17 +236,33 @@ class Controller extends Component implements ViewContextInterface
      * The method will trigger the [[EVENT_BEFORE_ACTION]] event. The return value of the method
      * will determine whether the action should continue to run.
      *
+<<<<<<< HEAD
+=======
+     * In case the action should not run, the request should be handled inside of the `beforeAction` code
+     * by either providing the necessary output or redirecting the request. Otherwise the response will be empty.
+     *
+>>>>>>> yiichina/master
      * If you override this method, your code should look like the following:
      *
      * ```php
      * public function beforeAction($action)
      * {
+<<<<<<< HEAD
      *     if (parent::beforeAction($action)) {
      *         // your custom code here
      *         return true;  // or false if needed
      *     } else {
      *         return false;
      *     }
+=======
+     *     if (!parent::beforeAction($action)) {
+     *         return false;
+     *     }
+     *
+     *     // your custom code here
+     *
+     *     return true; // or false to not run the action
+>>>>>>> yiichina/master
      * }
      * ```
      *

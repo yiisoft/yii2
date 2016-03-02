@@ -41,8 +41,13 @@ class Query extends Component implements QueryInterface
     use QueryTrait;
 
     /**
+<<<<<<< HEAD
      * @var array the fields of the results to return. For example: `['name', 'group_id']`, `['name' => true, '_id' => false]`.
      * Unless directly excluded, the "_id" field is always returned. If not set, it means selecting all columns.
+=======
+     * @var array the fields of the results to return. For example, `['name', 'group_id']`.
+     * The "_id" field is always returned. If not set, if means selecting all columns.
+>>>>>>> yiichina/master
      * @see select()
      */
     public $select = [];
@@ -377,12 +382,17 @@ class Query extends Component implements QueryInterface
     {
         $selectFields = [];
         if (!empty($this->select)) {
+<<<<<<< HEAD
             foreach ($this->select as $key => $value) {
                 if (is_numeric($key)) {
                     $selectFields[$value] = true;
                 } else {
                     $selectFields[$key] = $value;
                 }
+=======
+            foreach ($this->select as $fieldName) {
+                $selectFields[$fieldName] = true;
+>>>>>>> yiichina/master
             }
         }
         return $selectFields;

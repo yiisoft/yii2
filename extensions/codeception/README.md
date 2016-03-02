@@ -8,9 +8,12 @@ It provides classes that help with testing with codeception:
 - a base class for unit-tests: `yii\codeception\TestCase`;
 - a base class for codeception page-objects: `yii\codeception\BasePage`.
 
+<<<<<<< HEAD
 This repository is a git submodule of <https://github.com/yiisoft/yii2>.
 Please submit issue reports and pull requests to the main repository.
 For license information check the [LICENSE](LICENSE.md)-file.
+=======
+>>>>>>> yiichina/master
 
 Installation
 ------------
@@ -20,13 +23,21 @@ The preferred way to install this extension is through [composer](http://getcomp
 Either run
 
 ```
+<<<<<<< HEAD
 php composer.phar require --prefer-dist yiisoft/yii2-codeception
+=======
+php composer.phar require --prefer-dist yiisoft/yii2-codeception "*"
+>>>>>>> yiichina/master
 ```
 
 or add
 
 ```json
+<<<<<<< HEAD
 "yiisoft/yii2-codeception": "~2.0.0"
+=======
+"yiisoft/yii2-codeception": "*"
+>>>>>>> yiichina/master
 ```
 
 to the require section of your composer.json.

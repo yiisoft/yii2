@@ -16,7 +16,11 @@ if (empty($events)) {
 }
 ArrayHelper::multisort($events, 'name');
 ?>
+<<<<<<< HEAD
 <h2>Event Details</h2>
+=======
+<h2>事件详情</h2>
+>>>>>>> yiichina/master
 
 <div class="event-doc">
 <?php foreach ($events as $event): ?>
@@ -36,7 +40,11 @@ ArrayHelper::multisort($events, 'name');
         <span class="detail-header-tag small">
         event
         <?php if (!empty($event->since)): ?>
+<<<<<<< HEAD
             (available since version <?= $event->since ?>)
+=======
+            （可用自版本 <?= $event->since ?>）
+>>>>>>> yiichina/master
         <?php endif; ?>
         </span>
     </div>

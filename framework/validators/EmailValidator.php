@@ -112,6 +112,10 @@ class EmailValidator extends Validator
             PunycodeAsset::register($view);
         }
 
+<<<<<<< HEAD
         return 'yii.validation.email(value, messages, ' . Json::encode($options) . ');';
+=======
+        return 'yii.validation.email(value, messages, ' . Json::htmlEncode($options) . ');';
+>>>>>>> yiichina/master
     }
 }

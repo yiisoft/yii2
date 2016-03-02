@@ -1,6 +1,7 @@
 Yii Framework 2 jui extension Change Log
 ========================================
 
+<<<<<<< HEAD
 2.0.4 under development
 -----------------------
 
@@ -20,6 +21,8 @@ Yii Framework 2 jui extension Change Log
 - Enh #6471: Datepicker will now show an empty field when value is an empty string (cebe)
 
 
+=======
+>>>>>>> yiichina/master
 2.0.1 December 07, 2014
 -----------------------
 

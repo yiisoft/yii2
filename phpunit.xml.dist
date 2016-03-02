@@ -1,5 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
+<<<<<<< HEAD
 <phpunit bootstrap="./tests/unit/bootstrap.php"
+=======
+<phpunit bootstrap="./tests/bootstrap.php"
+>>>>>>> yiichina/master
 		colors="true"
 		convertErrorsToExceptions="true"
 		convertNoticesToExceptions="true"
@@ -7,7 +11,11 @@
 		stopOnFailure="false">
 		<testsuites>
 			<testsuite name="Yii Test Suite">
+<<<<<<< HEAD
 				<directory>./tests/unit</directory>
+=======
+				<directory>./tests</directory>
+>>>>>>> yiichina/master
 			</testsuite>
 		</testsuites>
 		<filter>

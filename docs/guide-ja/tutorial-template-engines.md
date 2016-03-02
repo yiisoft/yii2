@@ -1,8 +1,11 @@
 テンプレートエンジンを使う
 ==========================
 
+<<<<<<< HEAD
 > Note|注意: この節はまだ執筆中です。
 
+=======
+>>>>>>> yiichina/master
 デフォルトでは、Yii は PHP をテンプレート言語として使いますが、[Twig](http://twig.sensiolabs.org/) や [Smarty](http://www.smarty.net/) などの他のレンダリングエンジンをサポートするように Yii を構成することが出来ます。
 
 `view` コンポーネントがビューのレンダリングに責任を持っています。
@@ -46,6 +49,7 @@
 上のコードを `composer.json` の `require` セクションに追加します。
 変更をファイルに保存した後、コマンドラインで `composer update --prefer-dist` を実行することによってエクステンションをインストールすることが出来ます。
 
+<<<<<<< HEAD
 Twig
 ----
 
@@ -452,3 +456,10 @@ Smarty のテンプレート内では、次の変数が常に定義されてい�
 ```
 `{#something#}`
 ```
+=======
+具体的にテンプレートエンジンを使用する方法については、それぞれのドキュメントで詳細を参照してください。
+
+- [Twig ガイド](https://github.com/yiisoft/yii2-twig/tree/master/docs/guide-ja)
+- [Smarty ガイド](https://github.com/yiisoft/yii2-smarty/tree/master/docs/guide-ja)
+
+>>>>>>> yiichina/master

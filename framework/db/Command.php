@@ -157,6 +157,7 @@ class Command extends Component
     {
         if (empty($this->params)) {
             return $this->_sql;
+<<<<<<< HEAD
         } else {
             $params = [];
             foreach ($this->params as $name => $value) {
@@ -179,6 +180,28 @@ class Command extends Component
                 return strtr($this->_sql, $params);
             }
         }
+=======
+        }
+        $params = [];
+        foreach ($this->params as $name => $value) {
+            if (is_string($value)) {
+                $params[$name] = $this->db->quoteValue($value);
+            } elseif ($value === null) {
+                $params[$name] = 'NULL';
+            } elseif (!is_object($value) && !is_resource($value)) {
+                $params[$name] = $value;
+            }
+        }
+        if (!isset($params[1])) {
+            return strtr($this->_sql, $params);
+        }
+        $sql = '';
+        foreach (explode('?', $this->_sql) as $i => $part) {
+            $sql .= (isset($params[$i]) ? $params[$i] : '') . $part;
+        }
+
+        return $sql;
+>>>>>>> yiichina/master
     }
 
     /**
@@ -312,12 +335,20 @@ class Command extends Component
             return $this;
         }
 
+<<<<<<< HEAD
+=======
+        $schema = $this->db->getSchema();
+>>>>>>> yiichina/master
         foreach ($values as $name => $value) {
             if (is_array($value)) {
                 $this->_pendingParams[$name] = $value;
                 $this->params[$name] = $value[0];
             } else {
+<<<<<<< HEAD
                 $type = $this->db->getSchema()->getPdoType($value);
+=======
+                $type = $schema->getPdoType($value);
+>>>>>>> yiichina/master
                 $this->_pendingParams[$name] = [$value, $type];
                 $this->params[$name] = $value;
             }
@@ -432,8 +463,17 @@ class Command extends Component
      * ])->execute();
      * ~~~
      *
+<<<<<<< HEAD
      * Note that the values in each row must match the corresponding column names.
      *
+=======
+     * The method will properly escape the column names, and quote the values to be inserted.
+     *
+     * Note that the values in each row must match the corresponding column names.
+     *
+     * Also note that the created command is not executed until [[execute()]] is called.
+     *
+>>>>>>> yiichina/master
      * @param string $table the table that new rows will be inserted into.
      * @param array $columns the column names
      * @param array $rows the rows to be batch inserted into the table

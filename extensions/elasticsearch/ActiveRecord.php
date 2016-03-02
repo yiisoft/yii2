@@ -575,7 +575,11 @@ class ActiveRecord extends BaseActiveRecord
     {
         $pkName = static::primaryKey()[0];
         if (count($condition) == 1 && isset($condition[$pkName])) {
+<<<<<<< HEAD
             $primaryKeys = (array)$condition[$pkName];
+=======
+            $primaryKeys = is_array($condition[$pkName]) ? $condition[$pkName] : [$condition[$pkName]];
+>>>>>>> yiichina/master
         } else {
             $primaryKeys = static::find()->where($condition)->column($pkName); // TODO check whether this works with default pk _id
         }
@@ -635,7 +639,11 @@ class ActiveRecord extends BaseActiveRecord
     {
         $pkName = static::primaryKey()[0];
         if (count($condition) == 1 && isset($condition[$pkName])) {
+<<<<<<< HEAD
             $primaryKeys = (array)$condition[$pkName];
+=======
+            $primaryKeys = is_array($condition[$pkName]) ? $condition[$pkName] : [$condition[$pkName]];
+>>>>>>> yiichina/master
         } else {
             $primaryKeys = static::find()->where($condition)->column($pkName); // TODO check whether this works with default pk _id
         }
@@ -771,7 +779,11 @@ class ActiveRecord extends BaseActiveRecord
     {
         $pkName = static::primaryKey()[0];
         if (count($condition) == 1 && isset($condition[$pkName])) {
+<<<<<<< HEAD
             $primaryKeys = (array)$condition[$pkName];
+=======
+            $primaryKeys = is_array($condition[$pkName]) ? $condition[$pkName] : [$condition[$pkName]];
+>>>>>>> yiichina/master
         } else {
             $primaryKeys = static::find()->where($condition)->column($pkName); // TODO check whether this works with default pk _id
         }

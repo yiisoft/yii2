@@ -123,8 +123,13 @@ class Tabs extends Widget
      */
     public function run()
     {
+<<<<<<< HEAD
         $this->registerPlugin('tab');
         return $this->renderItems();
+=======
+        echo $this->renderItems();
+        $this->registerPlugin('tab');
+>>>>>>> yiichina/master
     }
 
     /**

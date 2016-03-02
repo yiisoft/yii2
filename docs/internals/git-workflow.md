@@ -2,12 +2,26 @@ Git workflow for Yii 2 contributors
 ===================================
 
 So you want to contribute to Yii? Great! But to increase the chances of your changes being accepted quickly, please
+<<<<<<< HEAD
 follow the following steps (the first 2 steps only need to be done the first time you contribute). If you are new to git
 and github, you might want to first check out [github help](http://help.github.com/), [try git](https://try.github.com)
 or learn something about [git internal data model](http://nfarina.com/post/9868516270/git-is-simpler).
 
 ### 1. [Fork](http://help.github.com/fork-a-repo/) the Yii repository on github and clone your fork to your development
 environment
+=======
+follow the following steps. If you are new to git
+and github, you might want to first check out [github help](http://help.github.com/), [try git](https://try.github.com)
+or learn something about [git internal data model](http://nfarina.com/post/9868516270/git-is-simpler).
+
+Prepare your development environment
+------------------------------------
+
+The following steps will create a development environment for Yii, which you can use to work
+on the core code of Yii framework. These steps only need to be done the first time you contribute.
+
+### 1. [Fork](http://help.github.com/fork-a-repo/) the Yii repository on github and clone your fork to your development environment
+>>>>>>> yiichina/master
 
 ```
 git clone git@github.com:YOUR-GITHUB-USERNAME/yii2.git
@@ -24,11 +38,63 @@ Change to the directory where you cloned Yii, normally, "yii2". Then enter the f
 git remote add upstream git://github.com/yiisoft/yii2.git
 ```
 
+<<<<<<< HEAD
 ### 3. Make sure there is an issue created for the thing you are working on if it requires significant effort to fix
+=======
+### 3. Prepare the testing environment
+
+The following steps are not necessary if you want to work only on translations or documentation.
+
+- run `composer update` to install dependencies (assuming you have [composer installed globally](https://getcomposer.org/doc/00-intro.md#globally)).
+- run `php build/build dev/app basic` to clone the basic app and install composer dependencies for the basic app.
+  This command will install foreign composer packages as normal but will link the yii2 repo to
+  the currently checked out repo, so you have one instance of all the code installed.
+  
+  Do the same for the advanced app if needed: `php build/build dev/app advanced`.
+  
+  This command will also be used to update dependencies, it runs `composer update` internally.
+
+**Now you have a working playground for hacking on Yii 2.**
+
+The following steps are optional.
+
+### Unit tests
+
+You can execute unit tests by running `phpunit` in the repo root directory. If you do not have phpunit installed globally
+you can run `php vendor/bin/phpunit` instead.
+
+Some tests require additional databases to be set up and configured. You can create `tests/data/config.local.php` to override
+settings that are configured in `tests/data/config.php`.
+
+You may limit the tests to a group of tests you are working on e.g. to run only tests for the validators and redis
+`phpunit --group=validators,redis`. You get the list of available groups by running `phpunit --groups`. 
+
+### Extensions
+
+To work on extensions you have to clone the extension repository. We have created a command that can do this for you:
+
+    php build/build dev/ext <extension-name>
+    
+where `<extension-name>` is the name of the extension, e.g. `redis`.
+
+If you want to test the extension in one of the application templates, just add it to the `composer.json` of the application as you would
+normally do e.g. add `"yiisoft/yii2-redis": "*"` to the `require` section of the basic app.
+Running `php build/build dev/app basic` will install the extension and its dependecies and create
+a symlink to `extensions/redis` so you are not working in the composer vendor dir but in the yii2 repository directly.
+
+
+Working on bugs and features
+----------------------------
+
+Having prepared your develop environment as explained above you can now start working on the feature or bugfix.
+
+### 1. Make sure there is an issue created for the thing you are working on if it requires significant effort to fix
+>>>>>>> yiichina/master
 
 All new features and bug fixes should have an associated issue to provide a single point of reference for discussion
 and documentation. Take a few minutes to look through the existing issue list for one that matches the contribution you
 intend to make. If you find one already on the issue list, then please leave a comment on that issue indicating you
+<<<<<<< HEAD
 intend to work on that item. If you do not find an existing issue matching what you intend to work on, please open a
 new issue for your item or create a pull request directly if it is straightforward fix. This will allow the team to review your suggestion, and provide appropriate feedback along
 the way.
@@ -36,6 +102,15 @@ the way.
 > For small changes or documentation issues or straightforward fixes, you don't need to create an issue, a pull request is enough in this case.
 
 ### 4. Fetch the latest code from the main Yii branch
+=======
+intend to work on that item. If you do not find an existing issue matching what you intend to work on, please
+[open a new issue](report-an-issue.md) or create a pull request directly if it is straightforward fix. This will allow the team to
+review your suggestion, and provide appropriate feedback along the way.
+
+> For small changes or documentation issues or straightforward fixes, you don't need to create an issue, a pull request is enough in this case.
+
+### 2. Fetch the latest code from the main Yii branch
+>>>>>>> yiichina/master
 
 ```
 git fetch upstream
@@ -43,7 +118,11 @@ git fetch upstream
 
 You should start at this point for every new contribution to make sure you are working on the latest code.
 
+<<<<<<< HEAD
 ### 5. Create a new branch for your feature based on the current Yii master branch
+=======
+### 3. Create a new branch for your feature based on the current Yii master branch
+>>>>>>> yiichina/master
 
 > That's very important since you will not be able to submit more than one pull request from your account if you'll
   use master.
@@ -57,14 +136,22 @@ git checkout upstream/master
 git checkout -b 999-name-of-your-branch-goes-here
 ```
 
+<<<<<<< HEAD
 ### 6. Do your magic, write your code
+=======
+### 4. Do your magic, write your code
+>>>>>>> yiichina/master
 
 Make sure it works :)
 
 Unit tests are always welcome. Tested and well covered code greatly simplifies the task of checking your contributions.
 Failing unit tests as issue description are also accepted.
 
+<<<<<<< HEAD
 ### 7. Update the CHANGELOG
+=======
+### 5. Update the CHANGELOG
+>>>>>>> yiichina/master
 
 Edit the CHANGELOG file to include your change, you should insert this at the top of the file under the
 "Work in progress" heading, the line in the change log should look like one of the following:
@@ -79,7 +166,11 @@ The changelog should be grouped by type (`Bug`,`Enh`) and ordered by issue numbe
 
 For very small fixes, e.g. typos and documentation changes, there is no need to update the CHANGELOG.
 
+<<<<<<< HEAD
 ### 8. Commit your changes
+=======
+### 6. Commit your changes
+>>>>>>> yiichina/master
 
 add the files/changes you want to commit to the [staging area](http://gitref.org/basic/#add) with
 
@@ -96,7 +187,11 @@ automatically link your commit with the ticket:
 git commit -m "A brief description of this change which fixes #42 goes here"
 ```
 
+<<<<<<< HEAD
 ### 9. Pull the latest Yii code from upstream into your branch
+=======
+### 7. Pull the latest Yii code from upstream into your branch
+>>>>>>> yiichina/master
 
 ```
 git pull upstream master
@@ -106,31 +201,52 @@ This ensures you have the latest code in your branch before you open your pull r
 you should fix them now and commit the changes again. This ensures that it's easy for the Yii team to merge your changes
 with one click.
 
+<<<<<<< HEAD
 ### 10. Having resolved any conflicts, push your code to github
+=======
+### 8. Having resolved any conflicts, push your code to github
+>>>>>>> yiichina/master
 
 ```
 git push -u origin 999-name-of-your-branch-goes-here
 ```
 
 The `-u` parameter ensures that your branch will now automatically push and pull from the github branch. That means
+<<<<<<< HEAD
 if you type `git push` the next time it will know where to push to.
 
 ### 11. Open a [pull request](http://help.github.com/send-pull-requests/) against upstream.
+=======
+if you type `git push` the next time it will know where to push to. This is useful if you want to later add more commits
+to the pull request.
+
+### 9. Open a [pull request](http://help.github.com/send-pull-requests/) against upstream.
+>>>>>>> yiichina/master
 
 Go to your repository on github and click "Pull Request", choose your branch on the right and enter some more details
 in the comment box. To link the pull request to the issue put anywhere in the pull comment `#999` where 999 is the
 issue number.
 
+<<<<<<< HEAD
 > Note that each pull-request should fix a single change.
 
 ### 12. Someone will review your code
+=======
+> Note that each pull-request should fix a single change. For multiple, unrelated changes, please open multiple pull requests.
+
+### 10. Someone will review your code
+>>>>>>> yiichina/master
 
 Someone will review your code, and you might be asked to make some changes, if so go to step #6 (you don't need to open
 another pull request if your current one is still open). If your code is accepted it will be merged into the main branch
 and become part of the next Yii release. If not, don't be disheartened, different people need different features and Yii
 can't be everything to everyone, your code will still be available on github as a reference for people who need it.
 
+<<<<<<< HEAD
 ### 13. Cleaning it up
+=======
+### 11. Cleaning it up
+>>>>>>> yiichina/master
 
 After your code was either accepted or declined you can delete branches you've worked with from your local repository
 and `origin`.

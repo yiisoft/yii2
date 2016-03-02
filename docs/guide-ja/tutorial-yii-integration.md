@@ -77,7 +77,11 @@ Yii は数多くの優れた機能を提供していますので、サードパ�
 
 サードパーティのシステムが Composer を使って依存を管理している場合は、単に下記のコマンドを実行すれば Yii をインストールすることが出来ます。
 
+<<<<<<< HEAD
     composer global require "fxp/composer-asset-plugin:1.0.0"
+=======
+    composer global require "fxp/composer-asset-plugin:~1.0.0"
+>>>>>>> yiichina/master
     composer require yiisoft/yii2
     composer install
 

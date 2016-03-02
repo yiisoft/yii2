@@ -230,6 +230,18 @@ $alerts = $session->getFlash('alerts');
   find sometimes you are getting an array while sometimes you are getting a string, depending on the order of
   the invocation of these two methods.
 
+<<<<<<< HEAD
+=======
+> Tip: For displaying Flash messages you can use [[yii\bootstrap\Alert|bootstrap Alert]] widget in the following way:
+>
+> ```php
+> echo Alert::widget([
+>    'options' => ['class' => 'alert-info'],
+>    'body' => Yii::$app->session->getFlash('postDeleted'),
+> ]);
+> ```
+
+>>>>>>> yiichina/master
 
 ## Cookies <span id="cookies"></span>
 

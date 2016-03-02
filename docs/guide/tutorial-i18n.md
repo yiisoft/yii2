@@ -435,8 +435,13 @@ in case your raw message is a valid verbose text. However, sometimes it is not e
 You may need to perform some custom processing of the situation, when the requested translation is missing from the source.
 This can be achieved using the [[yii\i18n\MessageSource::EVENT_MISSING_TRANSLATION|missingTranslation]]-event of [[yii\i18n\MessageSource]].
 
+<<<<<<< HEAD
 For example, let us mark all the missing translations with something notable so that they can be easily found at the page.
 First we need to setup an event handler. This can be done in the application configuration:
+=======
+For example, you may want to mark all the missing translations with something notable, so that they can be easily found at the page.
+First you need to setup an event handler. This can be done in the application configuration:
+>>>>>>> yiichina/master
 
 ```php
 'components' => [
@@ -456,7 +461,11 @@ First we need to setup an event handler. This can be done in the application con
 ],
 ```
 
+<<<<<<< HEAD
 Now we need to implement our own event handler:
+=======
+Now you need to implement your own event handler:
+>>>>>>> yiichina/master
 
 ```php
 <?php
@@ -467,7 +476,12 @@ use yii\i18n\MissingTranslationEvent;
 
 class TranslationEventHandler
 {
+<<<<<<< HEAD
     public static function handleMissingTranslation(MissingTranslationEvent $event) {
+=======
+    public static function handleMissingTranslation(MissingTranslationEvent $event)
+    {
+>>>>>>> yiichina/master
         $event->translatedMessage = "@MISSING: {$event->category}.{$event->message} FOR LANGUAGE {$event->language} @";
     }
 }
@@ -481,8 +495,33 @@ If [[yii\i18n\MissingTranslationEvent::translatedMessage]] is set by the event h
 
 ### Using the `message` command <a name="message-command"></a>
 
+<<<<<<< HEAD
 TDB
 
+=======
+Translations can be stored in [[yii\i18n\PhpMessageSource|php files]], [[yii\i18n\GettextMessageSource|.po files] or to [[yii\i18n\DbMessageSource|database]]. See specific classes for additional options.
+
+First of all you need to create a config file. Decide where you want to store it and then issue the command 
+
+```bash
+./yii message/config path/to/config.php
+```
+
+Open the created file and adjust the parameters to fit your needs. Pay special attention to:
+
+* `languages`: an array representing what languages your app should be translated to;
+* `messagePath`: path where to store message files, which should match the `i18n`'s `basePath` parameter stated in config.
+
+> Note that aliases are not supported here, they must be real path relative to the config file location
+
+Once you're done with the config file you can finally extract your messages with the command
+
+```bash
+./yii message path/to/config.php
+```
+
+You will then find your files (if you've choosen file based translations) in your `messagePath` directory.
+>>>>>>> yiichina/master
 
 Views
 -----
@@ -500,7 +539,11 @@ and fall back to the original view file if none was found.
 Formatting Number and Date values
 ---------------------------------
 
+<<<<<<< HEAD
 See the [data formatter section](output-formatter.md) for details.
+=======
+See the [data formatter section](output-formatting.md) for details.
+>>>>>>> yiichina/master
 
 
 Setting up your PHP environment <span id="setup-environment"></span>

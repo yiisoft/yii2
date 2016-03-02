@@ -14,6 +14,10 @@ use yii\caching\Dependency;
 use yii\di\Instance;
 
 /**
+<<<<<<< HEAD
+=======
+ * FragmentCache is used by [[\yii\base\View]] to provide caching of page fragments.
+>>>>>>> yiichina/master
  *
  * @property string|boolean $cachedContent The cached content. False is returned if valid content is not found
  * in the cache. This property is read-only.
@@ -84,7 +88,11 @@ class FragmentCache extends Widget
 
         $this->cache = $this->enabled ? Instance::ensure($this->cache, Cache::className()) : null;
 
+<<<<<<< HEAD
         if ($this->getCachedContent() === false) {
+=======
+        if ($this->cache instanceof Cache && $this->getCachedContent() === false) {
+>>>>>>> yiichina/master
             $this->getView()->cacheStack[] = $this;
             ob_start();
             ob_implicit_flush(false);

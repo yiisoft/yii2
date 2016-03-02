@@ -2,7 +2,11 @@ Handling Errors
 ===============
 
 Yii includes a built-in [[yii\web\ErrorHandler|error handler]] which makes error handling a much more pleasant
+<<<<<<< HEAD
 experience than before. In particular, the Yii error handler does the followings to improve error handling:
+=======
+experience than before. In particular, the Yii error handler does the following to improve error handling:
+>>>>>>> yiichina/master
 
 * All non-fatal PHP errors (e.g. warnings, notices) are converted into catchable exceptions.
 * Exceptions and fatal PHP errors are displayed with detailed call stack information and source code lines
@@ -144,7 +148,11 @@ the following variables if the error action is defined as [[yii\web\ErrorAction]
 * `exception`: the exception object through which you can retrieve more useful information, such as HTTP status code,
   error code, error call stack, etc.
 
+<<<<<<< HEAD
 > Info: If you are using the [basic application template](start-installation.md) or the [advanced application template](tutorial-advanced-app.md),
+=======
+> Info: If you are using the [basic project template](start-installation.md) or the [advanced project template](https://github.com/yiisoft/yii2-app-advanced/blob/master/docs/guide/README.md),
+>>>>>>> yiichina/master
 the error action and the error view are already defined for you.
 
 

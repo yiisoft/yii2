@@ -59,7 +59,11 @@ class ApiRenderer extends \yii\apidoc\templates\html\ApiRenderer
      */
     public function generateApiUrl($typeName)
     {
+<<<<<<< HEAD
         return strtolower(str_replace('\\', '-', $typeName));
+=======
+        return '/doc/api/2.0/' . strtolower(str_replace('\\', '-', $typeName));
+>>>>>>> yiichina/master
     }
 
     /**
@@ -67,6 +71,10 @@ class ApiRenderer extends \yii\apidoc\templates\html\ApiRenderer
      */
     protected function generateFileName($typeName)
     {
+<<<<<<< HEAD
         return $this->generateApiUrl($typeName) . '.html';
+=======
+        return strtolower(str_replace('\\', '-', $typeName)) . '.html';
+>>>>>>> yiichina/master
     }
 }

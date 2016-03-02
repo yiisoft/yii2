@@ -29,13 +29,21 @@ support cache multi-niveaux; et plus.
 profiter de son architecture extensible solide, afin d'utiliser ou développer des extensions redistribuables. 
 - La haute performance est toujours un des principaux objectifs de Yii.
 
+<<<<<<< HEAD
 Yii n'est pas un one-man show, il est soutenu par une [solide équipe de développement du noyau][] ainsi que d'une grande communauté 
+=======
+Yii n'est pas un one-man show, il est soutenu par une [solide équipe de développement du noyau][about_yii] ainsi que d'une grande communauté 
+>>>>>>> yiichina/master
 avec de nombreux professionnels qui contribuent constamment au développement de Yii. L'équipe de développeurs de Yii 
 garde un œil attentif sur les dernières tendances en développement Web, et sur ​​les meilleures pratiques et caractéristiques 
 trouvées dans d'autres frameworks ou projets. Les meilleures pratiques et caractéristiques les plus pertinentes trouvées ailleurs sont régulièrement intégrées dans le code du noyau et utilisables
 via des interfaces simples et élégantes.
 
+<<<<<<< HEAD
 [solide équipe de développement du noyau]: http://www.yiiframework.com/about/
+=======
+[about_yii]: http://www.yiiframework.com/about/
+>>>>>>> yiichina/master
 
 Versions de Yii
 ---------------

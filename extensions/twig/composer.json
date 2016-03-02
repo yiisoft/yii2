@@ -19,7 +19,11 @@
     ],
     "require": {
         "yiisoft/yii2": "*",
+<<<<<<< HEAD
         "twig/twig": "~1.0"
+=======
+        "twig/twig": "*"
+>>>>>>> yiichina/master
     },
     "autoload": {
         "psr-4": { "yii\\twig\\": "" }

@@ -190,6 +190,7 @@ class DbPanel extends Panel
     {
         return (($this->criticalQueryThreshold !== null) && ($count > $this->criticalQueryThreshold));
     }
+<<<<<<< HEAD
 
     /**
      * Returns array query types
@@ -208,4 +209,6 @@ class DbPanel extends Panel
             []
         );
     }
+=======
+>>>>>>> yiichina/master
 }

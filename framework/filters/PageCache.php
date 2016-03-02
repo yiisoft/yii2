@@ -106,6 +106,23 @@ class PageCache extends ActionFilter
      * [[\yii\web\Application::view]] will be used.
      */
     public $view;
+<<<<<<< HEAD
+=======
+    /**
+     * @var boolean|array a boolean value indicating whether to cache all cookies, or an array of
+     * cookie names indicating which cookies can be cached. Be very careful with caching cookies, because
+     * it may leak sensitive or private data stored in cookies to unwanted users.
+     * @since 2.0.4
+     */
+    public $cacheCookies = false;
+    /**
+     * @var boolean|array a boolean value indicating whether to cache all HTTP headers, or an array of
+     * HTTP header names (case-insensitive) indicating which HTTP headers can be cached.
+     * Note if your HTTP headers contain sensitive information, you should white-list which headers can be cached.
+     * @since 2.0.4
+     */
+    public $cacheHeaders = true;
+>>>>>>> yiichina/master
 
 
     /**
@@ -175,10 +192,19 @@ class PageCache extends ActionFilter
             $response->statusText = $data['statusText'];
         }
         if (isset($data['headers']) && is_array($data['headers'])) {
+<<<<<<< HEAD
             $response->getHeaders()->fromArray($data['headers']);
         }
         if (isset($data['cookies']) && is_array($data['cookies'])) {
             $response->getCookies()->fromArray($data['cookies']);
+=======
+            $headers = $response->getHeaders()->toArray();
+            $response->getHeaders()->fromArray(array_merge($data['headers'], $headers));
+        }
+        if (isset($data['cookies']) && is_array($data['cookies'])) {
+            $cookies = $response->getCookies()->toArray();
+            $response->getCookies()->fromArray(array_merge($data['cookies'], $cookies));
+>>>>>>> yiichina/master
         }
     }
 
@@ -195,9 +221,40 @@ class PageCache extends ActionFilter
             'version' => $response->version,
             'statusCode' => $response->statusCode,
             'statusText' => $response->statusText,
+<<<<<<< HEAD
             'headers' => $response->getHeaders()->toArray(),
             'cookies' => $response->getCookies()->toArray(),
         ];
+=======
+        ];
+        if (!empty($this->cacheHeaders)) {
+            $headers = $response->getHeaders()->toArray();
+            if (is_array($this->cacheHeaders)) {
+                $filtered = [];
+                foreach ($this->cacheHeaders as $name) {
+                    $name = strtolower($name);
+                    if (isset($headers[$name])) {
+                        $filtered[$name] = $headers[$name];
+                    }
+                }
+                $headers = $filtered;
+            }
+            $data['headers'] = $headers;
+        }
+        if (!empty($this->cacheCookies)) {
+            $cookies = $response->getCookies()->toArray();
+            if (is_array($this->cacheCookies)) {
+                $filtered = [];
+                foreach ($this->cacheCookies as $name) {
+                    if (isset($cookies[$name])) {
+                        $filtered[$name] = $cookies[$name];
+                    }
+                }
+                $cookies = $filtered;
+            }
+            $data['cookies'] = $cookies;
+        }
+>>>>>>> yiichina/master
         $this->cache->set($this->calculateCacheKey(), $data);
         echo ob_get_clean();
     }

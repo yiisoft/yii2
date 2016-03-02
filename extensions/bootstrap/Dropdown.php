@@ -15,6 +15,7 @@ use yii\helpers\Url;
 /**
  * Dropdown renders a Bootstrap dropdown menu component.
  *
+<<<<<<< HEAD
  * For example,
  *
  * ```php
@@ -30,6 +31,8 @@ use yii\helpers\Url;
  *     ?>
  * </div>
  * ```
+=======
+>>>>>>> yiichina/master
  * @see http://getbootstrap.com/javascript/#dropdowns
  * @author Antonio Ramirez <amigo.cobos@gmail.com>
  * @since 2.0
@@ -73,9 +76,14 @@ class Dropdown extends Widget
      */
     public function run()
     {
+<<<<<<< HEAD
         BootstrapPluginAsset::register($this->getView());
         $this->registerClientEvents();
         return $this->renderItems($this->items, $this->options);
+=======
+        echo $this->renderItems($this->items, $this->options);
+        BootstrapPluginAsset::register($this->getView());
+>>>>>>> yiichina/master
     }
 
     /**
@@ -90,6 +98,10 @@ class Dropdown extends Widget
         $lines = [];
         foreach ($items as $i => $item) {
             if (isset($item['visible']) && !$item['visible']) {
+<<<<<<< HEAD
+=======
+                unset($items[$i]);
+>>>>>>> yiichina/master
                 continue;
             }
             if (is_string($item)) {

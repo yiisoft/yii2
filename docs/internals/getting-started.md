@@ -1,6 +1,7 @@
 Getting started with Yii2 development
 =====================================
 
+<<<<<<< HEAD
 1. Clone your fork of yii2 `git clone git@github.com:<yourname>/yii2.git`.
 2. Change into the repo folder `cd yii2`.
 3. run `./build/build app/link basic` to install composer dependecies for the basic app.
@@ -42,3 +43,6 @@ Functional and acceptance tests for applications
 ------------------------------------------------
 
 See `apps/advanced/tests/README.md` and `apps/basic/tests/README.md` to learn about how to run Codeception tests.
+=======
+See [Git workflow for Yii 2 contributors](git-workflow.md) on how to set up your environment.
+>>>>>>> yiichina/master

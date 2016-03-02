@@ -108,7 +108,11 @@ $object = Yii::createObject([
 ], [$param1, $param2]);
 ```
 
+<<<<<<< HEAD
 More details about configurations can be found in the [Object Configurations](concept-configurations.md) section.
+=======
+More details about configurations can be found in the [Configurations](concept-configurations.md) section.
+>>>>>>> yiichina/master
 
 
 Events
@@ -503,9 +507,15 @@ User and IdentityInterface
 
 The `CWebUser` class in 1.1 is now replaced by [[yii\web\User]], and there is no more
 `CUserIdentity` class. Instead, you should implement the [[yii\web\IdentityInterface]] which
+<<<<<<< HEAD
 is much more straightforward to use. The advanced application template provides such an example.
 
 Please refer to the [Authentication](security-authentication.md), [Authorization](security-authorization.md), and [Advanced Application Template](tutorial-advanced-app.md) sections for more details.
+=======
+is much more straightforward to use. The advanced project template provides such an example.
+
+Please refer to the [Authentication](security-authentication.md), [Authorization](security-authorization.md), and [Advanced Project Template](https://github.com/yiisoft/yii2-app-advanced/blob/master/docs/guide/README.md) sections for more details.
+>>>>>>> yiichina/master
 
 
 URL Management

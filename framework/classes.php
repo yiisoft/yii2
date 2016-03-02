@@ -233,6 +233,10 @@ return [
   'yii\validators\CompareValidator' => YII2_PATH . '/validators/CompareValidator.php',
   'yii\validators\DateValidator' => YII2_PATH . '/validators/DateValidator.php',
   'yii\validators\DefaultValueValidator' => YII2_PATH . '/validators/DefaultValueValidator.php',
+<<<<<<< HEAD
+=======
+  'yii\validators\EachValidator' => YII2_PATH . '/validators/EachValidator.php',
+>>>>>>> yiichina/master
   'yii\validators\EmailValidator' => YII2_PATH . '/validators/EmailValidator.php',
   'yii\validators\ExistValidator' => YII2_PATH . '/validators/ExistValidator.php',
   'yii\validators\FileValidator' => YII2_PATH . '/validators/FileValidator.php',

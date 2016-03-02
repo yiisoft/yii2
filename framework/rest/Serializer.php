@@ -90,6 +90,21 @@ class Serializer extends Component
      */
     public $collectionEnvelope;
     /**
+<<<<<<< HEAD
+=======
+     * @var string the name of the envelope (e.g. `_links`) for returning the links objects.
+     * It takes effect only, if `collectionEnvelope` is set.
+     * @since 2.0.4
+     */
+    public $linksEnvelope = '_links';
+    /**
+     * @var string the name of the envelope (e.g. `_meta`) for returning the pagination object.
+     * It takes effect only, if `collectionEnvelope` is set.
+     * @since 2.0.4
+     */
+    public $metaEnvelope = '_meta';
+    /**
+>>>>>>> yiichina/master
      * @var Request the current request. If not set, the `request` application component will be used.
      */
     public $request;
@@ -190,8 +205,13 @@ class Serializer extends Component
     protected function serializePagination($pagination)
     {
         return [
+<<<<<<< HEAD
             '_links' => Link::serialize($pagination->getLinks(true)),
             '_meta' => [
+=======
+            $this->linksEnvelope => Link::serialize($pagination->getLinks(true)),
+            $this->metaEnvelope => [
+>>>>>>> yiichina/master
                 'totalCount' => $pagination->totalCount,
                 'pageCount' => $pagination->getPageCount(),
                 'currentPage' => $pagination->getPage() + 1,

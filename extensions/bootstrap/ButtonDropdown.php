@@ -79,6 +79,7 @@ class ButtonDropdown extends Widget
         $options = $this->containerOptions;
         $tag = ArrayHelper::remove($options, 'tag', 'div');
 
+<<<<<<< HEAD
         $this->registerPlugin('button');
         return implode("\n", [
             Html::beginTag($tag, $this->containerOptions),
@@ -86,6 +87,13 @@ class ButtonDropdown extends Widget
             $this->renderDropdown(),
             Html::endTag($tag)
         ]);
+=======
+        echo Html::beginTag($tag, $this->containerOptions);
+        echo "\n" . $this->renderButton();
+        echo "\n" . $this->renderDropdown();
+        echo "\n" . Html::endTag($tag);
+        $this->registerPlugin('button');
+>>>>>>> yiichina/master
     }
 
     /**

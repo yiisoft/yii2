@@ -1,6 +1,7 @@
 Yii Framework 2 twig extension Change Log
 =========================================
 
+<<<<<<< HEAD
 2.0.4 under development
 -----------------------
 
@@ -19,6 +20,8 @@ Yii Framework 2 twig extension Change Log
 - Bug #6464: `path` and `url` weren't resolving aliases (samdark, lynicidn)
 
 
+=======
+>>>>>>> yiichina/master
 2.0.1 December 07, 2014
 -----------------------
 

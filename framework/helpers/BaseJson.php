@@ -41,6 +41,24 @@ class BaseJson
     }
 
     /**
+<<<<<<< HEAD
+=======
+     * Encodes the given value into a JSON string HTML-escaping entities so it is safe to be embedded in HTML code.
+     * The method enhances `json_encode()` by supporting JavaScript expressions.
+     * In particular, the method will not encode a JavaScript expression that is
+     * represented in terms of a [[JsExpression]] object.
+     *
+     * @param mixed $value the data to be encoded
+     * @return string the encoding result
+     * @since 2.0.4
+     */
+    public static function htmlEncode($value)
+    {
+        return static::encode($value, JSON_UNESCAPED_UNICODE | JSON_HEX_QUOT | JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS);
+    }
+
+    /**
+>>>>>>> yiichina/master
      * Decodes the given JSON string into a PHP data structure.
      * @param string $json the JSON string to be decoded
      * @param boolean $asArray whether to return objects in terms of associative arrays.

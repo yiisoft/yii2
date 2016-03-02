@@ -81,6 +81,7 @@ class Carousel extends Widget
      */
     public function run()
     {
+<<<<<<< HEAD
         $this->registerPlugin('carousel');
         return implode("\n", [
             Html::beginTag('div', $this->options),
@@ -89,6 +90,14 @@ class Carousel extends Widget
             $this->renderControls(),
             Html::endTag('div')
         ]) . "\n";
+=======
+        echo Html::beginTag('div', $this->options) . "\n";
+        echo $this->renderIndicators() . "\n";
+        echo $this->renderItems() . "\n";
+        echo $this->renderControls() . "\n";
+        echo Html::endTag('div') . "\n";
+        $this->registerPlugin('carousel');
+>>>>>>> yiichina/master
     }
 
     /**

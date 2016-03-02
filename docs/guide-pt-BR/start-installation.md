@@ -1,18 +1,28 @@
 Instalando o Yii
 ================
 
+<<<<<<< HEAD
 Você pode instalar o Yii de duas maneiras, usando o [Composer](http://getcomposer.org/)
+=======
+Você pode instalar o Yii de duas maneiras, usando o gerenciador de pacotes [Composer](https://getcomposer.org/)
+>>>>>>> yiichina/master
 ou baixando um arquivo compactado. O primeiro modo é o preferido, já que permite
 que você instale novas [extensões](structure-extensions.md) ou atualize o
 Yii simplesmente executando um único comando.
 
 A instalação do Yii padrão resulta no download e instalação tanto do framework 
+<<<<<<< HEAD
 quanto de um template de aplicação.
 Um template de aplicação é uma aplicação do Yii implementando algumas recursos básicos,
+=======
+quanto de um template de projetos.
+Um template de projetos é uma aplicação do Yii implementando algumas recursos básicos,
+>>>>>>> yiichina/master
 como a autenticação, o formulário de contato, etc.
 Este código é organizado de uma forma recomendada. No entanto, ele pode servir 
 como ponto de partida para seus projetos.
 
+<<<<<<< HEAD
 Nesta e nas próximas seções, iremos descrever como instalar o *Template Básico de 
 Aplicação* do Yii e como implementar novas funcionalidades em cima deste template.
 O Yii também fornece um outro template chamado de [Template Avançado de Aplicação](tutorial-advanced-app.md) que é melhor usado em uma equipe de desenvolvimento que desenvolvem 
@@ -22,6 +32,17 @@ aplicações de multiplas camadas.
 cerca de 90% das aplicações Web. Este template difere do Template Avançado de 
 Aplicação principalmente na forma de como o seu código é organizado. Se você é 
 novo no Yii, recomendamos fortemente em escolher o Template Básico de Aplicação 
+=======
+Nesta e nas próximas seções, iremos descrever como instalar o *Template Básico 
+de Projetos* do Yii e como implementar novas funcionalidades em cima deste template.
+O Yii também fornece um outro template chamado de [Template Avançado de Projetos](https://github.com/yiisoft/yii2-app-advanced/blob/master/docs/guide-pt-BR/README.md) que é melhor usado em uma equipe de desenvolvimento que desenvolvem 
+aplicações de multiplas camadas.
+
+> Informação: O Template Básico de Projetos é adequado para o desenvolvimento de 
+cerca de 90% das aplicações Web. Este template difere do Template Avançado de 
+Projetos principalmente na forma de como o seu código é organizado. Se você é 
+novo no Yii, recomendamos fortemente em escolher o Template Básico de Projetos 
+>>>>>>> yiichina/master
 pela sua simplicidade além de ter funcionalidades o suficiente.
 
 
@@ -32,7 +53,11 @@ Se você já não tiver o Composer instalado, você pode fazê-lo seguindo as in
 em [getcomposer.org](https://getcomposer.org/download/). No Linux e no Mac OS X,
 você executará os seguintes comandos:
 
+<<<<<<< HEAD
     curl -s http://getcomposer.org/installer | php
+=======
+    curl -sS https://getcomposer.org/installer | php
+>>>>>>> yiichina/master
     mv composer.phar /usr/local/bin/composer
 
 No Windows, você baixará e executará o [Composer-Setup.exe](https://getcomposer.org/Composer-Setup.exe).
@@ -46,7 +71,11 @@ Você pode atualizar o Composer executando o comando `composer self-update`.
 Com o Composer instalado, você pode instalar o Yii executando o seguinte comando
 em um diretório acessível pela Web:
 
+<<<<<<< HEAD
     composer global require "fxp/composer-asset-plugin:1.0.0"
+=======
+    composer global require "fxp/composer-asset-plugin:~1.0.0"
+>>>>>>> yiichina/master
     composer create-project --prefer-dist yiisoft/yii2-app-basic basic
 
 O primeiro comando instaka o [composer asset plugin](https://github.com/francoispluchino/composer-asset-plugin/)
@@ -101,7 +130,11 @@ No entanto, existem outras opções de instalação disponíveis:
   [Construindo uma Aplicação a Partir do Zero](tutorial-start-from-scratch.md).
 * Se você quiser começar com uma aplicação mais sofisticada, mais adequada ao
   ambiente de desenvolvimento de equipes, você pode considerar instalar o
+<<<<<<< HEAD
   [Modelo de Aplicação Avançada](tutorial-advanced-app.md).
+=======
+  [Template Avançado de Projetos](https://github.com/yiisoft/yii2-app-advanced/blob/master/docs/guide-pt-BR/README.md).
+>>>>>>> yiichina/master
 
 
 Verificando a Instalação <span id="verifying-installation"></span>
@@ -217,7 +250,11 @@ server {
     root        /path/to/basic/web;
     index       index.php;
 
+<<<<<<< HEAD
     access_log  /path/to/basic/log/access.log main;
+=======
+    access_log  /path/to/basic/log/access.log;
+>>>>>>> yiichina/master
     error_log   /path/to/basic/log/error.log;
 
     location / {
@@ -232,9 +269,17 @@ server {
     #error_page 404 /404.html;
 
     location ~ \.php$ {
+<<<<<<< HEAD
         include fastcgi.conf;
         fastcgi_pass   127.0.0.1:9000;
         #fastcgi_pass unix:/var/run/php5-fpm.sock;
+=======
+        include fastcgi_params;
+        fastcgi_param SCRIPT_FILENAME $document_root/$fastcgi_script_name;
+        fastcgi_pass   127.0.0.1:9000;
+        #fastcgi_pass unix:/var/run/php5-fpm.sock;
+        try_files $uri =404;
+>>>>>>> yiichina/master
     }
 
     location ~ /\.(ht|svn|git) {

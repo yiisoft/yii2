@@ -35,7 +35,10 @@ use yii\helpers\Html;
  *             ],
  *         ],
  *     ],
+<<<<<<< HEAD
  *     'options' => ['class' =>'nav-pills'], // set this to nav-tab to get tab-styled navigation
+=======
+>>>>>>> yiichina/master
  * ]);
  * ```
  *
@@ -115,8 +118,13 @@ class Nav extends Widget
      */
     public function run()
     {
+<<<<<<< HEAD
         BootstrapAsset::register($this->getView());
         return $this->renderItems();
+=======
+        echo $this->renderItems();
+        BootstrapAsset::register($this->getView());
+>>>>>>> yiichina/master
     }
 
     /**
@@ -127,6 +135,10 @@ class Nav extends Widget
         $items = [];
         foreach ($this->items as $i => $item) {
             if (isset($item['visible']) && !$item['visible']) {
+<<<<<<< HEAD
+=======
+                unset($items[$i]);
+>>>>>>> yiichina/master
                 continue;
             }
             $items[] = $this->renderItem($item);

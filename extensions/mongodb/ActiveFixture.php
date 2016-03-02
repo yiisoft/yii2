@@ -18,7 +18,11 @@ use yii\test\BaseActiveFixture;
  * specified by [[dataFile]] or overriding [[getData()]] if you want to use code to generate the fixture data.
  *
  * When the fixture is being loaded, it will first call [[resetCollection()]] to remove any existing data in the collection.
+<<<<<<< HEAD
  * It will then populate the collection with the data returned by [[getData()]].
+=======
+ * It will then populate the table with the data returned by [[getData()]].
+>>>>>>> yiichina/master
  *
  * After the fixture is loaded, you can access the loaded data via the [[data]] property. If you set [[modelClass]],
  * you will also be able to retrieve an instance of [[modelClass]] with the populated data via [[getModel()]].
@@ -34,7 +38,11 @@ class ActiveFixture extends BaseActiveFixture
     public $db = 'mongodb';
     /**
      * @var string|array the collection name that this fixture is about. If this property is not set,
+<<<<<<< HEAD
      * the collection name will be determined via [[modelClass]].
+=======
+     * the table name will be determined via [[modelClass]].
+>>>>>>> yiichina/master
      * @see Connection::getCollection()
      */
     public $collectionName;
@@ -53,7 +61,11 @@ class ActiveFixture extends BaseActiveFixture
 
     /**
      * Loads the fixture data.
+<<<<<<< HEAD
      * The default implementation will first reset the MongoDB collection and then populate it with the data
+=======
+     * The default implementation will first reset the DB table and then populate it with the data
+>>>>>>> yiichina/master
      * returned by [[getData()]].
      */
     public function load()
@@ -90,7 +102,11 @@ class ActiveFixture extends BaseActiveFixture
      * This method is called by [[loadData()]] to get the needed fixture data.
      *
      * The default implementation will try to return the fixture data by including the external file specified by [[dataFile]].
+<<<<<<< HEAD
      * The file should return an array of data rows (column name => column value), each corresponding to a row in the collection.
+=======
+     * The file should return an array of data rows (column name => column value), each corresponding to a row in the table.
+>>>>>>> yiichina/master
      *
      * If the data file does not exist, an empty array will be returned.
      *

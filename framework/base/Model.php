@@ -159,17 +159,29 @@ class Model extends Component implements IteratorAggregate, ArrayAccess, Arrayab
      * An active attribute is one that is subject to validation in the current scenario.
      * The returned array should be in the following format:
      *
+<<<<<<< HEAD
      * ~~~
+=======
+     * ```php
+>>>>>>> yiichina/master
      * [
      *     'scenario1' => ['attribute11', 'attribute12', ...],
      *     'scenario2' => ['attribute21', 'attribute22', ...],
      *     ...
      * ]
+<<<<<<< HEAD
      * ~~~
      *
      * By default, an active attribute is considered safe and can be massively assigned.
      * If an attribute should NOT be massively assigned (thus considered unsafe),
      * please prefix the attribute with an exclamation character (e.g. '!rank').
+=======
+     * ```
+     *
+     * By default, an active attribute is considered safe and can be massively assigned.
+     * If an attribute should NOT be massively assigned (thus considered unsafe),
+     * please prefix the attribute with an exclamation character (e.g. `'!rank'`).
+>>>>>>> yiichina/master
      *
      * The default implementation of this method will return all scenarios found in the [[rules()]]
      * declaration. A special scenario named [[SCENARIO_DEFAULT]] will contain all attributes
@@ -216,9 +228,13 @@ class Model extends Component implements IteratorAggregate, ArrayAccess, Arrayab
         }
 
         foreach ($scenarios as $scenario => $attributes) {
+<<<<<<< HEAD
             if (empty($attributes) && $scenario !== self::SCENARIO_DEFAULT) {
                 unset($scenarios[$scenario]);
             } else {
+=======
+            if (!empty($attributes)) {
+>>>>>>> yiichina/master
                 $scenarios[$scenario] = array_keys($attributes);
             }
         }
@@ -287,6 +303,29 @@ class Model extends Component implements IteratorAggregate, ArrayAccess, Arrayab
     }
 
     /**
+<<<<<<< HEAD
+=======
+     * Returns the attribute hints.
+     *
+     * Attribute hints are mainly used for display purpose. For example, given an attribute
+     * `isPublic`, we can declare a hint `Whether the post should be visible for not logged in users`,
+     * which provides user-friendly description of the attribute meaning and can be displayed to end users.
+     *
+     * Unlike label hint will not be generated, if its explicit declaration is omitted.
+     *
+     * Note, in order to inherit hints defined in the parent class, a child class needs to
+     * merge the parent hints with child hints using functions such as `array_merge()`.
+     *
+     * @return array attribute hints (name => hint)
+     * @since 2.0.4
+     */
+    public function attributeHints()
+    {
+        return [];
+    }
+
+    /**
+>>>>>>> yiichina/master
      * Performs the data validation.
      *
      * This method executes the validation rules applicable to the current [[scenario]].
@@ -488,6 +527,22 @@ class Model extends Component implements IteratorAggregate, ArrayAccess, Arrayab
     }
 
     /**
+<<<<<<< HEAD
+=======
+     * Returns the text hint for the specified attribute.
+     * @param string $attribute the attribute name
+     * @return string the attribute hint
+     * @see attributeHints()
+     * @since 2.0.4
+     */
+    public function getAttributeHint($attribute)
+    {
+        $hints = $this->attributeHints();
+        return isset($hints[$attribute]) ? $hints[$attribute] : '';
+    }
+
+    /**
+>>>>>>> yiichina/master
      * Returns a value indicating whether there is any validation error.
      * @param string|null $attribute attribute name. Use null to check all attributes.
      * @return boolean whether there is any error.

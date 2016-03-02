@@ -138,6 +138,10 @@ class UrlValidator extends Validator
             PunycodeAsset::register($view);
         }
 
+<<<<<<< HEAD
         return 'yii.validation.url(value, messages, ' . Json::encode($options) . ');';
+=======
+        return 'yii.validation.url(value, messages, ' . Json::htmlEncode($options) . ');';
+>>>>>>> yiichina/master
     }
 }

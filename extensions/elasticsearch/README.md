@@ -5,9 +5,28 @@ This extension provides the [elasticsearch](http://www.elasticsearch.org/) integ
 It includes basic querying/search support and also implements the `ActiveRecord` pattern that allows you to store active
 records in elasticsearch.
 
+<<<<<<< HEAD
 This repository is a git submodule of <https://github.com/yiisoft/yii2>.
 Please submit issue reports and pull requests to the main repository.
 For license information check the [LICENSE](LICENSE.md)-file.
+=======
+To use this extension, you have to configure the Connection class in your application configuration:
+
+```php
+return [
+    //....
+    'components' => [
+        'elasticsearch' => [
+            'class' => 'yii\elasticsearch\Connection',
+            'nodes' => [
+                ['http_address' => '127.0.0.1:9200'],
+                // configure more hosts if you have a cluster
+            ],
+        ],
+    ]
+];
+```
+>>>>>>> yiichina/master
 
 Requirements
 ------------
@@ -22,17 +41,26 @@ The preferred way to install this extension is through [composer](http://getcomp
 Either run
 
 ```
+<<<<<<< HEAD
 php composer.phar require --prefer-dist yiisoft/yii2-elasticsearch
+=======
+php composer.phar require --prefer-dist yiisoft/yii2-elasticsearch "*"
+>>>>>>> yiichina/master
 ```
 
 or add
 
 ```json
+<<<<<<< HEAD
 "yiisoft/yii2-elasticsearch": "~2.0.0"
+=======
+"yiisoft/yii2-elasticsearch": "*"
+>>>>>>> yiichina/master
 ```
 
 to the require section of your composer.json.
 
+<<<<<<< HEAD
 Configuration
 -------------
 
@@ -52,6 +80,8 @@ return [
     ]
 ];
 ```
+=======
+>>>>>>> yiichina/master
 
 Using the Query
 ---------------

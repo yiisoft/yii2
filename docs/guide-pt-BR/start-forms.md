@@ -29,6 +29,10 @@ detalhes sobre convenção de nomenclatura dos arquivos de classes.
 
 namespace app\models;
 
+<<<<<<< HEAD
+=======
+use Yii;
+>>>>>>> yiichina/master
 use yii\base\Model;
 
 class EntryForm extends Model
@@ -103,7 +107,11 @@ class SiteController extends Controller
 
     public function actionEntry()
     {
+<<<<<<< HEAD
         $model = new EntryForm;
+=======
+        $model = new EntryForm();
+>>>>>>> yiichina/master
 
         if ($model->load(Yii::$app->request->post()) && $model->validate()) {
             // dados válidos recebidos pelo $model

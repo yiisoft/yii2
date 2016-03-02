@@ -70,7 +70,11 @@ interface ManagerInterface
     /**
      * Returns the named role.
      * @param string $name the role name.
+<<<<<<< HEAD
      * @return Role the role corresponding to the specified name. Null is returned if no such role.
+=======
+     * @return null|Role the role corresponding to the specified name. Null is returned if no such role.
+>>>>>>> yiichina/master
      */
     public function getRole($name);
 
@@ -91,7 +95,11 @@ interface ManagerInterface
     /**
      * Returns the named permission.
      * @param string $name the permission name.
+<<<<<<< HEAD
      * @return Permission the permission corresponding to the specified name. Null is returned if no such permission.
+=======
+     * @return null|Permission the permission corresponding to the specified name. Null is returned if no such permission.
+>>>>>>> yiichina/master
      */
     public function getPermission($name);
 
@@ -118,7 +126,11 @@ interface ManagerInterface
     /**
      * Returns the rule of the specified name.
      * @param string $name the rule name
+<<<<<<< HEAD
      * @return Rule the rule object, or null if the specified name does not correspond to a rule.
+=======
+     * @return null|Rule the rule object, or null if the specified name does not correspond to a rule.
+>>>>>>> yiichina/master
      */
     public function getRule($name);
 
@@ -197,7 +209,11 @@ interface ManagerInterface
      * Returns the assignment information regarding a role and a user.
      * @param string|integer $userId the user ID (see [[\yii\web\User::id]])
      * @param string $roleName the role name
+<<<<<<< HEAD
      * @return Assignment the assignment information. Null is returned if
+=======
+     * @return null|Assignment the assignment information. Null is returned if
+>>>>>>> yiichina/master
      * the role is not assigned to the user.
      */
     public function getAssignment($roleName, $userId);

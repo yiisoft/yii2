@@ -215,7 +215,10 @@ class ActiveQuery extends Query implements ActiveQueryInterface
             /* @var $class ActiveRecord */
             $class = $this->modelClass;
             $model = $class::instantiate($result);
+<<<<<<< HEAD
             $class = get_class($model);
+=======
+>>>>>>> yiichina/master
             $class::populateRecord($model, $result);
             if (!empty($this->with)) {
                 $models = [$model];

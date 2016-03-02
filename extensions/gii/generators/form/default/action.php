@@ -22,7 +22,11 @@ public function action<?= Inflector::id2camel(trim(basename($generator->viewName
         }
     }
 
+<<<<<<< HEAD
     return $this->render('<?= basename($generator->viewName) ?>', [
+=======
+    return $this->render('<?= $generator->viewName ?>', [
+>>>>>>> yiichina/master
         'model' => $model,
     ]);
 }

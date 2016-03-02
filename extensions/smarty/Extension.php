@@ -320,11 +320,19 @@ PHP;
 
         $url = ArrayHelper::remove($params, 'url');
         $key = ArrayHelper::remove($params, 'key', null);
+<<<<<<< HEAD
         $position = ArrayHelper::remove($params, 'position');
         if (isset($params['position']))
             $params['position'] = $this->getViewConstVal($position, View::POS_END);
 
         Yii::$app->getView()->registerJsFile($url, $params, $key);
+=======
+        $depends = ArrayHelper::remove($params, 'depends', null);
+        if (isset($params['position']))
+            $params['position'] = $this->getViewConstVal($params['position'], View::POS_END);
+
+        Yii::$app->getView()->registerJsFile($url, $depends, $params, $key);
+>>>>>>> yiichina/master
     }
 
     /**
@@ -380,8 +388,14 @@ PHP;
 
         $url = ArrayHelper::remove($params, 'url');
         $key = ArrayHelper::remove($params, 'key', null);
+<<<<<<< HEAD
 
         Yii::$app->getView()->registerCssFile($url, $params, $key);
+=======
+        $depends = ArrayHelper::remove($params, 'depends', null);
+
+        Yii::$app->getView()->registerCssFile($url, $depends, $params, $key);
+>>>>>>> yiichina/master
     }
 
     /**

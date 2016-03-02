@@ -71,6 +71,7 @@ class Widget extends \yii\base\Widget
             $view->registerJs($js);
         }
 
+<<<<<<< HEAD
         $this->registerClientEvents();
     }
 
@@ -82,11 +83,18 @@ class Widget extends \yii\base\Widget
     {
         if (!empty($this->clientEvents)) {
             $id = $this->options['id'];
+=======
+        if (!empty($this->clientEvents)) {
+>>>>>>> yiichina/master
             $js = [];
             foreach ($this->clientEvents as $event => $handler) {
                 $js[] = "jQuery('#$id').on('$event', $handler);";
             }
+<<<<<<< HEAD
             $this->getView()->registerJs(implode("\n", $js));
+=======
+            $view->registerJs(implode("\n", $js));
+>>>>>>> yiichina/master
         }
     }
 }

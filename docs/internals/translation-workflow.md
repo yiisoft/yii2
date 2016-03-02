@@ -7,8 +7,13 @@ where contribution is very welcome are documentation and framework messages.
 Framework messages
 ------------------
 
+<<<<<<< HEAD
 Framework has two types of messages: exceptions that are intended to developer and are never translated and messages
 that are actually visible to end user such as validation errors.
+=======
+The framework has two types of messages: exceptions that are intended to developer and are never translated and messages
+that are actually visible to the end user such as validation errors.
+>>>>>>> yiichina/master
 
 In order to start with message translation:
 

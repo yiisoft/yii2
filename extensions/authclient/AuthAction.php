@@ -11,7 +11,10 @@ use yii\base\Action;
 use yii\base\Exception;
 use yii\base\InvalidConfigException;
 use yii\base\NotSupportedException;
+<<<<<<< HEAD
 use yii\helpers\Url;
+=======
+>>>>>>> yiichina/master
 use yii\web\Response;
 use yii\web\HttpException;
 use yii\web\NotFoundHttpException;
@@ -157,7 +160,11 @@ class AuthAction extends Action
      */
     protected function defaultCancelUrl()
     {
+<<<<<<< HEAD
         return Url::to(Yii::$app->getUser()->loginUrl);
+=======
+        return Yii::$app->getRequest()->getAbsoluteUrl();
+>>>>>>> yiichina/master
     }
 
     /**

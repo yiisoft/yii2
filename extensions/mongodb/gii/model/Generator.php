@@ -194,7 +194,11 @@ class Generator extends \yii\gii\Generator
     }
 
     /**
+<<<<<<< HEAD
      * Generates validation rules for the specified collection.
+=======
+     * Generates validation rules for the specified table.
+>>>>>>> yiichina/master
      * @param array $attributes the list of attributes
      * @return array the generated validation rules
      */
@@ -262,8 +266,13 @@ class Generator extends \yii\gii\Generator
     }
 
     /**
+<<<<<<< HEAD
      * Generates a class name from the specified collection name.
      * @param string $collectionName the collection name (which may contain schema prefix)
+=======
+     * Generates a class name from the specified table name.
+     * @param string $collectionName the table name (which may contain schema prefix)
+>>>>>>> yiichina/master
      * @return string the generated class name
      */
     protected function generateClassName($collectionName)

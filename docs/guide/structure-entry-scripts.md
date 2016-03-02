@@ -16,7 +16,11 @@ so that users can run console applications through the command `./yii <route> [a
 Entry scripts mainly do the following work:
 
 * Define global constants;
+<<<<<<< HEAD
 * Register [Composer autoloader](http://getcomposer.org/doc/01-basic-usage.md#autoloading);
+=======
+* Register [Composer autoloader](https://getcomposer.org/doc/01-basic-usage.md#autoloading);
+>>>>>>> yiichina/master
 * Include the [[Yii]] class file;
 * Load application configuration;
 * Create and configure an [application](structure-applications.md) instance;
@@ -25,7 +29,11 @@ Entry scripts mainly do the following work:
 
 ## Web Applications <span id="web-applications"></span>
 
+<<<<<<< HEAD
 The following is the code in the entry script for the [Basic Web Application Template](start-installation.md).
+=======
+The following is the code in the entry script for the [Basic Web Project Template](start-installation.md).
+>>>>>>> yiichina/master
 
 ```php
 <?php

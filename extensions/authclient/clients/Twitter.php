@@ -43,7 +43,11 @@ class Twitter extends OAuth1
     /**
      * @inheritdoc
      */
+<<<<<<< HEAD
     public $authUrl = 'https://api.twitter.com/oauth/authenticate';
+=======
+    public $authUrl = 'https://api.twitter.com/oauth/authorize';
+>>>>>>> yiichina/master
     /**
      * @inheritdoc
      */

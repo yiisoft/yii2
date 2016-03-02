@@ -22,6 +22,11 @@ use yii\caching\TagDependency;
  * @property string $lastInsertID The row ID of the last row inserted, or the last value retrieved from the
  * sequence object. This property is read-only.
  * @property QueryBuilder $queryBuilder The query builder for this connection. This property is read-only.
+<<<<<<< HEAD
+=======
+ * @property string[] $schemaNames All schema names in the database, except system schemas. This property is
+ * read-only.
+>>>>>>> yiichina/master
  * @property string[] $tableNames All table names in the database. This property is read-only.
  * @property TableSchema[] $tableSchemas The metadata for all tables in the database. Each array element is an
  * instance of [[TableSchema]] or its child class. This property is read-only.
@@ -36,7 +41,11 @@ use yii\caching\TagDependency;
 abstract class Schema extends Object
 {
     /**
+<<<<<<< HEAD
      * The followings are the supported abstract column data types.
+=======
+     * The following are the supported abstract column data types.
+>>>>>>> yiichina/master
      */
     const TYPE_PK = 'pk';
     const TYPE_BIGPK = 'bigpk';
@@ -73,6 +82,13 @@ abstract class Schema extends Object
     ];
 
     /**
+<<<<<<< HEAD
+=======
+     * @var array list of ALL schema names in the database, except system schemas
+     */
+    private $_schemaNames;
+    /**
+>>>>>>> yiichina/master
      * @var array list of ALL table names in the database
      */
     private $_tableNames = [];
@@ -193,6 +209,25 @@ abstract class Schema extends Object
     }
 
     /**
+<<<<<<< HEAD
+=======
+     * Returns all schema names in the database, except system schemas.
+     * @param boolean $refresh whether to fetch the latest available schema names. If this is false,
+     * schema names fetched previously (if available) will be returned.
+     * @return string[] all schema names in the database, except system schemas.
+     * @since 2.0.4
+     */
+    public function getSchemaNames($refresh = false)
+    {
+        if ($this->_schemaNames === null || $refresh) {
+            $this->_schemaNames = $this->findSchemaNames();
+        }
+
+        return $this->_schemaNames;
+    }
+
+    /**
+>>>>>>> yiichina/master
      * Returns all table names in the database.
      * @param string $schema the schema of the tables. Defaults to empty string, meaning the current or default schema name.
      * If not empty, the returned table names will be prefixed with the schema name.
@@ -269,6 +304,22 @@ abstract class Schema extends Object
     }
 
     /**
+<<<<<<< HEAD
+=======
+     * Returns all schema names in the database, including the default one but not system schemas.
+     * This method should be overridden by child classes in order to support this feature
+     * because the default implementation simply throws an exception.
+     * @return array all schema names in the database, except system schemas
+     * @throws NotSupportedException if this method is called
+     * @since 2.0.4
+     */
+    protected function findSchemaNames()
+    {
+        throw new NotSupportedException(get_class($this) . ' does not support fetching all schema names.');
+    }
+
+    /**
+>>>>>>> yiichina/master
      * Returns all table names in the database.
      * This method should be overridden by child classes in order to support this feature
      * because the default implementation simply throws an exception.
@@ -313,7 +364,11 @@ abstract class Schema extends Object
     public function getLastInsertID($sequenceName = '')
     {
         if ($this->db->isActive) {
+<<<<<<< HEAD
             return $this->db->pdo->lastInsertId($sequenceName === '' ? null : $sequenceName);
+=======
+            return $this->db->pdo->lastInsertId($sequenceName === '' ? null : $this->quoteSimpleTableName($sequenceName));
+>>>>>>> yiichina/master
         } else {
             throw new InvalidCallException('DB Connection is not active.');
         }
@@ -368,6 +423,35 @@ abstract class Schema extends Object
     }
 
     /**
+<<<<<<< HEAD
+=======
+     * Executes the INSERT command, returning primary key values.
+     * @param string $table the table that new rows will be inserted into.
+     * @param array $columns the column data (name => value) to be inserted into the table.
+     * @return array primary key values or false if the command fails
+     * @since 2.0.4
+     */
+    public function insert($table, $columns)
+    {
+        $command = $this->db->createCommand()->insert($table, $columns);
+        if (!$command->execute()) {
+            return false;
+        }
+        $tableSchema = $this->getTableSchema($table);
+        $result = [];
+        foreach ($tableSchema->primaryKey as $name) {
+            if ($tableSchema->columns[$name]->autoIncrement) {
+                $result[$name] = $this->getLastInsertID($tableSchema->sequenceName);
+                break;
+            } else {
+                $result[$name] = isset($columns[$name]) ? $columns[$name] : $tableSchema->columns[$name]->defaultValue;
+            }
+        }
+        return $result;
+    }
+
+    /**
+>>>>>>> yiichina/master
      * Quotes a string value for use in a query.
      * Note that if the parameter is not a string, it will be returned without change.
      * @param string $str string to be quoted

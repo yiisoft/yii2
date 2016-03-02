@@ -8,12 +8,15 @@ if you want to upgrade from version A to version C and there is
 version B between A and C, you need to following the instructions
 for both A and B.
 
+<<<<<<< HEAD
 Upgrade from Yii 2.0.1
 ----------------------
 
 * MongoDB PHP extension min version raised up to 1.5.0. You should upgrade your environment in case you are
   using older version.
 
+=======
+>>>>>>> yiichina/master
 Upgrade from Yii 2.0.0
 ----------------------
 

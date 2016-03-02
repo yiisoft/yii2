@@ -16,7 +16,11 @@ Active Record
 
 ```php
 $customer = new Customer();
+<<<<<<< HEAD
 $customer->name = '李狗蛋';
+=======
+$customer->name = 'Qiang';
+>>>>>>> yiichina/master
 $customer->save();  // 一行新数据插入 customer 表
 ```
 
@@ -25,7 +29,11 @@ $customer->save();  // 一行新数据插入 customer 表
 
 ```php
 $db->createCommand('INSERT INTO customer (name) VALUES (:name)', [
+<<<<<<< HEAD
     ':name' => '李狗蛋',
+=======
+    ':name' => 'Qiang',
+>>>>>>> yiichina/master
 ])->execute();
 ```
 
@@ -87,7 +95,11 @@ $email = $customer->email;
 要改变列值，只要给关联属性赋新值并保存对象即可：
 
 ```php
+<<<<<<< HEAD
 $customer->email = '哪吒@example.com';
+=======
+$customer->email = 'james@example.com';
+>>>>>>> yiichina/master
 $customer->save();
 ```
 
@@ -429,7 +441,11 @@ class Customer extends \yii\db\ActiveRecord
 `hasMany()` 返回 [[yii\db\ActiveQuery]] 对象，该对象允许你通过
 [[yii\db\ActiveQuery]] 方法定制查询。
 
+<<<<<<< HEAD
 如上声明后，执行`$customer->bigOrders` 就返回
+=======
+如上声明后，执行 `$customer->bigOrders` 就返回
+>>>>>>> yiichina/master
 总额大于100的订单。使用以下代码更改设定值：
 
 ```php
@@ -997,8 +1013,16 @@ TODO
 
 被污染属性
 -------------------
+<<<<<<< HEAD
 
 TODO
+=======
+当你调用[[yii\db\ActiveRecord::save()|save()]]用于保存活动记录(Active Record)实例时,只有被污染的属性才会被保存。一个属性是否认定为被污染取决于它的值自从最后一次从数据库加载或者最近一次保存到数据库后到现在是否被修改过。注意:无论活动记录(Active Record)是否有被污染属性，数据验证始终会执行。
+
+活动记录(Active Record)会自动维护一个污染数据列表。它的工作方式是通过维护一个较旧属性值版本，并且将它们与最新的进行比较。你可以通过调用[[yii\db\ActiveRecord::getDirtyAttributes()]]来获取当前的污染属性。你也可以调用[[yii\db\ActiveRecord::markAttributeDirty()]]来显示的标记一个属性为污染属性。
+
+如果你对最近一次修改前的属性值感兴趣，你可以调用[[yii\db\ActiveRecord::getOldAttributes()|getOldAttributes()]] 或 [[yii\db\ActiveRecord::getOldAttribute()|getOldAttribute()]]。
+>>>>>>> yiichina/master
 
 另见
 -------------------

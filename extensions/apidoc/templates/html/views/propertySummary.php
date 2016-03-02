@@ -17,9 +17,15 @@ if ($protected && count($type->getProtectedProperties()) == 0 || !$protected && 
 } ?>
 
 <div class="summary doc-property">
+<<<<<<< HEAD
 <h2><?= $protected ? 'Protected Properties' : 'Public Properties' ?></h2>
 
 <p><a href="#" class="toggle">Hide inherited properties</a></p>
+=======
+<h2><?= $protected ? '受保护的属性' : '公共属性' ?></h2>
+
+<p><a href="#" class="toggle">隐藏继承属性</a></p>
+>>>>>>> yiichina/master
 
 <table class="summary-table table table-striped table-bordered table-hover">
 <colgroup>
@@ -29,7 +35,11 @@ if ($protected && count($type->getProtectedProperties()) == 0 || !$protected && 
     <col class="col-defined" />
 </colgroup>
 <tr>
+<<<<<<< HEAD
   <th>Property</th><th>Type</th><th>Description</th><th>Defined By</th>
+=======
+  <th>属性</th><th>类型</th><th>描述</th><th>定义在</th>
+>>>>>>> yiichina/master
 </tr>
 <?php
 $properties = $type->properties;

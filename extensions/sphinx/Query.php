@@ -321,7 +321,11 @@ class Query extends \yii\db\Query
      */
     protected function fillUpSnippets($rows)
     {
+<<<<<<< HEAD
         if ($this->snippetCallback === null || empty($rows)) {
+=======
+        if ($this->snippetCallback === null) {
+>>>>>>> yiichina/master
             return $rows;
         }
         $snippetSources = call_user_func($this->snippetCallback, $rows);
@@ -367,6 +371,7 @@ class Query extends \yii\db\Query
     }
 
     /**
+<<<<<<< HEAD
      * @inheritdoc
      */
     protected function queryScalar($selectExpression, $db)
@@ -395,6 +400,8 @@ class Query extends \yii\db\Query
     }
 
     /**
+=======
+>>>>>>> yiichina/master
      * Creates a new Query object and copies its property values from an existing one.
      * The properties being copies are the ones to be used by query builders.
      * @param Query $from the source query object

@@ -37,6 +37,7 @@ use yii\helpers\Html;
  * ]);
  * ```
  *
+<<<<<<< HEAD
  * You can also use this widget in an [[yii\widgets\ActiveForm|ActiveForm]] using the [[yii\widgets\ActiveField::widget()|widget()]]
  * method, for example like this:
  *
@@ -49,6 +50,8 @@ use yii\helpers\Html;
  * ]) ?>
  * ```
  *
+=======
+>>>>>>> yiichina/master
  * @see http://api.jqueryui.com/slider/
  * @author Alexander Makarov <sam@rmcreative.ru>
  * @since 2.0

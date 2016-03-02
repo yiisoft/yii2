@@ -4,7 +4,10 @@ php:
   - 5.4
   - 5.5
   - 5.6
+<<<<<<< HEAD
   - 7.0
+=======
+>>>>>>> yiichina/master
   - hhvm
   - hhvm-nightly
 
@@ -17,7 +20,10 @@ matrix:
   fast_finish: true
   allow_failures:
     - php: hhvm-nightly
+<<<<<<< HEAD
     - php: 7.0
+=======
+>>>>>>> yiichina/master
 
 services:
   - redis-server
@@ -41,6 +47,7 @@ addons:
 
 install:
   - travis_retry composer self-update && composer --version
+<<<<<<< HEAD
   - travis_retry composer global require "fxp/composer-asset-plugin:1.0.0"
   - export PATH="$HOME/.composer/vendor/bin:$PATH"
 # core framework:
@@ -59,12 +66,26 @@ install:
   - tests/unit/data/travis/apc-setup.sh
   - tests/unit/data/travis/memcache-setup.sh
 #  - tests/unit/data/travis/cubrid-setup.sh
+=======
+  - travis_retry composer global require "fxp/composer-asset-plugin:1.0.0-beta4"
+  - export PATH="$HOME/.composer/vendor/bin:$PATH"
+# core framework:
+  - travis_retry composer install --prefer-dist --no-interaction
+  - tests/unit/data/travis/mongodb-setup.sh
+# TODO: APC currently fails composer. https://github.com/composer/composer/issues/3405
+#  - tests/unit/data/travis/apc-setup.sh
+  - tests/unit/data/travis/memcache-setup.sh
+  - tests/unit/data/travis/cubrid-setup.sh
+# print elasticsearch version
+  - curl http://localhost:9200
+>>>>>>> yiichina/master
 # codeception
   - travis_retry composer global require "codeception/codeception=2.0.*" "codeception/specify=*" "codeception/verify=*"
 # basic and advanced application:
   - tests/unit/data/travis/setup-apps.sh
 
 before_script:
+<<<<<<< HEAD
   # show some versions and env information
   - echo 'elasticsearch version ' && curl http://localhost:9200/
   - php -r "echo INTL_ICU_VERSION . \"\n\";"
@@ -72,12 +93,16 @@ before_script:
   - psql --version
 
   # initialize databases
+=======
+  - echo 'elasticsearch version ' && curl http://localhost:9200/
+>>>>>>> yiichina/master
   - mysql -e 'CREATE DATABASE yiitest;';
   - psql -U postgres -c 'CREATE DATABASE yiitest;';
   - tests/unit/data/travis/sphinx-setup.sh
   - mongo yii2test --eval 'db.addUser("travis", "test");'
 # basic and advanced application:
   - tests/unit/data/travis/init-apps.sh
+<<<<<<< HEAD
   - |
     if [ $TRAVIS_PHP_VERSION = '5.6' ]; then
       PHPUNIT_FLAGS="--coverage-clover=coverage.clover"
@@ -86,6 +111,11 @@ before_script:
 
 script:
   - vendor/bin/phpunit --verbose $PHPUNIT_FLAGS --exclude-group mssql,oci,wincache,xcache,zenddata
+=======
+
+script:
+  - vendor/bin/phpunit --verbose --coverage-clover=coverage.clover --exclude-group mssql,oci,wincache,xcache,zenddata
+>>>>>>> yiichina/master
   - |
     if (php --version | grep -i HipHop > /dev/null); then
       echo "Skipping basic application tests on HHVM"
@@ -106,9 +136,15 @@ script:
     fi
 
 after_script:
+<<<<<<< HEAD
   - |
     if [ $TRAVIS_PHP_VERSION = '5.6' ]; then
       cd ../../.. 
       travis_retry wget https://scrutinizer-ci.com/ocular.phar
       php ocular.phar code-coverage:upload --format=php-clover coverage.clover
     fi
+=======
+  - cd ../../..
+  - travis_retry wget https://scrutinizer-ci.com/ocular.phar
+  - php ocular.phar code-coverage:upload --format=php-clover coverage.clover
+>>>>>>> yiichina/master

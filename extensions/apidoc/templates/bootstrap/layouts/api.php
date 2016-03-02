@@ -11,7 +11,11 @@ use yii\helpers\StringHelper;
 /** @var $renderer ApiRenderer */
 $renderer = $this->context;
 
+<<<<<<< HEAD
 $this->beginContent('@yii/apidoc/templates/bootstrap/layouts/main.php', isset($type) ? ['type' => $type] : []); ?>
+=======
+$this->beginContent('@yii/apidoc/templates/bootstrap/layouts/main.php'); ?>
+>>>>>>> yiichina/master
 
 <div class="row">
     <div class="col-md-3">

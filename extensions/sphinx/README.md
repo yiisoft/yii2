@@ -4,9 +4,12 @@ Sphinx Extension for Yii 2
 This extension adds [Sphinx](http://sphinxsearch.com/docs) full text search engine extension for the Yii 2 framework.
 It supports all Sphinx features including [Runtime Indexes](http://sphinxsearch.com/docs/current.html#rt-indexes).
 
+<<<<<<< HEAD
 This repository is a git submodule of <https://github.com/yiisoft/yii2>.
 Please submit issue reports and pull requests to the main repository.
 For license information check the [LICENSE](LICENSE.md)-file.
+=======
+>>>>>>> yiichina/master
 
 Requirements
 ------------
@@ -23,13 +26,21 @@ The preferred way to install this extension is through [composer](http://getcomp
 Either run
 
 ```
+<<<<<<< HEAD
 php composer.phar require --prefer-dist yiisoft/yii2-sphinx
+=======
+php composer.phar require --prefer-dist yiisoft/yii2-sphinx "*"
+>>>>>>> yiichina/master
 ```
 
 or add
 
 ```json
+<<<<<<< HEAD
 "yiisoft/yii2-sphinx": "~2.0.0"
+=======
+"yiisoft/yii2-sphinx": "*"
+>>>>>>> yiichina/master
 ```
 
 to the require section of your composer.json.

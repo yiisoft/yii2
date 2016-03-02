@@ -1,6 +1,7 @@
 Yii2 の開発を始めよう
 =====================
 
+<<<<<<< HEAD
 1. yii2 のフォークをクローンします `git clone git@github.com:<yourname>/yii2.git`.
 2. レポジトリのフォルダに入ります `cd yii2`.
 3. `./build/build app/link basic` を実行して、ベーシックアプリケーションのための composer 依存パッケージをインストールします。
@@ -45,3 +46,6 @@ git remote add upstream https://github.com/yiisoft/yii2.git
 ----------------------------------------
 
 Codeception のテストを実行する方法について学習するために `apps/advanced/tests/README.md` および `apps/basic/tests/README.md` を参照してください。
+=======
+環境をセットアップする方法については、[Yii 2 寄稿者のための Git ワークフロー](git-workflow.md) を参照してください。
+>>>>>>> yiichina/master

@@ -1,6 +1,7 @@
 Yii Framework 2 debug extension Change Log
 ==========================================
 
+<<<<<<< HEAD
 2.0.4 under development
 -----------------------
 
@@ -22,6 +23,8 @@ Yii Framework 2 debug extension Change Log
 - Chg #6572: Allow panels to stay even if they do not receive any debug data (qiangxue)
 
 
+=======
+>>>>>>> yiichina/master
 2.0.1 December 07, 2014
 -----------------------
 

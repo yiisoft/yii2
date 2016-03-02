@@ -1,6 +1,7 @@
 Installing Yii
 ==============
 
+<<<<<<< HEAD
 You can install Yii in two ways, using the [Composer](http://getcomposer.org/) package manager or by downloading an archive file.
 The former is the preferred way, as it allows you to install new [extensions](structure-extensions.md) or update Yii by simply running a single command.
 
@@ -16,6 +17,23 @@ to develop applications with multiple tiers.
 > Info: The Basic Application Template is suitable for developing 90 percent of Web applications. It differs
   from the Advanced Application Template mainly in how their code is organized. If you are new to Yii, we strongly
   recommend you stick to the Basic Application Template for its simplicity yet sufficient functionalities.
+=======
+You can install Yii in two ways, using the [Composer](https://getcomposer.org/) package manager or by downloading an archive file.
+The former is the preferred way, as it allows you to install new [extensions](structure-extensions.md) or update Yii by simply running a single command.
+
+Standard installations of Yii result in both the framework and a project template being downloaded and installed.
+A project template is a working Yii project implementing some basic features, such as login, contact form, etc. 
+Its code is organized in a recommended way. Therefore, it can serve as a good starting point for your projects.
+    
+In this and the next few sections, we will describe how to install Yii with the so-called *Basic Project Template* and
+how to implement new features on top of this template. Yii also provides another template called
+the [Advanced Project Template](https://github.com/yiisoft/yii2-app-advanced/blob/master/docs/guide/README.md) which is better used in a team development environment
+to develop applications with multiple tiers.
+
+> Info: The Basic Project Template is suitable for developing 90 percent of Web applications. It differs
+  from the Advanced Project Template mainly in how their code is organized. If you are new to Yii, we strongly
+  recommend you stick to the Basic Project Template for its simplicity yet sufficient functionalities.
+>>>>>>> yiichina/master
 
 
 Installing via Composer <span id="installing-via-composer"></span>
@@ -24,7 +42,11 @@ Installing via Composer <span id="installing-via-composer"></span>
 If you do not already have Composer installed, you may do so by following the instructions at
 [getcomposer.org](https://getcomposer.org/download/). On Linux and Mac OS X, you'll run the following commands:
 
+<<<<<<< HEAD
     curl -s http://getcomposer.org/installer | php
+=======
+    curl -sSS https://getcomposer.org/installer | php
+>>>>>>> yiichina/master
     mv composer.phar /usr/local/bin/composer
 
 On Windows, you'll download and run [Composer-Setup.exe](https://getcomposer.org/Composer-Setup.exe).
@@ -37,7 +59,11 @@ by running `composer self-update`.
 
 With Composer installed, you can install Yii by running the following commands under a Web-accessible folder:
 
+<<<<<<< HEAD
     composer global require "fxp/composer-asset-plugin:1.0.0"
+=======
+    composer global require "fxp/composer-asset-plugin:~1.0.0"
+>>>>>>> yiichina/master
     composer create-project --prefer-dist yiisoft/yii2-app-basic basic
 
 The first command installs the [composer asset plugin](https://github.com/francoispluchino/composer-asset-plugin/)
@@ -84,7 +110,11 @@ But there are other installation options available:
 * If you only want to install the core framework and would like to build an entire  application from scratch,
   you may follow the instructions as explained in [Building Application from Scratch](tutorial-start-from-scratch.md).
 * If you want to start with a more sophisticated application, better suited to team development environments,
+<<<<<<< HEAD
   you may consider installing the [Advanced Application Template](tutorial-advanced-app.md).
+=======
+  you may consider installing the [Advanced Project Template](https://github.com/yiisoft/yii2-app-advanced/blob/master/docs/guide/README.md).
+>>>>>>> yiichina/master
 
 
 Verifying the Installation <span id="verifying-installation"></span>

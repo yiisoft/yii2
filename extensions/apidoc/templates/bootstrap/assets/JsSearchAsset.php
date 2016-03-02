@@ -7,6 +7,10 @@
 
 namespace yii\apidoc\templates\bootstrap\assets;
 
+<<<<<<< HEAD
+=======
+use yii\web\AssetBundle;
+>>>>>>> yiichina/master
 use yii\web\View;
 
 /**
@@ -15,7 +19,11 @@ use yii\web\View;
  * @author Carsten Brandt <mail@cebe.cc>
  * @since 2.0
  */
+<<<<<<< HEAD
 class JsSearchAsset extends \yii\web\AssetBundle
+=======
+class JsSearchAsset extends AssetBundle
+>>>>>>> yiichina/master
 {
     public $sourcePath = '@vendor/cebe/js-search';
     public $js = [

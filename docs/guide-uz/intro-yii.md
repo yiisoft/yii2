@@ -19,9 +19,15 @@ Yii ni boshqa freymvorklar bilan solishtirish
 - Yii juda yaxhsi kengayishi mumkin. Siz asosiy kodni ixtiyoriy qismini almashtirishingiz yoki sozlashingiz mumkin. Kengaytirish arxitekturasiga bo'ysunib kodni boshqalar bilan ulashish yoki jamoatning kodidan foydalanish mumkin.
 - Yii ning asosiy maqsadlaridan biri - ishlash tezligi.
 
+<<<<<<< HEAD
 Yii — bir odamning loyihasi emas. U unga yordam berayotgan ishlab chiquvchilar [katta jamoa][]si  tomonidan qo'llab quvvatlanadi va rivojlantiriladi. Freymvork ishlab chiquvchilari web ishlab chiqish va boshqa ilovalarni maromini kuzatishadi. Ko'proq mos keluvchi imkoniyatlar va eng yaxshi sinalgan amaliyotlar freymvork sodda va elegantli interfeysi tarzida qo'llaniladi.
 
 [katta jamoa]: http://www.yiiframework.com/about/
+=======
+Yii — bir odamning loyihasi emas. U unga yordam berayotgan ishlab chiquvchilar [katta jamoa][about_yii]si  tomonidan qo'llab quvvatlanadi va rivojlantiriladi. Freymvork ishlab chiquvchilari web ishlab chiqish va boshqa ilovalarni maromini kuzatishadi. Ko'proq mos keluvchi imkoniyatlar va eng yaxshi sinalgan amaliyotlar freymvork sodda va elegantli interfeysi tarzida qo'llaniladi.
+
+[about_yii]: http://www.yiiframework.com/about/
+>>>>>>> yiichina/master
 
 Yii talqinlari
 --------------
@@ -34,4 +40,8 @@ DT va bilimlarga talablar
 
 Yii 2.0 PHP 5.4.0 va undan yuqorisini talab qiladi. Boshqa imkoniyatlar uchun talablarni bilish uchun har bir alohida yo'lga qo'yilgan freymvork bilan birga mos o'rnatilgan talablar tekshiruv skriptini ishga tushirishingiz mumkin.
 
+<<<<<<< HEAD
 Freymvork to'liq obektga mo'ljallangan dasturlashga (OMD) asoslanganligi bois Yii da ishlash uchun OMD ni umumiy tushunish talab etiladi. Shuningdek, PHP ning zamonaviy imkoniyatlari bo'lmish [nomlar soxasi](http://www.php.net/manual/ru/language.namespaces.php) va [treytlar](http://www.php.net/manual/ru/language.oop5.traits.php) ni o'rganish talab etiladi.
+=======
+Freymvork to'liq obektga mo'ljallangan dasturlashga (OMD) asoslanganligi bois Yii da ishlash uchun OMD ni umumiy tushunish talab etiladi. Shuningdek, PHP ning zamonaviy imkoniyatlari bo'lmish [nomlar soxasi](http://www.php.net/manual/ru/language.namespaces.php) va [treytlar](http://www.php.net/manual/ru/language.oop5.traits.php) ni o'rganish talab etiladi.
+>>>>>>> yiichina/master

@@ -4,12 +4,19 @@ Yii 2.0 Unit tests
 DIRECTORY STRUCTURE
 -------------------
 
+<<<<<<< HEAD
       unit/                Unit tests to run with PHPUnit
           data/            models, config and other test data
               config.php   this file contains configuration for database and caching backends
           framework/       the framework unit tests
           runtime/         the application runtime dir for the yii test app
       web/                 webapp for functional testing
+=======
+    data/            models, config and other test data
+        config.php   this file contains configuration for database and caching backends
+    framework/       the framework unit tests
+    runtime/         the application runtime dir for the yii test app
+>>>>>>> yiichina/master
 
 
 HOW TO RUN THE TESTS
@@ -19,18 +26,35 @@ Make sure you have PHPUnit installed and that you installed all composer depende
 
 Run PHPUnit in the yii repo base directory.
 
+<<<<<<< HEAD
 ```php
+=======
+```
+>>>>>>> yiichina/master
 phpunit
 ```
 
 You can run tests for specific groups only:
 
+<<<<<<< HEAD
 ```php
+=======
+```
+>>>>>>> yiichina/master
 phpunit --group=mysql,base,i18n
 ```
 
 You can get a list of available groups via `phpunit --list-groups`.
 
+<<<<<<< HEAD
+=======
+A single test class could be run like the follwing:
+
+```
+phpunit tests/framework/base/ObjectTest.php
+```
+
+>>>>>>> yiichina/master
 TEST CONFIGURATION
 ------------------
 

@@ -16,7 +16,11 @@ use yii\db\ActiveRecordInterface;
  * UniqueValidator checks if the value being validated is unique in the table column specified by
  * the ActiveRecord class [[targetClass]] and the attribute [[targetAttribute]].
  *
+<<<<<<< HEAD
  * The followings are examples of validation rules using this validator:
+=======
+ * The following are examples of validation rules using this validator:
+>>>>>>> yiichina/master
  *
  * ```php
  * // a1 needs to be unique

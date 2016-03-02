@@ -228,7 +228,11 @@ function foo($model, $attribute) {
 [
     // проверяет, что "primaryImage" - это загруженное изображение в формате PNG, JPG или GIF
     // размер файла должен быть меньше 1MB
+<<<<<<< HEAD
     ['primaryImage', 'file', 'extensions' => ['png', 'jpg', 'gif'], 'maxSize' => 1024*1024*1024],
+=======
+    ['primaryImage', 'file', 'extensions' => ['png', 'jpg', 'gif'], 'maxSize' => 1024*1024],
+>>>>>>> yiichina/master
 ]
 ```
 

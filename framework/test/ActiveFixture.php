@@ -77,6 +77,7 @@ class ActiveFixture extends BaseActiveFixture
         $this->data = [];
         $table = $this->getTableSchema();
         foreach ($this->getData() as $alias => $row) {
+<<<<<<< HEAD
             $this->db->createCommand()->insert($table->fullName, $row)->execute();
             if ($table->sequenceName !== null) {
                 foreach ($table->primaryKey as $pk) {
@@ -87,6 +88,10 @@ class ActiveFixture extends BaseActiveFixture
                 }
             }
             $this->data[$alias] = $row;
+=======
+            $primaryKeys = $this->db->schema->insert($table->fullName, $row);
+            $this->data[$alias] = array_merge($row, $primaryKeys);
+>>>>>>> yiichina/master
         }
     }
 

@@ -116,7 +116,11 @@ class UploadedFile extends Object
      * This is mainly used when multiple files were uploaded and saved as 'files[0]', 'files[1]',
      * 'files[n]'..., and you can retrieve them all by passing 'files' as the name.
      * @param string $name the name of the array of files
+<<<<<<< HEAD
      * @return UploadedFile[] the array of CUploadedFile objects. Empty array is returned
+=======
+     * @return UploadedFile[] the array of UploadedFile objects. Empty array is returned
+>>>>>>> yiichina/master
      * if no adequate upload was found. Please note that this array will contain
      * all files from all sub-arrays regardless how deeply nested they are.
      */
@@ -233,4 +237,8 @@ class UploadedFile extends Object
             ]);
         }
     }
+<<<<<<< HEAD
 }
+=======
+}
+>>>>>>> yiichina/master

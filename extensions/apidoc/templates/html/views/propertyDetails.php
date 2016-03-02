@@ -17,7 +17,11 @@ if (empty($properties)) {
 }
 ArrayHelper::multisort($properties, 'name');
 ?>
+<<<<<<< HEAD
 <h2>Property Details</h2>
+=======
+<h2>属性详情</h2>
+>>>>>>> yiichina/master
 
 <div class="property-doc">
 <?php foreach ($properties as $property): ?>
@@ -41,7 +45,11 @@ ArrayHelper::multisort($properties, 'name');
             <?php if ($property->getIsWriteOnly()) echo ' <em>write-only</em> '; ?>
             property
             <?php if (!empty($property->since)): ?>
+<<<<<<< HEAD
                 (available since version <?= $property->since ?>)
+=======
+                （可用自版本 <?= $property->since ?>）
+>>>>>>> yiichina/master
             <?php endif; ?>
         </span>
     </div>

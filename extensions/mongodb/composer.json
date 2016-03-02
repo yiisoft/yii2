@@ -19,7 +19,11 @@
     ],
     "require": {
         "yiisoft/yii2": "*",
+<<<<<<< HEAD
         "ext-mongo": ">=1.5.0"
+=======
+        "ext-mongo": ">=1.4.0"
+>>>>>>> yiichina/master
     },
     "autoload": {
         "psr-4": { "yii\\mongodb\\": "" }

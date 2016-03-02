@@ -53,6 +53,11 @@ class Collapse extends Widget
      * - content: string, required, the content (HTML) of the group
      * - options: array, optional, the HTML attributes of the group
      * - contentOptions: optional, the HTML attributes of the group's content
+<<<<<<< HEAD
+=======
+     *
+     * ```
+>>>>>>> yiichina/master
      */
     public $items = [];
 
@@ -76,12 +81,19 @@ class Collapse extends Widget
      */
     public function run()
     {
+<<<<<<< HEAD
         $this->registerPlugin('collapse');
         return implode("\n", [
             Html::beginTag('div', $this->options),
             $this->renderItems(),
             Html::endTag('div')
         ]) . "\n";
+=======
+        echo Html::beginTag('div', $this->options) . "\n";
+        echo $this->renderItems() . "\n";
+        echo Html::endTag('div') . "\n";
+        $this->registerPlugin('collapse');
+>>>>>>> yiichina/master
     }
 
     /**

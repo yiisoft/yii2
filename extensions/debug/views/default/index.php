@@ -66,7 +66,11 @@ if (isset($this->context->module->panels['db']) && isset($this->context->module-
             [
                 'attribute' => 'time',
                 'value' => function ($data) {
+<<<<<<< HEAD
                     return '<span class="nowrap">' . Yii::$app->formatter->asDatetime($data['time'], 'short') . '</span>';
+=======
+                    return '<span class="nowrap">' . Yii::$app->formatter->asDateTime($data['time'], 'short') . '</span>';
+>>>>>>> yiichina/master
                 },
                 'format' => 'html',
             ],

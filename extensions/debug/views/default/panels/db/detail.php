@@ -49,7 +49,10 @@ echo GridView::widget([
             'value' => function ($data) {
                 return Html::encode(mb_strtoupper($data['type'], 'utf8'));
             },
+<<<<<<< HEAD
             'filter' => $panel->getTypes(),
+=======
+>>>>>>> yiichina/master
         ],
         [
             'attribute' => 'query',

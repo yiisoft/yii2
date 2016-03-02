@@ -63,6 +63,7 @@ class ColumnSchema extends Object
      */
     public function phpTypecast($value)
     {
+<<<<<<< HEAD
         return $this->typecast($value);
     }
 
@@ -97,6 +98,15 @@ class ColumnSchema extends Object
         }
         switch ($this->phpType) {
             case 'resource':
+=======
+        if ($value === null || gettype($value) === $this->phpType || $value instanceof Expression) {
+            return $value;
+        }
+        if ($value === '' && $this->type !== Schema::TYPE_STRING) {
+            return null;
+        }
+        switch ($this->phpType) {
+>>>>>>> yiichina/master
             case 'string':
                 return is_resource($value) ? $value : (string) $value;
             case 'integer':
@@ -109,4 +119,21 @@ class ColumnSchema extends Object
 
         return $value;
     }
+<<<<<<< HEAD
+=======
+
+    /**
+     * Converts the input value according to [[type]] and [[dbType]] for use in a db query.
+     * If the value is null or an [[Expression]], it will not be converted.
+     * @param mixed $value input value
+     * @return mixed converted value. This may also be an array containing the value as the first element
+     * and the PDO type as the second element.
+     */
+    public function dbTypecast($value)
+    {
+        // the default implementation does the same as casting for PHP but it should be possible
+        // to override this with annotation of explicit PDO type.
+        return $this->phpTypecast($value);
+    }
+>>>>>>> yiichina/master
 }

@@ -129,6 +129,7 @@ class Schema extends \yii\db\Schema
     {
         $column = $this->createColumnSchema();
 
+<<<<<<< HEAD
         $column->name = $info['Field'];
         $column->allowNull = $info['Null'] === 'YES';
         $column->isPrimaryKey = strpos($info['Key'], 'PRI') !== false;
@@ -136,6 +137,15 @@ class Schema extends \yii\db\Schema
         $column->comment = $info['Comment'];
 
         $column->dbType = $info['Type'];
+=======
+        $column->name = $info['field'];
+        $column->allowNull = $info['null'] === 'YES';
+        $column->isPrimaryKey = strpos($info['key'], 'PRI') !== false;
+        $column->autoIncrement = stripos($info['extra'], 'auto_increment') !== false;
+        $column->comment = $info['comment'];
+
+        $column->dbType = $info['type'];
+>>>>>>> yiichina/master
         $column->unsigned = stripos($column->dbType, 'unsigned') !== false;
 
         $column->type = self::TYPE_STRING;
@@ -173,12 +183,21 @@ class Schema extends \yii\db\Schema
         $column->phpType = $this->getColumnPhpType($column);
 
         if (!$column->isPrimaryKey) {
+<<<<<<< HEAD
             if ($column->type === 'timestamp' && $info['Default'] === 'CURRENT_TIMESTAMP') {
                 $column->defaultValue = new Expression('CURRENT_TIMESTAMP');
             } elseif (isset($type) && $type === 'bit') {
                 $column->defaultValue = bindec(trim($info['Default'],'b\''));
             } else {
                 $column->defaultValue = $column->phpTypecast($info['Default']);
+=======
+            if ($column->type === 'timestamp' && $info['default'] === 'CURRENT_TIMESTAMP') {
+                $column->defaultValue = new Expression('CURRENT_TIMESTAMP');
+            } elseif (isset($type) && $type === 'bit') {
+                $column->defaultValue = bindec(trim($info['default'],'b\''));
+            } else {
+                $column->defaultValue = $column->phpTypecast($info['default']);
+>>>>>>> yiichina/master
             }
         }
 
@@ -206,6 +225,12 @@ class Schema extends \yii\db\Schema
             throw $e;
         }
         foreach ($columns as $info) {
+<<<<<<< HEAD
+=======
+            if ($this->db->slavePdo->getAttribute(\PDO::ATTR_CASE) !== \PDO::CASE_LOWER) {
+                $info = array_change_key_case($info, CASE_LOWER);
+            }
+>>>>>>> yiichina/master
             $column = $this->loadColumnSchema($info);
             $table->columns[$column->name] = $column;
             if ($column->isPrimaryKey) {

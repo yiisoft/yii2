@@ -377,7 +377,14 @@ class PhpManager extends BaseManager
     {
         $roles = [];
         foreach ($this->getAssignments($userId) as $name => $assignment) {
+<<<<<<< HEAD
             $roles[$name] = $this->items[$assignment->roleName];
+=======
+            $role = $this->items[$assignment->roleName];
+            if ($role->type === Item::TYPE_ROLE) {
+                $roles[$name] = $role;
+            }
+>>>>>>> yiichina/master
         }
 
         return $roles;
@@ -571,6 +578,7 @@ class PhpManager extends BaseManager
      */
     protected function updateItem($name, $item)
     {
+<<<<<<< HEAD
         $this->items[$item->name] = $item;
         if ($name !== $item->name) {
             if (isset($this->items[$item->name])) {
@@ -582,11 +590,27 @@ class PhpManager extends BaseManager
                 if (isset($this->children[$name])) {
                     $this->children[$item->name] = $this->children[$name];
                     unset ($this->children[$name]);
+=======
+        if ($name !== $item->name) {
+            if (isset($this->items[$item->name])) {
+                throw new InvalidParamException("Unable to change the item name. The name '{$item->name}' is already used by another item.");
+            } else {
+                // Remove old item in case of renaming
+                unset($this->items[$name]);
+
+                if (isset($this->children[$name])) {
+                    $this->children[$item->name] = $this->children[$name];
+                    unset($this->children[$name]);
+>>>>>>> yiichina/master
                 }
                 foreach ($this->children as &$children) {
                     if (isset($children[$name])) {
                         $children[$item->name] = $children[$name];
+<<<<<<< HEAD
                         unset ($children[$name]);
+=======
+                        unset($children[$name]);
+>>>>>>> yiichina/master
                     }
                 }
                 foreach ($this->assignments as &$assignments) {
@@ -597,6 +621,12 @@ class PhpManager extends BaseManager
                 }
             }
         }
+<<<<<<< HEAD
+=======
+
+        $this->items[$item->name] = $item;
+
+>>>>>>> yiichina/master
         $this->saveItems();
         return true;
     }

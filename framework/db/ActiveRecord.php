@@ -53,7 +53,11 @@ use yii\helpers\StringHelper;
  * * Using the `new` operator to create a new, empty object
  * * Using a method to fetch an existing record (or records) from the database
  *
+<<<<<<< HEAD
  * Here is a short teaser how working with an ActiveRecord looks like:
+=======
+ * Below is an example showing some typical usage of ActiveRecord:
+>>>>>>> yiichina/master
  *
  * ```php
  * $user = new User();
@@ -69,8 +73,13 @@ use yii\helpers\StringHelper;
  *
  * For more details and usage information on ActiveRecord, see the [guide article on ActiveRecord](guide:db-active-record).
  *
+<<<<<<< HEAD
  * @method ActiveQuery hasMany(string $class, array $link) see BaseActiveRecord::hasMany() for more info
  * @method ActiveQuery hasOne(string $class, array $link) see BaseActiveRecord::hasOne() for more info
+=======
+ * @method ActiveQuery hasMany($class, array $link) see [[BaseActiveRecord::hasMany()]] for more info
+ * @method ActiveQuery hasOne($class, array $link) see [[BaseActiveRecord::hasOne()]] for more info
+>>>>>>> yiichina/master
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @author Carsten Brandt <mail@cebe.cc>
@@ -454,6 +463,7 @@ class ActiveRecord extends BaseActiveRecord
                 $values[$key] = $value;
             }
         }
+<<<<<<< HEAD
         $db = static::getDb();
         $command = $db->createCommand()->insert($this->tableName(), $values);
         if (!$command->execute()) {
@@ -469,6 +479,15 @@ class ActiveRecord extends BaseActiveRecord
                     break;
                 }
             }
+=======
+        if (($primaryKeys = static::getDb()->schema->insert($this->tableName(), $values)) === false) {
+            return false;
+        }
+        foreach ($primaryKeys as $name => $value) {
+            $id = $this->getTableSchema()->columns[$name]->phpTypecast($value);
+            $this->setAttribute($name, $id);
+            $values[$name] = $id;
+>>>>>>> yiichina/master
         }
 
         $changedAttributes = array_fill_keys(array_keys($values), null);

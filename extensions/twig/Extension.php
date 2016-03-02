@@ -177,6 +177,7 @@ class Extension extends \Twig_Extension
         }
     }
 
+<<<<<<< HEAD
     /**
      * Generates relative URL
      *
@@ -205,6 +206,16 @@ class Extension extends \Twig_Extension
             $path = array_merge([$path], $args);
         }
         return Url::to($path, true);
+=======
+    public function path($path, $args = [])
+    {
+        return Url::to(array_merge([$path], $args));
+    }
+
+    public function url($path, $args = [])
+    {
+        return Url::to(array_merge([$path], $args), true);
+>>>>>>> yiichina/master
     }
 
     public function setProperty($object, $property, $value)

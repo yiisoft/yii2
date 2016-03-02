@@ -611,7 +611,11 @@ class BaseConsole
         if (static::isRunningOnWindows()) {
             $output = [];
             exec('mode con', $output);
+<<<<<<< HEAD
             if (isset($output) && strpos($output[1], 'CON') !== false) {
+=======
+            if (isset($output, $output[1]) && strpos($output[1], 'CON') !== false) {
+>>>>>>> yiichina/master
                 return $size = [(int) preg_replace('~[^0-9]~', '', $output[3]), (int) preg_replace('~[^0-9]~', '', $output[4])];
             }
         } else {
@@ -654,7 +658,11 @@ class BaseConsole
      * @param boolean $refresh whether to force refresh of screen size.
      * This will be passed to [[getScreenSize()]].
      * @return string the wrapped text.
+<<<<<<< HEAD
      * @since 2.0.3
+=======
+     * @since 2.0.4
+>>>>>>> yiichina/master
      */
     public static function wrapText($text, $indent = 0, $refresh = false)
     {

@@ -136,8 +136,14 @@ class DetailView extends Widget
             $rows[] = $this->renderAttribute($attribute, $i++);
         }
 
+<<<<<<< HEAD
         $tag = ArrayHelper::remove($this->options, 'tag', 'table');
         echo Html::tag($tag, implode("\n", $rows), $this->options);
+=======
+        $options = $this->options;
+        $tag = ArrayHelper::remove($options, 'tag', 'table');
+        echo Html::tag($tag, implode("\n", $rows), $options);
+>>>>>>> yiichina/master
     }
 
     /**

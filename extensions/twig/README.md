@@ -1,6 +1,7 @@
 Twig Extension for Yii 2
 ========================
 
+<<<<<<< HEAD
 This extension provides a `ViewRender` that would allow you to use [Twig](http://twig.sensiolabs.org/) view template engine.
 
 This repository is a git submodule of <https://github.com/yiisoft/yii2>.
@@ -28,6 +29,9 @@ to the require section of your composer.json.
 
 Usage
 -----
+=======
+This extension provides a `ViewRender` that would allow you to use Twig view template engine.
+>>>>>>> yiichina/master
 
 To use this extension, simply add the following code in your application configuration:
 
@@ -52,3 +56,26 @@ return [
     ],
 ];
 ```
+<<<<<<< HEAD
+=======
+
+
+Installation
+------------
+
+The preferred way to install this extension is through [composer](http://getcomposer.org/download/).
+
+Either run
+
+```
+php composer.phar require --prefer-dist yiisoft/yii2-twig "*"
+```
+
+or add
+
+```
+"yiisoft/yii2-twig": "*"
+```
+
+to the require section of your composer.json.
+>>>>>>> yiichina/master

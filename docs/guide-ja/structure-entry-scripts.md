@@ -14,7 +14,11 @@
 エントリスクリプトは主として次の仕事をします。
 
 * グローバルな定数を定義する。
+<<<<<<< HEAD
 * [Composer のオートローダ](http://getcomposer.org/doc/01-basic-usage.md#autoloading) を登録する。
+=======
+* [Composer のオートローダ](https://getcomposer.org/doc/01-basic-usage.md#autoloading) を登録する。
+>>>>>>> yiichina/master
 * [[Yii]] クラスファイルをインクルードする。
 * アプリケーションの構成情報を読み出す。
 * [アプリケーション](structure-applications.md) のインスタンスを生成して構成する。
@@ -23,7 +27,11 @@
 
 ## ウェブアプリケーション<span id="web-applications"></span>
 
+<<<<<<< HEAD
 次に示すのが、[ベーシックウェブアプリケーションテンプレート](start-installation.md) のエントリスクリプトです。
+=======
+次に示すのが、[ベーシックウェブプロジェクトテンプレート](start-installation.md) のエントリスクリプトです。
+>>>>>>> yiichina/master
 
 ```php
 <?php

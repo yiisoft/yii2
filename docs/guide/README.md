@@ -78,10 +78,17 @@ Working with Databases
 * [Query Builder](db-query-builder.md): Querying the database using a simple abstraction layer
 * [Active Record](db-active-record.md): The Active Record ORM, retrieving and manipulating records, and defining relations
 * [Migrations](db-migrations.md): Apply version control to your databases in a team development environment
+<<<<<<< HEAD
 * **TBD** [Sphinx](db-sphinx.md)
 * **TBD** [Redis](db-redis.md)
 * **TBD** [MongoDB](db-mongodb.md)
 * **TBD** [ElasticSearch](db-elasticsearch.md)
+=======
+* [Sphinx](https://github.com/yiisoft/yii2-sphinx/blob/master/docs/guide/README.md)
+* [Redis](https://github.com/yiisoft/yii2-redis/blob/master/docs/guide/README.md)
+* [MongoDB](https://github.com/yiisoft/yii2-mongodb/blob/master/docs/guide/README.md)
+* [ElasticSearch](https://github.com/yiisoft/yii2-elasticsearch/blob/master/docs/guide/README.md)
+>>>>>>> yiichina/master
 
 
 Getting Data from Users
@@ -97,7 +104,11 @@ Getting Data from Users
 Displaying Data
 ---------------
 
+<<<<<<< HEAD
 * [Data Formatting](output-formatter.md)
+=======
+* [Data Formatting](output-formatting.md)
+>>>>>>> yiichina/master
 * [Pagination](output-pagination.md)
 * [Sorting](output-sorting.md)
 * [Data Providers](output-data-providers.md)
@@ -112,7 +123,11 @@ Security
 * [Authentication](security-authentication.md)
 * [Authorization](security-authorization.md)
 * [Working with Passwords](security-passwords.md)
+<<<<<<< HEAD
 * [Auth Clients](security-auth-clients.md)
+=======
+* [Auth Clients](https://github.com/yiisoft/yii2-authclient/blob/master/docs/guide/README.md)
+>>>>>>> yiichina/master
 * [Best Practices](security-best-practices.md)
 
 
@@ -143,9 +158,15 @@ RESTful Web Services
 Development Tools
 -----------------
 
+<<<<<<< HEAD
 * [Debug Toolbar and Debugger](tool-debugger.md)
 * [Generating Code using Gii](tool-gii.md)
 * **TBD** [Generating API Documentation](tool-api-doc.md)
+=======
+* [Debug Toolbar and Debugger](https://github.com/yiisoft/yii2-debug/blob/master/docs/guide/README.md)
+* [Generating Code using Gii](https://github.com/yiisoft/yii2-gii/blob/master/docs/guide/README.md)
+* **TBD** [Generating API Documentation](https://github.com/yiisoft/yii2-apidoc)
+>>>>>>> yiichina/master
 
 
 Testing
@@ -162,7 +183,11 @@ Testing
 Special Topics
 --------------
 
+<<<<<<< HEAD
 * [Advanced Application Template](tutorial-advanced-app.md)
+=======
+* [Advanced Project Template](https://github.com/yiisoft/yii2-app-advanced/blob/master/docs/guide/README.md)
+>>>>>>> yiichina/master
 * [Building Application from Scratch](tutorial-start-from-scratch.md)
 * [Console Commands](tutorial-console.md)
 * [Core Validators](tutorial-core-validators.md)
@@ -185,8 +210,13 @@ Widgets
 * Menu: **TBD** link to demo page
 * LinkPager: **TBD** link to demo page
 * LinkSorter: **TBD** link to demo page
+<<<<<<< HEAD
 * [Bootstrap Widgets](widget-bootstrap.md)
 * [jQuery UI Widgets](widget-jui.md)
+=======
+* [Bootstrap Widgets](https://github.com/yiisoft/yii2-bootstrap/blob/master/docs/guide/README.md)
+* [jQuery UI Widgets](https://github.com/yiisoft/yii2-jui/blob/master/docs/guide/README.md)
+>>>>>>> yiichina/master
 
 
 Helpers

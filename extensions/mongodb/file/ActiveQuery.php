@@ -70,6 +70,7 @@ class ActiveQuery extends Query implements ActiveQueryInterface
     }
 
     /**
+<<<<<<< HEAD
      * @inheritdoc
      */
     protected function buildCursor($db = null)
@@ -102,6 +103,8 @@ class ActiveQuery extends Query implements ActiveQueryInterface
     }
 
     /**
+=======
+>>>>>>> yiichina/master
      * Executes query and returns all results as an array.
      * @param \yii\mongodb\Connection $db the Mongo connection used to execute the query.
      * If null, the Mongo connection returned by [[modelClass]] will be used.
@@ -146,7 +149,10 @@ class ActiveQuery extends Query implements ActiveQueryInterface
                 /* @var $class ActiveRecord */
                 $class = $this->modelClass;
                 $model = $class::instantiate($row);
+<<<<<<< HEAD
                 $class = get_class($model);
+=======
+>>>>>>> yiichina/master
                 $class::populateRecord($model, $row);
             }
             if (!empty($this->with)) {

@@ -250,7 +250,11 @@ class Generator extends \yii\gii\Generator
             } elseif ($column->phpType !== 'string' || $column->size === null) {
                 return "\$form->field(\$model, '$attribute')->$input()";
             } else {
+<<<<<<< HEAD
                 return "\$form->field(\$model, '$attribute')->$input(['maxlength' => true])";
+=======
+                return "\$form->field(\$model, '$attribute')->$input(['maxlength' => $column->size])";
+>>>>>>> yiichina/master
             }
         }
     }
@@ -317,7 +321,10 @@ class Generator extends \yii\gii\Generator
                     $types['boolean'][] = $column->name;
                     break;
                 case Schema::TYPE_FLOAT:
+<<<<<<< HEAD
                 case Schema::TYPE_DOUBLE:
+=======
+>>>>>>> yiichina/master
                 case Schema::TYPE_DECIMAL:
                 case Schema::TYPE_MONEY:
                     $types['number'][] = $column->name;
@@ -406,7 +413,10 @@ class Generator extends \yii\gii\Generator
                 case Schema::TYPE_BIGINT:
                 case Schema::TYPE_BOOLEAN:
                 case Schema::TYPE_FLOAT:
+<<<<<<< HEAD
                 case Schema::TYPE_DOUBLE:
+=======
+>>>>>>> yiichina/master
                 case Schema::TYPE_DECIMAL:
                 case Schema::TYPE_MONEY:
                 case Schema::TYPE_DATE:

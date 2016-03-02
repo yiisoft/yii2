@@ -10,7 +10,10 @@ namespace yii\apidoc\helpers;
 use cebe\jssearch\Indexer;
 use cebe\jssearch\tokenizer\StandardTokenizer;
 use cebe\jssearch\TokenizerInterface;
+<<<<<<< HEAD
 use yii\helpers\StringHelper;
+=======
+>>>>>>> yiichina/master
 
 /**
  * ApiIndexer indexes framework API
@@ -38,7 +41,14 @@ class ApiIndexer extends Indexer
         if (preg_match('~<div id="classDescription">\s*<strong>(.*?)</strong>~s', $contents, $matches)) {
             $description = strip_tags($matches[1]);
         } elseif (preg_match('~<p>(.*?)</p>~s', $contents, $matches)) {
+<<<<<<< HEAD
             $description = StringHelper::truncate(strip_tags($matches[1]), 1000, '...', 'UTF-8');
+=======
+            $description = strip_tags($matches[1]);
+            if (mb_strlen($description) > 1000) { // TODO truncate by words
+                $description = mb_substr($description, 0, 1000) . '...';
+            }
+>>>>>>> yiichina/master
         } else {
             $description = '';
         }

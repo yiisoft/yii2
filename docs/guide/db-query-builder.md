@@ -86,7 +86,11 @@ Besides column names, you can also select DB expressions. You must use the array
 that contains commas to avoid incorrect automatic name quoting. For example,
 
 ```php
+<<<<<<< HEAD
 $query->select(["CONCAT(first_name, ' ', last_name]) AS full_name", 'email']); 
+=======
+$query->select(["CONCAT(first_name, ' ', last_name) AS full_name", 'email']); 
+>>>>>>> yiichina/master
 ```
 
 Starting from version 2.0.1, you may also select sub-queries. You should specify each sub-query in terms of 
@@ -225,7 +229,11 @@ Operator format allows you to specify arbitrary conditions in a programmatic way
 ```
 
 where the operands can each be specified in string format, hash format or operator format recursively, while
+<<<<<<< HEAD
 the operator can be one of the followings:
+=======
+the operator can be one of the following:
+>>>>>>> yiichina/master
 
 - `and`: the operands should be concatenated together using `AND`. For example,
   `['and', 'id=1', 'id=2']` will generate `id=1 AND id=2`. If an operand is an array,
@@ -383,7 +391,11 @@ If `GROUP BY` only involves simple column names, you can specify it using a stri
 raw SQLs. For example,
 
 ```php
+<<<<<<< HEAD
 $query->groupBy('id, status']);
+=======
+$query->groupBy('id, status');
+>>>>>>> yiichina/master
 ```
 
 > Note: You should use the array format if `GROUP BY` involves some DB expression.
@@ -535,7 +547,11 @@ $row = (new \yii\db\Query())
   `(new \yii\db\Query())->from('user')->limit(1)->one()`.
 
 All these query methods take an optional `$db` parameter representing the [[yii\db\Connection|DB connection]] that
+<<<<<<< HEAD
 should be used to perform a DB query. If you omit this parameter, the `db` application component will be used
+=======
+should be used to perform a DB query. If you omit this parameter, the `db` [application component](structure-application-components.md) will be used
+>>>>>>> yiichina/master
 as the DB connection. Below is another example using the `count()` query method:
 
 ```php

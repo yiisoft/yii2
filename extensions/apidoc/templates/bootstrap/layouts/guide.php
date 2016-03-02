@@ -6,6 +6,7 @@ use yii\apidoc\templates\bootstrap\SideNavWidget;
 /* @var $content string */
 /* @var $chapters array */
 
+<<<<<<< HEAD
 if (isset($currentFile)) {
     foreach ($chapters as $chapter) {
         foreach ($chapter['content'] as $chContent) {
@@ -17,6 +18,9 @@ if (isset($currentFile)) {
 }
 
 $this->beginContent('@yii/apidoc/templates/bootstrap/layouts/main.php', isset($guideHeadline) ? ['guideHeadline' => $guideHeadline] : []); ?>
+=======
+$this->beginContent('@yii/apidoc/templates/bootstrap/layouts/main.php'); ?>
+>>>>>>> yiichina/master
 
 <div class="row">
     <div class="col-md-2">

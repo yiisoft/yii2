@@ -31,6 +31,7 @@ use yii\helpers\Html;
  * ]);
  * ```
  *
+<<<<<<< HEAD
  * You can also use this widget in an [[yii\widgets\ActiveForm|ActiveForm]] using the [[yii\widgets\ActiveField::widget()|widget()]]
  * method, for example like this:
  *
@@ -40,6 +41,8 @@ use yii\helpers\Html;
  * ]) ?>
  * ```
  *
+=======
+>>>>>>> yiichina/master
  * @see http://api.jqueryui.com/spinner/
  * @author Alexander Kochetov <creocoder@gmail.com>
  * @since 2.0

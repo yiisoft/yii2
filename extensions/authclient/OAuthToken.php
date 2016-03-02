@@ -50,9 +50,12 @@ class OAuthToken extends Object
     private $_params = [];
 
 
+<<<<<<< HEAD
     /**
      * @inheritdoc
      */
+=======
+>>>>>>> yiichina/master
     public function init()
     {
         if ($this->createTimestamp === null) {

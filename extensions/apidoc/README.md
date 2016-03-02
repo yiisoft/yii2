@@ -3,10 +3,13 @@ API documentation generator for Yii 2
 
 This extension provides an API documentation generator for the Yii framework 2.0.
 
+<<<<<<< HEAD
 This repository is a git submodule of <https://github.com/yiisoft/yii2>.
 Please submit issue reports and pull requests to the main repository.
 For license information check the [LICENSE](LICENSE.md)-file.
 
+=======
+>>>>>>> yiichina/master
 Installation
 ------------
 
@@ -15,13 +18,21 @@ The preferred way to install this extension is through [composer](http://getcomp
 Either run
 
 ```
+<<<<<<< HEAD
 php composer.phar require --prefer-dist yiisoft/yii2-apidoc
+=======
+php composer.phar require --prefer-dist yiisoft/yii2-apidoc "*"
+>>>>>>> yiichina/master
 ```
 
 or add
 
 ```json
+<<<<<<< HEAD
 "yiisoft/yii2-apidoc": "~2.0.0"
+=======
+"yiisoft/yii2-apidoc": "*"
+>>>>>>> yiichina/master
 ```
 
 to the require section of your composer.json.

@@ -99,7 +99,11 @@ Ricezione dati dagli utenti
 Visualizzazione dei dati
 ------------------------
 
+<<<<<<< HEAD
 * **TBD** [Formattazione](output-formatter.md)
+=======
+* **TBD** [Formattazione](output-formatting.md)
+>>>>>>> yiichina/master
 * **TBD** [Paginazione](output-pagination.md)
 * **TBD** [Ordinamento](output-sorting.md)
 * [Data Provider](output-data-providers.md)

@@ -17,7 +17,11 @@ if (empty($methods)) {
 }
 ArrayHelper::multisort($methods, 'name');
 ?>
+<<<<<<< HEAD
 <h2>Method Details</h2>
+=======
+<h2>方法详情</h2>
+>>>>>>> yiichina/master
 
 <div class="method-doc">
 <?php foreach ($methods as $method): ?>
@@ -39,7 +43,11 @@ ArrayHelper::multisort($methods, 'name');
             <?= $method->visibility ?>
             method
             <?php if (!empty($method->since)): ?>
+<<<<<<< HEAD
                 (available since version <?= $method->since ?>)
+=======
+                （可用自版本 <?= $method->since ?>）
+>>>>>>> yiichina/master
             <?php endif; ?>
         </span>
     </div>

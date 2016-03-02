@@ -53,6 +53,7 @@
     },
     "minimum-stability": "dev",
     "replace": {
+<<<<<<< HEAD
         "yiisoft/yii2-apidoc": "self.version",
         "yiisoft/yii2-authclient": "self.version",
         "yiisoft/yii2-bootstrap": "self.version",
@@ -69,6 +70,8 @@
         "yiisoft/yii2-swiftmailer": "self.version",
         "yiisoft/yii2-sphinx": "self.version",
         "yiisoft/yii2-twig": "self.version",
+=======
+>>>>>>> yiichina/master
         "yiisoft/yii2": "self.version"
     },
     "require": {
@@ -87,7 +90,11 @@
         "bower-asset/typeahead.js": "0.10.*"
     },
     "require-dev": {
+<<<<<<< HEAD
         "phpunit/phpunit": "3.7.*",
+=======
+        "phpunit/phpunit": "~4.5",
+>>>>>>> yiichina/master
         "twig/twig": "*",
         "smarty/smarty": "~3.1",
         "imagine/imagine": "0.5.*",
@@ -111,6 +118,7 @@
     },
     "autoload": {
         "psr-4": {
+<<<<<<< HEAD
             "yii\\": "framework/",
             "yii\\apidoc\\": "extensions/apidoc/",
             "yii\\authclient\\": "extensions/authclient/",
@@ -128,6 +136,9 @@
             "yii\\swiftmailer\\": "extensions/swiftmailer/",
             "yii\\sphinx\\": "extensions/sphinx/",
             "yii\\twig\\": "extensions/twig/"
+=======
+            "yii\\": "framework/"
+>>>>>>> yiichina/master
         }
     },
     "bin": [

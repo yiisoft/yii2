@@ -74,7 +74,11 @@ Regras e Observações
 
 - action — ação
 - application system - sistema
+<<<<<<< HEAD
 - application template — template de aplicação
+=======
+- project template — template de projetos
+>>>>>>> yiichina/master
 - controller — controller (controlador)
 - eager loading — eager loading (carregamento na inicialização)
 - lazy loading — lazy loading (carregamento retardado)
@@ -88,6 +92,11 @@ Regras e Observações
 - attribute label - label do atributo
 - inline action — ação inline
 - standalone action — ação standalone
+<<<<<<< HEAD
+=======
+- advanced project template — template avançado de projetos
+- basic project template — template básico de projetos
+>>>>>>> yiichina/master
 
 ### Termos Sem Tradução
 
@@ -104,4 +113,9 @@ Regras e Observações
 - widget
 - backend
 - frontend
+<<<<<<< HEAD
 - web service
+=======
+- web service
+- template
+>>>>>>> yiichina/master

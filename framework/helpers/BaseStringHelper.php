@@ -246,6 +246,10 @@ class BaseStringHelper
      *   - callable - will be called for each value instead of trim. Takes the only argument - value.
      * @param boolean $skipEmpty Whether to skip empty strings between delimiters. Default is false.
      * @return array
+<<<<<<< HEAD
+=======
+     * @since 2.0.4
+>>>>>>> yiichina/master
      */
     public static function explode($string, $delimiter = ',', $trim = true, $skipEmpty = false) {
         $result = explode($delimiter, $string);

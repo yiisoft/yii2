@@ -55,7 +55,11 @@
             return this.each(function () {
                 var $e = $(this);
                 var settings = $.extend({}, defaults, options || {});
+<<<<<<< HEAD
                 gridData[$e.prop('id')] = {settings: settings};
+=======
+                gridData[$e.attr('id')] = {settings: settings};
+>>>>>>> yiichina/master
 
                 var enterPressed = false;
                 $(document).off('change.yiiGridView keydown.yiiGridView', settings.filterSelector)
@@ -83,7 +87,11 @@
 
         applyFilter: function () {
             var $grid = $(this), event;
+<<<<<<< HEAD
             var settings = gridData[$grid.prop('id')].settings;
+=======
+            var settings = gridData[$grid.attr('id')].settings;
+>>>>>>> yiichina/master
             var data = {};
             $.each($(settings.filterSelector).serializeArray(), function () {
                 data[this.name] = this.value;
@@ -117,7 +125,11 @@
 
         setSelectionColumn: function (options) {
             var $grid = $(this);
+<<<<<<< HEAD
             var id = $(this).prop('id');
+=======
+            var id = $(this).attr('id');
+>>>>>>> yiichina/master
             gridData[id].selectionColumn = options.name;
             if (!options.multiple) {
                 return;
@@ -135,7 +147,11 @@
 
         getSelectedRows: function () {
             var $grid = $(this);
+<<<<<<< HEAD
             var data = gridData[$grid.prop('id')];
+=======
+            var data = gridData[$grid.attr('id')];
+>>>>>>> yiichina/master
             var keys = [];
             if (data.selectionColumn) {
                 $grid.find("input[name='" + data.selectionColumn + "']:checked").each(function () {
@@ -153,7 +169,11 @@
         },
 
         data: function () {
+<<<<<<< HEAD
             var id = $(this).prop('id');
+=======
+            var id = $(this).attr('id');
+>>>>>>> yiichina/master
             return gridData[id];
         }
     };

@@ -106,6 +106,7 @@ class Tabs extends Widget
     {
         $options = $this->options;
         $tag = ArrayHelper::remove($options, 'tag', 'div');
+<<<<<<< HEAD
         $out = Html::beginTag($tag, $options) . "\n";
         $out .= $this->renderItems() . "\n";
         $out .= Html::endTag($tag) . "\n";
@@ -113,6 +114,12 @@ class Tabs extends Widget
         $this->registerWidget('tabs');
 
         return $out;
+=======
+        echo Html::beginTag($tag, $options) . "\n";
+        echo $this->renderItems() . "\n";
+        echo Html::endTag($tag) . "\n";
+        $this->registerWidget('tabs');
+>>>>>>> yiichina/master
     }
 
     /**

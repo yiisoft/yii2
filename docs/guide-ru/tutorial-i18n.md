@@ -479,7 +479,11 @@ use yii\i18n\MissingTranslationEvent;
 
 class TranslationEventHandler
 {
+<<<<<<< HEAD
     public static function(MissingTranslationEvent $event) {
+=======
+    public static function handleMissingTranslation(MissingTranslationEvent $event) {
+>>>>>>> yiichina/master
         $event->translatedMessage = "@MISSING: {$event->category}.{$event->message} FOR LANGUAGE {$event->language} @";
     }
 }
@@ -509,7 +513,11 @@ class TranslationEventHandler
 Форматирование чисел и дат
 --------------------------
 
+<<<<<<< HEAD
 См. описание [форматирования дат](output-formatter.md).
+=======
+См. описание [форматирования дат](output-formatting.md).
+>>>>>>> yiichina/master
 
 
 Настройка PHP-окружения <span id="setup-environment"></span>

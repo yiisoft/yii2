@@ -8,6 +8,10 @@
 namespace yii\apidoc\helpers;
 
 use cebe\markdown\GithubMarkdown;
+<<<<<<< HEAD
+=======
+use phpDocumentor\Reflection\DocBlock\Type\Collection;
+>>>>>>> yiichina/master
 use yii\apidoc\models\TypeDoc;
 use yii\apidoc\renderers\BaseRenderer;
 use yii\helpers\Inflector;
@@ -81,7 +85,11 @@ class ApiMarkdown extends GithubMarkdown
     {
         $content = $this->renderAbsy($block['content']);
         $hash = Inflector::slug(strip_tags($content));
+<<<<<<< HEAD
         $hashLink = "<a href=\"#$hash\" id=\"$hash\" class=\"hashlink\">&para;</a>";
+=======
+        $hashLink = "<a href=\"#$hash\" name=\"$hash\" class=\"hashlink\">&para;</a>";
+>>>>>>> yiichina/master
 
         $tag = 'h' . $block['level'];
         return "<$tag>$content $hashLink</$tag>";

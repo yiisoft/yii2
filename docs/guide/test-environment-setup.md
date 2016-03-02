@@ -12,7 +12,11 @@ framework that allows you to create the following test types:
 
 Yii provides ready to use test sets for all three test types in both
 [`yii2-basic`](https://github.com/yiisoft/yii2/tree/master/apps/basic) and
+<<<<<<< HEAD
 [`yii2-advanced`](https://github.com/yiisoft/yii2/tree/master/apps/advanced) application templates.
+=======
+[`yii2-advanced`](https://github.com/yiisoft/yii2/tree/master/apps/advanced) project templates.
+>>>>>>> yiichina/master
 
 In order to run tests you need to install [Codeception](https://github.com/Codeception/Codeception). A good way to
 install it is the following:

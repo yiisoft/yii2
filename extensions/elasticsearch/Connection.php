@@ -137,9 +137,12 @@ class Connection extends Component
      */
     public function close()
     {
+<<<<<<< HEAD
         if ($this->activeNode === null) {
             return;
         }
+=======
+>>>>>>> yiichina/master
         Yii::trace('Closing connection to elasticsearch. Active node was: '
             . $this->nodes[$this->activeNode]['http_address'], __CLASS__);
         $this->activeNode = null;

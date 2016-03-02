@@ -129,6 +129,10 @@ class UrlManager extends Component
     private $_baseUrl;
     private $_scriptUrl;
     private $_hostInfo;
+<<<<<<< HEAD
+=======
+    private $_ruleCache;
+>>>>>>> yiichina/master
 
 
     /**
@@ -309,6 +313,7 @@ class UrlManager extends Component
         $baseUrl = $this->showScriptName || !$this->enablePrettyUrl ? $this->getScriptUrl() : $this->getBaseUrl();
 
         if ($this->enablePrettyUrl) {
+<<<<<<< HEAD
             /* @var $rule UrlRule */
             foreach ($this->rules as $rule) {
                 if (($url = $rule->createUrl($this, $route, $params)) !== false) {
@@ -321,6 +326,40 @@ class UrlManager extends Component
                     } else {
                         return "$baseUrl/{$url}{$anchor}";
                     }
+=======
+            $cacheKey = $route . '?' . implode('&', array_keys($params));
+
+            /* @var $rule UrlRule */
+            $url = false;
+            if (isset($this->_ruleCache[$cacheKey])) {
+                foreach ($this->_ruleCache[$cacheKey] as $rule) {
+                    if (($url = $rule->createUrl($this, $route, $params)) !== false) {
+                        break;
+                    }
+                }
+            } else {
+                $this->_ruleCache[$cacheKey] = [];
+            }
+
+            if ($url === false) {
+                foreach ($this->rules as $rule) {
+                    if (($url = $rule->createUrl($this, $route, $params)) !== false) {
+                        $this->_ruleCache[$cacheKey][] = $rule;
+                        break;
+                    }
+                }
+            }
+
+            if ($url !== false) {
+                if (strpos($url, '://') !== false) {
+                    if ($baseUrl !== '' && ($pos = strpos($url, '/', 8)) !== false) {
+                        return substr($url, 0, $pos) . $baseUrl . substr($url, $pos);
+                    } else {
+                        return $url . $baseUrl . $anchor;
+                    }
+                } else {
+                    return "$baseUrl/{$url}{$anchor}";
+>>>>>>> yiichina/master
                 }
             }
 

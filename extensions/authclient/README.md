@@ -1,12 +1,17 @@
 AuthClient Extension for Yii 2
 ==============================
 
+<<<<<<< HEAD
 This extension adds [OpenID](http://openid.net/), [OAuth](http://oauth.net/) and [OAuth2](http://oauth.net/2/) consumers
 for the Yii framework 2.0.
 
 This repository is a git submodule of <https://github.com/yiisoft/yii2>.
 Please submit issue reports and pull requests to the main repository.
 For license information check the [LICENSE](LICENSE.md)-file.
+=======
+This extension adds [OpenID](http://openid.net/), [OAuth](http://oauth.net/) and [OAuth2](http://oauth.net/2/) consumers for the Yii framework 2.0.
+
+>>>>>>> yiichina/master
 
 Installation
 ------------
@@ -16,13 +21,21 @@ The preferred way to install this extension is through [composer](http://getcomp
 Either run
 
 ```
+<<<<<<< HEAD
 composer require --prefer-dist yiisoft/yii2-authclient
+=======
+php composer.phar require --prefer-dist yiisoft/yii2-authclient "*"
+>>>>>>> yiichina/master
 ```
 
 or add
 
 ```json
+<<<<<<< HEAD
 "yiisoft/yii2-authclient": "~2.0.0"
+=======
+"yiisoft/yii2-authclient": "*"
+>>>>>>> yiichina/master
 ```
 
 to the `require` section of your composer.json.
@@ -55,7 +68,11 @@ You need to setup auth client collection application component:
 ]
 ```
 
+<<<<<<< HEAD
 Then you need to add [[yii\authclient\AuthAction]] to web controller:
+=======
+Then you need to add [[yii\authclient\AuthAction]] to some of your web controllers:
+>>>>>>> yiichina/master
 
 ```php
 class SiteController extends Controller
@@ -104,6 +121,7 @@ Although, all clients are different they shares same basic interface [[yii\authc
 which governs some common API.
 
 Each client has some descriptive data, which can be used for different purposes:
+<<<<<<< HEAD
  - `id` - unique client id, which separates it from other clients, it could be used in URLs, logs etc.
  - `name` - external auth provider name, which this client is match too. Different auth clients
  can share the same name, if they refer to the same external auth provider.
@@ -113,10 +131,22 @@ Each client has some descriptive data, which can be used for different purposes:
  at the view layer.
 
 Each auth client has different auth flow, but all of them supports `getUserAttributes()` method,
+=======
+ - id - unique client id, which separates it from other clients, it could be used in URLs, logs etc.
+ - name - external auth provider name, which this client is match too. Different auth clients
+ can share the same name, if they refer to the same external auth provider.
+ For example: clients for Google OpenID and Google OAuth have same name "google".
+ This attribute can be used inside the database, CSS styles and so on.
+ - title - user friendly name for the external auth provider, it is used to present auth client
+ at the view layer.
+
+Each auth client has different auth flow, but all of them supports "getUserAttributes()" method,
+>>>>>>> yiichina/master
 which can be invoked if authentication was successful.
 This method allows you to get information about external user account, such as id, email address,
 full name, preferred language etc.
 Defining list of attributes, which external auth provider should return, depends on client type:
+<<<<<<< HEAD
  - [[yii\authclient\OpenId]]: combination of `requiredAttributes` and `optionalAttributes`
  - [[yii\authclient\OAuth1]] and [[yii\authclient\OAuth2]]: field `scope`, note that different
  providers use different formats for the scope.
@@ -124,13 +154,26 @@ Defining list of attributes, which external auth provider should return, depends
 Each auth client has `viewOptions` attribute. It is an array, which stores name-value pairs,
 which serve to compose client representation in the view.
 For example widget [[yii\authclient\widgets\AuthChoice]] uses keys `popupWidth` and `popupHeight` to
+=======
+ - [[yii\authclient\OpenId]]: combination of "requiredAttributes" and "optionalAttributes"
+ - [[yii\authclient\OAuth1]] and [[yii\authclient\OAuth2]]: field "scope", note that different
+ providers use different formats for the scope.
+
+Each auth client has "viewOptions" attribute. It is an array, which stores name-value pairs,
+which serve to compose client representation in the view.
+For example widget [[yii\authclient\widgets\AuthChoice]] uses keys "popupWidth" and "popupHeight" to
+>>>>>>> yiichina/master
 determine the size of authentication popup window.
 
 
 External API usage
 ------------------
 
+<<<<<<< HEAD
 Both [[yii\authclient\OAuth1]] and [[yii\authclient\OAuth2]] provide method `api()`, which
+=======
+Both [[yii\authclient\OAuth1]] and [[yii\authclient\OAuth2]] provide method "api()", which
+>>>>>>> yiichina/master
 can be used to access external auth provider REST API. However this method is very basic and
 it may be not enough to access full external API functionality. This method is mainly used to
 fetch the external user account data.
@@ -151,6 +194,7 @@ Predefined auth clients
 -----------------------
 
 This extension provides the list of ready to use auth clients, which covers most
+<<<<<<< HEAD
 popular external authentication providers. These clients are located under `yii\authclient\clients`
 namespace.
 
@@ -165,6 +209,22 @@ Following predefined auth clients are available:
  - [[yii\authclient\clients\VKontakte]] - [VKontakte](http://vk.com/) OAuth2 client.
  - [[yii\authclient\clients\YandexOAuth]] - [Yandex](http://www.yandex.ru/) OAuth2 client.
  - [[yii\authclient\clients\YandexOpenId]] - [Yandex](http://www.yandex.ru/) OpenID client.
+=======
+popular external authentication providers. These clients are located under "yii\authclient\clients"
+namespace.
+
+Following predefined auth clients are available:
+ - [[yii\authclient\clients\Facebook]] - [Facebook](https://www.facebook.com/) OAuth2 client
+ - [[yii\authclient\clients\GitHub]] - [GitHub](https://github.com/) OAuth2 client
+ - [[yii\authclient\clients\GoogleOAuth]] - [Google](https://www.google.com/) OAuth2 client
+ - [[yii\authclient\clients\GoogleOpenId]] - [Google](https://www.google.com/) OpenID client
+ - [[yii\authclient\clients\LinkedIn]] - [LinkedIn](http://www.linkedin.com/) OAuth2 client
+ - [[yii\authclient\clients\Live]] - [Microsoft Live](http://live.com/) OAuth2 client
+ - [[yii\authclient\clients\Twitter]] - [Twitter](https://twitter.com/) OAuth1 client
+ - [[yii\authclient\clients\VKontakte]] - [VKontakte](http://vk.com/) OAuth2 client
+ - [[yii\authclient\clients\YandexOAuth]] - [Yandex](http://www.yandex.ru/) OAuth2 client
+ - [[yii\authclient\clients\YandexOpenId]] - [Yandex](http://www.yandex.ru/) OpenID client
+>>>>>>> yiichina/master
 
 Please, refer to the particular client class documentation for its actual usage.
 
@@ -203,10 +263,16 @@ You may create your own auth client for any external auth provider, which suppor
 OpenId or OAuth protocol. To do so, first of all, you need to find out which protocol is
 supported by the external auth provider, this will give you the name of the base class
 for your extension:
+<<<<<<< HEAD
 
  - For OAuth 2 use [[yii\authclient\OAuth2]].
  - For OAuth 1/1.0a use [[yii\authclient\OAuth1]].
  - For OpenID use [[yii\authclient\OpenId]].
+=======
+ - for OAuth 2 use [[yii\authclient\OAuth2]]
+ - for OAuth 1/1.0a use [[yii\authclient\OAuth1]]
+ - for OpenID use [[yii\authclient\OpenId]]
+>>>>>>> yiichina/master
 
 At this stage you can determine auth client default name, title and view options, declaring
 corresponding methods:
@@ -238,9 +304,15 @@ class MyAuthClient extends OAuth2
 
 Depending on actual base class, you will need to redeclare different fields and methods.
 
+<<<<<<< HEAD
 ### [[yii\authclient\OpenId]]
 
 All you need is to specify auth URL, by redeclaring `authUrl` field.
+=======
+1) [[yii\authclient\OpenId]]
+
+All you need is specify auth URL, by redeclaring "authUrl" field.
+>>>>>>> yiichina/master
 You may also setup default required and/or optional attributes.
 For example:
 
@@ -262,6 +334,7 @@ class MyAuthClient extends OpenId
 }
 ```
 
+<<<<<<< HEAD
 ### [[yii\authclient\OAuth2]]
 
 You will need to specify:
@@ -270,6 +343,15 @@ You will need to specify:
 - Token request URL by redeclaring `tokenUrl` field.
 - API base URL by redeclaring `apiBaseUrl` field.
 - User attribute fetching strategy by redeclaring `initUserAttributes()` method.
+=======
+2) [[yii\authclient\OAuth2]]
+
+You will need to specify:
+- authorize URL - redeclare "authUrl" field
+- token request URL - redeclare "tokenUrl" field
+- API base URL - redeclare "apiBaseUrl" field
+- User attribute fetching strategy - redeclare "initUserAttributes" method
+>>>>>>> yiichina/master
 
 For example:
 
@@ -293,6 +375,7 @@ class MyAuthClient extends OAuth2
 
 You may also specify default auth scopes.
 
+<<<<<<< HEAD
 > Note: Some OAuth providers may not follow OAuth standards clearly, introducing
   differences, and may require additional efforts to implement clients for.
 
@@ -305,6 +388,19 @@ You will need to specify:
 - Access token URL by redeclaring `accessTokenUrl` field.
 - API base URL by redeclaring `apiBaseUrl` field.
 - User attribute fetching strategy by redeclaring `initUserAttributes()` method.
+=======
+Note: some OAuth providers may not follow OAuth standards clearly, introducing
+some differences, which may require additional efforts to apply.
+
+3) [[yii\authclient\OAuth1]]
+
+You will need to specify:
+- authorize URL - redeclare "authUrl" field
+- request token URL - redeclare "requestTokenUrl" field
+- access token URL - redeclare "accessTokenUrl" field
+- API base URL - redeclare "apiBaseUrl" field
+- User attribute fetching strategy - redeclare "initUserAttributes" method
+>>>>>>> yiichina/master
 
 For example:
 
@@ -330,6 +426,11 @@ class MyAuthClient extends OAuth1
 
 You may also specify default auth scopes.
 
+<<<<<<< HEAD
 > Note: Some OAuth providers may not follow OAuth standards clearly, introducing
   differences, and may require additional efforts to implement clients for.
 
+=======
+Note: some OAuth providers may not follow OAuth standards clearly, introducing
+some differences, which may require additional efforts to apply.
+>>>>>>> yiichina/master

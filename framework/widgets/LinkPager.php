@@ -83,11 +83,19 @@ class LinkPager extends Widget
     public $prevPageLabel = '&laquo;';
     /**
      * @var string|boolean the text label for the "first" page button. Note that this will NOT be HTML-encoded.
+<<<<<<< HEAD
+=======
+     * If it's specified as true, page number will be used as label.
+>>>>>>> yiichina/master
      * Default is false that means the "first" page button will not be displayed.
      */
     public $firstPageLabel = false;
     /**
      * @var string|boolean the text label for the "last" page button. Note that this will NOT be HTML-encoded.
+<<<<<<< HEAD
+=======
+     * If it's specified as true, page number will be used as label.
+>>>>>>> yiichina/master
      * Default is false that means the "last" page button will not be displayed.
      */
     public $lastPageLabel = false;
@@ -154,8 +162,14 @@ class LinkPager extends Widget
         $currentPage = $this->pagination->getPage();
 
         // first page
+<<<<<<< HEAD
         if ($this->firstPageLabel !== false) {
             $buttons[] = $this->renderPageButton($this->firstPageLabel, 0, $this->firstPageCssClass, $currentPage <= 0, false);
+=======
+        $firstPageLabel = $this->firstPageLabel === true ? '1' : $this->firstPageLabel;
+        if ($firstPageLabel !== false) {
+            $buttons[] = $this->renderPageButton($firstPageLabel, 0, $this->firstPageCssClass, $currentPage <= 0, false);
+>>>>>>> yiichina/master
         }
 
         // prev page
@@ -181,8 +195,14 @@ class LinkPager extends Widget
         }
 
         // last page
+<<<<<<< HEAD
         if ($this->lastPageLabel !== false) {
             $buttons[] = $this->renderPageButton($this->lastPageLabel, $pageCount - 1, $this->lastPageCssClass, $currentPage >= $pageCount - 1, false);
+=======
+        $lastPageLabel = $this->lastPageLabel === true ? $pageCount : $this->lastPageLabel;
+        if ($lastPageLabel !== false) {
+            $buttons[] = $this->renderPageButton($lastPageLabel, $pageCount - 1, $this->lastPageCssClass, $currentPage >= $pageCount - 1, false);
+>>>>>>> yiichina/master
         }
 
         return Html::tag('ul', implode("\n", $buttons), $this->options);

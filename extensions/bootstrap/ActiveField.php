@@ -51,7 +51,11 @@ use yii\helpers\ArrayHelper;
  * ```php
  * use yii\bootstrap\ActiveForm;
  *
+<<<<<<< HEAD
  * $form = ActiveForm::begin(['layout' => 'horizontal']);
+=======
+ * $form = ActiveForm::begin(['layout' => 'horizontal'])
+>>>>>>> yiichina/master
  *
  * // Form field without label
  * echo $form->field($model, 'demo', [
@@ -71,6 +75,7 @@ use yii\helpers\ArrayHelper;
  * ]);
  *
  * // With 'default' layout you would use 'template' to size a specific field:
+<<<<<<< HEAD
  * echo $form->field($model, 'demo', [
  *     'template' => '{label} <div class="row"><div class="col-sm-4">{input}{error}{hint}</div></div>'
  * ]);
@@ -82,6 +87,19 @@ use yii\helpers\ArrayHelper;
  *
  * ActiveForm::end();
  * ```
+=======
+ * // echo $form->field($model, 'demo', [
+ * //     'template' => '{label} <div class="row"><div class="col-sm-4">{input}{error}{hint}</div></div>'
+ * // ]);
+ *
+ *  // Input group
+ *  echo $form->field($model, 'demo', [
+ *      'inputTemplate' => '<div class="input-group"><span class="input-group-addon">@</span>{input}</div>',
+ *  ]);
+ *
+ *  ActiveForm::end();
+ *  ```
+>>>>>>> yiichina/master
  *
  * @see \yii\bootstrap\ActiveForm
  * @see http://getbootstrap.com/css/#forms
@@ -376,9 +394,12 @@ class ActiveField extends \yii\widgets\ActiveField
                 $label = Html::encode($this->model->getAttributeLabel($attribute));
             }
         }
+<<<<<<< HEAD
         if (!isset($options['for'])) {
             $options['for'] = Html::getInputId($this->model, $this->attribute);
         }
+=======
+>>>>>>> yiichina/master
         $this->parts['{beginLabel}'] = Html::beginTag('label', $options);
         $this->parts['{endLabel}'] = Html::endTag('label');
         $this->parts['{labelTitle}'] = $label;

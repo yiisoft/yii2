@@ -203,6 +203,7 @@ class MessageController extends Controller
         foreach ($new as $category => $msgs) {
             foreach ($msgs as $m) {
                 $savedFlag = true;
+<<<<<<< HEAD
 
                 $db->createCommand()
                    ->insert($sourceMessageTable, ['category' => $category, 'message' => $m])->execute();
@@ -210,6 +211,13 @@ class MessageController extends Controller
                 foreach ($languages as $language) {
                     $db->createCommand()
                        ->insert($messageTable, ['id' => $lastID, 'language' => $language])->execute();
+=======
+                $lastPk = $db->schema->insert($sourceMessageTable, ['category' => $category, 'message' => $m]);
+                foreach ($languages as $language) {
+                    $db->createCommand()
+                       ->insert($messageTable, ['id' => $lastPk['id'], 'language' => $language])
+                       ->execute();
+>>>>>>> yiichina/master
                 }
             }
         }
@@ -222,7 +230,12 @@ class MessageController extends Controller
         } else {
             if ($removeUnused) {
                 $db->createCommand()
+<<<<<<< HEAD
                    ->delete($sourceMessageTable, ['in', 'id', $obsolete])->execute();
+=======
+                   ->delete($sourceMessageTable, ['in', 'id', $obsolete])
+                   ->execute();
+>>>>>>> yiichina/master
                 $this->stdout("deleted.\n");
             } else {
                 $db->createCommand()
@@ -241,7 +254,12 @@ class MessageController extends Controller
      *
      * @param string $fileName name of the file to extract messages from
      * @param string $translator name of the function used to translate messages
+<<<<<<< HEAD
      * @param array $ignoreCategories message categories to ignore
+=======
+     * @param array $ignoreCategories message categories to ignore.
+     * This parameter is available since version 2.0.4.
+>>>>>>> yiichina/master
      * @return array
      */
     protected function extractMessages($fileName, $translator, $ignoreCategories = [])

@@ -1,11 +1,19 @@
 <?php
 /**
+<<<<<<< HEAD
  * This is the template for generating the model class of a specified collection.
+=======
+ * This is the template for generating the model class of a specified table.
+>>>>>>> yiichina/master
  */
 
 /* @var $this yii\web\View */
 /* @var $generator yii\mongodb\gii\model\Generator */
+<<<<<<< HEAD
 /* @var $collectionName string full collection name */
+=======
+/* @var $collectionName string full table name */
+>>>>>>> yiichina/master
 /* @var $attributes array list of attribute names */
 /* @var $className string class name */
 /* @var $labels string[] list of attribute labels (name => label) */

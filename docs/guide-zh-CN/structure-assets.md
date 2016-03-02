@@ -113,7 +113,11 @@ class AppAsset extends AssetBundle
 在`AppAsset` 示例中，资源包依赖其他两个资源包： [[yii\web\YiiAsset]] 和 [[yii\bootstrap\BootstrapAsset]]
 也就是该资源包的CSS和JavaScript文件要在这两个依赖包的文件包含 *之后* 才包含。
 
+<<<<<<< HEAD
 资源依赖关系是可传递，也就是人说A依赖B，B依赖C，那么A也依赖C。
+=======
+资源依赖关系是可传递，也就是说A依赖B，B依赖C，那么A也依赖C。
+>>>>>>> yiichina/master
 
 
 ### 资源选项 <span id="asset-options"></span>
@@ -155,7 +159,11 @@ public $jsOptions = ['position' => \yii\web\View::POS_HEAD];
 
 ### Bower 和 NPM 资源 <span id="bower-npm-assets"></span>
 
+<<<<<<< HEAD
 大多数 JavaScript/CSS 包通过[Bower](http://bower.io/) 和/或 [NPM](https://www.npmjs.org/)管理，
+=======
+大多数 JavaScript/CSS 包通过[Bower](http://bower.io/) 和(或) [NPM](https://www.npmjs.org/)管理，
+>>>>>>> yiichina/master
 如果你的应用或扩展使用这些包，推荐你遵循以下步骤来管理库中的资源：
 
 1. 修改应用或扩展的 `composer.json` 文件将包列入`require` 中，
@@ -225,7 +233,11 @@ return [
 > ```
 
 可以设置资源包的名称对应`false`来禁用想禁用的一个或多个资源包，当视图中注册一个禁用资源包，
+<<<<<<< HEAD
 视图不会包含任何该包的资源以及不会注册它所依赖的包，例如，为禁用[[yii\web\JqueryAsset]]，可以使用如下配置：
+=======
+视图就不会包含任何该包的资源也不会注册它所依赖的包，例如，为禁用[[yii\web\JqueryAsset]]，可以使用如下配置：
+>>>>>>> yiichina/master
 
 ```php
 return [
@@ -312,7 +324,11 @@ Yii框架定义许多资源包，如下资源包是最常用，可在你的应�
 
 ## 资源转换 <span id="asset-conversion"></span>
 
+<<<<<<< HEAD
 除了直接编写CSS 和/或 JavaScript代码，开发人员经常使用扩展语法来编写，再使用特殊的工具将它们转换成CSS/Javascript。
+=======
+除了直接编写CSS 和(或) JavaScript代码，开发人员经常使用扩展语法来编写，再使用特殊的工具将它们转换成CSS/Javascript。
+>>>>>>> yiichina/master
 例如，对于CSS代码可使用[LESS](http://lesscss.org/) 或 [SCSS](http://sass-lang.com/)，
 对于JavaScript 可使用 [TypeScript](http://www.typescriptlang.org/)。
 
@@ -377,7 +393,11 @@ return [
 
 ## 合并和压缩资源 <span id="combining-compressing-assets"></span>
 
+<<<<<<< HEAD
 一个Web页面可以包含很多CSS 和/或 JavaScript 文件，为减少HTTP 请求和这些下载文件的大小，
+=======
+一个Web页面可以包含很多CSS 和(或) JavaScript 文件，为减少HTTP 请求和这些下载文件的大小，
+>>>>>>> yiichina/master
 通常的方式是在页面中合并并压缩多个CSS/JavaScript 文件为一个或很少的几个文件，并使用压缩后的文件而不是原始文件。
  
 > 补充: 合并和压缩资源通常在应用在产品上线模式，在开发模式下使用原始的CSS/JavaScript更方便调试。

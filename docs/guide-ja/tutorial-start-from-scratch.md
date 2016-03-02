@@ -3,9 +3,15 @@
 
 > Note|注意: この節はまだ執筆中です。
 
+<<<<<<< HEAD
 [ベーシック](https://github.com/yiisoft/yii2/tree/master/apps/basic) と [アドバンスト](https://github.com/yiisoft/yii2/tree/master/apps/advanced) のアプリケーションテンプレートは、あなたの要求をほとんどカバーする優れたものですが、あなたのプロジェクトを開始するためのあなた自身のテンプレートを作成したいこともあるでしょう。
 
 Yii におけるアプリケーションテンプレートは、`composer.json` ファイルを含み、Composer パッケージとして登録されたレポジトリであるに過ぎません。
+=======
+[ベーシック](https://github.com/yiisoft/yii2-app-basic) と [アドバンスト](https://github.com/yiisoft/yii2-app-advanced) のプロジェクトテンプレートは、あなたの要求をほとんどカバーする優れたものですが、あなたのプロジェクトを開始するためのあなた自身のテンプレートを作成したいこともあるでしょう。
+
+Yii におけるプロジェクトテンプレートは、`composer.json` ファイルを含み、Composer パッケージとして登録されたレポジトリであるに過ぎません。
+>>>>>>> yiichina/master
 どのようなレポジトリでも、Composer パッケージとして特定し、`create-project` Composer コマンドによってインストール可能なものにすることが出来ます。
 
 テンプレート全体を最初から構築するのは少々大変ですので、内蔵のテンプレートの一つを基礎として使うのが良いでしょう。
@@ -50,10 +56,18 @@ git clone git@github.com:yiisoft/yii2-app-basic.git
 テンプレートを使う
 ------------------
 
+<<<<<<< HEAD
 Yii の新しいアプリケーションテンプレートを作成するのに必要なことは以上です。
 これで、あなたのテンプレートを使ってプロジェクトを作成することが出来ます。
 
 ```
 composer global require "fxp/composer-asset-plugin:1.0.0"
+=======
+Yii の新しいプロジェクトテンプレートを作成するのに必要なことは以上です。
+これで、あなたのテンプレートを使ってプロジェクトを作成することが出来ます。
+
+```
+composer global require "fxp/composer-asset-plugin:~1.0.0"
+>>>>>>> yiichina/master
 composer create-project --prefer-dist --stability=dev mysoft/yii2-app-coolone new-project
 ```

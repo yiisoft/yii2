@@ -3,27 +3,42 @@ MongoDb Extension for Yii 2
 
 This extension provides the [MongoDB](http://www.mongodb.org/) integration for the Yii2 framework.
 
+<<<<<<< HEAD
 This repository is a git submodule of <https://github.com/yiisoft/yii2>.
 Please submit issue reports and pull requests to the main repository.
 For license information check the [LICENSE](LICENSE.md)-file.
+=======
+>>>>>>> yiichina/master
 
 Installation
 ------------
 
+<<<<<<< HEAD
 This extension requires [MongoDB PHP Extension](http://us1.php.net/manual/en/book.mongo.php) version 1.5.0 or higher.
+=======
+This extension requires [MongoDB PHP Extension](http://us1.php.net/manual/en/book.mongo.php) version 1.4.0 or higher.
+>>>>>>> yiichina/master
 
 The preferred way to install this extension is through [composer](http://getcomposer.org/download/).
 
 Either run
 
 ```
+<<<<<<< HEAD
 php composer.phar require --prefer-dist yiisoft/yii2-mongodb
+=======
+php composer.phar require --prefer-dist yiisoft/yii2-mongodb "*"
+>>>>>>> yiichina/master
 ```
 
 or add
 
 ```
+<<<<<<< HEAD
 "yiisoft/yii2-mongodb": "~2.0.0"
+=======
+"yiisoft/yii2-mongodb": "*"
+>>>>>>> yiichina/master
 ```
 
 to the require section of your composer.json.

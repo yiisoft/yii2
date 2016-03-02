@@ -3,7 +3,10 @@
 use yii\bootstrap\Nav;
 use yii\bootstrap\NavBar;
 use yii\helpers\Html;
+<<<<<<< HEAD
 use yii\helpers\StringHelper;
+=======
+>>>>>>> yiichina/master
 
 /* @var $this yii\web\View */
 
@@ -30,6 +33,7 @@ $this->beginPage();
     <meta name="language" content="en" />
     <?= Html::csrfMetaTags() ?>
     <?php $this->head() ?>
+<<<<<<< HEAD
     <title><?php if (isset($type)) {
             echo Html::encode(StringHelper::basename($type->name) . ", {$type->name} - {$this->context->pageTitle}");
         } elseif (isset($guideHeadline)) {
@@ -38,6 +42,9 @@ $this->beginPage();
             echo Html::encode($this->context->pageTitle);
         }
     ?></title>
+=======
+    <title><?= Html::encode($this->context->pageTitle) ?></title>
+>>>>>>> yiichina/master
 </head>
 <body>
 

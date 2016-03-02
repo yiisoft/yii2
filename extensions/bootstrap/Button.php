@@ -56,7 +56,12 @@ class Button extends Widget
      */
     public function run()
     {
+<<<<<<< HEAD
         $this->registerPlugin('button');
         return Html::tag($this->tagName, $this->encodeLabel ? Html::encode($this->label) : $this->label, $this->options);
+=======
+        echo Html::tag($this->tagName, $this->encodeLabel ? Html::encode($this->label) : $this->label, $this->options);
+        $this->registerPlugin('button');
+>>>>>>> yiichina/master
     }
 }

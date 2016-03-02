@@ -158,10 +158,14 @@ class OAuth2 extends BaseOAuth
         $params = array_merge($token->getParams(), $params);
         $response = $this->sendRequest('POST', $this->tokenUrl, $params);
 
+<<<<<<< HEAD
         $token = $this->createToken(['params' => $response]);
         $this->setAccessToken($token);
 
         return $token;
+=======
+        return $response;
+>>>>>>> yiichina/master
     }
 
     /**

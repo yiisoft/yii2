@@ -41,7 +41,11 @@ abstract class BaseManager extends Component implements ManagerInterface
 
     /**
      * Adds an auth item to the RBAC system.
+<<<<<<< HEAD
      * @param Item $item
+=======
+     * @param Item $item the item to add
+>>>>>>> yiichina/master
      * @return boolean whether the auth item is successfully added to the system
      * @throws \Exception if data validation or saving fails (such as the name of the role or permission is not unique)
      */
@@ -49,7 +53,11 @@ abstract class BaseManager extends Component implements ManagerInterface
 
     /**
      * Adds a rule to the RBAC system.
+<<<<<<< HEAD
      * @param Rule $rule
+=======
+     * @param Rule $rule the rule to add
+>>>>>>> yiichina/master
      * @return boolean whether the rule is successfully added to the system
      * @throws \Exception if data validation or saving fails (such as the name of the rule is not unique)
      */
@@ -57,7 +65,11 @@ abstract class BaseManager extends Component implements ManagerInterface
 
     /**
      * Removes an auth item from the RBAC system.
+<<<<<<< HEAD
      * @param Item $item
+=======
+     * @param Item $item the item to remove
+>>>>>>> yiichina/master
      * @return boolean whether the role or permission is successfully removed
      * @throws \Exception if data validation or saving fails (such as the name of the role or permission is not unique)
      */
@@ -65,7 +77,11 @@ abstract class BaseManager extends Component implements ManagerInterface
 
     /**
      * Removes a rule from the RBAC system.
+<<<<<<< HEAD
      * @param Rule $rule
+=======
+     * @param Rule $rule the rule to remove
+>>>>>>> yiichina/master
      * @return boolean whether the rule is successfully removed
      * @throws \Exception if data validation or saving fails (such as the name of the rule is not unique)
      */
@@ -73,8 +89,13 @@ abstract class BaseManager extends Component implements ManagerInterface
 
     /**
      * Updates an auth item in the RBAC system.
+<<<<<<< HEAD
      * @param string $name the old name of the auth item
      * @param Item $item
+=======
+     * @param string $name the name of the item being updated
+     * @param Item $item the updated item
+>>>>>>> yiichina/master
      * @return boolean whether the auth item is successfully updated
      * @throws \Exception if data validation or saving fails (such as the name of the role or permission is not unique)
      */
@@ -82,8 +103,13 @@ abstract class BaseManager extends Component implements ManagerInterface
 
     /**
      * Updates a rule to the RBAC system.
+<<<<<<< HEAD
      * @param string $name the old name of the rule
      * @param Rule $rule
+=======
+     * @param string $name the name of the rule being updated
+     * @param Rule $rule the updated rule
+>>>>>>> yiichina/master
      * @return boolean whether the rule is successfully updated
      * @throws \Exception if data validation or saving fails (such as the name of the rule is not unique)
      */

@@ -118,6 +118,7 @@ class DefaultController extends Controller
                 clearstatcache();
             }
             $indexFile = $this->module->dataPath . '/index.data';
+<<<<<<< HEAD
 
             $content = '';
             $fp = @fopen($indexFile, 'r');
@@ -129,6 +130,9 @@ class DefaultController extends Controller
             }
 
             if ($content !== '') {
+=======
+            if (is_file($indexFile) && is_readable($indexFile) && ($content = file_get_contents($indexFile)) !== false) {
+>>>>>>> yiichina/master
                 $this->_manifest = array_reverse(unserialize($content), true);
             } else {
                 $this->_manifest = [];
@@ -152,6 +156,12 @@ class DefaultController extends Controller
                     if (isset($data[$id])) {
                         $panel->tag = $tag;
                         $panel->load($data[$id]);
+<<<<<<< HEAD
+=======
+                    } else {
+                        // remove the panel since it has not received any data
+                        unset($this->module->panels[$id]);
+>>>>>>> yiichina/master
                     }
                 }
                 $this->summary = $data['summary'];

@@ -90,10 +90,22 @@ class Widget extends Component implements ViewContextInterface
     {
         ob_start();
         ob_implicit_flush(false);
+<<<<<<< HEAD
         /* @var $widget Widget */
         $config['class'] = get_called_class();
         $widget = Yii::createObject($config);
         $out = $widget->run();
+=======
+        try {
+            /* @var $widget Widget */
+            $config['class'] = get_called_class();
+            $widget = Yii::createObject($config);
+            $out = $widget->run();
+        } catch(\Exception $e) {
+            ob_end_clean();
+            throw $e;
+        }
+>>>>>>> yiichina/master
 
         return ob_get_clean() . $out;
     }

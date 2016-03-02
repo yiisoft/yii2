@@ -1,6 +1,7 @@
 Yii Framework 2 authclient extension Change Log
 ===============================================
 
+<<<<<<< HEAD
 2.0.4 under development
 -----------------------
 
@@ -20,6 +21,8 @@ Yii Framework 2 authclient extension Change Log
 - Bug #6510: Fixed infinite redirect loop using default `\yii\authclient\AuthAction::cancelUrl` (klimov-paul)
 
 
+=======
+>>>>>>> yiichina/master
 2.0.1 December 07, 2014
 -----------------------
 
