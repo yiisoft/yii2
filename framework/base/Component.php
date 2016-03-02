@@ -277,9 +277,9 @@ class Component extends Object
     public function __call($name, $params)
     {
         $this->ensureBehaviors();
-        foreach ($this->_behaviors as $object) {
-            if ($object->global && $object->hasMethod($name)) {
-                return call_user_func_array([$object, $name], $params);
+        foreach ($this->_behaviors as $behavior) {
+            if ($behavior->global && $behavior->hasMethod($name)) {
+                return call_user_func_array([$behavior, $name], $params);
             }
         }
         throw new UnknownMethodException('Calling unknown method: ' . get_class($this) . "::$name()");
