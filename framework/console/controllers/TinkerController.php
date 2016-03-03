@@ -37,7 +37,7 @@ class TinkerController extends Controller
         $config->getPresenter()->addCasters(
             $this->getCasters()
         );
-        $config->setTabCompletion(true);
+
         $shell = new Shell($config);
         $shell->run();
     }
