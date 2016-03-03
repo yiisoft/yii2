@@ -184,7 +184,7 @@ class Application extends \yii\base\Application
             'message' => 'yii\console\controllers\MessageController',
             'migrate' => 'yii\console\controllers\MigrateController',
             'serve' => 'yii\console\controllers\ServeController',
-            'tinker' => 'yii\console\controllers\TinkerController',
+            'shell' => 'yii\console\controllers\ShellController',
         ];
     }
 

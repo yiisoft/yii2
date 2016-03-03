@@ -12,17 +12,20 @@ use Psy\Shell;
 use Psy\Configuration;
 
 /**
- * Runs shell PHP interactive
+ * Runs interactive shell
  *
  * @author Daniel Gomez Pan <pana_1990@hotmail.com>
  */
-class TinkerController extends Controller
+class ShellController extends Controller
 {
     /**
      * @var array include file(s) before starting tinker shell
      */
     public $include = [];
 
+    /**
+     * @inheritdoc
+     */
     public function options($actionID)
     {
         return array_merge(parent::options($actionID), [
@@ -43,12 +46,12 @@ class TinkerController extends Controller
     }
 
     /**
-     * @return array casters for shell tinker
+     * @return array casters for psysh
      */
     protected function getCasters()
     {
         return [
-            'yii\db\ActiveRecord' => 'yii\console\TinkerCaster::castModel',
+            'yii\db\ActiveRecord' => 'yii\console\ShellCaster::castModel',
         ];
     }
 }
