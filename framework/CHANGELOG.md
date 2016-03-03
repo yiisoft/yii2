@@ -17,6 +17,7 @@ Yii Framework 2 Change Log
 - Bug #11066: `yii.js` - fixed `getQueryParams()` function to handle URLs with anchors correctly (DrDeath72)
 - Bug #11093: Fixed `yii\db\QueryBuilder::buildAndCondition()` to add query params passed directly by `yii\db\Expression` (CedricYii, silverfire)
 - Bug #11125: Fixed `JSON_ERROR_SYNTAX` for `json_decode(null)` in PHP 7 (fps01)
+- Bug #11012: Fixed `yii\web\UploadedFile` getBaseName return null if filename is chinese string (hiscaler)
 - Bug: SQlite querybuilder did not create primary key with bigint for `TYPE_BIGPK` (cebe)
 - Bug #10784: Fixed `yii\grid\CheckboxColumn` to set correct value when `yii\grid\CheckboxColumn::$checkboxOptions` closure is used (nukkumatti)
 - Enh #5469: Add mimetype validation by mask in FileValidator (kirsenn, samdark, silverfire)
