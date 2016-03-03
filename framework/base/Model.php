@@ -69,6 +69,10 @@ class Model extends Component implements IteratorAggregate, ArrayAccess, Arrayab
      * @event Event an event raised at the end of [[validate()]]
      */
     const EVENT_AFTER_VALIDATE = 'afterValidate';
+    /**
+     * @event ModelUnsafeAttributeEvent an event raised when setting and unsafe attribute
+     */
+    const EVENT_UNSAFE_ATTRIBUTE = 'unsafeAttribute';
 
     /**
      * @var array validation errors (attribute name => array of errors)
@@ -712,8 +716,13 @@ class Model extends Component implements IteratorAggregate, ArrayAccess, Arrayab
      */
     public function onUnsafeAttribute($name, $value)
     {
-        if (YII_DEBUG) {
-            Yii::trace("Failed to set unsafe attribute '$name' in '" . get_class($this) . "'.", __METHOD__);
+        $event = new ModelUnsafeAttributeEvent($name, $value);
+        $this->trigger(self::EVENT_UNSAFE_ATTRIBUTE, $event);
+
+        if (!$event->isSafe) {
+            if (YII_DEBUG) {
+                Yii::trace("Failed to set unsafe attribute '$name' in '" . get_class($this) . "'.", __METHOD__);
+            }
         }
     }
 
