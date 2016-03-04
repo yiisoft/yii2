@@ -12,6 +12,7 @@ use yii\db\Connection;
 use yii\db\Expression;
 use yii\db\TableSchema;
 use yii\db\ColumnSchema;
+use \PDO;
 
 /**
  * Schema is the class for retrieving metadata from an Oracle database
@@ -57,7 +58,25 @@ class Schema extends \yii\db\Schema
      */
     public function quoteSimpleTableName($name)
     {
-        return strpos($name, '"') !== false ? $name : '"' . $name . '"';
+        if (strpos($name, '"') !== false) {
+            return $name;
+        } elseif ($this->db->slavePdo->getAttribute(PDO::ATTR_CASE) === PDO::CASE_LOWER) {
+            $name = strtoupper($name);
+        }
+        return '"' . $name . '"';
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function quoteSimpleColumnName($name)
+    {
+        if (strpos($name, '"') !== false  || $name === '*') {
+            return $name;
+        } elseif ($this->db->slavePdo->getAttribute(PDO::ATTR_CASE) === PDO::CASE_LOWER) {
+            $name = strtoupper($name);
+        }
+        return '"' . $name . '"';
     }
 
     /**
@@ -155,7 +174,7 @@ SQL;
         }
 
         foreach ($columns as $column) {
-            if ($this->db->slavePdo->getAttribute(\PDO::ATTR_CASE) === \PDO::CASE_LOWER) {
+            if ($this->db->slavePdo->getAttribute(PDO::ATTR_CASE) === PDO::CASE_LOWER) {
                 $column = array_change_key_case($column, CASE_UPPER);
             }
             $c = $this->createColumn($column);
@@ -221,7 +240,12 @@ SQL;
     protected function createColumn($column)
     {
         $c = $this->createColumnSchema();
-        $c->name = $column['COLUMN_NAME'];
+        if ($this->db->slavePdo->getAttribute(PDO::ATTR_CASE) === PDO::CASE_LOWER) {
+            $c->name = strtolower($column['COLUMN_NAME']);
+        }
+        else {
+            $c->name = $column['COLUMN_NAME'];
+        }
         $c->allowNull = $column['NULLABLE'] === 'Y';
         $c->isPrimaryKey = strpos($column['KEY'], 'P') !== false;
         $c->comment = $column['COLUMN_COMMENT'] === null ? '' : $column['COLUMN_COMMENT'];
@@ -280,7 +304,7 @@ SQL;
         ]);
         $constraints = [];
         foreach ($command->queryAll() as $row) {
-            if ($this->db->slavePdo->getAttribute(\PDO::ATTR_CASE) === \PDO::CASE_LOWER) {
+            if ($this->db->slavePdo->getAttribute(PDO::ATTR_CASE) === PDO::CASE_LOWER) {
                 $row = array_change_key_case($row, CASE_UPPER);
             }
             if ($row['CONSTRAINT_TYPE'] !== 'R') {
@@ -347,7 +371,7 @@ SQL;
         $rows = $command->queryAll();
         $names = [];
         foreach ($rows as $row) {
-            if ($this->db->slavePdo->getAttribute(\PDO::ATTR_CASE) === \PDO::CASE_LOWER) {
+            if ($this->db->slavePdo->getAttribute(PDO::ATTR_CASE) === PDO::CASE_LOWER) {
                 $row = array_change_key_case($row, CASE_UPPER);
             }
             $names[] = $row['TABLE_NAME'];
@@ -466,9 +490,9 @@ SQL;
                     'value' => null,
                 ];
                 if (!isset($columnSchemas[$name]) || $columnSchemas[$name]->phpType !== 'integer') {
-                    $returnParams[$phName]['dataType'] = \PDO::PARAM_STR;
+                    $returnParams[$phName]['dataType'] = PDO::PARAM_STR;
                 } else {
-                    $returnParams[$phName]['dataType'] = \PDO::PARAM_INT;
+                    $returnParams[$phName]['dataType'] = PDO::PARAM_INT;
                 }
                 $returnParams[$phName]['size'] = isset($columnSchemas[$name]) && isset($columnSchemas[$name]->size) ? $columnSchemas[$name]->size : -1;
                 $returning[] = $this->quoteColumnName($name);
