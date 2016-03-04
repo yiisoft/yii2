@@ -102,7 +102,7 @@ class ServeController extends Controller
         return array_merge(parent::optionAliases(), [
             't' => 'docroot',
             'p' => 'port',
-            'r' => 'route'
+            'r' => 'router'
         ]);
     }
 
