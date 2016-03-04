@@ -163,9 +163,9 @@ class MessageController extends Controller
     /**
      * @inheritdoc
      */
-    public function optionsAliases()
+    public function optionAliases()
     {
-        return array_merge(parent::optionsAliases(), [
+        return array_merge(parent::optionAliases(), [
             'c' => 'catalog',
             'e' => 'except',
             'f' => 'format',
