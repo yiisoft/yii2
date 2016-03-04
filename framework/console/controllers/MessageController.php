@@ -178,7 +178,8 @@ class MessageController extends Controller
             'S' => 'sort',
             't' => 'translator',
             'm' => 'sourceMessageTable',
-            's' => 'sourcePath'
+            's' => 'sourcePath',
+            'r' => 'removeUnused'
         ]);
     }
 
