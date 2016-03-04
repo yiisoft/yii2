@@ -20,6 +20,7 @@ Yii Framework 2 Change Log
 - Enh #10610: Added `BaseUrl::$urlManager` to be able to set URL manager used for creating URLs (samdark)
 - Enh #10764: `yii\helpers\Html::tag()` and `::beginTag()` return content without any HTML when the `$tag` attribute is `false` or `null` (pana1990)
 - Enh #10941: Added `yii\helpers\ArrayHelper::isTraversable`, added support for traversable selections for dropdownList, radioList and checkboxList in `yii\helpers\Html`.
+- Enh #10954: Query builder now supports `Traversable` objects for use in `in` conditions. (sammousa)
 - Chg: HTMLPurifier dependency updated to `~4.6` (samdark)
 
 2.0.7 February 14, 2016
