@@ -421,7 +421,7 @@ class HelpController extends Controller
      */
     protected function formatOptionAliases($controller, $option)
     {
-        $aliases = $controller->optionsAliases();
+        $aliases = $controller->optionAliases();
         foreach ($aliases as $name => $value) {
             if ($value === $option) {
                 return ', -' . $name;
