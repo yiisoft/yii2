@@ -95,6 +95,18 @@ class ServeController extends Controller
     }
 
     /**
+     * @inheritdoc
+     */
+    public function optionAliases()
+    {
+        return array_merge(parent::optionAliases(), [
+            't' => 'docroot',
+            'p' => 'port',
+            'r' => 'route'
+        ]);
+    }
+
+    /**
      * @param string $address server address
      * @return boolean if address is already in use
      */
