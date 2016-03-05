@@ -540,9 +540,11 @@ class PhpManager extends BaseManager
             return;
         }
 
-        foreach ($this->assignments as $i => $assignment) {
-            if (isset($names[$assignment->roleName])) {
-                unset($this->assignments[$i]);
+        foreach ($this->assignments as $i => $assignments) {
+            foreach ($assignments as $n => $assignment) {
+                if (isset($names[$assignment->roleName])) {
+                    unset($this->assignments[$i][$n]);
+                }
             }
         }
         foreach ($this->children as $name => $children) {
