@@ -187,6 +187,9 @@ class View extends Component
             return $file;
         }
         $path = $file . '.' . $this->defaultExtension;
+        if ($this->theme !== null) {
+            $path = $this->theme->applyTo($path);
+        }
         if ($this->defaultExtension !== 'php' && !is_file($path)) {
             $path = $file . '.php';
         }
