@@ -4,7 +4,6 @@ namespace yiiunit\framework\rbac;
 
 use yii\rbac\Item;
 use yii\rbac\Permission;
-use yii\rbac\PhpManager;
 use yii\rbac\Role;
 use yiiunit\TestCase;
 
@@ -113,6 +112,16 @@ abstract class ManagerTestCase extends TestCase
 
         $rule = $this->auth->getRule('newName');
         $this->assertEquals(true, $rule->reallyReally);
+
+        $item = $this->auth->getPermission('createPost');
+        $item->name = 'new createPost';
+        $this->auth->update('createPost', $item);
+
+        $item = $this->auth->getPermission('createPost');
+        $this->assertEquals(null, $item);
+
+        $item = $this->auth->getPermission('new createPost');
+        $this->assertEquals('new createPost', $item->name);
     }
 
     public function testGetRules()
@@ -141,6 +150,10 @@ abstract class ManagerTestCase extends TestCase
         $rules = $this->auth->getRules();
 
         $this->assertEmpty($rules);
+
+        $this->auth->remove($this->auth->getPermission('createPost'));
+        $item = $this->auth->getPermission('createPost');
+        $this->assertNull($item);
     }
 
     public function testCheckAccess()
@@ -166,6 +179,8 @@ abstract class ManagerTestCase extends TestCase
                 'readPost' => true,
                 'updatePost' => false,
                 'updateAnyPost' => true,
+                'blablabla' => false,
+                null => false,
             ],
         ];
 
@@ -324,4 +339,40 @@ abstract class ManagerTestCase extends TestCase
         $this->assertFalse($this->auth->canAddChild($reader, $author));
     }
 
+
+    public function testRemoveAllRules()
+    {
+        $this->prepareData();
+
+        $this->auth->removeAllRules();
+
+        $this->assertEmpty($this->auth->getRules());
+
+        $this->assertNotEmpty($this->auth->getRoles());
+        $this->assertNotEmpty($this->auth->getPermissions());
+    }
+
+    public function testRemoveAllRoles()
+    {
+        $this->prepareData();
+
+        $this->auth->removeAllRoles();
+
+        $this->assertEmpty($this->auth->getRoles());
+
+        $this->assertNotEmpty($this->auth->getRules());
+        $this->assertNotEmpty($this->auth->getPermissions());
+    }
+
+    public function testRemoveAllPermissions()
+    {
+        $this->prepareData();
+
+        $this->auth->removeAllPermissions();
+
+        $this->assertEmpty($this->auth->getPermissions());
+
+        $this->assertNotEmpty($this->auth->getRules());
+        $this->assertNotEmpty($this->auth->getRoles());
+    }
 }
