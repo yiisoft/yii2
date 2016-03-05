@@ -333,8 +333,34 @@ abstract class ManagerTestCase extends TestCase
         $this->prepareData();
 
         $this->auth->removeAllRules();
-        $rules = $this->auth->getRules();
 
-        $this->assertEmpty($rules);
+        $this->assertEmpty($this->auth->getRules());
+
+        $this->assertNotEmpty($this->auth->getRoles());
+        $this->assertNotEmpty($this->auth->getPermissions());
+    }
+
+    public function testRemoveAllRoles()
+    {
+        $this->prepareData();
+
+        $this->auth->removeAllRoles();
+
+        $this->assertEmpty($this->auth->getRoles());
+
+        $this->assertNotEmpty($this->auth->getRules());
+        $this->assertNotEmpty($this->auth->getPermissions());
+    }
+
+    public function testRemoveAllPermissions()
+    {
+        $this->prepareData();
+
+        $this->auth->removeAllPermissions();
+
+        $this->assertEmpty($this->auth->getPermissions());
+
+        $this->assertNotEmpty($this->auth->getRules());
+        $this->assertNotEmpty($this->auth->getRoles());
     }
 }
