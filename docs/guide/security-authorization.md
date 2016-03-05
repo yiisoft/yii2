@@ -227,6 +227,10 @@ return [
     ],
 ];
 ```
+> Note:
+In case of yii2-basic-app template, there is a `config/console.php` configuration file where the authManager needs to be declared. It is not sufficient to have it only declared in `config/web.php`.
+
+> In case of yii2-advanced-app the authManager should be declared in `console/config/main.php` and not in the backend or frontend configuration files.
 
 `DbManager` uses four database tables to store its data: 
 
