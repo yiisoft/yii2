@@ -171,7 +171,7 @@ class UploadedFile extends Object
      */
     public function getBaseName()
     {
-        return substr(pathinfo("_$this->name", PATHINFO_FILENAME), 1);
+        return substr(pathinfo("_{$this->name}", PATHINFO_FILENAME), 1);
     }
 
     /**
