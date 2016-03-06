@@ -7,6 +7,7 @@ Yii Framework 2 Change Log
 - Bug #9851: Fixed partial commit / rollback in nested transactions (sammousa)
 - Bug #10850: Fixed unable to use 'definitions' and 'aliases' at `yii\widgets\MaskedInput` (rahimov, klimov-paul)
 - Bug #10884: Fixed MessageFormatter for formatting messages when not all parameters are given (laxity7, cebe)
+- Enh #10910: Fixed Captcha client side validation after image refresh, when controller is under module (silverfire)
 - Bug #10946: Fixed parameters binding to the SQL query in `yii\db\mysqlSchema::findConstraints()` (silverfire)
 - Bug #10969: Fixed generator migration tool with decimal params in column (pana1990)
 - Bug #10974: `yii.js` - fixed error in ajaxPrefilter event handler, caused by blocked frame (maximal)
