@@ -874,7 +874,7 @@ class Formatter extends Component
             $parts[] = Yii::t('yii', '{delta, plural, =1{1 minute} other{# minutes}}', ['delta' => $interval->i], $this->locale);
         }
         if ($interval->s > 0 || ($interval->s === 0 && empty($parts))) {
-            if(empty($parts)){
+            if($interval->s === 0 && empty($parts)){
                 $isNegative = false;
             }
             $parts[] = Yii::t('yii', '{delta, plural, =1{1 second} other{# seconds}}', ['delta' => $interval->s], $this->locale);
