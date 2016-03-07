@@ -705,6 +705,7 @@ To find out which version of ICU is used by PHP, you can run the following scrip
 <?php
 echo "PHP: " . PHP_VERSION . "\n";
 echo "ICU: " . INTL_ICU_VERSION . "\n";
+echo "ICU Data: " . INTL_ICU_DATA_VERSION . "\n";
 ```
 
 It is also recommended that you use an ICU version equal or greater than version 49. This will ensure you can use all the features

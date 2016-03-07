@@ -2,6 +2,7 @@
 
 namespace yiiunit\framework\validators;
 
+use yii\helpers\FileHelper;
 use yii\validators\FileValidator;
 use yii\web\UploadedFile;
 use Yii;
@@ -263,6 +264,23 @@ class FileValidatorTest extends TestCase
         return $files;
     }
 
+    /**
+     * @param $fileName
+     * @return UploadedFile
+     */
+    protected function getRealTestFile($fileName)
+    {
+        $filePath = \Yii::getAlias('@yiiunit/framework/validators/data/mimeType/') . $fileName;
+
+        return new UploadedFile([
+            'name' => $fileName,
+            'tempName' => $filePath,
+            'type' => FileHelper::getMimeType($filePath),
+            'size' => filesize($filePath),
+            'error' => UPLOAD_ERR_OK
+        ]);
+    }
+
     public function testValidateAttribute()
     {
         // single File
@@ -326,6 +344,52 @@ class FileValidatorTest extends TestCase
         $val->validateAttribute($m, 'attr_exe');
         $this->assertTrue($m->hasErrors('attr_exe'));
         $this->assertTrue(stripos(current($m->getErrors('attr_exe')), 'Only files with these extensions ') !== false);
+    }
+
+    /**
+     * @param string $fileName
+     * @param string $mask
+     * @dataProvider validMimeTypes
+     */
+    public function testValidateMimeTypeMaskValid($fileName, $mask)
+    {
+        $validator = new FileValidator(['mimeTypes' => $mask]);
+        $file = $this->getRealTestFile($fileName);
+        $this->assertTrue($validator->validate($file));
+    }
+
+    /**
+     * @param string $fileName
+     * @param string $mask
+     * @dataProvider invalidMimeTypes
+     */
+    public function testValidateMimeTypeMaskInvalid($fileName, $mask)
+    {
+        $validator = new FileValidator(['mimeTypes' => $mask]);
+        $file = $this->getRealTestFile($fileName);
+        $this->assertFalse($validator->validate($file));
+    }
+
+    public function validMimeTypes()
+    {
+        return [
+            ['test.jpg', 'image/*'],
+            ['test.png', 'image/*'],
+            ['test.png', 'IMAGE/*'],
+            ['test.txt', 'text/*'],
+            ['test.xml', '*/xml'],
+            ['test.odt', 'application/vnd*']
+        ];
+    }
+
+    public function invalidMimeTypes()
+    {
+        return [
+            ['test.txt', 'image/*'],
+            ['test.odt', 'text/*'],
+            ['test.xml', '*/svg+xml'],
+            ['test.png', 'image/x-iso9660-image'],
+        ];
     }
 
     protected function createModelForAttributeTest()

@@ -68,7 +68,7 @@ return [
     'in {delta, plural, =1{an hour} other{# hours}}' => 'через {delta, plural, =1{годину} one{# годину} few{# години} many{# годин} other{# години}}',
     'just now' => 'саме зараз',
     'the input value' => 'введене значення',
-    '{attribute} "{value}" has already been taken.' => '{attribute} "{value}" вже зайнятий.',
+    '{attribute} "{value}" has already been taken.' => 'Значення «{value}» для «{attribute}» вже зайнято.',
     '{attribute} cannot be blank.' => 'Необхідно заповнити "{attribute}".',
     '{attribute} contains wrong subnet mask.' => 'Значення «{attribute}» містить неправильну маску підмережі.',
     '{attribute} is invalid.' => 'Значення "{attribute}" не вірне.',

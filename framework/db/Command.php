@@ -367,7 +367,7 @@ class Command extends Component
      * This method is best used when only the first row of result is needed for a query.
      * @param integer $fetchMode the result fetch mode. Please refer to [PHP manual](http://www.php.net/manual/en/function.PDOStatement-setFetchMode.php)
      * for valid fetch modes. If this parameter is null, the value set in [[fetchMode]] will be used.
-     * @return array|boolean the first row (in terms of an array) of the query result. False is returned if the query
+     * @return array|false the first row (in terms of an array) of the query result. False is returned if the query
      * results in nothing.
      * @throws Exception execution failed
      */
@@ -379,7 +379,7 @@ class Command extends Component
     /**
      * Executes the SQL statement and returns the value of the first column in the first row of data.
      * This method is best used when only a single value is needed for a query.
-     * @return string|null|boolean the value of the first column in the first row of the query result.
+     * @return string|null|false the value of the first column in the first row of the query result.
      * False is returned if there is no value.
      * @throws Exception execution failed
      */

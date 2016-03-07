@@ -9,7 +9,6 @@ namespace yii\db\mssql;
 
 use yii\base\InvalidParamException;
 use yii\base\NotSupportedException;
-use yii\db\Query;
 
 /**
  * QueryBuilder is the query builder for MS SQL Server databases (version 2008 and above).
@@ -216,7 +215,7 @@ class QueryBuilder extends \yii\db\QueryBuilder
     {
         if ($this->_oldMssql === null) {
             $pdo = $this->db->getSlavePdo();
-            $version = preg_split("/\./", $pdo->getAttribute(\PDO::ATTR_SERVER_VERSION));
+            $version = explode('.', $pdo->getAttribute(\PDO::ATTR_SERVER_VERSION));
             $this->_oldMssql = $version[0] < 11;
         }
         return $this->_oldMssql;

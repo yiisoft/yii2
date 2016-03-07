@@ -84,6 +84,21 @@ Yii は数多くの優れた機能を提供していますので、サードパ�
 最初のコマンドは [composer アセットプラグイン](https://github.com/francoispluchino/composer-asset-plugin/) をインストールします。
 これは、Composer によって bower と npm の依存パッケージを管理できるようにするものです。
 このことは、データベースなど、アセットに関係しない Yii の機能を使いたいだけの場合でも、Yii の Composer パッケージをインストールするために必要とされます。
+
+[Yii のアセット発行の機能](structure-assets.md) を使いたい場合は、あなたの `composer.json` の `extra` セクションに次の構成も追加しなければなりません。
+
+```json
+{
+    ...
+    "extra": {
+        "asset-installer-paths": {
+            "npm-asset-library": "vendor/npm",
+            "bower-asset-library": "vendor/bower"
+        }
+    }
+}
+```
+
 Composer に関する更なる情報や、インストールの過程で出現しうる問題に対する解決方法については、一般的な [Composer によるインストール](start-installation.md#installing-via-composer) の節を参照してください。
 
 そうでない場合は、Yii のリリースを [ダウンロード](http://www.yiiframework.com/download/) して、`BasePath/vendor` ディレクトリに解凍してください。

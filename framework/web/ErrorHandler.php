@@ -68,6 +68,7 @@ class ErrorHandler extends \yii\base\ErrorHandler
      */
     public $displayVars = ['_GET', '_POST', '_FILES', '_COOKIE', '_SESSION'];
 
+
     /**
      * Renders the exception.
      * @param \Exception $exception the exception to be rendered.

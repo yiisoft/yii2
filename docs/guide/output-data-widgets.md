@@ -339,13 +339,14 @@ echo GridView::widget([
 
 ### Filtering data
 
-For filtering data the GridView needs a [model](structure-models.md) to take the input from and the filtering
-form that adjusts the query of the dataProvider to respect the search criteria.
+For filtering data, the GridView needs a [model](structure-models.md) that represents the search criteria which is
+usually taken from the filter fields in the GridView table.
 A common practice when using [active records](db-active-record.md) is to create a search Model class
 that provides needed functionality (it can be generated for you by [Gii](start-gii.md)). This class defines the validation 
-rules for the search and provides a `search()` method that will return the data provider.
+rules for the search and provides a `search()` method that will return the data provider with an
+adjusted query that respects the search criteria.
 
-To add the search capability for the `Post` model, we can create `PostSearch` like the following example:
+To add the search capability for the `Post` model, we can create a `PostSearch` model like the following example:
 
 ```php
 <?php
@@ -520,6 +521,7 @@ $dataProvider = new ActiveDataProvider([
 // join with relation `author` that is a relation to the table `users`
 // and set the table alias to be `author`
 $query->joinWith(['author' => function($query) { $query->from(['author' => 'users']); }]);
+// since version 2.0.7, the above line can be simplified to $query->joinWith('author AS author');
 // enable sorting for the related column
 $dataProvider->sort->attributes['author.name'] = [
     'asc' => ['author.name' => SORT_ASC],
@@ -561,8 +563,9 @@ $query->andFilterWhere(['LIKE', 'author.name', $this->getAttribute('author.name'
 > For example, if you use the alias `au` for the author relation table, the joinWith statement looks like the following:
 >
 > ```php
-> $query->joinWith(['author' => function($query) { $query->from(['au' => 'users']); }]);
+> $query->joinWith(['author au']);
 > ```
+>
 > It is also possible to just call `$query->joinWith(['author']);` when the alias is defined in the relation definition.
 >
 > The alias has to be used in the filter condition but the attribute name stays the same:

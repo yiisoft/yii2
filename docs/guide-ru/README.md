@@ -112,7 +112,7 @@ All Rights Reserved.
 * [Аутентификация](security-authentication.md)
 * [Авторизация](security-authorization.md)
 * [Работа с паролями](security-passwords.md)
-* [Клиенты авторизации](https://github.com/yiisoft/yii2-authclient/blob/master/docs/guide/README.md)
+* [Клиенты авторизации](https://github.com/yiisoft/yii2-authclient/blob/master/docs/guide-ru/README.md)
 * [Лучшие практики](security-best-practices.md)
 
 

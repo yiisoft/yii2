@@ -32,6 +32,7 @@ class ApcCache extends Cache
      */
     public $useApcu = false;
 
+
     /**
      * Initializes this application component.
      * It checks if extension required is loaded.
