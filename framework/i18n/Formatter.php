@@ -873,12 +873,11 @@ class Formatter extends Component
         if ($interval->i > 0) {
             $parts[] = Yii::t('yii', '{delta, plural, =1{1 minute} other{# minutes}}', ['delta' => $interval->i], $this->locale);
         }
-        if ($interval->s > 0) {
+        if ($interval->s > 0 || ($interval->s === 0 && empty($parts))) {
+            if(empty($parts)){
+                $isNegative = false;
+            }
             $parts[] = Yii::t('yii', '{delta, plural, =1{1 second} other{# seconds}}', ['delta' => $interval->s], $this->locale);
-        }
-        if ($interval->s === 0 && empty($parts)) {
-            $parts[] = Yii::t('yii', '{delta} seconds', ['delta' => $interval->s], $this->locale);
-            $isNegative = false;
         }
 
         return empty($parts) ? $this->nullDisplay : (($isNegative ? $negativeSign : '') . implode($implodeString, $parts));
