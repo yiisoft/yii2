@@ -400,7 +400,7 @@ class BaseFileHelper
             if (static::filterPath($path, $options)) {
                 if (is_file($path)) {
                     $list[] = $path;
-                } elseif (!isset($options['recursive']) || $options['recursive']) {
+                } elseif (isset($options['recursive']) || $options['recursive']) {
                     $list = array_merge($list, static::findFiles($path, $options));
                 }
             }
