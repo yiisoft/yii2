@@ -170,6 +170,26 @@ class UrlManagerTest extends TestCase
     }
 
     /**
+     * Issue #10935 - issue when one of rule params is null
+     * @see https://github.com/yiisoft/yii2/issues/10935
+     */
+    public function testIssue10935() {
+        $manager = new UrlManager([
+            'rules' => [
+                '<param1>/<param2>' => 'site/index',
+                '<param1>' => 'site/index',
+            ],
+            'enablePrettyUrl' => true,
+            'scriptUrl' => '/test',
+
+        ]);
+        $this->assertEquals('/test/111', $manager->createUrl(['site/index', 'param1' => 111, 'param2' => null]));
+        $this->assertEquals('/test/111', $manager->createUrl(['site/index', 'param1' => 123, 'param2' => null]));
+        $this->assertEquals('/test/111/222', $manager->createUrl(['site/index', 'param1' => 111, 'param2' => 222]));
+        $this->assertEquals('/test/111/222', $manager->createUrl(['site/index', 'param1' => 112, 'param2' => 222]));
+    }
+
+    /**
      * https://github.com/yiisoft/yii2/issues/6717
      */
     public function testCreateUrlWithEmptyPattern()
