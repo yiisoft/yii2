@@ -167,21 +167,26 @@ class UrlManagerTest extends TestCase
         $this->assertEquals('/test/page/services', $url);
         $url = $manager->createUrl(['frontend/page/view', 'slug' => 'index']);
         $this->assertEquals('/test/', $url);
+    }
 
-
-        #10935 - Cache issue when null is passed.
+    /**
+     * Issue #10935 - issue when one of rule params is null
+     * @see https://github.com/yiisoft/yii2/issues/10935
+     */
+    public function testIssue10935() {
         $manager = new UrlManager([
-            'rules'=>[
-                '<param1>/<param2>' => 'site/index', //rule1
-                '<param1>' => 'site/index', //rule2
-
+            'rules' => [
+                '<param1>/<param2>' => 'site/index',
+                '<param1>' => 'site/index',
             ],
             'enablePrettyUrl' => true,
             'scriptUrl' => '/test',
 
         ]);
-        $this->assertEquals('/test/111', $manager->createUrl(['site/index','param1' => 111, 'param2' => null]));
-        $this->assertEquals('/test/111/222', $manager->createUrl(['site/index','param1' => 111 ,'param2' => 222]));
+        $this->assertEquals('/test/111', $manager->createUrl(['site/index', 'param1' => 111, 'param2' => null]));
+        $this->assertEquals('/test/111', $manager->createUrl(['site/index', 'param1' => 123, 'param2' => null]));
+        $this->assertEquals('/test/111/222', $manager->createUrl(['site/index', 'param1' => 111, 'param2' => 222]));
+        $this->assertEquals('/test/111/222', $manager->createUrl(['site/index', 'param1' => 112, 'param2' => 222]));
     }
 
     /**
