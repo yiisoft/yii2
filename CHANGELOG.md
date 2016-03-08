@@ -22,6 +22,7 @@ Yii Framework 2 Change Log
 - Enh #10764: `yii\helpers\Html::tag()` and `::beginTag()` return content without any HTML when the `$tag` attribute is `false` or `null` (pana1990)
 - Enh #10941: Added `yii\helpers\ArrayHelper::isTraversable`, added support for traversable selections for dropdownList, radioList and checkboxList in `yii\helpers\Html` (sammousa)
 - Eng #10976: `Inflector::transliterate()` now uses `strtr` instead of `str_replace` (DrDeath72)
+- Bug #11040: Check parameter 'recursive' and disable recursive copying with option 'recursive' => false in method BaseFileHelper::copyDirectory (Ni-san)
 - Chg: HTMLPurifier dependency updated to `~4.6` (samdark)
 
 2.0.7 February 14, 2016
