@@ -11,6 +11,7 @@ Yii Framework 2 Change Log
 - Bug #10946: Fixed parameters binding to the SQL query in `yii\db\mysqlSchema::findConstraints()` (silverfire)
 - Bug #10969: Fixed generator migration tool with decimal params in column (pana1990)
 - Bug #10974: `yii.js` - fixed error in ajaxPrefilter event handler, caused by blocked frame (maximal)
+- Bug #11038: Fixed handling of intervals of 0 seconds in `yii\i18n\Formatter::asDuration()` (VirtualRJ)
 - Bug: SQlite querybuilder did not create primary key with bigint for `TYPE_BIGPK` (cebe)
 - Enh #5469: Add mimetype validation by mask in FileValidator (kirsenn, samdark, silverfire)
 - Enh #8602: `yii\validators\DateValidator` skip validation for `timestampAttribute`, if it is already in correct format (klimov-paul)
