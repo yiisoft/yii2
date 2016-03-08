@@ -1,3 +1,7 @@
+<div align="center">
+  <img src="http://static.yiiframework.com/css/img/logo.png">
+</div>
+
 Yii PHP Framework Version 2
 ===========================
 
