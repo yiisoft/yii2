@@ -316,7 +316,7 @@ class UrlManager extends Component
 
         if ($this->enablePrettyUrl) {
             $cacheKey = $route . '?';
-            foreach($params as $key => $value) {
+            foreach ($params as $key => $value) {
                 if ($value !== null) {
                     $cacheKey .= $key . '&';
                 }
