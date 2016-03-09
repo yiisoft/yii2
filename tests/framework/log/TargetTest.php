@@ -54,12 +54,12 @@ class TargetTest extends TestCase
     {
         static::$messages = [];
 
-        $logger = new Logger;
         $dispatcher = new Dispatcher([
-            'logger' => $logger,
+            'logger' => ['class' => 'yii\log\Logger'],
             'targets' => [new TestTarget(array_merge($filter, ['logVars' => []]))],
             'flushInterval' => 1,
         ]);
+        $logger = $dispatcher->logger;
         $logger->log('testA', Logger::LEVEL_INFO);
         $logger->log('testB', Logger::LEVEL_ERROR);
         $logger->log('testC', Logger::LEVEL_WARNING);

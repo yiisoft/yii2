@@ -39,9 +39,8 @@ class FileTargetTest extends TestCase
         FileHelper::removeDirectory(dirname($logFile));
         mkdir(dirname($logFile), 0777, true);
 
-        $logger = new Logger();
         $dispatcher = new Dispatcher([
-            'logger' => $logger,
+            'logger' => ['class' => 'yii\log\Logger'],
             'targets' => [
                 'file' => [
                     'class' => 'yii\log\FileTarget',
@@ -54,6 +53,7 @@ class FileTargetTest extends TestCase
                 ]
             ]
         ]);
+        $logger = $dispatcher->logger;
 
         // one file
 
