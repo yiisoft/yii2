@@ -80,7 +80,7 @@ class Dispatcher extends Component
     {
         // ensure logger gets set before any other config option
         if (isset($config['logger'])) {
-            $this->setLogger($config['logger']);
+            $this->setLogger(Yii::createObject($config['logger']));
             unset($config['logger']);
         }
         // connect logger and dispatcher
