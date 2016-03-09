@@ -98,7 +98,10 @@ class DbManager extends BaseManager
      * @var array auth item parent-child relationships (childName => list of parents)
      */
     protected $parents;
-
+    /**
+     * @var array cache for user assignments
+     */
+    protected $assignmentsCache;
 
     /**
      * Initializes the application component.
@@ -660,6 +663,10 @@ class DbManager extends BaseManager
             return [];
         }
 
+        if (isset($this->assignmentsCache[$userId])) {
+            return $this->assignmentsCache[$userId];
+        }
+
         $query = (new Query)
             ->from($this->assignmentTable)
             ->where(['user_id' => (string) $userId]);
@@ -673,7 +680,7 @@ class DbManager extends BaseManager
             ]);
         }
 
-        return $assignments;
+        return $this->assignmentsCache[$userId] = $assignments;
     }
 
     /**
