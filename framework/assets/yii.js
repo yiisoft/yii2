@@ -272,12 +272,13 @@ yii = (function ($) {
         },
 
         getQueryParams: function (url) {
+            url = url || document.location.href;
             var pos = url.indexOf('?');
             if (pos < 0) {
                 return {};
             }
 
-            var pairs = url.substring(pos + 1).split('&'),
+            var pairs = url.substring(pos + 1).split('#')[0].split('&'),
                 params = {},
                 pair,
                 i;
