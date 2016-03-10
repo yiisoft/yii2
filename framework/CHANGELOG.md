@@ -26,6 +26,7 @@ Yii Framework 2 Change Log
 - Eng #10976: `Inflector::transliterate()` now uses `strtr` instead of `str_replace` (DrDeath72)
 - Bug #11040: Check parameter 'recursive' and disable recursive copying with option 'recursive' => false in method BaseFileHelper::copyDirectory (Ni-san)
 - Chg: HTMLPurifier dependency updated to `~4.6` (samdark)
+- Chg #11071: `yii\helpers\BaseArrayHelper::isIn()` and `isTraversable()` since now throw `\yii\base\InvalidParamException` instead of `\InvalidArgumentException` (nukkumatti)
 
 2.0.7 February 14, 2016
 -----------------------
