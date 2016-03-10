@@ -418,12 +418,13 @@ class User extends Component
      *
      * @param boolean $checkAjax whether to check if the request is an AJAX request. When this is true and the request
      * is an AJAX request, the current URL (for AJAX request) will NOT be set as the return URL.
-     * @param boolean $checkAcceptHeader whether to check if the request accepts HTML responses. When this is true and
+     * @param boolean $checkAcceptHeader whether to check if the request accepts HTML responses. Defaults to `true`. When this is true and
      * the request does not accept HTML responses the current URL will not be SET as the return URL. Also instead of
      * redirecting the user an ForbiddenHttpException is thrown. This parameter is available since version 2.0.8.
      * @return Response the redirection response if [[loginUrl]] is set
      * @throws ForbiddenHttpException the "Access Denied" HTTP exception if [[loginUrl]] is not set or a redirect is
-     * not applicable (see $checkAcceptHeader).
+     * not applicable.
+     * @see checkAcceptHeader
      */
     public function loginRequired($checkAjax = true, $checkAcceptHeader = true)
     {
@@ -684,7 +685,7 @@ class User extends Component
     /**
      * Checks if the `Accept` header contains a content type that allows redirection to the login page.
      * The login page is assumed to serve `text/html` or `application/xhtml+xml`, configure this via
-     * `$acceptableRedirectTypes`
+     * [[acceptableRedirectTypes]]
      * @return boolean whether this request may be redirected to the login page.
      * @since 2.0.8
      */
@@ -699,6 +700,7 @@ class User extends Component
                 return true;
             }
         }
+        
         return false;
     }
 
