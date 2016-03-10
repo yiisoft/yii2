@@ -252,9 +252,12 @@ class QueryBuilderTest extends DatabaseTestCase
 
             // composite in using array objects.
             [
-                ['in', new TraversableObject(['id', 'name']), new TraversableObject([['id' => 1, 'name' => 'oy']])],
+                ['in', new TraversableObject(['id', 'name']), new TraversableObject([
+                    ['id' => 1, 'name' => 'oy'],
+                    ['id' => 2, 'name' => 'yo'],
+                ])],
                 '([[id]], [[name]]) IN ((:qp0, :qp1))',
-                [':qp0' => 1, ':qp1' => 'oy']
+                [':qp0' => 1, ':qp1' => 'oy', ':qp2' => 2, ':qp3' => 'yo']
             ],
             // exists
             [ ['exists', (new Query())->select('id')->from('users')->where(['active' => 1])], 'EXISTS (SELECT [[id]] FROM [[users]] WHERE [[active]]=:qp0)', [':qp0' => 1] ],

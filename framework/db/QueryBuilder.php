@@ -1196,12 +1196,6 @@ class QueryBuilder extends \yii\base\Object
     {
         $vss = [];
         foreach ($values as $value) {
-            if ($value instanceof \Traversable) {
-                var_dump($values);
-                die();
-            }
-
-
             $vs = [];
             foreach ($columns as $column) {
                 if (isset($value[$column])) {
