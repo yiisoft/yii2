@@ -125,9 +125,10 @@ class CheckboxColumn extends Column
             $options = call_user_func($this->checkboxOptions, $model, $key, $index, $this);
         } else {
             $options = $this->checkboxOptions;
-            if (!isset($options['value'])) {
-                $options['value'] = is_array($key) ? json_encode($key, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE) : $key;
-            }
+        }
+
+        if (!isset($options['value'])) {
+            $options['value'] = is_array($key) ? json_encode($key, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE) : $key;
         }
 
         return Html::checkbox($this->name, !empty($options['checked']), $options);
