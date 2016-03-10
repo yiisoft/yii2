@@ -8,6 +8,7 @@
 namespace yii\rest;
 
 use Yii;
+use yii\filters\Cors;
 use yii\filters\auth\CompositeAuth;
 use yii\filters\ContentNegotiator;
 use yii\filters\RateLimiter;
@@ -19,11 +20,12 @@ use yii\filters\VerbFilter;
  *
  * Controller implements the following steps in a RESTful API request handling cycle:
  *
- * 1. Resolving response format (see [[ContentNegotiator]]);
+ * 1. Resolving response format (see [[ContentNegotiator]]).
  * 2. Validating request method (see [[verbs()]]).
- * 3. Authenticating user (see [[\yii\filters\auth\AuthInterface]]);
- * 4. Rate limiting (see [[RateLimiter]]);
- * 5. Formatting response data (see [[serializeData()]]).
+ * 3. Implementing CORS (see [[\yii\filters\Cors]]).
+ * 4. Authenticating user (see [[\yii\filters\auth\AuthInterface]]).
+ * 5. Rate limiting (see [[RateLimiter]]).
+ * 6. Formatting response data (see [[serializeData()]]).
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
@@ -56,6 +58,9 @@ class Controller extends \yii\web\Controller
             'verbFilter' => [
                 'class' => VerbFilter::className(),
                 'actions' => $this->verbs(),
+            ],
+            'corsFilter' => [
+                'class' => Cors::className(),
             ],
             'authenticator' => [
                 'class' => CompositeAuth::className(),
