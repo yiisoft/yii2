@@ -19,6 +19,9 @@ ______________________
 
 * The signature of `yii\helpers\BaseArrayHelper::index()` was changed. The method has got an extra optional parameter
   `$groupBy`.
+* `yii\helpers\BaseArrayHelper` methods `isIn()` and `isSubset()` throw `\yii\base\InvalidParamException`
+  instead of `\InvalidArgumentException`. If you wrap calls of these methods in try/catch block, change expected
+  exception class.
 
 
 Upgrade from Yii 2.0.6
