@@ -138,6 +138,7 @@ class User extends Component
     public $returnUrlParam = '__returnUrl';
     /**
      * @var array MIME types for which this component should redirect to the loginUrl.
+     * @since 2.0.8
      */
     public $acceptableRedirectTypes = ['text/html', 'application/xhtml+xml'];
 
@@ -419,7 +420,7 @@ class User extends Component
      * is an AJAX request, the current URL (for AJAX request) will NOT be set as the return URL.
      * @param boolean $checkAcceptHeader whether to check if the request accepts HTML responses. When this is true and
      * the request does not accept HTML responses the current URL will not be SET as the return URL. Also instead of
-     * redirecting the user an ForbiddenHttpException is thrown.
+     * redirecting the user an ForbiddenHttpException is thrown. This parameter is available since version 2.0.8.
      * @return Response the redirection response if [[loginUrl]] is set
      * @throws ForbiddenHttpException the "Access Denied" HTTP exception if [[loginUrl]] is not set or a redirect is
      * not applicable (see $checkAcceptHeader).
@@ -685,6 +686,7 @@ class User extends Component
      * The login page is assumed to serve `text/html` or `application/xhtml+xml`, configure this via
      * `$acceptableRedirectTypes`
      * @return boolean whether this request may be redirected to the login page.
+     * @since 2.0.8
      */
     protected function checkRedirectAcceptable()
     {
