@@ -333,6 +333,13 @@ h1,h2,h3,p,img,ul li{
 .variable{
     color: #a00;
 }
+
+body pre {
+    pointer-events: none;
+}
+body.mousedown pre {
+    pointer-events: auto;
+}
     </style>
 </head>
 
@@ -442,6 +449,10 @@ window.onload = function() {
         });
     }
 };
+
+    // Highlight lines that have text in them but still support text selection:
+    document.onmousedown = function() { document.getElementsByTagName('body')[0].classList.add('mousedown'); }
+    document.onmouseup = function() { document.getElementsByTagName('body')[0].classList.remove('mousedown'); }
     </script>
     <?php if (method_exists($this, 'endBody')) $this->endBody(); // to allow injecting code into body (mostly by Yii Debug Toolbar) ?>
 </body>
