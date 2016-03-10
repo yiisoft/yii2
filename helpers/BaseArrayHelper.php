@@ -331,7 +331,7 @@ class BaseArrayHelper
      * @param string|string[]|\Closure[]|null $groups the array of keys, that will be used to group the input array
      * by one or more keys. If the $key attribute or its value for the particular element is null and $groups is not
      * defined, the array element will be discarded. Otherwise, if $groups is specified, array element will be added
-     * to the result array without any key.
+     * to the result array without any key. This parameter is available since version 2.0.8.
      * @return array the indexed and/or grouped array
      */
     public static function index($array, $key, $groups = [])
