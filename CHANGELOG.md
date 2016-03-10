@@ -58,6 +58,7 @@ Yii Framework 2 Change Log
 - Enh #10889: Allows unsigned primary key column definitions (df2)
 - Enh #10908: Added Dependency Injection for Closure configuration (SamMousa)
 - Enh #10921: `__toString()` of column schema builder now adapts to column types (df2)
+- Enh #10931: Removed hard dependency of `yii\di\Container` on `Yii::$app` (SamMousa)
 - Enh #10937: `yii\web\User` will now confirm the request accepts an HTML response before redirecting to the login page. Added optional `$checkAcceptHeader` to `yii\web\User::loginRequired()` (sammousa)
 - Enh #10941: Added `yii\helpers\ArrayHelper::isTraversable`, added support for traversable selections for dropdownList, radioList and checkboxList in `yii\helpers\Html` (sammousa)
 - Enh #11056: Allow setting a custom logger configuration for `yii\log\Dispatcher` in configuration (bionoren, cebe)
