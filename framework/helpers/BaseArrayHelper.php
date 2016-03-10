@@ -685,7 +685,7 @@ class BaseArrayHelper
      * @param array|\Traversable $haystack The set of values to search.
      * @param boolean $strict Whether to enable strict (`===`) comparison.
      * @return boolean `true` if `$needle` was found in `$haystack`, `false` otherwise.
-     * @throws \InvalidArgumentException if `$haystack` is neither traversable nor an array.
+     * @throws InvalidParamException if `$haystack` is neither traversable nor an array.
      * @see http://php.net/manual/en/function.in-array.php
      * @since 2.0.7
      */
@@ -700,7 +700,7 @@ class BaseArrayHelper
         } elseif (is_array($haystack)) {
             return in_array($needle, $haystack, $strict);
         } else {
-            throw new \InvalidArgumentException('Argument $haystack must be an array or implement Traversable');
+            throw new InvalidParamException('Argument $haystack must be an array or implement Traversable');
         }
 
         return false;
@@ -729,7 +729,7 @@ class BaseArrayHelper
      * @param array|\Traversable $needles The values that must **all** be in `$haystack`.
      * @param array|\Traversable $haystack The set of value to search.
      * @param boolean $strict Whether to enable strict (`===`) comparison.
-     * @throws \InvalidArgumentException if `$haystack` or `$needles` is neither traversable nor an array.
+     * @throws InvalidParamException if `$haystack` or `$needles` is neither traversable nor an array.
      * @return boolean `true` if `$needles` is a subset of `$haystack`, `false` otherwise.
      * @since 2.0.7
      */
@@ -743,7 +743,7 @@ class BaseArrayHelper
             }
             return true;
         } else {
-            throw new \InvalidArgumentException('Argument $needles must be an array or implement Traversable');
+            throw new InvalidParamException('Argument $needles must be an array or implement Traversable');
         }
     }
 }
