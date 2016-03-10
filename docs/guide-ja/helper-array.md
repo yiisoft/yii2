@@ -109,28 +109,83 @@ $result = ArrayHelper::getColumn($array, function ($element) {
 ## 配列を再インデックスする <span id="reindexing-arrays"></span>
 
 指定されたキーに従って配列にインデックスを付けるために、`index` メソッドを使うことが出来ます。
-入力値の配列は、多次元配列であるか、オブジェクトの配列でなければなりません。
-キーは、サブ配列のキーの名前、オブジェクトのプロパティの名前、または、配列要素を与えられてキーの値を返す無名関数とすることが出来ます。
+入力値は、多次元配列であるか、オブジェクトの配列でなければなりません。
+`$key` は、サブ配列のキーの名前、オブジェクトのプロパティの名前、または、キーとして使用される値を返す無名関数とすることが出来ます。
 
-キーの値が null である場合、対応する配列要素は破棄されて、結果には入りません。
+`$groups` 属性はキーの配列であり、入力値の配列を一つまたは複数のサブ配列にグループ化するために使用されます。
+
+特定の要素の `$key` 属性またはその値が null であるとき、`$groups` が定義されていない場合は、その要素は破棄されて、結果には入りません。
+そうではなく、`$groups` が指定されている場合は、配列の要素はキー無しで結果の配列に追加されます。
+
 例えば、
 
 ```php
 $array = [
-    ['id' => '123', 'data' => 'abc'],
-    ['id' => '345', 'data' => 'def'],
+    ['id' => '123', 'data' => 'abc', 'device' => 'laptop'],
+    ['id' => '345', 'data' => 'def', 'device' => 'tablet'],
+    ['id' => '345', 'data' => 'hgi', 'device' => 'smartphone'],
 ];
 $result = ArrayHelper::index($array, 'id');
-// 結果は次のようになります
-// [
-//     '123' => ['id' => '123', 'data' => 'abc'],
-//     '345' => ['id' => '345', 'data' => 'def'],
-// ]
+```
 
-// 無名関数を使う
+結果は、`id` 属性の値をキーとする連想配列になります。
+```php
+[
+    '123' => ['id' => '123', 'data' => 'abc', 'device' => 'laptop'],
+    '345' => ['id' => '345', 'data' => 'hgi', 'device' => 'smartphone']
+    // 元の配列の2番目の要素は、同じ id であるため、最後の要素によって上書きされます
+]
+```
+
+`$key` として無名関数を渡しても同じ結果になります。
+```php
 $result = ArrayHelper::index($array, function ($element) {
     return $element['id'];
 });
+```
+
+`id` を3番目の引数として渡すと、`$array` を `id` によってグループ化することが出来ます。
+```php
+$result = ArrayHelper::index($array, null, 'id');
+```
+
+結果は、最初のレベルが `id` でグループ化され、第2のレベルはインデックスされていない連想配列になります。
+```php
+[
+    '123' => [
+        ['id' => '123', 'data' => 'abc', 'device' => 'laptop']
+    ],
+    '345' => [ // このインデックスを持つ全ての要素が結果の配列に入る
+        ['id' => '345', 'data' => 'def', 'device' => 'tablet'],
+        ['id' => '345', 'data' => 'hgi', 'device' => 'smartphone'],
+    ]
+]
+```
+
+無名関数を配列のグループ化に使うことも出来ます。
+```php
+$result = ArrayHelper::index($array, 'data', [function ($element) {
+    return $element['id'];
+}, 'device']);
+```
+
+結果は、最初のレベルが `id` でグループ化され、第2のレベルが `device` でグループ化され、第3のレベルが `data` でインデックスされた連想配列になります。
+```php
+[
+    '123' => [
+        'laptop' => [
+            'abc' => ['id' => '123', 'data' => 'abc', 'device' => 'laptop']
+        ]
+    ],
+    '345' => [
+        'tablet' => [
+            'def' => ['id' => '345', 'data' => 'def', 'device' => 'tablet']
+        ],
+        'smartphone' => [
+            'hgi' => ['id' => '345', 'data' => 'hgi', 'device' => 'smartphone']
+        ]
+    ]
+]
 ```
 
 

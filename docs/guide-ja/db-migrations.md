@@ -176,8 +176,10 @@ class m150101_185401_create_news_table extends Migration
 
 バージョン 2.0.7 以降では、マイグレーション・コンソールがマイグレーションを生成する便利な方法を提供しています。
 
-マイグレーションの名前が `create_xxx` や `drop_xxx` などの特別な形式である場合は、
-生成されるマイグレーション・ファイルに追加のコードが書き込まれるのです。
+マイグレーションの名前が特定の形式である場合は、生成されるマイグレーション・ファイルに追加のコードが書き込まれます。
+例えば、`create_xxx` や `drop_xxx` であれば、テーブルの作成や削除をするコードが追加されます。
+以下で、この機能の全ての変種を説明します。
+
 
 ### テーブルの作成
 
@@ -207,7 +209,7 @@ class m150811_220037_create_post extends Migration
 テーブルのフィールドも直接に生成したい場合は、`--fields` オプションでフィールドを指定します。
  
 ```php
-yii migrate/create create_post --fields=title:string,body:text
+yii migrate/create create_post --fields="title:string,body:text"
 ``` 
 
 これは、次のコードを生成します。
@@ -234,7 +236,7 @@ class m150811_220037_create_post extends Migration
 さらに多くのフィールド・パラメータを指定することも出来ます。
 
 ```php
-yii migrate/create create_post --fields=title:string(12):notNull:unique,body:text
+yii migrate/create create_post --fields="title:string(12):notNull:unique,body:text"
 ``` 
 
 これは、次のコードを生成します。
@@ -259,13 +261,13 @@ class m150811_220037_create_post extends Migration
 ```
 
 > Note: プライマリ・キーが自動的に追加されて、デフォルトでは `id` と名付けられます。
-> 別の名前を使いたい場合は、`--fields=name:primaryKey` のように、明示的に指定してください。
+> 別の名前を使いたい場合は、`--fields="name:primaryKey"` のように、明示的に指定してください。
 
 
 ### テーブルを削除する
 
 ```php
-yii migrate/create drop_post --fields=title:string(12):notNull:unique,body:text
+yii migrate/create drop_post --fields="title:string(12):notNull:unique,body:text"
 ``` 
 
 これは、次のコードを生成します。
@@ -296,7 +298,7 @@ class m150811_220037_drop_post extends Migration
 カラムを追加するためには、次のようにします。
 
 ```php
-yii migrate/create add_position_to_post --fields=position:integer
+yii migrate/create add_position_to_post --fields="position:integer"
 ```
 
 これが次のコードを生成します。
@@ -321,7 +323,7 @@ class m150811_220037_add_position_to_post extends Migration
 マイグレーションの名前が `drop_xxx_from_yyy` の形式である場合、ファイルの内容は、必要となる `addColumn` と `dropColumn` を含むことになります。
 
 ```php
-yii migrate/create drop_position_from_post --fields=position:integer
+yii migrate/create drop_position_from_post --fields="position:integer"
 ```
 
 これは、次のコードを生成します。

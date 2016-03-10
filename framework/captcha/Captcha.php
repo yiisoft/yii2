@@ -150,7 +150,7 @@ class Captcha extends InputWidget
 
         $options = [
             'refreshUrl' => Url::toRoute($route),
-            'hashKey' => "yiiCaptcha/{$route[0]}",
+            'hashKey' => 'yiiCaptcha/' . trim($route[0], '/')
         ];
 
         return $options;
@@ -165,7 +165,7 @@ class Captcha extends InputWidget
     public static function checkRequirements()
     {
         if (extension_loaded('imagick')) {
-            $imagickFormats = \Imagick::queryFormats('PNG');
+            $imagickFormats = (new \Imagick())->queryFormats('PNG');
             if (in_array('PNG', $imagickFormats, true)) {
                 return 'imagick';
             }

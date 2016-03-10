@@ -132,6 +132,7 @@ $result = ArrayHelper::index($array, 'id');
 ```
 
 The result will be an associative array, where the key is the value of `id` attribute
+
 ```php
 [
     '123' => ['id' => '123', 'data' => 'abc', 'device' => 'laptop'],
@@ -141,6 +142,7 @@ The result will be an associative array, where the key is the value of `id` attr
 ```
 
 Anonymous function, passed as a `$key`, gives the same result.
+
 ```php
 $result = ArrayHelper::index($array, function ($element) {
     return $element['id'];
@@ -148,11 +150,13 @@ $result = ArrayHelper::index($array, function ($element) {
 ```
 
 Passing `id` as a third argument will group `$array` by `id`:
+
 ```php
 $result = ArrayHelper::index($array, null, 'id');
 ```
 
 The result will be a multidimensional array grouped by `id` on the first level and not indexed on the second level:
+
 ```php
 [
     '123' => [
@@ -166,6 +170,7 @@ The result will be a multidimensional array grouped by `id` on the first level a
 ```
 
 An anonymous function can be used in the grouping array as well:
+
 ```php
 $result = ArrayHelper::index($array, 'data', [function ($element) {
     return $element['id'];
@@ -174,6 +179,7 @@ $result = ArrayHelper::index($array, 'data', [function ($element) {
 
 The result will be a multidimensional array grouped by `id` on the first level, by `device` on the second level and
 indexed by `data` on the third level:
+
 ```php
 [
     '123' => [

@@ -170,6 +170,27 @@ class UrlManagerTest extends TestCase
     }
 
     /**
+     * @depends testCreateUrl
+     * @see https://github.com/yiisoft/yii2/issues/10935
+     */
+    public function testCreateUrlWithNullParams()
+    {
+        $manager = new UrlManager([
+            'rules' => [
+                '<param1>/<param2>' => 'site/index',
+                '<param1>' => 'site/index',
+            ],
+            'enablePrettyUrl' => true,
+            'scriptUrl' => '/test',
+
+        ]);
+        $this->assertEquals('/test/111', $manager->createUrl(['site/index', 'param1' => 111, 'param2' => null]));
+        $this->assertEquals('/test/123', $manager->createUrl(['site/index', 'param1' => 123, 'param2' => null]));
+        $this->assertEquals('/test/111/222', $manager->createUrl(['site/index', 'param1' => 111, 'param2' => 222]));
+        $this->assertEquals('/test/112/222', $manager->createUrl(['site/index', 'param1' => 112, 'param2' => 222]));
+    }
+
+    /**
      * https://github.com/yiisoft/yii2/issues/6717
      */
     public function testCreateUrlWithEmptyPattern()

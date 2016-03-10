@@ -1020,8 +1020,32 @@ $customers = Customer::find()->joinWith([
 上記のクエリは *全ての* 顧客を返し、各顧客について全てのアクティブな注文を返します。
 これは、少なくとも一つのアクティブな注文を持つ顧客を全て返す、という以前の例とは異なっていることに注意してください。
 
-> Info: [[yii\db\ActiveQuery]] が [[[[yii\db\ActiveQuery::onCondition()|onCondition()]] によって条件を指定された場合、クエリが JOIN 句を含む場合は、条件は `ON` の部分に置かれます。
-  クエリが JOIN 句を含まない場合は、ON の条件は自動的に `WHERE` の部分に追加されます。
+> Info: [[yii\db\ActiveQuery]] が [[yii\db\ActiveQuery::onCondition()|onCondition()]] によって条件を指定された場合、クエリが JOIN 句を含む場合は、条件は `ON` の部分に置かれます。
+  クエリが JOIN 句を含まない場合は、条件は自動的に `WHERE` の部分に追加されます。
+  このようにして、リレーションのテーブルのカラムを含む条件だけが `ON` の部分に置かれます。
+
+#### リレーションのテーブルのエイリアス <span id="relation-table-aliases"></span>
+
+前に注意したように、クエリに JOIN を使うときは、カラム名の曖昧さを解消する必要があります。
+そのために、テーブルにエイリアスを定義することがよくあります。
+リレーションのテーブルのためにエイリアスを設定することは、リレーショナルクエリを次のようにカスタマイズすることによっても可能です。
+
+```php
+$query->joinWith([
+    'orders' => function ($q) {
+        $q->from(['o' => Order::tableName()]);
+    },
+])
+```
+
+しかし、これでは非常に複雑ですし、リレーションオブジェクトのテーブル名をハードコーディングしたり、`Order::tableName()` を呼んだりしなければなりません。
+バージョン 2.0.7 以降、Yii はこれに対するショートカットを提供しています。
+今では、次のようにしてリレーションのテーブルのエイリアスを定義して使うことが出来ます。
+
+```php
+// orders リレーションを JOIN し、結果を orders.id でソートする
+$query->joinWith(['orders o'])->orderBy('o.id');
+```
 
 ### 逆リレーション <span id="inverse-relations"></span>
 

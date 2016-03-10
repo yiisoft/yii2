@@ -692,7 +692,7 @@ class BaseArrayHelper
     public static function isIn($needle, $haystack, $strict = false)
     {
         if ($haystack instanceof \Traversable) {
-            foreach($haystack as $value) {
+            foreach ($haystack as $value) {
                 if ($needle == $value && (!$strict || $needle === $haystack)) {
                     return true;
                 }
@@ -736,7 +736,7 @@ class BaseArrayHelper
     public static function isSubset($needles, $haystack, $strict = false)
     {
         if (is_array($needles) || $needles instanceof \Traversable) {
-            foreach($needles as $needle) {
+            foreach ($needles as $needle) {
                 if (!static::isIn($needle, $haystack, $strict)) {
                     return false;
                 }

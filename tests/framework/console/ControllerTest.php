@@ -9,16 +9,12 @@ namespace yiiunit\framework\console;
 
 use Yii;
 use yiiunit\TestCase;
-use yiiunit\framework\di\stubs\Qux;
-use yiiunit\framework\web\stubs\Bar;
-use yiiunit\framework\web\stubs\OtherQux;
 
 /**
  * @group console
  */
 class ControllerTest extends TestCase
 {
-
     public function testBindActionParams()
     {
         $this->mockApplication([]);
@@ -39,10 +35,22 @@ class ControllerTest extends TestCase
         $result = $controller->runAction('aksi2', $params);
         $this->assertEquals([['d426', 'mdmunir'], 'single'], $result);
 
+        $params = ['_aliases' => ['t' => 'test']];
+        $result = $controller->runAction('aksi4', $params);
+        $this->assertEquals('test', $result);
+
+        $params = ['_aliases' => ['a' => 'testAlias']];
+        $result = $controller->runAction('aksi5', $params);
+        $this->assertEquals('testAlias', $result);
+
+        $params = ['_aliases' => ['ta' => 'from params,notdefault']];
+        list($fromParam, $other) = $controller->runAction('aksi6', $params);
+        $this->assertEquals('from params', $fromParam);
+        $this->assertEquals('notdefault', $other);
+
         $params = ['avaliable'];
         $message = Yii::t('yii', 'Missing required arguments: {params}', ['params' => implode(', ', ['missing'])]);
         $this->setExpectedException('yii\console\Exception', $message);
         $result = $controller->runAction('aksi3', $params);
-
     }
 }
