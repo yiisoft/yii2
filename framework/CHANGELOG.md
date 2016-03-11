@@ -8,7 +8,7 @@ Yii Framework 2 Change Log
 - Bug #9027: Fixed descendant class of `yii\web\UploadedFile` returns parent instances in case invoked after it (andrewnester)
 - Bug #9101: Fixed `yii\web\View` to respect `yii\web\AssetManager::appendTimstamp` property (githubjeka, silverfire)
 - Bug #9277: Fixed `yii\console\controllers\AssetController` looses custom options of 'target' bundles (petrabarus, klimov-paul)
-- Bug #9561: Fixed `canGetProperty()` and `canSetProperty()` returns `false` for `yii\db\BaseActiveRecord` attributes (klimov-paul)
+- Bug #9561: Fixed `canGetProperty()` and `canSetProperty()` returns `false` for `yii\db\BaseActiveRecord` attributes (klimov-paul, Ni-san)
 - Bug #10567: Fixed `yii\console\controllers\AssetController` looses bundle override configuration, which makes it external one (klimov-paul)
 - Bug #10563: Fixed forming `Content-Disposition` header for file downloads (samdark)
 - Bug #10681: Reverted fix of beforeValidate event calling in `yii.activeForm.js` (silverfire)
