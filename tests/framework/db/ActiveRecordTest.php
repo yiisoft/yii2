@@ -1142,4 +1142,46 @@ class ActiveRecordTest extends DatabaseTestCase
         $trueBit = BitValues::findOne(2);
         $this->assertEquals(true, $trueBit->val);
     }
+
+    public function testCanGetProperty()
+    {
+        /* @var $customerClass \yii\db\ActiveRecordInterface */
+        $customerClass = $this->getCustomerClass();
+
+        /* @var $customer ActiveRecord */
+        $customer = new $customerClass();
+        $this->assertTrue($customer instanceof $customerClass);
+
+        $this->assertTrue($customer->canGetProperty('id'));
+        $this->assertTrue($customer->canSetProperty('id'));
+
+        // tests that we really can get and set this property
+        $this->assertNull($customer->id);
+        $customer->id = 10;
+        $this->assertNotNull($customer->id);
+
+        // Let's test relations
+        $this->assertTrue($customer->canGetProperty('orderItems'));
+        $this->assertFalse($customer->canSetProperty('orderItems'));
+
+        // Newly created model must have empty relation
+        $this->assertSame([], $customer->orderItems);
+
+        try {
+
+            $customer->orderItems = [new Item()];
+            // setter call above MUST throw Exception
+            $this->assertTrue(false);
+
+        } catch (\Exception $e) {
+            // catch exception "Setting read-only property"
+            $this->assertInstanceOf('yii\base\InvalidCallException', $e);
+        }
+
+        // related attribute $customer->orderItems didn't change cause it's read-only
+        $this->assertSame([], $customer->orderItems);
+
+        $this->assertFalse($customer->canGetProperty('non_existing_property'));
+        $this->assertFalse($customer->canSetProperty('non_existing_property'));
+    }
 }
