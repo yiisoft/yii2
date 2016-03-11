@@ -29,7 +29,7 @@ $url = Url::to(['post/view', 'id' => 100]);
 ```
 /index.php?r=post/view&id=100
 /index.php/post/100
-/posts/100
+/post/100
 ```
 
 ## Форматы URL <span id="url-formats"></span>
