@@ -1006,6 +1006,11 @@ class QueryBuilder extends \yii\base\Object
             if (is_array($operand)) {
                 $operand = $this->buildCondition($operand, $params);
             }
+            if ($operand instanceof Expression) {
+                foreach ($operand->params as $n => $v) {
+                    $params[$n] = $v;
+                }
+            }
             if ($operand !== '') {
                 $parts[] = $operand;
             }
