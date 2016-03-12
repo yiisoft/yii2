@@ -466,6 +466,26 @@ class BaseArrayHelper
     }
 
     /**
+     * Builds a copy from source array
+     * @param array $array the array that will be copied
+     * @return array
+     */
+    public static function copy($array)
+    {
+        $result = [];
+        foreach ($array as $key => $value) {
+            if( is_array( $value ) ) {
+                $result[$key] = static::copy($value );
+            } elseif (is_object($value)) {
+                $result[$key] = clone $value;
+            } else {
+                $result[$key] = $value;
+            }
+        }
+        return $result;
+    }
+
+    /**
      * Checks if the given array contains the specified key.
      * This method enhances the `array_key_exists()` function by supporting case-insensitive
      * key comparison.
