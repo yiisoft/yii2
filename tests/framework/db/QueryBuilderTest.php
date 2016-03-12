@@ -216,6 +216,7 @@ class QueryBuilderTest extends DatabaseTestCase
             // and
             [ ['and', 'id=1', 'id=2'], '(id=1) AND (id=2)', [] ],
             [ ['and', 'type=1', ['or', 'id=1', 'id=2']], '(type=1) AND ((id=1) OR (id=2))', [] ],
+            [ ['and', 'id=1', new Expression('id=:param1', [':param1' => 2])], '(id=1) AND (id=:param1)', [':param1' => 2] ],
 
             // or
             [ ['or', 'id=1', 'id=2'], '(id=1) OR (id=2)', [] ],
