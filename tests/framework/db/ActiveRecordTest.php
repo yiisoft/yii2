@@ -1111,6 +1111,19 @@ abstract class ActiveRecordTest extends DatabaseTestCase
         $model->save(false);
         $model->updateCounters(['status' => 1]);
         $this->assertEquals(1, $model->status);
+
+        // https://github.com/yiisoft/yii2/issues/11073
+        $order = Order::find()->where(['id' => 2])->one();
+        $this->assertFalse($order->isRelationPopulated('orderItems'));
+        $this->assertFalse($order->isRelationPopulated('items'));
+
+        $this->assertEquals(3, count($order->orderItems));
+
+        $items = $order->getItems()->via('orderItems', function ($q) {
+            $q->andWhere(['order_id' => 9999999]);
+        })->all();
+
+        $this->assertEquals(3, count($order->orderItems), 'Count of models in orderItems relation was changed and is wrong');
     }
 
     public function testPopulateRecordCallWhenQueryingOnParentClass()
