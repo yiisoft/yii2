@@ -1010,6 +1010,7 @@ class QueryBuilder extends \yii\base\Object
                 foreach ($operand->params as $n => $v) {
                     $params[$n] = $v;
                 }
+                $operand = $operand->expression;
             }
             if ($operand !== '') {
                 $parts[] = $operand;
