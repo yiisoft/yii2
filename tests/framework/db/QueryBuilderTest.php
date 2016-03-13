@@ -216,10 +216,13 @@ class QueryBuilderTest extends DatabaseTestCase
             // and
             [ ['and', 'id=1', 'id=2'], '(id=1) AND (id=2)', [] ],
             [ ['and', 'type=1', ['or', 'id=1', 'id=2']], '(type=1) AND ((id=1) OR (id=2))', [] ],
+            [ ['and', 'id=1', new Expression('id=:qp0', [':qp0' => 2])], '(id=1) AND (id=:qp0)', [':qp0' => 2] ],
 
             // or
             [ ['or', 'id=1', 'id=2'], '(id=1) OR (id=2)', [] ],
             [ ['or', 'type=1', ['or', 'id=1', 'id=2']], '(type=1) OR ((id=1) OR (id=2))', [] ],
+            [ ['or', 'type=1', new Expression('id=:qp0', [':qp0' => 1])], '(type=1) OR (id=:qp0)', [':qp0' => 1] ],
+
 
             // between
             [ ['between', 'id', 1, 10], '[[id]] BETWEEN :qp0 AND :qp1', [':qp0' => 1, ':qp1' => 10] ],
