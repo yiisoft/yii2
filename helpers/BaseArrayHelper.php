@@ -331,7 +331,7 @@ class BaseArrayHelper
      * @param string|string[]|\Closure[]|null $groups the array of keys, that will be used to group the input array
      * by one or more keys. If the $key attribute or its value for the particular element is null and $groups is not
      * defined, the array element will be discarded. Otherwise, if $groups is specified, array element will be added
-     * to the result array without any key.
+     * to the result array without any key. This parameter is available since version 2.0.8.
      * @return array the indexed and/or grouped array
      */
     public static function index($array, $key, $groups = [])
@@ -685,14 +685,14 @@ class BaseArrayHelper
      * @param array|\Traversable $haystack The set of values to search.
      * @param boolean $strict Whether to enable strict (`===`) comparison.
      * @return boolean `true` if `$needle` was found in `$haystack`, `false` otherwise.
-     * @throws \InvalidArgumentException if `$haystack` is neither traversable nor an array.
+     * @throws InvalidParamException if `$haystack` is neither traversable nor an array.
      * @see http://php.net/manual/en/function.in-array.php
      * @since 2.0.7
      */
     public static function isIn($needle, $haystack, $strict = false)
     {
         if ($haystack instanceof \Traversable) {
-            foreach($haystack as $value) {
+            foreach ($haystack as $value) {
                 if ($needle == $value && (!$strict || $needle === $haystack)) {
                     return true;
                 }
@@ -700,7 +700,7 @@ class BaseArrayHelper
         } elseif (is_array($haystack)) {
             return in_array($needle, $haystack, $strict);
         } else {
-            throw new \InvalidArgumentException('Argument $haystack must be an array or implement Traversable');
+            throw new InvalidParamException('Argument $haystack must be an array or implement Traversable');
         }
 
         return false;
@@ -729,21 +729,21 @@ class BaseArrayHelper
      * @param array|\Traversable $needles The values that must **all** be in `$haystack`.
      * @param array|\Traversable $haystack The set of value to search.
      * @param boolean $strict Whether to enable strict (`===`) comparison.
-     * @throws \InvalidArgumentException if `$haystack` or `$needles` is neither traversable nor an array.
+     * @throws InvalidParamException if `$haystack` or `$needles` is neither traversable nor an array.
      * @return boolean `true` if `$needles` is a subset of `$haystack`, `false` otherwise.
      * @since 2.0.7
      */
     public static function isSubset($needles, $haystack, $strict = false)
     {
         if (is_array($needles) || $needles instanceof \Traversable) {
-            foreach($needles as $needle) {
+            foreach ($needles as $needle) {
                 if (!static::isIn($needle, $haystack, $strict)) {
                     return false;
                 }
             }
             return true;
         } else {
-            throw new \InvalidArgumentException('Argument $needles must be an array or implement Traversable');
+            throw new InvalidParamException('Argument $needles must be an array or implement Traversable');
         }
     }
 }
