@@ -50,4 +50,34 @@ class MigrateControllerTest extends TestCase
         $query = new Query();
         return $query->from('migration')->all();
     }
+
+    public function testSessionMigration()
+    {
+        $this->mockWebApplication([
+            'components' => [
+                'db' => [
+                    'class' => 'yii\db\Connection',
+                    'dsn' => 'sqlite::memory:',
+                ],
+                'session' => [
+                    'class' => 'yii\web\DbSession'
+                ]
+            ],
+        ]);
+        $this->runMigrateControllerAction('down',['all']);
+
+        $this->migrationPath = '@yii/web/migrations';
+        $this->runMigrateControllerAction('up');
+        $this->assertMigrationHistory(['base', 'session_init']);
+        
+        $table = Yii::$app->db->schema->getTableSchema('{{%session}}');
+        $this->assertNotNull($table);
+        $this->assertEquals(array_keys($table->columns), ['id', 'expire', 'data']);
+
+        $this->runMigrateControllerAction('down');
+        $this->assertMigrationHistory(['base']);
+
+        $table = Yii::$app->db->schema->getTableSchema('{{%session}}');
+        $this->assertNull($table);
+    }
 }
