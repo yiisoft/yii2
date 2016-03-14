@@ -12,6 +12,7 @@ Yii Framework 2 Change Log
 - Bug #10946: Fixed parameters binding to the SQL query in `yii\db\mysqlSchema::findConstraints()` (silverfire)
 - Bug #10969: Fixed generator migration tool with decimal params in column (pana1990)
 - Bug #10974: `yii.js` - fixed error in ajaxPrefilter event handler, caused by blocked frame (maximal)
+- Bug #10993: Fixed `yii\rbac\DbManager::removeAllRules()` and `yii\rbac\PhpManager::removeAllItems()` (lav45)
 - Bug #11038: Fixed handling of intervals of 0 seconds in `yii\i18n\Formatter::asDuration()` (VirtualRJ)
 - Bug #11093: Fixed `yii\db\QueryBuilder::buildAndCondition()` to add query params passed directly by `yii\db\Expression` (CedricYii, silverfire)
 - Bug: SQlite querybuilder did not create primary key with bigint for `TYPE_BIGPK` (cebe)
