@@ -225,7 +225,7 @@ class ColumnSchemaBuilder extends Object
     {
         switch ($this->getTypeCategory()) {
             case self::CATEGORY_PK:
-                $format = '{type}{length}{check}';
+                $format = '{type}{check}';
                 break;
             default:
                 $format = '{type}{length}{notnull}{unique}{default}{check}';
