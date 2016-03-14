@@ -29,6 +29,8 @@ use yii\db\BaseActiveRecord;
  * By default, TimestampBehavior will fill the `created_at` and `updated_at` attributes with the current timestamp
  * when the associated AR object is being inserted; it will fill the `updated_at` attribute
  * with the timestamp when the AR object is being updated. The timestamp value is obtained by `time()`.
+ * 
+ * For the above implementation to work with MySQL database, please declare the columns(`created_at`, `updated_at`) as int(11) for being UNIX timestamp.
  *
  * If your attribute names are different or you want to use a different way of calculating the timestamp,
  * you may configure the [[createdAtAttribute]], [[updatedAtAttribute]] and [[value]] properties like the following:

@@ -71,6 +71,17 @@ class FixtureController extends Controller
     }
 
     /**
+     * @inheritdoc
+     */
+    public function optionAliases()
+    {
+        return array_merge(parent::optionAliases(), [
+            'g' => 'globalFixtures',
+            'n' => 'namespace'
+        ]);
+    }
+
+    /**
      * Loads the specified fixture data.
      * For example,
      *
@@ -460,7 +471,7 @@ class FixtureController extends Controller
             if (mb_strpos($fixture, '-') !== false) {
                 $filtered['except'][] = str_replace('-', '', $fixture);
             } else {
-                $filtered['apply'][] = $fixture;                
+                $filtered['apply'][] = $fixture;
             }
         }
 

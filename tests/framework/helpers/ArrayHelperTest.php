@@ -633,9 +633,8 @@ class ArrayHelperTest extends TestCase
         ], ArrayHelper::htmlDecode($array, false));
     }
 
-    public function testIn()
+    public function testIsIn()
     {
-
         $this->assertTrue(ArrayHelper::isIn('a', new \ArrayObject(['a', 'b'])));
         $this->assertTrue(ArrayHelper::isIn('a', ['a', 'b']));
 
@@ -650,7 +649,16 @@ class ArrayHelperTest extends TestCase
         $this->assertFalse(ArrayHelper::isIn('a', [['a'], 'b']));
     }
 
-    public function testSubset()
+    /**
+     * @expectedException \yii\base\InvalidParamException
+     * @expectedExceptionMessage Argument $haystack must be an array or implement Traversable
+     */
+    public function testInException()
+    {
+        ArrayHelper::isIn('value', null);
+    }
+
+    public function testIsSubset()
     {
         $this->assertTrue(ArrayHelper::isSubset(['a'], new \ArrayObject(['a', 'b'])));
         $this->assertTrue(ArrayHelper::isSubset(new \ArrayObject(['a']), ['a', 'b']));
@@ -660,8 +668,15 @@ class ArrayHelperTest extends TestCase
 
         $this->assertFalse(ArrayHelper::isSubset([1], new \ArrayObject(['1', 'b']), true));
         $this->assertFalse(ArrayHelper::isSubset(new \ArrayObject([1]), ['1', 'b'], true));
+    }
 
-
+    /**
+     * @expectedException \yii\base\InvalidParamException
+     * @expectedExceptionMessage Argument $needles must be an array or implement Traversable
+     */
+    public function testIsSubsetException()
+    {
+        ArrayHelper::isSubset('a', new \ArrayObject(['a', 'b']));
     }
 
     public function testIsArray()
