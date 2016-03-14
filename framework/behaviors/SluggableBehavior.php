@@ -109,6 +109,11 @@ class SluggableBehavior extends AttributeBehavior
      */
     public $uniqueSlugGenerator;
 
+    /**
+     * @var string
+     */
+    public $replacement = '-';
+
 
     /**
      * @inheritdoc
@@ -183,7 +188,7 @@ class SluggableBehavior extends AttributeBehavior
      */
     protected function generateSlug($slugParts)
     {
-        return Inflector::slug(implode('-', $slugParts));
+        return Inflector::slug(implode($this->replacement, $slugParts), $this->replacement);
     }
 
     /**
@@ -222,7 +227,7 @@ class SluggableBehavior extends AttributeBehavior
         if (is_callable($this->uniqueSlugGenerator)) {
             return call_user_func($this->uniqueSlugGenerator, $baseSlug, $iteration, $this->owner);
         } else {
-            return $baseSlug . '-' . ($iteration + 1);
+            return $baseSlug . $this->replacement . ($iteration + 1);
         }
     }
 }
