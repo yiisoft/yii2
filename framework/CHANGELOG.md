@@ -16,6 +16,7 @@ Yii Framework 2 Change Log
 - Bug #11093: Fixed `yii\db\QueryBuilder::buildAndCondition()` to add query params passed directly by `yii\db\Expression` (CedricYii, silverfire)
 - Bug: SQlite querybuilder did not create primary key with bigint for `TYPE_BIGPK` (cebe)
 - Enh #5469: Add mimetype validation by mask in FileValidator (kirsenn, samdark, silverfire)
+- Enh #7177, #10165: Added support for validating datetime using short format (VirtualRJ)
 - Enh #8602: `yii\validators\DateValidator` skip validation for `timestampAttribute`, if it is already in correct format (klimov-paul)
 - Enh #8639: Improve ActiveRecord to not create new instances of classes when objects are available (cebe)
 - Enh #9893: `yii.js` handleAction enhanced to support for data-form attribute, so links can trigger specific forms (SamMousa)

@@ -31,6 +31,14 @@ use yii\helpers\FormatConverter;
 class DateValidator extends Validator
 {
     /**
+     * Constant for specifying the type as a date value for validation using short format.
+     */    
+    const TYPE_DATE = 'date';
+    /**
+     * Constant for specifying the type as a datetime value for validation using short format.
+     */
+    const TYPE_DATETIME = 'dateTime';
+    /**
      * @var string the date format that the value being validated should follow.
      * This can be a date time pattern as described in the [ICU manual](http://userguide.icu-project.org/formatparse/datetime#TOC-Date-Time-Format-Syntax).
      *
@@ -143,7 +151,15 @@ class DateValidator extends Validator
      * @since 2.0.4
      */
     public $minString;
-
+    /**
+     * @var string type used for defining if short format validation should be on just
+     * date or on datetime. Defaults to 'date'. Possible values are:
+     * - [[TYPE_DATE]]
+     * - [[TYPE_DATETIME]]
+     * @since 2.0.8
+     */
+    public $type = self::TYPE_DATE;
+    
     /**
      * @var array map of short format names to IntlDateFormatter constant values.
      */
@@ -297,7 +313,11 @@ class DateValidator extends Validator
     private function parseDateValueIntl($value, $format)
     {
         if (isset($this->_dateFormats[$format])) {
-            $formatter = new IntlDateFormatter($this->locale, $this->_dateFormats[$format], IntlDateFormatter::NONE, 'UTC');
+            if ($this->type === self::TYPE_DATE) {
+                $formatter = new IntlDateFormatter($this->locale, $this->_dateFormats[$format], IntlDateFormatter::NONE, 'UTC');
+            } elseif ($this->type === self::TYPE_DATETIME) {
+                $formatter = new IntlDateFormatter($this->locale, $this->_dateFormats[$format], $this->_dateFormats[$format], 'UTC');
+            }
         } else {
             // if no time was provided in the format string set time to 0 to get a simple date timestamp
             $hasTimeInfo = (strpbrk($format, 'ahHkKmsSA') !== false);
