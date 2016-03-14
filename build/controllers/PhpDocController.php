@@ -288,6 +288,7 @@ class PhpDocController extends Controller
         $propertiesOnly = false;
         // remove blank lines between properties
         $skip = true;
+        $level = 0;
         foreach($lines as $i => $line) {
             if (strpos($line, 'class ') !== false) {
                 $skip = false;
@@ -295,8 +296,16 @@ class PhpDocController extends Controller
             if ($skip) {
                 continue;
             }
+
+            // keep spaces in multi line arrays
+            if (strpos($line, '*') === false && strncmp(trim($line), "'SQLSTATE[", 10) !== 0) {
+                $level += substr_count($line, '[') - substr_count($line, ']');
+            }
+
             if (trim($line) === '') {
-                unset($lines[$i]);
+                if ($level == 0) {
+                    unset($lines[$i]);
+                }
             } elseif (ltrim($line)[0] !== '*' && strpos($line, 'function ') !== false) {
                 break;
             } elseif (trim($line) === '}') {

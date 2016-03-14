@@ -19,6 +19,7 @@ use yii\console\Markdown;
  */
 class BaseConsole
 {
+    // foreground color control codes
     const FG_BLACK  = 30;
     const FG_RED    = 31;
     const FG_GREEN  = 32;
@@ -27,7 +28,7 @@ class BaseConsole
     const FG_PURPLE = 35;
     const FG_CYAN   = 36;
     const FG_GREY   = 37;
-
+    // background color control codes
     const BG_BLACK  = 40;
     const BG_RED    = 41;
     const BG_GREEN  = 42;
@@ -36,7 +37,7 @@ class BaseConsole
     const BG_PURPLE = 45;
     const BG_CYAN   = 46;
     const BG_GREY   = 47;
-
+    // fonts style control codes
     const RESET       = 0;
     const NORMAL      = 0;
     const BOLD        = 1;
