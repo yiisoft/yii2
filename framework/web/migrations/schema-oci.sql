@@ -13,7 +13,7 @@ drop table if exists "session";
 
 create table "session"
 (
-    "id"  varchar(40) not null,
+    "id"  varchar(256) not null,
     "expire" integer,
     "data"   BYTEA,
     primary key ("id")
