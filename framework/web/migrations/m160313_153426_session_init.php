@@ -45,12 +45,13 @@ class m160313_153426_session_init extends Migration
             $tableOptions = 'CHARACTER SET utf8 COLLATE utf8_unicode_ci ENGINE=InnoDB';
         }
 
+        $length = ini_get('session.hash_function') === 1 ? 256 : 40;
         $this->createTable($session->sessionTable, [
-            'id' => $this->string(40)->notNull(),
+            'id' => $this->string($length)->notNull(),
             'expire' => $this->integer(),
             'data' => $this->binary(),
             'PRIMARY KEY ([[id]])',
-            ], $tableOptions);
+        ], $tableOptions);
     }
 
     /**
