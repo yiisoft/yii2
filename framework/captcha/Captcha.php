@@ -91,7 +91,7 @@ class Captcha extends InputWidget
     {
         parent::init();
 
-        $this->checkRequirements();
+        static::checkRequirements();
 
         if (!isset($this->imageOptions['id'])) {
             $this->imageOptions['id'] = $this->options['id'] . '-image';
@@ -150,7 +150,7 @@ class Captcha extends InputWidget
 
         $options = [
             'refreshUrl' => Url::toRoute($route),
-            'hashKey' => "yiiCaptcha/{$route[0]}",
+            'hashKey' => 'yiiCaptcha/' . trim($route[0], '/')
         ];
 
         return $options;
@@ -165,9 +165,8 @@ class Captcha extends InputWidget
     public static function checkRequirements()
     {
         if (extension_loaded('imagick')) {
-            $imagick = new \Imagick();
-            $imagickFormats = $imagick->queryFormats('PNG');
-            if (in_array('PNG', $imagickFormats)) {
+            $imagickFormats = (new \Imagick())->queryFormats('PNG');
+            if (in_array('PNG', $imagickFormats, true)) {
                 return 'imagick';
             }
         }

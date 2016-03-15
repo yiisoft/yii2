@@ -23,9 +23,9 @@ use yii\helpers\Inflector;
  *
  * This command can be used as follows on command line:
  *
- * ~~~
+ * ```
  * yii help [command name]
- * ~~~
+ * ```
  *
  * In the above, if the command name is not provided, all
  * available commands will be displayed.
@@ -129,7 +129,7 @@ class HelpController extends Controller
      */
     protected function getModuleCommands($module)
     {
-        $prefix = $module instanceof Application ? '' : $module->getUniqueID() . '/';
+        $prefix = $module instanceof Application ? '' : $module->getUniqueId() . '/';
 
         $commands = [];
         foreach (array_keys($module->controllerMap) as $id) {
@@ -164,7 +164,7 @@ class HelpController extends Controller
     /**
      * Validates if the given class is a valid console controller class.
      * @param string $controllerClass
-     * @return bool
+     * @return boolean
      */
     protected function validateControllerClass($controllerClass)
     {
@@ -308,7 +308,7 @@ class HelpController extends Controller
         }
 
         $description = $controller->getActionHelp($action);
-        if ($description != '') {
+        if ($description !== '') {
             $this->stdout("\nDESCRIPTION\n", Console::BOLD);
             $this->stdout("\n$description\n\n");
         }
@@ -358,7 +358,7 @@ class HelpController extends Controller
             $this->stdout("\nOPTIONS\n\n", Console::BOLD);
             foreach ($options as $name => $option) {
                 $this->stdout($this->formatOptionHelp(
-                        $this->ansiFormat('--' . $name, Console::FG_RED, empty($option['required']) ? Console::FG_RED : Console::BOLD),
+                        $this->ansiFormat('--' . $name . $this->formatOptionAliases($controller, $name), Console::FG_RED, empty($option['required']) ? Console::FG_RED : Console::BOLD),
                         !empty($option['required']),
                         $option['type'],
                         $option['default'],
@@ -397,7 +397,7 @@ class HelpController extends Controller
             } else {
                 $defaultValue = var_export($defaultValue, true);
             }
-            $doc = "$type (defaults to " . $defaultValue . ")";
+            $doc = "$type (defaults to $defaultValue)";
         } else {
             $doc = $type;
         }
@@ -405,12 +405,29 @@ class HelpController extends Controller
         if ($doc === '') {
             $doc = $comment;
         } elseif ($comment !== '') {
-            $doc .= "\n" . preg_replace("/^/m", "  ", $comment);
+            $doc .= "\n" . preg_replace('/^/m', '  ', $comment);
         }
 
         $name = $required ? "$name (required)" : $name;
 
         return $doc === '' ? $name : "$name: $doc";
+    }
+
+    /**
+     * @param Controller $controller the controller instance
+     * @param string $option the option name
+     * @return string the formatted string for the alias argument or option
+     * @since 2.0.8
+     */
+    protected function formatOptionAliases($controller, $option)
+    {
+        $aliases = $controller->optionAliases();
+        foreach ($aliases as $name => $value) {
+            if ($value === $option) {
+                return ', -' . $name;
+            }
+        }
+        return '';
     }
 
     /**

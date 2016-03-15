@@ -9,7 +9,6 @@ namespace yii\behaviors;
 
 use yii\base\InvalidCallException;
 use yii\db\BaseActiveRecord;
-use yii\db\Expression;
 
 /**
  * TimestampBehavior automatically fills the specified attributes with the current timestamp.
@@ -30,6 +29,8 @@ use yii\db\Expression;
  * By default, TimestampBehavior will fill the `created_at` and `updated_at` attributes with the current timestamp
  * when the associated AR object is being inserted; it will fill the `updated_at` attribute
  * with the timestamp when the AR object is being updated. The timestamp value is obtained by `time()`.
+ * 
+ * For the above implementation to work with MySQL database, please declare the columns(`created_at`, `updated_at`) as int(11) for being UNIX timestamp.
  *
  * If your attribute names are different or you want to use a different way of calculating the timestamp,
  * you may configure the [[createdAtAttribute]], [[updatedAtAttribute]] and [[value]] properties like the following:
@@ -78,10 +79,10 @@ class TimestampBehavior extends AttributeBehavior
      */
     public $updatedAtAttribute = 'updated_at';
     /**
-     * @var callable|Expression The expression that will be used for generating the timestamp.
-     * This can be either an anonymous function that returns the timestamp value,
-     * or an [[Expression]] object representing a DB expression (e.g. `new Expression('NOW()')`).
-     * If not set, it will use the value of `time()` to set the attributes.
+     * @inheritdoc
+     *
+     * In case, when the value is `null`, the result of the PHP function [time()](http://php.net/manual/en/function.time.php)
+     * will be used as value.
      */
     public $value;
 
@@ -103,14 +104,16 @@ class TimestampBehavior extends AttributeBehavior
 
     /**
      * @inheritdoc
+     *
+     * In case, when the [[value]] is `null`, the result of the PHP function [time()](http://php.net/manual/en/function.time.php)
+     * will be used as value.
      */
     protected function getValue($event)
     {
-        if ($this->value instanceof Expression) {
-            return $this->value;
-        } else {
-            return $this->value !== null ? call_user_func($this->value, $event) : time();
+        if ($this->value === null) {
+            return time();
         }
+        return parent::getValue($event);
     }
 
     /**
@@ -120,14 +123,14 @@ class TimestampBehavior extends AttributeBehavior
      * $model->touch('lastVisit');
      * ```
      * @param string $attribute the name of the attribute to update.
-     * @throws InvalidCallException if owner is a new record.
+     * @throws InvalidCallException if owner is a new record (since version 2.0.6).
      */
     public function touch($attribute)
     {
         /* @var $owner BaseActiveRecord */
         $owner = $this->owner;
         if ($owner->getIsNewRecord()) {
-            throw new InvalidCallException('Timestamp updating is not available for new record.');
+            throw new InvalidCallException('Updating the timestamp is not possible on a new record.');
         }
         $owner->updateAttributes(array_fill_keys((array) $attribute, $this->getValue(null)));
     }

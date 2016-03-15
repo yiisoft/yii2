@@ -41,7 +41,7 @@ $this->title = 'ログイン';
 `$this` 以外に、上記の例の `$model` のように、事前に定義される変数をビューの中に置くことが出来ます。
 このような変数は、[ビューのレンダリング](#rendering-views) をトリガする [コントローラ](structure-controllers.md) などのオブジェクトによってビューに *プッシュ* されるデータを表します。
 
-> Tip|ヒント: 上の例では、事前に定義される変数は、IDE に認識されるように、ビューの先頭のコメントブロックの中にリストされています。
+> Tip: 上の例では、事前に定義される変数は、IDE に認識されるように、ビューの先頭のコメントブロックの中にリストされています。
   これは、ビューにドキュメントを付けるのにも良い方法です。
 
 
@@ -76,7 +76,7 @@ use yii\helpers\HtmlPurifier;
 </div>
 ```
 
-> Tip|ヒント: HTMLPurifier は、出力を安全なものにすることにおいては素晴らしい仕事をしますが、速くはありません。
+> Tip: HTMLPurifier は、出力を安全なものにすることにおいては素晴らしい仕事をしますが、速くはありません。
   アプリケーションが高いパフォーマンスを要求する場合は、フィルター結果を [キャッシュ](caching-overview.md) することを考慮すべきです。
 
 
@@ -559,7 +559,7 @@ $this->registerMetaTag(['name' => 'keywords', 'content' => 'yii, framework, php'
 ある型のメタタグのインスタンスが一つだけになることを保証したい場合は、このメソッドを呼ぶときに第二のパラメータとしてキーを指定することが出来ます。
 例えば、次のコードでは、二つの "description" メタタグを登録していますが、二番目のものだけがレンダリングされることになります。
 
-```html
+```php
 $this->registerMetaTag(['name' => 'description', 'content' => '俺が Yii で作ったクールなウェブサイトだぜぃ!!'], 'description');
 $this->registerMetaTag(['name' => 'description', 'content' => '面白いアライグマに関するウェブサイトです。'], 'description');
 ```

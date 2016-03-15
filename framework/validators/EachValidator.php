@@ -14,7 +14,7 @@ use yii\base\Model;
 /**
  * EachValidator validates an array by checking each of its elements against an embedded validation rule.
  *
- * ~~~php
+ * ```php
  * class MyModel extends Model
  * {
  *     public $categoryIDs = [];
@@ -27,7 +27,7 @@ use yii\base\Model;
  *         ]
  *     }
  * }
- * ~~~
+ * ```
  *
  * > Note: This validator will not work with inline validation rules in case of usage outside the model scope,
  *   e.g. via [[validate()]] method.
@@ -43,10 +43,10 @@ class EachValidator extends Validator
      * contain attribute list as the first element.
      * For example:
      *
-     * ~~~
+     * ```php
      * ['integer']
      * ['match', 'pattern' => '/[a-z]/is']
-     * ~~~
+     * ```
      *
      * Please refer to [[yii\base\Model::rules()]] for more details.
      */
@@ -141,6 +141,9 @@ class EachValidator extends Validator
 
         $validator = $this->getValidator();
         foreach ($value as $v) {
+            if ($validator->skipOnEmpty && $validator->isEmpty($v)) {
+                continue;
+            }
             $result = $validator->validateValue($v);
             if ($result !== null) {
                 return $this->allowMessageFromRule ? $result : [$this->message, []];

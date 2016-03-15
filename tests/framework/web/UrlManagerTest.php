@@ -64,7 +64,29 @@ class UrlManagerTest extends TestCase
         $url = $manager->createUrl(['post/view', 'id' => 1, 'title' => 'sample post']);
         $this->assertEquals('/test/index.php/post/view?id=1&title=sample+post', $url);
 
-        // todo: test showScriptName
+        // test showScriptName
+        $manager = new UrlManager([
+            'enablePrettyUrl' => true,
+            'baseUrl' => '/test',
+            'scriptUrl' => '/test/index.php',
+            'showScriptName' => true,
+            'cache' => null,
+        ]);
+        $url = $manager->createUrl(['post/view', 'id' => 1, 'title' => 'sample post']);
+        $this->assertEquals('/test/index.php/post/view?id=1&title=sample+post', $url);
+        $url = $manager->createUrl(['/post/view', 'id' => 1, 'title' => 'sample post']);
+        $this->assertEquals('/test/index.php/post/view?id=1&title=sample+post', $url);
+        $manager = new UrlManager([
+            'enablePrettyUrl' => true,
+            'baseUrl' => '/test',
+            'scriptUrl' => '/test/index.php',
+            'showScriptName' => false,
+            'cache' => null,
+        ]);
+        $url = $manager->createUrl(['post/view', 'id' => 1, 'title' => 'sample post']);
+        $this->assertEquals('/test/post/view?id=1&title=sample+post', $url);
+        $url = $manager->createUrl(['/post/view', 'id' => 1, 'title' => 'sample post']);
+        $this->assertEquals('/test/post/view?id=1&title=sample+post', $url);
 
         // pretty URL with rules
         $manager = new UrlManager([
@@ -125,6 +147,47 @@ class UrlManagerTest extends TestCase
         $this->assertEquals('http://en.example.com/test/post/1/sample+post', $url);
         $url = $manager->createUrl(['post/index', 'page' => 1]);
         $this->assertEquals('/test/post/index?page=1', $url);
+
+        // create url with the same route but different params/defaults
+        $manager = new UrlManager([
+            'enablePrettyUrl' => true,
+            'cache' => null,
+            'rules' => [
+                [
+                    'pattern' => '',
+                    'route' => 'frontend/page/view',
+                    'defaults' => ['slug' => 'index'],
+                ],
+                'page/<slug>' => 'frontend/page/view',
+            ],
+            'baseUrl' => '/test',
+            'scriptUrl' => '/test',
+        ]);
+        $url = $manager->createUrl(['frontend/page/view', 'slug' => 'services']);
+        $this->assertEquals('/test/page/services', $url);
+        $url = $manager->createUrl(['frontend/page/view', 'slug' => 'index']);
+        $this->assertEquals('/test/', $url);
+    }
+
+    /**
+     * @depends testCreateUrl
+     * @see https://github.com/yiisoft/yii2/issues/10935
+     */
+    public function testCreateUrlWithNullParams()
+    {
+        $manager = new UrlManager([
+            'rules' => [
+                '<param1>/<param2>' => 'site/index',
+                '<param1>' => 'site/index',
+            ],
+            'enablePrettyUrl' => true,
+            'scriptUrl' => '/test',
+
+        ]);
+        $this->assertEquals('/test/111', $manager->createUrl(['site/index', 'param1' => 111, 'param2' => null]));
+        $this->assertEquals('/test/123', $manager->createUrl(['site/index', 'param1' => 123, 'param2' => null]));
+        $this->assertEquals('/test/111/222', $manager->createUrl(['site/index', 'param1' => 111, 'param2' => 222]));
+        $this->assertEquals('/test/112/222', $manager->createUrl(['site/index', 'param1' => 112, 'param2' => 222]));
     }
 
     /**
@@ -368,5 +431,68 @@ class UrlManagerTest extends TestCase
         $this->destroyApplication();
 
         unset($_SERVER['REQUEST_METHOD']);
+    }
+
+    /**
+     * Tests if hash-anchor present
+     *
+     * https://github.com/yiisoft/yii2/pull/9596
+     */
+    public function testHash()
+    {
+        $manager = new UrlManager([
+            'enablePrettyUrl' => true,
+            'cache' => null,
+            'rules' => [
+                'http://example.com/testPage' => 'site/test',
+            ],
+            'hostInfo' => 'http://example.com',
+            'scriptUrl' => '/index.php',
+        ]);
+        $url = $manager->createAbsoluteUrl(['site/test', '#' => 'testhash']);
+        $this->assertEquals('http://example.com/index.php/testPage#testhash', $url);
+    }
+
+    /**
+     * Tests if multislashes not accepted at the end of URL if PrettyUrl is enabled
+     *
+     * @see https://github.com/yiisoft/yii2/issues/10739
+     */
+    public function testMultiSlashesAtTheEnd()
+    {
+        $manager = new UrlManager([
+            'enablePrettyUrl' => true,
+        ]);
+
+        $request = new Request;
+
+        $request->pathInfo = 'post/multi/slash/';
+        $result = $manager->parseRequest($request);
+        $this->assertEquals(['post/multi/slash/', []], $result);
+
+        $request->pathInfo = 'post/multi/slash//';
+        $result = $manager->parseRequest($request);
+        $this->assertEquals(false, $result);
+
+        $request->pathInfo = 'post/multi/slash////';
+        $result = $manager->parseRequest($request);
+        $this->assertEquals(false, $result);
+
+        $manager = new UrlManager([
+            'enablePrettyUrl' => true,
+            'suffix' => '/'
+        ]);
+
+        $request->pathInfo = 'post/multi/slash/';
+        $result = $manager->parseRequest($request);
+        $this->assertEquals(['post/multi/slash', []], $result);
+
+        $request->pathInfo = 'post/multi/slash//';
+        $result = $manager->parseRequest($request);
+        $this->assertEquals(false, $result);
+
+        $request->pathInfo = 'post/multi/slash///////';
+        $result = $manager->parseRequest($request);
+        $this->assertEquals(false, $result);
     }
 }

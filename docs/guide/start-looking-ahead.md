@@ -27,6 +27,7 @@ This section will summarize the Yii resources available to help you be more prod
 * Community
     - Forum: <http://www.yiiframework.com/forum/>
     - IRC chat: The #yii channel on the freenode network (<irc://irc.freenode.net/yii>)
+    - Gitter chat: <https://gitter.im/yiisoft/yii2>
     - GitHub: <https://github.com/yiisoft/yii2>
     - Facebook: <https://www.facebook.com/groups/yiitalk/>
     - Twitter: <https://twitter.com/yiiframework>

@@ -7,15 +7,15 @@
 
 namespace yii\db\oci;
 
-use yii\db\SchemaBuilder as AbstractSchemaBuilder;
+use yii\db\ColumnSchemaBuilder as AbstractColumnSchemaBuilder;
 
 /**
- * SchemaBuilder is the schema builder for Oracle databases.
+ * ColumnSchemaBuilder is the schema builder for Oracle databases.
  *
  * @author Vasenin Matvey <vaseninm@gmail.com>
- * @since 2.0.5
+ * @since 2.0.6
  */
-class SchemaBuilder extends AbstractSchemaBuilder
+class ColumnSchemaBuilder extends AbstractColumnSchemaBuilder
 {
     /**
      * @inheritdoc
@@ -25,6 +25,7 @@ class SchemaBuilder extends AbstractSchemaBuilder
         return
             $this->type .
             $this->buildLengthString() .
+            $this->buildUnsignedString() .
             $this->buildDefaultString() .
             $this->buildNotNullString() .
             $this->buildCheckString();

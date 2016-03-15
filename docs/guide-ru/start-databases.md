@@ -28,16 +28,16 @@ CREATE TABLE `country` (
   `population` INT(11) NOT NULL DEFAULT '0'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-INSERT INTO `country` VALUES ('AU','Australia',18886000);
-INSERT INTO `country` VALUES ('BR','Brazil',170115000);
-INSERT INTO `country` VALUES ('CA','Canada',1147000);
-INSERT INTO `country` VALUES ('CN','China',1277558000);
-INSERT INTO `country` VALUES ('DE','Germany',82164700);
-INSERT INTO `country` VALUES ('FR','France',59225700);
-INSERT INTO `country` VALUES ('GB','United Kingdom',59623400);
-INSERT INTO `country` VALUES ('IN','India',1013662000);
-INSERT INTO `country` VALUES ('RU','Russia',146934000);
-INSERT INTO `country` VALUES ('US','United States',278357000);
+INSERT INTO `country` VALUES ('AU','Australia',24016400);
+INSERT INTO `country` VALUES ('BR','Brazil',205722000);
+INSERT INTO `country` VALUES ('CA','Canada',35985751);
+INSERT INTO `country` VALUES ('CN','China',1375210000);
+INSERT INTO `country` VALUES ('DE','Germany',81459000);
+INSERT INTO `country` VALUES ('FR','France',64513242);
+INSERT INTO `country` VALUES ('GB','United Kingdom',65097000);
+INSERT INTO `country` VALUES ('IN','India',1285400000);
+INSERT INTO `country` VALUES ('RU','Russia',146519759);
+INSERT INTO `country` VALUES ('US','United States',322976000);
 ```
 
 На данный момент у вас есть база данных под названием `yii2basic`, и внутри неё таблица `country` с тремя столбцами, содержащими десять строк данных.
@@ -64,9 +64,17 @@ return [
 
 Подключение к БД, настроенное выше, доступно в коде приложения через выражение `Yii::$app->db`.
 
-> Информация: файл `config/db.php` будет подключен главной конфигурацией приложения `config/web.php`,
+> Info: файл `config/db.php` будет подключен главной конфигурацией приложения `config/web.php`,
   описывающей то, как экземпляр [приложения](structure-applications.md) должен быть инициализирован.
   Для детальной информации, пожалуйста, обратитесь к разделу [Конфигурации](concept-configurations.md).
+
+Если вам необходимо работать с базами данных, поддержка которых не включена непосредственно в фреймворк, стоит обратить
+внимание на следующие расширения:
+
+- [Informix](https://github.com/edgardmessias/yii2-informix)
+- [IBM DB2](https://github.com/edgardmessias/yii2-ibm-db2)
+- [Firebird](https://github.com/edgardmessias/yii2-firebird)
+
 
 Создаём потомка Active Record <span id="creating-active-record"></span>
 -------------------------
@@ -87,7 +95,7 @@ class Country extends ActiveRecord
 
 Класс `Country` наследуется от [[yii\db\ActiveRecord]]. Вам не нужно писать ни строчки кода внутри него! С кодом, приведённым выше, Yii свяжет имя таблицы с именем класса.
 
-> Информация: Если нет возможности задать прямой зависимости между именем таблицы и именем класса, вы можете переопределить
+> Info: Если нет возможности задать прямой зависимости между именем таблицы и именем класса, вы можете переопределить
   метод [[yii\db\ActiveRecord::tableName()]], чтобы явно задать имя связанной таблицы.
 
 Используя класс `Country`, вы можете легко манипулировать данными в таблице `country`, как показано в этих фрагментах:
@@ -109,7 +117,7 @@ $country->name = 'U.S.A.';
 $country->save();
 ```
 
-> Информация: Active Record - мощный способ доступа и манипулирования данными БД в объектно-ориентированном стиле.
+> Info: Active Record - мощный способ доступа и манипулирования данными БД в объектно-ориентированном стиле.
   Вы можете найти подробную информацию в разделе [Active Record](db-active-record.md). В качестве альтернативы, вы также можете взаимодействовать с базой данных, используя более низкоуровневый способ доступа, называемый [Data Access Objects](db-dao.md).
 
 

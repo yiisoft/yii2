@@ -133,7 +133,11 @@ class PhpDocController extends Controller
                 '/extensions/composer/',
                 '/extensions/gii/components/DiffRendererHtmlInline.php',
                 '/extensions/gii/generators/extension/default/*',
+                '/extensions/twig/Extension.php',
+                '/extensions/twig/Optimizer.php',
+                '/extensions/twig/Template.php',
                 '/extensions/twig/TwigSimpleFileLoader.php',
+                '/extensions/twig/ViewRendererStaticClassProxy.php',
                 '/framework/BaseYii.php',
                 '/framework/Yii.php',
                 'assets/',
@@ -243,6 +247,7 @@ class PhpDocController extends Controller
                     $codeBlock = false;
                     $tag = true;
                     $docLine = preg_replace('/\s+/', ' ', $docLine);
+                    $docLine = $this->fixParamTypes($docLine);
                 } elseif (preg_match('/^(~~~|```)/', $docLine)) {
                     $codeBlock = !$codeBlock;
                     $listIndent = '';
@@ -261,6 +266,20 @@ class PhpDocController extends Controller
         }
     }
 
+    protected function fixParamTypes($line)
+    {
+        return preg_replace_callback('~@(param|return) ([\w\\|]+)~i', function($matches) {
+            $types = explode('|', $matches[2]);
+            foreach($types as $i => $type) {
+                switch($type){
+                    case 'int': $types[$i] = 'integer'; break;
+                    case 'bool': $types[$i] = 'boolean'; break;
+                }
+            }
+            return '@' . $matches[1] . ' ' . implode('|', $types);
+        }, $line);
+    }
+
     /**
      * Fixes line spacing code style for properties and constants
      */
@@ -269,6 +288,7 @@ class PhpDocController extends Controller
         $propertiesOnly = false;
         // remove blank lines between properties
         $skip = true;
+        $level = 0;
         foreach($lines as $i => $line) {
             if (strpos($line, 'class ') !== false) {
                 $skip = false;
@@ -276,8 +296,16 @@ class PhpDocController extends Controller
             if ($skip) {
                 continue;
             }
+
+            // keep spaces in multi line arrays
+            if (strpos($line, '*') === false && strncmp(trim($line), "'SQLSTATE[", 10) !== 0) {
+                $level += substr_count($line, '[') - substr_count($line, ']');
+            }
+
             if (trim($line) === '') {
-                unset($lines[$i]);
+                if ($level == 0) {
+                    unset($lines[$i]);
+                }
             } elseif (ltrim($line)[0] !== '*' && strpos($line, 'function ') !== false) {
                 break;
             } elseif (trim($line) === '}') {

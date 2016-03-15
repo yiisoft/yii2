@@ -17,7 +17,7 @@ use yii\test\FixtureTrait;
 /**
  * Manages fixture data loading and unloading.
  *
- * ~~~
+ * ```
  * #load fixtures from UsersFixture class with default namespace "tests\unit\fixtures"
  * yii fixture/load User
  *
@@ -32,7 +32,7 @@ use yii\test\FixtureTrait;
  *
  * #load fixtures with different namespace.
  * yii fixture/load User --namespace=alias\my\custom\namespace\goes\here
- * ~~~
+ * ```
  *
  * The `unload` sub-command can be used similarly to unload fixtures.
  *
@@ -71,10 +71,21 @@ class FixtureController extends Controller
     }
 
     /**
+     * @inheritdoc
+     */
+    public function optionAliases()
+    {
+        return array_merge(parent::optionAliases(), [
+            'g' => 'globalFixtures',
+            'n' => 'namespace'
+        ]);
+    }
+
+    /**
      * Loads the specified fixture data.
      * For example,
      *
-     * ~~~
+     * ```
      * # load the fixture data specified by User and UserProfile.
      * # any existing fixture data will be removed first
      * yii fixture/load User UserProfile
@@ -84,7 +95,7 @@ class FixtureController extends Controller
      *
      * # load all fixtures except User and UserProfile
      * yii fixture/load "*" -User -UserProfile
-     * ~~~
+     * ```
      *
      * @throws Exception if the specified fixture does not exist.
      */
@@ -94,7 +105,7 @@ class FixtureController extends Controller
         if ($fixturesInput === []) {
             $this->stdout($this->getHelpSummary() . "\n");
 
-            $helpCommand = Console::ansiFormat("yii help fixture", [Console::FG_CYAN]);
+            $helpCommand = Console::ansiFormat('yii help fixture', [Console::FG_CYAN]);
             $this->stdout("Use $helpCommand to get usage info.\n");
 
             return self::EXIT_CODE_NORMAL;
@@ -155,7 +166,7 @@ class FixtureController extends Controller
      * Unloads the specified fixtures.
      * For example,
      *
-     * ~~~
+     * ```
      * # unload the fixture data specified by User and UserProfile.
      * yii fixture/unload User UserProfile
      *
@@ -164,7 +175,7 @@ class FixtureController extends Controller
      *
      * # unload all fixtures except User and UserProfile
      * yii fixture/unload "*" -User -UserProfile
-     * ~~~
+     * ```
      *
      * @throws Exception if the specified fixture does not exist.
      */
@@ -368,15 +379,15 @@ class FixtureController extends Controller
     /**
      * Checks if needed to apply all fixtures.
      * @param string $fixture
-     * @return bool
+     * @return boolean
      */
     public function needToApplyAll($fixture)
     {
-        return $fixture == '*';
+        return $fixture === '*';
     }
 
     /**
-     * Finds fixtures to be loaded, for example "User", if no fixtures were specified then all of them 
+     * Finds fixtures to be loaded, for example "User", if no fixtures were specified then all of them
      * will be searching by suffix "Fixture.php".
      * @param array $fixtures fixtures to be loaded
      * @return array Array of found fixtures. These may differ from input parameter as not all fixtures may exists.
@@ -386,7 +397,7 @@ class FixtureController extends Controller
         $fixturesPath = $this->getFixturePath();
 
         $filesToSearch = ['*Fixture.php'];
-        $findAll = ($fixtures == []);
+        $findAll = ($fixtures === []);
 
         if (!$findAll) {
 
@@ -433,8 +444,8 @@ class FixtureController extends Controller
      * Filters fixtures by splitting them in two categories: one that should be applied and not.
      * If fixture is prefixed with "-", for example "-User", that means that fixture should not be loaded,
      * if it is not prefixed it is considered as one to be loaded. Returns array:
-     * 
-     * ~~~
+     *
+     * ```php
      * [
      *     'apply' => [
      *         'User',
@@ -445,7 +456,7 @@ class FixtureController extends Controller
      *         ...
      *     ],
      * ]
-     * ~~~
+     * ```
      * @param array $fixtures
      * @return array fixtures array with 'apply' and 'except' elements.
      */
@@ -460,7 +471,7 @@ class FixtureController extends Controller
             if (mb_strpos($fixture, '-') !== false) {
                 $filtered['except'][] = str_replace('-', '', $fixture);
             } else {
-                $filtered['apply'][] = $fixture;                
+                $filtered['apply'][] = $fixture;
             }
         }
 

@@ -257,7 +257,7 @@ echo GridView::widget([
  заменён результатом из функции, определённой в `buttons['view']`. Если такая функция не может быть найдена, то маркер
  заменяется на пустую строку. По умолчанию шаблон имеет вид `{view} {update} {delete}`. 
 - [[yii\grid\ActionColumn::buttons|buttons]] массив из функций для отображения кнопок. Ключи массива представлены как
- имена кнопок(как описывалось выше), а значения представлены в качестве анонимных функций, которые выводят кнопки. Замыкания
+ имена кнопок (как описывалось выше), а значения представлены в качестве анонимных функций, которые выводят кнопки. Замыкания
  должны использоваться в следующем виде:
 
   ```php
@@ -271,6 +271,24 @@ echo GridView::widget([
 - [[yii\grid\ActionColumn::urlCreator|urlCreator]] замыкание, которое создаёт URL используя информацию из модели. Вид 
  замыкания должен быть таким же как и в [[yii\grid\ActionColumn::createUrl()]]. Если свойство не задано, то URL для кнопки
  будет создана используя метод [[yii\grid\ActionColumn::createUrl()]].
+- [[yii\grid\ActionColumn::visibleButtons|visibleButtons]] это массив условий видимости каждой из кнопок.
+ Ключи массива представлены как имена кнопок (как описывалось выше), а значения представлены как булево значение или
+ анонимная функция. Если имя кнопки не описано в массиве, она будет отображена по умолчанию.
+ Замыкания должны использоваться в следующем виде:
+
+ ```php
+ function ($model, $key, $index) {
+   return $model->status === 'editable'; // отображать ли кнопку
+ }
+ ```
+
+ Или вы можете передать булево значение:
+
+ ```php
+ [
+     'update' => \Yii::$app->user->can('update')
+ ]
+ ```
 
 #### CheckboxColumn
 
@@ -403,6 +421,86 @@ echo GridView::widget([
 ]);
 ```
 
+### Отдельная форма фильтрации
+
+Фильтров в шапке GridView достаточно для большинства задач, но добавление отдельной формы фильтрации не представляет
+особой сложности. Она бывает полезна в случае необходимости фильтрации по полям, которые не отображаются в GridView
+или особых условий фильтрации, например по диапазону дат.
+
+Создайте частичное представление `_search.php` со следующим содержимым:
+
+```php
+<?php
+
+use yii\helpers\Html;
+use yii\widgets\ActiveForm;
+
+/* @var $this yii\web\View */
+/* @var $model app\models\PostSearch */
+/* @var $form yii\widgets\ActiveForm */
+?>
+
+<div class="post-search">
+    <?php $form = ActiveForm::begin([
+        'action' => ['index'],
+        'method' => 'get',
+    ]); ?>
+
+    <?= $form->field($model, 'title') ?>
+
+    <?= $form->field($model, 'creation_date') ?>
+
+    <div class="form-group">
+        <?= Html::submitButton('Искать', ['class' => 'btn btn-primary']) ?>
+        <?= Html::submitButton('Сбросить', ['class' => 'btn btn-default']) ?>
+    </div>
+
+    <?php ActiveForm::end(); ?>
+</div>
+```
+
+и добавьте его отображение в `index.php` таким образом:
+
+```php
+<?= $this->render('_search', ['model' => $searchModel]) ?>
+```
+
+> Note: если вы используете Gii для генерации CRUD кода, отдельная форма фильтрации (`_search.php`)
+генерируется по умолчанию, но закомментирована в представлении `index.php`. Вам остается только раскомментировать
+эту строку и форма готова к использованию!
+
+Для фильтра по диапазону дат мы можем добавить дополнительные атрибуты `createdFrom` и `createdTo` в поисковую модель
+(их нет в соответствующей таблице модели):
+
+```php
+class PostSearch extends Post
+{
+    /**
+     * @var string
+     */
+    public $createdFrom;
+
+    /**
+     * @var string
+     */
+    public $createdTo;
+}
+```
+
+Расширим условия запроса в методе `search()`:
+
+```php
+$query->andFilterWhere(['>=', 'creation_date', $this->createdFrom])
+      ->andFilterWhere(['<=', 'creation_date', $this->createdTo]);
+```
+
+И добавим соответствующие поля в форму фильтрации:
+
+```php
+<?= $form->field($model, 'creationFrom') ?>
+
+<?= $form->field($model, 'creationTo') ?>
+```
 
 ### Отображение зависимых моделей
 
@@ -458,7 +556,7 @@ public function rules()
 $query->andFilterWhere(['LIKE', 'author.name', $this->getAttribute('author.name')]);
 ```
 
-> Информация: В коде, что выше, использует такая же строка, как и имя зависимости и псевдонима таблицы. 
+> Info: В коде, что выше, использует такая же строка, как и имя зависимости и псевдонима таблицы.
 > Однако, когда ваш псевдоним и имя связи различаются, вы должны обратить внимание, где вы используете псевдоним,
 > а где имя связи. Простым правилом для этого является использование псевдонима в каждом месте, которое используется
 > для построения запроса к базе данных, и имя связи во всех других определениях, таких как `attributes()`, `rules()` и т.д.
@@ -492,7 +590,7 @@ $query->andFilterWhere(['LIKE', 'author.name', $this->getAttribute('author.name'
 > $dataProvider->sort->defaultOrder = ['author.name' => SORT_ASC];
 > ```
 
-> Информация: Для подробной информации по `joinWith` и запросам, выполняемым в фоновом режиме, обратитесь к
+> Info: Для подробной информации по `joinWith` и запросам, выполняемым в фоновом режиме, обратитесь к
 > [active record документации](db-active-record.md#joining-with-relations).
 
 #### Использование SQL видов для вывода данных, их сортировки и фильтрации.
@@ -570,7 +668,7 @@ class UserView extends ActiveRecord
 При использовании нескольких экземпляров GridView вы должны настроить различные имена параметров для сортировки и ссылки
 для разбиения на страницы так, чтобы каждый GridView имел свою индивидуальный сортировку и разбиение на страницы.
 Сделать это возможно через настройку [[yii\data\Sort::sortParam|sortParam]] и [[yii\data\Pagination::pageParam|pageParam]]
-свойств провайдеров данных [[yii\data\BaseDataProvider::$sort|sort]] и [yii\data\BaseDataProvider::$pagination|pagination]]
+свойств провайдеров данных [[yii\data\BaseDataProvider::$sort|sort]] и [[yii\data\BaseDataProvider::$pagination|pagination]]
 
 Допустим мы хотим список моделей `Post` и `User`, для которых мы уже подготовили провайдеры данных `$userProvider` и 
 `$postProvider`, тогда код будет выглядеть следующим образом:

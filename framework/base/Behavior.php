@@ -45,12 +45,12 @@ class Behavior extends Object
      *
      * The following is an example:
      *
-     * ~~~
+     * ```php
      * [
      *     Model::EVENT_BEFORE_VALIDATE => 'myBeforeValidate',
      *     Model::EVENT_AFTER_VALIDATE => 'myAfterValidate',
      * ]
-     * ~~~
+     * ```
      *
      * @return array events (array keys) and the corresponding event handler methods (array values).
      */

@@ -31,8 +31,8 @@ class AccessRule extends Component
      */
     public $actions;
     /**
-     * @var array list of controller IDs that this rule applies to. The comparison is case-sensitive.
-     * If not set or empty, it means this rule applies to all controllers.
+     * @var array list of the controller IDs that this rule applies to. Each controller ID is prefixed with the module ID (if any).
+     * The comparison is case-sensitive. If not set or empty, it means this rule applies to all controllers.
      */
     public $controllers;
     /**
@@ -67,9 +67,9 @@ class AccessRule extends Component
      * @var callable a callback that will be called to determine if the rule should be applied.
      * The signature of the callback should be as follows:
      *
-     * ~~~
+     * ```php
      * function ($rule, $action)
-     * ~~~
+     * ```
      *
      * where `$rule` is this rule, and `$action` is the current [[Action|action]] object.
      * The callback should return a boolean value indicating whether this rule should be applied.
@@ -82,9 +82,9 @@ class AccessRule extends Component
      *
      * The signature of the callback should be as follows:
      *
-     * ~~~
+     * ```php
      * function ($rule, $action)
-     * ~~~
+     * ```
      *
      * where `$rule` is this rule, and `$action` is the current [[Action|action]] object.
      */

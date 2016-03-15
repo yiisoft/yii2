@@ -158,6 +158,7 @@ abstract class ManagerTestCase extends TestCase
                 'createPost' => true,
                 'readPost' => true,
                 'updatePost' => true,
+                'deletePost' => true,
                 'updateAnyPost' => false,
             ],
             'admin C' => [
@@ -194,6 +195,10 @@ abstract class ManagerTestCase extends TestCase
         $readPost->description = 'read a post';
         $this->auth->add($readPost);
 
+        $deletePost = $this->auth->createPermission('deletePost');
+        $deletePost->description = 'delete a post';
+        $this->auth->add($deletePost);
+
         $updatePost = $this->auth->createPermission('updatePost');
         $updatePost->description = 'update a post';
         $updatePost->ruleName = $rule->name;
@@ -222,28 +227,29 @@ abstract class ManagerTestCase extends TestCase
 
         $this->auth->assign($reader, 'reader A');
         $this->auth->assign($author, 'author B');
+        $this->auth->assign($deletePost, 'author B');
         $this->auth->assign($admin, 'admin C');
     }
 
     public function testGetPermissionsByRole()
     {
         $this->prepareData();
-        $roles = $this->auth->getPermissionsByRole('admin');
+        $permissions = $this->auth->getPermissionsByRole('admin');
         $expectedPermissions = ['createPost', 'updatePost', 'readPost', 'updateAnyPost'];
-        $this->assertEquals(count($roles), count($expectedPermissions));
-        foreach ($expectedPermissions as $permission) {
-            $this->assertTrue($roles[$permission] instanceof Permission);
+        $this->assertEquals(count($expectedPermissions), count($permissions));
+        foreach ($expectedPermissions as $permissionName) {
+            $this->assertTrue($permissions[$permissionName] instanceof Permission);
         }
     }
 
     public function testGetPermissionsByUser()
     {
         $this->prepareData();
-        $roles = $this->auth->getPermissionsByUser('author B');
-        $expectedPermissions = ['createPost', 'updatePost', 'readPost'];
-        $this->assertEquals(count($roles), count($expectedPermissions));
-        foreach ($expectedPermissions as $permission) {
-            $this->assertTrue($roles[$permission] instanceof Permission);
+        $permissions = $this->auth->getPermissionsByUser('author B');
+        $expectedPermissions = ['deletePost', 'createPost', 'updatePost', 'readPost'];
+        $this->assertEquals(count($expectedPermissions), count($permissions));
+        foreach ($expectedPermissions as $permissionName) {
+            $this->assertTrue($permissions[$permissionName] instanceof Permission);
         }
     }
 
@@ -291,5 +297,19 @@ abstract class ManagerTestCase extends TestCase
         $this->assertEquals(0, count($this->auth->getAssignments(0)));
         $this->assertEquals(1, count($this->auth->getAssignments(42)));
         $this->assertEquals(2, count($this->auth->getAssignments(1337)));
+    }
+
+    public function testGetAssignmentsByRole()
+    {
+        $this->prepareData();
+        $reader = $this->auth->getRole('reader');
+        $this->auth->assign($reader, 123);
+
+        $this->auth = $this->createManager();
+
+        $this->assertEquals([], $this->auth->getUserIdsByRole('nonexisting'));
+        $this->assertEquals(['reader A', '123'], $this->auth->getUserIdsByRole('reader'), '', 0.0, 10, true);
+        $this->assertEquals(['author B'], $this->auth->getUserIdsByRole('author'));
+        $this->assertEquals(['admin C'], $this->auth->getUserIdsByRole('admin'));
     }
 }
