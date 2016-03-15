@@ -90,7 +90,7 @@ class BaseJson
     {
         if (is_array($json)) {
             throw new InvalidParamException('Invalid JSON data.');
-        } elseif ((string) $json === '') {
+        } elseif ($json === null || $json === '') {
             return null;
         }
         $decode = json_decode((string) $json, $asArray);
