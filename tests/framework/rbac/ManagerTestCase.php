@@ -312,4 +312,16 @@ abstract class ManagerTestCase extends TestCase
         $this->assertEquals(['author B'], $this->auth->getUserIdsByRole('author'));
         $this->assertEquals(['admin C'], $this->auth->getUserIdsByRole('admin'));
     }
+
+    public function testCanAddChild()
+    {
+        $this->prepareData();
+
+        $author = $this->auth->createRole('author');
+        $reader = $this->auth->createRole('reader');
+
+        $this->assertTrue($this->auth->canAddChild($author, $reader));
+        $this->assertFalse($this->auth->canAddChild($reader, $author));
+    }
+
 }
