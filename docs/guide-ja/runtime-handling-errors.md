@@ -137,6 +137,12 @@ public function actionError()
 
 > Info: あなたが [ベーシックプロジェクトテンプレート](start-installation.md) または [アドバンストプロジェクトテンプレート](https://github.com/yiisoft/yii2-app-advanced/blob/master/docs/guide-ja/README.md) を使っている場合は、エラーアクションとエラービューは、既にあなたのために定義されています。
 
+> Note: エラーハンドラの中でリダイレクトする必要がある場合は、次のようにしてください。
+> ```php
+> Yii::$app->getResponse()->redirect($url)->send();
+> return;
+> ```
+
 
 ### エラーのレスポンス形式をカスタマイズする <span id="error-format"></span>
 

@@ -755,6 +755,7 @@ ICU のバージョンが異なると、日付や数値のフォーマットの�
 <?php
 echo "PHP: " . PHP_VERSION . "\n";
 echo "ICU: " . INTL_ICU_VERSION . "\n";
+echo "ICU Data: " . INTL_ICU_DATA_VERSION . "\n";
 ```
 
 さらに、バージョン 49 以上の ICU を使用する事も推奨されます。
