@@ -2109,10 +2109,16 @@ class BaseHtml
         $prefix = $matches[1];
         $attribute = $matches[2];
         $suffix = $matches[3];
+        $embeddedAttributes = '';
+        if (strpos($attribute, '.')) {
+            $list = explode('.', $attribute);
+            $attribute = array_shift($list);
+            $embeddedAttributes = '[' . implode('][', $list) . ']';
+        }
         if ($formName === '' && $prefix === '') {
-            return $attribute . $suffix;
+            return $attribute . $embeddedAttributes . $suffix;
         } elseif ($formName !== '') {
-            return $formName . $prefix . "[$attribute]" . $suffix;
+            return $formName . $prefix . "[$attribute]" . $embeddedAttributes . $suffix;
         } else {
             throw new InvalidParamException(get_class($model) . '::formName() cannot be empty for tabular inputs.');
         }

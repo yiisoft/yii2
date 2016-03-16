@@ -20,6 +20,7 @@ Yii Framework 2 Change Log
 - Enh #5469: Add mimetype validation by mask in FileValidator (kirsenn, samdark, silverfire)
 - Enh #8602: `yii\validators\DateValidator` skip validation for `timestampAttribute`, if it is already in correct format (klimov-paul)
 - Enh #8639: Improve ActiveRecord to not create new instances of classes when objects are available (cebe)
+- Enh #9519: `yii\base\Model` add support dot notation for access attributes (surgat)
 - Enh #9893: `yii.js` handleAction enhanced to support for data-form attribute, so links can trigger specific forms (SamMousa)
 - Enh #10451: Check of existence of `$_SERVER` in `\yii\web\Request` before using it (quantum13)
 - Enh #10487: `yii\helpers\BaseArrayHelper::index()` got a third parameter `$groupBy` to group the input array by the key in one or more dimensions (quantum13, silverfire, samdark)
