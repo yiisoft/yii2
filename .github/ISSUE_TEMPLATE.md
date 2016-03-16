@@ -1,6 +1,6 @@
 ### What steps will reproduce the problem?
 
-### What's expected?
+### What is the expected result?
 
 ### What do you get instead?
 
@@ -9,6 +9,6 @@
 
 | Q                | A
 | ---------------- | ---
-| Yii vesion       |
-| PHP version      |
-| Operating system |
+| Yii version      | 
+| PHP version      | 
+| Operating system | 
