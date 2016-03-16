@@ -12,9 +12,11 @@ namespace yiiunit\data\ar;
  */
 class OrderItem extends ActiveRecord
 {
+    public static $tableName;
+
     public static function tableName()
     {
-        return 'order_item';
+        return static::$tableName ?: 'order_item';
     }
 
     public function getOrder()

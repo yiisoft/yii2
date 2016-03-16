@@ -89,4 +89,26 @@ abstract class DatabaseTestCase extends TestCase
         }
         return $db;
     }
+
+    /**
+     * adjust dbms specific escaping
+     * @param $sql
+     * @return mixed
+     */
+    protected function replaceQuotes($sql)
+    {
+        switch ($this->driverName) {
+            case 'mysql':
+            case 'sqlite':
+                return str_replace(['[[', ']]'], '`', $sql);
+            case 'cubrid':
+            case 'pgsql':
+            case 'oci':
+                return str_replace(['[[', ']]'], '"', $sql);
+            case 'sqlsrv':
+                return str_replace(['[[', ']]'], ['[', ']'], $sql);
+            default:
+                return $sql;
+        }
+    }
 }
