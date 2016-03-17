@@ -87,12 +87,14 @@ class ReleaseController extends Controller
         }
 
         $versions = $this->getCurrentVersions($extensions);
+        $nextVersions = $this->getNextVersions($versions, self::PATCH);
 
         // print version table
         $w = $this->minWidth(array_keys($versions));
-        $this->stdout(str_repeat(' ', $w + 2) . "Current Version\n", Console::BOLD);
+        $this->stdout(str_repeat(' ', $w + 2) . "Current Version  Next Version\n", Console::BOLD);
         foreach($versions as $ext => $version) {
-            $this->stdout($ext . str_repeat(' ', $w + 3 - mb_strlen($ext)) . $version . "\n");
+            $this->stdout($ext . str_repeat(' ', $w + 3 - mb_strlen($ext)) . $version . "");
+            $this->stdout(str_repeat(' ', 17 - mb_strlen($version)) . $nextVersions[$ext] . "\n");
         }
 
     }
@@ -637,6 +639,10 @@ class ReleaseController extends Controller
     protected function getNextVersions(array $versions, $type)
     {
         foreach($versions as $k => $v) {
+            if (empty($v)) {
+                $versions[$k] = '2.0.0';
+                continue;
+            }
             $parts = explode('.', $v);
             switch($type) {
                 case self::MINOR:
