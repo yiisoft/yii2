@@ -111,6 +111,29 @@ class PhpDocController extends Controller
     protected function findFiles($root)
     {
         $except = [];
+        $extensionExcept = [
+            'apidoc' => [
+                '/helpers/PrettyPrinter.php',
+                '/extensions/apidoc/helpers/ApiIndexer.php',
+                '/extensions/apidoc/helpers/ApiMarkdownLaTeX.php',
+            ],
+            'codeception' => [
+                '/TestCase.php',
+                '/DbTestCase.php',
+            ],
+            'gii' => [
+                '/components/DiffRendererHtmlInline.php',
+                '/generators/extension/default/*',
+            ],
+            'twig' => [
+                '/Extension.php',
+                '/Optimizer.php',
+                '/Template.php',
+                '/TwigSimpleFileLoader.php',
+                '/ViewRendererStaticClassProxy.php',
+            ],
+        ];
+
         if ($root === null) {
             $root = dirname(YII2_PATH);
             $extensionPath = "$root/extensions";
@@ -121,29 +144,38 @@ class PhpDocController extends Controller
             }
 
             $except = [
-                '.git/',
                 '/apps/',
                 '/build/',
                 '/docs/',
-                '/extensions/apidoc/helpers/PrettyPrinter.php',
-                '/extensions/apidoc/helpers/ApiIndexer.php',
-                '/extensions/apidoc/helpers/ApiMarkdownLaTeX.php',
-                '/extensions/codeception/TestCase.php',
-                '/extensions/codeception/DbTestCase.php',
                 '/extensions/composer/',
-                '/extensions/gii/components/DiffRendererHtmlInline.php',
-                '/extensions/gii/generators/extension/default/*',
-                '/extensions/twig/Extension.php',
-                '/extensions/twig/Optimizer.php',
-                '/extensions/twig/Template.php',
-                '/extensions/twig/TwigSimpleFileLoader.php',
-                '/extensions/twig/ViewRendererStaticClassProxy.php',
                 '/framework/BaseYii.php',
                 '/framework/Yii.php',
                 'assets/',
                 'tests/',
                 'vendor/',
             ];
+            foreach($extensionExcept as $ext => $paths) {
+                foreach($paths as $path) {
+                    $except[] = "/extensions/$ext$path";
+                }
+            }
+        } elseif (preg_match('~extensions/([\w\d-]+)/?$~', $root, $matches)) {
+            list(, $extension) = $matches;
+            Yii::setAlias("@yii/$extension", "$root");
+
+            if (isset($extensionExcept[$extension])) {
+                foreach($extensionExcept[$extension] as $path) {
+                    $except[] = $path;
+                }
+            }
+            $except[] = '/vendor/';
+            $except[] = '/tests/';
+            $except[] = '/docs/';
+
+//            // composer extension does not contain yii code
+//            if ($extension === 'composer') {
+//                return [];
+//            }
         }
         $root = FileHelper::normalizePath($root);
         $options = [
@@ -159,6 +191,7 @@ class PhpDocController extends Controller
                 },
             'only' => ['*.php'],
             'except' => array_merge($except, [
+                '.git/',
                 'views/',
                 'requirements/',
                 'gii/generators/',
