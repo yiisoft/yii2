@@ -78,6 +78,9 @@ class ReleaseController extends Controller
 
         if ($this->update) {
             foreach($extensions as $extension) {
+                if ($extension === 'framework') {
+                    continue;
+                }
                 $this->stdout("fetching tags for $extension...");
                 $this->gitFetchTags("{$this->basePath}/extensions/$extension");
                 $this->stdout("done.\n", Console::FG_GREEN, Console::BOLD);
@@ -166,7 +169,9 @@ class ReleaseController extends Controller
         $this->stdout("Before you make a release briefly go over the changes and check if you spot obvious mistakes:\n\n", Console::BOLD);
         $this->stdout("- no accidentally added CHANGELOG lines for other versions than this one?\n");
         $this->stdout("- are all new `@since` tags for this relase version?\n");
-        $this->stdout("- other issues with code changes?\n\n");
+        $travisUrl = reset($what) === 'framework' ? '' : '-'.reset($what);
+        $this->stdout("- are unit tests passing on travis? https://travis-ci.org/yiisoft/yii2$travisUrl/builds\n");
+        $this->stdout("- other issues with code changes?\n");
         $this->stdout("- also make sure the milestone on github is complete and no issues or PRs are left open.\n\n");
         $this->printWhatUrls($what, $versions);
         $this->stdout("\n");
@@ -198,7 +203,7 @@ class ReleaseController extends Controller
                 $this->stdout(" extension version ");
             }
             $this->stdout($newVersions[$ext], Console::BOLD);
-            $this->stdout(", current latest release is {$versions[$ext]}\n");
+            $this->stdout(", last release was {$versions[$ext]}\n");
         }
     }
 
@@ -230,27 +235,6 @@ class ReleaseController extends Controller
                 }
                 $this->ensureGitClean($extPath);
             }
-        }
-    }
-
-    protected function ensureGitClean($path)
-    {
-        chdir($path);
-        exec('git status --porcelain -uno', $changes, $ret);
-        if ($ret != 0) {
-            throw new Exception('Command "git status --porcelain -uno" failed with code ' . $ret);
-        }
-        if (!empty($changes)) {
-            throw new Exception("You have uncommitted changes in $path: " . print_r($changes, true));
-        }
-    }
-
-    protected function gitFetchTags($path)
-    {
-        chdir($path);
-        exec('git fetch --tags', $output, $ret);
-        if ($ret != 0) {
-            throw new Exception('Command "git fetch --tags" failed with code ' . $ret);
         }
     }
 
@@ -384,7 +368,7 @@ class ReleaseController extends Controller
 
         $this->runGit("git commit -a -m \"release version $version\"", $path);
         $this->runGit("git tag -a $version -m\"version $version\"", $path);
-        $this->runGit("git push", $path);
+        $this->runGit("git push origin master", $path);
         $this->runGit("git push --tags", $path);
 
         $this->stdout("\n\n");
@@ -407,7 +391,7 @@ class ReleaseController extends Controller
         $this->runGit("git diff --color", $path);
         $this->stdout("\n\n");
         $this->runGit("git commit -a -m \"prepare for next release\"", $path);
-        $this->runGit("git push", $path);
+        $this->runGit("git push origin master", $path);
 
         $this->stdout("\n\nDONE!", Console::FG_YELLOW, Console::BOLD);
 
@@ -434,8 +418,31 @@ class ReleaseController extends Controller
             if ($ret != 0) {
                 throw new Exception("Command \"$cmd\" failed with code " . $ret);
             }
+            echo "\n";
         }
     }
+
+    protected function ensureGitClean($path)
+    {
+        chdir($path);
+        exec('git status --porcelain -uno', $changes, $ret);
+        if ($ret != 0) {
+            throw new Exception('Command "git status --porcelain -uno" failed with code ' . $ret);
+        }
+        if (!empty($changes)) {
+            throw new Exception("You have uncommitted changes in $path: " . print_r($changes, true));
+        }
+    }
+
+    protected function gitFetchTags($path)
+    {
+        chdir($path);
+        exec('git fetch --tags', $output, $ret);
+        if ($ret != 0) {
+            throw new Exception('Command "git fetch --tags" failed with code ' . $ret);
+        }
+    }
+
 
     protected function checkComposer($fwPath)
     {
@@ -459,7 +466,7 @@ class ReleaseController extends Controller
     protected function openChangelogs($what, $version)
     {
         $headline = "\n$version under development\n";
-        $headline .= str_repeat('-', strlen($headline) - 2) . "\n\n";
+        $headline .= str_repeat('-', strlen($headline) - 2) . "\n\n- no changes in this release.\n";
         foreach($this->getChangelogs($what) as $file) {
             $lines = explode("\n", file_get_contents($file));
             $hl = [

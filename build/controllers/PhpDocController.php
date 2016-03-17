@@ -72,7 +72,7 @@ class PhpDocController extends Controller
      */
     public function actionFix($root = null)
     {
-        $files = $this->findFiles($root);
+        $files = $this->findFiles($root, false);
 
         $nFilesTotal = 0;
         $nFilesUpdated = 0;
@@ -108,31 +108,38 @@ class PhpDocController extends Controller
         return array_merge(parent::options($actionID), ['updateFiles']);
     }
 
-    protected function findFiles($root)
+    protected function findFiles($root, $needsInclude = true)
     {
         $except = [];
-        $extensionExcept = [
-            'apidoc' => [
-                '/helpers/PrettyPrinter.php',
-                '/extensions/apidoc/helpers/ApiIndexer.php',
-                '/extensions/apidoc/helpers/ApiMarkdownLaTeX.php',
-            ],
-            'codeception' => [
-                '/TestCase.php',
-                '/DbTestCase.php',
-            ],
-            'gii' => [
-                '/components/DiffRendererHtmlInline.php',
-                '/generators/extension/default/*',
-            ],
-            'twig' => [
-                '/Extension.php',
-                '/Optimizer.php',
-                '/Template.php',
-                '/TwigSimpleFileLoader.php',
-                '/ViewRendererStaticClassProxy.php',
-            ],
-        ];
+        if ($needsInclude) {
+            $extensionExcept = [
+                'apidoc' => [
+                    '/helpers/PrettyPrinter.php',
+                    '/extensions/apidoc/helpers/ApiIndexer.php',
+                    '/extensions/apidoc/helpers/ApiMarkdownLaTeX.php',
+                ],
+                'codeception' => [
+                    '/TestCase.php',
+                    '/DbTestCase.php',
+                ],
+                'gii' => [
+                    '/components/DiffRendererHtmlInline.php',
+                    '/generators/extension/default/*',
+                ],
+                'swiftmailer' => [
+                    '/Logger.php',
+                ],
+                'twig' => [
+                    '/Extension.php',
+                    '/Optimizer.php',
+                    '/Template.php',
+                    '/TwigSimpleFileLoader.php',
+                    '/ViewRendererStaticClassProxy.php',
+                ],
+            ];
+        } else {
+            $extensionExcept = [];
+        }
 
         if ($root === null) {
             $root = dirname(YII2_PATH);
@@ -159,9 +166,20 @@ class PhpDocController extends Controller
                     $except[] = "/extensions/$ext$path";
                 }
             }
-        } elseif (preg_match('~extensions/([\w\d-]+)/?$~', $root, $matches)) {
+        } elseif (preg_match('~extensions/([\w\d-]+)[\\\\/]?$~', $root, $matches)) {
+
+            $extensionPath = dirname(rtrim($root, '\\/'));
+            foreach (scandir($extensionPath) as $extension) {
+                if (ctype_alpha($extension) && is_dir($extensionPath . '/' . $extension)) {
+                    Yii::setAlias("@yii/$extension", "$extensionPath/$extension");
+                }
+            }
+
             list(, $extension) = $matches;
             Yii::setAlias("@yii/$extension", "$root");
+            if (is_file($autoloadFile = Yii::getAlias("@yii/$extension/vendor/autoload.php"))) {
+                include($autoloadFile);
+            }
 
             if (isset($extensionExcept[$extension])) {
                 foreach($extensionExcept[$extension] as $path) {
