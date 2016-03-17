@@ -415,8 +415,19 @@ class ModelTest extends TestCase
             ['id' => 12, 'nik' => 333, 'name' => 'Dee']
         ];
         $oldUsers = [];
-        $users = models\User::createMultiple(['User' => $post], null, $oldUsers, null, 'update');
+        $users = models\User::createMultiple(['User' => $post], null, $oldUsers, null, ['scenario' => 'update']);
         $this->assertEquals($users[0]->attributes, ['id' => 12, 'name' => 'Dee', 'nik' => null]);
+
+        // use arguments constructor
+        $origin = [];
+        $post = [
+            [],
+            []
+        ];
+        $attributes = ['name', 'email'];
+        $models = \yii\base\DynamicModel::createMultiple($post, '', $origin, null, ['arguments' => [$attributes]]);
+        $this->assertEquals(2, count($models));
+        $this->assertEquals($attributes, $models[0]->attributes());
     }
 }
 

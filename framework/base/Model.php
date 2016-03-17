@@ -890,14 +890,21 @@ class Model extends Component implements IteratorAggregate, ArrayAccess, Arrayab
      * If same then will be used for result model.
      * @param string|array $keys list of attribute to check is two model are equals. If `$keys` is `null`
      * then it will use array index to check. If `$keys` is empty then always create new model.
-     * @param string $scenario scenario for model.
+     * @param array $options options applied to model.
+     *
+     * - scenario: string, scenario applied to new model.
+     * - arguments: array, the parameters to be passed to the class constructor.
+     * 
      * @return boolean|static[] whether at least one of the models is successfully populated.
      */
-    public static function createMultiple($data, $formName = null, &$origin = [], $keys = null, $scenario = null)
+    public static function createMultiple($data, $formName = null, &$origin = [], $keys = null, $options = [])
     {
+        $reflector = new \ReflectionClass(get_called_class());
+        $args = isset($options['arguments']) ? $options['arguments'] : [];
         if ($formName === null) {
-            $reflector = new ReflectionClass(get_called_class());
-            $formName = $reflector->getShortName();
+            /* @var $model static */
+            $model = empty($args) ? new static() : $reflector->newInstanceArgs($args);
+            $formName = $model->formName();
         }
         if ($formName != '') {
             $data = isset($data[$formName]) ? $data[$formName] : null;
@@ -908,47 +915,49 @@ class Model extends Component implements IteratorAggregate, ArrayAccess, Arrayab
 
         $models = [];
         foreach ($data as $i => $row) {
-            /* @var $model static */
-            $model = null;
-            if ($keys === null) {
-                if (isset($origin[$i])) {
-                    $model = $origin[$i];
-                    unset($origin[$i]);
-                }
-            } elseif (empty($keys)) {
-
-            } elseif (is_string($keys)) {
-                foreach ($origin as $j => $oldModel) {
-                    if ($row[$keys] == $oldModel[$keys]) {
-                        $model = $oldModel;
-                        unset($origin[$j]);
-                        break;
+            /* @var $newModel static */
+            $newModel = null;
+            if (!empty($origin)) {
+                if (empty($keys)) {
+                    if (isset($origin[$i])) {
+                        $newModel = $origin[$i];
+                        unset($origin[$i]);
                     }
-                }
-            } else {
-                $rowKeys = [];
-                foreach ($keys as $key) {
-                    $rowKeys[] = $row[$key];
-                }
-                foreach ($origin as $j => $oldModel) {
-                    $oldKeys = [];
+                } elseif (is_array($keys)) {
+                    $rowKeys = [];
                     foreach ($keys as $key) {
-                        $oldKeys[] = $oldModel[$key];
+                        $rowKeys[] = $row[$key];
                     }
-                    if ($rowKeys == $oldKeys) {
-                        $model = $oldModel;
-                        unset($origin[$j]);
-                        break;
+                    foreach ($origin as $j => $oldModel) {
+                        $oldKeys = [];
+                        foreach ($keys as $key) {
+                            $oldKeys[] = $oldModel[$key];
+                        }
+                        if ($rowKeys == $oldKeys) {
+                            $newModel = $oldModel;
+                            unset($origin[$j]);
+                            break;
+                        }
+                    }
+                } else {
+                    foreach ($origin as $j => $oldModel) {
+                        if ($row[$keys] == $oldModel[$keys]) {
+                            $newModel = $oldModel;
+                            unset($origin[$j]);
+                            break;
+                        }
                     }
                 }
             }
-
-            $model = $model ? : new static();
-            if ($scenario !== null) {
-                $model->scenario = $scenario;
+            if($newModel === null){
+                $newModel = empty($args) ? new static() : $reflector->newInstanceArgs($args);
             }
-            $model->load($row, '');
-            $models[$i] = $model;
+
+            if (isset($options['scenario'])) {
+                $newModel->scenario = $options['scenario'];
+            }
+            $newModel->load($row, '');
+            $models[$i] = $newModel;
         }
         return $models;
     }
