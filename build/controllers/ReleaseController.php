@@ -21,28 +21,38 @@ use yii\helpers\Console;
  */
 class ReleaseController extends Controller
 {
-    public $defaultAction = 'help';
+    public $defaultAction = 'release';
 
     /**
      * @var string base path to use for releases.
      */
     public $basePath;
     /**
-     * @var bool whether to do actual changes. If true, it will run without changing or pushing anything.
+     * @var bool whether to make actual changes. If true, it will run without changing or pushing anything.
      */
     public $dryRun = false;
+    /**
+     * @var bool whether to fetch latest tags.
+     */
+    public $update = false;
 
 
     public function options($actionID)
     {
-        return array_merge(parent::options($actionID), ['basePath', 'dryRun']);
+        $options = ['basePath'];
+        if ($actionID === 'release') {
+            $options[] = 'dryRun';
+        } elseif ($actionID === 'info') {
+            $options[] = 'update';
+        }
+        return array_merge(parent::options($actionID), $options);
     }
 
 
     public function beforeAction($action)
     {
         if (!$this->interactive) {
-            throw new Exception('Sorry, but releases should be run interactive to ensure you actually verify what you are doing ;)');
+            throw new Exception('Sorry, but releases should be run interactively to ensure you actually verify what you are doing ;)');
         }
         if ($this->basePath === null) {
             $this->basePath = dirname(dirname(__DIR__));
@@ -52,15 +62,85 @@ class ReleaseController extends Controller
     }
 
     /**
+     * Shows information about current framework and extension versions.
+     */
+    public function actionInfo()
+    {
+        $extensions = [
+            'framework',
+        ];
+        $extensionPath = "{$this->basePath}/extensions";
+        foreach (scandir($extensionPath) as $extension) {
+            if (ctype_alpha($extension) && is_dir($extensionPath . '/' . $extension)) {
+                $extensions[] = $extension;
+            }
+        }
+
+        if ($this->update) {
+            foreach($extensions as $extension) {
+                $this->stdout("fetching tags for $extension...");
+                $this->gitFetchTags("{$this->basePath}/extensions/$extension");
+                $this->stdout("done.\n", Console::FG_GREEN, Console::BOLD);
+            }
+        } else {
+            $this->stdout("\nInformation may be outdated, re-run with `--update` to fetch latest tags.\n\n");
+        }
+
+        $versions = $this->getCurrentVersions($extensions);
+
+        // print version table
+        $w = $this->minWidth(array_keys($versions));
+        $this->stdout(str_repeat(' ', $w + 2) . "Current Version\n", Console::BOLD);
+        foreach($versions as $ext => $version) {
+            $this->stdout($ext . str_repeat(' ', $w + 3 - mb_strlen($ext)) . $version . "\n");
+        }
+
+    }
+
+    private function minWidth($a)
+    {
+        $w = 1;
+        foreach($a as $s) {
+            if (($l = mb_strlen($s)) > $w) {
+                $w = $l;
+            }
+        }
+        return $w;
+    }
+
+    /**
+     * Automation tool for making Yii framework and official extension releases.
+     *
      * Usage:
      *
+     * To make a release, make sure your git is clean (no uncommitted changes) and run the following command in
+     * the yii dev repo root:
+     *
      * ```
-     * ./build/build release/prepare framework
-     * ./build/build release/prepare redis,bootstrap,apidoc
+     * ./build/build release framework
      * ```
      *
+     * or
+     *
+     * ```
+     * ./build/build release redis,bootstrap,apidoc
+     * ```
+     *
+     * You may use the `--dryRun` switch to test the command without changing or pushing anything:
+     *
+     * ```
+     * ./build/build release redis --dryRun
+     * ```
+     *
+     * The command will guide you through the complete release process including changing of files,
+     * committing and pushing them. Each git command must be confirmed and can be skipped individually.
+     * You may adjust changes in a separate shell or your IDE while the command is waiting for confirmation.
+     *
+     * @param array $what what do you want to release? this can either be an extension name such as `redis` or `bootstrap`,
+     * or `framework` if you want to release a new version of the framework itself.
+     * @return int
      */
-    public function actionPrepare(array $what)
+    public function actionRelease(array $what)
     {
         if (count($what) > 1) {
             $this->stdout("Currently only one simultaneous release is supported.\n");
@@ -160,6 +240,15 @@ class ReleaseController extends Controller
         }
         if (!empty($changes)) {
             throw new Exception("You have uncommitted changes in $path: " . print_r($changes, true));
+        }
+    }
+
+    protected function gitFetchTags($path)
+    {
+        chdir($path);
+        exec('git fetch --tags', $output, $ret);
+        if ($ret != 0) {
+            throw new Exception('Command "git fetch --tags" failed with code ' . $ret);
         }
     }
 
@@ -531,6 +620,7 @@ class ReleaseController extends Controller
             } else {
                 chdir("{$this->basePath}/extensions/$ext");
             }
+            $tags = [];
             exec('git tag', $tags, $ret);
             if ($ret != 0) {
                 throw new Exception('Command "git tag" failed with code ' . $ret);
