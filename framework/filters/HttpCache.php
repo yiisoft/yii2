@@ -71,6 +71,12 @@ class HttpCache extends ActionFilter
      */
     public $etagSeed;
     /**
+     * @var bool whether to generate weak Etags
+     *
+     * Weak Etags should be used if the content should not be considered byte-equal, but semantically equivalent.
+     */
+    public $weakEtag = true;
+    /**
      * @var mixed additional parameters that should be passed to the [[lastModified]] and [[etagSeed]] callbacks.
      */
     public $params;
@@ -191,6 +197,7 @@ class HttpCache extends ActionFilter
      */
     protected function generateEtag($seed)
     {
-        return '"' . rtrim(base64_encode(sha1($seed, true)), '=') . '"';
+        $etag =  '"' . rtrim(base64_encode(sha1($seed, true)), '=') . '"';
+        return $this->weakEtag ? 'W/' . $etag : $etag;
     }
 }
