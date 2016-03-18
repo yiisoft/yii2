@@ -424,10 +424,12 @@ class Security extends Component
     }
 
     const DEV_URANDOM = '/dev/urandom';
+    const DEV_RANDOM = '/dev/random';
     const SOURCE_LIBRE_SSL = 'LibreSSL';
     const SOURCE_MCRYPT = 'mcrypt';
     const SOURCE_OPEN_SSL = 'OpenSSL';
     const SOURCE_URANDOM = 'urandom';
+    const SOURCE_RANDOM = 'random';
     /**
      * @var string|null Identifies the random source of the last successful call of [[generateRandomKey]].
      */
@@ -497,26 +499,40 @@ class Security extends Component
             $this->_randomSource = null;
         }
 
-        // If not on Windows, test for a /dev/urandom device.
-        if ($this->_randomSource === null && DIRECTORY_SEPARATOR === '/') {
-            // Check it for speacial character device protection mode. Do not follow
-            // symbolic link at '/dev/urandom', as such would be suspicious. With lstat()
-            // (as opposed to stat()) the test fails if it is.
-            $lstat = @lstat(self::DEV_URANDOM);
-            $urandomDevice = $lstat !== false && ($lstat['mode'] & 0170000) === 020000;
-        } else {
-            $urandomDevice = false;
-        }
-        if ($this->_randomSource === self::SOURCE_URANDOM || $urandomDevice) {
-            $key = @file_get_contents(self::DEV_URANDOM, false, null, 0, $length);
+        // If not on Windows, look for a random special character device.
+        if (DIRECTORY_SEPARATOR === '/') {
+            $device = null;
 
-            if ($key !== false && StringHelper::byteLength($key) === $length) {
-                $this->_randomSource = self::SOURCE_URANDOM;
-
-                return $key;
+            if ($this->_randomSource === null) {
+                // Check /dev/urandom for speacial character device protection mode.
+                // Use lstat(), not stat(), in case an attacker arranges a symlink to a fake device.
+                $lstat = @lstat(self::DEV_URANDOM);
+                // Note: OCTAL int literals!
+                if ($lstat !== false && ($lstat['mode'] & 0170000) === 020000) {
+                    $device = self::DEV_URANDOM;
+                } elseif (php_uname('s') !== 'Linux') {
+                    // On some non-Linux systems, /dev/urandom is a symlink to /dev/random.
+                    $lstat = @lstat(self::DEV_RANDOM);
+                    // Note: OCTAL int literals!
+                    if ($lstat !== false && ($lstat['mode'] & 0170000) === 020000) {
+                        $device = self::DEV_RANDOM;
+                    }
+                }
+            } elseif ($this->_randomSource === self::SOURCE_URANDOM || $this->_randomSource === self::SOURCE_RANDOM) {
+                $device = $this->_randomSource;
             }
 
-            $this->_randomSource = null;
+            if ($device) {
+                $key = @file_get_contents($device, false, null, 0, $length);
+
+                if ($key !== false && StringHelper::byteLength($key) === $length) {
+                    $this->_randomSource = $device;
+
+                    return $key;
+                }
+
+                $this->_randomSource = null;
+            }
         }
 
         // Since 5.4.0, openssl_random_pseudo_bytes() reads from CryptGenRandom on Windows instead
