@@ -373,6 +373,7 @@ class FileValidatorTest extends TestCase
     public function validMimeTypes()
     {
         return [
+            ['test.svg', 'image/*'],
             ['test.jpg', 'image/*'],
             ['test.png', 'image/*'],
             ['test.png', 'IMAGE/*'],
