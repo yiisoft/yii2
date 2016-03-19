@@ -221,7 +221,7 @@ use yii\widgets\LinkPager;
 上記のコード全てがどのように動作するかを見るために、ブラウザで下記の URL をアクセスします。
 
 ```
-http://hostname/index.php?r=country/index
+http://hostname/index.php?r=country%2Findex
 ```
 
 ![国リスト](images/start-country-list.png)
@@ -232,7 +232,7 @@ http://hostname/index.php?r=country/index
 注意深く観察すると、ブラウザの URL も次のように変ったことに気付くでしょう。
 
 ```
-http://hostname/index.php?r=country/index&page=2
+http://hostname/index.php?r=country%2Findex&page=2
 ```
 
 舞台裏では、[[yii\data\Pagination|Pagination]] が、データセットをページ付けするのに必要な全ての機能を提供しています。

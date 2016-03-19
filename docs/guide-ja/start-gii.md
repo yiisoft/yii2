@@ -114,7 +114,7 @@ Gii を使って CRUD 機能を作成するためには、"CRUD Generator" を�
 どのように動作するかを見るために、ブラウザを使って下記の URL にアクセスしてください。
 
 ```
-http://hostname/index.php?r=country/index
+http://hostname/index.php?r=country%2Findex
 ```
 
 データグリッドがデータベーステーブルから取得した国を表示しているページが表示されます。
