@@ -126,6 +126,46 @@ yii <route> --appconfig=path/to/config.php ...
 Якщо значення за замовчуванням для опції є масивом і ви задаєте цю опцію під час виконання команди,
 то значення опції буде перетворене у масив розділенням вхідного текстового рядка за комами.
 
+### Псевдоніми опцій
+
+Починаючи із версії 2.0.8 консольна команда надає [[yii\console\Controller::optionAliases()]] 
+метод для створення псевдонімів для опцій.
+
+Щоб визначити псевдонім, потрібно перевизначити [[yii\console\Controller::optionAliases()]] метод
+у вашому контролері, наприклад:
+
+```php
+namespace app\commands;
+
+use yii\console\Controller;
+
+class HelloController extends Controller
+{
+    public $message;
+    
+    public function options()
+    {
+        return ['message'];
+    }
+    
+    public function optionAliases()
+    {
+        return ['m' => 'message'];
+    }
+    
+    public function actionIndex()
+    {
+        echo $message . "\n";
+    }
+}
+```
+
+Тепер ви зможете використовувати наступний синтакс для запуску команди:
+
+```
+./yii hello -m=hola
+```
+
 ### Аргументи
 
 Окрім опцій, команда також може приймати аргументи. Аргументи будуть передані як параметри до методу дії
@@ -169,7 +209,7 @@ class ExampleController extends \yii\console\Controller
 public function actionIndex()
 {
     if (/* деяка проблема */) {
-        echo "A problem occured!\n";
+        echo "A problem occurred!\n";
         return 1;
     }
     // щось виконується

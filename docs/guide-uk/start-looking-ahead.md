@@ -26,6 +26,7 @@
 * Спільнота
     - Форум: <http://www.yiiframework.com/forum/>
     - Чат IRC: Канал #yii мережі freenode (<irc://irc.freenode.net/yii>)
+    - Gitter chat: <https://gitter.im/yiisoft/yii2>
     - GitHub: <https://github.com/yiisoft/yii2>
     - Фейсбук: <https://www.facebook.com/groups/yiitalk/>
     - Твіттер: <https://twitter.com/yiiframework>

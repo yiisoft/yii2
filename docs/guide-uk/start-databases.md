@@ -220,7 +220,7 @@ use yii\widgets\LinkPager;
 Щоб побачити як весь вищезазначений код працює, відкрийте в браузері наступний URL:
 
 ```
-http://hostname/index.php?r=country/index
+http://hostname/index.php?r=country%2Findex
 ```
 
 ![Перелік країн](images/start-country-list.png)
@@ -230,7 +230,7 @@ http://hostname/index.php?r=country/index
 Придивившись більш уважно, ви побачите, що URL в браузері також змінюється на
 
 ```
-http://hostname/index.php?r=country/index&page=2
+http://hostname/index.php?r=country%2Findex&page=2
 ```
 
 За лаштунками, [[yii\data\Pagination|Pagination]] надає всю необхідну функціональність для розділення набору даних на сторінки:
