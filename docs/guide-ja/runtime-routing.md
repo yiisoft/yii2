@@ -26,7 +26,7 @@ $url = Url::to(['post/view', 'id' => 100]);
 そして、こうして生成された URL が後でリクエストされた場合には、解析されて元のルートとクエリパラメータの値に戻されます。
 
 ```
-/index.php?r=post/view&id=100
+/index.php?r=post%2Fview&id=100
 /index.php/post/100
 /posts/100
 ```
@@ -117,19 +117,19 @@ Yii は、与えられたルートとそれに結び付けられたクエリパ�
 ```php
 use yii\helpers\Url;
 
-// ルートへの URL を生成する: /index.php?r=post/index
+// ルートへの URL を生成する: /index.php?r=post%2Findex
 echo Url::to(['post/index']);
 
-// パラメータを持つルートへの URL を生成する: /index.php?r=post/view&id=100
+// パラメータを持つルートへの URL を生成する: /index.php?r=post%2Fview&id=100
 echo Url::to(['post/view', 'id' => 100]);
 
-// アンカー付きの URL を生成する: /index.php?r=post/view&id=100#content
+// アンカー付きの URL を生成する: /index.php?r=post%2Fview&id=100#content
 echo Url::to(['post/view', 'id' => 100, '#' => 'content']);
 
-// 絶対 URL を生成する: http://www.example.com/index.php?r=post/index
+// 絶対 URL を生成する: http://www.example.com/index.php?r=post%2Findex
 echo Url::to(['post/index'], true);
 
-// https スキームを使って絶対 URL を生成する: https://www.example.com/index.php?r=post/index
+// https スキームを使って絶対 URL を生成する: https://www.example.com/index.php?r=post%2Findex
 echo Url::to(['post/index'], 'https');
 ```
 
@@ -151,19 +151,19 @@ echo Url::to(['post/index'], 'https');
 ```php
 use yii\helpers\Url;
 
-// 現在リクエストされているルート: /index.php?r=admin/post/index
+// 現在リクエストされているルート: /index.php?r=admin%2Fpost%2Findex
 echo Url::to(['']);
 
-// アクション ID だけの相対ルート: /index.php?r=admin/post/index
+// アクション ID だけの相対ルート: /index.php?r=admin%2Fpost%2Findex
 echo Url::to(['index']);
 
-// 相対ルート: /index.php?r=admin/post/index
+// 相対ルート: /index.php?r=admin%2Fpost%2Findex
 echo Url::to(['post/index']);
 
-// 絶対ルート: /index.php?r=post/index
+// 絶対ルート: /index.php?r=post%2Findex
 echo Url::to(['/post/index']);
 
-// /index.php?r=post/index     エイリアス "@posts" が "/post/index" と定義されていると仮定
+// /index.php?r=post%2Findex     エイリアス "@posts" が "/post/index" と定義されていると仮定
 echo Url::to(['@posts']);
 ```
 
@@ -176,7 +176,7 @@ echo Url::to(['@posts']);
 ```php
 use yii\helpers\Url;
 
-// 現在リクエストされている URL: /index.php?r=admin/post/index
+// 現在リクエストされている URL: /index.php?r=admin%2Fpost%2Findex
 echo Url::to();
 
 // エイリアス化された URL: http://example.com
@@ -193,7 +193,7 @@ echo Url::to('/images/logo.gif', true);
 ```php
 use yii\helpers\Url;
 
-// ホームページの URL: /index.php?r=site/index
+// ホームページの URL: /index.php?r=site%2Findex
 echo Url::home();
 
 // ベース URL。アプリケーションがウェブルートのサブディレクトリに配置されているときに便利
