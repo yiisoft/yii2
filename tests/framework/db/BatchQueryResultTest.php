@@ -139,20 +139,28 @@ class BatchQueryResultTest extends DatabaseTestCase
 
     public function pdoAttributesProvider()
     {
-        return [
-            [[
-                PDO::MYSQL_ATTR_USE_BUFFERED_QUERY => true,
-            ]],
-            [[
-                PDO::MYSQL_ATTR_USE_BUFFERED_QUERY => false,
-            ]],
-        ];
+        if ($this->driverName === 'mysql') {
+            // try different settings of PDO::MYSQL_ATTR_USE_BUFFERED_QUERY for MySQL
+            return [
+                [[
+                    PDO::MYSQL_ATTR_USE_BUFFERED_QUERY => true,
+                ]],
+                [[
+                    PDO::MYSQL_ATTR_USE_BUFFERED_QUERY => false,
+                ]],
+            ];
+        } else {
+            return [
+                [[]], // no specific attributes
+            ];
+        }
     }
 
     /**
      * @var int defaults to 10 Mio records
      */
-    protected static $largeTableCount = 10000000;
+//    protected static $largeTableCount = 10000000;
+    protected static $largeTableCount = 10000;
 
     /**
      * @dataProvider pdoAttributesProvider
@@ -166,7 +174,7 @@ class BatchQueryResultTest extends DatabaseTestCase
 
         $this->ensureLargeTable($db);
 
-        $query = (new Query)->from('customer_large');
+        $query = (new Query)->select('*')->from('customer_large');
         Console::startProgress($c = 0, static::$largeTableCount, 'Running batch() query... (Memory: ' . memory_get_usage() . ')');
         foreach($query->batch(100, $db) as $batch) {
             $this->assertTrue(is_array($batch));
@@ -182,7 +190,7 @@ class BatchQueryResultTest extends DatabaseTestCase
         $memUsage = memory_get_peak_usage();
         echo "batch memory: $memUsage\n";
 
-        $query = (new Query)->from('customer_large');
+        $query = (new Query)->select('*')->from('customer_large');
         Console::startProgress($c = 0, static::$largeTableCount, 'Running each() query... (Memory: ' . memory_get_usage() . ')');
         foreach($query->each(100, $db) as $customer) {
             $this->assertTrue(is_array($customer));
@@ -198,6 +206,8 @@ class BatchQueryResultTest extends DatabaseTestCase
         echo "each() memory: $memUsage\n";
 
     }
+
+    protected static $largeTableInsertBatch = 1000;
 
     /**
      * @param Connection $db
@@ -222,7 +232,7 @@ class BatchQueryResultTest extends DatabaseTestCase
         Console::startProgress($i = 0, static::$largeTableCount, 'Creating large table... (Memory: ' . memory_get_usage() . ')');
         for(; $i < static::$largeTableCount; $i += $j) {
             $batchRecords = [];
-            for($j = 0; $j < 1000; ++$j) {
+            for($j = 0; $j < static::$largeTableInsertBatch; ++$j) {
                 $batchRecords[] = ["mail$i.$j@example.com", "customer$i.$j", "address$i.$j", 1];
             }
             $db->createCommand()->batchInsert('customer_large', ['email', 'name', 'address', 'status'], $batchRecords)->execute();
