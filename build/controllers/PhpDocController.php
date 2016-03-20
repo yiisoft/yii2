@@ -124,7 +124,7 @@ class PhpDocController extends Controller
                 ],
                 'gii' => [
                     '/components/DiffRendererHtmlInline.php',
-                    '/generators/extension/default/*',
+                    '/generators/extension/default/AutoloadExample.php',
                 ],
                 'swiftmailer' => [
                     '/Logger.php',
