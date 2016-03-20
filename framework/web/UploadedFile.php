@@ -171,7 +171,8 @@ class UploadedFile extends Object
      */
     public function getBaseName()
     {
-        return substr(pathinfo("_{$this->name}", PATHINFO_FILENAME), 1);
+        // https://github.com/yiisoft/yii2/issues/11012
+        return mb_substr(pathinfo("_{$this->name}", PATHINFO_FILENAME), 1, '8bit');
     }
 
     /**
