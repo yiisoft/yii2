@@ -160,13 +160,15 @@ class BatchQueryResultTest extends DatabaseTestCase
      * @var int defaults to 10 Mio records
      */
 //    protected static $largeTableCount = 10000000;
-    protected static $largeTableCount = 10000;
+    protected static $largeTableCount = 1000;
 
     /**
      * @dataProvider pdoAttributesProvider
      */
     public function testBatchHugeTable($pdoAttrs)
     {
+        $peakMemory = memory_get_peak_usage();
+
         $db = $this->getConnection(true, false);
         $this->assertFalse($db->isActive);
         $db->attributes = $pdoAttrs;
@@ -185,10 +187,10 @@ class BatchQueryResultTest extends DatabaseTestCase
         }
         Console::endProgress(true, false);
 
-        // peak memory should be less than 100MB
-        $this->assertLessThan(100 * 1024 * 1024, memory_get_peak_usage());
-        $memUsage = memory_get_peak_usage();
-        echo "batch memory: $memUsage\n";
+        // peak memory should be less than 25MB higher than before
+        $this->assertLessThan($peakMemory + 25 * 1024 * 1024, memory_get_peak_usage());
+        //$peakMemory = memory_get_peak_usage();
+        //echo "batch memory: $peakMemory\n";
 
         $query = (new Query)->select('*')->from('customer_large');
         Console::startProgress($c = 0, static::$largeTableCount, 'Running each() query... (Memory: ' . memory_get_usage() . ')');
@@ -200,10 +202,10 @@ class BatchQueryResultTest extends DatabaseTestCase
         }
         Console::endProgress(true, false);
 
-        // peak memory should be less than 100MB
-        $this->assertLessThan(100 * 1024 * 1024, memory_get_peak_usage());
-        $memUsage = memory_get_peak_usage();
-        echo "each() memory: $memUsage\n";
+        // peak memory should be less than 25MB higher than before
+        $this->assertLessThan($peakMemory + 25 * 1024 * 1024, memory_get_peak_usage());
+        //$peakMemory = memory_get_peak_usage();
+        //echo "each() memory: $peakMemory\n";
 
     }
 
