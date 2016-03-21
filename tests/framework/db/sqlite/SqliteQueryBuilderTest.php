@@ -18,11 +18,6 @@ class SqliteQueryBuilderTest extends QueryBuilderTest
     {
         return array_merge(parent::columnTypes(), [
             [
-                Schema::TYPE_PK . '(8)',
-                $this->primaryKey(8)->first()->after('col_before'),
-                'integer PRIMARY KEY AUTOINCREMENT NOT NULL'
-            ],
-            [
                 Schema::TYPE_PK,
                 $this->primaryKey()->first()->after('col_before'),
                 'integer PRIMARY KEY AUTOINCREMENT NOT NULL'
