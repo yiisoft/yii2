@@ -568,6 +568,11 @@ class User extends Component
             return;
         }
 
+        /* Ensure any existing identity cookies are removed. */  
+        if ($this->enableAutoLogin) {
+            Yii::$app->getResponse()->getCookies()->remove(new Cookie($this->identityCookie));  
+        }
+
         $session = Yii::$app->getSession();
         if (!YII_ENV_TEST) {
             $session->regenerateID(true);
@@ -586,8 +591,6 @@ class User extends Component
             if ($duration > 0 && $this->enableAutoLogin) {
                 $this->sendIdentityCookie($identity, $duration);
             }
-        } elseif ($this->enableAutoLogin) {
-            Yii::$app->getResponse()->getCookies()->remove(new Cookie($this->identityCookie));
         }
     }
 
