@@ -619,11 +619,7 @@ abstract class QueryBuilderTest extends DatabaseTestCase
                 $this->primaryKey(8)->check('value > 5'),
                 [
                     'mysql' => 'int(8) NOT NULL AUTO_INCREMENT PRIMARY KEY CHECK (value > 5)',
-                    'postgres' => 'serial NOT NULL PRIMARY KEY CHECK (value > 5)',
-                    'sqlite' => 'integer PRIMARY KEY AUTOINCREMENT NOT NULL CHECK (value > 5)',
                     'oci' => 'NUMBER(8) NOT NULL PRIMARY KEY CHECK (value > 5)',
-                    'sqlsrv' => 'int IDENTITY PRIMARY KEY CHECK (value > 5)',
-                    'cubrid' => 'int NOT NULL AUTO_INCREMENT PRIMARY KEY CHECK (value > 5)',
                 ],
             ],
             [
