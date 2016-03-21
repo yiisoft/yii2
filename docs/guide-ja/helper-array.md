@@ -129,6 +129,7 @@ $result = ArrayHelper::index($array, 'id');
 ```
 
 結果は、`id` 属性の値をキーとする連想配列になります。
+
 ```php
 [
     '123' => ['id' => '123', 'data' => 'abc', 'device' => 'laptop'],
@@ -138,6 +139,7 @@ $result = ArrayHelper::index($array, 'id');
 ```
 
 `$key` として無名関数を渡しても同じ結果になります。
+
 ```php
 $result = ArrayHelper::index($array, function ($element) {
     return $element['id'];
@@ -145,11 +147,13 @@ $result = ArrayHelper::index($array, function ($element) {
 ```
 
 `id` を3番目の引数として渡すと、`$array` を `id` によってグループ化することが出来ます。
+
 ```php
 $result = ArrayHelper::index($array, null, 'id');
 ```
 
 結果は、最初のレベルが `id` でグループ化され、第2のレベルはインデックスされていない連想配列になります。
+
 ```php
 [
     '123' => [
@@ -163,6 +167,7 @@ $result = ArrayHelper::index($array, null, 'id');
 ```
 
 無名関数を配列のグループ化に使うことも出来ます。
+
 ```php
 $result = ArrayHelper::index($array, 'data', [function ($element) {
     return $element['id'];
@@ -170,6 +175,7 @@ $result = ArrayHelper::index($array, 'data', [function ($element) {
 ```
 
 結果は、最初のレベルが `id` でグループ化され、第2のレベルが `device` でグループ化され、第3のレベルが `data` でインデックスされた連想配列になります。
+
 ```php
 [
     '123' => [

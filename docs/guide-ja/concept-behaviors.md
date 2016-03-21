@@ -288,6 +288,8 @@ class User extends ActiveRecord
 * 挿入されるとき、ビヘイビアは現在の UNIX タイムスタンプを `created_at` と `updated_at` 属性に割り当てます
 * 更新されるとき、ビヘイビアは現在の UNIX タイムスタンプを `updated_at` 属性に割り当てます
 
+> Note: 上記の実装が MySQL データベースで動作するようにするためには、`created_at` と `updated_at` のカラムを UNIX タイムスタンプ になるように int(11) として宣言してください。
+
 このコードが所定の位置にあれば、例えば `User` オブジェクトがあって、それを保存しようとしたら、そこで、
 `created_at` と `updated_at` が自動的に現在の UNIX タイムスタンプで埋められます。
 

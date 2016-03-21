@@ -270,4 +270,16 @@ class BaseStringHelper
         }
         return $result;
     }
+
+    /**
+     * Counts words in a string
+     * @since 2.0.8
+     *
+     * @param string $string
+     * @return integer
+     */
+    public static function countWords($string)
+    {
+        return count(preg_split('/\s+/u', $string, null, PREG_SPLIT_NO_EMPTY));
+    }
 }

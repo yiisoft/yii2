@@ -225,7 +225,7 @@ Trying it Out <span id="trying-it-out"></span>
 To see how all of the above code works, use your browser to access the following URL:
 
 ```
-http://hostname/index.php?r=country/index
+http://hostname/index.php?r=country%2Findex
 ```
 
 ![Country List](images/start-country-list.png)
@@ -235,7 +235,7 @@ If you click on the button "2", you will see the page display another five count
 Observe more carefully and you will find that the URL in the browser also changes to
 
 ```
-http://hostname/index.php?r=country/index&page=2
+http://hostname/index.php?r=country%2Findex&page=2
 ```
 
 Behind the scenes, [[yii\data\Pagination|Pagination]] is providing all of the necessary functionality to paginate a data set:
