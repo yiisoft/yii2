@@ -102,7 +102,7 @@ All Rights Reserved.
 * [Сортировка](output-sorting.md)
 * [Провайдеры данных](output-data-providers.md)
 * [Виджеты для данных](output-data-widgets.md)
-* [Работа с клиентскими скриптами](output-client-scripts.md)
+* [Работа с клиентскими скриптами](../guide/output-client-scripts.md)
 * [Темизация](output-theming.md)
 
 
@@ -190,7 +190,7 @@ All Rights Reserved.
 * [Виджеты Jquery UI](https://github.com/yiisoft/yii2-jui/blob/master/docs/guide/README.md)
 
 
-Хелперы
+Помощники
 -------
 
 * [Обзор](helper-overview.md)
