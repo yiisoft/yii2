@@ -65,19 +65,19 @@ class BaseUrl
      * Below are some examples of using this method:
      *
      * ```php
-     * // /index.php?r=site/index
+     * // /index.php?r=site%2Findex
      * echo Url::toRoute('site/index');
      *
-     * // /index.php?r=site/index&src=ref1#name
+     * // /index.php?r=site%2Findex&src=ref1#name
      * echo Url::toRoute(['site/index', 'src' => 'ref1', '#' => 'name']);
      *
-     * // http://www.example.com/index.php?r=site/index
+     * // http://www.example.com/index.php?r=site%2Findex
      * echo Url::toRoute('site/index', true);
      *
-     * // https://www.example.com/index.php?r=site/index
+     * // https://www.example.com/index.php?r=site%2Findex
      * echo Url::toRoute('site/index', 'https');
      *
-     * // /index.php?r=post/index     assume the alias "@posts" is defined as "post/index"
+     * // /index.php?r=post%2Findex     assume the alias "@posts" is defined as "post/index"
      * echo Url::toRoute('@posts');
      * ```
      *
@@ -167,13 +167,13 @@ class BaseUrl
      * Below are some examples of using this method:
      *
      * ```php
-     * // /index.php?r=site/index
+     * // /index.php?r=site%2Findex
      * echo Url::to(['site/index']);
      *
-     * // /index.php?r=site/index&src=ref1#name
+     * // /index.php?r=site%2Findex&src=ref1#name
      * echo Url::to(['site/index', 'src' => 'ref1', '#' => 'name']);
      *
-     * // /index.php?r=post/index     assume the alias "@posts" is defined as "/post/index"
+     * // /index.php?r=post%2Findex     assume the alias "@posts" is defined as "/post/index"
      * echo Url::to(['@posts']);
      *
      * // the currently requested URL
@@ -361,13 +361,13 @@ class BaseUrl
      * ```php
      * // assume $_GET = ['id' => 123, 'src' => 'google'], current route is "post/view"
      *
-     * // /index.php?r=post/view&id=123&src=google
+     * // /index.php?r=post%2Fview&id=123&src=google
      * echo Url::current();
      *
-     * // /index.php?r=post/view&id=123
+     * // /index.php?r=post%2Fview&id=123
      * echo Url::current(['src' => null]);
      *
-     * // /index.php?r=post/view&id=100&src=google
+     * // /index.php?r=post%2Fview&id=100&src=google
      * echo Url::current(['id' => 100]);
      * ```
      *

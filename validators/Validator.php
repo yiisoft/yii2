@@ -356,9 +356,11 @@ class Validator extends Component
      */
     public function addError($model, $attribute, $message, $params = [])
     {
-        $value = $model->$attribute;
         $params['attribute'] = $model->getAttributeLabel($attribute);
-        $params['value'] = is_array($value) ? 'array()' : $value;
+        if (!isset($params['value'])) {
+            $value = $model->$attribute;
+            $params['value'] = is_array($value) ? 'array()' : $value;
+        }
         $model->addError($attribute, Yii::$app->getI18n()->format($message, $params, Yii::$app->language));
     }
 

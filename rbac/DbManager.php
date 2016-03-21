@@ -679,6 +679,14 @@ class DbManager extends BaseManager
     /**
      * @inheritdoc
      */
+    public function canAddChild($parent, $child)
+    {
+        return !$this->detectLoop($parent, $child);
+    }
+
+    /**
+     * @inheritdoc
+     */
     public function addChild($parent, $child)
     {
         if ($parent->name === $child->name) {
@@ -892,7 +900,7 @@ class DbManager extends BaseManager
     {
         if (!$this->supportsCascadeUpdate()) {
             $this->db->createCommand()
-                ->update($this->itemTable, ['ruleName' => null])
+                ->update($this->itemTable, ['rule_name' => null])
                 ->execute();
         }
 
