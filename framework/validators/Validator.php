@@ -231,9 +231,22 @@ class Validator extends Component
     public function validateAttributes($model, $attributes = null)
     {
         if (is_array($attributes)) {
-            $attributes = array_intersect($this->attributes, $attributes);
+            $newAttributes = [];
+            foreach ($attributes as $attribute) {
+                if(in_array($attribute, $this->attributes) || in_array('!' . $attribute, $this->attributes)){
+                    $newAttributes[] = $attribute;
+                }
+            }
+            $attributes = $newAttributes;
         } else {
-            $attributes = $this->attributes;
+            $attributes = [];
+            foreach ($this->attributes as $attribute) {
+                if($attribute[0] === '!'){
+                    $attributes[] = substr($attribute, 1);
+                } else {
+                    $attributes[] = $attribute;
+                }
+            }
         }
         foreach ($attributes as $attribute) {
             $skip = $this->skipOnError && $model->hasErrors($attribute)

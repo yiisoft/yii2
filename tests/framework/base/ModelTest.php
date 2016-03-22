@@ -175,6 +175,50 @@ class ModelTest extends TestCase
         $model->scenario = 'create';
         $this->assertEquals(['account_id', 'user_id', 'email', 'name'], $model->safeAttributes());
         $this->assertEquals(['account_id', 'user_id', 'email', 'name'], $model->activeAttributes());
+
+        $model = new RulesModel();
+        $model->rules = [
+            [['name','!email'], 'required'],
+        ];
+        $this->assertEquals(['name'], $model->safeAttributes());
+        $this->assertEquals(['name', 'email'], $model->activeAttributes());
+        $model->attributes = ['name' => 'mdmunir', 'email' => 'mdm@mun.com'];
+        $this->assertNull($model->email);
+        $this->assertFalse($model->validate());
+
+        $model = new RulesModel();
+        $model->rules = [
+            [['name'], 'required'],
+            [['!user_id'], 'default', 'value' => '3426'],
+        ];
+        $model->attributes = ['name' => 'mdmunir', 'user_id' => '62792684'];
+        $this->assertTrue($model->validate());
+        $this->assertEquals('3426', $model->user_id);
+
+        $model = new RulesModel();
+        $model->rules = [
+            [['name', 'email'], 'required'],
+            [['!email'], 'safe']
+        ];
+        $this->assertEquals(['name'], $model->safeAttributes());
+        $model->attributes = ['name' => 'mdmunir', 'email' => 'm2792684@mdm.com'];
+        $this->assertFalse($model->validate());
+
+        $model = new RulesModel();
+        $model->rules = [
+            [['name', 'email'], 'required'],
+            [['email'], 'email'],
+            [['!email'], 'safe', 'on' => 'update']
+        ];
+        $model->setScenario(RulesModel::SCENARIO_DEFAULT);
+        $this->assertEquals(['name', 'email'], $model->safeAttributes());
+        $model->attributes = ['name' => 'mdmunir', 'email' => 'm2792684@mdm.com'];
+        $this->assertTrue($model->validate());
+        
+        $model->setScenario('update');
+        $this->assertEquals(['name'], $model->safeAttributes());
+        $model->attributes = ['name' => 'D426', 'email' => 'd426@mdm.com'];
+        $this->assertNotEquals('d426@mdm.com', $model->email);
     }
 
     public function testErrors()
