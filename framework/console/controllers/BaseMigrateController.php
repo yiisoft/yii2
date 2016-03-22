@@ -61,7 +61,12 @@ abstract class BaseMigrateController extends Controller
      * @since 2.0.7
      */
     public $fields = [];
-
+    /**
+     * @var Connection|array|string the DB connection object or the application component ID of the DB connection to use
+     * when applying migrations. Starting from version 2.0.3, this can also be a configuration array
+     * for creating the object.
+     */
+    public $db = 'db';
 
     /**
      * @inheritdoc
@@ -85,6 +90,8 @@ abstract class BaseMigrateController extends Controller
     public function beforeAction($action)
     {
         if (parent::beforeAction($action)) {
+            $this->db = \yii\di\Instance::ensure($this->db, \yii\db\Connection::className());
+            
             $path = Yii::getAlias($this->migrationPath);
             if (!is_dir($path)) {
                 if ($action->id !== 'create') {
@@ -498,7 +505,8 @@ abstract class BaseMigrateController extends Controller
 
         $className = 'm' . gmdate('ymd_His') . '_' . $name;
         $file = $this->migrationPath . DIRECTORY_SEPARATOR . $className . '.php';
-
+        $tablePrefix = $this->db->tablePrefix;
+        $tableTemplate = $tablePrefix ? "{{%$tablePrefix~}}" : '~';
         if ($this->confirm("Create new migration '$file'?")) {
             if (preg_match('/^create_junction_(.+)_and_(.+)$/', $name, $matches)) {
                 $firstTable = mb_strtolower($matches[1], Yii::$app->charset);
@@ -506,34 +514,34 @@ abstract class BaseMigrateController extends Controller
 
                 $content = $this->renderFile(Yii::getAlias($this->generatorTemplateFiles['create_junction']), [
                     'className' => $className,
-                    'table' => $firstTable . '_' . $secondTable,
+                    'table' => str_replace('~', $firstTable . '_' . $secondTable, $tableTemplate),
                     'field_first' => $firstTable,
                     'field_second' => $secondTable,
                 ]);
             } elseif (preg_match('/^add_(.+)_to_(.+)$/', $name, $matches)) {
                 $content = $this->renderFile(Yii::getAlias($this->generatorTemplateFiles['add_column']), [
                     'className' => $className,
-                    'table' => mb_strtolower($matches[2], Yii::$app->charset),
+                    'table' => str_replace('~', mb_strtolower($matches[2], Yii::$app->charset), $tableTemplate),
                     'fields' => $this->fields
                 ]);
             } elseif (preg_match('/^drop_(.+)_from_(.+)$/', $name, $matches)) {
                 $content = $this->renderFile(Yii::getAlias($this->generatorTemplateFiles['drop_column']), [
                     'className' => $className,
-                    'table' => mb_strtolower($matches[2], Yii::$app->charset),
+                    'table' => str_replace('~', mb_strtolower($matches[2], Yii::$app->charset), $tableTemplate),
                     'fields' => $this->fields
                 ]);
             } elseif (preg_match('/^create_(.+)$/', $name, $matches)) {
                 $this->addDefaultPrimaryKey();
                 $content = $this->renderFile(Yii::getAlias($this->generatorTemplateFiles['create_table']), [
                     'className' => $className,
-                    'table' => mb_strtolower($matches[1], Yii::$app->charset),
+                    'table' => str_replace('~', mb_strtolower($matches[1], Yii::$app->charset), $tableTemplate),
                     'fields' => $this->fields
                 ]);
             } elseif (preg_match('/^drop_(.+)$/', $name, $matches)) {
                 $this->addDefaultPrimaryKey();
                 $content = $this->renderFile(Yii::getAlias($this->generatorTemplateFiles['drop_table']), [
                     'className' => $className,
-                    'table' => mb_strtolower($matches[1], Yii::$app->charset),
+                    'table' => str_replace('~', mb_strtolower($matches[1], Yii::$app->charset), $tableTemplate),
                     'fields' => $this->fields
                 ]);
             } else {

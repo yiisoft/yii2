@@ -32,6 +32,7 @@ Yii Framework 2 Change Log
 - Enh #10976: `Inflector::transliterate()` now uses `strtr` instead of `str_replace` (DrDeath72)
 - Enh #11139: `yii\validators\EachValidator` injects specific attribute value in error message parameters (silverfire)
 - Enh: Added `StringHelper::countWords()` that given a string returns number of words in it (samdark)
+- Enh: `yii migrate/create` command generate migrate file support table prefix if set (hiscaler)
 - Bug #11040: Check parameter 'recursive' and disable recursive copying with option 'recursive' => false in method BaseFileHelper::copyDirectory (Ni-san)
 - Chg: HTMLPurifier dependency updated to `~4.6` (samdark)
 - Chg #10726: Added `yii\rbac\ManagerInterface::canAddChild()` (dkhlystov, samdark)
