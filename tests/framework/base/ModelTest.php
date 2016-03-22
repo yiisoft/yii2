@@ -3,11 +3,11 @@
 namespace yiiunit\framework\base;
 
 use yii\base\Model;
-use yiiunit\data\base\RulesModel;
-use yiiunit\TestCase;
-use yiiunit\data\base\Speaker;
-use yiiunit\data\base\Singer;
 use yiiunit\data\base\InvalidRulesModel;
+use yiiunit\data\base\RulesModel;
+use yiiunit\data\base\Singer;
+use yiiunit\data\base\Speaker;
+use yiiunit\TestCase;
 
 /**
  * @group base
@@ -177,6 +177,53 @@ class ModelTest extends TestCase
         $this->assertEquals(['account_id', 'user_id', 'email', 'name'], $model->activeAttributes());
     }
 
+    public function testUnsafeAttributes()
+    {
+        $model = new RulesModel();
+        $model->rules = [
+            [['name', '!email'], 'required'], // Name is safe to set, but email is not. Both are required
+        ];
+        $this->assertEquals(['name'], $model->safeAttributes());
+        $this->assertEquals(['name', 'email'], $model->activeAttributes());
+        $model->attributes = ['name' => 'mdmunir', 'email' => 'mdm@mun.com'];
+        $this->assertNull($model->email);
+        $this->assertFalse($model->validate());
+
+        $model = new RulesModel();
+        $model->rules = [
+            [['name'], 'required'],
+            [['!user_id'], 'default', 'value' => '3426'],
+        ];
+        $model->attributes = ['name' => 'mdmunir', 'user_id' => '62792684'];
+        $this->assertTrue($model->validate());
+        $this->assertEquals('3426', $model->user_id);
+
+        $model = new RulesModel();
+        $model->rules = [
+            [['name', 'email'], 'required'],
+            [['!email'], 'safe']
+        ];
+        $this->assertEquals(['name'], $model->safeAttributes());
+        $model->attributes = ['name' => 'mdmunir', 'email' => 'm2792684@mdm.com'];
+        $this->assertFalse($model->validate());
+
+        $model = new RulesModel();
+        $model->rules = [
+            [['name', 'email'], 'required'],
+            [['email'], 'email'],
+            [['!email'], 'safe', 'on' => 'update']
+        ];
+        $model->setScenario(RulesModel::SCENARIO_DEFAULT);
+        $this->assertEquals(['name', 'email'], $model->safeAttributes());
+        $model->attributes = ['name' => 'mdmunir', 'email' => 'm2792684@mdm.com'];
+        $this->assertTrue($model->validate());
+
+        $model->setScenario('update');
+        $this->assertEquals(['name'], $model->safeAttributes());
+        $model->attributes = ['name' => 'D426', 'email' => 'd426@mdm.com'];
+        $this->assertNotEquals('d426@mdm.com', $model->email);
+    }
+
     public function testErrors()
     {
         $speaker = new Speaker();
@@ -344,7 +391,8 @@ class ModelTest extends TestCase
 
     public function testCreateValidators()
     {
-        $this->setExpectedException('yii\base\InvalidConfigException', 'Invalid validation rule: a rule must specify both attribute names and validator type.');
+        $this->setExpectedException('yii\base\InvalidConfigException',
+            'Invalid validation rule: a rule must specify both attribute names and validator type.');
 
         $invalid = new InvalidRulesModel();
         $invalid->createValidators();

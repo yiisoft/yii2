@@ -392,6 +392,19 @@ have to do it explicitly as follows,
 $model->secret = $secret;
 ```
 
+The same can be done in `rules()` method:
+
+```php
+public function rules()
+{
+    return [
+        [['username', 'password', '!secret'], 'required', 'on' => 'login']
+    ];
+}
+```
+
+In this case attributes `username` and `password` are required, but `secret` must be assigned explicitly.
+
 
 ## Data Exporting <span id="data-exporting"></span>
 
