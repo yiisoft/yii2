@@ -137,7 +137,7 @@ class User extends Component
      */
     public $returnUrlParam = '__returnUrl';
     /**
-     * @var array MIME types for which this component should redirect to the loginUrl.
+     * @var array MIME types for which this component should redirect to the [[loginUrl]].
      * @since 2.0.8
      */
     public $acceptableRedirectTypes = ['text/html', 'application/xhtml+xml'];
@@ -684,9 +684,10 @@ class User extends Component
 
     /**
      * Checks if the `Accept` header contains a content type that allows redirection to the login page.
-     * The login page is assumed to serve `text/html` or `application/xhtml+xml`, configure this via
-     * [[acceptableRedirectTypes]]
+     * The login page is assumed to serve `text/html` or `application/xhtml+xml` by default. You can change acceptable
+     * content types by modifying [[acceptableRedirectTypes]] property.
      * @return boolean whether this request may be redirected to the login page.
+     * @see acceptableRedirectTypes
      * @since 2.0.8
      */
     protected function checkRedirectAcceptable()
@@ -695,12 +696,13 @@ class User extends Component
         if (empty($acceptableTypes)) {
             return true;
         }
-        foreach($acceptableTypes as $type => $params) {
+
+        foreach ($acceptableTypes as $type => $params) {
             if ($type === '*' || in_array($type, $this->acceptableRedirectTypes, true)) {
                 return true;
             }
         }
-        
+
         return false;
     }
 
