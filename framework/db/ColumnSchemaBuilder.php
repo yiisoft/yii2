@@ -20,6 +20,15 @@ use yii\base\Object;
  */
 class ColumnSchemaBuilder extends Object
 {
+    // Internally used constants representing categories that abstract column types fall under.
+    // See [[$categoryMap]] for mappings of abstract column types to category.
+    // @since 2.0.8
+    const CATEGORY_PK = 'pk';
+    const CATEGORY_STRING = 'string';
+    const CATEGORY_NUMERIC = 'numeric';
+    const CATEGORY_TIME = 'time';
+    const CATEGORY_OTHER = 'other';
+
     /**
      * @var string the column type definition such as INTEGER, VARCHAR, DATETIME, etc.
      */
@@ -51,19 +60,62 @@ class ColumnSchemaBuilder extends Object
      * @since 2.0.7
      */
     protected $isUnsigned = false;
-
+    /**
+     * @var string the column after which this column will be added.
+     * @since 2.0.8
+     */
+    protected $after;
+    /**
+     * @var boolean whether this column is to be inserted at the beginning of the table.
+     * @since 2.0.8
+     */
+    protected $isFirst;
+    /**
+     * @var array mapping of abstract column types (keys) to type categories (values).
+     * @since 2.0.8
+     */
+    public $categoryMap = [
+        Schema::TYPE_PK => self::CATEGORY_PK,
+        Schema::TYPE_UPK => self::CATEGORY_PK,
+        Schema::TYPE_BIGPK => self::CATEGORY_PK,
+        Schema::TYPE_UBIGPK => self::CATEGORY_PK,
+        Schema::TYPE_CHAR => self::CATEGORY_STRING,
+        Schema::TYPE_STRING => self::CATEGORY_STRING,
+        Schema::TYPE_TEXT => self::CATEGORY_STRING,
+        Schema::TYPE_SMALLINT => self::CATEGORY_NUMERIC,
+        Schema::TYPE_INTEGER => self::CATEGORY_NUMERIC,
+        Schema::TYPE_BIGINT => self::CATEGORY_NUMERIC,
+        Schema::TYPE_FLOAT => self::CATEGORY_NUMERIC,
+        Schema::TYPE_DOUBLE => self::CATEGORY_NUMERIC,
+        Schema::TYPE_DECIMAL => self::CATEGORY_NUMERIC,
+        Schema::TYPE_DATETIME => self::CATEGORY_TIME,
+        Schema::TYPE_TIMESTAMP => self::CATEGORY_TIME,
+        Schema::TYPE_TIME => self::CATEGORY_TIME,
+        Schema::TYPE_DATE => self::CATEGORY_TIME,
+        Schema::TYPE_BINARY => self::CATEGORY_OTHER,
+        Schema::TYPE_BOOLEAN => self::CATEGORY_NUMERIC,
+        Schema::TYPE_MONEY => self::CATEGORY_NUMERIC,
+    ];
+    /**
+     * @var \yii\db\Connection the current database connection. It is used mainly to escape strings
+     * safely when building the final column schema string.
+     * @since 2.0.8
+     */
+    public $db;
 
     /**
      * Create a column schema builder instance giving the type and value precision.
      *
      * @param string $type type of the column. See [[$type]].
      * @param integer|string|array $length length or precision of the column. See [[$length]].
+     * @param \yii\db\Connection $db the current database connection. See [[$db]].
      * @param array $config name-value pairs that will be used to initialize the object properties
      */
-    public function __construct($type, $length = null, $config = [])
+    public function __construct($type, $length = null, $db = null, $config = [])
     {
         $this->type = $type;
         $this->length = $length;
+        $this->db = $db;
         parent::__construct($config);
     }
 
@@ -116,7 +168,40 @@ class ColumnSchemaBuilder extends Object
      */
     public function unsigned()
     {
+        switch ($this->type) {
+            case Schema::TYPE_PK:
+                $this->type = Schema::TYPE_UPK;
+                break;
+            case Schema::TYPE_BIGPK:
+                $this->type = Schema::TYPE_UBIGPK;
+                break;
+        }
         $this->isUnsigned = true;
+        return $this;
+    }
+
+    /**
+     * Adds an `AFTER` constraint to the column.
+     * Note: MySQL, Oracle and Cubrid support only.
+     * @param string $after the column after which $this column will be added.
+     * @return $this
+     * @since 2.0.8
+     */
+    public function after($after)
+    {
+        $this->after = $after;
+        return $this;
+    }
+
+    /**
+     * Adds an `FIRST` constraint to the column.
+     * Note: MySQL, Oracle and Cubrid support only.
+     * @return $this
+     * @since 2.0.8
+     */
+    public function first()
+    {
+        $this->isFirst = true;
         return $this;
     }
 
@@ -133,19 +218,19 @@ class ColumnSchemaBuilder extends Object
     }
 
     /**
-     * Build full string for create the column's schema
+     * Builds the full string for the column's schema
      * @return string
      */
     public function __toString()
     {
-        return
-            $this->type .
-            $this->buildLengthString() .
-            $this->buildUnsignedString() .
-            $this->buildNotNullString() .
-            $this->buildUniqueString() .
-            $this->buildDefaultString() .
-            $this->buildCheckString();
+        switch ($this->getTypeCategory()) {
+            case self::CATEGORY_PK:
+                $format = '{type}{check}';
+                break;
+            default:
+                $format = '{type}{length}{notnull}{unique}{default}{check}';
+        }
+        return $this->buildCompleteString($format);
     }
 
     /**
@@ -223,12 +308,65 @@ class ColumnSchemaBuilder extends Object
     }
 
     /**
-     * Builds the unsigned string for column.
+     * Builds the unsigned string for column. Defaults to unsupported.
      * @return string a string containing UNSIGNED keyword.
      * @since 2.0.7
      */
     protected function buildUnsignedString()
     {
-        return $this->isUnsigned ? ' UNSIGNED' : '';
+        return '';
+    }
+
+    /**
+     * Builds the after constraint for the column. Defaults to unsupported.
+     * @return string a string containing the AFTER constraint.
+     * @since 2.0.8
+     */
+    protected function buildAfterString()
+    {
+        return '';
+    }
+
+    /**
+     * Builds the first constraint for the column. Defaults to unsupported.
+     * @return string a string containing the FIRST constraint.
+     * @since 2.0.8
+     */
+    protected function buildFirstString()
+    {
+        return '';
+    }
+
+    /**
+     * Returns the category of the column type.
+     * @return string a string containing the column type category name.
+     * @since 2.0.8
+     */
+    protected function getTypeCategory()
+    {
+        return $this->categoryMap[$this->type];
+    }
+
+    /**
+     * Returns the complete column definition from input format
+     * @param string $format the format of the definition.
+     * @return string a string containing the complete column definition.
+     * @since 2.0.8
+     */
+    protected function buildCompleteString($format)
+    {
+        $placeholderValues = [
+            '{type}' => $this->type,
+            '{length}' => $this->buildLengthString(),
+            '{unsigned}' => $this->buildUnsignedString(),
+            '{notnull}' => $this->buildNotNullString(),
+            '{unique}' => $this->buildUniqueString(),
+            '{default}' => $this->buildDefaultString(),
+            '{check}' => $this->buildCheckString(),
+            '{pos}' => ($this->isFirst) ?
+                        $this->buildFirstString() :
+                            $this->buildAfterString(),
+        ];
+        return strtr($format, $placeholderValues);
     }
 }

@@ -34,6 +34,11 @@ Yii Framework 2 Change Log
 - Enh: Added `StringHelper::countWords()` that given a string returns number of words in it (samdark)
 - Bug #11040: Check parameter 'recursive' and disable recursive copying with option 'recursive' => false in method BaseFileHelper::copyDirectory (Ni-san)
 - Chg: HTMLPurifier dependency updated to `~4.6` (samdark)
+- Enh #10889: Allows unsigned primary key column definitions (df2)
+- Chg #10921: Inverts responsibility of database specific column schema builder classes (df2)
+- Enh #9562: Adds `char` datatype to framework (df2)
+- Enh #9340: Adds `after()` and `first()` column schema builder modifiers (df2)
+- Enh #10921: `__toString()` of column schema builder now adapts to column types (df2)
 - Chg #10726: Added `yii\rbac\ManagerInterface::canAddChild()` (dkhlystov, samdark)
 - Chg #11071: `yii\helpers\BaseArrayHelper::isIn()` and `isTraversable()` since now throw `\yii\base\InvalidParamException` instead of `\InvalidArgumentException` (nukkumatti)
 
