@@ -27,7 +27,10 @@ class QueryBuilder extends \yii\db\QueryBuilder
      */
     public $typeMap = [
         Schema::TYPE_PK => 'integer PRIMARY KEY AUTOINCREMENT NOT NULL',
+        Schema::TYPE_UPK => 'integer UNSIGNED PRIMARY KEY AUTOINCREMENT NOT NULL',
         Schema::TYPE_BIGPK => 'bigint PRIMARY KEY AUTOINCREMENT NOT NULL',
+        Schema::TYPE_UBIGPK => 'bigint UNSIGNED PRIMARY KEY AUTOINCREMENT NOT NULL',
+        Schema::TYPE_CHAR => 'char(1)',
         Schema::TYPE_STRING => 'varchar(255)',
         Schema::TYPE_TEXT => 'text',
         Schema::TYPE_SMALLINT => 'smallint',
@@ -44,7 +47,6 @@ class QueryBuilder extends \yii\db\QueryBuilder
         Schema::TYPE_BOOLEAN => 'boolean',
         Schema::TYPE_MONEY => 'decimal(19,4)',
     ];
-
 
     /**
      * Generates a batch INSERT SQL statement.

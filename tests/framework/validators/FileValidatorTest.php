@@ -346,6 +346,16 @@ class FileValidatorTest extends TestCase
         $this->assertTrue(stripos(current($m->getErrors('attr_exe')), 'Only files with these extensions ') !== false);
     }
 
+    public function testIssue11012()
+    {
+        $baseName = '飛兒樂團光茫';
+        /** @var UploadedFile $file */
+        $file = $this->createTestFiles([
+            ['name' => $baseName . '.txt'],
+        ]);
+        $this->assertEquals($baseName, $file->getBaseName());
+    }
+
     /**
      * @param string $fileName
      * @param string $mask
@@ -373,6 +383,7 @@ class FileValidatorTest extends TestCase
     public function validMimeTypes()
     {
         return [
+            ['test.svg', 'image/*'],
             ['test.jpg', 'image/*'],
             ['test.png', 'image/*'],
             ['test.png', 'IMAGE/*'],

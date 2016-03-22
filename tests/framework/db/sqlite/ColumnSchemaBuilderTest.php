@@ -1,12 +1,12 @@
 <?php
-namespace yiiunit\framework\db\oci;
+namespace yiiunit\framework\db\sqlite;
 
-use yii\db\oci\ColumnSchemaBuilder;
+use yii\db\sqlite\ColumnSchemaBuilder;
 use yii\db\Schema;
 use \yiiunit\framework\db\ColumnSchemaBuilderTest as BaseColumnSchemaBuilderTest;
 
 /**
- * ColumnSchemaBuilderTest tests ColumnSchemaBuilder for Oracle
+ * ColumnSchemaBuilderTest tests ColumnSchemaBuilder for SQLite
  */
 class ColumnSchemaBuilderTest extends BaseColumnSchemaBuilderTest
 {

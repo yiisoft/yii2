@@ -5,15 +5,16 @@
  * @license http://www.yiiframework.com/license/
  */
 
-namespace yii\db\oci;
+namespace yii\db\sqlite;
 
 use yii\db\ColumnSchemaBuilder as AbstractColumnSchemaBuilder;
 
+
 /**
- * ColumnSchemaBuilder is the schema builder for Oracle databases.
+ * ColumnSchemaBuilder is the schema builder for Sqlite databases.
  *
- * @author Vasenin Matvey <vaseninm@gmail.com>
- * @since 2.0.6
+ * @author Chris Harris <chris@buckshotsoftware.com>
+ * @since 2.0.8
  */
 class ColumnSchemaBuilder extends AbstractColumnSchemaBuilder
 {
@@ -28,35 +29,17 @@ class ColumnSchemaBuilder extends AbstractColumnSchemaBuilder
     /**
      * @inheritdoc
      */
-    protected function buildAfterString()
-    {
-        return $this->after !== null ?
-            ' AFTER (' . $this->db->quoteColumnName($this->after) . ')' :
-            '';
-    }
-
-    /**
-     * @inheritdoc
-     */
-    protected function buildFirstString()
-    {
-        return $this->isFirst ? ' FIRST' : '';
-    }
-
-    /**
-     * @inheritdoc
-     */
     public function __toString()
     {
         switch ($this->getTypeCategory()) {
             case self::CATEGORY_PK:
-                $format = '{type}{length}{check}{pos}';
+                $format = '{type}{check}';
                 break;
             case self::CATEGORY_NUMERIC:
-                $format = '{type}{length}{unsigned}{default}{notnull}{check}{pos}';
+                $format = '{type}{length}{unsigned}{notnull}{unique}{check}{default}';
                 break;
             default:
-                $format = '{type}{length}{default}{notnull}{check}{pos}';
+                $format = '{type}{length}{notnull}{unique}{check}{default}';
         }
         return $this->buildCompleteString($format);
     }
