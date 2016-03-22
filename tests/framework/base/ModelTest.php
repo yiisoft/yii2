@@ -3,11 +3,11 @@
 namespace yiiunit\framework\base;
 
 use yii\base\Model;
-use yiiunit\data\base\RulesModel;
-use yiiunit\TestCase;
-use yiiunit\data\base\Speaker;
-use yiiunit\data\base\Singer;
 use yiiunit\data\base\InvalidRulesModel;
+use yiiunit\data\base\RulesModel;
+use yiiunit\data\base\Singer;
+use yiiunit\data\base\Speaker;
+use yiiunit\TestCase;
 
 /**
  * @group base
@@ -175,10 +175,13 @@ class ModelTest extends TestCase
         $model->scenario = 'create';
         $this->assertEquals(['account_id', 'user_id', 'email', 'name'], $model->safeAttributes());
         $this->assertEquals(['account_id', 'user_id', 'email', 'name'], $model->activeAttributes());
+    }
 
+    public function testUnsafeAttributes()
+    {
         $model = new RulesModel();
         $model->rules = [
-            [['name','!email'], 'required'],
+            [['name', '!email'], 'required'], // Name is safe to set, but email is not. Both are required
         ];
         $this->assertEquals(['name'], $model->safeAttributes());
         $this->assertEquals(['name', 'email'], $model->activeAttributes());
@@ -214,7 +217,7 @@ class ModelTest extends TestCase
         $this->assertEquals(['name', 'email'], $model->safeAttributes());
         $model->attributes = ['name' => 'mdmunir', 'email' => 'm2792684@mdm.com'];
         $this->assertTrue($model->validate());
-        
+
         $model->setScenario('update');
         $this->assertEquals(['name'], $model->safeAttributes());
         $model->attributes = ['name' => 'D426', 'email' => 'd426@mdm.com'];
@@ -388,7 +391,8 @@ class ModelTest extends TestCase
 
     public function testCreateValidators()
     {
-        $this->setExpectedException('yii\base\InvalidConfigException', 'Invalid validation rule: a rule must specify both attribute names and validator type.');
+        $this->setExpectedException('yii\base\InvalidConfigException',
+            'Invalid validation rule: a rule must specify both attribute names and validator type.');
 
         $invalid = new InvalidRulesModel();
         $invalid->createValidators();
