@@ -403,7 +403,7 @@ public function rules()
 }
 ```
 
-In this case attributes `username` and `password` are required, but `secret` must be assigned explicitly.
+In this case attributes `username`, `password` and `secret` are required, but `secret` must be assigned explicitly.
 
 
 ## Data Exporting <span id="data-exporting"></span>
