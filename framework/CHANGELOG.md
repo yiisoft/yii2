@@ -29,6 +29,8 @@ Yii Framework 2 Change Log
 - Enh #10487: `yii\helpers\BaseArrayHelper::index()` got a third parameter `$groupBy` to group the input array by the key in one or more dimensions (quantum13, silverfire, samdark)
 - Enh #10610: Added `BaseUrl::$urlManager` to be able to set URL manager used for creating URLs (samdark)
 - Enh #10764: `yii\helpers\Html::tag()` and `::beginTag()` return content without any HTML when the `$tag` attribute is `false` or `null` (pana1990)
+- Enh #10941: Added `yii\helpers\ArrayHelper::isTraversable`, added support for traversable selections for dropdownList, radioList and checkboxList in `yii\helpers\Html`.
+- Enh #10937: `yii\web\User` will now confirm the request accepts an HTML response before redirecting to the login page. Added optional `$checkAcceptHeader` to `yii\web\User::loginRequired()` (sammousa)
 - Enh #10941: Added `yii\helpers\ArrayHelper::isTraversable`, added support for traversable selections for dropdownList, radioList and checkboxList in `yii\helpers\Html` (sammousa)
 - Enh #10976: `Inflector::transliterate()` now uses `strtr` instead of `str_replace` (DrDeath72)
 - Enh #11139: `yii\validators\EachValidator` injects specific attribute value in error message parameters (silverfire)
