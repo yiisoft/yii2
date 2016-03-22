@@ -505,9 +505,9 @@ abstract class BaseMigrateController extends Controller
 
         $className = 'm' . gmdate('ymd_His') . '_' . $name;
         $file = $this->migrationPath . DIRECTORY_SEPARATOR . $className . '.php';
-        $tablePrefix = $this->db->tablePrefix;
-        $tableTemplate = $tablePrefix ? "{{%$tablePrefix~}}" : '~';
         if ($this->confirm("Create new migration '$file'?")) {
+            $tablePrefix = $this->db->tablePrefix;
+            $tableTemplate = $tablePrefix ? "{{%$tablePrefix~}}" : '~';
             if (preg_match('/^create_junction_(.+)_and_(.+)$/', $name, $matches)) {
                 $firstTable = mb_strtolower($matches[1], Yii::$app->charset);
                 $secondTable = mb_strtolower($matches[2], Yii::$app->charset);
