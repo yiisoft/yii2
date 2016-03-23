@@ -190,7 +190,7 @@ All Rights Reserved.
 * [Виджеты Jquery UI](https://github.com/yiisoft/yii2-jui/blob/master/docs/guide/README.md)
 
 
-Хелперы
+Помощники
 -------
 
 * [Обзор](helper-overview.md)
