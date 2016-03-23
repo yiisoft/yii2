@@ -43,6 +43,7 @@ Yii Framework 2 Change Log
 - Chg #10726: Added `yii\rbac\ManagerInterface::canAddChild()` (dkhlystov, samdark)
 - Chg #10921: Inverts responsibility of database specific column schema builder classes (df2)
 - Chg #11071: `yii\helpers\BaseArrayHelper::isIn()` and `isTraversable()` since now throw `\yii\base\InvalidParamException` instead of `\InvalidArgumentException` (nukkumatti)
+- Enh #11172: Added `retrieve()` function to `yii\caching\Cache`, as a shortcut to get and set (ryusoft)
 
 2.0.7 February 14, 2016
 -----------------------

@@ -192,6 +192,28 @@ abstract class Cache extends Component implements \ArrayAccess
     }
 
     /**
+     * Retrieve data from cache or generate with callback if cache data not exist or expired
+     * a short cut for get and set the value from cache
+     *
+     * @param mixed $key a key identifying the value to be cached. This can be a simple string or
+     * a complex data structure consisting of factors representing the key.
+     * @param mixed $callback the callback that return cache data
+     * @param integer $duration the number of seconds in which the cached value will expire. 0 means never expire.
+     * @param Dependency $dependency dependency of the cached item. If the dependency changes,
+     * the corresponding value in the cache will be invalidated when it is fetched via [[get()]].
+     * This parameter is ignored if [[serializer]] is false.
+     * @return mixed the data cached or generated with callback
+     */
+    public function retrieve($key, $callback, $duration = 0, $dependency = null)
+    {
+        if (($data = $this->get($key)) === false) {
+            $data = call_user_func($callback);
+            $this->set($key, $data, $duration, $dependency);
+        }
+        return $data;
+    }
+
+    /**
      * Stores a value identified by a key into cache.
      * If the cache already contains such a key, the existing value and
      * expiration time will be replaced with the new ones, respectively.
