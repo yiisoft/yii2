@@ -128,10 +128,10 @@ yii <route> --appconfig=path/to/config.php ...
 
 ### Псевдоніми опцій
 
-Починаючи із версії 2.0.8 консольна команда надає [[yii\console\Controller::optionAliases()]] 
-метод для створення псевдонімів для опцій.
+Починаючи із версії 2.0.8, консольна команда надає метод [[yii\console\Controller::optionAliases()]] 
+для створення псевдонімів для опцій.
 
-Щоб визначити псевдонім, потрібно перевизначити [[yii\console\Controller::optionAliases()]] метод
+Щоб визначити псевдонім, потрібно перевизначити метод [[yii\console\Controller::optionAliases()]]
 у вашому контролері, наприклад:
 
 ```php

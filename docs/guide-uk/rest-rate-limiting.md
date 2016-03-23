@@ -24,7 +24,7 @@
 ```php
 public function getRateLimit($request, $action)
 {
-    return [$this->rateLimit, 1]; // $rateLimit requests per second
+    return [$this->rateLimit, 1]; // $rateLimit запитів на секунду
 }
 
 public function loadAllowance($request, $action)
