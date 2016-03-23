@@ -30,7 +30,7 @@ Depending on the `urlManager` configuration, the created URL may look like one o
 And if the created URL is requested later, it will still be parsed back into the original route and query parameter value.
 
 ```
-/index.php?r=post/view&id=100
+/index.php?r=post%2Fview&id=100
 /index.php/post/100
 /posts/100
 ```
@@ -133,19 +133,19 @@ their associated query parameters. For example,
 ```php
 use yii\helpers\Url;
 
-// creates a URL to a route: /index.php?r=post/index
+// creates a URL to a route: /index.php?r=post%2Findex
 echo Url::to(['post/index']);
 
-// creates a URL to a route with parameters: /index.php?r=post/view&id=100
+// creates a URL to a route with parameters: /index.php?r=post%2Fview&id=100
 echo Url::to(['post/view', 'id' => 100]);
 
-// creates an anchored URL: /index.php?r=post/view&id=100#content
+// creates an anchored URL: /index.php?r=post%2Fview&id=100#content
 echo Url::to(['post/view', 'id' => 100, '#' => 'content']);
 
-// creates an absolute URL: http://www.example.com/index.php?r=post/index
+// creates an absolute URL: http://www.example.com/index.php?r=post%2Findex
 echo Url::to(['post/index'], true);
 
-// creates an absolute URL using the https scheme: https://www.example.com/index.php?r=post/index
+// creates an absolute URL using the https scheme: https://www.example.com/index.php?r=post%2Findex
 echo Url::to(['post/index'], 'https');
 ```
 
@@ -170,19 +170,19 @@ For example, assume the current module is `admin` and the current controller is 
 ```php
 use yii\helpers\Url;
 
-// currently requested route: /index.php?r=admin/post/index
+// currently requested route: /index.php?r=admin%2Fpost%2Findex
 echo Url::to(['']);
 
-// a relative route with action ID only: /index.php?r=admin/post/index
+// a relative route with action ID only: /index.php?r=admin%2Fpost%2Findex
 echo Url::to(['index']);
 
-// a relative route: /index.php?r=admin/post/index
+// a relative route: /index.php?r=admin%2Fpost%2Findex
 echo Url::to(['post/index']);
 
-// an absolute route: /index.php?r=post/index
+// an absolute route: /index.php?r=post%2Findex
 echo Url::to(['/post/index']);
 
-// /index.php?r=post/index     assume the alias "@posts" is defined as "/post/index"
+// /index.php?r=post%2Findex     assume the alias "@posts" is defined as "/post/index"
 echo Url::to(['@posts']);
 ```
 
@@ -197,7 +197,7 @@ Instead of passing an array as its first parameter, you should pass a string in 
 ```php
 use yii\helpers\Url;
 
-// currently requested URL: /index.php?r=admin/post/index
+// currently requested URL: /index.php?r=admin%2Fpost%2Findex
 echo Url::to();
 
 // an aliased URL: http://example.com
@@ -214,7 +214,7 @@ methods. For example,
 ```php
 use yii\helpers\Url;
 
-// home page URL: /index.php?r=site/index
+// home page URL: /index.php?r=site%2Findex
 echo Url::home();
 
 // the base URL, useful if the application is deployed in a sub-folder of the Web root

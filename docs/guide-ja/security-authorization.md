@@ -190,6 +190,7 @@ Yii は二種類の権限付与マネージャを提供しています。すな�
 前者は権限付与データを保存するのに PHP スクリプトファイルを使いますが、後者は権限付与データをデータベースに保存します。
 あなたのアプリケーションが非常に動的なロールと許可の管理を必要とするのでなければ、前者を使うことを考慮するのが良いでしょう。
 
+
 #### `PhpManager` を使用する <span id="using-php-manager"></span>
 
 次のコードは、アプリケーションの構成情報で [[yii\rbac\PhpManager]] クラスを使って `authManager` を構成する方法を示すものです。
@@ -211,6 +212,7 @@ return [
 デフォルトでは、[[yii\rbac\PhpManager]] は RBAC データを `@app/rbac/` ディレクトリの下のファイルに保存します。
 権限の階層をオンラインで変更する必要がある場合は、必ず、ウェブサーバのプロセスがこのディレクトリとその中の全てのファイルに対する書き込み権限を有するようにしてください。
 
+
 #### `DbManager` を使用する <span id="using-db-manager"></span>
 
 次のコードは、アプリケーションの構成情報で [[yii\rbac\DbManager]] クラスを使って `authManager` を構成する方法を示すものです。
@@ -227,6 +229,9 @@ return [
     ],
 ];
 ```
+
+> Note: yii2-basic-app テンプレートを使おうとする場合は、`config/web.php` に加えて、`config/console.php` 構成ファイルにおいても `uathManager` を宣言する必要があります。
+> yii2-advanced-app の場合は、`authManager` は `common/config/main.php` で一度だけ宣言されなければなりません。
 
 `DbManager` は四つのデータベーステーブルを使ってデータを保存します。
 

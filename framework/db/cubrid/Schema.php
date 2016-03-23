@@ -45,10 +45,10 @@ class Schema extends \yii\db\Schema
         'timestamp' => self::TYPE_TIMESTAMP,
         'datetime' => self::TYPE_DATETIME,
         // String data types
-        'char' => self::TYPE_STRING,
+        'char' => self::TYPE_CHAR,
         'varchar' => self::TYPE_STRING,
         'char varying' => self::TYPE_STRING,
-        'nchar' => self::TYPE_STRING,
+        'nchar' => self::TYPE_CHAR,
         'nchar varying' => self::TYPE_STRING,
         'string' => self::TYPE_STRING,
         // BLOB/CLOB data types
@@ -298,5 +298,13 @@ class Schema extends \yii\db\Schema
                 break;
         }
         parent::setTransactionIsolationLevel($level);
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function createColumnSchemaBuilder($type, $length = null)
+    {
+        return new ColumnSchemaBuilder($type, $length, $this->db);
     }
 }

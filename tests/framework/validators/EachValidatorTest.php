@@ -74,6 +74,28 @@ class EachValidatorTest extends TestCase
     }
 
     /**
+     * @depends testValidate
+     */
+    public function testCustomMessageValue()
+    {
+        $model = FakedValidationModel::createWithAttributes([
+            'attr_one' => [
+                'TEXT',
+            ],
+        ]);
+        $validator = new EachValidator(['rule' => ['integer', 'message' => '{value} is not an integer']]);
+
+        $validator->validateAttribute($model, 'attr_one');
+        $this->assertSame('TEXT is not an integer', $model->getFirstError('attr_one'));
+
+        $model->clearErrors();
+        $validator->allowMessageFromRule = false;
+        $validator->message = '{value} is invalid';
+        $validator->validateAttribute($model, 'attr_one');
+        $this->assertEquals('TEXT is invalid', $model->getFirstError('attr_one'));
+    }
+
+    /**
      * @see https://github.com/yiisoft/yii2/issues/10825
      *
      * @depends testValidate

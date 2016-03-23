@@ -1,12 +1,12 @@
 <?php
-namespace yiiunit\framework\db\mssql;
+namespace yiiunit\framework\db\cubrid;
 
-use yii\db\mssql\ColumnSchemaBuilder;
+use yii\db\cubrid\ColumnSchemaBuilder;
 use yii\db\Schema;
 use \yiiunit\framework\db\ColumnSchemaBuilderTest as BaseColumnSchemaBuilderTest;
 
 /**
- * ColumnSchemaBuilderTest tests ColumnSchemaBuilder for MSSQL
+ * ColumnSchemaBuilderTest tests ColumnSchemaBuilder for Cubrid
  */
 class ColumnSchemaBuilderTest extends BaseColumnSchemaBuilderTest
 {
@@ -26,10 +26,10 @@ class ColumnSchemaBuilderTest extends BaseColumnSchemaBuilderTest
     public function unsignedProvider()
     {
         return [
-            ['integer', Schema::TYPE_INTEGER, null, [
+            ['integer UNSIGNED', Schema::TYPE_INTEGER, null, [
                 ['unsigned'],
             ]],
-            ['integer(10)', Schema::TYPE_INTEGER, 10, [
+            ['integer(10) UNSIGNED', Schema::TYPE_INTEGER, 10, [
                 ['unsigned'],
             ]],
         ];

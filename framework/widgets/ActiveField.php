@@ -274,18 +274,16 @@ class ActiveField extends Component
     /**
      * Generates a tag that contains the first validation error of [[attribute]].
      * Note that even if there is no validation error, this method will still return an empty error tag.
-     * @param array|boolean $options the tag options in terms of name-value pairs. It will be merged with [[errorOptions]].
+     * @param array|false $options the tag options in terms of name-value pairs. It will be merged with [[errorOptions]].
      * The options will be rendered as the attributes of the resulting tag. The values will be HTML-encoded
-     * using [[Html::encode()]]. If a value is null, the corresponding attribute will not be rendered.
+     * using [[Html::encode()]]. If this parameter is false, no error tag will be rendered.
      *
      * The following options are specially handled:
      *
      * - tag: this specifies the tag name. If not set, "div" will be used.
      *
-     * If this parameter is false, no error tag will be rendered.
-     *
      * If you set a custom `id` for the error element, you may need to adjust the [[$selectors]] accordingly.
-     *
+     * @see $errorOptions
      * @return $this the field object itself
      */
     public function error($options = [])

@@ -42,14 +42,14 @@ You may specify the route as a string, e.g., `site/index`. You may also use an a
 query parameters for the URL being created. The array format must be:
 
 ```php
-// generates: /index.php?r=site/index&param1=value1&param2=value2
+// generates: /index.php?r=site%2Findex&param1=value1&param2=value2
 ['site/index', 'param1' => 'value1', 'param2' => 'value2']
 ```
 
 If you want to create a URL with an anchor, you can use the array format with a `#` parameter. For example,
 
 ```php
-// generates: /index.php?r=site/index&param1=value1#name
+// generates: /index.php?r=site%2Findex&param1=value1#name
 ['site/index', 'param1' => 'value1', '#' => 'name']
 ```
 
@@ -69,19 +69,19 @@ to the above rules.
 Below are some examples of using this method:
 
 ```php
-// /index.php?r=site/index
+// /index.php?r=site%2Findex
 echo Url::toRoute('site/index');
 
-// /index.php?r=site/index&src=ref1#name
+// /index.php?r=site%2Findex&src=ref1#name
 echo Url::toRoute(['site/index', 'src' => 'ref1', '#' => 'name']);
 
-// /index.php?r=post/edit&id=100     assume the alias "@postEdit" is defined as "post/edit"
+// /index.php?r=post%2Fedit&id=100     assume the alias "@postEdit" is defined as "post/edit"
 echo Url::toRoute(['@postEdit', 'id' => 100]);
 
-// http://www.example.com/index.php?r=site/index
+// http://www.example.com/index.php?r=site%2Findex
 echo Url::toRoute('site/index', true);
 
-// https://www.example.com/index.php?r=site/index
+// https://www.example.com/index.php?r=site%2Findex
 echo Url::toRoute('site/index', 'https');
 ```
 
@@ -105,13 +105,13 @@ will be replaced with the specified one.
 Below are some usage examples:
 
 ```php
-// /index.php?r=site/index
+// /index.php?r=site%2Findex
 echo Url::to(['site/index']);
 
-// /index.php?r=site/index&src=ref1#name
+// /index.php?r=site%2Findex&src=ref1#name
 echo Url::to(['site/index', 'src' => 'ref1', '#' => 'name']);
 
-// /index.php?r=post/edit&id=100     assume the alias "@postEdit" is defined as "post/edit"
+// /index.php?r=post%2Fedit&id=100     assume the alias "@postEdit" is defined as "post/edit"
 echo Url::to(['@postEdit', 'id' => 100]);
 
 // the currently requested URL
@@ -137,12 +137,12 @@ passing a `$params` parameter to the method. For example,
 ```php
 // assume $_GET = ['id' => 123, 'src' => 'google'], current route is "post/view"
 
-// /index.php?r=post/view&id=123&src=google
+// /index.php?r=post%2Fview&id=123&src=google
 echo Url::current();
 
-// /index.php?r=post/view&id=123
+// /index.php?r=post%2Fview&id=123
 echo Url::current(['src' => null]);
-// /index.php?r=post/view&id=100&src=google
+// /index.php?r=post%2Fview&id=100&src=google
 echo Url::current(['id' => 100]);
 ```
 
