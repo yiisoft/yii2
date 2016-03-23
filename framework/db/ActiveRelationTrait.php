@@ -419,9 +419,10 @@ trait ActiveRelationTrait
 
     /**
      * @param array $attributes the attributes to prefix
+     * @param QueryBuilder|null $builder
      * @return array
      */
-    private function prefixKeyColumns($attributes)
+    private function prefixKeyColumns($attributes, $builder = null)
     {
         if ($this instanceof ActiveQuery && (!empty($this->join) || !empty($this->joinWith))) {
             if (empty($this->from)) {
@@ -438,6 +439,11 @@ trait ActiveRelationTrait
             }
             if (isset($alias)) {
                 foreach ($attributes as $i => $attribute) {
+
+                    if (!empty($builder)) {
+                        $attribute = $builder->db->quoteColumnName($attribute);
+                    }
+
                     $attributes[$i] = "$alias.$attribute";
                 }
             }
@@ -447,12 +453,13 @@ trait ActiveRelationTrait
 
     /**
      * @param array $models
+     * @param QueryBuilder|null $builder
      */
-    private function filterByModels($models)
+    private function filterByModels($models, $builder = null)
     {
         $attributes = array_keys($this->link);
 
-        $attributes = $this->prefixKeyColumns($attributes);
+        $attributes = $this->prefixKeyColumns($attributes, $builder);
 
         $values = [];
         if (count($attributes) === 1) {
