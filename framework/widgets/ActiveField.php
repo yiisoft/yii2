@@ -725,7 +725,7 @@ class ActiveField extends Component
         $options = [];
 
         $inputID = $this->getInputId();
-        $options['id'] = $inputID;
+        $options['id'] = Html::getInputId($this->model, $this->attribute);
         $options['name'] = $this->attribute;
 
         $options['container'] = isset($this->selectors['container']) ? $this->selectors['container'] : ".field-$inputID";

@@ -17,7 +17,7 @@ use yii\web\AssetManager;
 class ActiveFieldTest extends \yiiunit\TestCase
 {
     /**
-     * @var ActiveField
+     * @var ActiveFieldExtend
      */
     private $activeField;
     /**
@@ -93,6 +93,26 @@ EOD;
 EOD;
 
         $actualValue = $this->activeField->render($content);
+        $this->assertEqualsWithoutLE($expectedValue, $actualValue);
+    }
+
+    /**
+     * @link https://github.com/yiisoft/yii2/issues/7627
+     */
+    public function testRenderWithCustomInputId()
+    {
+        $expectedValue = <<<EOD
+<div class="form-group field-custom-input-id">
+<label class="control-label" for="custom-input-id">Attribute Name</label>
+<input type="text" id="custom-input-id" class="form-control" name="DynamicModel[{$this->attributeName}]">
+
+<div class="help-block"></div>
+</div>
+EOD;
+
+        $this->activeField->inputOptions['id'] = 'custom-input-id';
+
+        $actualValue = $this->activeField->render();
         $this->assertEqualsWithoutLE($expectedValue, $actualValue);
     }
 
@@ -349,6 +369,36 @@ EOD;
     {
         $this->activeField->fileInput();
         $this->assertEquals('multipart/form-data', $this->activeField->form->options['enctype']);
+    }
+
+    /**
+     * @link https://github.com/yiisoft/yii2/issues/7627
+     */
+    public function testGetClientOptionsWithCustomInputId()
+    {
+        $this->activeField->setClientOptionsEmpty(false);
+
+        $this->activeField->model->addRule($this->attributeName, 'yiiunit\framework\widgets\TestValidator');
+        $this->activeField->inputOptions['id'] = 'custom-input-id';
+        $this->activeField->textInput();
+        $actualValue = $this->activeField->getClientOptions();
+
+        $this->assertArraySubset([
+            'id' => 'dynamicmodel-attributename',
+            'name' => $this->attributeName,
+            'container' => '.field-custom-input-id',
+            'input' => '#custom-input-id',
+        ], $actualValue);
+
+        $this->activeField->textInput(['id' => 'custom-textinput-id']);
+        $actualValue = $this->activeField->getClientOptions();
+
+        $this->assertArraySubset([
+            'id' => 'dynamicmodel-attributename',
+            'name' => $this->attributeName,
+            'container' => '.field-custom-textinput-id',
+            'input' => '#custom-textinput-id',
+        ], $actualValue);
     }
 
     /**
