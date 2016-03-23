@@ -114,9 +114,6 @@ class DbSessionTest extends TestCase
     {
         $this->mockWebApplication([
             'components' => [
-                'session' => [
-                    'class' => DbSession::className(),
-                ],
                 'db' => [
                     'class' => Connection::className(),
                     'dsn' => 'sqlite::memory:',

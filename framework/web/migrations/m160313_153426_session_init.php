@@ -5,8 +5,6 @@
  * @license http://www.yiiframework.com/license/
  */
 
-use yii\base\InvalidConfigException;
-use yii\web\DbSession;
 use yii\db\Migration;
 
 /**
@@ -19,33 +17,17 @@ class m160313_153426_session_init extends Migration
 {
 
     /**
-     * @throws yii\base\InvalidConfigException
-     * @return DbSession
-     */
-    protected function getSession()
-    {
-        $session = Yii::$app->getSession();
-        if (!$session instanceof DbSession) {
-            throw new InvalidConfigException('You should configure "session" component to use database before executing this migration.');
-        }
-        return $session;
-    }
-
-    /**
      * @inheritdoc
      */
     public function up()
     {
-        $session = $this->getSession();
-        $this->db = $session->db;
-
         $tableOptions = null;
         if ($this->db->driverName === 'mysql') {
             // http://stackoverflow.com/questions/766809/whats-the-difference-between-utf8-general-ci-and-utf8-unicode-ci
             $tableOptions = 'CHARACTER SET utf8 COLLATE utf8_unicode_ci ENGINE=InnoDB';
         }
 
-        $this->createTable($session->sessionTable, [
+        $this->createTable('{{%session}}', [
             'id' => $this->string()->notNull(),
             'expire' => $this->integer(),
             'data' => $this->binary(),
@@ -58,9 +40,6 @@ class m160313_153426_session_init extends Migration
      */
     public function down()
     {
-        $session = $this->getSession();
-        $this->db = $session->db;
-
-        $this->dropTable($session->sessionTable);
+        $this->dropTable('{{%session}}');
     }
 }
