@@ -76,9 +76,9 @@ if (!ArrayHelper::keyExists('username', $data1, false) || !ArrayHelper::keyExist
 }
 ```
 
-## Извлечение колонок <span id="retrieving-columns"></span>
+## Извлечение столбцов <span id="retrieving-columns"></span>
 
-Часто нужно извлечь колонку значений из многомерного массива или объекта. Например, список ID.
+Часто нужно извлечь столбец значений из многомерного массива или объекта. Например, список ID.
 
 ```php
 $data = [
