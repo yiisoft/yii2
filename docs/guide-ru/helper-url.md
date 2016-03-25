@@ -26,7 +26,7 @@ $absoluteBaseUrl = Url::base(true);
 $httpsAbsoluteBaseUrl = Url::base('https');
 ```
 
-Единственный параметр данного метода работает также как и `Url::home()`.
+Единственный параметр, данного метода, работает также как и `Url::home()`.
 
 ## Создание URL <span id="creating-urls"></span>
 
