@@ -4,6 +4,7 @@ Yii Framework 2 Change Log
 2.0.8 under development
 -----------------------
 
+- Bug #11196: Fixed VarDumper throws PHP Fatal when dumping __PHP_Incomplete_Class (DamianZ)
 - Bug #9851: Fixed partial commit / rollback in nested transactions (sammousa)
 - Bug #10784: Fixed `yii\grid\CheckboxColumn` to set correct value when `yii\grid\CheckboxColumn::$checkboxOptions` closure is used (nukkumatti)
 - Bug #10850: Fixed unable to use 'definitions' and 'aliases' at `yii\widgets\MaskedInput` (rahimov, klimov-paul)
