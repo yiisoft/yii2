@@ -117,7 +117,7 @@ class BaseVarDumper
                     $className = get_class($var);
                     $spaces = str_repeat(' ', $level * 4);
                     self::$_output .= "$className#$id\n" . $spaces . '(';
-                    if (method_exists($var, '__debugInfo')) {
+                    if ('__PHP_Incomplete_Class' !== get_class($var) && method_exists($var, '__debugInfo')) {
                         $dumpValues = $var->__debugInfo();
                         if (!is_array($dumpValues)) {
                             throw new InvalidValueException('__debuginfo() must return an array');
@@ -208,7 +208,7 @@ class BaseVarDumper
                             }
                             self::exportInternal($varAsArray, $level);
                             return;
-                        } elseif (method_exists($var, '__toString')) {
+                        } elseif ('__PHP_Incomplete_Class' !== get_class($var) && method_exists($var, '__toString')) {
                             $output = var_export($var->__toString(), true);
                         } else {
                             $outputBackup = self::$_output;
