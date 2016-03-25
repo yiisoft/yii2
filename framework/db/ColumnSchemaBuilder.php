@@ -56,6 +56,11 @@ class ColumnSchemaBuilder extends Object
      */
     protected $default;
     /**
+     * @var mixed SQL string to be appended to column schema string.
+     * @since 2.0.8
+     */
+    protected $custom;
+    /**
      * @var boolean whether the column values should be unsigned. If this is `true`, an `UNSIGNED` keyword will be added.
      * @since 2.0.7
      */
@@ -218,6 +223,18 @@ class ColumnSchemaBuilder extends Object
     }
 
     /**
+     * Specify additional SQL to be appended to schema string.
+     * @param string $sql the SQL string to be appended.
+     * @return $this
+     * @since 2.0.8
+     */
+    public function custom($sql)
+    {
+        $this->custom = $sql;
+        return $this;
+    }
+
+    /**
      * Builds the full string for the column's schema
      * @return string
      */
@@ -225,10 +242,10 @@ class ColumnSchemaBuilder extends Object
     {
         switch ($this->getTypeCategory()) {
             case self::CATEGORY_PK:
-                $format = '{type}{check}';
+                $format = '{type}{check}{custom}';
                 break;
             default:
-                $format = '{type}{length}{notnull}{unique}{default}{check}';
+                $format = '{type}{length}{notnull}{unique}{default}{check}{custom}';
         }
         return $this->buildCompleteString($format);
     }
@@ -338,6 +355,16 @@ class ColumnSchemaBuilder extends Object
     }
 
     /**
+     * Builds the first constraint for the column. Defaults to unsupported.
+     * @return string a string containing the FIRST constraint.
+     * @since 2.0.8
+     */
+    protected function buildCustomString()
+    {
+        return $this->custom !== null ? ' ' . $this->custom : '';
+    }
+
+    /**
      * Returns the category of the column type.
      * @return string a string containing the column type category name.
      * @since 2.0.8
@@ -366,6 +393,7 @@ class ColumnSchemaBuilder extends Object
             '{pos}' => ($this->isFirst) ?
                         $this->buildFirstString() :
                             $this->buildAfterString(),
+            '{custom}' => $this->buildCustomString(),
         ];
         return strtr($format, $placeholderValues);
     }

@@ -50,13 +50,13 @@ class ColumnSchemaBuilder extends AbstractColumnSchemaBuilder
     {
         switch ($this->getTypeCategory()) {
             case self::CATEGORY_PK:
-                $format = '{type}{length}{check}{pos}';
+                $format = '{type}{length}{check}{pos}{custom}';
                 break;
             case self::CATEGORY_NUMERIC:
-                $format = '{type}{length}{unsigned}{notnull}{unique}{default}{check}{pos}';
+                $format = '{type}{length}{unsigned}{notnull}{unique}{default}{check}{pos}{custom}';
                 break;
             default:
-                $format = '{type}{length}{notnull}{unique}{default}{check}{pos}';
+                $format = '{type}{length}{notnull}{unique}{default}{check}{pos}{custom}';
         }
         return $this->buildCompleteString($format);
     }
