@@ -92,6 +92,22 @@ Yii::$classMap['Class2'] = 'path/to/Class2.php';
 Перша команда встановлює [composer asset plugin](https://github.com/francoispluchino/composer-asset-plugin/),
 який дозволяє керувати залежностями пакунків Bower і NPM через Composer. Навіть якщо ви захочете використовувати тільки
 прошарки бази даних або інші, не повʼязані ресурсами, можливості Yii, вам все-одно необхідно встановити даний пакунок composer.
+
+Якщо ви бажаєте використовувати [можливість публікації ресурсів Yii](structure-assets.md),
+вам також слід додати наступну конфігурацію до розділу `extra` вашого файлу `composer.json`:
+
+```json
+{
+    ...
+    "extra": {
+        "asset-installer-paths": {
+            "npm-asset-library": "vendor/npm",
+            "bower-asset-library": "vendor/bower"
+        }
+    }
+}
+```
+
 Дивіться також загальний [розділ про встановлення Yii](start-installation.md#installing-via-composer), для отримання додаткової
 інформації про Composer та проблеми, які можуть виникнути під час встановлення.
 
