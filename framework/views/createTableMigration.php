@@ -12,8 +12,14 @@ echo "<?php\n";
 
 use yii\db\Migration;
 
+/**
+ * Handles the creation and droping for table `<?= $table ?>` in the database.
+ */
 class <?= $className ?> extends Migration
 {
+    /**
+     * @inheritdoc
+     */
     public function up()
     {
         $this->createTable('<?= $table ?>', [
@@ -27,6 +33,9 @@ class <?= $className ?> extends Migration
         ]);
     }
 
+    /**
+     * @inheritdoc
+     */
     public function down()
     {
         $this->dropTable('<?= $table ?>');
