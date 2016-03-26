@@ -359,7 +359,7 @@ If the migration name is in if the form of `create_junction_xxx_and_yyy` then co
 will be generated.
 
 ```php
-yii create/migration create_junction_post_and_tag
+yii migrate/create create_junction_post_and_tag
 ```
 
 generates
