@@ -24,11 +24,7 @@ class <?= $className ?> extends Migration
     {
         $this->createTable('<?= $table ?>', [
 <?php foreach ($fields as $field): ?>
-<?php if ($field == end($fields)): ?>
-            '<?= $field['property'] ?>' => $this-><?= $field['decorators'] . "\n"?>
-<?php else: ?>
             '<?= $field['property'] ?>' => $this-><?= $field['decorators'] . ",\n"?>
-<?php endif; ?>
 <?php endforeach; ?>
         ]);
     }
