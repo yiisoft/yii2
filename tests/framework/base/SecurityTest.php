@@ -826,6 +826,22 @@ TEXT;
 
     public function testGenerateRandomKeySpeed()
     {
+        $tests = [
+            "function_exists('random_bytes')",
+            "defined('OPENSSL_VERSION_TEXT') ? OPENSSL_VERSION_TEXT : null",
+            "PHP_VERSION_ID",
+            "PHP_OS",
+            "function_exists('mcrypt_create_iv') ? bin2hex(mcrypt_create_iv(4, MCRYPT_DEV_URANDOM)) : null",
+            "DIRECTORY_SEPARATOR",
+            "sprintf('%o', lstat('/dev/urandom')['mode'] & 0170000)",
+            "bin2hex(file_get_contents(PHP_OS === 'FreeBSD' ? '/dev/random' : '/dev/urandom', false, null, 0, 8))",
+            "ini_get('open_basedir')",
+        ];
+        foreach ($tests as $i => $test) {
+            $result = eval('return ' . $test . ';');
+            fwrite(STDERR, sprintf("%2d %s ==> %s\n", $i + 1, $test, var_export($result, true)));
+        }
+
         foreach ([16, 2000, 262144] as $block) {
             $security = new Security();
             foreach (range(1, 10) as $nth) {
