@@ -59,7 +59,7 @@ class ColumnSchemaBuilder extends Object
      * @var mixed SQL string to be appended to column schema string.
      * @since 2.0.8
      */
-    protected $custom;
+    protected $plus;
     /**
      * @var boolean whether the column values should be unsigned. If this is `true`, an `UNSIGNED` keyword will be added.
      * @since 2.0.7
@@ -228,9 +228,9 @@ class ColumnSchemaBuilder extends Object
      * @return $this
      * @since 2.0.8
      */
-    public function custom($sql)
+    public function plus($sql)
     {
-        $this->custom = $sql;
+        $this->plus = $sql;
         return $this;
     }
 
@@ -242,10 +242,10 @@ class ColumnSchemaBuilder extends Object
     {
         switch ($this->getTypeCategory()) {
             case self::CATEGORY_PK:
-                $format = '{type}{check}{custom}';
+                $format = '{type}{check}{plus}';
                 break;
             default:
-                $format = '{type}{length}{notnull}{unique}{default}{check}{custom}';
+                $format = '{type}{length}{notnull}{unique}{default}{check}{plus}';
         }
         return $this->buildCompleteString($format);
     }
@@ -359,9 +359,9 @@ class ColumnSchemaBuilder extends Object
      * @return string a string containing the FIRST constraint.
      * @since 2.0.8
      */
-    protected function buildCustomString()
+    protected function buildPlusString()
     {
-        return $this->custom !== null ? ' ' . $this->custom : '';
+        return $this->plus !== null ? ' ' . $this->plus : '';
     }
 
     /**
@@ -393,7 +393,7 @@ class ColumnSchemaBuilder extends Object
             '{pos}' => ($this->isFirst) ?
                         $this->buildFirstString() :
                             $this->buildAfterString(),
-            '{custom}' => $this->buildCustomString(),
+            '{plus}' => $this->buildPlusString(),
         ];
         return strtr($format, $placeholderValues);
     }
