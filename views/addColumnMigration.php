@@ -12,8 +12,22 @@ echo "<?php\n";
 
 use yii\db\Migration;
 
+/**
+ * Handles adding the columns <?php
+foreach ($fields as $field):
+    if ($field == end($fields)):
+        echo "`{$field['property']}`\n";
+    else:
+        echo "`{$field['property']}`, ";
+    endif;
+endforeach;?>
+ * for table `<?= $table ?>`.
+ */
 class <?= $className ?> extends Migration
 {
+    /**
+     * @inheritdoc
+     */
     public function up()
     {
 <?php foreach ($fields as $field): ?>
@@ -21,6 +35,9 @@ class <?= $className ?> extends Migration
 <?php endforeach; ?>
     }
 
+    /**
+     * @inheritdoc
+     */
     public function down()
     {
 <?php foreach ($fields as $field): ?>
