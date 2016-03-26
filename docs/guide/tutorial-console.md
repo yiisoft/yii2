@@ -132,7 +132,7 @@ the option value will be converted into an array by splitting the input string o
 ### Options Aliases
 
 Since version 2.0.8 console command provides [[yii\console\Controller::optionAliases()]] method to add
-aliases for commands.
+aliases for options.
 
 To define an alias, override [[yii\console\Controller::optionAliases()]] in your controller, for example:
 

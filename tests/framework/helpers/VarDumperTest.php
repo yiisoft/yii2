@@ -10,6 +10,23 @@ use yiiunit\TestCase;
  */
 class VarDumperTest extends TestCase
 {
+    public function testDumpIncompleteObject()
+    {
+        $serializedObj = 'O:16:"nonExistingClass":0:{}';
+        $incompleteObj = unserialize($serializedObj);
+        $dumpResult = VarDumper::dumpAsString($incompleteObj);
+        $this->assertContains("__PHP_Incomplete_Class#1\n(", $dumpResult);
+        $this->assertContains("nonExistingClass", $dumpResult);
+    }
+
+    public function testExportIncompleteObject()
+    {
+        $serializedObj = 'O:16:"nonExistingClass":0:{}';
+        $incompleteObj = unserialize($serializedObj);
+        $exportResult = VarDumper::export($incompleteObj);
+        $this->assertContains("nonExistingClass", $exportResult);
+    }
+    
     public function testDumpObject()
     {
         $obj = new \StdClass();

@@ -4,6 +4,7 @@ Yii Framework 2 Change Log
 2.0.8 under development
 -----------------------
 
+- Bug #11196: Fixed VarDumper throws PHP Fatal when dumping __PHP_Incomplete_Class (DamianZ)
 - Bug #9851: Fixed partial commit / rollback in nested transactions (sammousa)
 - Bug #10784: Fixed `yii\grid\CheckboxColumn` to set correct value when `yii\grid\CheckboxColumn::$checkboxOptions` closure is used (nukkumatti)
 - Bug #10850: Fixed unable to use 'definitions' and 'aliases' at `yii\widgets\MaskedInput` (rahimov, klimov-paul)
@@ -20,6 +21,7 @@ Yii Framework 2 Change Log
 - Bug #11012: Fixed `yii\web\UploadedFile::getBaseName()` to work with UTF-8 file names (hiscaler, silverfire)
 - Bug #11040: Check parameter 'recursive' and disable recursive copying with option 'recursive' => false in method BaseFileHelper::copyDirectory (Ni-san)
 - Bug #11125: Fixed `JSON_ERROR_SYNTAX` for `json_decode(null)` in PHP 7 (fps01)
+- Bug #11188: Fixed wrong index usage in `CaptchaAction` when calling `imagefilledrectangle` (alsopub)
 - Bug: SQlite querybuilder did not create primary key with bigint for `TYPE_BIGPK` (cebe)
 - Enh #5469: Add mimetype validation by mask in FileValidator (kirsenn, samdark, silverfire)
 - Enh #8145, #8139, #10234 #11153: `yii\validators\Validator::$attributes` property now supports `!attribute` notation to validate attribute, but do not mark it as safe (mdmunir)
@@ -37,7 +39,9 @@ Yii Framework 2 Change Log
 - Enh #10937: `yii\web\User` will now confirm the request accepts an HTML response before redirecting to the login page. Added optional `$checkAcceptHeader` to `yii\web\User::loginRequired()` (sammousa)
 - Enh #10941: Added `yii\helpers\ArrayHelper::isTraversable`, added support for traversable selections for dropdownList, radioList and checkboxList in `yii\helpers\Html` (sammousa)
 - Enh #10976: `Inflector::transliterate()` now uses `strtr` instead of `str_replace` (DrDeath72)
+- Enh #11137: Added weak ETag support to `yii\filters\HttpCache`. It could be turned on via setting `$weakEtag` to `true` (particleflux)
 - Enh #11139: `yii\validators\EachValidator` injects specific attribute value in error message parameters (silverfire)
+- Enh #11187: migrate command now generates phpdoc for table migrations (Faryshta)
 - Enh: Added `StringHelper::countWords()` that given a string returns number of words in it (samdark)
 - Chg: HTMLPurifier dependency updated to `~4.6` (samdark)
 - Chg #10726: Added `yii\rbac\ManagerInterface::canAddChild()` (dkhlystov, samdark)

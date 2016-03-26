@@ -224,8 +224,14 @@ CODE;
 
 use yii\db\Migration;
 
+/**
+ * Handles the creation and droping for table `test` in the database.
+ */
 class {$class} extends Migration
 {
+    /**
+     * @inheritdoc
+     */
     public function up()
     {
         \$this->createTable('test', [
@@ -236,6 +242,9 @@ class {$class} extends Migration
         ]);
     }
 
+    /**
+     * @inheritdoc
+     */
     public function down()
     {
         \$this->dropTable('test');
@@ -256,8 +265,14 @@ CODE;
 
 use yii\db\Migration;
 
+/**
+ * Handles the creation and droping for table `test` in the database.
+ */
 class {$class} extends Migration
 {
+    /**
+     * @inheritdoc
+     */
     public function up()
     {
         \$this->createTable('test', [
@@ -267,6 +282,9 @@ class {$class} extends Migration
         ]);
     }
 
+    /**
+     * @inheritdoc
+     */
     public function down()
     {
         \$this->dropTable('test');
@@ -286,8 +304,14 @@ CODE;
 
 use yii\db\Migration;
 
+/**
+ * Handles the creation and droping for table `test` in the database.
+ */
 class {$class} extends Migration
 {
+    /**
+     * @inheritdoc
+     */
     public function up()
     {
         \$this->createTable('test', [
@@ -295,6 +319,9 @@ class {$class} extends Migration
         ]);
     }
 
+    /**
+     * @inheritdoc
+     */
     public function down()
     {
         \$this->dropTable('test');
@@ -315,8 +342,14 @@ CODE;
 
 use yii\db\Migration;
 
+/**
+ * Handles the creation and droping for table `test` in the database.
+ */
 class {$class} extends Migration
 {
+    /**
+     * @inheritdoc
+     */
     public function up()
     {
         \$this->createTable('test', [
@@ -327,6 +360,9 @@ class {$class} extends Migration
         ]);
     }
 
+    /**
+     * @inheritdoc
+     */
     public function down()
     {
         \$this->dropTable('test');
