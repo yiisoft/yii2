@@ -13,23 +13,57 @@ echo "<?php\n";
 
 use yii\db\Migration;
 
+/**
+ * Handles the creation of table `<?= $table ?>` which is a junction between
+ * table `<?= $field_first ?>` and table `<?= $field_second ?>`.
+ */
 class <?= $className ?> extends Migration
 {
+    /**
+     * @inheritdoc
+     */
     public function up()
     {
         $this->createTable('<?= $table ?>', [
             '<?= $field_first ?>_id' => $this->integer(),
             '<?= $field_second ?>_id' => $this->integer(),
-            'PRIMARY KEY(<?= $field_first ?>_id, <?= $field_second ?>_id)'
+            'PRIMARY KEY(<?= $field_first ?>_id, <?= $field_second ?>_id)',
         ]);
 
-        $this->createIndex('idx-<?= $table . '-' . $field_first ?>_id', '<?= $table ?>', '<?= $field_first ?>_id');
-        $this->createIndex('idx-<?= $table . '-' . $field_second ?>_id', '<?= $table ?>', '<?= $field_second ?>_id');
+        $this->createIndex(
+            'idx-<?= $table . '-' . $field_first ?>_id',
+            '<?= $table ?>',
+            '<?= $field_first ?>_id'
+        );
 
-        $this->addForeignKey('fk-<?= $table . '-' . $field_first ?>_id', '<?= $table ?>', '<?= $field_first ?>_id', '<?= $field_first ?>', 'id', 'CASCADE');
-        $this->addForeignKey('fk-<?= $table . '-' . $field_second ?>_id', '<?= $table ?>', '<?= $field_second ?>_id', '<?= $field_second ?>', 'id', 'CASCADE');
+        $this->createIndex(
+            'idx-<?= $table . '-' . $field_second ?>_id',
+            '<?= $table ?>',
+            '<?= $field_second ?>_id'
+        );
+
+        $this->addForeignKey(
+            'fk-<?= $table . '-' . $field_first ?>_id',
+            '<?= $table ?>',
+            '<?= $field_first ?>_id',
+            '<?= $field_first ?>',
+            'id',
+            'CASCADE'
+        );
+
+        $this->addForeignKey(
+            'fk-<?= $table . '-' . $field_second ?>_id',
+            '<?= $table ?>',
+            '<?= $field_second ?>_id',
+            '<?= $field_second ?>',
+            'id',
+            'CASCADE'
+        );
     }
 
+    /**
+     * @inheritdoc
+     */
     public function down()
     {
         $this->dropTable('<?= $table ?>');
