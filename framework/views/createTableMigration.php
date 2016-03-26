@@ -13,7 +13,7 @@ echo "<?php\n";
 use yii\db\Migration;
 
 /**
- * Handles the creation and droping for table `<?= $table ?>` in the database.
+ * Handles the creation for table `<?= $table ?>`.
  */
 class <?= $className ?> extends Migration
 {
@@ -24,11 +24,7 @@ class <?= $className ?> extends Migration
     {
         $this->createTable('<?= $table ?>', [
 <?php foreach ($fields as $field): ?>
-<?php if ($field == end($fields)): ?>
-            '<?= $field['property'] ?>' => $this-><?= $field['decorators'] . "\n"?>
-<?php else: ?>
-            '<?= $field['property'] ?>' => $this-><?= $field['decorators'] . ",\n"?>
-<?php endif; ?>
+            <?= "'{$field['property']}' => \$this->{$field['decorators']},\n" ?>
 <?php endforeach; ?>
         ]);
     }
