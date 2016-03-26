@@ -27,7 +27,7 @@ class <?= $className ?> extends Migration
         $this->createTable('<?= $table ?>', [
             '<?= $field_first ?>_id' => $this->integer(),
             '<?= $field_second ?>_id' => $this->integer(),
-            'PRIMARY KEY(<?= $field_first ?>_id, <?= $field_second ?>_id)'
+            'PRIMARY KEY(<?= $field_first ?>_id, <?= $field_second ?>_id)',
         ]);
 
         $this->createIndex(

@@ -15,7 +15,11 @@ use yii\db\Migration;
 /**
  * Handles dropping columns <?php
 foreach ($fields as $field):
-    echo '`{$field['property']}`'
+    if ($field == end($fields)):
+        echo "`{$field['property']}`\n";
+    else:
+        echo "`{$field['property']}`, ";
+    endif;
 endforeach;?>
  * for table `<?= $table ?>`.
  */

@@ -225,7 +225,7 @@ CODE;
 use yii\db\Migration;
 
 /**
- * Handles the creation and droping for table `test` in the database.
+ * Handles the creation for table `test`.
  */
 class {$class} extends Migration
 {
@@ -238,7 +238,7 @@ class {$class} extends Migration
             'id' => \$this->primaryKey(),
             'title' => \$this->string(10)->notNull()->unique()->defaultValue("test"),
             'body' => \$this->text()->notNull(),
-            'price' => \$this->money(11,2)->notNull()
+            'price' => \$this->money(11,2)->notNull(),
         ]);
     }
 
@@ -266,7 +266,7 @@ CODE;
 use yii\db\Migration;
 
 /**
- * Handles the creation and droping for table `test` in the database.
+ * Handles the creation for table `test`.
  */
 class {$class} extends Migration
 {
@@ -278,7 +278,7 @@ class {$class} extends Migration
         \$this->createTable('test', [
             'title' => \$this->primaryKey(),
             'body' => \$this->text()->notNull(),
-            'price' => \$this->money(11,2)
+            'price' => \$this->money(11,2),
         ]);
     }
 
@@ -305,7 +305,7 @@ CODE;
 use yii\db\Migration;
 
 /**
- * Handles the creation and droping for table `test` in the database.
+ * Handles the creation for table `test`.
  */
 class {$class} extends Migration
 {
@@ -315,7 +315,7 @@ class {$class} extends Migration
     public function up()
     {
         \$this->createTable('test', [
-            'id' => \$this->primaryKey()
+            'id' => \$this->primaryKey(),
         ]);
     }
 
@@ -343,7 +343,7 @@ CODE;
 use yii\db\Migration;
 
 /**
- * Handles the creation and droping for table `test` in the database.
+ * Handles the creation for table `test`.
  */
 class {$class} extends Migration
 {
@@ -356,7 +356,7 @@ class {$class} extends Migration
             'id' => \$this->primaryKey(),
             'address' => \$this->string(),
             'address2' => \$this->string(),
-            'email' => \$this->string()
+            'email' => \$this->string(),
         ]);
     }
 
@@ -387,17 +387,26 @@ CODE;
 
 use yii\db\Migration;
 
+/**
+ * Handles the dropping for table `test`.
+ */
 class {$class} extends Migration
 {
+    /**
+     * @inheritdoc
+     */
     public function up()
     {
         \$this->dropTable('test');
     }
 
+    /**
+     * @inheritdoc
+     */
     public function down()
     {
         \$this->createTable('test', [
-            'id' => \$this->primaryKey()
+            'id' => \$this->primaryKey(),
         ]);
     }
 }
@@ -416,19 +425,28 @@ CODE;
 
 use yii\db\Migration;
 
+/**
+ * Handles the dropping for table `test`.
+ */
 class {$class} extends Migration
 {
+    /**
+     * @inheritdoc
+     */
     public function up()
     {
         \$this->dropTable('test');
     }
 
+    /**
+     * @inheritdoc
+     */
     public function down()
     {
         \$this->createTable('test', [
             'id' => \$this->primaryKey(),
             'body' => \$this->text()->notNull(),
-            'price' => \$this->money(11,2)
+            'price' => \$this->money(11,2),
         ]);
     }
 }
@@ -452,8 +470,15 @@ CODE;
 
 use yii\db\Migration;
 
+/**
+ * Handles adding the columns `title`, `body`, `price`, `created_at`
+ * for table `test`.
+ */
 class {$class} extends Migration
 {
+    /**
+     * @inheritdoc
+     */
     public function up()
     {
         \$this->addColumn('test', 'title', \$this->string(10)->notNull());
@@ -462,6 +487,9 @@ class {$class} extends Migration
         \$this->addColumn('test', 'created_at', \$this->dateTime());
     }
 
+    /**
+     * @inheritdoc
+     */
     public function down()
     {
         \$this->dropColumn('test', 'title');
@@ -490,8 +518,15 @@ CODE;
 
 use yii\db\Migration;
 
+/**
+ * Handles dropping columns `title`, `body`, `price`, `created_at`
+ * for table `test`.
+ */
 class {$class} extends Migration
 {
+    /**
+     * @inheritdoc
+     */
     public function up()
     {
         \$this->dropColumn('test', 'title');
@@ -500,6 +535,9 @@ class {$class} extends Migration
         \$this->dropColumn('test', 'created_at');
     }
 
+    /**
+     * @inheritdoc
+     */
     public function down()
     {
         \$this->addColumn('test', 'title', \$this->string(10)->notNull());
@@ -527,23 +565,57 @@ CODE;
 
 use yii\db\Migration;
 
+/**
+ * Handles the creation of table `post_tag` which is a junction between
+ * table `post` and table `tag`.
+ */
 class {$class} extends Migration
 {
+    /**
+     * @inheritdoc
+     */
     public function up()
     {
         \$this->createTable('post_tag', [
             'post_id' => \$this->integer(),
             'tag_id' => \$this->integer(),
-            'PRIMARY KEY(post_id, tag_id)'
+            'PRIMARY KEY(post_id, tag_id)',
         ]);
 
-        \$this->createIndex('idx-post_tag-post_id', 'post_tag', 'post_id');
-        \$this->createIndex('idx-post_tag-tag_id', 'post_tag', 'tag_id');
+        \$this->createIndex(
+            'idx-post_tag-post_id',
+            'post_tag',
+            'post_id'
+        );
 
-        \$this->addForeignKey('fk-post_tag-post_id', 'post_tag', 'post_id', 'post', 'id', 'CASCADE');
-        \$this->addForeignKey('fk-post_tag-tag_id', 'post_tag', 'tag_id', 'tag', 'id', 'CASCADE');
+        \$this->createIndex(
+            'idx-post_tag-tag_id',
+            'post_tag',
+            'tag_id'
+        );
+
+        \$this->addForeignKey(
+            'fk-post_tag-post_id',
+            'post_tag',
+            'post_id',
+            'post',
+            'id',
+            'CASCADE'
+        );
+
+        \$this->addForeignKey(
+            'fk-post_tag-tag_id',
+            'post_tag',
+            'tag_id',
+            'tag',
+            'id',
+            'CASCADE'
+        );
     }
 
+    /**
+     * @inheritdoc
+     */
     public function down()
     {
         \$this->dropTable('post_tag');
