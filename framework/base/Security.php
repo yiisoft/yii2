@@ -423,18 +423,6 @@ class Security extends Component
         return false;
     }
 
-    const DEV_URANDOM = '/dev/urandom';
-    const DEV_RANDOM = '/dev/random';
-    const SOURCE_LIBRE_SSL = 'LibreSSL';
-    const SOURCE_MCRYPT = 'mcrypt';
-    const SOURCE_OPEN_SSL = 'OpenSSL';
-    const SOURCE_URANDOM = 'urandom';
-    const SOURCE_RANDOM = 'random';
-    /**
-     * @var string|null Identifies the random source of the last successful call of [[generateRandomKey]].
-     */
-    private $_randomSource;
-
     /**
      * Generates specified number of random bytes.
      * Note that output may not be ASCII.
@@ -442,7 +430,7 @@ class Security extends Component
      *
      * @param integer $length the number of bytes to generate
      * @return string the generated random bytes
-     * @throws Exception on failure.
+     * @throws \Exception on failure.
      */
     public function generateRandomKey($length = 32)
     {
@@ -458,88 +446,19 @@ class Security extends Component
             throw new InvalidParamException('First parameter ($length) must be greater than 0');
         }
 
-        // The recent LibreSSL RNGs are faster and better than /dev/urandom.
+        // The recent LibreSSL RNGs are faster and likely better than /dev/urandom.
         // Parse OPENSSL_VERSION_TEXT because OPENSSL_VERSION_NUMBER is no use for LibreSSL.
         // https://bugs.php.net/bug.php?id=71143
-        if ($this->_randomSource === self::SOURCE_LIBRE_SSL
-            || ($this->_randomSource === null
-                && defined('OPENSSL_VERSION_TEXT')
+        static $libreSSL;
+        if ($libreSSL === null) {
+            $libreSSL = defined('OPENSSL_VERSION_TEXT')
                 && preg_match('{^LibreSSL (\d\d?)\.(\d\d?)\.(\d\d?)$}', OPENSSL_VERSION_TEXT, $matches)
-                && (10000 * $matches[1]) + (100 * $matches[2]) + $matches[3] >= 20105)
-        ) {
-            $key = openssl_random_pseudo_bytes($length, $cryptoStrong);
-            if ($cryptoStrong === false) {
-                throw new Exception(
-                    'openssl_random_pseudo_bytes() set $crypto_strong false. Your PHP setup is insecure.'
-                );
-            }
-            if ($key !== false && StringHelper::byteLength($key) === $length) {
-                $this->_randomSource = self::SOURCE_LIBRE_SSL;
-
-                return $key;
-            }
-
-            $this->_randomSource = null;
-        }
-
-        // mcrypt_create_iv() does not use libmcrypt. Since PHP 5.3.7 it directly reads
-        // CrypGenRandom on Windows. Elsewhere it directly reads /dev/urandom.
-        if ($this->_randomSource === self::SOURCE_MCRYPT
-            || ($this->_randomSource === null
-                && PHP_VERSION_ID >= 50307
-                && function_exists('mcrypt_create_iv'))
-        ) {
-            $key = mcrypt_create_iv($length, MCRYPT_DEV_URANDOM);
-            if (StringHelper::byteLength($key) === $length) {
-                $this->_randomSource = self::SOURCE_MCRYPT;
-
-                return $key;
-            }
-
-            $this->_randomSource = null;
-        }
-
-        // If not on Windows, look for a random special character device.
-        if (DIRECTORY_SEPARATOR === '/') {
-            $device = null;
-
-            if ($this->_randomSource === null) {
-                // Check /dev/urandom for speacial character device protection mode.
-                // Use lstat(), not stat(), in case an attacker arranges a symlink to a fake device.
-                $lstat = @lstat(self::DEV_URANDOM);
-                // Note: OCTAL int literals!
-                if ($lstat !== false && ($lstat['mode'] & 0170000) === 020000) {
-                    $device = self::DEV_URANDOM;
-                } elseif (php_uname('s') !== 'Linux') {
-                    // On some non-Linux systems, /dev/urandom is a symlink to /dev/random.
-                    $lstat = @lstat(self::DEV_RANDOM);
-                    // Note: OCTAL int literals!
-                    if ($lstat !== false && ($lstat['mode'] & 0170000) === 020000) {
-                        $device = self::DEV_RANDOM;
-                    }
-                }
-            } elseif ($this->_randomSource === self::SOURCE_URANDOM || $this->_randomSource === self::SOURCE_RANDOM) {
-                $device = $this->_randomSource;
-            }
-
-            if ($device) {
-                $key = @file_get_contents($device, false, null, 0, $length);
-
-                if ($key !== false && StringHelper::byteLength($key) === $length) {
-                    $this->_randomSource = $device;
-
-                    return $key;
-                }
-
-                $this->_randomSource = null;
-            }
+                && (10000 * $matches[1]) + (100 * $matches[2]) + $matches[3] >= 20105;
         }
 
         // Since 5.4.0, openssl_random_pseudo_bytes() reads from CryptGenRandom on Windows instead
         // of using OpenSSL library. Don't use OpenSSL on other platforms.
-        if ($this->_randomSource === self::SOURCE_OPEN_SSL
-            || (DIRECTORY_SEPARATOR !== '/' && PHP_VERSION_ID >= 50400)
-        ) {
+        if ($libreSSL || (DIRECTORY_SEPARATOR !== '/' && PHP_VERSION_ID >= 50400)) {
             $key = openssl_random_pseudo_bytes($length, $cryptoStrong);
             if ($cryptoStrong === false) {
                 throw new Exception(
@@ -547,12 +466,32 @@ class Security extends Component
                 );
             }
             if ($key !== false && StringHelper::byteLength($key) === $length) {
-                $this->_randomSource = self::SOURCE_OPEN_SSL;
-
                 return $key;
             }
+        }
 
-            $this->_randomSource = null;
+        // mcrypt_create_iv() does not use libmcrypt. Since PHP 5.3.7 it directly reads
+        // CrypGenRandom on Windows. Elsewhere it directly reads /dev/urandom.
+        if (PHP_VERSION_ID >= 50307 && function_exists('mcrypt_create_iv')) {
+            $key = mcrypt_create_iv($length, MCRYPT_DEV_URANDOM);
+            if (StringHelper::byteLength($key) === $length) {
+                return $key;
+            }
+        }
+
+        // If not on Windows, try a random device.
+        if (DIRECTORY_SEPARATOR === '/') {
+            // urandom is a symlink to random on FreeBSD.
+            $device = PHP_OS === 'FreeBSD' ? '/dev/random' : '/dev/urandom';
+            // Check random device for speacial character device protection mode. Use lstat()
+            // instead of stat() in case an attacker arranges a symlink to a fake device.
+            $lstat = @lstat($device);
+            if ($lstat !== false && ($lstat['mode'] & 0170000) === 020000) {
+                $key = @file_get_contents($device, false, null, 0, $length);
+                if ($key !== false && StringHelper::byteLength($key) === $length) {
+                    return $key;
+                }
+            }
         }
 
         throw new Exception('Unable to generate a random key');
