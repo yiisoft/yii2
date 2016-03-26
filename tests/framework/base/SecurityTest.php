@@ -7,6 +7,7 @@
 
 namespace yiiunit\framework\base;
 
+use yii\base\Security;
 use yiiunit\TestCase;
 
 /**
@@ -809,6 +810,37 @@ TEXT;
         $this->assertEquals($length, strlen($key2));
         $this->assertTrue($key1 != $key2);
     }
+
+    protected function randTime(Security $security, $count, $length, $message)
+    {
+        $t = microtime(true);
+        for ($i = 0; $i < $count; $i += 1) {
+            $key = $security->generateRandomKey($length);
+        }
+        $t = microtime(true) - $t;
+        $nbytes = number_format($count * $length, 0);
+        $milisec = number_format(1000 * ($t), 3);
+        $rate = number_format($count * $length / $t / 1000000, 3);
+        fwrite(STDERR, "$message: $count x $length B = $nbytes B in $milisec ms => $rate MB/s\n");
+    }
+
+    public function testGenerateRandomKeySpeed()
+    {
+        foreach ([16, 2000, 262144] as $block) {
+            $security = new Security();
+            foreach (range(1, 10) as $nth) {
+                $this->randTime($security, 1, $block, "Call $nth");
+            }
+            unset($security);
+        }
+
+        $security = new Security();
+        $this->randTime($security, 10000, 16, 'Rate test');
+
+        $security = new Security();
+        $this->randTime($security, 10000, 5000, 'Rate test');
+    }
+
 
     public function testGenerateRandomKeyURandom()
     {
