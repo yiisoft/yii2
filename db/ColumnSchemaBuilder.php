@@ -56,6 +56,11 @@ class ColumnSchemaBuilder extends Object
      */
     protected $default;
     /**
+     * @var mixed SQL string to be appended to column schema string.
+     * @since 2.0.8
+     */
+    protected $plus;
+    /**
      * @var boolean whether the column values should be unsigned. If this is `true`, an `UNSIGNED` keyword will be added.
      * @since 2.0.7
      */
@@ -237,6 +242,18 @@ class ColumnSchemaBuilder extends Object
     }
 
     /**
+     * Specify additional SQL to be appended to schema string.
+     * @param string $sql the SQL string to be appended.
+     * @return $this
+     * @since 2.0.8
+     */
+    public function plus($sql)
+    {
+        $this->plus = $sql;
+        return $this;
+    }
+
+    /**
      * Builds the full string for the column's schema
      * @return string
      */
@@ -244,10 +261,10 @@ class ColumnSchemaBuilder extends Object
     {
         switch ($this->getTypeCategory()) {
             case self::CATEGORY_PK:
-                $format = '{type}{check}{comment}';
+                $format = '{type}{check}{comment}{plus}';
                 break;
             default:
-                $format = '{type}{length}{notnull}{unique}{default}{check}{comment}';
+                $format = '{type}{length}{notnull}{unique}{default}{check}{comment}{plus}';
         }
         return $this->buildCompleteString($format);
     }
@@ -357,6 +374,16 @@ class ColumnSchemaBuilder extends Object
     }
 
     /**
+     * Builds the first constraint for the column. Defaults to unsupported.
+     * @return string a string containing the FIRST constraint.
+     * @since 2.0.8
+     */
+    protected function buildPlusString()
+    {
+        return $this->plus !== null ? ' ' . $this->plus : '';
+    }
+
+    /**
      * Returns the category of the column type.
      * @return string a string containing the column type category name.
      * @since 2.0.8
@@ -396,6 +423,7 @@ class ColumnSchemaBuilder extends Object
             '{pos}' => ($this->isFirst) ?
                         $this->buildFirstString() :
                             $this->buildAfterString(),
+            '{plus}' => $this->buildPlusString(),
         ];
         return strtr($format, $placeholderValues);
     }
