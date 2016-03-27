@@ -426,6 +426,10 @@ class ActiveField extends Component
         if ($this->inputOptions !== ['class' => 'form-control']) {
             $options = array_merge($this->inputOptions, $options);
         }
+        // https://github.com/yiisoft/yii2/issues/8779
+        if (!isset($this->form->options['enctype'])) {
+            $this->form->options['enctype'] = 'multipart/form-data';
+        }
         $this->adjustLabelFor($options);
         $this->parts['{input}'] = Html::activeFileInput($this->model, $this->attribute, $options);
 

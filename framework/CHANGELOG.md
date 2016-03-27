@@ -27,6 +27,7 @@ Yii Framework 2 Change Log
 - Enh #8145, #8139, #10234 #11153: `yii\validators\Validator::$attributes` property now supports `!attribute` notation to validate attribute, but do not mark it as safe (mdmunir)
 - Enh #8602: `yii\validators\DateValidator` skip validation for `timestampAttribute`, if it is already in correct format (klimov-paul)
 - Enh #8639: Improve ActiveRecord to not create new instances of classes when objects are available (cebe)
+- Enh #8779: Automatically set enctype form option when using file input field (pana1990, arogachev)
 - Enh #9340: Adds `after()` and `first()` column schema builder modifiers (df2)
 - Enh #9562: Adds `char` datatype to framework (df2)
 - Enh #9893: `yii.js` handleAction enhanced to support for data-form attribute, so links can trigger specific forms (SamMousa)
