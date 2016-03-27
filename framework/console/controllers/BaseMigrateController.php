@@ -503,7 +503,6 @@ abstract class BaseMigrateController extends Controller
 
         $className = 'm' . gmdate('ymd_His') . '_' . $name;
         $file = $this->migrationPath . DIRECTORY_SEPARATOR . $className . '.php';
-        $waste = [];
         if ($this->confirm("Create new migration '$file'?")) {
             $table = null;
             if (preg_match('/^create_junction_(.+)_and_(.+)$/', $name, $matches)) {
