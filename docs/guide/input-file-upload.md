@@ -77,6 +77,8 @@ use yii\widgets\ActiveForm;
 It is important to remember that you add the `enctype` option to the form so that the file can be properly uploaded.
 The `fileInput()` call will render a `<input type="file">` tag which will allow users to select a file to upload.
 
+> Tip: since 2.0.8 version, [[yii\web\widgets\ActiveField::fileInput|fileInput]] add the `enctype` option to the form
+automatically.
 
 ## Wiring Up <span id="wiring-up"></span>
 
