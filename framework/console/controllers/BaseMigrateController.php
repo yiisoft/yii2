@@ -62,6 +62,11 @@ abstract class BaseMigrateController extends Controller
      */
     public $fields = [];
 
+    /**
+     * @var array columns which have a foreign key and their related table.
+     * @since 2.0.8
+     */
+    protected $foreignKeys = [];
 
     /**
      * @inheritdoc
@@ -527,7 +532,8 @@ abstract class BaseMigrateController extends Controller
                 $content = $this->renderFile(Yii::getAlias($this->generatorTemplateFiles['create_table']), [
                     'className' => $className,
                     'table' => mb_strtolower($matches[1], Yii::$app->charset),
-                    'fields' => $this->fields
+                    'fields' => $this->fields,
+                    'foreignKeys' => $this->foreignKeys,
                 ]);
             } elseif (preg_match('/^drop_(.+)$/', $name, $matches)) {
                 $this->addDefaultPrimaryKey();
@@ -708,12 +714,25 @@ abstract class BaseMigrateController extends Controller
             $chunks = preg_split('/\s?:\s?/', $field, null);
             $property = array_shift($chunks);
 
-            foreach ($chunks as &$chunk) {
+            foreach ($chunks as $i => &$chunk) {
+                if (strpos($chunk, 'foreignKey') === 0) {
+                    preg_match('/foreignKey\((\w*)\)/', $chunk, $matches);
+                    $this->foreignKeys[$property] = isset($matches[1])
+                        ? $matches[1]
+                        : preg_replace('/_id$/', '', $property);
+
+                    unset($chunks[$i]);
+                    continue;
+                }
+
                 if (!preg_match('/^(.+?)\(([^)]+)\)$/', $chunk)) {
                     $chunk .= '()';
                 }
             }
-            $this->fields[$index] = ['property' => $property, 'decorators' => implode('->', $chunks)];
+            $this->fields[$index] = [
+                'property' => $property,
+                'decorators' => implode('->', $chunks),
+            ];
         }
     }
 

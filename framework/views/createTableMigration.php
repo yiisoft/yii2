@@ -24,9 +24,28 @@ class <?= $className ?> extends Migration
     {
         $this->createTable('<?= $table ?>', [
 <?php foreach ($fields as $field): ?>
-            <?= "'{$field['property']}' => \$this->{$field['decorators']},\n" ?>
+            <?= "'{$field['property']}' => \$this->{$field['decorators']}" ?>,
 <?php endforeach; ?>
         ]);
+<?php foreach ($foreignKeys as $column => $relatedTable): ?>
+
+        // index for column `<?= $column ?>`
+        $this->createIndex(
+            '<?= "idx-$table-$column" ?>',
+            '<?= $table ?>',
+            '<?= $column ?>'
+        );
+
+        // foreign key for table `<?= $relatedTable ?>`
+        $this->createIndex(
+            '<?= "fk-$table-$column" ?>',
+            '<?= $table ?>',
+            '<?= $column ?>',
+            '<?= $relatedTable ?>',
+            'id',
+            'CASCADE'
+        );
+<?php endforeach; ?>
     }
 
     /**

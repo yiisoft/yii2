@@ -371,6 +371,102 @@ class {$class} extends Migration
 
 CODE;
         $this->assertEqualsWithoutLE($code, $file);
+
+        $class = 'm' . gmdate('ymd_His') . '_' . $migrationName;
+        $this->runMigrateControllerAction('create', [
+            $migrationName,
+            'fields' => 'user_id:integer:foreignKey,
+                product_id:foreignKey:integer:unsigned:notNull,
+                order_id:integer:foreignKey(user_order):notNull,
+                created_at:dateTime:notNull',
+        ]);
+        $file = $this->parseNameClassMigration($class);
+        $code = <<<CODE
+<?php
+
+use yii\db\Migration;
+
+/**
+ * Handles the creation for table `test`.
+ */
+class {$class} extends Migration
+{
+    /**
+     * @inheritdoc
+     */
+    public function up()
+    {
+        \$this->createTable('test', [
+            'id' => \$this->primaryKey(),
+            'user_id' => \$this->integer(),
+            'product_id' => \$this->integer()->unsigned()->notNull(),
+            'order_id' => \$this->integer()->notNull(),
+            'created_at' => \$this->dateTime()->notNull(),
+        ]);
+
+        // index for column `user_id`
+        \$this->createIndex(
+            'idx-test-user_id',
+            'test',
+            'user_id'
+        );
+
+        // foreign key for table `user`
+        \$this->createIndex(
+            'fk-test-user_id',
+            'test',
+            'user_id',
+            'user',
+            'id',
+            'CASCADE'
+        );
+
+        // index for column `product_id`
+        \$this->createIndex(
+            'idx-test-product_id',
+            'test',
+            'product_id'
+        );
+
+        // foreign key for table `product`
+        \$this->createIndex(
+            'fk-test-product_id',
+            'test',
+            'product_id',
+            'product',
+            'id',
+            'CASCADE'
+        );
+
+        // index for column `order_id`
+        \$this->createIndex(
+            'idx-test-order_id',
+            'test',
+            'order_id'
+        );
+
+        // foreign key for table `user_order`
+        \$this->createIndex(
+            'fk-test-order_id',
+            'test',
+            'order_id',
+            'user_order',
+            'id',
+            'CASCADE'
+        );
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function down()
+    {
+        \$this->dropTable('test');
+    }
+}
+
+CODE;
+        $this->assertEqualsWithoutLE($code, $file);
     }
 
     public function testGenerateDropMigration()

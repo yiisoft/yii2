@@ -43,6 +43,7 @@ Yii Framework 2 Change Log
 - Enh #11139: `yii\validators\EachValidator` injects specific attribute value in error message parameters (silverfire)
 - Enh #11187: migrate command now generates phpdoc for table migrations (Faryshta)
 - Enh: Added `StringHelper::countWords()` that given a string returns number of words in it (samdark)
+- Enh: migrate command can create foreign keys.
 - Chg: HTMLPurifier dependency updated to `~4.6` (samdark)
 - Chg #10726: Added `yii\rbac\ManagerInterface::canAddChild()` (dkhlystov, samdark)
 - Chg #10921: Inverts responsibility of database specific column schema builder classes (df2)
