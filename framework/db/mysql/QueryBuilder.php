@@ -24,7 +24,10 @@ class QueryBuilder extends \yii\db\QueryBuilder
      */
     public $typeMap = [
         Schema::TYPE_PK => 'int(11) NOT NULL AUTO_INCREMENT PRIMARY KEY',
+        Schema::TYPE_UPK => 'int(11) UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY',
         Schema::TYPE_BIGPK => 'bigint(20) NOT NULL AUTO_INCREMENT PRIMARY KEY',
+        Schema::TYPE_UBIGPK => 'bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY',
+        Schema::TYPE_CHAR => 'char(1)',
         Schema::TYPE_STRING => 'varchar(255)',
         Schema::TYPE_TEXT => 'text',
         Schema::TYPE_SMALLINT => 'smallint(6)',
@@ -41,7 +44,6 @@ class QueryBuilder extends \yii\db\QueryBuilder
         Schema::TYPE_BOOLEAN => 'tinyint(1)',
         Schema::TYPE_MONEY => 'decimal(19,4)',
     ];
-
 
     /**
      * Builds a SQL statement for renaming a column.
@@ -78,6 +80,19 @@ class QueryBuilder extends \yii\db\QueryBuilder
         return "ALTER TABLE $quotedTable CHANGE "
             . $this->db->quoteColumnName($oldName) . ' '
             . $this->db->quoteColumnName($newName);
+    }
+
+    /**
+     * @inheritdoc
+     * @see https://bugs.mysql.com/bug.php?id=48875
+     */
+    public function createIndex($name, $table, $columns, $unique = false)
+    {
+        return 'ALTER TABLE '
+        . $this->db->quoteTableName($table)
+        . ($unique ? ' ADD UNIQUE INDEX ' : ' ADD INDEX ')
+        . $this->db->quoteTableName($name)
+        . ' (' . $this->buildColumns($columns) . ')';
     }
 
     /**
@@ -136,8 +151,8 @@ class QueryBuilder extends \yii\db\QueryBuilder
     /**
      * Builds a SQL statement for enabling or disabling integrity check.
      * @param boolean $check whether to turn on or off the integrity check.
-     * @param string $table the table name. Meaningless for MySQL.
      * @param string $schema the schema of the tables. Meaningless for MySQL.
+     * @param string $table the table name. Meaningless for MySQL.
      * @return string the SQL statement for checking integrity
      */
     public function checkIntegrity($check = true, $schema = '', $table = '')

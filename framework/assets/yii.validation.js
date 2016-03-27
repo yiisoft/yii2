@@ -36,7 +36,7 @@ yii.validation = (function ($) {
             }
         },
 
-        boolean: function (value, messages, options) {
+        'boolean': function (value, messages, options) {
             if (options.skipOnEmpty && pub.isEmpty(value)) {
                 return;
             }
@@ -68,17 +68,17 @@ yii.validation = (function ($) {
                 pub.addMessage(messages, options.notEqual, value);
             }
         },
-        
+
         file: function (attribute, messages, options) {
             var files = getUploadedFiles(attribute, messages, options);
             $.each(files, function (i, file) {
                 validateFile(file, messages, options);
             });
         },
-        
+
         image: function (attribute, messages, options, deferred) {
             var files = getUploadedFiles(attribute, messages, options);
-            
+
             $.each(files, function (i, file) {
                 validateFile(file, messages, options);
 
@@ -90,45 +90,45 @@ yii.validation = (function ($) {
                 var def = $.Deferred(),
                     fr = new FileReader(),
                     img = new Image();
-                    
+
                 img.onload = function () {
                     if (options.minWidth && this.width < options.minWidth) {
                         messages.push(options.underWidth.replace(/\{file\}/g, file.name));
                     }
-                    
+
                     if (options.maxWidth && this.width > options.maxWidth) {
                         messages.push(options.overWidth.replace(/\{file\}/g, file.name));
                     }
-                    
+
                     if (options.minHeight && this.height < options.minHeight) {
                         messages.push(options.underHeight.replace(/\{file\}/g, file.name));
                     }
-                    
+
                     if (options.maxHeight && this.height > options.maxHeight) {
                         messages.push(options.overHeight.replace(/\{file\}/g, file.name));
                     }
                     def.resolve();
                 };
-                
+
                 img.onerror = function () {
                     messages.push(options.notImage.replace(/\{file\}/g, file.name));
                     def.resolve();
                 };
-                
+
                 fr.onload = function () {
                     img.src = fr.result;
                 };
-                
+
                 // Resolve deferred if there was error while reading data
                 fr.onerror = function () {
                     def.resolve();
                 };
-                
+
                 fr.readAsDataURL(file);
-                
+
                 deferred.push(def);
             });
-        
+
         },
 
         number: function (value, messages, options) {
@@ -161,7 +161,7 @@ yii.validation = (function ($) {
 
             var inArray = true;
 
-            $.each($.isArray(value) ? value : [value], function(i, v) {
+            $.each($.isArray(value) ? value : [value], function (i, v) {
                 if ($.inArray(v, options.range) == -1) {
                     inArray = false;
                     return false;
@@ -192,17 +192,30 @@ yii.validation = (function ($) {
 
             var valid = true;
 
-            if (options.enableIDN) {
-                var regexp = /^(.*<?)(.*)@(.*)(>?)$/,
-                    matches = regexp.exec(value);
-                if (matches === null) {
+
+            var regexp = /^((?:"?([^"]*)"?\s)?)(?:\s+)?(?:(<?)((.+)@([^>]+))(>?))$/,
+                matches = regexp.exec(value);
+
+            if (matches === null) {
+                valid = false
+            } else {
+                if (options.enableIDN) {
+                    matches[5] = punycode.toASCII(matches[5]);
+                    matches[6] = punycode.toASCII(matches[6]);
+
+                    value = matches[1] + matches[3] + matches[5] + '@' + matches[6] + matches[7];
+                }
+
+                if (matches[5].length > 64) {
+                    valid = false;
+                } else if ((matches[5] + '@' + matches[6]).length > 254) {
                     valid = false;
                 } else {
-                    value = matches[1] + punycode.toASCII(matches[2]) + '@' + punycode.toASCII(matches[3]) + matches[4];
+                    valid = value.match(options.pattern) || (options.allowName && value.match(options.fullPattern));
                 }
             }
 
-            if (!valid || !(value.match(options.pattern) || (options.allowName && value.match(options.fullPattern)))) {
+            if (!valid) {
                 pub.addMessage(messages, options.message, value);
             }
         },
@@ -313,6 +326,54 @@ yii.validation = (function ($) {
             if (!valid) {
                 pub.addMessage(messages, options.message, value);
             }
+        },
+
+        ip: function (value, messages, options) {
+            var getIpVersion = function (value) {
+                return value.indexOf(':') === -1 ? 4 : 6;
+            };
+
+            var negation = null, cidr = null;
+
+            if (options.skipOnEmpty && pub.isEmpty(value)) {
+                return;
+            }
+
+            var matches = new RegExp(options.ipParsePattern).exec(value);
+            if (matches) {
+                negation = matches[1] || null;
+                value = matches[2];
+                cidr = matches[4] || null;
+            }
+
+            if (options.subnet === true && cidr === null) {
+                pub.addMessage(messages, options.messages.noSubnet, value);
+                return;
+            }
+            if (options.subnet === false && cidr !== null) {
+                pub.addMessage(messages, options.messages.hasSubnet, value);
+                return;
+            }
+            if (options.negation === false && negation !== null) {
+                pub.addMessage(messages, options.messages.message, value);
+                return;
+            }
+
+            if (getIpVersion(value) == 6) {
+                if (!options.ipv6) {
+                    pub.addMessage(messages, options.messages.ipv6NotAllowed, value);
+                }
+                if (!(new RegExp(options.ipv6Pattern)).test(value)) {
+                    pub.addMessage(messages, options.messages.message, value);
+                }
+            } else {
+                if (!options.ipv4) {
+                    pub.addMessage(messages, options.messages.ipv4NotAllowed, value);
+                }
+                if (!(new RegExp(options.ipv4Pattern)).test(value)) {
+                    pub.addMessage(messages, options.messages.message, value);
+                }
+            }
         }
     };
 
@@ -321,7 +382,7 @@ yii.validation = (function ($) {
         if (typeof File === "undefined") {
             return [];
         }
-        
+
         var files = $(attribute.input).get(0).files;
         if (!files) {
             messages.push(options.message);
@@ -361,7 +422,7 @@ yii.validation = (function ($) {
         }
 
         if (options.mimeTypes && options.mimeTypes.length > 0) {
-            if (!~options.mimeTypes.indexOf(file.type)) {
+            if (!validateMimeType(options.mimeTypes, file.type)) {
                 messages.push(options.wrongMimeType.replace(/\{file\}/g, file.name));
             }
         }
@@ -373,6 +434,16 @@ yii.validation = (function ($) {
         if (options.minSize && options.minSize > file.size) {
             messages.push(options.tooSmall.replace(/\{file\}/g, file.name));
         }
+    }
+
+    function validateMimeType(mimeTypes, fileType) {
+        for (var i = 0, len = mimeTypes.length; i < len; i++) {
+            if (new RegExp(mimeTypes[i]).test(fileType)) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     return pub;

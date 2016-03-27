@@ -29,7 +29,7 @@ use yii\helpers\Inflector;
  *
  * A typical usage of DetailView is as follows:
  *
- * ~~~
+ * ```php
  * echo DetailView::widget([
  *     'model' => $model,
  *     'attributes' => [
@@ -42,7 +42,7 @@ use yii\helpers\Inflector;
  *         'created_at:datetime', // creation date formatted as datetime
  *     ],
  * ]);
- * ~~~
+ * ```
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
@@ -82,14 +82,14 @@ class DetailView extends Widget
      * and `{value}` will be replaced with the label and the value of the corresponding attribute.
      * If a callback (e.g. an anonymous function), the signature must be as follows:
      *
-     * ~~~
+     * ```php
      * function ($attribute, $index, $widget)
-     * ~~~
+     * ```
      *
      * where `$attribute` refer to the specification of the attribute being rendered, `$index` is the zero-based
      * index of the attribute in the [[attributes]] array, and `$widget` refers to this widget instance.
      */
-    public $template = "<tr><th>{label}</th><td>{value}</td></tr>";
+    public $template = '<tr><th>{label}</th><td>{value}</td></tr>';
     /**
      * @var array the HTML attributes for the container tag of this widget. The "tag" option specifies
      * what container tag should be used. It defaults to "table" if not set.
@@ -113,7 +113,7 @@ class DetailView extends Widget
         if ($this->model === null) {
             throw new InvalidConfigException('Please specify the "model" property.');
         }
-        if ($this->formatter == null) {
+        if ($this->formatter === null) {
             $this->formatter = Yii::$app->getFormatter();
         } elseif (is_array($this->formatter)) {
             $this->formatter = Yii::createObject($this->formatter);
@@ -122,6 +122,10 @@ class DetailView extends Widget
             throw new InvalidConfigException('The "formatter" property must be either a Format object or a configuration array.');
         }
         $this->normalizeAttributes();
+
+        if (!isset($this->options['id'])) {
+            $this->options['id'] = $this->getId();
+        }
     }
 
     /**
@@ -169,7 +173,7 @@ class DetailView extends Widget
             if ($this->model instanceof Model) {
                 $this->attributes = $this->model->attributes();
             } elseif (is_object($this->model)) {
-                $this->attributes = $this->model instanceof Arrayable ? $this->model->toArray() : array_keys(get_object_vars($this->model));
+                $this->attributes = $this->model instanceof Arrayable ? array_keys($this->model->toArray()) : array_keys(get_object_vars($this->model));
             } elseif (is_array($this->model)) {
                 $this->attributes = array_keys($this->model);
             } else {

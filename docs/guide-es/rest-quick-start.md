@@ -74,7 +74,7 @@ del componente de aplicación `request` para usar [[yii\web\JsonParser]] para en
 ]
 ```
 
-> Consejo: La configuración anterior es opcional. Sin la configuración anterior, la API sólo reconocería
+> Tip: La configuración anterior es opcional. Sin la configuración anterior, la API sólo reconocería
   `application/x-www-form-urlencoded` y `multipart/form-data` como formatos de entrada.
 
 
@@ -93,7 +93,7 @@ para acceder a los datos de user. Las APIs que tienes creado incluyen:
 * `OPTIONS /users`: muestra los verbos compatibles respecto al punto final `/users`;
 * `OPTIONS /users/123`: muestra los verbos compatibles respecto al punto final `/users/123`.
 
-> Información: Yii automáticamente pluraliza los nombres de los controladores para usarlo en los puntos finales.
+> Info: Yii automáticamente pluraliza los nombres de los controladores para usarlo en los puntos finales.
 > Puedes configurar esto usando la propiedad [[yii\rest\UrlRule::$pluralize]].
 
 Puedes acceder a tus APIs con el comando `curl` de la siguiente manera,
@@ -172,7 +172,7 @@ Content-Type: application/json; charset=UTF-8
 {"id":1,"username":"example","email":"user@example.com","created_at":1414674789,"updated_at":1414674789}
 ```
 
-> Consejo: También puedes acceder a tus APIs a través del navegador web  introduciendo la URL `http://localhost/users`.
+> Tip: También puedes acceder a tus APIs a través del navegador web  introduciendo la URL `http://localhost/users`.
   Sin embargo, es posible que necesites algunos plugins para el navegador para enviar cabeceras especificas en la petición.
 
 Como se puede ver, en las cabeceras de la respuesta, hay información sobre la cuenta total, número de páginas, etc.
@@ -183,7 +183,7 @@ Utilizando los parámetros `fields` y `expand`, puedes también especificar que 
 Por ejemplo, la URL `http://localhost/users?fields=id,email` sólo devolverá los campos `id` y `email`.
 
 
-> Información: Puedes haber notado que el resultado de `http://localhost/users` incluye algunos campos sensibles,
+> Info: Puedes haber notado que el resultado de `http://localhost/users` incluye algunos campos sensibles,
 > tal como `password_hash`, `auth_key`. Seguramente no quieras que éstos aparecieran en el resultado de tu API.
 > Puedes y deberías filtrar estos campos como se describe en la sección [Response Formatting](rest-response-formatting.md).
 

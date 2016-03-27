@@ -167,7 +167,7 @@ abstract class BaseListView extends Widget
     {
         $options = $this->emptyTextOptions;
         $tag = ArrayHelper::remove($options, 'tag', 'div');
-        return Html::tag($tag, ($this->emptyText === null ? Yii::t('yii', 'No results found.') : $this->emptyText), $options);
+        return Html::tag($tag, $this->emptyText, $options);
     }
 
     /**

@@ -39,7 +39,7 @@ defined('YII_ENV') or define('YII_ENV', 'dev');
 http://hostname/index.php?r=gii
 ```
 
-> 补充： 如果你通过本机以外的机器访问 Gii，请求会被出于安全原因拒绝。你可以配置 Gii 为其添加允许访问的 IP 地址：
+> Info: 如果你通过本机以外的机器访问 Gii，请求会被出于安全原因拒绝。你可以配置 Gii 为其添加允许访问的 IP 地址：
 >
 ```php
 'gii' => [
@@ -113,7 +113,7 @@ http://hostname/index.php?r=country/index
 * 模型：`models/Country.php` 和 `models/CountrySearch.php`
 * 视图：`views/country/*.php`
 
-> 补充：Gii 被设计成高度可定制和可扩展的代码生成工具。使用它可以大幅提高应用开发速度。请参考 [Gii](tool-gii.md) 章节了解更多内容。
+> Info: Gii 被设计成高度可定制和可扩展的代码生成工具。使用它可以大幅提高应用开发速度。请参考 [Gii](tool-gii.md) 章节了解更多内容。
 
 
 总结 <span id="summary"></span>

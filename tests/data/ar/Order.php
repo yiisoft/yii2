@@ -108,6 +108,48 @@ class Order extends ActiveRecord
             ->viaTable('order_item', ['order_id' => 'id']);
     }
 
+    public function getBooksExplicit()
+    {
+        return $this->hasMany(Item::className(), ['id' => 'item_id'])
+            ->onCondition(['category_id' => 1])
+            ->viaTable('order_item', ['order_id' => 'id']);
+    }
+
+//    public function getBooksQuerysyntax()
+//    {
+//        return $this->hasMany(Item::className(), ['id' => 'item_id'])
+//            ->onCondition(['{{@item}}.category_id' => 1])
+//            ->viaTable('order_item', ['order_id' => 'id']);
+//    }
+
+    public function getBooksExplicitA()
+    {
+        return $this->hasMany(Item::className(), ['id' => 'item_id'])->alias('bo')
+            ->onCondition(['bo.category_id' => 1])
+            ->viaTable('order_item', ['order_id' => 'id']);
+    }
+
+//    public function getBooksQuerysyntaxA()
+//    {
+//        return $this->hasMany(Item::className(), ['id' => 'item_id'])->alias('bo')
+//            ->onCondition(['{{@item}}.category_id' => 1])
+//            ->viaTable('order_item', ['order_id' => 'id']);
+//    }
+
+    public function getBookItems()
+    {
+        return $this->hasMany(Item::className(), ['id' => 'item_id'])->alias('books')
+            ->onCondition(['books.category_id' => 1])
+            ->viaTable('order_item', ['order_id' => 'id']);
+    }
+
+    public function getMovieItems()
+    {
+        return $this->hasMany(Item::className(), ['id' => 'item_id'])->alias('movies')
+            ->onCondition(['movies.category_id' => 2])
+            ->viaTable('order_item', ['order_id' => 'id']);
+    }
+
     public function beforeSave($insert)
     {
         if (parent::beforeSave($insert)) {

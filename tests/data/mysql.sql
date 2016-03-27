@@ -24,7 +24,7 @@ CREATE TABLE `constraints`
 (
   `id` integer not null,
   `field1` varchar(255)
-);
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 
 CREATE TABLE `profile` (
@@ -100,7 +100,7 @@ CREATE TABLE `composite_fk` (
   `item_id` int(11) NOT NULL,
   PRIMARY KEY (`id`),
   CONSTRAINT `FK_composite_fk_order_item` FOREIGN KEY (`order_id`,`item_id`) REFERENCES `order_item` (`order_id`,`item_id`) ON DELETE CASCADE
-);
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE null_values (
   `id` INT(11) UNSIGNED NOT NULL AUTO_INCREMENT,
@@ -109,7 +109,7 @@ CREATE TABLE null_values (
   `var3` INT DEFAULT NULL,
   `stringcol` VARCHAR (32) DEFAULT NULL,
   PRIMARY KEY (id)
-);
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE `type` (
   `int_col` integer NOT NULL,
@@ -226,3 +226,15 @@ INSERT INTO `validator_ref` (a_field, ref) VALUES ('ref_to_3', 3);
 INSERT INTO `validator_ref` (a_field, ref) VALUES ('ref_to_4', 4);
 INSERT INTO `validator_ref` (a_field, ref) VALUES ('ref_to_4', 4);
 INSERT INTO `validator_ref` (a_field, ref) VALUES ('ref_to_5', 5);
+
+/* bit test, see https://github.com/yiisoft/yii2/issues/9006 */
+
+DROP TABLE IF EXISTS `bit_values` CASCADE;
+
+CREATE TABLE `bit_values` (
+  `id`      INT(11) NOT NULL AUTO_INCREMENT,
+  `val` bit(1) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+INSERT INTO `bit_values` (id, val) VALUES (1, b'0'), (2, b'1');

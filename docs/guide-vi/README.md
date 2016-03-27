@@ -3,7 +3,7 @@ The Definitive Guide to Yii 2.0
 
 Các hướng dẫn được phát hành theo [Các điều khoản về tài liệu Yii](http://www.yiiframework.com/doc/terms/).
 
-Giữ toàn quyền.
+All Rights Reserved.
 
 2014 (c) Yii Software LLC.
 
@@ -21,30 +21,30 @@ Bắt đầu
 * [Cài đặt Yii](start-installation.md)
 * [Thực hiện chạy ứng dụng](start-workflow.md)
 * [Viết lời chào đầu tiên](start-hello.md)
-* [Làm việc với form Forms](start-forms.md)
+* [Làm việc với Forms](start-forms.md)
 * [Làm việc với Databases](start-databases.md)
 * [Sử dụng Gii để sinh code](start-gii.md)
 * [Mức cao hơn](start-looking-ahead.md)
 
 
-Cấu trúc ứng dụng (Application Structure)
+Kiến trúc ứng dụng (Application Structure)
 ---------------------
 
 * [Tổng quan về kiến trúc ứng dụng](structure-overview.md)
 * [Mục Scripts](structure-entry-scripts.md)
-* [Ứng dụng](structure-applications.md)
-* [Các thành phần ứng dụng](structure-application-components.md)
+* [Ứng dụng (Applications)](structure-applications.md)
+* [Thành phần ứng dụng](structure-application-components.md)
 * [Bộ điều khiển (Controllers)](structure-controllers.md)
 * [Models](structure-models.md)
 * [Views](structure-views.md)
 * [Modules](structure-modules.md)
-* [Filters](structure-filters.md)
+* [Bộ lọc (Filters)](structure-filters.md)
 * [Widgets](structure-widgets.md)
 * [Assets](structure-assets.md)
 * [Phần mở rộng (Extensions)](structure-extensions.md)
 
 
-Yêu cầu xử lý
+Yêu cầu xử lý (Handling Requests)
 -----------------
 
 * [Tổng quan](runtime-overview.md)
@@ -84,14 +84,14 @@ Làm việc với Databases
 * **TBD** [ElasticSearch](db-elasticsearch.md)
 
 
-Nhận dữ liệu người dùng
+Nhận dữ liệu từ user
 -----------------------
 
 * [Tạo mới Forms](input-forms.md)
 * [Kiểm tra dữ liệu đầu vào (Validating Input)](input-validation.md)
 * [File Upload](input-file-upload.md)
 * [Thu thập dữ liệu từ danh sách đầu vào (Đang phát triển)](input-tabular-input.md)
-* [lấy dữ liệu cho nhiều Models (Chưa giải quyết)](input-multiple-models.md)
+* [Lấy dữ liệu cho nhiều Models (Chưa giải quyết)](input-multiple-models.md)
 
 
 Hiển thị dữ liệu
@@ -134,9 +134,9 @@ RESTful Web Services
 * [Bộ điều khiển (Controllers)](rest-controllers.md)
 * [Routing](rest-routing.md)
 * [Định dạng thông điệp gửi đi (Response Formatting)](rest-response-formatting.md)
-* [Authentication](rest-authentication.md)
+* [Xác thực (Authentication)](rest-authentication.md)
 * [Rate Limiting](rest-rate-limiting.md)
-* [Versioning](rest-versioning.md)
+* [Phiên bản (Version)](rest-versioning.md)
 * [Error Handling](rest-error-handling.md)
 
 
@@ -152,7 +152,7 @@ Testing
 -------
 
 * [Tổng quan](test-overview.md)
-* [Thiết lập môi trường cho việc Testing](test-environment-setup.md)
+* [Thiết lập môi trường](test-environment-setup.md)
 * [Unit Tests](test-unit.md)
 * [Kiểm tra chức năng (Functional Tests)](test-functional.md)
 * [Acceptance Tests](test-acceptance.md)

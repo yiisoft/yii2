@@ -151,17 +151,25 @@ class PhpManager extends BaseManager
     /**
      * @inheritdoc
      */
+    public function canAddChild($parent, $child)
+    {
+        return !$this->detectLoop($parent, $child);
+    }
+
+    /**
+     * @inheritdoc
+     */
     public function addChild($parent, $child)
     {
         if (!isset($this->items[$parent->name], $this->items[$child->name])) {
             throw new InvalidParamException("Either '{$parent->name}' or '{$child->name}' does not exist.");
         }
 
-        if ($parent->name == $child->name) {
+        if ($parent->name === $child->name) {
             throw new InvalidParamException("Cannot add '{$parent->name} ' as a child of itself.");
         }
         if ($parent instanceof Permission && $child instanceof Role) {
-            throw new InvalidParamException("Cannot add a role as a child of a permission.");
+            throw new InvalidParamException('Cannot add a role as a child of a permission.');
         }
 
         if ($this->detectLoop($parent, $child)) {
@@ -327,6 +335,7 @@ class PhpManager extends BaseManager
             }
             unset($this->items[$item->name]);
             $this->saveItems();
+            $this->saveAssignments();
             return true;
         } else {
             return false;
@@ -426,6 +435,39 @@ class PhpManager extends BaseManager
      */
     public function getPermissionsByUser($userId)
     {
+        $directPermission = $this->getDirectPermissionsByUser($userId);
+        $inheritedPermission = $this->getInheritedPermissionsByUser($userId);
+
+        return array_merge($directPermission, $inheritedPermission);
+    }
+
+    /**
+     * Returns all permissions that are directly assigned to user.
+     * @param string|integer $userId the user ID (see [[\yii\web\User::id]])
+     * @return Permission[] all direct permissions that the user has. The array is indexed by the permission names.
+     * @since 2.0.7
+     */
+    protected function getDirectPermissionsByUser($userId)
+    {
+        $permissions = [];
+        foreach ($this->getAssignments($userId) as $name => $assignment) {
+            $permission = $this->items[$assignment->roleName];
+            if ($permission->type === Item::TYPE_PERMISSION) {
+                $permissions[$name] = $permission;
+            }
+        }
+
+        return $permissions;
+    }
+
+    /**
+     * Returns all permissions that the user inherits from the roles assigned to him.
+     * @param string|integer $userId the user ID (see [[\yii\web\User::id]])
+     * @return Permission[] all inherited permissions that the user has. The array is indexed by the permission names.
+     * @since 2.0.7
+     */
+    protected function getInheritedPermissionsByUser($userId)
+    {
         $assignments = $this->getAssignments($userId);
         $result = [];
         foreach (array_keys($assignments) as $roleName) {
@@ -498,9 +540,11 @@ class PhpManager extends BaseManager
             return;
         }
 
-        foreach ($this->assignments as $i => $assignment) {
-            if (isset($names[$assignment->roleName])) {
-                unset($this->assignments[$i]);
+        foreach ($this->assignments as $i => $assignments) {
+            foreach ($assignments as $n => $assignment) {
+                if (isset($names[$assignment->roleName])) {
+                    unset($this->assignments[$i][$n]);
+                }
             }
         }
         foreach ($this->children as $name => $children) {
@@ -594,9 +638,11 @@ class PhpManager extends BaseManager
                 foreach ($this->assignments as &$assignments) {
                     if (isset($assignments[$name])) {
                         $assignments[$item->name] = $assignments[$name];
+                        $assignments[$item->name]->roleName = $item->name;
                         unset($assignments[$name]);
                     }
                 }
+                $this->saveAssignments();
             }
         }
 
@@ -770,5 +816,22 @@ class PhpManager extends BaseManager
             $rules[$name] = serialize($rule);
         }
         $this->saveToFile($rules, $this->ruleFile);
+    }
+
+    /**
+     * @inheritdoc
+     * @since 2.0.7
+     */
+    public function getUserIdsByRole($roleName)
+    {
+        $result = [];
+        foreach ($this->assignments as $userID => $assignments) {
+            foreach ($assignments as $userAssignment) {
+                if ($userAssignment->roleName === $roleName && $userAssignment->userId == $userID) {
+                    $result[] = (string)$userID;
+                }
+            }
+        }
+        return $result;
     }
 }

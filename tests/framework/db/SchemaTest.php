@@ -2,6 +2,7 @@
 
 namespace yiiunit\framework\db;
 
+use PDO;
 use yii\caching\FileCache;
 use yii\db\Expression;
 use yii\db\Schema;
@@ -12,10 +13,25 @@ use yii\db\Schema;
  */
 class SchemaTest extends DatabaseTestCase
 {
-    public function testGetTableNames()
+    public function pdoAttributesProvider()
     {
+        return [
+            [[PDO::ATTR_EMULATE_PREPARES => true]],
+            [[PDO::ATTR_EMULATE_PREPARES => false]],
+        ];
+    }
+
+    /**
+     * @dataProvider pdoAttributesProvider
+     */
+    public function testGetTableNames($pdoAttributes)
+    {
+        $connection = $this->getConnection();
+        foreach($pdoAttributes as $name => $value) {
+            $connection->pdo->setAttribute($name, $value);
+        }
         /* @var $schema Schema */
-        $schema = $this->getConnection()->schema;
+        $schema = $connection->schema;
 
         $tables = $schema->getTableNames();
         $this->assertTrue(in_array('customer', $tables));
@@ -28,10 +44,17 @@ class SchemaTest extends DatabaseTestCase
         $this->assertTrue(in_array('animal_view', $tables));
     }
 
-    public function testGetTableSchemas()
+    /**
+     * @dataProvider pdoAttributesProvider
+     */
+    public function testGetTableSchemas($pdoAttributes)
     {
+        $connection = $this->getConnection();
+        foreach($pdoAttributes as $name => $value) {
+            $connection->pdo->setAttribute($name, $value);
+        }
         /* @var $schema Schema */
-        $schema = $this->getConnection()->schema;
+        $schema = $connection->schema;
 
         $tables = $schema->getTableSchemas();
         $this->assertEquals(count($schema->getTableNames()), count($tables));
@@ -161,7 +184,7 @@ class SchemaTest extends DatabaseTestCase
                 'defaultValue' => 1,
             ],
             'char_col' => [
-                'type' => 'string',
+                'type' => 'char',
                 'dbType' => 'char(100)',
                 'phpType' => 'string',
                 'allowNull' => false,
@@ -333,20 +356,20 @@ class SchemaTest extends DatabaseTestCase
 
         foreach($table->columns as $name => $column) {
             $expected = $columns[$name];
-            $this->assertSame($expected['dbType'], $column->dbType, "dbType of colum $name does not match. type is $column->type, dbType is $column->dbType.");
-            $this->assertSame($expected['phpType'], $column->phpType, "phpType of colum $name does not match. type is $column->type, dbType is $column->dbType.");
-            $this->assertSame($expected['type'], $column->type, "type of colum $name does not match.");
-            $this->assertSame($expected['allowNull'], $column->allowNull, "allowNull of colum $name does not match.");
-            $this->assertSame($expected['autoIncrement'], $column->autoIncrement, "autoIncrement of colum $name does not match.");
-            $this->assertSame($expected['enumValues'], $column->enumValues, "enumValues of colum $name does not match.");
-            $this->assertSame($expected['size'], $column->size, "size of colum $name does not match.");
-            $this->assertSame($expected['precision'], $column->precision, "precision of colum $name does not match.");
-            $this->assertSame($expected['scale'], $column->scale, "scale of colum $name does not match.");
+            $this->assertSame($expected['dbType'], $column->dbType, "dbType of column $name does not match. type is $column->type, dbType is $column->dbType.");
+            $this->assertSame($expected['phpType'], $column->phpType, "phpType of column $name does not match. type is $column->type, dbType is $column->dbType.");
+            $this->assertSame($expected['type'], $column->type, "type of column $name does not match.");
+            $this->assertSame($expected['allowNull'], $column->allowNull, "allowNull of column $name does not match.");
+            $this->assertSame($expected['autoIncrement'], $column->autoIncrement, "autoIncrement of column $name does not match.");
+            $this->assertSame($expected['enumValues'], $column->enumValues, "enumValues of column $name does not match.");
+            $this->assertSame($expected['size'], $column->size, "size of column $name does not match.");
+            $this->assertSame($expected['precision'], $column->precision, "precision of column $name does not match.");
+            $this->assertSame($expected['scale'], $column->scale, "scale of column $name does not match.");
             if (is_object($expected['defaultValue'])) {
-                $this->assertTrue(is_object($column->defaultValue), "defaultValue of colum $name is expected to be an object but it is not.");
-                $this->assertEquals((string) $expected['defaultValue'], (string) $column->defaultValue, "defaultValue of colum $name does not match.");
+                $this->assertTrue(is_object($column->defaultValue), "defaultValue of column $name is expected to be an object but it is not.");
+                $this->assertEquals((string) $expected['defaultValue'], (string) $column->defaultValue, "defaultValue of column $name does not match.");
             } else {
-                $this->assertSame($expected['defaultValue'], $column->defaultValue, "defaultValue of colum $name does not match.");
+                $this->assertSame($expected['defaultValue'], $column->defaultValue, "defaultValue of column $name does not match.");
             }
         }
     }

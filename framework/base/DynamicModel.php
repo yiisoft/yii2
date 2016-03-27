@@ -66,7 +66,7 @@ class DynamicModel extends Model
     public function __construct(array $attributes = [], $config = [])
     {
         foreach ($attributes as $name => $value) {
-            if (is_integer($name)) {
+            if (is_int($name)) {
                 $this->_attributes[$value] = null;
             } else {
                 $this->_attributes[$name] = $value;

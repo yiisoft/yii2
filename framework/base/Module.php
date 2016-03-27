@@ -74,7 +74,7 @@ class Module extends ServiceLocator
      * the controller's fully qualified class name, and the rest of the name-value pairs
      * in the array are used to initialize the corresponding controller properties. For example,
      *
-     * ~~~
+     * ```php
      * [
      *   'account' => 'app\controllers\UserController',
      *   'article' => [
@@ -82,7 +82,7 @@ class Module extends ServiceLocator
      *      'pageTitle' => 'something new',
      *   ],
      * ]
-     * ~~~
+     * ```
      */
     public $controllerMap = [];
     /**
@@ -243,11 +243,10 @@ class Module extends ServiceLocator
      */
     public function getViewPath()
     {
-        if ($this->_viewPath !== null) {
-            return $this->_viewPath;
-        } else {
-            return $this->_viewPath = $this->getBasePath() . DIRECTORY_SEPARATOR . 'views';
+        if ($this->_viewPath === null) {
+            $this->_viewPath = $this->getBasePath() . DIRECTORY_SEPARATOR . 'views';
         }
+        return $this->_viewPath;
     }
 
     /**
@@ -266,11 +265,11 @@ class Module extends ServiceLocator
      */
     public function getLayoutPath()
     {
-        if ($this->_layoutPath !== null) {
-            return $this->_layoutPath;
-        } else {
-            return $this->_layoutPath = $this->getViewPath() . DIRECTORY_SEPARATOR . 'layouts';
+        if ($this->_layoutPath === null) {
+            $this->_layoutPath = $this->getViewPath() . DIRECTORY_SEPARATOR . 'layouts';
         }
+
+        return $this->_layoutPath;
     }
 
     /**
@@ -294,12 +293,12 @@ class Module extends ServiceLocator
      * (must start with '@') and the array values are the corresponding paths or aliases.
      * For example,
      *
-     * ~~~
+     * ```php
      * [
      *     '@models' => '@app/models', // an existing alias
      *     '@backend' => __DIR__ . '/../backend',  // a directory
      * ]
-     * ~~~
+     * ```
      */
     public function setAliases($aliases)
     {
@@ -415,7 +414,7 @@ class Module extends ServiceLocator
      *
      * The following is an example for registering two sub-modules:
      *
-     * ~~~
+     * ```php
      * [
      *     'comment' => [
      *         'class' => 'app\modules\comment\CommentModule',
@@ -423,7 +422,7 @@ class Module extends ServiceLocator
      *     ],
      *     'booking' => ['class' => 'app\modules\booking\BookingModule'],
      * ]
-     * ~~~
+     * ```
      *
      * @param array $modules modules (id => module configuration or instances)
      */

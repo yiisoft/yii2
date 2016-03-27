@@ -42,6 +42,7 @@ use yii\base\NotSupportedException;
  * - `trim`: [[FilterValidator]]
  * - `unique`: [[UniqueValidator]]
  * - `url`: [[UrlValidator]]
+ * - `ip`: [[IpValidator]]
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
@@ -81,6 +82,7 @@ class Validator extends Component
         ],
         'unique' => 'yii\validators\UniqueValidator',
         'url' => 'yii\validators\UrlValidator',
+        'ip' => 'yii\validators\IpValidator',
     ];
     /**
      * @var array|string attributes to be validated by this validator. For multiple attributes,
@@ -156,7 +158,8 @@ class Validator extends Component
     /**
      * @var string a JavaScript function name whose return value determines whether this validator should be applied
      * on the client side. The signature of the function should be `function (attribute, value)`, where
-     * `attribute` is the name of the attribute being validated and `value` the current value of the attribute.
+     * `attribute` is an object describing the attribute being validated (see [[clientValidateAttribute()]])
+     * and `value` the current value of the attribute.
      *
      * This property is mainly provided to support conditional validation on the client side.
      * If this property is not set, this validator will be always applied on the client side.
@@ -165,7 +168,7 @@ class Validator extends Component
      *
      * ```php
      * function (attribute, value) {
-     *     return $('#country').value == 'USA';
+     *     return $('#country').val() === 'USA';
      * }
      * ```
      *
@@ -221,17 +224,26 @@ class Validator extends Component
      * Validates the specified object.
      * @param \yii\base\Model $model the data model being validated
      * @param array|null $attributes the list of attributes to be validated.
-     * Note that if an attribute is not associated with the validator,
-     * it will be ignored.
-     * If this parameter is null, every attribute listed in [[attributes]] will be validated.
+     * Note that if an attribute is not associated with the validator, or is is prefixed with `!` char - it will be
+     * ignored. If this parameter is null, every attribute listed in [[attributes]] will be validated.
      */
     public function validateAttributes($model, $attributes = null)
     {
         if (is_array($attributes)) {
-            $attributes = array_intersect($this->attributes, $attributes);
+            $newAttributes = [];
+            foreach ($attributes as $attribute) {
+                if (in_array($attribute, $this->attributes) || in_array('!' . $attribute, $this->attributes)) {
+                    $newAttributes[] = $attribute;
+                }
+            }
+            $attributes = $newAttributes;
         } else {
-            $attributes = $this->attributes;
+            $attributes = [];
+            foreach ($this->attributes as $attribute) {
+                $attributes[] = $attribute[0] === '!' ? substr($attribute, 1) : $attribute;
+            }
         }
+
         foreach ($attributes as $attribute) {
             $skip = $this->skipOnError && $model->hasErrors($attribute)
                 || $this->skipOnEmpty && $this->isEmpty($model->$attribute);
@@ -300,10 +312,19 @@ class Validator extends Component
      *
      * The following JavaScript variables are predefined and can be used in the validation code:
      *
-     * - `attribute`: the name of the attribute being validated.
+     * - `attribute`: an object describing the the attribute being validated.
      * - `value`: the value being validated.
      * - `messages`: an array used to hold the validation error messages for the attribute.
      * - `deferred`: an array used to hold deferred objects for asynchronous validation
+     * - `$form`: a jQuery object containing the form element
+     *
+     * The `attribute` object contains the following properties:
+     * - `id`: a unique ID identifying the attribute (e.g. "loginform-username") in the form
+     * - `name`: attribute name or expression (e.g. "[0]content" for tabular input)
+     * - `container`: the jQuery selector of the container of the input field
+     * - `input`: the jQuery selector of the input field under the context of the form
+     * - `error`: the jQuery selector of the error tag under the context of the container
+     * - `status`: status of the input field, 0: empty, not entered before, 1: validated, 2: pending validation, 3: validating
      *
      * @param \yii\base\Model $model the data model being validated
      * @param string $attribute the name of the attribute to be validated.
@@ -344,9 +365,11 @@ class Validator extends Component
      */
     public function addError($model, $attribute, $message, $params = [])
     {
-        $value = $model->$attribute;
         $params['attribute'] = $model->getAttributeLabel($attribute);
-        $params['value'] = is_array($value) ? 'array()' : $value;
+        if (!isset($params['value'])) {
+            $value = $model->$attribute;
+            $params['value'] = is_array($value) ? 'array()' : $value;
+        }
         $model->addError($attribute, Yii::$app->getI18n()->format($message, $params, Yii::$app->language));
     }
 

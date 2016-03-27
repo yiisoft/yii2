@@ -4,7 +4,6 @@ namespace yiiunit\framework\rbac;
 
 use yii\rbac\Item;
 use yii\rbac\Permission;
-use yii\rbac\PhpManager;
 use yii\rbac\Role;
 use yiiunit\TestCase;
 
@@ -113,6 +112,16 @@ abstract class ManagerTestCase extends TestCase
 
         $rule = $this->auth->getRule('newName');
         $this->assertEquals(true, $rule->reallyReally);
+
+        $item = $this->auth->getPermission('createPost');
+        $item->name = 'new createPost';
+        $this->auth->update('createPost', $item);
+
+        $item = $this->auth->getPermission('createPost');
+        $this->assertEquals(null, $item);
+
+        $item = $this->auth->getPermission('new createPost');
+        $this->assertEquals('new createPost', $item->name);
     }
 
     public function testGetRules()
@@ -141,6 +150,10 @@ abstract class ManagerTestCase extends TestCase
         $rules = $this->auth->getRules();
 
         $this->assertEmpty($rules);
+
+        $this->auth->remove($this->auth->getPermission('createPost'));
+        $item = $this->auth->getPermission('createPost');
+        $this->assertNull($item);
     }
 
     public function testCheckAccess()
@@ -158,6 +171,7 @@ abstract class ManagerTestCase extends TestCase
                 'createPost' => true,
                 'readPost' => true,
                 'updatePost' => true,
+                'deletePost' => true,
                 'updateAnyPost' => false,
             ],
             'admin C' => [
@@ -165,6 +179,8 @@ abstract class ManagerTestCase extends TestCase
                 'readPost' => true,
                 'updatePost' => false,
                 'updateAnyPost' => true,
+                'blablabla' => false,
+                null => false,
             ],
         ];
 
@@ -194,6 +210,10 @@ abstract class ManagerTestCase extends TestCase
         $readPost->description = 'read a post';
         $this->auth->add($readPost);
 
+        $deletePost = $this->auth->createPermission('deletePost');
+        $deletePost->description = 'delete a post';
+        $this->auth->add($deletePost);
+
         $updatePost = $this->auth->createPermission('updatePost');
         $updatePost->description = 'update a post';
         $updatePost->ruleName = $rule->name;
@@ -222,28 +242,29 @@ abstract class ManagerTestCase extends TestCase
 
         $this->auth->assign($reader, 'reader A');
         $this->auth->assign($author, 'author B');
+        $this->auth->assign($deletePost, 'author B');
         $this->auth->assign($admin, 'admin C');
     }
 
     public function testGetPermissionsByRole()
     {
         $this->prepareData();
-        $roles = $this->auth->getPermissionsByRole('admin');
+        $permissions = $this->auth->getPermissionsByRole('admin');
         $expectedPermissions = ['createPost', 'updatePost', 'readPost', 'updateAnyPost'];
-        $this->assertEquals(count($roles), count($expectedPermissions));
-        foreach ($expectedPermissions as $permission) {
-            $this->assertTrue($roles[$permission] instanceof Permission);
+        $this->assertEquals(count($expectedPermissions), count($permissions));
+        foreach ($expectedPermissions as $permissionName) {
+            $this->assertTrue($permissions[$permissionName] instanceof Permission);
         }
     }
 
     public function testGetPermissionsByUser()
     {
         $this->prepareData();
-        $roles = $this->auth->getPermissionsByUser('author B');
-        $expectedPermissions = ['createPost', 'updatePost', 'readPost'];
-        $this->assertEquals(count($roles), count($expectedPermissions));
-        foreach ($expectedPermissions as $permission) {
-            $this->assertTrue($roles[$permission] instanceof Permission);
+        $permissions = $this->auth->getPermissionsByUser('author B');
+        $expectedPermissions = ['deletePost', 'createPost', 'updatePost', 'readPost'];
+        $this->assertEquals(count($expectedPermissions), count($permissions));
+        foreach ($expectedPermissions as $permissionName) {
+            $this->assertTrue($permissions[$permissionName] instanceof Permission);
         }
     }
 
@@ -291,5 +312,67 @@ abstract class ManagerTestCase extends TestCase
         $this->assertEquals(0, count($this->auth->getAssignments(0)));
         $this->assertEquals(1, count($this->auth->getAssignments(42)));
         $this->assertEquals(2, count($this->auth->getAssignments(1337)));
+    }
+
+    public function testGetAssignmentsByRole()
+    {
+        $this->prepareData();
+        $reader = $this->auth->getRole('reader');
+        $this->auth->assign($reader, 123);
+
+        $this->auth = $this->createManager();
+
+        $this->assertEquals([], $this->auth->getUserIdsByRole('nonexisting'));
+        $this->assertEquals(['reader A', '123'], $this->auth->getUserIdsByRole('reader'), '', 0.0, 10, true);
+        $this->assertEquals(['author B'], $this->auth->getUserIdsByRole('author'));
+        $this->assertEquals(['admin C'], $this->auth->getUserIdsByRole('admin'));
+    }
+
+    public function testCanAddChild()
+    {
+        $this->prepareData();
+
+        $author = $this->auth->createRole('author');
+        $reader = $this->auth->createRole('reader');
+
+        $this->assertTrue($this->auth->canAddChild($author, $reader));
+        $this->assertFalse($this->auth->canAddChild($reader, $author));
+    }
+
+
+    public function testRemoveAllRules()
+    {
+        $this->prepareData();
+
+        $this->auth->removeAllRules();
+
+        $this->assertEmpty($this->auth->getRules());
+
+        $this->assertNotEmpty($this->auth->getRoles());
+        $this->assertNotEmpty($this->auth->getPermissions());
+    }
+
+    public function testRemoveAllRoles()
+    {
+        $this->prepareData();
+
+        $this->auth->removeAllRoles();
+
+        $this->assertEmpty($this->auth->getRoles());
+
+        $this->assertNotEmpty($this->auth->getRules());
+        $this->assertNotEmpty($this->auth->getPermissions());
+    }
+
+    public function testRemoveAllPermissions()
+    {
+        $this->prepareData();
+
+        $this->auth->removeAllPermissions();
+
+        $this->assertEmpty($this->auth->getPermissions());
+
+        $this->assertNotEmpty($this->auth->getRules());
+        $this->assertNotEmpty($this->auth->getRoles());
     }
 }

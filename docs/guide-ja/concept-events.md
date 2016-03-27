@@ -11,7 +11,7 @@ Yiiはイベントをサポートするために、 [[yii\base\Component]] と�
 
 
 イベントハンドラ <span id="event-handlers"></span>
---------------
+----------------
 
 イベントハンドラとは、関連するイベントがトリガされたときに実行される、 [PHP コールバック](http://www.php.net/manual/ja/language.types.callable.php)
 です。次のコールバックのいずれも使用可能です:
@@ -37,7 +37,7 @@ function ($event) {
 
 
 イベントハンドラのアタッチ <span id="attaching-event-handlers"></span>
-------------------------
+--------------------------
 
 イベントハンドラは [[yii\base\Component::on()]] を呼び出すことでアタッチできます。たとえば:
 
@@ -76,7 +76,7 @@ function function_name($event) {
 ```
 
 イベントハンドラの順序
--------------------
+----------------------
 
 ひとつのイベントには、ひとつだけでなく複数のハンドラをアタッチすることができます。イベントがトリガされると、アタッチされたハンドラは、
 それらがイベントにアタッチされた順序どおりに呼び出されます。あるハンドラがその後に続くハンドラの呼び出しを停止する必要がある場合は、
@@ -98,8 +98,8 @@ $foo->on(Foo::EVENT_HELLO, function ($event) {
 }, $data, false);
 ```
 
-イベントのトリガー <span id="triggering-events"></span>
------------------
+イベントのトリガ <span id="triggering-events"></span>
+----------------
 
 イベントは、 [[yii\base\Component::trigger()]] メソッドを呼び出すことでトリガされます。このメソッドには **イベント名** が必須で、
 オプションで、イベントハンドラに渡されるパラメータを記述したイベントオブジェクトを渡すこともできます。たとえば:
@@ -163,7 +163,7 @@ class Mailer extends Component
 
 
 イベントハンドラのデタッチ <span id="detaching-event-handlers"></span>
-------------------------
+--------------------------
 
 イベントからハンドラを取り外すには、 [[yii\base\Component::off()]] メソッドを呼び出します。たとえば:
 
@@ -192,7 +192,7 @@ $foo->off(Foo::EVENT_HELLO);
 
 
 クラスレベル・イベントハンドラ <span id="class-level-event-handlers"></span>
---------------------------
+------------------------------
 
 ここまでの項では、 *インスタンスレベル* でのイベントにハンドラをアタッチする方法を説明してきました。
 場合によっては、特定のインスタンスだけではなく、クラスのすべてのインスタンスがトリガした
@@ -214,7 +214,7 @@ Event::on(ActiveRecord::className(), ActiveRecord::EVENT_AFTER_INSERT, function 
 ```
 
 [[yii\db\ActiveRecord|ActiveRecord]] またはその子クラスのいずれかが、 [[yii\db\BaseActiveRecord::EVENT_AFTER_INSERT|EVENT_AFTER_INSERT]]
-をトリガーするといつでも、このイベントハンドラが呼び出されます。ハンドラの中では、 `$event->sender` を通して、
+をトリガするといつでも、このイベントハンドラが呼び出されます。ハンドラの中では、 `$event->sender` を通して、
 イベントをトリガしたオブジェクトを取得することができます。
 
 オブジェクトがイベントをトリガするときは、最初にインスタンスレベルのハンドラを呼び出し、続いてクラスレベルのハンドラとなります。
@@ -233,9 +233,9 @@ Event::on(Foo::className(), Foo::EVENT_HELLO, function ($event) {
 Event::trigger(Foo::className(), Foo::EVENT_HELLO);
 ```
 
-この場合、`$event->sender` は、オブジェクトインスタンスではなく、イベントをトリガーするクラスの名前を指すことに注意してください。
+この場合、`$event->sender` は、オブジェクトインスタンスではなく、イベントをトリガするクラスの名前を指すことに注意してください。
 
-> 注: クラスレベルのハンドラは、そのクラスのあらゆるインスタンス、またはあらゆる子クラスのインスタンスがトリガしたイベントに応答
+> Note: クラスレベルのハンドラは、そのクラスのあらゆるインスタンス、またはあらゆる子クラスのインスタンスがトリガしたイベントに応答
   してしまうため、よく注意して使わなければなりません。 [[yii\base\Object]] のように、クラスが低レベルの基底クラスの場合は特にそうです。
 
 クラスレベルのイベントハンドラを取り外すときは、 [[yii\base\Event::off()]] を呼び出します。たとえば:
@@ -249,8 +249,78 @@ Event::off(Foo::className(), Foo::EVENT_HELLO);
 ```
 
 
+インターフェイスを使うイベント <span id="interface-level-event-handlers"></span>
+------------------------------
+
+イベントを扱うためには、もっと抽象的な方法もあります。
+特定のイベントのために専用のインターフェイスを作っておき、必要な場合にいろいろなクラスでそれを実装するのです。
+
+例えば、次のようなインタフェイスを作ります。
+
+```php
+interface DanceEventInterface
+{
+    const EVENT_DANCE = 'dance';
+}
+```
+
+そして、それを実装する二つのクラスを作ります。
+
+```php
+class Dog extends Component implements DanceEventInterface
+{
+    public function meetBuddy()
+    {
+        echo "ワン!";
+        $this->trigger(DanceEventInterface::EVENT_DANCE);
+    }
+}
+
+class Developer extends Component implements DanceEventInterface
+{
+    public function testsPassed()
+    {
+        echo "よっしゃ!";
+        $this->trigger(DanceEventInterface::EVENT_DANCE);
+    }
+}
+```
+
+これらのクラスのどれかによってトリガされた `EVENT_DANCE` を扱うためには、インターフェイスの名前を最初の引数にして [[yii\base\Event::on()|Event::on()]] を呼びます。
+
+```php
+Event::on('DanceEventInterface', DanceEventInterface::EVENT_DANCE, function ($event) {
+    Yii::trace($event->sender->className . ' が躍り上がって喜んだ。'); // 犬または開発者が躍り上がって喜んだことをログに記録。
+})
+```
+
+これらのクラスのイベントをトリガすることも出来ます。
+
+```php
+Event::trigger(DanceEventInterface::className(), DanceEventInterface::EVENT_DANCE);
+```
+
+ただし、このインタフェイスを実装する全クラスのイベントをトリガすることは出来ない、ということに注意して下さい。
+
+```php
+// これは動かない
+Event::trigger('DanceEventInterface', DanceEventInterface::EVENT_DANCE); // エラー
+```
+
+イベントハンドラをデタッチするためには、[[yii\base\Event::off()|Event::off()]] を呼びます。
+例えば、
+
+```php
+// $handler をデタッチ
+Event::off('DanceEventInterface', DanceEventInterface::EVENT_DANCE, $handler);
+
+// DanceEventInterface::EVENT_DANCE の全てのハンドラをデタッチ
+Event::off('DanceEventInterface', DanceEventInterface::EVENT_DANCE);
+```
+
+
 グローバル・イベント <span id="global-events"></span>
--------------
+--------------------
 
 Yiiは、実際に上記のイベントメカニズムに基づいたトリックである、いわゆる *グローバル・イベント* をサポートしています。
 グローバル・イベントは、 [アプリケーション](structure-applications.md) インスタンス自身などの、グローバルにアクセス可能なシングルトンを必要とします。

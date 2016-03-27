@@ -92,14 +92,14 @@ class Model extends Component implements IteratorAggregate, ArrayAccess, Arrayab
      *
      * Each rule is an array with the following structure:
      *
-     * ~~~
+     * ```php
      * [
      *     ['attribute1', 'attribute2'],
      *     'validator type',
      *     'on' => ['scenario1', 'scenario2'],
-     *     ...other parameters...
+     *     //...other parameters...
      * ]
-     * ~~~
+     * ```
      *
      * where
      *
@@ -114,13 +114,13 @@ class Model extends Component implements IteratorAggregate, ArrayAccess, Arrayab
      * A validator can be either an object of a class extending [[Validator]], or a model class method
      * (called *inline validator*) that has the following signature:
      *
-     * ~~~
+     * ```php
      * // $params refers to validation parameters given in the rule
      * function validatorName($attribute, $params)
-     * ~~~
+     * ```
      *
      * In the above `$attribute` refers to the attribute currently being validated while `$params` contains an array of
-     * validator configuration options such as `max` in case of `string` validator. The value of the attribute currently being validated    
+     * validator configuration options such as `max` in case of `string` validator. The value of the attribute currently being validated
      * can be accessed as `$this->$attribute`. Note the `$` before `attribute`; this is taking the value of the variable
      * `$attribute` and using it as the name of the property to access.
      *
@@ -129,7 +129,7 @@ class Model extends Component implements IteratorAggregate, ArrayAccess, Arrayab
      *
      * Below are some examples:
      *
-     * ~~~
+     * ```php
      * [
      *     // built-in "required" validator
      *     [['username', 'password'], 'required'],
@@ -142,7 +142,7 @@ class Model extends Component implements IteratorAggregate, ArrayAccess, Arrayab
      *     // a validator of class "DateRangeValidator"
      *     ['dateRange', 'DateRangeValidator'],
      * ];
-     * ~~~
+     * ```
      *
      * Note, in order to inherit rules defined in the parent class, a child class needs to
      * merge the parent rules with child rules using functions such as `array_merge()`.
@@ -233,15 +233,19 @@ class Model extends Component implements IteratorAggregate, ArrayAccess, Arrayab
      * name is "b", then the corresponding input name would be "A[b]". If the form name is
      * an empty string, then the input name would be "b".
      *
+     * The purpose of the above naming schema is that for forms which contain multiple different models,
+     * the attributes of each model are grouped in sub-arrays of the POST-data and it is easier to
+     * differentiate between them.
+     *
      * By default, this method returns the model class name (without the namespace part)
      * as the form name. You may override it when the model is used in different forms.
      *
      * @return string the form name of this model class.
+     * @see load()
      */
     public function formName()
     {
         $reflector = new ReflectionClass($this);
-
         return $reflector->getShortName();
     }
 
@@ -393,9 +397,9 @@ class Model extends Component implements IteratorAggregate, ArrayAccess, Arrayab
      * manipulate it by inserting or removing validators (useful in model behaviors).
      * For example,
      *
-     * ~~~
+     * ```php
      * $model->validators[] = $newValidator;
-     * ~~~
+     * ```
      *
      * @return ArrayObject|\yii\validators\Validator[] all the validators declared in the model.
      */
@@ -537,7 +541,7 @@ class Model extends Component implements IteratorAggregate, ArrayAccess, Arrayab
      * @return array errors for all attributes or the specified attribute. Empty array is returned if no error.
      * Note that when returning errors for all attributes, the result is a two-dimensional array, like the following:
      *
-     * ~~~
+     * ```php
      * [
      *     'username' => [
      *         'Username is required.',
@@ -547,7 +551,7 @@ class Model extends Component implements IteratorAggregate, ArrayAccess, Arrayab
      *         'Email address is invalid.',
      *     ]
      * ]
-     * ~~~
+     * ```
      *
      * @see getFirstErrors()
      * @see getFirstError()
@@ -750,7 +754,7 @@ class Model extends Component implements IteratorAggregate, ArrayAccess, Arrayab
         }
         $attributes = [];
         foreach ($scenarios[$scenario] as $attribute) {
-            if ($attribute[0] !== '!') {
+            if ($attribute[0] !== '!' && !in_array('!' . $attribute, $scenarios[$scenario])) {
                 $attributes[] = $attribute;
             }
         }
@@ -780,15 +784,37 @@ class Model extends Component implements IteratorAggregate, ArrayAccess, Arrayab
     }
 
     /**
-     * Populates the model with the data from end user.
-     * The data to be loaded is `$data[formName]`, where `formName` refers to the value of [[formName()]].
-     * If [[formName()]] is empty, the whole `$data` array will be used to populate the model.
-     * The data being populated is subject to the safety check by [[setAttributes()]].
-     * @param array $data the data array. This is usually `$_POST` or `$_GET`, but can also be any valid array
-     * supplied by end user.
-     * @param string $formName the form name to be used for loading the data into the model.
-     * If not set, [[formName()]] will be used.
-     * @return boolean whether the model is successfully populated with some data.
+     * Populates the model with input data.
+     *
+     * This method provides a convenient shortcut for:
+     *
+     * ```php
+     * if (isset($_POST['FormName'])) {
+     *     $model->attributes = $_POST['FormName'];
+     *     if ($model->save()) {
+     *         // handle success
+     *     }
+     * }
+     * ```
+     *
+     * which, with `load()` can be written as:
+     *
+     * ```php
+     * if ($model->load($_POST) && $model->save()) {
+     *     // handle success
+     * }
+     * ```
+     *
+     * `load()` gets the `'FormName'` from the model's [[formName()]] method (which you may override), unless the
+     * `$formName` parameter is given. If the form name is empty, `load()` populates the model with the whole of `$data`,
+     * instead of `$data['FormName']`.
+     *
+     * Note, that the data being populated is subject to the safety check by [[setAttributes()]].
+     *
+     * @param array $data the data array to load, typically `$_POST` or `$_GET`.
+     * @param string $formName the form name to use to load the data into the model.
+     * If not set, [[formName()]] is used.
+     * @return boolean whether `load()` found the expected form in `$data`.
      */
     public function load($data, $formName = null)
     {
@@ -883,7 +909,7 @@ class Model extends Component implements IteratorAggregate, ArrayAccess, Arrayab
      * returning the corresponding field value. The signature of the callable should be:
      *
      * ```php
-     * function ($field, $model) {
+     * function ($model, $field) {
      *     // return field value
      * }
      * ```

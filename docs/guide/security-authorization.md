@@ -88,8 +88,8 @@ be an array of action IDs. The comparison is case-sensitive. If this option is e
 it means the rule applies to all actions.
 
  * [[yii\filters\AccessRule::controllers|controllers]]: specifies which controllers this rule
-matches. This should be an array of controller IDs. The comparison is case-sensitive. If this option is
-empty or not set, it means the rule applies to all controllers.
+matches. This should be an array of controller IDs. Each controller ID is prefixed with the module ID (if any).
+The comparison is case-sensitive. If this option is empty or not set, it means the rule applies to all controllers.
 
  * [[yii\filters\AccessRule::roles|roles]]: specifies which user roles that this rule matches.
    Two special roles are recognized, and they are checked via [[yii\web\User::isGuest]]:
@@ -227,6 +227,9 @@ return [
     ],
 ];
 ```
+> Note: If you are using yii2-basic-app template, there is a `config/console.php` configuration file where the
+  `authManager` needs to be declared additionally to `config/web.php`.
+> In case of yii2-advanced-app the `authManager` should be declared only once in `common/config/main.php`.
 
 `DbManager` uses four database tables to store its data: 
 

@@ -10,7 +10,6 @@ namespace yii\validators;
 use DateTime;
 use IntlDateFormatter;
 use Yii;
-use yii\base\Exception;
 use yii\base\InvalidConfigException;
 use yii\helpers\FormatConverter;
 
@@ -53,7 +52,7 @@ class DateValidator extends Validator
      * is used to parse the input value. In all other cases the PHP [DateTime](http://php.net/manual/en/datetime.createfromformat.php) class
      * is used. The IntlDateFormatter has the advantage that it can parse international dates like `12. Mai 2015` or `12 мая 2014`, while the
      * PHP parser is limited to English only. The PHP parser however is more strict about the input format as it will not accept
-     * `12.05.05` for the format `php:d.m.Y`, but the IntlDateFormatter will accept it for the format `dd-MM-yyyy`.
+     * `12.05.05` for the format `php:d.m.Y`, but the IntlDateFormatter will accept it for the format `dd.MM.yyyy`.
      * If you need to use the IntlDateFormatter you can avoid this problem by specifying a [[min|minimum date]].
      */
     public $format;
@@ -210,6 +209,17 @@ class DateValidator extends Validator
         $value = $model->$attribute;
         $timestamp = $this->parseDateValue($value);
         if ($timestamp === false) {
+            if ($this->timestampAttribute === $attribute) {
+                if ($this->timestampAttributeFormat === null) {
+                    if (is_int($value)) {
+                        return;
+                    }
+                } else {
+                    if ($this->parseDateValueFormat($value, $this->timestampAttributeFormat) !== false) {
+                        return;
+                    }
+                }
+            }
             $this->addError($model, $attribute, $this->message, []);
         } elseif ($this->min !== null && $timestamp < $this->min) {
             $this->addError($model, $attribute, $this->tooSmall, ['min' => $this->minString]);
@@ -249,11 +259,23 @@ class DateValidator extends Validator
      */
     protected function parseDateValue($value)
     {
+        // TODO consider merging these methods into single one at 2.1
+        return $this->parseDateValueFormat($value, $this->format);
+    }
+
+    /**
+     * Parses date string into UNIX timestamp
+     *
+     * @param string $value string representing date
+     * @param string $format expected date format
+     * @return integer|false a UNIX timestamp or `false` on failure.
+     */
+    private function parseDateValueFormat($value, $format)
+    {
         if (is_array($value)) {
             return false;
         }
-        $format = $this->format;
-        if (strncmp($this->format, 'php:', 4) === 0) {
+        if (strncmp($format, 'php:', 4) === 0) {
             $format = substr($format, 4);
         } else {
             if (extension_loaded('intl')) {

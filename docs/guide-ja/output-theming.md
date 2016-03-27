@@ -21,7 +21,7 @@ return [
     'components' => [
         'view' => [
             'theme' => [
-                'basePath' => '@app/themes/basic'
+                'basePath' => '@app/themes/basic',
                 'baseUrl' => '@web/themes/basic',
                 'pathMap' => [
                     '@app/views' => '@app/themes/basic',
@@ -32,7 +32,7 @@ return [
 ];
 ```
 
-> Info|情報: テーマではパスエイリアスがサポートされています。
+> Info: テーマではパスエイリアスがサポートされています。
   ビューの置換を行う際に、パスエイリアスは実際のファイルパスまたは URL に変換されます。
 
 [[yii\base\View::theme]] プロパティを通じて [[yii\base\Theme]] オブジェクトにアクセスすることが出来ます。

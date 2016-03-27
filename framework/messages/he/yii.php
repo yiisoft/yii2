@@ -37,8 +37,8 @@ return [
     'Please upload a file.' => 'נא העלה קובץ.',
     'Showing <b>{begin, number}-{end, number}</b> of <b>{totalCount, number}</b> {totalCount, plural, one{item} other{items}}.' => 'מציג <b>{begin, number}-{end, number}</b> מתוך <b>{totalCount, number}</b> {totalCount, plural, one{רשומה} other{רשומות}}.',
     'The file "{file}" is not an image.' => 'הקובץ "{file}" אינו קובץ תמונה.',
-    'The file "{file}" is too big. Its size cannot exceed {limit, number} {limit, plural, one{byte} other{bytes}}.' => 'הקובץ "{file}" גדול מדי. גודל זה אינו מצליח {limit, number} {limit, plural, one{byte} other{bytes}}.',
-    'The file "{file}" is too small. Its size cannot be smaller than {limit, number} {limit, plural, one{byte} other{bytes}}.' => 'הקובץ "{file}" קטן מדי. הקובץ אינו יכול להיות קטן מ {limit, number} {limit, plural, one{byte} other{bytes}}.',
+    'The file "{file}" is too big. Its size cannot exceed {formattedLimit}.' => 'הקובץ "{file}" גדול מדי. גודל זה אינו מצליח {formattedLimit}.',
+    'The file "{file}" is too small. Its size cannot be smaller than {formattedLimit}.' => 'הקובץ "{file}" קטן מדי. הקובץ אינו יכול להיות קטן מ {formattedLimit}.',
     'The format of {attribute} is invalid.' => 'הפורמט של {attribute} אינו חוקי.',
     'The image "{file}" is too large. The height cannot be larger than {limit, number} {limit, plural, one{pixel} other{pixels}}.' => 'התמונה "{file}" גדולה מדי. הגובה לא יכול להיות גדול מ {limit, number} {limit, plural, one{pixel} other{pixels}}.',
     'The image "{file}" is too large. The width cannot be larger than {limit, number} {limit, plural, one{pixel} other{pixels}}.' => 'התמונה "{file}" גדולה מדי. הרוחב לא יכול להיות גדול מ {limit, number} {limit, plural, one{pixel} other{pixels}}.',
@@ -74,6 +74,6 @@ return [
     '{attribute} must be repeated exactly.' => '{attribute} חייב להיות מוחזר בדיוק.',
     '{attribute} must not be equal to "{compareValue}".' => '{attribute} חייב להיות שווה ל "{compareValue}"',
     '{attribute} should contain at least {min, number} {min, plural, one{character} other{characters}}.' => '{attribute} אמור לכלול לפחות {min, number} {min, plural, one{תו} few{תוים} many{תוים}}.',
-    '{attribute} should contain at most {max, number} {max, plural, one{character} other{characters}}.' => '{attribute} אמור לא לכלול יותר מ {max, number} {max, plural, one{תו} few{תוים} many{תוים}}.',
+    '{attribute} should contain at most {max, number} {max, plural, one{character} other{characters}}.' => '{attribute} אמור לא לכלול יותר מ{max, number} {max, plural, one{תו} other{תוים}}.',
     '{attribute} should contain {length, number} {length, plural, one{character} other{characters}}.' => '{attribute}  אמור לכלול {length, number} {length, plural, one{תו} few{תוים} many{תוים}}.',
 ];

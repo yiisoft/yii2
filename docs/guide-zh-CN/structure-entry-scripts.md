@@ -58,10 +58,6 @@ $config = require(__DIR__ . '/../config/web.php');
 
 defined('YII_DEBUG') or define('YII_DEBUG', true);
 
-// fcgi 默认没有定义 STDIN 和 STDOUT
-defined('STDIN') or define('STDIN', fopen('php://stdin', 'r'));
-defined('STDOUT') or define('STDOUT', fopen('php://stdout', 'w'));
-
 // 注册 Composer 自动加载器
 require(__DIR__ . '/vendor/autoload.php');
 

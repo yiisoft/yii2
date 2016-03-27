@@ -11,6 +11,7 @@ use yii\db\Transaction;
  */
 class ConnectionTest extends DatabaseTestCase
 {
+
     public function testConstruct()
     {
         $connection = $this->getConnection(false);
@@ -40,6 +41,17 @@ class ConnectionTest extends DatabaseTestCase
         $connection->dsn = 'unknown::memory:';
         $this->setExpectedException('yii\db\Exception');
         $connection->open();
+    }
+
+    public function testSerialize()
+    {
+        $connection = $this->getConnection(false, false);
+        $connection->open();
+        $serialized = serialize($connection);
+        $unserialized = unserialize($serialized);
+        $this->assertInstanceOf('yii\db\Connection', $unserialized);
+
+        $this->assertEquals(123, $unserialized->createCommand("SELECT 123")->queryScalar());
     }
 
     public function testGetDriverName()
@@ -166,4 +178,21 @@ class ConnectionTest extends DatabaseTestCase
         $this->assertEquals(1, $profilesCount, 'profile should be inserted in transaction shortcut');
     }
 
+    /**
+     * Tests nested transactions with partial rollback.
+     * @see https://github.com/yiisoft/yii2/issues/9851
+     */
+    public function testNestedTransaction()
+    {
+        /** @var Connection $connection */
+        $connection = $this->getConnection(true);
+        $connection->transaction(function(Connection $db) {
+            $this->assertNotNull($db->transaction);
+            $db->transaction(function(Connection $db) {
+                $this->assertNotNull($db->transaction);
+                $db->transaction->rollBack();
+            });
+            $this->assertNotNull($db->transaction);
+        });
+    }
 }

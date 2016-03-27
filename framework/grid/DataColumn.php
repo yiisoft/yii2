@@ -139,7 +139,7 @@ class DataColumn extends Column
 
         if ($this->attribute !== null && $this->enableSorting &&
             ($sort = $provider->getSort()) !== false && $sort->hasAttribute($this->attribute)) {
-            return $sort->link($this->attribute, array_merge($this->sortLinkOptions, ['label' => ($this->encodeLabel ? Html::encode($label) : $label)]));
+            return $sort->link($this->attribute, array_merge($this->sortLinkOptions, ['label' => $this->encodeLabel ? Html::encode($label) : $label]));
         } else {
             return $this->encodeLabel ? Html::encode($label) : $label;
         }

@@ -98,6 +98,32 @@ HTML
 <a href="#">item2</a>
 HTML
         , $output);
+
+        $output = Menu::widget([
+            'route' => 'test/test',
+            'params' => [],
+            'encodeLabels' => true,
+            'options' => [
+                'tag' => false,
+            ],
+            'items' => [
+                [
+                    'label'  => 'item1',
+                    'url'    => '#',
+                ],
+                [
+                    'label'  => 'item2',
+                    'url'    => '#',
+                ],
+            ],
+            'itemOptions' => ['tag' => false]
+        ]);
+
+        $this->assertEqualsWithoutLE(<<<HTML
+<a href="#">item1</a>
+<a href="#">item2</a>
+HTML
+            , $output);
     }
 
 

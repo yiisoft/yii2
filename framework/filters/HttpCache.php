@@ -20,7 +20,7 @@ use yii\base\Action;
  * In the following example the filter will be applied to the `list`-action and
  * the Last-Modified header will contain the date of the last update to the user table in the database.
  *
- * ~~~
+ * ```php
  * public function behaviors()
  * {
  *     return [
@@ -37,7 +37,7 @@ use yii\base\Action;
  *         ],
  *     ];
  * }
- * ~~~
+ * ```
  *
  * @author Da:Sourcerer <webmaster@dasourcerer.net>
  * @author Qiang Xue <qiang.xue@gmail.com>
@@ -49,9 +49,9 @@ class HttpCache extends ActionFilter
      * @var callable a PHP callback that returns the UNIX timestamp of the last modification time.
      * The callback's signature should be:
      *
-     * ~~~
+     * ```php
      * function ($action, $params)
-     * ~~~
+     * ```
      *
      * where `$action` is the [[Action]] object that this filter is currently handling;
      * `$params` takes the value of [[params]]. The callback should return a UNIX timestamp.
@@ -61,15 +61,23 @@ class HttpCache extends ActionFilter
      * @var callable a PHP callback that generates the Etag seed string.
      * The callback's signature should be:
      *
-     * ~~~
+     * ```php
      * function ($action, $params)
-     * ~~~
+     * ```
      *
      * where `$action` is the [[Action]] object that this filter is currently handling;
      * `$params` takes the value of [[params]]. The callback should return a string serving
      * as the seed for generating an Etag.
      */
     public $etagSeed;
+    /**
+     * @var bool whether to generate weak ETags
+     *
+     * Weak ETags should be used if the content should be considered semantically equivalent, but not byte-equal.
+     *
+     * @since 2.0.8
+     */
+    public $weakEtag = false;
     /**
      * @var mixed additional parameters that should be passed to the [[lastModified]] and [[etagSeed]] callbacks.
      */
@@ -152,7 +160,7 @@ class HttpCache extends ActionFilter
         if (isset($_SERVER['HTTP_IF_NONE_MATCH'])) {
             // HTTP_IF_NONE_MATCH takes precedence over HTTP_IF_MODIFIED_SINCE
             // http://tools.ietf.org/html/rfc7232#section-3.3
-            return $etag !== null && in_array($etag, Yii::$app->request->getEtags(), true);
+            return $etag !== null && in_array($etag, Yii::$app->request->getETags(), true);
         } elseif (isset($_SERVER['HTTP_IF_MODIFIED_SINCE'])) {
             return $lastModified !== null && @strtotime($_SERVER['HTTP_IF_MODIFIED_SINCE']) >= $lastModified;
         } else {
@@ -191,6 +199,7 @@ class HttpCache extends ActionFilter
      */
     protected function generateEtag($seed)
     {
-        return '"' . rtrim(base64_encode(sha1($seed, true)), '=') . '"';
+        $etag =  '"' . rtrim(base64_encode(sha1($seed, true)), '=') . '"';
+        return $this->weakEtag ? 'W/' . $etag : $etag;
     }
 }
