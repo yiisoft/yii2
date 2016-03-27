@@ -2,6 +2,8 @@
 /**
  * This view is used by console/controllers/MigrateController.php
  * The following variables are available in this view:
+ * @since 2.0.7
+ * @deprecated since 2.0.8
  */
 /* @var $className string the new migration class name */
 /* @var $table string the name table */

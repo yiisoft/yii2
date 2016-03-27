@@ -388,6 +388,11 @@ use yii\db\Migration;
 
 /**
  * Handles the creation for table `test`.
+ * Has foreign keys to the tables:
+ *
+ * - `user`
+ * - `product`
+ * - `user_order`
  */
 class {$class} extends Migration
 {
@@ -404,15 +409,15 @@ class {$class} extends Migration
             'created_at' => \$this->dateTime()->notNull(),
         ]);
 
-        // index for column `user_id`
+        // creates index for column `user_id`
         \$this->createIndex(
             'idx-test-user_id',
             'test',
             'user_id'
         );
 
-        // foreign key for table `user`
-        \$this->createIndex(
+        // add foreign key for table `user`
+        \$this->addForeignKey(
             'fk-test-user_id',
             'test',
             'user_id',
@@ -421,15 +426,15 @@ class {$class} extends Migration
             'CASCADE'
         );
 
-        // index for column `product_id`
+        // creates index for column `product_id`
         \$this->createIndex(
             'idx-test-product_id',
             'test',
             'product_id'
         );
 
-        // foreign key for table `product`
-        \$this->createIndex(
+        // add foreign key for table `product`
+        \$this->addForeignKey(
             'fk-test-product_id',
             'test',
             'product_id',
@@ -438,15 +443,15 @@ class {$class} extends Migration
             'CASCADE'
         );
 
-        // index for column `order_id`
+        // creates index for column `order_id`
         \$this->createIndex(
             'idx-test-order_id',
             'test',
             'order_id'
         );
 
-        // foreign key for table `user_order`
-        \$this->createIndex(
+        // add foreign key for table `user_order`
+        \$this->addForeignKey(
             'fk-test-order_id',
             'test',
             'order_id',
@@ -461,6 +466,42 @@ class {$class} extends Migration
      */
     public function down()
     {
+        // drops foreign key for table `user`
+        \$this->addForeignKey(
+            'fk-test-user_id',
+            'test'
+        );
+
+        // drops index for column `user_id`
+        \$this->dropIndex(
+            'idx-test-user_id',
+            'test'
+        );
+
+        // drops foreign key for table `product`
+        \$this->addForeignKey(
+            'fk-test-product_id',
+            'test'
+        );
+
+        // drops index for column `product_id`
+        \$this->dropIndex(
+            'idx-test-product_id',
+            'test'
+        );
+
+        // drops foreign key for table `user_order`
+        \$this->addForeignKey(
+            'fk-test-order_id',
+            'test'
+        );
+
+        // drops index for column `order_id`
+        \$this->dropIndex(
+            'idx-test-order_id',
+            'test'
+        );
+
         \$this->dropTable('test');
     }
 }
@@ -567,8 +608,7 @@ CODE;
 use yii\db\Migration;
 
 /**
- * Handles adding the columns `title`, `body`, `price`, `created_at`
- * for table `test`.
+ * Handles adding columns to table `test`.
  */
 class {$class} extends Migration
 {
@@ -615,8 +655,7 @@ CODE;
 use yii\db\Migration;
 
 /**
- * Handles dropping columns `title`, `body`, `price`, `created_at`
- * for table `test`.
+ * Handles dropping columns from table `test`.
  */
 class {$class} extends Migration
 {
@@ -662,8 +701,11 @@ CODE;
 use yii\db\Migration;
 
 /**
- * Handles the creation of table `post_tag` which is a junction between
- * table `post` and table `tag`.
+ * Handles the creation for table `post_tag`.
+ * Has foreign keys to the tables:
+ *
+ * - `post`
+ * - `tag`
  */
 class {$class} extends Migration
 {
@@ -678,18 +720,14 @@ class {$class} extends Migration
             'PRIMARY KEY(post_id, tag_id)',
         ]);
 
+        // creates index for column `post_id`
         \$this->createIndex(
             'idx-post_tag-post_id',
             'post_tag',
             'post_id'
         );
 
-        \$this->createIndex(
-            'idx-post_tag-tag_id',
-            'post_tag',
-            'tag_id'
-        );
-
+        // add foreign key for table `post`
         \$this->addForeignKey(
             'fk-post_tag-post_id',
             'post_tag',
@@ -699,6 +737,14 @@ class {$class} extends Migration
             'CASCADE'
         );
 
+        // creates index for column `tag_id`
+        \$this->createIndex(
+            'idx-post_tag-tag_id',
+            'post_tag',
+            'tag_id'
+        );
+
+        // add foreign key for table `tag`
         \$this->addForeignKey(
             'fk-post_tag-tag_id',
             'post_tag',
@@ -714,6 +760,30 @@ class {$class} extends Migration
      */
     public function down()
     {
+        // drops foreign key for table `post`
+        \$this->addForeignKey(
+            'fk-post_tag-post_id',
+            'post_tag'
+        );
+
+        // drops index for column `post_id`
+        \$this->dropIndex(
+            'idx-post_tag-post_id',
+            'post_tag'
+        );
+
+        // drops foreign key for table `tag`
+        \$this->addForeignKey(
+            'fk-post_tag-tag_id',
+            'post_tag'
+        );
+
+        // drops index for column `tag_id`
+        \$this->dropIndex(
+            'idx-post_tag-tag_id',
+            'post_tag'
+        );
+
         \$this->dropTable('post_tag');
     }
 }
