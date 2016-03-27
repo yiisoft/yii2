@@ -833,7 +833,7 @@ TEXT;
             "PHP_OS",
             "function_exists('mcrypt_create_iv') ? bin2hex(mcrypt_create_iv(4, MCRYPT_DEV_URANDOM)) : null",
             "DIRECTORY_SEPARATOR",
-            "sprintf('%o', lstat('/dev/urandom')['mode'] & 0170000)",
+            "sprintf('%o', lstat(PHP_OS === 'FreeBSD' ? '/dev/random' : '/dev/urandom')['mode'] & 0170000)",
             "bin2hex(file_get_contents(PHP_OS === 'FreeBSD' ? '/dev/random' : '/dev/urandom', false, null, 0, 8))",
             "ini_get('open_basedir')",
         ];
