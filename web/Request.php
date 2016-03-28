@@ -842,7 +842,7 @@ class Request extends \yii\base\Request
 
     /**
      * Returns the server port number.
-     * @return integer server port number, null if not available
+     * @return integer|null server port number, null if not available
      */
     public function getServerPort()
     {
@@ -851,7 +851,7 @@ class Request extends \yii\base\Request
 
     /**
      * Returns the URL referrer.
-     * @return string URL referrer, null if not available
+     * @return string|null URL referrer, null if not available
      */
     public function getReferrer()
     {
@@ -860,7 +860,7 @@ class Request extends \yii\base\Request
 
     /**
      * Returns the user agent.
-     * @return string user agent, null if not available
+     * @return string|null user agent, null if not available
      */
     public function getUserAgent()
     {
@@ -869,7 +869,7 @@ class Request extends \yii\base\Request
 
     /**
      * Returns the user IP address.
-     * @return string user IP address, null if not available
+     * @return string|null user IP address, null if not available
      */
     public function getUserIP()
     {
@@ -878,7 +878,7 @@ class Request extends \yii\base\Request
 
     /**
      * Returns the user host name.
-     * @return string user host name, null if not available
+     * @return string|null user host name, null if not available
      */
     public function getUserHost()
     {
@@ -886,7 +886,7 @@ class Request extends \yii\base\Request
     }
 
     /**
-     * @return string the username sent via HTTP authentication, null if the username is not given
+     * @return string|null the username sent via HTTP authentication, null if the username is not given
      */
     public function getAuthUser()
     {
@@ -894,7 +894,7 @@ class Request extends \yii\base\Request
     }
 
     /**
-     * @return string the password sent via HTTP authentication, null if the password is not given
+     * @return string|null the password sent via HTTP authentication, null if the password is not given
      */
     public function getAuthPassword()
     {
