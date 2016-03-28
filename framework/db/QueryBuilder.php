@@ -742,7 +742,7 @@ class QueryBuilder extends \yii\base\Object
                 $tables[$i] = "$table " . $this->db->quoteTableName($i);
             } elseif (strpos($table, '(') === false) {
                 if (preg_match('/^(.*?)(?i:\s+as|)\s+([^ ]+)$/', $table, $matches)) { // with alias
-                    $tables[$i] = $this->db->quoteTableName($matches[1]) . ' ' . $this->db->quoteTableName($matches[2]);
+                    $tables[$i] = $this->db->quoteTableName($matches[1]) . ' AS ' . $this->db->quoteTableName($matches[2]);
                 } else {
                     $tables[$i] = $this->db->quoteTableName($table);
                 }
