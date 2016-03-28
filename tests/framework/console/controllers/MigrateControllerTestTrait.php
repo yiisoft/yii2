@@ -467,7 +467,7 @@ class {$class} extends Migration
     public function down()
     {
         // drops foreign key for table `user`
-        \$this->addForeignKey(
+        \$this->dropForeignKey(
             'fk-test-user_id',
             'test'
         );
@@ -479,7 +479,7 @@ class {$class} extends Migration
         );
 
         // drops foreign key for table `product`
-        \$this->addForeignKey(
+        \$this->dropForeignKey(
             'fk-test-product_id',
             'test'
         );
@@ -491,7 +491,7 @@ class {$class} extends Migration
         );
 
         // drops foreign key for table `user_order`
-        \$this->addForeignKey(
+        \$this->dropForeignKey(
             'fk-test-order_id',
             'test'
         );
@@ -761,7 +761,7 @@ class {$class} extends Migration
     public function down()
     {
         // drops foreign key for table `post`
-        \$this->addForeignKey(
+        \$this->dropForeignKey(
             'fk-post_tag-post_id',
             'post_tag'
         );
@@ -773,7 +773,7 @@ class {$class} extends Migration
         );
 
         // drops foreign key for table `tag`
-        \$this->addForeignKey(
+        \$this->dropForeignKey(
             'fk-post_tag-tag_id',
             'post_tag'
         );

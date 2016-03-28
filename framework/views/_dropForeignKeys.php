@@ -1,6 +1,6 @@
 <?php foreach ($foreignKeys as $column => $relatedTable): ?>
         // drops foreign key for table `<?= $relatedTable ?>`
-        $this->addForeignKey(
+        $this->dropForeignKey(
             '<?= "fk-$table-$column" ?>',
             '<?= $table ?>'
         );
