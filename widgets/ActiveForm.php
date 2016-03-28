@@ -179,6 +179,7 @@ class ActiveForm extends Widget
             $this->options['id'] = $this->getId();
         }
         ob_start();
+        ob_implicit_flush(false);
     }
 
     /**
