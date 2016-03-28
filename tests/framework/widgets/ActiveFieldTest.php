@@ -44,7 +44,8 @@ class ActiveFieldTest extends \yiiunit\TestCase
 
         $this->helperModel = new DynamicModel(['attributeName']);
         ob_start();
-        $this->helperForm = new ActiveForm(['action' => '/something']);
+        $this->helperForm = ActiveForm::begin(['action' => '/something', 'enableClientScript' => false]);
+        ActiveForm::end();
         ob_end_clean();
 
         $this->activeField = new ActiveFieldExtend(true);
@@ -347,7 +348,7 @@ EOD;
     public function testEnctype()
     {
         $this->activeField->fileInput();
-        $this->assertEqualsWithoutLE('multipart/form-data', $this->activeField->form->options['enctype']);
+        $this->assertEquals('multipart/form-data', $this->activeField->form->options['enctype']);
     }
 
     /**
