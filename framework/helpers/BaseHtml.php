@@ -391,7 +391,12 @@ class BaseHtml
     public static function a($text, $url = null, $options = [])
     {
         if ($url !== null) {
-            $options['href'] = Url::to($url);
+            if (array_key_exists('absolute', $options)) {
+                $options['href'] = Url::to($url, $options['absolute']);
+                unset($options['absolute']);
+            } else {
+                $options['href'] = Url::to($url);
+            }
         }
         return static::tag('a', $text, $options);
     }
