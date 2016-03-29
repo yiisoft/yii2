@@ -489,7 +489,7 @@ class Security extends Component
         if (DIRECTORY_SEPARATOR === '/') {
             // urandom is a symlink to random on FreeBSD.
             $device = PHP_OS === 'FreeBSD' ? '/dev/random' : '/dev/urandom';
-            // Check random device for speacial character device protection mode. Use lstat()
+            // Check random device for special character device protection mode. Use lstat()
             // instead of stat() in case an attacker arranges a symlink to a fake device.
             $lstat = @lstat($device);
             if ($lstat !== false && ($lstat['mode'] & 0170000) === 020000) {
