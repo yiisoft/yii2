@@ -432,7 +432,7 @@ class Security extends Component
      *
      * @param integer $length the number of bytes to generate
      * @return string the generated random bytes
-     * @throws \Exception on failure.
+     * @throws Exception on failure.
      */
     public function generateRandomKey($length = 32)
     {
@@ -458,7 +458,7 @@ class Security extends Component
         }
 
         // Since 5.4.0, openssl_random_pseudo_bytes() reads from CryptGenRandom on Windows instead
-        // of using OpenSSL library. Don't use OpenSSL on other platforms.
+        // of using OpenSSL library. LibreSSL is ok everywhere but don't use OpenSSL on non-Windows.
         if ($this->_libreSSL
             || (DIRECTORY_SEPARATOR !== '/'
                 && PHP_VERSION_ID >= 50400
