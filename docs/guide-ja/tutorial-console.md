@@ -126,7 +126,7 @@ exit($exitCode);
 
 ### オプションのエイリアス
 
-バージョン 2.0.8 以降、コンソールコマンドは、コマンドにエイリアスを追加するための [[yii\console\Controller::optionAliases()]] メソッドを提供しています。
+バージョン 2.0.8 以降、コンソールコマンドは、オプションにエイリアスを追加するための [[yii\console\Controller::optionAliases()]] メソッドを提供しています。
 
 エイリアスを定義するためには、コントローラで [[yii\console\Controller::optionAliases()]] をオーバーライドします。
 例えば、
