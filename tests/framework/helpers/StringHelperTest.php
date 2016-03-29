@@ -122,6 +122,7 @@ class StringHelperTest extends TestCase
         // With Html
         $this->assertEquals('<span>This is a test</span>...', StringHelper::truncateWords('<span>This is a test sentance</span>', 4, '...', true));
         $this->assertEquals('<span><img src="image.png" />This is a test</span>...', StringHelper::truncateWords('<span><img src="image.png" />This is a test sentance</span>', 4, '...', true));
+        $this->assertEquals('<p> раз два три четыре пять </p> <p> шесть</p>...', StringHelper::truncateWords('<p> раз два три четыре пять </p> <p> шесть семь восемь девять десять</p>', 6, '...', true));
     }
 
     /**

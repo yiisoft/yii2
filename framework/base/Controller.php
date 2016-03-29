@@ -317,6 +317,7 @@ class Controller extends Component implements ViewContextInterface
     }
 
     /**
+     * Returns the unique ID of the controller.
      * @return string the controller ID that is prefixed with the module ID (if any).
      */
     public function getUniqueId()

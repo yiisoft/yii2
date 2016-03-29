@@ -506,7 +506,7 @@ abstract class BaseMigrateController extends Controller
         if ($this->confirm("Create new migration '$file'?")) {
             $table = null;
             if (preg_match('/^create_junction_(.+)_and_(.+)$/', $name, $matches)) {
-                $this->templateFile = $this->generatorTemplateFiles['create_table'];
+                $this->templateFile = $this->generatorTemplateFiles['create_junction'];
                 $firstTable = mb_strtolower($matches[1], Yii::$app->charset);
                 $secondTable = mb_strtolower($matches[2], Yii::$app->charset);
 

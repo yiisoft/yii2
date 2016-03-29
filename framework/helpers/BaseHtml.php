@@ -381,6 +381,14 @@ class BaseHtml
      * @param array|string|null $url the URL for the hyperlink tag. This parameter will be processed by [[Url::to()]]
      * and will be used for the "href" attribute of the tag. If this parameter is null, the "href" attribute
      * will not be generated.
+     *
+     * If you want to use an absolute url you can call [[Url::to()]] yourself, before passing the URL to this method,
+     * like this:
+     *
+     * ```php
+     * Html::a('link text', Url::to($url, true))
+     * ```
+     *
      * @param array $options the tag options in terms of name-value pairs. These will be rendered as
      * the attributes of the resulting tag. The values will be HTML-encoded using [[encode()]].
      * If a value is null, the corresponding attribute will not be rendered.
