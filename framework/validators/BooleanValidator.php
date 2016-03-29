@@ -53,15 +53,24 @@ class BooleanValidator extends Validator
     protected function validateValue($value)
     {
         $valid = !$this->strict && ($value == $this->trueValue || $value == $this->falseValue)
-            || $this->strict && ($value === $this->trueValue || $value === $this->falseValue);
+                 || $this->strict && ($value === $this->trueValue || $value === $this->falseValue);
+
         if (!$valid) {
+            $trueParamMessage = $this->trueValue;
+            $falseParamMessage = $this->falseValue;
+            if ($this->trueValue === true) {
+                $trueParamMessage = 'true';
+            }
+            if ($this->falseValue === false) {
+                $falseParamMessage = 'false';
+            }
             return [$this->message, [
-                'true' => $this->trueValue,
-                'false' => $this->falseValue,
+                'true' => $trueParamMessage,
+                'false' => $falseParamMessage,
             ]];
-        } else {
-            return null;
         }
+
+        return null;
     }
 
     /**
@@ -69,13 +78,22 @@ class BooleanValidator extends Validator
      */
     public function clientValidateAttribute($model, $attribute, $view)
     {
+        $trueParamMessage = $this->trueValue;
+        $falseParamMessage = $this->falseValue;
+        if ($this->trueValue === true) {
+            $trueParamMessage = 'true';
+        }
+        if ($this->falseValue === false) {
+            $falseParamMessage = 'false';
+        }
+
         $options = [
             'trueValue' => $this->trueValue,
             'falseValue' => $this->falseValue,
             'message' => Yii::$app->getI18n()->format($this->message, [
                 'attribute' => $model->getAttributeLabel($attribute),
-                'true' => $this->trueValue,
-                'false' => $this->falseValue,
+                'true' => $trueParamMessage,
+                'false' => $falseParamMessage,
             ], Yii::$app->language),
         ];
         if ($this->skipOnEmpty) {
