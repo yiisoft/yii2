@@ -348,7 +348,7 @@ class m150811_220037_drop_position_from_post extends Migration
 マイグレーションの名前が `create_junction_xxx_and_yyy` の形式である場合は、中間テーブルを作成するのに必要となるコードが生成されます。
 
 ```php
-yii create/migration create_junction_post_and_tag
+yii migrate/create create_junction_post_and_tag
 ```
 
 これは、次のコードを生成します。
