@@ -165,7 +165,7 @@ class BaseStringHelper
             } elseif ($token instanceof \HTMLPurifier_Token_Text && $totalCount <= $count) { //Text
                 if (false === $encoding) {
                     $token->data = self::truncateWords($token->data, $count - $totalCount, '');
-                    $currentCount = str_word_count($token->data);
+                    $currentCount = self::countWords($token->data);
                 } else {
                     $token->data = self::truncate($token->data, $count - $totalCount, '', $encoding) . ' ';
                     $currentCount = mb_strlen($token->data, $encoding);

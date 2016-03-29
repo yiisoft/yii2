@@ -19,6 +19,7 @@ Yii Framework 2 Change Log
 - Bug #11066: `yii.js` - fixed `getQueryParams()` function to handle URLs with anchors correctly (DrDeath72)
 - Bug #11093: Fixed `yii\db\QueryBuilder::buildAndCondition()` to add query params passed directly by `yii\db\Expression` (CedricYii, silverfire)
 - Bug #11012: Fixed `yii\web\UploadedFile::getBaseName()` to work with UTF-8 file names (hiscaler, silverfire)
+- Bug #11026: Fixed `StringHelper::truncateWords()` to count words properly for non-English text (samdark, tol17)
 - Bug #11040: Check parameter 'recursive' and disable recursive copying with option 'recursive' => false in method BaseFileHelper::copyDirectory (Ni-san)
 - Bug #11125: Fixed `JSON_ERROR_SYNTAX` for `json_decode(null)` in PHP 7 (fps01)
 - Bug #11188: Fixed wrong index usage in `CaptchaAction` when calling `imagefilledrectangle` (alsopub)
