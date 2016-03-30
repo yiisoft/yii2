@@ -102,7 +102,7 @@ class UrlRule extends CompositeUrlRule
      * @see patterns
      */
     public $tokens = [
-        '{id}' => '<id:\\d[\\d,]*>',
+        '{id}' => '<id:\\d[\\d]*>',
     ];
     /**
      * @var array list of possible patterns and the corresponding actions for creating the URL rules.
