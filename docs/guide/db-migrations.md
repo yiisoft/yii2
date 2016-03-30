@@ -36,7 +36,7 @@ how to accomplish various tasks using these tools. You may also get the usage of
 command `yii help migrate`.
 
 > Tip: migrations could affect not only database schema but adjust existing data to fit new schema, create RBAC
-  hierarcy or clean up cache.
+  hierarchy or clean up cache.
 
 
 ## Creating Migrations <span id="creating-migrations"></span>
@@ -185,8 +185,9 @@ A list of all available methods for defining the column types is available in th
 
 Since version 2.0.7 migration console provides a convenient way to create migrations.
 
-If the migration name is of a special form including but not limited to `create_xxx` or `drop_xxx` then migration
-file would contain extra code when generated.
+If the migration name is of a special form, for example `create_xxx` or `drop_xxx` then the generated migration 
+file will contain extra code, in this case for creating/dropping tables.
+In the following all variants of this feature are described.
 
 ### Create Table
 
@@ -216,7 +217,7 @@ class m150811_220037_create_post extends Migration
 To create table fields right away, specify them via `--fields` option.
  
 ```php
-yii migrate/create create_post --fields=title:string,body:text
+yii migrate/create create_post --fields="title:string,body:text"
 ``` 
 
 generates
@@ -243,7 +244,7 @@ class m150811_220037_create_post extends Migration
 You can specify more field parameters.
 
 ```php
-yii migrate/create create_post --fields=title:string(12):notNull:unique,body:text
+yii migrate/create create_post --fields="title:string(12):notNull:unique,body:text"
 ``` 
 
 generates 
@@ -268,13 +269,13 @@ class m150811_220037_create_post extends Migration
 ```
 
 > Note: primary key is added automatically and is named `id` by default. If you want to use another name you may
-> specify it explicitly like `--fields=name:primaryKey`.
+> specify it explicitly like `--fields="name:primaryKey"`.
 
 
 ### Drop Table
 
 ```php
-yii migrate/create drop_post --fields=title:string(12):notNull:unique,body:text
+yii migrate/create drop_post --fields="title:string(12):notNull:unique,body:text"
 ``` 
 
 generates 
@@ -306,7 +307,7 @@ statements necessary.
 To add column:
 
 ```php
-yii migrate/create add_position_to_post --fields=position:integer
+yii migrate/create add_position_to_post --fields="position:integer"
 ```
 
 generates
@@ -332,7 +333,7 @@ If the migration name is of the form `drop_xxx_from_yyy` then the file content w
 statements necessary.
 
 ```php
-yii migrate/create drop_position_from_post --fields=position:integer
+yii migrate/create drop_position_from_post --fields="position:integer"
 ```
 
 generates
@@ -358,7 +359,7 @@ If the migration name is in if the form of `create_junction_xxx_and_yyy` then co
 will be generated.
 
 ```php
-yii create/migration create_junction_post_and_tag
+yii migrate/create create_junction_post_and_tag
 ```
 
 generates

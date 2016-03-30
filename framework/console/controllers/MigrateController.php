@@ -65,6 +65,7 @@ class MigrateController extends BaseMigrateController
     public $templateFile = '@yii/views/migration.php';
     /**
      * @inheritdoc
+     * @since 2.0.7
      */
     public $generatorTemplateFiles = [
         'create_table' => '@yii/views/createTableMigration.php',
@@ -90,6 +91,19 @@ class MigrateController extends BaseMigrateController
             parent::options($actionID),
             ['migrationTable', 'db'] // global for all actions
         );
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function optionAliases()
+    {
+        return array_merge(parent::optionAliases(), [
+            'f' => 'fields',
+            'p' => 'migrationPath',
+            't' => 'migrationTable',
+            'F' => 'templateFile'
+        ]);
     }
 
     /**

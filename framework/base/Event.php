@@ -48,6 +48,9 @@ class Event extends Object
      */
     public $data;
 
+    /**
+     * @var array contains all globally registered event handlers.
+     */
     private static $_events = [];
 
 
@@ -145,11 +148,18 @@ class Event extends Object
         } else {
             $class = ltrim($class, '\\');
         }
-        do {
+
+        $classes = array_merge(
+            [$class],
+            class_parents($class, true),
+            class_implements($class, true)
+        );
+
+        foreach ($classes as $class) {
             if (!empty(self::$_events[$name][$class])) {
                 return true;
             }
-        } while (($class = get_parent_class($class)) !== false);
+        }
 
         return false;
     }
@@ -181,7 +191,14 @@ class Event extends Object
         } else {
             $class = ltrim($class, '\\');
         }
-        do {
+
+        $classes = array_merge(
+            [$class],
+            class_parents($class, true),
+            class_implements($class, true)
+        );
+
+        foreach ($classes as $class) {
             if (!empty(self::$_events[$name][$class])) {
                 foreach (self::$_events[$name][$class] as $handler) {
                     $event->data = $handler[1];
@@ -191,6 +208,6 @@ class Event extends Object
                     }
                 }
             }
-        } while (($class = get_parent_class($class)) !== false);
+        }
     }
 }

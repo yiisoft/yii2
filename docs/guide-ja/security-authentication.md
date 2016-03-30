@@ -130,7 +130,7 @@ class User extends ActiveRecord implements IdentityInterface
 }
 ```
 
-> Note|注意: ユーザ識別情報クラスである `User` と [[yii\web\User]] を混同してはいけません。
+> Note: ユーザ識別情報クラスである `User` と [[yii\web\User]] を混同してはいけません。
   前者は認証のロジックを実装するクラスであり、普通は、ユーザの認証情報を保存する何らかの持続的ストレージと関連付けられた [アクティブレコード](db-active-record.md) クラスとして実装されます。
   後者はユーザの認証状態の管理に責任を持つアプリケーションコンポーネントです。
 

@@ -88,6 +88,43 @@ class FormatterDateTest extends TestCase
         $this->assertSame($this->formatter->nullDisplay, $this->formatter->asDate(null));
     }
 
+    public function testIntlAsDateOtherCalendars()
+    {
+        // Persian calendar
+        $this->formatter->locale = 'fa_IR@calendar=persian';
+        $this->formatter->calendar = \IntlDateFormatter::TRADITIONAL;
+        $this->formatter->timeZone = 'UTC';
+
+        $value = 1451606400; // Fri, 01 Jan 2016 00:00:00 (UTC)
+        $this->assertSame('۱۳۹۴', $this->formatter->asDate($value, 'php:Y'));
+
+        $value = new DateTime();
+        $value->setTimestamp(1451606400); // Fri, 01 Jan 2016 00:00:00 (UTC)
+        $this->assertSame('۱۳۹۴', $this->formatter->asDate($value, 'php:Y'));
+
+        if (version_compare(PHP_VERSION, '5.5.0', '>=')) {
+            $value = new \DateTimeImmutable('2016-01-01 00:00:00', new \DateTimeZone('UTC'));
+            $this->assertSame('۱۳۹۴', $this->formatter->asDate($value, 'php:Y'));
+        }
+
+        // Buddhist calendar
+        $this->formatter->locale = 'fr_FR@calendar=buddhist';
+        $this->formatter->calendar = \IntlDateFormatter::TRADITIONAL;
+        $this->formatter->timeZone = 'UTC';
+
+        $value = 1451606400; // Fri, 01 Jan 2016 00:00:00 (UTC)
+        $this->assertSame('2559', $this->formatter->asDate($value, 'php:Y'));
+
+        $value = new DateTime();
+        $value->setTimestamp(1451606400); // Fri, 01 Jan 2016 00:00:00 (UTC)
+        $this->assertSame('2559', $this->formatter->asDate($value, 'php:Y'));
+
+        if (version_compare(PHP_VERSION, '5.5.0', '>=')) {
+            $value = new \DateTimeImmutable('2016-01-01 00:00:00', new \DateTimeZone('UTC'));
+            $this->assertSame('2559', $this->formatter->asDate($value, 'php:Y'));
+        }
+    }
+
     public function testIntlAsTime()
     {
         $this->testAsTime();
@@ -368,6 +405,7 @@ class FormatterDateTest extends TestCase
 
     public function testAsDuration()
     {
+        $interval_0_seconds   = new DateInterval("PT0S");
         $interval_1_second    = new DateInterval("PT1S");
         $interval_244_seconds = new DateInterval("PT244S");
         $interval_1_minute    = new DateInterval("PT1M");
@@ -382,6 +420,7 @@ class FormatterDateTest extends TestCase
         $interval_12_years    = new DateInterval("P12Y");
 
         // Pass a DateInterval
+        $this->assertSame('0 seconds', $this->formatter->asDuration($interval_0_seconds));
         $this->assertSame('1 second', $this->formatter->asDuration($interval_1_second));
         $this->assertSame('244 seconds', $this->formatter->asDuration($interval_244_seconds));
         $this->assertSame('1 minute', $this->formatter->asDuration($interval_1_minute));
@@ -394,6 +433,16 @@ class FormatterDateTest extends TestCase
         $this->assertSame('5 months', $this->formatter->asDuration($interval_5_months));
         $this->assertSame('1 year', $this->formatter->asDuration($interval_1_year));
         $this->assertSame('12 years', $this->formatter->asDuration($interval_12_years));
+        
+        // Pass a numeric value
+        $this->assertSame('0 seconds', $this->formatter->asDuration(0));
+        $this->assertSame('1 second', $this->formatter->asDuration(1));
+        $this->assertSame('4 minutes, 4 seconds', $this->formatter->asDuration(244));
+        $this->assertSame('1 minute', $this->formatter->asDuration(60));
+        $this->assertSame('33 minutes', $this->formatter->asDuration(1980));
+        $this->assertSame('1 hour', $this->formatter->asDuration(3600));
+        $this->assertSame('6 hours', $this->formatter->asDuration(21600));
+        $this->assertSame('1 day', $this->formatter->asDuration(86400));
 
         // Pass a DateInterval string
         $this->assertSame('1 year, 2 months, 10 days, 2 hours, 30 minutes', $this->formatter->asDuration('2007-03-01T13:00:00Z/2008-05-11T15:30:00Z'));
@@ -405,6 +454,7 @@ class FormatterDateTest extends TestCase
         $this->assertSame('-94 months', $this->formatter->asDuration('P-94M'));
 
         // Invert all the DateIntervals
+        $interval_0_seconds->invert = true;
         $interval_1_second->invert = true;
         $interval_244_seconds->invert = true;
         $interval_1_minute->invert = true;
@@ -419,6 +469,7 @@ class FormatterDateTest extends TestCase
         $interval_12_years->invert = true;
 
         // Pass a inverted DateInterval
+        $this->assertSame('0 seconds', $this->formatter->asDuration($interval_0_seconds));
         $this->assertSame('-1 second', $this->formatter->asDuration($interval_1_second));
         $this->assertSame('-244 seconds', $this->formatter->asDuration($interval_244_seconds));
         $this->assertSame('-1 minute', $this->formatter->asDuration($interval_1_minute));

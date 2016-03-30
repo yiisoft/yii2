@@ -8,9 +8,6 @@
 namespace yiiunit\framework\console;
 
 use yii\console\Controller;
-use yiiunit\framework\di\stubs\QuxInterface;
-use yiiunit\framework\web\stubs\Bar;
-use yii\validators\EmailValidator;
 
 /**
  * @author Misbahul D Munir <misbahuldmunir@gmail.com>
@@ -18,49 +15,56 @@ use yii\validators\EmailValidator;
  */
 class FakeController extends Controller
 {
+    public $test;
 
-    public function actionAksi1(Bar $bar, $fromParam, $other = 'default')
+    public $testArray = [];
+
+    public $alias;
+
+    public function options($actionID)
     {
-        return[$bar, $fromParam, $other];
+        return array_merge(parent::options($actionID), [
+            'test',
+            'testArray',
+            'alias'
+        ]);
     }
 
-    public function actionAksi2(Bar $barBelongApp, QuxInterface $qux)
+    public function optionAliases()
     {
-        return[$barBelongApp, $qux];
+        return [
+            't' => 'test',
+            'ta' => 'testArray',
+            'a' => 'alias'
+        ];
     }
 
-    public function actionAksi3(QuxInterface $quxApp)
+    public function actionAksi1($fromParam, $other = 'default')
     {
-        return[$quxApp];
+        return[$fromParam, $other];
     }
 
-    public function actionAksi4(Bar $bar, QuxInterface $quxApp, array $values, $value)
+    public function actionAksi2(array $values, $value)
     {
-        return [$bar->foo, $quxApp->quxMethod(), $values, $value];
+        return [$values, $value];
     }
 
-    public function actionAksi5($q, Bar $bar, QuxInterface $quxApp)
+    public function actionAksi3($available, $missing)
     {
-        return [$q, $bar->foo, $quxApp->quxMethod()];
     }
 
-    public function actionAksi6($q, EmailValidator $validator)
+    public function actionAksi4()
     {
-        return [$q, $validator->validate($q), $validator->validate('misbahuldmunir@gmail.com')];
-    }
-    
-    public function actionAksi7(Bar $bar, $avaliable, $missing)
-    {
-        
+        return $this->test;
     }
 
-    public function actionAksi8($arg1, $arg2)
+    public function actionAksi5()
     {
-        return func_get_args();
+        return $this->alias;
     }
 
-    public function actionAksi9($arg1, $arg2, QuxInterface $quxApp)
+    public function actionAksi6()
     {
-        return func_get_args();
+        return $this->testArray;
     }
 }

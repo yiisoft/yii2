@@ -275,7 +275,7 @@ class CaptchaAction extends Action
             (int) ($this->backColor % 0x10000 / 0x100),
             $this->backColor % 0x100
         );
-        imagefilledrectangle($image, 0, 0, $this->width, $this->height, $backColor);
+        imagefilledrectangle($image, 0, 0, $this->width - 1, $this->height - 1, $backColor);
         imagecolordeallocate($image, $backColor);
 
         if ($this->transparent) {
@@ -332,8 +332,8 @@ class CaptchaAction extends Action
         $fontMetrics = $image->queryFontMetrics($draw, $code);
 
         $length = strlen($code);
-        $w = (int) ($fontMetrics['textWidth']) - 8 + $this->offset * ($length - 1);
-        $h = (int) ($fontMetrics['textHeight']) - 8;
+        $w = (int) $fontMetrics['textWidth'] - 8 + $this->offset * ($length - 1);
+        $h = (int) $fontMetrics['textHeight'] - 8;
         $scale = min(($this->width - $this->padding * 2) / $w, ($this->height - $this->padding * 2) / $h);
         $x = 10;
         $y = round($this->height * 27 / 40);
@@ -344,7 +344,7 @@ class CaptchaAction extends Action
             $draw->setFillColor($foreColor);
             $image->annotateImage($draw, $x, $y, rand(-10, 10), $code[$i]);
             $fontMetrics = $image->queryFontMetrics($draw, $code[$i]);
-            $x += (int) ($fontMetrics['textWidth']) + $this->offset;
+            $x += (int) $fontMetrics['textWidth'] + $this->offset;
         }
 
         $image->setImageFormat('png');

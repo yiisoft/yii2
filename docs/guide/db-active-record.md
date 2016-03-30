@@ -440,7 +440,9 @@ If you are interested in the attribute values prior to their most recent modific
 > even if it has the same value but a different type. This is often the case when the model receives user input from
 > HTML forms where every value is represented as a string.
 > To ensure the correct type for e.g. integer values you may apply a [validation filter](input-validation.md#data-filtering):
-> `['attributeName', 'filter', 'filter' => 'intval']`.
+> `['attributeName', 'filter', 'filter' => 'intval']`. This works with all the typecasting functions of PHP like
+> [intval()](http://php.net/manual/en/function.intval.php), [floatval()](http://php.net/manual/en/function.floatval.php),
+> [boolval](http://php.net/manual/en/function.boolval.php), etc...
 
 ### Default Attribute Values <span id="default-attribute-values"></span>
 
@@ -1087,7 +1089,28 @@ Note that this differs from our earlier example which only brings back customers
 > Info: When [[yii\db\ActiveQuery]] is specified with a condition via [[yii\db\ActiveQuery::onCondition()|onCondition()]],
   the condition will be put in the `ON` part if the query involves a JOIN query. If the query does not involve
   JOIN, the on-condition will be automatically appended to the `WHERE` part of the query.
+  Thus it may only contain conditions including columns of the related table.
 
+#### Relation table aliases <span id="relation-table-aliases"></span>
+
+As noted before, when using JOIN in a query, we need to disambiguate column names. Therefor often an alias is
+defined for a table. Setting an alias for the relational query would be possible by customizing the relation query in the following way:
+
+```php
+$query->joinWith([
+    'orders' => function ($q) {
+        $q->from(['o' => Order::tableName()]);
+    },
+])
+```
+
+This however looks very complicated and involves either hardcoding the related objects table name or calling `Order::tableName()`.
+Since version 2.0.7, Yii provides a shortcut for this. You may now define and use the alias for the relation table like the following:
+
+```php
+// join the orders relation and sort the result by orders.id
+$query->joinWith(['orders o'])->orderBy('o.id');
+```
 
 ### Inverse Relations <span id="inverse-relations"></span>
 
@@ -1221,7 +1244,7 @@ The opposite operation to [[yii\db\ActiveRecord::link()|link()]] is [[yii\db\Act
 which breaks an existing relationship between two Active Record instances. For example,
 
 ```php
-$customer = Customer::find()->with('orders')->all();
+$customer = Customer::find()->with('orders')->where(['id' => 123])->one();
 $customer->unlink('orders', $customer->orders[0]);
 ```
 

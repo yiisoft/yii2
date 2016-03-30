@@ -48,7 +48,10 @@ class QueryBuilder extends \yii\db\QueryBuilder
      */
     public $typeMap = [
         Schema::TYPE_PK => 'serial NOT NULL PRIMARY KEY',
+        Schema::TYPE_UPK => 'serial NOT NULL PRIMARY KEY',
         Schema::TYPE_BIGPK => 'bigserial NOT NULL PRIMARY KEY',
+        Schema::TYPE_UBIGPK => 'bigserial NOT NULL PRIMARY KEY',
+        Schema::TYPE_CHAR => 'char(1)',
         Schema::TYPE_STRING => 'varchar(255)',
         Schema::TYPE_TEXT => 'text',
         Schema::TYPE_SMALLINT => 'smallint',

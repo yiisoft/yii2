@@ -2,9 +2,9 @@ Pobieranie danych dla wielu modeli
 ================================
 
 Kiedy mamy do czynienia z jakimiś skomplikowanymi danymi, jest możliwe, że będziesz musiał użyć wielu różnych modeli aby pobrać te dane od użytkownika.
-Dla przykładu: Zakładając, że dane logowania użytkownika zapisane są w tabeli `user`, podczas gdy dane profilu użytkownika są przechowywane w tabeli `profile`,
+Dla przykładu - zakładając, że dane logowania użytkownika zapisane są w tabeli `user`, podczas gdy dane profilu użytkownika są przechowywane w tabeli `profile`,
 będziesz chciał pobrać dane od użytkownika przez model `User` oraz `Profile`. 
-Z modelem Yii oraz wsparciem formularzy, możesz rozwiązać ten problem w sposób nie różniący się za bardzo od przetwarzania pojedyńczego modelu.
+Z modelem Yii oraz wsparciem formularzy, możesz rozwiązać ten problem w sposób nie różniący się za bardzo od przetwarzania pojedynczego modelu.
 
 W poniższym przykładzie pokażemy jak utworzyć formularz, który pozwoli Ci na zbieranie danych dla obydwu modeli: `User` oraz `Profile`.
 
@@ -51,7 +51,7 @@ class UserController extends Controller
 ```
 
 W akcji `update`, najpierw ładujemy modele `$user` oraz `$profile`, które zostaną zaktualizowane danymi z bazy danych.
-Następnie wywołujemy metodę [[yii\base\Model::load()]] aby wypełnić te dwa modele danymi wprowadzonymi przez użytkownika.
+Następnie wywołujemy metodę [[yii\base\Model::load()|load()]] aby wypełnić te dwa modele danymi wprowadzonymi przez użytkownika.
 Kolejnie modele zostaną poddane waliacji i, w przypadku prawidłowej walidacji, zapisane.
 W przeciwnym razie zostanie wyrenderowany widok `update`, który zawiera następujący kod:
 

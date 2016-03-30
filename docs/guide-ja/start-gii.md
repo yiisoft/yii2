@@ -46,7 +46,7 @@ defined('YII_ENV') or define('YII_ENV', 'dev');
 http://hostname/index.php?r=gii
 ```
 
-> Note|注意: ローカルホスト以外のマシンから Gii にアクセスしようとすると、デフォルトではセキュリティ上の理由でアクセスが拒否されます。
+> Note: ローカルホスト以外のマシンから Gii にアクセスしようとすると、デフォルトではセキュリティ上の理由でアクセスが拒否されます。
 > 下記のように Gii を構成して、許可される IP アドレスを追加することが出来ます。
 >
 ```php
@@ -114,7 +114,7 @@ Gii を使って CRUD 機能を作成するためには、"CRUD Generator" を�
 どのように動作するかを見るために、ブラウザを使って下記の URL にアクセスしてください。
 
 ```
-http://hostname/index.php?r=country/index
+http://hostname/index.php?r=country%2Findex
 ```
 
 データグリッドがデータベーステーブルから取得した国を表示しているページが表示されます。
@@ -134,7 +134,7 @@ http://hostname/index.php?r=country/index
 * Models: `models/Country.php` と `models/CountrySearch.php`
 * Views: `views/country/*.php`
 
-> Info|情報: Gii は非常にカスタマイズしやすく拡張しやすいコード生成ツールとして設計されています。
+> Info: Gii は非常にカスタマイズしやすく拡張しやすいコード生成ツールとして設計されています。
   これを賢く使うと、アプリケーションの開発速度を大いに高めることが出来ます。
   詳細については、[Gii](https://github.com/yiisoft/yii2-gii/blob/master/docs/guide-ja/README.md) の節を参照してください。
 

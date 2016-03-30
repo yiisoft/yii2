@@ -222,6 +222,33 @@ SQL;
         $this->assertEquals('user5@example.com', $command->queryScalar());
     }
 
+    public function paramsNonWhereProvider()
+    {
+        return[
+            ['SELECT SUBSTR(name, :len) FROM {{customer}} WHERE [[email]] = :email GROUP BY SUBSTR(name, :len)'],
+            ['SELECT SUBSTR(name, :len) FROM {{customer}} WHERE [[email]] = :email ORDER BY SUBSTR(name, :len)'],
+            ['SELECT SUBSTR(name, :len) FROM {{customer}} WHERE [[email]] = :email'],
+        ];
+    }
+
+    /**
+     * Test whether param binding works in other places than WHERE
+     * @dataProvider paramsNonWhereProvider
+     */
+    public function testBindParamsNonWhere($sql)
+    {
+        $db = $this->getConnection();
+
+        $db->createCommand()->insert('customer', ['name' => 'testParams', 'email' => 'testParams@example.com', 'address' => '1'])->execute();
+
+        $params = [
+            ':email' => 'testParams@example.com',
+            ':len' => 5,
+        ];
+        $command = $db->createCommand($sql, $params);
+        $this->assertEquals('Params', $command->queryScalar());
+    }
+
     public function testFetchMode()
     {
         $db = $this->getConnection();
@@ -263,7 +290,7 @@ SQL;
     public function testInsert()
     {
         $db = $this->getConnection();
-        $db->createCommand('DELETE FROM {{customer}};')->execute();
+        $db->createCommand('DELETE FROM {{customer}}')->execute();
 
         $command = $db->createCommand();
         $command->insert(
@@ -275,7 +302,7 @@ SQL;
             ]
         )->execute();
         $this->assertEquals(1, $db->createCommand('SELECT COUNT(*) FROM {{customer}};')->queryScalar());
-        $record = $db->createCommand('SELECT email, name, address FROM {{customer}};')->queryOne();
+        $record = $db->createCommand('SELECT [[email]], [[name]], [[address]] FROM {{customer}}')->queryOne();
         $this->assertEquals([
             'email' => 't1@example.com',
             'name' => 'test',
@@ -286,14 +313,21 @@ SQL;
     public function testInsertExpression()
     {
         $db = $this->getConnection();
-        $db->createCommand('DELETE FROM {{order_with_null_fk}};')->execute();
+        $db->createCommand('DELETE FROM {{order_with_null_fk}}')->execute();
 
         switch($this->driverName){
-            case 'pgsql': $expression = "EXTRACT(YEAR FROM TIMESTAMP 'now')"; break;
+            case 'pgsql':
+                $expression = "EXTRACT(YEAR FROM TIMESTAMP 'now')";
+            break;
             case 'cubrid':
-            case 'mysql': $expression = "YEAR(NOW())"; break;
-            default:
-            case 'sqlite': $expression = "strftime('%Y')"; break;
+            case 'mysql':
+                $expression = "YEAR(NOW())";
+            break;
+            case 'sqlite':
+                $expression = "strftime('%Y')";
+            break;
+            case 'sqlsrv':
+                $expression = 'YEAR(GETDATE())';
         }
 
         $command = $db->createCommand();
@@ -304,8 +338,8 @@ SQL;
                 'total' => 1,
             ]
         )->execute();
-        $this->assertEquals(1, $db->createCommand('SELECT COUNT(*) FROM {{order_with_null_fk}};')->queryScalar());
-        $record = $db->createCommand('SELECT created_at FROM {{order_with_null_fk}};')->queryOne();
+        $this->assertEquals(1, $db->createCommand('SELECT COUNT(*) FROM {{order_with_null_fk}}')->queryScalar());
+        $record = $db->createCommand('SELECT [[created_at]] FROM {{order_with_null_fk}}')->queryOne();
         $this->assertEquals([
             'created_at' => date('Y'),
         ], $record);

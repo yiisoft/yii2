@@ -516,6 +516,7 @@ class AssetManager extends Component
         $dstDir = $this->basePath . DIRECTORY_SEPARATOR . $dir;
         if ($this->linkAssets) {
             if (!is_dir($dstDir)) {
+                FileHelper::createDirectory(dirname($dstDir), $this->dirMode, true);
                 symlink($src, $dstDir);
             }
         } elseif (!empty($options['forceCopy']) || ($this->forceCopy && !isset($options['forceCopy'])) || !is_dir($dstDir)) {
@@ -549,7 +550,7 @@ class AssetManager extends Component
      * This method does not perform any publishing. It merely tells you
      * if the file or directory is published, where it will go.
      * @param string $path directory or file path being published
-     * @return string the published file path. False if the file or directory does not exist
+     * @return string|false string the published file path. False if the file or directory does not exist
      */
     public function getPublishedPath($path)
     {
@@ -570,7 +571,7 @@ class AssetManager extends Component
      * This method does not perform any publishing. It merely tells you
      * if the file path is published, what the URL will be to access it.
      * @param string $path directory or file path being published
-     * @return string the published URL for the file or directory. False if the file or directory does not exist.
+     * @return string|false string the published URL for the file or directory. False if the file or directory does not exist.
      */
     public function getPublishedUrl($path)
     {

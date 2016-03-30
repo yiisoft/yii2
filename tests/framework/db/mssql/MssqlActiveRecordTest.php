@@ -11,4 +11,9 @@ use yiiunit\framework\db\ActiveRecordTest;
 class MssqlActiveRecordTest extends ActiveRecordTest
 {
     protected $driverName = 'sqlsrv';
+
+    public function testExplicitPkOnAutoIncrement()
+    {
+        $this->markTestSkipped('MSSQL does not support explicit value for an IDENTITY column.');
+    }
 }

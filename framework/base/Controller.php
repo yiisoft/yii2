@@ -50,7 +50,7 @@ class Controller extends Component implements ViewContextInterface
      */
     public $defaultAction = 'index';
     /**
-     * @var string|boolean the name of the layout to be applied to this controller's views.
+     * @var null|string|boolean the name of the layout to be applied to this controller's views.
      * This property mainly affects the behavior of [[render()]].
      * Defaults to null, meaning the actual layout value should inherit that from [[module]]'s layout value.
      * If false, no layout will be applied.
@@ -317,6 +317,7 @@ class Controller extends Component implements ViewContextInterface
     }
 
     /**
+     * Returns the unique ID of the controller.
      * @return string the controller ID that is prefixed with the module ID (if any).
      */
     public function getUniqueId()

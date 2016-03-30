@@ -62,7 +62,7 @@ trait ActiveQueryTrait
      * Customer::find()->with('orders.address')->all();
      * // find customers together with their country and orders of status 1
      * Customer::find()->with([
-     *     'orders' => function ($query) {
+     *     'orders' => function (\yii\db\ActiveQuery $query) {
      *         $query->andWhere('status = 1');
      *     },
      *     'country',
@@ -159,7 +159,10 @@ trait ActiveQueryTrait
      */
     public function findWith($with, &$models)
     {
-        $primaryModel = new $this->modelClass;
+        $primaryModel = reset($models);
+        if (!$primaryModel instanceof ActiveRecordInterface) {
+            $primaryModel = new $this->modelClass;
+        }
         $relations = $this->normalizeRelations($primaryModel, $with);
         /* @var $relation ActiveQuery */
         foreach ($relations as $name => $relation) {

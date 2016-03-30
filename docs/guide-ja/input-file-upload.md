@@ -51,7 +51,7 @@ class UploadForm extends Model
 `file` バリデータによって、ファイル拡張子、サイズ、MIME タイプなどをチェックすることが出来ます。
 詳細については、[コアバリデータ](tutorial-core-validators.md#file) の節を参照してください。
 
-> Tip|ヒント: 画像をアップロードしようとする場合は、`image` バリデータを代りに使うことを考慮しても構いません。
+> Tip: 画像をアップロードしようとする場合は、`image` バリデータを代りに使うことを考慮しても構いません。
 `image` バリデータは [[yii\validators\ImageValidator]] によって実装されており、属性が有効な画像、すなわち、保存したり [Imagine エクステンション](https://github.com/yiisoft/yii2-imagine) を使って処理したりすることが可能な有効な画像を、受け取ったかどうかを検証します。
 
 
@@ -78,6 +78,8 @@ use yii\widgets\ActiveForm;
 
 ファイルが正しくアップロードされるように、フォームに `enctype` オプションを追加することを憶えておくのは重要なことです。
 `fileInput()` を呼ぶと `<input type="file">` のタグがレンダリングされて、ユーザがアップロードするファイルを選ぶことが出来るようになります。
+
+> Tip: バージョン 2.0.8 以降では、ファイルインプットのフィールドが使われているときは、[[yii\web\widgets\ActiveField::fileInput|fileInput]] がフォームに `enctype` オプションを自動的に追加します。
 
 
 ## 繋ぎ合せる <span id="wiring-up"></span>

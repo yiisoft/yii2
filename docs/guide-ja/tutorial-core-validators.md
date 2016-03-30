@@ -39,7 +39,7 @@ public function rules()
 - `strict`: 入力値の型が `trueValue` と `falseValue` の型と一致しなければならないかどうか。デフォルト値は `false`。
 
 
-> Note|注意: HTML フォームで送信されたデータ入力値は全て文字列であるため、通常は、[[yii\validators\BooleanValidator::strict|strict]] プロパティは false のままにすべきです。
+> Note: HTML フォームで送信されたデータ入力値は全て文字列であるため、通常は、[[yii\validators\BooleanValidator::strict|strict]] プロパティは false のままにすべきです。
 
 
 ## [[yii\captcha\CaptchaValidator|captcha]] <span id="captcha"></span>
@@ -153,7 +153,7 @@ function foo($model, $attribute) {
 }
 ```
 
-> Info|情報: 値が空であるか否かを決定する方法については、独立したトピックとして、[空の入力値を扱う](input-validation.md#handling-empty-inputs) の節でカバーされています。
+> Info: 値が空であるか否かを決定する方法については、独立したトピックとして、[空の入力値を扱う](input-validation.md#handling-empty-inputs) の節でカバーされています。
 
 
 ## [[yii\validators\NumberValidator|double]] <span id="double"></span>
@@ -176,7 +176,7 @@ function foo($model, $attribute) {
 
 ## [[yii\validators\EachValidator|each]] <span id="each"></span>
 
-> Info|情報: このバリデータは、バージョン 2.0.4 以降で利用できます。
+> Info: このバリデータは、バージョン 2.0.4 以降で利用できます。
 
 ```php
 [
@@ -195,7 +195,7 @@ function foo($model, $attribute) {
 - `allowMessageFromRule`: 埋め込まれた検証規則によって返されるエラーメッセージを使うかどうか。
   デフォルト値は true です。これが false の場合は、`message` をエラーメッセージとして使います。
 
-> Note|注意: 属性が配列でない場合は、検証が失敗したと見なされ、`message` がエラーメッセージとして返されます。
+> Note: 属性が配列でない場合は、検証が失敗したと見なされ、`message` がエラーメッセージとして返されます。
 
 
 ## [[yii\validators\EmailValidator|email]] <span id="email"></span>
@@ -289,6 +289,8 @@ function foo($model, $attribute) {
   デフォルト値は null であり、すべてのファイル名拡張子が許可されることを意味します。
 - `mimeTypes`: アップロードを許可されるファイルの MIME タイプのリスト。
   リストは、配列、または、空白かカンマで区切られたファイルの MIME タイプからなる文字列 (例えば、"image/jpeg, image/png") で指定することが出来ます。
+  特殊文字 `*` によるワイルドカードのマスクを使って、一群の MIME タイプに一致させることも出来ます。
+  例えば `image/*` は、`image/` で始まる全ての MIME タイプ (`image/jpeg`, `image/png` など) を通します。
   MIME タイプ名は大文字と小文字を区別しません。
   デフォルト値は null であり、すべての MIME タイプが許可されることを意味します。
   MIME タイプの詳細については、[一般的なメディアタイプ](http://en.wikipedia.org/wiki/Internet_media_type#List_of_common_media_types) を参照してください。
@@ -334,9 +336,9 @@ function foo($model, $attribute) {
   フィルタが配列の入力を処理できない場合は、このプロパティを true に設定しなければなりません。
   そうしないと、何らかの PHP エラーが生じ得ます。
 
-> Tip|ヒント: 入力値をトリムしたい場合は、[trim](#trim) バリデータを直接使うことが出来ます。
+> Tip: 入力値をトリムしたい場合は、[trim](#trim) バリデータを直接使うことが出来ます。
 
-> Tip|ヒント: `filter` のコールバックに期待されるシグニチャを持つ PHP 関数が多数存在します。
+> Tip: `filter` のコールバックに期待されるシグニチャを持つ PHP 関数が多数存在します。
 > 例えば、([intval](http://php.net/manual/ja/function.intval.php) や [boolval](http://php.net/manual/ja/function.boolval.php) などを使って) 型キャストを適用し、属性が特定の型になるように保証したい場合は、それらの関数をクロージャで包む必要はなく、単にフィルタの関数名を指定するだけで十分です。
 >
 > ```php
@@ -443,7 +445,7 @@ IPv4 アドレス `192.168.10.128` も、制約の前にリストされている
     * `documentation`: `192.0.2.0/24, 198.51.100.0/24, 203.0.113.0/24, 2001:db8::/32`
     * `system`: `multicast, linklocal, localhost, documentation`
 
-> Info|情報: このバリデータは、バージョン 2.0.7 以降で利用することが出来ます。
+> Info: このバリデータは、バージョン 2.0.7 以降で利用することが出来ます。
 
 
 ## [[yii\validators\RangeValidator|in]] <span id="in"></span>
@@ -531,7 +533,7 @@ IPv4 アドレス `192.168.10.128` も、制約の前にリストされている
   一方、このプロパティが false であるときは、値が空か否かの判断に緩い規則を使います。
   `requiredValue` が設定されている場合、このプロパティが true であるときは、入力値と `requiredValue` を比較するときに型のチェックを行います。
 
-> Info|情報: 値が空であるか否かを決定する方法については、独立したトピックとして、[空の入力値を扱う](input-validation.md#handling-empty-inputs) の節でカバーされています。
+> Info: 値が空であるか否かを決定する方法については、独立したトピックとして、[空の入力値を扱う](input-validation.md#handling-empty-inputs) の節でカバーされています。
 
 
 ## [[yii\validators\SafeValidator|safe]] <span id="safe"></span>

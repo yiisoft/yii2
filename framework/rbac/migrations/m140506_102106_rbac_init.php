@@ -91,7 +91,7 @@ class m140506_102106_rbac_init extends \yii\db\Migration
             'FOREIGN KEY (item_name) REFERENCES ' . $authManager->itemTable . ' (name) ON DELETE CASCADE ON UPDATE CASCADE',
         ], $tableOptions);
 
-        if($this->isMsSQL()) {
+        if ($this->isMSSQL()) {
             $this->execute("CREATE TRIGGER dbo.trigger_auth_item_child
             ON dbo.{$authManager->itemTable}
             INSTEAD OF DELETE, UPDATE
@@ -137,7 +137,7 @@ class m140506_102106_rbac_init extends \yii\db\Migration
         $authManager = $this->getAuthManager();
         $this->db = $authManager->db;
 
-        if($this->isMsSQL()) {
+        if ($this->isMSSQL()) {
             $this->execute('DROP dbo.trigger_auth_item_child;');
         }
 
