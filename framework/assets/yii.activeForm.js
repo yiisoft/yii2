@@ -202,7 +202,7 @@
                     attributes: attributes,
                     submitting: false,
                     validated: false,
-                    target: data.target || null
+                    target: $form.attr('target')
                 });
 
                 /**
