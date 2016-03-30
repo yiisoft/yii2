@@ -140,7 +140,7 @@ Yii Framework 2 Change Log
 - Bug #10751: Fixed `yii\validators\UrlValidator` pattern to improve matching (silverfire)
 - Bug #10760: `yii\widgets\DetailView::normalizeAttributes()` fixed for arrayable models (boehsermoe)
 - Bug #10825: Fixed `yii\validators\EachValidator` does not respect `skipOnEmpty` rule parameter (klimov-paul)
-- Bug #11088: Fixed bug with column name not being quoted correctly, when a quoted table name or a table name in prefix syntax was used (cebe, Ni-san)
+- Bug #11088: Fixed bug with column name not being quoted correctly, when a quoted table name or a table name in prefix syntax was used (cebe, edgardmessias, Ni-san)
 - Bug: Fixed generation of canonical URLs for `ViewAction` pages (samdark)
 - Bug: Fixed `mb_*` functions calls to use `UTF-8` or `Yii::$app->charset` (silverfire)
 - Enh #2377: Allow specifying a table alias when joining relations via `joinWith()` (cebe, nainoon)
