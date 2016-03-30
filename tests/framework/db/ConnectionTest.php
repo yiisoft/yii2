@@ -103,6 +103,7 @@ class ConnectionTest extends DatabaseTestCase
         $this->assertEquals('[[table.column]]', $connection->quoteColumnName('[[table.column]]'));
         $this->assertEquals('{{table}}.`column`', $connection->quoteColumnName('{{table}}.column'));
         $this->assertEquals('{{table}}.`column`', $connection->quoteColumnName('{{table}}.`column`'));
+        $this->assertEquals('{{table}}.[[column]]', $connection->quoteColumnName('{{table}}.[[column]]'));
         $this->assertEquals('{{%table}}.`column`', $connection->quoteColumnName('{{%table}}.column'));
         $this->assertEquals('{{%table}}.`column`', $connection->quoteColumnName('{{%table}}.`column`'));
 
