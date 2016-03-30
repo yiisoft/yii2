@@ -51,7 +51,7 @@ use yii\db\BaseActiveRecord;
  * }
  * ```
  *
- * In case you use an [[Expression]] object as in the example above, the attribute will not hold the timestamp value, but
+ * In case you use an [[\yii\db\Expression]] object as in the example above, the attribute will not hold the timestamp value, but
  * the Expression object itself after the record has been saved. If you need the value from DB afterwards you should call
  * the [[\yii\db\ActiveRecord::refresh()|refresh()]] method of the record.
  *
