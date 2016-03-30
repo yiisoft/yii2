@@ -25,6 +25,7 @@ Yii Framework 2 Change Log
 - Bug #11188: Fixed wrong index usage in `CaptchaAction` when calling `imagefilledrectangle` (alsopub)
 - Bug #11221: Boolean validator generates incorrect error message (azaikin, githubjeka)
 - Bug: SQlite querybuilder did not create primary key with bigint for `TYPE_BIGPK` (cebe)
+- Bug: Fixed `quoteColumnName` for table start with `{{` or `[[` (edgardmessias)
 - Enh #5469: Add mimetype validation by mask in FileValidator (kirsenn, samdark, silverfire)
 - Enh #8145, #8139, #10234 #11153: `yii\validators\Validator::$attributes` property now supports `!attribute` notation to validate attribute, but do not mark it as safe (mdmunir)
 - Enh #8602: `yii\validators\DateValidator` skip validation for `timestampAttribute`, if it is already in correct format (klimov-paul)
