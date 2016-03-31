@@ -79,7 +79,7 @@ use yii\helpers\Html;
 \Yii::$container->set('yii\widgets\LinkPager', ['maxButtonCount' => 5]);
 ```
 
-Подробнее это описано в [подразделе «Практическое использование» раздела «Контейнер внедрения зависимостей»](concept-di-container.md#practical-usage).
+Подробнее это описано в [подразделе «Практическое использование» раздела «Контейнер внедрения зависимостей»](concept-di-container.md#Практическое-использование-).
 
 ## Создание Виджетов <span id="creating-widgets"></span>
 

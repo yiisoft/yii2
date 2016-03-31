@@ -205,4 +205,4 @@ class PostController extends Controller
 * `X-Pagination-Per-Page`: количество ресурсов на страницу;
 * `Link`: набор ссылок, позволяющий клиенту пройти все страницы ресурсов.
 
-Примеры вы можете найти в разделе «[быстрый старт](rest-quick-start.md#trying-it-out)».
+Примеры вы можете найти в разделе «[быстрый старт](rest-quick-start.md#Быстрый-старт)».

@@ -17,7 +17,7 @@
 и `\Yii::$app->cache` для получения доступа к основному компоненту [[yii\caching\Cache|кэша]], зарегистрированному в приложении.
 
 Компонентами приложения могут быть любые объекты. Вы можете зарегистрировать их с помощью  
-свойства [[yii\base\Application::components]] в [конфигурации](structure-applications.md#application-configurations) приложения.
+свойства [[yii\base\Application::components]] в [конфигурации](structure-applications.md#Конфигурации-приложения-) приложения.
 Например,
 
 ```php
