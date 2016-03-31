@@ -495,6 +495,28 @@ class DbManager extends BaseManager
     /**
      * @inheritdoc
      */
+    public function getRolesByRole($roleName)
+    {
+        $childrenList = $this->getChildrenList();
+        $result = [];
+        $this->getChildrenRecursive($roleName, $childrenList, $result);
+        if (empty($result)) {
+            return [];
+        }
+        $query = (new Query)->from($this->itemTable)->where([
+            'type' => Item::TYPE_ROLE,
+            'name' => array_keys($result),
+        ]);
+        $roles = [];
+        foreach ($query->all($this->db) as $row) {
+            $roles[$row['name']] = $this->populateItem($row);
+        }
+        return $roles;
+    }
+
+    /**
+     * @inheritdoc
+     */
     public function getPermissionsByUser($userId)
     {
         if (empty($userId)) {
