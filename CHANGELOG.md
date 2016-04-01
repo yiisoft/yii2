@@ -24,6 +24,7 @@ Yii Framework 2 Change Log
 - Bug #11125: Fixed `JSON_ERROR_SYNTAX` for `json_decode(null)` in PHP 7 (fps01)
 - Bug #11188: Fixed wrong index usage in `CaptchaAction` when calling `imagefilledrectangle` (alsopub)
 - Bug #11221: Boolean validator generates incorrect error message (azaikin, githubjeka)
+- Bug #11223: Fixed returning an empty array when DbManager::getRolesByUser() was called on a user with user id 0 (VirtualRJ)
 - Bug: SQlite querybuilder did not create primary key with bigint for `TYPE_BIGPK` (cebe)
 - Enh #5469: Add mimetype validation by mask in FileValidator (kirsenn, samdark, silverfire)
 - Enh #8145, #8139, #10234 #11153: `yii\validators\Validator::$attributes` property now supports `!attribute` notation to validate attribute, but do not mark it as safe (mdmunir)
