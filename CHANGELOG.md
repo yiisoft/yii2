@@ -59,6 +59,7 @@ Yii Framework 2 Change Log
 - Bug #10613: Fixed PostgreSQL Schema to return correct column names for unique indexes that have mixed case column names (cebe)
 - Bug #11322: Fixed incorrect error message in `yii\validators\UniqueValidator` for composite `targetAttribute` (PowerGamer1, silverfire, cebe)
 - Chg #11364: Updated jQuery dependency to include versions `1.12.*` (cebe)
+- Bug #11252: Use strict comparison on ActiveRecord::hasAttribute() to avoid cases where it returns true when a number is passed to it (Faryshta)
 
 
 2.0.8 April 28, 2016
