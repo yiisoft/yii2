@@ -185,6 +185,20 @@ class Controller extends \yii\base\Controller
     {
         return Yii::$app->getResponse()->redirect(Yii::$app->getUser()->getReturnUrl($defaultUrl));
     }
+    
+    public function goReferrer($defaultUrl = null)
+    {
+        $referer = Yii::$app->getRequest()->getReferrer();
+        if(isset($referer)) {
+            return Yii::$app->getResponse()->redirect($referer);
+        } else {
+            if(isset($defaultUrl)) {
+                return Yii::$app->getResponse()-Юredirect($defaultUrl);
+            } else {
+                return $this->goHome();
+            }
+        }
+    }
 
     /**
      * Refreshes the current page.
