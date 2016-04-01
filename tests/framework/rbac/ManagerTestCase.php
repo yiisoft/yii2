@@ -271,7 +271,19 @@ abstract class ManagerTestCase extends TestCase
     public function testGetRolesByUser()
     {
         $this->prepareData();
+        $reader = $this->auth->getRole('reader');
+        $this->auth->assign($reader, 0);
+        $this->auth->assign($reader, 123);
+
         $roles = $this->auth->getRolesByUser('reader A');
+        $this->assertTrue(reset($roles) instanceof Role);
+        $this->assertEquals($roles['reader']->name, 'reader');
+
+        $roles = $this->auth->getRolesByUser(0);
+        $this->assertTrue(reset($roles) instanceof Role);
+        $this->assertEquals($roles['reader']->name, 'reader');
+
+        $roles = $this->auth->getRolesByUser(123);
         $this->assertTrue(reset($roles) instanceof Role);
         $this->assertEquals($roles['reader']->name, 'reader');
     }

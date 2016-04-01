@@ -453,7 +453,7 @@ class DbManager extends BaseManager
      */
     public function getRolesByUser($userId)
     {
-        if (empty($userId)) {
+        if (!isset($userId) || $userId === '') {
             return [];
         }
 
