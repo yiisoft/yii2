@@ -387,4 +387,68 @@ abstract class ManagerTestCase extends TestCase
         $this->assertNotEmpty($this->auth->getRules());
         $this->assertNotEmpty($this->auth->getRoles());
     }
+
+    public function testAssignRule()
+    {
+        $auth = $this->auth;
+        $userId = 3;
+
+        $auth->removeAll();
+        $role = $auth->createRole('Admin');
+        $auth->add($role);
+        $auth->assign($role, $userId);
+        $this->assertTrue($auth->checkAccess($userId, 'Admin'));
+
+        // with normal register rule
+        $auth->removeAll();
+        $rule = new ActionRule();
+        $auth->add($rule);
+        $role = $auth->createRole('Reader');
+        $role->ruleName = $rule->name;
+        $auth->add($role);
+        $auth->assign($role, $userId);
+        $this->assertTrue($auth->checkAccess($userId, 'Reader', ['action' => 'read']));
+        $this->assertFalse($auth->checkAccess($userId, 'Reader', ['action' => 'write']));
+
+        // using rule class name
+        $auth->removeAll();
+        $role = $auth->createRole('Reader');
+        $role->ruleName = 'yiiunit\framework\rbac\ActionRule';
+        $auth->add($role);
+        $auth->assign($role, $userId);
+        $this->assertTrue($auth->checkAccess($userId, 'Reader', ['action' => 'read']));
+        $this->assertFalse($auth->checkAccess($userId, 'Reader', ['action' => 'write']));
+
+        // using DI
+        \Yii::$container->set('write_rule', ['class' => 'yiiunit\framework\rbac\ActionRule', 'action' => 'write']);
+        \Yii::$container->set('delete_rule', ['class' => 'yiiunit\framework\rbac\ActionRule', 'action' => 'delete']);
+        \Yii::$container->set('all_rule', ['class' => 'yiiunit\framework\rbac\ActionRule', 'action' => 'all']);
+
+        $role = $auth->createRole('Writer');
+        $role->ruleName = 'write_rule';
+        $auth->add($role);
+        $auth->assign($role, $userId);
+        $this->assertTrue($auth->checkAccess($userId, 'Writer', ['action' => 'write']));
+        $this->assertFalse($auth->checkAccess($userId, 'Writer', ['action' => 'update']));
+
+        $role = $auth->createRole('Deleter');
+        $role->ruleName = 'delete_rule';
+        $auth->add($role);
+        $auth->assign($role, $userId);
+        $this->assertTrue($auth->checkAccess($userId, 'Deleter', ['action' => 'delete']));
+        $this->assertFalse($auth->checkAccess($userId, 'Deleter', ['action' => 'update']));
+
+        $role = $auth->createRole('Author');
+        $role->ruleName = 'all_rule';
+        $auth->add($role);
+        $auth->assign($role, $userId);
+        $this->assertTrue($auth->checkAccess($userId, 'Author', ['action' => 'update']));
+
+        // update role and rule
+        $role = $auth->getRole('Reader');
+        $role->name = 'AdminPost';
+        $role->ruleName = 'all_rule';
+        $auth->update('Reader', $role);
+        $this->assertTrue($auth->checkAccess($userId, 'AdminPost', ['action' => 'print']));
+    }
 }
