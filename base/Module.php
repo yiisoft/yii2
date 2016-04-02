@@ -217,7 +217,7 @@ class Module extends ServiceLocator
     public function setBasePath($path)
     {
         $path = Yii::getAlias($path);
-        $p = realpath($path);
+        $p = strncmp($path, 'phar://', 7) === 0 ? $path : realpath($path);
         if ($p !== false && is_dir($p)) {
             $this->_basePath = $p;
         } else {
