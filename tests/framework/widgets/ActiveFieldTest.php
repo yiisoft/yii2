@@ -44,7 +44,8 @@ class ActiveFieldTest extends \yiiunit\TestCase
 
         $this->helperModel = new DynamicModel(['attributeName']);
         ob_start();
-        $this->helperForm = new ActiveForm(['action' => '/something']);
+        $this->helperForm = ActiveForm::begin(['action' => '/something', 'enableClientScript' => false]);
+        ActiveForm::end();
         ob_end_clean();
 
         $this->activeField = new ActiveFieldExtend(true);
@@ -339,6 +340,15 @@ EOD;
             . "{ return 'yii2' == 'yii2'; })(attribute, value)) { return true; }}";
 
         $this->assertEquals($expectedJsExpression, $actualValue['validate']->expression);
+    }
+
+    /**
+     * @see https://github.com/yiisoft/yii2/issues/8779
+     */
+    public function testEnctype()
+    {
+        $this->activeField->fileInput();
+        $this->assertEquals('multipart/form-data', $this->activeField->form->options['enctype']);
     }
 
     /**

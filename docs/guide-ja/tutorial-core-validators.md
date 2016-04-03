@@ -289,6 +289,8 @@ function foo($model, $attribute) {
   デフォルト値は null であり、すべてのファイル名拡張子が許可されることを意味します。
 - `mimeTypes`: アップロードを許可されるファイルの MIME タイプのリスト。
   リストは、配列、または、空白かカンマで区切られたファイルの MIME タイプからなる文字列 (例えば、"image/jpeg, image/png") で指定することが出来ます。
+  特殊文字 `*` によるワイルドカードのマスクを使って、一群の MIME タイプに一致させることも出来ます。
+  例えば `image/*` は、`image/` で始まる全ての MIME タイプ (`image/jpeg`, `image/png` など) を通します。
   MIME タイプ名は大文字と小文字を区別しません。
   デフォルト値は null であり、すべての MIME タイプが許可されることを意味します。
   MIME タイプの詳細については、[一般的なメディアタイプ](http://en.wikipedia.org/wiki/Internet_media_type#List_of_common_media_types) を参照してください。

@@ -355,7 +355,7 @@ class MemCache extends Cache
     /**
      * Trims duration to 30 days (2592000 seconds).
      * @param integer $duration the number of seconds
-     * @return int the duration
+     * @return integer the duration
      * @since 2.0.7
      * @see http://php.net/manual/en/memcache.set.php
      * @see http://php.net/manual/en/memcached.expiration.php

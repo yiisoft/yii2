@@ -62,7 +62,7 @@
         "ext-ctype": "*",
         "lib-pcre": "*",
         "yiisoft/yii2-composer": "~2.0.4",
-        "ezyang/htmlpurifier": "4.6.*",
+        "ezyang/htmlpurifier": "~4.6",
         "cebe/markdown": "~1.0.0 | ~1.1.0",
         "bower-asset/jquery": "2.2.*@stable | 2.1.*@stable | 1.11.*@stable",
         "bower-asset/jquery.inputmask": "~3.2.2",

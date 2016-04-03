@@ -103,15 +103,19 @@ composer create-project --prefer-dist yiisoft/yii2-app-basic basic
 php yii serve
 ```
 
+> Note: デフォルトでは、この HTTP サーバは 8080 ポートをリスンします。
+しかし、このポートがすでに使われていたり、複数のアプリケーションをこの方法で動かしたい場合は、どのポートを使うかを指定したいと思うでしょう。
+単に --port 引数を追加して下さい。
+
+```bash
+php yii serve --port=8888
+```
+
 下記の URL によって、インストールされた Yii アプリケーションにブラウザを使ってアクセスすることが出来ます。
 
 ```
-http://localhost/
+http://localhost:8080/
 ```
-
-この URL は、あなたが Yii を ウェブサーバのドキュメントルートディレクトリ直下の `basic` という名前のディレクトリにインストールしたこと、
-そして、ウェブサーバがローカルマシン (`localhost`) で走っていることを想定しています。
-あなたのインストールの環境に合うように URL を変更する必要があるかもしれません。
 
 ![Yii のインストールが成功](images/start-app-installed.png)
 

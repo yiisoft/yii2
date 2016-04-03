@@ -354,6 +354,14 @@ EOD;
 </select>
 EOD;
         $this->assertEqualsWithoutLE($expected, Html::listBox('test', '', [], ['unselect' => '0']));
+
+        $expected = <<<EOD
+<select name="test" size="4">
+<option value="value1" selected>text1</option>
+<option value="value2" selected>text2</option>
+</select>
+EOD;
+        $this->assertEqualsWithoutLE($expected, Html::listBox('test', new \ArrayObject(['value1', 'value2']), $this->getDataItems()));
     }
 
     public function testCheckboxList()
@@ -402,6 +410,15 @@ EOD;
             },
             'tag' => false
         ]));
+
+
+        $this->assertEqualsWithoutLE($expected, Html::checkboxList('test', new \ArrayObject(['value2']), $this->getDataItems(), [
+            'item' => function ($index, $label, $name, $checked, $value) {
+                return $index . Html::label($label . ' ' . Html::checkbox($name, $checked, ['value' => $value]));
+            },
+            'tag' => false
+        ]));
+
     }
 
     public function testRadioList()
@@ -444,6 +461,13 @@ EOD;
 1<label>text2 <input type="radio" name="test" value="value2" checked></label>
 EOD;
         $this->assertEqualsWithoutLE($expected, Html::radioList('test', ['value2'], $this->getDataItems(), [
+            'item' => function ($index, $label, $name, $checked, $value) {
+                return $index . Html::label($label . ' ' . Html::radio($name, $checked, ['value' => $value]));
+            },
+            'tag' => false
+        ]));
+
+        $this->assertEqualsWithoutLE($expected, Html::radioList('test', new \ArrayObject(['value2']), $this->getDataItems(), [
             'item' => function ($index, $label, $name, $checked, $value) {
                 return $index . Html::label($label . ' ' . Html::radio($name, $checked, ['value' => $value]));
             },

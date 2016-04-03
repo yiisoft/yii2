@@ -371,6 +371,19 @@ public function scenarios()
 $model->secret = $secret;
 ```
 
+同じ事が `rules()` メソッドの中でも出来ます。
+
+```php
+public function rules()
+{
+    return [
+        [['username', 'password', '!secret'], 'required', 'on' => 'login']
+    ];
+}
+```
+
+この場合、`username`、`password` そして `secret` の属性が必須項目とされますが、`secret` は明示的に代入される必要があります。
+
 
 ## データのエクスポート <span id="data-exporting"></span>
 

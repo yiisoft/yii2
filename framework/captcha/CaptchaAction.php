@@ -275,7 +275,7 @@ class CaptchaAction extends Action
             (int) ($this->backColor % 0x10000 / 0x100),
             $this->backColor % 0x100
         );
-        imagefilledrectangle($image, 0, 0, $this->width, $this->height, $backColor);
+        imagefilledrectangle($image, 0, 0, $this->width - 1, $this->height - 1, $backColor);
         imagecolordeallocate($image, $backColor);
 
         if ($this->transparent) {

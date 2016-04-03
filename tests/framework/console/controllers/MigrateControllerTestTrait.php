@@ -117,7 +117,10 @@ CODE;
     protected function parseNameClassMigration($class)
     {
         $files = FileHelper::findFiles($this->migrationPath);
-        $file = preg_replace('/class (m\d+_\d+_.*) extends Migration/', "class $class extends Migration", file_get_contents($files[0]));
+        $file = file_get_contents($files[0]);
+        if (preg_match('/class (m\d+_\d+_.*) extends Migration/', $file, $match)) {
+            $file = str_replace($match[1], $class, $file);
+        }
         $this->tearDownMigrationPath();
         return $file;
     }
@@ -212,7 +215,7 @@ CODE;
         $class = 'm' . gmdate('ymd_His') . '_' . $migrationName;
         $this->runMigrateControllerAction('create', [
             $migrationName,
-            'fields' => 'title:string(10):notNull:unique:defaultValue("test"),body:text:notNull'
+            'fields' => 'title:string(10):notNull:unique:defaultValue("test"),body:text:notNull,price:money(11,2):notNull'
         ]);
         $file = $this->parseNameClassMigration($class);
 
@@ -221,17 +224,27 @@ CODE;
 
 use yii\db\Migration;
 
+/**
+ * Handles the creation for table `test`.
+ */
 class {$class} extends Migration
 {
+    /**
+     * @inheritdoc
+     */
     public function up()
     {
         \$this->createTable('test', [
             'id' => \$this->primaryKey(),
             'title' => \$this->string(10)->notNull()->unique()->defaultValue("test"),
-            'body' => \$this->text()->notNull()
+            'body' => \$this->text()->notNull(),
+            'price' => \$this->money(11,2)->notNull(),
         ]);
     }
 
+    /**
+     * @inheritdoc
+     */
     public function down()
     {
         \$this->dropTable('test');
@@ -244,7 +257,7 @@ CODE;
         $class = 'm' . gmdate('ymd_His') . '_' . $migrationName;
         $this->runMigrateControllerAction('create', [
             $migrationName,
-            'fields' => 'title:primaryKey,body:text:notNull',
+            'fields' => 'title:primaryKey,body:text:notNull,price:money(11,2)',
         ]);
         $file = $this->parseNameClassMigration($class);
         $code = <<<CODE
@@ -252,16 +265,26 @@ CODE;
 
 use yii\db\Migration;
 
+/**
+ * Handles the creation for table `test`.
+ */
 class {$class} extends Migration
 {
+    /**
+     * @inheritdoc
+     */
     public function up()
     {
         \$this->createTable('test', [
             'title' => \$this->primaryKey(),
-            'body' => \$this->text()->notNull()
+            'body' => \$this->text()->notNull(),
+            'price' => \$this->money(11,2),
         ]);
     }
 
+    /**
+     * @inheritdoc
+     */
     public function down()
     {
         \$this->dropTable('test');
@@ -281,15 +304,65 @@ CODE;
 
 use yii\db\Migration;
 
+/**
+ * Handles the creation for table `test`.
+ */
 class {$class} extends Migration
 {
+    /**
+     * @inheritdoc
+     */
     public function up()
     {
         \$this->createTable('test', [
-            'id' => \$this->primaryKey()
+            'id' => \$this->primaryKey(),
         ]);
     }
 
+    /**
+     * @inheritdoc
+     */
+    public function down()
+    {
+        \$this->dropTable('test');
+    }
+}
+
+CODE;
+        $this->assertEqualsWithoutLE($code, $file);
+
+        $class = 'm' . gmdate('ymd_His') . '_' . $migrationName;
+        $this->runMigrateControllerAction('create', [
+            $migrationName,
+            'fields' => 'id:primaryKey,address:string,address2:string,email:string',
+        ]);
+        $file = $this->parseNameClassMigration($class);
+        $code = <<<CODE
+<?php
+
+use yii\db\Migration;
+
+/**
+ * Handles the creation for table `test`.
+ */
+class {$class} extends Migration
+{
+    /**
+     * @inheritdoc
+     */
+    public function up()
+    {
+        \$this->createTable('test', [
+            'id' => \$this->primaryKey(),
+            'address' => \$this->string(),
+            'address2' => \$this->string(),
+            'email' => \$this->string(),
+        ]);
+    }
+
+    /**
+     * @inheritdoc
+     */
     public function down()
     {
         \$this->dropTable('test');
@@ -314,47 +387,26 @@ CODE;
 
 use yii\db\Migration;
 
+/**
+ * Handles the dropping for table `test`.
+ */
 class {$class} extends Migration
 {
+    /**
+     * @inheritdoc
+     */
     public function up()
     {
         \$this->dropTable('test');
     }
 
-    public function down()
-    {
-        \$this->createTable('test', [
-            'id' => \$this->primaryKey()
-        ]);
-    }
-}
-
-CODE;
-        $this->assertEqualsWithoutLE($code, $file);
-
-        $class = 'm' . gmdate('ymd_His') . '_' . $migrationName;
-        $this->runMigrateControllerAction('create', [
-            $migrationName,
-            'fields' => 'body:text:notNull'
-        ]);
-        $file = $this->parseNameClassMigration($class);
-        $code = <<<CODE
-<?php
-
-use yii\db\Migration;
-
-class {$class} extends Migration
-{
-    public function up()
-    {
-        \$this->dropTable('test');
-    }
-
+    /**
+     * @inheritdoc
+     */
     public function down()
     {
         \$this->createTable('test', [
             'id' => \$this->primaryKey(),
-            'body' => \$this->text()->notNull()
         ]);
     }
 }
@@ -365,7 +417,7 @@ CODE;
         $class = 'm' . gmdate('ymd_His') . '_' . $migrationName;
         $this->runMigrateControllerAction('create', [
             $migrationName,
-            'fields' => 'title:primaryKey,body:text:notNull'
+            'fields' => 'body:text:notNull,price:money(11,2)'
         ]);
         $file = $this->parseNameClassMigration($class);
         $code = <<<CODE
@@ -373,18 +425,28 @@ CODE;
 
 use yii\db\Migration;
 
+/**
+ * Handles the dropping for table `test`.
+ */
 class {$class} extends Migration
 {
+    /**
+     * @inheritdoc
+     */
     public function up()
     {
         \$this->dropTable('test');
     }
 
+    /**
+     * @inheritdoc
+     */
     public function down()
     {
         \$this->createTable('test', [
-            'title' => \$this->primaryKey(),
-            'body' => \$this->text()->notNull()
+            'id' => \$this->primaryKey(),
+            'body' => \$this->text()->notNull(),
+            'price' => \$this->money(11,2),
         ]);
     }
 }
@@ -399,7 +461,7 @@ CODE;
         $class = 'm' . gmdate('ymd_His') . '_' . $migrationName;
         $this->runMigrateControllerAction('create', [
             $migrationName,
-            'fields' => 'title:string(10):notNull,body:text:notNull,created_at:dateTime'
+            'fields' => 'title:string(10):notNull,body:text:notNull,price:money(11,2):notNull,created_at:dateTime'
         ]);
         $file = $this->parseNameClassMigration($class);
 
@@ -408,19 +470,31 @@ CODE;
 
 use yii\db\Migration;
 
+/**
+ * Handles adding the columns `title`, `body`, `price`, `created_at`
+ * for table `test`.
+ */
 class {$class} extends Migration
 {
+    /**
+     * @inheritdoc
+     */
     public function up()
     {
         \$this->addColumn('test', 'title', \$this->string(10)->notNull());
         \$this->addColumn('test', 'body', \$this->text()->notNull());
+        \$this->addColumn('test', 'price', \$this->money(11,2)->notNull());
         \$this->addColumn('test', 'created_at', \$this->dateTime());
     }
 
+    /**
+     * @inheritdoc
+     */
     public function down()
     {
         \$this->dropColumn('test', 'title');
         \$this->dropColumn('test', 'body');
+        \$this->dropColumn('test', 'price');
         \$this->dropColumn('test', 'created_at');
     }
 }
@@ -435,7 +509,7 @@ CODE;
         $class = 'm' . gmdate('ymd_His') . '_' . $migrationName;
         $this->runMigrateControllerAction('create', [
             $migrationName,
-            'fields' => 'title:string(10):notNull,body:text:notNull,created_at:dateTime'
+            'fields' => 'title:string(10):notNull,body:text:notNull,price:money(11,2):notNull,created_at:dateTime'
         ]);
         $file = $this->parseNameClassMigration($class);
 
@@ -444,51 +518,31 @@ CODE;
 
 use yii\db\Migration;
 
+/**
+ * Handles dropping columns `title`, `body`, `price`, `created_at`
+ * for table `test`.
+ */
 class {$class} extends Migration
 {
+    /**
+     * @inheritdoc
+     */
     public function up()
     {
         \$this->dropColumn('test', 'title');
         \$this->dropColumn('test', 'body');
+        \$this->dropColumn('test', 'price');
         \$this->dropColumn('test', 'created_at');
     }
 
+    /**
+     * @inheritdoc
+     */
     public function down()
     {
         \$this->addColumn('test', 'title', \$this->string(10)->notNull());
         \$this->addColumn('test', 'body', \$this->text()->notNull());
-        \$this->addColumn('test', 'created_at', \$this->dateTime());
-    }
-}
-
-CODE;
-        $this->assertEqualsWithoutLE($code, $file);
-
-        $class = 'm' . gmdate('ymd_His') . '_' . $migrationName;
-        $this->runMigrateControllerAction('create', [
-            $migrationName,
-            'fields' => 'title:string(10):notNull,body:text:notNull,created_at:dateTime'
-        ]);
-        $file = $this->parseNameClassMigration($class);
-
-        $code = <<<CODE
-<?php
-
-use yii\db\Migration;
-
-class {$class} extends Migration
-{
-    public function up()
-    {
-        \$this->dropColumn('test', 'title');
-        \$this->dropColumn('test', 'body');
-        \$this->dropColumn('test', 'created_at');
-    }
-
-    public function down()
-    {
-        \$this->addColumn('test', 'title', \$this->string(10)->notNull());
-        \$this->addColumn('test', 'body', \$this->text()->notNull());
+        \$this->addColumn('test', 'price', \$this->money(11,2)->notNull());
         \$this->addColumn('test', 'created_at', \$this->dateTime());
     }
 }
@@ -511,23 +565,57 @@ CODE;
 
 use yii\db\Migration;
 
+/**
+ * Handles the creation of table `post_tag` which is a junction between
+ * table `post` and table `tag`.
+ */
 class {$class} extends Migration
 {
+    /**
+     * @inheritdoc
+     */
     public function up()
     {
         \$this->createTable('post_tag', [
             'post_id' => \$this->integer(),
             'tag_id' => \$this->integer(),
-            'PRIMARY KEY(post_id, tag_id)'
+            'PRIMARY KEY(post_id, tag_id)',
         ]);
 
-        \$this->createIndex('idx-post_tag-post_id', 'post_tag', 'post_id');
-        \$this->createIndex('idx-post_tag-tag_id', 'post_tag', 'tag_id');
+        \$this->createIndex(
+            'idx-post_tag-post_id',
+            'post_tag',
+            'post_id'
+        );
 
-        \$this->addForeignKey('fk-post_tag-post_id', 'post_tag', 'post_id', 'post', 'id', 'CASCADE');
-        \$this->addForeignKey('fk-post_tag-tag_id', 'post_tag', 'tag_id', 'tag', 'id', 'CASCADE');
+        \$this->createIndex(
+            'idx-post_tag-tag_id',
+            'post_tag',
+            'tag_id'
+        );
+
+        \$this->addForeignKey(
+            'fk-post_tag-post_id',
+            'post_tag',
+            'post_id',
+            'post',
+            'id',
+            'CASCADE'
+        );
+
+        \$this->addForeignKey(
+            'fk-post_tag-tag_id',
+            'post_tag',
+            'tag_id',
+            'tag',
+            'id',
+            'CASCADE'
+        );
     }
 
+    /**
+     * @inheritdoc
+     */
     public function down()
     {
         \$this->dropTable('post_tag');

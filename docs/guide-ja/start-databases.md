@@ -32,16 +32,16 @@ CREATE TABLE `country` (
   `population` INT(11) NOT NULL DEFAULT '0'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-INSERT INTO `country` VALUES ('AU','Australia',18886000);
-INSERT INTO `country` VALUES ('BR','Brazil',170115000);
-INSERT INTO `country` VALUES ('CA','Canada',1147000);
-INSERT INTO `country` VALUES ('CN','China',1277558000);
-INSERT INTO `country` VALUES ('DE','Germany',82164700);
-INSERT INTO `country` VALUES ('FR','France',59225700);
-INSERT INTO `country` VALUES ('GB','United Kingdom',59623400);
-INSERT INTO `country` VALUES ('IN','India',1013662000);
-INSERT INTO `country` VALUES ('RU','Russia',146934000);
-INSERT INTO `country` VALUES ('US','United States',278357000);
+INSERT INTO `country` VALUES ('AU','Australia',24016400);
+INSERT INTO `country` VALUES ('BR','Brazil',205722000);
+INSERT INTO `country` VALUES ('CA','Canada',35985751);
+INSERT INTO `country` VALUES ('CN','China',1375210000);
+INSERT INTO `country` VALUES ('DE','Germany',81459000);
+INSERT INTO `country` VALUES ('FR','France',64513242);
+INSERT INTO `country` VALUES ('GB','United Kingdom',65097000);
+INSERT INTO `country` VALUES ('IN','India',1285400000);
+INSERT INTO `country` VALUES ('RU','Russia',146519759);
+INSERT INTO `country` VALUES ('US','United States',322976000);
 ```
 
 この時点で、あなたは `yii2basic` という名前のデータベースを持ち、その中に三つのカラムを持つ `country` というテーブルがあり、`country` テーブルは 10 行のデータを持っている、ということになります。
@@ -221,7 +221,7 @@ use yii\widgets\LinkPager;
 上記のコード全てがどのように動作するかを見るために、ブラウザで下記の URL をアクセスします。
 
 ```
-http://hostname/index.php?r=country/index
+http://hostname/index.php?r=country%2Findex
 ```
 
 ![国リスト](images/start-country-list.png)
@@ -232,7 +232,7 @@ http://hostname/index.php?r=country/index
 注意深く観察すると、ブラウザの URL も次のように変ったことに気付くでしょう。
 
 ```
-http://hostname/index.php?r=country/index&page=2
+http://hostname/index.php?r=country%2Findex&page=2
 ```
 
 舞台裏では、[[yii\data\Pagination|Pagination]] が、データセットをページ付けするのに必要な全ての機能を提供しています。

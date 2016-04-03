@@ -381,6 +381,14 @@ class BaseHtml
      * @param array|string|null $url the URL for the hyperlink tag. This parameter will be processed by [[Url::to()]]
      * and will be used for the "href" attribute of the tag. If this parameter is null, the "href" attribute
      * will not be generated.
+     *
+     * If you want to use an absolute url you can call [[Url::to()]] yourself, before passing the URL to this method,
+     * like this:
+     *
+     * ```php
+     * Html::a('link text', Url::to($url, true))
+     * ```
+     *
      * @param array $options the tag options in terms of name-value pairs. These will be rendered as
      * the attributes of the resulting tag. The values will be HTML-encoded using [[encode()]].
      * If a value is null, the corresponding attribute will not be rendered.
@@ -906,8 +914,8 @@ class BaseHtml
         $index = 0;
         foreach ($items as $value => $label) {
             $checked = $selection !== null &&
-                (!is_array($selection) && !strcmp($value, $selection)
-                    || is_array($selection) && in_array($value, $selection));
+                (!ArrayHelper::isTraversable($selection) && !strcmp($value, $selection)
+                    || ArrayHelper::isTraversable($selection) && ArrayHelper::isIn($value, $selection));
             if ($formatter !== null) {
                 $lines[] = call_user_func($formatter, $index, $label, $name, $checked, $value);
             } else {
@@ -984,8 +992,8 @@ class BaseHtml
         $index = 0;
         foreach ($items as $value => $label) {
             $checked = $selection !== null &&
-                (!is_array($selection) && !strcmp($value, $selection)
-                    || is_array($selection) && in_array($value, $selection));
+                (!ArrayHelper::isTraversable($selection) && !strcmp($value, $selection)
+                    || ArrayHelper::isTraversable($selection) && ArrayHelper::isIn($value, $selection));
             if ($formatter !== null) {
                 $lines[] = call_user_func($formatter, $index, $label, $name, $checked, $value);
             } else {
@@ -1737,8 +1745,8 @@ class BaseHtml
                 $attrs = isset($options[$key]) ? $options[$key] : [];
                 $attrs['value'] = (string) $key;
                 $attrs['selected'] = $selection !== null &&
-                        (!is_array($selection) && !strcmp($key, $selection)
-                        || is_array($selection) && in_array($key, $selection));
+                        (!ArrayHelper::isTraversable($selection) && !strcmp($key, $selection)
+                        || ArrayHelper::isTraversable($selection) && ArrayHelper::isIn($key, $selection));
                 $text = $encode ? static::encode($value) : $value;
                 if ($encodeSpaces) {
                     $text = str_replace(' ', '&nbsp;', $text);

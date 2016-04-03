@@ -754,7 +754,7 @@ class Model extends Component implements IteratorAggregate, ArrayAccess, Arrayab
         }
         $attributes = [];
         foreach ($scenarios[$scenario] as $attribute) {
-            if ($attribute[0] !== '!') {
+            if ($attribute[0] !== '!' && !in_array('!' . $attribute, $scenarios[$scenario])) {
                 $attributes[] = $attribute;
             }
         }

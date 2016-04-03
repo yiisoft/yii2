@@ -34,16 +34,16 @@ CREATE TABLE `country` (
   `population` int(11) NOT NULL DEFAULT '0'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-INSERT INTO `Country` VALUES ('AU','Australia',18886000);
-INSERT INTO `Country` VALUES ('BR','Brazil',170115000);
-INSERT INTO `Country` VALUES ('CA','Canada',1147000);
-INSERT INTO `Country` VALUES ('CN','China',1277558000);
-INSERT INTO `Country` VALUES ('DE','Germany',82164700);
-INSERT INTO `Country` VALUES ('FR','France',59225700);
-INSERT INTO `Country` VALUES ('GB','United Kingdom',59623400);
-INSERT INTO `Country` VALUES ('IN','India',1013662000);
-INSERT INTO `Country` VALUES ('RU','Russia',146934000);
-INSERT INTO `Country` VALUES ('US','United States',278357000);
+INSERT INTO `country` VALUES ('AU','Australia',24016400);
+INSERT INTO `country` VALUES ('BR','Brazil',205722000);
+INSERT INTO `country` VALUES ('CA','Canada',35985751);
+INSERT INTO `country` VALUES ('CN','China',1375210000);
+INSERT INTO `country` VALUES ('DE','Germany',81459000);
+INSERT INTO `country` VALUES ('FR','France',64513242);
+INSERT INTO `country` VALUES ('GB','United Kingdom',65097000);
+INSERT INTO `country` VALUES ('IN','India',1285400000);
+INSERT INTO `country` VALUES ('RU','Russia',146519759);
+INSERT INTO `country` VALUES ('US','United States',322976000);
 ```
 
 Al final, tendrás una base de datos llamada `yii2basic`, y dentro de esta, una tabla llamada `country` con diez

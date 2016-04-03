@@ -212,4 +212,14 @@ class I18NTest extends TestCase
         $this->assertEquals('Hallo Welt!', $this->i18n->translate('test', 'Hello world!', [], 'de-DE'));
         Event::off(PhpMessageSource::className(), PhpMessageSource::EVENT_MISSING_TRANSLATION);
     }
+
+    /**
+     * Formatting a message that contains params but they are not provided.
+     * https://github.com/yiisoft/yii2/issues/10884
+     */
+    public function testFormatMessageWithNoParam()
+    {
+        $message = 'Incorrect password (length must be from {min, number} to {max, number} symbols).';
+        $this->assertEquals($message, $this->i18n->format($message, ['attribute' => 'password'], 'en'));
+    }
 }

@@ -80,7 +80,7 @@ $sort->route = 'article/index';
 // 氏名による並べ替えと年齢による並べ替えを実行するリンクを表示
 echo $sort->link('name') . ' | ' . $sort->link('age');
 
-// /index.php?r=article/index&sort=age を表示
+// /index.php?r=article%2Findex&sort=age を表示
 echo $sort->createUrl('age');
 ```
 

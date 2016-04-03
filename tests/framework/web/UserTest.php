@@ -17,6 +17,7 @@ namespace yiiunit\framework\web;
 use yii\base\NotSupportedException;
 use yii\base\Component;
 use yii\rbac\PhpManager;
+use yii\web\ForbiddenHttpException;
 use yii\web\IdentityInterface;
 use yii\web\UrlManager;
 use yii\web\UrlRule;
@@ -92,6 +93,141 @@ class UserTest extends TestCase
         $this->assertTrue(Yii::$app->user->isGuest);
         $this->assertFalse(Yii::$app->user->can('doSomething'));
 
+    }
+
+    /**
+     * Resets request, response and $_SERVER.
+     */
+    protected function reset()
+    {
+        static $server;
+
+        if (!isset($server)) {
+            $server = $_SERVER;
+        }
+
+        $_SERVER = $server;
+        Yii::$app->set('response',['class' => 'yii\web\Response']);
+        Yii::$app->set('request',[
+            'class' => 'yii\web\Request',
+            'scriptFile' => __DIR__ .'/index.php',
+            'scriptUrl' => '/index.php',
+            'url' => ''
+        ]);
+        Yii::$app->user->setReturnUrl(null);
+    }
+    public function testLoginRequired()
+    {
+        $appConfig = [
+            'components' => [
+                'user' => [
+                    'identityClass' => UserIdentity::className(),
+                ],
+                'authManager' => [
+                    'class' => PhpManager::className(),
+                    'itemFile' => '@runtime/user_test_rbac_items.php',
+                    'assignmentFile' => '@runtime/user_test_rbac_assignments.php',
+                    'ruleFile' => '@runtime/user_test_rbac_rules.php',
+                ]
+            ],
+        ];
+        $this->mockWebApplication($appConfig);
+
+        
+        $user = Yii::$app->user;
+
+        $this->reset();
+        Yii::$app->request->setUrl('normal');
+        $user->loginRequired();
+        $this->assertEquals('normal', $user->getReturnUrl());
+        $this->assertTrue(Yii::$app->response->getIsRedirection());
+
+
+        $this->reset();
+        Yii::$app->request->setUrl('ajax');
+        $_SERVER['HTTP_X_REQUESTED_WITH'] = 'XMLHttpRequest';
+
+        $user->loginRequired();
+        $this->assertEquals(Yii::$app->getHomeUrl(), $user->getReturnUrl());
+        // AJAX requests don't update returnUrl but they do cause redirection.
+        $this->assertTrue(Yii::$app->response->getIsRedirection());
+
+        $user->loginRequired(false);
+        $this->assertEquals('ajax', $user->getReturnUrl());
+        $this->assertTrue(Yii::$app->response->getIsRedirection());
+
+        $this->reset();
+        Yii::$app->request->setUrl('json-only');
+        $_SERVER['HTTP_ACCEPT'] = 'Accept:  text/json, q=0.1';
+        $user->loginRequired(true, false);
+        $this->assertEquals('json-only', $user->getReturnUrl());
+        $this->assertTrue(Yii::$app->response->getIsRedirection());
+
+        $this->reset();
+        Yii::$app->request->setUrl('json-only');
+        $_SERVER['HTTP_ACCEPT'] = 'text/json,q=0.1';
+        $user->loginRequired(true, false);
+        $this->assertEquals('json-only', $user->getReturnUrl());
+        $this->assertTrue(Yii::$app->response->getIsRedirection());
+
+        $this->reset();
+        Yii::$app->request->setUrl('accept-all');
+        $_SERVER['HTTP_ACCEPT'] = '*;q=0.1';
+        $user->loginRequired();
+        $this->assertEquals('accept-all', $user->getReturnUrl());
+        $this->assertTrue(Yii::$app->response->getIsRedirection());
+
+        $this->reset();
+        Yii::$app->request->setUrl('accept-html-json');
+        $_SERVER['HTTP_ACCEPT'] = 'text/json; q=1, text/html; q=0.1';
+        $user->loginRequired();
+        $this->assertEquals('accept-html-json', $user->getReturnUrl());
+        $this->assertTrue(Yii::$app->response->getIsRedirection());
+
+        $this->reset();
+        Yii::$app->request->setUrl('accept-html-json');
+        $_SERVER['HTTP_ACCEPT'] = 'text/json;q=1,application/xhtml+xml;q=0.1';
+        $user->loginRequired();
+        $this->assertEquals('accept-html-json', $user->getReturnUrl());
+        $this->assertTrue(Yii::$app->response->getIsRedirection());
+
+        // Confirm that returnUrl is not set.
+        $this->reset();
+        Yii::$app->request->setUrl('json-only');
+        $_SERVER['HTTP_ACCEPT'] = 'text/json;q=0.1';
+        try {
+            $user->loginRequired();
+        } catch (ForbiddenHttpException $e) {}
+        $this->assertNotEquals('json-only', $user->getReturnUrl());
+
+
+        $this->reset();
+        $_SERVER['HTTP_ACCEPT'] = 'text/json;q=0.1';
+        $this->setExpectedException('yii\\web\\ForbiddenHttpException');
+        $user->loginRequired();
+    }
+
+    public function testLoginRequiredException1()
+    {
+        $appConfig = [
+            'components' => [
+                'user' => [
+                    'identityClass' => UserIdentity::className(),
+                ],
+                'authManager' => [
+                    'class' => PhpManager::className(),
+                    'itemFile' => '@runtime/user_test_rbac_items.php',
+                    'assignmentFile' => '@runtime/user_test_rbac_assignments.php',
+                    'ruleFile' => '@runtime/user_test_rbac_rules.php',
+                ]
+            ],
+        ];
+
+        $this->mockWebApplication($appConfig);
+        $this->reset();
+        $_SERVER['HTTP_ACCEPT'] = 'text/json,q=0.1';
+        $this->setExpectedException('yii\\web\\ForbiddenHttpException');
+        Yii::$app->user->loginRequired();
     }
 
 }

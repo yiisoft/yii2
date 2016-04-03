@@ -176,6 +176,8 @@ class InflectorTest extends TestCase
             // Russian
             'недвижимость' => 'nedvizimost',
             'Контакты' => 'kontakty',
+            // Chinese
+            '美国' => 'mei-guo',
         ];
 
         foreach ($data as $source => $expected) {
@@ -217,6 +219,8 @@ class InflectorTest extends TestCase
 
             // Spanish
             '¿Español?' => '¿Español?',
+            // Chinese
+            '美国' => 'měi guó',
         ];
 
         foreach ($data as $source => $expected) {
@@ -257,7 +261,9 @@ class InflectorTest extends TestCase
             'Српска: ђ, њ, џ!' => 'Srpska: d, n, d!',
 
             // Spanish
-            '¿Español?' => '¿Espanol?'
+            '¿Español?' => '¿Espanol?',
+            // Chinese
+            '美国' => 'mei guo',
         ];
 
         foreach ($data as $source => $expected) {
@@ -298,7 +304,9 @@ class InflectorTest extends TestCase
             'Српска: ђ, њ, џ!' => 'Srpska: d, n, d!',
 
             // Spanish
-            '¿Español?' => 'Espanol?'
+            '¿Español?' => 'Espanol?',
+            // Chinese
+            '美国' => 'mei guo',
         ];
 
         foreach ($data as $source => $expected) {

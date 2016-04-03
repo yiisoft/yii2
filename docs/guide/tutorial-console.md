@@ -2,7 +2,7 @@ Console applications
 ====================
 
 Besides the rich features for building web applications, Yii also has full featured support for console applications
-which are mainly used to create background and maintainance tasks that need to be performed for a website.
+which are mainly used to create background and maintenance tasks that need to be performed for a website.
 
 The structure of console applications is very similar to a Yii web application. It consists of one
 or more [[yii\console\Controller]] classes, which are often referred to as "commands" in the console environment.
@@ -128,6 +128,45 @@ This will assign `OptionValue` to the `OptionName` property of the controller cl
 
 If the default value of an option is of an array type and you set this option while running the command,
 the option value will be converted into an array by splitting the input string on any commas.
+
+### Options Aliases
+
+Since version 2.0.8 console command provides [[yii\console\Controller::optionAliases()]] method to add
+aliases for options.
+
+To define an alias, override [[yii\console\Controller::optionAliases()]] in your controller, for example:
+
+```php
+namespace app\commands;
+
+use yii\console\Controller;
+
+class HelloController extends Controller
+{
+    public $message;
+    
+    public function options()
+    {
+        return ['message'];
+    }
+    
+    public function optionAliases()
+    {
+        return ['m' => 'message'];
+    }
+    
+    public function actionIndex()
+    {
+        echo $message . "\n";
+    }
+}
+```
+
+Now, you can use the following syntax to run the command:
+
+```
+./yii hello -m=hola
+```
 
 ### Arguments
 

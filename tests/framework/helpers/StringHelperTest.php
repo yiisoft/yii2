@@ -122,6 +122,7 @@ class StringHelperTest extends TestCase
         // With Html
         $this->assertEquals('<span>This is a test</span>...', StringHelper::truncateWords('<span>This is a test sentance</span>', 4, '...', true));
         $this->assertEquals('<span><img src="image.png" />This is a test</span>...', StringHelper::truncateWords('<span><img src="image.png" />This is a test sentance</span>', 4, '...', true));
+        $this->assertEquals('<p> раз два три четыре пять </p> <p> шесть</p>...', StringHelper::truncateWords('<p> раз два три четыре пять </p> <p> шесть семь восемь девять десять</p>', 6, '...', true));
     }
 
     /**
@@ -239,5 +240,14 @@ class StringHelperTest extends TestCase
         $this->assertEquals(['Disable', '  trim  ', 'here but ignore empty'], StringHelper::explode("Disable,  trim  ,,,here but ignore empty", ',', false, true));
         $this->assertEquals(['It/', ' is?', ' a', ' test with rtrim'], StringHelper::explode("It/, is?, a , test with rtrim", ',', 'rtrim'));
         $this->assertEquals(['It', ' is', ' a ', ' test with closure'], StringHelper::explode("It/, is?, a , test with closure", ',', function ($value) { return trim($value, '/?'); }));
+    }
+
+    public function testWordCount()
+    {
+        $this->assertEquals(3, StringHelper::countWords('china 中国 ㄍㄐㄋㄎㄌ'));
+        $this->assertEquals(4, StringHelper::countWords('и много тут слов?'));
+        $this->assertEquals(4, StringHelper::countWords("и\rмного\r\nтут\nслов?"));
+        $this->assertEquals(1, StringHelper::countWords('крем-брюле'));
+        $this->assertEquals(1, StringHelper::countWords(' слово '));
     }
 }
