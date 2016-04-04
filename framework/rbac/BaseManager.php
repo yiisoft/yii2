@@ -115,7 +115,7 @@ abstract class BaseManager extends Component implements ManagerInterface
     public function add($object)
     {
         if ($object instanceof Item) {
-            if($object->ruleName && $this->getRule($object->ruleName) === null){
+            if ($object->ruleName && $this->getRule($object->ruleName) === null) {
                 $rule = \Yii::createObject($object->ruleName);
                 $rule->name = $object->ruleName;
                 $this->addRule($rule);
@@ -148,7 +148,7 @@ abstract class BaseManager extends Component implements ManagerInterface
     public function update($name, $object)
     {
         if ($object instanceof Item) {
-            if($object->ruleName && $this->getRule($object->ruleName) === null){
+            if ($object->ruleName && $this->getRule($object->ruleName) === null) {
                 $rule = \Yii::createObject($object->ruleName);
                 $rule->name = $object->ruleName;
                 $this->addRule($rule);
