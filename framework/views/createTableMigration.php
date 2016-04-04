@@ -6,6 +6,7 @@
 /* @var $className string the new migration class name */
 /* @var $table string the name table */
 /* @var $fields array the fields */
+/* @var $foreignKeys array the foreign keys */
 
 echo "<?php\n";
 ?>
@@ -14,6 +15,9 @@ use yii\db\Migration;
 
 /**
  * Handles the creation for table `<?= $table ?>`.
+<?= $this->render('_foreignTables', [
+    'foreignKeys' => $foreignKeys
+]) ?>
  */
 class <?= $className ?> extends Migration
 {
@@ -22,11 +26,12 @@ class <?= $className ?> extends Migration
      */
     public function up()
     {
-        $this->createTable('<?= $table ?>', [
-<?php foreach ($fields as $field): ?>
-            <?= "'{$field['property']}' => \$this->{$field['decorators']},\n" ?>
-<?php endforeach; ?>
-        ]);
+<?= $this->render('_createTable', [
+    'table' => $table,
+    'fields' => $fields,
+    'foreignKeys' => $foreignKeys,
+])
+?>
     }
 
     /**
@@ -34,6 +39,10 @@ class <?= $className ?> extends Migration
      */
     public function down()
     {
-        $this->dropTable('<?= $table ?>');
+<?= $this->render('_dropTable', [
+    'table' => $table,
+    'foreignKeys' => $foreignKeys,
+])
+?>
     }
 }

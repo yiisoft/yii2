@@ -62,6 +62,11 @@ abstract class BaseMigrateController extends Controller
      */
     public $fields = [];
 
+    /**
+     * @var array columns which have a foreign key and their related table.
+     * @since 2.0.8
+     */
+    protected $foreignKeys = [];
 
     /**
      * @inheritdoc
@@ -498,49 +503,60 @@ abstract class BaseMigrateController extends Controller
 
         $className = 'm' . gmdate('ymd_His') . '_' . $name;
         $file = $this->migrationPath . DIRECTORY_SEPARATOR . $className . '.php';
-
         if ($this->confirm("Create new migration '$file'?")) {
+            $table = null;
             if (preg_match('/^create_junction_(.+)_and_(.+)$/', $name, $matches)) {
+                $this->templateFile = $this->generatorTemplateFiles['create_junction'];
                 $firstTable = mb_strtolower($matches[1], Yii::$app->charset);
                 $secondTable = mb_strtolower($matches[2], Yii::$app->charset);
 
-                $content = $this->renderFile(Yii::getAlias($this->generatorTemplateFiles['create_junction']), [
-                    'className' => $className,
-                    'table' => $firstTable . '_' . $secondTable,
-                    'field_first' => $firstTable,
-                    'field_second' => $secondTable,
-                ]);
+                $this->fields = array_merge(
+                    [
+                        [
+                            'property' => $firstTable . '_id',
+                            'decorators' => 'integer()',
+                        ],
+                        [
+                            'property' => $secondTable . '_id',
+                            'decorators' => 'integer()',
+                        ],
+                    ],
+                    $this->fields,
+                    [
+                        [
+                            'property' => 'PRIMARY KEY(' .
+                                $firstTable . '_id, ' .
+                                $secondTable . '_id)',
+                        ],
+                    ]
+                );
+
+                $this->foreignKeys[$firstTable . '_id'] = $firstTable;
+                $this->foreignKeys[$secondTable . '_id'] = $secondTable;
+                $table = $firstTable . '_' . $secondTable;
             } elseif (preg_match('/^add_(.+)_to_(.+)$/', $name, $matches)) {
-                $content = $this->renderFile(Yii::getAlias($this->generatorTemplateFiles['add_column']), [
-                    'className' => $className,
-                    'table' => mb_strtolower($matches[2], Yii::$app->charset),
-                    'fields' => $this->fields
-                ]);
+                $this->templateFile = $this->generatorTemplateFiles['add_column'];
+                $table = mb_strtolower($matches[2], Yii::$app->charset);
             } elseif (preg_match('/^drop_(.+)_from_(.+)$/', $name, $matches)) {
-                $content = $this->renderFile(Yii::getAlias($this->generatorTemplateFiles['drop_column']), [
-                    'className' => $className,
-                    'table' => mb_strtolower($matches[2], Yii::$app->charset),
-                    'fields' => $this->fields
-                ]);
+                $this->templateFile = $this->generatorTemplateFiles['drop_column'];
+                $table = mb_strtolower($matches[2], Yii::$app->charset);
             } elseif (preg_match('/^create_(.+)$/', $name, $matches)) {
                 $this->addDefaultPrimaryKey();
-                $content = $this->renderFile(Yii::getAlias($this->generatorTemplateFiles['create_table']), [
-                    'className' => $className,
-                    'table' => mb_strtolower($matches[1], Yii::$app->charset),
-                    'fields' => $this->fields
-                ]);
+                $this->templateFile = $this->generatorTemplateFiles['create_table'];
+                $table = mb_strtolower($matches[1], Yii::$app->charset);
             } elseif (preg_match('/^drop_(.+)$/', $name, $matches)) {
                 $this->addDefaultPrimaryKey();
-                $content = $this->renderFile(Yii::getAlias($this->generatorTemplateFiles['drop_table']), [
-                    'className' => $className,
-                    'table' => mb_strtolower($matches[1], Yii::$app->charset),
-                    'fields' => $this->fields
-                ]);
-            } else {
-                $content = $this->renderFile(Yii::getAlias($this->templateFile), ['className' => $className]);
+                $this->templateFile = $this->generatorTemplateFiles['drop_table'];
+                $table = mb_strtolower($matches[1], Yii::$app->charset);
             }
 
-            file_put_contents($file, $content);
+            file_put_contents($file, $this->renderFile($this->templateFile, [
+                'className' => $className,
+                'name' => $name,
+                'table' => $table,
+                'fields' => $this->fields,
+                'foreignKeys' => $this->foreignKeys,
+            ]));
             $this->stdout("New migration created successfully.\n", Console::FG_GREEN);
         }
     }
@@ -708,12 +724,25 @@ abstract class BaseMigrateController extends Controller
             $chunks = preg_split('/\s?:\s?/', $field, null);
             $property = array_shift($chunks);
 
-            foreach ($chunks as &$chunk) {
+            foreach ($chunks as $i => &$chunk) {
+                if (strpos($chunk, 'foreignKey') === 0) {
+                    preg_match('/foreignKey\((\w*)\)/', $chunk, $matches);
+                    $this->foreignKeys[$property] = isset($matches[1])
+                        ? $matches[1]
+                        : preg_replace('/_id$/', '', $property);
+
+                    unset($chunks[$i]);
+                    continue;
+                }
+
                 if (!preg_match('/^(.+?)\(([^)]+)\)$/', $chunk)) {
                     $chunk .= '()';
                 }
             }
-            $this->fields[$index] = ['property' => $property, 'decorators' => implode('->', $chunks)];
+            $this->fields[$index] = [
+                'property' => $property,
+                'decorators' => implode('->', $chunks),
+            ];
         }
     }
 
