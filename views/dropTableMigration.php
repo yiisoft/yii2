@@ -14,6 +14,9 @@ use yii\db\Migration;
 
 /**
  * Handles the dropping for table `<?= $table ?>`.
+<?= $this->render('_foreignTables', [
+    'foreignKeys' => $foreignKeys
+]) ?>
  */
 class <?= $className ?> extends Migration
 {
@@ -22,7 +25,11 @@ class <?= $className ?> extends Migration
      */
     public function up()
     {
-        $this->dropTable('<?= $table ?>');
+<?= $this->render('_dropTable', [
+    'table' => $table,
+    'foreignKeys' => $foreignKeys,
+])
+?>
     }
 
     /**
@@ -30,10 +37,11 @@ class <?= $className ?> extends Migration
      */
     public function down()
     {
-        $this->createTable('<?= $table ?>', [
-<?php foreach ($fields as $field): ?>
-            <?= "'{$field['property']}' => \$this->{$field['decorators']},\n" ?>
-<?php endforeach; ?>
-        ]);
+<?= $this->render('_createTable', [
+    'table' => $table,
+    'fields' => $fields,
+    'foreignKeys' => $foreignKeys,
+])
+?>
     }
 }
