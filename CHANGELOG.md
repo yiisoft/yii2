@@ -48,6 +48,7 @@ Yii Framework 2 Change Log
 - Enh #11137: Added weak ETag support to `yii\filters\HttpCache`. It could be turned on via setting `$weakEtag` to `true` (particleflux)
 - Enh #11139: `yii\validators\EachValidator` injects specific attribute value in error message parameters (silverfire)
 - Enh #11187: migrate command now generates phpdoc for table migrations (Faryshta)
+- Enh #11254: Added ability to attach RBAC rule using class name (mdmunir)
 - Enh: Added `StringHelper::countWords()` that given a string returns number of words in it (samdark)
 - Chg: HTMLPurifier dependency updated to `~4.6` (samdark)
 - Chg #10726: Added `yii\rbac\ManagerInterface::canAddChild()` (dkhlystov, samdark)
