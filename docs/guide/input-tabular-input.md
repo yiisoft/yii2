@@ -105,8 +105,97 @@ In the view you can use javascript to add new input lines dynamically.
 
 ### Combining Update, Create and Delete on one page
 
-> Note: This section is under development.
->
-> It has no content yet.
+Code on controller
+```php
+public function actionCreate()
+{
+    $settings = $origins = Setting::findAll();
+    if (Yii::$app-request->getIsPost()) {
+        $valid = true;
+        $settings = Yii::$app->request->post('Setting', []);
+        foreach ($settings as $i => $setting) {
+            if (isset($origins[$i])) {
+                $settings[$i] = $origins[$i];
+                unset($origins[$i]);
+            } else {
+                $settings[$i] = new Setting();
+            }
+            $settings[$i]->attributes = $setting;
+            $valid = $settings[$i]->validate() && $valid;
+        }
+        if ($valid) {
+            // delete not listed origin
+            foreach ($origins as $setting) {
+                $setting->delete();
+            }
+            
+            foreach ($settings as $setting) {
+                $setting->save(false);
+            }
+            return $this->redirect('index');
+        }
+    }
+    return $this->render('create', ['settings' => $settings];
+}
+```
 
-TBD
+Code in view `create.php`
+```php
+<div class="sales-form">
+    <?php $form = ActiveForm::begin(); ?>
+    <?= Html::errorSummary($settings) ?>
+    <div class="form-group">
+        <?= Html::submitButton('Save', ['class' => 'btn btn-success']) ?>
+    </div>
+    <?php
+        $row_template = $this->render('_row', ['key' => '_key_', 'model' => new Setting(), 'form' => $form]);
+    ?>
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Value</th>
+                <th><a href="#" id="button-add"><span class="glyphicon glyphicon-plus"></span></a></th>
+            </tr>
+        </thead>
+        <tbody id="tabular">
+        <?php 
+            $i = -1;
+            foreach($settings as $i => $setting) {
+                echo $this->render('_row', ['key' => $i, 'model' => $setting, 'form' => $form]);
+            }
+            $i++;
+        ?>
+        </tbody>
+    <?php ActiveForm::end(); ?>
+</div>
+<?php
+
+$this->registerJs('var opts = ' . json_encode(['count' => $i, 'template' => $row_template]) . ';');
+$this->registerJs($this->render('_script.js');
+```
+
+View `_row.php`
+```php
+<tr data-key="<?= $key ?>">
+    <td><?= $form->field($model, "[$key]name")->label(false) ?></td>
+    <td><?= $form->field($model, "[$key]value")->label(false) ?></td>
+    <td><a href="#" class="button-del"><span class="glyphicon glyphicon-trush"></span></a></td>
+</tr>
+```
+
+Then view `_script.js`
+```javascript
+$('#button-add').click(function(){
+    var $row = $(opts.template.replace(/_key_/g, opts.count));
+    opts.count++;
+    $('#tabular').append($row);
+    return false;
+});
+
+$('#tabular').on('click', 'a.button-del', function(){
+    var $row = $(this).closest('tr[data-key]');
+    $row.remove();
+    return false;
+});
+```
