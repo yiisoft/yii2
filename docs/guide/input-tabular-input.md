@@ -105,7 +105,10 @@ In the view you can use javascript to add new input lines dynamically.
 
 ### Combining Update, Create and Delete on one page
 
-Code on controller
+To combine create, update, delete on one page, We can do the following step.
+* Create your controller action. You can use other name like `actionCreateOrUpdate()` or anyting else.
+First, we load original data. In posting request, we compare original data and posting data. For original data that
+not posted, we delete it.
 ```php
 public function actionCreate()
 {
@@ -139,16 +142,19 @@ public function actionCreate()
 }
 ```
 
-Code in view `create.php`
+* Create view `create.php`
+
 ```php
-<div class="sales-form">
+<div class="create-form">
     <?php $form = ActiveForm::begin(); ?>
     <?= Html::errorSummary($settings) ?>
     <div class="form-group">
         <?= Html::submitButton('Save', ['class' => 'btn btn-success']) ?>
     </div>
     <?php
-        $row_template = $this->render('_row', ['key' => '_key_', 'model' => new Setting(), 'form' => $form]);
+        // use $key = '_key_'.
+        // in javascript it will replaced using new number
+        $template = $this->render('_row', ['key' => '_key_', 'model' => new Setting(), 'form' => $form]);
     ?>
     <table class="table table-striped">
         <thead>
@@ -170,12 +176,14 @@ Code in view `create.php`
     <?php ActiveForm::end(); ?>
 </div>
 <?php
-
-$this->registerJs('var opts = ' . json_encode(['count' => $i, 'template' => $row_template]) . ';');
+// define opts variable in javascript
+$this->registerJs('var opts = ' . json_encode(['count' => $i, 'template' => $template]) . ';');
 $this->registerJs($this->render('_script.js');
 ```
 
-View `_row.php`
+* Create view `_row.php`
+This view use to generate all table row and also use to generate row template.
+The row template will contain frasa `_key_` that must be replace with new row number (automatic counted).
 ```php
 <tr data-key="<?= $key ?>">
     <td><?= $form->field($model, "[$key]name")->label(false) ?></td>
@@ -184,7 +192,8 @@ View `_row.php`
 </tr>
 ```
 
-Then view `_script.js`
+* Then create view `_script.js`
+Variable `opts` is provided from view `created.php` via `registerJs()`.
 ```javascript
 $('#button-add').click(function(){
     var $row = $(opts.template.replace(/_key_/g, opts.count));
