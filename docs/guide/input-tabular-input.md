@@ -106,9 +106,11 @@ In the view you can use javascript to add new input lines dynamically.
 ### Combining Update, Create and Delete on one page
 
 To combine create, update, delete on one page, We can do the following step.
-* Create your controller action. You can use other name like `actionCreateOrUpdate()` or anyting else.
+* Create your controller action. 
+
+You can use other name like `actionCreateOrUpdate()` or anyting else.
 First, we load original data. In posting request, we compare original data and posting data. For original data that
-not posted, we delete it.
+posted again, update it. For original data that not posted, delete it. For new data, created it.
 ```php
 public function actionCreate()
 {
@@ -142,8 +144,9 @@ public function actionCreate()
 }
 ```
 
-* Create view `create.php`
+* Create view `create.php`.
 
+We separated row table in other view because they have own local variable. Also use for generating row template.
 ```php
 <div class="create-form">
     <?php $form = ActiveForm::begin(); ?>
@@ -178,10 +181,11 @@ public function actionCreate()
 <?php
 // define opts variable in javascript
 $this->registerJs('var opts = ' . json_encode(['count' => $i, 'template' => $template]) . ';');
-$this->registerJs($this->render('_script.js');
+$this->registerJs($this->render('_script.js'));
 ```
 
-* Create view `_row.php`
+* Create view `_row.php`.
+
 This view use to generate all table row and also use to generate row template.
 The row template will contain frasa `_key_` that must be replace with new row number (automatic counted).
 ```php
@@ -192,10 +196,12 @@ The row template will contain frasa `_key_` that must be replace with new row nu
 </tr>
 ```
 
-* Then create view `_script.js`
-Variable `opts` is provided from view `created.php` via `registerJs()`.
+* Then create view `_script.js`.
+
+Variable `opts` is provided from view `created.php` via `View::registerJs()`.
 ```javascript
 $('#button-add').click(function(){
+    // replace frasa '_key_' in template with new number
     var $row = $(opts.template.replace(/_key_/g, opts.count));
     opts.count++;
     $('#tabular').append($row);
