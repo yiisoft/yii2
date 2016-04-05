@@ -24,6 +24,7 @@ Yii Framework 2 Change Log
 - Bug #11040: Check parameter 'recursive' and disable recursive copying with option 'recursive' => false in method BaseFileHelper::copyDirectory (Ni-san)
 - Bug #11125: Fixed `JSON_ERROR_SYNTAX` for `json_decode(null)` in PHP 7 (fps01)
 - Bug #11188: Fixed wrong index usage in `CaptchaAction` when calling `imagefilledrectangle` (alsopub)
+- Bug #11220: NumberValidator now handles objects properly (samdark)
 - Bug #11221: Boolean validator generates incorrect error message (azaikin, githubjeka)
 - Bug #11223: Fixed returning an empty array when DbManager::getRolesByUser() was called on a user with user id 0 (VirtualRJ)
 - Bug #11280: Descendants of `yii\console\controllers\BaseMigrateController`, like the one for MongoDB, unable to create new migration (klimov-paul)
