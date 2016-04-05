@@ -33,7 +33,7 @@ use yii\base\InvalidParamException;
  * @see Mutex
  *
  * @author nineinchnick <janek.jan@gmail.com>
- * @since 2.0.5
+ * @since 2.0.8
  */
 class PgsqlMutex extends DbMutex
 {
