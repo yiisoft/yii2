@@ -64,7 +64,15 @@ class MigrateController extends BaseMigrateController
      */
     public $templateFile = '@yii/views/migration.php';
     /**
-     * @inheritdoc
+     * @var array a set of template paths for generating migration code automatically.
+     *
+     * The key is the template type, the value is a path or the alias. Supported types are:
+     * - `create_table`: table creating template
+     * - `drop_table`: table dropping template
+     * - `add_column`: adding new column template
+     * - `drop_column`: dropping column template
+     * - `create_junction`: create junction template
+     *
      * @since 2.0.7
      */
     public $generatorTemplateFiles = [
@@ -75,11 +83,24 @@ class MigrateController extends BaseMigrateController
         'create_junction' => '@yii/views/createTableMigration.php'
     ];
     /**
+     * @var array column definition strings used for creating migration code.
+     * The format of each definition is `COLUMN_NAME:COLUMN_TYPE:COLUMN_DECORATOR`.
+     * For example, `--fields=name:string(12):notNull` produces a string column of size 12 which is not null.
+     * @since 2.0.7
+     */
+    public $fields = [];
+    /**
      * @var Connection|array|string the DB connection object or the application component ID of the DB connection to use
      * when applying migrations. Starting from version 2.0.3, this can also be a configuration array
      * for creating the object.
      */
     public $db = 'db';
+
+    /**
+     * @var array columns which have a foreign key and their related table.
+     * @since 2.0.8
+     */
+    protected $foreignKeys = [];
 
 
     /**
@@ -89,7 +110,8 @@ class MigrateController extends BaseMigrateController
     {
         return array_merge(
             parent::options($actionID),
-            ['migrationTable', 'db'] // global for all actions
+            ['migrationTable', 'db'], // global for all actions
+            $actionID === 'create' ? ['fields'] : [] // action create
         );
     }
 
@@ -197,5 +219,114 @@ class MigrateController extends BaseMigrateController
         $command->delete($this->migrationTable, [
             'version' => $version,
         ])->execute();
+    }
+
+    /**
+     * @inheritdoc
+     */
+    protected function generateMigrationSourceCode($params)
+    {
+        $this->parseFields();
+
+        $name = $params['name'];
+
+        $templateFile = $this->templateFile;
+        $table = null;
+        if (preg_match('/^create_junction_(.+)_and_(.+)$/', $name, $matches)) {
+            $templateFile = $this->generatorTemplateFiles['create_junction'];
+            $firstTable = mb_strtolower($matches[1], Yii::$app->charset);
+            $secondTable = mb_strtolower($matches[2], Yii::$app->charset);
+
+            $this->fields = array_merge(
+                [
+                    [
+                        'property' => $firstTable . '_id',
+                        'decorators' => 'integer()',
+                    ],
+                    [
+                        'property' => $secondTable . '_id',
+                        'decorators' => 'integer()',
+                    ],
+                ],
+                $this->fields,
+                [
+                    [
+                        'property' => 'PRIMARY KEY(' .
+                            $firstTable . '_id, ' .
+                            $secondTable . '_id)',
+                    ],
+                ]
+            );
+
+            $this->foreignKeys[$firstTable . '_id'] = $firstTable;
+            $this->foreignKeys[$secondTable . '_id'] = $secondTable;
+            $table = $firstTable . '_' . $secondTable;
+        } elseif (preg_match('/^add_(.+)_to_(.+)$/', $name, $matches)) {
+            $templateFile = $this->generatorTemplateFiles['add_column'];
+            $table = mb_strtolower($matches[2], Yii::$app->charset);
+        } elseif (preg_match('/^drop_(.+)_from_(.+)$/', $name, $matches)) {
+            $templateFile = $this->generatorTemplateFiles['drop_column'];
+            $table = mb_strtolower($matches[2], Yii::$app->charset);
+        } elseif (preg_match('/^create_(.+)$/', $name, $matches)) {
+            $this->addDefaultPrimaryKey();
+            $templateFile = $this->generatorTemplateFiles['create_table'];
+            $table = mb_strtolower($matches[1], Yii::$app->charset);
+        } elseif (preg_match('/^drop_(.+)$/', $name, $matches)) {
+            $this->addDefaultPrimaryKey();
+            $templateFile = $this->generatorTemplateFiles['drop_table'];
+            $table = mb_strtolower($matches[1], Yii::$app->charset);
+        }
+
+        return $this->renderFile(Yii::getAlias($templateFile), array_merge($params, [
+            'table' => $table,
+            'fields' => $this->fields,
+            'foreignKeys' => $this->foreignKeys,
+        ]));
+    }
+
+    /**
+     * Parse the command line migration fields
+     * @since 2.0.7
+     */
+    protected function parseFields()
+    {
+        foreach ($this->fields as $index => $field) {
+            $chunks = preg_split('/\s?:\s?/', $field, null);
+            $property = array_shift($chunks);
+
+            foreach ($chunks as $i => &$chunk) {
+                if (strpos($chunk, 'foreignKey') === 0) {
+                    preg_match('/foreignKey\((\w*)\)/', $chunk, $matches);
+                    $this->foreignKeys[$property] = isset($matches[1])
+                        ? $matches[1]
+                        : preg_replace('/_id$/', '', $property);
+
+                    unset($chunks[$i]);
+                    continue;
+                }
+
+                if (!preg_match('/^(.+?)\(([^)]+)\)$/', $chunk)) {
+                    $chunk .= '()';
+                }
+            }
+            $this->fields[$index] = [
+                'property' => $property,
+                'decorators' => implode('->', $chunks),
+            ];
+        }
+    }
+
+    /**
+     * Adds default primary key to fields list if there's no primary key specified
+     * @since 2.0.7
+     */
+    protected function addDefaultPrimaryKey()
+    {
+        foreach ($this->fields as $field) {
+            if ($field['decorators'] === 'primaryKey()') {
+                return;
+            }
+        }
+        array_unshift($this->fields, ['property' => 'id', 'decorators' => 'primaryKey()']);
     }
 }
