@@ -14,7 +14,7 @@ services:
   - memcached
 
 # faster builds on new travis setup not using sudo
-sudo: false
+sudo: true
 
 # cache vendor dirs
 cache:
@@ -46,7 +46,15 @@ before_script:
 
   # initialize databases
   - mysql -e 'CREATE DATABASE yiitest;';
-  - psql -U postgres -c 'CREATE DATABASE yiitest;';
+  - |
+    RAM_STORAGE=/mnt/ramfs/pgdata
+    TABLESPACE_NAME=ramfs
+    sudo mkdir -p $RAM_STORAGE
+    sudo mount -t ramfs none $RAM_STORAGE
+    sudo chown postgres:postgres $RAM_STORAGE
+    sudo chmod go-rwx $RAM_STORAGE
+    psql -U postgres -c "CREATE TABLESPACE $TABLESPACE_NAME OWNER postgres LOCATION '$RAM_STORAGE';"
+    psql -U postgres -c "CREATE DATABASE yiitest WITH TABLESPACE = $TABLESPACE_NAME;"
 
   - |
     if [ $TRAVIS_PHP_VERSION = '5.6' ]; then
