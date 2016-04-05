@@ -7,6 +7,7 @@
 
 namespace yiiunit\framework\base;
 
+use yii\base\Security;
 use yiiunit\TestCase;
 
 /**
@@ -809,6 +810,55 @@ TEXT;
         $this->assertEquals($length, strlen($key2));
         $this->assertTrue($key1 != $key2);
     }
+
+    protected function randTime(Security $security, $count, $length, $message)
+    {
+        $t = microtime(true);
+        for ($i = 0; $i < $count; $i += 1) {
+            $key = $security->generateRandomKey($length);
+        }
+        $t = microtime(true) - $t;
+        $nbytes = number_format($count * $length, 0);
+        $milisec = number_format(1000 * ($t), 3);
+        $rate = number_format($count * $length / $t / 1000000, 3);
+        fwrite(STDERR, "$message: $count x $length B = $nbytes B in $milisec ms => $rate MB/s\n");
+    }
+
+    public function testGenerateRandomKeySpeed()
+    {
+        $tests = [
+            "function_exists('random_bytes')",
+            "defined('OPENSSL_VERSION_TEXT') ? OPENSSL_VERSION_TEXT : null",
+            "PHP_VERSION_ID",
+            "PHP_OS",
+            "function_exists('mcrypt_create_iv') ? bin2hex(mcrypt_create_iv(4, MCRYPT_DEV_URANDOM)) : null",
+            "DIRECTORY_SEPARATOR",
+            "ini_get('open_basedir')",
+        ];
+        if (DIRECTORY_SEPARATOR === '/') {
+            $tests[] = "sprintf('%o', lstat(PHP_OS === 'FreeBSD' ? '/dev/random' : '/dev/urandom')['mode'] & 0170000)";
+            $tests[] = "bin2hex(file_get_contents(PHP_OS === 'FreeBSD' ? '/dev/random' : '/dev/urandom', false, null, 0, 8))";
+        }
+        foreach ($tests as $i => $test) {
+            $result = eval('return ' . $test . ';');
+            fwrite(STDERR, sprintf("%2d %s ==> %s\n", $i + 1, $test, var_export($result, true)));
+        }
+
+        foreach ([16, 2000, 262144] as $block) {
+            $security = new Security();
+            foreach (range(1, 10) as $nth) {
+                $this->randTime($security, 1, $block, "Call $nth");
+            }
+            unset($security);
+        }
+
+        $security = new Security();
+        $this->randTime($security, 10000, 16, 'Rate test');
+
+        $security = new Security();
+        $this->randTime($security, 10000, 5000, 'Rate test');
+    }
+
 
     public function testGenerateRandomKeyURandom()
     {
