@@ -41,32 +41,7 @@ abstract class BaseMigrateController extends Controller
      * or a file path.
      */
     public $templateFile;
-    /**
-     * @var array a set of template paths for generating migration code automatically.
-     *
-     * The key is the template type, the value is a path or the alias. Supported types are:
-     * - `create_table`: table creating template
-     * - `drop_table`: table dropping template
-     * - `add_column`: adding new column template
-     * - `drop_column`: dropping column template
-     * - `create_junction`: create junction template
-     *
-     * @since 2.0.7
-     */
-    public $generatorTemplateFiles;
-    /**
-     * @var array column definition strings used for creating migration code.
-     * The format of each definition is `COLUMN_NAME:COLUMN_TYPE:COLUMN_DECORATOR`.
-     * For example, `--fields=name:string(12):notNull` produces a string column of size 12 which is not null.
-     * @since 2.0.7
-     */
-    public $fields = [];
 
-    /**
-     * @var array columns which have a foreign key and their related table.
-     * @since 2.0.8
-     */
-    protected $foreignKeys = [];
 
     /**
      * @inheritdoc
@@ -76,7 +51,7 @@ abstract class BaseMigrateController extends Controller
         return array_merge(
             parent::options($actionID),
             ['migrationPath'], // global for all actions
-            $actionID === 'create' ? ['templateFile', 'fields'] : [] // action create
+            $actionID === 'create' ? ['templateFile'] : [] // action create
         );
     }
 
@@ -98,7 +73,6 @@ abstract class BaseMigrateController extends Controller
                 FileHelper::createDirectory($path);
             }
             $this->migrationPath = $path;
-            $this->parseFields();
 
             $version = Yii::getVersion();
             $this->stdout("Yii Migration Tool (based on Yii v{$version})\n\n");
@@ -504,59 +478,11 @@ abstract class BaseMigrateController extends Controller
         $className = 'm' . gmdate('ymd_His') . '_' . $name;
         $file = $this->migrationPath . DIRECTORY_SEPARATOR . $className . '.php';
         if ($this->confirm("Create new migration '$file'?")) {
-            $table = null;
-            if (preg_match('/^create_junction_(.+)_and_(.+)$/', $name, $matches)) {
-                $this->templateFile = $this->generatorTemplateFiles['create_junction'];
-                $firstTable = mb_strtolower($matches[1], Yii::$app->charset);
-                $secondTable = mb_strtolower($matches[2], Yii::$app->charset);
-
-                $this->fields = array_merge(
-                    [
-                        [
-                            'property' => $firstTable . '_id',
-                            'decorators' => 'integer()',
-                        ],
-                        [
-                            'property' => $secondTable . '_id',
-                            'decorators' => 'integer()',
-                        ],
-                    ],
-                    $this->fields,
-                    [
-                        [
-                            'property' => 'PRIMARY KEY(' .
-                                $firstTable . '_id, ' .
-                                $secondTable . '_id)',
-                        ],
-                    ]
-                );
-
-                $this->foreignKeys[$firstTable . '_id'] = $firstTable;
-                $this->foreignKeys[$secondTable . '_id'] = $secondTable;
-                $table = $firstTable . '_' . $secondTable;
-            } elseif (preg_match('/^add_(.+)_to_(.+)$/', $name, $matches)) {
-                $this->templateFile = $this->generatorTemplateFiles['add_column'];
-                $table = mb_strtolower($matches[2], Yii::$app->charset);
-            } elseif (preg_match('/^drop_(.+)_from_(.+)$/', $name, $matches)) {
-                $this->templateFile = $this->generatorTemplateFiles['drop_column'];
-                $table = mb_strtolower($matches[2], Yii::$app->charset);
-            } elseif (preg_match('/^create_(.+)$/', $name, $matches)) {
-                $this->addDefaultPrimaryKey();
-                $this->templateFile = $this->generatorTemplateFiles['create_table'];
-                $table = mb_strtolower($matches[1], Yii::$app->charset);
-            } elseif (preg_match('/^drop_(.+)$/', $name, $matches)) {
-                $this->addDefaultPrimaryKey();
-                $this->templateFile = $this->generatorTemplateFiles['drop_table'];
-                $table = mb_strtolower($matches[1], Yii::$app->charset);
-            }
-
-            file_put_contents($file, $this->renderFile($this->templateFile, [
-                'className' => $className,
+            $content = $this->generateMigrationSourceCode([
                 'name' => $name,
-                'table' => $table,
-                'fields' => $this->fields,
-                'foreignKeys' => $this->foreignKeys,
-            ]));
+                'className' => $className,
+            ]);
+            file_put_contents($file, $content);
             $this->stdout("New migration created successfully.\n", Console::FG_GREEN);
         }
     }
@@ -715,49 +641,19 @@ abstract class BaseMigrateController extends Controller
     }
 
     /**
-     * Parse the command line migration fields
-     * @since 2.0.7
+     * Generates new migration source PHP code.
+     * Child class may override this method, adding extra logic or variation to the process.
+     * @param array $params generation parameters, usually following parameters are present:
+     *
+     *  - name: string migration base name
+     *  - className: string migration class name
+     *
+     * @return string generated PHP code.
+     * @since 2.0.8
      */
-    protected function parseFields()
+    protected function generateMigrationSourceCode($params)
     {
-        foreach ($this->fields as $index => $field) {
-            $chunks = preg_split('/\s?:\s?/', $field, null);
-            $property = array_shift($chunks);
-
-            foreach ($chunks as $i => &$chunk) {
-                if (strpos($chunk, 'foreignKey') === 0) {
-                    preg_match('/foreignKey\((\w*)\)/', $chunk, $matches);
-                    $this->foreignKeys[$property] = isset($matches[1])
-                        ? $matches[1]
-                        : preg_replace('/_id$/', '', $property);
-
-                    unset($chunks[$i]);
-                    continue;
-                }
-
-                if (!preg_match('/^(.+?)\(([^)]+)\)$/', $chunk)) {
-                    $chunk .= '()';
-                }
-            }
-            $this->fields[$index] = [
-                'property' => $property,
-                'decorators' => implode('->', $chunks),
-            ];
-        }
-    }
-
-    /**
-     * Adds default primary key to fields list if there's no primary key specified
-     * @since 2.0.7
-     */
-    protected function addDefaultPrimaryKey()
-    {
-        foreach ($this->fields as $field) {
-            if ($field['decorators'] === 'primaryKey()') {
-                return;
-            }
-        }
-        array_unshift($this->fields, ['property' => 'id', 'decorators' => 'primaryKey()']);
+        return $this->renderFile(Yii::getAlias($this->templateFile), $params);
     }
 
     /**
