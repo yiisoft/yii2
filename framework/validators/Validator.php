@@ -285,7 +285,13 @@ class Validator extends Component
 
         list($message, $params) = $result;
         $params['attribute'] = Yii::t('yii', 'the input value');
-        $params['value'] = is_array($value) ? 'array()' : $value;
+        if (is_array($value)) {
+            $params['value'] = 'array()';
+        } elseif (is_object($value)) {
+            $params['value'] = 'object';
+        } else {
+            $params['value'] = $value;
+        }
         $error = Yii::$app->getI18n()->format($message, $params, Yii::$app->language);
 
         return false;
