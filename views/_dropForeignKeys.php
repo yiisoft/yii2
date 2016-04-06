@@ -1,13 +1,13 @@
-<?php foreach ($foreignKeys as $column => $relatedTable): ?>
-        // drops foreign key for table `<?= $relatedTable ?>`
+<?php foreach ($foreignKeys as $column => $fkData): ?>
+        // drops foreign key for table `<?= $fkData['relatedTable'] ?>`
         $this->dropForeignKey(
-            '<?= "fk-$table-$column" ?>',
+            '<?= $fkData['fk'] ?>',
             '<?= $table ?>'
         );
 
         // drops index for column `<?= $column ?>`
         $this->dropIndex(
-            '<?= "idx-$table-$column" ?>',
+            '<?= $fkData['idx'] ?>',
             '<?= $table ?>'
         );
 
