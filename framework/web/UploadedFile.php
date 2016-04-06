@@ -74,7 +74,7 @@ class UploadedFile extends Object
      * @param \yii\base\Model $model the data model
      * @param string $attribute the attribute name. The attribute name may contain array indexes.
      * For example, '[1]file' for tabular file uploading; and 'file[1]' for an element in a file array.
-     * @return null|UploadedFile the instance of the uploaded file.
+     * @return null|$this the instance of the uploaded file.
      * Null is returned if no file is uploaded for the specified model attribute.
      * @see getInstanceByName()
      */
@@ -89,7 +89,7 @@ class UploadedFile extends Object
      * @param \yii\base\Model $model the data model
      * @param string $attribute the attribute name. The attribute name may contain array indexes
      * for tabular file uploading, e.g. '[1]file'.
-     * @return UploadedFile[] array of UploadedFile objects.
+     * @return $this[] array of UploadedFile objects.
      * Empty array is returned if no available file was found for the given attribute.
      */
     public static function getInstances($model, $attribute)
@@ -102,7 +102,7 @@ class UploadedFile extends Object
      * Returns an uploaded file according to the given file input name.
      * The name can be a plain string or a string like an array element (e.g. 'Post[imageFile]', or 'Post[0][imageFile]').
      * @param string $name the name of the file input field.
-     * @return null|UploadedFile the instance of the uploaded file.
+     * @return null|$this the instance of the uploaded file.
      * Null is returned if no file is uploaded for the specified name.
      */
     public static function getInstanceByName($name)
@@ -116,7 +116,7 @@ class UploadedFile extends Object
      * This is mainly used when multiple files were uploaded and saved as 'files[0]', 'files[1]',
      * 'files[n]'..., and you can retrieve them all by passing 'files' as the name.
      * @param string $name the name of the array of files
-     * @return UploadedFile[] the array of UploadedFile objects. Empty array is returned
+     * @return $this[] the array of UploadedFile objects. Empty array is returned
      * if no adequate upload was found. Please note that this array will contain
      * all files from all sub-arrays regardless how deeply nested they are.
      */
@@ -234,4 +234,4 @@ class UploadedFile extends Object
             ]);
         }
     }
-}
+
