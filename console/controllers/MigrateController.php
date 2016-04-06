@@ -96,12 +96,6 @@ class MigrateController extends BaseMigrateController
      */
     public $db = 'db';
 
-    /**
-     * @var array columns which have a foreign key and their related table.
-     * @since 2.0.8
-     */
-    protected $foreignKeys = [];
-
 
     /**
      * @inheritdoc
@@ -226,7 +220,9 @@ class MigrateController extends BaseMigrateController
      */
     protected function generateMigrationSourceCode($params)
     {
-        $this->parseFields();
+        $parsedFields = $this->parseFields();
+        $fields = $parsedFields['fields'];
+        $foreignKeys = $parsedFields['foreignKeys'];
 
         $name = $params['name'];
 
@@ -237,7 +233,7 @@ class MigrateController extends BaseMigrateController
             $firstTable = mb_strtolower($matches[1], Yii::$app->charset);
             $secondTable = mb_strtolower($matches[2], Yii::$app->charset);
 
-            $this->fields = array_merge(
+            $fields = array_merge(
                 [
                     [
                         'property' => $firstTable . '_id',
@@ -248,7 +244,7 @@ class MigrateController extends BaseMigrateController
                         'decorators' => 'integer()',
                     ],
                 ],
-                $this->fields,
+                $fields,
                 [
                     [
                         'property' => 'PRIMARY KEY(' .
@@ -258,8 +254,8 @@ class MigrateController extends BaseMigrateController
                 ]
             );
 
-            $this->foreignKeys[$firstTable . '_id'] = $firstTable;
-            $this->foreignKeys[$secondTable . '_id'] = $secondTable;
+            $foreignKeys[$firstTable . '_id'] = $firstTable;
+            $foreignKeys[$secondTable . '_id'] = $secondTable;
             $table = $firstTable . '_' . $secondTable;
         } elseif (preg_match('/^add_(.+)_to_(.+)$/', $name, $matches)) {
             $templateFile = $this->generatorTemplateFiles['add_column'];
@@ -268,28 +264,36 @@ class MigrateController extends BaseMigrateController
             $templateFile = $this->generatorTemplateFiles['drop_column'];
             $table = mb_strtolower($matches[2], Yii::$app->charset);
         } elseif (preg_match('/^create_(.+)$/', $name, $matches)) {
-            $this->addDefaultPrimaryKey();
+            $this->addDefaultPrimaryKey($fields);
             $templateFile = $this->generatorTemplateFiles['create_table'];
             $table = mb_strtolower($matches[1], Yii::$app->charset);
         } elseif (preg_match('/^drop_(.+)$/', $name, $matches)) {
-            $this->addDefaultPrimaryKey();
+            $this->addDefaultPrimaryKey($fields);
             $templateFile = $this->generatorTemplateFiles['drop_table'];
             $table = mb_strtolower($matches[1], Yii::$app->charset);
         }
 
         return $this->renderFile(Yii::getAlias($templateFile), array_merge($params, [
             'table' => $table,
-            'fields' => $this->fields,
-            'foreignKeys' => $this->foreignKeys,
+            'fields' => $fields,
+            'foreignKeys' => $foreignKeys,
         ]));
     }
 
     /**
      * Parse the command line migration fields
+     * @return array parse result with following fields:
+     *
+     * - fields: array, parsed fields
+     * - foreignKeys: array, detected foreign keys
+     *
      * @since 2.0.7
      */
     protected function parseFields()
     {
+        $fields = [];
+        $foreignKeys = [];
+
         foreach ($this->fields as $index => $field) {
             $chunks = preg_split('/\s?:\s?/', $field, null);
             $property = array_shift($chunks);
@@ -297,7 +301,7 @@ class MigrateController extends BaseMigrateController
             foreach ($chunks as $i => &$chunk) {
                 if (strpos($chunk, 'foreignKey') === 0) {
                     preg_match('/foreignKey\((\w*)\)/', $chunk, $matches);
-                    $this->foreignKeys[$property] = isset($matches[1])
+                    $foreignKeys[$property] = isset($matches[1])
                         ? $matches[1]
                         : preg_replace('/_id$/', '', $property);
 
@@ -309,24 +313,30 @@ class MigrateController extends BaseMigrateController
                     $chunk .= '()';
                 }
             }
-            $this->fields[$index] = [
+            $fields[] = [
                 'property' => $property,
                 'decorators' => implode('->', $chunks),
             ];
         }
+
+        return [
+            'fields' => $fields,
+            'foreignKeys' => $foreignKeys,
+        ];
     }
 
     /**
      * Adds default primary key to fields list if there's no primary key specified
+     * @param array $fields parsed fields
      * @since 2.0.7
      */
-    protected function addDefaultPrimaryKey()
+    protected function addDefaultPrimaryKey(&$fields)
     {
-        foreach ($this->fields as $field) {
+        foreach ($fields as $field) {
             if ($field['decorators'] === 'primaryKey()') {
                 return;
             }
         }
-        array_unshift($this->fields, ['property' => 'id', 'decorators' => 'primaryKey()']);
+        array_unshift($fields, ['property' => 'id', 'decorators' => 'primaryKey()']);
     }
 }
