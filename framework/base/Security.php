@@ -31,6 +31,10 @@ use Yii;
 class Security extends Component
 {
     /**
+     * Buffer size for reading from /dev/random or /dev/urandom
+     */
+    const RANDOM_FILE_BUFFER = 8;
+    /**
      * @var string The cipher to use for encryption and decryption.
      */
     public $cipher = 'AES-128-CBC';
@@ -433,6 +437,7 @@ class Security extends Component
      *
      * @param integer $length the number of bytes to generate
      * @return string the generated random bytes
+     * @throws InvalidParamException if wrong length is specified
      * @throws Exception on failure.
      */
     public function generateRandomKey($length = 32)
@@ -452,18 +457,17 @@ class Security extends Component
         // The recent LibreSSL RNGs are faster and likely better than /dev/urandom.
         // Parse OPENSSL_VERSION_TEXT because OPENSSL_VERSION_NUMBER is no use for LibreSSL.
         // https://bugs.php.net/bug.php?id=71143
-        if ($this->_libreSSL === null) {
-            $this->_libreSSL = defined('OPENSSL_VERSION_TEXT')
+        if ($this->_useLibreSSL === null) {
+            $this->_useLibreSSL = defined('OPENSSL_VERSION_TEXT')
                 && preg_match('{^LibreSSL (\d\d?)\.(\d\d?)\.(\d\d?)$}', OPENSSL_VERSION_TEXT, $matches)
                 && (10000 * $matches[1]) + (100 * $matches[2]) + $matches[3] >= 20105;
         }
 
         // Since 5.4.0, openssl_random_pseudo_bytes() reads from CryptGenRandom on Windows instead
-        // of using OpenSSL library. LibreSSL is ok everywhere but don't use OpenSSL on non-Windows.
-        if ($this->_libreSSL
+        // of using OpenSSL library. LibreSSL is OK everywhere but don't use OpenSSL on non-Windows.
+        if ($this->_useLibreSSL
             || (
                 DIRECTORY_SEPARATOR !== '/'
-                && PHP_VERSION_ID >= 50400
                 && substr_compare(PHP_OS, 'win', 0, 3, true) === 0
                 && function_exists('openssl_random_pseudo_bytes')
             )
@@ -481,7 +485,7 @@ class Security extends Component
 
         // mcrypt_create_iv() does not use libmcrypt. Since PHP 5.3.7 it directly reads
         // CryptGenRandom on Windows. Elsewhere it directly reads /dev/urandom.
-        if (PHP_VERSION_ID >= 50307 && function_exists('mcrypt_create_iv')) {
+        if (function_exists('mcrypt_create_iv')) {
             $key = mcrypt_create_iv($length, MCRYPT_DEV_URANDOM);
             if (StringHelper::byteLength($key) === $length) {
                 return $key;
@@ -496,7 +500,20 @@ class Security extends Component
             // instead of stat() in case an attacker arranges a symlink to a fake device.
             $lstat = @lstat($device);
             if ($lstat !== false && ($lstat['mode'] & 0170000) === 020000) {
-                $this->_randomFile = fopen($device, 'r') ?: null;
+                $this->_randomFile = fopen($device, 'rb') ?: null;
+
+                if (is_resource($this->_randomFile)) {
+                    // By default PHP buffer size is 8192 bytes which causes wasting
+                    // more entropy that we're actually using. Therefore setting it to
+                    // lower value.
+                    if (function_exists('stream_set_read_buffer')) {
+                        stream_set_read_buffer($this->_randomFile, self::RANDOM_FILE_BUFFER);
+                    }
+                    // stream_set_read_buffer() isn't implemented on HHVM
+                    if (function_exists('stream_set_chunk_size')) {
+                        stream_set_chunk_size($this->_randomFile, self::RANDOM_FILE_BUFFER);
+                    }
+                }
             }
         }
 
@@ -509,8 +526,9 @@ class Security extends Component
                     break;
                 }
                 $buffer .= $someBytes;
-                $stillNeed = $length - StringHelper::byteLength($buffer);
+                $stillNeed -= StringHelper::byteLength($buffer);
                 if ($stillNeed === 0) {
+                    // Leaving file pointer open in order to make next generation faster by reusing it.
                     return $buffer;
                 }
             }
