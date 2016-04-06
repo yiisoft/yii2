@@ -59,10 +59,12 @@ class MigrateController extends BaseMigrateController
      * @var string the name of the table for keeping applied migration information.
      */
     public $migrationTable = '{{%migration}}';
+
     /**
      * @inheritdoc
      */
     public $templateFile = '@yii/views/migration.php';
+
     /**
      * @var array a set of template paths for generating migration code automatically.
      *
@@ -82,6 +84,15 @@ class MigrateController extends BaseMigrateController
         'drop_column' => '@yii/views/dropColumnMigration.php',
         'create_junction' => '@yii/views/createTableMigration.php'
     ];
+
+    /**
+     * @var boolean indicates whether the table names generated should consider
+     * the `tablePrefix` setting of the DB connection. For example, if the table
+     * name is `post` the generator wil return `{{%post}}`.
+     * @since 2.0.8
+     */
+    public $useTablePrefix = false;
+
     /**
      * @var array column definition strings used for creating migration code.
      * The format of each definition is `COLUMN_NAME:COLUMN_TYPE:COLUMN_DECORATOR`.
@@ -111,8 +122,29 @@ class MigrateController extends BaseMigrateController
         return array_merge(
             parent::options($actionID),
             ['migrationTable', 'db'], // global for all actions
-            $actionID === 'create' ? ['fields'] : [] // action create
+            $actionID === 'create'
+                ? ['templateFile', 'fields', 'useTablePrefix']
+                : []
         );
+    }
+
+    /**
+     * If `useTablePrefix` equals true, then the table name will contain the
+     * prefix format.
+     *
+     * @param string $tableName the table name to generate.
+     * @return string
+     */
+    public function generatedTableName($tableName)
+    {
+        static $tableNames = [];
+        if (!$this->useTablePrefix) {
+            return $tableName;
+        }
+        if (empty($tableNames[$tableName])) {
+            $tableNames[$tableName] = '{{%' . $tableName . '}}';
+        }
+        return $tableNames[$tableName];
     }
 
     /**
@@ -281,6 +313,7 @@ class MigrateController extends BaseMigrateController
             'table' => $table,
             'fields' => $this->fields,
             'foreignKeys' => $this->foreignKeys,
+            'tName' => [$this, 'generatedTableName'],
         ]));
     }
 

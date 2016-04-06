@@ -2,17 +2,17 @@
 
         // creates index for column `<?= $column ?>`
         $this->createIndex(
-            '<?= "idx-$table-$column" ?>',
-            '<?= $table ?>',
+            '<?= $tName("idx-$table-$column") ?>',
+            '<?= $tName($table) ?>',
             '<?= $column ?>'
         );
 
-        // add foreign key for table `<?= $relatedTable ?>`
+        // add foreign key for table `<?= $tName($relatedTable) ?>`
         $this->addForeignKey(
-            '<?= "fk-$table-$column" ?>',
-            '<?= $table ?>',
+            '<?= $tName("fk-$table-$column") ?>',
+            '<?= $tName($table) ?>',
             '<?= $column ?>',
-            '<?= $relatedTable ?>',
+            '<?= $tName($relatedTable) ?>',
             'id',
             'CASCADE'
         );

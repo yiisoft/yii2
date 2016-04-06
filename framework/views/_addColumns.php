@@ -1,6 +1,6 @@
 <?php foreach ($fields as $field): ?>
         $this->addColumn('<?=
-            $table
+            $tName($table)
         ?>', '<?=
             $field['property']
         ?>', $this-><?=

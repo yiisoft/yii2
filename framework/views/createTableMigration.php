@@ -14,9 +14,10 @@ echo "<?php\n";
 use yii\db\Migration;
 
 /**
- * Handles the creation for table `<?= $table ?>`.
+ * Handles the creation for table `<?= $tName($table) ?>`.
 <?= $this->render('_foreignTables', [
-    'foreignKeys' => $foreignKeys
+    'foreignKeys' => $foreignKeys,
+    'tName' => $tName,
 ]) ?>
  */
 class <?= $className ?> extends Migration
@@ -30,6 +31,7 @@ class <?= $className ?> extends Migration
     'table' => $table,
     'fields' => $fields,
     'foreignKeys' => $foreignKeys,
+    'tName' => $tName,
 ])
 ?>
     }
@@ -42,6 +44,7 @@ class <?= $className ?> extends Migration
 <?= $this->render('_dropTable', [
     'table' => $table,
     'foreignKeys' => $foreignKeys,
+    'tName' => $tName,
 ])
 ?>
     }

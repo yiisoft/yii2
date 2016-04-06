@@ -9,5 +9,6 @@
 echo $this->render('_dropForeignKeys', [
     'table' => $table,
     'foreignKeys' => $foreignKeys,
+    'tName' => $tName,
 ]) ?>
-        $this->dropTable('<?= $table ?>');
+        $this->dropTable('<?= $tName($table) ?>');
