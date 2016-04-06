@@ -240,6 +240,10 @@ Below is a summary of the available cache dependencies:
 - [[yii\caching\TagDependency]]: associates a cached data item with one or multiple tags. You may invalidate
   the cached data items with the specified tag(s) by calling [[yii\caching\TagDependency::invalidate()]].
 
+> Note: Avoid using [[yii\caching\Cache::exists()|exists()]] method along with dependencies. It does not check whether
+  the dependency associated with the cached data, if there is any, has changed. So a call to
+  [[yii\caching\Cache::get()|get()]] may return `false` while [[yii\caching\Cache::exists()|exists()]] returns `true`.
+
 
 ## Query Caching <span id="query-caching"></span>
 
