@@ -52,6 +52,8 @@ Yii Framework 2 Change Log
 - Enh #11187: migrate command now generates phpdoc for table migrations (Faryshta)
 - Enh #11254: Added ability to attach RBAC rule using class name (mdmunir)
 - Enh: Added `StringHelper::countWords()` that given a string returns number of words in it (samdark)
+- Enh #11207: migrate command can create foreign keys. (Faryshta)
+- Enh #11166: migrate command new option `useTablePrefix` (Faryshta)
 - Enh #11207: migrate command can create foreign keys. (faryshta)
 - Chg #11283: `ActiveRecord::unlink()` is not setting FK to `null` before deleting itself anymore (samdark)
 - Chg: HTMLPurifier dependency updated to `~4.6` (samdark)
