@@ -96,7 +96,7 @@ class View extends \yii\base\View
     /**
      * @var string the page title
      */
-    public $title;
+    private $_title;
     /**
      * @var array the registered meta tags.
      * @see registerMetaTag()
@@ -230,6 +230,24 @@ class View extends \yii\base\View
     public function setAssetManager($value)
     {
         $this->_assetManager = $value;
+    }
+
+    /**
+     * Returns the title of this view object.
+     * @return string. Defaults to null.
+     */
+    public function getTitle()
+    {
+        return $this->_title ? $this->_title : null;
+    }
+
+    /**
+     * Sets the title of this view object.
+     * @param string $value value of the title
+     */
+    public function setTitle($value)
+    {
+        $this->_title = $value;
     }
 
     /**
