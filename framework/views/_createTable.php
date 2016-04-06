@@ -7,7 +7,7 @@
 /* @var $fields array the fields */
 /* @var $foreignKeys array the foreign keys */
 
-?>        $this->createTable('<?= $tName($table) ?>', [
+?>        $this->createTable('<?= $table ?>', [
 <?php foreach ($fields as $field):
     if (empty($field['decorators'])): ?>
             '<?= $field['property'] ?>',
@@ -19,5 +19,4 @@ endforeach; ?>
 <?= $this->render('_addForeignKeys', [
     'table' => $table,
     'foreignKeys' => $foreignKeys,
-    'tName' => $tName,
 ]);

@@ -1,18 +1,18 @@
-<?php foreach ($foreignKeys as $column => $relatedTable): ?>
+<?php foreach ($foreignKeys as $column => $fkData): ?>
 
         // creates index for column `<?= $column ?>`
         $this->createIndex(
-            '<?= $tName("idx-$table-$column") ?>',
-            '<?= $tName($table) ?>',
+            '<?= $fkData['idx']  ?>',
+            '<?= $table ?>',
             '<?= $column ?>'
         );
 
-        // add foreign key for table `<?= $tName($relatedTable) ?>`
+        // add foreign key for table `<?= $fkData['relatedTable'] ?>`
         $this->addForeignKey(
-            '<?= $tName("fk-$table-$column") ?>',
-            '<?= $tName($table) ?>',
+            '<?= $fkData['fk'] ?>',
+            '<?= $table ?>',
             '<?= $column ?>',
-            '<?= $tName($relatedTable) ?>',
+            '<?= $fkData['relatedTable'] ?>',
             'id',
             'CASCADE'
         );

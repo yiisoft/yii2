@@ -129,25 +129,6 @@ class MigrateController extends BaseMigrateController
     }
 
     /**
-     * If `useTablePrefix` equals true, then the table name will contain the
-     * prefix format.
-     *
-     * @param string $tableName the table name to generate.
-     * @return string
-     */
-    public function generatedTableName($tableName)
-    {
-        static $tableNames = [];
-        if (!$this->useTablePrefix) {
-            return $tableName;
-        }
-        if (empty($tableNames[$tableName])) {
-            $tableNames[$tableName] = '{{%' . $tableName . '}}';
-        }
-        return $tableNames[$tableName];
-    }
-
-    /**
      * @inheritdoc
      */
     public function optionAliases()
@@ -156,7 +137,8 @@ class MigrateController extends BaseMigrateController
             'f' => 'fields',
             'p' => 'migrationPath',
             't' => 'migrationTable',
-            'F' => 'templateFile'
+            'F' => 'templateFile',
+            'P' => 'useTablePrefix',
         ]);
     }
 
@@ -292,29 +274,73 @@ class MigrateController extends BaseMigrateController
 
             $this->foreignKeys[$firstTable . '_id'] = $firstTable;
             $this->foreignKeys[$secondTable . '_id'] = $secondTable;
-            $table = $firstTable . '_' . $secondTable;
+            $this->generateForeignKeyNames(
+                $table = $firstTable . '_' . $secondTable
+            );
         } elseif (preg_match('/^add_(.+)_to_(.+)$/', $name, $matches)) {
             $templateFile = $this->generatorTemplateFiles['add_column'];
-            $table = mb_strtolower($matches[2], Yii::$app->charset);
+            $this->generateForeignKeyNames(
+                $table = mb_strtolower($matches[2], Yii::$app->charset)
+            );
         } elseif (preg_match('/^drop_(.+)_from_(.+)$/', $name, $matches)) {
             $templateFile = $this->generatorTemplateFiles['drop_column'];
-            $table = mb_strtolower($matches[2], Yii::$app->charset);
+            $this->generateForeignKeyNames(
+                $table = mb_strtolower($matches[2], Yii::$app->charset)
+            );
         } elseif (preg_match('/^create_(.+)$/', $name, $matches)) {
             $this->addDefaultPrimaryKey();
             $templateFile = $this->generatorTemplateFiles['create_table'];
-            $table = mb_strtolower($matches[1], Yii::$app->charset);
+            $this->generateForeignKeyNames(
+                $table = mb_strtolower($matches[1], Yii::$app->charset)
+            );
         } elseif (preg_match('/^drop_(.+)$/', $name, $matches)) {
             $this->addDefaultPrimaryKey();
             $templateFile = $this->generatorTemplateFiles['drop_table'];
-            $table = mb_strtolower($matches[1], Yii::$app->charset);
+            $this->generateForeignKeyNames(
+                $table = mb_strtolower($matches[1], Yii::$app->charset)
+            );
         }
 
         return $this->renderFile(Yii::getAlias($templateFile), array_merge($params, [
-            'table' => $table,
+            'table' => $this->generatedTableName($table),
             'fields' => $this->fields,
             'foreignKeys' => $this->foreignKeys,
-            'tName' => [$this, 'generatedTableName'],
         ]));
+    }
+
+    /**
+     * If `useTablePrefix` equals true, then the table name will contain the
+     * prefix format.
+     *
+     * @param string $tableName the table name to generate.
+     * @return string
+     */
+    protected function generatedTableName($tableName)
+    {
+        if (!$this->useTablePrefix) {
+            return $tableName;
+        }
+
+        return '{{%' . $tableName . '}}';
+    }
+
+    /**
+     * Checks all the foreign keys and generates the names for the indexes and
+     * related tables.
+     *
+     * @param string $table
+     * @since 2.0.8
+     * @see generatedTableName()
+     */
+    protected function generateForeignKeyNames($table)
+    {
+        foreach ($this->foreignKeys as $column => $relatedTable) {
+            $this->foreignKeys[$column] = [
+                'idx' => $this->generatedTableName("idx-$table-$column"),
+                'fk' => $this->generatedTableName("fk-$table-$column"),
+                'relatedTable' => $this->generatedTableName($relatedTable)
+            ];
+        }
     }
 
     /**
