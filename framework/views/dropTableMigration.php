@@ -15,7 +15,7 @@ use yii\db\Migration;
 /**
  * Handles the dropping for table `<?= $table ?>`.
 <?= $this->render('_foreignTables', [
-    'foreignKeys' => $foreignKeys
+    'foreignKeys' => $foreignKeys,
 ]) ?>
  */
 class <?= $className ?> extends Migration
