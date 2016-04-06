@@ -427,7 +427,7 @@ class Security extends Component
         return false;
     }
 
-    private $_libreSSL;
+    private $_useLibreSSL;
     private $_randomFile;
 
     /**
