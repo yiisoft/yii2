@@ -423,6 +423,42 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
     }
 
     /**
+     * Returns a value indicating whether a property can be read.
+     * This method is overridden as the attributes can be accessed like properties.
+     *
+     * @param string $name the property name
+     * @param boolean $checkVars whether to treat member variables as properties
+     * @param boolean $checkBehaviors whether to treat behaviors' properties as properties of this component
+     * @return boolean whether the property can be written
+     */
+    public function canGetProperty($name, $checkVars = true, $checkBehaviors = true)
+    {
+        if ($this->hasAttribute($name) || isset($this->_related[$name]) || array_key_exists($name, $this->_related)) {
+            return true;
+        } else {
+            return parent::canGetProperty($name, $checkVars, $checkBehaviors);
+        }
+    }
+
+    /**
+     * Returns a value indicating whether a property can be set.
+     * This method is overridden as the attributes can be accessed like properties.
+     *
+     * @param string $name the property name
+     * @param boolean $checkVars whether to treat member variables as properties
+     * @param boolean $checkBehaviors whether to treat behaviors' properties as properties of this component
+     * @return boolean whether the property can be written
+     */
+    public function canSetProperty($name, $checkVars = true, $checkBehaviors = true)
+    {
+        if ($this->hasAttribute($name)) {
+            return true;
+        } else {
+            return parent::canSetProperty($name, $checkVars, $checkBehaviors);
+        }
+    }
+
+    /**
      * Returns the named attribute value.
      * If this record is the result of a query and the attribute is not loaded,
      * null will be returned.
