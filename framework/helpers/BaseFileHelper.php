@@ -189,7 +189,7 @@ class BaseFileHelper
     public static function getExtensionsByMimeType($mimeType, $magicFile = null)
     {
         $mimeTypes = static::loadMimeTypes($magicFile);
-        return array_keys($mimeTypes, mb_strtolower($mimeType, 'utf-8'), true);
+        return array_keys($mimeTypes, mb_strtolower($mimeType, 'UTF-8'), true);
     }
 
     private static $_mimeTypes = [];
@@ -282,7 +282,10 @@ class BaseFileHelper
                         @chmod($to, $options['fileMode']);
                     }
                 } else {
-                    static::copyDirectory($from, $to, $options);
+                    // recursive copy, defaults to true
+                    if (!isset($options['recursive']) || $options['recursive']) {
+                        static::copyDirectory($from, $to, $options);
+                    }
                 }
                 if (isset($options['afterCopy'])) {
                     call_user_func($options['afterCopy'], $from, $to);

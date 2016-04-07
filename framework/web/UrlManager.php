@@ -21,7 +21,7 @@ use yii\caching\Cache;
  * You can modify its configuration by adding an array to your application config under `components`
  * as it is shown in the following example:
  *
- * ~~~
+ * ```php
  * 'urlManager' => [
  *     'enablePrettyUrl' => true,
  *     'rules' => [
@@ -29,7 +29,7 @@ use yii\caching\Cache;
  *     ],
  *     // ...
  * ]
- * ~~~
+ * ```
  *
  * @property string $baseUrl The base URL that is used by [[createUrl()]] to prepend to created URLs.
  * @property string $hostInfo The host info (e.g. "http://www.example.com") that is used by
@@ -46,7 +46,7 @@ class UrlManager extends Component
      * @var boolean whether to enable pretty URLs. Instead of putting all parameters in the query
      * string part of a URL, pretty URLs allow using path info to represent some of the parameters
      * and can thus produce more user-friendly URLs, such as "/news/Yii-is-released", instead of
-     * "/index.php?r=news/view&id=100".
+     * "/index.php?r=news%2Fview&id=100".
      */
     public $enablePrettyUrl = false;
     /**
@@ -79,18 +79,18 @@ class UrlManager extends Component
      *
      * Here is an example configuration for RESTful CRUD controller:
      *
-     * ~~~php
+     * ```php
      * [
      *     'dashboard' => 'site/index',
      *
-     *     'POST <controller:\w+>s' => '<controller>/create',
-     *     '<controller:\w+>s' => '<controller>/index',
+     *     'POST <controller:[\w-]+>s' => '<controller>/create',
+     *     '<controller:[\w-]+>s' => '<controller>/index',
      *
-     *     'PUT <controller:\w+>/<id:\d+>'    => '<controller>/update',
-     *     'DELETE <controller:\w+>/<id:\d+>' => '<controller>/delete',
-     *     '<controller:\w+>/<id:\d+>'        => '<controller>/view',
+     *     'PUT <controller:[\w-]+>/<id:\d+>'    => '<controller>/update',
+     *     'DELETE <controller:[\w-]+>/<id:\d+>' => '<controller>/delete',
+     *     '<controller:[\w-]+>/<id:\d+>'        => '<controller>/view',
      * ];
-     * ~~~
+     * ```
      *
      * Note that if you modify this property after the UrlManager object is created, make sure
      * you populate the array with rule objects instead of rule configurations.
@@ -242,6 +242,11 @@ class UrlManager extends Component
 
             Yii::trace('No matching URL rules. Using default URL parsing logic.', __METHOD__);
 
+            // Ensure, that $pathInfo does not end with more than one slash.
+            if (strlen($pathInfo) > 1 && substr_compare($pathInfo, '//', -2, 2) === 0) {
+                return false;
+            }
+
             $suffix = (string) $this->suffix;
             if ($suffix !== '' && $pathInfo !== '') {
                 $n = strlen($this->suffix);
@@ -277,7 +282,7 @@ class UrlManager extends Component
      * array format must be:
      *
      * ```php
-     * // generates: /index.php?r=site/index&param1=value1&param2=value2
+     * // generates: /index.php?r=site%2Findex&param1=value1&param2=value2
      * ['site/index', 'param1' => 'value1', 'param2' => 'value2']
      * ```
      *
@@ -285,7 +290,7 @@ class UrlManager extends Component
      * For example,
      *
      * ```php
-     * // generates: /index.php?r=site/index&param1=value1#name
+     * // generates: /index.php?r=site%2Findex&param1=value1#name
      * ['site/index', 'param1' => 'value1', '#' => 'name']
      * ```
      *
@@ -310,7 +315,12 @@ class UrlManager extends Component
         $baseUrl = $this->showScriptName || !$this->enablePrettyUrl ? $this->getScriptUrl() : $this->getBaseUrl();
 
         if ($this->enablePrettyUrl) {
-            $cacheKey = $route . '?' . implode('&', array_keys($params));
+            $cacheKey = $route . '?';
+            foreach ($params as $key => $value) {
+                if ($value !== null) {
+                    $cacheKey .= $key . '&';
+                }
+            }
 
             /* @var $rule UrlRule */
             $url = false;

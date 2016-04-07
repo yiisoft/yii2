@@ -19,6 +19,7 @@ use yii\console\Markdown;
  */
 class BaseConsole
 {
+    // foreground color control codes
     const FG_BLACK  = 30;
     const FG_RED    = 31;
     const FG_GREEN  = 32;
@@ -27,7 +28,7 @@ class BaseConsole
     const FG_PURPLE = 35;
     const FG_CYAN   = 36;
     const FG_GREY   = 37;
-
+    // background color control codes
     const BG_BLACK  = 40;
     const BG_RED    = 41;
     const BG_GREEN  = 42;
@@ -36,7 +37,7 @@ class BaseConsole
     const BG_PURPLE = 45;
     const BG_CYAN   = 46;
     const BG_GREY   = 47;
-
+    // fonts style control codes
     const RESET       = 0;
     const NORMAL      = 0;
     const BOLD        = 1;
@@ -587,7 +588,7 @@ class BaseConsole
 
     /**
      * Returns true if the console is running on windows
-     * @return bool
+     * @return boolean
      */
     public static function isRunningOnWindows()
     {
@@ -691,7 +692,7 @@ class BaseConsole
      * Prints a string to STDOUT.
      *
      * @param string $string the string to print
-     * @return int|boolean Number of bytes printed or false on error
+     * @return integer|boolean Number of bytes printed or false on error
      */
     public static function stdout($string)
     {
@@ -702,7 +703,7 @@ class BaseConsole
      * Prints a string to STDERR.
      *
      * @param string $string the string to print
-     * @return int|boolean Number of bytes printed or false on error
+     * @return integer|boolean Number of bytes printed or false on error
      */
     public static function stderr($string)
     {
@@ -954,7 +955,7 @@ class BaseConsole
             self::$_progressEtaLastUpdate = time();
         } elseif ($done < $total) {
             // update ETA once per second to avoid flapping
-            if (time() - self::$_progressEtaLastUpdate > 1) {
+            if (time() - self::$_progressEtaLastUpdate > 1 && $done > self::$_progressEtaLastDone) {
                 $rate = (time() - (self::$_progressEtaLastUpdate ?: self::$_progressStart)) / ($done - self::$_progressEtaLastDone);
                 self::$_progressEta = $rate * ($total - $done);
                 self::$_progressEtaLastUpdate = time();

@@ -147,6 +147,12 @@ the following variables if the error action is defined as [[yii\web\ErrorAction]
 > Info: If you are using the [basic project template](start-installation.md) or the [advanced project template](https://github.com/yiisoft/yii2-app-advanced/blob/master/docs/guide/README.md),
 the error action and the error view are already defined for you.
 
+> Note: If you need to redirect in an error handler, do it the following way:
+> ```php
+> Yii::$app->getResponse()->redirect($url)->send();
+> return;
+> ```
+
 
 ### Customizing Error Response Format <span id="error-format"></span>
 

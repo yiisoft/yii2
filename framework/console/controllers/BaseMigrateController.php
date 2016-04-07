@@ -51,7 +51,7 @@ abstract class BaseMigrateController extends Controller
         return array_merge(
             parent::options($actionID),
             ['migrationPath'], // global for all actions
-            ($actionID === 'create') ? ['templateFile'] : [] // action create
+            $actionID === 'create' ? ['templateFile'] : [] // action create
         );
     }
 
@@ -87,10 +87,10 @@ abstract class BaseMigrateController extends Controller
      * Upgrades the application by applying new migrations.
      * For example,
      *
-     * ~~~
+     * ```
      * yii migrate     # apply all new migrations
      * yii migrate 3   # apply the first 3 new migrations
-     * ~~~
+     * ```
      *
      * @param integer $limit the number of new migrations to be applied. If 0, it means
      * applying all available new migrations.
@@ -101,7 +101,7 @@ abstract class BaseMigrateController extends Controller
     {
         $migrations = $this->getNewMigrations();
         if (empty($migrations)) {
-            $this->stdout("No new migration found. Your system is up-to-date.\n", Console::FG_GREEN);
+            $this->stdout("No new migrations found. Your system is up-to-date.\n", Console::FG_GREEN);
 
             return self::EXIT_CODE_NORMAL;
         }
@@ -145,11 +145,11 @@ abstract class BaseMigrateController extends Controller
      * Downgrades the application by reverting old migrations.
      * For example,
      *
-     * ~~~
+     * ```
      * yii migrate/down     # revert the last migration
      * yii migrate/down 3   # revert the last 3 migrations
      * yii migrate/down all # revert all migrations
-     * ~~~
+     * ```
      *
      * @param integer $limit the number of migrations to be reverted. Defaults to 1,
      * meaning the last applied migration will be reverted.
@@ -207,11 +207,11 @@ abstract class BaseMigrateController extends Controller
      * This command will first revert the specified migrations, and then apply
      * them again. For example,
      *
-     * ~~~
+     * ```
      * yii migrate/redo     # redo the last applied migration
      * yii migrate/redo 3   # redo the last 3 applied migrations
      * yii migrate/redo all # redo all migrations
-     * ~~~
+     * ```
      *
      * @param integer $limit the number of migrations to be redone. Defaults to 1,
      * meaning the last applied migration will be redone.
@@ -277,12 +277,12 @@ abstract class BaseMigrateController extends Controller
      * This command will first revert the specified migrations, and then apply
      * them again. For example,
      *
-     * ~~~
+     * ```
      * yii migrate/to 101129_185401                      # using timestamp
      * yii migrate/to m101129_185401_create_user_table   # using full name
      * yii migrate/to 1392853618                         # using UNIX timestamp
      * yii migrate/to "2014-02-15 13:00:50"              # using strtotime() parseable string
-     * ~~~
+     * ```
      *
      * @param string $version either the version name or the certain time value in the past
      * that the application should be migrated to. This can be either the timestamp,
@@ -308,10 +308,10 @@ abstract class BaseMigrateController extends Controller
      *
      * No actual migration will be performed.
      *
-     * ~~~
+     * ```
      * yii migrate/mark 101129_185401                      # using timestamp
      * yii migrate/mark m101129_185401_create_user_table   # using full name
-     * ~~~
+     * ```
      *
      * @param string $version the version at which the migration history should be marked.
      * This can be either the timestamp or the full name of the migration.
@@ -370,11 +370,11 @@ abstract class BaseMigrateController extends Controller
      * This command will show the list of migrations that have been applied
      * so far. For example,
      *
-     * ~~~
+     * ```
      * yii migrate/history     # showing the last 10 migrations
      * yii migrate/history 5   # showing the last 5 migrations
      * yii migrate/history all # showing the whole history
-     * ~~~
+     * ```
      *
      * @param integer $limit the maximum number of migrations to be displayed.
      * If it is "all", the whole migration history will be displayed.
@@ -414,11 +414,11 @@ abstract class BaseMigrateController extends Controller
      * This command will show the new migrations that have not been applied.
      * For example,
      *
-     * ~~~
+     * ```
      * yii migrate/new     # showing the first 10 new migrations
      * yii migrate/new 5   # showing the first 5 new migrations
      * yii migrate/new all # showing all new migrations
-     * ~~~
+     * ```
      *
      * @param integer $limit the maximum number of new migrations to be displayed.
      * If it is `all`, all available new migrations will be displayed.
@@ -461,9 +461,9 @@ abstract class BaseMigrateController extends Controller
      * After using this command, developers should modify the created migration
      * skeleton by filling up the actual migration logic.
      *
-     * ~~~
+     * ```
      * yii migrate/create create_user_table
-     * ~~~
+     * ```
      *
      * @param string $name the name of the new migration. This should only contain
      * letters, digits and/or underscores.
@@ -475,11 +475,13 @@ abstract class BaseMigrateController extends Controller
             throw new Exception('The migration name should contain letters, digits and/or underscore characters only.');
         }
 
-        $name = 'm' . gmdate('ymd_His') . '_' . $name;
-        $file = $this->migrationPath . DIRECTORY_SEPARATOR . $name . '.php';
-
+        $className = 'm' . gmdate('ymd_His') . '_' . $name;
+        $file = $this->migrationPath . DIRECTORY_SEPARATOR . $className . '.php';
         if ($this->confirm("Create new migration '$file'?")) {
-            $content = $this->renderFile(Yii::getAlias($this->templateFile), ['className' => $name]);
+            $content = $this->generateMigrationSourceCode([
+                'name' => $name,
+                'className' => $className,
+            ]);
             file_put_contents($file, $content);
             $this->stdout("New migration created successfully.\n", Console::FG_GREEN);
         }
@@ -636,6 +638,22 @@ abstract class BaseMigrateController extends Controller
         sort($migrations);
 
         return $migrations;
+    }
+
+    /**
+     * Generates new migration source PHP code.
+     * Child class may override this method, adding extra logic or variation to the process.
+     * @param array $params generation parameters, usually following parameters are present:
+     *
+     *  - name: string migration base name
+     *  - className: string migration class name
+     *
+     * @return string generated PHP code.
+     * @since 2.0.8
+     */
+    protected function generateMigrationSourceCode($params)
+    {
+        return $this->renderFile(Yii::getAlias($this->templateFile), $params);
     }
 
     /**

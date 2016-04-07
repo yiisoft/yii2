@@ -77,6 +77,8 @@ use yii\widgets\ActiveForm;
 It is important to remember that you add the `enctype` option to the form so that the file can be properly uploaded.
 The `fileInput()` call will render a `<input type="file">` tag which will allow users to select a file to upload.
 
+> Tip: since version 2.0.8, [[yii\web\widgets\ActiveField::fileInput|fileInput]] adds `enctype` option to the form
+  automatically when file input field is used.
 
 ## Wiring Up <span id="wiring-up"></span>
 
@@ -119,8 +121,10 @@ the uploaded file is valid and save the file on the server.
 You can also upload multiple files at once, with some adjustments to the code listed in the previous subsections.
 
 First you should adjust the model class by adding the `maxFiles` option in the `file` validation rule to limit
-the maximum number of files allowed to upload. The `upload()` method should also be updated to save the uploaded files
-one by one.
+the maximum number of files allowed to upload. Setting `maxFiles` to `0` means there is no limit on the number of files
+that can be uploaded simultaneously. The maximum number of files allowed to be uploaded simultaneously is also limited
+with PHP directive [`max_file_uploads`](http://php.net/manual/en/ini.core.php#ini.max-file-uploads),
+which defaults to 20. The `upload()` method should also be updated to save the uploaded files one by one.
 
 ```php
 namespace app\models;

@@ -112,7 +112,7 @@ All Rights Reserved.
 * [Аутентификация](security-authentication.md)
 * [Авторизация](security-authorization.md)
 * [Работа с паролями](security-passwords.md)
-* [Клиенты авторизации](https://github.com/yiisoft/yii2-authclient/blob/master/docs/guide/README.md)
+* [Клиенты авторизации](https://github.com/yiisoft/yii2-authclient/blob/master/docs/guide-ru/README.md)
 * [Лучшие практики](security-best-practices.md)
 
 
@@ -166,9 +166,8 @@ All Rights Reserved.
 * [Шаблон приложения advanced](https://github.com/yiisoft/yii2-app-advanced/blob/master/docs/guide/README.md)
 * [Создание приложения с нуля](tutorial-start-from-scratch.md)
 * [Консольные команды](tutorial-console.md)
-* [Валидаторы](tutorial-core-validators.md)
-* [Интернационализация](tutorial-i18n.md)
 * [Встроенные валидаторы](tutorial-core-validators.md)
+* [Интернационализация](tutorial-i18n.md)
 * [Отправка почты](tutorial-mailing.md)
 * [Оптимизация производительности](tutorial-performance-tuning.md)
 * [Окружение виртуального хостинга](tutorial-shared-hosting.md)

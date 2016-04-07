@@ -6,7 +6,7 @@ hechas en Yii.
 Cada aplicación Yii contiene un objeto `Application` que es creado en el [script de entrada](structure-entry-scripts.md)
 y es globalmente accesible a través de la expresión `\Yii::$app`.
 
-> Información: Dependiendo del contexto, cuando decimos "una aplicación", puede significar tanto un objeto Application
+> Info: Dependiendo del contexto, cuando decimos "una aplicación", puede significar tanto un objeto Application
   o un sistema desarrollado en Yii.
 
 Hay dos tipos de aplicaciones: [[yii\web\Application|aplicaciones Web]] y
@@ -150,7 +150,7 @@ if (YII_ENV_DEV) {
 }
 ```
 
-> Nota: Agregar demasiados componentes `bootstrap` degradará la performance de tu aplicación debido a que
+> Note: Agregar demasiados componentes `bootstrap` degradará la performance de tu aplicación debido a que
   por cada request, se necesita correr el mismo grupo de componentes. Por lo tanto, utiliza componentes `bootstrap` con criterio.
 
 
@@ -372,11 +372,11 @@ no especifica una. La ruta puede consistir el ID de un sub-módulo, el ID de un 
 Por ejemplo, `help`, `post/create`, `admin/post/create`. Si el ID de la acción no se especifica, tomará el valor por defecto
 especificado en [[yii\base\Controller::defaultAction]].
 
-Para [yii\web\Application|aplicaciones Web], el valor por defecto de esta propiedad es `'site'`, lo que significa que el
+Para [[yii\web\Application|aplicaciones Web]], el valor por defecto de esta propiedad es `'site'`, lo que significa que el
 controlador `SiteController` y su acción por defecto serán usados. Como resultado, si accedes a la aplicación sin
 especificar una ruta, mostrará el resultado de `app\controllers\SiteController::actionIndex()`.
 
-Para [yii\console\Application|aplicaciones de consola], el valor por defecto es `'help'`, lo que significa que el comando
+Para [[yii\console\Application|aplicaciones de consola]], el valor por defecto es `'help'`, lo que significa que el comando
 [[yii\console\controllers\HelpController::actionIndex()]] debería ser utilizado. Como resultado, si corres el comando `yii`
 sin proveer ningún argumento, mostrará la información de ayuda.
 

@@ -54,13 +54,13 @@ class AssetManager extends Component
      * The following example shows how to disable the bootstrap css file used by Bootstrap widgets
      * (because you want to use your own styles):
      *
-     * ~~~
+     * ```php
      * [
      *     'yii\bootstrap\BootstrapAsset' => [
      *         'css' => [],
      *     ],
      * ]
-     * ~~~
+     * ```
      */
     public $bundles = [];
     /**
@@ -71,15 +71,6 @@ class AssetManager extends Component
      * @var string the base URL through which the published asset files can be accessed.
      */
     public $baseUrl = '@web/assets';
-    /**
-     * @var boolean|string the URI scheme to use. Possible values:
-     *
-     * - `false` (default): assets URL without host info.
-     * - `true`: assets URL with an absolute base URL whose scheme is the same as that in [[\yii\web\UrlManager::hostInfo]].
-     * - string: assets URL with an absolute base URL with the specified scheme (either `http` or `https`).
-     * @since 2.0.7
-     */
-    public $defaultScheme = false;
     /**
      * @var array mapping from source asset files (keys) to target asset files (values).
      *
@@ -124,9 +115,9 @@ class AssetManager extends Component
      * to Web users. For example, for Apache Web server, the following configuration directive should be added
      * for the Web folder:
      *
-     * ~~~
+     * ```apache
      * Options FollowSymLinks
-     * ~~~
+     * ```
      */
     public $linkAssets = false;
     /**
@@ -299,7 +290,6 @@ class AssetManager extends Component
     /**
      * Returns the actual URL for the specified asset.
      * The actual URL is obtained by prepending either [[baseUrl]] or [[AssetManager::baseUrl]] to the given asset path.
-     * [[scheme]] or [[AssetManager::defaultScheme]] is used, if specified.
      * @param AssetBundle $bundle the asset bundle which the asset file belongs to
      * @param string $asset the asset path. This should be one of the assets listed in [[js]] or [[css]].
      * @return string the actual URL for the specified asset.
@@ -323,11 +313,6 @@ class AssetManager extends Component
 
         if (!Url::isRelative($asset) || strncmp($asset, '/', 1) === 0) {
             return $asset;
-        }
-
-        $scheme = isset($bundle->scheme) ? $bundle->scheme : $this->defaultScheme;
-        if ($scheme) {
-            $baseUrl = Url::base($scheme) . $baseUrl;
         }
 
         if ($this->appendTimestamp && ($timestamp = @filemtime("$basePath/$asset")) > 0) {
@@ -366,9 +351,9 @@ class AssetManager extends Component
             $asset = $bundle->sourcePath . '/' . $asset;
         }
 
-        $n = mb_strlen($asset);
+        $n = mb_strlen($asset, Yii::$app->charset);
         foreach ($this->assetMap as $from => $to) {
-            $n2 = mb_strlen($from);
+            $n2 = mb_strlen($from, Yii::$app->charset);
             if ($n2 <= $n && substr_compare($asset, $from, $n - $n2, $n2) === 0) {
                 return $to;
             }
@@ -531,6 +516,7 @@ class AssetManager extends Component
         $dstDir = $this->basePath . DIRECTORY_SEPARATOR . $dir;
         if ($this->linkAssets) {
             if (!is_dir($dstDir)) {
+                FileHelper::createDirectory(dirname($dstDir), $this->dirMode, true);
                 symlink($src, $dstDir);
             }
         } elseif (!empty($options['forceCopy']) || ($this->forceCopy && !isset($options['forceCopy'])) || !is_dir($dstDir)) {
@@ -564,7 +550,7 @@ class AssetManager extends Component
      * This method does not perform any publishing. It merely tells you
      * if the file or directory is published, where it will go.
      * @param string $path directory or file path being published
-     * @return string the published file path. False if the file or directory does not exist
+     * @return string|false string the published file path. False if the file or directory does not exist
      */
     public function getPublishedPath($path)
     {
@@ -585,7 +571,7 @@ class AssetManager extends Component
      * This method does not perform any publishing. It merely tells you
      * if the file path is published, what the URL will be to access it.
      * @param string $path directory or file path being published
-     * @return string the published URL for the file or directory. False if the file or directory does not exist.
+     * @return string|false string the published URL for the file or directory. False if the file or directory does not exist.
      */
     public function getPublishedUrl($path)
     {

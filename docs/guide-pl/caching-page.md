@@ -4,7 +4,7 @@ Pamięć podręczna stron
 Pamięć podręczna stron odnosi się do zapisu zawartości całej strony po stronie serwera. Kiedy zostanie ona ponownie wywołana, 
 zawartość zostanie wyświetlona od razu z pamięci podręcznej zamiast generować ją ponownie od podstaw.
 
-Pamięć podręczna stron jest obsługiwana przez [[yii\filters\PageCache]], [filtr akcji](structure-filters.md).
+Pamięć podręczna stron jest obsługiwana przez [filtr akcji](structure-filters.md) [[yii\filters\PageCache|PageCache]].
 Poniżej znajdziesz przykładowy sposób użycia w klasie kontrolera:
 
 ```php

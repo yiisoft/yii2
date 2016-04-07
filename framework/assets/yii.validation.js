@@ -192,17 +192,30 @@ yii.validation = (function ($) {
 
             var valid = true;
 
-            if (options.enableIDN) {
-                var regexp = /^(.*<?)(.*)@(.*)(>?)$/,
-                    matches = regexp.exec(value);
-                if (matches === null) {
+
+            var regexp = /^((?:"?([^"]*)"?\s)?)(?:\s+)?(?:(<?)((.+)@([^>]+))(>?))$/,
+                matches = regexp.exec(value);
+
+            if (matches === null) {
+                valid = false
+            } else {
+                if (options.enableIDN) {
+                    matches[5] = punycode.toASCII(matches[5]);
+                    matches[6] = punycode.toASCII(matches[6]);
+
+                    value = matches[1] + matches[3] + matches[5] + '@' + matches[6] + matches[7];
+                }
+
+                if (matches[5].length > 64) {
+                    valid = false;
+                } else if ((matches[5] + '@' + matches[6]).length > 254) {
                     valid = false;
                 } else {
-                    value = matches[1] + punycode.toASCII(matches[2]) + '@' + punycode.toASCII(matches[3]) + matches[4];
+                    valid = value.match(options.pattern) || (options.allowName && value.match(options.fullPattern));
                 }
             }
 
-            if (!valid || !(value.match(options.pattern) || (options.allowName && value.match(options.fullPattern)))) {
+            if (!valid) {
                 pub.addMessage(messages, options.message, value);
             }
         },
@@ -328,9 +341,9 @@ yii.validation = (function ($) {
 
             var matches = new RegExp(options.ipParsePattern).exec(value);
             if (matches) {
-                negation = (matches[1] !== '') ? matches[1] : null;
-                cidr = (matches[4] !== '') ? matches[4] : null;
+                negation = matches[1] || null;
                 value = matches[2];
+                cidr = matches[4] || null;
             }
 
             if (options.subnet === true && cidr === null) {
@@ -342,7 +355,7 @@ yii.validation = (function ($) {
                 return;
             }
             if (options.negation === false && negation !== null) {
-                pub.addMessage(messages, options.messages.wrongIp, value);
+                pub.addMessage(messages, options.messages.message, value);
                 return;
             }
 
@@ -351,14 +364,14 @@ yii.validation = (function ($) {
                     pub.addMessage(messages, options.messages.ipv6NotAllowed, value);
                 }
                 if (!(new RegExp(options.ipv6Pattern)).test(value)) {
-                    pub.addMessage(messages, options.messages.wrongIp, value);
+                    pub.addMessage(messages, options.messages.message, value);
                 }
             } else {
                 if (!options.ipv4) {
                     pub.addMessage(messages, options.messages.ipv4NotAllowed, value);
                 }
                 if (!(new RegExp(options.ipv4Pattern)).test(value)) {
-                    pub.addMessage(messages, options.messages.wrongIp, value);
+                    pub.addMessage(messages, options.messages.message, value);
                 }
             }
         }
@@ -409,7 +422,7 @@ yii.validation = (function ($) {
         }
 
         if (options.mimeTypes && options.mimeTypes.length > 0) {
-            if (!~options.mimeTypes.indexOf(file.type)) {
+            if (!validateMimeType(options.mimeTypes, file.type)) {
                 messages.push(options.wrongMimeType.replace(/\{file\}/g, file.name));
             }
         }
@@ -421,6 +434,16 @@ yii.validation = (function ($) {
         if (options.minSize && options.minSize > file.size) {
             messages.push(options.tooSmall.replace(/\{file\}/g, file.name));
         }
+    }
+
+    function validateMimeType(mimeTypes, fileType) {
+        for (var i = 0, len = mimeTypes.length; i < len; i++) {
+            if (new RegExp(mimeTypes[i]).test(fileType)) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     return pub;

@@ -41,7 +41,7 @@ DOCUMENTATION
 Yii 2.0 has a [Definitive Guide](http://www.yiiframework.com/doc-2.0/guide-index.html) and 
 a [Class Reference](http://www.yiiframework.com/doc-2.0/index.html) which cover every detail of Yii.
 
-There is also a [PDF version](http://stuff.cebe.cc/yii2-guide.pdf) of the Definitive Guide
+There is also a [PDF version](http://stuff.cebe.cc/yii2-guide.en.pdf) of the Definitive Guide
 and a [Definitive Guide Mirror](http://stuff.cebe.cc/yii2docs/) which is updated every 15 minutes.
 
 For 1.1 users, you may refer to [Upgrading from Yii 1.1](docs/guide/intro-upgrade-from-v1.md)

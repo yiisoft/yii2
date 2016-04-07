@@ -2,6 +2,7 @@
 
 namespace yiiunit\framework\db;
 
+use yii\db\Expression;
 use yii\db\Query;
 
 /**
@@ -166,6 +167,14 @@ class QueryTest extends DatabaseTestCase
 
         $query->addOrderBy('age ASC, company DESC');
         $this->assertEquals(['team' => SORT_ASC, 'company' => SORT_DESC, 'age' => SORT_ASC], $query->orderBy);
+
+        $expression = new Expression('SUBSTR(name, 3, 4) DESC, x ASC');
+        $query->orderBy($expression);
+        $this->assertEquals([$expression], $query->orderBy);
+
+        $expression = new Expression('SUBSTR(name, 3, 4) DESC, x ASC');
+        $query->addOrderBy($expression);
+        $this->assertEquals([$expression, $expression], $query->orderBy);
     }
 
     public function testLimitOffset()
@@ -178,6 +187,20 @@ class QueryTest extends DatabaseTestCase
 
     public function testUnion()
     {
+        $connection = $this->getConnection();
+        $query = new Query;
+        $query->select(['id', 'name'])
+            ->from('item')
+            ->limit(2)
+            ->union(
+                (new Query())
+                    ->select(['id', 'name'])
+                    ->from(['category'])
+                    ->limit(2)
+            );
+        $result = $query->all($connection);
+        $this->assertNotEmpty($result);
+        $this->assertSame(4, count($result));
     }
 
     public function testOne()

@@ -222,6 +222,33 @@ SQL;
         $this->assertEquals('user5@example.com', $command->queryScalar());
     }
 
+    public function paramsNonWhereProvider()
+    {
+        return[
+            ['SELECT SUBSTR(name, :len) FROM {{customer}} WHERE [[email]] = :email GROUP BY SUBSTR(name, :len)'],
+            ['SELECT SUBSTR(name, :len) FROM {{customer}} WHERE [[email]] = :email ORDER BY SUBSTR(name, :len)'],
+            ['SELECT SUBSTR(name, :len) FROM {{customer}} WHERE [[email]] = :email'],
+        ];
+    }
+
+    /**
+     * Test whether param binding works in other places than WHERE
+     * @dataProvider paramsNonWhereProvider
+     */
+    public function testBindParamsNonWhere($sql)
+    {
+        $db = $this->getConnection();
+
+        $db->createCommand()->insert('customer', ['name' => 'testParams', 'email' => 'testParams@example.com', 'address' => '1'])->execute();
+
+        $params = [
+            ':email' => 'testParams@example.com',
+            ':len' => 5,
+        ];
+        $command = $db->createCommand($sql, $params);
+        $this->assertEquals('Params', $command->queryScalar());
+    }
+
     public function testFetchMode()
     {
         $db = $this->getConnection();
@@ -263,7 +290,7 @@ SQL;
     public function testInsert()
     {
         $db = $this->getConnection();
-        $db->createCommand('DELETE FROM {{customer}};')->execute();
+        $db->createCommand('DELETE FROM {{customer}}')->execute();
 
         $command = $db->createCommand();
         $command->insert(
@@ -275,7 +302,7 @@ SQL;
             ]
         )->execute();
         $this->assertEquals(1, $db->createCommand('SELECT COUNT(*) FROM {{customer}};')->queryScalar());
-        $record = $db->createCommand('SELECT email, name, address FROM {{customer}};')->queryOne();
+        $record = $db->createCommand('SELECT [[email]], [[name]], [[address]] FROM {{customer}}')->queryOne();
         $this->assertEquals([
             'email' => 't1@example.com',
             'name' => 'test',
@@ -286,14 +313,21 @@ SQL;
     public function testInsertExpression()
     {
         $db = $this->getConnection();
-        $db->createCommand('DELETE FROM {{order_with_null_fk}};')->execute();
+        $db->createCommand('DELETE FROM {{order_with_null_fk}}')->execute();
 
         switch($this->driverName){
-            case 'pgsql': $expression = "EXTRACT(YEAR FROM TIMESTAMP 'now')"; break;
+            case 'pgsql':
+                $expression = "EXTRACT(YEAR FROM TIMESTAMP 'now')";
+            break;
             case 'cubrid':
-            case 'mysql': $expression = "YEAR(NOW())"; break;
-            default:
-            case 'sqlite': $expression = "strftime('%Y')"; break;
+            case 'mysql':
+                $expression = "YEAR(NOW())";
+            break;
+            case 'sqlite':
+                $expression = "strftime('%Y')";
+            break;
+            case 'sqlsrv':
+                $expression = 'YEAR(GETDATE())';
         }
 
         $command = $db->createCommand();
@@ -304,8 +338,8 @@ SQL;
                 'total' => 1,
             ]
         )->execute();
-        $this->assertEquals(1, $db->createCommand('SELECT COUNT(*) FROM {{order_with_null_fk}};')->queryScalar());
-        $record = $db->createCommand('SELECT created_at FROM {{order_with_null_fk}};')->queryOne();
+        $this->assertEquals(1, $db->createCommand('SELECT COUNT(*) FROM {{order_with_null_fk}}')->queryScalar());
+        $record = $db->createCommand('SELECT [[created_at]] FROM {{order_with_null_fk}}')->queryOne();
         $this->assertEquals([
             'created_at' => date('Y'),
         ], $record);
@@ -314,7 +348,10 @@ SQL;
     public function testCreateTable()
     {
         $db = $this->getConnection();
-        $db->createCommand("DROP TABLE IF EXISTS testCreateTable;")->execute();
+
+        if($db->getSchema()->getTableSchema('testCreateTable') !== null){
+            $db->createCommand()->dropTable('testCreateTable')->execute();
+        }
 
         $db->createCommand()->createTable('testCreateTable', ['id' => Schema::TYPE_PK, 'bar' => Schema::TYPE_INTEGER])->execute();
         $db->createCommand()->insert('testCreateTable', ['bar' => 1])->execute();
@@ -331,7 +368,10 @@ SQL;
         }
 
         $db = $this->getConnection();
-        $db->createCommand("DROP TABLE IF EXISTS testAlterTable;")->execute();
+
+        if($db->getSchema()->getTableSchema('testAlterTable') !== null){
+            $db->createCommand()->dropTable('testAlterTable')->execute();
+        }
 
         $db->createCommand()->createTable('testAlterTable', ['id' => Schema::TYPE_PK, 'bar' => Schema::TYPE_INTEGER])->execute();
         $db->createCommand()->insert('testAlterTable', ['bar' => 1])->execute();
@@ -347,24 +387,53 @@ SQL;
     }
 
 
+    public function testDropTable()
+    {
+        $db = $this->getConnection();
+
+        $tableName = 'type';
+        $this->assertNotNull($db->getSchema()->getTableSchema($tableName));
+        $db->createCommand()->dropTable($tableName)->execute();
+        $this->assertNull($db->getSchema()->getTableSchema($tableName));
+    }
+
+    public function testTruncateTable()
+    {
+        $db = $this->getConnection();
+
+        $rows = $db->createCommand('SELECT * FROM {{animal}}')->queryAll();
+        $this->assertEquals(2, count($rows));
+        $db->createCommand()->truncateTable('animal')->execute();
+        $rows = $db->createCommand('SELECT * FROM {{animal}}')->queryAll();
+        $this->assertEquals(0, count($rows));
+    }
+
+    public function testRenameTable()
+    {
+        $db = $this->getConnection();
+
+        $fromTableName = 'type';
+        $toTableName = 'new_type';
+
+        if($db->getSchema()->getTableSchema($toTableName) !== null){
+            $db->createCommand()->dropTable($toTableName)->execute();
+        }
+
+        $this->assertNotNull($db->getSchema()->getTableSchema($fromTableName));
+        $this->assertNull($db->getSchema()->getTableSchema($toTableName));
+
+        $db->createCommand()->renameTable($fromTableName, $toTableName)->execute();
+
+        $this->assertNull($db->getSchema()->getTableSchema($fromTableName, true));
+        $this->assertNotNull($db->getSchema()->getTableSchema($toTableName, true));
+    }
+
     /*
     public function testUpdate()
     {
     }
 
     public function testDelete()
-    {
-    }
-
-    public function testRenameTable()
-    {
-    }
-
-    public function testDropTable()
-    {
-    }
-
-    public function testTruncateTable()
     {
     }
 

@@ -48,7 +48,7 @@ se define a través de la getter `getProp2()` y el setter `setProp2()`. Este cas
 
 Debido a que esta clase es un comportamiento, cuando está unido a un componente, el componente también tienen la propiedad `prop1` y `prop2` y el método `foo()`.
 
-> Consejo: Dentro de un comportamiento, puede acceder al componente que el comportamiento está unido a través de la propiedad [[yii\base\Behavior::owner]].
+> Tip: Dentro de un comportamiento, puede acceder al componente que el comportamiento está unido a través de la propiedad [[yii\base\Behavior::owner]].
 
 
 Gestión de eventos de componentes

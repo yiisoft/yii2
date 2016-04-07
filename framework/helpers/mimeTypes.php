@@ -414,6 +414,7 @@ return [
     'm3a' => 'audio/mpeg',
     'm3u' => 'audio/x-mpegurl',
     'm3u8' => 'application/vnd.apple.mpegurl',
+    'm4a' => 'audio/mp4',
     'm4u' => 'video/vnd.mpegurl',
     'm4v' => 'video/x-m4v',
     'ma' => 'application/mathematica',

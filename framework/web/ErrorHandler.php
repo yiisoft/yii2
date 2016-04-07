@@ -59,6 +59,14 @@ class ErrorHandler extends \yii\base\ErrorHandler
      * @var string the path of the view file for rendering previous exceptions.
      */
     public $previousExceptionView = '@yii/views/errorHandler/previousException.php';
+    /**
+     * @var array list of the PHP predefined variables that should be displayed on the error page.
+     * Note that a variable must be accessible via `$GLOBALS`. Otherwise it won't be displayed.
+     * Defaults to `['_GET', '_POST', '_FILES', '_COOKIE', '_SESSION']`.
+     * @see renderRequest()
+     * @since 2.0.7
+     */
+    public $displayVars = ['_GET', '_POST', '_FILES', '_COOKIE', '_SESSION'];
 
 
     /**
@@ -162,7 +170,7 @@ class ErrorHandler extends \yii\base\ErrorHandler
      */
     public function htmlEncode($text)
     {
-        return htmlspecialchars($text, ENT_QUOTES, Yii::$app->charset);
+        return htmlspecialchars($text, ENT_QUOTES, 'UTF-8');
     }
 
     /**
@@ -289,13 +297,15 @@ class ErrorHandler extends \yii\base\ErrorHandler
     }
 
     /**
-     * Renders the request information.
+     * Renders the global variables of the request.
+     * List of global variables is defined in [[displayVars]].
      * @return string the rendering result
+     * @see displayVars
      */
     public function renderRequest()
     {
         $request = '';
-        foreach (['_GET', '_POST', '_SERVER', '_FILES', '_COOKIE', '_SESSION', '_ENV'] as $name) {
+        foreach ($this->displayVars as $name) {
             if (!empty($GLOBALS[$name])) {
                 $request .= '$' . $name . ' = ' . VarDumper::export($GLOBALS[$name]) . ";\n\n";
             }
@@ -391,8 +401,8 @@ class ErrorHandler extends \yii\base\ErrorHandler
                 $args[$key] = '<span class="keyword">' . ($value ? 'true' : 'false') . '</span>';
             } elseif (is_string($value)) {
                 $fullValue = $this->htmlEncode($value);
-                if (mb_strlen($value, 'utf8') > 32) {
-                    $displayValue = $this->htmlEncode(mb_substr($value, 0, 32, 'utf8')) . '...';
+                if (mb_strlen($value, 'UTF-8') > 32) {
+                    $displayValue = $this->htmlEncode(mb_substr($value, 0, 32, 'UTF-8')) . '...';
                     $args[$key] = "<span class=\"string\" title=\"$fullValue\">'$displayValue'</span>";
                 } else {
                     $args[$key] = "<span class=\"string\">'$fullValue'</span>";

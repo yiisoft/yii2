@@ -1,7 +1,7 @@
 Query Builder
 =============
 
-Built on top of [Database Access Objects](db-dao.md), query builder allows you to construct a SQL statement
+Built on top of [Database Access Objects](db-dao.md), query builder allows you to construct a SQL query
 in a programmatic and DBMS-agnostic way. Compared to writing raw SQL statements, using query builder will help you write 
 more readable SQL-related code and generate more secure SQL statements.  
 
@@ -21,7 +21,7 @@ $rows = (new \yii\db\Query())
     ->all();
 ```
 
-The above code generates and executes the following SQL statement, where the `:last_name` parameter is bound with the
+The above code generates and executes the following SQL query, where the `:last_name` parameter is bound with the
 string `'Smith'`.
 
 ```sql
@@ -40,8 +40,8 @@ LIMIT 10
 ## Building Queries <span id="building-queries"></span>
 
 To build a [[yii\db\Query]] object, you call different query building methods to specify different parts of
-a SQL statement. The names of these methods resemble the SQL keywords used in the corresponding parts of the SQL
-statement. For example, to specify the `FROM` part of a SQL statement, you would call the `from()` method.
+a SQL query. The names of these methods resemble the SQL keywords used in the corresponding parts of the SQL
+statement. For example, to specify the `FROM` part of a SQL query, you would call the [[yii\db\Query::from()|from()]] method.
 All the query building methods return the query object itself, which allows you to chain multiple calls together.
 
 In the following, we will describe the usage of each query building method.
@@ -61,7 +61,7 @@ $query->select(['id', 'email']);
 $query->select('id, email');
 ```
 
-The column names being selected may include table prefixes and/or column aliases, like you do when writing raw SQL statements. 
+The column names being selected may include table prefixes and/or column aliases, like you do when writing raw SQL queries.
 For example,
 
 ```php
@@ -88,6 +88,9 @@ that contains commas to avoid incorrect automatic name quoting. For example,
 ```php
 $query->select(["CONCAT(first_name, ' ', last_name) AS full_name", 'email']); 
 ```
+
+As with all places where raw SQL is involved, you may use the [DBMS agnostic quoting syntax](db-dao.md#quoting-table-and-column-names)
+for table and column names when writing DB expressions in select.
 
 Starting from version 2.0.1, you may also select sub-queries. You should specify each sub-query in terms of 
 a [[yii\db\Query]] object. For example,
@@ -153,7 +156,7 @@ $query->from(['u' => $subQuery]);
 
 ### [[yii\db\Query::where()|where()]] <span id="where"></span>
 
-The [[yii\db\Query::where()|where()]] method specifies the `WHERE` fragment of a SQL statement. You can use one of
+The [[yii\db\Query::where()|where()]] method specifies the `WHERE` fragment of a SQL query. You can use one of
 the three formats to specify a `WHERE` condition:
 
 - string format, e.g., `'status=1'`
@@ -163,13 +166,17 @@ the three formats to specify a `WHERE` condition:
 
 #### String Format <span id="string-format"></span>
 
-String format is best used to specify very simple conditions. It works as if you are writing a raw SQL. For example,
+String format is best used to specify very simple conditions or if you need to use builtin functions of the DBMS.
+It works as if you are writing a raw SQL. For example,
 
 ```php
 $query->where('status=1');
 
 // or use parameter binding to bind dynamic parameter values
 $query->where('status=:status', [':status' => $status]);
+
+// raw SQL using MySQL YEAR() function on a date field
+$query->where('YEAR(somedate) = 2015');
 ```
 
 Do NOT embed variables directly in the condition like the following, especially if the variable values come from 
@@ -188,6 +195,8 @@ $query->where('status=:status')
     ->addParams([':status' => $status]);
 ```
 
+As with all places where raw SQL is involved, you may use the [DBMS agnostic quoting syntax](db-dao.md#quoting-table-and-column-names)
+for table and column names when writing conditions in string format. 
 
 #### Hash Format <span id="hash-format"></span>
 
@@ -214,6 +223,9 @@ $userQuery = (new Query())->select('id')->from('user');
 // ...WHERE `id` IN (SELECT `id` FROM `user`)
 $query->where(['id' => $userQuery]);
 ```
+
+Using the Hash Format, Yii internally uses parameter binding so in contrast to the [string format](#string-format), here
+you do not have to add parameters manually.
 
 
 #### Operator Format <span id="operator-format"></span>
@@ -286,6 +298,9 @@ the operator can be one of the following:
 - `>`, `<=`, or any other valid DB operator that takes two operands: the first operand must be a column name
   while the second operand a value. For example, `['>', 'age', 10]` will generate `age>10`.
 
+Using the Operator Format, Yii internally uses parameter binding so in contrast to the [string format](#string-format), here
+you do not have to add parameters manually.
+
 
 #### Appending Conditions <span id="appending-conditions"></span>
 
@@ -304,16 +319,16 @@ if (!empty($search)) {
 }
 ```
 
-If `$search` is not empty, the following SQL statement will be generated:
+If `$search` is not empty, the following WHERE condition will be generated:
 
 ```sql
-... WHERE (`status` = 10) AND (`title` LIKE '%yii%')
+WHERE (`status` = 10) AND (`title` LIKE '%yii%')
 ```
 
 
 #### Filter Conditions <span id="filter-conditions"></span>
 
-When building `WHERE` conditions based on input from end users, you usually want to ignore those empty input values.
+When building `WHERE` conditions based on input from end users, you usually want to ignore those input values, that are empty.
 For example, in a search form that allows you to search by username and email, you would like to ignore the username/email
 condition if the user does not enter anything in the username/email input field. You can achieve this goal by
 using the [[yii\db\Query::filterWhere()|filterWhere()]] method:
@@ -328,7 +343,7 @@ $query->filterWhere([
 
 The only difference between [[yii\db\Query::filterWhere()|filterWhere()]] and [[yii\db\Query::where()|where()]] 
 is that the former will ignore empty values provided in the condition in [hash format](#hash-format). So if `$email`
-is empty while `$username` is not, the above code will result in the SQL `...WHERE username=:username`.
+is empty while `$username` is not, the above code will result in the SQL condition `WHERE username=:username`.
 
 > Info: A value is considered empty if it is null, an empty array, an empty string or a string consisting of whitespaces only.
 
@@ -339,8 +354,8 @@ to append additional filter conditions to the existing one.
 
 ### [[yii\db\Query::orderBy()|orderBy()]] <span id="order-by"></span>
 
-The [[yii\db\Query::orderBy()|orderBy()]] method specifies the `ORDER BY` fragment of a SQL statement. For example,
- 
+The [[yii\db\Query::orderBy()|orderBy()]] method specifies the `ORDER BY` fragment of a SQL query. For example,
+
 ```php
 // ... ORDER BY `id` ASC, `name` DESC
 $query->orderBy([
@@ -372,7 +387,7 @@ $query->orderBy('id ASC')
 
 ### [[yii\db\Query::groupBy()|groupBy()]] <span id="group-by"></span>
 
-The [[yii\db\Query::groupBy()|groupBy()]] method specifies the `GROUP BY` fragment of a SQL statement. For example,
+The [[yii\db\Query::groupBy()|groupBy()]] method specifies the `GROUP BY` fragment of a SQL query. For example,
 
 ```php
 // ... GROUP BY `id`, `status`
@@ -399,7 +414,7 @@ $query->groupBy(['id', 'status'])
 
 ### [[yii\db\Query::having()|having()]] <span id="having"></span>
 
-The [[yii\db\Query::having()|having()]] method specifies the `HAVING` fragment of a SQL statement. It takes
+The [[yii\db\Query::having()|having()]] method specifies the `HAVING` fragment of a SQL query. It takes
 a condition which can be specified in the same way as that for [where()](#where). For example,
 
 ```php
@@ -422,8 +437,8 @@ $query->having(['status' => 1])
 ### [[yii\db\Query::limit()|limit()]] and [[yii\db\Query::offset()|offset()]] <span id="limit-offset"></span>
 
 The [[yii\db\Query::limit()|limit()]] and [[yii\db\Query::offset()|offset()]] methods specify the `LIMIT`
-and `OFFSET` fragments of a SQL statement. For example,
- 
+and `OFFSET` fragments of a SQL query. For example,
+
 ```php
 // ... LIMIT 10 OFFSET 20
 $query->limit(10)->offset(20);
@@ -437,19 +452,22 @@ If you specify an invalid limit or offset (e.g. a negative value), it will be ig
 
 ### [[yii\db\Query::join()|join()]] <span id="join"></span>
 
-The [[yii\db\Query::join()|join()]] method specifies the `JOIN` fragment of a SQL statement. For example,
- 
+The [[yii\db\Query::join()|join()]] method specifies the `JOIN` fragment of a SQL query. For example,
+
 ```php
 // ... LEFT JOIN `post` ON `post`.`user_id` = `user`.`id`
 $query->join('LEFT JOIN', 'post', 'post.user_id = user.id');
 ```
 
 The [[yii\db\Query::join()|join()]] method takes four parameters:
- 
+
 - `$type`: join type, e.g., `'INNER JOIN'`, `'LEFT JOIN'`.
 - `$table`: the name of the table to be joined.
 - `$on`: optional, the join condition, i.e., the `ON` fragment. Please refer to [where()](#where) for details
-   about specifying a condition.
+   about specifying a condition. Note, that the array syntax does **not** work for specifying a column based
+   condition, e.g. `['user.id' => 'comment.userId']` will result in a condition where the user id must be equal
+   to the string `'comment.userId'`. You should use the string syntax instead and specify the condition as
+   `'user.id = comment.userId'`.
 - `$params`: optional, the parameters to be bound to the join condition.
 
 You can use the following shortcut methods to specify `INNER JOIN`, `LEFT JOIN` and `RIGHT JOIN`, respectively.
@@ -479,7 +497,7 @@ In this case, you should put the sub-query in an array and use the array key to 
 
 ### [[yii\db\Query::union()|union()]] <span id="union"></span>
 
-The [[yii\db\Query::union()|union()]] method specifies the `UNION` fragment of a SQL statement. For example,
+The [[yii\db\Query::union()|union()]] method specifies the `UNION` fragment of a SQL query. For example,
 
 ```php
 $query1 = (new \yii\db\Query())
@@ -536,7 +554,7 @@ $row = (new \yii\db\Query())
 
 All these query methods take an optional `$db` parameter representing the [[yii\db\Connection|DB connection]] that
 should be used to perform a DB query. If you omit this parameter, the `db` [application component](structure-application-components.md) will be used
-as the DB connection. Below is another example using the `count()` query method:
+as the DB connection. Below is another example using the [[yii\db\Query::count()|count()]] query method:
 
 ```php
 // executes SQL: SELECT COUNT(*) FROM `user` WHERE `last_name`=:last_name
@@ -550,7 +568,7 @@ When you call a query method of [[yii\db\Query]], it actually does the following
 
 * Call [[yii\db\QueryBuilder]] to generate a SQL statement based on the current construct of [[yii\db\Query]];
 * Create a [[yii\db\Command]] object with the generated SQL statement;
-* Call a query method (e.g. `queryAll()`) of [[yii\db\Command]] to execute the SQL statement and retrieve the data.
+* Call a query method (e.g.  [[yii\db\Command::queryAll()|queryAll()]]) of [[yii\db\Command]] to execute the SQL statement and retrieve the data.
 
 Sometimes, you may want to examine or use the SQL statement built from a [[yii\db\Query]] object. You can
 achieve this goal with the following code: 
@@ -651,5 +669,6 @@ foreach ($query->batch() as $users) {
 }
 
 foreach ($query->each() as $username => $user) {
+    // ...
 }
 ```
