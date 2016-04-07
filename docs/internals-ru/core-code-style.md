@@ -118,7 +118,7 @@ class Foo
   `public`. Использование `var` не допустимо;
 - Открывающая фигурная кавычка должна быть расположена на строке, следующей за строкой объявления функции.
 
-```
+```php
 /**
  * Документация
  */
@@ -263,9 +263,9 @@ if (!$model && null === $event)
 ```php
 $result = $this->getResult();
 if (empty($result)) {
-  return true;
+    return true;
 } else {
-  // дальнейшие вычисления
+    // дальнейшие вычисления
 }
 ```
 
@@ -274,7 +274,7 @@ if (empty($result)) {
 ```php
 $result = $this->getResult();
 if (empty($result)) {
-  return true;
+    return true;
 }
 
 // дальнейшие вычисления
@@ -349,19 +349,19 @@ $mul = array_reduce($numbers, function($r, $x) use($n) {
   Вы можете добавить дополнительный тег `@property` для геттера или сеттера для пояснения назначения переменной метода, если это необходимо.
   Например:
 
-  ```php
-    <?php
-    /**
-     * Returns the errors for all attribute or a single attribute.
-     * @param string $attribute attribute name. Use null to retrieve errors for all attributes.
-     * @property array An array of errors for all attributes. Empty array is returned if no error.
-     * The result is a two-dimensional array. See [[getErrors()]] for detailed description.
-     * @return array errors for all attributes or the specified attribute. Empty array is returned if no error.
-     * Note that when returning errors for all attributes, the result is a two-dimensional array, like the following:
-     * ...
-     */
-    public function getErrors($attribute = null)
-  ```
+```php
+<?php
+/**
+ * Returns the errors for all attribute or a single attribute.
+ * @param string $attribute attribute name. Use null to retrieve errors for all attributes.
+ * @property array An array of errors for all attributes. Empty array is returned if no error.
+ * The result is a two-dimensional array. See [[getErrors()]] for detailed description.
+ * @return array errors for all attributes or the specified attribute. Empty array is returned if no error.
+ * Note that when returning errors for all attributes, the result is a two-dimensional array, like the following:
+ * ...
+ */
+public function getErrors($attribute = null)
+```
 
 #### Файл
 
