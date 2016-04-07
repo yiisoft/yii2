@@ -30,6 +30,7 @@ class InflectorTest extends TestCase
             'bus' => 'buses',
             'test' => 'tests',
             'car' => 'cars',
+            'netherlands' => 'netherlands',
         ];
 
         foreach ($testData as $testIn => $testOut) {
@@ -57,6 +58,7 @@ class InflectorTest extends TestCase
             'buses' => 'bus',
             'tests' => 'test',
             'cars' => 'car',
+            'Netherlands' => 'Netherlands',
         ];
         foreach ($testData as $testIn => $testOut) {
             $this->assertEquals($testOut, Inflector::singularize($testIn));
@@ -178,6 +180,8 @@ class InflectorTest extends TestCase
             'Контакты' => 'kontakty',
             // Chinese
             '美国' => 'mei-guo',
+            // Estonian
+            'Jääär' => 'jaaar',
         ];
 
         foreach ($data as $source => $expected) {
