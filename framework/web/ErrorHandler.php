@@ -134,7 +134,7 @@ class ErrorHandler extends \yii\base\ErrorHandler
     protected function convertExceptionToArray($exception)
     {
         if (!YII_DEBUG && !$exception instanceof UserException && !$exception instanceof HttpException) {
-            $exception = new HttpException(500, 'There was an error at the server.');
+            $exception = new HttpException(500, Yii::t('yii', 'There was an error at the server.'));
         }
 
         $array = [
