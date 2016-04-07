@@ -1235,8 +1235,12 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
             $this->_related[$name] = $model;
         } elseif (isset($this->_related[$name])) {
             if ($relation->indexBy !== null) {
-                $indexBy = $relation->indexBy;
-                $this->_related[$name][$model->$indexBy] = $model;
+                if ($relation->indexBy instanceof \Closure) {
+                    $indexBy = call_user_func($relation->indexBy, $model);
+                } else {
+                    $indexBy = $relation->indexBy;
+                }
+                $this->_related[$name][$indexBy] = $model;
             } else {
                 $this->_related[$name][] = $model;
             }
