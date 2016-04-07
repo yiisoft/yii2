@@ -80,8 +80,9 @@ class AttributeBehavior extends Behavior
     public $value;
 
     /**
-     * @var boolean wheter to skip this behavior when the `$owner` has not been
+     * @var boolean whether to skip this behavior when the `$owner` has not been
      * modified
+     * @since 2.0.8
      */
     public $skipUpdateOnClean = true;
 
