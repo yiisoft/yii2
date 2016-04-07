@@ -32,6 +32,20 @@ class Order extends ActiveRecord
         return $this->hasMany(OrderItem::className(), ['order_id' => 'id']);
     }
 
+    public function getOrderItems2()
+    {
+        return $this->hasMany(OrderItem::className(), ['order_id' => 'id'])
+            ->indexBy('item_id');
+    }
+
+    public function getOrderItems3()
+    {
+        return $this->hasMany(OrderItem::className(), ['order_id' => 'id'])
+            ->indexBy(function ($row) {
+                return $row['order_id'] . '_' . $row['item_id'];
+            });
+    }
+
     public function getOrderItemsWithNullFK()
     {
         return $this->hasMany(OrderItemWithNullFK::className(), ['order_id' => 'id']);
@@ -49,14 +63,6 @@ class Order extends ActiveRecord
     {
         return $this->hasMany(Item::className(), ['id' => 'item_id'])
             ->via('orderItems')->indexBy('id');
-    }
-
-    public function getItemsIndexed2()
-    {
-        return $this->hasMany(Item::className(), ['id' => 'item_id'])
-            ->via('orderItems')->indexBy(function ($row) {
-                return $row['id'];
-            });
     }
 
     public function getItemsWithNullFK()
