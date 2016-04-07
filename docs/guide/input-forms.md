@@ -115,15 +115,14 @@ class like it is done in the above example with [[yii\helpers\Html::submitButton
 > }
 > ```
 
-Creating Dropdown list <span id="creating-activeform-dropdownlist"></span>
----------------------
+Creating Drop-down List <span id="creating-activeform-dropdownlist"></span>
+-----------------------
 
 We can use ActiveForm [dropDownList()](http://www.yiiframework.com/doc-2.0/yii-widgets-activefield.html#dropDownList()-detail)
-method to create a Dropwown list: 
+method to create a drop-down list:
 
 ```php
 use app\models\ProductCategory;
-use yii\helpers\ArrayHelper;
 
 /* @var $this yii\web\View */
 /* @var $form yii\widgets\ActiveForm */
