@@ -1156,6 +1156,7 @@ class ActiveRecordTest extends DatabaseTestCase
             'subtotal' => 10.0,
         ]);
         $order->link('orderItems2', $orderItem);
+        $this->assertTrue(isset($order->orderItems2['3']));
     }
 
     public function testLinkWhenRelationIsIndexed3()
@@ -1171,5 +1172,6 @@ class ActiveRecordTest extends DatabaseTestCase
             'subtotal' => 10.0,
         ]);
         $order->link('orderItems3', $orderItem);
+        $this->assertTrue(isset($order->orderItems3['1_3']));
     }
 }
