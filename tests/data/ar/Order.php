@@ -32,6 +32,20 @@ class Order extends ActiveRecord
         return $this->hasMany(OrderItem::className(), ['order_id' => 'id']);
     }
 
+    public function getOrderItems2()
+    {
+        return $this->hasMany(OrderItem::className(), ['order_id' => 'id'])
+            ->indexBy('item_id');
+    }
+
+    public function getOrderItems3()
+    {
+        return $this->hasMany(OrderItem::className(), ['order_id' => 'id'])
+            ->indexBy(function ($row) {
+                return $row['order_id'] . '_' . $row['item_id'];
+            });
+    }
+
     public function getOrderItemsWithNullFK()
     {
         return $this->hasMany(OrderItemWithNullFK::className(), ['order_id' => 'id']);

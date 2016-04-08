@@ -1012,7 +1012,7 @@ class ActiveRecordTest extends DatabaseTestCase
         $this->assertEquals(1, $model->status);
     }
 
-    public function testPopulateRecordCallWhenQueryingOnParentClass() 
+    public function testPopulateRecordCallWhenQueryingOnParentClass()
     {
         (new Cat())->save(false);
         (new Dog())->save(false);
@@ -1141,5 +1141,37 @@ class ActiveRecordTest extends DatabaseTestCase
 
         $trueBit = BitValues::findOne(2);
         $this->assertEquals(true, $trueBit->val);
+    }
+
+    public function testLinkWhenRelationIsIndexed2()
+    {
+        $order = Order::find()
+                ->with('orderItems2')
+                ->where(['id' => 1])
+                ->one();
+        $orderItem = new OrderItem([
+            'order_id' => $order->id,
+            'item_id' => 3,
+            'quantity' => 1,
+            'subtotal' => 10.0,
+        ]);
+        $order->link('orderItems2', $orderItem);
+        $this->assertTrue(isset($order->orderItems2['3']));
+    }
+
+    public function testLinkWhenRelationIsIndexed3()
+    {
+        $order = Order::find()
+                ->with('orderItems3')
+                ->where(['id' => 1])
+                ->one();
+        $orderItem = new OrderItem([
+            'order_id' => $order->id,
+            'item_id' => 3,
+            'quantity' => 1,
+            'subtotal' => 10.0,
+        ]);
+        $order->link('orderItems3', $orderItem);
+        $this->assertTrue(isset($order->orderItems3['1_3']));
     }
 }
