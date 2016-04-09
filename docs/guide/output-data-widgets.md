@@ -716,14 +716,14 @@ Pjax::end();
 
 [[yii\widgets\Pjax|Pjax]] also works for links following the
 [[yii\widgets\Pjax::$linkSelector|Pjax::$linkSelector]] which might be a problem when
-using [[yii\data\ActionColumn|ActionColumn]] To prevent this, add the html attribute
-[[data-pjax="0"]] to links when you edit the
+using [[yii\data\ActionColumn|ActionColumn]]. To prevent this, add the html attribute
+`data-pjax="0"` to links when you edit the
 [[yii\data\ActionColumn::$buttons|ActionColumn::$buttons]] property.
 
 #### GridView with Pjax in Gii
 
-Since 2.0.5 Gii the option [[yii\gii\generators\crud\Generator::$enablePjax]]
-can be used on the graphic interface or in the command line
+Since 2.0.5 [Gii](start-gii.md) the option `$enablePjax` can be used on the graphic interface or in
+the command line.
 
 ```php
 yii gii/crud --controllerClass="backend\\controllers\PostController" \
