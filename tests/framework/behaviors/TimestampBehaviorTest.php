@@ -100,10 +100,33 @@ class TimestampBehaviorTest extends TestCase
         $this->assertTrue($model->updated_at >= $currentTime, 'Update time has NOT been set on update!');
     }
 
+    /**
+     * @depends testNewRecord
+     */
+    public function testUpdateCleanRecord()
+    {
+        $currentTime = time();
+
+        ActiveRecordTimestamp::$behaviors = [
+            TimestampBehavior::className(),
+        ];
+        $model = new ActiveRecordTimestamp();
+        $model->save(false);
+
+        $model->on(
+            ActiveRecordTimestamp::EVENT_AFTER_UPDATE,
+            function ($event) {
+                $this->assertEmpty($event->changedAttributes);
+            }
+        );
+
+        $model->save(false);
+    }
+
     public function expressionProvider()
     {
         return [
-            [function() { return '2015-01-01'; }, '2015-01-01'],
+            [function () { return '2015-01-01'; }, '2015-01-01'],
             [new Expression("strftime('%Y')"), date('Y')],
             ['2015-10-20', '2015-10-20'],
             [time(), time()],
