@@ -697,7 +697,7 @@ echo GridView::widget([
 
 ### Using GridView with Pjax
 
-The [[yii\widgets\Pjax|Pjax]] widgets allows you to update only a section of a
+The [[yii\widgets\Pjax|Pjax]] widget allows you to update only a section of a
 page instead of reloading the entire page. You can use it to only update the
 [[yii\widgets\GridView|GridView]] content when using filters.
 
@@ -716,7 +716,7 @@ Pjax::end();
 
 [[yii\widgets\Pjax|Pjax]] also works for links following the
 [[yii\widgets\Pjax::$linkSelector|Pjax::$linkSelector]] which might be a problem when
-using [[yii\data\ActionColumn|ActionColumn]]. To prevent this, add the html attribute
+using [[yii\data\ActionColumn|ActionColumn]]. To prevent this, add the HTML attribute
 `data-pjax="0"` to links when you edit the
 [[yii\data\ActionColumn::$buttons|ActionColumn::$buttons]] property.
 
