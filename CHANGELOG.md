@@ -57,7 +57,7 @@ Yii Framework 2 Change Log
 - Enh: Added `StringHelper::countWords()` that given a string returns number of words in it (samdark)
 - Enh #11207: migrate command can create foreign keys. (Faryshta)
 - Enh #11166: migrate command new option `useTablePrefix` (Faryshta)
-- Enh #11207: migrate command can create foreign keys. (faryshta)
+- Enh #11002: `AttributeBehavior::$skipUpdateOnClean` which determines whether to skip a behavior when the behavior owner has not been modified (Faryshta)
 - Chg #11283: `ActiveRecord::unlink()` is not setting FK to `null` before deleting itself anymore (samdark)
 - Chg: HTMLPurifier dependency updated to `~4.6` (samdark)
 - Chg #10726: Added `yii\rbac\ManagerInterface::canAddChild()` (dkhlystov, samdark)
