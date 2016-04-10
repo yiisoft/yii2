@@ -210,7 +210,7 @@ Sprawdź jak to działa <span id="trying-it-out"></span>
 Aby zobaczyć jak działa powyższy kod, użyj przeglądarki i przejdź pod podany adres URL:
 
 ```
-http://hostname/index.php?r=country/index
+http://hostname/index.php?r=country%2Findex
 ```
 
 ![Lista krajów](../guide/images/start-country-list.png)
@@ -220,7 +220,7 @@ Jeśli klikniesz przycisk "2", zobaczysz stronę wyświetlającą pięć innych 
 Zauważ, że adres URL w przeglądarce również się zmienił na 
 
 ```
-http://hostname/index.php?r=country/index&page=2
+http://hostname/index.php?r=country%2Findex&page=2
 ```
 
 Za kulisami, [[yii\data\Pagination|Pagination]] dostarcza wszystkich niezbędnych funkcjonalności do stronicowania zbioru danych: 

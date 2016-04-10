@@ -108,7 +108,7 @@ Sprawdzenie w działaniu <span id="trying-it-out"></span>
 Aby zobaczyć, jak działa nowo wygenerowany kod, użyj przeglądarki, aby uzyskać dostęp do podanego adresu URL:
 
 ```
-http://hostname/index.php?r=country/index
+http://hostname/index.php?r=country%2Findex
 ```
 
 Zobaczysz tabelę prezentującą kraje z bazy danych. Możesz sortować tabelę, lub filtrować ją przez wpisanie odpowiednich warunków w nagłówkach kolumn.

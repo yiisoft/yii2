@@ -1035,8 +1035,29 @@ Zwróć uwagę na to, że ten przykład różni się od poprzedniego, gdzie pobi
 
 > Info: Jeśli [[yii\db\ActiveQuery|ActiveQuery]] zawiera warunek podany za pomocą [[yii\db\ActiveQuery::onCondition()|onCondition()]],
 > będzie on umieszczony w części instrukcji `ON` tylko jeśli kwerenda zawiera JOIN. W przeciwnym wypadku warunek ten będzie automatycznie 
-> dodany do części `WHERE`.
+> dodany do części `WHERE`. Może zatem składać się z warunków opierających się tylko na kolumnach powiązanej tabeli.
 
+
+#### Aliasy dołączanych tabeli <span id="relation-table-aliases"></span>
+
+Jak już wspomniano wcześniej, używając JOIN w kwerendzie, musimy ujednoznacznić nazwy kolumn. Z tego powodu często stosuje się aliasy dla tabel. 
+Alias dla kwerendy relacyjnej można ustawić, modyfikując ją w następujący sposób:
+
+```php
+$query->joinWith([
+    'orders' => function ($q) {
+        $q->from(['o' => Order::tableName()]);
+    },
+])
+```
+
+Powyższy sposób wygląda jednak na bardzo skomplikowany i wymaga ręcznej modyfikacji w kodzie nazwy tabeli obiektu relacji lub wywołania `Order::tableName()`.
+Od wersji 2.0.7, Yii udostępnia do tego celu skróconą metodę. Możliwe jest zdefiniowanie i używanie aliasu dla tabeli relacji w poniższy sposób:
+
+```php
+// dołącz relację 'orders' i posortuj wyniki po 'orders.id'
+$query->joinWith(['orders o'])->orderBy('o.id');
+```
 
 ### Odwrócone relacje <span id="inverse-relations"></span>
 

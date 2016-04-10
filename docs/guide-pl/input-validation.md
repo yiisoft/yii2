@@ -648,3 +648,6 @@ Powyższy kod sprawdzi, czy zapytanie zostało wysłane przy użyciu AJAXa. Jeś
 
 > Info: Możesz również użyć [walidacji kolejkowej](#deferred-validation) do wykonania walidacji AJAX, jednakże walidacja AJAXowa opisana w tej sekcji jest bardziej systematyczna i 
 > wymaga mniej wysiłku przy kodowaniu.
+
+Kiedy zarówno `enableClientValidation`, jak i `enableAjaxValidation` ustawione są na true, walidacja za pomocą AJAX zostanie uruchomiona dopiero po udanej 
+walidacji po stronie klienta.
