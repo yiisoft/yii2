@@ -651,3 +651,5 @@ if (Yii::$app->request->isAjax && $model->load(Yii::$app->request->post())) {
 
 > Info: AJAX 検証を実行するためには、[Deferred 検証](#deferred-validation) を使うことも出来ます。
   しかし、ここで説明された AJAX 検証の機能の方がより体系化されており、コーディングの労力も少なくて済みます。
+
+`enableClientValidation` と `enableAjaxValidation` が両方とも真に設定されているときは、クライアント検証が成功した後でだけ AJAX 検証が起動されます。
