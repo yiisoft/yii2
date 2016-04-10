@@ -178,7 +178,7 @@ Próba <span id="trying-it-out"></span>
 Aby zobaczyć jak to działa, użyj przeglądarki i przejdź pod dany adres:
 
 ```
-http://hostname/index.php?r=site/entry
+http://hostname/index.php?r=site%2Fentry
 ```
 
 Zobaczysz stronę wyświetlającą formularz z dwoma polami. Przed każdym polem znajduje się etykieta opisująca to pole. Jeśli klikniesz przycisk "Wyślij" nie wpisując żadnych danych, lub 

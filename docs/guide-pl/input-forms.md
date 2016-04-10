@@ -117,7 +117,6 @@ Możemy użyć metody klasy ActiveForm [yii\widgets\ActiveForm::dropDownList()|d
 
 ```php
 use app\models\ProductCategory;
-use yii\helpers\ArrayHelper;
 
 /* @var $this yii\web\View */
 /* @var $form yii\widgets\ActiveForm */

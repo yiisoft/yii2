@@ -21,8 +21,10 @@ Instalacja przez Composer <span id="installing-via-composer"></span>
 Jeśli nie posiadasz jeszcze zainstalowanego Composera to możesz to zrobić podążając według zamieszczonych na [getcomposer.org](https://getcomposer.org/download/) instrukcji.
 W systemach operacyjnych Linux i Mac OS X należy wywołać następujące komendy:
 
-    curl -sS https://getcomposer.org/installer | php
-    mv composer.phar /usr/local/bin/composer
+```bash
+curl -sS https://getcomposer.org/installer | php
+mv composer.phar /usr/local/bin/composer
+```
 
 W systemie Windows należy pobrać i uruchomić [Composer-Setup.exe](https://getcomposer.org/Composer-Setup.exe).
 
@@ -33,8 +35,10 @@ Jeśli posiadałeś już wcześniej zainstalowanego Composera, upewnij się, że
 
 Z zainstalowanym Composerem możesz przejść do instalacji Yii wywołując poniższe komendy w katalogu dostępnym z poziomu sieci web:
 
-    composer global require "fxp/composer-asset-plugin:~1.1.1"
-    composer create-project --prefer-dist yiisoft/yii2-app-basic basic
+```bash
+composer global require "fxp/composer-asset-plugin:~1.1.1"
+composer create-project --prefer-dist yiisoft/yii2-app-basic basic
+```
 
 Pierwsza komenda instaluje [wtyczkę zasobów](https://github.com/francoispluchino/composer-asset-plugin/), która pozwala na zarządzanie zasobami [Bowera](http://bower.io) oraz 
 [paczkami zależności NPM](https://www.npmjs.com/) przez Composer.
@@ -47,14 +51,16 @@ Druga komenda instaluje Yii w katalogu `basic`. Jeśli chcesz, możesz wybrać k
 
 > Tip: Jeśli chcesz zainstalować najnowszą wersję deweloperską Yii, użyj poniższej komendy, która dodaje [opcję stabilności](https://getcomposer.org/doc/04-schema.md#minimum-stability):
 >
->   composer create-project --prefer-dist --stability=dev yiisoft/yii2-app-basic basic
+> ```bash
+> composer create-project --prefer-dist --stability=dev yiisoft/yii2-app-basic basic
+> ```
 >
 > Pamiętaj, że wersja deweloperska Yii nie powinna być używana w wersjach produkcyjnych aplikacji, ponieważ mogą wystąpić niespodziewane błędy.
 
 Instalacja z pliku archiwum <span id="installing-from-archive-file"></span>
 -------------------------------
 
-Instalacja Yii z pliku archiwum dotyczy trzech kroków:
+Instalacja Yii z pliku archiwum składa się z trzech kroków:
 
 1. Pobranie pliku archiwum z [yiiframework.com](http://www.yiiframework.com/download/).
 2. Rozpakowanie pliku archiwum do katalogu dostępnego z poziomu sieci web.
@@ -82,33 +88,43 @@ Dostępne są również inne opcje instalacji:
 Sprawdzenie instalacji <span id="verifying-installation"></span>
 --------------------------
 
-Po instalacji możesz użyć swojej przeglądarki, aby uzyskać dostęp do swojej aplikacji Yii przechodząc pod adres:
+Po zakończeniu instalacji, skonfiguruj swój serwer (zobacz następną sekcję) lub użyj 
+[wbudowanego serwera PHP](https://secure.php.net/manual/en/features.commandline.webserver.php), uruchamiając poniższą komendę w konsoli z poziomu folderu 
+`web` projektu:
+ 
+```bash
+php yii serve
+```
+
+> Note: Domyślnym portem, na którym serwer HTTP nasłuchuje, jest 8080. Jeśli jednak ten port jest już w użyciu lub też chcesz obsłużyć wiele aplikacji w ten sposób, 
+możesz podać inny numer portu, dodając argument --port:
+
+```bash
+php yii serve --port=8888
+```
+
+Możesz teraz użyć swojej przeglądarki, aby uzyskać dostęp do zainstalowanej aplikacji Yii przechodząc pod adres:
 
 ```
-http://localhost/basic/web/index.php
+http://localhost:8080/
 ```
 
-Powyższy wpis zakłada, że zainstalowałeś Yii w katalogu o nazwie `basic`, bezpośrednio jako katalog głównego katalogu serwera, oraz że serwer jest uruchomiony na Twojej lokalnej 
-maszynie ('localhost').
-Być może będziesz musiał dostosować go do Twojego środowiska instalacyjnego.
+![Poprawna instalacja Yii](../guide/images/start-app-installed.png)
 
-![Pomyślna instalacja Yii](../guide/images/start-app-installed.png)
-
-
-Na stronie w przeglądarce powinienieś zobaczyć napis "Congratulations!". Jeśli nie, sprawdź czy zainstalowana wersja PHP jest wystarczająca do wymagań Yii.
+Powinienieś zobaczyć stronę z napisem "Congratulations!" (Gratulacje!). Jeśli nie, sprawdź czy zainstalowane elementy środowiska spełniają wymagania Yii. 
 Możesz sprawdzić minimalne wymagania na dwa sposoby:
 
-* Używając przeglądarki przejdź pod adres `http://localhost/basic/requirements.php`
-* Wywołaj poniższą komendę:
+* Skopiuj plik `/requirements.php` do `/web/requirements.php`, a następnie przejdź do przeglądarki i uruchom go przechodząc pod adres `http://localhost/requirements.php`
+* Lub też uruchom następujące komendy:
 
-    ```
-    cd basic
-    php requirements.php
-    ```
+  ```bash
+  cd basic
+  php requirements.php
+  ```
 
-Powinienieś skonfigurować swoją instalację PHP tak, aby spełniała minimalne wymogi Yii. Najważniejszym z nich jest posiadanie PHP w wersji 5.4 lub wyższej. Powinienieś również 
-zainstalować [rozszerzenie PDO](http://www.php.net/manual/en/pdo.installation.php) oraz odpowiedni sterownik bazy danych (np. `pdo_mysql` dla bazy danych MySQL), jeśli Twoja aplikacja 
-potrzebuje bazy danych.
+Powinienieś skonfigurować swoją instalację PHP tak, aby spełniała minimalne wymogi Yii. Najważniejszym z nich jest posiadanie PHP w wersji 5.4 lub wyższej.
+Powinienieś również zainstalować [rozszerzenie PDO](http://www.php.net/manual/en/pdo.installation.php) oraz odpowiedni sterownik bazy danych (np. `pdo_mysql` dla bazy danych 
+MySQL), jeśli Twoja aplikacja potrzebuje bazy danych.
 
 
 Konfigurowanie serwerów WWW <span id="configuring-web-servers"></span>
@@ -140,7 +156,7 @@ Blokowanie dostępu do tych folderów jest dużą poprawą bezpieczeństwa.
 Użyj następującej konfiguracji serwera Apache w pliku `httpd.conf` lub w konfiguracji wirtualnego hosta.
 Pamiętaj, że musisz zamienić ścieżkę `path/to/basic/web` na aktualną ścieżkę do `basic/web` Twojej aplikacji.
 
-```
+```apache
 # Ustaw główny katalog na "basic/web"
 DocumentRoot "path/to/basic/web"
 
@@ -160,16 +176,16 @@ DocumentRoot "path/to/basic/web"
 ### Zalecane ustawienia Nginx <span id="recommended-nginx-configuration"></span>
 
 Aby użyć [Nginx](http://wiki.nginx.org/) powinienieś zainstalować PHP jako [FPM SAPI](http://php.net/install.fpm).
-Możesz użyć przedstawionej poniżej konfiguracji Nginx, zastępując jedynie ścieżkę `path/to/basic/web` aktualną ścieżką do `basic/web` Twojej aplikacji oraz `mysite.local` aktualną 
-nazwą hosta.
+Możesz użyć przedstawionej poniżej konfiguracji Nginx, zastępując jedynie ścieżkę `path/to/basic/web` aktualną ścieżką do `basic/web` Twojej aplikacji oraz 
+`mysite.local` aktualną nazwą hosta.
 
-```
+```nginx
 server {
     charset utf-8;
     client_max_body_size 128M;
 
     listen 80; ## nasłuchuj ipv4
-    #listen [::]:80 default_server ipv6only=on; ## listen for ipv6
+    #listen [::]:80 default_server ipv6only=on; ## nasłuchuj ipv6
 
     server_name mysite.local;
     root        /path/to/basic/web;
@@ -183,7 +199,7 @@ server {
         try_files $uri $uri/ /index.php?$args;
     }
 
-    # odkomentuj aby uniknąć przetwarzania żądań do nieistniejących plików przez Yii
+    # dkomentuj aby uniknąć przetwarzania żądań do nieistniejących plików przez Yii
     #location ~ \.(js|css|png|jpg|gif|swf|ico|pdf|mov|fla|zip|rar)$ {
     #    try_files $uri =404;
     #}
