@@ -49,7 +49,9 @@ class ExistValidatorTest extends DatabaseTestCase
 
     public function testValidateValue()
     {
-        $val = new ExistValidator(['targetClass' => ValidatorTestRefModel::className(), 'targetAttribute' => 'id']);
+        $val = new ExistValidator([
+            'targetClass' => ValidatorTestRefModel::className(), 'targetAttribute' => 'id'
+        ]);
         $this->assertTrue($val->validate(2));
         $this->assertTrue($val->validate(5));
         $this->assertFalse($val->validate(99));
@@ -164,5 +166,24 @@ class ExistValidatorTest extends DatabaseTestCase
         $m = new Order(['id' => 10]);
         $val->validateAttribute($m, 'id');
         $this->assertTrue($m->hasErrors('id'));
+    }
+
+    public function testWithEachValidator()
+    {
+        $validModel = FakedValidationModel::createWithAttributes([
+            'attr_foo' => [2, 5],
+        ]);
+        $invalidModel = FakedValidationModel::createWithAttributes([
+            'attr_foo' => [99, '1'],
+        ]);
+        // each element in $this->attr_foo[] is not equal to $this->attr_bar
+        $validator = new EachValidator(['rule' => [
+            'exist',
+            'targetClass' => ValidatorTestRefModel::className(), 'targetAttribute' => ['attr_foo' => 'id'],
+        ]]);
+        $validator->validateAttribute($validModel, 'attr_foo');
+        $this->assertEmpty($validModel->getErrors());
+        $validator->validateAttribute($invalidModel, 'attr_foo');
+        $this->assertNotEmpty($invalidModel->getErrors());
     }
 }
