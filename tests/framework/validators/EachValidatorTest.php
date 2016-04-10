@@ -83,16 +83,24 @@ class EachValidatorTest extends TestCase
                 'TEXT',
             ],
         ]);
-        $validator = new EachValidator(['rule' => ['integer', 'message' => '{value} is not an integer']]);
+        $validator = new EachValidator([
+            'rule' => ['integer', 'message' => '{value} is not an integer']
+        ]);
 
         $validator->validateAttribute($model, 'attr_one');
-        $this->assertSame('TEXT is not an integer', $model->getFirstError('attr_one'));
+        $this->assertSame(
+            'TEXT is not an integer',
+            $model->getFirstError('attr_one')
+        );
 
         $model->clearErrors();
         $validator->allowMessageFromRule = false;
         $validator->message = '{value} is invalid';
         $validator->validateAttribute($model, 'attr_one');
-        $this->assertEquals('TEXT is invalid', $model->getFirstError('attr_one'));
+        $this->assertEquals(
+            'TEXT is invalid',
+            $model->getFirstError('attr_one')
+        );
     }
 
     /**
@@ -102,10 +110,46 @@ class EachValidatorTest extends TestCase
      */
     public function testSkipOnEmpty()
     {
-        $validator = new EachValidator(['rule' => ['integer', 'skipOnEmpty' => true]]);
+        $validator = new EachValidator(['rule' => [
+            'integer',
+            'skipOnEmpty' => true,
+        ]]);
         $this->assertTrue($validator->validate(['']));
 
-        $validator = new EachValidator(['rule' => ['integer', 'skipOnEmpty' => false]]);
+        $validator = new EachValidator(['rule' => [
+            'integer',
+            'skipOnEmpty' => false,
+        ]]);
         $this->assertFalse($validator->validate(['']));
+    }
+
+    public function testWithCompareValidator()
+    {
+        $validModel = FakedValidationModel::createWithAttributes([
+            'attr_foo' => [
+                'text1',
+                'text2',
+                'text3'
+            ],
+            'attr_bar' => 'text'
+        ]);
+        $invalidModel = FakedValidationModel::createWithAttributes([
+            'attr_foo' => [
+                'text',
+                'text2',
+                'text3'
+            ],
+            'attr_bar' => 'text'
+        ]);
+        // each element in $this->attr_foo[] is not equal to $this->attr_bar
+        $validator = new EachValidator(['rule' => [
+            'compare',
+            'compareAttribute' => 'attr_bar',
+            'operator' => '!='
+        ]]);
+        $validator->validateAttribute($validModel, 'attr_foo');
+        $this->assertEmpty($validModel->getErrors());
+        $validator->validateAttribute($invalidModel, 'attr_foo');
+        $this->assertNotEmpty($invalidModel->getErrors());
     }
 }
