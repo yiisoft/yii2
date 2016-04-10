@@ -61,10 +61,10 @@ containing the page parameter. For example,
 // If you do not specify this, the currently requested route will be used
 $pagination->route = 'article/index';
 
-// displays: /index.php?r=article/index&page=100
+// displays: /index.php?r=article%2Findex&page=100
 echo $pagination->createUrl(100);
 
-// displays: /index.php?r=article/index&page=101
+// displays: /index.php?r=article%2Findex&page=101
 echo $pagination->createUrl(101);
 ```
 

@@ -651,7 +651,7 @@ class SiteController extends Controller
 このようにすると、ディレクトリ `@app/views/site/pages` の下に `about` という名前のビューを作成したときに、次の URL によってこのビューを表示することが出来るようになります。
 
 ```
-http://localhost/index.php?r=site/page&view=about
+http://localhost/index.php?r=site%2Fpage&view=about
 ```
 
 `view` という `GET` パラメータが、どのビューがリクエストされているかを [[yii\web\ViewAction]] に教えます。

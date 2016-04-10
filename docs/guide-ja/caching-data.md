@@ -2,7 +2,7 @@
 ============
 
 データキャッシュは PHP の変数をキャッシュに格納し、あとでキャッシュからそれらを読み込みます。
-[クエリキャッシュ](#query-caching) や [ページキャッシュ](caching-page.md) などのより高度なキャッシュ機能の基礎でもあります。
+これは、[クエリキャッシュ](#query-caching) や [ページキャッシュ](caching-page.md) などの、より高度なキャッシュ機能の基礎でもあります。
 
 以下はデータキャッシュの典型的な利用パターンを示したコードです。`$cache` は [キャッシュコンポーネント](#cache-components) を指します:
 
@@ -207,6 +207,10 @@ $data = $cache->get($key);
 - [[yii\caching\FileDependency]]: ファイルの最終更新時刻が変更された場合、依存が変更されます。
 - [[yii\caching\TagDependency]]: キャッシュされるデータアイテムに一つまたは複数のタグを関連付けます。
 [[yii\caching\TagDependency::invalidate()]] を呼び出すことによって、指定されたタグ (複数可) を持つキャッシュされたデータアイテムを無効にすることができます。
+
+> Note: 依存を有するキャッシュについて [[yii\caching\Cache::exists()|exists()]] メソッドを使用することは避けてください。
+  このメソッドは、キャッシュされたデータに関連づけられた依存がある場合でも、依存が変化したかどうかをチェックしません。
+  つまり、[[yii\caching\Cache::exists()|exists()]] が `true` を返しているのに、 [[yii\caching\Cache::get()|get()]] が `false` を返すという場合があり得ます。
 
 
 ## クエリキャッシュ <span id="query-caching"></span>

@@ -12,7 +12,7 @@ use yii\base\ActionFilter;
 use yii\base\Action;
 
 /**
- * HttpCache implements client-side caching by utilizing the `Last-Modified` and `Etag` HTTP headers.
+ * HttpCache implements client-side caching by utilizing the `Last-Modified` and `ETag` HTTP headers.
  *
  * It is an action filter that can be added to a controller and handles the `beforeAction` event.
  *
@@ -32,7 +32,7 @@ use yii\base\Action;
  *                 return $q->from('user')->max('updated_at');
  *             },
  * //            'etagSeed' => function ($action, $params) {
- * //                return // generate etag seed here
+ * //                return // generate ETag seed here
  * //            }
  *         ],
  *     ];
@@ -55,10 +55,12 @@ class HttpCache extends ActionFilter
      *
      * where `$action` is the [[Action]] object that this filter is currently handling;
      * `$params` takes the value of [[params]]. The callback should return a UNIX timestamp.
+     *
+     * @see http://tools.ietf.org/html/rfc7232#section-2.2
      */
     public $lastModified;
     /**
-     * @var callable a PHP callback that generates the Etag seed string.
+     * @var callable a PHP callback that generates the ETag seed string.
      * The callback's signature should be:
      *
      * ```php
@@ -67,15 +69,25 @@ class HttpCache extends ActionFilter
      *
      * where `$action` is the [[Action]] object that this filter is currently handling;
      * `$params` takes the value of [[params]]. The callback should return a string serving
-     * as the seed for generating an Etag.
+     * as the seed for generating an ETag.
      */
     public $etagSeed;
+    /**
+     * @var bool whether to generate weak ETags.
+     *
+     * Weak ETags should be used if the content should be considered semantically equivalent, but not byte-equal.
+     *
+     * @since 2.0.8
+     * @see http://tools.ietf.org/html/rfc7232#section-2.3
+     */
+    public $weakEtag = false;
     /**
      * @var mixed additional parameters that should be passed to the [[lastModified]] and [[etagSeed]] callbacks.
      */
     public $params;
     /**
      * @var string the value of the `Cache-Control` HTTP header. If null, the header will not be sent.
+     * @see http://tools.ietf.org/html/rfc2616#section-14.9
      */
     public $cacheControlHeader = 'public, max-age=3600';
     /**
@@ -152,7 +164,7 @@ class HttpCache extends ActionFilter
         if (isset($_SERVER['HTTP_IF_NONE_MATCH'])) {
             // HTTP_IF_NONE_MATCH takes precedence over HTTP_IF_MODIFIED_SINCE
             // http://tools.ietf.org/html/rfc7232#section-3.3
-            return $etag !== null && in_array($etag, Yii::$app->request->getEtags(), true);
+            return $etag !== null && in_array($etag, Yii::$app->request->getETags(), true);
         } elseif (isset($_SERVER['HTTP_IF_MODIFIED_SINCE'])) {
             return $lastModified !== null && @strtotime($_SERVER['HTTP_IF_MODIFIED_SINCE']) >= $lastModified;
         } else {
@@ -185,12 +197,13 @@ class HttpCache extends ActionFilter
     }
 
     /**
-     * Generates an Etag from the given seed string.
+     * Generates an ETag from the given seed string.
      * @param string $seed Seed for the ETag
-     * @return string the generated Etag
+     * @return string the generated ETag
      */
     protected function generateEtag($seed)
     {
-        return '"' . rtrim(base64_encode(sha1($seed, true)), '=') . '"';
+        $etag =  '"' . rtrim(base64_encode(sha1($seed, true)), '=') . '"';
+        return $this->weakEtag ? 'W/' . $etag : $etag;
     }
 }

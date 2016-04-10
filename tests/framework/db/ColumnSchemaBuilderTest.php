@@ -33,10 +33,10 @@ class ColumnSchemaBuilderTest extends TestCase
     public function unsignedProvider()
     {
         return [
-            ['integer UNSIGNED', Schema::TYPE_INTEGER, null, [
+            ['integer', Schema::TYPE_INTEGER, null, [
                 ['unsigned'],
             ]],
-            ['integer(10) UNSIGNED', Schema::TYPE_INTEGER, 10, [
+            ['integer(10)', Schema::TYPE_INTEGER, 10, [
                 ['unsigned'],
             ]],
         ];

@@ -291,6 +291,8 @@ The behavior configuration above specifies that when the record is being:
   the `created_at` and `updated_at` attributes
 * updated, the behavior should assign the current UNIX timestamp to the `updated_at` attribute
 
+> Note: For the above implementation to work with MySQL database, please declare the columns(`created_at`, `updated_at`) as int(11) for being UNIX timestamp.
+
 With that code in place, if you have a `User` object and try to save it, you will find its `created_at` and `updated_at` are automatically
 filled with the current UNIX timestamp:
 
@@ -316,7 +318,7 @@ There are several built-in and external behaviors available:
 
 - [[yii\behaviors\BlameableBehavior]] - automatically fills the specified attributes with the current user ID.
 - [[yii\behaviors\SluggableBehavior]] - automatically fills the specified attribute with a value that can be used
-  a slug in a URL.
+  as a slug in a URL.
 - [[yii\behaviors\AttributeBehavior]] - automatically assigns a specified value to one or multiple attributes of
   an ActiveRecord object when certain events happen.
 - [yii2tech\ar\softdelete\SoftDeleteBehavior](https://github.com/yii2tech/ar-softdelete) - provides methods to soft-delete

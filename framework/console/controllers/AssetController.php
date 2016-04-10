@@ -735,7 +735,7 @@ EOD;
             if ($pathPart === '..') {
                 array_pop($realPathParts);
             } else {
-                array_push($realPathParts, $pathPart);
+                $realPathParts[] = $pathPart;
             }
         }
         return implode(DIRECTORY_SEPARATOR, $realPathParts);

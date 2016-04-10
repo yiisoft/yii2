@@ -124,6 +124,45 @@ exit($exitCode);
 
 オプションのデフォルト値が配列型である場合、実行時にこのオプションをセットすると、オプションの値は、入力文字列をカンマで分離することによって、配列に変換されます。
 
+### オプションのエイリアス
+
+バージョン 2.0.8 以降、コンソールコマンドは、オプションにエイリアスを追加するための [[yii\console\Controller::optionAliases()]] メソッドを提供しています。
+
+エイリアスを定義するためには、コントローラで [[yii\console\Controller::optionAliases()]] をオーバーライドします。
+例えば、
+
+```php
+namespace app\commands;
+
+use yii\console\Controller;
+
+class HelloController extends Controller
+{
+    public $message;
+    
+    public function options()
+    {
+        return ['message'];
+    }
+    
+    public function optionAliases()
+    {
+        return ['m' => 'message'];
+    }
+    
+    public function actionIndex()
+    {
+        echo $message . "\n";
+    }
+}
+```
+
+これで、次の構文を使ってコマンドを走らせることが出来るようになります。
+
+```
+./yii hello -m=hola
+```
+
 ### 引数
 
 オプションに加えてに、コマンドは引数を取ることも出来ます。
@@ -168,7 +207,7 @@ class ExampleController extends \yii\console\Controller
 public function actionIndex()
 {
     if (/* 何らかの問題が発生 */) {
-        echo "問題が生じました!\n";
+        echo "A problem occurred!\n";
         return 1;
     }
     // 何かをする

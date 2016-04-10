@@ -17,6 +17,7 @@ use yiiunit\TestCase;
 /**
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
+ * @group di
  */
 class InstanceTest extends TestCase
 {

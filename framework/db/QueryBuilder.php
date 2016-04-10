@@ -13,8 +13,9 @@ use yii\base\NotSupportedException;
 /**
  * QueryBuilder builds a SELECT SQL statement based on the specification given as a [[Query]] object.
  *
- * QueryBuilder can also be used to build SQL statements such as INSERT, UPDATE, DELETE, CREATE TABLE,
- * from a [[Query]] object.
+ * SQL statements are created from [[Query]] objects using the [[build()]]-method.
+ *
+ * QueryBuilder is also used by [[Command]] to build SQL statements such as INSERT, UPDATE, DELETE, CREATE TABLE.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
@@ -575,6 +576,8 @@ class QueryBuilder extends \yii\base\Object
      *
      * - `pk`: an auto-incremental primary key type, will be converted into "int(11) NOT NULL AUTO_INCREMENT PRIMARY KEY"
      * - `bigpk`: an auto-incremental primary key type, will be converted into "bigint(20) NOT NULL AUTO_INCREMENT PRIMARY KEY"
+     * - `unsignedpk`: an unsigned auto-incremental primary key type, will be converted into "int(11) UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY"
+     * - `char`: char type, will be converted into "char(1)"
      * - `string`: string type, will be converted into "varchar(255)"
      * - `text`: a long string type, will be converted into "text"
      * - `smallint`: a small integer type, will be converted into "smallint(6)"
@@ -1004,6 +1007,12 @@ class QueryBuilder extends \yii\base\Object
         foreach ($operands as $operand) {
             if (is_array($operand)) {
                 $operand = $this->buildCondition($operand, $params);
+            }
+            if ($operand instanceof Expression) {
+                foreach ($operand->params as $n => $v) {
+                    $params[$n] = $v;
+                }
+                $operand = $operand->expression;
             }
             if ($operand !== '') {
                 $parts[] = $operand;

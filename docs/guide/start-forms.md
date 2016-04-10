@@ -187,7 +187,7 @@ Trying it Out <span id="trying-it-out"></span>
 To see how it works, use your browser to access the following URL:
 
 ```
-http://hostname/index.php?r=site/entry
+http://hostname/index.php?r=site%2Fentry
 ```
 
 You will see a page displaying a form with two input fields. In front of each input field, a label indicates what data is to be entered. If you click the submit button without

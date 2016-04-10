@@ -206,7 +206,7 @@ return [
 ];
 ```
 
-> Note: たいていのバリデータは、[[yii\base\Validator::skipOnEmpty]] プロパティがデフォルト値 `true` を取っている場合は、空の入力値を処理しません。
+> Note: たいていのバリデータは、[[yii\validators\Validator::skipOnEmpty]] プロパティがデフォルト値 `true` を取っている場合は、空の入力値を処理しません。
   そのようなバリデータは、関連付けられた属性が空の入力値を受け取ったときは、検証の過程ではスキップされるだけになります。
   [コアバリデータ](tutorial-core-validators.md) の中では、`captcha`、`default`、`filter`、`required`、そして `trim` だけが空の入力値を処理します。
 
@@ -651,3 +651,5 @@ if (Yii::$app->request->isAjax && $model->load(Yii::$app->request->post())) {
 
 > Info: AJAX 検証を実行するためには、[Deferred 検証](#deferred-validation) を使うことも出来ます。
   しかし、ここで説明された AJAX 検証の機能の方がより体系化されており、コーディングの労力も少なくて済みます。
+
+`enableClientValidation` と `enableAjaxValidation` が両方とも真に設定されているときは、クライアント検証が成功した後でだけ AJAX 検証が起動されます。

@@ -204,13 +204,13 @@ $ids = $provider->getKeys();
 имя колонки или функцию вычисления значений ключа. Например:
 
 ```php
-// используется "slug" колонка как ключ
+// в качетсве ключа используется столбец "slug"
 $provider = new ActiveDataProvider([
     'query' => Post::find(),
     'key' => 'slug',
 ]);
 
-// используется результат md5(id) как ключ
+// в качестве ключа используется md5(id)
 $provider = new ActiveDataProvider([
     'query' => Post::find(),
     'key' => function ($model) {

@@ -311,7 +311,7 @@ But please notice, that you can not trigger all the classes, that implement the 
 Event::trigger('DanceEventInterface', DanceEventInterface::EVENT_DANCE); // error
 ```
 
-Do detach event handler, call [[yii\base\Event::off()|Event::off()]]. For example:
+To detach event handler, call [[yii\base\Event::off()|Event::off()]]. For example:
 
 ```php
 // detaches $handler

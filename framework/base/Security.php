@@ -89,6 +89,7 @@ class Security extends Component
      */
     public $passwordHashCost = 13;
 
+
     /**
      * Encrypts data using a password.
      * Derives keys for encryption and authentication from the password using PBKDF2 and a random salt,
@@ -133,7 +134,7 @@ class Security extends Component
      * Verifies and decrypts data encrypted with [[encryptByPassword()]].
      * @param string $data the encrypted data to decrypt
      * @param string $password the password to use for decryption
-     * @return bool|string the decrypted data or false on authentication failure
+     * @return boolean|string the decrypted data or false on authentication failure
      * @see encryptByPassword()
      */
     public function decryptByPassword($data, $password)
@@ -146,7 +147,7 @@ class Security extends Component
      * @param string $data the encrypted data to decrypt
      * @param string $inputKey the input to use for encryption and authentication
      * @param string $info optional context and application specific information, see [[hkdf()]]
-     * @return bool|string the decrypted data or false on authentication failure
+     * @return boolean|string the decrypted data or false on authentication failure
      * @see encryptByKey()
      */
     public function decryptByKey($data, $inputKey, $info = null)
@@ -213,7 +214,7 @@ class Security extends Component
      * @param string $secret the decryption password or key
      * @param string $info context/application specific information, @see encrypt()
      *
-     * @return bool|string the decrypted data or false on authentication failure
+     * @return boolean|string the decrypted data or false on authentication failure
      * @throws InvalidConfigException on OpenSSL not loaded
      * @throws Exception on OpenSSL error
      * @see encrypt()

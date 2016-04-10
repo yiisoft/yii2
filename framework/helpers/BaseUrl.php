@@ -21,6 +21,13 @@ use yii\base\InvalidParamException;
 class BaseUrl
 {
     /**
+     * @var \yii\web\UrlManager URL manager to use for creating URLs
+     * @since 2.0.8
+     */
+    public static $urlManager;
+
+
+    /**
      * Creates a URL for the given route.
      *
      * This method will use [[\yii\web\UrlManager]] to create a URL.
@@ -58,19 +65,19 @@ class BaseUrl
      * Below are some examples of using this method:
      *
      * ```php
-     * // /index.php?r=site/index
+     * // /index.php?r=site%2Findex
      * echo Url::toRoute('site/index');
      *
-     * // /index.php?r=site/index&src=ref1#name
+     * // /index.php?r=site%2Findex&src=ref1#name
      * echo Url::toRoute(['site/index', 'src' => 'ref1', '#' => 'name']);
      *
-     * // http://www.example.com/index.php?r=site/index
+     * // http://www.example.com/index.php?r=site%2Findex
      * echo Url::toRoute('site/index', true);
      *
-     * // https://www.example.com/index.php?r=site/index
+     * // https://www.example.com/index.php?r=site%2Findex
      * echo Url::toRoute('site/index', 'https');
      *
-     * // /index.php?r=post/index     assume the alias "@posts" is defined as "post/index"
+     * // /index.php?r=post%2Findex     assume the alias "@posts" is defined as "post/index"
      * echo Url::toRoute('@posts');
      * ```
      *
@@ -91,9 +98,9 @@ class BaseUrl
         $route[0] = static::normalizeRoute($route[0]);
 
         if ($scheme) {
-            return Yii::$app->getUrlManager()->createAbsoluteUrl($route, is_string($scheme) ? $scheme : null);
+            return static::getUrlManager()->createAbsoluteUrl($route, is_string($scheme) ? $scheme : null);
         } else {
-            return Yii::$app->getUrlManager()->createUrl($route);
+            return static::getUrlManager()->createUrl($route);
         }
     }
 
@@ -160,13 +167,13 @@ class BaseUrl
      * Below are some examples of using this method:
      *
      * ```php
-     * // /index.php?r=site/index
+     * // /index.php?r=site%2Findex
      * echo Url::to(['site/index']);
      *
-     * // /index.php?r=site/index&src=ref1#name
+     * // /index.php?r=site%2Findex&src=ref1#name
      * echo Url::to(['site/index', 'src' => 'ref1', '#' => 'name']);
      *
-     * // /index.php?r=post/index     assume the alias "@posts" is defined as "/post/index"
+     * // /index.php?r=post%2Findex     assume the alias "@posts" is defined as "/post/index"
      * echo Url::to(['@posts']);
      *
      * // the currently requested URL
@@ -218,7 +225,7 @@ class BaseUrl
 
         if (($pos = strpos($url, ':')) === false || !ctype_alpha(substr($url, 0, $pos))) {
             // turn relative URL into absolute
-            $url = Yii::$app->getUrlManager()->getHostInfo() . '/' . ltrim($url, '/');
+            $url = static::getUrlManager()->getHostInfo() . '/' . ltrim($url, '/');
         }
 
         if (is_string($scheme) && ($pos = strpos($url, ':')) !== false) {
@@ -240,9 +247,9 @@ class BaseUrl
      */
     public static function base($scheme = false)
     {
-        $url = Yii::$app->getUrlManager()->getBaseUrl();
+        $url = static::getUrlManager()->getBaseUrl();
         if ($scheme) {
-            $url = Yii::$app->getUrlManager()->getHostInfo() . $url;
+            $url = static::getUrlManager()->getHostInfo() . $url;
             if (is_string($scheme) && ($pos = strpos($url, '://')) !== false) {
                 $url = $scheme . substr($url, $pos);
             }
@@ -304,7 +311,7 @@ class BaseUrl
         $params = Yii::$app->controller->actionParams;
         $params[0] = Yii::$app->controller->getRoute();
 
-        return Yii::$app->getUrlManager()->createAbsoluteUrl($params);
+        return static::getUrlManager()->createAbsoluteUrl($params);
     }
 
     /**
@@ -323,7 +330,7 @@ class BaseUrl
         $url = Yii::$app->getHomeUrl();
 
         if ($scheme) {
-            $url = Yii::$app->getUrlManager()->getHostInfo() . $url;
+            $url = static::getUrlManager()->getHostInfo() . $url;
             if (is_string($scheme) && ($pos = strpos($url, '://')) !== false) {
                 $url = $scheme . substr($url, $pos);
             }
@@ -354,13 +361,13 @@ class BaseUrl
      * ```php
      * // assume $_GET = ['id' => 123, 'src' => 'google'], current route is "post/view"
      *
-     * // /index.php?r=post/view&id=123&src=google
+     * // /index.php?r=post%2Fview&id=123&src=google
      * echo Url::current();
      *
-     * // /index.php?r=post/view&id=123
+     * // /index.php?r=post%2Fview&id=123
      * echo Url::current(['src' => null]);
      *
-     * // /index.php?r=post/view&id=100&src=google
+     * // /index.php?r=post%2Fview&id=100&src=google
      * echo Url::current(['id' => 100]);
      * ```
      *
@@ -381,5 +388,14 @@ class BaseUrl
         $currentParams[0] = '/' . Yii::$app->controller->getRoute();
         $route = ArrayHelper::merge($currentParams, $params);
         return static::toRoute($route, $scheme);
+    }
+
+    /**
+     * @return \yii\web\UrlManager URL manager used to create URLs
+     * @since 2.0.8
+     */
+    protected static function getUrlManager()
+    {
+        return static::$urlManager ?: Yii::$app->getUrlManager();
     }
 }

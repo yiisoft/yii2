@@ -684,3 +684,6 @@ this request by running the validation and returning the errors in JSON format.
 
 > Info: You can also use [Deferred Validation](#deferred-validation) to perform AJAX validation.
   However, the AJAX validation feature described here is more systematic and requires less coding effort.
+
+When both `enableClientValidation` and `enableAjaxValidation` are set to true, AJAX validation request will be triggered
+only after the successful client validation.

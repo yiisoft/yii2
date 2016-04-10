@@ -334,7 +334,7 @@
                         delete messages[i];
                     }
                 }
-                if (needAjaxValidation) {
+                if ($.isEmptyObject(messages) && needAjaxValidation) {
                     var $button = data.submitObject,
                         extData = '&' + data.settings.ajaxParam + '=' + $form.attr('id');
                     if ($button && $button.length && $button.attr('name')) {

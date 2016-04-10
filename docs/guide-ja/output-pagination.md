@@ -63,10 +63,10 @@ UI 要素を手動で構築したい場合は、[[yii\data\Pagination::createUrl
 // 指定しない場合は、現在リクエストされているルートが使用される
 $pagination->route = 'article/index';
 
-// /index.php?r=article/index&page=100 を表示
+// /index.php?r=article%2Findex&page=100 を表示
 echo $pagination->createUrl(100);
 
-// /index.php?r=article/index&page=101 を表示
+// /index.php?r=article%2Findex&page=101 を表示
 echo $pagination->createUrl(101);
 ```
 

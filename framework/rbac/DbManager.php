@@ -453,7 +453,7 @@ class DbManager extends BaseManager
      */
     public function getRolesByUser($userId)
     {
-        if (empty($userId)) {
+        if (!isset($userId) || $userId === '') {
             return [];
         }
 
@@ -511,7 +511,6 @@ class DbManager extends BaseManager
      * Returns all permissions that are directly assigned to user.
      * @param string|integer $userId the user ID (see [[\yii\web\User::id]])
      * @return Permission[] all direct permissions that the user has. The array is indexed by the permission names.
-     *
      * @since 2.0.7
      */
     protected function getDirectPermissionsByUser($userId)
@@ -533,7 +532,6 @@ class DbManager extends BaseManager
      * Returns all permissions that the user inherits from the roles assigned to him.
      * @param string|integer $userId the user ID (see [[\yii\web\User::id]])
      * @return Permission[] all inherited permissions that the user has. The array is indexed by the permission names.
-     *
      * @since 2.0.7
      */
     protected function getInheritedPermissionsByUser($userId)
@@ -676,6 +674,14 @@ class DbManager extends BaseManager
         }
 
         return $assignments;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function canAddChild($parent, $child)
+    {
+        return !$this->detectLoop($parent, $child);
     }
 
     /**
@@ -894,7 +900,7 @@ class DbManager extends BaseManager
     {
         if (!$this->supportsCascadeUpdate()) {
             $this->db->createCommand()
-                ->update($this->itemTable, ['ruleName' => null])
+                ->update($this->itemTable, ['rule_name' => null])
                 ->execute();
         }
 

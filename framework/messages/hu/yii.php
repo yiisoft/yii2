@@ -82,6 +82,7 @@ return array (
   '{attribute} must be no less than {min}.' => '{attribute} nem lehet kisebb, mint {min}.',
   '{attribute} must be repeated exactly.' => 'Ismételje meg pontosan a(z) {attribute} mezőbe írtakat.',
   '{attribute} must not be equal to "{compareValue}".' => '{attribute} nem lehet egyenlő ezzel: "{compareValue}".',
+  '{attribute} must be equal to "{compareValueOrAttribute}".' => '"{attribute}" mezőnek azonosnak kell lennie a "{compareValueOrAttribute}" mezőbe írtakkal.',
   '{attribute} should contain at least {min, number} {min, plural, one{character} other{characters}}.' => '{attribute} minimum {min, number} karakter kell, hogy legyen.',
   '{attribute} should contain at most {max, number} {max, plural, one{character} other{characters}}.' => '{attribute} maximum {max, number} karakter lehet.',
   '{attribute} should contain {length, number} {length, plural, one{character} other{characters}}.' => '{attribute} pontosan {length, number} kell, hogy legyen.',

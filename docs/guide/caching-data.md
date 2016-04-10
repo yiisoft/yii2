@@ -1,7 +1,7 @@
 Data Caching
 ============
 
-Data caching is about storing some PHP variable in cache and retrieving it later from cache.
+Data caching is about storing some PHP variables in cache and retrieving it later from cache.
 It is also the foundation for more advanced caching features, such as [query caching](#query-caching)
 and [page caching](caching-page.md).
 
@@ -240,6 +240,10 @@ Below is a summary of the available cache dependencies:
 - [[yii\caching\TagDependency]]: associates a cached data item with one or multiple tags. You may invalidate
   the cached data items with the specified tag(s) by calling [[yii\caching\TagDependency::invalidate()]].
 
+> Note: Avoid using [[yii\caching\Cache::exists()|exists()]] method along with dependencies. It does not check whether
+  the dependency associated with the cached data, if there is any, has changed. So a call to
+  [[yii\caching\Cache::get()|get()]] may return `false` while [[yii\caching\Cache::exists()|exists()]] returns `true`.
+
 
 ## Query Caching <span id="query-caching"></span>
 
@@ -283,7 +287,7 @@ You can flush the cache from the console by calling `yii cache/flush` as well.
  names separated with space)
  - `yii cache/flush-all`: flushes all cache components in the application
 
-> Info: Console application uses separate configuration file be default. Ensure, that you have the same caching
+> Info: Console application uses a separate configuration file by default. Ensure, that you have the same caching
 components in your web and console application configs to reach the proper effect.
 
 
