@@ -184,7 +184,10 @@ class ActionColumn extends Column
             $params = is_array($key) ? $key : ['id' => (string) $key];
             $params[0] = $this->controller ? $this->controller . '/' . $action : $action;
 
-            return Url::toRoute($params);
+            $request = Yii::$app->getRequest();
+            $paramsFromRequest = $request instanceof \yii\web\Request ? $request->getQueryParams() : [];
+
+            return Url::toRoute(array_merge($paramsFromRequest, $params));
         }
     }
 

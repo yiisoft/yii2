@@ -3,7 +3,7 @@ Yii Framework 2 Change Log
 
 2.0.8 under development
 -----------------------
-
+- Enh #11314: Fixed ActionColumn buttons reset filters/sorting in GridView (vologab)
 - Bug #11270: Fixed `BaseActiveRecord::link()` method in order to support closure in `indexBy` for relations declaration (iushev)
 - Bug #11262: Enabled use of yii2 inside of PHAR packaged console applications (hiqsol)
 - Bug #11196: Fixed VarDumper throws PHP Fatal when dumping `__PHP_Incomplete_Class` (DamianZ)
