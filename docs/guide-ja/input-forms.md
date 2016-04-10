@@ -116,7 +116,6 @@ ActiveForm の [dropDownList()](http://www.yiiframework.com/doc-2.0/yii-widgets-
 
 ```php
 use app\models\ProductCategory;
-use yii\helpers\ArrayHelper;
 
 /* @var $this yii\web\View */
 /* @var $form yii\widgets\ActiveForm */

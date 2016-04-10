@@ -21,6 +21,10 @@ class DbSessionTest extends TestCase
             'class' => Connection::className(),
             'dsn' => 'sqlite::memory:',
         ]);
+    }
+
+    protected function createTableSession()
+    {
         Yii::$app->db->createCommand()->createTable('session', [
             'id' => 'string',
             'expire' => 'integer',
@@ -28,11 +32,13 @@ class DbSessionTest extends TestCase
             'user_id' => 'integer',
         ])->execute();
     }
-
+    
     // Tests :
 
     public function testReadWrite()
     {
+        $this->createTableSession();
+
         $session = new DbSession();
 
         $session->writeSession('test', 'session data');
@@ -46,6 +52,8 @@ class DbSessionTest extends TestCase
      */
     public function testGarbageCollection()
     {
+        $this->createTableSession();
+
         $session = new DbSession();
 
         $session->writeSession('new', 'new data');
@@ -65,6 +73,8 @@ class DbSessionTest extends TestCase
      */
     public function testWriteCustomField()
     {
+        $this->createTableSession();
+
         $session = new DbSession();
         $session->writeCallback = function ($session) {
             return [
@@ -81,5 +91,43 @@ class DbSessionTest extends TestCase
 
         $this->assertEquals('session data', $sessionRow['data']);
         $this->assertEquals(15, $sessionRow['user_id']);
+    }
+
+    protected function runMigrate($action, $params = [])
+    {
+        $migrate = new \yii\console\controllers\MigrateController('migrate', Yii::$app, [
+            'migrationPath' => '@yii/web/migrations',
+            'interactive' => false,
+        ]);
+
+        ob_start();
+        ob_implicit_flush(false);
+        $migrate->run($action, $params);
+        ob_get_clean();
+
+        return array_map(function($version){
+            return substr($version, 15);
+        }, (new Query())->select(['version'])->from('migration')->column());
+    }
+    
+    public function testMigration()
+    {
+        $this->mockWebApplication([
+            'components' => [
+                'db' => [
+                    'class' => Connection::className(),
+                    'dsn' => 'sqlite::memory:',
+                ]
+            ],
+        ]);
+        
+        $history = $this->runMigrate('history');
+        $this->assertEquals(['base'], $history);
+
+        $history = $this->runMigrate('up');
+        $this->assertEquals(['base','session_init'], $history);
+
+        $history = $this->runMigrate('down');
+        $this->assertEquals(['base'], $history);
     }
 }

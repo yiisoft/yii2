@@ -208,6 +208,10 @@ $data = $cache->get($key);
 - [[yii\caching\TagDependency]]: キャッシュされるデータアイテムに一つまたは複数のタグを関連付けます。
 [[yii\caching\TagDependency::invalidate()]] を呼び出すことによって、指定されたタグ (複数可) を持つキャッシュされたデータアイテムを無効にすることができます。
 
+> Note: 依存を有するキャッシュについて [[yii\caching\Cache::exists()|exists()]] メソッドを使用することは避けてください。
+  このメソッドは、キャッシュされたデータに関連づけられた依存がある場合でも、依存が変化したかどうかをチェックしません。
+  つまり、[[yii\caching\Cache::exists()|exists()]] が `true` を返しているのに、 [[yii\caching\Cache::get()|get()]] が `false` を返すという場合があり得ます。
+
 
 ## クエリキャッシュ <span id="query-caching"></span>
 
