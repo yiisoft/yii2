@@ -576,6 +576,16 @@ class ActiveQuery extends Query implements ActiveQueryInterface
     }
 
     /**
+     * Replace the key string ==relationAlias== by aliasName into given conditions
+     * @param string|array $condition the given conditions.
+     * @param string $aliasName
+     */
+    private function replaceRelationAlias( $condition, $aliasName )
+    {
+        return str_replace('==relationAlias==', $aliasName, $condition);
+    }
+
+    /**
      * Joins a parent query with a child query.
      * The current query object will be modified accordingly.
      * @param ActiveQuery $parent
@@ -601,14 +611,16 @@ class ActiveQuery extends Query implements ActiveQueryInterface
         list ($parentTable, $parentAlias) = $this->getQueryTableName($parent);
         list ($childTable, $childAlias) = $this->getQueryTableName($child);
 
-        if (!empty($child->link)) {
+        if (strpos($parentAlias, '{{') === false) {
+            $parentAlias = '{{' . $parentAlias . '}}';
+        }
+        if (strpos($childAlias, '{{') === false) {
+            $childAlias = '{{' . $childAlias . '}}';
+        }
 
-            if (strpos($parentAlias, '{{') === false) {
-                $parentAlias = '{{' . $parentAlias . '}}';
-            }
-            if (strpos($childAlias, '{{') === false) {
-                $childAlias = '{{' . $childAlias . '}}';
-            }
+        $child->on = $this->replaceRelationAlias( $child->on, $childAlias );
+
+        if (!empty($child->link)) {
 
             $on = [];
             foreach ($child->link as $childColumn => $parentColumn) {
@@ -624,28 +636,28 @@ class ActiveQuery extends Query implements ActiveQueryInterface
         $this->join($joinType, empty($child->from) ? $childTable : $child->from, $on);
 
         if (!empty($child->where)) {
-            $this->andWhere($child->where);
+            $this->andWhere( $this->replaceRelationAlias( $child->where, $childAlias ) );
         }
         if (!empty($child->having)) {
-            $this->andHaving($child->having);
+            $this->andHaving( $this->replaceRelationAlias( $child->having, $childAlias ) );
         }
         if (!empty($child->orderBy)) {
-            $this->addOrderBy($child->orderBy);
+            $this->addOrderBy( $this->replaceRelationAlias( $child->orderBy, $childAlias ) );
         }
         if (!empty($child->groupBy)) {
-            $this->addGroupBy($child->groupBy);
+            $this->addGroupBy( $this->replaceRelationAlias( $child->groupBy, $childAlias ) );
         }
         if (!empty($child->params)) {
             $this->addParams($child->params);
         }
         if (!empty($child->join)) {
             foreach ($child->join as $join) {
-                $this->join[] = $join;
+                $this->join[] = $this->replaceRelationAlias( $join, $childAlias );
             }
         }
         if (!empty($child->union)) {
             foreach ($child->union as $union) {
-                $this->union[] = $union;
+                $this->union[] = $this->replaceRelationAlias( $union, $childAlias );
             }
         }
     }
