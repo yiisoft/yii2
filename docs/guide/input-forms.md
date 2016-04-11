@@ -165,12 +165,12 @@ Pjax::begin([
 Pjax::end();
 ```
 > Tip: Be careful with links inside the [[yii\widgets\Pjax|Pjax]] widget since
-> they will also be rendered inside the widget, to prevent this use the
-> `data-pjax=0` HTML attribute.
+> the response  will also be rendered inside the widget, to prevent this use the
+> `data-pjax="0"` HTML attribute.
 
-#### Values in Submit Buttons and file upload
+#### Values in Submit Buttons and File Upload
 
-There are known issues using `jQuery.serializeArray()`, when dealing with
+There are known issues using `jQuery.serializeArray()` when dealing with
 [[https://github.com/jquery/jquery/issues/2321|files]] and
 [[https://github.com/jquery/jquery/issues/2321|submit button values]] which
 won't be solved and are instead deprecated in favor of the `FormData` class
