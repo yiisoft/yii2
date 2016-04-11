@@ -139,9 +139,9 @@ The value of your model field will be automatically pre-selected.
 Working with Pjax <span id="working-with-pjax"></span>
 -----------------------
 
-The [[yii\widgets\Pjax|Pjax]] widget allows you to update only a section of a
-page instead of reloading the entire page. You can use it to only update the
-form or replace its contents after the submission.
+The [[yii\widgets\Pjax|Pjax]] widget allows you to update a certain section of a
+page instead of reloading the entire page. You can use it to update the form
+only or replace its contents after the submission.
 
 You can configure [[yii\widgets\Pjax::$formSelector|$formSelector]] to specify
 which form submission may trigger pjax. If not set, all forms with `data-pjax`
