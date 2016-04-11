@@ -94,7 +94,7 @@ abstract class BaseManager extends Component implements ManagerInterface
      */
     public function createRole($name)
     {
-        $role = new Role;
+        $role = new Role();
         $role->name = $name;
         return $role;
     }
