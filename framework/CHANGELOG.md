@@ -53,6 +53,10 @@ Yii Framework 2 Change Log
 - Enh #11139: `yii\validators\EachValidator` injects specific attribute value in error message parameters (silverfire)
 - Enh #11187: migrate command now generates phpdoc for table migrations (Faryshta)
 - Enh #11254: Added ability to attach RBAC rule using class name (mdmunir)
+- Enh #11285: `yii\base\Security` enhancements (tom--, samdark)
+  - Avoid reading too much from `/dev/urandom` and `/dev/random` not to waste entropy.
+  - Pefer `/dev/random` to `/dev/urandom` when running on FreeBSD.
+  - Better RNG performance.
 - Enh: Added `StringHelper::countWords()` that given a string returns number of words in it (samdark)
 - Enh #11207: migrate command can create foreign keys. (Faryshta)
 - Enh #11166: migrate command new option `useTablePrefix` (Faryshta)
