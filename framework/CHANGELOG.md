@@ -10,6 +10,7 @@ Yii Framework 2 Change Log
 - Bug #7627: Fixed `yii\widgets\ActiveField` to handle inputs AJAX validation with changed ID properly (dizeee)
 - Bug #9851: Fixed partial commit / rollback in nested transactions (sammousa)
 - Bug #10480: Fixed removing old identity cookie when loggin in as another user without logging out first (maine-mike)
+- Bug #10617: Fixed `yii\web\Request::getBodyParams()` returned `null` instead of empty array if request body is empty and content type is application/json (samdark)
 - Bug #10784: Fixed `yii\grid\CheckboxColumn` to set correct value when `yii\grid\CheckboxColumn::$checkboxOptions` closure is used (nukkumatti)
 - Bug #10850: Fixed unable to use 'definitions' and 'aliases' at `yii\widgets\MaskedInput` (rahimov, klimov-paul)
 - Bug #10884: Fixed MessageFormatter for formatting messages when not all parameters are given (laxity7, cebe)
