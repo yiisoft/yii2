@@ -58,6 +58,15 @@ class UniqueValidator extends Validator
      * is the [[\yii\db\Query|Query]] object that you can modify in the function.
      */
     public $filter;
+	/**
+     * @var string the user-defined error message used when `targetAttribute` is an array. It may contain the following placeholders which
+     * will be replaced accordingly by the validator:
+     *
+     * - `{attributeCombo}`: the labels of the attributes being validated
+     * - `{valueCombo}`: the values of the attributes being validated
+     * @since 2.0.8
+     */
+    public $comboNotUnique;
 
 
     /**
@@ -69,6 +78,9 @@ class UniqueValidator extends Validator
         if ($this->message === null) {
             $this->message = Yii::t('yii', '{attribute} "{value}" has already been taken.');
         }
+	    if ($this->comboNotUnique === null) {
+		    $this->comboNotUnique = Yii::t('yii', 'Combination [{valueCombo}] of [{attributeCombo}] has already been taken.');
+	    }
     }
 
     /**
@@ -133,7 +145,23 @@ class UniqueValidator extends Validator
         }
 
         if ($exists) {
-            $this->addError($model, $attribute, $this->message);
+            if (is_array($targetAttribute)) {
+                $attributeCombo = [];
+                $valueCombo = [];
+                foreach ($targetAttribute as $k => $v) {
+                    if(is_int($k)) {
+                        $attributeCombo[] = $v;
+                        $valueCombo[] = $model->$v;
+                    } else {
+                        $attributeCombo[] = $k;
+                        $valueCombo[] = $model->$k;
+                    }
+                }
+                array_walk($valueCombo, function (&$value) { $value = '"' . $value . '"'; });
+                $this->addError($model, $attribute, $this->comboNotUnique, ['attributeCombo' => implode(', ', $attributeCombo), 'valueCombo' => implode(', ', $valueCombo)]);
+            } else {
+                $this->addError($model, $attribute, $this->message);
+            }
         }
     }
 }
