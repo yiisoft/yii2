@@ -138,7 +138,7 @@ class EachValidator extends Validator
                     );
                     $cloneModel->clearErrors($attribute);
                 }
-                $values[$i] = $model->$attribute;
+                $values[$i] = $cloneModel->$attribute;
             }
         }
         $model->$attribute = $values;
