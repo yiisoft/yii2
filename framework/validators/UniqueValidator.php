@@ -157,6 +157,7 @@ class UniqueValidator extends Validator
                         $valueCombo[] = $model->$k;
                     }
                 }
+                array_walk($attributeCombo, function (&$attribute) use($model) { $attribute = $model->getAttributeLabel($attribute); });
                 array_walk($valueCombo, function (&$value) { $value = '"' . $value . '"'; });
                 $this->addError($model, $attribute, $this->comboNotUnique, ['attributeCombo' => implode(', ', $attributeCombo), 'valueCombo' => implode(', ', $valueCombo)]);
             } else {
