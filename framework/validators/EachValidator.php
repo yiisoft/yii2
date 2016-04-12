@@ -32,6 +32,9 @@ use yii\base\Model;
  * > Note: This validator will not work with inline validation rules in case of usage outside the model scope,
  *   e.g. via [[validate()]] method.
  *
+ * > Note: EachValidator is meant to be used only in basic cases, you should consider usage of tabular input,
+ *   using several models for the more complex case.
+ *
  * @author Paul Klimov <klimov.paul@gmail.com>
  * @since 2.0.4
  */
