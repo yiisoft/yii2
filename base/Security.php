@@ -31,10 +31,6 @@ use Yii;
 class Security extends Component
 {
     /**
-     * Buffer size for reading from /dev/random or /dev/urandom
-     */
-    const RANDOM_FILE_BUFFER = 8;
-    /**
      * @var string The cipher to use for encryption and decryption.
      */
     public $cipher = 'AES-128-CBC';
@@ -506,12 +502,14 @@ class Security extends Component
                     // By default PHP buffer size is 8192 bytes which causes wasting
                     // more entropy that we're actually using. Therefore setting it to
                     // lower value.
+                    $bufferSize = 8;
+
                     if (function_exists('stream_set_read_buffer')) {
-                        stream_set_read_buffer($this->_randomFile, self::RANDOM_FILE_BUFFER);
+                        stream_set_read_buffer($this->_randomFile, $bufferSize);
                     }
                     // stream_set_read_buffer() isn't implemented on HHVM
                     if (function_exists('stream_set_chunk_size')) {
-                        stream_set_chunk_size($this->_randomFile, self::RANDOM_FILE_BUFFER);
+                        stream_set_chunk_size($this->_randomFile, $bufferSize);
                     }
                 }
             }
