@@ -115,19 +115,34 @@ class EachValidator extends Validator
     public function validateAttribute($model, $attribute)
     {
         $value = $model->$attribute;
-        $validator = $this->getValidator();
-        if ($validator instanceof FilterValidator && is_array($value)) {
-            $filteredValue = [];
-            foreach ($value as $k => $v) {
-                if (!$validator->skipOnArray || !is_array($v)) {
-                    $filteredValue[$k] = call_user_func($validator->filter, $v);
-                }
-            }
-            $model->$attribute = $filteredValue;
-        } else {
-            $this->getValidator($model); // ensure model context while validator creation
-            parent::validateAttribute($model, $attribute);
+        if (!is_array($value)) {
+            $this->addError($model, $attribute, $this->message, []);
+            return;
         }
+
+        $validator = $this->getValidator($model); // ensure model context while validator creation
+
+        $originalErrors = $model->getErrors($attribute);
+        $filteredValue = [];
+        foreach ($value as $k => $v) {
+            $model->$attribute = $v;
+            $validator->validateAttribute($model, $attribute);
+            $filteredValue[$k] = $model->$attribute;
+            if ($model->hasErrors($attribute)) {
+                $validationErrors = $model->getErrors($attribute);
+                $model->clearErrors($attribute);
+                if (!empty($originalErrors)) {
+                    $model->addErrors([$attribute => $originalErrors]);
+                }
+                if ($this->allowMessageFromRule) {
+                    $model->addErrors([$attribute => $validationErrors]);
+                } else {
+                    $this->addError($model, $attribute, $this->message, ['value' => $v]);
+                }
+                return;
+            }
+        }
+        $model->$attribute = $filteredValue;
     }
 
     /**

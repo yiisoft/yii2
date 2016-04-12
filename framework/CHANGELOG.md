@@ -4,6 +4,7 @@ Yii Framework 2 Change Log
 2.0.8 under development
 -----------------------
 
+- Bug #9935: Fixed `yii\validators\EachValidator` does not invoke `validateAttribute()` method of the embedded validator (klimov-paul)
 - Bug #11270: Fixed `BaseActiveRecord::link()` method in order to support closure in `indexBy` for relations declaration (iushev)
 - Bug #11262: Enabled use of yii2 inside of PHAR packaged console applications (hiqsol)
 - Bug #11196: Fixed VarDumper throws PHP Fatal when dumping `__PHP_Incomplete_Class` (DamianZ)

@@ -108,4 +108,36 @@ class EachValidatorTest extends TestCase
         $validator = new EachValidator(['rule' => ['integer', 'skipOnEmpty' => false]]);
         $this->assertFalse($validator->validate(['']));
     }
+
+    /**
+     * @see https://github.com/yiisoft/yii2/issues/9935
+     *
+     * @depends testValidate
+     */
+    public function testCompare()
+    {
+        $model = FakedValidationModel::createWithAttributes([
+            'attr_one' => [
+                'value1',
+                'value2',
+                'value3',
+            ],
+            'attr_two' => 'value2',
+        ]);
+        $validator = new EachValidator(['rule' => ['compare', 'compareAttribute' => 'attr_two']]);
+        $validator->validateAttribute($model, 'attr_one');
+        $this->assertNotEmpty($model->getErrors('attr_one'));
+
+        $model = FakedValidationModel::createWithAttributes([
+            'attr_one' => [
+                'value1',
+                'value2',
+                'value3',
+            ],
+            'attr_two' => 'value4',
+        ]);
+        $validator = new EachValidator(['rule' => ['compare', 'compareAttribute' => 'attr_two', 'operator' => '!=']]);
+        $validator->validateAttribute($model, 'attr_one');
+        $this->assertEmpty($model->getErrors('attr_one'));
+    }
 }
