@@ -145,18 +145,23 @@ class UniqueValidator extends Validator
 
         if ($exists) {
             if (is_array($targetAttribute)) {
-                $this->addComboNotUniqueError();
+                $this->addComboNotUniqueError($model, $attribute);
             } else {
                 $this->addError($model, $attribute, $this->message);
             }
         }
     }
     
-    private function addComboNotUniqueError()
+    /**
+     * Builds and adds [[comboNotUnique]] error message to the specified model attribute.
+     * @param \yii\base\Model $model the data model.
+     * @param string $attribute the name of the attribute.
+    */
+    private function addComboNotUniqueError($model, $attribute)
     {
         $attributeCombo = [];
         $valueCombo = [];
-        foreach ($targetAttribute as $key => $value) {
+        foreach ($this->targetAttribute as $key => $value) {
             if(is_int($key)) {
                 $attributeCombo[] = $model->getAttributeLabel($value);
                 $valueCombo[] = '"' . $model->$value . '"';
