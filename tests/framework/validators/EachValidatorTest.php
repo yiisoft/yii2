@@ -124,9 +124,13 @@ class EachValidatorTest extends TestCase
             ],
             'attr_two' => 'value2',
         ]);
-        $validator = new EachValidator(['rule' => ['compare', 'compareAttribute' => 'attr_two']]);
+        $validator = new EachValidator(['rule' => [
+            'compare',
+            'compareAttribute' => 'attr_two'
+        ]]);
         $validator->validateAttribute($model, 'attr_one');
         $this->assertNotEmpty($model->getErrors('attr_one'));
+        $this->assertEquals(3, count($model->attr_one));
 
         $model = FakedValidationModel::createWithAttributes([
             'attr_one' => [
@@ -136,7 +140,11 @@ class EachValidatorTest extends TestCase
             ],
             'attr_two' => 'value4',
         ]);
-        $validator = new EachValidator(['rule' => ['compare', 'compareAttribute' => 'attr_two', 'operator' => '!=']]);
+        $validator = new EachValidator(['rule' => [
+            'compare',
+            'compareAttribute' => 'attr_two',
+            'operator' => '!='
+        ]]);
         $validator->validateAttribute($model, 'attr_one');
         $this->assertEmpty($model->getErrors('attr_one'));
     }
