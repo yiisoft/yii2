@@ -1,6 +1,11 @@
 Yii Framework 2 Change Log
 ==========================
 
+Work in process
+---------------
+
+Enh #11334: add  LogStashTarget for yii logs (qihuajun)
+
 2.0.8 under development
 -----------------------
 
