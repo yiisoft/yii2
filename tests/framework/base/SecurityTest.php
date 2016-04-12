@@ -826,6 +826,7 @@ TEXT;
 
     public function testGenerateRandomKeySpeed()
     {
+        self::markTestSkipped('Comment markTestSkipped in testGenerateRandomKeySpeed() in order to get RNG benchmark.');
         $tests = [
             "function_exists('random_bytes')",
             "defined('OPENSSL_VERSION_TEXT') ? OPENSSL_VERSION_TEXT : null",
