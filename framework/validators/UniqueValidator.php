@@ -59,8 +59,7 @@ class UniqueValidator extends Validator
      */
     public $filter;
 	/**
-     * @var string the user-defined error message used when `targetAttribute` is an array. It may contain the following placeholders which
-     * will be replaced accordingly by the validator:
+     * @var string the user-defined error message used when [[targetAttribute]] is an array. It may contain the following placeholders:
      *
      * - `{attributeCombo}`: the labels of the attributes being validated
      * - `{valueCombo}`: the values of the attributes being validated
@@ -148,17 +147,15 @@ class UniqueValidator extends Validator
             if (is_array($targetAttribute)) {
                 $attributeCombo = [];
                 $valueCombo = [];
-                foreach ($targetAttribute as $k => $v) {
-                    if(is_int($k)) {
-                        $attributeCombo[] = $v;
-                        $valueCombo[] = $model->$v;
+                foreach ($targetAttribute as $key => $value) {
+                    if(is_int($key)) {
+                        $attributeCombo[] = $model->getAttributeLabel($value);
+                        $valueCombo[] = '"' . $model->$value . '"';
                     } else {
-                        $attributeCombo[] = $k;
-                        $valueCombo[] = $model->$k;
+                        $attributeCombo[] = $model->getAttributeLabel($key);
+                        $valueCombo[] = '"' . $model->$key . '"';
                     }
                 }
-                array_walk($attributeCombo, function (&$attribute) use($model) { $attribute = $model->getAttributeLabel($attribute); });
-                array_walk($valueCombo, function (&$value) { $value = '"' . $value . '"'; });
                 $this->addError($model, $attribute, $this->comboNotUnique, ['attributeCombo' => implode(', ', $attributeCombo), 'valueCombo' => implode(', ', $valueCombo)]);
             } else {
                 $this->addError($model, $attribute, $this->message);
