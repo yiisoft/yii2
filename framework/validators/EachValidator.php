@@ -114,20 +114,34 @@ class EachValidator extends Validator
      */
     public function validateAttribute($model, $attribute)
     {
-        $value = $model->$attribute;
-        $validator = $this->getValidator();
-        if ($validator instanceof FilterValidator && is_array($value)) {
-            $filteredValue = [];
-            foreach ($value as $k => $v) {
-                if (!$validator->skipOnArray || !is_array($v)) {
-                    $filteredValue[$k] = call_user_func($validator->filter, $v);
-                }
+        $values = $model->$attribute;
+        $validator = $this->getValidator($model);
+
+        if ($this->allowMessageFromRule) {
+            foreach ($values as $i => $v) {
+                $model->$attribute = $v;
+                $validator->validateAttribute($model, $attribute);
+                $values[$i] = $model->$attribute;
             }
-            $model->$attribute = $filteredValue;
         } else {
-            $this->getValidator($model); // ensure model context while validator creation
-            parent::validateAttribute($model, $attribute);
+            $cloneModel = clone $model;
+            $cloneModel->clearErrors($attribute);
+            foreach ($values as $i => $v) {
+                $model->$attribute = $v;
+                $validator->validateAttribute($cloneModel, $attribute);
+                if ($cloneModel->hasErrors($attribute)) {
+                    $this->addError(
+                        $model,
+                        $attribute,
+                        $this->message,
+                        ['value' => $v]
+                    );
+                    $cloneModel->clearErrors($attribute);
+                }
+                $values[$i] = $cloneModel->$attribute;
+            }
         }
+        $model->$attribute = $values;
     }
 
     /**
