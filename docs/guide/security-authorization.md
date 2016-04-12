@@ -303,6 +303,8 @@ class RbacController extends Controller
 }
 ```
 
+> Note: If you are using advanced template, you need to put your RbacController inside `console/controllers` folder, and your namespace will be: `console/controllers`. `app` is root namespace for basic template not for advanced template.
+
 After executing the command with `yii rbac/init` we'll get the following hierarchy:
 
 ![Simple RBAC hierarchy](images/rbac-hierarchy-1.png "Simple RBAC hierarchy")
