@@ -145,21 +145,26 @@ class UniqueValidator extends Validator
 
         if ($exists) {
             if (is_array($targetAttribute)) {
-                $attributeCombo = [];
-                $valueCombo = [];
-                foreach ($targetAttribute as $key => $value) {
-                    if(is_int($key)) {
-                        $attributeCombo[] = $model->getAttributeLabel($value);
-                        $valueCombo[] = '"' . $model->$value . '"';
-                    } else {
-                        $attributeCombo[] = $model->getAttributeLabel($key);
-                        $valueCombo[] = '"' . $model->$key . '"';
-                    }
-                }
-                $this->addError($model, $attribute, $this->comboNotUnique, ['attributeCombo' => implode(', ', $attributeCombo), 'valueCombo' => implode(', ', $valueCombo)]);
+                $this->addComboNotUniqueError();
             } else {
                 $this->addError($model, $attribute, $this->message);
             }
         }
+    }
+    
+    private function addComboNotUniqueError()
+    {
+        $attributeCombo = [];
+        $valueCombo = [];
+        foreach ($targetAttribute as $key => $value) {
+            if(is_int($key)) {
+                $attributeCombo[] = $model->getAttributeLabel($value);
+                $valueCombo[] = '"' . $model->$value . '"';
+            } else {
+                $attributeCombo[] = $model->getAttributeLabel($key);
+                $valueCombo[] = '"' . $model->$key . '"';
+            }
+        }
+        $this->addError($model, $attribute, $this->comboNotUnique, ['attributeCombo' => implode(', ', $attributeCombo), 'valueCombo' => implode(', ', $valueCombo)]);
     }
 }
