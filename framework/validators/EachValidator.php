@@ -142,6 +142,7 @@ class EachValidator extends Validator
                 } else {
                     $this->addError($model, $attribute, $this->message, ['value' => $v]);
                 }
+                $model->$attribute = $value;
                 return;
             }
         }

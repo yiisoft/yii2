@@ -127,6 +127,7 @@ class EachValidatorTest extends TestCase
         $validator = new EachValidator(['rule' => ['compare', 'compareAttribute' => 'attr_two']]);
         $validator->validateAttribute($model, 'attr_one');
         $this->assertNotEmpty($model->getErrors('attr_one'));
+        $this->assertEquals(3, count($model->attr_one));
 
         $model = FakedValidationModel::createWithAttributes([
             'attr_one' => [
