@@ -4,11 +4,15 @@ Yii Framework 2 Change Log
 2.0.8 under development
 -----------------------
 
+- Bug #11322: Fixed incorrect error message in `yii\validators\UniqueValidator` for composite `targetAttribute` (PowerGamer1, silverfire).
+- Bug #9935: Fixed `yii\validators\EachValidator` does not invoke `validateAttribute()` method of the embedded validator (klimov-paul)
 - Bug #11270: Fixed `BaseActiveRecord::link()` method in order to support closure in `indexBy` for relations declaration (iushev)
 - Bug #11262: Enabled use of yii2 inside of PHAR packaged console applications (hiqsol)
 - Bug #11196: Fixed VarDumper throws PHP Fatal when dumping `__PHP_Incomplete_Class` (DamianZ)
 - Bug #7627: Fixed `yii\widgets\ActiveField` to handle inputs AJAX validation with changed ID properly (dizeee)
 - Bug #9851: Fixed partial commit / rollback in nested transactions (sammousa)
+- Bug #10480: Fixed removing old identity cookie when loggin in as another user without logging out first (maine-mike)
+- Bug #10617: Fixed `yii\web\Request::getBodyParams()` returned `null` instead of empty array if request body is empty and content type is application/json (samdark)
 - Bug #10784: Fixed `yii\grid\CheckboxColumn` to set correct value when `yii\grid\CheckboxColumn::$checkboxOptions` closure is used (nukkumatti)
 - Bug #10850: Fixed unable to use 'definitions' and 'aliases' at `yii\widgets\MaskedInput` (rahimov, klimov-paul)
 - Bug #10884: Fixed MessageFormatter for formatting messages when not all parameters are given (laxity7, cebe)
@@ -25,6 +29,7 @@ Yii Framework 2 Change Log
 - Bug #11026: Fixed `StringHelper::truncateWords()` to count words properly for non-English text (samdark, tol17)
 - Bug #11040: Check parameter 'recursive' and disable recursive copying with option 'recursive' => false in method BaseFileHelper::copyDirectory (Ni-san)
 - Bug #11125: Fixed `JSON_ERROR_SYNTAX` for `json_decode(null)` in PHP 7 (fps01)
+- Bug #11132: Fixed `yii\widgets\FragmentCache` not handling empty content correctly in all cases (kidol)
 - Bug #11188: Fixed wrong index usage in `CaptchaAction` when calling `imagefilledrectangle` (alsopub)
 - Bug #11220: NumberValidator now handles objects properly (samdark)
 - Bug #11221: Boolean validator generates incorrect error message (azaikin, githubjeka)
@@ -53,6 +58,10 @@ Yii Framework 2 Change Log
 - Enh #11139: `yii\validators\EachValidator` injects specific attribute value in error message parameters (silverfire)
 - Enh #11187: migrate command now generates phpdoc for table migrations (Faryshta)
 - Enh #11254: Added ability to attach RBAC rule using class name (mdmunir)
+- Enh #11285: `yii\base\Security` enhancements (tom--, samdark)
+  - Avoid reading too much from `/dev/urandom` and `/dev/random` not to waste entropy.
+  - Pefer `/dev/random` to `/dev/urandom` when running on FreeBSD.
+  - Better RNG performance.
 - Enh: Added `StringHelper::countWords()` that given a string returns number of words in it (samdark)
 - Enh #11207: migrate command can create foreign keys. (Faryshta)
 - Enh #11166: migrate command new option `useTablePrefix` (Faryshta)
