@@ -58,7 +58,7 @@ Yii Framework 2 Change Log
 - Enh #11187: migrate command now generates phpdoc for table migrations (Faryshta)
 - Enh #11254: Added ability to attach RBAC rule using class name (mdmunir)
 - Enh #11285: `yii\base\Security` enhancements (tom--, samdark)
-  - Avoid reading too much from `/dev/urandom` and `/dev/random` not to waste entropy.
+  - Avoid reading more bytes than needed from `/dev/urandom` and `/dev/random`.
   - Pefer `/dev/random` to `/dev/urandom` when running on FreeBSD.
   - Better RNG performance.
 - Enh: Added `StringHelper::countWords()` that given a string returns number of words in it (samdark)
