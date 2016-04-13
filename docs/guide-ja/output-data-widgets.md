@@ -18,7 +18,7 @@ DetailView は [[yii\widgets\DetailView::$attributes]] プロパティを使っ�
 利用できるフォーマットのオプションについては、[フォーマッタの節](output-formatting.md) を参照してください。
 
 次に DetailView の典型的な用例を示します。
- 
+
 ```php
 echo DetailView::widget([
     'model' => $model,
@@ -70,7 +70,7 @@ use yii\helpers\HtmlPurifier;
 ?>
 <div class="post">
     <h2><?= Html::encode($model->title) ?></h2>
-    
+
     <?= HtmlPurifier::process($model->text) ?>    
 </div>
 ```
@@ -215,7 +215,7 @@ echo GridView::widget([
             'format' => ['date', 'php:Y-m-d']
         ],
     ],
-]); 
+]);
 ```
 
 上記において、`text` は [[\yii\i18n\Formatter::asText()]] に対応し、カラムの値が最初の引数として渡されます。
@@ -687,10 +687,39 @@ echo GridView::widget([
 
 ### GridView を Pjax とともに使う
 
-> Note: このセクションはまだ執筆中です。
->
+[[yii\widgets\Pjax|Pjax]] ウィジェットを使うと、ページ全体をリロードせずに、ページの一部分だけを更新することが出来ます。
+これを使うと、フィルタを使うときに、[[yii\widgets\GridView|GridView]] の中身だけを更新することが出来ます。
 
-(内容未定)
+```php
+use yii\widgets\Pjax;
+use yii\widgets\GridView;
+
+Pjax::begin([
+    // PJax のオプション
+]);
+    Gridview::widget([
+        // GridView のオプション
+    ]);
+Pjax::end();
+```
+
+[[yii\widgets\Pjax|Pjax]] は、[[yii\widgets\Pjax::$linkSelector|Pjax::$linkSelector]] の指定に従って、リンクに対しても動作します。
+これは [[yii\data\ActionColumn|ActionColumn]] を使う場合には問題となり得ます。
+この問題を防止するためには、[[yii\data\ActionColumn::$buttons|ActionColumn::$buttons]]
+プロパティを編集して `data-pjax="0"` という HTML 属性を追加します。
+
+#### Gii における Pjax を伴う GridView
+
+バージョン 2.0.5 以降、[Gii](start-gii.md) では `$enablePjax` というオプションがウェブインターフェイスまたはコマンドラインで使用可能になっています。
+
+```php
+yii gii/crud --controllerClass="backend\\controllers\PostController" \
+  --modelClass="common\\models\\Post" \
+  --enablePjax=1
+```
+
+これによって、[[yii\widgets\GridView|GridView]] または [[yii\widgets\ListView|ListView]]
+を囲む [[yii\widgets\Pjax|Pjax]] ウィジェットが生成されます。
 
 
 さらに読むべき文書
