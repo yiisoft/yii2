@@ -577,12 +577,28 @@ class ActiveQuery extends Query implements ActiveQueryInterface
 
     /**
      * Replace the key string ==relationAlias== by aliasName into given conditions
-     * @param string|array $condition the given conditions.
+     * @param string|array $condition the given conditions
      * @param string $aliasName
      */
     private function replaceRelationAlias( $condition, $aliasName )
     {
-        return str_replace('==relationAlias==', $aliasName, $condition);
+        if (is_int($condition)) {
+            return $condition;
+        } elseif (is_string($condition)) {
+            return str_replace('==relationAlias==', $aliasName, $condition);
+        } elseif (is_array($condition)) {
+            $conditionNew = [];
+            foreach ($condition as $key => $value) {
+                unset($condition[$key]);
+                $key    = self::replaceRelationAlias($key,   $aliasName);
+                $value  = self::replaceRelationAlias($value, $aliasName);
+                $conditionNew[$key] = $value;
+            }
+            $condition = $conditionNew;
+        } elseif ($condition instanceof \yii\db\Expression) {
+            $condition->expression = self::replaceRelationAlias($condition->expression, $aliasName);
+        }
+        return $condition;
     }
 
     /**
@@ -611,20 +627,22 @@ class ActiveQuery extends Query implements ActiveQueryInterface
         list ($parentTable, $parentAlias) = $this->getQueryTableName($parent);
         list ($childTable, $childAlias) = $this->getQueryTableName($child);
 
-        if (strpos($parentAlias, '{{') === false) {
-            $parentAlias = '{{' . $parentAlias . '}}';
-        }
-        if (strpos($childAlias, '{{') === false) {
-            $childAlias = '{{' . $childAlias . '}}';
-        }
-
         $child->on = $this->replaceRelationAlias( $child->on, $childAlias );
 
         if (!empty($child->link)) {
+            //automatically quote table aliasName only for the link part (not sure why?)
+            $linkParentAlias = $parentAlias;
+            if (strpos($linkParentAlias, '{{') === false) {
+                $linkParentAlias = '{{' . $linkParentAlias . '}}';
+            }
+            $linkChildAlias = $childAlias;
+            if (strpos($linkChildAlias, '{{') === false) {
+                $linkChildAlias = '{{' . $linkChildAlias . '}}';
+            }
 
             $on = [];
             foreach ($child->link as $childColumn => $parentColumn) {
-                $on[] = "$parentAlias.[[$parentColumn]] = $childAlias.[[$childColumn]]";
+                $on[] = "$linkParentAlias.[[$parentColumn]] = $linkChildAlias.[[$childColumn]]";
             }
             $on = implode(' AND ', $on);
             if (!empty($child->on)) {
