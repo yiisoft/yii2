@@ -140,8 +140,8 @@ Working with Pjax <span id="working-with-pjax"></span>
 -----------------------
 
 The [[yii\widgets\Pjax|Pjax]] widget allows you to update a certain section of a
-page instead of reloading the entire page. You can use it to update the form
-only or replace its contents after the submission.
+page instead of reloading the entire page. You can use it to update only the form
+and replace its contents after the submission.
 
 You can configure [[yii\widgets\Pjax::$formSelector|$formSelector]] to specify
 which form submission may trigger pjax. If not set, all forms with `data-pjax`
@@ -153,19 +153,19 @@ use yii\widgets\ActiveForm;
 
 Pjax::begin([
     // Pjax options
-])
+]);
     $form = ActiveForm::begin([
         'options' => ['data' => ['pjax' => true]],
         // more ActiveForm options
-    ])
+    ]);
 
         // ActiveForm content
 
     ActiveForm::end();
 Pjax::end();
 ```
-> Tip: Be careful with links inside the [[yii\widgets\Pjax|Pjax]] widget since
-> the response  will also be rendered inside the widget, to prevent this use the
+> Tip: Be careful with the links inside the [[yii\widgets\Pjax|Pjax]] widget since
+> the response  will also be rendered inside the widget. To prevent this, use the
 > `data-pjax="0"` HTML attribute.
 
 #### Values in Submit Buttons and File Upload
