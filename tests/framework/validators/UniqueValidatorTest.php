@@ -117,7 +117,7 @@ class UniqueValidatorTest extends DatabaseTestCase
     public function testValidateCompositeKeys()
     {
         $val = new UniqueValidator([
-            'targetClass' => OrderItem::className(),
+//            'targetClass' => OrderItem::className(),
             'targetAttribute' => ['order_id', 'item_id'],
         ]);
         // validate old record
@@ -222,12 +222,12 @@ class UniqueValidatorTest extends DatabaseTestCase
         $this->assertFalse($profileModel->hasErrors('description'));
 
         $profileModel->clearErrors();
-        $validator->targetClass = 'yiiunit\data\ar\Profile';
+//        $validator->targetClass = 'yiiunit\data\ar\Profile';
         $validator->validateAttribute($profileModel, 'description');
         $this->assertFalse($profileModel->hasErrors('description'));
 
         $profileModel->clearErrors();
-        $validator->targetClass = '\yiiunit\data\ar\Profile';
+//        $validator->targetClass = '\yiiunit\data\ar\Profile';
         $validator->validateAttribute($profileModel, 'description');
         $this->assertFalse($profileModel->hasErrors('description'));
     }

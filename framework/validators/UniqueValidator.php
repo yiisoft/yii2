@@ -37,7 +37,7 @@ use yii\db\ActiveRecordInterface;
 class UniqueValidator extends Validator
 {
     /**
-     * @var string the name of the ActiveRecord class that should be used to validate the uniqueness
+     * @var string|\yii\db\ActiveRecordInterface the name of the ActiveRecord class that should be used to validate the uniqueness
      * of the current attribute value. If not set, it will use the ActiveRecord class of the attribute being validated.
      * @see targetAttribute
      */
@@ -77,7 +77,7 @@ class UniqueValidator extends Validator
     public function validateAttribute($model, $attribute)
     {
         /* @var $targetClass ActiveRecordInterface */
-        $targetClass = $this->targetClass === null ? get_class($model) : $this->targetClass;
+        $targetClass = $this->targetClass === null ? $model : $this->targetClass;
         $targetAttribute = $this->targetAttribute === null ? $attribute : $this->targetAttribute;
 
         if (is_array($targetAttribute)) {
@@ -106,33 +106,10 @@ class UniqueValidator extends Validator
             $query->andWhere($this->filter);
         }
 
-        if (!$model instanceof ActiveRecordInterface || $model->getIsNewRecord() || $model->className() !== $targetClass::className()) {
-            // if current $model isn't in the database yet then it's OK just to call exists()
-            // also there's no need to run check based on primary keys, when $targetClass is not the same as $model's class
-            $exists = $query->exists();
-        } else {
-            // if current $model is in the database already we can't use exists()
-            /* @var $models ActiveRecordInterface[] */
-            $models = $query->limit(2)->all();
-            $n = count($models);
-            if ($n === 1) {
-                $keys = array_keys($params);
-                $pks = $targetClass::primaryKey();
-                sort($keys);
-                sort($pks);
-                if ($keys === $pks) {
-                    // primary key is modified and not unique
-                    $exists = $model->getOldPrimaryKey() != $model->getPrimaryKey();
-                } else {
-                    // non-primary key, need to exclude the current record based on PK
-                    $exists = $models[0]->getPrimaryKey() != $model->getOldPrimaryKey();
-                }
-            } else {
-                $exists = $n > 1;
-            }
+        if ($targetClass instanceof ActiveRecordInterface && !$targetClass->getIsNewRecord()) {
+            $query->andWhere(['not in', $targetClass::primaryKey(), [$targetClass->getOldPrimaryKey(true)]]);
         }
-
-        if ($exists) {
+        if ($query->exists()) {
             $this->addError($model, $attribute, $this->message);
         }
     }
