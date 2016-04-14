@@ -12,7 +12,7 @@ namespace yii\caching;
  *
  * See [[Cache]] for common cache operations that ArrayCache supports.
  *
- * Unlike the [[Cache]], ArrayCache allows the expire parameter of [[set]], [[add]], [[mset]] and [[madd]] to
+ * Unlike the [[Cache]], ArrayCache allows the expire parameter of [[set]], [[add]], [[multiSet]] and [[multiAdd]] to
  * be a floating point number, so you may specify the time in milliseconds (e.g. 0.1 will be 100 milliseconds).
  *
  * @author Carsten Brandt <mail@cebe.cc>

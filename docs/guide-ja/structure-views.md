@@ -41,7 +41,7 @@ $this->title = 'ログイン';
 `$this` 以外に、上記の例の `$model` のように、事前に定義される変数をビューの中に置くことが出来ます。
 このような変数は、[ビューのレンダリング](#rendering-views) をトリガする [コントローラ](structure-controllers.md) などのオブジェクトによってビューに *プッシュ* されるデータを表します。
 
-> Tip|ヒント: 上の例では、事前に定義される変数は、IDE に認識されるように、ビューの先頭のコメントブロックの中にリストされています。
+> Tip: 上の例では、事前に定義される変数は、IDE に認識されるように、ビューの先頭のコメントブロックの中にリストされています。
   これは、ビューにドキュメントを付けるのにも良い方法です。
 
 
@@ -76,7 +76,7 @@ use yii\helpers\HtmlPurifier;
 </div>
 ```
 
-> Tip|ヒント: HTMLPurifier は、出力を安全なものにすることにおいては素晴らしい仕事をしますが、速くはありません。
+> Tip: HTMLPurifier は、出力を安全なものにすることにおいては素晴らしい仕事をしますが、速くはありません。
   アプリケーションが高いパフォーマンスを要求する場合は、フィルター結果を [キャッシュ](caching-overview.md) することを考慮すべきです。
 
 
@@ -651,7 +651,7 @@ class SiteController extends Controller
 このようにすると、ディレクトリ `@app/views/site/pages` の下に `about` という名前のビューを作成したときに、次の URL によってこのビューを表示することが出来るようになります。
 
 ```
-http://localhost/index.php?r=site/page&view=about
+http://localhost/index.php?r=site%2Fpage&view=about
 ```
 
 `view` という `GET` パラメータが、どのビューがリクエストされているかを [[yii\web\ViewAction]] に教えます。

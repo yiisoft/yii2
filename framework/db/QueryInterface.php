@@ -62,12 +62,12 @@ interface QueryInterface
      * This can also be a callable (e.g. anonymous function) that returns the index value based on the given
      * row data. The signature of the callable should be:
      *
-     * ~~~
+     * ```php
      * function ($row)
      * {
      *     // return the index value corresponding to $row
      * }
-     * ~~~
+     * ```
      *
      * @return $this the query object itself
      */
@@ -100,7 +100,7 @@ interface QueryInterface
      *   The method will *not* do any quoting or escaping.
      *
      * - **or**: similar to the `and` operator except that the operands are concatenated using `OR`. For example,
-     *   `['or', ['type' => [7, 8, 9]], ['id' => [1, 2, 3]]` will generate `(type IN (7, 8, 9) OR (id IN (1, 2, 3)))`.
+     *   `['or', ['type' => [7, 8, 9]], ['id' => [1, 2, 3]]]` will generate `(type IN (7, 8, 9) OR (id IN (1, 2, 3)))`.
      *
      * - **not**: this will take only one operand and build the negation of it by prefixing the query string with `NOT`.
      *   For example `['not', ['attribute' => null]]` will result in the condition `NOT (attribute IS NULL)`.

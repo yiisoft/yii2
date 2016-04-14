@@ -20,15 +20,19 @@ use yii\helpers\Console;
  * Users call a console command by specifying the corresponding route which identifies a controller action.
  * The `yii` program is used when calling a console command, like the following:
  *
- * ~~~
+ * ```
  * yii <route> [--param1=value1 --param2 ...]
- * ~~~
+ * ```
  *
  * where `<route>` is a route to a controller action and the params will be populated as properties of a command.
  * See [[options()]] for details.
  *
  * @property string $help This property is read-only.
  * @property string $helpSummary This property is read-only.
+ * @property array $passedOptionValues The properties corresponding to the passed options. This property is
+ * read-only.
+ * @property array $passedOptions The names of the options passed during execution. This property is
+ * read-only.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
@@ -47,6 +51,11 @@ class Controller extends \yii\base\Controller
      * If not set, ANSI color will only be enabled for terminals that support it.
      */
     public $color;
+
+    /**
+     * @var array the options passed during execution.
+     */
+    private $_passedOptions = [];
 
 
     /**
@@ -78,10 +87,29 @@ class Controller extends \yii\base\Controller
         if (!empty($params)) {
             // populate options here so that they are available in beforeAction().
             $options = $this->options($id === '' ? $this->defaultAction : $id);
+            if (isset($params['_aliases'])) {
+                $optionAliases = $this->optionAliases();
+                foreach ($params['_aliases'] as $name => $value) {
+                    if (array_key_exists($name, $optionAliases)) {
+                        $params[$optionAliases[$name]] = $value;
+                    } else {
+                        throw new Exception(Yii::t('yii', 'Unknown alias: -{name}', ['name' => $name]));
+                    }
+                }
+                unset($params['_aliases']);
+            }
             foreach ($params as $name => $value) {
                 if (in_array($name, $options, true)) {
                     $default = $this->$name;
-                    $this->$name = is_array($default) ? preg_split('/\s*,\s*/', $value) : $value;
+                    if (is_array($default)) {
+                        $this->$name = preg_split('/(?!\(\d+)\s*,\s*(?!\d+\))/', $value);
+                    } elseif ($default !== null) {
+                        settype($value, gettype($default));
+                        $this->$name = $value;
+                    } else {
+                        $this->$name = $value;
+                    }
+                    $this->_passedOptions[] = $name;
                     unset($params[$name]);
                 } elseif (!is_int($name)) {
                     throw new Exception(Yii::t('yii', 'Unknown option: --{name}', ['name' => $name]));
@@ -109,27 +137,16 @@ class Controller extends \yii\base\Controller
             $method = new \ReflectionMethod($action, 'run');
         }
 
-        $params = array_values($params);
+        $args = array_values($params);
 
-        $args = [];
         $missing = [];
-        foreach ($method->getParameters() as $param) {
-            if (($class = $param->getClass()) !== null) {
-                $name = $param->getName();
-                $className = $class->getName();
-                if (Yii::$app->has($name) && ($obj = Yii::$app->get($name)) instanceof $className) {
-                    $args[] = $obj;
-                } else {
-                    $args[] = Yii::$container->get($className);
-                }
-                continue;
+        foreach ($method->getParameters() as $i => $param) {
+            if ($param->isArray() && isset($args[$i])) {
+                $args[$i] = preg_split('/\s*,\s*/', $args[$i]);
             }
-            $value = array_shift($params);
-            if (isset($value)) {
-                $args[] = $param->isArray() ? preg_split('/\s*,\s*/', $value) : $value;
-            } else {
+            if (!isset($args[$i])) {
                 if ($param->isDefaultValueAvailable()) {
-                    $args[] = $param->getDefaultValue();
+                    $args[$i] = $param->getDefaultValue();
                 } else {
                     $missing[] = $param->getName();
                 }
@@ -140,9 +157,6 @@ class Controller extends \yii\base\Controller
             throw new Exception(Yii::t('yii', 'Missing required arguments: {params}', ['params' => implode(', ', $missing)]));
         }
 
-        foreach ($params as $value) {
-            $args[] = $value;
-        }
         return $args;
     }
 
@@ -153,9 +167,9 @@ class Controller extends \yii\base\Controller
      *
      * Example:
      *
-     * ~~~
+     * ```
      * echo $this->ansiFormat('This will be red and underlined.', Console::FG_RED, Console::UNDERLINE);
-     * ~~~
+     * ```
      *
      * @param string $string the string to be formatted
      * @return string
@@ -178,12 +192,12 @@ class Controller extends \yii\base\Controller
      *
      * Example:
      *
-     * ~~~
+     * ```
      * $this->stdout('This will be red and underlined.', Console::FG_RED, Console::UNDERLINE);
-     * ~~~
+     * ```
      *
      * @param string $string the string to print
-     * @return int|boolean Number of bytes printed or false on error
+     * @return integer|boolean Number of bytes printed or false on error
      */
     public function stdout($string)
     {
@@ -203,12 +217,12 @@ class Controller extends \yii\base\Controller
      *
      * Example:
      *
-     * ~~~
+     * ```
      * $this->stderr('This will be red and underlined.', Console::FG_RED, Console::UNDERLINE);
-     * ~~~
+     * ```
      *
      * @param string $string the string to print
-     * @return int|boolean Number of bytes printed or false on error
+     * @return integer|boolean Number of bytes printed or false on error
      */
     public function stderr($string)
     {
@@ -293,6 +307,62 @@ class Controller extends \yii\base\Controller
     }
 
     /**
+     * Returns option alias names.
+     * Child classes may override this method to specify alias options.
+     *
+     * @return array the options alias names valid for the action
+     * where the keys is alias name for option and value is option name.
+     *
+     * @since 2.0.8
+     * @see options($actionID)
+     */
+    public function optionAliases()
+    {
+        return [];
+    }
+
+    /**
+     * Returns properties corresponding to the options for the action id
+     * Child classes may override this method to specify possible properties.
+     *
+     * @param string $actionID the action id of the current request
+     * @return array properties corresponding to the options for the action
+     */
+    public function getOptionValues($actionID)
+    {
+        // $actionId might be used in subclasses to provide properties specific to action id
+        $properties = [];
+        foreach ($this->options($this->action->id) as $property) {
+            $properties[$property] = $this->$property;
+        }
+        return $properties;
+    }
+
+    /**
+     * Returns the names of valid options passed during execution.
+     *
+     * @return array the names of the options passed during execution
+     */
+    public function getPassedOptions()
+    {
+        return $this->_passedOptions;
+    }
+
+    /**
+     * Returns the properties corresponding to the passed options
+     *
+     * @return array the properties corresponding to the passed options
+     */
+    public function getPassedOptionValues()
+    {
+        $properties = [];
+        foreach ($this->_passedOptions as $property) {
+            $properties[$property] = $this->$property;
+        }
+        return $properties;
+    }
+
+    /**
      * Returns one-line short summary describing this controller.
      *
      * You may override this method to return customized summary.
@@ -360,6 +430,8 @@ class Controller extends \yii\base\Controller
         $params = isset($tags['param']) ? (array) $tags['param'] : [];
 
         $args = [];
+
+        /** @var \ReflectionParameter $reflection */
         foreach ($method->getParameters() as $i => $reflection) {
             $name = $reflection->getName();
             $tag = isset($params[$i]) ? $params[$i] : '';

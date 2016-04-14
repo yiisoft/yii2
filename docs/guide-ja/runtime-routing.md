@@ -26,7 +26,7 @@ $url = Url::to(['post/view', 'id' => 100]);
 そして、こうして生成された URL が後でリクエストされた場合には、解析されて元のルートとクエリパラメータの値に戻されます。
 
 ```
-/index.php?r=post/view&id=100
+/index.php?r=post%2Fview&id=100
 /index.php/post/100
 /posts/100
 ```
@@ -117,19 +117,19 @@ Yii は、与えられたルートとそれに結び付けられたクエリパ�
 ```php
 use yii\helpers\Url;
 
-// ルートへの URL を生成する: /index.php?r=post/index
+// ルートへの URL を生成する: /index.php?r=post%2Findex
 echo Url::to(['post/index']);
 
-// パラメータを持つルートへの URL を生成する: /index.php?r=post/view&id=100
+// パラメータを持つルートへの URL を生成する: /index.php?r=post%2Fview&id=100
 echo Url::to(['post/view', 'id' => 100]);
 
-// アンカー付きの URL を生成する: /index.php?r=post/view&id=100#content
+// アンカー付きの URL を生成する: /index.php?r=post%2Fview&id=100#content
 echo Url::to(['post/view', 'id' => 100, '#' => 'content']);
 
-// 絶対 URL を生成する: http://www.example.com/index.php?r=post/index
+// 絶対 URL を生成する: http://www.example.com/index.php?r=post%2Findex
 echo Url::to(['post/index'], true);
 
-// https スキームを使って絶対 URL を生成する: https://www.example.com/index.php?r=post/index
+// https スキームを使って絶対 URL を生成する: https://www.example.com/index.php?r=post%2Findex
 echo Url::to(['post/index'], 'https');
 ```
 
@@ -151,19 +151,19 @@ echo Url::to(['post/index'], 'https');
 ```php
 use yii\helpers\Url;
 
-// 現在リクエストされているルート: /index.php?r=admin/post/index
+// 現在リクエストされているルート: /index.php?r=admin%2Fpost%2Findex
 echo Url::to(['']);
 
-// アクション ID だけの相対ルート: /index.php?r=admin/post/index
+// アクション ID だけの相対ルート: /index.php?r=admin%2Fpost%2Findex
 echo Url::to(['index']);
 
-// 相対ルート: /index.php?r=admin/post/index
+// 相対ルート: /index.php?r=admin%2Fpost%2Findex
 echo Url::to(['post/index']);
 
-// 絶対ルート: /index.php?r=post/index
+// 絶対ルート: /index.php?r=post%2Findex
 echo Url::to(['/post/index']);
 
-// /index.php?r=post/index     エイリアス "@posts" が "/post/index" と定義されていると仮定
+// /index.php?r=post%2Findex     エイリアス "@posts" が "/post/index" と定義されていると仮定
 echo Url::to(['@posts']);
 ```
 
@@ -176,7 +176,7 @@ echo Url::to(['@posts']);
 ```php
 use yii\helpers\Url;
 
-// 現在リクエストされている URL: /index.php?r=admin/post/index
+// 現在リクエストされている URL: /index.php?r=admin%2Fpost%2Findex
 echo Url::to();
 
 // エイリアス化された URL: http://example.com
@@ -193,7 +193,7 @@ echo Url::to('/images/logo.gif', true);
 ```php
 use yii\helpers\Url;
 
-// ホームページの URL: /index.php?r=site/index
+// ホームページの URL: /index.php?r=site%2Findex
 echo Url::home();
 
 // ベース URL。アプリケーションがウェブルートのサブディレクトリに配置されているときに便利
@@ -240,7 +240,7 @@ echo Url::previous();
 * [[yii\web\UrlManager::rules|rules]]: このプロパティが URL を解析および生成するための一連の規則を含みます。
   このプロパティが、アプリケーションの固有の要求を満たす形式を持つ URL を生成するために、あなたが主として使うプロパティです。
 
-> Note|注意: 生成された URL からエントリスクリプト名を隠すためには、[[yii\web\UrlManager::showScriptName|showScriptName]] を false に設定するだけでなく、ウェブサーバを構成して、リクエストされた URL が PHP スクリプトを明示的に指定していない場合でも、正しい PHP スクリプトを特定出来るようにする必要があります。
+> Note: 生成された URL からエントリスクリプト名を隠すためには、[[yii\web\UrlManager::showScriptName|showScriptName]] を false に設定するだけでなく、ウェブサーバを構成して、リクエストされた URL が PHP スクリプトを明示的に指定していない場合でも、正しい PHP スクリプトを特定出来るようにする必要があります。
 もしあなたが Apache ウェブサーバを使うつもりなら、[インストール](start-installation.md#recommended-apache-configuration) の節で説明されている推奨設定を参照することが出来ます。
 
 
@@ -269,7 +269,7 @@ URL 規則は、パターンがリクエストされた URL と合致する場�
 ]
 ```
 
-> Info|情報: 規則のパターンは URL のパス情報の部分との照合に使用されます。
+> Info: 規則のパターンは URL のパス情報の部分との照合に使用されます。
 例えば、`/index.php/post/100?source=ad` のパス情報は `post/100` であり (先頭と末尾のスラッシュは無視します)、これは `post/(\d+)` というパターンに合致します。
 
 URL 規則は、「パターン - ルート」のペアとして宣言する以外に、構成情報配列として宣言することも出来ます。
@@ -298,7 +298,7 @@ URL 規則は、パターンの中で `<ParamName:RgExp>` の形式で指定さ�
 ここで、`ParamName` はパラメータ名を指定し、`RegExp` はパラメータの値との照合に使われるオプションの正規表現を指定するものです。
 `RegExp` が指定されていない場合は、パラメータの値がスラッシュを含まない文字列であるべきことを意味します。
 
-> Note|注意: 正規表現はパラメータに対してのみ指定できます。パターンの残りの部分はプレーンテキストとして解釈されます。
+> Note: 正規表現はパラメータに対してのみ指定できます。パターンの残りの部分はプレーンテキストとして解釈されます。
 
 規則が URL の解析に使われるときには、URL の対応する部分に合致した値が、結び付けられたパラメータに入れられます。
 そして、そのパラメータは、後に `request` アプリケーションコンポーネントによって、`$_GET` に入れられて利用できるようになります。
@@ -351,7 +351,7 @@ URL 規則のルートにはパラメータ名を埋め込むことが出来ま�
 
 同じように、`comment/index` というルートの URL を生成するためには、三番目の規則が適用されて、`index.php/comments` という URL が生成されます。
 
-> Info|情報: ルートをパラメータ化することによって、URL 規則の数を大幅に減らすことが可能になり、[[yii\web\UrlManager|URL マネージャ]] のパフォーマンスを目に見えて改善することが出来ます。
+> Info: ルートをパラメータ化することによって、URL 規則の数を大幅に減らすことが可能になり、[[yii\web\UrlManager|URL マネージャ]] のパフォーマンスを目に見えて改善することが出来ます。
   
 デフォルトでは、規則の中で宣言されたパラメータは必須となります。
 リクエストされた URL が特定のパラメータを含まない場合や、特定のパラメータなしで URL を生成する場合には、規則は適用されません。
@@ -403,7 +403,7 @@ URL 規則のパターンには、ウェブサーバ名を含むことが出来�
 ]
 ```
 
-> Note|注意: サーバ名を持つ規則は、エントリスクリプトのサブフォルダをパターンに含むべきではありません。
+> Note: サーバ名を持つ規則は、エントリスクリプトのサブフォルダをパターンに含むべきではありません。
 例えば、アプリケーションが `http://www.example.com/sandbox/blog` の下にある場合は、`http://www.example.com/sandbox/blog/posts` ではなく、`http://www.example.com/posts` というパターンを使うべきです。
 こうすれば、アプリケーションをどのようなディレクトリに配置しても、アプリケーションのコードを変更する必要がなくなります。
 
@@ -433,9 +433,9 @@ URL 規則のパターンには、ウェブサーバ名を含むことが出来�
 
 上記の構成によって、[[yii\web\UrlManager|URL マネージャ]] は、接尾辞として `.html` の付いた URL を認識し、また、生成するようになります。
 
-> Tip|ヒント: URL が全てスラッシュで終るようにするためには、URL 接尾辞として `/` を設定することが出来ます。
+> Tip: URL が全てスラッシュで終るようにするためには、URL 接尾辞として `/` を設定することが出来ます。
 
-> Note|注意: URL 接尾辞を構成すると、リクエストされた URL が接尾辞を持たない場合は、認識できない URL であると見なされるようになります。
+> Note: URL 接尾辞を構成すると、リクエストされた URL が接尾辞を持たない場合は、認識できない URL であると見なされるようになります。
   SEO の目的からも、これが推奨されるプラクティスです。
 
 場合によっては、URL によって異なる接尾辞を使いたいことがあるでしょう。
@@ -481,10 +481,10 @@ RESTful API を実装するときは、使用されている HTTP メソッド�
 ]
 ```
 
-> Note|注意: URL 規則が HTTP メソッドをパターンに含む場合、その規則は解析目的にだけ使用されます。
+> Note: URL 規則が HTTP メソッドをパターンに含む場合、その規則は解析目的にだけ使用されます。
   [[yii\web\UrlManager|URL マネージャ]] が URL 生成のために呼ばれたときは、その規則はスキップされます。
 
-> Tip|ヒント: RESTful API のルーティングを簡単にするために、Yii は特別な URL 規則クラス [[yii\rest\UrlRule]] を提供しています。
+> Tip: RESTful API のルーティングを簡単にするために、Yii は特別な URL 規則クラス [[yii\rest\UrlRule]] を提供しています。
   これは非常に効率的なもので、コントローラ ID の自動的な複数形化など、いくつかの素敵な機能をサポートするものです。
   詳細については、RESTful API 開発についての [ルーティング](rest-routing.md) の節を参照してください。
 
@@ -508,7 +508,7 @@ RESTful API を実装するときは、使用されている HTTP メソッド�
 ]
 ```
 
-> Info|情報: 規則の構成情報で `class` を指定しない場合は、デフォルトとして、[[yii\web\UrlRule]] クラスが使われます。
+> Info: 規則の構成情報で `class` を指定しない場合は、デフォルトとして、[[yii\web\UrlRule]] クラスが使われます。
   
 
 ### 規則を動的に追加する <span id="adding-rules"></span>

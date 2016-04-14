@@ -36,14 +36,14 @@ use yii\base\InvalidValueException;
  * You can modify its configuration by adding an array to your application config under `components`
  * as it is shown in the following example:
  *
- * ~~~
+ * ```php
  * 'user' => [
  *     'identityClass' => 'app\models\User', // User must implement the IdentityInterface
  *     'enableAutoLogin' => true,
  *     // 'loginUrl' => ['user/login'],
  *     // ...
  * ]
- * ~~~
+ * ```
  *
  * @property string|integer $id The unique identifier for the user. If null, it means the user is a guest.
  * This property is read-only.
@@ -84,9 +84,9 @@ class User extends Component
      * The first element of the array should be the route to the login action, and the rest of
      * the name-value pairs are GET parameters used to construct the login URL. For example,
      *
-     * ~~~
+     * ```php
      * ['site/login', 'ref' => 1]
-     * ~~~
+     * ```
      *
      * If this property is null, a 403 HTTP exception will be raised when [[loginRequired()]] is called.
      */
@@ -136,6 +136,11 @@ class User extends Component
      * @var string the session variable name used to store the value of [[returnUrl]].
      */
     public $returnUrlParam = '__returnUrl';
+    /**
+     * @var array MIME types for which this component should redirect to the [[loginUrl]].
+     * @since 2.0.8
+     */
+    public $acceptableRedirectTypes = ['text/html', 'application/xhtml+xml'];
 
     private $_access = [];
 
@@ -391,9 +396,9 @@ class User extends Component
      * The first element of the array should be the route, and the rest of
      * the name-value pairs are GET parameters used to construct the URL. For example,
      *
-     * ~~~
+     * ```php
      * ['admin/index', 'ref' => 1]
-     * ~~~
+     * ```
      */
     public function setReturnUrl($url)
     {
@@ -413,16 +418,25 @@ class User extends Component
      *
      * @param boolean $checkAjax whether to check if the request is an AJAX request. When this is true and the request
      * is an AJAX request, the current URL (for AJAX request) will NOT be set as the return URL.
+     * @param boolean $checkAcceptHeader whether to check if the request accepts HTML responses. Defaults to `true`. When this is true and
+     * the request does not accept HTML responses the current URL will not be SET as the return URL. Also instead of
+     * redirecting the user an ForbiddenHttpException is thrown. This parameter is available since version 2.0.8.
      * @return Response the redirection response if [[loginUrl]] is set
-     * @throws ForbiddenHttpException the "Access Denied" HTTP exception if [[loginUrl]] is not set
+     * @throws ForbiddenHttpException the "Access Denied" HTTP exception if [[loginUrl]] is not set or a redirect is
+     * not applicable.
+     * @see checkAcceptHeader
      */
-    public function loginRequired($checkAjax = true)
+    public function loginRequired($checkAjax = true, $checkAcceptHeader = true)
     {
         $request = Yii::$app->getRequest();
-        if ($this->enableSession && (!$checkAjax || !$request->getIsAjax())) {
+        $canRedirect = !$checkAcceptHeader || $this->checkRedirectAcceptable();
+        if ($this->enableSession
+            && (!$checkAjax || !$request->getIsAjax())
+            && $canRedirect
+        ) {
             $this->setReturnUrl($request->getUrl());
         }
-        if ($this->loginUrl !== null) {
+        if ($this->loginUrl !== null && $canRedirect) {
             $loginUrl = (array) $this->loginUrl;
             if ($loginUrl[0] !== Yii::$app->requestedRoute) {
                 return Yii::$app->getResponse()->redirect($this->loginUrl);
@@ -568,6 +582,11 @@ class User extends Component
             return;
         }
 
+        /* Ensure any existing identity cookies are removed. */  
+        if ($this->enableAutoLogin) {
+            Yii::$app->getResponse()->getCookies()->remove(new Cookie($this->identityCookie));  
+        }
+
         $session = Yii::$app->getSession();
         if (!YII_ENV_TEST) {
             $session->regenerateID(true);
@@ -586,8 +605,6 @@ class User extends Component
             if ($duration > 0 && $this->enableAutoLogin) {
                 $this->sendIdentityCookie($identity, $duration);
             }
-        } elseif ($this->enableAutoLogin) {
-            Yii::$app->getResponse()->getCookies()->remove(new Cookie($this->identityCookie));
         }
     }
 
@@ -666,6 +683,30 @@ class User extends Component
         }
 
         return $access;
+    }
+
+    /**
+     * Checks if the `Accept` header contains a content type that allows redirection to the login page.
+     * The login page is assumed to serve `text/html` or `application/xhtml+xml` by default. You can change acceptable
+     * content types by modifying [[acceptableRedirectTypes]] property.
+     * @return boolean whether this request may be redirected to the login page.
+     * @see acceptableRedirectTypes
+     * @since 2.0.8
+     */
+    protected function checkRedirectAcceptable()
+    {
+        $acceptableTypes = Yii::$app->getRequest()->getAcceptableContentTypes();
+        if (empty($acceptableTypes)) {
+            return true;
+        }
+
+        foreach ($acceptableTypes as $type => $params) {
+            if ($type === '*' || in_array($type, $this->acceptableRedirectTypes, true)) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     /**

@@ -7,11 +7,8 @@
 
 namespace yii\behaviors;
 
-use Closure;
-use yii\base\Event;
 use yii\base\InvalidCallException;
 use yii\db\BaseActiveRecord;
-use yii\db\Expression;
 
 /**
  * TimestampBehavior automatically fills the specified attributes with the current timestamp.
@@ -32,6 +29,8 @@ use yii\db\Expression;
  * By default, TimestampBehavior will fill the `created_at` and `updated_at` attributes with the current timestamp
  * when the associated AR object is being inserted; it will fill the `updated_at` attribute
  * with the timestamp when the AR object is being updated. The timestamp value is obtained by `time()`.
+ * 
+ * For the above implementation to work with MySQL database, please declare the columns(`created_at`, `updated_at`) as int(11) for being UNIX timestamp.
  *
  * If your attribute names are different or you want to use a different way of calculating the timestamp,
  * you may configure the [[createdAtAttribute]], [[updatedAtAttribute]] and [[value]] properties like the following:
@@ -52,7 +51,7 @@ use yii\db\Expression;
  * }
  * ```
  *
- * In case you use an [[Expression]] object as in the example above, the attribute will not hold the timestamp value, but
+ * In case you use an [[\yii\db\Expression]] object as in the example above, the attribute will not hold the timestamp value, but
  * the Expression object itself after the record has been saved. If you need the value from DB afterwards you should call
  * the [[\yii\db\ActiveRecord::refresh()|refresh()]] method of the record.
  *
@@ -80,8 +79,10 @@ class TimestampBehavior extends AttributeBehavior
      */
     public $updatedAtAttribute = 'updated_at';
     /**
-     * {@inheritdoc}
-     * In case, when the value is null - the [[time()]] function value will be used.
+     * @inheritdoc
+     *
+     * In case, when the value is `null`, the result of the PHP function [time()](http://php.net/manual/en/function.time.php)
+     * will be used as value.
      */
     public $value;
 
@@ -102,8 +103,10 @@ class TimestampBehavior extends AttributeBehavior
     }
 
     /**
-     * {@inheritdoc}
-     * [[time()]] function return value will be used, when [[value]] is null.
+     * @inheritdoc
+     *
+     * In case, when the [[value]] is `null`, the result of the PHP function [time()](http://php.net/manual/en/function.time.php)
+     * will be used as value.
      */
     protected function getValue($event)
     {

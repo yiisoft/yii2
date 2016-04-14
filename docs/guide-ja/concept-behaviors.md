@@ -51,6 +51,9 @@ class MyBehavior extends Behavior
 
 > Tip: ビヘイビア内から、[[yii\base\Behavior::owner]] プロパティを介して、ビヘイビアをアタッチしたコンポーネントにアクセスすることができます。
 
+> Note: ビヘイビアの [[yii\base\Behavior::__get()]] および/または [[yii\base\Behavior::__set()]] メソッドをオーバーライドする場合は、同時に [[yii\base\Behavior::canGetProperty()]] および/または [[yii\base\Behavior::canSetProperty()]] もオーバーライドする必要があります。
+
+
 コンポーネントイベントのハンドリング
 ------------------
 
@@ -271,9 +274,9 @@ class User extends ActiveRecord
                 'attributes' => [
                     ActiveRecord::EVENT_BEFORE_INSERT => ['created_at', 'updated_at'],
                     ActiveRecord::EVENT_BEFORE_UPDATE => ['updated_at'],
-                    // UNIX タイムスタンプではなく datetime を使う場合は
-                    // 'value' => new Expression('NOW()'),
                 ],
+                // UNIX タイムスタンプではなく datetime を使う場合は
+                // 'value' => new Expression('NOW()'),
             ],
         ];
     }
@@ -284,6 +287,8 @@ class User extends ActiveRecord
 
 * 挿入されるとき、ビヘイビアは現在の UNIX タイムスタンプを `created_at` と `updated_at` 属性に割り当てます
 * 更新されるとき、ビヘイビアは現在の UNIX タイムスタンプを `updated_at` 属性に割り当てます
+
+> Note: 上記の実装が MySQL データベースで動作するようにするためには、`created_at` と `updated_at` のカラムを UNIX タイムスタンプ になるように int(11) として宣言してください。
 
 このコードが所定の位置にあれば、例えば `User` オブジェクトがあって、それを保存しようとしたら、そこで、
 `created_at` と `updated_at` が自動的に現在の UNIX タイムスタンプで埋められます。
@@ -301,6 +306,18 @@ echo $user->created_at;  // 現在のタイムスタンプが表示される
 ```php
 $user->touch('login_time');
 ```
+
+その他のビヘイビア
+------------------
+
+その他にも、内蔵または外部ライブラリによって利用できるビヘイビアがいくつかあります。
+
+- [[yii\behaviors\BlameableBehavior]] - 指定された属性に現在のユーザ ID を自動的に設定します。
+- [[yii\behaviors\SluggableBehavior]] - 指定された属性に、URL のスラグとして使用できる値を自動的に設定します。
+- [[yii\behaviors\AttributeBehavior]] - 特定のイベントが発生したときに、ActiveRecord オブジェクトの一つまたは複数の属性に、指定された値を自動的に設定します。
+- [yii2tech\ar\softdelete\SoftDeleteBehavior](https://github.com/yii2tech/ar-softdelete) - ActiveRecord をソフト・デリートおよびソフト・リストアする、すなわち、レコードの削除を示すフラグまたはステータスを設定するメソッドを提供します。
+- [yii2tech\ar\position\PositionBehavior](https://github.com/yii2tech/ar-position) - レコードの順序を整数のフィールドによって管理することが出来るように、順序変更メソッドを提供します。
+
 
 ビヘイビアとトレイトの比較 <span id="comparison-with-traits"></span>
 ----------------------

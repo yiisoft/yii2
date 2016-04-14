@@ -19,7 +19,7 @@ Przykładowo żądanie `POST /users` może oznaczać wywołanie akcji `user/crea
 ]
 ```
 
-Porównując to z menadżerem URLi dla aplikacji Web, główną nowością tutaj jest użycie [[yii\rest\UrlRule]] do routingu RESTfulowych zasobów API. 
+Porównując to z menadżerem URLi dla aplikacji Web, główną nowością tutaj jest użycie [[yii\rest\UrlRule|UrlRule]] do routingu RESTfulowych zasobów API. 
 Ta specjalna klasa zasad URL stworzy cały zestaw potomnych zasad URL obsługujących routing i tworzenie URLi dla wyznaczonego kontrolera.
 Dla przykładu, kod powyżej jest zgrubnym odpowiednikiem następujących zasad:
 
@@ -72,14 +72,14 @@ Dla przykładu, aby dodać obsługę nowej akcji `search` dla punktu końcowego 
 ```
 
 Na pewno zwróciłeś uwagę na to, że ID kontrolera `user` występuje tu w formie mnogiej jako `users` dla URLi punktu końcowego.
-Dzieje się tak, ponieważ [[yii\rest\UrlRule]] automatycznie przechodzi na formę mnogą dla ID kontrolerów podczas tworzenia potomnych zasad URL.
-Zachowanie to można wyłączyć ustawiając [[yii\rest\UrlRule::pluralize]] na false. 
+Dzieje się tak, ponieważ [[yii\rest\UrlRule|UrlRule]] automatycznie przechodzi na formę mnogą dla ID kontrolerów podczas tworzenia potomnych zasad URL.
+Zachowanie to można wyłączyć ustawiając [[yii\rest\UrlRule::pluralize|pluralize]] na false. 
 
-> Info: forma mnoga ID kontrolerów jest tworzona poprzez metodę [[yii\helpers\Inflector::pluralize()]]. Uwzględnia ona specjalne zasady tworzenia form mnogich. 
-  Dla przykładu, od słowa `box` zostanie utworzona liczba mnoga `boxes` a nie `boxs`.
+> Info: forma mnoga ID kontrolerów jest tworzona poprzez metodę [[yii\helpers\Inflector::pluralize()|pluralize()]]. Uwzględnia ona specjalne zasady tworzenia form mnogich. 
+> Dla przykładu, od słowa `box` zostanie utworzona liczba mnoga `boxes` a nie `boxs`.
 
 W przypadku, gdy mechanizm automatycznego tworzenia formy mnogiej nie spełnia Twoich oczekiwań, możesz również skonfigurować właściwość 
-[[yii\rest\UrlRule::controller]], aby bezpośrednio określić w jaki sposób nazwa użyta w punkcie końcowym URLi ma być zmapowana na ID kontrolera. 
+[[yii\rest\UrlRule::controller|controller]], aby bezpośrednio określić w jaki sposób nazwa użyta w punkcie końcowym URLi ma być zmapowana na ID kontrolera. 
 Dla przykładu, poniższy kod mapuje nazwę `u` na ID kontrolera `user`.  
  
 ```php

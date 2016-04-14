@@ -8,6 +8,7 @@
 namespace yiiunit\framework\web;
 
 use yii\web\XmlResponseFormatter;
+use yiiunit\framework\web\stubs\ModelStub;
 
 /**
  * @author Qiang Xue <qiang.xue@gmail.com>
@@ -102,6 +103,16 @@ class XmlResponseFormatterTest extends FormatterTest
                 new Post(123, '<>'),
                 'a' => new Post(456, 'def'),
             ], "<response><Post><id>123</id><title>&lt;&gt;</title></Post><a><Post><id>456</id><title>def</title></Post></a></response>\n"],
+        ]);
+    }
+
+    public function formatModelDataProvider()
+    {
+        return $this->addXmlHead([
+            [
+                new ModelStub(['id' => 123, 'title' => 'abc', 'hidden' => 'hidden']),
+                "<response><ModelStub><id>123</id><title>abc</title></ModelStub></response>\n"
+            ]
         ]);
     }
 }

@@ -50,7 +50,7 @@ class Controller extends Component implements ViewContextInterface
      */
     public $defaultAction = 'index';
     /**
-     * @var string|boolean the name of the layout to be applied to this controller's views.
+     * @var null|string|boolean the name of the layout to be applied to this controller's views.
      * This property mainly affects the behavior of [[render()]].
      * Defaults to null, meaning the actual layout value should inherit that from [[module]]'s layout value.
      * If false, no layout will be applied.
@@ -90,7 +90,7 @@ class Controller extends Component implements ViewContextInterface
      * It should return an array, with array keys being action IDs, and array values the corresponding
      * action class names or action configuration arrays. For example,
      *
-     * ~~~
+     * ```php
      * return [
      *     'action1' => 'app\components\Action1',
      *     'action2' => [
@@ -99,7 +99,7 @@ class Controller extends Component implements ViewContextInterface
      *         'property2' => 'value2',
      *     ],
      * ];
-     * ~~~
+     * ```
      *
      * [[\Yii::createObject()]] will be used later to create the requested action
      * using the configuration provided here.
@@ -248,7 +248,7 @@ class Controller extends Component implements ViewContextInterface
      * public function beforeAction($action)
      * {
      *     // your custom code here, if you want the code to run before action filters,
-     *     // wich are triggered on the [[EVENT_BEFORE_ACTION]] event, e.g. PageCache or AccessControl
+     *     // which are triggered on the [[EVENT_BEFORE_ACTION]] event, e.g. PageCache or AccessControl
      *
      *     if (!parent::beforeAction($action)) {
      *         return false;
@@ -317,6 +317,7 @@ class Controller extends Component implements ViewContextInterface
     }
 
     /**
+     * Returns the unique ID of the controller.
      * @return string the controller ID that is prefixed with the module ID (if any).
      */
     public function getUniqueId()

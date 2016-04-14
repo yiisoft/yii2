@@ -95,6 +95,7 @@ class MessageFormatter extends Component
         }
 
         // replace named arguments (https://github.com/yiisoft/yii2/issues/9678)
+        $newParams = [];
         $pattern = $this->replaceNamedArguments($pattern, $params, $newParams);
         $params = $newParams;
 
@@ -191,7 +192,7 @@ class MessageFormatter extends Component
      * @param array $map
      * @return string The pattern string with placeholders replaced.
      */
-    private function replaceNamedArguments($pattern, $givenParams, &$resultingParams, &$map = [])
+    private function replaceNamedArguments($pattern, $givenParams, &$resultingParams = [], &$map = [])
     {
         if (($tokens = self::tokenizePattern($pattern)) === false) {
             return false;
@@ -316,7 +317,7 @@ class MessageFormatter extends Component
      * @param array $token the token to parse
      * @param array $args arguments to replace
      * @param string $locale the locale
-     * @return bool|string parsed token or false on failure
+     * @return boolean|string parsed token or false on failure
      * @throws \yii\base\NotSupportedException when unsupported formatting is used.
      */
     private function parseToken($token, $args, $locale)
@@ -341,8 +342,14 @@ class MessageFormatter extends Component
             case 'selectordinal':
                 throw new NotSupportedException("Message format '$type' is not supported. You have to install PHP intl extension to use this feature.");
             case 'number':
-                if (is_int($arg) && (!isset($token[2]) || trim($token[2]) === 'integer')) {
-                    return $arg;
+                $format = isset($token[2]) ? trim($token[2]) : null;
+                if (is_numeric($arg) && ($format === null || $format === 'integer')) {
+                    $number = number_format($arg);
+                    if ($format === null && ($pos = strpos($arg, '.')) !== false) {
+                        // add decimals with unknown length
+                        $number .= '.' . substr($arg, $pos + 1);
+                    }
+                    return $number;
                 }
                 throw new NotSupportedException("Message format 'number' is only supported for integer values. You have to install PHP intl extension to use this feature.");
             case 'none':

@@ -96,10 +96,10 @@ echo $form->field($model, 'items[]')->checkboxList(['a' => 'Item A', 'b' => 'Ite
 
 フォームに HTML タグを追加するためには、素の HTML を使うか、または、上記の例の [[yii\helpers\Html::submitButton()|Html::submitButton()]] のように、[[yii\helpers\Html|Html]] ヘルパクラスのメソッドを使うことが出来ます。
 
-> Tip|ヒント: あなたのアプリケーションで Twitter Bootstrap CSS を使っている場合は、[[yii\widgets\ActiveForm]] の代りに [[yii\bootstrap\ActiveForm]] を使うのが良いでしょう。
+> Tip: あなたのアプリケーションで Twitter Bootstrap CSS を使っている場合は、[[yii\widgets\ActiveForm]] の代りに [[yii\bootstrap\ActiveForm]] を使うのが良いでしょう。
 > 後者は前者の拡張であり、bootstrap CSS フレームワークで使用するための追加のスタイルをサポートしています。
 
-> tip|ヒント: 必須フィールドをアスタリスク付きのスタイルにするために、次の CSS を使うことが出来ます。
+> Tip: 必須フィールドをアスタリスク付きのスタイルにするために、次の CSS を使うことが出来ます。
 >
 > ```css
 > div.required label.control-label:after {
@@ -116,7 +116,6 @@ ActiveForm の [dropDownList()](http://www.yiiframework.com/doc-2.0/yii-widgets-
 
 ```php
 use app\models\ProductCategory;
-use yii\helpers\ArrayHelper;
 
 /* @var $this yii\web\View */
 /* @var $form yii\widgets\ActiveForm */
@@ -129,6 +128,49 @@ echo $form->field($model, 'product_category')->dropdownList(
 ```
 
 モデルのフィールドの値は、前もって自動的に選択されます。
+
+
+Pjax を使う <span id="working-with-pjax"></span>
+-----------
+
+[[yii\widgets\Pjax|Pjax]] ウィジェットを使うと、ページ全体をリロードせずに、ページの一部分だけを更新することが出来ます。
+これを使うと、送信後にフォームだけを更新して、その中身を入れ替えることが出来ます。
+
+[[yii\widgets\Pjax::$formSelector|$formSelector]] を構成すると、どのフォームの送信が pjax を起動するかを指定することが出来ます。
+それが指定されていない場合は、Pjax に囲まれたコンテントの中にあって `data-pjax` 属性を持つすべてのフォームが pjax リクエストを起動することになります。
+
+```php
+use yii\widgets\Pjax;
+use yii\widgets\ActiveForm;
+
+Pjax::begin([
+    // Pjax のオプション
+]);
+    $form = ActiveForm::begin([
+        'options' => ['data' => ['pjax' => true]],
+        // ActiveForm の追加のオプション
+    ]);
+
+        // ActiveForm のコンテント
+
+    ActiveForm::end();
+Pjax::end();
+```
+> Tip: [[yii\widgets\Pjax|Pjax]] ウィジェット内部のリンクに注意してください。
+> と言うのは、リンクに対するレスポンスもウィジェット内部でレンダリングされるからです。
+> これを防ぐためには、`data-pjax="0"` という HTML 属性を使用します。
+
+#### 送信ボタンの値とファイルのアップロード
+
+`jQuery.serializeArray()` については、
+[[https://github.com/jquery/jquery/issues/2321|ファイル]] および
+[[https://github.com/jquery/jquery/issues/2321|送信ボタンの値]]
+を扱うときに問題があることが知られています。
+これは解決される見込みがなく、HTML5 で導入された `FormData` クラスの使用に乗り換えるべく、廃止予定となっています。
+
+このことは、すなわち、ajax または [[yii\widgets\Pjax|Pjax]] ウィジェットを使う場合、ファイルと送信ボタンの値に対する公式なサポートは、ひとえに
+`FormData` クラスに対する [[https://developer.mozilla.org/en-US/docs/Web/API/FormData#Browser_compatibility|ブラウザのサポート]] に依存するということを意味します。
+
 
 さらに読むべき文書 <span id="further-reading"></span>
 ------------------

@@ -37,6 +37,7 @@ class ActionFilter extends Behavior
      */
     public $except = [];
 
+
     /**
      * @inheritdoc
      */
@@ -110,7 +111,7 @@ class ActionFilter extends Behavior
     }
 
     /**
-     * Returns an $action ID, convert action uniqueId into an ID relative to the module
+     * Returns an action ID by converting [[Action::$uniqueId]] into an ID relative to the module
      * @param Action $action
      * @return string
      * @since 2.0.7

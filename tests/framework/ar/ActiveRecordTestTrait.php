@@ -523,6 +523,15 @@ trait ActiveRecordTestTrait
         $this->assertEquals(2, count($customers[1]->orders[0]->items));
         $this->assertEquals(3, count($customers[2]->orders[0]->items));
         $this->assertEquals(1, count($customers[2]->orders[1]->items));
+
+        $customers = $customerClass::find()->where(['id' => 1])->with('ordersWithItems')->one();
+        $this->assertTrue($customers->isRelationPopulated('ordersWithItems'));
+        $this->assertCount(1, $customers->ordersWithItems);
+
+        /** @var Order $order */
+        $order = $customers->ordersWithItems[0];
+        $this->assertTrue($order->isRelationPopulated('orderItems'));
+        $this->assertCount(2, $order->orderItems);
     }
 
     /**

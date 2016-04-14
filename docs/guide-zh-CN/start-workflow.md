@@ -3,7 +3,7 @@
 
 安装 Yii 后，就有了一个可运行的 Yii 应用，根据配置的不同，可以通过 `http://hostname/basic/web/index.php` 或 `http://hostname/index.php` 访问。本章节将介绍应用的内建功能，如何组织代码，以及一般情况下应用如何处理请求。
 
-> 补充：为简单起见，在整个“入门”板块都假定你已经把 `basic/web` 设为 Web 服务器根目录并配置完毕，你访问应用的地址会是 `http://lostname/index.php` 或类似的。请按需调整 URL。
+> Info: 为简单起见，在整个“入门”板块都假定你已经把 `basic/web` 设为 Web 服务器根目录并配置完毕，你访问应用的地址会是 `http://lostname/index.php` 或类似的。请按需调整 URL。
 
 功能 <span id="functionality"></span>
 -------------

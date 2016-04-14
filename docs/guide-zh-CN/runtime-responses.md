@@ -67,7 +67,7 @@ $headers->set('Pragma', 'no-cache');
 $values = $headers->remove('Pragma');
 ```
 
-> 补充: 头名称是大小写敏感的，在[[yii\web\Response::send()]]方法调用前新注册的头信息并不会发送给用户。
+> Info: 头名称是大小写敏感的，在[[yii\web\Response::send()]]方法调用前新注册的头信息并不会发送给用户。
 
 
 ## 响应主体 <span id="response-body"></span>
@@ -139,7 +139,7 @@ public function actionInfo()
 }
 ```
 
-> 注意: 如果创建你自己的响应对象，将不能在应用配置中设置 `response` 组件，尽管如此，
+> Note: 如果创建你自己的响应对象，将不能在应用配置中设置 `response` 组件，尽管如此，
   可使用 [依赖注入](concept-di-container.md) 应用通用配置到你新的响应对象。
 
 
@@ -166,14 +166,14 @@ public function actionOld()
 \Yii::$app->response->redirect('http://example.com/new', 301)->send();
 ```
 
-> 补充: [[yii\web\Response::redirect()]] 方法默认会设置响应状态码为302，该状态码会告诉浏览器请求的资源
+> Info: [[yii\web\Response::redirect()]] 方法默认会设置响应状态码为302，该状态码会告诉浏览器请求的资源
   *临时* 放在另一个URI地址上，可传递一个301状态码告知浏览器请求的资源已经 *永久* 重定向到新的URId地址。
 
 如果当前请求为AJAX 请求，发送一个 `Location` 头不会自动使浏览器跳转，为解决这个问题，
 [[yii\web\Response::redirect()]] 方法设置一个值为要跳转的URL的`X-Redirect` 头，
 在客户端可编写JavaScript 代码读取该头部值然后让浏览器跳转对应的URL。
 
-> 补充: Yii 配备了一个`yii.js` JavaScript 文件提供常用JavaScript功能，包括基于`X-Redirect`头的浏览器跳转，
+> Info: Yii 配备了一个`yii.js` JavaScript 文件提供常用JavaScript功能，包括基于`X-Redirect`头的浏览器跳转，
   因此，如果你使用该JavaScript 文件(通过[[yii\web\YiiAsset]] 资源包注册)，就不需要编写AJAX跳转的代码。
 
 

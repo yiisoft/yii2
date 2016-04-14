@@ -36,7 +36,7 @@ how to accomplish various tasks using these tools. You may also get the usage of
 command `yii help migrate`.
 
 > Tip: migrations could affect not only database schema but adjust existing data to fit new schema, create RBAC
-  hierarcy or clean up cache.
+  hierarchy or clean up cache.
 
 
 ## Creating Migrations <span id="creating-migrations"></span>
@@ -185,20 +185,27 @@ A list of all available methods for defining the column types is available in th
 
 Since version 2.0.7 migration console provides a convenient way to create migrations.
 
-If the migration name is of a special form including but not limited to `create_xxx` or `drop_xxx` then migration
-file would contain extra code when generated.
+If the migration name is of a special form, for example `create_xxx` or `drop_xxx` then the generated migration
+file will contain extra code, in this case for creating/dropping tables.
+In the following all variants of this feature are described.
 
 ### Create Table
 
 ```php
 yii migrate/create create_post
-``` 
+```
 
 generates
 
 ```php
+/**
+ * Handles the creation for table `post`.
+ */
 class m150811_220037_create_post extends Migration
 {
+    /**
+     * @inheritdoc
+     */
     public function up()
     {
         $this->createTable('post', [
@@ -206,6 +213,9 @@ class m150811_220037_create_post extends Migration
         ]);
     }
 
+    /**
+     * @inheritdoc
+     */
     public function down()
     {
         $this->dropTable('post');
@@ -214,43 +224,59 @@ class m150811_220037_create_post extends Migration
 ```
 
 To create table fields right away, specify them via `--fields` option.
- 
+
 ```php
-yii migrate/create create_post --fields=title:string,body:text
-``` 
+yii migrate/create create_post --fields="title:string,body:text"
+```
 
 generates
 
 ```php
+/**
+ * Handles the creation for table `post`.
+ */
 class m150811_220037_create_post extends Migration
 {
+    /**
+     * @inheritdoc
+     */
     public function up()
     {
         $this->createTable('post', [
             'id' => $this->primaryKey(),
             'title' => $this->string(),
-            'body' => $this->text()
+            'body' => $this->text(),
         ]);
     }
 
+    /**
+     * @inheritdoc
+     */
     public function down()
     {
         $this->dropTable('post');
     }
 }
+
 ```
 
 You can specify more field parameters.
 
 ```php
-yii migrate/create create_post --fields=title:string(12):notNull:unique,body:text
-``` 
+yii migrate/create create_post --fields="title:string(12):notNull:unique,body:text"
+```
 
-generates 
+generates
 
 ```php
+/**
+ * Handles the creation for table `post`.
+ */
 class m150811_220037_create_post extends Migration
 {
+    /**
+     * @inheritdoc
+     */
     public function up()
     {
         $this->createTable('post', [
@@ -260,6 +286,9 @@ class m150811_220037_create_post extends Migration
         ]);
     }
 
+    /**
+     * @inheritdoc
+     */
     public function down()
     {
         $this->dropTable('post');
@@ -268,16 +297,136 @@ class m150811_220037_create_post extends Migration
 ```
 
 > Note: primary key is added automatically and is named `id` by default. If you want to use another name you may
-> specify it explicitly like `--fields=name:primaryKey`.
+> specify it explicitly like `--fields="name:primaryKey"`.
 
+#### Foreign keys
+
+Since 2.0.8 the generator supports foreign keys using the `foreignKey` keyword.
+
+```php
+yii migrate/create create_post --fields="author_id:integer:notNull:foreignKey(user),category_id:integer:defaultValue(1):foreignKey,title:string,body:text"
+```
+
+generates
+
+```php
+/**
+ * Handles the creation for table `post`.
+ * Has foreign keys to the tables:
+ *
+ * - `user`
+ * - `category`
+ */
+class m160328_040430_create_post extends Migration
+{
+    /**
+     * @inheritdoc
+     */
+    public function up()
+    {
+        $this->createTable('post', [
+            'id' => $this->primaryKey(),
+            'author_id' => $this->integer()->notNull(),
+            'category_id' => $this->integer()->defaultValue(1),
+            'title' => $this->string(),
+            'body' => $this->text(),
+        ]);
+
+        // creates index for column `author_id`
+        $this->createIndex(
+            'idx-post-author_id',
+            'post',
+            'author_id'
+        );
+
+        // add foreign key for table `user`
+        $this->addForeignKey(
+            'fk-post-author_id',
+            'post',
+            'author_id',
+            'user',
+            'id',
+            'CASCADE'
+        );
+
+        // creates index for column `category_id`
+        $this->createIndex(
+            'idx-post-category_id',
+            'post',
+            'category_id'
+        );
+
+        // add foreign key for table `category`
+        $this->addForeignKey(
+            'fk-post-category_id',
+            'post',
+            'category_id',
+            'category',
+            'id',
+            'CASCADE'
+        );
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function down()
+    {
+        // drops foreign key for table `user`
+        $this->dropForeignKey(
+            'fk-post-author_id',
+            'post'
+        );
+
+        // drops index for column `author_id`
+        $this->dropIndex(
+            'idx-post-author_id',
+            'post'
+        );
+
+        // drops foreign key for table `category`
+        $this->dropForeignKey(
+            'fk-post-category_id',
+            'post'
+        );
+
+        // drops index for column `category_id`
+        $this->dropIndex(
+            'idx-post-category_id',
+            'post'
+        );
+
+        $this->dropTable('post');
+    }
+}
+```
+
+The position of the `foreignKey` keyword in the column description doesn't
+change the generated code. That means:
+
+- `author_id:integer:notNull:foreignKey(user)`
+- `author_id:integer:foreignKey(user):notNull`
+- `author_id:foreignKey(user):integer:notNull`
+
+All generate the same code.
+
+The `foreignKey` keyword can take a parameter between parenthesis which will be
+the name of the related table for the generated foreign key. If no parameter
+is passed then the table name will be deduced from the column name.
+
+In the
+example above `author_id:integer:notNull:foreignKey(user)` will generate a
+column named `author_id` with a foreign key to the `user` table while
+`category_id:integer:default(1):foreignKey` will generate a column `category_id`
+with a foreign key to the `category` table.
 
 ### Drop Table
 
 ```php
-yii migrate/create drop_post --fields=title:string(12):notNull:unique,body:text
-``` 
+yii migrate/create drop_post --fields="title:string(12):notNull:unique,body:text"
+```
 
-generates 
+generates
 
 ```php
 class m150811_220037_drop_post extends Migration
@@ -306,7 +455,7 @@ statements necessary.
 To add column:
 
 ```php
-yii migrate/create add_position_to_post --fields=position:integer
+yii migrate/create add_position_to_post --fields="position:integer"
 ```
 
 generates
@@ -332,7 +481,7 @@ If the migration name is of the form `drop_xxx_from_yyy` then the file content w
 statements necessary.
 
 ```php
-yii migrate/create drop_position_from_post --fields=position:integer
+yii migrate/create drop_position_from_post --fields="position:integer"
 ```
 
 generates
@@ -358,31 +507,97 @@ If the migration name is in if the form of `create_junction_xxx_and_yyy` then co
 will be generated.
 
 ```php
-yii create/migration create_junction_post_and_tag
+yii migrate/create create_junction_post_and_tag --fields="created_at:dateTime"
 ```
 
 generates
 
 ```php
-class m150811_220037_create_junction_post_and_tag extends Migration
+/**
+ * Handles the creation for table `post_tag`.
+ * Has foreign keys to the tables:
+ *
+ * - `post`
+ * - `tag`
+ */
+class m160328_041642_create_junction_post_and_tag extends Migration
 {
+    /**
+     * @inheritdoc
+     */
     public function up()
     {
         $this->createTable('post_tag', [
             'post_id' => $this->integer(),
             'tag_id' => $this->integer(),
-            'PRIMARY KEY(post_id, tag_id)'
+            'created_at' => $this->dateTime(),
+            'PRIMARY KEY(post_id, tag_id)',
         ]);
 
-        $this->createIndex('idx-post_tag-post_id', 'post_tag', 'post_id');
-        $this->createIndex('idx-post_tag-tag_id', 'post_tag', 'tag_id');
+        // creates index for column `post_id`
+        $this->createIndex(
+            'idx-post_tag-post_id',
+            'post_tag',
+            'post_id'
+        );
 
-        $this->addForeignKey('fk-post_tag-post_id', 'post_tag', 'post_id', 'post', 'id', 'CASCADE');
-        $this->addForeignKey('fk-post_tag-tag_id', 'post_tag', 'tag_id', 'tag', 'id', 'CASCADE');
+        // add foreign key for table `post`
+        $this->addForeignKey(
+            'fk-post_tag-post_id',
+            'post_tag',
+            'post_id',
+            'post',
+            'id',
+            'CASCADE'
+        );
+
+        // creates index for column `tag_id`
+        $this->createIndex(
+            'idx-post_tag-tag_id',
+            'post_tag',
+            'tag_id'
+        );
+
+        // add foreign key for table `tag`
+        $this->addForeignKey(
+            'fk-post_tag-tag_id',
+            'post_tag',
+            'tag_id',
+            'tag',
+            'id',
+            'CASCADE'
+        );
     }
 
+    /**
+     * @inheritdoc
+     */
     public function down()
     {
+        // drops foreign key for table `post`
+        $this->dropForeignKey(
+            'fk-post_tag-post_id',
+            'post_tag'
+        );
+
+        // drops index for column `post_id`
+        $this->dropIndex(
+            'idx-post_tag-post_id',
+            'post_tag'
+        );
+
+        // drops foreign key for table `tag`
+        $this->dropForeignKey(
+            'fk-post_tag-tag_id',
+            'post_tag'
+        );
+
+        // drops index for column `tag_id`
+        $this->dropIndex(
+            'idx-post_tag-tag_id',
+            'post_tag'
+        );
+
         $this->dropTable('post_tag');
     }
 }
@@ -624,7 +839,7 @@ The migration command comes with a few command-line options that can be used to 
         'create_junction' => '@yii/views/createJunctionMigration.php'
   ]`), specifies template files for generating migration code. See "[Generating Migrations](#generating-migrations)"
   for more details.
-  
+
 * `fields`: array of column definition strings used for creating migration code. Defaults to `[]`. The format of each
   definition is `COLUMN_NAME:COLUMN_TYPE:COLUMN_DECORATOR`. For example, `--fields=name:string(12):notNull` produces
   a string column of size 12 which is not null.

@@ -28,6 +28,23 @@ class UrlValidatorTest extends TestCase
                                         .'&rls=org.mozilla:de:official&client=firefox-a&gws_rd=cr'));
         $this->assertFalse($val->validate('ftp://ftp.ruhr-uni-bochum.de/'));
         $this->assertFalse($val->validate('http://invalid,domain'));
+        $this->assertFalse($val->validate('http://example.com,'));
+        $this->assertFalse($val->validate('http://example.com*12'));
+        $this->assertTrue($val->validate('http://example.com/*12'));
+        $this->assertTrue($val->validate('http://example.com/?test'));
+        $this->assertTrue($val->validate('http://example.com/#test'));
+        $this->assertTrue($val->validate('http://example.com:80/#test'));
+        $this->assertTrue($val->validate('http://example.com:65535/#test'));
+        $this->assertTrue($val->validate('http://example.com:81/?good'));
+        $this->assertTrue($val->validate('http://example.com?test'));
+        $this->assertTrue($val->validate('http://example.com#test'));
+        $this->assertTrue($val->validate('http://example.com:81#test'));
+        $this->assertTrue($val->validate('http://example.com:81?good'));
+        $this->assertFalse($val->validate('http://example.com,?test'));
+        $this->assertFalse($val->validate('http://example.com:?test'));
+        $this->assertFalse($val->validate('http://example.com:test'));
+        $this->assertFalse($val->validate('http://example.com:123456/test'));
+
         $this->assertFalse($val->validate('http://äüö?=!"§$%&/()=}][{³²€.edu'));
     }
 

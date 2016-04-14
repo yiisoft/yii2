@@ -129,9 +129,20 @@ interface ManagerInterface
     public function getRules();
 
     /**
+     * Checks the possibility of adding a child to parent
+     * @param Item $parent the parent item
+     * @param Item $child the child item to be added to the hierarchy
+     * @return boolean possibility of adding
+     *
+     * @since 2.0.8
+     */
+    public function canAddChild($parent, $child);
+
+    /**
      * Adds an item as a child of another item.
      * @param Item $parent
      * @param Item $child
+     * @return boolean whether the child successfully added
      * @throws \yii\base\Exception if the parent-child relationship already exists or if a loop has been detected.
      */
     public function addChild($parent, $child);
@@ -209,6 +220,14 @@ interface ManagerInterface
      * returned if there is no role assigned to the user.
      */
     public function getAssignments($userId);
+
+    /**
+     * Returns all user IDs assigned to the role specified.
+     * @param string $roleName
+     * @return array array of user ID strings
+     * @since 2.0.7
+     */
+    public function getUserIdsByRole($roleName);
 
     /**
      * Removes all authorization data, including roles, permissions, rules, and assignments.

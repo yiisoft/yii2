@@ -4,7 +4,6 @@ namespace yiiunit\framework\rbac;
 
 use yii\rbac\Item;
 use yii\rbac\Permission;
-use yii\rbac\PhpManager;
 use yii\rbac\Role;
 use yiiunit\TestCase;
 
@@ -113,6 +112,16 @@ abstract class ManagerTestCase extends TestCase
 
         $rule = $this->auth->getRule('newName');
         $this->assertEquals(true, $rule->reallyReally);
+
+        $item = $this->auth->getPermission('createPost');
+        $item->name = 'new createPost';
+        $this->auth->update('createPost', $item);
+
+        $item = $this->auth->getPermission('createPost');
+        $this->assertEquals(null, $item);
+
+        $item = $this->auth->getPermission('new createPost');
+        $this->assertEquals('new createPost', $item->name);
     }
 
     public function testGetRules()
@@ -141,6 +150,10 @@ abstract class ManagerTestCase extends TestCase
         $rules = $this->auth->getRules();
 
         $this->assertEmpty($rules);
+
+        $this->auth->remove($this->auth->getPermission('createPost'));
+        $item = $this->auth->getPermission('createPost');
+        $this->assertNull($item);
     }
 
     public function testCheckAccess()
@@ -166,6 +179,8 @@ abstract class ManagerTestCase extends TestCase
                 'readPost' => true,
                 'updatePost' => false,
                 'updateAnyPost' => true,
+                'blablabla' => false,
+                null => false,
             ],
         ];
 
@@ -256,7 +271,19 @@ abstract class ManagerTestCase extends TestCase
     public function testGetRolesByUser()
     {
         $this->prepareData();
+        $reader = $this->auth->getRole('reader');
+        $this->auth->assign($reader, 0);
+        $this->auth->assign($reader, 123);
+
         $roles = $this->auth->getRolesByUser('reader A');
+        $this->assertTrue(reset($roles) instanceof Role);
+        $this->assertEquals($roles['reader']->name, 'reader');
+
+        $roles = $this->auth->getRolesByUser(0);
+        $this->assertTrue(reset($roles) instanceof Role);
+        $this->assertEquals($roles['reader']->name, 'reader');
+
+        $roles = $this->auth->getRolesByUser(123);
         $this->assertTrue(reset($roles) instanceof Role);
         $this->assertEquals($roles['reader']->name, 'reader');
     }
@@ -297,5 +324,131 @@ abstract class ManagerTestCase extends TestCase
         $this->assertEquals(0, count($this->auth->getAssignments(0)));
         $this->assertEquals(1, count($this->auth->getAssignments(42)));
         $this->assertEquals(2, count($this->auth->getAssignments(1337)));
+    }
+
+    public function testGetAssignmentsByRole()
+    {
+        $this->prepareData();
+        $reader = $this->auth->getRole('reader');
+        $this->auth->assign($reader, 123);
+
+        $this->auth = $this->createManager();
+
+        $this->assertEquals([], $this->auth->getUserIdsByRole('nonexisting'));
+        $this->assertEquals(['reader A', '123'], $this->auth->getUserIdsByRole('reader'), '', 0.0, 10, true);
+        $this->assertEquals(['author B'], $this->auth->getUserIdsByRole('author'));
+        $this->assertEquals(['admin C'], $this->auth->getUserIdsByRole('admin'));
+    }
+
+    public function testCanAddChild()
+    {
+        $this->prepareData();
+
+        $author = $this->auth->createRole('author');
+        $reader = $this->auth->createRole('reader');
+
+        $this->assertTrue($this->auth->canAddChild($author, $reader));
+        $this->assertFalse($this->auth->canAddChild($reader, $author));
+    }
+
+
+    public function testRemoveAllRules()
+    {
+        $this->prepareData();
+
+        $this->auth->removeAllRules();
+
+        $this->assertEmpty($this->auth->getRules());
+
+        $this->assertNotEmpty($this->auth->getRoles());
+        $this->assertNotEmpty($this->auth->getPermissions());
+    }
+
+    public function testRemoveAllRoles()
+    {
+        $this->prepareData();
+
+        $this->auth->removeAllRoles();
+
+        $this->assertEmpty($this->auth->getRoles());
+
+        $this->assertNotEmpty($this->auth->getRules());
+        $this->assertNotEmpty($this->auth->getPermissions());
+    }
+
+    public function testRemoveAllPermissions()
+    {
+        $this->prepareData();
+
+        $this->auth->removeAllPermissions();
+
+        $this->assertEmpty($this->auth->getPermissions());
+
+        $this->assertNotEmpty($this->auth->getRules());
+        $this->assertNotEmpty($this->auth->getRoles());
+    }
+
+    public function testAssignRule()
+    {
+        $auth = $this->auth;
+        $userId = 3;
+
+        $auth->removeAll();
+        $role = $auth->createRole('Admin');
+        $auth->add($role);
+        $auth->assign($role, $userId);
+        $this->assertTrue($auth->checkAccess($userId, 'Admin'));
+
+        // with normal register rule
+        $auth->removeAll();
+        $rule = new ActionRule();
+        $auth->add($rule);
+        $role = $auth->createRole('Reader');
+        $role->ruleName = $rule->name;
+        $auth->add($role);
+        $auth->assign($role, $userId);
+        $this->assertTrue($auth->checkAccess($userId, 'Reader', ['action' => 'read']));
+        $this->assertFalse($auth->checkAccess($userId, 'Reader', ['action' => 'write']));
+
+        // using rule class name
+        $auth->removeAll();
+        $role = $auth->createRole('Reader');
+        $role->ruleName = 'yiiunit\framework\rbac\ActionRule';
+        $auth->add($role);
+        $auth->assign($role, $userId);
+        $this->assertTrue($auth->checkAccess($userId, 'Reader', ['action' => 'read']));
+        $this->assertFalse($auth->checkAccess($userId, 'Reader', ['action' => 'write']));
+
+        // using DI
+        \Yii::$container->set('write_rule', ['class' => 'yiiunit\framework\rbac\ActionRule', 'action' => 'write']);
+        \Yii::$container->set('delete_rule', ['class' => 'yiiunit\framework\rbac\ActionRule', 'action' => 'delete']);
+        \Yii::$container->set('all_rule', ['class' => 'yiiunit\framework\rbac\ActionRule', 'action' => 'all']);
+
+        $role = $auth->createRole('Writer');
+        $role->ruleName = 'write_rule';
+        $auth->add($role);
+        $auth->assign($role, $userId);
+        $this->assertTrue($auth->checkAccess($userId, 'Writer', ['action' => 'write']));
+        $this->assertFalse($auth->checkAccess($userId, 'Writer', ['action' => 'update']));
+
+        $role = $auth->createRole('Deleter');
+        $role->ruleName = 'delete_rule';
+        $auth->add($role);
+        $auth->assign($role, $userId);
+        $this->assertTrue($auth->checkAccess($userId, 'Deleter', ['action' => 'delete']));
+        $this->assertFalse($auth->checkAccess($userId, 'Deleter', ['action' => 'update']));
+
+        $role = $auth->createRole('Author');
+        $role->ruleName = 'all_rule';
+        $auth->add($role);
+        $auth->assign($role, $userId);
+        $this->assertTrue($auth->checkAccess($userId, 'Author', ['action' => 'update']));
+
+        // update role and rule
+        $role = $auth->getRole('Reader');
+        $role->name = 'AdminPost';
+        $role->ruleName = 'all_rule';
+        $auth->update('Reader', $role);
+        $this->assertTrue($auth->checkAccess($userId, 'AdminPost', ['action' => 'print']));
     }
 }

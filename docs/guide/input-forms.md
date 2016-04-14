@@ -95,7 +95,7 @@ are some reserved names that can cause conflicts:
 
 > Forms and their child elements should not use input names or ids that conflict with properties of a form,
 > such as `submit`, `length`, or `method`. Name conflicts can cause confusing failures.
-> For a complete list of rules and to check your markup for these problems, see [DOMLint](http://kangax.github.io/domlint/). 
+> For a complete list of rules and to check your markup for these problems, see [DOMLint](http://kangax.github.io/domlint/).
 
 Additional HTML tags can be added to the form using plain HTML or using the methods from the [[yii\helpers\Html|Html]]-helper
 class like it is done in the above example with [[yii\helpers\Html::submitButton()|Html::submitButton()]].
@@ -115,15 +115,14 @@ class like it is done in the above example with [[yii\helpers\Html::submitButton
 > }
 > ```
 
-Creating Dropdown list <span id="creating-activeform-dropdownlist"></span>
----------------------
+Creating Drop-down List <span id="creating-activeform-dropdownlist"></span>
+-----------------------
 
 We can use ActiveForm [dropDownList()](http://www.yiiframework.com/doc-2.0/yii-widgets-activefield.html#dropDownList()-detail)
-method to create a Dropwown list: 
+method to create a drop-down list:
 
 ```php
 use app\models\ProductCategory;
-use yii\helpers\ArrayHelper;
 
 /* @var $this yii\web\View */
 /* @var $form yii\widgets\ActiveForm */
@@ -136,6 +135,51 @@ echo $form->field($model, 'product_category')->dropdownList(
 ```
 
 The value of your model field will be automatically pre-selected.
+
+Working with Pjax <span id="working-with-pjax"></span>
+-----------------------
+
+The [[yii\widgets\Pjax|Pjax]] widget allows you to update a certain section of a
+page instead of reloading the entire page. You can use it to update only the form
+and replace its contents after the submission.
+
+You can configure [[yii\widgets\Pjax::$formSelector|$formSelector]] to specify
+which form submission may trigger pjax. If not set, all forms with `data-pjax`
+attribute within the enclosed content of Pjax will trigger pjax requests.
+
+```php
+use yii\widgets\Pjax;
+use yii\widgets\ActiveForm;
+
+Pjax::begin([
+    // Pjax options
+]);
+    $form = ActiveForm::begin([
+        'options' => ['data' => ['pjax' => true]],
+        // more ActiveForm options
+    ]);
+
+        // ActiveForm content
+
+    ActiveForm::end();
+Pjax::end();
+```
+> Tip: Be careful with the links inside the [[yii\widgets\Pjax|Pjax]] widget since
+> the response  will also be rendered inside the widget. To prevent this, use the
+> `data-pjax="0"` HTML attribute.
+
+#### Values in Submit Buttons and File Upload
+
+There are known issues using `jQuery.serializeArray()` when dealing with
+[[https://github.com/jquery/jquery/issues/2321|files]] and
+[[https://github.com/jquery/jquery/issues/2321|submit button values]] which
+won't be solved and are instead deprecated in favor of the `FormData` class
+introduced in HTML5.
+
+That means the only official support for files and submit button values with
+ajax or using the [[yii\widgets\Pjax|Pjax]] widget depends on the
+[[https://developer.mozilla.org/en-US/docs/Web/API/FormData#Browser_compatibility|browser support]]
+for the `FormData` class.
 
 Further Reading <span id="further-reading"></span>
 ---------------
