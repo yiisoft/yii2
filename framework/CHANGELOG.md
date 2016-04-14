@@ -1,6 +1,11 @@
 Yii Framework 2 Change Log
 ==========================
 
+2.1.0 under development
+-----------------------
+
+- Removed methods marked as deprected in 2.0.x (samdark)
+
 2.0.8 under development
 -----------------------
 
