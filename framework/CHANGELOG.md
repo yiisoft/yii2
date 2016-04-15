@@ -4,6 +4,7 @@ Yii Framework 2 Change Log
 2.0.8 under development
 -----------------------
 
+- Bug #11322: Fixed incorrect error message in `yii\validators\UniqueValidator` for composite `targetAttribute` (PowerGamer1, silverfire).
 - Bug #9935: Fixed `yii\validators\EachValidator` does not invoke `validateAttribute()` method of the embedded validator (klimov-paul)
 - Bug #11270: Fixed `BaseActiveRecord::link()` method in order to support closure in `indexBy` for relations declaration (iushev)
 - Bug #11333: Avoid serializing PHP 7 errors (zuozp8)
