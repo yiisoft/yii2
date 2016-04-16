@@ -968,7 +968,7 @@ abstract class QueryBuilderTest extends DatabaseTestCase
                   strncmp($column, Schema::TYPE_BIGPK, 5) === 0 ||
                   strncmp($column, Schema::TYPE_UBIGPK, 6) === 0)) {
                 $column = str_replace('CHECK (value', 'CHECK ([[col' . $i . ']]', $column);
-                $column = str_replace('AFTER `colvalue', 'AFTER `[[col' . $i . ']]', $column);
+                $column = str_replace('AFTER `colvalue', 'AFTER `col' . $i, $column);
                 $columns['col' . ++$i] = $column;
             }
         }
