@@ -789,4 +789,17 @@ class ActiveQuery extends Query implements ActiveQueryInterface
         }
         return $this;
     }
+
+    /**
+     * @inheritdoc
+     */
+    public function exists($db = null)
+    {
+        if($db === null) {
+            /* @var $modelClass ActiveRecord */
+            $modelClass = $this->modelClass;
+            $db = $modelClass::getDb();
+        }
+        return parent::exists($db);
+    }
 }
