@@ -360,6 +360,16 @@ class Query extends Component implements QueryInterface
      */
     public function exists($db = null)
     {
+        // Workaround for making unit tests work.
+        if ($this instanceof ActiveQuery) {
+            /* @var $modelClass ActiveRecord */
+            $modelClass = $this->modelClass;
+            if ($db === null) {
+                $db = $modelClass::getDb();
+            }
+        } else if ($db === null) {
+            $db = Yii::$app->getDb();
+        }
         if ($db === null) {
             $db = Yii::$app->getDb();
         }
