@@ -1340,4 +1340,14 @@ class QueryBuilder extends \yii\base\Object
             return "$column $operator $phName";
         }
     }
+    
+    /**
+     * Creates a SELECT EXISTS() SQL statement.
+     * @param string $rawSql the subquery in a raw form to select from.
+     * @return string the SELECT EXISTS() SQL statement.
+     */
+    public function selectExists($rawSql)
+    {
+        return 'SELECT EXISTS(' . $rawSql . ')';
+    }
 }
