@@ -499,9 +499,9 @@ class Security extends Component
                 $this->_randomFile = fopen($device, 'rb') ?: null;
 
                 if (is_resource($this->_randomFile)) {
-                    // By default PHP buffer size is 8192 bytes which causes wasting
-                    // more entropy that we're actually using. Therefore setting it to
-                    // lower value.
+                    // Reduce PHP stream buffer from default 8192 bytes to optimize data
+                    // transfer from the random device for smaller values of $length.
+                    // This also helps to keep future randoms out of user memory space.
                     $bufferSize = 8;
 
                     if (function_exists('stream_set_read_buffer')) {
