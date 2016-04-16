@@ -140,15 +140,6 @@ abstract class QueryBuilderTest extends DatabaseTestCase
                 ],
             ],
             [
-                Schema::TYPE_BIGINT . ' AFTER `colvalue`',
-                $this->bigInteger()->after('colvalue'),
-                [
-                    'mysql' => 'bigint(20) AFTER `colvalue`',
-                    'oci' => 'NUMBER(20) AFTER `colvalue`',
-                    'cubrid' => 'bigint AFTER `colvalue`',
-                ],
-            ],
-            [
                 Schema::TYPE_BIGPK,
                 $this->bigPrimaryKey(),
                 [
@@ -967,9 +958,7 @@ abstract class QueryBuilderTest extends DatabaseTestCase
                   strncmp($column, Schema::TYPE_UPK, 3) === 0 ||
                   strncmp($column, Schema::TYPE_BIGPK, 5) === 0 ||
                   strncmp($column, Schema::TYPE_UBIGPK, 6) === 0)) {
-                $column = str_replace('CHECK (value', 'CHECK ([[col' . $i . ']]', $column);
-                $column = str_replace('AFTER `colvalue', 'AFTER `col' . $i, $column);
-                $columns['col' . ++$i] = $column;
+                $columns['col' . ++$i] = str_replace('CHECK (value', 'CHECK ([[col' . $i . ']]', $column);
             }
         }
         $this->getConnection(false)->createCommand($qb->createTable('column_type_table', $columns))->execute();
