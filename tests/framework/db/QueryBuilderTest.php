@@ -80,15 +80,15 @@ abstract class QueryBuilderTest extends DatabaseTestCase
     {
         $items = [
             [
-                Schema::TYPE_BIGINT . ' CHECK (value > 5)',
-                $this->bigInteger()->check('value > 5'),
+                Schema::TYPE_BIGINT,
+                $this->bigInteger(),
                 [
-                    'mysql' => 'bigint(20) CHECK (value > 5)',
-                    'postgres' => 'bigint CHECK (value > 5)',
-                    'sqlite' => 'bigint CHECK (value > 5)',
-                    'oci' => 'NUMBER(20) CHECK (value > 5)',
-                    'sqlsrv' => 'bigint CHECK (value > 5)',
-                    'cubrid' => 'bigint CHECK (value > 5)',
+                    'mysql' => 'bigint(20)',
+                    'postgres' => 'bigint',
+                    'sqlite' => 'bigint',
+                    'oci' => 'NUMBER(20)',
+                    'sqlsrv' => 'bigint',
+                    'cubrid' => 'bigint',
                 ],
             ],
             [
@@ -104,13 +104,13 @@ abstract class QueryBuilderTest extends DatabaseTestCase
                 ],
             ],
             [
-                Schema::TYPE_BIGINT . '(8) CHECK (value > 5)',
-                $this->bigInteger(8)->check('value > 5'),
+                Schema::TYPE_BIGINT . ' CHECK (value > 5)',
+                $this->bigInteger()->check('value > 5'),
                 [
-                    'mysql' => 'bigint(8) CHECK (value > 5)',
+                    'mysql' => 'bigint(20) CHECK (value > 5)',
                     'postgres' => 'bigint CHECK (value > 5)',
                     'sqlite' => 'bigint CHECK (value > 5)',
-                    'oci' => 'NUMBER(8) CHECK (value > 5)',
+                    'oci' => 'NUMBER(20) CHECK (value > 5)',
                     'sqlsrv' => 'bigint CHECK (value > 5)',
                     'cubrid' => 'bigint CHECK (value > 5)',
                 ],
@@ -128,15 +128,15 @@ abstract class QueryBuilderTest extends DatabaseTestCase
                 ],
             ],
             [
-                Schema::TYPE_BIGINT,
-                $this->bigInteger(),
+                Schema::TYPE_BIGINT . '(8) CHECK (value > 5)',
+                $this->bigInteger(8)->check('value > 5'),
                 [
-                    'mysql' => 'bigint(20)',
-                    'postgres' => 'bigint',
-                    'sqlite' => 'bigint',
-                    'oci' => 'NUMBER(20)',
-                    'sqlsrv' => 'bigint',
-                    'cubrid' => 'bigint',
+                    'mysql' => 'bigint(8) CHECK (value > 5)',
+                    'postgres' => 'bigint CHECK (value > 5)',
+                    'sqlite' => 'bigint CHECK (value > 5)',
+                    'oci' => 'NUMBER(8) CHECK (value > 5)',
+                    'sqlsrv' => 'bigint CHECK (value > 5)',
+                    'cubrid' => 'bigint CHECK (value > 5)',
                 ],
             ],
             [
