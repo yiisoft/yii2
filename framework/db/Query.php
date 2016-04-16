@@ -363,7 +363,7 @@ class Query extends Component implements QueryInterface
         if ($db === null) {
             $db = Yii::$app->getDb();
         }
-        $command = $db->createCommand('SELECT EXISTS(' . $this->createCommand()->getRawSql() . ')');
+        $command = $db->createCommand($db->getQueryBuilder()->selectExists($this->createCommand()->getRawSql()));
         return (boolean)$command->queryScalar();
     }
 
