@@ -2,31 +2,31 @@
 
 namespace yiiunit\framework\mutex;
 
-use yii\mutex\PgsqlMutex;
+use yii\mutex\MysqlMutex;
 use yiiunit\framework\db\DatabaseTestCase;
 
 /**
- * Class PgsqlMutexTest
+ * Class MysqlMutexTest
  *
  * @group mutex
- * @group pgsql
+ * @group mysql
  * 
  * @package yiiunit\framework\mutex
  */
-class PgsqlMutexTest extends DatabaseTestCase
+class MysqlMutexTest extends DatabaseTestCase
 {
     use MutexTestTrait;
 
-    protected $driverName = 'pgsql';
+    protected $driverName = 'mysql';
 
     /**
-     * @return PgsqlMutex
+     * @return MysqlMutex
      * @throws \yii\base\InvalidConfigException
      */
     protected function createMutex()
     {
         return \Yii::createObject([
-            'class' => PgsqlMutex::className(),
+            'class' => MysqlMutex::className(),
             'db' => $this->getConnection(),
         ]);
     }
