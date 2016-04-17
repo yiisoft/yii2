@@ -259,4 +259,12 @@ EOD;
 
         return 'INSERT ALL ' . $tableAndColumns . implode($tableAndColumns, $values) . ' SELECT 1 FROM SYS.DUAL';
     }
+
+    /**
+     * @inheritdoc
+     */
+    public function selectExists($rawSql)
+    {
+        return 'SELECT CASE WHEN EXISTS(' . $rawSql . ') THEN 1 ELSE 0 END FROM DUAL';
+    }
 }
