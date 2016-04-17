@@ -94,4 +94,12 @@ class QueryBuilder extends \yii\db\QueryBuilder
 
         return $sql;
     }
+
+    /**
+     * @inheritdoc
+     */
+    public function selectExists($rawSql)
+    {
+        return 'SELECT CASE WHEN EXISTS(' . $rawSql . ') THEN 1 ELSE 0 END';
+    }
 }
