@@ -252,6 +252,76 @@ Event::off(Foo::className(), Foo::EVENT_HELLO);
 ```
 
 
+Events using interfaces <span id="interface-level-event-handlers"></span>
+-------------
+
+There is even more abstract way to deal with events. You can create a separated interface for the special event and
+implement it in classes, where you need it.
+
+For example we can create the following interface:
+
+```php
+interface DanceEventInterface
+{
+    const EVENT_DANCE = 'dance';
+}
+```
+
+And two classes, that implement it:
+
+```php
+class Dog extends Component implements DanceEventInterface
+{
+    public function meetBuddy()
+    {
+        echo "Woof!";
+        $this->trigger(DanceEventInterface::EVENT_DANCE);
+    }
+}
+
+class Developer extends Component implements DanceEventInterface
+{
+    public function testsPassed()
+    {
+        echo "Yay!";
+        $this->trigger(DanceEventInterface::EVENT_DANCE);
+    }
+}
+```
+
+To handle the `EVENT_DANCE`, triggered by any of these classes, call [[yii\base\Event::on()|Event::on()]] and
+pass the interface name as the first argument:
+
+```php
+Event::on('DanceEventInterface', DanceEventInterface::EVENT_DANCE, function ($event) {
+    Yii::trace($event->sender->className . ' just danced'); // Will log that Dog or Developer danced
+})
+```
+
+You can trigger the event of those classes:
+
+```php
+Event::trigger(DanceEventInterface::className(), DanceEventInterface::EVENT_DANCE);
+```
+
+But please notice, that you can not trigger all the classes, that implement the interface:
+
+```php
+// DOES NOT WORK
+Event::trigger('DanceEventInterface', DanceEventInterface::EVENT_DANCE); // error
+```
+
+To detach event handler, call [[yii\base\Event::off()|Event::off()]]. For example:
+
+```php
+// detaches $handler
+Event::off('DanceEventInterface', DanceEventInterface::EVENT_DANCE, $handler);
+
+// detaches all handlers of DanceEventInterface::EVENT_DANCE
+Event::off('DanceEventInterface', DanceEventInterface::EVENT_DANCE);
+```
+
+
 Global Events <span id="global-events"></span>
 -------------
 

@@ -33,7 +33,7 @@ $name = $request->post('name', '');
 // $name = isset($_POST['name']) ? $_POST['name'] : ''; と同等
 ```
 
-> Info|情報: 直接に `$_GET` と `$_POST` にアクセスしてリクエストのパラメータを読み出す代りに、上記に示されているように、`request` コンポーネントを通じてそれらを取得することが推奨されます。
+> Info: 直接に `$_GET` と `$_POST` にアクセスしてリクエストのパラメータを読み出す代りに、上記に示されているように、`request` コンポーネントを通じてそれらを取得することが推奨されます。
   このようにすると、ダミーのリクエストデータを持った模擬リクエストコンポーネントを作ることが出来るため、テストを書くことがより容易になります。
 
 [RESTful API](rest-quick-start.md) を実装するときは、PUT、PATCH またはその他の [リクエストメソッド](#request-methods) によって送信されたパラメータを読み出さなければならないことがよくあります。
@@ -50,7 +50,7 @@ $params = $request->bodyParams;
 $param = $request->getBodyParam('id');
 ```
 
-> Info|情報: `GET` パラメータとは異なって、`POST`、`PUT`、`PATCH` などで送信されたパラメータは、リクエストのボディの中で送られます。
+> Info: `GET` パラメータとは異なって、`POST`、`PUT`、`PATCH` などで送信されたパラメータは、リクエストのボディの中で送られます。
   上述のメソッドによってこれらのパラメータにアクセスすると、`request` コンポーネントがパラメータを解析します。
   [[yii\web\Request::parsers]] プロパティを構成することによって、これらのパラメータが解析される方法をカスタマイズすることが出来ます。
 
@@ -64,10 +64,10 @@ $param = $request->getBodyParam('id');
 ```php
 $request = Yii::$app->request;
 
-if ($request->isAjax) { // リクエストは AJAX リクエスト }
-if ($request->isGet)  { // リクエストメソッドは GET }
-if ($request->isPost) { // リクエストメソッドは POST }
-if ($request->isPut)  { // リクエストメソッドは PUT }
+if ($request->isAjax) { /* リクエストは AJAX リクエスト */ }
+if ($request->isGet)  { /* リクエストメソッドは GET */ }
+if ($request->isPost) { /* リクエストメソッドは POST */ }
+if ($request->isPut)  { /* リクエストメソッドは PUT */ }
 ```
 
 ## リクエストの URL <span id="request-urls"></span>
@@ -99,7 +99,7 @@ $headers = Yii::$app->request->headers;
 // Accept ヘッダの値を返す
 $accept = $headers->get('Accept');
 
-if ($headers->has('User-Agent')) { // User-Agent ヘッダが在る }
+if ($headers->has('User-Agent')) { /* User-Agent ヘッダが在る */ }
 ```
 
 `request` コンポーネントは、よく使用されるいくつかのヘッダにすばやくアクセスする方法を提供しています。
@@ -115,7 +115,7 @@ if ($headers->has('User-Agent')) { // User-Agent ヘッダが在る }
 あなたのアプリケーションが複数の言語をサポートしており、エンドユーザが最も優先する言語でページを表示したいと思う場合は、言語ネゴシエーションメソッド [[yii\web\Request::getPreferredLanguage()]] を使うことが出来ます。
 このメソッドはアプリケーションによってサポートされている言語のリストを引数として取り、 [[yii\web\Request::acceptableLanguages|acceptableLanguages]] と比較して、最も適切な言語を返します。
 
-> Tip|ヒント: [[yii\filters\ContentNegotiator|ContentNegotiator]] フィルタを使用して、レスポンスにおいてどのコンテントタイプと言語を使うべきかを動的に決定することも出来ます。
+> Tip: [[yii\filters\ContentNegotiator|ContentNegotiator]] フィルタを使用して、レスポンスにおいてどのコンテントタイプと言語を使うべきかを動的に決定することも出来ます。
 このフィルタは、上記で説明したプロパティとメソッドの上に、コンテントネゴシエーションを実装しています。
 
 

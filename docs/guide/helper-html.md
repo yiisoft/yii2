@@ -44,11 +44,16 @@ know about:
 - Attributes whose values are of boolean type will be treated as
   [boolean attributes](http://www.w3.org/TR/html5/infrastructure.html#boolean-attributes).
 - The values of attributes will be HTML-encoded using [[yii\helpers\Html::encode()|Html::encode()]].
-- The "data" attribute could receive an array. In this case, it will be "expanded" and a list data attributes will be
-  rendered i.e. `'data' => ['id' => 1, 'name' => 'yii']` becomes `data-id="1" data-name="yii"`.
-- The "data" attribute could receive JSON. It is handled the same way as array i.e.
-  `'data' => ['params' => ['id' => 1, 'name' => 'yii'], 'status' => 'ok']` becomes
-  `data-params='{"id":1,"name":"yii"}' data-status="ok"`.
+- If the value of an attribute is an array, it will be handled as follows:
+ 
+   * If the attribute is a data attribute as listed in [[yii\helpers\Html::$dataAttributes]], such as `data` or `ng`,
+     a list of attributes will be rendered, one for each element in the value array. For example,
+     `'data' => ['id' => 1, 'name' => 'yii']` generates `data-id="1" data-name="yii"`; and 
+     `'data' => ['params' => ['id' => 1, 'name' => 'yii'], 'status' => 'ok']` generates
+     `data-params='{"id":1,"name":"yii"}' data-status="ok"`. Note that in the latter example, JSON format is used
+     to render a sub-array.
+   * If the attribute is NOT a data attribute, the value will be JSON-encoded. For example,
+     `['params' => ['id' => 1, 'name' => 'yii']` generates `params='{"id":1,"name":"yii"}'`.
 
 
 ### Forming CSS Classes and Styles <span id="forming-css"></span>
@@ -70,13 +75,63 @@ echo Html::tag('div', 'Pwede na', $options);
 // <div class="btn btn-success">Pwede na</div>
 ```
 
-In order to do the same with styles for the `style` attribute:
+You may specify multiple CSS classes using the array style as well:
+
+```php
+$options = ['class' => ['btn', 'btn-default']];
+
+echo Html::tag('div', 'Save', $options);
+// renders '<div class="btn btn-default">Save</div>'
+```
+
+While adding or removing classes you may use the array format as well:
+
+```php
+$options = ['class' => 'btn'];
+
+if ($type === 'success') {
+    Html::addCssClass($options, ['btn-success', 'btn-lg']);
+}
+
+echo Html::tag('div', 'Save', $options);
+// renders '<div class="btn btn-success btn-lg">Save</div>'
+```
+
+`Html::addCssClass()` prevents duplicating classes, so you don't need to worry that the same class may appear twice:
+
+```php
+$options = ['class' => 'btn btn-default'];
+
+Html::addCssClass($options, 'btn-default'); // class 'btn-default' is already present
+
+echo Html::tag('div', 'Save', $options);
+// renders '<div class="btn btn-default">Save</div>'
+```
+
+If the CSS class option is specified via the array format, you may use a named key to mark the logical purpose of the class.
+In this case, a class with the same key in the array format will be ignored in `Html::addCssClass()`:
+
+```php
+$options = [
+    'class' => [
+        'btn',
+        'theme' => 'btn-default',
+    ]
+];
+
+Html::addCssClass($options, ['theme' => 'btn-success']); // 'theme' key is already taken
+
+echo Html::tag('div', 'Save', $options);
+// renders '<div class="btn btn-default">Save</div>'
+```
+
+CSS styles can be setup in similar way using `style` attribute:
 
 ```php
 $options = ['style' => ['width' => '100px', 'height' => '100px']];
 
 // gives style="width: 100px; height: 200px; position: absolute;"
-Html::addCssStyle($options, 'height: 200px; positon: absolute;');
+Html::addCssStyle($options, 'height: 200px; position: absolute;');
 
 // gives style="position: absolute;"
 Html::removeCssStyle($options, ['width', 'height']);

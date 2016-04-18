@@ -10,7 +10,7 @@ and the associated query parameters. When the created URL is later requested, th
 back into the original route and query parameters.
   
 The central piece responsible for routing and URL creation is the [[yii\web\UrlManager|URL manager]],
-which is registered as the `urlManager` application component. The [[yii\web\UrlManager|URL manager]]
+which is registered as the `urlManager` [application component](structure-application-components.md). The [[yii\web\UrlManager|URL manager]]
 provides the [[yii\web\UrlManager::parseRequest()|parseRequest()]] method to parse an incoming request into
 a route and the associated query parameters and the [[yii\web\UrlManager::createUrl()|createUrl()]] method to
 create a URL from a given route and its associated query parameters.
@@ -30,7 +30,7 @@ Depending on the `urlManager` configuration, the created URL may look like one o
 And if the created URL is requested later, it will still be parsed back into the original route and query parameter value.
 
 ```
-/index.php?r=post/view&id=100
+/index.php?r=post%2Fview&id=100
 /index.php/post/100
 /posts/100
 ```
@@ -42,7 +42,7 @@ The [[yii\web\UrlManager|URL manager]] supports two URL formats: the default URL
 
 The default URL format uses a query parameter named `r` to represent the route and normal query parameters 
 to represent the query parameters associated with the route. For example, the URL `/index.php?r=post/view&id=100` represents 
-the route `post/view` and the `id` query parameter 100. The default URL format does not require any configuration about 
+the route `post/view` and the `id` query parameter 100. The default URL format does not require any configuration of 
 the [[yii\web\UrlManager|URL manager]] and works in any Web server setup.
 
 The pretty URL format uses the extra path following the entry script name to represent the route and the associated 
@@ -58,7 +58,7 @@ property of the [[yii\web\UrlManager|URL manager]] without changing any other ap
 ## Routing <span id="routing"></span>
 
 Routing involves two steps. In the first step, the incoming request is parsed into a route and the associated 
-query parameters. In the second step, a [controller action](structure-controllers.md) corresponding to the parsed route
+query parameters. In the second step, a [controller action](structure-controllers.md#actions) corresponding to the parsed route
 is created to handle the request.
 
 When using the default URL format, parsing a request into a route is as simple as getting the value of a `GET`
@@ -81,11 +81,11 @@ controller and action:
 3. Check if the ID refers to a module listed in the [[yii\base\Module::modules|modules]] property of
    the current module. If so, a module is created according to the configuration found in the module list,
    and Step 2 will be taken to handle the next part of the route under the context of the newly created module.
-4. Treat the ID as a controller ID and create a controller object. Do the next step with the rest part of
+4. Treat the ID as a [controller ID](structure-controllers.md#controller-ids) and create a controller object. Do the next step with the rest part of
    the route.
 5. The controller looks for the current ID in its [[yii\base\Controller::actions()|action map]]. If found,
    it creates an action according to the configuration found in the map. Otherwise, the controller will
-   attempt to create an inline action which is defined by an action method corresponding to the current ID.
+   attempt to create an inline action which is defined by an action method corresponding to the current [action ID](structure-controllers.md#action-ids).
 
 Among the above steps, if any error occurs, a [[yii\web\NotFoundHttpException]] will be thrown, indicating
 the failure of the routing process.
@@ -133,19 +133,19 @@ their associated query parameters. For example,
 ```php
 use yii\helpers\Url;
 
-// creates a URL to a route: /index.php?r=post/index
+// creates a URL to a route: /index.php?r=post%2Findex
 echo Url::to(['post/index']);
 
-// creates a URL to a route with parameters: /index.php?r=post/view&id=100
+// creates a URL to a route with parameters: /index.php?r=post%2Fview&id=100
 echo Url::to(['post/view', 'id' => 100]);
 
-// creates an anchored URL: /index.php?r=post/view&id=100#content
+// creates an anchored URL: /index.php?r=post%2Fview&id=100#content
 echo Url::to(['post/view', 'id' => 100, '#' => 'content']);
 
-// creates an absolute URL: http://www.example.com/index.php?r=post/index
+// creates an absolute URL: http://www.example.com/index.php?r=post%2Findex
 echo Url::to(['post/index'], true);
 
-// creates an absolute URL using the https scheme: https://www.example.com/index.php?r=post/index
+// creates an absolute URL using the https scheme: https://www.example.com/index.php?r=post%2Findex
 echo Url::to(['post/index'], 'https');
 ```
 
@@ -170,19 +170,19 @@ For example, assume the current module is `admin` and the current controller is 
 ```php
 use yii\helpers\Url;
 
-// currently requested route: /index.php?r=admin/post/index
+// currently requested route: /index.php?r=admin%2Fpost%2Findex
 echo Url::to(['']);
 
-// a relative route with action ID only: /index.php?r=admin/post/index
+// a relative route with action ID only: /index.php?r=admin%2Fpost%2Findex
 echo Url::to(['index']);
 
-// a relative route: /index.php?r=admin/post/index
+// a relative route: /index.php?r=admin%2Fpost%2Findex
 echo Url::to(['post/index']);
 
-// an absolute route: /index.php?r=post/index
+// an absolute route: /index.php?r=post%2Findex
 echo Url::to(['/post/index']);
 
-// /index.php?r=post/index     assume the alias "@posts" is defined as "/post/index"
+// /index.php?r=post%2Findex     assume the alias "@posts" is defined as "/post/index"
 echo Url::to(['@posts']);
 ```
 
@@ -197,7 +197,7 @@ Instead of passing an array as its first parameter, you should pass a string in 
 ```php
 use yii\helpers\Url;
 
-// currently requested URL: /index.php?r=admin/post/index
+// currently requested URL: /index.php?r=admin%2Fpost%2Findex
 echo Url::to();
 
 // an aliased URL: http://example.com
@@ -214,7 +214,7 @@ methods. For example,
 ```php
 use yii\helpers\Url;
 
-// home page URL: /index.php?r=site/index
+// home page URL: /index.php?r=site%2Findex
 echo Url::home();
 
 // the base URL, useful if the application is deployed in a sub-folder of the Web root
@@ -240,7 +240,7 @@ To use pretty URLs, configure the `urlManager` component in the application conf
         'urlManager' => [
             'enablePrettyUrl' => true,
             'showScriptName' => false,
-            'enableStrictParsing' => true,
+            'enableStrictParsing' => false,
             'rules' => [
                 // ...
             ],
@@ -275,7 +275,7 @@ The rest of the properties are optional. However, their configuration shown abov
 
 A URL rule is an instance of [[yii\web\UrlRule]] or its child class. Each URL rule consists of a pattern used 
 for matching the path info part of URLs, a route, and a few query parameters. A URL rule can be used to parse a request
-if its pattern matches the requested URL and a URL rule can be used to create a URL if its route and query parameter 
+if its pattern matches the requested URL. A URL rule can be used to create a URL if its route and query parameter 
 names match those that are given. 
 
 When the pretty URL format is enabled, the [[yii\web\UrlManager|URL manager]] uses the URL rules declared in its

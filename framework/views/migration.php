@@ -8,7 +8,6 @@
 echo "<?php\n";
 ?>
 
-use yii\db\Schema;
 use yii\db\Migration;
 
 class <?= $className ?> extends Migration
@@ -24,4 +23,15 @@ class <?= $className ?> extends Migration
 
         return false;
     }
+
+    /*
+    // Use safeUp/safeDown to run migration code within a transaction
+    public function safeUp()
+    {
+    }
+
+    public function safeDown()
+    {
+    }
+    */
 }

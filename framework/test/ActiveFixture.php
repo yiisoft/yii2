@@ -57,7 +57,7 @@ class ActiveFixture extends BaseActiveFixture
     public function init()
     {
         parent::init();
-        if (!isset($this->modelClass) && !isset($this->tableName)) {
+        if ($this->modelClass === null && $this->tableName === null) {
             throw new InvalidConfigException('Either "modelClass" or "tableName" must be set.');
         }
     }
@@ -77,16 +77,8 @@ class ActiveFixture extends BaseActiveFixture
         $this->data = [];
         $table = $this->getTableSchema();
         foreach ($this->getData() as $alias => $row) {
-            $this->db->createCommand()->insert($table->fullName, $row)->execute();
-            if ($table->sequenceName !== null) {
-                foreach ($table->primaryKey as $pk) {
-                    if (!isset($row[$pk])) {
-                        $row[$pk] = $this->db->getLastInsertID($table->sequenceName);
-                        break;
-                    }
-                }
-            }
-            $this->data[$alias] = $row;
+            $primaryKeys = $this->db->schema->insert($table->fullName, $row);
+            $this->data[$alias] = array_merge($row, $primaryKeys);
         }
     }
 

@@ -25,7 +25,7 @@ use yii\helpers\Json;
 class ActiveForm extends Widget
 {
     /**
-     * @param array|string $action the form action URL. This parameter will be processed by [[\yii\helpers\Url::to()]].
+     * @var array|string $action the form action URL. This parameter will be processed by [[\yii\helpers\Url::to()]].
      * @see method for specifying the HTTP method for this form.
      */
     public $action = '';
@@ -152,6 +152,11 @@ class ActiveForm extends Widget
      */
     public $ajaxDataType = 'json';
     /**
+     * @var boolean whether to scroll to the first error after validation.
+     * @since 2.0.6
+     */
+    public $scrollToError = true;
+    /**
      * @var array the client validation options for individual attributes. Each element of the array
      * represents the validation options for a particular attribute.
      * @internal
@@ -173,7 +178,8 @@ class ActiveForm extends Widget
         if (!isset($this->options['id'])) {
             $this->options['id'] = $this->getId();
         }
-        echo Html::beginForm($this->action, $this->method, $this->options);
+        ob_start();
+        ob_implicit_flush(false);
     }
 
     /**
@@ -187,10 +193,14 @@ class ActiveForm extends Widget
             throw new InvalidCallException('Each beginField() should have a matching endField() call.');
         }
 
+        $content = ob_get_clean();
+        echo Html::beginForm($this->action, $this->method, $this->options);
+        echo $content;
+
         if ($this->enableClientScript) {
             $id = $this->options['id'];
-            $options = Json::encode($this->getClientOptions());
-            $attributes = Json::encode($this->attributes);
+            $options = Json::htmlEncode($this->getClientOptions());
+            $attributes = Json::htmlEncode($this->attributes);
             $view = $this->getView();
             ActiveFormAsset::register($view);
             $view->registerJs("jQuery('#$id').yiiActiveForm($attributes, $options);");
@@ -214,6 +224,7 @@ class ActiveForm extends Widget
             'validatingCssClass' => $this->validatingCssClass,
             'ajaxParam' => $this->ajaxParam,
             'ajaxDataType' => $this->ajaxDataType,
+            'scrollToError' => $this->scrollToError,
         ];
         if ($this->validationUrl !== null) {
             $options['validationUrl'] = Url::to($this->validationUrl);
@@ -229,6 +240,7 @@ class ActiveForm extends Widget
             'validatingCssClass' => 'validating',
             'ajaxParam' => 'ajax',
             'ajaxDataType' => 'json',
+            'scrollToError' => true,
         ]);
     }
 
@@ -260,7 +272,8 @@ class ActiveForm extends Widget
      * @param Model $model the data model
      * @param string $attribute the attribute name or expression. See [[Html::getAttributeName()]] for the format
      * about attribute expression.
-     * @param array $options the additional configurations for the field object
+     * @param array $options the additional configurations for the field object. These are properties of [[ActiveField]]
+     * or a subclass, depending on the value of [[fieldClass]].
      * @return ActiveField the created ActiveField object
      * @see fieldConfig
      */
@@ -322,7 +335,7 @@ class ActiveForm extends Widget
      * For example, you may use the following code in a controller action to respond
      * to an AJAX validation request:
      *
-     * ~~~
+     * ```php
      * $model = new Post;
      * $model->load($_POST);
      * if (Yii::$app->request->isAjax) {
@@ -330,14 +343,14 @@ class ActiveForm extends Widget
      *     return ActiveForm::validate($model);
      * }
      * // ... respond to non-AJAX request ...
-     * ~~~
+     * ```
      *
      * To validate multiple models, simply pass each model as a parameter to this method, like
      * the following:
      *
-     * ~~~
+     * ```php
      * ActiveForm::validate($model1, $model2, ...);
-     * ~~~
+     * ```
      *
      * @param Model $model the model to be validated
      * @param mixed $attributes list of attributes that should be validated.
@@ -377,14 +390,14 @@ class ActiveForm extends Widget
      * For example, you may use the following code in a controller action to respond
      * to an AJAX validation request:
      *
-     * ~~~
+     * ```php
      * // ... load $models ...
      * if (Yii::$app->request->isAjax) {
      *     Yii::$app->response->format = Response::FORMAT_JSON;
      *     return ActiveForm::validateMultiple($models);
      * }
      * // ... respond to non-AJAX request ...
-     * ~~~
+     * ```
      *
      * @param array $models an array of models to be validated.
      * @param mixed $attributes list of attributes that should be validated.

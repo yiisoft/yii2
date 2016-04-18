@@ -20,7 +20,7 @@ Yii は、RESTful アクションを作成する仕事を簡単にするため�
 [[yii\rest\ActiveController]] は次の機能を追加で提供します。
 
 * 普通は必要とされる一連のアクション: `index`、`view`、`create`、`update`、`delete`、`options`
-* リクエストされたアクションとリソースに関するユーザへの権限付与
+* リクエストされたアクションとリソースに対するユーザへの権限付与
 
 
 ## コントローラクラスを作成する <span id="creating-controller"></span>
@@ -30,7 +30,7 @@ Yii は、RESTful アクションを作成する仕事を簡単にするため�
 
 新しいアクションを作成する仕方はウェブアプリケーションの場合とほぼ同じです。
 唯一の違いは、`render()` メソッドを呼んでビューを使って結果を表示する代りに、RESTful アクションの場合はデータを直接に返す、という点です。
-[[yii\rest\Controller::serializer|シリアライザ]] と [[yii\web\Response|レスポンスオブジェクト]] が、下のデータからリクエストされた形式への変換を処理します。
+[[yii\rest\Controller::serializer|シリアライザ]] と [[yii\web\Response|レスポンスオブジェクト]] が、元のデータからリクエストされた形式への変換を処理します。
 例えば、
 
 ```php
@@ -49,7 +49,7 @@ public function actionView($id)
 * [[yii\filters\ContentNegotiator|contentNegotiator]]: コンテントネゴシエーションをサポート。
   [レスポンス形式の設定](rest-response-formatting.md) の節で説明します。
 * [[yii\filters\VerbFilter|verbFilter]]: HTTP メソッドのバリデーションをサポート。
-* [[yii\filters\AuthMethod|authenticator]]: ユーザ認証をサポート。
+* [[yii\filters\auth\AuthMethod|authenticator]]: ユーザ認証をサポート。
   [認証](rest-authentication.md) の節で説明します。
 * [[yii\filters\RateLimiter|rateLimiter]]: レート制限をサポート。
   [レート制限](rest-rate-limiting.md) の節で説明します。
@@ -74,7 +74,7 @@ public function behaviors()
 
 ## `ActiveController` を拡張する <span id="extending-active-controller"></span>
 
-コントローラを [[yii\rest\ActiveController]] から拡張する場合は、このコントローラを通じて提供しようとしているリソースクラスの名前を [[yii\rest\ActiveController::modelClass||modelClass]] プロパティにセットしなければなりません。
+コントローラを [[yii\rest\ActiveController]] から拡張する場合は、このコントローラを通じて提供しようとしているリソースクラスの名前を [[yii\rest\ActiveController::modelClass|modelClass]] プロパティにセットしなければなりません。
 リソースクラスは [[yii\db\ActiveRecord]] から拡張しなければなりません。
 
 
@@ -82,11 +82,11 @@ public function behaviors()
 
 デフォルトでは、[[yii\rest\ActiveController]] は次のアクションを提供します。
 
-* [[yii\rest\IndexAction|index]]: リソースをページごとに一覧する。
-* [[yii\rest\ViewAction|view]]: 指定したリソースの詳細を返す。
+* [[yii\rest\IndexAction|index]]: リソースをページごとにリストする。
+* [[yii\rest\ViewAction|view]]: 指定されたリソースの詳細を返す。
 * [[yii\rest\CreateAction|create]]: 新しいリソースを作成する。
 * [[yii\rest\UpdateAction|update]]: 既存のリソースを更新する。
-* [[yii\rest\DeleteAction|delete]]: 指定したりソースを削除する。
+* [[yii\rest\DeleteAction|delete]]: 指定されたりソースを削除する。
 * [[yii\rest\OptionsAction|options]]: サポートされている HTTP メソッドを返す。
 
 これらのアクションは全て [[yii\rest\ActiveController::actions()|actions()]] メソッドによって宣言されます。
@@ -130,7 +130,7 @@ RESTful API によってリソースを公開するときには、たいてい�
  * ユーザが権限をもたない場合は、[[ForbiddenHttpException]] が投げられなければなりません。
  *
  * @param string $action 実行されるアクションの ID。
- * @param \yii\base\Model $model アクセスされるモデル。null の場合は、アクセスされる特定の特定がないことを意味する。
+ * @param \yii\base\Model $model アクセスされるモデル。null の場合は、アクセスされる特定のモデルが無いことを意味する。
  * @param array $params 追加のパラメータ
  * @throws ForbiddenHttpException ユーザが権限をもたない場合
  */
@@ -144,4 +144,4 @@ public function checkAccess($action, $model = null, $params = [])
 `checkAccess()` メソッドは [[yii\rest\ActiveController]] のデフォルトのアクションから呼ばれます。
 新しいアクションを作成して、それに対してもアクセスチェックをしたい場合は、新しいアクションの中からこのメソッドを明示的に呼び出さなければなりません。
 
-> Tip|ヒント: [ロールベースアクセス制御 (RBAC) コンポーネント](security-authorization.md) を使って `checkAccess()` を実装することも可能です。
+> Tip: [ロールベースアクセス制御 (RBAC) コンポーネント](security-authorization.md) を使って `checkAccess()` を実装することも可能です。

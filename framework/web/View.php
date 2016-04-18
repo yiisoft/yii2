@@ -23,7 +23,7 @@ use yii\base\InvalidConfigException;
  * You can modify its configuration by adding an array to your application config under `components`
  * as it is shown in the following example:
  *
- * ~~~
+ * ```php
  * 'view' => [
  *     'theme' => 'app\themes\MyTheme',
  *     'renderers' => [
@@ -31,7 +31,7 @@ use yii\base\InvalidConfigException;
  *     ]
  *     // ...
  * ]
- * ~~~
+ * ```
  *
  * @property \yii\web\AssetManager $assetManager The asset manager. Defaults to the "assetManager" application
  * component.
@@ -313,6 +313,18 @@ class View extends \yii\base\View
 
     /**
      * Registers a meta tag.
+     *
+     * For example, a description meta tag can be added like the following:
+     *
+     * ```php
+     * $view->registerMetaTag([
+     *     'name' => 'description',
+     *     'content' => 'This website is about funny raccoons.'
+     * ]);
+     * ```
+     *
+     * will result in the meta tag `<meta name="description" content="This website is about funny raccoons.">`.
+     *
      * @param array $options the HTML attributes for the meta tag.
      * @param string $key the key that identifies the meta tag. If two meta tags are registered
      * with the same key, the latter will overwrite the former. If this is null, the new meta tag
@@ -329,6 +341,19 @@ class View extends \yii\base\View
 
     /**
      * Registers a link tag.
+     *
+     * For example, a link tag for a custom [favicon](http://www.w3.org/2005/10/howto-favicon)
+     * can be added like the following:
+     *
+     * ```php
+     * $view->registerLinkTag(['rel' => 'icon', 'type' => 'image/png', 'href' => '/myicon.png']);
+     * ```
+     *
+     * which will result in the following HTML: `<link rel="icon" type="image/png" href="/myicon.png">`.
+     *
+     * **Note:** To register link tags for CSS stylesheets, use [[registerCssFile()]] instead, which
+     * has more options for this kind of link tag.
+     *
      * @param array $options the HTML attributes for the link tag.
      * @param string $key the key that identifies the link tag. If two link tags are registered
      * with the same key, the latter will overwrite the former. If this is null, the new link tag
@@ -345,8 +370,8 @@ class View extends \yii\base\View
 
     /**
      * Registers a CSS code block.
-     * @param string $css the CSS code block to be registered
-     * @param array $options the HTML attributes for the style tag.
+     * @param string $css the content of the CSS code block to be registered
+     * @param array $options the HTML attributes for the `<style>`-tag.
      * @param string $key the key that identifies the CSS code block. If null, it will use
      * $css as the key. If two CSS code blocks are registered with the same key, the latter
      * will overwrite the former.

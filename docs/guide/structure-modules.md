@@ -118,6 +118,31 @@ the [[yii\base\Module::layout]] property to point to the layout name. If you do 
 the application's layout will be used instead.
 
 
+### Console commands in Modules <span id="console-commands-in-modules"></span>
+
+Your module may also declare commands, that will be available through the [Console](tutorial-console.md) mode.
+
+In order for the command line utility to see your commands, you will need to change the [[yii\base\Module::controllerNamespace]]
+property, when Yii is executed in the console mode, and point it to your commands namespace.
+
+One way to achieve that is to test the instance type of the Yii application in the module's `init` method:
+
+```php
+public function init()
+{
+    parent::init();
+    if (Yii::$app instanceof \yii\console\Application) {
+        $this->controllerNamespace = 'app\modules\forum\commands';
+    }
+}
+```
+
+Your commands will then be available from the command line using the following route:
+
+```
+yii <module_id>/<command>/<sub_command>
+```
+
 ## Using Modules <span id="using-modules"></span>
 
 To use a module in an application, simply configure the application by listing the module in
@@ -144,7 +169,8 @@ array value is a [configuration](concept-configurations.md) for creating the mod
 
 Like accessing controllers in an application, [routes](structure-controllers.md#routes) are used to address
 controllers in a module. A route for a controller within a module must begin with the module ID followed by
-the controller ID and action ID. For example, if an application uses a module named `forum`, then the route
+the [controller ID](structure-controllers.md#controller-ids) and [action ID](structure-controllers.md#action-ids).
+For example, if an application uses a module named `forum`, then the route
 `forum/post/index` would represent the `index` action of the `post` controller in the module. If the route
 only contains the module ID, then the [[yii\base\Module::defaultRoute]] property, which defaults to `default`,
 will determine which controller/action should be used. This means a route `forum` would represent the `default`

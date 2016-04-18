@@ -15,8 +15,8 @@ There are two main principles when it comes to security no matter which applicat
 ### Filter input
 
 Filter input means that input should never be considered safe and you should always check if the value you've got is
-actually among allowed ones i.e. if we know that sorting could be done by three fields `title`, `created_at` and `status`
-and the field could be supplied via used input it's better to check the value we've got right where we're receiving it.
+actually among allowed ones. For example, if we know that sorting could be done by three fields `title`, `created_at` and `status`
+and the field could be supplied via user input, it's better to check the value we've got right where we're receiving it.
 In terms of basic PHP that would look like the following:
 
 ```php
@@ -133,12 +133,20 @@ Note that HtmlPurifier processing is quite heavy so consider adding caching.
 Avoiding CSRF
 -------------
 
-TBD: what's CSRF, how it works, intro
+CSRF is an abbreviation for cross-site request forgery. The idea is that many applications assume that requests coming
+from a user browser are made by the user himself. It could be false.
+
+For example, `an.example.com` website has `/logout` URL that, when accessed using a simple GET, logs user out. As long
+as it's requested by the user itself everything is OK but one day bad guys are somehow posting
+`<img src="http://an.example.com/logout">` on a forum user visits frequently. Browser doesn't make any difference between
+requesting an image or requesting a page so when user opens a page with such `img` tag, the browser will send the GET request to that URL, and the user will be logged out from `an.example.com`. 
+
+That's the basic idea. One can say that logging user out is nothing serious, but bad guys can do much more, using this idea. Imagine that some website has an URL `http://an.example.com/purse/transfer?to=anotherUser&amout=2000`. Accessing it using GET request, causes transfer of $2000 from authorized user account to user `anotherUser`. We know, that browser will always send GET request to load an image, so we can modify code to accept only POST requests on that URL. Unfortunately, this will not save us, because an attacker can put some JavaScript code instead of `<img>` tag, which allows to send POST requests on that URL.
+
+In order to avoid CSRF you should always:
 
 1. Follow HTTP specification i.e. GET should not change application state.
 2. Keep Yii CSRF protection enabled.
-
-TBD: how CSRF protection works
 
 
 Avoiding file exposure

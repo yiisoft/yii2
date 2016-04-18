@@ -7,8 +7,9 @@
 
 namespace yii\db\mysql;
 
-use yii\db\Exception;
 use yii\base\InvalidParamException;
+use yii\db\Exception;
+use yii\db\Expression;
 
 /**
  * QueryBuilder is the query builder for MySQL databases.
@@ -23,13 +24,17 @@ class QueryBuilder extends \yii\db\QueryBuilder
      */
     public $typeMap = [
         Schema::TYPE_PK => 'int(11) NOT NULL AUTO_INCREMENT PRIMARY KEY',
+        Schema::TYPE_UPK => 'int(11) UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY',
         Schema::TYPE_BIGPK => 'bigint(20) NOT NULL AUTO_INCREMENT PRIMARY KEY',
+        Schema::TYPE_UBIGPK => 'bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY',
+        Schema::TYPE_CHAR => 'char(1)',
         Schema::TYPE_STRING => 'varchar(255)',
         Schema::TYPE_TEXT => 'text',
         Schema::TYPE_SMALLINT => 'smallint(6)',
         Schema::TYPE_INTEGER => 'int(11)',
         Schema::TYPE_BIGINT => 'bigint(20)',
         Schema::TYPE_FLOAT => 'float',
+        Schema::TYPE_DOUBLE => 'double',
         Schema::TYPE_DECIMAL => 'decimal(10,0)',
         Schema::TYPE_DATETIME => 'datetime',
         Schema::TYPE_TIMESTAMP => 'timestamp',
@@ -39,7 +44,6 @@ class QueryBuilder extends \yii\db\QueryBuilder
         Schema::TYPE_BOOLEAN => 'tinyint(1)',
         Schema::TYPE_MONEY => 'decimal(19,4)',
     ];
-
 
     /**
      * Builds a SQL statement for renaming a column.
@@ -76,6 +80,19 @@ class QueryBuilder extends \yii\db\QueryBuilder
         return "ALTER TABLE $quotedTable CHANGE "
             . $this->db->quoteColumnName($oldName) . ' '
             . $this->db->quoteColumnName($newName);
+    }
+
+    /**
+     * @inheritdoc
+     * @see https://bugs.mysql.com/bug.php?id=48875
+     */
+    public function createIndex($name, $table, $columns, $unique = false)
+    {
+        return 'ALTER TABLE '
+        . $this->db->quoteTableName($table)
+        . ($unique ? ' ADD UNIQUE INDEX ' : ' ADD INDEX ')
+        . $this->db->quoteTableName($name)
+        . ' (' . $this->buildColumns($columns) . ')';
     }
 
     /**
@@ -134,8 +151,8 @@ class QueryBuilder extends \yii\db\QueryBuilder
     /**
      * Builds a SQL statement for enabling or disabling integrity check.
      * @param boolean $check whether to turn on or off the integrity check.
-     * @param string $table the table name. Meaningless for MySQL.
      * @param string $schema the schema of the tables. Meaningless for MySQL.
+     * @param string $table the table name. Meaningless for MySQL.
      * @return string the SQL statement for checking integrity
      */
     public function checkIntegrity($check = true, $schema = '', $table = '')
@@ -162,5 +179,44 @@ class QueryBuilder extends \yii\db\QueryBuilder
         }
 
         return $sql;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function insert($table, $columns, &$params)
+    {
+        $schema = $this->db->getSchema();
+        if (($tableSchema = $schema->getTableSchema($table)) !== null) {
+            $columnSchemas = $tableSchema->columns;
+        } else {
+            $columnSchemas = [];
+        }
+        $names = [];
+        $placeholders = [];
+        foreach ($columns as $name => $value) {
+            $names[] = $schema->quoteColumnName($name);
+            if ($value instanceof Expression) {
+                $placeholders[] = $value->expression;
+                foreach ($value->params as $n => $v) {
+                    $params[$n] = $v;
+                }
+            } else {
+                $phName = self::PARAM_PREFIX . count($params);
+                $placeholders[] = $phName;
+                $params[$phName] = !is_array($value) && isset($columnSchemas[$name]) ? $columnSchemas[$name]->dbTypecast($value) : $value;
+            }
+        }
+        if (empty($names) && $tableSchema !== null) {
+            $columns = !empty($tableSchema->primaryKey) ? $tableSchema->primaryKey : reset($tableSchema->columns)->name;
+            foreach ($columns as $name) {
+                $names[] = $schema->quoteColumnName($name);
+                $placeholders[] = 'DEFAULT';
+            }
+        }
+
+        return 'INSERT INTO ' . $schema->quoteTableName($table)
+            . (!empty($names) ? ' (' . implode(', ', $names) . ')' : '')
+            . (!empty($placeholders) ? ' VALUES (' . implode(', ', $placeholders) . ')' : ' DEFAULT VALUES');
     }
 }

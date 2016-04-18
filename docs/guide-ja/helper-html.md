@@ -6,7 +6,7 @@ Html ヘルパ
 Yii はそのような手助けを Html ヘルパの形式で提供します。
 これは、よく使われる HTML タグとそのオプションやコンテントを処理するための一連のスタティックメソッドを提供するものです。
 
-> Note|注意: あなたのマークアップがおおむね静的なものである場合は、HTML を直接に使用する方が良いです。
+> Note: あなたのマークアップがおおむね静的なものである場合は、HTML を直接に使用する方が適切です。
 > 何でもかんでも Html ヘルパの呼び出しでラップする必要はありません。
 
 
@@ -45,11 +45,14 @@ Yii はそのような手助けを Html ヘルパの形式で提供します。
 - 値が null である場合は、対応する属性はレンダリングされません。
 - 値が真偽値である属性は、[真偽値属性 (boolean attributes)](http://www.w3.org/TR/html5/infrastructure.html#boolean-attributes) として扱われます。
 - 属性の値は [[yii\helpers\Html::encode()|Html::encode()]] を使って HTML エンコードされます。
-- "data" 属性は配列を受け取ることが出来ます。
-  その場合、配列が「展開」されてデータ属性のリストがレンダリングされます。
-  例えば、`'data' => ['id' => 1, 'name' => 'yii']` は `data-id="1" data-name="yii"` となります。
-- "data" 属性は JSON を受け取ることが出来ます。これは配列と同じように処理されます。
-  すなわち、`'data' => ['params' => ['id' => 1, 'name' => 'yii'], 'status' => 'ok']` は `data-params='{"id":1,"name":"yii"}' data-status="ok"` となります。
+- 属性の値が配列である場合は、次のように処理されます。
+ 
+   * 属性が [[yii\helpers\Html::$dataAttributes]] にリストされているデータ属性である場合、例えば `data` や `ng` である場合は、値の配列にある要素の一つ一つについて、属性のリストがレンダリングされます。
+     例えば、`'data' => ['id' => 1, 'name' => 'yii']` は `data-id="1" data-name="yii"` を生成します。
+     また、`'data' => ['params' => ['id' => 1, 'name' => 'yii'], 'status' => 'ok']` は `data-params='{"id":1,"name":"yii"}' data-status="ok"` を生成します。
+     後者の例において、下位の配列に対して JSON 形式が使用されていることに注意してください。
+   * 属性がデータ属性でない場合は、値は JSON エンコードされます。
+     例えば、`['params' => ['id' => 1, 'name' => 'yii']` は `params='{"id":1,"name":"yii"}'` を生成します。
 
 
 ### CSS のクラスとスタイルを形成する <span id="forming-css"></span>
@@ -71,13 +74,63 @@ echo Html::tag('div', 'Pwede na', $options);
 // <div class="btn btn-success">Pwede na</div>
 ```
 
-同じことを `style` 属性のスタイルについて行うためには、次のようにします。
+配列形式を使って複数の CSS クラスを指定することも出来ます。
+
+```php
+$options = ['class' => ['btn', 'btn-default']];
+
+echo Html::tag('div', 'Save', $options);
+// '<div class="btn btn-default">Save</div>' をレンダリングする
+```
+
+クラスを追加・削除する際にも配列形式を使うことが出来ます。
+
+```php
+$options = ['class' => 'btn'];
+
+if ($type === 'success') {
+    Html::addCssClass($options, ['btn-success', 'btn-lg']);
+}
+
+echo Html::tag('div', 'Save', $options);
+// '<div class="btn btn-success btn-lg">Save</div>' をレンダリングする
+```
+
+`Html::addCssClass()` はクラスの重複を防止しますので、同じクラスが二度出現するかも知れないと心配する必要はありません。
+
+```php
+$options = ['class' => 'btn btn-default'];
+
+Html::addCssClass($options, 'btn-default'); // クラス 'btn-default' は既に存在する
+
+echo Html::tag('div', 'Save', $options);
+// '<div class="btn btn-default">Save</div>' をレンダリングする
+```
+
+CSS のクラスオプションを配列形式で指定する場合には、名前付きのキーを使ってクラスの論理的な目的を示すことが出来ます。
+この場合、`Html::addCssClass()` で同じキーを持つクラスを指定しても無視されます。
+
+```php
+$options = [
+    'class' => [
+        'btn',
+        'theme' => 'btn-default',
+    ]
+];
+
+Html::addCssClass($options, ['theme' => 'btn-success']); // 'theme' キーは既に使用されている
+
+echo Html::tag('div', 'Save', $options);
+// '<div class="btn btn-default">Save</div>' をレンダリングする
+```
+
+CSS のスタイルも `style` 属性を使って、同じように設定することが出来ます。
 
 ```php
 $options = ['style' => ['width' => '100px', 'height' => '100px']];
 
 // style="width: 100px; height: 200px; position: absolute;" となる
-Html::addCssStyle($options, 'height: 200px; positon: absolute;');
+Html::addCssStyle($options, 'height: 200px; position: absolute;');
 
 // style="position: absolute;" となる
 Html::removeCssStyle($options, ['width', 'height']);
@@ -109,7 +162,7 @@ $decodedUserName = Html::decode($userName);
 フォームのマークアップを扱う仕事は、極めて面倒くさく、エラーを生じがちなものです。
 このため、フォームのマークアップの仕事を助けるための一群のメソッドがあります。
 
-> Note|注意: モデルを扱っており、バリデーションが必要である場合は、[[yii\widgets\ActiveForm|ActiveForm]] を使うことを検討してください。
+> Note: モデルを扱っており、バリデーションが必要である場合は、[[yii\widgets\ActiveForm|ActiveForm]] を使うことを検討してください。
 
 
 ### フォームを作成する <span id="creating-forms"></span>

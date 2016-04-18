@@ -27,7 +27,7 @@ use yii\helpers\Html;
  *
  * The following example shows how to use Menu:
  *
- * ~~~
+ * ```php
  * echo Menu::widget([
  *     'items' => [
  *         // Important: you need to specify url as 'controller/action',
@@ -41,7 +41,7 @@ use yii\helpers\Html;
  *         ['label' => 'Login', 'url' => ['site/login'], 'visible' => Yii::$app->user->isGuest],
  *     ],
  * ]);
- * ~~~
+ * ```
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
@@ -68,6 +68,9 @@ class Menu extends Widget
      *   The token `{url}` will be replaced by the URL associated with this menu item,
      *   and the token `{label}` will be replaced by the label of the menu item.
      *   If this option is not set, [[linkTemplate]] or [[labelTemplate]] will be used instead.
+     * - submenuTemplate: string, optional, the template used to render the list of sub-menus.
+     *   The token `{items}` will be replaced with the rendered sub-menu items.
+     *   If this option is not set, [[submenuTemplate]] will be used instead.
      * - options: array, optional, the HTML attributes for the menu container tag.
      */
     public $items = [];
@@ -76,7 +79,7 @@ class Menu extends Widget
      * specifies its `options`, it will be merged with this property before being used to generate the HTML
      * attributes for the menu item tag. The following special options are recognized:
      *
-     * - tag: string, defaults to "li", the tag name of the item container tags.
+     * - tag: string, defaults to "li", the tag name of the item container tags. Set to false to disable container tag.
      *
      * @see \yii\helpers\Html::renderTagAttributes() for details on how attributes are being rendered.
      */
@@ -96,7 +99,7 @@ class Menu extends Widget
     public $labelTemplate = '{label}';
     /**
      * @var string the template used to render a list of sub-menus.
-     * In this template, the token `{items}` will be replaced with the renderer sub-menu items.
+     * In this template, the token `{items}` will be replaced with the rendered sub-menu items.
      */
     public $submenuTemplate = "\n<ul>\n{items}\n</ul>\n";
     /**
@@ -126,7 +129,7 @@ class Menu extends Widget
     /**
      * @var array the HTML attributes for the menu's container tag. The following special options are recognized:
      *
-     * - tag: string, defaults to "ul", the tag name of the item container tags.
+     * - tag: string, defaults to "ul", the tag name of the item container tags. Set to false to disable container tag.
      *
      * @see \yii\helpers\Html::renderTagAttributes() for details on how attributes are being rendered.
      */
@@ -172,6 +175,7 @@ class Menu extends Widget
         if (!empty($items)) {
             $options = $this->options;
             $tag = ArrayHelper::remove($options, 'tag', 'ul');
+
             echo Html::tag($tag, $this->renderItems($items), $options);
         }
     }
@@ -208,7 +212,8 @@ class Menu extends Widget
 
             $menu = $this->renderItem($item);
             if (!empty($item['items'])) {
-                $menu .= strtr($this->submenuTemplate, [
+                $submenuTemplate = ArrayHelper::getValue($item, 'submenuTemplate', $this->submenuTemplate);
+                $menu .= strtr($submenuTemplate, [
                     '{items}' => $this->renderItems($item['items']),
                 ]);
             }
@@ -298,7 +303,7 @@ class Menu extends Widget
     protected function isItemActive($item)
     {
         if (isset($item['url']) && is_array($item['url']) && isset($item['url'][0])) {
-            $route = $item['url'][0];
+            $route = Yii::getAlias($item['url'][0]);
             if ($route[0] !== '/' && Yii::$app->controller) {
                 $route = Yii::$app->controller->module->getUniqueId() . '/' . $route;
             }
@@ -307,7 +312,9 @@ class Menu extends Widget
             }
             unset($item['url']['#']);
             if (count($item['url']) > 1) {
-                foreach (array_splice($item['url'], 1) as $name => $value) {
+                $params = $item['url'];
+                unset($params[0]);
+                foreach ($params as $name => $value) {
                     if ($value !== null && (!isset($this->params[$name]) || $this->params[$name] != $value)) {
                         return false;
                     }

@@ -22,7 +22,7 @@ Yii のフィクスチャフレームワークにおける鍵となる概念は�
 前者は汎用目的のフィクスチャに最も適しています。
 一方、後者はデータベースとアクティブレコードを扱うために専用に設計された拡張機能を持っています。
 
-次のコードは、`User` アクティブレコードと対応するテーブルに対するフィクスチャを定義するものです。
+次のコードは、`User` アクティブレコードとそれに対応するテーブルに関して、フィクスチャを定義するものです。
 
 ```php
 <?php
@@ -36,11 +36,11 @@ class UserFixture extends ActiveFixture
 }
 ```
 
-> Tip|ヒント: すべての `ActiveFixture` は、テストの目的のために DB テーブルを準備するものです。
+> Tip: すべての `ActiveFixture` は、テストの目的のために DB テーブルを準備するものです。
 > [[yii\test\ActiveFixture::tableName]] プロパティまたは [[yii\test\ActiveFixture::modelClass]] プロパティを設定することによって、テーブルを指定することが出来ます。
 > 後者を使う場合は、`modelClass` によって指定される `ActiveRecord` クラスからテーブル名が取得されます。
 
-> Note|注意: [[yii\test\ActiveFixture]] は SQL データベースにのみ適しています。
+> Note: [[yii\test\ActiveFixture]] は SQL データベースにのみ適しています。
 > NoSQL データベースのためには、Yii は以下の `ActiveFixture` クラスを提供しています。
 >
 > - Mongo DB: [[yii\mongodb\ActiveFixture]]
@@ -77,7 +77,7 @@ return [
 また、オートインクリメントのカラムに対してはデータを指定する必要はありません。
 フィクスチャがロードされるときに Yii が自動的に実際の値を行に入れます。
 
-> Tip|ヒント: [[yii\test\ActiveFixture::dataFile]] プロパティを設定して、データファイルの所在をカスタマイズすることが出来ます。
+> Tip: [[yii\test\ActiveFixture::dataFile]] プロパティを設定して、データファイルの所在をカスタマイズすることが出来ます。
 > [[yii\test\ActiveFixture::getData()]] をオーバーライドしてデータを提供することも可能です。
 
 前に説明したように、フィクスチャは別のフィクスチャに依存する場合があります。
@@ -107,12 +107,12 @@ DB と関係しないフィクスチャ (例えば、何らかのファイルや
 フィクスチャを使用する
 ----------------------
 
-[CodeCeption](http://codeception.com/) を使ってコードをテストしている場合は、フィクスチャのローディングとアクセスを内蔵でサポートしている `yii2-codeception` を使用することを検討すべきです。
+[Codeception](http://codeception.com/) を使ってコードをテストしている場合は、フィクスチャのローディングとアクセスを内蔵でサポートしている `yii2-codeception` を使用することを検討すべきです。
 その他のテストフレームワークを使っている場合は、テストケースで [[yii\test\FixtureTrait]] を使って同じ目的を達することが出来ます。
 
-次に `yii2-codeception` を使って `UserProfile` ユニットテストを各方法を説明します。
+次に `yii2-codeception` を使って `UserProfile` 単体テストを書く方法を説明します。
 
-[[yii\codeception\DbTestCase]] または [[yii\codeception\TestCase]] を拡張するユニットテストクラスにおいて、どのフィクスチャを使用したいかを [[yii\test\FixtureTrait::fixtures()|fixtures()]] メソッドの中で宣言します。
+[[yii\codeception\DbTestCase]] または [[yii\codeception\TestCase]] を拡張する単体テストクラスにおいて、どのフィクスチャを使用したいかを [[yii\test\FixtureTrait::fixtures()|fixtures()]] メソッドの中で宣言します。
 例えば、
 
 ```php
@@ -158,7 +158,7 @@ $profile = $this->profiles('user1');
 foreach ($this->profiles as $row) ...
 ```
 
-> Info|情報: `$this->profiles` は依然として `UserProfileFixture` という型です。
+> Info: `$this->profiles` は依然として `UserProfileFixture` という型です。
 > 上記のアクセス機能は PHP マジックメソッドによって実装されています。
 
 
@@ -186,7 +186,7 @@ foreach ($this->profiles as $row) ...
 
 デフォルトでは、フィクスチャクラスは対応するデータファイルを探すときに、フィクスチャのクラスファイルを含むフォルダのサブフォルダである `data` フォルダの中を見ます。
 簡単なプロジェクトではこの規約に従うことができます。
-大きなプロジェクトでは、おそらくは、同じフィクスチャクラスを異なるテストに使うために、データファイルを切り替える必要がある場合がよく生じます。
+大きなプロジェクトでは、おそらくは、同じフィクスチャクラスを異なるテストに使うために、データファイルを切り替える必要がある場合が頻繁に生じるでしょう。
 従って、クラスの名前空間と同じように、データファイルを階層的な方法で編成することを推奨します。
 例えば、
 
@@ -207,10 +207,10 @@ data\
 # 等々
 ```
 
-このようにして、テスト間でフィクスチャのデータファイルが衝突するのを回避し、必要に応じてデータファイルを使います。
+このようにして、テスト間でフィクスチャのデータファイルが衝突するのを回避し、必要に応じてデータファイルを使い分けます。
 
 
-> Note|注意: 上の例では、フィクスチャファイルには例示目的だけの名前が付けられています。
+> Note: 上の例では、フィクスチャファイルには例示目的だけの名前が付けられています。
 > 実際の現場では、フィクスチャクラスの拡張元である基底クラスに従って名前を付けるべきです。
 > 例えば、DB フィクスチャを [[yii\test\ActiveFixture]] から拡張している場合は、DB テーブルの名前をフィクスチャのデータファイル名として使うべきです。
 > MongoDB フィクスチャを [[yii\mongodb\ActiveFixture]] から拡張している場合は、コレクション名をファイル名として使うべきです。
@@ -256,7 +256,7 @@ Yii supports fixtures via the `yii fixture` command line tool. This tool support
 Fixtures format
 ---------------
 
-Fixtures are objects with different methods and configurations, refer to official [documentation](https://github.com/yiisoft/yii2/blob/master/docs/guide/test-fixture.md) on them.
+Fixtures are objects with different methods and configurations, refer to official [documentation](https://github.com/yiisoft/yii2/blob/master/docs/guide/test-fixtures.md) on them.
 Lets assume we have fixtures data to load:
 
 ```
@@ -280,7 +280,7 @@ return [
 ];
 ```
 If we are using fixture that loads data into database then these rows will be applied to `users` table. If we are using nosql fixtures, for example `mongodb`
-fixture, then this data will be applied to `users` mongodb collection. In order to learn about implementing various loading strategies and more, refer to official [documentation](https://github.com/yiisoft/yii2/blob/master/docs/guide/test-fixture.md).
+fixture, then this data will be applied to `users` mongodb collection. In order to learn about implementing various loading strategies and more, refer to official [documentation](https://github.com/yiisoft/yii2/blob/master/docs/guide/test-fixtures.md).
 Above fixture example was auto-generated by `yii2-faker` extension, read more about it in these [section](#auto-generating-fixtures).
 Fixture classes name should not be plural.
 
@@ -373,4 +373,4 @@ Auto-generating fixtures
 
 Yii also can auto-generate fixtures for you based on some template. You can generate your fixtures with different data on different languages and formats.
 These feature is done by [Faker](https://github.com/fzaninotto/Faker) library and `yii2-faker` extension.
-See extension [guide](https://github.com/yiisoft/yii2/tree/master/extensions/faker) for more docs.
+See extension [guide](https://github.com/yiisoft/yii2-faker) for more docs.

@@ -36,8 +36,8 @@ class Schema extends \yii\db\Schema
         'decimal' => self::TYPE_DECIMAL,
         'float' => self::TYPE_FLOAT,
         'real' => self::TYPE_FLOAT,
-        'double' => self::TYPE_FLOAT,
-        'double precision' => self::TYPE_FLOAT,
+        'double' => self::TYPE_DOUBLE,
+        'double precision' => self::TYPE_DOUBLE,
         'monetary' => self::TYPE_MONEY,
         // Date/Time data types
         'date' => self::TYPE_DATE,
@@ -45,10 +45,10 @@ class Schema extends \yii\db\Schema
         'timestamp' => self::TYPE_TIMESTAMP,
         'datetime' => self::TYPE_DATETIME,
         // String data types
-        'char' => self::TYPE_STRING,
+        'char' => self::TYPE_CHAR,
         'varchar' => self::TYPE_STRING,
         'char varying' => self::TYPE_STRING,
-        'nchar' => self::TYPE_STRING,
+        'nchar' => self::TYPE_CHAR,
         'nchar varying' => self::TYPE_STRING,
         'string' => self::TYPE_STRING,
         // BLOB/CLOB data types
@@ -227,7 +227,7 @@ class Schema extends \yii\db\Schema
         ) {
             $column->defaultValue = new Expression($info['Default']);
         } elseif (isset($type) && $type === 'bit') {
-            $column->defaultValue = hexdec(trim($info['Default'],'X\''));
+            $column->defaultValue = hexdec(trim($info['Default'], 'X\''));
         } else {
             $column->defaultValue = $column->phpTypecast($info['Default']);
         }
@@ -243,7 +243,7 @@ class Schema extends \yii\db\Schema
     protected function findTableNames($schema = '')
     {
         $pdo = $this->db->getSlavePdo();
-        $tables =$pdo->cubrid_schema(\PDO::CUBRID_SCH_TABLE);
+        $tables = $pdo->cubrid_schema(\PDO::CUBRID_SCH_TABLE);
         $tableNames = [];
         foreach ($tables as $table) {
             // do not list system tables
@@ -298,5 +298,13 @@ class Schema extends \yii\db\Schema
                 break;
         }
         parent::setTransactionIsolationLevel($level);
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function createColumnSchemaBuilder($type, $length = null)
+    {
+        return new ColumnSchemaBuilder($type, $length, $this->db);
     }
 }

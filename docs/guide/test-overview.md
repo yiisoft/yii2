@@ -4,7 +4,9 @@ Testing
 Testing is an important part of software development. Whether we are aware of it or not, we conduct testing continuously.
 For example, when we write a class in PHP, we may debug it step by step or simply use echo or die statements to verify
 the implementation works according to our initial plan. In the case of a web application, we're entering some test data
-in forms to ensure the page interacts with us as expected. The testing process could be automated so that each time when we need to verify something, we just need to call up the code that does it for us. The code that verifies the result matches
+in forms to ensure the page interacts with us as expected.
+
+The testing process could be automated so that each time when we need to verify something, we just need to call up the code that does it for us. The code that verifies the result matches
 what we've planned is called test and the process of its creation and further execution is known as automated testing,
 which is the main topic of these testing chapters.
 
@@ -28,7 +30,7 @@ The process of developing a feature is the following:
 After it's done the process is repeated again for another feature or improvement. If the existing feature is to be changed,
 tests should be changed as well.
 
-> **Tip**: If you feel that you are losing time doing a lot of small and simple iterations, try covering more by your
+> Tip: If you feel that you are losing time doing a lot of small and simple iterations, try covering more by your
 > test scenario so you do more before executing tests again. If you're debugging too much, try doing the opposite.
 
 The reason to create tests before doing any implemenation is that it allows us to focus on what we want to achieve
@@ -42,7 +44,7 @@ So to sum up the pros of such an approach are the following:
 
 In the long term it usually gives you a good time-saving effect.
 
-> **Tip**: If you want to know more about the principles for gathering software requirements and modeling the subject
+> Tip: If you want to know more about the principles for gathering software requirements and modeling the subject
 > matter it's good to learn [Domain Driven Development (DDD)](https://en.wikipedia.org/wiki/Domain-driven_design).
 
 When and how to test

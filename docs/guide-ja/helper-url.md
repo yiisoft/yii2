@@ -16,9 +16,9 @@ $absoluteHomeUrl = Url::home(true);
 $httpsAbsoluteHomeUrl = Url::home('https');
 ```
 
-パラメータが渡されない場合は、相対 URL が生成されます。
-`true` を渡すと、現在のスキーマの絶対 URL を取得することが出来ます。
-または、スキームを明示的に指定して (`http`, `https`) 絶対 URL を取得することも出来ます。
+パラメータが渡されない場合は、生成される URL は相対 URL になります。
+パラメータとして `true` を渡せば、現在のスキーマの絶対 URL を取得することが出来ます。
+または、スキーマ (`http`, `https`) を明示的に指定しても構いません。
 
 現在のリクエストのベース URL を取得するためには、次のようにします。
  
@@ -45,14 +45,14 @@ $url = Url::toRoute(['product/view', 'id' => 42]);
 配列の形式は、以下のようにしなければなりません。
 
 ```php
-// /index.php?r=site/index&param1=value1&param2=value2 を生成
+// /index.php?r=site%2Findex&param1=value1&param2=value2 を生成
 ['site/index', 'param1' => 'value1', 'param2' => 'value2']
 ```
 
 アンカーの付いた URL を生成したい場合は、`#` パラメータを持つ配列を使うことが出来ます。例えば、
 
 ```php
-// /index.php?r=site/index&param1=value1#name を生成
+// /index.php?r=site%2Findex&param1=value1#name を生成
 ['site/index', 'param1' => 'value1', '#' => 'name']
 ```
 
@@ -70,19 +70,19 @@ $url = Url::toRoute(['product/view', 'id' => 42]);
 以下に、このメソッドの使用例をいくつか挙げます。
 
 ```php
-// /index.php?r=site/index
+// /index.php?r=site%2Findex
 echo Url::toRoute('site/index');
 
-// /index.php?r=site/index&src=ref1#name
+// /index.php?r=site%2Findex&src=ref1#name
 echo Url::toRoute(['site/index', 'src' => 'ref1', '#' => 'name']);
 
-// /index.php?r=post/edit&id=100     エイリアス "@postEdit" は "post/edit" と定義されていると仮定
+// /index.php?r=post%2Fedit&id=100     エイリアス "@postEdit" は "post/edit" と定義されていると仮定
 echo Url::toRoute(['@postEdit', 'id' => 100]);
 
-// http://www.example.com/index.php?r=site/index
+// http://www.example.com/index.php?r=site%2Findex
 echo Url::toRoute('site/index', true);
 
-// https://www.example.com/index.php?r=site/index
+// https://www.example.com/index.php?r=site%2Findex
 echo Url::toRoute('site/index', 'https');
 ```
 
@@ -94,7 +94,6 @@ echo Url::toRoute('site/index', 'https');
 
 - 配列: URL を生成するために [[toRoute()]] が呼び出されます。例えば、`['site/index']`、`['post/index', 'page' => 2]`。
   ルートの指定方法の詳細については [[toRoute()]] を参照してください。
-  on how to specify a route.
 - `@` で始まる文字列: これはエイリアスとして扱われ、エイリアスに対応する文字列が返されます。
 - 空文字列: 現在リクエストされている URL が返されます。
 - 通常の文字列: その通りのものとして扱われます。
@@ -105,13 +104,13 @@ echo Url::toRoute('site/index', 'https');
 下記にいくつかの用例を挙げます。
 
 ```php
-// /index.php?r=site/index
+// /index.php?r=site%2Findex
 echo Url::to(['site/index']);
 
-// /index.php?r=site/index&src=ref1#name
+// /index.php?r=site%2Findex&src=ref1#name
 echo Url::to(['site/index', 'src' => 'ref1', '#' => 'name']);
 
-// /index.php?r=post/edit&id=100     エイリアス "@postEdit" が "post/edit" と定義されていると仮定
+// /index.php?r=post%2Fedit&id=100     エイリアス "@postEdit" が "post/edit" と定義されていると仮定
 echo Url::to(['@postEdit', 'id' => 100]);
 
 // 現在リクエストされている URL
@@ -133,19 +132,16 @@ echo Url::to('@web/images/logo.gif', 'https');
 バージョン 2.0.3 以降では、[[yii\helpers\Url::current()]] を使って、現在リクエストされているルートと GET パラメータに基づいて URL を生成することが出来ます。
 `$params` パラメータを渡して、GET パラメータの中のいくつかを修正したり削除したり、または新しい GET パラメータを追加したりすることが出来ます。
 例えば、
-Starting from version 2.0.3, you may use [[yii\helpers\Url::current()]] to create a URL based on the currently
-requested route and GET parameters. You may modify or remove some of the GET parameters or add new ones by
-passing a `$params` parameter to the method. For example,
 
 ```php
 // $_GET が ['id' => 123, 'src' => 'google'] であり、現在のルートが "post/view" であると仮定
 
-// /index.php?r=post/view&id=123&src=google
+// /index.php?r=post%2Fview&id=123&src=google
 echo Url::current();
 
-// /index.php?r=post/view&id=123
+// /index.php?r=post%2Fview&id=123
 echo Url::current(['src' => null]);
-// /index.php?r=post/view&id=100&src=google
+// /index.php?r=post%2Fview&id=100&src=google
 echo Url::current(['id' => 100]);
 ```
 

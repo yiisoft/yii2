@@ -1,13 +1,45 @@
 データウィジェット
 ==================
 
-> Note|注意: この節はまだ執筆中です。
+Yii はデータを表示するために使うことが出来る一連の [ウィジェット](structure-widgets.md) を提供しています。
+[DetailView](#detail-view) は、単一のレコードのデータを表示するのに使うことが出来ます。
+それに対して、[ListView](#list-view) と [GridView](#grid-view) は、複数のデータレコードをリストまたはテーブルで表示することが出来るもので、ページネーション、並べ替え、フィルタリングなどの機能を提供するものです。
+
+
+DetailView
+----------
+
+DetailView は単一のデータ [[yii\widgets\DetailView::$model|モデル]] の詳細を表示します。
+
+モデルを標準的な書式で表示する場合 (例えば、全てのモデル属性をそれぞれテーブルの一行として表示する場合) に最も適しています。
+モデルは [[\yii\base\Model]] またはそのサブクラス、例えば [アクティブレコード](db-active-record.md) のインスタンスか、連想配列かのどちらかにすることが出来ます。
+ 
+DetailView は [[yii\widgets\DetailView::$attributes]] プロパティを使って、モデルのどの属性が表示されるべきか、また、どういうフォーマットで表示されるべきかを決定します。
+利用できるフォーマットのオプションについては、[フォーマッタの節](output-formatting.md) を参照してください。
+
+次に DetailView の典型的な用例を示します。
+
+```php
+echo DetailView::widget([
+    'model' => $model,
+    'attributes' => [
+        'title',               // title 属性 (平文テキストで)
+        'description:html',    // description 属性は HTML としてフォーマットされる
+        [                      // モデルの所有者の名前
+            'label' => '所有者',
+            'value' => $model->owner->name,
+        ],
+        'created_at:datetime', // 作成日は datetime としてフォーマットされる
+    ],
+]);
+```
+
 
 ListView
 --------
 
-ListView ウィジェットは、データプロバイダからのデータを表示するのに使用されます。
-各データモデルは指定されたビューを使って表示されます。
+[[yii\widgets\ListView|ListView]] ウィジェットは、[データプロバイダ](output-data-providers.md) からのデータを表示するのに使用されます。
+各データモデルは指定された [[yii\widgets\ListView::$itemView|ビューファイル]] を使って表示されます。
 ListView は、特に何もしなくても、ページネーション、並べ替え、フィルタリングなどの機能を提供してくれますので、エンドユーザに情報を表示するためにも、データ管理 UI を作成するためにも、非常に便利なウィジェットです。
 
 典型的な使用方法は以下の通りです。
@@ -28,7 +60,7 @@ echo ListView::widget([
 ]);
 ```
 
-`_post` ビューは次のようなものにすることが出来ます。
+`_post` ビューは次のような内容を含むことが出来ます。
 
 
 ```php
@@ -38,19 +70,19 @@ use yii\helpers\HtmlPurifier;
 ?>
 <div class="post">
     <h2><?= Html::encode($model->title) ?></h2>
-    
+
     <?= HtmlPurifier::process($model->text) ?>    
 </div>
 ```
 
-上記のビューでは、現在のデータモデルを `$model` としてアクセスすることが出来ます。
+上記のビューファイルでは、現在のデータモデルを `$model` としてアクセスすることが出来ます。
 追加で次のものを利用することも出来ます。
 
 - `$key`: mixed - データアイテムと関連付けられたキーの値。
 - `$index`: integer - データプロバイダによって返されるアイテムの配列の 0 から始まるインデックス。
 - `$widget`: ListView - ウィジェットのインスタンス。
 
-追加のデータをビューに渡す必要がある場合は、次のように、`$viewParams` を使います。
+追加のデータを各ビューに渡す必要がある場合は、次のように、[[yii\widgets\ListView::$viewParams|$viewParams]] を使って「キー - 値」のペアを渡すことが出来ます。
 
 ```php
 echo ListView::widget([
@@ -58,51 +90,24 @@ echo ListView::widget([
     'itemView' => '_post',
     'viewParams' => [
         'fullView' => true,
+        'context' => 'main-page',
+        // ...
     ],
 ]);
 ```
 
-
-DetailView
-----------
-
-DetailView は単一のデータ [[yii\widgets\DetailView::$model|モデル]] の詳細を表示します。
-
-モデルを標準的な書式で表示する場合 (例えば、全てのモデル属性をそれぞれテーブルの一行として表示する場合) に最も適しています。
-モデルは [[\yii\base\Model]] のインスタンスか連想配列かのどちらかを取り得ます。
- 
-DetailView は [[yii\widgets\DetailView::$attributes]] プロパティを使って、モデルのどの属性をどのように表示すべきかを決定します。
-
-次に DetailView の典型的な用例を示します。
- 
-```php
-echo DetailView::widget([
-    'model' => $model,
-    'attributes' => [
-        'title',             // title 属性 (平文テキストで)
-        'description:html',  // description 属性は HTML
-        [                    // モデルの所有者の名前
-            'label' => '所有者',
-            'value' => $model->owner->name,
-        ],
-    ],
-]);
-```
+このようにすると、これらをビューで変数として利用できるようになります。
 
 
-GridView
+GridView <a name="grid-view"></a>
 --------
 
-データグリッドすなわち GridView は Yii の最も強力なウィジェットの一つです。
+データグリッドすなわち [[yii\widgets\GridView|GridView]] は Yii の最も強力なウィジェットの一つです。
 これは、システムの管理セクションを素速く作らねばならない時に、この上なく便利なものです。
-このウィジェットは [データプロバイダ](output-data-providers.md) からデータを受けて、テーブルの形式で、行ごとに一組のカラムを使ってデータを表示します。
+このウィジェットは [データプロバイダ](output-data-providers.md) からデータを受けて、テーブルの形式で、行ごとに一組の [[yii\grid\GridView::columns|カラム]] を使ってデータを表示します。
 
 テーブルの各行が一つのデータアイテムを表します。そして、一つのカラムは通常はアイテムの一属性を表します
 (カラムの中に、複数の属性を組み合わせた複雑な式に対応するものや、静的なテキストを表すものを含めることも出来ます)。
-
-グリッドビューはデータアイテムの並べ替えとページネーションの両方をサポートします。
-並べ替えとページネーションは、AJAX モードで、あるいは、通常のページリクエストとして、実行することが出来ます。
-GridView を使用することの利点は、ユーザが JavaScript を無効化しても、並べ替えとページネーションが自動的に通常のページリクエストにグレードダウンして、引き続き期待通りの動作をするという点にあります。
 
 GridView を使うために必要な最小限のコードは次のようなものです。
 
@@ -122,14 +127,13 @@ echo GridView::widget([
 ```
 
 上記のコードは、最初にデータプロバイダを作成し、次に GridView を使って、データプロバイダから受け取る全ての行の全ての属性を表示するものです。
-表示されるテーブルには、並べ替えとページネーションの機能が装備されます。
+表示されるテーブルには、特に何も設定しなくても、並べ替えとページネーションの機能が装備されます。
 
-### グリッドカラム
+### グリッドのカラム
 
-Yii のグリッドは数多くのカラムから構成されます。
-それらのカラムは、タイプや設定に応じて、さまざまな形でデータを表示することが出来ます。
-
-カラムは、GridView の構成情報の `columns` の部分において、以下のように定義されます。
+グリッドのテーブルのカラムは [[yii\grid\Column]] クラスとして表現され、GridView の構成情報の [[yii\grid\GridView::columns|columns]] プロパティで構成されます。
+カラムは、タイプや設定の違いに応じて、データをさまざまな形で表現することが出来ます。
+デフォルトのクラスは [[yii\grid\DataColumn]] です。これは、モデルの一つの属性を表現し、その属性による並べ替えとフィルタリングを可能にするものです。
 
 ```php
 echo GridView::widget([
@@ -151,7 +155,7 @@ echo GridView::widget([
 ]);
 ```
 
-構成情報の `columns` の部分が指定されない場合は、Yii は、データプロバイダのモデルの表示可能な全てのカラムを表示しようとすることに注意してください。
+構成情報の [[yii\grid\GridView::columns|columns]] の部分が指定されない場合は、Yii は、データプロバイダのモデルの表示可能な全てのカラムを表示しようとすることに注意してください。
 
 ### カラムクラス
 
@@ -169,12 +173,13 @@ echo GridView::widget([
 
 Yii によって提供されるカラムクラスを以下で見ていきますが、それらに加えて、あなた自身のカラムクラスを作成することも出来ます。
 
-全てのカラムクラスは [[\yii\grid\Column]] を拡張するものですので、グリッドのカラムを構成するときに設定できる共通のオプションがいくつかあります。
+全てのカラムクラスは [[yii\grid\Column]] を拡張するものですので、グリッドのカラムを構成するときに設定できる共通のオプションがいくつかあります。
 
-- `header` によって、ヘッダ行のコンテントを設定することが出来ます。
-- `footer` によって、フッタ行のコンテントを設定することが出来ます。
-- `visible` はカラムの可視性を定義します。
-- `content` によって、行のデータを返す有効な PHP コールバックを渡すことが出来ます。書式は以下の通りです。
+
+- [[yii\grid\Column::header|header]] によって、ヘッダ行のコンテントを設定することが出来ます。
+- [[yii\grid\Column::footer|footer]] によって、フッタ行のコンテントを設定することが出来ます。
+- [[yii\grid\Column::visible|visible]] はカラムの可視性を定義します。
+- [[yii\grid\Column::content|content]] によって、行のデータを返す有効な PHP コールバックを渡すことが出来ます。書式は以下の通りです。
 
   ```php
   function ($model, $key, $index, $column) {
@@ -184,19 +189,19 @@ Yii によって提供されるカラムクラスを以下で見ていきます�
 
 下記のオプションに配列を渡して、コンテナ要素のさまざまな HTML オプションを指定することが出来ます。
 
-- `headerOptions`
-- `footerOptions`
-- `filterOptions`
-- `contentOptions`
+- [[yii\grid\Column::headerOptions|headerOptions]]
+- [[yii\grid\Column::footerOptions|footerOptions]]
+- [[yii\grid\Column::filterOptions|filterOptions]]
+- [[yii\grid\Column::contentOptions|contentOptions]]
+
 
 #### データカラム <span id="data-column"></span>
 
-データカラムは、データの表示と並べ替えに使用されます。
+[[yii\grid\DataColumn|データカラム]] は、データの表示と並べ替えに使用されます。
 これがデフォルトのカラムタイプですので、これを使用するときはクラスの指定を省略することが出来ます。
 
-データカラムの主要な設定項目は、その書式です。
-書式は `format` 属性によって定義することが出来ます。
-その値は、デフォルトでは [[\yii\i18n\Formatter|Formatter]] である `formatter` [アプリケーションコンポーネント](structure-application-components.md) のメソッドと対応するものです。
+データカラムの主要な設定項目は、その [[yii\grid\DataColumn::format|format]] プロパティです。
+その値が、デフォルトでは [[\yii\i18n\Formatter|Formatter]] である `formatter` [アプリケーションコンポーネント](structure-application-components.md) のメソッドに対応します。
 
 ```php
 echo GridView::widget([
@@ -210,19 +215,21 @@ echo GridView::widget([
             'format' => ['date', 'php:Y-m-d']
         ],
     ],
-]); 
+]);
 ```
 
 上記において、`text` は [[\yii\i18n\Formatter::asText()]] に対応し、カラムの値が最初の引数として渡されます。
 二番目のカラムの定義では、`date` が [[\yii\i18n\Formatter::asDate()]] に対応します。
 カラムの値が、ここでも、最初の引数として渡され、'php:Y-m-d' が二番目の引数の値として渡されます。
 
-利用できるフォーマッタの一覧については、[データのフォーマット](output-formatter.md) の節を参照してください。
+利用できるフォーマッタの一覧については、[データのフォーマット](output-formatting.md) の節を参照してください。
 
+データカラムを構成するためには、ショートカット形式を使うことも出来ます。
+それについては、[[yii\grid\GridView::columns|columns]] の API ドキュメントで説明されています。
 
 #### アクションカラム
 
-アクションカラムは、各行について、更新や削除などのアクションボタンを表示します。
+[[yii\grid\ActionColumn|アクションカラム]] は、各行について、更新や削除などのアクションボタンを表示します。
 
 ```php
 echo GridView::widget([
@@ -236,34 +243,54 @@ echo GridView::widget([
 
 構成が可能なプロパティは、以下の通りです。
 
-- `controller` は、アクションを処理すべきコントローラの ID です。設定されていない場合は、現在アクティブなコントローラが使われます。
-- `template` は、アクションカラムの各セルを構成するのに使用されるテンプレートを定義します。
+- [[yii\grid\ActionColumn::controller|controller]] は、アクションを処理すべきコントローラの ID です。
+  設定されていない場合は、現在アクティブなコントローラが使われます。
+- [[yii\grid\ActionColumn::template|template]] は、アクションカラムの各セルを構成するのに使用されるテンプレートを定義します。
   波括弧に囲まれたトークンは、コントローラのアクション ID として扱われます (アクションカラムのコンテキストでは *ボタンの名前* とも呼ばれます)。
   これらは、[[yii\grid\ActionColumn::$buttons|buttons]] によって定義される、対応するボタン表示コールバックによって置き換えられます。
   例えば、`{view}` というトークンは、`buttons['view']` のコールバックの結果によって置き換えられます。
   コールバックが見つからない場合は、トークンは空文字列によって置き換えられます。
   デフォルトのテンプレートは `{view} {update} {delete}` です。
-- `buttons` はボタン表示コールバックの配列です。
+- [[yii\grid\ActionColumn::buttons|buttons]] はボタン表示コールバックの配列です。
   配列のキーはボタンの名前 (波括弧を除く) であり、値は対応するボタン表示コールバックです。
   コールバックは下記のシグニチャを使わなければなりません。
 
-```php
-function ($url, $model, $key) {
-    // ボタンの HTML コードを返す
-}
-```
+  ```php
+  function ($url, $model, $key) {
+      // ボタンの HTML コードを返す
+  }
+  ```
 
-上記のコードで、`$url` はカラムがボタンのために生成する URL、`$model` は現在の行に表示されるモデルオブジェクト、そして `$key` はデータプロバイダの配列の中にあるモデルのキーです。
+  上記のコードで、`$url` はカラムがボタンのために生成する URL、`$model` は現在の行に表示されるモデルオブジェクト、そして `$key` はデータプロバイダの配列の中にあるモデルのキーです。
 
-- `urlCreator` は、指定されたモデルの情報を使って、ボタンの URL を生成するコールバックです。
+- [[yii\grid\ActionColumn::urlCreator|urlCreator]] は、指定されたモデルの情報を使って、ボタンの URL を生成するコールバックです。
   コールバックのシグニチャは [[yii\grid\ActionColumn::createUrl()]] のそれと同じでなければなりません。
   このプロパティが設定されていないときは、ボタンの URL は [[yii\grid\ActionColumn::createUrl()]] を使って生成されます。
+- [[yii\grid\ActionColumn::visibleButtons|visibleButtons]] は、各ボタンの可視性の条件を定義する配列です。
+  配列のキーはボタンの名前 (波括弧を除く) であり、値は真偽値 true/false または無名関数です。
+  ボタンの名前がこの配列の中で指定されていない場合は、デフォルトで、ボタンが表示されます。
+  コールバックは次のシグニチャを使わなければなりません。
+
+  ```php
+  function ($model, $key, $index) {
+      return $model->status === 'editable';
+  }
+  ```
+
+  または、真偽値を渡すことも出来ます。
+
+  ```php
+  [
+      'update' => \Yii::$app->user->can('update')
+  ]
+  ```
+
 
 #### チェックボックスカラム
 
-CheckboxColumn はチェックボックスのカラムを表示します。
+[[yii\grid\CheckboxColumn|チェックボックスカラム]] はチェックボックスのカラムを表示します。
 
-[[yii\grid\GridView]] に CheckboxColumn を追加するためには、以下のようにして、[[yii\grid\GridView::$columns|columns]] 構成情報にカラムを追加します。
+GridView に CheckboxColumn を追加するためには、以下のようにして、[[yii\grid\GridView::$columns|columns]] 構成情報にカラムを追加します。
 
 ```php
 echo GridView::widget([
@@ -287,7 +314,7 @@ var keys = $('#grid').yiiGridView('getSelectedRows');
 
 #### シリアルカラム
 
-シリアルカラムは、`1` から始まる行番号を表示します。
+[[yii\grid\SerialColumn|シリアルカラム]] は、`1` から始まる行番号を表示します。
 
 使い方は、次のように、とても簡単です。
 
@@ -302,13 +329,16 @@ echo GridView::widget([
 
 ### データを並べ替える
 
-- https://github.com/yiisoft/yii2/issues/1576
+> Note: このセクションはまだ執筆中です。
+>
+> - https://github.com/yiisoft/yii2/issues/1576
 
 ### データをフィルタリングする
 
-データをフィルタリングするためには、GridView は、フィルタリングのフォームから入力を受け取り、検索基準に合わせてデータプロバイダのクエリを修正するための [モデル](structure-models.md) を必要とします。
-[アクティブレコード](db-active-record.md) を使用している場合は、必要な機能を提供する検索用のモデルクラスを作成するのが一般的なプラクティスです (あなたに代って Gii が生成してくれます)。
-このクラスは、検索のためのバリデーション規則を定義し、データプロバイダを返す `search()` メソッドを提供するものです。
+データをフィルタリングするためには、GridView は検索基準を表す [モデル](structure-models.md) を必要とします。
+検索基準は、通常は、グリッドビューのテーブルのフィルタのフィールドから取得されます。
+[アクティブレコード](db-active-record.md) を使用している場合は、必要な機能を提供する検索用のモデルクラスを作成するのが一般的なプラクティスです (あなたに代って [Gii](start-gii.md) が生成してくれます)。
+このクラスは、検索のためのバリデーション規則を定義し、検索基準に従って修正されたクエリを持つデータプロバイダを返す `search()` メソッドを提供するものです。
 
 `Post` モデルに対して検索機能を追加するために、次の例のようにして、`PostSearch` モデルを作成することが出来ます。
 
@@ -380,14 +410,98 @@ return $this->render('myview', [
 echo GridView::widget([
     'dataProvider' => $dataProvider,
     'filterModel' => $searchModel,
+    'columns' => [
+        // ...
+    ],
 ]);
+```
+
+
+### 独立したフィルタ・フォーム
+
+たいていの場合はグリッドビューのヘッダのフィルタで十分でしょう。
+しかし、独立したフィルタのフォームが必要な場合でも、簡単に追加することができます。
+まず、以下の内容を持つパーシャル・ビュー `_search.php` を作成します。
+
+```php
+<?php
+
+use yii\helpers\Html;
+use yii\widgets\ActiveForm;
+
+/* @var $this yii\web\View */
+/* @var $model app\models\PostSearch */
+/* @var $form yii\widgets\ActiveForm */
+?>
+
+<div class="post-search">
+    <?php $form = ActiveForm::begin([
+        'action' => ['index'],
+        'method' => 'get',
+    ]); ?>
+
+    <?= $form->field($model, 'title') ?>
+
+    <?= $form->field($model, 'creation_date') ?>
+
+    <div class="form-group">
+        <?= Html::submitButton('Search', ['class' => 'btn btn-primary']) ?>
+        <?= Html::submitButton('Reset', ['class' => 'btn btn-default']) ?>
+    </div>
+
+    <?php ActiveForm::end(); ?>
+</div>
+```
+
+そして、これを以下のように `index.php` ビューにインクルードします。
+
+```php
+<?= $this->render('_search', ['model' => $searchModel]) ?>
+```
+
+> Note: Gii を使って CRUD コードを生成する場合、デフォルトで、独立したフィルタ・フォーム (`_search.php`) が生成されます。
+  ただし、`index.php` ビューの中ではコメントアウトされています。
+  コメントを外せば、すぐに使うことが出来ます。
+
+独立したフィルタ・フォームは、グリッドビューに表示されないフィールドによってフィルタをかけたり、
+または日付の範囲のような特殊なフィルタ条件を使う必要があったりする場合に便利です。
+日付の範囲によってフィルタする場合は、DB には存在しない `createdFrom` と `createdTo` という属性を検索用のモデルに追加すること良いでしょう。
+
+```php
+class PostSearch extends Post
+{
+    /**
+     * @var string
+     */
+    public $createdFrom;
+
+    /**
+     * @var string
+     */
+    public $createdTo;
+}
+```
+
+そして、`search()` メソッドでクエリの条件を次のように拡張します。
+
+```php
+$query->andFilterWhere(['>=', 'creation_date', $this->createdFrom])
+      ->andFilterWhere(['<=', 'creation_date', $this->createdTo]);
+```
+
+そして、フィルタ・フォームに、日付の範囲を示すフィールドを追加します。
+
+```php
+<?= $form->field($model, 'creationFrom') ?>
+
+<?= $form->field($model, 'creationTo') ?>
 ```
 
 
 ### モデルのリレーションを扱う
 
 GridView でアクティブレコードを表示するときに、リレーションのカラムの値、例えば、単に投稿者の `id` というのではなく、投稿者の名前を表示するという場合に遭遇するかも知れません。
-`Post` モデルが `author` という名前のリレーションを持っていて、その投稿者のモデルが `name` という属性を持っているなら、カラムの属性名を `author.name` と定義します。
+`Post` モデルが `author` という名前のリレーションを持っていて、その投稿者のモデルが `name` という属性を持っているなら、[[yii\grid\GridView::$columns]] の属性名を `author.name` と定義します。
 そうすれば、GridView が投稿者の名前を表示するようになります。
 ただし、並べ替えとフィルタリングは、デフォルトでは有効になりません。
 これらの機能を追加するためには、前の項で導入した `PostSearch` モデルを修正しなければなりません。
@@ -403,6 +517,7 @@ $dataProvider = new ActiveDataProvider([
 // リレーション `author` を結合します。これはテーブル `users` に対するリレーションであり、
 // テーブルエイリアスを `author` とします。
 $query->joinWith(['author' => function($query) { $query->from(['author' => 'users']); }]);
+// バージョン 2.0.7 以降では、上の行は $query->joinWith('author AS author'); として単純化することが出来ます。
 // リレーションのカラムによる並べ替えを有効にします。
 $dataProvider->sort->attributes['author.name'] = [
     'asc' => ['author.name' => SORT_ASC],
@@ -436,15 +551,16 @@ public function rules()
 $query->andFilterWhere(['LIKE', 'author.name', $this->getAttribute('author.name')]);
 ```
 
-> Info|情報: 上の例では、リレーション名とテーブルエイリアスに同じ文字列を使用しています。
+> Info: 上の例では、リレーション名とテーブルエイリアスに同じ文字列を使用しています。
 > しかし、エイリアスとリレーション名が異なる場合は、どこでエイリアスを使い、どこでリレーション名を使うかに注意を払わなければなりません。
 > これに関する簡単な規則は、データベースクエリを構築するために使われる全ての場所でエイリアスを使い、`attributes()` や `rules()` など、その他の全ての定義においてリレーション名を使う、というものです。
 >
 > 例えば、投稿者のリレーションテーブルに `au` というエイリアスを使う場合は、joinWith の文は以下のようになります。
 >
 > ```php
-> $query->joinWith(['author' => function($query) { $query->from(['au' => 'users']); }]);
+> $query->joinWith(['author au']);
 > ```
+>
 > リレーションの定義においてエイリアスが定義されている場合は、単に `$query->joinWith(['author']);` として呼び出すことも可能です。
 >
 > フィルタ条件においてはエイリアスが使われなければなりませんが、属性の名前はリレーション名のままで変りません。
@@ -468,7 +584,7 @@ $query->andFilterWhere(['LIKE', 'author.name', $this->getAttribute('author.name'
 > $dataProvider->sort->defaultOrder = ['author.name' => SORT_ASC];
 > ```
 
-> Info|情報: `joinWith` およびバックグラウンドで実行されるクエリの詳細については、[アクティブレコード - リレーションを使ってテーブルを結合する](db-active-record.md#joining-with-relations) を参照してください。
+> Info: `joinWith` およびバックグラウンドで実行されるクエリの詳細については、[アクティブレコード - リレーションを使ってテーブルを結合する](db-active-record.md#joining-with-relations) を参照してください。
 
 #### SQL ビューを使って、データのフィルタリング・並べ替え・表示をする
 
@@ -571,4 +687,42 @@ echo GridView::widget([
 
 ### GridView を Pjax とともに使う
 
-(内容未定)
+[[yii\widgets\Pjax|Pjax]] ウィジェットを使うと、ページ全体をリロードせずに、ページの一部分だけを更新することが出来ます。
+これを使うと、フィルタを使うときに、[[yii\widgets\GridView|GridView]] の中身だけを更新することが出来ます。
+
+```php
+use yii\widgets\Pjax;
+use yii\widgets\GridView;
+
+Pjax::begin([
+    // PJax のオプション
+]);
+    Gridview::widget([
+        // GridView のオプション
+    ]);
+Pjax::end();
+```
+
+[[yii\widgets\Pjax|Pjax]] は、[[yii\widgets\Pjax::$linkSelector|Pjax::$linkSelector]] の指定に従って、リンクに対しても動作します。
+これは [[yii\data\ActionColumn|ActionColumn]] を使う場合には問題となり得ます。
+この問題を防止するためには、[[yii\data\ActionColumn::$buttons|ActionColumn::$buttons]]
+プロパティを編集して `data-pjax="0"` という HTML 属性を追加します。
+
+#### Gii における Pjax を伴う GridView
+
+バージョン 2.0.5 以降、[Gii](start-gii.md) では `$enablePjax` というオプションがウェブインターフェイスまたはコマンドラインで使用可能になっています。
+
+```php
+yii gii/crud --controllerClass="backend\\controllers\PostController" \
+  --modelClass="common\\models\\Post" \
+  --enablePjax=1
+```
+
+これによって、[[yii\widgets\GridView|GridView]] または [[yii\widgets\ListView|ListView]]
+を囲む [[yii\widgets\Pjax|Pjax]] ウィジェットが生成されます。
+
+
+さらに読むべき文書
+------------------
+
+- Arno Slatius による [Rendering Data in Yii 2 with GridView and ListView](http://www.sitepoint.com/rendering-data-in-yii-2-with-gridview-and-listview/)。
