@@ -192,8 +192,7 @@ The rest of the array elements (key-value pairs) specify the parameters to be bo
 ]
 ```
 
-> Tip: In practice this is used in production, not at stage of development.
-> It is recommended to use a production environment, while `catchAll` mostly used in production mode
+> Info: Debug panel on development environment will not work when this property is enabled
 
 #### [[yii\base\Application::components|components]] <span id="components"></span>
 
