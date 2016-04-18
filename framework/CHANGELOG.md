@@ -4,7 +4,6 @@ Yii Framework 2 Change Log
 2.0.8 under development
 -----------------------
 
-- Enh #9425: `yii\db\Query::exists()` now uses SQL standard `SELECT EXISTS()` query improving performance in some cases (PowerGamer1)
 - Bug #9935: Fixed `yii\validators\EachValidator` does not invoke `validateAttribute()` method of the embedded validator (klimov-paul)
 - Bug #11270: Fixed `BaseActiveRecord::link()` method in order to support closure in `indexBy` for relations declaration (iushev)
 - Bug #11333: Avoid serializing PHP 7 errors (zuozp8)
@@ -44,6 +43,7 @@ Yii Framework 2 Change Log
 - Enh #8639: Improve ActiveRecord to not create new instances of classes when objects are available (cebe)
 - Enh #8779: Automatically set enctype form option when using file input field (pana1990, arogachev)
 - Enh #9340: Adds `after()` and `first()` column schema builder modifiers (df2)
+- Enh #9425: `yii\db\Query::exists()` now uses SQL standard `SELECT EXISTS()` query improving performance in some cases (PowerGamer1)
 - Enh #9562: Adds `char` datatype to framework (df2)
 - Enh #9893: `yii.js` handleAction enhanced to support for data-form attribute, so links can trigger specific forms (SamMousa)
 - Enh #10451: Check of existence of `$_SERVER` in `\yii\web\Request` before using it (quantum13)
@@ -70,6 +70,7 @@ Yii Framework 2 Change Log
 - Chg #11283: `ActiveRecord::unlink()` is not setting FK to `null` before deleting itself anymore (samdark)
 - Eng #10976: `Inflector::transliterate()` now uses `strtr` instead of `str_replace` (DrDeath72)
 - Enh #11110: Added migrations for DB session (mdmunir)
+- Enh #11368: `Model::validateAttributes` now support string as `attributeNames` param (dcb9)
 - Chg: HTMLPurifier dependency updated to `~4.6` (samdark)
 - Chg #10726: Added `yii\rbac\ManagerInterface::canAddChild()` (dkhlystov, samdark)
 - Chg #10921: Inverts responsibility of database specific column schema builder classes (df2)
