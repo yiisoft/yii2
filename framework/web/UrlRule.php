@@ -91,6 +91,11 @@ class UrlRule extends Object implements UrlRuleInterface
     public $encodeParams = true;
 
     /**
+     * @var array|string canonizer configuration
+     */
+    public $canonize;
+
+    /**
      * @var array list of placeholders for matching parameters names. Used in [[parseRequest()]], [[createUrl()]].
      * On the rule initialization, the [[pattern]] parameters names will be replaced with placeholders.
      * This array contains relations between the original parameters names and their placeholders.
@@ -213,6 +218,95 @@ class UrlRule extends Object implements UrlRuleInterface
         if (!empty($this->_routeParams)) {
             $this->_routeRule = '#^' . strtr($this->route, $tr2) . '$#u';
         }
+
+        $this->initCanonizer();
+    }
+
+    /**
+     * Initializes canonizer configuration
+     * @throws \Exception
+     */
+    protected function initCanonizer() {
+        $canonize = $this->canonize;
+
+        $default = [
+            // whether to collapse multiple slashes into one
+            'collapse-slashes' => false,
+            // whether trailing slash required
+            // true: yes
+            // false: no
+            // null: leave as is
+            'trailing-slash' => null,
+            // what action to perform if pathInfo was changed during canonization
+            // redirect: redirect to canonical path
+            // 404: throw NotFound exception
+            // none: no action, just route by canonized path
+            'action' => 'none'
+        ];
+
+        if (is_string($canonize) || is_null($canonize)) {
+            switch ($canonize) {
+                case '':
+                case 'disabled':
+                    $canonize = $default;
+                    break;
+                case 'trailing-slash':
+                    $canonize = [
+                        'collapse-slashes' => true,
+                        'trailing-slash' => true,
+                        'action' => 'redirect'
+                    ];
+                    break;
+                case 'no-trailing-slash':
+                    $canonize = [
+                        'collapse-slashes' => true,
+                        'trailing-slash' => false,
+                        'action' => 'redirect'
+                    ];
+                    break;
+                default:
+                    throw new \Exception('Unknown canonization strategy ' . $canonize);
+            }
+        } else {
+            $canonize = array_merge($default, $canonize);
+        }
+
+        $this->canonize = $canonize;
+
+        // if trailing slash is required, we need to set $this->suffix
+        // for proper url generation
+        if ($this->canonize['trailing-slash']) {
+            $this->suffix = '/';
+        }
+    }
+
+    /**
+     * Canonizes supplied pathInfo by canonization rules.
+     *
+     * @param $pathInfo original pathInfo
+     * @return string canonized pathInfo
+     */
+    protected function canonizePathInfo($pathInfo) {
+        $canonize = $this->canonize;
+
+        if (!$pathInfo) {
+            return $pathInfo; // nothing to canonize
+        }
+
+        if ($canonize['collapse-slashes']) {
+            $pathInfo = ltrim(preg_replace('#/+#', '/', $pathInfo), '/');
+        }
+
+        if (!is_null($canonize['trailing-slash'])) {
+            if ($canonize['trailing-slash'] && substr($pathInfo, -1) != '/') {
+                $pathInfo .= '/';
+            }
+            if (!$canonize['trailing-slash'] && substr($pathInfo, -1) == '/') {
+                $pathInfo = rtrim($pathInfo, '/');
+            }
+        }
+
+        return $pathInfo;
     }
 
     /**
@@ -232,7 +326,12 @@ class UrlRule extends Object implements UrlRuleInterface
             return false;
         }
 
-        $pathInfo = $request->getPathInfo();
+        // remember original pathInfo and canonize it
+        $pathInfoOrig = $request->getPathInfo();
+        $pathInfoCanonized = $this->canonizePathInfo($request->getPathInfo());
+        // below we try to route the request by canonized pathInfo
+        $pathInfo = $pathInfoCanonized;
+
         $suffix = (string)($this->suffix === null ? $manager->suffix : $this->suffix);
         if ($suffix !== '' && $pathInfo !== '') {
             $n = strlen($suffix);
@@ -255,6 +354,25 @@ class UrlRule extends Object implements UrlRuleInterface
             return false;
         }
         $matches = $this->substitutePlaceholderNames($matches);
+
+        // if routing succeeded (some rule matched), check whether pathInfo
+        //  was changed during canonization. If so, take the required action.
+        if ($pathInfoCanonized != $pathInfoOrig) {
+            switch ($this->canonize['action']) {
+                case 'redirect':
+                    $url = '/' . $pathInfoCanonized
+                        . (Yii::$app->request->queryString ? '?' . Yii::$app->request->queryString : '');
+                    die('redirect ' . $url);
+                    Yii::$app->getResponse()->redirect($url)->send();
+                    break;
+                case '404':
+                    throw new NotFoundHttpException('From canonizer');
+                    break;
+                default:
+                    // do nothing
+                    break;
+            }
+        }
 
         foreach ($this->defaults as $name => $value) {
             if (!isset($matches[$name]) || $matches[$name] === '') {
