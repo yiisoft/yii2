@@ -326,7 +326,7 @@ class Model extends Component implements IteratorAggregate, ArrayAccess, Arrayab
      * [[getFirstErrors()]] and [[getFirstError()]].
      *
      * @param array $attributeNames list of attribute names that should be validated.
-     * If this parameter is empty, it means any attribute listed in the applicable
+     * If this parameter is empty array or null, it means any attribute listed in the applicable
      * validation rules should be validated.
      * @param boolean $clearErrors whether to call [[clearErrors()]] before performing validation
      * @return boolean whether the validation is successful without any error.
@@ -350,6 +350,8 @@ class Model extends Component implements IteratorAggregate, ArrayAccess, Arrayab
 
         if ($attributeNames === null) {
             $attributeNames = $this->activeAttributes();
+        } elseif (is_string($attributeNames)) {
+            $attributeNames = [$attributeNames];
         }
 
         foreach ($this->getActiveValidators() as $validator) {
