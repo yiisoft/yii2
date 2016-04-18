@@ -124,6 +124,9 @@ With the above configuration, the `site/offline` action will be used to handle a
 The `catchAll` property should take an array whose first element specifies a route, and
 the rest of the elements (name-value pairs) specify the parameters to be [bound to the action](structure-controllers.md#action-parameters).
 
+> Tip: In practice this is used in production, not at stage of development.
+> It is recommended to use a production environment, while `catchAll` mostly used in production mode
+
 
 ## Creating URLs <span id="creating-urls"></span>
 
