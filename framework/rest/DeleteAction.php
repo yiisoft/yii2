@@ -8,6 +8,7 @@
 namespace yii\rest;
 
 use Yii;
+use yii\db\ActiveRecord;
 use yii\web\ServerErrorHttpException;
 
 /**
@@ -21,10 +22,12 @@ class DeleteAction extends Action
     /**
      * Deletes a model.
      * @param mixed $id id of the model to be deleted.
+     * @return ActiveRecord|null
      * @throws ServerErrorHttpException on failure.
      */
     public function run($id)
     {
+        /* @var $model ActiveRecord */
         $model = $this->findModel($id);
 
         if ($this->checkAccess) {
@@ -32,7 +35,11 @@ class DeleteAction extends Action
         }
 
         if ($model->delete() === false) {
-            throw new ServerErrorHttpException('Failed to delete the object for unknown reason.');
+            if ($model->hasErrors()) {
+                return $model;
+            } else {
+                throw new ServerErrorHttpException('Failed to delete the object for unknown reason.');
+            }
         }
 
         Yii::$app->getResponse()->setStatusCode(204);
