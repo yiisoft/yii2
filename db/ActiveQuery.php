@@ -795,7 +795,7 @@ class ActiveQuery extends Query implements ActiveQueryInterface
      */
     public function exists($db = null)
     {
-        if($db === null) {
+        if ($db === null) {
             /* @var $modelClass ActiveRecord */
             $modelClass = $this->modelClass;
             $db = $modelClass::getDb();
