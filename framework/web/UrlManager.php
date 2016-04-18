@@ -127,6 +127,16 @@ class UrlManager extends Component
     public $ruleConfig = ['class' => 'yii\web\UrlRule'];
 
     /**
+     * @var array the default configuration of Url Normalizer. Individual normalizer configurations
+     * specified via [[normalizer]] in [[rules]] will take precedence when the same property of the
+     * normalizer is configured.
+     *
+     * Default strategy is to remove trailing slash if suffix != '/' and redirect to new url.
+     * Discussion: https://github.com/yiisoft/yii2/pull/11381#discussion_r60205774
+     */
+    public $normalizer = ['class' => 'yii\web\UrlNormalizer', 'strategy' => UrlNormalizer::STRATEGY_SAFE_REMOVE_TRAILING_SLASH];
+
+    /**
      * @var string the cache key for cached rules
      * @since 2.0.8
      */
