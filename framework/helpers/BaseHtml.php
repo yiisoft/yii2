@@ -676,6 +676,7 @@ class BaseHtml
      * See [[booleanInput()]] for details about accepted attributes.
      *
      * @return string the generated radio button tag
+     * @see booleanInput()
      */
     public static function radio($name, $checked = false, $options = [])
     {
@@ -690,6 +691,7 @@ class BaseHtml
      * See [[booleanInput()]] for details about accepted attributes.
      *
      * @return string the generated checkbox tag
+     * @see booleanInput()
      */
     public static function checkbox($name, $checked = false, $options = [])
     {
@@ -697,8 +699,8 @@ class BaseHtml
     }
 
     /**
-     * Generates a checkbox input.
-     * @param string $type the input type. This can be 'radio' or 'checkbox'.
+     * Generates a boolean input.
+     * @param string $type the input type. This can be either `radio` or `checkbox`.
      * @param string $name the name attribute.
      * @param boolean $checked whether the checkbox should be checked.
      * @param array $options the tag options in terms of name-value pairs. The following options are specially handled:
@@ -716,6 +718,7 @@ class BaseHtml
      * See [[renderTagAttributes()]] for details on how attributes are being rendered.
      *
      * @return string the generated checkbox tag
+     * @since 2.0.9
      */
     protected static function booleanInput($type, $name, $checked = false, $options = [])
     {
@@ -1387,6 +1390,7 @@ class BaseHtml
      * See [[booleanInput()]] for details about accepted attributes.
      *
      * @return string the generated radio button tag
+     * @see booleanInput()
      */
     public static function activeRadio($model, $attribute, $options = [])
     {
@@ -1403,6 +1407,7 @@ class BaseHtml
      * See [[booleanInput()]] for details about accepted attributes.
      *
      * @return string the generated checkbox tag
+     * @see booleanInput()
      */
     public static function activeCheckbox($model, $attribute, $options = [])
     {
@@ -1412,13 +1417,15 @@ class BaseHtml
     /**
      * Generates a boolean input
      * This method is mainly called by [[activeCheckbox()]] and [[activeRadio()]].
-     * @param string $type the input type. This can be 'radio' or 'checkbox'.
+     * @param string $type the input type. This can be either `radio` or `checkbox`.
      * @param Model $model the model object
      * @param string $attribute the attribute name or expression. See [[getAttributeName()]] for the format
      * about attribute expression.
      * @param array $options the tag options in terms of name-value pairs.
      * See [[booleanInput()]] for details about accepted attributes.
-     * @return string the generated input list
+     * @return string the generated input element
+     * @see booleanInput()
+     * @since  2.0.9
      */
     protected static function activeBooleanInput($type, $model, $attribute, $options = [])
     {
