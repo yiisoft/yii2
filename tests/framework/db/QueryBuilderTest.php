@@ -932,7 +932,6 @@ abstract class QueryBuilderTest extends DatabaseTestCase
                 [
                     'mysql' => "int(11) NOT NULL AUTO_INCREMENT PRIMARY KEY COMMENT 'test comment'",
                     'postgres' => 'serial NOT NULL PRIMARY KEY',
-                    'sqlite' => 'integer PRIMARY KEY AUTOINCREMENT NOT NULL',
                     'oci' => 'NUMBER(10) NOT NULL PRIMARY KEY',
                     'sqlsrv' => 'int IDENTITY PRIMARY KEY',
                     'cubrid' => "int NOT NULL AUTO_INCREMENT PRIMARY KEY COMMENT 'test comment'",
