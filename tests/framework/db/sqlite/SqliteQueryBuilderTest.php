@@ -27,32 +27,22 @@ class SqliteQueryBuilderTest extends QueryBuilderTest
 
     public function testAddDropPrimaryKey()
     {
-        $this->setExpectedException('yii\base\NotSupportedException');
-        parent::testAddDropPrimaryKey();
+        $this->markTestSkipped('Comments are not supported in SQLite');
     }
 
     public function testCommentOnColumnSchemaBuilder()
     {
-        $this->setExpectedException('yii\base\NotSupportedException');
-        $this->string()->comment('comment');
+        $this->markTestSkipped('Comments are not supported in SQLite');
     }
 
     public function testCommentColumn()
     {
-        $qb = $this->getQueryBuilder();
-
-        $this->setExpectedException('yii\base\NotSupportedException');
-        $qb->addCommentOnColumn('comment', 'text', 'This is my column.');
-        $qb->dropCommentFromColumn('comment', 'text');
+        $this->markTestSkipped('Comments are not supported in SQLite');
     }
 
     public function testCommentTable()
     {
-        $qb = $this->getQueryBuilder();
-
-        $this->setExpectedException('yii\base\NotSupportedException');
-        $qb->addCommentOnTable('comment', 'This is my table.');
-        $qb->dropCommentFromTable('comment');
+        $this->markTestSkipped('Comments are not supported in SQLite');
     }
 
     public function testBatchInsert()
