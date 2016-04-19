@@ -40,6 +40,7 @@ Yii Framework 2 Change Log
 - Bug: SQlite querybuilder did not create primary key with bigint for `TYPE_BIGPK` (cebe)
 - Enh #5469: Add mimetype validation by mask in FileValidator (kirsenn, samdark, silverfire)
 - Enh #8145, #8139, #10234 #11153: `yii\validators\Validator::$attributes` property now supports `!attribute` notation to validate attribute, but do not mark it as safe (mdmunir)
+- Enh #8148: Implemented ability to add comment on table and column in migration (vaseninm, silverfire)
 - Enh #8602: `yii\validators\DateValidator` skip validation for `timestampAttribute`, if it is already in correct format (klimov-paul)
 - Enh #8639: Improve ActiveRecord to not create new instances of classes when objects are available (cebe)
 - Enh #8779: Automatically set enctype form option when using file input field (pana1990, arogachev)
