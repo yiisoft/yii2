@@ -43,4 +43,24 @@ class ColumnSchemaBuilder extends AbstractColumnSchemaBuilder
         }
         return $this->buildCompleteString($format);
     }
+
+    /**
+     * Specify the comment for the column
+     *
+     * @param string $comment the comment
+     * @throws NotSupportedException this is not supported by SQLite
+     * @since 2.0.8
+     */
+    public function comment($comment)
+    {
+        throw new NotSupportedException(__METHOD__ . ' is not supported by SQLite.');
+    }
+
+    /**
+     * @inheritdoc
+     */
+    protected function buildCommentString()
+    {
+        return '';
+    }
 }
