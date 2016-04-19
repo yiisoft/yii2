@@ -38,11 +38,17 @@ Yii Framework 2 Change Log
 - Bug #11536: Fixed regression introduced in 2.0.8, where scalar value was not allowed in QueryBuilder `IN` condition anymore (cebe)
 - Bug #11672: Fixed `yii\validators\NumberValidator` erroring when value is an object without `__toString()` method (SamMousa)
 - Bug #11561: Fixed DI container throwing exceptions for optional dependencies (SamMousa)
-
+- Enh #11168: `yii\helpers\BaseHtml` now uses abstracted `booleanInput()` and `activeBooleanInput()` methods to render `radio()`, `checkbox()`, `activeRadio()` and `activeCheckbox()` (cesarnicola)
 
 2.0.8 April 28, 2016
 --------------------
 
+- Enh #9425: `yii\db\Query::exists()` now uses SQL standard `EXISTS()` query via new `yii\db\QueryBuilder::selectExists()` method to improving performance in some cases (PowerGamer1)
+- Bug #9935: Fixed `yii\validators\EachValidator` does not invoke `validateAttribute()` method of the embedded validator (klimov-paul)
+- Bug #11270: Fixed `BaseActiveRecord::link()` method in order to support closure in `indexBy` for relations declaration (iushev)
+- Bug #11333: Avoid serializing PHP 7 errors (zuozp8)
+- Bug #11262: Enabled use of yii2 inside of PHAR packaged console applications (hiqsol)
+- Bug #11196: Fixed VarDumper throws PHP Fatal when dumping `__PHP_Incomplete_Class` (DamianZ)
 - Bug #7627: Fixed `yii\widgets\ActiveField` to handle inputs AJAX validation with changed ID properly (dizeee)
 - Bug #7717: Fixed the bug that `$properties` parameter in `ArrayHelper::toArray()` was not passed to recursive calls (quantum13)
 - Bug #9074: Fixed JS call `$('#grid').yiiGridView('getSelectedRows')` when `GridView::$showHeader` is set to false (NekitoSP, silverfire)
