@@ -915,6 +915,9 @@ abstract class QueryBuilderTest extends DatabaseTestCase
                     'sqlite' => 'bigint UNSIGNED PRIMARY KEY AUTOINCREMENT NOT NULL',
                 ],
             ],
+            [
+
+            ],
         ];
 
         foreach ($items as $i => $item) {
@@ -1521,4 +1524,34 @@ abstract class QueryBuilderTest extends DatabaseTestCase
 //        // TODO implement
 //    }
 
+
+    public function testCommentColumn()
+    {
+        $qb = $this->getQueryBuilder();
+
+        $expected = "ALTER TABLE `comment` CHANGE `add_comment` `add_comment` varchar(255) NOT NULL COMMENT 'This is my column.'";
+        $sql = $qb->addCommentOnColumn('comment', 'add_comment', 'This is my column.');
+        $this->assertEquals($expected, $sql);
+
+        $expected = "ALTER TABLE `comment` CHANGE `replace_comment` `replace_comment` varchar(255) DEFAULT NULL COMMENT 'This is my column.'";
+        $sql = $qb->addCommentOnColumn('comment', 'replace_comment', 'This is my column.');
+        $this->assertEquals($expected, $sql);
+
+        $expected = "ALTER TABLE `comment` CHANGE `delete_comment` `delete_comment` varchar(128) NOT NULL COMMENT ''";
+        $sql = $qb->dropCommentFromColumn('comment', 'delete_comment');
+        $this->assertEquals($expected, $sql);
+    }
+
+    public function testCommentTable()
+    {
+        $qb = $this->getQueryBuilder();
+
+        $expected = "ALTER TABLE `comment` COMMENT 'This is my table.'";
+        $sql = $qb->addCommentOnTable('comment', 'This is my table.');
+        $this->assertEquals($expected, $sql);
+
+        $expected = "ALTER TABLE `comment` COMMENT ''";
+        $sql = $qb->dropCommentFromTable('comment');
+        $this->assertEquals($expected, $sql);
+    }
 }

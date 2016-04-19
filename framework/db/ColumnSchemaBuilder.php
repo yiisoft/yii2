@@ -102,6 +102,12 @@ class ColumnSchemaBuilder extends Object
      * @since 2.0.8
      */
     public $db;
+    /**
+     * @var mixed comment value of the column.
+     * @since 2.0.8
+     */
+    public $comment;
+
 
     /**
      * Create a column schema builder instance giving the type and value precision.
@@ -158,6 +164,18 @@ class ColumnSchemaBuilder extends Object
     public function defaultValue($default)
     {
         $this->default = $default;
+        return $this;
+    }
+
+    /**
+     * Specify the comment for the column.
+     * @param string $comment the comment
+     * @return $this
+     * @since 2.0.8
+     */
+    public function comment($comment)
+    {
+        $this->comment = $comment;
         return $this;
     }
 
@@ -228,7 +246,7 @@ class ColumnSchemaBuilder extends Object
                 $format = '{type}{check}';
                 break;
             default:
-                $format = '{type}{length}{notnull}{unique}{default}{check}';
+                $format = '{type}{length}{notnull}{unique}{default}{check}{comment}';
         }
         return $this->buildCompleteString($format);
     }
@@ -366,7 +384,17 @@ class ColumnSchemaBuilder extends Object
             '{pos}' => ($this->isFirst) ?
                         $this->buildFirstString() :
                             $this->buildAfterString(),
+            '{comment}' => $this->buildCommentString(),
         ];
         return strtr($format, $placeholderValues);
+    }
+
+    /**
+     * Builds the comment specification for the column.
+     * @return string with comment.
+     */
+    protected function buildCommentString()
+    {
+        return $this->comment !== null ? " COMMENT '{$this->comment}'" : '';
     }
 }

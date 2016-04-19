@@ -8,6 +8,7 @@
 namespace yii\db\cubrid;
 
 use yii\base\InvalidParamException;
+use yii\db\Exception;
 
 /**
  * QueryBuilder is the query builder for CUBRID databases (version 9.3.x and higher).
@@ -101,5 +102,120 @@ class QueryBuilder extends \yii\db\QueryBuilder
     public function selectExists($rawSql)
     {
         return 'SELECT CASE WHEN EXISTS(' . $rawSql . ') THEN 1 ELSE 0 END';
+    }
+
+    /**
+     * Builds a SQL command for adding comment to column
+     *
+     * @param string $table the table whose column is to be commented. The table name will be properly quoted by the method.
+     * @param string $column the name of the column to be commented. The column name will be properly quoted by the method.
+     * @param string $comment the text of the comment to be added. The comment will be properly quoted by the method.
+     * @return $this the command object itself
+     * @since 2.0.8
+     */
+    public function addCommentOnColumn($table, $column, $comment)
+    {
+        $quotedTable = $this->db->quoteTableName($table);
+        $definition = $this->getColumnDefinition($quotedTable, $column);
+        $definition = trim(preg_replace("/COMMENT '(.*?)'/i", '', $definition));
+        return sprintf(
+            'ALTER TABLE %s CHANGE %s %s%s COMMENT %s',
+            $quotedTable,
+            $this->db->quoteColumnName($column),
+            $this->db->quoteColumnName($column),
+            empty($definition) ? '' : ' ' . $definition,
+            $this->db->quoteValue($comment)
+        );
+    }
+
+    /**
+     * Builds a SQL command for adding comment to table
+     *
+     * @param string $table the table whose column is to be commented. The table name will be properly quoted by the method.
+     * @param string $comment the text of the comment to be added. The comment will be properly quoted by the method.
+     * @return $this the command object itself
+     * @since 2.0.8
+     */
+    public function addCommentOnTable($table, $comment)
+    {
+        $quotedTable = $this->db->quoteTableName($table);
+        return sprintf(
+            'ALTER TABLE %s COMMENT %s',
+            $quotedTable,
+            $this->db->quoteValue($comment)
+        );
+    }
+
+    /**
+     * Builds a SQL command for adding comment to column
+     *
+     * @param string $table the table whose column is to be commented. The table name will be properly quoted by the method.
+     * @param string $column the name of the column to be commented. The column name will be properly quoted by the method.
+     * @return $this the command object itself
+     * @since 2.0.8
+     */
+    public function dropCommentFromColumn($table, $column)
+    {
+        $quotedTable = $this->db->quoteTableName($table);
+        $definition = $this->getColumnDefinition($quotedTable, $column);
+        $definition = trim(preg_replace("/COMMENT '(.*?)'/i", '', $definition));
+        return sprintf(
+            'ALTER TABLE %s CHANGE %s %s%s COMMENT \'\'',
+            $quotedTable,
+            $this->db->quoteColumnName($column),
+            $this->db->quoteColumnName($column),
+            empty($definition) ? '' : ' ' . $definition
+        );
+    }
+
+    /**
+     * Builds a SQL command for adding comment to table
+     *
+     * @param string $table the table whose column is to be commented. The table name will be properly quoted by the method.
+     * @return $this the command object itself
+     * @since 2.0.8
+     */
+    public function dropCommentFromTable($table)
+    {
+        $quotedTable = $this->db->quoteTableName($table);
+        return sprintf(
+            "ALTER TABLE %s COMMENT ''",
+            $quotedTable,
+            empty($definition) ? '' : ' ' . $definition
+        );
+    }
+
+
+    /**
+     * Gets column definition.
+     *
+     * @param string $table table name
+     * @param string $column column name
+     * @return null|string the column definition
+     * @throws Exception in case when table does not contain column
+     * @since 2.0.8
+     */
+    private function getColumnDefinition($table, $column)
+    {
+        $row = $this->db->createCommand('SHOW CREATE TABLE ' . $table)->queryOne();
+        if ($row === false) {
+            throw new Exception("Unable to find column '$column' in table '$table'.");
+        }
+        if (isset($row['Create Table'])) {
+            $sql = $row['Create Table'];
+        } else {
+            $row = array_values($row);
+            $sql = $row[1];
+        }
+        $sql = preg_replace('/^[^(]+\((.*)\).*$/', '\1', $sql);
+        $sql = str_replace(', [', ",\n[", $sql);
+        if (preg_match_all('/^\s*\[(.*?)\]\s+(.*?),?$/m', $sql, $matches)) {
+            foreach ($matches[1] as $i => $c) {
+                if ($c === $column) {
+                    return $matches[2][$i];
+                }
+            }
+        }
+        return null;
     }
 }
