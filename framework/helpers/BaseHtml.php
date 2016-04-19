@@ -672,46 +672,33 @@ class BaseHtml
      * Generates a radio button input.
      * @param string $name the name attribute.
      * @param boolean $checked whether the radio button should be checked.
-     * @param array $options the tag options in terms of name-value pairs. The following options are specially handled:
-     *
-     * - uncheck: string, the value associated with the uncheck state of the radio button. When this attribute
-     *   is present, a hidden input will be generated so that if the radio button is not checked and is submitted,
-     *   the value of this attribute will still be submitted to the server via the hidden input.
-     * - label: string, a label displayed next to the radio button.  It will NOT be HTML-encoded. Therefore you can pass
-     *   in HTML code such as an image tag. If this is is coming from end users, you should [[encode()]] it to prevent XSS attacks.
-     *   When this option is specified, the radio button will be enclosed by a label tag.
-     * - labelOptions: array, the HTML attributes for the label tag. Do not set this option unless you set the "label" option.
-     *
-     * The rest of the options will be rendered as the attributes of the resulting radio button tag. The values will
-     * be HTML-encoded using [[encode()]]. If a value is null, the corresponding attribute will not be rendered.
-     * See [[renderTagAttributes()]] for details on how attributes are being rendered.
+     * @param array $options the tag options in terms of name-value pairs.
+     * See [[booleanInput()]] for details on how attributes are being rendered.
      *
      * @return string the generated radio button tag
      */
     public static function radio($name, $checked = false, $options = [])
     {
-        $options['checked'] = (bool) $checked;
-        $value = array_key_exists('value', $options) ? $options['value'] : '1';
-        if (isset($options['uncheck'])) {
-            // add a hidden field so that if the radio button is not selected, it still submits a value
-            $hidden = static::hiddenInput($name, $options['uncheck']);
-            unset($options['uncheck']);
-        } else {
-            $hidden = '';
-        }
-        if (isset($options['label'])) {
-            $label = $options['label'];
-            $labelOptions = isset($options['labelOptions']) ? $options['labelOptions'] : [];
-            unset($options['label'], $options['labelOptions']);
-            $content = static::label(static::input('radio', $name, $value, $options) . ' ' . $label, null, $labelOptions);
-            return $hidden . $content;
-        } else {
-            return $hidden . static::input('radio', $name, $value, $options);
-        }
+        return static::booleanInput('radio', $name, $checked, $options);
     }
 
     /**
      * Generates a checkbox input.
+     * @param string $name the name attribute.
+     * @param boolean $checked whether the checkbox should be checked.
+     * @param array $options the tag options in terms of name-value pairs.
+     * See [[booleanInput()]] for details on how attributes are being rendered.
+     *
+     * @return string the generated checkbox tag
+     */
+    public static function checkbox($name, $checked = false, $options = [])
+    {
+        return static::booleanInput('checkbox', $name, $checked, $options);
+    }
+
+    /**
+     * Generates a checkbox input.
+     * @param string $type the input type. This can be 'radio' or 'checkbox'.
      * @param string $name the name attribute.
      * @param boolean $checked whether the checkbox should be checked.
      * @param array $options the tag options in terms of name-value pairs. The following options are specially handled:
@@ -730,7 +717,7 @@ class BaseHtml
      *
      * @return string the generated checkbox tag
      */
-    public static function checkbox($name, $checked = false, $options = [])
+    protected static function booleanInput($type, $name, $checked = false, $options = [])
     {
         $options['checked'] = (bool) $checked;
         $value = array_key_exists('value', $options) ? $options['value'] : '1';
@@ -745,10 +732,10 @@ class BaseHtml
             $label = $options['label'];
             $labelOptions = isset($options['labelOptions']) ? $options['labelOptions'] : [];
             unset($options['label'], $options['labelOptions']);
-            $content = static::label(static::input('checkbox', $name, $value, $options) . ' ' . $label, null, $labelOptions);
+            $content = static::label(static::input($type, $name, $value, $options) . ' ' . $label, null, $labelOptions);
             return $hidden . $content;
         } else {
-            return $hidden . static::input('checkbox', $name, $value, $options);
+            return $hidden . static::input($type, $name, $value, $options);
         }
     }
 
@@ -1417,26 +1404,7 @@ class BaseHtml
      */
     public static function activeRadio($model, $attribute, $options = [])
     {
-        $name = isset($options['name']) ? $options['name'] : static::getInputName($model, $attribute);
-        $value = static::getAttributeValue($model, $attribute);
-
-        if (!array_key_exists('value', $options)) {
-            $options['value'] = '1';
-        }
-        if (!array_key_exists('uncheck', $options)) {
-            $options['uncheck'] = '0';
-        }
-        if (!array_key_exists('label', $options)) {
-            $options['label'] = static::encode($model->getAttributeLabel(static::getAttributeName($attribute)));
-        }
-
-        $checked = "$value" === "{$options['value']}";
-
-        if (!array_key_exists('id', $options)) {
-            $options['id'] = static::getInputId($model, $attribute);
-        }
-
-        return static::radio($name, $checked, $options);
+        return static::activeBooleanInput('checkbox', $model, $attribute, $options);
     }
 
     /**
@@ -1466,6 +1434,22 @@ class BaseHtml
      */
     public static function activeCheckbox($model, $attribute, $options = [])
     {
+        return static::activeBooleanInput('checkbox', $model, $attribute, $options);
+    }
+
+    /**
+     * Generates a boolean input
+     * This method is mainly called by [[activeCheckbox()]] and [[activeRadio()]].
+     * @param string $type the input type. This can be 'radio' or 'checkbox'.
+     * @param Model $model the model object
+     * @param string $attribute the attribute name or expression. See [[getAttributeName()]] for the format
+     * about attribute expression.
+     * @param array $options options (name => config) for the input list. The supported special options
+     * depend on the input type specified by `$type`.
+     * @return string the generated input list
+     */
+    protected static function activeBooleanInput($type, $model, $attribute, $options = [])
+    {
         $name = isset($options['name']) ? $options['name'] : static::getInputName($model, $attribute);
         $value = static::getAttributeValue($model, $attribute);
 
@@ -1485,7 +1469,7 @@ class BaseHtml
             $options['id'] = static::getInputId($model, $attribute);
         }
 
-        return static::checkbox($name, $checked, $options);
+        return static::$type($name, $checked, $options);
     }
 
     /**
