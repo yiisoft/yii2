@@ -20,6 +20,7 @@ DROP TABLE IF EXISTS "bool_values" CASCADE;
 DROP TABLE IF EXISTS "animal" CASCADE;
 DROP TABLE IF EXISTS "default_pk" CASCADE;
 DROP TABLE IF EXISTS "document" CASCADE;
+DROP TABLE IF EXISTS "comment" CASCADE;
 DROP VIEW IF EXISTS "animal_view";
 DROP SCHEMA IF EXISTS "schema1" CASCADE;
 DROP SCHEMA IF EXISTS "schema2" CASCADE;
@@ -152,6 +153,12 @@ CREATE TABLE "document" (
   title varchar(255) not null,
   content text not null,
   version integer not null default 0
+);
+
+CREATE TABLE "comment" (
+  id serial primary key,
+  name varchar(255) not null,
+  message text not null
 );
 
 CREATE VIEW "animal_view" AS SELECT * FROM "animal";

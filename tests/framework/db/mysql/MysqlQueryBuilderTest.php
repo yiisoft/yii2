@@ -48,6 +48,11 @@ class MysqlQueryBuilderTest extends QueryBuilderTest
         	    $this->primaryKey(8)->first()->after('col_before'),
         	    'int(8) NOT NULL AUTO_INCREMENT PRIMARY KEY FIRST'
         	],
+        	[
+        	    Schema::TYPE_PK . " COMMENT 'test' AFTER `col_before`",
+        	    $this->primaryKey()->comment('test')->after('col_before'),
+        	    "int(11) NOT NULL AUTO_INCREMENT PRIMARY KEY COMMENT 'test' AFTER `col_before`"
+        	],
         ]);
     }
 }

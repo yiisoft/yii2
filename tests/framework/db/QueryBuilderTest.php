@@ -915,6 +915,29 @@ abstract class QueryBuilderTest extends DatabaseTestCase
                     'sqlite' => 'bigint UNSIGNED PRIMARY KEY AUTOINCREMENT NOT NULL',
                 ],
             ],
+            [
+                Schema::TYPE_INTEGER . " COMMENT 'test comment'",
+                $this->integer()->comment('test comment'),
+                [
+                    'mysql' => "int(11) COMMENT 'test comment'",
+                    'postgres' => 'integer',
+                    'oci' => "NUMBER(10)",
+                    'sqlsrv' => 'int',
+                    'cubrid' => "int COMMENT 'test comment'",
+                ],
+            ],
+            [
+                Schema::TYPE_PK . " COMMENT 'test comment'",
+                $this->primaryKey()->comment('test comment'),
+                [
+                    'mysql' => "int(11) NOT NULL AUTO_INCREMENT PRIMARY KEY COMMENT 'test comment'",
+                    'postgres' => 'serial NOT NULL PRIMARY KEY',
+                    'sqlite' => 'integer PRIMARY KEY AUTOINCREMENT NOT NULL',
+                    'oci' => 'NUMBER(10) NOT NULL PRIMARY KEY',
+                    'sqlsrv' => 'int IDENTITY PRIMARY KEY',
+                    'cubrid' => "int NOT NULL AUTO_INCREMENT PRIMARY KEY COMMENT 'test comment'",
+                ],
+            ],
         ];
 
         foreach ($items as $i => $item) {
@@ -1521,4 +1544,34 @@ abstract class QueryBuilderTest extends DatabaseTestCase
 //        // TODO implement
 //    }
 
+
+    public function testCommentColumn()
+    {
+        $qb = $this->getQueryBuilder();
+
+        $expected = "ALTER TABLE `comment` CHANGE `add_comment` `add_comment` varchar(255) NOT NULL COMMENT 'This is my column.'";
+        $sql = $qb->addCommentOnColumn('comment', 'add_comment', 'This is my column.');
+        $this->assertEquals($expected, $sql);
+
+        $expected = "ALTER TABLE `comment` CHANGE `replace_comment` `replace_comment` varchar(255) DEFAULT NULL COMMENT 'This is my column.'";
+        $sql = $qb->addCommentOnColumn('comment', 'replace_comment', 'This is my column.');
+        $this->assertEquals($expected, $sql);
+
+        $expected = "ALTER TABLE `comment` CHANGE `delete_comment` `delete_comment` varchar(128) NOT NULL COMMENT ''";
+        $sql = $qb->dropCommentFromColumn('comment', 'delete_comment');
+        $this->assertEquals($expected, $sql);
+    }
+
+    public function testCommentTable()
+    {
+        $qb = $this->getQueryBuilder();
+
+        $expected = "ALTER TABLE `comment` COMMENT 'This is my table.'";
+        $sql = $qb->addCommentOnTable('comment', 'This is my table.');
+        $this->assertEquals($expected, $sql);
+
+        $expected = "ALTER TABLE `comment` COMMENT ''";
+        $sql = $qb->dropCommentFromTable('comment');
+        $this->assertEquals($expected, $sql);
+    }
 }
