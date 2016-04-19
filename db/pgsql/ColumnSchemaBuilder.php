@@ -17,7 +17,6 @@ use yii\db\ColumnSchemaBuilder as AbstractColumnSchemaBuilder;
  */
 class ColumnSchemaBuilder extends AbstractColumnSchemaBuilder
 {
-
     /**
      * @inheritdoc
      */

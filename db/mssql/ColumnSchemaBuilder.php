@@ -20,7 +20,6 @@ class ColumnSchemaBuilder extends AbstractColumnSchemaBuilder
     /**
      * @inheritdoc
      */
-
     protected function buildCommentString()
     {
         return '';

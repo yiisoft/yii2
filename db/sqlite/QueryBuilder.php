@@ -291,13 +291,8 @@ class QueryBuilder extends \yii\db\QueryBuilder
     }
 
     /**
-     * Builds a SQL command for adding comment to column
-     *
-     * @param string $table the table whose column is to be commented. The table name will be properly quoted by the method.
-     * @param string $column the name of the column to be commented. The column name will be properly quoted by the method.
-     * @param string $comment the text of the comment to be added. The comment will be properly quoted by the method.
-     * @return $this the command object itself
-     * @throws NotSupportedException this is not supported by SQLite
+     * @inheritdoc
+     * @throws NotSupportedException
      */
     public function addCommentOnColumn($table, $column, $comment)
     {
@@ -305,12 +300,8 @@ class QueryBuilder extends \yii\db\QueryBuilder
     }
 
     /**
-     * Builds a SQL command for adding comment to table
-     *
-     * @param string $table the table whose column is to be commented. The table name will be properly quoted by the method.
-     * @param string $comment the text of the comment to be added. The comment will be properly quoted by the method.
-     * @return $this the command object itself
-     * @throws NotSupportedException this is not supported by SQLite
+     * @inheritdoc
+     * @throws NotSupportedException
      */
     public function addCommentOnTable($table, $comment)
     {
@@ -318,12 +309,8 @@ class QueryBuilder extends \yii\db\QueryBuilder
     }
 
     /**
-     * Builds a SQL command for adding comment to column
-     *
-     * @param string $table the table whose column is to be commented. The table name will be properly quoted by the method.
-     * @param string $column the name of the column to be commented. The column name will be properly quoted by the method.
-     * @return $this the command object itself
-     * @throws NotSupportedException this is not supported by SQLite
+     * @inheritdoc
+     * @throws NotSupportedException
      */
     public function dropCommentFromColumn($table, $column)
     {
@@ -331,11 +318,8 @@ class QueryBuilder extends \yii\db\QueryBuilder
     }
 
     /**
-     * Builds a SQL command for adding comment to table
-     *
-     * @param string $table the table whose column is to be commented. The table name will be properly quoted by the method.
-     * @return $this the command object itself
-     * @throws NotSupportedException this is not supported by SQLite
+     * @inheritdoc
+     * @throws NotSupportedException
      */
     public function dropCommentFromTable($table)
     {

@@ -221,80 +221,42 @@ class QueryBuilder extends \yii\db\QueryBuilder
     }
 
     /**
-     * Builds a SQL command for adding comment to column
-     *
-     * @param string $table the table whose column is to be commented. The table name will be properly quoted by the method.
-     * @param string $column the name of the column to be commented. The column name will be properly quoted by the method.
-     * @param string $comment the text of the comment to be added. The comment will be properly quoted by the method.
-     * @return $this the command object itself
+     * @inheritdoc
      */
     public function addCommentOnColumn($table, $column, $comment)
     {
-        $quotedTable = $this->db->quoteTableName($table);
-        $definition = $this->getColumnDefinition($quotedTable, $column);
+        $definition = $this->getColumnDefinition($table, $column);
         $definition = trim(preg_replace("/COMMENT '(.*?)'/i", '', $definition));
-        return sprintf(
-            'ALTER TABLE %s CHANGE %s %s%s COMMENT %s',
-            $quotedTable,
-            $this->db->quoteColumnName($column),
-            $this->db->quoteColumnName($column),
-            empty($definition) ? '' : ' ' . $definition,
-            $this->db->quoteValue($comment)
-        );
+
+        return 'ALTER TABLE ' . $this->db->quoteTableName($table)
+            . ' CHANGE ' . $this->db->quoteColumnName($column)
+            . ' ' . $this->db->quoteColumnName($column)
+            . (empty($definition) ? '' : ' ' . $definition)
+            . ' COMMENT ' . $this->db->quoteValue($comment);
     }
 
     /**
-     * Builds a SQL command for adding comment to table
-     *
-     * @param string $table the table whose column is to be commented. The table name will be properly quoted by the method.
-     * @param string $comment the text of the comment to be added. The comment will be properly quoted by the method.
-     * @return $this the command object itself
+     * @inheritdoc
      */
     public function addCommentOnTable($table, $comment)
     {
-        $quotedTable = $this->db->quoteTableName($table);
-        return sprintf(
-            'ALTER TABLE %s COMMENT %s',
-            $quotedTable,
-            $this->db->quoteValue($comment)
-        );
+        return 'ALTER TABLE ' . $this->db->quoteTableName($table) . ' COMMENT ' . $this->db->quoteValue($comment);
     }
 
     /**
-     * Builds a SQL command for adding comment to column
-     *
-     * @param string $table the table whose column is to be commented. The table name will be properly quoted by the method.
-     * @param string $column the name of the column to be commented. The column name will be properly quoted by the method.
-     * @return $this the command object itself
+     * @inheritdoc
      */
     public function dropCommentFromColumn($table, $column)
     {
-        $quotedTable = $this->db->quoteTableName($table);
-        $definition = $this->getColumnDefinition($quotedTable, $column);
-        $definition = trim(preg_replace("/COMMENT '(.*?)'/i", '', $definition));
-        return sprintf(
-            'ALTER TABLE %s CHANGE %s %s%s COMMENT \'\'',
-            $quotedTable,
-            $this->db->quoteColumnName($column),
-            $this->db->quoteColumnName($column),
-            empty($definition) ? '' : ' ' . $definition
-        );
+        return $this->addCommentOnColumn($table, $column, '');
     }
 
     /**
-     * Builds a SQL command for adding comment to table
-     *
-     * @param string $table the table whose column is to be commented. The table name will be properly quoted by the method.
-     * @return $this the command object itself
+     * @inheritdoc
      */
     public function dropCommentFromTable($table)
     {
-        $quotedTable = $this->db->quoteTableName($table);
-        return sprintf(
-            "ALTER TABLE %s COMMENT ''",
-            $quotedTable,
-            empty($definition) ? '' : ' ' . $definition
-        );
+        return $this->addCommentOnTable($table, '');
     }
 
 
@@ -308,7 +270,8 @@ class QueryBuilder extends \yii\db\QueryBuilder
      */
     private function getColumnDefinition($table, $column)
     {
-        $row = $this->db->createCommand('SHOW CREATE TABLE ' . $table)->queryOne();
+        $quotedTable = $this->db->quoteTableName($table);
+        $row = $this->db->createCommand('SHOW CREATE TABLE ' . $quotedTable)->queryOne();
         if ($row === false) {
             throw new Exception("Unable to find column '$column' in table '$table'.");
         }
