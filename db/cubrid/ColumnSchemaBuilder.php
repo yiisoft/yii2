@@ -53,10 +53,10 @@ class ColumnSchemaBuilder extends AbstractColumnSchemaBuilder
                 $format = '{type}{check}{pos}{comment}';
                 break;
             case self::CATEGORY_NUMERIC:
-                $format = '{type}{length}{unsigned}{notnull}{unique}{default}{check}{pos}{comment}';
+                $format = '{type}{length}{unsigned}{notnull}{unique}{default}{check}{comment}{pos}';
                 break;
             default:
-                $format = '{type}{length}{notnull}{unique}{default}{check}{pos}{comment}';
+                $format = '{type}{length}{notnull}{unique}{default}{check}{comment}{pos}';
         }
         return $this->buildCompleteString($format);
     }
