@@ -364,8 +364,21 @@ yii = (function ($) {
         };
 
         // handle data-confirm and data-method for clickable and changeable elements
-        $(document).on('click.yii', pub.clickableSelector, handler)
-            .on('change.yii', pub.changeableSelector, handler);
+        $(document).on('click.yii change.yii', pub.clickableSelector, handler);
+
+        // Make sure that when user clicks with middle/right button we don't let him open link in new tab
+        // without going through pub.handleAction().
+        // We can't attach listen on pub.clickableSelector only because it doesn't work for non-left mouse clicks
+        // (see jQuery.event.handlers).
+        $(document).on('click.yii contextmenu.yii', function (e) {
+            var clickedElement = $(e.target);
+            if (!clickedElement.is(pub.clickableSelector)) {
+                clickedElement =  clickedElement.parents(pub.clickableSelector).first();
+            }
+            if (clickedElement.data('method') || clickedElement.data('confirm') || clickedElement.data('form')) {
+                e.preventDefault();
+            }
+        });
     }
 
     function initScriptFilter() {
