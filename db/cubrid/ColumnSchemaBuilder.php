@@ -31,7 +31,7 @@ class ColumnSchemaBuilder extends AbstractColumnSchemaBuilder
     protected function buildAfterString()
     {
         return $this->after !== null ?
-            ' AFTER (' . $this->db->quoteColumnName($this->after) . ')' :
+            ' AFTER ' . $this->db->quoteColumnName($this->after) :
             '';
     }
 
