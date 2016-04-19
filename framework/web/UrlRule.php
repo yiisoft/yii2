@@ -362,12 +362,11 @@ class UrlRule extends Object implements UrlRuleInterface
                 case 'redirect':
                     $url = '/' . $pathInfoCanonized
                         . (Yii::$app->request->queryString ? '?' . Yii::$app->request->queryString : '');
-                    die('redirect ' . $url);
                     Yii::$app->getResponse()->redirect($url)->send();
+                    Yii::$app->end();
                     break;
                 case '404':
-                    throw new NotFoundHttpException('From canonizer');
-                    break;
+                    throw new NotFoundHttpException();
                 default:
                     // do nothing
                     break;
