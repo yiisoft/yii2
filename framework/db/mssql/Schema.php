@@ -126,6 +126,7 @@ class Schema extends \yii\db\Schema
 
     /**
      * @inheritdoc
+     * @return ColumnSchemaBuilder column schema builder instance
      */
     public function createColumnSchemaBuilder($type, $length = null)
     {

@@ -37,7 +37,7 @@ class OracleQueryBuilderTest extends QueryBuilderTest
         $sql = $qb->addCommentOnColumn('comment', 'text', 'This is my column.');
         $this->assertEquals($expected, $sql);
 
-        $expected = "COMMENT ON COLUMN \"comment\".\"text\" IS ' '";
+        $expected = "COMMENT ON COLUMN \"comment\".\"text\" IS ''";
         $sql = $qb->dropCommentFromColumn('comment', 'text');
         $this->assertEquals($expected, $sql);
     }
@@ -50,7 +50,7 @@ class OracleQueryBuilderTest extends QueryBuilderTest
         $sql = $qb->addCommentOnTable('comment', 'This is my table.');
         $this->assertEquals($expected, $sql);
 
-        $expected = "COMMENT ON TABLE \"comment\" IS ' '";
+        $expected = "COMMENT ON TABLE \"comment\" IS ''";
         $sql = $qb->dropCommentFromTable('comment');
         $this->assertEquals($expected, $sql);
     }

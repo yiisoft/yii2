@@ -505,7 +505,7 @@ class Migration extends Component implements MigrationInterface
     {
         echo "    > drop comment from column $column ...";
         $time = microtime(true);
-        $this->db->createCommand()->dropCommentFromColumn($table, $column, $comment)->execute();
+        $this->db->createCommand()->dropCommentFromColumn($table, $column)->execute();
         echo ' done (time: ' . sprintf('%.3f', microtime(true) - $time) . "s)\n";
     }
 
@@ -520,7 +520,7 @@ class Migration extends Component implements MigrationInterface
     {
         echo "    > drop comment from table $table ...";
         $time = microtime(true);
-        $this->db->createCommand()->dropCommentFromTable($table, $comment)->execute();
+        $this->db->createCommand()->dropCommentFromTable($table)->execute();
         echo ' done (time: ' . sprintf('%.3f', microtime(true) - $time) . "s)\n";
     }
 }

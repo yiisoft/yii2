@@ -7,6 +7,7 @@
 
 namespace yii\db\sqlite;
 
+use yii\base\NotSupportedException;
 use yii\db\ColumnSchemaBuilder as AbstractColumnSchemaBuilder;
 
 
@@ -41,15 +42,14 @@ class ColumnSchemaBuilder extends AbstractColumnSchemaBuilder
             default:
                 $format = '{type}{length}{notnull}{unique}{check}{default}';
         }
+
         return $this->buildCompleteString($format);
     }
 
     /**
-     * Specify the comment for the column
-     *
-     * @param string $comment the comment
-     * @throws NotSupportedException this is not supported by SQLite
-     * @since 2.0.8
+     * @inheritdoc
+     * @param string $comment
+     * @throws NotSupportedException
      */
     public function comment($comment)
     {

@@ -916,7 +916,27 @@ abstract class QueryBuilderTest extends DatabaseTestCase
                 ],
             ],
             [
-
+                Schema::TYPE_INTEGER . " COMMENT 'test comment'",
+                $this->integer()->comment('test comment'),
+                [
+                    'mysql' => "int(11) COMMENT 'test comment'",
+                    'postgres' => 'integer',
+                    'oci' => "NUMBER(10)",
+                    'sqlsrv' => 'int',
+                    'cubrid' => "int COMMENT 'test comment'",
+                ],
+            ],
+            [
+                Schema::TYPE_PK . " COMMENT 'test comment'",
+                $this->primaryKey()->comment('test comment'),
+                [
+                    'mysql' => "int(11) NOT NULL AUTO_INCREMENT PRIMARY KEY COMMENT 'test comment'",
+                    'postgres' => 'serial NOT NULL PRIMARY KEY',
+                    'sqlite' => 'integer PRIMARY KEY AUTOINCREMENT NOT NULL',
+                    'oci' => 'NUMBER(10) NOT NULL PRIMARY KEY',
+                    'sqlsrv' => 'int IDENTITY PRIMARY KEY',
+                    'cubrid' => "int NOT NULL AUTO_INCREMENT PRIMARY KEY COMMENT 'test comment'",
+                ],
             ],
         ];
 
