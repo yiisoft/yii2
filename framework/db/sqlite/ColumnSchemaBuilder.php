@@ -44,12 +44,4 @@ class ColumnSchemaBuilder extends AbstractColumnSchemaBuilder
 
         return $this->buildCompleteString($format);
     }
-
-    /**
-     * @inheritdoc
-     */
-    protected function buildCommentString()
-    {
-        return '';
-    }
 }

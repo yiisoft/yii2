@@ -119,15 +119,6 @@ class Schema extends \yii\db\Schema
     }
 
     /**
-     * @inheritdoc
-     * @return ColumnSchemaBuilder column schema builder instance
-     */
-    public function createColumnSchemaBuilder($type, $length = null)
-    {
-        return new ColumnSchemaBuilder($type, $length);
-    }
-
-    /**
      * Resolves the table name and schema name (if any).
      * @param TableSchema $table the table metadata object
      * @param string $name the table name

@@ -13,7 +13,8 @@ use yii\db\ColumnSchemaBuilder as AbstractColumnSchemaBuilder;
  * ColumnSchemaBuilder is the schema builder for Oracle databases.
  *
  * @author Vasenin Matvey <vaseninm@gmail.com>
- * @since 2.0.6
+ * @author Chris Harris <chris@buckshotsoftware.com>
+ * @since 2.0.8
  */
 class ColumnSchemaBuilder extends AbstractColumnSchemaBuilder
 {
@@ -59,13 +60,5 @@ class ColumnSchemaBuilder extends AbstractColumnSchemaBuilder
                 $format = '{type}{length}{default}{notnull}{check}{pos}';
         }
         return $this->buildCompleteString($format);
-    }
-
-    /**
-     * @inheritdoc
-     */
-    protected function buildCommentString()
-    {
-        return '';
     }
 }
