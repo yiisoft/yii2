@@ -102,11 +102,11 @@ class PostgreSQLQueryBuilderTest extends QueryBuilderTest
 
         $expected = "COMMENT ON COLUMN [[comment]].[[text]] IS 'This is my column.'";
         $sql = $qb->addCommentOnColumn('comment', 'text', 'This is my column.');
-        $this->assertEquals($expected, $sql);
+        $this->assertEquals($this->replaceQuotes($expected), $sql);
 
         $expected = "COMMENT ON COLUMN [[comment]].[[text]] IS NULL";
         $sql = $qb->dropCommentFromColumn('comment', 'text');
-        $this->assertEquals($expected, $sql);
+        $this->assertEquals($this->replaceQuotes($expected), $sql);
     }
 
     public function testCommentTable()
@@ -115,10 +115,10 @@ class PostgreSQLQueryBuilderTest extends QueryBuilderTest
 
         $expected = "COMMENT ON TABLE [[comment]] IS 'This is my table.'";
         $sql = $qb->addCommentOnTable('comment', 'This is my table.');
-        $this->assertEquals($expected, $sql);
+        $this->assertEquals($this->replaceQuotes($expected), $sql);
 
         $expected = "COMMENT ON TABLE [[comment]] IS NULL";
         $sql = $qb->dropCommentFromTable('comment');
-        $this->assertEquals($expected, $sql);
+        $this->assertEquals($this->replaceQuotes($expected), $sql);
     }
 }
