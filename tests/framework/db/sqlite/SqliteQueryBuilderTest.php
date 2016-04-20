@@ -27,8 +27,17 @@ class SqliteQueryBuilderTest extends QueryBuilderTest
 
     public function testAddDropPrimaryKey()
     {
-        $this->setExpectedException('yii\base\NotSupportedException');
-        parent::testAddDropPrimaryKey();
+        $this->markTestSkipped('Comments are not supported in SQLite');
+    }
+
+    public function testCommentColumn()
+    {
+        $this->markTestSkipped('Comments are not supported in SQLite');
+    }
+
+    public function testCommentTable()
+    {
+        $this->markTestSkipped('Comments are not supported in SQLite');
     }
 
     public function testBatchInsert()

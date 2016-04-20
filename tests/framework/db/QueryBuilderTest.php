@@ -80,15 +80,15 @@ abstract class QueryBuilderTest extends DatabaseTestCase
     {
         $items = [
             [
-                Schema::TYPE_BIGINT . ' CHECK (value > 5)',
-                $this->bigInteger()->check('value > 5'),
+                Schema::TYPE_BIGINT,
+                $this->bigInteger(),
                 [
-                    'mysql' => 'bigint(20) CHECK (value > 5)',
-                    'postgres' => 'bigint CHECK (value > 5)',
-                    'sqlite' => 'bigint CHECK (value > 5)',
-                    'oci' => 'NUMBER(20) CHECK (value > 5)',
-                    'sqlsrv' => 'bigint CHECK (value > 5)',
-                    'cubrid' => 'bigint CHECK (value > 5)',
+                    'mysql' => 'bigint(20)',
+                    'postgres' => 'bigint',
+                    'sqlite' => 'bigint',
+                    'oci' => 'NUMBER(20)',
+                    'sqlsrv' => 'bigint',
+                    'cubrid' => 'bigint',
                 ],
             ],
             [
@@ -104,13 +104,13 @@ abstract class QueryBuilderTest extends DatabaseTestCase
                 ],
             ],
             [
-                Schema::TYPE_BIGINT . '(8) CHECK (value > 5)',
-                $this->bigInteger(8)->check('value > 5'),
+                Schema::TYPE_BIGINT . ' CHECK (value > 5)',
+                $this->bigInteger()->check('value > 5'),
                 [
-                    'mysql' => 'bigint(8) CHECK (value > 5)',
+                    'mysql' => 'bigint(20) CHECK (value > 5)',
                     'postgres' => 'bigint CHECK (value > 5)',
                     'sqlite' => 'bigint CHECK (value > 5)',
-                    'oci' => 'NUMBER(8) CHECK (value > 5)',
+                    'oci' => 'NUMBER(20) CHECK (value > 5)',
                     'sqlsrv' => 'bigint CHECK (value > 5)',
                     'cubrid' => 'bigint CHECK (value > 5)',
                 ],
@@ -128,15 +128,15 @@ abstract class QueryBuilderTest extends DatabaseTestCase
                 ],
             ],
             [
-                Schema::TYPE_BIGINT,
-                $this->bigInteger(),
+                Schema::TYPE_BIGINT . '(8) CHECK (value > 5)',
+                $this->bigInteger(8)->check('value > 5'),
                 [
-                    'mysql' => 'bigint(20)',
-                    'postgres' => 'bigint',
-                    'sqlite' => 'bigint',
-                    'oci' => 'NUMBER(20)',
-                    'sqlsrv' => 'bigint',
-                    'cubrid' => 'bigint',
+                    'mysql' => 'bigint(8) CHECK (value > 5)',
+                    'postgres' => 'bigint CHECK (value > 5)',
+                    'sqlite' => 'bigint CHECK (value > 5)',
+                    'oci' => 'NUMBER(8) CHECK (value > 5)',
+                    'sqlsrv' => 'bigint CHECK (value > 5)',
+                    'cubrid' => 'bigint CHECK (value > 5)',
                 ],
             ],
             [
@@ -915,6 +915,28 @@ abstract class QueryBuilderTest extends DatabaseTestCase
                     'sqlite' => 'bigint UNSIGNED PRIMARY KEY AUTOINCREMENT NOT NULL',
                 ],
             ],
+            [
+                Schema::TYPE_INTEGER . " COMMENT 'test comment'",
+                $this->integer()->comment('test comment'),
+                [
+                    'mysql' => "int(11) COMMENT 'test comment'",
+                    'postgres' => 'integer',
+                    'oci' => "NUMBER(10)",
+                    'sqlsrv' => 'int',
+                    'cubrid' => "int COMMENT 'test comment'",
+                ],
+            ],
+            [
+                Schema::TYPE_PK . " COMMENT 'test comment'",
+                $this->primaryKey()->comment('test comment'),
+                [
+                    'mysql' => "int(11) NOT NULL AUTO_INCREMENT PRIMARY KEY COMMENT 'test comment'",
+                    'postgres' => 'serial NOT NULL PRIMARY KEY',
+                    'oci' => 'NUMBER(10) NOT NULL PRIMARY KEY',
+                    'sqlsrv' => 'int IDENTITY PRIMARY KEY',
+                    'cubrid' => "int NOT NULL AUTO_INCREMENT PRIMARY KEY COMMENT 'test comment'",
+                ],
+            ],
         ];
 
         foreach ($items as $i => $item) {
@@ -1521,4 +1543,34 @@ abstract class QueryBuilderTest extends DatabaseTestCase
 //        // TODO implement
 //    }
 
+
+    public function testCommentColumn()
+    {
+        $qb = $this->getQueryBuilder();
+
+        $expected = "ALTER TABLE [[comment]] CHANGE [[add_comment]] [[add_comment]] varchar(255) NOT NULL COMMENT 'This is my column.'";
+        $sql = $qb->addCommentOnColumn('comment', 'add_comment', 'This is my column.');
+        $this->assertEquals($this->replaceQuotes($expected), $sql);
+
+        $expected = "ALTER TABLE [[comment]] CHANGE [[replace_comment]] [[replace_comment]] varchar(255) DEFAULT NULL COMMENT 'This is my column.'";
+        $sql = $qb->addCommentOnColumn('comment', 'replace_comment', 'This is my column.');
+        $this->assertEquals($this->replaceQuotes($expected), $sql);
+
+        $expected = "ALTER TABLE [[comment]] CHANGE [[delete_comment]] [[delete_comment]] varchar(128) NOT NULL COMMENT ''";
+        $sql = $qb->dropCommentFromColumn('comment', 'delete_comment');
+        $this->assertEquals($this->replaceQuotes($expected), $sql);
+    }
+
+    public function testCommentTable()
+    {
+        $qb = $this->getQueryBuilder();
+
+        $expected = "ALTER TABLE [[comment]] COMMENT 'This is my table.'";
+        $sql = $qb->addCommentOnTable('comment', 'This is my table.');
+        $this->assertEquals($this->replaceQuotes($expected), $sql);
+
+        $expected = "ALTER TABLE [[comment]] COMMENT ''";
+        $sql = $qb->dropCommentFromTable('comment');
+        $this->assertEquals($this->replaceQuotes($expected), $sql);
+    }
 }

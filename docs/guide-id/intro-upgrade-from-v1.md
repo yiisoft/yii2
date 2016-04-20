@@ -8,7 +8,7 @@ menemukan perbedaan utama antara dua versi.
 Jika Anda belum pernah menggunakan Yii 1.1 sebelumnya, Anda dapat dengan aman melewati bagian ini dan menuju ke "[Persiapan](start-installation.md)".
 
 Harap dicatat bahwa Yii 2.0 memperkenalkan lebih banyak fitur baru dari yang tercakup dalam ringkasan ini. Sangat dianjurkan
-Anda membaca keseluruhan panduan definitif keseluruhan untuk mempelajari hal tersebut. Kemungkinannya adalah bahwa
+Anda membaca keseluruhan panduan definitif untuk mempelajari hal tersebut. Kemungkinannya adalah bahwa
 beberapa fitur yang sebelumnya harus anda kembangkan sendiri kini menjadi bagian dari kode inti.
 
 
