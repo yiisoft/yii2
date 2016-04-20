@@ -158,10 +158,11 @@ class Query extends Component implements QueryInterface
      *
      * @param integer $batchSize the number of records to be fetched in each batch.
      * @param Connection $db the database connection. If not set, the "db" application component will be used.
+	 * @param boolean $split split query to many queries with "offset, limit"
      * @return BatchQueryResult the batch query result. It implements the [[\Iterator]] interface
      * and can be traversed to retrieve the data in batches.
      */
-    public function batch($batchSize = 100, $db = null)
+    public function batch($batchSize = 100, $db = null, $split = false)
     {
         return Yii::createObject([
             'class' => BatchQueryResult::className(),
@@ -169,6 +170,7 @@ class Query extends Component implements QueryInterface
             'batchSize' => $batchSize,
             'db' => $db,
             'each' => false,
+			'split' => $split,
         ]);
     }
 

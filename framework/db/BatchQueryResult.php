@@ -49,7 +49,10 @@ class BatchQueryResult extends Object implements \Iterator
      * If false, a whole batch of rows will be returned in each iteration.
      */
     public $each = false;
-
+    /**
+     * @var boolean $split split query to many queries with "offset, limit"
+     */
+    public $split = false;
     /**
      * @var DataReader the data reader associated with this batch query.
      */
@@ -66,7 +69,10 @@ class BatchQueryResult extends Object implements \Iterator
      * @var string|integer the key for the current iteration
      */
     private $_key;
-
+    /**
+     * @var int the number of rows to skip from beginning (offset of the first row to return)
+     */
+    private $_offset = 0;
 
     /**
      * Destructor.
@@ -134,9 +140,14 @@ class BatchQueryResult extends Object implements \Iterator
      */
     protected function fetchData()
     {
-        if ($this->_dataReader === null) {
-            $this->_dataReader = $this->query->createCommand($this->db)->query();
-        }
+		if ($this->split) {
+			$this->_dataReader = $this->query->limit($this->batchSize)->offset($this->_offset)->createCommand($this->db)->query();
+			$this->_offset += $this->batchSize;
+		} else {
+			if ($this->_dataReader === null) {
+				$this->_dataReader = $this->query->createCommand($this->db)->query();
+			}
+		}
 
         $rows = [];
         $count = 0;
