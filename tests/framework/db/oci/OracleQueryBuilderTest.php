@@ -33,25 +33,25 @@ class OracleQueryBuilderTest extends QueryBuilderTest
     {
         $qb = $this->getQueryBuilder();
 
-        $expected = "COMMENT ON COLUMN \"comment\".\"text\" IS 'This is my column.'";
+        $expected = "COMMENT ON COLUMN [[comment]].[[text]] IS 'This is my column.'";
         $sql = $qb->addCommentOnColumn('comment', 'text', 'This is my column.');
-        $this->assertEquals($expected, $sql);
+        $this->assertEquals($this->replaceQuotes($expected), $sql);
 
-        $expected = "COMMENT ON COLUMN \"comment\".\"text\" IS ''";
+        $expected = "COMMENT ON COLUMN [[comment]].[[text]] IS ''";
         $sql = $qb->dropCommentFromColumn('comment', 'text');
-        $this->assertEquals($expected, $sql);
+        $this->assertEquals($this->replaceQuotes($expected), $sql);
     }
 
     public function testCommentTable()
     {
         $qb = $this->getQueryBuilder();
 
-        $expected = "COMMENT ON TABLE \"comment\" IS 'This is my table.'";
+        $expected = "COMMENT ON TABLE [[comment]] IS 'This is my table.'";
         $sql = $qb->addCommentOnTable('comment', 'This is my table.');
-        $this->assertEquals($expected, $sql);
+        $this->assertEquals($this->replaceQuotes($expected), $sql);
 
-        $expected = "COMMENT ON TABLE \"comment\" IS ''";
+        $expected = "COMMENT ON TABLE [[comment]] IS ''";
         $sql = $qb->dropCommentFromTable('comment');
-        $this->assertEquals($expected, $sql);
+        $this->assertEquals($this->replaceQuotes($expected), $sql);
     }
 }

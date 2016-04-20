@@ -30,11 +30,6 @@ class SqliteQueryBuilderTest extends QueryBuilderTest
         $this->markTestSkipped('Comments are not supported in SQLite');
     }
 
-    public function testCommentOnColumnSchemaBuilder()
-    {
-        $this->markTestSkipped('Comments are not supported in SQLite');
-    }
-
     public function testCommentColumn()
     {
         $this->markTestSkipped('Comments are not supported in SQLite');
