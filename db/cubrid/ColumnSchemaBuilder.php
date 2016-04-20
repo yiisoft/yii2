@@ -46,6 +46,14 @@ class ColumnSchemaBuilder extends AbstractColumnSchemaBuilder
     /**
      * @inheritdoc
      */
+    protected function buildCommentString()
+    {
+        return $this->comment !== null ? " COMMENT " . $this->db->quoteValue($this->comment) : '';
+    }
+
+    /**
+     * @inheritdoc
+     */
     public function __toString()
     {
         switch ($this->getTypeCategory()) {

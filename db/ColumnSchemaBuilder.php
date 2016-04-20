@@ -372,7 +372,7 @@ class ColumnSchemaBuilder extends Object
      */
     protected function buildCommentString()
     {
-        return $this->comment !== null ? " COMMENT " . $this->db->quoteValue($this->comment) : '';
+        return '';
     }
 
     /**
