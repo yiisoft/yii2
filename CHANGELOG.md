@@ -195,6 +195,7 @@ Yii Framework 2 Change Log
 - Enh #10545: `yii\web\XMLResponseFormatter` changed to format models in a proper way (andrewnester)
 - Enh #10783: Added migration and unit-tests for `yii\i18n\DbMessageSource` (silverfire)
 - Enh #10797: Cleaned up requirements checker CSS (muhammadcahya)
+- Enh #11336: Allow resettting `$hostInfo`, `$scriptUrl`, and `$pathInfo` in `yii\web\Request` to `null`, to make Yii determine the value again (cebe)
 - Enh: Added last resort measure for `FileHelper::removeDirectory()` fail to unlink symlinks under Windows (samdark)
 - Enh: `AttributeBehavior::getValue()` now respects the callable in array format (silverfire)
 - Chg #6419: Added `yii\web\ErrorHandler::displayVars` make list of displayed vars customizable. `$_ENV` and `$_SERVER` are not displayed by default anymore (silverfire)
