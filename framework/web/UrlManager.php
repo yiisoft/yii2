@@ -437,7 +437,7 @@ class UrlManager extends Component
      */
     public function setBaseUrl($value)
     {
-        $this->_baseUrl = rtrim($value, '/');
+        $this->_baseUrl = $value === null ? null : rtrim($value, '/');
     }
 
     /**
@@ -496,6 +496,6 @@ class UrlManager extends Component
      */
     public function setHostInfo($value)
     {
-        $this->_hostInfo = rtrim($value, '/');
+        $this->_hostInfo = $value === null ? null : rtrim($value, '/');
     }
 }
