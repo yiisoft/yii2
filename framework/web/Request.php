@@ -557,7 +557,7 @@ class Request extends \yii\base\Request
      */
     public function setHostInfo($value)
     {
-        $this->_hostInfo = rtrim($value, '/');
+        $this->_hostInfo = $value === null ? null : rtrim($value, '/');
     }
 
     private $_baseUrl;
@@ -628,7 +628,7 @@ class Request extends \yii\base\Request
      */
     public function setScriptUrl($value)
     {
-        $this->_scriptUrl = '/' . trim($value, '/');
+        $this->_scriptUrl = $value === null ? null : '/' . trim($value, '/');
     }
 
     private $_scriptFile;
@@ -688,7 +688,7 @@ class Request extends \yii\base\Request
      */
     public function setPathInfo($value)
     {
-        $this->_pathInfo = ltrim($value, '/');
+        $this->_pathInfo = $value === null ? null : ltrim($value, '/');
     }
 
     /**
