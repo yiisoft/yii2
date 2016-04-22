@@ -64,6 +64,7 @@ Yii Framework 2 Change Log
 - Enh #10937: `yii\web\User` will now confirm the request accepts an HTML response before redirecting to the login page. Added optional `$checkAcceptHeader` to `yii\web\User::loginRequired()` (sammousa)
 - Enh #10941: Added `yii\helpers\ArrayHelper::isTraversable`, added support for traversable selections for dropdownList, radioList and checkboxList in `yii\helpers\Html` (sammousa)
 - Enh #11056: Allow setting a custom logger configuration for `yii\log\Dispatcher` in configuration (bionoren, cebe)
+- Enh #11058: `yii\web\User::loginRequired()` now does not set return URL when request method is not GET (dawei101, silverfire)
 - Enh #11137: Added weak ETag support to `yii\filters\HttpCache`. It could be turned on via setting `$weakEtag` to `true` (particleflux)
 - Enh #11139: `yii\validators\EachValidator` injects specific attribute value in error message parameters (silverfire)
 - Enh #11187: migrate command now generates phpdoc for table migrations (Faryshta)
