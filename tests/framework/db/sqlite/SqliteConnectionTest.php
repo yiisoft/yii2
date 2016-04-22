@@ -31,25 +31,6 @@ class SqliteConnectionTest extends ConnectionTest
         $this->assertEquals("'It''s interesting'", $connection->quoteValue("It's interesting"));
     }
 
-    public function testQuoteTableName()
-    {
-        $connection = $this->getConnection(false);
-        $this->assertEquals("`table`", $connection->quoteTableName('table'));
-        $this->assertEquals("`schema`.`table`", $connection->quoteTableName('schema.table'));
-        $this->assertEquals('{{table}}', $connection->quoteTableName('{{table}}'));
-        $this->assertEquals('(table)', $connection->quoteTableName('(table)'));
-    }
-
-    public function testQuoteColumnName()
-    {
-        $connection = $this->getConnection(false);
-        $this->assertEquals('`column`', $connection->quoteColumnName('column'));
-        $this->assertEquals("`table`.`column`", $connection->quoteColumnName('table.column'));
-        $this->assertEquals('[[column]]', $connection->quoteColumnName('[[column]]'));
-        $this->assertEquals('{{column}}', $connection->quoteColumnName('{{column}}'));
-        $this->assertEquals('(column)', $connection->quoteColumnName('(column)'));
-    }
-
     public function testTransactionIsolation()
     {
         $connection = $this->getConnection(true);
