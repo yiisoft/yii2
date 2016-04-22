@@ -55,6 +55,7 @@ Yii Framework 2 Change Log
 - Enh #10487: `yii\helpers\BaseArrayHelper::index()` got a third parameter `$groupBy` to group the input array by the key in one or more dimensions (quantum13, silverfire, samdark)
 - Enh #10610: Added `BaseUrl::$urlManager` to be able to set URL manager used for creating URLs (samdark)
 - Enh #10631: Splitted gettng label and rendering cell in `yii\grid\DataColumn::renderHeaderCellContent()` to make code simpler (t-kanstantsin, samdark)
+- Enh #10710: `yii\helpers\FileHelper::copyDirectory()` is now throwing exception when trying to copy a directory to itself or a subdirectory (wallysalami, cebe, samdark)
 - Enh #10764: `yii\helpers\Html::tag()` and `::beginTag()` return content without any HTML when the `$tag` attribute is `false` or `null` (pana1990)
 - Enh #10840: Added `yii\console\Controller::optionAliases()` method to support aliases for commands (pana1990)
 - Enh #10889: Allows unsigned primary key column definitions (df2)
