@@ -119,10 +119,14 @@ class Dispatcher extends Component
 
     /**
      * Sets the connected logger.
-     * @param Logger $value the logger.
+     * @param Logger|string|array $value the logger to be used. This can either be a logger instance
+     * or a configuration that will be used to create one using [[Yii::createObject()]].
      */
     public function setLogger($value)
     {
+        if (is_string($value) || is_array($value)) {
+            $value = Yii::createObject($value);
+        }
         $this->_logger = $value;
         $this->_logger->dispatcher = $this;
     }
