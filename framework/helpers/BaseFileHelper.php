@@ -253,6 +253,9 @@ class BaseFileHelper
      */
     public static function copyDirectory($src, $dst, $options = [])
     {
+        if ($src === $dst || strpos($dst, $src) !== false){
+            throw new InvalidParamException( "Trying to copy a directory to itself or a subdirectory." );
+        }
         if (!is_dir($dst)) {
             static::createDirectory($dst, isset($options['dirMode']) ? $options['dirMode'] : 0775, true);
         }
