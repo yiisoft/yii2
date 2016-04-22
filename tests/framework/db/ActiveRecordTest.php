@@ -815,6 +815,41 @@ class ActiveRecordTest extends DatabaseTestCase
         $this->assertEquals(0, count($orders[0]->itemsIndexed));
     }
 
+    public function tableNameProvider()
+    {
+        return [
+            ['order', 'order_item'],
+            ['order', '{{%order_item}}'],
+            ['{{%order}}', 'order_item'],
+            ['{{%order}}', '{{%order_item}}'],
+        ];
+    }
+
+    /**
+     * Test whether conditions are quoted correctly in conditions where joinWith is used.
+     * @see https://github.com/yiisoft/yii2/issues/11088
+     * @dataProvider tableNameProvider
+     */
+    public function testRelationWhereParams($orderTableName, $orderItemTableName)
+    {
+        Order::$tableName = $orderTableName;
+        OrderItem::$tableName = $orderItemTableName;
+
+        /** @var $order Order */
+        $order = Order::findOne(1);
+        $itemsSQL = $order->getOrderitems()->createCommand()->rawSql;
+        $expectedSQL = $this->replaceQuotes("SELECT * FROM [[order_item]] WHERE [[order_id]]=1");
+        $this->assertEquals($expectedSQL, $itemsSQL);
+
+        $order = Order::findOne(1);
+        $itemsSQL = $order->getOrderItems()->joinWith('item')->createCommand()->rawSql;
+        $expectedSQL = $this->replaceQuotes("SELECT [[order_item]].* FROM [[order_item]] LEFT JOIN [[item]] ON [[order_item]].[[item_id]] = [[item]].[[id]] WHERE [[order_item]].[[order_id]]=1");
+        $this->assertEquals($expectedSQL, $itemsSQL);
+
+        Order::$tableName = null;
+        OrderItem::$tableName = null;
+    }
+
     public function testAlias()
     {
         $query = Order::find();

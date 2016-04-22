@@ -169,7 +169,7 @@ class ActiveQuery extends Query implements ActiveQueryInterface
             if ($this->via instanceof self) {
                 // via junction table
                 $viaModels = $this->via->findJunctionRows([$this->primaryModel]);
-                $this->filterByModels($viaModels);
+                $this->filterByModels($viaModels, $builder);
             } elseif (is_array($this->via)) {
                 // via relation
                 /* @var $viaQuery ActiveQuery */
@@ -182,9 +182,9 @@ class ActiveQuery extends Query implements ActiveQueryInterface
                     $this->primaryModel->populateRelation($viaName, $model);
                     $viaModels = $model === null ? [] : [$model];
                 }
-                $this->filterByModels($viaModels);
+                $this->filterByModels($viaModels, $builder);
             } else {
-                $this->filterByModels([$this->primaryModel]);
+                $this->filterByModels([$this->primaryModel], $builder);
             }
 
             $query = Query::create($this);
