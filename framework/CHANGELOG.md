@@ -1,6 +1,11 @@
 Yii Framework 2 Change Log
 ==========================
 
+Work in progress
+________________
+
+- Bug: loadMultiple returns true event if load() returns false (zvook)
+
 2.0.8 under development
 -----------------------
 
