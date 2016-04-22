@@ -70,7 +70,7 @@ class ConnectionTest extends DatabaseTestCase
 
     public function testQuoteTableName()
     {
-        $connection = $this->getConnection(false);
+        $connection = $this->getConnection(false, false);
         $this->assertEquals('`table`', $connection->quoteTableName('table'));
         $this->assertEquals('`table`', $connection->quoteTableName('`table`'));
         $this->assertEquals('`schema`.`table`', $connection->quoteTableName('schema.table'));
@@ -81,14 +81,36 @@ class ConnectionTest extends DatabaseTestCase
 
     public function testQuoteColumnName()
     {
-        $connection = $this->getConnection(false);
+        $connection = $this->getConnection(false, false);
         $this->assertEquals('`column`', $connection->quoteColumnName('column'));
         $this->assertEquals('`column`', $connection->quoteColumnName('`column`'));
-        $this->assertEquals('`table`.`column`', $connection->quoteColumnName('table.column'));
-        $this->assertEquals('`table`.`column`', $connection->quoteColumnName('table.`column`'));
         $this->assertEquals('[[column]]', $connection->quoteColumnName('[[column]]'));
         $this->assertEquals('{{column}}', $connection->quoteColumnName('{{column}}'));
         $this->assertEquals('(column)', $connection->quoteColumnName('(column)'));
+
+        $this->assertEquals('`column`', $connection->quoteSql('[[column]]'));
+        $this->assertEquals('`column`', $connection->quoteSql('{{column}}'));
+    }
+
+    public function testQuoteFullColumnName()
+    {
+        $connection = $this->getConnection(false, false);
+        $this->assertEquals('`table`.`column`', $connection->quoteColumnName('table.column'));
+        $this->assertEquals('`table`.`column`', $connection->quoteColumnName('table.`column`'));
+        $this->assertEquals('`table`.`column`', $connection->quoteColumnName('`table`.column'));
+        $this->assertEquals('`table`.`column`', $connection->quoteColumnName('table.`column`'));
+
+        $this->assertEquals('[[table.column]]', $connection->quoteColumnName('[[table.column]]'));
+        $this->assertEquals('{{table}}.`column`', $connection->quoteColumnName('{{table}}.column'));
+        $this->assertEquals('{{table}}.`column`', $connection->quoteColumnName('{{table}}.`column`'));
+        $this->assertEquals('{{%table}}.`column`', $connection->quoteColumnName('{{%table}}.column'));
+        $this->assertEquals('{{%table}}.`column`', $connection->quoteColumnName('{{%table}}.`column`'));
+
+        $this->assertEquals('`table`.`column`', $connection->quoteSql('[[table.column]]'));
+        $this->assertEquals('`table`.`column`', $connection->quoteSql('{{table}}.[[column]]'));
+        $this->assertEquals('`table`.`column`', $connection->quoteSql('{{table}}.`column`'));
+        $this->assertEquals('`table`.`column`', $connection->quoteSql('{{%table}}.[[column]]'));
+        $this->assertEquals('`table`.`column`', $connection->quoteSql('{{%table}}.`column`'));
     }
 
     public function testTransaction()
