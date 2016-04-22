@@ -131,6 +131,7 @@ class Column extends Object
      * Returns header cell label.
      * This method may be overridden to customize the label of the header cell.
      * @return string label
+     * @since 2.0.8
      */
     protected function getHeaderCellLabel()
     {
