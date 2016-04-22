@@ -45,4 +45,27 @@ class DispatcherTest extends TestCase
         $this->assertInstanceOf('yii\log\Logger', $dispatcher->getLogger());
         $this->assertEquals(42, $dispatcher->getLogger()->traceLevel);
     }
+
+    public function testSetLogger()
+    {
+        $dispatcher = new Dispatcher();
+        $this->assertSame(Yii::getLogger(), $dispatcher->getLogger());
+
+        $logger = new Logger();
+        $dispatcher->setLogger($logger);
+        $this->assertSame($logger, $dispatcher->getLogger());
+
+        $dispatcher->setLogger('yii\log\Logger');
+        $this->assertInstanceOf('yii\log\Logger', $dispatcher->getLogger());
+        $this->assertEquals(0, $dispatcher->getLogger()->traceLevel);
+
+
+        $dispatcher->setLogger([
+            'class' => 'yii\log\Logger',
+            'traceLevel' => 42,
+        ]);
+        $this->assertInstanceOf('yii\log\Logger', $dispatcher->getLogger());
+        $this->assertEquals(42, $dispatcher->getLogger()->traceLevel);
+    }
+
 }
