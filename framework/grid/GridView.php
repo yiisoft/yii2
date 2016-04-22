@@ -272,11 +272,6 @@ class GridView extends BaseListView
             $this->filterRowOptions['id'] = $this->options['id'] . '-filters';
         }
 
-        $id = $this->options['id'];
-        $options = Json::htmlEncode($this->getClientOptions());
-        $view = $this->getView();
-        $view->registerJs("jQuery('#$id').yiiGridView($options);");
-
         $this->initColumns();
     }
 
@@ -285,9 +280,11 @@ class GridView extends BaseListView
      */
     public function run()
     {
+        $id = $this->options['id'];
+        $options = Json::htmlEncode($this->getClientOptions());
         $view = $this->getView();
         GridViewAsset::register($view);
-
+        $view->registerJs("jQuery('#$id').yiiGridView($options);");
         parent::run();
     }
 
