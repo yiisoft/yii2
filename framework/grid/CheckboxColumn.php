@@ -81,6 +81,15 @@ class CheckboxColumn extends Column
         if (substr_compare($this->name, '[]', -2, 2)) {
             $this->name .= '[]';
         }
+
+        $name = $this->grid->showHeader ? $this->getHeaderCheckBoxName() : NULL;
+        $id = $this->grid->options['id'];
+        $options = json_encode([
+            'name' => $this->name,
+            'multiple' => $this->multiple,
+            'checkAll' => $name,
+        ], JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
+        $this->grid->getView()->registerJs("jQuery('#$id').yiiGridView('setSelectionColumn', $options);");
     }
 
     /**
@@ -132,5 +141,14 @@ class CheckboxColumn extends Column
         }
 
         return Html::checkbox($this->name, !empty($options['checked']), $options);
+    }
+
+    /**
+     * Returns header checkbox name
+     * @return string header checkbox name
+     */
+    private function getHeaderCheckBoxName()
+    {
+        return rtrim($this->name, '[]') . '_all';
     }
 }
