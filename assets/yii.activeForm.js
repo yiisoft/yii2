@@ -201,8 +201,7 @@
                     settings: settings,
                     attributes: attributes,
                     submitting: false,
-                    validated: false,
-                    target: $form.attr('target')
+                    validated: false
                 });
 
                 /**
@@ -576,13 +575,7 @@
                 data.submitting = false;
             } else {
                 data.validated = true;
-                var buttonTarget = $button.attr('formtarget');
-                if (data.submitObject && buttonTarget) {
-                    // set target attribute to form tag at submit moment
-                    $form.attr('target', buttonTarget);
-                }
                 $form.submit();
-                $form.attr('target', data.target);
             }
         } else {
             $.each(data.attributes, function () {
