@@ -75,6 +75,7 @@ class ConnectionTest extends DatabaseTestCase
         $this->assertEquals('`table`', $connection->quoteTableName('`table`'));
         $this->assertEquals('`schema`.`table`', $connection->quoteTableName('schema.table'));
         $this->assertEquals('`schema`.`table`', $connection->quoteTableName('schema.`table`'));
+        $this->assertEquals('`schema`.`table`', $connection->quoteTableName('`schema`.`table`'));
         $this->assertEquals('{{table}}', $connection->quoteTableName('{{table}}'));
         $this->assertEquals('(table)', $connection->quoteTableName('(table)'));
     }
@@ -98,7 +99,7 @@ class ConnectionTest extends DatabaseTestCase
         $this->assertEquals('`table`.`column`', $connection->quoteColumnName('table.column'));
         $this->assertEquals('`table`.`column`', $connection->quoteColumnName('table.`column`'));
         $this->assertEquals('`table`.`column`', $connection->quoteColumnName('`table`.column'));
-        $this->assertEquals('`table`.`column`', $connection->quoteColumnName('table.`column`'));
+        $this->assertEquals('`table`.`column`', $connection->quoteColumnName('`table`.`column`'));
 
         $this->assertEquals('[[table.column]]', $connection->quoteColumnName('[[table.column]]'));
         $this->assertEquals('{{table}}.`column`', $connection->quoteColumnName('{{table}}.column'));
