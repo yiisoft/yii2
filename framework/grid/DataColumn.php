@@ -118,12 +118,15 @@ class DataColumn extends Column
         }
 
         $label = $this->getHeaderCellLabel();
+        if ($this->encodeLabel) {
+            $label = Html::encode($label);
+        }
 
         if ($this->attribute !== null && $this->enableSorting &&
             ($sort = $this->grid->dataProvider->getSort()) !== false && $sort->hasAttribute($this->attribute)) {
-            return $sort->link($this->attribute, array_merge($this->sortLinkOptions, ['label' => ($this->encodeLabel ? Html::encode($label) : $label)]));
+            return $sort->link($this->attribute, array_merge($this->sortLinkOptions, ['label' => $label]));
         } else {
-            return $this->encodeLabel ? Html::encode() : $label;
+            return $label;
         }
     }
 
