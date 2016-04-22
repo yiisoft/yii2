@@ -815,6 +815,39 @@ class ActiveRecordTest extends DatabaseTestCase
         $this->assertEquals(0, count($orders[0]->itemsIndexed));
     }
 
+    /**
+     * https://github.com/yiisoft/yii2/issues/10201
+     * https://github.com/yiisoft/yii2/issues/9047
+     */
+    public function testFindCompositeRelationWithJoin()
+    {
+        /* @var $orderItem OrderItem */
+        $orderItem = OrderItem::findOne([1, 1]);
+
+        $orderItemNoJoin = $orderItem->orderItemCompositeNoJoin;
+        $this->assertInstanceOf('yiiunit\data\ar\OrderItem', $orderItemNoJoin);
+
+        $orderItemWithJoin = $orderItem->orderItemCompositeWithJoin;
+        $this->assertInstanceOf('yiiunit\data\ar\OrderItem', $orderItemWithJoin);
+    }
+
+    public function testFindSimpleRelationWithJoin()
+    {
+        /* @var $order Order */
+        $order = Order::findOne(1);
+
+        $customerNoJoin = $order->customer;
+        $this->assertInstanceOf('yiiunit\data\ar\Customer', $customerNoJoin);
+
+        $customerWithJoin = $order->customerJoinedWithProfile;
+        $this->assertInstanceOf('yiiunit\data\ar\Customer', $customerWithJoin);
+
+        $customerWithJoinIndexOrdered = $order->customerJoinedWithProfileIndexOrdered;
+        $this->assertTrue(is_array($customerWithJoinIndexOrdered));
+        $this->assertArrayHasKey('user1', $customerWithJoinIndexOrdered);
+        $this->assertInstanceOf('yiiunit\data\ar\Customer', $customerWithJoinIndexOrdered['user1']);
+    }
+
     public function tableNameProvider()
     {
         return [

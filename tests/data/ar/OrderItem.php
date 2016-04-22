@@ -28,4 +28,15 @@ class OrderItem extends ActiveRecord
     {
         return $this->hasOne(Item::className(), ['id' => 'item_id']);
     }
+
+    // relations used by ::testFindCompositeWithJoin()
+    public function getOrderItemCompositeWithJoin()
+    {
+        return $this->hasOne(OrderItem::className(), ['item_id' => 'item_id', 'order_id' => 'order_id' ])
+            ->joinWith('item');
+    }
+    public function getOrderItemCompositeNoJoin()
+    {
+        return $this->hasOne(OrderItem::className(), ['item_id' => 'item_id', 'order_id' => 'order_id' ]);
+    }
 }

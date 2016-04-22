@@ -24,6 +24,18 @@ class Order extends ActiveRecord
         return $this->hasOne(Customer::className(), ['id' => 'customer_id']);
     }
 
+    public function getCustomerJoinedWithProfile()
+    {
+        return $this->hasOne(Customer::className(), ['id' => 'customer_id'])
+            ->joinWith('profile');
+    }
+
+    public function getCustomerJoinedWithProfileIndexOrdered()
+    {
+        return $this->hasMany(Customer::className(), ['id' => 'customer_id'])
+            ->joinWith('profile')->orderBy(['profile.description' => SORT_ASC])->indexBy('name');
+    }
+
     public function getCustomer2()
     {
         return $this->hasOne(Customer::className(), ['id' => 'customer_id'])->inverseOf('orders2');
