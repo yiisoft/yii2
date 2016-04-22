@@ -38,6 +38,7 @@ Yii Framework 2 Change Log
 - Bug #11228: `yii.activeForm.js` - AJAX validation will not be triggered if client side validation failed (silverfire)
 - Bug #11280: Descendants of `yii\console\controllers\BaseMigrateController`, like the one for MongoDB, unable to create new migration (klimov-paul)
 - Bug: SQlite querybuilder did not create primary key with bigint for `TYPE_BIGPK` (cebe)
+- Bug: Fixed `quoteColumnName` for table start with `{{` or `[[` (edgardmessias)
 - Enh #5469: Add mimetype validation by mask in FileValidator (kirsenn, samdark, silverfire)
 - Enh #8145, #8139, #10234 #11153: `yii\validators\Validator::$attributes` property now supports `!attribute` notation to validate attribute, but do not mark it as safe (mdmunir)
 - Enh #8148: Implemented ability to add comment on table and column in migration (vaseninm, silverfire)

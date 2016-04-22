@@ -522,7 +522,7 @@ abstract class Schema extends Object
      */
     public function quoteColumnName($name)
     {
-        if (strpos($name, '(') !== false || strpos($name, '[[') !== false || strpos($name, '{{') !== false) {
+        if (strpos($name, '(') !== false) {
             return $name;
         }
         if (($pos = strrpos($name, '.')) !== false) {
@@ -530,6 +530,10 @@ abstract class Schema extends Object
             $name = substr($name, $pos + 1);
         } else {
             $prefix = '';
+        }
+
+        if (strpos($name, '[[') !== false || strpos($name, '{{') !== false) {
+            return $prefix . $name;
         }
 
         return $prefix . $this->quoteSimpleColumnName($name);

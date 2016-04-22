@@ -39,6 +39,9 @@ class CubridConnectionTest extends ConnectionTest
         $this->assertEquals('"table"."column"', $connection->quoteColumnName('table."column"'));
         $this->assertEquals('[[column]]', $connection->quoteColumnName('[[column]]'));
         $this->assertEquals('{{column}}', $connection->quoteColumnName('{{column}}'));
+        $this->assertEquals('{{table}}."column"', $connection->quoteColumnName('{{table}}.column'));
+        $this->assertEquals('{{table}}."column"', $connection->quoteColumnName('{{table}}."column"'));
+        $this->assertEquals('{{table}}.[[column]]', $connection->quoteColumnName('{{table}}.[[column]]'));
         $this->assertEquals('(column)', $connection->quoteColumnName('(column)'));
     }
 }
