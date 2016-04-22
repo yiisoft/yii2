@@ -243,6 +243,7 @@ Yii Framework 2 Change Log
 - Bug #9046: Fixed problem with endless error loop when an error occurred after sending a stream or file download response to the user (cebe)
 - Bug #9059: Fixed PHP Notice in error handler view (dynasource, andrewnester, samdark)
 - Bug #9063: Workaround for MySQL losing table case when adding index (sebathi)
+- Bug #9074: Fixed JS call `$('#grid').yiiGridView('getSelectedRows')` when `GridView::$showHeader` is set to false (NekitoSP, silverfire)
 - Bug #9076: Fixed `yii\filters\PageCache` not using the configured duration and dependency when caching the response data (kidol)
 - Bug #9091: `UrlManager::createUrl()` did not create correct url when defaults were used, internal cache is now skipped in certain situations (cebe)
 - Bug #9127, #9128: Fixed MSSQL `QueryBuilder::renameColumn()` and `QueryBuilder::renameTable()` escaping (sitawit)
