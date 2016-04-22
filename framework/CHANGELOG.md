@@ -12,6 +12,7 @@ Yii Framework 2 Change Log
 - Bug #11196: Fixed VarDumper throws PHP Fatal when dumping `__PHP_Incomplete_Class` (DamianZ)
 - Bug #7627: Fixed `yii\widgets\ActiveField` to handle inputs AJAX validation with changed ID properly (dizeee)
 - Bug #9851: Fixed partial commit / rollback in nested transactions (sammousa)
+- Bug #10201: Fixed bug in ActiveRecord, where relational data could not be fetched in case with composite key and join with IN condition (PaulVanSchayck, airmoi, joe-meyer, cebe)
 - Bug #10480: Fixed removing old identity cookie when loggin in as another user without logging out first (maine-mike)
 - Bug #10617: Fixed `yii\web\Request::getBodyParams()` returned `null` instead of empty array if request body is empty and content type is application/json (samdark)
 - Bug #10784: Fixed `yii\grid\CheckboxColumn` to set correct value when `yii\grid\CheckboxColumn::$checkboxOptions` closure is used (nukkumatti)
