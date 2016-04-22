@@ -77,7 +77,11 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
      * @event Event an event that is triggered after a record is deleted.
      */
     const EVENT_AFTER_DELETE = 'afterDelete';
-
+    /**
+     * @event Event an event that is triggered after a record is refreshed.
+     * @since 2.0.8
+     */
+    const EVENT_AFTER_REFRESH = 'afterRefresh';
     /**
      * @var array attribute values indexed by attribute names
      */
@@ -860,6 +864,17 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
     }
 
     /**
+     * This method is called when the AR object is refreshed.
+     * The default implementation will trigger an [[EVENT_AFTER_REFRESH]] event.
+     * When overriding this method, make sure you call the parent implementation to ensure the
+     * event is triggered.
+     * @since 2.0.8
+     */
+    public function afterRefresh()
+    {
+    	$this->trigger(self::EVENT_AFTER_REFRESH);
+    }
+    /**
      * This method is called at the beginning of inserting or updating a record.
      * The default implementation will trigger an [[EVENT_BEFORE_INSERT]] event when `$insert` is true,
      * or an [[EVENT_BEFORE_UPDATE]] event if `$insert` is false.
@@ -951,6 +966,9 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
 
     /**
      * Repopulates this active record with the latest data.
+     *
+     * If the refresh is successful, the event named [[EVENT_AFTER_DELETE]] will be raised by the corresponding methods.
+     *
      * @return boolean whether the row still exists in the database. If true, the latest data
      * will be populated to this active record. Otherwise, this record will remain unchanged.
      */
@@ -966,6 +984,7 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
         }
         $this->_oldAttributes = $this->_attributes;
         $this->_related = [];
+        $this->afterRefresh();
 
         return true;
     }

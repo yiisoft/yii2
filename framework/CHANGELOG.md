@@ -3,6 +3,7 @@ Yii Framework 2 Change Log
 
 2.0.8 under development
 -----------------------
+- Enh #9604: `yii\db\BaseActiveRecord` now triggers event `EVENT_AFTER_REFRESH` after a record is refreshed (raoul2000)
 
 - Enh #9425: `yii\db\Query::exists()` now uses SQL standard `EXISTS()` query via new `yii\db\QueryBuilder::selectExists()` method to improving performance in some cases (PowerGamer1)
 - Bug #9935: Fixed `yii\validators\EachValidator` does not invoke `validateAttribute()` method of the embedded validator (klimov-paul)

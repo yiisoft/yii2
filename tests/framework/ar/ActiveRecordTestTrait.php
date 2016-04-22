@@ -1126,6 +1126,27 @@ trait ActiveRecordTestTrait
         Event::off(BaseActiveRecord::className(), BaseActiveRecord::EVENT_AFTER_FIND);
     }
 
+    public function testAfterRefresh()
+    {
+        /* @var $customerClass \yii\db\ActiveRecordInterface */
+        $customerClass = $this->getCustomerClass();
+        /* @var $this TestCase|ActiveRecordTestTrait */
+
+        $afterRefreshCalls = [];
+        Event::on(BaseActiveRecord::className(), BaseActiveRecord::EVENT_AFTER_REFRESH, function ($event) use (&$afterRefreshCalls) {
+    	    /* @var $ar BaseActiveRecord */
+    	    $ar = $event->sender;
+    	    $afterRefreshCalls[] = [get_class($ar), $ar->getIsNewRecord(), $ar->getPrimaryKey(), $ar->isRelationPopulated('orders')];
+        });
+
+        $customer = $customerClass::findOne(1);
+        $this->assertNotNull($customer);
+        $customer->refresh();
+        $this->assertEquals([[$customerClass, false, 1, false]], $afterRefreshCalls);
+        $afterRefreshCalls = [];
+        Event::off(BaseActiveRecord::className(), BaseActiveRecord::EVENT_AFTER_REFRESH);
+    }
+
     public function testFindEmptyInCondition()
     {
         /* @var $customerClass \yii\db\ActiveRecordInterface */
