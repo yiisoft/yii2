@@ -4,6 +4,7 @@ Yii Framework 2 Change Log
 2.0.8 under development
 -----------------------
 
+- Enh #11383: `yii\helpers\BaseHtml` now uses abstracted `booleanInput()` and `activeBooleanInput()` methods to render `radio()`, `checkbox()`, `activeRadio()` and `activeCheckbox()` (cesarnicola)
 - Enh #9425: `yii\db\Query::exists()` now uses SQL standard `EXISTS()` query via new `yii\db\QueryBuilder::selectExists()` method to improving performance in some cases (PowerGamer1)
 - Bug #9935: Fixed `yii\validators\EachValidator` does not invoke `validateAttribute()` method of the embedded validator (klimov-paul)
 - Bug #11270: Fixed `BaseActiveRecord::link()` method in order to support closure in `indexBy` for relations declaration (iushev)
