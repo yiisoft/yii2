@@ -129,4 +129,45 @@ class ConsoleTest extends TestCase
     {
         $this->assertEquals($html, Console::ansiToHtml($ansi));
     }
+
+    public function testTable()
+    {
+        $expected = <<<EXPECTED
++---------------+---------------+---------------+
+| test1         | test2         | test3         |
++---------------+---------------+---------------+
+| testcontent1  | testcontent2  | testcontent3  |
++---------------+---------------+---------------+
+| testcontent21 | testcontent22 | testcontent23 |
++---------------+---------------+---------------+
+
+EXPECTED;
+
+        $this->assertEqualsWithoutLE($expected, Console::table(
+            ['test1', 'test2', 'test3'],
+            [
+                ['testcontent1', 'testcontent2', 'testcontent3'],
+                ['testcontent21', 'testcontent22', 'testcontent23']
+            ]
+        ));
+
+        $expected = <<<EXPECTED
+*++++++++++++++++*+++++++++++++++++*++++++++++++++++++*
+/ test1          / test2           / test3            /
+*++++++++++++++++*+++++++++++++++++*++++++++++++++++++*
+/ testcontent1   / testcontent2    / testcontent3     /
+*++++++++++++++++*+++++++++++++++++*++++++++++++++++++*
+/ testcontent_21 / testcontent__22 / testcontent___23 /
+*++++++++++++++++*+++++++++++++++++*++++++++++++++++++*
+
+EXPECTED;
+
+        $this->assertEqualsWithoutLE($expected, Console::table(
+            ['test1', 'test2', 'test3'],
+            [
+                ['testcontent1', 'testcontent2', 'testcontent3'],
+                ['testcontent_21', 'testcontent__22', 'testcontent___23']
+            ], '*', '+', '/')
+        );
+    }
 }
