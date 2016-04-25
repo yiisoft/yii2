@@ -38,7 +38,8 @@ ______________________
   existing columns, but any new columns you generate via the migrations engine will now store data as Unicode.
 
 * Output buffering was introduced in the pair of `yii\widgets\ActiveForm::init()` and `::run()`. If you override any of
-  these methods, make sure that output buffer handling is not corrupted.
+  these methods, make sure that output buffer handling is not corrupted. If you call the parent implementation, when
+  overriding, everything should work fine. You should be doing that anyway.
 
 Upgrade from Yii 2.0.6
 ----------------------
