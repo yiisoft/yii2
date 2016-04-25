@@ -59,7 +59,7 @@ class BaseConsole
      */
     public static function moveCursorUp($rows = 1)
     {
-        echo "\033[" . (int)$rows . 'A';
+        echo "\033[" . (int) $rows . 'A';
     }
 
     /**
@@ -69,7 +69,7 @@ class BaseConsole
      */
     public static function moveCursorDown($rows = 1)
     {
-        echo "\033[" . (int)$rows . 'B';
+        echo "\033[" . (int) $rows . 'B';
     }
 
     /**
@@ -79,7 +79,7 @@ class BaseConsole
      */
     public static function moveCursorForward($steps = 1)
     {
-        echo "\033[" . (int)$steps . 'C';
+        echo "\033[" . (int) $steps . 'C';
     }
 
     /**
@@ -89,7 +89,7 @@ class BaseConsole
      */
     public static function moveCursorBackward($steps = 1)
     {
-        echo "\033[" . (int)$steps . 'D';
+        echo "\033[" . (int) $steps . 'D';
     }
 
     /**
@@ -98,7 +98,7 @@ class BaseConsole
      */
     public static function moveCursorNextLine($lines = 1)
     {
-        echo "\033[" . (int)$lines . 'E';
+        echo "\033[" . (int) $lines . 'E';
     }
 
     /**
@@ -107,7 +107,7 @@ class BaseConsole
      */
     public static function moveCursorPrevLine($lines = 1)
     {
-        echo "\033[" . (int)$lines . 'F';
+        echo "\033[" . (int) $lines . 'F';
     }
 
     /**
@@ -118,9 +118,9 @@ class BaseConsole
     public static function moveCursorTo($column, $row = null)
     {
         if ($row === null) {
-            echo "\033[" . (int)$column . 'G';
+            echo "\033[" . (int) $column . 'G';
         } else {
-            echo "\033[" . (int)$row . ';' . (int)$column . 'H';
+            echo "\033[" . (int) $row . ';' . (int) $column . 'H';
         }
     }
 
@@ -131,7 +131,7 @@ class BaseConsole
      */
     public static function scrollUp($lines = 1)
     {
-        echo "\033[" . (int)$lines . 'S';
+        echo "\033[" . (int) $lines . 'S';
     }
 
     /**
@@ -141,7 +141,7 @@ class BaseConsole
      */
     public static function scrollDown($lines = 1)
     {
-        echo "\033[" . (int)$lines . 'T';
+        echo "\033[" . (int) $lines . 'T';
     }
 
     /**
@@ -614,7 +614,7 @@ class BaseConsole
             $output = [];
             exec('mode con', $output);
             if (isset($output, $output[1]) && strpos($output[1], 'CON') !== false) {
-                return $size = [(int)preg_replace('~\D~', '', $output[3]), (int)preg_replace('~\D~', '', $output[4])];
+                return $size = [(int) preg_replace('~\D~', '', $output[3]), (int) preg_replace('~\D~', '', $output[4])];
             }
         } else {
             // try stty if available
@@ -624,12 +624,12 @@ class BaseConsole
             }
 
             // fallback to tput, which may not be updated on terminal resize
-            if (($width = (int)exec('tput cols 2>&1')) > 0 && ($height = (int)exec('tput lines 2>&1')) > 0) {
+            if (($width = (int) exec('tput cols 2>&1')) > 0 && ($height = (int) exec('tput lines 2>&1')) > 0) {
                 return $size = [$width, $height];
             }
 
             // fallback to ENV variables, which may not be updated on terminal resize
-            if (($width = (int)getenv('COLUMNS')) > 0 && ($height = (int)getenv('LINES')) > 0) {
+            if (($width = (int) getenv('COLUMNS')) > 0 && ($height = (int) getenv('LINES')) > 0) {
                 return $size = [$width, $height];
             }
         }
@@ -1020,7 +1020,7 @@ class BaseConsole
         self::$_progressEtaLastUpdate = null;
     }
 
-    public static function table($headers, $rows, $span = '+', $separator = '-',  $conector = '|')
+    public static function table($headers, $rows, $span = '+', $separator = '-', $conector = '|')
     {
         $rowsSize = static::calculateSizeRows($headers, $rows);
         $table = static::renderSeparator($rowsSize, $span, $separator, $conector);
@@ -1040,7 +1040,7 @@ class BaseConsole
         $render = '';
         foreach ($rows as $index => $row) {
             $render .= $conector . ' ';
-            $render .= $row . str_repeat(' ', $size[$index] - strlen($row) -1);
+            $render .= $row . str_repeat(' ', $size[$index] - strlen($row) - 1);
         }
         $render .= "$conector\n";
         return $render;
