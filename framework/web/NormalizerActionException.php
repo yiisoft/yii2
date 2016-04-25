@@ -9,9 +9,8 @@ namespace yii\web;
 
 use yii\base\InvalidCallException;
 use yii\base\UnknownPropertyException;
-use yii\base\UserException;
 
-class NormalizerActionException extends UserException
+class NormalizerActionException extends HttpException
 {
 
     /**
@@ -33,10 +32,13 @@ class NormalizerActionException extends UserException
 
     /**
      * Constructor.
+     * @param string $message error message
+     * @param integer $code error code
+     * @param \Exception $previous The previous exception used for the exception chaining.
      */
-    public function __construct()
+    public function __construct($message = null, $code = 0, \Exception $previous = null)
     {
-        parent::__construct("Request should be normalized.");
+        parent::__construct(301, $message, $code, $previous);
     }
 
     /**

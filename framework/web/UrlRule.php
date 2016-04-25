@@ -330,7 +330,7 @@ class UrlRule extends Object implements UrlRuleInterface
         if ($pathInfoNormalized != $pathInfoOrig) {
             switch ($this->normalize['action']) {
                 case 'redirect':
-                    $e = new NormalizerActionException();
+                    $e = new NormalizerActionException("Request should be normalized");
                     $e->setAction('redirect');
                     $e->setRedirectUrl($pathInfoNormalized);
                     $e->setOrigPathInfo($pathInfoOrig);
