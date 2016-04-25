@@ -253,6 +253,57 @@ class FileHelperTest extends TestCase
         $this->assertFileMode($fileMode, $dstDirName . DIRECTORY_SEPARATOR . $fileName, 'Copied file has wrong mode!');
     }
 
+    /**
+     * @see https://github.com/yiisoft/yii2/issues/10710
+     */
+    public function testCopyDirectoryToItself()
+    {
+        $dirName = 'test_dir';
+
+        $this->createFileStructure([
+            $dirName => [],
+        ]);
+
+        $this->setExpectedException('yii\base\InvalidParamException');
+
+        $dirName = $this->testFilePath . DIRECTORY_SEPARATOR . 'test_dir';
+        FileHelper::copyDirectory($dirName, $dirName);
+    }
+
+    /**
+     * @see https://github.com/yiisoft/yii2/issues/10710
+     */
+    public function testCopyDirToSubdirOfItself()
+    {
+        $this->createFileStructure([
+            'data' => [],
+            'backup' => ['data' => []]
+        ]);
+
+        $this->setExpectedException('yii\base\InvalidParamException');
+
+        FileHelper::copyDirectory(
+            $this->testFilePath . DIRECTORY_SEPARATOR . 'backup',
+            $this->testFilePath . DIRECTORY_SEPARATOR . 'backup' . DIRECTORY_SEPARATOR . 'data'
+        );
+    }
+
+    /**
+     * @see https://github.com/yiisoft/yii2/issues/10710
+     */
+    public function testCopyDirToAnotherWithSameName()
+    {
+        $this->createFileStructure([
+            'data' => [],
+            'backup' => ['data' => []]
+        ]);
+
+        FileHelper::copyDirectory(
+            $this->testFilePath . DIRECTORY_SEPARATOR . 'data',
+            $this->testFilePath . DIRECTORY_SEPARATOR . 'backup' . DIRECTORY_SEPARATOR . 'data'
+        );
+    }
+
     public function testRemoveDirectory()
     {
         $dirName = 'test_dir_for_remove';

@@ -123,5 +123,5 @@ action for the requested resource. This process is called *authorization* which 
 the [Authorization section](security-authorization.md).
 
 If your controllers extend from [[yii\rest\ActiveController]], you may override
-the [[yii\rest\Controller::checkAccess()|checkAccess()]] method to perform authorization check. The method
+the [[yii\rest\ActiveController::checkAccess()|checkAccess()]] method to perform authorization check. The method
 will be called by the built-in actions provided by [[yii\rest\ActiveController]].

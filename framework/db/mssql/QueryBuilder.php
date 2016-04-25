@@ -187,6 +187,38 @@ class QueryBuilder extends \yii\db\QueryBuilder
     }
 
     /**
+     * @inheritdoc
+     */
+    public function addCommentOnColumn($table, $column, $comment)
+    {
+        return "sp_updateextendedproperty @name = N'MS_Description', @value = {$this->db->quoteValue($comment)}, @level1type = N'Table',  @level1name = {$this->db->quoteTableName($table)}, @level2type = N'Column', @level2name = {$this->db->quoteColumnName($column)}";
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function addCommentOnTable($table, $comment)
+    {
+        return "sp_updateextendedproperty @name = N'MS_Description', @value = {$this->db->quoteValue($comment)}, @level1type = N'Table',  @level1name = {$this->db->quoteTableName($table)}";
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function dropCommentFromColumn($table, $column)
+    {
+        return "sp_dropextendedproperty @name = N'MS_Description', @level1type = N'Table',  @level1name = {$this->db->quoteTableName($table)}, @level2type = N'Column', @level2name = {$this->db->quoteColumnName($column)}";
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function dropCommentFromTable($table)
+    {
+        return "sp_dropextendedproperty @name = N'MS_Description', @level1type = N'Table',  @level1name = {$this->db->quoteTableName($table)}";
+    }
+
+    /**
      * Returns an array of column names given model name
      *
      * @param string $modelClass name of the model class

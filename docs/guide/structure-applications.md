@@ -192,6 +192,7 @@ The rest of the array elements (key-value pairs) specify the parameters to be bo
 ]
 ```
 
+> Info: Debug panel on development environment will not work when this property is enabled
 
 #### [[yii\base\Application::components|components]] <span id="components"></span>
 

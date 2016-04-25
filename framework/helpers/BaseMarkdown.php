@@ -93,13 +93,7 @@ class BaseMarkdown
         if (!isset(static::$flavors[$flavor])) {
             throw new InvalidParamException("Markdown flavor '$flavor' is not defined.'");
         } elseif (!is_object($config = static::$flavors[$flavor])) {
-            $parser = Yii::createObject($config);
-            if (is_array($config)) {
-                foreach ($config as $name => $value) {
-                    $parser->{$name} = $value;
-                }
-            }
-            static::$flavors[$flavor] = $parser;
+            static::$flavors[$flavor] = Yii::createObject($config);
         }
 
         return static::$flavors[$flavor];

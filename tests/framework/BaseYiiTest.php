@@ -2,6 +2,8 @@
 namespace yiiunit\framework;
 
 use Yii;
+use yii\di\Container;
+use yiiunit\data\base\Singer;
 use yiiunit\TestCase;
 
 /**
@@ -59,5 +61,27 @@ class BaseYiiTest extends TestCase
     public function testPowered()
     {
         $this->assertTrue(is_string(Yii::powered()));
+    }
+
+    public function testCreateObjectCallable()
+    {
+        Yii::$container = new Container();
+
+        // Test passing in of normal params combined with DI params.
+        $this->assertTrue(Yii::createObject(function(Singer $singer, $a) {
+            return $a === 'a';
+        }, ['a']));
+
+
+        $singer = new Singer();
+        $singer->firstName = 'Bob';
+        $this->assertTrue(Yii::createObject(function(Singer $singer, $a) {
+            return $singer->firstName === 'Bob';
+        }, [$singer, 'a']));
+
+
+        $this->assertTrue(Yii::createObject(function(Singer $singer, $a = 3) {
+            return true;
+        }));
     }
 }

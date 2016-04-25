@@ -41,6 +41,7 @@ class ColumnSchemaBuilder extends AbstractColumnSchemaBuilder
             default:
                 $format = '{type}{length}{notnull}{unique}{check}{default}';
         }
+
         return $this->buildCompleteString($format);
     }
 }

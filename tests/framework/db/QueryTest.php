@@ -244,6 +244,37 @@ class QueryTest extends DatabaseTestCase
     }
 
     /**
+     * @depends testFilterWhere
+     */
+    public function testAndFilterCompare()
+    {
+        $query = new Query;
+
+        $result = $query->andFilterCompare('name', null);
+        $this->assertInstanceOf('yii\db\Query', $result);
+        $this->assertNull($query->where);
+
+        $query->andFilterCompare('name', '');
+        $this->assertNull($query->where);
+
+        $query->andFilterCompare('name', 'John Doe');
+        $condition = ['=', 'name', 'John Doe'];
+        $this->assertEquals($condition, $query->where);
+
+        $condition = ['and', $condition, ['like', 'name', 'Doe']];
+        $query->andFilterCompare('name', 'Doe', 'like');
+        $this->assertEquals($condition, $query->where);
+
+        $condition = ['and', $condition, ['>', 'rating', '9']];
+        $query->andFilterCompare('rating', '>9');
+        $this->assertEquals($condition, $query->where);
+
+        $condition = ['and', $condition, ['<=', 'value', '100']];
+        $query->andFilterCompare('value', '<=100');
+        $this->assertEquals($condition, $query->where);
+    }
+
+    /**
      * @see https://github.com/yiisoft/yii2/issues/8068
      *
      * @depends testCount

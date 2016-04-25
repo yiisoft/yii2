@@ -31,7 +31,7 @@ class ColumnSchemaBuilder extends AbstractColumnSchemaBuilder
     protected function buildAfterString()
     {
         return $this->after !== null ?
-            ' AFTER (' . $this->db->quoteColumnName($this->after) . ')' :
+            ' AFTER ' . $this->db->quoteColumnName($this->after) :
             '';
     }
 
@@ -46,17 +46,25 @@ class ColumnSchemaBuilder extends AbstractColumnSchemaBuilder
     /**
      * @inheritdoc
      */
+    protected function buildCommentString()
+    {
+        return $this->comment !== null ? " COMMENT " . $this->db->quoteValue($this->comment) : '';
+    }
+
+    /**
+     * @inheritdoc
+     */
     public function __toString()
     {
         switch ($this->getTypeCategory()) {
             case self::CATEGORY_PK:
-                $format = '{type}{check}{pos}';
+                $format = '{type}{check}{pos}{comment}';
                 break;
             case self::CATEGORY_NUMERIC:
-                $format = '{type}{length}{unsigned}{notnull}{unique}{default}{check}{pos}';
+                $format = '{type}{length}{unsigned}{notnull}{unique}{default}{check}{comment}{pos}';
                 break;
             default:
-                $format = '{type}{length}{notnull}{unique}{default}{check}{pos}';
+                $format = '{type}{length}{notnull}{unique}{default}{check}{comment}{pos}';
         }
         return $this->buildCompleteString($format);
     }

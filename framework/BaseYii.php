@@ -343,7 +343,7 @@ class BaseYii
             unset($type['class']);
             return static::$container->get($class, $params, $type);
         } elseif (is_callable($type, true)) {
-            return call_user_func($type, $params);
+            return static::$container->invoke($type, $params);
         } elseif (is_array($type)) {
             throw new InvalidConfigException('Object configuration must be an array containing a "class" element.');
         } else {
