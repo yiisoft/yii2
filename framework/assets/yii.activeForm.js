@@ -549,42 +549,44 @@
      */
     var updateInputs = function ($form, messages, submitting) {
         var data = $form.data('yiiActiveForm');
-
-        if (submitting) {
-            var errorAttributes = [];
-            $.each(data.attributes, function () {
-                if (!$(this.input).is(":disabled") && !this.cancelled && updateInput($form, this, messages)) {
-                    errorAttributes.push(this);
-                }
-            });
-
-            $form.trigger(events.afterValidate, [messages, errorAttributes]);
-
-            updateSummary($form, messages);
-
-            if (errorAttributes.length) {
-                if (data.settings.scrollToError) {
-                    var top = $form.find($.map(errorAttributes, function(attribute) {
-                        return attribute.input;
-                    }).join(',')).first().closest(':visible').offset().top;
-                    var wtop = $(window).scrollTop();
-                    if (top < wtop || top > wtop + $(window).height()) {
-                        $(window).scrollTop(top);
+        
+        if (data) {
+            if (submitting) {
+                var errorAttributes = [];
+                $.each(data.attributes, function () {
+                    if (!$(this.input).is(":disabled") && !this.cancelled && updateInput($form, this, messages)) {
+                        errorAttributes.push(this);
                     }
+                });
+
+                $form.trigger(events.afterValidate, [messages, errorAttributes]);
+
+                updateSummary($form, messages);
+
+                if (errorAttributes.length) {
+                    if (data.settings.scrollToError) {
+                        var top = $form.find($.map(errorAttributes, function(attribute) {
+                            return attribute.input;
+                        }).join(',')).first().closest(':visible').offset().top;
+                        var wtop = $(window).scrollTop();
+                        if (top < wtop || top > wtop + $(window).height()) {
+                            $(window).scrollTop(top);
+                        }
+                    }
+                    data.submitting = false;
+                } else {
+                    data.validated = true;
+                    $form.submit();
                 }
-                data.submitting = false;
             } else {
-                data.validated = true;
-                $form.submit();
+                $.each(data.attributes, function () {
+                    if (!this.cancelled && (this.status === 2 || this.status === 3)) {
+                        updateInput($form, this, messages);
+                    }
+                });
             }
-        } else {
-            $.each(data.attributes, function () {
-                if (!this.cancelled && (this.status === 2 || this.status === 3)) {
-                    updateInput($form, this, messages);
-                }
-            });
+            submitFinalize($form);
         }
-        submitFinalize($form);
     };
 
     /**
