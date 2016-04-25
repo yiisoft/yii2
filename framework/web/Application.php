@@ -77,10 +77,10 @@ class Application extends \yii\base\Application
                 list ($route, $params) = $request->resolve();
             } catch (NormalizerActionException $e) {
                 $action = $e->getAction();
-                switch ($action['type']) {
+                switch ($action) {
                     case 'redirect':
                         $url = '/'
-                            . $action['pathInfoNormalized']
+                            . $e->getRedirectUrl()
                             . ($request->queryString ? '?' . $request->queryString : '');
                         $this->getResponse()->redirect($url)->send();
                         Yii::$app->end();
