@@ -1174,7 +1174,7 @@ class QueryBuilder extends \yii\base\Object
             return $this->buildSubqueryInCondition($operator, $column, $values, $params);
         }
 
-        if ($column instanceof  \Traversable || count($column) > 1) {
+        if ($column instanceof \Traversable || count($column) > 1) {
             return $this->buildCompositeInCondition($operator, $column, $values, $params);
         }
 
@@ -1248,7 +1248,7 @@ class QueryBuilder extends \yii\base\Object
      * Builds SQL for IN condition
      *
      * @param string $operator
-     * @param array $columns
+     * @param array|\Traversable $columns
      * @param array $values
      * @param array $params
      * @return string SQL
@@ -1403,7 +1403,7 @@ class QueryBuilder extends \yii\base\Object
             return "$column $operator $phName";
         }
     }
-    
+
     /**
      * Creates a SELECT EXISTS() SQL statement.
      * @param string $rawSql the subquery in a raw form to select from.

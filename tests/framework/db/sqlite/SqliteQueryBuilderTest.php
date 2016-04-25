@@ -4,6 +4,7 @@ namespace yiiunit\framework\db\sqlite;
 
 use yii\db\Query;
 use yii\db\Schema;
+use yii\test\TraversableObject;
 use yiiunit\framework\db\QueryBuilderTest;
 
 /**
@@ -21,6 +22,25 @@ class SqliteQueryBuilderTest extends QueryBuilderTest
                 Schema::TYPE_PK,
                 $this->primaryKey()->first()->after('col_before'),
                 'integer PRIMARY KEY AUTOINCREMENT NOT NULL'
+            ],
+        ]);
+    }
+
+    public function conditionProvider()
+    {
+        return array_merge(parent::conditionProvider(), [
+            'composite in using array objects' => [
+                ['in', new TraversableObject(['id', 'name']), new TraversableObject([
+                    ['id' => 1, 'name' => 'oy'],
+                    ['id' => 2, 'name' => 'yo'],
+                ])],
+                '(([[id]] = :qp0 AND [[name]] = :qp1) OR ([[id]] = :qp2 AND [[name]] = :qp3))',
+                [':qp0' => 1, ':qp1' => 'oy', ':qp2' => 2, ':qp3' => 'yo']
+            ],
+            'composite in' => [
+                ['in', ['id', 'name'], [['id' =>1, 'name' => 'oy']]],
+                '(([[id]] = :qp0 AND [[name]] = :qp1))',
+                [':qp0' => 1, ':qp1' => 'oy']
             ],
         ]);
     }
