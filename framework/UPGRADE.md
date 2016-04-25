@@ -19,16 +19,21 @@ ______________________
 
 * The signature of `yii\helpers\BaseArrayHelper::index()` was changed. The method has got an extra optional parameter
   `$groups`.
+
 * `yii\helpers\BaseArrayHelper` methods `isIn()` and `isSubset()` throw `\yii\base\InvalidParamException`
   instead of `\InvalidArgumentException`. If you wrap calls of these methods in try/catch block, change expected
   exception class.
+
 * `yii\rbac\ManagerInterface::canAddChild()` method was added. If you have custom backend for RBAC you need to implement
   it.
+
 * The signature of `yii\web\User::loginRequired()` was changed. The method has got an extra optional parameter
   `$checkAcceptHeader`.
+
 * The signature of `yii\db\ColumnSchemaBuilder::__construct()` was changed. The method has got an extra optional
   parameter `$db`. In case you are instantiating this class yourself and using the `$config` parameter, you will need to
   move it to the right by one.
+
 * String types in the MSSQL column schema map were upgraded to Unicode storage types. This will have no effect on
   existing columns, but any new columns you generate via the migrations engine will now store data as Unicode.
 
