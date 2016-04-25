@@ -120,7 +120,10 @@ class DbSessionTest extends TestCase
                 ]
             ],
         ]);
-        
+
+        $consoleClass = Yii::$classMap['yii\helpers\Console'];
+        Yii::$classMap['yii\helpers\Console'] = Yii::getAlias('@yiiunit/framework/web/mocks/ConsoleMock.php');
+
         $history = $this->runMigrate('history');
         $this->assertEquals(['base'], $history);
 
@@ -129,5 +132,7 @@ class DbSessionTest extends TestCase
 
         $history = $this->runMigrate('down');
         $this->assertEquals(['base'], $history);
+
+        Yii::$classMap['yii\helpers\Console'] = $consoleClass;
     }
 }
