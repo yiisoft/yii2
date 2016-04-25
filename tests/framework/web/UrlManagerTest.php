@@ -3,6 +3,7 @@ namespace yiiunit\framework\web;
 
 use yii\web\Request;
 use yii\web\UrlManager;
+use yii\web\NormalizerActionException;
 use yiiunit\TestCase;
 
 /**
@@ -310,8 +311,14 @@ class UrlManagerTest extends TestCase
         $this->assertEquals(['post/view', ['id' => '123', 'title' => 'this+is+sample']], $result);
         // trailing slash is significant
         $request->pathInfo = 'post/123/this+is+sample/';
-        $result = $manager->parseRequest($request);
-        $this->assertEquals(['post/123/this+is+sample/', []], $result);
+        try {
+            $resultExceptionClass = null;
+            $result = $manager->parseRequest($request);
+        } catch (NormalizerActionException $e) {
+            $resultExceptionClass = get_class($e);
+        }
+        $this->assertEquals('yii\web\NormalizerActionException', $resultExceptionClass);
+        $this->assertEquals(['redirect', 'post/123/this+is+sample'], [$e->getAction(), $e->getRedirectUrl()]);
         // empty pathinfo
         $request->pathInfo = '';
         $result = $manager->parseRequest($request);
