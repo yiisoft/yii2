@@ -502,9 +502,18 @@ class ActiveQuery extends Query implements ActiveQueryInterface
             while (($pos = strpos($name, '.')) !== false) {
                 $childName = substr($name, $pos + 1);
                 $name = substr($name, 0, $pos);
+             
+                $alias = null;
+                if (preg_match('/^(.*?)(?:\s+AS\s+|\s+)(\w+)$/i', $name, $matches)) {
+                    // relation is defined with an alias, adjust $name and extract alias
+                    list(, $name, $alias) = $matches;
+                }
+
                 $fullName = $prefix === '' ? $name : "$prefix.$name";
                 if (!isset($relations[$fullName])) {
                     $relations[$fullName] = $relation = $primaryModel->getRelation($name);
+                    if (!empty($alias))
+                        $relation->alias( $alias );
                     $this->joinWithRelation($parent, $relation, $this->getJoinType($joinType, $fullName));
                 } else {
                     $relation = $relations[$fullName];
