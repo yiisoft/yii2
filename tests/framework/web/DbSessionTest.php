@@ -6,6 +6,7 @@ use Yii;
 use yii\db\Connection;
 use yii\db\Query;
 use yii\web\DbSession;
+use yiiunit\framework\console\controllers\EchoMigrateController;
 use yiiunit\TestCase;
 
 /**
@@ -95,7 +96,7 @@ class DbSessionTest extends TestCase
 
     protected function runMigrate($action, $params = [])
     {
-        $migrate = new \yii\console\controllers\MigrateController('migrate', Yii::$app, [
+        $migrate = new EchoMigrateController('migrate', Yii::$app, [
             'migrationPath' => '@yii/web/migrations',
             'interactive' => false,
         ]);
@@ -121,9 +122,6 @@ class DbSessionTest extends TestCase
             ],
         ]);
 
-        $consoleClass = Yii::$classMap['yii\helpers\Console'];
-        Yii::$classMap['yii\helpers\Console'] = Yii::getAlias('@yiiunit/framework/web/mocks/ConsoleMock.php');
-
         $history = $this->runMigrate('history');
         $this->assertEquals(['base'], $history);
 
@@ -132,7 +130,5 @@ class DbSessionTest extends TestCase
 
         $history = $this->runMigrate('down');
         $this->assertEquals(['base'], $history);
-
-        Yii::$classMap['yii\helpers\Console'] = $consoleClass;
     }
 }
