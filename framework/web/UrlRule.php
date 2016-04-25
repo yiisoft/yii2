@@ -218,49 +218,64 @@ class UrlRule extends Object implements UrlRuleInterface
         if (!empty($this->_routeParams)) {
             $this->_routeRule = '#^' . strtr($this->route, $tr2) . '$#u';
         }
-
-        $this->initNormalizer();
     }
 
     /**
      * Initializes normalizer configuration
-     * @throws \Exception
+     * @param UrlManager $manager the URL manager
+     * @throws \Exception if config is not understood
      */
-    protected function initNormalizer() {
+    protected function initNormalizer($manager) {
         $normalize = $this->normalize;
 
-        $default = [
-            // whether to collapse multiple slashes into one
+        $configNoAction = [
+            // whether to collapse multiple slashes to single
             'collapse-slashes' => false,
-            // whether trailing slash required
-            // true: yes
-            // false: no
-            // null: leave as is
-            'trailing-slash' => null,
+            // remove trailing slash if it exists
+            'remove-trailing-slash' => false,
+            // add trailing slash if there is no one
+            'add-trailing-slash' => false,
             // what action to perform if pathInfo was changed during normalization
-            // redirect: redirect to normalized path
-            // 404: throw NotFound exception
+            // redirect: instant redirect to normalized path
+            // route: return new route (must be configured via 'route')
             // none: no action, just route by normalized path
-            'action' => 'none'
+            'action' => 'none',
+            // string: route for $action == 'route', i.e. 'site/redirect'
+            'route' => null
         ];
 
         if (is_string($normalize) || is_null($normalize)) {
             switch ($normalize) {
                 case '':
+                case 'safe-remove-trailing-slash':
+                    // Default behavior.
+                    // Acts only if $suffix != '/'.
+                    // Redirects 'posts/' to 'posts' and 'posts.html/' to 'posts.html'
+                    // See issue #6498 for details.
+                    $suffix = (string)($this->suffix === null ? $manager->suffix : $this->suffix);
+                    $normalize = [
+                        'collapse-slashes' => false,
+                        'remove-trailing-slash' => ($suffix != '/') ? true : false,
+                        'add-trailing-slash' => false,
+                        'action' => 'redirect'
+                    ];
+                    break;
                 case 'disabled':
-                    $normalize = $default;
+                    $normalize = $configNoAction;
                     break;
                 case 'add-trailing-slash':
                     $normalize = [
                         'collapse-slashes' => true,
-                        'trailing-slash' => true,
+                        'add-trailing-slash' => true,
+                        'remove-trailing-slash' => false,
                         'action' => 'redirect'
                     ];
                     break;
                 case 'remove-trailing-slash':
                     $normalize = [
                         'collapse-slashes' => true,
-                        'trailing-slash' => false,
+                        'add-trailing-slash' => false,
+                        'remove-trailing-slash' => true,
                         'action' => 'redirect'
                     ];
                     break;
@@ -268,14 +283,13 @@ class UrlRule extends Object implements UrlRuleInterface
                     throw new \Exception('Unknown normalization strategy ' . $normalize);
             }
         } else {
-            $normalize = array_merge($default, $normalize);
+            $normalize = array_merge($configNoAction, $normalize);
         }
 
         $this->normalize = $normalize;
 
-        // if trailing slash is required, we need to set $this->suffix
-        // for proper url generation
-        if ($this->normalize['trailing-slash'] === true) {
+        // set $this->suffix if trailing slash is required (for createUrl())
+        if ($this->normalize['add-trailing-slash'] === true) {
             $this->suffix = '/';
         }
     }
@@ -297,11 +311,12 @@ class UrlRule extends Object implements UrlRuleInterface
             $pathInfo = ltrim(preg_replace('#/+#', '/', $pathInfo), '/');
         }
 
-        if (!is_null($normalize['trailing-slash'])) {
-            if ($normalize['trailing-slash'] && substr($pathInfo, -1) != '/') {
+        if ($normalize['add-trailing-slash']) {
+            if (substr($pathInfo, -1) != '/') {
                 $pathInfo .= '/';
             }
-            if (!$normalize['trailing-slash'] && substr($pathInfo, -1) == '/') {
+        } elseif ($normalize['remove-trailing-slash']) {
+            if (substr($pathInfo, -1) == '/') {
                 $pathInfo = rtrim($pathInfo, '/');
             }
         }
@@ -309,11 +324,45 @@ class UrlRule extends Object implements UrlRuleInterface
         return $pathInfo;
     }
 
+    protected function normalize($pathInfoOrig, $pathInfoNormalized, $origRoute) {
+        // check whether pathInfo was changed during normalization.
+        // If so, take the required action.
+        if ($pathInfoNormalized != $pathInfoOrig) {
+            switch ($this->normalize['action']) {
+                case 'redirect':
+                    $e = new NormalizerActionException();
+                    $e->setAction('redirect');
+                    $e->setRedirectUrl($pathInfoNormalized);
+                    $e->setOrigPathInfo($pathInfoOrig);
+                    $e->setOrigRoute($origRoute);
+                    throw $e;
+                    break;
+                case 'route':
+                    // construct new route
+                    $redirectRoute = $this->normalize['route'];
+                    $redirectParams = [
+                        'redirectUrl' => $pathInfoNormalized,
+                        'origRoute' => $origRoute,
+                        'origPathInfo' => $pathInfoOrig,
+                    ];
+                    return [$redirectRoute, $redirectParams];
+                    break;
+                case 'none':
+                    // no action
+                    return $origRoute;
+                default:
+                    throw new \Exception("Unknown normalizer action " . $this->normalize['action']);
+                    break;
+            }
+        }
+
+        return $origRoute;
+    }
+
     /**
      * Parses the given request and returns the corresponding route and parameters.
      * @param UrlManager $manager the URL manager
      * @param Request $request the request component
-     * @throws NotFoundHttpException
      * @return array|boolean the parsing result. The route and the parameters are returned as an array.
      * If false, it means this rule cannot be used to parse this path info.
      */
@@ -327,10 +376,11 @@ class UrlRule extends Object implements UrlRuleInterface
             return false;
         }
 
-        // remember original pathInfo and normalize it
+        // init normalizer, as it may depend on UrlManager $suffix
+        $this->initNormalizer($manager);
+
         $pathInfoOrig = $request->getPathInfo();
         $pathInfoNormalized = $this->normalizePathInfo($request->getPathInfo());
-        // below we try to route the request by normalized pathInfo
         $pathInfo = $pathInfoNormalized;
 
         $suffix = (string)($this->suffix === null ? $manager->suffix : $this->suffix);
@@ -354,26 +404,8 @@ class UrlRule extends Object implements UrlRuleInterface
         if (!preg_match($this->pattern, $pathInfo, $matches)) {
             return false;
         }
+
         $matches = $this->substitutePlaceholderNames($matches);
-
-        // if routing succeeded (some rule matched), check whether pathInfo
-        //  was changed during normalization. If so, take the required action.
-        if ($pathInfoNormalized != $pathInfoOrig) {
-            switch ($this->normalize['action']) {
-                case 'redirect':
-                    $url = '/' . $pathInfoNormalized
-                        . (Yii::$app->request->queryString ? '?' . Yii::$app->request->queryString : '');
-                    Yii::$app->getResponse()->redirect($url)->send();
-                    Yii::$app->end();
-                    break;
-                case '404':
-                    throw new NotFoundHttpException();
-                default:
-                    // do nothing
-                    break;
-            }
-        }
-
         foreach ($this->defaults as $name => $value) {
             if (!isset($matches[$name]) || $matches[$name] === '') {
                 $matches[$name] = $value;
@@ -397,7 +429,7 @@ class UrlRule extends Object implements UrlRuleInterface
 
         Yii::trace("Request parsed with URL rule: {$this->name}", __METHOD__);
 
-        return [$route, $params];
+        return $this->normalize($pathInfoOrig, $pathInfoNormalized, [$route, $params]);
     }
 
     /**
@@ -412,6 +444,9 @@ class UrlRule extends Object implements UrlRuleInterface
         if ($this->mode === self::PARSING_ONLY) {
             return false;
         }
+
+        // init normalizer, because it may change $this->suffix according to chosen strategy
+        $this->initNormalizer($manager);
 
         $tr = [];
 
