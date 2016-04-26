@@ -4,7 +4,7 @@ namespace yiiunit\framework\db\sqlite;
 
 use yii\db\Query;
 use yii\db\Schema;
-use yii\test\TraversableObject;
+use yiiunit\data\base\TraversableObject;
 use yiiunit\framework\db\QueryBuilderTest;
 
 /**
