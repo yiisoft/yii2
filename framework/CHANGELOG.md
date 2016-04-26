@@ -41,7 +41,7 @@ Yii Framework 2 Change Log
 - Bug #11280: Descendants of `yii\console\controllers\BaseMigrateController`, like the one for MongoDB, unable to create new migration (klimov-paul)
 - Bug: SQlite querybuilder did not create primary key with bigint for `TYPE_BIGPK` (cebe)
 - Enh #5469: Add mimetype validation by mask in FileValidator (kirsenn, samdark, silverfire)
-- Enh #7177, #10165: Added support for validating datetime values using intl short format to `DateValidator` (VirtualRJ)
+- Enh #7177, #10165: Added support for validating datetime and time values using intl short format to `DateValidator` (VirtualRJ, cebe)
 - Enh #8145, #8139, #10234 #11153: `yii\validators\Validator::$attributes` property now supports `!attribute` notation to validate attribute, but do not mark it as safe (mdmunir)
 - Enh #8148: Implemented ability to add comment on table and column in migration (vaseninm, silverfire)
 - Enh #8505: `yii\db\Query` now contains a andFilterCompare() method that allows filtering using operators in the query value (lennartvdd)
