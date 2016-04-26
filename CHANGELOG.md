@@ -39,6 +39,7 @@ Yii Framework 2 Change Log
 - Bug #11223: Fixed returning an empty array when DbManager::getRolesByUser() was called on a user with user id 0 (VirtualRJ)
 - Bug #11228: `yii.activeForm.js` - AJAX validation will not be triggered if client side validation failed (silverfire)
 - Bug #11280: Descendants of `yii\console\controllers\BaseMigrateController`, like the one for MongoDB, unable to create new migration (klimov-paul)
+- Bug #11425: Fixed namespace conflict with Markdown helper and Console helper (cebe, mdmunir)
 - Bug: SQlite querybuilder did not create primary key with bigint for `TYPE_BIGPK` (cebe)
 - Enh #5469: Add mimetype validation by mask in FileValidator (kirsenn, samdark, silverfire)
 - Enh #7177, #10165: Added support for validating datetime and time values using intl short format to `DateValidator` (VirtualRJ, cebe)
