@@ -97,6 +97,14 @@ class ActiveRecordTest extends DatabaseTestCase
         $this->assertEquals('user2', $customerName);
     }
 
+    public function testFindExists()
+    {
+        $this->assertTrue(Customer::find()->where(['[[id]]' => 2])->exists());
+        $this->assertFalse(Customer::find()->where(['[[id]]' => 42])->exists());
+        $this->assertTrue(Customer::find()->where(['[[id]]' => 2])->select('[[name]]')->exists());
+        $this->assertFalse(Customer::find()->where(['[[id]]' => 42])->select('[[name]]')->exists());
+    }
+
     public function testFindColumn()
     {
         /* @var $this TestCase|ActiveRecordTestTrait */

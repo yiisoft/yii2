@@ -214,6 +214,17 @@ class QueryTest extends DatabaseTestCase
         $this->assertFalse($result);
     }
 
+    public function testExists()
+    {
+        $db = $this->getConnection();
+
+        $result = (new Query)->from('customer')->where(['status' => 2])->exists($db);
+        $this->assertTrue($result);
+
+        $result = (new Query)->from('customer')->where(['status' => 3])->exists($db);
+        $this->assertFalse($result);
+    }
+
     public function testColumn()
     {
         $db = $this->getConnection();

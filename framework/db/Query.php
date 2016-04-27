@@ -360,10 +360,10 @@ class Query extends Component implements QueryInterface
      */
     public function exists($db = null)
     {
-        if ($db === null) {
-            $db = Yii::$app->getDb();
-        }
-        $command = $db->createCommand($db->getQueryBuilder()->selectExists($this->createCommand()->getRawSql()));
+        $command = $this->createCommand($db);
+        $params = $command->params;
+        $command->setSql($command->db->getQueryBuilder()->selectExists($command->getSql()));
+        $command->bindValues($params);
         return (boolean)$command->queryScalar();
     }
 
