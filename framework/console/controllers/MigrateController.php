@@ -92,8 +92,14 @@ class MigrateController extends BaseMigrateController
 
     /**
      * @var array column definition strings used for creating migration code.
-     * The format of each definition is `COLUMN_NAME:COLUMN_TYPE:COLUMN_DECORATOR`.
-     * For example, `--fields=name:string(12):notNull` produces a string column of size 12 which is not null.
+     *
+     * The format of each definition is `COLUMN_NAME:COLUMN_TYPE:COLUMN_DECORATOR`. Delimiter is `,`.
+     * For example, `--fields="name:string(12):notNull:unique"`
+     * produces a string column of size 12 which is not null and unique values.
+     *
+     * Note: primary key is added automatically and is named id by default.
+     * If you want to use another name you may specify it explicitly like
+     * `--fields="id_key:primaryKey,name:string(12):notNull:unique"`
      * @since 2.0.7
      */
     public $fields = [];
