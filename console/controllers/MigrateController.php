@@ -235,6 +235,7 @@ class MigrateController extends BaseMigrateController
 
     /**
      * @inheritdoc
+     * @since 2.0.8
      */
     protected function generateMigrationSourceCode($params)
     {
@@ -312,6 +313,7 @@ class MigrateController extends BaseMigrateController
      *
      * @param string $tableName the table name to generate.
      * @return string
+     * @since 2.0.8
      */
     protected function generateTableName($tableName)
     {
