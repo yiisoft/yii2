@@ -72,6 +72,7 @@ class FixtureController extends Controller
 
     /**
      * @inheritdoc
+     * @since 2.0.8
      */
     public function optionAliases()
     {
