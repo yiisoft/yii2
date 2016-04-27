@@ -204,6 +204,7 @@ class Response extends \yii\base\Response
         416 => 'Requested range unsatisfiable',
         417 => 'Expectation failed',
         418 => 'I\'m a teapot',
+        421 => 'Misdirected Request',
         422 => 'Unprocessable entity',
         423 => 'Locked',
         424 => 'Method failure',
