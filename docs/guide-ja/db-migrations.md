@@ -407,7 +407,7 @@ class m160328_040430_create_post extends Migration
 パラメータが渡されなかった場合は、テーブル名はカラム名から推測されます。
 
 上記の例で `author_id:integer:notNull:foreignKey(user)` は、`user` テーブルへの外部キーを持つ `author_id` という名前のカラムを生成します。
-一方、`category_id:integer:default(1):foreignKey` は、`category` テーブルへの外部キーを持つ `category_id` というカラムを生成します。
+一方、`category_id:integer:defaultValue(1):foreignKey` は、`category` テーブルへの外部キーを持つ `category_id` というカラムを生成します。
 
 
 ### テーブルを削除する
