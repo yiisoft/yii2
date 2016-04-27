@@ -127,6 +127,7 @@ class MigrateController extends BaseMigrateController
 
     /**
      * @inheritdoc
+     * @since 2.0.8
      */
     public function optionAliases()
     {
