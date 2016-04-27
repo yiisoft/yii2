@@ -4,7 +4,7 @@ Yii Framework 2 Change Log
 2.0.9 under development
 -----------------------
 
-- no changes in this release.
+- Enh #11414: Files specified as `null` in `yii\web\AssetBundle` won't be registered (Razzwan)
 
 
 2.0.8 April 28, 2016
