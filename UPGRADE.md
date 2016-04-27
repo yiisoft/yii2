@@ -8,14 +8,15 @@ if you want to upgrade from version A to version C and there is
 version B between A and C, you need to follow the instructions
 for both A and B.
 
-Make sure you have global install of latest version of composer asset plugin:
+Make sure you have global install of latest version of composer asset plugin as well as a stable version of composer:
 
 ```
+php composer.phar self-update
 php composer.phar global require "fxp/composer-asset-plugin:~1.1.1"
 ```
 
 Upgrade from Yii 2.0.7
-______________________
+----------------------
 
 * The signature of `yii\helpers\BaseArrayHelper::index()` was changed. The method has got an extra optional parameter
   `$groups`.
@@ -88,7 +89,6 @@ Upgrade from Yii 2.0.6
 * The `yii\console\controllers\MessageController` class has been refactored to be better configurable and now also allows
   setting a lot of configuration options via command line. If you extend from this class, make sure it works as expected after
   these changes.
-
 
 Upgrade from Yii 2.0.5
 ----------------------
@@ -169,7 +169,6 @@ Upgrade from Yii 2.0 RC
 * If you are using CUBRID DBMS, make sure to use at least version 9.3.0 as the server and also as the PDO extension.
   Quoting of values is broken in prior versions and Yii has no reliable way to work around this issue.
   A workaround that may have worked before has been removed in this release because it was not reliable.
-
 
 Upgrade from Yii 2.0 Beta
 -------------------------
