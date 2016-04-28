@@ -1,6 +1,8 @@
 Yii Framework 2 Change Log
 ==========================
 
+- Enh #11387: Oracle charset is now respected on connection to DB
+
 2.0.8 under development
 -----------------------
 
