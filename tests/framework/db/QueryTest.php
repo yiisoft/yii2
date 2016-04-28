@@ -214,6 +214,17 @@ class QueryTest extends DatabaseTestCase
         $this->assertFalse($result);
     }
 
+    public function testExists()
+    {
+        $db = $this->getConnection();
+
+        $result = (new Query)->from('customer')->where(['status' => 2])->exists($db);
+        $this->assertTrue($result);
+
+        $result = (new Query)->from('customer')->where(['status' => 3])->exists($db);
+        $this->assertFalse($result);
+    }
+
     public function testColumn()
     {
         $db = $this->getConnection();
@@ -241,6 +252,37 @@ class QueryTest extends DatabaseTestCase
 
         $count = (new Query)->select('[[status]], COUNT([[id]])')->from('customer')->groupBy('status')->count('*', $db);
         $this->assertEquals(2, $count);
+    }
+
+    /**
+     * @depends testFilterWhere
+     */
+    public function testAndFilterCompare()
+    {
+        $query = new Query;
+
+        $result = $query->andFilterCompare('name', null);
+        $this->assertInstanceOf('yii\db\Query', $result);
+        $this->assertNull($query->where);
+
+        $query->andFilterCompare('name', '');
+        $this->assertNull($query->where);
+
+        $query->andFilterCompare('name', 'John Doe');
+        $condition = ['=', 'name', 'John Doe'];
+        $this->assertEquals($condition, $query->where);
+
+        $condition = ['and', $condition, ['like', 'name', 'Doe']];
+        $query->andFilterCompare('name', 'Doe', 'like');
+        $this->assertEquals($condition, $query->where);
+
+        $condition = ['and', $condition, ['>', 'rating', '9']];
+        $query->andFilterCompare('rating', '>9');
+        $this->assertEquals($condition, $query->where);
+
+        $condition = ['and', $condition, ['<=', 'value', '100']];
+        $query->andFilterCompare('value', '<=100');
+        $this->assertEquals($condition, $query->where);
     }
 
     /**

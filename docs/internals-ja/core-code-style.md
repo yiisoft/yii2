@@ -126,7 +126,7 @@ class Foo
 - クラスのメソッドは常に修飾子 `private`、`protected` または `public` を使って、可視性を宣言すべきです。`var` は許可されません。
 - 関数の開始の中括弧は関数宣言の次の行に置くべきです。
 
-```
+```php
 /**
  * ドキュメント
  */
@@ -273,9 +273,9 @@ if (!$model && null === $event)
 ```php
 $result = $this->getResult();
 if (empty($result)) {
-  return true;
+    return true;
 } else {
-  // $result を処理
+    // $result を処理
 }
 ```
 
@@ -284,7 +284,7 @@ if (empty($result)) {
 ```php
 $result = $this->getResult();
 if (empty($result)) {
-  return true;
+    return true;
 }
 
 // $result を処理

@@ -431,6 +431,7 @@ class User extends Component
         $request = Yii::$app->getRequest();
         $canRedirect = !$checkAcceptHeader || $this->checkRedirectAcceptable();
         if ($this->enableSession
+            && $request->getIsGet()
             && (!$checkAjax || !$request->getIsAjax())
             && $canRedirect
         ) {

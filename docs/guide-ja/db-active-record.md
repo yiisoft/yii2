@@ -527,6 +527,11 @@ Customer::deleteAll(['status' => Customer::STATUS_INACTIVE]);
 > - [[yii\db\ActiveRecord::updateCounters()]] 
 > - [[yii\db\ActiveRecord::updateAllCounters()]] 
 
+### データをリフレッシュする際のライフサイクル <span id="refreshing-data-life-cycle"></span>
+
+[[yii\db\ActiveRecord::refresh()|refresh()]] を呼んでアクティブレコードインスタンスをリフレッシュする際は、リフレッシュが成功してメソッドが `true` を返すと
+[[yii\db\ActiveRecord::EVENT_AFTER_REFRESH|EVENT_AFTER_REFRESH]] イベントがトリガされます。
+
 
 ## トランザクションを扱う <span id="transactional-operations"></span>
 

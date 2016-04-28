@@ -292,6 +292,42 @@ class QueryBuilder extends \yii\db\QueryBuilder
 
     /**
      * @inheritdoc
+     * @throws NotSupportedException
+     */
+    public function addCommentOnColumn($table, $column, $comment)
+    {
+        throw new NotSupportedException(__METHOD__ . ' is not supported by SQLite.');
+    }
+
+    /**
+     * @inheritdoc
+     * @throws NotSupportedException
+     */
+    public function addCommentOnTable($table, $comment)
+    {
+        throw new NotSupportedException(__METHOD__ . ' is not supported by SQLite.');
+    }
+
+    /**
+     * @inheritdoc
+     * @throws NotSupportedException
+     */
+    public function dropCommentFromColumn($table, $column)
+    {
+        throw new NotSupportedException(__METHOD__ . ' is not supported by SQLite.');
+    }
+
+    /**
+     * @inheritdoc
+     * @throws NotSupportedException
+     */
+    public function dropCommentFromTable($table)
+    {
+        throw new NotSupportedException(__METHOD__ . ' is not supported by SQLite.');
+    }
+
+    /**
+     * @inheritdoc
      */
     public function buildLimit($limit, $offset)
     {

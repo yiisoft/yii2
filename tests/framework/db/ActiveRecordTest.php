@@ -97,6 +97,14 @@ class ActiveRecordTest extends DatabaseTestCase
         $this->assertEquals('user2', $customerName);
     }
 
+    public function testFindExists()
+    {
+        $this->assertTrue(Customer::find()->where(['[[id]]' => 2])->exists());
+        $this->assertFalse(Customer::find()->where(['[[id]]' => 42])->exists());
+        $this->assertTrue(Customer::find()->where(['[[id]]' => 2])->select('[[name]]')->exists());
+        $this->assertFalse(Customer::find()->where(['[[id]]' => 42])->select('[[name]]')->exists());
+    }
+
     public function testFindColumn()
     {
         /* @var $this TestCase|ActiveRecordTestTrait */
@@ -813,6 +821,74 @@ class ActiveRecordTest extends DatabaseTestCase
         $this->assertEquals(2, $orders[0]->id);
         $this->assertTrue($orders[0]->isRelationPopulated('itemsIndexed'));
         $this->assertEquals(0, count($orders[0]->itemsIndexed));
+    }
+
+    /**
+     * https://github.com/yiisoft/yii2/issues/10201
+     * https://github.com/yiisoft/yii2/issues/9047
+     */
+    public function testFindCompositeRelationWithJoin()
+    {
+        /* @var $orderItem OrderItem */
+        $orderItem = OrderItem::findOne([1, 1]);
+
+        $orderItemNoJoin = $orderItem->orderItemCompositeNoJoin;
+        $this->assertInstanceOf('yiiunit\data\ar\OrderItem', $orderItemNoJoin);
+
+        $orderItemWithJoin = $orderItem->orderItemCompositeWithJoin;
+        $this->assertInstanceOf('yiiunit\data\ar\OrderItem', $orderItemWithJoin);
+    }
+
+    public function testFindSimpleRelationWithJoin()
+    {
+        /* @var $order Order */
+        $order = Order::findOne(1);
+
+        $customerNoJoin = $order->customer;
+        $this->assertInstanceOf('yiiunit\data\ar\Customer', $customerNoJoin);
+
+        $customerWithJoin = $order->customerJoinedWithProfile;
+        $this->assertInstanceOf('yiiunit\data\ar\Customer', $customerWithJoin);
+
+        $customerWithJoinIndexOrdered = $order->customerJoinedWithProfileIndexOrdered;
+        $this->assertTrue(is_array($customerWithJoinIndexOrdered));
+        $this->assertArrayHasKey('user1', $customerWithJoinIndexOrdered);
+        $this->assertInstanceOf('yiiunit\data\ar\Customer', $customerWithJoinIndexOrdered['user1']);
+    }
+
+    public function tableNameProvider()
+    {
+        return [
+            ['order', 'order_item'],
+            ['order', '{{%order_item}}'],
+            ['{{%order}}', 'order_item'],
+            ['{{%order}}', '{{%order_item}}'],
+        ];
+    }
+
+    /**
+     * Test whether conditions are quoted correctly in conditions where joinWith is used.
+     * @see https://github.com/yiisoft/yii2/issues/11088
+     * @dataProvider tableNameProvider
+     */
+    public function testRelationWhereParams($orderTableName, $orderItemTableName)
+    {
+        Order::$tableName = $orderTableName;
+        OrderItem::$tableName = $orderItemTableName;
+
+        /** @var $order Order */
+        $order = Order::findOne(1);
+        $itemsSQL = $order->getOrderitems()->createCommand()->rawSql;
+        $expectedSQL = $this->replaceQuotes("SELECT * FROM [[order_item]] WHERE [[order_id]]=1");
+        $this->assertEquals($expectedSQL, $itemsSQL);
+
+        $order = Order::findOne(1);
+        $itemsSQL = $order->getOrderItems()->joinWith('item')->createCommand()->rawSql;
+        $expectedSQL = $this->replaceQuotes("SELECT [[order_item]].* FROM [[order_item]] LEFT JOIN [[item]] ON [[order_item]].[[item_id]] = [[item]].[[id]] WHERE [[order_item]].[[order_id]]=1");
+        $this->assertEquals($expectedSQL, $itemsSQL);
+
+        Order::$tableName = null;
+        OrderItem::$tableName = null;
     }
 
     public function testAlias()

@@ -3,7 +3,7 @@ Panduan Definitif Untuk Yii 2.0
 
 Tutorial ini dirilis di bawah [Persyaratan Dokumentasi Yii] (http://www.yiiframework.com/doc/terms/).
 
-Seluruh hak cipta.
+Seluruh hak cipta dilindungi.
 
 2014 (c) Yii Software LLC.
 

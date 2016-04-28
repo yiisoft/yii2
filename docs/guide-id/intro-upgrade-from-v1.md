@@ -7,15 +7,15 @@ menemukan perbedaan utama antara dua versi.
 
 Jika Anda belum pernah menggunakan Yii 1.1 sebelumnya, Anda dapat dengan aman melewati bagian ini dan menuju ke "[Persiapan](start-installation.md)".
 
-Harap dicatat bahwa Yii 2.0 memperkenalkan fitur baru yang tercakup dalam ringkasan ini. Hal ini sangat dianjurkan
-Anda membaca melalui panduan definitif keseluruhan untuk belajar tentang mereka semua. Kemungkinannya adalah bahwa
-beberapa fitur yang sebelumnya harus anda kembangkan sendiri sehingga menjadi bagian dari kode inti.
+Harap dicatat bahwa Yii 2.0 memperkenalkan lebih banyak fitur baru dari yang tercakup dalam ringkasan ini. Sangat dianjurkan
+Anda membaca keseluruhan panduan definitif untuk mempelajari hal tersebut. Kemungkinannya adalah bahwa
+beberapa fitur yang sebelumnya harus anda kembangkan sendiri kini menjadi bagian dari kode inti.
 
 
 Instalasi
 ------------
 
-Yii 2.0 sepenuhnya menggunakan [composer](https://getcomposer.org/), yaitu paket manager yang sudah diakui oleh PHP. Instalasi
+Yii 2.0 sepenuhnya menggunakan [composer](https://getcomposer.org/), yaitu dependency manager yang sudah diakui oleh PHP. Instalasi
 dari kerangka inti serta ekstensi, ditangani melalui Composer. Silakan merujuk ke
 bagian [Instalasi Yii](start-installation.md) untuk belajar cara menginstal Yii 2.0. Jika Anda menghendaki
 membuat ekstensi baru, atau mengubah ekstensi 1.1 yang sudah ke ekstensi 2.0 yang kompatibel, silakan
@@ -25,7 +25,7 @@ merujuk panduan [Membuat Ekstensi](structure-extensions.md#menciptakan-ekstensi)
 Persyaratan PHP
 ----------------
 
-Yii 2.0 membutuhkan PHP 5.4 atau di atas, yang merupakan perbaikan besar atas PHP versi 5.2 yang dibutuhkan oleh Yii 1.1.
+Yii 2.0 membutuhkan PHP 5.4 atau versi lebih tinggi, yang merupakan perbaikan besar atas PHP versi 5.2 yang dibutuhkan oleh Yii 1.1.
 Akibatnya, ada banyak perbedaan pada tingkat bahasa yang harus Anda perhatikan.
 Di bawah ini adalah ringkasan perubahan utama mengenai PHP:
 
@@ -136,14 +136,14 @@ Path Alias
 
 Yii 2.0 memperluas penggunaan alias path baik untuk file/direktori maupun URL. Yii 2.0 juga sekarang mensyaratkan
 nama alias dimulai dengan karakter `@`.
-Misalnya, alias `@yii` mengacu pada direktori instalasi Yii. Alias path 
+Misalnya, alias `@yii` mengacu pada direktori instalasi Yii. Alias path
 didukung di sebagian besar tempat di kode inti Yii. Misalnya, [[yii\caching\FileCache::cachePath]] dapat mengambil
 baik alias path maupun direktori normal.
 
 Sebuah alias juga terkait erat dengan namespace kelas. Disarankan alias didefinisikan untuk setiap akar namespace,
-sehingga memungkinkan Anda untuk menggunakan autoloader class Yii tanpa konfigurasi lebih lanjut. 
-Misalnya, karena `@yii` mengacu pada direktori instalasi Yii, class seperti `yii\web\Request` dapat otomatis diambil. 
-Jika Anda menggunakan librari pihak ketiga seperti Zend Framework. Anda dapat menentukan alias path `@Zend` yang mengacu pada 
+sehingga memungkinkan Anda untuk menggunakan autoloader class Yii tanpa konfigurasi lebih lanjut.
+Misalnya, karena `@yii` mengacu pada direktori instalasi Yii, class seperti `yii\web\Request` dapat otomatis diambil.
+Jika Anda menggunakan librari pihak ketiga seperti Zend Framework. Anda dapat menentukan alias path `@Zend` yang mengacu pada
 direktori instalasi framework direktori. Setelah Anda selesai melakukannya, Yii akan dapat menload setiap class dalam librari Zend Framework.
 
 Lebih jauh tentang alias path dapat ditemukan di bagian [Alias](concept-aliases.md).
@@ -215,7 +215,7 @@ Yii 2.0 menggunakan [[yii\web\Controller]] sebagai kelas dasar controller, yang 
 Dampak paling nyata dari perubahan ini pada kode Anda adalah bahwa aksi kontroler harus mengembalikan nilai konten
 alih-alih menampilkannya:
 
-````php
+```php
 public function actionView($id)
 {
     $model = \app\models\Post::findOne($id);
