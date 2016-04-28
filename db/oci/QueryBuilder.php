@@ -271,6 +271,7 @@ EOD;
 
     /**
      * @inheritdoc
+     * @since 2.0.8
      */
     public function dropCommentFromColumn($table, $column)
     {
@@ -279,6 +280,7 @@ EOD;
 
     /**
      * @inheritdoc
+     * @since 2.0.8
      */
     public function dropCommentFromTable($table)
     {
