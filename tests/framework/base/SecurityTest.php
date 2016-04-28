@@ -932,7 +932,7 @@ TEXT;
             }
         }
         // there is no /dev/urandom on windows so we expect this to fail
-        if (PHP_OS == 'win' && $functions['random_bytes'] == false && $functions['openssl_random_pseudo_bytes'] == false && $functions['mcrypt_create_iv'] === false ) {
+        if (DIRECTORY_SEPARATOR === '\\' && $functions['random_bytes'] === false && $functions['openssl_random_pseudo_bytes'] === false && $functions['mcrypt_create_iv'] === false ) {
             $this->setExpectedException('yii\base\Exception', 'Unable to generate a random key');
         }
         static::$functions = $functions;
