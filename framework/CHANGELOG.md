@@ -1,6 +1,8 @@
 Yii Framework 2 Change Log
 ==========================
 
+- Enh #11428: Speedup SQL SELECT in yii\db\oci\Schema\findColumns
+
 2.0.8 under development
 -----------------------
 

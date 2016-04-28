@@ -125,9 +125,9 @@ SELECT a.column_name, a.data_type, a.data_precision, a.data_scale, a.data_length
     a.nullable, a.data_default,
     (   SELECT D.constraint_type
         FROM ALL_CONS_COLUMNS C
-        inner join ALL_constraints D on D.OWNER = C.OWNER and D.constraint_name = C.constraint_name
-        WHERE C.OWNER = B.OWNER
-           and C.table_name = B.object_name
+        inner join ALL_constraints D on D.OWNER = C.OWNER  and d.TABLE_NAME=c.TABLE_NAME and D.constraint_name = C.constraint_name
+        WHERE C.OWNER = A.OWNER
+           and C.table_name = A.table_name
            and C.column_name = A.column_name
            and D.constraint_type = 'P') as Key,
     com.comments as column_comment
