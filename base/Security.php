@@ -525,7 +525,7 @@ class Security extends Component
                     break;
                 }
                 $buffer .= $someBytes;
-                $stillNeed -= StringHelper::byteLength($buffer);
+                $stillNeed -= StringHelper::byteLength($someBytes);
                 if ($stillNeed === 0) {
                     // Leaving file pointer open in order to make next generation faster by reusing it.
                     return $buffer;
