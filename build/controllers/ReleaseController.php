@@ -12,9 +12,30 @@ use yii\base\Exception;
 use yii\console\Controller;
 use yii\helpers\ArrayHelper;
 use yii\helpers\Console;
+use yii\helpers\FileHelper;
 
 /**
- * ReleaseController is there to help preparing releases
+ * ReleaseController is there to help preparing releases.
+ *
+ * Get a version overview:
+ *
+ *     ./build release/info
+ *
+ * run it with `--update` to fetch tags for all repos:
+ *
+ *     ./build release/info --update
+ *
+ * Make a framework release (apps are always in line with framework):
+ *
+ *     ./build release framework
+ *     ./build release app-basic
+ *     ./build release app-advanced
+ *
+ * Make an extension release (e.g. for redis):
+ *
+ *     ./build release redis
+ *
+ * Be sure to check the help info for individual sub-commands:
  *
  * @author Carsten Brandt <mail@cebe.cc>
  * @since 2.0
@@ -66,30 +87,35 @@ class ReleaseController extends Controller
      */
     public function actionInfo()
     {
-        $extensions = [
+        $items = [
             'framework',
+            'app-basic',
+            'app-advanced',
         ];
         $extensionPath = "{$this->basePath}/extensions";
         foreach (scandir($extensionPath) as $extension) {
             if (ctype_alpha($extension) && is_dir($extensionPath . '/' . $extension)) {
-                $extensions[] = $extension;
+                $items[] = $extension;
             }
         }
 
         if ($this->update) {
-            foreach($extensions as $extension) {
-                if ($extension === 'framework') {
-                    continue;
+            foreach($items as $item) {
+                $this->stdout("fetching tags for $item...");
+                if ($item === 'framework') {
+                    $this->gitFetchTags("{$this->basePath}");
+                } elseif (strncmp('app-', $item, 4) === 0) {
+                    $this->gitFetchTags("{$this->basePath}/apps/" . substr($item, 4));
+                } else {
+                    $this->gitFetchTags("{$this->basePath}/extensions/$item");
                 }
-                $this->stdout("fetching tags for $extension...");
-                $this->gitFetchTags("{$this->basePath}/extensions/$extension");
                 $this->stdout("done.\n", Console::FG_GREEN, Console::BOLD);
             }
         } else {
             $this->stdout("\nInformation may be outdated, re-run with `--update` to fetch latest tags.\n\n");
         }
 
-        $versions = $this->getCurrentVersions($extensions);
+        $versions = $this->getCurrentVersions($items);
         $nextVersions = $this->getNextVersions($versions, self::PATCH);
 
         // print version table
@@ -141,8 +167,12 @@ class ReleaseController extends Controller
      * committing and pushing them. Each git command must be confirmed and can be skipped individually.
      * You may adjust changes in a separate shell or your IDE while the command is waiting for confirmation.
      *
-     * @param array $what what do you want to release? this can either be an extension name such as `redis` or `bootstrap`,
-     * or `framework` if you want to release a new version of the framework itself.
+     * @param array $what what do you want to release? this can either be:
+     *
+     * - an extension name such as `redis` or `bootstrap`,
+     * - an application indicated by prefix `app-`, e.g. `app-basic`,
+     * - or `framework` if you want to release a new version of the framework itself.
+     *
      * @return int
      */
     public function actionRelease(array $what)
@@ -196,6 +226,67 @@ class ReleaseController extends Controller
         return 0;
     }
 
+    /**
+     * This will generate application packages for download page.
+     *
+     * Usage:
+     *
+     * ```
+     * ./build/build release/package app-basic
+     * ```
+     *
+     * @param array $what what do you want to package? this can either be:
+     *
+     * - an application indicated by prefix `app-`, e.g. `app-basic`,
+     *
+     * @return int
+     */
+    public function actionPackage(array $what)
+    {
+        $this->validateWhat($what, ['app']);
+        $versions = $this->getCurrentVersions($what);
+
+        $this->stdout("You are about to generate packages for the following things:\n\n");
+        foreach($what as $ext) {
+            if (strncmp('app-', $ext, 4) === 0) {
+                $this->stdout(" - ");
+                $this->stdout(substr($ext, 4), Console::FG_RED);
+                $this->stdout(" application version ");
+            } elseif ($ext === 'framework') {
+                $this->stdout(" - Yii Framework version ");
+            } else {
+                $this->stdout(" - ");
+                $this->stdout($ext, Console::FG_RED);
+                $this->stdout(" extension version ");
+            }
+            $this->stdout($versions[$ext], Console::BOLD);
+            $this->stdout("\n");
+        }
+        $this->stdout("\n");
+
+        $packagePath = "{$this->basePath}/packages";
+        $this->stdout("Packages will be stored in $packagePath\n\n");
+
+        if (!$this->confirm('Continue?', false)) {
+            $this->stdout("Canceled.\n");
+            return 1;
+        }
+
+        foreach($what as $ext) {
+            if ($ext === 'framework') {
+                throw new Exception('Can not package framework.');
+            } elseif (strncmp('app-', $ext, 4) === 0) {
+                $this->packageApplication(substr($ext, 4), $versions[$ext], $packagePath);
+            } else {
+                throw new Exception('Can not package extension.');
+            }
+        }
+
+        $this->stdout("\ndone. verify the versions composer installed above and push it to github!\n\n");
+
+        return 0;
+    }
+
     protected function printWhat(array $what, $newVersions, $versions)
     {
         foreach($what as $ext) {
@@ -229,20 +320,34 @@ class ReleaseController extends Controller
         }
     }
 
-    protected function validateWhat(array $what)
+    /**
+     * @param array $what list of items
+     * @param array $limit list of things to allow, or empty to allow any, can be `app`, `framework`, `extension`
+     * @throws \yii\base\Exception
+     */
+    protected function validateWhat(array $what, $limit = [])
     {
         foreach($what as $w) {
             if (strncmp('app-', $w, 4) === 0) {
+                if (!empty($limit) && !in_array('app', $limit)) {
+                    throw new Exception("Only the following types are allowed: ".implode(', ', $limit)."\n");
+                }
                 if (!is_dir($appPath = "{$this->basePath}/apps/" . substr($w, 4))) {
                     throw new Exception("Application path does not exist: \"{$appPath}\"\n");
                 }
                 $this->ensureGitClean($appPath);
             } elseif ($w === 'framework') {
+                if (!empty($limit) && !in_array('framework', $limit)) {
+                    throw new Exception("Only the following types are allowed: ".implode(', ', $limit)."\n");
+                }
                 if (!is_dir($fwPath = "{$this->basePath}/framework")) {
                     throw new Exception("Framework path does not exist: \"{$this->basePath}/framework\"\n");
                 }
                 $this->ensureGitClean($fwPath);
             } else {
+                if (!empty($limit) && !in_array('ext', $limit)) {
+                    throw new Exception("Only the following types are allowed: ".implode(', ', $limit)."\n");
+                }
                 if (!is_dir($extPath = "{$this->basePath}/extensions/$w")) {
                     throw new Exception("Extension path for \"$w\" does not exist: \"{$this->basePath}/extensions/$w\"\n");
                 }
@@ -453,7 +558,7 @@ class ReleaseController extends Controller
         $this->stdout("\n\nThe following steps are left for you to do manually:\n\n");
         $nextVersion2 = $this->getNextVersions($nextVersion, self::PATCH); // TODO support other versions
         $this->stdout("- close the $version milestone on github and open new ones for {$nextVersion["app-$name"]} and {$nextVersion2["app-$name"]}: https://github.com/yiisoft/yii2-app-$name/milestones\n");
-        $this->stdout("- Create Application packages and upload them to github.\n");
+        $this->stdout("- Create Application packages and upload them to github:  ./build release/package app-$name\n");
 
         $this->stdout("\n");
     }
@@ -477,6 +582,22 @@ class ReleaseController extends Controller
     protected function resetAppAliases()
     {
         Yii::setAlias('@app', $this->_oldAlias);
+    }
+
+    protected function packageApplication($name, $version, $packagePath)
+    {
+        FileHelper::createDirectory($packagePath);
+
+        $this->runCommand("composer create-project yiisoft/yii2-app-$name $name $version", $packagePath);
+        // clear cookie validation key in basic app
+        if (is_file($configFile = "$packagePath/$name/config/web.php")) {
+            $this->sed(
+                "/'cookieValidationKey' => '.*?',/",
+                "'cookieValidationKey' => '',",
+                $configFile
+            );
+        }
+        $this->runCommand("tar zcf yii-$name-app-$version.tgz $name", $packagePath);
     }
 
     protected function releaseExtension($name, $path, $version)
@@ -556,6 +677,22 @@ class ReleaseController extends Controller
         $this->stdout("\n");
     }
 
+
+    protected function runCommand($cmd, $path)
+    {
+        $this->stdout("running  $cmd  ...", Console::BOLD);
+        if ($this->dryRun) {
+            $this->stdout("dry run, command `$cmd` not executed.\n");
+            return;
+        }
+        chdir($path);
+        exec($cmd, $output, $ret);
+        if ($ret != 0) {
+            echo implode("\n", $output);
+            throw new Exception("Command \"$cmd\" failed with code " . $ret);
+        }
+        $this->stdout("\ndone.\n", Console::BOLD, Console::FG_GREEN);
+    }
 
     protected function runGit($cmd, $path)
     {
