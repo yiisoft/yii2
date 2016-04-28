@@ -678,6 +678,7 @@ class DbManager extends BaseManager
 
     /**
      * @inheritdoc
+     * @since 2.0.8
      */
     public function canAddChild($parent, $child)
     {
