@@ -945,7 +945,9 @@ TEXT;
             $key2 = $this->security->generateRandomKey($length);
             $this->assertInternalType('string', $key2);
             $this->assertEquals($length, strlen($key2));
-            $this->assertTrue($key1 != $key2);
+            if ($length >= 7) { // avoid random test failure, short strings are likely to collide
+                $this->assertTrue($key1 != $key2);
+            }
         }
 
         // test for /dev/urandom, reading larger data to see if loop works properly
