@@ -341,7 +341,7 @@ class ReleaseController extends Controller
         $this->stdout("done.\n", Console::FG_GREEN, Console::BOLD);
 
         $this->stdout('updating Yii version...');
-        $this->dryRun || $this->updateYiiVersion($frameworkPath, $nextVersion . '-dev');
+        $this->dryRun || $this->updateYiiVersion($frameworkPath, $nextVersion['framework'] . '-dev');
         $this->stdout("done.\n", Console::FG_GREEN, Console::BOLD);
 
 
