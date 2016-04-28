@@ -62,7 +62,6 @@ Yii Framework 2 Change Log
 - Enh #9604: `yii\db\BaseActiveRecord` now triggers event `EVENT_AFTER_REFRESH` after a record is refreshed (raoul2000)
 - Enh #9893: `yii.js` handleAction enhanced to support for data-form attribute, so links can trigger specific forms (SamMousa)
 - Enh #10309: Extracted `yii\web\UrlManager` rule cache key into `$cacheKey` protected property (lordthorzonus)
-- Enh #10322: `yii.activeForm.js` now respects the `formtarget` attribute of  submit button (anatolyrugalev)
 - Enh #10322: ActiveForm now respects formtarget attribute of submit button (AnatolyRugalev)
 - Enh #10451: Check of existence of `$_SERVER` in `\yii\web\Request` before using it (quantum13)
 - Enh #10475: Extracted `getUrlFromCache()` and `setRuleToCache()` protected methods from `yii\web\UrlManager::createUrl()` (dmdark)
