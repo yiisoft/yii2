@@ -5,6 +5,18 @@
  * @license http://www.yiiframework.com/license/
  */
 
+namespace yii\base;
+
+function function_exists($name) {
+
+    if (isset(\yiiunit\framework\base\SecurityTest::$functions[$name])) {
+        return \yiiunit\framework\base\SecurityTest::$functions[$name];
+    }
+    return \function_exists($name);
+}
+
+
+
 namespace yiiunit\framework\base;
 
 use yii\base\Security;
@@ -18,15 +30,27 @@ class SecurityTest extends TestCase
     const CRYPT_VECTORS = 'old';
 
     /**
+     * @var array set of functions for which a fake return value for `function_exists()` is provided.
+     */
+    public static $functions = [];
+
+    /**
      * @var ExposedSecurity
      */
     protected $security;
 
     protected function setUp()
     {
+        static::$functions = [];
         parent::setUp();
         $this->security = new ExposedSecurity();
         $this->security->derivationIterations = 1000; // speed up test running
+    }
+
+    protected function tearDown()
+    {
+        static::$functions = [];
+        parent::tearDown();
     }
 
     // Tests :
@@ -799,9 +823,70 @@ TEXT;
         $this->assertEquals($data, $this->security->decryptByPassword($encrypted, $password));
     }
 
-    public function testGenerateRandomKey()
+
+    public function randomKeyInvalidInputs()
     {
-        $length = 21;
+        return [
+            [ 0 ],
+            [ -1 ],
+            [ '0' ],
+            [ '34' ],
+            [ [] ],
+        ];
+    }
+
+    /**
+     * @dataProvider randomKeyInvalidInputs
+     * @expectedException \yii\base\InvalidParamException
+     */
+    public function testRandomKeyInvalidInput($input)
+    {
+        $key1 = $this->security->generateRandomKey($input);
+    }
+
+
+    /**
+     * returns a set of different combinations of functions available.
+     */
+    public function randomKeyVariants()
+    {
+        return [
+            [ ['random_bytes' => true,  'openssl_random_pseudo_bytes' => true,  'mcrypt_create_iv' => true ] ],
+            [ ['random_bytes' => true,  'openssl_random_pseudo_bytes' => true,  'mcrypt_create_iv' => false ] ],
+            [ ['random_bytes' => true,  'openssl_random_pseudo_bytes' => false, 'mcrypt_create_iv' => true ] ],
+            [ ['random_bytes' => true,  'openssl_random_pseudo_bytes' => false, 'mcrypt_create_iv' => false ] ],
+            [ ['random_bytes' => false, 'openssl_random_pseudo_bytes' => true,  'mcrypt_create_iv' => true ] ],
+            [ ['random_bytes' => false, 'openssl_random_pseudo_bytes' => true,  'mcrypt_create_iv' => false ] ],
+            [ ['random_bytes' => false, 'openssl_random_pseudo_bytes' => false, 'mcrypt_create_iv' => true ] ],
+            [ ['random_bytes' => false, 'openssl_random_pseudo_bytes' => false, 'mcrypt_create_iv' => false ] ],
+        ];
+    }
+
+    /**
+     * @dataProvider randomKeyVariants
+     */
+    public function testGenerateRandomKey($functions)
+    {
+        foreach($functions as $fun => $available) {
+            if ($available && !\function_exists($fun)) {
+                $this->markTestSkipped("Can not test generateRandomKey() branch that includes $fun, because it is not available on your system.");
+            }
+        }
+        static::$functions = $functions;
+
+        // test various string lengths
+        for($length = 1; $length < 64; $length++) {
+            $key1 = $this->security->generateRandomKey($length);
+            $this->assertInternalType('string', $key1);
+            $this->assertEquals($length, strlen($key1));
+            $key2 = $this->security->generateRandomKey($length);
+            $this->assertInternalType('string', $key2);
+            $this->assertEquals($length, strlen($key2));
+            $this->assertTrue($key1 != $key2);
+        }
+
+        // test for /dev/urandom, reading larger data to see if loop works properly
+        $length = 1024 * 1024;
         $key1 = $this->security->generateRandomKey($length);
         $this->assertInternalType('string', $key1);
         $this->assertEquals($length, strlen($key1));
