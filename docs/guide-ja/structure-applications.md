@@ -182,6 +182,8 @@ if (YII_ENV_DEV) {
 ]
 ```
 
+> Info: このプロパティを有効にすると、開発環境でデバッグパネルが動作しなくなります。
+
 
 #### [[yii\base\Application::components|components]] <span id="components"></span>
 

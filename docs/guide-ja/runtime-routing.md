@@ -109,6 +109,8 @@ $url = Url::to(['post/view', 'id' => 100]);
 
 `catchAll` プロパティは配列を取り、最初の要素はルートを指定し、残りの要素 (「名前-値」のペア) は [アクションのパラメータ](structure-controllers.md#action-parameters) を指定するものでなければなりません。
 
+> Info: このプロパティを有効にすると、開発環境でデバッグパネルが動作しなくなります。
+
 
 ## URL を生成する <span id="creating-urls"></span>
 
