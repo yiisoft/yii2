@@ -167,8 +167,10 @@ class ReleaseController extends Controller
         $this->stdout("\n");
 
         $this->stdout("Before you make a release briefly go over the changes and check if you spot obvious mistakes:\n\n", Console::BOLD);
-        $this->stdout("- no accidentally added CHANGELOG lines for other versions than this one?\n");
-        $this->stdout("- are all new `@since` tags for this relase version?\n");
+        if (strncmp('app-', reset($what), 4) !== 0) {
+            $this->stdout("- no accidentally added CHANGELOG lines for other versions than this one?\n");
+            $this->stdout("- are all new `@since` tags for this relase version?\n");
+        }
         $travisUrl = reset($what) === 'framework' ? '' : '-'.reset($what);
         $this->stdout("- are unit tests passing on travis? https://travis-ci.org/yiisoft/yii2$travisUrl/builds\n");
         $this->stdout("- other issues with code changes?\n");
@@ -184,6 +186,8 @@ class ReleaseController extends Controller
         foreach($what as $ext) {
             if ($ext === 'framework') {
                 $this->releaseFramework("{$this->basePath}/framework", $newVersions['framework']);
+            } elseif (strncmp('app-', $ext, 4) === 0) {
+                $this->releaseApplication(substr($ext, 4), "{$this->basePath}/apps/" . substr($ext, 4), $newVersions[$ext]);
             } else {
                 $this->releaseExtension($ext, "{$this->basePath}/extensions/$ext", $newVersions[$ext]);
             }
@@ -195,7 +199,11 @@ class ReleaseController extends Controller
     protected function printWhat(array $what, $newVersions, $versions)
     {
         foreach($what as $ext) {
-            if ($ext === 'framework') {
+            if (strncmp('app-', $ext, 4) === 0) {
+                $this->stdout(" - ");
+                $this->stdout(substr($ext, 4), Console::FG_RED);
+                $this->stdout(" application version ");
+            } elseif ($ext === 'framework') {
                 $this->stdout(" - Yii Framework version ");
             } else {
                 $this->stdout(" - ");
@@ -224,7 +232,12 @@ class ReleaseController extends Controller
     protected function validateWhat(array $what)
     {
         foreach($what as $w) {
-            if ($w === 'framework') {
+            if (strncmp('app-', $w, 4) === 0) {
+                if (!is_dir($appPath = "{$this->basePath}/apps/" . substr($w, 4))) {
+                    throw new Exception("Application path does not exist: \"{$appPath}\"\n");
+                }
+                $this->ensureGitClean($appPath);
+            } elseif ($w === 'framework') {
                 if (!is_dir($fwPath = "{$this->basePath}/framework")) {
                     throw new Exception("Framework path does not exist: \"{$this->basePath}/framework\"\n");
                 }
@@ -357,11 +370,113 @@ class ReleaseController extends Controller
         $nextVersion2 = $this->getNextVersions($nextVersion, self::PATCH); // TODO support other versions
         $this->stdout("- wait for your changes to be propagated to the repo and create a tag $version on  https://github.com/yiisoft/yii2-framework\n\n");
         $this->stdout("- close the $version milestone on github and open new ones for {$nextVersion['framework']} and {$nextVersion2['framework']}: https://github.com/yiisoft/yii2/milestones\n");
+        $this->stdout("- create a release on github.\n");
         $this->stdout("- release news and announcement.\n");
         $this->stdout("- update the website (will be automated soon and is only relevant for the new website).\n");
+        $this->stdout("\n");
+        $this->stdout("- release applications: ./build/build release app-basic\n");
+        $this->stdout("- release applications: ./build/build release app-advanced\n");
 
         $this->stdout("\n");
 
+    }
+
+    protected function releaseApplication($name, $path, $version)
+    {
+        $this->stdout("\n");
+        $this->stdout($h = "Preparing release for application  $name  version $version", Console::BOLD);
+        $this->stdout("\n" . str_repeat('-', strlen($h)) . "\n\n", Console::BOLD);
+
+        $this->runGit('git checkout master', $path); // TODO add compatibility for other release branches
+        $this->runGit('git pull', $path); // TODO add compatibility for other release branches
+
+        // adjustments
+
+        $this->stdout("fixing various PHPdoc style issues...\n", Console::BOLD);
+        $this->setAppAliases($name, $path);
+        $this->dryRun || Yii::$app->runAction('php-doc/fix', [$path, 'skipFrameworkRequirements' => true]);
+        $this->resetAppAliases();
+        $this->stdout("done.\n", Console::FG_GREEN, Console::BOLD);
+
+        $this->stdout("updating PHPdoc @property annotations...\n", Console::BOLD);
+        $this->setAppAliases($name, $path);
+        $this->dryRun || Yii::$app->runAction('php-doc/property', [$path, 'skipFrameworkRequirements' => true]);
+        $this->resetAppAliases();
+        $this->stdout("done.\n", Console::FG_GREEN, Console::BOLD);
+
+        $this->stdout("updating composer stability...\n", Console::BOLD);
+        $this->dryRun || $this->composerSetStability(["app-$name"], $version);
+        $this->stdout("done.\n", Console::FG_GREEN, Console::BOLD);
+
+        $this->stdout("\nIn the following you can check the above changes using git diff.\n\n");
+        do {
+            $this->runGit("git diff --color", $path);
+            $this->stdout("\n\n\nCheck whether the above diff is okay, if not you may change things as needed before continuing.\n");
+            $this->stdout("You may abort the program with Ctrl + C and reset the changes by running `git checkout -- .` in the repo.\n\n");
+        } while(!$this->confirm("Type `yes` to continue, `no` to view git diff again. Continue?"));
+
+        $this->stdout("\n\n");
+        $this->stdout("    ****          RELEASE TIME!         ****\n", Console::FG_YELLOW, Console::BOLD);
+        $this->stdout("    ****    Commit, Tag and Push it!    ****\n", Console::FG_YELLOW, Console::BOLD);
+        $this->stdout("\n\nHint: if you decide 'no' for any of the following, the command will not be executed. You may manually run them later if needed. E.g. try the release locally without pushing it.\n\n");
+
+        $this->runGit("git commit -a -m \"release version $version\"", $path);
+        $this->runGit("git tag -a $version -m\"version $version\"", $path);
+        $this->runGit("git push origin master", $path);
+        $this->runGit("git push --tags", $path);
+
+        $this->stdout("\n\n");
+        $this->stdout("CONGRATULATIONS! You have just released application ", Console::FG_YELLOW, Console::BOLD);
+        $this->stdout($name, Console::FG_RED, Console::BOLD);
+        $this->stdout(" version ", Console::FG_YELLOW, Console::BOLD);
+        $this->stdout($version, Console::BOLD);
+        $this->stdout("!\n\n", Console::FG_YELLOW, Console::BOLD);
+
+        // prepare next release
+
+        $this->stdout("Time to prepare the next release...\n\n", Console::FG_YELLOW, Console::BOLD);
+
+        $this->stdout("updating composer stability...\n", Console::BOLD);
+        $this->dryRun || $this->composerSetStability(["app-$name"], 'dev');
+        $this->stdout("done.\n", Console::FG_GREEN, Console::BOLD);
+
+        $nextVersion = $this->getNextVersions(["app-$name" => $version], self::PATCH); // TODO support other versions
+
+        $this->stdout("\n");
+        $this->runGit("git diff --color", $path);
+        $this->stdout("\n\n");
+        $this->runGit("git commit -a -m \"prepare for next release\"", $path);
+        $this->runGit("git push origin master", $path);
+
+        $this->stdout("\n\nDONE!", Console::FG_YELLOW, Console::BOLD);
+
+        $this->stdout("\n\nThe following steps are left for you to do manually:\n\n");
+        $nextVersion2 = $this->getNextVersions($nextVersion, self::PATCH); // TODO support other versions
+        $this->stdout("- close the $version milestone on github and open new ones for {$nextVersion["app-$name"]} and {$nextVersion2["app-$name"]}: https://github.com/yiisoft/yii2-app-$name/milestones\n");
+        $this->stdout("- Create Application packages and upload them to github.\n");
+
+        $this->stdout("\n");
+    }
+
+    private $_oldAlias;
+
+    protected function setAppAliases($app, $path)
+    {
+        $this->_oldAlias = Yii::getAlias('@app');
+        switch($app) {
+            case 'basic':
+                Yii::setAlias('@app', $path);
+                break;
+            case 'advanced':
+                // setup @frontend, @backend etc...
+                require("$path/common/config/bootstrap.php");
+                break;
+        }
+    }
+
+    protected function resetAppAliases()
+    {
+        Yii::setAlias('@app', $this->_oldAlias);
     }
 
     protected function releaseExtension($name, $path, $version)
@@ -663,6 +778,8 @@ class ReleaseController extends Controller
         foreach($what as $ext) {
             if ($ext === 'framework') {
                 chdir("{$this->basePath}/framework");
+            } elseif (strncmp('app-', $ext, 4) === 0) {
+                chdir("{$this->basePath}/apps/" . substr($ext, 4));
             } else {
                 chdir("{$this->basePath}/extensions/$ext");
             }
