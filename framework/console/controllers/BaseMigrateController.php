@@ -467,7 +467,7 @@ abstract class BaseMigrateController extends Controller
      *
      * @param string $name the name of the new migration. This should only contain
      * letters, digits and/or underscores.
-     * 
+     *
      * Note: If the migration name is of a special form, for example create_xxx or
      * drop_xxx then the generated migration file will contain extra code,
      * in this case for creating/dropping tables.

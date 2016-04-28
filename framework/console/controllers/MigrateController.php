@@ -89,7 +89,6 @@ class MigrateController extends BaseMigrateController
      * @since 2.0.8
      */
     public $useTablePrefix = false;
-
     /**
      * @var array column definition strings used for creating migration code.
      *
