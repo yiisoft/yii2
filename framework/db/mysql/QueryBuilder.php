@@ -222,6 +222,7 @@ class QueryBuilder extends \yii\db\QueryBuilder
 
     /**
      * @inheritdoc
+     * @since 2.0.8
      */
     public function addCommentOnColumn($table, $column, $comment)
     {
@@ -237,6 +238,7 @@ class QueryBuilder extends \yii\db\QueryBuilder
 
     /**
      * @inheritdoc
+     * @since 2.0.8
      */
     public function addCommentOnTable($table, $comment)
     {
@@ -245,6 +247,7 @@ class QueryBuilder extends \yii\db\QueryBuilder
 
     /**
      * @inheritdoc
+     * @since 2.0.8
      */
     public function dropCommentFromColumn($table, $column)
     {
@@ -253,6 +256,7 @@ class QueryBuilder extends \yii\db\QueryBuilder
 
     /**
      * @inheritdoc
+     * @since 2.0.8
      */
     public function dropCommentFromTable($table)
     {
