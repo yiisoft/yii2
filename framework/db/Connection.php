@@ -590,6 +590,9 @@ class Connection extends Component
                 } elseif ($driver === 'sqlsrv') {
                     $pdoClass = 'yii\db\mssql\SqlsrvPDO';
                 }
+                if ($driver === 'oci' && $this->charset !== null ){
+                	$this->dsn .= ";charset=".$this->charset;
+                }				
             }
         }
 
