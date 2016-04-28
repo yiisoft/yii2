@@ -52,7 +52,8 @@ use yii\base\ErrorHandler;
  *
  * @property integer $flushInterval How many messages should be logged before they are sent to targets. This
  * method returns the value of [[Logger::flushInterval]].
- * @property Logger $logger The logger. If not set, [[\Yii::getLogger()]] will be used.
+ * @property Logger $logger The logger. If not set, [[\Yii::getLogger()]] will be used. Note that the type of
+ * this property differs in getter and setter. See [[getLogger()]] and [[setLogger()]] for details.
  * @property integer $traceLevel How many application call stacks should be logged together with each message.
  * This method returns the value of [[Logger::traceLevel]]. Defaults to 0.
  *

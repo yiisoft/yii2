@@ -62,7 +62,6 @@ class AttributeBehavior extends Behavior
      * ```
      */
     public $attributes = [];
-
     /**
      * @var mixed the value that will be assigned to the current attributes. This can be an anonymous function,
      * callable in array format (e.g. `[$this, 'methodName']`), an [[Expression]] object representing a DB expression
@@ -78,13 +77,13 @@ class AttributeBehavior extends Behavior
      * ```
      */
     public $value;
-
     /**
      * @var boolean whether to skip this behavior when the `$owner` has not been
      * modified
      * @since 2.0.8
      */
     public $skipUpdateOnClean = true;
+
 
     /**
      * @inheritdoc

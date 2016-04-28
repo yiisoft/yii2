@@ -18,10 +18,10 @@ use yii\base\InvalidParamException;
  * @property array $keys The list of key values corresponding to [[models]]. Each data model in [[models]] is
  * uniquely identified by the corresponding key value in this array.
  * @property array $models The list of data models in the current page.
- * @property Pagination|false $pagination The pagination object. If this is false, it means the pagination
+ * @property Pagination|boolean $pagination The pagination object. If this is false, it means the pagination
  * is disabled. Note that the type of this property differs in getter and setter. See [[getPagination()]] and
  * [[setPagination()]] for details.
- * @property Sort|false $sort The sorting object. If this is false, it means the sorting is disabled. Note
+ * @property Sort|boolean $sort The sorting object. If this is false, it means the sorting is disabled. Note
  * that the type of this property differs in getter and setter. See [[getSort()]] and [[setSort()]] for details.
  * @property integer $totalCount Total number of possible data models.
  *

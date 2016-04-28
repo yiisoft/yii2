@@ -70,6 +70,8 @@ class ColumnSchemaBuilder extends Object
      * @since 2.0.8
      */
     protected $isFirst;
+
+
     /**
      * @var array mapping of abstract column types (keys) to type categories (values).
      * @since 2.0.8
@@ -107,7 +109,6 @@ class ColumnSchemaBuilder extends Object
      * @since 2.0.8
      */
     public $comment;
-
 
     /**
      * Create a column schema builder instance giving the type and value precision.
