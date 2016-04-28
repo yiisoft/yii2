@@ -241,27 +241,12 @@ class ReleaseController extends Controller
 
     protected function releaseFramework($frameworkPath, $version)
     {
-        throw new Exception('NOT IMPLEMENTED COMPLETELY YET');
-
         $this->stdout("\n");
         $this->stdout($h = "Preparing framework release version $version", Console::BOLD);
         $this->stdout("\n" . str_repeat('-', strlen($h)) . "\n\n", Console::BOLD);
 
-        if ($this->confirm('Run `git checkout master`?', true)) {
-            chdir($frameworkPath);
-            exec('git checkout master', $output, $ret); // TODO add compatibility for other release branches
-            if ($ret != 0) {
-                throw new Exception('Command "git checkout master" failed with code ' . $ret);
-            }
-        }
-
-        if ($this->confirm('Run `git pull`?', true)) {
-            chdir($frameworkPath);
-            exec('git pull', $output, $ret);
-            if ($ret != 0) {
-                throw new Exception('Command "git pull" failed with code ' . $ret);
-            }
-        }
+        $this->runGit('git checkout master', $frameworkPath); // TODO add compatibility for other release branches
+        $this->runGit('git pull', $frameworkPath); // TODO add compatibility for other release branches
 
         // checks
 
@@ -271,38 +256,57 @@ class ReleaseController extends Controller
 
         // adjustments
 
-
-        $this->stdout('prepare classmap...');
+        $this->stdout('prepare classmap...', Console::BOLD);
         $this->dryRun || Yii::$app->runAction('classmap', [$frameworkPath]);
         $this->stdout("done.\n", Console::FG_GREEN, Console::BOLD);
 
-        $this->stdout('fixing various PHPdoc style issues...');
-        $this->dryRun || Yii::$app->runAction('php-doc/fix', [$frameworkPath]);
-        $this->stdout("done.\n", Console::FG_GREEN, Console::BOLD);
-
-        $this->stdout('updating PHPdoc @property annotations...');
-        $this->dryRun || Yii::$app->runAction('php-doc/property', [$frameworkPath]);
-        $this->stdout("done.\n", Console::FG_GREEN, Console::BOLD);
-
-        $this->stdout('updating mimetype magic file...');
+        $this->stdout('updating mimetype magic file...', Console::BOLD);
         $this->dryRun || Yii::$app->runAction('mime-type', ["$frameworkPath/helpers/mimeTypes.php"]);
         $this->stdout("done.\n", Console::FG_GREEN, Console::BOLD);
 
-        $this->stdout('sorting changelogs...');
+        $this->stdout("fixing various PHPdoc style issues...\n", Console::BOLD);
+        $this->dryRun || Yii::$app->runAction('php-doc/fix', [$frameworkPath]);
+        $this->stdout("done.\n", Console::FG_GREEN, Console::BOLD);
+
+        $this->stdout("updating PHPdoc @property annotations...\n", Console::BOLD);
+        $this->dryRun || Yii::$app->runAction('php-doc/property', [$frameworkPath]);
+        $this->stdout("done.\n", Console::FG_GREEN, Console::BOLD);
+
+        $this->stdout('sorting changelogs...', Console::BOLD);
         $this->dryRun || $this->resortChangelogs(['framework'], $version);
         $this->stdout("done.\n", Console::FG_GREEN, Console::BOLD);
 
-        $this->stdout('closing changelogs...');
+        $this->stdout('closing changelogs...', Console::BOLD);
         $this->dryRun || $this->closeChangelogs(['framework'], $version);
         $this->stdout("done.\n", Console::FG_GREEN, Console::BOLD);
 
         $this->stdout('updating Yii version...');
-        $this->dryRun || $this->updateYiiVersion($frameworkPath, $version);;
+        $this->dryRun || $this->updateYiiVersion($frameworkPath, $version);
         $this->stdout("done.\n", Console::FG_GREEN, Console::BOLD);
 
-        // TODO Commit and push
+        $this->stdout("\nIn the following you can check the above changes using git diff.\n\n");
+        do {
+            $this->runGit("git diff --color", $frameworkPath);
+            $this->stdout("\n\n\nCheck whether the above diff is okay, if not you may change things as needed before continuing.\n");
+            $this->stdout("You may abort the program with Ctrl + C and reset the changes by running `git checkout -- .` in the repo.\n\n");
+        } while(!$this->confirm("Type `yes` to continue, `no` to view git diff again. Continue?"));
 
-        // TODO tag and push
+        $this->stdout("\n\n");
+        $this->stdout("    ****          RELEASE TIME!         ****\n", Console::FG_YELLOW, Console::BOLD);
+        $this->stdout("    ****    Commit, Tag and Push it!    ****\n", Console::FG_YELLOW, Console::BOLD);
+        $this->stdout("\n\nHint: if you decide 'no' for any of the following, the command will not be executed. You may manually run them later if needed. E.g. try the release locally without pushing it.\n\n");
+
+        $this->runGit("git commit -a -m \"release version $version\"", $frameworkPath);
+        $this->runGit("git tag -a $version -m\"version $version\"", $frameworkPath);
+        $this->runGit("git push origin master", $frameworkPath);
+        $this->runGit("git push --tags", $frameworkPath);
+
+        $this->stdout("\n\n");
+        $this->stdout("CONGRATULATIONS! You have just released extension ", Console::FG_YELLOW, Console::BOLD);
+        $this->stdout('framework', Console::FG_RED, Console::BOLD);
+        $this->stdout(" version ", Console::FG_YELLOW, Console::BOLD);
+        $this->stdout($version, Console::BOLD);
+        $this->stdout("!\n\n", Console::FG_YELLOW, Console::BOLD);
 
         // TODO release applications
         // $this->composerSetStability($what, $version);
@@ -324,6 +328,39 @@ class ReleaseController extends Controller
 //            if (in_array('framework', $what)) {
 //                $this->updateYiiVersion($devVersion);
 //            }
+
+
+
+        // prepare next release
+
+        $this->stdout("Time to prepare the next release...\n\n", Console::FG_YELLOW, Console::BOLD);
+
+        $this->stdout('opening changelogs...', Console::BOLD);
+        $nextVersion = $this->getNextVersions(['framework' => $version], self::PATCH); // TODO support other versions
+        $this->dryRun || $this->openChangelogs(['framework'], $nextVersion['framework']);
+        $this->stdout("done.\n", Console::FG_GREEN, Console::BOLD);
+
+        $this->stdout('updating Yii version...');
+        $this->dryRun || $this->updateYiiVersion($frameworkPath, $nextVersion . '-dev');
+        $this->stdout("done.\n", Console::FG_GREEN, Console::BOLD);
+
+
+        $this->stdout("\n");
+        $this->runGit("git diff --color", $frameworkPath);
+        $this->stdout("\n\n");
+        $this->runGit("git commit -a -m \"prepare for next release\"", $frameworkPath);
+        $this->runGit("git push origin master", $frameworkPath);
+
+        $this->stdout("\n\nDONE!", Console::FG_YELLOW, Console::BOLD);
+
+        $this->stdout("\n\nThe following steps are left for you to do manually:\n\n");
+        $nextVersion2 = $this->getNextVersions($nextVersion, self::PATCH); // TODO support other versions
+        $this->stdout("- wait for your changes to be propagated to the repo and create a tag $version on  https://github.com/yiisoft/yii2-framework\n\n");
+        $this->stdout("- close the $version milestone on github and open new ones for {$nextVersion['framework']} and {$nextVersion2['framework']}: https://github.com/yiisoft/yii2/milestones\n");
+        $this->stdout("- release news and announcement.\n");
+        $this->stdout("- update the website (will be automated soon and is only relevant for the new website).\n");
+
+        $this->stdout("\n");
 
     }
 
@@ -446,7 +483,7 @@ class ReleaseController extends Controller
 
     protected function checkComposer($fwPath)
     {
-        if (!$this->confirm("\nNot yet automated: Please check if composer.json dependencies in framework dir match the on in repo root. Continue?", false)) {
+        if (!$this->confirm("\nNot yet automated: Please check if composer.json dependencies in framework dir match the one in repo root. Continue?", false)) {
             exit;
         }
     }
