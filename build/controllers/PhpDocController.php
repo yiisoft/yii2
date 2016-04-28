@@ -589,13 +589,13 @@ class PhpDocController extends Controller
             return false;
         }
         if (count($classes) < 1) {
-            $interfaces = $this->match('#\ninterface (?<name>\w+)( extends .+)?\n\{(?<content>.+)\n\}(\n|$)#', $file);
+            $interfaces = $this->match('#\ninterface (?<name>\w+)( extends .+)?\n\{(?<content>.*)\n\}(\n|$)#', $file);
             if (count($interfaces) == 1) {
                 return false;
             } elseif (count($interfaces) > 1) {
                 $this->stderr("[ERR] There should be only one interface in a file: $fileName\n", Console::FG_RED);
             } else {
-                $traits = $this->match('#\ntrait (?<name>\w+)\n\{(?<content>.+)\n\}(\n|$)#', $file);
+                $traits = $this->match('#\ntrait (?<name>\w+)\n\{(?<content>.*)\n\}(\n|$)#', $file);
                 if (count($traits) == 1) {
                     return false;
                 } elseif (count($traits) > 1) {
