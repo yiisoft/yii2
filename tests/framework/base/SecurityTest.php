@@ -7,6 +7,12 @@
 
 namespace yii\base;
 
+/**
+ * emulate availability of functions, to test different branches of Security class
+ * where different execution paths are chosen based on calling function_exists.
+ *
+ * This function overrides function_exists from the root namespace in yii\base.
+ */
 function function_exists($name) {
 
     if (isset(\yiiunit\framework\base\SecurityTest::$functions[$name])) {
@@ -867,15 +873,19 @@ TEXT;
      */
     public function testGenerateRandomKey($functions)
     {
-        foreach($functions as $fun => $available) {
+        foreach ($functions as $fun => $available) {
             if ($available && !\function_exists($fun)) {
                 $this->markTestSkipped("Can not test generateRandomKey() branch that includes $fun, because it is not available on your system.");
             }
         }
+        // there is no /dev/urandom on windows so we expect this to fail
+        if (PHP_OS == 'win' && $functions['random_bytes'] == false && $functions['openssl_random_pseudo_bytes'] == false && $functions['mcrypt_create_iv'] === false ) {
+            $this->setExpectedException('yii\base\Exception', 'Unable to generate a random key');
+        }
         static::$functions = $functions;
 
         // test various string lengths
-        for($length = 1; $length < 64; $length++) {
+        for ($length = 1; $length < 64; $length++) {
             $key1 = $this->security->generateRandomKey($length);
             $this->assertInternalType('string', $key1);
             $this->assertEquals($length, strlen($key1));
@@ -943,29 +953,6 @@ TEXT;
 
         $security = new Security();
         $this->randTime($security, 10000, 5000, 'Rate test');
-    }
-
-
-    public function testGenerateRandomKeyURandom()
-    {
-        if (function_exists('random_bytes')) {
-            $this->markTestSkipped('This test can only work on platforms where random_bytes() function does not exist. You may disable it in php.ini for testing. http://php.net/manual/en/ini.core.php#ini.disable-functions');
-        }
-        if (PHP_VERSION_ID >= 50307 && function_exists('mcrypt_create_iv')) {
-            $this->markTestSkipped('This test can only work on platforms where mcrypt_create_iv() function does not exist. You may disable it in php.ini for testing. http://php.net/manual/en/ini.core.php#ini.disable-functions');
-        }
-        if (!@is_readable('/dev/urandom')) {
-            $this->markTestSkipped('/dev/urandom does not seem to exist on your system.');
-        }
-
-        $length = 1024 * 1024;
-        $key1 = $this->security->generateRandomKey($length);
-        $this->assertInternalType('string', $key1);
-        $this->assertEquals($length, strlen($key1));
-        $key2 = $this->security->generateRandomKey($length);
-        $this->assertInternalType('string', $key2);
-        $this->assertEquals($length, strlen($key2));
-        $this->assertTrue($key1 != $key2);
     }
 
     public function testGenerateRandomString()
