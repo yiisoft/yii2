@@ -62,7 +62,7 @@ abstract class Target extends Component
     /**
      * @var array list of keys which will be excluded from [[logVars]]
      * Default to []
-     * @see lofVars
+     * @see logVars
      */
     public $logVarsHiddenKeys = [];
     /**
