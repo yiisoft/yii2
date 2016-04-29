@@ -215,7 +215,7 @@ CODE;
         $class = 'm' . gmdate('ymd_His') . '_' . $migrationName;
         $this->runMigrateControllerAction('create', [
             $migrationName,
-            'fields' => 'title:string(10):notNull:unique:defaultValue("test"),body:text:notNull,price:money(11,2):notNull'
+            'fields' => 'title:string(10):notNull:unique:defaultValue("test"),body:text:notNull:defaultValue("te,st"),price:money(11,2):notNull:defaultValue(\'test\')'
         ]);
         $file = $this->parseNameClassMigration($class);
 
@@ -237,8 +237,8 @@ class {$class} extends Migration
         \$this->createTable('test', [
             'id' => \$this->primaryKey(),
             'title' => \$this->string(10)->notNull()->unique()->defaultValue("test"),
-            'body' => \$this->text()->notNull(),
-            'price' => \$this->money(11,2)->notNull(),
+            'body' => \$this->text()->notNull()->defaultValue("te,st"),
+            'price' => \$this->money(11,2)->notNull()->defaultValue('test'),
         ]);
     }
 

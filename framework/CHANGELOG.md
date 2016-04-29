@@ -4,7 +4,7 @@ Yii Framework 2 Change Log
 2.0.9 under development
 -----------------------
 
-- no changes in this release.
+- Bug #11461: Fixed migration tool error when create migrate with comma in defaultValue (pana1990, 	s-o-f)
 
 
 2.0.8 April 28, 2016
