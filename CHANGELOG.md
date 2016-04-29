@@ -4,6 +4,7 @@ Yii Framework 2 Change Log
 2.0.9 under development
 -----------------------
 
+- Bug #11459: Fixed flash messages not destroyed when `session.auto_start = 1` set in php.ini (cartmanchen)
 - Enh #11414: Files specified as `null` in `yii\web\AssetBundle` won't be registered (Razzwan)
 
 
