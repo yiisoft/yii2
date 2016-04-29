@@ -60,6 +60,12 @@ abstract class Target extends Component
      */
     public $logVars = ['_GET', '_POST', '_FILES', '_COOKIE', '_SESSION', '_SERVER'];
     /**
+     * @var array list of keys which will be excluded from [[logVars]]
+     * Default to []
+     * @see lofVars
+     */
+    public $logVarsHiddenKeys = [];
+    /**
      * @var callable a PHP callable that returns a string to be prefixed to every exported message.
      *
      * If not set, [[getMessagePrefix()]] will be used, which prefixes the message with context information
@@ -125,7 +131,13 @@ abstract class Target extends Component
         $context = [];
         foreach ($this->logVars as $name) {
             if (!empty($GLOBALS[$name])) {
-                $context[] = "\${$name} = " . VarDumper::dumpAsString($GLOBALS[$name]);
+                $var = $GLOBALS[$name];
+                foreach ($this->logVarsHiddenKeys as $key) {
+                    if (isset($var[$key])) {
+                        unset($var[$key]);
+                    }
+                }
+                $context[] = "\${$name} = " . VarDumper::dumpAsString($var);
             }
         }
 

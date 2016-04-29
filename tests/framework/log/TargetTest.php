@@ -75,6 +75,23 @@ class TargetTest extends TestCase
             $this->assertEquals('test' . $e, static::$messages[$i++][0]);
         }
     }
+
+    public function testGetContextMessage()
+    {
+        $hiddenKey = 'hidden_key';
+        $visibleKey = 'visible_key';
+        $target = new TestTarget([
+            'logVars' => ['A'],
+            'logVarsHiddenKeys' => [$hiddenKey],
+        ]);
+        $GLOBALS['A'] = [
+            $hiddenKey => 'value',
+            $visibleKey => 'value',
+        ];
+        $context = $target->getContextMessage();
+        $this->assertContains($visibleKey, $context);
+        $this->assertNotContains($hiddenKey, $context);
+    }
 }
 
 class TestTarget extends Target
@@ -89,5 +106,13 @@ class TestTarget extends Target
     {
         TargetTest::$messages = array_merge(TargetTest::$messages, $this->messages);
         $this->messages = [];
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function getContextMessage()
+    {
+        return parent::getContextMessage();
     }
 }
