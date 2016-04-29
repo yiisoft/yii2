@@ -1020,43 +1020,62 @@ class BaseConsole
         self::$_progressEtaLastUpdate = null;
     }
 
-    public static function table($headers, $rows, $span = '+', $separator = '-', $conector = '|')
+    private static $_chars = [
+        'top' => '─',
+        'top-mid' => '┬',
+        'top-left' => '┌',
+        'top-right' => '┐',
+        'bottom' => '─',
+        'bottom-mid' => '┴',
+        'bottom-left' => '└',
+        'bottom-right' => '┘',
+        'left' => '│',
+        'left-mid' => '├',
+        'mid' => '─',
+        'mid-mid' => '┼',
+        'right' => '│',
+        'right-mid' => '┤',
+        'middle' => '│',
+    ];
+
+    public static function table(array $headers, array $rows, array $chars = [])
     {
+        $chars = ArrayHelper::merge($chars, self::$_chars);
         $rowsSize = static::calculateSizeRows($headers, $rows);
-        $table = static::renderSeparator($rowsSize, $span, $separator, $conector);
-        $table .= static::renderRows($headers, $rowsSize, $conector);
-        $table .= static::renderSeparator($rowsSize, $span, $separator);
+        $table = static::renderSeparator($rowsSize, $chars['top-left'], $chars['top'], $chars['top-mid'], $chars['top-right']);
+        $table .= static::renderRows($headers, $rowsSize, $chars['middle']);
 
         foreach ($rows as $row) {
-            $table .= static::renderRows($row, $rowsSize, $conector);
-            $table .= static::renderSeparator($rowsSize, $span, $separator);
+            $table .= static::renderSeparator($rowsSize, $chars['left-mid'], $chars['mid'], $chars['mid-mid'], $chars['right-mid']);
+            $table .= static::renderRows($row, $rowsSize, $chars['middle']);
         }
+
+        $table .= static::renderSeparator($rowsSize, $chars['bottom-left'], $chars['bottom'], $chars['bottom-mid'], $chars['bottom-right']);
 
         return $table;
     }
 
     protected static function renderRows(array $rows, array $size, $conector)
     {
-        $render = '';
+        $buffer = '';
         foreach ($rows as $index => $row) {
-            $render .= $conector . ' ';
-            $render .= $row . str_repeat(' ', $size[$index] - strlen($row) - 1);
+            $buffer .= $conector . ' ';
+            $buffer .= $row . str_repeat(' ', $size[$index] - strlen($row) - 1);
         }
-        $render .= "$conector\n";
-        return $render;
+        $buffer .= "$conector\n";
+        return $buffer;
     }
 
-    protected static function renderSeparator(array $rowSizes, $span = '+', $conector = '-')
+    protected static function renderSeparator(array $rowSizes, $span_left, $span, $span_mid, $span_right)
     {
-        $separator = '';
+        $separator = $span_left;
         foreach ($rowSizes as $index => $rowSize) {
-            if ($index === 0) {
-                $separator .= $span;
+            if ($index != 0) {
+                $separator .= $span_mid;
             }
-            $separator .= str_repeat($conector, $rowSize);
-            $separator .= $span;
+            $separator .= str_repeat($span, $rowSize);
         }
-        $separator .= "\n";
+        $separator .= "$span_right\n";
         return $separator;
     }
 

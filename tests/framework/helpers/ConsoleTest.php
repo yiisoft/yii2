@@ -133,13 +133,13 @@ class ConsoleTest extends TestCase
     public function testTable()
     {
         $expected = <<<EXPECTED
-+---------------+---------------+---------------+
-| test1         | test2         | test3         |
-+---------------+---------------+---------------+
-| testcontent1  | testcontent2  | testcontent3  |
-+---------------+---------------+---------------+
-| testcontent21 | testcontent22 | testcontent23 |
-+---------------+---------------+---------------+
+╔═════════╤═════════╤════════╗
+║ test1         │test2          │ test3         ║
+╟-────────┼-─────────┼-───────╢
+║ testcontent1  │ testcontent2  │ testcontent3  ║
+╟-────────┼-─────────┼-───────╢
+║ testcontent21 │ testcontent22 │ testcontent23 ║
+╚═════════╧═════════╧════════╝
 
 EXPECTED;
 
