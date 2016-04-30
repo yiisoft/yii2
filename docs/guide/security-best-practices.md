@@ -148,6 +148,43 @@ In order to avoid CSRF you should always:
 1. Follow HTTP specification i.e. GET should not change application state.
 2. Keep Yii CSRF protection enabled.
 
+Sometimes you need to disable CSRF validation per controller and/or action. It could be achieved by setting its property:
+
+```php
+namespace app\controllers;
+
+use yii\web\Controller;
+
+class SiteController extends Controller
+{
+    public $enableCsrfValidation = false;
+
+    public function actionIndex()
+    {
+        // CSRF validation will not be applied to this and other actions
+    }
+
+}
+```
+
+To disable CSRF validation per custom actions you can do:
+
+```php
+namespace app\controllers;
+
+use yii\web\Controller;
+
+class SiteController extends Controller
+{
+    public function beforeAction($action)
+    {
+        // ...set `$this->enableCsrfValidation` here based on some conditions...
+        // call parent method that will check CSRF if such property is true.
+        return parent::beforeAction($action);
+    }
+}
+```
+
 
 Avoiding file exposure
 ----------------------
