@@ -107,7 +107,7 @@ declared in `rules()`.
 > }
 > ```
 >
-> TYou can use it in a child model:
+> You can use it in a child model:
 >
 > ```php
 > public function rules()
