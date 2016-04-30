@@ -76,12 +76,12 @@ class IndexAction extends Action
             return call_user_func($this->prepareDataProvider, $this);
         }
 
-        /* @var $modelClass \yii\db\BaseActiveRecord */
-        $modelClass = $this->modelClass;
-
         if ($this->searchClass !== null) {
             return (new $this->searchClass)->search(Yii::$app->request->queryParams);
         }
+
+        /* @var $modelClass \yii\db\BaseActiveRecord */
+        $modelClass = $this->modelClass;
 
         return new ActiveDataProvider([
             'query' => $modelClass::find(),
