@@ -126,6 +126,12 @@ class UrlManager extends Component
      */
     public $ruleConfig = ['class' => 'yii\web\UrlRule'];
 
+    /**
+     * @var string the cache key for cached rules
+     * @since 2.0.8
+     */
+    protected $cacheKey = __CLASS__;
+
     private $_baseUrl;
     private $_scriptUrl;
     private $_hostInfo;
@@ -146,7 +152,7 @@ class UrlManager extends Component
             $this->cache = Yii::$app->get($this->cache, false);
         }
         if ($this->cache instanceof Cache) {
-            $cacheKey = __CLASS__;
+            $cacheKey = $this->cacheKey;
             $hash = md5(json_encode($this->rules));
             if (($data = $this->cache->get($cacheKey)) !== false && isset($data[1]) && $data[1] === $hash) {
                 $this->rules = $data[0];
@@ -322,28 +328,19 @@ class UrlManager extends Component
                 }
             }
 
-            /* @var $rule UrlRule */
-            $url = false;
-            if (isset($this->_ruleCache[$cacheKey])) {
-                foreach ($this->_ruleCache[$cacheKey] as $rule) {
-                    if (($url = $rule->createUrl($this, $route, $params)) !== false) {
-                        break;
-                    }
-                }
-            } else {
-                $this->_ruleCache[$cacheKey] = [];
-            }
+            $url = $this->getUrlFromCache($cacheKey, $route, $params);
 
             if ($url === false) {
                 $cacheable = true;
                 foreach ($this->rules as $rule) {
+                    /* @var $rule UrlRule */
                     if (!empty($rule->defaults) && $rule->mode !== UrlRule::PARSING_ONLY) {
                         // if there is a rule with default values involved, the matching result may not be cached
                         $cacheable = false;
                     }
                     if (($url = $rule->createUrl($this, $route, $params)) !== false) {
                         if ($cacheable) {
-                            $this->_ruleCache[$cacheKey][] = $rule;
+                            $this->setRuleToCache($cacheKey, $rule);
                         }
                         break;
                     }
@@ -378,6 +375,41 @@ class UrlManager extends Component
 
             return $url . $anchor;
         }
+    }
+
+    /**
+     * Get URL from internal cache if exists
+     * @param string $cacheKey generated cache key to store data.
+     * @param string $route the route (e.g. `site/index`).
+     * @param array $params rule params.
+     * @return boolean|string the created URL
+     * @see createUrl()
+     * @since 2.0.8
+     */
+    protected function getUrlFromCache($cacheKey, $route, $params)
+    {
+        if (!empty($this->_ruleCache[$cacheKey])) {
+            foreach ($this->_ruleCache[$cacheKey] as $rule) {
+                /* @var $rule UrlRule */
+                if (($url = $rule->createUrl($this, $route, $params)) !== false) {
+                    return $url;
+                }
+            }
+        } else {
+            $this->_ruleCache[$cacheKey] = [];
+        }
+        return false;
+    }
+
+    /**
+     * Store rule (e.g. [[UrlRule]]) to internal cache
+     * @param $cacheKey
+     * @param UrlRuleInterface $rule
+     * @since 2.0.8
+     */
+    protected function setRuleToCache($cacheKey, UrlRuleInterface $rule)
+    {
+        $this->_ruleCache[$cacheKey][] = $rule;
     }
 
     /**
@@ -437,7 +469,7 @@ class UrlManager extends Component
      */
     public function setBaseUrl($value)
     {
-        $this->_baseUrl = rtrim($value, '/');
+        $this->_baseUrl = $value === null ? null : rtrim($value, '/');
     }
 
     /**
@@ -496,6 +528,6 @@ class UrlManager extends Component
      */
     public function setHostInfo($value)
     {
-        $this->_hostInfo = rtrim($value, '/');
+        $this->_hostInfo = $value === null ? null : rtrim($value, '/');
     }
 }

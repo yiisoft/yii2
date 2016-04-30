@@ -1,21 +1,21 @@
 Upgrade dari Versi 1.1
 ==========================
 
-Ada banyak perbedaan antara versi 1.1 dan 2.0 karena Yii sebagai framework benar-benar ditulis ulang untuk 2.0.
-Akibatnya, upgrade dari versi 1.1 tidak mudah seperti upgrade antara versi minor. Dalam panduan ini Anda akan
+Ada banyak perbedaan antara versi 1.1 dan 2.0 karena Yii Framework benar-benar ditulis ulang di versi 2.0.
+Akibatnya, upgrade dari versi 1.1 tidak mudah seperti upgrade untuk versi minor. Dalam panduan ini Anda akan
 menemukan perbedaan utama antara dua versi.
 
-Jika Anda belum pernah menggunakan Yii 1.1 sebelumnya, Anda dapat dengan aman melewati bagian ini dan mengubah langsung ke "[Persiapan](start-installation.md)".
+Jika Anda belum pernah menggunakan Yii 1.1 sebelumnya, Anda dapat dengan aman melewati bagian ini dan menuju ke "[Persiapan](start-installation.md)".
 
-Harap dicatat bahwa Yii 2.0 memperkenalkan fitur baru dari tercakup dalam ringkasan ini. Hal ini sangat dianjurkan
-Anda membaca melalui panduan definitif keseluruhan untuk belajar tentang mereka semua. Kemungkinannya adalah bahwa
-beberapa fitur yang sebelumnya Anda harus kembangkan sendiri sekarang menjadi bagian dari kode inti.
+Harap dicatat bahwa Yii 2.0 memperkenalkan lebih banyak fitur baru dari yang tercakup dalam ringkasan ini. Sangat dianjurkan
+Anda membaca keseluruhan panduan definitif untuk mempelajari hal tersebut. Kemungkinannya adalah bahwa
+beberapa fitur yang sebelumnya harus anda kembangkan sendiri kini menjadi bagian dari kode inti.
 
 
 Instalasi
 ------------
 
-Yii 2.0 sepenuhnya merangkul [composer](https://getcomposer.org/), yang adalah paket manager PHP. Instalasi
+Yii 2.0 sepenuhnya menggunakan [composer](https://getcomposer.org/), yaitu dependency manager yang sudah diakui oleh PHP. Instalasi
 dari kerangka inti serta ekstensi, ditangani melalui Composer. Silakan merujuk ke
 bagian [Instalasi Yii](start-installation.md) untuk belajar cara menginstal Yii 2.0. Jika Anda menghendaki
 membuat ekstensi baru, atau mengubah ekstensi 1.1 yang sudah ke ekstensi 2.0 yang kompatibel, silakan
@@ -25,7 +25,7 @@ merujuk panduan [Membuat Ekstensi](structure-extensions.md#menciptakan-ekstensi)
 Persyaratan PHP
 ----------------
 
-Yii 2.0 membutuhkan PHP 5.4 atau di atas, yang merupakan perbaikan besar atas PHP versi 5.2 yang dibutuhkan oleh Yii 1.1.
+Yii 2.0 membutuhkan PHP 5.4 atau versi lebih tinggi, yang merupakan perbaikan besar atas PHP versi 5.2 yang dibutuhkan oleh Yii 1.1.
 Akibatnya, ada banyak perbedaan pada tingkat bahasa yang harus Anda perhatikan.
 Di bawah ini adalah ringkasan perubahan utama mengenai PHP:
 
@@ -41,7 +41,7 @@ Di bawah ini adalah ringkasan perubahan utama mengenai PHP:
   untuk mendukung fitur internasionalisasi.
 
 
-namespace
+Namespace
 ---------
 
 Perubahan yang paling jelas dalam Yii 2.0 adalah penggunaan namespace. Hampir setiap kelas inti
@@ -49,8 +49,7 @@ menggunakan namespace, misalnya, `yii\web\Request`. Awalan "C" tidak lagi diguna
 Skema penamaan sekarang mengikuti struktur direktori. Misalnya, `yii\web\Request`
 menunjukkan bahwa file kelas yang sesuai adalah `web/Request.php` bawah folder framework Yii.
 
-(Anda dapat menggunakan setiap kelas inti tanpa menyertakannya secara eksplisit berkat Yii
-class loader.)
+(Anda dapat menggunakan setiap kelas inti tanpa menyertakannya secara eksplisit berkat Yiiclass loader.)
 
 
 Komponen dan Object
@@ -97,8 +96,7 @@ yang berisi pasangan nama-nilai untuk menginisialisasi properti pada akhir konst
 Anda dapat menimpa method [[yii\base\Object::init()|init()]] untuk melakukan pekerjaan inisialisasi yang harus dilakukan setelah
 konfigurasi telah diterapkan.
 
-Dengan mengikuti konvensi ini, Anda akan dapat membuat dan mengkonfigurasi objek baru
-menggunakan array konfigurasi:
+Dengan mengikuti konvensi ini, Anda akan dapat membuat dan mengkonfigurasi objek baru menggunakan array konfigurasi:
 
 ```php
 $object = Yii::createObject([
@@ -138,14 +136,14 @@ Path Alias
 
 Yii 2.0 memperluas penggunaan alias path baik untuk file/direktori maupun URL. Yii 2.0 juga sekarang mensyaratkan
 nama alias dimulai dengan karakter `@`.
-Misalnya, alias `@yii` mengacu pada direktori instalasi Yii. Alias path 
+Misalnya, alias `@yii` mengacu pada direktori instalasi Yii. Alias path
 didukung di sebagian besar tempat di kode inti Yii. Misalnya, [[yii\caching\FileCache::cachePath]] dapat mengambil
 baik alias path maupun direktori normal.
 
 Sebuah alias juga terkait erat dengan namespace kelas. Disarankan alias didefinisikan untuk setiap akar namespace,
-sehingga memungkinkan Anda untuk menggunakan autoloader class Yii tanpa konfigurasi lebih lanjut. 
-Misalnya, karena `@yii` mengacu pada direktori instalasi Yii, class seperti `yii\web\Request` dapat otomatis diambil. 
-Jika Anda menggunakan librari pihak ketiga seperti Zend Framework. Anda dapat menentukan alias path `@Zend` yang mengacu pada 
+sehingga memungkinkan Anda untuk menggunakan autoloader class Yii tanpa konfigurasi lebih lanjut.
+Misalnya, karena `@yii` mengacu pada direktori instalasi Yii, class seperti `yii\web\Request` dapat otomatis diambil.
+Jika Anda menggunakan librari pihak ketiga seperti Zend Framework. Anda dapat menentukan alias path `@Zend` yang mengacu pada
 direktori instalasi framework direktori. Setelah Anda selesai melakukannya, Yii akan dapat menload setiap class dalam librari Zend Framework.
 
 Lebih jauh tentang alias path dapat ditemukan di bagian [Alias](concept-aliases.md).
@@ -217,7 +215,7 @@ Yii 2.0 menggunakan [[yii\web\Controller]] sebagai kelas dasar controller, yang 
 Dampak paling nyata dari perubahan ini pada kode Anda adalah bahwa aksi kontroler harus mengembalikan nilai konten
 alih-alih menampilkannya:
 
-````php
+```php
 public function actionView($id)
 {
     $model = \app\models\Post::findOne($id);
@@ -303,10 +301,10 @@ sumber berdasarkan kategori pesan.
 Silakan merujuk ke bagian [Internasionalisasi](tutorial-i18n.md) untuk rincian lebih lanjut.
 
 
-Filter Action
+Action Filter
 --------------
 
-Filter Action sekarang diimplementasikan melalui behavior. Untuk membuat baru, filter diperluas dari [[yii\base\ActionFilter]].
+Action Filter sekarang diimplementasikan melalui behavior. Untuk membuat baru, filter diperluas dari [[yii\base\ActionFilter]].
 Untuk menggunakan filter, pasang Kelas filter untuk controller sebagai behavior. Misalnya, untuk menggunakan filter [[yii\filters\AccessControl]],
 Anda harus mengikuti kode berikut di kontroler:
 

@@ -364,6 +364,15 @@ interface ActiveRecordInterface
     public function getRelation($name, $throwException = true);
 
     /**
+     * Populates the named relation with the related records.
+     * Note that this method does not check if the relation exists or not.
+     * @param string $name the relation name (case-sensitive)
+     * @param ActiveRecordInterface|array|null $records the related records to be populated into the relation.
+     * @since 2.0.8
+     */
+    public function populateRelation($name, $records);
+
+    /**
      * Establishes the relationship between two records.
      *
      * The relationship is established by setting the foreign key value(s) in one record

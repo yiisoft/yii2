@@ -70,6 +70,8 @@ class ColumnSchemaBuilder extends Object
      * @since 2.0.8
      */
     protected $isFirst;
+
+
     /**
      * @var array mapping of abstract column types (keys) to type categories (values).
      * @since 2.0.8
@@ -102,6 +104,11 @@ class ColumnSchemaBuilder extends Object
      * @since 2.0.8
      */
     public $db;
+    /**
+     * @var string comment value of the column.
+     * @since 2.0.8
+     */
+    public $comment;
 
     /**
      * Create a column schema builder instance giving the type and value precision.
@@ -158,6 +165,18 @@ class ColumnSchemaBuilder extends Object
     public function defaultValue($default)
     {
         $this->default = $default;
+        return $this;
+    }
+
+    /**
+     * Specifies the comment for column.
+     * @param string $comment the comment
+     * @return $this
+     * @since 2.0.8
+     */
+    public function comment($comment)
+    {
+        $this->comment = $comment;
         return $this;
     }
 
@@ -225,10 +244,10 @@ class ColumnSchemaBuilder extends Object
     {
         switch ($this->getTypeCategory()) {
             case self::CATEGORY_PK:
-                $format = '{type}{check}';
+                $format = '{type}{check}{comment}';
                 break;
             default:
-                $format = '{type}{length}{notnull}{unique}{default}{check}';
+                $format = '{type}{length}{notnull}{unique}{default}{check}{comment}';
         }
         return $this->buildCompleteString($format);
     }
@@ -348,6 +367,16 @@ class ColumnSchemaBuilder extends Object
     }
 
     /**
+     * Builds the comment specification for the column.
+     * @return string a string containing the COMMENT keyword and the comment itself
+     * @since 2.0.8
+     */
+    protected function buildCommentString()
+    {
+        return '';
+    }
+
+    /**
      * Returns the complete column definition from input format
      * @param string $format the format of the definition.
      * @return string a string containing the complete column definition.
@@ -363,6 +392,7 @@ class ColumnSchemaBuilder extends Object
             '{unique}' => $this->buildUniqueString(),
             '{default}' => $this->buildDefaultString(),
             '{check}' => $this->buildCheckString(),
+            '{comment}' => $this->buildCommentString(),
             '{pos}' => ($this->isFirst) ?
                         $this->buildFirstString() :
                             $this->buildAfterString(),

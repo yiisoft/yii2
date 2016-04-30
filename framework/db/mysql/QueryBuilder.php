@@ -45,6 +45,7 @@ class QueryBuilder extends \yii\db\QueryBuilder
         Schema::TYPE_MONEY => 'decimal(19,4)',
     ];
 
+
     /**
      * Builds a SQL statement for renaming a column.
      * @param string $table the table whose column is to be renamed. The name will be properly quoted by the method.
@@ -218,5 +219,80 @@ class QueryBuilder extends \yii\db\QueryBuilder
         return 'INSERT INTO ' . $schema->quoteTableName($table)
             . (!empty($names) ? ' (' . implode(', ', $names) . ')' : '')
             . (!empty($placeholders) ? ' VALUES (' . implode(', ', $placeholders) . ')' : ' DEFAULT VALUES');
+    }
+
+    /**
+     * @inheritdoc
+     * @since 2.0.8
+     */
+    public function addCommentOnColumn($table, $column, $comment)
+    {
+        $definition = $this->getColumnDefinition($table, $column);
+        $definition = trim(preg_replace("/COMMENT '(.*?)'/i", '', $definition));
+
+        return 'ALTER TABLE ' . $this->db->quoteTableName($table)
+            . ' CHANGE ' . $this->db->quoteColumnName($column)
+            . ' ' . $this->db->quoteColumnName($column)
+            . (empty($definition) ? '' : ' ' . $definition)
+            . ' COMMENT ' . $this->db->quoteValue($comment);
+    }
+
+    /**
+     * @inheritdoc
+     * @since 2.0.8
+     */
+    public function addCommentOnTable($table, $comment)
+    {
+        return 'ALTER TABLE ' . $this->db->quoteTableName($table) . ' COMMENT ' . $this->db->quoteValue($comment);
+    }
+
+    /**
+     * @inheritdoc
+     * @since 2.0.8
+     */
+    public function dropCommentFromColumn($table, $column)
+    {
+        return $this->addCommentOnColumn($table, $column, '');
+    }
+
+    /**
+     * @inheritdoc
+     * @since 2.0.8
+     */
+    public function dropCommentFromTable($table)
+    {
+        return $this->addCommentOnTable($table, '');
+    }
+
+
+    /**
+     * Gets column definition.
+     *
+     * @param string $table table name
+     * @param string $column column name
+     * @return null|string the column definition
+     * @throws Exception in case when table does not contain column
+     */
+    private function getColumnDefinition($table, $column)
+    {
+        $quotedTable = $this->db->quoteTableName($table);
+        $row = $this->db->createCommand('SHOW CREATE TABLE ' . $quotedTable)->queryOne();
+        if ($row === false) {
+            throw new Exception("Unable to find column '$column' in table '$table'.");
+        }
+        if (isset($row['Create Table'])) {
+            $sql = $row['Create Table'];
+        } else {
+            $row = array_values($row);
+            $sql = $row[1];
+        }
+        if (preg_match_all('/^\s*`(.*?)`\s+(.*?),?$/m', $sql, $matches)) {
+            foreach ($matches[1] as $i => $c) {
+                if ($c === $column) {
+                    return $matches[2][$i];
+                }
+            }
+        }
+        return null;
     }
 }

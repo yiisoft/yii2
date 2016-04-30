@@ -18,6 +18,7 @@ DROP TABLE IF EXISTS `constraints` CASCADE;
 DROP TABLE IF EXISTS `animal` CASCADE;
 DROP TABLE IF EXISTS `default_pk` CASCADE;
 DROP TABLE IF EXISTS `document` CASCADE;
+DROP TABLE IF EXISTS `comment` CASCADE;
 DROP VIEW IF EXISTS `animal_view`;
 
 CREATE TABLE `constraints`
@@ -147,6 +148,14 @@ CREATE TABLE `document` (
   `title` VARCHAR(255) NOT NULL,
   `content` TEXT,
   `version` INT(11) NOT NULL DEFAULT 0,
+  PRIMARY KEY (id)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+CREATE TABLE `comment` (
+  `id` INT(11) NOT NULL AUTO_INCREMENT,
+  `add_comment` VARCHAR(255) NOT NULL,
+  `replace_comment` VARCHAR(255) COMMENT 'comment',
+  `delete_comment` VARCHAR(128) NOT NULL COMMENT 'comment',
   PRIMARY KEY (id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 

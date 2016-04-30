@@ -8,6 +8,7 @@
 namespace yiiunit\framework\console;
 
 use Yii;
+use yii\console\Request;
 use yiiunit\TestCase;
 
 /**
@@ -53,4 +54,39 @@ class ControllerTest extends TestCase
         $this->setExpectedException('yii\console\Exception', $message);
         $result = $controller->runAction('aksi3', $params);
     }
+
+    public function assertResponseStatus($status, $response)
+    {
+        $this->assertInstanceOf('yii\console\Response', $response);
+        $this->assertSame($status, $response->exitStatus);
+    }
+
+    public function runRequest($route, $args = 0)
+    {
+        $request = new Request();
+        $request->setParams(func_get_args());
+        return Yii::$app->handleRequest($request);
+    }
+
+    public function testResponse()
+    {
+        $this->mockApplication();
+        Yii::$app->controllerMap = [
+            'fake' => 'yiiunit\framework\console\FakeController',
+        ];
+        $status = 123;
+
+        $response = $this->runRequest('fake/status');
+        $this->assertResponseStatus(0, $response);
+
+        $response = $this->runRequest('fake/status', (string)$status);
+        $this->assertResponseStatus($status, $response);
+
+        $response = $this->runRequest('fake/response');
+        $this->assertResponseStatus(0, $response);
+
+        $response = $this->runRequest('fake/response', (string)$status);
+        $this->assertResponseStatus($status, $response);
+    }
+
 }

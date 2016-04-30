@@ -160,7 +160,7 @@ class HelloController extends Controller
 これで、次の構文を使ってコマンドを走らせることが出来るようになります。
 
 ```
-./yii hello -m=hola
+./yii hello -m=hello
 ```
 
 ### 引数

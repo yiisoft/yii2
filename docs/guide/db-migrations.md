@@ -417,8 +417,8 @@ is passed then the table name will be deduced from the column name.
 In the
 example above `author_id:integer:notNull:foreignKey(user)` will generate a
 column named `author_id` with a foreign key to the `user` table while
-`category_id:integer:default(1):foreignKey` will generate a column `category_id`
-with a foreign key to the `category` table.
+`category_id:integer:defaultValue(1):foreignKey` will generate a column
+`category_id` with a foreign key to the `category` table.
 
 ### Drop Table
 
@@ -685,6 +685,10 @@ Below is the list of all these database accessing methods:
 * [[yii\db\Migration::dropForeignKey()|dropForeignKey()]]: removing a foreign key
 * [[yii\db\Migration::createIndex()|createIndex()]]: creating an index
 * [[yii\db\Migration::dropIndex()|dropIndex()]]: removing an index
+* [[yii\db\Migration::addCommentOnColumn()|addCommentOnColumn()]: adding comment to column
+* [[yii\db\Migration::dropCommentFromColumn()|dropCommentFromColumn()]: dropping comment from column
+* [[yii\db\Migration::addCommentOnTable()|addCommentOnTable()]: adding comment to table
+* [[yii\db\Migration::dropCommentFromTable()|dropCommentFromTable()]: dropping comment from table
 
 > Info: [[yii\db\Migration]] does not provide a database query method. This is because you normally do not need
   to display extra message about retrieving data from a database. It is also because you can use the powerful

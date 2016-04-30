@@ -757,6 +757,66 @@ class Command extends Component
     }
 
     /**
+     * Builds a SQL command for adding comment to column
+     *
+     * @param string $table the table whose column is to be commented. The table name will be properly quoted by the method.
+     * @param string $column the name of the column to be commented. The column name will be properly quoted by the method.
+     * @param string $comment the text of the comment to be added. The comment will be properly quoted by the method.
+     * @return $this the command object itself
+     * @since 2.0.8
+     */
+    public function addCommentOnColumn($table, $column, $comment)
+    {
+        $sql = $this->db->getQueryBuilder()->addCommentOnColumn($table, $column, $comment);
+
+        return $this->setSql($sql);
+    }
+
+    /**
+     * Builds a SQL command for adding comment to table
+     *
+     * @param string $table the table whose column is to be commented. The table name will be properly quoted by the method.
+     * @param string $comment the text of the comment to be added. The comment will be properly quoted by the method.
+     * @return $this the command object itself
+     * @since 2.0.8
+     */
+    public function addCommentOnTable($table, $comment)
+    {
+        $sql = $this->db->getQueryBuilder()->addCommentOnTable($table, $comment);
+
+        return $this->setSql($sql);
+    }
+
+    /**
+     * Builds a SQL command for dropping comment from column
+     *
+     * @param string $table the table whose column is to be commented. The table name will be properly quoted by the method.
+     * @param string $column the name of the column to be commented. The column name will be properly quoted by the method.
+     * @return $this the command object itself
+     * @since 2.0.8
+     */
+    public function dropCommentFromColumn($table, $column)
+    {
+        $sql = $this->db->getQueryBuilder()->dropCommentFromColumn($table, $column);
+
+        return $this->setSql($sql);
+    }
+
+    /**
+     * Builds a SQL command for dropping comment from table
+     *
+     * @param string $table the table whose column is to be commented. The table name will be properly quoted by the method.
+     * @return $this the command object itself
+     * @since 2.0.8
+     */
+    public function dropCommentFromTable($table)
+    {
+        $sql = $this->db->getQueryBuilder()->dropCommentFromTable($table);
+
+        return $this->setSql($sql);
+    }
+
+    /**
      * Executes the SQL statement.
      * This method should only be used for executing non-query SQL statement, such as `INSERT`, `DELETE`, `UPDATE` SQLs.
      * No result set will be returned.

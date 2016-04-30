@@ -570,6 +570,11 @@ life cycle will happen:
 > - [[yii\db\ActiveRecord::updateCounters()]] 
 > - [[yii\db\ActiveRecord::updateAllCounters()]] 
 
+### Refreshing Data Life Cycle <span id="refreshing-data-life-cycle"></span>
+
+When calling [[yii\db\ActiveRecord::refresh()|refresh()]] to refresh an Active Record instance, the
+[[yii\db\ActiveRecord::EVENT_AFTER_REFRESH|EVENT_AFTER_REFRESH]] event is triggered if refresh is successful and the method returns `true`.
+
 
 ## Working with Transactions <span id="transactional-operations"></span>
 

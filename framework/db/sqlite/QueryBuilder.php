@@ -48,6 +48,7 @@ class QueryBuilder extends \yii\db\QueryBuilder
         Schema::TYPE_MONEY => 'decimal(19,4)',
     ];
 
+
     /**
      * Generates a batch INSERT SQL statement.
      * For example,
@@ -286,6 +287,46 @@ class QueryBuilder extends \yii\db\QueryBuilder
      * @throws NotSupportedException this is not supported by SQLite
      */
     public function dropPrimaryKey($name, $table)
+    {
+        throw new NotSupportedException(__METHOD__ . ' is not supported by SQLite.');
+    }
+
+    /**
+     * @inheritdoc
+     * @throws NotSupportedException
+     * @since 2.0.8
+     */
+    public function addCommentOnColumn($table, $column, $comment)
+    {
+        throw new NotSupportedException(__METHOD__ . ' is not supported by SQLite.');
+    }
+
+    /**
+     * @inheritdoc
+     * @throws NotSupportedException
+     * @since 2.0.8
+     */
+    public function addCommentOnTable($table, $comment)
+    {
+        throw new NotSupportedException(__METHOD__ . ' is not supported by SQLite.');
+    }
+
+    /**
+     * @inheritdoc
+     * @throws NotSupportedException
+     * @since 2.0.8
+     */
+    public function dropCommentFromColumn($table, $column)
+    {
+        throw new NotSupportedException(__METHOD__ . ' is not supported by SQLite.');
+    }
+
+    /**
+     * @inheritdoc
+     * @throws NotSupportedException
+     * @since 2.0.8
+     */
+    public function dropCommentFromTable($table)
     {
         throw new NotSupportedException(__METHOD__ . ' is not supported by SQLite.');
     }

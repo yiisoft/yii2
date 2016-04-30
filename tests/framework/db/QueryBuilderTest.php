@@ -13,6 +13,7 @@ use yii\db\mssql\QueryBuilder as MssqlQueryBuilder;
 use yii\db\pgsql\QueryBuilder as PgsqlQueryBuilder;
 use yii\db\cubrid\QueryBuilder as CubridQueryBuilder;
 use yii\db\oci\QueryBuilder as OracleQueryBuilder;
+use yiiunit\data\base\TraversableObject;
 
 abstract class QueryBuilderTest extends DatabaseTestCase
 {
@@ -51,28 +52,6 @@ abstract class QueryBuilderTest extends DatabaseTestCase
     }
 
     /**
-     * adjust dbms specific escaping
-     * @param $sql
-     * @return mixed
-     */
-    protected function replaceQuotes($sql)
-    {
-        switch ($this->driverName) {
-            case 'mysql':
-            case 'sqlite':
-                return str_replace(['[[', ']]'], '`', $sql);
-            case 'cubrid':
-            case 'pgsql':
-            case 'oci':
-                return str_replace(['[[', ']]'], '"', $sql);
-            case 'sqlsrv':
-                return str_replace(['[[', ']]'], ['[', ']'], $sql);
-            default:
-                return $sql;
-        }
-    }
-
-    /**
      * this is not used as a dataprovider for testGetColumnType to speed up the test
      * when used as dataprovider every single line will cause a reconnect with the database which is not needed here
      */
@@ -80,15 +59,15 @@ abstract class QueryBuilderTest extends DatabaseTestCase
     {
         $items = [
             [
-                Schema::TYPE_BIGINT . ' CHECK (value > 5)',
-                $this->bigInteger()->check('value > 5'),
+                Schema::TYPE_BIGINT,
+                $this->bigInteger(),
                 [
-                    'mysql' => 'bigint(20) CHECK (value > 5)',
-                    'postgres' => 'bigint CHECK (value > 5)',
-                    'sqlite' => 'bigint CHECK (value > 5)',
-                    'oci' => 'NUMBER(20) CHECK (value > 5)',
-                    'sqlsrv' => 'bigint CHECK (value > 5)',
-                    'cubrid' => 'bigint CHECK (value > 5)',
+                    'mysql' => 'bigint(20)',
+                    'postgres' => 'bigint',
+                    'sqlite' => 'bigint',
+                    'oci' => 'NUMBER(20)',
+                    'sqlsrv' => 'bigint',
+                    'cubrid' => 'bigint',
                 ],
             ],
             [
@@ -104,13 +83,13 @@ abstract class QueryBuilderTest extends DatabaseTestCase
                 ],
             ],
             [
-                Schema::TYPE_BIGINT . '(8) CHECK (value > 5)',
-                $this->bigInteger(8)->check('value > 5'),
+                Schema::TYPE_BIGINT . ' CHECK (value > 5)',
+                $this->bigInteger()->check('value > 5'),
                 [
-                    'mysql' => 'bigint(8) CHECK (value > 5)',
+                    'mysql' => 'bigint(20) CHECK (value > 5)',
                     'postgres' => 'bigint CHECK (value > 5)',
                     'sqlite' => 'bigint CHECK (value > 5)',
-                    'oci' => 'NUMBER(8) CHECK (value > 5)',
+                    'oci' => 'NUMBER(20) CHECK (value > 5)',
                     'sqlsrv' => 'bigint CHECK (value > 5)',
                     'cubrid' => 'bigint CHECK (value > 5)',
                 ],
@@ -128,15 +107,15 @@ abstract class QueryBuilderTest extends DatabaseTestCase
                 ],
             ],
             [
-                Schema::TYPE_BIGINT,
-                $this->bigInteger(),
+                Schema::TYPE_BIGINT . '(8) CHECK (value > 5)',
+                $this->bigInteger(8)->check('value > 5'),
                 [
-                    'mysql' => 'bigint(20)',
-                    'postgres' => 'bigint',
-                    'sqlite' => 'bigint',
-                    'oci' => 'NUMBER(20)',
-                    'sqlsrv' => 'bigint',
-                    'cubrid' => 'bigint',
+                    'mysql' => 'bigint(8) CHECK (value > 5)',
+                    'postgres' => 'bigint CHECK (value > 5)',
+                    'sqlite' => 'bigint CHECK (value > 5)',
+                    'oci' => 'NUMBER(8) CHECK (value > 5)',
+                    'sqlsrv' => 'bigint CHECK (value > 5)',
+                    'cubrid' => 'bigint CHECK (value > 5)',
                 ],
             ],
             [
@@ -915,6 +894,28 @@ abstract class QueryBuilderTest extends DatabaseTestCase
                     'sqlite' => 'bigint UNSIGNED PRIMARY KEY AUTOINCREMENT NOT NULL',
                 ],
             ],
+            [
+                Schema::TYPE_INTEGER . " COMMENT 'test comment'",
+                $this->integer()->comment('test comment'),
+                [
+                    'mysql' => "int(11) COMMENT 'test comment'",
+                    'postgres' => 'integer',
+                    'oci' => "NUMBER(10)",
+                    'sqlsrv' => 'int',
+                    'cubrid' => "int COMMENT 'test comment'",
+                ],
+            ],
+            [
+                Schema::TYPE_PK . " COMMENT 'test comment'",
+                $this->primaryKey()->comment('test comment'),
+                [
+                    'mysql' => "int(11) NOT NULL AUTO_INCREMENT PRIMARY KEY COMMENT 'test comment'",
+                    'postgres' => 'serial NOT NULL PRIMARY KEY',
+                    'oci' => 'NUMBER(10) NOT NULL PRIMARY KEY',
+                    'sqlsrv' => 'int IDENTITY PRIMARY KEY',
+                    'cubrid' => "int NOT NULL AUTO_INCREMENT PRIMARY KEY COMMENT 'test comment'",
+                ],
+            ],
         ];
 
         foreach ($items as $i => $item) {
@@ -1023,6 +1024,27 @@ abstract class QueryBuilderTest extends DatabaseTestCase
             [ ['in', 'id', (new Query())->select('id')->from('users')->where(['active' => 1])], '[[id]] IN (SELECT [[id]] FROM [[users]] WHERE [[active]]=:qp0)', [':qp0' => 1] ],
             [ ['not in', 'id', (new Query())->select('id')->from('users')->where(['active' => 1])], '[[id]] NOT IN (SELECT [[id]] FROM [[users]] WHERE [[active]]=:qp0)', [':qp0' => 1] ],
 
+            [ ['in', 'id', [1]], '[[id]]=:qp0', [':qp0' => 1] ],
+            [ ['in', 'id', new TraversableObject([1])], '[[id]]=:qp0', [':qp0' => 1] ],
+            'composite in' => [
+                ['in', ['id', 'name'], [['id' =>1, 'name' => 'oy']]],
+                '([[id]], [[name]]) IN ((:qp0, :qp1))',
+                [':qp0' => 1, ':qp1' => 'oy']
+            ],
+
+            // in using array objects.
+            [ ['id' => new TraversableObject([1, 2])], '[[id]] IN (:qp0, :qp1)', [':qp0' => 1, ':qp1' => 2] ],
+
+            [ ['in', 'id', new TraversableObject([1, 2, 3])], '[[id]] IN (:qp0, :qp1, :qp2)', [':qp0' => 1, ':qp1' => 2, ':qp2' => 3] ],
+
+            'composite in using array objects' => [
+                ['in', new TraversableObject(['id', 'name']), new TraversableObject([
+                    ['id' => 1, 'name' => 'oy'],
+                    ['id' => 2, 'name' => 'yo'],
+                ])],
+                '([[id]], [[name]]) IN ((:qp0, :qp1), (:qp2, :qp3))',
+                [':qp0' => 1, ':qp1' => 'oy', ':qp2' => 2, ':qp3' => 'yo']
+            ],
             // exists
             [ ['exists', (new Query())->select('id')->from('users')->where(['active' => 1])], 'EXISTS (SELECT [[id]] FROM [[users]] WHERE [[active]]=:qp0)', [':qp0' => 1] ],
             [ ['not exists', (new Query())->select('id')->from('users')->where(['active' => 1])], 'NOT EXISTS (SELECT [[id]] FROM [[users]] WHERE [[active]]=:qp0)', [':qp0' => 1] ],
@@ -1046,8 +1068,10 @@ abstract class QueryBuilderTest extends DatabaseTestCase
             // direct conditions
             [ 'a = CONCAT(col1, col2)', 'a = CONCAT(col1, col2)', [] ],
             [ new Expression('a = CONCAT(col1, :param1)', ['param1' => 'value1']), 'a = CONCAT(col1, :param1)', ['param1' => 'value1'] ],
-        ];
 
+
+
+        ];
         switch ($this->driverName) {
             case 'sqlsrv':
             case 'sqlite':
@@ -1347,19 +1371,6 @@ abstract class QueryBuilderTest extends DatabaseTestCase
 
     }
 
-    public function testCompositeInCondition()
-    {
-        $condition = [
-            'in',
-            ['id', 'name'],
-            [
-                ['id' => 1, 'name' => 'foo'],
-                ['id' => 2, 'name' => 'bar'],
-            ],
-        ];
-        (new Query())->from('customer')->where($condition)->all($this->getConnection());
-    }
-
     /**
      * https://github.com/yiisoft/yii2/issues/10869
      */
@@ -1521,4 +1532,34 @@ abstract class QueryBuilderTest extends DatabaseTestCase
 //        // TODO implement
 //    }
 
+
+    public function testCommentColumn()
+    {
+        $qb = $this->getQueryBuilder();
+
+        $expected = "ALTER TABLE [[comment]] CHANGE [[add_comment]] [[add_comment]] varchar(255) NOT NULL COMMENT 'This is my column.'";
+        $sql = $qb->addCommentOnColumn('comment', 'add_comment', 'This is my column.');
+        $this->assertEquals($this->replaceQuotes($expected), $sql);
+
+        $expected = "ALTER TABLE [[comment]] CHANGE [[replace_comment]] [[replace_comment]] varchar(255) DEFAULT NULL COMMENT 'This is my column.'";
+        $sql = $qb->addCommentOnColumn('comment', 'replace_comment', 'This is my column.');
+        $this->assertEquals($this->replaceQuotes($expected), $sql);
+
+        $expected = "ALTER TABLE [[comment]] CHANGE [[delete_comment]] [[delete_comment]] varchar(128) NOT NULL COMMENT ''";
+        $sql = $qb->dropCommentFromColumn('comment', 'delete_comment');
+        $this->assertEquals($this->replaceQuotes($expected), $sql);
+    }
+
+    public function testCommentTable()
+    {
+        $qb = $this->getQueryBuilder();
+
+        $expected = "ALTER TABLE [[comment]] COMMENT 'This is my table.'";
+        $sql = $qb->addCommentOnTable('comment', 'This is my table.');
+        $this->assertEquals($this->replaceQuotes($expected), $sql);
+
+        $expected = "ALTER TABLE [[comment]] COMMENT ''";
+        $sql = $qb->dropCommentFromTable('comment');
+        $this->assertEquals($this->replaceQuotes($expected), $sql);
+    }
 }

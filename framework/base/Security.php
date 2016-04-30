@@ -428,16 +428,17 @@ class Security extends Component
      */
     public function generateRandomKey($length = 32)
     {
-        if (function_exists('random_bytes')) {
-            return random_bytes($length);
-        }
-
         if (!is_int($length)) {
             throw new InvalidParamException('First parameter ($length) must be an integer');
         }
 
         if ($length < 1) {
             throw new InvalidParamException('First parameter ($length) must be greater than 0');
+        }
+
+        // always use random_bytes() if it is available
+        if (function_exists('random_bytes')) {
+            return random_bytes($length);
         }
 
         // The recent LibreSSL RNGs are faster and likely better than /dev/urandom.
@@ -489,9 +490,9 @@ class Security extends Component
                 $this->_randomFile = fopen($device, 'rb') ?: null;
 
                 if (is_resource($this->_randomFile)) {
-                    // By default PHP buffer size is 8192 bytes which causes wasting
-                    // more entropy that we're actually using. Therefore setting it to
-                    // lower value.
+                    // Reduce PHP stream buffer from default 8192 bytes to optimize data
+                    // transfer from the random device for smaller values of $length.
+                    // This also helps to keep future randoms out of user memory space.
                     $bufferSize = 8;
 
                     if (function_exists('stream_set_read_buffer')) {
@@ -514,7 +515,7 @@ class Security extends Component
                     break;
                 }
                 $buffer .= $someBytes;
-                $stillNeed -= StringHelper::byteLength($buffer);
+                $stillNeed -= StringHelper::byteLength($someBytes);
                 if ($stillNeed === 0) {
                     // Leaving file pointer open in order to make next generation faster by reusing it.
                     return $buffer;

@@ -1,9 +1,9 @@
-Panduan Defitif Untuk Yii 2.0
+Panduan Definitif Untuk Yii 2.0
 ===============================
 
 Tutorial ini dirilis di bawah [Persyaratan Dokumentasi Yii] (http://www.yiiframework.com/doc/terms/).
 
-Seluruh hak cipta.
+Seluruh hak cipta dilindungi.
 
 2014 (c) Yii Software LLC.
 
@@ -23,7 +23,7 @@ Mulai
 * [Mengatakan Hello] (start-hello.md)
 * [Bekerja dengan Form] (start-forms.md)
 * [Bekerja dengan Database] (start-databases.md)
-* [Membangkitkan Kode dengan Gii] (start-gii.md)
+* [Membuat Kode Otomatis dengan Gii] (start-gii.md)
 * [Menatap ke Depan] (start-looking-ahead.md)
 
 
@@ -66,7 +66,7 @@ Konsep Pokok
 * [Perilaku] (concept-behaviors.md)
 * [Konfigurasi] (concept-configurations.md)
 * [Alias] (concept-aliases.md)
-* [Class autoloading] (concept-autoloading.md)
+* [Class Autoloading] (concept-autoloading.md)
 * [Layanan Locator] (concept-service-locator.md)
 * [Dependency Injection] (concept-di-container.md)
 
@@ -76,7 +76,7 @@ Bekerja dengan Database
 
 * [Data Access Objects] (db-dao.md): Menghubungkan ke database, query dasar, transaksi, dan manipulasi skema
 * [Query Builder] (db-query-builder.md): Query database menggunakan lapisan abstraksi sederhana
-* [Rekaman Aktif] (db-active-record.md): The Rekaman Aktif ORM, mengambil dan memanipulasi catatan, dan mendefinisikan hubungan
+* [Active Record] (db-active-record.md): ORM Active Record, mengambil dan memanipulasi catatan, dan mendefinisikan hubungan
 * [Migrasi] (db-migrations.md): Terapkan kontrol versi untuk database Anda dalam lingkungan pengembangan tim
 * [Sphinx] (https://github.com/yiisoft/yii2-sphinx/blob/master/docs/guide/README.md)
 * [Redis] (https://github.com/yiisoft/yii2-redis/blob/master/docs/guide/README.md)
@@ -111,8 +111,8 @@ Keamanan
 
 * [Otentikasi] (security-authentication.md)
 * [Otorisasi] (security-authorization.md)
-* [Bekerja dengan Sandi] (security-passwords.md)
-* [Tupoksi Klien] (https://github.com/yiisoft/yii2-authclient/blob/master/docs/guide/README.md)
+* [Bekerja dengan Kata Sandi] (security-passwords.md)
+* [Otentikasi Klien] (https://github.com/yiisoft/yii2-authclient/blob/master/docs/guide/README.md)
 * [Praktik Terbaik] (security-best-practices.md)
 
 
@@ -144,8 +144,8 @@ Alat Pengembangan
 -----------------
 
 * [Debug Toolbar dan Debugger] (https://github.com/yiisoft/yii2-debug/blob/master/docs/guide/README.md)
-* [Kode Membangkitkan menggunakan Gii] (https://github.com/yiisoft/yii2-gii/blob/master/docs/guide/README.md)
-* ** TBD ** [Membangkitkan API Documentation] (https://github.com/yiisoft/yii2-apidoc)
+* [Membuat Kode Otomatis dengan Gii] (https://github.com/yiisoft/yii2-gii/blob/master/docs/guide/README.md)
+* ** TBD ** [Membuat API Documentation] (https://github.com/yiisoft/yii2-apidoc)
 
 
 Pengujian
@@ -169,12 +169,12 @@ Topik Khusus
 * [Internasionalisasi] (tutorial-i18n.md)
 * [Mailing] (tutorial-mailing.md)
 * [Penyetelan Performa] (tutorial-performance-tuning.md)
-* [Shared Hosting Lingkungan] (tutorial-shared-hosting.md)
+* [Lingkungan Shared Hosting] (tutorial-shared-hosting.md)
 * [Template Engine] (tutorial-template-engines.md)
 * [Bekerja dengan Kode Pihak Ketiga] (tutorial-yii-integration.md)
 
 
-widget
+Widget
 -------
 
 * GridView: ** TBD ** Link ke demo halaman

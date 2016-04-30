@@ -165,7 +165,7 @@ class HelloController extends Controller
 Now, you can use the following syntax to run the command:
 
 ```
-./yii hello -m=hola
+./yii hello -m=hello
 ```
 
 ### Arguments
