@@ -5,6 +5,7 @@ Yii Framework 2 Change Log
 -----------------------
 
 - Enh #4479: `yii\rest\IndexAction` can now accept a search class to be used on filtering results (tunecino)
+- Enh #11414: Files specified as `null` in `yii\web\AssetBundle` won't be registered (Razzwan)
 
 
 2.0.8 April 28, 2016
