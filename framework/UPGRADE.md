@@ -15,6 +15,11 @@ php composer.phar self-update
 php composer.phar global require "fxp/composer-asset-plugin:~1.1.1"
 ```
 
+Upgrade to Yii 2.1.0
+--------------------
+
+* 5.6.0 is the minimum required version of PHP now.
+
 Upgrade from Yii 2.0.7
 ----------------------
 

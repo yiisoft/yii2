@@ -5,6 +5,7 @@ Yii Framework 2 Change Log
 -----------------------
 
 - Removed methods marked as deprected in 2.0.x (samdark)
+- Chg #11397: Minimum required version of PHP is 5.6.0 now (samdark)
 
 2.0.9 under development
 -----------------------
