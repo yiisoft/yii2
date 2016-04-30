@@ -395,8 +395,10 @@ class PostSearch extends Post
         return $dataProvider;
     }
 }
-
 ```
+
+> Tip: See [Query Builder](db-query-builder.md) and especially [Filter Conditions](db-query-builder.md#filter-conditions)
+> to learn how to build filtering query.
 
 You can use this function in the controller to get the dataProvider for the GridView:
 
