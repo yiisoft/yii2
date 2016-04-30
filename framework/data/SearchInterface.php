@@ -10,8 +10,9 @@ namespace yii\data;
 /**
  * The SearchInterface must represent the model behind search forms.
  *
+ * @param array $params the parameters (name-value pairs) to be used on filtering results.
  * @author Qiang Xue <qiang.xue@gmail.com>
- * @since 2.0
+ * @since 2.0.9
  */
 interface SearchInterface
 {

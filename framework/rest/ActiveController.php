@@ -44,6 +44,7 @@ class ActiveController extends Controller
     /**
      * @var string the search class related to the model. This property is not required.
      * @see \yii\rest\IndexAction::$searchClass
+     * @since 2.0.9
      */
     public $searchClass;
     /**
