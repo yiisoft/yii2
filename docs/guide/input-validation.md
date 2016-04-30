@@ -577,6 +577,10 @@ JS;
 > ]
 > ```
 
+> Tip: If you need to work with client validation manually i.e. dynamically add fields or do some custom UI logic, refer
+> to [Working with ActiveForm via JavaScript](https://github.com/samdark/yii2-cookbook/blob/master/book/forms-activeform-js.md)
+> in Yii 2.0 Cookbook.
+
 ### Deferred Validation <span id="deferred-validation"></span>
 
 If you need to perform asynchronous client-side validation, you can create [Deferred objects](http://api.jquery.com/category/deferred-object/).
