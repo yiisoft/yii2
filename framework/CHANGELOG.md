@@ -4,7 +4,7 @@ Yii Framework 2 Change Log
 2.0.9 under development
 -----------------------
 
-- no changes in this release.
+- Enh #4479: `yii\rest\IndexAction` can now accept a search class to be used on filtering results (tunecino)
 
 
 2.0.8 April 28, 2016
