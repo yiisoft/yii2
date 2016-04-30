@@ -215,7 +215,7 @@ CODE;
         $class = 'm' . gmdate('ymd_His') . '_' . $migrationName;
         $this->runMigrateControllerAction('create', [
             $migrationName,
-            'fields' => 'title:string(10):notNull:unique:defaultValue("test"),body:text:notNull:defaultValue("te,st"),price:money(11,2):notNull:defaultValue(\'test\')'
+            'fields' => 'title:string(10):notNull:unique:defaultValue("test"),body:text:notNull,price:money(11,2):notNull'
         ]);
         $file = $this->parseNameClassMigration($class);
 
@@ -237,8 +237,8 @@ class {$class} extends Migration
         \$this->createTable('test', [
             'id' => \$this->primaryKey(),
             'title' => \$this->string(10)->notNull()->unique()->defaultValue("test"),
-            'body' => \$this->text()->notNull()->defaultValue("te,st"),
-            'price' => \$this->money(11,2)->notNull()->defaultValue('test'),
+            'body' => \$this->text()->notNull(),
+            'price' => \$this->money(11,2)->notNull(),
         ]);
     }
 
@@ -641,6 +641,59 @@ class {$class} extends Migration
         );
 
         \$this->dropTable('{{%test}}');
+    }
+}
+
+CODE;
+        $this->assertEqualsWithoutLE($code, $file);
+
+        /* @see https://github.com/yiisoft/yii2/issues/11461 */
+        $class = 'm' . gmdate('ymd_His') . '_' . $migrationName;
+        $expected = <<<EXPECTED
+test:integer(2):defaultValue(2),
+test2:money(11,2):defaultValue(2.5),
+test3:text:notNull:defaultValue(",test"),
+test4:text:notNull:defaultValue("test,test2,test3"),
+test5:string:defaultValue(',test'),
+test6:string:defaultValue(',test,test,test')
+EXPECTED;
+        $this->runMigrateControllerAction('create', [
+            $migrationName,
+            'fields' => $expected
+        ]);
+        $file = $this->parseNameClassMigration($class);
+        $code = <<<CODE
+<?php
+
+use yii\db\Migration;
+
+/**
+ * Handles the creation for table `test`.
+ */
+class {$class} extends Migration
+{
+    /**
+     * @inheritdoc
+     */
+    public function up()
+    {
+        \$this->createTable('test', [
+            'id' => \$this->primaryKey(),
+            'test' => \$this->integer(2)->defaultValue(2),
+            'test2' => \$this->money(11,2)->defaultValue(2.5),
+            'test3' => \$this->text()->notNull()->defaultValue(",test"),
+            'test4' => \$this->text()->notNull()->defaultValue("test,test2,test3"),
+            'test5' => \$this->string()->defaultValue(',test'),
+            'test6' => \$this->string()->defaultValue(',test,test,test'),
+        ]);
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function down()
+    {
+        \$this->dropTable('test');
     }
 }
 
