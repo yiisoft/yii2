@@ -715,6 +715,9 @@ these migrations, it will run the `up()` or `safeUp()` method in every new migra
 in the order of their timestamp values. If any of the migrations fails, the command will quit without applying
 the rest of the migrations.
 
+> Tip: In case you don't have command line at your server you may try [web shell](https://github.com/samdark/yii2-webshell)
+> extension.
+
 For each migration that has been successfully applied, the command will insert a row into a database table named
 `migration` to record the successful application of the migration. This will allow the migration tool to identify
 which migrations have been applied and which have not.
