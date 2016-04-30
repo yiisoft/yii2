@@ -175,7 +175,7 @@ Using secure connection over TLS
 --------------------------------
 
 Yii provides features that rely on cookies and/or PHP sessions. These can be vulnerable in case your connection is
-compromised. The vulnerability is reduced if the app uses secure connection via TLS.
+compromised. The risk is reduced if the app uses secure connection via TLS.
 
 Please refer to your webserver documentation for instructions on how to configure it. You may also check example configs
 provided by H5BP project:
