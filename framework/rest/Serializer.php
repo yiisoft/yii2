@@ -277,7 +277,7 @@ class Serializer extends Component
             if ($model instanceof Arrayable) {
                 $models[$i] = $model->toArray($fields, $expand);
             } elseif (is_array($model)) {
-                $models[$i] = ArrayHelper::toArray($model);
+                $models[$i] = ArrayHelper::toArray($model, [], true, $expand);
             }
         }
 

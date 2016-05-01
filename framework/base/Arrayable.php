@@ -88,5 +88,5 @@ interface Arrayable
      * @param boolean $recursive whether to recursively return array representation of embedded objects.
      * @return array the array representation of the object
      */
-    public function toArray(array $fields = [], array $expand = [], $recursive = true);
+    public function toArray(array $fields = [], array $expand = [], array $except = [], $recursive = true);
 }

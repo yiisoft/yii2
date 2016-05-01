@@ -53,39 +53,56 @@ class BaseArrayHelper
      * ]
      * ```
      *
+     * To exclude field(s) from expanded, provide it as 5th parameter
+     * ```php
+     * ArrayHelper::toArray($post, [], true, ['author'], ['create_at', 'author.auth_key']);
+     * ```
+     * Will expands `author` but exclude `author.auth_key`.
+     * 
      * @param boolean $recursive whether to recursively converts properties which are objects into arrays.
+     * @param array $expand the additional fields being requested for exporting
+     * @param array $except the excluded fields being requested for exporting
      * @return array the array representation of the object
      */
-    public static function toArray($object, $properties = [], $recursive = true)
+    public static function toArray($object, $properties = [], $recursive = true, $expand = [], $except = [])
     {
+        $expands = static::resolveExpand($expand);
+        $excepts = static::resolveExpand($except);
+        
         if (is_array($object)) {
             if ($recursive) {
                 foreach ($object as $key => $value) {
                     if (is_array($value) || is_object($value)) {
-                        $object[$key] = static::toArray($value, $properties, true);
+                        if (is_int($key)) {
+                            $itemExpand = $expand;
+                            $itemExcept = $except;
+                        } else {
+                            $itemExpand = isset($expands[$key]) ? $expands[$key] : [];
+                            $itemExcept = isset($excepts[$key]) ? $excepts[$key] : [];
+                            if (isset($excepts['*'])) {
+                                foreach ($excepts['*'] as $field) {
+                                    $itemExcept[] = '*.' . $field;
+                                }
+                            }
+                        }
+                        $object[$key] = static::toArray($value, $properties, true, $itemExpand, $itemExcept);
                     }
                 }
             }
 
             return $object;
         } elseif (is_object($object)) {
-            if (!empty($properties)) {
-                $className = get_class($object);
-                if (!empty($properties[$className])) {
-                    $result = [];
-                    foreach ($properties[$className] as $key => $name) {
-                        if (is_int($key)) {
-                            $result[$name] = $object->$name;
-                        } else {
-                            $result[$key] = static::getValue($object, $name);
-                        }
+            if (!empty($properties[$className = get_class($object)])) {
+                $result = [];
+                foreach ($properties[$className] as $key => $name) {
+                    if (is_int($key)) {
+                        $result[$name] = $object->$name;
+                    } else {
+                        $result[$key] = static::getValue($object, $name);
                     }
-
-                    return $recursive ? static::toArray($result, $properties) : $result;
                 }
-            }
-            if ($object instanceof Arrayable) {
-                $result = $object->toArray([], [], $recursive);
+            } elseif ($object instanceof Arrayable) {
+                $result = $object->toArray([], $expand, $except, $recursive);
             } else {
                 $result = [];
                 foreach ($object as $key => $value) {
@@ -93,10 +110,48 @@ class BaseArrayHelper
                 }
             }
 
-            return $recursive ? static::toArray($result, $properties) : $result;
+            foreach (array_keys($expands) as $field) {
+                if (!array_key_exists($field, $result)) {
+                    $result[$field] = $object->$field;
+                }
+            }
+
+            foreach ($excepts as $field => $child) {
+                if (empty($child) && $field !== '*') {
+                    unset($result[$field]);
+                } elseif ($field === '*') {
+                    foreach ($child as $field) {
+                        unset($result[$field]);
+                    }
+                }
+            }
+            return $recursive ? static::toArray($result, $properties, true, $expand, $except) : $result;
         } else {
             return [$object];
         }
+    }
+
+    /**
+     * Convert dot format into array format.
+     * ```php
+     * ['branch', 'items.uom', 'items.product.vendor'];
+     * ```
+     * will convert to
+     * ```php
+     * ['branch' => [], 'items' => ['uom', 'product.vendor']]
+     * ```
+     * @param array $expand
+     * @return array
+     */
+    public static function resolveExpand(array $expand)
+    {
+        $result = [];
+        foreach ($expand as $field) {
+            $fields = explode('.', $field, 2);
+            $result[$fields[0]][] = isset($fields[1]) ? $fields[1] : false;
+        }
+
+        return array_map('array_filter', $result);
     }
 
     /**
