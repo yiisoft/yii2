@@ -269,16 +269,16 @@ class Connection extends Component
      * [[Schema]] class to support DBMS that is not supported by Yii.
      */
     public $schemaMap = [
-        'pgsql' => 'yii\db\pgsql\Schema', // PostgreSQL
-        'mysqli' => 'yii\db\mysql\Schema', // MySQL
-        'mysql' => 'yii\db\mysql\Schema', // MySQL
-        'sqlite' => 'yii\db\sqlite\Schema', // sqlite 3
-        'sqlite2' => 'yii\db\sqlite\Schema', // sqlite 2
-        'sqlsrv' => 'yii\db\mssql\Schema', // newer MSSQL driver on MS Windows hosts
-        'oci' => 'yii\db\oci\Schema', // Oracle driver
-        'mssql' => 'yii\db\mssql\Schema', // older MSSQL driver on MS Windows hosts
-        'dblib' => 'yii\db\mssql\Schema', // dblib drivers on GNU/Linux (and maybe other OSes) hosts
-        'cubrid' => 'yii\db\cubrid\Schema', // CUBRID
+        'pgsql' => pgsql\Schema::class, // PostgreSQL
+        'mysqli' => mysql\Schema::class, // MySQL
+        'mysql' => mysql\Schema::class, // MySQL
+        'sqlite' => sqlite\Schema::class, // sqlite 3
+        'sqlite2' => sqlite\Schema::class, // sqlite 2
+        'sqlsrv' => mssql\Schema::class, // newer MSSQL driver on MS Windows hosts
+        'oci' => oci\Schema::class, // Oracle driver
+        'mssql' => mssql\Schema::class, // older MSSQL driver on MS Windows hosts
+        'dblib' => mssql\Schema::class, // dblib drivers on GNU/Linux (and maybe other OSes) hosts
+        'cubrid' => cubrid\Schema::class, // CUBRID
     ];
     /**
      * @var string Custom PDO wrapper class. If not set, it will use [[PDO]] or [[yii\db\mssql\PDO]] when MSSQL is used.
@@ -291,7 +291,7 @@ class Connection extends Component
      * @see createCommand
      * @since 2.0.7
      */
-    public $commandClass = 'yii\db\Command';
+    public $commandClass = Command::class;
     /**
      * @var boolean whether to enable [savepoint](http://en.wikipedia.org/wiki/Savepoint).
      * Note that if the underlying DBMS does not support savepoint, setting this property to be true will have no effect.
@@ -586,9 +586,9 @@ class Connection extends Component
             }
             if (isset($driver)) {
                 if ($driver === 'mssql' || $driver === 'dblib') {
-                    $pdoClass = 'yii\db\mssql\PDO';
+                    $pdoClass = mssql\PDO::class;
                 } elseif ($driver === 'sqlsrv') {
-                    $pdoClass = 'yii\db\mssql\SqlsrvPDO';
+                    $pdoClass = mssql\SqlsrvPDO::class;
                 }
             }
         }
