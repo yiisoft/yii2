@@ -351,6 +351,20 @@ Like [[yii\db\Query::andWhere()|andWhere()]] and [[yii\db\Query::orWhere()|orWhe
 [[yii\db\Query::andFilterWhere()|andFilterWhere()]] and [[yii\db\Query::orFilterWhere()|orFilterWhere()]]
 to append additional filter conditions to the existing one.
 
+Additionally, there is [[yii\db\Query::andFilterCompare()]] that can intelligently determine operator based on what's
+in the value:
+
+```php
+$query->andFilterCompare('name', 'John Doe');
+$query->andFilterCompare('rating', '>9');
+$query->andFilterCompare('value', '<=100');
+```
+
+You can also specify operator explicitly:
+
+```php
+$query->andFilterCompare('name', 'Doe', 'like');
+```
 
 ### [[yii\db\Query::orderBy()|orderBy()]] <span id="order-by"></span>
 
