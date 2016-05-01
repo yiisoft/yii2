@@ -28,6 +28,11 @@ Upgrade to Yii 2.1.0
 
   `::class` does not trigger auto loading so you can even use it in config.
 
+* The following method signature have changed. If you override any of them in your code, you have to adjust these places:
+
+  `yii\db\QueryBuilderbuild::buildGroupBy($columns)` -> `buildGroupBy($columns, &$params)`
+  `yii\db\QueryBuilderbuild::buildOrderByAndLimit($sql, $orderBy, $limit, $offset)` -> `buildOrderByAndLimit($sql, $orderBy, $limit, $offset, &$params)`
+
 
 Upgrade from Yii 2.0.7
 ----------------------
