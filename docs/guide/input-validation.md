@@ -113,7 +113,7 @@ declared in `rules()`.
 > public function rules()
 > {
 >     $rules = parent::rules();
->     unset($rules['passoword']);
+>     unset($rules['password']);
 >     return $rules;
 > }
 
