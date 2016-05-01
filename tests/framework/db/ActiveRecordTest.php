@@ -37,31 +37,31 @@ class ActiveRecordTest extends DatabaseTestCase
 
     public function getCustomerClass()
     {
-        return Customer::className();
+        return Customer::class;
     }
 
     public function getItemClass()
     {
-        return Item::className();
+        return Item::class;
     }
 
     public function getOrderClass()
     {
-        return Order::className();
+        return Order::class;
     }
 
     public function getOrderItemClass()
     {
-        return OrderItem::className();
+        return OrderItem::class;
     }
 
     public function getOrderWithNullFKClass()
     {
-        return OrderWithNullFK::className();
+        return OrderWithNullFK::class;
     }
     public function getOrderItemWithNullFKmClass()
     {
-        return OrderItemWithNullFK::className();
+        return OrderItemWithNullFK::class;
     }
 
     public function testCustomColumns()
@@ -202,8 +202,8 @@ class ActiveRecordTest extends DatabaseTestCase
         $items = $customer->orderItems;
 
         $this->assertEquals(2, count($items));
-        $this->assertInstanceOf(Item::className(), $items[0]);
-        $this->assertInstanceOf(Item::className(), $items[1]);
+        $this->assertInstanceOf(Item::class, $items[0]);
+        $this->assertInstanceOf(Item::class, $items[1]);
         $this->assertEquals(1, $items[0]->id);
         $this->assertEquals(2, $items[1]->id);
     }
@@ -221,8 +221,8 @@ class ActiveRecordTest extends DatabaseTestCase
         $this->assertNotNull($category);
         $orders = $category->orders;
         $this->assertEquals(2, count($orders));
-        $this->assertInstanceOf(Order::className(), $orders[0]);
-        $this->assertInstanceOf(Order::className(), $orders[1]);
+        $this->assertInstanceOf(Order::class, $orders[0]);
+        $this->assertInstanceOf(Order::class, $orders[1]);
         $ids = [$orders[0]->id, $orders[1]->id];
         sort($ids);
         $this->assertEquals([1, 3], $ids);
@@ -231,7 +231,7 @@ class ActiveRecordTest extends DatabaseTestCase
         $this->assertNotNull($category);
         $orders = $category->orders;
         $this->assertEquals(1, count($orders));
-        $this->assertInstanceOf(Order::className(), $orders[0]);
+        $this->assertInstanceOf(Order::class, $orders[0]);
         $this->assertEquals(2, $orders[0]->id);
 
     }
@@ -529,7 +529,7 @@ class ActiveRecordTest extends DatabaseTestCase
         $this->assertEquals(2, $customers[1]->id);
         $this->assertTrue($customers[0]->isRelationPopulated('profile'));
         $this->assertTrue($customers[1]->isRelationPopulated('profile'));
-        $this->assertInstanceOf(Profile::className(), $customers[0]->profile);
+        $this->assertInstanceOf(Profile::class, $customers[0]->profile);
         $this->assertNull($customers[1]->profile);
 
         // hasMany
@@ -1093,10 +1093,10 @@ class ActiveRecordTest extends DatabaseTestCase
         (new Cat())->save(false);
         (new Dog())->save(false);
 
-        $animal = Animal::find()->where(['type' => Dog::className()])->one();
+        $animal = Animal::find()->where(['type' => Dog::class])->one();
         $this->assertEquals('bark', $animal->getDoes());
 
-        $animal = Animal::find()->where(['type' => Cat::className()])->one();
+        $animal = Animal::find()->where(['type' => Cat::class])->one();
         $this->assertEquals('meow', $animal->getDoes());
     }
 
@@ -1154,7 +1154,7 @@ class ActiveRecordTest extends DatabaseTestCase
             ->orderBy('status')
             ->all();
         $this->assertCount(2, $aggregation);
-        $this->assertContainsOnlyInstancesOf(Customer::className(), $aggregation);
+        $this->assertContainsOnlyInstancesOf(Customer::class, $aggregation);
         foreach($aggregation as $item) {
             if ($item->status == 1) {
                 $this->assertEquals(183, $item->sumTotal);
@@ -1195,7 +1195,7 @@ class ActiveRecordTest extends DatabaseTestCase
             ->orderBy('[[order_id]]')
             ->all();
         $this->assertCount(3, $aggregation);
-        $this->assertContainsOnlyInstancesOf(OrderItem::className(), $aggregation);
+        $this->assertContainsOnlyInstancesOf(OrderItem::class, $aggregation);
         foreach($aggregation as $item) {
             if ($item->order_id == 1) {
                 $this->assertEquals(70, $item->subtotal);

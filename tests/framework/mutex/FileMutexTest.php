@@ -30,7 +30,7 @@ class FileMutexTest extends TestCase
     protected function createMutex()
     {
         return \Yii::createObject([
-            'class' => FileMutex::className(),
+            'class' => FileMutex::class,
         ]);
     }
 

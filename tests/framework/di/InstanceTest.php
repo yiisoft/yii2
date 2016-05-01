@@ -24,7 +24,7 @@ class InstanceTest extends TestCase
     public function testOf()
     {
         $container = new Container;
-        $className = Component::className();
+        $className = Component::class;
         $instance = Instance::of($className);
 
         $this->assertTrue($instance instanceof Instance);

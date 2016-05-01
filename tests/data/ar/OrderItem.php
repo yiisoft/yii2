@@ -21,22 +21,22 @@ class OrderItem extends ActiveRecord
 
     public function getOrder()
     {
-        return $this->hasOne(Order::className(), ['id' => 'order_id']);
+        return $this->hasOne(Order::class, ['id' => 'order_id']);
     }
 
     public function getItem()
     {
-        return $this->hasOne(Item::className(), ['id' => 'item_id']);
+        return $this->hasOne(Item::class, ['id' => 'item_id']);
     }
 
     // relations used by ::testFindCompositeWithJoin()
     public function getOrderItemCompositeWithJoin()
     {
-        return $this->hasOne(OrderItem::className(), ['item_id' => 'item_id', 'order_id' => 'order_id' ])
+        return $this->hasOne(OrderItem::class, ['item_id' => 'item_id', 'order_id' => 'order_id' ])
             ->joinWith('item');
     }
     public function getOrderItemCompositeNoJoin()
     {
-        return $this->hasOne(OrderItem::className(), ['item_id' => 'item_id', 'order_id' => 'order_id' ]);
+        return $this->hasOne(OrderItem::class, ['item_id' => 'item_id', 'order_id' => 'order_id' ]);
     }
 }

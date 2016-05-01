@@ -28,7 +28,7 @@ abstract class DbManagerTestCase extends ManagerTestCase
                 'id' => 'Migrator',
                 'basePath' => '@yiiunit',
                 'controllerMap' => [
-                    'migrate' => EchoMigrateController::className(),
+                    'migrate' => EchoMigrateController::class,
                 ],
                 'components' => [
                     'db' => static::getConnection(),

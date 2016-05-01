@@ -194,11 +194,11 @@ class I18NTest extends TestCase
         $this->assertEquals('Missing translation message.', $this->i18n->translate('test', 'Missing translation message.', [], 'de-DE'));
         $this->assertEquals('Hallo Welt!', $this->i18n->translate('test', 'Hello world!', [], 'de-DE'));
 
-        Event::on(PhpMessageSource::className(), PhpMessageSource::EVENT_MISSING_TRANSLATION, function ($event) {});
+        Event::on(PhpMessageSource::class, PhpMessageSource::EVENT_MISSING_TRANSLATION, function ($event) {});
         $this->assertEquals('Hallo Welt!', $this->i18n->translate('test', 'Hello world!', [], 'de-DE'));
         $this->assertEquals('Missing translation message.', $this->i18n->translate('test', 'Missing translation message.', [], 'de-DE'));
         $this->assertEquals('Hallo Welt!', $this->i18n->translate('test', 'Hello world!', [], 'de-DE'));
-        Event::off(PhpMessageSource::className(), PhpMessageSource::EVENT_MISSING_TRANSLATION);
+        Event::off(PhpMessageSource::class, PhpMessageSource::EVENT_MISSING_TRANSLATION);
 
         Event::on(PhpMessageSource::className(), PhpMessageSource::EVENT_MISSING_TRANSLATION, function ($event) {
             if ($event->message == 'New missing translation message.') {
@@ -210,7 +210,7 @@ class I18NTest extends TestCase
         $this->assertEquals('Missing translation message.', $this->i18n->translate('test', 'Missing translation message.', [], 'de-DE'));
         $this->assertEquals('TRANSLATION MISSING HERE!', $this->i18n->translate('test', 'New missing translation message.', [], 'de-DE'));
         $this->assertEquals('Hallo Welt!', $this->i18n->translate('test', 'Hello world!', [], 'de-DE'));
-        Event::off(PhpMessageSource::className(), PhpMessageSource::EVENT_MISSING_TRANSLATION);
+        Event::off(PhpMessageSource::class, PhpMessageSource::EVENT_MISSING_TRANSLATION);
     }
 
     /**
