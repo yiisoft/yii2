@@ -2,6 +2,9 @@ Yii Framework 2 Change Log
 ==========================
 
 2.0.9 under development
+- Enh #11428: Speedup SQL SELECT in yii\db\oci\Schema\findColumns
+
+2.0.8 under development
 -----------------------
 
 - Enh #11414: Files specified as `null` in `yii\web\AssetBundle` won't be registered (Razzwan)
