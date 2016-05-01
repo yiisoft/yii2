@@ -5,7 +5,9 @@ Yii Framework 2 Change Log
 -----------------------
 
 - Removed methods marked as deprected in 2.0.x (samdark)
-- Chg #11397: Minimum required version of PHP is 5.6.0 now (samdark)
+- Chg #11397: Minimum required version of PHP is 5.5.0 now (samdark)
+- Chg: Removed `yii\base\Object::className()` in favor of native PHP syntax `::class`, which does not trigger autoloading (cebe)
+
 
 2.0.9 under development
 -----------------------

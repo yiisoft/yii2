@@ -18,7 +18,16 @@ php composer.phar global require "fxp/composer-asset-plugin:~1.1.1"
 Upgrade to Yii 2.1.0
 --------------------
 
-* 5.6.0 is the minimum required version of PHP now.
+* The minimum required PHP version is 5.5.0 now.
+
+* `yii\base\Object::className()` has been removed in favor of the [native PHP syntax](http://php.net/manual/en/language.oop5.basic.php#language.oop5.basic.class.class)
+  `::class`. When upgrading to Yii 2.1, You should do a global search and replace for `::className()` to `::class`.
+  All calls on objects via `->className()` should be replaced by a call to `get_class()`.
+
+  You can make this change even before upgrading to Yii 2.1, Yii 2.0.x does work with it.
+
+  `::class` does not trigger auto loading so you can even use it in config.
+
 
 Upgrade from Yii 2.0.7
 ----------------------
