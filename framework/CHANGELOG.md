@@ -7,7 +7,7 @@ Yii Framework 2 Change Log
 - Enh #11414: Files specified as `null` in `yii\web\AssetBundle` won't be registered (Razzwan)
 - Enh #11432: Added HTTP status 421 "Misdirected Request" to list of statuses in `yii\web\Response` (dasmfm)
 - Bug #11459: Fixed flash messages not destroyed when `session.auto_start = 1` set in php.ini (cartmanchen)
-
+- Enh: Elements of `yii\log\Target::$logVar` can be in different forms. (Viktor Pikaev)
 
 2.0.8 April 28, 2016
 --------------------
