@@ -8,10 +8,11 @@
 namespace yii\db\oci;
 
 use yii\base\InvalidCallException;
+use yii\db\ColumnSchema;
 use yii\db\Connection;
 use yii\db\Expression;
+use yii\db\IntegrityException;
 use yii\db\TableSchema;
-use yii\db\ColumnSchema;
 
 /**
  * Schema is the class for retrieving metadata from an Oracle database
@@ -29,7 +30,7 @@ class Schema extends \yii\db\Schema
      * If left part is found in DB error message exception class from the right part is used.
      */
     public $exceptionMap = [
-        'ORA-00001: unique constraint' => 'yii\db\IntegrityException',
+        'ORA-00001: unique constraint' => IntegrityException::class,
     ];
 
 
@@ -177,7 +178,6 @@ SQL;
      */
     protected function getTableSequenceName($tableName)
     {
-
         $seq_name_sql = <<<SQL
 SELECT ud.referenced_name as sequence_name
 FROM user_dependencies ud

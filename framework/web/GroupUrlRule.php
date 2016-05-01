@@ -69,7 +69,7 @@ class GroupUrlRule extends CompositeUrlRule
      * @var array the default configuration of URL rules. Individual rule configurations
      * specified via [[rules]] will take precedence when the same property of the rule is configured.
      */
-    public $ruleConfig = ['class' => 'yii\web\UrlRule'];
+    public $ruleConfig = ['class' => UrlRule::class];
 
 
     /**

@@ -179,8 +179,8 @@ abstract class BaseDataProvider extends Component implements DataProviderInterfa
      * @param array|Pagination|boolean $value the pagination to be used by this data provider.
      * This can be one of the following:
      *
-     * - a configuration array for creating the pagination object. The "class" element defaults
-     *   to 'yii\data\Pagination'
+     * - a configuration array for creating the pagination object. The
+     *   "class" element defaults to `yii\data\Pagination`
      * - an instance of [[Pagination]] or its subclass
      * - false, if pagination needs to be disabled.
      *
@@ -219,8 +219,8 @@ abstract class BaseDataProvider extends Component implements DataProviderInterfa
      * @param array|Sort|boolean $value the sort definition to be used by this data provider.
      * This can be one of the following:
      *
-     * - a configuration array for creating the sort definition object. The "class" element defaults
-     *   to 'yii\data\Sort'
+     * - a configuration array for creating the sort definition object. The
+     *   "class" element defaults to `yii\data\Sort`
      * - an instance of [[Sort]] or its subclass
      * - false, if sorting needs to be disabled.
      *

@@ -8,6 +8,7 @@
 namespace yii\widgets;
 
 use yii\web\AssetBundle;
+use yii\web\YiiAsset;
 
 /**
  * The asset bundle for the [[MaskedInput]] widget.
@@ -19,11 +20,18 @@ use yii\web\AssetBundle;
  */
 class MaskedInputAsset extends AssetBundle
 {
+    /**
+     * @inheritdoc
+     */
     public $sourcePath = '@bower/jquery.inputmask/dist';
-    public $js = [
-        'jquery.inputmask.bundle.js'
-    ];
-    public $depends = [
-        'yii\web\YiiAsset'
-    ];
+
+    /**
+     * @inheritdoc
+     */
+    public $js = ['jquery.inputmask.bundle.js'];
+
+    /**
+     * @inheritdoc
+     */
+    public $depends = [YiiAsset::class];
 }

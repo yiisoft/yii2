@@ -170,7 +170,7 @@ class HelpController extends Controller
     {
         if (class_exists($controllerClass)) {
             $class = new \ReflectionClass($controllerClass);
-            return !$class->isAbstract() && $class->isSubclassOf('yii\console\Controller');
+            return !$class->isAbstract() && $class->isSubclassOf(Controller::class);
         } else {
             return false;
         }
@@ -268,14 +268,14 @@ class HelpController extends Controller
 
             $maxlen = 5;
             foreach ($actions as $action) {
-                $len = strlen($prefix.'/'.$action) + 2 + ($action === $controller->defaultAction ? 10 : 0);
+                $len = strlen($prefix . '/' . $action) + 2 + ($action === $controller->defaultAction ? 10 : 0);
                 if ($maxlen < $len) {
                     $maxlen = $len;
                 }
             }
             foreach ($actions as $action) {
-                $this->stdout('- ' . $this->ansiFormat($prefix.'/'.$action, Console::FG_YELLOW));
-                $len = strlen($prefix.'/'.$action) + 2;
+                $this->stdout('- ' . $this->ansiFormat($prefix . '/' . $action, Console::FG_YELLOW));
+                $len = strlen($prefix . '/' . $action) + 2;
                 if ($action === $controller->defaultAction) {
                     $this->stdout(' (default)', Console::FG_GREEN);
                     $len += 10;

@@ -8,6 +8,7 @@
 namespace yii\widgets;
 
 use yii\web\AssetBundle;
+use yii\web\YiiAsset;
 
 /**
  * @author Qiang Xue <qiang.xue@gmail.com>
@@ -15,11 +16,18 @@ use yii\web\AssetBundle;
  */
 class ActiveFormAsset extends AssetBundle
 {
+    /**
+     * @inheritdoc
+     */
     public $sourcePath = '@yii/assets';
-    public $js = [
-        'yii.activeForm.js',
-    ];
-    public $depends = [
-        'yii\web\YiiAsset',
-    ];
+
+    /**
+     * @inheritdoc
+     */
+    public $js = ['yii.activeForm.js'];
+
+    /**
+     * @inheritdoc
+     */
+    public $depends = [YiiAsset::class];
 }

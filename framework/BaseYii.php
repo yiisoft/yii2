@@ -303,7 +303,7 @@ class BaseYii
      *
      * ```php
      * // create an object using a class name
-     * $object = Yii::createObject('yii\db\Connection');
+     * $object = Yii::createObject(\yii\db\Connection::class);
      *
      * // create an object using a configuration array
      * $object = Yii::createObject([
@@ -361,7 +361,7 @@ class BaseYii
         if (self::$_logger !== null) {
             return self::$_logger;
         } else {
-            return self::$_logger = static::createObject('yii\log\Logger');
+            return self::$_logger = static::createObject(Logger::class);
         }
     }
 

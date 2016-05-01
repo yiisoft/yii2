@@ -13,6 +13,7 @@ use yii\console\Exception;
 use yii\helpers\Console;
 use yii\helpers\FileHelper;
 use yii\test\FixtureTrait;
+use yii\test\InitDb;
 
 /**
  * Manages fixture data loading and unloading.
@@ -55,9 +56,7 @@ class FixtureController extends Controller
      * @var array global fixtures that should be applied when loading and unloading. By default it is set to `InitDbFixture`
      * that disables and enables integrity check, so your data can be safely loaded.
      */
-    public $globalFixtures = [
-        'yii\test\InitDb',
-    ];
+    public $globalFixtures = [InitDb::class];
 
 
     /**
@@ -116,7 +115,6 @@ class FixtureController extends Controller
         $except = $filtered['except'];
 
         if (!$this->needToApplyAll($fixturesInput[0])) {
-
             $fixtures = $filtered['apply'];
 
             $foundFixtures = $this->findFixtures($fixtures);
@@ -125,7 +123,6 @@ class FixtureController extends Controller
             if ($notFoundFixtures) {
                 $this->notifyNotFound($notFoundFixtures);
             }
-
         } else {
             $foundFixtures = $this->findFixtures();
         }
@@ -187,7 +184,6 @@ class FixtureController extends Controller
         $except = $filtered['except'];
 
         if (!$this->needToApplyAll($fixturesInput[0])) {
-
             $fixtures = $filtered['apply'];
 
             $foundFixtures = $this->findFixtures($fixtures);
@@ -196,7 +192,6 @@ class FixtureController extends Controller
             if ($notFoundFixtures) {
                 $this->notifyNotFound($notFoundFixtures);
             }
-
         } else {
             $foundFixtures = $this->findFixtures();
         }
@@ -404,7 +399,6 @@ class FixtureController extends Controller
         $findAll = ($fixtures === []);
 
         if (!$findAll) {
-
             $filesToSearch = [];
 
             foreach ($fixtures as $fileName) {
@@ -432,7 +426,6 @@ class FixtureController extends Controller
         $config = [];
 
         foreach ($fixtures as $fixture) {
-
             $isNamespaced = (strpos($fixture, '\\') !== false);
             $fullClassName = $isNamespaced ? $fixture . 'Fixture' : $this->namespace . '\\' . $fixture . 'Fixture';
 
@@ -490,5 +483,4 @@ class FixtureController extends Controller
     {
         return Yii::getAlias('@' . str_replace('\\', '/', $this->namespace));
     }
-
 }

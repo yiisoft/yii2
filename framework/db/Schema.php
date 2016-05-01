@@ -74,7 +74,7 @@ abstract class Schema extends Object
      * If left part is found in DB error message exception class from the right part is used.
      */
     public $exceptionMap = [
-        'SQLSTATE[23' => 'yii\db\IntegrityException',
+        'SQLSTATE[23' => IntegrityException::class,
     ];
 
     /**
@@ -101,7 +101,7 @@ abstract class Schema extends Object
      */
     protected function createColumnSchema()
     {
-        return Yii::createObject('yii\db\ColumnSchema');
+        return Yii::createObject(ColumnSchema::class);
     }
 
     /**
@@ -508,7 +508,6 @@ abstract class Schema extends Object
         }
 
         return implode('.', $parts);
-
     }
 
     /**
@@ -622,7 +621,7 @@ abstract class Schema extends Object
             return $e;
         }
 
-        $exceptionClass = '\yii\db\Exception';
+        $exceptionClass = Exception::class;
         foreach ($this->exceptionMap as $error => $class) {
             if (strpos($e->getMessage(), $error) !== false) {
                 $exceptionClass = $class;
