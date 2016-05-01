@@ -57,14 +57,13 @@ abstract class Target extends Component
      * @var array list of the PHP predefined variables that should be logged in a message.
      * Note that a variable must be accessible via `$GLOBALS`. Otherwise it won't be logged.
      * Defaults to `['_GET', '_POST', '_FILES', '_COOKIE', '_SESSION', '_SERVER']`.
+     * Each element should be in one of next forms:
+     * - `Var` - `Var` will be logged.
+     * - `Var.key` - only `Var[key]` key will be logged.
+     * - `!Var.key` - `Var[key]` key will be excluded.
+     *
      */
     public $logVars = ['_GET', '_POST', '_FILES', '_COOKIE', '_SESSION', '_SERVER'];
-    /**
-     * @var array list of keys which will be excluded from [[logVars]]
-     * Default to []
-     * @see logVars
-     */
-    public $logVarsHiddenKeys = [];
     /**
      * @var callable a PHP callable that returns a string to be prefixed to every exported message.
      *
@@ -129,19 +128,45 @@ abstract class Target extends Component
     protected function getContextMessage()
     {
         $context = [];
-        foreach ($this->logVars as $name) {
-            if (!empty($GLOBALS[$name])) {
-                $var = $GLOBALS[$name];
-                foreach ($this->logVarsHiddenKeys as $key) {
-                    if (isset($var[$key])) {
-                        unset($var[$key]);
-                    }
+        foreach ($this->logVars as $var) {
+            $keys = explode('.', $var);
+            $globalKey = $keys[0];
+            $localKey = isset($keys[1]) ? $keys[1] : null;
+
+            $hideCurrentVar = false;
+            if ($globalKey[0] === '!') {
+                $globalKey = substr($globalKey, 1);
+                $hideCurrentVar = true;
+            }
+
+            if (empty($GLOBALS[$globalKey])) {
+                continue;
+            }
+            if ($localKey === null) {
+                $context[$globalKey] = $GLOBALS[$globalKey];
+                continue;
+            }
+            if ($hideCurrentVar) {
+                if (isset($context[$globalKey])) {
+                    unset($context[$globalKey][$localKey]);
                 }
-                $context[] = "\${$name} = " . VarDumper::dumpAsString($var);
+            } else {
+                if (!isset($GLOBALS[$globalKey][$localKey])) {
+                    continue;
+                }
+                if (!isset($context[$globalKey])) {
+                    $context[$globalKey] = [];
+                }
+                $context[$globalKey][$localKey] = $GLOBALS[$globalKey][$localKey];
             }
         }
 
-        return implode("\n\n", $context);
+        $result = [];
+        foreach ($context as $key => $value) {
+            $result[] = "\${$key} = " . VarDumper::dumpAsString($value);
+        }
+
+        return implode("\n\n", $result);
     }
 
     /**

@@ -78,19 +78,50 @@ class TargetTest extends TestCase
 
     public function testGetContextMessage()
     {
-        $hiddenKey = 'hidden_key';
-        $visibleKey = 'visible_key';
         $target = new TestTarget([
-            'logVars' => ['A'],
-            'logVarsHiddenKeys' => [$hiddenKey],
+            'logVars' => [
+                'A', '!A.A_b', 'A.A_d',
+                'B.B_a',
+                'C', 'C.C_a',
+                'D',
+            ],
         ]);
         $GLOBALS['A'] = [
-            $hiddenKey => 'value',
-            $visibleKey => 'value',
+            'A_a' => 1,
+            'A_b' => 1,
+            'A_c' => 1,
+        ];
+        $GLOBALS['B'] = [
+            'B_a' => 1,
+            'B_b' => 1,
+            'B_c' => 1,
+        ];
+        $GLOBALS['C'] = [
+            'C_a' => 1,
+            'C_b' => 1,
+            'C_c' => 1,
+        ];
+        $GLOBALS['E'] = [
+            'C_a' => 1,
+            'C_b' => 1,
+            'C_c' => 1,
         ];
         $context = $target->getContextMessage();
-        $this->assertContains($visibleKey, $context);
-        $this->assertNotContains($hiddenKey, $context);
+        $this->assertContains('A_a', $context);
+        $this->assertNotContains('A_b', $context);
+        $this->assertContains('A_c', $context);
+        $this->assertContains('B_a', $context);
+        $this->assertNotContains('B_b', $context);
+        $this->assertNotContains('B_c', $context);
+        $this->assertContains('C_a', $context);
+        $this->assertContains('C_b', $context);
+        $this->assertContains('C_c', $context);
+        $this->assertNotContains('D_a', $context);
+        $this->assertNotContains('D_b', $context);
+        $this->assertNotContains('D_c', $context);
+        $this->assertNotContains('E_a', $context);
+        $this->assertNotContains('E_b', $context);
+        $this->assertNotContains('E_c', $context);
     }
 }
 
