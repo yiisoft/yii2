@@ -871,7 +871,7 @@ class QueryBuilder extends \yii\base\Object
         foreach ($columns as $name => $direction) {
             if ($direction instanceof Expression) {
                 $orders[] = $direction->expression;
-                $params = array_merge($params, $column->params);
+                $params = array_merge($params, $direction->params);
             } else {
                 $orders[] = $this->db->quoteColumnName($name) . ($direction === SORT_DESC ? ' DESC' : '');
             }
