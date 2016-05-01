@@ -30,7 +30,7 @@ instead of adding a new one. If you don't provide it, the JS code itself will be
 An external script can be added like the following:
 
 ```php
-$this->registerJsFile('http://example.com/js/main.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
+$this->registerJsFile('http://example.com/js/main.js', ['depends' => [\yii\web\JqueryAsset::class]]);
 ```
 
 The arguments for [[yii\web\View::registerJsFile()|registerJsFile()]] are similar to those for
@@ -77,7 +77,7 @@ If you need to make sure there's only a single style tag use fourth argument as 
 
 ```php
 $this->registerCssFile("http://example.com/css/themes/black-and-white.css", [
-    'depends' => [BootstrapAsset::className()],
+    'depends' => [BootstrapAsset::class],
     'media' => 'print',
 ], 'css-print-theme');
 ```

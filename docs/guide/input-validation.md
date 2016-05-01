@@ -412,7 +412,7 @@ class EntryForm extends Model
     {
         return [
             [['name', 'email'], 'required'],
-            ['country', CountryValidator::className()],
+            ['country', CountryValidator::class],
             ['email', 'email'],
         ];
     }

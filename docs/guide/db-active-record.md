@@ -717,7 +717,7 @@ class Customer extends ActiveRecord
 
     public function getOrders()
     {
-        return $this->hasMany(Order::className(), ['customer_id' => 'id']);
+        return $this->hasMany(Order::class, ['customer_id' => 'id']);
     }
 }
 
@@ -727,7 +727,7 @@ class Order extends ActiveRecord
 
     public function getCustomer()
     {
-        return $this->hasOne(Customer::className(), ['id' => 'customer_id']);
+        return $this->hasOne(Customer::class, ['id' => 'customer_id']);
     }
 }
 ```
@@ -745,8 +745,9 @@ While declaring a relation, you should specify the following information:
   declarations that a customer has many orders while an order only has one customer.
 - the name of the related Active Record class: specified as the first parameter to 
   either [[yii\db\ActiveRecord::hasMany()|hasMany()]] or [[yii\db\ActiveRecord::hasOne()|hasOne()]].
-  A recommended practice is to call `Xyz::className()` to get the class name string so that you can receive
-  IDE auto-completion support as well as error detection at compiling stage. 
+  A recommended practice is to use the `Xyz::class` syntax provided by PHP to get the class name string so that you can receive
+  IDE auto-completion support as well as error detection using static analysis tools.
+  Using the `::class` syntax does not trigger auto loading, so this does not violate the lazy loading approach.
 - the link between the two types of data: specifies the column(s) through which the two types of data are related.
   The array values are the columns of the primary data (represented by the Active Record class that you are declaring
   relations), while the array keys are the columns of the related data.
@@ -823,7 +824,7 @@ class Customer extends ActiveRecord
 {
     public function getBigOrders($threshold = 100)
     {
-        return $this->hasMany(Order::className(), ['customer_id' => 'id'])
+        return $this->hasMany(Order::class, ['customer_id' => 'id'])
             ->where('subtotal > :threshold', [':threshold' => $threshold])
             ->orderBy('id');
     }
@@ -858,7 +859,7 @@ class Order extends ActiveRecord
 {
     public function getItems()
     {
-        return $this->hasMany(Item::className(), ['id' => 'item_id'])
+        return $this->hasMany(Item::class, ['id' => 'item_id'])
             ->viaTable('order_item', ['order_id' => 'id']);
     }
 }
@@ -871,12 +872,12 @@ class Order extends ActiveRecord
 {
     public function getOrderItems()
     {
-        return $this->hasMany(OrderItem::className(), ['order_id' => 'id']);
+        return $this->hasMany(OrderItem::class, ['order_id' => 'id']);
     }
 
     public function getItems()
     {
-        return $this->hasMany(Item::className(), ['id' => 'item_id'])
+        return $this->hasMany(Item::class, ['id' => 'item_id'])
             ->via('orderItems');
     }
 }
@@ -1127,7 +1128,7 @@ class Customer extends ActiveRecord
 {
     public function getOrders()
     {
-        return $this->hasMany(Order::className(), ['customer_id' => 'id']);
+        return $this->hasMany(Order::class, ['customer_id' => 'id']);
     }
 }
 
@@ -1135,7 +1136,7 @@ class Order extends ActiveRecord
 {
     public function getCustomer()
     {
-        return $this->hasOne(Customer::className(), ['id' => 'customer_id']);
+        return $this->hasOne(Customer::class, ['id' => 'customer_id']);
     }
 }
 ```
@@ -1169,7 +1170,7 @@ class Customer extends ActiveRecord
 {
     public function getOrders()
     {
-        return $this->hasMany(Order::className(), ['customer_id' => 'id'])->inverseOf('customer');
+        return $this->hasMany(Order::class, ['customer_id' => 'id'])->inverseOf('customer');
     }
 }
 ```
@@ -1280,7 +1281,7 @@ class Customer extends \yii\db\ActiveRecord
     public function getComments()
     {
         // a customer has many comments
-        return $this->hasMany(Comment::className(), ['customer_id' => 'id']);
+        return $this->hasMany(Comment::class, ['customer_id' => 'id']);
     }
 }
 
@@ -1295,7 +1296,7 @@ class Comment extends \yii\mongodb\ActiveRecord
     public function getCustomer()
     {
         // a comment has one customer
-        return $this->hasOne(Customer::className(), ['id' => 'customer_id']);
+        return $this->hasOne(Customer::class, ['id' => 'customer_id']);
     }
 }
 
@@ -1371,7 +1372,7 @@ class Customer extends \yii\db\ActiveRecord
 {
     public function getActiveComments()
     {
-        return $this->hasMany(Comment::className(), ['customer_id' => 'id'])->active();
+        return $this->hasMany(Comment::class, ['customer_id' => 'id'])->active();
     }
 }
 
@@ -1441,7 +1442,7 @@ class Customer extends \yii\db\ActiveRecord
 
     public function getOrders()
     {
-        return $this->hasMany(Order::className(), ['customer_id' => 'id']);
+        return $this->hasMany(Order::class, ['customer_id' => 'id']);
     }
 }
 ```
@@ -1535,7 +1536,7 @@ class Customer extends \yii\db\ActiveRecord
 
     public function getOrders()
     {
-        return $this->hasMany(Order::className(), ['customer_id' => 'id']);
+        return $this->hasMany(Order::class, ['customer_id' => 'id']);
     }
 }
 ```

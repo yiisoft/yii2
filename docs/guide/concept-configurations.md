@@ -51,6 +51,8 @@ The format of a configuration can be formally described as:
 where
 
 * The `class` element specifies a fully qualified class name for the object being created.
+  Instead of string, you may use the [`::class` PHP syntax](http://php.net/manual/en/language.oop5.basic.php#language.oop5.basic.class.class)
+  to specify the class name. This enables better IDE navigation.
 * The `propertyName` elements specify the initial values for the named property. The keys are the property names, and the
   values are the corresponding initial values. Only public member variables and [properties](concept-properties.md)
   defined by getters/setters can be configured.
@@ -65,7 +67,7 @@ Below is an example showing a configuration with initial property values, event 
 
 ```php
 [
-    'class' => 'app\components\SearchEngine',
+    'class' => \app\components\SearchEngine::class,
     'apiKey' => 'xxxxxxxx',
     'on search' => function ($event) {
         Yii::info("Keyword searched: " . $event->keyword);
@@ -100,22 +102,22 @@ $config = [
     'extensions' => require(__DIR__ . '/../vendor/yiisoft/extensions.php'),
     'components' => [
         'cache' => [
-            'class' => 'yii\caching\FileCache',
+            'class' => \yii\caching\FileCache::class,
         ],
         'mailer' => [
-            'class' => 'yii\swiftmailer\Mailer',
+            'class' => \yii\swiftmailer\Mailer::class,
         ],
         'log' => [
-            'class' => 'yii\log\Dispatcher',
+            'class' => \yii\log\Dispatcher::class,
             'traceLevel' => YII_DEBUG ? 3 : 0,
             'targets' => [
                 [
-                    'class' => 'yii\log\FileTarget',
+                    'class' => \yii\log\FileTarget::class,
                 ],
             ],
         ],
         'db' => [
-            'class' => 'yii\db\Connection',
+            'class' => \yii\db\Connection::class,
             'dsn' => 'mysql:host=localhost;dbname=stay2',
             'username' => 'root',
             'password' => '',
@@ -182,22 +184,22 @@ and "require" this file in `web.php` as shown above. The content of `components.
 ```php
 return [
     'cache' => [
-        'class' => 'yii\caching\FileCache',
+        'class' => \yii\caching\FileCache::class,
     ],
     'mailer' => [
-        'class' => 'yii\swiftmailer\Mailer',
+        'class' => yii\swiftmailer\Mailer::class,
     ],
     'log' => [
-        'class' => 'yii\log\Dispatcher',
+        'class' => \yii\log\Dispatcher::class,
         'traceLevel' => YII_DEBUG ? 3 : 0,
         'targets' => [
             [
-                'class' => 'yii\log\FileTarget',
+                'class' => \yii\log\FileTarget::class,
             ],
         ],
     ],
     'db' => [
-        'class' => 'yii\db\Connection',
+        'class' => \yii\db\Connection::class,
         'dsn' => 'mysql:host=localhost;dbname=stay2',
         'username' => 'root',
         'password' => '',
@@ -225,7 +227,7 @@ For example, if you want to customize [[yii\widgets\LinkPager]] so that ALL link
 (the default value is 10), you may use the following code to achieve this goal,
 
 ```php
-\Yii::$container->set('yii\widgets\LinkPager', [
+\Yii::$container->set(\yii\widgets\LinkPager::class, [
     'maxButtonCount' => 5,
 ]);
 ```
@@ -263,7 +265,7 @@ $config = [...];
 if (YII_ENV_DEV) {
     // configuration adjustments for 'dev' environment
     $config['bootstrap'][] = 'debug';
-    $config['modules']['debug'] = 'yii\debug\Module';
+    $config['modules']['debug'] = \yii\debug\Module::class;
 }
 
 return $config;

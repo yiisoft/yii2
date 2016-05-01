@@ -211,7 +211,7 @@ use Yii;
 use yii\base\Event;
 use yii\db\ActiveRecord;
 
-Event::on(ActiveRecord::className(), ActiveRecord::EVENT_AFTER_INSERT, function ($event) {
+Event::on(ActiveRecord::class, ActiveRecord::EVENT_AFTER_INSERT, function ($event) {
     Yii::trace(get_class($event->sender) . ' is inserted');
 });
 ```
@@ -229,11 +229,11 @@ handlers only. For example:
 ```php
 use yii\base\Event;
 
-Event::on(Foo::className(), Foo::EVENT_HELLO, function ($event) {
+Event::on(Foo::class, Foo::EVENT_HELLO, function ($event) {
     echo $event->sender;  // displays "app\models\Foo"
 });
 
-Event::trigger(Foo::className(), Foo::EVENT_HELLO);
+Event::trigger(Foo::class, Foo::EVENT_HELLO);
 ```
 
 Note that, in this case, `$event->sender` refers to the name of the class triggering the event instead of an object instance.
@@ -245,10 +245,10 @@ To detach a class-level event handler, call [[yii\base\Event::off()]]. For examp
 
 ```php
 // detach $handler
-Event::off(Foo::className(), Foo::EVENT_HELLO, $handler);
+Event::off(Foo::class, Foo::EVENT_HELLO, $handler);
 
 // detach all handlers of Foo::EVENT_HELLO
-Event::off(Foo::className(), Foo::EVENT_HELLO);
+Event::off(Foo::class, Foo::EVENT_HELLO);
 ```
 
 
@@ -301,7 +301,7 @@ Event::on('DanceEventInterface', DanceEventInterface::EVENT_DANCE, function ($ev
 You can trigger the event of those classes:
 
 ```php
-Event::trigger(DanceEventInterface::className(), DanceEventInterface::EVENT_DANCE);
+Event::trigger(DanceEventInterface::class, DanceEventInterface::EVENT_DANCE);
 ```
 
 But please notice, that you can not trigger all the classes, that implement the interface:
@@ -315,10 +315,10 @@ To detach event handler, call [[yii\base\Event::off()|Event::off()]]. For exampl
 
 ```php
 // detaches $handler
-Event::off('DanceEventInterface', DanceEventInterface::EVENT_DANCE, $handler);
+Event::off(DanceEventInterface::class, DanceEventInterface::EVENT_DANCE, $handler);
 
 // detaches all handlers of DanceEventInterface::EVENT_DANCE
-Event::off('DanceEventInterface', DanceEventInterface::EVENT_DANCE);
+Event::off(DanceEventInterface::class, DanceEventInterface::EVENT_DANCE);
 ```
 
 
