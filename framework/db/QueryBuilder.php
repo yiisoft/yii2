@@ -96,27 +96,12 @@ class QueryBuilder extends \yii\base\Object
             $this->buildFrom($query->from, $params),
             $this->buildJoin($query->join, $params),
             $this->buildWhere($query->where, $params),
-            $this->buildGroupBy($query->groupBy),
+            $this->buildGroupBy($query->groupBy, $params),
             $this->buildHaving($query->having, $params),
         ];
 
         $sql = implode($this->separator, array_filter($clauses));
-        $sql = $this->buildOrderByAndLimit($sql, $query->orderBy, $query->limit, $query->offset);
-
-        if (!empty($query->orderBy)) {
-            foreach ($query->orderBy as $expression) {
-                if ($expression instanceof Expression) {
-                    $params = array_merge($params, $expression->params);
-                }
-            }
-        }
-        if (!empty($query->groupBy)) {
-            foreach ($query->groupBy as $expression) {
-                if ($expression instanceof Expression) {
-                    $params = array_merge($params, $expression->params);
-                }
-            }
-        }
+        $sql = $this->buildOrderByAndLimit($sql, $query->orderBy, $query->limit, $query->offset, $params);
 
         $union = $this->buildUnion($query->union, $params);
         if ($union !== '') {
@@ -819,9 +804,10 @@ class QueryBuilder extends \yii\base\Object
 
     /**
      * @param array $columns
+     * @param array $params the binding parameters to be populated
      * @return string the GROUP BY clause
      */
-    public function buildGroupBy($columns)
+    public function buildGroupBy($columns, &$params)
     {
         if (empty($columns)) {
             return '';
@@ -829,6 +815,7 @@ class QueryBuilder extends \yii\base\Object
         foreach ($columns as $i => $column) {
             if ($column instanceof Expression) {
                 $columns[$i] = $column->expression;
+                $params = array_merge($params, $column->params);
             } elseif (strpos($column, '(') === false) {
                 $columns[$i] = $this->db->quoteColumnName($column);
             }
@@ -854,11 +841,12 @@ class QueryBuilder extends \yii\base\Object
      * @param array $orderBy the order by columns. See [[Query::orderBy]] for more details on how to specify this parameter.
      * @param integer $limit the limit number. See [[Query::limit]] for more details.
      * @param integer $offset the offset number. See [[Query::offset]] for more details.
+     * @param array $params the binding parameters to be populated
      * @return string the SQL completed with ORDER BY/LIMIT/OFFSET (if any)
      */
-    public function buildOrderByAndLimit($sql, $orderBy, $limit, $offset)
+    public function buildOrderByAndLimit($sql, $orderBy, $limit, $offset, &$params)
     {
-        $orderBy = $this->buildOrderBy($orderBy);
+        $orderBy = $this->buildOrderBy($orderBy, $params);
         if ($orderBy !== '') {
             $sql .= $this->separator . $orderBy;
         }
@@ -871,9 +859,10 @@ class QueryBuilder extends \yii\base\Object
 
     /**
      * @param array $columns
+     * @param array $params the binding parameters to be populated
      * @return string the ORDER BY clause built from [[Query::$orderBy]].
      */
-    public function buildOrderBy($columns)
+    public function buildOrderBy($columns, &$params)
     {
         if (empty($columns)) {
             return '';
@@ -882,6 +871,7 @@ class QueryBuilder extends \yii\base\Object
         foreach ($columns as $name => $direction) {
             if ($direction instanceof Expression) {
                 $orders[] = $direction->expression;
+                $params = array_merge($params, $column->params);
             } else {
                 $orders[] = $this->db->quoteColumnName($name) . ($direction === SORT_DESC ? ' DESC' : '');
             }
