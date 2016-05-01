@@ -79,6 +79,8 @@ class Object implements Configurable
     /**
      * Returns the fully qualified name of this class.
      * @return string the fully qualified name of this class.
+     * @deprecated since version 2.1. PHPs `::class` syntax should be used instead.
+     * For object instances, use `get_class()`.
      */
     public static function className()
     {

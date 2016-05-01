@@ -660,7 +660,7 @@ class ActiveQuery extends Query implements ActiveQueryInterface
      * ```php
      * public function getActiveUsers()
      * {
-     *     return $this->hasMany(User::className(), ['id' => 'user_id'])
+     *     return $this->hasMany(User::class, ['id' => 'user_id'])
      *                 ->onCondition(['active' => true]);
      * }
      * ```
@@ -730,7 +730,7 @@ class ActiveQuery extends Query implements ActiveQueryInterface
      * ```php
      * public function getItems()
      * {
-     *     return $this->hasMany(Item::className(), ['id' => 'item_id'])
+     *     return $this->hasMany(Item::class, ['id' => 'item_id'])
      *                 ->viaTable('order_item', ['order_id' => 'id']);
      * }
      * ```
