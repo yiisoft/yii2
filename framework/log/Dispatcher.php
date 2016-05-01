@@ -27,12 +27,12 @@ use yii\base\ErrorHandler;
  *         'log' => [
  *             'targets' => [
  *                 'file' => [
- *                     'class' => 'yii\log\FileTarget',
+ *                     'class' => \yii\log\FileTarget::class,
  *                     'levels' => ['trace', 'info'],
  *                     'categories' => ['yii\*'],
  *                 ],
  *                 'email' => [
- *                     'class' => 'yii\log\EmailTarget',
+ *                     'class' => \yii\log\EmailTarget::class,
  *                     'levels' => ['error', 'warning'],
  *                     'message' => [
  *                         'to' => 'admin@example.com',

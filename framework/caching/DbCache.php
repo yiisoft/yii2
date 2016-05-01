@@ -25,7 +25,7 @@ use yii\di\Instance;
  *
  * ```php
  * 'cache' => [
- *     'class' => 'yii\caching\DbCache',
+ *     'class' => \yii\caching\DbCache::class,
  *     // 'db' => 'mydb',
  *     // 'cacheTable' => 'my_cache',
  * ]

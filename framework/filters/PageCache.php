@@ -30,11 +30,11 @@ use yii\web\Response;
  * {
  *     return [
  *         'pageCache' => [
- *             'class' => 'yii\filters\PageCache',
+ *             'class' => \yii\filters\PageCache::class,
  *             'only' => ['index'],
  *             'duration' => 60,
  *             'dependency' => [
- *                 'class' => 'yii\caching\DbDependency',
+ *                 'class' => \yii\caching\DbDependency::class,
  *                 'sql' => 'SELECT COUNT(*) FROM post',
  *             ],
  *             'variations' => [
@@ -74,7 +74,7 @@ class PageCache extends ActionFilter
      *
      * ```php
      * [
-     *     'class' => 'yii\caching\DbDependency',
+     *     'class' => \yii\caching\DbDependency::class,
      *     'sql' => 'SELECT MAX(updated_at) FROM post',
      * ]
      * ```

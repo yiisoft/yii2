@@ -20,11 +20,11 @@ use yii\base\InvalidParamException;
  * [
  *     'components' => [
  *         'db' => [
- *             'class' => 'yii\db\Connection',
+ *             'class' => \yii\db\Connection::class,
  *             'dsn' => 'pgsql:host=127.0.0.1;dbname=demo',
  *         ]
  *         'mutex' => [
- *             'class' => 'yii\mutex\PgsqlMutex',
+ *             'class' => \yii\mutex\PgsqlMutex::class,
  *         ],
  *     ],
  * ]

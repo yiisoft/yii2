@@ -25,20 +25,20 @@ class BaseMarkdown
      */
     public static $flavors = [
         'original' => [
-            'class' => 'cebe\markdown\Markdown',
+            'class' => \cebe\markdown\Markdown::class,
             'html5' => true,
         ],
         'gfm' => [
-            'class' => 'cebe\markdown\GithubMarkdown',
+            'class' => \cebe\markdown\GithubMarkdown::class,
             'html5' => true,
         ],
         'gfm-comment' => [
-            'class' => 'cebe\markdown\GithubMarkdown',
+            'class' => \cebe\markdown\GithubMarkdown::class,
             'html5' => true,
             'enableNewlines' => true,
         ],
         'extra' => [
-            'class' => 'cebe\markdown\MarkdownExtra',
+            'class' => \cebe\markdown\MarkdownExtra::class,
             'html5' => true,
         ],
     ];

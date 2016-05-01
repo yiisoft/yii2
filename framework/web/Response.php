@@ -917,11 +917,11 @@ class Response extends \yii\base\Response
     protected function defaultFormatters()
     {
         return [
-            self::FORMAT_HTML => 'yii\web\HtmlResponseFormatter',
-            self::FORMAT_XML => 'yii\web\XmlResponseFormatter',
-            self::FORMAT_JSON => 'yii\web\JsonResponseFormatter',
+            self::FORMAT_HTML => HtmlResponseFormatter::class,
+            self::FORMAT_XML => XmlResponseFormatter::class,
+            self::FORMAT_JSON => JsonResponseFormatter::class,
             self::FORMAT_JSONP => [
-                'class' => 'yii\web\JsonResponseFormatter',
+                'class' => JsonResponseFormatter::class,
                 'useJsonp' => true,
             ],
         ];

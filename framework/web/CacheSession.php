@@ -26,7 +26,7 @@ use yii\di\Instance;
  *
  * ```php
  * 'session' => [
- *     'class' => 'yii\web\CacheSession',
+ *     'class' => \yii\web\CacheSession::class,
  *     // 'cache' => 'mycache',
  * ]
  * ```

@@ -307,7 +307,7 @@ class BaseYii
      *
      * // create an object using a configuration array
      * $object = Yii::createObject([
-     *     'class' => 'yii\db\Connection',
+     *     'class' => \yii\db\Connection::class,
      *     'dsn' => 'mysql:host=127.0.0.1;dbname=demo',
      *     'username' => 'root',
      *     'password' => '',

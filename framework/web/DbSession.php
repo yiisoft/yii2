@@ -24,7 +24,7 @@ use yii\di\Instance;
  *
  * ```php
  * 'session' => [
- *     'class' => 'yii\web\DbSession',
+ *     'class' => \yii\web\DbSession::class,
  *     // 'db' => 'mydb',
  *     // 'sessionTable' => 'my_session',
  * ]

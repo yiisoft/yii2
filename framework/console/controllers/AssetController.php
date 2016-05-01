@@ -692,7 +692,7 @@ return [
     // Asset bundle for compression output:
     'targets' => [
         'all' => [
-            'class' => 'yii\web\AssetBundle',
+            'class' => \yii\web\AssetBundle::class,
             'basePath' => '@webroot/assets',
             'baseUrl' => '@web/assets',
             'js' => 'js/all-{hash}.js',

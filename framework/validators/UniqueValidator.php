@@ -38,7 +38,11 @@ class UniqueValidator extends Validator
 {
     /**
      * @var string the name of the ActiveRecord class that should be used to validate the uniqueness
-     * of the current attribute value. If not set, it will use the ActiveRecord class of the attribute being validated.
+     * of the current attribute value.
+     * This must be a fully qualified class name.
+     *
+     * If not set, it will use the ActiveRecord class of the attribute being validated.
+     *
      * @see targetAttribute
      */
     public $targetClass;
@@ -106,7 +110,7 @@ class UniqueValidator extends Validator
             $query->andWhere($this->filter);
         }
 
-        if (!$model instanceof ActiveRecordInterface || $model->getIsNewRecord() || get_class($model) !== $targetClass::class) {
+        if (!$model instanceof ActiveRecordInterface || $model->getIsNewRecord() || get_class($model) !== $targetClass) {
             // if current $model isn't in the database yet then it's OK just to call exists()
             // also there's no need to run check based on primary keys, when $targetClass is not the same as $model's class
             $exists = $query->exists();

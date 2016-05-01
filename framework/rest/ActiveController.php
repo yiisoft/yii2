@@ -71,34 +71,34 @@ class ActiveController extends Controller
     {
         return [
             'index' => [
-                'class' => 'yii\rest\IndexAction',
+                'class' => IndexAction::class,
                 'modelClass' => $this->modelClass,
                 'checkAccess' => [$this, 'checkAccess'],
             ],
             'view' => [
-                'class' => 'yii\rest\ViewAction',
+                'class' => ViewAction::class,
                 'modelClass' => $this->modelClass,
                 'checkAccess' => [$this, 'checkAccess'],
             ],
             'create' => [
-                'class' => 'yii\rest\CreateAction',
+                'class' => CreateAction::class,
                 'modelClass' => $this->modelClass,
                 'checkAccess' => [$this, 'checkAccess'],
                 'scenario' => $this->createScenario,
             ],
             'update' => [
-                'class' => 'yii\rest\UpdateAction',
+                'class' => UpdateAction::class,
                 'modelClass' => $this->modelClass,
                 'checkAccess' => [$this, 'checkAccess'],
                 'scenario' => $this->updateScenario,
             ],
             'delete' => [
-                'class' => 'yii\rest\DeleteAction',
+                'class' => DeleteAction::class,
                 'modelClass' => $this->modelClass,
                 'checkAccess' => [$this, 'checkAccess'],
             ],
             'options' => [
-                'class' => 'yii\rest\OptionsAction',
+                'class' => OptionsAction::class,
             ],
         ];
     }

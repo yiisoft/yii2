@@ -21,7 +21,7 @@ use yii\helpers\Url;
  * 'columns' => [
  *     // ...
  *     [
- *         'class' => ActionColumn::class,
+ *         'class' => \yii\grid\ActionColumn::class,
  *         // you may configure additional properties here
  *     ],
  * ]
@@ -53,7 +53,7 @@ class ActionColumn extends Column
      * As an example, to only have the view, and update button you can add the ActionColumn to your GridView columns as follows:
      *
      * ```php
-     * ['class' => 'yii\grid\ActionColumn', 'template' => '{view} {update}'],
+     * ['class' => \yii\grid\ActionColumn::class, 'template' => '{view} {update}'],
      * ```
      *
      * @see buttons

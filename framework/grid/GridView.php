@@ -141,14 +141,14 @@ class GridView extends BaseListView
      *
      * ```php
      * [
-     *     ['class' => SerialColumn::class],
+     *     ['class' => \yii\grid\SerialColumn::class],
      *     [
-     *         'class' => DataColumn::class, // this line is optional
+     *         'class' => \yii\grid\DataColumn::class, // this line is optional
      *         'attribute' => 'name',
      *         'format' => 'text',
      *         'label' => 'Name',
      *     ],
-     *     ['class' => CheckboxColumn::class],
+     *     ['class' => \yii\grid\CheckboxColumn::class],
      * ]
      * ```
      *

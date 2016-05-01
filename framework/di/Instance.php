@@ -25,9 +25,9 @@ use yii\base\InvalidConfigException;
  *
  * ```php
  * $container = new \yii\di\Container;
- * $container->set('cache', 'yii\caching\DbCache', Instance::of('db'));
+ * $container->set('cache', \yii\caching\DbCache::class, Instance::of('db'));
  * $container->set('db', [
- *     'class' => 'yii\db\Connection',
+ *     'class' => \yii\db\Connection::class,
  *     'dsn' => 'sqlite:path/to/file.db',
  * ]);
  * ```
@@ -42,7 +42,7 @@ use yii\base\InvalidConfigException;
  *     public function init()
  *     {
  *         parent::init();
- *         $this->db = Instance::ensure($this->db, 'yii\db\Connection');
+ *         $this->db = Instance::ensure($this->db, \yii\db\Connection::class);
  *     }
  * }
  * ```

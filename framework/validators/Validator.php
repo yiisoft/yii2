@@ -67,7 +67,7 @@ class Validator extends Component
         'image' => 'yii\validators\ImageValidator',
         'in' => 'yii\validators\RangeValidator',
         'integer' => [
-            'class' => 'yii\validators\NumberValidator',
+            'class' => NumberValidator::class,
             'integerOnly' => true,
         ],
         'match' => 'yii\validators\RegularExpressionValidator',
@@ -76,7 +76,7 @@ class Validator extends Component
         'safe' => 'yii\validators\SafeValidator',
         'string' => 'yii\validators\StringValidator',
         'trim' => [
-            'class' => 'yii\validators\FilterValidator',
+            'class' => FilterValidator::class,
             'filter' => 'trim',
             'skipOnArray' => true,
         ],

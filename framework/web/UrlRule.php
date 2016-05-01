@@ -19,7 +19,7 @@ use yii\base\InvalidConfigException;
  *
  * ```php
  * 'rules' => [
- *     ['class' => 'MyUrlRule', 'pattern' => '...', 'route' => 'site/index', ...],
+ *     ['class' => MyUrlRule::class, 'pattern' => '...', 'route' => 'site/index', ...],
  *     // ...
  * ]
  * ```
