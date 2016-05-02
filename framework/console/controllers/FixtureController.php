@@ -334,6 +334,9 @@ class FixtureController extends Controller
             $this->outputList($except);
         }
 
+        $this->stdout("\nBe aware that:\n", Console::BOLD);
+        $this->stdout("Applying leads to purging of certain data in the database!\n", Console::FG_RED);
+
         return $this->confirm("\nLoad above fixtures?");
     }
 

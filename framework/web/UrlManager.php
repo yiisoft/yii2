@@ -382,7 +382,7 @@ class UrlManager extends Component
      * @param string $cacheKey generated cache key to store data.
      * @param string $route the route (e.g. `site/index`).
      * @param array $params rule params.
-     * @return bool|string the created URL
+     * @return boolean|string the created URL
      * @see createUrl()
      * @since 2.0.8
      */

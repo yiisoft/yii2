@@ -258,7 +258,6 @@ class Migration extends Component implements MigrationInterface
         echo "    > create table $table ...";
         $time = microtime(true);
         $this->db->createCommand()->createTable($table, $columns, $options)->execute();
-        echo ' done (time: ' . sprintf('%.3f', microtime(true) - $time) . "s)\n";
         foreach ($columns as $column => $type) {
             if ($type instanceof ColumnSchemaBuilder && $type->comment !== null) {
                 $this->db->createCommand()->addCommentOnColumn($table, $column, $type->comment)->execute();
@@ -366,7 +365,6 @@ class Migration extends Component implements MigrationInterface
         if ($type instanceof ColumnSchemaBuilder && $type->comment !== null) {
             $this->db->createCommand()->addCommentOnColumn($table, $column, $type->comment)->execute();
         }
-
         echo ' done (time: ' . sprintf('%.3f', microtime(true) - $time) . "s)\n";
     }
 
