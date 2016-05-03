@@ -144,10 +144,10 @@ class DataColumn extends Column
                 /* @var $model Model */
                 $model = new $provider->query->modelClass;
                 $label = $model->getAttributeLabel($this->attribute);
-            } else if($provider instanceof ArrayDataProvider && $provider->modelClass !== null) {
-	            /* @var $model Model */
-	            $model = new $provider->modelClass;
-	            $label = $model->getAttributeLabel($this->attribute);
+            } else if ($provider instanceof ArrayDataProvider && $provider->modelClass !== null) {
+                /* @var $model Model */
+                $model = new $provider->modelClass;
+                $label = $model->getAttributeLabel($this->attribute);
             } else {
                 $models = $provider->getModels();
                 if (($model = reset($models)) instanceof Model) {
