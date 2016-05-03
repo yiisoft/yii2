@@ -5,7 +5,8 @@ Yii Framework 2 Change Log
 2.0.9 under development
 -----------------------
 
-- Enh #4146: Added `yii\data\ArrayDataProvider::$modelClass` property to specify a model used to provide column labels even when data array is empty (PowerGamer1)
+- Enh #11490: Added `yii\data\ArrayDataProvider::$modelClass` property to specify a model used to provide column labels even when data array is empty (PowerGamer1)
+- Bug #9950: Updated `yii\grid\DataColumn::getHeaderCellLabel()` to extract attribute label from the `filterModel` of Grid (silverfire)
 - Enh #11428: Speedup SQL query in `yii\db\oci\Schema::findColumns()` (SSiwek)
 - Enh #11414: Files specified as `null` in `yii\web\AssetBundle` won't be registered (Razzwan)
 - Enh #11432: Added HTTP status 421 "Misdirected Request" to list of statuses in `yii\web\Response` (dasmfm)
