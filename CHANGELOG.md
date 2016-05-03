@@ -5,6 +5,7 @@ Yii Framework 2 Change Log
 2.0.9 under development
 -----------------------
 
+- Enh #11484: moved "P" "isPrimaryKey" in `yii\db\oci\Schema` to findConstraints (SSiwek)
 - Enh #11428: Speedup SQL query in `yii\db\oci\Schema::findColumns()` (SSiwek)
 - Enh #11414: Files specified as `null` in `yii\web\AssetBundle` won't be registered (Razzwan)
 - Enh #11432: Added HTTP status 421 "Misdirected Request" to list of statuses in `yii\web\Response` (dasmfm)
