@@ -20,7 +20,7 @@ class DataColumnTest extends \yiiunit\TestCase
         $this->mockApplication();
     }
 
-    public function testColumnLabelsOnEmptyProvider()
+    public function testColumnLabelsOnEmptyArrayProvider()
     {
         $grid = new GridView([
             'dataProvider' => new ArrayDataProvider([
@@ -29,6 +29,28 @@ class DataColumnTest extends \yiiunit\TestCase
                 'modelClass' => Order::className()
             ]),
             'columns' => ['customer_id', 'total']
+        ]);
+
+        $labels = [];
+        foreach ($grid->columns as $column) {
+            $method = new \ReflectionMethod($column, 'getHeaderCellLabel');
+            $method->setAccessible(true);
+            $labels[] = $method->invoke($column);
+            $method->setAccessible(false);
+        }
+
+        $this->assertEquals(['Customer', 'Invoice Total'], $labels);
+    }
+
+    public function testColumnLabelsOnEmptyArrayProviderWithFilterModel()
+    {
+        $grid = new GridView([
+            'dataProvider' => new ArrayDataProvider([
+                'allModels' => [],
+                'totalCount' => 0,
+            ]),
+            'columns' => ['customer_id', 'total'],
+            'filterModel' => new Order
         ]);
 
         $labels = [];

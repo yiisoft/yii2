@@ -148,6 +148,8 @@ class DataColumn extends Column
                 /* @var $model Model */
                 $model = new $provider->modelClass;
                 $label = $model->getAttributeLabel($this->attribute);
+            } else if ($this->grid->filterModel !== null && $this->grid->filterModel instanceof Model) {
+                $label = $this->grid->filterModel->getAttributeLabel($this->attribute);
             } else {
                 $models = $provider->getModels();
                 if (($model = reset($models)) instanceof Model) {
