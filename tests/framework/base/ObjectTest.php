@@ -35,6 +35,7 @@ class ObjectTest extends TestCase
         $this->assertTrue($this->object->hasProperty('content'));
         $this->assertFalse($this->object->hasProperty('content', false));
         $this->assertFalse($this->object->hasProperty('Content'));
+        $this->assertTrue($this->object->hasProperty('class'));
     }
 
     public function testCanGetProperty()
@@ -60,7 +61,8 @@ class ObjectTest extends TestCase
 
     public function testGetProperty()
     {
-        $this->assertTrue('default' === $this->object->Text);
+        $this->assertEquals('default', $this->object->Text);
+        $this->assertEquals(NewObject::class, $this->object::class);
         $this->setExpectedException('yii\base\UnknownPropertyException');
         $value2 = $this->object->Caption;
     }
@@ -190,5 +192,7 @@ class NewObject extends Object
         return $this->_items;
     }
 
-    public function setWriteOnly() {}
+    public function setWriteOnly()
+    {
+    }
 }
