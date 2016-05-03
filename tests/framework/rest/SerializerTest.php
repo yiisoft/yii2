@@ -17,10 +17,15 @@ class SerializerTest extends TestCase
         
         $seralizer = new Serializer();
 
-        $_GET['expand'] = 'customer, items';        
+        $_GET['fields'] = '';
         $this->assertEquals([
             'id' => 1, 'customer_id' => 1,
-            'customer' => ['id' => 1,],
+            ], $seralizer->serialize($model));
+
+        $_GET['fields'] = '*, customer, items';
+        $this->assertEquals([
+            'id' => 1, 'customer_id' => 1,
+            'customer' => ['id' => 1],
             'items' => [
                 ['product_id' => 1, 'qty' => 10,],
                 ['product_id' => 2, 'qty' => 3426,],
@@ -28,24 +33,21 @@ class SerializerTest extends TestCase
             ], $seralizer->serialize($model));
 
 
-        $_GET['expand'] = 'customer.name, items.product.name';        
+        $_GET['fields'] = '*, customer.name, items.product.name';
         $this->assertEquals([
             'id' => 1,
             'customer_id' => 1,
             'customer' => [
-                'id' => 1,
                 'name' => 'Munir'
             ],
             'items' => [
-                ['product_id' => 1, 'qty' => 10,
+                [
                     'product' => [
-                        'id' => 1,
                         'name' => 'Product satu'
                     ]
                 ],
-                ['product_id' => 2, 'qty' => 3426,
+                [
                     'product' => [
-                        'id' => 2,
                         'name' => 'Product dua'
                     ]
                 ],

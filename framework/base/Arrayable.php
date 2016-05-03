@@ -82,11 +82,11 @@ interface Arrayable
      *
      * @param array $fields the fields that the output array should contain. Fields not specified
      * in [[fields()]] will be ignored. If this parameter is empty, all fields as specified in [[fields()]] will be returned.
-     * @param array $expand the additional fields that the output array should contain.
+     * @param array $except the additional fields that the output array should contain.
      * Fields not specified in [[extraFields()]] will be ignored. If this parameter is empty, no extra fields
      * will be returned.
      * @param boolean $recursive whether to recursively return array representation of embedded objects.
      * @return array the array representation of the object
      */
-    public function toArray(array $fields = [], array $expand = [], array $except = [], $recursive = true);
+    public function toArray(array $fields = [], array $except = [], $recursive = true);
 }

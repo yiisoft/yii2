@@ -156,12 +156,7 @@ class Serializer extends Component
     protected function getRequestedFields()
     {
         $fields = $this->request->get($this->fieldsParam);
-        $expand = $this->request->get($this->expandParam);
-
-        return [
-            preg_split('/\s*,\s*/', $fields, -1, PREG_SPLIT_NO_EMPTY),
-            preg_split('/\s*,\s*/', $expand, -1, PREG_SPLIT_NO_EMPTY),
-        ];
+        return preg_split('/\s*,\s*/', $fields, -1, PREG_SPLIT_NO_EMPTY);
     }
 
     /**
@@ -241,8 +236,8 @@ class Serializer extends Component
         if ($this->request->getIsHead()) {
             return null;
         } else {
-            list ($fields, $expand) = $this->getRequestedFields();
-            return $model->toArray($fields, $expand);
+            $fields = $this->getRequestedFields();
+            return $model->toArray($fields);
         }
     }
 
@@ -272,12 +267,12 @@ class Serializer extends Component
      */
     protected function serializeModels(array $models)
     {
-        list ($fields, $expand) = $this->getRequestedFields();
+        $fields = $this->getRequestedFields();
         foreach ($models as $i => $model) {
             if ($model instanceof Arrayable) {
-                $models[$i] = $model->toArray($fields, $expand);
+                $models[$i] = $model->toArray($fields);
             } elseif (is_array($model)) {
-                $models[$i] = ArrayHelper::toArray($model, [], true, $expand);
+                $models[$i] = ArrayHelper::toArray($model, $fields);
             }
         }
 

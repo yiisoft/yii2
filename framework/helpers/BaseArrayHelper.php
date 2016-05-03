@@ -24,6 +24,8 @@ class BaseArrayHelper
     /**
      * Converts an object or an array of objects into an array.
      * @param object|array|string $object the object to be converted into an array
+     * @param array $expand the additional fields being requested for exporting
+     * @param array $except the excluded fields being requested for exporting
      * @param array $properties a mapping from object class names to the properties that need to put into the resulting arrays.
      * The properties specified for each class is an array of the following format:
      *
@@ -60,11 +62,9 @@ class BaseArrayHelper
      * Will expands `author` but exclude `author.auth_key`.
      * 
      * @param boolean $recursive whether to recursively converts properties which are objects into arrays.
-     * @param array $expand the additional fields being requested for exporting
-     * @param array $except the excluded fields being requested for exporting
      * @return array the array representation of the object
      */
-    public static function toArray($object, $properties = [], $recursive = true, $expand = [], $except = [])
+    public static function toArray($object, $expand = [], $except = [], $properties = [], $recursive = true)
     {
         $expands = static::resolveExpand($expand);
         $excepts = static::resolveExpand($except);
@@ -85,7 +85,7 @@ class BaseArrayHelper
                                 }
                             }
                         }
-                        $object[$key] = static::toArray($value, $properties, true, $itemExpand, $itemExcept);
+                        $object[$key] = static::toArray($value, $itemExpand, $itemExcept, $properties, true);
                     }
                 }
             }
@@ -102,7 +102,7 @@ class BaseArrayHelper
                     }
                 }
             } elseif ($object instanceof Arrayable) {
-                $result = $object->toArray([], $expand, $except, $recursive);
+                $result = $object->toArray($expand, $except, $recursive);
             } else {
                 $result = [];
                 foreach ($object as $key => $value) {
@@ -111,21 +111,21 @@ class BaseArrayHelper
             }
 
             foreach (array_keys($expands) as $field) {
-                if (!array_key_exists($field, $result)) {
+                if ($field !== '*' && !array_key_exists($field, $result)) {
                     $result[$field] = $object->$field;
                 }
             }
 
             foreach ($excepts as $field => $child) {
-                if (empty($child) && $field !== '*') {
-                    unset($result[$field]);
-                } elseif ($field === '*') {
+                if ($field === '*') {
                     foreach ($child as $field) {
                         unset($result[$field]);
                     }
+                } elseif (empty ($child) || $child === ['*']) {
+                    unset($result[$field]);
                 }
             }
-            return $recursive ? static::toArray($result, $properties, true, $expand, $except) : $result;
+            return $recursive ? static::toArray($result, $expand, $except, $properties, true) : $result;
         } else {
             return [$object];
         }
@@ -138,7 +138,7 @@ class BaseArrayHelper
      * ```
      * will convert to
      * ```php
-     * ['branch' => [], 'items' => ['uom', 'product.vendor']]
+     * ['branch' => ['*'], 'items' => ['uom', 'product.vendor']]
      * ```
      * @param array $expand
      * @return array
@@ -148,10 +148,10 @@ class BaseArrayHelper
         $result = [];
         foreach ($expand as $field) {
             $fields = explode('.', $field, 2);
-            $result[$fields[0]][] = isset($fields[1]) ? $fields[1] : false;
+            $result[$fields[0]][] = isset($fields[1]) ? $fields[1] : '*';
         }
 
-        return array_map('array_filter', $result);
+        return $result;
     }
 
     /**

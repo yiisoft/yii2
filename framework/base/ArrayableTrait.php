@@ -108,15 +108,13 @@ trait ArrayableTrait
      * which refers to a list of links as specified by the interface.
      *
      * @param array $fields the fields being requested. If empty, all fields as specified by [[fields()]] will be returned.
-     * @param array $expand the additional fields being requested for exporting. Only fields declared in [[extraFields()]]
-     * will be considered.
      * @param boolean $recursive whether to recursively return array representation of embedded objects.
      * @return array the array representation of the object
      */
-    public function toArray(array $fields = [], array $expand = [], array $except = [], $recursive = true)
+    public function toArray(array $fields = [], array $except = [], $recursive = true)
     {
         $data = [];
-        foreach ($this->resolveFields($fields, $expand, $except) as $field => $definition) {
+        foreach ($this->resolveFields($fields, $except) as $field => $definition) {
             $data[$field] = is_string($definition) ? $this->$definition : call_user_func($definition, $this, $field);
         }
 
@@ -124,7 +122,7 @@ trait ArrayableTrait
             $data['_links'] = Link::serialize($this->getLinks());
         }
 
-        return $recursive ? ArrayHelper::toArray($data, [], true, $expand, $except) : $data;
+        return $recursive ? ArrayHelper::toArray($data, $fields, $except, [], true) : $data;
     }
 
     /**
@@ -137,40 +135,47 @@ trait ArrayableTrait
      * @return array the list of fields to be exported. The array keys are the field names, and the array values
      * are the corresponding object property names or PHP callables returning the field values.
      */
-    protected function resolveFields(array $fields, array $expand, array $except)
+    protected function resolveFields(array $fields, array $except)
     {
         $result = [];
-
+        $fields = ArrayHelper::resolveExpand($fields);
         foreach ($this->fields() as $field => $definition) {
             if (is_int($field)) {
                 $field = $definition;
             }
-            if (empty($fields) || in_array($field, $fields, true)) {
+            if (empty($fields) || isset($fields['*']) || isset($fields[$field])) {
                 $result[$field] = $definition;
+                unset($fields[$field]);
             }
         }
+        unset($fields['*']);
 
-        if (!empty($expand)) {
-            $expand = ArrayHelper::resolveExpand($expand);
+        if (!empty($fields)) {
             foreach ($this->extraFields() as $field => $definition) {
                 if (is_int($field)) {
                     $field = $definition;
                 }
-                if (isset($expand[$field])) {
+                if (isset($fields[$field])) {
                     $result[$field] = $definition;
+                    unset($fields[$field]);
                 }
             }
+        }
+
+        // for expanded field that not defined in extraFields()
+        if (!empty($fields)) {
+            $result = array_merge($result, array_combine(array_keys($fields), array_keys($fields)));
         }
 
         if (!empty($except)) {
             $except = ArrayHelper::resolveExpand($except);
             foreach ($except as $field => $child) {
-                if (empty($child) && $field !== '*') {
-                    unset($result[$field]);
-                } elseif ($field === '*') {
+                if ($field === '*') {
                     foreach ($child as $field) {
                         unset($result[$field]);
                     }
+                } elseif (empty ($child) || $child === ['*']) {
+                    unset($result[$field]);
                 }
             }
         }
