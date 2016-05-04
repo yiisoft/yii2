@@ -87,7 +87,7 @@ class PostgreSQLCommandTest extends CommandTest
         $this->assertEquals(1, $command->execute());
 
         $command = $db->createCommand()->update('type', [
-            'blob_col' => serialize($this),
+            'blob_col' => serialize($db),
         ], ['char_col' => 'serialize']);
         $this->assertEquals(1, $command->execute());
     }
