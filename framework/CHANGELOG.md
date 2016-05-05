@@ -5,6 +5,7 @@ Yii Framework 2 Change Log
 2.0.9 under development
 -----------------------
 
+- Enh #11490: added ability to invalidate all active user sessions by changing the value of `IdentityInterface::getAuthKey()` associated with the user (PowerGamer1)
 - Enh #11490: Added `yii\data\ArrayDataProvider::$modelClass` property to specify a model used to provide column labels even when data array is empty (PowerGamer1)
 - Bug #9950: Updated `yii\grid\DataColumn::getHeaderCellLabel()` to extract attribute label from the `filterModel` of Grid (silverfire)
 - Enh #11428: Speedup SQL query in `yii\db\oci\Schema::findColumns()` (SSiwek)
