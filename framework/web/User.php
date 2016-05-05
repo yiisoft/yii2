@@ -637,10 +637,12 @@ class User extends Component
             /* @var $class IdentityInterface */
             $class = $this->identityClass;
             $identity = $class::findIdentity($id);
-	        $authKey = $session->get($this->authKeyParam);
-	        if (!$identity->validateAuthKey($authKey)) {
-		        $identity = null;
-	        }
+            if ($identity) {
+	            $authKey = $session->get($this->authKeyParam);
+	            if ($authKey && !$identity->validateAuthKey($authKey)) {
+		            $identity = null;
+	            }
+            }
         }
 
         $this->setIdentity($identity);
