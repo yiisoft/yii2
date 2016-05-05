@@ -122,6 +122,11 @@ class User extends Component
      * @var string the session variable name used to store the value of [[id]].
      */
     public $idParam = '__id';
+	/**
+	 * @var string the session variable name used to store the value of a user identity key returned by [[IdentityInterface::getAuthKey()]].
+	 * @since 2.0.9
+	 */
+	public $authKeyParam = '__authKey';
     /**
      * @var string the session variable name used to store the value of expiration timestamp of the authenticated state.
      * This is used when [[authTimeout]] is set.
@@ -593,10 +598,12 @@ class User extends Component
             $session->regenerateID(true);
         }
         $session->remove($this->idParam);
+	    $session->remove($this->authKeyParam);
         $session->remove($this->authTimeoutParam);
 
         if ($identity) {
             $session->set($this->idParam, $identity->getId());
+	        $session->set($this->authKeyParam, $identity->getAuthKey());
             if ($this->authTimeout !== null) {
                 $session->set($this->authTimeoutParam, time() + $this->authTimeout);
             }
@@ -630,6 +637,10 @@ class User extends Component
             /* @var $class IdentityInterface */
             $class = $this->identityClass;
             $identity = $class::findIdentity($id);
+	        $authKey = $session->get($this->authKeyParam);
+	        if (!$identity->validateAuthKey($authKey)) {
+		        $identity = null;
+	        }
         }
 
         $this->setIdentity($identity);
