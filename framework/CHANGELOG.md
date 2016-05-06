@@ -1,13 +1,20 @@
 Yii Framework 2 Change Log
 ==========================
 
+
 2.0.9 under development
 -----------------------
 
+- Enh #11490: Added `yii\data\ArrayDataProvider::$modelClass` property to specify a model used to provide column labels even when data array is empty (PowerGamer1)
+- Bug #9950: Updated `yii\grid\DataColumn::getHeaderCellLabel()` to extract attribute label from the `filterModel` of Grid (silverfire)
+- Enh #11428: Speedup SQL query in `yii\db\oci\Schema::findColumns()` (SSiwek)
 - Enh #11414: Files specified as `null` in `yii\web\AssetBundle` won't be registered (Razzwan)
 - Enh #11432: Added HTTP status 421 "Misdirected Request" to list of statuses in `yii\web\Response` (dasmfm)
+- Enh #11438: Configurable `yii\helpers\Markdown` default flavor (mdmunir)
 - Bug #11459: Fixed flash messages not destroyed when `session.auto_start = 1` set in php.ini (cartmanchen)
 - Enh: Elements of `yii\log\Target::$logVar` can be in different forms. (Viktor Pikaev)
+- Bug #11498: Fixed inability to save serialized object into PostgreSQL binary column (klimov-paul)
+
 
 2.0.8 April 28, 2016
 --------------------
