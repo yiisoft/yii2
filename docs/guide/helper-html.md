@@ -386,12 +386,23 @@ The first argument is the title. It's not encoded so if you're using data got fr
 `Html::encode()`. Second argument is what will be in `href` of `<a` tag. See [Url::to()](helper-url.md) for details on
 what values it accepts. Third argument is array of tag properties.
 
-In you need to generate `mailto` link you can use the following code:
+If you need to generate `mailto` link you can use the following code:
 
 ```php
 <?= Html::mailto('Contact us', 'admin@example.com') ?>
 ```
 
+If you need to generate `tel` link you can use the following code:
+
+```php
+<?= Html::tel('Call us', '+71111111111') ?>
+```
+
+If you need to generate `skype` link you can use the following code:
+
+```php
+<?= Html::skype('Call us on Skype', 'skype_account', 'call') ?>
+```
 
 ## Images <span id="images"></span>
 

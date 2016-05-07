@@ -410,6 +410,34 @@ class Formatter extends Component
     }
 
     /**
+     * Formats the value as a skype link.
+     * @param string $value the value to be formatted.
+     * @param array $options the tag options in terms of name-value pairs. See [[Html::skype()]].
+     * @return string the formatted result.
+     */
+    public function asSkype($value, $options = [])
+    {
+        if ($value === null) {
+            return $this->nullDisplay;
+        }
+        return Html::skype(Html::encode($value), $value, null, $options);
+    }
+
+    /**
+     * Formats the value as a phone link.
+     * @param string $value the value to be formatted.
+     * @param array $options the tag options in terms of name-value pairs. See [[Html::tel()]].
+     * @return string the formatted result.
+     */
+    public function asTel($value, $options = [])
+    {
+        if ($value === null) {
+            return $this->nullDisplay;
+        }
+        return Html::tel(Html::encode($value), $value, $options);
+    }
+
+    /**
      * Formats the value as an image tag.
      * @param mixed $value the value to be formatted.
      * @param array $options the tag options in terms of name-value pairs. See [[Html::img()]].

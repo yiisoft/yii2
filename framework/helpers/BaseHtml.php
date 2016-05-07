@@ -424,6 +424,55 @@ class BaseHtml
     }
 
     /**
+     * Generates a skype hyperlink.
+     * @param string $text link body. It will NOT be HTML-encoded. Therefore you can pass in HTML code
+     * such as an image tag. If this is coming from end users, you should consider [[encode()]]
+     * it to prevent XSS attacks.
+     * @param string $skype skype account. If this is null, the first parameter (link body) will be treated
+     * as the skype account and used.
+     * @param string $action action for a Skype. Examples of actions are:
+     *
+     * ```
+     *  call - to call
+     *  chat - to chat
+     *  voicemail - to leave a voice mail
+     *  sendfile - to send a file
+     *  add - to add to contacts
+     *  userinfo - to view profile
+     * ```
+     *
+     * @param array $options the tag options in terms of name-value pairs. These will be rendered as
+     * the attributes of the resulting tag. The values will be HTML-encoded using [[encode()]].
+     * If a value is null, the corresponding attribute will not be rendered.
+     * See [[renderTagAttributes()]] for details on how attributes are being rendered.
+     * @return string the generated skype link
+     */
+    public static function skype($text, $skype = null, $action = null, $options = [])
+    {
+        $options['href'] = 'skype:' . ($skype === null ? $text : $skype) . ($action !== null ? '?' . $action : '');
+        return static::tag('a', $text, $options);
+    }
+
+    /**
+     * Generates a phone hyperlink.
+     * @param string $text link body. It will NOT be HTML-encoded. Therefore you can pass in HTML code
+     * such as an image tag. If this is coming from end users, you should consider [[encode()]]
+     * it to prevent XSS attacks.
+     * @param string $tel phone number. If this is null, the first parameter (link body) will be treated
+     * as the phone number and used.
+     * @param array $options the tag options in terms of name-value pairs. These will be rendered as
+     * the attributes of the resulting tag. The values will be HTML-encoded using [[encode()]].
+     * If a value is null, the corresponding attribute will not be rendered.
+     * See [[renderTagAttributes()]] for details on how attributes are being rendered.
+     * @return string the generated tel link
+     */
+    public static function tel($text, $tel = null, $options = [])
+    {
+        $options['href'] = 'tel:' . ($tel === null ? str_replace(['-', '(', ')', ' '], '', $text) : $tel);
+        return static::tag('a', $text, $options);
+    }
+
+    /**
      * Generates an image tag.
      * @param array|string $src the image URL. This parameter will be processed by [[Url::to()]].
      * @param array $options the tag options in terms of name-value pairs. These will be rendered as
