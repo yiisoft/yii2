@@ -12,7 +12,8 @@ Yii Framework 2 Change Log
 - Enh #11432: Added HTTP status 421 "Misdirected Request" to list of statuses in `yii\web\Response` (dasmfm)
 - Enh #11438: Configurable `yii\helpers\Markdown` default flavor (mdmunir)
 - Bug #11459: Fixed flash messages not destroyed when `session.auto_start = 1` set in php.ini (cartmanchen)
-- Enh: Elements of `yii\log\Target::$logVar` can be in different forms. (Viktor Pikaev)
+- Enh: Added support of filtering rules to `yii\log\Target::$logVar`. (Viktor Pikaev)
+- Enh: Added `\yii\helpers\BaseArrayHelper::filter()` method. (Viktor Pikaev)
 - Bug #11498: Fixed inability to save serialized object into PostgreSQL binary column (klimov-paul)
 
 

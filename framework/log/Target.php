@@ -10,6 +10,7 @@ namespace yii\log;
 use Yii;
 use yii\base\Component;
 use yii\base\InvalidConfigException;
+use yii\helpers\ArrayHelper;
 use yii\helpers\VarDumper;
 use yii\web\Request;
 
@@ -58,9 +59,9 @@ abstract class Target extends Component
      * Note that a variable must be accessible via `$GLOBALS`. Otherwise it won't be logged.
      * Defaults to `['_GET', '_POST', '_FILES', '_COOKIE', '_SESSION', '_SERVER']`.
      * Each element should be in one of next forms:
-     * - `Var` - `Var` will be logged.
-     * - `Var.key` - only `Var[key]` key will be logged.
-     * - `!Var.key` - `Var[key]` key will be excluded.
+     * - `var` - `var` will be logged.
+     * - `var.key` - only `var[key]` key will be logged.
+     * - `!var.key` - `var[key]` key will be excluded.
      *
      */
     public $logVars = ['_GET', '_POST', '_FILES', '_COOKIE', '_SESSION', '_SERVER'];
@@ -127,45 +128,11 @@ abstract class Target extends Component
      */
     protected function getContextMessage()
     {
-        $context = [];
-        foreach ($this->logVars as $var) {
-            $keys = explode('.', $var);
-            $globalKey = $keys[0];
-            $localKey = isset($keys[1]) ? $keys[1] : null;
-
-            $hideCurrentVar = false;
-            if ($globalKey[0] === '!') {
-                $globalKey = substr($globalKey, 1);
-                $hideCurrentVar = true;
-            }
-
-            if (empty($GLOBALS[$globalKey])) {
-                continue;
-            }
-            if ($localKey === null) {
-                $context[$globalKey] = $GLOBALS[$globalKey];
-                continue;
-            }
-            if ($hideCurrentVar) {
-                if (isset($context[$globalKey])) {
-                    unset($context[$globalKey][$localKey]);
-                }
-            } else {
-                if (!isset($GLOBALS[$globalKey][$localKey])) {
-                    continue;
-                }
-                if (!isset($context[$globalKey])) {
-                    $context[$globalKey] = [];
-                }
-                $context[$globalKey][$localKey] = $GLOBALS[$globalKey][$localKey];
-            }
-        }
-
+        $context = ArrayHelper::filter($GLOBALS,$this->logVars);
         $result = [];
         foreach ($context as $key => $value) {
             $result[] = "\${$key} = " . VarDumper::dumpAsString($value);
         }
-
         return implode("\n\n", $result);
     }
 
