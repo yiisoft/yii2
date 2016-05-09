@@ -763,23 +763,23 @@ class BaseArrayHelper
      *
      * $result = \yii\helpers\ArrayHelper::filter($array, ['A']);
      * // $result will be:
-     * [
-     *     'A' => [1, 2],
-     * ]
+     * // [
+     * //     'A' => [1, 2],
+     * // ]
      *
      * $result = \yii\helpers\ArrayHelper::filter($array, ['A', 'B.C']);
      * // $result will be:
-     * [
-     *     'A' => [1, 2],
-     *     'B' => ['C' => 1],
-     * ]
+     * // [
+     * //     'A' => [1, 2],
+     * //     'B' => ['C' => 1],
+     * // ]
      * ```
      *
      * $result = \yii\helpers\ArrayHelper::filter($array, ['B', '!B.C']);
      * // $result will be:
-     * [
-     *     'B' => ['D' => 2],
-     * ]
+     * // [
+     * //     'B' => ['D' => 2],
+     * // ]
      * ```
      *
      * @param array $array Source array.
