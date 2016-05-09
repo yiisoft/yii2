@@ -824,7 +824,9 @@ class BaseArrayHelper
             $result[$globalKey][$localKey] = $array[$globalKey][$localKey];
         }
 
-        foreach ($forbiddenVars as list($globalKey, $localKey)) {
+        foreach ($forbiddenVars as $var) {
+            $globalKey=$var[0];
+            $localKey=$var[1];
             if (isset($result[$globalKey])) {
                 unset($result[$globalKey][$localKey]);
             }
