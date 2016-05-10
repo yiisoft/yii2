@@ -11,6 +11,7 @@ use ReflectionClass;
 use Yii;
 use yii\base\Component;
 use yii\base\InvalidConfigException;
+use yii\base\Lazy;
 use yii\helpers\ArrayHelper;
 
 /**
@@ -446,15 +447,22 @@ class Container extends Component
         foreach ($dependencies as $index => $dependency) {
             if ($dependency instanceof Instance) {
                 if ($dependency->id !== null) {
-                    $dependencies[$index] = $this->get($dependency->id);
+                    $dependencies[$index] = $dependency->id === Lazy::className() ?
+                        new Lazy(static::getConstructorParameterName($reflection, $index)) :
+                        $this->get($dependency->id);
                 } elseif ($reflection !== null) {
-                    $name = $reflection->getConstructor()->getParameters()[$index]->getName();
+                    $name = static::getConstructorParameterName($reflection, $index);
                     $class = $reflection->getName();
                     throw new InvalidConfigException("Missing required parameter \"$name\" when instantiating \"$class\".");
                 }
             }
         }
         return $dependencies;
+    }
+
+    private static getConstructorParameterName($reflectionClass, $parameterIndex)
+    {
+        return $reflectionClass->getConstructor()->getParameters()[$parameterIndex]->getName();
     }
 
     /**
