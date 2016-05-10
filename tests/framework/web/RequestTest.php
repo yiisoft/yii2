@@ -201,4 +201,75 @@ class RequestTest extends TestCase
         unset($_SERVER['SERVER_PORT']);
         $this->assertEquals(null, $request->getServerPort());
     }
+
+    public function testGetUserIp()
+    {
+        $request = new Request();
+        $_SERVER['REMOTE_ADDR'] = '1.1.1.1';
+        $this->assertEquals('1.1.1.1', $request->getUserIP());
+
+        unset($_SERVER['REMOTE_ADDR']);
+        $this->assertEquals(null, $request->getUserIP());
+    }
+
+    public function testGetUserHost()
+    {
+        $request = new Request();
+        $_SERVER['REMOTE_HOST'] = 'yiiframework.com';
+        $this->assertEquals('yiiframework.com', $request->getUserHost());
+
+        unset($_SERVER['REMOTE_HOST']);
+        $this->assertEquals(null, $request->getUserHost());
+    }
+
+    public function testGetUserIpBehindProxy()
+    {
+        $this->mockWebApplication();
+
+        $request = new Request();
+        $request->headers->set($request->trustedHeaders[Request::HEADER_USER_IP], '1.1.1.1');
+        $request->trustedProxies = [
+            '127.0.0.1',
+        ];
+
+        // Valid Proxy IP
+        $_SERVER['REMOTE_ADDR'] = '127.0.0.1';
+        $this->assertEquals('1.1.1.1', $request->getUserIP());
+
+        // Invalid Proxy IP
+        $_SERVER['REMOTE_ADDR'] = '127.0.0.2';
+        $this->assertEquals('127.0.0.2', $request->getUserIP());
+
+        $request = new Request();
+        $request->headers->set($request->trustedHeaders[Request::HEADER_USER_IP], '1.1.1.1');
+        $request->trustedProxies = [
+            'ranges' => [
+                'localhost',
+            ],
+        ];
+
+        // Valid Proxy IP
+        $_SERVER['REMOTE_ADDR'] = '127.0.0.1';
+        $this->assertEquals('1.1.1.1', $request->getUserIP());
+    }
+
+    public function testGetUserHostBehindProxy()
+    {
+        $this->mockWebApplication();
+
+        $request = new Request();
+        $request->headers->set($request->trustedHeaders[Request::HEADER_USER_HOST], 'yiiframework.com');
+        $request->trustedProxies = [
+            '127.0.0.1',
+        ];
+
+        // Valid Proxy IP
+        $_SERVER['REMOTE_ADDR'] = '127.0.0.1';
+        $_SERVER['REMOTE_HOST'] = 'yiiproxy.com';
+        $this->assertEquals('yiiframework.com', $request->getUserHost());
+
+        // Invalid Proxy IP
+        $_SERVER['REMOTE_ADDR'] = '127.0.0.2';
+        $this->assertEquals('yiiproxy.com', $request->getUserHost());
+    }
 }

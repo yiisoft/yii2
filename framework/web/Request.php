@@ -10,6 +10,7 @@ namespace yii\web;
 use Yii;
 use yii\base\InvalidConfigException;
 use yii\helpers\StringHelper;
+use yii\validators\IpValidator;
 
 /**
  * The web Request class represents an HTTP request
@@ -90,6 +91,12 @@ class Request extends \yii\base\Request
      */
     const CSRF_MASK_LENGTH = 8;
 
+    const HEADER_FORWARDED  = 'forwarded';
+    const HEADER_USER_IP    = 'user_ip';
+    const HEADER_USER_HOST  = 'user_host';
+    const HEADER_USER_PROTO = 'user_proto';
+    const HEADER_USER_PORT  = 'user_port';
+
     /**
      * @var boolean whether to enable CSRF (Cross-Site Request Forgery) validation. Defaults to true.
      * When CSRF validation is enabled, forms submitted to an Yii Web application must be originated
@@ -158,6 +165,37 @@ class Request extends \yii\base\Request
      * @see getBodyParams()
      */
     public $parsers = [];
+    /**
+     * @var array List of trusted IP addresses or valid IpValidator config used for validating proxy's IP
+     *
+     * ```
+     * [
+     *     '127.0.0.1',
+     *     '10.1.2.3',
+     * ]
+     * ```
+     *
+     * ```
+     * [
+     *     'ranges' => [
+     *         '127.0.0.1',
+     *         '10.1.2.3',
+     *     ],
+     * ]
+     *
+     * @see yii\validators\IpValidator
+     */
+    public $trustedProxies = [];
+    /**
+     * @var array Keys for headers that can be trusted when using trusted proxies
+     */
+    public $trustedHeaders = [
+        self::HEADER_FORWARDED  => 'forwarded',
+        self::HEADER_USER_IP    => 'x-forwarded-for',
+        self::HEADER_USER_HOST  => 'x-forwarded-host',
+        self::HEADER_USER_PROTO => 'x-forwarded-proto',
+        self::HEADER_USER_PORT  => 'x-forwarded-port',
+    ];
 
     /**
      * @var CookieCollection Collection of request cookies.
@@ -231,15 +269,15 @@ class Request extends \yii\base\Request
         if (isset($_POST[$this->methodParam])) {
             return strtoupper($_POST[$this->methodParam]);
         }
-        
+
         if (isset($_SERVER['HTTP_X_HTTP_METHOD_OVERRIDE'])) {
             return strtoupper($_SERVER['HTTP_X_HTTP_METHOD_OVERRIDE']);
         }
-        
+
         if (isset($_SERVER['REQUEST_METHOD'])) {
             return strtoupper($_SERVER['REQUEST_METHOD']);
         }
-        
+
         return 'GET';
     }
 
@@ -872,7 +910,17 @@ class Request extends \yii\base\Request
      */
     public function getUserIP()
     {
-        return isset($_SERVER['REMOTE_ADDR']) ? $_SERVER['REMOTE_ADDR'] : null;
+        $ip = isset($_SERVER['REMOTE_ADDR']) ? $_SERVER['REMOTE_ADDR'] : null;
+
+        if (!$this->isFromTrustedProxy()) {
+            return $ip;
+        }
+
+        if (isset($this->trustedHeaders[self::HEADER_USER_IP]) && $this->headers->has($this->trustedHeaders[self::HEADER_USER_IP])) {
+            return $this->headers->get($this->trustedHeaders[self::HEADER_USER_IP]);
+        }
+
+        return $ip;
     }
 
     /**
@@ -881,7 +929,17 @@ class Request extends \yii\base\Request
      */
     public function getUserHost()
     {
-        return isset($_SERVER['REMOTE_HOST']) ? $_SERVER['REMOTE_HOST'] : null;
+        $host = isset($_SERVER['REMOTE_HOST']) ? $_SERVER['REMOTE_HOST'] : null;
+
+        if (!$this->isFromTrustedProxy()) {
+            return $host;
+        }
+
+        if (isset($this->trustedHeaders[self::HEADER_USER_HOST]) && $this->headers->has($this->trustedHeaders[self::HEADER_USER_HOST])) {
+            return $this->headers->get($this->trustedHeaders[self::HEADER_USER_HOST]);
+        }
+
+        return $host;
     }
 
     /**
@@ -1266,7 +1324,7 @@ class Request extends \yii\base\Request
     /**
      * Returns the token used to perform CSRF validation.
      *
-     * This token is generated in a way to prevent [BREACH attacks](http://breachattack.com/). It may be passed 
+     * This token is generated in a way to prevent [BREACH attacks](http://breachattack.com/). It may be passed
      * along via a hidden field of an HTML form or an HTTP header value to support CSRF validation.
      * @param boolean $regenerate whether to regenerate CSRF token. When this parameter is true, each time
      * this method is called, a new CSRF token will be generated and persisted (in session or cookie).
@@ -1413,5 +1471,29 @@ class Request extends \yii\base\Request
         $token = $this->xorTokens($mask, $token);
 
         return $token === $trueToken;
+    }
+
+    /**
+     * Check if REMOTE_ADDR can be trusted when [trustedProxies] is defined.
+     *
+     * @return boolean
+     */
+    private function isFromTrustedProxy()
+    {
+        if (empty($this->trustedProxies)) {
+            return false;
+        }
+
+        // Convert trusted proxies defined as list of IPs to valid IpValidator config
+        if (isset($this->trustedProxies[0])) {
+            $this->trustedProxies = [
+                'ranges' => $this->trustedProxies,
+            ];
+        }
+
+        $ipValidator = new IpValidator($this->trustedProxies);
+        $ip = isset($_SERVER['REMOTE_ADDR']) ? $_SERVER['REMOTE_ADDR'] : null;
+
+        return $ipValidator->validate($ip);
     }
 }
