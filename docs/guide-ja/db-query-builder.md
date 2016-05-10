@@ -332,6 +332,20 @@ $query->filterWhere([
 
 [[yii\db\Query::andWhere()|andWhere()]] または [[yii\db\Query::orWhere()|orWhere()]] と同じように、[[yii\db\Query::andFilterWhere()|andFilterWhere()]] または [[yii\db\Query::orFilterWhere()|orFilterWhere()]] を使って、既存の条件に別のフィルタ条件を追加することも出来ます。
 
+さらに加えて、値の方に含まれている比較演算子を適切に判断してくれる [[yii\db\Query::andFilterCompare()]] があります。
+
+```php
+$query->andFilterCompare('name', 'John Doe');
+$query->andFilterCompare('rating', '>9');
+$query->andFilterCompare('value', '<=100');
+```
+
+比較演算子を明示的に指定することも可能です。
+
+```php
+$query->andFilterCompare('name', 'Doe', 'like');
+```
+
 ### [[yii\db\Query::orderBy()|orderBy()]] <span id="order-by"></span>
 
 [[yii\db\Query::orderBy()|orderBy()]] メソッドは SQL クエリの `ORDER BY` 句を指定します。例えば、
@@ -579,6 +593,13 @@ $query = (new \yii\db\Query())
 ```
 
 この無名関数は、現在の行データを含む `$row` というパラメータを取り、現在の行のインデックス値として使われるスカラ値を返さなくてはなりません。
+
+> Note: [[yii\db\Query::groupBy()|groupBy()]] や [[yii\db\Query::orderBy()|orderBy()]]
+> のようなクエリメソッドが SQL に変換されてクエリの一部となるのとは対照的に、
+> このメソッドはデータベースからデータが取得された後で動作します。
+> このことは、クエリの SELECT に含まれるカラム名だけを使うことが出来る、ということを意味します。
+> また、テーブルプレフィックスを付けてカラムを選択した場合、例えば `customer.id` を選択した場合は、
+> リザルトセットのカラム名は `id` しか含みませんので、テーブルプレフィックス無しで `->indexBy('id')` と呼ぶ必要があります。
 
 
 ## バッチクエリ <span id="batch-query"></span>

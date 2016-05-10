@@ -287,7 +287,7 @@ Yii は、新しいオブジェクトを作成するさい、そのコアコー�
 \Yii::$container->set('yii\widgets\LinkPager', ['maxButtonCount' => 5]);
 ```
 
-次のコードでビューでウィジェットを使用すれば、 `maxButtonCount` プロパティは、
+そして、次のコードでビューでウィジェットを使用すれば、`maxButtonCount` プロパティは、
 クラスで定義されているデフォルト値 10 の代わりに 5 で初期化されます。
 
 ```php
@@ -299,6 +299,8 @@ echo \yii\widgets\LinkPager::widget();
 ```php
 echo \yii\widgets\LinkPager::widget(['maxButtonCount' => 20]);
 ```
+
+> Tip: どのような型の値であろうとも上書きされますので、オプションの配列の指定には気を付けてください。オプションの配列はマージされません。
 
 DI コンテナの自動コンストラクタ・インジェクションの利点を活かす別の例です。
 あなたのコントローラクラスが、ホテル予約サービスのような、いくつかの他のオブジェクトに依存するとします。

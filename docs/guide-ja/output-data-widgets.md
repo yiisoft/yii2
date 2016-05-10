@@ -392,6 +392,9 @@ class PostSearch extends Post
 
 ```
 
+> Tip: フィルタのクエリを構築する方法を学ぶためには、[クエリビルダ](db-query-builder.md)、
+> 中でも特に [フィルタ条件](db-query-builder.md#filter-conditions) を参照してください。
+
 この `search()` メソッドをコントローラで使用して、GridView のためのデータプロバイダを取得することが出来ます。
 
 ```php
