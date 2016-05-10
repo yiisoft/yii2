@@ -917,7 +917,9 @@ class Request extends \yii\base\Request
         }
 
         if (isset($this->trustedHeaders[self::HEADER_USER_IP]) && $this->headers->has($this->trustedHeaders[self::HEADER_USER_IP])) {
-            return $this->headers->get($this->trustedHeaders[self::HEADER_USER_IP]);
+            // Forwarded ip can be in format "client ip, proxy1, proxy2"
+            $ips = explode(',', str_replace(' ', '', $this->headers->get($this->trustedHeaders[self::HEADER_USER_IP])));
+            return $ips[0];
         }
 
         return $ip;
@@ -936,7 +938,9 @@ class Request extends \yii\base\Request
         }
 
         if (isset($this->trustedHeaders[self::HEADER_USER_HOST]) && $this->headers->has($this->trustedHeaders[self::HEADER_USER_HOST])) {
-            return $this->headers->get($this->trustedHeaders[self::HEADER_USER_HOST]);
+            // Forwarded host can be in format "host:port"
+            $host = explode(':', $this->headers->get($this->trustedHeaders[self::HEADER_USER_HOST]));
+            return $host[0];
         }
 
         return $host;

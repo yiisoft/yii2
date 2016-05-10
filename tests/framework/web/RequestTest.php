@@ -227,7 +227,7 @@ class RequestTest extends TestCase
         $this->mockWebApplication();
 
         $request = new Request();
-        $request->headers->set($request->trustedHeaders[Request::HEADER_USER_IP], '1.1.1.1');
+        $request->headers->set($request->trustedHeaders[Request::HEADER_USER_IP], '1.1.1.1, 2.2.2.2, 3.3.3.3');
         $request->trustedProxies = [
             '127.0.0.1',
         ];
@@ -258,7 +258,7 @@ class RequestTest extends TestCase
         $this->mockWebApplication();
 
         $request = new Request();
-        $request->headers->set($request->trustedHeaders[Request::HEADER_USER_HOST], 'yiiframework.com');
+        $request->headers->set($request->trustedHeaders[Request::HEADER_USER_HOST], 'yiiframework.com:80');
         $request->trustedProxies = [
             '127.0.0.1',
         ];
