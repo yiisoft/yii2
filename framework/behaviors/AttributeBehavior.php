@@ -34,8 +34,8 @@ use yii\db\ActiveRecord;
  *                 ActiveRecord::EVENT_BEFORE_INSERT => 'attribute1',
  *                 ActiveRecord::EVENT_BEFORE_UPDATE => 'attribute2',
  *             ],
- *             'value' => function ($event) {
- *                 return 'some value';
+ *             'value' => function ($event, $attributeName) {
+ *                 return $attributeName === 'attribute1' ? 'some value' : 'some other value';
  *             },
  *         ],
  *     ];
@@ -73,7 +73,7 @@ class AttributeBehavior extends Behavior
      * The signature of the function should be as follows,
      *
      * ```php
-     * function ($event)
+     * function ($event, $attributeName)
      * {
      *     // return value will be assigned to the attribute
      * }
@@ -114,11 +114,10 @@ class AttributeBehavior extends Behavior
 
         if (!empty($this->attributes[$event->name])) {
             $attributes = (array) $this->attributes[$event->name];
-            $value = $this->getValue($event);
             foreach ($attributes as $attribute) {
                 // ignore attribute names which are not string (e.g. when set by TimestampBehavior::updatedAtAttribute)
                 if (is_string($attribute)) {
-                    $this->owner->$attribute = $value;
+                    $this->owner->$attribute = $this->getValue($event, $attribute);
                 }
             }
         }
@@ -129,12 +128,13 @@ class AttributeBehavior extends Behavior
      * This method is called by [[evaluateAttributes()]]. Its return value will be assigned
      * to the attributes corresponding to the triggering event.
      * @param Event $event the event that triggers the current attribute updating.
+     * @param string $attributeName the current attribute name.
      * @return mixed the attribute value
      */
-    protected function getValue($event)
+    protected function getValue($event, $attributeName)
     {
         if ($this->value instanceof Closure || is_array($this->value) && is_callable($this->value)) {
-            return call_user_func($this->value, $event);
+            return call_user_func($this->value, $event, $attributeName);
         }
 
         return $this->value;
