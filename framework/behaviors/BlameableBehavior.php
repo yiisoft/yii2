@@ -94,13 +94,13 @@ class BlameableBehavior extends AttributeBehavior
      *
      * In case, when the [[value]] property is `null`, the value of `Yii::$app->user->id` will be used as the value.
      */
-    protected function getValue($event)
+    protected function getValue($event, $attributeName)
     {
         if ($this->value === null) {
             $user = Yii::$app->get('user', false);
             return $user && !$user->isGuest ? $user->id : null;
         }
 
-        return parent::getValue($event);
+        return parent::getValue($event, $attributeName);
     }
 }

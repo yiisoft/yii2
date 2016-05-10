@@ -133,7 +133,7 @@ class SluggableBehavior extends AttributeBehavior
     /**
      * @inheritdoc
      */
-    protected function getValue($event)
+    protected function getValue($event, $attributeName)
     {
         if ($this->attribute !== null) {
             if ($this->isNewSlugNeeded()) {
@@ -147,7 +147,7 @@ class SluggableBehavior extends AttributeBehavior
                 return $this->owner->{$this->slugAttribute};
             }
         } else {
-            $slug = parent::getValue($event);
+            $slug = parent::getValue($event, $attributeName);
         }
 
         return $this->ensureUnique ? $this->makeUnique($slug) : $slug;

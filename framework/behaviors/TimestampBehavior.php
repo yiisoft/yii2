@@ -111,12 +111,12 @@ class TimestampBehavior extends AttributeBehavior
      * In case, when the [[value]] is `null`, the result of the PHP function [time()](http://php.net/manual/en/function.time.php)
      * will be used as value.
      */
-    protected function getValue($event)
+    protected function getValue($event, $attributeName)
     {
         if ($this->value === null) {
             return time();
         }
-        return parent::getValue($event);
+        return parent::getValue($event, $attributeName);
     }
 
     /**
@@ -135,6 +135,6 @@ class TimestampBehavior extends AttributeBehavior
         if ($owner->getIsNewRecord()) {
             throw new InvalidCallException('Updating the timestamp is not possible on a new record.');
         }
-        $owner->updateAttributes(array_fill_keys((array) $attribute, $this->getValue(null)));
+        $owner->updateAttributes(array_fill_keys((array) $attribute, $this->getValue(null, null)));
     }
 }
