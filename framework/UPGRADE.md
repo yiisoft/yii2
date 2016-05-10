@@ -33,6 +33,8 @@ Upgrade to Yii 2.1.0
   `yii\db\QueryBuilderbuild::buildGroupBy($columns)` -> `buildGroupBy($columns, &$params)`
   `yii\db\QueryBuilderbuild::buildOrderByAndLimit($sql, $orderBy, $limit, $offset)` -> `buildOrderByAndLimit($sql, $orderBy, $limit, $offset, &$params)`
 
+* The JSONP response formatter have changed. Jsonp callback should be provided via query param or setting up at `\yii\web\Response::formats['jsonp']`.
+  Then the data provided to `\yii\web\Response` has format like json response as.
 
 Upgrade from Yii 2.0.7
 ----------------------
