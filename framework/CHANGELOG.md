@@ -7,7 +7,7 @@ Yii Framework 2 Change Log
 - Removed methods marked as deprected in 2.0.x (samdark)
 - Chg #11397: Minimum required version of PHP is 5.5.0 now (samdark)
 - Chg: Removed `yii\base\Object::className()` in favor of native PHP syntax `::class`, which does not trigger autoloading (cebe)
-- Chg #10943: Refactoring JSONP response formatter. Only need `data` value. Callback provided via query param (mdmunir)
+- Chg #10943: Refactored JSONP response formatter. Only need `data` value. Callback provided via query param (mdmunir)
 
 
 2.0.9 under development
