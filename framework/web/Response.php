@@ -921,8 +921,7 @@ class Response extends \yii\base\Response
             self::FORMAT_XML => XmlResponseFormatter::class,
             self::FORMAT_JSON => JsonResponseFormatter::class,
             self::FORMAT_JSONP => [
-                'class' => JsonResponseFormatter::class,
-                'useJsonp' => true,
+                'class' => JsonpResponseFormatter::class,
             ],
         ];
     }
