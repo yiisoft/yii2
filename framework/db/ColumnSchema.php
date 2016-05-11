@@ -113,7 +113,7 @@ class ColumnSchema extends Object
      */
     protected function typecast($value)
     {
-        if ($value === '' && $this->type !== Schema::TYPE_TEXT && $this->type !== Schema::TYPE_STRING && $this->type !== Schema::TYPE_BINARY) {
+        if ($value === '' && $this->type !== Schema::TYPE_TEXT && $this->type !== Schema::TYPE_STRING && $this->type !== Schema::TYPE_CHAR && $this->type !== Schema::TYPE_BINARY) {
             return null;
         }
         if ($value === null || gettype($value) === $this->phpType || $value instanceof Expression) {
