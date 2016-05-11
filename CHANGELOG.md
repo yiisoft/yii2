@@ -13,6 +13,7 @@ Yii Framework 2 Change Log
 - Enh #11438: Configurable `yii\helpers\Markdown` default flavor (mdmunir)
 - Bug #11459: Fixed flash messages not destroyed when `session.auto_start = 1` set in php.ini (cartmanchen)
 - Bug #11498: Fixed inability to save serialized object into PostgreSQL binary column (klimov-paul)
+- Bug #11507: Fixed `yii\validators\EachValidator::validateAttribute()` does not respect `skipOnEmpty` rule parameter (webdevsega)
 
 
 2.0.8 April 28, 2016
