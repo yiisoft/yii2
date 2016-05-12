@@ -122,6 +122,12 @@ class UserTest extends TestCase
         $this->mockWebApplication($appConfig);
         Yii::$app->session->removeAll();
 
+        $cookie = new Cookie(Yii::$app->user->identityCookie);
+        $cookie->value = 'junk';
+        $cookiesMock->add($cookie);
+        Yii::$app->user->getIdentity();
+        $this->assertTrue(strlen($cookiesMock->getValue(Yii::$app->user->identityCookie['name'])) == 0);
+
         Yii::$app->user->login(UserIdentity::findIdentity('user1'),3600);
         $this->assertFalse(Yii::$app->user->isGuest);
         $this->assertSame(Yii::$app->user->id, 'user1');
