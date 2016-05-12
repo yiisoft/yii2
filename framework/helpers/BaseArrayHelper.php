@@ -265,6 +265,7 @@ class BaseArrayHelper
      * ```
      *
      * The result will be an associative array, where the key is the value of `id` attribute
+     *
      * ```php
      * [
      *     '123' => ['id' => '123', 'data' => 'abc', 'device' => 'laptop'],
@@ -274,6 +275,7 @@ class BaseArrayHelper
      * ```
      *
      * An anonymous function can be used in the grouping array as well.
+     *
      * ```php
      * $result = ArrayHelper::index($array, function ($element) {
      *     return $element['id'];
@@ -281,12 +283,14 @@ class BaseArrayHelper
      * ```
      *
      * Passing `id` as a third argument will group `$array` by `id`:
+     *
      * ```php
      * $result = ArrayHelper::index($array, null, 'id');
      * ```
      *
      * The result will be a multidimensional array grouped by `id` on the first level, by `device` on the second level
      * and indexed by `data` on the third level:
+     *
      * ```php
      * [
      *     '123' => [
@@ -300,6 +304,7 @@ class BaseArrayHelper
      * ```
      *
      * The anonymous function can be used in the array of grouping keys as well:
+     *
      * ```php
      * $result = ArrayHelper::index($array, 'data', [function ($element) {
      *     return $element['id'];
@@ -308,6 +313,7 @@ class BaseArrayHelper
      *
      * The result will be a multidimensional array grouped by `id` on the first level, by the `device` on the second one
      * and indexed by the `data` on the third level:
+     *
      * ```php
      * [
      *     '123' => [
