@@ -189,7 +189,7 @@ class BaseArrayHelper
             $key = $lastKey;
         }
 
-        if (is_array($array) && array_key_exists($key, $array)) {
+        if (is_array($array) && (isset($array[$key]) || array_key_exists($key, $array)) ) {
             return $array[$key];
         }
 
@@ -203,7 +203,7 @@ class BaseArrayHelper
             // it is not reliably possible to check whether a property is accessable beforehand
             return $array->$key;
         } elseif (is_array($array)) {
-            return array_key_exists($key, $array) ? $array[$key] : $default;
+            return (isset($array[$key]) || array_key_exists($key, $array)) ? $array[$key] : $default;
         } else {
             return $default;
         }
