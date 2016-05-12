@@ -46,8 +46,8 @@ class JsonpResponseFormatterTest extends FormatterTest
             [[1, 'abc'], 'process([1,"abc"]);'],
             [[
                 'a' => 1,
-                'b' => 'abc',
-            ], 'process({"a":1,"b":"abc"});'],
+                '1<33' => 1 < 33,
+            ], 'process({"a":1,"1\u003C33":true});'],
             [[
                 1,
                 'abc',
@@ -103,4 +103,23 @@ class JsonpResponseFormatterTest extends FormatterTest
         $this->assertEquals('process(null);', $this->response->content);
     }
 
+    public function testCallbackParam()
+    {
+        \Yii::$app->set('request', new \yii\web\Request());
+        $formatter = new JsonpResponseFormatter();
+
+        $_GET['callback'] = 'jQuery_random_callback';
+        $this->response->data = 3426;
+        $formatter->format($this->response);
+        $this->assertEquals('jQuery_random_callback(3426);', $this->response->content);
+
+        $this->response->data = ['1<33' => 1 < 33];
+        $formatter->format($this->response);
+        $this->assertEquals('jQuery_random_callback({"1\u003C33":true});', $this->response->content);
+
+        $_GET['callback'] = 'jQuery_3426';
+        $this->response->data = new Post(123, 'mdmunir');
+        $formatter->format($this->response);
+        $this->assertEquals('jQuery_3426({"id":123,"title":"mdmunir"});', $this->response->content);
+    }
 }
