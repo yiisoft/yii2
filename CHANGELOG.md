@@ -6,6 +6,11 @@ Yii Framework 2 Change Log
 -----------------------
 
 - Enh #11195: Added ability to append custom string to schema builder column definition (df2, samdark)
+- Enh #8795: Move Identity Cookie code into separate functions and cleanup invalid identity cookies
+- Enh #8795: Move Identity Cookie code into separate functions and cleanup invalid identity cookies (maine-mike)
+- Enh #8795 Move Identity Cookie code into separate functions and cleanup invalid identity cookies (maine-mike)
+-Enh #11195: Added ability to append custom string to schema builder column definition (df2, samdark)
+- Enh #11195: Added ability to append custom string to schema builder column definition (df2, samdark)
 - Enh #11490: Added `yii\data\ArrayDataProvider::$modelClass` property to specify a model used to provide column labels even when data array is empty (PowerGamer1)
 - Enh #11591: Added support for wildcards for `only` and `except` at `yii\base\ActionFilter` (klimov-paul)
 - Bug #9950: Updated `yii\grid\DataColumn::getHeaderCellLabel()` to extract attribute label from the `filterModel` of Grid (silverfire)
