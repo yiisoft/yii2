@@ -11,6 +11,7 @@ use ReflectionClass;
 use Yii;
 use yii\base\Component;
 use yii\base\InvalidConfigException;
+use yii\base\NotInstantiableException;
 use yii\helpers\ArrayHelper;
 
 /**
@@ -364,6 +365,9 @@ class Container extends Component
         }
 
         $dependencies = $this->resolveDependencies($dependencies, $reflection);
+        if (!$reflection->isInstantiable()) {
+            throw new NotInstantiableException($reflection->name);
+        }
         if (empty($config)) {
             return $reflection->newInstanceArgs($dependencies);
         }
@@ -527,7 +531,17 @@ class Container extends Component
                 } elseif (isset(Yii::$app) && Yii::$app->has($name) && ($obj = Yii::$app->get($name)) instanceof $className) {
                     $args[] = $obj;
                 } else {
-                    $args[] = $this->get($className);
+                    // If the argument is optional we catch not instantiable exceptions.
+                    try {
+                        $args[] = $this->get($className);
+                    } catch (NotInstantiableException $e) {
+                        if ($param->isDefaultValueAvailable()) {
+                            $args[] = $param->getDefaultValue();
+                        } else {
+                            throw $e;
+                        }
+                    }
+
                 }
             } elseif ($associative && isset($params[$name])) {
                 $args[] = $params[$name];
