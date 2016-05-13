@@ -7,8 +7,6 @@
 
 namespace yii\base;
 
-use Exception;
-
 /**
  * NotInstantiableException represents an exception caused by incorrect DI configuration / usage.
  *
