@@ -247,7 +247,7 @@ class ColumnSchemaBuilder extends Object
      * @return $this
      * @since 2.0.9
      */
-    public function plus($sql)
+    public function append($sql)
     {
         $this->append = $sql;
         return $this;
