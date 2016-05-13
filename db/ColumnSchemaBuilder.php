@@ -57,7 +57,7 @@ class ColumnSchemaBuilder extends Object
     protected $default;
     /**
      * @var mixed SQL string to be appended to column schema definition.
-     * @since 2.0.8
+     * @since 2.0.9
      */
     protected $append;
     /**
