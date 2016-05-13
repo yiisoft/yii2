@@ -56,10 +56,10 @@ class ColumnSchemaBuilder extends Object
      */
     protected $default;
     /**
-     * @var mixed SQL string to be appended to column schema string.
+     * @var mixed SQL string to be appended to column schema definition.
      * @since 2.0.8
      */
-    protected $plus;
+    protected $append;
     /**
      * @var boolean whether the column values should be unsigned. If this is `true`, an `UNSIGNED` keyword will be added.
      * @since 2.0.7
@@ -245,11 +245,11 @@ class ColumnSchemaBuilder extends Object
      * Specify additional SQL to be appended to schema string.
      * @param string $sql the SQL string to be appended.
      * @return $this
-     * @since 2.0.8
+     * @since 2.0.9
      */
     public function plus($sql)
     {
-        $this->plus = $sql;
+        $this->append = $sql;
         return $this;
     }
 
@@ -261,10 +261,10 @@ class ColumnSchemaBuilder extends Object
     {
         switch ($this->getTypeCategory()) {
             case self::CATEGORY_PK:
-                $format = '{type}{check}{comment}{plus}';
+                $format = '{type}{check}{comment}{append}';
                 break;
             default:
-                $format = '{type}{length}{notnull}{unique}{default}{check}{comment}{plus}';
+                $format = '{type}{length}{notnull}{unique}{default}{check}{comment}{append}';
         }
         return $this->buildCompleteString($format);
     }
@@ -374,13 +374,13 @@ class ColumnSchemaBuilder extends Object
     }
 
     /**
-     * Builds the first constraint for the column. Defaults to unsupported.
-     * @return string a string containing the FIRST constraint.
-     * @since 2.0.8
+     * Builds the custom string that's appended to column definition.
+     * @return string custom string to append.
+     * @since 2.0.9
      */
-    protected function buildPlusString()
+    protected function buildAppendString()
     {
-        return $this->plus !== null ? ' ' . $this->plus : '';
+        return $this->append !== null ? ' ' . $this->append : '';
     }
 
     /**
@@ -420,10 +420,8 @@ class ColumnSchemaBuilder extends Object
             '{default}' => $this->buildDefaultString(),
             '{check}' => $this->buildCheckString(),
             '{comment}' => $this->buildCommentString(),
-            '{pos}' => ($this->isFirst) ?
-                        $this->buildFirstString() :
-                            $this->buildAfterString(),
-            '{plus}' => $this->buildPlusString(),
+            '{pos}' => $this->isFirst ? $this->buildFirstString() : $this->buildAfterString(),
+            '{append}' => $this->buildAppendString(),
         ];
         return strtr($format, $placeholderValues);
     }
