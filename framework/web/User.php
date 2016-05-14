@@ -579,7 +579,6 @@ class User extends Component
     /**
      * Removes the identity cookie.
      * This method is used when [[enableAutoLogin]] is true.
-     * @param IdentityInterface $identity
      */
     protected function removeIdentityCookie()
     {
