@@ -11,6 +11,7 @@ use Yii;
 use yii\base\Component;
 use yii\base\InvalidConfigException;
 use yii\base\InvalidValueException;
+use yii\helpers\Json;
 
 /**
  * User is the class for the "user" application component that manages the user authentication status.
@@ -512,7 +513,7 @@ class User extends Component
         $name = $this->identityCookie['name'];
         $value = Yii::$app->getRequest()->getCookies()->getValue($name);
         if ($value !== null) {
-            $data = json_decode($value, true);
+            $data = Json::decode($value, true);
             if (is_array($data) && isset($data[2])) {
                 $cookie = new Cookie($this->identityCookie);
                 $cookie->value = $value;
