@@ -697,12 +697,12 @@ class User extends Component
     protected function checkRedirectAcceptable()
     {
         $acceptableTypes = Yii::$app->getRequest()->getAcceptableContentTypes();
-        if (empty($acceptableTypes)) {
+        if (empty($acceptableTypes) || count($acceptableTypes) === 1 && array_keys($acceptableTypes)[0] === '*/*') {
             return true;
         }
 
         foreach ($acceptableTypes as $type => $params) {
-            if ($type === '*' || $type === '*/*' || in_array($type, $this->acceptableRedirectTypes, true)) {
+            if (in_array($type, $this->acceptableRedirectTypes, true)) {
                 return true;
             }
         }
