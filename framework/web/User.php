@@ -285,7 +285,7 @@ class User extends Component
     protected function loginByCookie()
     {
         $data = $this->validateIdentityCookie();
-        if ($data !== null && isset( $data['identity'], $data['duration'])) {
+        if (isset($data['identity'], $data['duration'])) {
             $identity = $data['identity'];
             $duration = $data['duration'];
             if ($this->beforeLogin($identity, true, $duration)) {
@@ -512,7 +512,7 @@ class User extends Component
         $name = $this->identityCookie['name'];
         $value = Yii::$app->getRequest()->getCookies()->getValue($name);
         if ($value !== null) {
-            $data = json_decode($value, true);
+            $data = Json::decode($value, true);
             if (is_array($data) && isset($data[2])) {
                 $cookie = new Cookie($this->identityCookie);
                 $cookie->value = $value;
@@ -544,7 +544,7 @@ class User extends Component
     }
 
     /**
-     * Determines if an identity cookie format is valid and has a valid auth key.
+     * Determines if an identity cookie has a valid format and contains a valid auth key. 
      * This method is used when [[enableAutoLogin]] is true.
      * This method attempts to authenticate a user using the information in the identity cookie.
      * @return array|null Returns an array of 'identity' and 'duration' if valid, otherwise null.
@@ -554,7 +554,7 @@ class User extends Component
     {
         $value = Yii::$app->getRequest()->getCookies()->getValue($this->identityCookie['name']);
         if ($value === null) {
-            return null;
+            return;
         }
         $data = json_decode($value, true);
         if (count($data) === 3 && isset($data[0], $data[1], $data[2])) {
@@ -568,12 +568,12 @@ class User extends Component
                 } elseif (!$identity->validateAuthKey($authKey)) {
                     Yii::warning("Invalid auth key attempted for user '$id': $authKey", __METHOD__);
                 } else {
-                    return [ 'identity' => $identity, 'duration' => $duration ];
+                    return ['identity' => $identity, 'duration' => $duration];
                 }
             }
         }
         $this->removeIdentityCookie();
-        return null;
+        return;
     }
      
     /**
