@@ -4,6 +4,8 @@ namespace yiiunit\framework\db\pgsql;
 
 use yii\db\Expression;
 use yii\db\pgsql\Schema;
+use yiiunit\data\ar\ActiveRecord;
+use yiiunit\data\ar\Type;
 use yiiunit\framework\db\SchemaTest;
 
 /**
@@ -64,6 +66,19 @@ class PostgreSQLSchemaTest extends SchemaTest
         $columns['bit_col']['dbType'] = 'bit';
         $columns['bit_col']['size'] = 8;
         $columns['bit_col']['precision'] = null;
+        $columns['bigint_col'] = [
+            'type' => 'bigint',
+            'dbType' => 'int8',
+            'phpType' => 'integer',
+            'allowNull' => true,
+            'autoIncrement' => false,
+            'enumValues' => null,
+            'size' => null,
+            'precision' => 64,
+            'scale' => 0,
+            'defaultValue' => null,
+        ];
+
         return $columns;
     }
 
@@ -105,5 +120,40 @@ class PostgreSQLSchemaTest extends SchemaTest
         $schema = $this->getConnection()->schema;
 
         $this->assertEquals(3, count($schema->getSchemaNames()));
+    }
+
+    public function bigintValueProvider()
+    {
+        return [
+            [8817806877],
+            [3797444208],
+            [3199585540],
+            [1389831585],
+            [922337203685477580],
+            [9223372036854775807],
+            [-9223372036854775808]
+        ];
+    }
+
+    /**
+     * @dataProvider bigintValueProvider
+     */
+    public function testBigintValue($bigint)
+    {
+        $this->mockApplication();
+        ActiveRecord::$db = $this->getConnection();
+
+        Type::deleteAll();
+
+        $type = new Type();
+        $type->setAttributes([
+            'bigint_col' => $bigint,
+            // whatever just to satisfy NOT NULL columns
+            'int_col' => 1, 'char_col' => 'a', 'float_col' => 0.1, 'bool_col' => true,
+        ], false);
+        $type->save(false);
+
+        $actual = Type::find()->one();
+        $this->assertEquals($bigint, $actual->bigint_col);
     }
 }

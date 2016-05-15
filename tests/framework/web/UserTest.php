@@ -216,10 +216,18 @@ class UserTest extends TestCase
 
         $this->reset();
         Yii::$app->request->setUrl('accept-all');
-        $_SERVER['HTTP_ACCEPT'] = '*;q=0.1';
+        $_SERVER['HTTP_ACCEPT'] = '*/*;q=0.1';
         $user->loginRequired();
         $this->assertEquals('accept-all', $user->getReturnUrl());
         $this->assertTrue(Yii::$app->response->getIsRedirection());
+
+        $this->reset();
+        Yii::$app->request->setUrl('json-and-accept-all');
+        $_SERVER['HTTP_ACCEPT'] = 'text/json, */*; q=0.1';
+        try {
+            $user->loginRequired();
+        } catch (ForbiddenHttpException $e) {}
+        $this->assertFalse(Yii::$app->response->getIsRedirection());
 
         $this->reset();
         Yii::$app->request->setUrl('accept-html-json');
