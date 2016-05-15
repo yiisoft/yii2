@@ -702,7 +702,7 @@ class User extends Component
         }
 
         foreach ($acceptableTypes as $type => $params) {
-            if ($type === '*' || in_array($type, $this->acceptableRedirectTypes, true)) {
+            if ($type === '*' || $type === '*/*' || in_array($type, $this->acceptableRedirectTypes, true)) {
                 return true;
             }
         }
