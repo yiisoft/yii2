@@ -285,7 +285,7 @@ class User extends Component
      */
     protected function loginByCookie()
     {
-        $data = $this->validateIdentityCookie();
+        $data = $this->getIdentityAndDurationFromCookie();
         if (isset($data['identity'], $data['duration'])) {
             $identity = $data['identity'];
             $duration = $data['duration'];
@@ -535,7 +535,7 @@ class User extends Component
     protected function sendIdentityCookie($identity, $duration)
     {
         $cookie = new Cookie($this->identityCookie);
-        $cookie->value = json_encode([
+        $cookie->value = Json::encode([
             $identity->getId(),
             $identity->getAuthKey(),
             $duration,
@@ -551,14 +551,14 @@ class User extends Component
      * @return array|null Returns an array of 'identity' and 'duration' if valid, otherwise null.
      * @see loginByCookie()
      */
-    protected function validateIdentityCookie()
+    protected function getIdentityAndDurationFromCookie()
     {
         $value = Yii::$app->getRequest()->getCookies()->getValue($this->identityCookie['name']);
         if ($value === null) {
             return;
         }
-        $data = json_decode($value, true);
-        if (count($data) === 3 && isset($data[0], $data[1], $data[2])) {
+        $data = Json::decode($value, true);
+        if (count($data) == 3) {
             list ($id, $authKey, $duration) = $data;
             /* @var $class IdentityInterface */
             $class = $this->identityClass;
