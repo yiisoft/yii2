@@ -390,7 +390,7 @@ class ColumnSchemaBuilder extends Object
      */
     protected function getTypeCategory()
     {
-        return $this->categoryMap[$this->type];
+        return isset($this->categoryMap[$this->type]) ? $this->categoryMap[$this->type] : null;
     }
 
     /**
