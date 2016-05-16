@@ -125,7 +125,7 @@ class Foo
   `public` modifiers. `var` is not allowed.
 - Opening brace of a function should be on the line after the function declaration.
 
-```
+```php
 /**
  * Documentation
  */
@@ -270,9 +270,9 @@ Use [guard conditions](http://refactoring.com/catalog/replaceNestedConditionalWi
 ```php
 $result = $this->getResult();
 if (empty($result)) {
-  return true;
+    return true;
 } else {
-  // process result
+    // process result
 }
 ```
 
@@ -281,7 +281,7 @@ is better as
 ```php
 $result = $this->getResult();
 if (empty($result)) {
-  return true;
+   return true;
 }
 
 // process result
@@ -486,3 +486,6 @@ Properties allowing to configure component not to do something should accept val
 - use lower case
 - use plural form for nouns which represent objects (e.g. validators)
 - use singular form for names representing relevant functionality/features (e.g. web)
+- prefer single word namespaces
+- if single word isn't suitable, use camelCase
+

@@ -27,6 +27,7 @@ class Post2 extends Object
 class Post3 extends Object
 {
     public $id = 33;
+    /** @var Object */
     public $subObject;
 
     public function init()
@@ -88,6 +89,45 @@ class ArrayHelperTest extends TestCase
                 'content' => 'test',
             ],
         ], ArrayHelper::toArray($object));
+
+        //recursive with attributes of object and subobject
+        $this->assertEquals([
+            'id' => 33,
+            'id_plus_1' => 34,
+            'subObject' => [
+                'id' => 123,
+                'id_plus_1' => 124,
+            ],
+        ], ArrayHelper::toArray($object, [
+            $object->className() => [
+                'id', 'subObject',
+                'id_plus_1' => function ($post) {
+                    return $post->id+1;
+                }
+            ],
+            $object->subObject->className() => [
+                'id',
+                'id_plus_1' => function ($post) {
+                    return $post->id+1;
+                }
+            ],
+        ]));
+
+        //recursive with attributes of subobject only
+        $this->assertEquals([
+            'id' => 33,
+            'subObject' => [
+                'id' => 123,
+                'id_plus_1' => 124,
+            ],
+        ], ArrayHelper::toArray($object, [
+            $object->subObject->className() => [
+                'id',
+                'id_plus_1' => function ($post) {
+                    return $post->id+1;
+                }
+            ],
+        ]));
     }
 
     public function testRemove()

@@ -305,6 +305,9 @@ class RbacController extends Controller
 }
 ```
 
+> Note: アドバンストテンプレートを使おうとするときは、`RbacController` を `console/controllers`
+ディレクトリの中に置いて、名前空間を `console/controllers` に変更する必要があります。
+
 `yii rbac/init` によってコマンドを実行した後には、次の権限階層が得られます。
 
 ![単純な RBAC 階層](images/rbac-hierarchy-1.png "単純な RBAC 階層")

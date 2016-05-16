@@ -131,7 +131,7 @@ class Pagination extends Object implements Linkable
      */
     public $defaultPageSize = 20;
     /**
-     * @var array|boolean the page size limits. The first array element stands for the minimal page size, and the second
+     * @var array|false the page size limits. The first array element stands for the minimal page size, and the second
      * the maximal page size. If this is false, it means [[pageSize]] should always return the value of [[defaultPageSize]].
      */
     public $pageSizeLimit = [1, 50];

@@ -9,6 +9,7 @@ namespace yii\grid;
 
 use yii\base\Model;
 use yii\data\ActiveDataProvider;
+use yii\data\ArrayDataProvider;
 use yii\db\ActiveQueryInterface;
 use yii\helpers\ArrayHelper;
 use yii\helpers\Html;
@@ -117,6 +118,25 @@ class DataColumn extends Column
             return parent::renderHeaderCellContent();
         }
 
+        $label = $this->getHeaderCellLabel();
+        if ($this->encodeLabel) {
+            $label = Html::encode($label);
+        }
+
+        if ($this->attribute !== null && $this->enableSorting &&
+            ($sort = $this->grid->dataProvider->getSort()) !== false && $sort->hasAttribute($this->attribute)) {
+            return $sort->link($this->attribute, array_merge($this->sortLinkOptions, ['label' => $label]));
+        } else {
+            return $label;
+        }
+    }
+
+    /**
+     * @inheritdoc
+     * @since 2.0.8
+     */
+    protected function getHeaderCellLabel()
+    {
         $provider = $this->grid->dataProvider;
 
         if ($this->label === null) {
@@ -124,6 +144,12 @@ class DataColumn extends Column
                 /* @var $model Model */
                 $model = new $provider->query->modelClass;
                 $label = $model->getAttributeLabel($this->attribute);
+            } else if ($provider instanceof ArrayDataProvider && $provider->modelClass !== null) {
+                /* @var $model Model */
+                $model = new $provider->modelClass;
+                $label = $model->getAttributeLabel($this->attribute);
+            } else if ($this->grid->filterModel !== null && $this->grid->filterModel instanceof Model) {
+                $label = $this->grid->filterModel->getAttributeLabel($this->attribute);
             } else {
                 $models = $provider->getModels();
                 if (($model = reset($models)) instanceof Model) {
@@ -137,12 +163,7 @@ class DataColumn extends Column
             $label = $this->label;
         }
 
-        if ($this->attribute !== null && $this->enableSorting &&
-            ($sort = $provider->getSort()) !== false && $sort->hasAttribute($this->attribute)) {
-            return $sort->link($this->attribute, array_merge($this->sortLinkOptions, ['label' => $this->encodeLabel ? Html::encode($label) : $label]));
-        } else {
-            return $this->encodeLabel ? Html::encode($label) : $label;
-        }
+        return $label;
     }
 
     /**

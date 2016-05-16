@@ -130,7 +130,7 @@ Failing unit tests as issue description are also accepted.
 ### 5. Update the CHANGELOG
 
 Edit the CHANGELOG file to include your change, you should insert this at the top of the file under the
-"Work in progress" heading, the line in the change log should look like one of the following:
+first heading (the version that is currently under development), the line in the change log should look like one of the following:
 
 ```
 Bug #999: a description of the bug fix (Your Name)

@@ -126,7 +126,7 @@ class Foo
 - クラスのメソッドは常に修飾子 `private`、`protected` または `public` を使って、可視性を宣言すべきです。`var` は許可されません。
 - 関数の開始の中括弧は関数宣言の次の行に置くべきです。
 
-```
+```php
 /**
  * ドキュメント
  */
@@ -273,9 +273,9 @@ if (!$model && null === $event)
 ```php
 $result = $this->getResult();
 if (empty($result)) {
-  return true;
+    return true;
 } else {
-  // $result を処理
+    // $result を処理
 }
 ```
 
@@ -284,7 +284,7 @@ if (empty($result)) {
 ```php
 $result = $this->getResult();
 if (empty($result)) {
-  return true;
+    return true;
 }
 
 // $result を処理
@@ -484,5 +484,7 @@ public function getEventHandlers($name)
 ### ディレクトリ/名前空間の名前
 
 - 小文字を使います。
-- オブジェクトを表すものには複数形の名詞を使います (例えば、validators)
-- 機能や特徴を表す名前には単数形を使います (例えば、web)
+- オブジェクトを表すものには複数形の名詞を使います (例えば、validators)。
+- 機能や特徴を表す名前には単数形を使います (例えば、web)。
+- 出来れば単一の語の名前空間にします。
+- 単一の語が適切でない場合は、camelCase を使います。

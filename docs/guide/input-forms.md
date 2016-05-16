@@ -78,6 +78,10 @@ The name of the input field is determined automatically from the model's [[yii\b
 For example, the name for the input field for the `username` attribute in the above example will be `LoginForm[username]`. This naming rule will result in an array
 of all attributes for the login form to be available in `$_POST['LoginForm']` on the server side.
 
+> Tip: If you have only one model in a form and want to simplify the input names you may skip the array part by
+> overriding the [[yii\base\Model::formName()|formName()]] method of the model to return an empty string.
+> This can be useful for filter models used in the [GridView](output-data-widgets.md#grid-view) to create nicer URLs.
+
 Specifying the attribute of the model can be done in more sophisticated ways. For example when an attribute may
 take an array value when uploading multiple files or selecting multiple items you may specify it by appending `[]`
 to the attribute name:
@@ -140,8 +144,8 @@ Working with Pjax <span id="working-with-pjax"></span>
 -----------------------
 
 The [[yii\widgets\Pjax|Pjax]] widget allows you to update a certain section of a
-page instead of reloading the entire page. You can use it to update the form
-only or replace its contents after the submission.
+page instead of reloading the entire page. You can use it to update only the form
+and replace its contents after the submission.
 
 You can configure [[yii\widgets\Pjax::$formSelector|$formSelector]] to specify
 which form submission may trigger pjax. If not set, all forms with `data-pjax`
@@ -153,19 +157,19 @@ use yii\widgets\ActiveForm;
 
 Pjax::begin([
     // Pjax options
-])
+]);
     $form = ActiveForm::begin([
         'options' => ['data' => ['pjax' => true]],
         // more ActiveForm options
-    ])
+    ]);
 
         // ActiveForm content
 
     ActiveForm::end();
 Pjax::end();
 ```
-> Tip: Be careful with links inside the [[yii\widgets\Pjax|Pjax]] widget since
-> the response  will also be rendered inside the widget, to prevent this use the
+> Tip: Be careful with the links inside the [[yii\widgets\Pjax|Pjax]] widget since
+> the response  will also be rendered inside the widget. To prevent this, use the
 > `data-pjax="0"` HTML attribute.
 
 #### Values in Submit Buttons and File Upload

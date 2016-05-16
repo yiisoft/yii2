@@ -55,7 +55,12 @@
             return this.each(function () {
                 var $e = $(this);
                 var settings = $.extend({}, defaults, options || {});
-                gridData[$e.attr('id')] = {settings: settings};
+                var id = $e.attr('id');
+                if (gridData[id] === undefined) {
+                    gridData[id] = {};
+                }
+
+                gridData[id] = $.extend(gridData[id], {settings: settings});
 
                 var enterPressed = false;
                 $(document).off('change.yiiGridView keydown.yiiGridView', settings.filterSelector)
@@ -142,8 +147,11 @@
         setSelectionColumn: function (options) {
             var $grid = $(this);
             var id = $(this).attr('id');
+            if (gridData.id === undefined) {
+                gridData[id] = {};
+            }
             gridData[id].selectionColumn = options.name;
-            if (!options.multiple) {
+            if (!options.multiple || !options.checkAll) {
                 return;
             }
             var checkAll = "#" + id + " input[name='" + options.checkAll + "']";

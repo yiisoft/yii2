@@ -56,6 +56,11 @@ class ColumnSchemaBuilder extends Object
      */
     protected $default;
     /**
+     * @var mixed SQL string to be appended to column schema definition.
+     * @since 2.0.9
+     */
+    protected $append;
+    /**
      * @var boolean whether the column values should be unsigned. If this is `true`, an `UNSIGNED` keyword will be added.
      * @since 2.0.7
      */
@@ -70,6 +75,8 @@ class ColumnSchemaBuilder extends Object
      * @since 2.0.8
      */
     protected $isFirst;
+
+
     /**
      * @var array mapping of abstract column types (keys) to type categories (values).
      * @since 2.0.8
@@ -102,6 +109,11 @@ class ColumnSchemaBuilder extends Object
      * @since 2.0.8
      */
     public $db;
+    /**
+     * @var string comment value of the column.
+     * @since 2.0.8
+     */
+    public $comment;
 
     /**
      * Create a column schema builder instance giving the type and value precision.
@@ -162,6 +174,18 @@ class ColumnSchemaBuilder extends Object
     }
 
     /**
+     * Specifies the comment for column.
+     * @param string $comment the comment
+     * @return $this
+     * @since 2.0.8
+     */
+    public function comment($comment)
+    {
+        $this->comment = $comment;
+        return $this;
+    }
+
+    /**
      * Marks column as unsigned.
      * @return $this
      * @since 2.0.7
@@ -218,6 +242,18 @@ class ColumnSchemaBuilder extends Object
     }
 
     /**
+     * Specify additional SQL to be appended to schema string.
+     * @param string $sql the SQL string to be appended.
+     * @return $this
+     * @since 2.0.9
+     */
+    public function append($sql)
+    {
+        $this->append = $sql;
+        return $this;
+    }
+
+    /**
      * Builds the full string for the column's schema
      * @return string
      */
@@ -225,10 +261,10 @@ class ColumnSchemaBuilder extends Object
     {
         switch ($this->getTypeCategory()) {
             case self::CATEGORY_PK:
-                $format = '{type}{check}';
+                $format = '{type}{check}{comment}{append}';
                 break;
             default:
-                $format = '{type}{length}{notnull}{unique}{default}{check}';
+                $format = '{type}{length}{notnull}{unique}{default}{check}{comment}{append}';
         }
         return $this->buildCompleteString($format);
     }
@@ -338,6 +374,16 @@ class ColumnSchemaBuilder extends Object
     }
 
     /**
+     * Builds the custom string that's appended to column definition.
+     * @return string custom string to append.
+     * @since 2.0.9
+     */
+    protected function buildAppendString()
+    {
+        return $this->append !== null ? ' ' . $this->append : '';
+    }
+
+    /**
      * Returns the category of the column type.
      * @return string a string containing the column type category name.
      * @since 2.0.8
@@ -345,6 +391,16 @@ class ColumnSchemaBuilder extends Object
     protected function getTypeCategory()
     {
         return $this->categoryMap[$this->type];
+    }
+
+    /**
+     * Builds the comment specification for the column.
+     * @return string a string containing the COMMENT keyword and the comment itself
+     * @since 2.0.8
+     */
+    protected function buildCommentString()
+    {
+        return '';
     }
 
     /**
@@ -363,9 +419,9 @@ class ColumnSchemaBuilder extends Object
             '{unique}' => $this->buildUniqueString(),
             '{default}' => $this->buildDefaultString(),
             '{check}' => $this->buildCheckString(),
-            '{pos}' => ($this->isFirst) ?
-                        $this->buildFirstString() :
-                            $this->buildAfterString(),
+            '{comment}' => $this->buildCommentString(),
+            '{pos}' => $this->isFirst ? $this->buildFirstString() : $this->buildAfterString(),
+            '{append}' => $this->buildAppendString(),
         ];
         return strtr($format, $placeholderValues);
     }

@@ -407,7 +407,7 @@ class m160328_040430_create_post extends Migration
 パラメータが渡されなかった場合は、テーブル名はカラム名から推測されます。
 
 上記の例で `author_id:integer:notNull:foreignKey(user)` は、`user` テーブルへの外部キーを持つ `author_id` という名前のカラムを生成します。
-一方、`category_id:integer:default(1):foreignKey` は、`category` テーブルへの外部キーを持つ `category_id` というカラムを生成します。
+一方、`category_id:integer:defaultValue(1):foreignKey` は、`category` テーブルへの外部キーを持つ `category_id` というカラムを生成します。
 
 
 ### テーブルを削除する
@@ -668,6 +668,10 @@ class m150101_185401_create_news_table extends Migration
 * [[yii\db\Migration::dropForeignKey()|dropForeignKey()]]: 外部キーを削除
 * [[yii\db\Migration::createIndex()|createIndex()]]: インデックスを作成
 * [[yii\db\Migration::dropIndex()|dropIndex()]]: インデックスを削除
+* [[yii\db\Migration::addCommentOnColumn()|addCommentOnColumn()]: カラムにコメントを追加
+* [[yii\db\Migration::dropCommentFromColumn()|dropCommentFromColumn()]: カラムからコメントを削除
+* [[yii\db\Migration::addCommentOnTable()|addCommentOnTable()]: テーブルにコメントを追加
+* [[yii\db\Migration::dropCommentFromTable()|dropCommentFromTable()]: テーブルからコメントを削除
 
 > Info: [[yii\db\Migration]] は、データベースクエリメソッドを提供しません。
   これは、通常、データベースからのデータ取得については、メッセージを追加して表示する必要がないからです。
@@ -691,6 +695,9 @@ yii migrate
 コマンドを実行すると、まだ適用されていない全てのマイグレーションが一覧表示されます。
 リストされたマイグレーションを適用することをあなたが確認すると、タイムスタンプの値の順に、一つずつ、すべての新しいマイグレーションクラスの `up()` または `safeUp()` メソッドが実行されます。
 マイグレーションのどれかが失敗した場合は、コマンドは残りのマイグレーションを適用せずに終了します。
+
+> Tip: あなたのサーバでコマンドラインを使用できない場合は
+> [web shell](https://github.com/samdark/yii2-webshell) エクステンションを使ってみてください。
 
 適用が成功したマイグレーションの一つ一つについて、`migration` という名前のデータベーステーブルに行が挿入されて、マイグレーションの成功が記録されます。
 この記録によって、マイグレーションツールは、どのマイグレーションが適用され、どのマイグレーションが適用されていないかを特定することが出来ます。

@@ -72,6 +72,7 @@ class FixtureController extends Controller
 
     /**
      * @inheritdoc
+     * @since 2.0.8
      */
     public function optionAliases()
     {
@@ -332,6 +333,9 @@ class FixtureController extends Controller
             $this->stdout("\nFixtures that will NOT be loaded: \n\n", Console::FG_YELLOW);
             $this->outputList($except);
         }
+
+        $this->stdout("\nBe aware that:\n", Console::BOLD);
+        $this->stdout("Applying leads to purging of certain data in the database!\n", Console::FG_RED);
 
         return $this->confirm("\nLoad above fixtures?");
     }

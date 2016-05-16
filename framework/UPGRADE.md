@@ -8,29 +8,39 @@ if you want to upgrade from version A to version C and there is
 version B between A and C, you need to follow the instructions
 for both A and B.
 
-Make sure you have global install of latest version of composer asset plugin:
+Make sure you have global install of latest version of composer asset plugin as well as a stable version of composer:
 
 ```
+php composer.phar self-update
 php composer.phar global require "fxp/composer-asset-plugin:~1.1.1"
 ```
 
 Upgrade from Yii 2.0.7
-______________________
+----------------------
 
 * The signature of `yii\helpers\BaseArrayHelper::index()` was changed. The method has got an extra optional parameter
   `$groups`.
+
 * `yii\helpers\BaseArrayHelper` methods `isIn()` and `isSubset()` throw `\yii\base\InvalidParamException`
   instead of `\InvalidArgumentException`. If you wrap calls of these methods in try/catch block, change expected
   exception class.
+
 * `yii\rbac\ManagerInterface::canAddChild()` method was added. If you have custom backend for RBAC you need to implement
   it.
+
 * The signature of `yii\web\User::loginRequired()` was changed. The method has got an extra optional parameter
   `$checkAcceptHeader`.
+
 * The signature of `yii\db\ColumnSchemaBuilder::__construct()` was changed. The method has got an extra optional
   parameter `$db`. In case you are instantiating this class yourself and using the `$config` parameter, you will need to
   move it to the right by one.
+
 * String types in the MSSQL column schema map were upgraded to Unicode storage types. This will have no effect on
   existing columns, but any new columns you generate via the migrations engine will now store data as Unicode.
+
+* Output buffering was introduced in the pair of `yii\widgets\ActiveForm::init()` and `::run()`. If you override any of
+  these methods, make sure that output buffer handling is not corrupted. If you call the parent implementation, when
+  overriding, everything should work fine. You should be doing that anyway.
 
 Upgrade from Yii 2.0.6
 ----------------------
@@ -79,7 +89,6 @@ Upgrade from Yii 2.0.6
 * The `yii\console\controllers\MessageController` class has been refactored to be better configurable and now also allows
   setting a lot of configuration options via command line. If you extend from this class, make sure it works as expected after
   these changes.
-
 
 Upgrade from Yii 2.0.5
 ----------------------
@@ -160,7 +169,6 @@ Upgrade from Yii 2.0 RC
 * If you are using CUBRID DBMS, make sure to use at least version 9.3.0 as the server and also as the PDO extension.
   Quoting of values is broken in prior versions and Yii has no reliable way to work around this issue.
   A workaround that may have worked before has been removed in this release because it was not reliable.
-
 
 Upgrade from Yii 2.0 Beta
 -------------------------
