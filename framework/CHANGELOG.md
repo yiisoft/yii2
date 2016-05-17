@@ -5,17 +5,13 @@ Yii Framework 2 Change Log
 2.0.9 under development
 -----------------------
 
-- Bug #9935: Fixed `yii\validators\EachValidator` does not invoke `validateAttribute()` method of the embedded validator (klimov-paul)
-- Bug #11270: Fixed `BaseActiveRecord::link()` method in order to support closure in `indexBy` for relations declaration (iushev)
-- Bug #11384: `yii.js` - middle/right clicking links that should go through handleAction(zuozp8)
-- Bug #11262: Enabled use of yii2 inside of PHAR packaged console applications (hiqsol)
-- Bug #11196: Fixed VarDumper throws PHP Fatal when dumping `__PHP_Incomplete_Class` (DamianZ)
 - Enh #11195: Added ability to append custom string to schema builder column definition (df2, samdark)
 - Enh #11490: Added `yii\data\ArrayDataProvider::$modelClass` property to specify a model used to provide column labels even when data array is empty (PowerGamer1)
 - Bug #9950: Updated `yii\grid\DataColumn::getHeaderCellLabel()` to extract attribute label from the `filterModel` of Grid (silverfire)
 - Bug #11429: Fixed `yii\i18n\PhpMessageSource::loadFallbackMessages()` not to log error when source and language is same, but locales are different (silverfire)
 - Enh #11428: Speedup SQL query in `yii\db\oci\Schema::findColumns()` (SSiwek)
 - Enh #11414: Files specified as `null` in `yii\web\AssetBundle` won't be registered (Razzwan)
+- Bug #11384: `yii.js` - middle/right clicking links that should go through handleAction(zuozp8)
 - Enh #11432: Added HTTP status 421 "Misdirected Request" to list of statuses in `yii\web\Response` (dasmfm)
 - Enh #11438: Configurable `yii\helpers\Markdown` default flavor (mdmunir)
 - Bug #11459: Fixed flash messages not destroyed when `session.auto_start = 1` set in php.ini (cartmanchen)
