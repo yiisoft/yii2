@@ -371,10 +371,7 @@ yii = (function ($) {
         // We can't attach listen on pub.clickableSelector only because it doesn't work for non-left mouse clicks
         // (see jQuery.event.handlers).
         $(document).on('click.yii contextmenu.yii', function (e) {
-            var clickedElement = $(e.target);
-            if (!clickedElement.is(pub.clickableSelector)) {
-                clickedElement =  clickedElement.parents(pub.clickableSelector).first();
-            }
+            var clickedElement = $(e.target).closest(pub.clickableSelector);
             if (clickedElement.data('method') || clickedElement.data('confirm') || clickedElement.data('form')) {
                 e.preventDefault();
             }
