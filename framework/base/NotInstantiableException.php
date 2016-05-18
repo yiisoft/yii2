@@ -13,7 +13,7 @@ namespace yii\base;
  * @author Sam Mousa <sam@mousa.nl>
  * @since 2.0.8
  */
-class NotInstantiableException extends Exception
+class NotInstantiableException extends InvalidConfigException
 {
     public function __construct($class, $message = null, $code = 0, Exception $previous = null)
     {
