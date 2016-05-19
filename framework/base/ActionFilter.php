@@ -138,6 +138,27 @@ class ActionFilter extends Behavior
     protected function isActive($action)
     {
         $id = $this->getActionId($action);
-        return !in_array($id, $this->except, true) && (empty($this->only) || in_array($id, $this->only, true));
+
+        if (empty($this->only)) {
+            $onlyMatch = true;
+        } else {
+            $onlyMatch = false;
+            foreach ($this->only as $pattern) {
+                if (fnmatch($pattern, $id)) {
+                    $onlyMatch = true;
+                    break;
+                }
+            }
+        }
+
+        $exceptMatch = false;
+        foreach ($this->except as $pattern) {
+            if (fnmatch($pattern, $id)) {
+                $exceptMatch = true;
+                break;
+            }
+        }
+
+        return !$exceptMatch && $onlyMatch;
     }
 }
