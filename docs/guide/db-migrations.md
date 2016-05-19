@@ -414,8 +414,7 @@ The `foreignKey` keyword can take a parameter between parenthesis which will be
 the name of the related table for the generated foreign key. If no parameter
 is passed then the table name will be deduced from the column name.
 
-In the
-example above `author_id:integer:notNull:foreignKey(user)` will generate a
+In the example above `author_id:integer:notNull:foreignKey(user)` will generate a
 column named `author_id` with a foreign key to the `user` table while
 `category_id:integer:defaultValue(1):foreignKey` will generate a column
 `category_id` with a foreign key to the `category` table.
