@@ -5,9 +5,11 @@ Yii Framework 2 Change Log
 2.0.9 under development
 -----------------------
 
+- Enh #11195: Added ability to append custom string to schema builder column definition (df2, samdark)
 - Enh #11490: Added `yii\data\ArrayDataProvider::$modelClass` property to specify a model used to provide column labels even when data array is empty (PowerGamer1)
 - Enh #11591: Added support for wildcards for `only` and `except` at `yii\base\ActionFilter` (klimov-paul)
 - Bug #9950: Updated `yii\grid\DataColumn::getHeaderCellLabel()` to extract attribute label from the `filterModel` of Grid (silverfire)
+- Bug #11429: Fixed `yii\i18n\PhpMessageSource::loadFallbackMessages()` not to log error when source and language is same, but locales are different (silverfire)
 - Enh #11428: Speedup SQL query in `yii\db\oci\Schema::findColumns()` (SSiwek)
 - Enh #11414: Files specified as `null` in `yii\web\AssetBundle` won't be registered (Razzwan)
 - Enh #11432: Added HTTP status 421 "Misdirected Request" to list of statuses in `yii\web\Response` (dasmfm)
@@ -15,6 +17,8 @@ Yii Framework 2 Change Log
 - Bug #11459: Fixed flash messages not destroyed when `session.auto_start = 1` set in php.ini (cartmanchen)
 - Bug #11498: Fixed inability to save serialized object into PostgreSQL binary column (klimov-paul)
 - Bug #11507: Fixed `yii\validators\EachValidator::validateAttribute()` does not respect `skipOnEmpty` rule parameter (webdevsega)
+- Bug #11523: Fixed `yii\web\User::checkRedirectAcceptable()` to treat acceptable content type `*/*` as `*` (silverfire)
+- Bug #11532: Fixed casting of empty char value to `null` resulting in integrity constraint violation for not null columns (samdark)
 
 
 2.0.8 April 28, 2016
