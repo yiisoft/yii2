@@ -12,7 +12,7 @@ use \yii\base\InvalidConfigException;
  * NotInstantiableException represents an exception caused by incorrect DI configuration / usage.
  *
  * @author Sam Mousa <sam@mousa.nl>
- * @since 2.0.8
+ * @since 2.0.9
  */
 class NotInstantiableException extends InvalidConfigException
 {
