@@ -28,7 +28,7 @@ class ActionFilter extends Behavior
      * Note that if the filter is attached to a module, the action IDs should also include child module IDs (if any)
      * and controller IDs.
      *
-     * @since 2.0.9 action IDs can be specified as wildcards, e.g. `site/*`.
+     * Since version 2.0.9 action IDs can be specified as wildcards, e.g. `site/*`.
      *
      * @see except
      */
