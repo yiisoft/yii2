@@ -142,7 +142,6 @@ class ActionFilterTest extends TestCase
     {
         $this->mockWebApplication();
 
-        /** @var $filter ActionFilter */
         $filter = new ActionFilter();
         $reflection = new \ReflectionClass($filter);
         $method = $reflection->getMethod('isActive');
