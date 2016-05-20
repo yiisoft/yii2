@@ -11,7 +11,6 @@ use ReflectionClass;
 use Yii;
 use yii\base\Component;
 use yii\base\InvalidConfigException;
-use yii\base\NotInstantiableException;
 use yii\helpers\ArrayHelper;
 
 /**

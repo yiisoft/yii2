@@ -5,8 +5,9 @@
  * @license http://www.yiiframework.com/license/
  */
 
-namespace yii\base;
+namespace yii\di;
 
+use \yii\base\InvalidConfigException;
 /**
  * NotInstantiableException represents an exception caused by incorrect DI configuration / usage.
  *
