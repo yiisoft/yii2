@@ -48,7 +48,7 @@ class UserFixture extends ActiveFixture
 
 
 Los datos para un fixture `ActiveFixture` son usualmente provistos en un archivo ubicado en `FixturePath/data/TableName.php`,
-donde `FixturePath` correponde al directorio conteniendo el archivo de clase del fixture, y `TableName`
+donde `FixturePath` corresponde al directorio conteniendo el archivo de clase del fixture, y `TableName`
 es el nombre de la tabla asociada al fixture. En el ejemplo anterior, el archivo debería ser
 `@app/tests/fixtures/data/user.php`. El archivo de datos debe devolver un array de registros
 a ser insertados en la tabla user. Por ejemplo,
@@ -81,7 +81,7 @@ dentro de los registros cuando el fixture está siendo cargado.
 > Puedes también sobrescribir [[yii\test\ActiveFixture::getData()]] para obtener los datos.
 
 Como se describió anteriormente, un fixture puede depender de otros fixtures. Por ejemplo, un `UserProfileFixture` puede necesitar depender de `UserFixture`
-porque la table de perfiles de usuarios contiene una cláve foránea a la tabla user.
+porque la table de perfiles de usuarios contiene una clave foránea a la tabla user.
 La dependencia es especificada vía la propiedad [[yii\test\Fixture::depends]], como a continuación,
 
 ```php
@@ -96,9 +96,6 @@ class UserProfileFixture extends ActiveFixture
 }
 ```
 
-The dependency also ensures, that the fixtures are loaded and unloaded in a well defined order. In the above example `UserFixture` will
-always be loaded before `UserProfileFixture` to ensure all foreign key references exist and will be unloaded after `UserProfileFixture`
-has been unloaded for the same reason.
 La dependencia también asegura que los fixtures son cargados y descargados en un orden bien definido. En el ejemplo `UserFixture`
 será siempre cargado antes de `UserProfileFixture` para asegurar que todas las referencias de las claves foráneas existan y será siempre descargado después de `UserProfileFixture`
 por la misma razón.
@@ -172,9 +169,6 @@ foreach ($this->profiles as $row) ...
 Definir y Utilizar Fixtures Globales
 ------------------------------------
 
-The fixtures described above are mainly used by individual test cases. In most cases, you also need some global
-fixtures that are applied to ALL or many test cases. An example is [[yii\test\InitDbFixture]] which does
-two things:
 Los fixtures descritos arriba son principalmente utilizados para casos de tests individuales. En la mayoría de los casos, puedes necesitar algunos
 fixtures globales que sean aplicados a TODOS o muchos casos de test. Un ejemplo sería [[yii\test\InitDbFixture]], que hace
 dos cosas:
@@ -186,9 +180,6 @@ Utilizar fixtures globales es similar a utilizar los no-globales. La única dife
 en [[yii\codeception\TestCase::globalFixtures()]] en vez de en `fixtures()`. Cuando un caso de test carga fixtures,
 primero carga los globales y luego los no-globales.
 
-By default, [[yii\codeception\DbTestCase]] already declares `InitDbFixture` in its `globalFixtures()` method.
-This means you only need to work with `@app/tests/fixtures/initdb.php` if you want to do some initialization work
-before each test. You may otherwise simply focus on developing each individual test case and the corresponding fixtures.
 Por defecto, [[yii\codeception\DbTestCase]] ya declara `InitDbFixture` en su método `globalFixtures()`.
 Esto significa que sólo necesitas trabajar con `@app/tests/fixtures/initdb.php` si quieres realizar algún trabajo de inicialización
 antes de cada test. Sino puedes simplemente enfocarte en desarrollar cada caso de test individual y sus fixtures correspondientes.
@@ -220,60 +211,59 @@ data\
 # y así sucesivamente
 ```
 
-In this way you will avoid collision of fixture data files between tests and use them as you need.
 De esta manera evitarás la colisión de archivos de datos de fixtures entre tests y podrás utlilizarlos como necesites.
 
-> Note: In the example above fixture files are named only for example purpose. In real life you should name them
-> according to which fixture class your fixture classes are extending from. For example, if you are extending
-> from [[yii\test\ActiveFixture]] for DB fixtures, you should use DB table names as the fixture data file names;
-> If you are extending from [[yii\mongodb\ActiveFixture]] for MongoDB fixtures, you should use collection names as the file names.
+> Note: En el ejemplo de arriba los archivos de fixtures son nombrados así sólo como ejemplo. En la vida real deberías nombrarlos
+> de acuerdo a qué clase de fixture extienden tus clases de fixtures. Por ejemplo, si estás extendiendo
+> de [[yii\test\ActiveFixture]] para fixtures de BD, deberías utilizar nombres de tabla de la BD como nombres de los archivos de fixtures;
+> Si estás extendiendo de [[yii\mongodb\ActiveFixture]] para fixtures de MongoDB, deberías utilizar nombres de colecciones para los nombres de archivo.
 
-The similar hierarchy can be used to organize fixture class files. Instead of using `data` as the root directory, you may
-want to use `fixtures` as the root directory to avoid conflict with the data files.
+Se puede utilizar una jerarquía similar para organizar archivos de clases de fixtures. En vez de utilizar `data` como directorio raíz, podrías
+querer utilizar `fixtures` como directorio raíz para evitar conflictos con los archivos de datos.
 
 
-Summary
+Resumen
 -------
 
-> Note: This section is under development.
+> Note: Esta sección se encuentra en desarrollo.
 
-In the above, we have described how to define and use fixtures. Below we summarize the typical workflow
-of running unit tests related with DB:
+Arriba, definimos cómo definir y utilizar fixtures. Abajo resumiremos el típico flujo de trabajo
+de correr tests de unidad relacionados a BD:
 
-1. Use `yii migrate` tool to upgrade your test database to the latest version;
-2. Run a test case:
-   - Load fixtures: clean up the relevant DB tables and populate them with fixture data;
-   - Perform the actual test;
-   - Unload fixtures.
-3. Repeat Step 2 until all tests finish.
+1. Usa la herramienta `yii migrate` para actualizar tu base de datos de prueba a la última versión;
+2. Corre el caso de test:
+   - Carga los fixtures: limpia las tablas de la BD relevantes y cargala con los datos de los fixtures;
+   - Realiza el test en sí;
+   - Descarga los fixtures.
+3. Repite el Paso 2 hasta que todos los tests terminen.
 
 
-**To be cleaned up below**
+**Lo siguiente, a ser limpiado**
 
-Managing Fixtures
-=================
+Administrar Fixtures
+====================
 
-> Note: This section is under development.
+> Note: Esta sección está en desarrollo.
 >
-> todo: this tutorial may be merged with the above part of test-fixtures.md
+> todo: este tutorial podría ser unificado con la parte de arriba en test-fixtures.md
 
-Fixtures are important part of testing. Their main purpose is to populate you with data that needed by testing
-different cases. With this data using your tests becoming more efficient and useful.
+Los fixtures son una parte importante del testing. Su principal propósito es el de poblarte con datos necesarios para el test
+de diferentes casos. Con estos datos. utilizar tests se vuelve más eficiente y útil.
 
-Yii supports fixtures via the `yii fixture` command line tool. This tool supports:
+Yii soporta fixtures a través de la herramienta de línea de comandos `yii fixture`. Esta herramienta soporta:
 
-* Loading fixtures to different storage such as: RDBMS, NoSQL, etc;
-* Unloading fixtures in different ways (usually it is clearing storage);
-* Auto-generating fixtures and populating it with random data.
+* Cargar fixtures a diferentes almacenamientos: RDBMS, NoSQL, etc;
+* Descargar fixtures de diferentes maneras (usualmente limpiando el almacenamiento);
+* Auto-generar fixtures y poblarlos con datos al azar.
 
-Fixtures format
----------------
+Formato de Fixtures
+-------------------
 
-Fixtures are objects with different methods and configurations, refer to official [documentation](https://github.com/yiisoft/yii2/blob/master/docs/guide/test-fixtures.md) on them.
-Lets assume we have fixtures data to load:
+Los fixtures son objetos con diferentes métodos y configuraciones, inspecciónalos en la [documentación oficial](https://github.com/yiisoft/yii2/blob/master/docs/guide-es/test-fixtures.md).
+Asumamos que tenemos datos de fixtures a cargar:
 
 ```
-#users.php file under fixtures data path, by default @tests\unit\fixtures\data
+#archivo users.php bajo la ruta de los fixtures, por defecto @tests\unit\fixtures\data
 
 return [
     [
@@ -292,81 +282,81 @@ return [
     ],
 ];
 ```
-If we are using fixture that loads data into database then these rows will be applied to `users` table. If we are using nosql fixtures, for example `mongodb`
-fixture, then this data will be applied to `users` mongodb collection. In order to learn about implementing various loading strategies and more, refer to official [documentation](https://github.com/yiisoft/yii2/blob/master/docs/guide/test-fixtures.md).
-Above fixture example was auto-generated by `yii2-faker` extension, read more about it in these [section](#auto-generating-fixtures).
-Fixture classes name should not be plural.
+Si estamos utilizando un fixture que carga datos en la base de datos, entonces esos registros serán insertados en la tabla `users`. Si estamos utilizando fixtures no sql, por ejemplo de `mongodb`,
+entonces estos datos serán aplicados a la colección mongodb `users`. Para aprender cómo implementar varias estrategias de carga y más, visita la [documentación oficial](https://github.com/yiisoft/yii2/blob/master/docs/guide-es/test-fixtures.md).
+El fixture de ejemplo de arriba fue autogenerado por la extensión `yii2-faker`, lee más acerca de esto en su [sección](#auto-generating-fixtures).
+Los nombres de clase de fixtures no deberían ser en plural.
 
-Loading fixtures
+Cargar fixtures
 ----------------
 
-Fixture classes should be suffixed by `Fixture` class. By default fixtures will be searched under `tests\unit\fixtures` namespace, you can
-change this behavior with config or command options. You can exclude some fixtures due load or unload by specifying `-` before its name like `-User`.
+Las clases de fixture deberían tener el prefijo `Fixture`. Por defecto los fixtures serán buscados bajo el espacio de nombre `tests\unit\fixtures`, puedes
+modificar este comportamiento con opciones de comando o configuración. Puedes excluir algunos fixtures para carga o descarga especificando `-` antes de su nombre, por ejemplo `-User`.
 
-To load fixture, run the following command:
+Para cargar un fixture, ejecuta el siguiente comando:
 
 ```
 yii fixture/load <fixture_name>
 ```
 
-The required `fixture_name` parameter specifies a fixture name which data will be loaded. You can load several fixtures at once.
-Below are correct formats of this command:
+El parámetro requerido `fixture_name` especifica un nombre de fixture cuyos datos serán cargados. Puedes cargar varios fixtures de una sola vez.
+Abajo se muestran formatos correctos de este comando:
 
 ```
-// load `User` fixture
+// carga el fixture `User`
 yii fixture/load User
 
-// same as above, because default action of "fixture" command is "load"
+// lo mismo que arriba, dado que la acción por defecto del comando "fixture" es "load"
 yii fixture User
 
-// load several fixtures
+// carga varios fixtures
 yii fixture User UserProfile
 
-// load all fixtures
+// carga todos los fixtures
 yii fixture/load "*"
 
-// same as above
+// lo mismo que arriba
 yii fixture "*"
 
-// load all fixtures except ones
+// carga todos los fixtures excepto uno
 yii fixture "*" -DoNotLoadThisOne
 
-// load fixtures, but search them in different namespace. By default namespace is: tests\unit\fixtures.
+// carga fixtures, pero los busca en diferente espacio de nombre. El espacio de nombre por defecto es: tests\unit\fixtures.
 yii fixture User --namespace='alias\my\custom\namespace'
 
-// load global fixture `some\name\space\CustomFixture` before other fixtures will be loaded.
-// By default this option is set to `InitDbFixture` to disable/enable integrity checks. You can specify several
-// global fixtures separated by comma.
+// carga el fixture global `some\name\space\CustomFixture` antes de que otros fixtures sean cargados.
+// Por defecto está opción se define como `InitDbFixture` para habilitar/deshabilitar la comprobación de integridad. Puedes especificar varios
+// fixtures globales separados por coma.
 yii fixture User --globalFixtures='some\name\space\Custom'
 ```
 
-Unloading fixtures
+Descargar fixtures
 ------------------
 
-To unload fixture, run the following command:
+Para descargar un fixture, ejecuta el siguiente comando:
 
 ```
-// unload Users fixture, by default it will clear fixture storage (for example "users" table, or "users" collection if this is mongodb fixture).
+// descarga el fixture Users, por defecto limpiará el almacenamiento del fixture (por ejemplo la tabla "users", o la colección "users" si es un fixture mongodb).
 yii fixture/unload User
 
-// Unload several fixtures
+// descarga varios fixtures
 yii fixture/unload User,UserProfile
 
-// unload all fixtures
+// descarga todos los fixtures
 yii fixture/unload "*"
 
-// unload all fixtures except ones
+// descarga todos los fixtures excepto uno
 yii fixture/unload "*" -DoNotUnloadThisOne
 
 ```
 
-Same command options like: `namespace`, `globalFixtures` also can be applied to this command.
+Opciones de comando similares como: `namespace`, `globalFixtures` también pueden ser aplicadas a este comando.
 
-Configure Command Globally
---------------------------
-While command line options allow us to configure the migration command
-on-the-fly, sometimes we may want to configure the command once for all. For example you can configure
-different migration path as follows:
+Configurar el Comando Globalmente
+---------------------------------
+Mientras que las opciones de línea de comandos nos permiten configurar el comando de migración
+en el momento, a veces queremos configurar el comando de una vez y para siempre. Por ejemplo puedes configurar
+diferentes rutas de migración como a continuación:
 
 ```
 'controllerMap' => [
@@ -381,9 +371,9 @@ different migration path as follows:
 ]
 ```
 
-Auto-generating fixtures
-------------------------
+Autogenerando fixtures
+----------------------
 
-Yii also can auto-generate fixtures for you based on some template. You can generate your fixtures with different data on different languages and formats.
-These feature is done by [Faker](https://github.com/fzaninotto/Faker) library and `yii2-faker` extension.
-See extension [guide](https://github.com/yiisoft/yii2-faker) for more docs.
+Yii puede también autogenerar fixtures por tí basándose en algún template. Puedes generar tus fixtures con distintos datos en diferentes lenguajes y formatos.
+Esta característica es realizada por la librería [Faker](https://github.com/fzaninotto/Faker) y la extensión `yii2-faker`.
+Visita la [guía de la extensión](https://github.com/yiisoft/yii2-faker) para mayor documentación.
