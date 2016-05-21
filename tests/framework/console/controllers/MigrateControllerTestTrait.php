@@ -42,6 +42,25 @@ trait MigrateControllerTestTrait
         FileHelper::removeDirectory($this->migrationPath);
     }
 
+    public function assertFileContent($expectedFile, $class)
+    {
+        $this->assertEqualsWithoutLE(
+            include __DIR__ . "/migrate_create/$expectedFile.php",
+            $this->parseNameClassMigration($class)
+        );
+    }
+
+    public function assertCommandCreatedFile(
+        $expectedFile,
+        $migrationName,
+        $params = []
+    ) {
+        $class = 'm' . gmdate('ymd_His') . '_' . $migrationName;
+        $params[0] = $migrationName;
+        $this->runMigrateControllerAction('create', $params);
+        $this->assertFileContent($expectedFile, $class);
+    }
+
     /**
      * @return array applied migration entries
      */
@@ -168,209 +187,28 @@ CODE;
 
     public function testGenerateDefaultMigration()
     {
-        $migrationName = 'DefaultTest';
-        $class = 'm' . gmdate('ymd_His') . '_' . $migrationName;
-        $this->runMigrateControllerAction('create', [$migrationName]);
-        $file = $this->parseNameClassMigration($class);
-
-        $newLine = '\n';
-        $code = <<<CODE
-<?php
-
-use yii\db\Migration;
-
-class {$class} extends Migration
-{
-    public function up()
-    {
-
-    }
-
-    public function down()
-    {
-        echo "{$class} cannot be reverted.{$newLine}";
-
-        return false;
-    }
-
-    /*
-    // Use safeUp/safeDown to run migration code within a transaction
-    public function safeUp()
-    {
-    }
-
-    public function safeDown()
-    {
-    }
-    */
-}
-
-CODE;
-        $this->assertEqualsWithoutLE($code, $file);
+        $this->assertCommandCreatedFile('default', 'DefaultTest');
     }
 
     public function testGenerateCreateMigration()
     {
         $migrationName = 'create_test';
-        $class = 'm' . gmdate('ymd_His') . '_' . $migrationName;
-        $this->runMigrateControllerAction('create', [
-            $migrationName,
-            'fields' => 'title:string(10):notNull:unique:defaultValue("test"),body:text:notNull,price:money(11,2):notNull'
+
+        $this->assertCommandCreatedFile('create_test', $migrationName);
+
+        $this->assertCommandCreatedFile('create_fields', $migrationName, [
+            'fields' => 'title:string(10):notNull:unique:defaultValue("test"),
+                body:text:notNull,price:money(11,2):notNull'
         ]);
-        $file = $this->parseNameClassMigration($class);
 
-        $code = <<<CODE
-<?php
-
-use yii\db\Migration;
-
-/**
- * Handles the creation for table `test`.
- */
-class {$class} extends Migration
-{
-    /**
-     * @inheritdoc
-     */
-    public function up()
-    {
-        \$this->createTable('test', [
-            'id' => \$this->primaryKey(),
-            'title' => \$this->string(10)->notNull()->unique()->defaultValue("test"),
-            'body' => \$this->text()->notNull(),
-            'price' => \$this->money(11,2)->notNull(),
-        ]);
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function down()
-    {
-        \$this->dropTable('test');
-    }
-}
-
-CODE;
-        $this->assertEqualsWithoutLE($code, $file);
-
-        $class = 'm' . gmdate('ymd_His') . '_' . $migrationName;
-        $this->runMigrateControllerAction('create', [
-            $migrationName,
+        $this->assertCommandCreatedFile('create_title_pk', $migrationName, [
             'fields' => 'title:primaryKey,body:text:notNull,price:money(11,2)',
         ]);
-        $file = $this->parseNameClassMigration($class);
-        $code = <<<CODE
-<?php
 
-use yii\db\Migration;
-
-/**
- * Handles the creation for table `test`.
- */
-class {$class} extends Migration
-{
-    /**
-     * @inheritdoc
-     */
-    public function up()
-    {
-        \$this->createTable('test', [
-            'title' => \$this->primaryKey(),
-            'body' => \$this->text()->notNull(),
-            'price' => \$this->money(11,2),
+        $this->assertCommandCreatedFile('create_id_pk', $migrationName, [
+            'fields' => 'id:primaryKey,address:string,
+                address2:string,email:string',
         ]);
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function down()
-    {
-        \$this->dropTable('test');
-    }
-}
-
-CODE;
-        $this->assertEqualsWithoutLE($code, $file);
-
-        $class = 'm' . gmdate('ymd_His') . '_' . $migrationName;
-        $this->runMigrateControllerAction('create', [
-            $migrationName,
-        ]);
-        $file = $this->parseNameClassMigration($class);
-        $code = <<<CODE
-<?php
-
-use yii\db\Migration;
-
-/**
- * Handles the creation for table `test`.
- */
-class {$class} extends Migration
-{
-    /**
-     * @inheritdoc
-     */
-    public function up()
-    {
-        \$this->createTable('test', [
-            'id' => \$this->primaryKey(),
-        ]);
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function down()
-    {
-        \$this->dropTable('test');
-    }
-}
-
-CODE;
-        $this->assertEqualsWithoutLE($code, $file);
-
-        $class = 'm' . gmdate('ymd_His') . '_' . $migrationName;
-        $this->runMigrateControllerAction('create', [
-            $migrationName,
-            'fields' => 'id:primaryKey,address:string,address2:string,email:string',
-        ]);
-        $file = $this->parseNameClassMigration($class);
-        $code = <<<CODE
-<?php
-
-use yii\db\Migration;
-
-/**
- * Handles the creation for table `test`.
- */
-class {$class} extends Migration
-{
-    /**
-     * @inheritdoc
-     */
-    public function up()
-    {
-        \$this->createTable('test', [
-            'id' => \$this->primaryKey(),
-            'address' => \$this->string(),
-            'address2' => \$this->string(),
-            'email' => \$this->string(),
-        ]);
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function down()
-    {
-        \$this->dropTable('test');
-    }
-}
-
-CODE;
-        $this->assertEqualsWithoutLE($code, $file);
 
         $class = 'm' . gmdate('ymd_His') . '_' . $migrationName;
         $this->runMigrateControllerAction('create', [
