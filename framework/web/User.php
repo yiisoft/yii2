@@ -549,12 +549,13 @@ class User extends Component
      * This method attempts to authenticate a user using the information in the identity cookie.
      * @return array|null Returns an array of 'identity' and 'duration' if valid, otherwise null.
      * @see loginByCookie()
+     * @since 2.0.9
      */
     protected function getIdentityAndDurationFromCookie()
     {
         $value = Yii::$app->getRequest()->getCookies()->getValue($this->identityCookie['name']);
         if ($value === null) {
-            return;
+            return null;
         }
         $data = json_decode($value, true);
         if (count($data) == 3) {
@@ -573,12 +574,13 @@ class User extends Component
             }
         }
         $this->removeIdentityCookie();
-        return;
+        return null;
     }
      
     /**
      * Removes the identity cookie.
      * This method is used when [[enableAutoLogin]] is true.
+     * @since 2.0.9
      */
     protected function removeIdentityCookie()
     {
