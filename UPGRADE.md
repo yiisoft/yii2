@@ -15,6 +15,12 @@ php composer.phar self-update
 php composer.phar global require "fxp/composer-asset-plugin:~1.1.1"
 ```
 
+Upgrade from Yii 2.0.8
+----------------------
+
+* Part of code from `yii\web\User::loginByCookie()` method was moved to new `getIdentityAndDurationFromCookie()`
+  and `removeIdentityCookie()` methods. If you override `loginByCookie()` method, update it in order use new methods.
+
 Upgrade from Yii 2.0.7
 ----------------------
 
