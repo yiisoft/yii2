@@ -8,10 +8,10 @@
 namespace yii\db\oci;
 
 use yii\base\InvalidCallException;
+use yii\db\ColumnSchema;
 use yii\db\Connection;
 use yii\db\Expression;
 use yii\db\TableSchema;
-use yii\db\ColumnSchema;
 
 /**
  * Schema is the class for retrieving metadata from an Oracle database
@@ -271,21 +271,21 @@ SQL;
             if ($this->db->slavePdo->getAttribute(\PDO::ATTR_CASE) === \PDO::CASE_LOWER) {
                 $row = array_change_key_case($row, CASE_UPPER);
             }
-            
+
             if ($row['CONSTRAINT_TYPE'] === 'P') {
-            	$table->columns[$row['COLUMN_NAME']]->isPrimaryKey = true;
-            	$table->primaryKey[] = $row['COLUMN_NAME'];
-            	if (empty($table->sequenceName )) {
-            		$table->sequenceName = $this->getTableSequenceName($table->name);
-            	}
+                $table->columns[$row['COLUMN_NAME']]->isPrimaryKey = true;
+                $table->primaryKey[] = $row['COLUMN_NAME'];
+                if (empty($table->sequenceName)) {
+                    $table->sequenceName = $this->getTableSequenceName($table->name);
+                }
             }
 
             if ($row['CONSTRAINT_TYPE'] !== 'R') {
-            	// this condition is not checked in SQL WHERE because of an Oracle Bug:
-            	// see https://github.com/yiisoft/yii2/pull/8844
-            	continue;
-            }            
-            
+                // this condition is not checked in SQL WHERE because of an Oracle Bug:
+                // see https://github.com/yiisoft/yii2/pull/8844
+                continue;
+            }
+
             $name = $row['CONSTRAINT_NAME'];
             if (!isset($constraints[$name])) {
                 $constraints[$name] = [
@@ -439,9 +439,9 @@ SQL;
      */
     protected function extractColumnSize($column, $dbType, $precision, $scale, $length)
     {
-        $column->size = trim($length) === '' ? null : (int) $length;
-        $column->precision = trim($precision) === '' ? null : (int) $precision;
-        $column->scale = trim($scale) === '' ? null : (int) $scale;
+        $column->size = trim($length) === '' ? null : (int)$length;
+        $column->precision = trim($precision) === '' ? null : (int)$precision;
+        $column->scale = trim($scale) === '' ? null : (int)$scale;
     }
 
     /**
@@ -457,7 +457,7 @@ SQL;
         if (!empty($returnColumns)) {
             $columnSchemas = $tableSchema->columns;
             $returning = [];
-            foreach ((array) $returnColumns as $name) {
+            foreach ((array)$returnColumns as $name) {
                 $phName = QueryBuilder::PARAM_PREFIX . (count($params) + count($returnParams));
                 $returnParams[$phName] = [
                     'column' => $name,
