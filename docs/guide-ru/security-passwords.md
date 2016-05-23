@@ -148,5 +148,5 @@ class SiteController extends Controller
 Смотрите также
 --------------
 
-- [Безопасность представлений](structure-views.md#security)
+- [Безопасность представлений](structure-views.md#Безопасность-)
 

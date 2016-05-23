@@ -198,7 +198,7 @@ $component->attachBehaviors([
 ]
 ```
 
-Более детальная информация приведена в разделе [Конфигурации](concept-configurations.md#configuration-format).
+Более детальная информация приведена в разделе [Конфигурации](concept-configurations.md#Формат-конфигурации-).
 
 Использование поведений <span id="using-behaviors"></span>
 ------------------------------------------------

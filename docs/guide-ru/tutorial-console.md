@@ -17,10 +17,10 @@
 Как вы можете видеть на скриншоте, в Yii уже определён набор доступных по умолчанию команд:
 
 - [[yii\console\controllers\AssetController|AssetController]] - Позволяет вам объединять и сжимать ваши JavaScript и CSS файлы.
-  Больше об этой команде вы можете узнать в [Assets Section](structure-assets.md#using-the-asset-command).
+  Больше об этой команде вы можете узнать в [Assets Section](structure-assets.md#Использование-Комплекта-Ресурсов).
 - [[yii\console\controllers\CacheController|CacheController]] - Позволяет вам сбрасывать кеш приложения.
 - [[yii\console\controllers\FixtureController|FixtureController]] - Управляет загрузкой и выгрузкой данных фикстур для тестирования.
-  Данная команда более подробно описана в [Testing Section about Fixtures](test-fixtures.md#managing-fixtures).
+  Данная команда более подробно описана в [Testing Section about Fixtures](test-fixtures.md#Управление-фикстурами).
 - [[yii\console\controllers\HelpController|HelpController]] - Обеспечивает справочную информацию о консольных командах,
   это команда по умолчанию и она печатает текст, который вы видели выше.
 - [[yii\console\controllers\MessageController|MessageController]] - Извлекает сообщения для перевода из файлов с исходными тестами.

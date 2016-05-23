@@ -37,4 +37,4 @@ public function behaviors()
 а кэширование фрагмента в виде [виджета](structure-widgets.md).
 
 Вы можете использовать вместе [кэширование фрагмента](caching-fragment.md),
-[динамическое содержимое](caching-fragment.md#dynamic-content) и кэширование страницы.
+[динамическое содержимое](caching-fragment.md#Динамическое-содержимое-) и кэширование страницы.
