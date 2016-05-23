@@ -246,7 +246,7 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
         } elseif ($this->hasAttribute($name)) {
             return null;
         } else {
-            if (isset($this->_related[$name]) || array_key_exists($name, $this->_related)) {
+            if (isset($this->_related[$name]) || $this->isRelationPopulated($name)) {
                 return $this->_related[$name];
             }
             $value = parent::__get($name);
@@ -298,7 +298,7 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
     {
         if ($this->hasAttribute($name)) {
             unset($this->_attributes[$name]);
-        } elseif (array_key_exists($name, $this->_related)) {
+        } elseif ($this->isRelationPopulated($name)) {
             unset($this->_related[$name]);
         } elseif ($this->getRelation($name, false) === null) {
             parent::__unset($name);
@@ -1010,42 +1010,29 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
 
     /**
      * Returns the primary key value(s).
+     * 
      * @param boolean $asArray whether to return the primary key value as an array. If true,
-     * the return value will be an array with column names as keys and column values as values.
-     * Note that for composite primary keys, an array will always be returned regardless of this parameter value.
-     * @property mixed The primary key value. An array (column name => column value) is returned if
-     * the primary key is composite. A string is returned otherwise (null will be returned if
-     * the key value is null).
+     * the return value will be an array with column name as key and column value as value.
      * @return mixed the primary key value. An array (column name => column value) is returned if the primary key
      * is composite or `$asArray` is true. A string is returned otherwise (null will be returned if
      * the key value is null).
+     * @throws Exception if the AR model does not have a primary key
      */
     public function getPrimaryKey($asArray = false)
     {
-        $keys = $this->primaryKey();
-        if (!$asArray && count($keys) === 1) {
-            return isset($this->_attributes[$keys[0]]) ? $this->_attributes[$keys[0]] : null;
-        } else {
-            $values = [];
-            foreach ($keys as $name) {
-                $values[$name] = isset($this->_attributes[$name]) ? $this->_attributes[$name] : null;
-            }
-
-            return $values;
-        }
+        return $this->getPrimaryKeyFromAttributes($this->_attributes,$asArray);
     }
 
     /**
      * Returns the old primary key value(s).
+     * 
      * This refers to the primary key value that is populated into the record
      * after executing a find method (e.g. find(), findOne()).
      * The value remains unchanged even if the primary key attribute is manually assigned with a different value.
+     * 
      * @param boolean $asArray whether to return the primary key value as an array. If true,
      * the return value will be an array with column name as key and column value as value.
      * If this is false (default), a scalar value will be returned for non-composite primary key.
-     * @property mixed The old primary key value. An array (column name => column value) is
-     * returned if the primary key is composite. A string is returned otherwise (null will be
-     * returned if the key value is null).
      * @return mixed the old primary key value. An array (column name => column value) is returned if the primary key
      * is composite or `$asArray` is true. A string is returned otherwise (null will be returned if
      * the key value is null).
@@ -1053,22 +1040,31 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
      */
     public function getOldPrimaryKey($asArray = false)
     {
+        return $this->getPrimaryKeyFromAttributes($this->_oldAttributes,$asArray);
+    }
+        
+    /**
+     * Retrieves the Primary Key from given attributes
+     * 
+     * @see getPrimaryKey()
+     * @see getOldPrimaryKey()
+     */
+    private function getPrimaryKeyFromAttributes($attributes,$asArray){
         $keys = $this->primaryKey();
         if (empty($keys)) {
             throw new Exception(get_class($this) . ' does not have a primary key. You should either define a primary key for the corresponding table or override the primaryKey() method.');
         }
         if (!$asArray && count($keys) === 1) {
-            return isset($this->_oldAttributes[$keys[0]]) ? $this->_oldAttributes[$keys[0]] : null;
+            return isset($attributes[$keys[0]]) ? $attributes[$keys[0]] : null;
         } else {
             $values = [];
             foreach ($keys as $name) {
-                $values[$name] = isset($this->_oldAttributes[$name]) ? $this->_oldAttributes[$name] : null;
+                $values[$name] = isset($attributes[$name]) ? $attributes[$name] : null;
             }
-
             return $values;
-        }
+        }        
     }
-
+    
     /**
      * Populates an active record object using a row of data from the database/storage.
      *
@@ -1254,8 +1250,8 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
 
         // update lazily loaded related objects
         if (!$relation->multiple) {
-            $this->_related[$name] = $model;
-        } elseif (isset($this->_related[$name])) {
+            $this->populateRelation($name, $model);
+        } elseif ($this->isRelationPopulated($name)){
             if ($relation->indexBy !== null) {
                 if ($relation->indexBy instanceof \Closure) {
                     $index = call_user_func($relation->indexBy, $model);
