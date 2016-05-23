@@ -45,7 +45,9 @@ trait MigrateControllerTestTrait
     public function assertFileContent($expectedFile, $class)
     {
         $this->assertEqualsWithoutLE(
-            include __DIR__ . "/migrate_create/$expectedFile.php",
+            include Yii::getAlias(
+                "@yiiunit/data/console/migrate_create/$expectedFile.php"
+            ),
             $this->parseNameClassMigration($class)
         );
     }
