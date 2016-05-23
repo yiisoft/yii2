@@ -399,6 +399,25 @@ class PhpManager extends BaseManager
     /**
      * @inheritdoc
      */
+    public function getRolesByRole($roleName)
+    {
+        $result = [];
+        $this->getChildrenRecursive($roleName, $result);
+        if (empty($result)) {
+            return [];
+        }
+        $roles = [];
+        foreach (array_keys($result) as $itemName) {
+            if (isset($this->items[$itemName]) && $this->items[$itemName] instanceof Role) {
+                $roles[$itemName] = $this->items[$itemName];
+            }
+        }
+        return $roles;
+    }
+
+    /**
+     * @inheritdoc
+     */
     public function getPermissionsByRole($roleName)
     {
         $result = [];

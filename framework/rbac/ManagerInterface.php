@@ -81,6 +81,13 @@ interface ManagerInterface
     public function getRoles();
 
     /**
+     * Returns the roles that are inherited by this role via [[addChild()]].
+     * @param string $roleName the role name
+     * @return Role[] all roles that are inherited by the role. The array is indexed by the role names.
+     */
+    public function getRolesByRole($roleName);
+
+    /**
      * Returns the roles that are assigned to the user via [[assign()]].
      * Note that child roles that are not assigned directly to the user will not be returned.
      * @param string|integer $userId the user ID (see [[\yii\web\User::id]])
