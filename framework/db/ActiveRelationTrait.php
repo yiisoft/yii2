@@ -467,6 +467,7 @@ trait ActiveRelationTrait
                     }
                 }
             }
+            $this->andWhere([reset($attributes) => array_unique($values, SORT_REGULAR)]);
         } else {
             // composite keys
 
@@ -482,8 +483,8 @@ trait ActiveRelationTrait
                 }
                 $values[] = $v;
             }
+            $this->andWhere(['in', $attributes, array_unique($values, SORT_REGULAR)]);
         }
-        $this->andWhere(['in', $attributes, array_unique($values, SORT_REGULAR)]);
     }
 
     /**
