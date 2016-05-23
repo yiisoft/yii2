@@ -190,7 +190,7 @@ abstract class ErrorHandler extends Component
         if (error_reporting() & $code) {
             // load ErrorException manually here because autoloading them will not work
             // when error occurs while autoloading a class
-            if (!class_exists('yii\\base\\ErrorException', false)) {
+            if (!class_exists(ErrorException::class, false)) {
                 require_once(__DIR__ . '/ErrorException.php');
             }
             $exception = new ErrorException($message, $code, $code, $file, $line);
@@ -220,9 +220,9 @@ abstract class ErrorHandler extends Component
     {
         unset($this->_memoryReserve);
 
-        // load ErrorException manually here because autoloading them will not work
-        // when error occurs while autoloading a class
-        if (!class_exists('yii\\base\\ErrorException', false)) {
+        // load ErrorException manually here because autoloading them will not
+        // work when error occurs while autoloading a class
+        if (!class_exists(ErrorException::class, false)) {
             require_once(__DIR__ . '/ErrorException.php');
         }
 
@@ -267,7 +267,7 @@ abstract class ErrorHandler extends Component
     {
         $category = get_class($exception);
         if ($exception instanceof HttpException) {
-            $category = 'yii\\web\\HttpException:' . $exception->statusCode;
+            $category = HttpException::class . ': ' . $exception->statusCode;
         } elseif ($exception instanceof \ErrorException) {
             $category .= ':' . $exception->getSeverity();
         }

@@ -496,7 +496,7 @@ class Module extends ServiceLocator
         }
 
         if (strpos($route, '/') !== false) {
-            list ($id, $route) = explode('/', $route, 2);
+            list($id, $route) = explode('/', $route, 2);
         } else {
             $id = $route;
             $route = '';
@@ -563,7 +563,7 @@ class Module extends ServiceLocator
             return null;
         }
 
-        if (is_subclass_of($className, 'yii\base\Controller')) {
+        if (is_subclass_of($className, Controller::class)) {
             $controller = Yii::createObject($className, [$id, $this]);
             return get_class($controller) === $className ? $controller : null;
         } elseif (YII_DEBUG) {

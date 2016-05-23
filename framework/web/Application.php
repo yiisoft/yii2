@@ -72,7 +72,7 @@ class Application extends \yii\base\Application
     public function handleRequest($request)
     {
         if (empty($this->catchAll)) {
-            list ($route, $params) = $request->resolve();
+            list($route, $params) = $request->resolve();
         } else {
             $route = $this->catchAll[0];
             $params = $this->catchAll;
@@ -147,11 +147,11 @@ class Application extends \yii\base\Application
     public function coreComponents()
     {
         return array_merge(parent::coreComponents(), [
-            'request' => ['class' => 'yii\web\Request'],
-            'response' => ['class' => 'yii\web\Response'],
-            'session' => ['class' => 'yii\web\Session'],
-            'user' => ['class' => 'yii\web\User'],
-            'errorHandler' => ['class' => 'yii\web\ErrorHandler'],
+            'request' => ['class' => Request::class],
+            'response' => ['class' => Response::class],
+            'session' => ['class' => Session::class],
+            'user' => ['class' => User::class],
+            'errorHandler' => ['class' => ErrorHandler::class],
         ]);
     }
 }

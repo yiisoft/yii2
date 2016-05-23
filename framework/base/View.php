@@ -58,8 +58,8 @@ class View extends Component
      *
      * ```php
      * [
-     *     'tpl' => ['class' => 'yii\smarty\ViewRenderer'],
-     *     'twig' => ['class' => 'yii\twig\ViewRenderer'],
+     *     'tpl' => ['class' => \yii\smarty\ViewRenderer::class],
+     *     'twig' => ['class' => \yii\twig\ViewRenderer::class],
      * ]
      * ```
      *
@@ -111,7 +111,7 @@ class View extends Component
         parent::init();
         if (is_array($this->theme)) {
             if (!isset($this->theme['class'])) {
-                $this->theme['class'] = 'yii\base\Theme';
+                $this->theme['class'] = Theme::class;
             }
             $this->theme = Yii::createObject($this->theme);
         } elseif (is_string($this->theme)) {

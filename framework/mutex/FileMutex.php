@@ -21,7 +21,7 @@ use yii\helpers\FileHelper;
  * [
  *     'components' => [
  *         'mutex' => [
- *             'class' => 'yii\mutex\FileMutex'
+ *             'class' => \yii\mutex\FileMutex::class,
  *         ],
  *     ],
  * ]
