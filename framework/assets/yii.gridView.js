@@ -157,11 +157,23 @@
             var checkAll = "#" + id + " input[name='" + options.checkAll + "']";
             var inputs = "#" + id + " input[name='" + options.name + "']";
             $(document).off('click.yiiGridView', checkAll).on('click.yiiGridView', checkAll, function () {
-                $grid.find("input[name='" + options.name + "']:enabled").prop('checked', this.checked);
+                var checkers = $grid.find("input[name='" + options.name + "']:enabled");
+                checkers.prop('checked', this.checked);
+                if(this.checked){
+                    checkers.parent().addClass('checked');
+                }else{
+                    checkers.parent().removeClass('checked');
+                }
             });
             $(document).off('click.yiiGridView', inputs + ":enabled").on('click.yiiGridView', inputs + ":enabled", function () {
                 var all = $grid.find("input[name='" + options.name + "']").length == $grid.find("input[name='" + options.name + "']:checked").length;
-                $grid.find("input[name='" + options.checkAll + "']").prop('checked', all);
+                var checkerAll = $grid.find("input[name='" + options.checkAll + "']");
+                checkerAll.prop('checked', all);
+                if(all){
+                    checkerAll.parent().addClass('checked');
+                }else{
+                    checkerAll.parent().removeClass('checked');
+                }
             });
         },
 
