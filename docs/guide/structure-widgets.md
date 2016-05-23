@@ -68,19 +68,6 @@ use yii\helpers\Html;
 Note that unlike [[yii\base\Widget::widget()]] which returns the rendering result of a widget, the method
 [[yii\base\Widget::begin()]] returns an instance of the widget which you can use to build the widget content.
 
-
-### Configuring global defaults
-
-Global defaults for a widget type could be configured via DI container:
-
-```php
-\Yii::$container->set('yii\widgets\LinkPager', ['maxButtonCount' => 5]);
-```
-
-See ["Practical Usage" section in Dependency Injection Container guide](concept-di-container.md#practical-usage) for
-details.
-
-
 ## Creating Widgets <span id="creating-widgets"></span>
 
 To create a widget, extend from [[yii\base\Widget]] and override the [[yii\base\Widget::init()]] and/or
@@ -124,6 +111,66 @@ use app\components\HelloWidget;
 ?>
 <?= HelloWidget::widget(['message' => 'Good morning']) ?>
 ```
+
+### Configuring Global Defaults
+
+If you need to configure your widget with global defaults, you can add your widget in `web.php` (basic) or `main.php` (advanced). Simply define your widget in your config file under the components array.
+
+```
+'components' => [
+        'helloWidget' => [
+            'class' => 'app\components\HelloWidget',    // path to HelloWidget.php Class
+            'message' => 'My default message',
+        ]
+    ],
+```
+
+Now you can access the `message` variable using `Yii::$app->helloWidget->message`. Where `helloWidget` is the same as the key used in the components array.
+
+Based off the example widget above, make minor changes to use this default `message` param. If `message` is `null` (because it was not set in the widget directly), it will fetch the value from your config `web.php`.
+
+```
+class HelloWidget extends Widget
+{
+    public $message;
+
+    public function init()
+    {
+        parent::init();
+        if ($this->message === null) {
+            $this->message = Yii::$app->helloWidget->message;
+        }
+    }
+
+    public function run()
+    {
+        return Html::encode($this->message);
+    }
+}
+```
+
+Now just call the widget without any configurations, and it will use the defaults from `web.php`. You can override them by passing them directly in the widget, if needed.
+
+In your view, call the widget:
+
+```
+<?= HelloWidget::widget() ?>
+```
+
+It will print out `My default message`, because `message` is defined in `web.php` and was not passed via `message` when declaring the widget.
+
+### Global Defaults using DI
+
+Alternatively, global defaults for a widget type could be configured programmatically via DI container:
+
+```php
+\Yii::$container->set('yii\widgets\LinkPager', ['maxButtonCount' => 5]);
+```
+
+See ["Practical Usage" section in Dependency Injection Container guide](concept-di-container.md#practical-usage) for
+details.
+
+### Using begin() and end() with Widgets
 
 Below is a variant of `HelloWidget` which takes the content enclosed within the `begin()` and `end()` calls,
 HTML-encodes it and then displays it.
