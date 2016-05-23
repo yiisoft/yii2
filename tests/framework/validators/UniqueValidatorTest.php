@@ -231,4 +231,40 @@ class UniqueValidatorTest extends DatabaseTestCase
         $validator->validateAttribute($profileModel, 'description');
         $this->assertFalse($profileModel->hasErrors('description'));
     }
+
+    public function countQuery()
+    {
+        return [
+            [['order_id' => 1], 2],
+            [['order_id' => 1, 'item_id' => 2], 2],
+            [['order_id' => 1, 'item_id' => 2, 'quantity' => 2], 2],
+        ];
+    }
+
+    /**
+     * @dataProvider countQuery
+     */
+    public function testCountQuery($attributes, $expectCount)
+    {
+        $values = $attributes;
+        $attributes = array_keys($attributes);
+
+        $val = $this->getMock(UniqueValidator::className(), ['validateAttribute'], [[
+            'attributes' => $attributes,
+            'targetClass' => OrderItem::className(),
+            'targetAttribute' => $attributes,
+        ]]);
+
+        $val->expects($this->exactly($expectCount))->method('validateAttribute');
+
+        /** @var UniqueValidator $val */
+
+        // validate old record
+        $m = OrderItem::findOne($values);
+        $val->validateAttributes($m, $attributes);
+
+        // validate new record
+        $m = new OrderItem([$values]);
+        $val->validateAttributes($m, $attributes);
+    }
 }
