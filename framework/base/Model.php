@@ -193,35 +193,43 @@ class Model extends Component implements IteratorAggregate, ArrayAccess, Arrayab
         $names = array_keys($scenarios);
 
         foreach ($this->getValidators() as $validator) {
+            $safe = $validator->safe;
             if (empty($validator->on) && empty($validator->except)) {
                 foreach ($names as $name) {
                     foreach ($validator->attributes as $attribute) {
-                        $scenarios[$name][$attribute] = true;
+                        if(!isset($scenarios[$name][$attribute]) || !$safe){
+                            $scenarios[$name][$attribute] = $safe;
+                        }
                     }
                 }
             } elseif (empty($validator->on)) {
                 foreach ($names as $name) {
                     if (!in_array($name, $validator->except, true)) {
                         foreach ($validator->attributes as $attribute) {
-                            $scenarios[$name][$attribute] = true;
+                            if(!isset($scenarios[$name][$attribute]) || !$safe){
+                                $scenarios[$name][$attribute] = $safe;
+                            }
                         }
                     }
                 }
             } else {
                 foreach ($validator->on as $name) {
                     foreach ($validator->attributes as $attribute) {
-                        $scenarios[$name][$attribute] = true;
+                        if(!isset($scenarios[$name][$attribute]) || !$safe){
+                            $scenarios[$name][$attribute] = $safe;
+                        }
                     }
                 }
             }
         }
-
         foreach ($scenarios as $scenario => $attributes) {
             if (!empty($attributes)) {
-                $scenarios[$scenario] = array_keys($attributes);
+                $scenarios[$scenario] = [];
+                foreach ($attributes as $attribute => $safe) {
+                    $scenarios[$scenario][] = ($safe ? '' : '!') . $attribute;
+                }
             }
         }
-
         return $scenarios;
     }
 

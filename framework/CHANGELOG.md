@@ -303,6 +303,7 @@ Yii Framework 2 Change Log
 - Enh #7169: `yii\widgets\ActiveField` now uses corresponding methods for default parts rendering (klimov-paul)
 - Enh #7259: Added `errorAttributes` parameter to ActiveForm `afterValidate` event. Made scrolling to first error optional (nkovacs)
 - Enh #8070: `yii\console\controllers\MessageController` now sorts created messages, even if there is no new one, while saving to PHP file (klimov-paul)
+- Enh #8139: Added unsafe validator (mdmunir)
 - Enh #8286: `yii\console\controllers\MessageController` improved allowing extraction of nested translator calls (klimov-paul)
 - Enh #8373: Check also `post_max_size` parameter in `yii\validators\FileValidator::getSizeLimit()` (maxxer)
 - Enh #8415: `yii\helpers\Html` allows correct rendering of conditional comments containing `!IE` (salaros, klimov-paul)

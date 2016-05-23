@@ -41,6 +41,7 @@ use yii\base\NotSupportedException;
  * - `string`: [[StringValidator]]
  * - `trim`: [[FilterValidator]]
  * - `unique`: [[UniqueValidator]]
+ * - `unsafe`: [[UnsafeValidator]]
  * - `url`: [[UrlValidator]]
  * - `ip`: [[IpValidator]]
  *
@@ -81,6 +82,10 @@ class Validator extends Component
             'skipOnArray' => true,
         ],
         'unique' => 'yii\validators\UniqueValidator',
+        'unsafe' => [
+            'class' => 'yii\validators\SafeValidator',
+            'safe' => false,
+        ],
         'url' => 'yii\validators\UrlValidator',
         'ip' => 'yii\validators\IpValidator',
     ];
@@ -175,6 +180,12 @@ class Validator extends Component
      * @see when
      */
     public $whenClient;
+	/**
+	 * @var boolean whether attributes listed with this validator should be considered safe for massive assignment.
+	 * Defaults to true.
+	 * @since 2.0.4
+	 */
+	public $safe = true;
 
 
     /**
