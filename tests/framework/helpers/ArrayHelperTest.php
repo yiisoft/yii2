@@ -730,5 +730,27 @@ class ArrayHelperTest extends TestCase
         $this->assertFalse(ArrayHelper::isTraversable(null));
     }
 
+    public function testCopy()
+    {
+        $expected = [
+            1,
+            'a',
+            new Post1(),
+            ['key' => 'value'],
+            ['object' => new Post2()],
+            'recursive' => [
+                'item 1',
+                'items' => [
+                    'item 1.1',
+                    'item 1.2',
+                    new Post3()
+                ]
+            ]
+        ];
+
+        $copied = ArrayHelper::copy($expected);
+        $this->assertEquals($expected, $copied);
+    }
+
 
 }
