@@ -244,7 +244,10 @@ class Query extends Component implements QueryInterface
      */
     public function one($db = null)
     {
-        return $this->createCommand($db)->queryOne();
+        $limit = $this->limit;
+        $return = $this->limit(1)->createCommand($db)->queryOne();
+        $this->limit = $limit;
+        return $return;
     }
 
     /**
