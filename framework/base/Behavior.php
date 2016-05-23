@@ -25,7 +25,11 @@ class Behavior extends Object
      */
     public $owner;
 
-
+    /**
+     * @var bool Allow access to behavior methods and properties from owner
+     */
+    public $global = true;
+    
     /**
      * Declares event handlers for the [[owner]]'s events.
      *
