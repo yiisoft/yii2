@@ -125,7 +125,7 @@ class Component extends Object
     public function __get($name)
     {
         $getter = 'get' . $name;
-        if (method_exists($this, $getter)) {
+        if (Yii::isCallable($this, $getter)) {
             // read property, e.g. getName()
             return $this->$getter();
         } else {
@@ -137,7 +137,7 @@ class Component extends Object
                 }
             }
         }
-        if (method_exists($this, 'set' . $name)) {
+        if (Yii::isCallable($this, 'set' . $name)) {
             throw new InvalidCallException('Getting write-only property: ' . get_class($this) . '::' . $name);
         } else {
             throw new UnknownPropertyException('Getting unknown property: ' . get_class($this) . '::' . $name);
@@ -164,7 +164,7 @@ class Component extends Object
     public function __set($name, $value)
     {
         $setter = 'set' . $name;
-        if (method_exists($this, $setter)) {
+        if (Yii::isCallable($this, $setter)) {
             // set property
             $this->$setter($value);
 
@@ -191,7 +191,7 @@ class Component extends Object
                 }
             }
         }
-        if (method_exists($this, 'get' . $name)) {
+        if (Yii::isCallable($this, 'get' . $name)) {
             throw new InvalidCallException('Setting read-only property: ' . get_class($this) . '::' . $name);
         } else {
             throw new UnknownPropertyException('Setting unknown property: ' . get_class($this) . '::' . $name);
@@ -215,7 +215,7 @@ class Component extends Object
     public function __isset($name)
     {
         $getter = 'get' . $name;
-        if (method_exists($this, $getter)) {
+        if (Yii::isCallable($this, $getter)) {
             return $this->$getter() !== null;
         } else {
             // behavior property
@@ -245,7 +245,7 @@ class Component extends Object
     public function __unset($name)
     {
         $setter = 'set' . $name;
-        if (method_exists($this, $setter)) {
+        if (Yii::isCallable($this, $setter)) {
             $this->$setter(null);
             return;
         } else {
@@ -333,7 +333,7 @@ class Component extends Object
      */
     public function canGetProperty($name, $checkVars = true, $checkBehaviors = true)
     {
-        if (method_exists($this, 'get' . $name) || $checkVars && property_exists($this, $name)) {
+        if (Yii::isCallable($this, 'get' . $name) || $checkVars && array_key_exist($name, Yii::getObjectVars($this))) {
             return true;
         } elseif ($checkBehaviors) {
             $this->ensureBehaviors();
@@ -363,7 +363,7 @@ class Component extends Object
      */
     public function canSetProperty($name, $checkVars = true, $checkBehaviors = true)
     {
-        if (method_exists($this, 'set' . $name) || $checkVars && property_exists($this, $name)) {
+        if (Yii::isCallable($this, 'set' . $name) || $checkVars && array_key_exist($name, Yii::getObjectVars($this))) {
             return true;
         } elseif ($checkBehaviors) {
             $this->ensureBehaviors();

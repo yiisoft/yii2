@@ -536,4 +536,10 @@ class BaseYii
     {
         return get_object_vars($object);
     }
+    
+    public function isCallable($object, $name) 
+    {
+        return in_array($name, get_class_methods($object));
+        
+    }
 }
