@@ -7,8 +7,10 @@
 
 namespace yiiunit\framework\data;
 
+use Yii;
 use yii\data\ActiveDataProvider;
 use yii\db\Query;
+use yii\web\Request;
 use yiiunit\data\ar\ActiveRecord;
 use yiiunit\data\ar\Customer;
 use yiiunit\data\ar\Item;
@@ -168,7 +170,6 @@ class ActiveDataProviderTest extends DatabaseTestCase
             'query' => $query->from('order')->orderBy('id'),
         ]);
         $pagination = $provider->getPagination();
-        $this->assertEquals(0, $pagination->getPageCount());
         $this->assertCount(3, $provider->getModels());
         $this->assertEquals(1, $pagination->getPageCount());
 
@@ -176,5 +177,37 @@ class ActiveDataProviderTest extends DatabaseTestCase
         $this->assertEquals(3, count($provider->getModels()));
         $provider->refresh();
         $this->assertEquals(2, count($provider->getModels()));
+    }
+
+    public function testPaginationDataBeforeModels()
+    {
+        $query = new Query;
+        $provider = new ActiveDataProvider([
+            'db' => $this->getConnection(),
+            'query' => $query->from('order')->orderBy('id'),
+        ]);
+
+        $pagination = $provider->getPagination();
+
+        /** Set \yii\web\Request */
+        Yii::$app->set('request', new Request([
+            'queryParams' => [
+                $pagination->pageParam => 2
+            ]
+        ]));
+
+        $pagination->pageSize = 2;
+        $defaultPageData = $provider->getModels();
+        $this->assertEquals(2, $pagination->getPage() + 1);
+
+        $provider->refresh();
+        $provider->setPagination([]);
+
+        $pagination = $provider->getPagination();
+        $pagination->pageSize = 2;
+        $this->assertEquals(2, $pagination->getPage() + 1);
+        $testPageData = $provider->getModels();
+
+        $this->assertTrue($defaultPageData === $testPageData);
     }
 }
