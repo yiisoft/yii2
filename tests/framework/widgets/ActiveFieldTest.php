@@ -362,6 +362,21 @@ EOD;
         $this->assertEquals($expectedJsExpression, $actualValue['validate']->expression);
     }
 
+    public function testGetClientOptionsValidatorWhenClientDisabled()
+    {
+        $this->activeField->setClientOptionsEmpty(false);
+        $this->activeField->enableAjaxValidation = true;
+        $this->activeField->model->addRule($this->attributeName, 'yiiunit\framework\widgets\TestValidator');
+
+        foreach($this->activeField->model->validators as $validator) {
+            $validator->whenClient = false; // disabling client validation
+        }
+
+        $actualValue = $this->activeField->getClientOptions();
+
+        $this->assertTrue(!isset($actualValue['validate']));
+    }
+
     /**
      * @see https://github.com/yiisoft/yii2/issues/8779
      */
