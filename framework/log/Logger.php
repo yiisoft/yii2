@@ -124,6 +124,8 @@ class Logger extends Component
         });
     }
 
+    private $_messagesCount = 0;
+
     /**
      * Logs a message with the given type and category.
      * If [[traceLevel]] is greater than 0, additional call stack information about
@@ -153,8 +155,11 @@ class Logger extends Component
                 }
             }
         }
+
         $this->messages[] = [$message, $level, $category, $time, $traces];
-        if ($this->flushInterval > 0 && count($this->messages) >= $this->flushInterval) {
+        $this->_messagesCount++;
+
+        if ($this->flushInterval > 0 && $this->_messagesCount >= $this->flushInterval) {
             $this->flush();
         }
     }
