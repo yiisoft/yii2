@@ -33,8 +33,8 @@ class UserController extends Controller
             throw new NotFoundHttpException("The user was not found.");
         }
         
-        $user->scenario = 'update';
-        $profile->scenario = 'update';
+        $user->scenario = User::SCENARIO_UPDATE;
+        $profile->scenario = Profile::SCENARIO_UPDATE;
         
         if ($user->load(Yii::$app->request->post()) && $profile->load(Yii::$app->request->post())) {
             $isValid = $user->validate();

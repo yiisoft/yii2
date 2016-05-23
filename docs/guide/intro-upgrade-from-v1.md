@@ -187,8 +187,8 @@ supported scenarios, and to indicate under which scenario an attribute needs to 
 public function scenarios()
 {
     return [
-        'backend' => ['email', 'role'],
-        'frontend' => ['email', '!role'],
+        self::SCENARIO_BACKEND => ['email', 'role'],
+        self::SCENARIO_FRONTEND => ['email', '!role'],
     ];
 }
 ```
