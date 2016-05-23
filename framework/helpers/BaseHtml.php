@@ -699,7 +699,7 @@ class BaseHtml
         } else {
             $hidden = '';
         }
-        if (isset($options['label'])) {
+        if (isset($options['label']) && $options['label']) {
             $label = $options['label'];
             $labelOptions = isset($options['labelOptions']) ? $options['labelOptions'] : [];
             unset($options['label'], $options['labelOptions']);
@@ -741,7 +741,7 @@ class BaseHtml
         } else {
             $hidden = '';
         }
-        if (isset($options['label'])) {
+        if (isset($options['label']) && $options['label']) {
             $label = $options['label'];
             $labelOptions = isset($options['labelOptions']) ? $options['labelOptions'] : [];
             unset($options['label'], $options['labelOptions']);
