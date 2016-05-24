@@ -138,11 +138,13 @@ class BaseYii
 
         if (isset(static::$aliases[$root])) {
             if (is_string(static::$aliases[$root])) {
-                return $pos === false ? static::$aliases[$root] : static::$aliases[$root] . substr($alias, $pos);
+                $path = $pos === false ? static::$aliases[$root] : static::$aliases[$root] . substr($alias, $pos);
+                return strncmp($path, '@', 1) ? $path : static::getAlias($path);
             } else {
                 foreach (static::$aliases[$root] as $name => $path) {
                     if (strpos($alias . '/', $name . '/') === 0) {
-                        return $path . substr($alias, strlen($name));
+                        $path = $path . substr($alias, strlen($name));
+                        return strncmp($path, '@', 1) ? $path : static::getAlias($path);
                     }
                 }
             }
@@ -218,7 +220,7 @@ class BaseYii
         $pos = strpos($alias, '/');
         $root = $pos === false ? $alias : substr($alias, 0, $pos);
         if ($path !== null) {
-            $path = strncmp($path, '@', 1) ? rtrim($path, '\\/') : static::getAlias($path);
+            $path = rtrim($path, '\\/');
             if (!isset(static::$aliases[$root])) {
                 if ($pos === false) {
                     static::$aliases[$root] = $path;
