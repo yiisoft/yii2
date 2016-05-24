@@ -99,6 +99,10 @@ class LinkPager extends Widget
      */
     public $lastPageLabel = false;
     /**
+     * @var boolean whether button to current page is hyperlink or text.
+     */
+    public $linkButtonActive = true;
+    /**
      * @var boolean whether to register link tags in the HTML header for prev, next, first and last page.
      * Defaults to `false` to avoid conflicts when multiple pagers are used on one page.
      * @see http://www.w3.org/TR/html401/struct/links.html#h-12.1.2
@@ -212,6 +216,9 @@ class LinkPager extends Widget
         $options = ['class' => empty($class) ? $this->pageCssClass : $class];
         if ($active) {
             Html::addCssClass($options, $this->activePageCssClass);
+            if (!$this->linkButtonActive) {
+                return Html::tag('li', $label, $options);
+            }
         }
         if ($disabled) {
             Html::addCssClass($options, $this->disabledPageCssClass);
