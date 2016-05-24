@@ -847,6 +847,7 @@ Yii Framework 2 Change Log
 2.0.0-rc September 27, 2014
 ---------------------------
 
+- Bug #3868: `yii\i18n\I18N` use incorrect `$language` attribute in his `translation` method for case when `translation` is missed (vova07)
 - Bug #1263: Fixed the issue that Gii and Debug modules might be affected by incompatible asset manager configuration (qiangxue)
 - Bug #2314: Gii model generator does not generate correct relation type in some special case (qiangxue)
 - Bug #2563: Theming is not working if the path map of the theme contains ".." or "." in the paths (qiangxue)
