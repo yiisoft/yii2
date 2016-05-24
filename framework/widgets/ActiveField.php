@@ -208,7 +208,7 @@ class ActiveField extends Component
 
     /**
      * Renders the opening tag of the field container.
-     * @return string the rendering result.
+     * @return string the rendering result or if tag is NULL then returns an empty string.
      */
     public function begin()
     {
@@ -233,16 +233,17 @@ class ActiveField extends Component
         $options['class'] = implode(' ', $class);
         $tag = ArrayHelper::remove($options, 'tag', 'div');
 
-        return Html::beginTag($tag, $options);
+        return (empty($tag) ? "" : Html::beginTag($tag, $options));
     }
 
     /**
      * Renders the closing tag of the field container.
-     * @return string the rendering result.
+     * @return string the rendering result or if tag is NULL then returns an empty string.
      */
     public function end()
     {
-        return Html::endTag(isset($this->options['tag']) ? $this->options['tag'] : 'div');
+        $tag = ArrayHelper::remove($this->options, 'tag', 'div');
+        return (empty($tag) ? "" : Html::endTag($tag));
     }
 
     /**
