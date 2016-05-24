@@ -25,11 +25,6 @@ use ReflectionClass;
 class Widget extends Component implements ViewContextInterface
 {
     /**
-     * @var integer a counter used to generate [[id]] for widgets.
-     * @internal
-     */
-    public static $counter = 0;
-    /**
      * @var string the prefix to the automatically generated widget IDs.
      * @see getId()
      */
@@ -117,7 +112,7 @@ class Widget extends Component implements ViewContextInterface
     public function getId($autoGenerate = true)
     {
         if ($autoGenerate && $this->_id === null) {
-            $this->_id = static::$autoIdPrefix . static::$counter++;
+            $this->_id = uniqid(static::$autoIdPrefix);
         }
 
         return $this->_id;
