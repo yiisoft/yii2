@@ -140,7 +140,9 @@ class DataColumn extends Column
         $provider = $this->grid->dataProvider;
 
         if ($this->label === null) {
-            if ($provider instanceof ActiveDataProvider && $provider->query instanceof ActiveQueryInterface) {
+            if ($this->grid->filterModel instanceof Model) {
+                $label = $this->grid->filterModel->getAttributeLabel($this->attribute);
+            } elseif ($provider instanceof ActiveDataProvider && $provider->query instanceof ActiveQueryInterface) {
                 /* @var $model Model */
                 $model = new $provider->query->modelClass;
                 $label = $model->getAttributeLabel($this->attribute);

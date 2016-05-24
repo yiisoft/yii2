@@ -1045,6 +1045,7 @@ Yii Framework 2 Change Log
 - Enh #4424: Added `inline` parameter to `yii\web\Response::xSendFile()` (klimov-paul)
 - Enh #4436: Added callback functions to AJAX-based form validation (thiagotalma)
 - Enh #4485: Added support for deferred validation in `ActiveForm` (Alex-Code)
+- Enh #4504: Added ability for `yii\grid\DataColumn` to use attribute label from grid filter model (klimov-paul)
 - Enh #4520: Added sasl support to `yii\caching\MemCache` (xjflyttp)
 - Enh #4566: Added client validation support for image validator (Skysplit, qiangxue)
 - Enh #4581: Added ability to disable url encoding in `UrlRule` (tadaszelvys)
