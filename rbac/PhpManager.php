@@ -770,6 +770,7 @@ class PhpManager extends BaseManager
     /**
      * Invalidates precompiled script cache (such as OPCache or APC) for the given file.
      * @param string $file the file path.
+     * @since 2.0.9
      */
     protected function invalidateScriptCache($file)
     {
