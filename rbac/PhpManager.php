@@ -764,6 +764,21 @@ class PhpManager extends BaseManager
     protected function saveToFile($data, $file)
     {
         file_put_contents($file, "<?php\nreturn " . VarDumper::export($data) . ";\n", LOCK_EX);
+        $this->invalidateScriptCache($file);
+    }
+
+    /**
+     * Invalidates precompiled script cache (such as OPCache or APC) for the given file.
+     * @param string $file the file path.
+     */
+    protected function invalidateScriptCache($file)
+    {
+        if (function_exists('opcache_invalidate')) {
+            opcache_invalidate($file, true);
+        }
+        if (function_exists('apc_delete_file')) {
+            @apc_delete_file($file);
+        }
     }
 
     /**
