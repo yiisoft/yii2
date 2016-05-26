@@ -252,7 +252,7 @@ class Query extends Component implements QueryInterface
      * The value returned will be the first column in the first row of the query results.
      * @param Connection $db the database connection used to generate the SQL statement.
      * If this parameter is not given, the `db` application component will be used.
-     * @return string|boolean the value of the first column in the first row of the query result.
+     * @return string|null|false the value of the first column in the first row of the query result.
      * False is returned if the query result is empty.
      */
     public function scalar($db = null)
