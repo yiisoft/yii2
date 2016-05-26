@@ -236,8 +236,8 @@ class FileValidator extends Validator
                         [
                             'file' => $file->name,
                             'limit' => $this->getSizeLimit(),
-                            'formattedLimit' => Yii::$app->formatter->asShortSize($this->getSizeLimit())
-                        ]
+                            'formattedLimit' => Yii::$app->formatter->asShortSize($this->getSizeLimit()),
+                        ],
                     ];
                 } elseif ($this->minSize !== null && $file->size < $this->minSize) {
                     return [
@@ -245,22 +245,21 @@ class FileValidator extends Validator
                         [
                             'file' => $file->name,
                             'limit' => $this->minSize,
-                            'formattedLimit' => Yii::$app->formatter->asShortSize($this->minSize)
-                        ]
+                            'formattedLimit' => Yii::$app->formatter->asShortSize($this->minSize),
+                        ],
                     ];
                 } elseif (!empty($this->extensions) && !$this->validateExtension($file)) {
                     return [$this->wrongExtension, ['file' => $file->name, 'extensions' => implode(', ', $this->extensions)]];
                 } elseif (!empty($this->mimeTypes) &&  !$this->validateMimeType($file)) {
                     return [$this->wrongMimeType, ['file' => $file->name, 'mimeTypes' => implode(', ', $this->mimeTypes)]];
-                } else {
-                    return null;
                 }
+                return null;
             case UPLOAD_ERR_INI_SIZE:
             case UPLOAD_ERR_FORM_SIZE:
                 return [$this->tooBig, [
                     'file' => $file->name,
                     'limit' => $this->getSizeLimit(),
-                    'formattedLimit' => Yii::$app->formatter->asShortSize($this->getSizeLimit())
+                    'formattedLimit' => Yii::$app->formatter->asShortSize($this->getSizeLimit()),
                 ]];
             case UPLOAD_ERR_PARTIAL:
                 Yii::warning('File was only partially uploaded: ' . $file->name, __METHOD__);

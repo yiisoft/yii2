@@ -405,7 +405,7 @@ class ActiveQuery extends Query implements ActiveQueryInterface
                 // relation is defined with an alias, adjust callback to apply alias
                 list(, $relation, $alias) = $matches;
                 $name = $relation;
-                $callback = function($query) use ($callback, $alias) {
+                $callback = function ($query) use ($callback, $alias) {
                     /** @var $query ActiveQuery */
                     $query->alias($alias);
                     if ($callback !== null) {

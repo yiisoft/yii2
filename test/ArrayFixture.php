@@ -73,5 +73,4 @@ class ArrayFixture extends Fixture implements \IteratorAggregate, \ArrayAccess, 
         parent::unload();
         $this->data = [];
     }
-
 }
