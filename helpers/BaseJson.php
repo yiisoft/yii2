@@ -53,7 +53,7 @@ class BaseJson
     {
         $expressions = [];
         $value = static::processData($value, $expressions, uniqid('', true));
-        set_error_handler(function() {
+        set_error_handler(function () {
             static::handleJsonError(JSON_ERROR_SYNTAX);
         }, E_WARNING);
         $json = json_encode($value, $options);

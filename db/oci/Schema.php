@@ -213,7 +213,7 @@ SQL;
         $c->name = $column['COLUMN_NAME'];
         $c->allowNull = $column['NULLABLE'] === 'Y';
         $c->comment = $column['COLUMN_COMMENT'] === null ? '' : $column['COLUMN_COMMENT'];
-		$c->isPrimaryKey = false;
+        $c->isPrimaryKey = false;
         $this->extractColumnType($c, $column['DATA_TYPE'], $column['DATA_PRECISION'], $column['DATA_SCALE'], $column['DATA_LENGTH']);
         $this->extractColumnSize($c, $column['DATA_TYPE'], $column['DATA_PRECISION'], $column['DATA_SCALE'], $column['DATA_LENGTH']);
 

@@ -118,7 +118,8 @@ class ActionFilter extends Behavior
      * @return string
      * @since 2.0.7
      */
-    protected function getActionId($action) {
+    protected function getActionId($action)
+    {
         if ($this->owner instanceof Module) {
             $mid = $this->owner->getUniqueId();
             $id = $action->getUniqueId();
