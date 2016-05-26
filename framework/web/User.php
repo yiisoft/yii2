@@ -544,7 +544,7 @@ class User extends Component
     }
 
     /**
-     * Determines if an identity cookie has a valid format and contains a valid auth key. 
+     * Determines if an identity cookie has a valid format and contains a valid auth key.
      * This method is used when [[enableAutoLogin]] is true.
      * This method attempts to authenticate a user using the information in the identity cookie.
      * @return array|null Returns an array of 'identity' and 'duration' if valid, otherwise null.
@@ -609,7 +609,7 @@ class User extends Component
             return;
         }
 
-        /* Ensure any existing identity cookies are removed. */  
+        /* Ensure any existing identity cookies are removed. */
         if ($this->enableAutoLogin) {
             $this->removeIdentityCookie();
         }

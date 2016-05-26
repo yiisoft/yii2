@@ -106,7 +106,7 @@ class PhpMessageSource extends MessageSource
         $fallbackMessages = $this->loadMessagesFromFile($fallbackMessageFile);
 
         if (
-            $messages === null && $fallbackMessages === null 
+            $messages === null && $fallbackMessages === null
             && $fallbackLanguage !== $this->sourceLanguage
             && $fallbackLanguage !== substr($this->sourceLanguage, 0, 2)
         ) {

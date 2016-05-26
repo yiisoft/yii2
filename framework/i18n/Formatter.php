@@ -1146,21 +1146,33 @@ class Formatter extends Component
 
         if ($this->sizeFormatBase == 1024) {
             switch ($position) {
-                case 0:  return Yii::t('yii', '{nFormatted} B', $params, $this->locale);
-                case 1:  return Yii::t('yii', '{nFormatted} KiB', $params, $this->locale);
-                case 2:  return Yii::t('yii', '{nFormatted} MiB', $params, $this->locale);
-                case 3:  return Yii::t('yii', '{nFormatted} GiB', $params, $this->locale);
-                case 4:  return Yii::t('yii', '{nFormatted} TiB', $params, $this->locale);
-                default: return Yii::t('yii', '{nFormatted} PiB', $params, $this->locale);
+                case 0:
+                    return Yii::t('yii', '{nFormatted} B', $params, $this->locale);
+                case 1:
+                    return Yii::t('yii', '{nFormatted} KiB', $params, $this->locale);
+                case 2:
+                    return Yii::t('yii', '{nFormatted} MiB', $params, $this->locale);
+                case 3:
+                    return Yii::t('yii', '{nFormatted} GiB', $params, $this->locale);
+                case 4:
+                    return Yii::t('yii', '{nFormatted} TiB', $params, $this->locale);
+                default:
+                    return Yii::t('yii', '{nFormatted} PiB', $params, $this->locale);
             }
         } else {
             switch ($position) {
-                case 0:  return Yii::t('yii', '{nFormatted} B', $params, $this->locale);
-                case 1:  return Yii::t('yii', '{nFormatted} KB', $params, $this->locale);
-                case 2:  return Yii::t('yii', '{nFormatted} MB', $params, $this->locale);
-                case 3:  return Yii::t('yii', '{nFormatted} GB', $params, $this->locale);
-                case 4:  return Yii::t('yii', '{nFormatted} TB', $params, $this->locale);
-                default: return Yii::t('yii', '{nFormatted} PB', $params, $this->locale);
+                case 0:
+                    return Yii::t('yii', '{nFormatted} B', $params, $this->locale);
+                case 1:
+                    return Yii::t('yii', '{nFormatted} KB', $params, $this->locale);
+                case 2:
+                    return Yii::t('yii', '{nFormatted} MB', $params, $this->locale);
+                case 3:
+                    return Yii::t('yii', '{nFormatted} GB', $params, $this->locale);
+                case 4:
+                    return Yii::t('yii', '{nFormatted} TB', $params, $this->locale);
+                default:
+                    return Yii::t('yii', '{nFormatted} PB', $params, $this->locale);
             }
         }
     }
@@ -1190,21 +1202,33 @@ class Formatter extends Component
 
         if ($this->sizeFormatBase == 1024) {
             switch ($position) {
-                case 0:  return Yii::t('yii', '{nFormatted} {n, plural, =1{byte} other{bytes}}', $params, $this->locale);
-                case 1:  return Yii::t('yii', '{nFormatted} {n, plural, =1{kibibyte} other{kibibytes}}', $params, $this->locale);
-                case 2:  return Yii::t('yii', '{nFormatted} {n, plural, =1{mebibyte} other{mebibytes}}', $params, $this->locale);
-                case 3:  return Yii::t('yii', '{nFormatted} {n, plural, =1{gibibyte} other{gibibytes}}', $params, $this->locale);
-                case 4:  return Yii::t('yii', '{nFormatted} {n, plural, =1{tebibyte} other{tebibytes}}', $params, $this->locale);
-                default: return Yii::t('yii', '{nFormatted} {n, plural, =1{pebibyte} other{pebibytes}}', $params, $this->locale);
+                case 0:
+                    return Yii::t('yii', '{nFormatted} {n, plural, =1{byte} other{bytes}}', $params, $this->locale);
+                case 1:
+                    return Yii::t('yii', '{nFormatted} {n, plural, =1{kibibyte} other{kibibytes}}', $params, $this->locale);
+                case 2:
+                    return Yii::t('yii', '{nFormatted} {n, plural, =1{mebibyte} other{mebibytes}}', $params, $this->locale);
+                case 3:
+                    return Yii::t('yii', '{nFormatted} {n, plural, =1{gibibyte} other{gibibytes}}', $params, $this->locale);
+                case 4:
+                    return Yii::t('yii', '{nFormatted} {n, plural, =1{tebibyte} other{tebibytes}}', $params, $this->locale);
+                default:
+                    return Yii::t('yii', '{nFormatted} {n, plural, =1{pebibyte} other{pebibytes}}', $params, $this->locale);
             }
         } else {
             switch ($position) {
-                case 0:  return Yii::t('yii', '{nFormatted} {n, plural, =1{byte} other{bytes}}', $params, $this->locale);
-                case 1:  return Yii::t('yii', '{nFormatted} {n, plural, =1{kilobyte} other{kilobytes}}', $params, $this->locale);
-                case 2:  return Yii::t('yii', '{nFormatted} {n, plural, =1{megabyte} other{megabytes}}', $params, $this->locale);
-                case 3:  return Yii::t('yii', '{nFormatted} {n, plural, =1{gigabyte} other{gigabytes}}', $params, $this->locale);
-                case 4:  return Yii::t('yii', '{nFormatted} {n, plural, =1{terabyte} other{terabytes}}', $params, $this->locale);
-                default: return Yii::t('yii', '{nFormatted} {n, plural, =1{petabyte} other{petabytes}}', $params, $this->locale);
+                case 0:
+                    return Yii::t('yii', '{nFormatted} {n, plural, =1{byte} other{bytes}}', $params, $this->locale);
+                case 1:
+                    return Yii::t('yii', '{nFormatted} {n, plural, =1{kilobyte} other{kilobytes}}', $params, $this->locale);
+                case 2:
+                    return Yii::t('yii', '{nFormatted} {n, plural, =1{megabyte} other{megabytes}}', $params, $this->locale);
+                case 3:
+                    return Yii::t('yii', '{nFormatted} {n, plural, =1{gigabyte} other{gigabytes}}', $params, $this->locale);
+                case 4:
+                    return Yii::t('yii', '{nFormatted} {n, plural, =1{terabyte} other{terabytes}}', $params, $this->locale);
+                default:
+                    return Yii::t('yii', '{nFormatted} {n, plural, =1{petabyte} other{petabytes}}', $params, $this->locale);
             }
         }
     }

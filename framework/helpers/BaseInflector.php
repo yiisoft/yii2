@@ -362,7 +362,7 @@ class BaseInflector
         $label = trim(strtolower(str_replace([
             '-',
             '_',
-            '.'
+            '.',
         ], ' ', preg_replace('/(?<![A-Z])[A-Z]/', ' \0', $name))));
 
         return $ucwords ? ucwords($label) : $label;
