@@ -289,13 +289,14 @@ class Sort extends Object
      * If this is not set, the label defined in [[attributes]] will be used.
      * If no label is defined, [[\yii\helpers\Inflector::camel2words()]] will be called to get a label.
      * Note that it will not be HTML-encoded.
+     * @param int|null $direction force direction of sorting
      * @return string the generated hyperlink
      * @throws InvalidConfigException if the attribute is unknown
      */
-    public function link($attribute, $options = [])
+    public function link($attribute, $options = [], $direction = null)
     {
-        if (($direction = $this->getAttributeOrder($attribute)) !== null) {
-            $class = $direction === SORT_DESC ? 'desc' : 'asc';
+        if (($currentDirection = $this->getAttributeOrder($attribute)) !== null) {
+            $class = $currentDirection === SORT_DESC ? 'desc' : 'asc';
             if (isset($options['class'])) {
                 $options['class'] .= ' ' . $class;
             } else {
@@ -303,8 +304,8 @@ class Sort extends Object
             }
         }
 
-        $url = $this->createUrl($attribute);
-        $options['data-sort'] = $this->createSortParam($attribute);
+        $url = $this->createUrl($attribute, $direction);
+        $options['data-sort'] = $this->createSortParam($attribute, $direction);
 
         if (isset($options['label'])) {
             $label = $options['label'];
@@ -327,18 +328,19 @@ class Sort extends Object
      * then the URL created will lead to a page that sorts the data by the specified attribute in descending order.
      * @param string $attribute the attribute name
      * @param boolean $absolute whether to create an absolute URL. Defaults to `false`.
+     * @param int|null $direction force direction of sorting
      * @return string the URL for sorting. False if the attribute is invalid.
      * @throws InvalidConfigException if the attribute is unknown
      * @see attributeOrders
      * @see params
      */
-    public function createUrl($attribute, $absolute = false)
+    public function createUrl($attribute, $absolute = false, $direction = null)
     {
         if (($params = $this->params) === null) {
             $request = Yii::$app->getRequest();
             $params = $request instanceof Request ? $request->getQueryParams() : [];
         }
-        $params[$this->sortParam] = $this->createSortParam($attribute);
+        $params[$this->sortParam] = $this->createSortParam($attribute, $direction);
         $params[0] = $this->route === null ? Yii::$app->controller->getRoute() : $this->route;
         $urlManager = $this->urlManager === null ? Yii::$app->getUrlManager() : $this->urlManager;
         if ($absolute) {
@@ -353,21 +355,25 @@ class Sort extends Object
      * The newly created sort variable can be used to create a URL that will lead to
      * sorting by the specified attribute.
      * @param string $attribute the attribute name
+     * @param int|null $direction force direction of sorting
      * @return string the value of the sort variable
      * @throws InvalidConfigException if the specified attribute is not defined in [[attributes]]
      */
-    public function createSortParam($attribute)
+    public function createSortParam($attribute, $direction = null)
     {
         if (!isset($this->attributes[$attribute])) {
             throw new InvalidConfigException("Unknown attribute: $attribute");
         }
         $definition = $this->attributes[$attribute];
+
         $directions = $this->getAttributeOrders();
-        if (isset($directions[$attribute])) {
-            $direction = $directions[$attribute] === SORT_DESC ? SORT_ASC : SORT_DESC;
-            unset($directions[$attribute]);
-        } else {
-            $direction = isset($definition['default']) ? $definition['default'] : SORT_ASC;
+        if ($direction === null) {
+            if (isset($directions[$attribute])) {
+                $direction = $directions[$attribute] === SORT_DESC ? SORT_ASC : SORT_DESC;
+                unset($directions[$attribute]);
+            } else {
+                $direction = isset($definition['default']) ? $definition['default'] : SORT_ASC;
+            }
         }
 
         if ($this->enableMultiSort) {
