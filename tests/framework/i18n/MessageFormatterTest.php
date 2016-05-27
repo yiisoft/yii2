@@ -381,4 +381,12 @@ _MSG_
         $result = $formatter->format($pattern, [], 'en-US');
         $this->assertEquals($pattern, $result, $formatter->getErrorMessage());
     }
+
+    public function testMalformedFormatter()
+    {
+        $formatter = new MessageFormatter();
+        $result = $formatter->format(null, ['word' => 'test'], 'en-US');
+        $this->assertFalse($result);
+        $this->assertNotEmpty($formatter->getErrorMessage());
+    }
 }
