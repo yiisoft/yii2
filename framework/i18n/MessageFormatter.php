@@ -99,10 +99,14 @@ class MessageFormatter extends Component
         $pattern = $this->replaceNamedArguments($pattern, $params, $newParams);
         $params = $newParams;
 
-        $formatter = new \MessageFormatter($language, $pattern);
-        if ($formatter === null) {
-            $this->_errorCode = intl_get_error_code();
-            $this->_errorMessage = 'Message pattern is invalid: ' . intl_get_error_message();
+        try {
+            $formatter = new \MessageFormatter($language, $pattern);
+            if ($formatter === null) {
+                throw new \IntlException(intl_get_error_message(), intl_get_error_code());
+            }
+        } catch (\IntlException $e) {
+            $this->_errorCode = $e->getCode();
+            $this->_errorMessage = 'Message pattern is invalid: ' . $e->getMessage();
 
             return false;
         }
