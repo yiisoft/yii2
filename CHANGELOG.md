@@ -50,6 +50,8 @@ Yii Framework 2 Change Log
 - Enh #11857: `yii\filters\AccessRule::$verbs` can now be configured in upper and lowercase (DrDeath72, samdark)
 - Bug #11863: Fixed usage of `mb_substr` with PHP < 5.4.8 where length of NULL was treated the same as 0 (samdark)
 - Bug #11865: Fixed setting `selected` for dropdown list using options (samdark)
+- Bug #11528: Fixed MessageFormatter construction exception caught for PHP 7 compatibility (subdee)
+
 
 2.0.8 April 28, 2016
 --------------------
