@@ -24,7 +24,6 @@ class ColumnSchemaBuilder extends Object
     // Internally used constants representing categories that abstract column types fall under.
     // See [[$categoryMap]] for mappings of abstract column types to category.
     // @since 2.0.8
-    const CATEGORY_PK = 'pk';
     const CATEGORY_STRING = 'string';
     const CATEGORY_NUMERIC = 'numeric';
     const CATEGORY_TIME = 'time';
@@ -35,6 +34,17 @@ class ColumnSchemaBuilder extends Object
      * DATETIME, etc.
      */
     protected $type;
+
+    /**
+     * @var boolean if this column is the primary key on the table.
+     */
+    protected $primaryKey = false;
+
+    /**
+     * @var boolean if this column is auto incrementable. Only applies when
+     * [[$primaryKey]] equals `true`.
+     */
+    protected $autoIncrement = false;
 
     /**
      * @var integer|string|array column size or precision definition. This is
@@ -56,6 +66,7 @@ class ColumnSchemaBuilder extends Object
      * `true`, a `UNIQUE` constraint will be added.
      */
     protected $isUnique = false;
+
     /**
      * @var string the `CHECK` constraint for the column.
      */
@@ -93,10 +104,6 @@ class ColumnSchemaBuilder extends Object
      * @since 2.0.8
      */
     public $categoryMap = [
-        Schema::TYPE_PK => self::CATEGORY_PK,
-        Schema::TYPE_UPK => self::CATEGORY_PK,
-        Schema::TYPE_BIGPK => self::CATEGORY_PK,
-        Schema::TYPE_UBIGPK => self::CATEGORY_PK,
         Schema::TYPE_CHAR => self::CATEGORY_STRING,
         Schema::TYPE_STRING => self::CATEGORY_STRING,
         Schema::TYPE_TEXT => self::CATEGORY_STRING,
@@ -147,6 +154,26 @@ class ColumnSchemaBuilder extends Object
         $this->length = $length;
         $this->db = $db;
         parent::__construct($config);
+    }
+
+    /**
+     * Makes this column the primary key of the table. It automatically calls
+     * the [[notNUll()]] method.
+     *
+     * @param boolean wheter this column will be autoincrementable. Only works
+     * for columns with integer types.
+     * @return $this
+     */
+    public function primaryKey($autoIncrement = true)
+    {
+        $this->primaryKey = true;
+        $this->autoIncrement = $autoIncrement && in_array($this->type, [
+            Schema::TYPE_SMALLINT,
+            Schema::TYPE_INTEGER,
+            Schema::TYPE_BIGINT,
+        ], true);
+
+        return $this->notNull();
     }
 
     /**
@@ -210,14 +237,6 @@ class ColumnSchemaBuilder extends Object
      */
     public function unsigned()
     {
-        switch ($this->type) {
-            case Schema::TYPE_PK:
-                $this->type = Schema::TYPE_UPK;
-                break;
-            case Schema::TYPE_BIGPK:
-                $this->type = Schema::TYPE_UBIGPK;
-                break;
-        }
         $this->isUnsigned = true;
         return $this;
     }
@@ -277,14 +296,19 @@ class ColumnSchemaBuilder extends Object
      */
     public function __toString()
     {
-        switch ($this->getTypeCategory()) {
-            case self::CATEGORY_PK:
-                $format = '{type}{check}{comment}{append}';
-                break;
-            default:
-                $format = '{type}{length}{notnull}{unique}{default}{check}{comment}{append}';
-        }
-        return $this->buildCompleteString($format);
+        return $this->buildCompleteString($this->primaryKey
+            ? '{type}{length}{notnull}{primarykey}{check}{comment}{append}'
+            : '{type}{length}{notnull}{unique}{default}{check}{comment}{append}'
+        );
+    }
+
+    /**
+     * Builds the primary key and auto increment parts of the column.
+     * @return string
+     */
+    protected function buildPrimaryKeyString()
+    {
+        return ($this->autoIncrement ? ' AUTO_INCREMENT' : '') . ' PRIMARY KEY';
     }
 
     /**
@@ -435,6 +459,7 @@ class ColumnSchemaBuilder extends Object
         $placeholderValues = [
             '{type}' => $this->type,
             '{length}' => $this->buildLengthString(),
+            '{primarykey}' => $this->buildPrimaryKeyString(),
             '{unsigned}' => $this->buildUnsignedString(),
             '{notnull}' => $this->buildNotNullString(),
             '{unique}' => $this->buildUniqueString(),
