@@ -162,6 +162,27 @@ class Migration extends Component implements MigrationInterface
     }
 
     /**
+     * Creates a primary key string declaration for the table.
+     *
+     * Usage:
+     * ```php
+     * $this->createTable   ('table_name', [
+     *     // columns definitions
+     *     $this->tablePrimaryKey(['column1', 'column2'])
+     * ])
+     * ```
+     *
+     * @param string|string[] $columns
+     * @return string
+     */
+    public function tablePrimaryKey($columns)
+    {
+        return 'PRIMARY KEY('
+            . implode((array)$columns, ', ')
+        . ')';
+    }
+
+    /**
      * Executes a SQL statement.
      * This method executes the specified SQL statement using [[db]].
      * @param string $sql the SQL statement to be executed

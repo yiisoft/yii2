@@ -87,7 +87,7 @@ trait SchemaBuilderTrait
      * @since 2.0.6
      * @see ColumnSchemaBuilder::primaryKey()
      */
-    public function bigPrimaryKey($length = null, $autoIncrement = null)
+    public function bigPrimaryKey($length = null, $autoIncrement = true)
     {
         return $this->bigInteger($length)->primaryKey($autoIncrement);
     }
