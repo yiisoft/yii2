@@ -304,7 +304,7 @@ class Sort extends Object
             }
         }
 
-        $url = $this->createUrl($attribute, $direction);
+        $url = $this->createUrl($attribute, false, $direction);
         $options['data-sort'] = $this->createSortParam($attribute, $direction);
 
         if (isset($options['label'])) {
