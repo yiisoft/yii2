@@ -7,9 +7,7 @@
 
 namespace yiiunit\framework\db;
 
-
 use yii\db\ColumnSchemaBuilder;
-use yii\db\Exception;
 use yii\db\Expression;
 use yii\db\Schema;
 use yiiunit\TestCase;
@@ -41,6 +39,22 @@ class ColumnSchemaBuilderTest extends TestCase
             ['integer(10)', Schema::TYPE_INTEGER, 10, [
                 ['unsigned'],
             ]],
+            [
+                'integer NOT NULL AUTO_INCREMENT PRIMARY KEY',
+                Schema::TYPE_INTEGER,
+                null,
+                [
+                    ['primaryKey']
+                ]
+            ],
+            [
+                'string(32) NOT NULL PRIMARY KEY',
+                Schema::TYPE_STRING,
+                32,
+                [
+                    ['primaryKey']
+                ]
+            ],
             ['timestamp() WITH TIME ZONE NOT NULL', 'timestamp() WITH TIME ZONE', null, [
                 ['notNull']
             ]],
@@ -72,6 +86,6 @@ class ColumnSchemaBuilderTest extends TestCase
             call_user_func_array([$builder, $method], $call);
         }
 
-        self::assertEquals($expected, $builder->__toString());
+        self::assertEquals($expected, (string)$builder);
     }
 }
