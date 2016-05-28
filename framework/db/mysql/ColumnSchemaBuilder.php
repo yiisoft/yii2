@@ -50,7 +50,7 @@ class ColumnSchemaBuilder extends AbstractColumnSchemaBuilder
     {
         return empty($this->comment)
             ? ''
-            : " COMMENT " . $this->db->quoteValue($this->comment);
+            : ' COMMENT ' . $this->db->quoteValue($this->comment);
     }
 
     /**

@@ -31,9 +31,9 @@ class ColumnSchemaBuilder extends AbstractColumnSchemaBuilder
      */
     protected function buildAfterString()
     {
-        return $this->after !== null ?
-            ' AFTER ' . $this->db->quoteColumnName($this->after) :
-            '';
+        return empty($this->after)
+            ? ''
+            : ' AFTER ' . $this->db->quoteColumnName($this->after);
     }
 
     /**
@@ -49,16 +49,19 @@ class ColumnSchemaBuilder extends AbstractColumnSchemaBuilder
      */
     public function __toString()
     {
-        switch ($this->getTypeCategory()) {
-            case self::CATEGORY_PK:
-                $format = '{type}{length}{check}{pos}{append}';
-                break;
-            case self::CATEGORY_NUMERIC:
-                $format = '{type}{length}{unsigned}{default}{notnull}{check}{pos}{append}';
-                break;
-            default:
-                $format = '{type}{length}{default}{notnull}{check}{pos}{append}';
+        $format = '{type}{length}';
+        if ($this->getTypeCategory() === self::CATEGORY_NUMERIC) {
+            $format .= '{unsigned}';
         }
+        $format .= '{notnull}';
+
+        if ($this->primaryKey) {
+            $format .= '{primarykey}';
+        } else {
+            $format .= '{default}';
+        }
+
+        $format .= '{check}{pos}{append}';
         return $this->buildCompleteString($format);
     }
 }

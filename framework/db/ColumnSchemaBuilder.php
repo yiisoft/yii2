@@ -21,7 +21,8 @@ use yii\base\Object;
  */
 class ColumnSchemaBuilder extends Object
 {
-    // Internally used constants representing categories that abstract column types fall under.
+    // Internally used constants representing categories that abstract column
+    // types fall under.
     // See [[$categoryMap]] for mappings of abstract column types to category.
     // @since 2.0.8
     const CATEGORY_STRING = 'string';
@@ -466,7 +467,9 @@ class ColumnSchemaBuilder extends Object
             '{default}' => $this->buildDefaultString(),
             '{check}' => $this->buildCheckString(),
             '{comment}' => $this->buildCommentString(),
-            '{pos}' => $this->isFirst ? $this->buildFirstString() : $this->buildAfterString(),
+            '{pos}' => $this->isFirst
+                ? $this->buildFirstString()
+                : $this->buildAfterString(),
             '{append}' => $this->buildAppendString(),
         ];
         return strtr($format, $placeholderValues);

@@ -30,17 +30,19 @@ class ColumnSchemaBuilder extends AbstractColumnSchemaBuilder
      */
     public function __toString()
     {
-        switch ($this->getTypeCategory()) {
-            case self::CATEGORY_PK:
-                $format = '{type}{check}{append}';
-                break;
-            case self::CATEGORY_NUMERIC:
-                $format = '{type}{length}{unsigned}{notnull}{unique}{check}{default}{append}';
-                break;
-            default:
-                $format = '{type}{length}{notnull}{unique}{check}{default}{append}';
+        $format = '{type}{length}';
+        if ($this->getTypeCategory() === self::CATEGORY_NUMERIC) {
+            $format .= '{unsigned}';
+        }
+        $format .= '{notnull}';
+
+        if ($this->primaryKey) {
+            $format .= '{primarykey}';
+        } else {
+            $format .= '{unique}';
         }
 
+        $format .= '{check}{default}{append}';
         return $this->buildCompleteString($format);
     }
 }
