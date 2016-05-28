@@ -26,10 +26,6 @@ class QueryBuilder extends \yii\db\QueryBuilder
      * @var array mapping from abstract column types (keys) to physical column types (values).
      */
     public $typeMap = [
-        Schema::TYPE_PK => 'integer PRIMARY KEY AUTOINCREMENT NOT NULL',
-        Schema::TYPE_UPK => 'integer UNSIGNED PRIMARY KEY AUTOINCREMENT NOT NULL',
-        Schema::TYPE_BIGPK => 'bigint PRIMARY KEY AUTOINCREMENT NOT NULL',
-        Schema::TYPE_UBIGPK => 'bigint UNSIGNED PRIMARY KEY AUTOINCREMENT NOT NULL',
         Schema::TYPE_CHAR => 'char(1)',
         Schema::TYPE_STRING => 'varchar(255)',
         Schema::TYPE_TEXT => 'text',
@@ -157,7 +153,7 @@ class QueryBuilder extends \yii\db\QueryBuilder
      */
     public function checkIntegrity($check = true, $schema = '', $table = '')
     {
-        return 'PRAGMA foreign_keys='.(int) $check;
+        return 'PRAGMA foreign_keys=' . (int) $check;
     }
 
     /**
