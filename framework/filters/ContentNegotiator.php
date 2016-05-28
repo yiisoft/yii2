@@ -39,7 +39,7 @@ use yii\web\UnsupportedMediaTypeHttpException;
  * return [
  *     'bootstrap' => [
  *         [
- *             'class' => 'yii\filters\ContentNegotiator',
+ *             'class' => \yii\filters\ContentNegotiator::class,
  *             'formats' => [
  *                 'application/json' => Response::FORMAT_JSON,
  *                 'application/xml' => Response::FORMAT_XML,
@@ -64,7 +64,7 @@ use yii\web\UnsupportedMediaTypeHttpException;
  * {
  *     return [
  *         [
- *             'class' => 'yii\filters\ContentNegotiator',
+ *             'class' => \yii\filters\ContentNegotiator::class,
  *             'only' => ['view', 'index'],  // in a controller
  *             // if in a module, use the following IDs for user actions
  *             // 'only' => ['user/view', 'user/index']

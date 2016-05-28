@@ -9,6 +9,7 @@ namespace yii\di;
 
 use ReflectionClass;
 use Yii;
+use yii\base\Configurable;
 use yii\base\Component;
 use yii\base\InvalidConfigException;
 use yii\helpers\ArrayHelper;
@@ -72,13 +73,13 @@ use yii\helpers\ArrayHelper;
  * }
  *
  * $container = new Container;
- * $container->set('yii\db\Connection', [
+ * $container->set(\yii\db\Connection::class, [
  *     'dsn' => '...',
  * ]);
- * $container->set('app\models\UserFinderInterface', [
- *     'class' => 'app\models\UserFinder',
+ * $container->set(\app\models\UserFinderInterface::class, [
+ *     'class' => \app\models\UserFinder::class,
  * ]);
- * $container->set('userLister', 'app\models\UserLister');
+ * $container->set('userLister', \app\models\UserLister::class);
  *
  * $lister = $container->get('userLister');
  *
@@ -191,20 +192,20 @@ class Container extends Component
      *
      * ```php
      * // register a class name as is. This can be skipped.
-     * $container->set('yii\db\Connection');
+     * $container->set(\yii\db\Connection::class);
      *
      * // register an interface
      * // When a class depends on the interface, the corresponding class
      * // will be instantiated as the dependent object
-     * $container->set('yii\mail\MailInterface', 'yii\swiftmailer\Mailer');
+     * $container->set(\yii\mail\MailInterface::class, \yii\swiftmailer\Mailer::class);
      *
      * // register an alias name. You can use $container->get('foo')
      * // to create an instance of Connection
-     * $container->set('foo', 'yii\db\Connection');
+     * $container->set('foo', \yii\db\Connection::class);
      *
      * // register a class with configuration. The configuration
      * // will be applied when the class is instantiated by get()
-     * $container->set('yii\db\Connection', [
+     * $container->set(\yii\db\Connection::class, [
      *     'dsn' => 'mysql:host=127.0.0.1;dbname=demo',
      *     'username' => 'root',
      *     'password' => '',
@@ -214,7 +215,7 @@ class Container extends Component
      * // register an alias name with class configuration
      * // In this case, a "class" element is required to specify the class
      * $container->set('db', [
-     *     'class' => 'yii\db\Connection',
+     *     'class' => \yii\db\Connection::class,
      *     'dsn' => 'mysql:host=127.0.0.1;dbname=demo',
      *     'username' => 'root',
      *     'password' => '',
@@ -357,7 +358,7 @@ class Container extends Component
     protected function build($class, $params, $config)
     {
         /* @var $reflection ReflectionClass */
-        list ($reflection, $dependencies) = $this->getDependencies($class);
+        list($reflection, $dependencies) = $this->getDependencies($class);
 
         foreach ($params as $index => $param) {
             $dependencies[$index] = $param;
@@ -368,7 +369,7 @@ class Container extends Component
             return $reflection->newInstanceArgs($dependencies);
         }
 
-        if (!empty($dependencies) && $reflection->implementsInterface('yii\base\Configurable')) {
+        if (!empty($dependencies) && $reflection->implementsInterface(Configurable::class)) {
             // set $config as the last parameter (existing one will be overwritten)
             $dependencies[count($dependencies) - 1] = $config;
             return $reflection->newInstanceArgs($dependencies);

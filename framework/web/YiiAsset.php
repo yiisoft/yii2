@@ -15,11 +15,19 @@ namespace yii\web;
  */
 class YiiAsset extends AssetBundle
 {
+
+    /**
+     * @inheritdoc
+     */
     public $sourcePath = '@yii/assets';
-    public $js = [
-        'yii.js',
-    ];
-    public $depends = [
-        'yii\web\JqueryAsset',
-    ];
+
+    /**
+     * @inheritdoc
+     */
+    public $js = ['yii.js',];
+
+    /**
+     * @inheritdoc
+     */
+    public $depends = [JqueryAsset::class];
 }

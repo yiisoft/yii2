@@ -319,7 +319,7 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
      * ```php
      * public function getCountry()
      * {
-     *     return $this->hasOne(Country::className(), ['id' => 'country_id']);
+     *     return $this->hasOne(Country::class, ['id' => 'country_id']);
      * }
      * ```
      *
@@ -360,7 +360,7 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
      * ```php
      * public function getOrders()
      * {
-     *     return $this->hasMany(Order::className(), ['customer_id' => 'id']);
+     *     return $this->hasMany(Order::class, ['customer_id' => 'id']);
      * }
      * ```
      *

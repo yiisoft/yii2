@@ -22,18 +22,18 @@ class EventTest extends TestCase
     public function setUp()
     {
         $this->counter = 0;
-        Event::off(ActiveRecord::className(), 'save');
-        Event::off(Post::className(), 'save');
-        Event::off(User::className(), 'save');
+        Event::off(ActiveRecord::class, 'save');
+        Event::off(Post::class, 'save');
+        Event::off(User::class, 'save');
         Event::off('yiiunit\framework\base\SomeInterface', SomeInterface::EVENT_SUPER_EVENT);
     }
 
     public function testOn()
     {
-        Event::on(Post::className(), 'save', function ($event) {
+        Event::on(Post::class, 'save', function ($event) {
             $this->counter += 1;
         });
-        Event::on(ActiveRecord::className(), 'save', function ($event) {
+        Event::on(ActiveRecord::class, 'save', function ($event) {
             $this->counter += 3;
         });
         Event::on('yiiunit\framework\base\SomeInterface', SomeInterface::EVENT_SUPER_EVENT, function ($event) {
@@ -59,33 +59,33 @@ class EventTest extends TestCase
         $handler = function ($event) {
             $this->counter ++;
         };
-        $this->assertFalse(Event::hasHandlers(Post::className(), 'save'));
-        Event::on(Post::className(), 'save', $handler);
-        $this->assertTrue(Event::hasHandlers(Post::className(), 'save'));
-        Event::off(Post::className(), 'save', $handler);
-        $this->assertFalse(Event::hasHandlers(Post::className(), 'save'));
+        $this->assertFalse(Event::hasHandlers(Post::class, 'save'));
+        Event::on(Post::class, 'save', $handler);
+        $this->assertTrue(Event::hasHandlers(Post::class, 'save'));
+        Event::off(Post::class, 'save', $handler);
+        $this->assertFalse(Event::hasHandlers(Post::class, 'save'));
     }
 
     public function testHasHandlers()
     {
-        $this->assertFalse(Event::hasHandlers(Post::className(), 'save'));
-        $this->assertFalse(Event::hasHandlers(ActiveRecord::className(), 'save'));
+        $this->assertFalse(Event::hasHandlers(Post::class, 'save'));
+        $this->assertFalse(Event::hasHandlers(ActiveRecord::class, 'save'));
         $this->assertFalse(Event::hasHandlers('yiiunit\framework\base\SomeInterface', SomeInterface::EVENT_SUPER_EVENT));
-        Event::on(Post::className(), 'save', function ($event) {
+        Event::on(Post::class, 'save', function ($event) {
             $this->counter += 1;
         });
         Event::on('yiiunit\framework\base\SomeInterface', SomeInterface::EVENT_SUPER_EVENT, function ($event) {
             $this->counter ++;
         });
-        $this->assertTrue(Event::hasHandlers(Post::className(), 'save'));
-        $this->assertFalse(Event::hasHandlers(ActiveRecord::className(), 'save'));
+        $this->assertTrue(Event::hasHandlers(Post::class, 'save'));
+        $this->assertFalse(Event::hasHandlers(ActiveRecord::class, 'save'));
 
-        $this->assertFalse(Event::hasHandlers(User::className(), 'save'));
-        Event::on(ActiveRecord::className(), 'save', function ($event) {
+        $this->assertFalse(Event::hasHandlers(User::class, 'save'));
+        Event::on(ActiveRecord::class, 'save', function ($event) {
             $this->counter += 1;
         });
-        $this->assertTrue(Event::hasHandlers(User::className(), 'save'));
-        $this->assertTrue(Event::hasHandlers(ActiveRecord::className(), 'save'));
+        $this->assertTrue(Event::hasHandlers(User::class, 'save'));
+        $this->assertTrue(Event::hasHandlers(ActiveRecord::class, 'save'));
         $this->assertTrue(Event::hasHandlers('yiiunit\framework\base\SomeInterface', SomeInterface::EVENT_SUPER_EVENT));
     }
 }

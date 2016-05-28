@@ -8,6 +8,7 @@
 namespace yii\validators;
 
 use yii\web\AssetBundle;
+use yii\web\YiiAsset;
 
 /**
  * This asset bundle provides the javascript files for client validation.
@@ -17,11 +18,18 @@ use yii\web\AssetBundle;
  */
 class ValidationAsset extends AssetBundle
 {
+    /**
+     * @inheritdoc
+     */
     public $sourcePath = '@yii/assets';
-    public $js = [
-        'yii.validation.js',
-    ];
-    public $depends = [
-        'yii\web\YiiAsset',
-    ];
+
+    /**
+     * @inheritdoc
+     */
+    public $js = ['yii.validation.js'];
+
+    /**
+     * @inheritdoc
+     */
+    public $depends = [YiiAsset::class];
 }

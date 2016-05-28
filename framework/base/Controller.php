@@ -92,9 +92,9 @@ class Controller extends Component implements ViewContextInterface
      *
      * ```php
      * return [
-     *     'action1' => 'app\components\Action1',
+     *     'action1' => \app\components\Action1::class,
      *     'action2' => [
-     *         'class' => 'app\components\Action2',
+     *         'class' => \app\components\Action2::class,
      *         'property1' => 'value1',
      *         'property2' => 'value2',
      *     ],

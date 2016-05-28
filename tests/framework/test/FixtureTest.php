@@ -81,31 +81,31 @@ class MyTestCase
         switch ($this->scenario) {
             case 0: return [];
             case 1: return [
-                'fixture1' => Fixture1::className(),
+                'fixture1' => Fixture1::class,
             ];
             case 2: return [
-                'fixture2' => Fixture2::className(),
+                'fixture2' => Fixture2::class,
             ];
             case 3: return [
-                'fixture3' => Fixture3::className(),
+                'fixture3' => Fixture3::class,
             ];
             case 4: return [
-                'fixture1' => Fixture1::className(),
-                'fixture2' => Fixture2::className(),
+                'fixture1' => Fixture1::class,
+                'fixture2' => Fixture2::class,
             ];
             case 5: return [
-                'fixture2' => Fixture2::className(),
-                'fixture3' => Fixture3::className(),
+                'fixture2' => Fixture2::class,
+                'fixture3' => Fixture3::class,
             ];
             case 6: return [
-                'fixture1' => Fixture1::className(),
-                'fixture3' => Fixture3::className(),
+                'fixture1' => Fixture1::class,
+                'fixture3' => Fixture3::class,
             ];
             case 7:
             default: return [
-                'fixture1' => Fixture1::className(),
-                'fixture2' => Fixture2::className(),
-                'fixture3' => Fixture3::className(),
+                'fixture1' => Fixture1::class,
+                'fixture2' => Fixture2::class,
+                'fixture3' => Fixture3::class,
             ];
         }
     }

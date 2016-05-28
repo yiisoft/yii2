@@ -25,7 +25,7 @@ use yii\di\Instance;
  *
  * ```php
  * 'cache' => [
- *     'class' => 'yii\caching\DbCache',
+ *     'class' => \yii\caching\DbCache::class,
  *     // 'db' => 'mydb',
  *     // 'cacheTable' => 'my_cache',
  * ]
@@ -82,7 +82,7 @@ class DbCache extends Cache
     public function init()
     {
         parent::init();
-        $this->db = Instance::ensure($this->db, Connection::className());
+        $this->db = Instance::ensure($this->db, Connection::class);
     }
 
     /**

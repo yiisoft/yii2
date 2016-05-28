@@ -426,7 +426,7 @@ class UrlManagerTest extends TestCase
                     'baseUrl' => '/app'
                 ]
             ]
-        ], \yii\web\Application::className());
+        ], \yii\web\Application::class);
         $this->assertEquals('/app/post/delete?id=123', $manager->createUrl(['post/delete', 'id' => 123]));
         $this->destroyApplication();
 

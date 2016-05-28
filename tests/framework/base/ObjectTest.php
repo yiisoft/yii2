@@ -140,12 +140,6 @@ class ObjectTest extends TestCase
         $this->assertEquals('test text', $object->getText());
     }
 
-    public function testGetClassName()
-    {
-        $object = $this->object;
-        $this->assertSame(get_class($object), $object::className());
-    }
-
     public function testReadingWriteOnlyProperty()
     {
         $this->setExpectedException(

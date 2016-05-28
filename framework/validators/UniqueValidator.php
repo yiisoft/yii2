@@ -38,7 +38,11 @@ class UniqueValidator extends Validator
 {
     /**
      * @var string the name of the ActiveRecord class that should be used to validate the uniqueness
-     * of the current attribute value. If not set, it will use the ActiveRecord class of the attribute being validated.
+     * of the current attribute value.
+     * This must be a fully qualified class name.
+     *
+     * If not set, it will use the ActiveRecord class of the attribute being validated.
+     *
      * @see targetAttribute
      */
     public $targetClass;
@@ -77,8 +81,9 @@ class UniqueValidator extends Validator
     public function validateAttribute($model, $attribute)
     {
         /* @var $targetClass ActiveRecordInterface */
-        $targetClass = $this->targetClass === null ? get_class($model) : $this->targetClass;
-        $targetAttribute = $this->targetAttribute === null ? $attribute : $this->targetAttribute;
+        $targetClass = $this->targetClass ?: get_class($model);
+        $targetClass = ltrim($targetClass, '\\');
+        $targetAttribute = $this->targetAttribute ?: $attribute;
 
         if (is_array($targetAttribute)) {
             $params = [];
@@ -91,7 +96,11 @@ class UniqueValidator extends Validator
 
         foreach ($params as $value) {
             if (is_array($value)) {
-                $this->addError($model, $attribute, Yii::t('yii', '{attribute} is invalid.'));
+                $this->addError(
+                    $model,
+                    $attribute,
+                    Yii::t('yii', '{attribute} is invalid.')
+                );
 
                 return;
             }
@@ -106,7 +115,10 @@ class UniqueValidator extends Validator
             $query->andWhere($this->filter);
         }
 
-        if (!$model instanceof ActiveRecordInterface || $model->getIsNewRecord() || $model->className() !== $targetClass::className()) {
+        if (!$model instanceof ActiveRecordInterface
+            || $model->getIsNewRecord()
+            || get_class($model) !== $targetClass
+        ) {
             // if current $model isn't in the database yet then it's OK just to call exists()
             // also there's no need to run check based on primary keys, when $targetClass is not the same as $model's class
             $exists = $query->exists();

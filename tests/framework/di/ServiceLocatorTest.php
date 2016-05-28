@@ -36,7 +36,7 @@ class ServiceLocatorTest extends TestCase
     {
         // anonymous function
         $container = new ServiceLocator;
-        $className = TestClass::className();
+        $className = TestClass::class;
         $container->set($className, function () {
             return new TestClass([
                 'prop1' => 100,
@@ -50,7 +50,7 @@ class ServiceLocatorTest extends TestCase
 
         // static method
         $container = new ServiceLocator;
-        $className = TestClass::className();
+        $className = TestClass::class;
         $container->set($className, [__NAMESPACE__ . "\\Creator", 'create']);
         $object = $container->get($className);
         $this->assertTrue($object instanceof $className);
@@ -61,7 +61,7 @@ class ServiceLocatorTest extends TestCase
     public function testObject()
     {
         $object = new TestClass;
-        $className = TestClass::className();
+        $className = TestClass::class;
         $container = new ServiceLocator;
         $container->set($className, $object);
         $this->assertTrue($container->get($className) === $object);
@@ -71,7 +71,7 @@ class ServiceLocatorTest extends TestCase
     {
         // with configuration: shared
         $container = new ServiceLocator;
-        $className = TestClass::className();
+        $className = TestClass::class;
         $container->set($className, [
             'class' => $className,
             'prop1' => 10,

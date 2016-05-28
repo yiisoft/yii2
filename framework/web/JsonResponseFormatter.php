@@ -24,7 +24,7 @@ use yii\helpers\Json;
  *     // ...
  *     'formatters' => [
  *         \yii\web\Response::FORMAT_JSON => [
- *              'class' => 'yii\web\JsonResponseFormatter',
+ *              'class' => \yii\web\JsonResponseFormatter::class,
  *              'prettyPrint' => YII_DEBUG, // use "pretty" output in debug mode
  *              // ...
  *         ],

@@ -127,7 +127,7 @@ class Application extends \yii\base\Application
         }
         // ensure we have the 'help' command so that we can list the available commands
         if (!isset($this->controllerMap['help'])) {
-            $this->controllerMap['help'] = 'yii\console\controllers\HelpController';
+            $this->controllerMap['help'] = controllers\HelpController::class;
         }
     }
 
@@ -138,7 +138,7 @@ class Application extends \yii\base\Application
      */
     public function handleRequest($request)
     {
-        list ($route, $params) = $request->resolve();
+        list($route, $params) = $request->resolve();
         $this->requestedRoute = $route;
         $result = $this->runAction($route, $params);
         if ($result instanceof Response) {
@@ -187,13 +187,13 @@ class Application extends \yii\base\Application
     public function coreCommands()
     {
         return [
-            'asset' => 'yii\console\controllers\AssetController',
-            'cache' => 'yii\console\controllers\CacheController',
-            'fixture' => 'yii\console\controllers\FixtureController',
-            'help' => 'yii\console\controllers\HelpController',
-            'message' => 'yii\console\controllers\MessageController',
-            'migrate' => 'yii\console\controllers\MigrateController',
-            'serve' => 'yii\console\controllers\ServeController',
+            'asset' => controllers\AssetController::class,
+            'cache' => controllers\CacheController::class,
+            'fixture' => controllers\FixtureController::class,
+            'help' => controllers\HelpController::class,
+            'message' => controllers\MessageController::class,
+            'migrate' => controllers\MigrateController::class,
+            'serve' => controllers\ServeController::class,
         ];
     }
 
@@ -203,9 +203,9 @@ class Application extends \yii\base\Application
     public function coreComponents()
     {
         return array_merge(parent::coreComponents(), [
-            'request' => ['class' => 'yii\console\Request'],
-            'response' => ['class' => 'yii\console\Response'],
-            'errorHandler' => ['class' => 'yii\console\ErrorHandler'],
+            'request' => ['class' => Request::class],
+            'response' => ['class' => Response::class],
+            'errorHandler' => ['class' => ErrorHandler::class],
         ]);
     }
 }

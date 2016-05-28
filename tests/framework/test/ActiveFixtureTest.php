@@ -36,14 +36,14 @@ class MyDbTestCase
     public function fixtures()
     {
         return [
-            'customers' => CustomerFixture::className(),
+            'customers' => CustomerFixture::class,
         ];
     }
 
     public function globalFixtures()
     {
         return [
-            InitDbFixture::className(),
+            InitDbFixture::class,
         ];
     }
 }
@@ -72,7 +72,7 @@ class ActiveFixtureTest extends DatabaseTestCase
         $test = new MyDbTestCase();
         $test->setUp();
         $fixture = $test->getFixture('customers');
-        $this->assertEquals(CustomerFixture::className(), get_class($fixture));
+        $this->assertEquals(CustomerFixture::class, get_class($fixture));
         $this->assertEquals(2, count($fixture));
         $this->assertEquals(1, $fixture['customer1']['id']);
         $this->assertEquals('customer1@example.com', $fixture['customer1']['email']);
@@ -86,7 +86,7 @@ class ActiveFixtureTest extends DatabaseTestCase
         $test = new MyDbTestCase();
         $test->setUp();
         $fixture = $test->getFixture('customers');
-        $this->assertEquals(Customer::className(), get_class($fixture->getModel('customer1')));
+        $this->assertEquals(Customer::class, get_class($fixture->getModel('customer1')));
         $this->assertEquals(1, $fixture->getModel('customer1')->id);
         $this->assertEquals('customer1@example.com', $fixture->getModel('customer1')->email);
         $this->assertEquals(2, $fixture->getModel('customer2')->id);

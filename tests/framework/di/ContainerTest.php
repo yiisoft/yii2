@@ -28,9 +28,9 @@ class ContainerTest extends TestCase
     {
         $namespace = __NAMESPACE__ . '\stubs';
         $QuxInterface = "$namespace\\QuxInterface";
-        $Foo = Foo::className();
-        $Bar = Bar::className();
-        $Qux = Qux::className();
+        $Foo = Foo::class;
+        $Bar = Bar::class;
+        $Qux = Qux::class;
 
         // automatic wiring
         $container = new Container;
@@ -69,7 +69,7 @@ class ContainerTest extends TestCase
         $container = new Container;
         $container->set($QuxInterface, $Qux);
         $container->set('foo', function (Container $c, $params, $config) {
-            return $c->get(Foo::className());
+            return $c->get(Foo::class);
         });
         $foo = $container->get('foo');
         $this->assertTrue($foo instanceof $Foo);

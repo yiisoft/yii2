@@ -32,7 +32,7 @@ class AccessRuleTest extends \yiiunit\TestCase
         $action = new Action('test', $controller);
 
         $user = new User([
-            'identityClass' => UserIdentity::className(),
+            'identityClass' => UserIdentity::class,
             'enableAutoLogin' => false,
         ]);
 

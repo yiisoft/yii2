@@ -54,7 +54,7 @@ class ActiveForm extends Widget
      * @var string the default field class name when calling [[field()]] to create a new field.
      * @see fieldConfig
      */
-    public $fieldClass = 'yii\widgets\ActiveField';
+    public $fieldClass = ActiveField::class;
     /**
      * @var array|\Closure the default configuration used by [[field()]] when creating a new field object.
      * This can be either a configuration array or an anonymous function returning a configuration array.

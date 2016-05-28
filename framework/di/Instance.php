@@ -25,9 +25,9 @@ use yii\base\InvalidConfigException;
  *
  * ```php
  * $container = new \yii\di\Container;
- * $container->set('cache', 'yii\caching\DbCache', Instance::of('db'));
+ * $container->set('cache', \yii\caching\DbCache::class, Instance::of('db'));
  * $container->set('db', [
- *     'class' => 'yii\db\Connection',
+ *     'class' => \yii\db\Connection::class,
  *     'dsn' => 'sqlite:path/to/file.db',
  * ]);
  * ```
@@ -42,7 +42,7 @@ use yii\base\InvalidConfigException;
  *     public function init()
  *     {
  *         parent::init();
- *         $this->db = Instance::ensure($this->db, 'yii\db\Connection');
+ *         $this->db = Instance::ensure($this->db, \yii\db\Connection::class);
  *     }
  * }
  * ```
@@ -91,9 +91,9 @@ class Instance
      * use yii\db\Connection;
      *
      * // returns Yii::$app->db
-     * $db = Instance::ensure('db', Connection::className());
+     * $db = Instance::ensure('db', Connection::class);
      * // returns an instance of Connection using the given configuration
-     * $db = Instance::ensure(['dsn' => 'sqlite:path/to/my.db'], Connection::className());
+     * $db = Instance::ensure(['dsn' => 'sqlite:path/to/my.db'], Connection::class);
      * ```
      *
      * @param object|string|array|static $reference an object or a reference to the desired object.

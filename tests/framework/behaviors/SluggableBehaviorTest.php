@@ -158,7 +158,7 @@ class ActiveRecordSluggable extends ActiveRecord
     {
         return [
             'sluggable' => [
-                'class' => SluggableBehavior::className(),
+                'class' => SluggableBehavior::class,
                 'attribute' => 'name',
             ],
         ];
@@ -184,7 +184,7 @@ class ActiveRecordSluggableUnique extends ActiveRecordSluggable
     {
         return [
             'sluggable' => [
-                'class' => SluggableBehavior::className(),
+                'class' => SluggableBehavior::class,
                 'attribute' => 'name',
                 'ensureUnique' => true,
             ],

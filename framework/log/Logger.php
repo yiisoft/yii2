@@ -196,7 +196,7 @@ class Logger extends Component
      * @param array $categories list of categories that you are interested in.
      * You can use an asterisk at the end of a category to do a prefix match.
      * For example, 'yii\db\*' will match categories starting with 'yii\db\',
-     * such as 'yii\db\Connection'.
+     * such as `yii\db\Connection`.
      * @param array $excludeCategories list of categories that you want to exclude
      * @return array the profiling results. Each element is an array consisting of these elements:
      * `info`, `category`, `timestamp`, `trace`, `level`, `duration`.
@@ -247,7 +247,10 @@ class Logger extends Component
      */
     public function getDbProfiling()
     {
-        $timings = $this->getProfiling(['yii\db\Command::query', 'yii\db\Command::execute']);
+        $timings = $this->getProfiling([
+            'yii\db\Command::query',
+            'yii\db\Command::execute',
+        ]);
         $count = count($timings);
         $time = 0;
         foreach ($timings as $timing) {
@@ -271,9 +274,9 @@ class Logger extends Component
         foreach ($messages as $i => $log) {
             list($token, $level, $category, $timestamp, $traces) = $log;
             $log[5] = $i;
-            if ($level == Logger::LEVEL_PROFILE_BEGIN) {
+            if ($level == self::LEVEL_PROFILE_BEGIN) {
                 $stack[] = $log;
-            } elseif ($level == Logger::LEVEL_PROFILE_END) {
+            } elseif ($level == self::LEVEL_PROFILE_END) {
                 if (($last = array_pop($stack)) !== null && $last[0] === $token) {
                     $timings[$last[5]] = [
                         'info' => $last[0],

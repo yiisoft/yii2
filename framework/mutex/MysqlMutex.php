@@ -19,11 +19,11 @@ use yii\base\InvalidConfigException;
  * [
  *     'components' => [
  *         'db' => [
- *             'class' => 'yii\db\Connection',
+ *             'class' => \yii\db\Connection::class,
  *             'dsn' => 'mysql:host=127.0.0.1;dbname=demo',
  *         ]
  *         'mutex' => [
- *             'class' => 'yii\mutex\MysqlMutex',
+ *             'class' => \yii\mutex\MysqlMutex::class,
  *         ],
  *     ],
  * ]

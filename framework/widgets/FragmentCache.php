@@ -43,7 +43,7 @@ class FragmentCache extends Widget
      *
      * ```php
      * [
-     *     'class' => 'yii\caching\DbDependency',
+     *     'class' => \yii\caching\DbDependency::class,
      *     'sql' => 'SELECT MAX(updated_at) FROM post',
      * ]
      * ```
@@ -84,7 +84,7 @@ class FragmentCache extends Widget
     {
         parent::init();
 
-        $this->cache = $this->enabled ? Instance::ensure($this->cache, Cache::className()) : null;
+        $this->cache = $this->enabled ? Instance::ensure($this->cache, Cache::class) : null;
 
         if ($this->cache instanceof Cache && $this->getCachedContent() === false) {
             $this->getView()->cacheStack[] = $this;
