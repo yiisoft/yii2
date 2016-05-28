@@ -11,7 +11,8 @@ use Yii;
 use yii\base\Object;
 
 /**
- * ColumnSchemaBuilder helps to define database schema types using a PHP interface.
+ * ColumnSchemaBuilder helps to define database schema types using a PHP
+ * interface.
  *
  * See [[SchemaBuilderTrait]] for more detailed description and usage examples.
  *
@@ -30,21 +31,29 @@ class ColumnSchemaBuilder extends Object
     const CATEGORY_OTHER = 'other';
 
     /**
-     * @var string the column type definition such as INTEGER, VARCHAR, DATETIME, etc.
+     * @var string the column type definition such as INTEGER, VARCHAR,
+     * DATETIME, etc.
      */
     protected $type;
+
     /**
-     * @var integer|string|array column size or precision definition. This is what goes into the parenthesis after
-     * the column type. This can be either a string, an integer or an array. If it is an array, the array values will
+     * @var integer|string|array column size or precision definition. This is
+     * what goes into the parenthesis after
+     * the column type. This can be either a string, an integer or an array. If
+     * it is an array, the array values will
      * be joined into a string separated by comma.
      */
     protected $length;
+
     /**
-     * @var boolean whether the column is not nullable. If this is `true`, a `NOT NULL` constraint will be added.
+     * @var boolean whether the column is not nullable. If this is `true`, a
+     * `NOT NULL` constraint will be added.
      */
     protected $isNotNull = false;
+
     /**
-     * @var boolean whether the column values should be unique. If this is `true`, a `UNIQUE` constraint will be added.
+     * @var boolean whether the column values should be unique. If this is
+     * `true`, a `UNIQUE` constraint will be added.
      */
     protected $isUnique = false;
     /**
@@ -61,7 +70,8 @@ class ColumnSchemaBuilder extends Object
      */
     protected $append;
     /**
-     * @var boolean whether the column values should be unsigned. If this is `true`, an `UNSIGNED` keyword will be added.
+     * @var boolean whether the column values should be unsigned. If this is
+     * `true`, an `UNSIGNED` keyword will be added.
      * @since 2.0.7
      */
     protected $isUnsigned = false;
@@ -71,14 +81,15 @@ class ColumnSchemaBuilder extends Object
      */
     protected $after;
     /**
-     * @var boolean whether this column is to be inserted at the beginning of the table.
+     * @var boolean whether this column is to be inserted at the beginning of
+     * the table.
      * @since 2.0.8
      */
     protected $isFirst;
 
-
     /**
-     * @var array mapping of abstract column types (keys) to type categories (values).
+     * @var array mapping of abstract column types (keys) to type categories
+     * (values).
      * @since 2.0.8
      */
     public $categoryMap = [
@@ -103,12 +114,15 @@ class ColumnSchemaBuilder extends Object
         Schema::TYPE_BOOLEAN => self::CATEGORY_NUMERIC,
         Schema::TYPE_MONEY => self::CATEGORY_NUMERIC,
     ];
+
     /**
-     * @var \yii\db\Connection the current database connection. It is used mainly to escape strings
+     * @var \yii\db\Connection the current database connection. It is used
+     * mainly to escape strings
      * safely when building the final column schema string.
      * @since 2.0.8
      */
     public $db;
+
     /**
      * @var string comment value of the column.
      * @since 2.0.8
@@ -116,12 +130,16 @@ class ColumnSchemaBuilder extends Object
     public $comment;
 
     /**
-     * Create a column schema builder instance giving the type and value precision.
+     * Create a column schema builder instance giving the type and value
+     * precision.
      *
      * @param string $type type of the column. See [[$type]].
-     * @param integer|string|array $length length or precision of the column. See [[$length]].
-     * @param \yii\db\Connection $db the current database connection. See [[$db]].
-     * @param array $config name-value pairs that will be used to initialize the object properties
+     * @param integer|string|array $length length or precision of the column.
+     * See [[$length]].
+     * @param \yii\db\Connection $db the current database connection. See
+     * [[$db]].
+     * @param array $config name-value pairs that will be used to initialize the
+     * object properties
      */
     public function __construct($type, $length = null, $db = null, $config = [])
     {
@@ -286,7 +304,8 @@ class ColumnSchemaBuilder extends Object
 
     /**
      * Builds the not null constraint for the column.
-     * @return string returns 'NOT NULL' if [[isNotNull]] is true, otherwise it returns an empty string.
+     * @return string returns 'NOT NULL' if [[isNotNull]] is true, otherwise it
+     * returns an empty string.
      */
     protected function buildNotNullString()
     {
@@ -295,7 +314,8 @@ class ColumnSchemaBuilder extends Object
 
     /**
      * Builds the unique constraint for the column.
-     * @return string returns string 'UNIQUE' if [[isUnique]] is true, otherwise it returns an empty string.
+     * @return string returns string 'UNIQUE' if [[isUnique]] is true, otherwise
+     * it returns an empty string.
      */
     protected function buildUniqueString()
     {
@@ -395,7 +415,8 @@ class ColumnSchemaBuilder extends Object
 
     /**
      * Builds the comment specification for the column.
-     * @return string a string containing the COMMENT keyword and the comment itself
+     * @return string a string containing the COMMENT keyword and the comment
+     * itself
      * @since 2.0.8
      */
     protected function buildCommentString()
