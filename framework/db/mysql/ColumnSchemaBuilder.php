@@ -30,9 +30,9 @@ class ColumnSchemaBuilder extends AbstractColumnSchemaBuilder
      */
     protected function buildAfterString()
     {
-        return $this->after !== null ?
-            ' AFTER ' . $this->db->quoteColumnName($this->after) :
-            '';
+        return empty($this->after)
+            ? ''
+            : ' AFTER ' . $this->db->quoteColumnName($this->after);
     }
 
     /**
@@ -48,7 +48,9 @@ class ColumnSchemaBuilder extends AbstractColumnSchemaBuilder
      */
     protected function buildCommentString()
     {
-        return $this->comment !== null ? " COMMENT " . $this->db->quoteValue($this->comment) : '';
+        return empty($this->comment)
+            ? ''
+            : " COMMENT " . $this->db->quoteValue($this->comment);
     }
 
     /**
@@ -56,16 +58,19 @@ class ColumnSchemaBuilder extends AbstractColumnSchemaBuilder
      */
     public function __toString()
     {
-        switch ($this->getTypeCategory()) {
-            case self::CATEGORY_PK:
-                $format = '{type}{length}{check}{comment}{pos}{append}';
-                break;
-            case self::CATEGORY_NUMERIC:
-                $format = '{type}{length}{unsigned}{notnull}{unique}{default}{check}{comment}{pos}{append}';
-                break;
-            default:
-                $format = '{type}{length}{notnull}{unique}{default}{check}{comment}{pos}{append}';
+        $format = '{type}{length}';
+        if ($this->getTypeCategory() === self::CATEGORY_NUMERIC) {
+            $format .= '{unsigned}';
         }
+        $format .= '{notnull}';
+
+        if ($this->primaryKey) {
+            $format .= '{primarykey}';
+        } else {
+            $format .= '{unique}{default}';
+        }
+
+        $format .= '{check}{comment}{pos}{append}';
         return $this->buildCompleteString($format);
     }
 }
