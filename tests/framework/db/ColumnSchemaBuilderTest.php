@@ -43,17 +43,19 @@ class ColumnSchemaBuilderTest extends TestCase
                 'integer NOT NULL AUTO_INCREMENT PRIMARY KEY',
                 Schema::TYPE_INTEGER,
                 null,
-                [
-                    ['primaryKey']
-                ]
+                [['primaryKey']]
+            ],
+            [
+                'integer NOT NULL PRIMARY KEY',
+                Schema::TYPE_INTEGER,
+                null,
+                [['primaryKey', false]]
             ],
             [
                 'string(32) NOT NULL PRIMARY KEY',
                 Schema::TYPE_STRING,
                 32,
-                [
-                    ['primaryKey']
-                ]
+                [['primaryKey']]
             ],
             ['timestamp() WITH TIME ZONE NOT NULL', 'timestamp() WITH TIME ZONE', null, [
                 ['notNull']
