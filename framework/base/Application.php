@@ -39,6 +39,10 @@ use Yii;
  * [[basePath]].
  * @property View|\yii\web\View $view The view application component that is used to render various view
  * files. This property is read-only.
+ * @property string $name the application name.
+ * @property string $charset the charset currently used for the application
+ * @property string $language the language currently used for the application
+ * @property string $sourceLanguage the language that the application is written in
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
