@@ -24,6 +24,7 @@ Yii Framework 2 Change Log
 - Bug #11532: Fixed casting of empty char value to `null` resulting in integrity constraint violation for not null columns (samdark)
 - Bug #11571: Fixed `yii\db\ColumnSchemaBuilder` to work with custom column types (andrey-mokhov, silverfire)
 - Bug #11662: Fixed `schema-oci.sql` for RBAC (jonny7)
+- Bug #11527: Fixed `bigPrimaryKey()` for SQLite (dynasource)
 
 
 2.0.8 April 28, 2016
