@@ -1,15 +1,17 @@
 Alias
 =====
 
-Los alias son utilizados para representar las rutas de archivos o URLs para evitar su [hard-coding](http://es.wikipedia.org/wiki/Hard_code)
-en tu código. Un alias debe comenzar con un cáracter `@` para que así pueda ser diferenciado de las rutas de archivos y URLs.
-Por ejemplo, el alias `@yii` representa la ruta de instalación de la librería Yii, mientras que `@web` representa la
-URL base la aplicación que actualmente se está ejecutando.
+Loa alias son utilizados para representar rutas o URLs de manera que no tengas que escribir explícitamente rutas absolutas o URLs en tu
+proyecto. Un alias debe comenzar con el signo `@` para ser diferenciado de una ruta normal de archivo y de URLs. Los alias definidos
+sin el `@` del principio, serán prefijados con el signo `@`.
 
-Definiendo Alias <span id="defining-aliases"></span>
-----------------
+Yii trae disponibles varios alias predefinidos. Por ejemplo, el alias `@yii` representa la ruta de instalación del
+framework Yii; `@web` representa la URL base para la aplicación Web ejecutándose.
 
-Puedes llamar a [[Yii::setAlias()]] para definir un alias para una determinada ruta de archivo o URL. Por ejemplo,
+Definir Alias <span id="defining-aliases"></span>
+-------------
+
+Para definir un alias puedes llamar a [[Yii::setAlias()]] para una determinada ruta de archivo o URL. Por ejemplo,
 
 ```php
 // un alias de una ruta de archivos
@@ -83,9 +85,10 @@ Si `@foo/bar` no está definido como un alias de raíz, la última declaración 
 Usando Alias <span id="using-aliases"></span>
 ------------
 
-Los alias son utilizados en muchos lugares en Yii sin necesidad de llamar [[Yii::getAlias()]] para convertirlos en rutas/URLs.
-Por ejemplo, [[yii\caching\FileCache::cachePath]] puede aceptar tanto una ruta de archivo como un alias que represente
-la ruta de archivo, gracias al prefijo `@` el cual permite diferenciar una ruta de archivo de un alias.
+Los alias son utilizados en muchos lugares en Yii sin necesidad de llamar [[Yii::getAlias()]] para convertirlos
+en rutas/URLs. Por ejemplo, [[yii\caching\FileCache::cachePath]] puede aceptar tanto una ruta de archivo como un alias
+que represente la ruta de archivo, gracias al prefijo `@` el cual permite diferenciar una ruta de archivo
+de un alias.
 
 ```php
 use yii\caching\FileCache;
@@ -121,10 +124,10 @@ mientras que el resto de los alias están definidos en el constructor de la apli
 Alias en Extensiones <span id="extension-aliases"></span>
 --------------------
 
-Un alias se define automaticamente por cada [extensión](structure-extensions.md) que ha sido instalada a través de Composer.
+Un alias se define automáticamente por cada [extensión](structure-extensions.md) que ha sido instalada a través de Composer.
 El alias es nombrado tras el `namespace` de raíz de la extensión instalada tal y como está declarada en su archivo `composer.json`,
 y representa el directorio raíz de la extensión. Por ejemplo, si instalas la extensión `yiisoft/yii2-jui`, tendrás
-automaticamente definido el alias `@yii/jui` durante la etapa [bootstrapping](runtime-bootstrapping.md) de la aplicación:
+automáticamente definido el alias `@yii/jui` durante la etapa [bootstrapping](runtime-bootstrapping.md) de la aplicación:
 
 ```php
 Yii::setAlias('@yii/jui', 'VendorPath/yiisoft/yii2-jui');
