@@ -305,7 +305,7 @@ class RbacController extends Controller
 
 Despues, ejecutando el comando `yii rbac/init` obtendremos la siguiente jerarquia:
 
-![Simple RBAC hierarchy](images/rbac-hierarchy-1.png "Simple RBAC hierarchy")
+![Simple RBAC hierarchy](../guide/images/rbac-hierarchy-1.png "Simple RBAC hierarchy")
 
 Autor puede crear un post, admin puede actualizar su mensaje y hacer todo lo posible autor.
 
@@ -395,7 +395,7 @@ $auth->addChild($author, $updateOwnPost);
 
 Now we have got the following hierarchy:
 
-![RBAC hierarchy with a rule](images/rbac-hierarchy-2.png "RBAC hierarchy with a rule")
+![RBAC hierarchy with a rule](../guide/images/rbac-hierarchy-2.png "RBAC hierarchy with a rule")
 
 
 ### Comprobación de acceso <span id="access-check"></span>
@@ -412,7 +412,7 @@ if (\Yii::$app->user->can('createPost')) {
 
 Si el usuario actual es Jane con `ID=1` estamos empezando a `createPost` y tratando de obtener a `Jane`:
 
-![Access check](images/rbac-access-check-1.png "Access check")
+![Access check](../guide/images/rbac-access-check-1.png "Access check")
 
 Con el fin de comprobar si un usuario puede actualizar un anuncio, necesitamos pasar un parámetro adicional que es requerido por `AuthorRule` descrito antes:
 
@@ -425,7 +425,7 @@ if (\Yii::$app->user->can('updatePost', ['post' => $post])) {
 Aquí es lo que sucede si el usuario actual es John:
 
 
-![Access check](images/rbac-access-check-2.png "Access check")
+![Access check](../guide/images/rbac-access-check-2.png "Access check")
 
 Estamos comenzando con el `updatePost` y pasando por `updateOwnPost`. Con el fin de pasar a la comprobación de acceso, `AuthorRule`
 debe devolver `true` desde el metodo `execute()`. el metodo recive estos `$params` desde la llamada al metodo `can()`  por lo que el valor es
@@ -433,7 +433,7 @@ debe devolver `true` desde el metodo `execute()`. el metodo recive estos `$param
 
 En caso de Jane que es un poco más simple ya que es un admin:
 
-![Access check](images/rbac-access-check-3.png "Access check")
+![Access check](../guide/images/rbac-access-check-3.png "Access check")
 
 
 ### Usando los roles por defecto <span id="using-default-roles"></span>
