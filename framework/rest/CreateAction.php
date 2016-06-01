@@ -37,16 +37,17 @@ class CreateAction extends Action
      */
     public function run()
     {
-        if ($this->checkAccess) {
-            call_user_func($this->checkAccess, $this->id);
-        }
-
         /* @var $model \yii\db\ActiveRecord */
         $model = new $this->modelClass([
             'scenario' => $this->scenario,
         ]);
 
         $model->load(Yii::$app->getRequest()->getBodyParams(), '');
+
+        if ($this->checkAccess) {
+            call_user_func($this->checkAccess, $this->id, $model);
+        }
+
         if ($model->save()) {
             $response = Yii::$app->getResponse();
             $response->setStatusCode(201);
