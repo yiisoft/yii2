@@ -75,6 +75,11 @@ class View extends \yii\base\View
      */
     const POS_LOAD = 5;
     /**
+     * The location of registered JavaScript code block.
+     * This means the location is at the end of all other files.
+     */
+    const POS_LAST = 6;
+    /**
      * This is internally used as the placeholder for receiving the content registered for the head section.
      */
     const PH_HEAD = '<![CDATA[YII-BLOCK-HEAD]]>';
@@ -569,6 +574,10 @@ class View extends \yii\base\View
                 $js = "jQuery(window).load(function () {\n" . implode("\n", $this->js[self::POS_LOAD]) . "\n});";
                 $lines[] = Html::script($js, ['type' => 'text/javascript']);
             }
+        }
+
+        if (!empty($this->jsFiles[self::POS_LAST])) {
+            $lines[] = implode("\n", $this->jsFiles[self::POS_LAST]);
         }
 
         return empty($lines) ? '' : implode("\n", $lines);
