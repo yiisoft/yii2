@@ -21,6 +21,7 @@ determines where script should be inserted into the page. Possible values are:
 - [[yii\web\View::POS_HEAD|View::POS_HEAD]] for head section.
 - [[yii\web\View::POS_BEGIN|View::POS_BEGIN]] for right after opening `<body>`.
 - [[yii\web\View::POS_END|View::POS_END]] for right before closing `</body>`.
+- [[yii\web\View::POS_LAST|View::POS_LAST]] for right after last script on POS_END.
 - [[yii\web\View::POS_READY|View::POS_READY]] for executing code on document `ready` event. This will register [[yii\web\JqueryAsset|jQuery]] automatically.
 - [[yii\web\View::POS_LOAD|View::POS_LOAD]] for executing code on document `load` event. This will register [[yii\web\JqueryAsset|jQuery]] automatically.
 
