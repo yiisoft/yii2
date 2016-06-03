@@ -214,7 +214,7 @@ y todos sus archivos son tienen permiso de escritura para el proceso del servido
 
 #### Utilizar `DbManager` <span id="using-db-manager"></span>
 
-The following code shows how to configure the `authManager` in the application configuration using the [[yii\rbac\DbManager]] class:
+El sigiente código muestra cómo configurar `authManager` en la configuración de la aplicación utilizando la clase [[yii\rbac\DbManager]]:
 
 ```php
 return [
@@ -227,38 +227,38 @@ return [
     ],
 ];
 ```
-> Note: If you are using yii2-basic-app template, there is a `config/console.php` configuration file where the
-  `authManager` needs to be declared additionally to `config/web.php`.
-> In case of yii2-advanced-app the `authManager` should be declared only once in `common/config/main.php`.
+> Note: si estás utilizando el template yii2-basic-app, existe el archivo de configuración `config/console.php` donde
+  necesita declararse `authManager` adicionalmente a `config/web.php`.
+> En el caso de yii2-advanced-app, `authManager` sólo debe declararse en `common/config/main.php`.
 
-`DbManager` uses four database tables to store its data: 
+`DbManager` utiliza cuatro tablas de la BD para almacenar los datos: 
 
-- [[yii\rbac\DbManager::$itemTable|itemTable]]: the table for storing authorization items. Defaults to "auth_item".
-- [[yii\rbac\DbManager::$itemChildTable|itemChildTable]]: the table for storing authorization item hierarchy. Defaults to "auth_item_child".
-- [[yii\rbac\DbManager::$assignmentTable|assignmentTable]]: the table for storing authorization item assignments. Defaults to "auth_assignment".
-- [[yii\rbac\DbManager::$ruleTable|ruleTable]]: the table for storing rules. Defaults to "auth_rule".
+- [[yii\rbac\DbManager::$itemTable|itemTable]]: la tabla para almacenar los ítems de autorización. Por defecto "auth_item".
+- [[yii\rbac\DbManager::$itemChildTable|itemChildTable]]: la tabla para almacentar la jerarquía de los ítems de autorización. Por defecto "auth_item_child".
+- [[yii\rbac\DbManager::$assignmentTable|assignmentTable]]: la tabla para almacenar las asignaciones de los ítems de autorización. Por defecto "auth_assignment".
+- [[yii\rbac\DbManager::$ruleTable|ruleTable]]: la tabla para almacenar las reglas. Por defecto "auth_rule".
 
-Before you can go on you need to create those tables in the database. To do this, you can use the migration stored in `@yii/rbac/migrations`:
+Antes de continuar, necesitas crear las tablas respectivas en la base de datos. Para hacerlo, puedes utilizar las migraciones contenidas en `@yii/rbac/migrations`:
 
 `yii migrate --migrationPath=@yii/rbac/migrations`
 
-The `authManager` can now be accessed via `\Yii::$app->authManager`.
+El `authManager` puede ahora ser accedido vía `\Yii::$app->authManager`.
 
 
-### Building Authorization Data <span id="generating-rbac-data"></span>
+### Construir los Datos de Autorización <span id="generating-rbac-data"></span>
 
-Building authorization data is all about the following tasks:
+Construir los datos de autorización implica las siguientes tareas:
 
-- defining roles and permissions;
-- establishing relations among roles and permissions;
-- defining rules;
-- associating rules with roles and permissions;
-- assigning roles to users.
+- definir roles y permisos;
+- establecer relaciones entre roles y permisos;
+- definir reglas;
+- asociar reglas con roles y permisos;
+- asignar roles a usuarios.
 
-Depending on authorization flexibility requirements the tasks above could be done in different ways.
+Dependiendo de los requerimientos de flexibilidad en la autorización, las tareas se pueden lograr de diferentes maneras.
 
-If your permissions hierarchy doesn't change at all and you have a fixed number of users you can create a
-[console command](tutorial-console.md#create-command) that will initialize authorization data once via APIs offered by `authManager`:
+Si la jerarquía de permisos no cambia en absoluto y tienes un número fijo de usuarios puede crear un
+[comando de consola](tutorial-console.md#create-command) que va a inicializar los datos de autorización una vez a través de las API que ofrece por `authManager`:
 
 ```php
 <?php
@@ -273,48 +273,48 @@ class RbacController extends Controller
     {
         $auth = Yii::$app->authManager;
 
-        // add "createPost" permission
+        // agrega el permiso "createPost"
         $createPost = $auth->createPermission('createPost');
         $createPost->description = 'Create a post';
         $auth->add($createPost);
 
-        // add "updatePost" permission
+        // agrega el permiso "updatePost"
         $updatePost = $auth->createPermission('updatePost');
         $updatePost->description = 'Update post';
         $auth->add($updatePost);
 
-        // add "author" role and give this role the "createPost" permission
+        // agrega el rol "author" y le asigna el permiso "createPost"
         $author = $auth->createRole('author');
         $auth->add($author);
         $auth->addChild($author, $createPost);
 
-        // add "admin" role and give this role the "updatePost" permission
-        // as well as the permissions of the "author" role
+        // agrega el rol "admin" y le asigna el permiso "updatePost"
+        // más los permisos del rol "author"
         $admin = $auth->createRole('admin');
         $auth->add($admin);
         $auth->addChild($admin, $updatePost);
         $auth->addChild($admin, $author);
 
-        // Assign roles to users. 1 and 2 are IDs returned by IdentityInterface::getId()
-        // usually implemented in your User model.
+        // asigna roles a usuarios. 1 y 2 son IDs devueltos por IdentityInterface::getId()
+        // usualmente implementado en tu modelo User.
         $auth->assign($author, 2);
         $auth->assign($admin, 1);
     }
 }
 ```
 
-> Note: If you are using advanced template, you need to put your `RbacController` inside `console/controllers` directory
-  and change namespace to `console/controllers`.
+> Note: Si estas utilizando el template avanzado, necesitas poner tu `RbacController` dentro del directorio `console/controllers`
+  y cambiar el espacio de nombres a `console/controllers`.
 
-After executing the command with `yii rbac/init` we'll get the following hierarchy:
+Después de ejecutar el comando `yii rbac/init`, obtendremos la siguiente jerarquía:
 
-![Simple RBAC hierarchy](images/rbac-hierarchy-1.png "Simple RBAC hierarchy")
+![Simple RBAC hierarchy](../guide/images/rbac-hierarchy-1.png "Simple RBAC hierarchy")
 
-Author can create post, admin can update post and do everything author can.
+"Author" puede crear un post, "admin" puede actualizar posts y hacer todo lo que puede hacer "author".
 
-If your application allows user signup you need to assign roles to these new users once. For example, in order for all
-signed up users to become authors in your advanced project template you need to modify `frontend\models\SignupForm::signup()`
-as follows:
+Si tu aplicación permite el registro de usuarios, necesitas asignar los roles necesarios para cada usuario nuevo. Por ejemplo, para que todos
+los usuarios registrados tengan el rol "author", en el template de aplicación avanzada debes modificar `frontend\models\SignupForm::signup()`
+como a continuación:
 
 ```php
 public function signup()
@@ -327,7 +327,7 @@ public function signup()
         $user->generateAuthKey();
         $user->save(false);
 
-        // the following three lines were added:
+        // las siguientes tres líneas fueron agregadas
         $auth = Yii::$app->authManager;
         $authorRole = $auth->getRole('author');
         $auth->assign($authorRole, $user->getId());
@@ -339,15 +339,15 @@ public function signup()
 }
 ```
 
-For applications that require complex access control with dynamically updated authorization data, special user interfaces
-(i.e. admin panel) may need to be developed using APIs offered by `authManager`.
+Para aplicaciones que requieren un control de acceso complejo con una actualización constante en los datos de autorización, puede ser necesario
+desarrollar una interfaz especial (por ej. un panel de administración) utilizando las APIs ofrecidas por `authManager`.
 
 
-### Using Rules <span id="using-rules"></span>
+### Utilizar Reglas <span id="using-rules"></span>
 
-As aforementioned, rules add additional constraint to roles and permissions. A rule is a class extending
-from [[yii\rbac\Rule]]. It must implement the [[yii\rbac\Rule::execute()|execute()]] method. In the hierarchy we've
-created previously author cannot edit his own post. Let's fix it. First we need a rule to verify that the user is the post author:
+Como se había mencionado, las reglas agregan restricciones adicionales a los roles y permisos. Una regla es una clase extendida
+de [[yii\rbac\Rule]]. Debe implementar al método [[yii\rbac\Rule::execute()|execute()]]. En la jerarquía que creamos
+previamente, "author" no puede editar su propio post. Vamos a arreglarlo. Primero necesitamos una regla para comprobar que el usuario actual es el autor del post:
 
 ```php
 namespace app\rbac;
@@ -355,17 +355,17 @@ namespace app\rbac;
 use yii\rbac\Rule;
 
 /**
- * Checks if authorID matches user passed via params
+ * Comprueba si authorID coincide con el usuario pasado como parámetro
  */
 class AuthorRule extends Rule
 {
     public $name = 'isAuthor';
 
     /**
-     * @param string|integer $user the user ID.
-     * @param Item $item the role or permission that this rule is associated with
-     * @param array $params parameters passed to ManagerInterface::checkAccess().
-     * @return boolean a value indicating whether the rule permits the role or permission it is associated with.
+     * @param string|integer $user el ID de usuario.
+     * @param Item $item el rol o permiso asociado a la regla
+     * @param array $params parámetros pasados a ManagerInterface::checkAccess().
+     * @return boolean un valor indicando si la regla permite al rol o permiso con el que está asociado.
      */
     public function execute($user, $item, $params)
     {
@@ -374,87 +374,87 @@ class AuthorRule extends Rule
 }
 ```
 
-The rule above checks if the `post` is created by `$user`. We'll create a special permission `updateOwnPost` in the
-command we've used previously:
+La regla anterior comprueba si el `post` fue creado por `$user`. Crearemos un permiso especial, `updateOwnPost`, en el comando que hemos utilizado
+anteriormente:
 
 ```php
 $auth = Yii::$app->authManager;
 
-// add the rule
+// agrega la regla
 $rule = new \app\rbac\AuthorRule;
 $auth->add($rule);
 
-// add the "updateOwnPost" permission and associate the rule with it.
+// agrega el permiso "updateOwnPost" y le asocia la regla.
 $updateOwnPost = $auth->createPermission('updateOwnPost');
 $updateOwnPost->description = 'Update own post';
 $updateOwnPost->ruleName = $rule->name;
 $auth->add($updateOwnPost);
 
-// "updateOwnPost" will be used from "updatePost"
+// "updateOwnPost" será utilizado desde "updatePost"
 $auth->addChild($updateOwnPost, $updatePost);
 
-// allow "author" to update their own posts
+// permite a "author" editar sus propios posts
 $auth->addChild($author, $updateOwnPost);
 ```
 
-Now we have got the following hierarchy:
+Ahora tenemos la siguiente jerarquía:
 
-![RBAC hierarchy with a rule](images/rbac-hierarchy-2.png "RBAC hierarchy with a rule")
+![RBAC hierarchy with a rule](../guide/images/rbac-hierarchy-2.png "RBAC hierarchy with a rule")
 
 
-### Access Check <span id="access-check"></span>
+### Comprobación de Acceso <span id="access-check"></span>
 
-With the authorization data ready, access check is as simple as a call to the [[yii\rbac\ManagerInterface::checkAccess()]]
-method. Because most access check is about the current user, for convenience Yii provides a shortcut method
-[[yii\web\User::can()]], which can be used like the following:
+Con los datos de autorización listos, la comprobación de acceso se hace con una simple llamada al método [[yii\rbac\ManagerInterface::checkAccess()]].
+Dado que la mayoría de la comprobación de acceso se hace sobre el usuario actual, para mayor comodidad Yii proporciona el atajo
+[[yii\web\User::can()]], que puede ser utilizado como a continuación:
 
 ```php
 if (\Yii::$app->user->can('createPost')) {
-    // create post
+    // crear el post
 }
 ```
 
-If the current user is Jane with `ID=1` we are starting at `createPost` and trying to get to `Jane`:
+Si el usuario actual es Jane con `ID=1`, comenzamos desde `createPost` y tratamos de alcanzar a `Jane`:
 
-![Access check](images/rbac-access-check-1.png "Access check")
+![Access check](../guide/images/rbac-access-check-1.png "Access check")
 
-In order to check if a user can update a post, we need to pass an extra parameter that is required by `AuthorRule` described before:
+Con el fin de comprobar si un usuario puede actualizar un post, necesitamos pasarle un parámetro adicional requerido por `AuthorRule`, descrito antes:
 
 ```php
 if (\Yii::$app->user->can('updatePost', ['post' => $post])) {
-    // update post
+    // actualizar post
 }
 ```
 
-Here is what happens if the current user is John:
+Aquí es lo que sucede si el usuario actual es John:
 
 
-![Access check](images/rbac-access-check-2.png "Access check")
+![Access check](../guide/images/rbac-access-check-2.png "Access check")
 
-We are starting with the `updatePost` and going through `updateOwnPost`. In order to pass the access check, `AuthorRule` 
-should return `true` from its `execute()` method. The method receives its `$params` from the `can()` method call so the value is
-`['post' => $post]`. If everything is fine, we will get to `author` which is assigned to John.
+Comenzamos desde `updatePost` y pasamos por `updateOwnPost`. Con el fin de pasar la comprobación de acceso, `AuthorRule`
+debe devolver `true` desde su método `execute()`. El método recive `$params` desde la llamada al método `can()`, cuyo valor es
+`['post' => $post]`. Si todo está bien, vamos a obtener `author`, el cual es asignado a John.
 
-In case of Jane it is a bit simpler since she is an admin:
+En caso de Jane es un poco más simple, ya que ella es un "admin":
 
-![Access check](images/rbac-access-check-3.png "Access check")
+![Access check](../guide/images/rbac-access-check-3.png "Access check")
 
 
-### Using Default Roles <span id="using-default-roles"></span>
+### Utilizar Roles por Defecto <span id="using-default-roles"></span>
 
-A default role is a role that is *implicitly* assigned to *all* users. The call to [[yii\rbac\ManagerInterface::assign()]]
-is not needed, and the authorization data does not contain its assignment information.
+Un rol por defecto es un rol que esta asignado *implícitamente* a *todos* los usuarios. La llamada a [[yii\rbac\ManagerInterface::assign()]]
+no es necesaria, y los datos de autorización no contienen su información de asignación.
 
-A default role is usually associated with a rule which determines if the role applies to the user being checked.
+Un rol por defecto es usualmente asociado con una regla que determina si el rol aplica al usuario siendo verificado.
 
-Default roles are often used in applications which already have some sort of role assignment. For example, an application
-may have a "group" column in its user table to represent which privilege group each user belongs to.
-If each privilege group can be mapped to a RBAC role, you can use the default role feature to automatically
-assign each user to a RBAC role. Let's use an example to show how this can be done.
+Los roles por defecto se utilizan a menudo en aplicaciones que ya tienen algún tipo de asignación de roles. Por ejemplo, una aplicación
+puede tener una columna "grupo" en su tabla de usuario para representar a qué grupo de privilegio pertenece cada usuario.
+Si cada grupo privilegio puede ser conectado a un rol de RBAC, se puede utilizar la función de rol por defecto para asignar
+cada usuario a un rol RBAC automáticamente. Usemos un ejemplo para mostrar cómo se puede hacer esto.
 
-Assume in the user table, you have a `group` column which uses 1 to represent the administrator group and 2 the author group.
-You plan to have two RBAC roles `admin` and `author` to represent the permissions for these two groups, respectively.
-You can set up the RBAC data as follows,
+Suponga que en la tabla de usuario, usted tiene una columna `group` que utiliza 1 para representar el grupo administrador y 2 al grupo autor.
+Planeas tener dos roles RBAC, `admin` y `author`, para representar los permisos de estos dos grupos, respectivamente.
+Puede configurar los datos RBAC de la siguiente manera,
 
 
 ```php
@@ -464,7 +464,7 @@ use Yii;
 use yii\rbac\Rule;
 
 /**
- * Checks if user group matches
+ * Comprueba si el grupo coincide
  */
 class UserGroupRule extends Rule
 {
@@ -492,21 +492,21 @@ $auth->add($rule);
 $author = $auth->createRole('author');
 $author->ruleName = $rule->name;
 $auth->add($author);
-// ... add permissions as children of $author ...
+// ... agrega permisos hijos a $author ...
 
 $admin = $auth->createRole('admin');
 $admin->ruleName = $rule->name;
 $auth->add($admin);
 $auth->addChild($admin, $author);
-// ... add permissions as children of $admin ...
+// ... agrega permisos hijos a $admin ...
 ```
 
-Note that in the above, because "author" is added as a child of "admin", when you implement the `execute()` method
-of the rule class, you need to respect this hierarchy as well. That is why when the role name is "author",
-the `execute()` method will return true if the user group is either 1 or 2 (meaning the user is in either "admin"
-group or "author" group).
+Tenga en cuenta que en el ejemplo anterior, dado que "author" es agregado como hijo de "admin", cuando implementes el método `execute()`
+de la clase de la regla, necesitas respetar esta jerarquía. Esto se debe a que cuando el nombre del rol es "author",
+el método `execute()` devolverá true si el grupo de usuario es tanto 1 como 2 (lo que significa que el usuario se encuentra en
+cualquiera de los dos grupos, "admin" o "author").
 
-Next, configure `authManager` by listing the two roles in [[yii\rbac\BaseManager::$defaultRoles]]:
+Luego, configura `authManager` enumerando los dos roles en [[yii\rbac\BaseManager::$defaultRoles]]:
 
 ```php
 return [
@@ -521,7 +521,7 @@ return [
 ];
 ```
 
-Now if you perform an access check, both of the `admin` and `author` roles will be checked by evaluating
-the rules associated with them. If the rule returns true, it means the role applies to the current user.
-Based on the above rule implementation, this means if the `group` value of a user is 1, the `admin` role
-would apply to the user; and if the `group` value is 2, the `author` role would apply.
+Ahora si realizas una comprobación de acceso, tanto el rol `admin` y como el rol `author` serán comprobados evaluando
+las reglas asociadas con ellos. Si la regla devuelve true, significa que la regla aplica al usuario actual.
+Basado en la implementación de la regla anterior, esto significa que si el valor `group` en un usuario es 1, el rol `admin`
+se aplicaría al usuario; y si el valor de `group` es 2, se le aplicaría el rol `author`.
