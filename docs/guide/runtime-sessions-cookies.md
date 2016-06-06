@@ -247,6 +247,8 @@ maintain a collection of cookies via the property named `cookies`. The cookie co
 the cookies submitted in a request, while the cookie collection in the latter represents the cookies that are to
 be sent to the user.
 
+The part of the application dealing with request and response directly is controller. Therefore, cookies should be
+read and sent in controller.
 
 ### Reading Cookies <span id="reading-cookies"></span>
 

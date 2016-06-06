@@ -33,6 +33,11 @@ Upgrade to Yii 2.1.0
   `yii\db\QueryBuilderbuild::buildGroupBy($columns)` -> `buildGroupBy($columns, &$params)`
   `yii\db\QueryBuilderbuild::buildOrderByAndLimit($sql, $orderBy, $limit, $offset)` -> `buildOrderByAndLimit($sql, $orderBy, $limit, $offset, &$params)`
 
+Upgrade from Yii 2.0.8
+----------------------
+
+* Part of code from `yii\web\User::loginByCookie()` method was moved to new `getIdentityAndDurationFromCookie()`
+  and `removeIdentityCookie()` methods. If you override `loginByCookie()` method, update it in order use new methods.
 
 Upgrade from Yii 2.0.7
 ----------------------

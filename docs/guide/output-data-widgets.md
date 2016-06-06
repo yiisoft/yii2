@@ -103,7 +103,7 @@ These are then also available as variables in the view.
 GridView <a name="grid-view"></a>
 --------
 
-Data grid or [[yii\widgets\GridView|GridView]] is one of the most powerful Yii widgets. It is extremely useful if you need to quickly build the admin
+Data grid or [[yii\grid\GridView|GridView]] is one of the most powerful Yii widgets. It is extremely useful if you need to quickly build the admin
 section of the system. It takes data from a [data provider](output-data-providers.md) and renders each row using a set of [[yii\grid\GridView::columns|columns]]
 presenting data in the form of a table.
 
@@ -395,8 +395,10 @@ class PostSearch extends Post
         return $dataProvider;
     }
 }
-
 ```
+
+> Tip: See [Query Builder](db-query-builder.md) and especially [Filter Conditions](db-query-builder.md#filter-conditions)
+> to learn how to build filtering query.
 
 You can use this function in the controller to get the dataProvider for the GridView:
 
@@ -699,11 +701,11 @@ echo GridView::widget([
 
 The [[yii\widgets\Pjax|Pjax]] widget allows you to update a certain section of a
 page instead of reloading the entire page. You can use it to to update only the
-[[yii\widgets\GridView|GridView]] content when using filters.
+[[yii\grid\GridView|GridView]] content when using filters.
 
 ```php
 use yii\widgets\Pjax;
-use yii\widgets\GridView;
+use yii\grid\GridView;
 
 Pjax::begin([
     // PJax options
@@ -716,9 +718,9 @@ Pjax::end();
 
 Pjax also works for the links inside the [[yii\widgets\Pjax|Pjax]] widget and
 for the links specified by [[yii\widgets\Pjax::$linkSelector|Pjax::$linkSelector]].
-But this might be a problem for the links of an [[yii\data\ActionColumn|ActionColumn]].
+But this might be a problem for the links of an [[yii\grid\ActionColumn|ActionColumn]].
 To prevent this, add the HTML attribute `data-pjax="0"` to the links when you edit
-the [[yii\data\ActionColumn::$buttons|ActionColumn::$buttons]] property.
+the [[yii\grid\ActionColumn::$buttons|ActionColumn::$buttons]] property.
 
 #### GridView/ListView with Pjax in Gii
 
@@ -732,7 +734,7 @@ yii gii/crud --controllerClass="backend\\controllers\PostController" \
 ```
 
 Which generates a [[yii\widgets\Pjax|Pjax]] widget wrapping the
-[[yii\widgets\GridView|GridView]] or [[yii\widgets\ListView|ListView]] widgets.
+[[yii\grid\GridView|GridView]] or [[yii\widgets\ListView|ListView]] widgets.
 
 Further reading
 ---------------

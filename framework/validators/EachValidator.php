@@ -129,7 +129,9 @@ class EachValidator extends Validator
         $filteredValue = [];
         foreach ($value as $k => $v) {
             $model->$attribute = $v;
-            $validator->validateAttribute($model, $attribute);
+            if (!$validator->skipOnEmpty || !$validator->isEmpty($v)) {
+                $validator->validateAttribute($model, $attribute);
+            }
             $filteredValue[$k] = $model->$attribute;
             if ($model->hasErrors($attribute)) {
                 $validationErrors = $model->getErrors($attribute);

@@ -150,7 +150,7 @@ class Captcha extends InputWidget
 
         $options = [
             'refreshUrl' => Url::toRoute($route),
-            'hashKey' => 'yiiCaptcha/' . trim($route[0], '/')
+            'hashKey' => 'yiiCaptcha/' . trim($route[0], '/'),
         ];
 
         return $options;

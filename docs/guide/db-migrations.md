@@ -414,8 +414,7 @@ The `foreignKey` keyword can take a parameter between parenthesis which will be
 the name of the related table for the generated foreign key. If no parameter
 is passed then the table name will be deduced from the column name.
 
-In the
-example above `author_id:integer:notNull:foreignKey(user)` will generate a
+In the example above `author_id:integer:notNull:foreignKey(user)` will generate a
 column named `author_id` with a foreign key to the `user` table while
 `category_id:integer:defaultValue(1):foreignKey` will generate a column
 `category_id` with a foreign key to the `category` table.
@@ -714,6 +713,9 @@ This command will list all migrations that have not been applied so far. If you 
 these migrations, it will run the `up()` or `safeUp()` method in every new migration class, one after another,
 in the order of their timestamp values. If any of the migrations fails, the command will quit without applying
 the rest of the migrations.
+
+> Tip: In case you don't have command line at your server you may try [web shell](https://github.com/samdark/yii2-webshell)
+> extension.
 
 For each migration that has been successfully applied, the command will insert a row into a database table named
 `migration` to record the successful application of the migration. This will allow the migration tool to identify

@@ -42,6 +42,9 @@ use yii\db\ActiveRecord;
  * }
  * ```
  *
+ * Because attribute values will be set automatically, it's a good idea to make sure attribute names aren't
+ * in `rules()` method of the model.
+ *
  * @author Luciano Baraglia <luciano.baraglia@gmail.com>
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0

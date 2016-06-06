@@ -486,3 +486,6 @@ Properties allowing to configure component not to do something should accept val
 - use lower case
 - use plural form for nouns which represent objects (e.g. validators)
 - use singular form for names representing relevant functionality/features (e.g. web)
+- prefer single word namespaces
+- if single word isn't suitable, use camelCase
+

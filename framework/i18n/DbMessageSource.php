@@ -140,7 +140,7 @@ class DbMessageSource extends MessageSource
             ->where([
                 't1.id' => new Expression('[[t2.id]]'),
                 't1.category' => $category,
-                't2.language' => $language
+                't2.language' => $language,
             ]);
 
         $fallbackLanguage = substr($language, 0, 2);
@@ -175,7 +175,7 @@ class DbMessageSource extends MessageSource
             ->where([
                 't1.id' => new Expression('[[t2.id]]'),
                 't1.category' => $category,
-                't2.language' => $fallbackLanguage
+                't2.language' => $fallbackLanguage,
             ])->andWhere([
                 'NOT IN', 't2.id', (new Query())->select('[[id]]')->from($this->messageTable)->where(['language' => $language])
             ]);

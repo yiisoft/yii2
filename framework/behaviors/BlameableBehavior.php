@@ -28,8 +28,13 @@ use yii\db\BaseActiveRecord;
  *
  * By default, BlameableBehavior will fill the `created_by` and `updated_by` attributes with the current user ID
  * when the associated AR object is being inserted; it will fill the `updated_by` attribute
- * with the current user ID when the AR object is being updated. If your attribute names are different, you may configure
- * the [[createdByAttribute]] and [[updatedByAttribute]] properties like the following:
+ * with the current user ID when the AR object is being updated.
+ *
+ * Because attribute values will be set automatically, it's a good idea to make sure `created_by` and `updated_by` aren't
+ * in `rules()` method of the model.
+ *
+ * If your attribute names are different, you may configure the [[createdByAttribute]] and [[updatedByAttribute]]
+ * properties like the following:
  *
  * ```php
  * public function behaviors()

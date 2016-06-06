@@ -123,7 +123,7 @@
             var $form = $('<form/>', {
                 action: url,
                 method: 'get',
-                class: 'gridview-filter-form',
+                'class': 'gridview-filter-form',
                 style: 'display:none',
                 'data-pjax': ''
             }).appendTo($grid);

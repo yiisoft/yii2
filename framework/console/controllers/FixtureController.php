@@ -77,7 +77,7 @@ class FixtureController extends Controller
     {
         return array_merge(parent::optionAliases(), [
             'g' => 'globalFixtures',
-            'n' => 'namespace'
+            'n' => 'namespace',
         ]);
     }
 

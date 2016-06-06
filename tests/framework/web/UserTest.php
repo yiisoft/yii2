@@ -122,6 +122,12 @@ class UserTest extends TestCase
         $this->mockWebApplication($appConfig);
         Yii::$app->session->removeAll();
 
+        $cookie = new Cookie(Yii::$app->user->identityCookie);
+        $cookie->value = 'junk';
+        $cookiesMock->add($cookie);
+        Yii::$app->user->getIdentity();
+        $this->assertTrue(strlen($cookiesMock->getValue(Yii::$app->user->identityCookie['name'])) == 0);
+
         Yii::$app->user->login(UserIdentity::findIdentity('user1'),3600);
         $this->assertFalse(Yii::$app->user->isGuest);
         $this->assertSame(Yii::$app->user->id, 'user1');
@@ -210,10 +216,18 @@ class UserTest extends TestCase
 
         $this->reset();
         Yii::$app->request->setUrl('accept-all');
-        $_SERVER['HTTP_ACCEPT'] = '*;q=0.1';
+        $_SERVER['HTTP_ACCEPT'] = '*/*;q=0.1';
         $user->loginRequired();
         $this->assertEquals('accept-all', $user->getReturnUrl());
         $this->assertTrue(Yii::$app->response->getIsRedirection());
+
+        $this->reset();
+        Yii::$app->request->setUrl('json-and-accept-all');
+        $_SERVER['HTTP_ACCEPT'] = 'text/json, */*; q=0.1';
+        try {
+            $user->loginRequired();
+        } catch (ForbiddenHttpException $e) {}
+        $this->assertFalse(Yii::$app->response->getIsRedirection());
 
         $this->reset();
         Yii::$app->request->setUrl('accept-html-json');

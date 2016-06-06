@@ -23,7 +23,7 @@ class ColumnSchemaBuilderTest extends BaseColumnSchemaBuilderTest
     /**
      * @return array
      */
-    public function unsignedProvider()
+    public function typesProvider()
     {
         return [
             ['integer UNSIGNED', Schema::TYPE_INTEGER, null, [
