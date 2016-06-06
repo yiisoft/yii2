@@ -26,7 +26,7 @@ class DataColumnTest extends \yiiunit\TestCase
             'dataProvider' => new ArrayDataProvider([
                 'allModels' => [],
                 'totalCount' => 0,
-                'modelClass' => Order::className()
+                'modelClass' => Order::class
             ]),
             'columns' => ['customer_id', 'total']
         ]);

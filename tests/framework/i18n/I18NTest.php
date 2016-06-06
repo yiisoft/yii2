@@ -46,7 +46,7 @@ class I18NTest extends TestCase
 
     private function getMessageSourceClass()
     {
-        return PhpMessageSource::className();
+        return PhpMessageSource::class;
     }
 
     public function testTranslate()
