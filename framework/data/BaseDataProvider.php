@@ -200,6 +200,9 @@ abstract class BaseDataProvider extends Component implements DataProviderInterfa
         } else {
             throw new InvalidParamException('Only Pagination instance, configuration array or false is allowed.');
         }
+        if ($this->_pagination !== false) {
+            $this->_pagination->totalCount = $this->getTotalCount();
+        }
     }
 
     /**
