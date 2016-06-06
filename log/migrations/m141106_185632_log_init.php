@@ -61,7 +61,7 @@ class m141106_185632_log_init extends Migration
             }
 
             $this->createTable($target->logTable, [
-                'id' => $this->db->driverName === 'sqlite' ? $this->primaryKey() : $this->bigPrimaryKey(),
+                'id' => $this->bigPrimaryKey(),
                 'level' => $this->integer(),
                 'category' => $this->string(),
                 'log_time' => $this->double(),
