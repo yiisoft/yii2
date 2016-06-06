@@ -25,6 +25,7 @@ Yii Framework 2 Change Log
 - Bug #11571: Fixed `yii\db\ColumnSchemaBuilder` to work with custom column types (andrey-mokhov, silverfire)
 - Bug #11662: Fixed `schema-oci.sql` for RBAC (jonny7)
 - Bug #11527: Fixed `bigPrimaryKey()` for SQLite (dynasource)
+- Enh #11702: Added `yii\rbac\DbManager::$assignmentTablePk` to be able to customize RBAC DB schema more (jrobles-boom)
 
 
 2.0.8 April 28, 2016
