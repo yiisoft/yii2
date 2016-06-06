@@ -211,5 +211,10 @@ You should profile your code to find out the performance bottlenecks and take ap
 The following profiling tools may be useful:
 
 - [Yii debug toolbar and debugger](https://github.com/yiisoft/yii2-debug/blob/master/docs/guide/README.md)
-- [XDebug profiler](http://xdebug.org/docs/profiler)
+- [Blackfire](https://blackfire.io/)
 - [XHProf](http://www.php.net/manual/en/book.xhprof.php)
+- [XDebug profiler](http://xdebug.org/docs/profiler)
+
+## Prepare application for scaling
+
+When nothing helps you may try making your application scalabe. A good introduction is provided in [Configuring a Yii2 Application for an Autoscaling Stack](https://github.com/samdark/yii2-cookbook/blob/master/book/scaling.md). For further reading you may refer to [Web apps performance and scaling](http://thehighload.com/).
