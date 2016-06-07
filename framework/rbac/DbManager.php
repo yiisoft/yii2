@@ -60,9 +60,13 @@ class DbManager extends BaseManager
      */
     public $ruleTable = '{{%auth_rule}}';
     /**
-     * @var string the name of the primary key. Defaults to user_id
+     * @var array the names of the primary keys for assignment table. Defaults to "user_id" and "item_name".
+     * @since 2.0.9
      */
-    public $assignmentTablePk = 'user_id';
+    public $assignmentTablePk = [
+                'user_id'=>'user_id',
+                'item_name'=>'item_name'
+            ];
     /**
      * @var Cache|array|string the cache used to improve RBAC performance. This can be one of the following:
      *
@@ -291,7 +295,7 @@ class DbManager extends BaseManager
                 ->delete($this->itemChildTable, ['or', '[[parent]]=:name', '[[child]]=:name'], [':name' => $item->name])
                 ->execute();
             $this->db->createCommand()
-                ->delete($this->assignmentTable, ['item_name' => $item->name])
+                ->delete($this->assignmentTable, [$this->assignmentTablePk['item_name'] => $item->name])
                 ->execute();
         }
 
@@ -317,7 +321,7 @@ class DbManager extends BaseManager
                 ->update($this->itemChildTable, ['child' => $item->name], ['child' => $name])
                 ->execute();
             $this->db->createCommand()
-                ->update($this->assignmentTable, ['item_name' => $item->name], ['item_name' => $name])
+                ->update($this->assignmentTable, [$this->assignmentTablePk['item_name'] => $item->name], [$this->assignmentTablePk['item_name'] => $name])
                 ->execute();
         }
 
@@ -463,8 +467,8 @@ class DbManager extends BaseManager
 
         $query = (new Query)->select('b.*')
             ->from(['a' => $this->assignmentTable, 'b' => $this->itemTable])
-            ->where('{{a}}.[[item_name]]={{b}}.[[name]]')
-            ->andWhere(['a.'.$this->assignmentTablePk => (string) $userId])
+            ->where('{{a}}.[['.$this->assignmentTablePk['item_name'].']]={{b}}.[[name]]')
+            ->andWhere(['a.'.$this->assignmentTablePk['user_id'] => (string) $userId])
             ->andWhere(['b.type' => Item::TYPE_ROLE]);
 
         $roles = [];
@@ -521,8 +525,8 @@ class DbManager extends BaseManager
     {
         $query = (new Query)->select('b.*')
             ->from(['a' => $this->assignmentTable, 'b' => $this->itemTable])
-            ->where('{{a}}.[[item_name]]={{b}}.[[name]]')
-            ->andWhere(['a.'.$this->assignmentTablePk => (string) $userId])
+            ->where('{{a}}.[['.$this->assignmentTablePk['item_name'].']]={{b}}.[[name]]')
+            ->andWhere(['a.'.$this->assignmentTablePk['user_id'] => (string) $userId])
             ->andWhere(['b.type' => Item::TYPE_PERMISSION]);
 
         $permissions = [];
@@ -540,9 +544,9 @@ class DbManager extends BaseManager
      */
     protected function getInheritedPermissionsByUser($userId)
     {
-        $query = (new Query)->select('item_name')
+        $query = (new Query)->select($this->assignmentTablePk['item_name'])
             ->from($this->assignmentTable)
-            ->where([$this->assignmentTablePk => (string) $userId]);
+            ->where([$this->assignmentTablePk['user_id'] => (string) $userId]);
 
         $childrenList = $this->getChildrenList();
         $result = [];
@@ -641,7 +645,8 @@ class DbManager extends BaseManager
         }
 
         $row = (new Query)->from($this->assignmentTable)
-            ->where([$this->assignmentTablePk => (string) $userId, 'item_name' => $roleName])
+            ->where([$this->assignmentTablePk['user_id'] => (string) $userId,
+                     $this->assignmentTablePk['item_name'] => $roleName])
             ->one($this->db);
 
         if ($row === false) {
@@ -649,8 +654,8 @@ class DbManager extends BaseManager
         }
 
         return new Assignment([
-            'userId' => $row[$this->assignmentTablePk],
-            'roleName' => $row['item_name'],
+            'userId' => $row[$this->assignmentTablePk['user_id']],
+            'roleName' => $row[$this->assignmentTablePk['item_name']],
             'createdAt' => $row['created_at'],
         ]);
     }
@@ -666,13 +671,13 @@ class DbManager extends BaseManager
 
         $query = (new Query)
             ->from($this->assignmentTable)
-            ->where([$this->assignmentTablePk => (string) $userId]);
+            ->where([$this->assignmentTablePk['user_id'] => (string) $userId]);
 
         $assignments = [];
         foreach ($query->all($this->db) as $row) {
-            $assignments[$row['item_name']] = new Assignment([
-                'userId' => $row[$this->assignmentTablePk],
-                'roleName' => $row['item_name'],
+            $assignments[$row[$this->assignmentTablePk['item_name']]] = new Assignment([
+                'userId' => $row[$this->assignmentTablePk['user_id']],
+                'roleName' => $row[$this->assignmentTablePk['item_name']],
                 'createdAt' => $row['created_at'],
             ]);
         }
@@ -804,8 +809,8 @@ class DbManager extends BaseManager
 
         $this->db->createCommand()
             ->insert($this->assignmentTable, [
-                $this->assignmentTablePk => $assignment->userId,
-                'item_name' => $assignment->roleName,
+                $this->assignmentTablePk['user_id'] => $assignment->userId,
+                $this->assignmentTablePk['item_name'] => $assignment->roleName,
                 'created_at' => $assignment->createdAt,
             ])->execute();
 
@@ -822,7 +827,7 @@ class DbManager extends BaseManager
         }
 
         return $this->db->createCommand()
-            ->delete($this->assignmentTable, [$this->assignmentTablePk => (string) $userId, 'item_name' => $role->name])
+            ->delete($this->assignmentTable, [$this->assignmentTablePk['user_id'] => (string) $userId, $this->assignmentTablePk['item_name'] => $role->name])
             ->execute() > 0;
     }
 
@@ -836,7 +841,7 @@ class DbManager extends BaseManager
         }
 
         return $this->db->createCommand()
-            ->delete($this->assignmentTable, [$this->assignmentTablePk => (string) $userId])
+            ->delete($this->assignmentTable, [$this->assignmentTablePk['user_id'] => (string) $userId])
             ->execute() > 0;
     }
 
@@ -888,7 +893,7 @@ class DbManager extends BaseManager
                 ->delete($this->itemChildTable, [$key => $names])
                 ->execute();
             $this->db->createCommand()
-                ->delete($this->assignmentTable, ['item_name' => $names])
+                ->delete($this->assignmentTable, [$this->assignmentTablePk['item_name'] => $names])
                 ->execute();
         }
         $this->db->createCommand()
@@ -980,8 +985,8 @@ class DbManager extends BaseManager
             return [];
         }
 
-        return (new Query)->select('[['.$this->assignmentTablePk.']]')
+        return (new Query)->select('[['.$this->assignmentTablePk['user_id'].']]')
             ->from($this->assignmentTable)
-            ->where(['item_name' => $roleName])->column($this->db);
+            ->where([$this->assignmentTablePk['item_name'] => $roleName])->column($this->db);
     }
 }
