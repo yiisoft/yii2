@@ -455,7 +455,8 @@ class IpValidator extends Validator
      *  - boolean: whether the string is negated
      *  - string: the string without negation (when the negation were present)
      */
-    private function parseNegatedRange ($string) {
+    private function parseNegatedRange($string)
+    {
         $isNegated = strpos($string, static::NEGATION_CHAR) === 0;
         return [$isNegated, $isNegated ? substr($string, strlen(static::NEGATION_CHAR)) : $string];
     }
@@ -470,7 +471,8 @@ class IpValidator extends Validator
      * @return array
      * @see networks
      */
-    private function prepareRanges($ranges) {
+    private function prepareRanges($ranges)
+    {
         $result = [];
         foreach ($ranges as $string) {
             list($isRangeNegated, $range) = $this->parseNegatedRange($string);
@@ -607,7 +609,7 @@ class IpValidator extends Validator
             'ipv6' => (boolean)$this->ipv6,
             'ipParsePattern' => new JsExpression(Html::escapeJsRegularExpression($this->getIpParsePattern())),
             'negation' => $this->negation,
-            'subnet' => $this->subnet
+            'subnet' => $this->subnet,
         ];
         if ($this->skipOnEmpty) {
             $options['skipOnEmpty'] = 1;

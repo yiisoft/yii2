@@ -80,7 +80,7 @@ class MigrateController extends BaseMigrateController
         'drop_table' => '@yii/views/dropTableMigration.php',
         'add_column' => '@yii/views/addColumnMigration.php',
         'drop_column' => '@yii/views/dropColumnMigration.php',
-        'create_junction' => '@yii/views/createTableMigration.php'
+        'create_junction' => '@yii/views/createTableMigration.php',
     ];
     /**
      * @var boolean indicates whether the table names generated should consider
@@ -295,7 +295,7 @@ class MigrateController extends BaseMigrateController
             $foreignKeys[$column] = [
                 'idx' => $this->generateTableName("idx-$table-$column"),
                 'fk' => $this->generateTableName("fk-$table-$column"),
-                'relatedTable' => $this->generateTableName($relatedTable)
+                'relatedTable' => $this->generateTableName($relatedTable),
             ];
         }
 

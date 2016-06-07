@@ -18,7 +18,7 @@ use yii\base\NotSupportedException;
  * logic of performing data validation. Child classes may also override [[clientValidateAttribute()]]
  * to provide client-side validation support.
  *
- * Validator declares a set of [[builtInValidators|built-in validators] which can
+ * Validator declares a set of [[builtInValidators|built-in validators]] which can
  * be referenced using short names. They are listed as follows:
  *
  * - `boolean`: [[BooleanValidator]]

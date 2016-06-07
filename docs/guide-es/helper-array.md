@@ -1,7 +1,7 @@
 ArrayHelper
 ===========
 
-Adicionalmente al [rico conjunto de funciones para arrays de PHP](http://php.net/manual/es/book.array.php) Yii array helper proporciona
+Adicionalmente al [rico conjunto de funciones para arrays de PHP](http://php.net/manual/es/book.array.php), el array helper de Yii proporciona
 métodos estáticos adicionales permitiendo trabajar con arrays de manera más eficiente.
 
 
@@ -109,30 +109,94 @@ $result = ArrayHelper::getColumn($array, function ($element) {
 
 ## Re-indexar Arrays <span id="reindexing-arrays"></span>
 
-Con el fin de indexar un array según una clave especificada, se puede usar el método `index`. La entrada del array debe ser
-multidimensional o un array de objetos. La clave puede ser un nombre clave del sub-array, un nombre de una propiedad del objeto, o
-una función anónima que retorne el valor de la clave dado el elemento del array.
+Con el fin de indexar un array según una clave especificada, se puede usar el método `index`. La entrada debería ser
+un array multidimensional o un array de objetos. `$key` puede ser tanto una clave del sub-array, un nombre de una propiedad
+del objeto, o una función anónima que debe devolver el valor que será utilizado como clave.
 
-Si el valor de la clave es null, el correspondiente elemento del array será desechado y no se pondrá en el resultado. Por ejemplo,
+El atributo `$groups` es un array de claves, que será utilizado para agrupar el array de entrada en uno o más sub-arrays
+basado en la clave especificada.
+
+Si el atributo `$key` o su valor por el elemento en particular es null y `$groups` no está definido, dicho elemento del array
+será descartado. De otro modo, si `$groups` es especificado, el elemento del array será agregado al array resultante
+sin una clave.
+
+Por ejemplo:
 
 ```php
 $array = [
-    ['id' => '123', 'data' => 'abc'],
-    ['id' => '345', 'data' => 'def'],
+    ['id' => '123', 'data' => 'abc', 'device' => 'laptop'],
+    ['id' => '345', 'data' => 'def', 'device' => 'tablet'],
+    ['id' => '345', 'data' => 'hgi', 'device' => 'smartphone'],
 ];
-$result = ArrayHelper::index($array, 'id');
-// el resultado es:
-// [
-//     '123' => ['id' => '123', 'data' => 'abc'],
-//     '345' => ['id' => '345', 'data' => 'def'],
-// ]
+$result = ArrayHelper::index($array, 'id');');
+```
 
-// usando función anónima
+El resultado será un array asociativo, donde la clave es el valor del atributo `id`
+
+```php
+[
+    '123' => ['id' => '123', 'data' => 'abc', 'device' => 'laptop'],
+    '345' => ['id' => '345', 'data' => 'hgi', 'device' => 'smartphone']
+    // El segundo elemento del array original es sobrescrito por el último elemento debido a que tiene el mismo id
+]
+```
+
+Pasando una función anónima en `$key`, da el mismo resultado.
+
+```php
 $result = ArrayHelper::index($array, function ($element) {
     return $element['id'];
 });
 ```
 
+Pasando `id` como tercer argumento, agrupará `$array` mediante `id`:
+
+```php
+$result = ArrayHelper::index($array, null, 'id');
+```
+
+El resultado será un array multidimensional agrupado por `id` en su primer nivel y no indexado en su segundo nivel:
+
+```php
+[
+    '123' => [
+        ['id' => '123', 'data' => 'abc', 'device' => 'laptop']
+    ],
+    '345' => [ // todos los elementos con este índice están presentes en el array resultante
+        ['id' => '345', 'data' => 'def', 'device' => 'tablet'],
+        ['id' => '345', 'data' => 'hgi', 'device' => 'smartphone'],
+    ]
+]
+```
+
+Una función anónima puede ser usada también en el array agrupador:
+
+```php
+$result = ArrayHelper::index($array, 'data', [function ($element) {
+    return $element['id'];
+}, 'device']);
+```
+
+El resultado será un array multidimensional agrupado por `id` en su primer nivel, por `device` en su segundo nivel e
+indexado por `data` en su tercer nivel:
+
+```php
+[
+    '123' => [
+        'laptop' => [
+            'abc' => ['id' => '123', 'data' => 'abc', 'device' => 'laptop']
+        ]
+    ],
+    '345' => [
+        'tablet' => [
+            'def' => ['id' => '345', 'data' => 'def', 'device' => 'tablet']
+        ],
+        'smartphone' => [
+            'hgi' => ['id' => '345', 'data' => 'hgi', 'device' => 'smartphone']
+        ]
+    ]
+]
+```
 
 ## Construyendo Mapas (Maps) <span id="building-maps"></span>
 
@@ -241,31 +305,30 @@ La codificación utilizará el charset de la aplicación y podría ser cambiado 
 
 ```php
   /**
-     * Merges two or more arrays into one recursively.
-     * If each array has an element with the same string key value, the latter
-     * will overwrite the former (different from array_merge_recursive).
-     * Recursive merging will be conducted if both arrays have an element of array
-     * type and are having the same key.
-     * For integer-keyed elements, the elements from the latter array will
-     * be appended to the former array.
-     * @param array $a array to be merged to
-     * @param array $b array to be merged from. You can specify additional
-     * arrays via third argument, fourth argument etc.
-     * @return array the merged array (the original arrays are not changed.)
-     */
+    * Fusiona recursivamente dos o más arrays en uno.
+    * Si cada array tiene un elemento con el mismo valor string de clave, el último
+    * sobrescribirá el anterior (difiere de array_merge_recursive).
+    * Se llegará a una fusión recursiva si ambos arrays tienen un elemento tipo array
+    * y comparten la misma clave.
+    * Para elementos cuyas claves son enteros, los elementos del array final
+    * serán agregados al array anterior.
+    * @param array $a array al que se va a fusionar
+    * @param array $b array desde el cual fusionar. Puedes especificar
+    * arrays adicionales mediante el tercer argumento, cuarto argumento, etc.
+    * @return array el array fusionado (los arrays originales no sufren cambios)
+    */
     public static function merge($a, $b)
 ```
 
 
 ## Convirtiendo Objetos a Arrays <span id="converting-objects-to-arrays"></span>
 
-A menudo necesitas convertir un objeto o un array de objetos a un array. El caso más común es convertir los modelos de
-active record con el fin de servir los arrays de datos vía API REST o utilizarlos de otra manera. El siguiente código
-se podría utilizar para hacerlo:
+A menudo necesitas convertir un objeto o un array de objetos a un array. El caso más común es convertir los modelos de active record
+con el fin de servir los arrays de datos vía API REST o utilizarlos de otra manera. El siguiente código se podría utilizar para hacerlo:
 
 ```php
 $posts = Post::find()->limit(10)->all();
-$data = ArrayHelper::toArray($post, [
+$data = ArrayHelper::toArray($posts, [
     'app\models\Post' => [
         'id',
         'title',
@@ -302,3 +365,22 @@ El resultado de la conversión anterior será:
 
 Es posible proporcionar una manera predeterminada de convertir un objeto a un array para una clase especifica
 mediante la implementación de la interfaz [[yii\base\Arrayable|Arrayable]] en esa clase.
+
+## Haciendo pruebas con Arrays <span id="testing-arrays"></span>
+
+A menudo necesitarás comprobar está en un array o un grupo de elementos es un sub-grupo de otro.
+A pesar de que PHP ofrece `in_array()`, este no soporta sub-grupos u objetos de tipo `\Traversable`.
+
+Para ayudar en este tipo de pruebas, [[yii\base\ArrayHelper]] provee [[yii\base\ArrayHelper::isIn()|isIn()]]
+y [[yii\base\ArrayHelper::isSubset()|isSubset()]] con la misma firma del método [[in_array()]].
+
+```php
+// true
+ArrayHelper::isIn('a', ['a']);
+// true
+ArrayHelper::isIn('a', new(ArrayObject['a']));
+
+// true 
+ArrayHelper::isSubset(new(ArrayObject['a', 'c']), new(ArrayObject['a', 'b', 'c'])
+
+```
