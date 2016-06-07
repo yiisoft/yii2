@@ -17,6 +17,13 @@ class DbSessionTest extends TestCase
     protected function setUp()
     {
         parent::setUp();
+        /**
+         * @todo Optionally do fallback to some other database, however this might be overkill for tests only since
+         * sqlite is always available on travis.
+         */
+        if (!in_array('sqlite', \PDO::getAvailableDrivers())) {
+            $this->markTestIncomplete('DbSessionTest requires SQLite!');
+        }
         $this->mockApplication();
         Yii::$app->set('db', [
             'class' => Connection::className(),
