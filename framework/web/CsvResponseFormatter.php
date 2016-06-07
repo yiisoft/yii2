@@ -25,7 +25,7 @@ class CsvResponseFormatter extends Component implements ResponseFormatterInterfa
     /**
      * @var int Maximum number of bytes to use in memory before using a temp file. Defaults to 20MB
      */
-    public $maxMemory = 20 * 1024 * 1024;
+    public $maxMemory = 20971520;
     /**
      * @var string the Content-Type header for the response
      */
