@@ -39,7 +39,7 @@ class DbMessageSourceTest extends I18NTest
 
     private function getMessageSourceClass()
     {
-        return DbMessageSource::className();
+        return DbMessageSource::class;
     }
 
     protected static function runConsoleAction($route, $params = [])

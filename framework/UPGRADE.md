@@ -11,7 +11,8 @@ php composer.phar self-update
 php composer.phar global require "fxp/composer-asset-plugin:~1.1.1"
 ```
 
-## Upgrade to Yii 2.1.0
+Upgrade to Yii 2.1.0
+--------------------
 
 - The minimum required PHP version is 5.5.0 now.
 
@@ -28,7 +29,10 @@ You can make this change even before upgrading to Yii 2.1, Yii 2.0.x does work w
 > - `buildGroupBy($columns)` -> `buildGroupBy($columns, &$params)`
 > - `buildOrderByAndLimit($sql, $orderBy, $limit, $offset)` -> `buildOrderByAndLimit($sql, $orderBy, $limit, $offset, &$params)`
 
-## Upgrade from Yii 2.0.8
+Upgrade from Yii 2.0.8
+----------------------
+
+- Part of code from `yii\web\User::loginByCookie()` method was moved to new `getIdentityAndDurationFromCookie()` and `removeIdentityCookie()` methods. If you override `loginByCookie()` method, update it in order use new methods.
 
 - Part of code from `yii\web\User::loginByCookie()` method was moved to new `getIdentityAndDurationFromCookie()` and `removeIdentityCookie()` methods. If you override `loginByCookie()` method, update it in order use new methods.
 
