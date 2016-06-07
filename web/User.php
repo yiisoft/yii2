@@ -11,6 +11,7 @@ use Yii;
 use yii\base\Component;
 use yii\base\InvalidConfigException;
 use yii\base\InvalidValueException;
+use yii\rbac\CheckAccessInterface;
 
 /**
  * User is the class for the "user" application component that manages the user authentication status.
@@ -103,6 +104,12 @@ class User extends Component
      * Note that this will not work if [[enableAutoLogin]] is true.
      */
     public $authTimeout;
+    /**
+     * @var CheckAccessInterface The acess checker to use for checking access.
+     * If not set the application auth manager will be used.
+     * @since 2.0.9
+     */
+    public $accessChecker;
     /**
      * @var integer the number of seconds in which the user will be logged out automatically
      * regardless of activity.
@@ -692,7 +699,7 @@ class User extends Component
      * When this parameter is true (default), if the access check of an operation was performed
      * before, its result will be directly returned when calling this method to check the same
      * operation. If this parameter is false, this method will always call
-     * [[\yii\rbac\ManagerInterface::checkAccess()]] to obtain the up-to-date access result. Note that this
+     * [[\yii\rbac\CheckAcessInterface::checkAccess()]] to obtain the up-to-date access result. Note that this
      * caching is effective only within the same request and only works when `$params = []`.
      * @return boolean whether the user can perform the operation as specified by the given permission.
      */
@@ -701,10 +708,10 @@ class User extends Component
         if ($allowCaching && empty($params) && isset($this->_access[$permissionName])) {
             return $this->_access[$permissionName];
         }
-        if (($manager = $this->getAuthManager()) === null) {
+        if (($accessChecker = $this->getAccessChecker()) === null) {
             return false;
         }
-        $access = $manager->checkAccess($this->getId(), $permissionName, $params);
+        $access = $accessChecker->checkAccess($this->getId(), $permissionName, $params);
         if ($allowCaching && empty($params)) {
             $this->_access[$permissionName] = $access;
         }
@@ -743,9 +750,20 @@ class User extends Component
      * You may override this method to return a different auth manager instance if needed.
      * @return \yii\rbac\ManagerInterface
      * @since 2.0.6
+     * @deprecated Use `getAccessChecker()` instead.
      */
     protected function getAuthManager()
     {
         return Yii::$app->getAuthManager();
+    }
+
+    /**
+     * Returns the acess checker used for checking access.
+     * @return CheckAccessInterface
+     * @since 2.0.9
+     */
+    protected function getAccessChecker()
+    {
+        return $this->accessChecker !== null ? $this->accessChecker : $this->getAuthManager();
     }
 }
