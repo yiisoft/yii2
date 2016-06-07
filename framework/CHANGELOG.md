@@ -36,6 +36,7 @@ Yii Framework 2 Change Log
 - Bug #11549: Fixed `ArrayHelper::getValue()` to work properly with float keys (zsounder, AnikanovD)
 - Bug #8644: Fixed trying to ENABLE/DISABLE TRIGGER ALL on a view in PostgreSQL (ricpelo)
 - Bug #11536: Fixed regression introduced in 2.0.8, where scalar value was not allowed in QueryBuilder `IN` condition anymore (cebe)
+- Bug #11672: Fixed `yii\validators\NumberValidator` erroring when value is an object without `__toString()` method (SamMousa)
 
 2.0.8 April 28, 2016
 --------------------
