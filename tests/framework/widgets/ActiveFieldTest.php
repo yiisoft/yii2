@@ -251,6 +251,7 @@ EOD;
 EOD;
         $this->activeField->hiddenInput();
         $this->assertEquals($expectedValue, $this->activeField->parts['{input}']);
+        $this->assertEquals('', $this->activeField->parts['{label}']);
     }
 
     public function testListBox()
