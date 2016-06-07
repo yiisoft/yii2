@@ -28,7 +28,7 @@ use yii\test\FixtureTrait;
  * yii fixture "*"
  *
  * #load all fixtures except User
- * yii fixture "*" -User
+ * yii fixture "*, -User"
  *
  * #load fixtures with different namespace.
  * yii fixture/load User --namespace=alias\my\custom\namespace\goes\here
@@ -100,9 +100,8 @@ class FixtureController extends Controller
      *
      * @throws Exception if the specified fixture does not exist.
      */
-    public function actionLoad()
+    public function actionLoad(array $fixturesInput = [])
     {
-        $fixturesInput = func_get_args();
         if ($fixturesInput === []) {
             $this->stdout($this->getHelpSummary() . "\n");
 
@@ -116,7 +115,6 @@ class FixtureController extends Controller
         $except = $filtered['except'];
 
         if (!$this->needToApplyAll($fixturesInput[0])) {
-
             $fixtures = $filtered['apply'];
 
             $foundFixtures = $this->findFixtures($fixtures);
@@ -125,7 +123,6 @@ class FixtureController extends Controller
             if ($notFoundFixtures) {
                 $this->notifyNotFound($notFoundFixtures);
             }
-
         } else {
             $foundFixtures = $this->findFixtures();
         }
@@ -180,14 +177,12 @@ class FixtureController extends Controller
      *
      * @throws Exception if the specified fixture does not exist.
      */
-    public function actionUnload()
+    public function actionUnload(array $fixturesInput = [])
     {
-        $fixturesInput = func_get_args();
         $filtered = $this->filterFixtures($fixturesInput);
         $except = $filtered['except'];
 
         if (!$this->needToApplyAll($fixturesInput[0])) {
-
             $fixtures = $filtered['apply'];
 
             $foundFixtures = $this->findFixtures($fixtures);
@@ -196,7 +191,6 @@ class FixtureController extends Controller
             if ($notFoundFixtures) {
                 $this->notifyNotFound($notFoundFixtures);
             }
-
         } else {
             $foundFixtures = $this->findFixtures();
         }
@@ -404,7 +398,6 @@ class FixtureController extends Controller
         $findAll = ($fixtures === []);
 
         if (!$findAll) {
-
             $filesToSearch = [];
 
             foreach ($fixtures as $fileName) {
@@ -432,7 +425,6 @@ class FixtureController extends Controller
         $config = [];
 
         foreach ($fixtures as $fixture) {
-
             $isNamespaced = (strpos($fixture, '\\') !== false);
             $fullClassName = $isNamespaced ? $fixture . 'Fixture' : $this->namespace . '\\' . $fixture . 'Fixture';
 
