@@ -27,6 +27,7 @@ Yii Framework 2 Change Log
 - Bug #11527: Fixed `bigPrimaryKey()` for SQLite (dynasource)
 - Bug #11686: `BaseArrayHelper::isIn()` comparison did not work in strict mode (taobig)
 - Enh #11679: Extracted `CheckAccessInterface` from `ManagerInterface` (SamMousa, samdark, mdomba)
+- Bug #11723: Fixed PHP 7 + XDebug error handling displaying "Expected array for frame 0" (tanakahisateru)
 
 
 2.0.8 April 28, 2016
