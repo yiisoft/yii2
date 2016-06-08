@@ -70,7 +70,7 @@ class CheckboxColumn extends Column
     /**
      * @var string the css class that will be used to find the checkboxes.
      */
-    public $cssClass = 'yii-checkboxcolum-check';
+    public $cssClass;
 
     /**
      * @inheritdoc
