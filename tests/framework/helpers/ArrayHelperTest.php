@@ -687,6 +687,17 @@ class ArrayHelperTest extends TestCase
         $this->assertTrue(ArrayHelper::isIn(['a'], new \ArrayObject([['a'], 'b'])));
         $this->assertFalse(ArrayHelper::isIn('a', new \ArrayObject([['a'], 'b'])));
         $this->assertFalse(ArrayHelper::isIn('a', [['a'], 'b']));
+
+    }
+
+    public function testIsInStrict()
+    {
+        // strict comparison
+        $this->assertTrue(ArrayHelper::isIn(1, new \ArrayObject([1, 'a']), true));
+        $this->assertTrue(ArrayHelper::isIn(1, [1, 'a'], true));
+
+        $this->assertFalse(ArrayHelper::isIn('1', new \ArrayObject([1, 'a']), true));
+        $this->assertFalse(ArrayHelper::isIn('1', [1, 'a'], true));
     }
 
     /**

@@ -22,7 +22,11 @@ use yii\helpers\FormatConverter;
  * It is further possible to limit the date within a certain range using [[min]] and [[max]].
  *
  * Additional to validating the date it can also export the parsed timestamp as a machine readable format
- * which can be configured using [[timestampAttribute]].
+ * which can be configured using [[timestampAttribute]]. For values that include time information (not date-only values)
+ * also the time zone will be adjusted. The time zone of the input value is assumed to be the one specified by the [[timeZone]]
+ * property and the target timeZone will be UTC when [[timestampAttributeFormat]] is `null` (exporting as UNIX timestamp)
+ * or [[timestampAttributeTimeZone]] otherwise. If you want to avoid the time zone conversion, make sure that [[timeZone]] and
+ * [[timestampAttributeTimeZone]] are the same.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @author Carsten Brandt <mail@cebe.cc>

@@ -668,10 +668,10 @@ class m150101_185401_create_news_table extends Migration
 * [[yii\db\Migration::dropForeignKey()|dropForeignKey()]]: 外部キーを削除
 * [[yii\db\Migration::createIndex()|createIndex()]]: インデックスを作成
 * [[yii\db\Migration::dropIndex()|dropIndex()]]: インデックスを削除
-* [[yii\db\Migration::addCommentOnColumn()|addCommentOnColumn()]: カラムにコメントを追加
-* [[yii\db\Migration::dropCommentFromColumn()|dropCommentFromColumn()]: カラムからコメントを削除
-* [[yii\db\Migration::addCommentOnTable()|addCommentOnTable()]: テーブルにコメントを追加
-* [[yii\db\Migration::dropCommentFromTable()|dropCommentFromTable()]: テーブルからコメントを削除
+* [[yii\db\Migration::addCommentOnColumn()|addCommentOnColumn()]]: カラムにコメントを追加
+* [[yii\db\Migration::dropCommentFromColumn()|dropCommentFromColumn()]]: カラムからコメントを削除
+* [[yii\db\Migration::addCommentOnTable()|addCommentOnTable()]]: テーブルにコメントを追加
+* [[yii\db\Migration::dropCommentFromTable()|dropCommentFromTable()]]: テーブルからコメントを削除
 
 > Info: [[yii\db\Migration]] は、データベースクエリメソッドを提供しません。
   これは、通常、データベースからのデータ取得については、メッセージを追加して表示する必要がないからです。

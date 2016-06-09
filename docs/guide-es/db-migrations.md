@@ -684,10 +684,10 @@ Debajo hay una lista de todos los métodos de acceso a la base de datos:
 * [[yii\db\Migration::dropForeignKey()|dropForeignKey()]]: elimina una clave foránea
 * [[yii\db\Migration::createIndex()|createIndex()]]: crea un índice
 * [[yii\db\Migration::dropIndex()|dropIndex()]]: elimina un índice
-* [[yii\db\Migration::addCommentOnColumn()|addCommentOnColumn()]: agrega un comentario a una columna
-* [[yii\db\Migration::dropCommentFromColumn()|dropCommentFromColumn()]: elimina un comentario de una columna
-* [[yii\db\Migration::addCommentOnTable()|addCommentOnTable()]: agrega un comentario a una tabla
-* [[yii\db\Migration::dropCommentFromTable()|dropCommentFromTable()]: elimina un comentario de una tabla
+* [[yii\db\Migration::addCommentOnColumn()|addCommentOnColumn()]]: agrega un comentario a una columna
+* [[yii\db\Migration::dropCommentFromColumn()|dropCommentFromColumn()]]: elimina un comentario de una columna
+* [[yii\db\Migration::addCommentOnTable()|addCommentOnTable()]]: agrega un comentario a una tabla
+* [[yii\db\Migration::dropCommentFromTable()|dropCommentFromTable()]]: elimina un comentario de una tabla
 
 > Info: [[yii\db\Migration]] no provee un método de consulta a la base de datos. Esto es porque normalmente no necesitas
   mostrar mensajes detallados al traer datos de una base de datos. También se debe a que puedes utilizar el poderoso
