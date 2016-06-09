@@ -25,6 +25,7 @@ Yii Framework 2 Change Log
 - Bug #11571: Fixed `yii\db\ColumnSchemaBuilder` to work with custom column types (andrey-mokhov, silverfire)
 - Bug #11662: Fixed `schema-oci.sql` for RBAC (jonny7)
 - Bug #11527: Fixed `bigPrimaryKey()` for SQLite (dynasource)
+- Bug #11723: Fixed PHP7+Xdebug error handling problem #11120 displaying "Expected array for frame 0" (tanakahisateru)
 
 
 2.0.8 April 28, 2016
