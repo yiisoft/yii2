@@ -744,26 +744,15 @@ class User extends Component
     }
 
     /**
-     * Returns auth manager associated with the user component.
+     * Returns the acess checker used for checking access.
      *
      * By default this is the `authManager` application component.
-     * You may override this method to return a different auth manager instance if needed.
-     * @return \yii\rbac\ManagerInterface
-     * @since 2.0.6
-     * @deprecated Use `getAccessChecker()` instead.
-     */
-    protected function getAuthManager()
-    {
-        return Yii::$app->getAuthManager();
-    }
-
-    /**
-     * Returns the acess checker used for checking access.
+     *
      * @return CheckAccessInterface
      * @since 2.0.9
      */
     protected function getAccessChecker()
     {
-        return $this->accessChecker !== null ? $this->accessChecker : $this->getAuthManager();
+        return $this->accessChecker !== null ? $this->accessChecker : Yii::$app->getAuthManager();
     }
 }
