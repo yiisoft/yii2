@@ -631,7 +631,7 @@ If [[yii\i18n\MissingTranslationEvent::translatedMessage]] is set by the event h
 
 ### Using the `message` command <a name="message-command"></a>
 
-Translations can be stored in [[yii\i18n\PhpMessageSource|php files]], [[yii\i18n\GettextMessageSource|.po files] or to [[yii\i18n\DbMessageSource|database]]. See specific classes for additional options.
+Translations can be stored in [[yii\i18n\PhpMessageSource|php files]], [[yii\i18n\GettextMessageSource|.po files]] or in a [[yii\i18n\DbMessageSource|database]]. See specific classes for additional options.
 
 First of all you need to create a configuration file. Decide where you want to store it and then issue the command 
 
