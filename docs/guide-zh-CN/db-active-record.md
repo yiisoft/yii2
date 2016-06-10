@@ -1,7 +1,7 @@
 Active Record
 =============
 
-> 注意：该章节还在开发中。
+> Note: 该章节还在开发中。
 
 [Active Record](http://zh.wikipedia.org/wiki/Active_Record) （活动记录，以下简称AR）提供了一个面向对象的接口，
 用以访问数据库中的数据。一个 AR 类关联一张数据表，
@@ -166,7 +166,7 @@ $sql = 'SELECT * FROM customer';
 $customers = Customer::findBySql($sql)->all();
 ```
 
-> 小技巧：在上面的代码中，`Customer::STATUS_ACTIVE` 是一个在 `Customer` 类里定义的常量。（译注：这种常量的值一般都是tinyint）相较于直接在代码中写死字符串或数字，使用一个更有意义的常量名称是一种更好的编程习惯。
+> Tip: 在上面的代码中，`Customer::STATUS_ACTIVE` 是一个在 `Customer` 类里定义的常量。（译注：这种常量的值一般都是tinyint）相较于直接在代码中写死字符串或数字，使用一个更有意义的常量名称是一种更好的编程习惯。
 
 有两个快捷方法：`findOne` 和 `findAll()` 用来返回一个或者一组`ActiveRecord`实例。前者返回第一个匹配到的实例，后者返回所有。
 例如：
@@ -405,7 +405,7 @@ SELECT * FROM customer WHERE id=1;
 SELECT * FROM order WHERE customer_id=1;
 ```
 
-> 提示:再次用表达式 `$customer->orders`将不会执行第二次 SQL 查询，
+> Tip: 再次用表达式 `$customer->orders`将不会执行第二次 SQL 查询，
 SQL 查询只在该表达式第一次使用时执行。
 数据库访问只返回缓存在内部前一次取回的结果集，如果你想查询新的
 关联数据，先要注销现有结果集：`unset($customer->orders);`。
@@ -436,7 +436,7 @@ class Customer extends \yii\db\ActiveRecord
 $orders = $customer->getBigOrders(200)->all();
 ```
 
->注意：关联查询返回的是 [[yii\db\ActiveQuery]] 的实例，如果像特性（如类属性）那样连接关联数据，
+> Note: 关联查询返回的是 [[yii\db\ActiveQuery]] 的实例，如果像特性（如类属性）那样连接关联数据，
 返回的结果是关联查询的结果，即 [[yii\db\ActiveRecord]] 的实例，
 或者是数组，或者是 null ，取决于关联关系的多样性。如，`$customer->getOrders()` 返回
 `ActiveQuery` 实例，而 `$customer->orders` 返回`Order` 对象数组
@@ -630,7 +630,7 @@ if ($customers[0]->orders[0]->customer === $customers[0]) {
 }
 ```
 
->注意:相对关系不能在包含中间表的关联关系中定义。 即是，如果你的关系是通过[[yii\db\ActiveQuery::via()|via()]] 或 [[yii\db\ActiveQuery::viaTable()|viaTable()]]方法定义的， 就不能调用[[yii\db\ActiveQuery::inverseOf()]]方法了。
+> Note: 相对关系不能在包含中间表的关联关系中定义。 即是，如果你的关系是通过[[yii\db\ActiveQuery::via()|via()]] 或 [[yii\db\ActiveQuery::viaTable()|viaTable()]]方法定义的， 就不能调用[[yii\db\ActiveQuery::inverseOf()]]方法了。
 
 
  JOIN 类型关联查询
@@ -997,8 +997,11 @@ TODO
 
 被污染属性
 -------------------
+当你调用[[yii\db\ActiveRecord::save()|save()]]用于保存活动记录(Active Record)实例时,只有被污染的属性才会被保存。一个属性是否认定为被污染取决于它的值自从最后一次从数据库加载或者最近一次保存到数据库后到现在是否被修改过。注意:无论活动记录(Active Record)是否有被污染属性，数据验证始终会执行。
 
-TODO
+活动记录(Active Record)会自动维护一个污染数据列表。它的工作方式是通过维护一个较旧属性值版本，并且将它们与最新的进行比较。你可以通过调用[[yii\db\ActiveRecord::getDirtyAttributes()]]来获取当前的污染属性。你也可以调用[[yii\db\ActiveRecord::markAttributeDirty()]]来显示的标记一个属性为污染属性。
+
+如果你对最近一次修改前的属性值感兴趣，你可以调用[[yii\db\ActiveRecord::getOldAttributes()|getOldAttributes()]] 或 [[yii\db\ActiveRecord::getOldAttribute()|getOldAttribute()]]。
 
 另见
 -------------------

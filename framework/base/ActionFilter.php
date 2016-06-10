@@ -28,6 +28,8 @@ class ActionFilter extends Behavior
      * Note that if the filter is attached to a module, the action IDs should also include child module IDs (if any)
      * and controller IDs.
      *
+     * Since version 2.0.9 action IDs can be specified as wildcards, e.g. `site/*`.
+     *
      * @see except
      */
     public $only;
@@ -111,14 +113,14 @@ class ActionFilter extends Behavior
     }
 
     /**
-     * Returns a value indicating whether the filer is active for the given action.
-     * @param Action $action the action being filtered
-     * @return boolean whether the filer is active for the given action.
+     * Returns an action ID by converting [[Action::$uniqueId]] into an ID relative to the module
+     * @param Action $action
+     * @return string
+     * @since 2.0.7
      */
-    protected function isActive($action)
+    protected function getActionId($action)
     {
         if ($this->owner instanceof Module) {
-            // convert action uniqueId into an ID relative to the module
             $mid = $this->owner->getUniqueId();
             $id = $action->getUniqueId();
             if ($mid !== '' && strpos($id, $mid) === 0) {
@@ -127,6 +129,39 @@ class ActionFilter extends Behavior
         } else {
             $id = $action->id;
         }
-        return !in_array($id, $this->except, true) && (empty($this->only) || in_array($id, $this->only, true));
+
+        return $id;
+    }
+
+    /**
+     * Returns a value indicating whether the filter is active for the given action.
+     * @param Action $action the action being filtered
+     * @return boolean whether the filter is active for the given action.
+     */
+    protected function isActive($action)
+    {
+        $id = $this->getActionId($action);
+
+        if (empty($this->only)) {
+            $onlyMatch = true;
+        } else {
+            $onlyMatch = false;
+            foreach ($this->only as $pattern) {
+                if (fnmatch($pattern, $id)) {
+                    $onlyMatch = true;
+                    break;
+                }
+            }
+        }
+
+        $exceptMatch = false;
+        foreach ($this->except as $pattern) {
+            if (fnmatch($pattern, $id)) {
+                $exceptMatch = true;
+                break;
+            }
+        }
+
+        return !$exceptMatch && $onlyMatch;
     }
 }

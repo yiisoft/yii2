@@ -6,7 +6,6 @@
  */
 
 use yii\base\InvalidConfigException;
-use yii\db\Schema;
 use yii\rbac\DbManager;
 
 /**
@@ -30,6 +29,17 @@ class m140506_102106_rbac_init extends \yii\db\Migration
         return $authManager;
     }
 
+    /**
+     * @return bool
+     */
+    protected function isMSSQL()
+    {
+        return $this->db->driverName === 'mssql' || $this->db->driverName === 'sqlsrv' || $this->db->driverName === 'dblib';
+    }
+
+    /**
+     * @inheritdoc
+     */
     public function up()
     {
         $authManager = $this->getAuthManager();
@@ -42,47 +52,94 @@ class m140506_102106_rbac_init extends \yii\db\Migration
         }
 
         $this->createTable($authManager->ruleTable, [
-            'name' => Schema::TYPE_STRING . '(64) NOT NULL',
-            'data' => Schema::TYPE_TEXT,
-            'created_at' => Schema::TYPE_INTEGER,
-            'updated_at' => Schema::TYPE_INTEGER,
+            'name' => $this->string(64)->notNull(),
+            'data' => $this->text(),
+            'created_at' => $this->integer(),
+            'updated_at' => $this->integer(),
             'PRIMARY KEY (name)',
         ], $tableOptions);
 
         $this->createTable($authManager->itemTable, [
-            'name' => Schema::TYPE_STRING . '(64) NOT NULL',
-            'type' => Schema::TYPE_INTEGER . ' NOT NULL',
-            'description' => Schema::TYPE_TEXT,
-            'rule_name' => Schema::TYPE_STRING . '(64)',
-            'data' => Schema::TYPE_TEXT,
-            'created_at' => Schema::TYPE_INTEGER,
-            'updated_at' => Schema::TYPE_INTEGER,
+            'name' => $this->string(64)->notNull(),
+            'type' => $this->integer()->notNull(),
+            'description' => $this->text(),
+            'rule_name' => $this->string(64),
+            'data' => $this->text(),
+            'created_at' => $this->integer(),
+            'updated_at' => $this->integer(),
             'PRIMARY KEY (name)',
-            'FOREIGN KEY (rule_name) REFERENCES ' . $authManager->ruleTable . ' (name) ON DELETE SET NULL ON UPDATE CASCADE',
+            'FOREIGN KEY (rule_name) REFERENCES ' . $authManager->ruleTable . ' (name)'.
+                ($this->isMSSQL() ? '' : ' ON DELETE SET NULL ON UPDATE CASCADE'),
         ], $tableOptions);
         $this->createIndex('idx-auth_item-type', $authManager->itemTable, 'type');
 
         $this->createTable($authManager->itemChildTable, [
-            'parent' => Schema::TYPE_STRING . '(64) NOT NULL',
-            'child' => Schema::TYPE_STRING . '(64) NOT NULL',
+            'parent' => $this->string(64)->notNull(),
+            'child' => $this->string(64)->notNull(),
             'PRIMARY KEY (parent, child)',
-            'FOREIGN KEY (parent) REFERENCES ' . $authManager->itemTable . ' (name) ON DELETE CASCADE ON UPDATE CASCADE',
-            'FOREIGN KEY (child) REFERENCES ' . $authManager->itemTable . ' (name) ON DELETE CASCADE ON UPDATE CASCADE',
+            'FOREIGN KEY (parent) REFERENCES ' . $authManager->itemTable . ' (name)'.
+                ($this->isMSSQL() ? '' : ' ON DELETE CASCADE ON UPDATE CASCADE'),
+            'FOREIGN KEY (child) REFERENCES ' . $authManager->itemTable . ' (name)'.
+                ($this->isMSSQL() ? '' : ' ON DELETE CASCADE ON UPDATE CASCADE'),
         ], $tableOptions);
 
         $this->createTable($authManager->assignmentTable, [
-            'item_name' => Schema::TYPE_STRING . '(64) NOT NULL',
-            'user_id' => Schema::TYPE_STRING . '(64) NOT NULL',
-            'created_at' => Schema::TYPE_INTEGER,
+            'item_name' => $this->string(64)->notNull(),
+            'user_id' => $this->string(64)->notNull(),
+            'created_at' => $this->integer(),
             'PRIMARY KEY (item_name, user_id)',
             'FOREIGN KEY (item_name) REFERENCES ' . $authManager->itemTable . ' (name) ON DELETE CASCADE ON UPDATE CASCADE',
         ], $tableOptions);
+
+        if ($this->isMSSQL()) {
+            $this->execute("CREATE TRIGGER dbo.trigger_auth_item_child
+            ON dbo.{$authManager->itemTable}
+            INSTEAD OF DELETE, UPDATE
+            AS
+            DECLARE @old_name VARCHAR (64) = (SELECT name FROM deleted)
+            DECLARE @new_name VARCHAR (64) = (SELECT name FROM inserted)
+            BEGIN
+            IF COLUMNS_UPDATED() > 0
+                BEGIN
+                    IF @old_name <> @new_name
+                    BEGIN
+                        ALTER TABLE auth_item_child NOCHECK CONSTRAINT FK__auth_item__child;
+                        UPDATE auth_item_child SET child = @new_name WHERE child = @old_name;
+                    END
+                UPDATE auth_item
+                SET name = (SELECT name FROM inserted),
+                type = (SELECT type FROM inserted),
+                description = (SELECT description FROM inserted),
+                rule_name = (SELECT rule_name FROM inserted),
+                data = (SELECT data FROM inserted),
+                created_at = (SELECT created_at FROM inserted),
+                updated_at = (SELECT updated_at FROM inserted)
+                WHERE name IN (SELECT name FROM deleted)
+                IF @old_name <> @new_name
+                    BEGIN
+                        ALTER TABLE auth_item_child CHECK CONSTRAINT FK__auth_item__child;
+                    END
+                END
+                ELSE
+                    BEGIN
+                        DELETE FROM dbo.{$authManager->itemChildTable} WHERE parent IN (SELECT name FROM deleted) OR child IN (SELECT name FROM deleted);
+                        DELETE FROM dbo.{$authManager->itemTable} WHERE name IN (SELECT name FROM deleted);
+                    END
+            END;");
+        }
     }
 
+    /**
+     * @inheritdoc
+     */
     public function down()
     {
         $authManager = $this->getAuthManager();
         $this->db = $authManager->db;
+
+        if ($this->isMSSQL()) {
+            $this->execute('DROP dbo.trigger_auth_item_child;');
+        }
 
         $this->dropTable($authManager->assignmentTable);
         $this->dropTable($authManager->itemChildTable);

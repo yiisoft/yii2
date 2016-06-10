@@ -33,7 +33,7 @@ especificado onde os asset estão localizados, quais arquivos CSS e JavaScript
 possuem e como o bundle depende de outro bundles.
 
 O código a seguir define o asset bundle principal que é usado pelo 
-[template básico de aplicação](start-installation.md):
+[template básico de projetos](start-installation.md):
 
 ```php
 <?php
@@ -343,8 +343,8 @@ nomes das classes (sem a barra invertida) dos asset bundles e os valores do
 array devem corresponder aos [arrays de configuração](concept-configurations.md).
 
 > Dica: Você pode, de forma condicional, escolher os assets que queira usar em 
-  um asset bundle. O exemplo a seguir mostra como usar o `jquery.js` no ambiente 
-  de desenvolvimento e o `jquery.min.js` em outra situação:
+> um asset bundle. O exemplo a seguir mostra como usar o `jquery.js` no ambiente 
+> de desenvolvimento e o `jquery.min.js` em outra situação:
 >
 > ```php
 > 'yii\web\JqueryAsset' => [

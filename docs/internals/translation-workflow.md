@@ -7,8 +7,8 @@ where contribution is very welcome are documentation and framework messages.
 Framework messages
 ------------------
 
-Framework has two types of messages: exceptions that are intended to developer and are never translated and messages
-that are actually visible to end user such as validation errors.
+The framework has two types of messages: exceptions that are intended to developer and are never translated and messages
+that are actually visible to the end user such as validation errors.
 
 In order to start with message translation:
 
@@ -16,11 +16,11 @@ In order to start with message translation:
    add your language there (remember to keep the list in alphabetical order). The format of language code
    should follow [IETF language tag spec](http://en.wikipedia.org/wiki/IETF_language_tag), for example,
    `ru`, `zh-CN`.
-2. Go to `framework` and run `yii message/extract messages/config.php`.
+2. Go to `framework` and run `./yii message/extract --languages=<your_language>`.
 3. Translate messages in `framework/messages/your_language/yii.php`. Make sure file is saved using UTF-8 encoding.
-4. [Make a pull request](https://github.com/yiisoft/yii2/blob/master/docs/internals/git-workflow.md).
+4. [Make a pull request](git-workflow.md).
 
-In order to keep your translation up to date you may run `yii message/extract messages/config.php` again. It will
+In order to keep your translation up to date you may run `./yii message/extract --languages=<your_language>` again. It will
 automatically re-extract messages keeping unchanged ones intact.
 
 In the translation file each array element represents the translation (value) of a message (key). If the value is empty,
@@ -43,3 +43,5 @@ php build translation "../docs/guide" "../docs/guide-ru" "Russian guide translat
 ```
 
 If it will complain about composer, perform `composer install` in the source root dir.
+
+For information on the documentation syntax and style guide, see [documentation_style_guide.md](../documentation_style_guide.md).

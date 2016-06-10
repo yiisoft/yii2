@@ -90,7 +90,7 @@ Getting Data from Users
 * [Creating Forms](input-forms.md)
 * [Validating Input](input-validation.md)
 * [Uploading Files](input-file-upload.md)
-* [Collecting tabular input](input-tabular-input.md)
+* [Collecting Tabular Input](input-tabular-input.md)
 * [Getting Data for Multiple Models](input-multiple-models.md)
 
 
@@ -109,9 +109,12 @@ Displaying Data
 Security
 --------
 
+* [Overview](security-overview.md)
 * [Authentication](security-authentication.md)
 * [Authorization](security-authorization.md)
 * [Working with Passwords](security-passwords.md)
+* [Cryptography](security-cryptography.md)
+* [Views security](structure-views.md#security)
 * [Auth Clients](https://github.com/yiisoft/yii2-authclient/blob/master/docs/guide/README.md)
 * [Best Practices](security-best-practices.md)
 

@@ -47,11 +47,11 @@ class Schema extends \yii\db\Schema
         'datetime' => self::TYPE_DATETIME,
         'time' => self::TYPE_TIME,
         // character strings
-        'char' => self::TYPE_STRING,
+        'char' => self::TYPE_CHAR,
         'varchar' => self::TYPE_STRING,
         'text' => self::TYPE_TEXT,
         // unicode character strings
-        'nchar' => self::TYPE_STRING,
+        'nchar' => self::TYPE_CHAR,
         'nvarchar' => self::TYPE_STRING,
         'ntext' => self::TYPE_TEXT,
         // binary strings
@@ -152,13 +152,13 @@ class Schema extends \yii\db\Schema
     {
         $parts = explode('.', str_replace(['[', ']'], '', $name));
         $partCount = count($parts);
-        if ($partCount == 3) {
+        if ($partCount === 3) {
             // catalog name, schema name and table name passed
             $table->catalogName = $parts[0];
             $table->schemaName = $parts[1];
             $table->name = $parts[2];
             $table->fullName = $table->catalogName . '.' . $table->schemaName . '.' . $table->name;
-        } elseif ($partCount == 2) {
+        } elseif ($partCount === 2) {
             // only schema name and table name passed
             $table->schemaName = $parts[0];
             $table->name = $parts[1];
@@ -180,7 +180,7 @@ class Schema extends \yii\db\Schema
         $column = $this->createColumnSchema();
 
         $column->name = $info['column_name'];
-        $column->allowNull = $info['is_nullable'] == 'YES';
+        $column->allowNull = $info['is_nullable'] === 'YES';
         $column->dbType = $info['data_type'];
         $column->enumValues = []; // mssql has only vague equivalents to enum
         $column->isPrimaryKey = null; // primary key will be determined in findColumns() method
@@ -214,7 +214,7 @@ class Schema extends \yii\db\Schema
 
         $column->phpType = $this->getColumnPhpType($column);
 
-        if ($info['column_default'] == '(NULL)') {
+        if ($info['column_default'] === '(NULL)') {
             $info['column_default'] = null;
         }
         if (!$column->isPrimaryKey && ($column->type !== 'timestamp' || $info['column_default'] !== 'CURRENT_TIMESTAMP')) {
@@ -287,6 +287,7 @@ SQL;
      * @param TableSchema $table
      * @param string $type either PRIMARY KEY or UNIQUE
      * @return array each entry contains index_name and field_name
+     * @since 2.0.4
      */
     protected function findTableConstraints($table, $type)
     {
@@ -305,6 +306,7 @@ SELECT
     [kcu].[column_name] AS [field_name]
 FROM {$keyColumnUsageTableName} AS [kcu]
 LEFT JOIN {$tableConstraintsTableName} AS [tc] ON
+    [kcu].[table_schema] = [tc].[table_schema] AND
     [kcu].[table_name] = [tc].[table_name] AND
     [kcu].[constraint_name] = [tc].[constraint_name]
 WHERE
@@ -367,10 +369,13 @@ JOIN {$keyColumnUsageTableName} AS [kcu2] ON
     [kcu2].[constraint_schema] = [rc].[constraint_schema] AND
     [kcu2].[constraint_name] = [rc].[unique_constraint_name] AND
     [kcu2].[ordinal_position] = [kcu1].[ordinal_position]
-WHERE [kcu1].[table_name] = :tableName
+WHERE [kcu1].[table_name] = :tableName AND [kcu1].[table_schema] = :schemaName
 SQL;
 
-        $rows = $this->db->createCommand($sql, [':tableName' => $table->name])->queryAll();
+        $rows = $this->db->createCommand($sql, [
+            ':tableName' => $table->name,
+            ':schemaName' => $table->schemaName,
+        ])->queryAll();
         $table->foreignKeys = [];
         foreach ($rows as $row) {
             $table->foreignKeys[] = [$row['uq_table_name'], $row['fk_column_name'] => $row['uq_column_name']];
@@ -402,15 +407,16 @@ SQL;
      * Returns all unique indexes for the given table.
      * Each array element is of the following structure:
      *
-     * ~~~
+     * ```php
      * [
-     *  'IndexName1' => ['col1' [, ...]],
-     *  'IndexName2' => ['col2' [, ...]],
+     *     'IndexName1' => ['col1' [, ...]],
+     *     'IndexName2' => ['col2' [, ...]],
      * ]
-     * ~~~
+     * ```
      *
      * @param TableSchema $table the table metadata
      * @return array all unique indexes for the given table.
+     * @since 2.0.4
      */
     public function findUniqueIndexes($table)
     {

@@ -5,7 +5,7 @@
 
 実際には、綺麗な URL を有効にして HTTP 動詞を利用したいというのが普通でしょう。
 例えば、`POST /users` というリクエストが `user/create` アクションへのアクセスを意味するようにする訳です。
-これは、アプリケーションの構成情報で `urlManager` アプリケーションコンポーネントを次のように構成することによって容易に達成することが出来ます。
+これは、アプリケーションの構成情報で `urlManager` [アプリケーションコンポーネント](structure-application-components.md) を次のように構成することによって容易に達成することが出来ます。
 
 ```php
 'urlManager' => [
@@ -74,7 +74,7 @@
 これは、[[yii\rest\UrlRule]] が子 URL 規則を作るときに、コントローラの ID を自動的に複数形にするためです。
 この振る舞いは [[yii\rest\UrlRule::pluralize]] を false に設定することで無効にすることが出来ます。
 
-> Info|情報: コントローラ ID の複数形化は [[yii\helpers\Inflector::pluralize()]] によって行われます。
+> Info: コントローラ ID の複数形化は [[yii\helpers\Inflector::pluralize()]] によって行われます。
   このメソッドは特殊な複数形の規則を考慮します。
   例えば、`box` という単語の複数形は `boxs` ではなく `boxes` になります。
 

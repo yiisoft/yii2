@@ -141,7 +141,7 @@ trait ArrayableTrait
         $result = [];
 
         foreach ($this->fields() as $field => $definition) {
-            if (is_integer($field)) {
+            if (is_int($field)) {
                 $field = $definition;
             }
             if (empty($fields) || in_array($field, $fields, true)) {
@@ -154,7 +154,7 @@ trait ArrayableTrait
         }
 
         foreach ($this->extraFields() as $field => $definition) {
-            if (is_integer($field)) {
+            if (is_int($field)) {
                 $field = $definition;
             }
             if (in_array($field, $expand, true)) {

@@ -8,7 +8,7 @@
 namespace yii\web;
 
 /**
- * UrlRuleInterface is the interface that should be implemented URL rule classes.
+ * UrlRuleInterface is the interface that should be implemented by URL rule classes.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
@@ -23,6 +23,7 @@ interface UrlRuleInterface
      * If false, it means this rule cannot be used to parse this path info.
      */
     public function parseRequest($manager, $request);
+
     /**
      * Creates a URL according to the given route and parameters.
      * @param UrlManager $manager the URL manager

@@ -1,7 +1,7 @@
 Installing Yii
 ==============
 
-You can install Yii in two ways, using the [Composer](http://getcomposer.org/) package manager or by downloading an archive file.
+You can install Yii in two ways, using the [Composer](https://getcomposer.org/) package manager or by downloading an archive file.
 The former is the preferred way, as it allows you to install new [extensions](structure-extensions.md) or update Yii by simply running a single command.
 
 Standard installations of Yii result in both the framework and a project template being downloaded and installed.
@@ -24,8 +24,10 @@ Installing via Composer <span id="installing-via-composer"></span>
 If you do not already have Composer installed, you may do so by following the instructions at
 [getcomposer.org](https://getcomposer.org/download/). On Linux and Mac OS X, you'll run the following commands:
 
-    curl -s http://getcomposer.org/installer | php
-    mv composer.phar /usr/local/bin/composer
+```bash
+curl -sS https://getcomposer.org/installer | php
+mv composer.phar /usr/local/bin/composer
+```
 
 On Windows, you'll download and run [Composer-Setup.exe](https://getcomposer.org/Composer-Setup.exe).
 
@@ -37,8 +39,10 @@ by running `composer self-update`.
 
 With Composer installed, you can install Yii by running the following commands under a Web-accessible folder:
 
-    composer global require "fxp/composer-asset-plugin:1.0.0"
-    composer create-project --prefer-dist yiisoft/yii2-app-basic basic
+```bash
+composer global require "fxp/composer-asset-plugin:~1.1.1"
+composer create-project --prefer-dist yiisoft/yii2-app-basic basic
+```
 
 The first command installs the [composer asset plugin](https://github.com/francoispluchino/composer-asset-plugin/)
 which allows managing bower and npm package dependencies through Composer. You only need to run this command
@@ -51,7 +55,9 @@ once for all. The second command installs Yii in a directory named `basic`. You 
 > Tip: If you want to install the latest development version of Yii, you may use the following command instead,
 > which adds a [stability option](https://getcomposer.org/doc/04-schema.md#minimum-stability):
 >
->     composer create-project --prefer-dist --stability=dev yiisoft/yii2-app-basic basic
+> ```bash
+> composer create-project --prefer-dist --stability=dev yiisoft/yii2-app-basic basic
+> ```
 >
 > Note that the development version of Yii should not be used for production as it may break your running code.
 
@@ -90,31 +96,43 @@ But there are other installation options available:
 Verifying the Installation <span id="verifying-installation"></span>
 --------------------------
 
-After installation, you can use your browser to access the installed Yii application with the following URL:
+After installation is done, either configure your web server (see next section) or use the
+[built-in PHP web server](https://secure.php.net/manual/en/features.commandline.webserver.php) by running the following
+console command while in the project `web` directory:
+ 
+```bash
+php yii serve
+```
+
+> Note: By default the HTTP-server will listen to port 8080. However if that port is already in use or you wish to 
+serve multiple applications this way, you might want to specify what port to use. Just add the --port argument:
+
+```bash
+php yii serve --port=8888
+```
+
+You can use your browser to access the installed Yii application with the following URL:
 
 ```
-http://localhost/basic/web/index.php
+http://localhost:8080/
 ```
-
-This URL assumes you have installed Yii in a directory named `basic`, directly under the Web server's document root directory,
-and that the Web server is running on your local machine (`localhost`). You may need to adjust it to your installation environment.
 
 ![Successful Installation of Yii](images/start-app-installed.png)
 
 You should see the above "Congratulations!" page in your browser. If not, please check if your PHP installation satisfies
 Yii's requirements. You can check if the minimum requirements are met using one of the following approaches:
 
-* Use a browser to access the URL `http://localhost/basic/requirements.php`
+* Copy `/requirements.php` to `/web/requirements.php` and then use a browser to access it via `http://localhost/requirements.php`
 * Run the following commands:
 
-  ```
+  ```bash
   cd basic
   php requirements.php
   ```
 
-You should configure your PHP installation so that it meets the minimum requirements of Yii. Most importantly, you should have PHP 5.4 or above. You should also install
-the [PDO PHP Extension](http://www.php.net/manual/en/pdo.installation.php) and a corresponding database driver
-(such as `pdo_mysql` for MySQL databases), if your application needs a database.
+You should configure your PHP installation so that it meets the minimum requirements of Yii. Most importantly, you
+should have PHP 5.4 or above. You should also install the [PDO PHP Extension](http://www.php.net/manual/en/pdo.installation.php)
+and a corresponding database driver (such as `pdo_mysql` for MySQL databases), if your application needs a database.
 
 
 Configuring Web Servers <span id="configuring-web-servers"></span>
@@ -149,7 +167,7 @@ the [Shared Hosting Environment](tutorial-shared-hosting.md) section for more de
 Use the following configuration in Apache's `httpd.conf` file or within a virtual host configuration. Note that you
 should replace `path/to/basic/web` with the actual path for `basic/web`.
 
-```
+```apache
 # Set document root to be "basic/web"
 DocumentRoot "path/to/basic/web"
 
@@ -173,7 +191,7 @@ To use [Nginx](http://wiki.nginx.org/), you should install PHP as an [FPM SAPI](
 You may use the following Nginx configuration, replacing `path/to/basic/web` with the actual path for 
 `basic/web` and `mysite.local` with the actual hostname to serve.
 
-```
+```nginx
 server {
     charset utf-8;
     client_max_body_size 128M;
@@ -190,7 +208,7 @@ server {
 
     location / {
         # Redirect everything that isn't a real file to index.php
-        try_files $uri $uri/ /index.php?$args;
+        try_files $uri $uri/ /index.php$is_args$args;
     }
 
     # uncomment to avoid processing of calls to non-existing static files by Yii
@@ -201,7 +219,7 @@ server {
 
     location ~ \.php$ {
         include fastcgi_params;
-        fastcgi_param SCRIPT_FILENAME $document_root/$fastcgi_script_name;
+        fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;
         fastcgi_pass   127.0.0.1:9000;
         #fastcgi_pass unix:/var/run/php5-fpm.sock;
         try_files $uri =404;

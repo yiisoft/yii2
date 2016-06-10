@@ -230,6 +230,15 @@ $alerts = $session->getFlash('alerts');
   find sometimes you are getting an array while sometimes you are getting a string, depending on the order of
   the invocation of these two methods.
 
+> Tip: For displaying Flash messages you can use [[yii\bootstrap\Alert|bootstrap Alert]] widget in the following way:
+>
+> ```php
+> echo Alert::widget([
+>    'options' => ['class' => 'alert-info'],
+>    'body' => Yii::$app->session->getFlash('postDeleted'),
+> ]);
+> ```
+
 
 ## Cookies <span id="cookies"></span>
 
@@ -238,6 +247,8 @@ maintain a collection of cookies via the property named `cookies`. The cookie co
 the cookies submitted in a request, while the cookie collection in the latter represents the cookies that are to
 be sent to the user.
 
+The part of the application dealing with request and response directly is controller. Therefore, cookies should be
+read and sent in controller.
 
 ### Reading Cookies <span id="reading-cookies"></span>
 
