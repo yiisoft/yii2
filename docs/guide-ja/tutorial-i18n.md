@@ -683,7 +683,7 @@ class TranslationEventHandler
 
 ### `message` コマンドを使う <a name="message-command"></a>
 
-翻訳は [[yii\i18n\PhpMessageSource|php ファイル]]、[[yii\i18n\GettextMessageSource|.po ファイル]、または [[yii\i18n\DbMessageSource|database]] に保存することが出来ます。
+翻訳は [[yii\i18n\PhpMessageSource|php ファイル]]、[[yii\i18n\GettextMessageSource|.po ファイル]]、または [[yii\i18n\DbMessageSource|database]] に保存することが出来ます。
 追加のオプションについてはそれぞれのクラスを参照してください。
 
 まず最初に、構成情報ファイルを作成する必要があります。

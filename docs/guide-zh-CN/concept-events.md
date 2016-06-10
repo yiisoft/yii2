@@ -68,7 +68,7 @@ $foo->on(Foo::EVENT_HELLO, function ($event) {
 事件处理器顺序
 -----------------
 
-可以附加一个或多个处理器到一个事件。当事件被触发，已附加的处理器将按附加次序依次调用。如果某个处理器需要停止其后的处理器调用，可以设置 `$event` 参数的 [yii\base\Event::handled]] 属性为真，如下：
+可以附加一个或多个处理器到一个事件。当事件被触发，已附加的处理器将按附加次序依次调用。如果某个处理器需要停止其后的处理器调用，可以设置 `$event` 参数的 [[yii\base\Event::handled]] 属性为真，如下：
 
 ```php
 $foo->on(Foo::EVENT_HELLO, function ($event) {

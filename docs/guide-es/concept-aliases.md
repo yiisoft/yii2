@@ -112,7 +112,7 @@ utilizadas regularmente. La siguiente es la lista de alias predefinidos por Yii:
 - `@runtime`: la [[yii\base\Application::runtimePath|ruta de ejecución]] de la aplicación en ejecución. Por defecto `@app/runtime`.
 - `@webroot`: el directorio raíz Web de la aplicación Web se está ejecutando actualmente.
 - `@web`: la URL base de la aplicación web se ejecuta actualmente. Tiene el mismo valor que [[yii\web\Request::baseUrl]].
-- `@vendor`: el [[yii\base\Application::vendorPath|directorio vendor de Composer]. Por defecto `@app/vendor`.
+- `@vendor`: el [[yii\base\Application::vendorPath|directorio vendor de Composer]]. Por defecto `@app/vendor`.
 - `@bower`, el directorio raíz que contiene [paquetes bower](http://bower.io/). Por defecto `@vendor/bower`.
 - `@npm`, el directorio raíz que contiene [paquetes npm](https://www.npmjs.org/). Por defecto `@vendor/npm`.
 

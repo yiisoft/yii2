@@ -204,7 +204,7 @@ abstract class BaseManager extends Component implements ManagerInterface
      * @param string|integer $user the user ID. This should be either an integer or a string representing
      * the unique identifier of a user. See [[\yii\web\User::id]].
      * @param Item $item the auth item that needs to execute its rule
-     * @param array $params parameters passed to [[ManagerInterface::checkAccess()]] and will be passed to the rule
+     * @param array $params parameters passed to [[CheckAccessInterface::checkAccess()]] and will be passed to the rule
      * @return boolean the return value of [[Rule::execute()]]. If the auth item does not specify a rule, true will be returned.
      * @throws InvalidConfigException if the auth item has an invalid rule.
      */

@@ -699,7 +699,7 @@ class BaseArrayHelper
     {
         if ($haystack instanceof \Traversable) {
             foreach ($haystack as $value) {
-                if ($needle == $value && (!$strict || $needle === $haystack)) {
+                if ($needle == $value && (!$strict || $needle === $value)) {
                     return true;
                 }
             }
