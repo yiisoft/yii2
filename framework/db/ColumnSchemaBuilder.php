@@ -40,9 +40,10 @@ class ColumnSchemaBuilder extends Object
      */
     protected $length;
     /**
-     * @var boolean whether the column is not nullable. If this is `true`, a `NOT NULL` constraint will be added.
+     * @var boolean|null whether the column is or not nullable. If this is `true`, a `NOT NULL` constraint will be added.
+     * If this is `false`, a `NULL` constraint will be added.
      */
-    protected $isNotNull = false;
+    protected $isNotNull = null;
     /**
      * @var boolean whether the column values should be unique. If this is `true`, a `UNIQUE` constraint will be added.
      */
@@ -75,12 +76,6 @@ class ColumnSchemaBuilder extends Object
      * @since 2.0.8
      */
     protected $isFirst;
-    /**
-     * @var boolean whether the column is nullable. If this is `true`, a `NULL` constraint will be added.
-     * @since 2.0.9
-     */
-    protected $isNull = false;
-
 
     /**
      * @var array mapping of abstract column types (keys) to type categories (values).
@@ -152,7 +147,7 @@ class ColumnSchemaBuilder extends Object
      */
     public function null()
     {
-        $this->isNull = true;
+        $this->isNotNull = false;
         return $this;
     }
 
@@ -301,13 +296,14 @@ class ColumnSchemaBuilder extends Object
 
     /**
      * Builds the not null constraint for the column.
-     * @return string returns 'NOT NULL' if [[isNotNull]] is true, otherwise it returns an empty string.
+     * @return string returns 'NOT NULL' if [[isNotNull]] is true, 
+     * 'NULL' if [[isNotNull]] is false or an empty string otherwise.
      */
     protected function buildNotNullString()
     {
-        if ($this->isNotNull) {
+        if ($this->isNotNull === true) {
             return ' NOT NULL';
-        } elseif ($this->isNull) {
+        } elseif ($this->isNotNull === false) {
             return ' NULL';
         } else {
             return '';
