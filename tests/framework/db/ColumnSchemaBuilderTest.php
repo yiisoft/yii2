@@ -9,7 +9,6 @@ namespace yiiunit\framework\db;
 
 
 use yii\db\ColumnSchemaBuilder;
-use yii\db\Exception;
 use yii\db\Expression;
 use yii\db\Schema;
 use yiiunit\TestCase;
@@ -35,8 +34,8 @@ class ColumnSchemaBuilderTest extends TestCase
     public function typesProvider()
     {
         return [
-            ['integer', Schema::TYPE_INTEGER, null, [
-                ['unsigned'],
+            ['integer NULL', Schema::TYPE_INTEGER, null, [
+                ['unsigned'], ['null'],
             ]],
             ['integer(10)', Schema::TYPE_INTEGER, 10, [
                 ['unsigned'],

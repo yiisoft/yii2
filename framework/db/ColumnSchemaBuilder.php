@@ -75,6 +75,11 @@ class ColumnSchemaBuilder extends Object
      * @since 2.0.8
      */
     protected $isFirst;
+    /**
+     * @var boolean whether the column is nullable. If this is `true`, a `NULL` constraint will be added.
+     * @since 2.0.9
+     */
+    protected $isNull = false;
 
 
     /**
@@ -138,6 +143,16 @@ class ColumnSchemaBuilder extends Object
     public function notNull()
     {
         $this->isNotNull = true;
+        return $this;
+    }
+
+    /**
+     * Adds a `NULL` constraint to the column
+     * @return $this
+     */
+    public function null()
+    {
+        $this->isNull = true;
         return $this;
     }
 
@@ -290,7 +305,13 @@ class ColumnSchemaBuilder extends Object
      */
     protected function buildNotNullString()
     {
-        return $this->isNotNull ? ' NOT NULL' : '';
+        if ($this->isNotNull) {
+            return ' NOT NULL';
+        } elseif ($this->isNull) {
+            return ' NULL';
+        } else {
+            return '';
+        }
     }
 
     /**
