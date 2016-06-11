@@ -61,15 +61,7 @@ a rule that matches the current execution context. The `allow` value of the matc
 judge if the user is authorized or not. If none of the rules matches, it means the user is NOT authorized,
 and ACF will stop further action execution.
 
-<<<<<<< HEAD
-<<<<<<< HEAD
-By default, ACF does only of the followings when it determines a user is not authorized to access the current action:
-=======
-By default, ACF does only the following when it determines a user is not authorized to access the current action:
->>>>>>> yiichina/master
-=======
 When ACF determines a user is not authorized to access the current action, it takes the following measure by default:
->>>>>>> master
 
 * If the user is a guest, it will call [[yii\web\User::loginRequired()]] to redirect the user browser to the login page.
 * If the user is already authenticated, it will throw a [[yii\web\ForbiddenHttpException]].
@@ -321,15 +313,7 @@ After executing the command with `yii rbac/init` we'll get the following hierarc
 Author can create post, admin can update post and do everything author can.
 
 If your application allows user signup you need to assign roles to these new users once. For example, in order for all
-<<<<<<< HEAD
-<<<<<<< HEAD
-signed up users to become authors in your advanced application template you need to modify `frontend\models\SignupForm::signup()`
-=======
 signed up users to become authors in your advanced project template you need to modify `frontend\models\SignupForm::signup()`
->>>>>>> yiichina/master
-=======
-signed up users to become authors in your advanced project template you need to modify `frontend\models\SignupForm::signup()`
->>>>>>> master
 as follows:
 
 ```php

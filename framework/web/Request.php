@@ -179,22 +179,12 @@ class Request extends \yii\base\Request
         $result = Yii::$app->getUrlManager()->parseRequest($this);
         if ($result !== false) {
             list ($route, $params) = $result;
-<<<<<<< HEAD
-<<<<<<< HEAD
-            $_GET = array_merge($_GET, $params);
-=======
-            $_GET = $params + $_GET; // preserve numeric keys
->>>>>>> yiichina/master
-
-            return [$route, $_GET];
-=======
             if ($this->_queryParams === null) {
                 $_GET = $params + $_GET; // preserve numeric keys
             } else {
                 $this->_queryParams = $params + $this->_queryParams;
             }
             return [$route, $this->getQueryParams()];
->>>>>>> master
         } else {
             throw new NotFoundHttpException(Yii::t('yii', 'Page not found.'));
         }
@@ -1290,15 +1280,7 @@ class Request extends \yii\base\Request
             }
             // the mask doesn't need to be very random
             $chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789_-.';
-<<<<<<< HEAD
-<<<<<<< HEAD
-            $mask = substr(str_shuffle(str_repeat($chars, 5)), 0, self::CSRF_MASK_LENGTH);
-=======
             $mask = substr(str_shuffle(str_repeat($chars, 5)), 0, static::CSRF_MASK_LENGTH);
->>>>>>> yiichina/master
-=======
-            $mask = substr(str_shuffle(str_repeat($chars, 5)), 0, static::CSRF_MASK_LENGTH);
->>>>>>> master
             // The + sign may be decoded as blank space later, which will fail the validation
             $this->_csrfToken = str_replace('+', '.', base64_encode($mask . $this->xorTokens($token, $mask)));
         }
@@ -1361,15 +1343,7 @@ class Request extends \yii\base\Request
      */
     public function getCsrfTokenFromHeader()
     {
-<<<<<<< HEAD
-<<<<<<< HEAD
-        $key = 'HTTP_' . str_replace('-', '_', strtoupper(self::CSRF_HEADER));
-=======
         $key = 'HTTP_' . str_replace('-', '_', strtoupper(static::CSRF_HEADER));
->>>>>>> yiichina/master
-=======
-        $key = 'HTTP_' . str_replace('-', '_', strtoupper(static::CSRF_HEADER));
->>>>>>> master
         return isset($_SERVER[$key]) ? $_SERVER[$key] : null;
     }
 
@@ -1390,15 +1364,6 @@ class Request extends \yii\base\Request
 
     /**
      * Performs the CSRF validation.
-<<<<<<< HEAD
-<<<<<<< HEAD
-     * The method will compare the CSRF token obtained from a cookie and from a POST field.
-     * If they are different, a CSRF attack is detected and a 400 HTTP exception will be raised.
-     * This method is called in [[Controller::beforeAction()]].
-     * @return boolean whether CSRF token is valid. If [[enableCsrfValidation]] is false, this method will return true.
-     */
-    public function validateCsrfToken()
-=======
      *
      * This method will validate the user-provided CSRF token by comparing it with the one stored in cookie or session.
      * This method is mainly called in [[Controller::beforeAction()]].
@@ -1412,22 +1377,6 @@ class Request extends \yii\base\Request
      * @return boolean whether CSRF token is valid. If [[enableCsrfValidation]] is false, this method will return true.
      */
     public function validateCsrfToken($token = null)
->>>>>>> yiichina/master
-=======
-     *
-     * This method will validate the user-provided CSRF token by comparing it with the one stored in cookie or session.
-     * This method is mainly called in [[Controller::beforeAction()]].
-     *
-     * Note that the method will NOT perform CSRF validation if [[enableCsrfValidation]] is false or the HTTP method
-     * is among GET, HEAD or OPTIONS.
-     *
-     * @param string $token the user-provided CSRF token to be validated. If null, the token will be retrieved from
-     * the [[csrfParam]] POST field or HTTP header.
-     * This parameter is available since version 2.0.4.
-     * @return boolean whether CSRF token is valid. If [[enableCsrfValidation]] is false, this method will return true.
-     */
-    public function validateCsrfToken($token = null)
->>>>>>> master
     {
         $method = $this->getMethod();
         // only validate CSRF token on non-"safe" methods http://www.w3.org/Protocols/rfc2616/rfc2616-sec9.html#sec9.1.1
@@ -1437,23 +1386,12 @@ class Request extends \yii\base\Request
 
         $trueToken = $this->loadCsrfToken();
 
-<<<<<<< HEAD
-<<<<<<< HEAD
-        return $this->validateCsrfTokenInternal($this->getBodyParam($this->csrfParam), $trueToken)
-            || $this->validateCsrfTokenInternal($this->getCsrfTokenFromHeader(), $trueToken);
-=======
-=======
->>>>>>> master
         if ($token !== null) {
             return $this->validateCsrfTokenInternal($token, $trueToken);
         } else {
             return $this->validateCsrfTokenInternal($this->getBodyParam($this->csrfParam), $trueToken)
                 || $this->validateCsrfTokenInternal($this->getCsrfTokenFromHeader(), $trueToken);
         }
-<<<<<<< HEAD
->>>>>>> yiichina/master
-=======
->>>>>>> master
     }
 
     /**
@@ -1467,27 +1405,11 @@ class Request extends \yii\base\Request
     {
         $token = base64_decode(str_replace('.', '+', $token));
         $n = StringHelper::byteLength($token);
-<<<<<<< HEAD
-<<<<<<< HEAD
-        if ($n <= self::CSRF_MASK_LENGTH) {
-            return false;
-        }
-        $mask = StringHelper::byteSubstr($token, 0, self::CSRF_MASK_LENGTH);
-        $token = StringHelper::byteSubstr($token, self::CSRF_MASK_LENGTH, $n - self::CSRF_MASK_LENGTH);
-=======
         if ($n <= static::CSRF_MASK_LENGTH) {
             return false;
         }
         $mask = StringHelper::byteSubstr($token, 0, static::CSRF_MASK_LENGTH);
         $token = StringHelper::byteSubstr($token, static::CSRF_MASK_LENGTH, $n - static::CSRF_MASK_LENGTH);
->>>>>>> yiichina/master
-=======
-        if ($n <= static::CSRF_MASK_LENGTH) {
-            return false;
-        }
-        $mask = StringHelper::byteSubstr($token, 0, static::CSRF_MASK_LENGTH);
-        $token = StringHelper::byteSubstr($token, static::CSRF_MASK_LENGTH, $n - static::CSRF_MASK_LENGTH);
->>>>>>> master
         $token = $this->xorTokens($mask, $token);
 
         return $token === $trueToken;

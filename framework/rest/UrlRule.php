@@ -166,15 +166,7 @@ class UrlRule extends CompositeUrlRule
     {
         $only = array_flip($this->only);
         $except = array_flip($this->except);
-<<<<<<< HEAD
-<<<<<<< HEAD
-        $patterns = array_merge($this->patterns, $this->extraPatterns);
-=======
         $patterns = $this->extraPatterns + $this->patterns;
->>>>>>> yiichina/master
-=======
-        $patterns = $this->extraPatterns + $this->patterns;
->>>>>>> master
         $rules = [];
         foreach ($this->controller as $urlName => $controller) {
             $prefix = trim($this->prefix . '/' . $urlName, '/');

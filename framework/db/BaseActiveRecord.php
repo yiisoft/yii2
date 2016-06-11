@@ -519,43 +519,20 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
 
     /**
      * Returns a value indicating whether the named attribute has been changed.
-<<<<<<< HEAD
-<<<<<<< HEAD
-     * @param string $name the name of the attribute
-=======
      * @param string $name the name of the attribute.
      * @param boolean $identical whether the comparison of new and old value is made for
      * identical values using `===`, defaults to `true`. Otherwise `==` is used for comparison.
      * This parameter is available since version 2.0.4.
->>>>>>> master
      * @return boolean whether the attribute has been changed
      */
     public function isAttributeChanged($name, $identical = true)
     {
         if (isset($this->_attributes[$name], $this->_oldAttributes[$name])) {
-<<<<<<< HEAD
-            return $this->_attributes[$name] !== $this->_oldAttributes[$name];
-=======
-     * @param string $name the name of the attribute.
-     * @param bool $identical whether the comparison of new and old value is made for
-     * identical values using `===`, defaults to `true`. Otherwise `==` is used for comparison.
-     * This parameter is available since version 2.0.4.
-     * @return bool whether the attribute has been changed
-     */
-    public function isAttributeChanged($name, $identical = true)
-    {
-        if (isset($this->_attributes[$name], $this->_oldAttributes[$name])) {
-=======
->>>>>>> master
             if ($identical) {
                 return $this->_attributes[$name] !== $this->_oldAttributes[$name];
             } else {
                 return $this->_attributes[$name] != $this->_oldAttributes[$name];
             }
-<<<<<<< HEAD
->>>>>>> yiichina/master
-=======
->>>>>>> master
         } else {
             return isset($this->_attributes[$name]) || isset($this->_oldAttributes[$name]);
         }
@@ -790,21 +767,11 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
     {
         if (static::updateAllCounters($counters, $this->getOldPrimaryKey(true)) > 0) {
             foreach ($counters as $name => $value) {
-<<<<<<< HEAD
-<<<<<<< HEAD
-                $this->_attributes[$name] += $value;
-=======
-=======
->>>>>>> master
                 if (!isset($this->_attributes[$name])) {
                     $this->_attributes[$name] = $value;
                 } else {
                     $this->_attributes[$name] += $value;
                 }
-<<<<<<< HEAD
->>>>>>> yiichina/master
-=======
->>>>>>> master
                 $this->_oldAttributes[$name] = $this->_attributes[$name];
             }
             return true;
@@ -1230,15 +1197,7 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
 
         if ($relation->via !== null) {
             if ($this->getIsNewRecord() || $model->getIsNewRecord()) {
-<<<<<<< HEAD
-<<<<<<< HEAD
-                throw new InvalidCallException('Unable to link models: both models must NOT be newly created.');
-=======
                 throw new InvalidCallException('Unable to link models: the models being linked cannot be newly created.');
->>>>>>> yiichina/master
-=======
-                throw new InvalidCallException('Unable to link models: the models being linked cannot be newly created.');
->>>>>>> master
             }
             if (is_array($relation->via)) {
                 /* @var $viaRelation ActiveQuery */
@@ -1278,15 +1237,7 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
             $p2 = static::isPrimaryKey(array_values($relation->link));
             if ($p1 && $p2) {
                 if ($this->getIsNewRecord() && $model->getIsNewRecord()) {
-<<<<<<< HEAD
-<<<<<<< HEAD
-                    throw new InvalidCallException('Unable to link models: both models are newly created.');
-=======
                     throw new InvalidCallException('Unable to link models: at most one model can be newly created.');
->>>>>>> yiichina/master
-=======
-                    throw new InvalidCallException('Unable to link models: at most one model can be newly created.');
->>>>>>> master
                 } elseif ($this->getIsNewRecord()) {
                     $this->bindModels(array_flip($relation->link), $this, $model);
                 } else {
@@ -1297,15 +1248,7 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
             } elseif ($p2) {
                 $this->bindModels($relation->link, $model, $this);
             } else {
-<<<<<<< HEAD
-<<<<<<< HEAD
-                throw new InvalidCallException('Unable to link models: the link does not involve any primary key.');
-=======
                 throw new InvalidCallException('Unable to link models: the link defining the relation does not involve any primary key.');
->>>>>>> yiichina/master
-=======
-                throw new InvalidCallException('Unable to link models: the link defining the relation does not involve any primary key.');
->>>>>>> master
             }
         }
 
@@ -1560,18 +1503,8 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
 
             $relatedModel = $this;
             foreach ($attributeParts as $relationName) {
-<<<<<<< HEAD
-<<<<<<< HEAD
-                if (isset($this->_related[$relationName]) && $this->_related[$relationName] instanceof self) {
-                    $relatedModel = $this->_related[$relationName];
-=======
                 if ($relatedModel->isRelationPopulated($relationName) && $relatedModel->$relationName instanceof self) {
                     $relatedModel = $relatedModel->$relationName;
->>>>>>> yiichina/master
-=======
-                if ($relatedModel->isRelationPopulated($relationName) && $relatedModel->$relationName instanceof self) {
-                    $relatedModel = $relatedModel->$relationName;
->>>>>>> master
                 } else {
                     try {
                         $relation = $relatedModel->getRelation($relationName);
@@ -1592,11 +1525,6 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
     }
 
     /**
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
-=======
->>>>>>> master
      * Returns the text hint for the specified attribute.
      * If the attribute looks like `relatedModel.attribute`, then the attribute will be received from the related model.
      * @param string $attribute the attribute name
@@ -1608,11 +1536,7 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
     {
         $hints = $this->attributeHints();
         if (isset($hints[$attribute])) {
-<<<<<<< HEAD
-            return ($hints[$attribute]);
-=======
             return $hints[$attribute];
->>>>>>> master
         } elseif (strpos($attribute, '.')) {
             $attributeParts = explode('.', $attribute);
             $neededAttribute = array_pop($attributeParts);
@@ -1640,10 +1564,6 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
     }
 
     /**
-<<<<<<< HEAD
->>>>>>> yiichina/master
-=======
->>>>>>> master
      * @inheritdoc
      *
      * The default implementation returns the names of the columns whose values have been populated into this record.

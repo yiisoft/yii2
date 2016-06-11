@@ -157,14 +157,6 @@ interface ActiveRecordInterface
      *
      *  - a scalar value (integer or string): query by a single primary key value and return the
      *    corresponding record (or null if not found).
-<<<<<<< HEAD
-<<<<<<< HEAD
-     *  - an array of name-value pairs: query by a set of attribute values and return a single record
-     *    matching all of them (or null if not found).
-     *
-     * Note that this method will automatically call the `one()` method and return an
-     * [[ActiveRecordInterface|ActiveRecord]] instance. For example,
-=======
      *  - a non-associative array: query by a list of primary key values and return the
      *    first record (or null if not found).
      *  - an associative array of name-value pairs: query by a set of attribute values and return a single record
@@ -172,16 +164,6 @@ interface ActiveRecordInterface
      *
      * That this method will automatically call the `one()` method and return an [[ActiveRecordInterface|ActiveRecord]]
      * instance. For example,
->>>>>>> yiichina/master
-=======
-     *  - a non-associative array: query by a list of primary key values and return the
-     *    first record (or null if not found).
-     *  - an associative array of name-value pairs: query by a set of attribute values and return a single record
-     *    matching all of them (or null if not found). Note that `['id' => 1, 2]` is treated as a non-associative array.
-     *
-     * That this method will automatically call the `one()` method and return an [[ActiveRecordInterface|ActiveRecord]]
-     * instance. For example,
->>>>>>> master
      *
      * ```php
      * // find a single customer whose primary key value is 10
@@ -209,23 +191,6 @@ interface ActiveRecordInterface
      *
      *  - a scalar value (integer or string): query by a single primary key value and return an array containing the
      *    corresponding record (or an empty array if not found).
-<<<<<<< HEAD
-<<<<<<< HEAD
-     *  - an array of scalar values (integer or string): query by a list of primary key values and return the
-=======
-     *  - a non-associative array: query by a list of primary key values and return the
->>>>>>> master
-     *    corresponding records (or an empty array if none was found).
-     *    Note that an empty condition will result in an empty result as it will be interpreted as a search for
-     *    primary keys and not an empty `WHERE` condition.
-     *  - an associative array of name-value pairs: query by a set of attribute values and return an array of records
-     *    matching all of them (or an empty array if none was found). Note that `['id' => 1, 2]` is treated as
-     *    a non-associative array.
-     *
-<<<<<<< HEAD
-     * Note that this method will automatically call the `all()` method and return an array of
-     * [[ActiveRecordInterface|ActiveRecord]] instances. For example,
-=======
      *  - a non-associative array: query by a list of primary key values and return the
      *    corresponding records (or an empty array if none was found).
      *    Note that an empty condition will result in an empty result as it will be interpreted as a search for
@@ -236,11 +201,6 @@ interface ActiveRecordInterface
      *
      * This method will automatically call the `all()` method and return an array of [[ActiveRecordInterface|ActiveRecord]]
      * instances. For example,
->>>>>>> yiichina/master
-=======
-     * This method will automatically call the `all()` method and return an array of [[ActiveRecordInterface|ActiveRecord]]
-     * instances. For example,
->>>>>>> master
      *
      * ```php
      * // find the customers whose primary key value is 10

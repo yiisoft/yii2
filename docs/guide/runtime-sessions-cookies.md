@@ -230,11 +230,6 @@ $alerts = $session->getFlash('alerts');
   find sometimes you are getting an array while sometimes you are getting a string, depending on the order of
   the invocation of these two methods.
 
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
-=======
->>>>>>> master
 > Tip: For displaying Flash messages you can use [[yii\bootstrap\Alert|bootstrap Alert]] widget in the following way:
 >
 > ```php
@@ -244,10 +239,6 @@ $alerts = $session->getFlash('alerts');
 > ]);
 > ```
 
-<<<<<<< HEAD
->>>>>>> yiichina/master
-=======
->>>>>>> master
 
 ## Cookies <span id="cookies"></span>
 

@@ -44,18 +44,8 @@ concept-service-locator.md          | Yes
 concept-di-container.md             | Yes
 db-dao.md                           | Yes
 db-query-builder.md                 | Yes
-<<<<<<< HEAD
-<<<<<<< HEAD
-db-active-record.md                 |
-db-migrations.md                    |
-=======
 db-active-record.md                 | Yes
 db-migrations.md                    | Yes
->>>>>>> yiichina/master
-=======
-db-active-record.md                 | Yes
-db-migrations.md                    | Yes
->>>>>>> master
 db-sphinx.md                        |
 db-redis.md                         |
 db-mongodb.md                       |
@@ -65,26 +55,6 @@ input-validation.md                 | Yes
 input-file-upload.md                | Yes
 input-multiple-models.md            | Yes
 input-tabular-input.md              |
-<<<<<<< HEAD
-<<<<<<< HEAD
-output-formatter.md                 |
-output-pagination.md                |
-output-sorting.md                   |
-output-data-providers.md            |
-output-data-widgets.md              |
-output-theming.md                   |
-security-authentication.md          |
-=======
-output-formatting.md                |
-output-pagination.md                | Yes
-output-sorting.md                   | Yes
-output-data-providers.md            | Yes
-output-data-widgets.md              |
-output-theming.md                   | Yes
-security-authentication.md          | Yes
->>>>>>> yiichina/master
-security-authorization.md           |
-=======
 output-formatting.md                | Yes
 output-pagination.md                | Yes
 output-sorting.md                   | Yes
@@ -93,7 +63,6 @@ output-data-widgets.md              |
 output-theming.md                   | Yes
 security-authentication.md          | Yes
 security-authorization.md           | Yes
->>>>>>> master
 security-passwords.md               |
 security-auth-clients.md            |
 security-best-practices.md          |

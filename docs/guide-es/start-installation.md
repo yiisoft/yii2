@@ -1,17 +1,8 @@
 Instalar Yii
 ============
 
-<<<<<<< HEAD
-<<<<<<< HEAD
-Yii puede ser instalado de dos maneras, usando [Composer](http://getcomposer.org/) o descargando un archivo comprimido.
-=======
-Yii puede ser instalado de dos maneras, usando [Composer](https://getcomposer.org/) o descargando un archivo comprimido.
->>>>>>> yiichina/master
-Es preferible usar la primera forma, ya que te permite instalar [extensiones](structure-extensions.md) o actualizar Yii ejecutando un simple comando.
-=======
 Puedes instalar Yii de dos maneras, utilizando el administrador de paquetes [Composer](https://getcomposer.org/) o descargando un archivo comprimido.
 La forma recomendada es la primera, ya que te permite instalar nuevas [extensions](structure-extensions.md) o actualizar Yii con sólo ejecutar un comando.
->>>>>>> master
 
 La instalación estándar de Yii cuenta tanto con el framework como un template de proyecto instalados.
 Un template de proyecto es un proyecto Yii funcional que implementa algunas características básicas como: login, formulario de contacto, etc. 
@@ -33,19 +24,10 @@ Installing via Composer <span id="installing-via-composer"></span>
 Si aún no tienes Composer instalado, puedes hacerlo siguiendo las instrucciones que se encuentran en
 [getcomposer.org](https://getcomposer.org/download/). En Linux y Mac OS X, se ejecutan los siguientes comandos:
 
-<<<<<<< HEAD
-<<<<<<< HEAD
-    curl -s http://getcomposer.org/installer | php
-=======
-    curl -sS https://getcomposer.org/installer | php
->>>>>>> yiichina/master
-    mv composer.phar /usr/local/bin/composer
-=======
 ```bash
 curl -sS https://getcomposer.org/installer | php
 mv composer.phar /usr/local/bin/composer
 ```
->>>>>>> master
 
 En Windows, tendrás que descargar y ejecutar [Composer-Setup.exe](https://getcomposer.org/Composer-Setup.exe).
 
@@ -57,14 +39,6 @@ ejecutando el comando `composer self-update`
 
 Teniendo Composer instalado, puedes instalar Yii ejecutando los siguientes comandos en un directorio accesible vía Web:
 
-<<<<<<< HEAD
-<<<<<<< HEAD
-    composer global require "fxp/composer-asset-plugin:1.0.0"
-=======
-    composer global require "fxp/composer-asset-plugin:~1.0.0"
->>>>>>> yiichina/master
-    composer create-project --prefer-dist yiisoft/yii2-app-basic basic
-=======
 ```bash
 composer global require "fxp/composer-asset-plugin:~1.1.1"
 composer create-project --prefer-dist yiisoft/yii2-app-basic basic
@@ -73,7 +47,6 @@ composer create-project --prefer-dist yiisoft/yii2-app-basic basic
 El primer comando instala [composer asset plugin](https://github.com/francoispluchino/composer-asset-plugin/),
 que permite administrar dependencias de paquetes bower y npm a través de Composer. Sólo necesitas ejecutar este comando
 una vez. El segundo comando instala Yii en un directorio llamado `basic`. Puedes elegir un nombre de directorio diferente si así lo deseas.
->>>>>>> master
 
 > Note: Durante la instalación, Composer puede preguntar por tus credenciales de acceso de Github. Esto es normal ya que Composer 
 > necesita obtener suficiente límite de acceso de la API para traer la información de dependencias de Github. Para más detalles, 

@@ -586,15 +586,7 @@ class Security extends Component
      * @param integer $cost Cost parameter used by the Blowfish hash algorithm.
      * The higher the value of cost,
      * the longer it takes to generate the hash and to verify a password against it. Higher cost
-<<<<<<< HEAD
-<<<<<<< HEAD
-     * therefore slows down a brute-force attack. For best protection against brute for attacks,
-=======
      * therefore slows down a brute-force attack. For best protection against brute-force attacks,
->>>>>>> yiichina/master
-=======
-     * therefore slows down a brute-force attack. For best protection against brute-force attacks,
->>>>>>> master
      * set it to the highest value that is tolerable on production servers. The time taken to
      * compute the hash doubles for every increment by one of $cost.
      * @return string The password hash string. When [[passwordHashStrategy]] is set to 'crypt',

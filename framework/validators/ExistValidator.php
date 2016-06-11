@@ -19,15 +19,7 @@ use yii\base\InvalidConfigException;
  * This validator is often used to verify that a foreign key contains a value
  * that can be found in the foreign table.
  *
-<<<<<<< HEAD
-<<<<<<< HEAD
- * The followings are examples of validation rules using this validator:
-=======
  * The following are examples of validation rules using this validator:
->>>>>>> yiichina/master
-=======
- * The following are examples of validation rules using this validator:
->>>>>>> master
  *
  * ```php
  * // a1 needs to exist

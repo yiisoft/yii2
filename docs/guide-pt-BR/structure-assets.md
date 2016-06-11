@@ -33,15 +33,7 @@ especificado onde os asset estão localizados, quais arquivos CSS e JavaScript
 possuem e como o bundle depende de outro bundles.
 
 O código a seguir define o asset bundle principal que é usado pelo 
-<<<<<<< HEAD
-<<<<<<< HEAD
-[template básico de aplicação](start-installation.md):
-=======
 [template básico de projetos](start-installation.md):
->>>>>>> yiichina/master
-=======
-[template básico de projetos](start-installation.md):
->>>>>>> master
 
 ```php
 <?php
@@ -351,18 +343,8 @@ nomes das classes (sem a barra invertida) dos asset bundles e os valores do
 array devem corresponder aos [arrays de configuração](concept-configurations.md).
 
 > Dica: Você pode, de forma condicional, escolher os assets que queira usar em 
-<<<<<<< HEAD
-<<<<<<< HEAD
-  um asset bundle. O exemplo a seguir mostra como usar o `jquery.js` no ambiente 
-  de desenvolvimento e o `jquery.min.js` em outra situação:
-=======
 > um asset bundle. O exemplo a seguir mostra como usar o `jquery.js` no ambiente 
 > de desenvolvimento e o `jquery.min.js` em outra situação:
->>>>>>> yiichina/master
-=======
-> um asset bundle. O exemplo a seguir mostra como usar o `jquery.js` no ambiente 
-> de desenvolvimento e o `jquery.min.js` em outra situação:
->>>>>>> master
 >
 > ```php
 > 'yii\web\JqueryAsset' => [
@@ -470,11 +452,6 @@ o caminho fonte de um asset bundle quando estiver sendo publicado. Isto é mais
 rápido que a cópia de arquivos e também pode garantir que os assets publicados 
 estejam sempre atualizados.
 
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
-=======
->>>>>>> master
 ### Cache Busting <span id="cache-busting"></span>
 
 Para aplicações Web que estam rodando no modo produção, é uma prática comum habilitar
@@ -500,10 +477,6 @@ modificação. Por exemplo, a URL do `yii.js` pode parecer com `/assets/5515a87c
 onde o parâmetro `V` representa o último horário de modificação do arquivo `yii.js`.
 Agora se você modificar um asset, a sua URL será alterada, fazendo com que o cliente
 busque a versão mais recente do asset.
-<<<<<<< HEAD
->>>>>>> yiichina/master
-=======
->>>>>>> master
 
 ## Asset Bundles de Uso Comum <span id="common-asset-bundles"></span>
 
@@ -823,11 +796,6 @@ conforme descrito na última subseção.
 > Informação: O uso do comando `asset` não é a única opção para automatizar o 
   processo de combinação e compressão de asset. Você pode usar a excelente 
   ferramenta chamada [grunt](http://gruntjs.com/) para atingir o mesmo objetivo.
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
-=======
->>>>>>> master
 
 ### Agrupando Asset Bundles <span id="grouping-asset-bundles"></span>
 
@@ -884,7 +852,3 @@ Ao executar o comando `asset` com essa configuração, será combinado os asset 
 > Informação: Voce pode deixar a configuração `depends` em branco para um determinado bundle.
 Ao fazer isso, esse asset bundle dependerá de todos os asset bundles restantes que outros
 determinados bundles não dependam.
-<<<<<<< HEAD
->>>>>>> yiichina/master
-=======
->>>>>>> master

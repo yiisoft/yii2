@@ -16,15 +16,7 @@ utilisateurs puissent lancer des applications console grâce à la commande `./y
 Les scipts de démarrage effectuent principalement les tâches suivantes :
 
 * Définir des constantes globales;
-<<<<<<< HEAD
-<<<<<<< HEAD
-* Enregistrer l'[autoloader Composer](http://getcomposer.org/doc/01-basic-usage.md#autoloading);
-=======
 * Enregistrer l'[autoloader Composer](https://getcomposer.org/doc/01-basic-usage.md#autoloading);
->>>>>>> yiichina/master
-=======
-* Enregistrer l'[autoloader Composer](https://getcomposer.org/doc/01-basic-usage.md#autoloading);
->>>>>>> master
 * Inclure le fichier de classe de [[Yii]];
 * Charger la configuration de l'application;
 * Créer et configurer une instance d'[application](structure-applications.md);

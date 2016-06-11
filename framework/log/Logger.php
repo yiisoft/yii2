@@ -116,20 +116,10 @@ class Logger extends Component
     {
         parent::init();
         register_shutdown_function(function () {
-<<<<<<< HEAD
-<<<<<<< HEAD
-            // make sure "flush()" is called last when there are multiple shutdown functions
-=======
-=======
->>>>>>> master
             // make regular flush before other shutdown functions, which allows session data collection and so on
             $this->flush();
             // make sure log entries written by shutdown functions are also flushed
             // ensure "flush()" is called last when there are multiple shutdown functions
-<<<<<<< HEAD
->>>>>>> yiichina/master
-=======
->>>>>>> master
             register_shutdown_function([$this, 'flush'], true);
         });
     }

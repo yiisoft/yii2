@@ -403,29 +403,11 @@ EOD;
         foreach ($new as $category => $msgs) {
             foreach ($msgs as $m) {
                 $savedFlag = true;
-<<<<<<< HEAD
-<<<<<<< HEAD
-
-                $db->createCommand()
-                   ->insert($sourceMessageTable, ['category' => $category, 'message' => $m])->execute();
-                $lastID = $db->getLastInsertID();
-                foreach ($languages as $language) {
-                    $db->createCommand()
-                       ->insert($messageTable, ['id' => $lastID, 'language' => $language])->execute();
-=======
                 $lastPk = $db->schema->insert($sourceMessageTable, ['category' => $category, 'message' => $m]);
                 foreach ($languages as $language) {
                     $db->createCommand()
                        ->insert($messageTable, ['id' => $lastPk['id'], 'language' => $language])
                        ->execute();
->>>>>>> yiichina/master
-=======
-                $lastPk = $db->schema->insert($sourceMessageTable, ['category' => $category, 'message' => $m]);
-                foreach ($languages as $language) {
-                    $db->createCommand()
-                       ->insert($messageTable, ['id' => $lastPk['id'], 'language' => $language])
-                       ->execute();
->>>>>>> master
                 }
             }
         }
@@ -438,17 +420,8 @@ EOD;
         } else {
             if ($removeUnused) {
                 $db->createCommand()
-<<<<<<< HEAD
-<<<<<<< HEAD
-                   ->delete($sourceMessageTable, ['in', 'id', $obsolete])->execute();
-=======
                    ->delete($sourceMessageTable, ['in', 'id', $obsolete])
                    ->execute();
->>>>>>> yiichina/master
-=======
-                   ->delete($sourceMessageTable, ['in', 'id', $obsolete])
-                   ->execute();
->>>>>>> master
                 $this->stdout("deleted.\n");
             } elseif ($markUnused) {
                 $db->createCommand()
@@ -469,17 +442,8 @@ EOD;
      *
      * @param string $fileName name of the file to extract messages from
      * @param string $translator name of the function used to translate messages
-<<<<<<< HEAD
-<<<<<<< HEAD
-     * @param array $ignoreCategories message categories to ignore
-=======
      * @param array $ignoreCategories message categories to ignore.
      * This parameter is available since version 2.0.4.
->>>>>>> yiichina/master
-=======
-     * @param array $ignoreCategories message categories to ignore.
-     * This parameter is available since version 2.0.4.
->>>>>>> master
      * @return array
      */
     protected function extractMessages($fileName, $translator, $ignoreCategories = [])

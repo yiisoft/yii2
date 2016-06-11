@@ -2,10 +2,7 @@
 namespace yiiunit\framework\helpers;
 
 use yii\helpers\VarDumper;
-<<<<<<< HEAD
-=======
 use yiiunit\data\helpers\CustomDebugInfo;
->>>>>>> master
 use yiiunit\TestCase;
 
 /**
@@ -13,15 +10,6 @@ use yiiunit\TestCase;
  */
 class VarDumperTest extends TestCase
 {
-<<<<<<< HEAD
-    public function testDumpObject()
-    {
-        $obj = new \StdClass();
-        ob_start();
-        VarDumper::dump($obj);
-        $this->assertEquals("stdClass#1\n(\n)", ob_get_contents());
-        ob_end_clean();
-=======
     public function testDumpIncompleteObject()
     {
         $serializedObj = 'O:16:"nonExistingClass":0:{}';
@@ -51,7 +39,6 @@ class VarDumperTest extends TestCase
         $this->assertContains("stdClass#1\n(", $dumpResult);
         $this->assertContains("[name] => 'test-name'", $dumpResult);
         $this->assertContains("[price] => 19", $dumpResult);
->>>>>>> master
     }
 
     /**
@@ -119,8 +106,6 @@ RESULT;
 RESULT;
         $data[] = [$var, $expectedResult];
 
-<<<<<<< HEAD
-=======
         $var = [
             'key1' => [
                 'subkey1' => 'value2',
@@ -141,7 +126,6 @@ RESULT;
 RESULT;
         $data[] = [$var, $expectedResult];
 
->>>>>>> master
         // Objects :
 
         $var = new \StdClass();
@@ -149,14 +133,8 @@ RESULT;
         $expectedResult = "unserialize('" . serialize($var) . "')";
         $data[] = [$var, $expectedResult];
 
-<<<<<<< HEAD
-        $var = new \StdClass();
-        $var->testFunction = function () {return 2;};
-        $expectedResult = var_export($var, true);
-=======
         $var = function () {return 2;};
         $expectedResult = 'function () {return 2;}';
->>>>>>> master
         $data[] = [$var, $expectedResult];
 
         return $data;
@@ -174,8 +152,6 @@ RESULT;
         $this->assertEqualsWithoutLE($expectedResult, $exportResult);
         //$this->assertEquals($var, eval('return ' . $exportResult . ';'));
     }
-<<<<<<< HEAD
-=======
 
     /**
      * @depends testExport
@@ -210,5 +186,4 @@ RESULT;
         $this->assertContains('totalPrice', $dumpResult);
         $this->assertNotContains('unitPrice', $dumpResult);
     }
->>>>>>> master
 }

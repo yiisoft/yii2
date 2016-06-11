@@ -8,10 +8,7 @@
 namespace yiiunit\framework\web;
 
 use yii\web\JsonResponseFormatter;
-<<<<<<< HEAD
-=======
 use yiiunit\framework\web\stubs\ModelStub;
->>>>>>> master
 
 /**
  * @author Alexander Makarov <sam@rmcreative.ru>
@@ -42,14 +39,6 @@ class JsonResponseFormatterTest extends FormatterTest
     public function formatArrayDataProvider()
     {
         return [
-<<<<<<< HEAD
-            [[], "[]"],
-            [[1, 'abc'], '[1,"abc"]'],
-            [[
-                'a' => 1,
-                'b' => 'abc',
-            ], '{"a":1,"b":"abc"}'],
-=======
             // input, json, pretty json
             [[], "[]", "[]"],
             [[1, 'abc'], '[1,"abc"]', "[\n    1,\n    \"abc\"\n]"],
@@ -57,28 +46,19 @@ class JsonResponseFormatterTest extends FormatterTest
                 'a' => 1,
                 'b' => 'abc',
             ], '{"a":1,"b":"abc"}', "{\n    \"a\": 1,\n    \"b\": \"abc\"\n}"],
->>>>>>> master
             [[
                 1,
                 'abc',
                 [2, 'def'],
                 true,
-<<<<<<< HEAD
-            ], '[1,"abc",[2,"def"],true]'],
-=======
             ], '[1,"abc",[2,"def"],true]', "[\n    1,\n    \"abc\",\n    [\n        2,\n        \"def\"\n    ],\n    true\n]"],
->>>>>>> master
             [[
                 'a' => 1,
                 'b' => 'abc',
                 'c' => [2, '<>'],
                 true,
-<<<<<<< HEAD
-            ], '{"a":1,"b":"abc","c":[2,"<>"],"0":true}'],
-=======
             ], '{"a":1,"b":"abc","c":[2,"<>"],"0":true}',
                "{\n    \"a\": 1,\n    \"b\": \"abc\",\n    \"c\": [\n        2,\n        \"<>\"\n    ],\n    \"0\": true\n}"],
->>>>>>> master
         ];
     }
 
@@ -96,8 +76,6 @@ class JsonResponseFormatterTest extends FormatterTest
             ], '{"0":{"id":123,"title":"<>"},"a":{"id":456,"title":"def"}}'],
         ];
     }
-<<<<<<< HEAD
-=======
 
     public function formatTraversableObjectDataProvider()
     {
@@ -131,5 +109,4 @@ class JsonResponseFormatterTest extends FormatterTest
         $this->assertEquals($prettyJson, $this->response->content);
     }
 
->>>>>>> master
 }

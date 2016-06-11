@@ -27,18 +27,8 @@ use yii\di\Instance;
  *
  * If you don't want to use migration and need SQL instead, files for all databases are in migrations directory.
  *
-<<<<<<< HEAD
-<<<<<<< HEAD
- * You may change the names of the three tables used to store the authorization data by setting [[itemTable]],
- * [[itemChildTable]] and [[assignmentTable]].
-=======
  * You may change the names of the tables used to store the authorization and rule data by setting [[itemTable]],
  * [[itemChildTable]], [[assignmentTable]] and [[ruleTable]].
->>>>>>> yiichina/master
-=======
- * You may change the names of the tables used to store the authorization and rule data by setting [[itemTable]],
- * [[itemChildTable]], [[assignmentTable]] and [[ruleTable]].
->>>>>>> master
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @author Alexander Kochetov <creocoder@gmail.com>
@@ -70,15 +60,7 @@ class DbManager extends BaseManager
      */
     public $ruleTable = '{{%auth_rule}}';
     /**
-<<<<<<< HEAD
-<<<<<<< HEAD
-     * @var Cache|array|string the cache used to improve RBAC performance. This can be one of the followings:
-=======
      * @var Cache|array|string the cache used to improve RBAC performance. This can be one of the following:
->>>>>>> yiichina/master
-=======
-     * @var Cache|array|string the cache used to improve RBAC performance. This can be one of the following:
->>>>>>> master
      *
      * - an application component ID (e.g. `cache`)
      * - a configuration array
@@ -478,17 +460,8 @@ class DbManager extends BaseManager
         $query = (new Query)->select('b.*')
             ->from(['a' => $this->assignmentTable, 'b' => $this->itemTable])
             ->where('{{a}}.[[item_name]]={{b}}.[[name]]')
-<<<<<<< HEAD
-<<<<<<< HEAD
-            ->andWhere(['a.user_id' => (string) $userId]);
-=======
             ->andWhere(['a.user_id' => (string) $userId])
             ->andWhere(['b.type' => Item::TYPE_ROLE]);
->>>>>>> yiichina/master
-=======
-            ->andWhere(['a.user_id' => (string) $userId])
-            ->andWhere(['b.type' => Item::TYPE_ROLE]);
->>>>>>> master
 
         $roles = [];
         foreach ($query->all($this->db) as $row) {

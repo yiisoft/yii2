@@ -58,15 +58,7 @@ interface ManagerInterface extends CheckAccessInterface
     /**
      * Returns the named role.
      * @param string $name the role name.
-<<<<<<< HEAD
-<<<<<<< HEAD
-     * @return Role the role corresponding to the specified name. Null is returned if no such role.
-=======
      * @return null|Role the role corresponding to the specified name. Null is returned if no such role.
->>>>>>> yiichina/master
-=======
-     * @return null|Role the role corresponding to the specified name. Null is returned if no such role.
->>>>>>> master
      */
     public function getRole($name);
 
@@ -87,15 +79,7 @@ interface ManagerInterface extends CheckAccessInterface
     /**
      * Returns the named permission.
      * @param string $name the permission name.
-<<<<<<< HEAD
-<<<<<<< HEAD
-     * @return Permission the permission corresponding to the specified name. Null is returned if no such permission.
-=======
      * @return null|Permission the permission corresponding to the specified name. Null is returned if no such permission.
->>>>>>> yiichina/master
-=======
-     * @return null|Permission the permission corresponding to the specified name. Null is returned if no such permission.
->>>>>>> master
      */
     public function getPermission($name);
 
@@ -122,15 +106,7 @@ interface ManagerInterface extends CheckAccessInterface
     /**
      * Returns the rule of the specified name.
      * @param string $name the rule name
-<<<<<<< HEAD
-<<<<<<< HEAD
-     * @return Rule the rule object, or null if the specified name does not correspond to a rule.
-=======
      * @return null|Rule the rule object, or null if the specified name does not correspond to a rule.
->>>>>>> yiichina/master
-=======
-     * @return null|Rule the rule object, or null if the specified name does not correspond to a rule.
->>>>>>> master
      */
     public function getRule($name);
 
@@ -219,16 +195,8 @@ interface ManagerInterface extends CheckAccessInterface
     /**
      * Returns the assignment information regarding a role and a user.
      * @param string $roleName the role name
-<<<<<<< HEAD
-<<<<<<< HEAD
-     * @return Assignment the assignment information. Null is returned if
-=======
-     * @return null|Assignment the assignment information. Null is returned if
->>>>>>> yiichina/master
-=======
      * @param string|integer $userId the user ID (see [[\yii\web\User::id]])
      * @return null|Assignment the assignment information. Null is returned if
->>>>>>> master
      * the role is not assigned to the user.
      */
     public function getAssignment($roleName, $userId);

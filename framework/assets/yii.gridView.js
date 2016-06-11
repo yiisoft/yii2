@@ -55,20 +55,12 @@
             return this.each(function () {
                 var $e = $(this);
                 var settings = $.extend({}, defaults, options || {});
-<<<<<<< HEAD
-<<<<<<< HEAD
-                gridData[$e.prop('id')] = {settings: settings};
-=======
-                gridData[$e.attr('id')] = {settings: settings};
->>>>>>> yiichina/master
-=======
                 var id = $e.attr('id');
                 if (gridData[id] === undefined) {
                     gridData[id] = {};
                 }
 
                 gridData[id] = $.extend(gridData[id], {settings: settings});
->>>>>>> master
 
                 var enterPressed = false;
                 $(document).off('change.yiiGridView keydown.yiiGridView', settings.filterSelector)
@@ -96,15 +88,7 @@
 
         applyFilter: function () {
             var $grid = $(this), event;
-<<<<<<< HEAD
-<<<<<<< HEAD
-            var settings = gridData[$grid.prop('id')].settings;
-=======
             var settings = gridData[$grid.attr('id')].settings;
->>>>>>> yiichina/master
-=======
-            var settings = gridData[$grid.attr('id')].settings;
->>>>>>> master
             var data = {};
             $.each($(settings.filterSelector).serializeArray(), function () {
                 if (!(this.name in data)) {
@@ -162,18 +146,10 @@
 
         setSelectionColumn: function (options) {
             var $grid = $(this);
-<<<<<<< HEAD
-<<<<<<< HEAD
-            var id = $(this).prop('id');
-=======
-            var id = $(this).attr('id');
->>>>>>> yiichina/master
-=======
             var id = $(this).attr('id');
             if (gridData.id === undefined) {
                 gridData[id] = {};
             }
->>>>>>> master
             gridData[id].selectionColumn = options.name;
             if (!options.multiple || !options.checkAll) {
                 return;
@@ -191,15 +167,7 @@
 
         getSelectedRows: function () {
             var $grid = $(this);
-<<<<<<< HEAD
-<<<<<<< HEAD
-            var data = gridData[$grid.prop('id')];
-=======
             var data = gridData[$grid.attr('id')];
->>>>>>> yiichina/master
-=======
-            var data = gridData[$grid.attr('id')];
->>>>>>> master
             var keys = [];
             if (data.selectionColumn) {
                 $grid.find("input[name='" + data.selectionColumn + "']:checked").each(function () {
@@ -217,15 +185,7 @@
         },
 
         data: function () {
-<<<<<<< HEAD
-<<<<<<< HEAD
-            var id = $(this).prop('id');
-=======
             var id = $(this).attr('id');
->>>>>>> yiichina/master
-=======
-            var id = $(this).attr('id');
->>>>>>> master
             return gridData[id];
         }
     };

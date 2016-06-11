@@ -218,13 +218,7 @@ $alerts = $session->getFlash('alerts');
   これは、後者のメソッドが、同じ名前のフラッシュデータを追加できるように、フラッシュデータを自動的に配列に変換するからです。
   その結果、[[yii\web\Session::getFlash()]] を呼び出したとき、この二つのメソッドの呼び出し順によって、あるときは配列を受け取り、あるときは文字列を受け取るということになってしまいます。
 
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
-> Tip|ヒント: フラッシュメッセージを表示するためには、[[yii\bootstrap\Alert|bootstrap Alert]] ウィジェットを次のように使用することが出来ます。
-=======
 > Tip: フラッシュメッセージを表示するためには、[[yii\bootstrap\Alert|bootstrap Alert]] ウィジェットを次のように使用することが出来ます。
->>>>>>> master
 >
 > ```php
 > echo Alert::widget([
@@ -233,10 +227,6 @@ $alerts = $session->getFlash('alerts');
 > ]);
 > ```
 
-<<<<<<< HEAD
->>>>>>> yiichina/master
-=======
->>>>>>> master
 
 ## クッキー <span id="cookies"></span>
 

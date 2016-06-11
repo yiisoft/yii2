@@ -84,15 +84,7 @@ $query->select(['user_id' => 'user.id', 'email']);
 例えば、
 
 ```php
-<<<<<<< HEAD
-<<<<<<< HEAD
-$query->select(["CONCAT(first_name, ' ', last_name]) AS full_name", 'email']);
-=======
 $query->select(["CONCAT(first_name, ' ', last_name) AS full_name", 'email']); 
->>>>>>> yiichina/master
-=======
-$query->select(["CONCAT(first_name, ' ', last_name) AS full_name", 'email']); 
->>>>>>> master
 ```
 
 生の SQL が使われる場所ではどこでもそうですが、セレクトに DB 式を書く場合には、テーブルやカラムの名前を表すために
@@ -401,15 +393,7 @@ $query->groupBy(['id', 'status']);
 例えば、
 
 ```php
-<<<<<<< HEAD
-<<<<<<< HEAD
-$query->groupBy('id, status']);
-=======
 $query->groupBy('id, status');
->>>>>>> yiichina/master
-=======
-$query->groupBy('id, status');
->>>>>>> master
 ```
 
 > Note: `GROUP BY` が何らかの DB 式を含む場合は、配列形式を使わなければなりません。
@@ -543,17 +527,8 @@ $query1->union($query2);
   これらのメソッドでは、`$q` パラメータは必須であり、カラム名または DB 式とすることが出来る。
 
 上記のメソッドの全ては、オプションで、DB クエリの実行に使用されるべき [[yii\db\Connection|DB 接続]] を表す `$db` パラメータを取ることが出来ます。
-<<<<<<< HEAD
-<<<<<<< HEAD
-このパラメータを省略した場合は、DB 接続として `db` アプリケーションコンポーネントが使用されます。
-=======
-このパラメータを省略した場合は、DB 接続として `db` [アプリケーションコンポーネント](structure-application-components.md) が使用されます。
->>>>>>> yiichina/master
-次に `count()` クエリメソッドを使う例をもう一つ挙げます。
-=======
 このパラメータを省略した場合は、DB 接続として `db` [アプリケーションコンポーネント](structure-application-components.md) が使用されます。
 次に [[yii\db\Query::count()|count()]] クエリメソッドを使う例をもう一つ挙げます。
->>>>>>> master
 
 ```php
 // 実行される SQL: SELECT COUNT(*) FROM `user` WHERE `last_name`=:last_name

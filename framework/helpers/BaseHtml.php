@@ -184,13 +184,6 @@ class BaseHtml
      * @param array $options the tag options in terms of name-value pairs. These will be rendered as
      * the attributes of the resulting tag. The values will be HTML-encoded using [[encode()]].
      * If a value is null, the corresponding attribute will not be rendered.
-<<<<<<< HEAD
-<<<<<<< HEAD
-     * If the options does not contain "type", a "type" attribute with value "text/css" will be used.
-=======
->>>>>>> yiichina/master
-=======
->>>>>>> master
      * See [[renderTagAttributes()]] for details on how attributes are being rendered.
      * @return string the generated style tag
      */
@@ -205,13 +198,6 @@ class BaseHtml
      * @param array $options the tag options in terms of name-value pairs. These will be rendered as
      * the attributes of the resulting tag. The values will be HTML-encoded using [[encode()]].
      * If a value is null, the corresponding attribute will not be rendered.
-<<<<<<< HEAD
-<<<<<<< HEAD
-     * If the options does not contain "type", a "type" attribute with value "text/javascript" will be rendered.
-=======
->>>>>>> yiichina/master
-=======
->>>>>>> master
      * See [[renderTagAttributes()]] for details on how attributes are being rendered.
      * @return string the generated script tag
      */
@@ -1137,11 +1123,6 @@ class BaseHtml
     }
 
     /**
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
-=======
->>>>>>> master
      * Generates a hint tag for the given model attribute.
      * The hint text is the hint associated with the attribute, obtained via [[Model::getAttributeHint()]].
      * If no hint content can be obtained, method will return an empty string.
@@ -1175,10 +1156,6 @@ class BaseHtml
     }
 
     /**
-<<<<<<< HEAD
->>>>>>> yiichina/master
-=======
->>>>>>> master
      * Generates a summary of the validation errors.
      * If there is no validation error, an empty error summary markup will still be generated, but it will be hidden.
      * @param Model|Model[] $models the model(s) whose validation errors are to be displayed
@@ -1186,15 +1163,7 @@ class BaseHtml
      *
      * - header: string, the header HTML for the error summary. If not set, a default prompt string will be used.
      * - footer: string, the footer HTML for the error summary.
-<<<<<<< HEAD
-<<<<<<< HEAD
-     * - encode: boolean, if set to false then value won't be encoded.
-=======
      * - encode: boolean, if set to false then the error messages won't be encoded.
->>>>>>> yiichina/master
-=======
-     * - encode: boolean, if set to false then the error messages won't be encoded.
->>>>>>> master
      *
      * The rest of the options will be rendered as the attributes of the container tag. The values will
      * be HTML-encoded using [[encode()]]. If a value is null, the corresponding attribute will not be rendered.
@@ -1240,15 +1209,7 @@ class BaseHtml
      * The following options are specially handled:
      *
      * - tag: this specifies the tag name. If not set, "div" will be used.
-<<<<<<< HEAD
-<<<<<<< HEAD
-     * - encode: boolean, if set to false then value won't be encoded.
-=======
      * - encode: boolean, if set to false then the error message won't be encoded.
->>>>>>> yiichina/master
-=======
-     * - encode: boolean, if set to false then the error message won't be encoded.
->>>>>>> master
      *
      * See [[renderTagAttributes()]] for details on how attributes are being rendered.
      *
@@ -1774,19 +1735,9 @@ class BaseHtml
         foreach ($items as $key => $value) {
             if (is_array($value)) {
                 $groupAttrs = isset($groups[$key]) ? $groups[$key] : [];
-<<<<<<< HEAD
-<<<<<<< HEAD
-                $groupAttrs['label'] = $key;
-=======
                 if (!isset($groupAttrs['label'])) {
                     $groupAttrs['label'] = $key;
                 }
->>>>>>> yiichina/master
-=======
-                if (!isset($groupAttrs['label'])) {
-                    $groupAttrs['label'] = $key;
-                }
->>>>>>> master
                 $attrs = ['options' => $options, 'groups' => $groups, 'encodeSpaces' => $encodeSpaces, 'encode' => $encode];
                 $content = static::renderSelectOptions($selection, $value, $attrs);
                 $lines[] = static::tag('optgroup', "\n" . $content . "\n", $groupAttrs);
@@ -1851,15 +1802,7 @@ class BaseHtml
                 if (in_array($name, static::$dataAttributes)) {
                     foreach ($value as $n => $v) {
                         if (is_array($v)) {
-<<<<<<< HEAD
-<<<<<<< HEAD
-                            $html .= " $name-$n='" . Json::encode($v, JSON_HEX_APOS) . "'";
-=======
                             $html .= " $name-$n='" . Json::htmlEncode($v) . "'";
->>>>>>> yiichina/master
-=======
-                            $html .= " $name-$n='" . Json::htmlEncode($v) . "'";
->>>>>>> master
                         } else {
                             $html .= " $name-$n=\"" . static::encode($v) . '"';
                         }
@@ -1875,15 +1818,7 @@ class BaseHtml
                     }
                     $html .= " $name=\"" . static::encode(static::cssStyleFromArray($value)) . '"';
                 } else {
-<<<<<<< HEAD
-<<<<<<< HEAD
-                    $html .= " $name='" . Json::encode($value, JSON_HEX_APOS) . "'";
-=======
                     $html .= " $name='" . Json::htmlEncode($value) . "'";
->>>>>>> yiichina/master
-=======
-                    $html .= " $name='" . Json::htmlEncode($value) . "'";
->>>>>>> master
                 }
             } elseif ($value !== null) {
                 $html .= " $name=\"" . static::encode($value) . '"';

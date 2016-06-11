@@ -5,11 +5,8 @@ namespace yiiunit\framework\db;
 use yii\caching\FileCache;
 use yii\db\Connection;
 use yii\db\DataReader;
-<<<<<<< HEAD
-=======
 use yii\db\Expression;
 use yii\db\Schema;
->>>>>>> master
 
 /**
  * @group db
@@ -225,8 +222,6 @@ SQL;
         $this->assertEquals('user5@example.com', $command->queryScalar());
     }
 
-<<<<<<< HEAD
-=======
     public function paramsNonWhereProvider()
     {
         return[
@@ -254,7 +249,6 @@ SQL;
         $this->assertEquals('Params', $command->queryScalar());
     }
 
->>>>>>> master
     public function testFetchMode()
     {
         $db = $this->getConnection();
@@ -293,19 +287,6 @@ SQL;
         $this->assertEquals(2, $command->execute());
     }
 
-<<<<<<< HEAD
-    /*
-    public function testInsert()
-    {
-    }
-
-    public function testUpdate()
-    {
-    }
-
-    public function testDelete()
-    {
-=======
     public function testInsert()
     {
         $db = $this->getConnection();
@@ -362,21 +343,10 @@ SQL;
         $this->assertEquals([
             'created_at' => date('Y'),
         ], $record);
->>>>>>> master
     }
 
     public function testCreateTable()
     {
-<<<<<<< HEAD
-    }
-
-    public function testRenameTable()
-    {
-    }
-
-    public function testDropTable()
-    {
-=======
         $db = $this->getConnection();
 
         if($db->getSchema()->getTableSchema('testCreateTable') !== null){
@@ -425,28 +395,10 @@ SQL;
         $this->assertNotNull($db->getSchema()->getTableSchema($tableName));
         $db->createCommand()->dropTable($tableName)->execute();
         $this->assertNull($db->getSchema()->getTableSchema($tableName));
->>>>>>> master
     }
 
     public function testTruncateTable()
     {
-<<<<<<< HEAD
-    }
-
-    public function testAddColumn()
-    {
-    }
-
-    public function testDropColumn()
-    {
-    }
-
-    public function testRenameColumn()
-    {
-    }
-
-    public function testAlterColumn()
-=======
         $db = $this->getConnection();
 
         $rows = $db->createCommand('SELECT * FROM {{animal}}')->queryAll();
@@ -494,7 +446,6 @@ SQL;
     }
 
     public function testRenameColumn()
->>>>>>> master
     {
     }
 
@@ -527,8 +478,6 @@ SQL;
         $command->execute();
     }
 
-<<<<<<< HEAD
-=======
     public function testLastInsertId()
     {
         $db = $this->getConnection();
@@ -539,7 +488,6 @@ SQL;
         $this->assertEquals(3, $db->getSchema()->getLastInsertID());
     }
 
->>>>>>> master
     public function testQueryCache()
     {
         $db = $this->getConnection();
@@ -608,8 +556,6 @@ SQL;
         $this->assertTrue(isset($rows[0]['CUSTOMER_ID']));
         $this->assertTrue(isset($rows[0]['TOTAL']));
     }
-<<<<<<< HEAD
-=======
 
     /**
      * Data provider for [[testGetRawSql()]]
@@ -684,5 +630,4 @@ SQL;
         $db->createCommand()->dropTable($tableName)->execute();
         $this->assertNull($db->getSchema()->getTableSchema($tableName));
     }
->>>>>>> master
 }

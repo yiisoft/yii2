@@ -72,9 +72,6 @@ class EachValidatorTest extends TestCase
         $validator->validateAttribute($model, 'attr_one');
         $this->assertNotContains('integer', $model->getFirstError('attr_one'));
     }
-<<<<<<< HEAD
-}
-=======
 
     /**
      * @depends testValidate
@@ -159,4 +156,3 @@ class EachValidatorTest extends TestCase
         $this->assertEmpty($model->getErrors('attr_one'));
     }
 }
->>>>>>> master

@@ -170,15 +170,7 @@ class ServiceLocator extends Component
      *
      * @param string $id component ID (e.g. `db`).
      * @param mixed $definition the component definition to be registered with this locator.
-<<<<<<< HEAD
-<<<<<<< HEAD
-     * It can be one of the followings:
-=======
      * It can be one of the following:
->>>>>>> yiichina/master
-=======
-     * It can be one of the following:
->>>>>>> master
      *
      * - a class name
      * - a configuration array: the array contains name-value pairs that will be used to

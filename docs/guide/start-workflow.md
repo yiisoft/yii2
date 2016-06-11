@@ -10,18 +10,9 @@ how the code is organized, and how the application handles requests in general.
   as the document root of your Web server, and configured the URL for accessing
   your application to be `http://hostname/index.php` or something similar.
   For your needs, please adjust the URLs in our descriptions accordingly.
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
   
 Note that unlike framework itself, after project template is installed it's all yours. You're free to add or delete
 code and overall modify it as you need.
->>>>>>> yiichina/master
-=======
-  
-Note that unlike framework itself, after project template is installed it's all yours. You're free to add or delete
-code and overall modify it as you need.
->>>>>>> master
 
 
 Functionality <span id="functionality"></span>
@@ -42,17 +33,8 @@ You should also see a toolbar at the bottom of the browser window.
 This is a useful [debugger tool](https://github.com/yiisoft/yii2-debug/blob/master/docs/guide/README.md) provided by Yii to record and display a lot of debugging information, such as log messages, response statuses, the database queries run, and so on.
 
 Additionally to the web application, there is a console script called `yii`, which is located in the applications base directory.
-<<<<<<< HEAD
-This script can be used to run background and maintainance tasks for the application, which are described
-<<<<<<< HEAD
-in the [Console Application Section](tutoral-console.md).
-=======
-in the [Console Application Section](tutorial-console.md).
->>>>>>> yiichina/master
-=======
 This script can be used to run background and maintenance tasks for the application, which are described
 in the [Console Application Section](tutorial-console.md).
->>>>>>> master
 
 
 Application Structure <span id="application-structure"></span>

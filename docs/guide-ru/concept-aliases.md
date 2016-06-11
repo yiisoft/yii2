@@ -105,17 +105,8 @@ $cache = new FileCache([
 - `@yii`: директория, в которой находится файл `BaseYii.php` (директория фреймворка).
 - `@app`: [[yii\base\Application::basePath|базовый путь]] текущего приложения.
 - `@runtime`: [[yii\base\Application::runtimePath|директория runtime]] текущего приложения.
-<<<<<<< HEAD
-- `@vendor`: [[yii\base\Application::vendorPath|директория vendor Composer].
-<<<<<<< HEAD
-- `@webroot`: вебрут текущего веб приложения (там где `index.php`).
-=======
-- `@webroot`: вебрут текущего веб приложения (там где находится [входной скрипт](structure-entry-scripts.md) `index.php`).
->>>>>>> yiichina/master
-=======
 - `@vendor`: [[yii\base\Application::vendorPath|директория vendor Composer]].
 - `@webroot`: вебрут текущего веб приложения (там где находится [входной скрипт](structure-entry-scripts.md) `index.php`).
->>>>>>> master
 - `@web`: базовый URL текущего приложения.
 
 Псевдоним `@yii` задаётся в момент подключения файла `Yii.php` во [входном скрипте](structure-entry-scripts.md).

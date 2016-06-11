@@ -25,14 +25,7 @@
 
 namespace app\models;
 
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
 use Yii;
->>>>>>> yiichina/master
-=======
-use Yii;
->>>>>>> master
 use yii\base\Model;
 
 class EntryForm extends Model

@@ -154,14 +154,6 @@ class NumberValidator extends Validator
 
         ValidationAsset::register($view);
 
-<<<<<<< HEAD
-<<<<<<< HEAD
-        return 'yii.validation.number(value, messages, ' . Json::encode($options) . ');';
-=======
         return 'yii.validation.number(value, messages, ' . Json::htmlEncode($options) . ');';
->>>>>>> yiichina/master
-=======
-        return 'yii.validation.number(value, messages, ' . Json::htmlEncode($options) . ');';
->>>>>>> master
     }
 }

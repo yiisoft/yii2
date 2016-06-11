@@ -77,26 +77,8 @@ class ActiveFixture extends BaseActiveFixture
         $this->data = [];
         $table = $this->getTableSchema();
         foreach ($this->getData() as $alias => $row) {
-<<<<<<< HEAD
-<<<<<<< HEAD
-            $this->db->createCommand()->insert($table->fullName, $row)->execute();
-            if ($table->sequenceName !== null) {
-                foreach ($table->primaryKey as $pk) {
-                    if (!isset($row[$pk])) {
-                        $row[$pk] = $this->db->getLastInsertID($table->sequenceName);
-                        break;
-                    }
-                }
-            }
-            $this->data[$alias] = $row;
-=======
             $primaryKeys = $this->db->schema->insert($table->fullName, $row);
             $this->data[$alias] = array_merge($row, $primaryKeys);
->>>>>>> yiichina/master
-=======
-            $primaryKeys = $this->db->schema->insert($table->fullName, $row);
-            $this->data[$alias] = array_merge($row, $primaryKeys);
->>>>>>> master
         }
     }
 

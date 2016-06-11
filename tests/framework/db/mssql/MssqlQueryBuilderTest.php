@@ -2,10 +2,7 @@
 
 namespace yiiunit\framework\db\mssql;
 
-<<<<<<< HEAD
-=======
 use yii\db\mssql\Schema;
->>>>>>> master
 use yiiunit\framework\db\QueryBuilderTest;
 use yii\db\Query;
 
@@ -19,13 +16,8 @@ class MssqlQueryBuilderTest extends QueryBuilderTest
 
     public function testOffsetLimit()
     {
-<<<<<<< HEAD
-        $expectedQuerySql = 'SELECT `id` FROM `exapmle` OFFSET 5 ROWS FETCH NEXT 10 ROWS ONLY';
-        $expectedQueryParams = null;
-=======
         $expectedQuerySql = 'SELECT [id] FROM [example] ORDER BY (SELECT NULL) OFFSET 5 ROWS FETCH NEXT 10 ROWS ONLY';
         $expectedQueryParams = [];
->>>>>>> master
 
         $query = new Query();
         $query->select('id')->from('example')->limit(10)->offset(5);
@@ -38,13 +30,8 @@ class MssqlQueryBuilderTest extends QueryBuilderTest
 
     public function testLimit()
     {
-<<<<<<< HEAD
-        $expectedQuerySql = 'SELECT `id` FROM `exapmle` OFFSET 0 ROWS FETCH NEXT 10 ROWS ONLY';
-        $expectedQueryParams = null;
-=======
         $expectedQuerySql = 'SELECT [id] FROM [example] ORDER BY (SELECT NULL) OFFSET 0 ROWS FETCH NEXT 10 ROWS ONLY';
         $expectedQueryParams = [];
->>>>>>> master
 
         $query = new Query();
         $query->select('id')->from('example')->limit(10);
@@ -57,13 +44,8 @@ class MssqlQueryBuilderTest extends QueryBuilderTest
 
     public function testOffset()
     {
-<<<<<<< HEAD
-        $expectedQuerySql = 'SELECT `id` FROM `exapmle` OFFSET 10 ROWS';
-        $expectedQueryParams = null;
-=======
         $expectedQuerySql = 'SELECT [id] FROM [example] ORDER BY (SELECT NULL) OFFSET 10 ROWS';
         $expectedQueryParams = [];
->>>>>>> master
 
         $query = new Query();
         $query->select('id')->from('example')->offset(10);
@@ -73,8 +55,6 @@ class MssqlQueryBuilderTest extends QueryBuilderTest
         $this->assertEquals($expectedQuerySql, $actualQuerySql);
         $this->assertEquals($expectedQueryParams, $actualQueryParams);
     }
-<<<<<<< HEAD
-=======
 
     public function testCommentColumn()
     {
@@ -110,5 +90,4 @@ class MssqlQueryBuilderTest extends QueryBuilderTest
     {
         return array_merge(parent::columnTypes(), []);
     }
->>>>>>> master
 }

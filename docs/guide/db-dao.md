@@ -89,36 +89,21 @@ and [[yii\db\Connection::password|password]]. Please refer to [[yii\db\Connectio
 > Info: When you create a DB connection instance, the actual connection to the database is not established until
   you execute the first SQL or you call the [[yii\db\Connection::open()|open()]] method explicitly.
 
-<<<<<<< .merge_file_a06164
-<<<<<<< HEAD
-=======
-> Tip: Sometimes you may want to execute some queries right after the database connection is established to initialize
-> some environment variables. You can register an event handler for the [[yii\db\Connection::EVENT_AFTER_OPEN|afterOpen]] event
-=======
 > Tip: Sometimes you may want to execute some queries right after the database connection is established to initialize
 > some environment variables (e.g., to set the timezone or character set). You can do so by registering an event handler
 > for the [[yii\db\Connection::EVENT_AFTER_OPEN|afterOpen]] event
->>>>>>> .merge_file_a03184
 > of the database connection. You may register the handler directly in the application configuration like so:
 > 
 > ```php
 > 'db' => [
 >     // ...
 >     'on afterOpen' => function($event) {
-<<<<<<< .merge_file_a06164
->         $event->sender->createCommand("YOUR SQL HERE")->execute();
->     }
-> ]
-> ```
->>>>>>> yiichina/master
-=======
 >         // $event->sender refers to the DB connection
 >         $event->sender->createCommand("SET time_zone = 'UTC'")->execute();
 >     }
 > ],
 > ```
 
->>>>>>> .merge_file_a03184
 
 ## Executing SQL Queries <span id="executing-sql-queries"></span>
 

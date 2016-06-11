@@ -27,14 +27,7 @@ use yii\base\NotSupportedException;
  * - `date`: [[DateValidator]]
  * - `default`: [[DefaultValueValidator]]
  * - `double`: [[NumberValidator]]
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
  * - `each`: [[EachValidator]]
->>>>>>> yiichina/master
-=======
- * - `each`: [[EachValidator]]
->>>>>>> master
  * - `email`: [[EmailValidator]]
  * - `exist`: [[ExistValidator]]
  * - `file`: [[FileValidator]]
@@ -66,14 +59,7 @@ class Validator extends Component
         'date' => 'yii\validators\DateValidator',
         'default' => 'yii\validators\DefaultValueValidator',
         'double' => 'yii\validators\NumberValidator',
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
         'each' => 'yii\validators\EachValidator',
->>>>>>> yiichina/master
-=======
-        'each' => 'yii\validators\EachValidator',
->>>>>>> master
         'email' => 'yii\validators\EmailValidator',
         'exist' => 'yii\validators\ExistValidator',
         'file' => 'yii\validators\FileValidator',
@@ -395,15 +381,7 @@ class Validator extends Component
 
     /**
      * Checks if the given value is empty.
-<<<<<<< HEAD
-<<<<<<< HEAD
-     * A value is considered empty if it is null, an empty array, or the trimmed result is an empty string.
-=======
      * A value is considered empty if it is null, an empty array, or an empty string.
->>>>>>> yiichina/master
-=======
-     * A value is considered empty if it is null, an empty array, or an empty string.
->>>>>>> master
      * Note that this method is different from PHP empty(). It will return false when the value is 0.
      * @param mixed $value the value to be checked
      * @return boolean whether the value is empty

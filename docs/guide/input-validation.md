@@ -9,28 +9,12 @@ Given a [model](structure-models.md) populated with user inputs, you can validat
 succeeded or not. If not, you may get the error messages from the [[yii\base\Model::errors]] property. For example,
 
 ```php
-<<<<<<< HEAD
-<<<<<<< HEAD
-$model = new \app\models\ContactForm;
-
-// populate model attributes with user inputs
-$model->attributes = \Yii::$app->request->post('ContactForm');
-=======
 $model = new \app\models\ContactForm();
 
 // populate model attributes with user inputs
 $model->load(\Yii::$app->request->post());
 // which is equivalent to the following:
 // $model->attributes = \Yii::$app->request->post('ContactForm');
->>>>>>> yiichina/master
-=======
-$model = new \app\models\ContactForm();
-
-// populate model attributes with user inputs
-$model->load(\Yii::$app->request->post());
-// which is equivalent to the following:
-// $model->attributes = \Yii::$app->request->post('ContactForm');
->>>>>>> master
 
 if ($model->validate()) {
     // all inputs are valid
@@ -107,15 +91,7 @@ When the `validate()` method is called, it does the following steps to perform v
    using the current [[yii\base\Model::scenario|scenario]]. These rules are called *active rules*.
 3. Use each active rule to validate each active attribute which is associated with the rule.
    The validation rules are evaluated in the order they are listed.
-<<<<<<< HEAD
-<<<<<<< HEAD
-   
-=======
 
->>>>>>> yiichina/master
-=======
-
->>>>>>> master
 According to the above validation steps, an attribute will be validated if and only if it is
 an active attribute declared in `scenarios()` and is associated with one or multiple active rules
 declared in `rules()`.
@@ -537,17 +513,8 @@ changes the value of an input field or submit the form, the client-side validati
 If you want to turn off client-side validation completely, you may configure the
 [[yii\widgets\ActiveForm::enableClientValidation]] property to be false. You may also turn off client-side
 validation of individual input fields by configuring their [[yii\widgets\ActiveField::enableClientValidation]]
-<<<<<<< HEAD
-<<<<<<< HEAD
-property to be false.
-=======
 property to be false. When `enableClientValidation` is configured at both the input field level and the form level,
 the former will take precedence.
->>>>>>> yiichina/master
-=======
-property to be false. When `enableClientValidation` is configured at both the input field level and the form level,
-the former will take precedence.
->>>>>>> master
 
 
 ### Implementing Client-Side Validation <span id="implementing-client-side-validation"></span>
@@ -697,43 +664,6 @@ For example, to validate if a username is unique or not, it is necessary to chec
 You can use AJAX-based validation in this case. It will trigger an AJAX request in the background to validate the
 input while keeping the same user experience as the regular client-side validation.
 
-<<<<<<< HEAD
-<<<<<<< HEAD
-To enable AJAX validation for the whole form, you have to set the
-[[yii\widgets\ActiveForm::enableAjaxValidation]] property to be `true` and specify `id` to be a unique form identifier:
-=======
-To enable AJAX validation for a single input field, configure the [[yii\widgets\ActiveField::enableAjaxValidation|enableAjaxValidation]]
-property of that field to be true and specify a unique form `id`:
->>>>>>> master
-
-```php
-use yii\widgets\ActiveForm;
-
-$form = ActiveForm::begin([
-    'id' => 'registration-form',
-]);
-
-echo $form->field($model, 'username', ['enableAjaxValidation' => true]);
-
-// ...
-
-ActiveForm::end();
-```
-
-To enable AJAX validation for the whole form, configure [[yii\widgets\ActiveForm::enableAjaxValidation|enableAjaxValidation]]
-to be true at the form level:
-
-```php
-$form = ActiveForm::begin([
-    'id' => 'contact-form',
-    'enableAjaxValidation' => true,
-]);
-```
-
-<<<<<<< HEAD
-You may also turn AJAX validation on or off for individual input fields by configuring their
-[[yii\widgets\ActiveField::enableAjaxValidation]] property.
-=======
 To enable AJAX validation for a single input field, configure the [[yii\widgets\ActiveField::enableAjaxValidation|enableAjaxValidation]]
 property of that field to be true and specify a unique form `id`:
 
@@ -763,11 +693,6 @@ $form = ActiveForm::begin([
 
 > Note: When the `enableAjaxValidation` property is configured at both the input field level and the form level,
   the former will take precedence.
->>>>>>> yiichina/master
-=======
-> Note: When the `enableAjaxValidation` property is configured at both the input field level and the form level,
-  the former will take precedence.
->>>>>>> master
 
 You also need to prepare the server so that it can handle the AJAX validation requests.
 This can be achieved by a code snippet like the following in the controller actions:

@@ -113,15 +113,7 @@ Upgrading from 2.0.4 to 2.0.5 does not require any changes.
 Upgrade from Yii 2.0.3
 ----------------------
 
-<<<<<<< HEAD
-<<<<<<< HEAD
-* Updated dependency to `cebe/markdown` to version `1.0.x`.
-=======
 * Updated dependency to `cebe/markdown` to version `1.1.x`.
->>>>>>> yiichina/master
-=======
-* Updated dependency to `cebe/markdown` to version `1.1.x`.
->>>>>>> master
   If you need stick with 1.0.x, you can specify that in your `composer.json` by
   adding the following line in the `require` section:
   
@@ -191,15 +183,7 @@ Upgrade from Yii 2.0 Beta
   the composer-asset-plugin, *before* you update your project:
 
   ```
-<<<<<<< HEAD
-<<<<<<< HEAD
-  php composer.phar global require "fxp/composer-asset-plugin:1.0.0"
-=======
   php composer.phar global require "fxp/composer-asset-plugin:~1.0.0"
->>>>>>> yiichina/master
-=======
-  php composer.phar global require "fxp/composer-asset-plugin:~1.0.0"
->>>>>>> master
   ```
 
   You also need to add the following code to your project's `composer.json` file:
@@ -301,15 +285,7 @@ Upgrade from Yii 2.0 Beta
   ];
   ```
 
-<<<<<<< HEAD
-<<<<<<< HEAD
-  > Note: If you are using the `Advanced Application Template` you should not add this configuration to `common/config`
-=======
   > Note: If you are using the `Advanced Project Template` you should not add this configuration to `common/config`
->>>>>>> yiichina/master
-=======
-  > Note: If you are using the `Advanced Project Template` you should not add this configuration to `common/config`
->>>>>>> master
   or `console/config` because the console application doesn't have to deal with CSRF and uses its own request that
   doesn't have `cookieValidationKey` property.
 

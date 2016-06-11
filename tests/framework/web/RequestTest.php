@@ -78,8 +78,6 @@ class RequestTest extends TestCase
         $request->acceptableLanguages = ['en-us', 'de'];
         $this->assertEquals('pl', $request->getPreferredLanguage(['pl', 'ru-ru']));
     }
-<<<<<<< HEAD
-=======
 
     public function testCsrfTokenValidation()
     {
@@ -203,5 +201,4 @@ class RequestTest extends TestCase
         unset($_SERVER['SERVER_PORT']);
         $this->assertEquals(null, $request->getServerPort());
     }
->>>>>>> master
 }

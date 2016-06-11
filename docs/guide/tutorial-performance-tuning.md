@@ -205,14 +205,6 @@ In the push method, you would use a message queue (e.g. RabbitMQ, ActiveMQ, Amaz
 Whenever a new task is put on the queue, it will initiate or notify the task handling process to trigger the task processing.
 
 
-<<<<<<< HEAD
-<<<<<<< HEAD
-- [Yii debug toolbar and debugger](tool-debugger.md)
-=======
-- [Yii debug toolbar and debugger](https://github.com/yiisoft/yii2-debug/blob/master/docs/guide/README.md)
->>>>>>> yiichina/master
-- [XDebug profiler](http://xdebug.org/docs/profiler)
-=======
 ## Performance Profiling <span id="performance-profiling"></span>
 
 You should profile your code to find out the performance bottlenecks and take appropriate measures accordingly.
@@ -220,7 +212,6 @@ The following profiling tools may be useful:
 
 - [Yii debug toolbar and debugger](https://github.com/yiisoft/yii2-debug/blob/master/docs/guide/README.md)
 - [Blackfire](https://blackfire.io/)
->>>>>>> master
 - [XHProf](http://www.php.net/manual/en/book.xhprof.php)
 - [XDebug profiler](http://xdebug.org/docs/profiler)
 

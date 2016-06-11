@@ -387,20 +387,10 @@ class PhpManager extends BaseManager
     {
         $roles = [];
         foreach ($this->getAssignments($userId) as $name => $assignment) {
-<<<<<<< HEAD
-<<<<<<< HEAD
-            $roles[$name] = $this->items[$assignment->roleName];
-=======
-=======
->>>>>>> master
             $role = $this->items[$assignment->roleName];
             if ($role->type === Item::TYPE_ROLE) {
                 $roles[$name] = $role;
             }
-<<<<<<< HEAD
->>>>>>> yiichina/master
-=======
->>>>>>> master
         }
 
         return $roles;
@@ -629,23 +619,6 @@ class PhpManager extends BaseManager
      */
     protected function updateItem($name, $item)
     {
-<<<<<<< HEAD
-<<<<<<< HEAD
-        $this->items[$item->name] = $item;
-=======
->>>>>>> master
-        if ($name !== $item->name) {
-            if (isset($this->items[$item->name])) {
-                throw new InvalidParamException("Unable to change the item name. The name '{$item->name}' is already used by another item.");
-            } else {
-                // Remove old item in case of renaming
-                unset($this->items[$name]);
-
-                if (isset($this->children[$name])) {
-                    $this->children[$item->name] = $this->children[$name];
-<<<<<<< HEAD
-                    unset ($this->children[$name]);
-=======
         if ($name !== $item->name) {
             if (isset($this->items[$item->name])) {
                 throw new InvalidParamException("Unable to change the item name. The name '{$item->name}' is already used by another item.");
@@ -656,23 +629,11 @@ class PhpManager extends BaseManager
                 if (isset($this->children[$name])) {
                     $this->children[$item->name] = $this->children[$name];
                     unset($this->children[$name]);
->>>>>>> yiichina/master
-=======
-                    unset($this->children[$name]);
->>>>>>> master
                 }
                 foreach ($this->children as &$children) {
                     if (isset($children[$name])) {
                         $children[$item->name] = $children[$name];
-<<<<<<< HEAD
-<<<<<<< HEAD
-                        unset ($children[$name]);
-=======
                         unset($children[$name]);
->>>>>>> yiichina/master
-=======
-                        unset($children[$name]);
->>>>>>> master
                     }
                 }
                 foreach ($this->assignments as &$assignments) {
@@ -685,18 +646,9 @@ class PhpManager extends BaseManager
                 $this->saveAssignments();
             }
         }
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
 
         $this->items[$item->name] = $item;
 
->>>>>>> yiichina/master
-=======
-
-        $this->items[$item->name] = $item;
-
->>>>>>> master
         $this->saveItems();
         return true;
     }

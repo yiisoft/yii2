@@ -447,15 +447,7 @@ class Component extends Object
     /**
      * Attaches an event handler to an event.
      *
-<<<<<<< HEAD
-<<<<<<< HEAD
-     * The event handler must be a valid PHP callback. The followings are
-=======
      * The event handler must be a valid PHP callback. The following are
->>>>>>> yiichina/master
-=======
-     * The event handler must be a valid PHP callback. The following are
->>>>>>> master
      * some examples:
      *
      * ```

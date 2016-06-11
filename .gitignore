@@ -9,13 +9,10 @@ nbproject
 .project
 .settings
 
-<<<<<<< .merge_file_a06844
-=======
 # sublime text project / workspace files
 *.sublime-project
 *.sublime-workspace
 
->>>>>>> .merge_file_a06648
 # windows thumbnail cache
 Thumbs.db
 
@@ -37,10 +34,7 @@ composer.phar
 phpunit.phar
 # local phpunit config
 /phpunit.xml
-<<<<<<< .merge_file_a06844
-=======
 
 # ignore sub directory for dev installed apps and extensions
 /apps
 /extensions
->>>>>>> .merge_file_a06648

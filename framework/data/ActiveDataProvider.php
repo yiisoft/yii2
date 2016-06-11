@@ -171,26 +171,9 @@ class ActiveDataProvider extends BaseDataProvider
     public function setSort($value)
     {
         parent::setSort($value);
-<<<<<<< HEAD
-<<<<<<< HEAD
-        if (($sort = $this->getSort()) !== false && empty($sort->attributes) && $this->query instanceof ActiveQueryInterface) {
-            /* @var $model Model */
-            $model = new $this->query->modelClass;
-            foreach ($model->attributes() as $attribute) {
-                $sort->attributes[$attribute] = [
-                    'asc' => [$attribute => SORT_ASC],
-                    'desc' => [$attribute => SORT_DESC],
-                    'label' => $model->getAttributeLabel($attribute),
-                ];
-=======
         if (($sort = $this->getSort()) !== false && $this->query instanceof ActiveQueryInterface) {
             /* @var $model Model */
             $model = new $this->query->modelClass;
-=======
-        if (($sort = $this->getSort()) !== false && $this->query instanceof ActiveQueryInterface) {
-            /* @var $model Model */
-            $model = new $this->query->modelClass;
->>>>>>> master
             if (empty($sort->attributes)) {
                 foreach ($model->attributes() as $attribute) {
                     $sort->attributes[$attribute] = [
@@ -200,19 +183,11 @@ class ActiveDataProvider extends BaseDataProvider
                     ];
                 }
             } else {
-<<<<<<< HEAD
-                foreach($sort->attributes as $attribute => $config) {
-=======
                 foreach ($sort->attributes as $attribute => $config) {
->>>>>>> master
                     if (!isset($config['label'])) {
                         $sort->attributes[$attribute]['label'] = $model->getAttributeLabel($attribute);
                     }
                 }
-<<<<<<< HEAD
->>>>>>> yiichina/master
-=======
->>>>>>> master
             }
         }
     }

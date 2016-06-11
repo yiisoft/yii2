@@ -78,23 +78,10 @@ All Rights Reserved.
 * [クエリビルダ](db-query-builder.md): シンプルな抽象レイヤを使ってデータベースに対してクエリを行う
 * [アクティブレコード](db-active-record.md): アクティブレコード ORM、レコードの読み出しと操作、リレーションの定義
 * [マイグレーション](db-migrations.md): チーム開発環境においてデータベースにバージョンコントロールを適用
-<<<<<<< HEAD
-<<<<<<< HEAD
-* **未定** [Sphinx](db-sphinx.md)
-* **未定** [Redis](db-redis.md)
-* **未定** [MongoDB](db-mongodb.md)
-* **未定** [ElasticSearch](db-elasticsearch.md)
-=======
-=======
->>>>>>> master
 * [Sphinx](https://github.com/yiisoft/yii2-sphinx/blob/master/docs/guide-ja/README.md)
 * [Redis](https://github.com/yiisoft/yii2-redis/blob/master/docs/guide-ja/README.md)
 * [MongoDB](https://github.com/yiisoft/yii2-mongodb/blob/master/docs/guide-ja/README.md)
 * [ElasticSearch](https://github.com/yiisoft/yii2-elasticsearch/blob/master/docs/guide-ja/README.md)
-<<<<<<< HEAD
->>>>>>> yiichina/master
-=======
->>>>>>> master
 
 
 ユーザからのデータ取得
@@ -110,15 +97,7 @@ All Rights Reserved.
 データの表示
 ------------
 
-<<<<<<< HEAD
-<<<<<<< HEAD
-* [データのフォーマット](output-formatter.md)
-=======
 * [データのフォーマット](output-formatting.md)
->>>>>>> yiichina/master
-=======
-* [データのフォーマット](output-formatting.md)
->>>>>>> master
 * [ページネーション](output-pagination.md)
 * [並べ替え](output-sorting.md)
 * [データプロバイダ](output-data-providers.md)
@@ -134,17 +113,9 @@ All Rights Reserved.
 * [認証](security-authentication.md)
 * [権限付与](security-authorization.md)
 * [パスワードを扱う](security-passwords.md)
-<<<<<<< HEAD
-<<<<<<< HEAD
-* [認証クライアント](security-auth-clients.md)
-=======
-* [認証クライアント](https://github.com/yiisoft/yii2-authclient/blob/master/docs/guide-ja/README.md)
->>>>>>> yiichina/master
-=======
 * [暗号化](security-cryptography.md)
 * [ビューのセキュリティ](structure-views.md#security)
 * [認証クライアント](https://github.com/yiisoft/yii2-authclient/blob/master/docs/guide-ja/README.md)
->>>>>>> master
 * [ベストプラクティス](security-best-practices.md)
 
 
@@ -175,19 +146,8 @@ RESTful ウェブサービス
 開発ツール
 ----------
 
-<<<<<<< HEAD
-<<<<<<< HEAD
-* [デバッグツールバーとデバッガ](tool-debugger.md)
-* [Gii を使ってコードを生成する](tool-gii.md)
-* **未定** [API ドキュメントを生成する](tool-api-doc.md)
-=======
-* [デバッグツールバーとデバッガ](https://github.com/yiisoft/yii2-debug/blob/master/docs/guide-ja/README.md)
-* [Gii を使ってコードを生成する](https://github.com/yiisoft/yii2-gii/blob/master/docs/guide/README.md)
->>>>>>> yiichina/master
-=======
 * [デバッグツールバーとデバッガ](https://github.com/yiisoft/yii2-debug/blob/master/docs/guide-ja/README.md)
 * [Gii を使ってコードを生成する](https://github.com/yiisoft/yii2-gii/blob/master/docs/guide-ja/README.md)
->>>>>>> master
 
 
 テスト
@@ -204,15 +164,7 @@ RESTful ウェブサービス
 スペシャルトピック
 ------------------
 
-<<<<<<< HEAD
-<<<<<<< HEAD
-* [アドバンストアプリケーションテンプレート](tutorial-advanced-app.md)
-=======
 * [アドバンストプロジェクトテンプレート](https://github.com/yiisoft/yii2-app-advanced/blob/master/docs/guide-ja/README.md)
->>>>>>> yiichina/master
-=======
-* [アドバンストプロジェクトテンプレート](https://github.com/yiisoft/yii2-app-advanced/blob/master/docs/guide-ja/README.md)
->>>>>>> master
 * [アプリケーションを一から構築する](tutorial-start-from-scratch.md)
 * [コンソールコマンド](tutorial-console.md)
 * [コアバリデータ](tutorial-core-validators.md)
@@ -235,18 +187,8 @@ RESTful ウェブサービス
 * Menu: **未定** デモページへリンク
 * LinkPager: **未定** デモページへリンク
 * LinkSorter: **未定** デモページへリンク
-<<<<<<< HEAD
-<<<<<<< HEAD
-* [Bootstrap ウィジェット](widget-bootstrap.md)
-* [jQuery UI ウィジェット](widget-jui.md)
-=======
 * [Bootstrap ウィジェット](https://github.com/yiisoft/yii2-bootstrap/blob/master/docs/guide-ja/README.md)
 * [jQuery UI ウィジェット](https://github.com/yiisoft/yii2-jui/blob/master/docs/guide-ja/README.md)
->>>>>>> yiichina/master
-=======
-* [Bootstrap ウィジェット](https://github.com/yiisoft/yii2-bootstrap/blob/master/docs/guide-ja/README.md)
-* [jQuery UI ウィジェット](https://github.com/yiisoft/yii2-jui/blob/master/docs/guide-ja/README.md)
->>>>>>> master
 
 
 ヘルパ

@@ -21,8 +21,6 @@
 *.jpg  binary
 *.gif  binary
 *.ttf  binary
-<<<<<<< .merge_file_a01752
-=======
 
 # Ignore all test and documentation for archive
 /.github            export-ignore
@@ -40,4 +38,3 @@
 # https://about.gitlab.com/2015/02/10/gitlab-reduced-merge-conflicts-by-90-percent-with-changelog-placeholders/
 /framework/CHANGELOG.md		merge=union
 
->>>>>>> .merge_file_a04068

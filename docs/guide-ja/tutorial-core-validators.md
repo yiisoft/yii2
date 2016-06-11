@@ -104,16 +104,6 @@ public function rules()
   あるいは、PHP の `Datetime` クラスによって認識される書式に接頭辞 `php:` を付けた文字列でも構いません。
   サポートされている書式については、<http://php.net/manual/ja/datetime.createfromformat.php> を参照してください。
   このプロパティが設定されていないときは、`Yii::$app->formatter->dateFormat` の値を取ります。
-<<<<<<< HEAD
-<<<<<<< HEAD
-- `timestampAttribute`: このバリデータが入力された日付/時刻から変換した UNIX タイムスタンプを代入することが出来る属性の名前。
-=======
-- `timestampAttribute`: このバリデータが、入力された日付/時刻から変換した UNIX タイムスタンプを代入することが出来る属性の名前。
-  これは、検証される属性と同じ属性であってもかまいません。
-  その場合は、元の値は検証実行後にタイムスタンプで上書きされます。
-  [DatePicker で日付の入力を扱う](widget-jui#datepicker-date-input) に使用例がありますので、参照してください。
->>>>>>> yiichina/master
-=======
 
 - `timestampAttribute`: このバリデータが、入力された日付/時刻から変換した UNIX タイムスタンプを代入することが出来る属性の名前。
   これは、検証される属性と同じ属性であってもかまいません。
@@ -123,23 +113,13 @@ public function rules()
   バージョン 2.0.4 以降では、[[yii\validators\DateValidator::$timestampAttributeFormat|$timestampAttributeFormat]] と [[yii\validators\DateValidator::$timestampAttributeTimeZone|$timestampAttributeTimeZone]] を使って、この属性に対するフォーマットとタイムゾーンを指定することが出来ます。
 
 - バージョン 2.0.4 以降では、タイムスタンプの [[yii\validators\DateValidator::$min|最小値]] または  [[yii\validators\DateValidator::$max|最大値]] を指定することも出来ます。
->>>>>>> master
 
 入力が必須でない場合には、date バリデータに加えて、default バリデータ (デフォルト値フィルタ) を追加すれば、空の入力値が `NULL` として保存されることを保証することが出来ます。
 そうしないと、データベースに `0000-00-00` という日付が保存されたり、デートピッカーの入力フィールドが `1970-01-01` になったりしてしまいます。
 
 ```php
-<<<<<<< HEAD
-<<<<<<< HEAD
-[['from_date', 'to_date'], 'default', 'value' => null],
-=======
     [['from_date', 'to_date'], 'default', 'value' => null],
     [['from_date', 'to_date'], 'date'],
->>>>>>> yiichina/master
-=======
-    [['from_date', 'to_date'], 'default', 'value' => null],
-    [['from_date', 'to_date'], 'date'],
->>>>>>> master
 ```
 
 ## [[yii\validators\DefaultValueValidator|default]] <span id="default"></span>
@@ -194,17 +174,9 @@ function foo($model, $attribute) {
   設定されていない場合は、バリデータが下限値をチェックしないことを意味します。
 
 
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
-## [[yii\validators\EachValidator|each]] <span id="each"></span>
-
-> Info|情報: このバリデータは、バージョン 2.0.4 以降で利用できます。
-=======
 ## [[yii\validators\EachValidator|each]] <span id="each"></span>
 
 > Info: このバリデータは、バージョン 2.0.4 以降で利用できます。
->>>>>>> master
 
 ```php
 [
@@ -223,16 +195,9 @@ function foo($model, $attribute) {
 - `allowMessageFromRule`: 埋め込まれた検証規則によって返されるエラーメッセージを使うかどうか。
   デフォルト値は true です。これが false の場合は、`message` をエラーメッセージとして使います。
 
-<<<<<<< HEAD
-> Note|注意: 属性が配列でない場合は、検証が失敗したと見なされ、`message` がエラーメッセージとして返されます。
-
-
->>>>>>> yiichina/master
-=======
 > Note: 属性が配列でない場合は、検証が失敗したと見なされ、`message` がエラーメッセージとして返されます。
 
 
->>>>>>> master
 ## [[yii\validators\EmailValidator|email]] <span id="email"></span>
 
 ```php
@@ -281,24 +246,12 @@ function foo($model, $attribute) {
 ]
 ```
 
-<<<<<<< HEAD
-<<<<<<< HEAD
-このバリデータは、入力値がテーブルのカラムに存在するかどうかをチェックします。
-[アクティブレコード](db-active-record.md) モデルの属性に対してのみ働きます。
-一つのカラムに対するバリデーションか、複数のカラムに対するバリデーションか、どちらかをサポートします。
-=======
-=======
->>>>>>> master
 このバリデータは、入力値が [アクティブレコード](db-active-record.md) の属性によって表されるテーブルのカラムに存在するかどうかをチェックします。
 `targetAttribute` を使って [アクティブレコード](db-active-record.md) の属性を指定し、`targetClass` によって対応するクラスを指定することが出来ます。
 これらを指定しない場合は、検証されるモデルの属性とクラスの値が使用されます。
 
 このバリデータは、一つまたは複数のカラムに対する検証に使用することが出来ます
 (複数のカラムに対する検証の場合は、それらの属性の組み合せが存在しなければならないことを意味します)。
-<<<<<<< HEAD
->>>>>>> yiichina/master
-=======
->>>>>>> master
 
 - `targetClass`: 検証される入力値を探すために使用される [アクティブレコード](db-active-record.md) クラスの名前。
   設定されていない場合は、現在検証されているモデルのクラスが使用されます。

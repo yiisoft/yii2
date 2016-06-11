@@ -1,10 +1,7 @@
 <?php
 namespace yiiunit\framework\db\sqlite;
 
-<<<<<<< HEAD
-=======
 use yii\db\Query;
->>>>>>> master
 use yiiunit\framework\db\QueryTest;
 
 /**
@@ -14,8 +11,6 @@ use yiiunit\framework\db\QueryTest;
 class SqliteQueryTest extends QueryTest
 {
     protected $driverName = 'sqlite';
-<<<<<<< HEAD
-=======
 
     public function testUnion()
     {
@@ -32,5 +27,4 @@ class SqliteQueryTest extends QueryTest
         $this->assertNotEmpty($result);
         $this->assertSame(7, count($result));
     }
->>>>>>> master
 }

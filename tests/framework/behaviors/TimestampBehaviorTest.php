@@ -3,10 +3,7 @@
 namespace yiiunit\framework\behaviors;
 
 use Yii;
-<<<<<<< HEAD
-=======
 use yii\db\Expression;
->>>>>>> master
 use yiiunit\TestCase;
 use yii\db\Connection;
 use yii\db\ActiveRecord;
@@ -45,12 +42,6 @@ class TimestampBehaviorTest extends TestCase
 
         $columns = [
             'id' => 'pk',
-<<<<<<< HEAD
-            'created_at' => 'integer',
-            'updated_at' => 'integer',
-        ];
-        Yii::$app->getDb()->createCommand()->createTable('test_auto_timestamp', $columns)->execute();
-=======
             'created_at' => 'integer NOT NULL',
             'updated_at' => 'integer',
         ];
@@ -62,7 +53,6 @@ class TimestampBehaviorTest extends TestCase
             'updated_at' => 'string',
         ];
         Yii::$app->getDb()->createCommand()->createTable('test_auto_timestamp_string', $columns)->execute();
->>>>>>> master
     }
 
     public function tearDown()
@@ -77,12 +67,9 @@ class TimestampBehaviorTest extends TestCase
     {
         $currentTime = time();
 
-<<<<<<< HEAD
-=======
         ActiveRecordTimestamp::$behaviors = [
             TimestampBehavior::className(),
         ];
->>>>>>> master
         $model = new ActiveRecordTimestamp();
         $model->save(false);
 
@@ -97,12 +84,9 @@ class TimestampBehaviorTest extends TestCase
     {
         $currentTime = time();
 
-<<<<<<< HEAD
-=======
         ActiveRecordTimestamp::$behaviors = [
             TimestampBehavior::className(),
         ];
->>>>>>> master
         $model = new ActiveRecordTimestamp();
         $model->save(false);
 
@@ -115,8 +99,6 @@ class TimestampBehaviorTest extends TestCase
         $this->assertEquals($enforcedTime, $model->created_at, 'Create time has been set on update!');
         $this->assertTrue($model->updated_at >= $currentTime, 'Update time has NOT been set on update!');
     }
-<<<<<<< HEAD
-=======
 
     /**
      * @depends testNewRecord
@@ -206,7 +188,6 @@ class TimestampBehaviorTest extends TestCase
         $this->assertEquals($enforcedTime, $model->created_at, 'Create time has been set on update!');
         $this->assertEquals(date('Y'), $model->updated_at);
     }
->>>>>>> master
 }
 
 /**
@@ -218,28 +199,16 @@ class TimestampBehaviorTest extends TestCase
  */
 class ActiveRecordTimestamp extends ActiveRecord
 {
-<<<<<<< HEAD
-    public function behaviors()
-    {
-        return [
-            TimestampBehavior::className(),
-        ];
-=======
     public static $behaviors;
     public static $tableName = 'test_auto_timestamp';
 
     public function behaviors()
     {
         return static::$behaviors;
->>>>>>> master
     }
 
     public static function tableName()
     {
-<<<<<<< HEAD
-        return 'test_auto_timestamp';
-=======
         return static::$tableName;
->>>>>>> master
     }
 }

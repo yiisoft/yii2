@@ -37,26 +37,10 @@ All Rights Reserved.
 * [Контроллеры](structure-controllers.md)
 * [Модели](structure-models.md)
 * [Представления](structure-views.md)
-<<<<<<< HEAD
-<<<<<<< HEAD
-* **TBD** [Модели](structure-models.md)
-* [Фильтры](structure-filters.md)
-* [Виджеты](structure-widgets.md)
-* [Модули](structure-modules.md)
-* **TBD** [Ресурсы](structure-assets.md)
-=======
-* [Модели](structure-models.md)
-* [Фильтры](structure-filters.md)
-* [Виджеты](structure-widgets.md)
-* [Модули](structure-modules.md)
-* [Ресурсы](structure-assets.md)
->>>>>>> yiichina/master
-=======
 * [Модули](structure-modules.md)
 * [Фильтры](structure-filters.md)
 * [Виджеты](structure-widgets.md)
 * [Ресурсы](structure-assets.md)
->>>>>>> master
 * [Расширения](structure-extensions.md)
 
 
@@ -68,16 +52,7 @@ All Rights Reserved.
 * [Разбор и генерация URL](runtime-routing.md)
 * [Запросы](runtime-requests.md)
 * [Ответы](runtime-responses.md)
-<<<<<<< HEAD
-<<<<<<< HEAD
-* **TBD** [Сессии и куки](runtime-sessions-cookies.md)
-=======
 * [Сессии и куки](runtime-sessions-cookies.md)
->>>>>>> yiichina/master
-* [Разбор и генерация URL](runtime-routing.md)
-=======
-* [Сессии и куки](runtime-sessions-cookies.md)
->>>>>>> master
 * [Обработка ошибок](runtime-handling-errors.md)
 * [Логирование](runtime-logging.md)
 
@@ -99,20 +74,6 @@ All Rights Reserved.
 Работа с базами данных
 ----------------------
 
-<<<<<<< HEAD
-* **TBD** [Объекты доступа к данным (DAO)](db-dao.md) - Соединение с базой данных, простые запросы, транзакции и работа со схемой.
-* **TBD** [Построитель запросов](db-query-builder.md) - Запросы к базе данных через простой слой абстракции.
-* **TBD** [Active Record](db-active-record.md) - Получение объектов AR, работа с ними и определение связей.
-<<<<<<< HEAD
-* **TBD** [Миграции](db-migrations.md) - Контроль версий схемы данных при работе в команде.
-=======
-* [Миграции](db-migrations.md) - Контроль версий схемы данных при работе в команде.
->>>>>>> yiichina/master
-* **TBD** [Sphinx](db-sphinx.md)
-* **TBD** [Redis](db-redis.md)
-* **TBD** [MongoDB](db-mongodb.md)
-* **TBD** [ElasticSearch](db-elasticsearch.md)
-=======
 * [Объекты доступа к данным (DAO)](db-dao.md) - Соединение с базой данных, простые запросы, транзакции и работа со схемой.
 * [Построитель запросов](db-query-builder.md) - Запросы к базе данных через простой слой абстракции.
 * [Active Record](db-active-record.md) - Получение объектов AR, работа с ними и определение связей.
@@ -121,7 +82,6 @@ All Rights Reserved.
 * [Redis](https://github.com/yiisoft/yii2-redis/blob/master/docs/guide/README.md)
 * [MongoDB](https://github.com/yiisoft/yii2-mongodb/blob/master/docs/guide/README.md)
 * [ElasticSearch](https://github.com/yiisoft/yii2-elasticsearch/blob/master/docs/guide/README.md)
->>>>>>> master
 
 
 Получение данных от пользователя
@@ -129,40 +89,14 @@ All Rights Reserved.
 
 * [Создание форм](input-forms.md)
 * [Валидация](input-validation.md)
-<<<<<<< HEAD
-<<<<<<< HEAD
-* **TBD** [Загрузка файлов](input-file-upload.md)
-=======
-* [Загрузка файлов](input-file-upload.md)
->>>>>>> yiichina/master
-* **TBD** [Работа с несколькими моделями](input-multiple-models.md)
-=======
 * [Загрузка файлов](input-file-upload.md)
 * [Табличный ввод](input-tabular-input.md)
 * [Работа с несколькими моделями](input-multiple-models.md)
->>>>>>> master
 
 
 Отображение данных
 ------------------
 
-<<<<<<< HEAD
-<<<<<<< HEAD
-* **TBD** [Форматирование данных](output-formatter.md)
-*  [Постраничная разбивка](output-pagination.md)
-* [Сортировка](output-sorting.md)
-* **TBD** [Провайдеры данных](output-data-providers.md)
-* **TBD** [Виджеты для данных](output-data-widgets.md)
-* **TBD** [Темизация](output-theming.md)
-=======
-* [Форматирование данных](output-formatting.md)
-* [Постраничная разбивка](output-pagination.md)
-* [Сортировка](output-sorting.md)
-* **TBD** [Провайдеры данных](output-data-providers.md)
-* **TBD** [Виджеты для данных](output-data-widgets.md)
-* [Темизация](output-theming.md)
->>>>>>> yiichina/master
-=======
 * [Форматирование данных](output-formatting.md)
 * [Постраничная разбивка](output-pagination.md)
 * [Сортировка](output-sorting.md)
@@ -170,29 +104,16 @@ All Rights Reserved.
 * [Виджеты для данных](output-data-widgets.md)
 * [Работа с клиентскими скриптами](output-client-scripts.md)
 * [Темизация](output-theming.md)
->>>>>>> master
 
 
 Безопасность
 ------------
 
-<<<<<<< HEAD
-<<<<<<< HEAD
-* **TBD** [Аутентификация](security-authentication.md)
-=======
-* [Аутентификация](security-authentication.md)
->>>>>>> yiichina/master
-* **TBD** [Авторизация](security-authorization.md)
-* **TBD** [Работа с паролями](security-passwords.md)
-* **TBD** [Клиенты авторизации](security-auth-clients.md)
-* **TBD** [Лучшие практики](security-best-practices.md)
-=======
 * [Аутентификация](security-authentication.md)
 * [Авторизация](security-authorization.md)
 * [Работа с паролями](security-passwords.md)
 * [Клиенты авторизации](https://github.com/yiisoft/yii2-authclient/blob/master/docs/guide-ru/README.md)
 * [Лучшие практики](security-best-practices.md)
->>>>>>> master
 
 
 Кеширование

@@ -12,15 +12,7 @@ use yii\base\Object;
 /**
  * JsExpression marks a string as a JavaScript expression.
  *
-<<<<<<< HEAD
-<<<<<<< HEAD
- * When using [[\yii\helpers\Json::encode()]] to encode a value, JsonExpression objects
-=======
  * When using [[\yii\helpers\Json::encode()]] or [[\yii\helpers\Json::htmlEncode()]] to encode a value, JsonExpression objects
->>>>>>> yiichina/master
-=======
- * When using [[\yii\helpers\Json::encode()]] or [[\yii\helpers\Json::htmlEncode()]] to encode a value, JsonExpression objects
->>>>>>> master
  * will be specially handled and encoded as a JavaScript expression instead of a string.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>

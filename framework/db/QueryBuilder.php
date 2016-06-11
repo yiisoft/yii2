@@ -188,16 +188,8 @@ class QueryBuilder extends \yii\base\Object
      *
      * Note that the values in each row must match the corresponding column names.
      *
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
      * The method will properly escape the column names, and quote the values to be inserted.
      *
->>>>>>> yiichina/master
-=======
-     * The method will properly escape the column names, and quote the values to be inserted.
-     *
->>>>>>> master
      * @param string $table the table that new rows will be inserted into.
      * @param array $columns the column names
      * @param array $rows the rows to be batch inserted into the table
@@ -923,15 +915,7 @@ class QueryBuilder extends \yii\base\Object
      */
     protected function hasLimit($limit)
     {
-<<<<<<< HEAD
-<<<<<<< HEAD
-        return is_string($limit) && ctype_digit($limit) || is_integer($limit) && $limit >= 0;
-=======
         return ctype_digit((string) $limit);
->>>>>>> yiichina/master
-=======
-        return ctype_digit((string) $limit);
->>>>>>> master
     }
 
     /**
@@ -941,17 +925,8 @@ class QueryBuilder extends \yii\base\Object
      */
     protected function hasOffset($offset)
     {
-<<<<<<< HEAD
-<<<<<<< HEAD
-        return is_integer($offset) && $offset > 0 || is_string($offset) && ctype_digit($offset) && $offset !== '0';
-=======
         $offset = (string) $offset;
         return ctype_digit($offset) && $offset !== '0';
->>>>>>> yiichina/master
-=======
-        $offset = (string) $offset;
-        return ctype_digit($offset) && $offset !== '0';
->>>>>>> master
     }
 
     /**
@@ -980,15 +955,7 @@ class QueryBuilder extends \yii\base\Object
     }
 
     /**
-<<<<<<< HEAD
-<<<<<<< HEAD
-     * Processes columns and properly quote them if necessary.
-=======
      * Processes columns and properly quotes them if necessary.
->>>>>>> yiichina/master
-=======
-     * Processes columns and properly quotes them if necessary.
->>>>>>> master
      * It will join all columns into a string with comma as separators.
      * @param string|array $columns the columns to be processed
      * @return string the processing result
@@ -1427,18 +1394,9 @@ class QueryBuilder extends \yii\base\Object
                 $params[$n] = $v;
             }
             return "$column $operator {$value->expression}";
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
         } elseif ($value instanceof Query) {
             list($sql, $params) = $this->build($value, $params);
             return "$column $operator ($sql)";
->>>>>>> yiichina/master
-=======
-        } elseif ($value instanceof Query) {
-            list($sql, $params) = $this->build($value, $params);
-            return "$column $operator ($sql)";
->>>>>>> master
         } else {
             $phName = self::PARAM_PREFIX . count($params);
             $params[$phName] = $value;

@@ -1,15 +1,7 @@
 Установка Yii
 ==============
 
-<<<<<<< HEAD
-<<<<<<< HEAD
-Вы можете установить Yii двумя способами: используя [Composer](http://getcomposer.org/) или скачав архив.
-=======
 Вы можете установить Yii двумя способами: используя [Composer](https://getcomposer.org/) или скачав архив.
->>>>>>> yiichina/master
-=======
-Вы можете установить Yii двумя способами: используя [Composer](https://getcomposer.org/) или скачав архив.
->>>>>>> master
 Первый способ предпочтительнее так как позволяет установить новые [расширения](structure-extensions.md)
 или обновить Yii одной командой.
 
@@ -23,21 +15,10 @@
 [getcomposer.org](https://getcomposer.org/download/), или одним из нижеперечисленных способов. На Linux или Mac 
 используйте следующую команду:
 
-<<<<<<< HEAD
-  ```
-<<<<<<< HEAD
-  curl -s http://getcomposer.org/installer | php
-=======
-  curl -sS https://getcomposer.org/installer | php
->>>>>>> yiichina/master
-  mv composer.phar /usr/local/bin/composer
-  ```
-=======
 ```bash
 curl -sS https://getcomposer.org/installer | php
 mv composer.phar /usr/local/bin/composer
 ```
->>>>>>> master
 
 На Windows, скачайте и запустите [Composer-Setup.exe](https://getcomposer.org/Composer-Setup.exe).
 
@@ -48,19 +29,10 @@ mv composer.phar /usr/local/bin/composer
 
 После установки Composer устанавливать Yii можно запустив следующую команду в папке доступной через веб:
 
-<<<<<<< HEAD
-<<<<<<< HEAD
-    composer global require "fxp/composer-asset-plugin:1.0.0"
-=======
-    composer global require "fxp/composer-asset-plugin:~1.0.0"
->>>>>>> yiichina/master
-    composer create-project --prefer-dist yiisoft/yii2-app-basic basic
-=======
 ```bash
 composer global require "fxp/composer-asset-plugin:~1.1.1"
 composer create-project --prefer-dist yiisoft/yii2-app-basic basic
 ```
->>>>>>> master
 
 Первая команда устанавливает [composer asset plugin](https://github.com/francoispluchino/composer-asset-plugin/),
 который позволяет управлять зависимостями пакетов bower и npm через Composer. Эту команду достаточно выполнить один раз.
@@ -207,15 +179,7 @@ server {
     root        /path/to/basic/web;
     index       index.php;
 
-<<<<<<< HEAD
-<<<<<<< HEAD
-    access_log  /path/to/project/log/access.log main;
-=======
     access_log  /path/to/project/log/access.log;
->>>>>>> yiichina/master
-=======
-    access_log  /path/to/project/log/access.log;
->>>>>>> master
     error_log   /path/to/project/log/error.log;
 
     location / {

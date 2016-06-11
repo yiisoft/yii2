@@ -44,16 +44,8 @@ echo DatePicker::widget([
 Пример:
 
 ```php
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
 <?php
 
->>>>>>> yiichina/master
-=======
-<?php
-
->>>>>>> master
 namespace yii\components\MyClass;
 
 use yii\base\Object;

@@ -7,29 +7,20 @@
 
 namespace yiiunit\framework\di;
 
-<<<<<<< HEAD
-=======
 use Yii;
->>>>>>> master
 use yii\di\Container;
 use yii\di\Instance;
 use yiiunit\framework\di\stubs\Bar;
 use yiiunit\framework\di\stubs\Foo;
 use yiiunit\framework\di\stubs\Qux;
 use yiiunit\TestCase;
-<<<<<<< HEAD
-=======
 use yii\validators\NumberValidator;
->>>>>>> master
 
 
 /**
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
-<<<<<<< HEAD
-=======
  * @group di
->>>>>>> master
  */
 class ContainerTest extends TestCase
 {
@@ -112,8 +103,6 @@ class ContainerTest extends TestCase
         $qux = $container->get('qux', [3, ['a' => 4]]);
         $this->assertEquals(4, $qux->a);
     }
-<<<<<<< HEAD
-=======
 
     public function testInvoke()
     {
@@ -224,5 +213,4 @@ class ContainerTest extends TestCase
         $this->assertEquals([1, 5], Yii::$container->resolveCallableDependencies($closure, ['a' => 1, 'b' => 5]));
         $this->assertEquals([1, 5], Yii::$container->resolveCallableDependencies($closure, [1, 5]));
     }
->>>>>>> master
 }

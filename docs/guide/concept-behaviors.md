@@ -46,12 +46,6 @@ The above code defines the behavior class `app\components\MyBehavior`, with two 
 `prop1` and `prop2`--and one method `foo()`. Note that property `prop2`
 is defined via the getter `getProp2()` and the setter `setProp2()`. This is the case because [[yii\base\Behavior]] extends [[yii\base\Object]] and therefore supports defining [properties](concept-properties.md) via getters and setters.
 
-<<<<<<< .merge_file_a00436
-Because this class is a behavior, when it is attached to a component, that component will then also have the the `prop1` and `prop2` properties and the `foo()` method.
-
-> Tip: Within a behavior, you can access the component that the behavior is attached to through the [[yii\base\Behavior::owner]] property.
-
-=======
 Because this class is a behavior, when it is attached to a component, that component will then also have the `prop1` and `prop2` properties and the `foo()` method.
 
 > Tip: Within a behavior, you can access the component that the behavior is attached to through the [[yii\base\Behavior::owner]] property.
@@ -59,7 +53,6 @@ Because this class is a behavior, when it is attached to a component, that compo
 > Note: In case [[yii\base\Behavior::__get()]] and/or [[yii\base\Behavior::__set()]] method of behavior is overridden you
 need to override [[yii\base\Behavior::canGetProperty()]] and/or [[yii\base\Behavior::canSetProperty()]] as well.
 
->>>>>>> .merge_file_a06836
 Handling Component Events
 ------------------
 
@@ -260,12 +253,8 @@ Using `TimestampBehavior` <span id="using-timestamp-behavior"></span>
 -------------------------
 
 To wrap up, let's take a look at [[yii\behaviors\TimestampBehavior]]. This behavior supports automatically
-<<<<<<< .merge_file_a00436
-updating the timestamp attributes of an [[yii\db\ActiveRecord|Active Record]] model anytime the model is saved (e.g., on insert or update).
-=======
 updating the timestamp attributes of an [[yii\db\ActiveRecord|Active Record]] model anytime the model is saved via
 `insert()`, `update()` or `save()` method.
->>>>>>> .merge_file_a06836
 
 First, attach this behavior to the [[yii\db\ActiveRecord|Active Record]] class that you plan to use:
 
@@ -288,11 +277,8 @@ class User extends ActiveRecord
                     ActiveRecord::EVENT_BEFORE_INSERT => ['created_at', 'updated_at'],
                     ActiveRecord::EVENT_BEFORE_UPDATE => ['updated_at'],
                 ],
-<<<<<<< .merge_file_a00436
-=======
                 // if you're using datetime instead of UNIX timestamp:
                 // 'value' => new Expression('NOW()'),
->>>>>>> .merge_file_a06836
             ],
         ];
     }
@@ -301,14 +287,6 @@ class User extends ActiveRecord
 
 The behavior configuration above specifies that when the record is being:
 
-<<<<<<< .merge_file_a00436
-* inserted, the behavior should assign the current timestamp to
-  the `created_at` and `updated_at` attributes
-* updated, the behavior should assign the current timestamp to the `updated_at` attribute
-
-With that code in place, if you have a `User` object and try to save it, you will find its `created_at` and `updated_at` are automatically
-filled with the current timestamp:
-=======
 * inserted, the behavior should assign the current UNIX timestamp to
   the `created_at` and `updated_at` attributes
 * updated, the behavior should assign the current UNIX timestamp to the `updated_at` attribute
@@ -317,7 +295,6 @@ filled with the current timestamp:
 
 With that code in place, if you have a `User` object and try to save it, you will find its `created_at` and `updated_at` are automatically
 filled with the current UNIX timestamp:
->>>>>>> .merge_file_a06836
 
 ```php
 $user = new User;
@@ -334,8 +311,6 @@ to a specified attribute and save it to the database:
 $user->touch('login_time');
 ```
 
-<<<<<<< .merge_file_a00436
-=======
 Other behaviors
 ---------------
 
@@ -351,7 +326,6 @@ There are several built-in and external behaviors available:
 - [yii2tech\ar\position\PositionBehavior](https://github.com/yii2tech/ar-position) - allows managing records order in an
   integer field by providing reordering methods.
 
->>>>>>> .merge_file_a06836
 Comparing Behaviors with Traits <span id="comparison-with-traits"></span>
 ----------------------
 

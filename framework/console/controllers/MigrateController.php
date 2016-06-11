@@ -181,15 +181,7 @@ class MigrateController extends BaseMigrateController
         $query = new Query;
         $rows = $query->select(['version', 'apply_time'])
             ->from($this->migrationTable)
-<<<<<<< HEAD
-<<<<<<< HEAD
-            ->orderBy('version DESC')
-=======
             ->orderBy('apply_time DESC, version DESC')
->>>>>>> yiichina/master
-=======
-            ->orderBy('apply_time DESC, version DESC')
->>>>>>> master
             ->limit($limit)
             ->createCommand($this->db)
             ->queryAll();

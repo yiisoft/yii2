@@ -199,18 +199,8 @@ class ActiveForm extends Widget
 
         if ($this->enableClientScript) {
             $id = $this->options['id'];
-<<<<<<< HEAD
-<<<<<<< HEAD
-            $options = Json::encode($this->getClientOptions());
-            $attributes = Json::encode($this->attributes);
-=======
             $options = Json::htmlEncode($this->getClientOptions());
             $attributes = Json::htmlEncode($this->attributes);
->>>>>>> yiichina/master
-=======
-            $options = Json::htmlEncode($this->getClientOptions());
-            $attributes = Json::htmlEncode($this->attributes);
->>>>>>> master
             $view = $this->getView();
             ActiveFormAsset::register($view);
             $view->registerJs("jQuery('#$id').yiiActiveForm($attributes, $options);");
@@ -282,17 +272,8 @@ class ActiveForm extends Widget
      * @param Model $model the data model
      * @param string $attribute the attribute name or expression. See [[Html::getAttributeName()]] for the format
      * about attribute expression.
-<<<<<<< HEAD
-<<<<<<< HEAD
-     * @param array $options the additional configurations for the field object
-=======
      * @param array $options the additional configurations for the field object. These are properties of [[ActiveField]]
      * or a subclass, depending on the value of [[fieldClass]].
->>>>>>> yiichina/master
-=======
-     * @param array $options the additional configurations for the field object. These are properties of [[ActiveField]]
-     * or a subclass, depending on the value of [[fieldClass]].
->>>>>>> master
      * @return ActiveField the created ActiveField object
      * @see fieldConfig
      */

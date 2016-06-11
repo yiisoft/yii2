@@ -478,18 +478,6 @@ Segue algumas boas práticas em destaque. Os controllers:
 * podem chamar os métodos dos [models](structure-models.md) e outros componentes
   de serviço com dados da requisição;
 * podem usar as [views](structure-views.md) para compor as respostas;
-<<<<<<< HEAD
-<<<<<<< HEAD
-* NÃO devem processar os dados da requisição - isto deve ser feito pelos [models](structure-models.md);
-* devem evitar inserir códigos HTML ou outro código de apresentação - é melhor 
-que sejam feitos nas [views](structure-views.md).
-=======
 * NÃO devem processar os dados da requisição - isto deve ser feito na [camada model (modelo)](structure-models.md);
 * devem evitar inserir códigos HTML ou outro código de apresentação - é melhor 
   que sejam feitos nas [views](structure-views.md).
->>>>>>> yiichina/master
-=======
-* NÃO devem processar os dados da requisição - isto deve ser feito na [camada model (modelo)](structure-models.md);
-* devem evitar inserir códigos HTML ou outro código de apresentação - é melhor 
-  que sejam feitos nas [views](structure-views.md).
->>>>>>> master

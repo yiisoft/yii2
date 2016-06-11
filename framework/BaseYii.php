@@ -93,15 +93,7 @@ class BaseYii
      */
     public static function getVersion()
     {
-<<<<<<< HEAD
-<<<<<<< HEAD
-        return '2.0.4-dev';
-=======
-        return '2.0.5';
->>>>>>> yiichina/master
-=======
         return '2.0.9-dev';
->>>>>>> master
     }
 
     /**

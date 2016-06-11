@@ -113,56 +113,8 @@ class SiteController extends Controller
 }
 ```
 
-<<<<<<< HEAD
-`model->load(...)` の代りに `UploadedFile::getInstance(...)` を使っています。
-[[\yii\web\UploadedFile|UploadedFile]] はモデルの検証を実行せず、アップロードされたファイルに関する情報を提供するだけです。
-そのため、`$model->validate()` を手作業で実行して、[[yii\validators\FileValidator|FileValidator]] を起動する必要があります。
-[[yii\validators\FileValidator|FileValidator]] は、下記のコアコードが示しているように、属性がファイルであることを要求します。
-
-```php
-if (!$file instanceof UploadedFile || $file->error == UPLOAD_ERR_NO_FILE) {
-    return [$this->uploadRequired, []];  // "ファイルをアップロードしてください。" というエラーメッセージ
-}
-```
-
-検証が成功したら、ファイルを保存します。
-
-```php
-$model->file->saveAs('uploads/' . $model->file->baseName . '.' . $model->file->extension);
-```
-
-<<<<<<< HEAD
-「ベーシック」アプリケーションテンプレートを使っている場合は、`uploads` フォルダを `web` の下に作成しなければなりません。
-=======
-「ベーシック」プロジェクトテンプレートを使っている場合は、`uploads` フォルダを `web` の下に作成しなければなりません。
->>>>>>> yiichina/master
-
-以上です。ページをロードして、アップロードを試して見てください。ファイルは `basic/web/uploads` にアップロードされます。
-
-検証
-----
-
-たいていの場合、検証規則を調整して、特定のファイルだけを受け取るようにしたり、アップロードを必須としたりする必要があります。
-下記で、よく使われる規則の構成を見てみましよう。
-
-### Required
-
-ファイルのアップロードを必須とする必要がある場合は、次のように `skipOnEmpty` を `false` に設定します。
-
-```php
-public function rules()
-{
-    return [
-        [['file'], 'file', 'skipOnEmpty' => false],
-    ];
-}
-```
-
-### MIME タイプ
-=======
 上記のコードでは、フォームが送信されると [[yii\web\UploadedFile::getInstance()]] メソッドが呼ばれて、アップロードされたファイルが `UploadedFile` のインスタンスとして表現されます。
 そして、次に、モデルの検証によってアップロードされたファイルが有効なものであることを確かめ、サーバにファイルを保存します。
->>>>>>> master
 
 
 ## 複数のファイルをアップロードする <span id="uploading-multiple-files"></span>
@@ -175,32 +127,7 @@ public function rules()
 `upload()` メソッドも、アップロードされた複数のファイルを一つずつ保存するように修正しなければなりません。
 
 ```php
-<<<<<<< HEAD
-public function rules()
-{
-    return [
-        [['file'], 'file', 'checkExtensionByMimeType' => false, 'extensions' => 'csv', 'mimeTypes' => 'text/plain'],
-    ];
-}
-```
-
-[一般的なメディアタイプの一覧表](http://en.wikipedia.org/wiki/Internet_media_type#List_of_common_media_types)
-
-### 画像のプロパティ
-
-画像をアップロードするときは、[[yii\validators\ImageValidator|ImageValidator]] が重宝するでしょう。
-このバリデータは、属性が有効な画像を受け取ったか否かを検証します。
-<<<<<<< HEAD
-画像は、保存するか、または、[Imagine エクステンション](https://github.com/yiisoft/yii2/tree/master/extensions/imagine) によって処理することが出来ます。
-=======
-画像は、保存するか、または、[Imagine エクステンション](https://github.com/yiisoft/yii2-imagine) によって処理することが出来ます。
->>>>>>> yiichina/master
-
-複数のファイルをアップロードする
---------------------------------
-=======
 namespace app\models;
->>>>>>> master
 
 use yii\base\Model;
 use yii\web\UploadedFile;

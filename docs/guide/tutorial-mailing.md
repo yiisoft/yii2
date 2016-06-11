@@ -8,15 +8,7 @@ only the content composition functionality and basic interface. Actual mail send
 be provided by the extension, because different projects may require its different implementation and
 it usually depends on the external services and libraries.
 
-<<<<<<< HEAD
-<<<<<<< HEAD
-For the most common cases you can use [yii2-swiftmailer](https://github.com/yiisoft/yii2/tree/master/extensions/swiftmailer) official extension.
-=======
 For the most common cases you can use [yii2-swiftmailer](https://github.com/yiisoft/yii2-swiftmailer) official extension.
->>>>>>> yiichina/master
-=======
-For the most common cases you can use [yii2-swiftmailer](https://github.com/yiisoft/yii2-swiftmailer) official extension.
->>>>>>> master
 
 
 Configuration
@@ -140,15 +132,7 @@ Yii::$app->mailer->compose([
 If you specify view name as a scalar string, its rendering result will be used as HTML body, while
 plain text body will be composed by removing all HTML entities from HTML one.
 
-<<<<<<< HEAD
-<<<<<<< HEAD
-View rendering result can be wrapped into the layout, which an be setup using [[yii\mail\BaseMailer::htmlLayout]]
-=======
 View rendering result can be wrapped into the layout, which can be setup using [[yii\mail\BaseMailer::htmlLayout]]
->>>>>>> yiichina/master
-=======
-View rendering result can be wrapped into the layout, which can be setup using [[yii\mail\BaseMailer::htmlLayout]]
->>>>>>> master
 and [[yii\mail\BaseMailer::textLayout]]. It will work the same way like layouts in regular web application.
 Layout can be used to setup mail CSS styles or other shared content:
 

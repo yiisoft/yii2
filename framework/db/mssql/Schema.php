@@ -283,13 +283,6 @@ SQL;
     }
 
     /**
-<<<<<<< HEAD
-<<<<<<< HEAD
-     * Collects the primary key column details for the given table.
-     * @param TableSchema $table the table metadata
-     */
-    protected function findPrimaryKeys($table)
-=======
      * Collects the constraint details for the given table and constraint type.
      * @param TableSchema $table
      * @param string $type either PRIMARY KEY or UNIQUE
@@ -297,16 +290,6 @@ SQL;
      * @since 2.0.4
      */
     protected function findTableConstraints($table, $type)
->>>>>>> yiichina/master
-=======
-     * Collects the constraint details for the given table and constraint type.
-     * @param TableSchema $table
-     * @param string $type either PRIMARY KEY or UNIQUE
-     * @return array each entry contains index_name and field_name
-     * @since 2.0.4
-     */
-    protected function findTableConstraints($table, $type)
->>>>>>> master
     {
         $keyColumnUsageTableName = 'INFORMATION_SCHEMA.KEY_COLUMN_USAGE';
         $tableConstraintsTableName = 'INFORMATION_SCHEMA.TABLE_CONSTRAINTS';
@@ -319,21 +302,6 @@ SQL;
 
         $sql = <<<SQL
 SELECT
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
-    [kcu].[constraint_name] AS [index_name],
->>>>>>> master
-    [kcu].[column_name] AS [field_name]
-FROM {$keyColumnUsageTableName} AS [kcu]
-LEFT JOIN {$tableConstraintsTableName} AS [tc] ON
-    [kcu].[table_schema] = [tc].[table_schema] AND
-    [kcu].[table_name] = [tc].[table_name] AND
-    [kcu].[constraint_name] = [tc].[constraint_name]
-WHERE
-<<<<<<< HEAD
-    [tc].[constraint_type] = 'PRIMARY KEY' AND
-=======
     [kcu].[constraint_name] AS [index_name],
     [kcu].[column_name] AS [field_name]
 FROM {$keyColumnUsageTableName} AS [kcu]
@@ -343,22 +311,10 @@ LEFT JOIN {$tableConstraintsTableName} AS [tc] ON
     [kcu].[constraint_name] = [tc].[constraint_name]
 WHERE
     [tc].[constraint_type] = :type AND
->>>>>>> yiichina/master
-=======
-    [tc].[constraint_type] = :type AND
->>>>>>> master
     [kcu].[table_name] = :tableName AND
     [kcu].[table_schema] = :schemaName
 SQL;
 
-<<<<<<< HEAD
-<<<<<<< HEAD
-        $table->primaryKey = $this->db
-            ->createCommand($sql, [':tableName' => $table->name, ':schemaName' => $table->schemaName])
-            ->queryColumn();
-=======
-=======
->>>>>>> master
         return $this->db
             ->createCommand($sql, [
                 ':tableName' => $table->name,
@@ -379,10 +335,6 @@ SQL;
             $result[] = $row['field_name'];
         }
         $table->primaryKey = $result;
-<<<<<<< HEAD
->>>>>>> yiichina/master
-=======
->>>>>>> master
     }
 
     /**
@@ -417,29 +369,13 @@ JOIN {$keyColumnUsageTableName} AS [kcu2] ON
     [kcu2].[constraint_schema] = [rc].[constraint_schema] AND
     [kcu2].[constraint_name] = [rc].[unique_constraint_name] AND
     [kcu2].[ordinal_position] = [kcu1].[ordinal_position]
-<<<<<<< HEAD
-<<<<<<< HEAD
-WHERE [kcu1].[table_name] = :tableName
-SQL;
-
-        $rows = $this->db->createCommand($sql, [':tableName' => $table->name])->queryAll();
-=======
 WHERE [kcu1].[table_name] = :tableName AND [kcu1].[table_schema] = :schemaName
 SQL;
 
-=======
-WHERE [kcu1].[table_name] = :tableName AND [kcu1].[table_schema] = :schemaName
-SQL;
-
->>>>>>> master
         $rows = $this->db->createCommand($sql, [
             ':tableName' => $table->name,
             ':schemaName' => $table->schemaName,
         ])->queryAll();
-<<<<<<< HEAD
->>>>>>> yiichina/master
-=======
->>>>>>> master
         $table->foreignKeys = [];
         foreach ($rows as $row) {
             $table->foreignKeys[] = [$row['uq_table_name'], $row['fk_column_name'] => $row['uq_column_name']];
@@ -460,46 +396,23 @@ SQL;
         $sql = <<<SQL
 SELECT [t].[table_name]
 FROM [INFORMATION_SCHEMA].[TABLES] AS [t]
-<<<<<<< HEAD
-<<<<<<< HEAD
-WHERE [t].[table_schema] = :schema AND [t].[table_type] = 'BASE TABLE'
-=======
 WHERE [t].[table_schema] = :schema AND [t].[table_type] IN ('BASE TABLE', 'VIEW')
 ORDER BY [t].[table_name]
->>>>>>> yiichina/master
-=======
-WHERE [t].[table_schema] = :schema AND [t].[table_type] IN ('BASE TABLE', 'VIEW')
-ORDER BY [t].[table_name]
->>>>>>> master
 SQL;
 
         return $this->db->createCommand($sql, [':schema' => $schema])->queryColumn();
     }
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
-=======
->>>>>>> master
 
     /**
      * Returns all unique indexes for the given table.
      * Each array element is of the following structure:
      *
-<<<<<<< HEAD
-     * ~~~
-     * [
-     *  'IndexName1' => ['col1' [, ...]],
-     *  'IndexName2' => ['col2' [, ...]],
-     * ]
-     * ~~~
-=======
      * ```php
      * [
      *     'IndexName1' => ['col1' [, ...]],
      *     'IndexName2' => ['col2' [, ...]],
      * ]
      * ```
->>>>>>> master
      *
      * @param TableSchema $table the table metadata
      * @return array all unique indexes for the given table.
@@ -513,8 +426,4 @@ SQL;
         }
         return $result;
     }
-<<<<<<< HEAD
->>>>>>> yiichina/master
-=======
->>>>>>> master
 }

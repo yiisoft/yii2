@@ -63,24 +63,11 @@ class CompositeAuth extends AuthMethod
     public function authenticate($user, $request, $response)
     {
         foreach ($this->authMethods as $i => $auth) {
-<<<<<<< HEAD
-<<<<<<< HEAD
-            $this->authMethods[$i] = $auth = Yii::createObject($auth);
             if (!$auth instanceof AuthInterface) {
-                throw new InvalidConfigException(get_class($auth) . ' must implement yii\filters\auth\AuthInterface');
-=======
-            if (!$auth instanceof AuthInterface) {
-=======
-            if (!$auth instanceof AuthInterface) {
->>>>>>> master
                 $this->authMethods[$i] = $auth = Yii::createObject($auth);
                 if (!$auth instanceof AuthInterface) {
                     throw new InvalidConfigException(get_class($auth) . ' must implement yii\filters\auth\AuthInterface');
                 }
-<<<<<<< HEAD
->>>>>>> yiichina/master
-=======
->>>>>>> master
             }
 
             $identity = $auth->authenticate($user, $request, $response);

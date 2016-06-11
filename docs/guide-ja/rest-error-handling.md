@@ -74,15 +74,7 @@ return [
             'class' => 'yii\web\Response',
             'on beforeSend' => function ($event) {
                 $response = $event->sender;
-<<<<<<< HEAD
-<<<<<<< HEAD
-                if ($response->data !== null && !empty(Yii::$app->request->get('suppress_response_code'))) {
-=======
                 if ($response->data !== null && Yii::$app->request->get('suppress_response_code')) {
->>>>>>> yiichina/master
-=======
-                if ($response->data !== null && Yii::$app->request->get('suppress_response_code')) {
->>>>>>> master
                     $response->data = [
                         'success' => $response->isSuccessful,
                         'data' => $response->data,

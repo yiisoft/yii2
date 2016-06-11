@@ -130,21 +130,10 @@ abstract class BaseListView extends Widget
         } else {
             $content = $this->renderEmpty();
         }
-<<<<<<< HEAD
-<<<<<<< HEAD
-        $tag = ArrayHelper::remove($this->options, 'tag', 'div');
-        echo Html::tag($tag, $content, $this->options);
-=======
-=======
->>>>>>> master
 
         $options = $this->options;
         $tag = ArrayHelper::remove($options, 'tag', 'div');
         echo Html::tag($tag, $content, $options);
-<<<<<<< HEAD
->>>>>>> yiichina/master
-=======
->>>>>>> master
     }
 
     /**
@@ -176,20 +165,9 @@ abstract class BaseListView extends Widget
      */
     public function renderEmpty()
     {
-<<<<<<< HEAD
-<<<<<<< HEAD
-        $tag = ArrayHelper::remove($this->emptyTextOptions, 'tag', 'div');
-        return Html::tag($tag, ($this->emptyText === null ? Yii::t('yii', 'No results found.') : $this->emptyText), $this->emptyTextOptions);
-=======
-        $options = $this->emptyTextOptions;
-        $tag = ArrayHelper::remove($options, 'tag', 'div');
-        return Html::tag($tag, ($this->emptyText === null ? Yii::t('yii', 'No results found.') : $this->emptyText), $options);
->>>>>>> yiichina/master
-=======
         $options = $this->emptyTextOptions;
         $tag = ArrayHelper::remove($options, 'tag', 'div');
         return Html::tag($tag, $this->emptyText, $options);
->>>>>>> master
     }
 
     /**
@@ -201,17 +179,8 @@ abstract class BaseListView extends Widget
         if ($count <= 0) {
             return '';
         }
-<<<<<<< HEAD
-<<<<<<< HEAD
-        $tag = ArrayHelper::remove($this->summaryOptions, 'tag', 'div');
-=======
         $summaryOptions = $this->summaryOptions;
         $tag = ArrayHelper::remove($summaryOptions, 'tag', 'div');
->>>>>>> yiichina/master
-=======
-        $summaryOptions = $this->summaryOptions;
-        $tag = ArrayHelper::remove($summaryOptions, 'tag', 'div');
->>>>>>> master
         if (($pagination = $this->dataProvider->getPagination()) !== false) {
             $totalCount = $this->dataProvider->getTotalCount();
             $begin = $pagination->getPage() * $pagination->pageSize + 1;
@@ -229,15 +198,7 @@ abstract class BaseListView extends Widget
                         'totalCount' => $totalCount,
                         'page' => $page,
                         'pageCount' => $pageCount,
-<<<<<<< HEAD
-<<<<<<< HEAD
-                    ]), $this->summaryOptions);
-=======
                     ]), $summaryOptions);
->>>>>>> yiichina/master
-=======
-                    ]), $summaryOptions);
->>>>>>> master
             }
         } else {
             $begin = $page = $pageCount = 1;
@@ -250,15 +211,7 @@ abstract class BaseListView extends Widget
                     'totalCount' => $totalCount,
                     'page' => $page,
                     'pageCount' => $pageCount,
-<<<<<<< HEAD
-<<<<<<< HEAD
-                ]), $this->summaryOptions);
-=======
                 ]), $summaryOptions);
->>>>>>> yiichina/master
-=======
-                ]), $summaryOptions);
->>>>>>> master
             }
         }
 

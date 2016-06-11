@@ -86,15 +86,7 @@ Besides column names, you can also select DB expressions. You must use the array
 that contains commas to avoid incorrect automatic name quoting. For example,
 
 ```php
-<<<<<<< HEAD
-<<<<<<< HEAD
-$query->select(["CONCAT(first_name, ' ', last_name]) AS full_name", 'email']); 
-=======
 $query->select(["CONCAT(first_name, ' ', last_name) AS full_name", 'email']); 
->>>>>>> yiichina/master
-=======
-$query->select(["CONCAT(first_name, ' ', last_name) AS full_name", 'email']); 
->>>>>>> master
 ```
 
 As with all places where raw SQL is involved, you may use the [DBMS agnostic quoting syntax](db-dao.md#quoting-table-and-column-names)
@@ -245,15 +237,7 @@ Operator format allows you to specify arbitrary conditions in a programmatic way
 ```
 
 where the operands can each be specified in string format, hash format or operator format recursively, while
-<<<<<<< HEAD
-<<<<<<< HEAD
-the operator can be one of the followings:
-=======
 the operator can be one of the following:
->>>>>>> yiichina/master
-=======
-the operator can be one of the following:
->>>>>>> master
 
 - `and`: the operands should be concatenated together using `AND`. For example,
   `['and', 'id=1', 'id=2']` will generate `id=1 AND id=2`. If an operand is an array,
@@ -428,15 +412,7 @@ If `GROUP BY` only involves simple column names, you can specify it using a stri
 raw SQL statements. For example,
 
 ```php
-<<<<<<< HEAD
-<<<<<<< HEAD
-$query->groupBy('id, status']);
-=======
 $query->groupBy('id, status');
->>>>>>> yiichina/master
-=======
-$query->groupBy('id, status');
->>>>>>> master
 ```
 
 > Note: You should use the array format if `GROUP BY` involves some DB expression.
@@ -591,17 +567,8 @@ $row = (new \yii\db\Query())
   `(new \yii\db\Query())->from('user')->limit(1)->one()`.
 
 All these query methods take an optional `$db` parameter representing the [[yii\db\Connection|DB connection]] that
-<<<<<<< HEAD
-<<<<<<< HEAD
-should be used to perform a DB query. If you omit this parameter, the `db` application component will be used
-=======
-should be used to perform a DB query. If you omit this parameter, the `db` [application component](structure-application-components.md) will be used
->>>>>>> yiichina/master
-as the DB connection. Below is another example using the `count()` query method:
-=======
 should be used to perform a DB query. If you omit this parameter, the `db` [application component](structure-application-components.md) will be used
 as the DB connection. Below is another example using the [[yii\db\Query::count()|count()]] query method:
->>>>>>> master
 
 ```php
 // executes SQL: SELECT COUNT(*) FROM `user` WHERE `last_name`=:last_name

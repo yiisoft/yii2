@@ -17,20 +17,14 @@ namespace yiiunit\framework\web;
 use yii\base\NotSupportedException;
 use yii\base\Component;
 use yii\rbac\PhpManager;
-<<<<<<< HEAD
-=======
 use yii\web\ForbiddenHttpException;
 use yii\web\Cookie;
 use yii\web\CookieCollection;
->>>>>>> master
 use yii\web\IdentityInterface;
 use yii\web\UrlManager;
 use yii\web\UrlRule;
 use yii\web\Request;
-<<<<<<< HEAD
-=======
 use yii\web\Response;
->>>>>>> master
 use Yii;
 use yiiunit\TestCase;
 
@@ -103,8 +97,6 @@ class UserTest extends TestCase
         $this->assertFalse(Yii::$app->user->can('doSomething'));
 
     }
-<<<<<<< HEAD
-=======
     
     public function testCookieCleanup()
     {
@@ -302,7 +294,6 @@ class UserTest extends TestCase
         $this->setExpectedException('yii\\web\\ForbiddenHttpException');
         Yii::$app->user->loginRequired();
     }
->>>>>>> master
 
 }
 
@@ -337,20 +328,11 @@ class UserIdentity extends Component implements IdentityInterface
 
     public function getAuthKey()
     {
-<<<<<<< HEAD
-        throw new NotSupportedException();
-=======
         return 'ABCD1234';
->>>>>>> master
     }
 
     public function validateAuthKey($authKey)
     {
-<<<<<<< HEAD
-        throw new NotSupportedException();
-    }
-}
-=======
         return $authKey === 'ABCD1234';
     }
 }
@@ -376,4 +358,3 @@ class MockResponse extends \yii\web\Response
         return $cookiesMock;
     }
 }
->>>>>>> master

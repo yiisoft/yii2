@@ -191,17 +191,8 @@ class UrlRule extends Object implements UrlRuleInterface
                 if (array_key_exists($name, $this->defaults)) {
                     $length = strlen($match[0][0]);
                     $offset = $match[0][1];
-<<<<<<< HEAD
-<<<<<<< HEAD
-                    if ($offset > 1 && $this->pattern[$offset - 1] === '/' && $this->pattern[$offset + $length] === '/') {
-=======
-                    if ($offset > 1 && $this->pattern[$offset - 1] === '/' && (!isset($this->pattern[$offset + $length]) || $this->pattern[$offset + $length] === '/')) {
->>>>>>> yiichina/master
-                        $tr["/<$name>"] = "(/(?P<$name>$pattern))?";
-=======
                     if ($offset > 1 && $this->pattern[$offset - 1] === '/' && (!isset($this->pattern[$offset + $length]) || $this->pattern[$offset + $length] === '/')) {
                         $tr["/<$name>"] = "(/(?P<$placeholder>$pattern))?";
->>>>>>> master
                     } else {
                         $tr["<$name>"] = "(?P<$placeholder>$pattern)?";
                     }

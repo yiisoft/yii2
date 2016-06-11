@@ -27,14 +27,7 @@ section for more details about the class file naming convention.
 
 namespace app\models;
 
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
 use Yii;
->>>>>>> yiichina/master
-=======
-use Yii;
->>>>>>> master
 use yii\base\Model;
 
 class EntryForm extends Model

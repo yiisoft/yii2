@@ -268,12 +268,6 @@ class Query extends Component implements QueryInterface
      */
     public function column($db = null)
     {
-<<<<<<< HEAD
-<<<<<<< HEAD
-        return $this->createCommand($db)->queryColumn();
-=======
-=======
->>>>>>> master
         if (!is_string($this->indexBy)) {
             return $this->createCommand($db)->queryColumn();
         }
@@ -290,24 +284,12 @@ class Query extends Component implements QueryInterface
             }
         }
         return $results;
-<<<<<<< HEAD
->>>>>>> yiichina/master
-=======
->>>>>>> master
     }
 
     /**
      * Returns the number of records.
      * @param string $q the COUNT expression. Defaults to '*'.
-<<<<<<< HEAD
-<<<<<<< HEAD
-     * Make sure you properly quote column names in the expression.
-=======
      * Make sure you properly [quote](guide:db-dao#quoting-table-and-column-names) column names in the expression.
->>>>>>> yiichina/master
-=======
-     * Make sure you properly [quote](guide:db-dao#quoting-table-and-column-names) column names in the expression.
->>>>>>> master
      * @param Connection $db the database connection used to generate the SQL statement.
      * If this parameter is not given (or null), the `db` application component will be used.
      * @return integer|string number of records. The result may be a string depending on the
@@ -321,15 +303,7 @@ class Query extends Component implements QueryInterface
     /**
      * Returns the sum of the specified column values.
      * @param string $q the column name or expression.
-<<<<<<< HEAD
-<<<<<<< HEAD
-     * Make sure you properly quote column names in the expression.
-=======
      * Make sure you properly [quote](guide:db-dao#quoting-table-and-column-names) column names in the expression.
->>>>>>> yiichina/master
-=======
-     * Make sure you properly [quote](guide:db-dao#quoting-table-and-column-names) column names in the expression.
->>>>>>> master
      * @param Connection $db the database connection used to generate the SQL statement.
      * If this parameter is not given, the `db` application component will be used.
      * @return mixed the sum of the specified column values.
@@ -342,15 +316,7 @@ class Query extends Component implements QueryInterface
     /**
      * Returns the average of the specified column values.
      * @param string $q the column name or expression.
-<<<<<<< HEAD
-<<<<<<< HEAD
-     * Make sure you properly quote column names in the expression.
-=======
      * Make sure you properly [quote](guide:db-dao#quoting-table-and-column-names) column names in the expression.
->>>>>>> yiichina/master
-=======
-     * Make sure you properly [quote](guide:db-dao#quoting-table-and-column-names) column names in the expression.
->>>>>>> master
      * @param Connection $db the database connection used to generate the SQL statement.
      * If this parameter is not given, the `db` application component will be used.
      * @return mixed the average of the specified column values.
@@ -363,15 +329,7 @@ class Query extends Component implements QueryInterface
     /**
      * Returns the minimum of the specified column values.
      * @param string $q the column name or expression.
-<<<<<<< HEAD
-<<<<<<< HEAD
-     * Make sure you properly quote column names in the expression.
-=======
      * Make sure you properly [quote](guide:db-dao#quoting-table-and-column-names) column names in the expression.
->>>>>>> yiichina/master
-=======
-     * Make sure you properly [quote](guide:db-dao#quoting-table-and-column-names) column names in the expression.
->>>>>>> master
      * @param Connection $db the database connection used to generate the SQL statement.
      * If this parameter is not given, the `db` application component will be used.
      * @return mixed the minimum of the specified column values.
@@ -384,15 +342,7 @@ class Query extends Component implements QueryInterface
     /**
      * Returns the maximum of the specified column values.
      * @param string $q the column name or expression.
-<<<<<<< HEAD
-<<<<<<< HEAD
-     * Make sure you properly quote column names in the expression.
-=======
      * Make sure you properly [quote](guide:db-dao#quoting-table-and-column-names) column names in the expression.
->>>>>>> yiichina/master
-=======
-     * Make sure you properly [quote](guide:db-dao#quoting-table-and-column-names) column names in the expression.
->>>>>>> master
      * @param Connection $db the database connection used to generate the SQL statement.
      * If this parameter is not given, the `db` application component will be used.
      * @return mixed the maximum of the specified column values.
@@ -439,15 +389,7 @@ class Query extends Component implements QueryInterface
         $this->limit = $limit;
         $this->offset = $offset;
 
-<<<<<<< HEAD
-<<<<<<< HEAD
-        if (empty($this->groupBy) && empty($this->union) && !$this->distinct) {
-=======
         if (empty($this->groupBy) && empty($this->having) && empty($this->union) && !$this->distinct) {
->>>>>>> yiichina/master
-=======
-        if (empty($this->groupBy) && empty($this->having) && empty($this->union) && !$this->distinct) {
->>>>>>> master
             return $command->queryScalar();
         } else {
             return (new Query)->select([$selectExpression])
@@ -493,11 +435,6 @@ class Query extends Component implements QueryInterface
 
     /**
      * Add more columns to the SELECT part of the query.
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
-=======
->>>>>>> master
      *
      * Note, that if [[select]] has not been specified before, you should include `*` explicitly
      * if you want to select all remaining columns too:
@@ -506,15 +443,9 @@ class Query extends Component implements QueryInterface
      * $query->addSelect(["*", "CONCAT(first_name, ' ', last_name) AS full_name"])->one();
      * ```
      *
-<<<<<<< HEAD
->>>>>>> yiichina/master
-     * @param string|array $columns the columns to add to the select.
-     * @return static the query object itself
-=======
      * @param string|array|Expression $columns the columns to add to the select. See [[select()]] for more
      * details about the format of this parameter.
      * @return $this the query object itself
->>>>>>> master
      * @see select()
      */
     public function addSelect($columns)

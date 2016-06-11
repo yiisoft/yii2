@@ -15,17 +15,8 @@
 
 Вхідні скрипти в основному виконують наступну роботу:
 
-<<<<<<< HEAD
-* Оголошують глобальні константи;
-<<<<<<< HEAD
-* Реєструють автозавантажувач класів [Composer](http://getcomposer.org/doc/01-basic-usage.md#autoloading);
-=======
-* Реєструють автозавантажувач класів [Composer](https://getcomposer.org/doc/01-basic-usage.md#autoloading);
->>>>>>> yiichina/master
-=======
 * Визначають глобальні константи;
 * Реєструють автозавантажувач класів [Composer](https://getcomposer.org/doc/01-basic-usage.md#autoloading);
->>>>>>> master
 * Підключають файл класу [[Yii]];
 * Завантажують конфігурацію додатка;
 * Створюють і налаштовують екземпляр [додатка](structure-applications.md);

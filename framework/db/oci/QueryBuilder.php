@@ -164,10 +164,6 @@ EOD;
 
         return $sql;
     }
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
-=======
 
     /**
      * @inheritdoc
@@ -207,27 +203,18 @@ EOD;
             . (!empty($names) ? ' (' . implode(', ', $names) . ')' : '')
             . (!empty($placeholders) ? ' VALUES (' . implode(', ', $placeholders) . ')' : ' DEFAULT VALUES');
     }
->>>>>>> master
 
     /**
      * Generates a batch INSERT SQL statement.
      * For example,
      *
-<<<<<<< HEAD
-     * ~~~
-=======
      * ```php
->>>>>>> master
      * $sql = $queryBuilder->batchInsert('user', ['name', 'age'], [
      *     ['Tom', 30],
      *     ['Jane', 20],
      *     ['Linda', 25],
      * ]);
-<<<<<<< HEAD
-     * ~~~
-=======
      * ```
->>>>>>> master
      *
      * Note that the values in each row must match the corresponding column names.
      *
@@ -273,9 +260,6 @@ EOD;
 
         return 'INSERT ALL ' . $tableAndColumns . implode($tableAndColumns, $values) . ' SELECT 1 FROM SYS.DUAL';
     }
-<<<<<<< HEAD
->>>>>>> yiichina/master
-=======
 
     /**
      * @inheritdoc
@@ -303,5 +287,4 @@ EOD;
     {
         return 'COMMENT ON TABLE ' . $this->db->quoteTableName($table) . " IS ''";
     }
->>>>>>> master
 }

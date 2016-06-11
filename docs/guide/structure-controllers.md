@@ -131,15 +131,7 @@ Controller class names can be derived from controller IDs according to the follo
 3. Append the suffix `Controller`.
 4. Prepend the [[yii\base\Application::controllerNamespace|controller namespace]].
 
-<<<<<<< HEAD
-<<<<<<< HEAD
-The followings are some examples, assuming the [[yii\base\Application::controllerNamespace|controller namespace]]
-=======
 The following are some examples, assuming the [[yii\base\Application::controllerNamespace|controller namespace]]
->>>>>>> yiichina/master
-=======
-The following are some examples, assuming the [[yii\base\Application::controllerNamespace|controller namespace]]
->>>>>>> master
 takes the default value `app\controllers`:
 
 * `article` becomes `app\controllers\ArticleController`;

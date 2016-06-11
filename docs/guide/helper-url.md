@@ -7,15 +7,7 @@ Url helper provides a set of static methods for managing URLs.
 ## Getting Common URLs <span id="getting-common-urls"></span>
 
 There are two methods you can use to get common URLs: home URL and base URL of the current request. In order to get
-<<<<<<< HEAD
-<<<<<<< HEAD
-home URL use the following:
-=======
 home URL, use the following:
->>>>>>> yiichina/master
-=======
-home URL, use the following:
->>>>>>> master
 
 ```php
 $relativeHomeUrl = Url::home();
@@ -23,24 +15,10 @@ $absoluteHomeUrl = Url::home(true);
 $httpsAbsoluteHomeUrl = Url::home('https');
 ```
 
-<<<<<<< HEAD
-<<<<<<< HEAD
-If no parameter is passed, URL generated is relative. You can either pass `true` to get absolute URL for the current
-schema or specify schema explicitly (`https`, `http`).
-
-To get base URL of the current request use the following:
-=======
 If no parameter is passed, the generated URL is relative. You can either pass `true` to get an absolute URL for the current
 schema or specify a schema explicitly (`https`, `http`).
 
 To get the base URL of the current request use the following:
->>>>>>> yiichina/master
-=======
-If no parameter is passed, the generated URL is relative. You can either pass `true` to get an absolute URL for the current
-schema or specify a schema explicitly (`https`, `http`).
-
-To get the base URL of the current request use the following:
->>>>>>> master
  
 ```php
 $relativeBaseUrl = Url::base();
@@ -53,15 +31,7 @@ The only parameter of the method works exactly the same as for `Url::home()`.
 
 ## Creating URLs <span id="creating-urls"></span>
 
-<<<<<<< HEAD
-<<<<<<< HEAD
-In order to create URL to a given route use `Url::toRoute()` method. The method uses [[\yii\web\UrlManager]] to create
-=======
 In order to create a URL to a given route use the `Url::toRoute()` method. The method uses [[\yii\web\UrlManager]] to create
->>>>>>> yiichina/master
-=======
-In order to create a URL to a given route use the `Url::toRoute()` method. The method uses [[\yii\web\UrlManager]] to create
->>>>>>> master
 a URL:
 
 ```php
@@ -83,15 +53,7 @@ If you want to create a URL with an anchor, you can use the array format with a 
 ['site/index', 'param1' => 'value1', '#' => 'name']
 ```
 
-<<<<<<< HEAD
-<<<<<<< HEAD
-A route may be either absolute or relative. An absolute route has a leading slash (e.g. `/site/index`), while a relative
-=======
 A route may be either absolute or relative. An absolute route has a leading slash (e.g. `/site/index`) while a relative
->>>>>>> yiichina/master
-=======
-A route may be either absolute or relative. An absolute route has a leading slash (e.g. `/site/index`) while a relative
->>>>>>> master
 route has none (e.g. `site/index` or `index`). A relative route will be converted into an absolute one by the following rules:
 
 - If the route is an empty string, the current [[\yii\web\Controller::route|route]] will be used;

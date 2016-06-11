@@ -53,15 +53,7 @@ use yii\helpers\StringHelper;
  * * Using the `new` operator to create a new, empty object
  * * Using a method to fetch an existing record (or records) from the database
  *
-<<<<<<< HEAD
-<<<<<<< HEAD
- * Here is a short teaser how working with an ActiveRecord looks like:
-=======
  * Below is an example showing some typical usage of ActiveRecord:
->>>>>>> yiichina/master
-=======
- * Below is an example showing some typical usage of ActiveRecord:
->>>>>>> master
  *
  * ```php
  * $user = new User();
@@ -77,18 +69,8 @@ use yii\helpers\StringHelper;
  *
  * For more details and usage information on ActiveRecord, see the [guide article on ActiveRecord](guide:db-active-record).
  *
-<<<<<<< HEAD
-<<<<<<< HEAD
- * @method ActiveQuery hasMany(string $class, array $link) see BaseActiveRecord::hasMany() for more info
- * @method ActiveQuery hasOne(string $class, array $link) see BaseActiveRecord::hasOne() for more info
-=======
  * @method ActiveQuery hasMany($class, array $link) see [[BaseActiveRecord::hasMany()]] for more info
  * @method ActiveQuery hasOne($class, array $link) see [[BaseActiveRecord::hasOne()]] for more info
->>>>>>> yiichina/master
-=======
- * @method ActiveQuery hasMany($class, array $link) see [[BaseActiveRecord::hasMany()]] for more info
- * @method ActiveQuery hasOne($class, array $link) see [[BaseActiveRecord::hasOne()]] for more info
->>>>>>> master
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @author Carsten Brandt <mail@cebe.cc>
@@ -472,38 +454,6 @@ class ActiveRecord extends BaseActiveRecord
             return false;
         }
         $values = $this->getDirtyAttributes($attributes);
-<<<<<<< HEAD
-        if (empty($values)) {
-            foreach ($this->getPrimaryKey(true) as $key => $value) {
-                $values[$key] = $value;
-            }
-        }
-<<<<<<< HEAD
-        $db = static::getDb();
-        $command = $db->createCommand()->insert($this->tableName(), $values);
-        if (!$command->execute()) {
-            return false;
-        }
-        $table = $this->getTableSchema();
-        if ($table->sequenceName !== null) {
-            foreach ($table->primaryKey as $name) {
-                if ($this->getAttribute($name) === null) {
-                    $id = $table->columns[$name]->phpTypecast($db->getLastInsertID($table->sequenceName));
-                    $this->setAttribute($name, $id);
-                    $values[$name] = $id;
-                    break;
-                }
-            }
-=======
-        if (($primaryKeys = static::getDb()->schema->insert($this->tableName(), $values)) === false) {
-            return false;
-        }
-        foreach ($primaryKeys as $name => $value) {
-            $id = $this->getTableSchema()->columns[$name]->phpTypecast($value);
-            $this->setAttribute($name, $id);
-            $values[$name] = $id;
->>>>>>> yiichina/master
-=======
         if (($primaryKeys = static::getDb()->schema->insert(static::tableName(), $values)) === false) {
             return false;
         }
@@ -511,7 +461,6 @@ class ActiveRecord extends BaseActiveRecord
             $id = static::getTableSchema()->columns[$name]->phpTypecast($value);
             $this->setAttribute($name, $id);
             $values[$name] = $id;
->>>>>>> master
         }
 
         $changedAttributes = array_fill_keys(array_keys($values), null);

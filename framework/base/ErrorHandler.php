@@ -95,21 +95,12 @@ abstract class ErrorHandler extends Component
         // disable error capturing to avoid recursive errors while handling exceptions
         $this->unregister();
 
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
-=======
->>>>>>> master
         // set preventive HTTP status code to 500 in case error handling somehow fails and headers are sent
         // HTTP exceptions will override this value in renderException()
         if (PHP_SAPI !== 'cli') {
             http_response_code(500);
         }
 
-<<<<<<< HEAD
->>>>>>> yiichina/master
-=======
->>>>>>> master
         try {
             $this->logException($exception);
             if ($this->discardExistingOutput) {
@@ -125,17 +116,8 @@ abstract class ErrorHandler extends Component
             }
         } catch (\Exception $e) {
             // an other exception could be thrown while displaying the exception
-<<<<<<< HEAD
-<<<<<<< HEAD
-            $msg = (string) $e;
-=======
             $msg = "An Error occurred while handling another error:\n";
             $msg .= (string) $e;
->>>>>>> yiichina/master
-=======
-            $msg = "An Error occurred while handling another error:\n";
-            $msg .= (string) $e;
->>>>>>> master
             $msg .= "\nPrevious exception:\n";
             $msg .= (string) $exception;
             if (YII_DEBUG) {
@@ -149,18 +131,9 @@ abstract class ErrorHandler extends Component
             }
             $msg .= "\n\$_SERVER = " . VarDumper::export($_SERVER);
             error_log($msg);
-<<<<<<< HEAD
-<<<<<<< HEAD
-
-            if (PHP_SAPI !== 'cli') {
-                http_response_code(500);
-=======
             if (defined('HHVM_VERSION')) {
                 flush();
->>>>>>> master
             }
-=======
->>>>>>> yiichina/master
             exit(1);
         }
 

@@ -1,20 +1,8 @@
 Встановлення Yii
 ================
 
-<<<<<<< HEAD
-<<<<<<< HEAD
-Ви можете встановити Yii двома шляхами: використовуючи [Composer](http://getcomposer.org/) або завантаживши архів.
-Перший варіант э бажанішим, тому що дозволить встановити всі нові [розширення](structure-extensions.md)
-або оновити Yii однією командою.
-=======
-Ви можете встановити Yii двома шляхами: використовуючи менеджер пакетів [Composer](https://getcomposer.org/) 
-або завантаживши архів. Перший варіант э бажанішим, тому що дозволить встановити всі нові 
-[розширення](structure-extensions.md) або оновити Yii однією командою.
->>>>>>> yiichina/master
-=======
 Ви можете встановити Yii двома шляхами: використовуючи менеджер пакунків [Composer](https://getcomposer.org/) або завантаживши файл архіву.
 Перший варіант є бажанішим, тому що дозволяє встановлювати нові [розширення](structure-extensions.md) або оновлювати Yii простим виконанням однієї команди.
->>>>>>> master
 
 Після стандартного встановлення Yii ми отримуємо як фреймворк, так і шаблон проекту. Шаблон проекту - це робочий проект Yii,
 в якому реалізовано деякий базовий функціонал, такий як система входу/виходу користувачів, форма зворотнього зв’язку і т. д.
@@ -36,16 +24,8 @@
 Якщо у вас все ще не встановлено Composer, то це можна зробити за допомогою інструкції на
 [getcomposer.org](https://getcomposer.org/download/). Користувачам Linux та Mac OS X потрібно виконати наступні команди:
 
-<<<<<<< HEAD
-<<<<<<< HEAD
-    curl -s http://getcomposer.org/installer | php
-=======
-    curl -sS https://getcomposer.org/installer | php
->>>>>>> yiichina/master
-=======
 ```bash
     curl -sS https://getcomposer.org/installer | php
->>>>>>> master
     mv composer.phar /usr/local/bin/composer
 ```
 
@@ -59,16 +39,8 @@
 
 Після встановлення Composer, встановити Yii можна виконавши наступну команду з директорії, яка доступна через Web:
 
-<<<<<<< HEAD
-<<<<<<< HEAD
-    composer global require "fxp/composer-asset-plugin:1.0.0"
-=======
-    composer global require "fxp/composer-asset-plugin:~1.0.0"
->>>>>>> yiichina/master
-=======
 ```bash
     composer global require "fxp/composer-asset-plugin:~1.1.1"
->>>>>>> master
     composer create-project --prefer-dist yiisoft/yii2-app-basic basic
 ```
 
@@ -235,15 +207,7 @@ server {
     root        /path/to/basic/web;
     index       index.php;
 
-<<<<<<< HEAD
-<<<<<<< HEAD
-    access_log  /path/to/basic/log/access.log main;
-=======
     access_log  /path/to/basic/log/access.log;
->>>>>>> yiichina/master
-=======
-    access_log  /path/to/basic/log/access.log;
->>>>>>> master
     error_log   /path/to/basic/log/error.log;
 
     location / {

@@ -166,15 +166,7 @@ Durante o processo de inicialização, cada componente será instanciado. Se a c
 do componente implementa [[yii\base\BootstrapInterface]], seu método [[yii\base\BootstrapInterface::bootstrap()|bootstrap()]]
 também será chamado.
 
-<<<<<<< HEAD
-<<<<<<< HEAD
-Outro exemplo prático está na configuração do [Modelo Básico de Aplicação](start-installation.md),
-=======
 Outro exemplo prático está na configuração do [Template Básico de Projetos](start-installation.md),
->>>>>>> yiichina/master
-=======
-Outro exemplo prático está na configuração do [Template Básico de Projetos](start-installation.md),
->>>>>>> master
 onde os módulos `debug` e `gii` estão configurados como componentes de inicialização
 quando a aplicação está rodando no ambiente de desenvolvimento:
 
@@ -465,15 +457,7 @@ informação de ajuda.
 Essa propriedade especifica a lista de [extensões](structure-extensions.md) que
 estão instaladas e são usadas pela aplicação. Por padrão, ela receberá o array
 retornado pelo arquivo `@vendor/yiisoft/extensions.php`. O arquivo `extensions.php`
-<<<<<<< HEAD
-<<<<<<< HEAD
-é gerado e mantido automaticamente quando você usa o [Composer](http://getcomposer.org)
-=======
 é gerado e mantido automaticamente quando você usa o [Composer](https://getcomposer.org)
->>>>>>> yiichina/master
-=======
-é gerado e mantido automaticamente quando você usa o [Composer](https://getcomposer.org)
->>>>>>> master
 para instalar extensões. Então na maioria dos casos você não precisa configurar
 essa propriedade.
 
@@ -559,15 +543,7 @@ caminho.
 
 #### [[yii\base\Application::vendorPath|vendorPath]] <span id="vendorPath"></span>
 
-<<<<<<< HEAD
-<<<<<<< HEAD
-Essa propriedade especifica o diretório vendor gerenciado pelo [Composer](http://getcomposer.org).
-=======
 Essa propriedade especifica o diretório vendor gerenciado pelo [Composer](https://getcomposer.org).
->>>>>>> yiichina/master
-=======
-Essa propriedade especifica o diretório vendor gerenciado pelo [Composer](https://getcomposer.org).
->>>>>>> master
 Ele contém todas as bibliotecas de terceiros usadas pela sua aplicação, incluindo
 o framework do Yii. O valor padrão é o diretório representado pelo alias `@app/vendor`.
 

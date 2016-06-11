@@ -118,15 +118,7 @@ the uploaded file is valid and save the file on the server.
 
 ## Uploading Multiple Files <span id="uploading-multiple-files"></span>
 
-<<<<<<< HEAD
-<<<<<<< HEAD
-If you're using the "basic" application template, then folder `uploads` should be created under `web`.
-=======
-If you're using the "basic" project template, then folder `uploads` should be created under `web`.
->>>>>>> yiichina/master
-=======
 You can also upload multiple files at once, with some adjustments to the code listed in the previous subsections.
->>>>>>> master
 
 First you should adjust the model class by adding the `maxFiles` option in the `file` validation rule to limit
 the maximum number of files allowed to upload. Setting `maxFiles` to `0` means there is no limit on the number of files
@@ -135,48 +127,7 @@ with PHP directive [`max_file_uploads`](http://php.net/manual/en/ini.core.php#in
 which defaults to 20. The `upload()` method should also be updated to save the uploaded files one by one.
 
 ```php
-<<<<<<< HEAD
-public function rules()
-{
-    return [
-        [['file'], 'file', 'extensions' => 'gif, jpg'],
-    ];
-}
-```
-
-By default it will validate against file content mime type corresponding to extension specified. For gif it will be
-`image/gif`, for `jpg` it will be `image/jpeg`.
-
-
-Note that some mime types can't be detected properly by PHP's fileinfo extension that is used by `file` validator. For
-example, `csv` files are detected as `text/plain` instead of `text/csv`. You can turn off such behavior by setting
-`checkExtensionByMimeType` to `false` and specifying mime types manually:
-
-```php
-public function rules()
-{
-    return [
-        [['file'], 'file', 'checkExtensionByMimeType' => false, 'extensions' => 'csv', 'mimeTypes' => 'text/plain'],
-    ];
-}
-```
-
-[List of common media types](http://en.wikipedia.org/wiki/Internet_media_type#List_of_common_media_types)
-
-### Image properties
-
-If you upload an image, [[yii\validators\ImageValidator|ImageValidator]] may come in handy. It verifies if an attribute
-<<<<<<< HEAD
-received a valid image that can be then either saved or processed using the [Imagine Extension](https://github.com/yiisoft/yii2/tree/master/extensions/imagine).
-=======
-received a valid image that can be then either saved or processed using the [Imagine Extension](https://github.com/yiisoft/yii2-imagine).
->>>>>>> yiichina/master
-
-Uploading multiple files
-------------------------
-=======
 namespace app\models;
->>>>>>> master
 
 use yii\base\Model;
 use yii\web\UploadedFile;

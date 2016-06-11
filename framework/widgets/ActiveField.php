@@ -196,15 +196,7 @@ class ActiveField extends Component
                 $this->error();
             }
             if (!isset($this->parts['{hint}'])) {
-<<<<<<< HEAD
-<<<<<<< HEAD
-                $this->parts['{hint}'] = '';
-=======
-                $this->parts['{hint}'] = Html::activeHint($this->model, $this->attribute, $this->hintOptions);
->>>>>>> yiichina/master
-=======
                 $this->hint(null);
->>>>>>> master
             }
             $content = strtr($this->template, $this->parts);
         } elseif (!is_string($content)) {

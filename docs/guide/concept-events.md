@@ -252,8 +252,6 @@ Event::off(Foo::className(), Foo::EVENT_HELLO);
 ```
 
 
-<<<<<<< .merge_file_a05284
-=======
 Events using interfaces <span id="interface-level-event-handlers"></span>
 -------------
 
@@ -324,7 +322,6 @@ Event::off('DanceEventInterface', DanceEventInterface::EVENT_DANCE);
 ```
 
 
->>>>>>> .merge_file_a06468
 Global Events <span id="global-events"></span>
 -------------
 
@@ -351,8 +348,4 @@ which will be triggered by the object. Instead, the handler attachment and the e
 done through the Singleton (e.g. the application instance).
 
 However, because the namespace of the global events is shared by all parties, you should name the global events
-<<<<<<< .merge_file_a05284
 wisely, such as introducing some sort of namespace (e.g. "frontend.mail.sent", "backend.mail.sent").
-=======
-wisely, such as introducing some sort of namespace (e.g. "frontend.mail.sent", "backend.mail.sent").
->>>>>>> .merge_file_a06468

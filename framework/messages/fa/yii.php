@@ -81,21 +81,6 @@ return [
     '{attribute} must be an IP address with specified subnet.' => '{attribute} باید یک IP آدرسی با زیرشبکه بخصوص باشد.',
     '{attribute} must be an integer.' => '{attribute} باید یک عدد صحیح باشد.',
     '{attribute} must be either "{true}" or "{false}".' => '{attribute} باید "{true}" و یا "{false}" باشد.',
-<<<<<<< HEAD
-    '{attribute} must be greater than "{compareValue}".' => '{attribute} باید بزرگتر از "{compareValue}" باشد.',
-    '{attribute} must be greater than or equal to "{compareValue}".' => '{attribute} باید بزرگتر و یا مساوی "{compareValue}" باشد.',
-    '{attribute} must be less than "{compareValue}".' => '{attribute} باید کوچکتر از "{compareValue}" باشد.',
-    '{attribute} must be less than or equal to "{compareValue}".' => '{attribute} باید کوچکتر و یا مساوی "{compareValue}" باشد.',
-<<<<<<< HEAD
-    '{attribute} must be no greater than {max}.' => '{attribute} نباید بیشتر از "{compareValue}" باشد.',
-    '{attribute} must be no less than {min}.' => '{attribute} نباید کمتر از "{compareValue}" باشد.',
-=======
-    '{attribute} must be no greater than {max}.' => '{attribute} نباید بیشتر از "{max}" باشد.',
-    '{attribute} must be no less than {min}.' => '{attribute} نباید کمتر از "{min}" باشد.',
->>>>>>> yiichina/master
-    '{attribute} must be repeated exactly.' => '{attribute} عیناً باید تکرار شود.',
-    '{attribute} must not be equal to "{compareValue}".' => '{attribute} نباید برابر با "{compareValue}" باشد.',
-=======
     '{attribute} must be equal to "{compareValueOrAttribute}".' => '{attribute} باید با "{compareValueOrAttribute}" برابر باشد.',
     '{attribute} must be greater than "{compareValueOrAttribute}".' => '{attribute} باید بزرگتر از "{compareValueOrAttribute}" باشد.',
     '{attribute} must be greater than or equal to "{compareValueOrAttribute}".' => '{attribute} باید بزرکتر یا برابر با "{compareValueOrAttribute}" باشد.',
@@ -107,7 +92,6 @@ return [
     '{attribute} must not be an IPv4 address.' => '{attribute} باید آدرس IPv4 نباشد.',
     '{attribute} must not be an IPv6 address.' => '{attribute} باید آدرس IPv6 نباشد.',
     '{attribute} must not be equal to "{compareValueOrAttribute}".' => '{attribute} باید مانند "{compareValueOrAttribute}" تکرار نشود.',
->>>>>>> master
     '{attribute} should contain at least {min, number} {min, plural, one{character} other{characters}}.' => '{attribute} حداقل باید شامل {min, number} کارکتر باشد.',
     '{attribute} should contain at most {max, number} {max, plural, one{character} other{characters}}.' => '{attribute} حداکثر باید شامل {max, number} کارکتر باشد.',
     '{attribute} should contain {length, number} {length, plural, one{character} other{characters}}.' => '{attribute} باید شامل {length, number} کارکتر باشد.',

@@ -122,27 +122,14 @@ class ColumnSchema extends Object
         switch ($this->phpType) {
             case 'resource':
             case 'string':
-<<<<<<< HEAD
-<<<<<<< HEAD
-                return is_resource($value) ? $value : (string) $value;
-=======
-=======
->>>>>>> master
                 if (is_resource($value)) {
                     return $value;
                 }
                 if (is_float($value)) {
                     // ensure type cast always has . as decimal separator in all locales
-<<<<<<< HEAD
-                    return str_replace(',', '.', (string)$value);
-                }
-                return (string)$value;
->>>>>>> yiichina/master
-=======
                     return str_replace(',', '.', (string) $value);
                 }
                 return (string) $value;
->>>>>>> master
             case 'integer':
                 return (int) $value;
             case 'boolean':

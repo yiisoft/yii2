@@ -54,38 +54,16 @@ class Pjax extends Widget
      */
     public $options = [];
     /**
-<<<<<<< HEAD
-<<<<<<< HEAD
-     * @var string the jQuery selector of the links that should trigger pjax requests.
-     * If not set, all links within the enclosed content of Pjax will trigger pjax requests.
-=======
      * @var string|false the jQuery selector of the links that should trigger pjax requests.
      * If not set, all links within the enclosed content of Pjax will trigger pjax requests.
      * If set to false, no code will be registered to handle links.
->>>>>>> yiichina/master
-=======
-     * @var string|false the jQuery selector of the links that should trigger pjax requests.
-     * If not set, all links within the enclosed content of Pjax will trigger pjax requests.
-     * If set to false, no code will be registered to handle links.
->>>>>>> master
      * Note that if the response to the pjax request is a full page, a normal request will be sent again.
      */
     public $linkSelector;
     /**
-<<<<<<< HEAD
-<<<<<<< HEAD
-     * @var string the jQuery selector of the forms whose submissions should trigger pjax requests.
-     * If not set, all forms with `data-pjax` attribute within the enclosed content of Pjax will trigger pjax requests.
-=======
      * @var string|false the jQuery selector of the forms whose submissions should trigger pjax requests.
      * If not set, all forms with `data-pjax` attribute within the enclosed content of Pjax will trigger pjax requests.
      * If set to false, no code will be registered to handle forms.
->>>>>>> yiichina/master
-=======
-     * @var string|false the jQuery selector of the forms whose submissions should trigger pjax requests.
-     * If not set, all forms with `data-pjax` attribute within the enclosed content of Pjax will trigger pjax requests.
-     * If set to false, no code will be registered to handle forms.
->>>>>>> master
      * Note that if the response to the pjax request is a full page, a normal request will be sent again.
      */
     public $formSelector;
@@ -203,17 +181,6 @@ class Pjax extends Widget
         $this->clientOptions['replace'] = $this->enableReplaceState;
         $this->clientOptions['timeout'] = $this->timeout;
         $this->clientOptions['scrollTo'] = $this->scrollTo;
-<<<<<<< HEAD
-<<<<<<< HEAD
-        $options = Json::encode($this->clientOptions);
-        $linkSelector = Json::encode($this->linkSelector !== null ? $this->linkSelector : '#' . $id . ' a');
-        $formSelector = Json::encode($this->formSelector !== null ? $this->formSelector : '#' . $id . ' form[data-pjax]');
-        $view = $this->getView();
-        PjaxAsset::register($view);
-        $js = "jQuery(document).pjax($linkSelector, \"#$id\", $options);";
-        $js .= "\njQuery(document).on('submit', $formSelector, function (event) {jQuery.pjax.submit(event, '#$id', $options);});";
-        $view->registerJs($js);
-=======
         $options = Json::htmlEncode($this->clientOptions);
         $js = '';
         if ($this->linkSelector !== false) {
@@ -226,27 +193,9 @@ class Pjax extends Widget
         }
         $view = $this->getView();
         PjaxAsset::register($view);
-=======
-        $options = Json::htmlEncode($this->clientOptions);
-        $js = '';
-        if ($this->linkSelector !== false) {
-            $linkSelector = Json::htmlEncode($this->linkSelector !== null ? $this->linkSelector : '#' . $id . ' a');
-            $js .= "jQuery(document).pjax($linkSelector, \"#$id\", $options);";
-        }
-        if ($this->formSelector !== false) {
-            $formSelector = Json::htmlEncode($this->formSelector !== null ? $this->formSelector : '#' . $id . ' form[data-pjax]');
-            $js .= "\njQuery(document).on('submit', $formSelector, function (event) {jQuery.pjax.submit(event, '#$id', $options);});";
-        }
-        $view = $this->getView();
-        PjaxAsset::register($view);
->>>>>>> master
 
         if ($js !== '') {
             $view->registerJs($js);
         }
-<<<<<<< HEAD
->>>>>>> yiichina/master
-=======
->>>>>>> master
     }
 }

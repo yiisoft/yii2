@@ -9,44 +9,19 @@ em geral.
 
 > Info: Por questões de simplicidade, por todo este tutorial de "Primeiros Passos"
   assume-se que você definiu `basic/web` como a raiz de documentos do seu
-<<<<<<< HEAD
-<<<<<<< HEAD
-  servidor Web, e configurou a URL de acesso de sua aplicação como `http://hostname/index.php`
-  ou algo semelhantes. Por favor ajuste as URLs em nossas descrições às suas
-  necessidades.
-
-=======
   servidor Web e configurou a URL de acesso de sua aplicação como `http://hostname/index.php`
   ou algo semelhantes. Por favor ajuste as URLs em nossas descrições às suas
   necessidades.
 
-=======
-  servidor Web e configurou a URL de acesso de sua aplicação como `http://hostname/index.php`
-  ou algo semelhantes. Por favor ajuste as URLs em nossas descrições às suas
-  necessidades.
-
->>>>>>> master
 Observe que ao contrário do próprio framework, após a instalação de um dos templates 
 de projetos, você está livre para adicionar, remover ou sobrescrever qualquer código
 que precisar.
 
-<<<<<<< HEAD
->>>>>>> yiichina/master
-=======
->>>>>>> master
 
 Funcionalidade <span id="functionality"></span>
 --------------
 
-<<<<<<< HEAD
-<<<<<<< HEAD
-A aplicação básica instalada contém quatro páginas:
-=======
 O template básico de projetos instalado contém quatro páginas:
->>>>>>> yiichina/master
-=======
-O template básico de projetos instalado contém quatro páginas:
->>>>>>> master
 
 * A página inicial, exibida quando você acessa a URL `http://hostname/index.php`,
 * a página "About" (Sobre),
@@ -64,19 +39,10 @@ Essa é uma [ferramenta de depuração](tool-debugger.md) fornecida pelo Yii par
 registrar e exibir várias informações de depuração, tais como mensagens de logs,
 status de respostas, as consultas de banco de dados executadas, e assim por diante.
 
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
-=======
->>>>>>> master
 Além da aplicação Web, existe um script console chamado `yii`, que está localizado
 na pasta base da aplicação.
 Este script pode ser usado para executar rotinas em segundo plano e tarefas de
 manutenção da aplicação, descritas na [seção Comandos de Console](tutorial-console.md).
-<<<<<<< HEAD
->>>>>>> yiichina/master
-=======
->>>>>>> master
 
 Estrutura da Aplicação <span id="application-structure"></span>
 ----------------------

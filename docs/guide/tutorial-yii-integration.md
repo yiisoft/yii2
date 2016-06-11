@@ -82,15 +82,7 @@ take two steps: install Yii, and bootstrap Yii.
 If the third-party system uses Composer to manage its dependencies, you can simply run the following commands
 to install Yii:
 
-<<<<<<< HEAD
-<<<<<<< HEAD
-    composer global require "fxp/composer-asset-plugin:1.0.0"
-=======
-    composer global require "fxp/composer-asset-plugin:~1.0.0"
->>>>>>> yiichina/master
-=======
     composer global require "fxp/composer-asset-plugin:~1.1.1"
->>>>>>> master
     composer require yiisoft/yii2
     composer install
 

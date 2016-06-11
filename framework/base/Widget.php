@@ -91,27 +91,11 @@ class Widget extends Component implements ViewContextInterface
     {
         ob_start();
         ob_implicit_flush(false);
-<<<<<<< HEAD
-<<<<<<< HEAD
-        /* @var $widget Widget */
-        $config['class'] = get_called_class();
-        $widget = Yii::createObject($config);
-        $out = $widget->run();
-=======
-=======
->>>>>>> master
         try {
             /* @var $widget Widget */
             $config['class'] = get_called_class();
             $widget = Yii::createObject($config);
             $out = $widget->run();
-<<<<<<< HEAD
-        } catch(\Exception $e) {
-            ob_end_clean();
-            throw $e;
-        }
->>>>>>> yiichina/master
-=======
         } catch (\Exception $e) {
             // close the output buffer opened above if it has not been closed already
             if (ob_get_level() > 0) {
@@ -119,7 +103,6 @@ class Widget extends Component implements ViewContextInterface
             }
             throw $e;
         }
->>>>>>> master
 
         return ob_get_clean() . $out;
     }

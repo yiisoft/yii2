@@ -3,17 +3,11 @@
 namespace yiiunit\framework\helpers;
 
 use yii\base\Model;
-<<<<<<< HEAD
-use yii\helpers\Json;
-use yiiunit\TestCase;
-use yii\web\JsExpression;
-=======
 use yii\helpers\BaseJson;
 use yii\helpers\Json;
 use yiiunit\TestCase;
 use yii\web\JsExpression;
 use yiiunit\framework\web\Post;
->>>>>>> master
 
 /**
  * @group helpers
@@ -108,8 +102,6 @@ class JsonTest extends TestCase
         // JsonSerializable
         $data = new JsonModel();
         $this->assertSame('{"json":"serializable"}', Json::htmlEncode($data));
-<<<<<<< HEAD
-=======
 
         // https://github.com/yiisoft/yii2/issues/10278
         $xml = '<?xml version="1.0" encoding="UTF-8"?>
@@ -128,7 +120,6 @@ class JsonTest extends TestCase
         $postsStack->push(new Post(456, 'record2'));
 
         $this->assertSame('{"1":{"id":456,"title":"record2"},"0":{"id":915,"title":"record1"}}', Json::encode($postsStack));
->>>>>>> master
     }
 
     public function testDecode()
@@ -146,8 +137,6 @@ class JsonTest extends TestCase
         $this->setExpectedException('yii\base\InvalidParamException');
         Json::decode($json);
     }
-<<<<<<< HEAD
-=======
 
     public function testHandleJsonError()
     {
@@ -173,7 +162,6 @@ class JsonTest extends TestCase
             }
         }
     }
->>>>>>> master
 }
 
 class JsonModel extends Model implements \JsonSerializable

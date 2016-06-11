@@ -197,14 +197,6 @@ composer dumpautoload -o
 あなたは、あなたのコードをプロファイルして、パフォーマンスのボトルネックを発見し、それに応じた適切な手段を講じるべきです。
 次のプロファイリングツールが役に立つでしょう。
 
-<<<<<<< HEAD
-<<<<<<< HEAD
-- [Yii のデバッグツールバーとデバッガ](tool-debugger.md)
-=======
-- [Yii のデバッグツールバーとデバッガ](https://github.com/yiisoft/yii2-debug/blob/master/docs/guide/README.md)
->>>>>>> yiichina/master
-=======
 - [Yii のデバッグツールバーとデバッガ](https://github.com/yiisoft/yii2-debug/blob/master/docs/guide-ja/README.md)
->>>>>>> master
 - [XDebug プロファイラ](http://xdebug.org/docs/profiler)
 - [XHProf](http://www.php.net/manual/ja/book.xhprof.php)

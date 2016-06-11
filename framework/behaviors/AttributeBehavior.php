@@ -14,15 +14,6 @@ use yii\base\Event;
 use yii\db\ActiveRecord;
 
 /**
-<<<<<<< HEAD
-<<<<<<< HEAD
- * AttributeBehavior automatically assigns a specified value to one or multiple attributes of an ActiveRecord object when certain events happen.
- *
- * To use AttributeBehavior, configure the [[attributes]] property which should specify the list of attributes
- * that need to be updated and the corresponding events that should trigger the update. For example,
- * Then configure the [[value]] property with a PHP callable whose return value will be used to assign to the current
- * attribute(s). For example,
-=======
  * AttributeBehavior automatically assigns a specified value to one or multiple attributes of an ActiveRecord
  * object when certain events happen.
  *
@@ -30,16 +21,6 @@ use yii\db\ActiveRecord;
  * that need to be updated and the corresponding events that should trigger the update. Then configure the
  * [[value]] property with a PHP callable whose return value will be used to assign to the current attribute(s).
  * For example,
->>>>>>> yiichina/master
-=======
- * AttributeBehavior automatically assigns a specified value to one or multiple attributes of an ActiveRecord
- * object when certain events happen.
- *
- * To use AttributeBehavior, configure the [[attributes]] property which should specify the list of attributes
- * that need to be updated and the corresponding events that should trigger the update. Then configure the
- * [[value]] property with a PHP callable whose return value will be used to assign to the current attribute(s).
- * For example,
->>>>>>> master
  *
  * ```php
  * use yii\behaviors\AttributeBehavior;

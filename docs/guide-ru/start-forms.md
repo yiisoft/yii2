@@ -78,15 +78,7 @@ class SiteController extends Controller
 
     public function actionEntry()
     {
-<<<<<<< HEAD
-<<<<<<< HEAD
-        $model = new EntryForm;
-=======
         $model = new EntryForm();
->>>>>>> yiichina/master
-=======
-        $model = new EntryForm();
->>>>>>> master
 
         if ($model->load(Yii::$app->request->post()) && $model->validate()) {
             // данные в $model удачно проверены
