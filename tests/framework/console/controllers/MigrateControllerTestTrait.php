@@ -229,6 +229,13 @@ CODE;
                 order_id:integer:foreignKey(user_order):notNull,
                 created_at:dateTime:notNull',
         ]);
+
+        /* @see https://github.com/yiisoft/yii2/issues/11461 */
+        $this->assertCommandCreatedFile('create_title_with_comma', $migrationName, [
+            'fields' => 'title:string(10):notNull:unique:defaultValue(",te,st"),
+            body:text:notNull:defaultValue(",test"),
+            test:custom(11,2,"s"):notNull',
+        ]);
     }
 
     public function testGenerateDropMigration()
