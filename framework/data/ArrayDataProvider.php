@@ -63,7 +63,12 @@ class ArrayDataProvider extends BaseDataProvider
      * The array elements must use zero-based integer keys.
      */
     public $allModels;
-
+    /**
+     * @var string the name of the [[yii\base\Model|Model]] class that will be represented.
+     * This property is used to get columns' names.
+     * @since 2.0.9
+     */
+    public $modelClass;
 
     /**
      * @inheritdoc

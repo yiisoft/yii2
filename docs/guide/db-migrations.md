@@ -414,8 +414,7 @@ The `foreignKey` keyword can take a parameter between parenthesis which will be
 the name of the related table for the generated foreign key. If no parameter
 is passed then the table name will be deduced from the column name.
 
-In the
-example above `author_id:integer:notNull:foreignKey(user)` will generate a
+In the example above `author_id:integer:notNull:foreignKey(user)` will generate a
 column named `author_id` with a foreign key to the `user` table while
 `category_id:integer:defaultValue(1):foreignKey` will generate a column
 `category_id` with a foreign key to the `category` table.
@@ -685,10 +684,10 @@ Below is the list of all these database accessing methods:
 * [[yii\db\Migration::dropForeignKey()|dropForeignKey()]]: removing a foreign key
 * [[yii\db\Migration::createIndex()|createIndex()]]: creating an index
 * [[yii\db\Migration::dropIndex()|dropIndex()]]: removing an index
-* [[yii\db\Migration::addCommentOnColumn()|addCommentOnColumn()]: adding comment to column
-* [[yii\db\Migration::dropCommentFromColumn()|dropCommentFromColumn()]: dropping comment from column
-* [[yii\db\Migration::addCommentOnTable()|addCommentOnTable()]: adding comment to table
-* [[yii\db\Migration::dropCommentFromTable()|dropCommentFromTable()]: dropping comment from table
+* [[yii\db\Migration::addCommentOnColumn()|addCommentOnColumn()]]: adding comment to column
+* [[yii\db\Migration::dropCommentFromColumn()|dropCommentFromColumn()]]: dropping comment from column
+* [[yii\db\Migration::addCommentOnTable()|addCommentOnTable()]]: adding comment to table
+* [[yii\db\Migration::dropCommentFromTable()|dropCommentFromTable()]]: dropping comment from table
 
 > Info: [[yii\db\Migration]] does not provide a database query method. This is because you normally do not need
   to display extra message about retrieving data from a database. It is also because you can use the powerful
@@ -714,6 +713,9 @@ This command will list all migrations that have not been applied so far. If you 
 these migrations, it will run the `up()` or `safeUp()` method in every new migration class, one after another,
 in the order of their timestamp values. If any of the migrations fails, the command will quit without applying
 the rest of the migrations.
+
+> Tip: In case you don't have command line at your server you may try [web shell](https://github.com/samdark/yii2-webshell)
+> extension.
 
 For each migration that has been successfully applied, the command will insert a row into a database table named
 `migration` to record the successful application of the migration. This will allow the migration tool to identify

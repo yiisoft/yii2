@@ -330,7 +330,7 @@ class m150811_220037_drop_position_from_post extends Migration
 Если имя миграции задано как `create_junction_xxx_and_yyy`, файл будет содержать код для создания промежуточной таблцы.
 
 ```php
-yii create/migration create_junction_post_and_tag
+yii migrate/create create_junction_post_and_tag
 ```
 
 сгенерирует

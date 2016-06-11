@@ -2,7 +2,6 @@
 
 use yii\helpers\FileHelper;
 use yiiunit\TestCase;
-
 /**
  * Unit test for [[yii\helpers\FileHelper]]
  * @see FileHelper
@@ -21,6 +20,18 @@ class FileHelperTest extends TestCase
         $this->createDir($this->testFilePath);
         if (!file_exists($this->testFilePath)) {
             $this->markTestIncomplete('Unit tests runtime directory should have writable permissions!');
+        }
+
+        // Check if chmod works as expected.
+        $dir = $this->testFilePath . DIRECTORY_SEPARATOR . 'test_chmod';
+        mkdir($dir);
+        chmod($dir, 0700);
+        if ($this->getMode($dir) !== "0700") {
+            /**
+             * Chmod returns true but fileperms does not reflect this.
+             * This happens on remote file systems, also has been seen in vagrant mounts.
+             */
+            $this->markTestInComplete('Unit tests runtime directory should be local!');
         }
     }
 
@@ -113,6 +124,23 @@ class FileHelperTest extends TestCase
 
     // Tests :
 
+    public function testCreateDirectory()
+    {
+        $basePath = $this->testFilePath;
+        $dirName = $basePath . DIRECTORY_SEPARATOR . 'test_dir_level_1' . DIRECTORY_SEPARATOR . 'test_dir_level_2';
+        $this->assertTrue(FileHelper::createDirectory($dirName), 'FileHelper::createDirectory should return true if directory was created!');
+        $this->assertFileExists($dirName, 'Unable to create directory recursively!');
+        $this->assertTrue(FileHelper::createDirectory($dirName), 'FileHelper::createDirectory should return true for already existing directories!');
+
+        $dirName = $basePath . DIRECTORY_SEPARATOR . 'test_dir_perms';
+        $this->assertTrue(FileHelper::createDirectory($dirName, 0700, false));
+        $this->assertFileMode(0700, $dirName);
+
+    }
+
+    /**
+     * @depends testCreateDirectory
+     */
     public function testCopyDirectory()
     {
         $srcDirName = 'test_src_dir';
@@ -565,15 +593,6 @@ class FileHelperTest extends TestCase
         ];
         $foundFiles = FileHelper::findFiles($dirName, $options);
         $this->assertCount(2, $foundFiles);
-    }
-
-    public function testCreateDirectory()
-    {
-        $basePath = $this->testFilePath;
-        $dirName = $basePath . DIRECTORY_SEPARATOR . 'test_dir_level_1' . DIRECTORY_SEPARATOR . 'test_dir_level_2';
-        $this->assertTrue(FileHelper::createDirectory($dirName), 'FileHelper::createDirectory should return true if directory was created!');
-        $this->assertFileExists($dirName, 'Unable to create directory recursively!');
-        $this->assertTrue(FileHelper::createDirectory($dirName), 'FileHelper::createDirectory should return true for already existing directories!');
     }
 
     public function testGetMimeTypeByExtension()
