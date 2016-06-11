@@ -2,7 +2,11 @@
 
 namespace yiiunit\framework\db\pgsql;
 
+<<<<<<< HEAD
 use yii\db\pgsql\Schema;
+=======
+use yii\db\Schema;
+>>>>>>> master
 use yiiunit\framework\db\QueryBuilderTest;
 
 /**
@@ -15,6 +19,7 @@ class PostgreSQLQueryBuilderTest extends QueryBuilderTest
 
     public function columnTypes()
     {
+<<<<<<< HEAD
         return [
             [Schema::TYPE_PK, 'serial NOT NULL PRIMARY KEY'],
             [Schema::TYPE_PK . '(8)', 'serial NOT NULL PRIMARY KEY'],
@@ -74,6 +79,40 @@ class PostgreSQLQueryBuilderTest extends QueryBuilderTest
             [Schema::TYPE_MONEY . '(16,2) CHECK (value > 0.0)', 'numeric(16,2) CHECK (value > 0.0)'],
             [Schema::TYPE_MONEY . ' NOT NULL', 'numeric(19,4) NOT NULL'],
         ];
+=======
+        return array_merge(parent::columnTypes(), [
+            [
+                Schema::TYPE_BOOLEAN . ' NOT NULL DEFAULT TRUE',
+                $this->boolean()->notNull()->defaultValue(true),
+                'boolean NOT NULL DEFAULT TRUE'
+            ],
+            [
+                Schema::TYPE_CHAR . ' CHECK (value LIKE \'test%\')',
+                $this->char()->check('value LIKE \'test%\''),
+                'char(1) CHECK (value LIKE \'test%\')'
+            ],
+            [
+                Schema::TYPE_CHAR . '(6) CHECK (value LIKE \'test%\')',
+                $this->char(6)->check('value LIKE \'test%\''),
+                'char(6) CHECK (value LIKE \'test%\')'
+            ],
+            [
+                Schema::TYPE_CHAR . '(6)',
+                $this->char(6)->unsigned(),
+                'char(6)'
+            ],
+            [
+                Schema::TYPE_INTEGER . '(8)',
+                $this->integer(8)->unsigned(),
+                'integer'
+            ],
+            [
+                Schema::TYPE_TIMESTAMP . '(4)',
+                $this->timestamp(4),
+                'timestamp(4)'
+            ],
+        ]);
+>>>>>>> master
     }
 
     public function conditionProvider()
@@ -122,4 +161,33 @@ class PostgreSQLQueryBuilderTest extends QueryBuilderTest
         $sql = $qb->alterColumn('foo1', 'bar', 'reset xyz');
         $this->assertEquals($expected, $sql);
     }
+<<<<<<< HEAD
+=======
+
+    public function testCommentColumn()
+    {
+        $qb = $this->getQueryBuilder();
+
+        $expected = "COMMENT ON COLUMN [[comment]].[[text]] IS 'This is my column.'";
+        $sql = $qb->addCommentOnColumn('comment', 'text', 'This is my column.');
+        $this->assertEquals($this->replaceQuotes($expected), $sql);
+
+        $expected = "COMMENT ON COLUMN [[comment]].[[text]] IS NULL";
+        $sql = $qb->dropCommentFromColumn('comment', 'text');
+        $this->assertEquals($this->replaceQuotes($expected), $sql);
+    }
+
+    public function testCommentTable()
+    {
+        $qb = $this->getQueryBuilder();
+
+        $expected = "COMMENT ON TABLE [[comment]] IS 'This is my table.'";
+        $sql = $qb->addCommentOnTable('comment', 'This is my table.');
+        $this->assertEquals($this->replaceQuotes($expected), $sql);
+
+        $expected = "COMMENT ON TABLE [[comment]] IS NULL";
+        $sql = $qb->dropCommentFromTable('comment');
+        $this->assertEquals($this->replaceQuotes($expected), $sql);
+    }
+>>>>>>> master
 }

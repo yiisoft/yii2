@@ -74,7 +74,7 @@ class UploadedFile extends Object
      * @param \yii\base\Model $model the data model
      * @param string $attribute the attribute name. The attribute name may contain array indexes.
      * For example, '[1]file' for tabular file uploading; and 'file[1]' for an element in a file array.
-     * @return UploadedFile the instance of the uploaded file.
+     * @return null|UploadedFile the instance of the uploaded file.
      * Null is returned if no file is uploaded for the specified model attribute.
      * @see getInstanceByName()
      */
@@ -102,7 +102,7 @@ class UploadedFile extends Object
      * Returns an uploaded file according to the given file input name.
      * The name can be a plain string or a string like an array element (e.g. 'Post[imageFile]', or 'Post[0][imageFile]').
      * @param string $name the name of the file input field.
-     * @return UploadedFile the instance of the uploaded file.
+     * @return null|UploadedFile the instance of the uploaded file.
      * Null is returned if no file is uploaded for the specified name.
      */
     public static function getInstanceByName($name)
@@ -117,10 +117,14 @@ class UploadedFile extends Object
      * 'files[n]'..., and you can retrieve them all by passing 'files' as the name.
      * @param string $name the name of the array of files
 <<<<<<< HEAD
+<<<<<<< HEAD
      * @return UploadedFile[] the array of CUploadedFile objects. Empty array is returned
 =======
      * @return UploadedFile[] the array of UploadedFile objects. Empty array is returned
 >>>>>>> yiichina/master
+=======
+     * @return UploadedFile[] the array of UploadedFile objects. Empty array is returned
+>>>>>>> master
      * if no adequate upload was found. Please note that this array will contain
      * all files from all sub-arrays regardless how deeply nested they are.
      */
@@ -175,7 +179,8 @@ class UploadedFile extends Object
      */
     public function getBaseName()
     {
-        return pathinfo($this->name, PATHINFO_FILENAME);
+        // https://github.com/yiisoft/yii2/issues/11012
+        return mb_substr(pathinfo('_' . $this->name, PATHINFO_FILENAME), 1, null, '8bit');
     }
 
     /**
@@ -227,7 +232,7 @@ class UploadedFile extends Object
             foreach ($names as $i => $name) {
                 self::loadFilesRecursive($key . '[' . $i . ']', $name, $tempNames[$i], $types[$i], $sizes[$i], $errors[$i]);
             }
-        } elseif ($errors !== UPLOAD_ERR_NO_FILE) {
+        } elseif ((int)$errors !== UPLOAD_ERR_NO_FILE) {
             self::$_files[$key] = new static([
                 'name' => $names,
                 'tempName' => $tempNames,
@@ -238,7 +243,11 @@ class UploadedFile extends Object
         }
     }
 <<<<<<< HEAD
+<<<<<<< HEAD
 }
 =======
 }
 >>>>>>> yiichina/master
+=======
+}
+>>>>>>> master

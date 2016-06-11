@@ -11,8 +11,10 @@ use Yii;
 use Closure;
 use yii\base\Behavior;
 use yii\base\Event;
+use yii\db\ActiveRecord;
 
 /**
+<<<<<<< HEAD
 <<<<<<< HEAD
  * AttributeBehavior automatically assigns a specified value to one or multiple attributes of an ActiveRecord object when certain events happen.
  *
@@ -29,8 +31,17 @@ use yii\base\Event;
  * [[value]] property with a PHP callable whose return value will be used to assign to the current attribute(s).
  * For example,
 >>>>>>> yiichina/master
+=======
+ * AttributeBehavior automatically assigns a specified value to one or multiple attributes of an ActiveRecord
+ * object when certain events happen.
  *
- * ~~~
+ * To use AttributeBehavior, configure the [[attributes]] property which should specify the list of attributes
+ * that need to be updated and the corresponding events that should trigger the update. Then configure the
+ * [[value]] property with a PHP callable whose return value will be used to assign to the current attribute(s).
+ * For example,
+>>>>>>> master
+ *
+ * ```php
  * use yii\behaviors\AttributeBehavior;
  *
  * public function behaviors()
@@ -48,7 +59,10 @@ use yii\base\Event;
  *         ],
  *     ];
  * }
- * ~~~
+ * ```
+ *
+ * Because attribute values will be set automatically, it's a good idea to make sure attribute names aren't
+ * in `rules()` method of the model.
  *
  * @author Luciano Baraglia <luciano.baraglia@gmail.com>
  * @author Qiang Xue <qiang.xue@gmail.com>
@@ -71,8 +85,10 @@ class AttributeBehavior extends Behavior
      */
     public $attributes = [];
     /**
-     * @var mixed the value that will be assigned to the current attributes. This can be an anonymous function
-     * or an arbitrary value. If the former, the return value of the function will be assigned to the attributes.
+     * @var mixed the value that will be assigned to the current attributes. This can be an anonymous function,
+     * callable in array format (e.g. `[$this, 'methodName']`), an [[Expression]] object representing a DB expression
+     * (e.g. `new Expression('NOW()')`), scalar, string or an arbitrary value. If the former, the return value of the
+     * function will be assigned to the attributes.
      * The signature of the function should be as follows,
      *
      * ```php
@@ -83,6 +99,12 @@ class AttributeBehavior extends Behavior
      * ```
      */
     public $value;
+    /**
+     * @var boolean whether to skip this behavior when the `$owner` has not been
+     * modified
+     * @since 2.0.8
+     */
+    public $skipUpdateOnClean = true;
 
 
     /**
@@ -90,7 +112,10 @@ class AttributeBehavior extends Behavior
      */
     public function events()
     {
-        return array_fill_keys(array_keys($this->attributes), 'evaluateAttributes');
+        return array_fill_keys(
+            array_keys($this->attributes),
+            'evaluateAttributes'
+        );
     }
 
     /**
@@ -99,6 +124,13 @@ class AttributeBehavior extends Behavior
      */
     public function evaluateAttributes($event)
     {
+        if ($this->skipUpdateOnClean
+            && $event->name == ActiveRecord::EVENT_BEFORE_UPDATE
+            && empty($this->owner->dirtyAttributes)
+        ) {
+            return;
+        }
+
         if (!empty($this->attributes[$event->name])) {
             $attributes = (array) $this->attributes[$event->name];
             $value = $this->getValue($event);
@@ -112,7 +144,7 @@ class AttributeBehavior extends Behavior
     }
 
     /**
-     * Returns the value of the current attributes.
+     * Returns the value for the current attributes.
      * This method is called by [[evaluateAttributes()]]. Its return value will be assigned
      * to the attributes corresponding to the triggering event.
      * @param Event $event the event that triggers the current attribute updating.
@@ -120,6 +152,10 @@ class AttributeBehavior extends Behavior
      */
     protected function getValue($event)
     {
-        return $this->value instanceof Closure ? call_user_func($this->value, $event) : $this->value;
+        if ($this->value instanceof Closure || is_array($this->value) && is_callable($this->value)) {
+            return call_user_func($this->value, $event);
+        }
+
+        return $this->value;
     }
 }

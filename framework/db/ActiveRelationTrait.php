@@ -98,7 +98,7 @@ trait ActiveRelationTrait
      * @param string $relationName the relation name. This refers to a relation declared in [[primaryModel]].
      * @param callable $callable a PHP callback for customizing the relation associated with the junction table.
      * Its signature should be `function($query)`, where `$query` is the query to be customized.
-     * @return static the relation object itself.
+     * @return $this the relation object itself.
      */
     public function via($relationName, callable $callable = null)
     {
@@ -128,7 +128,7 @@ trait ActiveRelationTrait
      * ```
      *
      * @param string $relationName the name of the relation that is the inverse of this relation.
-     * @return static the relation object itself.
+     * @return $this the relation object itself.
      */
     public function inverseOf($relationName)
     {
@@ -160,20 +160,26 @@ trait ActiveRelationTrait
             return $related;
         }
 
-        $inverseRelation = (new $this->modelClass)->getRelation($this->inverseOf);
-
         if ($this->multiple) {
             foreach ($related as $i => $relatedModel) {
                 if ($relatedModel instanceof ActiveRecordInterface) {
+                    if (!isset($inverseRelation)) {
+                        $inverseRelation = $relatedModel->getRelation($this->inverseOf);
+                    }
                     $relatedModel->populateRelation($this->inverseOf, $inverseRelation->multiple ? [$model] : $model);
                 } else {
+                    if (!isset($inverseRelation)) {
+                        $inverseRelation = (new $this->modelClass)->getRelation($this->inverseOf);
+                    }
                     $related[$i][$this->inverseOf] = $inverseRelation->multiple ? [$model] : $model;
                 }
             }
         } else {
             if ($related instanceof ActiveRecordInterface) {
+                $inverseRelation = $related->getRelation($this->inverseOf);
                 $related->populateRelation($this->inverseOf, $inverseRelation->multiple ? [$model] : $model);
             } else {
+                $inverseRelation = (new $this->modelClass)->getRelation($this->inverseOf);
                 $related[$this->inverseOf] = $inverseRelation->multiple ? [$model] : $model;
             }
         }
@@ -249,9 +255,10 @@ trait ActiveRelationTrait
 
             $link = array_values(isset($viaQuery) ? $viaQuery->link : $this->link);
             foreach ($primaryModels as $i => $primaryModel) {
-                if ($this->multiple && count($link) == 1 && is_array($keys = $primaryModel[reset($link)])) {
+                if ($this->multiple && count($link) === 1 && is_array($keys = $primaryModel[reset($link)])) {
                     $value = [];
                     foreach ($keys as $key) {
+<<<<<<< HEAD
 <<<<<<< HEAD
                         if (!is_scalar($key)) {
                             $key = serialize($key);
@@ -267,6 +274,13 @@ trait ActiveRelationTrait
                                 // if indexBy is set, array_merge will cause renumbering of numeric array
                                 foreach ($buckets[$key] as $bucketKey => $bucketValue) {
 >>>>>>> yiichina/master
+=======
+                        $key = $this->normalizeModelKey($key);
+                        if (isset($buckets[$key])) {
+                            if ($this->indexBy !== null) {
+                                // if indexBy is set, array_merge will cause renumbering of numeric array
+                                foreach ($buckets[$key] as $bucketKey => $bucketValue) {
+>>>>>>> master
                                     $value[$bucketKey] = $bucketValue;
                                 }
                             } else {
@@ -376,10 +390,14 @@ trait ActiveRelationTrait
 
         if (isset($map)) {
 <<<<<<< HEAD
+<<<<<<< HEAD
             foreach ($models as $i => $model) {
 =======
             foreach ($models as $model) {
 >>>>>>> yiichina/master
+=======
+            foreach ($models as $model) {
+>>>>>>> master
                 $key = $this->getModelKey($model, $linkKeys);
                 if (isset($map[$key])) {
                     foreach (array_keys($map[$key]) as $key2) {
@@ -389,10 +407,14 @@ trait ActiveRelationTrait
             }
         } else {
 <<<<<<< HEAD
+<<<<<<< HEAD
             foreach ($models as $i => $model) {
 =======
             foreach ($models as $model) {
 >>>>>>> yiichina/master
+=======
+            foreach ($models as $model) {
+>>>>>>> master
                 $key = $this->getModelKey($model, $linkKeys);
                 $buckets[$key][] = $model;
             }
@@ -481,9 +503,15 @@ trait ActiveRelationTrait
             }
         } else {
             // composite keys
+
+            // ensure keys of $this->link are prefixed the same way as $attributes
+            $prefixedLink = array_combine(
+                $attributes,
+                array_values($this->link)
+            );
             foreach ($models as $model) {
                 $v = [];
-                foreach ($this->link as $attribute => $link) {
+                foreach ($prefixedLink as $attribute => $link) {
                     $v[$attribute] = $model[$link];
                 }
                 $values[] = $v;
@@ -493,12 +521,13 @@ trait ActiveRelationTrait
     }
 
     /**
-     * @param ActiveRecord|array $model
+     * @param ActiveRecordInterface|array $model
      * @param array $attributes
      * @return string
      */
     private function getModelKey($model, $attributes)
     {
+<<<<<<< HEAD
 <<<<<<< HEAD
         if (count($attributes) > 1) {
             $key = [];
@@ -506,13 +535,30 @@ trait ActiveRelationTrait
                 $key[] = $model[$attribute];
             }
 
-            return serialize($key);
-        } else {
-            $attribute = reset($attributes);
-            $key = $model[$attribute];
-
-            return is_scalar($key) ? $key : serialize($key);
+=======
+        $key = [];
+        foreach ($attributes as $attribute) {
+            $key[] = $this->normalizeModelKey($model[$attribute]);
         }
+        if (count($key) > 1) {
+>>>>>>> master
+            return serialize($key);
+        }
+        $key = reset($key);
+        return is_scalar($key) ? $key : serialize($key);
+    }
+
+    /**
+     * @param mixed $value raw key value.
+     * @return string normalized key value.
+     */
+    private function normalizeModelKey($value)
+    {
+        if (is_object($value) && method_exists($value, '__toString')) {
+            // ensure matching to special objects, which are convertable to string, for cross-DBMS relations, for example: `|MongoId`
+            $value = $value->__toString();
+        }
+<<<<<<< HEAD
 =======
         $key = [];
         foreach ($attributes as $attribute) {
@@ -537,6 +583,9 @@ trait ActiveRelationTrait
         }
         return $value;
 >>>>>>> yiichina/master
+=======
+        return $value;
+>>>>>>> master
     }
 
     /**
@@ -553,9 +602,9 @@ trait ActiveRelationTrait
         $primaryModel = reset($primaryModels);
         if (!$primaryModel instanceof ActiveRecordInterface) {
             // when primaryModels are array of arrays (asArray case)
-            $primaryModel = new $this->modelClass;
+            $primaryModel = $this->modelClass;
         }
 
-        return $this->asArray()->all($primaryModel->getDb());
+        return $this->asArray()->all($primaryModel::getDb());
     }
 }

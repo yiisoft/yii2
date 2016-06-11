@@ -10,6 +10,7 @@ succeeded or not. If not, you may get the error messages from the [[yii\base\Mod
 
 ```php
 <<<<<<< HEAD
+<<<<<<< HEAD
 $model = new \app\models\ContactForm;
 
 // populate model attributes with user inputs
@@ -22,6 +23,14 @@ $model->load(\Yii::$app->request->post());
 // which is equivalent to the following:
 // $model->attributes = \Yii::$app->request->post('ContactForm');
 >>>>>>> yiichina/master
+=======
+$model = new \app\models\ContactForm();
+
+// populate model attributes with user inputs
+$model->load(\Yii::$app->request->post());
+// which is equivalent to the following:
+// $model->attributes = \Yii::$app->request->post('ContactForm');
+>>>>>>> master
 
 if ($model->validate()) {
     // all inputs are valid
@@ -99,13 +108,38 @@ When the `validate()` method is called, it does the following steps to perform v
 3. Use each active rule to validate each active attribute which is associated with the rule.
    The validation rules are evaluated in the order they are listed.
 <<<<<<< HEAD
+<<<<<<< HEAD
    
 =======
 
 >>>>>>> yiichina/master
+=======
+
+>>>>>>> master
 According to the above validation steps, an attribute will be validated if and only if it is
 an active attribute declared in `scenarios()` and is associated with one or multiple active rules
 declared in `rules()`.
+
+> Note: It is handy to give names to rules i.e.
+> ```php
+> public function rules()
+> {
+>     return [
+>         // ...
+>         'password' => [['password'], 'string', 'max' => 60],
+>     ];
+> }
+> ```
+>
+> You can use it in a child model:
+>
+> ```php
+> public function rules()
+> {
+>     $rules = parent::rules();
+>     unset($rules['password']);
+>     return $rules;
+> }
 
 
 ### Customizing Error Messages <span id="customizing-error-messages"></span>
@@ -154,11 +188,9 @@ on the value of another attribute you can use the [[yii\validators\Validator::wh
 to define such conditions. For example,
 
 ```php
-[
     ['state', 'required', 'when' => function($model) {
         return $model->country == 'USA';
-    }],
-]
+    }]
 ```
 
 The [[yii\validators\Validator::when|when]] property takes a PHP callable with the following signature:
@@ -177,13 +209,11 @@ the [[yii\validators\Validator::whenClient|whenClient]] property which takes a s
 function whose return value determines whether to apply the rule or not. For example,
 
 ```php
-[
     ['state', 'required', 'when' => function ($model) {
         return $model->country == 'USA';
     }, 'whenClient' => "function (attribute, value) {
         return $('#country').val() == 'USA';
-    }"],
-]
+    }"]
 ```
 
 
@@ -196,10 +226,10 @@ The following examples shows how to trim the spaces in the inputs and turn empty
 the [trim](tutorial-core-validators.md#trim) and [default](tutorial-core-validators.md#default) core validators:
 
 ```php
-[
+return [
     [['username', 'email'], 'trim'],
     [['username', 'email'], 'default'],
-]
+];
 ```
 
 You may also use the more general [filter](tutorial-core-validators.md#filter) validator to perform more complex
@@ -215,28 +245,26 @@ When input data are submitted from HTML forms, you often need to assign some def
 if they are empty. You can do so by using the [default](tutorial-core-validators.md#default) validator. For example,
 
 ```php
-[
+return [
     // set "username" and "email" as null if they are empty
     [['username', 'email'], 'default'],
 
     // set "level" to be 1 if it is empty
     ['level', 'default', 'value' => 1],
-]
+];
 ```
 
 By default, an input is considered empty if its value is an empty string, an empty array or a null.
-You may customize the default empty detection logic by configuring the the [[yii\validators\Validator::isEmpty]] property
+You may customize the default empty detection logic by configuring the [[yii\validators\Validator::isEmpty]] property
 with a PHP callable. For example,
 
 ```php
-[
     ['agree', 'required', 'isEmpty' => function ($value) {
         return empty($value);
-    }],
-]
+    }]
 ```
 
-> Note: Most validators do not handle empty inputs if their [[yii\base\Validator::skipOnEmpty]] property takes
+> Note: Most validators do not handle empty inputs if their [[yii\validators\Validator::skipOnEmpty]] property takes
   the default value true. They will simply be skipped during validation if their associated attributes receive empty
   inputs. Among the [core validators](tutorial-core-validators.md), only the `captcha`, `default`, `filter`,
   `required`, and `trim` validators will handle empty inputs.
@@ -384,7 +412,10 @@ class MyForm extends Model
 A standalone validator is a class extending [[yii\validators\Validator]] or its child class. You may implement
 its validation logic by overriding the [[yii\validators\Validator::validateAttribute()]] method. If an attribute
 fails the validation, call [[yii\base\Model::addError()]] to save the error message in the model, like you do
-with [inline validators](#inline-validators). For example,
+with [inline validators](#inline-validators).
+
+
+For example the inline validator above could be moved into new [[components/validators/CountryValidator]] class.
 
 ```php
 namespace app\components;
@@ -406,6 +437,32 @@ If you want your validator to support validating a value without a model, you sh
 [[yii\validators\Validator::validate()]]. You may also override [[yii\validators\Validator::validateValue()]]
 instead of `validateAttribute()` and `validate()` because by default the latter two methods are implemented
 by calling `validateValue()`.
+
+Below is an example of how you could use the above validator class within your model.
+
+```php
+namespace app\models;
+
+use Yii;
+use yii\base\Model;
+use app\components\validators\CountryValidator;
+
+class EntryForm extends Model
+{
+    public $name;
+    public $email;
+    public $country;
+
+    public function rules()
+    {
+        return [
+            [['name', 'email'], 'required'],
+            ['country', CountryValidator::className()],
+            ['email', 'email'],
+        ];
+    }
+}
+```
 
 
 ## Client-Side Validation <span id="client-side-validation"></span>
@@ -481,11 +538,16 @@ If you want to turn off client-side validation completely, you may configure the
 [[yii\widgets\ActiveForm::enableClientValidation]] property to be false. You may also turn off client-side
 validation of individual input fields by configuring their [[yii\widgets\ActiveField::enableClientValidation]]
 <<<<<<< HEAD
+<<<<<<< HEAD
 property to be false.
 =======
 property to be false. When `enableClientValidation` is configured at both the input field level and the form level,
 the former will take precedence.
 >>>>>>> yiichina/master
+=======
+property to be false. When `enableClientValidation` is configured at both the input field level and the form level,
+the former will take precedence.
+>>>>>>> master
 
 
 ### Implementing Client-Side Validation <span id="implementing-client-side-validation"></span>
@@ -530,7 +592,7 @@ class StatusValidator extends Validator
         $statuses = json_encode(Status::find()->select('id')->asArray()->column());
         $message = json_encode($this->message, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
         return <<<JS
-if (!$.inArray(value, $statuses)) {
+if ($.inArray(value, $statuses) === -1) {
     messages.push($message);
 }
 JS;
@@ -547,6 +609,10 @@ JS;
 >     ['status', 'in', 'range' => Status::find()->select('id')->asArray()->column()],
 > ]
 > ```
+
+> Tip: If you need to work with client validation manually i.e. dynamically add fields or do some custom UI logic, refer
+> to [Working with ActiveForm via JavaScript](https://github.com/samdark/yii2-cookbook/blob/master/book/forms-activeform-js.md)
+> in Yii 2.0 Cookbook.
 
 ### Deferred Validation <span id="deferred-validation"></span>
 
@@ -632,16 +698,39 @@ You can use AJAX-based validation in this case. It will trigger an AJAX request 
 input while keeping the same user experience as the regular client-side validation.
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 To enable AJAX validation for the whole form, you have to set the
 [[yii\widgets\ActiveForm::enableAjaxValidation]] property to be `true` and specify `id` to be a unique form identifier:
+=======
+To enable AJAX validation for a single input field, configure the [[yii\widgets\ActiveField::enableAjaxValidation|enableAjaxValidation]]
+property of that field to be true and specify a unique form `id`:
+>>>>>>> master
 
 ```php
-<?php $form = yii\widgets\ActiveForm::begin([
-    'id' => 'contact-form',
-    'enableAjaxValidation' => true,
-]); ?>
+use yii\widgets\ActiveForm;
+
+$form = ActiveForm::begin([
+    'id' => 'registration-form',
+]);
+
+echo $form->field($model, 'username', ['enableAjaxValidation' => true]);
+
+// ...
+
+ActiveForm::end();
 ```
 
+To enable AJAX validation for the whole form, configure [[yii\widgets\ActiveForm::enableAjaxValidation|enableAjaxValidation]]
+to be true at the form level:
+
+```php
+$form = ActiveForm::begin([
+    'id' => 'contact-form',
+    'enableAjaxValidation' => true,
+]);
+```
+
+<<<<<<< HEAD
 You may also turn AJAX validation on or off for individual input fields by configuring their
 [[yii\widgets\ActiveField::enableAjaxValidation]] property.
 =======
@@ -675,6 +764,10 @@ $form = ActiveForm::begin([
 > Note: When the `enableAjaxValidation` property is configured at both the input field level and the form level,
   the former will take precedence.
 >>>>>>> yiichina/master
+=======
+> Note: When the `enableAjaxValidation` property is configured at both the input field level and the form level,
+  the former will take precedence.
+>>>>>>> master
 
 You also need to prepare the server so that it can handle the AJAX validation requests.
 This can be achieved by a code snippet like the following in the controller actions:
@@ -691,3 +784,6 @@ this request by running the validation and returning the errors in JSON format.
 
 > Info: You can also use [Deferred Validation](#deferred-validation) to perform AJAX validation.
   However, the AJAX validation feature described here is more systematic and requires less coding effort.
+
+When both `enableClientValidation` and `enableAjaxValidation` are set to true, AJAX validation request will be triggered
+only after the successful client validation.

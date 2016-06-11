@@ -10,6 +10,7 @@ namespace yii\db\oci;
 use yii\base\InvalidParamException;
 use yii\db\Connection;
 use yii\db\Exception;
+use yii\db\Expression;
 
 /**
  * QueryBuilder is the query builder for Oracle databases.
@@ -24,7 +25,10 @@ class QueryBuilder extends \yii\db\QueryBuilder
      */
     public $typeMap = [
         Schema::TYPE_PK => 'NUMBER(10) NOT NULL PRIMARY KEY',
+        Schema::TYPE_UPK => 'NUMBER(10) UNSIGNED NOT NULL PRIMARY KEY',
         Schema::TYPE_BIGPK => 'NUMBER(20) NOT NULL PRIMARY KEY',
+        Schema::TYPE_UBIGPK => 'NUMBER(20) UNSIGNED NOT NULL PRIMARY KEY',
+        Schema::TYPE_CHAR => 'CHAR(1)',
         Schema::TYPE_STRING => 'VARCHAR2(255)',
         Schema::TYPE_TEXT => 'CLOB',
         Schema::TYPE_SMALLINT => 'NUMBER(5)',
@@ -161,19 +165,69 @@ EOD;
         return $sql;
     }
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+
+    /**
+     * @inheritdoc
+     */
+    public function insert($table, $columns, &$params)
+    {
+        $schema = $this->db->getSchema();
+        if (($tableSchema = $schema->getTableSchema($table)) !== null) {
+            $columnSchemas = $tableSchema->columns;
+        } else {
+            $columnSchemas = [];
+        }
+        $names = [];
+        $placeholders = [];
+        foreach ($columns as $name => $value) {
+            $names[] = $schema->quoteColumnName($name);
+            if ($value instanceof Expression) {
+                $placeholders[] = $value->expression;
+                foreach ($value->params as $n => $v) {
+                    $params[$n] = $v;
+                }
+            } else {
+                $phName = self::PARAM_PREFIX . count($params);
+                $placeholders[] = $phName;
+                $params[$phName] = !is_array($value) && isset($columnSchemas[$name]) ? $columnSchemas[$name]->dbTypecast($value) : $value;
+            }
+        }
+        if (empty($names) && $tableSchema !== null) {
+            $columns = !empty($tableSchema->primaryKey) ? $tableSchema->primaryKey : reset($tableSchema->columns)->name;
+            foreach ($columns as $name) {
+                $names[] = $schema->quoteColumnName($name);
+                $placeholders[] = 'DEFAULT';
+            }
+        }
+
+        return 'INSERT INTO ' . $schema->quoteTableName($table)
+            . (!empty($names) ? ' (' . implode(', ', $names) . ')' : '')
+            . (!empty($placeholders) ? ' VALUES (' . implode(', ', $placeholders) . ')' : ' DEFAULT VALUES');
+    }
+>>>>>>> master
 
     /**
      * Generates a batch INSERT SQL statement.
      * For example,
      *
+<<<<<<< HEAD
      * ~~~
+=======
+     * ```php
+>>>>>>> master
      * $sql = $queryBuilder->batchInsert('user', ['name', 'age'], [
      *     ['Tom', 30],
      *     ['Jane', 20],
      *     ['Linda', 25],
      * ]);
+<<<<<<< HEAD
      * ~~~
+=======
+     * ```
+>>>>>>> master
      *
      * Note that the values in each row must match the corresponding column names.
      *
@@ -219,5 +273,35 @@ EOD;
 
         return 'INSERT ALL ' . $tableAndColumns . implode($tableAndColumns, $values) . ' SELECT 1 FROM SYS.DUAL';
     }
+<<<<<<< HEAD
 >>>>>>> yiichina/master
+=======
+
+    /**
+     * @inheritdoc
+     * @since 2.0.8
+     */
+    public function selectExists($rawSql)
+    {
+        return 'SELECT CASE WHEN EXISTS(' . $rawSql . ') THEN 1 ELSE 0 END FROM DUAL';
+    }
+
+    /**
+     * @inheritdoc
+     * @since 2.0.8
+     */
+    public function dropCommentFromColumn($table, $column)
+    {
+        return 'COMMENT ON COLUMN ' . $this->db->quoteTableName($table) . '.' . $this->db->quoteColumnName($column) . " IS ''";
+    }
+
+    /**
+     * @inheritdoc
+     * @since 2.0.8
+     */
+    public function dropCommentFromTable($table)
+    {
+        return 'COMMENT ON TABLE ' . $this->db->quoteTableName($table) . " IS ''";
+    }
+>>>>>>> master
 }

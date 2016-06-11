@@ -91,7 +91,10 @@ class Serializer extends Component
     public $collectionEnvelope;
     /**
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> master
      * @var string the name of the envelope (e.g. `_links`) for returning the links objects.
      * It takes effect only, if `collectionEnvelope` is set.
      * @since 2.0.4
@@ -104,7 +107,10 @@ class Serializer extends Component
      */
     public $metaEnvelope = '_meta';
     /**
+<<<<<<< HEAD
 >>>>>>> yiichina/master
+=======
+>>>>>>> master
      * @var Request the current request. If not set, the `request` application component will be used.
      */
     public $request;
@@ -206,12 +212,17 @@ class Serializer extends Component
     {
         return [
 <<<<<<< HEAD
+<<<<<<< HEAD
             '_links' => Link::serialize($pagination->getLinks(true)),
             '_meta' => [
 =======
             $this->linksEnvelope => Link::serialize($pagination->getLinks(true)),
             $this->metaEnvelope => [
 >>>>>>> yiichina/master
+=======
+            $this->linksEnvelope => Link::serialize($pagination->getLinks(true)),
+            $this->metaEnvelope => [
+>>>>>>> master
                 'totalCount' => $pagination->totalCount,
                 'pageCount' => $pagination->getPageCount(),
                 'currentPage' => $pagination->getPage() + 1,

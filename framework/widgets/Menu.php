@@ -27,7 +27,7 @@ use yii\helpers\Html;
  *
  * The following example shows how to use Menu:
  *
- * ~~~
+ * ```php
  * echo Menu::widget([
  *     'items' => [
  *         // Important: you need to specify url as 'controller/action',
@@ -41,7 +41,7 @@ use yii\helpers\Html;
  *         ['label' => 'Login', 'url' => ['site/login'], 'visible' => Yii::$app->user->isGuest],
  *     ],
  * ]);
- * ~~~
+ * ```
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
@@ -80,10 +80,14 @@ class Menu extends Widget
      * attributes for the menu item tag. The following special options are recognized:
      *
 <<<<<<< HEAD
+<<<<<<< HEAD
      * - tag: string, defaults to "li", the tag name of the item container tags.
 =======
      * - tag: string, defaults to "li", the tag name of the item container tags. Set to false to disable container tag.
 >>>>>>> yiichina/master
+=======
+     * - tag: string, defaults to "li", the tag name of the item container tags. Set to false to disable container tag.
+>>>>>>> master
      *
      * @see \yii\helpers\Html::renderTagAttributes() for details on how attributes are being rendered.
      */
@@ -180,6 +184,10 @@ class Menu extends Widget
             $options = $this->options;
             $tag = ArrayHelper::remove($options, 'tag', 'ul');
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+
+>>>>>>> master
             echo Html::tag($tag, $this->renderItems($items), $options);
 =======
 
@@ -229,11 +237,7 @@ class Menu extends Widget
                     '{items}' => $this->renderItems($item['items']),
                 ]);
             }
-            if ($tag === false) {
-                $lines[] = $menu;
-            } else {
-                $lines[] = Html::tag($tag, $menu, $options);
-            }
+            $lines[] = Html::tag($tag, $menu, $options);
         }
 
         return implode("\n", $lines);
@@ -319,7 +323,7 @@ class Menu extends Widget
     protected function isItemActive($item)
     {
         if (isset($item['url']) && is_array($item['url']) && isset($item['url'][0])) {
-            $route = $item['url'][0];
+            $route = Yii::getAlias($item['url'][0]);
             if ($route[0] !== '/' && Yii::$app->controller) {
                 $route = Yii::$app->controller->module->getUniqueId() . '/' . $route;
             }
@@ -329,12 +333,18 @@ class Menu extends Widget
             unset($item['url']['#']);
             if (count($item['url']) > 1) {
 <<<<<<< HEAD
+<<<<<<< HEAD
                 foreach (array_splice($item['url'], 1) as $name => $value) {
 =======
                 $params = $item['url'];
                 unset($params[0]);
                 foreach ($params as $name => $value) {
 >>>>>>> yiichina/master
+=======
+                $params = $item['url'];
+                unset($params[0]);
+                foreach ($params as $name => $value) {
+>>>>>>> master
                     if ($value !== null && (!isset($this->params[$name]) || $this->params[$name] != $value)) {
                         return false;
                     }

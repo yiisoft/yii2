@@ -30,20 +30,28 @@ Se hai già familiarità con altri framework potrai apprezzare questi punti in c
 - Le prestazioni elevate sono sempre il focus primario di Yii.
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 Yii non è frutto di un uomo solo, ma è supportato da un [folto gruppo di sviluppatori][], così come da una numerosa
 =======
 Yii non è frutto di un uomo solo, ma è supportato da un [folto gruppo di sviluppatori][about_yii], così come da una numerosa
 >>>>>>> yiichina/master
+=======
+Yii non è frutto di un uomo solo, ma è supportato da un [folto gruppo di sviluppatori][about_yii], così come da una numerosa
+>>>>>>> master
 comunità di professionisti che contribuiscono costantemente allo sviluppo. Il gruppo di sviluppatori tiene sempre 
 sott'occhio le ultime tendenze e tecnologie di sviluppo web, sulle pratiche ottimali e funzionalità degli altri
 framework e progetti. Le peculiarità più rilevanti che si trovano altrove sono regolarmente incorporate nel
 codice principale del framework, e rese disponibili tramite semplici ed eleganti interfacce.
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 [folto gruppo di sviluppatori]: http://www.yiiframework.com/about/
 =======
 [about_yii]: http://www.yiiframework.com/about/
 >>>>>>> yiichina/master
+=======
+[about_yii]: http://www.yiiframework.com/about/
+>>>>>>> master
 
 Versioni di Yii
 ---------------

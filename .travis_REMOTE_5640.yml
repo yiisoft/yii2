@@ -1,0 +1,65 @@
+language: php
+
+php:
+  - 5.4
+  - 5.5
+  - 5.6
+  - 7.0
+  - hhvm
+
+env:
+  - CUBRID_VERSION=9.3.0/CUBRID-9.3.0.0206 CUBRID_PDO_VERSION=9.3.0.0001
+
+services:
+  - memcached
+
+# faster builds on new travis setup not using sudo
+sudo: false
+
+# cache vendor dirs
+cache:
+  directories:
+#    - cubrid/9.3.0
+    - vendor
+    - $HOME/.composer/cache
+
+# try running against postgres 9.3
+addons:
+  postgresql: "9.3"
+
+install:
+  - travis_retry composer self-update && composer --version
+  - travis_retry composer global require "fxp/composer-asset-plugin:~1.1.1"
+  - export PATH="$HOME/.composer/vendor/bin:$PATH"
+# core framework:
+  - travis_retry composer install --prefer-dist --no-interaction
+  - tests/data/travis/apc-setup.sh
+  - tests/data/travis/memcache-setup.sh
+#  - tests/data/travis/cubrid-setup.sh
+
+before_script:
+  # show some versions and env information
+  - php -r "echo INTL_ICU_VERSION . \"\n\";"
+  - php -r "echo INTL_ICU_DATA_VERSION . \"\n\";"
+  - mysql --version
+  - psql --version
+
+  # initialize databases
+  - mysql -e 'CREATE DATABASE yiitest;';
+  - psql -U postgres -c 'CREATE DATABASE yiitest;';
+
+  - |
+    if [ $TRAVIS_PHP_VERSION = '5.6' ]; then
+      PHPUNIT_FLAGS="--coverage-clover=coverage.clover"
+    fi
+
+
+script:
+  - vendor/bin/phpunit --verbose $PHPUNIT_FLAGS --exclude-group mssql,oci,wincache,xcache,zenddata,cubrid
+
+after_script:
+  - |
+    if [ $TRAVIS_PHP_VERSION = '5.6' ]; then
+      travis_retry wget https://scrutinizer-ci.com/ocular.phar
+      php ocular.phar code-coverage:upload --format=php-clover coverage.clover
+    fi

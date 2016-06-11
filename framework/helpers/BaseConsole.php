@@ -7,7 +7,7 @@
 
 namespace yii\helpers;
 
-use yii\console\Markdown;
+use yii\console\Markdown as ConsoleMarkdown;
 
 /**
  * BaseConsole provides concrete implementation for [[Console]].
@@ -19,6 +19,7 @@ use yii\console\Markdown;
  */
 class BaseConsole
 {
+    // foreground color control codes
     const FG_BLACK  = 30;
     const FG_RED    = 31;
     const FG_GREEN  = 32;
@@ -27,7 +28,7 @@ class BaseConsole
     const FG_PURPLE = 35;
     const FG_CYAN   = 36;
     const FG_GREY   = 37;
-
+    // background color control codes
     const BG_BLACK  = 40;
     const BG_RED    = 41;
     const BG_GREEN  = 42;
@@ -36,7 +37,7 @@ class BaseConsole
     const BG_PURPLE = 45;
     const BG_CYAN   = 46;
     const BG_GREY   = 47;
-
+    // fonts style control codes
     const RESET       = 0;
     const NORMAL      = 0;
     const BOLD        = 1;
@@ -130,7 +131,7 @@ class BaseConsole
      */
     public static function scrollUp($lines = 1)
     {
-        echo "\033[" . (int) $lines . "S";
+        echo "\033[" . (int) $lines . 'S';
     }
 
     /**
@@ -140,7 +141,7 @@ class BaseConsole
      */
     public static function scrollDown($lines = 1)
     {
-        echo "\033[" . (int) $lines . "T";
+        echo "\033[" . (int) $lines . 'T';
     }
 
     /**
@@ -287,7 +288,7 @@ class BaseConsole
     {
         $code = implode(';', $format);
 
-        return "\033[0m" . ($code !== '' ? "\033[" . $code . "m" : '') . $string . "\033[0m";
+        return "\033[0m" . ($code !== '' ? "\033[" . $code . 'm' : '') . $string . "\033[0m";
     }
 
     /**
@@ -334,7 +335,8 @@ class BaseConsole
      * @param string $string the string to measure
      * @return integer the length of the string not counting ANSI format characters
      */
-    public static function ansiStrlen($string) {
+    public static function ansiStrlen($string)
+    {
         return mb_strlen(static::stripAnsiFormat($string));
     }
 
@@ -401,7 +403,7 @@ class BaseConsole
                 }
 
                 $return = '';
-                while($reset && $tags > 0) {
+                while ($reset && $tags > 0) {
                     $return .= '</span>';
                     $tags--;
                 }
@@ -433,7 +435,7 @@ class BaseConsole
                 }
 
                 $styleString = '';
-                foreach($currentStyle as $name => $value) {
+                foreach ($currentStyle as $name => $value) {
                     if (is_array($value)) {
                         $value = implode(' ', $value);
                     }
@@ -444,7 +446,7 @@ class BaseConsole
             },
             $string
         );
-        while($tags > 0) {
+        while ($tags > 0) {
             $result .= '</span>';
             $tags--;
         }
@@ -453,12 +455,12 @@ class BaseConsole
 
     /**
      * Converts Markdown to be better readable in console environments by applying some ANSI format
-     * @param string $markdown
-     * @return string
+     * @param string $markdown the markdown string.
+     * @return string the parsed result as ANSI formatted string.
      */
     public static function markdownToAnsi($markdown)
     {
-        $parser = new Markdown();
+        $parser = new ConsoleMarkdown();
         return $parser->parse($markdown);
     }
 
@@ -579,18 +581,18 @@ class BaseConsole
      */
     public static function streamSupportsAnsiColors($stream)
     {
-        return DIRECTORY_SEPARATOR == '\\'
+        return DIRECTORY_SEPARATOR === '\\'
             ? getenv('ANSICON') !== false || getenv('ConEmuANSI') === 'ON'
             : function_exists('posix_isatty') && @posix_isatty($stream);
     }
 
     /**
      * Returns true if the console is running on windows
-     * @return bool
+     * @return boolean
      */
     public static function isRunningOnWindows()
     {
-        return DIRECTORY_SEPARATOR == '\\';
+        return DIRECTORY_SEPARATOR === '\\';
     }
 
     /**
@@ -612,11 +614,16 @@ class BaseConsole
             $output = [];
             exec('mode con', $output);
 <<<<<<< HEAD
+<<<<<<< HEAD
             if (isset($output) && strpos($output[1], 'CON') !== false) {
 =======
             if (isset($output, $output[1]) && strpos($output[1], 'CON') !== false) {
 >>>>>>> yiichina/master
                 return $size = [(int) preg_replace('~[^0-9]~', '', $output[3]), (int) preg_replace('~[^0-9]~', '', $output[4])];
+=======
+            if (isset($output, $output[1]) && strpos($output[1], 'CON') !== false) {
+                return $size = [(int) preg_replace('~\D~', '', $output[3]), (int) preg_replace('~\D~', '', $output[4])];
+>>>>>>> master
             }
         } else {
             // try stty if available
@@ -659,10 +666,14 @@ class BaseConsole
      * This will be passed to [[getScreenSize()]].
      * @return string the wrapped text.
 <<<<<<< HEAD
+<<<<<<< HEAD
      * @since 2.0.3
 =======
      * @since 2.0.4
 >>>>>>> yiichina/master
+=======
+     * @since 2.0.4
+>>>>>>> master
      */
     public static function wrapText($text, $indent = 0, $refresh = false)
     {
@@ -673,7 +684,7 @@ class BaseConsole
         $pad = str_repeat(' ', $indent);
         $lines = explode("\n", wordwrap($text, $size[0] - $indent, "\n", true));
         $first = true;
-        foreach($lines as $i => $line) {
+        foreach ($lines as $i => $line) {
             if ($first) {
                 $first = false;
                 continue;
@@ -698,7 +709,7 @@ class BaseConsole
      * Prints a string to STDOUT.
      *
      * @param string $string the string to print
-     * @return int|boolean Number of bytes printed or false on error
+     * @return integer|boolean Number of bytes printed or false on error
      */
     public static function stdout($string)
     {
@@ -709,7 +720,7 @@ class BaseConsole
      * Prints a string to STDERR.
      *
      * @param string $string the string to print
-     * @return int|boolean Number of bytes printed or false on error
+     * @return integer|boolean Number of bytes printed or false on error
      */
     public static function stderr($string)
     {
@@ -788,7 +799,7 @@ class BaseConsole
             ? static::input("$text [" . $options['default'] . '] ')
             : static::input("$text ");
 
-        if (!strlen($input)) {
+        if ($input === '') {
             if (isset($options['default'])) {
                 $input = $options['default'];
             } elseif ($options['required']) {
@@ -825,11 +836,11 @@ class BaseConsole
                 return $default;
             }
 
-            if (!strcasecmp ($input, 'y') || !strcasecmp ($input, 'yes') ) {
+            if (!strcasecmp($input, 'y') || !strcasecmp($input, 'yes')) {
                 return true;
             }
 
-            if (!strcasecmp ($input, 'n') || !strcasecmp ($input, 'no') ) {
+            if (!strcasecmp($input, 'n') || !strcasecmp($input, 'no')) {
                 return false;
             }
         }
@@ -847,13 +858,13 @@ class BaseConsole
     public static function select($prompt, $options = [])
     {
         top:
-        static::stdout("$prompt [" . implode(',', array_keys($options)) . ",?]: ");
+        static::stdout("$prompt [" . implode(',', array_keys($options)) . ',?]: ');
         $input = static::stdin();
         if ($input === '?') {
             foreach ($options as $key => $value) {
                 static::output(" $key - $value");
             }
-            static::output(" ? - Show help");
+            static::output(' ? - Show help');
             goto top;
         } elseif (!array_key_exists($input, $options)) {
             goto top;
@@ -865,6 +876,9 @@ class BaseConsole
     private static $_progressStart;
     private static $_progressWidth;
     private static $_progressPrefix;
+    private static $_progressEta;
+    private static $_progressEtaLastDone = 0;
+    private static $_progressEtaLastUpdate;
 
     /**
      * Starts display of a progress bar on screen.
@@ -910,6 +924,9 @@ class BaseConsole
         self::$_progressStart = time();
         self::$_progressWidth = $width;
         self::$_progressPrefix = $prefix;
+        self::$_progressEta = null;
+        self::$_progressEtaLastDone = 0;
+        self::$_progressEtaLastUpdate = time();
 
         static::updateProgress($done, $total);
     }
@@ -948,13 +965,24 @@ class BaseConsole
         $width -= static::ansiStrlen($prefix);
 
         $percent = ($total == 0) ? 1 : $done / $total;
-        $info = sprintf("%d%% (%d/%d)", $percent * 100, $done, $total);
+        $info = sprintf('%d%% (%d/%d)', $percent * 100, $done, $total);
 
         if ($done > $total || $done == 0) {
-            $info .= ' ETA: n/a';
+            self::$_progressEta = null;
+            self::$_progressEtaLastUpdate = time();
         } elseif ($done < $total) {
-            $rate = (time() - self::$_progressStart) / $done;
-            $info .= sprintf(' ETA: %d sec.', $rate * ($total - $done));
+            // update ETA once per second to avoid flapping
+            if (time() - self::$_progressEtaLastUpdate > 1 && $done > self::$_progressEtaLastDone) {
+                $rate = (time() - (self::$_progressEtaLastUpdate ?: self::$_progressStart)) / ($done - self::$_progressEtaLastDone);
+                self::$_progressEta = $rate * ($total - $done);
+                self::$_progressEtaLastUpdate = time();
+                self::$_progressEtaLastDone = $done;
+            }
+        }
+        if (self::$_progressEta === null) {
+            $info .= ' ETA: n/a';
+        } else {
+            $info .= sprintf(' ETA: %d sec.', self::$_progressEta);
         }
 
         $width -= 3 + static::ansiStrlen($info);
@@ -968,10 +996,10 @@ class BaseConsole
                 $percent = 1;
             }
             $bar = floor($percent * $width);
-            $status = str_repeat("=", $bar);
+            $status = str_repeat('=', $bar);
             if ($bar < $width) {
-                $status .= ">";
-                $status .= str_repeat(" ", $width - $bar - 1);
+                $status .= '>';
+                $status .= str_repeat(' ', $width - $bar - 1);
             }
             static::stdout("\r$prefix" . "[$status] $info");
         }
@@ -1004,5 +1032,8 @@ class BaseConsole
         self::$_progressStart = null;
         self::$_progressWidth = null;
         self::$_progressPrefix = '';
+        self::$_progressEta = null;
+        self::$_progressEtaLastDone = 0;
+        self::$_progressEtaLastUpdate = null;
     }
 }

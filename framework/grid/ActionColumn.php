@@ -33,6 +33,10 @@ use yii\helpers\Url;
 class ActionColumn extends Column
 {
     /**
+     * @inheritdoc
+     */
+    public $headerOptions = ['class' => 'action-column'];
+    /**
      * @var string the ID of the controller that should handle the actions specified here.
      * If not set, it will use the currently active controller. This property is mainly used by
      * [[urlCreator]] to create URLs for different actions. The value of this property will be prefixed
@@ -48,7 +52,7 @@ class ActionColumn extends Column
      *
      * As an example, to only have the view, and update button you can add the ActionColumn to your GridView columns as follows:
      *
-     * ```
+     * ```php
      * ['class' => 'yii\grid\ActionColumn', 'template' => '{view} {update}'],
      * ```
      *
@@ -76,11 +80,32 @@ class ActionColumn extends Column
      * [
      *     'update' => function ($url, $model, $key) {
      *         return $model->status === 'editable' ? Html::a('Update', $url) : '';
-     *     };
+     *     },
      * ],
      * ```
      */
     public $buttons = [];
+    /** @var array visibility conditions for each button. The array keys are the button names (without curly brackets),
+     * and the values are the boolean true/false or the anonymous function. When the button name is not specified in
+     * this array it will be shown by default.
+     * The callbacks must use the following signature:
+     *
+     * ```php
+     * function ($model, $key, $index) {
+     *     return $model->status === 'editable';
+     * }
+     * ```
+     *
+     * Or you can pass a boolean value:
+     *
+     * ```php
+     * [
+     *     'update' => \Yii::$app->user->can('update'),
+     * ],
+     * ```
+     * @since 2.0.7
+     */
+    public $visibleButtons = [];
     /**
      * @var callable a callback that creates a button URL using the specified model information.
      * The signature of the callback should be the same as that of [[createUrl()]].
@@ -111,9 +136,15 @@ class ActionColumn extends Column
         if (!isset($this->buttons['view'])) {
             $this->buttons['view'] = function ($url, $model, $key) {
 <<<<<<< HEAD
+<<<<<<< HEAD
                 return Html::a('<span class="glyphicon glyphicon-eye-open"></span>', $url, array_merge([
+=======
+                $options = array_merge([
+>>>>>>> master
                     'title' => Yii::t('yii', 'View'),
+                    'aria-label' => Yii::t('yii', 'View'),
                     'data-pjax' => '0',
+<<<<<<< HEAD
                 ], $this->buttonOptions));
 =======
                 $options = array_merge([
@@ -123,14 +154,24 @@ class ActionColumn extends Column
                 ], $this->buttonOptions);
                 return Html::a('<span class="glyphicon glyphicon-eye-open"></span>', $url, $options);
 >>>>>>> yiichina/master
+=======
+                ], $this->buttonOptions);
+                return Html::a('<span class="glyphicon glyphicon-eye-open"></span>', $url, $options);
+>>>>>>> master
             };
         }
         if (!isset($this->buttons['update'])) {
             $this->buttons['update'] = function ($url, $model, $key) {
 <<<<<<< HEAD
+<<<<<<< HEAD
                 return Html::a('<span class="glyphicon glyphicon-pencil"></span>', $url, array_merge([
+=======
+                $options = array_merge([
+>>>>>>> master
                     'title' => Yii::t('yii', 'Update'),
+                    'aria-label' => Yii::t('yii', 'Update'),
                     'data-pjax' => '0',
+<<<<<<< HEAD
                 ], $this->buttonOptions));
 =======
                 $options = array_merge([
@@ -140,16 +181,26 @@ class ActionColumn extends Column
                 ], $this->buttonOptions);
                 return Html::a('<span class="glyphicon glyphicon-pencil"></span>', $url, $options);
 >>>>>>> yiichina/master
+=======
+                ], $this->buttonOptions);
+                return Html::a('<span class="glyphicon glyphicon-pencil"></span>', $url, $options);
+>>>>>>> master
             };
         }
         if (!isset($this->buttons['delete'])) {
             $this->buttons['delete'] = function ($url, $model, $key) {
 <<<<<<< HEAD
+<<<<<<< HEAD
                 return Html::a('<span class="glyphicon glyphicon-trash"></span>', $url, array_merge([
+=======
+                $options = array_merge([
+>>>>>>> master
                     'title' => Yii::t('yii', 'Delete'),
+                    'aria-label' => Yii::t('yii', 'Delete'),
                     'data-confirm' => Yii::t('yii', 'Are you sure you want to delete this item?'),
                     'data-method' => 'post',
                     'data-pjax' => '0',
+<<<<<<< HEAD
                 ], $this->buttonOptions));
 =======
                 $options = array_merge([
@@ -161,6 +212,10 @@ class ActionColumn extends Column
                 ], $this->buttonOptions);
                 return Html::a('<span class="glyphicon glyphicon-trash"></span>', $url, $options);
 >>>>>>> yiichina/master
+=======
+                ], $this->buttonOptions);
+                return Html::a('<span class="glyphicon glyphicon-trash"></span>', $url, $options);
+>>>>>>> master
             };
         }
     }
@@ -176,7 +231,7 @@ class ActionColumn extends Column
      */
     public function createUrl($action, $model, $key, $index)
     {
-        if ($this->urlCreator instanceof Closure) {
+        if (is_callable($this->urlCreator)) {
             return call_user_func($this->urlCreator, $action, $model, $key, $index);
         } else {
             $params = is_array($key) ? $key : ['id' => (string) $key];
@@ -193,9 +248,17 @@ class ActionColumn extends Column
     {
         return preg_replace_callback('/\\{([\w\-\/]+)\\}/', function ($matches) use ($model, $key, $index) {
             $name = $matches[1];
-            if (isset($this->buttons[$name])) {
-                $url = $this->createUrl($name, $model, $key, $index);
 
+            if (isset($this->visibleButtons[$name])) {
+                $isVisible = $this->visibleButtons[$name] instanceof \Closure
+                    ? call_user_func($this->visibleButtons[$name], $model, $key, $index)
+                    : $this->visibleButtons[$name];
+            } else {
+                $isVisible = true;
+            }
+
+            if ($isVisible && isset($this->buttons[$name])) {
+                $url = $this->createUrl($name, $model, $key, $index);
                 return call_user_func($this->buttons[$name], $url, $model, $key);
             } else {
                 return '';

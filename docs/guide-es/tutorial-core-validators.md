@@ -1,7 +1,7 @@
-Validadores del núcleo
-======================
+Validadores del framework
+=========================
 
-Yii provee en el núcleo un conjunto de validadores de uso común, que se pueden encontrar principalmente bajo el espacio de nombres (namespace) `yii\validators`.
+Yii provee en su núcleo un conjunto de validadores de uso común, que se pueden encontrar principalmente bajo el espacio de nombres (namespace) `yii\validators`.
 En vez de utilizar interminables nombres de clases para los validadores, puedes usar *alias* para especificar el uso de esos validadores del núcleo. Por ejemplo, puedes usar el alias `required` para referirte a la clase [[yii\validators\RequiredValidator]] :
 
 ```php
@@ -37,7 +37,7 @@ Este validador comprueba si el valor de la entrada (input) es booleano.
 - `strict`: Si el tipo del valor de la entrada (input) debe corresponder con `trueValue` y `falseValue`. Valor por defecto a `false`.
 
 
-> Nota: Ya que los datos enviados con la entrada, vía formularios HTML,son todos cadenas (strings), usted debe normalmente dejar la propiedad  [[yii\validators\BooleanValidator::strict|strict]] a false.
+> Note: Ya que los datos enviados con la entrada, vía formularios HTML,son todos cadenas (strings), usted debe normalmente dejar la propiedad  [[yii\validators\BooleanValidator::strict|strict]] a false.
 
 
 ## [[yii\captcha\CaptchaValidator|captcha]] <span id="captcha"></span>

@@ -1,15 +1,16 @@
 ファイルをアップロードする
 ==========================
 
-Yii におけるファイルのアップロードは、フォームモデル、その検証規則、そして、いくらかのコントローラコードによって行われます。
-アップロードを適切に処理するために何が必要とされるのか、見ていきましよう。
+Yii におけるファイルのアップロードは、通常、アップロードされる個々のファイルを `UploadedFile` としてカプセル化する [[yii\web\UploadedFile]] の助けを借りて実行されます。
+これを [[yii\widgets\ActiveForm]] および [モデル](structure-models.md) と組み合わせることで、安全なファイルアップロードメカニズムを簡単に実装することが出来ます。
 
 
-一つのファイルをアップロードする
---------------------------------
+## モデルを作成する <span id="creating-models"></span>
 
-まず最初に、ファイルのアップロードを処理するモデルを作成する必要があります。
-次の内容を持つ `models/UploadForm.php` を作成してください。
+プレーンなテキストインプットを扱うのと同じように、一つのファイルをアップロードするためには、モデルクラスを作成して、そのモデルの一つの属性を使ってアップロードされるファイルのインスタンスを保持します。
+また、ファイルのアップロードを検証するために、検証規則も宣言しなければなりません。
+例えば、
+
 
 ```php
 namespace app\models;
@@ -17,34 +18,49 @@ namespace app\models;
 use yii\base\Model;
 use yii\web\UploadedFile;
 
-/**
- * UploadForm : アップロードのフォームの背後にあるモデル
- */
 class UploadForm extends Model
 {
     /**
-     * @var UploadedFile file 属性
+     * @var UploadedFile
      */
-    public $file;
+    public $imageFile;
 
-    /**
-     * @return array 検証規則
-     */
     public function rules()
     {
         return [
-            [['file'], 'file'],
+            [['imageFile'], 'file', 'skipOnEmpty' => false, 'extensions' => 'png, jpg'],
         ];
+    }
+    
+    public function upload()
+    {
+        if ($this->validate()) {
+            $this->imageFile->saveAs('uploads/' . $this->imageFile->baseName . '.' . $this->imageFile->extension);
+            return true;
+        } else {
+            return false;
+        }
     }
 }
 ```
 
+上記のコードにおいては、`imageFile` 属性がアップロードされたファイルのインスタンスを保持するのに使われます。
+この属性が関連付けられている `file` 検証規則は、[[yii\validators\FileValidator]] を使って、`png` または `jpg` の拡張子を持つファイルがアップロードされることを保証しています。
+`upload()` メソッドは検証を実行して、アップロードされたファイルをサーバに保存します。
+
+`file` バリデータによって、ファイル拡張子、サイズ、MIME タイプなどをチェックすることが出来ます。
+詳細については、[コアバリデータ](tutorial-core-validators.md#file) の節を参照してください。
+
+> Tip: 画像をアップロードしようとする場合は、`image` バリデータを代りに使うことを考慮しても構いません。
+`image` バリデータは [[yii\validators\ImageValidator]] によって実装されており、属性が有効な画像、すなわち、保存したり [Imagine エクステンション](https://github.com/yiisoft/yii2-imagine) を使って処理したりすることが可能な有効な画像を、受け取ったかどうかを検証します。
+
+
 上記のコードにおいて作成した `UploadForm` というモデルは、HTML フォームで `<input type="file">` となる `$file` という属性を持ちます。
 この属性は [[yii\validators\FileValidator|FileValidator]] を使用する `file` という検証規則を持ちます。
 
-### フォームのビュー
+## ファイルインプットをレンダリングする <span id="rendering-file-input"></span>
 
-次に、フォームを表示するビューを作成します。
+次に、ビューでファイルインプットを作成します。
 
 ```php
 <?php
@@ -53,19 +69,22 @@ use yii\widgets\ActiveForm;
 
 <?php $form = ActiveForm::begin(['options' => ['enctype' => 'multipart/form-data']]) ?>
 
-<?= $form->field($model, 'file')->fileInput() ?>
+    <?= $form->field($model, 'imageFile')->fileInput() ?>
 
-<button>送信</button>
+    <button>送信</button>
 
 <?php ActiveForm::end() ?>
 ```
 
-ファイルのアップロードを可能にする `'enctype' => 'multipart/form-data'` は不可欠です。
-`fileInput()` がフォームの入力フィールドを表します。
+ファイルが正しくアップロードされるように、フォームに `enctype` オプションを追加することを憶えておくのは重要なことです。
+`fileInput()` を呼ぶと `<input type="file">` のタグがレンダリングされて、ユーザがアップロードするファイルを選ぶことが出来るようになります。
 
-### コントローラ
+> Tip: バージョン 2.0.8 以降では、ファイルインプットのフィールドが使われているときは、[[yii\web\widgets\ActiveField::fileInput|fileInput]] がフォームに `enctype` オプションを自動的に追加します。
 
-そして、フォームとモデルを結び付けるコントローラを作成します。
+
+## 繋ぎ合せる <span id="wiring-up"></span>
+
+そして、コントローラアクションの中で、モデルとビューを繋ぎ合せるコードを書いて、ファイルのアップロードを実装します。
 
 ```php
 namespace app\controllers;
@@ -82,10 +101,10 @@ class SiteController extends Controller
         $model = new UploadForm();
 
         if (Yii::$app->request->isPost) {
-            $model->file = UploadedFile::getInstance($model, 'file');
-
-            if ($model->file && $model->validate()) {                
-                $model->file->saveAs('uploads/' . $model->file->baseName . '.' . $model->file->extension);
+            $model->imageFile = UploadedFile::getInstance($model, 'imageFile');
+            if ($model->upload()) {
+                // ファイルのアップロードが成功
+                return;
             }
         }
 
@@ -94,6 +113,7 @@ class SiteController extends Controller
 }
 ```
 
+<<<<<<< HEAD
 `model->load(...)` の代りに `UploadedFile::getInstance(...)` を使っています。
 [[\yii\web\UploadedFile|UploadedFile]] はモデルの検証を実行せず、アップロードされたファイルに関する情報を提供するだけです。
 そのため、`$model->validate()` を手作業で実行して、[[yii\validators\FileValidator|FileValidator]] を起動する必要があります。
@@ -139,27 +159,23 @@ public function rules()
 ```
 
 ### MIME タイプ
+=======
+上記のコードでは、フォームが送信されると [[yii\web\UploadedFile::getInstance()]] メソッドが呼ばれて、アップロードされたファイルが `UploadedFile` のインスタンスとして表現されます。
+そして、次に、モデルの検証によってアップロードされたファイルが有効なものであることを確かめ、サーバにファイルを保存します。
+>>>>>>> master
 
-アップロードされるファイルのタイプを検証することは賢明なことです。
-`FileValidator` はこの目的のための `extensions` プロパティを持っています。
 
-```php
-public function rules()
-{
-    return [
-        [['file'], 'file', 'extensions' => 'gif, jpg'],
-    ];
-}
-```
+## 複数のファイルをアップロードする <span id="uploading-multiple-files"></span>
 
-デフォルトでは、ファイルのコンテントの MIME タイプが指定された拡張子に対応するものであるかどうかが検証されます。
-例えば、`gif` に対しては `image/gif`、`jpg` に対しては `image/jpeg` であるかどうかが検証されます。
+ここまでの項で示したコードに若干の修正を加えれば、複数のファイルを一度にアップロードすることも出来ます。
 
-MIME タイプの中には、`file` バリデータによって使われている PHP fileinfo 拡張では適切に検知することが出来ないものがあることに注意してください。
-例えば、`csv` ファイルは `text/csv` ではなく `text/plain` として検知されます。
-このような振る舞いを避けるために、`checkExtensionByMimeType` を `false` に設定して、MIME タイプを手動で指定することが出来ます。
+最初に、モデルクラスを修正して、`file` 検証規則に `maxFiles` オプションを追加して、アップロードを許可されるファイルの最大数を制限しなければなりません。
+`maxFiles` を `0` に設定することは、同時にアップロード出来るファイル数に制限がないことを意味します。
+同時にアップロードすることを許されるファイルの数は、また、PHP のディレクティブ [`max_file_uploads`](http://php.net/manual/ja/ini.core.php#ini.max-file-uploads) (デフォルト値は 20) によっても制限されます。
+`upload()` メソッドも、アップロードされた複数のファイルを一つずつ保存するように修正しなければなりません。
 
 ```php
+<<<<<<< HEAD
 public function rules()
 {
     return [
@@ -182,54 +198,58 @@ public function rules()
 
 複数のファイルをアップロードする
 --------------------------------
+=======
+namespace app\models;
+>>>>>>> master
 
-複数のファイルを一度にアップロードする必要がある場合は、少し修正が必要になります。
- 
-モデル:
+use yii\base\Model;
+use yii\web\UploadedFile;
 
-```php
 class UploadForm extends Model
 {
     /**
-     * @var UploadedFile|Null ファイル属性
+     * @var UploadedFile[]
      */
-    public $file;
+    public $imageFiles;
 
-    /**
-     * @return array 検証規則
-     */
     public function rules()
     {
         return [
-            [['file'], 'file', 'maxFiles' => 10], // <--- ここ !
+            [['imageFiles'], 'file', 'skipOnEmpty' => false, 'extensions' => 'png, jpg', 'maxFiles' => 4],
         ];
+    }
+    
+    public function upload()
+    {
+        if ($this->validate()) { 
+            foreach ($this->imageFiles as $file) {
+                $file->saveAs('uploads/' . $file->baseName . '.' . $file->extension);
+            }
+            return true;
+        } else {
+            return false;
+        }
     }
 }
 ```
 
-ビュー:
+ビューファイルでは、`fileInput()` の呼び出しに `multiple` オプションを追加して、ファイルアップロードのフィールドが複数のファイルを受け取ることが出来るようにしなければなりません。
 
 ```php
 <?php
 use yii\widgets\ActiveForm;
-
-$form = ActiveForm::begin(['options' => ['enctype' => 'multipart/form-data']]);
 ?>
 
-<?= $form->field($model, 'file[]')->fileInput(['multiple' => true]) ?>
+<?php $form = ActiveForm::begin(['options' => ['enctype' => 'multipart/form-data']]) ?>
+
+    <?= $form->field($model, 'imageFiles[]')->fileInput(['multiple' => true, 'accept' => 'image/*']) ?>
 
     <button>送信</button>
 
-<?php ActiveForm::end(); ?>
+<?php ActiveForm::end() ?>
 ```
 
-違いがあるのは、次の行です。
-
-```php
-<?= $form->field($model, 'file[]')->fileInput(['multiple' => true]) ?>
-```
-
-コントローラ:
+そして、最後に、コントローラアクションの中では、`UploadedFile::getInstance()` の代りに `UploadedFile::getInstances()` を呼んで、`UploadedFile` インスタンスの配列を `UploadForm::imageFiles` に代入しなければなりません。
 
 ```php
 namespace app\controllers;
@@ -246,12 +266,10 @@ class SiteController extends Controller
         $model = new UploadForm();
 
         if (Yii::$app->request->isPost) {
-            $model->file = UploadedFile::getInstances($model, 'file');
-            
-            if ($model->file && $model->validate()) {
-                foreach ($model->file as $file) {
-                    $file->saveAs('uploads/' . $file->baseName . '.' . $file->extension);
-                }
+            $model->imageFiles = UploadedFile::getInstances($model, 'imageFiles');
+            if ($model->upload()) {
+                // ファイルのアップロードが成功
+                return;
             }
         }
 
@@ -259,8 +277,3 @@ class SiteController extends Controller
     }
 }
 ```
-
-単一のファイルのアップロードとは、二つの点で異なります。
-最初の違いは、`UploadedFile::getInstance($model, 'file');` の代りに `UploadedFile::getInstances($model, 'file');` が使用されることです。
-前者が一つのインスタンスを返すだけなのに対して、後者はアップロードされた **全ての** ファイルのインスタンスを返します。
-第二の違いは、`foreach` によって、全てのファイルをそれぞれ保存している点です。

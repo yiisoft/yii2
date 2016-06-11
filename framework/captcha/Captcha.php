@@ -50,7 +50,7 @@ use yii\widgets\InputWidget;
  * method, for example like this:
  *
  * ```php
- * <?= $form->field($model, 'captcha')->widget(\yii\widgets\Captcha::classname(), [
+ * <?= $form->field($model, 'captcha')->widget(\yii\captcha\Captcha::classname(), [
  *     // configure additional widget properties here
  * ]) ?>
  * ```
@@ -91,7 +91,7 @@ class Captcha extends InputWidget
     {
         parent::init();
 
-        $this->checkRequirements();
+        static::checkRequirements();
 
         if (!isset($this->imageOptions['id'])) {
             $this->imageOptions['id'] = $this->options['id'] . '-image';
@@ -129,10 +129,14 @@ class Captcha extends InputWidget
     {
         $options = $this->getClientOptions();
 <<<<<<< HEAD
+<<<<<<< HEAD
         $options = empty($options) ? '' : Json::encode($options);
 =======
         $options = empty($options) ? '' : Json::htmlEncode($options);
 >>>>>>> yiichina/master
+=======
+        $options = empty($options) ? '' : Json::htmlEncode($options);
+>>>>>>> master
         $id = $this->imageOptions['id'];
         $view = $this->getView();
         CaptchaAsset::register($view);
@@ -154,7 +158,7 @@ class Captcha extends InputWidget
 
         $options = [
             'refreshUrl' => Url::toRoute($route),
-            'hashKey' => "yiiCaptcha/{$route[0]}",
+            'hashKey' => 'yiiCaptcha/' . trim($route[0], '/'),
         ];
 
         return $options;
@@ -169,9 +173,8 @@ class Captcha extends InputWidget
     public static function checkRequirements()
     {
         if (extension_loaded('imagick')) {
-            $imagick = new \Imagick();
-            $imagickFormats = $imagick->queryFormats('PNG');
-            if (in_array('PNG', $imagickFormats)) {
+            $imagickFormats = (new \Imagick())->queryFormats('PNG');
+            if (in_array('PNG', $imagickFormats, true)) {
                 return 'imagick';
             }
         }

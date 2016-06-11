@@ -2,22 +2,65 @@
 ====
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 > Note|注意: この節はまだ執筆中です。
+=======
+認証は、ユーザが誰であるかを確認するプロセスです。
+通常は、識別子 (ユーザ名やメールアドレスなど) と秘密のトークン (パスワードやアクセストークンなど) を使って、ユーザがそうであると主張する通りのユーザであるか否かを判断します。
+認証がログイン機能の基礎となります。
+>>>>>>> master
 
-認証はユーザが誰であるかを確認する行為であり、ログインプロセスの基礎となるものです。
-典型的には、認証は、識別子 (ユーザ名またはメールアドレス) とパスワードの組み合わせを使用します。
-ユーザはこれらの値をフォームを通じて送信し、アプリケーションは送信された情報を以前に (例えば、ユーザ登録時に) 保存された情報と比較します。
+Yii はさまざまなコンポーネントを結び付けてログインをサポートする認証フレームワークを提供しています。
+このフレームワークを使用するために、あなたは主として次の仕事をする必要があります。
 
-Yii では、このプロセス全体が半自動的に実行されます。
-開発者に残されているのは、認証システムにおいて最も重要なクラスである [[yii\web\IdentityInterface]] を実装することだけです。
-典型的には、`IdentityInterface` の実装は `User` モデルを使って達成されます。
+* [[yii\web\User|user]] アプリケーションコンポーネントを構成する。
+* [[yii\web\IdentityInterface]] インタフェイスを実装するクラスを作成する。
 
-十分な機能を有する認証の実例を [アドバンストアプリケーションテンプレート](tutorial-advanced-app.md) の中に見出すことが出来ます。
-下記にインターフェイスのメソッドだけをリストします。
+
+## [[yii\web\User]] を構成する <span id="configuring-user"></span>
+
+[[yii\web\User|user]] アプリケーションコンポーネントがユーザの認証状態を管理します。
+実際の認証ロジックを含む [[yii\web\User::identityClass|ユーザ識別情報クラス]] は、あなたが指定しなければなりません。
+下記のアプリケーション構成情報においては、[[yii\web\User|user]] の [[yii\web\User::identityClass|ユーザ識別情報クラス]] は `app\models\User` であると構成されています。
+`app\models\User` の実装については、次の項で説明します。
+  
+```php
+return [
+    'components' => [
+        'user' => [
+            'identityClass' => 'app\models\User',
+        ],
+    ],
+];
+```
+
+## [[yii\web\IdentityInterface]] を実装する <span id="implementing-identity"></span>
+
+[[yii\web\User::identityClass|ユーザ識別情報クラス]] が実装しなければならない [[yii\web\IdentityInterface]] は次のメソッドを含んでいます。
+
+* [[yii\web\IdentityInterface::findIdentity()|findIdentity()]]: 指定されたユーザ ID を使ってユーザ識別情報クラスのインスタンスを探します。
+  セッションを通じてログイン状態を保持する必要がある場合に、このメソッドが使用されます。
+* [[yii\web\IdentityInterface::findIdentityByAccessToken()|findIdentityByAccessToken()]]: 指定されたアクセストークンを使ってユーザ識別情報クラスのインスタンスを探します。
+  単一の秘密のトークンでユーザを認証する必要がある場合 (ステートレスな RESTful アプリケーションなどの場合) に、このメソッドが使用されます。
+* [[yii\web\IdentityInterface::getId()|getId()]]: ユーザ識別情報クラスのインスタンスによって表されるユーザの ID を返します。
+* [[yii\web\IdentityInterface::getAuthKey()|getAuthKey()]]: クッキーベースのログインを検証するのに使用されるキーを返します。
+  このキーがログインクッキーに保存され、後でサーバ側のキーと比較されて、ログインクッキーが有効であることが確認されます。
+* [[yii\web\IdentityInterface::validateAuthKey()|validateAuthKey()]]: クッキーベースのログインキーを検証するロジックを実装します。
+
+特定のメソッドが必要でない場合は、中身を空にして実装しても構いません。
+例えば、あなたのアプリケーションが純粋なステートレス RESTful アプリケーションであるなら、実装する必要があるのは [[yii\web\IdentityInterface::findIdentityByAccessToken()|findIdentityByAccessToken()]] と [[yii\web\IdentityInterface::getId()|getId()]] だけであり、他のメソッドは全て中身を空にしておくことが出来ます。
+
+次の例では、[[yii\web\User::identityClass|ユーザ識別情報クラス]] は、`user` データベーステーブルと関連付けられた [アクティブレコード](db-active-record.md) クラスとして実装されています。
 
 ```php
+<?php
+
+use yii\db\ActiveRecord;
+use yii\web\IdentityInterface;
+
 class User extends ActiveRecord implements IdentityInterface
 {
+<<<<<<< HEAD
     // ...
 =======
 認証は、ユーザが誰であるかを確認するプロセスです。
@@ -74,11 +117,16 @@ use yii\web\IdentityInterface;
 
 class User extends ActiveRecord implements IdentityInterface
 {
+=======
+>>>>>>> master
     public static function tableName()
     {
         return 'user';
     }
+<<<<<<< HEAD
 >>>>>>> yiichina/master
+=======
+>>>>>>> master
 
     /**
      * 与えられた ID によってユーザ識別情報を探す
@@ -130,6 +178,7 @@ class User extends ActiveRecord implements IdentityInterface
 ```
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 概要を述べたメソッドのうち、二つは単純なものです。
 `findIdentity` は ID の値を受け取って、その ID と関連付けられたモデルのインスタンスを返します。
 `getId` メソッドは ID そのものを返します。
@@ -137,20 +186,30 @@ class User extends ActiveRecord implements IdentityInterface
 `getAuthKey` メソッドは全てのユーザに対してユニークな文字列を返さなければなりません。
 `Yii::$app->getSecurity()->generateRandomString()` を使うと、信頼性の高い方法でユニークな文字列を生成することが出来ます。
 これをユーザのレコードの一部として保存しておくのは良いアイデアです。
+=======
+前述のように、`getAuthKey()` と `validateAuthKey()` は、あなたのアプリケーションがクッキーベースのログイン機能を使用する場合にのみ実装する必要があります。
+この場合、次のコードを使って、各ユーザに対して認証キーを生成して、`user` テーブルに保存しておくことが出来ます。
+>>>>>>> master
 
 ```php
-public function beforeSave($insert)
+class User extends ActiveRecord implements IdentityInterface
 {
-    if (parent::beforeSave($insert)) {
-        if ($this->isNewRecord) {
-            $this->auth_key = Yii::$app->getSecurity()->generateRandomString();
+    ......
+    
+    public function beforeSave($insert)
+    {
+        if (parent::beforeSave($insert)) {
+            if ($this->isNewRecord) {
+                $this->auth_key = \Yii::$app->security->generateRandomString();
+            }
+            return true;
         }
-        return true;
+        return false;
     }
-    return false;
 }
 ```
 
+<<<<<<< HEAD
 `validateAuthKey` メソッドでは、パラメータとして渡された `$authKey` 変数 (これ自体はクッキーから読み出されます) をデータベースから読み出された値と比較する必要があるだけです。
 =======
 前述のように、`getAuthKey()` と `validateAuthKey()` は、あなたのアプリケーションがクッキーベースのログイン機能を使用する場合にのみ実装する必要があります。
@@ -175,6 +234,9 @@ class User extends ActiveRecord implements IdentityInterface
 ```
 
 > Note|注意: ユーザ識別情報クラスである `User` と [[yii\web\User]] を混同してはいけません。
+=======
+> Note: ユーザ識別情報クラスである `User` と [[yii\web\User]] を混同してはいけません。
+>>>>>>> master
   前者は認証のロジックを実装するクラスであり、普通は、ユーザの認証情報を保存する何らかの持続的ストレージと関連付けられた [アクティブレコード](db-active-record.md) クラスとして実装されます。
   後者はユーザの認証状態の管理に責任を持つアプリケーションコンポーネントです。
 
@@ -241,4 +303,7 @@ Yii::$app->user->logout();
 
 これらのイベントに反応して、ログイン監査、オンラインユーザ統計などの機能を実装することが出来ます。
 例えば、[[yii\web\User::EVENT_AFTER_LOGIN|EVENT_AFTER_LOGIN]] のハンドラの中で、`user` テーブルにログインの日時と IP アドレスを記録することが出来ます。
+<<<<<<< HEAD
 >>>>>>> yiichina/master
+=======
+>>>>>>> master

@@ -8,10 +8,14 @@ Url helper provides a set of static methods for managing URLs.
 
 There are two methods you can use to get common URLs: home URL and base URL of the current request. In order to get
 <<<<<<< HEAD
+<<<<<<< HEAD
 home URL use the following:
 =======
 home URL, use the following:
 >>>>>>> yiichina/master
+=======
+home URL, use the following:
+>>>>>>> master
 
 ```php
 $relativeHomeUrl = Url::home();
@@ -19,6 +23,7 @@ $absoluteHomeUrl = Url::home(true);
 $httpsAbsoluteHomeUrl = Url::home('https');
 ```
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 If no parameter is passed, URL generated is relative. You can either pass `true` to get absolute URL for the current
 schema or specify schema explicitly (`https`, `http`).
@@ -30,6 +35,12 @@ schema or specify a schema explicitly (`https`, `http`).
 
 To get the base URL of the current request use the following:
 >>>>>>> yiichina/master
+=======
+If no parameter is passed, the generated URL is relative. You can either pass `true` to get an absolute URL for the current
+schema or specify a schema explicitly (`https`, `http`).
+
+To get the base URL of the current request use the following:
+>>>>>>> master
  
 ```php
 $relativeBaseUrl = Url::base();
@@ -43,10 +54,14 @@ The only parameter of the method works exactly the same as for `Url::home()`.
 ## Creating URLs <span id="creating-urls"></span>
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 In order to create URL to a given route use `Url::toRoute()` method. The method uses [[\yii\web\UrlManager]] to create
 =======
 In order to create a URL to a given route use the `Url::toRoute()` method. The method uses [[\yii\web\UrlManager]] to create
 >>>>>>> yiichina/master
+=======
+In order to create a URL to a given route use the `Url::toRoute()` method. The method uses [[\yii\web\UrlManager]] to create
+>>>>>>> master
 a URL:
 
 ```php
@@ -57,22 +72,26 @@ You may specify the route as a string, e.g., `site/index`. You may also use an a
 query parameters for the URL being created. The array format must be:
 
 ```php
-// generates: /index.php?r=site/index&param1=value1&param2=value2
+// generates: /index.php?r=site%2Findex&param1=value1&param2=value2
 ['site/index', 'param1' => 'value1', 'param2' => 'value2']
 ```
 
 If you want to create a URL with an anchor, you can use the array format with a `#` parameter. For example,
 
 ```php
-// generates: /index.php?r=site/index&param1=value1#name
+// generates: /index.php?r=site%2Findex&param1=value1#name
 ['site/index', 'param1' => 'value1', '#' => 'name']
 ```
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 A route may be either absolute or relative. An absolute route has a leading slash (e.g. `/site/index`), while a relative
 =======
 A route may be either absolute or relative. An absolute route has a leading slash (e.g. `/site/index`) while a relative
 >>>>>>> yiichina/master
+=======
+A route may be either absolute or relative. An absolute route has a leading slash (e.g. `/site/index`) while a relative
+>>>>>>> master
 route has none (e.g. `site/index` or `index`). A relative route will be converted into an absolute one by the following rules:
 
 - If the route is an empty string, the current [[\yii\web\Controller::route|route]] will be used;
@@ -88,19 +107,19 @@ to the above rules.
 Below are some examples of using this method:
 
 ```php
-// /index.php?r=site/index
+// /index.php?r=site%2Findex
 echo Url::toRoute('site/index');
 
-// /index.php?r=site/index&src=ref1#name
+// /index.php?r=site%2Findex&src=ref1#name
 echo Url::toRoute(['site/index', 'src' => 'ref1', '#' => 'name']);
 
-// /index.php?r=post/edit&id=100     assume the alias "@postEdit" is defined as "post/edit"
+// /index.php?r=post%2Fedit&id=100     assume the alias "@postEdit" is defined as "post/edit"
 echo Url::toRoute(['@postEdit', 'id' => 100]);
 
-// http://www.example.com/index.php?r=site/index
+// http://www.example.com/index.php?r=site%2Findex
 echo Url::toRoute('site/index', true);
 
-// https://www.example.com/index.php?r=site/index
+// https://www.example.com/index.php?r=site%2Findex
 echo Url::toRoute('site/index', 'https');
 ```
 
@@ -124,13 +143,13 @@ will be replaced with the specified one.
 Below are some usage examples:
 
 ```php
-// /index.php?r=site/index
+// /index.php?r=site%2Findex
 echo Url::to(['site/index']);
 
-// /index.php?r=site/index&src=ref1#name
+// /index.php?r=site%2Findex&src=ref1#name
 echo Url::to(['site/index', 'src' => 'ref1', '#' => 'name']);
 
-// /index.php?r=post/edit&id=100     assume the alias "@postEdit" is defined as "post/edit"
+// /index.php?r=post%2Fedit&id=100     assume the alias "@postEdit" is defined as "post/edit"
 echo Url::to(['@postEdit', 'id' => 100]);
 
 // the currently requested URL
@@ -156,12 +175,12 @@ passing a `$params` parameter to the method. For example,
 ```php
 // assume $_GET = ['id' => 123, 'src' => 'google'], current route is "post/view"
 
-// /index.php?r=post/view&id=123&src=google
+// /index.php?r=post%2Fview&id=123&src=google
 echo Url::current();
 
-// /index.php?r=post/view&id=123
+// /index.php?r=post%2Fview&id=123
 echo Url::current(['src' => null]);
-// /index.php?r=post/view&id=100&src=google
+// /index.php?r=post%2Fview&id=100&src=google
 echo Url::current(['id' => 100]);
 ```
 

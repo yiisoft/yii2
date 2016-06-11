@@ -92,10 +92,14 @@ This is because the [[yii\web\Application|application]] class has a lot of confi
 More importantly, its [[yii\web\Application::components|components]] property can receive an array of configurations
 for creating components that are registered through the application. The following is an abstract from the application
 <<<<<<< HEAD
+<<<<<<< HEAD
 configuration file for the [basic application template](start-installation.md).
 =======
 configuration file for the [Basic Project Template](start-installation.md).
 >>>>>>> yiichina/master
+=======
+configuration file for the [Basic Project Template](start-installation.md).
+>>>>>>> master
 
 ```php
 $config = [

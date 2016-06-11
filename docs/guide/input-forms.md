@@ -10,7 +10,7 @@ to validate its input on the server side (Check the [Validating Input](input-val
 When creating model-based forms, the first step is to define the model itself. The model can be either based upon
 an [Active Record](db-active-record.md) class, representing some data from the database, or a generic Model class
 (extending from [[yii\base\Model]]) to capture arbitrary input, for example a login form.
-In the following example we show, how a generic Model is used for a login form:
+In the following example, we show how a generic model can be used for a login form:
 
 ```php
 <?php
@@ -75,12 +75,20 @@ To customize the output, you can chain additional methods of [[yii\widgets\Activ
 
 This will create all the `<label>`, `<input>` and other tags according to the [[yii\widgets\ActiveField::$template|template]] defined by the form field.
 <<<<<<< HEAD
+<<<<<<< HEAD
 The name of the input field is determined automatically from the model's [[yii\base\Model::formName()|form name] and the attribute's name.
 =======
 The name of the input field is determined automatically from the model's [[yii\base\Model::formName()|form name]] and the attribute's name.
 >>>>>>> yiichina/master
+=======
+The name of the input field is determined automatically from the model's [[yii\base\Model::formName()|form name]] and the attribute name.
+>>>>>>> master
 For example, the name for the input field for the `username` attribute in the above example will be `LoginForm[username]`. This naming rule will result in an array
 of all attributes for the login form to be available in `$_POST['LoginForm']` on the server side.
+
+> Tip: If you have only one model in a form and want to simplify the input names you may skip the array part by
+> overriding the [[yii\base\Model::formName()|formName()]] method of the model to return an empty string.
+> This can be useful for filter models used in the [GridView](output-data-widgets.md#grid-view) to create nicer URLs.
 
 Specifying the attribute of the model can be done in more sophisticated ways. For example when an attribute may
 take an array value when uploading multiple files or selecting multiple items you may specify it by appending `[]`
@@ -94,29 +102,106 @@ echo $form->field($model, 'uploadFile[]')->fileInput(['multiple'=>'multiple']);
 echo $form->field($model, 'items[]')->checkboxList(['a' => 'Item A', 'b' => 'Item B', 'c' => 'Item C']);
 ```
 
+Be careful when naming form elements such as submit buttons. According to the [jQuery documentation](https://api.jquery.com/submit/) there
+are some reserved names that can cause conflicts:
+
+> Forms and their child elements should not use input names or ids that conflict with properties of a form,
+> such as `submit`, `length`, or `method`. Name conflicts can cause confusing failures.
+> For a complete list of rules and to check your markup for these problems, see [DOMLint](http://kangax.github.io/domlint/).
+
 Additional HTML tags can be added to the form using plain HTML or using the methods from the [[yii\helpers\Html|Html]]-helper
 class like it is done in the above example with [[yii\helpers\Html::submitButton()|Html::submitButton()]].
 
 
 > Tip: If you are using Twitter Bootstrap CSS in your application you may want to use
-> [[yii\bootstrap\ActiveForm]] instead of [[yii\widgets\ActiveForm]], which is an extension of the
-> ActiveForm class that adds some additional styling that works well with the bootstrap CSS framework.
+> [[yii\bootstrap\ActiveForm]] instead of [[yii\widgets\ActiveForm]]. The former extends from the latter and
+> uses Bootstrap-specific styles when generating form input fields.
 
 
-> Tip: in order to style required fields with asterisk you can use the following CSS:
+> Tip: In order to style required fields with asterisks, you can use the following CSS:
 >
 > ```css
-> div.required label:after {
+> div.required label.control-label:after {
 >     content: " *";
 >     color: red;
 > }
 > ```
+
+Creating Drop-down List <span id="creating-activeform-dropdownlist"></span>
+-----------------------
+
+We can use ActiveForm [dropDownList()](http://www.yiiframework.com/doc-2.0/yii-widgets-activefield.html#dropDownList()-detail)
+method to create a drop-down list:
+
+```php
+use app\models\ProductCategory;
+
+/* @var $this yii\web\View */
+/* @var $form yii\widgets\ActiveForm */
+/* @var $model app\models\Product */
+
+echo $form->field($model, 'product_category')->dropdownList(
+    ProductCategory::find()->select(['category_name', 'id'])->indexBy('id')->column(),
+    ['prompt'=>'Select Category']
+);
+```
+
+The value of your model field will be automatically pre-selected.
+
+Working with Pjax <span id="working-with-pjax"></span>
+-----------------------
+
+The [[yii\widgets\Pjax|Pjax]] widget allows you to update a certain section of a
+page instead of reloading the entire page. You can use it to update only the form
+and replace its contents after the submission.
+
+You can configure [[yii\widgets\Pjax::$formSelector|$formSelector]] to specify
+which form submission may trigger pjax. If not set, all forms with `data-pjax`
+attribute within the enclosed content of Pjax will trigger pjax requests.
+
+```php
+use yii\widgets\Pjax;
+use yii\widgets\ActiveForm;
+
+Pjax::begin([
+    // Pjax options
+]);
+    $form = ActiveForm::begin([
+        'options' => ['data' => ['pjax' => true]],
+        // more ActiveForm options
+    ]);
+
+        // ActiveForm content
+
+    ActiveForm::end();
+Pjax::end();
+```
+> Tip: Be careful with the links inside the [[yii\widgets\Pjax|Pjax]] widget since
+> the response  will also be rendered inside the widget. To prevent this, use the
+> `data-pjax="0"` HTML attribute.
+
+#### Values in Submit Buttons and File Upload
+
+There are known issues using `jQuery.serializeArray()` when dealing with
+[[https://github.com/jquery/jquery/issues/2321|files]] and
+[[https://github.com/jquery/jquery/issues/2321|submit button values]] which
+won't be solved and are instead deprecated in favor of the `FormData` class
+introduced in HTML5.
+
+That means the only official support for files and submit button values with
+ajax or using the [[yii\widgets\Pjax|Pjax]] widget depends on the
+[[https://developer.mozilla.org/en-US/docs/Web/API/FormData#Browser_compatibility|browser support]]
+for the `FormData` class.
+
+Further Reading <span id="further-reading"></span>
+---------------
 
 The next section [Validating Input](input-validation.md) handles the validation of the submitted form data on the server
 side as well as ajax- and client side validation.
 
 To read about more complex usage of forms, you may want to check out the following sections:
 
+<<<<<<< HEAD
 - [Collecting tabular input](input-tabular-input.md) for collecting data for multiple models of the same kind.
 - [Complex Forms with Multiple Models](input-multiple-models.md) for handling multiple different models in the same form.
 <<<<<<< HEAD
@@ -124,3 +209,8 @@ To read about more complex usage of forms, you may want to check out the followi
 =======
 - [Uploading Files](input-file-upload.md) on how to use forms for uploading files.
 >>>>>>> yiichina/master
+=======
+- [Collecting Tabular Input](input-tabular-input.md) for collecting data for multiple models of the same kind.
+- [Getting Data for Multiple Models](input-multiple-models.md) for handling multiple different models in the same form.
+- [Uploading Files](input-file-upload.md) on how to use forms for uploading files.
+>>>>>>> master

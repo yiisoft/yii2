@@ -38,10 +38,14 @@ Se já estiver familiarizado com um outro framework, você pode gosta se saber c
 - A alta performance é sempre um objetivo principal do Yii.
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 O Yii não é um show de um homem só, ele é apoiado por uma [forte equipe de desenvolvedores do core][] 
 =======
 O Yii não é um show de um homem só, ele é apoiado por uma [forte equipe de desenvolvedores do core][about_yii] 
 >>>>>>> yiichina/master
+=======
+O Yii não é um show de um homem só, ele é apoiado por uma [forte equipe de desenvolvedores do core][about_yii] 
+>>>>>>> master
 bem como por uma ampla comunidade de muitos profissionais constantemente
 contribuindo com o desenvolvimento do Yii. A equipe de desenvolvedores do Yii
 acompanha de perto às últimas tendências do desenvolvimento Web, e às
@@ -51,10 +55,14 @@ são incorporadas regularmente no core do framework e expostas via interfaces
 simples e elegantes.
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 [forte equipe desenvolvedores do core]: http://www.yiiframework.com/about/
 =======
 [about_yii]: http://www.yiiframework.com/about/
 >>>>>>> yiichina/master
+=======
+[about_yii]: http://www.yiiframework.com/about/
+>>>>>>> master
 
 Versões do Yii
 --------------

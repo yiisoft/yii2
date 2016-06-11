@@ -25,7 +25,7 @@ use yii\web\Response;
  * cache the whole page for maximum 60 seconds or until the count of entries in the post table changes.
  * It also stores different versions of the page depending on the application language.
  *
- * ~~~
+ * ```php
  * public function behaviors()
  * {
  *     return [
@@ -43,7 +43,7 @@ use yii\web\Response;
  *         ],
  *     ];
  * }
- * ~~~
+ * ```
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
@@ -72,15 +72,18 @@ class PageCache extends ActionFilter
      * This can be either a [[Dependency]] object or a configuration array for creating the dependency object.
      * For example,
      *
-     * ~~~
+     * ```php
      * [
      *     'class' => 'yii\caching\DbDependency',
      *     'sql' => 'SELECT MAX(updated_at) FROM post',
      * ]
-     * ~~~
+     * ```
      *
-     * would make the output cache depends on the last modified time of all posts.
+     * would make the output cache depend on the last modified time of all posts.
      * If any post has its modification time changed, the cached content would be invalidated.
+     *
+     * If [[cacheCookies]] or [[cacheHeaders]] is enabled, then [[\yii\caching\Dependency::reusable]] should be enabled as well to save performance.
+     * This is because the cookies and headers are currently stored separately from the actual page content, causing the dependency to be evaluated twice.
      */
     public $dependency;
     /**
@@ -89,11 +92,11 @@ class PageCache extends ActionFilter
      * The following variation setting will cause the content to be cached in different versions
      * according to the current application language:
      *
-     * ~~~
+     * ```php
      * [
      *     Yii::$app->language,
      * ]
-     * ~~~
+     * ```
      */
     public $variations;
     /**
@@ -107,7 +110,10 @@ class PageCache extends ActionFilter
      */
     public $view;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> master
     /**
      * @var boolean|array a boolean value indicating whether to cache all cookies, or an array of
      * cookie names indicating which cookies can be cached. Be very careful with caching cookies, because
@@ -122,7 +128,10 @@ class PageCache extends ActionFilter
      * @since 2.0.4
      */
     public $cacheHeaders = true;
+<<<<<<< HEAD
 >>>>>>> yiichina/master
+=======
+>>>>>>> master
 
 
     /**
@@ -149,6 +158,10 @@ class PageCache extends ActionFilter
         }
 
         $this->cache = Instance::ensure($this->cache, Cache::className());
+
+        if (is_array($this->dependency)) {
+            $this->dependency = Yii::createObject($this->dependency);
+        }
 
         $properties = [];
         foreach (['cache', 'duration', 'dependency', 'variations'] as $name) {
@@ -193,6 +206,7 @@ class PageCache extends ActionFilter
         }
         if (isset($data['headers']) && is_array($data['headers'])) {
 <<<<<<< HEAD
+<<<<<<< HEAD
             $response->getHeaders()->fromArray($data['headers']);
         }
         if (isset($data['cookies']) && is_array($data['cookies'])) {
@@ -205,6 +219,14 @@ class PageCache extends ActionFilter
             $cookies = $response->getCookies()->toArray();
             $response->getCookies()->fromArray(array_merge($data['cookies'], $cookies));
 >>>>>>> yiichina/master
+=======
+            $headers = $response->getHeaders()->toArray();
+            $response->getHeaders()->fromArray(array_merge($data['headers'], $headers));
+        }
+        if (isset($data['cookies']) && is_array($data['cookies'])) {
+            $cookies = $response->getCookies()->toArray();
+            $response->getCookies()->fromArray(array_merge($data['cookies'], $cookies));
+>>>>>>> master
         }
     }
 
@@ -222,11 +244,15 @@ class PageCache extends ActionFilter
             'statusCode' => $response->statusCode,
             'statusText' => $response->statusText,
 <<<<<<< HEAD
+<<<<<<< HEAD
             'headers' => $response->getHeaders()->toArray(),
             'cookies' => $response->getCookies()->toArray(),
         ];
 =======
         ];
+=======
+        ];
+>>>>>>> master
         if (!empty($this->cacheHeaders)) {
             $headers = $response->getHeaders()->toArray();
             if (is_array($this->cacheHeaders)) {
@@ -254,8 +280,12 @@ class PageCache extends ActionFilter
             }
             $data['cookies'] = $cookies;
         }
+<<<<<<< HEAD
 >>>>>>> yiichina/master
         $this->cache->set($this->calculateCacheKey(), $data);
+=======
+        $this->cache->set($this->calculateCacheKey(), $data, $this->duration, $this->dependency);
+>>>>>>> master
         echo ob_get_clean();
     }
 

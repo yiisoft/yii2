@@ -22,6 +22,8 @@ class Customer extends ActiveRecord
 
     public $status2;
 
+    public $sumTotal;
+
     public static function tableName()
     {
         return 'customer';
@@ -32,6 +34,11 @@ class Customer extends ActiveRecord
         return $this->hasOne(Profile::className(), ['id' => 'profile_id']);
     }
 
+    public function getOrdersPlain()
+    {
+        return $this->hasMany(Order::className(), ['customer_id' => 'id']);
+    }
+
     public function getOrders()
     {
         return $this->hasMany(Order::className(), ['customer_id' => 'id'])->orderBy('id');
@@ -40,6 +47,11 @@ class Customer extends ActiveRecord
     public function getExpensiveOrders()
     {
         return $this->hasMany(Order::className(), ['customer_id' => 'id'])->andWhere('[[total]] > 50')->orderBy('id');
+    }
+
+    public function getOrdersWithItems()
+    {
+        return $this->hasMany(Order::className(), ['customer_id' => 'id'])->with('orderItems');
     }
 
     public function getExpensiveOrdersWithNullFK()

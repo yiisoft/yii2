@@ -1,8 +1,9 @@
 あなた自身のアプリケーション構造を作成する
 ==========================================
 
-> Note|注意: この節はまだ執筆中です。
+> Note: この節はまだ執筆中です。
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 [ベーシック](https://github.com/yiisoft/yii2/tree/master/apps/basic) と [アドバンスト](https://github.com/yiisoft/yii2/tree/master/apps/advanced) のアプリケーションテンプレートは、あなたの要求をほとんどカバーする優れたものですが、あなたのプロジェクトを開始するためのあなた自身のテンプレートを作成したいこともあるでしょう。
 
@@ -12,6 +13,11 @@ Yii におけるアプリケーションテンプレートは、`composer.json` 
 
 Yii におけるプロジェクトテンプレートは、`composer.json` ファイルを含み、Composer パッケージとして登録されたレポジトリであるに過ぎません。
 >>>>>>> yiichina/master
+=======
+[ベーシック](https://github.com/yiisoft/yii2-app-basic) と [アドバンスト](https://github.com/yiisoft/yii2-app-advanced) のプロジェクトテンプレートは、あなたの要求をほとんどカバーする優れたものですが、あなたのプロジェクトを開始するためのあなた自身のテンプレートを作成したいこともあるでしょう。
+
+Yii におけるプロジェクトテンプレートは、`composer.json` ファイルを含み、Composer パッケージとして登録されたレポジトリであるに過ぎません。
+>>>>>>> master
 どのようなレポジトリでも、Composer パッケージとして特定し、`create-project` Composer コマンドによってインストール可能なものにすることが出来ます。
 
 テンプレート全体を最初から構築するのは少々大変ですので、内蔵のテンプレートの一つを基礎として使うのが良いでしょう。
@@ -36,7 +42,7 @@ git clone git@github.com:yiisoft/yii2-app-basic.git
 `name`、`description`、`keywords`、`homepage`、`license` および `support` の値を、あなたの新しいテンプレートを説明するものに変更します。
 また、`require`、`require-dev`、`suggest` や、その他のオプションも、あなたのテンプレートの要求に合うように調整します。
 
-> Note|注意: `composer.json` ファイルで、`extra` の下の `writable` パラメータを使って、アプリケーションがテンプレートを使って作成された後に設定されるべきファイル単位のアクセス権限を指定してください。
+> Note: `composer.json` ファイルで、`extra` の下の `writable` パラメータを使って、アプリケーションがテンプレートを使って作成された後に設定されるべきファイル単位のアクセス権限を指定してください。
 
 次に、あなたが好むデフォルトの状態に合うように、アプリケーションの構造と内容を実際に修正します。
 最後に、あなたのテンプレートに適用できるように、README ファイルを更新します。
@@ -57,6 +63,7 @@ git clone git@github.com:yiisoft/yii2-app-basic.git
 ------------------
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 Yii の新しいアプリケーションテンプレートを作成するのに必要なことは以上です。
 これで、あなたのテンプレートを使ってプロジェクトを作成することが出来ます。
 
@@ -69,5 +76,12 @@ Yii の新しいプロジェクトテンプレートを作成するのに必要�
 ```
 composer global require "fxp/composer-asset-plugin:~1.0.0"
 >>>>>>> yiichina/master
+=======
+Yii の新しいプロジェクトテンプレートを作成するのに必要なことは以上です。
+これで、あなたのテンプレートを使ってプロジェクトを作成することが出来ます。
+
+```
+composer global require "fxp/composer-asset-plugin:~1.1.1"
+>>>>>>> master
 composer create-project --prefer-dist --stability=dev mysoft/yii2-app-coolone new-project
 ```

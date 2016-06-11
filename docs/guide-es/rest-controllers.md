@@ -53,7 +53,7 @@ En particular, los siguientes filtros se ejecutarán en el orden en que aparecen
 * [[yii\filters\ContentNegotiator|contentNegotiator]]: soporta la negociación de contenido, que se explica en
   la sección [Formateo de respuestas](rest-response-formatting.md);
 * [[yii\filters\VerbFilter|verbFilter]]: soporta métodos de validación HTTP;
-* [[yii\filters\AuthMethod|authenticator]]: soporta la autenticación de usuarios, que se explica en
+* [[yii\filters\auth\AuthMethod|authenticator]]: soporta la autenticación de usuarios, que se explica en
   la sección [Autenticación](rest-authentication.md);
 * [[yii\filters\RateLimiter|rateLimiter]]: soporta la limitación de rango, que se explica en
   la sección [Límite de Rango](rest-rate-limiting.md).
@@ -79,7 +79,7 @@ public function behaviors()
 ## Extendiendo `ActiveController` <span id="extending-active-controller"></span>
 
 Si tu clase controlador extiende de [[yii\rest\ActiveController]], debe establecer
-su propiedad [[yii\rest\ActiveController::modelClass||modelClass]] con el nombre de la clase del recurso
+su propiedad [[yii\rest\ActiveController::modelClass|modelClass]] con el nombre de la clase del recurso
 que planeas servir a través de este controlador. La clase debe extender de [[yii\db\ActiveRecord]].
 
 
@@ -149,4 +149,4 @@ public function checkAccess($action, $model = null, $params = [])
 El método `checkAccess()` será llamado por defecto en las acciones predeterminadas de [[yii\rest\ActiveController]]. Si creas
 nuevas acciones y también deseas llevar a cabo la comprobación de acceso, debe llamar a este método de forma explícita en las nuevas acciones.
 
-> Consejo: Puedes implementar `checkAccess()` mediante el uso del [Componente Role-Based Access Control (RBAC)](security-authorization.md).
+> Tip: Puedes implementar `checkAccess()` mediante el uso del [Componente Role-Based Access Control (RBAC)](security-authorization.md).

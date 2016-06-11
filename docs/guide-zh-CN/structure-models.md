@@ -15,7 +15,7 @@
 `Model` 类也是更多高级模型如[Active Record 活动记录](db-active-record.md)的基类，
 更多关于这些高级模型的详情请参考相关手册。
 
-> 补充：模型并不强制一定要继承[[yii\base\Model]]，但是由于很多组件支持[[yii\base\Model]]，最好使用它做为模型基类。
+> Info: 模型并不强制一定要继承[[yii\base\Model]]，但是由于很多组件支持[[yii\base\Model]]，最好使用它做为模型基类。
 
 
 ## 属性 <span id="attributes"></span>
@@ -139,10 +139,14 @@ public function attributeLabels()
 可对相同的属性返回不同的标签。
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 > 补充：属性标签是 [视图](structure-views.md)一部分，但是在模型中申明标签通常非常方便，并可行程非常简洁可重用代码。
 =======
 > 补充：属性标签是 [视图](structure-views.md)一部分，但是在模型中申明标签通常非常方便，并可形成非常简洁可重用代码。
 >>>>>>> yiichina/master
+=======
+> Info: 属性标签是 [视图](structure-views.md)一部分，但是在模型中申明标签通常非常方便，并可行程非常简洁可重用代码。
+>>>>>>> master
 
 
 ## 场景 <span id="scenarios"></span>
@@ -182,7 +186,7 @@ class User extends ActiveRecord
 }
 ```
 
-> 补充：在上述和下述的例子中，模型类都是继承[[yii\db\ActiveRecord]]，
+> Info: 在上述和下述的例子中，模型类都是继承[[yii\db\ActiveRecord]]，
   因为多场景的使用通常发生在[Active Record](db-active-record.md) 类中.
 
 `scenarios()` 方法返回一个数组，数组的键为场景名，值为对应的 *active attributes活动属性*。
@@ -317,7 +321,7 @@ public function scenarios()
 }
 ```
 
-> 补充: 块赋值只应用在安全属性上，因为你想控制哪些属性会被终端用户输入数据所修改，
+> Info: 块赋值只应用在安全属性上，因为你想控制哪些属性会被终端用户输入数据所修改，
   例如，如果 `User` 模型有一个`permission`属性对应用户的权限，
   你可能只想让这个属性在后台界面被管理员修改。
 
@@ -433,7 +437,7 @@ public function fields()
 }
 ```
 
-> 警告：由于模型的所有属性会被包含在导出数组，最好检查数据确保没包含敏感数据，
+> Warning: 由于模型的所有属性会被包含在导出数组，最好检查数据确保没包含敏感数据，
 > 如果有敏感数据，应覆盖 `fields()` 方法过滤掉，在上述列子中，我们选择过滤掉
 > `auth_key`, `password_hash` and `password_reset_token`。
 

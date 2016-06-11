@@ -14,10 +14,17 @@ use yii\base\Model;
 /**
  * EachValidator validates an array by checking each of its elements against an embedded validation rule.
  *
+<<<<<<< HEAD
  * ~~~php
  * class MyModel extends Model
  * {
  *     public $arrayAttribute = [];
+=======
+ * ```php
+ * class MyModel extends Model
+ * {
+ *     public $categoryIDs = [];
+>>>>>>> master
  *
  *     public function rules()
  *     {
@@ -27,11 +34,21 @@ use yii\base\Model;
  *         ]
  *     }
  * }
+<<<<<<< HEAD
  * ~~~
+=======
+ * ```
+>>>>>>> master
  *
  * > Note: This validator will not work with inline validation rules in case of usage outside the model scope,
  *   e.g. via [[validate()]] method.
  *
+<<<<<<< HEAD
+=======
+ * > Note: EachValidator is meant to be used only in basic cases, you should consider usage of tabular input,
+ *   using several models for the more complex case.
+ *
+>>>>>>> master
  * @author Paul Klimov <klimov.paul@gmail.com>
  * @since 2.0.4
  */
@@ -43,10 +60,17 @@ class EachValidator extends Validator
      * contain attribute list as the first element.
      * For example:
      *
+<<<<<<< HEAD
      * ~~~
      * ['integer']
      * ['match', 'pattern' => '/[a-z]/is']
      * ~~~
+=======
+     * ```php
+     * ['integer']
+     * ['match', 'pattern' => '/[a-z]/is']
+     * ```
+>>>>>>> master
      *
      * Please refer to [[yii\base\Model::rules()]] for more details.
      */
@@ -115,6 +139,7 @@ class EachValidator extends Validator
     public function validateAttribute($model, $attribute)
     {
         $value = $model->$attribute;
+<<<<<<< HEAD
         $validator = $this->getValidator();
         if ($validator instanceof FilterValidator && is_array($value)) {
             $filteredValue = [];
@@ -128,6 +153,39 @@ class EachValidator extends Validator
             $this->getValidator($model); // ensure model context while validator creation
             parent::validateAttribute($model, $attribute);
         }
+=======
+        if (!is_array($value)) {
+            $this->addError($model, $attribute, $this->message, []);
+            return;
+        }
+
+        $validator = $this->getValidator($model); // ensure model context while validator creation
+
+        $originalErrors = $model->getErrors($attribute);
+        $filteredValue = [];
+        foreach ($value as $k => $v) {
+            $model->$attribute = $v;
+            if (!$validator->skipOnEmpty || !$validator->isEmpty($v)) {
+                $validator->validateAttribute($model, $attribute);
+            }
+            $filteredValue[$k] = $model->$attribute;
+            if ($model->hasErrors($attribute)) {
+                $validationErrors = $model->getErrors($attribute);
+                $model->clearErrors($attribute);
+                if (!empty($originalErrors)) {
+                    $model->addErrors([$attribute => $originalErrors]);
+                }
+                if ($this->allowMessageFromRule) {
+                    $model->addErrors([$attribute => $validationErrors]);
+                } else {
+                    $this->addError($model, $attribute, $this->message, ['value' => $v]);
+                }
+                $model->$attribute = $value;
+                return;
+            }
+        }
+        $model->$attribute = $filteredValue;
+>>>>>>> master
     }
 
     /**
@@ -141,9 +199,23 @@ class EachValidator extends Validator
 
         $validator = $this->getValidator();
         foreach ($value as $v) {
+<<<<<<< HEAD
             $result = $validator->validateValue($v);
             if ($result !== null) {
                 return $this->allowMessageFromRule ? $result : [$this->message, []];
+=======
+            if ($validator->skipOnEmpty && $validator->isEmpty($v)) {
+                continue;
+            }
+            $result = $validator->validateValue($v);
+            if ($result !== null) {
+                if ($this->allowMessageFromRule) {
+                    $result[1]['value'] = $v;
+                    return $result;
+                } else {
+                    return [$this->message, ['value' => $v]];
+                }
+>>>>>>> master
             }
         }
 

@@ -280,6 +280,40 @@ class DateValidatorTest extends TestCase
     public function testIntlValidationWithTime($timezone)
     {
         $this->testValidationWithTime($timezone);
+<<<<<<< HEAD
+=======
+
+        $this->mockApplication([
+            'language' => 'en-GB',
+            'components' => [
+                'formatter' => [
+                    'dateFormat' => 'long',
+                    'datetimeFormat' => 'short', // this is the format to be used by the validator by default
+                ]
+            ]
+        ]);
+        $val = new DateValidator(['type' => DateValidator::TYPE_DATETIME]);
+        $this->assertTrue($val->validate('31/5/2017 12:30'));
+        $this->assertFalse($val->validate('5/31/2017 12:30'));
+        $val = new DateValidator(['format' => 'short', 'locale' => 'en-GB', 'type' => DateValidator::TYPE_DATETIME]);
+        $this->assertTrue($val->validate('31/5/2017 12:30'));
+        $this->assertFalse($val->validate('5/31/2017 12:30'));
+        $this->mockApplication([
+            'language' => 'de-DE',
+            'components' => [
+                'formatter' => [
+                    'dateFormat' => 'long',
+                    'datetimeFormat' => 'short', // this is the format to be used by the validator by default
+                ]
+            ]
+        ]);
+        $val = new DateValidator(['type' => DateValidator::TYPE_DATETIME]);
+        $this->assertTrue($val->validate('31.5.2017 12:30'));
+        $this->assertFalse($val->validate('5.31.2017 12:30'));
+        $val = new DateValidator(['format' => 'short', 'locale' => 'de-DE', 'type' => DateValidator::TYPE_DATETIME]);
+        $this->assertTrue($val->validate('31.5.2017 12:30'));
+        $this->assertFalse($val->validate('5.31.2017 12:30'));
+>>>>>>> master
     }
 
     /**
@@ -418,11 +452,29 @@ class DateValidatorTest extends TestCase
 
     public function testValidateValueRange()
     {
+<<<<<<< HEAD
         $date = '14-09-13';
         $val = new DateValidator(['format' => 'yyyy-MM-dd']);
         $this->assertTrue($val->validate($date), "$date is valid");
 
         $val = new DateValidator(['format' => 'yyyy-MM-dd', 'min' => '1900-01-01']);
+=======
+        if (PHP_INT_SIZE == 8) { // this passes only on 64bit systems
+            // intl parser allows 14 for yyyy pattern, see the following for more details:
+            // https://github.com/yiisoft/yii2/blob/a003a8fb487dfa60c0f88ecfacf18a7407ced18b/framework/validators/DateValidator.php#L51-L57
+            $date = '14-09-13';
+            $val = new DateValidator(['format' => 'yyyy-MM-dd']);
+            $this->assertTrue($val->validate($date), "$date is valid");
+
+            $min = '1900-01-01';
+            $beforeMin = '1899-12-31';
+        } else {
+            $min = '1920-01-01';
+            $beforeMin = '1919-12-31';
+        }
+
+        $val = new DateValidator(['format' => 'yyyy-MM-dd', 'min' => $min]);
+>>>>>>> master
         $date = "1958-01-12";
         $this->assertTrue($val->validate($date), "$date is valid");
 
@@ -432,11 +484,19 @@ class DateValidatorTest extends TestCase
         $date = "1958-01-12";
         $this->assertTrue($val->validate($date), "$date is valid");
 
+<<<<<<< HEAD
         $val = new DateValidator(['format' => 'yyyy-MM-dd', 'min' => '1900-01-01', 'max' => '2000-01-01']);
         $this->assertTrue($val->validate('1999-12-31'), "max -1 day is valid");
         $this->assertTrue($val->validate('2000-01-01'), "max is inside range");
         $this->assertTrue($val->validate('1900-01-01'), "min is inside range");
         $this->assertFalse($val->validate('1899-12-31'), "min -1 day is invalid");
+=======
+        $val = new DateValidator(['format' => 'yyyy-MM-dd', 'min' => $min, 'max' => '2000-01-01']);
+        $this->assertTrue($val->validate('1999-12-31'), "max -1 day is valid");
+        $this->assertTrue($val->validate('2000-01-01'), "max is inside range");
+        $this->assertTrue($val->validate($min), "min is inside range");
+        $this->assertFalse($val->validate($beforeMin), "min -1 day is invalid");
+>>>>>>> master
         $this->assertFalse($val->validate('2000-01-02'), "max +1 day is invalid");
     }
 
@@ -458,11 +518,29 @@ class DateValidatorTest extends TestCase
 
     public function testValidateAttributeRange()
     {
+<<<<<<< HEAD
         $val = new DateValidator(['format' => 'yyyy-MM-dd']);
         $date = '14-09-13';
         $this->validateModelAttribute($val, $date, true, "$date is valid");
 
         $val = new DateValidator(['format' => 'yyyy-MM-dd', 'min' => '1900-01-01']);
+=======
+        if (PHP_INT_SIZE == 8) { // this passes only on 64bit systems
+            // intl parser allows 14 for yyyy pattern, see the following for more details:
+            // https://github.com/yiisoft/yii2/blob/a003a8fb487dfa60c0f88ecfacf18a7407ced18b/framework/validators/DateValidator.php#L51-L57
+            $val = new DateValidator(['format' => 'yyyy-MM-dd']);
+            $date = '14-09-13';
+            $this->validateModelAttribute($val, $date, true, "$date is valid");
+
+            $min = '1900-01-01';
+            $beforeMin = '1899-12-31';
+        } else {
+            $min = '1920-01-01';
+            $beforeMin = '1919-12-31';
+        }
+
+        $val = new DateValidator(['format' => 'yyyy-MM-dd', 'min' => $min]);
+>>>>>>> master
         $date = '1958-01-12';
         $this->validateModelAttribute($val, $date, true, "$date is valid");
 
@@ -472,11 +550,19 @@ class DateValidatorTest extends TestCase
         $date = '1958-01-12';
         $this->validateModelAttribute($val, $date, true, "$date is valid");
 
+<<<<<<< HEAD
         $val = new DateValidator(['format' => 'yyyy-MM-dd', 'min' => '1900-01-01', 'max' => '2000-01-01']);
         $this->validateModelAttribute($val, '1999-12-31', true, "max -1 day is valid");
         $this->validateModelAttribute($val, '2000-01-01', true, "max is inside range");
         $this->validateModelAttribute($val, '1900-01-01', true, "min is inside range");
         $this->validateModelAttribute($val, '1899-12-31', false, "min -1 day is invalid");
+=======
+        $val = new DateValidator(['format' => 'yyyy-MM-dd', 'min' => $min, 'max' => '2000-01-01']);
+        $this->validateModelAttribute($val, '1999-12-31', true, "max -1 day is valid");
+        $this->validateModelAttribute($val, '2000-01-01', true, "max is inside range");
+        $this->validateModelAttribute($val, $min, true, "min is inside range");
+        $this->validateModelAttribute($val, $beforeMin, false, "min -1 day is invalid");
+>>>>>>> master
         $this->validateModelAttribute($val, '2000-01-02', false, "max +1 day is invalid");
     }
 
@@ -486,7 +572,11 @@ class DateValidatorTest extends TestCase
             $this->markTestSkipped("ICU is too old.");
         }
         $date = '14-09-13';
+<<<<<<< HEAD
         $val = new DateValidator(['format' => 'yyyy-MM-dd', 'min' => '1900-01-01']);
+=======
+        $val = new DateValidator(['format' => 'yyyy-MM-dd', 'min' => '1920-01-01']);
+>>>>>>> master
         $this->assertFalse($val->validate($date), "$date is too small");
     }
 
@@ -496,7 +586,11 @@ class DateValidatorTest extends TestCase
             $this->markTestSkipped("ICU is too old.");
         }
         $date = '14-09-13';
+<<<<<<< HEAD
         $val = new DateValidator(['format' => 'yyyy-MM-dd', 'min' => '1900-01-01']);
+=======
+        $val = new DateValidator(['format' => 'yyyy-MM-dd', 'min' => '1920-01-01']);
+>>>>>>> master
         $this->validateModelAttribute($val, $date, false, "$date is too small");
     }
 
@@ -519,4 +613,39 @@ class DateValidatorTest extends TestCase
 
         return false;
     }
+<<<<<<< HEAD
+=======
+
+    /**
+     * @depends testValidateAttributePHPFormat
+     */
+    public function testTimestampAttributeSkipValidation()
+    {
+        // timestamp as integer
+        $val = new DateValidator(['format' => 'php:Y/m/d', 'timestampAttribute' => 'attr_date']);
+        $model = new FakedValidationModel();
+        $model->attr_date = 1379030400;
+        $val->validateAttribute($model, 'attr_date');
+        $this->assertFalse($model->hasErrors('attr_date'));
+
+        $val = new DateValidator(['format' => 'php:Y/m/d', 'timestampAttribute' => 'attr_date']);
+        $model = new FakedValidationModel();
+        $model->attr_date = 'invalid';
+        $val->validateAttribute($model, 'attr_date');
+        $this->assertTrue($model->hasErrors('attr_date'));
+
+        // timestamp as formatted date
+        $val = new DateValidator(['format' => 'php:Y/m/d', 'timestampAttribute' => 'attr_date', 'timestampAttributeFormat' => 'php:Y-m-d']);
+        $model = new FakedValidationModel();
+        $model->attr_date = '2013-09-13';
+        $val->validateAttribute($model, 'attr_date');
+        $this->assertFalse($model->hasErrors('attr_date'));
+
+        $val = new DateValidator(['format' => 'php:Y/m/d', 'timestampAttribute' => 'attr_date', 'timestampAttributeFormat' => 'php:Y-m-d']);
+        $model = new FakedValidationModel();
+        $model->attr_date = '2013-09-2013';
+        $val->validateAttribute($model, 'attr_date');
+        $this->assertTrue($model->hasErrors('attr_date'));
+    }
+>>>>>>> master
 }

@@ -17,10 +17,14 @@ Les scipts de démarrage effectuent principalement les tâches suivantes :
 
 * Définir des constantes globales;
 <<<<<<< HEAD
+<<<<<<< HEAD
 * Enregistrer l'[autoloader Composer](http://getcomposer.org/doc/01-basic-usage.md#autoloading);
 =======
 * Enregistrer l'[autoloader Composer](https://getcomposer.org/doc/01-basic-usage.md#autoloading);
 >>>>>>> yiichina/master
+=======
+* Enregistrer l'[autoloader Composer](https://getcomposer.org/doc/01-basic-usage.md#autoloading);
+>>>>>>> master
 * Inclure le fichier de classe de [[Yii]];
 * Charger la configuration de l'application;
 * Créer et configurer une instance d'[application](structure-applications.md);
@@ -67,10 +71,6 @@ De même, le code qui suit est le code du script de démarrage d'une application
  */
 
 defined('YII_DEBUG') or define('YII_DEBUG', true);
-
-// fcgi doesn't have STDIN and STDOUT defined by default
-defined('STDIN') or define('STDIN', fopen('php://stdin', 'r'));
-defined('STDOUT') or define('STDOUT', fopen('php://stdout', 'w'));
 
 // register Composer autoloader
 require(__DIR__ . '/vendor/autoload.php');

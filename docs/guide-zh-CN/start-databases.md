@@ -27,6 +27,7 @@ CREATE TABLE `country` (
   `population` INT(11) NOT NULL DEFAULT '0'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
+<<<<<<< .merge_file_a07132
 INSERT INTO `country` VALUES ('AU','Australia',18886000);
 INSERT INTO `country` VALUES ('BR','Brazil',170115000);
 INSERT INTO `country` VALUES ('CA','Canada',1147000);
@@ -37,6 +38,18 @@ INSERT INTO `country` VALUES ('GB','United Kingdom',59623400);
 INSERT INTO `country` VALUES ('IN','India',1013662000);
 INSERT INTO `country` VALUES ('RU','Russia',146934000);
 INSERT INTO `country` VALUES ('US','United States',278357000);
+=======
+INSERT INTO `country` VALUES ('AU','Australia',24016400);
+INSERT INTO `country` VALUES ('BR','Brazil',205722000);
+INSERT INTO `country` VALUES ('CA','Canada',35985751);
+INSERT INTO `country` VALUES ('CN','China',1375210000);
+INSERT INTO `country` VALUES ('DE','Germany',81459000);
+INSERT INTO `country` VALUES ('FR','France',64513242);
+INSERT INTO `country` VALUES ('GB','United Kingdom',65097000);
+INSERT INTO `country` VALUES ('IN','India',1285400000);
+INSERT INTO `country` VALUES ('RU','Russia',146519759);
+INSERT INTO `country` VALUES ('US','United States',322976000);
+>>>>>>> .merge_file_a06196
 ```
 
 此时便有了一个名为 `yii2basic` 的数据库，在这个数据库中有一个包含三个字段的数据表 `country`，表中有十行数据。
@@ -64,7 +77,11 @@ return [
 
 上面配置的数据库连接可以在应用中通过 `Yii::$app->db` 表达式访问。
 
+<<<<<<< .merge_file_a07132
 > 补充：`config/db.php` 将被包含在应用配置文件 `config/web.php` 中，后者指定了整个[应用](structure-applications.md)如何初始化。请参考[配置](concept-configurations.md)章节了解更多信息。
+=======
+> Info: `config/db.php` 将被包含在应用配置文件 `config/web.php` 中，后者指定了整个[应用](structure-applications.md)如何初始化。请参考[配置](concept-configurations.md)章节了解更多信息。
+>>>>>>> .merge_file_a06196
 
 
 创建活动记录 <span id="creating-active-record"></span>
@@ -86,7 +103,11 @@ class Country extends ActiveRecord
 
 这个 `Country` 类继承自 [[yii\db\ActiveRecord]]。你不用在里面写任何代码。只需要像现在这样，Yii 就能根据类名去猜测对应的数据表名。
 
+<<<<<<< .merge_file_a07132
 > 补充：如果类名和数据表名不能直接对应，可以覆写 [[yii\db\ActiveRecord::tableName()|tableName()]] 方法去显式指定相关表名。
+=======
+> Info: 如果类名和数据表名不能直接对应，可以覆写 [[yii\db\ActiveRecord::tableName()|tableName()]] 方法去显式指定相关表名。
+>>>>>>> .merge_file_a06196
 
 使用 `Country` 类可以很容易地操作 `country` 表数据，就像这段代码：
 
@@ -107,7 +128,11 @@ $country->name = 'U.S.A.';
 $country->save();
 ```
 
+<<<<<<< .merge_file_a07132
 > 补充：活动记录是面向对象、功能强大的访问和操作数据库数据的方式。你可以在[活动记录](db-active-record.md)章节了解更多信息。除此之外你还可以使用另一种更原生的被称做[数据访问对象](db-dao)的方法操作数据库数据。
+=======
+> Info: 活动记录是面向对象、功能强大的访问和操作数据库数据的方式。你可以在[活动记录](db-active-record.md)章节了解更多信息。除此之外你还可以使用另一种更原生的被称做[数据访问对象](db-dao)的方法操作数据库数据。
+>>>>>>> .merge_file_a06196
 
 
 创建操作 <span id="creating-action"></span>
@@ -212,4 +237,8 @@ http://hostname/index.php?r=country/index&page=2
 
 本章节中你学到了如何使用数据库。你还学到了如何取出并使用 [[yii\data\Pagination]] 和 [[yii\widgets\LinkPager]] 显示数据。
 
+<<<<<<< .merge_file_a07132
 下一章中你会学到如何使用 Yii 中强大的代码生成器 [Gii](tool-gii.md)，去帮助你实现一些常用的功能需求，例如增查改删（CRUD）数据表中的数据。事实上你之前所写的代码全部都可以由 Gii 自动生成。
+=======
+下一章中你会学到如何使用 Yii 中强大的代码生成器 [Gii](tool-gii.md)，去帮助你实现一些常用的功能需求，例如增查改删（CRUD）数据表中的数据。事实上你之前所写的代码全部都可以由 Gii 自动生成。
+>>>>>>> .merge_file_a06196

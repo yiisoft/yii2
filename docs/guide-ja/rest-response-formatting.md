@@ -9,11 +9,15 @@ RESTful API のリクエストを処理するとき、アプリケーション�
    [リソース](rest-resources.md) の節で説明したように、この作業は [[yii\rest\Serializer]] によって実行されます。
 3. 配列をコンテントネゴシエーションのステップで決定された形式の文字列に変換します。
 <<<<<<< HEAD
+<<<<<<< HEAD
    この作業は、[[yii\web\Response::formatters|response]] アプリケーションコンポーネントに登録された [[yii\web\ResponseFormatterInterface|レスポンスフォーマッタ]] によって実行されます。
 
 =======
    この作業は、`response` [アプリケーションコンポーネント](structure-application-components.md) の [[yii\web\Response::formatters|formatters]] プロパティに登録された [[yii\web\ResponseFormatterInterface|レスポンスフォーマッタ]] によって実行されます。
 >>>>>>> yiichina/master
+=======
+   この作業は、`response` [アプリケーションコンポーネント](structure-application-components.md) の [[yii\web\Response::formatters|formatters]] プロパティに登録された [[yii\web\ResponseFormatterInterface|レスポンスフォーマッタ]] によって実行されます。
+>>>>>>> master
 
 ## コンテントネゴシエーション <span id="content-negotiation"></span>
 

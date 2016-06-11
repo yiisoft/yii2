@@ -101,7 +101,7 @@ class NumberValidator extends Validator
      */
     protected function validateValue($value)
     {
-        if (is_array($value)) {
+        if (is_array($value) || is_object($value)) {
             return [Yii::t('yii', '{attribute} is invalid.'), []];
         }
         $pattern = $this->integerOnly ? $this->integerPattern : $this->numberPattern;
@@ -133,7 +133,7 @@ class NumberValidator extends Validator
         if ($this->min !== null) {
             // ensure numeric value to make javascript comparison equal to PHP comparison
             // https://github.com/yiisoft/yii2/issues/3118
-            $options['min'] = is_string($this->min) ? (float)$this->min : $this->min;
+            $options['min'] = is_string($this->min) ? (float) $this->min : $this->min;
             $options['tooSmall'] = Yii::$app->getI18n()->format($this->tooSmall, [
                 'attribute' => $label,
                 'min' => $this->min,
@@ -142,7 +142,7 @@ class NumberValidator extends Validator
         if ($this->max !== null) {
             // ensure numeric value to make javascript comparison equal to PHP comparison
             // https://github.com/yiisoft/yii2/issues/3118
-            $options['max'] = is_string($this->max) ? (float)$this->max : $this->max;
+            $options['max'] = is_string($this->max) ? (float) $this->max : $this->max;
             $options['tooBig'] = Yii::$app->getI18n()->format($this->tooBig, [
                 'attribute' => $label,
                 'max' => $this->max,
@@ -155,9 +155,13 @@ class NumberValidator extends Validator
         ValidationAsset::register($view);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
         return 'yii.validation.number(value, messages, ' . Json::encode($options) . ');';
 =======
         return 'yii.validation.number(value, messages, ' . Json::htmlEncode($options) . ');';
 >>>>>>> yiichina/master
+=======
+        return 'yii.validation.number(value, messages, ' . Json::htmlEncode($options) . ');';
+>>>>>>> master
     }
 }

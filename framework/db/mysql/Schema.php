@@ -43,7 +43,7 @@ class Schema extends \yii\db\Schema
         'text' => self::TYPE_TEXT,
         'varchar' => self::TYPE_STRING,
         'string' => self::TYPE_STRING,
-        'char' => self::TYPE_STRING,
+        'char' => self::TYPE_CHAR,
         'datetime' => self::TYPE_DATETIME,
         'year' => self::TYPE_DATE,
         'date' => self::TYPE_DATE,
@@ -61,7 +61,7 @@ class Schema extends \yii\db\Schema
      */
     public function quoteSimpleTableName($name)
     {
-        return strpos($name, "`") !== false ? $name : "`" . $name . "`";
+        return strpos($name, '`') !== false ? $name : "`$name`";
     }
 
     /**
@@ -72,7 +72,7 @@ class Schema extends \yii\db\Schema
      */
     public function quoteSimpleColumnName($name)
     {
-        return strpos($name, '`') !== false || $name === '*' ? $name : '`' . $name . '`';
+        return strpos($name, '`') !== false || $name === '*' ? $name : "`$name`";
     }
 
     /**
@@ -130,6 +130,7 @@ class Schema extends \yii\db\Schema
         $column = $this->createColumnSchema();
 
 <<<<<<< HEAD
+<<<<<<< HEAD
         $column->name = $info['Field'];
         $column->allowNull = $info['Null'] === 'YES';
         $column->isPrimaryKey = strpos($info['Key'], 'PRI') !== false;
@@ -146,6 +147,15 @@ class Schema extends \yii\db\Schema
 
         $column->dbType = $info['type'];
 >>>>>>> yiichina/master
+=======
+        $column->name = $info['field'];
+        $column->allowNull = $info['null'] === 'YES';
+        $column->isPrimaryKey = strpos($info['key'], 'PRI') !== false;
+        $column->autoIncrement = stripos($info['extra'], 'auto_increment') !== false;
+        $column->comment = $info['comment'];
+
+        $column->dbType = $info['type'];
+>>>>>>> master
         $column->unsigned = stripos($column->dbType, 'unsigned') !== false;
 
         $column->type = self::TYPE_STRING;
@@ -184,11 +194,16 @@ class Schema extends \yii\db\Schema
 
         if (!$column->isPrimaryKey) {
 <<<<<<< HEAD
+<<<<<<< HEAD
             if ($column->type === 'timestamp' && $info['Default'] === 'CURRENT_TIMESTAMP') {
+=======
+            if ($column->type === 'timestamp' && $info['default'] === 'CURRENT_TIMESTAMP') {
+>>>>>>> master
                 $column->defaultValue = new Expression('CURRENT_TIMESTAMP');
             } elseif (isset($type) && $type === 'bit') {
-                $column->defaultValue = bindec(trim($info['Default'],'b\''));
+                $column->defaultValue = bindec(trim($info['default'], 'b\''));
             } else {
+<<<<<<< HEAD
                 $column->defaultValue = $column->phpTypecast($info['Default']);
 =======
             if ($column->type === 'timestamp' && $info['default'] === 'CURRENT_TIMESTAMP') {
@@ -198,6 +213,9 @@ class Schema extends \yii\db\Schema
             } else {
                 $column->defaultValue = $column->phpTypecast($info['default']);
 >>>>>>> yiichina/master
+=======
+                $column->defaultValue = $column->phpTypecast($info['default']);
+>>>>>>> master
             }
         }
 
@@ -226,11 +244,17 @@ class Schema extends \yii\db\Schema
         }
         foreach ($columns as $info) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
             if ($this->db->slavePdo->getAttribute(\PDO::ATTR_CASE) !== \PDO::CASE_LOWER) {
                 $info = array_change_key_case($info, CASE_LOWER);
             }
 >>>>>>> yiichina/master
+=======
+            if ($this->db->slavePdo->getAttribute(\PDO::ATTR_CASE) !== \PDO::CASE_LOWER) {
+                $info = array_change_key_case($info, CASE_LOWER);
+            }
+>>>>>>> master
             $column = $this->loadColumnSchema($info);
             $table->columns[$column->name] = $column;
             if ($column->isPrimaryKey) {
@@ -268,18 +292,58 @@ class Schema extends \yii\db\Schema
      */
     protected function findConstraints($table)
     {
-        $sql = $this->getCreateTableSql($table);
+        $sql = <<<SQL
+SELECT
+    kcu.constraint_name,
+    kcu.column_name,
+    kcu.referenced_table_name,
+    kcu.referenced_column_name
+FROM information_schema.referential_constraints AS rc
+JOIN information_schema.key_column_usage AS kcu ON
+    (
+        kcu.constraint_catalog = rc.constraint_catalog OR
+        (kcu.constraint_catalog IS NULL AND rc.constraint_catalog IS NULL)
+    ) AND
+    kcu.constraint_schema = rc.constraint_schema AND
+    kcu.constraint_name = rc.constraint_name
+WHERE rc.constraint_schema = database() AND kcu.table_schema = database()
+AND rc.table_name = :tableName AND kcu.table_name = :tableName1
+SQL;
 
-        $regexp = '/FOREIGN KEY\s+\(([^\)]+)\)\s+REFERENCES\s+([^\(^\s]+)\s*\(([^\)]+)\)/mi';
-        if (preg_match_all($regexp, $sql, $matches, PREG_SET_ORDER)) {
-            foreach ($matches as $match) {
-                $fks = array_map('trim', explode(',', str_replace('`', '', $match[1])));
-                $pks = array_map('trim', explode(',', str_replace('`', '', $match[3])));
-                $constraint = [str_replace('`', '', $match[2])];
-                foreach ($fks as $k => $name) {
-                    $constraint[$name] = $pks[$k];
+        try {
+            $rows = $this->db->createCommand($sql, [':tableName' => $table->name, ':tableName1' => $table->name])->queryAll();
+            $constraints = [];
+            foreach ($rows as $row) {
+                $constraints[$row['constraint_name']]['referenced_table_name'] = $row['referenced_table_name'];
+                $constraints[$row['constraint_name']]['columns'][$row['column_name']] = $row['referenced_column_name'];
+            }
+            $table->foreignKeys = [];
+            foreach ($constraints as $constraint) {
+                $table->foreignKeys[] = array_merge(
+                    [$constraint['referenced_table_name']],
+                    $constraint['columns']
+                );
+            }
+        } catch (\Exception $e) {
+            $previous = $e->getPrevious();
+            if (!$previous instanceof \PDOException || strpos($previous->getMessage(), 'SQLSTATE[42S02') === false) {
+                throw $e;
+            }
+
+            // table does not exist, try to determine the foreign keys using the table creation sql
+            $sql = $this->getCreateTableSql($table);
+            $regexp = '/FOREIGN KEY\s+\(([^\)]+)\)\s+REFERENCES\s+([^\(^\s]+)\s*\(([^\)]+)\)/mi';
+            if (preg_match_all($regexp, $sql, $matches, PREG_SET_ORDER)) {
+                foreach ($matches as $match) {
+                    $fks = array_map('trim', explode(',', str_replace('`', '', $match[1])));
+                    $pks = array_map('trim', explode(',', str_replace('`', '', $match[3])));
+                    $constraint = [str_replace('`', '', $match[2])];
+                    foreach ($fks as $k => $name) {
+                        $constraint[$name] = $pks[$k];
+                    }
+                    $table->foreignKeys[md5(serialize($constraint))] = $constraint;
                 }
-                $table->foreignKeys[] = $constraint;
+                $table->foreignKeys = array_values($table->foreignKeys);
             }
         }
     }
@@ -288,12 +352,12 @@ class Schema extends \yii\db\Schema
      * Returns all unique indexes for the given table.
      * Each array element is of the following structure:
      *
-     * ~~~
+     * ```php
      * [
-     *  'IndexName1' => ['col1' [, ...]],
-     *  'IndexName2' => ['col2' [, ...]],
+     *     'IndexName1' => ['col1' [, ...]],
+     *     'IndexName2' => ['col2' [, ...]],
      * ]
-     * ~~~
+     * ```
      *
      * @param TableSchema $table the table metadata
      * @return array all unique indexes for the given table.
@@ -328,5 +392,13 @@ class Schema extends \yii\db\Schema
         }
 
         return $this->db->createCommand($sql)->queryColumn();
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function createColumnSchemaBuilder($type, $length = null)
+    {
+        return new ColumnSchemaBuilder($type, $length, $this->db);
     }
 }

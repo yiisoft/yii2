@@ -20,19 +20,27 @@ Yii は、RESTful ウェブサービス API を実装する仕事を簡単にす
 
 ユーザのデータを RESTful API によって公開したいと仮定しましょう。
 <<<<<<< HEAD
+<<<<<<< HEAD
 ユーザのデータは `user` という DB テーブルに保存されており、それにアクセスするための [[yii\db\ActiveRecord|ActiveRecord]] クラス `app\models\User` が既に作成済みであるとします。
 =======
 ユーザのデータは `user` という DB テーブルに保存されており、それにアクセスするための [アクティブレコード](db-active-record.md) クラス `app\models\User` が既に作成済みであるとします。
 >>>>>>> yiichina/master
+=======
+ユーザのデータは `user` という DB テーブルに保存されており、それにアクセスするための [アクティブレコード](db-active-record.md) クラス `app\models\User` が既に作成済みであるとします。
+>>>>>>> master
 
 
 ## コントローラを作成する <span id="creating-controller"></span>
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 最初に、コントローラクラス `app\controllers\UserController` を次のようにして作成します。
 =======
 最初に、[コントローラ](structure-controllers.md) クラス `app\controllers\UserController` を次のようにして作成します。
 >>>>>>> yiichina/master
+=======
+最初に、[コントローラ](structure-controllers.md) クラス `app\controllers\UserController` を次のようにして作成します。
+>>>>>>> master
 
 ```php
 namespace app\controllers;
@@ -46,6 +54,7 @@ class UserController extends ActiveController
 ```
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 このコントローラクラスは、[[yii\rest\ActiveController]] を拡張するものです。
 [[yii\rest\ActiveController::modelClass|modelClass]] を `app\models\User` と指定することによって、データの取得と操作にどのモデルが使用できるかをコントローラに教えてやります。
 =======
@@ -55,6 +64,13 @@ The controller class extends from [[yii\rest\ActiveController]], which implement
 By specifying [[yii\rest\ActiveController::modelClass|modelClass]]
 as `app\models\User`, the controller knows which model can be used for fetching and manipulating data.
 >>>>>>> yiichina/master
+=======
+このコントローラクラスは、よく使用される一揃いの RESTful アクションを実装した [[yii\rest\ActiveController]] を拡張するものです。
+[[yii\rest\ActiveController::modelClass|modelClass]] を `app\models\User` と指定することによって、データの取得と操作にどのモデルが使用できるかをコントローラに教えてやります。
+The controller class extends from [[yii\rest\ActiveController]], which implements a common set of RESTful actions.
+By specifying [[yii\rest\ActiveController::modelClass|modelClass]]
+as `app\models\User`, the controller knows which model can be used for fetching and manipulating data.
+>>>>>>> master
 
 
 ## URL 規則を構成する <span id="configuring-url-rules"></span>
@@ -78,10 +94,14 @@ as `app\models\User`, the controller knows which model can be used for fetching 
 ## JSON の入力を可能にする <span id="enabling-json-input"></span>
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 API が JSON 形式で入力データを受け取ることが出来るように、`request` アプリケーションコンポーネントの [[yii\web\Request::$parsers|parsers]] プロパティを構成して、JSON 入力のために [[yii\web\JsonParser]] を使うようにします。
 =======
 API が JSON 形式で入力データを受け取ることが出来るように、`request` [アプリケーションコンポーネント](structure-application-components.md) の [[yii\web\Request::$parsers|parsers]] プロパティを構成して、JSON 入力のために [[yii\web\JsonParser]] を使うようにします。
 >>>>>>> yiichina/master
+=======
+API が JSON 形式で入力データを受け取ることが出来るように、`request` [アプリケーションコンポーネント](structure-application-components.md) の [[yii\web\Request::$parsers|parsers]] プロパティを構成して、JSON 入力のために [[yii\web\JsonParser]] を使うようにします。
+>>>>>>> master
 
 ```php
 'request' => [
@@ -91,7 +111,7 @@ API が JSON 形式で入力データを受け取ることが出来るように�
 ]
 ```
 
-> Info|情報: 上記の構成はオプションです。
+> Info: 上記の構成はオプションです。
   上記のように構成しない場合は、API は `application/x-www-form-urlencoded` と `multipart/form-data` だけを入力形式として認識します。
 
 
@@ -110,7 +130,7 @@ API が JSON 形式で入力データを受け取ることが出来るように�
 * `OPTIONS /users`: エンドポイント `/users` に関してサポートされている動詞を示す
 * `OPTIONS /users/123`: エンドポイント `/users/123` に関してサポートされている動詞を示す
 
-> Info|情報: Yii はコントローラの名前を自動的に複数形にしてエンドポイントとして使用します。
+> Info: Yii はコントローラの名前を自動的に複数形にしてエンドポイントとして使用します。
 > この振る舞いは [[yii\rest\UrlRule::$pluralize]] プロパティを使って構成することが可能です。
 
 作成した API は、次のように、`curl` コマンドでアクセスすることが出来ます。
@@ -189,7 +209,7 @@ Content-Type: application/json; charset=UTF-8
 {"id":1,"username":"example","email":"user@example.com","created_at":1414674789,"updated_at":1414674789}
 ```
 
-> Tip|ヒント: URL `http://localhost/users` を入力すれば、ウェブブラウザ経由で API にアクセスすることも出来ます。
+> Tip: URL `http://localhost/users` を入力すれば、ウェブブラウザ経由で API にアクセスすることも出来ます。
   ただし、特殊なリクエストヘッダを送信するためには、何らかのブラウザプラグインが必要になるでしょう。
 
 ご覧のように、レスポンスヘッダの中には、総ユーザ数やページ数などの情報が書かれています。
@@ -200,9 +220,9 @@ Content-Type: application/json; charset=UTF-8
 例えば、URL `http://localhost/users?fields=id,email` は、`id` と `email` のフィールドだけを返します。
 
 
-> Info|情報: 気がついたかも知れませんが、`http://localhost/users` の結果は、いくつかの公開すべきでないフィールド、例えば `password_hash` や `auth_key` を含んでいます。
+> Info: 気がついたかも知れませんが、`http://localhost/users` の結果は、いくつかの公開すべきでないフィールド、例えば `password_hash` や `auth_key` を含んでいます。
 > 当然ながら、これらが API の結果に出現することは避けたいでしょう。
-> [レスポンス形式の設定](rest-response-formatting.md) の節で説明されているように、これらのフィールドを除外することは出来ますし、また、除外しなければなりません。
+> [リソース](rest-resources.md) の節で説明されているように、これらのフィールドを除外することは出来ますし、また、除外しなければなりません。
 
 
 ## まとめ <span id="summary"></span>

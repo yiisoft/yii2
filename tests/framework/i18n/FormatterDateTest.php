@@ -88,6 +88,43 @@ class FormatterDateTest extends TestCase
         $this->assertSame($this->formatter->nullDisplay, $this->formatter->asDate(null));
     }
 
+    public function testIntlAsDateOtherCalendars()
+    {
+        // Persian calendar
+        $this->formatter->locale = 'fa_IR@calendar=persian';
+        $this->formatter->calendar = \IntlDateFormatter::TRADITIONAL;
+        $this->formatter->timeZone = 'UTC';
+
+        $value = 1451606400; // Fri, 01 Jan 2016 00:00:00 (UTC)
+        $this->assertSame('۱۳۹۴', $this->formatter->asDate($value, 'php:Y'));
+
+        $value = new DateTime();
+        $value->setTimestamp(1451606400); // Fri, 01 Jan 2016 00:00:00 (UTC)
+        $this->assertSame('۱۳۹۴', $this->formatter->asDate($value, 'php:Y'));
+
+        if (version_compare(PHP_VERSION, '5.5.0', '>=')) {
+            $value = new \DateTimeImmutable('2016-01-01 00:00:00', new \DateTimeZone('UTC'));
+            $this->assertSame('۱۳۹۴', $this->formatter->asDate($value, 'php:Y'));
+        }
+
+        // Buddhist calendar
+        $this->formatter->locale = 'fr_FR@calendar=buddhist';
+        $this->formatter->calendar = \IntlDateFormatter::TRADITIONAL;
+        $this->formatter->timeZone = 'UTC';
+
+        $value = 1451606400; // Fri, 01 Jan 2016 00:00:00 (UTC)
+        $this->assertSame('2559', $this->formatter->asDate($value, 'php:Y'));
+
+        $value = new DateTime();
+        $value->setTimestamp(1451606400); // Fri, 01 Jan 2016 00:00:00 (UTC)
+        $this->assertSame('2559', $this->formatter->asDate($value, 'php:Y'));
+
+        if (version_compare(PHP_VERSION, '5.5.0', '>=')) {
+            $value = new \DateTimeImmutable('2016-01-01 00:00:00', new \DateTimeZone('UTC'));
+            $this->assertSame('2559', $this->formatter->asDate($value, 'php:Y'));
+        }
+    }
+
     public function testIntlAsTime()
     {
         $this->testAsTime();
@@ -129,31 +166,31 @@ class FormatterDateTest extends TestCase
 
         // empty input
         $this->formatter->locale = 'de-DE';
-        $this->assertSame('01.01.1970 00:00:00', $this->formatter->asDatetime(''));
-        $this->assertSame('01.01.1970 00:00:00', $this->formatter->asDatetime(0));
-        $this->assertSame('01.01.1970 00:00:00', $this->formatter->asDatetime(false));
+        $this->assertRegExp('~01\.01\.1970,? 00:00:00~', $this->formatter->asDatetime(''));
+        $this->assertRegExp('~01\.01\.1970,? 00:00:00~', $this->formatter->asDatetime(0));
+        $this->assertRegExp('~01\.01\.1970,? 00:00:00~', $this->formatter->asDatetime(false));
     }
 
     public function testAsDatetime()
     {
         $value = time();
-        $this->assertSame(date('M j, Y g:i:s A', $value), $this->formatter->asDatetime($value));
+        $this->assertRegExp(date('~M j, Y,? g:i:s A~', $value), $this->formatter->asDatetime($value));
         $this->assertSame(date('Y/m/d h:i:s A', $value), $this->formatter->asDatetime($value, 'php:Y/m/d h:i:s A'));
 
         $value = new DateTime();
-        $this->assertSame(date('M j, Y g:i:s A', $value->getTimestamp()), $this->formatter->asDatetime($value));
+        $this->assertRegExp(date('~M j, Y,? g:i:s A~', $value->getTimestamp()), $this->formatter->asDatetime($value));
         $this->assertSame(date('Y/m/d h:i:s A', $value->getTimestamp()), $this->formatter->asDatetime($value, 'php:Y/m/d h:i:s A'));
 
         if (version_compare(PHP_VERSION, '5.5.0', '>=')) {
             $value = new \DateTimeImmutable();
-            $this->assertSame(date('M j, Y g:i:s A', $value->getTimestamp()), $this->formatter->asDatetime($value));
+            $this->assertRegExp(date('~M j, Y,? g:i:s A~', $value->getTimestamp()), $this->formatter->asDatetime($value));
             $this->assertSame(date('Y/m/d h:i:s A', $value->getTimestamp()), $this->formatter->asDatetime($value, 'php:Y/m/d h:i:s A'));
         }
 
         // empty input
-        $this->assertSame('Jan 1, 1970 12:00:00 AM', $this->formatter->asDatetime(''));
-        $this->assertSame('Jan 1, 1970 12:00:00 AM', $this->formatter->asDatetime(0));
-        $this->assertSame('Jan 1, 1970 12:00:00 AM', $this->formatter->asDatetime(false));
+        $this->assertRegExp('~Jan 1, 1970,? 12:00:00 AM~', $this->formatter->asDatetime(''));
+        $this->assertRegExp('~Jan 1, 1970,? 12:00:00 AM~', $this->formatter->asDatetime(0));
+        $this->assertRegExp('~Jan 1, 1970,? 12:00:00 AM~', $this->formatter->asDatetime(false));
         // null display
         $this->assertSame($this->formatter->nullDisplay, $this->formatter->asDatetime(null));
     }
@@ -359,6 +396,102 @@ class FormatterDateTest extends TestCase
         // null display
         $this->assertSame($this->formatter->nullDisplay, $this->formatter->asRelativeTime(null));
         $this->assertSame($this->formatter->nullDisplay, $this->formatter->asRelativeTime(null, time()));
+    }
+
+    public function testIntlAsDuration()
+    {
+        $this->testAsDuration();
+    }
+
+    public function testAsDuration()
+    {
+        $interval_0_seconds   = new DateInterval("PT0S");
+        $interval_1_second    = new DateInterval("PT1S");
+        $interval_244_seconds = new DateInterval("PT244S");
+        $interval_1_minute    = new DateInterval("PT1M");
+        $interval_33_minutes  = new DateInterval("PT33M");
+        $interval_1_hour      = new DateInterval("PT1H");
+        $interval_6_hours     = new DateInterval("PT6H");
+        $interval_1_day       = new DateInterval("P1D");
+        $interval_89_days     = new DateInterval("P89D");
+        $interval_1_month     = new DateInterval("P1M");
+        $interval_5_months    = new DateInterval("P5M");
+        $interval_1_year      = new DateInterval("P1Y");
+        $interval_12_years    = new DateInterval("P12Y");
+
+        // Pass a DateInterval
+        $this->assertSame('0 seconds', $this->formatter->asDuration($interval_0_seconds));
+        $this->assertSame('1 second', $this->formatter->asDuration($interval_1_second));
+        $this->assertSame('244 seconds', $this->formatter->asDuration($interval_244_seconds));
+        $this->assertSame('1 minute', $this->formatter->asDuration($interval_1_minute));
+        $this->assertSame('33 minutes', $this->formatter->asDuration($interval_33_minutes));
+        $this->assertSame('1 hour', $this->formatter->asDuration($interval_1_hour));
+        $this->assertSame('6 hours', $this->formatter->asDuration($interval_6_hours));
+        $this->assertSame('1 day', $this->formatter->asDuration($interval_1_day));
+        $this->assertSame('89 days', $this->formatter->asDuration($interval_89_days));
+        $this->assertSame('1 month', $this->formatter->asDuration($interval_1_month));
+        $this->assertSame('5 months', $this->formatter->asDuration($interval_5_months));
+        $this->assertSame('1 year', $this->formatter->asDuration($interval_1_year));
+        $this->assertSame('12 years', $this->formatter->asDuration($interval_12_years));
+        
+        // Pass a numeric value
+        $this->assertSame('0 seconds', $this->formatter->asDuration(0));
+        $this->assertSame('1 second', $this->formatter->asDuration(1));
+        $this->assertSame('4 minutes, 4 seconds', $this->formatter->asDuration(244));
+        $this->assertSame('1 minute', $this->formatter->asDuration(60));
+        $this->assertSame('33 minutes', $this->formatter->asDuration(1980));
+        $this->assertSame('1 hour', $this->formatter->asDuration(3600));
+        $this->assertSame('6 hours', $this->formatter->asDuration(21600));
+        $this->assertSame('1 day', $this->formatter->asDuration(86400));
+
+        // Pass a DateInterval string
+        $this->assertSame('1 year, 2 months, 10 days, 2 hours, 30 minutes', $this->formatter->asDuration('2007-03-01T13:00:00Z/2008-05-11T15:30:00Z'));
+        $this->assertSame('1 year, 2 months, 10 days, 2 hours, 30 minutes', $this->formatter->asDuration('2007-03-01T13:00:00Z/P1Y2M10DT2H30M'));
+        $this->assertSame('1 year, 2 months, 10 days, 2 hours, 30 minutes', $this->formatter->asDuration('P1Y2M10DT2H30M/2008-05-11T15:30:00Z'));
+        $this->assertSame('1 year, 2 months, 10 days, 2 hours, 30 minutes', $this->formatter->asDuration('P1Y2M10DT2H30M'));
+        $this->assertSame('-1 year, 2 months, 10 days, 2 hours, 30 minutes', $this->formatter->asDuration('P-1Y2M10DT2H30M'));
+        $this->assertSame('94 months', $this->formatter->asDuration('P94M'));
+        $this->assertSame('-94 months', $this->formatter->asDuration('P-94M'));
+
+        // Invert all the DateIntervals
+        $interval_0_seconds->invert = true;
+        $interval_1_second->invert = true;
+        $interval_244_seconds->invert = true;
+        $interval_1_minute->invert = true;
+        $interval_33_minutes->invert = true;
+        $interval_1_hour->invert = true;
+        $interval_6_hours->invert = true;
+        $interval_1_day->invert = true;
+        $interval_89_days->invert = true;
+        $interval_1_month->invert = true;
+        $interval_5_months->invert = true;
+        $interval_1_year->invert = true;
+        $interval_12_years->invert = true;
+
+        // Pass a inverted DateInterval
+        $this->assertSame('0 seconds', $this->formatter->asDuration($interval_0_seconds));
+        $this->assertSame('-1 second', $this->formatter->asDuration($interval_1_second));
+        $this->assertSame('-244 seconds', $this->formatter->asDuration($interval_244_seconds));
+        $this->assertSame('-1 minute', $this->formatter->asDuration($interval_1_minute));
+        $this->assertSame('-33 minutes', $this->formatter->asDuration($interval_33_minutes));
+        $this->assertSame('-1 hour', $this->formatter->asDuration($interval_1_hour));
+        $this->assertSame('-6 hours', $this->formatter->asDuration($interval_6_hours));
+        $this->assertSame('-1 day', $this->formatter->asDuration($interval_1_day));
+        $this->assertSame('-89 days', $this->formatter->asDuration($interval_89_days));
+        $this->assertSame('-1 month', $this->formatter->asDuration($interval_1_month));
+        $this->assertSame('-5 months', $this->formatter->asDuration($interval_5_months));
+        $this->assertSame('-1 year', $this->formatter->asDuration($interval_1_year));
+        $this->assertSame('-12 years', $this->formatter->asDuration($interval_12_years));
+
+        // other options
+        $this->assertSame('minus 244 seconds', $this->formatter->asDuration($interval_244_seconds, ' and ', 'minus '));
+        $this->assertSame('minus 4 minutes and 4 seconds', $this->formatter->asDuration(-244, ' and ', 'minus '));
+
+        // Pass a inverted DateInterval string
+        $this->assertSame('-1 year, 2 months, 10 days, 2 hours, 30 minutes', $this->formatter->asDuration('2008-05-11T15:30:00Z/2007-03-01T13:00:00Z'));
+
+        // null display
+        $this->assertSame($this->formatter->nullDisplay, $this->formatter->asDuration(null));
     }
 
     public function dateInputs()
@@ -573,6 +706,61 @@ class FormatterDateTest extends TestCase
         $this->assertFalse(DateTime::createFromFormat('Y-m-d', '2014-05-08 12:48:53'));
         $this->assertFalse(DateTime::createFromFormat('Y-m-d H:i:s', 1416829733));
         $this->assertFalse(DateTime::createFromFormat('Y-m-d H:i:s', '2014-05-08'));
+    }
+
+    public function testIntlInputFractionSeconds()
+    {
+        $this->testInputFractionSeconds();
+    }
+
+    public function testInputFractionSeconds()
+    {
+        $this->formatter->defaultTimeZone = 'UTC';
+
+        $timeStamp = '2015-04-28 10:06:15.000000';
+        $this->formatter->timeZone = 'UTC';
+        $this->assertEquals('2015-04-28 10:06:15+0000', $this->formatter->asDateTime($timeStamp, 'yyyy-MM-dd HH:mm:ssZ'));
+        $this->formatter->timeZone = 'Europe/Berlin';
+        $this->assertEquals('2015-04-28 12:06:15+0200', $this->formatter->asDateTime($timeStamp, 'yyyy-MM-dd HH:mm:ssZ'));
+
+        $timeStamp = '2015-04-28 10:06:15';
+        $this->formatter->timeZone = 'UTC';
+        $this->assertEquals('2015-04-28 10:06:15+0000', $this->formatter->asDateTime($timeStamp, 'yyyy-MM-dd HH:mm:ssZ'));
+        $this->formatter->timeZone = 'Europe/Berlin';
+        $this->assertEquals('2015-04-28 12:06:15+0200', $this->formatter->asDateTime($timeStamp, 'yyyy-MM-dd HH:mm:ssZ'));
+    }
+
+
+    public function testInputUnixTimestamp()
+    {
+        $this->formatter->defaultTimeZone = 'UTC';
+        $timeStamp = 1431907200;
+        $this->formatter->timeZone = 'UTC';
+        $this->assertEquals('2015-05-18 00:00:00+0000', $this->formatter->asDateTime($timeStamp, 'yyyy-MM-dd HH:mm:ssZ'));
+        $this->formatter->timeZone = 'Europe/Berlin';
+        $this->assertEquals('2015-05-18 02:00:00+0200', $this->formatter->asDateTime($timeStamp, 'yyyy-MM-dd HH:mm:ssZ'));
+
+        $this->formatter->defaultTimeZone = 'Europe/Berlin';
+        $timeStamp = 1431907200;
+        $this->formatter->timeZone = 'UTC';
+        $this->assertEquals('2015-05-18 00:00:00+0000', $this->formatter->asDateTime($timeStamp, 'yyyy-MM-dd HH:mm:ssZ'));
+        $this->formatter->timeZone = 'Europe/Berlin';
+        $this->assertEquals('2015-05-18 02:00:00+0200', $this->formatter->asDateTime($timeStamp, 'yyyy-MM-dd HH:mm:ssZ'));
+
+        $this->formatter->defaultTimeZone = 'UTC';
+        $timeStamp = -1431907200;
+        $this->formatter->timeZone = 'UTC';
+        $this->assertEquals('1924-08-17 00:00:00+0000', $this->formatter->asDateTime($timeStamp, 'yyyy-MM-dd HH:mm:ssZ'));
+        $this->formatter->timeZone = 'Europe/Berlin';
+        $this->assertEquals('1924-08-17 01:00:00+0100', $this->formatter->asDateTime($timeStamp, 'yyyy-MM-dd HH:mm:ssZ'));
+
+        $this->formatter->defaultTimeZone = 'Europe/Berlin';
+        $timeStamp = -1431907200;
+        $this->formatter->timeZone = 'UTC';
+        $this->assertEquals('1924-08-17 00:00:00+0000', $this->formatter->asDateTime($timeStamp, 'yyyy-MM-dd HH:mm:ssZ'));
+        $this->formatter->timeZone = 'Europe/Berlin';
+        $this->assertEquals('1924-08-17 01:00:00+0100', $this->formatter->asDateTime($timeStamp, 'yyyy-MM-dd HH:mm:ssZ'));
+
     }
 
 }

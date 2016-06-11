@@ -9,12 +9,19 @@ Yii2 コアフレームワークのコードスタイル
 なお、CodeSniffer のための設定をここで入手できます: https://github.com/yiisoft/yii2-coding-standards
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 > Note|注意: 以下では、説明のために、サンプル・コードのドキュメントやコメントを日本語に翻訳しています。
   しかし、コアコードや公式エクステンションに対して実際に寄稿する場合には、それらを英語で書く必要があります。
 
 
 >>>>>>> yiichina/master
+=======
+> Note: 以下では、説明のために、サンプル・コードのドキュメントやコメントを日本語に翻訳しています。
+  しかし、コアコードや公式エクステンションに対して実際に寄稿する場合には、それらを英語で書く必要があります。
+
+
+>>>>>>> master
 1. 概要
 -------
 
@@ -59,7 +66,7 @@ PHP コードは BOM 無しの UTF-8 のみを使わなければなりません�
 - クラスは `CamelCase` で命名されなければなりません。
 - 中括弧は常にクラス名の下の行に書かれるべきです。
 - 全てのクラスは PHPDoc に従ったドキュメントブロックを持たなければなりません。
-- クラス内のすべてのコードは一個のタブによってインデントされなければなりません。
+- クラス内のすべてのコードは4個の空白によってインデントされなければなりません。
 - 一つの PHP ファイルにはクラスが一つだけあるべきです。
 - 全てのクラスは名前空間に属すべきです。
 - クラス名はファイル名と合致すべきです。クラスの名前空間はディレクトリ構造と合致すべきです。
@@ -93,8 +100,10 @@ class Foo
 - Public および protected な変数はクラスの冒頭で、すべてのメソッドの宣言に先立って宣言されるべきです。
   Private な変数もまたクラスの冒頭で宣言されるべきですが、
   変数がクラスのメソッドのごく一部分にのみ関係する場合は、変数を扱う一群のメソッドの直前に追加しても構いません。
-- クラスにおけるプロパティの宣言の順序は public から始まり、protected、private と続くべきです。
+- クラスにおけるプロパティの宣言の順序は、その可視性に基づいて、 public から始まり、protected、private と続くべきです。
+- 同じ可視性を持つプロパティの順序については、厳格な規則はありません。
 - より読みやすいように、プロパティの宣言は空行を挟まずに続け、プロパティ宣言とメソッド宣言のブロック間には2行の空行を挟むべきです。
+  また、異なる可視性のグループの間に、1行の空行を追加するべきです。
 - Private 変数は `$_varName` のように名付けるべきです。
 - Public なクラスメンバとスタンドアロンな変数は、先頭を小文字にした `$camelCase` で名付けるべきです。
 - 説明的な名前を使うこと。`$i` や `$j` のような変数は使わないようにしましょう。
@@ -105,9 +114,18 @@ class Foo
 <?php
 class Foo
 {
-    public $publicProp;
+    public $publicProp1;
+    public $publicProp2;
+
     protected $protectedProp;
+
     private $_privateProp;
+
+
+    public function someMethod()
+    {
+        // ...
+    }
 }
 ```
 
@@ -118,7 +136,7 @@ class Foo
 - クラスのメソッドは常に修飾子 `private`、`protected` または `public` を使って、可視性を宣言すべきです。`var` は許可されません。
 - 関数の開始の中括弧は関数宣言の次の行に置くべきです。
 
-~~~
+```php
 /**
  * ドキュメント
  */
@@ -133,7 +151,7 @@ class Foo
         return $value;
     }
 }
-~~~
+```
 
 ### 4.4 Doc ブロック
 
@@ -260,18 +278,22 @@ if (!$model && null === $event)
 ```
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 そうすることが合理的な場合は、`return` の後の `else` は出来れば避けてください。
 =======
 そうしても意味が通じる場合は、`return` の後の `else` は避けてください。
 >>>>>>> yiichina/master
+=======
+そうしても意味が通じる場合は、`return` の後の `else` は避けてください。
+>>>>>>> master
 [ガード条件](http://refactoring.com/catalog/replaceNestedConditionalWithGuardClauses.html) を使用しましょう。
 
 ```php
 $result = $this->getResult();
 if (empty($result)) {
-  return true;
+    return true;
 } else {
-  // $result を処理
+    // $result を処理
 }
 ```
 
@@ -280,7 +302,7 @@ if (empty($result)) {
 ```php
 $result = $this->getResult();
 if (empty($result)) {
-  return true;
+    return true;
 }
 
 // $result を処理
@@ -370,10 +392,13 @@ $mul = array_reduce($numbers, function($r, $x) use($n) {
   ```
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 >Note|注意: ここでは読みやすさを考慮してドキュメントの内容を日本語に翻訳していますが、コアコードや公式エクステンションに対して寄稿する場合は、当然ながら、コメントには英語だけを使う必要があります。
 
 =======
 >>>>>>> yiichina/master
+=======
+>>>>>>> master
 #### ファイル
 
 ```php
@@ -408,9 +433,9 @@ class Component extends \yii\base\Object
  * 返された [[Vector]] オブジェクトを操作して、ハンドラを追加したり削除したり出来る。
  * 例えば、
  *
- * ~~~
+ * ```
  * $component->getEventHandlers($eventName)->insertAt(0, $eventHandler);
- * ~~~
+ * ```
  *
  * @param string $name イベントの名前
  * @return Vector イベントにアタッチされたハンドラのリスト
@@ -457,10 +482,14 @@ public function getEventHandlers($name)
 
 - 一行コメントは `//` で開始されるべきです。`#` は使いません。
 <<<<<<< HEAD
+<<<<<<< HEAD
 - 一行コメントはそれ自身の行に置くべきです。
 =======
 - 一行コメントはそれ自体で一行を占めるべきです。
 >>>>>>> yiichina/master
+=======
+- 一行コメントはそれ自体で一行を占めるべきです。
+>>>>>>> master
 
 追加の規則
 ----------
@@ -489,5 +518,7 @@ public function getEventHandlers($name)
 ### ディレクトリ/名前空間の名前
 
 - 小文字を使います。
-- オブジェクトを表すものには複数形の名詞を使います (例えば、validators)
-- 機能や特徴を表す名前には単数形を使います (例えば、web)
+- オブジェクトを表すものには複数形の名詞を使います (例えば、validators)。
+- 機能や特徴を表す名前には単数形を使います (例えば、web)。
+- 出来れば単一の語の名前空間にします。
+- 単一の語が適切でない場合は、camelCase を使います。

@@ -2,10 +2,13 @@
 ==========================
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 > Note|注意: この節はまだ執筆中です。
 
 =======
 >>>>>>> yiichina/master
+=======
+>>>>>>> master
 デフォルトでは、Yii は PHP をテンプレート言語として使いますが、[Twig](http://twig.sensiolabs.org/) や [Smarty](http://www.smarty.net/) などの他のレンダリングエンジンをサポートするように Yii を構成することが出来ます。
 
 `view` コンポーネントがビューのレンダリングに責任を持っています。
@@ -49,6 +52,7 @@
 上のコードを `composer.json` の `require` セクションに追加します。
 変更をファイルに保存した後、コマンドラインで `composer update --prefer-dist` を実行することによってエクステンションをインストールすることが出来ます。
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 Twig
 ----
@@ -346,41 +350,14 @@ Smarty のテンプレートの構文を学ぶための最善のリソースは�
 ```
 
 ActiveForm のように `begin` および `end` メソッドを持つウィジェットについては、ブロックを使うほうが良いでしょう。
+=======
+具体的にテンプレートエンジンを使用する方法については、それぞれのドキュメントで詳細を参照してください。
+>>>>>>> master
 
-```
-{use class='yii\widgets\ActiveForm' type='block'}
-{ActiveForm assign='form' id='login-form' action='/form-handler' options=['class' => 'form-horizontal']}
-    {$form->field($model, 'firstName')}
-    <div class="form-group">
-        <div class="col-lg-offset-1 col-lg-11">
-            <input type="submit" value="ログイン" class="btn btn-primary" />
-        </div>
-    </div>
-{/ActiveForm}
-```
+- [Twig ガイド](https://github.com/yiisoft/yii2-twig/tree/master/docs/guide-ja)
+- [Smarty ガイド](https://github.com/yiisoft/yii2-smarty/tree/master/docs/guide-ja)
 
-特定のウィジェットを多用する場合は、それをアプリケーション構成の中で宣言して、テンプレートから `{use class` の呼び出しを削除するのが良いアイデアです。
-
-```php
-'components' => [
-    'view' => [
-        // ...
-        'renderers' => [
-            'tpl' => [
-                'class' => 'yii\smarty\ViewRenderer',
-                'widgets' => [
-                    'blocks' => [
-                        'ActiveForm' => '\yii\widgets\ActiveForm',
-                    ],
-                ],
-            ],
-        ],
-    ],
-],
-```
-
-#### 他のテンプレートを参照する
-
+<<<<<<< HEAD
 `include` と `extends` 文によるテンプレートの参照には、主として二つの方法があります。
 
 
@@ -463,3 +440,5 @@ Smarty のテンプレート内では、次の変数が常に定義されてい�
 - [Smarty ガイド](https://github.com/yiisoft/yii2-smarty/tree/master/docs/guide-ja)
 
 >>>>>>> yiichina/master
+=======
+>>>>>>> master

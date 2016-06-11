@@ -1,12 +1,20 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
 Security
 =======
 Working with Passwords
 >>>>>>> yiichina/master
 ========
+=======
+Working with Passwords
+======================
+>>>>>>> master
 
-> Note: This section is under development.
+Most developers know that passwords cannot be stored in plain text, but many developers believe it's still safe to hash
+passwords using `md5` or `sha1`. There was a time when using the aforementioned hashing algorithms was sufficient,
+but modern hardware makes it possible to reverse such hashes and even stronger ones very quickly using brute force attacks.
 
+<<<<<<< HEAD
 Good security is vital to the health and success of any application. Unfortunately, many developers cut corners when it comes to security, either due to a lack of understanding or because implementation is too much of a hurdle. To make your Yii powered application as secure as possible, Yii has included several excellent and easy to use security features.
 
 
@@ -20,6 +28,12 @@ Hashing and Verifying Passwords
 Most developers know that passwords cannot be stored in plain text, but many developers believe it's still safe to hash passwords using `md5` or `sha1`. There was a time when using the aforementioned hashing algorithms was sufficient, but modern hardware makes it possible to reverse such hashes very quickly using brute force attacks.
 
 In order to provide increased security for user passwords, even in the worst case scenario (your application is breached), you need to use a hashing algorithm that is resilient against brute force attacks. The best current choice is `bcrypt`. In PHP, you can create a `bcrypt` hash  using the [crypt function](http://php.net/manual/en/function.crypt.php). Yii provides two helper functions which make using `crypt` to securely generate and verify hashes easier.
+=======
+In order to provide increased security for user passwords, even in the worst case scenario (your application is breached),
+you need to use a hashing algorithm that is resilient against brute force attacks. The best current choice is `bcrypt`.
+In PHP, you can create a `bcrypt` hash using the [crypt function](http://php.net/manual/en/function.crypt.php). Yii provides
+two helper functions which make using `crypt` to securely generate and verify hashes easier.
+>>>>>>> master
 
 When a user provides a password for the first time (e.g., upon registration), the password needs to be hashed:
 
@@ -40,6 +54,7 @@ if (Yii::$app->getSecurity()->validatePassword($password, $hash)) {
     // wrong password
 }
 ```
+<<<<<<< HEAD
 
 <<<<<<< HEAD
 Generating Pseudorandom data
@@ -158,3 +173,5 @@ See also
 
 - [Views security](structure-views.md#security)
 
+=======
+>>>>>>> master

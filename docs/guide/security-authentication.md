@@ -2,18 +2,73 @@ Authentication
 ==============
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 > Note: This section is under development.
+=======
+Authentication is the process of verifying the identity of a user. It usually uses an identifier 
+(e.g. a username or an email address) and a secret token (e.g. a password or an access token) to judge 
+if the user is the one whom he claims as. Authentication is the basis of the login feature.
+>>>>>>> master
 
-Authentication is the act of verifying who a user is, and is the basis of the login process. Typically, authentication uses the combination of an identifier--a username or email address--and a password. The user submits these values  through a form, and the application then compares the submitted information against that previously stored (e.g., upon registration).
+Yii provides an authentication framework which wires up various components to support login. To use this framework, 
+you mainly need to do the following work:
+ 
+* Configure the [[yii\web\User|user]] application component;
+* Create a class that implements the [[yii\web\IdentityInterface]] interface.
 
-In Yii, this entire process is performed semi-automatically, leaving the developer to merely implement [[yii\web\IdentityInterface]], the most important class in the authentication system. Typically, implementation of `IdentityInterface` is accomplished using the `User` model.
 
-You can find a fully featured example of authentication in the
-[advanced application template](tutorial-advanced-app.md). Below, only the interface methods are listed:
+## Configuring [[yii\web\User]] <span id="configuring-user"></span>
+
+The [[yii\web\User|user]] application component manages the user authentication status. It requires you to 
+specify an [[yii\web\User::identityClass|identity class]] which contains the actual authentication logic.
+In the following application configuration, the [[yii\web\User::identityClass|identity class]] for
+[[yii\web\User|user]] is configured to be `app\models\User` whose implementation is explained in 
+the next subsection:
+  
+```php
+return [
+    'components' => [
+        'user' => [
+            'identityClass' => 'app\models\User',
+        ],
+    ],
+];
+```
+
+
+## Implementing [[yii\web\IdentityInterface]] <span id="implementing-identity"></span>
+
+The [[yii\web\User::identityClass|identity class]] must implement the [[yii\web\IdentityInterface]] which contains
+the following methods:
+
+* [[yii\web\IdentityInterface::findIdentity()|findIdentity()]]: it looks for an instance of the identity
+  class using the specified user ID. This method is used when you need to maintain the login status via session.
+* [[yii\web\IdentityInterface::findIdentityByAccessToken()|findIdentityByAccessToken()]]: it looks for
+  an instance of the identity class using the specified access token. This method is used when you need
+  to authenticate a user by a single secret token (e.g. in a stateless RESTful application).
+* [[yii\web\IdentityInterface::getId()|getId()]]: it returns the ID of the user represented by this identity instance.
+* [[yii\web\IdentityInterface::getAuthKey()|getAuthKey()]]: it returns a key used to verify cookie-based login.
+  The key is stored in the login cookie and will be later compared with the server-side version to make
+  sure the login cookie is valid.
+* [[yii\web\IdentityInterface::validateAuthKey()|validateAuthKey()]]: it implements the logic for verifying
+  the cookie-based login key.
+
+If a particular method is not needed, you may implement it with an empty body. For example, if your application 
+is a pure stateless RESTful application, you would only need to implement [[yii\web\IdentityInterface::findIdentityByAccessToken()|findIdentityByAccessToken()]]
+and [[yii\web\IdentityInterface::getId()|getId()]] while leaving all other methods with an empty body.
+
+In the following example, an [[yii\web\User::identityClass|identity class]] is implemented as 
+an [Active Record](db-active-record.md) class associated with the `user` database table.
 
 ```php
+<?php
+
+use yii\db\ActiveRecord;
+use yii\web\IdentityInterface;
+
 class User extends ActiveRecord implements IdentityInterface
 {
+<<<<<<< HEAD
     // ...
 =======
 Authentication is the process of verifying the identity of a user. It usually uses an identifier 
@@ -78,11 +133,16 @@ use yii\web\IdentityInterface;
 
 class User extends ActiveRecord implements IdentityInterface
 {
+=======
+>>>>>>> master
     public static function tableName()
     {
         return 'user';
     }
+<<<<<<< HEAD
 >>>>>>> yiichina/master
+=======
+>>>>>>> master
 
     /**
      * Finds an identity by the given ID.
@@ -134,25 +194,37 @@ class User extends ActiveRecord implements IdentityInterface
 ```
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 Two of the outlined methods are simple: `findIdentity` is provided with an  ID value and returns a model instance
 associated with that ID. The `getId` method returns the ID itself. Two of the other methods – `getAuthKey` and
 `validateAuthKey` – are used to provide extra security to the "remember me" cookie. The `getAuthKey` method should
 return a string that is unique for each user. You can reliably create a unique string using
 `Yii::$app->getSecurity()->generateRandomString()`. It's a good idea to also save this as part of the user's record:
+=======
+As explained previously, you only need to implement `getAuthKey()` and `validateAuthKey()` if your application
+uses cookie-based login feature. In this case, you may use the following code to generate an auth key for each
+user and store it in the `user` table:
+>>>>>>> master
 
 ```php
-public function beforeSave($insert)
+class User extends ActiveRecord implements IdentityInterface
 {
-    if (parent::beforeSave($insert)) {
-        if ($this->isNewRecord) {
-            $this->auth_key = Yii::$app->getSecurity()->generateRandomString();
+    ......
+    
+    public function beforeSave($insert)
+    {
+        if (parent::beforeSave($insert)) {
+            if ($this->isNewRecord) {
+                $this->auth_key = \Yii::$app->security->generateRandomString();
+            }
+            return true;
         }
-        return true;
+        return false;
     }
-    return false;
 }
 ```
 
+<<<<<<< HEAD
 The `validateAuthKey` method just needs to compare the `$authKey` variable, passed as a parameter (itself retrieved from a cookie), with the value fetched from the database.
 =======
 As explained previously, you only need to implement `getAuthKey()` and `validateAuthKey()` if your application
@@ -177,6 +249,8 @@ class User extends ActiveRecord implements IdentityInterface
 }
 ```
 
+=======
+>>>>>>> master
 > Note: Do not confuse the `User` identity class with [[yii\web\User]]. The former is the class implementing
   the authentication logic. It is often implemented as an [Active Record](db-active-record.md) class associated
   with some persistent storage for storing the user credential information. The latter is an application component
@@ -251,4 +325,7 @@ The [[yii\web\User]] class raises a few events during the login and logout proce
 You may respond to these events to implement features such as login audit, online user statistics. For example,
 in the handler for [[yii\web\User::EVENT_AFTER_LOGIN|EVENT_AFTER_LOGIN]], you may record the login time and IP
 address in the `user` table.
+<<<<<<< HEAD
 >>>>>>> yiichina/master
+=======
+>>>>>>> master

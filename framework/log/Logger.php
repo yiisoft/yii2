@@ -78,7 +78,7 @@ class Logger extends Component
      * @var array logged messages. This property is managed by [[log()]] and [[flush()]].
      * Each log message is of the following structure:
      *
-     * ~~~
+     * ```
      * [
      *   [0] => message (mixed, can be a string or some complex data, such as an exception object)
      *   [1] => level (integer)
@@ -86,7 +86,7 @@ class Logger extends Component
      *   [3] => timestamp (float, obtained by microtime(true))
      *   [4] => traces (array, debug backtrace, contains the application code call stacks)
      * ]
-     * ~~~
+     * ```
      */
     public $messages = [];
     /**
@@ -117,13 +117,19 @@ class Logger extends Component
         parent::init();
         register_shutdown_function(function () {
 <<<<<<< HEAD
+<<<<<<< HEAD
             // make sure "flush()" is called last when there are multiple shutdown functions
 =======
+=======
+>>>>>>> master
             // make regular flush before other shutdown functions, which allows session data collection and so on
             $this->flush();
             // make sure log entries written by shutdown functions are also flushed
             // ensure "flush()" is called last when there are multiple shutdown functions
+<<<<<<< HEAD
 >>>>>>> yiichina/master
+=======
+>>>>>>> master
             register_shutdown_function([$this, 'flush'], true);
         });
     }

@@ -37,10 +37,14 @@ class Behavior extends Object
      * the behavior is detached from the component.
      *
 <<<<<<< HEAD
+<<<<<<< HEAD
      * The callbacks can be any of the followings:
 =======
      * The callbacks can be any of the following:
 >>>>>>> yiichina/master
+=======
+     * The callbacks can be any of the following:
+>>>>>>> master
      *
      * - method in this behavior: `'handleClick'`, equivalent to `[$this, 'handleClick']`
      * - object method: `[$object, 'handleClick']`
@@ -49,12 +53,12 @@ class Behavior extends Object
      *
      * The following is an example:
      *
-     * ~~~
+     * ```php
      * [
      *     Model::EVENT_BEFORE_VALIDATE => 'myBeforeValidate',
      *     Model::EVENT_AFTER_VALIDATE => 'myAfterValidate',
      * ]
-     * ~~~
+     * ```
      *
      * @return array events (array keys) and the corresponding event handler methods (array values).
      */

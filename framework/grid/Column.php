@@ -33,10 +33,14 @@ class Column extends Object
     public $footer;
     /**
 <<<<<<< HEAD
+<<<<<<< HEAD
      * @var callable This is a callable that will be used to generated the content of each cell.
 =======
      * @var callable This is a callable that will be used to generate the content of each cell.
 >>>>>>> yiichina/master
+=======
+     * @var callable This is a callable that will be used to generate the content of each cell.
+>>>>>>> master
      * The signature of the function should be the following: `function ($model, $key, $index, $column)`.
      * Where `$model`, `$key`, and `$index` refer to the model, key and index of the row currently being rendered
      * and `$column` is a reference to the [[Column]] object.
@@ -128,7 +132,18 @@ class Column extends Object
      */
     protected function renderHeaderCellContent()
     {
-        return trim($this->header) !== '' ? $this->header : $this->grid->emptyCell;
+        return trim($this->header) !== '' ? $this->header : $this->getHeaderCellLabel();
+    }
+
+    /**
+     * Returns header cell label.
+     * This method may be overridden to customize the label of the header cell.
+     * @return string label
+     * @since 2.0.8
+     */
+    protected function getHeaderCellLabel()
+    {
+        return $this->grid->emptyCell;
     }
 
     /**

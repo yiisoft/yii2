@@ -1,7 +1,11 @@
 /**
+<<<<<<< HEAD
  * This is the database schema for testing PostgreSQL support of yii Active Record.
  * To test this feature, you need to create a database named 'yiitest' on 'localhost'
  * and create an account 'postgres/postgres' which owns this test database.
+=======
+ * This is the database schema for testing Oracle support of Yii Active Record.
+>>>>>>> master
  */
 
 BEGIN EXECUTE IMMEDIATE 'DROP TABLE "composite_fk"'; EXCEPTION WHEN OTHERS THEN IF SQLCODE != -942 THEN RAISE; END IF; END;--
@@ -19,6 +23,10 @@ BEGIN EXECUTE IMMEDIATE 'DROP TABLE "constraints"'; EXCEPTION WHEN OTHERS THEN I
 BEGIN EXECUTE IMMEDIATE 'DROP TABLE "bool_values"'; EXCEPTION WHEN OTHERS THEN IF SQLCODE != -942 THEN RAISE; END IF; END;--
 BEGIN EXECUTE IMMEDIATE 'DROP TABLE "animal"'; EXCEPTION WHEN OTHERS THEN IF SQLCODE != -942 THEN RAISE; END IF; END;--
 BEGIN EXECUTE IMMEDIATE 'DROP TABLE "default_pk"'; EXCEPTION WHEN OTHERS THEN IF SQLCODE != -942 THEN RAISE; END IF; END;--
+<<<<<<< HEAD
+=======
+BEGIN EXECUTE IMMEDIATE 'DROP TABLE "document"'; EXCEPTION WHEN OTHERS THEN IF SQLCODE != -942 THEN RAISE; END IF; END;--
+>>>>>>> master
 BEGIN EXECUTE IMMEDIATE 'DROP VIEW "animal_view"'; EXCEPTION WHEN OTHERS THEN IF SQLCODE != -942 THEN RAISE; END IF; END;--
 BEGIN EXECUTE IMMEDIATE 'DROP TABLE "validator_main"'; EXCEPTION WHEN OTHERS THEN IF SQLCODE != -942 THEN RAISE; END IF; END;--
 BEGIN EXECUTE IMMEDIATE 'DROP TABLE "validator_ref"'; EXCEPTION WHEN OTHERS THEN IF SQLCODE != -942 THEN RAISE; END IF; END;--
@@ -29,8 +37,15 @@ BEGIN EXECUTE IMMEDIATE 'DROP SEQUENCE "category_SEQ"'; EXCEPTION WHEN OTHERS TH
 BEGIN EXECUTE IMMEDIATE 'DROP SEQUENCE "item_SEQ"'; EXCEPTION WHEN OTHERS THEN IF SQLCODE != -2289 THEN RAISE; END IF; END;--
 BEGIN EXECUTE IMMEDIATE 'DROP SEQUENCE "order_SEQ"'; EXCEPTION WHEN OTHERS THEN IF SQLCODE != -2289 THEN RAISE; END IF; END;--
 BEGIN EXECUTE IMMEDIATE 'DROP SEQUENCE "order_with_null_fk_SEQ"'; EXCEPTION WHEN OTHERS THEN IF SQLCODE != -2289 THEN RAISE; END IF; END;--
+<<<<<<< HEAD
 BEGIN EXECUTE IMMEDIATE 'DROP SEQUENCE "bool_values_SEQ"'; EXCEPTION WHEN OTHERS THEN IF SQLCODE != -2289 THEN RAISE; END IF; END;--
 BEGIN EXECUTE IMMEDIATE 'DROP SEQUENCE "animal_SEQ"'; EXCEPTION WHEN OTHERS THEN IF SQLCODE != -2289 THEN RAISE; END IF; END;--
+=======
+BEGIN EXECUTE IMMEDIATE 'DROP SEQUENCE "null_values_SEQ"'; EXCEPTION WHEN OTHERS THEN IF SQLCODE != -2289 THEN RAISE; END IF; END;--
+BEGIN EXECUTE IMMEDIATE 'DROP SEQUENCE "bool_values_SEQ"'; EXCEPTION WHEN OTHERS THEN IF SQLCODE != -2289 THEN RAISE; END IF; END;--
+BEGIN EXECUTE IMMEDIATE 'DROP SEQUENCE "animal_SEQ"'; EXCEPTION WHEN OTHERS THEN IF SQLCODE != -2289 THEN RAISE; END IF; END;--
+BEGIN EXECUTE IMMEDIATE 'DROP SEQUENCE "document_SEQ"'; EXCEPTION WHEN OTHERS THEN IF SQLCODE != -2289 THEN RAISE; END IF; END;--
+>>>>>>> master
 
 /* STATEMENTS */
 
@@ -127,6 +142,10 @@ CREATE TABLE "null_values" (
   "stringcol" varchar2(32) DEFAULT NULL,
   CONSTRAINT "null_values_PK" PRIMARY KEY ("id") ENABLE
 );
+<<<<<<< HEAD
+=======
+CREATE SEQUENCE "null_values_SEQ";
+>>>>>>> master
 
 CREATE TABLE "type" (
   "int_col" integer NOT NULL,
@@ -169,6 +188,18 @@ CREATE TABLE "default_pk" (
   CONSTRAINT "default_pk_PK" PRIMARY KEY ("id") ENABLE
 );
 
+<<<<<<< HEAD
+=======
+CREATE TABLE "document" (
+  "id" integer,
+  "title" varchar2(255) not null,
+  "content" varchar(4000),
+  "version" integer default 0 not null,
+  CONSTRAINT "document_PK" PRIMARY KEY ("id") ENABLE
+);
+CREATE SEQUENCE "document_SEQ";
+
+>>>>>>> master
 CREATE VIEW "animal_view" AS SELECT * FROM "animal";
 
 /**
@@ -220,6 +251,14 @@ CREATE TRIGGER "order_with_null_fk_TRG" BEFORE INSERT ON "order_with_null_fk" FO
 END COLUMN_SEQUENCES;
 END;
 /
+<<<<<<< HEAD
+=======
+CREATE TRIGGER "null_values_TRG" BEFORE INSERT ON "null_values" FOR EACH ROW BEGIN <<COLUMN_SEQUENCES>> BEGIN
+  IF INSERTING AND :NEW."id" IS NULL THEN SELECT "null_values_SEQ".NEXTVAL INTO :NEW."id" FROM SYS.DUAL; END IF;
+END COLUMN_SEQUENCES;
+END;
+/
+>>>>>>> master
 CREATE TRIGGER "bool_values_TRG" BEFORE INSERT ON "bool_values" FOR EACH ROW BEGIN <<COLUMN_SEQUENCES>> BEGIN
   IF INSERTING AND :NEW."id" IS NULL THEN SELECT "bool_values_SEQ".NEXTVAL INTO :NEW."id" FROM SYS.DUAL; END IF;
 END COLUMN_SEQUENCES;
@@ -275,6 +314,11 @@ INSERT INTO "order_item_with_null_fk" ("order_id", "item_id", "quantity", "subto
 INSERT INTO "order_item_with_null_fk" ("order_id", "item_id", "quantity", "subtotal") VALUES (2, 3, 1, 8.0);
 INSERT INTO "order_item_with_null_fk" ("order_id", "item_id", "quantity", "subtotal") VALUES (3, 2, 1, 40.0);
 
+<<<<<<< HEAD
+=======
+INSERT INTO "document" ("title", "content", "version") VALUES ('Yii 2.0 guide', 'This is Yii 2.0 guide', 0);
+
+>>>>>>> master
 INSERT INTO "validator_main" ("id", "field1") VALUES (1, 'just a string1');
 INSERT INTO "validator_main" ("id", "field1") VALUES (2, 'just a string2');
 INSERT INTO "validator_main" ("id", "field1") VALUES (3, 'just a string3');
@@ -285,3 +329,27 @@ INSERT INTO "validator_ref" ("id", "a_field", "ref") VALUES (3, 'ref_to_3', 3);
 INSERT INTO "validator_ref" ("id", "a_field", "ref") VALUES (4, 'ref_to_4', 4);
 INSERT INTO "validator_ref" ("id", "a_field", "ref") VALUES (5, 'ref_to_4', 4);
 INSERT INTO "validator_ref" ("id", "a_field", "ref") VALUES (6, 'ref_to_5', 5);
+<<<<<<< HEAD
+=======
+
+/* bit test, see https://github.com/yiisoft/yii2/issues/9006 */
+
+BEGIN EXECUTE IMMEDIATE 'DROP TABLE "bit_values"'; EXCEPTION WHEN OTHERS THEN IF SQLCODE != -942 THEN RAISE; END IF; END;--
+
+CREATE TABLE [dbo].[] (
+    [id] [int] IDENTITY(1,1) NOT NULL,
+	[val] [bit] NOT NULL,
+	CONSTRAINT [PK_bit_values] PRIMARY KEY CLUSTERED (
+		[id] ASC
+	) ON [PRIMARY]
+);
+
+CREATE TABLE "bit_values" (
+  "id" integer not null,
+  "val" char(1) NOT NULL,
+  CONSTRAINT "bit_values_PK" PRIMARY KEY ("id") ENABLE,
+  CONSTRAINT "bit_values_val" CHECK (val IN ('1','0'))
+);
+
+INSERT INTO "bit_values" ("id", "val") VALUES (1, '0'), (2, '1');
+>>>>>>> master

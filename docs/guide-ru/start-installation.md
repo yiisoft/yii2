@@ -2,14 +2,18 @@
 ==============
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 Вы можете установить Yii двумя способами: используя [Composer](http://getcomposer.org/) или скачав архив.
 =======
 Вы можете установить Yii двумя способами: используя [Composer](https://getcomposer.org/) или скачав архив.
 >>>>>>> yiichina/master
+=======
+Вы можете установить Yii двумя способами: используя [Composer](https://getcomposer.org/) или скачав архив.
+>>>>>>> master
 Первый способ предпочтительнее так как позволяет установить новые [расширения](structure-extensions.md)
 или обновить Yii одной командой.
 
-> Примечание: В отличие от Yii 1, после стандартной установки Yii 2 мы получаем как фреймворк, так и шаблон приложения.
+> Note: В отличие от Yii 1, после стандартной установки Yii 2 мы получаем как фреймворк, так и шаблон приложения.
 
 
 Установка при помощи Composer <span id="installing-via-composer"></span>
@@ -19,6 +23,7 @@
 [getcomposer.org](https://getcomposer.org/download/), или одним из нижеперечисленных способов. На Linux или Mac 
 используйте следующую команду:
 
+<<<<<<< HEAD
   ```
 <<<<<<< HEAD
   curl -s http://getcomposer.org/installer | php
@@ -27,6 +32,12 @@
 >>>>>>> yiichina/master
   mv composer.phar /usr/local/bin/composer
   ```
+=======
+```bash
+curl -sS https://getcomposer.org/installer | php
+mv composer.phar /usr/local/bin/composer
+```
+>>>>>>> master
 
 На Windows, скачайте и запустите [Composer-Setup.exe](https://getcomposer.org/Composer-Setup.exe).
 
@@ -38,11 +49,18 @@
 После установки Composer устанавливать Yii можно запустив следующую команду в папке доступной через веб:
 
 <<<<<<< HEAD
+<<<<<<< HEAD
     composer global require "fxp/composer-asset-plugin:1.0.0"
 =======
     composer global require "fxp/composer-asset-plugin:~1.0.0"
 >>>>>>> yiichina/master
     composer create-project --prefer-dist yiisoft/yii2-app-basic basic
+=======
+```bash
+composer global require "fxp/composer-asset-plugin:~1.1.1"
+composer create-project --prefer-dist yiisoft/yii2-app-basic basic
+```
+>>>>>>> master
 
 Первая команда устанавливает [composer asset plugin](https://github.com/francoispluchino/composer-asset-plugin/),
 который позволяет управлять зависимостями пакетов bower и npm через Composer. Эту команду достаточно выполнить один раз.
@@ -50,16 +68,18 @@
 
 Composer установит Yii (шаблонное приложение basic) в папку `basic`.
 
-> Примечание: В процессе установки Composer может запросить логин и пароль от Github потому как у API Github имеется
+> Note: В процессе установки Composer может запросить логин и пароль от Github потому как у API Github имеется
 > ограничение на количество запросов. Это нормально потому как Composer в процессе работы запрашивает у Github большое
 >  количество информации для каждого пакета. Вход на Github повышает ограничение по запросам API и Composer может
 > продолжить свою работу. Подробнее об этом можно прочитать в
 > [документации Composer](https://getcomposer.org/doc/articles/troubleshooting.md#api-rate-limit-and-oauth-tokens).
 
-> Подсказка: Если вы хотите установить последнюю нестабильную ревизию Yii, можете использовать следующую команду,
+> Tip: Если вы хотите установить последнюю нестабильную ревизию Yii, можете использовать следующую команду,
 > в которой присутствует [опция stability](https://getcomposer.org/doc/04-schema.md#minimum-stability):
 >
->     composer create-project --prefer-dist --stability=dev yiisoft/yii2-app-basic basic
+> ```bash
+> composer create-project --prefer-dist --stability=dev yiisoft/yii2-app-basic basic
+> ```
 >
 > Старайтесь не использовать нестабильную версию Yii на рабочих серверах потому как она может внезапно поломать код.
 
@@ -74,10 +94,10 @@ Composer установит Yii (шаблонное приложение basic) 
 3. В файле `config/web.php` добавьте секретный ключ в значение `cookieValidationKey` (при установке через Composer
    это происходит автоматически):
 
-   ```php
-   // !!! insert a secret key in the following (if it is empty) - this is required by cookie validation
-   'cookieValidationKey' => 'enter your secret key here',
-   ```
+```php
+// !!! insert a secret key in the following (if it is empty) - this is required by cookie validation
+'cookieValidationKey' => 'enter your secret key here',
+```
 
 Другие опции установки <span id="other-installation-options"></span>
 --------------------------
@@ -90,7 +110,7 @@ Composer установит Yii (шаблонное приложение basic) 
 * Если вам нужен только сам фреймворк и вы хотели бы создать приложение с нуля, воспользуйтесь инструкцией, описанной в
 разделе «[Создание приложения с нуля](tutorial-start-from-scratch.md)».
 * Если хотите начать с более продвинутого приложения, хорошо подходящего для работы в команде, используйте
-[шаблон приложения advanced](tutorial-advanced-app.md).
+[шаблон приложения advanced](https://github.com/yiisoft/yii2-app-advanced/blob/master/docs/guide/README.md).
 
 
 Проверка установки <span id="verifying-installation"></span>
@@ -112,10 +132,10 @@ http://localhost/basic/web/index.php
 * Браузером перейдите по адресу `http://localhost/basic/requirements.php`
 * Или выполните команду в консоли: 
 
-  ```
-  cd basic
-  php requirements.php
-  ```
+```bash
+cd basic
+php requirements.php
+```
 
 Для корректной работы фреймворка вам необходима установка PHP, соответствующая его минимальным требованиям. Основное
 требование — PHP версии 5.4 и выше. Если ваше приложение работает с базой данных, необходимо установить
@@ -126,7 +146,7 @@ http://localhost/basic/web/index.php
 Настройка веб сервера <span id="configuring-web-servers"></span>
 -----------------------
 
-> Информация: можете пропустить этот подраздел если вы только начали знакомиться с фреймворком и пока не разворачиваете
+> Info: можете пропустить этот подраздел если вы только начали знакомиться с фреймворком и пока не разворачиваете
   его на рабочем сервере.
 
 Приложение, установленное по инструкциям, приведённым выше, будет работать сразу как с [Apache](http://httpd.apache.org/),
@@ -137,12 +157,12 @@ http://localhost/basic/web/index.php
 На рабочем сервере вам наверняка захочется изменить URL приложения с `http://www.example.com/basic/web/index.php`
 на `http://www.example.com/index.php`. Для этого необходимо изменить корневую директорию в настройках веб сервера так,
 чтобы та указывала на `basic/web`. Дополнительно можно спрятать `index.php` следуя описанию в разделе
-«[Разбор и генерация URL](runtime-url-handling.md)». Далее будет показано как настроить Apache и Nginx.
+«[Разбор и генерация URL](runtime-routing.md)». Далее будет показано как настроить Apache и Nginx.
 
-> Информация: Устанавливая `basic/web` корневой директорией веб сервера вы защищаете от нежелательного доступа код и данные,
+> Info: Устанавливая `basic/web` корневой директорией веб сервера вы защищаете от нежелательного доступа код и данные,
   находящиеся на одном уровне с `basic/web`. Это делает приложение более защищенным.
 
-> Информация: Если приложение работает на хостинге где нет доступа к настройкам веб сервера, то можно изменить структуру
+> Info: Если приложение работает на хостинге где нет доступа к настройкам веб сервера, то можно изменить структуру
   приложения как описано в разделе «[Работа на Shared хостинге](tutorial-shared-hosting.md)».
 
 
@@ -188,10 +208,14 @@ server {
     index       index.php;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
     access_log  /path/to/project/log/access.log main;
 =======
     access_log  /path/to/project/log/access.log;
 >>>>>>> yiichina/master
+=======
+    access_log  /path/to/project/log/access.log;
+>>>>>>> master
     error_log   /path/to/project/log/error.log;
 
     location / {

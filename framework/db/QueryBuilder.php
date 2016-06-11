@@ -9,12 +9,14 @@ namespace yii\db;
 
 use yii\base\InvalidParamException;
 use yii\base\NotSupportedException;
+use yii\helpers\ArrayHelper;
 
 /**
  * QueryBuilder builds a SELECT SQL statement based on the specification given as a [[Query]] object.
  *
- * QueryBuilder can also be used to build SQL statements such as INSERT, UPDATE, DELETE, CREATE TABLE,
- * from a [[Query]] object.
+ * SQL statements are created from [[Query]] objects using the [[build()]]-method.
+ *
+ * QueryBuilder is also used by [[Command]] to build SQL statements such as INSERT, UPDATE, DELETE, CREATE TABLE.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
@@ -34,7 +36,7 @@ class QueryBuilder extends \yii\base\Object
      * @var string the separator between different fragments of a SQL statement.
      * Defaults to an empty space. This is mainly used by [[build()]] when generating a SQL statement.
      */
-    public $separator = " ";
+    public $separator = ' ';
     /**
      * @var array the abstract column types mapped to physical column types.
      * This is mainly used to support creating/modifying tables using DB-independent data type specifications.
@@ -101,6 +103,21 @@ class QueryBuilder extends \yii\base\Object
         $sql = implode($this->separator, array_filter($clauses));
         $sql = $this->buildOrderByAndLimit($sql, $query->orderBy, $query->limit, $query->offset);
 
+        if (!empty($query->orderBy)) {
+            foreach ($query->orderBy as $expression) {
+                if ($expression instanceof Expression) {
+                    $params = array_merge($params, $expression->params);
+                }
+            }
+        }
+        if (!empty($query->groupBy)) {
+            foreach ($query->groupBy as $expression) {
+                if ($expression instanceof Expression) {
+                    $params = array_merge($params, $expression->params);
+                }
+            }
+        }
+
         $union = $this->buildUnion($query->union, $params);
         if ($union !== '') {
             $sql = "($sql){$this->separator}$union";
@@ -113,12 +130,12 @@ class QueryBuilder extends \yii\base\Object
      * Creates an INSERT SQL statement.
      * For example,
      *
-     * ~~~
+     * ```php
      * $sql = $queryBuilder->insert('user', [
-     *  'name' => 'Sam',
-     *  'age' => 30,
+     *     'name' => 'Sam',
+     *     'age' => 30,
      * ], $params);
-     * ~~~
+     * ```
      *
      * The method will properly escape the table and column names.
      *
@@ -153,29 +170,34 @@ class QueryBuilder extends \yii\base\Object
         }
 
         return 'INSERT INTO ' . $schema->quoteTableName($table)
-            . ' (' . implode(', ', $names) . ') VALUES ('
-            . implode(', ', $placeholders) . ')';
+            . (!empty($names) ? ' (' . implode(', ', $names) . ')' : '')
+            . (!empty($placeholders) ? ' VALUES (' . implode(', ', $placeholders) . ')' : ' DEFAULT VALUES');
     }
 
     /**
      * Generates a batch INSERT SQL statement.
      * For example,
      *
-     * ~~~
+     * ```php
      * $sql = $queryBuilder->batchInsert('user', ['name', 'age'], [
      *     ['Tom', 30],
      *     ['Jane', 20],
      *     ['Linda', 25],
      * ]);
-     * ~~~
+     * ```
      *
      * Note that the values in each row must match the corresponding column names.
      *
+<<<<<<< HEAD
 <<<<<<< HEAD
 =======
      * The method will properly escape the column names, and quote the values to be inserted.
      *
 >>>>>>> yiichina/master
+=======
+     * The method will properly escape the column names, and quote the values to be inserted.
+     *
+>>>>>>> master
      * @param string $table the table that new rows will be inserted into.
      * @param array $columns the column names
      * @param array $rows the rows to be batch inserted into the table
@@ -221,10 +243,10 @@ class QueryBuilder extends \yii\base\Object
      * Creates an UPDATE SQL statement.
      * For example,
      *
-     * ~~~
+     * ```php
      * $params = [];
      * $sql = $queryBuilder->update('user', ['status' => 1], 'age > 30', $params);
-     * ~~~
+     * ```
      *
      * The method will properly escape the table and column names.
      *
@@ -268,9 +290,9 @@ class QueryBuilder extends \yii\base\Object
      * Creates a DELETE SQL statement.
      * For example,
      *
-     * ~~~
+     * ```php
      * $sql = $queryBuilder->delete('user', 'status = 0');
-     * ~~~
+     * ```
      *
      * The method will properly escape the table and column names.
      *
@@ -302,13 +324,13 @@ class QueryBuilder extends \yii\base\Object
      *
      * For example,
      *
-     * ~~~
+     * ```php
      * $sql = $queryBuilder->createTable('user', [
      *  'id' => 'pk',
      *  'name' => 'string',
      *  'age' => 'integer',
      * ]);
-     * ~~~
+     * ```
      *
      * @param string $table the name of the table to be created. The name will be properly quoted by the method.
      * @param array $columns the columns (name => definition) in the new table.
@@ -325,7 +347,7 @@ class QueryBuilder extends \yii\base\Object
                 $cols[] = "\t" . $type;
             }
         }
-        $sql = "CREATE TABLE " . $this->db->quoteTableName($table) . " (\n" . implode(",\n", $cols) . "\n)";
+        $sql = 'CREATE TABLE ' . $this->db->quoteTableName($table) . " (\n" . implode(",\n", $cols) . "\n)";
 
         return $options === null ? $sql : $sql . ' ' . $options;
     }
@@ -348,7 +370,7 @@ class QueryBuilder extends \yii\base\Object
      */
     public function dropTable($table)
     {
-        return "DROP TABLE " . $this->db->quoteTableName($table);
+        return 'DROP TABLE ' . $this->db->quoteTableName($table);
     }
 
     /**
@@ -392,7 +414,7 @@ class QueryBuilder extends \yii\base\Object
      */
     public function truncateTable($table)
     {
-        return "TRUNCATE TABLE " . $this->db->quoteTableName($table);
+        return 'TRUNCATE TABLE ' . $this->db->quoteTableName($table);
     }
 
     /**
@@ -419,8 +441,8 @@ class QueryBuilder extends \yii\base\Object
      */
     public function dropColumn($table, $column)
     {
-        return "ALTER TABLE " . $this->db->quoteTableName($table)
-            . " DROP COLUMN " . $this->db->quoteColumnName($column);
+        return 'ALTER TABLE ' . $this->db->quoteTableName($table)
+            . ' DROP COLUMN ' . $this->db->quoteColumnName($column);
     }
 
     /**
@@ -432,9 +454,9 @@ class QueryBuilder extends \yii\base\Object
      */
     public function renameColumn($table, $oldName, $newName)
     {
-        return "ALTER TABLE " . $this->db->quoteTableName($table)
-            . " RENAME COLUMN " . $this->db->quoteColumnName($oldName)
-            . " TO " . $this->db->quoteColumnName($newName);
+        return 'ALTER TABLE ' . $this->db->quoteTableName($table)
+            . ' RENAME COLUMN ' . $this->db->quoteColumnName($oldName)
+            . ' TO ' . $this->db->quoteColumnName($newName);
     }
 
     /**
@@ -556,6 +578,59 @@ class QueryBuilder extends \yii\base\Object
     }
 
     /**
+     * Builds a SQL command for adding comment to column
+     *
+     * @param string $table the table whose column is to be commented. The table name will be properly quoted by the method.
+     * @param string $column the name of the column to be commented. The column name will be properly quoted by the method.
+     * @param string $comment the text of the comment to be added. The comment will be properly quoted by the method.
+     * @return string the SQL statement for adding comment on column
+     * @since 2.0.8
+     */
+    public function addCommentOnColumn($table, $column, $comment)
+    {
+
+        return 'COMMENT ON COLUMN ' . $this->db->quoteTableName($table) . '.' . $this->db->quoteColumnName($column) . ' IS ' . $this->db->quoteValue($comment);
+    }
+
+    /**
+     * Builds a SQL command for adding comment to table
+     *
+     * @param string $table the table whose column is to be commented. The table name will be properly quoted by the method.
+     * @param string $comment the text of the comment to be added. The comment will be properly quoted by the method.
+     * @return string the SQL statement for adding comment on table
+     * @since 2.0.8
+     */
+    public function addCommentOnTable($table, $comment)
+    {
+        return 'COMMENT ON TABLE ' . $this->db->quoteTableName($table) . ' IS ' . $this->db->quoteValue($comment);
+    }
+
+    /**
+     * Builds a SQL command for adding comment to column
+     *
+     * @param string $table the table whose column is to be commented. The table name will be properly quoted by the method.
+     * @param string $column the name of the column to be commented. The column name will be properly quoted by the method.
+     * @return string the SQL statement for adding comment on column
+     * @since 2.0.8
+     */
+    public function dropCommentFromColumn($table, $column)
+    {
+        return 'COMMENT ON COLUMN ' . $this->db->quoteTableName($table) . '.' . $this->db->quoteColumnName($column) . ' IS NULL';
+    }
+
+    /**
+     * Builds a SQL command for adding comment to table
+     *
+     * @param string $table the table whose column is to be commented. The table name will be properly quoted by the method.
+     * @return string the SQL statement for adding comment on column
+     * @since 2.0.8
+     */
+    public function dropCommentFromTable($table)
+    {
+        return 'COMMENT ON TABLE ' . $this->db->quoteTableName($table) . ' IS NULL';
+    }
+
+    /**
      * Converts an abstract column type into a physical column type.
      * The conversion is done using the type map specified in [[typeMap]].
      * The following abstract column types are supported (using MySQL as an example to explain the corresponding
@@ -563,6 +638,8 @@ class QueryBuilder extends \yii\base\Object
      *
      * - `pk`: an auto-incremental primary key type, will be converted into "int(11) NOT NULL AUTO_INCREMENT PRIMARY KEY"
      * - `bigpk`: an auto-incremental primary key type, will be converted into "bigint(20) NOT NULL AUTO_INCREMENT PRIMARY KEY"
+     * - `unsignedpk`: an unsigned auto-incremental primary key type, will be converted into "int(11) UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY"
+     * - `char`: char type, will be converted into "char(1)"
      * - `string`: string type, will be converted into "varchar(255)"
      * - `text`: a long string type, will be converted into "text"
      * - `smallint`: a small integer type, will be converted into "smallint(6)"
@@ -589,11 +666,15 @@ class QueryBuilder extends \yii\base\Object
      * be ignored.
      *
      * If a type cannot be found in [[typeMap]], it will be returned without any change.
-     * @param string $type abstract column type
+     * @param string|ColumnSchemaBuilder $type abstract column type
      * @return string physical column type.
      */
     public function getColumnType($type)
     {
+        if ($type instanceof ColumnSchemaBuilder) {
+            $type = $type->__toString();
+        }
+
         if (isset($this->typeMap[$type])) {
             return $this->typeMap[$type];
         } elseif (preg_match('/^(\w+)\((.+?)\)(.*)$/', $type, $matches)) {
@@ -750,7 +831,17 @@ class QueryBuilder extends \yii\base\Object
      */
     public function buildGroupBy($columns)
     {
-        return empty($columns) ? '' : 'GROUP BY ' . $this->buildColumns($columns);
+        if (empty($columns)) {
+            return '';
+        }
+        foreach ($columns as $i => $column) {
+            if ($column instanceof Expression) {
+                $columns[$i] = $column->expression;
+            } elseif (strpos($column, '(') === false) {
+                $columns[$i] = $this->db->quoteColumnName($column);
+            }
+        }
+        return 'GROUP BY ' . implode(', ', $columns);
     }
 
     /**
@@ -833,10 +924,14 @@ class QueryBuilder extends \yii\base\Object
     protected function hasLimit($limit)
     {
 <<<<<<< HEAD
+<<<<<<< HEAD
         return is_string($limit) && ctype_digit($limit) || is_integer($limit) && $limit >= 0;
 =======
         return ctype_digit((string) $limit);
 >>>>>>> yiichina/master
+=======
+        return ctype_digit((string) $limit);
+>>>>>>> master
     }
 
     /**
@@ -847,11 +942,16 @@ class QueryBuilder extends \yii\base\Object
     protected function hasOffset($offset)
     {
 <<<<<<< HEAD
+<<<<<<< HEAD
         return is_integer($offset) && $offset > 0 || is_string($offset) && ctype_digit($offset) && $offset !== '0';
 =======
         $offset = (string) $offset;
         return ctype_digit($offset) && $offset !== '0';
 >>>>>>> yiichina/master
+=======
+        $offset = (string) $offset;
+        return ctype_digit($offset) && $offset !== '0';
+>>>>>>> master
     }
 
     /**
@@ -881,10 +981,14 @@ class QueryBuilder extends \yii\base\Object
 
     /**
 <<<<<<< HEAD
+<<<<<<< HEAD
      * Processes columns and properly quote them if necessary.
 =======
      * Processes columns and properly quotes them if necessary.
 >>>>>>> yiichina/master
+=======
+     * Processes columns and properly quotes them if necessary.
+>>>>>>> master
      * It will join all columns into a string with comma as separators.
      * @param string|array $columns the columns to be processed
      * @return string the processing result
@@ -911,14 +1015,19 @@ class QueryBuilder extends \yii\base\Object
 
     /**
      * Parses the condition specification and generates the corresponding SQL expression.
-     * @param string|array $condition the condition specification. Please refer to [[Query::where()]]
+     * @param string|array|Expression $condition the condition specification. Please refer to [[Query::where()]]
      * on how to specify a condition.
      * @param array $params the binding parameters to be populated
      * @return string the generated SQL expression
      */
     public function buildCondition($condition, &$params)
     {
-        if (!is_array($condition)) {
+        if ($condition instanceof Expression) {
+            foreach ($condition->params as $n => $v) {
+                $params[$n] = $v;
+            }
+            return $condition->expression;
+        } elseif (!is_array($condition)) {
             return (string) $condition;
         } elseif (empty($condition)) {
             return '';
@@ -948,7 +1057,7 @@ class QueryBuilder extends \yii\base\Object
     {
         $parts = [];
         foreach ($condition as $column => $value) {
-            if (is_array($value) || $value instanceof Query) {
+            if (ArrayHelper::isTraversable($value) || $value instanceof Query) {
                 // IN condition
                 $parts[] = $this->buildInCondition('IN', [$column, $value], $params);
             } else {
@@ -986,6 +1095,12 @@ class QueryBuilder extends \yii\base\Object
             if (is_array($operand)) {
                 $operand = $this->buildCondition($operand, $params);
             }
+            if ($operand instanceof Expression) {
+                foreach ($operand->params as $n => $v) {
+                    $params[$n] = $v;
+                }
+                $operand = $operand->expression;
+            }
             if ($operand !== '') {
                 $parts[] = $operand;
             }
@@ -1007,7 +1122,7 @@ class QueryBuilder extends \yii\base\Object
      */
     public function buildNotCondition($operator, $operands, &$params)
     {
-        if (count($operands) != 1) {
+        if (count($operands) !== 1) {
             throw new InvalidParamException("Operator '$operator' requires exactly one operand.");
         }
 
@@ -1084,7 +1199,7 @@ class QueryBuilder extends \yii\base\Object
 
         list($column, $values) = $operands;
 
-        if ($values === [] || $column === []) {
+        if ($column === []) {
             return $operator === 'IN' ? '0=1' : '';
         }
 
@@ -1092,41 +1207,46 @@ class QueryBuilder extends \yii\base\Object
             return $this->buildSubqueryInCondition($operator, $column, $values, $params);
         }
 
-        $values = (array) $values;
-
-        if (count($column) > 1) {
+        if ($column instanceof \Traversable || count($column) > 1) {
             return $this->buildCompositeInCondition($operator, $column, $values, $params);
         }
 
         if (is_array($column)) {
             $column = reset($column);
         }
+
+        $sqlValues = [];
         foreach ($values as $i => $value) {
-            if (is_array($value)) {
+            if (is_array($value) || $value instanceof \ArrayAccess) {
                 $value = isset($value[$column]) ? $value[$column] : null;
             }
             if ($value === null) {
-                $values[$i] = 'NULL';
+                $sqlValues[$i] = 'NULL';
             } elseif ($value instanceof Expression) {
-                $values[$i] = $value->expression;
+                $sqlValues[$i] = $value->expression;
                 foreach ($value->params as $n => $v) {
                     $params[$n] = $v;
                 }
             } else {
                 $phName = self::PARAM_PREFIX . count($params);
                 $params[$phName] = $value;
-                $values[$i] = $phName;
+                $sqlValues[$i] = $phName;
             }
         }
+
+        if (empty($sqlValues)) {
+            return $operator === 'IN' ? '0=1' : '';
+        }
+
         if (strpos($column, '(') === false) {
             $column = $this->db->quoteColumnName($column);
         }
 
-        if (count($values) > 1) {
-            return "$column $operator (" . implode(', ', $values) . ')';
+        if (count($sqlValues) > 1) {
+            return "$column $operator (" . implode(', ', $sqlValues) . ')';
         } else {
             $operator = $operator === 'IN' ? '=' : '<>';
-            return $column . $operator . reset($values);
+            return $column . $operator . reset($sqlValues);
         }
     }
 
@@ -1161,7 +1281,7 @@ class QueryBuilder extends \yii\base\Object
      * Builds SQL for IN condition
      *
      * @param string $operator
-     * @param array $columns
+     * @param array|\Traversable $columns
      * @param array $values
      * @param array $params
      * @return string SQL
@@ -1182,13 +1302,17 @@ class QueryBuilder extends \yii\base\Object
             }
             $vss[] = '(' . implode(', ', $vs) . ')';
         }
+
+        if (empty($vss)) {
+            return $operator === 'IN' ? '0=1' : '';
+        };
+
+        $sqlColumns = [];
         foreach ($columns as $i => $column) {
-            if (strpos($column, '(') === false) {
-                $columns[$i] = $this->db->quoteColumnName($column);
-            }
+            $sqlColumns[] = strpos($column, '(') === false ? $this->db->quoteColumnName($column) : $column;
         }
 
-        return '(' . implode(', ', $columns) . ") $operator (" . implode(', ', $vss) . ')';
+        return '(' . implode(', ', $sqlColumns) . ") $operator (" . implode(', ', $vss) . ')';
     }
 
     /**
@@ -1217,7 +1341,7 @@ class QueryBuilder extends \yii\base\Object
             throw new InvalidParamException("Operator '$operator' requires two operands.");
         }
 
-        $escape = isset($operands[2]) ? $operands[2] : ['%'=>'\%', '_'=>'\_', '\\'=>'\\\\'];
+        $escape = isset($operands[2]) ? $operands[2] : ['%' => '\%', '_' => '\_', '\\' => '\\\\'];
         unset($operands[2]);
 
         if (!preg_match('/^(AND |OR |)(((NOT |))I?LIKE)/', $operator, $matches)) {
@@ -1304,15 +1428,32 @@ class QueryBuilder extends \yii\base\Object
             }
             return "$column $operator {$value->expression}";
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
         } elseif ($value instanceof Query) {
             list($sql, $params) = $this->build($value, $params);
             return "$column $operator ($sql)";
 >>>>>>> yiichina/master
+=======
+        } elseif ($value instanceof Query) {
+            list($sql, $params) = $this->build($value, $params);
+            return "$column $operator ($sql)";
+>>>>>>> master
         } else {
             $phName = self::PARAM_PREFIX . count($params);
             $params[$phName] = $value;
             return "$column $operator $phName";
         }
+    }
+
+    /**
+     * Creates a SELECT EXISTS() SQL statement.
+     * @param string $rawSql the subquery in a raw form to select from.
+     * @return string the SELECT EXISTS() SQL statement.
+     * @since 2.0.8
+     */
+    public function selectExists($rawSql)
+    {
+        return 'SELECT EXISTS(' . $rawSql . ')';
     }
 }

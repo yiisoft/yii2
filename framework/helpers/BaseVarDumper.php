@@ -7,6 +7,9 @@
 
 namespace yii\helpers;
 
+use yii\base\Arrayable;
+use yii\base\InvalidValueException;
+
 /**
  * BaseVarDumper provides concrete implementation for [[VarDumper]].
  *
@@ -81,7 +84,7 @@ class BaseVarDumper
                 self::$_output .= '{resource}';
                 break;
             case 'NULL':
-                self::$_output .= "null";
+                self::$_output .= 'null';
                 break;
             case 'unknown type':
                 self::$_output .= '{unknown}';
@@ -114,7 +117,15 @@ class BaseVarDumper
                     $className = get_class($var);
                     $spaces = str_repeat(' ', $level * 4);
                     self::$_output .= "$className#$id\n" . $spaces . '(';
-                    foreach ((array) $var as $key => $value) {
+                    if ('__PHP_Incomplete_Class' !== get_class($var) && method_exists($var, '__debugInfo')) {
+                        $dumpValues = $var->__debugInfo();
+                        if (!is_array($dumpValues)) {
+                            throw new InvalidValueException('__debuginfo() must return an array');
+                        }
+                    } else {
+                        $dumpValues = (array) $var;
+                    }
+                    foreach ($dumpValues as $key => $value) {
                         $keyDisplay = strtr(trim($key), "\0", ':');
                         self::$_output .= "\n" . $spaces . "    [$keyDisplay] => ";
                         self::dumpInternal($value, $level + 1);
@@ -163,7 +174,7 @@ class BaseVarDumper
                     self::$_output .= '[]';
                 } else {
                     $keys = array_keys($var);
-                    $outputKeys = ($keys !== range(0, sizeof($var) - 1));
+                    $outputKeys = ($keys !== range(0, count($var) - 1));
                     $spaces = str_repeat(' ', $level * 4);
                     self::$_output .= '[';
                     foreach ($keys as $key) {
@@ -180,6 +191,7 @@ class BaseVarDumper
                 break;
             case 'object':
 <<<<<<< HEAD
+<<<<<<< HEAD
                 self::$_output .= 'unserialize(' . var_export(serialize($var), true) . ')';
 =======
                 try {
@@ -191,9 +203,85 @@ class BaseVarDumper
                 }
                 self::$_output .= $output;
 >>>>>>> yiichina/master
+=======
+                if ($var instanceof \Closure) {
+                    self::$_output .= self::exportClosure($var);
+                } else {
+                    try {
+                        $output = 'unserialize(' . var_export(serialize($var), true) . ')';
+                    } catch (\Exception $e) {
+                        // serialize may fail, for example: if object contains a `\Closure` instance
+                        // so we use a fallback
+                        if ($var instanceof Arrayable) {
+                            self::exportInternal($var->toArray(), $level);
+                            return;
+                        } elseif ($var instanceof \IteratorAggregate) {
+                            $varAsArray = [];
+                            foreach ($var as $key => $value) {
+                                $varAsArray[$key] = $value;
+                            }
+                            self::exportInternal($varAsArray, $level);
+                            return;
+                        } elseif ('__PHP_Incomplete_Class' !== get_class($var) && method_exists($var, '__toString')) {
+                            $output = var_export($var->__toString(), true);
+                        } else {
+                            $outputBackup = self::$_output;
+                            $output = var_export(self::dumpAsString($var), true);
+                            self::$_output = $outputBackup;
+                        }
+                    }
+                    self::$_output .= $output;
+                }
+>>>>>>> master
                 break;
             default:
                 self::$_output .= var_export($var, true);
         }
+    }
+
+    /**
+     * Exports a [[Closure]] instance.
+     * @param \Closure $closure closure instance.
+     * @return string
+     */
+    private static function exportClosure(\Closure $closure)
+    {
+        $reflection = new \ReflectionFunction($closure);
+
+        $fileName = $reflection->getFileName();
+        $start = $reflection->getStartLine();
+        $end = $reflection->getEndLine();
+
+        if ($fileName === false || $start === false || $end === false) {
+            return 'function() {/* Error: unable to determine Closure source */}';
+        }
+
+        --$start;
+
+        $source = implode("\n", array_slice(file($fileName), $start, $end - $start));
+        $tokens = token_get_all('<?php ' . $source);
+        array_shift($tokens);
+
+        $closureTokens = [];
+        $pendingParenthesisCount = 0;
+        foreach ($tokens as $token) {
+            if (isset($token[0]) && $token[0] === T_FUNCTION) {
+                $closureTokens[] = $token[1];
+                continue;
+            }
+            if ($closureTokens !== []) {
+                $closureTokens[] = isset($token[1]) ? $token[1] : $token;
+                if ($token === '}') {
+                    $pendingParenthesisCount--;
+                    if ($pendingParenthesisCount === 0) {
+                        break;
+                    }
+                } elseif ($token === '{') {
+                    $pendingParenthesisCount++;
+                }
+            }
+        }
+
+        return implode('', $closureTokens);
     }
 }

@@ -16,8 +16,17 @@ use yii\web\AssetManager;
  */
 class ActiveFieldTest extends \yiiunit\TestCase
 {
+    /**
+     * @var ActiveFieldExtend
+     */
     private $activeField;
+    /**
+     * @var DynamicModel
+     */
     private $helperModel;
+    /**
+     * @var ActiveForm
+     */
     private $helperForm;
     private $attributeName = 'attributeName';
 
@@ -35,7 +44,8 @@ class ActiveFieldTest extends \yiiunit\TestCase
 
         $this->helperModel = new DynamicModel(['attributeName']);
         ob_start();
-        $this->helperForm = new ActiveForm(['action' => '/something']);
+        $this->helperForm = ActiveForm::begin(['action' => '/something', 'enableClientScript' => false]);
+        ActiveForm::end();
         ob_end_clean();
 
         $this->activeField = new ActiveFieldExtend(true);
@@ -83,6 +93,26 @@ EOD;
 EOD;
 
         $actualValue = $this->activeField->render($content);
+        $this->assertEqualsWithoutLE($expectedValue, $actualValue);
+    }
+
+    /**
+     * @link https://github.com/yiisoft/yii2/issues/7627
+     */
+    public function testRenderWithCustomInputId()
+    {
+        $expectedValue = <<<EOD
+<div class="form-group field-custom-input-id">
+<label class="control-label" for="custom-input-id">Attribute Name</label>
+<input type="text" id="custom-input-id" class="form-control" name="DynamicModel[{$this->attributeName}]">
+
+<div class="help-block"></div>
+</div>
+EOD;
+
+        $this->activeField->inputOptions['id'] = 'custom-input-id';
+
+        $actualValue = $this->activeField->render();
         $this->assertEqualsWithoutLE($expectedValue, $actualValue);
     }
 
@@ -233,9 +263,33 @@ EOD;
 EOD;
         $this->activeField->listBox(["1" => "Item One", "2" => "Item 2"]);
         $this->assertEqualsWithoutLE($expectedValue, $this->activeField->parts['{input}']);
+
+        // https://github.com/yiisoft/yii2/issues/8848
+        $expectedValue = <<<EOD
+<input type="hidden" name="DynamicModel[attributeName]" value=""><select id="dynamicmodel-attributename" class="form-control" name="DynamicModel[attributeName]" size="4">
+<option value="value1" disabled>Item One</option>
+<option value="value2" label="value 2">Item 2</option>
+</select>
+EOD;
+        $this->activeField->listBox(["value1" => "Item One", "value2" => "Item 2"], ['options' => [
+            'value1' => ['disabled' => true],
+            'value2' => ['label' => 'value 2'],
+        ]]);
+        $this->assertEqualsWithoutLE($expectedValue, $this->activeField->parts['{input}']);
+
+        $expectedValue = <<<EOD
+<input type="hidden" name="DynamicModel[attributeName]" value=""><select id="dynamicmodel-attributename" class="form-control" name="DynamicModel[attributeName]" size="4">
+<option value="value1" disabled>Item One</option>
+<option value="value2" selected label="value 2">Item 2</option>
+</select>
+EOD;
+        $this->activeField->model->{$this->attributeName} = 'value2';
+        $this->activeField->listBox(["value1" => "Item One", "value2" => "Item 2"], ['options' => [
+            'value1' => ['disabled' => true],
+            'value2' => ['label' => 'value 2'],
+        ]]);
+        $this->assertEqualsWithoutLE($expectedValue, $this->activeField->parts['{input}']);
     }
-
-
 
     public function testGetClientOptionsReturnEmpty()
     {
@@ -306,6 +360,45 @@ EOD;
             . "{ return 'yii2' == 'yii2'; })(attribute, value)) { return true; }}";
 
         $this->assertEquals($expectedJsExpression, $actualValue['validate']->expression);
+    }
+
+    /**
+     * @see https://github.com/yiisoft/yii2/issues/8779
+     */
+    public function testEnctype()
+    {
+        $this->activeField->fileInput();
+        $this->assertEquals('multipart/form-data', $this->activeField->form->options['enctype']);
+    }
+
+    /**
+     * @link https://github.com/yiisoft/yii2/issues/7627
+     */
+    public function testGetClientOptionsWithCustomInputId()
+    {
+        $this->activeField->setClientOptionsEmpty(false);
+
+        $this->activeField->model->addRule($this->attributeName, 'yiiunit\framework\widgets\TestValidator');
+        $this->activeField->inputOptions['id'] = 'custom-input-id';
+        $this->activeField->textInput();
+        $actualValue = $this->activeField->getClientOptions();
+
+        $this->assertArraySubset([
+            'id' => 'dynamicmodel-attributename',
+            'name' => $this->attributeName,
+            'container' => '.field-custom-input-id',
+            'input' => '#custom-input-id',
+        ], $actualValue);
+
+        $this->activeField->textInput(['id' => 'custom-textinput-id']);
+        $actualValue = $this->activeField->getClientOptions();
+
+        $this->assertArraySubset([
+            'id' => 'dynamicmodel-attributename',
+            'name' => $this->attributeName,
+            'container' => '.field-custom-textinput-id',
+            'input' => '#custom-textinput-id',
+        ], $actualValue);
     }
 
     /**

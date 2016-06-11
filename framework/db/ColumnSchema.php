@@ -27,7 +27,7 @@ class ColumnSchema extends Object
     public $allowNull;
     /**
      * @var string abstract type of this column. Possible abstract types include:
-     * string, text, boolean, smallint, integer, bigint, float, decimal, datetime,
+     * char, string, text, boolean, smallint, integer, bigint, float, decimal, datetime,
      * timestamp, time, date, binary, and money.
      */
     public $type;
@@ -113,7 +113,7 @@ class ColumnSchema extends Object
      */
     protected function typecast($value)
     {
-        if ($value === '' && $this->type !== Schema::TYPE_TEXT && $this->type !== Schema::TYPE_STRING && $this->type !== Schema::TYPE_BINARY) {
+        if ($value === '' && $this->type !== Schema::TYPE_TEXT && $this->type !== Schema::TYPE_STRING && $this->type !== Schema::TYPE_BINARY && $this->type !== Schema::TYPE_CHAR) {
             return null;
         }
         if ($value === null || gettype($value) === $this->phpType || $value instanceof Expression) {
@@ -123,21 +123,32 @@ class ColumnSchema extends Object
             case 'resource':
             case 'string':
 <<<<<<< HEAD
+<<<<<<< HEAD
                 return is_resource($value) ? $value : (string) $value;
 =======
+=======
+>>>>>>> master
                 if (is_resource($value)) {
                     return $value;
                 }
                 if (is_float($value)) {
                     // ensure type cast always has . as decimal separator in all locales
+<<<<<<< HEAD
                     return str_replace(',', '.', (string)$value);
                 }
                 return (string)$value;
 >>>>>>> yiichina/master
+=======
+                    return str_replace(',', '.', (string) $value);
+                }
+                return (string) $value;
+>>>>>>> master
             case 'integer':
                 return (int) $value;
             case 'boolean':
-                return (bool) $value;
+                // treating a 0 bit value as false too
+                // https://github.com/yiisoft/yii2/issues/9006
+                return (bool) $value && $value !== "\0";
             case 'double':
                 return (double) $value;
         }

@@ -179,4 +179,8 @@ class ArrayDataProviderTest extends TestCase
         $dataProvider = new ArrayDataProvider(['allModels' => $mixedArray, 'pagination' => $pagination]);
         $this->assertEquals(['key1', 9], $dataProvider->getKeys());
     }
+<<<<<<< HEAD
 } 
+=======
+}
+>>>>>>> master

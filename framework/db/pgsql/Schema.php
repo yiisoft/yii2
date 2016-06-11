@@ -45,8 +45,9 @@ class Schema extends \yii\db\Schema
         'polygon' => self::TYPE_STRING,
         'path' => self::TYPE_STRING,
 
-        'character' => self::TYPE_STRING,
-        'char' => self::TYPE_STRING,
+        'character' => self::TYPE_CHAR,
+        'char' => self::TYPE_CHAR,
+        'bpchar' => self::TYPE_CHAR,
         'character varying' => self::TYPE_STRING,
         'varchar' => self::TYPE_STRING,
         'text' => self::TYPE_TEXT,
@@ -104,7 +105,7 @@ class Schema extends \yii\db\Schema
         'uuid' => self::TYPE_STRING,
         'json' => self::TYPE_STRING,
         'jsonb' => self::TYPE_STRING,
-        'xml' => self::TYPE_STRING
+        'xml' => self::TYPE_STRING,
     ];
 
 
@@ -168,7 +169,10 @@ class Schema extends \yii\db\Schema
 
     /**
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> master
      * Returns all schema names in the database, including the default one but not system schemas.
      * This method should be overridden by child classes in order to support this feature
      * because the default implementation simply throws an exception.
@@ -187,7 +191,10 @@ SQL;
     }
 
     /**
+<<<<<<< HEAD
 >>>>>>> yiichina/master
+=======
+>>>>>>> master
      * Returns all table names in the database.
      * @param string $schema the schema of the tables. Defaults to empty string, meaning the current or default schema.
      * @return array all table names in the database. The names have NO schema name prefix.
@@ -198,6 +205,7 @@ SQL;
             $schema = $this->defaultSchema;
         }
 <<<<<<< HEAD
+<<<<<<< HEAD
         $sql = <<<EOD
 SELECT table_name, table_schema FROM information_schema.tables
 WHERE table_schema=:schema AND table_type='BASE TABLE'
@@ -205,6 +213,8 @@ EOD;
         $command = $this->db->createCommand($sql);
         $command->bindParam(':schema', $schema);
 =======
+=======
+>>>>>>> master
         $sql = <<<SQL
 SELECT c.relname AS table_name
 FROM pg_class c
@@ -213,7 +223,10 @@ WHERE ns.nspname = :schemaName AND c.relkind IN ('r','v','m','f')
 ORDER BY c.relname
 SQL;
         $command = $this->db->createCommand($sql, [':schemaName' => $schema]);
+<<<<<<< HEAD
 >>>>>>> yiichina/master
+=======
+>>>>>>> master
         $rows = $command->queryAll();
         $names = [];
         foreach ($rows as $row) {
@@ -239,16 +252,25 @@ SQL;
         $sql = <<<SQL
 select
 <<<<<<< HEAD
+<<<<<<< HEAD
     (select string_agg(attname,',') attname from pg_attribute where attrelid=ct.conrelid and attnum = any(ct.conkey)) as columns,
+=======
+    ct.conname as constraint_name,
+    a.attname as column_name,
+>>>>>>> master
     fc.relname as foreign_table_name,
     fns.nspname as foreign_table_schema,
-    (select string_agg(attname,',') attname from pg_attribute where attrelid=ct.confrelid and attnum = any(ct.confkey)) as foreign_columns
+    fa.attname as foreign_column_name
 from
-    pg_constraint ct
+    (SELECT ct.conname, ct.conrelid, ct.confrelid, ct.conkey, ct.contype, ct.confkey, generate_subscripts(ct.conkey, 1) AS s
+       FROM pg_constraint ct
+    ) AS ct
     inner join pg_class c on c.oid=ct.conrelid
     inner join pg_namespace ns on c.relnamespace=ns.oid
+    inner join pg_attribute a on a.attrelid=ct.conrelid and a.attnum = ct.conkey[ct.s]
     left join pg_class fc on fc.oid=ct.confrelid
     left join pg_namespace fns on fc.relnamespace=fns.oid
+<<<<<<< HEAD
 
 =======
     ct.conname as constraint_name,
@@ -267,10 +289,14 @@ from
     left join pg_namespace fns on fc.relnamespace=fns.oid
     left join pg_attribute fa on fa.attrelid=ct.confrelid and fa.attnum = ct.confkey[ct.s]
 >>>>>>> yiichina/master
+=======
+    left join pg_attribute fa on fa.attrelid=ct.confrelid and fa.attnum = ct.confkey[ct.s]
+>>>>>>> master
 where
     ct.contype='f'
     and c.relname={$tableName}
     and ns.nspname={$tableSchema}
+<<<<<<< HEAD
 <<<<<<< HEAD
 SQL;
 
@@ -286,11 +312,20 @@ SQL;
         $constraints = [];
         foreach ($this->db->createCommand($sql)->queryAll() as $constraint) {
 >>>>>>> yiichina/master
+=======
+order by
+    fns.nspname, fc.relname, a.attnum
+SQL;
+
+        $constraints = [];
+        foreach ($this->db->createCommand($sql)->queryAll() as $constraint) {
+>>>>>>> master
             if ($constraint['foreign_table_schema'] !== $this->defaultSchema) {
                 $foreignTable = $constraint['foreign_table_schema'] . '.' . $constraint['foreign_table_name'];
             } else {
                 $foreignTable = $constraint['foreign_table_name'];
             }
+<<<<<<< HEAD
 <<<<<<< HEAD
             $citem = [$foreignTable];
             foreach ($columns as $idx => $column) {
@@ -305,11 +340,23 @@ SQL;
                     'columns' => [],
                 ];
             }
+=======
+            $name = $constraint['constraint_name'];
+            if (!isset($constraints[$name])) {
+                $constraints[$name] = [
+                    'tableName' => $foreignTable,
+                    'columns' => [],
+                ];
+            }
+>>>>>>> master
             $constraints[$name]['columns'][$constraint['column_name']] = $constraint['foreign_column_name'];
         }
         foreach ($constraints as $constraint) {
             $table->foreignKeys[] = array_merge([$constraint['tableName']], $constraint['columns']);
+<<<<<<< HEAD
 >>>>>>> yiichina/master
+=======
+>>>>>>> master
         }
     }
 
@@ -317,33 +364,31 @@ SQL;
      * Gets information about given table unique indexes.
      * @param TableSchema $table the table metadata
 <<<<<<< HEAD
+<<<<<<< HEAD
      * @return array with index names, columns and if it is an expression tree
+=======
+     * @return array with index and column names
+>>>>>>> master
      */
     protected function getUniqueIndexInformation($table)
     {
-        $tableName = $this->quoteValue($table->name);
-        $tableSchema = $this->quoteValue($table->schemaName);
-
         $sql = <<<SQL
 SELECT
     i.relname as indexname,
-    ARRAY(
-        SELECT pg_get_indexdef(idx.indexrelid, k + 1, True)
-        FROM generate_subscripts(idx.indkey, 1) AS k
-        ORDER BY k
-    ) AS indexcolumns,
-    idx.indexprs IS NOT NULL AS indexprs
-FROM pg_index idx
+    pg_get_indexdef(idx.indexrelid, k + 1, TRUE) AS columnname
+FROM (
+  SELECT *, generate_subscripts(indkey, 1) AS k
+  FROM pg_index
+) idx
 INNER JOIN pg_class i ON i.oid = idx.indexrelid
 INNER JOIN pg_class c ON c.oid = idx.indrelid
 INNER JOIN pg_namespace ns ON c.relnamespace = ns.oid
-WHERE idx.indisprimary != True
-AND idx.indisunique = True
-AND c.relname = {$tableName}
-AND ns.nspname = {$tableSchema}
-;
+WHERE idx.indisprimary = FALSE AND idx.indisunique = TRUE
+AND c.relname = :tableName AND ns.nspname = :schemaName
+ORDER BY i.relname, k
 SQL;
 
+<<<<<<< HEAD
         return $this->db->createCommand($sql)->queryAll();
 =======
      * @return array with index and column names
@@ -366,29 +411,35 @@ AND c.relname = :tableName AND ns.nspname = :schemaName
 ORDER BY i.relname, k
 SQL;
 
+=======
+>>>>>>> master
         return $this->db->createCommand($sql, [
             ':schemaName' => $table->schemaName,
             ':tableName' => $table->name,
         ])->queryAll();
+<<<<<<< HEAD
 >>>>>>> yiichina/master
+=======
+>>>>>>> master
     }
 
     /**
      * Returns all unique indexes for the given table.
      * Each array element is of the following structure:
      *
-     * ~~~
+     * ```php
      * [
-     *  'IndexName1' => ['col1' [, ...]],
-     *  'IndexName2' => ['col2' [, ...]],
+     *     'IndexName1' => ['col1' [, ...]],
+     *     'IndexName2' => ['col2' [, ...]],
      * ]
-     * ~~~
+     * ```
      *
      * @param TableSchema $table the table metadata
      * @return array all unique indexes for the given table.
      */
     public function findUniqueIndexes($table)
     {
+<<<<<<< HEAD
 <<<<<<< HEAD
         $indexes = $this->getUniqueIndexInformation($table);
         $uniqueIndexes = [];
@@ -412,6 +463,13 @@ SQL;
         foreach ($rows as $row) {
             $uniqueIndexes[$row['indexname']][] = $row['columnname'];
 >>>>>>> yiichina/master
+=======
+        $uniqueIndexes = [];
+
+        $rows = $this->getUniqueIndexInformation($table);
+        foreach ($rows as $row) {
+            $uniqueIndexes[$row['indexname']][] = $row['columnname'];
+>>>>>>> master
         }
 
         return $uniqueIndexes;
@@ -503,8 +561,12 @@ SQL;
                     $column->defaultValue = bindec(trim($column->defaultValue, 'B\''));
                 } elseif (preg_match("/^'(.*?)'::/", $column->defaultValue, $matches)) {
                     $column->defaultValue = $matches[1];
-                } elseif (preg_match("/^(.*?)::/", $column->defaultValue, $matches)) {
-                    $column->defaultValue = $column->phpTypecast($matches[1]);
+                } elseif (preg_match('/^(.*?)::/', $column->defaultValue, $matches)) {
+                    if ($matches[1] === 'NULL') {
+                        $column->defaultValue = null;
+                    } else {
+                        $column->defaultValue = $column->phpTypecast($matches[1]);
+                    }
                 } else {
                     $column->defaultValue = $column->phpTypecast($column->defaultValue);
                 }
@@ -544,7 +606,10 @@ SQL;
         return $column;
     }
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> master
 
     /**
      * @inheritdoc
@@ -556,7 +621,11 @@ SQL;
         $returnColumns = $this->getTableSchema($table)->primaryKey;
         if (!empty($returnColumns)) {
             $returning = [];
+<<<<<<< HEAD
             foreach ((array)$returnColumns as $name) {
+=======
+            foreach ((array) $returnColumns as $name) {
+>>>>>>> master
                 $returning[] = $this->quoteColumnName($name);
             }
             $sql .= ' RETURNING ' . implode(', ', $returning);
@@ -568,5 +637,8 @@ SQL;
 
         return !$command->pdoStatement->rowCount() ? false : $result;
     }
+<<<<<<< HEAD
 >>>>>>> yiichina/master
+=======
+>>>>>>> master
 }

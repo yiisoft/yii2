@@ -16,7 +16,7 @@ use yii\base\InvalidCallException;
  * returns all the rows in a single array. Rows of data can also be read by
  * iterating through the reader. For example,
  *
- * ~~~
+ * ```php
  * $command = $connection->createCommand('SELECT * FROM post');
  * $reader = $command->query();
  *
@@ -31,7 +31,7 @@ use yii\base\InvalidCallException;
  *
  * // equivalent to:
  * $rows = $reader->readAll();
- * ~~~
+ * ```
  *
  * Note that since DataReader is a forward-only stream, you can only traverse it once.
  * Doing it the second time will throw an exception.
@@ -212,7 +212,7 @@ class DataReader extends \yii\base\Object implements \Iterator, \Countable
 
     /**
      * Resets the iterator to the initial state.
-     * This method is required by the interface Iterator.
+     * This method is required by the interface [[\Iterator]].
      * @throws InvalidCallException if this method is invoked twice
      */
     public function rewind()
@@ -227,7 +227,7 @@ class DataReader extends \yii\base\Object implements \Iterator, \Countable
 
     /**
      * Returns the index of the current row.
-     * This method is required by the interface Iterator.
+     * This method is required by the interface [[\Iterator]].
      * @return integer the index of the current row.
      */
     public function key()
@@ -237,7 +237,7 @@ class DataReader extends \yii\base\Object implements \Iterator, \Countable
 
     /**
      * Returns the current row.
-     * This method is required by the interface Iterator.
+     * This method is required by the interface [[\Iterator]].
      * @return mixed the current row.
      */
     public function current()
@@ -247,7 +247,7 @@ class DataReader extends \yii\base\Object implements \Iterator, \Countable
 
     /**
      * Moves the internal pointer to the next row.
-     * This method is required by the interface Iterator.
+     * This method is required by the interface [[\Iterator]].
      */
     public function next()
     {
@@ -257,7 +257,7 @@ class DataReader extends \yii\base\Object implements \Iterator, \Countable
 
     /**
      * Returns whether there is a row of data at current position.
-     * This method is required by the interface Iterator.
+     * This method is required by the interface [[\Iterator]].
      * @return boolean whether there is a row of data at current position.
      */
     public function valid()

@@ -94,10 +94,14 @@ class BaseYii
     public static function getVersion()
     {
 <<<<<<< HEAD
+<<<<<<< HEAD
         return '2.0.4-dev';
 =======
         return '2.0.5';
 >>>>>>> yiichina/master
+=======
+        return '2.0.9-dev';
+>>>>>>> master
     }
 
     /**
@@ -347,11 +351,11 @@ class BaseYii
             unset($type['class']);
             return static::$container->get($class, $params, $type);
         } elseif (is_callable($type, true)) {
-            return call_user_func($type, $params);
+            return static::$container->invoke($type, $params);
         } elseif (is_array($type)) {
             throw new InvalidConfigException('Object configuration must be an array containing a "class" element.');
         } else {
-            throw new InvalidConfigException("Unsupported configuration type: " . gettype($type));
+            throw new InvalidConfigException('Unsupported configuration type: ' . gettype($type));
         }
     }
 
@@ -433,14 +437,14 @@ class BaseYii
      * This has to be matched with a call to [[endProfile]] with the same category name.
      * The begin- and end- calls must also be properly nested. For example,
      *
-     * ~~~
+     * ```php
      * \Yii::beginProfile('block1');
      * // some code to be profiled
      *     \Yii::beginProfile('block2');
      *     // some other code to be profiled
      *     \Yii::endProfile('block2');
      * \Yii::endProfile('block1');
-     * ~~~
+     * ```
      * @param string $token token for the code block
      * @param string $category the category of this log message
      * @see endProfile()
@@ -468,7 +472,10 @@ class BaseYii
      */
     public static function powered()
     {
-        return 'Powered by <a href="http://www.yiiframework.com/" rel="external">Yii Framework</a>';
+        return \Yii::t('yii', 'Powered by {yii}', [
+            'yii' => '<a href="http://www.yiiframework.com/" rel="external">' . \Yii::t('yii',
+                    'Yii Framework') . '</a>'
+        ]);
     }
 
     /**

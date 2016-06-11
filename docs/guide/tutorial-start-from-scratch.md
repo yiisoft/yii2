@@ -4,6 +4,7 @@ Creating your own Application structure
 > Note: This section is under development.
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 While the [basic](https://github.com/yiisoft/yii2/tree/master/apps/basic) and [advanced](https://github.com/yiisoft/yii2/tree/master/apps/advanced)
 application templates are great for most of your needs, you may want to create your own application template with which
 to start your projects.
@@ -16,6 +17,13 @@ to start your projects.
 
 Project templates in Yii are simply repositories containing a `composer.json` file, and registered as a Composer package.
 >>>>>>> yiichina/master
+=======
+While the [basic](https://github.com/yiisoft/yii2-app-basic) and [advanced](https://github.com/yiisoft/yii2-app-advanced)
+project templates are great for most of your needs, you may want to create your own project template with which
+to start your projects.
+
+Project templates in Yii are simply repositories containing a `composer.json` file, and registered as a Composer package.
+>>>>>>> master
 Any repository can be identified as a Composer package, making it installable via `create-project` Composer command.
 
 Since it's a bit too much to start building your entire template from scratch, it is better to use one of the built-in
@@ -56,6 +64,7 @@ Use the Template
 ------
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 That's all that's required to create a new Yii application template. Now you can create projects using your template:
 
 ```
@@ -66,5 +75,11 @@ That's all that's required to create a new Yii project template. Now you can cre
 ```
 composer global require "fxp/composer-asset-plugin:~1.0.0"
 >>>>>>> yiichina/master
+=======
+That's all that's required to create a new Yii project template. Now you can create projects using your template:
+
+```
+composer global require "fxp/composer-asset-plugin:~1.1.1"
+>>>>>>> master
 composer create-project --prefer-dist --stability=dev mysoft/yii2-app-coolone new-project
 ```

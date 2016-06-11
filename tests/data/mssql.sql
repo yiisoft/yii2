@@ -10,82 +10,86 @@ IF OBJECT_ID('[dbo].[type]', 'U') IS NOT NULL DROP TABLE [dbo].[type];
 IF OBJECT_ID('[dbo].[null_values]', 'U') IS NOT NULL DROP TABLE [dbo].[null_values];
 IF OBJECT_ID('[dbo].[animal]', 'U') IS NOT NULL DROP TABLE [dbo].[animal];
 IF OBJECT_ID('[dbo].[default_pk]', 'U') IS NOT NULL DROP TABLE [dbo].[default_pk];
+IF OBJECT_ID('[dbo].[document]', 'U') IS NOT NULL DROP TABLE [dbo].[document];
 IF OBJECT_ID('[dbo].[animal_view]', 'V') IS NOT NULL DROP VIEW [dbo].[animal_view];
 
 CREATE TABLE [dbo].[profile] (
-	[id] [int] IDENTITY(1,1) NOT NULL,
-	[description] [varchar](128) NOT NULL,
-	CONSTRAINT [PK_customer] PRIMARY KEY CLUSTERED (
-		[id] ASC
-	) ON [PRIMARY]
+    [id] [int] IDENTITY NOT NULL,
+    [description] [varchar](128) NOT NULL,
+    CONSTRAINT [PK_profile] PRIMARY KEY CLUSTERED (
+        [id] ASC
+    ) ON [PRIMARY]
 );
 
 CREATE TABLE [dbo].[customer] (
-	[id] [int] IDENTITY(1,1) NOT NULL,
-	[email] [varchar](128) NOT NULL,
-	[name] [varchar](128),
-	[address] [text],
-	[status] [int] DEFAULT 0,
-  [profile_id] [int],
-	CONSTRAINT [PK_customer] PRIMARY KEY CLUSTERED (
-		[id] ASC
-	) ON [PRIMARY]
+    [id] [int] IDENTITY NOT NULL,
+    [email] [varchar](128) NOT NULL,
+    [name] [varchar](128),
+    [address] [text],
+    [status] [int] DEFAULT 0,
+    [profile_id] [int],
+    CONSTRAINT [PK_customer] PRIMARY KEY CLUSTERED (
+        [id] ASC
+    ) ON [PRIMARY]
 );
 
 CREATE TABLE [dbo].[category] (
-	[id] [int] IDENTITY(1,1) NOT NULL,
-	[name] [varchar](128) NOT NULL,
-	CONSTRAINT [PK_category] PRIMARY KEY CLUSTERED (
-		[id] ASC
-	) ON [PRIMARY]
+    [id] [int] IDENTITY NOT NULL,
+    [name] [varchar](128) NOT NULL,
+    CONSTRAINT [PK_category] PRIMARY KEY CLUSTERED (
+        [id] ASC
+    ) ON [PRIMARY]
 );
 
 CREATE TABLE [dbo].[item] (
-	[id] [int] IDENTITY(1,1) NOT NULL,
-	[name] [varchar](128) NOT NULL,
-	[category_id] [int] NOT NULL,
-	CONSTRAINT [PK_item] PRIMARY KEY CLUSTERED (
-		[id] ASC
-	) ON [PRIMARY]
+    [id] [int] IDENTITY NOT NULL,
+    [name] [varchar](128) NOT NULL,
+    [category_id] [int] NOT NULL,
+    CONSTRAINT [PK_item] PRIMARY KEY CLUSTERED (
+        [id] ASC
+    ) ON [PRIMARY]
 );
 
 CREATE TABLE [dbo].[order] (
-	[id] [int] IDENTITY(1,1) NOT NULL,
-	[customer_id] [int] NOT NULL,
-	[created_at] [int] NOT NULL,
-	[total] [decimal](10,0) NOT NULL,
-	CONSTRAINT [PK_order] PRIMARY KEY CLUSTERED (
-		[id] ASC
-	) ON [PRIMARY]
+    [id] [int] IDENTITY NOT NULL,
+    [customer_id] [int] NOT NULL,
+    [created_at] [int] NOT NULL,
+    [total] [decimal](10,0) NOT NULL,
+    CONSTRAINT [PK_order] PRIMARY KEY CLUSTERED (
+        [id] ASC
+    ) ON [PRIMARY]
 );
 
 CREATE TABLE [dbo].[order_with_null_fk] (
-	[id] [int] IDENTITY(1,1) NOT NULL,
-	[customer_id] [int] ,
-	[created_at] [int] NOT NULL,
-	[total] [decimal](10,0) NOT NULL
+    [id] [int] IDENTITY NOT NULL,
+    [customer_id] [int] ,
+    [created_at] [int] NOT NULL,
+    [total] [decimal](10,0) NOT NULL,
+    CONSTRAINT [PK_order_with_null_fk] PRIMARY KEY CLUSTERED (
+        [id] ASC
+    ) ON [PRIMARY]
 );
 
 CREATE TABLE [dbo].[order_item] (
-	[order_id] [int] NOT NULL,
-	[item_id] [int] NOT NULL,
-	[quantity] [int] NOT NULL,
-	[subtotal] [decimal](10,0) NOT NULL,
-	CONSTRAINT [PK_order_item] PRIMARY KEY CLUSTERED (
-		[order_id] ASC,
-		[item_id] ASC
-	) ON [PRIMARY]
+    [order_id] [int] NOT NULL,
+    [item_id] [int] NOT NULL,
+    [quantity] [int] NOT NULL,
+    [subtotal] [decimal](10,0) NOT NULL,
+    CONSTRAINT [PK_order_item] PRIMARY KEY CLUSTERED (
+        [order_id] ASC,
+        [item_id] ASC
+    ) ON [PRIMARY]
 
 );CREATE TABLE [dbo].[order_item_with_null_fk] (
-	[order_id] [int],
-	[item_id] [int],
-	[quantity] [int] NOT NULL,
-	[subtotal] [decimal](10,0) NOT NULL
+    [order_id] [int],
+    [item_id] [int],
+    [quantity] [int] NOT NULL,
+    [subtotal] [decimal](10,0) NOT NULL
 );
 
 CREATE TABLE [dbo].[null_values] (
-  id [int] UNSIGNED NOT NULL,
-  var1 [int] UNSIGNED NULL,
+  [id] [int] IDENTITY NOT NULL,
+  var1 [int] NULL,
   var2 [int] NULL,
   var3 [int] DEFAULT NULL,
   stringcol [varchar](32) DEFAULT NULL,
@@ -93,35 +97,45 @@ CREATE TABLE [dbo].[null_values] (
 );
 
 CREATE TABLE [dbo].[type] (
-	[int_col] [int] NOT NULL,
-	[int_col2] [int] DEFAULT '1',
-	[smallint_col] [smallint] DEFAULT '1',
-	[char_col] [char](100) NOT NULL,
-	[char_col2] [varchar](100) DEFAULT 'something',
-	[char_col3] [text],
-	[float_col] [decimal](4,3) NOT NULL,
-	[float_col2] [float] DEFAULT '1.23',
-	[blob_col] [varbinary](MAX),
-	[numeric_col] [decimal](5,2) DEFAULT '33.22',
-	[time] [datetime] NOT NULL DEFAULT '2002-01-01 00:00:00',
-	[bool_col] [tinyint] NOT NULL,
-	[bool_col2] [tinyint] DEFAULT '1'
+    [int_col] [int] NOT NULL,
+    [int_col2] [int] DEFAULT '1',
+    [smallint_col] [smallint] DEFAULT '1',
+    [char_col] [char](100) NOT NULL,
+    [char_col2] [varchar](100) DEFAULT 'something',
+    [char_col3] [text],
+    [float_col] [decimal](4,3) NOT NULL,
+    [float_col2] [float] DEFAULT '1.23',
+    [blob_col] [varbinary](MAX),
+    [numeric_col] [decimal](5,2) DEFAULT '33.22',
+    [time] [datetime] NOT NULL DEFAULT '2002-01-01 00:00:00',
+    [bool_col] [tinyint] NOT NULL,
+    [bool_col2] [tinyint] DEFAULT '1'
 );
 
 CREATE TABLE [dbo].[animal] (
-	[id] [int] IDENTITY(1,1) NOT NULL,
-	[type] [varchar](255) NOT NULL,
-	CONSTRAINT [PK_animal] PRIMARY KEY CLUSTERED (
-		[id] ASC
-	) ON [PRIMARY]
+    [id] [int] IDENTITY NOT NULL,
+    [type] [varchar](255) NOT NULL,
+    CONSTRAINT [PK_animal] PRIMARY KEY CLUSTERED (
+        [id] ASC
+    ) ON [PRIMARY]
 );
 
 CREATE TABLE [dbo].[default_pk] (
-	[id] [int] NOT NULL DEFAULT 5,
-	[type] [varchar](255) NOT NULL,
-	CONSTRAINT [PK_default_pk] PRIMARY KEY CLUSTERED (
-		[id] ASC
-	) ON [PRIMARY]
+    [id] [int] NOT NULL DEFAULT 5,
+    [type] [varchar](255) NOT NULL,
+    CONSTRAINT [PK_default_pk] PRIMARY KEY CLUSTERED (
+        [id] ASC
+    ) ON [PRIMARY]
+);
+
+CREATE TABLE [dbo].[document] (
+    [id] [int] IDENTITY NOT NULL,
+    [title] [varchar](255) NOT NULL,
+    [content] [text],
+    [version] [int] NOT NULL DEFAULT 0,
+    CONSTRAINT [PK_document_pk] PRIMARY KEY CLUSTERED (
+        [id] ASC
+    ) ON [PRIMARY]
 );
 
 CREATE VIEW [dbo].[animal_view] AS SELECT * FROM [dbo].[animal];
@@ -166,3 +180,19 @@ INSERT INTO [dbo].[order_item_with_null_fk] ([order_id], [item_id], [quantity], 
 INSERT INTO [dbo].[order_item_with_null_fk] ([order_id], [item_id], [quantity], [subtotal]) VALUES (2, 5, 1, 15.0);
 INSERT INTO [dbo].[order_item_with_null_fk] ([order_id], [item_id], [quantity], [subtotal]) VALUES (2, 3, 1, 8.0);
 INSERT INTO [dbo].[order_item_with_null_fk] ([order_id], [item_id], [quantity], [subtotal]) VALUES (3, 2, 1, 40.0);
+
+INSERT INTO [dbo].[document] ([title], [content], [version]) VALUES ('Yii 2.0 guide', 'This is Yii 2.0 guide', 0);
+
+/* bit test, see https://github.com/yiisoft/yii2/issues/9006 */
+
+IF OBJECT_ID('[dbo].[bit_values]', 'U') IS NOT NULL DROP TABLE [dbo].[bit_values];
+
+CREATE TABLE [dbo].[bit_values] (
+    [id] [int] IDENTITY NOT NULL,
+    [val] [bit] NOT NULL,
+    CONSTRAINT [PK_bit_values] PRIMARY KEY CLUSTERED (
+        [id] ASC
+    ) ON [PRIMARY]
+);
+
+INSERT INTO [dbo].[bit_values] ([val]) VALUES (0), (1);

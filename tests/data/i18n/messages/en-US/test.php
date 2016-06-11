@@ -1,7 +1,15 @@
 <?php
 /**
+<<<<<<< HEAD
  *
  */
 return [
     'The dog runs fast.' => 'Der Hund rennt schell.',
+=======
+ * Messages are copy-pasted in \yiiunit\framework\i18n\DbMessageSourceTest::setUpBeforeClass()
+ * Do not forget to update it in after changing this file!
+ */
+return [
+    'The dog runs fast.' => 'The dog runs fast (en-US).',
+>>>>>>> master
 ];

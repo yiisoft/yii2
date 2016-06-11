@@ -4,6 +4,11 @@ namespace yiiunit\data\validators\models;
 
 use yiiunit\data\ar\ActiveRecord;
 
+/**
+ * @property int id
+ * @property string a_field
+ * @property int ref
+ */
 class ValidatorTestRefModel extends ActiveRecord
 {
 

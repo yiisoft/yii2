@@ -2,7 +2,13 @@
 
 namespace yiiunit\framework\db\sqlite;
 
+<<<<<<< HEAD
 use yii\db\sqlite\Schema;
+=======
+use yii\db\Query;
+use yii\db\Schema;
+use yiiunit\data\base\TraversableObject;
+>>>>>>> master
 use yiiunit\framework\db\QueryBuilderTest;
 
 /**
@@ -15,6 +21,7 @@ class SqliteQueryBuilderTest extends QueryBuilderTest
 
     public function columnTypes()
     {
+<<<<<<< HEAD
         return [
             [Schema::TYPE_PK, 'integer PRIMARY KEY AUTOINCREMENT NOT NULL'],
             [Schema::TYPE_PK . '(8)', 'integer PRIMARY KEY AUTOINCREMENT NOT NULL'],
@@ -74,12 +81,54 @@ class SqliteQueryBuilderTest extends QueryBuilderTest
             [Schema::TYPE_MONEY . '(16,2) CHECK (value > 0.0)', 'decimal(16,2) CHECK (value > 0.0)'],
             [Schema::TYPE_MONEY . ' NOT NULL', 'decimal(19,4) NOT NULL'],
         ];
+=======
+        return array_merge(parent::columnTypes(), [
+            [
+                Schema::TYPE_PK,
+                $this->primaryKey()->first()->after('col_before'),
+                'integer PRIMARY KEY AUTOINCREMENT NOT NULL'
+            ],
+        ]);
+    }
+
+    public function conditionProvider()
+    {
+        return array_merge(parent::conditionProvider(), [
+            'composite in using array objects' => [
+                ['in', new TraversableObject(['id', 'name']), new TraversableObject([
+                    ['id' => 1, 'name' => 'oy'],
+                    ['id' => 2, 'name' => 'yo'],
+                ])],
+                '(([[id]] = :qp0 AND [[name]] = :qp1) OR ([[id]] = :qp2 AND [[name]] = :qp3))',
+                [':qp0' => 1, ':qp1' => 'oy', ':qp2' => 2, ':qp3' => 'yo']
+            ],
+            'composite in' => [
+                ['in', ['id', 'name'], [['id' =>1, 'name' => 'oy']]],
+                '(([[id]] = :qp0 AND [[name]] = :qp1))',
+                [':qp0' => 1, ':qp1' => 'oy']
+            ],
+        ]);
+>>>>>>> master
     }
 
     public function testAddDropPrimaryKey()
     {
+<<<<<<< HEAD
         $this->setExpectedException('yii\base\NotSupportedException');
         parent::testAddDropPrimaryKey();
+=======
+        $this->markTestSkipped('Comments are not supported in SQLite');
+    }
+
+    public function testCommentColumn()
+    {
+        $this->markTestSkipped('Comments are not supported in SQLite');
+    }
+
+    public function testCommentTable()
+    {
+        $this->markTestSkipped('Comments are not supported in SQLite');
+>>>>>>> master
     }
 
     public function testBatchInsert()
@@ -91,4 +140,40 @@ class SqliteQueryBuilderTest extends QueryBuilderTest
         $sql = $this->getQueryBuilder()->batchInsert('{{customer}} t', ['t.id', 't.name'], [[1, 'a'], [2, 'b']]);
         $this->assertEquals("INSERT INTO {{customer}} t (`t`.`id`, `t`.`name`) SELECT 1, 'a' UNION SELECT 2, 'b'", $sql);
     }
+<<<<<<< HEAD
+=======
+
+    public function testRenameTable()
+    {
+        $sql = $this->getQueryBuilder()->renameTable('table_from', 'table_to');
+        $this->assertEquals("ALTER TABLE `table_from` RENAME TO `table_to`", $sql);
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function testBuildUnion()
+    {
+        $expectedQuerySql = $this->replaceQuotes(
+            "SELECT `id` FROM `TotalExample` `t1` WHERE (w > 0) AND (x < 2) UNION  SELECT `id` FROM `TotalTotalExample` `t2` WHERE w > 5 UNION ALL  SELECT `id` FROM `TotalTotalExample` `t3` WHERE w = 3"
+        );
+        $query = new Query();
+        $secondQuery = new Query();
+        $secondQuery->select('id')
+            ->from('TotalTotalExample t2')
+            ->where('w > 5');
+        $thirdQuery = new Query();
+        $thirdQuery->select('id')
+            ->from('TotalTotalExample t3')
+            ->where('w = 3');
+        $query->select('id')
+            ->from('TotalExample t1')
+            ->where(['and', 'w > 0', 'x < 2'])
+            ->union($secondQuery)
+            ->union($thirdQuery, TRUE);
+        list($actualQuerySql, $queryParams) = $this->getQueryBuilder()->build($query);
+        $this->assertEquals($expectedQuerySql, $actualQuerySql);
+        $this->assertEquals([], $queryParams);
+    }
+>>>>>>> master
 }

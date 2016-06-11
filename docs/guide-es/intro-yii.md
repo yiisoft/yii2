@@ -26,6 +26,7 @@ Si estás familiarizado con otros framework, puedes apreciar como se compara Yii
 - El alto rendimiento es siempre la meta principal de Yii.
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 Yii no es un proyecto de un sola persona, detrás de Yii hay un [sólido equipo de desarrollo][], así como una gran comunidad en la que numerosos profesionales contribuyen constantemente a su desarrollo.
 El equipo de desarrollo de Yii se mantiene atento a las últimas tendencias de desarrollo web, así como a las mejores prácticas y características de otros frameworks y proyectos.
 Las buenas prácticas y características más relevantes de otros proyectos se incorporan regularmente a la base del framework y se exponen a través de interfaces simples y elegantes.
@@ -38,6 +39,13 @@ Las buenas prácticas y características más relevantes de otros proyectos se i
 
 [about_yii]: http://www.yiiframework.com/about/
 >>>>>>> yiichina/master
+=======
+Yii no es un proyecto de un sola persona, detrás de Yii hay un [sólido equipo de desarrollo][about_yii], así como una gran comunidad en la que numerosos profesionales contribuyen constantemente a su desarrollo.
+El equipo de desarrollo de Yii se mantiene atento a las últimas tendencias de desarrollo web, así como a las mejores prácticas y características de otros frameworks y proyectos.
+Las buenas prácticas y características más relevantes de otros proyectos se incorporan regularmente a la base del framework y se exponen a través de interfaces simples y elegantes.
+
+[about_yii]: http://www.yiiframework.com/about/
+>>>>>>> master
 
 Versiones de Yii
 ----------------

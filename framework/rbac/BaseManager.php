@@ -42,10 +42,14 @@ abstract class BaseManager extends Component implements ManagerInterface
     /**
      * Adds an auth item to the RBAC system.
 <<<<<<< HEAD
+<<<<<<< HEAD
      * @param Item $item
 =======
      * @param Item $item the item to add
 >>>>>>> yiichina/master
+=======
+     * @param Item $item the item to add
+>>>>>>> master
      * @return boolean whether the auth item is successfully added to the system
      * @throws \Exception if data validation or saving fails (such as the name of the role or permission is not unique)
      */
@@ -54,10 +58,14 @@ abstract class BaseManager extends Component implements ManagerInterface
     /**
      * Adds a rule to the RBAC system.
 <<<<<<< HEAD
+<<<<<<< HEAD
      * @param Rule $rule
 =======
      * @param Rule $rule the rule to add
 >>>>>>> yiichina/master
+=======
+     * @param Rule $rule the rule to add
+>>>>>>> master
      * @return boolean whether the rule is successfully added to the system
      * @throws \Exception if data validation or saving fails (such as the name of the rule is not unique)
      */
@@ -66,10 +74,14 @@ abstract class BaseManager extends Component implements ManagerInterface
     /**
      * Removes an auth item from the RBAC system.
 <<<<<<< HEAD
+<<<<<<< HEAD
      * @param Item $item
 =======
      * @param Item $item the item to remove
 >>>>>>> yiichina/master
+=======
+     * @param Item $item the item to remove
+>>>>>>> master
      * @return boolean whether the role or permission is successfully removed
      * @throws \Exception if data validation or saving fails (such as the name of the role or permission is not unique)
      */
@@ -78,10 +90,14 @@ abstract class BaseManager extends Component implements ManagerInterface
     /**
      * Removes a rule from the RBAC system.
 <<<<<<< HEAD
+<<<<<<< HEAD
      * @param Rule $rule
 =======
      * @param Rule $rule the rule to remove
 >>>>>>> yiichina/master
+=======
+     * @param Rule $rule the rule to remove
+>>>>>>> master
      * @return boolean whether the rule is successfully removed
      * @throws \Exception if data validation or saving fails (such as the name of the rule is not unique)
      */
@@ -90,12 +106,17 @@ abstract class BaseManager extends Component implements ManagerInterface
     /**
      * Updates an auth item in the RBAC system.
 <<<<<<< HEAD
+<<<<<<< HEAD
      * @param string $name the old name of the auth item
      * @param Item $item
 =======
      * @param string $name the name of the item being updated
      * @param Item $item the updated item
 >>>>>>> yiichina/master
+=======
+     * @param string $name the name of the item being updated
+     * @param Item $item the updated item
+>>>>>>> master
      * @return boolean whether the auth item is successfully updated
      * @throws \Exception if data validation or saving fails (such as the name of the role or permission is not unique)
      */
@@ -104,12 +125,17 @@ abstract class BaseManager extends Component implements ManagerInterface
     /**
      * Updates a rule to the RBAC system.
 <<<<<<< HEAD
+<<<<<<< HEAD
      * @param string $name the old name of the rule
      * @param Rule $rule
 =======
      * @param string $name the name of the rule being updated
      * @param Rule $rule the updated rule
 >>>>>>> yiichina/master
+=======
+     * @param string $name the name of the rule being updated
+     * @param Rule $rule the updated rule
+>>>>>>> master
      * @return boolean whether the rule is successfully updated
      * @throws \Exception if data validation or saving fails (such as the name of the rule is not unique)
      */
@@ -120,7 +146,7 @@ abstract class BaseManager extends Component implements ManagerInterface
      */
     public function createRole($name)
     {
-        $role = new Role;
+        $role = new Role();
         $role->name = $name;
         return $role;
     }
@@ -141,11 +167,16 @@ abstract class BaseManager extends Component implements ManagerInterface
     public function add($object)
     {
         if ($object instanceof Item) {
+            if ($object->ruleName && $this->getRule($object->ruleName) === null) {
+                $rule = \Yii::createObject($object->ruleName);
+                $rule->name = $object->ruleName;
+                $this->addRule($rule);
+            }
             return $this->addItem($object);
         } elseif ($object instanceof Rule) {
             return $this->addRule($object);
         } else {
-            throw new InvalidParamException("Adding unsupported object type.");
+            throw new InvalidParamException('Adding unsupported object type.');
         }
     }
 
@@ -159,7 +190,7 @@ abstract class BaseManager extends Component implements ManagerInterface
         } elseif ($object instanceof Rule) {
             return $this->removeRule($object);
         } else {
-            throw new InvalidParamException("Removing unsupported object type.");
+            throw new InvalidParamException('Removing unsupported object type.');
         }
     }
 
@@ -169,11 +200,16 @@ abstract class BaseManager extends Component implements ManagerInterface
     public function update($name, $object)
     {
         if ($object instanceof Item) {
+            if ($object->ruleName && $this->getRule($object->ruleName) === null) {
+                $rule = \Yii::createObject($object->ruleName);
+                $rule->name = $object->ruleName;
+                $this->addRule($rule);
+            }
             return $this->updateItem($name, $object);
         } elseif ($object instanceof Rule) {
             return $this->updateRule($name, $object);
         } else {
-            throw new InvalidParamException("Updating unsupported object type.");
+            throw new InvalidParamException('Updating unsupported object type.');
         }
     }
 
@@ -220,7 +256,7 @@ abstract class BaseManager extends Component implements ManagerInterface
      * @param string|integer $user the user ID. This should be either an integer or a string representing
      * the unique identifier of a user. See [[\yii\web\User::id]].
      * @param Item $item the auth item that needs to execute its rule
-     * @param array $params parameters passed to [[ManagerInterface::checkAccess()]] and will be passed to the rule
+     * @param array $params parameters passed to [[CheckAccessInterface::checkAccess()]] and will be passed to the rule
      * @return boolean the return value of [[Rule::execute()]]. If the auth item does not specify a rule, true will be returned.
      * @throws InvalidConfigException if the auth item has an invalid rule.
      */

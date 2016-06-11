@@ -208,4 +208,11 @@ class NumberValidatorTest extends TestCase
         $this->assertContains('"min":5.65', $js);
         $this->assertContains('"max":13.37', $js);
     }
+
+    public function testValidateObject()
+    {
+        $val = new NumberValidator();
+        $value = new \stdClass();
+        $this->assertFalse($val->validate($value));
+    }
 }

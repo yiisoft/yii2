@@ -2,7 +2,11 @@
 
 namespace yiiunit\framework\db\cubrid;
 
+<<<<<<< HEAD
 use yii\db\sqlite\Schema;
+=======
+use yii\db\Schema;
+>>>>>>> master
 use yiiunit\framework\db\QueryBuilderTest;
 
 /**
@@ -19,6 +23,7 @@ class CubridQueryBuilderTest extends QueryBuilderTest
      */
     public function columnTypes()
     {
+<<<<<<< HEAD
         return [
             [Schema::TYPE_PK, 'int NOT NULL AUTO_INCREMENT PRIMARY KEY'],
             [Schema::TYPE_PK . '(8)', 'int NOT NULL AUTO_INCREMENT PRIMARY KEY'],
@@ -78,5 +83,8 @@ class CubridQueryBuilderTest extends QueryBuilderTest
             [Schema::TYPE_MONEY . '(16,2) CHECK (value > 0.0)', 'decimal(16,2) CHECK (value > 0.0)'],
             [Schema::TYPE_MONEY . ' NOT NULL', 'decimal(19,4) NOT NULL'],
         ];
+=======
+        return array_merge(parent::columnTypes(), []);
+>>>>>>> master
     }
 }

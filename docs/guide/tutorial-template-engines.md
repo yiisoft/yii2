@@ -2,6 +2,7 @@ Using template engines
 ======================
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 > Note: This section is under development.
 
 By default, Yii uses PHP as its template language, but you can configure Yii to support other rendering engines, such as
@@ -10,6 +11,10 @@ By default, Yii uses PHP as its template language, but you can configure Yii to 
 By default, Yii uses PHP as its template language, but you can configure Yii to support other rendering engines, such as
 [Twig](http://twig.sensiolabs.org/) or [Smarty](http://www.smarty.net/) available as extensions.
 >>>>>>> yiichina/master
+=======
+By default, Yii uses PHP as its template language, but you can configure Yii to support other rendering engines, such as
+[Twig](http://twig.sensiolabs.org/) or [Smarty](http://www.smarty.net/) available as extensions.
+>>>>>>> master
 
 The `view` component is responsible for rendering views. You can add a custom template engine by reconfiguring this
 component's behavior:
@@ -50,6 +55,7 @@ your `composer.json` file to include them, too:
 ```
 That code would be added to the `require` section of `composer.json`. After making that change and saving the file, you can install the extensions by running `composer update --prefer-dist` in the command-line.
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 Twig
 ----
@@ -463,3 +469,9 @@ For details about using concrete template engine please refer to its documentati
 - [Twig guide](https://github.com/yiisoft/yii2-twig/tree/master/docs/guide)
 - [Smarty guide](https://github.com/yiisoft/yii2-smarty/tree/master/docs/guide)
 >>>>>>> yiichina/master
+=======
+For details about using concrete template engine please refer to its documentation:
+
+- [Twig guide](https://github.com/yiisoft/yii2-twig/tree/master/docs/guide)
+- [Smarty guide](https://github.com/yiisoft/yii2-smarty/tree/master/docs/guide)
+>>>>>>> master

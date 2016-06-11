@@ -18,6 +18,17 @@ use Yii;
 class ErrorException extends \ErrorException
 {
     /**
+     * This constant represents a fatal error in the HHVM engine.
+     *
+     * PHP Zend runtime won't call the error handler on fatals, HHVM will, with an error code of 16777217
+     * We will handle fatal error a bit different on HHVM.
+     * @see https://github.com/facebook/hhvm/blob/master/hphp/runtime/base/runtime-error.h#L62
+     * @since 2.0.6
+     */
+    const E_HHVM_FATAL_ERROR = 16777217; // E_ERROR | (1 << 24)
+
+
+    /**
      * Constructs the exception.
      * @link http://php.net/manual/en/errorexception.construct.php
      * @param $message [optional]
@@ -32,8 +43,11 @@ class ErrorException extends \ErrorException
         parent::__construct($message, $code, $severity, $filename, $lineno, $previous);
 
         if (function_exists('xdebug_get_function_stack')) {
-            $trace = array_slice(array_reverse(xdebug_get_function_stack()), 3, -1);
-            foreach ($trace as &$frame) {
+            // XDebug trace can't be modified and used directly with PHP 7
+            // @see https://github.com/yiisoft/yii2/pull/11723
+            $xDebugTrace = array_slice(array_reverse(xdebug_get_function_stack()), 3, -1);
+            $trace = [];
+            foreach ($xDebugTrace as $frame) {
                 if (!isset($frame['function'])) {
                     $frame['function'] = 'unknown';
                 }
@@ -49,6 +63,7 @@ class ErrorException extends \ErrorException
                 if (isset($frame['params']) && !isset($frame['args'])) {
                     $frame['args'] = $frame['params'];
                 }
+                $trace[] = $frame;
             }
 
             $ref = new \ReflectionProperty('Exception', 'trace');
@@ -65,7 +80,7 @@ class ErrorException extends \ErrorException
      */
     public static function isFatalError($error)
     {
-        return isset($error['type']) && in_array($error['type'], [E_ERROR, E_PARSE, E_CORE_ERROR, E_CORE_WARNING, E_COMPILE_ERROR, E_COMPILE_WARNING]);
+        return isset($error['type']) && in_array($error['type'], [E_ERROR, E_PARSE, E_CORE_ERROR, E_CORE_WARNING, E_COMPILE_ERROR, E_COMPILE_WARNING, self::E_HHVM_FATAL_ERROR]);
     }
 
     /**
@@ -89,6 +104,7 @@ class ErrorException extends \ErrorException
             E_USER_NOTICE => 'PHP User Notice',
             E_USER_WARNING => 'PHP User Warning',
             E_WARNING => 'PHP Warning',
+            self::E_HHVM_FATAL_ERROR => 'HHVM Fatal Error',
         ];
 
         return isset($names[$this->getCode()]) ? $names[$this->getCode()] : 'Error';

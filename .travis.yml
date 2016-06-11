@@ -9,11 +9,11 @@ php:
 =======
 >>>>>>> yiichina/master
   - hhvm
-  - hhvm-nightly
 
 env:
   - CUBRID_VERSION=9.3.0/CUBRID-9.3.0.0206 CUBRID_PDO_VERSION=9.3.0.0001
 
+<<<<<<< .merge_file_a02932
 # run build against hhvm but allow them to fail
 # http://docs.travis-ci.com/user/build-configuration/#Rows-That-are-Allowed-To-Fail
 matrix:
@@ -25,11 +25,10 @@ matrix:
 =======
 >>>>>>> yiichina/master
 
+=======
+>>>>>>> .merge_file_a06108
 services:
-  - redis-server
   - memcached
-  - elasticsearch
-  - mongodb
 
 # faster builds on new travis setup not using sudo
 sudo: false
@@ -37,7 +36,7 @@ sudo: false
 # cache vendor dirs
 cache:
   directories:
-#    - cubrid # caching cubrid breaks the build on a regular basis and has nearly no speedup
+#    - cubrid/9.3.0
     - vendor
     - $HOME/.composer/cache
 
@@ -47,6 +46,7 @@ addons:
 
 install:
   - travis_retry composer self-update && composer --version
+<<<<<<< .merge_file_a02932
 <<<<<<< HEAD
   - travis_retry composer global require "fxp/composer-asset-plugin:1.0.0"
   - export PATH="$HOME/.composer/vendor/bin:$PATH"
@@ -83,12 +83,21 @@ install:
   - travis_retry composer global require "codeception/codeception=2.0.*" "codeception/specify=*" "codeception/verify=*"
 # basic and advanced application:
   - tests/unit/data/travis/setup-apps.sh
+=======
+  - travis_retry composer global require "fxp/composer-asset-plugin:~1.1.1"
+  - export PATH="$HOME/.composer/vendor/bin:$PATH"
+# core framework:
+  - travis_retry composer install --prefer-dist --no-interaction
+  - tests/data/travis/apc-setup.sh
+  - tests/data/travis/memcache-setup.sh
+#  - tests/data/travis/cubrid-setup.sh
+>>>>>>> .merge_file_a06108
 
 before_script:
 <<<<<<< HEAD
   # show some versions and env information
-  - echo 'elasticsearch version ' && curl http://localhost:9200/
   - php -r "echo INTL_ICU_VERSION . \"\n\";"
+  - php -r "echo INTL_ICU_DATA_VERSION . \"\n\";"
   - mysql --version
   - psql --version
 
@@ -98,11 +107,15 @@ before_script:
 >>>>>>> yiichina/master
   - mysql -e 'CREATE DATABASE yiitest;';
   - psql -U postgres -c 'CREATE DATABASE yiitest;';
+<<<<<<< .merge_file_a02932
   - tests/unit/data/travis/sphinx-setup.sh
   - mongo yii2test --eval 'db.addUser("travis", "test");'
 # basic and advanced application:
   - tests/unit/data/travis/init-apps.sh
 <<<<<<< HEAD
+=======
+
+>>>>>>> .merge_file_a06108
   - |
     if [ $TRAVIS_PHP_VERSION = '5.6' ]; then
       PHPUNIT_FLAGS="--coverage-clover=coverage.clover"
@@ -110,6 +123,7 @@ before_script:
 
 
 script:
+<<<<<<< .merge_file_a02932
   - vendor/bin/phpunit --verbose $PHPUNIT_FLAGS --exclude-group mssql,oci,wincache,xcache,zenddata
 =======
 
@@ -134,12 +148,14 @@ script:
       cd tests
       codecept run
     fi
+=======
+  - vendor/bin/phpunit --verbose $PHPUNIT_FLAGS --exclude-group mssql,oci,wincache,xcache,zenddata,cubrid
+>>>>>>> .merge_file_a06108
 
 after_script:
 <<<<<<< HEAD
   - |
     if [ $TRAVIS_PHP_VERSION = '5.6' ]; then
-      cd ../../.. 
       travis_retry wget https://scrutinizer-ci.com/ocular.phar
       php ocular.phar code-coverage:upload --format=php-clover coverage.clover
     fi

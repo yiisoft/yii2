@@ -1,25 +1,23 @@
-﻿Gestión de Errores
+Gestión de Errores
 ==================
 
 Yii incluye un [[yii\web\ErrorHandler|error handler]] que permite una gestión de errores mucho más práctica que
 anteriormente. En particular, el gestor de errores de Yii hace lo siguiente para mejorar la gestión de errores:
 
-* Todos los errores no fatales (ej. advertencias (warning), avisos (notices)) se convierten en excepciones
-  capturables.
+* Todos los errores no fatales (ej. advertencias (warning), avisos (notices)) se convierten en excepciones capturables.
 * Las excepciones y los errores fatales de PHP se muestran con una pila de llamadas (call stack) de información
   detallada y lineas de código fuente.
 * Soporta el uso de [acciones de controlador](structure-controllers.md#actions) dedicadas para mostrar errores.
 * Soporta diferentes formatos de respuesta (response) de errores.
 
 El [[yii\web\ErrorHandler|error handler]] esta habilitado de forma predeterminada. Se puede deshabilitar definiendo la
-constante `YII_ENABLE_ERROR_HANDLER` con valor false en el
-[script de entrada (entry script)](structure-entry-scripts.md) de la aplicación.
+constante `YII_ENABLE_ERROR_HANDLER` con valor false en el [script de entrada (entry script)](structure-entry-scripts.md) de la aplicación.
+
 
 ## Uso del Gestor de Errores <span id="using-error-handler"></span>
 
-El [[yii\web\ErrorHandler|error handler]] se registra como un
-[componente de aplicación](structure-application-components.md) llamado `errorHandler`. Se puede configurar en la
-configuración de la aplicación como en el siguiente ejemplo:
+El [[yii\web\ErrorHandler|error handler]] se registra como un [componente de aplicación](structure-application-components.md) llamado `errorHandler`.
+Se puede configurar en la configuración de la aplicación como en el siguiente ejemplo:
 
 ```php
 return [
@@ -31,8 +29,7 @@ return [
 ];
 ```
 
-Con la anterior configuración, el numero del lineas de código fuente que se mostrará en las páginas de excepciones
-será como máximo de 20.
+Con la anterior configuración, el numero del lineas de código fuente que se mostrará en las páginas de excepciones será como máximo de 20.
 
 Como se ha mencionado, el gestor de errores convierte todos los errores de PHP no fatales en excepciones capturables.
 Esto significa que se puede usar el siguiente código para tratar los errores PHP:
@@ -61,29 +58,27 @@ use yii\web\NotFoundHttpException;
 throw new NotFoundHttpException();
 ```
 
+
 ## Personalizar la Visualización de Errores <span id="customizing-error-display"></span>
 
-El [[yii\web\ErrorHandler|error handler]] ajusta la visualización del error conforme al valor de la constante
-`YII_DEBUG`. Cuando `YII_DEBUG` es `true` (es decir, en modo depuración (debug)), el gestor de errores mostrara las
-excepciones con una pila detallada de información y con lineas de código fuente para ayudar a depurar. Y cuando la
-variable `YII_DEBUG` es `false`, solo se mostrará el mensaje de error para prevenir la revelación de información
-sensible de la aplicación.
+El [[yii\web\ErrorHandler|error handler]] ajusta la visualización del error conforme al valor de la constante `YII_DEBUG`.
+Cuando `YII_DEBUG` es `true` (es decir, en modo depuración (debug)), el gestor de errores mostrara las
+excepciones con una pila detallada de información y con lineas de código fuente para ayudar a depurar. Y cuando la variable `YII_DEBUG` es `false`,
+solo se mostrará el mensaje de error para prevenir la revelación de información sensible de la aplicación.
 
-> Información: Si una excepción es descendiente de [[yii\base\UserException]], no se mostrará la pila de llamadas
-  independientemente del valor de `YII_DEBUG`. Esto es debido a que se considera que estas excepciones se deben a
-  errores cometidos por los usuarios y los desarrolladores no necesitan corregirlas.
+> Info: Si una excepción es descendiente de [[yii\base\UserException]], no se mostrará la pila de llamadas
+independientemente del valor de `YII_DEBUG`. Esto es debido a que se considera que estas excepciones se deben a
+errores cometidos por los usuarios y los desarrolladores no necesitan corregirlas.
 
-De forma predeterminada, el [[yii\web\ErrorHandler|error handler]] muestra los errores usando dos
-[vistas](structure-views.md):
+De forma predeterminada, el [[yii\web\ErrorHandler|error handler]] muestra los errores usando dos [vistas](structure-views.md):
 
 * `@yii/views/errorHandler/error.php`: se usa cuando deben mostrarse los errores SIN la información de la pila de
   llamadas. Cuando `YII_DEBUG` es falos, este es el único error que se mostrara.
-* `@yii/views/errorHandler/exception.php`: se usa cuando los errores deben mostrarse CON la información de la pila de
-  llamadas.
+* `@yii/views/errorHandler/exception.php`: se usa cuando los errores deben mostrarse CON la información de la pila de llamadas.
 
-Se pueden configurar las propiedades [[yii\web\ErrorHandler::errorView|errorView]] y
-[[yii\web\ErrorHandler::exceptionView|exceptionView]] el gestor de errores para usar nuestros propias vistas para
-personalizar la visualización de los errores.
+Se pueden configurar las propiedades [[yii\web\ErrorHandler::errorView|errorView]] y [[yii\web\ErrorHandler::exceptionView|exceptionView]]
+el gestor de errores para usar nuestros propias vistas para personalizar la visualización de los errores.
+
 
 ### Uso de Acciones de Error <span id="using-error-actions"></span>
 
@@ -129,8 +124,7 @@ class SiteController extends Controller
 El código anterior define la acción `error` usando la clase [[yii\web\ErrorAction]] que renderiza un error usando la
 vista llamada `error`.
 
-Además, usando [[yii\web\ErrorAction]], también se puede definir la acción `error` usando un método de acción como en
-el siguiente ejemplo,
+Además, usando [[yii\web\ErrorAction]], también se puede definir la acción `error` usando un método de acción como en el siguiente ejemplo,
 
 ```php
 public function actionError()
@@ -150,8 +144,15 @@ a las siguientes variables si se define el error como un [[yii\web\ErrorAction]]
 * `exception`: el objeto de excepción a través del cual se puede obtener más información útil, tal como el código de
   estado HTTP, el código de error, la pila de llamadas del error, etc.
 
-> Información: Tanto la [plantilla de aplicación básica](start-installation.md) como la
-  [plantilla de aplicación avanzada](tutorial-advanced-app.md), ya incorporan la acción de error y la vista de error.
+> Info: Tanto la [plantilla de aplicación básica](start-installation.md) como la [plantilla de aplicación avanzada](tutorial-advanced-app.md),
+ya incorporan la acción de error y la vista de error.
+
+> Note: Si necesitas redireccionar en un gestor de error, hazlo de la siguiente manera:
+> ```php
+> Yii::$app->getResponse()->redirect($url)->send();
+> return;
+> ```
+
 
 ### Personalizar el Formato de Respuesta de Error <span id="error-format"></span>
 

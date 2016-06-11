@@ -83,16 +83,36 @@ If the third-party system uses Composer to manage its dependencies, you can simp
 to install Yii:
 
 <<<<<<< HEAD
+<<<<<<< HEAD
     composer global require "fxp/composer-asset-plugin:1.0.0"
 =======
     composer global require "fxp/composer-asset-plugin:~1.0.0"
 >>>>>>> yiichina/master
+=======
+    composer global require "fxp/composer-asset-plugin:~1.1.1"
+>>>>>>> master
     composer require yiisoft/yii2
     composer install
 
 The first command installs the [composer asset plugin](https://github.com/francoispluchino/composer-asset-plugin/)
 which allows managing bower and npm package dependencies through Composer. Even if you only want to use the database
 layer or other non-asset related features of Yii, this is required to install the Yii composer package.
+
+If you want to use the [Asset publishing feature of Yii](structure-assets.md) you should also add the following configuration
+to the `extra` section in your `composer.json`:
+
+```json
+{
+    ...
+    "extra": {
+        "asset-installer-paths": {
+            "npm-asset-library": "vendor/npm",
+            "bower-asset-library": "vendor/bower"
+        }
+    }
+}
+```
+
 See also the general [section about installing Yii](start-installation.md#installing-via-composer) for more information
 on Composer and solution to possible issues popping up during the installation.
 
@@ -164,7 +184,7 @@ class Yii extends \yii\BaseYii
 }
 
 Yii::$classMap = include($yii2path . '/classes.php');
-// register Yii2 autoloader via Yii1
+// register Yii 2 autoloader via Yii 1
 Yii::registerAutoloader(['Yii', 'autoload']);
 // create the dependency injection container
 Yii::$container = new yii\di\Container;

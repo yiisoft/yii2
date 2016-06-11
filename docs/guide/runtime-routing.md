@@ -11,10 +11,14 @@ back into the original route and query parameters.
   
 The central piece responsible for routing and URL creation is the [[yii\web\UrlManager|URL manager]],
 <<<<<<< HEAD
+<<<<<<< HEAD
 which is registered as the `urlManager` application component. The [[yii\web\UrlManager|URL manager]]
 =======
 which is registered as the `urlManager` [application component](structure-application-components.md). The [[yii\web\UrlManager|URL manager]]
 >>>>>>> yiichina/master
+=======
+which is registered as the `urlManager` [application component](structure-application-components.md). The [[yii\web\UrlManager|URL manager]]
+>>>>>>> master
 provides the [[yii\web\UrlManager::parseRequest()|parseRequest()]] method to parse an incoming request into
 a route and the associated query parameters and the [[yii\web\UrlManager::createUrl()|createUrl()]] method to
 create a URL from a given route and its associated query parameters.
@@ -34,7 +38,7 @@ Depending on the `urlManager` configuration, the created URL may look like one o
 And if the created URL is requested later, it will still be parsed back into the original route and query parameter value.
 
 ```
-/index.php?r=post/view&id=100
+/index.php?r=post%2Fview&id=100
 /index.php/post/100
 /posts/100
 ```
@@ -62,7 +66,7 @@ property of the [[yii\web\UrlManager|URL manager]] without changing any other ap
 ## Routing <span id="routing"></span>
 
 Routing involves two steps. In the first step, the incoming request is parsed into a route and the associated 
-query parameters. In the second step, a [controller action](structure-controllers.md) corresponding to the parsed route
+query parameters. In the second step, a [controller action](structure-controllers.md#actions) corresponding to the parsed route
 is created to handle the request.
 
 When using the default URL format, parsing a request into a route is as simple as getting the value of a `GET`
@@ -85,11 +89,11 @@ controller and action:
 3. Check if the ID refers to a module listed in the [[yii\base\Module::modules|modules]] property of
    the current module. If so, a module is created according to the configuration found in the module list,
    and Step 2 will be taken to handle the next part of the route under the context of the newly created module.
-4. Treat the ID as a controller ID and create a controller object. Do the next step with the rest part of
+4. Treat the ID as a [controller ID](structure-controllers.md#controller-ids) and create a controller object. Do the next step with the rest part of
    the route.
 5. The controller looks for the current ID in its [[yii\base\Controller::actions()|action map]]. If found,
    it creates an action according to the configuration found in the map. Otherwise, the controller will
-   attempt to create an inline action which is defined by an action method corresponding to the current ID.
+   attempt to create an inline action which is defined by an action method corresponding to the current [action ID](structure-controllers.md#action-ids).
 
 Among the above steps, if any error occurs, a [[yii\web\NotFoundHttpException]] will be thrown, indicating
 the failure of the routing process.
@@ -128,6 +132,8 @@ With the above configuration, the `site/offline` action will be used to handle a
 The `catchAll` property should take an array whose first element specifies a route, and
 the rest of the elements (name-value pairs) specify the parameters to be [bound to the action](structure-controllers.md#action-parameters).
 
+> Info: Debug panel on development environment will not work when this property is enabled
+
 
 ## Creating URLs <span id="creating-urls"></span>
 
@@ -137,19 +143,19 @@ their associated query parameters. For example,
 ```php
 use yii\helpers\Url;
 
-// creates a URL to a route: /index.php?r=post/index
+// creates a URL to a route: /index.php?r=post%2Findex
 echo Url::to(['post/index']);
 
-// creates a URL to a route with parameters: /index.php?r=post/view&id=100
+// creates a URL to a route with parameters: /index.php?r=post%2Fview&id=100
 echo Url::to(['post/view', 'id' => 100]);
 
-// creates an anchored URL: /index.php?r=post/view&id=100#content
+// creates an anchored URL: /index.php?r=post%2Fview&id=100#content
 echo Url::to(['post/view', 'id' => 100, '#' => 'content']);
 
-// creates an absolute URL: http://www.example.com/index.php?r=post/index
+// creates an absolute URL: http://www.example.com/index.php?r=post%2Findex
 echo Url::to(['post/index'], true);
 
-// creates an absolute URL using the https scheme: https://www.example.com/index.php?r=post/index
+// creates an absolute URL using the https scheme: https://www.example.com/index.php?r=post%2Findex
 echo Url::to(['post/index'], 'https');
 ```
 
@@ -174,19 +180,19 @@ For example, assume the current module is `admin` and the current controller is 
 ```php
 use yii\helpers\Url;
 
-// currently requested route: /index.php?r=admin/post/index
+// currently requested route: /index.php?r=admin%2Fpost%2Findex
 echo Url::to(['']);
 
-// a relative route with action ID only: /index.php?r=admin/post/index
+// a relative route with action ID only: /index.php?r=admin%2Fpost%2Findex
 echo Url::to(['index']);
 
-// a relative route: /index.php?r=admin/post/index
+// a relative route: /index.php?r=admin%2Fpost%2Findex
 echo Url::to(['post/index']);
 
-// an absolute route: /index.php?r=post/index
+// an absolute route: /index.php?r=post%2Findex
 echo Url::to(['/post/index']);
 
-// /index.php?r=post/index     assume the alias "@posts" is defined as "/post/index"
+// /index.php?r=post%2Findex     assume the alias "@posts" is defined as "/post/index"
 echo Url::to(['@posts']);
 ```
 
@@ -201,7 +207,7 @@ Instead of passing an array as its first parameter, you should pass a string in 
 ```php
 use yii\helpers\Url;
 
-// currently requested URL: /index.php?r=admin/post/index
+// currently requested URL: /index.php?r=admin%2Fpost%2Findex
 echo Url::to();
 
 // an aliased URL: http://example.com
@@ -218,7 +224,7 @@ methods. For example,
 ```php
 use yii\helpers\Url;
 
-// home page URL: /index.php?r=site/index
+// home page URL: /index.php?r=site%2Findex
 echo Url::home();
 
 // the base URL, useful if the application is deployed in a sub-folder of the Web root

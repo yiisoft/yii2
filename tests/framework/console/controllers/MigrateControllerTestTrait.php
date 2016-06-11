@@ -42,6 +42,27 @@ trait MigrateControllerTestTrait
         FileHelper::removeDirectory($this->migrationPath);
     }
 
+    public function assertFileContent($expectedFile, $class)
+    {
+        $this->assertEqualsWithoutLE(
+            include Yii::getAlias(
+                "@yiiunit/data/console/migrate_create/$expectedFile.php"
+            ),
+            $this->parseNameClassMigration($class)
+        );
+    }
+
+    public function assertCommandCreatedFile(
+        $expectedFile,
+        $migrationName,
+        $params = []
+    ) {
+        $class = 'm' . gmdate('ymd_His') . '_' . $migrationName;
+        $params[0] = $migrationName;
+        $this->runMigrateControllerAction('create', $params);
+        $this->assertFileContent($expectedFile, $class);
+    }
+
     /**
      * @return array applied migration entries
      */
@@ -109,6 +130,23 @@ CODE;
     }
 
     /**
+     * Change class name migration to $class
+     * @param string $class name class
+     * @return string content generated class migration
+     * @see https://github.com/yiisoft/yii2/pull/10213
+     */
+    protected function parseNameClassMigration($class)
+    {
+        $files = FileHelper::findFiles($this->migrationPath);
+        $file = file_get_contents($files[0]);
+        if (preg_match('/class (m\d+_\d+_.*) extends Migration/', $file, $match)) {
+            $file = str_replace($match[1], $class, $file);
+        }
+        $this->tearDownMigrationPath();
+        return $file;
+    }
+
+    /**
      * Checks if applied migration history matches expected one.
      * @param array $expectedMigrations migration names in expected order
      * @param string $message failure message
@@ -147,6 +185,102 @@ CODE;
         $files = FileHelper::findFiles($this->migrationPath);
         $this->assertCount(1, $files, 'Unable to create new migration!');
         $this->assertContains($migrationName, basename($files[0]), 'Wrong migration name!');
+    }
+
+    public function testGenerateDefaultMigration()
+    {
+        $this->assertCommandCreatedFile('default', 'DefaultTest');
+    }
+
+    public function testGenerateCreateMigration()
+    {
+        $migrationName = 'create_test';
+
+        $this->assertCommandCreatedFile('create_test', $migrationName);
+
+        $this->assertCommandCreatedFile('create_fields', $migrationName, [
+            'fields' => 'title:string(10):notNull:unique:defaultValue("test"),
+                body:text:notNull,
+                price:money(11,2):notNull'
+        ]);
+
+        $this->assertCommandCreatedFile('create_title_pk', $migrationName, [
+            'fields' => 'title:primaryKey,body:text:notNull,price:money(11,2)',
+        ]);
+
+        $this->assertCommandCreatedFile('create_id_pk', $migrationName, [
+            'fields' => 'id:primaryKey,
+                address:string,
+                address2:string,
+                email:string',
+        ]);
+
+        $this->assertCommandCreatedFile('create_foreign_key', $migrationName, [
+            'fields' => 'user_id:integer:foreignKey,
+                product_id:foreignKey:integer:unsigned:notNull,
+                order_id:integer:foreignKey(user_order):notNull,
+                created_at:dateTime:notNull',
+        ]);
+
+        $this->assertCommandCreatedFile('create_prefix', $migrationName, [
+            'useTablePrefix' => true,
+            'fields' => 'user_id:integer:foreignKey,
+                product_id:foreignKey:integer:unsigned:notNull,
+                order_id:integer:foreignKey(user_order):notNull,
+                created_at:dateTime:notNull',
+        ]);
+    }
+
+    public function testGenerateDropMigration()
+    {
+        $migrationName = 'drop_test';
+        $this->assertCommandCreatedFile('drop_test', $migrationName);
+
+        $this->assertCommandCreatedFile('drop_fields', $migrationName, [
+            'fields' => 'body:text:notNull,price:money(11,2)'
+        ]);
+    }
+
+    public function testGenerateAddColumnMigration()
+    {
+        $migrationName = 'add_columns_to_test';
+        $this->assertCommandCreatedFile('add_columns_test', $migrationName, [
+            'fields' => 'title:string(10):notNull,
+                body:text:notNull,
+                price:money(11,2):notNull,
+                created_at:dateTime'
+        ]);
+
+        $this->assertCommandCreatedFile('add_columns_fk', $migrationName, [
+            'fields' => 'user_id:integer:foreignKey,
+                product_id:foreignKey:integer:unsigned:notNull,
+                order_id:integer:foreignKey(user_order):notNull,
+                created_at:dateTime:notNull',
+        ]);
+
+        $this->assertCommandCreatedFile('add_columns_prefix', $migrationName, [
+            'useTablePrefix' => true,
+            'fields' => 'user_id:integer:foreignKey,
+                product_id:foreignKey:integer:unsigned:notNull,
+                order_id:integer:foreignKey(user_order):notNull,
+                created_at:dateTime:notNull',
+        ]);
+    }
+
+    public function testGenerateDropColumnMigration()
+    {
+        $migrationName = 'drop_columns_from_test';
+        $this->assertCommandCreatedFile('drop_columns_test', $migrationName, [
+            'fields' => 'title:string(10):notNull,body:text:notNull,
+                price:money(11,2):notNull,
+                created_at:dateTime'
+        ]);
+    }
+
+    public function testGenerateCreateJunctionMigration()
+    {
+        $migrationName = 'create_junction_post_and_tag';
+        $this->assertCommandCreatedFile('junction_test', $migrationName);
     }
 
     public function testUp()

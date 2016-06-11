@@ -3,7 +3,7 @@ Yii PHP Framework Version 2
 
 This is the core framework code of [Yii 2](https://github.com/yiisoft/yii2#readme).
 
-This repository is a git submodule of <https://github.com/yiisoft/yii2>.
+This repository is a read-only git subsplit of <https://github.com/yiisoft/yii2>.
 Please submit issue reports and pull requests to the main repository.
 For license information check the [LICENSE](LICENSE.md)-file.
 
@@ -16,10 +16,14 @@ Either run
 
 ```
 <<<<<<< HEAD
+<<<<<<< HEAD
 composer global require "fxp/composer-asset-plugin:1.0.0"
 =======
 composer global require "fxp/composer-asset-plugin:~1.0.0"
 >>>>>>> yiichina/master
+=======
+composer global require "fxp/composer-asset-plugin:~1.1.1"
+>>>>>>> master
 composer require yiisoft/yii2
 ```
 

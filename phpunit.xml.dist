@@ -1,9 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <<<<<<< HEAD
+<<<<<<< HEAD
 <phpunit bootstrap="./tests/unit/bootstrap.php"
 =======
 <phpunit bootstrap="./tests/bootstrap.php"
 >>>>>>> yiichina/master
+=======
+<phpunit bootstrap="./tests/bootstrap.php"
+>>>>>>> master
 		colors="true"
 		convertErrorsToExceptions="true"
 		convertNoticesToExceptions="true"
@@ -12,13 +16,20 @@
 		<testsuites>
 			<testsuite name="Yii Test Suite">
 <<<<<<< HEAD
+<<<<<<< HEAD
 				<directory>./tests/unit</directory>
 =======
 				<directory>./tests</directory>
 >>>>>>> yiichina/master
+=======
+				<directory>./tests</directory>
+>>>>>>> master
 			</testsuite>
 		</testsuites>
 		<filter>
+            <whitelist>
+                <directory suffix=".php">framework/</directory>
+            </whitelist>
 			<blacklist>
 				<file>framework/helpers/Json.php</file>
 				<file>framework/helpers/StringHelper.php</file>

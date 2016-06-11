@@ -283,10 +283,14 @@ acordo com as seguintes regras:
   [[yii\base\ViewContextInterface::getViewPath()|diretório da view]] do contexto. 
   Isto se aplica principalmente para as views (visões) renderizadas pelos controllers 
 <<<<<<< HEAD
+<<<<<<< HEAD
   (controladores) e widgets. Por exemplo, `site/about` corresponderá ao 
 =======
   (controladores) e widgets. Por exemplo, `about` corresponderá ao 
 >>>>>>> yiichina/master
+=======
+  (controladores) e widgets. Por exemplo, `about` corresponderá ao 
+>>>>>>> master
   `@app/views/site/about.php` caso o contexto seja o controller (controlador) 
   `SiteController`.
 * Se uma view (visão) for renderizada por outra view (visão), o diretório desta 

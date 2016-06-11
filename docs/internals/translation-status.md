@@ -45,21 +45,27 @@ concept-di-container.md             | Yes
 db-dao.md                           | Yes
 db-query-builder.md                 | Yes
 <<<<<<< HEAD
+<<<<<<< HEAD
 db-active-record.md                 |
 db-migrations.md                    |
 =======
 db-active-record.md                 | Yes
 db-migrations.md                    | Yes
 >>>>>>> yiichina/master
+=======
+db-active-record.md                 | Yes
+db-migrations.md                    | Yes
+>>>>>>> master
 db-sphinx.md                        |
 db-redis.md                         |
 db-mongodb.md                       |
 db-elasticsearch.md                 |
 input-forms.md                      |
 input-validation.md                 | Yes
-input-file-upload.md                |
-input-multiple-models.md            |
+input-file-upload.md                | Yes
+input-multiple-models.md            | Yes
 input-tabular-input.md              |
+<<<<<<< HEAD
 <<<<<<< HEAD
 output-formatter.md                 |
 output-pagination.md                |
@@ -78,6 +84,16 @@ output-theming.md                   | Yes
 security-authentication.md          | Yes
 >>>>>>> yiichina/master
 security-authorization.md           |
+=======
+output-formatting.md                | Yes
+output-pagination.md                | Yes
+output-sorting.md                   | Yes
+output-data-providers.md            | Yes
+output-data-widgets.md              |
+output-theming.md                   | Yes
+security-authentication.md          | Yes
+security-authorization.md           | Yes
+>>>>>>> master
 security-passwords.md               |
 security-auth-clients.md            |
 security-best-practices.md          |
@@ -108,7 +124,7 @@ tutorial-start-from-scratch.md      |
 tutorial-console.md                 |
 tutorial-i18n.md                    |
 tutorial-mailing.md                 |
-tutorial-performance-tuning.md      |
+tutorial-performance-tuning.md      | Yes
 tutorial-shared-hosting.md          |
 tutorial-template-engines.md        |
 tutorial-core-validators.md         | Yes

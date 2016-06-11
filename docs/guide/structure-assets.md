@@ -26,10 +26,14 @@ be [autoloadable](concept-autoloading.md). It usually specifies where the assets
 JavaScript files the bundle contains, and how the bundle depends on other bundles.
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 The following code defines the main asset bundle used by [the basic application template](start-installation.md):
 =======
 The following code defines the main asset bundle used by [the basic project template](start-installation.md):
 >>>>>>> yiichina/master
+=======
+The following code defines the main asset bundle used by [the basic project template](start-installation.md):
+>>>>>>> master
 
 ```php
 <?php
@@ -193,21 +197,18 @@ class FontAwesomeAsset extends AssetBundle
     public $sourcePath = '@bower/font-awesome'; 
     public $css = [ 
         'css/font-awesome.min.css', 
-    ]; 
-    
-    public function init()
-    {
-        parent::init();
-        $this->publishOptions['beforeCopy'] = function ($from, $to) {
-            $dirname = basename(dirname($from));
-            return $dirname === 'fonts' || $dirname === 'css';
-        };
-    }
+    ];
+    public $publishOptions = [
+        'only' => [
+            'fonts/',
+            'css/',
+        ]
+    ];
 }  
 ```
 
 The above example defines an asset bundle for the ["fontawesome" package](http://fontawesome.io/). By specifying 
-the `beforeCopy` publishing option, only the `fonts` and `css` subdirectories will be published.
+the `only` publishing option, only the `fonts` and `css` subdirectories will be published.
 
 
 ### Bower and NPM Assets <span id="bower-npm-assets"></span>

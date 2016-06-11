@@ -22,7 +22,7 @@ use yii\di\Instance;
  *
  * The following is an example of using ActiveDataProvider to provide ActiveRecord instances:
  *
- * ~~~
+ * ```php
  * $provider = new ActiveDataProvider([
  *     'query' => Post::find(),
  *     'pagination' => [
@@ -32,12 +32,12 @@ use yii\di\Instance;
  *
  * // get the posts in the current page
  * $posts = $provider->getModels();
- * ~~~
+ * ```
  *
  * And the following example shows how to use ActiveDataProvider without ActiveRecord:
  *
- * ~~~
- * $query = new Query;
+ * ```php
+ * $query = new Query();
  * $provider = new ActiveDataProvider([
  *     'query' => $query->from('post'),
  *     'pagination' => [
@@ -47,7 +47,7 @@ use yii\di\Instance;
  *
  * // get the posts in the current page
  * $posts = $provider->getModels();
- * ~~~
+ * ```
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
@@ -172,6 +172,7 @@ class ActiveDataProvider extends BaseDataProvider
     {
         parent::setSort($value);
 <<<<<<< HEAD
+<<<<<<< HEAD
         if (($sort = $this->getSort()) !== false && empty($sort->attributes) && $this->query instanceof ActiveQueryInterface) {
             /* @var $model Model */
             $model = new $this->query->modelClass;
@@ -185,6 +186,11 @@ class ActiveDataProvider extends BaseDataProvider
         if (($sort = $this->getSort()) !== false && $this->query instanceof ActiveQueryInterface) {
             /* @var $model Model */
             $model = new $this->query->modelClass;
+=======
+        if (($sort = $this->getSort()) !== false && $this->query instanceof ActiveQueryInterface) {
+            /* @var $model Model */
+            $model = new $this->query->modelClass;
+>>>>>>> master
             if (empty($sort->attributes)) {
                 foreach ($model->attributes() as $attribute) {
                     $sort->attributes[$attribute] = [
@@ -194,12 +200,19 @@ class ActiveDataProvider extends BaseDataProvider
                     ];
                 }
             } else {
+<<<<<<< HEAD
                 foreach($sort->attributes as $attribute => $config) {
+=======
+                foreach ($sort->attributes as $attribute => $config) {
+>>>>>>> master
                     if (!isset($config['label'])) {
                         $sort->attributes[$attribute]['label'] = $model->getAttributeLabel($attribute);
                     }
                 }
+<<<<<<< HEAD
 >>>>>>> yiichina/master
+=======
+>>>>>>> master
             }
         }
     }

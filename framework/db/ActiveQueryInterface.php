@@ -25,7 +25,7 @@ interface ActiveQueryInterface extends QueryInterface
     /**
      * Sets the [[asArray]] property.
      * @param boolean $value whether to return the query results in terms of arrays instead of Active Records.
-     * @return static the query object itself
+     * @return $this the query object itself
      */
     public function asArray($value = true);
 
@@ -35,16 +35,16 @@ interface ActiveQueryInterface extends QueryInterface
      * This can also be a callable (e.g. anonymous function) that returns the index value based on the given
      * row or model data. The signature of the callable should be:
      *
-     * ~~~
+     * ```php
      * // $model is an AR instance when `asArray` is false,
      * // or an array of column values when `asArray` is true.
      * function ($model)
      * {
      *     // return the index value corresponding to $model
      * }
-     * ~~~
+     * ```
      *
-     * @return static the query object itself
+     * @return $this the query object itself
      */
     public function indexBy($column);
 
@@ -60,26 +60,30 @@ interface ActiveQueryInterface extends QueryInterface
      * in the model class corresponding to the `orders` relation.
      *
 <<<<<<< HEAD
+<<<<<<< HEAD
      * The followings are some usage examples:
 =======
      * The following are some usage examples:
 >>>>>>> yiichina/master
+=======
+     * The following are some usage examples:
+>>>>>>> master
      *
-     * ~~~
+     * ```php
      * // find customers together with their orders and country
      * Customer::find()->with('orders', 'country')->all();
      * // find customers together with their orders and the orders' shipping address
      * Customer::find()->with('orders.address')->all();
      * // find customers together with their country and orders of status 1
      * Customer::find()->with([
-     *     'orders' => function ($query) {
+     *     'orders' => function (\yii\db\ActiveQuery $query) {
      *         $query->andWhere('status = 1');
      *     },
      *     'country',
      * ])->all();
-     * ~~~
+     * ```
      *
-     * @return static the query object itself
+     * @return $this the query object itself
      */
     public function with();
 
@@ -88,7 +92,7 @@ interface ActiveQueryInterface extends QueryInterface
      * @param string $relationName the relation name. This refers to a relation declared in the [[ActiveRelationTrait::primaryModel|primaryModel]] of the relation.
      * @param callable $callable a PHP callback for customizing the relation associated with the junction table.
      * Its signature should be `function($query)`, where `$query` is the query to be customized.
-     * @return static the relation object itself.
+     * @return $this the relation object itself.
      */
     public function via($relationName, callable $callable = null);
 

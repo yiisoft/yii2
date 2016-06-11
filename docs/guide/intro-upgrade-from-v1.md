@@ -109,10 +109,14 @@ $object = Yii::createObject([
 ```
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 More details about configurations can be found in the [Object Configurations](concept-configurations.md) section.
 =======
 More details about configurations can be found in the [Configurations](concept-configurations.md) section.
 >>>>>>> yiichina/master
+=======
+More details about configurations can be found in the [Configurations](concept-configurations.md) section.
+>>>>>>> master
 
 
 Events
@@ -508,6 +512,7 @@ User and IdentityInterface
 The `CWebUser` class in 1.1 is now replaced by [[yii\web\User]], and there is no more
 `CUserIdentity` class. Instead, you should implement the [[yii\web\IdentityInterface]] which
 <<<<<<< HEAD
+<<<<<<< HEAD
 is much more straightforward to use. The advanced application template provides such an example.
 
 Please refer to the [Authentication](security-authentication.md), [Authorization](security-authorization.md), and [Advanced Application Template](tutorial-advanced-app.md) sections for more details.
@@ -516,6 +521,11 @@ is much more straightforward to use. The advanced project template provides such
 
 Please refer to the [Authentication](security-authentication.md), [Authorization](security-authorization.md), and [Advanced Project Template](https://github.com/yiisoft/yii2-app-advanced/blob/master/docs/guide/README.md) sections for more details.
 >>>>>>> yiichina/master
+=======
+is much more straightforward to use. The advanced project template provides such an example.
+
+Please refer to the [Authentication](security-authentication.md), [Authorization](security-authorization.md), and [Advanced Project Template](https://github.com/yiisoft/yii2-app-advanced/blob/master/docs/guide/README.md) sections for more details.
+>>>>>>> master
 
 
 URL Management
@@ -535,6 +545,12 @@ the same goal.
 ```
 
 Please refer to the [Url manager docs](runtime-routing.md) section for more details.
+
+An important change in the naming convention for routes is that camel case names of controllers
+and actions are now converted to lower case where each word is separated by a hypen, e.g. the controller
+id for the `CamelCaseController` will be `camel-case`.
+See the section about [controller IDs](structure-controllers.md#controller-ids) and [action IDs](structure-controllers.md#action-ids) for more details.
+
 
 Using Yii 1.1 and 2.x together
 ------------------------------

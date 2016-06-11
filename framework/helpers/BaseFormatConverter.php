@@ -154,10 +154,14 @@ class BaseFormatConverter
             'MMMM' => 'F',  // A full textual representation of a month, such as January or March
             'MMMMM' => '',  //
 <<<<<<< HEAD
+<<<<<<< HEAD
             'L' => 'm',     // Stand alone month in year
 =======
             'L' => 'n',     // Stand alone month in year
 >>>>>>> yiichina/master
+=======
+            'L' => 'n',     // Stand alone month in year
+>>>>>>> master
             'LL' => 'm',    // Stand alone month in year
             'LLL' => 'M',   // Stand alone month in year
             'LLLL' => 'F',  // Stand alone month in year
@@ -368,10 +372,14 @@ class BaseFormatConverter
             'MMMM' => 'MM', // A full textual representation of a month, such as January or March
             'MMMMM' => '',  //
 <<<<<<< HEAD
+<<<<<<< HEAD
             'L' => 'mm',     // Stand alone month in year
 =======
             'L' => 'm',     // Stand alone month in year
 >>>>>>> yiichina/master
+=======
+            'L' => 'm',     // Stand alone month in year
+>>>>>>> master
             'LL' => 'mm',   // Stand alone month in year
             'LLL' => 'M',   // Stand alone month in year
             'LLLL' => 'MM', // Stand alone month in year

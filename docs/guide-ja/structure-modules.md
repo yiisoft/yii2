@@ -110,6 +110,32 @@ class PostController extends Controller
 `layout` プロパティを構成しない場合は、アプリケーションのレイアウトが代りに使用されます。
 
 
+### モジュール内のコンソールコマンド <span id="console-commands-in-modules"></span>
+
+[コンソール](tutorial-console.md) モードで使用する事が出来るコマンドをmodeコマンドをモジュール内で宣言することも可能です。
+
+あなたのコマンドがコマンドラインユーティリティから見えるようにするためには、Yii がコンソールモードで実行されたときに
+[[yii\base\Module::controllerNamespace]] を変更して、コマンドの名前空間を指し示すようにする必要があります。
+
+それを達成する一つの方法は、モジュールの `init` メソッドの中で Yii アプリケーションのインスタンスの型を調べるという方法です。
+
+```php
+public function init()
+{
+    parent::init();
+    if (Yii::$app instanceof \yii\console\Application) {
+        $this->controllerNamespace = 'app\modules\forum\commands';
+    }
+}
+```
+
+このようにすれば、コマンドラインから次のルートを使ってあなたのコマンドを使用する事が出来るようになります。
+
+```
+yii <module_id>/<command>/<sub_command>
+```
+
+
 ## モジュールを使う <span id="using-modules"></span>
 
 アプリケーションの中でモジュールを使うためには、アプリケーションの [[yii\base\Application::modules|modules]] プロパティのリストにそのモジュールを載せてアプリケーションを構成するだけで大丈夫です。
@@ -134,7 +160,7 @@ class PostController extends Controller
 ### ルート <span id="routes"></span>
 
 アプリケーションの中のコントローラをアクセスするのと同じように、[ルート](structure-controllers.md#routes) がモジュールの中のコントローラを指し示すために使われます。
-モジュール内のコントローラのルートは、モジュール ID で始まり、コントローラ ID、アクション ID と続くものでなければなりません。
+モジュール内のコントローラのルートは、モジュール ID で始まり、[コントローラ ID](structure-controllers.md#controller-ids)、[アクション ID](structure-controllers.md#action-ids) と続くものでなければなりません。
 例えば、アプリケーションが `forum` という名前のモジュールを使用している場合、`forum/post/index` というルートは、`forum` モジュール内の `post` コントローラの `index` アクションを表します。
 ルートがモジュール ID だけを含む場合は、[[yii\base\Module::defaultRoute]] プロパティ (デフォルト値は `default` です) が、どのコントローラ/アクションが使用されるべきかを決定します。
 これは、`forum` というルートは `forum` モジュール内の `default` コントローラを表すという意味です。
@@ -155,7 +181,7 @@ $module = MyModuleClass::getInstance();
 モジュールクラスの新しいインスタンスを手動で作成しようとしてはいけないことに注意してください。
 手動で作成したインスタンスは、リクエストに対するレスポンスとして Yii によって作成されたインスタンスとは別のものになります。
 
-> Info|情報: モジュールを開発するとき、モジュールが固定の ID を使うと仮定してはいけません。
+> Info: モジュールを開発するとき、モジュールが固定の ID を使うと仮定してはいけません。
   なぜなら、モジュールは、アプリケーションや他のモジュールの中で使うときに、任意の ID と結び付けることが出来るからです。
   モジュール ID を取得するためには、上記の方法を使って最初にモジュールのインスタンスを取得し、そして `$module->id` によって ID を取得しなければなりません。
 
@@ -229,7 +255,7 @@ class Module extends \yii\base\Module
 入れ子にされたモジュールの中にあるコントローラのルートは、全ての祖先のモジュールの ID を含まなければなりません。
 例えば、`forum/admin/dashboard/index` というルートは、`forum` モジュールの子モジュールである `admin` モジュールの `dashboard` コントローラの `index` アクションを表します。
 
-> Info|情報: [[yii\base\Module::getModule()|getModule()]] メソッドは、親モジュールに直接属する子モジュールだけを返します。
+> Info: [[yii\base\Module::getModule()|getModule()]] メソッドは、親モジュールに直接属する子モジュールだけを返します。
 [[yii\base\Application::loadedModules]] プロパティがロードされた全てのモジュールのリストを保持しています。
 このリストには、直接の子と孫以下の両方のモジュールが含まれ、クラス名によってインデックスされています。
 

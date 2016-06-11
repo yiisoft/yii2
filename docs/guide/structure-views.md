@@ -599,7 +599,7 @@ regardless whether the meta tags are the same or not.
 To make sure there is only a single instance of a meta tag type, you can specify a key as a second parameter when calling the method.
 For example, the following code registers two "description" meta tags. However, only the second one will be rendered.
 
-```html
+```php
 $this->registerMetaTag(['name' => 'description', 'content' => 'This is my cool website made with Yii!'], 'description');
 $this->registerMetaTag(['name' => 'description', 'content' => 'This website is about funny raccoons.'], 'description');
 ```
@@ -694,7 +694,7 @@ Now if you create a view named `about` under the directory `@app/views/site/page
 display this view by the following URL:
 
 ```
-http://localhost/index.php?r=site/page&view=about
+http://localhost/index.php?r=site%2Fpage&view=about
 ```
 
 The `GET` parameter `view` tells [[yii\web\ViewAction]] which view is requested. The action will then look

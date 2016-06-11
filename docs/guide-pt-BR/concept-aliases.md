@@ -1,7 +1,14 @@
+<<<<<<< HEAD
 Aliases(Apelidos)
 =======
 
 Aliases são usados para representar caminhos de arquivos ou URLs de forma que você não precise acoplar o código usando caminhos absolutos ou URLs em seu projeto. Um alias deve começar com o caractere `@` para se diferenciar de um caminho de arquivo normal ou URL. Yii já possui vários aliases predefinidos disponíveis. 
+=======
+Aliases (Apelidos)
+=======
+
+Aliases são usados para representar caminhos de arquivos ou URLs de forma que você não precise acoplar o código usando caminhos absolutos ou URLs em seu projeto. Um alias deve começar com o caractere `@` para se diferenciar de um caminho de arquivo normal ou URL. O Yii já possui vários aliases predefinidos disponíveis. 
+>>>>>>> master
 Por exemplo, o alias `@yii` representa o local em que o framework Yii foi instalado; `@web` representa a URL base para a aplicação que está sendo executada no momento. 
 
 
@@ -18,9 +25,15 @@ Yii::setAlias('@foo', '/caminho/para/foo');
 Yii::setAlias('@bar', 'http://www.exemplo.com.br');
 ```
 
+<<<<<<< HEAD
 > Observação: O caminho do arquivo ou URL sendo <i>apelidado</i>(aliased) *não* necessariamente refere-se a um arquivo ou a recursos existentes.
 
 Dado um alias definido, você pode derivar um novo alias (sem a necessidade de chamar [[Yii::setAlias()]]) apenas acrescentando uma barra `/` seguido de um ou mais segmentos de caminhos de arquivos. Os aliases definidos através de [[Yii::setAlias()]] tornam-se o *alias raiz*(root alias), enquanto que aliases derivados dele, tornam-se *aliases derivados*. Por exemplo, `@foo` é um <i>alias raiz</i>(root alias), enquanto `@foo/bar/arquivo.php` é um alias derivado.
+=======
+> Observação: O caminho do arquivo ou URL sendo *apelidado* (aliased) *não* necessariamente refere-se a um arquivo ou a recursos existentes.
+
+Dado um alias definido, você pode derivar um novo alias (sem a necessidade de chamar [[Yii::setAlias()]]) apenas acrescentando uma barra `/` seguido de um ou mais segmentos de caminhos de arquivos. Os aliases definidos através de [[Yii::setAlias()]] tornam-se o *alias raiz* (root alias), enquanto que aliases derivados dele, tornam-se *aliases derivados*. Por exemplo, `@foo` é um *alias raiz* (root alias), enquanto `@foo/bar/arquivo.php` é um alias derivado.
+>>>>>>> master
 
 Você pode definir um alias usando outro alias (tanto raiz quanto derivado):
 
@@ -30,8 +43,12 @@ Yii::setAlias('@foobar', '@foo/bar');
 
 Aliases raiz são normalmente definidos durante o estágio de [inicialização](runtime-bootstrapping.md).
 Por exemplo, você pode chamar [[Yii::setAlias()]] no [script de entrada](structure-entry-scripts.md).
+<<<<<<< HEAD
 Por conveniência, as [Aplicações](structure-applications.md) difinem uma propriedade `aliases` que você
 pode configurar na [configuração](concept-configurations.md) da aplicação:
+=======
+Por conveniência, as [aplicações](structure-applications.md) difinem uma propriedade `aliases` que você pode configurar na [configuração](concept-configurations.md) da aplicação:
+>>>>>>> master
 
 ```php
 return [
@@ -48,7 +65,11 @@ Resolvendo Aliases <span id="resolving-aliases"></span>
 -----------------
 
 Você pode chamar [[Yii::getAlias()]] em um alias raiz para resolver o caminho de arquivo ou URL que ele representa.
+<<<<<<< HEAD
 O mesmo método pode tambem, resolver um alias derivado em seu caminho de arquivo ou URL correspondente.
+=======
+O mesmo método pode resolver também um alias derivado em seu caminho de arquivo ou URL correspondente.
+>>>>>>> master
 
 ```php
 echo Yii::getAlias('@foo');               // exibe: /caminho/para/foo
@@ -60,7 +81,10 @@ O caminho/URL representado por um alias derivado é determinado substituindo a p
 
 > Observação: O método [[Yii::getAlias()]] não checa se o caminho/URL resultante refere-se a um arquivo ou recursos existentes.
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> master
 Um alias raiz pode também conter caracteres de barra `/`. O método [[Yii::getAlias()]] é inteligente o suficiente
 para descobrir que parte de um alias é um alias raiz e assim determina o caminho de arquivo ou URL correspondente:
 
@@ -87,12 +111,17 @@ $cache = new FileCache([
 ]);
 ```
 
+<<<<<<< HEAD
 Por favor preste atenção a documentação da API para saber se o parâmetro de uma propriedade ou método suporta aliases.
+=======
+Por favor, consulte a documentação da API para saber se o parâmetro de uma propriedade ou método suporta aliases.
+>>>>>>> master
 
 
 Aliases Predefinidos <span id="predefined-aliases"></span>
 ------------------
 
+<<<<<<< HEAD
 Yii já predefine uma gama de aliases para referenciar facilmente caminhos de arquivos e URLs comumente usados:
 
 - `@yii`, o diretório onde o arquivo `BaseYii.php` está localizado (também chamado de diretório do framework).
@@ -103,6 +132,17 @@ Yii já predefine uma gama de aliases para referenciar facilmente caminhos de ar
    contendo o [script de entrada](structure-entry-scripts.md).
 - `@web`, a URL base da aplicacão sendo executada no momento. Esta tem o mesmo valor de [[yii\web\Request::baseUrl]].
 - `@vendor`, o caminho da pasta vendor [[yii\base\Application::vendorPath|Composer vendor directory]]. 
+=======
+O Yii já predefine uma gama de aliases para referenciar facilmente caminhos de arquivos e URLs comumente usados:
+
+- `@yii`, o diretório onde o arquivo `BaseYii.php` está localizado (também chamado de diretório do framework).
+- `@app`, o [[yii\base\Application::basePath|caminho base]] da aplicação sendo executada no momento.
+- `@runtime`, o [[yii\base\Application::runtimePath|caminho runtime]] da aplicação sendo executada no momento.
+- `@webroot`, o diretório webroot da aplicação sendo executada no momento. Este é determinado baseado no diretório
+   contendo o [script de entrada](structure-entry-scripts.md).
+- `@web`, a URL base da aplicacão sendo executada no momento. Esta tem o mesmo valor de [[yii\web\Request::baseUrl]].
+- `@vendor`, o [[yii\base\Application::vendorPath|caminho da pasta vendor do Composer]]. 
+>>>>>>> master
    Seu padrão é `@app/vendor`.
 - `@bower`, o caminho raiz que contém os [pacotes bower](http://bower.io/). Seu padrão é `@vendor/bower`.
 - `@npm`, o caminho raiz que contém [pacotes npm](https://www.npmjs.org/). Seu padrão é `@vendor/npm`.
@@ -115,8 +155,12 @@ Aliases para Extensões <span id="extension-aliases"></span>
 -----------------
 
 Um alias é automaticamente definido para cada [extensão](structure-extensions.md) que for instalada através do Composer.
+<<<<<<< HEAD
 Cada alias é nomeado a partir do namespace raiz da extensão como declarada em seu arquivo `composer.json`, e cada alias representa o diretório raiz de seu pacote. Por exemplo, se você instalar a extensão `yiisoft/yii2-jui`,
 você terá automaticamente o alias `@yii/jui` definido durante o estágio de [inicialização](runtime-bootstrapping.md), equivalente a:
+=======
+Cada alias é nomeado a partir do namespace raiz da extensão como declarada em seu arquivo `composer.json`, e cada alias representa o diretório raiz de seu pacote. Por exemplo, se você instalar a extensão `yiisoft/yii2-jui`, você terá automaticamente o alias `@yii/jui` definido durante o estágio de [inicialização](runtime-bootstrapping.md), equivalente a:
+>>>>>>> master
 
 ```php
 Yii::setAlias('@yii/jui', 'VendorPath/yiisoft/yii2-jui');

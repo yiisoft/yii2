@@ -35,7 +35,9 @@ All Rights Reserved.
 * [Приложения](structure-applications.md)
 * [Компоненты приложения](structure-application-components.md)
 * [Контроллеры](structure-controllers.md)
+* [Модели](structure-models.md)
 * [Представления](structure-views.md)
+<<<<<<< HEAD
 <<<<<<< HEAD
 * **TBD** [Модели](structure-models.md)
 * [Фильтры](structure-filters.md)
@@ -49,22 +51,33 @@ All Rights Reserved.
 * [Модули](structure-modules.md)
 * [Ресурсы](structure-assets.md)
 >>>>>>> yiichina/master
+=======
+* [Модули](structure-modules.md)
+* [Фильтры](structure-filters.md)
+* [Виджеты](structure-widgets.md)
+* [Ресурсы](structure-assets.md)
+>>>>>>> master
 * [Расширения](structure-extensions.md)
 
 
 Обработка запросов
 ------------------
 
+* [Обзор](runtime-overview.md)
 * [Bootstrapping](runtime-bootstrapping.md)
-* [Роутинг](runtime-routing.md)
+* [Разбор и генерация URL](runtime-routing.md)
 * [Запросы](runtime-requests.md)
 * [Ответы](runtime-responses.md)
+<<<<<<< HEAD
 <<<<<<< HEAD
 * **TBD** [Сессии и куки](runtime-sessions-cookies.md)
 =======
 * [Сессии и куки](runtime-sessions-cookies.md)
 >>>>>>> yiichina/master
 * [Разбор и генерация URL](runtime-routing.md)
+=======
+* [Сессии и куки](runtime-sessions-cookies.md)
+>>>>>>> master
 * [Обработка ошибок](runtime-handling-errors.md)
 * [Логирование](runtime-logging.md)
 
@@ -86,6 +99,7 @@ All Rights Reserved.
 Работа с базами данных
 ----------------------
 
+<<<<<<< HEAD
 * **TBD** [Объекты доступа к данным (DAO)](db-dao.md) - Соединение с базой данных, простые запросы, транзакции и работа со схемой.
 * **TBD** [Построитель запросов](db-query-builder.md) - Запросы к базе данных через простой слой абстракции.
 * **TBD** [Active Record](db-active-record.md) - Получение объектов AR, работа с ними и определение связей.
@@ -98,24 +112,41 @@ All Rights Reserved.
 * **TBD** [Redis](db-redis.md)
 * **TBD** [MongoDB](db-mongodb.md)
 * **TBD** [ElasticSearch](db-elasticsearch.md)
+=======
+* [Объекты доступа к данным (DAO)](db-dao.md) - Соединение с базой данных, простые запросы, транзакции и работа со схемой.
+* [Построитель запросов](db-query-builder.md) - Запросы к базе данных через простой слой абстракции.
+* [Active Record](db-active-record.md) - Получение объектов AR, работа с ними и определение связей.
+* [Миграции](db-migrations.md) - Контроль версий схемы данных при работе в команде.
+* [Sphinx](https://github.com/yiisoft/yii2-sphinx/blob/master/docs/guide/README.md)
+* [Redis](https://github.com/yiisoft/yii2-redis/blob/master/docs/guide/README.md)
+* [MongoDB](https://github.com/yiisoft/yii2-mongodb/blob/master/docs/guide/README.md)
+* [ElasticSearch](https://github.com/yiisoft/yii2-elasticsearch/blob/master/docs/guide/README.md)
+>>>>>>> master
 
 
 Получение данных от пользователя
 --------------------------------
 
-* **TBD** [Создание форм](input-forms.md)
+* [Создание форм](input-forms.md)
 * [Валидация](input-validation.md)
+<<<<<<< HEAD
 <<<<<<< HEAD
 * **TBD** [Загрузка файлов](input-file-upload.md)
 =======
 * [Загрузка файлов](input-file-upload.md)
 >>>>>>> yiichina/master
 * **TBD** [Работа с несколькими моделями](input-multiple-models.md)
+=======
+* [Загрузка файлов](input-file-upload.md)
+* [Табличный ввод](input-tabular-input.md)
+* [Работа с несколькими моделями](input-multiple-models.md)
+>>>>>>> master
 
 
 Отображение данных
 ------------------
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 * **TBD** [Форматирование данных](output-formatter.md)
 *  [Постраничная разбивка](output-pagination.md)
@@ -131,11 +162,21 @@ All Rights Reserved.
 * **TBD** [Виджеты для данных](output-data-widgets.md)
 * [Темизация](output-theming.md)
 >>>>>>> yiichina/master
+=======
+* [Форматирование данных](output-formatting.md)
+* [Постраничная разбивка](output-pagination.md)
+* [Сортировка](output-sorting.md)
+* [Провайдеры данных](output-data-providers.md)
+* [Виджеты для данных](output-data-widgets.md)
+* [Работа с клиентскими скриптами](output-client-scripts.md)
+* [Темизация](output-theming.md)
+>>>>>>> master
 
 
 Безопасность
 ------------
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 * **TBD** [Аутентификация](security-authentication.md)
 =======
@@ -145,6 +186,13 @@ All Rights Reserved.
 * **TBD** [Работа с паролями](security-passwords.md)
 * **TBD** [Клиенты авторизации](security-auth-clients.md)
 * **TBD** [Лучшие практики](security-best-practices.md)
+=======
+* [Аутентификация](security-authentication.md)
+* [Авторизация](security-authorization.md)
+* [Работа с паролями](security-passwords.md)
+* [Клиенты авторизации](https://github.com/yiisoft/yii2-authclient/blob/master/docs/guide-ru/README.md)
+* [Лучшие практики](security-best-practices.md)
+>>>>>>> master
 
 
 Кеширование
@@ -174,43 +222,36 @@ All Rights Reserved.
 Инструменты разработчика
 ------------------------
 
-* **TBD** [Отладочная панель и отладчик](tool-debugger.md)
-* **TBD** [Генерация кода с Gii](tool-gii.md)
-* **TBD** [Генератор документации API](tool-api-doc.md)
+* [Отладочная панель и отладчик](https://github.com/yiisoft/yii2-debug/blob/master/docs/guide/README.md)
+* [Генерация кода с Gii](https://github.com/yiisoft/yii2-gii/blob/master/docs/guide/README.md)
+* **TBD** [Генератор документации API](https://github.com/yiisoft/yii2-apidoc)
 
 
 Тестирование
 ------------
 
-* **TBD** [Обзор](test-overview.md)
-* **TBD** [Модульные тесты](test-unit.md)
-* **TBD** [Функциональные тесты](test-functional.md)
-* **TBD** [Приёмочные тесты](test-acceptance.md)
-* **TBD** [Фикстуры](test-fixtures.md)
-
-
-Расширение Yii
---------------
-
-* **TBD** [Создание расширений](extend-creating-extensions.md)
-* **TBD** [Расширение кода фреймворка](extend-customizing-core.md)
-* **TBD** [Использование сторонних библиотек](extend-using-libs.md)
-* **TBD** [Интеграция Yii в сторонние системы](extend-embedding-in-others.md)
-* **TBD** [Одновременное использование Yii 1.1 и 2.0](extend-using-v1-v2.md)
-* **TBD** [Использование Composer](extend-using-composer.md)
+* [Обзор](test-overview.md)
+* [Настройка тестового окружения](test-environment-setup.md)
+* [Модульные тесты](test-unit.md)
+* [Функциональные тесты](test-functional.md)
+* [Приёмочные тесты](test-acceptance.md)
+* [Фикстуры](test-fixtures.md)
 
 
 Специальные темы
 ----------------
 
-* [Шаблон приложения advanced](tutorial-advanced-app.md)
-* **TBD** [Создание приложения с нуля](tutorial-start-from-scratch.md)
-* **TBD** [Консольные команды](tutorial-console.md)
+
+* [Шаблон приложения advanced](https://github.com/yiisoft/yii2-app-advanced/blob/master/docs/guide/README.md)
+* [Создание приложения с нуля](tutorial-start-from-scratch.md)
+* [Консольные команды](tutorial-console.md)
+* [Встроенные валидаторы](tutorial-core-validators.md)
 * [Интернационализация](tutorial-i18n.md)
-* **TBD** [Отправка почты](tutorial-mailing.md)
-* **TBD** [Улучшение производительности](tutorial-performance-tuning.md)
-* **TBD** [Работа на shared хостинге](tutorial-shared-hosting.md)
-* **TBD** [Шаблонизаторы](tutorial-template-engines.md)
+* [Отправка почты](tutorial-mailing.md)
+* [Оптимизация производительности](tutorial-performance-tuning.md)
+* [Окружение виртуального хостинга](tutorial-shared-hosting.md)
+* [Шаблонизаторы](tutorial-template-engines.md)
+* [Работа со сторонним кодом](tutorial-yii-integration.md)
 
 
 Виджеты
@@ -224,16 +265,14 @@ All Rights Reserved.
 * Menu: link to demo page
 * LinkPager: link to demo page
 * LinkSorter: link to demo page
-* **TBD** [Виджеты Bootstrap](widget-bootstrap.md)
-* **TBD** [Виджеты Jquery UI](widget-jui.md)
+* [Виджеты Bootstrap](https://github.com/yiisoft/yii2-bootstrap/blob/master/docs/guide/README.md)
+* [Виджеты Jquery UI](https://github.com/yiisoft/yii2-jui/blob/master/docs/guide/README.md)
 
 
 Хелперы
 -------
 
-* **TBD** [Обзор](helper-overview.md)
+* [Обзор](helper-overview.md)
 * [ArrayHelper](helper-array.md)
-* **TBD** [Html](helper-html.md)
-* **TBD** [Url](helper-url.md)
-* **TBD** [Security](helper-security.md)
-
+* [Html](helper-html.md)
+* [Url хелпер](helper-url.md)

@@ -34,10 +34,14 @@ use yii\web\View;
  *
  * ```php
 <<<<<<< HEAD
+<<<<<<< HEAD
  * <?= $form->field($model, 'from_date')->widget(\yii\widgets\MaskedInput::classname(), [
 =======
  * <?= $form->field($model, 'from_date')->widget(\yii\widgets\MaskedInput::className(), [
 >>>>>>> yiichina/master
+=======
+ * <?= $form->field($model, 'from_date')->widget(\yii\widgets\MaskedInput::className(), [
+>>>>>>> master
  *     'mask' => '999-999-9999',
  * ]) ?>
  * ```
@@ -96,6 +100,12 @@ class MaskedInput extends InputWidget
      * @see \yii\helpers\Html::renderTagAttributes() for details on how attributes are being rendered.
      */
     public $options = ['class' => 'form-control'];
+    /**
+     * @var string the type of the input tag. Currently only 'text' and 'tel' are supported.
+     * @see https://github.com/RobinHerbots/jquery.inputmask
+     * @since 2.0.6
+     */
+    public $type = 'text';
 
     /**
      * @var string the hashed variable to store the pluginOptions
@@ -122,22 +132,30 @@ class MaskedInput extends InputWidget
     public function run()
     {
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
         $this->registerClientScript();
 >>>>>>> yiichina/master
+=======
+        $this->registerClientScript();
+>>>>>>> master
         if ($this->hasModel()) {
-            echo Html::activeTextInput($this->model, $this->attribute, $this->options);
+            echo Html::activeInput($this->type, $this->model, $this->attribute, $this->options);
         } else {
-            echo Html::textInput($this->name, $this->value, $this->options);
+            echo Html::input($this->type, $this->name, $this->value, $this->options);
         }
+<<<<<<< HEAD
 <<<<<<< HEAD
         $this->registerClientScript();
 =======
 >>>>>>> yiichina/master
+=======
+>>>>>>> master
     }
 
     /**
      * Generates a hashed variable to store the plugin `clientOptions`. Helps in reusing the variable for similar
+<<<<<<< HEAD
 <<<<<<< HEAD
      * options passed for other widgets on the same page. The following special data attributes will also be
      * setup for the input widget, that can be accessed through javascript:
@@ -150,12 +168,19 @@ class MaskedInput extends InputWidget
      *
      * - 'data-plugin-inputmask' will store the hashed variable storing the plugin options.
 >>>>>>> yiichina/master
+=======
+     * options passed for other widgets on the same page. The following special data attribute will also be
+     * added to the input field to allow accessing the client options via javascript:
+     *
+     * - 'data-plugin-inputmask' will store the hashed variable storing the plugin options.
+>>>>>>> master
      *
      * @param View $view the view instance
      * @author [Thiago Talma](https://github.com/thiagotalma)
      */
     protected function hashPluginOptions($view)
     {
+<<<<<<< HEAD
 <<<<<<< HEAD
         $encOptions = empty($this->clientOptions) ? '{}' : Json::encode($this->clientOptions);
         $this->_hashVar = self::PLUGIN_NAME . '_' . hash('crc32', $encOptions);
@@ -167,6 +192,12 @@ class MaskedInput extends InputWidget
         $this->options['data-plugin-' . self::PLUGIN_NAME] = $this->_hashVar;
 >>>>>>> yiichina/master
         $view->registerJs("var {$this->_hashVar} = {$encOptions};\n", View::POS_HEAD);
+=======
+        $encOptions = empty($this->clientOptions) ? '{}' : Json::htmlEncode($this->clientOptions);
+        $this->_hashVar = self::PLUGIN_NAME . '_' . hash('crc32', $encOptions);
+        $this->options['data-plugin-' . self::PLUGIN_NAME] = $this->_hashVar;
+        $view->registerJs("var {$this->_hashVar} = {$encOptions};", View::POS_READY);
+>>>>>>> master
     }
 
     /**
@@ -177,7 +208,7 @@ class MaskedInput extends InputWidget
         $options = $this->clientOptions;
         foreach ($options as $key => $value) {
             if (!$value instanceof JsExpression && in_array($key, ['oncomplete', 'onincomplete', 'oncleared', 'onKeyUp',
-                    'onKeyDown', 'onBeforeMask', 'onBeforePaste', 'onUnMask', 'isComplete', 'determineActiveMasksetIndex'])
+                    'onKeyDown', 'onBeforeMask', 'onBeforePaste', 'onUnMask', 'isComplete', 'determineActiveMasksetIndex'], true)
             ) {
                 $options[$key] = new JsExpression($value);
             }
@@ -199,6 +230,7 @@ class MaskedInput extends InputWidget
         $this->hashPluginOptions($view);
         if (is_array($this->definitions) && !empty($this->definitions)) {
 <<<<<<< HEAD
+<<<<<<< HEAD
             $js .= '$.extend($.' . self::PLUGIN_NAME . '.defaults.definitions, ' . Json::encode($this->definitions) . ");\n";
         }
         if (is_array($this->aliases) && !empty($this->aliases)) {
@@ -209,9 +241,15 @@ class MaskedInput extends InputWidget
         if (is_array($this->aliases) && !empty($this->aliases)) {
             $js .= '$.extend($.' . self::PLUGIN_NAME . '.defaults.aliases, ' . Json::htmlEncode($this->aliases) . ");\n";
 >>>>>>> yiichina/master
+=======
+            $js .= ucfirst(self::PLUGIN_NAME) . '.extendDefinitions(' . Json::htmlEncode($this->definitions) . ');';
+        }
+        if (is_array($this->aliases) && !empty($this->aliases)) {
+            $js .= ucfirst(self::PLUGIN_NAME) . '.extendAliases(' . Json::htmlEncode($this->aliases) . ');';
+>>>>>>> master
         }
         $id = $this->options['id'];
-        $js .= '$("#' . $id . '").' . self::PLUGIN_NAME . "(" . $this->_hashVar . ");\n";
+        $js .= '$("#' . $id . '").' . self::PLUGIN_NAME . '(' . $this->_hashVar . ');';
         MaskedInputAsset::register($view);
         $view->registerJs($js);
     }

@@ -18,6 +18,7 @@
  */
 return [
 <<<<<<< HEAD
+<<<<<<< HEAD
   '(not set)' => '(nenustatyta)',
   'An internal server error occurred.' => 'Įvyko vidinė serverio klaida',
   'Are you sure you want to delete this item?' => 'Ar tikrai norite ištrinti šį elementą?',
@@ -105,6 +106,8 @@ return [
   '{n} PB' => '{n} PB',
   '{n} TB' => '{n} TB',
 =======
+=======
+>>>>>>> master
     'just now' => 'dabar',
     '{nFormatted} B' => '{nFormatted} B',
     '{nFormatted} GB' => '{nFormatted} GB',
@@ -148,8 +151,13 @@ return [
     'Please upload a file.' => 'Prašome įkelti failą.',
     'Showing <b>{begin, number}-{end, number}</b> of <b>{totalCount, number}</b> {totalCount, plural, one{item} other{items}}.' => 'Rodomi rezultatai <b>{begin, number}-{end, number}</b> iš <b>{totalCount, number}</b>.',
     'The file "{file}" is not an image.' => 'Failas „{file}“ nėra paveikslėlis.',
+<<<<<<< HEAD
     'The file "{file}" is too big. Its size cannot exceed {limit, number} {limit, plural, one{byte} other{bytes}}.' => 'Failas „{file}“ yra per didelis. Dydis negali viršyti {limit, number} {limit, plural, one{baito} few{baitų} other{baitų}}.',
     'The file "{file}" is too small. Its size cannot be smaller than {limit, number} {limit, plural, one{byte} other{bytes}}.' => 'Failas „{file}“ yra per mažas. Dydis negali būti mažesnis už {limit, number} {limit, plural, one{baitą} few{baitus} other{baitų}}.',
+=======
+    'The file "{file}" is too big. Its size cannot exceed {formattedLimit}.' => 'Failas „{file}“ yra per didelis. Dydis negali viršyti {formattedLimit}.',
+    'The file "{file}" is too small. Its size cannot be smaller than {formattedLimit}.' => 'Failas „{file}“ yra per mažas. Dydis negali būti mažesnis už {formattedLimit}.',
+>>>>>>> master
     'The format of {attribute} is invalid.' => 'Atributo „{attribute}“ formatas yra netinkamas.',
     'The image "{file}" is too large. The height cannot be larger than {limit, number} {limit, plural, one{pixel} other{pixels}}.' => 'Paveikslėlis „{file}“ yra per didelis. Aukštis negali viršyti {limit, number} {limit, plural, one{taško} few{taškų} other{taškų}}.',
     'The image "{file}" is too large. The width cannot be larger than {limit, number} {limit, plural, one{pixel} other{pixels}}.' => 'Paveikslėlis „{file}“ yra per didelis. Plotis negali viršyti {limit, number} {limit, plural, one{taško} few{taškų} other{taškų}}.',
@@ -199,5 +207,8 @@ return [
     '{delta, plural, =1{a second} other{# seconds}} ago' => 'prieš {delta, plural, =1{sekundę} one{# sekundę} few{# sekundes} other{# sekundžių}}',
     '{delta, plural, =1{a year} other{# years}} ago' => 'prieš {delta, plural, =1{metus} one{# metus} few{# metus} other{# metų}}',
     '{delta, plural, =1{an hour} other{# hours}} ago' => 'prieš {delta, plural, =1{valandą} one{# valandą} few{# valandas} other{# valandų}}',
+<<<<<<< HEAD
 >>>>>>> yiichina/master
+=======
+>>>>>>> master
 ];

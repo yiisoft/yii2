@@ -13,7 +13,7 @@ the core developers.
    exceptions about the code etc. should not be translated. Console messages are always in English because of encoding
    and codepage handling difficulties.
 3. **[Adding new auth client support](https://github.com/yiisoft/yii2/issues/1652)**
-   For better maintenability, we will not add any additional auth clients to the core extension. They should be done 
+   For better maintainability, we will not add any additional auth clients to the core extension. They should be done 
    in terms of user extensions. 
 4. **When using closures** it is recommended to **include all passed parameters** in the signature even if not all of them are
    used. This way modifying or copying code is easier because all information is directly visible and it is not necessary to

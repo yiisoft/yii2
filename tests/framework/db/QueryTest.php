@@ -2,6 +2,7 @@
 
 namespace yiiunit\framework\db;
 
+use yii\db\Expression;
 use yii\db\Query;
 
 /**
@@ -166,6 +167,14 @@ class QueryTest extends DatabaseTestCase
 
         $query->addOrderBy('age ASC, company DESC');
         $this->assertEquals(['team' => SORT_ASC, 'company' => SORT_DESC, 'age' => SORT_ASC], $query->orderBy);
+
+        $expression = new Expression('SUBSTR(name, 3, 4) DESC, x ASC');
+        $query->orderBy($expression);
+        $this->assertEquals([$expression], $query->orderBy);
+
+        $expression = new Expression('SUBSTR(name, 3, 4) DESC, x ASC');
+        $query->addOrderBy($expression);
+        $this->assertEquals([$expression, $expression], $query->orderBy);
     }
 
     public function testLimitOffset()
@@ -178,6 +187,20 @@ class QueryTest extends DatabaseTestCase
 
     public function testUnion()
     {
+        $connection = $this->getConnection();
+        $query = new Query;
+        $query->select(['id', 'name'])
+            ->from('item')
+            ->limit(2)
+            ->union(
+                (new Query())
+                    ->select(['id', 'name'])
+                    ->from(['category'])
+                    ->limit(2)
+            );
+        $result = $query->all($connection);
+        $this->assertNotEmpty($result);
+        $this->assertSame(4, count($result));
     }
 
     public function testOne()
@@ -188,6 +211,17 @@ class QueryTest extends DatabaseTestCase
         $this->assertEquals('user3', $result['name']);
 
         $result = (new Query)->from('customer')->where(['status' => 3])->one($db);
+        $this->assertFalse($result);
+    }
+
+    public function testExists()
+    {
+        $db = $this->getConnection();
+
+        $result = (new Query)->from('customer')->where(['status' => 2])->exists($db);
+        $this->assertTrue($result);
+
+        $result = (new Query)->from('customer')->where(['status' => 3])->exists($db);
         $this->assertFalse($result);
     }
 
@@ -216,8 +250,39 @@ class QueryTest extends DatabaseTestCase
         $count = (new Query)->from('customer')->where(['status' => 2])->count('*', $db);
         $this->assertEquals(1, $count);
 
-        $count = (new Query)->select('status, COUNT(id)')->from('customer')->groupBy('status')->count('*', $db);
+        $count = (new Query)->select('[[status]], COUNT([[id]])')->from('customer')->groupBy('status')->count('*', $db);
         $this->assertEquals(2, $count);
+    }
+
+    /**
+     * @depends testFilterWhere
+     */
+    public function testAndFilterCompare()
+    {
+        $query = new Query;
+
+        $result = $query->andFilterCompare('name', null);
+        $this->assertInstanceOf('yii\db\Query', $result);
+        $this->assertNull($query->where);
+
+        $query->andFilterCompare('name', '');
+        $this->assertNull($query->where);
+
+        $query->andFilterCompare('name', 'John Doe');
+        $condition = ['=', 'name', 'John Doe'];
+        $this->assertEquals($condition, $query->where);
+
+        $condition = ['and', $condition, ['like', 'name', 'Doe']];
+        $query->andFilterCompare('name', 'Doe', 'like');
+        $this->assertEquals($condition, $query->where);
+
+        $condition = ['and', $condition, ['>', 'rating', '9']];
+        $query->andFilterCompare('rating', '>9');
+        $this->assertEquals($condition, $query->where);
+
+        $condition = ['and', $condition, ['<=', 'value', '100']];
+        $query->andFilterCompare('value', '<=100');
+        $this->assertEquals($condition, $query->where);
     }
 
     /**

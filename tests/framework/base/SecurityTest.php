@@ -5,8 +5,48 @@
  * @license http://www.yiiframework.com/license/
  */
 
-namespace yiiunit\framework\base;
+namespace yii\base {
 
+    /**
+     * emulate availability of functions, to test different branches of Security class
+     * where different execution paths are chosen based on calling function_exists.
+     *
+     * This function overrides function_exists from the root namespace in yii\base.
+     */
+    function function_exists($name) {
+
+        if (isset(\yiiunit\framework\base\SecurityTest::$functions[$name])) {
+            return \yiiunit\framework\base\SecurityTest::$functions[$name];
+        }
+        return \function_exists($name);
+    }
+    /**
+     * emulate chunked reading of fread(), to test different branches of Security class
+     * where different execution paths are chosen based on the return value of fopen/fread
+     *
+     * This function overrides fopen and fread from the root namespace in yii\base.
+     */
+    function fopen($filename, $mode) {
+        if (\yiiunit\framework\base\SecurityTest::$fopen !== null) {
+            return \yiiunit\framework\base\SecurityTest::$fopen;
+        }
+        return \fopen($filename, $mode);
+    }
+    function fread($handle, $length) {
+        if (\yiiunit\framework\base\SecurityTest::$fread !== null) {
+            return \yiiunit\framework\base\SecurityTest::$fread;
+        }
+        if (\yiiunit\framework\base\SecurityTest::$fopen !== null) {
+            return $length < 8 ? \str_repeat('s', $length) : 'test1234';
+        }
+        return \fread($handle, $length);
+    }
+
+} // closing namespace yii\base;
+
+namespace yiiunit\framework\base {
+
+use yii\base\Security;
 use yiiunit\TestCase;
 
 /**
@@ -17,15 +57,36 @@ class SecurityTest extends TestCase
     const CRYPT_VECTORS = 'old';
 
     /**
+     * @var array set of functions for which a fake return value for `function_exists()` is provided.
+     */
+    public static $functions = [];
+    /**
+     * @var resource|false|null fake return value for fopen() in \yii\base namespace. Normal behavior if this is null.
+     */
+    public static $fopen;
+    public static $fread;
+
+    /**
      * @var ExposedSecurity
      */
     protected $security;
 
     protected function setUp()
     {
+        static::$functions = [];
+        static::$fopen = null;
+        static::$fread = null;
         parent::setUp();
         $this->security = new ExposedSecurity();
         $this->security->derivationIterations = 1000; // speed up test running
+    }
+
+    protected function tearDown()
+    {
+        static::$functions = [];
+        static::$fopen = null;
+        static::$fread = null;
+        parent::tearDown();
     }
 
     // Tests :
@@ -41,37 +102,9 @@ class SecurityTest extends TestCase
         $this->assertFalse($this->security->validateData($hashedData, $key));
     }
 
-    /**
-     * Data provider for [[testPasswordHash()]]
-     * @return array test data
-     */
-    public function dataProviderPasswordHash()
+    public function testPasswordHash()
     {
-        return [
-            [
-                'crypt',
-                false
-            ],
-            [
-                'password_hash',
-                !function_exists('password_hash')
-            ],
-        ];
-    }
-
-    /**
-     * @dataProvider dataProviderPasswordHash
-     *
-     * @param string $passwordHashStrategy
-     * @param boolean $isSkipped
-     */
-    public function testPasswordHash($passwordHashStrategy, $isSkipped)
-    {
-        if ($isSkipped) {
-            $this->markTestSkipped("Unable to test '{$passwordHashStrategy}' password hash strategy");
-            return;
-        }
-        $this->security->passwordHashStrategy = $passwordHashStrategy;
+        $this->security->passwordHashCost = 4;  // minimum blowfish's value is enough for tests
 
         $password = 'secret';
         $hash = $this->security->generatePasswordHash($password);
@@ -127,7 +160,7 @@ class SecurityTest extends TestCase
     public function notestGenerateVectors()
     {
         $bin1024 =
-           'badec0c7d9ca734e161a1df6ca4daa8cdbf6b3bbb60ec404b47a23226ec266b1
+            'badec0c7d9ca734e161a1df6ca4daa8cdbf6b3bbb60ec404b47a23226ec266b1
             3837ffc969e9c23e2bbba72facb491a6a3271193a35026a9ebc93698d689bf7b
             84fc384f544cc5d71c2945c8c48ae6348c753322fcaf75171b7d8f1e178e8545
             3d5c79f03bae6d9705cabbe7004ec81e188812a66313297fcf5d4c61a48614d2
@@ -826,11 +859,165 @@ TEXT;
         $this->assertEquals($data, $this->security->decryptByPassword($encrypted, $password));
     }
 
-    public function testGenerateRandomKey()
+
+    public function randomKeyInvalidInputs()
     {
-        $length = 21;
-        $key = $this->security->generateRandomKey($length);
-        $this->assertEquals($length, strlen($key));
+        return [
+            [ 0 ],
+            [ -1 ],
+            [ '0' ],
+            [ '34' ],
+            [ [] ],
+        ];
+    }
+
+    /**
+     * @dataProvider randomKeyInvalidInputs
+     * @expectedException \yii\base\InvalidParamException
+     */
+    public function testRandomKeyInvalidInput($input)
+    {
+        $key1 = $this->security->generateRandomKey($input);
+    }
+
+    /**
+     * Test the case where opening /dev/urandom fails
+     */
+    public function testRandomKeyNoOptions()
+    {
+        static::$functions = ['random_bytes' => false, 'openssl_random_pseudo_bytes' => false, 'mcrypt_create_iv' => false ];
+        static::$fopen = false;
+        $this->setExpectedException('yii\base\Exception', 'Unable to generate a random key');
+
+        $this->security->generateRandomKey(42);
+    }
+
+    /**
+     * Test the case where reading from /dev/urandom fails
+     */
+    public function testRandomKeyFreadFailure()
+    {
+        static::$functions = ['random_bytes' => false, 'openssl_random_pseudo_bytes' => false, 'mcrypt_create_iv' => false ];
+        static::$fread = false;
+        $this->setExpectedException('yii\base\Exception', 'Unable to generate a random key');
+
+        $this->security->generateRandomKey(42);
+    }
+
+    /**
+     * returns a set of different combinations of functions available.
+     */
+    public function randomKeyVariants()
+    {
+        return [
+            [ ['random_bytes' => true,  'openssl_random_pseudo_bytes' => true,  'mcrypt_create_iv' => true ] ],
+            [ ['random_bytes' => true,  'openssl_random_pseudo_bytes' => true,  'mcrypt_create_iv' => false ] ],
+            [ ['random_bytes' => true,  'openssl_random_pseudo_bytes' => false, 'mcrypt_create_iv' => true ] ],
+            [ ['random_bytes' => true,  'openssl_random_pseudo_bytes' => false, 'mcrypt_create_iv' => false ] ],
+            [ ['random_bytes' => false, 'openssl_random_pseudo_bytes' => true,  'mcrypt_create_iv' => true ] ],
+            [ ['random_bytes' => false, 'openssl_random_pseudo_bytes' => true,  'mcrypt_create_iv' => false ] ],
+            [ ['random_bytes' => false, 'openssl_random_pseudo_bytes' => false, 'mcrypt_create_iv' => true ] ],
+            [ ['random_bytes' => false, 'openssl_random_pseudo_bytes' => false, 'mcrypt_create_iv' => false ] ],
+        ];
+    }
+
+    /**
+     * @dataProvider randomKeyVariants
+     */
+    public function testGenerateRandomKey($functions)
+    {
+        foreach ($functions as $fun => $available) {
+            if ($available && !\function_exists($fun)) {
+                $this->markTestSkipped("Can not test generateRandomKey() branch that includes $fun, because it is not available on your system.");
+            }
+        }
+        // there is no /dev/urandom on windows so we expect this to fail
+        if (DIRECTORY_SEPARATOR === '\\' && $functions['random_bytes'] === false && $functions['openssl_random_pseudo_bytes'] === false && $functions['mcrypt_create_iv'] === false ) {
+            $this->setExpectedException('yii\base\Exception', 'Unable to generate a random key');
+        }
+        static::$functions = $functions;
+
+        // test various string lengths
+        for ($length = 1; $length < 64; $length++) {
+            $key1 = $this->security->generateRandomKey($length);
+            $this->assertInternalType('string', $key1);
+            $this->assertEquals($length, strlen($key1));
+            $key2 = $this->security->generateRandomKey($length);
+            $this->assertInternalType('string', $key2);
+            $this->assertEquals($length, strlen($key2));
+            if ($length >= 7) { // avoid random test failure, short strings are likely to collide
+                $this->assertTrue($key1 != $key2);
+            }
+        }
+
+        // test for /dev/urandom, reading larger data to see if loop works properly
+        $length = 1024 * 1024;
+        $key1 = $this->security->generateRandomKey($length);
+        $this->assertInternalType('string', $key1);
+        $this->assertEquals($length, strlen($key1));
+        $key2 = $this->security->generateRandomKey($length);
+        $this->assertInternalType('string', $key2);
+        $this->assertEquals($length, strlen($key2));
+        $this->assertTrue($key1 != $key2);
+
+        // force /dev/urandom reading loop to deal with chunked data
+        // the above test may have read everything in one run.
+        // not sure if this can happen in real life but if it does
+        // we should be prepared
+        static::$fopen = fopen('php://memory', 'rwb');
+        $length = 1024 * 1024;
+        $key1 = $this->security->generateRandomKey($length);
+        $this->assertInternalType('string', $key1);
+        $this->assertEquals($length, strlen($key1));
+    }
+
+    protected function randTime(Security $security, $count, $length, $message)
+    {
+        $t = microtime(true);
+        for ($i = 0; $i < $count; $i += 1) {
+            $key = $security->generateRandomKey($length);
+        }
+        $t = microtime(true) - $t;
+        $nbytes = number_format($count * $length, 0);
+        $milisec = number_format(1000 * ($t), 3);
+        $rate = number_format($count * $length / $t / 1000000, 3);
+        fwrite(STDERR, "$message: $count x $length B = $nbytes B in $milisec ms => $rate MB/s\n");
+    }
+
+    public function testGenerateRandomKeySpeed()
+    {
+        self::markTestSkipped('Comment markTestSkipped in testGenerateRandomKeySpeed() in order to get RNG benchmark.');
+        $tests = [
+            "function_exists('random_bytes')",
+            "defined('OPENSSL_VERSION_TEXT') ? OPENSSL_VERSION_TEXT : null",
+            "PHP_VERSION_ID",
+            "PHP_OS",
+            "function_exists('mcrypt_create_iv') ? bin2hex(mcrypt_create_iv(4, MCRYPT_DEV_URANDOM)) : null",
+            "DIRECTORY_SEPARATOR",
+            "ini_get('open_basedir')",
+        ];
+        if (DIRECTORY_SEPARATOR === '/') {
+            $tests[] = "sprintf('%o', lstat(PHP_OS === 'FreeBSD' ? '/dev/random' : '/dev/urandom')['mode'] & 0170000)";
+            $tests[] = "bin2hex(file_get_contents(PHP_OS === 'FreeBSD' ? '/dev/random' : '/dev/urandom', false, null, 0, 8))";
+        }
+        foreach ($tests as $i => $test) {
+            $result = eval('return ' . $test . ';');
+            fwrite(STDERR, sprintf("%2d %s ==> %s\n", $i + 1, $test, var_export($result, true)));
+        }
+
+        foreach ([16, 2000, 262144] as $block) {
+            $security = new Security();
+            foreach (range(1, 10) as $nth) {
+                $this->randTime($security, 1, $block, "Call $nth");
+            }
+            unset($security);
+        }
+
+        $security = new Security();
+        $this->randTime($security, 10000, 16, 'Rate test');
+
+        $security = new Security();
+        $this->randTime($security, 10000, 5000, 'Rate test');
     }
 
     public function testGenerateRandomString()
@@ -1060,3 +1247,6 @@ TEXT;
         $this->assertEquals(strcmp($expected, $actual) === 0, $this->security->compareString($expected, $actual));
     }
 }
+
+} // closing namespace yiiunit\framework\base;
+

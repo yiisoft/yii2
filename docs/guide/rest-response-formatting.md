@@ -11,11 +11,16 @@ with response formatting:
 3. Convert arrays into a string in the format as determined by the content negotiation step. This is
    done by [[yii\web\ResponseFormatterInterface|response formatters]] registered with
 <<<<<<< HEAD
+<<<<<<< HEAD
    the [[yii\web\Response::formatters|response]] application component.
 =======
    the [[yii\web\Response::formatters|formatters]] property of the
    `response` [application component](structure-application-components.md).
 >>>>>>> yiichina/master
+=======
+   the [[yii\web\Response::formatters|formatters]] property of the
+   `response` [application component](structure-application-components.md).
+>>>>>>> master
 
 
 ## Content Negotiation <span id="content-negotiation"></span>

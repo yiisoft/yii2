@@ -17,10 +17,14 @@ use yii\db\ActiveRecordInterface;
  * the ActiveRecord class [[targetClass]] and the attribute [[targetAttribute]].
  *
 <<<<<<< HEAD
+<<<<<<< HEAD
  * The followings are examples of validation rules using this validator:
 =======
  * The following are examples of validation rules using this validator:
 >>>>>>> yiichina/master
+=======
+ * The following are examples of validation rules using this validator:
+>>>>>>> master
  *
  * ```php
  * // a1 needs to be unique
@@ -87,7 +91,7 @@ class UniqueValidator extends Validator
         if (is_array($targetAttribute)) {
             $params = [];
             foreach ($targetAttribute as $k => $v) {
-                $params[$v] = is_integer($k) ? $model->$v : $model->$k;
+                $params[$v] = is_int($k) ? $model->$v : $model->$k;
             }
         } else {
             $params = [$targetAttribute => $model->$attribute];
@@ -110,8 +114,9 @@ class UniqueValidator extends Validator
             $query->andWhere($this->filter);
         }
 
-        if (!$model instanceof ActiveRecordInterface || $model->getIsNewRecord()) {
+        if (!$model instanceof ActiveRecordInterface || $model->getIsNewRecord() || $model->className() !== $targetClass::className()) {
             // if current $model isn't in the database yet then it's OK just to call exists()
+            // also there's no need to run check based on primary keys, when $targetClass is not the same as $model's class
             $exists = $query->exists();
         } else {
             // if current $model is in the database already we can't use exists()

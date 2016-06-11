@@ -569,10 +569,14 @@ concreta irá conter apenas as regras e lógicas que são específicas de uma ap
 ou módulo.
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 Por exemplo, no [Template Avançado de Aplicação](tutorial-advanced-app.md), você 
 =======
 Por exemplo, no [Template Avançado de Projetos](tutorial-advanced-app.md), você 
 >>>>>>> yiichina/master
+=======
+Por exemplo, no [Template Avançado de Projetos](tutorial-advanced-app.md), você 
+>>>>>>> master
 pode definir uma classe model (modelo) base `common\models\Post`. Em seguida, 
 para a aplicação front-end, você define uma classe model (modelo) concreta 
 `frontend\models\Post` que estende de `common\models\Post`. E de forma similar 

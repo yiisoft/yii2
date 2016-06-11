@@ -73,10 +73,10 @@ class Widget extends Component implements ViewContextInterface
                 echo $widget->run();
                 return $widget;
             } else {
-                throw new InvalidCallException("Expecting end() of " . get_class($widget) . ", found " . get_called_class());
+                throw new InvalidCallException('Expecting end() of ' . get_class($widget) . ', found ' . get_called_class());
             }
         } else {
-            throw new InvalidCallException("Unexpected " . get_called_class() . '::end() call. A matching begin() is not found.');
+            throw new InvalidCallException('Unexpected ' . get_called_class() . '::end() call. A matching begin() is not found.');
         }
     }
 
@@ -85,27 +85,41 @@ class Widget extends Component implements ViewContextInterface
      * The widget rendering result is returned by this method.
      * @param array $config name-value pairs that will be used to initialize the object properties
      * @return string the rendering result of the widget.
+     * @throws \Exception
      */
     public static function widget($config = [])
     {
         ob_start();
         ob_implicit_flush(false);
 <<<<<<< HEAD
+<<<<<<< HEAD
         /* @var $widget Widget */
         $config['class'] = get_called_class();
         $widget = Yii::createObject($config);
         $out = $widget->run();
 =======
+=======
+>>>>>>> master
         try {
             /* @var $widget Widget */
             $config['class'] = get_called_class();
             $widget = Yii::createObject($config);
             $out = $widget->run();
+<<<<<<< HEAD
         } catch(\Exception $e) {
             ob_end_clean();
             throw $e;
         }
 >>>>>>> yiichina/master
+=======
+        } catch (\Exception $e) {
+            // close the output buffer opened above if it has not been closed already
+            if (ob_get_level() > 0) {
+                ob_end_clean();
+            }
+            throw $e;
+        }
+>>>>>>> master
 
         return ob_get_clean() . $out;
     }
