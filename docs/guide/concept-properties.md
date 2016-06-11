@@ -2,9 +2,13 @@ Properties
 ==========
 
 In PHP, class member variables are also called *properties*. These variables are part of the class definition, and are used
+<<<<<<< .merge_file_a02092
+to represent the state of a class instance (i.e., to differentiate one instance of the class from another). In practice, you may often want to handle the reading or writing of properties in special ways. For example, you may want to always trim a string when it is being assigned
+=======
 to represent the state of a class instance (i.e., to differentiate one instance of the class from another).
 In practice, you may often want to handle the reading or writing of properties in special ways. For example,
 you may want to always trim a string when it is being assigned
+>>>>>>> .merge_file_a03416
 to a `label` property. You *could* use the following code to achieve this task:
 
 ```php
@@ -12,16 +16,24 @@ $object->label = trim($label);
 ```
 
 The drawback of the above code is that you would have to call `trim()` everywhere in your code where you might set the `label`
+<<<<<<< .merge_file_a02092
+property. If, in the future, the `label` property gets a new requirement, such as the first letter must be capitalized, you would again have to modify every bit of code that assigns a value to `label`. The repetition of code leads to bugs, and is a practice you want to avoid as much as possible.
+=======
 property. If, in the future, the `label` property gets a new requirement, such as the first letter must be capitalized,
 you would again have to modify every bit of code that assigns a value to `label`.
 The repetition of code leads to bugs, and is a practice you want to avoid as much as possible.
+>>>>>>> .merge_file_a03416
 
 To solve this problem, Yii introduces a base class called [[yii\base\Object]] that supports defining properties
 based on *getter* and *setter* class methods. If a class needs that functionality, it should extend from
 [[yii\base\Object]], or from a child class.
 
 > Info: Nearly every core class in the Yii framework extends from [[yii\base\Object]] or a child class.
+<<<<<<< .merge_file_a02092
+  This means that whenever you see a getter or setter in a core class, you can use it like a property.
+=======
   This means, that whenever you see a getter or setter in a core class, you can use it like a property.
+>>>>>>> .merge_file_a03416
 
 A getter method is a method whose name starts with the word `get`; a setter method starts with `set`.
 The name after the `get` or `set` prefix defines the name of a property. For example, a getter `getLabel()` and/or
@@ -48,8 +60,12 @@ class Foo extends Object
 }
 ```
 
+<<<<<<< .merge_file_a02092
+(To be clear, the getter and setter methods create the property `label`, which in this case internally refers to a private attribute named `_label`.)
+=======
 To be clear, the getter and setter methods create the property `label`, which in this case internally refers to a private
 property named `_label`.
+>>>>>>> .merge_file_a03416
 
 Properties defined by getters and setters can be used like class member variables. The main difference is that
 when such property is being read, the corresponding getter method will be called;  when the property is
@@ -77,6 +93,10 @@ There are several special rules for, and limitations on, the properties defined 
   will affect the *member variable* 'label'; that line would not call the  `setLabel()` setter method.
 * These properties do not support visibility. It makes no difference to the defining getter or setter method if the property is public, protected or private.
 * The properties can only be defined by *non-static* getters and/or setters. Static methods will not be treated in the same manner.
+<<<<<<< .merge_file_a02092
+
+Returning back to the problem described at the beginning of this guide, instead of calling `trim()` everywhere a `label` value is assigned, `trim()` now only needs to be invoked within the setter `setLabel()`. And if a new requirement makes it necesary that the label be initially capitalized, the `setLabel()` method can quickly be modified without touching any other code. The one change will universally affect every assignment to `label`.
+=======
 * A normal call to `property_exists()` does not work to determine magic properties. You should call [[yii\base\Object::canGetProperty()|canGetProperty()]]
   or [[yii\base\Object::canSetProperty()|canSetProperty()]] respectively.
 
@@ -84,3 +104,4 @@ Returning back to the problem described at the beginning of this guide, instead 
 `trim()` now only needs to be invoked within the setter `setLabel()`.
 And if a new requirement makes it necessary that the label be initially capitalized, the `setLabel()` method can quickly
 be modified without touching any other code. The one change will universally affect every assignment to `label`.
+>>>>>>> .merge_file_a03416

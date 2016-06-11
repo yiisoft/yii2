@@ -1,12 +1,19 @@
 Aliases
 =======
 
+<<<<<<< .merge_file_a05440
+Aliases are used to represent file paths or URLs so that you don't have to hard-code absolute paths or URLs in your project. An alias must start with the `@` character to be differentiated from normal file paths and URLs. Yii has many pre-defined aliases already available. 
+For example, the alias `@yii` represents the installation path of the Yii framework; `@web` represents
+the base URL for the currently running Web application.
+
+=======
 Aliases are used to represent file paths or URLs so that you don't have to hard-code absolute paths or URLs in your
 project. An alias must start with the `@` character to be differentiated from normal file paths and URLs. Alias defined
 without leading `@` will be prefixed with `@` character.
 
 Yii has many pre-defined aliases already available. For example, the alias `@yii` represents the installation path of
 the Yii framework; `@web` represents the base URL for the currently running Web application.
+>>>>>>> .merge_file_a00824
 
 Defining Aliases <span id="defining-aliases"></span>
 ----------------

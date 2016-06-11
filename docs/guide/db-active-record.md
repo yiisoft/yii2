@@ -1,14 +1,14 @@
 Active Record
 =============
 
-<<<<<<< HEAD
+<<<<<<< .merge_file_a06500
 <<<<<<< HEAD
 > Note: This section is under development.
 
 =======
 >>>>>>> yiichina/master
 =======
->>>>>>> master
+>>>>>>> .merge_file_a06100
 [Active Record](http://en.wikipedia.org/wiki/Active_record_pattern) provides an object-oriented interface
 for accessing and manipulating data stored in databases. An Active Record class is associated with a database table,
 an Active Record instance corresponds to a row of that table, and an *attribute* of an Active Record
@@ -135,7 +135,7 @@ The process usually takes the following three steps:
 
 1. Create a new query object by calling the [[yii\db\ActiveRecord::find()]] method;
 2. Build the query object by calling [query building methods](db-query-builder.md#building-queries);
-<<<<<<< HEAD
+<<<<<<< .merge_file_a06500
 <<<<<<< HEAD
 3. Call a [query method](db-query-builder.md#query-methods) to retrieve data in terms ofActive Record instances.
 =======
@@ -143,7 +143,7 @@ The process usually takes the following three steps:
 >>>>>>> yiichina/master
 =======
 3. Call a [query method](db-query-builder.md#query-methods) to retrieve data in terms of Active Record instances.
->>>>>>> master
+>>>>>>> .merge_file_a06100
 
 As you can see, this is very similar to the procedure with [query builder](db-query-builder.md). The only difference
 is that instead of using the `new` operator to create a query object, you call [[yii\db\ActiveRecord::find()]]
@@ -171,7 +171,7 @@ $count = Customer::find()
     ->where(['status' => Customer::STATUS_ACTIVE])
     ->count();
 
-<<<<<<< HEAD
+<<<<<<< .merge_file_a06500
 <<<<<<< HEAD
 // return all active customers in an array indexed by customer IDs
 =======
@@ -179,7 +179,7 @@ $count = Customer::find()
 >>>>>>> yiichina/master
 =======
 // return all customers in an array indexed by customer IDs
->>>>>>> master
+>>>>>>> .merge_file_a06100
 // SELECT * FROM `customer`
 $customers = Customer::find()
     ->indexBy('id')
@@ -236,7 +236,7 @@ $customers = Customer::findAll([
   to improve the performance, e.g., `Customer::find()->limit(1)->one()`.
 
 Besides using query building methods, you can also write raw SQLs to query data and populate the results into
-<<<<<<< HEAD
+<<<<<<< .merge_file_a06500
 <<<<<<< HEAD
 Active Record objects. You can do so by calling the [[yii\db\ActiveRecord::queryBySql()]] method:
 =======
@@ -244,7 +244,7 @@ Active Record objects. You can do so by calling the [[yii\db\ActiveRecord::findB
 >>>>>>> yiichina/master
 =======
 Active Record objects. You can do so by calling the [[yii\db\ActiveRecord::findBySql()]] method:
->>>>>>> master
+>>>>>>> .merge_file_a06100
 
 ```php
 // returns all inactive customers
@@ -252,7 +252,7 @@ $sql = 'SELECT * FROM customer WHERE status=:status';
 $customers = Customer::findBySql($sql, [':status' => Customer::STATUS_INACTIVE])->all();
 ```
 
-<<<<<<< HEAD
+<<<<<<< .merge_file_a06500
 <<<<<<< HEAD
 Do not call extra query building methods after calling [[yii\db\ActiveRecord::queryBySql()|queryBySql()]] as they
 =======
@@ -260,7 +260,7 @@ Do not call extra query building methods after calling [[yii\db\ActiveRecord::fi
 >>>>>>> yiichina/master
 =======
 Do not call extra query building methods after calling [[yii\db\ActiveRecord::findBySql()|findBySql()]] as they
->>>>>>> master
+>>>>>>> .merge_file_a06100
 will be ignored.
 
 
@@ -289,7 +289,7 @@ named in this way. If you are concerned about code style consistency, you should
 
 ### Data Transformation <span id="data-transformation"></span>
 
-<<<<<<< HEAD
+<<<<<<< .merge_file_a06500
 <<<<<<< HEAD
 It often happens that the data being entered and/or displayed are in a different format from the one used in
 storing the data in a database. For example, in the database you are storing customers' birthdays as UNIX timestamps
@@ -306,7 +306,7 @@ It often happens that the data being entered and/or displayed are in a format wh
 storing the data in a database. For example, in the database you are storing customers' birthdays as UNIX timestamps
 (which is not a good design, though), while in most cases you would like to manipulate birthdays as strings in
 the format of `'YYYY/MM/DD'`. To achieve this goal, you can define *data transformation* methods in the `Customer`
->>>>>>> master
+>>>>>>> .merge_file_a06100
 Active Record class like the following:
 
 ```php
@@ -329,19 +329,19 @@ class Customer extends ActiveRecord
 Now in your PHP code, instead of accessing `$customer->birthday`, you would access `$customer->birthdayText`, which
 will allow you to input and display customer birthdays in the format of `'YYYY/MM/DD'`.
 
-<<<<<<< HEAD
+<<<<<<< .merge_file_a06500
 <<<<<<< HEAD
 =======
 =======
->>>>>>> master
+>>>>>>> .merge_file_a06100
 > Tip: The above example shows a generic way of transforming data in different formats. If you are working with
 > date values, you may use [DateValidator](tutorial-core-validators.md#date) and [[yii\jui\DatePicker|DatePicker]],
 > which is easier to use and more powerful.
 
-<<<<<<< HEAD
+<<<<<<< .merge_file_a06500
 >>>>>>> yiichina/master
 =======
->>>>>>> master
+>>>>>>> .merge_file_a06100
 
 ### Retrieving Data in Arrays <span id="data-in-arrays"></span>
 
@@ -528,7 +528,7 @@ table rows. To update multiple rows simultaneously, you should call [[yii\db\Act
 which is a static method.
 
 ```php
-<<<<<<< HEAD
+<<<<<<< .merge_file_a06500
 <<<<<<< HEAD
 // UPDATE `customer` SET `status` = 1 WHERE `email` LIKE `%@example.com`
 =======
@@ -536,7 +536,7 @@ which is a static method.
 >>>>>>> yiichina/master
 =======
 // UPDATE `customer` SET `status` = 1 WHERE `email` LIKE `%@example.com%`
->>>>>>> master
+>>>>>>> .merge_file_a06100
 Customer::updateAll(['status' => Customer::STATUS_ACTIVE], ['like', 'email', '@example.com']);
 ```
 
@@ -729,13 +729,13 @@ To use optimistic locking,
 2. Override the [[yii\db\ActiveRecord::optimisticLock()]] method to return the name of this column.
 <<<<<<< HEAD
 3. In the Web form that takes user inputs, add a hidden field to store the current version number of the row being updated.
-<<<<<<< HEAD
+<<<<<<< .merge_file_a06500
 =======
 3. In the Web form that takes user inputs, add a hidden field to store the current version number of the row being updated. Be sure your version attribute has input validation rules and validates successfully.
 >>>>>>> yiichina/master
 =======
    Be sure your version attribute has input validation rules and validates successfully.
->>>>>>> master
+>>>>>>> .merge_file_a06100
 4. In the controller action that updates the row using Active Record, try and catch the [[yii\db\StaleObjectException]]
    exception. Implement necessary business logic (e.g. merging the changes, prompting staled data) to resolve the conflict.
    
@@ -748,7 +748,7 @@ the following.
 use yii\helpers\Html;
 
 // ...other input fields
-<<<<<<< HEAD
+<<<<<<< .merge_file_a06500
 <<<<<<< HEAD
 echo Html::activeHiddenField($model, 'version');
 =======
@@ -756,7 +756,7 @@ echo Html::activeHiddenInput($model, 'version');
 >>>>>>> yiichina/master
 =======
 echo Html::activeHiddenInput($model, 'version');
->>>>>>> master
+>>>>>>> .merge_file_a06100
 
 
 // ------ controller code -------
@@ -769,7 +769,7 @@ public function actionUpdate($id)
 
     try {
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
-<<<<<<< HEAD
+<<<<<<< .merge_file_a06500
 <<<<<<< HEAD
             return $this->redirect(['view', <?= $urlParams ?>]);
 =======
@@ -777,7 +777,7 @@ public function actionUpdate($id)
 >>>>>>> yiichina/master
 =======
             return $this->redirect(['view', 'id' => $model->id]);
->>>>>>> master
+>>>>>>> .merge_file_a06100
         } else {
             return $this->render('update', [
                 'model' => $model,
@@ -844,19 +844,19 @@ While declaring a relation, you should specify the following information:
 - the link between the two types of data: specifies the column(s) through which the two types of data are related.
   The array values are the columns of the primary data (represented by the Active Record class that you are declaring
   relations), while the array keys are the columns of the related data.
-<<<<<<< HEAD
+<<<<<<< .merge_file_a06500
 <<<<<<< HEAD
 =======
 =======
->>>>>>> master
+>>>>>>> .merge_file_a06100
 
   An easy rule to remember this is, as you see in the example above, you write the column that belongs to the related
   Active Record directly next to it. You see there that `customer_id` is a property of `Order` and `id` is a property
   of `Customer`.
-<<<<<<< HEAD
+<<<<<<< .merge_file_a06500
 >>>>>>> yiichina/master
 =======
->>>>>>> master
+>>>>>>> .merge_file_a06100
   
 
 ### Accessing Relational Data <span id="accessing-relational-data"></span>
@@ -875,7 +875,7 @@ $orders = $customer->orders;
 ```
 
 > Info: When you declare a relation named `xyz` via a getter method `getXyz()`, you will be able to access
-<<<<<<< HEAD
+<<<<<<< .merge_file_a06500
 <<<<<<< HEAD
   `xyz` like an object [property](concept-properties.md). Note that the name is case sensitive.
 =======
@@ -883,7 +883,7 @@ $orders = $customer->orders;
 >>>>>>> yiichina/master
 =======
   `xyz` like an [object property](concept-properties.md). Note that the name is case sensitive.
->>>>>>> master
+>>>>>>> .merge_file_a06100
   
 If a relation is declared with [[yii\db\ActiveRecord::hasMany()|hasMany()]], accessing this relation property
 will return an array of the related Active Record instances; if a relation is declared with 
@@ -891,7 +891,7 @@ will return an array of the related Active Record instances; if a relation is de
 Active Record instance or null if no related data is found.
 
 When you access a relation property for the first time, a SQL statement will be executed, like shown in the
-<<<<<<< HEAD
+<<<<<<< .merge_file_a06500
 <<<<<<< HEAD
 above example. If the same property is access again, the previous result will be returned and no extra SQL
 statement will be executed. To enforce a re-execution of the SQL statement, you should unset the relation property
@@ -907,7 +907,7 @@ above example. If the same property is accessed again, the previous result will 
 the SQL statement. To force re-executing the SQL statement, you should unset the relation property
 first: `unset($customer->orders)`.
 
->>>>>>> master
+>>>>>>> .merge_file_a06100
 > Note: While this concept looks similar to the [object property](concept-properties.md) feature, there is an
 > important difference. For normal object properties the property value is of the same type as the defining getter method.
 > A relation method however returns an [[yii\db\ActiveQuery]] instance, while accessing a relation property will either
@@ -920,10 +920,10 @@ first: `unset($customer->orders)`.
 > 
 > This is useful for creating customized queries, which is described in the next section.
 
-<<<<<<< HEAD
+<<<<<<< .merge_file_a06500
 >>>>>>> yiichina/master
 =======
->>>>>>> master
+>>>>>>> .merge_file_a06100
 
 ### Dynamic Relational Query <span id="dynamic-relational-query"></span>
 
@@ -940,20 +940,20 @@ $orders = $customer->getOrders()
     ->all();
 ```
 
-<<<<<<< HEAD
+<<<<<<< .merge_file_a06500
 <<<<<<< HEAD
 Sometimes you may even want to parameterize a relation declaration so that you can more easily perform
 =======
 =======
->>>>>>> master
+>>>>>>> .merge_file_a06100
 Unlike accessing a relation property, each time you perform a dynamic relational query via a relation method, 
 a SQL statement will be executed, even if the same dynamic relational query was performed before.
 
 Sometimes you may even want to parametrize a relation declaration so that you can more easily perform
-<<<<<<< HEAD
+<<<<<<< .merge_file_a06500
 >>>>>>> yiichina/master
 =======
->>>>>>> master
+>>>>>>> .merge_file_a06100
 dynamic relational query. For example, you may declare a `bigOrders` relation as follows, 
 
 ```php
@@ -978,7 +978,7 @@ $orders = $customer->getBigOrders(200)->all();
 $orders = $customer->bigOrders;
 ```
 
-<<<<<<< HEAD
+<<<<<<< .merge_file_a06500
 <<<<<<< HEAD
 > Note: While a relation method returns a [[yii\db\ActiveQuery]] instance, accessing a relation property will either
   return a [[yii\db\ActiveRecord]] instance or an array of that. This is different from a normal object 
@@ -990,7 +990,7 @@ a SQL statement will be executed, even if the same dynamic relational query is p
 =======
 >>>>>>> yiichina/master
 =======
->>>>>>> master
+>>>>>>> .merge_file_a06100
 
 ### Relations via a Junction Table <span id="junction-table"></span>
 
@@ -1033,7 +1033,7 @@ class Order extends ActiveRecord
 }
 ```
 
-<<<<<<< HEAD
+<<<<<<< .merge_file_a06500
 <<<<<<< HEAD
 The usage of relations declared with a junction table is the same as normal relations. For example,
 =======
@@ -1041,7 +1041,7 @@ The usage of relations declared with a junction table is the same as that of nor
 >>>>>>> yiichina/master
 =======
 The usage of relations declared with a junction table is the same as that of normal relations. For example,
->>>>>>> master
+>>>>>>> .merge_file_a06100
 
 ```php
 // SELECT * FROM `order` WHERE `id` = 100
@@ -1056,7 +1056,7 @@ $items = $order->items;
 
 ### Lazy Loading and Eager Loading <span id="lazy-eager-loading"></span>
 
-<<<<<<< HEAD
+<<<<<<< .merge_file_a06500
 <<<<<<< HEAD
 As described earlier, when you access the related objects for the first time, ActiveRecord will perform a DB query
 to retrieve the corresponding data and populate it into the related objects. No query will be performed
@@ -1066,7 +1066,7 @@ In [Accessing Relational Data](#accessing-relational-data), we explained that yo
 of an Active Record instance like accessing a normal object property. A SQL statement will be executed only when
 you access the relation property the first time. We call such relational data accessing method *lazy loading*.
 For example,
->>>>>>> master
+>>>>>>> .merge_file_a06100
 
 ```php
 // SELECT * FROM `customer` WHERE `id` = 123
@@ -1074,7 +1074,7 @@ $customer = Customer::findOne(123);
 
 // SELECT * FROM `order` WHERE `customer_id` = 123
 $orders = $customer->orders;
-<<<<<<< HEAD
+<<<<<<< .merge_file_a06500
 =======
 In [Accessing Relational Data](#accessing-relational-data), we explained that you can access a relation property
 of an Active Record instance like accessing a normal object property. A SQL statement will be executed only when
@@ -1091,19 +1091,19 @@ $orders = $customer->orders;
 >>>>>>> yiichina/master
 =======
 
->>>>>>> master
+>>>>>>> .merge_file_a06100
 // no SQL executed
 $orders2 = $customer->orders;
 ```
 
-<<<<<<< HEAD
+<<<<<<< .merge_file_a06500
 <<<<<<< HEAD
 Lazy loading is very convenient to use. However, it may suffer from a performance issue in the following scenario:
 =======
 Lazy loading is very convenient to use. However, it may suffer from a performance issue when you need to access
 the same relation property of multiple Active Record instances. Consider the following code example. How many 
 SQL statements will be executed?
->>>>>>> master
+>>>>>>> .merge_file_a06100
 
 ```php
 // SELECT * FROM `customer` LIMIT 100
@@ -1122,7 +1122,7 @@ will be executed.
 To solve this performance problem, you can use the so-called *eager loading* approach as shown below,
 
 ```php
-<<<<<<< HEAD
+<<<<<<< .merge_file_a06500
 // SQL executed: SELECT * FROM customer LIMIT 100;
 //               SELECT * FROM orders WHERE customer_id IN (1,2,...)
 $customers = Customer::find()->limit(100)
@@ -1150,26 +1150,26 @@ To solve this performance problem, you can use the so-called *eager loading* app
 
 ```php
 =======
->>>>>>> master
+>>>>>>> .merge_file_a06100
 // SELECT * FROM `customer` LIMIT 100;
 // SELECT * FROM `orders` WHERE `customer_id` IN (...)
 $customers = Customer::find()
     ->with('orders')
     ->limit(100)
     ->all();
-<<<<<<< HEAD
+<<<<<<< .merge_file_a06500
 >>>>>>> yiichina/master
 =======
->>>>>>> master
+>>>>>>> .merge_file_a06100
 
 foreach ($customers as $customer) {
     // no SQL executed
     $orders = $customer->orders;
-<<<<<<< HEAD
+<<<<<<< .merge_file_a06500
 <<<<<<< HEAD
     // ...handle $orders...
 =======
->>>>>>> master
+>>>>>>> .merge_file_a06100
 }
 ```
 
@@ -1213,7 +1213,7 @@ When eagerly loading a relation, you can customize the corresponding relational 
 For example,
 
 ```php
-<<<<<<< HEAD
+<<<<<<< .merge_file_a06500
 $customer = Customer::findOne(1);
 // lazy loading: SELECT * FROM order WHERE customer_id=1 AND subtotal>100
 $orders = $customer->getOrders()->where('subtotal>100')->all();
@@ -1268,7 +1268,7 @@ For example,
 
 ```php
 =======
->>>>>>> master
+>>>>>>> .merge_file_a06100
 // find customers and bring back together their country and active orders
 // SELECT * FROM `customer`
 // SELECT * FROM `country` WHERE `id` IN (...)
@@ -1277,22 +1277,22 @@ $customers = Customer::find()->with([
     'country',
     'orders' => function ($query) {
         $query->andWhere(['status' => Order::STATUS_ACTIVE]);
-<<<<<<< HEAD
+<<<<<<< .merge_file_a06500
 >>>>>>> yiichina/master
 =======
->>>>>>> master
+>>>>>>> .merge_file_a06100
     },
 ])->all();
 ```
 
-<<<<<<< HEAD
+<<<<<<< .merge_file_a06500
 <<<<<<< HEAD
 =======
 When customizing the relational query for a relation, you should specify the relation name as an array key
 and use an anonymous function as the corresponding array value. The anonymous function will receive a `$query` parameter
 which represents the [[yii\db\ActiveQuery]] object used to perform the relational query for the relation.
 In the code example above, we are modifying the relational query by appending an additional condition about order status.
->>>>>>> master
+>>>>>>> .merge_file_a06100
 
 > Note: If you call [[yii\db\Query::select()|select()]] while eagerly loading relations, you have to make sure
 > the columns referenced in the relation declarations are being selected. Otherwise, the related models may not 
@@ -1304,7 +1304,7 @@ In the code example above, we are modifying the relational query by appending an
 > $orders = Order::find()->select(['id', 'amount', 'customer_id'])->with('customer')->all();
 > ```
 
-<<<<<<< HEAD
+<<<<<<< .merge_file_a06500
 Relations can often be defined in pairs. For example, `Customer` may have a relation named `orders` while `Order` may have a relation
 named `customer`:
 =======
@@ -1324,7 +1324,7 @@ In the code example above, we are modifying the relational query by appending an
 > ```
 
 =======
->>>>>>> master
+>>>>>>> .merge_file_a06100
 
 ### Joining with Relations <span id="joining-with-relations"></span>
 
@@ -1350,11 +1350,11 @@ $customers = Customer::find()
     ->all();
 ```
 
-<<<<<<< HEAD
+<<<<<<< .merge_file_a06500
 > Note: It is important to disambiguate column names when building relational queries involving JOIN SQL statements. 
 =======
 > Note: It is important to disambiguate column names when building relational queries involving JOIN SQL statements.
->>>>>>> master
+>>>>>>> .merge_file_a06100
   A common practice is to prefix column names with their corresponding table names.
 
 However, a better approach is to exploit the existing relation declarations by calling [[yii\db\ActiveQuery::joinWith()]]:
@@ -1409,7 +1409,7 @@ Note that this differs from our earlier example which only brings back customers
 > Info: When [[yii\db\ActiveQuery]] is specified with a condition via [[yii\db\ActiveQuery::onCondition()|onCondition()]],
   the condition will be put in the `ON` part if the query involves a JOIN query. If the query does not involve
   JOIN, the on-condition will be automatically appended to the `WHERE` part of the query.
-<<<<<<< HEAD
+<<<<<<< .merge_file_a06500
 
 =======
   Thus it may only contain conditions including columns of the related table.
@@ -1434,27 +1434,27 @@ Since version 2.0.7, Yii provides a shortcut for this. You may now define and us
 // join the orders relation and sort the result by orders.id
 $query->joinWith(['orders o'])->orderBy('o.id');
 ```
->>>>>>> master
+>>>>>>> .merge_file_a06100
 
 ### Inverse Relations <span id="inverse-relations"></span>
 
 Relation declarations are often reciprocal between two Active Record classes. For example, `Customer` is related 
 to `Order` via the `orders` relation, and `Order` is related back to `Customer` via the `customer` relation.
-<<<<<<< HEAD
+<<<<<<< .merge_file_a06500
 >>>>>>> yiichina/master
 =======
->>>>>>> master
+>>>>>>> .merge_file_a06100
 
 ```php
 class Customer extends ActiveRecord
 {
-<<<<<<< HEAD
+<<<<<<< .merge_file_a06500
 <<<<<<< HEAD
     ....
 =======
 >>>>>>> yiichina/master
 =======
->>>>>>> master
+>>>>>>> .merge_file_a06100
     public function getOrders()
     {
         return $this->hasMany(Order::className(), ['customer_id' => 'id']);
@@ -1463,13 +1463,13 @@ class Customer extends ActiveRecord
 
 class Order extends ActiveRecord
 {
-<<<<<<< HEAD
+<<<<<<< .merge_file_a06500
 <<<<<<< HEAD
     ....
 =======
 >>>>>>> yiichina/master
 =======
->>>>>>> master
+>>>>>>> .merge_file_a06100
     public function getCustomer()
     {
         return $this->hasOne(Customer::className(), ['id' => 'customer_id']);
@@ -1477,14 +1477,14 @@ class Order extends ActiveRecord
 }
 ```
 
-<<<<<<< HEAD
+<<<<<<< .merge_file_a06500
 <<<<<<< HEAD
 If we perform the following query, we would find that the `customer` of an order is not the same customer object
 that finds those orders, and accessing `customer->orders` will trigger one SQL execution while accessing
 the `customer` of an order will trigger another SQL execution:
 =======
 Now consider the following piece of code:
->>>>>>> master
+>>>>>>> .merge_file_a06100
 
 ```php
 // SELECT * FROM `customer` WHERE `id` = 123
@@ -1500,7 +1500,7 @@ $customer2 = $order->customer;
 echo $customer2 === $customer ? 'same' : 'not the same';
 ```
 
-<<<<<<< HEAD
+<<<<<<< .merge_file_a06500
 To avoid the redundant execution of the last SQL statement, we could declare the inverse relations for the `customer`
 and the `orders` relations by calling the [[yii\db\ActiveQuery::inverseOf()|inverseOf()]] method, like the following:
 =======
@@ -1521,7 +1521,7 @@ echo $customer2 === $customer ? 'same' : 'not the same';
 ```
 
 =======
->>>>>>> master
+>>>>>>> .merge_file_a06100
 We would think `$customer` and `$customer2` are the same, but they are not! Actually they do contain the same
 customer data, but they are different objects. When accessing `$order->customer`, an extra SQL statement
 is executed to populate a new object `$customer2`.
@@ -1529,21 +1529,21 @@ is executed to populate a new object `$customer2`.
 To avoid the redundant execution of the last SQL statement in the above example, we should tell Yii that
 `customer` is an *inverse relation* of `orders` by calling the [[yii\db\ActiveQuery::inverseOf()|inverseOf()]] method
 like shown below:
-<<<<<<< HEAD
+<<<<<<< .merge_file_a06500
 >>>>>>> yiichina/master
 =======
->>>>>>> master
+>>>>>>> .merge_file_a06100
 
 ```php
 class Customer extends ActiveRecord
 {
-<<<<<<< HEAD
+<<<<<<< .merge_file_a06500
 <<<<<<< HEAD
     ....
 =======
 >>>>>>> yiichina/master
 =======
->>>>>>> master
+>>>>>>> .merge_file_a06100
     public function getOrders()
     {
         return $this->hasMany(Order::className(), ['customer_id' => 'id'])->inverseOf('customer');
@@ -1551,12 +1551,12 @@ class Customer extends ActiveRecord
 }
 ```
 
-<<<<<<< HEAD
+<<<<<<< .merge_file_a06500
 <<<<<<< HEAD
 Now if we execute the same query as shown above, we would get:
 =======
 With this modified relation declaration, we will have:
->>>>>>> master
+>>>>>>> .merge_file_a06100
 
 ```php
 // SELECT * FROM `customer` WHERE `id` = 123
@@ -1651,7 +1651,7 @@ The databases can be of different types (e.g. MySQL and PostgreSQL, or MS SQL an
 different servers. You can use the same syntax to perform relational queries. For example,
 
 ```php
-<<<<<<< HEAD
+<<<<<<< .merge_file_a06500
 // Relational database Active Record
 =======
 With this modified relation declaration, we will have:
@@ -1753,7 +1753,7 @@ different servers. You can use the same syntax to perform relational queries. Fo
 >>>>>>> yiichina/master
 =======
 // Customer is associated with the "customer" table in a relational database (e.g. MySQL)
->>>>>>> master
+>>>>>>> .merge_file_a06100
 class Customer extends \yii\db\ActiveRecord
 {
     public static function tableName()
@@ -1763,7 +1763,7 @@ class Customer extends \yii\db\ActiveRecord
 
     public function getComments()
     {
-<<<<<<< HEAD
+<<<<<<< .merge_file_a06500
 <<<<<<< HEAD
         // Customer, stored in relational database, has many Comments, stored in MongoDB collection:
 =======
@@ -1771,12 +1771,12 @@ class Customer extends \yii\db\ActiveRecord
 >>>>>>> yiichina/master
 =======
         // a customer has many comments
->>>>>>> master
+>>>>>>> .merge_file_a06100
         return $this->hasMany(Comment::className(), ['customer_id' => 'id']);
     }
 }
 
-<<<<<<< HEAD
+<<<<<<< .merge_file_a06500
 <<<<<<< HEAD
 // MongoDb Active Record
 =======
@@ -1784,7 +1784,7 @@ class Customer extends \yii\db\ActiveRecord
 >>>>>>> yiichina/master
 =======
 // Comment is associated with the "comment" collection in a MongoDB database
->>>>>>> master
+>>>>>>> .merge_file_a06100
 class Comment extends \yii\mongodb\ActiveRecord
 {
     public static function collectionName()
@@ -1794,12 +1794,12 @@ class Comment extends \yii\mongodb\ActiveRecord
 
     public function getCustomer()
     {
-<<<<<<< HEAD
+<<<<<<< .merge_file_a06500
 <<<<<<< HEAD
         // Comment, stored in MongoDB collection, has one Customer, stored in relational database:
 =======
         // a comment has one customer
->>>>>>> master
+>>>>>>> .merge_file_a06100
         return $this->hasOne(Customer::className(), ['id' => 'customer_id']);
     }
 }
@@ -1853,7 +1853,7 @@ class CommentQuery extends ActiveQuery
 {
     public function active($state = true)
     {
-<<<<<<< HEAD
+<<<<<<< .merge_file_a06500
         return new CommentQuery(get_called_class());
 =======
         // a comment has one customer
@@ -1912,14 +1912,10 @@ class CommentQuery extends ActiveQuery
     {
         return $this->andWhere(['active' => $state]);
 >>>>>>> yiichina/master
-=======
-        return $this->andWhere(['active' => $state]);
->>>>>>> master
     }
 }
 ```
 
-<<<<<<< HEAD
 <<<<<<< HEAD
 That's it. Now you can use your custom scope methods:
 
@@ -1932,24 +1928,29 @@ This allows you to write query building code like the following:
  
 >>>>>>> yiichina/master
 =======
+        return $this->andWhere(['active' => $state]);
+    }
+}
+```
+
 > Note: Instead of calling [[yii\db\ActiveQuery::where()|where()]], you usually should call
   [[yii\db\ActiveQuery::andWhere()|andWhere()]] or [[yii\db\ActiveQuery::orWhere()|orWhere()]] to append additional
   conditions when defining new query building methods so that any existing conditions are not overwritten.
 
 This allows you to write query building code like the following:
  
->>>>>>> master
+>>>>>>> .merge_file_a06100
 ```php
 $comments = Comment::find()->active()->all();
 $inactiveComments = Comment::find()->active(false)->all();
 ```
 
-<<<<<<< HEAD
+<<<<<<< .merge_file_a06500
 <<<<<<< HEAD
 You can also use scopes when defining relations. For example,
 =======
 You can also use the new query building methods when defining relations about `Comment` or performing relational query:
->>>>>>> master
+>>>>>>> .merge_file_a06100
 
 ```php
 class Customer extends \yii\db\ActiveRecord
@@ -1962,7 +1963,7 @@ class Customer extends \yii\db\ActiveRecord
 
 $customers = Customer::find()->with('activeComments')->all();
 
-<<<<<<< HEAD
+<<<<<<< .merge_file_a06500
 ```php
 $posts = Post::find()->with([
 =======
@@ -1987,14 +1988,14 @@ $customers = Customer::find()->with([
 // or alternatively
  
 $customers = Customer::find()->with([
->>>>>>> master
+>>>>>>> .merge_file_a06100
     'comments' => function($q) {
         $q->active();
     }
 ])->all();
 ```
 
-<<<<<<< HEAD
+<<<<<<< .merge_file_a06500
 <<<<<<< HEAD
 ### Default Scope
 =======
@@ -2006,7 +2007,7 @@ $customers = Customer::find()->with([
 
 When Active Record instance is populated from query results, its attributes are filled up by corresponding column
 values from received data set.
->>>>>>> master
+>>>>>>> .merge_file_a06100
 
 You are able to fetch additional columns or values from query and store it inside the Active Record.
 For example, assume we have a table named 'room', which contains information about rooms available in the hotel.
@@ -2045,7 +2046,7 @@ Ability to select extra fields can be exceptionally useful for aggregation queri
 Assume you need to display a list of customers with the count of orders they have made.
 First of all, you need to declare a `Customer` class with 'orders' relation and extra field for count storage:
 
-<<<<<<< HEAD
+<<<<<<< .merge_file_a06500
 =======
 > Info: In Yii 1.1, there is a concept called *scope*. Scope is no longer directly supported in Yii 2.0,
   and you should use customized query classes and query methods to achieve the same goal.
@@ -2168,12 +2169,12 @@ When the select query doesn't provide the volume, the model will be able to calc
 the attributes of the model.
 
 Similary it can be used on extra fields depending on relational data
->>>>>>> master
+>>>>>>> .merge_file_a06100
 
 ```php
 class Customer extends \yii\db\ActiveRecord
 {
-<<<<<<< HEAD
+<<<<<<< .merge_file_a06500
     public $ordersCount;
 =======
     private $_ordersCount;
@@ -2195,7 +2196,7 @@ class Customer extends \yii\db\ActiveRecord
 
         return $this->_ordersCount;
     }
->>>>>>> master
+>>>>>>> .merge_file_a06100
 
     // ...
 
@@ -2205,7 +2206,7 @@ class Customer extends \yii\db\ActiveRecord
     }
 }
 ```
-<<<<<<< HEAD
+<<<<<<< .merge_file_a06500
 
 Then you can compose a query, which joins the orders and calculates their count:
 
@@ -2221,4 +2222,4 @@ $customers = Customer::find()
 ```
 >>>>>>> yiichina/master
 =======
->>>>>>> master
+>>>>>>> .merge_file_a06100

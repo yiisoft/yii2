@@ -78,7 +78,7 @@ Working with Databases
 * [Query Builder](db-query-builder.md): Querying the database using a simple abstraction layer
 * [Active Record](db-active-record.md): The Active Record ORM, retrieving and manipulating records, and defining relations
 * [Migrations](db-migrations.md): Apply version control to your databases in a team development environment
-<<<<<<< HEAD
+<<<<<<< .merge_file_a00412
 <<<<<<< HEAD
 * **TBD** [Sphinx](db-sphinx.md)
 * **TBD** [Redis](db-redis.md)
@@ -86,15 +86,15 @@ Working with Databases
 * **TBD** [ElasticSearch](db-elasticsearch.md)
 =======
 =======
->>>>>>> master
+>>>>>>> .merge_file_a02972
 * [Sphinx](https://github.com/yiisoft/yii2-sphinx/blob/master/docs/guide/README.md)
 * [Redis](https://github.com/yiisoft/yii2-redis/blob/master/docs/guide/README.md)
 * [MongoDB](https://github.com/yiisoft/yii2-mongodb/blob/master/docs/guide/README.md)
 * [ElasticSearch](https://github.com/yiisoft/yii2-elasticsearch/blob/master/docs/guide/README.md)
-<<<<<<< HEAD
+<<<<<<< .merge_file_a00412
 >>>>>>> yiichina/master
 =======
->>>>>>> master
+>>>>>>> .merge_file_a02972
 
 
 Getting Data from Users
@@ -110,7 +110,7 @@ Getting Data from Users
 Displaying Data
 ---------------
 
-<<<<<<< HEAD
+<<<<<<< .merge_file_a00412
 <<<<<<< HEAD
 * [Data Formatting](output-formatter.md)
 =======
@@ -118,7 +118,7 @@ Displaying Data
 >>>>>>> yiichina/master
 =======
 * [Data Formatting](output-formatting.md)
->>>>>>> master
+>>>>>>> .merge_file_a02972
 * [Pagination](output-pagination.md)
 * [Sorting](output-sorting.md)
 * [Data Providers](output-data-providers.md)
@@ -134,7 +134,7 @@ Security
 * [Authentication](security-authentication.md)
 * [Authorization](security-authorization.md)
 * [Working with Passwords](security-passwords.md)
-<<<<<<< HEAD
+<<<<<<< .merge_file_a00412
 <<<<<<< HEAD
 * [Auth Clients](security-auth-clients.md)
 =======
@@ -144,7 +144,7 @@ Security
 * [Cryptography](security-cryptography.md)
 * [Views security](structure-views.md#security)
 * [Auth Clients](https://github.com/yiisoft/yii2-authclient/blob/master/docs/guide/README.md)
->>>>>>> master
+>>>>>>> .merge_file_a02972
 * [Best Practices](security-best-practices.md)
 
 
@@ -175,7 +175,7 @@ RESTful Web Services
 Development Tools
 -----------------
 
-<<<<<<< HEAD
+<<<<<<< .merge_file_a00412
 <<<<<<< HEAD
 * [Debug Toolbar and Debugger](tool-debugger.md)
 * [Generating Code using Gii](tool-gii.md)
@@ -189,7 +189,7 @@ Development Tools
 * [Debug Toolbar and Debugger](https://github.com/yiisoft/yii2-debug/blob/master/docs/guide/README.md)
 * [Generating Code using Gii](https://github.com/yiisoft/yii2-gii/blob/master/docs/guide/README.md)
 * **TBD** [Generating API Documentation](https://github.com/yiisoft/yii2-apidoc)
->>>>>>> master
+>>>>>>> .merge_file_a02972
 
 
 Testing
@@ -206,7 +206,7 @@ Testing
 Special Topics
 --------------
 
-<<<<<<< HEAD
+<<<<<<< .merge_file_a00412
 <<<<<<< HEAD
 * [Advanced Application Template](tutorial-advanced-app.md)
 =======
@@ -214,7 +214,7 @@ Special Topics
 >>>>>>> yiichina/master
 =======
 * [Advanced Project Template](https://github.com/yiisoft/yii2-app-advanced/blob/master/docs/guide/README.md)
->>>>>>> master
+>>>>>>> .merge_file_a02972
 * [Building Application from Scratch](tutorial-start-from-scratch.md)
 * [Console Commands](tutorial-console.md)
 * [Core Validators](tutorial-core-validators.md)
@@ -237,7 +237,7 @@ Widgets
 * Menu: **TBD** link to demo page
 * LinkPager: **TBD** link to demo page
 * LinkSorter: **TBD** link to demo page
-<<<<<<< HEAD
+<<<<<<< .merge_file_a00412
 <<<<<<< HEAD
 * [Bootstrap Widgets](widget-bootstrap.md)
 * [jQuery UI Widgets](widget-jui.md)
@@ -248,7 +248,7 @@ Widgets
 =======
 * [Bootstrap Widgets](https://github.com/yiisoft/yii2-bootstrap/blob/master/docs/guide/README.md)
 * [jQuery UI Widgets](https://github.com/yiisoft/yii2-jui/blob/master/docs/guide/README.md)
->>>>>>> master
+>>>>>>> .merge_file_a02972
 
 
 Helpers

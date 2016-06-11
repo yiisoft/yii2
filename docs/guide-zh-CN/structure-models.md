@@ -138,7 +138,7 @@ public function attributeLabels()
 甚至可以根据条件定义标签，例如通过使用模型的 [scenario场景](#scenarios)，
 可对相同的属性返回不同的标签。
 
-<<<<<<< HEAD
+<<<<<<< .merge_file_a04932
 <<<<<<< HEAD
 > 补充：属性标签是 [视图](structure-views.md)一部分，但是在模型中申明标签通常非常方便，并可行程非常简洁可重用代码。
 =======
@@ -146,7 +146,7 @@ public function attributeLabels()
 >>>>>>> yiichina/master
 =======
 > Info: 属性标签是 [视图](structure-views.md)一部分，但是在模型中申明标签通常非常方便，并可行程非常简洁可重用代码。
->>>>>>> master
+>>>>>>> .merge_file_a03564
 
 
 ## 场景 <span id="scenarios"></span>

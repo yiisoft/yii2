@@ -27,7 +27,7 @@ For example, if a class name and namespace is `foo\bar\MyClass`, the [alias](con
 would be `@foo/bar/MyClass.php`. In order for this alias to be resolvable into a file path,
 either `@foo` or `@foo/bar` must be a [root alias](concept-aliases.md#defining-aliases).
 
-<<<<<<< HEAD
+<<<<<<< .merge_file_a07032
 <<<<<<< HEAD
 When using the [Basic Application Template](start-installation.md), you may put your classes under the top-level
 =======
@@ -35,12 +35,12 @@ When using the [Basic Project Template](start-installation.md), you may put your
 >>>>>>> yiichina/master
 =======
 When using the [Basic Project Template](start-installation.md), you may put your classes under the top-level
->>>>>>> master
+>>>>>>> .merge_file_a00396
 namespace `app` so that they can be autoloaded by Yii without the need of defining a new alias. This is because
 `@app` is a [predefined alias](concept-aliases.md#predefined-aliases), and a class name like `app\components\MyClass`
 can be resolved into the class file `AppBasePath/components/MyClass.php`, according to the algorithm just described.
 
-<<<<<<< HEAD
+<<<<<<< .merge_file_a07032
 <<<<<<< HEAD
 In the [Advanced Application Template](tutorial-advanced-app.md), each tier has its own root alias. For example,
 =======
@@ -48,7 +48,7 @@ In the [Advanced Project Template](https://github.com/yiisoft/yii2-app-advanced/
 >>>>>>> yiichina/master
 =======
 In the [Advanced Project Template](https://github.com/yiisoft/yii2-app-advanced/blob/master/docs/guide/README.md), each tier has its own root alias. For example,
->>>>>>> master
+>>>>>>> .merge_file_a00396
 the front-end tier has a root alias `@frontend`, while the back-end tier root alias is `@backend`. As a result,
 you may put the front-end classes under the namespace `frontend` while the back-end classes are under `backend`. This will
 allow these classes to be autoloaded by the Yii autoloader.
@@ -82,7 +82,7 @@ also install those.
 When using the Yii autoloader together with other autoloaders, you should include the `Yii.php` file
 *after* all other autoloaders are installed. This will make the Yii autoloader the first one responding to
 any class autoloading request. For example, the following code is extracted from
-<<<<<<< HEAD
+<<<<<<< .merge_file_a07032
 <<<<<<< HEAD
 the [entry script](structure-entry-scripts.md) of the [Basic Application Template](start-installation.md). The first
 =======
@@ -90,7 +90,7 @@ the [entry script](structure-entry-scripts.md) of the [Basic Project Template](s
 >>>>>>> yiichina/master
 =======
 the [entry script](structure-entry-scripts.md) of the [Basic Project Template](start-installation.md). The first
->>>>>>> master
+>>>>>>> .merge_file_a00396
 line installs the Composer autoloader, while the second line installs the Yii autoloader:
 
 ```php
