@@ -88,7 +88,7 @@ return [
     '{attribute} must be less than or equal to "{compareValueOrAttribute}".' => '{attribute} باید کمتر یا برابر با "{compareValueOrAttribute}" باشد.',
     '{attribute} must be no greater than {max}.' => '{attribute} نباید بیشتر از "{max}" باشد.',
     '{attribute} must be no less than {min}.' => '{attribute} نباید کمتر از "{min}" باشد.',
-    '{attribute} must not be a subnet.' => '{attribute} باید کمتر یا برابر "{compareValueOrAttribute}" باشد.',
+    '{attribute} must not be a subnet.' => '{attribute} نباید یک زیرشبکه باشد.',
     '{attribute} must not be an IPv4 address.' => '{attribute} باید آدرس IPv4 نباشد.',
     '{attribute} must not be an IPv6 address.' => '{attribute} باید آدرس IPv6 نباشد.',
     '{attribute} must not be equal to "{compareValueOrAttribute}".' => '{attribute} باید مانند "{compareValueOrAttribute}" تکرار نشود.',
