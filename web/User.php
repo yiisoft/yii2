@@ -750,7 +750,7 @@ class User extends Component
      * You may override this method to return a different auth manager instance if needed.
      * @return \yii\rbac\ManagerInterface
      * @since 2.0.6
-     * @deprecated Use `getAccessChecker()` instead.
+     * @deprecated Deprecated since version 2.0.9, to be removed in 2.1. Use `getAccessChecker()` instead.
      */
     protected function getAuthManager()
     {
