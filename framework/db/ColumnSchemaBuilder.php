@@ -144,6 +144,7 @@ class ColumnSchemaBuilder extends Object
     /**
      * Adds a `NULL` constraint to the column
      * @return $this
+     * @since 2.0.9
      */
     public function null()
     {
