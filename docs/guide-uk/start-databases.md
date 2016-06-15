@@ -33,16 +33,16 @@ CREATE TABLE `country` (
   `population` INT(11) NOT NULL DEFAULT '0'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-INSERT INTO `country` VALUES ('AU','Australia',18886000);
-INSERT INTO `country` VALUES ('BR','Brazil',170115000);
-INSERT INTO `country` VALUES ('CA','Canada',1147000);
-INSERT INTO `country` VALUES ('CN','China',1277558000);
-INSERT INTO `country` VALUES ('DE','Germany',82164700);
-INSERT INTO `country` VALUES ('FR','France',59225700);
-INSERT INTO `country` VALUES ('GB','United Kingdom',59623400);
-INSERT INTO `country` VALUES ('IN','India',1013662000);
-INSERT INTO `country` VALUES ('RU','Russia',146934000);
-INSERT INTO `country` VALUES ('US','United States',278357000);
+INSERT INTO `country` VALUES ('AU','Australia',24016400);
+INSERT INTO `country` VALUES ('BR','Brazil',205722000);
+INSERT INTO `country` VALUES ('CA','Canada',35985751);
+INSERT INTO `country` VALUES ('CN','China',1375210000);
+INSERT INTO `country` VALUES ('DE','Germany',81459000);
+INSERT INTO `country` VALUES ('FR','France',64513242);
+INSERT INTO `country` VALUES ('GB','United Kingdom',65097000);
+INSERT INTO `country` VALUES ('IN','India',1285400000);
+INSERT INTO `country` VALUES ('RU','Russia',146519759);
+INSERT INTO `country` VALUES ('US','United States',322976000);
 ```
 
 На даний момент, у вас є база даних `yii2basic` і таблиця `country` з трьома колонками, що містить десять рядків даних.
@@ -75,9 +75,9 @@ return [
 
 З’єднання з БД, описане вище, може бути доступне в коді додатка за допомогою виразу `Yii::$app->db`.
 
-> Інформація: Файл конфігурації `config/db.php` буде включений до конфігурації головного додатка `config/web.php`, 
-  який визначає як має бути проініціалізований екземпляр [додатку](structure-applications.md).
-  Для отримання додаткової інформації, будь ласка, зверніться до розділу [Конфігурації](concept-configurations.md).
+> Info: Файл конфігурації `config/db.php` буде включений до конфігурації головного додатка `config/web.php`,
+який визначає як має бути проініціалізований екземпляр [додатку](structure-applications.md).
+Для отримання додаткової інформації, будь ласка, зверніться до розділу [Конфігурації](concept-configurations.md).
 
 
 Створення Active Record <span id="creating-active-record"></span>
@@ -101,8 +101,8 @@ class Country extends ActiveRecord
 Клас `Country` наслідує [[yii\db\ActiveRecord]]. Вам не потрібно писати ніякого коду всередині нього! 
 Всього лише за допомогою описаного вище коду, Yii самостійно вгадає відповідне імʼя таблиці з імені класу.
 
-> Інформація: Якщо неможливо отримати прямої відповідності імені класу до імені таблиці, ви можете
-  перевизначити метод [[yii\db\ActiveRecord::tableName()]], щоб точно задати відповідне імʼя таблиці.
+> Info: Якщо неможливо отримати прямої відповідності імені класу до імені таблиці, ви можете
+перевизначити метод [[yii\db\ActiveRecord::tableName()]], щоб точно задати відповідне імʼя таблиці.
 
 Використовуючи клас `Country`, ви можете легко маніпулювати даними з таблиці `country`, як показано у цих фрагментах коду:
 
@@ -123,9 +123,9 @@ $country->name = 'U.S.A.';
 $country->save();
 ```
 
-> Інформація: Active Record є потужним засобом для доступу і управління даними бази даних в обʼєктно-орієнтованому стилі.
-  Ви можете знайти більш детальну інформацію в розділі [Active Record](db-active-record.md). Крім того, ви також можете 
-  взаємодіяти з базою даних, використовуючи для доступу метод передачі даних нижнього рівня під назвою [Data Access Objects](db-dao.md).
+> Info: Active Record є потужним засобом для доступу і управління даними бази даних в обʼєктно-орієнтованому стилі.
+Ви можете знайти більш детальну інформацію в розділі [Active Record](db-active-record.md). Крім того, ви також можете
+взаємодіяти з базою даних, використовуючи для доступу метод передачі даних нижнього рівня під назвою [Data Access Objects](db-dao.md).
 
 
 Створення дії <span id="creating-action"></span>
@@ -220,7 +220,7 @@ use yii\widgets\LinkPager;
 Щоб побачити як весь вищезазначений код працює, відкрийте в браузері наступний URL:
 
 ```
-http://hostname/index.php?r=country/index
+http://hostname/index.php?r=country%2Findex
 ```
 
 ![Перелік країн](images/start-country-list.png)
@@ -230,7 +230,7 @@ http://hostname/index.php?r=country/index
 Придивившись більш уважно, ви побачите, що URL в браузері також змінюється на
 
 ```
-http://hostname/index.php?r=country/index&page=2
+http://hostname/index.php?r=country%2Findex&page=2
 ```
 
 За лаштунками, [[yii\data\Pagination|Pagination]] надає всю необхідну функціональність для розділення набору даних на сторінки:

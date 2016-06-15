@@ -48,7 +48,10 @@ class QueryBuilder extends \yii\db\QueryBuilder
      */
     public $typeMap = [
         Schema::TYPE_PK => 'serial NOT NULL PRIMARY KEY',
+        Schema::TYPE_UPK => 'serial NOT NULL PRIMARY KEY',
         Schema::TYPE_BIGPK => 'bigserial NOT NULL PRIMARY KEY',
+        Schema::TYPE_UBIGPK => 'bigserial NOT NULL PRIMARY KEY',
+        Schema::TYPE_CHAR => 'char(1)',
         Schema::TYPE_STRING => 'varchar(255)',
         Schema::TYPE_TEXT => 'text',
         Schema::TYPE_SMALLINT => 'smallint',
@@ -219,6 +222,42 @@ class QueryBuilder extends \yii\db\QueryBuilder
         }
         return 'ALTER TABLE ' . $this->db->quoteTableName($table) . ' ALTER COLUMN '
             . $this->db->quoteColumnName($column) . ' ' . $type;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function insert($table, $columns, &$params)
+    {
+        return parent::insert($table, $this->normalizeTableRowData($table, $columns), $params);
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function update($table, $columns, $condition, &$params)
+    {
+        return parent::update($table, $this->normalizeTableRowData($table, $columns), $condition, $params);
+    }
+
+    /**
+     * Normalizes data to be saved into the table, performing extra preparations and type converting, if necessary.
+     * @param string $table the table that data will be saved into.
+     * @param array $columns the column data (name => value) to be saved into the table.
+     * @return array normalized columns
+     * @since 2.0.9
+     */
+    private function normalizeTableRowData($table, $columns)
+    {
+        if (($tableSchema = $this->db->getSchema()->getTableSchema($table)) !== null) {
+            $columnSchemas = $tableSchema->columns;
+            foreach ($columns as $name => $value) {
+                if (isset($columnSchemas[$name]) && $columnSchemas[$name]->type === Schema::TYPE_BINARY && is_string($value)) {
+                    $columns[$name] = [$value, \PDO::PARAM_LOB]; // explicitly setup PDO param type for binary column
+                }
+            }
+        }
+        return $columns;
     }
 
     /**

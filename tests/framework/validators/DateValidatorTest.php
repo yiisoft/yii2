@@ -280,6 +280,37 @@ class DateValidatorTest extends TestCase
     public function testIntlValidationWithTime($timezone)
     {
         $this->testValidationWithTime($timezone);
+
+        $this->mockApplication([
+            'language' => 'en-GB',
+            'components' => [
+                'formatter' => [
+                    'dateFormat' => 'long',
+                    'datetimeFormat' => 'short', // this is the format to be used by the validator by default
+                ]
+            ]
+        ]);
+        $val = new DateValidator(['type' => DateValidator::TYPE_DATETIME]);
+        $this->assertTrue($val->validate('31/5/2017 12:30'));
+        $this->assertFalse($val->validate('5/31/2017 12:30'));
+        $val = new DateValidator(['format' => 'short', 'locale' => 'en-GB', 'type' => DateValidator::TYPE_DATETIME]);
+        $this->assertTrue($val->validate('31/5/2017 12:30'));
+        $this->assertFalse($val->validate('5/31/2017 12:30'));
+        $this->mockApplication([
+            'language' => 'de-DE',
+            'components' => [
+                'formatter' => [
+                    'dateFormat' => 'long',
+                    'datetimeFormat' => 'short', // this is the format to be used by the validator by default
+                ]
+            ]
+        ]);
+        $val = new DateValidator(['type' => DateValidator::TYPE_DATETIME]);
+        $this->assertTrue($val->validate('31.5.2017 12:30'));
+        $this->assertFalse($val->validate('5.31.2017 12:30'));
+        $val = new DateValidator(['format' => 'short', 'locale' => 'de-DE', 'type' => DateValidator::TYPE_DATETIME]);
+        $this->assertTrue($val->validate('31.5.2017 12:30'));
+        $this->assertFalse($val->validate('5.31.2017 12:30'));
     }
 
     /**
@@ -538,5 +569,37 @@ class DateValidatorTest extends TestCase
         }
 
         return false;
+    }
+
+    /**
+     * @depends testValidateAttributePHPFormat
+     */
+    public function testTimestampAttributeSkipValidation()
+    {
+        // timestamp as integer
+        $val = new DateValidator(['format' => 'php:Y/m/d', 'timestampAttribute' => 'attr_date']);
+        $model = new FakedValidationModel();
+        $model->attr_date = 1379030400;
+        $val->validateAttribute($model, 'attr_date');
+        $this->assertFalse($model->hasErrors('attr_date'));
+
+        $val = new DateValidator(['format' => 'php:Y/m/d', 'timestampAttribute' => 'attr_date']);
+        $model = new FakedValidationModel();
+        $model->attr_date = 'invalid';
+        $val->validateAttribute($model, 'attr_date');
+        $this->assertTrue($model->hasErrors('attr_date'));
+
+        // timestamp as formatted date
+        $val = new DateValidator(['format' => 'php:Y/m/d', 'timestampAttribute' => 'attr_date', 'timestampAttributeFormat' => 'php:Y-m-d']);
+        $model = new FakedValidationModel();
+        $model->attr_date = '2013-09-13';
+        $val->validateAttribute($model, 'attr_date');
+        $this->assertFalse($model->hasErrors('attr_date'));
+
+        $val = new DateValidator(['format' => 'php:Y/m/d', 'timestampAttribute' => 'attr_date', 'timestampAttributeFormat' => 'php:Y-m-d']);
+        $model = new FakedValidationModel();
+        $model->attr_date = '2013-09-2013';
+        $val->validateAttribute($model, 'attr_date');
+        $this->assertTrue($model->hasErrors('attr_date'));
     }
 }

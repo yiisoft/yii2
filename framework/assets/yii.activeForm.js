@@ -201,7 +201,8 @@
                     settings: settings,
                     attributes: attributes,
                     submitting: false,
-                    validated: false
+                    validated: false,
+                    target: $form.attr('target')
                 });
 
                 /**
@@ -334,7 +335,7 @@
                         delete messages[i];
                     }
                 }
-                if (needAjaxValidation) {
+                if ($.isEmptyObject(messages) && needAjaxValidation) {
                     var $button = data.submitObject,
                         extData = '&' + data.settings.ajaxParam + '=' + $form.attr('id');
                     if ($button && $button.length && $button.attr('name')) {
@@ -393,6 +394,7 @@
                     submitFinalize($form);
                     return false;
                 }
+                updateHiddenButton($form);
                 return true;   // continue submitting the form since validation passes
             } else {
                 // First submit's call (from yii.js/handleAction) - execute validating
@@ -474,7 +476,7 @@
         if (attribute.validateOnBlur) {
             $input.on('blur.yiiActiveForm', function () {
                 if (attribute.status == 0 || attribute.status == 1) {
-                    validateAttribute($form, attribute, !attribute.status);
+                    validateAttribute($form, attribute, true);
                 }
             });
         }
@@ -574,22 +576,14 @@
                 data.submitting = false;
             } else {
                 data.validated = true;
-                var $button = data.submitObject || $form.find(':submit:first');
-                // TODO: if the submission is caused by "change" event, it will not work
-                if ($button.length && $button.attr('type') == 'submit' && $button.attr('name')) {
-                    // simulate button input value
-                    var $hiddenButton = $('input[type="hidden"][name="' + $button.attr('name') + '"]', $form);
-                    if (!$hiddenButton.length) {
-                        $('<input>').attr({
-                            type: 'hidden',
-                            name: $button.attr('name'),
-                            value: $button.attr('value')
-                        }).appendTo($form);
-                    } else {
-                        $hiddenButton.attr('value', $button.attr('value'));
-                    }
+                var buttonTarget = data.submitObject ? data.submitObject.attr('formtarget') : null;
+                if (buttonTarget) {
+                    // set target attribute to form tag before submit
+                    $form.attr('target', buttonTarget);
                 }
                 $form.submit();
+                // restore original target attribute value
+                $form.attr('target', data.target);
             }
         } else {
             $.each(data.attributes, function () {
@@ -599,6 +593,29 @@
             });
         }
         submitFinalize($form);
+    };
+
+    /**
+     * Updates hidden field that represents clicked submit button.
+     * @param $form the form jQuery object.
+     */
+    var updateHiddenButton = function ($form) {
+        var data = $form.data('yiiActiveForm');
+        var $button = data.submitObject || $form.find(':submit:first');
+        // TODO: if the submission is caused by "change" event, it will not work
+        if ($button.length && $button.attr('type') == 'submit' && $button.attr('name')) {
+            // simulate button input value
+            var $hiddenButton = $('input[type="hidden"][name="' + $button.attr('name') + '"]', $form);
+            if (!$hiddenButton.length) {
+                $('<input>').attr({
+                    type: 'hidden',
+                    name: $button.attr('name'),
+                    value: $button.attr('value')
+                }).appendTo($form);
+            } else {
+                $hiddenButton.attr('value', $button.attr('value'));
+            }
+        }
     };
 
     /**

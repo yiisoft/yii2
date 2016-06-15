@@ -26,7 +26,7 @@ use yii\web\Request;
  *
  * Controller action:
  *
- * ~~~
+ * ```php
  * function actionIndex()
  * {
  *     $query = Article::find()->where(['status' => 1]);
@@ -41,11 +41,11 @@ use yii\web\Request;
  *          'pages' => $pages,
  *     ]);
  * }
- * ~~~
+ * ```
  *
  * View:
  *
- * ~~~
+ * ```php
  * foreach ($models as $model) {
  *     // display $model here
  * }
@@ -54,7 +54,7 @@ use yii\web\Request;
  * echo LinkPager::widget([
  *     'pagination' => $pages,
  * ]);
- * ~~~
+ * ```
  *
  * @property integer $limit The limit of the data. This may be used to set the LIMIT value for a SQL statement
  * for fetching the current page of data. Note that if the page size is infinite, a value -1 will be returned.
@@ -131,7 +131,7 @@ class Pagination extends Object implements Linkable
      */
     public $defaultPageSize = 20;
     /**
-     * @var array|boolean the page size limits. The first array element stands for the minimal page size, and the second
+     * @var array|false the page size limits. The first array element stands for the minimal page size, and the second
      * the maximal page size. If this is false, it means [[pageSize]] should always return the value of [[defaultPageSize]].
      */
     public $pageSizeLimit = [1, 50];

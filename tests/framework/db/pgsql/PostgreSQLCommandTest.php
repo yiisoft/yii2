@@ -69,4 +69,26 @@ class PostgreSQLCommandTest extends CommandTest
         $command->execute();
         $this->assertEquals(3, $db->getSchema()->getLastInsertID('schema1.profile_id_seq'));
     }
+
+    /**
+     * @see https://github.com/yiisoft/yii2/issues/11498
+     */
+    public function testSaveSerializedObject()
+    {
+        $db = $this->getConnection();
+
+        $command = $db->createCommand()->insert('type', [
+            'int_col' => 1,
+            'char_col' => 'serialize',
+            'float_col' => 5.6,
+            'bool_col' => true,
+            'blob_col' => serialize($db),
+        ]);
+        $this->assertEquals(1, $command->execute());
+
+        $command = $db->createCommand()->update('type', [
+            'blob_col' => serialize($db),
+        ], ['char_col' => 'serialize']);
+        $this->assertEquals(1, $command->execute());
+    }
 }

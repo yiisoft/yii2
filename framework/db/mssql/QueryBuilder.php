@@ -9,7 +9,6 @@ namespace yii\db\mssql;
 
 use yii\base\InvalidParamException;
 use yii\base\NotSupportedException;
-use yii\db\Query;
 
 /**
  * QueryBuilder is the query builder for MS SQL Server databases (version 2008 and above).
@@ -24,9 +23,12 @@ class QueryBuilder extends \yii\db\QueryBuilder
      */
     public $typeMap = [
         Schema::TYPE_PK => 'int IDENTITY PRIMARY KEY',
+        Schema::TYPE_UPK => 'int IDENTITY PRIMARY KEY',
         Schema::TYPE_BIGPK => 'bigint IDENTITY PRIMARY KEY',
-        Schema::TYPE_STRING => 'varchar(255)',
-        Schema::TYPE_TEXT => 'text',
+        Schema::TYPE_UBIGPK => 'bigint IDENTITY PRIMARY KEY',
+        Schema::TYPE_CHAR => 'nchar(1)',
+        Schema::TYPE_STRING => 'nvarchar(255)',
+        Schema::TYPE_TEXT => 'ntext',
         Schema::TYPE_SMALLINT => 'smallint',
         Schema::TYPE_INTEGER => 'int',
         Schema::TYPE_BIGINT => 'bigint',
@@ -185,6 +187,42 @@ class QueryBuilder extends \yii\db\QueryBuilder
     }
 
     /**
+     * @inheritdoc
+     * @since 2.0.8
+     */
+    public function addCommentOnColumn($table, $column, $comment)
+    {
+        return "sp_updateextendedproperty @name = N'MS_Description', @value = {$this->db->quoteValue($comment)}, @level1type = N'Table',  @level1name = {$this->db->quoteTableName($table)}, @level2type = N'Column', @level2name = {$this->db->quoteColumnName($column)}";
+    }
+
+    /**
+     * @inheritdoc
+     * @since 2.0.8
+     */
+    public function addCommentOnTable($table, $comment)
+    {
+        return "sp_updateextendedproperty @name = N'MS_Description', @value = {$this->db->quoteValue($comment)}, @level1type = N'Table',  @level1name = {$this->db->quoteTableName($table)}";
+    }
+
+    /**
+     * @inheritdoc
+     * @since 2.0.8
+     */
+    public function dropCommentFromColumn($table, $column)
+    {
+        return "sp_dropextendedproperty @name = N'MS_Description', @level1type = N'Table',  @level1name = {$this->db->quoteTableName($table)}, @level2type = N'Column', @level2name = {$this->db->quoteColumnName($column)}";
+    }
+
+    /**
+     * @inheritdoc
+     * @since 2.0.8
+     */
+    public function dropCommentFromTable($table)
+    {
+        return "sp_dropextendedproperty @name = N'MS_Description', @level1type = N'Table',  @level1name = {$this->db->quoteTableName($table)}";
+    }
+
+    /**
      * Returns an array of column names given model name
      *
      * @param string $modelClass name of the model class
@@ -216,20 +254,15 @@ class QueryBuilder extends \yii\db\QueryBuilder
     {
         if ($this->_oldMssql === null) {
             $pdo = $this->db->getSlavePdo();
-            $version = preg_split("/\./", $pdo->getAttribute(\PDO::ATTR_SERVER_VERSION));
+            $version = explode('.', $pdo->getAttribute(\PDO::ATTR_SERVER_VERSION));
             $this->_oldMssql = $version[0] < 11;
         }
         return $this->_oldMssql;
     }
 
     /**
-     * Builds SQL for IN condition
-     *
-     * @param string $operator
-     * @param array $columns
-     * @param Query $values
-     * @param array $params
-     * @return string SQL
+     * @inheritdoc
+     * @throws NotSupportedException if `$columns` is an array
      */
     protected function buildSubqueryInCondition($operator, $columns, $values, &$params)
     {
@@ -270,5 +303,14 @@ class QueryBuilder extends \yii\db\QueryBuilder
         }
 
         return '(' . implode($operator === 'IN' ? ' OR ' : ' AND ', $vss) . ')';
+    }
+
+    /**
+     * @inheritdoc
+     * @since 2.0.8
+     */
+    public function selectExists($rawSql)
+    {
+        return 'SELECT CASE WHEN EXISTS(' . $rawSql . ') THEN 1 ELSE 0 END';
     }
 }

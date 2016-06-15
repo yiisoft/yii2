@@ -150,6 +150,15 @@ class PhpManager extends BaseManager
 
     /**
      * @inheritdoc
+     * @since 2.0.8
+     */
+    public function canAddChild($parent, $child)
+    {
+        return !$this->detectLoop($parent, $child);
+    }
+
+    /**
+     * @inheritdoc
      */
     public function addChild($parent, $child)
     {
@@ -437,7 +446,6 @@ class PhpManager extends BaseManager
      * Returns all permissions that are directly assigned to user.
      * @param string|integer $userId the user ID (see [[\yii\web\User::id]])
      * @return Permission[] all direct permissions that the user has. The array is indexed by the permission names.
-     *
      * @since 2.0.7
      */
     protected function getDirectPermissionsByUser($userId)
@@ -457,7 +465,6 @@ class PhpManager extends BaseManager
      * Returns all permissions that the user inherits from the roles assigned to him.
      * @param string|integer $userId the user ID (see [[\yii\web\User::id]])
      * @return Permission[] all inherited permissions that the user has. The array is indexed by the permission names.
-     *
      * @since 2.0.7
      */
     protected function getInheritedPermissionsByUser($userId)
@@ -534,9 +541,11 @@ class PhpManager extends BaseManager
             return;
         }
 
-        foreach ($this->assignments as $i => $assignment) {
-            if (isset($names[$assignment->roleName])) {
-                unset($this->assignments[$i]);
+        foreach ($this->assignments as $i => $assignments) {
+            foreach ($assignments as $n => $assignment) {
+                if (isset($names[$assignment->roleName])) {
+                    unset($this->assignments[$i][$n]);
+                }
             }
         }
         foreach ($this->children as $name => $children) {
@@ -755,6 +764,22 @@ class PhpManager extends BaseManager
     protected function saveToFile($data, $file)
     {
         file_put_contents($file, "<?php\nreturn " . VarDumper::export($data) . ";\n", LOCK_EX);
+        $this->invalidateScriptCache($file);
+    }
+
+    /**
+     * Invalidates precompiled script cache (such as OPCache or APC) for the given file.
+     * @param string $file the file path.
+     * @since 2.0.9
+     */
+    protected function invalidateScriptCache($file)
+    {
+        if (function_exists('opcache_invalidate')) {
+            opcache_invalidate($file, true);
+        }
+        if (function_exists('apc_delete_file')) {
+            @apc_delete_file($file);
+        }
     }
 
     /**
@@ -808,5 +833,22 @@ class PhpManager extends BaseManager
             $rules[$name] = serialize($rule);
         }
         $this->saveToFile($rules, $this->ruleFile);
+    }
+
+    /**
+     * @inheritdoc
+     * @since 2.0.7
+     */
+    public function getUserIdsByRole($roleName)
+    {
+        $result = [];
+        foreach ($this->assignments as $userID => $assignments) {
+            foreach ($assignments as $userAssignment) {
+                if ($userAssignment->roleName === $roleName && $userAssignment->userId == $userID) {
+                    $result[] = (string)$userID;
+                }
+            }
+        }
+        return $result;
     }
 }

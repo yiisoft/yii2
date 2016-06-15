@@ -103,7 +103,7 @@ Wyświetlanie danych
 * [Sortowanie](output-sorting.md)
 * [Dostawcy danych](output-data-providers.md)
 * [Widżety danych](output-data-widgets.md)
-* [Praca ze skryptami po stronie klienta](output-client-scripts.md)
+* [Praca ze skryptami](output-client-scripts.md)
 * [Skórki i motywy (Theming)](output-theming.md)
 
 

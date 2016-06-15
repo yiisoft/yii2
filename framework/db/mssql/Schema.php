@@ -47,11 +47,11 @@ class Schema extends \yii\db\Schema
         'datetime' => self::TYPE_DATETIME,
         'time' => self::TYPE_TIME,
         // character strings
-        'char' => self::TYPE_STRING,
+        'char' => self::TYPE_CHAR,
         'varchar' => self::TYPE_STRING,
         'text' => self::TYPE_TEXT,
         // unicode character strings
-        'nchar' => self::TYPE_STRING,
+        'nchar' => self::TYPE_CHAR,
         'nvarchar' => self::TYPE_STRING,
         'ntext' => self::TYPE_TEXT,
         // binary strings
@@ -407,12 +407,12 @@ SQL;
      * Returns all unique indexes for the given table.
      * Each array element is of the following structure:
      *
-     * ~~~
+     * ```php
      * [
-     *  'IndexName1' => ['col1' [, ...]],
-     *  'IndexName2' => ['col2' [, ...]],
+     *     'IndexName1' => ['col1' [, ...]],
+     *     'IndexName2' => ['col2' [, ...]],
      * ]
-     * ~~~
+     * ```
      *
      * @param TableSchema $table the table metadata
      * @return array all unique indexes for the given table.

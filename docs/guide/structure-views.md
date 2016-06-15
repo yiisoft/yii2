@@ -694,7 +694,7 @@ Now if you create a view named `about` under the directory `@app/views/site/page
 display this view by the following URL:
 
 ```
-http://localhost/index.php?r=site/page&view=about
+http://localhost/index.php?r=site%2Fpage&view=about
 ```
 
 The `GET` parameter `view` tells [[yii\web\ViewAction]] which view is requested. The action will then look

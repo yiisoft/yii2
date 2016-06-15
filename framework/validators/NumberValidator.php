@@ -101,7 +101,7 @@ class NumberValidator extends Validator
      */
     protected function validateValue($value)
     {
-        if (is_array($value)) {
+        if (is_array($value) || is_object($value)) {
             return [Yii::t('yii', '{attribute} is invalid.'), []];
         }
         $pattern = $this->integerOnly ? $this->integerPattern : $this->numberPattern;

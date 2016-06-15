@@ -160,20 +160,26 @@ trait ActiveRelationTrait
             return $related;
         }
 
-        $inverseRelation = (new $this->modelClass)->getRelation($this->inverseOf);
-
         if ($this->multiple) {
             foreach ($related as $i => $relatedModel) {
                 if ($relatedModel instanceof ActiveRecordInterface) {
+                    if (!isset($inverseRelation)) {
+                        $inverseRelation = $relatedModel->getRelation($this->inverseOf);
+                    }
                     $relatedModel->populateRelation($this->inverseOf, $inverseRelation->multiple ? [$model] : $model);
                 } else {
+                    if (!isset($inverseRelation)) {
+                        $inverseRelation = (new $this->modelClass)->getRelation($this->inverseOf);
+                    }
                     $related[$i][$this->inverseOf] = $inverseRelation->multiple ? [$model] : $model;
                 }
             }
         } else {
             if ($related instanceof ActiveRecordInterface) {
+                $inverseRelation = $related->getRelation($this->inverseOf);
                 $related->populateRelation($this->inverseOf, $inverseRelation->multiple ? [$model] : $model);
             } else {
+                $inverseRelation = (new $this->modelClass)->getRelation($this->inverseOf);
                 $related[$this->inverseOf] = $inverseRelation->multiple ? [$model] : $model;
             }
         }
@@ -463,9 +469,15 @@ trait ActiveRelationTrait
             }
         } else {
             // composite keys
+
+            // ensure keys of $this->link are prefixed the same way as $attributes
+            $prefixedLink = array_combine(
+                $attributes,
+                array_values($this->link)
+            );
             foreach ($models as $model) {
                 $v = [];
-                foreach ($this->link as $attribute => $link) {
+                foreach ($prefixedLink as $attribute => $link) {
                     $v[$attribute] = $model[$link];
                 }
                 $values[] = $v;
@@ -475,7 +487,7 @@ trait ActiveRelationTrait
     }
 
     /**
-     * @param ActiveRecord|array $model
+     * @param ActiveRecordInterface|array $model
      * @param array $attributes
      * @return string
      */
@@ -519,9 +531,9 @@ trait ActiveRelationTrait
         $primaryModel = reset($primaryModels);
         if (!$primaryModel instanceof ActiveRecordInterface) {
             // when primaryModels are array of arrays (asArray case)
-            $primaryModel = new $this->modelClass;
+            $primaryModel = $this->modelClass;
         }
 
-        return $this->asArray()->all($primaryModel->getDb());
+        return $this->asArray()->all($primaryModel::getDb());
     }
 }

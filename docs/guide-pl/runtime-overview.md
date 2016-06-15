@@ -1,23 +1,20 @@
-Przegl±d
+PrzeglÄ…d
 ========
-      
-Za ka¿dym razem kiedy aplikacja Yii obs³uguje ¿±danie, przetwarza je w podobny sposób.      
 
-1. U¿ytkownik wykonuje ¿±danie do [skryptu wej¶ciowego](structure-entry-scripts.md) `web/index.php`.
-2. Skrypt wej¶ciowy ³aduje [konfiguracjê](concept-configurations.md) aplikacji i tworzy
-   [instancjê aplikacji](structure-applications.md) aby obs³u¿yæ zapytanie.
-3. Aplikacja osi±ga ¿±dan± [¶cie¿kê](runtime-routing.md) za pomoc± komponentu 
-   [¿±dania](runtime-requests.md) aplikacji.
-4. Aplikacja tworzy instancjê [kontrolera](structure-controllers.md), który obs³u¿y ¿±danie.
-5. Kontroler tworzy instancjê [akcji](structure-controllers.md) i wykonuje filtry dla akcji.
-6. Je¿eli jakikolwiek filtr siê nie wykona, akcja zostanie anulowana.
-7. Je¿eli wszystkie filtry przejd±, akcja zostaje wykonana.
-8. Akcja wczytuje model danych, byæ mo¿e z bazy danych.
-9. Akcja renderuje widok dostarczaj±c go z modelem danych.
-10. Wyrenderowana zawarto¶æ jest zwracana do komponentu [odpowiedzi](runtime-responses.md) aplikacji. 
-11. Komponent odpowiedzi wysy³a wyrenderowan± zawarto¶æ do przegl±darki u¿ytkownika.
-Ten diagram pokazuje jak aplikacja obs³uguje ¿±danie.
+Za kaÅ¼dym razem kiedy aplikacja Yii obsÅ‚uguje Å¼Ä…danie, przetwarza je w podobny sposÃ³b.
 
-![Request Lifecycle](images/request-lifecycle.png)
+1. UÅ¼ytkownik wykonuje Å¼Ä…danie do [skryptu wejÅ›ciowego](structure-entry-scripts.md) `web/index.php`.
+2. Skrypt wejÅ›ciowy Å‚aduje [konfiguracjÄ™](concept-configurations.md) aplikacji i tworzy [instancjÄ™ aplikacji](structure-applications.md), aby obsÅ‚uÅ¼yÄ‡ zapytanie.
+3. Aplikacja osiÄ…ga Å¼Ä…danÄ… [Å›cieÅ¼kÄ™](runtime-routing.md) za pomocÄ… komponentu [Å¼Ä…dania](runtime-requests.md) aplikacji.
+4. Aplikacja tworzy instancjÄ™ [kontrolera](structure-controllers.md), ktÃ³ry obsÅ‚uÅ¼y Å¼Ä…danie.
+5. Kontroler tworzy instancjÄ™ [akcji](structure-controllers.md) i przetwarza filtry dla akcji.
+6. JeÅ¼eli jakikolwiek filtr siÄ™ nie wykona, akcja zostanie anulowana.
+7. JeÅ¼eli wszystkie filtry przejdÄ…, akcja zostaje wykonana.
+8. Akcja wczytuje model danych, byÄ‡ moÅ¼e z bazy danych.
+9. Akcja renderuje widok dostarczajÄ…c go z modelem danych.
+10. Wyrenderowana zawartoÅ›Ä‡ jest zwracana do komponentu [odpowiedzi](runtime-responses.md) aplikacji.
+11. Komponent odpowiedzi wysyÅ‚a wyrenderowanÄ… zawartoÅ›Ä‡ do przeglÄ…darki uÅ¼ytkownika.
 
-W tej sekcji opiszemy szczegó³y dotycz±ce niektórych kroków przetwarzania ¿±dania.
+![Cykl Å¼ycia Å¼Ä…dania](../guide/images/request-lifecycle.png)
+
+W tej sekcji opiszemy szczegÃ³Å‚y dotyczÄ…ce niektÃ³rych krokÃ³w przetwarzania Å¼Ä…dania.

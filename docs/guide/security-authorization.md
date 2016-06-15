@@ -227,6 +227,9 @@ return [
     ],
 ];
 ```
+> Note: If you are using yii2-basic-app template, there is a `config/console.php` configuration file where the
+  `authManager` needs to be declared additionally to `config/web.php`.
+> In case of yii2-advanced-app the `authManager` should be declared only once in `common/config/main.php`.
 
 `DbManager` uses four database tables to store its data: 
 
@@ -299,6 +302,9 @@ class RbacController extends Controller
     }
 }
 ```
+
+> Note: If you are using advanced template, you need to put your `RbacController` inside `console/controllers` directory
+  and change namespace to `console/controllers`.
 
 After executing the command with `yii rbac/init` we'll get the following hierarchy:
 

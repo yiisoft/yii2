@@ -53,7 +53,7 @@ The term "class" refers to all classes and interfaces here.
 - Classes should be named using `CamelCase`.
 - The brace should always be written on the line underneath the class name.
 - Every class must have a documentation block that conforms to the PHPDoc.
-- All code in a class must be indented with a single tab.
+- All code in a class must be indented with 4 spaces.
 - There should be only one class in a single PHP file.
 - All classes should be namespaced.
 - Class name should match file name. Class namespace should match directory structure.
@@ -87,9 +87,10 @@ class Foo
 - Public and protected variables should be declared at the top of the class before any method declarations.
   Private variables should also be declared at the top of the class but may be added right before the methods
   that are dealing with them in cases where they are only related to a small subset of the class methods.
-- The order of property declaration in a class should be ascending from public over protected to private.
+- The order of property declaration in a class should be ascending based on their visibility: from public over protected to private.
+- There are no strict rules for ordering properties that have the same visibility.
 - For better readability there should be no blank lines between property declarations and two blank lines
-  between property and method declaration sections.
+  between property and method declaration sections. One blank line should be added between the different visibility groups.
 - Private variables should be named like `$_varName`.
 - Public class members and standalone variables should be named using `$camelCase`
   with first letter lowercase.
@@ -101,9 +102,18 @@ For example:
 <?php
 class Foo
 {
-    public $publicProp;
+    public $publicProp1;
+    public $publicProp2;
+
     protected $protectedProp;
+
     private $_privateProp;
+
+
+    public function someMethod()
+    {
+        // ...
+    }
 }
 ```
 
@@ -115,7 +125,7 @@ class Foo
   `public` modifiers. `var` is not allowed.
 - Opening brace of a function should be on the line after the function declaration.
 
-~~~
+```php
 /**
  * Documentation
  */
@@ -130,7 +140,7 @@ class Foo
         return $value;
     }
 }
-~~~
+```
 
 ### 4.4 Doc blocks
 
@@ -260,9 +270,9 @@ Use [guard conditions](http://refactoring.com/catalog/replaceNestedConditionalWi
 ```php
 $result = $this->getResult();
 if (empty($result)) {
-  return true;
+    return true;
 } else {
-  // process result
+    // process result
 }
 ```
 
@@ -271,7 +281,7 @@ is better as
 ```php
 $result = $this->getResult();
 if (empty($result)) {
-  return true;
+   return true;
 }
 
 // process result
@@ -398,9 +408,9 @@ class Component extends \yii\base\Object
  * You may manipulate the returned [[Vector]] object by adding or removing handlers.
  * For example,
  *
- * ~~~
+ * ```
  * $component->getEventHandlers($eventName)->insertAt(0, $eventHandler);
- * ~~~
+ * ```
  *
  * @param string $name the event name
  * @return Vector list of attached event handlers for the event
@@ -476,3 +486,6 @@ Properties allowing to configure component not to do something should accept val
 - use lower case
 - use plural form for nouns which represent objects (e.g. validators)
 - use singular form for names representing relevant functionality/features (e.g. web)
+- prefer single word namespaces
+- if single word isn't suitable, use camelCase
+

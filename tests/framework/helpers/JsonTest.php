@@ -7,6 +7,7 @@ use yii\helpers\BaseJson;
 use yii\helpers\Json;
 use yiiunit\TestCase;
 use yii\web\JsExpression;
+use yiiunit\framework\web\Post;
 
 /**
  * @group helpers
@@ -101,6 +102,24 @@ class JsonTest extends TestCase
         // JsonSerializable
         $data = new JsonModel();
         $this->assertSame('{"json":"serializable"}', Json::htmlEncode($data));
+
+        // https://github.com/yiisoft/yii2/issues/10278
+        $xml = '<?xml version="1.0" encoding="UTF-8"?>
+<file>
+  <apiKey>ieu2iqw4o</apiKey>
+  <methodProperties>
+    <FindByString>Kiev</FindByString>
+  </methodProperties>
+</file>';
+
+        $document = simplexml_load_string($xml);
+        $this->assertSame('{"apiKey":"ieu2iqw4o","methodProperties":{"FindByString":"Kiev"}}', Json::encode($document));
+
+        $postsStack = new \SplStack();
+        $postsStack->push(new Post(915, 'record1'));
+        $postsStack->push(new Post(456, 'record2'));
+
+        $this->assertSame('{"1":{"id":456,"title":"record2"},"0":{"id":915,"title":"record1"}}', Json::encode($postsStack));
     }
 
     public function testDecode()

@@ -37,6 +37,7 @@ class BaseJson
         'JSON_ERROR_UNSUPPORTED_TYPE' => 'A value of a type that cannot be encoded was given', // PHP 5.5.0
     ];
 
+
     /**
      * Encodes the given value into a JSON string.
      * The method enhances `json_encode()` by supporting JavaScript expressions.
@@ -52,7 +53,7 @@ class BaseJson
     {
         $expressions = [];
         $value = static::processData($value, $expressions, uniqid('', true));
-        set_error_handler(function() {
+        set_error_handler(function () {
             static::handleJsonError(JSON_ERROR_SYNTAX);
         }, E_WARNING);
         $json = json_encode($value, $options);
@@ -89,6 +90,8 @@ class BaseJson
     {
         if (is_array($json)) {
             throw new InvalidParamException('Invalid JSON data.');
+        } elseif ($json === null || $json === '') {
+            return null;
         }
         $decode = json_decode((string) $json, $asArray);
         static::handleJsonError(json_last_error());
@@ -142,6 +145,8 @@ class BaseJson
                 $data = $data->jsonSerialize();
             } elseif ($data instanceof Arrayable) {
                 $data = $data->toArray();
+            } elseif ($data instanceof \SimpleXMLElement) {
+                $data = (array) $data;
             } else {
                 $result = [];
                 foreach ($data as $name => $value) {

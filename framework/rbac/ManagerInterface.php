@@ -11,20 +11,8 @@ namespace yii\rbac;
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */
-interface ManagerInterface
+interface ManagerInterface extends CheckAccessInterface
 {
-    /**
-     * Checks if the user has the specified permission.
-     * @param string|integer $userId the user ID. This should be either an integer or a string representing
-     * the unique identifier of a user. See [[\yii\web\User::id]].
-     * @param string $permissionName the name of the permission to be checked against
-     * @param array $params name-value pairs that will be passed to the rules associated
-     * with the roles and permissions assigned to the user.
-     * @return boolean whether the user has the specified permission.
-     * @throws \yii\base\InvalidParamException if $permissionName does not refer to an existing permission
-     */
-    public function checkAccess($userId, $permissionName, $params = []);
-
     /**
      * Creates a new Role object.
      * Note that the newly created role is not added to the RBAC system yet.
@@ -129,9 +117,20 @@ interface ManagerInterface
     public function getRules();
 
     /**
+     * Checks the possibility of adding a child to parent
+     * @param Item $parent the parent item
+     * @param Item $child the child item to be added to the hierarchy
+     * @return boolean possibility of adding
+     *
+     * @since 2.0.8
+     */
+    public function canAddChild($parent, $child);
+
+    /**
      * Adds an item as a child of another item.
      * @param Item $parent
      * @param Item $child
+     * @return boolean whether the child successfully added
      * @throws \yii\base\Exception if the parent-child relationship already exists or if a loop has been detected.
      */
     public function addChild($parent, $child);
@@ -209,6 +208,14 @@ interface ManagerInterface
      * returned if there is no role assigned to the user.
      */
     public function getAssignments($userId);
+
+    /**
+     * Returns all user IDs assigned to the role specified.
+     * @param string $roleName
+     * @return array array of user ID strings
+     * @since 2.0.7
+     */
+    public function getUserIdsByRole($roleName);
 
     /**
      * Removes all authorization data, including roles, permissions, rules, and assignments.

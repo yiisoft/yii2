@@ -67,9 +67,9 @@ class AccessRule extends Component
      * @var callable a callback that will be called to determine if the rule should be applied.
      * The signature of the callback should be as follows:
      *
-     * ~~~
+     * ```php
      * function ($rule, $action)
-     * ~~~
+     * ```
      *
      * where `$rule` is this rule, and `$action` is the current [[Action|action]] object.
      * The callback should return a boolean value indicating whether this rule should be applied.
@@ -82,9 +82,9 @@ class AccessRule extends Component
      *
      * The signature of the callback should be as follows:
      *
-     * ~~~
+     * ```php
      * function ($rule, $action)
-     * ~~~
+     * ```
      *
      * where `$rule` is this rule, and `$action` is the current [[Action|action]] object.
      */

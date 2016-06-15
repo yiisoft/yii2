@@ -83,48 +83,12 @@ class MssqlCommandTest extends CommandTest
         $this->assertEquals('user5@example.com', $command->queryScalar());
     }
 
-    public function testCreateTable()
+    public function paramsNonWhereProvider()
     {
-        $db = $this->getConnection();
-        // on the first run the 'testCreateTable' table does not exist
-        try {
-            $db->createCommand()->dropTable('testCreateTable')->execute();
-        } catch (\Exception $ex) {
-            // 'testCreateTable' table does not exist
-        }
-
-        $db->createCommand()->createTable('testCreateTable', ['id' => Schema::TYPE_PK, 'bar' => Schema::TYPE_INTEGER])->execute();
-        $db->createCommand()->insert('testCreateTable', ['bar' => 1])->execute();
-        $records = $db->createCommand('SELECT [[id]], [[bar]] FROM {{testCreateTable}};')->queryAll();
-        $this->assertEquals([
-            ['id' => 1, 'bar' => 1],
-        ], $records);
-    }
-
-    public function testAlterTable()
-    {
-        if ($this->driverName === 'sqlite'){
-            $this->markTestSkipped('Sqlite does not support alterTable');
-        }
-
-        $db = $this->getConnection();
-        // on the first run the 'testAlterTable' table does not exist
-        try {
-            $db->createCommand()->dropTable('testAlterTable')->execute();
-        } catch (\Exception $ex) {
-            // 'testAlterTable' table does not exist
-        }
-
-        $db->createCommand()->createTable('testAlterTable', ['id' => Schema::TYPE_PK, 'bar' => Schema::TYPE_INTEGER])->execute();
-        $db->createCommand()->insert('testAlterTable', ['bar' => 1])->execute();
-
-        $db->createCommand()->alterColumn('testAlterTable', 'bar', Schema::TYPE_STRING)->execute();
-
-        $db->createCommand()->insert('testAlterTable', ['bar' => 'hello'])->execute();
-        $records = $db->createCommand('SELECT [[id]], [[bar]] FROM {{testAlterTable}};')->queryAll();
-        $this->assertEquals([
-            ['id' => 1, 'bar' => 1],
-            ['id' => 2, 'bar' => 'hello'],
-        ], $records);
+        return[
+            ['SELECT SUBSTRING(name, :len, 6) AS name FROM {{customer}} WHERE [[email]] = :email GROUP BY name'],
+            ['SELECT SUBSTRING(name, :len, 6) as name FROM {{customer}} WHERE [[email]] = :email ORDER BY name'],
+            ['SELECT SUBSTRING(name, :len, 6) FROM {{customer}} WHERE [[email]] = :email'],
+        ];
     }
 }

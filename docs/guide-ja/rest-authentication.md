@@ -29,7 +29,7 @@ Yii は上記の全ての認証方法をサポートしています。新しい�
 [[yii\web\User::enableSession|enableSession]] が false である場合、ユーザの認証ステータスがセッションを使ってリクエストをまたいで存続することはありません。
 その代りに、すべてのリクエストに対して認証が実行されます。このことは、ステップ 2 と 3 によって達成されます。
 
-> Tip|情報: RESTful API をアプリケーションの形式で開発する場合は、アプリケーションの構成情報で `user` アプリケーションコンポーネント(structure-application-components.md) の [[yii\web\User::enableSession|enableSession]] プロパティを構成することが出来ます。
+> Tip: RESTful API をアプリケーションの形式で開発する場合は、アプリケーションの構成情報で `user` アプリケーションコンポーネント(structure-application-components.md) の [[yii\web\User::enableSession|enableSession]] プロパティを構成することが出来ます。
 > RESTful API をモジュールとして開発する場合は、次のように、モジュールの `init()` メソッドに一行を追加することが出来ます。
 > ```php
 > public function init()
@@ -110,5 +110,5 @@ class User extends ActiveRecord implements IdentityInterface
 ユーザが認証された後、おそらくは、リクエストされたリソースに対してリクエストされたアクションを実行する許可を彼または彼女が持っているかどうかをチェックしたいでしょう。
 *権限付与* と呼ばれるこのプロセスについては、[権限付与](security-authorization.md) のセクションで詳細に説明されています。
 
-あなたのコントローラが [[yii\rest\ActiveController]] から拡張したものである場合は、[[yii\rest\Controller::checkAccess()|checkAccess()]] メソッドをオーバーライドして権限付与のチェックを実行することが出来ます。
+あなたのコントローラが [[yii\rest\ActiveController]] から拡張したものである場合は、[[yii\rest\ActiveController::checkAccess()|checkAccess()]] メソッドをオーバーライドして権限付与のチェックを実行することが出来ます。
 このメソッドが [[yii\rest\ActiveController]] によって提供されている内蔵のアクションから呼び出されます。

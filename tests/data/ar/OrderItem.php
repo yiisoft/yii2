@@ -12,9 +12,11 @@ namespace yiiunit\data\ar;
  */
 class OrderItem extends ActiveRecord
 {
+    public static $tableName;
+
     public static function tableName()
     {
-        return 'order_item';
+        return static::$tableName ?: 'order_item';
     }
 
     public function getOrder()
@@ -25,5 +27,16 @@ class OrderItem extends ActiveRecord
     public function getItem()
     {
         return $this->hasOne(Item::className(), ['id' => 'item_id']);
+    }
+
+    // relations used by ::testFindCompositeWithJoin()
+    public function getOrderItemCompositeWithJoin()
+    {
+        return $this->hasOne(OrderItem::className(), ['item_id' => 'item_id', 'order_id' => 'order_id' ])
+            ->joinWith('item');
+    }
+    public function getOrderItemCompositeNoJoin()
+    {
+        return $this->hasOne(OrderItem::className(), ['item_id' => 'item_id', 'order_id' => 'order_id' ]);
     }
 }

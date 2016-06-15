@@ -96,6 +96,27 @@ According to the above validation steps, an attribute will be validated if and o
 an active attribute declared in `scenarios()` and is associated with one or multiple active rules
 declared in `rules()`.
 
+> Note: It is handy to give names to rules i.e.
+> ```php
+> public function rules()
+> {
+>     return [
+>         // ...
+>         'password' => [['password'], 'string', 'max' => 60],
+>     ];
+> }
+> ```
+>
+> You can use it in a child model:
+>
+> ```php
+> public function rules()
+> {
+>     $rules = parent::rules();
+>     unset($rules['password']);
+>     return $rules;
+> }
+
 
 ### Customizing Error Messages <span id="customizing-error-messages"></span>
 
@@ -143,11 +164,9 @@ on the value of another attribute you can use the [[yii\validators\Validator::wh
 to define such conditions. For example,
 
 ```php
-[
     ['state', 'required', 'when' => function($model) {
         return $model->country == 'USA';
-    }],
-]
+    }]
 ```
 
 The [[yii\validators\Validator::when|when]] property takes a PHP callable with the following signature:
@@ -166,13 +185,11 @@ the [[yii\validators\Validator::whenClient|whenClient]] property which takes a s
 function whose return value determines whether to apply the rule or not. For example,
 
 ```php
-[
     ['state', 'required', 'when' => function ($model) {
         return $model->country == 'USA';
     }, 'whenClient' => "function (attribute, value) {
         return $('#country').val() == 'USA';
-    }"],
-]
+    }"]
 ```
 
 
@@ -185,10 +202,10 @@ The following examples shows how to trim the spaces in the inputs and turn empty
 the [trim](tutorial-core-validators.md#trim) and [default](tutorial-core-validators.md#default) core validators:
 
 ```php
-[
+return [
     [['username', 'email'], 'trim'],
     [['username', 'email'], 'default'],
-]
+];
 ```
 
 You may also use the more general [filter](tutorial-core-validators.md#filter) validator to perform more complex
@@ -204,13 +221,13 @@ When input data are submitted from HTML forms, you often need to assign some def
 if they are empty. You can do so by using the [default](tutorial-core-validators.md#default) validator. For example,
 
 ```php
-[
+return [
     // set "username" and "email" as null if they are empty
     [['username', 'email'], 'default'],
 
     // set "level" to be 1 if it is empty
     ['level', 'default', 'value' => 1],
-]
+];
 ```
 
 By default, an input is considered empty if its value is an empty string, an empty array or a null.
@@ -218,14 +235,12 @@ You may customize the default empty detection logic by configuring the [[yii\val
 with a PHP callable. For example,
 
 ```php
-[
     ['agree', 'required', 'isEmpty' => function ($value) {
         return empty($value);
-    }],
-]
+    }]
 ```
 
-> Note: Most validators do not handle empty inputs if their [[yii\base\Validator::skipOnEmpty]] property takes
+> Note: Most validators do not handle empty inputs if their [[yii\validators\Validator::skipOnEmpty]] property takes
   the default value true. They will simply be skipped during validation if their associated attributes receive empty
   inputs. Among the [core validators](tutorial-core-validators.md), only the `captcha`, `default`, `filter`,
   `required`, and `trim` validators will handle empty inputs.
@@ -544,7 +559,7 @@ class StatusValidator extends Validator
         $statuses = json_encode(Status::find()->select('id')->asArray()->column());
         $message = json_encode($this->message, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
         return <<<JS
-if ($.inArray(value, $statuses) > -1) {
+if ($.inArray(value, $statuses) === -1) {
     messages.push($message);
 }
 JS;
@@ -561,6 +576,10 @@ JS;
 >     ['status', 'in', 'range' => Status::find()->select('id')->asArray()->column()],
 > ]
 > ```
+
+> Tip: If you need to work with client validation manually i.e. dynamically add fields or do some custom UI logic, refer
+> to [Working with ActiveForm via JavaScript](https://github.com/samdark/yii2-cookbook/blob/master/book/forms-activeform-js.md)
+> in Yii 2.0 Cookbook.
 
 ### Deferred Validation <span id="deferred-validation"></span>
 
@@ -690,3 +709,6 @@ this request by running the validation and returning the errors in JSON format.
 
 > Info: You can also use [Deferred Validation](#deferred-validation) to perform AJAX validation.
   However, the AJAX validation feature described here is more systematic and requires less coding effort.
+
+When both `enableClientValidation` and `enableAjaxValidation` are set to true, AJAX validation request will be triggered
+only after the successful client validation.

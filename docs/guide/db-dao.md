@@ -90,23 +90,26 @@ and [[yii\db\Connection::password|password]]. Please refer to [[yii\db\Connectio
   you execute the first SQL or you call the [[yii\db\Connection::open()|open()]] method explicitly.
 
 > Tip: Sometimes you may want to execute some queries right after the database connection is established to initialize
-> some environment variables. You can register an event handler for the [[yii\db\Connection::EVENT_AFTER_OPEN|afterOpen]] event
+> some environment variables (e.g., to set the timezone or character set). You can do so by registering an event handler
+> for the [[yii\db\Connection::EVENT_AFTER_OPEN|afterOpen]] event
 > of the database connection. You may register the handler directly in the application configuration like so:
 > 
 > ```php
 > 'db' => [
 >     // ...
 >     'on afterOpen' => function($event) {
->         $event->sender->createCommand("YOUR SQL HERE")->execute();
+>         // $event->sender refers to the DB connection
+>         $event->sender->createCommand("SET time_zone = 'UTC'")->execute();
 >     }
-> ]
+> ],
 > ```
+
 
 ## Executing SQL Queries <span id="executing-sql-queries"></span>
 
 Once you have a database connection instance, you can execute a SQL query by taking the following steps:
  
-1. Create a [[yii\db\Command]] with a plain SQL;
+1. Create a [[yii\db\Command]] with a plain SQL query;
 2. Bind parameters (optional);
 3. Call one of the SQL execution methods in [[yii\db\Command]].
 
@@ -114,49 +117,28 @@ The following example shows various ways of fetching data from a database:
  
 ```php
 // return a set of rows. each row is an associative array of column names and values.
-// an empty array is returned if no results
+// an empty array is returned if the query returned no results
 $posts = Yii::$app->db->createCommand('SELECT * FROM post')
             ->queryAll();
 
 // return a single row (the first row)
-// false is returned if no results
+// false is returned if the query has no result
 $post = Yii::$app->db->createCommand('SELECT * FROM post WHERE id=1')
            ->queryOne();
 
 // return a single column (the first column)
-// an empty array is returned if no results
+// an empty array is returned if the query returned no results
 $titles = Yii::$app->db->createCommand('SELECT title FROM post')
              ->queryColumn();
 
-// return a scalar
-// false is returned if no results
+// return a scalar value
+// false is returned if the query has no result
 $count = Yii::$app->db->createCommand('SELECT COUNT(*) FROM post')
              ->queryScalar();
 ```
 
 > Note: To preserve precision, the data fetched from databases are all represented as strings, even if the corresponding
   database column types are numerical.
-
-> Tip: If you need to execute a SQL query right after establishing a connection (e.g., to set the timezone or character set), 
-> you can do so in the [[yii\db\Connection::EVENT_AFTER_OPEN]] event handler. For example,
->
-```php
-return [
-    // ...
-    'components' => [
-        // ...
-        'db' => [
-            'class' => 'yii\db\Connection',
-            // ...
-            'on afterOpen' => function($event) {
-                // $event->sender refers to the DB connection
-                $event->sender->createCommand("SET time_zone = 'UTC'")->execute();
-            }
-        ],
-    ],
-    // ...
-];
-```
 
 
 ### Binding Parameters <span id="binding-parameters"></span>
@@ -202,6 +184,7 @@ $command = Yii::$app->db->createCommand('SELECT * FROM post WHERE id=:id');
 
 $post1 = $command->bindValue(':id', 1)->queryOne();
 $post2 = $command->bindValue(':id', 2)->queryOne();
+// ...
 ```
 
 Because [[yii\db\Command::bindParam()|bindParam()]] supports binding parameters by references, the above code
@@ -216,6 +199,7 @@ $post1 = $command->queryOne();
 
 $id = 2;
 $post2 = $command->queryOne();
+// ...
 ```
 
 Notice that you bind the placeholder to the `$id` variable before the execution, and then change the value of that variable 
@@ -265,17 +249,21 @@ Yii::$app->db->createCommand()->batchInsert('user', ['name', 'age'], [
 ])->execute();
 ```
 
+Note that the aforementioned methods only create the query and you always have to call [[yii\db\Command::execute()|execute()]]
+to actually run them.
+
 
 ## Quoting Table and Column Names <span id="quoting-table-and-column-names"></span>
 
-When writing database-agnostic code, properly quote table and column names is often a headache because
+When writing database-agnostic code, properly quoting table and column names is often a headache because
 different databases have different name quoting rules. To overcome this problem, you may use the following
 quoting syntax introduced by Yii:
 
 * `[[column name]]`: enclose a column name to be quoted in double square brackets; 
 * `{{table name}}`: enclose a table name to be quoted in double curly brackets.
 
-Yii DAO will automatically turn such constructs in a SQL into the corresponding quoted column or table names.
+Yii DAO will automatically convert such constructs into the corresponding quoted column or table names using the
+DBMS specific syntax.
 For example,
 
 ```php
@@ -287,10 +275,10 @@ $count = Yii::$app->db->createCommand("SELECT COUNT([[id]]) FROM {{employee}}")
 
 ### Using Table Prefix <span id="using-table-prefix"></span>
 
-If most of your DB tables use some common prefix in their tables, you may use the table prefix feature supported
+If most of your DB tables names share a common prefix, you may use the table prefix feature provided
 by Yii DAO.
 
-First, specify the table prefix via the [[yii\db\Connection::tablePrefix]] property:
+First, specify the table prefix via the [[yii\db\Connection::tablePrefix]] property in the application config:
 
 ```php
 return [
@@ -306,7 +294,7 @@ return [
 ```
 
 Then in your code, whenever you need to refer to a table whose name contains such a prefix, use the syntax
-`{{%table name}}`. The percentage character will be automatically replaced with the table prefix that you have specified
+`{{%table_name}}`. The percentage character will be automatically replaced with the table prefix that you have specified
 when configuring the DB connection. For example,
 
 ```php
@@ -320,7 +308,7 @@ $count = Yii::$app->db->createCommand("SELECT COUNT([[id]]) FROM {{%employee}}")
 
 When running multiple related queries in a sequence, you may need to wrap them in a transaction to ensure the integrity
 and consistency of your database. If any of the queries fails, the database will be rolled back to the state as if
-none of these queries is executed.
+none of these queries were executed.
  
 The following code shows a typical way of using transactions:
 
@@ -332,14 +320,15 @@ Yii::$app->db->transaction(function($db) {
 });
 ```
 
-The above code is equivalent to the following:
+The above code is equivalent to the following, which gives you more control about the error handling code:
 
 ```php
-$transaction = Yii::$app->db->beginTransaction();
+$db = Yii::$app->db;
+$transaction = $db->beginTransaction();
 
 try {
-    Yii::$app->db->createCommand($sql1)->execute();
-    Yii::$app->db->createCommand($sql2)->execute();
+    $db->createCommand($sql1)->execute();
+    $db->createCommand($sql2)->execute();
     // ... executing other SQL statements ...
     
     $transaction->commit();
@@ -355,9 +344,10 @@ try {
 By calling the [[yii\db\Connection::beginTransaction()|beginTransaction()]] method, a new transaction is started.
 The transaction is represented as a [[yii\db\Transaction]] object stored in the `$transaction` variable. Then,
 the queries being executed are enclosed in a `try...catch...` block. If all queries are executed successfully,
-the [[yii\db\Transaction::commit()|commit()]] method is called to commit the transaction. Otherwise, an exception
-will be triggered and caught, and the [[yii\db\Transaction::rollBack()|rollBack()]] method is called to roll back
-the changes made by the queries prior to that failed query in the transaction.
+the [[yii\db\Transaction::commit()|commit()]] method is called to commit the transaction. Otherwise, if an exception
+will be triggered and caught, the [[yii\db\Transaction::rollBack()|rollBack()]] method is called to roll back
+the changes made by the queries prior to that failed query in the transaction. `throw $e` will then re-throw the
+exception as if we had not caught it, so the normal error handling process will take care of it.
 
 
 ### Specifying Isolation Levels <span id="specifying-isolation-levels"></span>
@@ -390,7 +380,7 @@ by the DBMS that you are using. For example, in PostgreSQL, you may use `SERIALI
 Note that some DBMS allow setting the isolation level only for the whole connection. Any subsequent transactions
 will get the same isolation level even if you do not specify any. When using this feature
 you may need to set the isolation level for all transactions explicitly to avoid conflicting settings.
-At the time of this writing, only MSSQL and SQLite are affected.
+At the time of this writing, only MSSQL and SQLite are affected by this limitation.
 
 > Note: SQLite only supports two isolation levels, so you can only use `READ UNCOMMITTED` and `SERIALIZABLE`.
 Usage of other levels will result in an exception being thrown.
@@ -419,13 +409,14 @@ Yii::$app->db->transaction(function ($db) {
 Or alternatively,
 
 ```php
-$outerTransaction = Yii::$app->db->beginTransaction();
+$db = Yii::$app->db;
+$outerTransaction = $db->beginTransaction();
 try {
-    Yii::$app->db->createCommand($sql1)->execute();
+    $db->createCommand($sql1)->execute();
 
-    $innerTransaction = Yii::$app->db->beginTransaction();
+    $innerTransaction = $db->beginTransaction();
     try {
-        Yii::$app->db->createCommand($sql2)->execute();
+        $db->createCommand($sql2)->execute();
         $innerTransaction->commit();
     } catch (\Exception $e) {
         $innerTransaction->rollBack();
@@ -445,7 +436,7 @@ try {
 Many DBMS support [database replication](http://en.wikipedia.org/wiki/Replication_(computing)#Database_replication)
 to get better database availability and faster server response time. With database replication, data are replicated
 from the so-called *master servers* to *slave servers*. All writes and updates must take place on the master servers,
-while reads may take place on the slave servers.
+while reads may also take place on the slave servers.
 
 To take advantage of database replication and achieve read-write splitting, you can configure a [[yii\db\Connection]]
 component like the following:
@@ -566,13 +557,14 @@ By default, transactions use the master connection. And within a transaction, al
 the master connection. For example,
 
 ```php
+$db = Yii::$app->db;
 // the transaction is started on the master connection
-$transaction = Yii::$app->db->beginTransaction();
+$transaction = $db->beginTransaction();
 
 try {
     // both queries are performed against the master
-    $rows = Yii::$app->db->createCommand('SELECT * FROM user LIMIT 10')->queryAll();
-    Yii::$app->db->createCommand("UPDATE user SET username='demo' WHERE id=1")->execute();
+    $rows = $db->createCommand('SELECT * FROM user LIMIT 10')->queryAll();
+    $db->createCommand("UPDATE user SET username='demo' WHERE id=1")->execute();
 
     $transaction->commit();
 } catch(\Exception $e) {
@@ -601,7 +593,7 @@ You may also directly set `Yii::$app->db->enableSlaves` to be false to direct al
 
 ## Working with Database Schema <span id="database-schema"></span>
 
-Yii DAO provides a whole set of methods to let you manipulate database schema, such as creating new tables,
+Yii DAO provides a whole set of methods to let you manipulate the database schema, such as creating new tables,
 dropping a column from a table, etc. These methods are listed as follows:
 
 * [[yii\db\Command::createTable()|createTable()]]: creating a table
@@ -630,7 +622,12 @@ Yii::$app->db->createCommand()->createTable('post', [
 ]);
 ```
 
-You can also retrieve the definition information about a table through 
+The above array describes the name and types of the columns to be created. For the column types, Yii provides
+a set of abstract data types, that allow you to define a database agnostic schema. These are converted to
+DBMS specific type definitions dependent on the database, the table is created in.
+Please refer to the API documentation of the [[yii\db\Command::createTable()|createTable()]]-method for more information.
+
+Besides changing the database schema, you can also retrieve the definition information about a table through
 the [[yii\db\Connection::getTableSchema()|getTableSchema()]] method of a DB connection. For example,
 
 ```php

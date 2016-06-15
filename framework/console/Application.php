@@ -34,9 +34,9 @@ defined('STDERR') or define('STDERR', fopen('php://stderr', 'w'));
  *
  * To run the console application, enter the following on the command line:
  *
- * ~~~
+ * ```
  * yii <route> [--param1=value1 --param2 ...]
- * ~~~
+ * ```
  *
  * where `<route>` refers to a controller route in the form of `ModuleID/ControllerID/ActionID`
  * (e.g. `sitemap/create`), and `param1`, `param2` refers to a set of named parameters that
@@ -46,9 +46,9 @@ defined('STDERR') or define('STDERR', fopen('php://stderr', 'w'));
  * A `help` command is provided by default, which lists available commands and shows their usage.
  * To use this command, simply type:
  *
- * ~~~
+ * ```
  * yii help
- * ~~~
+ * ```
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
@@ -156,15 +156,25 @@ class Application extends \yii\base\Application
      * This method parses the specified route and creates the corresponding child module(s), controller and action
      * instances. It then calls [[Controller::runAction()]] to run the action with the given parameters.
      * If the route is empty, the method will use [[defaultRoute]].
+     *
+     * For example, to run `public function actionTest($a, $b)` assuming that the controller has options the following
+     * code should be used:
+     *
+     * ```php
+     * \Yii::$app->runAction('controller/test', ['option' => 'value', $a, $b]);
+     * ```
+     *
      * @param string $route the route that specifies the action.
      * @param array $params the parameters to be passed to the action
-     * @return integer the status code returned by the action execution. 0 means normal, and other values mean abnormal.
+     * @return integer|Response the result of the action. This can be either an exit code or Response object.
+     * Exit code 0 means normal, and other values mean abnormal. Exit code of `null` is treaded as `0` as well.
      * @throws Exception if the route is invalid
      */
     public function runAction($route, $params = [])
     {
         try {
-            return (int)parent::runAction($route, $params);
+            $res = parent::runAction($route, $params);
+            return is_object($res) ? $res : (int)$res;
         } catch (InvalidRouteException $e) {
             throw new Exception("Unknown command \"$route\".", 0, $e);
         }
@@ -177,12 +187,12 @@ class Application extends \yii\base\Application
     public function coreCommands()
     {
         return [
-            'message' => 'yii\console\controllers\MessageController',
-            'help' => 'yii\console\controllers\HelpController',
-            'migrate' => 'yii\console\controllers\MigrateController',
-            'cache' => 'yii\console\controllers\CacheController',
             'asset' => 'yii\console\controllers\AssetController',
+            'cache' => 'yii\console\controllers\CacheController',
             'fixture' => 'yii\console\controllers\FixtureController',
+            'help' => 'yii\console\controllers\HelpController',
+            'message' => 'yii\console\controllers\MessageController',
+            'migrate' => 'yii\console\controllers\MigrateController',
             'serve' => 'yii\console\controllers\ServeController',
         ];
     }

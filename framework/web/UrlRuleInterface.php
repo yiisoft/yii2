@@ -8,7 +8,7 @@
 namespace yii\web;
 
 /**
- * UrlRuleInterface is the interface that should be implemented URL rule classes.
+ * UrlRuleInterface is the interface that should be implemented by URL rule classes.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0

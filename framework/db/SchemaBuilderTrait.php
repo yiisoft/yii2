@@ -64,6 +64,18 @@ trait SchemaBuilderTrait
     }
 
     /**
+     * Creates a char column.
+     * @param integer $length column size definition i.e. the maximum string length.
+     * This parameter will be ignored if not supported by the DBMS.
+     * @return ColumnSchemaBuilder the column instance which can be further customized.
+     * @since 2.0.8
+     */
+    public function char($length = null)
+    {
+        return $this->getDb()->getSchema()->createColumnSchemaBuilder(Schema::TYPE_CHAR, $length);
+    }
+
+    /**
      * Creates a string column.
      * @param integer $length column size definition i.e. the maximum string length.
      * This parameter will be ignored if not supported by the DBMS.

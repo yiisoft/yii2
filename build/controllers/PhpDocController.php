@@ -27,6 +27,10 @@ class PhpDocController extends Controller
      * for copy and paste.
      */
     public $updateFiles = true;
+    /**
+     * @var bool whether to add copyright header to php files. This should be skipped in application code.
+     */
+    public $skipFrameworkRequirements = false;
 
 
     /**
@@ -72,7 +76,7 @@ class PhpDocController extends Controller
      */
     public function actionFix($root = null)
     {
-        $files = $this->findFiles($root);
+        $files = $this->findFiles($root, false);
 
         $nFilesTotal = 0;
         $nFilesUpdated = 0;
@@ -83,7 +87,9 @@ class PhpDocController extends Controller
             // fix line endings
             $lines = preg_split('/(\r\n|\n|\r)/', $contents);
 
-            $this->fixFileDoc($lines);
+            if (!$this->skipFrameworkRequirements) {
+                $this->fixFileDoc($lines);
+            }
             $this->fixDocBlockIndentation($lines);
             $lines = array_values($this->fixLineSpacing($lines));
 
@@ -105,12 +111,42 @@ class PhpDocController extends Controller
      */
     public function options($actionID)
     {
-        return array_merge(parent::options($actionID), ['updateFiles']);
+        return array_merge(parent::options($actionID), ['updateFiles', 'skipFrameworkRequirements']);
     }
 
-    protected function findFiles($root)
+    protected function findFiles($root, $needsInclude = true)
     {
         $except = [];
+        if ($needsInclude) {
+            $extensionExcept = [
+                'apidoc' => [
+                    '/helpers/PrettyPrinter.php',
+                    '/extensions/apidoc/helpers/ApiIndexer.php',
+                    '/extensions/apidoc/helpers/ApiMarkdownLaTeX.php',
+                ],
+                'codeception' => [
+                    '/TestCase.php',
+                    '/DbTestCase.php',
+                ],
+                'gii' => [
+                    '/components/DiffRendererHtmlInline.php',
+                    '/generators/extension/default/AutoloadExample.php',
+                ],
+                'swiftmailer' => [
+                    '/Logger.php',
+                ],
+                'twig' => [
+                    '/Extension.php',
+                    '/Optimizer.php',
+                    '/Template.php',
+                    '/TwigSimpleFileLoader.php',
+                    '/ViewRendererStaticClassProxy.php',
+                ],
+            ];
+        } else {
+            $extensionExcept = [];
+        }
+
         if ($root === null) {
             $root = dirname(YII2_PATH);
             $extensionPath = "$root/extensions";
@@ -121,25 +157,61 @@ class PhpDocController extends Controller
             }
 
             $except = [
-                '.git/',
                 '/apps/',
                 '/build/',
                 '/docs/',
-                '/extensions/apidoc/helpers/PrettyPrinter.php',
-                '/extensions/apidoc/helpers/ApiIndexer.php',
-                '/extensions/apidoc/helpers/ApiMarkdownLaTeX.php',
-                '/extensions/codeception/TestCase.php',
-                '/extensions/codeception/DbTestCase.php',
                 '/extensions/composer/',
-                '/extensions/gii/components/DiffRendererHtmlInline.php',
-                '/extensions/gii/generators/extension/default/*',
-                '/extensions/twig/TwigSimpleFileLoader.php',
                 '/framework/BaseYii.php',
                 '/framework/Yii.php',
                 'assets/',
                 'tests/',
                 'vendor/',
             ];
+            foreach($extensionExcept as $ext => $paths) {
+                foreach($paths as $path) {
+                    $except[] = "/extensions/$ext$path";
+                }
+            }
+        } elseif (preg_match('~extensions/([\w\d-]+)[\\\\/]?$~', $root, $matches)) {
+
+            $extensionPath = dirname(rtrim($root, '\\/'));
+            $this->setUpExtensionAliases($extensionPath);
+
+            list(, $extension) = $matches;
+            Yii::setAlias("@yii/$extension", "$root");
+            if (is_file($autoloadFile = Yii::getAlias("@yii/$extension/vendor/autoload.php"))) {
+                include($autoloadFile);
+            }
+
+            if (isset($extensionExcept[$extension])) {
+                foreach($extensionExcept[$extension] as $path) {
+                    $except[] = $path;
+                }
+            }
+            $except[] = '/vendor/';
+            $except[] = '/tests/';
+            $except[] = '/docs/';
+
+//            // composer extension does not contain yii code
+//            if ($extension === 'composer') {
+//                return [];
+//            }
+        } elseif (preg_match('~apps/([\w\d-]+)[\\\\/]?$~', $root, $matches)) {
+
+            $extensionPath = dirname(dirname(rtrim($root, '\\/'))) . '/extensions';
+            $this->setUpExtensionAliases($extensionPath);
+
+            list(, $appName) = $matches;
+            Yii::setAlias("@app-$appName", "$root");
+            if (is_file($autoloadFile = Yii::getAlias("@app-$appName/vendor/autoload.php"))) {
+                include($autoloadFile);
+            }
+
+            $except[] = '/runtime/';
+            $except[] = '/vendor/';
+            $except[] = '/tests/';
+            $except[] = '/docs/';
+
         }
         $root = FileHelper::normalizePath($root);
         $options = [
@@ -155,6 +227,7 @@ class PhpDocController extends Controller
                 },
             'only' => ['*.php'],
             'except' => array_merge($except, [
+                '.git/',
                 'views/',
                 'requirements/',
                 'gii/generators/',
@@ -162,6 +235,15 @@ class PhpDocController extends Controller
             ]),
         ];
         return FileHelper::findFiles($root, $options);
+    }
+
+    private function setUpExtensionAliases($extensionPath)
+    {
+        foreach (scandir($extensionPath) as $extension) {
+            if (ctype_alpha($extension) && is_dir($extensionPath . '/' . $extension)) {
+                Yii::setAlias("@yii/$extension", "$extensionPath/$extension");
+            }
+        }
     }
 
     /**
@@ -243,6 +325,7 @@ class PhpDocController extends Controller
                     $codeBlock = false;
                     $tag = true;
                     $docLine = preg_replace('/\s+/', ' ', $docLine);
+                    $docLine = $this->fixParamTypes($docLine);
                 } elseif (preg_match('/^(~~~|```)/', $docLine)) {
                     $codeBlock = !$codeBlock;
                     $listIndent = '';
@@ -261,6 +344,20 @@ class PhpDocController extends Controller
         }
     }
 
+    protected function fixParamTypes($line)
+    {
+        return preg_replace_callback('~@(param|return) ([\w\\|]+)~i', function($matches) {
+            $types = explode('|', $matches[2]);
+            foreach($types as $i => $type) {
+                switch($type){
+                    case 'int': $types[$i] = 'integer'; break;
+                    case 'bool': $types[$i] = 'boolean'; break;
+                }
+            }
+            return '@' . $matches[1] . ' ' . implode('|', $types);
+        }, $line);
+    }
+
     /**
      * Fixes line spacing code style for properties and constants
      */
@@ -269,6 +366,7 @@ class PhpDocController extends Controller
         $propertiesOnly = false;
         // remove blank lines between properties
         $skip = true;
+        $level = 0;
         foreach($lines as $i => $line) {
             if (strpos($line, 'class ') !== false) {
                 $skip = false;
@@ -276,8 +374,16 @@ class PhpDocController extends Controller
             if ($skip) {
                 continue;
             }
+
+            // keep spaces in multi line arrays
+            if (strpos($line, '*') === false && strncmp(trim($line), "'SQLSTATE[", 10) !== 0) {
+                $level += substr_count($line, '[') - substr_count($line, ']');
+            }
+
             if (trim($line) === '') {
-                unset($lines[$i]);
+                if ($level == 0) {
+                    unset($lines[$i]);
+                }
             } elseif (ltrim($line)[0] !== '*' && strpos($line, 'function ') !== false) {
                 break;
             } elseif (trim($line) === '}') {
@@ -380,7 +486,11 @@ class PhpDocController extends Controller
 
         if (!$ref->isSubclassOf('yii\base\Object') && $className != 'yii\base\Object') {
             $this->stderr("[INFO] Skipping class $className as it is not a subclass of yii\\base\\Object.\n", Console::FG_BLUE, Console::BOLD);
+            return false;
+        }
 
+        if ($ref->isSubclassOf('yii\db\BaseActiveRecord')) {
+            $this->stderr("[INFO] Skipping class $className as it is an ActiveRecord class, property handling is not supported yet.\n", Console::FG_BLUE, Console::BOLD);
             return false;
         }
 
@@ -405,11 +515,13 @@ class PhpDocController extends Controller
             }
         }
 
-        if (!$seenSince) {
-            $this->stderr("[ERR] No @since found in class doc in file: $file\n", Console::FG_RED);
-        }
-        if (!$seenAuthor) {
-            $this->stderr("[ERR] No @author found in class doc in file: $file\n", Console::FG_RED);
+        if (!$this->skipFrameworkRequirements) {
+            if (!$seenSince) {
+                $this->stderr("[ERR] No @since found in class doc in file: $file\n", Console::FG_RED);
+            }
+            if (!$seenAuthor) {
+                $this->stderr("[ERR] No @author found in class doc in file: $file\n", Console::FG_RED);
+            }
         }
 
         if (trim($oldDoc) != trim($newDoc)) {
@@ -484,6 +596,12 @@ class PhpDocController extends Controller
                 unset($lines[$i]);
             }
         }
+
+        // if no properties or other tags where present add properties at the end
+        if ($propertyPosition === false) {
+            $propertyPosition = count($lines) - 2;
+        }
+
         $finalDoc = '';
         foreach ($lines as $i => $line) {
             $finalDoc .= $line . "\n";
@@ -510,13 +628,13 @@ class PhpDocController extends Controller
             return false;
         }
         if (count($classes) < 1) {
-            $interfaces = $this->match('#\ninterface (?<name>\w+)( extends .+)?\n\{(?<content>.+)\n\}(\n|$)#', $file);
+            $interfaces = $this->match('#\ninterface (?<name>\w+)( extends .+)?\n\{(?<content>.*)\n\}(\n|$)#', $file);
             if (count($interfaces) == 1) {
                 return false;
             } elseif (count($interfaces) > 1) {
                 $this->stderr("[ERR] There should be only one interface in a file: $fileName\n", Console::FG_RED);
             } else {
-                $traits = $this->match('#\ntrait (?<name>\w+)\n\{(?<content>.+)\n\}(\n|$)#', $file);
+                $traits = $this->match('#\ntrait (?<name>\w+)\n\{(?<content>.*)\n\}(\n|$)#', $file);
                 if (count($traits) == 1) {
                     return false;
                 } elseif (count($traits) > 1) {

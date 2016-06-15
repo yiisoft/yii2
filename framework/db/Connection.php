@@ -32,40 +32,40 @@ use yii\caching\Cache;
  * The following example shows how to create a Connection instance and establish
  * the DB connection:
  *
- * ~~~
+ * ```php
  * $connection = new \yii\db\Connection([
  *     'dsn' => $dsn,
  *     'username' => $username,
  *     'password' => $password,
  * ]);
  * $connection->open();
- * ~~~
+ * ```
  *
  * After the DB connection is established, one can execute SQL statements like the following:
  *
- * ~~~
+ * ```php
  * $command = $connection->createCommand('SELECT * FROM post');
  * $posts = $command->queryAll();
  * $command = $connection->createCommand('UPDATE post SET status=1');
  * $command->execute();
- * ~~~
+ * ```
  *
  * One can also do prepared SQL execution and bind parameters to the prepared SQL.
  * When the parameters are coming from user input, you should use this approach
  * to prevent SQL injection attacks. The following is an example:
  *
- * ~~~
+ * ```php
  * $command = $connection->createCommand('SELECT * FROM post WHERE id=:id');
  * $command->bindValue(':id', $_GET['id']);
  * $post = $command->query();
- * ~~~
+ * ```
  *
  * For more information about how to perform various DB queries, please refer to [[Command]].
  *
  * If the underlying DBMS supports transactions, you can perform transactional SQL queries
  * like the following:
  *
- * ~~~
+ * ```php
  * $transaction = $connection->beginTransaction();
  * try {
  *     $connection->createCommand($sql1)->execute();
@@ -75,30 +75,30 @@ use yii\caching\Cache;
  * } catch (Exception $e) {
  *     $transaction->rollBack();
  * }
- * ~~~
+ * ```
  *
  * You also can use shortcut for the above like the following:
  *
- * ~~~
+ * ```php
  * $connection->transaction(function () {
  *     $order = new Order($customer);
  *     $order->save();
  *     $order->addItems($items);
  * });
- * ~~~
+ * ```
  *
  * If needed you can pass transaction isolation level as a second parameter:
  *
- * ~~~
+ * ```php
  * $connection->transaction(function (Connection $db) {
  *     //return $db->...
  * }, Transaction::READ_UNCOMMITTED);
- * ~~~
+ * ```
  *
  * Connection is often used as an application component and configured in the application
  * configuration like the following:
  *
- * ~~~
+ * ```php
  * 'components' => [
  *     'db' => [
  *         'class' => '\yii\db\Connection',
@@ -108,7 +108,7 @@ use yii\caching\Cache;
  *         'charset' => 'utf8',
  *     ],
  * ],
- * ~~~
+ * ```
  *
  * @property string $driverName Name of the DB driver.
  * @property boolean $isActive Whether the DB connection is established. This property is read-only.
@@ -180,6 +180,7 @@ class Connection extends Component
      * This property is mainly managed by [[open()]] and [[close()]] methods.
      * When a DB connection is active, this property will represent a PDO instance;
      * otherwise, it will be null.
+     * @see pdoClass
      */
     public $pdo;
     /**
@@ -280,9 +281,17 @@ class Connection extends Component
         'cubrid' => 'yii\db\cubrid\Schema', // CUBRID
     ];
     /**
-     * @var string Custom PDO wrapper class. If not set, it will use "PDO" or "yii\db\mssql\PDO" when MSSQL is used.
+     * @var string Custom PDO wrapper class. If not set, it will use [[PDO]] or [[yii\db\mssql\PDO]] when MSSQL is used.
+     * @see pdo
      */
     public $pdoClass;
+    /**
+     * @var string the class used to create new database [[Command]] objects. If you want to extend the [[Command]] class,
+     * you may configure this property to use your extended version of the class.
+     * @see createCommand
+     * @since 2.0.7
+     */
+    public $commandClass = 'yii\db\Command';
     /**
      * @var boolean whether to enable [savepoint](http://en.wikipedia.org/wiki/Savepoint).
      * Note that if the underlying DBMS does not support savepoint, setting this property to be true will have no effect.
@@ -618,7 +627,8 @@ class Connection extends Component
      */
     public function createCommand($sql = null, $params = [])
     {
-        $command = new Command([
+        /** @var Command $command */
+        $command = new $this->commandClass([
             'db' => $this,
             'sql' => $sql,
         ]);
@@ -665,14 +675,17 @@ class Connection extends Component
     public function transaction(callable $callback, $isolationLevel = null)
     {
         $transaction = $this->beginTransaction($isolationLevel);
+        $level = $transaction->level;
 
         try {
             $result = call_user_func($callback, $this);
-            if ($transaction->isActive) {
+            if ($transaction->isActive && $transaction->level === $level) {
                 $transaction->commit();
             }
         } catch (\Exception $e) {
-            $transaction->rollBack();
+            if ($transaction->isActive && $transaction->level === $level) {
+                $transaction->rollBack();
+            }
             throw $e;
         }
 
@@ -944,5 +957,15 @@ class Connection extends Component
         }
 
         return null;
+    }
+
+    /**
+     * Close the connection before serializing.
+     * @return array
+     */
+    public function __sleep()
+    {
+        $this->close();
+        return array_keys((array) $this);
     }
 }

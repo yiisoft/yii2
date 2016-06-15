@@ -1,7 +1,5 @@
 /**
- * This is the database schema for testing PostgreSQL support of yii Active Record.
- * To test this feature, you need to create a database named 'yiitest' on 'localhost'
- * and create an account 'postgres/postgres' which owns this test database.
+ * This is the database schema for testing Oracle support of Yii Active Record.
  */
 
 BEGIN EXECUTE IMMEDIATE 'DROP TABLE "composite_fk"'; EXCEPTION WHEN OTHERS THEN IF SQLCODE != -942 THEN RAISE; END IF; END;--
