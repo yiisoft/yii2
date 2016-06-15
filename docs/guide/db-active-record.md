@@ -181,6 +181,8 @@ Both methods can take one of the following parameter formats:
 - an array of scalar values: the array is treated as the desired primary key values to be looked for.
 - an associative array: the keys are column names and the values are the corresponding desired column values to 
   be looked for. Please refer to [Hash Format](db-query-builder.md#hash-format) for more details.
+
+> Note since 2.0.9 version [[yii\db\ActiveRecord::findAll()]] method accept a null value to fetch all records from table.
   
 The following code shows how these methods can be used:
 
@@ -188,6 +190,10 @@ The following code shows how these methods can be used:
 // returns a single customer whose ID is 123
 // SELECT * FROM `customer` WHERE `id` = 123
 $customer = Customer::findOne(123);
+
+// returns all customers 
+// SELECT * FROM `customer`
+$customers = Customer::findAll();
 
 // returns customers whose ID is 100, 101, 123 or 124
 // SELECT * FROM `customer` WHERE `id` IN (100, 101, 123, 124)
