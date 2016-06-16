@@ -57,7 +57,7 @@ class ColumnSchemaBuilder extends AbstractColumnSchemaBuilder
      */
     protected function buildNotNullString()
     {
-        return $this->isNotNull ? ' NOT NULL' : $this->type == Schema::TYPE_TIMESTAMP ? ' NULL' : '';
+        return $this->isNotNull ? ' NOT NULL' : $this->type === Schema::TYPE_TIMESTAMP ? ' NULL' : '';
     }
 
     /**
