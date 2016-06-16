@@ -52,6 +52,15 @@ class ColumnSchemaBuilder extends AbstractColumnSchemaBuilder
     }
 
     /**
+     * Builds the not null constraint for the column.
+     * @return string returns 'NOT NULL' if [[isNotNull]] is true, otherwise it returns an empty string or 'NULL'.
+     */
+    protected function buildNotNullString()
+    {
+        return $this->isNotNull ? ' NOT NULL' : $this->type == Schema::TYPE_TIMESTAMP ? ' NULL' : '';
+    }
+
+    /**
      * @inheritdoc
      */
     public function __toString()
