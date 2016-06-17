@@ -38,6 +38,7 @@ return [
     'Please upload a file.' => '請上傳一個檔案。',
     'Showing <b>{begin, number}-{end, number}</b> of <b>{totalCount, number}</b> {totalCount, plural, one{item} other{items}}.' => '第 <b>{begin, number}-{end, number}</b> 項，共 <b>{totalCount, number}</b> 項資料.',
     'The file "{file}" is not an image.' => '檔案 "{file}" 不是一個圖片檔案。',
+    'The file "{file}" is too big. Its size cannot exceed {formattedLimit}.' => '檔案 "{file}"太大。它的大小不可以超過{formattedLimit}。',
     'The file "{file}" is too big. Its size cannot exceed {limit, number} {limit, plural, one{byte} other{bytes}}.' => '檔案 "{file}" 太大。它的大小不可以超過 {limit, number} 位元組。',
     'The file "{file}" is too small. Its size cannot be smaller than {limit, number} {limit, plural, one{byte} other{bytes}}.' => '檔案 "{file}" 太小。它的大小不可以小於 {limit, number} 位元組。',
     'The format of {attribute} is invalid.' => '屬性 {attribute} 的格式不正確。',
