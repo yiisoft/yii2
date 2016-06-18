@@ -332,6 +332,22 @@ class FileHelperTest extends TestCase
         );
     }
 
+    /**
+     * @see https://github.com/yiisoft/yii2/issues/10710
+     */
+    public function testCopyDirWithSameName()
+    {
+        $this->createFileStructure([
+            'data' => [],
+            'data-backup' => []
+        ]);
+
+        FileHelper::copyDirectory(
+            $this->testFilePath . DIRECTORY_SEPARATOR . 'data',
+            $this->testFilePath . DIRECTORY_SEPARATOR . 'data-backup'
+        );
+    }
+
     public function testRemoveDirectory()
     {
         $dirName = 'test_dir_for_remove';
