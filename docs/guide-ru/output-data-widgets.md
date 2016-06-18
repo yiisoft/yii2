@@ -145,15 +145,15 @@ echo GridView::widget([
     'dataProvider' => $dataProvider,
     'columns' => [
         ['class' => 'yii\grid\SerialColumn'],
-        // Simple columns defined by the data contained in $dataProvider.
-        // Data from the model's column will be used.
+        // Обычные поля определенные данными содержащимися в $dataProvider.
+        // Будут использованы данные из полей модели.
         'id',
         'username',
-        // More complex one.
+        // Более сложный пример.
         [
-            'class' => 'yii\grid\DataColumn', // can be omitted, as it is the default
+            'class' => 'yii\grid\DataColumn', // может быть опущено, поскольку является значением по умолчанию
             'value' => function ($data) {
-                return $data->name; // $data['name'] for array data, e.g. using SqlDataProvider.
+                return $data->name; // $data['name'] для массивов, например, при использовании SqlDataProvider.
             },
         ],
     ],
@@ -360,7 +360,7 @@ class PostSearch extends Post
 {
     public function rules()
     {
-        // only fields in rules() are searchable
+        // только поля определенные в rules() будут доступны для поиска
         return [
             [['id'], 'integer'],
             [['title', 'creation_date'], 'safe'],
@@ -381,12 +381,12 @@ class PostSearch extends Post
             'query' => $query,
         ]);
 
-        // load the search form data and validate
+        // загружаем данные формы поиска и производим валидацию
         if (!($this->load($params) && $this->validate())) {
             return $dataProvider;
         }
 
-        // adjust the query by adding the filters
+        // изменяем запрос добавляя в его фильтрацию
         $query->andFilterWhere(['id' => $this->id]);
         $query->andFilterWhere(['like', 'title', $this->title])
               ->andFilterWhere(['like', 'creation_date', $this->creation_date]);
@@ -519,10 +519,10 @@ $dataProvider = new ActiveDataProvider([
     'query' => $query,
 ]);
 
-// join with relation `author` that is a relation to the table `users`
-// and set the table alias to be `author`
+// присоединяем зависимость `author` которая является связью с таблицей `users`
+// и устанавливаем алиас таблицы в значение `author`
 $query->joinWith(['author' => function($query) { $query->from(['author' => 'users']); }]);
-// enable sorting for the related column
+// добавляем сортировку по колонке из зависимости
 $dataProvider->sort->attributes['author.name'] = [
     'asc' => ['author.name' => SORT_ASC],
     'desc' => ['author.name' => SORT_DESC],
@@ -537,7 +537,7 @@ $dataProvider->sort->attributes['author.name'] = [
 ```php
 public function attributes()
 {
-    // add related fields to searchable attributes
+    // делаем поле зависимости доступным для поиска
     return array_merge(parent::attributes(), ['author.name']);
 }
 
@@ -635,7 +635,7 @@ class UserView extends ActiveRecord
     public function rules()
     {
         return [
-            // define here your rules
+            // здесь определяйте ваши правила
         ];
     }
 
@@ -645,7 +645,7 @@ class UserView extends ActiveRecord
     public static function attributeLabels()
     {
         return [
-            // define here your attribute labels
+            // здесь определяйте ваши метки атрибутов
         ];
     }
 
