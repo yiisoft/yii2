@@ -5,6 +5,7 @@ Yii Framework 2 Change Log
 2.0.9 under development
 -----------------------
 
+- Enh #10422: Added `null` method on `yii\db\ColumnSchemaBuilder` to explicitly set column nullability (nevermnd)
 - Enh #8795: Refactored `yii\web\User::loginByCookie()` in order to make it easier to override (maine-mike, silverfire)
 - Enh #9948: `yii\rbac\PhpManager` now invalidates script file cache performed by 'OPCache' or 'APC' on file saving (klimov-paul)
 - Enh #11195: Added ability to append custom string to schema builder column definition (df2, samdark)
