@@ -190,6 +190,8 @@ class QueryBuilder extends \yii\db\QueryBuilder
         $enable = $check ? 'ENABLE' : 'DISABLE';
         $schema = $schema ? $schema : $this->db->getSchema()->defaultSchema;
         $tableNames = $table ? [$table] : $this->db->getSchema()->getTableNames($schema);
+        $viewNames = $this->db->getSchema()->getViewNames($schema);
+        $tableNames = array_diff($tableNames, $viewNames);
         $command = '';
 
         foreach ($tableNames as $tableName) {
