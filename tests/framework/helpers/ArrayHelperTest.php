@@ -307,6 +307,19 @@ class ArrayHelperTest extends TestCase
         $this->assertEquals($expected, $result);
     }
 
+    /**
+     * @see https://github.com/yiisoft/yii2/pull/11549
+     */
+    public function test()
+    {
+        $array = [];
+        $array[1.0] = 'some value';
+
+        $result = ArrayHelper::getValue($array, 1.0);
+
+        $this->assertEquals('some value', $result);
+    }
+
     public function testIndex()
     {
         $array = [
