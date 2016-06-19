@@ -220,6 +220,7 @@ SQL;
      * Returns all views names in the database.
      * @param string $schema the schema of the views. Defaults to empty string, meaning the current or default schema.
      * @return array all views names in the database. The names have NO schema name prefix.
+     * @since 2.0.9
      */
     protected function findViewNames($schema = '')
     {
