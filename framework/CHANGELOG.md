@@ -33,6 +33,7 @@ Yii Framework 2 Change Log
 - Bug #11774: Fixed incorrect recusuive symlinks check in FileHelper (AnikanovD)
 - Bug #11739: Fixed `ArrayHelper::index()` losing precision for float keys (AnikanovD)
 - Bug #11549: Fixed `ArrayHelper::getValue()` to work properly with float keys (zsounder, AnikanovD)
+- Bug #8644: Fixed trying to ENABLE/DISABLE TRIGGER ALL on a view in PostgreSQL (ricpelo)
 
 2.0.8 April 28, 2016
 --------------------
