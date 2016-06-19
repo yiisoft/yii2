@@ -83,7 +83,7 @@ class QueryBuilder extends \yii\db\QueryBuilder
             . $this->db->quoteColumnName($newName);
     }
 
-     /**
+    /**
      * Builds a SQL statement for create indexes in tables.
      * @see https://bugs.mysql.com/bug.php?id=48875
      * 
