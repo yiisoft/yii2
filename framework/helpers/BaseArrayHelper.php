@@ -363,6 +363,9 @@ class BaseArrayHelper
             } else {
                 $value = static::getValue($element, $key);
                 if ($value !== null) {
+                    if (is_float($value)) {
+                        $value = (string) $value;
+                    }
                     $lastArray[$value] = $element;
                 }
             }
