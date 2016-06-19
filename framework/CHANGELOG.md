@@ -31,6 +31,7 @@ Yii Framework 2 Change Log
 - Bug #11723: Fixed PHP 7 + XDebug error handling displaying "Expected array for frame 0" (tanakahisateru)
 - Bug #11735: Fixed `yii\web\UploadedFile` to return `null` when there's no file uploaded (brummm)
 - Bug #11774: Fixed incorrect recusuive symlinks check in FileHelper (AnikanovD)
+- Bug #11739: Fixed `ArrayHelper::index()` losing precision for float keys (AnikanovD)
 
 2.0.8 April 28, 2016
 --------------------
