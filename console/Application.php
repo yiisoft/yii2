@@ -198,6 +198,33 @@ class Application extends \yii\base\Application
     }
 
     /**
+     * Returns the error handler component.
+     * @return ErrorHandler the error handler application component.
+     */
+    public function getErrorHandler()
+    {
+        return $this->get('errorHandler');
+    }
+
+    /**
+     * Returns the request component.
+     * @return Request the request component.
+     */
+    public function getRequest()
+    {
+        return $this->get('request');
+    }
+
+    /**
+     * Returns the response component.
+     * @return Response the response component.
+     */
+    public function getResponse()
+    {
+        return $this->get('response');
+    }
+
+    /**
      * @inheritdoc
      */
     public function coreComponents()
