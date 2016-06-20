@@ -6,6 +6,11 @@ php:
   - 5.6
   - 7.0
   - hhvm
+  - nightly
+
+matrix:
+  allow_failures:
+    - php: nightly
 
 env:
   - CUBRID_VERSION=9.3.0/CUBRID-9.3.0.0206 CUBRID_PDO_VERSION=9.3.0.0001
