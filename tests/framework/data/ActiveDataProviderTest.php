@@ -22,7 +22,7 @@ use yiiunit\data\ar\Order;
  * @group data
  * @group db
  */
-class ActiveDataProviderTest extends DatabaseTestCase
+abstract class ActiveDataProviderTest extends DatabaseTestCase
 {
     protected function setUp()
     {

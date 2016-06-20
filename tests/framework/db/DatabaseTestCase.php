@@ -1,4 +1,5 @@
 <?php
+
 namespace yiiunit\framework\db;
 
 use yii\db\Connection;
@@ -7,14 +8,22 @@ use yiiunit\TestCase as TestCase;
 abstract class DatabaseTestCase extends TestCase
 {
     protected $database;
-    protected $driverName = 'mysql';
+    /**
+     * @var string the driver name of this test class. Must be set by a subclass.
+     */
+    protected $driverName;
     /**
      * @var Connection
      */
     private $_db;
 
+
     protected function setUp()
     {
+        if ($this->driverName === null) {
+            throw new \Exception('driverName is not set for a DatabaseTestCase.');
+        }
+
         parent::setUp();
         $databases = self::getParam('databases');
         $this->database = $databases[$this->driverName];

@@ -1,14 +1,14 @@
 <?php
 
-namespace yiiunit\framework\db\oci;
+namespace yiiunit\framework\db\pgsql;
 
-use yii\db\oci\ColumnSchemaBuilder;
+use yii\db\ColumnSchemaBuilder;
 use yii\db\Schema;
 
 /**
  * ColumnSchemaBuilderTest tests ColumnSchemaBuilder for Oracle
  * @group db
- * @group oci
+ * @group pgsql
  */
 class ColumnSchemaBuilderTest extends \yiiunit\framework\db\ColumnSchemaBuilderTest
 {
@@ -20,20 +20,5 @@ class ColumnSchemaBuilderTest extends \yiiunit\framework\db\ColumnSchemaBuilderT
     public function getColumnSchemaBuilder($type, $length = null)
     {
         return new ColumnSchemaBuilder($type, $length);
-    }
-
-    /**
-     * @return array
-     */
-    public function typesProvider()
-    {
-        return [
-            ['integer UNSIGNED', Schema::TYPE_INTEGER, null, [
-                ['unsigned'],
-            ]],
-            ['integer(10) UNSIGNED', Schema::TYPE_INTEGER, 10, [
-                ['unsigned'],
-            ]],
-        ];
     }
 }
