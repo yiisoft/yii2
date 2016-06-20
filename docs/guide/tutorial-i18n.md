@@ -9,14 +9,14 @@ translation, view translation, date and number formatting.
 
 ## Locale and Language <span id="locale-language"></span>
 
-Locale is a set of parameters that defines the user's language, country and any special variant preferences 
-that the user wants to see in their user interface. It is usually identified by an ID consisting of a language 
-ID and a region ID. For example, the ID `en-US` stands for the locale of English and United States. 
-For consistency, all locale IDs used in Yii applications should be canonicalized to the format of 
+Locale is a set of parameters that defines the user's language, country and any special variant preferences
+that the user wants to see in their user interface. It is usually identified by an ID consisting of a language
+ID and a region ID. For example, the ID `en-US` stands for the locale of English and United States.
+For consistency, all locale IDs used in Yii applications should be canonicalized to the format of
 `ll-CC`, where `ll` is a two- or three-letter lowercase language code according to
 [ISO-639](http://www.loc.gov/standards/iso639-2/) and `CC` is a two-letter country code according to
 [ISO-3166](http://www.iso.org/iso/en/prods-services/iso3166ma/02iso-3166-code-lists/list-en1.html).
-More details about locale can be found in the 
+More details about locale can be found in the
 [documentation of the ICU project](http://userguide.icu-project.org/locale#TOC-The-Locale-Concept).
 
 In Yii, we often use the term "language" to refer to a locale.
@@ -52,6 +52,9 @@ you can use the following statement to change the target language:
 // change target language to Chinese
 \Yii::$app->language = 'zh-CN';
 ```
+
+> Tip: If your source language varies among different parts of your code, you can
+> override the source language for different message sources, which are described in the next section.
 
 ## Message Translation <span id="message-translation"></span>
 
