@@ -153,7 +153,7 @@ require(__DIR__ . '/../components/Yii.php');
 
 // configuration for Yii 2 application
 $yii2Config = require(__DIR__ . '/../config/yii2/web.php');
-new yii\web\Application($yii2Config); // Do NOT call run()
+new yii\web\Application($yii2Config); // Do NOT call run(), yii2 app is only used as service locator
 
 // configuration for Yii 1 application
 $yii1Config = require(__DIR__ . '/../config/yii1/main.php');
@@ -177,7 +177,7 @@ class Yii extends \yii\BaseYii
 
 Yii::$classMap = include($yii2path . '/classes.php');
 // register Yii 2 autoloader via Yii 1
-Yii::registerAutoloader(['Yii', 'autoload']);
+Yii::registerAutoloader(['yii\BaseYii', 'autoload']);
 // create the dependency injection container
 Yii::$container = new yii\di\Container;
 ```
