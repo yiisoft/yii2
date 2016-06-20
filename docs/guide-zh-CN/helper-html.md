@@ -78,6 +78,56 @@ echo Html::tag('div', 'Pwede na', $options);
 基于同样的目的，针对 `style` 属性：
 
 ```php
+$options = ['class' => ['btn', 'btn-default']];
+
+echo Html::tag('div', 'Save', $options);
+// renders '<div class="btn btn-default">Save</div>'
+```
+
+While adding or removing classes you may use the array format as well:
+
+```php
+$options = ['class' => 'btn'];
+
+if ($type === 'success') {
+    Html::addCssClass($options, ['btn-success', 'btn-lg']);
+}
+
+echo Html::tag('div', 'Save', $options);
+// renders '<div class="btn btn-success btn-lg">Save</div>'
+```
+
+`Html::addCssClass()` prevents duplicating classes, so you don't need to worry that the same class may appear twice:
+
+```php
+$options = ['class' => 'btn btn-default'];
+
+Html::addCssClass($options, 'btn-default'); // class 'btn-default' is already present
+
+echo Html::tag('div', 'Save', $options);
+// renders '<div class="btn btn-default">Save</div>'
+```
+
+If the CSS class option is specified via the array format, you may use a named key to mark the logical purpose of the class.
+In this case, a class with the same key in the array format will be ignored in `Html::addCssClass()`:
+
+```php
+$options = [
+    'class' => [
+        'btn',
+        'theme' => 'btn-default',
+    ]
+];
+
+Html::addCssClass($options, ['theme' => 'btn-success']); // 'theme' key is already taken
+
+echo Html::tag('div', 'Save', $options);
+// renders '<div class="btn btn-default">Save</div>'
+```
+
+CSS styles can be setup in similar way using `style` attribute:
+
+```php
 $options = ['style' => ['width' => '100px', 'height' => '100px']];
 
 // gives style="width: 100px; height: 200px; position: absolute;"
@@ -149,15 +199,15 @@ Yii 也提供了一系列的方法来辅助处理表单标签。
 <?= Html::resetButton('Reset', ['class' => 'reset']) ?>
 ```
 
-上述三个方法的第一个参数为按钮的标题，第二个是标签属性。标题默认没有进行转码，如果标题是由终端用输入的，那么请自行用 [[yii\helpers\Html::encode()|Html::encode()]] 方法进行转码。
-
+上述三个方法的第一个参数为按钮的标题，第二个是标签属性。标题默认没有进行转码，如果标题是由终端用输入的，
+那么请自行用 [[yii\helpers\Html::encode()|Html::encode()]] 方法进行转码。
 
 
 ### 输入栏 <span id="input-fields"></span>
 
-input 相关的方法有两组：以 `active` 开头的被称为 active inputs，另一组则不以其开头。
-active inputs 依据指定的模型和属性获取数据，而普通 input 则是直接指定数据。
-
+input 相关的方法有两组：以 `active` 开头的被称为 active inputs，
+另一组则不以其开头。active inputs 依据指定的模型和属性获取数据，
+而普通 input 则是直接指定数据。
 
 一般用法如下：
 

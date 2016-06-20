@@ -77,6 +77,8 @@ use yii\widgets\ActiveForm;
 需要注意的是要记得在表单选项里加入 `enctype` 属性以确保文件能被正常上传。
 `fileInput()` 方法会渲染一个 `<input type="file">` 标签，让用户可以选择一个文件上传。
 
+> Tip: since version 2.0.8, [[yii\web\widgets\ActiveField::fileInput|fileInput]] adds `enctype` option to the form
+  automatically when file input field is used.
 
 ## 视图和模型的连接 <span id="wiring-up"></span>
 
@@ -119,8 +121,10 @@ class SiteController extends Controller
 将前面所述的代码做一些调整，也可以一次性上传多个文件。
 
 首先你得调整模型类，在 `file` 验证规则里增加一个 `maxFiles` 选项，用以限制一次上传文件的最大数量。
-`upload()`方法也得修改,
-以便一个一个地保存上传的文件。
+`upload()`方法也得修改,以便一个一个地保存上传的文件。Setting `maxFiles` to `0` means there is no limit on the number of files
+that can be uploaded simultaneously. The maximum number of files allowed to be uploaded simultaneously is also limited
+with PHP directive [`max_file_uploads`](http://php.net/manual/en/ini.core.php#ini.max-file-uploads),
+which defaults to 20. The `upload()` method should also be updated to save the uploaded files one by one.
 
 ```php
 namespace app\models;

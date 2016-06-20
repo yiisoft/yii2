@@ -113,32 +113,96 @@ $result = ArrayHelper::getColumn($array, function ($element) {
 键名（译者注：第二个参数）可以是子数组的键名、对象的属性名，
 也可以是一个返回给定元素数组键值的匿名函数。
 
-如果一个键值（译者注：第二个参数对应的值）是 null，相应的数组元素将被丢弃并且不会放入到结果中，例如，
+The `$groups` attribute is an array of keys, that will be used to group the input array into one or more sub-arrays
+based on keys specified.
+
+If the `$key` attribute or its value for the particular element is null and `$groups` is not defined, the array
+element will be discarded. Otherwise, if `$groups` is specified, array element will be added to the result array
+without any key.
+
+For example:
 
 ```php
 $array = [
-    ['id' => '123', 'data' => 'abc'],
-    ['id' => '345', 'data' => 'def'],
+    ['id' => '123', 'data' => 'abc', 'device' => 'laptop'],
+    ['id' => '345', 'data' => 'def', 'device' => 'tablet'],
+    ['id' => '345', 'data' => 'hgi', 'device' => 'smartphone'],
 ];
 $result = ArrayHelper::index($array, 'id');
-// the result is:
-// [
-//     '123' => ['id' => '123', 'data' => 'abc'],
-//     '345' => ['id' => '345', 'data' => 'def'],
-// ]
+```
 
-// using anonymous function
+The result will be an associative array, where the key is the value of `id` attribute
+
+```php
+[
+    '123' => ['id' => '123', 'data' => 'abc', 'device' => 'laptop'],
+    '345' => ['id' => '345', 'data' => 'hgi', 'device' => 'smartphone']
+    // The second element of an original array is overwritten by the last element because of the same id
+]
+```
+
+Anonymous function, passed as a `$key`, gives the same result.
+
+```php
 $result = ArrayHelper::index($array, function ($element) {
     return $element['id'];
 });
 ```
 
+Passing `id` as a third argument will group `$array` by `id`:
+
+```php
+$result = ArrayHelper::index($array, null, 'id');
+```
+
+The result will be a multidimensional array grouped by `id` on the first level and not indexed on the second level:
+
+```php
+[
+    '123' => [
+        ['id' => '123', 'data' => 'abc', 'device' => 'laptop']
+    ],
+    '345' => [ // all elements with this index are present in the result array
+        ['id' => '345', 'data' => 'def', 'device' => 'tablet'],
+        ['id' => '345', 'data' => 'hgi', 'device' => 'smartphone'],
+    ]
+]
+```
+
+An anonymous function can be used in the grouping array as well:
+
+```php
+$result = ArrayHelper::index($array, 'data', [function ($element) {
+    return $element['id'];
+}, 'device']);
+```
+
+The result will be a multidimensional array grouped by `id` on the first level, by `device` on the second level and
+indexed by `data` on the third level:
+
+```php
+[
+    '123' => [
+        'laptop' => [
+            'abc' => ['id' => '123', 'data' => 'abc', 'device' => 'laptop']
+        ]
+    ],
+    '345' => [
+        'tablet' => [
+            'def' => ['id' => '345', 'data' => 'def', 'device' => 'tablet']
+        ],
+        'smartphone' => [
+            'hgi' => ['id' => '345', 'data' => 'hgi', 'device' => 'smartphone']
+        ]
+    ]
+]
+```
 
 ## 建立哈希表 <span id="building-maps"></span>
 
 为了从一个多维数组或者一个对象数组中建立一个映射表(键值对)，你可以使用
 `map`方法.`$from` 和 `$to` 参数分别指定了欲构建的映射表的键名和属性名。
-根据需要，你可以按照一个分组字段 `$group` 将映射表进行分组，例如。
+根据需要，你可以按照一个分组字段 `$group` 将映射表进行分组，例如，
 
 ```php
 $array = [
@@ -201,9 +265,9 @@ ArrayHelper::multisort($data, function($item) {
 });
 ```
 
-第三个参数表示增降顺序。单键排序时，它可以是 `SORT_ASC` 或者 `SORT_DESC` 之一。
-如果是按多个键名排序，你可以用一个数组为各个键指定不同的顺序。
-
+第三个参数表示增降顺序。单键排序时，它可以是 `SORT_ASC` 或者 
+`SORT_DESC` 之一。如果是按多个键名排序，你可以用一个数组为
+各个键指定不同的顺序。
 
 最后一个参数（译者注：第四个参数）是PHP的排序标识（sort flag），可使用的值和调用PHP
 [sort()](http://php.net/manual/zh/function.sort.php) 函数时传递的值一样。
@@ -301,3 +365,22 @@ $data = ArrayHelper::toArray($posts, [
 
 也可以在一个特定的类中实现[[yii\base\Arrayable|Arrayable]]接口，
 从而为其对象提供默认的转换成数组的方法。
+
+## Testing against Arrays <span id="testing-arrays"></span>
+
+Often you need to check if an element is in an array or a set of elements is a subset of another.
+While PHP offers `in_array()`, this does not support subsets or `\Traversable` objects.
+
+To aid these kinds of tests, [[yii\base\ArrayHelper]] provides [[yii\base\ArrayHelper::isIn()|isIn()]]
+and [[yii\base\ArrayHelper::isSubset()|isSubset()]] with the same signature as [[in_array()]].
+
+```php
+// true
+ArrayHelper::isIn('a', ['a']);
+// true
+ArrayHelper::isIn('a', new(ArrayObject['a']));
+
+// true 
+ArrayHelper::isSubset(new(ArrayObject['a', 'c']), new(ArrayObject['a', 'b', 'c'])
+
+```
