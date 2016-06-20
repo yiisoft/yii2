@@ -635,6 +635,16 @@ class Query extends Component implements QueryInterface
      *
      * @param string|array $on the join condition that should appear in the ON part.
      * Please refer to [[where()]] on how to specify this parameter.
+     *
+     * Note that the array format of [[where()]] is designed to match columns to values instead of columns to columns, so
+     * the following would **not** work as expected: `['post.author_id' => 'user.id']`, it would
+     * match the `post.author_id` column value against the string `'user.id'`.
+     * It is recommended to use the string syntax here which is more suited for a join:
+     *
+     * ```php
+     * 'post.author_id = user.id'
+     * ```
+     *
      * @param array $params the parameters (name => value) to be bound to the query.
      * @return $this the query object itself
      */
@@ -658,7 +668,7 @@ class Query extends Component implements QueryInterface
      * represents the alias for the sub-query.
      *
      * @param string|array $on the join condition that should appear in the ON part.
-     * Please refer to [[where()]] on how to specify this parameter.
+     * Please refer to [[join()]] on how to specify this parameter.
      * @param array $params the parameters (name => value) to be bound to the query.
      * @return $this the query object itself
      */
@@ -682,7 +692,7 @@ class Query extends Component implements QueryInterface
      * represents the alias for the sub-query.
      *
      * @param string|array $on the join condition that should appear in the ON part.
-     * Please refer to [[where()]] on how to specify this parameter.
+     * Please refer to [[join()]] on how to specify this parameter.
      * @param array $params the parameters (name => value) to be bound to the query
      * @return $this the query object itself
      */
@@ -706,7 +716,7 @@ class Query extends Component implements QueryInterface
      * represents the alias for the sub-query.
      *
      * @param string|array $on the join condition that should appear in the ON part.
-     * Please refer to [[where()]] on how to specify this parameter.
+     * Please refer to [[join()]] on how to specify this parameter.
      * @param array $params the parameters (name => value) to be bound to the query
      * @return $this the query object itself
      */
