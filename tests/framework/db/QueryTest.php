@@ -5,11 +5,7 @@ namespace yiiunit\framework\db;
 use yii\db\Expression;
 use yii\db\Query;
 
-/**
- * @group db
- * @group mysql
- */
-class QueryTest extends DatabaseTestCase
+abstract class QueryTest extends DatabaseTestCase
 {
     public function testSelect()
     {
