@@ -124,13 +124,14 @@ class LinkPager extends Widget
     /**
      * Executes the widget.
      * This overrides the parent implementation by displaying the generated page buttons.
+     * @return string the result of widget execution to be outputted.
      */
     public function run()
     {
         if ($this->registerLinkTags) {
             $this->registerLinkTags();
         }
-        echo $this->renderPageButtons();
+        return $this->renderPageButtons();
     }
 
     /**

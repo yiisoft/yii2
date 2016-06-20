@@ -57,13 +57,15 @@ class Block extends Widget
     /**
      * Ends recording a block.
      * This method stops output buffering and saves the rendering result as a named block in the view.
+     * @return string the result of widget execution to be outputted.
      */
     public function run()
     {
         $block = ob_get_clean();
         if ($this->renderInPlace) {
-            echo $block;
+            return $block;
         }
         $this->view->blocks[$this->getId()] = $block;
+        return '';
     }
 }

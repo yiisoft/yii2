@@ -162,6 +162,7 @@ class Menu extends Widget
 
     /**
      * Renders the menu.
+     * @return string the result of widget execution to be outputted.
      */
     public function run()
     {
@@ -172,12 +173,14 @@ class Menu extends Widget
             $this->params = Yii::$app->request->getQueryParams();
         }
         $items = $this->normalizeItems($this->items, $hasActiveChild);
-        if (!empty($items)) {
-            $options = $this->options;
-            $tag = ArrayHelper::remove($options, 'tag', 'ul');
-
-            echo Html::tag($tag, $this->renderItems($items), $options);
+        if (empty($items)) {
+            return '';
         }
+
+        $options = $this->options;
+        $tag = ArrayHelper::remove($options, 'tag', 'ul');
+
+        return Html::tag($tag, $this->renderItems($items), $options);
     }
 
     /**
