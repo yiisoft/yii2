@@ -48,8 +48,9 @@ abstract class ActiveFixtureTest extends DatabaseTestCase
     public function setUp()
     {
         parent::setUp();
-        \Yii::$app->set('db', $this->getConnection());
-        ActiveRecord::$db = $this->getConnection();
+        $db = $this->getConnection();
+        \Yii::$app->set('db', $db);
+        ActiveRecord::$db = $db;
     }
 
     public function tearDown()
