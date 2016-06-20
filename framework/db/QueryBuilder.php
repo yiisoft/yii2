@@ -1178,6 +1178,8 @@ class QueryBuilder extends \yii\base\Object
             return $this->buildCompositeInCondition($operator, $column, $values, $params);
         }
 
+        $values = (array) $values;
+
         if (is_array($column)) {
             $column = reset($column);
         }
