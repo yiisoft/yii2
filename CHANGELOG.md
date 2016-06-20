@@ -34,6 +34,7 @@ Yii Framework 2 Change Log
 - Bug #11739: Fixed `ArrayHelper::index()` losing precision for float keys (AnikanovD)
 - Bug #11549: Fixed `ArrayHelper::getValue()` to work properly with float keys (zsounder, AnikanovD)
 - Bug #8644: Fixed trying to ENABLE/DISABLE TRIGGER ALL on a view in PostgreSQL (ricpelo)
+- Bug #11536: Fixed regression introduced in 2.0.8, where scalar value was not allowed in QueryBuilder `IN` condition anymore (cebe)
 
 2.0.8 April 28, 2016
 --------------------
