@@ -93,6 +93,29 @@ is as specified by the `operator` property.
      * `<=`: check if value being validated is less than or equal to the value being compared with.
 
 
+### Comparing date values
+
+The compare validator can only be used to compare strings and numbers. If you need to compare values
+like dates you have two options. For comparing a date against a fixed value, you can simply use the
+[[yii\validators\DateValidator|date]] validator and specify its
+[[yii\validators\DateValidator::$min|$min]] or [[yii\validators\DateValidator::$max|$max]] property.
+If you need to compare two dates entered in the form, e.g. a `fromDate` and a `toDate` field,
+you can use a combination of compare and date validator like the following:
+
+```php
+['fromDate', 'date', 'timestampAttribute' => 'fromDate'],
+['toDate', 'date', 'timestampAttribute' => 'toDate'],
+['fromDate', 'compare', 'compareAttribute' => 'toDate', 'operator' => '<', 'enableClientValidation' => false],
+```
+
+As validators are executed in the order they are specified this will first validate that the values entered in
+`fromDate` and `toDate` are valid date values and if so, they will be converted into a machine readable format.
+Afterwards these two values are compared with the compare validator.
+Client validation is not enabled as this will only work on the server side because the date validator currently does not
+provide client validation, so [[yii\validators\CompareValidator::$enableClientValidation|$enableClientValidation]]
+is set to `false` on the compare validator too.
+
+
 ## [[yii\validators\DateValidator|date]] <span id="date"></span>
 
 ```php
