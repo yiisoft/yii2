@@ -1,22 +1,13 @@
 <?php
-/**
- * @link http://www.yiiframework.com/
- * @copyright Copyright (c) 2008 Yii Software LLC
- * @license http://www.yiiframework.com/license/
- */
 
 namespace yiiunit\framework\db;
-
 
 use yii\db\ColumnSchemaBuilder;
 use yii\db\Expression;
 use yii\db\Schema;
 use yiiunit\TestCase;
 
-/**
- * ColumnSchemaBuilderTest tests ColumnSchemaBuilder
- */
-class ColumnSchemaBuilderTest extends TestCase
+abstract class ColumnSchemaBuilderTest extends TestCase
 {
     /**
      * @param string $type
