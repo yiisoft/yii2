@@ -5,6 +5,7 @@ Yii Framework 2 Change Log
 2.0.9 under development
 -----------------------
 
+- Enh #10422: Added `null` method on `yii\db\ColumnSchemaBuilder` to explicitly set column nullability (nevermnd)
 - Enh #8795: Refactored `yii\web\User::loginByCookie()` in order to make it easier to override (maine-mike, silverfire)
 - Enh #9948: `yii\rbac\PhpManager` now invalidates script file cache performed by 'OPCache' or 'APC' on file saving (klimov-paul)
 - Enh #11195: Added ability to append custom string to schema builder column definition (df2, samdark)
@@ -29,6 +30,10 @@ Yii Framework 2 Change Log
 - Enh #11679: Extracted `CheckAccessInterface` from `ManagerInterface` (SamMousa, samdark, mdomba)
 - Bug #11723: Fixed PHP 7 + XDebug error handling displaying "Expected array for frame 0" (tanakahisateru)
 - Bug #11735: Fixed `yii\web\UploadedFile` to return `null` when there's no file uploaded (brummm)
+- Bug #11774: Fixed incorrect recusuive symlinks check in FileHelper (AnikanovD)
+- Bug #11739: Fixed `ArrayHelper::index()` losing precision for float keys (AnikanovD)
+- Bug #11549: Fixed `ArrayHelper::getValue()` to work properly with float keys (zsounder, AnikanovD)
+- Bug #8644: Fixed trying to ENABLE/DISABLE TRIGGER ALL on a view in PostgreSQL (ricpelo)
 
 2.0.8 April 28, 2016
 --------------------
