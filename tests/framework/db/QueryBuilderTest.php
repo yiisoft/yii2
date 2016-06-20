@@ -1024,6 +1024,7 @@ abstract class QueryBuilderTest extends DatabaseTestCase
             [ ['in', 'id', (new Query())->select('id')->from('users')->where(['active' => 1])], '[[id]] IN (SELECT [[id]] FROM [[users]] WHERE [[active]]=:qp0)', [':qp0' => 1] ],
             [ ['not in', 'id', (new Query())->select('id')->from('users')->where(['active' => 1])], '[[id]] NOT IN (SELECT [[id]] FROM [[users]] WHERE [[active]]=:qp0)', [':qp0' => 1] ],
 
+            [ ['in', 'id', 1],   '[[id]]=:qp0', [':qp0' => 1] ],
             [ ['in', 'id', [1]], '[[id]]=:qp0', [':qp0' => 1] ],
             [ ['in', 'id', new TraversableObject([1])], '[[id]]=:qp0', [':qp0' => 1] ],
             'composite in' => [
