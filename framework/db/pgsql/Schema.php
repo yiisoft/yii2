@@ -107,6 +107,10 @@ class Schema extends \yii\db\Schema
         'jsonb' => self::TYPE_STRING,
         'xml' => self::TYPE_STRING,
     ];
+    /**
+     * @var array list of ALL view names in the database
+     */
+    private $_viewNames = [];
 
 
     /**
@@ -210,6 +214,52 @@ SQL;
         }
 
         return $names;
+    }
+
+    /**
+     * Returns all views names in the database.
+     * @param string $schema the schema of the views. Defaults to empty string, meaning the current or default schema.
+     * @return array all views names in the database. The names have NO schema name prefix.
+     * @since 2.0.9
+     */
+    protected function findViewNames($schema = '')
+    {
+        if ($schema === '') {
+            $schema = $this->defaultSchema;
+        }
+        $sql = <<<SQL
+SELECT c.relname AS table_name
+FROM pg_class c
+INNER JOIN pg_namespace ns ON ns.oid = c.relnamespace
+WHERE ns.nspname = :schemaName AND c.relkind = 'v'
+ORDER BY c.relname
+SQL;
+        $command = $this->db->createCommand($sql, [':schemaName' => $schema]);
+        $rows = $command->queryAll();
+        $names = [];
+        foreach ($rows as $row) {
+            $names[] = $row['table_name'];
+        }
+
+        return $names;
+    }
+
+    /**
+     * Returns all view names in the database.
+     * @param string $schema the schema of the views. Defaults to empty string, meaning the current or default schema name.
+     * If not empty, the returned view names will be prefixed with the schema name.
+     * @param boolean $refresh whether to fetch the latest available view names. If this is false,
+     * view names fetched previously (if available) will be returned.
+     * @return string[] all view names in the database.
+     * @since 2.0.9
+     */
+    public function getViewNames($schema = '', $refresh = false)
+    {
+        if (!isset($this->_viewNames[$schema]) || $refresh) {
+            $this->_viewNames[$schema] = $this->findViewNames($schema);
+        }
+
+        return $this->_viewNames[$schema];
     }
 
     /**

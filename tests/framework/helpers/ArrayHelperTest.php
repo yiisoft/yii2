@@ -307,6 +307,19 @@ class ArrayHelperTest extends TestCase
         $this->assertEquals($expected, $result);
     }
 
+    /**
+     * @see https://github.com/yiisoft/yii2/pull/11549
+     */
+    public function test()
+    {
+        $array = [];
+        $array[1.0] = 'some value';
+
+        $result = ArrayHelper::getValue($array, 1.0);
+
+        $this->assertEquals('some value', $result);
+    }
+
     public function testIndex()
     {
         $array = [
@@ -421,6 +434,30 @@ class ArrayHelperTest extends TestCase
         $result = ArrayHelper::index($array, function ($element) {
             return $element['data'];
         }, ['id', 'data']);
+        $this->assertEquals($expected, $result);
+    }
+
+    /**
+     * @see https://github.com/yiisoft/yii2/issues/11739
+     */
+    public function testIndexFloat()
+    {
+        $array = [
+            ['id' => 1e6],
+            ['id' => 1e32],
+            ['id' => 1e64],
+            ['id' => 1465540807.522109],
+        ];
+
+        $expected = [
+            '1000000' => ['id' => 1e6],
+            '1.0E+32' => ['id' => 1e32],
+            '1.0E+64' => ['id' => 1e64],
+            '1465540807.5221' => ['id' => 1465540807.522109],
+        ];
+
+        $result = ArrayHelper::index($array, 'id');
+
         $this->assertEquals($expected, $result);
     }
 

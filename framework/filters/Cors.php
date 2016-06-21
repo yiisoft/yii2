@@ -14,8 +14,9 @@ use yii\web\Response;
 
 /**
  * Cors filter implements [Cross Origin Resource Sharing](http://en.wikipedia.org/wiki/Cross-origin_resource_sharing).
+ *
  * Make sure to read carefully what CORS does and does not. CORS do not secure your API,
- * but allow the developer to grant access to third party code (ajax calls from external domain)
+ * but allow the developer to grant access to third party code (ajax calls from external domain).
  *
  * You may use CORS filter by attaching it as a behavior to a controller or module, like the following,
  *
@@ -57,6 +58,9 @@ use yii\web\Response;
  *     ];
  * }
  * ```
+ *
+ * For more information on how to add the CORS filter to a controller, see
+ * the [Guide on REST controllers](guide:rest-controllers#cors).
  *
  * @author Philippe Gaultier <pgaultier@gmail.com>
  * @since 2.0

@@ -232,12 +232,10 @@ Yii встановлює відповідність між ідентифіка�
 ```php
 [
     'controllerMap' => [
-        [
-            'account' => 'app\controllers\UserController',
-            'article' => [
-                'class' => 'app\controllers\PostController',
-                'enableCsrfValidation' => false,
-            ],
+        'account' => 'app\controllers\UserController',
+        'article' => [
+            'class' => 'app\controllers\PostController',
+            'enableCsrfValidation' => false,
         ],
     ],
 ]
