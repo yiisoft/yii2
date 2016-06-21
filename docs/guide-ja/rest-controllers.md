@@ -72,6 +72,40 @@ public function behaviors()
 ```
 
 
+### CORS <span id="cors"></span>
+
+コントローラに [CORS (クロスオリジンリソース共有)](structure-filters.md#cors) フィルタを追加するのは、上記の他のフィルタを追加するのより、若干複雑になります。
+と言うのは、CORS フィルタは認証メソッドより前に適用されなければならないため、他のフィルタとは少し異なるアプローチが必要だからです。
+また、ブラウザが認証クレデンシャルを送信する必要なく、リクエストが出来るかどうかを前もって安全に判断できるように、
+[CORS プリフライトリクエスト](https://developer.mozilla.org/en-US/docs/Web/HTTP/Access_control_CORS#Preflighted_requests) の認証を無効にする必要もあります。
+下記のコードは、[[yii\rest\ActiveController]] を拡張した既存のコントローラに [yii\filters\Cors]] フィルタを追加するのに必要なコードを示しています。
+
+```php
+use yii\filters\auth\HttpBasicAuth;
+
+public function behaviors()
+{
+    $behaviors = parent::behaviors();
+
+    // 認証フィルタを削除する
+    $auth = $behaviors['authenticator'];
+    unset($behaviors['authenticator']);
+    
+    // CORS フィルタを追加する
+    $behaviors['corsFilter'] = [
+        'class' => \yii\filters\Cors::className(),
+    ];
+    
+    // 認証フィルタを再度追加する
+    $behaviors['authenticator'] = $auth;
+    // CORS プリフライトリクエスト (HTTP OPTIONS メソッド) の認証を回避する
+    $behaviors['authenticator']['except'] = ['options'];
+
+    return $behaviors;
+}
+```
+
+
 ## `ActiveController` を拡張する <span id="extending-active-controller"></span>
 
 コントローラを [[yii\rest\ActiveController]] から拡張する場合は、このコントローラを通じて提供しようとしているリソースクラスの名前を [[yii\rest\ActiveController::modelClass|modelClass]] プロパティにセットしなければなりません。
