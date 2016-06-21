@@ -8,11 +8,7 @@ use yii\db\DataReader;
 use yii\db\Expression;
 use yii\db\Schema;
 
-/**
- * @group db
- * @group mysql
- */
-class CommandTest extends DatabaseTestCase
+abstract class CommandTest extends DatabaseTestCase
 {
     public function testConstruct()
     {

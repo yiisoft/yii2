@@ -14,13 +14,8 @@ use yiiunit\data\validators\models\ValidatorTestMainModel;
 use yiiunit\data\validators\models\ValidatorTestRefModel;
 use yiiunit\framework\db\DatabaseTestCase;
 
-/**
- * @group validators
- */
-class UniqueValidatorTest extends DatabaseTestCase
+abstract class UniqueValidatorTest extends DatabaseTestCase
 {
-    protected $driverName = 'mysql';
-
     public function setUp()
     {
         parent::setUp();

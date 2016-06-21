@@ -1157,18 +1157,21 @@ class QueryBuilder extends \yii\base\Object
         list($column, $values) = $operands;
 
         if ($column === []) {
+            // no columns to test against
             return $operator === 'IN' ? '0=1' : '';
         }
 
         if ($values instanceof Query) {
             return $this->buildSubqueryInCondition($operator, $column, $values, $params);
         }
+        if (!is_array($values) && !$values instanceof \Traversable) {
+            // ensure values is an array
+            $values = (array) $values;
+        }
 
         if ($column instanceof \Traversable || count($column) > 1) {
             return $this->buildCompositeInCondition($operator, $column, $values, $params);
-        }
-
-        if (is_array($column)) {
+        } elseif (is_array($column)) {
             $column = reset($column);
         }
 

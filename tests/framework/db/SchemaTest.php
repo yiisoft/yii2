@@ -4,14 +4,11 @@ namespace yiiunit\framework\db;
 
 use PDO;
 use yii\caching\FileCache;
+use yii\db\ColumnSchema;
 use yii\db\Expression;
 use yii\db\Schema;
 
-/**
- * @group db
- * @group mysql
- */
-class SchemaTest extends DatabaseTestCase
+abstract class SchemaTest extends DatabaseTestCase
 {
     public function pdoAttributesProvider()
     {
@@ -373,4 +370,11 @@ class SchemaTest extends DatabaseTestCase
             }
         }
     }
+
+    public function testColumnSchemaDbTypecastWithEmptyCharType()
+    {
+        $columnSchema = new ColumnSchema(['type' => Schema::TYPE_CHAR]);
+        $this->assertSame('', $columnSchema->dbTypecast(''));
+    }
+
 }

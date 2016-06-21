@@ -1,4 +1,5 @@
 <?php
+
 namespace yiiunit\framework\db;
 
 use yii\db\ActiveQuery;
@@ -16,16 +17,12 @@ use yiiunit\data\ar\OrderWithNullFK;
 use yiiunit\data\ar\Profile;
 use yiiunit\data\ar\Type;
 use yiiunit\framework\ar\ActiveRecordTestTrait;
-use yiiunit\framework\db\cubrid\CubridActiveRecordTest;
+use yiiunit\framework\db\cubrid\ActiveRecordTest as CubridActiveRecordTest;
 use yiiunit\data\ar\Animal;
 use yiiunit\data\ar\Cat;
 use yiiunit\data\ar\Dog;
 
-/**
- * @group db
- * @group mysql
- */
-class ActiveRecordTest extends DatabaseTestCase
+abstract class ActiveRecordTest extends DatabaseTestCase
 {
     use ActiveRecordTestTrait;
 

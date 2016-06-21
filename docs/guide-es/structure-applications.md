@@ -215,12 +215,10 @@ para controladores específicos. En el siguiente ejemplo, `account` será mapead
 ```php
 [
     'controllerMap' => [
-        [
-            'account' => 'app\controllers\UserController',
-            'article' => [
-                'class' => 'app\controllers\PostController',
-                'enableCsrfValidation' => false,
-            ],
+        'account' => 'app\controllers\UserController',
+        'article' => [
+            'class' => 'app\controllers\PostController',
+            'enableCsrfValidation' => false,
         ],
     ],
 ]

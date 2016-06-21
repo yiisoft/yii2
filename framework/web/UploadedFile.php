@@ -224,7 +224,7 @@ class UploadedFile extends Object
             foreach ($names as $i => $name) {
                 self::loadFilesRecursive($key . '[' . $i . ']', $name, $tempNames[$i], $types[$i], $sizes[$i], $errors[$i]);
             }
-        } elseif ($errors !== UPLOAD_ERR_NO_FILE) {
+        } elseif ((int)$errors !== UPLOAD_ERR_NO_FILE) {
             self::$_files[$key] = new static([
                 'name' => $names,
                 'tempName' => $tempNames,
