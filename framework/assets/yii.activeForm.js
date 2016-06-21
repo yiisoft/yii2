@@ -434,8 +434,8 @@
                     var $container = $form.find(this.container);
                     $container.removeClass(
                         data.settings.validatingCssClass + ' ' +
-                        data.settings.errorCssClass + ' ' +
-                        data.settings.successCssClass
+                            data.settings.errorCssClass + ' ' +
+                            data.settings.successCssClass
                     );
                     $container.find(this.error).html('');
                 });
@@ -658,11 +658,11 @@
                     $error.html(messages[attribute.id][0]);
                 }
                 $container.removeClass(data.settings.validatingCssClass + ' ' + data.settings.successCssClass)
-                          .addClass(data.settings.errorCssClass);
+                    .addClass(data.settings.errorCssClass);
             } else {
                 $error.empty();
                 $container.removeClass(data.settings.validatingCssClass + ' ' + data.settings.errorCssClass + ' ')
-                          .addClass(data.settings.successCssClass);
+                    .addClass(data.settings.successCssClass);
             }
             attribute.value = getValue($form, attribute);
         }
