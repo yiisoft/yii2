@@ -35,17 +35,14 @@ class BreadcrumbsTest extends \yiiunit\TestCase
             . "<li class=\"active\">http://my.example.com/yii2/link/page</li>\n"
             . "</ul>";
 
-        ob_start();
-        $this->breadcrumbs->run();
-        $actualHtml = ob_get_contents();
-        ob_end_clean();
+        $actualHtml = $this->breadcrumbs->run();
 
         $this->assertEquals($expectedHtml, $actualHtml);
     }
 
     public function testEmptyLinks()
     {
-        $this->assertNull($this->breadcrumbs->run());
+        $this->assertEmpty($this->breadcrumbs->run());
     }
 
     public function testHomeLinkFalse()
@@ -57,10 +54,7 @@ class BreadcrumbsTest extends \yiiunit\TestCase
             . "<li class=\"active\">http://my.example.com/yii2/link/page</li>\n"
             . "</ul>";
 
-        ob_start();
-        $this->breadcrumbs->run();
-        $actualHtml = ob_get_contents();
-        ob_end_clean();
+        $actualHtml = $this->breadcrumbs->run();
 
         $this->assertEquals($expectedHtml, $actualHtml);
     }
@@ -76,10 +70,7 @@ class BreadcrumbsTest extends \yiiunit\TestCase
             . "<li class=\"active\">http://my.example.com/yii2/link/page</li>\n"
             . "</ul>";
 
-        ob_start();
-        $this->breadcrumbs->run();
-        $actualHtml = ob_get_contents();
-        ob_end_clean();
+        $actualHtml = $this->breadcrumbs->run();
 
         $this->assertEquals($expectedHtml, $actualHtml);
     }
@@ -174,10 +165,7 @@ class BreadcrumbsTest extends \yiiunit\TestCase
             . "My Home Page\n"
             . "http://my.example.com/yii2/link/page\n";
 
-        ob_start();
-        $this->breadcrumbs->run();
-        $actualHtml = ob_get_contents();
-        ob_end_clean();
+        $actualHtml = $this->breadcrumbs->run();
 
         $this->assertEquals($expectedHtml, $actualHtml);
     }
