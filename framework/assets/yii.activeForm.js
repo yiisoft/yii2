@@ -124,7 +124,9 @@
         // the URL for performing AJAX-based validation. If not set, it will use the the form's action
         validationUrl: undefined,
         // whether to scroll to first visible error after validation.
-        scrollToError: true
+        scrollToError: true,
+        // the route param set on urlManager component
+        routeParam: null
     };
 
     // NOTE: If you change any of these defaults, make sure you update yii\widgets\ActiveField::getClientOptions() as well
@@ -337,14 +339,23 @@
                 }
                 if ($.isEmptyObject(messages) && needAjaxValidation) {
                     var $button = data.submitObject,
-                        extData = '&' + data.settings.ajaxParam + '=' + $form.attr('id');
+                        extData = '&' + data.settings.ajaxParam + '=' + $form.attr('id'),
+                        formData = null,
+                        requestMethod = $form.attr('method');
                     if ($button && $button.length && $button.attr('name')) {
                         extData += '&' + $button.attr('name') + '=' + $button.attr('value');
                     }
+                    if (data.settings.routeParam === null || !requestMethod.match(/(get)/i)) {
+                        formData = $form.serialize();
+                    } else {
+                        formData = $.param($.grep($form.serializeArray(), function (object) {
+                            return object.name !== data.settings.routeParam;
+                        }));
+                    }
                     $.ajax({
                         url: data.settings.validationUrl,
-                        type: $form.attr('method'),
-                        data: $form.serialize() + extData,
+                        type: requestMethod,
+                        data: formData + extData,
                         dataType: data.settings.ajaxDataType,
                         complete: function (jqXHR, textStatus) {
                             $form.trigger(events.ajaxComplete, [jqXHR, textStatus]);
@@ -423,8 +434,8 @@
                     var $container = $form.find(this.container);
                     $container.removeClass(
                         data.settings.validatingCssClass + ' ' +
-                            data.settings.errorCssClass + ' ' +
-                            data.settings.successCssClass
+                        data.settings.errorCssClass + ' ' +
+                        data.settings.successCssClass
                     );
                     $container.find(this.error).html('');
                 });
@@ -647,11 +658,11 @@
                     $error.html(messages[attribute.id][0]);
                 }
                 $container.removeClass(data.settings.validatingCssClass + ' ' + data.settings.successCssClass)
-                    .addClass(data.settings.errorCssClass);
+                          .addClass(data.settings.errorCssClass);
             } else {
                 $error.empty();
                 $container.removeClass(data.settings.validatingCssClass + ' ' + data.settings.errorCssClass + ' ')
-                    .addClass(data.settings.successCssClass);
+                          .addClass(data.settings.successCssClass);
             }
             attribute.value = getValue($form, attribute);
         }
