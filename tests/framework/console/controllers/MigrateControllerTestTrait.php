@@ -194,93 +194,121 @@ CODE;
 
     public function testGenerateCreateMigration()
     {
-        $migrationName = 'create_test';
+        $migrationNames = [
+            'create_test',
+            'create_test_table',
+        ];
+        foreach ($migrationNames as $migrationName) {
+            $this->assertCommandCreatedFile('create_test', $migrationName);
 
-        $this->assertCommandCreatedFile('create_test', $migrationName);
+            $this->assertCommandCreatedFile('create_fields', $migrationName, [
+                'fields' => 'title:string(10):notNull:unique:defaultValue("test"),
+                    body:text:notNull,
+                    price:money(11,2):notNull'
+            ]);
 
-        $this->assertCommandCreatedFile('create_fields', $migrationName, [
-            'fields' => 'title:string(10):notNull:unique:defaultValue("test"),
-                body:text:notNull,
-                price:money(11,2):notNull'
-        ]);
+            $this->assertCommandCreatedFile('create_title_pk', $migrationName, [
+                'fields' => 'title:primaryKey,body:text:notNull,price:money(11,2)',
+            ]);
 
-        $this->assertCommandCreatedFile('create_title_pk', $migrationName, [
-            'fields' => 'title:primaryKey,body:text:notNull,price:money(11,2)',
-        ]);
+            $this->assertCommandCreatedFile('create_id_pk', $migrationName, [
+                'fields' => 'id:primaryKey,
+                    address:string,
+                    address2:string,
+                    email:string',
+            ]);
 
-        $this->assertCommandCreatedFile('create_id_pk', $migrationName, [
-            'fields' => 'id:primaryKey,
-                address:string,
-                address2:string,
-                email:string',
-        ]);
+            $this->assertCommandCreatedFile('create_foreign_key', $migrationName, [
+                'fields' => 'user_id:integer:foreignKey,
+                    product_id:foreignKey:integer:unsigned:notNull,
+                    order_id:integer:foreignKey(user_order):notNull,
+                    created_at:dateTime:notNull',
+            ]);
 
-        $this->assertCommandCreatedFile('create_foreign_key', $migrationName, [
-            'fields' => 'user_id:integer:foreignKey,
-                product_id:foreignKey:integer:unsigned:notNull,
-                order_id:integer:foreignKey(user_order):notNull,
-                created_at:dateTime:notNull',
-        ]);
-
-        $this->assertCommandCreatedFile('create_prefix', $migrationName, [
-            'useTablePrefix' => true,
-            'fields' => 'user_id:integer:foreignKey,
-                product_id:foreignKey:integer:unsigned:notNull,
-                order_id:integer:foreignKey(user_order):notNull,
-                created_at:dateTime:notNull',
-        ]);
+            $this->assertCommandCreatedFile('create_prefix', $migrationName, [
+                'useTablePrefix' => true,
+                'fields' => 'user_id:integer:foreignKey,
+                    product_id:foreignKey:integer:unsigned:notNull,
+                    order_id:integer:foreignKey(user_order):notNull,
+                    created_at:dateTime:notNull',
+            ]);
+        }
     }
 
     public function testGenerateDropMigration()
     {
-        $migrationName = 'drop_test';
-        $this->assertCommandCreatedFile('drop_test', $migrationName);
+        $migrationNames = [
+            'drop_test',
+            'drop_test_table',
+        ];
+        foreach ($migrationNames as $migrationName) {
+            $this->assertCommandCreatedFile('drop_test', $migrationName);
 
-        $this->assertCommandCreatedFile('drop_fields', $migrationName, [
-            'fields' => 'body:text:notNull,price:money(11,2)'
-        ]);
+            $this->assertCommandCreatedFile('drop_fields', $migrationName, [
+                'fields' => 'body:text:notNull,price:money(11,2)'
+            ]);
+        }
     }
 
     public function testGenerateAddColumnMigration()
     {
-        $migrationName = 'add_columns_to_test';
-        $this->assertCommandCreatedFile('add_columns_test', $migrationName, [
-            'fields' => 'title:string(10):notNull,
-                body:text:notNull,
-                price:money(11,2):notNull,
-                created_at:dateTime'
-        ]);
+        $migrationNames = [
+            'add_columns_to_test',
+            'add_columns_to_test_table',
+            'add_columns_column_to_test_table',
+        ];
+        foreach ($migrationNames as $migrationName) {
+            $this->assertCommandCreatedFile('add_columns_test', $migrationName, [
+                'fields' => 'title:string(10):notNull,
+                    body:text:notNull,
+                    price:money(11,2):notNull,
+                    created_at:dateTime'
+            ]);
 
-        $this->assertCommandCreatedFile('add_columns_fk', $migrationName, [
-            'fields' => 'user_id:integer:foreignKey,
-                product_id:foreignKey:integer:unsigned:notNull,
-                order_id:integer:foreignKey(user_order):notNull,
-                created_at:dateTime:notNull',
-        ]);
+            $this->assertCommandCreatedFile('add_columns_fk', $migrationName, [
+                'fields' => 'user_id:integer:foreignKey,
+                    product_id:foreignKey:integer:unsigned:notNull,
+                    order_id:integer:foreignKey(user_order):notNull,
+                    created_at:dateTime:notNull',
+            ]);
 
-        $this->assertCommandCreatedFile('add_columns_prefix', $migrationName, [
-            'useTablePrefix' => true,
-            'fields' => 'user_id:integer:foreignKey,
-                product_id:foreignKey:integer:unsigned:notNull,
-                order_id:integer:foreignKey(user_order):notNull,
-                created_at:dateTime:notNull',
-        ]);
+            $this->assertCommandCreatedFile('add_columns_prefix', $migrationName, [
+                'useTablePrefix' => true,
+                'fields' => 'user_id:integer:foreignKey,
+                    product_id:foreignKey:integer:unsigned:notNull,
+                    order_id:integer:foreignKey(user_order):notNull,
+                    created_at:dateTime:notNull',
+            ]);
+        }
     }
 
     public function testGenerateDropColumnMigration()
     {
-        $migrationName = 'drop_columns_from_test';
-        $this->assertCommandCreatedFile('drop_columns_test', $migrationName, [
-            'fields' => 'title:string(10):notNull,body:text:notNull,
-                price:money(11,2):notNull,
-                created_at:dateTime'
-        ]);
+        $migrationNames = [
+            'drop_columns_from_test',
+            'drop_columns_from_test_table',
+            'drop_columns_column_from_test_table',
+        ];
+        foreach ($migrationNames as $migrationName) {
+            $this->assertCommandCreatedFile('drop_columns_test', $migrationName, [
+                'fields' => 'title:string(10):notNull,body:text:notNull,
+                    price:money(11,2):notNull,
+                    created_at:dateTime'
+            ]);
+        }
     }
 
     public function testGenerateCreateJunctionMigration()
     {
-        $migrationName = 'create_junction_post_and_tag';
-        $this->assertCommandCreatedFile('junction_test', $migrationName);
+        $migrationNames = [
+            'create_junction_post_and_tag',
+            'create_junction_table_for_post_and_tag_tables',
+            'create_junction_table_for_post_and_tag_table',
+            'create_junction_post_and_tag_tables',
+        ];
+        foreach ($migrationNames as $migrationName) {
+            $this->assertCommandCreatedFile('junction_test', $migrationName);
+        }
     }
 
     public function testUp()
