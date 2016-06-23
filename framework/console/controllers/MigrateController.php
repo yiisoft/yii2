@@ -80,7 +80,7 @@ class MigrateController extends BaseMigrateController
         'drop_table' => '@yii/views/dropTableMigration.php',
         'add_column' => '@yii/views/addColumnMigration.php',
         'drop_column' => '@yii/views/dropColumnMigration.php',
-        'create_junction' => '@yii/views/createTableMigration.php',
+        'create_junction' => '@yii/views/createJunctionMigration.php',
     ];
     /**
      * @var boolean indicates whether the table names generated should consider
