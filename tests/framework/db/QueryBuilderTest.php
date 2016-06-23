@@ -877,6 +877,18 @@ abstract class QueryBuilderTest extends DatabaseTestCase
                 ],
             ],
             [
+                Schema::TYPE_TIMESTAMP . ' NULL DEFAULT NULL',
+                $this->timestamp()->defaultValue(null),
+                [
+                    'mysql' => 'timestamp NULL DEFAULT NULL',
+                    'postgres' => 'timestamp(0) NULL DEFAULT NULL',
+                    'sqlite' => 'timestamp NULL DEFAULT NULL',
+                    'oci' => 'TIMESTAMP NULL DEFAULT NULL',
+                    'sqlsrv' => 'timestamp NULL DEFAULT NULL',
+                    'cubrid' => 'timestamp NULL DEFAULT NULL',
+                ],
+            ],
+            [
                 Schema::TYPE_UPK,
                 $this->primaryKey()->unsigned(),
                 [
