@@ -22,6 +22,7 @@ Yii Framework 2 Change Log
 - Bug #11459: Fixed flash messages not destroyed when `session.auto_start = 1` set in php.ini (cartmanchen)
 - Bug #11498: Fixed inability to save serialized object into PostgreSQL binary column (klimov-paul)
 - Bug #11507: Fixed `yii\validators\EachValidator::validateAttribute()` does not respect `skipOnEmpty` rule parameter (webdevsega)
+- Bug #11561: Fixed DI container throwing exceptions for optional dependencies. (sammousa)
 - Bug #11523: Fixed `yii\web\User::checkRedirectAcceptable()` to treat acceptable content type `*/*` as `*` (silverfire)
 - Bug #11532: Fixed casting of empty char value to `null` resulting in integrity constraint violation for not null columns (samdark)
 - Bug #11571: Fixed `yii\db\ColumnSchemaBuilder` to work with custom column types (andrey-mokhov, silverfire)
