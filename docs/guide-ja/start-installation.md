@@ -212,15 +212,20 @@ server {
     #}
     #error_page 404 /404.html;
 
+    # /assets ディレクトリの php ファイルへのアクセスを拒否する
+    location ~ ^/assets/.*\.php$ {
+        deny all;
+    }
+
     location ~ \.php$ {
         include fastcgi_params;
         fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;
-        fastcgi_pass   127.0.0.1:9000;
+        fastcgi_pass 127.0.0.1:9000;
         #fastcgi_pass unix:/var/run/php5-fpm.sock;
         try_files $uri =404;
     }
 
-    location ~ /\.(ht|svn|git) {
+    location ~* /\. {
         deny all;
     }
 }
