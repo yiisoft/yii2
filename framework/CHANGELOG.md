@@ -36,6 +36,7 @@ Yii Framework 2 Change Log
 - Bug #11549: Fixed `ArrayHelper::getValue()` to work properly with float keys (zsounder, AnikanovD)
 - Bug #8644: Fixed trying to ENABLE/DISABLE TRIGGER ALL on a view in PostgreSQL (ricpelo)
 - Bug #11536: Fixed regression introduced in 2.0.8, where scalar value was not allowed in QueryBuilder `IN` condition anymore (cebe)
+- Bug #11693: Handle `QueryBuilder::batchInsert()` calls with no data to insert (rob006)
 - Bug #11672: Fixed `yii\validators\NumberValidator` erroring when value is an object without `__toString()` method (SamMousa)
 - Bug #11561: Fixed DI container throwing exceptions for optional dependencies (SamMousa)
 - Enh #11168: `yii\helpers\BaseHtml` now uses abstracted `booleanInput()` and `activeBooleanInput()` methods to render `radio()`, `checkbox()`, `activeRadio()` and `activeCheckbox()` (cesarnicola)

@@ -281,6 +281,15 @@ SQL;
             ]
         );
         $this->assertEquals(2, $command->execute());
+
+        // @see https://github.com/yiisoft/yii2/issues/11693
+        $command = $this->getConnection()->createCommand();
+        $command->batchInsert(
+            '{{customer}}',
+            ['email', 'name', 'address'],
+            []
+        );
+        $this->assertEquals(0, $command->execute());
     }
 
     public function testInsert()
