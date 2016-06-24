@@ -229,6 +229,10 @@ class ActiveForm extends Widget
         if ($this->validationUrl !== null) {
             $options['validationUrl'] = Url::to($this->validationUrl);
         }
+        $urlManager = Yii::$app->getUrlManager();
+        if (!$urlManager->enablePrettyUrl) {
+            $options['routeParam'] = $urlManager->routeParam;
+        }
 
         // only get the options that are different from the default ones (set in yii.activeForm.js)
         return array_diff_assoc($options, [
