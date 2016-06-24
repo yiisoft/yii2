@@ -1391,7 +1391,7 @@ class BaseHtml
      */
     public static function activeRadio($model, $attribute, $options = [])
     {
-        return static::activeBooleanInput('checkbox', $model, $attribute, $options);
+        return static::activeBooleanInput('radio', $model, $attribute, $options);
     }
 
     /**
