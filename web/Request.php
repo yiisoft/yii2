@@ -1403,6 +1403,10 @@ class Request extends \yii\base\Request
      */
     private function validateCsrfTokenInternal($token, $trueToken)
     {
+        if (!is_string($token)) {
+            return false;
+        }
+
         $token = base64_decode(str_replace('.', '+', $token));
         $n = StringHelper::byteLength($token);
         if ($n <= static::CSRF_MASK_LENGTH) {
