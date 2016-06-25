@@ -180,6 +180,10 @@ class ColumnSchemaBuilder extends Object
      */
     public function defaultValue($default)
     {
+        if ($default === null) {
+            $this->null();
+        }
+
         $this->default = $default;
         return $this;
     }
@@ -327,7 +331,7 @@ class ColumnSchemaBuilder extends Object
     protected function buildDefaultString()
     {
         if ($this->default === null) {
-            return '';
+            return $this->isNotNull === false ? ' DEFAULT NULL' : '';
         }
 
         $string = ' DEFAULT ';
