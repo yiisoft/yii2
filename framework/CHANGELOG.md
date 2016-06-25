@@ -4,7 +4,7 @@ Yii Framework 2 Change Log
 
 2.0.9 under development
 -----------------------
-
+- Enh #11725: Added indexes on message tables (OndrejVasicek)
 - Enh #10422: Added `null` method on `yii\db\ColumnSchemaBuilder` to explicitly set column nullability (nevermnd)
 - Enh #8795: Refactored `yii\web\User::loginByCookie()` in order to make it easier to override (maine-mike, silverfire)
 - Enh #9948: `yii\rbac\PhpManager` now invalidates script file cache performed by 'OPCache' or 'APC' on file saving (klimov-paul)
