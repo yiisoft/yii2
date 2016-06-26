@@ -186,7 +186,8 @@ A list of all available methods for defining the column types is available in th
 Since version 2.0.7 migration console provides a convenient way to create migrations.
 
 If the migration name is of a special form, for example `create_xxx` or `drop_xxx` then the generated migration
-file will contain extra code, in this case for creating/dropping tables.
+file will contain extra code, in this case for creating/dropping tables. Since 2.0.9 more explicit names are
+available, for example `create_xxx_table` or `drop_xxx_table`.
 In the following all variants of this feature are described.
 
 ### Create Table
@@ -448,8 +449,8 @@ class m150811_220037_drop_post extends Migration
 
 ### Add Column
 
-If the migration name is of the form `add_xxx_to_yyy` then the file content would contain `addColumn` and `dropColumn`
-statements necessary.
+If the migration name is of the form `add_xxx_to_yyy` or `add_xxx_column_to_yyy_table` then the file
+content would contain `addColumn` and `dropColumn` statements necessary.
 
 To add column:
 
@@ -476,8 +477,8 @@ class m150811_220037_add_position_to_post extends Migration
 
 ### Drop Column
 
-If the migration name is of the form `drop_xxx_from_yyy` then the file content would contain `addColumn` and `dropColumn`
-statements necessary.
+If the migration name is of the form `drop_xxx_from_yyy` or `drop_xxx_column_from_yyy_table` then
+the file content would contain `addColumn` and `dropColumn` statements necessary.
 
 ```php
 yii migrate/create drop_position_from_post --fields="position:integer"
@@ -502,8 +503,8 @@ class m150811_220037_drop_position_from_post extends Migration
 
 ### Add Junction Table
 
-If the migration name is in if the form of `create_junction_xxx_and_yyy` then code necessary to create junction table
-will be generated.
+If the migration name is of the form `create_junction_xxx_and_yyy` or `create_junction_table_for_xxx_and_yyy_tables`
+then code necessary to create junction table will be generated.
 
 ```php
 yii migrate/create create_junction_post_and_tag --fields="created_at:dateTime"
