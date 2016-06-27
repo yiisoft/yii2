@@ -90,8 +90,8 @@ use yii\helpers\ArrayHelper;
  * $lister = new UserLister($finder);
  * ```
  *
- * @property array $definitions The list of the object definitions or the loaded shared objects (type or ID =>
- * definition or instance). This property is read-only.
+ * @property-read array $definitions The list of the object definitions or the loaded shared objects (type or ID =>
+ * definition or instance).
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0

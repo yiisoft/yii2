@@ -19,7 +19,7 @@ use yii\helpers\FileHelper;
  *
  * Note that you should enable `fileinfo` PHP extension.
  *
- * @property integer $sizeLimit The size limit for uploaded files. This property is read-only.
+ * @property-read integer $sizeLimit The size limit for uploaded files.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0

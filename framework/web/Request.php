@@ -21,60 +21,56 @@ use yii\helpers\StringHelper;
  * Request is configured as an application component in [[\yii\web\Application]] by default.
  * You can access that instance via `Yii::$app->request`.
  *
- * @property string $absoluteUrl The currently requested absolute URL. This property is read-only.
+ * @property-read string $absoluteUrl The currently requested absolute URL.
  * @property array $acceptableContentTypes The content types ordered by the quality score. Types with the
  * highest scores will be returned first. The array keys are the content types, while the array values are the
  * corresponding quality score and other parameters as given in the header.
  * @property array $acceptableLanguages The languages ordered by the preference level. The first element
  * represents the most preferred language.
- * @property string|null $authPassword The password sent via HTTP authentication, null if the password is not
- * given. This property is read-only.
- * @property string|null $authUser The username sent via HTTP authentication, null if the username is not
- * given. This property is read-only.
+ * @property-read string|null $authPassword The password sent via HTTP authentication, null if the password is not
+ * given.
+ * @property-read string|null $authUser The username sent via HTTP authentication, null if the username is not
+ * given.
  * @property string $baseUrl The relative URL for the application.
  * @property array $bodyParams The request parameters given in the request body.
- * @property string $contentType Request content-type. Null is returned if this information is not available.
- * This property is read-only.
- * @property CookieCollection $cookies The cookie collection. This property is read-only.
- * @property string $csrfToken The token used to perform CSRF validation. This property is read-only.
- * @property string $csrfTokenFromHeader The CSRF token sent via [[CSRF_HEADER]] by browser. Null is returned
- * if no such header is sent. This property is read-only.
- * @property array $eTags The entity tags. This property is read-only.
- * @property HeaderCollection $headers The header collection. This property is read-only.
+ * @property-read string $contentType Request content-type. Null is returned if this information is not available.
+ * @property-read CookieCollection $cookies The cookie collection.
+ * @property-read string $csrfToken The token used to perform CSRF validation.
+ * @property-read string $csrfTokenFromHeader The CSRF token sent via [[CSRF_HEADER]] by browser. Null is returned
+ * if no such header is sent.
+ * @property-read array $eTags The entity tags.
+ * @property-read HeaderCollection $headers The header collection.
  * @property string $hostInfo Schema and hostname part (with port number if needed) of the request URL (e.g.
  * `http://www.yiiframework.com`), null if can't be obtained from `$_SERVER` and wasn't set.
- * @property boolean $isAjax Whether this is an AJAX (XMLHttpRequest) request. This property is read-only.
- * @property boolean $isDelete Whether this is a DELETE request. This property is read-only.
- * @property boolean $isFlash Whether this is an Adobe Flash or Adobe Flex request. This property is
- * read-only.
- * @property boolean $isGet Whether this is a GET request. This property is read-only.
- * @property boolean $isHead Whether this is a HEAD request. This property is read-only.
- * @property boolean $isOptions Whether this is a OPTIONS request. This property is read-only.
- * @property boolean $isPatch Whether this is a PATCH request. This property is read-only.
- * @property boolean $isPjax Whether this is a PJAX request. This property is read-only.
- * @property boolean $isPost Whether this is a POST request. This property is read-only.
- * @property boolean $isPut Whether this is a PUT request. This property is read-only.
- * @property boolean $isSecureConnection If the request is sent via secure channel (https). This property is
- * read-only.
- * @property string $method Request method, such as GET, POST, HEAD, PUT, PATCH, DELETE. The value returned is
- * turned into upper case. This property is read-only.
+ * @property-read boolean $isAjax Whether this is an AJAX (XMLHttpRequest) request.
+ * @property-read boolean $isDelete Whether this is a DELETE request.
+ * @property-read boolean $isFlash Whether this is an Adobe Flash or Adobe Flex request.
+ * @property-read boolean $isGet Whether this is a GET request.
+ * @property-read boolean $isHead Whether this is a HEAD request.
+ * @property-read boolean $isOptions Whether this is a OPTIONS request.
+ * @property-read boolean $isPatch Whether this is a PATCH request.
+ * @property-read boolean $isPjax Whether this is a PJAX request.
+ * @property-read boolean $isPost Whether this is a POST request.
+ * @property-read boolean $isPut Whether this is a PUT request.
+ * @property-read boolean $isSecureConnection If the request is sent via secure channel (https).
+ * @property-read string $method Request method, such as GET, POST, HEAD, PUT, PATCH, DELETE. The value returned is
+ * turned into upper case.
  * @property string $pathInfo Part of the request URL that is after the entry script and before the question
  * mark. Note, the returned path info is already URL-decoded.
  * @property integer $port Port number for insecure requests.
  * @property array $queryParams The request GET parameter values.
- * @property string $queryString Part of the request URL that is after the question mark. This property is
- * read-only.
+ * @property-read string $queryString Part of the request URL that is after the question mark.
  * @property string $rawBody The request body.
- * @property string|null $referrer URL referrer, null if not available. This property is read-only.
+ * @property-read string|null $referrer URL referrer, null if not available.
  * @property string $scriptFile The entry script file path.
  * @property string $scriptUrl The relative URL of the entry script.
  * @property integer $securePort Port number for secure requests.
- * @property string $serverName Server name, null if not available. This property is read-only.
- * @property integer|null $serverPort Server port number, null if not available. This property is read-only.
+ * @property-read string $serverName Server name, null if not available.
+ * @property-read integer|null $serverPort Server port number, null if not available.
  * @property string $url The currently requested relative URL. Note that the URI returned is URL-encoded.
- * @property string|null $userAgent User agent, null if not available. This property is read-only.
- * @property string|null $userHost User host name, null if not available. This property is read-only.
- * @property string|null $userIP User IP address, null if not available. This property is read-only.
+ * @property-read string|null $userAgent User agent, null if not available.
+ * @property-read string|null $userHost User host name, null if not available.
+ * @property-read string|null $userIP User IP address, null if not available.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0

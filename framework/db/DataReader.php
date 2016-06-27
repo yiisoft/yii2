@@ -40,10 +40,10 @@ use yii\base\InvalidCallException;
  * [[fetchMode]]. See the [PHP manual](http://www.php.net/manual/en/function.PDOStatement-setFetchMode.php)
  * for more details about possible fetch mode.
  *
- * @property integer $columnCount The number of columns in the result set. This property is read-only.
- * @property integer $fetchMode Fetch mode. This property is write-only.
- * @property boolean $isClosed Whether the reader is closed or not. This property is read-only.
- * @property integer $rowCount Number of rows contained in the result. This property is read-only.
+ * @property-read integer $columnCount The number of columns in the result set.
+ * @property-write integer $fetchMode Fetch mode.
+ * @property-read boolean $isClosed Whether the reader is closed or not.
+ * @property-read integer $rowCount Number of rows contained in the result.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0

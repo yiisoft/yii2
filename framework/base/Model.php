@@ -35,19 +35,16 @@ use yii\validators\Validator;
  *
  * You may directly use Model to store model data, or extend it with customization.
  *
- * @property \yii\validators\Validator[] $activeValidators The validators applicable to the current
- * [[scenario]]. This property is read-only.
+ * @property-read \yii\validators\Validator[] $activeValidators The validators applicable to the current
+ * [[scenario]].
  * @property array $attributes Attribute values (name => value).
- * @property array $errors An array of errors for all attributes. Empty array is returned if no error. The
- * result is a two-dimensional array. See [[getErrors()]] for detailed description. This property is read-only.
- * @property array $firstErrors The first errors. The array keys are the attribute names, and the array values
- * are the corresponding error messages. An empty array will be returned if there is no error. This property is
- * read-only.
- * @property ArrayIterator $iterator An iterator for traversing the items in the list. This property is
- * read-only.
+ * @property-read array $errors An array of errors for all attributes. Empty array is returned if no error. The
+ * result is a two-dimensional array. See [[getErrors()]] for detailed description.
+ * @property-read array $firstErrors The first errors. The array keys are the attribute names, and the array values
+ * are the corresponding error messages. An empty array will be returned if there is no error.
+ * @property-read ArrayIterator $iterator An iterator for traversing the items in the list.
  * @property string $scenario The scenario that this model is in. Defaults to [[SCENARIO_DEFAULT]].
- * @property ArrayObject|\yii\validators\Validator[] $validators All the validators declared in the model.
- * This property is read-only.
+ * @property-read ArrayObject|\yii\validators\Validator[] $validators All the validators declared in the model.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0

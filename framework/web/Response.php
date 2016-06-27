@@ -34,23 +34,19 @@ use yii\helpers\StringHelper;
  * ]
  * ```
  *
- * @property CookieCollection $cookies The cookie collection. This property is read-only.
- * @property string $downloadHeaders The attachment file name. This property is write-only.
- * @property HeaderCollection $headers The header collection. This property is read-only.
- * @property boolean $isClientError Whether this response indicates a client error. This property is
- * read-only.
- * @property boolean $isEmpty Whether this response is empty. This property is read-only.
- * @property boolean $isForbidden Whether this response indicates the current request is forbidden. This
- * property is read-only.
- * @property boolean $isInformational Whether this response is informational. This property is read-only.
- * @property boolean $isInvalid Whether this response has a valid [[statusCode]]. This property is read-only.
- * @property boolean $isNotFound Whether this response indicates the currently requested resource is not
- * found. This property is read-only.
- * @property boolean $isOk Whether this response is OK. This property is read-only.
- * @property boolean $isRedirection Whether this response is a redirection. This property is read-only.
- * @property boolean $isServerError Whether this response indicates a server error. This property is
- * read-only.
- * @property boolean $isSuccessful Whether this response is successful. This property is read-only.
+ * @property-read CookieCollection $cookies The cookie collection.
+ * @property-read HeaderCollection $headers The header collection.
+ * @property-read boolean $isClientError Whether this response indicates a client error.
+ * @property-read boolean $isEmpty Whether this response is empty.
+ * @property-read boolean $isForbidden Whether this response indicates the current request is forbidden.
+ * @property-read boolean $isInformational Whether this response is informational.
+ * @property-read boolean $isInvalid Whether this response has a valid [[statusCode]].
+ * @property-read boolean $isNotFound Whether this response indicates the currently requested resource is not found.
+ * @property-read boolean $isOk Whether this response is OK.
+ * @property-read boolean $isRedirection Whether this response is a redirection.
+ * @property-read boolean $isServerError Whether this response indicates a server error.
+ * @property-read boolean $isSuccessful Whether this response is successful.
+ * @property-write string $downloadHeaders The attachment file name.
  * @property integer $statusCode The HTTP status code to send with the response.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>

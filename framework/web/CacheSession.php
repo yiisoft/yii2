@@ -31,7 +31,7 @@ use yii\di\Instance;
  * ]
  * ```
  *
- * @property boolean $useCustomStorage Whether to use custom storage. This property is read-only.
+ * @property-read boolean $useCustomStorage Whether to use custom storage.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0

@@ -21,15 +21,13 @@ use yii\di\ServiceLocator;
  * [[components|Components]] may be registered with the module so that they are globally
  * accessible within the module.
  *
- * @property array $aliases List of path aliases to be defined. The array keys are alias names (must start
+ * @property-write array $aliases List of path aliases to be defined. The array keys are alias names (must start
  * with '@') and the array values are the corresponding paths or aliases. See [[setAliases()]] for an example.
- * This property is write-only.
  * @property string $basePath The root directory of the module.
- * @property string $controllerPath The directory that contains the controller classes. This property is
- * read-only.
+ * @property-read string $controllerPath The directory that contains the controller classes.
  * @property string $layoutPath The root directory of layout files. Defaults to "[[viewPath]]/layouts".
  * @property array $modules The modules (indexed by their IDs).
- * @property string $uniqueId The unique ID of the module. This property is read-only.
+ * @property-read string $uniqueId The unique ID of the module.
  * @property string $viewPath The root directory of view files. Defaults to "[[basePath]]/views".
  *
  * @author Qiang Xue <qiang.xue@gmail.com>

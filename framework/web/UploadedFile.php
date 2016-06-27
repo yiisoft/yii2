@@ -18,10 +18,10 @@ use yii\helpers\Html;
  * You may also query other information about the file, including [[name]],
  * [[tempName]], [[type]], [[size]] and [[error]].
  *
- * @property string $baseName Original file base name. This property is read-only.
- * @property string $extension File extension. This property is read-only.
- * @property boolean $hasError Whether there is an error with the uploaded file. Check [[error]] for detailed
- * error code information. This property is read-only.
+ * @property-read string $baseName Original file base name.
+ * @property-read string $extension File extension.
+ * @property-read boolean $hasError Whether there is an error with the uploaded file. Check [[error]] for detailed
+ * error code information.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
