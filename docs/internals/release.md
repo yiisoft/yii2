@@ -67,6 +67,7 @@ before.
 - ensure composer.json does not contain a branch alias on this branch anymore.
 - merge necessary changes from `master` to `2.1`
 - point `master` to the lastest commit on `2.1`
+- adjust composer.json branch alias for master to `2.1.x-dev`.
 - delete `2.1` branch
 
 Now check out `master` and run the release command with the `--version=2.1.0` option. 
