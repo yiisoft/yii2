@@ -3,6 +3,7 @@
 namespace yiiunit\framework\db;
 
 use yii\db\ActiveQuery;
+use yii\db\Expression;
 use yiiunit\data\ar\ActiveRecord;
 use yiiunit\data\ar\BitValues;
 use yiiunit\data\ar\Category;
@@ -818,6 +819,23 @@ abstract class ActiveRecordTest extends DatabaseTestCase
         $this->assertEquals(2, $orders[0]->id);
         $this->assertTrue($orders[0]->isRelationPopulated('itemsIndexed'));
         $this->assertEquals(0, count($orders[0]->itemsIndexed));
+    }
+
+    /**
+     * https://github.com/yiisoft/yii2/issues/11807
+     */
+    public function testFromIndexHintWithJoinRelations()
+    {
+        /** @var $order Order */
+        $query = Order::find()->from([new Expression('{{order}} USE INDEX (primary)')])->joinWith('customer');
+        $rawSql = $query->createCommand()->rawSql;
+        $expectedSQL = $this->replaceQuotes("SELECT `order`.* FROM `order` USE INDEX (primary) LEFT JOIN `customer` ON `order`.`customer_id` = `customer`.`id`");
+        $this->assertEquals($expectedSQL, $rawSql);
+
+        $query = Order::find()->from([new Expression('{{order}} {{t}} USE INDEX (primary)')])->joinWith('customer');
+        $rawSql = $query->createCommand()->rawSql;
+        $expectedSQL = $this->replaceQuotes("SELECT `order`.* FROM `order` `t` USE INDEX (primary) LEFT JOIN `customer` ON `order`.`customer_id` = `customer`.`id`");
+        $this->assertEquals($expectedSQL, $rawSql);
     }
 
     /**

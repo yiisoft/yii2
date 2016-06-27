@@ -551,29 +551,47 @@ class ActiveQuery extends Query implements ActiveQueryInterface
      */
     private function getQueryTableName($query)
     {
-        if (empty($query->from)) {
-            /* @var $modelClass ActiveRecord */
-            $modelClass = $query->modelClass;
-            $tableName = $modelClass::tableName();
-        } else {
-            $tableName = '';
-            foreach ($query->from as $alias => $tableName) {
-                if (is_string($alias)) {
-                    return [$tableName, $alias];
-                } else {
-                    break;
-                }
-            }
-        }
+        $tableName = null;
+        $alias = null;
 
-        if (preg_match('/^(.*?)\s+({{\w+}}|\w+)$/', $tableName, $matches)) {
-            $alias = $matches[2];
+        /* @var $modelClass ActiveRecord */
+        $modelClass = $query->modelClass;
+        $defaultTableName = $modelClass::tableName();
+        if (empty($query->from)) {
+            $tableName = $defaultTableName;
+            $alias = $defaultTableName;
         } else {
-            $alias = $tableName;
+            foreach ($query->from as $fromAlias => $fromTableName) {
+                if (is_string($fromAlias)) {
+                    $tableName = $defaultTableName;
+                    $alias = $fromAlias;
+                } elseif ($fromTableName instanceof Expression) {
+                    $alias = $defaultTableName;
+                    $tableName = $this->getQueryTableNameAlias($fromTableName);
+                } else {
+                    $tableName = $fromTableName;
+                    $alias = $this->getQueryTableNameAlias($fromTableName);
+                }
+                break;
+            }
         }
 
         return [$tableName, $alias];
     }
+
+    /** Return the alias from a tableName sentence
+     * @param mixed $tableName
+     * @return string mixed
+     */
+    private function getQueryTableNameAlias($tableName)
+    {
+        if (preg_match('/^(.*?)\s+({{\w+}}|\w+)$/', $tableName, $matches)) {
+            return $matches[2];
+        } else {
+            return $tableName;
+        }
+    }
+
 
     /**
      * Joins a parent query with a child query.

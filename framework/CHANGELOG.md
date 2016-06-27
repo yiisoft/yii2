@@ -4,6 +4,7 @@ Yii Framework 2 Change Log
 
 2.0.9 under development
 -----------------------
+- Enh #11807: Added support for hint index in queries with join relations (fdezmc)
 - Enh #11725: Added indexes on message tables (OndrejVasicek)
 - Enh #10422: Added `null` method on `yii\db\ColumnSchemaBuilder` to explicitly set column nullability (nevermnd)
 - Enh #9574: Implicit run `ColumnSchemaBuilder::null()` when default value is set to `null`. (rob006)
