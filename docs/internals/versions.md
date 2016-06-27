@@ -77,7 +77,7 @@ The following image shows an illustration of the branches on changing commit his
 
 ## Releases
 
-Both Yii2  Framework and official extension projects follow the above versioning and branching policies.
+Both Yii2 Framework and official extension projects follow the above versioning and branching policies.
 Framework and official extension projects are released independently of each other, i.e. version number mismatch between framework and extension is expected.
 The Application Templates are always released together with the framework.
 

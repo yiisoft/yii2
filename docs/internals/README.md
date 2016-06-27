@@ -13,7 +13,7 @@ Contributor Guidelines
 - [Yii2 View Code Style](view-code-style.md)
 
 
-Dokumentation
+Documentation
 -------------
 
 - [Translation Status](translation-status.md) - which documents are ready for translation.
@@ -33,7 +33,7 @@ Versioning and Release
 
 - [Project Organization](project-organization.md)
 - [Yii Versioning](versions.md)
-
+- [Releasing a new version](release.md)
 
 Misc
 ----
