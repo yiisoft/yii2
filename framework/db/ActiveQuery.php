@@ -566,8 +566,8 @@ class ActiveQuery extends Query implements ActiveQueryInterface
                     $tableName = $defaultTableName;
                     $alias = $fromAlias;
                 } elseif ($fromTableName instanceof Expression) {
-                    $alias = $defaultTableName;
-                    $tableName = $this->getQueryTableNameAlias($fromTableName);
+                    $tableName = $defaultTableName;
+                    $alias = $this->getQueryTableNameAlias($fromTableName);
                 } else {
                     $tableName = $fromTableName;
                     $alias = $this->getQueryTableNameAlias($fromTableName);
