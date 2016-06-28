@@ -580,7 +580,10 @@ class Model extends Component implements IteratorAggregate, ArrayAccess, Arrayab
             $errors = [];
             foreach ($this->_errors as $name => $es) {
                 if (!empty($es)) {
-                    $errors[$name] = reset($es);
+                    while (is_array($es)) {
+                        $es = reset($es);
+                    }
+                    $errors[$name] = $es;
                 }
             }
 
