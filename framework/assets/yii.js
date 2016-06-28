@@ -300,6 +300,73 @@ yii = (function ($) {
             return params;
         },
 
+        pushUrl: function (params, opts) {
+            var data = {};
+            $.each(params, function () {
+                if (!(this.name in data)) {
+                    data[this.name] = [];
+                }
+                data[this.name].push(this.value);
+            });
+
+            var namesInFilter = Object.keys(data);
+
+            opts = $.extend({}, {
+                url: location.href,
+                elem: $('body'),
+                'class': 'push-url-form',
+                events: {},
+            }, opts || {});
+
+            $.each(yii.getQueryParams(opts.url), function (name, value) {
+                if (namesInFilter.indexOf(name) === -1 && namesInFilter.indexOf(name.replace(/\[\]$/, '')) === -1) {
+                    if (!$.isArray(value)) {
+                        value = [value];
+                    }
+                    if (!(name in data)) {
+                        data[name] = value;
+                    } else {
+                        $.each(value, function (i, val) {
+                            if ($.inArray(val, data[name])) {
+                                data[name].push(val);
+                            }
+                        });
+                    }
+                }
+            });
+
+            var pos = opts.url.indexOf('?');
+            var url = pos < 0 ? opts.url : opts.url.substring(0, pos);
+
+            opts.elem.find('form.' + opts.class).remove();
+            var $form = $('<form/>', {
+                action: url,
+                method: 'get',
+                'class': opts.class,
+                style: 'display:none',
+                'data-pjax': ''
+            }).appendTo(opts.elem);
+            $.each(data, function (name, values) {
+                $.each(values, function (index, value) {
+                    $form.append($('<input/>').attr({type: 'hidden', name: name, value: value}));
+                });
+            });
+
+            if (opts.events.before) {
+                var event = $.Event(opts.events.before);
+                opts.elem.trigger(event);
+                if (event.result === false) {
+                    return;
+                }
+            }
+
+            $form.submit();
+
+            if (opts.events.after) {
+                opts.elem.trigger(opts.events.after);
+            }
+        },
+
         initModule: function (module) {
             if (module.isActive === undefined || module.isActive) {
                 if ($.isFunction(module.init)) {

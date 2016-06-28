@@ -87,61 +87,18 @@
         },
 
         applyFilter: function () {
-            var $grid = $(this), event;
+            var $grid = $(this);
             var settings = gridData[$grid.attr('id')].settings;
-            var data = {};
-            $.each($(settings.filterSelector).serializeArray(), function () {
-                if (!(this.name in data)) {
-                    data[this.name] = [];
-                }
-                data[this.name].push(this.value);
-            });
-
-            var namesInFilter = Object.keys(data);
-
-            $.each(yii.getQueryParams(settings.filterUrl), function (name, value) {
-                if (namesInFilter.indexOf(name) === -1 && namesInFilter.indexOf(name.replace(/\[\]$/, '')) === -1) {
-                    if (!$.isArray(value)) {
-                        value = [value];
-                    }
-                    if (!(name in data)) {
-                        data[name] = value;
-                    } else {
-                        $.each(value, function (i, val) {
-                            if ($.inArray(val, data[name])) {
-                                data[name].push(val);
-                            }
-                        });
-                    }
-                }
-            });
-
-            var pos = settings.filterUrl.indexOf('?');
-            var url = pos < 0 ? settings.filterUrl : settings.filterUrl.substring(0, pos);
-
-            $grid.find('form.gridview-filter-form').remove();
-            var $form = $('<form/>', {
-                action: url,
-                method: 'get',
+            
+            yii.pushUrl($(settings.filterSelector).serializeArray(),{
+                url: settings.filterUrl,
+                elem: $grid,
                 'class': 'gridview-filter-form',
-                style: 'display:none',
-                'data-pjax': ''
-            }).appendTo($grid);
-            $.each(data, function (name, values) {
-                $.each(values, function (index, value) {
-                    $form.append($('<input/>').attr({type: 'hidden', name: name, value: value}));
-                });
+                events: {
+                    before: gridEvents.beforeFilter,
+                    after: gridEvents.afterFilter
+                }
             });
-
-            event = $.Event(gridEvents.beforeFilter);
-            $grid.trigger(event);
-            if (event.result === false) {
-                return;
-            }
-
-            $form.submit();
-
-            $grid.trigger(gridEvents.afterFilter);
         },
 
         setSelectionColumn: function (options) {

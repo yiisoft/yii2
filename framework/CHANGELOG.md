@@ -20,6 +20,7 @@ Yii Framework 2 Change Log
 - Enh #11432: Added HTTP status 421 "Misdirected Request" to list of statuses in `yii\web\Response` (dasmfm)
 - Enh #11438: Configurable `yii\helpers\Markdown` default flavor (mdmunir)
 - Enh #11729: Added `yii\grid\CheckboxColumn::$cssClas` property to specify a class added to checkbox input (thiagotalma)
+- Enh #11833: Make reusable gridview `applyFilter` (mdmunir)
 - Bug #11459: Fixed flash messages not destroyed when `session.auto_start = 1` set in php.ini (cartmanchen)
 - Bug #11498: Fixed inability to save serialized object into PostgreSQL binary column (klimov-paul)
 - Bug #11507: Fixed `yii\validators\EachValidator::validateAttribute()` does not respect `skipOnEmpty` rule parameter (webdevsega)
