@@ -25,7 +25,7 @@ abstract class ColumnSchemaBuilderTest extends TestCase
     public function typesProvider()
     {
         return [
-            ['integer NULL', Schema::TYPE_INTEGER, null, [
+            ['integer NULL DEFAULT NULL', Schema::TYPE_INTEGER, null, [
                 ['unsigned'], ['null'],
             ]],
             ['integer(10)', Schema::TYPE_INTEGER, 10, [

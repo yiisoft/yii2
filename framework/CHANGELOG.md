@@ -12,8 +12,9 @@ Yii Framework 2 Change Log
 
 2.0.9 under development
 -----------------------
-
+- Enh #11725: Added indexes on message tables (OndrejVasicek)
 - Enh #10422: Added `null` method on `yii\db\ColumnSchemaBuilder` to explicitly set column nullability (nevermnd)
+- Enh #9574: Implicit run `ColumnSchemaBuilder::null()` when default value is set to `null`. (rob006)
 - Enh #8795: Refactored `yii\web\User::loginByCookie()` in order to make it easier to override (maine-mike, silverfire)
 - Enh #9948: `yii\rbac\PhpManager` now invalidates script file cache performed by 'OPCache' or 'APC' on file saving (klimov-paul)
 - Enh #11195: Added ability to append custom string to schema builder column definition (df2, samdark)
@@ -26,6 +27,7 @@ Yii Framework 2 Change Log
 - Enh #11414: Files specified as `null` in `yii\web\AssetBundle` won't be registered (Razzwan)
 - Enh #11432: Added HTTP status 421 "Misdirected Request" to list of statuses in `yii\web\Response` (dasmfm)
 - Enh #11438: Configurable `yii\helpers\Markdown` default flavor (mdmunir)
+- Enh #11729: Added `yii\grid\CheckboxColumn::$cssClas` property to specify a class added to checkbox input (thiagotalma)
 - Bug #11459: Fixed flash messages not destroyed when `session.auto_start = 1` set in php.ini (cartmanchen)
 - Bug #11498: Fixed inability to save serialized object into PostgreSQL binary column (klimov-paul)
 - Bug #11507: Fixed `yii\validators\EachValidator::validateAttribute()` does not respect `skipOnEmpty` rule parameter (webdevsega)
@@ -43,6 +45,11 @@ Yii Framework 2 Change Log
 - Bug #11549: Fixed `ArrayHelper::getValue()` to work properly with float keys (zsounder, AnikanovD)
 - Bug #8644: Fixed trying to ENABLE/DISABLE TRIGGER ALL on a view in PostgreSQL (ricpelo)
 - Bug #11536: Fixed regression introduced in 2.0.8, where scalar value was not allowed in QueryBuilder `IN` condition anymore (cebe)
+- Bug #11693: Handle `QueryBuilder::batchInsert()` calls with no data to insert (rob006)
+- Bug #11672: Fixed `yii\validators\NumberValidator` erroring when value is an object without `__toString()` method (SamMousa)
+- Bug #11561: Fixed DI container throwing exceptions for optional dependencies (SamMousa)
+- Enh #11168: `yii\helpers\BaseHtml` now uses abstracted `booleanInput()` and `activeBooleanInput()` methods to render `radio()`, `checkbox()`, `activeRadio()` and `activeCheckbox()` (cesarnicola)
+- Bug #11822: Fixed exception on non-string value provided as CSRF token (cebe)
 
 2.0.8 April 28, 2016
 --------------------

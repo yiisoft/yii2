@@ -251,6 +251,27 @@ class UrlManagerTest extends TestCase
         $this->assertEquals('http://www.example.com?r=post%2Fview&id=1&title=sample+post', $url);
     }
 
+    public function testCreateAbsoluteUrlWithSuffix()
+    {
+        $manager = new UrlManager([
+            'baseUrl' => '/',
+            'scriptUrl' => '',
+            'hostInfo' => 'http://app.example.com',
+            'cache' => null,
+
+            'enablePrettyUrl' => true,
+            'showScriptName' => false,
+            'suffix' => '/',
+            'rules' => [
+                'http://app.example.com/login' => 'site/login',
+            ],
+        ]);
+        $url = $manager->createAbsoluteUrl(['site/login']);
+        $this->assertEquals('http://app.example.com/login/', $url);
+        $url = $manager->createUrl(['site/login']);
+        $this->assertEquals('http://app.example.com/login/', $url);
+    }
+
     public function testParseRequest()
     {
         $manager = new UrlManager(['cache' => null]);

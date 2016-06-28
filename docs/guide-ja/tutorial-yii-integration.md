@@ -144,7 +144,7 @@ require(__DIR__ . '/../components/Yii.php');
 
 // Yii 2 アプリケーションの構成
 $yii2Config = require(__DIR__ . '/../config/yii2/web.php');
-new yii\web\Application($yii2Config); // ここで run() を呼ばない
+new yii\web\Application($yii2Config); // ここで run() を呼ばない。yii2 app はサービスロケータとしてのみ使用される。
 
 // Yii 1 アプリケーションの構成
 $yii1Config = require(__DIR__ . '/../config/yii1/main.php');
@@ -168,7 +168,7 @@ class Yii extends \yii\BaseYii
 
 Yii::$classMap = include($yii2path . '/classes.php');
 // Yii 2 オートローダを Yii 1 によって登録
-Yii::registerAutoloader(['Yii', 'autoload']);
+Yii::registerAutoloader(['yii\BaseYii', 'autoload']);
 // 依存注入コンテナを作成
 Yii::$container = new yii\di\Container;
 ```

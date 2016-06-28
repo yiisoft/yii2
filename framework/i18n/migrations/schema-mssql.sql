@@ -27,3 +27,6 @@ CREATE TABLE [message]
 
 ALTER TABLE [message] ADD CONSTRAINT [pk_message_id_language] PRIMARY KEY ([id], [language]);
 ALTER TABLE [message] ADD CONSTRAINT [fk_message_source_message] FOREIGN KEY ([id]) REFERENCES [source_message] ([id]) ON UPDATE CASCADE ON DELETE NO ACTION;
+
+CREATE INDEX [idx_message_language] on [message] ([language]);
+CREATE INDEX [idx_source_message_category] on [source_message] ([category]);
