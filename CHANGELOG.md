@@ -42,6 +42,7 @@ Yii Framework 2 Change Log
 - Bug #11561: Fixed DI container throwing exceptions for optional dependencies (SamMousa)
 - Enh #11168: `yii\helpers\BaseHtml` now uses abstracted `booleanInput()` and `activeBooleanInput()` methods to render `radio()`, `checkbox()`, `activeRadio()` and `activeCheckbox()` (cesarnicola)
 - Bug #11822: Fixed exception on non-string value provided as CSRF token (cebe)
+- Enh #11850: Introduced `yii\widgets\Pjax::$submitEvent` to be able to customize event triggering PJAX form submit (Bvanleeuwen)
 
 2.0.8 April 28, 2016
 --------------------
