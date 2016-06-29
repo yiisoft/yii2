@@ -68,6 +68,11 @@ class Pjax extends Widget
      */
     public $formSelector;
     /**
+     * @var string The jQuery event selector that will be used to trigger the handler code on the form
+     * This defaults to submit.
+     */
+    public $eventSelector = 'submit';
+    /**
      * @var boolean whether to enable push state.
      */
     public $enablePushState = true;
@@ -189,7 +194,8 @@ class Pjax extends Widget
         }
         if ($this->formSelector !== false) {
             $formSelector = Json::htmlEncode($this->formSelector !== null ? $this->formSelector : '#' . $id . ' form[data-pjax]');
-            $js .= "\njQuery(document).on('submit', $formSelector, function (event) {jQuery.pjax.submit(event, '#$id', $options);});";
+            $eventSelector = Json::htmlEncode($this->eventSelector);
+            $js .= "\njQuery(document).on('$eventSelector', $formSelector, function (event) {jQuery.pjax.submit(event, '#$id', $options);});";
         }
         $view = $this->getView();
         PjaxAsset::register($view);
