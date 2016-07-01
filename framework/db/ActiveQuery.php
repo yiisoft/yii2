@@ -174,13 +174,17 @@ class ActiveQuery extends Query implements ActiveQueryInterface
                 // via relation
                 /* @var $viaQuery ActiveQuery */
                 list($viaName, $viaQuery) = $this->via;
-                if ($viaQuery->multiple) {
-                    $viaModels = $viaQuery->all();
-                    $this->primaryModel->populateRelation($viaName, $viaModels);
+                if ($this->primaryModel->isRelationPopulated($viaName)) {
+                    $viaModels = $this->primaryModel->$viaName;
                 } else {
-                    $model = $viaQuery->one();
-                    $this->primaryModel->populateRelation($viaName, $model);
-                    $viaModels = $model === null ? [] : [$model];
+                    if ($viaQuery->multiple) {
+                        $viaModels = $viaQuery->all();
+                        $this->primaryModel->populateRelation($viaName, $viaModels);
+                    } else {
+                        $model = $viaQuery->one();
+                        $this->primaryModel->populateRelation($viaName, $model);
+                        $viaModels = $model === null ? [] : [$model];
+                    }
                 }
                 $this->filterByModels($viaModels);
             } else {
