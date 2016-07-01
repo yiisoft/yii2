@@ -64,7 +64,7 @@ class ArrayDataProvider extends BaseDataProvider
      */
     public $allModels;
     /**
-     * @var string the name of the [[yii\base\Model|Model]] class that will be represented.
+     * @var string the name of the [[\yii\base\Model|Model]] class that will be represented.
      * This property is used to get columns' names.
      * @since 2.0.9
      */
