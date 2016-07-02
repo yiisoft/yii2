@@ -778,5 +778,44 @@ class ArrayHelperTest extends TestCase
         $this->assertFalse(ArrayHelper::isTraversable(null));
     }
 
-
+    public function testFilter()
+    {
+        $array = [
+            'A' => [
+                'B' => 1,
+                'C' => 2,
+            ],
+            'G' => 1,
+        ];
+        $this->assertEquals(ArrayHelper::filter($array, ['A']), [
+            'A' => [
+                'B' => 1,
+                'C' => 2,
+            ],
+        ]);
+        $this->assertEquals(ArrayHelper::filter($array, ['A.B']), [
+            'A' => [
+                'B' => 1,
+            ],
+        ]);
+        $this->assertEquals(ArrayHelper::filter($array, ['A', '!A.B']), [
+            'A' => [
+                'C' => 2,
+            ],
+        ]);
+        $this->assertEquals(ArrayHelper::filter($array, ['!A.B', 'A']), [
+            'A' => [
+                'C' => 2,
+            ],
+        ]);
+        $this->assertEquals(ArrayHelper::filter($array, ['A', 'G']), [
+            'A' => [
+                'B' => 1,
+                'C' => 2,
+            ],
+            'G' => 1,
+        ]);
+        $this->assertEquals(ArrayHelper::filter($array, ['X']), []);
+        $this->assertEquals(ArrayHelper::filter($array, ['X.Y']), []);
+    }
 }
