@@ -1702,9 +1702,11 @@ class BaseHtml
             } else {
                 $attrs = isset($options[$key]) ? $options[$key] : [];
                 $attrs['value'] = (string) $key;
-                $attrs['selected'] = $selection !== null &&
+                if (!array_key_exists('selected', $attrs)) {
+                    $attrs['selected'] = $selection !== null &&
                         (!ArrayHelper::isTraversable($selection) && !strcmp($key, $selection)
                         || ArrayHelper::isTraversable($selection) && ArrayHelper::isIn($key, $selection));
+                }
                 $text = $encode ? static::encode($value) : $value;
                 if ($encodeSpaces) {
                     $text = str_replace(' ', '&nbsp;', $text);

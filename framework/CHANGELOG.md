@@ -47,6 +47,7 @@ Yii Framework 2 Change Log
 - Bug #10681: Fixed active form `beforeValidate` wasn't triggered in some cases (lynicidn)
 - Enh #11857: `yii\filters\AccessRule::$verbs` could not be configured with any case of request method names (DrDeath72, samdark)
 - Bug #11863: Fixed usage of `mb_substr` with PHP < 5.4.8 where length of NULL was treated the same as 0 (samdark)
+- Bug #11865: Fixed setting `selected` for dropdown list using options (samdark)
 
 2.0.8 April 28, 2016
 --------------------
