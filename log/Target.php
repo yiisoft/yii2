@@ -58,7 +58,7 @@ abstract class Target extends Component
      * @var array list of the PHP predefined variables that should be logged in a message.
      * Note that a variable must be accessible via `$GLOBALS`. Otherwise it won't be logged.
      * Defaults to `['_GET', '_POST', '_FILES', '_COOKIE', '_SESSION', '_SERVER']`.
-     * Each element should be in one of next forms:
+     * Each element could be specified as one of the following:
      * - `var` - `var` will be logged.
      * - `var.key` - only `var[key]` key will be logged.
      * - `!var.key` - `var[key]` key will be excluded.
@@ -128,7 +128,7 @@ abstract class Target extends Component
      */
     protected function getContextMessage()
     {
-        $context = ArrayHelper::filter($GLOBALS,$this->logVars);
+        $context = ArrayHelper::filter($GLOBALS, $this->logVars);
         $result = [];
         foreach ($context as $key => $value) {
             $result[] = "\${$key} = " . VarDumper::dumpAsString($value);
