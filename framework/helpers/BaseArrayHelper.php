@@ -757,7 +757,7 @@ class BaseArrayHelper
     }
 
     /**
-     * Filters array by specified rules.
+     * Filters array according to rules specified.
      *
      * For example:
      * ```php
@@ -791,13 +791,14 @@ class BaseArrayHelper
      * // ]
      * ```
      *
-     * @param array $array Source array.
-     * @param array $filters List of array keys which should be passed or removed from results.
-     * Each item should contains one of the next rules:
-     * - `var` - `$array['var']` will be passed to result.
-     * - `var.key` = only `$array['var']['key'] will be passed to result.
+     * @param array $array Source array
+     * @param array $filters Rules that define array keys which should be left or removed from results.
+     * Each rule is:
+     * - `var` - `$array['var']` will be left in result.
+     * - `var.key` = only `$array['var']['key'] will be left in result.
      * - `!var.key` = `$array['var']['key'] will be removed from result.
-     * @return array Filtering array
+     * @return array Filtered array
+     * @since 2.0.9
      */
     public static function filter($array, $filters)
     {
@@ -827,19 +828,17 @@ class BaseArrayHelper
             if (!isset($array[$globalKey][$localKey])) {
                 continue;
             }
-            if (!isset($result[$globalKey])) {
+            if (!array_key_exists($globalKey, $result)) {
                 $result[$globalKey] = [];
             }
             $result[$globalKey][$localKey] = $array[$globalKey][$localKey];
         }
 
         foreach ($forbiddenVars as $var) {
-            $globalKey=$var[0];
-            $localKey=$var[1];
-            if (isset($result[$globalKey])) {
+            list($globalKey, $localKey) = $var;
+            if (array_key_exists($globalKey, $result)) {
                 unset($result[$globalKey][$localKey]);
             }
-
         }
 
         return $result;
