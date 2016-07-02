@@ -755,4 +755,93 @@ class BaseArrayHelper
             throw new InvalidParamException('Argument $needles must be an array or implement Traversable');
         }
     }
+
+    /**
+     * Filters array by specified rules.
+     *
+     * For example:
+     * ```php
+     * $array = [
+     *     'A' => [1, 2],
+     *     'B' => [
+     *         'C' => 1,
+     *         'D' => 2,
+     *     ],
+     *     'E' => 1,
+     * ];
+     *
+     * $result = \yii\helpers\ArrayHelper::filter($array, ['A']);
+     * // $result will be:
+     * // [
+     * //     'A' => [1, 2],
+     * // ]
+     *
+     * $result = \yii\helpers\ArrayHelper::filter($array, ['A', 'B.C']);
+     * // $result will be:
+     * // [
+     * //     'A' => [1, 2],
+     * //     'B' => ['C' => 1],
+     * // ]
+     * ```
+     *
+     * $result = \yii\helpers\ArrayHelper::filter($array, ['B', '!B.C']);
+     * // $result will be:
+     * // [
+     * //     'B' => ['D' => 2],
+     * // ]
+     * ```
+     *
+     * @param array $array Source array.
+     * @param array $filters List of array keys which should be passed or removed from results.
+     * Each item should contains one of the next rules:
+     * - `var` - `$array['var']` will be passed to result.
+     * - `var.key` = only `$array['var']['key'] will be passed to result.
+     * - `!var.key` = `$array['var']['key'] will be removed from result.
+     * @return array Filtering array
+     */
+    public static function filter($array, $filters)
+    {
+        $result = [];
+        $forbiddenVars = [];
+
+        foreach ($filters as $var) {
+            $keys = explode('.', $var);
+            $globalKey = $keys[0];
+            $localKey = isset($keys[1]) ? $keys[1] : null;
+
+            if ($globalKey[0] === '!') {
+                $forbiddenVars[] = [
+                    substr($globalKey, 1),
+                    $localKey,
+                ];
+                continue;
+            }
+
+            if (empty($array[$globalKey])) {
+                continue;
+            }
+            if ($localKey === null) {
+                $result[$globalKey] = $array[$globalKey];
+                continue;
+            }
+            if (!isset($array[$globalKey][$localKey])) {
+                continue;
+            }
+            if (!isset($result[$globalKey])) {
+                $result[$globalKey] = [];
+            }
+            $result[$globalKey][$localKey] = $array[$globalKey][$localKey];
+        }
+
+        foreach ($forbiddenVars as $var) {
+            $globalKey=$var[0];
+            $localKey=$var[1];
+            if (isset($result[$globalKey])) {
+                unset($result[$globalKey][$localKey]);
+            }
+
+        }
+
+        return $result;
+    }
 }
