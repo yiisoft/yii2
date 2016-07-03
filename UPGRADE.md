@@ -12,7 +12,7 @@ Make sure you have global install of latest version of composer asset plugin as 
 
 ```
 php composer.phar self-update
-php composer.phar global require "fxp/composer-asset-plugin:~1.1.1"
+php composer.phar global require "fxp/composer-asset-plugin:^1.2.0"
 ```
 
 Upgrade from Yii 2.0.8
