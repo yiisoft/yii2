@@ -47,7 +47,7 @@ Yii Framework 2 Change Log
 - Enh #11850: Introduced `yii\widgets\Pjax::$submitEvent` to be able to customize event triggering PJAX form submit (Bvanleeuwen)
 - Bug #11847: Fixed `yii\widgets\Pjax` to properly respond with partials when custom selector is used for container (pigochu, samdark)
 - Bug #10681: Fixed active form `beforeValidate` wasn't triggered in some cases (lynicidn)
-- Enh #11857: `yii\filters\AccessRule::$verbs` could not be configured with any case of request method names (DrDeath72, samdark)
+- Enh #11857: `yii\filters\AccessRule::$verbs` can now be configured in upper and lowercase (DrDeath72, samdark)
 - Bug #11863: Fixed usage of `mb_substr` with PHP < 5.4.8 where length of NULL was treated the same as 0 (samdark)
 - Bug #11865: Fixed setting `selected` for dropdown list using options (samdark)
 

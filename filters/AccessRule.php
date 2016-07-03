@@ -175,7 +175,7 @@ class AccessRule extends Component
     }
 
     /**
-     * @param string $verb the request method
+     * @param string $verb the request method in upper case.
      * @return boolean whether the rule applies to the request
      */
     protected function matchVerb($verb)
