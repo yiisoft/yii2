@@ -22,7 +22,6 @@ Yii Framework 2 Change Log
 - Enh #11729: Added `yii\grid\CheckboxColumn::$cssClass` property to specify a class added to checkbox input (thiagotalma)
 - Bug #11459: Fixed flash messages not destroyed when `session.auto_start = 1` set in php.ini (cartmanchen)
 - New: Added `yii\db\BaseActiveRecord::findOrNew($condition)` (Razzwan)
-
 - Enh #11462: Added support of filtering rules to `yii\log\Target::$logVar` (HaruAtari)
 - Enh #11462: Added `\yii\helpers\BaseArrayHelper::filter()` method (HaruAtari)
 - Bug #11498: Fixed inability to save serialized object into PostgreSQL binary column (klimov-paul)
