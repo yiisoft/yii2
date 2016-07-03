@@ -108,6 +108,15 @@ class AccessRuleTest extends \yiiunit\TestCase
 
         $request = $this->mockRequest('HEAD');
         $this->assertNull($rule->allows($action, $user, $request));
+
+        $request = $this->mockRequest('get');
+        $this->assertTrue($rule->allows($action, $user, $request));
+
+        $request = $this->mockRequest('post');
+        $this->assertTrue($rule->allows($action, $user, $request));
+
+        $request = $this->mockRequest('head');
+        $this->assertNull($rule->allows($action, $user, $request));
     }
 
     // TODO test match custom callback
