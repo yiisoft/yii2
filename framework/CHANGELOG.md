@@ -1446,6 +1446,7 @@ Yii Framework 2 Change Log
 - New: Added `yii\filters\RateLimiter` (qiangxue)
 - New: Added various authentication methods, including `HttpBasicAuth`, `HttpBearerAuth`, `QueryParamAuth`, and `CompositeAuth` (qiangxue)
 - New: Added `HtmlResponseFormatter` and `JsonResponseFormatter` (qiangxue)
+- New: Added `yii\db\BaseActiveRecord::findOrNew($condition)` (razzwan)
 
 
 2.0.0-alpha December 1, 2013
