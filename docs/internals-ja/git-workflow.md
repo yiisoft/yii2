@@ -27,7 +27,7 @@ Yii をクローンしたディレクトリ、通常は "yii2" に入って、�
 git remote add upstream git://github.com/yiisoft/yii2.git
 ```
 
-### 3. テスト環境を準備する
+### 3. テスト環境を準備する <span id="prepare-the-test-environment"></span
 
 以下のステップは、翻訳またはドキュメントだけに取り組みたい場合は、必要ではありません。
 
