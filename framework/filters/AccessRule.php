@@ -58,7 +58,6 @@ class AccessRule extends Component
     public $ips;
     /**
      * @var array list of request methods (e.g. `GET`, `POST`) that this rule applies to.
-     * The request methods must be specified in uppercase.
      * If not set or empty, it means this rule applies to all request methods.
      * @see \yii\web\Request::method
      */
@@ -181,7 +180,7 @@ class AccessRule extends Component
      */
     protected function matchVerb($verb)
     {
-        return empty($this->verbs) || in_array($verb, $this->verbs, true);
+        return empty($this->verbs) || in_array($verb, array_map('strtoupper', $this->verbs), true);
     }
 
     /**

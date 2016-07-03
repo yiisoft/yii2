@@ -182,7 +182,7 @@ Both methods can take one of the following parameter formats:
 - an associative array: the keys are column names and the values are the corresponding desired column values to 
   be looked for. Please refer to [Hash Format](db-query-builder.md#hash-format) for more details.
   
-The following code shows how theses methods can be used:
+The following code shows how these methods can be used:
 
 ```php
 // returns a single customer whose ID is 123

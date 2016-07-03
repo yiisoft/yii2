@@ -56,6 +56,10 @@ class ReleaseController extends Controller
      * @var bool whether to fetch latest tags.
      */
     public $update = false;
+    /**
+     * @var string override the default version. e.g. for major or patch releases.
+     */
+    public $version;
 
 
     public function options($actionID)
@@ -63,6 +67,7 @@ class ReleaseController extends Controller
         $options = ['basePath'];
         if ($actionID === 'release') {
             $options[] = 'dryRun';
+            $options[] = 'version';
         } elseif ($actionID === 'info') {
             $options[] = 'update';
         }
@@ -190,7 +195,17 @@ class ReleaseController extends Controller
 
         $this->validateWhat($what);
         $versions = $this->getCurrentVersions($what);
-        $newVersions = $this->getNextVersions($versions, self::PATCH);// TODO add support for minor
+
+        if ($this->version !== null) {
+            // if a version is explicitly given
+            $newVersions = [];
+            foreach($versions as $k => $v) {
+                $newVersions[$k] = $this->version;
+            }
+        } else {
+            // otherwise get next patch or minor
+            $newVersions = $this->getNextVersions($versions, self::PATCH);
+        }
 
         $this->stdout("You are about to prepare a new release for the following things:\n\n");
         $this->printWhat($what, $newVersions, $versions);
@@ -363,8 +378,10 @@ class ReleaseController extends Controller
         $this->stdout($h = "Preparing framework release version $version", Console::BOLD);
         $this->stdout("\n" . str_repeat('-', strlen($h)) . "\n\n", Console::BOLD);
 
-        $this->runGit('git checkout master', $frameworkPath); // TODO add compatibility for other release branches
-        $this->runGit('git pull', $frameworkPath); // TODO add compatibility for other release branches
+        if (!$this->confirm('Make sure you are on the right branch for this release and that it tracks the correct remote branch! Continue?')) {
+            exit(1);
+        }
+        $this->runGit('git pull', $frameworkPath);
 
         // checks
 
@@ -415,8 +432,8 @@ class ReleaseController extends Controller
         $this->stdout("\n\nHint: if you decide 'no' for any of the following, the command will not be executed. You may manually run them later if needed. E.g. try the release locally without pushing it.\n\n");
 
         $this->runGit("git commit -a -m \"release version $version\"", $frameworkPath);
-        $this->runGit("git tag -a $version -m\"version $version\"", $frameworkPath);
-        $this->runGit("git push origin master", $frameworkPath);
+        $this->runGit("git tag -a $version -m \"version $version\"", $frameworkPath);
+        $this->runGit("git push", $frameworkPath);
         $this->runGit("git push --tags", $frameworkPath);
 
         $this->stdout("\n\n");
@@ -467,7 +484,7 @@ class ReleaseController extends Controller
         $this->runGit("git diff --color", $frameworkPath);
         $this->stdout("\n\n");
         $this->runGit("git commit -a -m \"prepare for next release\"", $frameworkPath);
-        $this->runGit("git push origin master", $frameworkPath);
+        $this->runGit("git push", $frameworkPath);
 
         $this->stdout("\n\nDONE!", Console::FG_YELLOW, Console::BOLD);
 
@@ -492,8 +509,10 @@ class ReleaseController extends Controller
         $this->stdout($h = "Preparing release for application  $name  version $version", Console::BOLD);
         $this->stdout("\n" . str_repeat('-', strlen($h)) . "\n\n", Console::BOLD);
 
-        $this->runGit('git checkout master', $path); // TODO add compatibility for other release branches
-        $this->runGit('git pull', $path); // TODO add compatibility for other release branches
+        if (!$this->confirm('Make sure you are on the right branch for this release and that it tracks the correct remote branch! Continue?')) {
+            exit(1);
+        }
+        $this->runGit('git pull', $path);
 
         // adjustments
 
@@ -526,8 +545,8 @@ class ReleaseController extends Controller
         $this->stdout("\n\nHint: if you decide 'no' for any of the following, the command will not be executed. You may manually run them later if needed. E.g. try the release locally without pushing it.\n\n");
 
         $this->runGit("git commit -a -m \"release version $version\"", $path);
-        $this->runGit("git tag -a $version -m\"version $version\"", $path);
-        $this->runGit("git push origin master", $path);
+        $this->runGit("git tag -a $version -m \"version $version\"", $path);
+        $this->runGit("git push", $path);
         $this->runGit("git push --tags", $path);
 
         $this->stdout("\n\n");
@@ -551,7 +570,7 @@ class ReleaseController extends Controller
         $this->runGit("git diff --color", $path);
         $this->stdout("\n\n");
         $this->runGit("git commit -a -m \"prepare for next release\"", $path);
-        $this->runGit("git push origin master", $path);
+        $this->runGit("git push", $path);
 
         $this->stdout("\n\nDONE!", Console::FG_YELLOW, Console::BOLD);
 
@@ -606,8 +625,10 @@ class ReleaseController extends Controller
         $this->stdout($h = "Preparing release for extension  $name  version $version", Console::BOLD);
         $this->stdout("\n" . str_repeat('-', strlen($h)) . "\n\n", Console::BOLD);
 
-        $this->runGit('git checkout master', $path); // TODO add compatibility for other release branches
-        $this->runGit('git pull', $path); // TODO add compatibility for other release branches
+        if (!$this->confirm('Make sure you are on the right branch for this release and that it tracks the correct remote branch! Continue?')) {
+            exit(1);
+        }
+        $this->runGit('git pull', $path);
 
         // adjustments
 
@@ -640,8 +661,8 @@ class ReleaseController extends Controller
         $this->stdout("\n\nHint: if you decide 'no' for any of the following, the command will not be executed. You may manually run them later if needed. E.g. try the release locally without pushing it.\n\n");
 
         $this->runGit("git commit -a -m \"release version $version\"", $path);
-        $this->runGit("git tag -a $version -m\"version $version\"", $path);
-        $this->runGit("git push origin master", $path);
+        $this->runGit("git tag -a $version -m \"version $version\"", $path);
+        $this->runGit("git push", $path);
         $this->runGit("git push --tags", $path);
 
         $this->stdout("\n\n");
@@ -664,7 +685,7 @@ class ReleaseController extends Controller
         $this->runGit("git diff --color", $path);
         $this->stdout("\n\n");
         $this->runGit("git commit -a -m \"prepare for next release\"", $path);
-        $this->runGit("git push origin master", $path);
+        $this->runGit("git push", $path);
 
         $this->stdout("\n\nDONE!", Console::FG_YELLOW, Console::BOLD);
 

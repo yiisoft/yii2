@@ -29,7 +29,7 @@ Change to the directory where you cloned Yii, normally, "yii2". Then enter the f
 git remote add upstream git://github.com/yiisoft/yii2.git
 ```
 
-### 3. Prepare the testing environment
+### 3. Prepare the testing environment <span id="prepare-the-test-environment"></span>
 
 The following steps are not necessary if you want to work only on translations or documentation.
 

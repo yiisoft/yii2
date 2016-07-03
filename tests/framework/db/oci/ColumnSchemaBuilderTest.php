@@ -1,14 +1,16 @@
 <?php
+
 namespace yiiunit\framework\db\oci;
 
 use yii\db\oci\ColumnSchemaBuilder;
 use yii\db\Schema;
-use \yiiunit\framework\db\ColumnSchemaBuilderTest as BaseColumnSchemaBuilderTest;
 
 /**
  * ColumnSchemaBuilderTest tests ColumnSchemaBuilder for Oracle
+ * @group db
+ * @group oci
  */
-class ColumnSchemaBuilderTest extends BaseColumnSchemaBuilderTest
+class ColumnSchemaBuilderTest extends \yiiunit\framework\db\ColumnSchemaBuilderTest
 {
     /**
      * @param string $type
@@ -23,7 +25,7 @@ class ColumnSchemaBuilderTest extends BaseColumnSchemaBuilderTest
     /**
      * @return array
      */
-    public function unsignedProvider()
+    public function typesProvider()
     {
         return [
             ['integer UNSIGNED', Schema::TYPE_INTEGER, null, [

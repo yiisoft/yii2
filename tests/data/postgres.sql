@@ -128,7 +128,8 @@ CREATE TABLE "type" (
   bool_col boolean NOT NULL,
   bool_col2 boolean DEFAULT TRUE,
   ts_default TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  bit_col BIT(8) NOT NULL DEFAULT B'10000010'
+  bit_col BIT(8) NOT NULL DEFAULT B'10000010',
+  bigint_col BIGINT
 );
 
 CREATE TABLE "bool_values" (

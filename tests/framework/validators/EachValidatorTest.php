@@ -107,6 +107,20 @@ class EachValidatorTest extends TestCase
 
         $validator = new EachValidator(['rule' => ['integer', 'skipOnEmpty' => false]]);
         $this->assertFalse($validator->validate(['']));
+
+        $model = FakedValidationModel::createWithAttributes([
+            'attr_one' => [
+                ''
+            ],
+        ]);
+        $validator = new EachValidator(['rule' => ['integer', 'skipOnEmpty' => true]]);
+        $validator->validateAttribute($model, 'attr_one');
+        $this->assertFalse($model->hasErrors('attr_one'));
+
+        $model->clearErrors();
+        $validator = new EachValidator(['rule' => ['integer', 'skipOnEmpty' => false]]);
+        $validator->validateAttribute($model, 'attr_one');
+        $this->assertTrue($model->hasErrors('attr_one'));
     }
 
     /**

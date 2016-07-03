@@ -78,7 +78,7 @@ class FixtureController extends Controller
     {
         return array_merge(parent::optionAliases(), [
             'g' => 'globalFixtures',
-            'n' => 'namespace'
+            'n' => 'namespace',
         ]);
     }
 
@@ -490,5 +490,4 @@ class FixtureController extends Controller
     {
         return Yii::getAlias('@' . str_replace('\\', '/', $this->namespace));
     }
-
 }

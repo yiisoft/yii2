@@ -290,9 +290,9 @@
                 deferreds = deferredArray(),
                 submitting = data.submitting;
 
+            var event = $.Event(events.beforeValidate);
+            $form.trigger(event, [messages, deferreds]);
             if (submitting) {
-                var event = $.Event(events.beforeValidate);
-                $form.trigger(event, [messages, deferreds]);
                 if (event.result === false) {
                     data.submitting = false;
                     submitFinalize($form);
