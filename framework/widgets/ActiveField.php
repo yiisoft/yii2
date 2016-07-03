@@ -41,7 +41,8 @@ class ActiveField extends Component
      * If a value is null, the corresponding attribute will not be rendered.
      * The following special options are recognized:
      *
-     * - tag: the tag name of the container element. Defaults to "div".
+     * - tag: the tag name of the container element. Defaults to "div". Setting it to `false` will not render a container tag.
+     *   See also [[\yii\helpers\Html::tag()]].
      *
      * If you set a custom `id` for the container element, you may need to adjust the [[$selectors]] accordingly.
      *
@@ -67,8 +68,9 @@ class ActiveField extends Component
      * merged with this property when rendering the error tag.
      * The following special options are recognized:
      *
-     * - tag: the tag name of the container element. Defaults to "div".
-     * - encode: whether to encode the error output. Defaults to true.
+     * - tag: the tag name of the container element. Defaults to "div". Setting it to `false` will not render a container tag.
+     *   See also [[\yii\helpers\Html::tag()]].
+     * - encode: whether to encode the error output. Defaults to `true`.
      *
      * If you set a custom `id` for the error element, you may need to adjust the [[$selectors]] accordingly.
      *
@@ -86,7 +88,8 @@ class ActiveField extends Component
      * merged with this property when rendering the hint tag.
      * The following special options are recognized:
      *
-     * - tag: the tag name of the container element. Defaults to "div".
+     * - tag: the tag name of the container element. Defaults to "div". Setting it to `false` will not render a container tag.
+     *   See also [[\yii\helpers\Html::tag()]].
      *
      * @see \yii\helpers\Html::renderTagAttributes() for details on how attributes are being rendered.
      */
@@ -281,6 +284,7 @@ class ActiveField extends Component
      * The following options are specially handled:
      *
      * - tag: this specifies the tag name. If not set, "div" will be used.
+     *   See also [[\yii\helpers\Html::tag()]].
      *
      * If you set a custom `id` for the error element, you may need to adjust the [[$selectors]] accordingly.
      * @see $errorOptions
@@ -307,6 +311,7 @@ class ActiveField extends Component
      * The following options are specially handled:
      *
      * - tag: this specifies the tag name. If not set, "div" will be used.
+     *   See also [[\yii\helpers\Html::tag()]].
      *
      * @return $this the field object itself
      */
