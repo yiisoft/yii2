@@ -9,6 +9,7 @@ Yii Framework 2 Change Log
 - Enh #11414: Files specified as `null` in `yii\web\AssetBundle` won't be registered (Razzwan)
 - Enh #11432: Added HTTP status 421 "Misdirected Request" to list of statuses in `yii\web\Response` (dasmfm)
 - Bug #11459: Fixed flash messages not destroyed when `session.auto_start = 1` set in php.ini (cartmanchen)
+- New: Added `yii\db\BaseActiveRecord::findOrNew($condition)` (razzwan)
 
 
 2.0.8 April 28, 2016
@@ -1446,7 +1447,6 @@ Yii Framework 2 Change Log
 - New: Added `yii\filters\RateLimiter` (qiangxue)
 - New: Added various authentication methods, including `HttpBasicAuth`, `HttpBearerAuth`, `QueryParamAuth`, and `CompositeAuth` (qiangxue)
 - New: Added `HtmlResponseFormatter` and `JsonResponseFormatter` (qiangxue)
-- New: Added `yii\db\BaseActiveRecord::findOrNew($condition)` (razzwan)
 
 
 2.0.0-alpha December 1, 2013
