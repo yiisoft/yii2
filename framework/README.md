@@ -15,7 +15,7 @@ The preferred way to install the Yii framework is through [composer](http://getc
 Either run
 
 ```
-composer global require "fxp/composer-asset-plugin:~1.1.1"
+composer global require "fxp/composer-asset-plugin:^1.2.0"
 composer require yiisoft/yii2
 ```
 
