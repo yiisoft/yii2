@@ -51,7 +51,7 @@ Making an extension release includes only one command (e.g. for redis):
     ./build release redis
 
 The default release command will release a new minor version from the currently checked out branch.
-To release another version thatn the default, you have to specify it using the `--version` option, e.g.
+To release another version than the default, you have to specify it using the `--version` option, e.g.
 `--version=2.1.0`, or `--version=2.1.0-beta`.
 
 
