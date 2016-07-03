@@ -49,6 +49,7 @@ class Pjax extends Widget
      *
      * - `tag`: string, the tag name for the container. Defaults to `div`
      *   This option is available since version 2.0.7.
+     *   See also [[\yii\helpers\Html::tag()]].
      *
      * @see \yii\helpers\Html::renderTagAttributes() for details on how attributes are being rendered.
      */
