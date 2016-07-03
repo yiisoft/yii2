@@ -175,12 +175,12 @@ class AccessRule extends Component
     }
 
     /**
-     * @param string $verb the request method in upper case.
+     * @param string $verb the request method.
      * @return boolean whether the rule applies to the request
      */
     protected function matchVerb($verb)
     {
-        return empty($this->verbs) || in_array($verb, array_map('strtoupper', $this->verbs), true);
+        return empty($this->verbs) || in_array(strtoupper($verb), array_map('strtoupper', $this->verbs), true);
     }
 
     /**
