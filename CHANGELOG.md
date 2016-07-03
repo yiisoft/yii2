@@ -54,6 +54,7 @@ Yii Framework 2 Change Log
 - Bug #11865: Fixed setting `selected` for dropdown list using options (samdark)
 - Bug #11528: Fixed MessageFormatter construction exception caught for PHP 7 compatibility (subdee, cebe)
 
+- Bug #11878: Fixed i18n gettext fallback language message loading (stevekr)
 
 2.0.8 April 28, 2016
 --------------------
