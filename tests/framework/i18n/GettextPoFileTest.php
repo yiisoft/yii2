@@ -10,6 +10,13 @@ use yiiunit\TestCase;
  */
 class GettextPoFileTest extends TestCase
 {
+
+    protected function setUp()
+    {
+        parent::setUp();
+        $this->mockApplication();
+    }
+
     public function testLoad()
     {
         $poFile = new GettextPoFile();
