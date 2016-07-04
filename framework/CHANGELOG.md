@@ -55,6 +55,7 @@ Yii Framework 2 Change Log
 - Bug #11528: Fixed MessageFormatter construction exception caught for PHP 7 compatibility (subdee, cebe)
 
 - Bug #11878: Fixed i18n gettext fallback language message loading (stevekr)
+- Enh #11212: Added headers to PO file in `yii\i18n\GettextPoFile::save()` (stevekr)
 
 2.0.8 April 28, 2016
 --------------------
