@@ -185,7 +185,7 @@ A list of all available methods for defining the column types is available in th
 
 Since version 2.0.7 migration console provides a convenient way to create migrations.
 
-If the migration name is of a special form, for example `create_xxx_table` then the generated migration
+If the migration name is of a special form, for example `create_xxx_table` or `drop_xxx_table` then the generated migration
 file will contain extra code, in this case for creating/dropping tables.
 In the following all variants of this feature are described.
 
