@@ -17,8 +17,18 @@ Yii 为包括 [`yii2-basic`](https://github.com/yiisoft/yii2/tree/master/apps/ba
 为了运行测试用例，你需要安装 [Codeception](https://github.com/Codeception/Codeception) 。
 一个较好的安装方式是：
 
+For the local installation use following commands:
+
 ```
 composer global require "codeception/codeception=2.0.*"
+composer global require "codeception/specify=*"
+composer global require "codeception/verify=*"
+```
+
+For the global installation you will need to use `global` directive:
+
+```
+composer global require "codeception/codeception=2.1.*"
 composer global require "codeception/specify=*"
 composer global require "codeception/verify=*"
 ```
@@ -31,3 +41,9 @@ Changed current directory to <directory>
 
 然后，将 `<directory>/vendor/bin` 增加到你的 `PATH` 环境变量中。现在，
 我们可以在命令行中全局的使用 `codecept` 命令了。
+
+> Note: global installation allows you use Codeception for all projects you are working on your development machine and
+  allows running `codecept` shell command globally without specifying path. However, such approach may be inappropriate,
+  for example, if 2 different projects require different versions of Codeception installed.
+  For the simplicity all shell commands related to the tests running around this guide are written assuming Codeception
+  has been installed globally.

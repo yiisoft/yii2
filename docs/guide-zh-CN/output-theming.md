@@ -10,12 +10,12 @@
 
 - [[yii\base\Theme::basePath]]：指定包含主题资源（CSS, JS, images, 等等）的基准目录。
 - [[yii\base\Theme::baseUrl]]：指定主题资源的基准URL。
-- [[yii\base\Theme::pathMap]]：指定视图文件的替换规则。更多细节将在下面介绍。
+- [[yii\base\Theme::pathMap]]：指定视图文件的替换规则。
+  更多细节将在下面介绍。
 
-
-例如，如果你在 `SiteController` 里面调用 `$this->render('about')`，那你将渲染视图文件 `@app/views/site/about.php`。
-然而，如果你在下面的应用配置中开启了主题功能，那么`@app/themes/basic/site/about.php` 文件将会被渲染。
-
+例如，如果你在 `SiteController` 里面调用 `$this->render('about')`，那你将渲染
+视图文件 `@app/views/site/about.php` 。然而，如果你在下面的应用配置中开启了主
+题功能，那么 `@app/themes/basic/site/about.php` 文件将会被渲染。
 
 ```php
 return [
@@ -34,7 +34,7 @@ return [
 ```
 
 > 信息：主题支持路径别名。当我们在做视图替换的时候，
-路径别名将被转换成实际的文件路径或者URL。
+  路径别名将被转换成实际的文件路径或者URL。
 
 你可以通过 [[yii\base\View::theme]] 属性访问 [[yii\base\Theme]] 对象。例如，在一个视图文件里，你可以写下面的代码，
 因为 `$this` 指向视图对象：

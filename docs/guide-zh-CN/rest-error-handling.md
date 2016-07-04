@@ -1,7 +1,8 @@
 错误处理
 ==============
 
-处理一个 RESTful API 请求时， 如果有一个用户请求错误或服务器发生意外时， 你可以简单地抛出一个异常来通知用户出错了。
+处理一个 RESTful API 请求时， 如果有一个用户请求错误或服务器发生意外时，
+你可以简单地抛出一个异常来通知用户出错了。
 如果你能找出错误的原因 (例如，所请求的资源不存在)，你应该
 考虑抛出一个适当的HTTP状态代码的异常 (例如， [[yii\web\NotFoundHttpException]]
 意味着一个404 HTTP状态代码)。 Yii 将通过HTTP状态码和文本
@@ -16,7 +17,6 @@ Transfer-Encoding: chunked
 Content-Type: application/json; charset=UTF-8
 
 {
-    "type": "yii\\web\\NotFoundHttpException",
     "name": "Not Found Exception",
     "message": "The requested resource was not found.",
     "code": 0,
@@ -41,8 +41,6 @@ Content-Type: application/json; charset=UTF-8
 * `422`: 数据验证失败 (例如，响应一个 `POST` 请求)。 请检查响应体内详细的错误消息。
 * `429`: 请求过多。 由于限速请求被拒绝。
 * `500`: 内部服务器错误。 这可能是由于内部程序错误引起的。
-<<<<<<< .merge_file_a05756
-=======
 
 
 ## 自定义错误响应 <span id="customizing-error-response"></span>
@@ -94,4 +92,3 @@ return [
 
 当 `suppress_response_code` 作为 `GET` 参数传递时，上面的代码
 将重新按照自己定义的格式响应（无论失败还是成功）。
->>>>>>> .merge_file_a06412

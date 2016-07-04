@@ -5,13 +5,15 @@
 例如访问控制过滤器可在动作执行之前来控制特殊终端用户是否有权限执行动作，
 内容压缩过滤器可在动作执行之后发给终端用户之前压缩响应内容。
 
-过滤器可包含 预过滤（过滤逻辑在动作*之前*） 或 后过滤（过滤逻辑在动作*之后*），也可同时包含两者。
+过滤器可包含 预过滤（过滤逻辑在动作*之前*） 或 后过滤（过滤逻辑在动作*之后*），
+也可同时包含两者。
 
 
 ## 使用过滤器 <span id="using-filters"></span>
 
 过滤器本质上是一类特殊的 [行为](concept-behaviors.md)，所以使用过滤器和 [使用 行为](concept-behaviors.md#attaching-behaviors)一样。
-可以在控制器类中覆盖它的 [[yii\base\Controller::behaviors()|behaviors()]] 方法来申明过滤器，如下所示：
+可以在控制器类中覆盖它的 [[yii\base\Controller::behaviors()|behaviors()]] 方法来申明过滤器，
+如下所示：
 
 ```php
 public function behaviors()
@@ -29,21 +31,20 @@ public function behaviors()
 }
 ```
 
-控制器类的过滤器默认应用到该类的 *所有* 动作，你可以配置[[yii\base\ActionFilter::only|only]]属性明确指定控制器应用到哪些动作。
-在上述例子中，`HttpCache` 过滤器只应用到`index`和`view`动作。
+控制器类的过滤器默认应用到该类的 *所有* 动作，
+你可以配置[[yii\base\ActionFilter::only|only]]属性明确指定控制器应用到哪些动作。
+在上述例子中，
+`HttpCache` 过滤器只应用到`index`和`view`动作。
 也可以配置[[yii\base\ActionFilter::except|except]]属性使一些动作不执行过滤器。
 
 除了控制器外，可在 [模块](structure-modules.md)或[应用主体](structure-applications.md) 中申明过滤器。
 申明之后，过滤器会应用到所属该模块或应用主体的 *所有* 控制器动作，
-除非像上述一样配置过滤器的 [[yii\base\ActionFilter::only|only]] 和 [[yii\base\ActionFilter::except|except]] 属性。
+除非像上述一样配置过滤器的 [[yii\base\ActionFilter::only|only]] 
+和 [[yii\base\ActionFilter::except|except]] 属性。
 
-<<<<<<< .merge_file_a04372
-> 补充: 在模块或应用主体中申明过滤器，在[[yii\base\ActionFilter::only|only]] 和 [[yii\base\ActionFilter::except|except]]
-=======
-> Info: 在模块或应用主体中申明过滤器，在[[yii\base\ActionFilter::only|only]] 和 [[yii\base\ActionFilter::except|except]]
->>>>>>> .merge_file_a06364
+> 注意: 在模块或应用主体中申明过滤器，在[[yii\base\ActionFilter::only|only]] 和 [[yii\base\ActionFilter::except|except]]
   属性中使用[路由](structure-controllers.md#routes) 代替动作ID，
-  因为在模块或应用主体中只用动作ID并不能唯一指定到具体动作。.
+  因为在模块或应用主体中只用动作ID并不能唯一指定到具体动作。
 
 当一个动作有多个过滤器时，根据以下规则先后执行：
 
@@ -51,7 +52,8 @@ public function behaviors()
     - 按顺序执行应用主体中`behaviors()`列出的过滤器。
     - 按顺序执行模块中`behaviors()`列出的过滤器。
     - 按顺序执行控制器中`behaviors()`列出的过滤器。
-    - 如果任意过滤器终止动作执行，后面的过滤器（包括预过滤和后过滤）不再执行。
+    - 如果任意过滤器终止动作执行，
+      后面的过滤器（包括预过滤和后过滤）不再执行。
 * 成功通过预过滤后执行动作。
 * 后过滤
     - 倒序执行控制器中`behaviors()`列出的过滤器。
@@ -97,16 +99,20 @@ class ActionTimeFilter extends ActionFilter
 
 ## 核心过滤器 <span id="core-filters"></span>
 
-Yii提供了一组常用过滤器，在`yii\filters`命名空间下，接下来我们简要介绍这些过滤器。
+Yii提供了一组常用过滤器，在`yii\filters`命名空间下，
+接下来我们简要介绍这些过滤器。
 
 
 ### [[yii\filters\AccessControl|AccessControl]] <span id="access-control"></span>
 
 AccessControl提供基于[[yii\filters\AccessControl::rules|rules]]规则的访问控制。
-特别是在动作执行之前，访问控制会检测所有规则并找到第一个符合上下文的变量（比如用户IP地址、登录状态等等）的规则，
-来决定允许还是拒绝请求动作的执行，如果没有规则符合，访问就会被拒绝。
+特别是在动作执行之前，
+访问控制会检测所有规则并找到第一个符合上下文的变量（比如用户IP地址、登录状态等等）的规则，
+来决定允许还是拒绝请求动作的执行，
+如果没有规则符合，访问就会被拒绝。
 
-如下示例表示表示允许已认证用户访问`create` 和 `update` 动作，拒绝其他用户访问这两个动作。
+如下示例表示表示允许已认证用户访问`create` 和 `update` 动作，
+拒绝其他用户访问这两个动作。
 
 ```php
 use yii\filters\AccessControl;
@@ -136,9 +142,11 @@ public function behaviors()
 ### 认证方法过滤器 <span id="auth-method-filters"></span>
 
 认证方法过滤器通过[HTTP Basic Auth](http://en.wikipedia.org/wiki/Basic_access_authentication)或[OAuth 2](http://oauth.net/2/)
-来认证一个用户，认证方法过滤器类在 `yii\filters\auth` 命名空间下。
+来认证一个用户，
+认证方法过滤器类在 `yii\filters\auth` 命名空间下。
 
-如下示例表示可使用[[yii\filters\auth\HttpBasicAuth]]来认证一个用户，它使用基于HTTP基础认证方法的令牌。
+如下示例表示可使用[[yii\filters\auth\HttpBasicAuth]]来认证一个用户，
+它使用基于HTTP基础认证方法的令牌。
 注意为了可运行，[[yii\web\User::identityClass|user identity class]] 类必须
 实现 [[yii\web\IdentityInterface::findIdentityByAccessToken()|findIdentityByAccessToken()]]方法。
 
@@ -155,7 +163,8 @@ public function behaviors()
 }
 ```
 
-认证方法过滤器通常在实现RESTful API中使用，更多关于访问控制的详情请参阅 RESTful [认证](rest-authentication.md) 一节。
+认证方法过滤器通常在实现RESTful API中使用，
+更多关于访问控制的详情请参阅 RESTful [认证](rest-authentication.md) 一节。
 
 
 ### [[yii\filters\ContentNegotiator|ContentNegotiator]] <span id="content-negotiator"></span>
@@ -163,7 +172,8 @@ public function behaviors()
 ContentNegotiator支持响应内容格式处理和语言处理。
 通过检查 `GET` 参数和 `Accept` HTTP头部来决定响应内容格式和语言。
 
-如下示例，配置ContentNegotiator支持JSON和XML响应格式和英语（美国）和德语。
+如下示例，配置ContentNegotiator支持JSON和XML响应格式
+和英语（美国）和德语。
 
 ```php
 use yii\filters\ContentNegotiator;
@@ -188,8 +198,10 @@ public function behaviors()
 ```
 
 在[应用主体生命周期](structure-applications.md#application-lifecycle)过程中检测响应格式和语言简单很多，
-因此ContentNegotiator设计可被[引导启动组件](structure-applications.md#bootstrap)调用的过滤器。
-如下例所示可以将它配置在[应用主体配置](structure-applications.md#application-configurations)。
+因此ContentNegotiator设计可被
+[引导启动组件](structure-applications.md#bootstrap)调用的过滤器。
+如下例所示可以将它配置在
+[应用主体配置](structure-applications.md#application-configurations)。
 
 ```php
 use yii\filters\ContentNegotiator;
@@ -212,17 +224,15 @@ use yii\web\Response;
 ];
 ```
 
-<<<<<<< .merge_file_a04372
-> 补充: 如果请求中没有检测到内容格式和语言，使用[[formats]]和[[languages]]第一个配置项。
-=======
-> Info: 如果请求中没有检测到内容格式和语言，使用[[formats]]和[[languages]]第一个配置项。
->>>>>>> .merge_file_a06364
+> 补充: 如果请求中没有检测到内容格式和语言，
+  使用[[formats]]和[[languages]]第一个配置项。
 
 
 
 ### [[yii\filters\HttpCache|HttpCache]] <span id="http-cache"></span>
 
-HttpCache利用`Last-Modified` 和 `Etag` HTTP头实现客户端缓存。例如：
+HttpCache利用`Last-Modified` 和 `Etag` HTTP头实现客户端缓存。
+例如：
 
 ```php
 use yii\filters\HttpCache;
@@ -248,7 +258,8 @@ public function behaviors()
 ### [[yii\filters\PageCache|PageCache]] <span id="page-cache"></span>
 
 PageCache实现服务器端整个页面的缓存。如下示例所示，PageCache应用在`index`动作，
-缓存整个页面60秒或`post`表的记录数发生变化。它也会根据不同应用语言保存不同的页面版本。
+缓存整个页面60秒或`post`表的记录数发生变化。
+它也会根据不同应用语言保存不同的页面版本。
 
 ```php
 use yii\filters\PageCache;
@@ -279,12 +290,14 @@ public function behaviors()
 ### [[yii\filters\RateLimiter|RateLimiter]] <span id="rate-limiter"></span>
 
 RateLimiter 根据 [漏桶算法](http://en.wikipedia.org/wiki/Leaky_bucket) 来实现速率限制。
-主要用在实现RESTful APIs，更多关于该过滤器详情请参阅 [Rate Limiting](rest-rate-limiting.md) 一节。
+主要用在实现RESTful APIs，
+更多关于该过滤器详情请参阅 [Rate Limiting](rest-rate-limiting.md) 一节。
 
 
 ### [[yii\filters\VerbFilter|VerbFilter]] <span id="verb-filter"></span>
 
-VerbFilter检查请求动作的HTTP请求方式是否允许执行，如果不允许，会抛出HTTP 405异常。
+VerbFilter检查请求动作的HTTP请求方式是否允许执行，
+如果不允许，会抛出HTTP 405异常。
 如下示例，VerbFilter指定CRUD动作所允许的请求方式。
 
 ```php
@@ -311,10 +324,12 @@ public function behaviors()
 
 跨域资源共享 [CORS](https://developer.mozilla.org/fr/docs/HTTP/Access_control_CORS) 机制允许一个网页的许多资源（例如字体、JavaScript等）
 这些资源可以通过其他域名访问获取。
-特别是JavaScript's AJAX 调用可使用 XMLHttpRequest 机制，由于同源安全策略该跨域请求会被网页浏览器禁止.
+特别是JavaScript's AJAX 调用可使用 XMLHttpRequest 机制，
+由于同源安全策略该跨域请求会被网页浏览器禁止.
 CORS定义浏览器和服务器交互时哪些跨域请求允许和禁止。
 
-[[yii\filters\Cors|Cors filter]] 应在 授权 / 认证 过滤器之前定义，以保证CORS头部被发送。
+[[yii\filters\Cors|Cors filter]] 应在 授权 / 认证 过滤器之前定义，
+以保证CORS头部被发送。
 
 ```php
 use yii\filters\Cors;
@@ -358,7 +373,8 @@ public function behaviors()
 }
 ```
 
-可以覆盖默认参数为每个动作调整CORS 头部。例如，为`login`动作增加`Access-Control-Allow-Credentials`参数如下所示：
+可以覆盖默认参数为每个动作调整CORS 头部。例如，
+为`login`动作增加`Access-Control-Allow-Credentials`参数如下所示：
 
 ```php
 use yii\filters\Cors;

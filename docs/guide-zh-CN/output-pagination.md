@@ -1,45 +1,72 @@
 分页
 ==========
 
-当一次要在一个页面上显示很多数据时，通过需要将其分为
-几部分，每个部分都包含一些数据列表并且一次只显示一部分。这些部分在网页上被称为
-分页。
+当一次要在一个页面上显示很多数据时，通过需要将其分为几部分，每个部分都包含一些数据
+列表并且一次只显示一部分。这些部分在网页上被称为 *分页*。
   
-如果你使用 [数据提供者](output-data-providers.md) 和 [数据小部件](output-data-widgets.md) 中之一，
-分页已经自动为你整理。否则，你需要创建 [[\yii\data\Pagination]]
-对象为其填充数据，例如 [[\yii\data\Pagination::$totalCount|总记录数]]，
-[[\yii\data\Pagination::$pageSize|每页数量]] 和 [[\yii\data\Pagination::$page|当前页码]]，在
-查询中使用它并且填充到 [[\yii\widgets\LinkPager|链接分页]]。
+Yii uses a [[yii\data\Pagination]] object to represent the information about a pagination scheme. In particular,
 
+* [[yii\data\Pagination::$totalCount|total count]] specifies the total number of data items. Note that this
+  is usually much more than the number of data items needed to display on a single page.
+* [[yii\data\Pagination::$pageSize|page size]] specifies how many data items each page contains. The default
+  value is 20.
+* [[yii\data\Pagination::$page|current page]] gives the current page number (zero-based). The default value
+  value is 0, meaning the first page.
 
-首先在控制器的动作中，我们创建分页对象并且为其填充数据：
+With a fully specified [[yii\data\Pagination]] object, you can retrieve and display data partially. For example,
+if you are fetching data from a database, you can specify the `OFFSET` and `LIMIT` clause of the DB query with
+the corresponding values provided by the pagination. Below is an example, 
 
 ```php
-function actionIndex()
-{
-    $query = Article::find()->where(['status' => 1]);
-    $countQuery = clone $query;
-    $pages = new Pagination(['totalCount' => $countQuery->count()]);
-    $models = $query->offset($pages->offset)
-        ->limit($pages->limit)
-        ->all();
+use yii\data\Pagination;
 
-    return $this->render('index', [
-         'models' => $models,
-         'pages' => $pages,
-    ]);
-}
+// build a DB query to get all articles with status = 1
+$query = Article::find()->where(['status' => 1]);
+
+// get the total number of articles (but do not fetch the article data yet)
+$count = $query->count();
+
+// create a pagination object with the total count
+$pagination = new Pagination(['totalCount' => $count]);
+
+// limit the query using the pagination and retrieve the articles
+$articles = $query->offset($pagination->offset)
+    ->limit($pagination->limit)
+    ->all();
 ```
 
-其次在视图中我们输出的模板为当前页并通过分页对象链接到该页：
+Which page of articles will be returned in the above example? It depends on whether a query parameter named `page`
+is given. By default, the pagination will attempt to set the [[yii\data\Pagination::$page|current page]] to be
+the value of the `page` parameter. If the parameter is not provided, then it will default to 0.
+
+To facilitate building the UI element that supports pagination, Yii provides the [[yii\widgets\LinkPager]] widget
+that displays a list of page buttons upon which users can click to indicate which page of data should be displayed.
+The widget takes a pagination object so that it knows what is the current page and how many page buttons should
+be displayed. For example,
 
 ```php
-foreach ($models as $model) {
-    // 在这里显示 $model
-}
+use yii\widgets\LinkPager;
 
-// 显示分页
 echo LinkPager::widget([
-    'pagination' => $pages,
+    'pagination' => $pagination,
 ]);
 ```
+
+If you want to build UI element manually, you may use [[yii\data\Pagination::createUrl()]] to create URLs that
+would lead to different pages. The method requires a page parameter and will create a properly formatted URL
+containing the page parameter. For example,
+
+```php
+// specifies the route that the URL to be created should use
+// If you do not specify this, the currently requested route will be used
+$pagination->route = 'article/index';
+
+// displays: /index.php?r=article%2Findex&page=100
+echo $pagination->createUrl(100);
+
+// displays: /index.php?r=article%2Findex&page=101
+echo $pagination->createUrl(101);
+```
+
+> Tip: You can customize the name of the `page` query parameter by configuring the
+  [[yii\data\Pagination::pageParam|pageParam]] property when creating the pagination object.

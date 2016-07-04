@@ -22,7 +22,6 @@ www
 
 对于我们的基础项目模板而言，其 webroot 名为 `web` 。 在你上传你的应用程序到 web 服务器上去之前，将你的本地 webroot 重命名以匹配服务器。 即： 从 `web` 改为 `www`, `public_html` 或者其他你的托管环境的 webroot 名称。
 
-
 ### FTP 根目录可写
 
 如果你有 FTP 根目录的写权限，即，有 `config`, `logs` 和 `www` 的根目录，那么，如本地根目录相同的结构上传 `assets`, `commands` 等目录。
@@ -49,7 +48,8 @@ RewriteRule . index.php
 
 ### 检查环境要求
 
-为了运行 Yii ，你的 web 服务器必须匹配它的环境要求。最低的要求必须是 PHP 5.4。为了检查环境配置，将 `requirements.php` 从你的根目录拷贝到 webroot 目录，并通过浏览器输入 URL `http://example.com/requirements.php` 运行它。最后，检查结束后别忘了删除这个文件哦！
+为了运行 Yii ，你的 web 服务器必须匹配它的环境要求。最低的要求必须是 PHP 5.4。为了检查环境配置，将 `requirements.php` 从你的根目录拷贝到 webroot 目录，
+并通过浏览器输入 URL `http://example.com/requirements.php` 运行它。最后，检查结束后别忘了删除这个文件哦！
 
 部署一个高级应用程序模板
 ---------------------------------
@@ -75,7 +75,8 @@ frontend
 
 ### 分离 Session 和 Cookie
 
-通常情况下，backend 和 frontend 运行在不同的域下，当我们将其都移到同一个域时， frontend 和 backend 将会共享相同的 cookie，这样会造成冲突。为了修复这个问题，如下调整 backend 的应用程序配置文件 `backend/config/main.php`：
+通常情况下，backend 和 frontend 运行在不同的域下，当我们将其都移到同一个域时， frontend 和 backend 将会共享相同的 cookie，这样会造成冲突。为了修复这个问题，
+如下调整 backend 的应用程序配置文件 `backend/config/main.php`：
 
 ```php
 'components' => [

@@ -89,6 +89,9 @@ $query->select(['user_id' => 'user.id', 'email']);
 $query->select(["CONCAT(first_name, ' ', last_name) AS full_name", 'email']); 
 ```
 
+As with all places where raw SQL is involved, you may use the [DBMS agnostic quoting syntax](db-dao.md#quoting-table-and-column-names)
+for table and column names when writing DB expressions in select.
+
 从 2.0.1 的版本开始你就可以使用子查询了。在定义每一个子查询的时候，
 你应该使用 [[yii\db\Query]] 对象。例如：
  
@@ -163,13 +166,17 @@ $query->from(['u' => $subQuery]);
 
 #### 字符串格式 <span id="string-format"></span>
 
-在定义非常简单的查询条件的时候，字符串格式是最合适的。它看起来和原生 SQL 语句差不多。例如：
+在定义非常简单的查询条件的时候，字符串格式是最合适的。
+它看起来和原生 SQL 语句差不多。例如：
 
 ```php
 $query->where('status=1');
 
-// 或者使用参数绑定来绑定动态参数值
+// or use parameter binding to bind dynamic parameter values
 $query->where('status=:status', [':status' => $status]);
+
+// raw SQL using MySQL YEAR() function on a date field
+$query->where('YEAR(somedate) = 2015');
 ```
 
 千万不要像如下的例子一样直接在条件语句当中嵌入变量，特别是当这些变量来源于终端用户输入的时候，
@@ -188,6 +195,8 @@ $query->where('status=:status')
     ->addParams([':status' => $status]);
 ```
 
+As with all places where raw SQL is involved, you may use the [DBMS agnostic quoting syntax](db-dao.md#quoting-table-and-column-names)
+for table and column names when writing conditions in string format. 
 
 #### 哈希格式 <span id="hash-format"></span>
 
@@ -215,6 +224,9 @@ $userQuery = (new Query())->select('id')->from('user');
 $query->where(['id' => $userQuery]);
 ```
 
+Using the Hash Format, Yii internally uses parameter binding so in contrast to the [string format](#string-format), here
+you do not have to add parameters manually.
+
 
 #### 操作符格式 <span id="operator-format"></span>
 
@@ -224,8 +236,8 @@ $query->where(['id' => $userQuery]);
 [操作符, 操作数1, 操作数2, ...]
 ```
 
-其中每个操作数可以是字符串格式、哈希格式或者嵌套的操作符格式，而操作符可以是如下列表中的一个：
-
+其中每个操作数可以是字符串格式、哈希格式或者嵌套的操作符格式，
+而操作符可以是如下列表中的一个：
 
 - `and`: 操作数会被 `AND` 关键字串联起来。例如，`['and', 'id=1', 'id=2']` 
   将会生成 `id=1 AND id=2`。如果操作数是一个数组，它也会按上述规则转换成
@@ -239,8 +251,8 @@ $query->where(['id' => $userQuery]);
   的取值范围。例如，`['between', 'id', 1, 10]` 将会生成
   `id BETWEEN 1 AND 10`。
 
-- `not between`: 用法和 `BETWEEN` 操作符类似，这里就不再赘述。
-
+- `not between`: similar to `between` except the `BETWEEN` is replaced with `NOT BETWEEN`
+  in the generated condition.
 
 - `in`: 第一个操作数应为字段名称或者 DB 表达式。第二个操作符既可以是一个数组，
   也可以是一个  `Query` 对象。它会转换成`IN` 条件语句。如果第二个操作数是一个
@@ -253,7 +265,8 @@ $query->where(['id' => $userQuery]);
 
 - `not in`: 用法和 `in` 操作符类似，这里就不再赘述。
 
-- `like`: 第一个操作数应为一个字段名称或 DB 表达式，第二个操作数可以使字符串或数组，
+- `like`: 第一个操作数应为一个字段名称或 DB 表达式，
+  第二个操作数可以使字符串或数组，
   代表第一个操作数需要模糊查询的值。比如，`['like', 'name', 'tester']` 会生成
   `name LIKE '%tester%'`。 如果范围值是一个数组，那么将会生成用 `AND` 串联起来的
   多个 `like` 语句。例如，`['like', 'name', ['test', 'sample']]` 将会生成
@@ -265,9 +278,8 @@ $query->where(['id' => $userQuery]);
   当使用转义映射（又或者没有提供第三个操作数的时候），第二个操作数的值的前后
   将会被加上百分号。
 
-
-  > 注意：当使用 PostgreSQL 的时候你还可以使用 [`ilike`](http://www.postgresql.org/docs/8.3/static/functions-matching.html#FUNCTIONS-LIKE)，
-  > 该方法对大小写不敏感。
+> 注意：当使用 PostgreSQL 的时候你还可以使用 [`ilike`](http://www.postgresql.org/docs/8.3/static/functions-matching.html#FUNCTIONS-LIKE)，
+> 该方法对大小写不敏感。
 
 - `or like`: 用法和 `like` 操作符类似，区别在于当第二个操作数为数组时，
   会使用 `OR` 来串联多个 `LIKE` 条件语句。
@@ -285,6 +297,9 @@ $query->where(['id' => $userQuery]);
 
 - `>`, `<=`, 或者其他包含两个操作数的合法 DB 操作符: 第一个操作数必须为字段的名称，
   而第二个操作数则应为一个值。例如，`['>', 'age', 10]` 将会生成 `age>10`。
+
+Using the Operator Format, Yii internally uses parameter binding so in contrast to the [string format](#string-format), here
+you do not have to add parameters manually.
 
 
 #### 附加条件 <span id="appending-conditions"></span>
@@ -336,6 +351,20 @@ $query->filterWhere([
 你可以使用 [[yii\db\Query::andFilterWhere()|andFilterWhere()]] 和 [[yii\db\Query::orFilterWhere()|orFilterWhere()]] 方法
 来追加额外的过滤条件。
 
+Additionally, there is [[yii\db\Query::andFilterCompare()]] that can intelligently determine operator based on what's
+in the value:
+
+```php
+$query->andFilterCompare('name', 'John Doe');
+$query->andFilterCompare('rating', '>9');
+$query->andFilterCompare('value', '<=100');
+```
+
+You can also specify operator explicitly:
+
+```php
+$query->andFilterCompare('name', 'Doe', 'like');
+```
 
 ### [[yii\db\Query::orderBy()|orderBy()]] <span id="order-by"></span>
 
@@ -448,8 +477,11 @@ $query->join('LEFT JOIN', 'post', 'post.user_id = user.id');
  
 - `$type`: 连接类型，例如：`'INNER JOIN'`, `'LEFT JOIN'`。
 - `$table`: 将要连接的表名称。
-- `$on`: 可选参数，连接条件，即 `ON` 子句。请查阅 [where()](#where) 
-  获取更多有关于条件定义的细节。
+- `$on`: optional, the join condition, i.e., the `ON` fragment. Please refer to [where()](#where) for details
+   about specifying a condition. Note, that the array syntax does **not** work for specifying a column based
+   condition, e.g. `['user.id' => 'comment.userId']` will result in a condition where the user id must be equal
+   to the string `'comment.userId'`. You should use the string syntax instead and specify the condition as
+   `'user.id = comment.userId'`.
 - `$params`: 可选参数，与连接条件绑定的参数。
 
 你可以分别调用如下的快捷方法来指定 `INNER JOIN`, `LEFT JOIN` 和 `RIGHT JOIN`。
@@ -602,13 +634,19 @@ $query = (new \yii\db\Query())
 该匿名函数将带有一个包含了当前行的数据的 `$row` 参数，并且返回用作当前行索引的
 标量值（译者注：就是简单的数值或者字符串，而不是其他复杂结构，例如数组）。
 
+> Note: In contrast to query methods like [[yii\db\Query::groupBy()|groupBy()]] or [[yii\db\Query::orderBy()|orderBy()]]
+> which are converted to SQL and are part of the query, this method works after the data has been fetched from the database.
+> That means that only those column names can be used that have been part of SELECT in your query.
+> Also if you selected a column with table prefix, e.g. `customer.id`, the result set will only contain `id` so you have to call
+> `->indexBy('id')` without table prefix.
+
 
 ### 批处理查询 <span id="batch-query"></span>
 
 当需要处理大数据的时候，像 [[yii\db\Query::all()]] 这样的方法就不太合适了，
 因为它们会把所有数据都读取到内存上。为了保持较低的内存需求， Yii 提供了一个
-所谓的批处理查询的支持。批处理查询会利用数据游标将数据以批为单位取出来。
-
+所谓的批处理查询的支持。批处理查询会利用数据游标
+将数据以批为单位取出来。
 
 批处理查询的用法如下：
 
@@ -638,7 +676,8 @@ foreach ($query->each() as $user) {
 相对于 [[yii\db\Query::all()]] 方法，批处理查询每次只读取 100 行的数据到内存。
 如果你在处理完这些数据后及时丢弃这些数据，那么批处理查询可以很好的帮助降低内存的占用率。
 
-如果你通过 [[yii\db\Query::indexBy()]] 方法为查询结果指定了索引字段，那么批处理查询将仍然保持相对应的索引方案，例如，
+如果你通过 [[yii\db\Query::indexBy()]] 方法为查询结果指定了索引字段，
+那么批处理查询将仍然保持相对应的索引方案，例如，
 
 
 ```php
@@ -653,4 +692,3 @@ foreach ($query->batch() as $users) {
 foreach ($query->each() as $username => $user) {
 }
 ```
-

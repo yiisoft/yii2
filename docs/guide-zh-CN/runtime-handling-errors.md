@@ -5,7 +5,8 @@ Yii 内置了一个[[yii\web\ErrorHandler|error handler]]错误处理器，它�
 Yii错误处理器做以下工作来提升错误处理效果：
 
 * 所有非致命PHP错误（如，警告，提示）会转换成可获取异常；
-* 异常和致命的PHP错误会被显示，在调试模式会显示详细的函数调用栈和源代码行数。
+* 异常和致命的PHP错误会被显示，
+  在调试模式会显示详细的函数调用栈和源代码行数。
 * 支持使用专用的 [控制器操作](structure-controllers.md#actions) 来显示错误；
 * 支持不同的错误响应格式；
 
@@ -30,7 +31,8 @@ return [
 
 使用如上代码，异常页面最多显示20条源代码。
 
-如前所述，错误处理器将所有非致命PHP错误转换成可获取异常，也就是说可以使用如下代码处理PHP错误：
+如前所述，错误处理器将所有非致命PHP错误转换成可获取异常，
+也就是说可以使用如下代码处理PHP错误：
 
 ```php
 use Yii;
@@ -45,8 +47,10 @@ try {
 // execution continues...
 ```
 
-如果你想显示一个错误页面告诉用户请求是无效的或无法处理的，可简单地抛出一个 [[yii\web\HttpException|HTTP exception]]异常，
-如 [[yii\web\NotFoundHttpException]]。错误处理器会正确地设置响应的HTTP状态码并使用合适的错误视图页面来显示错误信息。
+如果你想显示一个错误页面告诉用户请求是无效的或无法处理的，
+可简单地抛出一个 [[yii\web\HttpException|HTTP exception]]异常，如 [[yii\web\NotFoundHttpException]]。
+错误处理器会正确地设置响应的HTTP状态码并使用合适的错误视图页面来显示错误信息。
+
 
 ```php
 use yii\web\NotFoundHttpException;
@@ -57,15 +61,13 @@ throw new NotFoundHttpException();
 
 ## 自定义错误显示 <span id="customizing-error-display"></span>
 
-[[yii\web\ErrorHandler|error handler]]错误处理器根据常量`YII_DEBUG`的值来调整错误显示，
-当`YII_DEBUG` 为 true (表示在调试模式)，错误处理器会显示异常以及详细的函数调用栈和源代码行数来帮助调试，
+[[yii\web\ErrorHandler|error handler]]错误处理器根据常量
+`YII_DEBUG`的值来调整错误显示，当`YII_DEBUG` 为 true (表示在调试模式)，
+错误处理器会显示异常以及详细的函数调用栈和源代码行数来帮助调试，
 当`YII_DEBUG` 为 false，只有错误信息会被显示以防止应用的敏感信息泄漏。
 
-<<<<<<< .merge_file_a02672
-> 补充: 如果异常是继承 [[yii\base\UserException]]，不管`YII_DEBUG`为何值，函数调用栈信息都不会显示，
-=======
-> Info: 如果异常是继承 [[yii\base\UserException]]，不管`YII_DEBUG`为何值，函数调用栈信息都不会显示，
->>>>>>> .merge_file_a06884
+> Info: 如果异常是继承 [[yii\base\UserException]]，
+不管`YII_DEBUG`为何值，函数调用栈信息都不会显示，
 这是因为这种错误会被认为是用户产生的错误，开发人员不需要去修正。
 
 [[yii\web\ErrorHandler|error handler]] 错误处理器默认使用两个[视图](structure-views.md)显示错误:
@@ -81,7 +83,8 @@ throw new NotFoundHttpException();
 ### 使用错误操作 <span id="using-error-actions"></span>
 
 使用指定的错误[操作](structure-controllers.md) 来自定义错误显示更方便，
-为此，首先配置`errorHandler`组件的 [[yii\web\ErrorHandler::errorAction|errorAction]] 属性，类似如下： 
+为此，首先配置`errorHandler`组件的 [[yii\web\ErrorHandler::errorAction|errorAction]] 属性，
+类似如下： 
 
 ```php
 return [
@@ -93,7 +96,8 @@ return [
 ];
 ```
 
-[[yii\web\ErrorHandler::errorAction|errorAction]] 属性使用[路由](structure-controllers.md#routes)到一个操作，
+[[yii\web\ErrorHandler::errorAction|errorAction]] 属性使用
+[路由](structure-controllers.md#routes)到一个操作，
 上述配置表示不用显示函数调用栈信息的错误会通过执行`site/error`操作来显示。
 
 可以创建`site/error` 操作如下所示：
@@ -117,7 +121,8 @@ class SiteController extends Controller
 }
 ```
 
-上述代码定义`error` 操作使用[[yii\web\ErrorAction]] 类，该类渲染名为`error`视图来显示错误。
+上述代码定义`error` 操作使用[[yii\web\ErrorAction]] 类，
+该类渲染名为`error`视图来显示错误。
 
 除了使用[[yii\web\ErrorAction]], 可定义`error` 操作使用类似如下的操作方法：
 
@@ -136,21 +141,26 @@ public function actionError()
 
 * `name`: 错误名称
 * `message`: 错误信息
-* `exception`: 更多详细信息的异常对象，如HTTP 状态码，错误码，错误调用栈等。
+* `exception`: 更多详细信息的异常对象，如HTTP 状态码，错误码，
+  错误调用栈等。
 
-<<<<<<< .merge_file_a02672
-> 补充: 如果你使用 [基础应用模板](start-installation.md) 或 [高级应用模板](tutorial-advanced-app.md),
-=======
 > Info: 如果你使用 [基础应用模板](start-installation.md) 或 [高级应用模板](tutorial-advanced-app.md),
->>>>>>> .merge_file_a06884
 错误操作和错误视图已经定义好了。
+
+> Note: If you need to redirect in an error handler, do it the following way:
+> ```php
+> Yii::$app->getResponse()->redirect($url)->send();
+> return;
+> ```
 
 
 ### 自定义错误格式 <span id="error-format"></span>
 
 错误处理器根据[响应](runtime-responses.md)设置的格式来显示错误，
-如果[[yii\web\Response::format|response format]] 响应格式为`html`, 会使用错误或异常视图来显示错误信息，如上一小节所述。
-对于其他的响应格式，错误处理器会错误信息作为数组赋值给[[yii\web\Response::data]]属性，然后转换到对应的格式，
+如果[[yii\web\Response::format|response format]] 响应格式为`html`, 
+会使用错误或异常视图来显示错误信息，如上一小节所述。
+对于其他的响应格式，错误处理器会错误信息作为数组赋值给[[yii\web\Response::data]]属性，
+然后转换到对应的格式，
 例如，如果响应格式为`json`，可以看到如下响应信息：
 
 ```
@@ -168,7 +178,8 @@ Content-Type: application/json; charset=UTF-8
 }
 ```
 
-可在应用配置中响应`response`组件的`beforeSend`事件来自定义错误响应格式。
+可在应用配置中响应`response`组件的`beforeSend`
+事件来自定义错误响应格式。
 
 ```php
 return [

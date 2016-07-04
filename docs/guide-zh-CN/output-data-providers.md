@@ -6,8 +6,8 @@
 因为分页和排序数据的任务是很常见的，所以Yii提供了一组封装好的*data provider*类。
 
 数据提供者是一个实现了 [[yii\data\DataProviderInterface]] 接口的类。
-它主要用于获取分页和数据排序。它经常用在 [data widgets](output-data-widgets.md) 小物件里，方便终端用户进行分页与数据排序。
-
+它主要用于获取分页和数据排序。它经常用在 [data widgets](output-data-widgets.md) 
+小物件里，方便终端用户进行分页与数据排序。
 
 下面的数据提供者类都包含在Yii的发布版本里面：
 
@@ -36,10 +36,10 @@ $count = $provider->getCount();
 $totalCount = $provider->getTotalCount();
 ```
 
-你可以通过配置 [[yii\data\BaseDataProvider::pagination|pagination]] 和 [[yii\data\BaseDataProvider::sort|sort]]
-的属性来设定数据提供者的分页和排序行为。属性分别对应于 [[yii\data\Pagination]] 和 [[yii\data\Sort]]。
+你可以通过配置 [[yii\data\BaseDataProvider::pagination|pagination]] 和 
+[[yii\data\BaseDataProvider::sort|sort]]的属性来设定数据提供者的分页和排序行为。
+属性分别对应于 [[yii\data\Pagination]] 和 [[yii\data\Sort]]。
 你也可以对它们配置false来禁用分页和排序特性。
-
 
 [Data widgets](output-data-widgets.md),诸如 [[yii\grid\GridView]]，有一个属性名叫 `dataProvider` ，这个属性能够提供一个
 数据提供者的示例并且可以显示所提供的数据，例如，
@@ -50,8 +50,8 @@ echo yii\grid\GridView::widget([
 ]);
 ```
 
-这些数据提供者的主要区别在于数据源的指定方式上。在下面的部分，我们将详细介绍这些数据提供者的使用方法。
-
+这些数据提供者的主要区别在于数据源的指定方式上。在下面的部分，
+我们将详细介绍这些数据提供者的使用方法。
 
 
 ## 活动数据提供者 <span id="active-data-provider"></span>
@@ -91,9 +91,9 @@ use yii\db\Query;
 $query = (new Query())->from('post')->where(['status' => 1]);
 ```
 
-> 注意：假如查询已经指定了 `orderBy` 从句，则终端用户给定的新的排序说明（通过 `sort` 来配置的）将被添加到已经存在的从句中。
-  任何已经存在的 `limit` 和 `offset` 从句都将被终端用户所请求的分页（通过 `pagination` 所配置的）所重写。
-
+> 注意：假如查询已经指定了 `orderBy` 从句，则终端用户给定的新的排序说明（通过 `sort` 来配置的）
+  将被添加到已经存在的从句中。任何已经存在的 `limit` 和 `offset` 从句都将被终端用户所请求的分页
+  （通过 `pagination` 所配置的）所重写。
 
 默认情况下，[[yii\data\ActiveDataProvider]]使用 `db` 应用组件来作为数据库连接。你可以通过配置 [[yii\data\ActiveDataProvider::db]]
 的属性来使用不同数据库连接。
@@ -101,10 +101,10 @@ $query = (new Query())->from('post')->where(['status' => 1]);
 
 ## SQL数据提供者 <span id="sql-data-provider"></span>
 
-[[yii\data\SqlDataProvider]] 应用的时候需要结合需要获取数据的SQL语句。基于 [[yii\data\SqlDataProvider::sort|sort]] 和
-[[yii\data\SqlDataProvider::pagination|pagination]] 规格，数据提供者会根据所请求的数据页面（期望的顺序）来调整 `ORDER BY` 和 `LIMIT`
-的SQL从句。
-
+[[yii\data\SqlDataProvider]] 应用的时候需要结合需要获取数据的SQL语句。
+基于 [[yii\data\SqlDataProvider::sort|sort]] 和
+[[yii\data\SqlDataProvider::pagination|pagination]] 规格，
+数据提供者会根据所请求的数据页面（期望的顺序）来调整 `ORDER BY` 和 `LIMIT` 的SQL从句。
 
 为了使用 [[yii\data\SqlDataProvider]]，你应该指定 [[yii\data\SqlDataProvider::sql|sql]] 属性以及
 [[yii\data\SqlDataProvider::totalCount|totalCount]] 属性，例如，
@@ -136,20 +136,20 @@ $provider = new SqlDataProvider([
 $models = $provider->getModels();
 ```
 
-> 说明：[[yii\data\SqlDataProvider::totalCount|totalCount]] 的属性只有你需要分页数据的时候才会用到。
-  这是因为通过 [[yii\data\SqlDataProvider::sql|sql]] 指定的SQL语句将被数据提供者所修改并且只返回当前页面数据。
-  数据提供者为了正确计算可用页面的数量仍旧需要知道数据项的总数。
-
+> 说明：[[yii\data\SqlDataProvider::totalCount|totalCount]] 的属性只有你需要
+  分页数据的时候才会用到。这是因为通过 [[yii\data\SqlDataProvider::sql|sql]] 
+  指定的SQL语句将被数据提供者所修改并且只返回当
+  前页面数据。数据提供者为了正确计算可用页面的数量仍旧需要知道数据项的总数。
 
 
 ## 数组数据提供者 <span id="array-data-provider"></span>
 
-[[yii\data\ArrayDataProvider]] 非常适用于大的数组。数据提供者允许你返回一个经过一个或者多个字段排序的数组数据页面。
-为了使用 [[yii\data\ArrayDataProvider]]，你应该指定 [[yii\data\ArrayDataProvider::allModels|allModels]] 属性
-作为一个大的数组。
-这个大数组的元素既可以是一些关联数组（例如：[DAO](db-dao.md)查询出来的结果）也可以是一些对象（例如：[Active Record](db-active-record.md)实例）
+[[yii\data\ArrayDataProvider]] 非常适用于大的数组。数据提供者允许你返回一个
+经过一个或者多个字段排序的数组数据页面。为了使用 [[yii\data\ArrayDataProvider]]，
+你应该指定 [[yii\data\ArrayDataProvider::allModels|allModels]] 属性作为一个大的数组。
+这个大数组的元素既可以是一些关联数组（例如：[DAO](db-dao.md)查询出来的结果）
+也可以是一些对象（例如：[Active Record](db-active-record.md)实例）
 例如,
-
 
 ```php
 use yii\data\ArrayDataProvider;
@@ -203,9 +203,9 @@ $ids = $provider->getKeys();
 ```
 
 在上面的例子中，因为你提供给 [[yii\data\ActiveDataProvider]] 一个 [[yii\db\ActiveQuery]] 对象，
-它是足够智能地返回一些主键值作为键。你也可以明确指出键值应该怎样被计算出来，计算的方式是通过使用一个字段名或者一个可调用的计算键值来配置。
+它是足够智能地返回一些主键值作为键。你也可以明确指出键值应该怎样被计算出来，
+计算的方式是通过使用一个字段名或者一个可调用的计算键值来配置。
 例如，
-
 
 ```php
 // 使用 "slug" 字段作为键值
@@ -230,12 +230,12 @@ $provider = new ActiveDataProvider([
 一个简单的方式是从 [[yii\data\BaseDataProvider]] 去扩展，这种方式允许你关注数据提供者的核心逻辑。
 这时，你主要需要实现下面的一些方法：
 
-- [[yii\data\BaseDataProvider::prepareModels()|prepareModels()]]：准备好在当前页面可用的数据模型，并且作为一个数组返回它们。
-
-- [[yii\data\BaseDataProvider::prepareKeys()|prepareKeys()]]：接受一个当前可用的数据模型的数组，并且返回一些与它们相关联的键。
-
-- [[yii\data\BaseDataProvider::prepareTotalCount()|prepareTotalCount]]: 在数据提供者中返回一个标识出数据模型总数的值。
-
+- [[yii\data\BaseDataProvider::prepareModels()|prepareModels()]]：准备好在当前页面可用的数据模型，
+  并且作为一个数组返回它们。
+- [[yii\data\BaseDataProvider::prepareKeys()|prepareKeys()]]：接受一个当前可用的数据模型的数组，
+  并且返回一些与它们相关联的键。
+- [[yii\data\BaseDataProvider::prepareTotalCount()|prepareTotalCount]]: 在数据提供者中返回一个
+  标识出数据模型总数的值。
 
 下面是一个数据提供者的例子，这个数据提供者可以高效地读取CSV数据：
 

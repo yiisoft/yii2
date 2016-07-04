@@ -38,9 +38,9 @@ $name = $request->post('name', '');
 直接访问 `$_GET` 和 `$_POST`。
 这使你更容易编写测试用例，因为你可以伪造数据来创建一个模拟请求组件。
 
-当实现 [RESTful APIs](rest-quick-start.md) 接口的时候，你经常需要获取通过PUT， PATCH或者其他的 [request methods](#request-methods) 
+当实现 [RESTful APIs](rest-quick-start.md) 接口的时候，你经常需要获取通过PUT， 
+PATCH或者其他的 [request methods](#request-methods) 
 请求方法提交上来的参数。你可以通过调用 [[yii\web\Request::getBodyParam()]] 方法来获取这些参数。例如，
-
 
 ```php
 $request = Yii::$app->request;
@@ -118,14 +118,14 @@ if ($headers->has('User-Agent')) { /* 这是一个 User-Agent 头 */ }
 * [[yii\web\Request::acceptableLanguages|acceptableLanguages]]：返回用户可接受的语言。
   返回的语言是按照他们的偏好层次来排序的。第一个参数代表最优先的语言。
 
-假如你的应用支持多语言，并且你想在终端用户最喜欢的语言中显示页面，那么你可以使用语言协商方法 [[yii\web\Request::getPreferredLanguage()]]。
-这个方法通过 [[yii\web\Request::acceptableLanguages|acceptableLanguages]] 在你的应用中所支持的语言列表里进行比较筛选，返回最适合的语言。
+假如你的应用支持多语言，并且你想在终端用户最喜欢的语言中显示页面，
+那么你可以使用语言协商方法 [[yii\web\Request::getPreferredLanguage()]]。
+这个方法通过 [[yii\web\Request::acceptableLanguages|acceptableLanguages]] 
+在你的应用中所支持的语言列表里进行比较筛选，返回最适合的语言。
 
-
-
-> 提示：你也可以使用 [[yii\filters\ContentNegotiator|ContentNegotiator]] 过滤器进行动态确定哪些内容类型和语言应该在响应中使用。
+> 提示：你也可以使用 [[yii\filters\ContentNegotiator|ContentNegotiator]] 
+  过滤器进行动态确定哪些内容类型和语言应该在响应中使用。
   这个过滤器实现了上面介绍的内容协商的属性和方法。
-
 
 
 ## 客户端信息 <span id="client-information"></span>

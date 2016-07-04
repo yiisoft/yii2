@@ -33,11 +33,11 @@ $this->registerJs("var options = ".json_encode($options).";", View::POS_END, 'my
 $this->registerJsFile('http://example.com/js/main.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
 ```
 
-[[yii\web\View::registerJsFile()|registerJsFile()]] 中参数的使用与 [[yii\web\View::registerCssFile()|registerCssFile()]] 中的参数使用类似。
-在上面的例子中,我们注册了 `main.js` 文件，并且依赖于 `JqueryAsset` 类。这意味着 `main.js` 文件将被添加在 `jquery.js` 的后面。
+[[yii\web\View::registerJsFile()|registerJsFile()]] 中参数的使用与 
+[[yii\web\View::registerCssFile()|registerCssFile()]] 中的参数使用类似。
+在上面的例子中,我们注册了 `main.js` 文件，并且依赖于 `JqueryAsset` 类。
+这意味着 `main.js` 文件将被添加在 `jquery.js` 的后面。
 如果没有这个依赖规范的话，`main.js`和 `jquery.js` 两者之间的顺序将不会被定义。
-
-
 
 和 [[yii\web\View::registerCssFile()|registerCssFile()]] 一样，我们强烈建议您使用 [asset bundles](structure-assets.md) 来注册外部JS文件，而非使用
 [[yii\web\View::registerJsFile()|registerJsFile()]] 来注册。
@@ -85,12 +85,12 @@ $this->registerCssFile("http://example.com/css/themes/black-and-white.css", [
 上面的代码将在页面的头部添加一个link引入CSS文件。
 
 * 第一个参数指明被注册的CSS文件。
-* 第二个参数指明 `<link>` 标签的HTML属性，选项 `depends` 是专门处理指明CSS文件依赖于哪个资源包。在这种情况下，依赖资源包就是
-  [[yii\bootstrap\BootstrapAsset|BootstrapAsset]]。这意味着CSS文件将被添加在 [[yii\bootstrap\BootstrapAsset|BootstrapAsset]] 之后。
-* 最后一个参数指明一个ID来标识这个CSS文件。假如这个参数未传，CSS文件的URL将被作为ID来替代。
-
-
-
+* 第二个参数指明 `<link>` 标签的HTML属性，选项 `depends` 是专门处理
+  指明CSS文件依赖于哪个资源包。在这种情况下，依赖资源包就是
+  [[yii\bootstrap\BootstrapAsset|BootstrapAsset]]。这意味着CSS文件将
+  被添加在 [[yii\bootstrap\BootstrapAsset|BootstrapAsset]] 之后。
+* 最后一个参数指明一个ID来标识这个CSS文件。假如这个参数未传，
+  CSS文件的URL将被作为ID来替代。
 
 
 我们强烈建议使用 [asset bundles](structure-assets.md) 来注册外部CSS文件，
