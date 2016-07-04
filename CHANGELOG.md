@@ -44,6 +44,7 @@ Yii Framework 2 Change Log
 - Bug #11672: Fixed `yii\validators\NumberValidator` erroring when value is an object without `__toString()` method (SamMousa)
 - Bug #11561: Fixed DI container throwing exceptions for optional dependencies (SamMousa)
 - Enh #11168: `yii\helpers\BaseHtml` now uses abstracted `booleanInput()` and `activeBooleanInput()` methods to render `radio()`, `checkbox()`, `activeRadio()` and `activeCheckbox()` (cesarnicola)
+- Enh #11808: `_table` and `_column` suffixes are now required when generating migration (rob006)
 - Bug #11822: Fixed exception on non-string value provided as CSRF token (cebe)
 - Enh #11850: Introduced `yii\widgets\Pjax::$submitEvent` to be able to customize event triggering PJAX form submit (Bvanleeuwen)
 - Bug #11847: Fixed `yii\widgets\Pjax` to properly respond with partials when custom selector is used for container (pigochu, samdark)
