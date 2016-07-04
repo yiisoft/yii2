@@ -927,8 +927,10 @@ abstract class ActiveRecordTest extends DatabaseTestCase
         $customer = Customer::findOne(2);
         $orders = $customer->getOrders2()->all();
         $this->assertTrue(count($orders) === 2);
-        $this->assertTrue($customer->orders2[0]->customer2 === $customer);
-        $this->assertTrue($customer->orders2[1]->customer2 === $customer);
+        $this->assertTrue($orders[0]->isRelationPopulated('customer2'), 'inverse relation did not populate the relation');
+        $this->assertTrue($orders[1]->isRelationPopulated('customer2'), 'inverse relation did not populate the relation');
+        $this->assertTrue($orders[0]->customer2 === $customer);
+        $this->assertTrue($orders[1]->customer2 === $customer);
 
         // the other way around
         $customer = Customer::find()->with('orders2')->where(['id' => 1])->asArray()->one();
