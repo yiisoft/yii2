@@ -53,9 +53,10 @@ Yii Framework 2 Change Log
 - Bug #11863: Fixed usage of `mb_substr` with PHP < 5.4.8 where length of NULL was treated the same as 0 (samdark)
 - Bug #11865: Fixed setting `selected` for dropdown list using options (samdark)
 - Bug #11528: Fixed MessageFormatter construction exception caught for PHP 7 compatibility (subdee, cebe)
-
 - Bug #11878: Fixed i18n gettext fallback language message loading (stevekr)
 - Enh #11212: Added headers to PO file in `yii\i18n\GettextPoFile::save()` (stevekr)
+- Bug #6347: `inverseOf()` not working for dynamic relational queries (laszlovl)
+
 
 2.0.8 April 28, 2016
 --------------------
@@ -333,7 +334,6 @@ Yii Framework 2 Change Log
 - Enh #5991: Added `updateMessages()` to `yii.activeForm.js` to support manually updating ActiveForm messages (nkovacs)
 - Enh #6043: Specification for 'class' and 'style' in array format added to `yii\helpers\Html` (klimov-paul)
 - Enh #6853: Console application will now register PHP constants for `STDIN`, `STDOUT`, and `STDERR` itself if they are not defined (cebe)
-- Bug #6347: `inverseOf()` not working for dynamic relational queries (laszlovl)
 - Enh #7169: `yii\widgets\ActiveField` now uses corresponding methods for default parts rendering (klimov-paul)
 - Enh #7259: Added `errorAttributes` parameter to ActiveForm `afterValidate` event. Made scrolling to first error optional (nkovacs)
 - Enh #8070: `yii\console\controllers\MessageController` now sorts created messages, even if there is no new one, while saving to PHP file (klimov-paul)
