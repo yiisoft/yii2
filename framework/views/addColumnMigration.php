@@ -7,7 +7,7 @@
 /* @var $table string the name table */
 /* @var $fields array the fields */
 
-preg_match('/^add_(.+)(?:_column)?_to_(.+)(?:_table)?$/U', $name, $matches);
+preg_match('/^add_(.+)_columns?_to_(.+)_table$/', $name, $matches);
 $columns = $matches[1];
 
 echo "<?php\n";

@@ -195,7 +195,6 @@ CODE;
     public function testGenerateCreateMigration()
     {
         $migrationNames = [
-            'create_test',
             'create_test_table',
         ];
         foreach ($migrationNames as $migrationName) {
@@ -233,12 +232,14 @@ CODE;
                     created_at:dateTime:notNull',
             ]);
         }
+
+		// @see https://github.com/yiisoft/yii2/issues/10876
+		$this->assertCommandCreatedFile('create_products_from_store_table', 'create_products_from_store_table');
     }
 
     public function testGenerateDropMigration()
     {
         $migrationNames = [
-            'drop_test',
             'drop_test_table',
         ];
         foreach ($migrationNames as $migrationName) {
@@ -248,14 +249,16 @@ CODE;
                 'fields' => 'body:text:notNull,price:money(11,2)'
             ]);
         }
+		
+		// @see https://github.com/yiisoft/yii2/issues/10876
+		$this->assertCommandCreatedFile('drop_products_from_store_table', 'drop_products_from_store_table');
     }
 
     public function testGenerateAddColumnMigration()
     {
         $migrationNames = [
-            'add_columns_to_test',
-            'add_columns_to_test_table',
             'add_columns_column_to_test_table',
+            'add_columns_columns_to_test_table',
         ];
         foreach ($migrationNames as $migrationName) {
             $this->assertCommandCreatedFile('add_columns_test', $migrationName, [
@@ -285,9 +288,8 @@ CODE;
     public function testGenerateDropColumnMigration()
     {
         $migrationNames = [
-            'drop_columns_from_test',
-            'drop_columns_from_test_table',
             'drop_columns_column_from_test_table',
+            'drop_columns_columns_from_test_table',
         ];
         foreach ($migrationNames as $migrationName) {
             $this->assertCommandCreatedFile('drop_columns_test', $migrationName, [
@@ -301,10 +303,10 @@ CODE;
     public function testGenerateCreateJunctionMigration()
     {
         $migrationNames = [
-            'create_junction_post_and_tag',
+            'create_junction_post_and_tag_tables',
+            'create_junction_for_post_and_tag_tables',
             'create_junction_table_for_post_and_tag_tables',
             'create_junction_table_for_post_and_tag_table',
-            'create_junction_post_and_tag_tables',
         ];
         foreach ($migrationNames as $migrationName) {
             $this->assertCommandCreatedFile('junction_test', $migrationName);
