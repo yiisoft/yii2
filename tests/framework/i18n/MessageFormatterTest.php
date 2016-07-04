@@ -388,5 +388,6 @@ _MSG_
         $result = $formatter->format(null, ['word' => 'test'], 'en-US');
         $this->assertFalse($result);
         $this->assertNotEmpty($formatter->getErrorMessage());
+        $this->assertGreaterThan(0, $formatter->getErrorCode());
     }
 }

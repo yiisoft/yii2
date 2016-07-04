@@ -99,18 +99,27 @@ class MessageFormatter extends Component
         $pattern = $this->replaceNamedArguments($pattern, $params, $newParams);
         $params = $newParams;
 
-        $formatter = new \MessageFormatter($language, $pattern);
-        if ($formatter === null) {
-            $this->_errorCode = intl_get_error_code();
-            $this->_errorMessage = 'Message pattern is invalid: ' . intl_get_error_message();
+        try {
+            $formatter = new \MessageFormatter($language, $pattern);
 
+            if ($formatter === null) {
+                // formatter may be null in PHP 5.x
+                $this->_errorCode = intl_get_error_code();
+                $this->_errorMessage = 'Message pattern is invalid: ' . intl_get_error_message();
+                return false;
+            }
+        } catch (\IntlException $e) {
+            // IntlException is thrown since PHP 7
+            $this->_errorCode = $e->getCode();
+            $this->_errorMessage = 'Message pattern is invalid: ' . $e->getMessage();
             return false;
         }
+
         $result = $formatter->format($params);
+
         if ($result === false) {
             $this->_errorCode = $formatter->getErrorCode();
             $this->_errorMessage = $formatter->getErrorMessage();
-
             return false;
         } else {
             return $result;
