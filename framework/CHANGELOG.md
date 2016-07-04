@@ -4,6 +4,7 @@ Yii Framework 2 Change Log
 
 2.0.9 under development
 -----------------------
+
 - Enh #11725: Added indexes on message tables (OndrejVasicek)
 - Enh #10422: Added `null` method on `yii\db\ColumnSchemaBuilder` to explicitly set column nullability (nevermnd)
 - Enh #9574: Implicit run `ColumnSchemaBuilder::null()` when default value is set to `null`. (rob006)
@@ -43,6 +44,7 @@ Yii Framework 2 Change Log
 - Bug #11672: Fixed `yii\validators\NumberValidator` erroring when value is an object without `__toString()` method (SamMousa)
 - Bug #11561: Fixed DI container throwing exceptions for optional dependencies (SamMousa)
 - Enh #11168: `yii\helpers\BaseHtml` now uses abstracted `booleanInput()` and `activeBooleanInput()` methods to render `radio()`, `checkbox()`, `activeRadio()` and `activeCheckbox()` (cesarnicola)
+- Enh #11808: `_table` and `_column` suffixes are now required when generating migration (rob006)
 - Bug #11822: Fixed exception on non-string value provided as CSRF token (cebe)
 - Enh #11850: Introduced `yii\widgets\Pjax::$submitEvent` to be able to customize event triggering PJAX form submit (Bvanleeuwen)
 - Bug #11847: Fixed `yii\widgets\Pjax` to properly respond with partials when custom selector is used for container (pigochu, samdark)
@@ -50,6 +52,9 @@ Yii Framework 2 Change Log
 - Enh #11857: `yii\filters\AccessRule::$verbs` can now be configured in upper and lowercase (DrDeath72, samdark)
 - Bug #11863: Fixed usage of `mb_substr` with PHP < 5.4.8 where length of NULL was treated the same as 0 (samdark)
 - Bug #11865: Fixed setting `selected` for dropdown list using options (samdark)
+- Bug #11528: Fixed MessageFormatter construction exception caught for PHP 7 compatibility (subdee, cebe)
+
+- Bug #11878: Fixed i18n gettext fallback language message loading (stevekr)
 
 2.0.8 April 28, 2016
 --------------------
