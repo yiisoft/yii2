@@ -197,6 +197,17 @@ class ColumnSchemaBuilder extends Object
     }
 
     /**
+     * Specifies the comment for column. If RDBMS does not support comments, then skips.
+     * @param string $comment the comment
+     * @return $this
+     * @since 2.0.
+     */
+    public function optionalComment($comment)
+    {
+        return $this->comment($comment);
+    }
+
+    /**
      * Marks column as unsigned.
      * @return $this
      * @since 2.0.7

@@ -20,6 +20,14 @@ class ColumnSchemaBuilder extends AbstractColumnSchemaBuilder
     /**
      * @inheritdoc
      */
+    public function optionalComment($comment)
+    {
+        return $this;
+    }
+
+    /**
+     * @inheritdoc
+     */
     protected function buildUnsignedString()
     {
         return $this->isUnsigned ? ' UNSIGNED' : '';
