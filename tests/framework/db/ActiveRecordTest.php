@@ -1083,36 +1083,56 @@ abstract class ActiveRecordTest extends DatabaseTestCase
 //        $this->assertSame(false, $model->bool_col2);
     }
 
-    public function testIssues()
+    /**
+     * https://github.com/yiisoft/yii2/issues/4938
+     */
+    public function testRelationalOnConditionCount()
     {
-        // https://github.com/yiisoft/yii2/issues/4938
         $category = Category::findOne(2);
         $this->assertTrue($category instanceof Category);
         $this->assertEquals(3, $category->getItems()->count());
         $this->assertEquals(1, $category->getLimitedItems()->count());
         $this->assertEquals(1, $category->getLimitedItems()->distinct(true)->count());
+    }
 
-        // https://github.com/yiisoft/yii2/issues/3197
+    /**
+     * https://github.com/yiisoft/yii2/issues/3197
+     */
+    public function testRelationalIndexBy()
+    {
         $orders = Order::find()->with('orderItems')->orderBy('id')->all();
         $this->assertEquals(3, count($orders));
         $this->assertEquals(2, count($orders[0]->orderItems));
         $this->assertEquals(3, count($orders[1]->orderItems));
         $this->assertEquals(1, count($orders[2]->orderItems));
-        $orders = Order::find()->with(['orderItems' => function ($q) { $q->indexBy('item_id'); }])->orderBy('id')->all();
+        $orders = Order::find()->with(['orderItems' => function ($q) {
+            $q->indexBy('item_id');
+        }])->orderBy('id')->all();
         $this->assertEquals(3, count($orders));
         $this->assertEquals(2, count($orders[0]->orderItems));
         $this->assertEquals(3, count($orders[1]->orderItems));
         $this->assertEquals(1, count($orders[2]->orderItems));
 
-        // https://github.com/yiisoft/yii2/issues/8149
+    }
+
+    /**
+     * https://github.com/yiisoft/yii2/issues/8149
+     */
+    public function testUpdateCounterOnUninitializedAttribute()
+    {
         $model = new Customer();
         $model->name = 'test';
         $model->email = 'test';
         $model->save(false);
         $model->updateCounters(['status' => 1]);
         $this->assertEquals(1, $model->status);
+    }
 
-        // https://github.com/yiisoft/yii2/issues/11073
+    /**
+     * https://github.com/yiisoft/yii2/issues/11073
+     */
+    public function testNoCachingOfModifiedViaRelation()
+    {
         $order = Order::find()->where(['id' => 2])->one();
         $this->assertFalse($order->isRelationPopulated('orderItems'));
         $this->assertFalse($order->isRelationPopulated('items'));
@@ -1124,6 +1144,7 @@ abstract class ActiveRecordTest extends DatabaseTestCase
         })->all();
 
         $this->assertEquals(3, count($order->orderItems), 'Count of models in orderItems relation was changed and is wrong');
+        $this->assertEquals(0, count($items));
     }
 
     public function testPopulateRecordCallWhenQueryingOnParentClass()
