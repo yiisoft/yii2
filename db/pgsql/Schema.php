@@ -370,7 +370,13 @@ SQL;
 
         $rows = $this->getUniqueIndexInformation($table);
         foreach ($rows as $row) {
-            $uniqueIndexes[$row['indexname']][] = $row['columnname'];
+            $column = $row['columnname'];
+            if (!empty($column) && $column[0] === '"') {
+                // postgres will quote names that are not lowercase-only
+                // https://github.com/yiisoft/yii2/issues/10613
+                $column = substr($column, 1, -1);
+            }
+            $uniqueIndexes[$row['indexname']][] = $column;
         }
 
         return $uniqueIndexes;
