@@ -57,6 +57,7 @@ Yii Framework 2 Change Log
 - Enh #11212: Added headers to PO file in `yii\i18n\GettextPoFile::save()` (stevekr)
 - Bug #6347: `inverseOf()` not working for dynamic relational queries (laszlovl)
 - Bug #10613: Fixed PostgreSQL Schema to return correct column names for unique indexes that have mixed case column names (cebe)
+- Chg #11364: Updated jQuery dependency to include versions `1.12.*` (cebe)
 
 
 2.0.8 April 28, 2016
