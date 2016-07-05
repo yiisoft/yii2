@@ -181,33 +181,33 @@ INSERT INTO "customer" (email, name, address, status, bool_status, profile_id) V
 INSERT INTO "category" (name) VALUES ('Books');
 INSERT INTO "category" (name) VALUES ('Movies');
 
-INSERT INTO "item" (name, category_id) VALUES ('Agile Web Application Development with Yii1.1 and PHP5', 1);
-INSERT INTO "item" (name, category_id) VALUES ('Yii 1.1 Application Development Cookbook', 1);
-INSERT INTO "item" (name, category_id) VALUES ('Ice Age', 2);
-INSERT INTO "item" (name, category_id) VALUES ('Toy Story', 2);
-INSERT INTO "item" (name, category_id) VALUES ('Cars', 2);
+INSERT INTO "item" (id, name, category_id) VALUES (21, 'Agile Web Application Development with Yii1.1 and PHP5', 1);
+INSERT INTO "item" (id, name, category_id) VALUES (22, 'Yii 1.1 Application Development Cookbook', 1);
+INSERT INTO "item" (id, name, category_id) VALUES (23, 'Ice Age', 2);
+INSERT INTO "item" (id, name, category_id) VALUES (24, 'Toy Story', 2);
+INSERT INTO "item" (id, name, category_id) VALUES (25, 'Cars', 2);
 
-INSERT INTO "order" (customer_id, created_at, total) VALUES (1, 1325282384, 110.0);
-INSERT INTO "order" (customer_id, created_at, total) VALUES (2, 1325334482, 33.0);
-INSERT INTO "order" (customer_id, created_at, total) VALUES (2, 1325502201, 40.0);
+INSERT INTO "order" (id, customer_id, created_at, total) VALUES (11, 1, 1325282384, 110.0);
+INSERT INTO "order" (id, customer_id, created_at, total) VALUES (12, 2, 1325334482, 33.0);
+INSERT INTO "order" (id, customer_id, created_at, total) VALUES (13, 2, 1325502201, 40.0);
 
-INSERT INTO "order_with_null_fk" (customer_id, created_at, total) VALUES (1, 1325282384, 110.0);
-INSERT INTO "order_with_null_fk" (customer_id, created_at, total) VALUES (2, 1325334482, 33.0);
-INSERT INTO "order_with_null_fk" (customer_id, created_at, total) VALUES (2, 1325502201, 40.0);
+INSERT INTO "order_with_null_fk" (id, customer_id, created_at, total) VALUES (11, 1, 1325282384, 110.0);
+INSERT INTO "order_with_null_fk" (id, customer_id, created_at, total) VALUES (12, 2, 1325334482, 33.0);
+INSERT INTO "order_with_null_fk" (id, customer_id, created_at, total) VALUES (13, 2, 1325502201, 40.0);
 
-INSERT INTO "order_item" (order_id, item_id, quantity, subtotal) VALUES (1, 1, 1, 30.0);
-INSERT INTO "order_item" (order_id, item_id, quantity, subtotal) VALUES (1, 2, 2, 40.0);
-INSERT INTO "order_item" (order_id, item_id, quantity, subtotal) VALUES (2, 4, 1, 10.0);
-INSERT INTO "order_item" (order_id, item_id, quantity, subtotal) VALUES (2, 5, 1, 15.0);
-INSERT INTO "order_item" (order_id, item_id, quantity, subtotal) VALUES (2, 3, 1, 8.0);
-INSERT INTO "order_item" (order_id, item_id, quantity, subtotal) VALUES (3, 2, 1, 40.0);
+INSERT INTO "order_item" (order_id, item_id, quantity, subtotal) VALUES (11, 21, 1, 30.0);
+INSERT INTO "order_item" (order_id, item_id, quantity, subtotal) VALUES (11, 22, 2, 40.0);
+INSERT INTO "order_item" (order_id, item_id, quantity, subtotal) VALUES (12, 24, 1, 10.0);
+INSERT INTO "order_item" (order_id, item_id, quantity, subtotal) VALUES (12, 25, 1, 15.0);
+INSERT INTO "order_item" (order_id, item_id, quantity, subtotal) VALUES (12, 23, 1, 8.0);
+INSERT INTO "order_item" (order_id, item_id, quantity, subtotal) VALUES (13, 22, 1, 40.0);
 
-INSERT INTO "order_item_with_null_fk" (order_id, item_id, quantity, subtotal) VALUES (1, 1, 1, 30.0);
-INSERT INTO "order_item_with_null_fk" (order_id, item_id, quantity, subtotal) VALUES (1, 2, 2, 40.0);
-INSERT INTO "order_item_with_null_fk" (order_id, item_id, quantity, subtotal) VALUES (2, 4, 1, 10.0);
-INSERT INTO "order_item_with_null_fk" (order_id, item_id, quantity, subtotal) VALUES (2, 5, 1, 15.0);
-INSERT INTO "order_item_with_null_fk" (order_id, item_id, quantity, subtotal) VALUES (2, 3, 1, 8.0);
-INSERT INTO "order_item_with_null_fk" (order_id, item_id, quantity, subtotal) VALUES (3, 2, 1, 40.0);
+INSERT INTO "order_item_with_null_fk" (order_id, item_id, quantity, subtotal) VALUES (11, 21, 1, 30.0);
+INSERT INTO "order_item_with_null_fk" (order_id, item_id, quantity, subtotal) VALUES (11, 22, 2, 40.0);
+INSERT INTO "order_item_with_null_fk" (order_id, item_id, quantity, subtotal) VALUES (12, 24, 1, 10.0);
+INSERT INTO "order_item_with_null_fk" (order_id, item_id, quantity, subtotal) VALUES (12, 25, 1, 15.0);
+INSERT INTO "order_item_with_null_fk" (order_id, item_id, quantity, subtotal) VALUES (12, 23, 1, 8.0);
+INSERT INTO "order_item_with_null_fk" (order_id, item_id, quantity, subtotal) VALUES (13, 22, 1, 40.0);
 
 INSERT INTO "document" (title, content, version) VALUES ('Yii 2.0 guide', 'This is Yii 2.0 guide', 0);
 
