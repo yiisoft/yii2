@@ -109,6 +109,16 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
 
     /**
      * @inheritdoc
+     * @return static ActiveRecord instance matching the condition, or new static ActiveRecord instance if nothing matches.
+     */
+    public static function findOrNew($condition)
+    {
+        $result = static::findByCondition($condition)->one();
+        return $result === null ? new static() : $result;
+    }
+
+    /**
+     * @inheritdoc
      * @return static[] an array of ActiveRecord instances, or an empty array if nothing matches.
      */
     public static function findAll($condition)
