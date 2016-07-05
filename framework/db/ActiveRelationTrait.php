@@ -56,7 +56,7 @@ trait ActiveRelationTrait
      * is the "orders", and the inverse of the "orders" relation is the "customer".
      * If this property is set, the primary record(s) will be referenced through the specified relation.
      * For example, `$customer->orders[0]->customer` and `$customer` will be the same object,
-     * and accessing the customer of an order will not trigger new DB query.
+     * and accessing the customer of an order will not trigger a new DB query.
      * This property is only used in relational context.
      * @see inverseOf()
      */
@@ -139,8 +139,8 @@ trait ActiveRelationTrait
     /**
      * Finds the related records for the specified primary record.
      * This method is invoked when a relation of an ActiveRecord is being accessed in a lazy fashion.
-     * @param string $name the relation name
-     * @param ActiveRecordInterface|BaseActiveRecord $model the primary model
+     * @param string $name the relation name.
+     * @param ActiveRecordInterface|BaseActiveRecord $model the primary model.
      * @return mixed the related record(s)
      * @throws InvalidParamException if the relation is invalid
      */
@@ -441,6 +441,7 @@ trait ActiveRelationTrait
     }
 
     /**
+     * Adjust this query's condition to match related models primary keys only, i.e. to limit query to related records only.
      * @param array $models
      */
     private function filterByModels($models)
@@ -456,6 +457,7 @@ trait ActiveRelationTrait
             foreach ($models as $model) {
                 if (($value = $model[$attribute]) !== null) {
                     if (is_array($value)) {
+                        // relation via multi value column
                         $values = array_merge($values, $value);
                     } else {
                         $values[] = $value;
