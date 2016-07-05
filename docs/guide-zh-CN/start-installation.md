@@ -5,7 +5,7 @@
 推荐使用前者，这样只需执行一条简单的命令就可以安装新的[扩展](structure-extensions.md)或更新 Yii 了。
 
 标准安装完Yii之后，框架和一个项目模板两者都下载并安装好了。
-一个项目模板是实现了一些基本特性的一个可行的Yii项目，比如登录，联系表单，等等。
+一个项目模板是实现了一些基本特性的一个 可行的Yii项目，比如登录，联系表单，等等。
 它的代码是以推荐的方式组织的。因此，它能够适合作为你项目的一个好的起点。
 
 在本章节和以后的章节，我们将会介绍如何去安装Yii和所谓的*基本的应用程序模板*和如何去实现这个模板上的新特性。Yii当然也提供了其它模板叫[高级的应用程序模板](https://github.com/yiisoft/yii2-app-advanced/blob/master/docs/guide/README.md)，它是更好应用于在一个团队开发环境中去开发多层级的应用程序。
@@ -97,7 +97,7 @@ composer create-project --prefer-dist yiisoft/yii2-app-basic basic
 php yii serve
 ```
 
-> 注意：默认情况下Https-server将监听8080。可是如果这个端口已经使用或者你想通过这个方式运行多个应用程序，你可以指定使用哪些端口。仅仅加上 --port 参数：
+> 注意：默认情况下Https-server将监听8080。可是如果这个端口已经使用或者你想通过这个方式运行多个应用程序，你可以指定使用哪些端口。只加上 --port 参数：
 
 ```bash
 php yii serve --port=8888
