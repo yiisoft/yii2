@@ -255,15 +255,19 @@ class Migration extends Component implements MigrationInterface
      */
     public function createTable($table, $columns, $options = null)
     {
-        echo "    > create table $table ...";
+        echo "    > create table $table ...\n";
         $time = microtime(true);
         $this->db->createCommand()->createTable($table, $columns, $options)->execute();
         foreach ($columns as $column => $type) {
             if ($type instanceof ColumnSchemaBuilder && $type->comment !== null) {
-                $this->db->createCommand()->addCommentOnColumn($table, $column, $type->comment)->execute();
+                try {
+                    $this->db->createCommand()->addCommentOnColumn($table, $column, $type->comment)->execute();
+                } catch (\yii\base\NotSupportedException $e) {
+                    echo "    > " . $this->db->driverName . " does not support comments\n";
+                }
             }
         }
-        echo " done (time: " . sprintf('%.3f', microtime(true) - $time) . "s)\n";
+        echo "    > done (time: " . sprintf('%.3f', microtime(true) - $time) . "s)\n";
     }
 
     /**
