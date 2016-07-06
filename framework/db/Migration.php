@@ -8,6 +8,7 @@
 namespace yii\db;
 
 use yii\base\Component;
+use yii\base\InvalidParamException;
 use yii\di\Instance;
 
 /**
@@ -78,6 +79,32 @@ class Migration extends Component implements MigrationInterface
     protected function getDb()
     {
         return $this->db;
+    }
+
+    /**
+     * @param string $type type of key
+     * @param string $table table name
+     * @param string|array $columns the name of the column to that the constraint will be added on.
+     * If there are multiple columns, separate them with commas or use an array.
+     * @return string
+     */
+    protected function getKeyName($type, $table, $columns)
+    {
+        if ($columns === null) {
+            throw new InvalidParamException('Set $columns param for automatic generate key name');
+        }
+        $columnsString = is_array($columns) ? implode('_', $columns) : preg_replace("/\,\s*/", '_', $columns);
+
+        return implode('_', [$type, $this->getTableName($table), $columnsString]);
+    }
+
+    /**
+     * @param string $table table name, for example '{{%users}}'
+     * @return string
+     */
+    public function getTableName($table)
+    {
+        return str_replace(['"', "'"], '', $this->getDb()->quoteSql($table));
     }
 
     /**
@@ -371,12 +398,15 @@ class Migration extends Component implements MigrationInterface
     /**
      * Builds and executes a SQL statement for creating a primary key.
      * The method will properly quote the table and column names.
-     * @param string $name the name of the primary key constraint.
+     * @param string|null $name the name of the primary key constraint.
      * @param string $table the table that the primary key constraint will be added to.
      * @param string|array $columns comma separated string or array of columns that the primary key will consist of.
      */
     public function addPrimaryKey($name, $table, $columns)
     {
+        if ($name === null) {
+            $name = $this->getKeyName('pk', $table, $columns);
+        }
         echo "    > add primary key $name on $table (" . (is_array($columns) ? implode(',', $columns) : $columns) . ') ...';
         $time = microtime(true);
         $this->db->createCommand()->addPrimaryKey($name, $table, $columns)->execute();
@@ -387,9 +417,14 @@ class Migration extends Component implements MigrationInterface
      * Builds and executes a SQL statement for dropping a primary key.
      * @param string $name the name of the primary key constraint to be removed.
      * @param string $table the table that the primary key constraint will be removed from.
+     * @param null|string|array $columns the name of the column to that the constraint will be added on.
+     * If there are multiple columns, separate them with commas or use an array.
      */
-    public function dropPrimaryKey($name, $table)
+    public function dropPrimaryKey($name, $table, $columns = null)
     {
+        if ($name === null) {
+            $name = $this->getKeyName('pk', $table, $columns);
+        }
         echo "    > drop primary key $name ...";
         $time = microtime(true);
         $this->db->createCommand()->dropPrimaryKey($name, $table)->execute();
@@ -399,7 +434,7 @@ class Migration extends Component implements MigrationInterface
     /**
      * Builds a SQL statement for adding a foreign key constraint to an existing table.
      * The method will properly quote the table and column names.
-     * @param string $name the name of the foreign key constraint.
+     * @param string|null $name the name of the foreign key constraint. If set null - generated automatically
      * @param string $table the table that the foreign key constraint will be added to.
      * @param string|array $columns the name of the column to that the constraint will be added on. If there are multiple columns, separate them with commas or use an array.
      * @param string $refTable the table that the foreign key references to.
@@ -409,6 +444,9 @@ class Migration extends Component implements MigrationInterface
      */
     public function addForeignKey($name, $table, $columns, $refTable, $refColumns, $delete = null, $update = null)
     {
+        if ($name === null) {
+            $name = $this->getKeyName('fk', $table, $columns);
+        }
         echo "    > add foreign key $name: $table (" . implode(',', (array) $columns) . ") references $refTable (" . implode(',', (array) $refColumns) . ') ...';
         $time = microtime(true);
         $this->db->createCommand()->addForeignKey($name, $table, $columns, $refTable, $refColumns, $delete, $update)->execute();
@@ -419,9 +457,13 @@ class Migration extends Component implements MigrationInterface
      * Builds a SQL statement for dropping a foreign key constraint.
      * @param string $name the name of the foreign key constraint to be dropped. The name will be properly quoted by the method.
      * @param string $table the table whose foreign is to be dropped. The name will be properly quoted by the method.
+     * @param string|array $columns the name of the column to that the constraint will be added on. If there are multiple columns, separate them with commas or use an array.
      */
-    public function dropForeignKey($name, $table)
+    public function dropForeignKey($name, $table, $columns = null)
     {
+        if ($name === null) {
+            $name = $this->getKeyName('fk', $table, $columns);
+        }
         echo "    > drop foreign key $name from table $table ...";
         $time = microtime(true);
         $this->db->createCommand()->dropForeignKey($name, $table)->execute();
@@ -430,7 +472,7 @@ class Migration extends Component implements MigrationInterface
 
     /**
      * Builds and executes a SQL statement for creating a new index.
-     * @param string $name the name of the index. The name will be properly quoted by the method.
+     * @param string|null $name the name of the index. The name will be properly quoted by the method. If set null - generated automatically
      * @param string $table the table that the new index will be created for. The table name will be properly quoted by the method.
      * @param string|array $columns the column(s) that should be included in the index. If there are multiple columns, please separate them
      * by commas or use an array. Each column name will be properly quoted by the method. Quoting will be skipped for column names that
@@ -439,6 +481,9 @@ class Migration extends Component implements MigrationInterface
      */
     public function createIndex($name, $table, $columns, $unique = false)
     {
+        if ($name === null) {
+            $name = $this->getKeyName('i', $table, $columns);
+        }
         echo '    > create' . ($unique ? ' unique' : '') . " index $name on $table (" . implode(',', (array) $columns) . ') ...';
         $time = microtime(true);
         $this->db->createCommand()->createIndex($name, $table, $columns, $unique)->execute();
@@ -449,9 +494,14 @@ class Migration extends Component implements MigrationInterface
      * Builds and executes a SQL statement for dropping an index.
      * @param string $name the name of the index to be dropped. The name will be properly quoted by the method.
      * @param string $table the table whose index is to be dropped. The name will be properly quoted by the method.
+     * @param null|string|array $columns the name of the column to that the constraint will be added on.
+     * If there are multiple columns, separate them with commas or use an array.
      */
-    public function dropIndex($name, $table)
+    public function dropIndex($name, $table, $columns = null)
     {
+        if ($name === null) {
+            $name = $this->getKeyName('i', $table, $columns);
+        }
         echo "    > drop index $name ...";
         $time = microtime(true);
         $this->db->createCommand()->dropIndex($name, $table)->execute();
