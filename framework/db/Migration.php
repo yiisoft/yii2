@@ -105,6 +105,7 @@ class Migration extends Component implements MigrationInterface
     public function getTableName($table)
     {
         $table = str_replace(['{{', '}}'], '', $table);
+
         return str_replace('%', $this->getDb()->tablePrefix, $table);
     }
 
