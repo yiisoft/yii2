@@ -114,7 +114,12 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
     public static function findOrNew($condition)
     {
         $result = static::findByCondition($condition)->one();
-        return $result === null ? new static($condition) : $result;
+        if ($result === null) {
+            $result = new static();
+            $attributes = array_intersect_key($condition, $result->attributes);
+            $result->setAttributes($attributes);
+        }
+        return $result;
     }
 
     /**
