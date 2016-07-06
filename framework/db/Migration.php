@@ -100,11 +100,12 @@ class Migration extends Component implements MigrationInterface
 
     /**
      * @param string $table table name, for example '{{%users}}'
-     * @return string
+     * @return string clear table name
      */
     public function getTableName($table)
     {
-        return str_replace(['"', "'"], '', $this->getDb()->quoteSql($table));
+        $table = str_replace(['{{', '}}'], '', $table);
+        return str_replace('%', $this->getDb()->tablePrefix, $table);
     }
 
     /**
