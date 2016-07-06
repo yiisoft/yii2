@@ -616,7 +616,7 @@ class Connection extends Component
         if ($this->emulatePrepare !== null && constant('PDO::ATTR_EMULATE_PREPARES')) {
             $this->pdo->setAttribute(PDO::ATTR_EMULATE_PREPARES, $this->emulatePrepare);
         }
-        if ($this->charset !== null && in_array($this->getDriverName(), ['pgsql', 'mysql', 'mysqli', 'cubrid'])) {
+        if ($this->charset !== null && in_array($this->getDriverName(), ['pgsql', 'mysql', 'mysqli', 'cubrid'], true)) {
             $this->pdo->exec('SET NAMES ' . $this->pdo->quote($this->charset));
         }
         $this->trigger(self::EVENT_AFTER_OPEN);
