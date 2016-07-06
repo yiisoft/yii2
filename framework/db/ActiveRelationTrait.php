@@ -536,4 +536,16 @@ trait ActiveRelationTrait
 
         return $this->asArray()->all($primaryModel::getDb());
     }
+
+    /**
+     * @see ActiveQueryInterface::andWhere()
+     * @return ActiveQueryInterface
+     */
+    abstract public function andWhere($condition);
+
+    /**
+     * @see ActiveQueryInterface::asArray()
+     * @return ActiveQueryInterface
+     */
+    abstract public function asArray($value = true);
 }
