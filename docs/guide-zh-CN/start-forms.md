@@ -8,7 +8,7 @@
 为了实现这个目标，除了创建一个[操作](structure-controllers.md)和两个[视图](structure-views)外，
 还需要创建一个[模型](structure-models.md)。
 
-贯穿整个小节，你将会学到：
+通过本教程，你将会学到：
 
 * 创建一个[模型](structure-models.md)代表用户通过表单输入的数据
 * 声明规则去验证输入的数据
@@ -94,7 +94,7 @@ use app\models\EntryForm;
 
 class SiteController extends Controller
 {
-    // ...其它代码...
+    // ...现存的代码...
 
     public function actionEntry()
     {
@@ -115,7 +115,7 @@ class SiteController extends Controller
 ```
 
 该操作首先创建了一个 `EntryForm` 对象。然后尝试从 `$_POST` 搜集用户提交的数据，
-由 Yii 的 [[yii\web\Request::post()]] 方法负责搜集。如果模型被成功填充数据（也就是说用户已经提交了 HTML 表单），
+由 Yii 的 [[yii\web\Request::post()]] 方法负责搜集。如果模型被成功填充数据（比如：如果用户已经提交了 HTML 表单），
 操作将调用 [[yii\base\Model::validate()|validate()]] 去确保用户提交的是有效数据。
 
 
@@ -124,7 +124,7 @@ class SiteController extends Controller
   能提供 `request`，`response`，`db` 等等特定功能的组件。
   在上面的代码里就是使用 `request` 组件来访问应用实例收到的 `$_POST` 数据。
 
-用户提交表单后，操作将会渲染一个名为 `entry-confirm` 的视图去确认用户输入的数据。
+如果一切都准备好了，用户提交表单后，操作将会渲染一个名为 `entry-confirm` 的视图去确认用户输入的数据。
 如果没填表单就提交，或数据包含错误（译者：如 email 格式不对），`entry` 视图将会渲染输出，
 连同表单一起输出的还有验证错误的详细信息。
 
@@ -139,7 +139,7 @@ class SiteController extends Controller
 最后创建两个视图文件 `entry-confirm` 和 `entry`。
 他们会被刚才创建的 `entry` 操作渲染。
 
-`entry-confirm` 视图简单地显示提交的 name 和 email 数据。视图文件保存在 `views/site/entry-confirm.php`。
+`entry-confirm` 视图简单地显示提交的 name 和 email 数据。视图文件应该保存在 `views/site/entry-confirm.php`。
 
 ```php
 <?php
@@ -153,7 +153,7 @@ use yii\helpers\Html;
 </ul>
 ```
 
-`entry` 视图显示一个 HTML 表单。视图文件保存在 `views/site/entry.php`。
+`entry` 视图显示一个 HTML 表单。视图文件应该保存在 `views/site/entry.php`。
 
 ```php
 <?php
@@ -196,7 +196,7 @@ http://hostname/index.php?r=site/entry
 ![验证错误的表单](images/start-form-validation.png)
 
 输入有效的 name 和 email 信息并提交后，
-将会看到一个显示你所提交数据的确认页面。
+你将会看到一个显示你所提交数据的新页面。
 
 ![输入数据的确认页](images/start-entry-confirmation.png)
 
@@ -237,10 +237,10 @@ http://hostname/index.php?r=site/entry
 -------
 
 本章节指南中你接触了 MVC 设计模式的每个部分。
-学到了如何创建一个模型代表用户数据并验证它的有效性。
+你已经学到了如何创建一个模型代表用户数据并验证它的有效性。
 
 你还学到了如何从用户那获取数据并在浏览器上回显给用户。
 这本来是开发应用的过程中比较耗时的任务，
 好在 Yii 提供了强大的小部件让它变得如此简单。
 
-下一章你将学习如何使用数据库，几乎每个应用都需要数据库。
+在下一章节中，你将学习如何使用数据库，几乎每个应用都需要数据库。
