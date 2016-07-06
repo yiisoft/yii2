@@ -18,7 +18,7 @@
 创建操作 <span id="creating-action"></span>
 ------------------
 
-为了 “Hello”，需要创建一个 `say` [操作](structure-controllers.md#creating-actions)，
+对于“Hello”任务，需要创建一个 `say` [操作](structure-controllers.md#creating-actions)，
 从请求中接收 `message` 参数并显示给最终用户。如果请求没有提供 `message` 参数，
 操作将显示默认参数 “Hello”。
 
@@ -27,7 +27,7 @@
   一个操作的执行结果就是最终用户收到的响应内容。
 
 操作必须声明在[控制器](structure-controllers.md)中。为了简单起见，
-你可以直接在 `SiteController` 控制器里声明 `say` 操作。这个控制器是由文件 `controllers/SiteController.php` 定义的。
+你可以在现存的 `SiteController` 控制器里声明 `say` 操作。这个控制器定义在 `controllers/SiteController.php` 类文件中。
 以下是一个操作的声明：
 
 ```php
@@ -39,7 +39,7 @@ use yii\web\Controller;
 
 class SiteController extends Controller
 {
-    // ...其它代码...
+    // ...现存的代码...
 
     public function actionSay($message = 'Hello')
     {
@@ -54,15 +54,15 @@ Yii 使用 `action` 前缀区分普通方法和操作。
 
 涉及到给操作命名时，你应该理解 Yii 如何处理操作 ID。
 操作 ID 总是被以小写处理，如果一个操作 ID 由多个单词组成，
-单词之间将由连字符连接（如 `create-comment`）。操作 ID 映射为方法名时移除了连字符，
+单词之间将由破折号连接（如 `create-comment`）。操作 ID 映射为方法名时移除了破折号，
 将每个单词首字母大写，并加上 `action` 前缀。 
-例子：操作 ID `create-comment` 相当于方法名 `actionCreateComment`。
+比如：操作 ID `create-comment` 对应方法名 `actionCreateComment`。
 
 上述代码中的操作方法接受一个参数 `$message`，
 它的默认值是 `“Hello”`（就像你设置 PHP 中其它函数或方法的默认值一样）。
 当应用接收到请求并确定由 `say` 操作来响应请求时，应用将从请求的参数中寻找对应值传入进来。
 换句话说，如果请求包含一个 `message` 参数，它的值是 `“Goodybye”`，
-操作方法中的 `$message` 变量也将被填充为 `“Goodbye”`。
+操作方法中的 `$message` 变量也将赋值为 `“Goodbye”`。
 
 在操作方法中，[[yii\web\Controller::render()|render()]] 被用来渲染一个名为
 `say` 的[视图](structure-views.md)文件。
@@ -84,7 +84,7 @@ use yii\helpers\Html;
 ```
 
 `say` 视图应该存为 `views/site/say.php` 文件。当一个操作中调用了 [[yii\web\Controller::render()|render()]] 方法时，
-它将会按 `views/控制器 ID/视图名.php` 路径加载 PHP 文件。
+它将会寻找名为 `views/控制器 ID/视图名.php` 的PHP文件。。
 
 注意以上代码，`message` 参数在输出之前被 [[yii\helpers\Html::encode()|HTML-encoded]] 方法处理过。
 这很有必要，当参数来自于最终用户时，
@@ -114,21 +114,21 @@ http://hostname/index.php?r=site/say&message=Hello+World
 
 > 注意：新页面和其它页面使用同样的头部和尾部是因为 [[yii\web\Controller::render()|render()]] 方法会
   自动把 `say` 视图执行的结果嵌入称为[布局](structure-views.md#layouts)的文件中，
-  本例中是 `views/layouts/main.php`。
+  位于 `views/layouts/main.php`。
 
 上面 URL 中的参数 `r` 需要更多解释。
 它代表[路由](runtime-routing.md)，是整个应用级的，
 指向特定操作的独立 ID。路由格式是 `控制器 ID/操作 ID`。应用接受请求的时候会检查参数，
 使用控制器 ID 去确定哪个控制器应该被用来处理请求。
 然后相应控制器将使用操作 ID 去确定哪个操作方法将被用来做具体工作。
-上述例子中，路由 `site/say` 将被解析至 `SiteController` 控制器和其中的 `say` 操作。
+在本例子中，路由 `site/say` 将被解析至 `SiteController` 控制器和其中的 `say` 操作。
 因此 `SiteController::actionSay()` 方法将被调用处理请求。
 
 > 注意：与操作一样，一个应用中控制器同样有唯一的 ID。
   控制器 ID 和操作 ID 使用同样的命名规则。
-  控制器的类名源自于控制器 ID，移除了连字符
+  控制器的类名源自于控制器 ID，移除了破折号
   ，每个单词首字母大写，并加上 `Controller` 后缀。
-  例子：控制器 ID `post-comment` 相当于控制器类名 `PostCommentController`。
+  例子：控制器 ID `post-comment` 对应控制器类名 `PostCommentController`。
 
 
 总结 <span id="summary"></span>
@@ -140,4 +140,4 @@ http://hostname/index.php?r=site/say&message=Hello+World
 
 你同样学习了 Yii 路由的相关内容，它是用户请求与控制器操作之间的桥梁。
 
-下一章，你将学习如何创建一个模型，以及添加一个包含 HTML 表单的页面。
+在下一章节中，你将学习如何创建一个模型，以及添加一个包含 HTML 表单的页面。
