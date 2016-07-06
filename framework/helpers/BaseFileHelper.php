@@ -179,6 +179,46 @@ class BaseFileHelper
     }
 
     /**
+     * Return file type (image, audio, video, ...).
+     * @param string $fileName full name of file, anything string but the end must contain filename with extension after dot, exe: "photo/travel/family.jpg"
+     * @param array $customFileTypes if you want define exclusive formats, exe: [ ['my_new_format1' => ['extension1', 'extension2', ...]], ['my_new_format2' => ['extension1', 'extension2', ...]], ...]
+     * @param string $unknowFileType returned when file type is not found
+     * @return string last file type found on local array $fileTypes or in param $customFileTypes
+     */
+    public static function getCustomFileType($fileName, $customFileTypes = [], $unknowFileType = 'unknow_file_type')
+    {
+        $fileTypes['image'] = ['jpg', 'png', 'gif'];
+		$fileTypes['audio'] = ['mp3', 'wma', 'wav'];
+		$fileTypes['video'] = ['mp4', 'avi', 'mkv'];
+		if (is_array($customFileTypes) && (count($customFileTypes) > 0)) {
+			if (count($customFileTypes) == 1) {
+				foreach ($customFileTypes as $fileType => $extensions) {
+					$fileTypes[$fileType] = $extensions;
+				}
+			} else {
+				foreach ($customFileTypes as $customFileType) {
+					foreach ($customFileType as $fileType => $extensions) {
+						$fileTypes[$fileType] = $extensions;
+					}
+				}
+			}
+		}
+		$extension = explode('.', $fileName);
+		$extension = end($extension);
+		$lastFileTypeFound = null;
+		foreach ($fileTypes as $fileType => $extensions) {
+			if (in_array($extension, $extensions)) {
+				$lastFileTypeFound = $fileType;
+			}
+		}
+		
+		if ($lastFileTypeFound !== null) {
+			return $lastFileTypeFound;
+		}
+		return $unknowFileType;
+    }
+
+    /**
      * Determines the extensions by given MIME type.
      * This method will use a local map between extension names and MIME types.
      * @param string $mimeType file MIME type.
