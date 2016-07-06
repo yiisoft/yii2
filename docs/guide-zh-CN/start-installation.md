@@ -8,10 +8,15 @@
 一个项目模板是实现了一些基本特性的一个 可行的Yii项目，比如登录，联系表单，等等。
 它的代码是以推荐的方式组织的。因此，它能够适合作为你项目的一个好的起点。
 
-在本章节和以后的章节，我们将会介绍如何去安装Yii和所谓的*基本的应用程序模板*和如何去实现这个模板上的新特性。Yii当然也提供了其它模板叫[高级的应用程序模板](https://github.com/yiisoft/yii2-app-advanced/blob/master/docs/guide/README.md)，它是更好应用于在一个团队开发环境中去开发多层级的应用程序。
+在本章节和以后的章节，我们将会介绍如何去安装Yii和所谓的*基本的应用程序模板*和如何去实现这个模板上的新特性。
+Yii当然也提供了其它模板叫
+[高级的应用程序模板](https://github.com/yiisoft/yii2-app-advanced/blob/master/docs/guide/README.md)，
+它是更好应用于在一个团队开发环境中去开发多层级的应用程序。
 
 > 信息：这个基本的应用程序模板是适合于开发90%的Web应用程序。
-  它不同于高级的应用程序模板主要地在如何使它们的代码是有组织的。如果你是刚接触Yii，我们强烈建议你坚持使用简单并有足够的功能的基础的应用程序模板。
+  它不同于高级的应用程序模板主要地在如何使它们的代码是有组织的。
+  如果你是刚接触Yii，我们强烈建议你坚持使用简单并有足够的功能的基础的应用程序模板。
+
 
 通过 Composer 安装 <span id="installing-via-composer"></span>
 -----------------------
@@ -91,13 +96,16 @@ composer create-project --prefer-dist yiisoft/yii2-app-basic basic
 验证安装的结果 <span id="verifying-installation"></span>
 --------------------------
 
-当安装完成之后，或配置你的Web服务器(看下面的文章)或使用[内置Web Server](https://secure.php.net/manual/en/features.commandline.webserver.php),当在项目 `web` 目录下可以通过下面的命令:
+当安装完成之后，
+或配置你的Web服务器(看下面的文章)或使用[内置Web Server](https://secure.php.net/manual/en/features.commandline.webserver.php)，
+当在项目 `web` 目录下可以通过下面的命令:
  
 ```bash
 php yii serve
 ```
 
-> 注意：默认情况下Https-server将监听8080。可是如果这个端口已经使用或者你想通过这个方式运行多个应用程序，你可以指定使用哪些端口。只加上 --port 参数：
+> 注意：默认情况下Https-server将监听8080。可是如果这个端口已经使用或者你想通过这个方式运行多个应用程序，你可以指定使用哪些端口。
+只加上 --port 参数：
 
 ```bash
 php yii serve --port=8888
@@ -208,11 +216,6 @@ server {
     #    try_files $uri =404;
     #}
     #error_page 404 /404.html;
-
-    # deny accessing php files for the /assets directory
-    location ~ ^/assets/.*\.php$ {
-        deny all;
-    }
 
     location ~ \.php$ {
         include fastcgi_params;
