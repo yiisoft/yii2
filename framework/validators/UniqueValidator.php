@@ -9,6 +9,7 @@ namespace yii\validators;
 
 use Yii;
 use yii\db\ActiveRecordInterface;
+use yii\helpers\Inflector;
 
 /**
  * UniqueValidator validates that the attribute value is unique in the specified database table.
@@ -145,7 +146,7 @@ class UniqueValidator extends Validator
         }
 
         if ($exists) {
-            if (is_array($targetAttribute)) {
+            if (count($targetAttribute) > 1) {
                 $this->addComboNotUniqueError($model, $attribute);
             } else {
                 $this->addError($model, $attribute, $this->message);
@@ -171,6 +172,9 @@ class UniqueValidator extends Validator
                 $valueCombo[] = '"' . $model->$key . '"';
             }
         }
-        $this->addError($model, $attribute, $this->comboNotUnique, ['attributes' => implode(', ', $attributeCombo), 'values' => implode(', ', $valueCombo)]);
+        $this->addError($model, $attribute, $this->comboNotUnique, [
+            'attributes' => Inflector::sentence($attributeCombo),
+            'values' => implode('-', $valueCombo)
+        ]);
     }
 }
