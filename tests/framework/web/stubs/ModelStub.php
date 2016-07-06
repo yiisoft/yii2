@@ -10,7 +10,7 @@ class ModelStub extends Model
     public $title;
     public $hidden;
 
-    public function toArray(array $fields = [], array $expand = [], $recursive = true)
+    public function toArray(array $fields = [], array $except = [], $recursive = true)
     {
         return ['id' => $this->id, 'title' => $this->title];
     }

@@ -22,6 +22,15 @@ class Post2 extends Object
     {
         return $this->secret;
     }
+    
+    private $_post1;
+    public function getPost1()
+    {
+        if ($this->_post1 === null){
+            $this->_post1 = new Post1();
+        }
+        return $this->_post1;
+    }
 }
 
 class Post3 extends Object
@@ -46,7 +55,7 @@ class ArrayHelperTest extends TestCase
         parent::setUp();
         $this->mockApplication();
     }
-
+    
     public function testToArray()
     {
         $object = new Post1;
@@ -70,7 +79,7 @@ class ArrayHelperTest extends TestCase
             'secret' => 's',
             '_content' => 'test',
             'length' => 4,
-        ], ArrayHelper::toArray($object, [
+        ], ArrayHelper::toArray($object, [], [], [
             get_class($object) => [
                 'id', 'secret',
                 '_content' => 'content',
@@ -81,7 +90,7 @@ class ArrayHelperTest extends TestCase
         ]));
 
         $object = new Post3();
-        $this->assertEquals(get_object_vars($object), ArrayHelper::toArray($object, [], false));
+        $this->assertEquals(get_object_vars($object), ArrayHelper::toArray($object, [], [], [], false));
         $this->assertEquals([
             'id' => 33,
             'subObject' => [
@@ -98,7 +107,7 @@ class ArrayHelperTest extends TestCase
                 'id' => 123,
                 'id_plus_1' => 124,
             ],
-        ], ArrayHelper::toArray($object, [
+        ], ArrayHelper::toArray($object, [], [], [
             get_class($object) => [
                 'id', 'subObject',
                 'id_plus_1' => function ($post) {
@@ -120,7 +129,7 @@ class ArrayHelperTest extends TestCase
                 'id' => 123,
                 'id_plus_1' => 124,
             ],
-        ], ArrayHelper::toArray($object, [
+        ], ArrayHelper::toArray($object, [], [], [
             get_class($object->subObject) => [
                 'id',
                 'id_plus_1' => function ($post) {
@@ -128,6 +137,55 @@ class ArrayHelperTest extends TestCase
                 }
             ],
         ]));
+
+        // expand field
+        $this->assertEquals([
+            'id' => 33,
+            'subObject' => [
+                'id' => 123,
+                'content' => 'test',
+            ],
+        ], ArrayHelper::toArray($object, ['subObject']));
+
+        // expand field recursive with exclude
+        $this->assertEquals([
+            'id' => 33,
+            'subObject' => [
+                'id' => 123,
+                'secret' => 's',
+            ],
+        ], ArrayHelper::toArray($object, ['subObject.secret'], ['subObject.content']));
+
+        //recursive with attributes of subobject and use expand field
+        $this->assertEquals([
+            'id' => 33,
+            'subObject' => [
+                'id' => 123,
+                'id_plus_1' => 124,
+                'secret' => 's',
+            ],
+        ], ArrayHelper::toArray($object, ['subObject.secret'], [], [
+            get_class($object->subObject) => [
+                'id',
+                'id_plus_1' => function ($post) {
+                    return $post->id+1;
+                }
+            ],
+        ], true));
+
+
+        //recursive with attributes of subobject and use expand and exclude
+        $this->assertEquals([
+            'id' => 33,
+            'subObject' => [
+                'id' => 123,
+                'secret' => 's',
+                'post1' => [
+                    'id' => 23,
+                    'title' => 'tt'
+                ]
+            ],
+        ], ArrayHelper::toArray($object, ['subObject.secret', 'subObject.post1'], ['subObject.content']));
     }
 
     public function testRemove()
