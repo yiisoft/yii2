@@ -280,10 +280,11 @@ $data = ArrayHelper::toArray($posts, [
 ## Проверка на присутствие в массиве <span id="testing-arrays"></span>
 
 Часто необходимо проверить, содержится ли элемент в массиве, или является ли массив подмножеством другого массива.
-К сожалению, PHP функция [[in_array()]] не поддерживает подмножества объектов, реализующих интерфейс `\Traversable`.
+К сожалению, PHP функция `in_array()` не поддерживает подмножества объектов, реализующих интерфейс `\Traversable`.
 
-Для таких случаев [[yii\base\ArrayHelper]] предоставляет [[yii\base\ArrayHelper::isIn()|isIn()]] и
-[[yii\base\ArrayHelper::isSubset()|isSubset()]]. Методы принимают такие же параметры, что и [[in_array()]].
+Для таких случаев [[yii\helpers\ArrayHelper]] предоставляет [[yii\helpers\ArrayHelper::isIn()|isIn()]] и
+[[yii\helpers\ArrayHelper::isSubset()|isSubset()]]. Методы принимают такие же параметры, что и
+[in_array()](http://php.net/manual/en/function.in-array.php).
 
 ```php
 // true
