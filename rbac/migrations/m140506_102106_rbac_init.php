@@ -138,7 +138,7 @@ class m140506_102106_rbac_init extends \yii\db\Migration
         $this->db = $authManager->db;
 
         if ($this->isMSSQL()) {
-            $this->execute('DROP dbo.trigger_auth_item_child;');
+            $this->execute('DROP TRIGGER dbo.trigger_auth_item_child;');
         }
 
         $this->dropTable($authManager->assignmentTable);
