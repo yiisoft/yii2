@@ -18,6 +18,7 @@ Yii Framework 2 Change Log
 - Enh #11484: Speed up `yii\db\oci\Schema::loadTableSchema()` for Oracle DBMS (SSiwek)
 - Enh #11428: Speedup SQL query in `yii\db\oci\Schema::findColumns()` (SSiwek)
 - Enh #11414: Files specified as `null` in `yii\web\AssetBundle` won't be registered (Razzwan)
+- Bug #11384: `yii.js` - middle/right clicking links that should go through handleAction(zuozp8)
 - Enh #11432: Added HTTP status 421 "Misdirected Request" to list of statuses in `yii\web\Response` (dasmfm)
 - Enh #11438: Configurable `yii\helpers\Markdown` default flavor (mdmunir)
 - Enh #11729: Added `yii\grid\CheckboxColumn::$cssClass` property to specify a class added to checkbox input (thiagotalma)
