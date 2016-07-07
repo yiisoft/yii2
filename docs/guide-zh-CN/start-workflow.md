@@ -11,8 +11,8 @@
   你访问应用的地址会是 `http://lostname/index.php` 或类似的。
   请按需调整 URL。
 
-Note that unlike framework itself, after project template is installed it's all yours. You're free to add or delete
-code and overall modify it as you need.
+注意项目模板和框架完全不同，安装完之后全都归你了。你可以根据你的需要自由的添加或删除代码和
+修改全部的。
 
 
 功能 <span id="functionality"></span>
@@ -32,9 +32,9 @@ code and overall modify it as you need.
 在浏览器底部可以看到一个工具栏。这是 Yii 提供的很有用的[调试工具](tool-debugger.md)，
 可以记录并显示大量的调试信息，例如日志信息，响应状态，数据库查询等等。
 
-Additionally to the web application, there is a console script called `yii`, which is located in the applications base directory.
-This script can be used to run background and maintenance tasks for the application, which are described
-in the [Console Application Section](tutorial-console.md).
+除了web应用程序，还有一个控制台脚步叫 `yii` ,它位于应用程序根目录。
+它可以用于程序的后台运行和维护任务，在[控制台应用程序章节](tutorial-console.md)
+中描述。
 
 
 应用结构 <span id="application-structure"></span>
@@ -93,7 +93,7 @@ Yii 实现了[模型-视图-控制器 (MVC)](http://wikipedia.org/wiki/Model-vie
    解析请求的[路由](runtime-routing.md)。
 4. 应用创建一个[控制器](structure-controllers.md)实例去处理请求。
 5. 控制器创建一个[操作](structure-controllers.md)实例并针对操作执行过滤器。
-6. 如果任何一个过滤器返回失败，则操作退出。
+6. 如果任何一个过滤器返回失败，则操作取消。
 7. 如果所有过滤器都通过，操作将被执行。
 8. 操作会加载一个数据模型，或许是来自数据库。
 9. 操作会渲染一个视图，把数据模型提供给它。
