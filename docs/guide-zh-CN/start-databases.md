@@ -1,7 +1,7 @@
 使用数据库
 ======================
 
-本章节将介绍如何如何创建一个从数据表 `country` 中读取国家数据并显示出来的页面。
+本章节将介绍如何创建一个从数据表 `country` 中读取国家数据并显示出来的页面。
 为了实现这个目标，你将会配置一个数据库连接，创建一个[活动记录](db-active-record.md)类，
 并且创建一个[操作](structure-controllers.md)及一个[视图](structure-views.md)。
 
@@ -51,7 +51,7 @@ INSERT INTO `country` VALUES ('US','United States',278357000);
 
 开始之前，请确保你已经安装了 PHP [PDO](http://www.php.net/manual/en/book.pdo.php) 
 扩展和你所使用的数据库的 PDO 驱动（例如 MySQL 的 `pdo_mysql`）。
-对于使用关系型数据库来讲，这是基本要求。
+假如你的程序是使用关系型数据库，这是基本要求。
 
 驱动和扩展安装可用后，打开 `config/db.php` 修改里面的配置参数对应你的数据库配置。
 该文件默认包含这些内容：
@@ -78,7 +78,7 @@ return [
   后者指定了整个[应用](structure-applications.md)如何初始化。
   请参考[配置](concept-configurations.md)章节了解更多信息。
 
-If you need to work with databases support for which isn't bundled with Yii, check the following extensions:
+如果你需要的不是Yii附带的数据库驱动，查阅以下的驱动:
 
 - [Informix](https://github.com/edgardmessias/yii2-informix)
 - [IBM DB2](https://github.com/edgardmessias/yii2-ibm-db2)

@@ -95,7 +95,7 @@ CRUD 代表增，查，改，删操作，这是绝大多数 Web 站点常用的�
 
 然后点击 “Preview” 按钮。你会看到下述将要生成的文件列表。
 
-[[NEED THE IMAGE HERE / 等待官方补充图片]]
+![CRUD 生成器预览](images/start-gii-crud-preview.png)
 
 如果你之前创建过 `controllers/CountryController.php` 和 `views/country/index.php` 文件（在指南的使用数据库章节），
 选中 “overwrite” 下的复选框覆写它们（之前的文件没能全部支持 CRUD）。
