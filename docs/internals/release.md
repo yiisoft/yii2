@@ -28,7 +28,18 @@ the framework:
 The release command depends on the development environment introduced in
 the [Git Workflow Document](git-workflow.md#extensions), i.e. the application 
 templates must be located under `/apps/` and extensions must be located under `/extensions/`.
-This structure is preferably created using the `dev/app` command.
+This structure is preferably created using the `dev/app` and `dev/ext` commands.
+
+e.g. install an extension:
+
+    ./build/build dev/ext authclient
+
+or an application:
+
+    ./build/build dev/app basic
+
+This installation will ensure that the extension will use the same framework code that is in the current
+repositories state.
 
 ### Version overview
 
