@@ -15,6 +15,7 @@ use yii\db\Expression;
 use yii\base\InvalidCallException;
 use yii\base\InvalidParamException;
 use yii\di\Instance;
+use yii\helpers\ArrayHelper;
 
 /**
  * DbManager represents an authorization manager that stores authorization information in database.
@@ -753,6 +754,24 @@ class DbManager extends BaseManager
     /**
      * @inheritdoc
      */
+    public function getParents($name)
+    {
+        $query = (new Query)
+            ->select(['name', 'type', 'description', 'rule_name', 'data', 'created_at', 'updated_at'])
+            ->from([$this->itemTable, $this->itemChildTable])
+            ->where(['child' => $name, 'name' => new Expression('[[parent]]')]);
+
+        $parents = [];
+        foreach ($query->all($this->db) as $row) {
+            $parents[$row['name']] = $this->populateItem($row);
+        }
+
+        return $parents;
+    }
+
+    /**
+     * @inheritdoc
+     */
     public function getChildren($name)
     {
         $query = (new Query)
@@ -966,18 +985,36 @@ class DbManager extends BaseManager
     /**
      * Returns all role assignment information for the specified role.
      * @param string $roleName
+     * @param string $recursive
      * @return Assignment[] the assignments. An empty array will be
      * returned if role is not assigned to any user.
      * @since 2.0.7
      */
-    public function getUserIdsByRole($roleName)
+    public function getUserIdsByRole($roleName, $recursive = false)
     {
         if (empty($roleName)) {
             return [];
         }
 
-        return (new Query)->select('[[user_id]]')
+        $userIds = (new Query)
+            ->select('[[user_id]]')
             ->from($this->assignmentTable)
-            ->where(['item_name' => $roleName])->column($this->db);
+            ->where(['item_name' => $roleName])
+            ->column($this->db);
+
+        if ($recursive === false) {
+            return $userIds;
+        }
+
+        $parents = $this->getParents($roleName);
+        foreach ($parents as $parent) {
+            if ($parent->type === Item::TYPE_ROLE) {
+                $parentName = $parent->name;
+                $parentUserIds = $this->getUserIdsByRole($parentName, true);
+                $userIds = ArrayHelper::merge($userIds, $parentUserIds);
+            }
+        }
+
+        return $userIds;
     }
 }

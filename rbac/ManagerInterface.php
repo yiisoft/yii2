@@ -161,6 +161,13 @@ interface ManagerInterface extends CheckAccessInterface
     public function hasChild($parent, $child);
 
     /**
+     * Returns the parent permissions and/or roles.
+     * @param string $name the child name
+     * @return Item[] the parent permissions and/or roles
+     */
+    public function getParents($name);
+
+    /**
      * Returns the child permissions and/or roles.
      * @param string $name the parent name
      * @return Item[] the child permissions and/or roles
@@ -212,10 +219,11 @@ interface ManagerInterface extends CheckAccessInterface
     /**
      * Returns all user IDs assigned to the role specified.
      * @param string $roleName
+     * @param string $recursive
      * @return array array of user ID strings
      * @since 2.0.7
      */
-    public function getUserIdsByRole($roleName);
+    public function getUserIdsByRole($roleName, $recursive);
 
     /**
      * Removes all authorization data, including roles, permissions, rules, and assignments.

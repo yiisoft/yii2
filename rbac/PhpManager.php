@@ -11,6 +11,7 @@ use yii\base\InvalidCallException;
 use yii\base\InvalidParamException;
 use Yii;
 use yii\helpers\VarDumper;
+use yii\helpers\ArrayHelper;
 
 /**
  * PhpManager represents an authorization manager that stores authorization
@@ -491,6 +492,22 @@ class PhpManager extends BaseManager
     /**
      * @inheritdoc
      */
+    public function getParents($name)
+    {
+        $parents = [];
+        foreach ($this->children as $parentName => $children) {
+            $isParent = array_key_exists($name, $children);
+            if ($isParent === true) {
+                $parent = $this->items[$parentName];
+                $parents[] = $parent;
+            }
+        }
+        return $parents;
+    }
+
+    /**
+     * @inheritdoc
+     */
     public function getChildren($name)
     {
         return isset($this->children[$name]) ? $this->children[$name] : [];
@@ -839,16 +856,30 @@ class PhpManager extends BaseManager
      * @inheritdoc
      * @since 2.0.7
      */
-    public function getUserIdsByRole($roleName)
+    public function getUserIdsByRole($roleName, $recursive = false)
     {
-        $result = [];
+        $userIds = [];
         foreach ($this->assignments as $userID => $assignments) {
             foreach ($assignments as $userAssignment) {
                 if ($userAssignment->roleName === $roleName && $userAssignment->userId == $userID) {
-                    $result[] = (string)$userID;
+                    $userIds[] = (string)$userID;
                 }
             }
         }
-        return $result;
+
+        if ($recursive === false) {
+            return $userIds;
+        }
+
+        $parents = $this->getParents($roleName);
+        foreach ($parents as $parent) {
+            if ($parent->type === Item::TYPE_ROLE) {
+                $parentName = $parent->name;
+                $parentUserIds = $this->getUserIdsByRole($parentName, true);
+                $userIds = ArrayHelper::merge($userIds, $parentUserIds);
+            }
+        }
+
+        return $userIds;
     }
 }
