@@ -8,7 +8,6 @@
 namespace yii\db;
 
 use yii\base\InvalidConfigException;
-use yii\base\Event;
 use yii\base\Model;
 use yii\base\InvalidParamException;
 use yii\base\ModelEvent;
@@ -16,6 +15,7 @@ use yii\base\NotSupportedException;
 use yii\base\UnknownMethodException;
 use yii\base\InvalidCallException;
 use yii\helpers\ArrayHelper;
+use yii\helpers\TypecastingHelper;
 
 /**
  * ActiveRecord is the base class for classes representing relational data in terms of objects.
@@ -97,6 +97,10 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
      */
     private $_related = [];
 
+    /**
+     * @var array|null array of cast rules for attributes
+     */
+    private $_castsRules = null;
 
     /**
      * @inheritdoc
@@ -266,6 +270,7 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
      */
     public function __set($name, $value)
     {
+        $value = $this->castAttribute($name, $value);
         if ($this->hasAttribute($name)) {
             $this->_attributes[$name] = $value;
         } else {
@@ -388,6 +393,90 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
     }
 
     /**
+     * Normalize typecast rules from attributeCasts method for later.
+     * @return array
+     * @throws InvalidConfigException
+     */
+    public function getTypecastRules() {
+        if ($this->_castsRules === null) {
+            $this->_castsRules = [];
+            foreach($this->attributeCasts() as $rule) {
+                $attributes = array_shift($rule);
+                $scalarType = array_shift($rule);
+                if (empty($scalarType) || empty($attributes)) {
+                    throw new InvalidConfigException('Invalid attributeCasts rule: a rule must specify both attribute names and native type.');
+                }
+                $strict = !empty($rule['strict']) || in_array('strict', $rule);
+                if (!is_array($attributes)) {
+                    $attributes = [$attributes];
+                }
+                foreach($attributes as $attribute) {
+                    if (empty($attribute)) {
+                        throw new InvalidConfigException('Invalid attributeCasts rule: a rule must specify both attribute names and native type.');
+                    }
+                    $this->_castsRules[$attribute] = [
+                        'type'  => $scalarType,
+                        'strict' => $strict
+                    ];
+                }
+            }
+        }
+
+        return $this->_castsRules;
+    }
+
+    /**
+     * Method typecast attribute value to scalar type according to typecast rules.
+     * @notice if you set null value, it will be like unset($model->attrName)
+     *
+     * @param $name
+     * @param $value
+     * @return bool|int|mixed|string
+     * @throws InvalidConfigException
+     */
+    public function castAttribute($name, $value) {
+        $types = $this->getTypecastRules();
+        if (isset($types[$name]) && !is_null($value)) {
+            return TypecastingHelper::typecastValue($value, $types[$name]['type'], $types[$name]['strict']);
+        }
+
+        return $value;
+    }
+
+    /**
+     * Following method returns array of rules for attribute values conversion.
+     *
+     * Attributes values can be converted to following scalar types:
+     *  boolean
+     *  string
+     *  integer
+     *  float
+     *
+     * By default conversion will be in non strict mode. In case when conversion of current value is impossible,
+     * attribute take non-converted value.
+     *
+     * You can set strict mode for some attribute. In this case if conversion is impossible you get an error.
+     * @notice in soft mode null value don't typecast.
+     *
+     * For example :
+     * [
+     *     // try to convert following attributes to string if it is possible
+     *     [['username', 'password'], 'string'],
+     *     // try to convert following attributes to integer if it is impossible, you will get an error
+     *     ['followersCount', 'integer', 'strict' => true],
+     *     // try to convert following attributes to boolean (any value can be converted to boolean)
+     *     ['isAdmin', 'boolean'],
+     * ];
+     *
+     * You have to override this method to make casting of your attributes if it possible.
+     * @return array attribute cast rules
+     */
+    public function attributeCasts()
+    {
+        return [];
+    }
+
+    /**
      * Populates the named relation with the related records.
      * Note that this method does not check if the relation exists or not.
      * @param string $name the relation name (case-sensitive)
@@ -424,7 +513,7 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
      */
     public function hasAttribute($name)
     {
-        return isset($this->_attributes[$name]) || in_array($name, $this->attributes(), true);
+        return isset($this->_attributes[$name]) || in_array($name, $this->attributes());
     }
 
     /**
@@ -450,7 +539,7 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
     public function setAttribute($name, $value)
     {
         if ($this->hasAttribute($name)) {
-            $this->_attributes[$name] = $value;
+            $this->_attributes[$name] = $this->castAttribute($name, $value);
         } else {
             throw new InvalidParamException(get_class($this) . ' has no attribute named "' . $name . '".');
         }
@@ -768,9 +857,9 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
         if (static::updateAllCounters($counters, $this->getOldPrimaryKey(true)) > 0) {
             foreach ($counters as $name => $value) {
                 if (!isset($this->_attributes[$name])) {
-                    $this->_attributes[$name] = $value;
+                    $this->_attributes[$name] = $this->castAttribute($name, $value);
                 } else {
-                    $this->_attributes[$name] += $value;
+                    $this->_attributes[$name] = $this->castAttribute($name, $value + $this->_attributes[$name]);
                 }
                 $this->_oldAttributes[$name] = $this->_attributes[$name];
             }
@@ -971,7 +1060,9 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
             return false;
         }
         foreach ($this->attributes() as $name) {
-            $this->_attributes[$name] = isset($record->_attributes[$name]) ? $record->_attributes[$name] : null;
+            $this->_attributes[ $name ] = isset($record->_attributes[ $name ])
+                ? $this->castAttribute($name, $record->_attributes[ $name ])
+                : null;
         }
         $this->_oldAttributes = $this->_attributes;
         $this->_related = [];
@@ -1087,6 +1178,7 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
     {
         $columns = array_flip($record->attributes());
         foreach ($row as $name => $value) {
+            $value = $record->castAttribute($name, $value);
             if (isset($columns[$name])) {
                 $record->_attributes[$name] = $value;
             } elseif ($record->canSetProperty($name)) {
