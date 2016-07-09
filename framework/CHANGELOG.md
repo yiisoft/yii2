@@ -5,6 +5,7 @@ Yii Framework 2 Change Log
 2.0.9 under development
 -----------------------
 
+- Enh #11895: Added `$recursive` option to `yii\rbac\ManagerInterface::getUserIdsByRole()` and its implementations. (Kolyunya)
 - Bug #11896: Fix for DROP TRIGGER in migrations from RBAC. (barradas-alberto)
 - Enh #11725: Added indexes on message tables (OndrejVasicek)
 - Enh #10422: Added `null` method on `yii\db\ColumnSchemaBuilder` to explicitly set column nullability (nevermnd)
