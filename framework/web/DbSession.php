@@ -181,7 +181,6 @@ class DbSession extends MultiFieldSession
             $exception = ErrorHandler::convertExceptionToString($e);
             // its too late to use Yii logging here
             error_log($exception);
-            echo $exception;
 
             return false;
         }
