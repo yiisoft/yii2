@@ -437,7 +437,7 @@ class ReleaseController extends Controller
         $this->runGit("git push --tags", $frameworkPath);
 
         $this->stdout("\n\n");
-        $this->stdout("CONGRATULATIONS! You have just released extension ", Console::FG_YELLOW, Console::BOLD);
+        $this->stdout("CONGRATULATIONS! You have just released ", Console::FG_YELLOW, Console::BOLD);
         $this->stdout('framework', Console::FG_RED, Console::BOLD);
         $this->stdout(" version ", Console::FG_YELLOW, Console::BOLD);
         $this->stdout($version, Console::BOLD);

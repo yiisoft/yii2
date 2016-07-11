@@ -77,6 +77,7 @@ class ColumnSchemaBuilder extends Object
      */
     protected $isFirst;
 
+
     /**
      * @var array mapping of abstract column types (keys) to type categories (values).
      * @since 2.0.8
@@ -301,7 +302,7 @@ class ColumnSchemaBuilder extends Object
 
     /**
      * Builds the not null constraint for the column.
-     * @return string returns 'NOT NULL' if [[isNotNull]] is true, 
+     * @return string returns 'NOT NULL' if [[isNotNull]] is true,
      * 'NULL' if [[isNotNull]] is false or an empty string otherwise.
      */
     protected function buildNotNullString()

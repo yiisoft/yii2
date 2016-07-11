@@ -15,6 +15,8 @@ use yii\db\ColumnSchema;
  * Schema is the class for retrieving metadata from a PostgreSQL database
  * (version 9.x and above).
  *
+ * @property string[] $viewNames All view names in the database. This property is read-only.
+ *
  * @author Gevik Babakhani <gevikb@gmail.com>
  * @since 2.0
  */
@@ -107,6 +109,7 @@ class Schema extends \yii\db\Schema
         'jsonb' => self::TYPE_STRING,
         'xml' => self::TYPE_STRING,
     ];
+
     /**
      * @var array list of ALL view names in the database
      */
