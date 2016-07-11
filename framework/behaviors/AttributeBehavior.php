@@ -42,8 +42,8 @@ use yii\db\ActiveRecord;
  * }
  * ```
  *
- * Because attribute values will be set automatically, it's a good idea to make sure attribute names aren't
- * in `rules()` method of the model.
+ * Because attribute values will be set automatically by this behavior, they are usually not user input and should therefore
+ * not be validated, i.e. they should not appear in the [[\yii\base\Model::rules()|rules()]] method of the model.
  *
  * @author Luciano Baraglia <luciano.baraglia@gmail.com>
  * @author Qiang Xue <qiang.xue@gmail.com>

@@ -57,12 +57,17 @@ abstract class Target extends Component
     /**
      * @var array list of the PHP predefined variables that should be logged in a message.
      * Note that a variable must be accessible via `$GLOBALS`. Otherwise it won't be logged.
+     *
      * Defaults to `['_GET', '_POST', '_FILES', '_COOKIE', '_SESSION', '_SERVER']`.
+     *
+     * Since version 2.0.9 additional syntax can be used:
      * Each element could be specified as one of the following:
+     *
      * - `var` - `var` will be logged.
      * - `var.key` - only `var[key]` key will be logged.
      * - `!var.key` - `var[key]` key will be excluded.
      *
+     * @see \yii\helpers\ArrayHelper::filter()
      */
     public $logVars = ['_GET', '_POST', '_FILES', '_COOKIE', '_SESSION', '_SERVER'];
     /**

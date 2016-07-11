@@ -69,6 +69,7 @@ class CheckboxColumn extends Column
     public $multiple = true;
     /**
      * @var string the css class that will be used to find the checkboxes.
+     * @since 2.0.9
      */
     public $cssClass;
 
