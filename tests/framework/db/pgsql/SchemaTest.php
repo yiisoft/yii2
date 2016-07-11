@@ -114,19 +114,6 @@ class SchemaTest extends \yiiunit\framework\db\SchemaTest
         $this->assertSame(false, $table->getColumn('default_false')->defaultValue);
     }
 
-    public function testNegativeDefaultValues()
-    {
-        /* @var $schema Schema */
-        $schema = $this->getConnection()->schema;
-
-        $table = $schema->getTableSchema('negative_default_values');
-        $this->assertEquals(-123, $table->getColumn('smallint_col')->defaultValue);
-        $this->assertEquals(-123, $table->getColumn('int_col')->defaultValue);
-        $this->assertEquals(-123, $table->getColumn('bigint_col')->defaultValue);
-        $this->assertEquals(-12345.6789, $table->getColumn('float_col')->defaultValue);
-        $this->assertEquals(-33.22, $table->getColumn('numeric_col')->defaultValue);
-    }
-
     public function testFindSchemaNames()
     {
         $schema = $this->getConnection()->schema;
