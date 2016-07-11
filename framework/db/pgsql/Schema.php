@@ -320,7 +320,10 @@ SQL;
             $constraints[$name]['columns'][$constraint['column_name']] = $constraint['foreign_column_name'];
         }
         foreach ($constraints as $constraint) {
-            $table->foreignKeys[] = array_merge([$constraint['tableName']], $constraint['columns']);
+            $name = array_keys($constraint);
+            $name = reset($name);
+
+            $table->foreignKeys[$name] = array_merge([$constraint['tableName']], $constraint['columns']);
         }
     }
 
