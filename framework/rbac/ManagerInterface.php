@@ -164,6 +164,8 @@ interface ManagerInterface extends CheckAccessInterface
      * Returns the parent permissions and/or roles.
      * @param string $name the child name
      * @return Item[] the parent permissions and/or roles
+     *
+     * @since 2.0.10
      */
     public function getParents($name);
 
@@ -218,8 +220,12 @@ interface ManagerInterface extends CheckAccessInterface
 
     /**
      * Returns all user IDs assigned to the role specified.
-     * @param string $roleName
-     * @param string $recursive
+     * Only users having a direct assignment to the specified role are returned if
+     * `$recursive` is false. Otherwise a recursive search over roles hierarchy is performed
+     * and all users having an assignment to each of parent roles are returned.
+     *
+     * @param string $roleName role name.
+     * @param string $recursive whether to perform a recursive search over parent roles.
      * @return array array of user ID strings
      * @since 2.0.7
      */

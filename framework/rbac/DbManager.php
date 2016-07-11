@@ -984,8 +984,11 @@ class DbManager extends BaseManager
 
     /**
      * Returns all role assignment information for the specified role.
-     * @param string $roleName
-     * @param string $recursive
+     * Only users having a direct assignment to the specified role are returned if
+     * `$recursive` is false. Otherwise a recursive search over roles hierarchy is performed
+     * and all users having an assignment to each of parent roles are returned.
+     * @param string $roleName role name.
+     * @param string $recursive whether to perform a recursive search over parent roles.
      * @return Assignment[] the assignments. An empty array will be
      * returned if role is not assigned to any user.
      * @since 2.0.7
