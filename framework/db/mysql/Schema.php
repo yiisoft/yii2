@@ -274,7 +274,7 @@ SQL;
             $table->foreignKeys = [];
             foreach ($constraints as $constraint) {
                 $name = array_keys($constraint);
-                $name = reset($name);
+                $name = current($name);
 
                 $table->foreignKeys[$name] = array_merge(
                     [$constraint['referenced_table_name']],
