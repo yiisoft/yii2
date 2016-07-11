@@ -158,7 +158,7 @@ class UniqueValidator extends Validator
      * Builds and adds [[comboNotUnique]] error message to the specified model attribute.
      * @param \yii\base\Model $model the data model.
      * @param string $attribute the name of the attribute.
-    */
+     */
     private function addComboNotUniqueError($model, $attribute)
     {
         $attributeCombo = [];
