@@ -4,7 +4,7 @@ Yii Framework 2 Change Log
 2.0.10 under development
 ------------------------
 
-- no changes in this release.
+- Bug #11912: Fixed PostgreSQL Schema to support negative default values for integer/float/decimal columns (nsknewbie)
 
 
 
