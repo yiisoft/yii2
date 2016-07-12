@@ -9,6 +9,7 @@ namespace yii\validators;
 
 use Yii;
 use yii\db\ActiveRecordInterface;
+use yii\helpers\Inflector;
 
 /**
  * UniqueValidator validates that the attribute value is unique in the specified database table.
@@ -58,6 +59,15 @@ class UniqueValidator extends Validator
      * is the [[\yii\db\Query|Query]] object that you can modify in the function.
      */
     public $filter;
+    /**
+     * @var string the user-defined error message used when [[targetAttribute]] is an array. It may contain the following placeholders:
+     *
+     * - `{attributes}`: the labels of the attributes being validated.
+     * - `{values}`: the values of the attributes being validated.
+     *
+     * @since 2.0.9
+     */
+    public $comboNotUnique;
 
 
     /**
@@ -68,6 +78,9 @@ class UniqueValidator extends Validator
         parent::init();
         if ($this->message === null) {
             $this->message = Yii::t('yii', '{attribute} "{value}" has already been taken.');
+        }
+        if ($this->comboNotUnique === null) {
+            $this->comboNotUnique = Yii::t('yii', 'The combination {values} of {attributes} has already been taken.');
         }
     }
 
@@ -133,7 +146,35 @@ class UniqueValidator extends Validator
         }
 
         if ($exists) {
-            $this->addError($model, $attribute, $this->message);
+            if (count($targetAttribute) > 1) {
+                $this->addComboNotUniqueError($model, $attribute);
+            } else {
+                $this->addError($model, $attribute, $this->message);
+            }
         }
+    }
+    
+    /**
+     * Builds and adds [[comboNotUnique]] error message to the specified model attribute.
+     * @param \yii\base\Model $model the data model.
+     * @param string $attribute the name of the attribute.
+     */
+    private function addComboNotUniqueError($model, $attribute)
+    {
+        $attributeCombo = [];
+        $valueCombo = [];
+        foreach ($this->targetAttribute as $key => $value) {
+            if(is_int($key)) {
+                $attributeCombo[] = $model->getAttributeLabel($value);
+                $valueCombo[] = '"' . $model->$value . '"';
+            } else {
+                $attributeCombo[] = $model->getAttributeLabel($key);
+                $valueCombo[] = '"' . $model->$key . '"';
+            }
+        }
+        $this->addError($model, $attribute, $this->comboNotUnique, [
+            'attributes' => Inflector::sentence($attributeCombo),
+            'values' => implode('-', $valueCombo)
+        ]);
     }
 }

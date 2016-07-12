@@ -310,7 +310,7 @@ yii fixture/load User
 yii fixture User
 
 // carga varios fixtures
-yii fixture User UserProfile
+yii fixture "User, UserProfile"
 
 // carga todos los fixtures
 yii fixture/load "*"
@@ -319,7 +319,7 @@ yii fixture/load "*"
 yii fixture "*"
 
 // carga todos los fixtures excepto uno
-yii fixture "*" -DoNotLoadThisOne
+yii fixture "*, -DoNotLoadThisOne"
 
 // carga fixtures, pero los busca en diferente espacio de nombre. El espacio de nombre por defecto es: tests\unit\fixtures.
 yii fixture User --namespace='alias\my\custom\namespace'
@@ -340,13 +340,13 @@ Para descargar un fixture, ejecuta el siguiente comando:
 yii fixture/unload User
 
 // descarga varios fixtures
-yii fixture/unload User,UserProfile
+yii fixture/unload "User, UserProfile"
 
 // descarga todos los fixtures
 yii fixture/unload "*"
 
 // descarga todos los fixtures excepto uno
-yii fixture/unload "*" -DoNotUnloadThisOne
+yii fixture/unload "*, -DoNotUnloadThisOne"
 
 ```
 

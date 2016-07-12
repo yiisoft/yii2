@@ -371,8 +371,9 @@ mediante la implementación de la interfaz [[yii\base\Arrayable|Arrayable]] en e
 A menudo necesitarás comprobar está en un array o un grupo de elementos es un sub-grupo de otro.
 A pesar de que PHP ofrece `in_array()`, este no soporta sub-grupos u objetos de tipo `\Traversable`.
 
-Para ayudar en este tipo de pruebas, [[yii\base\ArrayHelper]] provee [[yii\base\ArrayHelper::isIn()|isIn()]]
-y [[yii\base\ArrayHelper::isSubset()|isSubset()]] con la misma firma del método [[in_array()]].
+Para ayudar en este tipo de pruebas, [[yii\helpers\ArrayHelper]] provee [[yii\helpers\ArrayHelper::isIn()|isIn()]]
+y [[yii\helpers\ArrayHelper::isSubset()|isSubset()]] con la misma firma del método
+[in_array()](http://php.net/manual/en/function.in-array.php).
 
 ```php
 // true

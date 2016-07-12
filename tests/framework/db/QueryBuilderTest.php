@@ -877,6 +877,18 @@ abstract class QueryBuilderTest extends DatabaseTestCase
                 ],
             ],
             [
+                Schema::TYPE_TIMESTAMP . ' NULL DEFAULT NULL',
+                $this->timestamp()->defaultValue(null),
+                [
+                    'mysql' => 'timestamp NULL DEFAULT NULL',
+                    'postgres' => 'timestamp(0) NULL DEFAULT NULL',
+                    'sqlite' => 'timestamp NULL DEFAULT NULL',
+                    'oci' => 'TIMESTAMP NULL DEFAULT NULL',
+                    'sqlsrv' => 'timestamp NULL DEFAULT NULL',
+                    'cubrid' => 'timestamp NULL DEFAULT NULL',
+                ],
+            ],
+            [
                 Schema::TYPE_UPK,
                 $this->primaryKey()->unsigned(),
                 [
@@ -1024,6 +1036,7 @@ abstract class QueryBuilderTest extends DatabaseTestCase
             [ ['in', 'id', (new Query())->select('id')->from('users')->where(['active' => 1])], '[[id]] IN (SELECT [[id]] FROM [[users]] WHERE [[active]]=:qp0)', [':qp0' => 1] ],
             [ ['not in', 'id', (new Query())->select('id')->from('users')->where(['active' => 1])], '[[id]] NOT IN (SELECT [[id]] FROM [[users]] WHERE [[active]]=:qp0)', [':qp0' => 1] ],
 
+            [ ['in', 'id', 1],   '[[id]]=:qp0', [':qp0' => 1] ],
             [ ['in', 'id', [1]], '[[id]]=:qp0', [':qp0' => 1] ],
             [ ['in', 'id', new TraversableObject([1])], '[[id]]=:qp0', [':qp0' => 1] ],
             'composite in' => [

@@ -280,6 +280,18 @@ EOD;
 </select>
 EOD;
         $this->assertEqualsWithoutLE($expected, Html::dropDownList('test', 'value2', $this->getDataItems()));
+
+        $expected = <<<EOD
+<select name="test">
+<option value="value1">text1</option>
+<option value="value2" selected>text2</option>
+</select>
+EOD;
+        $this->assertEqualsWithoutLE($expected, Html::dropDownList('test', null, $this->getDataItems(), [
+            'options' => [
+                'value2' => ['selected' => true]
+            ],
+        ]));
     }
 
     public function testListBox()

@@ -177,14 +177,14 @@ class m150101_185401_create_news_table extends Migration
 バージョン 2.0.7 以降では、マイグレーション・コンソールがマイグレーションを生成する便利な方法を提供しています。
 
 マイグレーションの名前が特定の形式である場合は、生成されるマイグレーション・ファイルに追加のコードが書き込まれます。
-例えば、`create_xxx` や `drop_xxx` であれば、テーブルの作成や削除をするコードが追加されます。
+例えば、`create_xxx_table` や `drop_xxx_table` であれば、テーブルの作成や削除をするコードが追加されます。
 以下で、この機能の全ての変種を説明します。
 
 
 ### テーブルの作成
 
 ```php
-yii migrate/create create_post
+yii migrate/create create_post_table
 ``` 
 
 上記のコマンドは、次のコードを生成します。
@@ -193,7 +193,7 @@ yii migrate/create create_post
 /**
  * Handles the creation for table `post`.
  */
-class m150811_220037_create_post extends Migration
+class m150811_220037_create_post_table extends Migration
 {
     /**
      * @inheritdoc
@@ -218,7 +218,7 @@ class m150811_220037_create_post extends Migration
 テーブルのフィールドも直接に生成したい場合は、`--fields` オプションでフィールドを指定します。
  
 ```php
-yii migrate/create create_post --fields="title:string,body:text"
+yii migrate/create create_post_table --fields="title:string,body:text"
 ``` 
 
 これは、次のコードを生成します。
@@ -227,7 +227,7 @@ yii migrate/create create_post --fields="title:string,body:text"
 /**
  * Handles the creation for table `post`.
  */
-class m150811_220037_create_post extends Migration
+class m150811_220037_create_post_table extends Migration
 {
     /**
      * @inheritdoc
@@ -255,7 +255,7 @@ class m150811_220037_create_post extends Migration
 さらに多くのフィールド・パラメータを指定することも出来ます。
 
 ```php
-yii migrate/create create_post --fields="title:string(12):notNull:unique,body:text"
+yii migrate/create create_post_table --fields="title:string(12):notNull:unique,body:text"
 ``` 
 
 これは、次のコードを生成します。
@@ -264,7 +264,7 @@ yii migrate/create create_post --fields="title:string(12):notNull:unique,body:te
 /**
  * Handles the creation for table `post`.
  */
-class m150811_220037_create_post extends Migration
+class m150811_220037_create_post_table extends Migration
 {
     /**
      * @inheritdoc
@@ -297,7 +297,7 @@ class m150811_220037_create_post extends Migration
 バージョン 2.0.8 からは、`foreignKey` キーワードを使って外部キーを生成することができます。
 
 ```php
-yii migrate/create create_post --fields="author_id:integer:notNull:foreignKey(user),category_id:integer:defaultValue(1):foreignKey,title:string,body:text"
+yii migrate/create create_post_table --fields="author_id:integer:notNull:foreignKey(user),category_id:integer:defaultValue(1):foreignKey,title:string,body:text"
 ```
 
 これは、次のコードを生成します。
@@ -310,7 +310,7 @@ yii migrate/create create_post --fields="author_id:integer:notNull:foreignKey(us
  * - `user`
  * - `category`
  */
-class m160328_040430_create_post extends Migration
+class m160328_040430_create_post_table extends Migration
 {
     /**
      * @inheritdoc
@@ -413,13 +413,13 @@ class m160328_040430_create_post extends Migration
 ### テーブルを削除する
 
 ```php
-yii migrate/create drop_post --fields="title:string(12):notNull:unique,body:text"
+yii migrate/create drop_post_table --fields="title:string(12):notNull:unique,body:text"
 ``` 
 
 これは、次のコードを生成します。
 
 ```php
-class m150811_220037_drop_post extends Migration
+class m150811_220037_drop_post_table extends Migration
 {
     public function up()
     {
@@ -439,18 +439,18 @@ class m150811_220037_drop_post extends Migration
 
 ### カラムを追加する
 
-マイグレーションの名前が `add_xxx_to_yyy` の形式である場合、ファイルの内容は、必要となる `addColumn` と `dropColumn` を含むことになります。
+マイグレーションの名前が `add_xxx_column_to_yyy_table` の形式である場合、ファイルの内容は、必要となる `addColumn` と `dropColumn` を含むことになります。
 
 カラムを追加するためには、次のようにします。
 
 ```php
-yii migrate/create add_position_to_post --fields="position:integer"
+yii migrate/create add_position_column_to_post_table --fields="position:integer"
 ```
 
 これが次のコードを生成します。
 
 ```php
-class m150811_220037_add_position_to_post extends Migration
+class m150811_220037_add_position_column_to_post_table extends Migration
 {
     public function up()
     {
@@ -466,16 +466,16 @@ class m150811_220037_add_position_to_post extends Migration
 
 ### カラムを削除する
 
-マイグレーションの名前が `drop_xxx_from_yyy` の形式である場合、ファイルの内容は、必要となる `addColumn` と `dropColumn` を含むことになります。
+マイグレーションの名前が `drop_xxx_column_from_yyy_table` の形式である場合、ファイルの内容は、必要となる `addColumn` と `dropColumn` を含むことになります。
 
 ```php
-yii migrate/create drop_position_from_post --fields="position:integer"
+yii migrate/create drop_position_column_from_post_table --fields="position:integer"
 ```
 
 これは、次のコードを生成します。
 
 ```php
-class m150811_220037_drop_position_from_post extends Migration
+class m150811_220037_drop_position_column_from_post_table extends Migration
 {
     public function up()
     {
@@ -491,10 +491,10 @@ class m150811_220037_drop_position_from_post extends Migration
 
 ### 中間テーブルを追加する
 
-マイグレーションの名前が `create_junction_xxx_and_yyy` の形式である場合は、中間テーブルを作成するのに必要となるコードが生成されます。
+マイグレーションの名前が `create_junction_table_for_xxx_and_yyy_tables` の形式である場合は、中間テーブルを作成するのに必要となるコードが生成されます。
 
 ```php
-yii migrate/create create_junction_post_and_tag --fields="created_at:dateTime"
+yii migrate/create create_junction_table_for_post_and_tag_tables --fields="created_at:dateTime"
 ```
 
 これは、次のコードを生成します。
@@ -507,7 +507,7 @@ yii migrate/create create_junction_post_and_tag --fields="created_at:dateTime"
  * - `post`
  * - `tag`
  */
-class m160328_041642_create_junction_post_and_tag extends Migration
+class m160328_041642_create_junction_table_for_post_and_tag_tables extends Migration
 {
     /**
      * @inheritdoc

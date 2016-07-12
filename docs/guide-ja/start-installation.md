@@ -39,7 +39,7 @@ Composer は `composer self-update` コマンドを実行してアップデー�
 Composer がインストールされたら、ウェブからアクセスできるフォルダで下記のコマンドを実行することによって Yii をインストールすることが出来ます。
 
 ```bash
-composer global require "fxp/composer-asset-plugin:~1.1.1"
+composer global require "fxp/composer-asset-plugin:~1.2.0"
 composer create-project --prefer-dist yiisoft/yii2-app-basic basic
 ```
 
@@ -212,15 +212,20 @@ server {
     #}
     #error_page 404 /404.html;
 
+    # /assets ディレクトリの php ファイルへのアクセスを拒否する
+    location ~ ^/assets/.*\.php$ {
+        deny all;
+    }
+
     location ~ \.php$ {
         include fastcgi_params;
         fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;
-        fastcgi_pass   127.0.0.1:9000;
+        fastcgi_pass 127.0.0.1:9000;
         #fastcgi_pass unix:/var/run/php5-fpm.sock;
         try_files $uri =404;
     }
 
-    location ~ /\.(ht|svn|git) {
+    location ~* /\. {
         deny all;
     }
 }

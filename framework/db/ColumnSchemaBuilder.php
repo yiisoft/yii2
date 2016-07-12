@@ -40,9 +40,10 @@ class ColumnSchemaBuilder extends Object
      */
     protected $length;
     /**
-     * @var boolean whether the column is not nullable. If this is `true`, a `NOT NULL` constraint will be added.
+     * @var boolean|null whether the column is or not nullable. If this is `true`, a `NOT NULL` constraint will be added.
+     * If this is `false`, a `NULL` constraint will be added.
      */
-    protected $isNotNull = false;
+    protected $isNotNull = null;
     /**
      * @var boolean whether the column values should be unique. If this is `true`, a `UNIQUE` constraint will be added.
      */
@@ -142,6 +143,17 @@ class ColumnSchemaBuilder extends Object
     }
 
     /**
+     * Adds a `NULL` constraint to the column
+     * @return $this
+     * @since 2.0.9
+     */
+    public function null()
+    {
+        $this->isNotNull = false;
+        return $this;
+    }
+
+    /**
      * Adds a `UNIQUE` constraint to the column.
      * @return $this
      */
@@ -169,6 +181,10 @@ class ColumnSchemaBuilder extends Object
      */
     public function defaultValue($default)
     {
+        if ($default === null) {
+            $this->null();
+        }
+
         $this->default = $default;
         return $this;
     }
@@ -286,11 +302,18 @@ class ColumnSchemaBuilder extends Object
 
     /**
      * Builds the not null constraint for the column.
-     * @return string returns 'NOT NULL' if [[isNotNull]] is true, otherwise it returns an empty string.
+     * @return string returns 'NOT NULL' if [[isNotNull]] is true,
+     * 'NULL' if [[isNotNull]] is false or an empty string otherwise.
      */
     protected function buildNotNullString()
     {
-        return $this->isNotNull ? ' NOT NULL' : '';
+        if ($this->isNotNull === true) {
+            return ' NOT NULL';
+        } elseif ($this->isNotNull === false) {
+            return ' NULL';
+        } else {
+            return '';
+        }
     }
 
     /**
@@ -309,7 +332,7 @@ class ColumnSchemaBuilder extends Object
     protected function buildDefaultString()
     {
         if ($this->default === null) {
-            return '';
+            return $this->isNotNull === false ? ' DEFAULT NULL' : '';
         }
 
         $string = ' DEFAULT ';
