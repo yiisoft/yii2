@@ -53,7 +53,7 @@ namespace yii\helpers;
  * ```
  *
  * @author Robert Korulczyk <robert@korulczyk.pl>
- * @since 2.0.9
+ * @since 2.0.10
  */
 class ReplaceArrayValue
 {
