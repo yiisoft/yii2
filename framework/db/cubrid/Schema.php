@@ -159,7 +159,6 @@ class Schema extends \yii\db\Schema
                 ];
             }
         }
-        $table->foreignKeys = array_values($table->foreignKeys);
 
         return $table;
     }
