@@ -267,13 +267,15 @@ SQL;
         try {
             $rows = $this->db->createCommand($sql, [':tableName' => $table->name, ':tableName1' => $table->name])->queryAll();
             $constraints = [];
+
             foreach ($rows as $row) {
                 $constraints[$row['constraint_name']]['referenced_table_name'] = $row['referenced_table_name'];
                 $constraints[$row['constraint_name']]['columns'][$row['column_name']] = $row['referenced_column_name'];
             }
+
             $table->foreignKeys = [];
-            foreach ($constraints as $constraint) {
-                $table->foreignKeys[] = array_merge(
+            foreach ($constraints as $name => $constraint) {
+                $table->foreignKeys[$name] = array_merge(
                     [$constraint['referenced_table_name']],
                     $constraint['columns']
                 );

@@ -29,4 +29,17 @@ class SchemaTest extends \yiiunit\framework\db\SchemaTest
         return $columns;
     }
 
+    public function testCompositeFk()
+    {
+        /* @var $schema Schema */
+        $schema = $this->getConnection()->schema;
+
+        $table = $schema->getTableSchema('composite_fk');
+
+        $this->assertCount(1, $table->foreignKeys);
+        $this->assertTrue(isset($table->foreignKeys[0]));
+        $this->assertEquals('order_item', $table->foreignKeys[0][0]);
+        $this->assertEquals('order_id', $table->foreignKeys[0]['order_id']);
+        $this->assertEquals('item_id', $table->foreignKeys[0]['item_id']);
+    }
 }

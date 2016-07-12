@@ -112,10 +112,10 @@ abstract class SchemaTest extends DatabaseTestCase
         $table = $schema->getTableSchema('composite_fk');
 
         $this->assertCount(1, $table->foreignKeys);
-        $this->assertTrue(isset($table->foreignKeys[0]));
-        $this->assertEquals('order_item', $table->foreignKeys[0][0]);
-        $this->assertEquals('order_id', $table->foreignKeys[0]['order_id']);
-        $this->assertEquals('item_id', $table->foreignKeys[0]['item_id']);
+        $this->assertTrue(isset($table->foreignKeys['FK_composite_fk_order_item']));
+        $this->assertEquals('order_item', $table->foreignKeys['FK_composite_fk_order_item'][0]);
+        $this->assertEquals('order_id', $table->foreignKeys['FK_composite_fk_order_item']['order_id']);
+        $this->assertEquals('item_id', $table->foreignKeys['FK_composite_fk_order_item']['item_id']);
     }
 
     public function testGetPDOType()
