@@ -5,7 +5,7 @@ Yii Framework 2 Change Log
 ------------------------
 
 - Bug #11912: Fixed PostgreSQL Schema to support negative default values for integer/float/decimal columns (nsknewbie)
-
+- Bug #11947: Fixed `gridData` initialization in `yii.gridView.js` (pavlm)
 
 
 2.0.9 July 11, 2016
