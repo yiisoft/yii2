@@ -145,6 +145,14 @@ EOD;
         $actualValue = $this->activeField->begin();
 
         $this->assertEquals($expectedValue, $actualValue);
+    }
+
+    public function testBegin() {
+        $expectedValue = '<article class="form-group field-dynamicmodel-attributename">';
+        $this->activeField->options['tag'] = 'article';
+        $actualValue = $this->activeField->begin();
+
+        $this->assertEquals($expectedValue, $actualValue);
 
         $expectedValue = "";
         $this->activeField->options['tag'] = null;
@@ -153,7 +161,7 @@ EOD;
         $this->assertEquals($expectedValue, $actualValue);
 
         $expectedValue = "";
-        $this->activeField->options['tag'] = null;
+        $this->activeField->options['tag'] = false;
         $actualValue = $this->activeField->begin();
 
         $this->assertEquals($expectedValue, $actualValue);
