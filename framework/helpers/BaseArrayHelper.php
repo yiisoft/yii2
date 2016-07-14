@@ -486,7 +486,7 @@ class BaseArrayHelper
     public static function keyExists($key, $array, $caseSensitive = true)
     {
         if ($caseSensitive) {
-            return array_key_exists($key, $array);
+            return isset($array[$key]) || array_key_exists($key, $array);
         } else {
             foreach (array_keys($array) as $k) {
                 if (strcasecmp($key, $k) === 0) {
