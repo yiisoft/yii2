@@ -782,7 +782,6 @@ class BaseArrayHelper
      * //     'A' => [1, 2],
      * //     'B' => ['C' => 1],
      * // ]
-     * ```
      *
      * $result = \yii\helpers\ArrayHelper::filter($array, ['B', '!B.C']);
      * // $result will be:
