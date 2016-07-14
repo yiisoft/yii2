@@ -94,11 +94,12 @@ abstract class Cache extends Component implements \ArrayAccess
     /**
      * Retrieves a value from cache with a specified key.
      * @param mixed $key a key identifying the cached value. This can be a simple string or
+     * @param mixed $defaultValue the default parameter value if the parameter does not exist.
      * a complex data structure consisting of factors representing the key.
      * @return mixed the value stored in cache, false if the value is not in the cache, expired,
      * or the dependency associated with the cached data has changed.
      */
-    public function get($key)
+    public function get($key, $defaultValue = false)
     {
         $key = $this->buildKey($key);
         $value = $this->getValue($key);
@@ -112,7 +113,7 @@ abstract class Cache extends Component implements \ArrayAccess
         if (is_array($value) && !($value[1] instanceof Dependency && $value[1]->getHasChanged($this))) {
             return $value[0];
         } else {
-            return false;
+            return $defaultValue;
         }
     }
 
