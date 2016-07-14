@@ -236,7 +236,7 @@ Use the following format for associative arrays:
 
 ```php
 $config = [
-    'name'  => 'Yii',
+    'name' => 'Yii',
     'options' => ['usePHP' => true],
 ];
 ```
