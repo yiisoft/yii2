@@ -475,7 +475,7 @@ Always use `static` except the following cases:
 
 - accessing constants MUST be done via `self`: `self::MY_CONSTANT`
 - accessing private static properties MUST be done via `self`: `self::$_events`
-- It is allowed to use `self` for recursion to call current implementation again instead of extending classes implementation.
+- It is allowed to use `self` for method calls where it makes sense such as recursive call to current implementation instead of extending classes implementation.
 
 ### value for "don't do something"
 
