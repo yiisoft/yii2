@@ -245,7 +245,7 @@ class ActiveField extends Component
      */
     public function end()
     {
-        return Html::endTag(isset($this->options['tag']) ? $this->options['tag'] : 'div');
+        return Html::endTag(ArrayHelper::keyExists('tag', $this->options) ? $this->options['tag'] : 'div');
     }
 
     /**
