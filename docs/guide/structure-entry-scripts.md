@@ -63,6 +63,7 @@ Similarly, the following is the code for the entry script of a console applicati
  */
 
 defined('YII_DEBUG') or define('YII_DEBUG', true);
+defined('YII_ENV') or define('YII_ENV', 'dev');
 
 // register Composer autoloader
 require(__DIR__ . '/vendor/autoload.php');
