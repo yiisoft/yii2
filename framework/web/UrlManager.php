@@ -151,7 +151,10 @@ class UrlManager extends Component
         if (is_string($this->cache)) {
             $this->cache = Yii::$app->get($this->cache, false);
         }
-        if ($this->cache instanceof Cache) {
+        // if configuration cache server but yii_debug is true and yii_env is dev so urlrule isn't update in main.php
+        // unless cache LRU expired
+        // if ($this->cache instanceof Cache) {
+        if ($this->cache instanceof Cache && !YII_DEBUG) {
             $cacheKey = $this->cacheKey;
             $hash = md5(json_encode($this->rules));
             if (($data = $this->cache->get($cacheKey)) !== false && isset($data[1]) && $data[1] === $hash) {
