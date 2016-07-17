@@ -86,6 +86,11 @@ class AttributeBehavior extends Behavior
      * @since 2.0.8
      */
     public $skipUpdateOnClean = true;
+    /**
+     * @var boolean whether to skip attribute update when it is not empty
+     * @since 2.0.10
+     */
+    public $skipUpdateOnFilled = false;
 
 
     /**
@@ -118,6 +123,10 @@ class AttributeBehavior extends Behavior
             foreach ($attributes as $attribute) {
                 // ignore attribute names which are not string (e.g. when set by TimestampBehavior::updatedAtAttribute)
                 if (is_string($attribute)) {
+                    // skip attribute update when it is not empty and the corresponding mode is enabled
+                    if ($this->skipUpdateOnFilled && !empty($this->owner->$attribute)) {
+                        continue;
+                    }
                     $this->owner->$attribute = $value;
                 }
             }
