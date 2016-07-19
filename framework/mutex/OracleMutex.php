@@ -26,6 +26,8 @@ use yii\base\InvalidConfigException;
  *         ]
  *         'mutex' => [
  *             'class' => 'yii\mutex\OracleMutex',
+ *             'lockMode' => 'NL_MODE',
+ *             'releaseOnCommit' => true,
  *              ...
  *         ],
  *     ],
@@ -39,13 +41,9 @@ use yii\base\InvalidConfigException;
  */
 class OracleMutex extends DbMutex
 {
-    /**
-     * @var string driver name.
-     */
-    public $driverName = 'oci';
 
     /**
-     * @var array available lock modes
+     * @const array available lock modes
      */
     const AVAILABLE_LOCK_MODES = [
         'X_MODE',
@@ -57,13 +55,23 @@ class OracleMutex extends DbMutex
     ];
 
     /**
+     * @var string lock mode
+     */
+    public $lockMode = 'X_MODE';
+
+    /**
+     * @var bool release lock on commit
+     */
+    public $releaseOnCommit = false;
+
+    /**
      * Initializes Oracle specific mutex component implementation.
      * @throws InvalidConfigException if [[db]] is not Oracle connection.
      */
     public function init()
     {
         parent::init();
-        if ($this->db->driverName !== $this->driverName) {
+        if (strpos($this->db->driverName, 'oci') !== 0 && strpos($this->db->driverName, 'odbc') !== 0) {
             throw new InvalidConfigException('In order to use OracleMutex connection must be configured to use Oracle database.');
         }
     }
@@ -72,20 +80,18 @@ class OracleMutex extends DbMutex
      * Acquires lock by given name.
      * @param string $name of the lock to be acquired.
      * @param integer $timeout to wait for lock to become released.
-     * @param string $lockMode lock mode.
-     * @param boolean $releaseOnCommit release on commit.
      * @return boolean acquiring result.
      * @see http://docs.oracle.com/cd/B19306_01/appdev.102/b14258/d_lock.htm
      */
-    protected function acquireLock($name, $timeout = 0, $lockMode = 'X_MODE', $releaseOnCommit = false)
+    protected function acquireLock($name, $timeout = 0)
     {
         $lockStatus = null;
 
         /** clean vars before using */
-        $releaseOnCommit = ($releaseOnCommit === true) ? 'TRUE' : 'FALSE';
+        $releaseOnCommit = ($this->releaseOnCommit === true) ? 'TRUE' : 'FALSE';
         $timeout = abs((int)$timeout);
 
-        if(!in_array($lockMode, self::AVAILABLE_LOCK_MODES)){
+        if(!in_array($this->lockMode, self::AVAILABLE_LOCK_MODES)){
             throw new InvalidConfigException('Wrong lock mode');
         }
 
@@ -96,7 +102,7 @@ class OracleMutex extends DbMutex
     handle VARCHAR2(128);
 BEGIN
     DBMS_LOCK.ALLOCATE_UNIQUE(:name, handle);
-    :lockStatus := DBMS_LOCK.REQUEST(handle, DBMS_LOCK.' . $lockMode . ', ' . $timeout . ', ' . $releaseOnCommit . ');
+    :lockStatus := DBMS_LOCK.REQUEST(handle, DBMS_LOCK.' . $this->lockMode . ', ' . $timeout . ', ' . $releaseOnCommit . ');
 END;',
                 [':name' => $name])
             ->bindParam(':lockStatus', $lockStatus, PDO::PARAM_INT, 1)
