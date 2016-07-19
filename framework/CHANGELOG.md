@@ -8,6 +8,7 @@ Yii Framework 2 Change Log
 - Bug #11461: Fixed migration tool error when create migrate with comma in defaultValue (pana1990, s-o-f)
 - Bug #11912: Fixed PostgreSQL Schema to support negative default values for integer/float/decimal columns (nsknewbie)
 - Bug #11947: Fixed `gridData` initialization in `yii.gridView.js` (pavlm)
+- Enh #11979: Oracle mutex (zlakomanoff)
 - Bug #11949: Fixed `ActiveField::end` generates close tag when it's `option['tag']` is null (egorio)
 - Enh #11275: Added possibility of unset or force replace former value in `ArrayHelper::merge()` (mdmunir, rob006)
 - Enh #11950: Improve BaseArrayHelper::keyExists speed (egorio)
@@ -19,6 +20,8 @@ Yii Framework 2 Change Log
 - Enh #10583: Do not silence session errors in debug mode (samdark)
 - Enh #12048: Improved message extraction command performance (samdark)
 - Enh #12038: Introduced `yii\base\ViewNotFoundException` which is thrown when views file doesn't exists, used it in `ViewAction` (samdark)
+- Enh #11979: Oracle mutex (zlakomanoff)
+
 
 2.0.9 July 11, 2016
 -------------------
