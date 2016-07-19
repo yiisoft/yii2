@@ -12,6 +12,7 @@ use yii\base\Arrayable;
 use yii\base\Component;
 use yii\base\Model;
 use yii\data\DataProviderInterface;
+use yii\data\ArrayDataProvider;
 use yii\data\Pagination;
 use yii\helpers\ArrayHelper;
 use yii\web\Link;
@@ -171,7 +172,11 @@ class Serializer extends Component
      */
     protected function serializeDataProvider($dataProvider)
     {
-        $models = $this->serializeModels($dataProvider->getModels());
+        $models = $dataProvider->getModels();
+        if ($dataProvider instanceof ArrayDataProvider) {
+            $models = array_values($models);
+        }
+        $models = $this->serializeModels($models);
 
         if (($pagination = $dataProvider->getPagination()) !== false) {
             $this->addPaginationHeaders($pagination);
