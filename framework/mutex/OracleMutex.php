@@ -47,7 +47,7 @@ class OracleMutex extends DbMutex
     /**
      * @var array available lock modes
      */
-    private $availableLockModes = [
+    const AVAILABLE_LOCK_MODES = [
         'X_MODE',
         'NL_MODE',
         'S_MODE',
@@ -58,7 +58,7 @@ class OracleMutex extends DbMutex
 
     /**
      * Initializes Oracle specific mutex component implementation.
-     * @throws InvalidConfigException if [[db]] is not MySQL connection.
+     * @throws InvalidConfigException if [[db]] is not Oracle connection.
      */
     public function init()
     {
@@ -85,7 +85,7 @@ class OracleMutex extends DbMutex
         $releaseOnCommit = ($releaseOnCommit === true) ? 'TRUE' : 'FALSE';
         $timeout = abs((int)$timeout);
 
-        if(!in_array($lockMode, $this->availableLockModes)){
+        if(!in_array($lockMode, self::AVAILABLE_LOCK_MODES)){
             throw new InvalidConfigException('Wrong lock mode');
         }
 

@@ -7,7 +7,6 @@ Yii Framework 2 Change Log
 - Bug #11912: Fixed PostgreSQL Schema to support negative default values for integer/float/decimal columns (nsknewbie)
 - Bug #11947: Fixed `gridData` initialization in `yii.gridView.js` (pavlm)
 - Enh #11979: Oracle mutex (zlakomanoff)
-
 - Bug #11949: Fixed `ActiveField::end` generates close tag when it's `option['tag']` is null (egorio)
 - Enh #11950: Improve BaseArrayHelper::keyExists speed (egorio)
 
