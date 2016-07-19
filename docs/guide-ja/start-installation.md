@@ -21,7 +21,9 @@ Yii はもう一つ、[アドバンストプロジェクトテンプレート](h
 Composer によるインストール <span id="installing-via-composer"></span>
 ---------------------------
 
-まだ Composer をインストールしていない場合は、[getcomposer.org](https://getcomposer.org/download/) の指示に従ってインストールすることが出来ます。
+### Composer をインストールする
+
+まだ Composer をインストールしていない場合は、[getcomposer.org]() の指示に従ってインストールすることが出来ます。
 Linux や Mac OS X では、次のコマンドを実行します。
 
 ```bash
@@ -31,10 +33,24 @@ mv composer.phar /usr/local/bin/composer
 
 Windows では、[Composer-Setup.exe](https://getcomposer.org/Composer-Setup.exe) をダウンロードして実行します。
 
-何か問題が生じたときや、Composer の使い方に関してもっと学習したいときは、[Composer ドキュメント](https://getcomposer.org/doc/) を参照してください。
+何か問題が生じたときは、[Composer ドキュメントのトラブル・シューティングの節](https://getcomposer.org/doc/articles/troubleshooting.md) を参照してください。
+Composer は初めてだという場合は、少なくとも、Composer ドキュメントの [基本的な使い方の節](https://getcomposer.org/doc/01-basic-usage.md) も参照することを推奨します。
+
+このガイドでは、composer のコマンドの全ては、あなたが composer を [グローバル](https://getcomposer.org/doc/00-intro.md#globally) にインストールし、`composer` コマンドとして使用できるようにしているものと想定しています。
+そうではなく、ローカル・ディレクトリにある `composer.phar` を使おうとする場合は、例に出てくるコマンドをそれに合せて修正しなければなりません。
 
 以前に Composer をインストールしたことがある場合は、確実に最新のバージョンを使うようにしてください。
 Composer は `composer self-update` コマンドを実行してアップデートすることが出来ます。
+
+> Note: Yii のインストールを実行する際に、Composer は大量の情報を Github API から要求する必要が生じます。
+> リクエストの量は、あなたのアプリケーションが持つ依存の数に依存しますが、**Github API レート制限** より大きくなることがあり得ます。
+> この制限にかかった場合、Composer は Github API トークンを取得するために、あなたの Github ログイン認証情報を要求するでしょう。
+> 高速な接続においては、Composer が対処できるよりも早い段階でこの制限にかかることもありますので、
+> Yii のインストールの前に、このアクセス・トークンを構成することを推奨します。
+> アクセス・トークンの構成の仕方については、[Github API トークンに関する Composer ドキュメント](https://getcomposer.org/doc/articles/troubleshooting.md#api-rate-limit-and-oauth-tokens)
+> の指示を参照して下さい。
+
+### Yii をインストールする
 
 Composer がインストールされたら、ウェブからアクセスできるフォルダで下記のコマンドを実行することによって Yii をインストールすることが出来ます。
 
@@ -46,12 +62,14 @@ composer create-project --prefer-dist yiisoft/yii2-app-basic basic
 最初のコマンドは [composer アセットプラグイン](https://github.com/francoispluchino/composer-asset-plugin/) をインストールします。
 これにより、Composer を通じて bower と npm の依存パッケージを管理することが出来るようになります。
 このコマンドは一度だけ実行すれば十分です。
-第二のコマンドは `basic` という名前のディレクトリに Yii をインストールします。
+第二のコマンドは `basic` という名前のディレクトリに Yii の最新の安定版をインストールします。
 必要なら別のディレクトリ名を選ぶことも出来ます。
 
-> Note: インストール実行中に Composer が あなたの Github のログイン認証情報を求めることがあるかも知れません。
-> これは、Comoser が依存パッケージの情報を Github から読み出すために十分な API レートを必要とするためで、普通にあることです。
-> 詳細については、[Composer ドキュメント](https://getcomposer.org/doc/articles/troubleshooting.md#api-rate-limit-and-oauth-tokens) を参照してください。
+> Info: `composer create-project` コマンドが失敗するときは、composer asset plugin が正しくインストール出来ているかどうかを確認して下さい。
+> `composer global show` を実行することで確認することが出来ます。このコマンドの出力に `fxp/composer-asset-plugin` のエントリが含まれていなければなりません。.
+> よくあるエラーについては、[Composer ドキュメントのトラブル・シューティングの節](https://getcomposer.org/doc/articles/troubleshooting.md)
+> も参照して下さい。
+> エラーを修正した後は、`basic` ディレクトリの中で `composer update` を実行して、中断されたインストールを再開することが出来ます。
 
 > Tip: Yii の最新の開発バージョンをインストールしたい場合は、[stability option](https://getcomposer.org/doc/04-schema.md#minimum-stability) を追加した次のコマンドを代りに使うことが出来ます。
 >

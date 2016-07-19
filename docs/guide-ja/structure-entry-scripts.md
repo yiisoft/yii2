@@ -61,6 +61,7 @@ $config = require(__DIR__ . '/../config/web.php');
  */
 
 defined('YII_DEBUG') or define('YII_DEBUG', true);
+defined('YII_ENV') or define('YII_ENV', 'dev');
 
 // Composer のオートローダを登録
 require(__DIR__ . '/vendor/autoload.php');

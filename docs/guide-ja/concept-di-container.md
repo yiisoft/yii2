@@ -12,6 +12,7 @@
 Yii は [[yii\di\Container]] クラスを通して DI コンテナの機能を提供します。これは、次の種類の依存注入をサポートしています:
 
 * コンストラクタ·インジェクション
+* メソッド・インジェクション
 * セッター/プロパティ·インジェクション
 * PHP コーラブル·インジェクション
 
@@ -35,6 +36,37 @@ $foo = $container->get('Foo');
 // これは下記と等価:
 $bar = new Bar;
 $foo = new Foo($bar);
+```
+
+
+### メソッド・インジェクション <span id="method-injection"></span>
+
+通常、クラスの依存はコンストラクタに渡されて、そのクラスの内部でライフサイクル全体にわたって利用可能になります。
+メソッド・インジェクションを使うと、クラスのメソッドの一つだけに必要となる依存、例えば、コンストラクタに渡すことが不可能であったり、大半のユースケースにおいてはオーバーヘッドが大きすぎるような依存を提供することが可能になります。
+
+クラスのメソッドを次の例の `doSomething` メソッドのように定義することが出来ます。
+
+```php
+class MyClass extends \yii\base\Component
+{
+    public function __construct(/* 軽量の依存はここに */, $config = [])
+    {
+        // ...
+    }
+
+    public function doSomething($param1, \my\heavy\Dependency $something)
+    {
+        // $something を使って何かをする
+    }
+}
+```
+
+あなた自身で `\my\heavy\Dependency` のインスタンスを渡すか、次のように
+[[yii\di\Container::invoke()]] を使えば、このメソッドを呼ぶことが出来ます。
+
+```php
+$obj = new MyClass(/*...*/);
+Yii::$container->invoke([$obj, 'doSomethingWithHeavyDependency'], ['param1' => 42]); // $something は DI コンテナによって提供される
 ```
 
 
