@@ -37,15 +37,15 @@ use yii\base\InvalidConfigException;
  * @see Mutex
  *
  * @author Alexander Zlakomanov <zlakomanoff@gmail.com>
- * @since 1.0
+ * @since 2.0.10
  */
 class OracleMutex extends DbMutex
 {
 
     /**
-     * @const array available lock modes
+     * @var array available lock modes
      */
-    const AVAILABLE_LOCK_MODES = [
+    private $availableLockModes = [
         'X_MODE',
         'NL_MODE',
         'S_MODE',
@@ -91,7 +91,7 @@ class OracleMutex extends DbMutex
         $releaseOnCommit = ($this->releaseOnCommit === true) ? 'TRUE' : 'FALSE';
         $timeout = abs((int)$timeout);
 
-        if(!in_array($this->lockMode, self::AVAILABLE_LOCK_MODES)){
+        if(!in_array($this->lockMode, $this->availableLockModes)){
             throw new InvalidConfigException('Wrong lock mode');
         }
 
