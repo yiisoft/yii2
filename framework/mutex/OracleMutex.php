@@ -8,6 +8,7 @@
 namespace yii\mutex;
 
 use PDO;
+use ReflectionClass;
 use Yii;
 use yii\base\InvalidConfigException;
 
@@ -41,23 +42,18 @@ use yii\base\InvalidConfigException;
  */
 class OracleMutex extends DbMutex
 {
-
-    /**
-     * @var array available lock modes
-     */
-    private $availableLockModes = [
-        'X_MODE',
-        'NL_MODE',
-        'S_MODE',
-        'SX_MODE',
-        'SS_MODE',
-        'SSX_MODE'
-    ];
+    /** available lock modes */
+    const MODE_X = 'X_MODE';
+    const MODE_NL = 'NL_MODE';
+    const MODE_S = 'S_MODE';
+    const MODE_SX = 'SX_MODE';
+    const MODE_SS = 'SS_MODE';
+    const MODE_SSX = 'SSX_MODE';
 
     /**
      * @var string lock mode
      */
-    public $lockMode = 'X_MODE';
+    public $lockMode = self::MODE_X;
 
     /**
      * @var bool release lock on commit
@@ -91,7 +87,7 @@ class OracleMutex extends DbMutex
         $releaseOnCommit = ($this->releaseOnCommit === true) ? 'TRUE' : 'FALSE';
         $timeout = abs((int)$timeout);
 
-        if(!in_array($this->lockMode, $this->availableLockModes)){
+        if(!in_array($this->lockMode, (new ReflectionClass(self::className()))->getConstants())){
             throw new InvalidConfigException('Wrong lock mode');
         }
 
