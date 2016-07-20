@@ -551,15 +551,16 @@
     var updateInputs = function ($form, messages, submitting) {
         var data = $form.data('yiiActiveForm');
 
-        if (submitting) {
-            var errorAttributes = [];
-            $.each(data.attributes, function () {
-                if (!$(this.input).is(":disabled") && !this.cancelled && updateInput($form, this, messages)) {
-                    errorAttributes.push(this);
-                }
-            });
+        var errorAttributes = [];
+        $.each(data.attributes, function () {
+            if (!$(this.input).is(":disabled") && !this.cancelled && updateInput($form, this, messages)) {
+                errorAttributes.push(this);
+            }
+        });
 
-            $form.trigger(events.afterValidate, [messages, errorAttributes]);
+        $form.trigger(events.afterValidate, [messages, errorAttributes]);
+
+        if (submitting) {
 
             updateSummary($form, messages);
 
