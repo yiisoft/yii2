@@ -305,6 +305,9 @@ class RbacController extends Controller
 }
 ```
 
+> Note: アドバンストテンプレートを使おうとするときは、`RbacController` を `console/controllers`
+ディレクトリの中に置いて、名前空間を `console/controllers` に変更する必要があります。
+
 `yii rbac/init` によってコマンドを実行した後には、次の権限階層が得られます。
 
 ![単純な RBAC 階層](images/rbac-hierarchy-1.png "単純な RBAC 階層")
@@ -435,6 +438,51 @@ if (\Yii::$app->user->can('updatePost', ['post' => $post])) {
 Jane の場合は、彼女が管理者であるため、少し簡単になります。
 
 ![アクセスチェック](images/rbac-access-check-3.png "アクセスチェック")
+
+コントローラ内で権限付与を実装するのには、いくつかの方法があります。
+追加と削除に対するアクセス権を分離する細分化された許可が必要な場合は、それぞれのアクションに対してアクセス権をチェックする必要があります。
+各アクションメソッドの中で上記の条件を使用するか、または [[yii\filters\AccessControl]] を使います。
+
+```php
+public function behaviors()
+{
+    return [
+        'access' => [
+            'class' => AccessControl::className(),
+            'rules' => [
+                [
+                    'allow' => true,
+                    'actions' => ['index'],
+                    'roles' => ['managePost'],
+                ],
+                [
+                    'allow' => true,
+                    'actions' => ['view'],
+                    'roles' => ['viewPost'],
+                ],
+                [
+                    'allow' => true,
+                    'actions' => ['create'],
+                    'roles' => ['createPost'],
+                ],
+                [
+                    'allow' => true,
+                    'actions' => ['update'],
+                    'roles' => ['updatePost'],
+                ],
+                [
+                    'allow' => true,
+                    'actions' => ['delete'],
+                    'roles' => ['deletePost'],
+                ],
+            ],
+        ],
+    ];
+}
+```
+
+全ての CRUD 操作がまとめて管理される場合は、`managePost` のような単一の許可を使い、
+[[yii\web\Controller::beforeAction()]] の中でそれをチェックするのが良いアイデアです。
 
 ### デフォルトロールを使う <span id="using-default-roles"></span>
 

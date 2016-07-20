@@ -96,13 +96,14 @@ class ServeController extends Controller
 
     /**
      * @inheritdoc
+     * @since 2.0.8
      */
     public function optionAliases()
     {
         return array_merge(parent::optionAliases(), [
             't' => 'docroot',
             'p' => 'port',
-            'r' => 'router'
+            'r' => 'router',
         ]);
     }
 

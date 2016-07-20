@@ -155,7 +155,7 @@ class Schema extends \yii\db\Schema
             } else {
                 $table->foreignKeys[$key['FK_NAME']] = [
                     $key['PKTABLE_NAME'],
-                    $key['FKCOLUMN_NAME'] => $key['PKCOLUMN_NAME']
+                    $key['FKCOLUMN_NAME'] => $key['PKCOLUMN_NAME'],
                 ];
             }
         }

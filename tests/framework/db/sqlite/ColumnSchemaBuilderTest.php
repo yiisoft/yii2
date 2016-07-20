@@ -1,14 +1,16 @@
 <?php
+
 namespace yiiunit\framework\db\sqlite;
 
 use yii\db\sqlite\ColumnSchemaBuilder;
 use yii\db\Schema;
-use \yiiunit\framework\db\ColumnSchemaBuilderTest as BaseColumnSchemaBuilderTest;
 
 /**
  * ColumnSchemaBuilderTest tests ColumnSchemaBuilder for SQLite
+ * @group db
+ * @group sqlite
  */
-class ColumnSchemaBuilderTest extends BaseColumnSchemaBuilderTest
+class ColumnSchemaBuilderTest extends \yiiunit\framework\db\ColumnSchemaBuilderTest
 {
     /**
      * @param string $type
@@ -23,7 +25,7 @@ class ColumnSchemaBuilderTest extends BaseColumnSchemaBuilderTest
     /**
      * @return array
      */
-    public function unsignedProvider()
+    public function typesProvider()
     {
         return [
             ['integer UNSIGNED', Schema::TYPE_INTEGER, null, [

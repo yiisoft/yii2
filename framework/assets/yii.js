@@ -411,7 +411,7 @@ yii = (function ($) {
     return pub;
 })(jQuery);
 
-jQuery(document).ready(function () {
+jQuery(function () {
     yii.initModule(yii);
 });
 

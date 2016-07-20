@@ -24,10 +24,14 @@ class UserController extends Controller
     public function actionUpdate($id)
     {
         $user = User::findOne($id);
+        if (!$user) {
+            throw new NotFoundHttpException("ユーザが見つかりませんでした。");
+        }
+        
         $profile = Profile::findOne($id);
         
-        if (!isset($user, $profile)) {
-            throw new NotFoundHttpException("ユーザが見つかりませんでした。");
+        if (!$profile) {
+            throw new NotFoundHttpException("ユーザのプロファイルがありません。");
         }
         
         $user->scenario = 'update';

@@ -101,7 +101,7 @@ class PostController extends Controller
 
 You may customize the namespace of controller classes by configuring the [[yii\base\Module::controllerNamespace]]
 property. In case some of the controllers are outside of this namespace, you may make them accessible
-by configuring the [[yii\base\Module::controllerMap]] property, similar to [what you do in an application](structure-applications.md#controller-map).
+by configuring the [[yii\base\Module::controllerMap]] property, similar to [what you do in an application](structure-applications.md#controllerMap).
 
 
 ### Views in Modules <span id="views-in-modules"></span>

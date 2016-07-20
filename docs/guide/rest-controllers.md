@@ -75,6 +75,41 @@ public function behaviors()
 }
 ```
 
+### CORS <span id="cors"></span>
+
+Adding the [Cross Origin Resource Sharing](structure-filters.md#cors) filter to a controller is a bit more complicated
+than adding other filters described above, because the CORS filter has to be applied before authentication methods
+and thus needs a slightly different approach compared to other filters. Also authentication has to be disabled for the
+[CORS Preflight requests](https://developer.mozilla.org/en-US/docs/Web/HTTP/Access_control_CORS#Preflighted_requests)
+so that a browser can safely determine whether a request can be made beforehand without the need for sending
+authentication credentials. The follow code shows the code that is needed to add the [[yii\filters\Cors]] filter
+to an existing controller that extends from [[yii\rest\ActiveController]]:
+
+```php
+use yii\filters\auth\HttpBasicAuth;
+
+public function behaviors()
+{
+    $behaviors = parent::behaviors();
+
+    // remove authentication filter
+    $auth = $behaviors['authenticator'];
+    unset($behaviors['authenticator']);
+    
+    // add CORS filter
+    $behaviors['corsFilter'] = [
+        'class' => \yii\filters\Cors::className(),
+    ];
+    
+    // re-add authentication filter
+    $behaviors['authenticator'] = $auth;
+    // avoid authentication on CORS-pre-flight requests (HTTP OPTIONS method)
+    $behaviors['authenticator']['except'] = ['options'];
+
+    return $behaviors;
+}
+```
+
 
 ## Extending `ActiveController` <span id="extending-active-controller"></span>
 

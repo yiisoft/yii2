@@ -180,7 +180,7 @@ class ImageValidator extends FileValidator
 
         if ($this->notImage !== null) {
             $options['notImage'] = Yii::$app->getI18n()->format($this->notImage, [
-                'attribute' => $label
+                'attribute' => $label,
             ], Yii::$app->language);
         }
 
@@ -188,7 +188,7 @@ class ImageValidator extends FileValidator
             $options['minWidth'] = $this->minWidth;
             $options['underWidth'] = Yii::$app->getI18n()->format($this->underWidth, [
                 'attribute' => $label,
-                'limit' => $this->minWidth
+                'limit' => $this->minWidth,
             ], Yii::$app->language);
         }
 
@@ -196,7 +196,7 @@ class ImageValidator extends FileValidator
             $options['maxWidth'] = $this->maxWidth;
             $options['overWidth'] = Yii::$app->getI18n()->format($this->overWidth, [
                 'attribute' => $label,
-                'limit' => $this->maxWidth
+                'limit' => $this->maxWidth,
             ], Yii::$app->language);
         }
 
@@ -204,7 +204,7 @@ class ImageValidator extends FileValidator
             $options['minHeight'] = $this->minHeight;
             $options['underHeight'] = Yii::$app->getI18n()->format($this->underHeight, [
                 'attribute' => $label,
-                'limit' => $this->minHeight
+                'limit' => $this->minHeight,
             ], Yii::$app->language);
         }
 
@@ -212,7 +212,7 @@ class ImageValidator extends FileValidator
             $options['maxHeight'] = $this->maxHeight;
             $options['overHeight'] = Yii::$app->getI18n()->format($this->overHeight, [
                 'attribute' => $label,
-                'limit' => $this->maxHeight
+                'limit' => $this->maxHeight,
             ], Yii::$app->language);
         }
 
