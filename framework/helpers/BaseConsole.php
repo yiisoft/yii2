@@ -1020,34 +1020,21 @@ class BaseConsole
         self::$_progressEtaLastUpdate = null;
     }
 
-    private static $_chars = [
-        'top' => '─',
-        'top-mid' => '┬',
-        'top-left' => '┌',
-        'top-right' => '┐',
-        'bottom' => '─',
-        'bottom-mid' => '┴',
-        'bottom-left' => '└',
-        'bottom-right' => '┘',
-        'left' => '│',
-        'left-mid' => '├',
-        'mid' => '─',
-        'mid-mid' => '┼',
-        'right' => '│',
-        'right-mid' => '┤',
-        'middle' => '│',
-    ];
-
-    public static function table(array $headers, array $rows, array $chars = [])
+    public static function table(array $headers, array $rows, array $chars = [
+        'top' => '═', 'top-mid' => '╤', 'top-left' => '╔',
+        'top-right' => '╗', 'bottom' => '═', 'bottom-mid' => '╧',
+        'bottom-left' => '╚', 'bottom-right' => '╝', 'left' => '║',
+        'left-mid' => '╟', 'mid' => '─', 'mid-mid' => '┼',
+        'right' => '║', 'right-mid' => '╢', 'middle' => '│',
+    ])
     {
-        $chars = ArrayHelper::merge($chars, self::$_chars);
         $rowsSize = static::calculateSizeRows($headers, $rows);
         $table = static::renderSeparator($rowsSize, $chars['top-left'], $chars['top'], $chars['top-mid'], $chars['top-right']);
-        $table .= static::renderRows($headers, $rowsSize, $chars['middle']);
+        $table .= static::renderRows($headers, $rowsSize, $chars['left'], $chars['middle'], $chars['right']);
 
         foreach ($rows as $row) {
             $table .= static::renderSeparator($rowsSize, $chars['left-mid'], $chars['mid'], $chars['mid-mid'], $chars['right-mid']);
-            $table .= static::renderRows($row, $rowsSize, $chars['middle']);
+            $table .= static::renderRows($row, $rowsSize, $chars['left'], $chars['middle'], $chars['right']);
         }
 
         $table .= static::renderSeparator($rowsSize, $chars['bottom-left'], $chars['bottom'], $chars['bottom-mid'], $chars['bottom-right']);
@@ -1055,27 +1042,29 @@ class BaseConsole
         return $table;
     }
 
-    protected static function renderRows(array $rows, array $size, $conector)
+    protected static function renderRows(array $rows, array $size, $spanLeft, $spanMiddle, $spanRight)
     {
-        $buffer = '';
+        $buffer = $spanLeft . ' ';
         foreach ($rows as $index => $row) {
-            $buffer .= $conector . ' ';
+            if ($index != 0) {
+                $buffer .= $spanMiddle . ' ';
+            }
             $buffer .= $row . str_repeat(' ', $size[$index] - strlen($row) - 1);
         }
-        $buffer .= "$conector\n";
+        $buffer .= "$spanRight\n";
         return $buffer;
     }
 
-    protected static function renderSeparator(array $rowSizes, $span_left, $span, $span_mid, $span_right)
+    protected static function renderSeparator(array $rowSizes, $spanLeft, $spanMid, $spanMidMid, $spanRight)
     {
-        $separator = $span_left;
+        $separator = $spanLeft;
         foreach ($rowSizes as $index => $rowSize) {
             if ($index != 0) {
-                $separator .= $span_mid;
+                $separator .= $spanMidMid;
             }
-            $separator .= str_repeat($span, $rowSize);
+            $separator .= str_repeat($spanMid, $rowSize);
         }
-        $separator .= "$span_right\n";
+        $separator .= "$spanRight\n";
         return $separator;
     }
 

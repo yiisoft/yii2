@@ -133,13 +133,13 @@ class ConsoleTest extends TestCase
     public function testTable()
     {
         $expected = <<<EXPECTED
-╔═════════╤═════════╤════════╗
-║ test1         │test2          │ test3         ║
-╟-────────┼-─────────┼-───────╢
+╔═══════════════╤═══════════════╤═══════════════╗
+║ test1         │ test2         │ test3         ║
+╟───────────────┼───────────────┼───────────────╢
 ║ testcontent1  │ testcontent2  │ testcontent3  ║
-╟-────────┼-─────────┼-───────╢
+╟───────────────┼───────────────┼───────────────╢
 ║ testcontent21 │ testcontent22 │ testcontent23 ║
-╚═════════╧═════════╧════════╝
+╚═══════════════╧═══════════════╧═══════════════╝
 
 EXPECTED;
 
@@ -167,7 +167,14 @@ EXPECTED;
             [
                 ['testcontent1', 'testcontent2', 'testcontent3'],
                 ['testcontent_21', 'testcontent__22', 'testcontent___23']
-            ], '*', '+', '/')
+            ],
+            [
+                'top' => '+', 'top-mid' => '*', 'top-left' => '*',
+                'top-right' => '*', 'bottom' => '+', 'bottom-mid' => '*',
+                'bottom-left' => '*', 'bottom-right' => '*', 'left' => '/',
+                'left-mid' => '*', 'mid' => '+', 'mid-mid' => '*',
+                'right' => '/', 'right-mid' => '*', 'middle' => '/',
+            ])
         );
     }
 }
