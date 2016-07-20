@@ -159,6 +159,10 @@ class ActiveQuery extends Query implements ActiveQueryInterface
             $this->select = ["$alias.*"];
         }
 
+        if(!empty($this->where)){
+            $this->where = $this->buildExistsRelations($this->where);
+        }
+
         if ($this->primaryModel === null) {
             // eager loading
             $query = Query::create($this);
@@ -547,6 +551,73 @@ class ActiveQuery extends Query implements ActiveQueryInterface
         } else {
             return is_string($joinType) ? $joinType : 'INNER JOIN';
         }
+    }
+
+    /**
+     * @param mixed $where
+     * @return array
+     */
+    private function buildExistsRelations($where)
+    {
+        if(!isset($where[0]) || !is_array($where)){
+            return $where;
+        }
+
+        $operator = array_shift($where);
+        /** @var ActiveRecord $model */
+        $model = new $this->modelClass;
+
+        if(in_array($operator, ['exists', 'not exists'])){
+            list($name, $callback) = [key($where), current($where)];
+            if(is_int($name)){
+                $name = $callback;
+                $callback = null;
+            }
+
+            if($callback instanceof QueryInterface || $name instanceof QueryInterface){
+                array_unshift($where, $operator);
+                return $where;
+            }
+            unset($where[key($where)]);
+
+            $relation = $model->getRelation($name);
+            if(is_callable($callback)){
+                call_user_func($callback, $relation);
+            }
+
+            $this->buildExistsRelation($relation);
+            $where[] = $relation;
+        }else{
+            foreach($where as $key => $value){
+                $where[$key] = $this->buildExistsRelations($value);
+            }
+        }
+
+        array_unshift($where, $operator);
+        return $where;
+    }
+
+    /**
+     * @param ActiveQuery $relation
+     * @param \Closure|null $callback
+     */
+    private function buildExistsRelation($relation, \Closure $callback = null)
+    {
+        list(, $parentAlias) = $this->getQueryTableName($this);
+        list(, $childAlias) = $this->getQueryTableName($relation);
+
+        if (strpos($parentAlias, '{{') === false) {
+            $parentAlias = '{{' . $parentAlias . '}}';
+        }
+        if (strpos($childAlias, '{{') === false) {
+            $childAlias = '{{' . $childAlias . '}}';
+        }
+
+        foreach ($relation->link as $childColumn => $parentColumn) {
+            $relation->andWhere("$parentAlias.[[$parentColumn]] = $childAlias.[[$childColumn]]");
+        }
+
+        $relation->primaryModel = null;
     }
 
     /**
