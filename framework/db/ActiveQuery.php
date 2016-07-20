@@ -732,6 +732,7 @@ class ActiveQuery extends Query implements ActiveQueryInterface
     }
 
     /**
+     * Transform all relation names in exists/not exists conditions to Query objects
      * @param mixed $where
      * @return array
      */
@@ -744,7 +745,6 @@ class ActiveQuery extends Query implements ActiveQueryInterface
         $operator = array_shift($where);
         /** @var ActiveRecord $model */
         $model = new $this->modelClass;
-
         if(in_array($operator, ['exists', 'not exists'])){
             list($name, $callback) = [key($where), current($where)];
             if(is_int($name)){
@@ -756,8 +756,8 @@ class ActiveQuery extends Query implements ActiveQueryInterface
                 array_unshift($where, $operator);
                 return $where;
             }
-            unset($where[key($where)]);
 
+            unset($where[key($where)]);
             $relation = $model->getRelation($name);
             if(is_callable($callback)){
                 call_user_func($callback, $relation);

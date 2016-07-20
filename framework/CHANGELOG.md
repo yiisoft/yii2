@@ -8,6 +8,7 @@ Yii Framework 2 Change Log
 - Bug #11947: Fixed `gridData` initialization in `yii.gridView.js` (pavlm)
 - Bug #11949: Fixed `ActiveField::end` generates close tag when it's `option['tag']` is null (egorio)
 - Enh #11950: Improve BaseArrayHelper::keyExists speed (egorio)
+- Enh #11993: Improve ActiveQuery (nanodesu88)
 
 2.0.9 July 11, 2016
 -------------------
