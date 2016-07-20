@@ -87,7 +87,7 @@ class OracleMutex extends DbMutex
         $releaseOnCommit = ($this->releaseOnCommit === true) ? 'TRUE' : 'FALSE';
         $timeout = abs((int)$timeout);
 
-        if (!in_array($this->lockMode, (new ReflectionClass(self::className()))->getConstants())) {
+        if (!in_array($this->lockMode, (new ReflectionClass(self::className()))->getConstants(), true)) {
             throw new InvalidConfigException('Wrong lock mode');
         }
 
