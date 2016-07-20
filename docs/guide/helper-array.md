@@ -209,7 +209,7 @@ $array = [
     ['id' => '123', 'name' => 'aaa', 'class' => 'x'],
     ['id' => '124', 'name' => 'bbb', 'class' => 'x'],
     ['id' => '345', 'name' => 'ccc', 'class' => 'y'],
-);
+];
 
 $result = ArrayHelper::map($array, 'id', 'name');
 // the result is:
@@ -379,9 +379,8 @@ and [[yii\helpers\ArrayHelper::isSubset()|isSubset()]] with the same signature a
 // true
 ArrayHelper::isIn('a', ['a']);
 // true
-ArrayHelper::isIn('a', new(ArrayObject['a']));
+ArrayHelper::isIn('a', new ArrayObject(['a']));
 
 // true 
-ArrayHelper::isSubset(new(ArrayObject['a', 'c']), new(ArrayObject['a', 'b', 'c'])
-
+ArrayHelper::isSubset(new ArrayObject(['a', 'c']), new ArrayObject(['a', 'b', 'c']));
 ```
