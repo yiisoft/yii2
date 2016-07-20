@@ -159,7 +159,7 @@ class ActiveQuery extends Query implements ActiveQueryInterface
             $this->select = ["$alias.*"];
         }
 
-        if(!empty($this->where)){
+        if (!empty($this->where)) {
             $this->where = $this->buildExistsRelations($this->where);
         }
 
@@ -732,41 +732,43 @@ class ActiveQuery extends Query implements ActiveQueryInterface
     }
 
     /**
-     * Transform all relation names in exists/not exists conditions to Query objects
+     * Transform all relation names in exists/not exists conditions to Query objects.
      * @param mixed $where
      * @return array
      */
     private function buildExistsRelations($where)
     {
-        if(!isset($where[0]) || !is_array($where)){
+        if (!isset($where[0]) || !is_array($where)) {
             return $where;
         }
 
         $operator = array_shift($where);
         /** @var ActiveRecord $model */
         $model = new $this->modelClass;
-        if(in_array($operator, ['exists', 'not exists'])){
+        if (in_array($operator, ['exists', 'not exists'])) {
             list($name, $callback) = [key($where), current($where)];
-            if(is_int($name)){
+
+            if (is_int($name)) {
                 $name = $callback;
                 $callback = null;
             }
 
-            if($callback instanceof QueryInterface || $name instanceof QueryInterface){
+            if ($callback instanceof QueryInterface || $name instanceof QueryInterface) {
                 array_unshift($where, $operator);
                 return $where;
             }
 
             unset($where[key($where)]);
             $relation = $model->getRelation($name);
-            if(is_callable($callback)){
+
+            if (is_callable($callback)) {
                 call_user_func($callback, $relation);
             }
 
             $this->buildExistsRelation($relation);
             $where[] = $relation;
-        }else{
-            foreach($where as $key => $value){
+        } else {
+            foreach ($where as $key => $value) {
                 $where[$key] = $this->buildExistsRelations($value);
             }
         }
@@ -776,6 +778,7 @@ class ActiveQuery extends Query implements ActiveQueryInterface
     }
 
     /**
+     * Transform links to where condition.
      * @param ActiveQuery $relation
      * @param \Closure|null $callback
      */
@@ -787,6 +790,7 @@ class ActiveQuery extends Query implements ActiveQueryInterface
         if (strpos($parentAlias, '{{') === false) {
             $parentAlias = '{{' . $parentAlias . '}}';
         }
+
         if (strpos($childAlias, '{{') === false) {
             $childAlias = '{{' . $childAlias . '}}';
         }
@@ -794,7 +798,8 @@ class ActiveQuery extends Query implements ActiveQueryInterface
         foreach ($relation->link as $childColumn => $parentColumn) {
             $relation->andWhere("$parentAlias.[[$parentColumn]] = $childAlias.[[$childColumn]]");
         }
-
+        // cleaning
+        $relation->link = null;
         $relation->primaryModel = null;
     }
 
