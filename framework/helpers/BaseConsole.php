@@ -1020,6 +1020,43 @@ class BaseConsole
         self::$_progressEtaLastUpdate = null;
     }
 
+    /**
+     * Renders table to output.
+     *
+     * The following example shows a simple usage of like draw a table:
+     *
+     * ```php
+     * Console::table(
+     *      ['header1', 'header2', 'header3'],
+     *      [
+     *          ['row1', 'row2', 'row3'],
+     *          ['row21', 'row22', 'row23']
+     *      ]
+     * );
+     * ```
+     *
+     * @param array $headers Table headers
+     * @param array $rows Table rows
+     * @param array $chars set of chars in terms of name-value pairs. The following chars are handled:
+     *  - top (Default: '═')
+     *  - top-mid (Default: '╤')
+     *  - top-left (Default: '╔')
+     *  - top-right (Default: '╗')
+     *  - bottom (Default: '═')
+     *  - bottom-mid (Default: '╧')
+     *  - bottom-left (Default: '╚')
+     *  - bottom-right (Default: '╝')
+     *  - left (Default: '║')
+     *  - left-mid (Default: '╟')
+     *  - mid (Default: '─')
+     *  - mid-mid (Default: '┼')
+     *  - right (Default: '║')
+     *  - right-mid (Default: '╢')
+     *  - middle (Default: '│')
+     *
+     * @return string the generated table
+     * @since 2.0.10
+     */
     public static function table(array $headers, array $rows, array $chars = [
         'top' => '═', 'top-mid' => '╤', 'top-left' => '╔',
         'top-right' => '╗', 'bottom' => '═', 'bottom-mid' => '╧',

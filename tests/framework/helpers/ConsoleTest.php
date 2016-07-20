@@ -174,7 +174,7 @@ EXPECTED;
                 'bottom-left' => '*', 'bottom-right' => '*', 'left' => '/',
                 'left-mid' => '*', 'mid' => '+', 'mid-mid' => '*',
                 'right' => '/', 'right-mid' => '*', 'middle' => '/',
-            ])
-        );
+            ]
+        ));
     }
 }
