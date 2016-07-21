@@ -105,7 +105,7 @@ class User extends Component
      */
     public $authTimeout;
     /**
-     * @var CheckAccessInterface The acess checker to use for checking access.
+     * @var CheckAccessInterface The access checker to use for checking access.
      * If not set the application auth manager will be used.
      * @since 2.0.9
      */
