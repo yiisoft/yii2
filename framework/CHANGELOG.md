@@ -7,6 +7,7 @@ Yii Framework 2 Change Log
 - Bug #11912: Fixed PostgreSQL Schema to support negative default values for integer/float/decimal columns (nsknewbie)
 - Bug #11947: Fixed `gridData` initialization in `yii.gridView.js` (pavlm)
 - Bug #11949: Fixed `ActiveField::end` generates close tag when it's `option['tag']` is null (egorio)
+- Enh #8719: Add support for html5 attributes on submitbutton (formaction/formmethod...) for ActiveForm
 - Enh #11950: Improve BaseArrayHelper::keyExists speed (egorio)
 
 2.0.9 July 11, 2016

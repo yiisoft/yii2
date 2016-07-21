@@ -576,14 +576,11 @@
                 data.submitting = false;
             } else {
                 data.validated = true;
-                var buttonTarget = data.submitObject ? data.submitObject.attr('formtarget') : null;
-                if (buttonTarget) {
-                    // set target attribute to form tag before submit
-                    $form.attr('target', buttonTarget);
+                if(data.submitObject){
+                    data.submitObject.trigger("click");
+                } else {
+                    $form.submit();
                 }
-                $form.submit();
-                // restore original target attribute value
-                $form.attr('target', data.target);
             }
         } else {
             $.each(data.attributes, function () {
