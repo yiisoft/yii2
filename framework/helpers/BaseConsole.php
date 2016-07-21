@@ -1086,7 +1086,7 @@ class BaseConsole
             if ($index != 0) {
                 $buffer .= $spanMiddle . ' ';
             }
-            $buffer .= $row . str_repeat(' ', $size[$index] - strlen($row) - 1);
+            $buffer .= $row . str_repeat(' ', $size[$index] - mb_strwidth($row) - 1);
         }
         $buffer .= "$spanRight\n";
         return $buffer;
@@ -1114,7 +1114,7 @@ class BaseConsole
         }
 
         foreach ($columns as $column) {
-            $arraySizes[] = max(array_map('strlen', $column)) + 2;
+            $arraySizes[] = max(array_map('mb_strwidth', $column)) + 2;
         }
 
         return $arraySizes;
