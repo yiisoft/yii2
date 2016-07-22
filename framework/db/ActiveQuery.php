@@ -160,7 +160,7 @@ class ActiveQuery extends Query implements ActiveQueryInterface
         }
 
         if (!empty($this->where)) {
-            $this->where = $this->buildExistsRelations($this->where);
+            $this->buildExistsRelations();
         }
 
         if ($this->primaryModel === null) {
@@ -732,19 +732,29 @@ class ActiveQuery extends Query implements ActiveQueryInterface
     }
 
     /**
+     * Starts a transform relations in exists condition
+     */
+    private function buildExistsRelations()
+    {
+        $model = new $this->modelClass;
+
+        $this->where = $this->existsRelations($model, $this->where);
+    }
+
+    /**
      * Transform all relation names in exists/not exists conditions to Query objects.
+     * @param ActiveRecord $model
      * @param mixed $where
      * @return array
      */
-    private function buildExistsRelations($where)
+    private function existsRelations($model, $where)
     {
         if (!isset($where[0]) || !is_array($where)) {
             return $where;
         }
 
         $operator = array_shift($where);
-        /** @var ActiveRecord $model */
-        $model = new $this->modelClass;
+
         if (in_array($operator, ['exists', 'not exists'])) {
             list($name, $callback) = [key($where), current($where)];
 
@@ -765,11 +775,11 @@ class ActiveQuery extends Query implements ActiveQueryInterface
                 call_user_func($callback, $relation);
             }
 
-            $this->buildExistsRelation($relation);
+            $this->existsRelation($relation);
             $where[] = $relation;
         } else {
             foreach ($where as $key => $value) {
-                $where[$key] = $this->buildExistsRelations($value);
+                $where[$key] = $this->existsRelations($model, $value);
             }
         }
 
@@ -782,7 +792,7 @@ class ActiveQuery extends Query implements ActiveQueryInterface
      * @param ActiveQuery $relation
      * @param \Closure|null $callback
      */
-    private function buildExistsRelation($relation, \Closure $callback = null)
+    private function existsRelation($relation, \Closure $callback = null)
     {
         list(, $parentAlias) = $this->getQueryTableName($this);
         list(, $childAlias) = $this->getQueryTableName($relation);
