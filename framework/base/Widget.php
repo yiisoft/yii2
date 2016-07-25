@@ -25,6 +25,11 @@ use ReflectionClass;
 class Widget extends Component implements ViewContextInterface
 {
     /**
+     * @event Event an event that is triggered when the widget is initialized via [[init()]].
+     */    
+    const EVENT_INIT = 'init';
+    
+    /**
      * @var integer a counter used to generate [[id]] for widgets.
      * @internal
      */
@@ -41,6 +46,16 @@ class Widget extends Component implements ViewContextInterface
      */
     public static $stack = [];
 
+    /**
+     * Initializes the object.
+     * This method is called at the end of the constructor.
+     * The default implementation will trigger an [[EVENT_INIT]] event.
+     */    
+    public function init()
+    {
+        parent::init();
+        $this->trigger(self::EVENT_INIT);
+    }
 
     /**
      * Begins a widget.

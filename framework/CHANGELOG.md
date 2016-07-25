@@ -9,6 +9,7 @@ Yii Framework 2 Change Log
 - Bug #11949: Fixed `ActiveField::end` generates close tag when it's `option['tag']` is null (egorio)
 - Enh #11950: Improve BaseArrayHelper::keyExists speed (egorio)
 - Bug #11972: Fixed active form `afterValidate` wasn't triggered in some cases (lynicidn)
+- Enh #12000: Added EVENT_INIT to widget (user57376)
 
 2.0.9 July 11, 2016
 -------------------
