@@ -7,7 +7,7 @@
 
 namespace yii\helpers;
 
-use yii\console\Markdown;
+use yii\console\Markdown as ConsoleMarkdown;
 
 /**
  * BaseConsole provides concrete implementation for [[Console]].
@@ -238,7 +238,7 @@ class BaseConsole
      * Returns the ANSI format code.
      *
      * @param array $format An array containing formatting values.
-     * You can pass any of the FG_*, BG_* and TEXT_* constants
+     * You can pass any of the `FG_*`, `BG_*` and `TEXT_*` constants
      * and also [[xtermFgColor]] and [[xtermBgColor]] to specify a format.
      * @return string The ANSI format code according to the given formatting constants.
      */
@@ -251,7 +251,7 @@ class BaseConsole
      * Echoes an ANSI format code that affects the formatting of any text that is printed afterwards.
      *
      * @param array $format An array containing formatting values.
-     * You can pass any of the FG_*, BG_* and TEXT_* constants
+     * You can pass any of the `FG_*`, `BG_*` and `TEXT_*` constants
      * and also [[xtermFgColor]] and [[xtermBgColor]] to specify a format.
      * @see ansiFormatCode()
      * @see endAnsiFormat()
@@ -280,7 +280,7 @@ class BaseConsole
      *
      * @param string $string the string to be formatted
      * @param array $format An array containing formatting values.
-     * You can pass any of the FG_*, BG_* and TEXT_* constants
+     * You can pass any of the `FG_*`, `BG_*` and `TEXT_*` constants
      * and also [[xtermFgColor]] and [[xtermBgColor]] to specify a format.
      * @return string
      */
@@ -347,7 +347,7 @@ class BaseConsole
      *
      * @param string $string the string to convert.
      * @param array $styleMap an optional mapping of ANSI control codes such as
-     * [[FG_COLOR]] or [[BOLD]] to a set of css style definitions.
+     * FG\_*COLOR* or [[BOLD]] to a set of css style definitions.
      * The CSS style definitions are represented as an array where the array keys correspond
      * to the css style attribute names and the values are the css values.
      * values may be arrays that will be merged and imploded with `' '` when rendered.
@@ -455,12 +455,12 @@ class BaseConsole
 
     /**
      * Converts Markdown to be better readable in console environments by applying some ANSI format
-     * @param string $markdown
-     * @return string
+     * @param string $markdown the markdown string.
+     * @return string the parsed result as ANSI formatted string.
      */
     public static function markdownToAnsi($markdown)
     {
-        $parser = new Markdown();
+        $parser = new ConsoleMarkdown();
         return $parser->parse($markdown);
     }
 

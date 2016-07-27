@@ -232,7 +232,7 @@ class BaseStringHelper
             }
             return substr_compare($string, $with, -$bytes, $bytes) === 0;
         } else {
-            return mb_strtolower(mb_substr($string, -$bytes, null, '8bit'), Yii::$app->charset) === mb_strtolower($with, Yii::$app->charset);
+            return mb_strtolower(mb_substr($string, -$bytes, mb_strlen($string, '8bit'), '8bit'), Yii::$app->charset) === mb_strtolower($with, Yii::$app->charset);
         }
     }
 

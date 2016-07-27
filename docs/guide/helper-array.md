@@ -209,7 +209,7 @@ $array = [
     ['id' => '123', 'name' => 'aaa', 'class' => 'x'],
     ['id' => '124', 'name' => 'bbb', 'class' => 'x'],
     ['id' => '345', 'name' => 'ccc', 'class' => 'y'],
-);
+];
 
 $result = ArrayHelper::map($array, 'id', 'name');
 // the result is:
@@ -371,16 +371,16 @@ It is possible to provide default way of converting object to array for a specif
 Often you need to check if an element is in an array or a set of elements is a subset of another.
 While PHP offers `in_array()`, this does not support subsets or `\Traversable` objects.
 
-To aid these kinds of tests, [[yii\base\ArrayHelper]] provides [[yii\base\ArrayHelper::isIn()|isIn()]]
-and [[yii\base\ArrayHelper::isSubset()|isSubset()]] with the same signature as [[in_array()]].
+To aid these kinds of tests, [[yii\helpers\ArrayHelper]] provides [[yii\helpers\ArrayHelper::isIn()|isIn()]]
+and [[yii\helpers\ArrayHelper::isSubset()|isSubset()]] with the same signature as
+[in_array()](http://php.net/manual/en/function.in-array.php).
 
 ```php
 // true
 ArrayHelper::isIn('a', ['a']);
 // true
-ArrayHelper::isIn('a', new(ArrayObject['a']));
+ArrayHelper::isIn('a', new ArrayObject(['a']));
 
 // true 
-ArrayHelper::isSubset(new(ArrayObject['a', 'c']), new(ArrayObject['a', 'b', 'c'])
-
+ArrayHelper::isSubset(new ArrayObject(['a', 'c']), new ArrayObject(['a', 'b', 'c']));
 ```

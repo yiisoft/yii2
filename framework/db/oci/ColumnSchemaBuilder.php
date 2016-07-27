@@ -14,7 +14,7 @@ use yii\db\ColumnSchemaBuilder as AbstractColumnSchemaBuilder;
  *
  * @author Vasenin Matvey <vaseninm@gmail.com>
  * @author Chris Harris <chris@buckshotsoftware.com>
- * @since 2.0.8
+ * @since 2.0.6
  */
 class ColumnSchemaBuilder extends AbstractColumnSchemaBuilder
 {
@@ -51,13 +51,13 @@ class ColumnSchemaBuilder extends AbstractColumnSchemaBuilder
     {
         switch ($this->getTypeCategory()) {
             case self::CATEGORY_PK:
-                $format = '{type}{length}{check}{pos}';
+                $format = '{type}{length}{check}{pos}{append}';
                 break;
             case self::CATEGORY_NUMERIC:
-                $format = '{type}{length}{unsigned}{default}{notnull}{check}{pos}';
+                $format = '{type}{length}{unsigned}{default}{notnull}{check}{pos}{append}';
                 break;
             default:
-                $format = '{type}{length}{default}{notnull}{check}{pos}';
+                $format = '{type}{length}{default}{notnull}{check}{pos}{append}';
         }
         return $this->buildCompleteString($format);
     }

@@ -50,6 +50,10 @@ defined('STDERR') or define('STDERR', fopen('php://stderr', 'w'));
  * yii help
  * ```
  *
+ * @property ErrorHandler $errorHandler The error handler application component. This property is read-only.
+ * @property Request $request The request component. This property is read-only.
+ * @property Response $response The response component. This property is read-only.
+ *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */
@@ -195,6 +199,33 @@ class Application extends \yii\base\Application
             'migrate' => 'yii\console\controllers\MigrateController',
             'serve' => 'yii\console\controllers\ServeController',
         ];
+    }
+
+    /**
+     * Returns the error handler component.
+     * @return ErrorHandler the error handler application component.
+     */
+    public function getErrorHandler()
+    {
+        return $this->get('errorHandler');
+    }
+
+    /**
+     * Returns the request component.
+     * @return Request the request component.
+     */
+    public function getRequest()
+    {
+        return $this->get('request');
+    }
+
+    /**
+     * Returns the response component.
+     * @return Response the response component.
+     */
+    public function getResponse()
+    {
+        return $this->get('response');
     }
 
     /**

@@ -52,3 +52,14 @@ containing the translations. The following shows an example for german:
 
 * Web, not web
 * the guide or this guide, not the Guide
+
+## validating the docs
+
+The following are some scripts that help find broken links and other issues in the guide:
+
+Find broken links (some false-positives may occur):
+
+    grep -rniP "\[\[[^\],']+?\][^\]]"  docs/guide*
+    grep -rniP "[^\[]\[[^\]\[,']+?\]\]"  docs/guide*
+    
+    

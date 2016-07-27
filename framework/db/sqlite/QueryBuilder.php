@@ -28,8 +28,8 @@ class QueryBuilder extends \yii\db\QueryBuilder
     public $typeMap = [
         Schema::TYPE_PK => 'integer PRIMARY KEY AUTOINCREMENT NOT NULL',
         Schema::TYPE_UPK => 'integer UNSIGNED PRIMARY KEY AUTOINCREMENT NOT NULL',
-        Schema::TYPE_BIGPK => 'bigint PRIMARY KEY AUTOINCREMENT NOT NULL',
-        Schema::TYPE_UBIGPK => 'bigint UNSIGNED PRIMARY KEY AUTOINCREMENT NOT NULL',
+        Schema::TYPE_BIGPK => 'integer PRIMARY KEY AUTOINCREMENT NOT NULL',
+        Schema::TYPE_UBIGPK => 'integer UNSIGNED PRIMARY KEY AUTOINCREMENT NOT NULL',
         Schema::TYPE_CHAR => 'char(1)',
         Schema::TYPE_STRING => 'varchar(255)',
         Schema::TYPE_TEXT => 'text',
@@ -47,6 +47,7 @@ class QueryBuilder extends \yii\db\QueryBuilder
         Schema::TYPE_BOOLEAN => 'boolean',
         Schema::TYPE_MONEY => 'decimal(19,4)',
     ];
+
 
     /**
      * Generates a batch INSERT SQL statement.
@@ -69,6 +70,10 @@ class QueryBuilder extends \yii\db\QueryBuilder
      */
     public function batchInsert($table, $columns, $rows)
     {
+        if (empty($rows)) {
+            return '';
+        }
+
         // SQLite supports batch insert natively since 3.7.11
         // http://www.sqlite.org/releaselog/3_7_11.html
         $this->db->open(); // ensure pdo is not null
@@ -293,6 +298,7 @@ class QueryBuilder extends \yii\db\QueryBuilder
     /**
      * @inheritdoc
      * @throws NotSupportedException
+     * @since 2.0.8
      */
     public function addCommentOnColumn($table, $column, $comment)
     {
@@ -302,6 +308,7 @@ class QueryBuilder extends \yii\db\QueryBuilder
     /**
      * @inheritdoc
      * @throws NotSupportedException
+     * @since 2.0.8
      */
     public function addCommentOnTable($table, $comment)
     {
@@ -311,6 +318,7 @@ class QueryBuilder extends \yii\db\QueryBuilder
     /**
      * @inheritdoc
      * @throws NotSupportedException
+     * @since 2.0.8
      */
     public function dropCommentFromColumn($table, $column)
     {
@@ -320,6 +328,7 @@ class QueryBuilder extends \yii\db\QueryBuilder
     /**
      * @inheritdoc
      * @throws NotSupportedException
+     * @since 2.0.8
      */
     public function dropCommentFromTable($table)
     {

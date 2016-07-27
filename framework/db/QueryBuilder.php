@@ -9,6 +9,7 @@ namespace yii\db;
 
 use yii\base\InvalidParamException;
 use yii\base\NotSupportedException;
+use yii\helpers\ArrayHelper;
 
 /**
  * QueryBuilder builds a SELECT SQL statement based on the specification given as a [[Query]] object.
@@ -196,6 +197,10 @@ class QueryBuilder extends \yii\base\Object
      */
     public function batchInsert($table, $columns, $rows)
     {
+        if (empty($rows)) {
+            return '';
+        }
+
         $schema = $this->db->getSchema();
         if (($tableSchema = $schema->getTableSchema($table)) !== null) {
             $columnSchemas = $tableSchema->columns;
@@ -1023,7 +1028,7 @@ class QueryBuilder extends \yii\base\Object
     {
         $parts = [];
         foreach ($condition as $column => $value) {
-            if (is_array($value) || $value instanceof Query) {
+            if (ArrayHelper::isTraversable($value) || $value instanceof Query) {
                 // IN condition
                 $parts[] = $this->buildInCondition('IN', [$column, $value], $params);
             } else {
@@ -1165,49 +1170,57 @@ class QueryBuilder extends \yii\base\Object
 
         list($column, $values) = $operands;
 
-        if ($values === [] || $column === []) {
+        if ($column === []) {
+            // no columns to test against
             return $operator === 'IN' ? '0=1' : '';
         }
 
         if ($values instanceof Query) {
             return $this->buildSubqueryInCondition($operator, $column, $values, $params);
         }
-
-        $values = (array) $values;
-
-        if (count($column) > 1) {
-            return $this->buildCompositeInCondition($operator, $column, $values, $params);
+        if (!is_array($values) && !$values instanceof \Traversable) {
+            // ensure values is an array
+            $values = (array) $values;
         }
 
-        if (is_array($column)) {
+        if ($column instanceof \Traversable || count($column) > 1) {
+            return $this->buildCompositeInCondition($operator, $column, $values, $params);
+        } elseif (is_array($column)) {
             $column = reset($column);
         }
+
+        $sqlValues = [];
         foreach ($values as $i => $value) {
-            if (is_array($value)) {
+            if (is_array($value) || $value instanceof \ArrayAccess) {
                 $value = isset($value[$column]) ? $value[$column] : null;
             }
             if ($value === null) {
-                $values[$i] = 'NULL';
+                $sqlValues[$i] = 'NULL';
             } elseif ($value instanceof Expression) {
-                $values[$i] = $value->expression;
+                $sqlValues[$i] = $value->expression;
                 foreach ($value->params as $n => $v) {
                     $params[$n] = $v;
                 }
             } else {
                 $phName = self::PARAM_PREFIX . count($params);
                 $params[$phName] = $value;
-                $values[$i] = $phName;
+                $sqlValues[$i] = $phName;
             }
         }
+
+        if (empty($sqlValues)) {
+            return $operator === 'IN' ? '0=1' : '';
+        }
+
         if (strpos($column, '(') === false) {
             $column = $this->db->quoteColumnName($column);
         }
 
-        if (count($values) > 1) {
-            return "$column $operator (" . implode(', ', $values) . ')';
+        if (count($sqlValues) > 1) {
+            return "$column $operator (" . implode(', ', $sqlValues) . ')';
         } else {
             $operator = $operator === 'IN' ? '=' : '<>';
-            return $column . $operator . reset($values);
+            return $column . $operator . reset($sqlValues);
         }
     }
 
@@ -1242,7 +1255,7 @@ class QueryBuilder extends \yii\base\Object
      * Builds SQL for IN condition
      *
      * @param string $operator
-     * @param array $columns
+     * @param array|\Traversable $columns
      * @param array $values
      * @param array $params
      * @return string SQL
@@ -1263,13 +1276,17 @@ class QueryBuilder extends \yii\base\Object
             }
             $vss[] = '(' . implode(', ', $vs) . ')';
         }
+
+        if (empty($vss)) {
+            return $operator === 'IN' ? '0=1' : '';
+        };
+
+        $sqlColumns = [];
         foreach ($columns as $i => $column) {
-            if (strpos($column, '(') === false) {
-                $columns[$i] = $this->db->quoteColumnName($column);
-            }
+            $sqlColumns[] = strpos($column, '(') === false ? $this->db->quoteColumnName($column) : $column;
         }
 
-        return '(' . implode(', ', $columns) . ") $operator (" . implode(', ', $vss) . ')';
+        return '(' . implode(', ', $sqlColumns) . ") $operator (" . implode(', ', $vss) . ')';
     }
 
     /**
@@ -1393,12 +1410,11 @@ class QueryBuilder extends \yii\base\Object
             return "$column $operator $phName";
         }
     }
-    
+
     /**
      * Creates a SELECT EXISTS() SQL statement.
      * @param string $rawSql the subquery in a raw form to select from.
      * @return string the SELECT EXISTS() SQL statement.
-     *
      * @since 2.0.8
      */
     public function selectExists($rawSql)

@@ -78,6 +78,10 @@ The name of the input field is determined automatically from the model's [[yii\b
 For example, the name for the input field for the `username` attribute in the above example will be `LoginForm[username]`. This naming rule will result in an array
 of all attributes for the login form to be available in `$_POST['LoginForm']` on the server side.
 
+> Tip: If you have only one model in a form and want to simplify the input names you may skip the array part by
+> overriding the [[yii\base\Model::formName()|formName()]] method of the model to return an empty string.
+> This can be useful for filter models used in the [GridView](output-data-widgets.md#grid-view) to create nicer URLs.
+
 Specifying the attribute of the model can be done in more sophisticated ways. For example when an attribute may
 take an array value when uploading multiple files or selecting multiple items you may specify it by appending `[]`
 to the attribute name:

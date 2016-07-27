@@ -8,11 +8,7 @@ use yii\db\DataReader;
 use yii\db\Expression;
 use yii\db\Schema;
 
-/**
- * @group db
- * @group mysql
- */
-class CommandTest extends DatabaseTestCase
+abstract class CommandTest extends DatabaseTestCase
 {
     public function testConstruct()
     {
@@ -285,6 +281,15 @@ SQL;
             ]
         );
         $this->assertEquals(2, $command->execute());
+
+        // @see https://github.com/yiisoft/yii2/issues/11693
+        $command = $this->getConnection()->createCommand();
+        $command->batchInsert(
+            '{{customer}}',
+            ['email', 'name', 'address'],
+            []
+        );
+        $this->assertEquals(0, $command->execute());
     }
 
     public function testInsert()

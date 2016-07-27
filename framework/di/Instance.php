@@ -25,7 +25,10 @@ use yii\base\InvalidConfigException;
  *
  * ```php
  * $container = new \yii\di\Container;
- * $container->set('cache', 'yii\caching\DbCache', Instance::of('db'));
+ * $container->set('cache', [
+ *     'class' => 'yii\caching\DbCache',
+ *     'db' => Instance::of('db')
+ * ]);
  * $container->set('db', [
  *     'class' => 'yii\db\Connection',
  *     'dsn' => 'sqlite:path/to/file.db',

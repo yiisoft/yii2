@@ -201,7 +201,8 @@
                     settings: settings,
                     attributes: attributes,
                     submitting: false,
-                    validated: false
+                    validated: false,
+                    target: $form.attr('target')
                 });
 
                 /**
@@ -289,9 +290,9 @@
                 deferreds = deferredArray(),
                 submitting = data.submitting;
 
+            var event = $.Event(events.beforeValidate);
+            $form.trigger(event, [messages, deferreds]);
             if (submitting) {
-                var event = $.Event(events.beforeValidate);
-                $form.trigger(event, [messages, deferreds]);
                 if (event.result === false) {
                     data.submitting = false;
                     submitFinalize($form);
@@ -550,15 +551,16 @@
     var updateInputs = function ($form, messages, submitting) {
         var data = $form.data('yiiActiveForm');
 
-        if (submitting) {
-            var errorAttributes = [];
-            $.each(data.attributes, function () {
-                if (!$(this.input).is(":disabled") && !this.cancelled && updateInput($form, this, messages)) {
-                    errorAttributes.push(this);
-                }
-            });
+        var errorAttributes = [];
+        $.each(data.attributes, function () {
+            if (!$(this.input).is(":disabled") && !this.cancelled && updateInput($form, this, messages)) {
+                errorAttributes.push(this);
+            }
+        });
 
-            $form.trigger(events.afterValidate, [messages, errorAttributes]);
+        $form.trigger(events.afterValidate, [messages, errorAttributes]);
+
+        if (submitting) {
 
             updateSummary($form, messages);
 
@@ -575,7 +577,14 @@
                 data.submitting = false;
             } else {
                 data.validated = true;
+                var buttonTarget = data.submitObject ? data.submitObject.attr('formtarget') : null;
+                if (buttonTarget) {
+                    // set target attribute to form tag before submit
+                    $form.attr('target', buttonTarget);
+                }
                 $form.submit();
+                // restore original target attribute value
+                $form.attr('target', data.target);
             }
         } else {
             $.each(data.attributes, function () {

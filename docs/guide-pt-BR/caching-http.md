@@ -4,7 +4,7 @@ Cache HTTP
 Além do cache no servidor que nós descrevemos nas seções anteriores, aplicações Web pode também aproveitar-se
 de cache no cliente para economizar o tempo na montagem e transmissão do mesmo conteúdo de uma página.
 
-Para usar o cache no cliente, você poderá configurar [[yii\filters\HttpCache] como um filtro de ações de um controller ao qual o resultado de sua renderização possa ser armazenado em cache no navegador do cliente. A classe [[yii\filters\HttpCache|HttpCache]] funciona apenas para requisições `GET` e `HEAD`. Ele pode manipular três tipos de cache relacionados a cabeçalhos HTTP para estas requisições:
+Para usar o cache no cliente, você poderá configurar [[yii\filters\HttpCache]] como um filtro de ações de um controller ao qual o resultado de sua renderização possa ser armazenado em cache no navegador do cliente. A classe [[yii\filters\HttpCache|HttpCache]] funciona apenas para requisições `GET` e `HEAD`. Ele pode manipular três tipos de cache relacionados a cabeçalhos HTTP para estas requisições:
 
 * [[yii\filters\HttpCache::lastModified|Last-Modified]]
 * [[yii\filters\HttpCache::etagSeed|Etag]]

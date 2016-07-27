@@ -45,6 +45,7 @@ class QueryBuilder extends \yii\db\QueryBuilder
         Schema::TYPE_MONEY => 'decimal(19,4)',
     ];
 
+
     /**
      * Builds a SQL statement for renaming a column.
      * @param string $table the table whose column is to be renamed. The name will be properly quoted by the method.
@@ -222,6 +223,7 @@ class QueryBuilder extends \yii\db\QueryBuilder
 
     /**
      * @inheritdoc
+     * @since 2.0.8
      */
     public function addCommentOnColumn($table, $column, $comment)
     {
@@ -237,6 +239,7 @@ class QueryBuilder extends \yii\db\QueryBuilder
 
     /**
      * @inheritdoc
+     * @since 2.0.8
      */
     public function addCommentOnTable($table, $comment)
     {
@@ -245,6 +248,7 @@ class QueryBuilder extends \yii\db\QueryBuilder
 
     /**
      * @inheritdoc
+     * @since 2.0.8
      */
     public function dropCommentFromColumn($table, $column)
     {
@@ -253,6 +257,7 @@ class QueryBuilder extends \yii\db\QueryBuilder
 
     /**
      * @inheritdoc
+     * @since 2.0.8
      */
     public function dropCommentFromTable($table)
     {
