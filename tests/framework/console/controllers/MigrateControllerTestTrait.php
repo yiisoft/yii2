@@ -235,6 +235,13 @@ CODE;
 
 		// @see https://github.com/yiisoft/yii2/issues/10876
 		$this->assertCommandCreatedFile('create_products_from_store_table', 'create_products_from_store_table');
+
+        // @see https://github.com/yiisoft/yii2/issues/11461
+        $this->assertCommandCreatedFile('create_titlte_with_comma_default_values', 'create_test_table', [
+            'fields' => 'title:string(10):notNull:unique:defaultValue(",te,st"),
+             body:text:notNull:defaultValue(",test"),
+             test:custom(11,2,"s"):notNull',
+        ]);
     }
 
     public function testGenerateDropMigration()
@@ -249,7 +256,7 @@ CODE;
                 'fields' => 'body:text:notNull,price:money(11,2)'
             ]);
         }
-		
+
 		// @see https://github.com/yiisoft/yii2/issues/10876
 		$this->assertCommandCreatedFile('drop_products_from_store_table', 'drop_products_from_store_table');
     }
