@@ -257,7 +257,7 @@ abstract class BaseMigrateController extends Controller
             }
             foreach (array_reverse($migrations) as $migration) {
                 if (!$this->migrateUp($migration)) {
-                    $this->stdout("\nMigration failed. The rest of the migrations migrations are canceled.\n", Console::FG_RED);
+                    $this->stdout("\nMigration failed. The rest of the migrations are canceled.\n", Console::FG_RED);
 
                     return self::EXIT_CODE_ERROR;
                 }
