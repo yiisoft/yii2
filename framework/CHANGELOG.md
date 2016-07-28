@@ -11,6 +11,7 @@ Yii Framework 2 Change Log
 - Enh #11950: Improve BaseArrayHelper::keyExists speed (egorio)
 - Bug #11972: Fixed active form `afterValidate` wasn't triggered in some cases (lynicidn)
 - Bug #11726: `DbSession` was echoing database errors in production mode (samdark, pastuhov, deadkrolik)
+- Bug #12030: Fixed `yii\base\Model::offsetExists()` throws an exception on un-existing field (klimov-paul)
 
 2.0.9 July 11, 2016
 -------------------
