@@ -137,7 +137,7 @@ abstract class BaseMailer extends Component implements MailerInterface, ViewCont
      * @param array $config view configuration.
      * @return View view instance.
      */
-    protected function createView(array $config)
+    protected function view(array $config)
     {
         if (!array_key_exists('class', $config)) {
             $config['class'] = View::className();

@@ -12,6 +12,7 @@ Yii Framework 2 Change Log
 - Bug #11972: Fixed active form `afterValidate` wasn't triggered in some cases (lynicidn)
 - Bug #11726: `DbSession` was echoing database errors in production mode (samdark, pastuhov, deadkrolik)
 - Bug #12030: Fixed `yii\base\Model::offsetExists()` throws an exception on un-existing field (klimov-paul)
+- Bug #12037: Fixed 2.0.7 regression in memcahe/memcached cache backend (samdark)
 
 2.0.9 July 11, 2016
 -------------------
