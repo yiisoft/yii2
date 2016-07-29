@@ -13,6 +13,7 @@ Yii Framework 2 Change Log
 - Bug #12030: Fixed `yii\base\Model::offsetExists()` throws an exception on un-existing field (klimov-paul)
 - Bug #12037: Fixed 2.0.7 regression in memcahe/memcached cache backend (samdark)
 - Bug #12045: Added missing `LEVEL_PROFILE` to `yii\log\Logger::getLevelName()` map (Mak-Di)
+- Enh #10583: Do not silence session errors in debug mode (samdark)
 
 2.0.9 July 11, 2016
 -------------------
