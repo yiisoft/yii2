@@ -307,6 +307,7 @@ class Logger extends Component
             self::LEVEL_TRACE => 'trace',
             self::LEVEL_PROFILE_BEGIN => 'profile begin',
             self::LEVEL_PROFILE_END => 'profile end',
+            self::LEVEL_PROFILE => 'profile'
         ];
 
         return isset($levels[$level]) ? $levels[$level] : 'unknown';
