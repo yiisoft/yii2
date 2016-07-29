@@ -9,7 +9,6 @@ Yii Framework 2 Change Log
 - Bug #11947: Fixed `gridData` initialization in `yii.gridView.js` (pavlm)
 - Bug #11949: Fixed `ActiveField::end` generates close tag when it's `option['tag']` is null (egorio)
 - Enh #11950: Improve BaseArrayHelper::keyExists speed (egorio)
-- Bug #11972: Fixed active form `afterValidate` wasn't triggered in some cases (lynicidn)
 - Bug #11726: `DbSession` was echoing database errors in production mode (samdark, pastuhov, deadkrolik)
 - Bug #12030: Fixed `yii\base\Model::offsetExists()` throws an exception on un-existing field (klimov-paul)
 - Bug #12037: Fixed 2.0.7 regression in memcahe/memcached cache backend (samdark)
