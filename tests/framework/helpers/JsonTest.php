@@ -55,6 +55,13 @@ class JsonTest extends TestCase
         // JsonSerializable
         $data = new JsonModel();
         $this->assertSame('{"json":"serializable"}', Json::encode($data));
+
+        // Empty JsonSerializable
+        $data = new EmptyJsonModel();
+        $this->assertSame(
+            json_encode($data, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE),
+            Json::encode($data)
+        );
     }
 
     public function testHtmlEncode()
@@ -169,5 +176,13 @@ class JsonModel extends Model implements \JsonSerializable
     function jsonSerialize()
     {
         return ['json' => 'serializable'];
+    }
+}
+
+class EmptyJsonModel extends Model implements \JsonSerializable
+{
+    public function jsonSerialize()
+    {
+        return [];
     }
 }
