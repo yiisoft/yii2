@@ -5,7 +5,6 @@
 
 namespace yiiunit\framework\log;
 
-use yii\log\Dispatcher;
 use yii\log\Logger;
 use yiiunit\TestCase;
 
@@ -27,7 +26,7 @@ class LoggerTest extends TestCase
     protected function setUp()
     {
         $this->logger = new Logger();
-        $this->dispatcher = $this->getMock(Dispatcher::class, ['dispatch']);
+        $this->dispatcher = $this->getMock('yii\\log\\Dispatcher', ['dispatch']);
     }
 
     /**
@@ -63,7 +62,7 @@ class LoggerTest extends TestCase
         $this->assertEquals('application', $this->logger->messages[0][2]);
         $this->assertEquals([
             'file' => __FILE__,
-            'line' => 59,
+            'line' => 58,
             'function' => 'log',
             'class' => get_class($this->logger),
             'type' => '->'
@@ -87,7 +86,7 @@ class LoggerTest extends TestCase
      */
     public function testFlushWithoutDispatcher()
     {
-        $dispatcher = $this->getMock(\stdClass::class);
+        $dispatcher = $this->getMock('\stdClass');
         $dispatcher->expects($this->never())->method($this->anything());
 
         $this->logger->messages = ['anything'];
