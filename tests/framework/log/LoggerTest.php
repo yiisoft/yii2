@@ -99,7 +99,7 @@ class LoggerTest extends TestCase
     /**
      * @covers yii\log\Logger::Flush()
      */
-    public function testFlushWitDispatcherAndDefaultParam()
+    public function testFlushWithDispatcherAndDefaultParam()
     {
         $message = ['anything'];
         $this->dispatcher->expects($this->once())
@@ -114,7 +114,7 @@ class LoggerTest extends TestCase
     /**
      * @covers yii\log\Logger::Flush()
      */
-    public function testFlushWitDispatcherAndDefinedParam()
+    public function testFlushWithDispatcherAndDefinedParam()
     {
         $message = ['anything'];
         $this->dispatcher->expects($this->once())
