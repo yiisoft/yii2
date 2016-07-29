@@ -146,18 +146,35 @@ class HelpController extends Controller
         }
 
         $controllerPath = $module->getControllerPath();
-        if (is_dir($controllerPath)) {
-            $files = scandir($controllerPath);
-            foreach ($files as $file) {
-                if (!empty($file) && substr_compare($file, 'Controller.php', -14, 14) === 0) {
-                    $controllerClass = $module->controllerNamespace . '\\' . substr(basename($file), 0, -4);
-                    if ($this->validateControllerClass($controllerClass)) {
-                        $commands[] = $prefix . Inflector::camel2id(substr(basename($file), 0, -14));
-                    }
+        $commandsRes = $this->readDir($controllerPath,$module,$prefix);
+        if($commandsRes)$commands=array_merge($commands,$commandsRes);
+        return $commands;
+    }
+
+    /**
+     * @param string $file  the controllerPath
+     * @param $module \yii\base\Module $module the module instance
+     * @param string $prefix   namespace as prefix
+     * @return array the available command names
+     */
+    private function readDir($file,$module,$prefix){
+        $commands=[];
+        if(is_dir($file) ){
+            $files = scandir($file);
+            foreach($files as $v){
+                if( '.' === $v || '..'===$v)continue;
+                $commandsRes = $this->readDir($file.'/'.$v,$module,$prefix);
+                if($commandsRes)$commands=array_merge($commands,$commandsRes);
+            }
+        }else{
+            if (!empty($file) && substr_compare($file, 'Controller.php', -14, 14) === 0){
+                $controllerClass = $module->controllerNamespace . '\\' .substr(substr($file,strlen($module->getControllerPath())+1), 0, -4);
+                $controllerClass =  preg_replace('/\//','\\',$controllerClass);
+                if ($this->validateControllerClass($controllerClass)){
+                    $commands[] = $prefix . Inflector::camel2id(substr(substr($file,strlen($module->getControllerPath())+1), 0, -14));
                 }
             }
         }
-
         return $commands;
     }
 

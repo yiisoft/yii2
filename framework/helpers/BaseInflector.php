@@ -371,7 +371,8 @@ class BaseInflector
     /**
      * Converts a CamelCase name into an ID in lowercase.
      * Words in the ID may be concatenated using the specified character (defaults to '-').
-     * For example, 'PostTag' will be converted to 'post-tag'.
+     * For example, 'PostTag' will be converted to 'post-tag',
+     * schedule\cron\SyncToQueueController will be converted to  schedule/cron/sync-to-queue.
      * @param string $name the string to be converted
      * @param string $separator the character used to concatenate the words in the ID
      * @param boolean|string $strict whether to insert a separator between two consecutive uppercase chars, defaults to false
@@ -383,7 +384,7 @@ class BaseInflector
         if ($separator === '_') {
             return trim(strtolower(preg_replace($regex, '_\0', $name)), '_');
         } else {
-            return trim(strtolower(str_replace('_', $separator, preg_replace($regex, $separator . '\0', $name))), $separator);
+            return trim(strtolower(preg_replace('/\/'.$separator.'/','/',str_replace('_', $separator, preg_replace($regex, $separator . '\0', $name)))), $separator);
         }
     }
 
