@@ -851,11 +851,11 @@ EOD;
             foreach ($msgs as $message) {
                 $merged[$category . chr(4) . $message] = '';
             }
-            ksort($merged);
             $this->stdout("Category \"$category\" merged.\n");
             $hasSomethingToWrite = true;
         }
         if ($hasSomethingToWrite) {
+            ksort($merged);
             $poFile->save($file, $merged);
             $this->stdout("Translation saved.\n", Console::FG_GREEN);
         } else {
