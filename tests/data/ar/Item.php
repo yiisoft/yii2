@@ -20,4 +20,9 @@ class Item extends ActiveRecord
     {
         return $this->hasOne(Category::className(), ['id' => 'category_id']);
     }
+
+    public function getTotalOrder()
+    {
+        return $this->hasOne(TotalOrder::className(), ['item_id' => 'id']);
+    }
 }
