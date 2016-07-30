@@ -15,6 +15,7 @@ Yii Framework 2 Change Log
 - Bug #12045: Added missing `LEVEL_PROFILE` to `yii\log\Logger::getLevelName()` map (Mak-Di)
 - Enh #10583: Do not silence session errors in debug mode (samdark)
 - Enh #12048: Improved message extraction command performance (samdark)
+- Enh #12038: Introduced `yii\base\ViewNotFoundException` which is thrown when views file doesn't exists, used it in `ViewAction` (samdark)
 
 2.0.9 July 11, 2016
 -------------------
