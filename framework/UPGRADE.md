@@ -305,7 +305,7 @@ new ones save the following code as `convert.php` that should be placed in the s
   
   function saveToFile($data, $fileName) {
       $out = var_export($data, true);
-      $out = "<?php\nreturn " . $out . ";";
+      $out = "<?php\nreturn " . $out . ';';
       $out = str_replace(['array (', ')'], ['[', ']'], $out);
       file_put_contents($fileName, $out);
   }

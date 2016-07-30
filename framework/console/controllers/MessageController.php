@@ -449,10 +449,10 @@ EOD;
 
         $subject = file_get_contents($fileName);
         $messages = [];
+        $tokens = token_get_all($subject);
         foreach ((array) $translator as $currentTranslator) {
             $translatorTokens = token_get_all('<?php ' . $currentTranslator);
             array_shift($translatorTokens);
-            $tokens = token_get_all($subject);
             $messages = array_merge_recursive($messages, $this->extractMessagesFromTokens($tokens, $translatorTokens, $ignoreCategories));
         }
 
@@ -640,6 +640,7 @@ EOD;
      * @param boolean $sort if translations should be sorted
      * @param string $category message category
      * @param boolean $markUnused if obsolete translations should be marked
+     * @return int exit code
      */
     protected function saveMessagesCategoryToPHP($messages, $fileName, $overwrite, $removeUnused, $sort, $category, $markUnused)
     {
@@ -650,7 +651,7 @@ EOD;
             ksort($existingMessages);
             if (array_keys($existingMessages) === $messages && (!$sort || array_keys($rawExistingMessages) === $messages)) {
                 $this->stdout("Nothing new in \"$category\" category... Nothing to save.\n\n", Console::FG_GREEN);
-                return;
+                return self::EXIT_CODE_NORMAL;
             }
             unset($rawExistingMessages);
             $merged = [];
@@ -851,11 +852,11 @@ EOD;
             foreach ($msgs as $message) {
                 $merged[$category . chr(4) . $message] = '';
             }
-            ksort($merged);
             $this->stdout("Category \"$category\" merged.\n");
             $hasSomethingToWrite = true;
         }
         if ($hasSomethingToWrite) {
+            ksort($merged);
             $poFile->save($file, $merged);
             $this->stdout("Translation saved.\n", Console::FG_GREEN);
         } else {

@@ -1279,7 +1279,7 @@ class QueryBuilder extends \yii\base\Object
 
         if (empty($vss)) {
             return $operator === 'IN' ? '0=1' : '';
-        };
+        }
 
         $sqlColumns = [];
         foreach ($columns as $i => $column) {

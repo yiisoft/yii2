@@ -9,10 +9,14 @@ Yii Framework 2 Change Log
 - Bug #11947: Fixed `gridData` initialization in `yii.gridView.js` (pavlm)
 - Bug #11949: Fixed `ActiveField::end` generates close tag when it's `option['tag']` is null (egorio)
 - Enh #11950: Improve BaseArrayHelper::keyExists speed (egorio)
-- Bug #11972: Fixed active form `afterValidate` wasn't triggered in some cases (lynicidn)
 - Bug #11726: `DbSession` was echoing database errors in production mode (samdark, pastuhov, deadkrolik)
 - Bug #12030: Fixed `yii\base\Model::offsetExists()` throws an exception on un-existing field (klimov-paul)
 - Enh #12028: Add -h|--help option to console command to display help information (pana1990)
+- Bug #12037: Fixed 2.0.7 regression in memcahe/memcached cache backend (samdark)
+- Bug #12045: Added missing `LEVEL_PROFILE` to `yii\log\Logger::getLevelName()` map (Mak-Di)
+- Enh #10583: Do not silence session errors in debug mode (samdark)
+- Enh #12048: Improved message extraction command performance (samdark)
+- Enh #12038: Introduced `yii\base\ViewNotFoundException` which is thrown when views file doesn't exists, used it in `ViewAction` (samdark)
 
 2.0.9 July 11, 2016
 -------------------
