@@ -52,7 +52,7 @@ class Controller extends \yii\base\Controller
      */
     public $color;
     /**
-     * @var boolean
+     * @var boolean whether to display help information about console command current
      */
     public $help;
 
