@@ -11,7 +11,7 @@ use yiiunit\data\ar\Item;
  * Description of QueryRecordTest
  *
  * @author Misbahul D Munir <misbahuldmunir@gmail.com>
- * @since 1.0
+ * @since 2.0.10
  */
 abstract class QueryRecordTest extends DatabaseTestCase
 {

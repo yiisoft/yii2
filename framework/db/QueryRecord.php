@@ -74,7 +74,7 @@ use yii\helpers\StringHelper;
  * @method ActiveQuery hasOne($class, array $link) see [[BaseActiveRecord::hasOne()]] for more info
  *
  * @author Misbahul D Munir <misbahuldmunir@gmail.com>
- * @since 2.10
+ * @since 2.0.10
  */
 class QueryRecord extends BaseActiveRecord
 {
@@ -84,7 +84,7 @@ class QueryRecord extends BaseActiveRecord
      */
     public static function query()
     {
-        throw new InvalidConfigException(__METHOD__ . '');
+        throw new InvalidConfigException(__METHOD__ . ' must be overrided');
     }
 
     /**
@@ -101,8 +101,8 @@ class QueryRecord extends BaseActiveRecord
      */
     public static function find()
     {
-        return Yii::createObject(ActiveQuery::className(), [get_called_class()])
-                ->from([Inflector::camel2id(StringHelper::basename(get_called_class()), '_') => static::query()]);
+        return Yii::createObject(ActiveQuery::className(), [$class = get_called_class()])
+                ->from([Inflector::camel2id(StringHelper::basename($class), '_') => static::query()]);
     }
 
     /**
@@ -121,6 +121,6 @@ class QueryRecord extends BaseActiveRecord
      */
     public static function primaryKey()
     {
-
+        return [];
     }
 }

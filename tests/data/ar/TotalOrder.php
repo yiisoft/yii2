@@ -6,7 +6,7 @@ namespace yiiunit\data\ar;
  * Description of TotalOrder
  *
  * @author Misbahul D Munir <misbahuldmunir@gmail.com>
- * @since 2.10
+ * @since 2.0.10
  */
 class TotalOrder extends QueryRecord
 {
