@@ -78,8 +78,11 @@ class DetailView extends Widget
      */
     public $attributes;
     /**
-     * @var string|callable the template used to render a single attribute. If a string, the token `{label}`
-     * and `{value}` will be replaced with the label and the value of the corresponding attribute.
+     * @var string|callable the template used to render a single attribute. If a string, the token `{label}`,
+     * `{value}` and `{attribute_name}`  will be replaced with the label, value and the name of the corresponding attribute.
+     * ```php
+        $template = '<tr class="{attribute_name}"><th>{label}</th><td>{value}</td></tr>';
+     * ```
      * If a callback (e.g. an anonymous function), the signature must be as follows:
      *
      * ```php
@@ -157,6 +160,7 @@ class DetailView extends Widget
             return strtr($this->template, [
                 '{label}' => $attribute['label'],
                 '{value}' => $this->formatter->format($attribute['value'], $attribute['format']),
+                '{attribute_name}' => $attribute['attribute'],
             ]);
         } else {
             return call_user_func($this->template, $attribute, $index, $this);
