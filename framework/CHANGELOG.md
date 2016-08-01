@@ -16,6 +16,7 @@ Yii Framework 2 Change Log
 - Enh #10583: Do not silence session errors in debug mode (samdark)
 - Enh #12048: Improved message extraction command performance (samdark)
 - Enh #12038: Introduced `yii\base\ViewNotFoundException` which is thrown when views file doesn't exists, used it in `ViewAction` (samdark)
+- Enh #12059: Make simple url rule with default parameter (mdmunir)
 
 2.0.9 July 11, 2016
 -------------------

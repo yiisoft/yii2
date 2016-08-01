@@ -205,10 +205,14 @@ class UrlManager extends Component
         foreach ($rules as $key => $rule) {
             if (is_string($rule) || (is_array($rule) && isset($rule[0]))) {
                 $rule = (array) $rule;
-                $rule = [
-                    'route' => $rule[0],
-                    'defaults' => array_slice($rule, 1),
-                ];
+                if(is_string($rule)){
+                    $rule = ['route' => $rule];
+                } else {
+                    $rule = [
+                        'route' => $rule[0],
+                        'defaults' => array_slice($rule, 1),
+                    ];
+                }
                 
                 if (preg_match("/^((?:($verbs),)*($verbs))\\s+(.*)$/", $key, $matches)) {
                     $rule['verb'] = explode(',', $matches[1]);

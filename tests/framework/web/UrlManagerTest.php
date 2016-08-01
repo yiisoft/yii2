@@ -180,6 +180,7 @@ class UrlManagerTest extends TestCase
                     'defaults' => ['view' => 'about-me']
                 ],
                 'page/<view>' => 'site/page',
+                '' => ['profile/view', 'id' => 3426]
             ],
             'baseUrl' => '/test',
             'scriptUrl' => '/test',
@@ -190,6 +191,8 @@ class UrlManagerTest extends TestCase
         $this->assertEquals('/test/tentang-aku', $url);
         $url = $manager->createUrl(['site/page', 'view' => 'other-page']);
         $this->assertEquals('/test/page/other-page', $url);
+        $url = $manager->createUrl(['profile/view', 'id' => 3426]);
+        $this->assertEquals('/test/', $url);
     }
 
     /**
@@ -437,6 +440,7 @@ class UrlManagerTest extends TestCase
                     'defaults' => ['view' => 'about-me']
                 ],
                 'page/<view>' => 'site/page',
+                '' => ['profile/view', 'id' => 3426]
             ],
         ]);
         // matching pathinfo
@@ -451,6 +455,10 @@ class UrlManagerTest extends TestCase
         $request->pathInfo = 'page/other-page';
         $result = $manager->parseRequest($request);
         $this->assertEquals(['site/page', ['view' => 'other-page']], $result);
+
+        $request->pathInfo = '';
+        $result = $manager->parseRequest($request);
+        $this->assertEquals(['profile/view', ['id' => 3426]], $result);
     }
 
     public function testParseRESTRequest()
