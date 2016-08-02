@@ -22,7 +22,7 @@ class AttributeTypecastBehaviorTest extends TestCase
         }
     }
 
-    public function setUp()
+    protected function setUp()
     {
         $this->mockApplication([
             'components' => [
@@ -38,9 +38,16 @@ class AttributeTypecastBehaviorTest extends TestCase
             'name' => 'string',
             'amount' => 'integer',
             'price' => 'float',
+            'isActive' => 'boolean',
             'callback' => 'string',
         ];
         Yii::$app->getDb()->createCommand()->createTable('test_attribute_typecast', $columns)->execute();
+    }
+
+    protected function tearDown()
+    {
+        parent::tearDown();
+        AttributeTypecastBehavior::clearAutoDetectedAttributeTypes();
     }
 
     // Tests :
@@ -52,6 +59,7 @@ class AttributeTypecastBehaviorTest extends TestCase
         $model->name = 123;
         $model->amount = '58';
         $model->price = '100.8';
+        $model->isActive = 1;
         $model->callback = 'foo';
 
         $model->getAttributeTypecastBehavior()->typecastAttributes();
@@ -59,6 +67,7 @@ class AttributeTypecastBehaviorTest extends TestCase
         $this->assertSame('123', $model->name);
         $this->assertSame(58, $model->amount);
         $this->assertSame(100.8, $model->price);
+        $this->assertSame(true, $model->isActive);
         $this->assertSame('callback: foo', $model->callback);
     }
 
@@ -73,6 +82,7 @@ class AttributeTypecastBehaviorTest extends TestCase
         $model->name = null;
         $model->amount = null;
         $model->price = null;
+        $model->isActive = null;
         $model->callback = null;
 
         $model->getAttributeTypecastBehavior()->typecastAttributes();
@@ -80,6 +90,7 @@ class AttributeTypecastBehaviorTest extends TestCase
         $this->assertNull($model->name);
         $this->assertNull($model->amount);
         $this->assertNull($model->price);
+        $this->assertNull($model->isActive);
         $this->assertNull($model->callback);
 
         $model->getAttributeTypecastBehavior()->skipOnNull = false;
@@ -88,6 +99,7 @@ class AttributeTypecastBehaviorTest extends TestCase
         $this->assertSame('', $model->name);
         $this->assertSame(0, $model->amount);
         $this->assertSame(0.0, $model->price);
+        $this->assertSame(false, $model->isActive);
         $this->assertSame('callback: ', $model->callback);
     }
 
@@ -114,6 +126,22 @@ class AttributeTypecastBehaviorTest extends TestCase
         $model->refresh();
         $this->assertSame('callback: find', $model->callback);
     }
+
+    public function testAutoDetectAttributeTypes()
+    {
+        $model = new ActiveRecordAttributeTypecast();
+
+        $model->getAttributeTypecastBehavior()->attributeTypes = null;
+        $model->getAttributeTypecastBehavior()->init();
+
+        $expectedAttributeTypes = [
+            'name' => AttributeTypecastBehavior::TYPE_STRING,
+            'amount' => AttributeTypecastBehavior::TYPE_INTEGER,
+            'price' => AttributeTypecastBehavior::TYPE_FLOAT,
+            'isActive' => AttributeTypecastBehavior::TYPE_BOOLEAN,
+        ];
+        $this->assertEquals($expectedAttributeTypes, $model->getAttributeTypecastBehavior()->attributeTypes);
+    }
 }
 
 /**
@@ -123,6 +151,7 @@ class AttributeTypecastBehaviorTest extends TestCase
  * @property string $name
  * @property integer $amount
  * @property float $price
+ * @property boolean $isActive
  * @property string $callback
  *
  * @property AttributeTypecastBehavior $attributeTypecastBehavior
@@ -138,6 +167,7 @@ class ActiveRecordAttributeTypecast extends ActiveRecord
                     'name' => AttributeTypecastBehavior::TYPE_STRING,
                     'amount' => AttributeTypecastBehavior::TYPE_INTEGER,
                     'price' => AttributeTypecastBehavior::TYPE_FLOAT,
+                    'isActive' => AttributeTypecastBehavior::TYPE_BOOLEAN,
                     'callback' => function ($value) {
                         return 'callback: ' . $value;
                     },
@@ -149,6 +179,16 @@ class ActiveRecordAttributeTypecast extends ActiveRecord
     public static function tableName()
     {
         return 'test_attribute_typecast';
+    }
+
+    public function rules()
+    {
+        return [
+            ['name', 'string'],
+            ['amount', 'integer'],
+            ['price', 'number'],
+            ['isActive', 'boolean'],
+        ];
     }
 
     /**

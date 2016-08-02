@@ -10,12 +10,68 @@ namespace yii\behaviors;
 use yii\base\Behavior;
 use yii\base\InvalidParamException;
 use yii\db\BaseActiveRecord;
+use yii\validators\BooleanValidator;
+use yii\validators\NumberValidator;
+use yii\validators\StringValidator;
 
 /**
  * AttributeTypecastBehavior provides ability of automatic ActiveRecord attribute typecasting.
  * This behavior is very useful in case of usage schema-less databases like MongoDB or Redis.
+ * It may also come in handy for regular [[\yii\db\ActiveRecord]], allowing to maintain strict
+ * attribute types after model validation.
  *
  * This behavior should be attached to [[\yii\db\BaseActiveRecord]] descendant.
+ *
+ * You should specify exact attribute types via [[attributeTypes]].
+ *
+ * For example:
+ *
+ * ```php
+ * use yii\behaviors\AttributeTypecastBehavior;
+ *
+ * class Item extends \yii\db\ActiveRecord
+ * {
+ *     public function behaviors()
+ *     {
+ *         return [
+ *             'typecast' => [
+ *                 'class' => AttributeTypecastBehavior::className(),
+ *                 'attributeTypes' => [
+ *                     'amount' => AttributeTypecastBehavior::TYPE_INTEGER,
+ *                     'price' => AttributeTypecastBehavior::TYPE_FLOAT,
+ *                     'is_active' => AttributeTypecastBehavior::TYPE_BOOLEAN,
+ *                 ],
+ *                 'typecastAfterValidate' => true,
+ *                 'typecastBeforeSave' => false,
+ *                 'typecastAfterFind' => false,
+ *             ],
+ *         ];
+ *     }
+ *
+ *     // ...
+ * }
+ * ```
+ *
+ * Tip: you may left [[attributeTypes]] blank - in this case its value will be detected
+ * automatically based on owner validation rules.
+ *
+ * Attribute typecasting will be automatically performed at following cases:
+ *
+ * - after successful model validation
+ * - before model save (insert or update)
+ * - after model find (found by query or refreshed)
+ *
+ * You may disable automatic typecasting at particular case using fields [[typecastAfterValidate]],
+ * [[typecastBeforeSave]] and [[typecastAfterFind]].
+ *
+ * Note: you can manually trigger attribute typecasting at anytime invoking [[typecastAttributes]] method:
+ *
+ * ```php
+ * $model = new Item();
+ * $model->price = '38.5';
+ * $model->is_active = 1;
+ * $model->typecastAttributes();
+ * ```
  *
  * @property BaseActiveRecord $owner the owner of this behavior
  *
@@ -45,6 +101,8 @@ class AttributeTypecastBehavior extends Behavior
      *     },
      * ]
      * ```
+     *
+     * If not set attribute type map will be composed automatically from the owner validation rules.
      */
     public $attributeTypes;
     /**
@@ -74,6 +132,37 @@ class AttributeTypecastBehavior extends Behavior
      */
     public $typecastAfterFind = true;
 
+    /**
+     * @var array internal static cache for auto detected [[attributeTypes]] values
+     * in format: ownerClassName => attributeTypes
+     */
+    private static $autoDetectedAttributeTypes = [];
+
+
+    /**
+     * Clears internal static cache of auto detected [[attributeTypes]] values
+     * over all affected owner classes.
+     */
+    public static function clearAutoDetectedAttributeTypes()
+    {
+        self::$autoDetectedAttributeTypes = [];
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function init()
+    {
+        parent::init();
+
+        if ($this->attributeTypes === null) {
+            $ownerClass = get_class($this->owner);
+            if (!isset(self::$autoDetectedAttributeTypes[$ownerClass])) {
+                self::$autoDetectedAttributeTypes[$ownerClass] = $this->detectAttributeTypes();
+            }
+            $this->attributeTypes = self::$autoDetectedAttributeTypes[$ownerClass];
+        }
+    }
 
     /**
      * Typecast owner attributes according to [[attributeTypes]].
@@ -133,6 +222,32 @@ class AttributeTypecastBehavior extends Behavior
         }
 
         return call_user_func($type,  $value);
+    }
+
+    /**
+     * Composes default value for [[attributeTypes]] from the owner validation rules.
+     * @return array attribute type map.
+     */
+    protected function detectAttributeTypes()
+    {
+        $attributeTypes = [];
+        foreach ($this->owner->getValidators() as $validator) {
+            $type = null;
+            if ($validator instanceof BooleanValidator) {
+                $type = self::TYPE_BOOLEAN;
+            } elseif ($validator instanceof NumberValidator) {
+                $type = $validator->integerOnly ? self::TYPE_INTEGER : self::TYPE_FLOAT;
+            } elseif ($validator instanceof StringValidator) {
+                $type = self::TYPE_STRING;
+            }
+
+            if ($type !== null) {
+                foreach ((array)$validator->attributes as $attribute) {
+                    $attributeTypes[$attribute] = $type;
+                }
+            }
+        }
+        return $attributeTypes;
     }
 
     /**
