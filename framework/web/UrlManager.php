@@ -204,7 +204,6 @@ class UrlManager extends Component
         $verbs = 'GET|HEAD|POST|PUT|PATCH|DELETE|OPTIONS';
         foreach ($rules as $key => $rule) {
             if (is_string($rule) || (is_array($rule) && isset($rule[0]))) {
-                $rule = (array) $rule;
                 if(is_string($rule)){
                     $rule = ['route' => $rule];
                 } else {
