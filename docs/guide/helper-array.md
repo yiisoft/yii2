@@ -303,21 +303,68 @@ Encoding will use application charset and could be changed via third argument.
 
 ## Merging Arrays <span id="merging-arrays"></span>
 
+You can use [[yii\helpers\ArrayHelper::merge()|ArrayHelper::merge()]] to merge two or more arrays into one recursively.
+If each array has an element with the same string key value, the latter will overwrite the former
+(different from [array_merge_recursive()](http://php.net/manual/en/function.array-merge-recursive.php)).
+Recursive merging will be conducted if both arrays have an element of array type and are having the same key.
+For integer-keyed elements, the elements from the latter array will be appended to the former array.
+You can use [[yii\helpers\UnsetArrayValue]] object to unset value from previous array or
+[[yii\helpers\ReplaceArrayValue]] to force replace former value instead of recursive merging.
+
+For example:
+
 ```php
-  /**
-    * Merges two or more arrays into one recursively.
-    * If each array has an element with the same string key value, the latter
-    * will overwrite the former (different from array_merge_recursive).
-    * Recursive merging will be conducted if both arrays have an element of array
-    * type and are having the same key.
-    * For integer-keyed elements, the elements from the latter array will
-    * be appended to the former array.
-    * @param array $a array to be merged to
-    * @param array $b array to be merged from. You can specify additional
-    * arrays via third argument, fourth argument etc.
-    * @return array the merged array (the original arrays are not changed.)
-    */
-    public static function merge($a, $b)
+$array1 = [
+    'name' => 'Yii',
+    'version' => '1.1',
+    'ids' => [
+        1,
+    ],
+    'validDomains' => [
+        'example.com',
+        'www.example.com',
+    ],
+    'emails' => [
+        'admin' => 'admin@example.com',
+        'dev' => 'dev@example.com',
+    ],
+];
+
+$array2 = [
+    'version' => '2.0',
+    'ids' => [
+        2,
+    ],
+    'validDomains' => new \yii\helpers\ReplaceArrayValue([
+        'yiiframework.com',
+        'www.yiiframework.com',
+    ]),
+    'emails' => [
+        'dev' => new \yii\helpers\UnsetArrayValue(),
+    ],
+];
+
+$result = ArrayHelper::merge($array1, $array2);
+```
+
+The result will be:
+
+```php
+[
+    'name' => 'Yii',
+    'version' => '2.0',
+    'ids' => [
+        1,
+        2,
+    ],
+    'validDomains' => [
+        'yiiframework.com',
+        'www.yiiframework.com',
+    ],
+    'emails' => [
+        'admin' => 'admin@example.com',
+    ],
+]
 ```
 
 

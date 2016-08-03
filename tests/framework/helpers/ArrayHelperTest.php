@@ -307,6 +307,79 @@ class ArrayHelperTest extends TestCase
         $this->assertEquals($expected, $result);
     }
 
+    public function testMergeWithUnset()
+    {
+        $a = [
+            'name' => 'Yii',
+            'version' => '1.0',
+            'options' => [
+                'namespace' => false,
+                'unittest' => false,
+            ],
+            'features' => [
+                'mvc',
+            ],
+        ];
+        $b = [
+            'version' => '1.1',
+            'options' => new \yii\helpers\UnsetArrayValue(),
+            'features' => [
+                'gii',
+            ],
+        ];
+
+        $result = ArrayHelper::merge($a, $b);
+        $expected = [
+            'name' => 'Yii',
+            'version' => '1.1',
+            'features' => [
+                'mvc',
+                'gii',
+            ],
+        ];
+
+        $this->assertEquals($expected, $result);
+    }
+
+    public function testMergeWithReplace()
+    {
+        $a = [
+            'name' => 'Yii',
+            'version' => '1.0',
+            'options' => [
+                'namespace' => false,
+                'unittest' => false,
+            ],
+            'features' => [
+                'mvc',
+            ],
+        ];
+        $b = [
+            'version' => '1.1',
+            'options' => [
+                'unittest' => true,
+            ],
+            'features' => new \yii\helpers\ReplaceArrayValue([
+                'gii',
+            ]),
+        ];
+
+        $result = ArrayHelper::merge($a, $b);
+        $expected = [
+            'name' => 'Yii',
+            'version' => '1.1',
+            'options' => [
+                'namespace' => false,
+                'unittest' => true,
+            ],
+            'features' => [
+                'gii',
+            ],
+        ];
+
+        $this->assertEquals($expected, $result);
+    }
+
     /**
      * @see https://github.com/yiisoft/yii2/pull/11549
      */
