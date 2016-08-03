@@ -22,7 +22,7 @@ class QueryBuilderTest extends \yiiunit\framework\db\QueryBuilderTest
         	[
         	    Schema::TYPE_PK . ' AFTER `col_before`',
         	    $this->primaryKey()->after('col_before'),
-        	    'int(11) NOT NULL AUTO_INCREMENT PRIMARY KEY AFTER `col_before`'
+        	    'int(10) NOT NULL AUTO_INCREMENT PRIMARY KEY AFTER `col_before`'
         	],
         	[
         	    Schema::TYPE_PK . ' FIRST',
