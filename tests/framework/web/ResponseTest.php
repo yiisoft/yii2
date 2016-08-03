@@ -98,7 +98,7 @@ class ResponseTest extends \yiiunit\TestCase
         static::assertEquals(200, $this->response->statusCode);
         $headers = $this->response->headers;
         static::assertEquals('application/octet-stream', $headers->get('Content-Type'));
-        static::assertEquals('attachment; filename="test.txt"', $headers->get('Content-Disposition'));
+        static::assertEquals('attachment; filename="test.txt"; filename*=utf-8\'\'test.txt', $headers->get('Content-Disposition'));
         static::assertEquals(4, $headers->get('Content-Length'));
     }
 }

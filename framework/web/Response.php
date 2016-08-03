@@ -438,6 +438,7 @@ class Response extends \yii\base\Response
         }
         if ($attachmentName === null) {
             $attachmentName = basename($filePath);
+            $this->headers->setDefault('Content-Disposition', "attachment; filename=\"$attachmentName\"");
         }
         $handle = fopen($filePath, 'rb');
         $this->sendStreamAsFile($handle, $attachmentName, $options);
@@ -563,7 +564,7 @@ class Response extends \yii\base\Response
             ->setDefault('Accept-Ranges', 'bytes')
             ->setDefault('Expires', '0')
             ->setDefault('Cache-Control', 'must-revalidate, post-check=0, pre-check=0')
-            ->setDefault('Content-Disposition', "$disposition; filename=\"$attachmentName\"");
+            ->setDefault('Content-Disposition', "$disposition; filename=\"$attachmentName\"; filename*=utf-8''" . rawurlencode($attachmentName));
 
         if ($mimeType !== null) {
             $headers->setDefault('Content-Type', $mimeType);
