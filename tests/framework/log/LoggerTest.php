@@ -18,9 +18,15 @@ class LoggerTest extends TestCase
      */
     protected $logger;
 
+    /**
+     * @var Dispatcher
+     */
+    protected $dispatcher;
+
     protected function setUp()
     {
         $this->logger = new Logger();
+        $this->dispatcher = $this->getMock('yii\\log\\Dispatcher', ['dispatch']);
     }
 
     /**
@@ -56,7 +62,7 @@ class LoggerTest extends TestCase
         $this->assertEquals('application', $this->logger->messages[0][2]);
         $this->assertEquals([
             'file' => __FILE__,
-            'line' => 52,
+            'line' => 58,
             'function' => 'log',
             'class' => get_class($this->logger),
             'type' => '->'
@@ -73,5 +79,49 @@ class LoggerTest extends TestCase
         $logger->flushInterval = 1;
         $logger->expects($this->exactly(1))->method('flush');
         $logger->log('test1', Logger::LEVEL_INFO);
+    }
+
+    /**
+     * @covers yii\log\Logger::Flush()
+     */
+    public function testFlushWithoutDispatcher()
+    {
+        $dispatcher = $this->getMock('\stdClass');
+        $dispatcher->expects($this->never())->method($this->anything());
+
+        $this->logger->messages = ['anything'];
+        $this->logger->dispatcher = $dispatcher;
+        $this->logger->flush();
+        $this->assertEmpty($this->logger->messages);
+    }
+
+    /**
+     * @covers yii\log\Logger::Flush()
+     */
+    public function testFlushWithDispatcherAndDefaultParam()
+    {
+        $message = ['anything'];
+        $this->dispatcher->expects($this->once())
+            ->method('dispatch')->with($this->equalTo($message), $this->equalTo(false));
+
+        $this->logger->messages = $message;
+        $this->logger->dispatcher = $this->dispatcher;
+        $this->logger->flush();
+        $this->assertEmpty($this->logger->messages);
+    }
+
+    /**
+     * @covers yii\log\Logger::Flush()
+     */
+    public function testFlushWithDispatcherAndDefinedParam()
+    {
+        $message = ['anything'];
+        $this->dispatcher->expects($this->once())
+            ->method('dispatch')->with($this->equalTo($message), $this->equalTo(true));
+
+        $this->logger->messages = $message;
+        $this->logger->dispatcher = $this->dispatcher;
+        $this->logger->flush(true);
+        $this->assertEmpty($this->logger->messages);
     }
 }
