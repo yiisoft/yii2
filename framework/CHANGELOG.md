@@ -20,6 +20,7 @@ Yii Framework 2 Change Log
 - Enh #12048: Improved message extraction command performance (samdark)
 - Enh #12038: Introduced `yii\base\ViewNotFoundException` which is thrown when views file doesn't exists, used it in `ViewAction` (samdark)
 - Enh #11979: Added `yii\mutex\OracleMutex` which implements mutex "lock" mechanism via Oracle locks (zlakomanoff)
+- Enh #12082: Used `jQuery.on(` instead of event method to ensure forwards compatibility (newerton)
 
 
 2.0.9 July 11, 2016
