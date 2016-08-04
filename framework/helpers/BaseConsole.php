@@ -613,14 +613,14 @@ class BaseConsole
         if (static::isRunningOnWindows()) {
             $output = [];
             exec('mode con', $output);
-            if (isset($output, $output[1]) && strpos($output[1], 'CON') !== false) {
-                return $size = [(int) preg_replace('~\D~', '', $output[3]), (int) preg_replace('~\D~', '', $output[4])];
+            if (isset($output, $output[1]) && preg_match('/con:.*lines:\s+(\d+)\s+columns:\s+(\d+)/mi', implode(' ', $output), $matches)) {
+                return $size = [(int)$matches[2], (int)$matches[1]];
             }
         } else {
             // try stty if available
             $stty = [];
             if (exec('stty -a 2>&1', $stty) && preg_match('/rows\s+(\d+);\s*columns\s+(\d+);/mi', implode(' ', $stty), $matches)) {
-                return $size = [$matches[2], $matches[1]];
+                return $size = [(int)$matches[2], (int)$matches[1]];
             }
 
             // fallback to tput, which may not be updated on terminal resize
