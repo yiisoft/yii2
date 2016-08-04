@@ -22,6 +22,7 @@ Yii Framework 2 Change Log
 - Enh #11979: Added `yii\mutex\OracleMutex` which implements mutex "lock" mechanism via Oracle locks (zlakomanoff)
 - Enh #12082: Used `jQuery.on(` instead of event method to ensure forwards compatibility (newerton)
 - Enh #12028: Add -h|--help option to console command to display help information (pana1990)
+- Bug #12053: `./yii migrate/create` was generating wrong code when using `bigPrimaryKey` (VojtechH, samdark)
 
 2.0.9 July 11, 2016
 -------------------
