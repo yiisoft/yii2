@@ -13,6 +13,7 @@ Yii Framework 2 Change Log
 - Enh #11950: Improve BaseArrayHelper::keyExists speed (egorio)
 - Bug #11726: `DbSession` was echoing database errors in production mode (samdark, pastuhov, deadkrolik)
 - Bug #12030: Fixed `yii\base\Model::offsetExists()` throws an exception on un-existing field (klimov-paul)
+- Enh #12028: Add -h|--help option to console command to display help information (pana1990)
 - Bug #12037: Fixed 2.0.7 regression in memcahe/memcached cache backend (samdark)
 - Bug #12043: Fixed `yii\helpers\Json::encode()` encodes empty array returned by `JsonSerializable::jsonSerialize()` as object (klimov-paul)
 - Bug #12045: Added missing `LEVEL_PROFILE` to `yii\log\Logger::getLevelName()` map (Mak-Di)
