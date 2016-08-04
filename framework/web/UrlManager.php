@@ -82,6 +82,7 @@ class UrlManager extends Component
      * ```php
      * [
      *     'dashboard' => 'site/index',
+     *     'about' => ['site/page', 'view' => 'about'],
      *
      *     'POST <controller:[\w-]+>s' => '<controller>/create',
      *     '<controller:[\w-]+>s' => '<controller>/index',
@@ -202,8 +203,16 @@ class UrlManager extends Component
         $compiledRules = [];
         $verbs = 'GET|HEAD|POST|PUT|PATCH|DELETE|OPTIONS';
         foreach ($rules as $key => $rule) {
-            if (is_string($rule)) {
-                $rule = ['route' => $rule];
+            if (is_string($rule) || (is_array($rule) && isset($rule[0]))) {
+                if(is_string($rule)){
+                    $rule = ['route' => $rule];
+                } else {
+                    $rule = [
+                        'route' => $rule[0],
+                        'defaults' => array_slice($rule, 1),
+                    ];
+                }
+                
                 if (preg_match("/^((?:($verbs),)*($verbs))\\s+(.*)$/", $key, $matches)) {
                     $rule['verb'] = explode(',', $matches[1]);
                     // rules that do not apply for GET requests should not be use to create urls

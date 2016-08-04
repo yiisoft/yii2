@@ -167,6 +167,32 @@ class UrlManagerTest extends TestCase
         $this->assertEquals('/test/page/services', $url);
         $url = $manager->createUrl(['frontend/page/view', 'slug' => 'index']);
         $this->assertEquals('/test/', $url);
+
+        // create url with simple params/defaults
+        $manager = new UrlManager([
+            'enablePrettyUrl' => true,
+            'cache' => null,
+            'rules' => [
+                'about' => ['site/page', 'view' => 'about'],
+                [
+                    'pattern' => 'tentang-aku',
+                    'route' => 'site/page',
+                    'defaults' => ['view' => 'about-me']
+                ],
+                'page/<view>' => 'site/page',
+                '' => ['profile/view', 'id' => 3426]
+            ],
+            'baseUrl' => '/test',
+            'scriptUrl' => '/test',
+        ]);
+        $url = $manager->createUrl(['site/page', 'view' => 'about']);
+        $this->assertEquals('/test/about', $url);
+        $url = $manager->createUrl(['site/page', 'view' => 'about-me']);
+        $this->assertEquals('/test/tentang-aku', $url);
+        $url = $manager->createUrl(['site/page', 'view' => 'other-page']);
+        $this->assertEquals('/test/page/other-page', $url);
+        $url = $manager->createUrl(['profile/view', 'id' => 3426]);
+        $this->assertEquals('/test/', $url);
     }
 
     /**
@@ -400,6 +426,39 @@ class UrlManagerTest extends TestCase
         $request->pathInfo = 'site/index.html';
         $result = $manager->parseRequest($request);
         $this->assertFalse($result);
+
+
+        // url with simple defaults/params
+        $manager = new UrlManager([
+            'enablePrettyUrl' => true,
+            'cache' => null,
+            'rules' => [
+                'about' => ['site/page', 'view' => 'about'],
+                [
+                    'pattern' => 'tentang-aku',
+                    'route' => 'site/page',
+                    'defaults' => ['view' => 'about-me']
+                ],
+                'page/<view>' => 'site/page',
+                '' => ['profile/view', 'id' => 3426]
+            ],
+        ]);
+        // matching pathinfo
+        $request->pathInfo = 'about';
+        $result = $manager->parseRequest($request);
+        $this->assertEquals(['site/page', ['view' => 'about']], $result);
+
+        $request->pathInfo = 'tentang-aku';
+        $result = $manager->parseRequest($request);
+        $this->assertEquals(['site/page', ['view' => 'about-me']], $result);
+
+        $request->pathInfo = 'page/other-page';
+        $result = $manager->parseRequest($request);
+        $this->assertEquals(['site/page', ['view' => 'other-page']], $result);
+
+        $request->pathInfo = '';
+        $result = $manager->parseRequest($request);
+        $this->assertEquals(['profile/view', ['id' => 3426]], $result);
     }
 
     public function testParseRESTRequest()
