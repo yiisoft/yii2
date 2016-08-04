@@ -15,8 +15,8 @@ use yii\validators\NumberValidator;
 use yii\validators\StringValidator;
 
 /**
- * AttributeTypecastBehavior provides ability of automatic ActiveRecord attribute typecasting.
- * This behavior is very useful in case of usage schema-less databases like MongoDB or Redis.
+ * AttributeTypecastBehavior provides an ability of automatic ActiveRecord attribute typecasting.
+ * This behavior is very useful in case of usage of the schema-less databases like MongoDB or Redis.
  * It may also come in handy for regular [[\yii\db\ActiveRecord]], allowing to maintain strict
  * attribute types after model validation.
  *
@@ -54,6 +54,36 @@ use yii\validators\StringValidator;
  *
  * Tip: you may left [[attributeTypes]] blank - in this case its value will be detected
  * automatically based on owner validation rules.
+ * Following example will automatically create same [[attributeTypes]] value as it was configured at the above one:
+ *
+ * ```php
+ * use yii\behaviors\AttributeTypecastBehavior;
+ *
+ * class Item extends \yii\db\ActiveRecord
+ * {
+ *
+ *     public function rules()
+ *     {
+ *         return [
+ *             ['amount', 'integer'],
+ *             ['price', 'number'],
+ *             ['is_active', 'boolean'],
+ *         ];
+ *     }
+ *
+ *     public function behaviors()
+ *     {
+ *         return [
+ *             'typecast' => [
+ *                 'class' => AttributeTypecastBehavior::className(),
+ *                 // 'attributeTypes' will be composed automatically according to `rules()`
+ *             ],
+ *         ];
+ *     }
+ *
+ *     // ...
+ * }
+ * ```
  *
  * Attribute typecasting will be automatically performed at following cases:
  *
@@ -61,10 +91,10 @@ use yii\validators\StringValidator;
  * - before model save (insert or update)
  * - after model find (found by query or refreshed)
  *
- * You may disable automatic typecasting at particular case using fields [[typecastAfterValidate]],
+ * You may disable automatic typecasting for particular case using fields [[typecastAfterValidate]],
  * [[typecastBeforeSave]] and [[typecastAfterFind]].
  *
- * Note: you can manually trigger attribute typecasting at anytime invoking [[typecastAttributes]] method:
+ * Note: you can manually trigger attribute typecasting anytime invoking [[typecastAttributes()]] method:
  *
  * ```php
  * $model = new Item();
@@ -102,12 +132,13 @@ class AttributeTypecastBehavior extends Behavior
      * ]
      * ```
      *
-     * If not set attribute type map will be composed automatically from the owner validation rules.
+     * If not set, attribute type map will be composed automatically from the owner validation rules.
      */
     public $attributeTypes;
     /**
-     * @var boolean whether to skip typecasting on `null` values.
-     * If enabled any attribute, which value equals to `null` will not be processed.
+     * @var boolean whether to skip typecasting of `null` values.
+     * If enabled attribute value which equals to `null` will not be type-casted (e.g. `null` remains `null`),
+     * otherwise it will be converted according to the type configured at [[attributeTypes]].
      */
     public $skipOnNull = true;
     /**
@@ -166,7 +197,7 @@ class AttributeTypecastBehavior extends Behavior
 
     /**
      * Typecast owner attributes according to [[attributeTypes]].
-     * @param null $attributeNames list of attribute names that should be type-casted.
+     * @param array $attributeNames list of attribute names that should be type-casted.
      * If this parameter is empty, it means any attribute listed in the [[attributeTypes]]
      * should be type-casted.
      */
@@ -221,7 +252,7 @@ class AttributeTypecastBehavior extends Behavior
             }
         }
 
-        return call_user_func($type,  $value);
+        return call_user_func($type, $value);
     }
 
     /**
