@@ -85,7 +85,7 @@ response format names which must be supported in [[yii\web\Response::formatters]
 ## Data Serializing <span id="data-serializing"></span>
 
 As we have described above, [[yii\rest\Serializer]] is the central piece responsible for converting resource
-objects or collections into arrays. It recognizes objects implementing [[yii\base\ArrayableInterface]] as
+objects or collections into arrays. It recognizes objects implementing [[yii\base\Arrayable]] as
 well as [[yii\data\DataProviderInterface]]. The former is mainly implemented by resource objects, while
 the latter resource collections.
 
