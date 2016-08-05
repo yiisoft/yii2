@@ -172,6 +172,9 @@ class ActiveRecordAttributeTypecast extends ActiveRecord
                         return 'callback: ' . $value;
                     },
                 ],
+                'typecastAfterValidate' => true,
+                'typecastBeforeSave' => true,
+                'typecastAfterFind' => true,
             ],
         ];
     }

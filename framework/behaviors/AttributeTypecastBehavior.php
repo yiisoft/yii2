@@ -9,18 +9,19 @@ namespace yii\behaviors;
 
 use yii\base\Behavior;
 use yii\base\InvalidParamException;
+use yii\base\Model;
 use yii\db\BaseActiveRecord;
 use yii\validators\BooleanValidator;
 use yii\validators\NumberValidator;
 use yii\validators\StringValidator;
 
 /**
- * AttributeTypecastBehavior provides an ability of automatic ActiveRecord attribute typecasting.
- * This behavior is very useful in case of usage of the schema-less databases like MongoDB or Redis.
- * It may also come in handy for regular [[\yii\db\ActiveRecord]], allowing to maintain strict
- * attribute types after model validation.
+ * AttributeTypecastBehavior provides an ability of automatic model attribute typecasting.
+ * This behavior is very useful in case of usage of ActiveRecord for the schema-less databases like MongoDB or Redis.
+ * It may also come in handy for regular [[\yii\db\ActiveRecord]] or even [[\yii\base\Model]], allowing to maintain
+ * strict attribute types after model validation.
  *
- * This behavior should be attached to [[\yii\db\BaseActiveRecord]] descendant.
+ * This behavior should be attached to [[\yii\base\Model]] or [[\yii\db\BaseActiveRecord]] descendant.
  *
  * You should specify exact attribute types via [[attributeTypes]].
  *
@@ -85,14 +86,15 @@ use yii\validators\StringValidator;
  * }
  * ```
  *
- * Attribute typecasting will be automatically performed at following cases:
+ * This behavior allows automatic attribute typecasting at following cases:
  *
  * - after successful model validation
  * - before model save (insert or update)
  * - after model find (found by query or refreshed)
  *
- * You may disable automatic typecasting for particular case using fields [[typecastAfterValidate]],
+ * You may control automatic typecasting for particular case using fields [[typecastAfterValidate]],
  * [[typecastBeforeSave]] and [[typecastAfterFind]].
+ * By default typecasting will be performed only after model validation.
  *
  * Note: you can manually trigger attribute typecasting anytime invoking [[typecastAttributes()]] method:
  *
@@ -103,7 +105,7 @@ use yii\validators\StringValidator;
  * $model->typecastAttributes();
  * ```
  *
- * @property BaseActiveRecord $owner the owner of this behavior
+ * @property Model|BaseActiveRecord $owner the owner of this behavior.
  *
  * @author Paul Klimov <klimov.paul@gmail.com>
  * @since 2.0.10
@@ -145,6 +147,7 @@ class AttributeTypecastBehavior extends Behavior
      * @var boolean whether to perform typecasting after owner model validation.
      * Note that typecasting will be performed only if validation was successful, e.g.
      * owner model has no errors.
+     * Note that changing this option value will have no effect after this behavior has been attached to the model.
      */
     public $typecastAfterValidate = true;
     /**
@@ -152,16 +155,18 @@ class AttributeTypecastBehavior extends Behavior
      * This option may be disabled in order to achieve better performance.
      * For example, in case of [[\yii\db\ActiveRecord]] usage, typecasting before save
      * will grant no benefit an thus can be disabled.
+     * Note that changing this option value will have no effect after this behavior has been attached to the model.
      */
-    public $typecastBeforeSave = true;
+    public $typecastBeforeSave = false;
     /**
      * @var boolean whether to perform typecasting after retrieving owner model data from
      * the database (after find or refresh).
      * This option may be disabled in order to achieve better performance.
      * For example, in case of [[\yii\db\ActiveRecord]] usage, typecasting after find
      * will grant no benefit in most cases an thus can be disabled.
+     * Note that changing this option value will have no effect after this behavior has been attached to the model.
      */
-    public $typecastAfterFind = true;
+    public $typecastAfterFind = false;
 
     /**
      * @var array internal static cache for auto detected [[attributeTypes]] values
@@ -286,12 +291,20 @@ class AttributeTypecastBehavior extends Behavior
      */
     public function events()
     {
-        return [
-            BaseActiveRecord::EVENT_AFTER_VALIDATE => 'afterValidate',
-            BaseActiveRecord::EVENT_BEFORE_INSERT => 'beforeSave',
-            BaseActiveRecord::EVENT_BEFORE_UPDATE => 'beforeSave',
-            BaseActiveRecord::EVENT_AFTER_FIND => 'afterFind',
-        ];
+        $events = [];
+
+        if ($this->typecastAfterValidate) {
+            $events[Model::EVENT_AFTER_VALIDATE] = 'afterValidate';
+        }
+        if ($this->typecastBeforeSave) {
+            $events[BaseActiveRecord::EVENT_BEFORE_INSERT] = 'beforeSave';
+            $events[BaseActiveRecord::EVENT_BEFORE_UPDATE] = 'beforeSave';
+        }
+        if ($this->typecastAfterFind) {
+            $events[BaseActiveRecord::EVENT_AFTER_FIND] = 'afterFind';
+        }
+
+        return $events;
     }
 
     /**
@@ -300,7 +313,7 @@ class AttributeTypecastBehavior extends Behavior
      */
     public function afterValidate($event)
     {
-        if ($this->typecastAfterValidate && !$this->owner->hasErrors()) {
+        if (!$this->owner->hasErrors()) {
             $this->typecastAttributes();
         }
     }
@@ -311,9 +324,7 @@ class AttributeTypecastBehavior extends Behavior
      */
     public function beforeSave($event)
     {
-        if ($this->typecastBeforeSave) {
-            $this->typecastAttributes();
-        }
+        $this->typecastAttributes();
     }
 
     /**
@@ -322,8 +333,6 @@ class AttributeTypecastBehavior extends Behavior
      */
     public function afterFind($event)
     {
-        if ($this->typecastAfterFind) {
-            $this->typecastAttributes();
-        }
+        $this->typecastAttributes();
     }
 }
