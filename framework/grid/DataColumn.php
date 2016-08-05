@@ -106,9 +106,11 @@ class DataColumn extends Column
      * @var array the HTML attributes for the filter input fields. This property is used in combination with
      * the [[filter]] property. When [[filter]] is not set or is an array, this property will be used to
      * render the HTML attributes for the generated filter input fields.
+     * By default a `'class' => 'form-control'` element will be added if no class has been specified.
+     * If you do not want to create a class attribute, you can specify `['class' => null]`.
      * @see \yii\helpers\Html::renderTagAttributes() for details on how attributes are being rendered.
      */
-    public $filterInputOptions = ['class' => 'form-control', 'id' => null];
+    public $filterInputOptions = [];
 
 
     /**
@@ -186,17 +188,19 @@ class DataColumn extends Column
             } else {
                 $error = '';
             }
+
+            $filterOptions = array_merge(['class' => 'form-control', 'id' => null], $this->filterInputOptions);
             if (is_array($this->filter)) {
-                $options = array_merge(['prompt' => ''], $this->filterInputOptions);
+                $options = array_merge(['prompt' => ''], $filterOptions);
                 return Html::activeDropDownList($model, $this->attribute, $this->filter, $options) . $error;
             } elseif ($this->format === 'boolean') {
-                $options = array_merge(['prompt' => ''], $this->filterInputOptions);
+                $options = array_merge(['prompt' => ''], $filterOptions);
                 return Html::activeDropDownList($model, $this->attribute, [
                     $this->grid->formatter->booleanFormat[0],
                     $this->grid->formatter->booleanFormat[1],
                 ], $options) . $error;
             } else {
-                return Html::activeTextInput($model, $this->attribute, $this->filterInputOptions) . $error;
+                return Html::activeTextInput($model, $this->attribute, $filterOptions) . $error;
             }
         } else {
             return parent::renderFilterCellContent();

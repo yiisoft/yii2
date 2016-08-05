@@ -19,6 +19,8 @@ Yii Framework 2 Change Log
 - Chg #13080: Rename `yii\base\InvalidParamException` to `yii\base\InvalidArgumentException` (arogachev)
 - Enh #2990: `yii\widgets\ActiveField::hiddenInput()` no longer renders label by default (lennartvdd)
 - Chg: Moved masked input field widget into separate extension https://github.com/yiisoft/yii2-maskedinput (samdark)
+- Chg #12089: Behavior of `yii\grid\DataColumn::$filterInputOptions` changed when default value is overwritten (bvanleeuwen, cebe)
+
 
 2.0.11 under development
 2.0.12 under development
