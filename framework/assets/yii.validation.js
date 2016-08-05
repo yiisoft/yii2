@@ -383,7 +383,7 @@ yii.validation = (function ($) {
             return [];
         }
 
-        var files = $(attribute.input).get(0).files;
+        var files = $(attribute.input, attribute.$form).get(0).files;
         if (!files) {
             messages.push(options.message);
             return [];
