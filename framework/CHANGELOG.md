@@ -17,6 +17,7 @@ Yii Framework 2 Change Log
 - Bug #12043: Fixed `yii\helpers\Json::encode()` encodes empty array returned by `JsonSerializable::jsonSerialize()` as object (klimov-paul)
 - Bug #12045: Added missing `LEVEL_PROFILE` to `yii\log\Logger::getLevelName()` map (Mak-Di)
 - Enh #10583: Do not silence session errors in debug mode (samdark)
+- Enh #11804: Added `yii\behaviors\AttributeTypecastBehavior` for maintaining of strict ActiveRecord attribute types (klimov-paul)
 - Enh #12048: Improved message extraction command performance (samdark)
 - Enh #12038: Introduced `yii\base\ViewNotFoundException` which is thrown when views file doesn't exists, used it in `ViewAction` (samdark)
 - Enh #11979: Added `yii\mutex\OracleMutex` which implements mutex "lock" mechanism via Oracle locks (zlakomanoff)
