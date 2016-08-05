@@ -17,6 +17,7 @@ Yii Framework 2 Change Log
 - Bug #12043: Fixed `yii\helpers\Json::encode()` encodes empty array returned by `JsonSerializable::jsonSerialize()` as object (klimov-paul)
 - Bug #12045: Added missing `LEVEL_PROFILE` to `yii\log\Logger::getLevelName()` map (Mak-Di)
 - Bug #10681: Reverted fix of beforeValidate event calling in `yii.activeForm.js` (silverfire)
+- Bug #11715: Fixed JS validation when the same model's attribute file input is listed more than once on the same page (uaoleg)
 - Enh #10583: Do not silence session errors in debug mode (samdark)
 - Enh #11804: Added `yii\behaviors\AttributeTypecastBehavior` for maintaining of strict ActiveRecord attribute types (klimov-paul)
 - Enh #12048: Improved message extraction command performance (samdark)
