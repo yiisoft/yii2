@@ -39,6 +39,10 @@ use Yii;
  * [[basePath]].
  * @property View|\yii\web\View $view The view application component that is used to render various view
  * files. This property is read-only.
+ * @property string $name the application name.
+ * @property string $charset the charset currently used for the application
+ * @property string $language the language currently used for the application
+ * @property string $sourceLanguage the language that the application is written in
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
@@ -91,30 +95,9 @@ abstract class Application extends Module
      */
     public $controllerNamespace = 'app\\controllers';
     /**
-     * @var string the application name.
-     */
-    public $name = 'My Application';
-    /**
      * @var string the version of this application.
      */
     public $version = '1.0';
-    /**
-     * @var string the charset currently used for the application.
-     */
-    public $charset = 'UTF-8';
-    /**
-     * @var string the language that is meant to be used for end users. It is recommended that you
-     * use [IETF language tags](http://en.wikipedia.org/wiki/IETF_language_tag). For example, `en` stands
-     * for English, while `en-US` stands for English (United States).
-     * @see sourceLanguage
-     */
-    public $language = 'en-US';
-    /**
-     * @var string the language that the application is written in. This mainly refers to
-     * the language that the messages and view files are written in.
-     * @see language
-     */
-    public $sourceLanguage = 'en-US';
     /**
      * @var Controller the currently active controller instance
      */
@@ -185,7 +168,27 @@ abstract class Application extends Module
      */
     public $loadedModules = [];
 
-
+    /**
+     * @var string the application name.
+     */
+    protected $_name = 'My Application';
+    /**
+     * @var string the charset currently used for the application.
+     */
+    protected $_charset = 'UTF-8';
+    /**
+     * @var string the language that is meant to be used for end users. It is recommended that you
+     * use [IETF language tags](http://en.wikipedia.org/wiki/IETF_language_tag). For example, `en` stands
+     * for English, while `en-US` stands for English (United States).
+     * @see sourceLanguage
+     */
+    protected $_language = 'en-US';
+    /**
+     * @var string the language that the application is written in. This mainly refers to
+     * the language that the messages and view files are written in.
+     * @see language
+     */
+    protected $_sourceLanguage = 'en-US';
     /**
      * Constructor.
      * @param array $config name-value pairs that will be used to initialize the object properties.
@@ -357,6 +360,78 @@ abstract class Application extends Module
     {
         parent::setBasePath($path);
         Yii::setAlias('@app', $this->getBasePath());
+    }
+
+    /**
+     * gets the application name
+     * @return string the application nam
+     */
+    public function getName()
+    {
+        return $this->_name;
+    }
+
+    /**
+     * sets application name
+     * @param string $name the application name that needs to be set
+     */
+    public function setName($name)
+    {
+        $this->_name = $name;
+    }
+
+    /**
+     * get the application charset
+     * @return string the application charset
+     */
+    public function getCharset()
+    {
+        return $this->_charset;
+    }
+
+    /**
+     * sets the application charset
+     * @param string $charset the charset that needs to be set
+     */
+    public function setCharset($charset)
+    {
+        $this->_charset = $charset;
+    }
+
+    /**
+     * gets the application source language
+     * @return string the application source language
+     */
+    public function getSourceLanguage()
+    {
+        return $this->_sourceLanguage;
+    }
+
+    /**
+     * sets the source language
+     * @param string $language the application source language that needs to be set
+     */
+    public function setSourceLanguage($language)
+    {
+        $this->_sourceLanguage = $language;
+    }
+
+    /**
+     * gets the application language
+     * @return string the application language
+     */
+    public function getLanguage()
+    {
+        return $this->_language;
+    }
+
+    /**
+     * sets application language
+     * @param string $language the application lnaguage thatneeds to be set
+     */
+    public function setLanguage($language)
+    {
+        $this->_language = $language;
     }
 
     /**
