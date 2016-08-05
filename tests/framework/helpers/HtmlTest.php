@@ -949,11 +949,27 @@ EOD;
         $noCsrfForm = Html::beginForm('/index.php', 'post', ['csrf' => false, 'id' => 'myform']);
         $this->assertEquals('<form id="myform" action="/index.php" method="post">', $noCsrfForm);
     }
+
+    public function testGetAttributeValue()
+    {
+        $model = new HtmlTestModel();
+        $model->types = ['type1', 'type2', ['sub-array', 'sub-array2']];
+
+        $this->assertEquals($model->types, Html::getAttributeValue($model, 'types'));
+        $this->assertEquals($model->types, Html::getAttributeValue($model, 'types[]'));
+        $this->assertEquals('type1', Html::getAttributeValue($model, 'types[0]'));
+        $this->assertEquals('type2', Html::getAttributeValue($model, 'types[1]'));
+        $this->assertEquals('type2', Html::getAttributeValue($model, 'types[1][]'));
+        $this->assertEquals(['sub-array', 'sub-array2'], Html::getAttributeValue($model, 'types[2][]'));
+        $this->assertEquals('sub-array2', Html::getAttributeValue($model, 'types[2][1]'));
+        $this->assertEquals(null, Html::getAttributeValue($model, 'types[3]'));
+    }
 }
 
 class HtmlTestModel extends Model
 {
     public $name;
+    public $types;
     public $description;
 
     public function rules()

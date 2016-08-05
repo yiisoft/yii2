@@ -26,6 +26,7 @@ Yii Framework 2 Change Log
 - Enh #12028: Add -h|--help option to console command to display help information (pana1990)
 - Bug #12053: `./yii migrate/create` was generating wrong code when using `bigPrimaryKey` (VojtechH, samdark)
 - Bug #11907: Fixed `yii\helpers\Console::getScreenSize()` on Windows was giving out width and height swapped (Spell6inder, samdark, cebe)
+- Bug #11973: Fixed `yii\helpers\BaseHtml::getAttributeValue()` to work with `items[]` notation correctly (silverfire)
 
 2.0.9 July 11, 2016
 -------------------
