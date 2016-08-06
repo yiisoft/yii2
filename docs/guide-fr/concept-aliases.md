@@ -1,6 +1,7 @@
 Les Alias
 =========
-Les alias sont utilisés pour représenter des chemins de fichier ou des URLs de sorte que vous n'ayez pas à spécifier des chemins ou des URLs explicitement dans votre projet. Un alias doit commencer par le caractère `@` de façon à le différencier des chemins de fichiers habituels et des URLs. Yii dispose déjà d'un nombre important d'alias prédéfinis. Par exemple, l'alias `@yii` représente le chemin d'installation du framework Yii; `@web` représente l'URL de base pour l'application web courante. 
+Les alias sont utilisés pour représenter des chemins de fichier ou des URLs de sorte que vous n'ayez pas à spécifier des chemins ou des URLs explicitement dans votre projet. Un alias doit commencer par le caractère `@` de façon à le différencier des chemins de fichiers habituels et des URLs. Les alias définis sans le caractère de tête `@` seront préfixés avec ce caractère `@`. 
+Yii dispose déjà d'un nombre important d'alias prédéfinis. Par exemple, l'alias `@yii` représente le chemin d'installation du *framework* Yii; `@web` représente l'URL de base pour l'application web courante. 
 
 
 
