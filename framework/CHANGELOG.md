@@ -406,6 +406,7 @@ Yii Framework 2 Change Log
 - Enh #12580: Make `yii.js` comply with strict and non-strict javascript mode to allow concatenation with external code (mikehaertl)
 - Enh #12664: Added support for wildcards for `optional` at `yii\filters\auth\AuthMethod` (mg-code)
 - Enh #12744: Added `afterInit` event to `yii.activeForm.js` (werew01f)
+- Enh #8347: Added basic support for working with database views (igravity)
 - Enh: Method `yii\console\controllers\AssetController::getAssetManager()` automatically enables `yii\web\AssetManager::forceCopy` in case it is not explicitly specified (pana1990, klimov-paul)
 
 

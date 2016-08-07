@@ -1085,4 +1085,47 @@ SQL;
         $db->createCommand()->dropTable($tableName)->execute();
         $this->assertNull($db->getSchema()->getTableSchema($tableName));
     }
+
+    /**
+     * @see https://github.com/yiisoft/yii2/issues/8347
+     */
+    public function testCreateView()
+    {
+        $db = $this->getConnection();
+        $subquery = (new \yii\db\Query())
+            ->select('bar')
+            ->from('testCreateViewTable')
+            ->where(['>', 'bar', 5]);
+
+        if ($db->getSchema()->getTableSchema('testCreateViewTable') !== null) {
+            $db->createCommand()->dropTable('testCreateViewTable')->execute();
+        }
+        if ($db->getSchema()->getTableSchema('testCreateView') !== null) {
+          $db->createCommand()->dropView('testCreateView')->execute();
+        }
+
+        $db->createCommand()->createTable('testCreateViewTable', [
+            'id' => Schema::TYPE_PK,
+            'bar' => Schema::TYPE_INTEGER,
+        ])->execute();
+        $db->createCommand()->insert('testCreateViewTable', ['bar' => 1])->execute();
+        $db->createCommand()->insert('testCreateViewTable', ['bar' => 6])->execute();
+
+        $db->createCommand()->createView('testCreateView', $subquery)->execute();
+        $records = $db->createCommand('SELECT [[bar]] FROM {{testCreateView}};')->queryAll();
+        $this->assertEquals([['bar' => 1]], $records);
+    }
+
+    /**
+     * @see https://github.com/yiisoft/yii2/issues/8347
+     */
+    public function testDropView()
+    {
+        $db = $this->getConnection();
+
+        $viewName = 'animal_view'; // since it already exists in the fixtures
+        $this->assertNotNull($db->getSchema()->getTableSchema($viewName));
+        $db->createCommand()->dropView($viewName)->execute();
+        $this->assertNull($db->getSchema()->getTableSchema($viewName));
+    }
 }
