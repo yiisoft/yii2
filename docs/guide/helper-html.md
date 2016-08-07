@@ -328,7 +328,7 @@ echo Html::getAttributeName('dates[0]');
 
 ## Styles and Scripts <span id="styles-and-scripts"></span>
 
-There two methods to generate tags wrapping embedded styles and scripts:
+There are two methods to generate tags wrapping embedded styles and scripts:
 
 ```php
 <?= Html::style('.danger { color: #f00; }') ?>
