@@ -320,6 +320,10 @@ Yii Framework 2 Change Log
 - Enh #12744: Added `afterInit` event to `yii.activeForm.js` (werew01f)
 - Enh: Method `yii\console\controllers\AssetController::getAssetManager()` automatically enables `yii\web\AssetManager::forceCopy` in case it is not explicitly specified (pana1990, klimov-paul)
 
+- Bug #12053: `./yii migrate/create` was generating wrong code when using `bigPrimaryKey` (VojtechH, samdark)
+- Bug #11907: Fixed `yii\helpers\Console::getScreenSize()` on Windows was giving out width and height swapped (Spell6inder, samdark, cebe)
+- Bug #11973: Fixed `yii\helpers\BaseHtml::getAttributeValue()` to work with `items[]` notation correctly (silverfire)
+- Enh #8347: Added basic support for working with database views (igravity)
 
 2.0.9 July 11, 2016
 -------------------
