@@ -481,7 +481,7 @@ class ActiveField extends Component
      * If you set a custom `id` for the input element, you may need to adjust the [[$selectors]] accordingly.
      *
      * @param boolean $enclosedByLabel whether to enclose the radio within the label.
-     * If true, the method will still use [[template]] to layout the checkbox and the error message
+     * If true, the method will still use [[template]] to layout the radio button and the error message
      * except that the radio is enclosed by the label tag.
      * @return $this the field object itself
      */
