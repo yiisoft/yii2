@@ -274,7 +274,12 @@ class ActiveField extends Component
         if ($label !== null) {
             $options['label'] = $label;
         }
-        $this->parts['{label}'] = Html::activeLabel($this->model, $this->attribute, $options, $this->_withoutLabelFor);
+
+        if($this->_withoutLabelFor){
+            $options['for']=null;
+        }
+
+        $this->parts['{label}'] = Html::activeLabel($this->model, $this->attribute, $options);
 
         return $this;
     }

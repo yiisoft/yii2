@@ -1105,15 +1105,12 @@ class BaseHtml
      *
      * @return string the generated label tag
      */
-    public static function activeLabel($model, $attribute, $options = [], $withoutFor=false)
+    public static function activeLabel($model, $attribute, $options = [])
     {
         $for = ArrayHelper::remove($options, 'for', static::getInputId($model, $attribute));
         $attribute = static::getAttributeName($attribute);
         $label = ArrayHelper::remove($options, 'label', static::encode($model->getAttributeLabel($attribute)));
 
-        if($withoutFor){
-            $for=null;
-        }
         return static::label($label, $for, $options);
     }
 
