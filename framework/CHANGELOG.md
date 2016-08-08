@@ -18,6 +18,7 @@ Yii Framework 2 Change Log
 - Bug #12045: Added missing `LEVEL_PROFILE` to `yii\log\Logger::getLevelName()` map (Mak-Di)
 - Bug #10681: Reverted fix of beforeValidate event calling in `yii.activeForm.js` (silverfire)
 - Bug #11715: Fixed JS validation when the same model's attribute file input is listed more than once on the same page (uaoleg)
+- Bug #11541: Fixed default MySQL integer display width for unsigned primary key (h311ion, rob006, cebe)
 - Enh #10583: Do not silence session errors in debug mode (samdark)
 - Enh #11804: Added `yii\behaviors\AttributeTypecastBehavior` for maintaining of strict ActiveRecord attribute types (klimov-paul)
 - Enh #12048: Improved message extraction command performance (samdark)
@@ -28,6 +29,8 @@ Yii Framework 2 Change Log
 - Bug #12053: `./yii migrate/create` was generating wrong code when using `bigPrimaryKey` (VojtechH, samdark)
 - Bug #11907: Fixed `yii\helpers\Console::getScreenSize()` on Windows was giving out width and height swapped (Spell6inder, samdark, cebe)
 - Bug #11973: Fixed `yii\helpers\BaseHtml::getAttributeValue()` to work with `items[]` notation correctly (silverfire)
+- Bug #12107: Fixed REST Serializer to validate input for 'expand' and 'fields' parameter, which crashed on array input (njspok, cebe)
+
 
 2.0.9 July 11, 2016
 -------------------
