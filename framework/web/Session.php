@@ -194,12 +194,12 @@ class Session extends Component implements \IteratorAggregate, \ArrayAccess, \Co
     {
         if ($this->getIsActive()) {
             $sessionId = session_id();
-            session_write_close();
-            session_id($sessionId);
-            session_start();
+            $this->close();
+            $this->setId($sessionId);
+            $this->open();
             session_unset();
             session_destroy();
-            session_id($sessionId);
+            $this->setId($sessionId);
         }
     }
 
