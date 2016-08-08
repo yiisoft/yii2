@@ -328,7 +328,7 @@ echo Html::getAttributeName('dates[0]');
 
 ## Styles and Scripts <span id="styles-and-scripts"></span>
 
-There two methods to generate tags wrapping embedded styles and scripts:
+There are two methods to generate tags wrapping embedded styles and scripts:
 
 ```php
 <?= Html::style('.danger { color: #f00; }') ?>
@@ -386,7 +386,7 @@ The first argument is the title. It's not encoded so if you're using data got fr
 `Html::encode()`. Second argument is what will be in `href` of `<a` tag. See [Url::to()](helper-url.md) for details on
 what values it accepts. Third argument is array of tag properties.
 
-In you need to generate `mailto` link you can use the following code:
+If you need to generate `mailto` link you can use the following code:
 
 ```php
 <?= Html::mailto('Contact us', 'admin@example.com') ?>
