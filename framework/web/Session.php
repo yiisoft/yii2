@@ -193,10 +193,13 @@ class Session extends Component implements \IteratorAggregate, \ArrayAccess, \Co
     public function destroy()
     {
         if ($this->getIsActive()) {
-            YII_DEBUG ? session_unset() : @session_unset();
             $sessionId = session_id();
-            YII_DEBUG ? session_destroy() : @session_destroy();
-            YII_DEBUG ? session_id($sessionId) : @session_id($sessionId);
+            session_write_close();
+            session_id($sessionId);
+            session_start();
+            session_unset();
+            session_destroy();
+            session_id($sessionId);
         }
     }
 
