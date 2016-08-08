@@ -65,7 +65,7 @@ class AppAsset extends AssetBundle
 * [[yii\web\AssetBundle::js|js]]: 一个包含该资源包JavaScript文件的数组，注意正斜杠"/"应作为目录分隔符，
   每个JavaScript文件可指定为以下两种格式之一：
   - 相对路径表示为本地JavaScript文件 (如 `js/main.js`)，文件实际的路径在该相对路径前加上
-    [[yii\web\AssetManager::basePath]]，文件实际的URL在该路径前加上[[yii\web\AssetManager::baseUrl]]。
+    [[yii\web\AssetBundle::basePath]]，文件实际的URL在该路径前加上[[yii\web\AssetBundle::baseUrl]]。
   - 绝对URL地址表示为外部JavaScript文件，如
     `http://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js` 或 
     `//ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js`.
