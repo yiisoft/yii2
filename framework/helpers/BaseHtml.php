@@ -1093,6 +1093,7 @@ class BaseHtml
      * about attribute expression.
      * @param array $options the tag options in terms of name-value pairs. These will be rendered as
      * the attributes of the resulting tag. The values will be HTML-encoded using [[encode()]].
+     * @param bool $withoutFor the flag set
      * If a value is null, the corresponding attribute will not be rendered.
      * The following options are specially handled:
      *
@@ -1104,11 +1105,15 @@ class BaseHtml
      *
      * @return string the generated label tag
      */
-    public static function activeLabel($model, $attribute, $options = [])
+    public static function activeLabel($model, $attribute, $options = [], $withoutFor=false)
     {
         $for = ArrayHelper::remove($options, 'for', static::getInputId($model, $attribute));
         $attribute = static::getAttributeName($attribute);
         $label = ArrayHelper::remove($options, 'label', static::encode($model->getAttributeLabel($attribute)));
+
+        if($withoutFor){
+            $for=null;
+        }
         return static::label($label, $for, $options);
     }
 
