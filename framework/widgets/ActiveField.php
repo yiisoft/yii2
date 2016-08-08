@@ -152,6 +152,11 @@ class ActiveField extends Component
      */
     private $_inputId;
 
+    /**
+     * @var bool if "for" field label attribute should be skipped.
+     */
+    private $_skipLabelFor = false;
+
 
     /**
      * PHP magic method that returns the string representation of this object.
@@ -269,6 +274,11 @@ class ActiveField extends Component
         if ($label !== null) {
             $options['label'] = $label;
         }
+
+        if ($this->_skipLabelFor) {
+            $options['for'] = null;
+        }
+
         $this->parts['{label}'] = Html::activeLabel($this->model, $this->attribute, $options);
 
         return $this;
@@ -631,6 +641,7 @@ class ActiveField extends Component
     public function checkboxList($items, $options = [])
     {
         $this->adjustLabelFor($options);
+        $this->_skipLabelFor = true;
         $this->parts['{input}'] = Html::activeCheckboxList($this->model, $this->attribute, $items, $options);
 
         return $this;
@@ -649,6 +660,7 @@ class ActiveField extends Component
     public function radioList($items, $options = [])
     {
         $this->adjustLabelFor($options);
+        $this->_skipLabelFor = true;
         $this->parts['{input}'] = Html::activeRadioList($this->model, $this->attribute, $items, $options);
 
         return $this;
