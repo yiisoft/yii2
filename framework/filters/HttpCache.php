@@ -193,7 +193,6 @@ class HttpCache extends ActionFilter
         }
 
         $headers = Yii::$app->getResponse()->getHeaders();
-        $headers->set('Pragma');
 
         if ($this->cacheControlHeader !== null) {
             $headers->set('Cache-Control', $this->cacheControlHeader);
