@@ -892,7 +892,7 @@ abstract class QueryBuilderTest extends DatabaseTestCase
                 Schema::TYPE_UPK,
                 $this->primaryKey()->unsigned(),
                 [
-                    'mysql' => 'int(11) UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY',
+                    'mysql' => 'int(10) UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY',
                     'postgres' => 'serial NOT NULL PRIMARY KEY',
                     'sqlite' => 'integer UNSIGNED PRIMARY KEY AUTOINCREMENT NOT NULL',
                 ],
