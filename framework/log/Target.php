@@ -276,7 +276,7 @@ abstract class Target extends Component
      */
     public function getMessagePrefix($message)
     {
-        if ($this->prefix !== null) {
+        if (is_callable($this->prefix)) {
             return call_user_func($this->prefix, $message);
         }
 
