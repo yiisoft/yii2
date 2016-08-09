@@ -1,7 +1,7 @@
 Contrôleurs
 ===========
 
-Les contrôleurs font partie du modèle d'architecture [MVC](http://en.wikipedia.org/wiki/Model%E2%80%93view%E2%80%93controller) (Modèle Vue Contrôleur). Ce sont des objets dont la classe étend [[yii\base\Controller]]. Ils sont chargés de traiter les requêtes et de générer les réponses. En particulier, après que l'objet [applications](structure-applications.md) leur a passé le contrôle, ils analysent les données de la requête entrante, les transmettent aux [modèles](structure-models.md), injectent le résultat des modèles dans les [vues](structure-views.md) et, pour finir, génèrent les réponses sortantes. 
+Les contrôleurs font partie du modèle d'architecture [MVC](http://en.wikipedia.org/wiki/Model%E2%80%93view%E2%80%93controller) (Modèle Vue Contrôleur). Ce sont des objets dont la classe étend [[yii\base\Controller]]. Ils sont chargés de traiter les requêtes et de générer les réponses. En particulier, après que l'objet [application](structure-applications.md) leur a passé le contrôle, ils analysent les données de la requête entrante, les transmettent aux [modèles](structure-models.md), injectent le résultat des modèles dans les [vues](structure-views.md) et, pour finir, génèrent les réponses sortantes. 
 
 
 ## Actions <span id="actions"></span>
@@ -49,7 +49,7 @@ class PostController extends Controller
 
 Dans l'action `view` (définie par la méthode `actionView()`), le code commence par charger le [modèle](structure-models.md) en fonction de l'identifiant (ID) du modèle requis. Si le chargement du modèle réussit, l'action l'affiche en utilisant une [vue](structure-views.md) nommée `view`. Autrement, elle lève une exception. 
 
-Dans l'action  `create` (définie par le méthode `actionCreate()`), le code est similaire.  Elle commence par essayer de peupler une nouvelle instance du[modèle](structure-models.md) avec les données de la requête et sauvegarde le modèle. Si les deux opérations réussissent, elle redirige le navigateur vers l'action  `view` en lui passant l'identifiant (ID) du nouveau modèle. Autrement, elle affiche la vue `create` dans laquelle l'utilisateur pour saisir les entrées requises.
+Dans l'action  `create` (définie par le méthode `actionCreate()`), le code est similaire.  Elle commence par essayer de peupler une nouvelle instance du [modèle](structure-models.md) avec les données de la requête et sauvegarde le modèle. Si les deux opérations réussissent, elle redirige le navigateur vers l'action  `view` en lui passant l'identifiant (ID) du nouveau modèle. Autrement, elle affiche la vue `create` dans laquelle l'utilisateur peut saisir les entrées requises.
 
 
 ## Routes <span id="routes"></span>
@@ -57,8 +57,8 @@ Dans l'action  `create` (définie par le méthode `actionCreate()`), le code est
 L'utilisateur final demande l'exécution des actions via ce qu'on appelle des *routes*. Une route est une chaîne de caractères constituée des parties suivantes :
 
 * un identifiant (ID) de module : cette partie n'est présente que si le contrôleur appartient à un [module](structure-modules.md) qui n'est pas en soi une application ;
-* un [identifiant de contrôleur](#controller-ids): une chaîne de caractères qui distingue le contrôleur des autres contrôleurs de la même application — ou du même module si le contrôleur appartient à un module) ;;
-* un [identifiant d'action](#action-ids): une chaîne de caractères qui distingue cette action des autres actions du même contrôleur.
+* un [identifiant de contrôleur](#controller-ids) : une chaîne de caractères qui distingue le contrôleur des autres contrôleurs de la même application — ou du même module si le contrôleur appartient à un module ;
+* un [identifiant d'action](#action-ids) : une chaîne de caractères qui distingue cette action des autres actions du même contrôleur.
 
 Les routes se présentent dans le format suivant :
 
@@ -77,7 +77,7 @@ Ainsi si un utilisateur requiert l'URL `http://hostname/index.php?r=site/index`,
 
 ## Création des contrôleurs <span id="creating-controllers"></span>
 
-Dans les [[yii\web\Application|applications Web]], les contrôleur doivent étendre la classe [[yii\web\Controller]] ou ses classes enfants. De façon similaire, dans les [[yii\console\Application|applications de console]], les contrôleurs doivent étendre la classe[[yii\console\Controller]] ou ses classes enfants. Le code qui suit définit un contrôleur nommé `site` :
+Dans les [[yii\web\Application|applications Web]], les contrôleur doivent étendre la classe [[yii\web\Controller]] ou ses classes filles. De façon similaire, dans les [[yii\console\Application|applications de console]], les contrôleurs doivent étendre la classe [[yii\console\Controller]] ou ses classes filles. Le code qui suit définit un contrôleur nommé `site` :
 
 ```php
 namespace app\controllers;
@@ -97,7 +97,7 @@ Par exemple, vous pouvez utiliser `article` comme identifiant d'un contrôleur q
 
 Par défaut, l'identifiant d'un contrôleur ne peut contenir que les caractères suivants : lettres de l'alphabet anglais en bas de casse, chiffres, tiret  bas, trait d'union et barre oblique de division. Par exemple, `article` et `post-comment` sont tous deux des identifiants de contrôleur valides, tandis que `article?`, `PostComment` et `admin\post` ne le sont pas.
 Un identifiant de contrôleur peut aussi contenir un préfixe de sous-dossier. Par exemple `admin/article` représente un contrôleur `article` dans le dossier `admin` dans l'[[yii\base\Application::controllerNamespace|espace de noms du contrôleur]].
-Les caractères valides pour le préfixe des sous-dossiers incluent : les lettres de l'alphabet anglais dans les deux casses, les chiffres, le tiret bas et la barre oblique de division, parmi lesquels les barres obliques de division sont utilisés comme séparateurs pour les sous-dossiers à plusieurs niveaux (p. ex. `panels/admin`).
+Les caractères valides pour le préfixe des sous-dossiers incluent : les lettres de l'alphabet anglais dans les deux casses, les chiffres, le tiret bas et la barre oblique de division, parmi lesquels les barres obliques de division sont utilisées comme séparateurs pour les sous-dossiers à plusieurs niveaux (p. ex. `panels/admin`).
 
 ### Nommage des classes de contrôleur <span id="controller-class-naming"></span>
 
@@ -182,10 +182,10 @@ class SiteController extends Controller
 
 Une action est souvent conçue pour effectuer une manipulation particulière d'une ressource. Pour cette raison, les identifiants d'action sont habituellement des verbes comme `view` (voir), `update` (mettre à jour), etc.
 
-Par défaut, les identifiants d'action ne doivent contenir rien d'autre que les caractères suivants : les lettres de l'alphabet anglais en bas de casse, les chiffres, le tiret bas et le trait d'union. (Vous pouvez utiliser le trait d'union pour séparer les mots). Par exemple : 
+Par défaut, les identifiants d'action ne doivent contenir rien d'autre que les caractères suivants : les lettres de l'alphabet anglais en bas de casse, les chiffres, le tiret bas et le trait d'union. Vous pouvez utiliser le trait d'union pour séparer les mots. Par exemple : 
 `view`, `update2`, et `comment-post` sont des identifiants d'action valides, tandis que `view?` et `Update` ne le sont pas.
 
-Vous pouvez créer des actions sous deux formes : les actions en ligne (*inline*) et les actions autonomes (*standalone*). Une action en ligne est définie en tant que méthode dans un contrôleur, alors qu'une action autonome est une classe qui étend la classe [[yii\base\Action]] ou une des ses classes filles. La définition d'une action en ligne requiert moins d'efforts est est souvent préférée lorsqu'il n'y a pas d'intention de réutiliser cette action. Par contre, les actions autonomes sont essentiellement créées pour être utilisées dans différents contrôleurs ou pour être redistribuées dans des [extensions](structure-extensions.md).
+Vous pouvez créer des actions sous deux formes : les actions en ligne (*inline*) et les actions autonomes (*standalone*). Une action en ligne est définie en tant que méthode dans un contrôleur, alors qu'une action autonome est une classe qui étend la classe [[yii\base\Action]] ou une des ses classes filles. La définition d'une action en ligne requiert moins d'efforts et est souvent préférée lorsqu'il n'y a pas d'intention de réutiliser cette action. Par contre, les actions autonomes sont essentiellement créées pour être utilisées dans différents contrôleurs ou pour être redistribuées dans des [extensions](structure-extensions.md).
 
 
 ### Actions en ligne <span id="inline-actions"></span>
@@ -303,7 +303,7 @@ public function actionView(array $id, $version = null)
 }
 ```
 
-Désormais, si la requête est `http://hostname/index.php?r=post/view&id[]=123`, paramètre `$id` accepte la valeur `['123']`. Si la requête est  `http://hostname/index.php?r=post/view&id=123`, le paramètre `$id` accepte également la valeur transmise par la requête parce que les valeurs scalaires sont automatiquement convertie en tableau (*array*).
+Désormais, si la requête est `http://hostname/index.php?r=post/view&id[]=123`, le paramètre `$id` accepte la valeur `['123']`. Si la requête est  `http://hostname/index.php?r=post/view&id=123`, le paramètre `$id` accepte également la valeur transmise par la requête parce que les valeurs scalaires sont automatiquement convertie en tableau (*array*).
 
 Les exemples qui précèdent montrent essentiellement comment les paramètres d'action fonctionnent dans les applications Web. Pour les applications de console, reportez-vous à la section  [Commandes de console](tutorial-console.md) pour plus de détails.
 
