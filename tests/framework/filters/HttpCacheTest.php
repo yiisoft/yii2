@@ -38,7 +38,7 @@ class HttpCacheTest extends \yiiunit\TestCase
         $method->setAccessible(true);
 
         unset($_SERVER['HTTP_IF_MODIFIED_SINCE'], $_SERVER['HTTP_IF_NONE_MATCH']);
-        $this->assertTrue($method->invoke($httpCache, null, null));
+        $this->assertFalse($method->invoke($httpCache, null, null));
         $this->assertFalse($method->invoke($httpCache, 0, null));
         $this->assertFalse($method->invoke($httpCache, 0, '"foo"'));
 
@@ -65,6 +65,14 @@ class HttpCacheTest extends \yiiunit\TestCase
     {
         $httpCache = new HttpCache;
         $httpCache->weakEtag = false;
+
+        $httpCache->etagSeed = function($action, $params) {
+            return null;
+        };
+        $httpCache->beforeAction(null);
+        $response = Yii::$app->getResponse();
+        $this->assertFalse($response->getHeaders()->offsetExists('ETag'));
+
         $httpCache->etagSeed = function($action, $params) {
             return '';
         };
