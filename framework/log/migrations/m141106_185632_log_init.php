@@ -35,9 +35,17 @@ class m141106_185632_log_init extends Migration
         if ($this->dbTargets === []) {
             $log = Yii::$app->getLog();
 
+            $diffTargets = [];
             foreach ($log->targets as $target) {
                 if ($target instanceof DbTarget) {
-                    $this->dbTargets[] = $target;
+                    $diffTarget = [
+                        $target->db,
+                        $target->logTable,
+                    ];
+                    if (!in_array($diffTarget, $diffTargets)) {
+                        $diffTargets[] = $diffTarget;
+                        $this->dbTargets[] = $target;
+                    }
                 }
             }
 
@@ -67,7 +75,7 @@ class m141106_185632_log_init extends Migration
                 'log_time' => $this->double(),
                 'prefix' => $this->text(),
                 'message' => $this->text(),
-            ], $tableOptions);
+                ], $tableOptions);
 
             $this->createIndex('idx_log_level', $target->logTable, 'level');
             $this->createIndex('idx_log_category', $target->logTable, 'category');
