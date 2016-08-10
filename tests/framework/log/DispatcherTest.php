@@ -4,8 +4,12 @@
  */
 
 namespace yii\log {
-    function microtime() {
-        return \yiiunit\framework\log\DispatcherTest::microtime(func_get_args());
+    function microtime($get_as_float) {
+        if (\yiiunit\framework\log\DispatcherTest::$microtimeIsMocked) {
+            return \yiiunit\framework\log\DispatcherTest::microtime(func_get_args());
+        } else {
+            return \microtime($get_as_float);
+        }
     }
 }
 
@@ -33,6 +37,11 @@ namespace yiiunit\framework\log {
         protected $dispatcher;
 
         /**
+         * @var bool
+         */
+        static $microtimeIsMocked = false;
+
+        /**
          * Array of static functions
          *
          * @var array
@@ -41,6 +50,7 @@ namespace yiiunit\framework\log {
 
         protected function setUp()
         {
+            static::$microtimeIsMocked = false;
             $this->dispatcher = new Dispatcher();
             $this->logger = new Logger();
         }
@@ -176,6 +186,7 @@ namespace yiiunit\framework\log {
          */
         public function testDispatchWithFakeTarget2ThrowExceptionWhenCollect()
         {
+            static::$microtimeIsMocked = true;
             $target1 = $this->getMockBuilder('yii\\log\\Target')
                 ->setMethods(['collect'])
                 ->getMockForAbstractClass();

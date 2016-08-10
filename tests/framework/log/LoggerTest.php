@@ -228,9 +228,9 @@ class LoggerTest extends TestCase
      */
     public function testGetElapsedTime()
     {
-        $timeBefore = microtime(true) - YII_BEGIN_TIME;
+        $timeBefore = \microtime(true) - YII_BEGIN_TIME;
         $actual = $this->logger->getElapsedTime();
-        $timeAfter = microtime(true) - YII_BEGIN_TIME;
+        $timeAfter = \microtime(true) - YII_BEGIN_TIME;
 
         $this->assertGreaterThan($timeBefore, $actual);
         $this->assertLessThan($timeAfter, $actual);
