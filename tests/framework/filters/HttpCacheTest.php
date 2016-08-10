@@ -28,6 +28,18 @@ class HttpCacheTest extends \yiiunit\TestCase
         $this->assertTrue($httpCache->beforeAction(null));
     }
 
+    public function testEmptyPragma()
+    {
+        $httpCache = new HttpCache;
+        $httpCache->etagSeed = function($action, $params) {
+            return '';
+        };
+        $httpCache->beforeAction(null);
+        $response = Yii::$app->getResponse();
+        $this->assertFalse($response->getHeaders()->offsetExists('Pragma'));
+        $this->assertFalse($response->getHeaders()->get('Pragma') === '');
+    }
+
     /**
      * @covers yii\filters\HttpCache::validateCache
      */
