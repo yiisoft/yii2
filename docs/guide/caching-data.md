@@ -227,7 +227,7 @@ $cache->set($key, $data, 30, $dependency);
 
 // The cache will check if the data has expired.
 // It will also check if the associated dependency was changed.
-// It will return false if any of these conditions is met.
+// It will return false if any of these conditions are met.
 $data = $cache->get($key);
 ```
 
