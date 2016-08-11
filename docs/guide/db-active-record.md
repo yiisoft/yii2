@@ -282,7 +282,7 @@ will allow you to input and display customer birthdays in the format of `'YYYY/M
 
 ### Retrieving Data in Arrays <span id="data-in-arrays"></span>
 
-While retrieving data in terms of Active Record objects is convenient and flexible, it is not always desirable
+While retrieving data in terms of Active Record objects are convenient and flexible, it is not always desirable
 when you have to bring back a large amount of data due to the big memory footprint. In this case, you can retrieve
 data using PHP arrays by calling [[yii\db\ActiveQuery::asArray()|asArray()]] before executing a query method:
 
