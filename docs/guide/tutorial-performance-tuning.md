@@ -138,7 +138,7 @@ If you have [Redis](http://redis.io/) on your server, it is highly recommended y
 
 ## Optimizing Databases <span id="optimizing-databases"></span>
 
-Execute DB queries and fetching data from databases is often the main performance bottleneck in
+Executing DB queries and fetching data from databases are often the main performance bottleneck in
 a Web application. Although using [data caching](caching-data.md) techniques may alleviate the performance hit,
 it does not fully solve the problem. When the database contains enormous amounts of data and the cached data is invalid, 
 fetching the latest data could be prohibitively expensive without proper database and query design.
