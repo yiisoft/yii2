@@ -9,7 +9,7 @@ Elles sont gérées par le [[yii\web\View|view]] [composant application](structu
 
 ## Création des vues <span id="creating-views"></span>
 
-Comme nous l'avons dit ci-dessus, une vue n'est rien d'autre qu'un script PHP incluant de code HTML et du code PHP. Le script ci-dessous correspond à la vue d'un formulaire de connexion. Comme vous pouvez le voir le code PHP est utilisé pour générer le contenu dynamique, dont par exemple le titre de la page et le formulaire, tandis que le code HTML les organise en une page présentable. 
+Comme nous l'avons dit ci-dessus, une vue n'est rien d'autre qu'un script PHP incluant du code HTML et du code PHP. Le script ci-dessous correspond à la vue d'un formulaire de connexion. Comme vous pouvez le voir le code PHP est utilisé pour générer le contenu dynamique, dont par exemple le titre de la page et le formulaire, tandis que le code HTML les organise en une page présentable. 
 
 ```php
 <?php
@@ -42,7 +42,7 @@ En plus de `$this`, il peut aussi y avoir d'autres variables prédéfinies dans 
 
 ### Sécurité <span id="security"></span>
 
-Lors de la création des vues qui génèrent des pages HTML, il est important que vous encodiez et/ou filtriez les données en provenance de l'utilisateur final avant des les présenter. Autrement, votre application serait sujette aux [attaques par injection de scripts (*cross-site scripting*)](http://en.wikipedia.org/wiki/Cross-site_scripting).
+Lors de la création de vues qui génèrent des pages HTML, il est important que vous encodiez et/ou filtriez les données en provenance de l'utilisateur final avant des les présenter. Autrement, votre application serait sujette aux [attaques par injection de scripts (*cross-site scripting*)](http://en.wikipedia.org/wiki/Cross-site_scripting).
 
 Pour afficher du texte simple, commencez par l'encoder en appelant la méthode [[yii\helpers\Html::encode()]]. Par exemple, le code suivant encode le nom d'utilisateur (*username*) avant de l'afficher :
 
@@ -76,7 +76,7 @@ use yii\helpers\HtmlPurifier;
 
 Comme les [contrôleurs](structure-controllers.md) et les  [modèles](structure-models.md), il existe certaines conventions pour organiser les vues. 
 
-* Pour les vues rendues par un contrôleur, elles devraient être placées par défaut dans le dossier  `@app/views/ControllerID` où `ControllerID` doit être remplacé par l'[identifiant du contrôleur](structure-controllers.md#routes). Par exemple, si la classe du contrôleur est  `PostController`, le dossier est `@app/views/post`; si c'est  `PostCommentController` le dossier est `@app/views/post-comment`. Dans le cas où le contrôleur appartient à un module, le dossier s'appelle `views/ControllerID` sous le [[yii\base\Module::basePath|dossier racine du module]].
+* Pour les vues rendues par un contrôleur, elles devraient être placées par défaut dans le dossier  `@app/views/ControllerID` où `ControllerID` doit être remplacé par l'[identifiant du contrôleur](structure-controllers.md#routes). Par exemple, si la classe du contrôleur est  `PostController`, le dossier est `@app/views/post`; si c'est  `PostCommentController` le dossier est `@app/views/post-comment`. Dans le cas où le contrôleur appartient à un module, le dossier s'appelle `views/ControllerID` et se trouve dans le [[yii\base\Module::basePath|dossier racine du module]].
 * Pour les vues rendues dans un [widget (objet graphique)](structure-widgets.md), elles devraient être placées par défaut dans le dossier `WidgetPath/views` où  `WidgetPath` est le dossier contenant le fichier de la classe du widget. 
 * Pour les vues rendues par d'autres objets, il est recommandé d'adopter une convention similaire à celle utilisée pour les *widgets*. 
 
@@ -104,7 +104,7 @@ Dans les [contrôleurs](structure-controllers.md), vous pouvez appeler la métho
   au résultat du rendu.
 * [[yii\base\Controller::renderPartial()|renderPartial()]]: rend une [vue nommée](#named-views) sans disposition.
 * [[yii\web\Controller::renderAjax()|renderAjax()]]: rend une [vue nommée ](#named-views) sans disposition et injecte tous les scripts et fichiers JS/CSS enregistrés. Cette méthode est ordinairement utilisée en réponse à une requête Web AJAX.
-* [[yii\base\Controller::renderFile()|renderFile()]]: rend une vue spécifiée en terme de chemin d'[alias](concept-aliases.md) de fichier de vue.
+* [[yii\base\Controller::renderFile()|renderFile()]]: rend une vue spécifiée en terme de chemin ou d'[alias](concept-aliases.md) de fichier de vue.
 * [[yii\base\Controller::renderContent()|renderContent()]]: rend un chaîne statique en l'injectant dans la [disposition](#layouts) courante. Cette méthode est disponible depuis la version 2.0.1.
 
 Par exemple :
@@ -180,7 +180,7 @@ Par exemple, le code suivant dans une vue, rend le fichier de vue `_overview.php
 ```
 
 
-### Rendu des vues en d'autres endroits <span id="rendering-in-other-places"></span>
+### Rendu de vues en d'autres endroits <span id="rendering-in-other-places"></span>
 
 Dans n'importe quel endroit, vous pouvez accéder au composant d'application [[yii\base\View|view]] à l'aide de l'expression `Yii::$app->view` et ensuite appeler une de ses méthodes mentionnées plus haut pour rendre une vue. Par exemple :
 
@@ -254,7 +254,7 @@ Les dispositions (*layouts*) sont des types  spéciaux de vues qui représentent
 
 ### Création de dispositions <span id="creating-layouts"></span>
 
-Parce que les dispositions sont aussi des vues, elles peuvent être créées de manière similaire aux vues ordinaires. Par défaut, les dispositions sont stockées dans le dossier `@app/views/layouts`. Les dispositions utilisées dans un module [module](structure-modules.md) doivent être stockées dans le dossier `views/layouts` du [[yii\base\Module::basePath|dossier racine du module]]. Vous pouvez personnaliser le dossier par défaut des dispositions en configurant la propriété [[yii\base\Module::layoutPath]] de l'application ou du module.
+Parce que les dispositions sont aussi des vues, elles peuvent être créées de manière similaire aux vues ordinaires. Par défaut, les dispositions sont stockées dans le dossier `@app/views/layouts`. Les dispositions utilisées dans un [module](structure-modules.md) doivent être stockées dans le dossier `views/layouts` du [[yii\base\Module::basePath|dossier racine du module]]. Vous pouvez personnaliser le dossier par défaut des dispositions en configurant la propriété [[yii\base\Module::layoutPath]] de l'application ou du module.
 
 L'exemple qui suit montre à quoi ressemble une disposition. Notez que dans un but illustratif, nous avons grandement simplifié le code à l'intérieur de cette disposition. En pratique, vous désirerez ajouter à ce code plus de contenu, comme des balises head, un menu principal, etc. 
 
@@ -306,7 +306,7 @@ Si vous voulez accéder à d'autres données dans les dispositions, vous devez u
 
 Comme c'est décrit à la sous-section [Rendu des vues dans les contrôleurs](#rendering-in-controllers), lorsque vous rendez une vue en appelant la méthode  [[yii\base\Controller::render()|render()]] dans un contrôleur, une disposition est appliquée au résultat du rendu. Par défaut, la disposition  `@app/views/layouts/main.php` est utilisée. 
 
-Vous pouvez utiliser une disposition différente en configurant soit [[yii\base\Application::layout]], soit [[yii\base\Controller::layout]]. La première gouverne la disposition utilisée par tous les contrôleurs, tandis que la deuxième redéfinit le premier pour les contrôleurs individuels. Par exemple, le code suivant fait que le contrôleur `post` utilise `@app/views/layouts/post.php` en tant qu disposition lorsqu'il rend ses vues. Les autres contrôleurs, en supposant que leur propriété  `layout` n'est pas modifiée, continuent d'utiliser la disposition par défaut `@app/views/layouts/main.php`.
+Vous pouvez utiliser une disposition différente en configurant soit [[yii\base\Application::layout]], soit [[yii\base\Controller::layout]]. La première gouverne la disposition utilisée par tous les contrôleurs, tandis que la deuxième redéfinit la première pour les contrôleurs individuels. Par exemple, le code suivant fait que le contrôleur `post` utilise `@app/views/layouts/post.php` en tant qu disposition lorsqu'il rend ses vues. Les autres contrôleurs, en supposant que leur propriété  `layout` n'est pas modifiée, continuent d'utiliser la disposition par défaut `@app/views/layouts/main.php`.
  
 ```php
 namespace app\controllers;
@@ -323,14 +323,14 @@ class PostController extends Controller
 
 Pour les contrôleurs appartenant à un module ,vous pouvez également configurer la propriété  [[yii\base\Module::layout|layout]] pour utiliser une disposition particulière pour ces contrôleurs. 
 
-Comme la propriété `layout` peut être configurée à différents niveaux (contrôleurs, modules, application), en arrière plan, Yii opère en deux étapes pour déterminer quelle est le fichier de disposition réel qui doit être utilisé pour un contrôleur donné.  
+Comme la propriété `layout` peut être configurée à différents niveaux (contrôleurs, modules, application), en arrière plan, Yii opère en deux étapes pour déterminer quel est le fichier de disposition réel qui doit être utilisé pour un contrôleur donné.  
 
 Dans la première étape, il détermine la valeurs de la disposition et le module du contexte :
 
 - Si la propriété  [[yii\base\Controller::layout]] du contrôleur n'est pas nulle, il l'utilise en tant que valeur de disposition et le [[yii\base\Controller::module|module]] du contrôleur en tant que module du contexte. 
 - Si  la propriété [[yii\base\Controller::layout|layout]] est nulle, il cherche, à travers tous les modules ancêtres (y compris l'application elle-même) du contrôleur, le premier module dont la propriété [[yii\base\Module::layout|layout]] n'est pas nulle. Il utilise alors ce module et la valeur de sa  [[yii\base\Module::layout|disposition]] comme module du contexte et valeur de disposition, respectivement. Si un tel module n'est pas trouvé, cela signifie qu'aucune disposition n'est appliquée. 
   
-Dans la seconde étape, il détermine le fichier de dispositeon réel en fonction de la valeur de disposition et du module du contexte déterminés dans la première étape. La valeur de disposition peut être :
+Dans la seconde étape, il détermine le fichier de disposition réel en fonction de la valeur de disposition et du module du contexte déterminés dans la première étape. La valeur de disposition peut être :
 
 - Un alias de chemin (p. ex. `@app/views/layouts/main`).
 - Un chemin absolu (p. ex. `/main`): la valeur de disposition commence par une barre oblique de division. Le fichier réel de disposition est recherché dans le [[yii\base\Application::layoutPath|chemin des disposition (*layoutPath*)]] (par défaut `@app/views/layouts`).
@@ -342,7 +342,7 @@ Si la valeur de disposition ne contient pas d'extension de fichier, l'extension 
 
 ### Dispositions imbriquées <span id="nested-layouts"></span>
 
-Parfois, vous désirez imbriquer une disposition dans une autre. Par exemple, dans les différentes sections d'un site Web, vous voulez utiliser des dispositions différentes, bien que ces dispositions partagent la même disposition de base qui génère la structure d'ensemble des pages HTML5. Vouspouvez réaliser cela en appelant la méthode [[yii\base\View::beginContent()|beginContent()]] et la méthode 
+Parfois, vous désirez imbriquer une disposition dans une autre. Par exemple, dans les différentes sections d'un site Web, vous voulez utiliser des dispositions différentes, bien que ces dispositions partagent la même disposition de base qui génère la structure d'ensemble des pages HTML5. Vous pouvez réaliser cela en appelant la méthode [[yii\base\View::beginContent()|beginContent()]] et la méthode 
 [[yii\base\View::endContent()|endContent()]] dans les dispositions filles comme illustré ci-après :
 ```php
 <?php $this->beginContent('@app/views/layouts/base.php'); ?>
@@ -352,7 +352,7 @@ Parfois, vous désirez imbriquer une disposition dans une autre. Par exemple, da
 <?php $this->endContent(); ?>
 ```
 
-Comme on le voit ci-dessus, le contenu de la disposition fille doit être  situé entre les appels des méthodes [[yii\base\View::beginContent()|beginContent()]] et [[yii\base\View::endContent()|endContent()]]. Le paramètre passé à la méthode [[yii\base\View::beginContent()|beginContent()]] spécifie quel est la disposition parente. Ce peut être un fichier de disposition ou un alias. En utilisant l'approche ci-dessus, vous pouvez imbriquer des dispositions sur plusieurs niveaux. 
+Comme on le voit ci-dessus, le contenu de la disposition fille doit être  situé entre les appels des méthodes [[yii\base\View::beginContent()|beginContent()]] et [[yii\base\View::endContent()|endContent()]]. Le paramètre passé à la méthode [[yii\base\View::beginContent()|beginContent()]] spécifie quelle est la disposition parente. Ce peut être un fichier de disposition ou un alias. En utilisant l'approche ci-dessus, vous pouvez imbriquer des dispositions sur plusieurs niveaux. 
 
 
 
@@ -431,7 +431,7 @@ Les composants [[yii\base\View|view]] fournissent de nombreuses fonctionnalités
 
 Les composants View fournissent les fonctionnalités utiles suivantes relatives aux vues, chacune décrite en détails dans une section séparée :
 
-* [theming](output-theming.md): vous permet des développer et de changer les thèmes pour votre site Web.
+* [gestion des thèmes](output-theming.md): vous permet des développer et de changer les thèmes pour votre site Web.
 * [mise en cache de fragments](caching-fragment.md): vous permet de mettre en cache un fragment de votre page Web.
 * [gestion des scripts client](output-client-scripts.md): prend en charge l'enregistrement et le rendu de code CSS et JavaScript. 
 * [gestion de paquets de ressources](structure-assets.md): prend en charge l'enregistrement et le rendu de [paquets de ressources](structure-assets.md).
@@ -442,7 +442,7 @@ Vous pouvez aussi utiliser les fonctionnalités suivantes qui, bien que mineures
 
 ### Définition du titre des pages <span id="setting-page-titles"></span>
 
-Chaque page Web doit avoir un titre. Normalement la balise titre est affichée dans une  [disposition](#layouts). Cependant, en pratique, le titre est souvent détérminé dans les vues contenu plutôt que dans les dispositions. Pour résoudre ce problème,[[yii\web\View]] met à votre disposition la propriété [[yii\web\View::title|title]] qui vous permet de passer l'information de titre de la vue de contenu à la disposition.
+Chaque page Web doit avoir un titre. Normalement la balise titre est affichée dans une  [disposition](#layouts). Cependant, en pratique, le titre est souvent détérminé dans les vues de contenu plutôt que dans les dispositions. Pour résoudre ce problème,[[yii\web\View]] met à votre disposition la propriété [[yii\web\View::title|title]] qui vous permet de passer l'information de titre de la vue de contenu à la disposition.
 
 Pour utiliser cette fonctionnalité, dans chacune des vues de contenu, vous pouvez définir le titre de la page de la manière suivante :
 ```php
@@ -476,7 +476,7 @@ Le code ci-dessus enregistre une balise meta "mot clé" dans le composant view. 
 <meta name="keywords" content="yii, framework, php">
 ```
 
-Notez que si vous appelez [[yii\web\View::registerMetaTag()]] à de multiples reprises, elle enregistrera de multiples balises meta que les balises soient les mêmes ou pas.
+Notez que si vous appelez [[yii\web\View::registerMetaTag()]] à de multiples reprises, elle enregistrera de multiples balises meta, que les balises soient les mêmes ou pas.
 
 Pour garantir qu'il n'y a qu'une instance d'un type de balise meta, vous pouvez spécifier une clé en tant que deuxième paramètre lors de l'appel de la méthode. 
 Par exemple, le code suivant, enregistre deux balises meta « description ». Cependant, seule la seconde sera rendue. 
@@ -562,13 +562,12 @@ class SiteController extends Controller
     }
 }
 ```
-
 Maintenant, si vous créez une vue nommée `about` dans le dossier `@app/views/site/pages`, vous pourrez afficher cette vue via l'URL suivante :
 ```
 http://localhost/index.php?r=site%2Fpage&view=about
 ```
 
-Le paramètre `view` de la méthode  `GET` parameter `view`  dit à [[yii\web\ViewAction]] quelle est la vue requise. L'action recherche alors cet vue dans le dossier `@app/views/site/pages`. Vous pouvez configurer la propriété [[yii\web\ViewAction::viewPrefix]] pour changer le dossier dans lequel la vue est recherchée.
+Le paramètre `view` de la méthode  `GET` dit à [[yii\web\ViewAction]] quelle est la vue requise. L'action recherche alors cette vue dans le dossier `@app/views/site/pages`. Vous pouvez configurer la propriété [[yii\web\ViewAction::viewPrefix]] pour changer le dossier dans lequel la vue est recherchée.
 
 
 ## Meilleures pratiques <span id="best-practices"></span>
@@ -584,6 +583,6 @@ Pour rendre les vues plus gérables, évitez de créer des vues qui sont trop co
 
 * Utiliser des [dispositions](#layouts) pour représenter les sections communes de présentation (p. ex. l'entête de page, le pied de page). 
 * Diviser une vue complexe en plusieurs vues plus réduites. Les vues plus réduites peuvent être rendue et assemblées dans une plus grande en utilisant les méthodes de rendu que nous avons décrites. 
-* Créer et utiliser des [widgets](structure-widgets.md) en tant que bloc de construction des vues.
+* Créer et utiliser des [widgets](structure-widgets.md) en tant que blocs de construction des vues.
 * Créer et utiliser des classes d'aide pour transformer et formater les données dans les vues.
 
