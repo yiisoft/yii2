@@ -231,10 +231,11 @@ class UrlRule extends Object implements UrlRuleInterface
         $configNoAction = [
             // whether to collapse multiple slashes to single
             'collapse-slashes' => false,
-            // remove trailing slash if it exists
-            'remove-trailing-slash' => false,
-            // add trailing slash if there is no one
-            'add-trailing-slash' => false,
+            // add or remove trailing slash?
+            // true - add
+            // false - remove
+            // null - do neither
+            'trailing-slash' => null,
             // what action to perform if pathInfo was changed during normalization
             // redirect: instant redirect to normalized path
             // route: return new route (must be configured via 'route')
@@ -249,14 +250,15 @@ class UrlRule extends Object implements UrlRuleInterface
                 case '':
                 case 'safe-remove-trailing-slash':
                     // Default behavior.
-                    // Acts only if $suffix != '/'.
+                    // Removes trailing slash only if $suffix != '/'.
                     // Redirects 'posts/' to 'posts' and 'posts.html/' to 'posts.html'
                     // See issue #6498 for details.
+                    // Discussion: https://github.com/yiisoft/yii2/pull/11381#discussion_r60205774
                     $suffix = (string)($this->suffix === null ? $manager->suffix : $this->suffix);
                     $normalize = [
                         'collapse-slashes' => false,
-                        'remove-trailing-slash' => ($suffix != '/') ? true : false,
-                        'add-trailing-slash' => false,
+                        // if $suffix != '/', set normalizer to remove trailing slash, otherwise don't act.
+                        'trailing-slash' => ($suffix != '/') ? false : null,
                         'action' => 'redirect'
                     ];
                     break;
@@ -266,30 +268,28 @@ class UrlRule extends Object implements UrlRuleInterface
                 case 'add-trailing-slash':
                     $normalize = [
                         'collapse-slashes' => true,
-                        'add-trailing-slash' => true,
-                        'remove-trailing-slash' => false,
+                        'trailing-slash' => true,
                         'action' => 'redirect'
                     ];
                     break;
                 case 'remove-trailing-slash':
                     $normalize = [
                         'collapse-slashes' => true,
-                        'add-trailing-slash' => false,
-                        'remove-trailing-slash' => true,
+                        'trailing-slash' => false,
                         'action' => 'redirect'
                     ];
                     break;
                 default:
                     throw new \Exception('Unknown normalization strategy ' . $normalize);
             }
-        } else {
-            $normalize = array_merge($configNoAction, $normalize);
         }
+
+        $normalize = array_merge($configNoAction, $normalize);
 
         $this->normalize = $normalize;
 
         // set $this->suffix if trailing slash is required (for createUrl())
-        if ($this->normalize['add-trailing-slash'] === true) {
+        if ($this->normalize['trailing-slash']) {
             $this->suffix = '/';
         }
     }
@@ -311,13 +311,17 @@ class UrlRule extends Object implements UrlRuleInterface
             $pathInfo = ltrim(preg_replace('#/+#', '/', $pathInfo), '/');
         }
 
-        if ($normalize['add-trailing-slash']) {
-            if (substr($pathInfo, -1) != '/') {
-                $pathInfo .= '/';
-            }
-        } elseif ($normalize['remove-trailing-slash']) {
-            if (substr($pathInfo, -1) == '/') {
-                $pathInfo = rtrim($pathInfo, '/');
+        if (!is_null($normalize['trailing-slash'])) {
+            if ($normalize['trailing-slash']) {
+                // add trailing slash
+                if (substr($pathInfo, -1) != '/') {
+                    $pathInfo .= '/';
+                }
+            } else {
+                // remove trailing slash
+                if (substr($pathInfo, -1) == '/') {
+                    $pathInfo = rtrim($pathInfo, '/');
+                }
             }
         }
 

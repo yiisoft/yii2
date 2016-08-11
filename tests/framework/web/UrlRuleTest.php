@@ -83,7 +83,7 @@ class UrlRuleTest extends TestCase
                     }
                 } else {
                     if (isset($expectedResult['route'])) {
-                        $this->assertEquals($route, $expectedResult['route'], "Test#$i-$j: $name [route]");
+                        $this->assertEquals($expectedResult['route'], $route, "Test#$i-$j: $name [route]");
                     }
                 }
             }
@@ -898,29 +898,6 @@ class UrlRuleTest extends TestCase
                 ],
             ],
             [
-                'normalizer disabled',
-                'pretty-url-no-suffix',
-                [
-                    'pattern' => 'post/<id>/<title>',
-                    'route' => 'post/view',
-                    'normalize' => 'disabled'
-                ],
-                [
-                    ['post/123/this+is+sample', [
-                        'exception' => null,
-                        'route' => ['post/view', ['id' => 123, 'title' => 'this+is+sample']]
-                    ]],
-                    ['post/123/this+is+sample/', [
-                        'exception' => null,
-                        'route' => false
-                    ]],
-                    ['post/123///this+is+sample/', [
-                        'exception' => null,
-                        'route' => false
-                    ]],
-                ],
-            ],
-            [
                 'normalizer remove-trailing-slash strategy',
                 'pretty-url-no-suffix',
                 [
@@ -982,8 +959,7 @@ class UrlRuleTest extends TestCase
                     'route' => 'post/view',
                     'normalize' => [
                         'collapse-slashes' => true,
-                        'add-trailing-slash' => false,
-                        'remove-trailing-slash' => true,
+                        'trailing-slash' => false,
                         'action' => 'route',
                         'route' => 'site/redirect'
                     ],
