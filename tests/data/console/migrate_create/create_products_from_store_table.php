@@ -6,7 +6,7 @@ return <<<CODE
 use yii\db\Migration;
 
 /**
- * Handles the creation for table `products_from_store`.
+ * Handles the creation of table `products_from_store`.
  */
 class {$class} extends Migration
 {
