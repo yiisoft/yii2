@@ -13,7 +13,7 @@ echo "<?php\n";
 use yii\db\Migration;
 
 /**
- * Handles the dropping for table `<?= $table ?>`.
+ * Handles the dropping of table `<?= $table ?>`.
 <?= $this->render('_foreignTables', [
     'foreignKeys' => $foreignKeys,
 ]) ?>
