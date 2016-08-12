@@ -95,7 +95,7 @@ Svako posebno rešenje baga ili izmena bi trebala da se nalazi u svojoj posebnoj
 
 ```
 git checkout upstream/master
-git checkout -b 999-name-of-your-branch-goes-here
+git checkout -b 999-IME-VASE-GRANE
 ```
 
 ### 4. Bacite se na posao, napišite vaš kod
@@ -110,8 +110,8 @@ Neuspeli unit testovi kao opis teme se takođe prihvataju.
 Izmenite CHANGELOG fajl kako bi uključili vašu izmenu, trebali bi je uneti na vrhu fajla ispod "Work in progress" naslova, linija u CHNAGELOG fajlu bi trebalo da izgleda nešto nalik sledećem:
 
 ```
-Bug #999: a description of the bug fix (Your Name)
-Enh #999: a description of the enhancement (Your Name)
+Bug #999: opis vaše ispravke (vaše ime)
+Enh #999: opis vašeg poboljšanja (vaše ime)
 ```
 
 `#999` je broj teme na koju se `Bug` ili `Enh` odnosi.
@@ -132,7 +132,7 @@ Možete koristit `-p` opciju kako bi izabrali izmene koje želite da komitujete.
 Komitujte vaše izmene sa opisnom porukom komita. Potrudite se da napomente broj teme sa `#XXX` kako bi GitHub automatski ulinkovao vaš komit sa temom:
 
 ```
-git commit -m "A brief description of this change which fixes #999 goes here"
+git commit -m "Ovde napišite kratak opis promene koja ispravlja #999"
 ```
 
 ### 7. Preuzmite poslednji Yii kod sa upstream-a u vašu granu
@@ -146,7 +146,7 @@ Ovo nas osigurava da imamo poslednji kod u vašoj lokalnoj grani pre nego naprav
 ### 8. Nakon razrešenih svih konflikata, postavite vaš kod na GitHub
 
 ```
-git push -u origin 999-name-of-your-branch-goes-here
+git push -u origin 999-IME-VASE-GRANE
 ```
 
 Parametar `-u` će osigurati da će vaša grana moći da šalje pull i push zahteve sa GitHub grane. To znači da ako pozovete `git push` sledeći put će znati gde treba kod da se pošalje. Ovo je korisno ako budete hteli da kasnije dodate više komitova u jednom pull zahtevu.
@@ -167,8 +167,8 @@ Nakom što je vaš kod ili prihvaćen ili odbijen možete obrisati vaše grane n
 
 ```
 git checkout master
-git branch -D 999-name-of-your-branch-goes-here
-git push origin --delete 999-name-of-your-branch-goes-here
+git branch -D 999-IME-VASE-GRANE
+git push origin --delete 999-IME-VASE-GRANE
 ```
 
 ### Napomena:
@@ -185,19 +185,19 @@ Na ovaj način će Travis započinjati testiranje samo izmena koje nisu prvenstv
 ### Pregled komandi (za napredne saradnike)
 
 ```
-git clone git@github.com:YOUR-GITHUB-USERNAME/yii2.git
+git clone git@github.com:VASE-GITHUB-KORISNICKO-IME/yii2.git
 git remote add upstream git://github.com/yiisoft/yii2.git
 ```
 
 ```
 git fetch upstream
 git checkout upstream/master
-git checkout -b 999-name-of-your-branch-goes-here
+git checkout -b 999-IME-VASE-GRANE
 
 /* bacite se na posao, izmenite changelog ako je potrebno */
 
 git add path/to/my/file.php
-git commit -m "A brief description of this change which fixes #999 goes here"
+git commit -m "Ovde napišite kratak opis promene koja ispravlja #999"
 git pull upstream master
-git push -u origin 999-name-of-your-branch-goes-here
+git push -u origin 999-IME-VASE-GRANE
 ```
