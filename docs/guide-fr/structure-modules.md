@@ -6,7 +6,7 @@ Les modules sont des unités logicielles auto-suffisantes constituées de [modè
 
 ## Création de modules <span id="creating-modules"></span>
 
-Un module est organisé comme un dossier qui est appelé le [[yii\base\Module::basePath|dossier de base (*basePath*)]] du module. Dans ce dossier, se trouvent des sous-dossiers, tels que `controllers`, `models` et `views`, qui contiennent les contrôleurs, les modèles ,les vues et d'autres parties de code, juste comme une application. L'exemple suivant présente le contenu d'un module : 
+Un module est organisé comme un dossier qui est appelé le [[yii\base\Module::basePath|dossier de base (*basePath*)]] du module. Dans ce dossier, se trouvent des sous-dossiers, tels que `controllers`, `models` et `views`, qui contiennent les contrôleurs, les modèles , les vues et d'autres parties de code, juste comme une application. L'exemple suivant présente le contenu d'un module : 
 
 ```
 forum/
@@ -142,7 +142,7 @@ Les [routes](structure-controllers.md#routes) sont utilisées pour accéder aux 
 
 ### Accès aux modules <span id="accessing-modules"></span>
 
-Dans un module, souvent, il arrive que vous ayez besoin d'une instance de la [classe module](#module-classes) de façon à pouvoir accéder à l'identifiant du module, à ses paramètres, à ses composants, etc. Vous pouvez le faire en utilisant l'instruction suivante :
+Dans un module, souvent, il arrive que vous ayez besoin d'une instance de la [classe du module](#module-classes) de façon à pouvoir accéder à l'identifiant du module, à ses paramètres, à ses composants, etc. Vous pouvez le faire en utilisant l'instruction suivante :
 
 ```php
 $module = MyModuleClass::getInstance();
