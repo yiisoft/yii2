@@ -310,7 +310,7 @@ yii fixture/load User
 yii fixture User
 
 // load several fixtures
-yii fixture User UserProfile
+yii fixture "User, UserProfile"
 
 // load all fixtures
 yii fixture/load "*"
@@ -319,7 +319,7 @@ yii fixture/load "*"
 yii fixture "*"
 
 // load all fixtures except ones
-yii fixture "*" -DoNotLoadThisOne
+yii fixture "*, -DoNotLoadThisOne"
 
 // load fixtures, but search them in different namespace. By default namespace is: tests\unit\fixtures.
 yii fixture User --namespace='alias\my\custom\namespace'
@@ -340,13 +340,13 @@ To unload fixture, run the following command:
 yii fixture/unload User
 
 // Unload several fixtures
-yii fixture/unload User,UserProfile
+yii fixture/unload "User, UserProfile"
 
 // unload all fixtures
 yii fixture/unload "*"
 
 // unload all fixtures except ones
-yii fixture/unload "*" -DoNotUnloadThisOne
+yii fixture/unload "*, -DoNotUnloadThisOne"
 
 ```
 

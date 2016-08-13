@@ -36,8 +36,8 @@ use Yii;
  * By default, SluggableBehavior will fill the `slug` attribute with a value that can be used a slug in a URL
  * when the associated AR object is being validated.
  *
- * Because attribute value will be set automatically, it's a good idea to make sure `slug` isn't
- * in `rules()` method of the model.
+ * Because attribute values will be set automatically by this behavior, they are usually not user input and should therefore
+ * not be validated, i.e. the `slug` attribute should not appear in the [[\yii\base\Model::rules()|rules()]] method of the model.
  *
  * If your attribute name is different, you may configure the [[slugAttribute]] property like the following:
  *

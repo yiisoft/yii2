@@ -626,7 +626,7 @@ The code above will result in
 <link title="Live News for Yii" rel="alternate" type="application/rss+xml" href="http://www.yiiframework.com/rss.xml/">
 ```
 
-Similar as [[yii\web\View::registerMetaTag()|registerMetaTags()]], you can specify a key when calling
+Similar as [[yii\web\View::registerMetaTag()|registerMetaTag()]], you can specify a key when calling
 [[yii\web\View::registerLinkTag()|registerLinkTag()]] to avoid generating repeated link tags.
 
 

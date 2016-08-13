@@ -160,19 +160,19 @@ class m150101_185401_create_news_table extends Migration
 
 Начиная с версии 2.0.7 появился удобный способ создания миграций из консоли.
 
-В том случае, если миграция названа особым образом, таким как, например, `create_xxx` или `drop_xxx` сгенерированный
+В том случае, если миграция названа особым образом, таким как, например, `create_xxx_table` или `drop_xxx_table` сгенерированный
 файл миграции будет содержать дополнительный код.
 
 ### Создание таблицы
 
 ```php
-yii migrate/create create_post
+yii migrate/create create_post_table
 ``` 
 
 сгенерирует
 
 ```php
-class m150811_220037_create_post extends Migration
+class m150811_220037_create_post_table extends Migration
 {
     public function up()
     {
@@ -191,13 +191,13 @@ class m150811_220037_create_post extends Migration
 Чтобы сразу создать поля таблицы, укажите их через опцию `--fields`.
  
 ```php
-yii migrate/create create_post --fields=title:string,body:text
+yii migrate/create create_post_table --fields=title:string,body:text
 ``` 
 
 сгенерирует
 
 ```php
-class m150811_220037_create_post extends Migration
+class m150811_220037_create_post_table extends Migration
 {
     public function up()
     {
@@ -218,13 +218,13 @@ class m150811_220037_create_post extends Migration
 Можно указать дополнительные параметры.
 
 ```php
-yii migrate/create create_post --fields=title:string(12):notNull:unique,body:text
+yii migrate/create create_post_table --fields=title:string(12):notNull:unique,body:text
 ``` 
 
 сгенерирует
 
 ```php
-class m150811_220037_create_post extends Migration
+class m150811_220037_create_post_table extends Migration
 {
     public function up()
     {
@@ -249,13 +249,13 @@ class m150811_220037_create_post extends Migration
 ### Удаление таблицы
 
 ```php
-yii migrate/create drop_post --fields=title:string(12):notNull:unique,body:text
+yii migrate/create drop_post_table --fields=title:string(12):notNull:unique,body:text
 ``` 
 
 сгенерирует
 
 ```php
-class m150811_220037_drop_post extends Migration
+class m150811_220037_drop_post_table extends Migration
 {
     public function up()
     {
@@ -275,18 +275,18 @@ class m150811_220037_drop_post extends Migration
 
 ### Добавление столбца
 
-Если имя миграции задано как `add_xxx_to_yyy`, файл будет содержать необходимые методы `addColumn` и `dropColumn`.
+Если имя миграции задано как `add_xxx_column_to_yyy_table`, файл будет содержать необходимые методы `addColumn` и `dropColumn`.
 
 Для добавления столбца:
 
 ```php
-yii migrate/create add_position_to_post --fields=position:integer
+yii migrate/create add_position_column_to_post_table --fields=position:integer
 ```
 
 сгенерирует
 
 ```php
-class m150811_220037_add_position_to_post extends Migration
+class m150811_220037_add_position_column_to_post_table extends Migration
 {
     public function up()
     {
@@ -302,16 +302,16 @@ class m150811_220037_add_position_to_post extends Migration
 
 ### Удаление столбца
 
-Если имя миграции задано как `drop_xxx_from_yyy`, файл будет содержать необходимые методы `addColumn` и `dropColumn`.
+Если имя миграции задано как `drop_xxx_column_from_yyy_table`, файл будет содержать необходимые методы `addColumn` и `dropColumn`.
 
 ```php
-yii migrate/create drop_position_from_post --fields=position:integer
+yii migrate/create drop_position_column_from_post_table --fields=position:integer
 ```
 
 сгенерирует
 
 ```php
-class m150811_220037_drop_position_from_post extends Migration
+class m150811_220037_drop_position_column_from_post_table extends Migration
 {
     public function up()
     {
@@ -327,10 +327,10 @@ class m150811_220037_drop_position_from_post extends Migration
 
 ### Добавление промежуточной таблицы
 
-Если имя миграции задано как `create_junction_xxx_and_yyy`, файл будет содержать код для создания промежуточной таблцы.
+Если имя миграции задано как `create_junction_table_for_xxx_and_yyy_tables`, файл будет содержать код для создания промежуточной таблцы.
 
 ```php
-yii migrate/create create_junction_post_and_tag
+yii migrate/create create_junction_table_for_post_and_tag_tables
 ```
 
 сгенерирует

@@ -7,7 +7,7 @@ return
 use yii\db\Migration;
 
 /**
- * Handles the creation for table `post_tag`.
+ * Handles the creation of table `post_tag`.
  * Has foreign keys to the tables:
  *
  * - `post`

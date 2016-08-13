@@ -15,6 +15,8 @@ use yii\db\ColumnSchema;
  * Schema is the class for retrieving metadata from a PostgreSQL database
  * (version 9.x and above).
  *
+ * @property string[] $viewNames All view names in the database. This property is read-only.
+ *
  * @author Gevik Babakhani <gevikb@gmail.com>
  * @since 2.0
  */
@@ -107,6 +109,7 @@ class Schema extends \yii\db\Schema
         'jsonb' => self::TYPE_STRING,
         'xml' => self::TYPE_STRING,
     ];
+
     /**
      * @var array list of ALL view names in the database
      */
@@ -370,7 +373,13 @@ SQL;
 
         $rows = $this->getUniqueIndexInformation($table);
         foreach ($rows as $row) {
-            $uniqueIndexes[$row['indexname']][] = $row['columnname'];
+            $column = $row['columnname'];
+            if (!empty($column) && $column[0] === '"') {
+                // postgres will quote names that are not lowercase-only
+                // https://github.com/yiisoft/yii2/issues/10613
+                $column = substr($column, 1, -1);
+            }
+            $uniqueIndexes[$row['indexname']][] = $column;
         }
 
         return $uniqueIndexes;
@@ -462,7 +471,7 @@ SQL;
                     $column->defaultValue = bindec(trim($column->defaultValue, 'B\''));
                 } elseif (preg_match("/^'(.*?)'::/", $column->defaultValue, $matches)) {
                     $column->defaultValue = $matches[1];
-                } elseif (preg_match('/^(.*?)::/', $column->defaultValue, $matches)) {
+                } elseif (preg_match('/^(?:\()?(.*?)(?(1)\))(?:::.+)?$/', $column->defaultValue, $matches)) {
                     if ($matches[1] === 'NULL') {
                         $column->defaultValue = null;
                     } else {

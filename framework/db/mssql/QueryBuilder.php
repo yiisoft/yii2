@@ -238,8 +238,7 @@ class QueryBuilder extends \yii\db\QueryBuilder
         /* @var $model \yii\db\ActiveRecord */
         $model = new $modelClass;
         $schema = $model->getTableSchema();
-        $columns = array_keys($schema->columns);
-        return $columns;
+        return array_keys($schema->columns);
     }
 
     /**

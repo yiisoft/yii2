@@ -26,26 +26,43 @@ class AccessRuleTest extends \yiiunit\TestCase
         $this->mockWebApplication();
     }
 
-    protected function mockObjects()
+    /**
+     * @param string $method
+     * @return Request
+     */
+    protected function mockRequest($method = 'GET')
     {
-        $controller = new Controller('site', Yii::$app);
-        $action = new Action('test', $controller);
+        /** @var Request $request */
+        $request = $this->getMockBuilder('\yii\web\Request')->setMethods(['getMethod'])->getMock();
+        $request->method('getMethod')->willReturn($method);
+        return $request;
+    }
 
-        $user = new User([
+    /**
+     * @return User
+     */
+    protected function mockUser()
+    {
+        return new User([
             'identityClass' => UserIdentity::class,
             'enableAutoLogin' => false,
         ]);
+    }
 
-        return [$action, $user, Yii::$app->request];
+    /**
+     * @return Action
+     */
+    protected function mockAction()
+    {
+        $controller = new Controller('site', Yii::$app);
+        return new Action('test', $controller);
     }
 
     public function testMatchAction()
     {
-        /** @var $action Action */
-        /** @var $user User */
-        /** @var $request Request */
-        list($action, $user, $request) = $this->mockObjects();
-
+        $action = $this->mockAction();
+        $user = $this->mockUser();
+        $request = $this->mockRequest();
 
         $rule = new AccessRule([
             'allow' => true,
@@ -73,16 +90,42 @@ class AccessRuleTest extends \yiiunit\TestCase
 
     // TODO test match roles
 
-    // TODO test match verb
+    public function testMatchVerb()
+    {
+        $action = $this->mockAction();
+        $user = $this->mockUser();
+
+        $rule = new AccessRule([
+            'allow' => true,
+            'verbs' => ['POST', 'get'],
+        ]);
+
+        $request = $this->mockRequest('GET');
+        $this->assertTrue($rule->allows($action, $user, $request));
+
+        $request = $this->mockRequest('POST');
+        $this->assertTrue($rule->allows($action, $user, $request));
+
+        $request = $this->mockRequest('HEAD');
+        $this->assertNull($rule->allows($action, $user, $request));
+
+        $request = $this->mockRequest('get');
+        $this->assertTrue($rule->allows($action, $user, $request));
+
+        $request = $this->mockRequest('post');
+        $this->assertTrue($rule->allows($action, $user, $request));
+
+        $request = $this->mockRequest('head');
+        $this->assertNull($rule->allows($action, $user, $request));
+    }
 
     // TODO test match custom callback
 
     public function testMatchIP()
     {
-        /** @var $action Action */
-        /** @var $user User */
-        /** @var $request Request */
-        list($action, $user, $request) = $this->mockObjects();
+        $action = $this->mockAction();
+        $user = $this->mockUser();
+        $request = $this->mockRequest();
 
         $rule = new AccessRule();
 
@@ -162,10 +205,9 @@ class AccessRuleTest extends \yiiunit\TestCase
 
     public function testMatchIPWildcard()
     {
-        /** @var $action Action */
-        /** @var $user User */
-        /** @var $request Request */
-        list($action, $user, $request) = $this->mockObjects();
+        $action = $this->mockAction();
+        $user = $this->mockUser();
+        $request = $this->mockRequest();
 
         $rule = new AccessRule();
 

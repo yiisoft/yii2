@@ -587,7 +587,7 @@ $this->registerLinkTag([
 <link title="Yii ライブニューズ" rel="alternate" type="application/rss+xml" href="http://www.yiiframework.com/rss.xml/">
 ```
 
-[[yii\web\View::registerMetaTag()|registerMetaTags()]] と同じように、[[yii\web\View::registerLinkTag()|registerLinkTag()]] を呼ぶときにキーを指定すると、同じリンクタグを繰り返して生成するのを避けることが出来ます。
+[[yii\web\View::registerMetaTag()|registerMetaTag()]] と同じように、[[yii\web\View::registerLinkTag()|registerLinkTag()]] を呼ぶときにキーを指定すると、同じリンクタグを繰り返して生成するのを避けることが出来ます。
 
 
 ## ビューのイベント <span id="view-events"></span>

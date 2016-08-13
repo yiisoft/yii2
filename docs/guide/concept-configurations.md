@@ -224,7 +224,7 @@ the specified classes when they are being created using [[Yii::createObject()]].
 can be specified by calling `Yii::$container->set()` in the [bootstrapping](runtime-bootstrapping.md) code.
 
 For example, if you want to customize [[yii\widgets\LinkPager]] so that ALL link pagers will show at most 5 page buttons
-(the default value is 10), you may use the following code to achieve this goal,
+(the default value is 10), you may use the following code to achieve this goal:
 
 ```php
 \Yii::$container->set(\yii\widgets\LinkPager::class, [

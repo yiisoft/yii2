@@ -434,10 +434,11 @@ do not match either one of them. Following each possible parameter value, you sh
 it in a pair of curly brackets.
 
 
-### Specifying default translation <span id="default-translation"></span>
+### Specifying default message source <span id="default-message-source"></span>
 
-You can specify default translations that will be used as a fallback for categories that don't match any other translation.
-This translation should be marked with `*`. In order to do it add the following to the application config:
+You can specify default message source that will be used as a fallback for category that don't match any
+configured category. You can do that by configuring a wildcard category `*`. In order to do that, add the following
+to the application config:
 
 ```php
 //configure i18n component
