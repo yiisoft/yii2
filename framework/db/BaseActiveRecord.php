@@ -689,7 +689,7 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
         }
 
         $values = $this->getDirtyAttributes($attrs);
-        if (empty($values)) {
+        if (empty($values) || $this->getIsNewRecord()) {
             return 0;
         }
 
