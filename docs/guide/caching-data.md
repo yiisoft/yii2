@@ -89,7 +89,7 @@ Yii supports a wide range of cache storage. The following is a summary:
   the corresponding cache component. In both cases, you may use the same code
   `Yii::$app->cache->get($key)` to attempt retrieving data from the cache without worrying that
   `Yii::$app->cache` might be `null`.
-* [[yii\caching\FileCache]]: uses standard files to store cached data. This is particular suitable
+* [[yii\caching\FileCache]]: uses standard files to store cached data. This is particularly suitable
   to cache large chunk of data, such as page content.
 * [[yii\caching\MemCache]]: uses PHP [memcache](http://php.net/manual/en/book.memcache.php)
   and [memcached](http://php.net/manual/en/book.memcached.php) extensions. This option can be considered as
