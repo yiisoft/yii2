@@ -436,7 +436,7 @@ class UrlRuleTest extends TestCase
                 [
                     'pattern' => 'posts',
                     'route' => 'post/index',
-                    'normalize' => 'add-trailing-slash'
+                    'normalizer' => ['strategy' => 'add-trailing-slash']
                 ],
                 [
                     ['post/index', [], 'posts/'],
@@ -880,7 +880,7 @@ class UrlRuleTest extends TestCase
                 [
                     'pattern' => 'post/<id>/<title>',
                     'route' => 'post/view',
-                    'normalize' => 'disabled'
+                    'normalizer' => ['strategy' => 'disabled']
                 ],
                 [
                     ['post/123/this+is+sample', [
@@ -903,7 +903,7 @@ class UrlRuleTest extends TestCase
                 [
                     'pattern' => 'post/<id>/<title>',
                     'route' => 'post/view',
-                    'normalize' => 'remove-trailing-slash'
+                    'normalizer' => ['strategy' => 'remove-trailing-slash']
                 ],
                 [
                     ['post/123/this+is+sample', [
@@ -930,7 +930,7 @@ class UrlRuleTest extends TestCase
                 [
                     'pattern' => 'post/<id>/<title>',
                     'route' => 'post/view',
-                    'normalize' => 'add-trailing-slash'
+                    'normalizer' => ['strategy' => 'add-trailing-slash'],
                 ],
                 [
                     ['post/123/this+is+sample/', [
@@ -957,9 +957,10 @@ class UrlRuleTest extends TestCase
                 [
                     'pattern' => 'post/<id>/<title>',
                     'route' => 'post/view',
-                    'normalize' => [
-                        'collapse-slashes' => true,
-                        'trailing-slash' => false,
+                    'normalizer' => [
+                        'strategy' => null,
+                        'collapseSlashes' => true,
+                        'trailingSlash' => false,
                         'action' => 'route',
                         'route' => 'site/redirect'
                     ],

@@ -10,6 +10,7 @@ namespace yii\web;
 use Yii;
 use yii\base\Object;
 use yii\base\InvalidConfigException;
+use yii\helpers\ArrayHelper;
 
 /**
  * UrlRule represents a rule used by [[UrlManager]] for parsing and generating URLs.
@@ -89,11 +90,10 @@ class UrlRule extends Object implements UrlRuleInterface
      * @var boolean a value indicating if parameters should be url encoded.
      */
     public $encodeParams = true;
-
     /**
-     * @var array|string normalize configuration
+     * @var UrlNormalizer
      */
-    public $normalize;
+    public $normalizer;
 
     /**
      * @var array list of placeholders for matching parameters names. Used in [[parseRequest()]], [[createUrl()]].
@@ -221,146 +221,22 @@ class UrlRule extends Object implements UrlRuleInterface
     }
 
     /**
-     * Initializes normalizer configuration
      * @param UrlManager $manager the URL manager
-     * @throws \Exception if config is not understood
+     * @return UrlNormalizer
      */
-    protected function initNormalizer($manager) {
-        $normalize = $this->normalize;
-
-        $configNoAction = [
-            // whether to collapse multiple slashes to single
-            'collapse-slashes' => false,
-            // add or remove trailing slash?
-            // true - add
-            // false - remove
-            // null - do neither
-            'trailing-slash' => null,
-            // what action to perform if pathInfo was changed during normalization
-            // redirect: instant redirect to normalized path
-            // route: return new route (must be configured via 'route')
-            // none: no action, just route by normalized path
-            'action' => 'none',
-            // string: route for $action == 'route', i.e. 'site/redirect'
-            'route' => null
+    protected function getNormalizer($manager) {
+        $defaultConfig = [
+            'class' => UrlNormalizer::className()
         ];
 
-        if (is_string($normalize) || is_null($normalize)) {
-            switch ($normalize) {
-                case '':
-                case 'safe-remove-trailing-slash':
-                    // Default behavior.
-                    // Removes trailing slash only if $suffix != '/'.
-                    // Redirects 'posts/' to 'posts' and 'posts.html/' to 'posts.html'
-                    // See issue #6498 for details.
-                    // Discussion: https://github.com/yiisoft/yii2/pull/11381#discussion_r60205774
-                    $suffix = (string)($this->suffix === null ? $manager->suffix : $this->suffix);
-                    $normalize = [
-                        'collapse-slashes' => false,
-                        // if $suffix != '/', set normalizer to remove trailing slash, otherwise don't act.
-                        'trailing-slash' => ($suffix != '/') ? false : null,
-                        'action' => 'redirect'
-                    ];
-                    break;
-                case 'disabled':
-                    $normalize = $configNoAction;
-                    break;
-                case 'add-trailing-slash':
-                    $normalize = [
-                        'collapse-slashes' => true,
-                        'trailing-slash' => true,
-                        'action' => 'redirect'
-                    ];
-                    break;
-                case 'remove-trailing-slash':
-                    $normalize = [
-                        'collapse-slashes' => true,
-                        'trailing-slash' => false,
-                        'action' => 'redirect'
-                    ];
-                    break;
-                default:
-                    throw new \Exception('Unknown normalization strategy ' . $normalize);
-            }
-        }
+        $normalizerConfig = ArrayHelper::merge(
+            ArrayHelper::merge($defaultConfig, $manager->normalizer ?: []),
+            $this->normalizer ?: []
+        );
 
-        $normalize = array_merge($configNoAction, $normalize);
+        $normalizer = Yii::createObject($normalizerConfig);
 
-        $this->normalize = $normalize;
-
-        // set $this->suffix if trailing slash is required (for createUrl())
-        if ($this->normalize['trailing-slash']) {
-            $this->suffix = '/';
-        }
-    }
-
-    /**
-     * Normalizes supplied pathInfo by normalization rules.
-     *
-     * @param $pathInfo string original pathInfo
-     * @return string normalized pathInfo
-     */
-    protected function normalizePathInfo($pathInfo) {
-        $normalize = $this->normalize;
-
-        if (!$pathInfo) {
-            return $pathInfo; // nothing to normalize
-        }
-
-        if ($normalize['collapse-slashes']) {
-            $pathInfo = ltrim(preg_replace('#/+#', '/', $pathInfo), '/');
-        }
-
-        if (!is_null($normalize['trailing-slash'])) {
-            if ($normalize['trailing-slash']) {
-                // add trailing slash
-                if (substr($pathInfo, -1) != '/') {
-                    $pathInfo .= '/';
-                }
-            } else {
-                // remove trailing slash
-                if (substr($pathInfo, -1) == '/') {
-                    $pathInfo = rtrim($pathInfo, '/');
-                }
-            }
-        }
-
-        return $pathInfo;
-    }
-
-    protected function normalize($pathInfoOrig, $pathInfoNormalized, $origRoute) {
-        // check whether pathInfo was changed during normalization.
-        // If so, take the required action.
-        if ($pathInfoNormalized != $pathInfoOrig) {
-            switch ($this->normalize['action']) {
-                case 'redirect':
-                    $e = new NormalizerActionException("Request should be normalized");
-                    $e->setAction('redirect');
-                    $e->setRedirectUrl($pathInfoNormalized);
-                    $e->setOrigPathInfo($pathInfoOrig);
-                    $e->setOrigRoute($origRoute);
-                    throw $e;
-                    break;
-                case 'route':
-                    // construct new route
-                    $redirectRoute = $this->normalize['route'];
-                    $redirectParams = [
-                        'redirectUrl' => $pathInfoNormalized,
-                        'origRoute' => $origRoute,
-                        'origPathInfo' => $pathInfoOrig,
-                    ];
-                    return [$redirectRoute, $redirectParams];
-                    break;
-                case 'none':
-                    // no action
-                    return $origRoute;
-                default:
-                    throw new \Exception("Unknown normalizer action " . $this->normalize['action']);
-                    break;
-            }
-        }
-
-        return $origRoute;
+        return $normalizer;
     }
 
     /**
@@ -380,12 +256,12 @@ class UrlRule extends Object implements UrlRuleInterface
             return false;
         }
 
-        // init normalizer, as it may depend on UrlManager $suffix
-        $this->initNormalizer($manager);
+        $normalizer = $this->getNormalizer($manager);
+        $normalizer->prepare($manager, $this);
+        $this->suffix = $normalizer->getSuffix();
+        $normalizer->processRequest($request);
 
-        $pathInfoOrig = $request->getPathInfo();
-        $pathInfoNormalized = $this->normalizePathInfo($request->getPathInfo());
-        $pathInfo = $pathInfoNormalized;
+        $pathInfo = $normalizer->getPathInfoNormalized();
 
         $suffix = (string)($this->suffix === null ? $manager->suffix : $this->suffix);
         if ($suffix !== '' && $pathInfo !== '') {
@@ -433,7 +309,7 @@ class UrlRule extends Object implements UrlRuleInterface
 
         Yii::trace("Request parsed with URL rule: {$this->name}", __METHOD__);
 
-        return $this->normalize($pathInfoOrig, $pathInfoNormalized, [$route, $params]);
+        return $normalizer->getNormalizedRoute([$route, $params]);
     }
 
     /**
@@ -450,7 +326,9 @@ class UrlRule extends Object implements UrlRuleInterface
         }
 
         // init normalizer, because it may change $this->suffix according to chosen strategy
-        $this->initNormalizer($manager);
+        $normalizer = $this->getNormalizer($manager);
+        $normalizer->prepare($manager, $this);
+        $this->suffix = $normalizer->getSuffix();
 
         $tr = [];
 
