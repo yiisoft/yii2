@@ -237,7 +237,7 @@ CODE;
 		$this->assertCommandCreatedFile('create_products_from_store_table', 'create_products_from_store_table');
 
         // @see https://github.com/yiisoft/yii2/issues/11461
-        $this->assertCommandCreatedFile('create_titlte_with_comma_default_values', 'create_test_table', [
+        $this->assertCommandCreatedFile('create_title_with_comma_default_values', 'create_test_table', [
             'fields' => 'title:string(10):notNull:unique:defaultValue(",te,st"),
              body:text:notNull:defaultValue(",test"),
              test:custom(11,2,"s"):notNull',

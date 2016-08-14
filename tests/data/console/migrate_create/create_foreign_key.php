@@ -6,7 +6,7 @@ return <<<CODE
 use yii\db\Migration;
 
 /**
- * Handles the creation for table `test`.
+ * Handles the creation of table `test`.
  * Has foreign keys to the tables:
  *
  * - `user`

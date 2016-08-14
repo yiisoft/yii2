@@ -19,6 +19,7 @@ Yii Framework 2 Change Log
 - Bug #10681: Reverted fix of beforeValidate event calling in `yii.activeForm.js` (silverfire)
 - Bug #11715: Fixed JS validation when the same model's attribute file input is listed more than once on the same page (uaoleg)
 - Bug #11541: Fixed default MySQL integer display width for unsigned primary key (h311ion, rob006, cebe)
+- Bug #12143: Fixed `yii\db\BaseActiveRecord::updateAttributes()` change `isNewRecord` state for the new model (klimov-paul)
 - Enh #10583: Do not silence session errors in debug mode (samdark)
 - Enh #11804: Added `yii\behaviors\AttributeTypecastBehavior` for maintaining of strict ActiveRecord attribute types (klimov-paul)
 - Enh #12048: Improved message extraction command performance (samdark)
