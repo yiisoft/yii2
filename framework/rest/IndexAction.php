@@ -9,6 +9,7 @@ namespace yii\rest;
 
 use Yii;
 use yii\data\ActiveDataProvider;
+use yii\data\SearchInterface;
 
 /**
  * @author Qiang Xue <qiang.xue@gmail.com>
@@ -77,7 +78,7 @@ class IndexAction extends Action
             return call_user_func($this->prepareDataProvider, $this);
         }
 
-        if ($this->searchClass !== null) {
+        if ($this->searchClass instanceof SearchInterface) {
             return (new $this->searchClass)->search(Yii::$app->request->queryParams);
         }
 
