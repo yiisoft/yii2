@@ -33,12 +33,12 @@ Yii Framework 2 Change Log
 - Bug #11973: Fixed `yii\helpers\BaseHtml::getAttributeValue()` to work with `items[]` notation correctly (silverfire)
 - Bug #12100: Fixed `yii\filters\HttpCache` was sending an empty Pragma header (sergeymakinen)
 - Bug #12107: Fixed REST Serializer to validate input for 'expand' and 'fields' parameter, which crashed on array input (njspok, cebe)
+- Enh #4479: `yii\rest\IndexAction` can now accept a search class to be used on filtering results (tunecino)
 
 
 2.0.9 July 11, 2016
 -------------------
 
-- Enh #4479: `yii\rest\IndexAction` can now accept a search class to be used on filtering results (tunecino)
 - Bug #6347: `inverseOf()` not working for dynamic relational queries (laszlovl)
 - Bug #8644: Fixed trying to ENABLE/DISABLE TRIGGER ALL on a view in PostgreSQL (ricpelo)
 - Bug #9950: Updated `yii\grid\DataColumn::getHeaderCellLabel()` to extract attribute label from the `filterModel` of Grid (silverfire)

@@ -11,7 +11,7 @@ namespace yii\data;
  * The SearchInterface must represent the model behind search forms.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
- * @since 2.0.9
+ * @since 2.0.10
  */
 interface SearchInterface
 {

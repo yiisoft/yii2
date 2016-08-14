@@ -51,7 +51,7 @@ class IndexAction extends Action
      * ```
      * See [[\yii\base\Model::formName()]] for more details.
      *
-     * @since 2.0.9
+     * @since 2.0.10
      */
     public $searchClass;
 
