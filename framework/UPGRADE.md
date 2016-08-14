@@ -15,6 +15,11 @@ php composer.phar self-update
 php composer.phar global require "fxp/composer-asset-plugin:^1.2.0"
 ```
 
+Upgrade from Yii 2.0.9
+----------------------
+
+* The first argument of `yii\widgets\ActiveField::hint()` method has become optional with default value of `null`. Method signature in derived classes that override this method must be updated accordingly.
+
 Upgrade from Yii 2.0.8
 ----------------------
 
