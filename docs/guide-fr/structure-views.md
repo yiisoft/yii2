@@ -76,7 +76,7 @@ use yii\helpers\HtmlPurifier;
 
 Comme les [contrôleurs](structure-controllers.md) et les  [modèles](structure-models.md), il existe certaines conventions pour organiser les vues. 
 
-* Pour les vues rendues par un contrôleur, elles devraient être placées par défaut dans le dossier  `@app/views/ControllerID` où `ControllerID` doit être remplacé par l'[identifiant du contrôleur](structure-controllers.md#routes). Par exemple, si la classe du contrôleur est  `PostController`, le dossier est `@app/views/post`; si c'est  `PostCommentController` le dossier est `@app/views/post-comment`. Dans le cas où le contrôleur appartient à un module, le dossier s'appelle `views/ControllerID` et se trouve dans le [[yii\base\Module::basePath|dossier racine du module]].
+* Pour les vues rendues par un contrôleur, elles devraient être placées par défaut dans le dossier  `@app/views/ControllerID` où `ControllerID` doit être remplacé par l'[identifiant du contrôleur](structure-controllers.md#routes). Par exemple, si la classe du contrôleur est  `PostController`, le dossier est `@app/views/post`; si c'est  `PostCommentController` le dossier est `@app/views/post-comment`. Dans le cas où le contrôleur appartient à un module, le dossier s'appelle `views/ControllerID` et se trouve dans le [[yii\base\Module::basePath|dossier de base du module]].
 * Pour les vues rendues dans un [widget (objet graphique)](structure-widgets.md), elles devraient être placées par défaut dans le dossier `WidgetPath/views` où  `WidgetPath` est le dossier contenant le fichier de la classe du widget. 
 * Pour les vues rendues par d'autres objets, il est recommandé d'adopter une convention similaire à celle utilisée pour les *widgets*. 
 
@@ -254,7 +254,7 @@ Les dispositions (*layouts*) sont des types  spéciaux de vues qui représentent
 
 ### Création de dispositions <span id="creating-layouts"></span>
 
-Parce que les dispositions sont aussi des vues, elles peuvent être créées de manière similaire aux vues ordinaires. Par défaut, les dispositions sont stockées dans le dossier `@app/views/layouts`. Les dispositions utilisées dans un [module](structure-modules.md) doivent être stockées dans le dossier `views/layouts` du [[yii\base\Module::basePath|dossier racine du module]]. Vous pouvez personnaliser le dossier par défaut des dispositions en configurant la propriété [[yii\base\Module::layoutPath]] de l'application ou du module.
+Parce que les dispositions sont aussi des vues, elles peuvent être créées de manière similaire aux vues ordinaires. Par défaut, les dispositions sont stockées dans le dossier `@app/views/layouts`. Les dispositions utilisées dans un [module](structure-modules.md) doivent être stockées dans le dossier `views/layouts` du [[yii\base\Module::basePath|dossier de base du module]]. Vous pouvez personnaliser le dossier par défaut des dispositions en configurant la propriété [[yii\base\Module::layoutPath]] de l'application ou du module.
 
 L'exemple qui suit montre à quoi ressemble une disposition. Notez que dans un but illustratif, nous avons grandement simplifié le code à l'intérieur de cette disposition. En pratique, vous désirerez ajouter à ce code plus de contenu, comme des balises head, un menu principal, etc. 
 
@@ -334,7 +334,7 @@ Dans la seconde étape, il détermine le fichier de disposition réel en fonctio
 
 - Un alias de chemin (p. ex. `@app/views/layouts/main`).
 - Un chemin absolu (p. ex. `/main`): la valeur de disposition commence par une barre oblique de division. Le fichier réel de disposition est recherché dans le [[yii\base\Application::layoutPath|chemin des disposition (*layoutPath*)]] (par défaut `@app/views/layouts`).
-- Un chemin relatif (p. ex. `main`): le fichier réel de disposition est recherché dans le [[yii\base\Module::layoutPath|chemin des dispositions (*layoutPath*)]] du module du contexte (par défaut`views/layouts`) dans le [[yii\base\Module::basePath|dossier racine du module]].
+- Un chemin relatif (p. ex. `main`): le fichier réel de disposition est recherché dans le [[yii\base\Module::layoutPath|chemin des dispositions (*layoutPath*)]] du module du contexte (par défaut`views/layouts`) dans le [[yii\base\Module::basePath|dossier de base du module]].
 - La valeur booléenne `false`: aucune disposition n'est appliquée.
 
 Si la valeur de disposition ne contient pas d'extension de fichier, l'extension par défaut `.php` est utilisée. 
