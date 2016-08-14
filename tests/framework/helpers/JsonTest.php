@@ -32,6 +32,12 @@ class JsonTest extends TestCase
         $data->b = 2;
         $this->assertSame('{"a":1,"b":2}', Json::encode($data));
 
+        // empty data encoding
+        $data = [];
+        $this->assertSame('[]', Json::encode($data));
+        $data = new \stdClass();
+        $this->assertSame('{}', Json::encode($data));
+
         // expression encoding
         $expression = 'function () {}';
         $data = new JsExpression($expression);
@@ -55,6 +61,13 @@ class JsonTest extends TestCase
         // JsonSerializable
         $data = new JsonModel();
         $this->assertSame('{"json":"serializable"}', Json::encode($data));
+        // @see https://github.com/yiisoft/yii2/issues/12043
+        $data = new JsonModel();
+        $data->data = [];
+        $this->assertSame('[]', Json::encode($data));
+        $data = new JsonModel();
+        $data->data = (object) null;
+        $this->assertSame('{}', Json::encode($data));
     }
 
     public function testHtmlEncode()
@@ -166,8 +179,10 @@ class JsonTest extends TestCase
 
 class JsonModel extends Model implements \JsonSerializable
 {
+    public $data = ['json' => 'serializable'];
+
     function jsonSerialize()
     {
-        return ['json' => 'serializable'];
+        return $this->data;
     }
 }

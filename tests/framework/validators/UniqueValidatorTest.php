@@ -14,13 +14,8 @@ use yiiunit\data\validators\models\ValidatorTestMainModel;
 use yiiunit\data\validators\models\ValidatorTestRefModel;
 use yiiunit\framework\db\DatabaseTestCase;
 
-/**
- * @group validators
- */
-class UniqueValidatorTest extends DatabaseTestCase
+abstract class UniqueValidatorTest extends DatabaseTestCase
 {
-    protected $driverName = 'mysql';
-
     public function setUp()
     {
         parent::setUp();
@@ -128,11 +123,13 @@ class UniqueValidatorTest extends DatabaseTestCase
         $m->item_id = 1;
         $val->validateAttribute($m, 'order_id');
         $this->assertTrue($m->hasErrors('order_id'));
+        $this->assertStringStartsWith('The combination "1"-"1" of Order Id and Item Id', $m->getFirstError('order_id'));
 
         // validate new record
         $m = new OrderItem(['order_id' => 1, 'item_id' => 2]);
         $val->validateAttribute($m, 'order_id');
         $this->assertTrue($m->hasErrors('order_id'));
+        $this->assertStringStartsWith('The combination "1"-"2" of Order Id and Item Id', $m->getFirstError('order_id'));
         $m = new OrderItem(['order_id' => 10, 'item_id' => 2]);
         $val->validateAttribute($m, 'order_id');
         $this->assertFalse($m->hasErrors('order_id'));
@@ -146,10 +143,12 @@ class UniqueValidatorTest extends DatabaseTestCase
         $m = Order::findOne(1);
         $val->validateAttribute($m, 'id');
         $this->assertTrue($m->hasErrors('id'));
+        $this->assertStringStartsWith('Id "1" has already been taken.', $m->getFirstError('id'));
         $m = Order::findOne(1);
         $m->id = 2;
         $val->validateAttribute($m, 'id');
         $this->assertTrue($m->hasErrors('id'));
+        $this->assertStringStartsWith('Id "2" has already been taken.', $m->getFirstError('id'));
         $m = Order::findOne(1);
         $m->id = 10;
         $val->validateAttribute($m, 'id');
@@ -158,6 +157,7 @@ class UniqueValidatorTest extends DatabaseTestCase
         $m = new Order(['id' => 1]);
         $val->validateAttribute($m, 'id');
         $this->assertTrue($m->hasErrors('id'));
+        $this->assertStringStartsWith('Id "1" has already been taken.', $m->getFirstError('id'));
         $m = new Order(['id' => 10]);
         $val->validateAttribute($m, 'id');
         $this->assertFalse($m->hasErrors('id'));

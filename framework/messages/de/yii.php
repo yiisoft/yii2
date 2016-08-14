@@ -17,7 +17,7 @@
  * NOTE: this file must be saved in UTF-8 encoding.
  */
 return [
-    'Unknown alias: -{name}' => 'Unbekannter Alias: -{name}',
+    'The combination {values} of {attributes} has already been taken.' => 'Die Kombination {values} für {attributes} wird bereits verwendet.',
     '(not set)' => '(nicht gesetzt)',
     'An internal server error occurred.' => 'Es ist ein interner Serverfehler aufgetreten.',
     'Are you sure you want to delete this item?' => 'Wollen Sie diesen Eintrag wirklich löschen?',
@@ -50,6 +50,7 @@ return [
     'The verification code is incorrect.' => 'Der Prüfcode ist falsch.',
     'Total <b>{count, number}</b> {count, plural, one{item} other{items}}.' => 'Insgesamt <b>{count, number}</b> {count, plural, one{Eintrag} other{Einträge}}.',
     'Unable to verify your data submission.' => 'Es ist nicht möglich, Ihre Dateneingabe zu prüfen.',
+    'Unknown alias: -{name}' => 'Unbekannter Alias: -{name}',
     'Unknown option: --{name}' => 'Unbekannte Option: --{name}',
     'Update' => 'Bearbeiten',
     'View' => 'Anzeigen',

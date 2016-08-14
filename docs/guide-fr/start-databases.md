@@ -1,9 +1,9 @@
 Travailler avec les bases de données
 ======================
 
-Cette section décrira comment créer une nouvelle page qui affiche des données pays récupérées dans une table de base 
+Cette section décrit comment créer une nouvelle page qui affiche des données pays récupérées dans une table de base 
 de données nommée `country`. Pour ce faire, vous allez configurer une connexion à une base de données, créer une 
-classe [Active Record](db-active-record.md), et définir une [action](structure-controllers.md), et créer une
+classe [Active Record](db-active-record.md), définir une [action](structure-controllers.md), et créer une
 [vue](structure-views.md).
 
 Au long de ce tutoriel, vous apprendrez comment :
@@ -27,7 +27,7 @@ Vous pouvez créer une base de données SQLite, MySQL, PostgreSQL, MSSQL ou Orac
 applications de base de données. Par simplicité, nous supposerons que vous utilisez MySQL dans les descriptions qui 
 suivent.
 
-Next, create a table named `country` in the base de données, and insert some sample data. You may run the following SQL statements to do so:
+Créez maintenant une table nommée `country` dans la base de données et insérez-y quelques données exemples. Vous pouvez exécuter l'instruction SQL suivante pour le faire : 
 
 ```sql
 CREATE TABLE `country` (
@@ -48,12 +48,12 @@ INSERT INTO `country` VALUES ('RU','Russia',146519759);
 INSERT INTO `country` VALUES ('US','United States',322976000);
 ```
 
-A ce niveau, vous avez une base de données appelée `yii2basic`, et dedans, une table `country` comportant trois colonnes, contenant dix lignes de données.
+Vous avez désormais une base de données appelée `yii2basic` conmprenant une table `country` comportant trois colonnes et contenant dix lignes de données.
 
 Configurer une Connexion à la BDD <span id="configuring-db-connection"></span>
 ---------------------------
 
-Avant de continuer, assurons nous que vous avez installé à la fois l'extension PHP 
+Avant de continuer, vérifiez que vous avez installé à la fois l'extension PHP 
 [PDO](http://www.php.net/manual/fr/book.pdo.php) et le pilote PDO pour la base de données que vous utilisez (c'est
 à dire `pdo_mysql` pour MySQL). C'est une exigence de base si votre application utilise une base de données 
 relationnelle.
@@ -80,15 +80,15 @@ dans la base de données sous-jacente.
 On peut accéder à connexion à la BDD configurée ci-dessus depuis le code de l'application vial'expression 
 `Yii::$app->db`.
 
-> Info: Le fichier `config/db.php` sera inclus par la configuration principale de l'application `config/web.php`, 
+> Info: le fichier `config/db.php` sera inclus par la configuration principale de l'application `config/web.php`, 
   qui spécifie comment l'instante d'[application](structure-applications.md) doit être initialisée.
-  Pour plus d'informations, merci de vous référer à la section [Configurations](concept-configurations.md).
+  Pour plus d'informations, reportez-vous à la section [Configurations](concept-configurations.md).
 
 
 Créer un Active Record <span id="creating-active-record"></span>
 -------------------------
 
-Pour représenter et aller chercher des données dans la table `country`, créez une classe dérivée d'[Active Record](db-active-record.md) appelée `Country`, et enregistrez la dans le fichier `models/Country.php`.
+Pour représenter et aller chercher des données dans la table `country`, créez une classe dérivée d'[Active Record](db-active-record.md) appelée `Country`, et enregistrez-la dans le fichier `models/Country.php`.
 
 ```php
 <?php
@@ -102,10 +102,10 @@ class Country extends ActiveRecord
 }
 ```
 
-La classe `Country` étend [[yii\db\ActiveRecord]]. Vous n'avez pas besoin d'y écrire le moindre code ! Simplement avec
-le code ci-dessus, Yii devinera le nom de la table associée au nom de la class. 
+La classe `Country` étend [[yii\db\ActiveRecord]]. Vous n'avez pas besoin d'y écrire le moindre code ! Simplement, avec
+le code ci-dessus, Yii devine le nom de la table associée au nom de la classe. 
 
-> Info: Si aucune correspondance directe ne peut être faite à partir du nom de la classe, vous pouvez outrepasser la méthode [[yii\db\ActiveRecord::tableName()]] pour spécifier explicitement un nom de table.
+> Info: si aucune correspondance directe ne peut être faite à partir du nom de la classe, vous pouvez outrepasser la méthode [[yii\db\ActiveRecord::tableName()]] pour spécifier explicitement un nom de table.
 
 A l'aide de la classe `Country`, vous pouvez facilement manipuler les données de la table `country`, comme dans les bribes suivantes :
 
@@ -137,7 +137,7 @@ Créer une Action <span id="creating-action"></span>
 
 Pour exposer les données pays aux utilisateurs, vous devez créer une action. Plutôt que de placer la nouvelle action 
 dans le contrôleur `site`, comme vous l'avez fait dans les sections précédentes, il est plus cohérent de créer un 
-nouveau contrôleur spécifiquement pour toutes les actions liées aux données pays. Nommez ce contrôleur 
+nouveau contrôleur spécifique à toutes les actions liées aux données pays. Nommez ce contrôleur 
 `CountryController`, et créez-y une action `index`, comme suit.
 
 ```php
@@ -182,7 +182,7 @@ Pour limiter le nombre de pays retournés par chaque requête, la requête est p
 
 * Il ajuste les clauses `offset` et `limit` de la déclaration SQL représentée par la requête afin qu'elle en retourne
   qu'une page de données à la fois (au plus 5 colonnes par page).
-* Il est utilisé dans la vue pour afficher un pagineur qui consiste en une liste de boutons de page, comme nous
+* Il est utilisé dans la vue pour afficher un sélecteur de pages qui consiste en une liste de boutons de page, comme nous
   l'expliquerons dans la prochaine sous-section.
 
 A la fin du code, l'action `index` effectue le rendu d'une vue nommée `index`, et lui transmet les données pays ainsi que les informations de pagination.
@@ -213,16 +213,16 @@ use yii\widgets\LinkPager;
 <?= LinkPager::widget(['pagination' => $pagination]) ?>
 ```
 
-La vue a deux sections relatives à l'affichage des données pays. Dans la première partie, les données pays fournies
-est parcourue et rendue sous forme de liste non ordonnée HTML.
+La vue comprend deux sections relatives à l'affichage des données pays. Dans la première partie, les données pays fournies
+sont parcourues et rendues sous forme de liste non ordonnée HTML.
 Dans la deuxième partie, un widget [[yii\widgets\LinkPager]] est rendu en utilisant les informations de pagination transmises par l'action.
-Le widget `LinkPager` affiche une liste de boutons de pages. Le fait de cliquer sur l'un deux rafraichit les données pays dans la page correspondante.
+Le widget `LinkPager` affiche une liste de boutons de page. Le fait de cliquer sur l'un deux rafraichit les données pays dans la page correspondante.
 
 
 Essayer <span id="trying-it-out"></span>
 -------------
 
-Pour voir comment tout le code ci-dessus fonctionne, utilisez votre navigateur pour accéder à l'URL suivant :
+Pour voir comment tout le code ci-dessus fonctionne, pointez votre navigateur sur l'URL suivante :
 
 ```
 http://hostname/index.php?r=country/index
@@ -230,7 +230,7 @@ http://hostname/index.php?r=country/index
 
 ![Liste de Pays](images/start-country-list.png)
 
-Au début, vous verrez une page affichant cinq pays. En dessous des pays, vous verrez un pagineur avec quatre boutons.
+Au début, vous verrez une page affichant cinq pays. En dessous des pays, vous verrez un sélecteur de pages avec quatre boutons.
 Si vous cliquez sur le bouton "2", vous verrez la page afficher cinq autres pays de la base de données : la deuxième 
 page d'enregistrements.
 Observez plus attentivement et vous noterez que l'URL dans le navigateur devient
@@ -243,7 +243,7 @@ En coulisse, [[yii\data\Pagination|Pagination]] fournit toutes les fonctionnalit
 
 * Au départ, [[yii\data\Pagination|Pagination]] représente la première page, qui reflète la requête SELECT de country
   avec la clause `LIMIT 5 OFFSET 0`. Il en résulte que les cinq premiers pays seront trouvés et affichés.
-* Le widget [[yii\widgets\LinkPager|LinkPager]] effectue le rendu des boutons de pages en utilisant les URLs créés par 
+* Le widget [[yii\widgets\LinkPager|LinkPager]] effectue le rendu des boutons de pages en utilisant les URLs créées par 
   [[yii\data\Pagination::createUrl()|Pagination]]. Les URLs contiendront le paramètre de requête `page`, qui représente
   les différents numéros de pages.
 * Si vous cliquez sur le bouton de page "2", une nouvelle requête pour la route `country/index` sera déclenchée et 
@@ -257,7 +257,7 @@ Résumé <span id="summary"></span>
 -------
 
 Dans cette section, vous avez appris comment travailler avec une base de données. Vous avez également appris comment 
-chercher et afficher des données dans des pages avec l'aide de [[yii\data\Pagination]] et [[yii\widgets\LinkPager]].
+chercher et afficher des données dans des pages avec l'aide de [[yii\data\Pagination]] et de [[yii\widgets\LinkPager]].
 
 Dans la prochaine section, vous apprendrez comment utiliser le puissant outil de génération de code, appelé 
 [Gii](tool-gii.md), pour vous aider à implémenter rapidement des fonctionnalités communément requises, telles que les 

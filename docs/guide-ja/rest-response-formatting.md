@@ -146,3 +146,30 @@ Content-Type: application/json; charset=UTF-8
     }
 }
 ```
+
+### JSON 出力を制御する
+
+JSON 形式のレスポンスを生成する [[yii\web\JsonResponseFormatter|JsonResponseFormatter]] クラスは [[yii\helpers\Json|JSON ヘルパ]] を内部的に使用します。
+このフォーマッタはさまざまなオプションによって構成することが可能です。
+例えば、[[yii\web\JsonResponseFormatter::$prettyPrint|$prettyPrint]] オプションは、より読みやすいレスポンスのためのもので、開発時に有用なオプションです。
+また、[[yii\web\JsonResponseFormatter::$encodeOptions|$encodeOptions]] によって JSON エンコーディングの出力を制御することが出来ます。
+
+フォーマッタは、以下のように、アプリケーションの [構成情報](concept-configuration.md) の中で、`response` アプリケーション・コンポーネントの [[yii\web\Response::formatters|formatters]] プロパティの中で構成することが出来ます。
+
+```php
+'response' => [
+    // ...
+    'formatters' => [
+        \yii\web\Response::FORMAT_JSON => [
+            'class' => 'yii\web\JsonResponseFormatter',
+            'prettyPrint' => YII_DEBUG, // デバッグモードでは "きれい" な出力を使用
+            'encodeOptions' => JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE,
+            // ...
+        ],
+    ],
+],
+```
+
+[DAO](db-dao.md) データベース・レイヤを使ってデータベースからデータを返す場合は、全てのデータが文字列として表されます。
+しかし、特に数値は JSON では数として表現されなければなりませんので、これは必ずしも期待通りの結果であるとは言えません。
+一方、ActiveRecord レイヤを使ってデータベースからデータを取得する場合は、数値カラムの値は、[[yii\db\ActiveRecord::populateRecord()]] においてデータベースからデータが取得される際に、整数に変換されます。

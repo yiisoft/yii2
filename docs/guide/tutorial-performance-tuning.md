@@ -138,7 +138,7 @@ If you have [Redis](http://redis.io/) on your server, it is highly recommended y
 
 ## Optimizing Databases <span id="optimizing-databases"></span>
 
-Execute DB queries and fetching data from databases is often the main performance bottleneck in
+Executing DB queries and fetching data from databases are often the main performance bottleneck in
 a Web application. Although using [data caching](caching-data.md) techniques may alleviate the performance hit,
 it does not fully solve the problem. When the database contains enormous amounts of data and the cached data is invalid, 
 fetching the latest data could be prohibitively expensive without proper database and query design.
@@ -211,5 +211,10 @@ You should profile your code to find out the performance bottlenecks and take ap
 The following profiling tools may be useful:
 
 - [Yii debug toolbar and debugger](https://github.com/yiisoft/yii2-debug/blob/master/docs/guide/README.md)
-- [XDebug profiler](http://xdebug.org/docs/profiler)
+- [Blackfire](https://blackfire.io/)
 - [XHProf](http://www.php.net/manual/en/book.xhprof.php)
+- [XDebug profiler](http://xdebug.org/docs/profiler)
+
+## Prepare application for scaling
+
+When nothing helps you may try making your application scalabe. A good introduction is provided in [Configuring a Yii2 Application for an Autoscaling Stack](https://github.com/samdark/yii2-cookbook/blob/master/book/scaling.md). For further reading you may refer to [Web apps performance and scaling](http://thehighload.com/).

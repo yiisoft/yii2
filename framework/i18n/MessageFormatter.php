@@ -99,18 +99,32 @@ class MessageFormatter extends Component
         $pattern = $this->replaceNamedArguments($pattern, $params, $newParams);
         $params = $newParams;
 
-        $formatter = new \MessageFormatter($language, $pattern);
-        if ($formatter === null) {
-            $this->_errorCode = intl_get_error_code();
-            $this->_errorMessage = 'Message pattern is invalid: ' . intl_get_error_message();
+        try {
+            $formatter = new \MessageFormatter($language, $pattern);
 
+            if ($formatter === null) {
+                // formatter may be null in PHP 5.x
+                $this->_errorCode = intl_get_error_code();
+                $this->_errorMessage = 'Message pattern is invalid: ' . intl_get_error_message();
+                return false;
+            }
+        } catch (\IntlException $e) {
+            // IntlException is thrown since PHP 7
+            $this->_errorCode = $e->getCode();
+            $this->_errorMessage = 'Message pattern is invalid: ' . $e->getMessage();
+            return false;
+        } catch (\Exception $e) {
+            // Exception is thrown by HHVM
+            $this->_errorCode = $e->getCode();
+            $this->_errorMessage = 'Message pattern is invalid: ' . $e->getMessage();
             return false;
         }
+
         $result = $formatter->format($params);
+
         if ($result === false) {
             $this->_errorCode = $formatter->getErrorCode();
             $this->_errorMessage = $formatter->getErrorMessage();
-
             return false;
         } else {
             return $result;
@@ -401,10 +415,10 @@ class MessageFormatter extends Component
 
                     if ($i == 1 && strncmp($selector, 'offset:', 7) === 0) {
                         $offset = (int) trim(mb_substr($selector, 7, ($pos = mb_strpos(str_replace(["\n", "\r", "\t"], ' ', $selector), ' ', 7, $charset)) - 7, $charset));
-                        $selector = trim(mb_substr($selector, $pos + 1, null, $charset));
+                        $selector = trim(mb_substr($selector, $pos + 1, mb_strlen($selector, $charset), $charset));
                     }
                     if ($message === false && $selector === 'other' ||
-                        $selector[0] === '=' && (int) mb_substr($selector, 1, null, $charset) === $arg ||
+                        $selector[0] === '=' && (int) mb_substr($selector, 1, mb_strlen($selector, $charset), $charset) === $arg ||
                         $selector === 'one' && $arg - $offset == 1
                     ) {
                         $message = implode(',', str_replace('#', $arg - $offset, $plural[$i]));

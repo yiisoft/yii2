@@ -1,10 +1,13 @@
 <?php
 namespace yiiunit\framework\helpers;
 
+use Yii;
 use yii\base\Action;
 use yii\base\Module;
 use yii\helpers\Url;
 use yii\web\Controller;
+use yii\web\UrlManager;
+use yii\widgets\Menu;
 use yiiunit\TestCase;
 
 /**
@@ -182,6 +185,39 @@ class UrlTest extends TestCase
 
         $this->setExpectedException('yii\base\InvalidParamException');
         Url::to(['site/view']);
+    }
+
+    /**
+     * https://github.com/yiisoft/yii2/issues/11925
+     */
+    public function testToWithSuffix()
+    {
+        Yii::$app->set('urlManager', [
+            'class' => 'yii\web\UrlManager',
+            'enablePrettyUrl' => true,
+            'showScriptName' => false,
+            'cache' => null,
+            'rules' => [
+                '<controller:\w+>/<id:\d+>' => '<controller>/view',
+                '<controller:\w+>/<action:\w+>/<id:\d+>' => '<controller>/<action>',
+                '<controller:\w+>/<action:\w+>' => '<controller>/<action>',
+            ],
+            'baseUrl' => '/',
+            'scriptUrl' => '/index.php',
+            'suffix' => '.html',
+        ]);
+        $url = Yii::$app->urlManager->createUrl(['/site/page', 'view' => 'about']);
+        $this->assertEquals('/site/page.html?view=about', $url);
+
+        $url = Url::to(['/site/page', 'view' => 'about']);
+        $this->assertEquals('/site/page.html?view=about', $url);
+
+        $output = Menu::widget([
+            'items' => [
+                ['label' => 'Test', 'url' => ['/site/page', 'view' => 'about']],
+            ],
+        ]);
+        $this->assertRegExp('~<a href="/site/page.html\?view=about">~', $output);
     }
 
     public function testBase()

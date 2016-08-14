@@ -1,15 +1,19 @@
 <?php
+
 namespace yiiunit\framework\db\sqlite;
 
 use yii\db\sqlite\ColumnSchemaBuilder;
 use yii\db\Schema;
-use \yiiunit\framework\db\ColumnSchemaBuilderTest as BaseColumnSchemaBuilderTest;
 
 /**
  * ColumnSchemaBuilderTest tests ColumnSchemaBuilder for SQLite
+ * @group db
+ * @group sqlite
  */
-class ColumnSchemaBuilderTest extends BaseColumnSchemaBuilderTest
+class ColumnSchemaBuilderTest extends \yiiunit\framework\db\ColumnSchemaBuilderTest
 {
+    public $driverName = 'sqlite';
+
     /**
      * @param string $type
      * @param integer $length
@@ -17,13 +21,13 @@ class ColumnSchemaBuilderTest extends BaseColumnSchemaBuilderTest
      */
     public function getColumnSchemaBuilder($type, $length = null)
     {
-        return new ColumnSchemaBuilder($type, $length);
+        return new ColumnSchemaBuilder($type, $length, $this->getConnection());
     }
 
     /**
      * @return array
      */
-    public function unsignedProvider()
+    public function typesProvider()
     {
         return [
             ['integer UNSIGNED', Schema::TYPE_INTEGER, null, [
@@ -31,6 +35,10 @@ class ColumnSchemaBuilderTest extends BaseColumnSchemaBuilderTest
             ]],
             ['integer(10) UNSIGNED', Schema::TYPE_INTEGER, 10, [
                 ['unsigned'],
+            ]],
+            // comments are ignored
+            ['integer(10)', Schema::TYPE_INTEGER, 10, [
+                ['comment', 'test']
             ]],
         ];
     }

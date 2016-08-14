@@ -152,7 +152,7 @@ echo Url::to(['post/index'], 'https');
 
 Hay que tener en cuenta que en el anterior ejemplo, asumimos que se está usando el formato de URL predeterminado. 
 Si habilita el formato de URL amigable, las URLs creadas serán diferentes, de acuerdo con las 
-[[yii\web\UrlManager::rules|URL rules] que se usen.
+[[yii\web\UrlManager::rules|URL rules]] que se usen.
 
 La ruta que se pasa al método [[yii\helpers\Url::to()]] es context sensitive. Esto quiere decir que puede ser una ruta 
 *relativa* o una ruta *absoluta* que serán tipificadas de acuerdo con las siguientes reglas:

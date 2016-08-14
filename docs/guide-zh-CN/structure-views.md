@@ -390,7 +390,7 @@ class PostController extends Controller
 第二步，它决定第一步中布局的值和上下文模块对应到实际的布局文件，布局的值可为：
 
 - 路径别名 (如 `@app/views/layouts/main`).
-- 绝对路径 (如 `/main`): 布局的值以斜杠开始，在应用的[[yii\base\Application::layoutPath|layout path] 布局路径
+- 绝对路径 (如 `/main`): 布局的值以斜杠开始，在应用的[[yii\base\Application::layoutPath|layout path]] 布局路径
   中查找实际的布局文件，布局路径默认为 `@app/views/layouts`。
 - 相对路径 (如 `main`): 在上下文模块的[[yii\base\Module::layoutPath|layout path]]布局路径中查找实际的布局文件，
   布局路径默认为[[yii\base\Module::basePath|module directory]]模块目录下的`views/layouts` 目录。

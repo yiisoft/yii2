@@ -293,6 +293,7 @@
             if (submitting) {
                 var event = $.Event(events.beforeValidate);
                 $form.trigger(event, [messages, deferreds]);
+
                 if (event.result === false) {
                     data.submitting = false;
                     submitFinalize($form);
@@ -302,6 +303,7 @@
 
             // client-side validation
             $.each(data.attributes, function () {
+                this.$form = $form;
                 if (!$(this.input).is(":disabled")) {
                     this.cancelled = false;
                     // perform validation only if the form is being submitted or if an attribute is pending validation

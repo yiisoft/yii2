@@ -80,7 +80,7 @@ class MigrateController extends BaseMigrateController
         'drop_table' => '@yii/views/dropTableMigration.php',
         'add_column' => '@yii/views/addColumnMigration.php',
         'drop_column' => '@yii/views/dropColumnMigration.php',
-        'create_junction' => '@yii/views/createTableMigration.php'
+        'create_junction' => '@yii/views/createTableMigration.php',
     ];
     /**
      * @var boolean indicates whether the table names generated should consider
@@ -246,7 +246,7 @@ class MigrateController extends BaseMigrateController
 
         $templateFile = $this->templateFile;
         $table = null;
-        if (preg_match('/^create_junction_(.+)_and_(.+)$/', $name, $matches)) {
+        if (preg_match('/^create_junction(?:_table_for_|_for_|_)(.+)_and_(.+)_tables?$/', $name, $matches)) {
             $templateFile = $this->generatorTemplateFiles['create_junction'];
             $firstTable = mb_strtolower($matches[1], Yii::$app->charset);
             $secondTable = mb_strtolower($matches[2], Yii::$app->charset);
@@ -275,17 +275,17 @@ class MigrateController extends BaseMigrateController
             $foreignKeys[$firstTable . '_id'] = $firstTable;
             $foreignKeys[$secondTable . '_id'] = $secondTable;
             $table = $firstTable . '_' . $secondTable;
-        } elseif (preg_match('/^add_(.+)_to_(.+)$/', $name, $matches)) {
+        } elseif (preg_match('/^add_(.+)_columns?_to_(.+)_table$/', $name, $matches)) {
             $templateFile = $this->generatorTemplateFiles['add_column'];
             $table = mb_strtolower($matches[2], Yii::$app->charset);
-        } elseif (preg_match('/^drop_(.+)_from_(.+)$/', $name, $matches)) {
+        } elseif (preg_match('/^drop_(.+)_columns?_from_(.+)_table$/', $name, $matches)) {
             $templateFile = $this->generatorTemplateFiles['drop_column'];
             $table = mb_strtolower($matches[2], Yii::$app->charset);
-        } elseif (preg_match('/^create_(.+)$/', $name, $matches)) {
+        } elseif (preg_match('/^create_(.+)_table$/', $name, $matches)) {
             $this->addDefaultPrimaryKey($fields);
             $templateFile = $this->generatorTemplateFiles['create_table'];
             $table = mb_strtolower($matches[1], Yii::$app->charset);
-        } elseif (preg_match('/^drop_(.+)$/', $name, $matches)) {
+        } elseif (preg_match('/^drop_(.+)_table$/', $name, $matches)) {
             $this->addDefaultPrimaryKey($fields);
             $templateFile = $this->generatorTemplateFiles['drop_table'];
             $table = mb_strtolower($matches[1], Yii::$app->charset);
@@ -295,7 +295,7 @@ class MigrateController extends BaseMigrateController
             $foreignKeys[$column] = [
                 'idx' => $this->generateTableName("idx-$table-$column"),
                 'fk' => $this->generateTableName("fk-$table-$column"),
-                'relatedTable' => $this->generateTableName($relatedTable)
+                'relatedTable' => $this->generateTableName($relatedTable),
             ];
         }
 
@@ -375,7 +375,7 @@ class MigrateController extends BaseMigrateController
     protected function addDefaultPrimaryKey(&$fields)
     {
         foreach ($fields as $field) {
-            if ($field['decorators'] === 'primaryKey()') {
+            if ($field['decorators'] === 'primaryKey()' || $field['decorators'] === 'bigPrimaryKey()') {
                 return;
             }
         }

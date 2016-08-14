@@ -328,7 +328,9 @@ public function behaviors()
 }
 ```
 
-Cors のフィルタリングは `cors` プロパティを使ってチューニングすることが出来ます。
+あなたの API の [[yii\rest\ActiveController]] クラスに CORS フィルタを追加したい場合は、[REST コントローラ](rest-controllers.md#cors) の節も参照して下さい。
+
+Cors のフィルタリングは [[yii\filters\Cors::$cors|$cors]] プロパティを使ってチューニングすることが出来ます。
 
 * `cors['Origin']`: 許可される生成元を定義するのに使われる配列。
   `['*']` (すべて) または `['http://www.myserver.net'、'http://www.myotherserver.com']` などが設定可能。デフォルトは `['*']`。

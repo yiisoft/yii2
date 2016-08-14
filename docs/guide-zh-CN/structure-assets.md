@@ -188,7 +188,7 @@ AppAsset::register($this);  // $this 代表视图对象
 
 ### 自定义资源包 <span id="customizing-asset-bundles"></span>
 
-Yii通过名为 `assetManager`的应用组件实现[[yii\web\AssetManager] 来管理应用组件，
+Yii通过名为 `assetManager`的应用组件实现[[yii\web\AssetManager]] 来管理应用组件，
 通过配置[[yii\web\AssetManager::bundles]] 属性，可以自定义资源包的行为，
 例如，[[yii\web\JqueryAsset]] 资源包默认从jquery Bower包中使用`jquery.js` 文件，
 为了提高可用性和性能，你可能需要从Google服务器上获取jquery文件，可以在应用配置中配置`assetManager`，如下所示：

@@ -312,7 +312,7 @@ yii fixture/load User
 yii fixture User
 
 // загрузить нескольких фикстур
-yii fixture User UserProfile
+yii fixture "User, UserProfile"
 
 // загрузить все фикстуры
 yii fixture/load "*"
@@ -321,7 +321,7 @@ yii fixture/load "*"
 yii fixture "*"
 
 // загрузить все фикстуры кроме указанной
-yii fixture "*" -DoNotLoadThisOne
+yii fixture "*, -DoNotLoadThisOne"
 
 // загрузка фикстур, но искать их следует в другом пространстве имен. Пространство имен по умолчанию: tests\unit\fixtures.
 yii fixture User --namespace='alias\my\custom\namespace'
@@ -342,13 +342,13 @@ yii fixture User --globalFixtures='some\name\space\Custom'
 yii fixture/unload User
 
 // выгрузить несколько фикстур
-yii fixture/unload User,UserProfile
+yii fixture/unload "User, UserProfile"
 
 // выгрузить все фикстуры
 yii fixture/unload "*"
 
 // выгрузить все фикстуры за исключением указанной
-yii fixture/unload "*" -DoNotUnloadThisOne
+yii fixture/unload "*, -DoNotUnloadThisOne"
 
 ```
 
