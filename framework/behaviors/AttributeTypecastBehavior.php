@@ -36,7 +36,7 @@ use yii\validators\StringValidator;
  *     {
  *         return [
  *             'typecast' => [
- *                 'class' => AttributeTypecastBehavior::className(),
+ *                 'class' => AttributeTypecastBehavior::class,
  *                 'attributeTypes' => [
  *                     'amount' => AttributeTypecastBehavior::TYPE_INTEGER,
  *                     'price' => AttributeTypecastBehavior::TYPE_FLOAT,
@@ -76,7 +76,7 @@ use yii\validators\StringValidator;
  *     {
  *         return [
  *             'typecast' => [
- *                 'class' => AttributeTypecastBehavior::className(),
+ *                 'class' => AttributeTypecastBehavior::class,
  *                 // 'attributeTypes' will be composed automatically according to `rules()`
  *             ],
  *         ];
