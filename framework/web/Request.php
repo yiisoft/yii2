@@ -405,7 +405,11 @@ class Request extends \yii\base\Request
                 $this->_bodyParams = $parser->parse($this->getRawBody(), $contentType);
             } elseif ($this->getMethod() === 'POST') {
                 // PHP has already parsed the body so we have all params in $_POST
-                $this->_bodyParams = $_POST;
+                if ($contentType === 'application/json') {
+                    $this->_bodyParams = json_decode($this->getRawBody(), true);
+                } else {
+                    $this->_bodyParams = $_POST;
+                }
             } else {
                 $this->_bodyParams = [];
                 mb_parse_str($this->getRawBody(), $this->_bodyParams);
