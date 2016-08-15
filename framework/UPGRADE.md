@@ -32,6 +32,7 @@ Upgrade to Yii 2.1.0
 
   `yii\db\QueryBuilderbuild::buildGroupBy($columns)` -> `buildGroupBy($columns, &$params)`
   `yii\db\QueryBuilderbuild::buildOrderByAndLimit($sql, $orderBy, $limit, $offset)` -> `buildOrderByAndLimit($sql, $orderBy, $limit, $offset, &$params)`
+  `yii\widgets\ActiveField::hint($content = null, $options = [])`
 
 Upgrade from Yii 2.0.8
 ----------------------

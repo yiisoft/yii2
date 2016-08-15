@@ -199,7 +199,7 @@ class ActiveField extends Component
                 $this->error();
             }
             if (!isset($this->parts['{hint}'])) {
-                $this->hint(null);
+                $this->hint();
             }
             $content = strtr($this->template, $this->parts);
         } elseif (!is_string($content)) {
@@ -317,7 +317,7 @@ class ActiveField extends Component
      *
      * @return $this the field object itself
      */
-    public function hint($content, $options = [])
+    public function hint($content = null, $options = [])
     {
 		if ($content === false) {
 			$this->parts['{hint}'] = '';
