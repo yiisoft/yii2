@@ -152,6 +152,11 @@ class ActiveField extends Component
      */
     private $_inputId;
 
+    /**
+     * @var bool this property allows delete attribute {for} in tag {label}
+     */
+    private $_withoutLabelFor=false;
+
 
     /**
      * PHP magic method that returns the string representation of this object.
@@ -269,9 +274,23 @@ class ActiveField extends Component
         if ($label !== null) {
             $options['label'] = $label;
         }
+
+        if($this->_withoutLabelFor){
+            $options['for']=null;
+        }
+
         $this->parts['{label}'] = Html::activeLabel($this->model, $this->attribute, $options);
 
         return $this;
+    }
+
+    /**
+     * Set property $_withoutLabelFor in true
+     * now render tag label will be without attribute {for}
+     */
+    private function setDeleteLabelFor()
+    {
+        $this->_withoutLabelFor=true;
     }
 
     /**
@@ -622,6 +641,7 @@ class ActiveField extends Component
     public function checkboxList($items, $options = [])
     {
         $this->adjustLabelFor($options);
+        $this->setDeleteLabelFor();
         $this->parts['{input}'] = Html::activeCheckboxList($this->model, $this->attribute, $items, $options);
 
         return $this;
@@ -640,6 +660,7 @@ class ActiveField extends Component
     public function radioList($items, $options = [])
     {
         $this->adjustLabelFor($options);
+        $this->setDeleteLabelFor();
         $this->parts['{input}'] = Html::activeRadioList($this->model, $this->attribute, $items, $options);
 
         return $this;
