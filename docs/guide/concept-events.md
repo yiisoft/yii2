@@ -129,7 +129,7 @@ With the above code, any calls to `bar()` will trigger an event named `hello`.
   auto-completion support. Third, you can tell what events are supported in a class by simply checking its constant declarations.
 
 Sometimes when triggering an event you may want to pass along additional information to the event handlers.
-For example, a mailer may want pass the message information to the handlers of the `messageSent` event so that the handlers
+For example, a mailer may want to pass the message information to the handlers of the `messageSent` event so that the handlers
 can know the particulars of the sent messages. To do so, you can provide an event object as the second parameter to
 the [[yii\base\Component::trigger()]] method. The event object must be an instance of the [[yii\base\Event]] class
 or a child class. For example:
@@ -258,7 +258,7 @@ Events using interfaces <span id="interface-level-event-handlers"></span>
 There is even more abstract way to deal with events. You can create a separated interface for the special event and
 implement it in classes, where you need it.
 
-For example we can create the following interface:
+For example, we can create the following interface:
 
 ```php
 interface DanceEventInterface
