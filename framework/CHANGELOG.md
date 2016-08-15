@@ -12,6 +12,7 @@ Yii Framework 2 Change Log
 2.0.10 under development
 ------------------------
 
+- Enh #12073: Added the ability to suppress the generation of input hint when it is specified through  `Model::attributeHints()` (PowerGamer1)
 - Bug #12068: Added missing 'LEVEL_PROFILE' for the syslog target (Mak-Di)
 - Bug #11461: Fixed migration tool error when create migrate with comma in defaultValue (pana1990, s-o-f)
 - Bug #11912: Fixed PostgreSQL Schema to support negative default values for integer/float/decimal columns (nsknewbie)
