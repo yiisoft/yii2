@@ -120,9 +120,9 @@ Les classes de contrôleur doivent être [auto-chargeables](concept-autoloading.
 > Info: dans le dernier exemple,  `admin/post-comment` montre comment placer un contrôleur dans un sous-dossier de l'[[yii\base\Application::controllerNamespace|espace de noms du contrôleur]]. Cela est utile lorsque vous voulez organiser vos contrôleurs en plusieurs catégories et que vous ne voulez pas utiliser de [modules](structure-modules.md).
 
 
-### Cartographie des contrôleurs <span id="controller-map"></span>
+### Table de mise en correspondance des contrôleurs <span id="controller-map"></span>
 
-Vous pouvez configurer [[yii\base\Application::controllerMap|controller map (cartographie des contrôleurs)]] pour outrepasser les contraintes concernant les identifiants de contrôleur et les noms de classe décrites plus haut. Cela est principalement utile lorsque vous utilisez des contrôleurs de tierces parties et que vous n'avez aucun contrôle sur le nommage de leur classe. 
+Vous pouvez configurer [[yii\base\Application::controllerMap|controller map (table de mise en correpondance des contrôleurs)]] pour outrepasser les contraintes concernant les identifiants de contrôleur et les noms de classe décrites plus haut. Cela est principalement utile lorsque vous utilisez des contrôleurs de tierces parties et que vous n'avez aucun contrôle sur le nommage de leur classe. 
 Vous pouvez configurer [[yii\base\Application::controllerMap|controller map]] dans la [configuration de l'application](structure-applications.md#application-configurations). Par exemple :
 
 ```php
@@ -211,7 +211,7 @@ Les actions en ligne sont les actions les plus communément définies parce qu'e
 Les actions autonomes sont définies comme des classes d'action qui étendent la classe [[yii\base\Action]] ou une de ses classes filles.
 Par exemple, dans les versions de Yii, il y a [[yii\web\ViewAction]] et [[yii\web\ErrorAction]], qui sont toutes les deux des actions autonomes.
 
-Pour utiliser une action autonome, vous devez la déclarer dans la *cartographie des actions* en redéfinissant les méthodes de la classe [[yii\base\Controller::actions()]] dans la classe de votre contrôleur de la manière suivante : 
+Pour utiliser une action autonome, vous devez la déclarer dans la *table de mise en correspondance des actions* en redéfinissant les méthodes de la classe [[yii\base\Controller::actions()]] dans la classe de votre contrôleur de la manière suivante : 
 
 ```php
 public function actions()
@@ -339,7 +339,7 @@ Lors du traitement d'une requête, une [application](structure-applications.md) 
 1. La méthode [[yii\base\Controller::init()]] est appelée après que le contrôleur est créé et configuré. 
 2. Le contrôleur crée un objet *action* en se basant sur l'identifiant d'action de la requête : 
    * Si l'identifiant de l'action n'est pas spécifié, l'[[yii\base\Controller::defaultAction|identifiant de l'action par défaut]] est utilisé.
-   * Si l'identifiant de l'action est trouvé dans la [yii\base\Controller::actions()|cartographie des actions]], une action autonome est créée.
+   * Si l'identifiant de l'action est trouvé dans la [yii\base\Controller::actions()|table de mise en correspondance des actions]], une action autonome est créée.
    * Si l'identifiant de l'action est trouvé et qu'il correspond à une méthode d'action, une action en ligne est créée.
    * Dans les autres cas, une exception [[yii\base\InvalidRouteException]] est levée.
 3. Le contrôleur appelle consécutivement la méthode `beforeAction()` de l'application, celle du module (si module si le contrôleur appartient à un module) et celle du contrôleur. 

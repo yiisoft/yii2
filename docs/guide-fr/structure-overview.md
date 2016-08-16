@@ -19,7 +19,7 @@ En plus du MVC, les applications Yii ont les entités suivantes :
   être organisée en de multiples modules.
 * [filtres](structure-filters.md): ils représentent du code qui doit être invoqué avant et après la gestion effective 
   de chaque requête par des contrôleurs.
-* [widgets](structure-widgets.md): ce sont des objets qui peuvent être intégrés dans des [vues](structure-views.md). Ils
+* [objets graphiques](structure-widgets.md): ce sont des objets qui peuvent être intégrés dans des [vues](structure-views.md). Ils
   peuvent contenir de la logique contrôleur et peuvent être réutilisés dans différentes vues.
 
 Le diagramme suivant montre la structure statique d'une application :
