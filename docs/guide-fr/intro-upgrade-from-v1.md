@@ -160,9 +160,9 @@ Vues
 ----
 
 Le changement le plus significatif à propos des vues dans Yii 2 est que la variable spéciale `$this` dans une vue ne fait plus référence au
-contrôleur ou widget. Au lieu de cela, `$this` correspond maintenant à un objet *vue*, un nouveau concept
+contrôleur ou à l'objet graphique. Au lieu de cela, `$this` correspond maintenant à un objet *vue*, un nouveau concept
 introduit dans la version 2.0. L'objet *vue* est de type [[yii\web\View]], et représente la partie vue
-du modèle MVC. Si vous souhaitez accéder au contrôleur ou widget dans une vue, vous pouvez utiliser `$this->context`.
+du modèle MVC. Si vous souhaitez accéder au contrôleur ou  à l'objet graphique dans une vue, vous pouvez utiliser `$this->context`.
 
 Pour afficher une vue depuis une autre vue, utilisez `$this->render()`, et non `$this->renderPartial()`. Le résultat retourné par la méthode `render()` doit être explicitement envoyé à la sortie, en effet `render()` retournera la vue au lieu de l'afficher. Par exemple :
 
@@ -231,12 +231,12 @@ public function actionView($id)
 Reportez-vous à la section [Contrôleurs](structure-controllers.md) pour plus de détails.
 
 
-Widgets
--------
+Objets graphiques
+-----------------
 
-Yii 2.0 utilise la classe [[yii\base\Widget]] comme classe de base pour les widgets, similaire à la classe `CWidget` de Yii 1.1.
+Yii 2.0 utilise la classe [[yii\base\Widget]] comme classe de base pour les objets graphiques, similaire à la classe `CWidget` de Yii 1.1.
 
-Pour avoir une meilleure prise en charge du framework dans les EDI, Yii2 introduit une nouvelle syntaxe pour utiliser les widgets. Les méthodes statiques
+Pour avoir une meilleure prise en charge du framework dans les EDI, Yii2 introduit une nouvelle syntaxe pour utiliser les objets graphiques. Les méthodes statiques
 [[yii\base\Widget::begin()|begin()]], [[yii\base\Widget::end()|end()]], et [[yii\base\Widget::widget()|widget()]]
 ont été créées et sont utilisables comme suit :
 
@@ -256,17 +256,17 @@ $form = ActiveForm::begin([
 ActiveForm::end();
 ```
 
-Reportez-vous à la section [Widgets](structure-widgets.md) pour en savoir plus.
+Reportez-vous à la section [Objets graphiques](structure-widgets.md) pour en savoir plus.
 
 
 Thèmes
 ------
 
-Les thèmes fonctionnent tout à fait différemment dans la version 2.0. Ils sont maintenant basés sur un mécanisme de mappage de chemin qui mappe un chemin
-de fichier de vue à un chemin de fichier de vue thématisée. Par exemple, si le mappage pour un thème est
+Les thèmes fonctionnent tout à fait différemment dans la version 2.0. Ils sont maintenant basés sur un mécanisme de mise en correspondance de chemin qui met un chemin
+de fichier de vue en correspondance avec un chemin de fichier de vue thématisée. Par exemple, si la mise en correspondance  pour un thème est
 `['/web/views' => '/web/themes/basic']`, alors la version thématisée du fichier de vue
 `/web/views/site/index.php` sera `/web/themes/basic/site/index.php`. Pour cette raison, les thèmes peuvent maintenant
-être appliqués à n'importe quel fichier de vue, même une vue utilisée en dehors du contexte d'un contrôleur ou d'un widget.
+être appliqués à n'importe quel fichier de vue, même une vue utilisée en dehors du contexte d'un contrôleur ou d'un objet graphique.
 
 En outre, il n'y a plus de composant `CThemeManager`. A la place, `theme` est une propriété configurable du composant `view`
 de l'application.
@@ -373,7 +373,7 @@ En utilisant des champs, vous pouvez construire un formulaire plus proprement qu
 Reportez-vous à la section [Créer des formulaires](input-forms.md) pour plus de détails.
 
 
-Constructeur de requête
+Constructeur de requêtes
 -----------------------
 
 Dans la version 1.1, la construction des requêtes était dispersée dans plusieurs classes, y compris `CDbCommand`,
