@@ -162,7 +162,7 @@ Vues
 Le changement le plus significatif à propos des vues dans Yii 2 est que la variable spéciale `$this` dans une vue ne fait plus référence au
 contrôleur ou à l'objet graphique. Au lieu de cela, `$this` correspond maintenant à un objet *vue*, un nouveau concept
 introduit dans la version 2.0. L'objet *vue* est de type [[yii\web\View]], et représente la partie vue
-du modèle MVC. Si vous souhaitez accéder au contrôleur ou  dans une vue, vous pouvez utiliser `$this->context`.
+du modèle MVC. Si vous souhaitez accéder au contrôleur ou  à l'objet graphique dans une vue, vous pouvez utiliser `$this->context`.
 
 Pour afficher une vue depuis une autre vue, utilisez `$this->render()`, et non `$this->renderPartial()`. Le résultat retourné par la méthode `render()` doit être explicitement envoyé à la sortie, en effet `render()` retournera la vue au lieu de l'afficher. Par exemple :
 
