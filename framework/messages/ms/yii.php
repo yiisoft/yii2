@@ -37,7 +37,7 @@ return [
     'Please upload a file.' => 'Sila muat naik fail',
     'Showing <b>{begin, number}-{end, number}</b> of <b>{totalCount, number}</b> {totalCount, plural, one{item} other{items}}.' => 
     'Memaparkan <b>{begin, number}-{end, number}</b> daripada <b>{totalCount, number}</b> {totalCount, plural, one{item} other{items}}.',
-    'The file "{file}" is not an image.' => 'Fail ini "{file}" bukan bejenis gambar.',
+    'The file "{file}" is not an image.' => 'Fail ini "{file}" bukan berjenis gambar.',
     'The file "{file}" is too big. Its size cannot exceed {formattedLimit}.' =>
     'Fail ini "{file}" terlalu besar. Saiz tidak boleh lebih besar daripada {formattedLimit}.',
     'The file "{file}" is too small. Its size cannot be smaller than {formattedLimit}.' =>
