@@ -488,7 +488,7 @@ A Web page can include many CSS and/or JavaScript files. To reduce the number of
 download size of these files, a common practice is to combine and compress multiple CSS/JavaScript files into 
 one or very few files, and then include these compressed files instead of the original ones in the Web pages.  
  
-> Info: Combining and compressing assets is usually needed when an application is in production mode. 
+> Info: Combining and compressing assets are usually needed when an application is in production mode. 
   In development mode, using the original CSS/JavaScript files is often more convenient for debugging purposes.
 
 In the following, we introduce an approach to combine and compress asset files without the need to modify
