@@ -250,7 +250,7 @@ named in this way. If you are concerned about code style consistency, you should
 ### Data Transformation <span id="data-transformation"></span>
 
 It often happens that the data being entered and/or displayed are in a format which is different from the one used in
-storing the data in a database. For example, in the database you are storing customer's birthdays as UNIX timestamps
+storing the data in a database. For example, in the database you are storing customers' birthdays as UNIX timestamps
 (which is not a good design, though), while in most cases you would like to manipulate birthdays as strings in
 the format of `'YYYY/MM/DD'`. To achieve this goal, you can define *data transformation* methods in the `Customer`
 Active Record class like the following:
