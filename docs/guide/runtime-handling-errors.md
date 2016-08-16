@@ -150,7 +150,7 @@ the error action and the error view are already defined for you.
 > Note: If you need to redirect in an error handler, do it the following way:
 >
 > ```php
-> Yii::$app->getResponse()->redirect($url)->send();
+> Yii::$app->response->redirect($url)->send();
 > return;
 > ```
 
