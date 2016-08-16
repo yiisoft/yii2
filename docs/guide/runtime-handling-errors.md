@@ -148,6 +148,7 @@ the following variables if the error action is defined as [[yii\web\ErrorAction]
 the error action and the error view are already defined for you.
 
 > Note: If you need to redirect in an error handler, do it the following way:
+>
 > ```php
 > Yii::$app->getResponse()->redirect($url)->send();
 > return;
