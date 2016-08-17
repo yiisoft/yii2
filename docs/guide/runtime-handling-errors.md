@@ -148,6 +148,7 @@ the following variables if the error action is defined as [[yii\web\ErrorAction]
 the error action and the error view are already defined for you.
 
 > Note: If you need to redirect in an error handler, do it the following way:
+>
 > ```php
 > Yii::$app->getResponse()->redirect($url)->send();
 > return;
@@ -157,7 +158,7 @@ the error action and the error view are already defined for you.
 ### Customizing Error Response Format <span id="error-format"></span>
 
 The error handler displays errors according to the format setting of the [response](runtime-responses.md).
-If the the [[yii\web\Response::format|response format]] is `html`, it will use the error or exception view
+If the [[yii\web\Response::format|response format]] is `html`, it will use the error or exception view
 to display errors, as described in the last subsection. For other response formats, the error handler will
 assign the array representation of the exception to the [[yii\web\Response::data]] property which will then
 be converted to different formats accordingly. For example, if the response format is `json`, you may see

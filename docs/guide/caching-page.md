@@ -27,8 +27,8 @@ public function behaviors()
 }
 ```
 
-The above code states that page caching should be used only for the `index` action; the page content should
-be cached for at most 60 seconds and should be variated by the current application language;
+The above code states that page caching should be used only for the `index` action. The page content should
+be cached for at most 60 seconds and should be variated by the current application language
 and the cached page should be invalidated if the total number of posts is changed.
 
 As you can see, page caching is very similar to [fragment caching](caching-fragment.md). They both support options such
