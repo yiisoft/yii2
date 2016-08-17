@@ -134,7 +134,7 @@ class UrlManager extends Component
      * Default strategy is to remove trailing slash if suffix != '/' and redirect to new url.
      * Discussion: https://github.com/yiisoft/yii2/pull/11381#discussion_r60205774
      */
-    public $normalizer = ['class' => 'yii\web\UrlNormalizer', 'strategy' => 'safe-remove-trailing-slash'];
+    public $normalizer = ['class' => 'yii\web\UrlNormalizer', 'strategy' => UrlNormalizer::STRATEGY_SAFE_REMOVE_TRAILING_SLASH];
 
     /**
      * @var string the cache key for cached rules
