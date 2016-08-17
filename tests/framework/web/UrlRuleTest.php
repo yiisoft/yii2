@@ -3,6 +3,7 @@
 namespace yiiunit\framework\web;
 
 use yii\web\UrlManager;
+use yii\web\UrlNormalizer;
 use yii\web\UrlRule;
 use yii\web\Request;
 use yii\web\NormalizerActionException;
@@ -436,7 +437,7 @@ class UrlRuleTest extends TestCase
                 [
                     'pattern' => 'posts',
                     'route' => 'post/index',
-                    'normalizer' => ['strategy' => 'add-trailing-slash']
+                    'normalizer' => ['strategy' => UrlNormalizer::STRATEGY_ADD_TRAILING_SLASH]
                 ],
                 [
                     ['post/index', [], 'posts/'],
@@ -880,7 +881,7 @@ class UrlRuleTest extends TestCase
                 [
                     'pattern' => 'post/<id>/<title>',
                     'route' => 'post/view',
-                    'normalizer' => ['strategy' => 'disabled']
+                    'normalizer' => ['strategy' => UrlNormalizer::STRATEGY_DISABLED]
                 ],
                 [
                     ['post/123/this+is+sample', [
@@ -903,7 +904,7 @@ class UrlRuleTest extends TestCase
                 [
                     'pattern' => 'post/<id>/<title>',
                     'route' => 'post/view',
-                    'normalizer' => ['strategy' => 'remove-trailing-slash']
+                    'normalizer' => ['strategy' => UrlNormalizer::STRATEGY_REMOVE_TRAILING_SLASH]
                 ],
                 [
                     ['post/123/this+is+sample', [
@@ -930,7 +931,7 @@ class UrlRuleTest extends TestCase
                 [
                     'pattern' => 'post/<id>/<title>',
                     'route' => 'post/view',
-                    'normalizer' => ['strategy' => 'add-trailing-slash'],
+                    'normalizer' => ['strategy' => UrlNormalizer::STRATEGY_ADD_TRAILING_SLASH],
                 ],
                 [
                     ['post/123/this+is+sample/', [
@@ -958,9 +959,7 @@ class UrlRuleTest extends TestCase
                     'pattern' => 'post/<id>/<title>',
                     'route' => 'post/view',
                     'normalizer' => [
-                        'strategy' => null,
-                        'collapseSlashes' => true,
-                        'trailingSlash' => false,
+                        'strategy' => UrlNormalizer::STRATEGY_REMOVE_TRAILING_SLASH,
                         'action' => 'route',
                         'route' => 'site/redirect'
                     ],

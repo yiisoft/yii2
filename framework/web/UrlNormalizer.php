@@ -16,16 +16,31 @@ use yii\base\Object;
  */
 class UrlNormalizer extends Object
 {
+    const TRAILING_SLASH_ADD = true;
+    const TRAILING_SLASH_REMOVE = false;
+    const TRAILING_SLASH_IGNORE = 'trailing-slash-ignore';
+
+    const ACTION_REDIRECT = 'redirect';
+    const ACTION_ROUTE = 'route';
+    const ACTION_NONE = false;
+
+    const STRATEGY_DISABLED = 'disabled';
+    const STRATEGY_SAFE_REMOVE_TRAILING_SLASH = 'safe-remove-trailing-slash';
+    const STRATEGY_REMOVE_TRAILING_SLASH = 'remove-trailing-slash';
+    const STRATEGY_ADD_TRAILING_SLASH = 'add-trailing-slash';
+
     /**
      * @var boolean whether to collapse slashes in urls: 'site///index' => 'site/index'
      */
     public $collapseSlashes;
     /**
-     * @var boolean|null true/false - add/remove trailing slash, null - do nothing
+     * @var boolean|null use TRAILING_SLASH_* constants to set values; true/false supported
+     * to simplify configuration
      */
     public $trailingSlash;
     /**
-     * @var string action to perform if url was changed during normalization: 'route', 'redirect' or 'none'
+     * @var string action to perform if url was changed during normalization, see ACTION_* constants
+     * for possible values
      */
     public $action;
     /**
@@ -33,8 +48,8 @@ class UrlNormalizer extends Object
      */
     public $route;
     /**
-     * @var string bolk set of other properties via single config option, strategies supported:
-     * 'add-trailing-slash', 'remove-trailing-slash', 'safe-remove-trailing-slash', 'disabled'
+     * @var string bulk set of other properties via single config option, supported strategies
+     * are STRATEGY_* constants
      */
     public $strategy;
 
@@ -59,40 +74,56 @@ class UrlNormalizer extends Object
      * @throws \Exception if config is not understood
      */
     public function prepare($manager, $rule) {
+        $config = [];
+
         if ($this->strategy) switch ($this->strategy) {
-            case 'disabled':
-                $this->trailingSlash = null;
-                $this->collapseSlashes = false;
-                $this->action = false;
+            case self::STRATEGY_DISABLED:
+                $config = [
+                    'trailingSlash' => self::TRAILING_SLASH_IGNORE,
+                    'collapseSlashes' => false,
+                    'action' => self::ACTION_NONE
+                ];
                 break;
-            case 'safe-remove-trailing-slash':
+            case self::STRATEGY_SAFE_REMOVE_TRAILING_SLASH:
                 // Removes trailing slash only if $suffix != '/'.
                 // Redirects 'posts/' to 'posts' and 'posts.html/' to 'posts.html'
                 // See issue #6498 for details.
                 $suffix = (string)($rule->suffix === null ? $manager->suffix : $rule->suffix);
 
-                // if $suffix != '/', set normalizer to remove trailing slash, otherwise don't act.
-                $this->trailingSlash = ($suffix != '/') ? false : null;
-
-                $this->collapseSlashes = false;
-                $this->action = 'redirect';
+                $config = [
+                    // if $suffix != '/', set normalizer to remove trailing slash, otherwise don't act.
+                    'trailingSlash' =>  ($suffix != '/') ? self::TRAILING_SLASH_REMOVE : self::TRAILING_SLASH_IGNORE,
+                    'collapseSlashes' => null,
+                    'action' => self::ACTION_REDIRECT
+                ];
                 break;
-            case 'add-trailing-slash':
-                $this->trailingSlash = true;
-                $this->collapseSlashes = true;
-                $this->action = 'redirect';
+            case self::STRATEGY_ADD_TRAILING_SLASH:
+                $config = [
+                    'trailingSlash' => self::TRAILING_SLASH_ADD,
+                    'collapseSlashes' => true,
+                    'action' => self::ACTION_REDIRECT
+                ];
                 break;
-            case 'remove-trailing-slash':
-                $this->trailingSlash = false;
-                $this->collapseSlashes = true;
-                $this->action = 'redirect';
+            case self::STRATEGY_REMOVE_TRAILING_SLASH:
+                $config = [
+                    'trailingSlash' => self::TRAILING_SLASH_REMOVE,
+                    'collapseSlashes' => true,
+                    'action' => self::ACTION_REDIRECT
+                ];
                 break;
             default:
                 throw new \Exception('Unknown normalization strategy ' . $this->strategy);
         }
 
+        foreach ($config as $name => $value) {
+            // explicit property configuration overrides strategy
+            $config[$name] = !is_null($this->$name) ? $this->$name : $value;
+        }
+
+        Yii::configure($this, $config);
+
         // set rule's $suffix if trailing slash is required (for createUrl())
-        if ($this->trailingSlash) {
+        if ($this->trailingSlash === self::TRAILING_SLASH_ADD) {
             $this->suffix = '/';
         } else {
             $this->suffix = $rule->suffix;
@@ -129,8 +160,8 @@ class UrlNormalizer extends Object
      */
     public function getNormalizedRoute($origRoute) {
         if ($this->pathInfoNormalized != $this->pathInfoOrig) {
-            switch ($this->action) {
-                case 'redirect':
+            switch (true) {
+                case $this->action === self::ACTION_REDIRECT:
                     $e = new NormalizerActionException("Request should be normalized");
                     $e->setAction('redirect');
                     $e->setRedirectUrl($this->pathInfoNormalized);
@@ -138,7 +169,7 @@ class UrlNormalizer extends Object
                     $e->setOrigRoute($origRoute);
                     throw $e;
                     break;
-                case 'route':
+                case $this->action === self::ACTION_ROUTE:
                     // construct new route
                     $redirectParams = [
                         'redirectUrl' => $this->pathInfoNormalized,
@@ -147,7 +178,8 @@ class UrlNormalizer extends Object
                     ];
                     return [$this->route, $redirectParams];
                     break;
-                case 'none':
+                case !$this->action:
+                case $this->action === self::ACTION_NONE:
                     // no action
                     return $origRoute;
                 default:
@@ -174,7 +206,7 @@ class UrlNormalizer extends Object
             $pathInfo = ltrim(preg_replace('#/+#', '/', $pathInfo), '/');
         }
 
-        if (!is_null($this->trailingSlash)) {
+        if ($this->trailingSlash !== self::TRAILING_SLASH_IGNORE) {
             if ($this->trailingSlash) {
                 // add trailing slash
                 if (substr($pathInfo, -1) != '/') {
