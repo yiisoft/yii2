@@ -211,7 +211,7 @@ class MessageController extends Controller
  * You may modify this file to suit your needs.
  *
  * You can use 'yii {$this->id}/{$this->action->id}-template' command to create
- * template configuration file with detaild description for each parameter.
+ * template configuration file with detailed description for each parameter.
  */
 return $array;
 
