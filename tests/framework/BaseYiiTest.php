@@ -89,16 +89,13 @@ class BaseYiiTest extends TestCase
 
     /**
      * @covers yii\BaseYii::setLogger()
+     * @covers yii\BaseYii::getLogger()
      */
-    public function testSetLogger()
+    public function testSetAndGetLoggerTogether()
     {
         $logger = new Logger();
         BaseYii::setLogger($logger);
 
-        $reflection = new \ReflectionClass('yii\BaseYii');
-        $log = $reflection->getProperty('_logger');
-        $log->setAccessible(true);
-
-        $this->assertEquals($log->getValue('yii\BaseYii'), $logger);
+        $this->assertSame($logger, BaseYii::getLogger());
     }
 }
