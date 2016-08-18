@@ -94,7 +94,7 @@ class UniqueValidator extends Validator
         $targetAttribute = $this->targetAttribute === null ? [$attribute] : (array)$this->targetAttribute;
         
         // Perform the validation only once even if this validator is attached to multiple attributes.
-        if ($targetAttribute[0] != $this->attributes[0]) {
+        if (isset($this->attributes[0]) && $targetAttribute[0] != $this->attributes[0]) {
             return;
         }
 
