@@ -175,7 +175,7 @@ class UniqueValidator extends Validator
 			$valueCombo[] = '"' . $model->$modelAttribute . '"';
 		}
 
-		$message = Yii::$app->getI18n()->format($this->message, [
+		$message = Yii::$app->getI18n()->format($this->comboNotUnique, [
 			'attributes' => Inflector::sentence($attributeCombo),
 			'values' => implode('-', $valueCombo)
 		], Yii::$app->language);
