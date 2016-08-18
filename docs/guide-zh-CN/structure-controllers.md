@@ -112,7 +112,7 @@ class SiteController extends Controller
 例如使用`article`作为处理文章的控制器ID。
 
 控制器ID应仅包含英文小写字母、数字、下划线、中横杠和正斜杠，
-例如 `article` 和 `post-comment` 是真是的控制器
+例如 `article` 和 `post-comment` 是真实的控制器
 ID，`article?`, `PostComment`, `admin\post`不是控制器ID。
 
 控制器Id可包含子目录前缀，例如 `admin/article` 代表
