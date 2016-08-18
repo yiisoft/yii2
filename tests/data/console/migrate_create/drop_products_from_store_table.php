@@ -6,7 +6,7 @@ return <<<CODE
 use yii\db\Migration;
 
 /**
- * Handles the dropping for table `products_from_store`.
+ * Handles the dropping of table `products_from_store`.
  */
 class {$class} extends Migration
 {

@@ -215,8 +215,8 @@ use yii\widgets\LinkPager;
 
 La vue comprend deux sections relatives à l'affichage des données pays. Dans la première partie, les données pays fournies
 sont parcourues et rendues sous forme de liste non ordonnée HTML.
-Dans la deuxième partie, un widget [[yii\widgets\LinkPager]] est rendu en utilisant les informations de pagination transmises par l'action.
-Le widget `LinkPager` affiche une liste de boutons de page. Le fait de cliquer sur l'un deux rafraichit les données pays dans la page correspondante.
+Dans la deuxième partie, un objet graphique [[yii\widgets\LinkPager]] est rendu en utilisant les informations de pagination transmises par l'action.
+L'objet graphique `LinkPager` affiche une liste de boutons de page. Le fait de cliquer sur l'un deux rafraichit les données pays dans la page correspondante.
 
 
 Essayer <span id="trying-it-out"></span>
@@ -243,7 +243,7 @@ En coulisse, [[yii\data\Pagination|Pagination]] fournit toutes les fonctionnalit
 
 * Au départ, [[yii\data\Pagination|Pagination]] représente la première page, qui reflète la requête SELECT de country
   avec la clause `LIMIT 5 OFFSET 0`. Il en résulte que les cinq premiers pays seront trouvés et affichés.
-* Le widget [[yii\widgets\LinkPager|LinkPager]] effectue le rendu des boutons de pages en utilisant les URLs créées par 
+* L'objet graphique [[yii\widgets\LinkPager|LinkPager]] effectue le rendu des boutons de pages en utilisant les URLs créées par 
   [[yii\data\Pagination::createUrl()|Pagination]]. Les URLs contiendront le paramètre de requête `page`, qui représente
   les différents numéros de pages.
 * Si vous cliquez sur le bouton de page "2", une nouvelle requête pour la route `country/index` sera déclenchée et 
