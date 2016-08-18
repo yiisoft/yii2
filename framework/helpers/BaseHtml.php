@@ -1157,9 +1157,6 @@ class BaseHtml
      * @since 2.0.10
      * - showAllErrors: boolean, if set to true every error message for each attribute will be shown otherwise
      * only the first error message for each attribute will be shown.
-     * @since 2.0.10
-     * - skipDuplicateErrors: boolean, if set to false all duplicate error messages will be shown otherwise 
-     * duplicate error messages will be shown only once.
      *
      * The rest of the options will be rendered as the attributes of the container tag. The values will
      * be HTML-encoded using [[encode()]]. If a value is null, the corresponding attribute will not be rendered.
@@ -1171,7 +1168,6 @@ class BaseHtml
         $footer = ArrayHelper::remove($options, 'footer', '');
         $encode = ArrayHelper::remove($options, 'encode', true);
 		$showAllErrors = ArrayHelper::remove($options, 'showAllErrors', false);
-		$skipDuplicateErrors = ArrayHelper::remove($options, 'skipDuplicateErrors', true);
         unset($options['header']);
 
         $lines = [];
@@ -1183,7 +1179,7 @@ class BaseHtml
 			foreach ($model->getErrors() as $errors) {
 				foreach ($errors as $error) {
 					$line = $encode ? Html::encode($error) : $error;
-					if (!$skipDuplicateErrors || array_search($line, $lines) === false) {
+					if (array_search($line, $lines) === false) {
 						$lines[] = $line;
 					}
 					if (!$showAllErrors) {
