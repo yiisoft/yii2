@@ -88,8 +88,8 @@ class BaseYiiTest extends TestCase
     }
 
     /**
-     * @covers yii\BaseYii::setLogger()
-     * @covers yii\BaseYii::getLogger()
+     * @covers \yii\BaseYii::setLogger()
+     * @covers \yii\BaseYii::getLogger()
      */
     public function testSetupLogger()
     {
@@ -97,5 +97,9 @@ class BaseYiiTest extends TestCase
         BaseYii::setLogger($logger);
 
         $this->assertSame($logger, BaseYii::getLogger());
+
+        BaseYii::setLogger(null);
+        $defaultLogger = BaseYii::getLogger();
+        $this->assertTrue($defaultLogger instanceof Logger);
     }
 }
