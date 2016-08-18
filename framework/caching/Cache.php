@@ -59,7 +59,7 @@ abstract class Cache extends Component implements \ArrayAccess
      */
     public $keyPrefix;
     /**
-     * @var array|boolean the functions used to serialize and unserialize cached data. Defaults to null, meaning
+     * @var null|array|false the functions used to serialize and unserialize cached data. Defaults to null, meaning
      * using the default PHP `serialize()` and `unserialize()` functions. If you want to use some more efficient
      * serializer (e.g. [igbinary](http://pecl.php.net/package/igbinary)), you may configure this property with
      * a two-element array. The first element specifies the serialization function, and the second the deserialization
