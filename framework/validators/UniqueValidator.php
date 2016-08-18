@@ -91,21 +91,19 @@ class UniqueValidator extends Validator
     {
         /* @var $targetClass ActiveRecordInterface */
         $targetClass = $this->targetClass === null ? get_class($model) : $this->targetClass;
-        $targetAttributes = $this->targetAttribute === null ? [$attribute] : (array)$this->targetAttribute;
-        
-        // Perform the validation only once even if this validator is attached to multiple attributes.
-        if (isset($this->attributes[0]) && $targetAttributes[0] != $this->attributes[0]) {
-            return;
-        }
+        $targetAttribute = $this->targetAttribute === null ? $attribute : $this->targetAttribute;
 
-        $params = [];
-        foreach ($targetAttributes as $modelAttribute => $targetAttribute) {
-            if (is_int($modelAttribute)) {
-                $modelAttribute = $targetAttribute;
+        if (is_array($targetAttribute)) {
+            $params = [];
+            foreach ($targetAttribute as $k => $v) {
+                $params[$v] = is_int($k) ? $model->$v : $model->$k;
             }
-            if ($this->skipOnError && $model->hasErrors($modelAttribute))
+            // When validating a combo perform the validation only once even if this validator is attached to multiple attributes.
+            if (isset($this->attributes[0]) && $targetAttributes[0] != $this->attributes[0]) {
                 return;
-            $params[$targetAttribute] =  $model->$modelAttribute;
+            }
+        } else {
+            $params = [$targetAttribute => $model->$attribute];
         }
 
         foreach ($params as $value) {
