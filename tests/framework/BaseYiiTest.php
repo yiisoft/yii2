@@ -91,7 +91,7 @@ class BaseYiiTest extends TestCase
      * @covers yii\BaseYii::setLogger()
      * @covers yii\BaseYii::getLogger()
      */
-    public function testSetAndGetLoggerTogether()
+    public function testSetupLogger()
     {
         $logger = new Logger();
         BaseYii::setLogger($logger);
