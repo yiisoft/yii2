@@ -15,7 +15,7 @@ Pour utiliser une extension, vous devez d'abord l'installer. La plupart des exte
 
 Notez que devez installer [Composer](https://getcomposer.org/) si vous ne l'avez pas déjà fait.
 
-Par défaut, Composer installe les paquets enregistrés sur [Packagist](https://packagist.org/) — le plus grand dépôts pour les paquets Composer Open Source. Vous pouvez rechercher des extensions sur Packagist. Vous pouvez aussi [créer votre propre dépôt](https://getcomposer.org/doc/05-repositories.md#repository) et configurer Composer pour l'utiliser. Ceci est utile si vous développez des extensions privées que vous ne voulez partager que dans vos propres projets seulement.
+Par défaut, Composer installe les paquets enregistrés sur [Packagist](https://packagist.org/) — le plus grand dépôt pour les paquets Composer Open Source. Vous pouvez rechercher des extensions sur Packagist. Vous pouvez aussi [créer votre propre dépôt](https://getcomposer.org/doc/05-repositories.md#repository) et configurer Composer pour l'utiliser. Ceci est utile si vous développez des extensions privées que vous ne voulez partager que dans vos propres projets seulement.
 
 Les extensions installées par Composer sont stockées dans le dossier `BasePath/vendor`, où `BasePath` fait référence au [chemin de base](structure-applications.md#basePath) de l'application.  Comme Composer est un gestionnaire de dépendances, quand il installe un paquet, il installe aussi automatiquement tous les paquets dont le paquet dépend. 
 
@@ -26,7 +26,7 @@ Par exemple, pour installer l'extension `yiisoft/yii2-imagine`, modifier votre f
     // ...
 
     "require": {
-        // ... other dependencies
+        // ... autres dépendances
 
         "yiisoft/yii2-imagine": "*"
     }
@@ -48,7 +48,7 @@ Image::thumbnail('@webroot/img/test-image.jpg', 120, 120)
     ->save(Yii::getAlias('@runtime/thumb-test-image.jpg'), ['quality' => 50]);
 ```
 
-> Info: les classes d'extension sont chargées automatiquement par  [Yii class autoloader](concept-autoloading.md).
+> Info: les classes d'extension sont chargées automatiquement par  la [classe de chargement automatique de Yii (*autoloader*)](concept-autoloading.md).
 
 
 ### Installation manuelle d'extensions <span id="installing-extensions-manually"></span>
@@ -56,7 +56,7 @@ Image::thumbnail('@webroot/img/test-image.jpg', 120, 120)
 Dans quelques cas rares, vous désirez installer quelques, ou toutes les, extensions manuellement, plutôt que de vous en remettre à Composer. Pour le faire, vous devez :
 
 1. Télécharger les archives des extensions et les décompresser dans le dossier `vendor`.
-2. Installer la classe *autoloader* procurées par les extensions, si elles en possèdent.
+2. Installer la classe *autoloader* procurée par les extensions, si elles en possèdent.
 3. Télécharger et installer toutes les extensions dont vos extensions dépendent selon les instructions.
  
 Si une extension ne possède pas de classe *autoloader* mais obéit à la [norme PSR-4](http://www.php-fig.org/psr/psr-4/), vous pouvez utiliser la classe *autoloader* procurée par Yii pour charger automatiquement les classes d'extension. Tout ce que vous avez à faire, c'est de déclarer un [alias racine](concept-aliases.md#defining-aliases) pour le dossier racine de l'extension. Par exemple, en supposant que vous avez installé une extension dans le dossier `vendor/mycompany/myext`, et que les classes d'extension sont sous l'espace de noms `myext`, alors vous pouvez inclure le code suivant dans la configuration de votre application :
@@ -90,10 +90,10 @@ L'exemple suivant montre le fichier `composer.json` de l'extension `yiisoft/yii2
 
 ```json
 {
-    // package name
+    // package name (nom du paquet)
     "name": "yiisoft/yii2-imagine",
 
-    // package type
+    // package type (type du paquet)
     "type": "yii2-extension",
 
     "description": "l'intégration d'Imagine pour le framework Yii ",
@@ -153,7 +153,7 @@ plutôt que par Composer. Yii utilise le [greffon *assets* de Composer(https://g
 
 ```json
 {
-    // package dependencies
+    // paquets dépendances
     "require": {
         "bower-asset/jquery": ">=1.11.*"
     }
@@ -193,7 +193,7 @@ Parce que les extensions sont prévues pour être utilisées par d'autres person
 
 #### Espaces de noms <span id="namespaces"></span>
 
-Pour éviter les collisions de noms et rendre le chargement des classes de votre extension automatique, vous devez utiliser des espaces de noms et nommer les classes de votre extensions en respectant la [norme PSR-4](http://www.php-fig.org/psr/psr-4/) ou la [norme PSR-0](http://www.php-fig.org/psr/psr-0/).
+Pour éviter les collisions de noms et rendre le chargement des classes de votre extension automatique, vous devez utiliser des espaces de noms et nommer les classes de votre extension en respectant la [norme PSR-4](http://www.php-fig.org/psr/psr-4/) ou la [norme PSR-0](http://www.php-fig.org/psr/psr-0/).
 
 Vos noms de classe doivent commencer par  `vendorName\extensionName`, où `extensionName` est similaire au nom du projet dans le nom du paquet sauf qu'il doit contenir le préfixe `yii2-`. Par exemple, pour l'extension `yiisoft/yii2-imagine`, nous utilisons l'espace de noms `yii\imagine` pour ses classes. 
 
@@ -286,7 +286,7 @@ Vous devriez donner à chacune des versions publiées de votre extension un num�
 Pour permettre aux autres personnes de connaître votre extension, vous devez la publier. Si c'est la première fois que vous publiez l'extension, vous devez l'enregistrer sur un dépôt Composer tel que [Packagist](https://packagist.org/). Ensuite, tout ce que vous avez à faire, c'est de créer une balise de version (p. ex. `v1.0.1`) sur le dépôt VCS de votre extension et de notifier au dépôt Composer la nouvelle version. Les gens seront capables de trouver votre nouvelle version et, soit de l'installer, soit de la mettre à jour via le dépôt Composer. 
 
 Dans les versions de votre extension, en plus des fichiers de code, vous devez envisager d'inclure ce qui suit par aider les gens à connaître votre extension et à l'utiliser :
-* Un ficher *readme* (lisez-moi) dans le dossier racine du paquet : il doit décrire ce que fait votre extension, comment l'installer et l'utiliser. Nous vous recommandons de l'écrire dans le format [Markdown](http://daringfireball.net/projects/markdown/) et de nommer le fichier `readme.md`.
+* Un ficher *readme* (lisez-moi) dans le dossier racine du paquet : il doit décrire ce que fait votre extension, comment l'installer et l'utiliser. Nous vous recommandons de l'écrire dans le format [Markdown](http://daringfireball.net/projects/markdown/) et de nommer ce fichier `readme.md`.
 * Un fichier *changelog* (journal des modifications) dans le dossier racine du paquet : il liste les changements apportés dans chacune des versions. Ce fichier peut être écrit dans le format Markdown et nommé `changelog.md`.
 * Un fichier *upgrade* (mise à jour) dans le dossier racine du paquet : il donne les instructions sur la manière de mettre l'extension à jour en partant d'une version précédente.   Ce fichier peut être écrit dans le format Markdown et nommé `upgrade.md`.
 * Tutorials, demos, screenshots, etc.: ces derniers sont nécessaires si votre extension fournit de nombreuses fonctionnalités qui ne peuvent être couvertes dans le fichier readme. 
@@ -310,7 +310,7 @@ Yii fournit les extensions du noyau suivantes qui sont développées et maintenu
 - [yiisoft/yii2-faker](https://github.com/yiisoft/yii2-faker) : fournit la prise en charge de [Faker](https://github.com/fzaninotto/Faker) pour générer des données factices pour vous.
 - [yiisoft/yii2-gii](https://github.com/yiisoft/yii2-gii) : fournit un générateur de code basé sur le Web qui est hautement extensible et peut être utilisé pour générer rapidement des modèles, des formulaires, des modules, des requêtes CRUD, etc. 
 - [yiisoft/yii2-imagine](https://github.com/yiisoft/yii2-imagine) : fournit des fonctionnalités couramment utilisées de manipulation d'images basées sur [Imagine](http://imagine.readthedocs.org/).
-- [yiisoft/yii2-jui](https://github.com/yiisoft/yii2-jui) : fournit un jeu d'objets graphiques qui encapsule les interactions et les objets graphiques de [JQuery UI](http://jqueryui.com/).
+- [yiisoft/yii2-jui](https://github.com/yiisoft/yii2-jui) : fournit un jeu d'objets graphiques qui encapsulent les interactions et les objets graphiques de [JQuery UI](http://jqueryui.com/).
 - [yiisoft/yii2-mongodb](https://github.com/yiisoft/yii2-mongodb) : fournit la prise en charge de [MongoDB](http://www.mongodb.org/). Elle inclut des fonctionnalités telles que les requêtes de base, les enregistrements actifs, les migrations, la mise en cache, la génération de code, etc.
 - [yiisoft/yii2-redis](https://github.com/yiisoft/yii2-redis) : fournit la prise en charge de [redis](http://redis.io/). Elle inclut des fonctionnalités telles que les requêtes de base, les enregistrements actifs, la mise en cache, etc.
 - [yiisoft/yii2-smarty](https://github.com/yiisoft/yii2-smarty) : fournit un moteur de modèles basé sur  [Smarty](http://www.smarty.net/).
