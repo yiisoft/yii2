@@ -82,6 +82,7 @@ Yii Framework 2 Change Log
 - Enh #12580: Make `yii.js` comply with strict and non-strict javascript mode to allow concatenation with external code (mikehaertl)
 - Enh #12664: Added support for wildcards for `optional` at `yii\filters\auth\AuthMethod` (mg-code)
 - Enh: Method `yii\console\controllers\AssetController::getAssetManager()` automatically enables `yii\web\AssetManager::forceCopy` in case it is not explicitly specified (pana1990, klimov-paul)
+- Enh #12198: Added `time` and `datetime` validator short names (nkovacs)
 
 
 2.0.9 July 11, 2016
