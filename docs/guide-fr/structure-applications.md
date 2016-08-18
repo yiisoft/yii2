@@ -194,7 +194,7 @@ Vous pouvez enregistrer n'importe quel composant dans une application, et vous p
 Reportez-vous à la section  [Composants d'application](structure-application-components.md) pour plus de détails.
 
 
-#### [[yii\base\Application::controllerMap|controllerMap (cartographie des contrôleurs)]] <span id="controllerMap"></span>
+#### [[yii\base\Application::controllerMap|controllerMap (Table de mise en correspondance des contrôleurs)]] <span id="controllerMap"></span>
 
 Cette propriété vous permet de faire correspondre un identifiant (ID) de contrôleur avec une classe de contrôleur arbitraire. Par défaut, Yii fait correspondre un identifiant de contrôleur avec une classe de contrôleur selon une [convention](#controllerNamespace) (p. ex.  l'identifiant `post` correspond à `app\controllers\PostController`). En configurant cette propriété, vous passez outre la convention pour les contrôleurs spécifiés. Dans l'exemple qui suit,  `account` correspond à 
 `app\controllers\UserController`, tandis que `article` correspond à  `app\controllers\PostController`.
@@ -232,7 +232,7 @@ Si vous désirez passer outre la convention décrite précédemment, vous devez 
 Cette propriété spécifie la langue dans laquelle l'application présente les contenus aux utilisateurs finaux. 
 La valeur par défaut de cette propriété est  `en`, pour anglais. Vous devez configurer cette propriété si votre application doit prendre en charge plusieurs langues. 
 
-La valeur de cette propriété détermine des aspects variés de l'[internationalisation](tutorial-i18n.md) tels que la traduction des messages, le formatage des dates et des nombres, etc. Par exemple, le widget [[yii\jui\DatePicker]] utilise la valeur de cette propriété pour déterminer dans quelle langue le calendrier doit être affiché et comment les dates doivent être formatées. 
+La valeur de cette propriété détermine des aspects variés de l'[internationalisation](tutorial-i18n.md) tels que la traduction des messages, le formatage des dates et des nombres, etc. Par exemple, l'objet graphique [[yii\jui\DatePicker]] utilise la valeur de cette propriété pour déterminer dans quelle langue le calendrier doit être affiché et comment les dates doivent être formatées. 
 
 La spécification de la langue par une  [étiquette IETF d'identification de langue ](http://en.wikipedia.org/wiki/IETF_language_tag) est recommandée. Par exemple, `en` signifie anglais, tandis que `en-US` signifie anglais (États-Unis)..
 

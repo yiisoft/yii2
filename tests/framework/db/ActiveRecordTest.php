@@ -1275,4 +1275,22 @@ abstract class ActiveRecordTest extends DatabaseTestCase
         $order->link('orderItems3', $orderItem);
         $this->assertTrue(isset($order->orderItems3['1_3']));
     }
+
+    public function testUpdateAttributes()
+    {
+        $order = Order::findOne(1);
+        $newTotal = 978;
+        $this->assertSame(1, $order->updateAttributes(['total' => $newTotal]));
+        $this->assertEquals($newTotal, $order->total);
+        $order = Order::findOne(1);
+        $this->assertEquals($newTotal, $order->total);
+
+        // @see https://github.com/yiisoft/yii2/issues/12143
+        $newOrder = new Order();
+        $this->assertTrue($newOrder->getIsNewRecord());
+        $newTotal = 200;
+        $this->assertSame(0, $newOrder->updateAttributes(['total' => $newTotal]));
+        $this->assertTrue($newOrder->getIsNewRecord());
+        $this->assertEquals($newTotal, $newOrder->total);
+    }
 }

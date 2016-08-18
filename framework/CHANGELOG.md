@@ -4,6 +4,8 @@ Yii Framework 2 Change Log
 2.0.10 under development
 ------------------------
 
+- Enh #12073: Added the ability to suppress the generation of input hint when it is specified through  `Model::attributeHints()` (PowerGamer1)
+- Bug #12009: Do not render "for" field label attribute for active form RadioList and CheckboxList (shevchik87, samdark)
 - Bug #12068: Added missing 'LEVEL_PROFILE' for the syslog target (Mak-Di)
 - Bug #11461: Fixed migration tool error when create migrate with comma in defaultValue (pana1990, s-o-f)
 - Bug #11912: Fixed PostgreSQL Schema to support negative default values for integer/float/decimal columns (nsknewbie)
@@ -19,6 +21,7 @@ Yii Framework 2 Change Log
 - Bug #10681: Reverted fix of beforeValidate event calling in `yii.activeForm.js` (silverfire)
 - Bug #11715: Fixed JS validation when the same model's attribute file input is listed more than once on the same page (uaoleg)
 - Bug #11541: Fixed default MySQL integer display width for unsigned primary key (h311ion, rob006, cebe)
+- Bug #12143: Fixed `yii\db\BaseActiveRecord::updateAttributes()` change `isNewRecord` state for the new model (klimov-paul)
 - Enh #10583: Do not silence session errors in debug mode (samdark)
 - Enh #11804: Added `yii\behaviors\AttributeTypecastBehavior` for maintaining of strict ActiveRecord attribute types (klimov-paul)
 - Enh #12048: Improved message extraction command performance (samdark)
