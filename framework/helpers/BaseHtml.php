@@ -1154,6 +1154,8 @@ class BaseHtml
      * - header: string, the header HTML for the error summary. If not set, a default prompt string will be used.
      * - footer: string, the footer HTML for the error summary.
      * - encode: boolean, if set to false then the error messages won't be encoded.
+     * - showAllErrors: boolean, if set to true every error message for each attribute will be shown otherwise
+     * only the first error message for each attribute will be shown.
      *
      * The rest of the options will be rendered as the attributes of the container tag. The values will
      * be HTML-encoded using [[encode()]]. If a value is null, the corresponding attribute will not be rendered.
@@ -1164,6 +1166,7 @@ class BaseHtml
         $header = isset($options['header']) ? $options['header'] : '<p>' . Yii::t('yii', 'Please fix the following errors:') . '</p>';
         $footer = ArrayHelper::remove($options, 'footer', '');
         $encode = ArrayHelper::remove($options, 'encode', true);
+        $showAllErrors = ArrayHelper::remove($options, 'showAllErrors', false);
         unset($options['header']);
 
         $lines = [];
@@ -1172,8 +1175,16 @@ class BaseHtml
         }
         foreach ($models as $model) {
             /* @var $model Model */
-            foreach ($model->getFirstErrors() as $error) {
-                $lines[] = $encode ? Html::encode($error) : $error;
+            foreach ($model->getErrors() as $errors) {
+                foreach ($errors as $error) {
+                    $line = $encode ? Html::encode($error) : $error;
+                    if (array_search($line, $lines) === false) {
+                        $lines[] = $line;
+                    }
+                    if (!$showAllErrors) {
+                        break;
+                    }
+                }
             }
         }
 
