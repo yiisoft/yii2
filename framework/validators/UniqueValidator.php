@@ -180,8 +180,12 @@ class UniqueValidator extends Validator
 			'values' => implode('-', $valueCombo)
 		], Yii::$app->language);
 
-		foreach($this->attributes as $attribute) {
-			$model->addError($attribute, $message);
+		if ($this->attributes !== []) {
+    		foreach($this->attributes as $attribute) {
+    			$model->addError($attribute, $message);
+    		}
+		} else {
+		    $model->addError($attribute, $message);
 		}
     }
 }
