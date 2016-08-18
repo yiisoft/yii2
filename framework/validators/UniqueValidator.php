@@ -103,7 +103,7 @@ class UniqueValidator extends Validator
             if (is_int($modelAttribute)) {
                 $modelAttribute = $targetAttribute;
             }
-            if ($this->skipOnError && $model->hasError($modelAttribute))
+            if ($this->skipOnError && $model->hasErrors($modelAttribute))
                 return;
             $params[$targetAttribute] =  $model->$modelAttribute;
         }
