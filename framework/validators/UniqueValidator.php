@@ -91,15 +91,21 @@ class UniqueValidator extends Validator
     {
         /* @var $targetClass ActiveRecordInterface */
         $targetClass = $this->targetClass === null ? get_class($model) : $this->targetClass;
-        $targetAttribute = $this->targetAttribute === null ? $attribute : $this->targetAttribute;
+        $targetAttribute = $this->targetAttribute === null ? [$attribute] : (array)$this->targetAttribute;
+        
+        // Perform the validation only once even if this validator is attached to multiple attributes.
+        if ($targetAttribute[0] != $this->attributes[0]) {
+            return;
+        }
 
-        if (is_array($targetAttribute)) {
-            $params = [];
-            foreach ($targetAttribute as $k => $v) {
-                $params[$v] = is_int($k) ? $model->$v : $model->$k;
+        $params = [];
+        foreach ($targetAttribute as $modelAttribute => $targetAttribute) {
+            if (is_int($modelAttribute)) {
+                $modelAttribute = $targetAttribute;
             }
-        } else {
-            $params = [$targetAttribute => $model->$attribute];
+            if ($this->skipOnError && $model->hasError($modelAttribute))
+                return;
+            $params[$targetAttribute] =  $model->$modelAttribute;
         }
 
         foreach ($params as $value) {
@@ -161,20 +167,25 @@ class UniqueValidator extends Validator
      */
     private function addComboNotUniqueError($model, $attribute)
     {
-        $attributeCombo = [];
-        $valueCombo = [];
-        foreach ($this->targetAttribute as $key => $value) {
-            if(is_int($key)) {
-                $attributeCombo[] = $model->getAttributeLabel($value);
-                $valueCombo[] = '"' . $model->$value . '"';
-            } else {
-                $attributeCombo[] = $model->getAttributeLabel($key);
-                $valueCombo[] = '"' . $model->$key . '"';
-            }
-        }
-        $this->addError($model, $attribute, $this->comboNotUnique, [
-            'attributes' => Inflector::sentence($attributeCombo),
-            'values' => implode('-', $valueCombo)
-        ]);
+		$attributeCombo = [];
+		$valueCombo = [];
+		foreach($this->targetAttribute as $modelAttribute => $targetAttribute) {
+			if(is_int($modelAttribute)) {
+				$modelAttribute = $targetAttribute;
+			}
+			$attributeCombo[] = $model->getAttributeLabel($modelAttribute);
+			$valueCombo[] = '"' . $model->$modelAttribute . '"';
+		}
+
+		$message = Yii::$app->getI18n()->format($this->message, [
+			'attributes' => Inflector::sentence($attributeCombo),
+			'values' => implode('-', $valueCombo)
+		], Yii::$app->language);
+
+		foreach($this->attributes as $attribute) {
+			if($model->isAttributeActive($attribute)) {
+				$model->addError($attribute, $message);
+			}
+		}
     }
 }
