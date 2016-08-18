@@ -2,7 +2,9 @@
 namespace yiiunit\framework;
 
 use Yii;
+use yii\BaseYii;
 use yii\di\Container;
+use yii\log\Logger;
 use yiiunit\data\base\Singer;
 use yiiunit\TestCase;
 
@@ -83,5 +85,17 @@ class BaseYiiTest extends TestCase
         $this->assertTrue(Yii::createObject(function(Singer $singer, $a = 3) {
             return true;
         }));
+    }
+
+    /**
+     * @covers yii\BaseYii::setLogger()
+     * @covers yii\BaseYii::getLogger()
+     */
+    public function testSetupLogger()
+    {
+        $logger = new Logger();
+        BaseYii::setLogger($logger);
+
+        $this->assertSame($logger, BaseYii::getLogger());
     }
 }
