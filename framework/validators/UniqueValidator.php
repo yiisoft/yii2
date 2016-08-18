@@ -99,7 +99,7 @@ class UniqueValidator extends Validator
                 $params[$v] = is_int($k) ? $model->$v : $model->$k;
             }
             // When validating a combo perform the validation only once even if this validator is attached to multiple attributes.
-            if (isset($this->attributes[0]) && $targetAttributes[0] != $this->attributes[0]) {
+            if (isset($this->attributes[0]) && $targetAttribute[0] != $this->attributes[0]) {
                 return;
             }
         } else {
@@ -150,7 +150,7 @@ class UniqueValidator extends Validator
         }
 
         if ($exists) {
-            if (count($targetAttributes) > 1) {
+            if (count($targetAttribute) > 1) {
                 $this->addComboNotUniqueError($model, $attribute);
             } else {
                 $this->addError($model, $attribute, $this->message);
