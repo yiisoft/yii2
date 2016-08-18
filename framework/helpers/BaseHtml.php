@@ -1157,9 +1157,9 @@ class BaseHtml
      * @since 2.0.10
      * - showAllErrors: boolean, if set to true every error message for each attribute will be shown otherwise
      * only the first error message for each attribute will be shown.
+     * @since 2.0.10
      * - skipDuplicateErrors: boolean, if set to false all duplicate error messages will be shown otherwise 
      * duplicate error messages will be shown only once.
-     * @since 2.0.10
      *
      * The rest of the options will be rendered as the attributes of the container tag. The values will
      * be HTML-encoded using [[encode()]]. If a value is null, the corresponding attribute will not be rendered.
