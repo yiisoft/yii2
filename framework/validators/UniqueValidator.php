@@ -181,9 +181,7 @@ class UniqueValidator extends Validator
 		], Yii::$app->language);
 
 		foreach($this->attributes as $attribute) {
-			if($model->isAttributeActive($attribute)) {
-				$model->addError($attribute, $message);
-			}
+			$model->addError($attribute, $message);
 		}
     }
 }
