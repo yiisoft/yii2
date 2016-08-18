@@ -101,7 +101,7 @@ class PostController extends Controller
 
 ### Представления в модулях <span id="views-in-modules"></span>
 
-Представления модуля также следует поместить в в поддиректорию `views` [[yii\base\Module::basePath|базового пути]]
+Представления модуля также следует поместить в поддиректорию `views` [[yii\base\Module::basePath|базового пути]]
 модуля. Виды, которые рендерит контроллер модуля, должны располагаться в директории `views/ControllerID`, где `ControllerID`
 соответствует [идентификатору контроллера](structure-controllers.md#routes). Например, если контроллер реализуется
 классом `PostController`, представления следует разместить в поддиректории `views/post`
