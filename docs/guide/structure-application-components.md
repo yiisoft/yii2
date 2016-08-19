@@ -113,7 +113,7 @@ if you do not specify its class, the default one will be used.
 * [[yii\web\UrlManager|urlManager]]: supports URL parsing and creation.
   Please refer to the [Routing and URL Creation](runtime-routing.md) section for more details.
 * [[yii\web\User|user]]: represents the user authentication information. This component is only available
-  in [[yii\web\Application|Web applications]]
+  in [[yii\web\Application|Web applications]].
   Please refer to the [Authentication](security-authentication.md) section for more details.
 * [[yii\web\View|view]]: supports view rendering.
   Please refer to the [Views](structure-views.md) section for more details.
