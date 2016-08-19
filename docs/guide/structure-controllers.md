@@ -355,7 +355,7 @@ class PostController extends Controller
 The action parameters will be populated as follows for different requests:
 
 * `http://hostname/index.php?r=post/view&id=123`: the `$id` parameter will be filled with the value
-  `'123'`,  while `$version` is still null because there is no `version` query parameter.
+  `'123'`,  while `$version` is still `null` because there is no `version` query parameter.
 * `http://hostname/index.php?r=post/view&id=123&version=2`: the `$id` and `$version` parameters will
   be filled with `'123'` and `'2'`, respectively.
 * `http://hostname/index.php?r=post/view`: a [[yii\web\BadRequestHttpException]] exception will be thrown
