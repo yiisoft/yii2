@@ -65,7 +65,8 @@ abstract class Cache extends Component implements \ArrayAccess
      * a two-element array. The first element specifies the serialization function, and the second the deserialization
      * function. If this property is set false, data will be directly sent to and retrieved from the underlying
      * cache component without any serialization or deserialization. You should not turn off serialization if
-     * you are using [[Dependency|cache dependency]], because it relies on data serialization.
+     * you are using [[Dependency|cache dependency]], because it relies on data serialization. Also, some
+     * implementations of the cache can not correctly save and retrieve data different from a string type.
      */
     public $serializer;
 
@@ -386,7 +387,8 @@ abstract class Cache extends Component implements \ArrayAccess
      * This method should be implemented by child classes to store the data
      * in specific cache storage.
      * @param string $key the key identifying the value to be cached
-     * @param string $value the value to be cached
+     * @param mixed $value the value to be cached. Most often it's a string. If you disabled [[serializer]],
+     * it could be something else.
      * @param integer $duration the number of seconds in which the cached value will expire. 0 means never expire.
      * @return boolean true if the value is successfully stored into cache, false otherwise
      */
@@ -397,7 +399,8 @@ abstract class Cache extends Component implements \ArrayAccess
      * This method should be implemented by child classes to store the data
      * in specific cache storage.
      * @param string $key the key identifying the value to be cached
-     * @param string $value the value to be cached
+     * @param mixed $value the value to be cached. Most often it's a string. If you disabled [[serializer]],
+     * it could be something else.
      * @param integer $duration the number of seconds in which the cached value will expire. 0 means never expire.
      * @return boolean true if the value is successfully stored into cache, false otherwise
      */
@@ -460,7 +463,7 @@ abstract class Cache extends Component implements \ArrayAccess
      * Adds multiple key-value pairs to cache.
      * The default implementation calls [[addValue()]] multiple times add values one by one. If the underlying cache
      * storage supports multi-add, this method should be overridden to exploit that feature.
-     * @param array $data array where key corresponds to cache key while value is the value stored
+     * @param array $data array where key corresponds to cache key while value is the value stored.
      * @param integer $duration the number of seconds in which the cached values will expire. 0 means never expire.
      * @return array array of failed keys
      */
