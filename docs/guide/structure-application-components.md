@@ -7,7 +7,7 @@ the `urlManager` component is responsible for routing Web requests to appropriat
 the `db` component provides DB-related services; and so on.
 
 Each application component has an ID that uniquely identifies itself among other application components
-in the same application. You can access an application component through the expression
+in the same application. You can access an application component through the expression:
 
 ```php
 \Yii::$app->componentID
