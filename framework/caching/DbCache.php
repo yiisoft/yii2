@@ -179,7 +179,7 @@ class DbCache extends Cache
      * This is the implementation of the method declared in the parent class.
      *
      * @param string $key the key identifying the value to be cached
-     * @param string $value the value to be cached. Other types(if you disabled [[serializer]]) cannot be saved.
+     * @param string $value the value to be cached. Other types (if you have disabled [[serializer]]) cannot be saved.
      * @param integer $duration the number of seconds in which the cached value will expire. 0 means never expire.
      * @return boolean true if the value is successfully stored into cache, false otherwise
      */
@@ -205,7 +205,7 @@ class DbCache extends Cache
      * This is the implementation of the method declared in the parent class.
      *
      * @param string $key the key identifying the value to be cached
-     * @param string $value the value to be cached. Other types(if you disabled [[serializer]]) cannot be saved.
+     * @param string $value the value to be cached. Other types (if you have disabled [[serializer]]) cannot be saved.
      * @param integer $duration the number of seconds in which the cached value will expire. 0 means never expire.
      * @return boolean true if the value is successfully stored into cache, false otherwise
      */

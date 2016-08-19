@@ -379,7 +379,7 @@ abstract class Cache extends Component implements \ArrayAccess
      * from specific cache storage.
      * @param string $key a unique key identifying the cached value
      * @return mixed|false the value stored in cache, false if the value is not in the cache or expired. Most often
-     * value is a string. If you disabled [[serializer]], it could be something else.
+     * value is a string. If you have disabled [[serializer]], it could be something else.
      */
     abstract protected function getValue($key);
 
@@ -388,7 +388,7 @@ abstract class Cache extends Component implements \ArrayAccess
      * This method should be implemented by child classes to store the data
      * in specific cache storage.
      * @param string $key the key identifying the value to be cached
-     * @param mixed $value the value to be cached. Most often it's a string. If you disabled [[serializer]],
+     * @param mixed $value the value to be cached. Most often it's a string. If you have disabled [[serializer]],
      * it could be something else.
      * @param integer $duration the number of seconds in which the cached value will expire. 0 means never expire.
      * @return boolean true if the value is successfully stored into cache, false otherwise
@@ -400,7 +400,7 @@ abstract class Cache extends Component implements \ArrayAccess
      * This method should be implemented by child classes to store the data
      * in specific cache storage.
      * @param string $key the key identifying the value to be cached
-     * @param mixed $value the value to be cached. Most often it's a string. If you disabled [[serializer]],
+     * @param mixed $value the value to be cached. Most often it's a string. If you have disabled [[serializer]],
      * it could be something else.
      * @param integer $duration the number of seconds in which the cached value will expire. 0 means never expire.
      * @return boolean true if the value is successfully stored into cache, false otherwise

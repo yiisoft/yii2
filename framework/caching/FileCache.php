@@ -127,7 +127,7 @@ class FileCache extends Cache
      * This is the implementation of the method declared in the parent class.
      *
      * @param string $key the key identifying the value to be cached
-     * @param string $value the value to be cached. Other types(if you disabled [[serializer]]) unable to get is
+     * @param string $value the value to be cached. Other types (If you have disabled [[serializer]]) unable to get is
      * correct in [[getValue()]].
      * @param integer $duration the number of seconds in which the cached value will expire. 0 means never expire.
      * @return boolean true if the value is successfully stored into cache, false otherwise
@@ -160,7 +160,7 @@ class FileCache extends Cache
      * This is the implementation of the method declared in the parent class.
      *
      * @param string $key the key identifying the value to be cached
-     * @param string $value the value to be cached. Other types(if you disabled [[serializer]]) unable to get is
+     * @param string $value the value to be cached. Other types (if you have disabled [[serializer]]) unable to get is
      * correct in [[getValue()]].
      * @param integer $duration the number of seconds in which the cached value will expire. 0 means never expire.
      * @return boolean true if the value is successfully stored into cache, false otherwise
