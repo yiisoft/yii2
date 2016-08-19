@@ -1,9 +1,9 @@
 Routage et création d'URL 
 =========================
 
-Losqu'une application Yii commence à traiter une URL objet d'une requête, sa première étape consiste à analyser cette URL pour la résoudre en une [route](structure-controllers.md#routes). La route est ensuite utilisée pour instancier l'[action de contrôleur](structure-controllers.md) correspondante pour la prise en charge de la requête. Ce processus est appelé *routage*.
+Lorsqu'une application Yii commence à traiter une URL objet d'une requête, sa première étape consiste à analyser cette URL pour la résoudre en une [route](structure-controllers.md#routes). La route est ensuite utilisée pour instancier l'[action de contrôleur](structure-controllers.md) correspondante pour la prise en charge de la requête. Ce processus est appelé *routage*.
  
-Le processus inverse du routage, qui consiste créer une URL à partir d'une route et des paramètres associés de la requête,  est appelé *création d'URL*. Lorsque l'URL créée est ensuite requise, le processus de routage est capable de la résoudre en la route originale avec les paramètres de requête. 
+Le processus inverse du routage, qui consiste à créer une URL à partir d'une route et des paramètres associés de la requête,  est appelé *création d'URL*. Lorsque l'URL créée est ensuite requise, le processus de routage est capable de la résoudre en la route originale avec les paramètres de requête. 
   
 L'élément central en charge du routage et de la création d'URL est le [[yii\web\UrlManager|gestionnaire d'URL]], qui est enregistré en tant que  [composant d'application](structure-application-components.md) sous le nom `urlManager`. Le [[yii\web\UrlManager|gestionnaire d'URL]] fournit la méthode [[yii\web\UrlManager::parseRequest()|parseRequest()]] pour analyser une requête entrante et la résoudre en une route et les paramètres de requête associés, et la méthode [[yii\web\UrlManager::createUrl()|createUrl()]] pour créer une URL en partant d'une route avec ses paramètres de requête associés. 
  
@@ -27,7 +27,7 @@ Selon la configuration de `urlManager`, l'URL créée peut ressenmbler à l'une 
 
 ## Formats d'URL  <span id="url-formats"></span>
 
-Le [[yii\web\UrlManager|gestionnaire d'URL]] prend en charge deux formats d'URL : le format d'URL par défaut et le format d'URL élégante.
+Le [[yii\web\UrlManager|gestionnaire d'URL]] prend en charge deux formats d'URL : le format d'URL par défaut et le format d'URL élégantes.
 
 Le format d'URL par défaut utilise un paramètre de requête nommé `r` qui représente la route et les paramètres de requête normaux associés à la route. Par exemple, l'URL `/index.php?r=post/view&id=100` represente la route `post/view` et le paramètre de requête `id` dont la valeur est 100. Le format d'URL par défaut ne requiert aucune configuration du [[yii\web\UrlManager|gestionnaire d'URL] et fonctionne dans toutes les configurations de serveur Web. 
 
@@ -40,19 +40,19 @@ Vous pouvez passer d'un format d'URL à l'autre en inversant la propriété [[yi
 
 Le routage se fait en deux étapes. Dans la première étape, la requête entrante est analysée et résolue en une route et les paramètres de requête associés. Dans la seconde étape, l'[action de contrôleur](structure-controllers.md#actions) correspondant à la route analysée est créée pour prendre la requête en charge. 
 
-Lors de l'utilisation du format d'URL par défaut, la résolution d'une requête en route est aussi simple que d'obtenir le paramètre nommé `r` la méthode `GET`.
+Lors de l'utilisation du format d'URL par défaut, la résolution d'une requête en route est aussi simple que d'obtenir le paramètre nommé `r` de la méthode `GET`.
 
-Lors de l'utilisation du format d'URL élégantes, le [[yii\web\UrlManager|gestionnaire d'URL] examine les [[yii\web\UrlManager::rules|règles d'URL]] enregistrées pour trouver une règle qui correspond et résoudre la requête en une route. Si une tèlle règle n'est pas trouvée, une exception  [[yii\web\NotFoundHttpException]] est levée. 
+Lors de l'utilisation du format d'URL élégantes, le [[yii\web\UrlManager|gestionnaire d'URL] examine les [[yii\web\UrlManager::rules|règles d'URL]] enregistrées pour trouver une règle qui correspond et résoudre la requête en une route. Si une telle règle n'est pas trouvée, une exception  [[yii\web\NotFoundHttpException]] est levée. 
 
 Une fois que la requête est résolue en une route, il est temps de créer l'action de contrôleur identifiée par la route. La route est éclatée en de multiples parties par des barres oblique de division. Par exemple, `site/index` est éclatée en  `site` et `index`. Chacune des parties est considérée comme un identifiant qui peut faire référence à un module, un contrôleur ou une action. En partant de la première partie dans la route, l'application entreprend les étapes suivantes pour créer un module (s'il en existe un), un contrôleur et une action. 
 
 1. Définit l'application comme étant le module courant.
 2. Vérifie si la [[yii\base\Module::controllerMap|table de mise en correspondance des contrôleurs]] du module courant contient l'identifiant courant. Si c'est le cas, un objet *controller* est créé en respectant la configuration du contrôleur trouvé dans la table de mise en correspondance, et on passe à l'étape 5 pour prendre en compte le reste de la route. 
 3. Vérifie si l'identifiant fait référence à un module listé dans la propriété [[yii\base\Module::modules|modules]] du module courant. Si c'est le cas, un module est créé en respectant la configuration trouvée dans la liste des modules et on passe à l'étape 2 pour prendre en compte le reste de la route dans le contexte du nouveau module. 
-4. Traite l'identifiant comme un identifiant[identifiant de contrôleur](structure-controllers.md#controller-ids), crée un objet *controller* et passe à l'étape suivante avec le reste de la route. 
+4. Traite l'identifiant comme un [identifiant de contrôleur](structure-controllers.md#controller-ids), crée un objet *controller* et passe à l'étape suivante avec le reste de la route. 
 5. Le contrôleur recherche l'identifiant courant dans sa [[yii\base\Controller::actions()|table de mise en correspondance des actions]]. s'il le trouve, il crée une action respectant la configuration trouvée dans la table de mise en correspondance. Autrement, le contrôleur essaye de créer une action en ligne dont le nom de méthode correspond à l' [identifiant d'action](structure-controllers.md#action-ids) courant.
 
-Si une erreur se produit dans l'une des étapes décrites ci-dessus, une exception  [[yii\web\NotFoundHttpException]] est levée, indiquant l'échec du processus de processus de routage. 
+Si une erreur se produit dans l'une des étapes décrites ci-dessus, une exception  [[yii\web\NotFoundHttpException]] est levée, indiquant l'échec du processus de routage. 
 
 
 ### Route par défaut <span id="default-route"></span>
@@ -78,7 +78,7 @@ Parfois, vous désirez mettre votre application Web en mode maintenance temporai
 ];
 ```
 
-Avec le configuration ci-dessus, l'action `site/offline` est utilisée pour prendre toutes les requêtes entrantes en charge. 
+Avec la configuration ci-dessus, l'action `site/offline` est utilisée pour prendre toutes les requêtes entrantes en charge. 
 
 La propriété  `catchAll` accepte un tableau dont le premier élément spécifie une route et le reste des éléments des couples clé-valeur pour les paramètres  [liés à l'action](structure-controllers.md#action-parameters).
 
@@ -110,11 +110,11 @@ echo Url::to(['post/index'], 'https');
 
 Notez que dans l'exemple ci-dessus, nous supposons que le format d'URL est le format par défaut. Si le format d'URL élégantes est activé, les URL créées sont différentes et respectent les [[yii\web\UrlManager::rules|règles d'URL]] en cours d'utilisation. 
 
-La route passée à la méthode [[yii\helpers\Url::to()]] est sensible au contexte. Elle peut êter soit *relative*, soit *absolue* et normalisée en respect des règles suivantes :
+La route passée à la méthode [[yii\helpers\Url::to()]] est sensible au contexte. Elle peut être soit *relative*, soit *absolue* et normalisée en respect des règles suivantes :
 
 - Si la route est une chaîne vide, la [[yii\web\Controller::route|route]] couramment requise est utilisée ;
-- Si la route ne contient aucune barre oblique de division, elle est considéré comme un identifiant d'action du contrôleur courant et est préfixée par la valeur de l'identifiant [[\yii\web\Controller::uniqueId|uniqueId]] du contrôleur courant ;
-- Si la route n'a pas de barre oblique de division, elle est considéré comme une route relative au module courant et préfixée par la valeur de l'identifiant [[\yii\base\Module::uniqueId|uniqueId]] du module courant.
+- Si la route ne contient aucune barre oblique de division, elle est considérée comme un identifiant d'action du contrôleur courant et est préfixée par la valeur de l'identifiant [[\yii\web\Controller::uniqueId|uniqueId]] du contrôleur courant ;
+- Si la route n'a pas de barre oblique de division, elle est considérée comme une route relative au module courant et préfixée par la valeur de l'identifiant [[\yii\base\Module::uniqueId|uniqueId]] du module courant.
 
 À partir de la version 2.0.2, vous pouvez spécifier une route en terme d'[alias](concept-aliases.md). Si c'est le cas, l'alias est d'abord converti en la route réelle qui est ensuite transformée en route absolue dans le respect des règles précédentes. 
 
@@ -129,7 +129,7 @@ echo Url::to(['']);
 // une route relative avec un identifiant d'action seulement : /index.php?r=admin%2Fpost%2Findex
 echo Url::to(['index']);
 
-// a relative route: /index.php?r=admin%2Fpost%2Findex
+// une route relative : /index.php?r=admin%2Fpost%2Findex
 echo Url::to(['post/index']);
 
 // une route absoulue : /index.php?r=post%2Findex
@@ -199,8 +199,8 @@ Pour utiliser les URL élégantes, configurez le composant `urlManager` dans la 
 
 La propriété [[yii\web\UrlManager::enablePrettyUrl|enablePrettyUrl]] est obligatoire car elle active/désactive le format d'URL élégantes. Le reste des propriétés est facultatif. Néanmoins, leur configuration montrée plus haut est couramment utilisée. 
 
-* [[yii\web\UrlManager::showScriptName|showScriptName]]: cette propriété détermine si le script d'entrée doit êter inclus dans l'URL créée. Par exemple, au lieu de créer une URL `/index.php/post/100`, en définissant cette propriété à `false`, l'URL `/post/100` est générée. 
-* [[yii\web\UrlManager::enableStrictParsing|enableStrictParsing]]: cette propriété détermine si l'analyse stricte est activée . Si c'est le cas, l'URL entrante doit correspondre à au moins une des [[yii\web\UrlManager::rules|règles]] afin d'être traitée comme une requête valide, sinon une exception [[yii\web\NotFoundHttpException]] est levée. Si l'analyse stricte est désactivée, lorsqu'aucune  [[yii\web\UrlManager::rules|règle]] ne correspond à l'URL requise, le partie chemin de l'URL est considéré comme étant la route requise. 
+* [[yii\web\UrlManager::showScriptName|showScriptName]]: cette propriété détermine si le script d'entrée doit être inclus dans l'URL créée. Par exemple, au lieu de créer une URL `/index.php/post/100`, en définissant cette propriété à `false`, l'URL `/post/100` est générée. 
+* [[yii\web\UrlManager::enableStrictParsing|enableStrictParsing]]: cette propriété détermine si l'analyse stricte est activée . Si c'est le cas, l'URL entrante doit correspondre à au moins une des [[yii\web\UrlManager::rules|règles]] afin d'être traitée comme une requête valide, sinon une exception [[yii\web\NotFoundHttpException]] est levée. Si l'analyse stricte est désactivée, lorsqu'aucune  [[yii\web\UrlManager::rules|règle]] ne correspond à l'URL requise, la partie chemin de l'URL est considérée comme étant la route requise. 
 * [[yii\web\UrlManager::rules|rules]]: cette propriété contient une liste de règles spécifiant comme analyser et créer des URL. C'est la propriété principale avec laquelle vous devez travailler afin de créer des URL dont le format satisfait les exigences particulières de votre application. 
 
 > Note: afin de cacher le nom du script d'entrée dans l'URL créée, en plus de définir la propriété [[yii\web\UrlManager::showScriptName|showScriptName]] à `false`, vous pouvez aussi configurer votre serveur Web de manière à ce qu'il puisse identifier correctement quel script PHP doit être exécuté lorsqu'une URL requise n'en précise aucun explicitement. Si vous utilisez le serveur Apache, vous pouvez vous reporter à la configuration recommandée décrite dans la section [Installation](start-installation.md#recommended-apache-configuration).
@@ -213,7 +213,7 @@ Une règle d'URL est une instance de la classe [[yii\web\UrlRule]] ou de ses cla
 Quand le format d'URL élégantes est activé, le [[yii\web\UrlManager|gestionnaire d'URL]] utilise les règles d'URL déclarées dans sa propriété 
 [[yii\web\UrlManager::rules|rules]] pour analyser les requêtes entrantes et créer des URL. En particulier, pour analyser une requête entrante, le [[yii\web\UrlManager|gestionnaire d'URL]] examine les règles dans l'ordre de leur déclaration et cherche la *première* règle qui correspond à l'URL requise. La règle correspondante est ensuite utilisée pour analyser l'URL et la résoudre en une route et ses paramètres de requête associés. De façon similaire, pour créer une URL, le [[yii\web\UrlManager|gestionnaire d'URL]] cherche la première règle qui correspond à la route donnée et aux paramètres et l'utilise pour créer l'URL. 
 
-Vous pouvez configurer la propriété [[yii\web\UrlManager::rules]] sous forme de tableau dont les clés sont les motifs et les valeurs, les routes correspondantes. Chacune des paires motif-route construit une règle d'URL. Par exemple,  la configuration des [[yii\web\UrlManager::rules|règles]] suivante déclare deux règles d'URL. La première correspond à l'URL `posts` et la met en correspondance avec la route   `post/index`. La seconde correspond à une URL qui correspond à l'expression régulière  `post/(\d+)` et la met en correspondance avec la route `post/view` et le paramètre nommé `id`.
+Vous pouvez configurer la propriété [[yii\web\UrlManager::rules]] sous forme de tableau dont les clés sont les motifs et les valeurs, les routes correspondantes. Chacune des paires motif-route construit une règle d'URL. Par exemple,  la configuration des [[yii\web\UrlManager::rules|règles]] suivantes déclare deux règles d'URL. La première correspond à l'URL `posts` et la met en correspondance avec la route   `post/index`. La seconde correspond à une URL qui correspond à l'expression régulière  `post/(\d+)` et la met en correspondance avec la route `post/view` et le paramètre nommé `id`.
 
 ```php
 [
@@ -224,7 +224,7 @@ Vous pouvez configurer la propriété [[yii\web\UrlManager::rules]] sous forme d
 
 > Info: le motif dans une règle est utilisé pour correspondre à la partie chemin d'une URL.  Par exemple, la partie chemin de `/index.php/post/100?source=ad` est `post/100` (les barres obliques de division de début et de fin sont ignorées) et correspond au motif `post/(\d+)`.
 
-En plus de déclerer des règles d'URL sous forme de paires motif-route, vous pouvez aussi les déclarer  sous forme de tableaux de configuration. Chacun des tableaux de configuration est utilisé pour configure un simple objet règle d'URL. C'est souvent nécessaire lorsque vous voulez configurer d'autres propriétés d'une règle d'URL. Par exemple :
+En plus de déclarer des règles d'URL sous forme de paires motif-route, vous pouvez aussi les déclarer  sous forme de tableaux de configuration. Chacun des tableaux de configuration est utilisé pour configurer un simple objet règle d'URL. C'est souvent nécessaire lorsque vous voulez configurer d'autres propriétés d'une règle d'URL. Par exemple :
 
 ```php
 [
@@ -243,11 +243,11 @@ Par défaut, si vous ne spécifiez pas l'option `class` pour une configuration d
 
 ### Paramètres nommés <span id="named-parameters"></span>
 
-Une règle d'URL peut être associée à quelques paramètres de requête nommés qui sont spécifiés dans le motif dans le format `<ParamName:RegExp>`, où  `ParamName` spécifie le nom du paramètre et  `RegExp` est une expression régulière facultative utilisée pour établir la correspondance avec une valeur de paramètre. Si `RegExp` n'est pas spécifié, cela signifie que la valeur du paramètre doit être une chaîne de caractères sans aucune barre oblique de division. 
+Une règle d'URL peut être associée à quelques paramètres de requête nommés qui sont spécifiés dans le motif et respectent le format `<ParamName:RegExp>`, où  `ParamName` spécifie le nom du paramètre et  `RegExp` est une expression régulière facultative utilisée pour établir la correspondance avec une valeur de paramètre. Si `RegExp` n'est pas spécifié, cela signifie que la valeur du paramètre doit être une chaîne de caractères sans aucune barre oblique de division. 
 
-> Note: vous pouvez seulement spécifier des expressions régulières pour les paramètres. La partie restant du motif est considérée être du texte simple.
+> Note: vous pouvez seulement spécifier des expressions régulières pour les paramètres. La partie restante du motif est considérée être du texte simple.
 
-Lorsqu'une règle est utilisée pour analyser une URL, elle remplit les paramètres associés avec les valeurs des parties de l'URL qui leur correspondent, et ces paramètres sont rendus disponibles dans `$_GET` et plus tard dans le composant d'application `request`. Lorsque le règle est utilisée pour créer une URL, elle prend les valeurs des paramètres fournis et les insère à l'endroit où ces paramètres sont déclarés.
+Lorsqu'une règle est utilisée pour analyser une URL, elle remplit les paramètres associés avec les valeurs des parties de l'URL qui leur correspondent, et ces paramètres sont rendus disponibles dans `$_GET` et plus tard dans le composant d'application `request`. Lorsque la règle est utilisée pour créer une URL, elle prend les valeurs des paramètres fournis et les insère à l'endroit où ces paramètres sont déclarés.
 
 Prenons quelques exemples pour illustrer comment les paramètres nommés fonctionnent. Supposons que nous ayons déclaré les règles d'URL suivantes :
 
@@ -259,7 +259,7 @@ Prenons quelques exemples pour illustrer comment les paramètres nommés fonctio
 ]
 ```
 
-Lorsque les règles sont utilisée pour analyser des URL :
+Lorsque les règles sont utilisées pour analyser des URL :
 
 - `/index.php/posts` est analysée et résolue en la route `post/index` en utilisant la deuxième règle ;
 - `/index.php/posts/2014/php` est analysée et résolue en la route `post/index`, le paramètre  `year` dont la valeur est  2014 et le paramètre `category` dont la valeur est  `php` en utilisant la première règle ;
@@ -275,9 +275,9 @@ Et quand les règles sont utilisées pour créer des URL :
 - `Url::to(['post/view', 'id' => 100, 'source' => 'ad'])` crée `/index.php/post/100?source=ad` en utilisant la troisième règle.
   Comme le paramètre `source` n'est pas spécifié dans la règle, il est ajouté en tant que paramètre de requête à l'URL créée.
 - `Url::to(['post/index', 'category' => 'php'])` crée `/index.php/post/index?category=php` en utilisant aucune des règles.
-  Notez que comme aucune des règles n'étant utilisée, l'URL est créée en ajoutant simplement la route en tant que partie chemin et tous les paramètres en tant que partie de la chaîne de requête.
+  Notez que, aucune des règles n'étant utilisée, l'URL est créée en ajoutant simplement la route en tant que partie chemin et tous les paramètres en tant que partie de la chaîne de requête.
 
-### Paramétrisation des routes <span id="parameterizing-routes"></span>
+### Paramétrage des routes <span id="parameterizing-routes"></span>
 
 Vous pouvez inclure les noms des paramètres dans la route d'une règle d'URL. Cela permet à une règle d'URL d'être utilisée pour correspondre à de multiples routes. Par exemple, les règles suivantes incluent les paramètres `controller` et `action` dans les routes.
 
@@ -367,7 +367,7 @@ La configuration ci-dessus permet au [[yii\web\UrlManager|gestionnaire d'URL]] d
 
 > Note: lorsque vous configurez un suffixe d'URL, si une URL requise ne contient pas ce suffixe, elle est considérée comme une URL non reconnue. Cela est une pratique recommandée pour l'optimisation des moteurs de recherche (SE0 – Search Engine Optimization). 
   
-Parfois vous désirez utiliser des suffixes différents pour différentes URL. Cela peut être fait en configurant la propriété [[yii\web\UrlRule::suffix|suffix]] des règles d'URL individuelles. Losqu'une URL a cette propriété définie, elle écrase la valeur définie au niveau du [[yii\web\UrlManager|gestionnaire d'URL]]. Par exemple, la configuration suivante contient une règle d'URL personnalisée  qui utilise  `.json` en tant que suffixe à la place du suffixe défini globalement `.html`.
+Parfois vous désirez utiliser des suffixes différents pour différentes URL. Cela peut être fait en configurant la propriété [[yii\web\UrlRule::suffix|suffix]] des règles d'URL individuelles. Lorsqu'une URL a cette propriété définie, elle écrase la valeur définie au niveau du [[yii\web\UrlManager|gestionnaire d'URL]]. Par exemple, la configuration suivante contient une règle d'URL personnalisée  qui utilise  `.json` en tant que suffixe à la place du suffixe défini globalement `.html`.
 
 ```php
 [
@@ -393,7 +393,7 @@ Parfois vous désirez utiliser des suffixes différents pour différentes URL. C
 
 ### Méthodes HTTP  <span id="http-methods"></span>
 
-En mettant en œuvre des API pleinement REST, il est couramment nécessaire que la même URL puisse être résolue en différentes routes selon la méthode HTTP utilisée par la requête. Cela peut être fait facilement en préfixant les motifs des règles avec les méthodes HTTP prises en charge. Si une règle prend en charge plusieurs méthodes HTTP, il faut séparer les noms de méhode par une virgule. Par exemple, les règles suivantes ont le même motif `post/<id:\d+>` mais des méthodes HTTP différentes. Un requête de `PUT post/100` est résolue en la route `post/create`, tandis que la requête de `GET post/100` en la route `post/view`.
+En mettant en œuvre des API pleinement REST, il est couramment nécessaire que la même URL puisse être résolue en différentes routes selon la méthode HTTP utilisée par la requête. Cela peut être fait facilement en préfixant les motifs des règles avec les méthodes HTTP prises en charge. Si une règle prend en charge plusieurs méthodes HTTP, il faut séparer les noms de méthode par une virgule. Par exemple, les règles suivantes ont le même motif `post/<id:\d+>` mais des méthodes HTTP différentes. Un requête de `PUT post/100` est résolue en la route `post/create`, tandis que la requête de `GET post/100` en la route `post/view`.
 
 ```php
 [
@@ -428,7 +428,7 @@ Dans l'exemple précédent, les règles d'URL sont essentiellement déclarées e
 
 ### Ajout dynamique de règles <span id="adding-rules"></span>
 
-Des règles d'URL peuvent être ajoutées dynamiquement au [[yii\web\UrlManager|gestionnaire d'URL]]. Cela est souvent nécessaire pour les [modules](structure-modules.md) distribuables qui veulent gérér leurs propres règles d'URL. Pour que les règles ajoutées dynamiquement prennent effet dans de processus de routage, vous devez les ajouter dans l'étape d'[amorçage](runtime-bootstrapping.md). Pour les modules, cela signifie qu'ils doivent implémenter l'interface  [[yii\base\BootstrapInterface]] et ajouter les règles dans leur méthode [[yii\base\BootstrapInterface::bootstrap()|bootstrap()]] comme l'exemple suivant le montre :
+Des règles d'URL peuvent être ajoutées dynamiquement au [[yii\web\UrlManager|gestionnaire d'URL]]. Cela est souvent nécessaire pour les [modules](structure-modules.md) distribuables qui veulent gérer leurs propres règles d'URL. Pour que les règles ajoutées dynamiquement prennent effet dans de processus de routage, vous devez les ajouter dans l'étape d'[amorçage](runtime-bootstrapping.md). Pour les modules, cela signifie qu'ils doivent implémenter l'interface  [[yii\base\BootstrapInterface]] et ajouter les règles dans leur méthode [[yii\base\BootstrapInterface::bootstrap()|bootstrap()]] comme l'exemple suivant le montre :
 
 ```php
 public function bootstrap($app)
@@ -439,14 +439,14 @@ public function bootstrap($app)
 }
 ```
 
-Notez que vous devez également lister ces modules dans la propriété [[yii\web\Application::bootstrap]] afin qu'ils puissent participer au processus d'[amorçage](runtime-bootstrapping.md) process.
+Notez que vous devez également lister ces modules dans la propriété [[yii\web\Application::bootstrap]] afin qu'ils puissent participer au processus d'[amorçage](runtime-bootstrapping.md).
 
 
 ### Création des classes règles <span id="creating-rules"></span>
 
-En dépit du fait que la classe par défaut [[yii\web\UrlRule]] est suffisamment flexible pour la majorité des projets, il y a des situations dans lesquelles vous devez créer votre propres classes de règles. Par exemple, dans site Web de vendeur de voitures, vous désirerez peut-être prendre en charge des formats d'URL du type `/Manufacturer/Model`, où `Manufacturer` et `Model` doivent correspondre à quelques données stockées dans une base de données. La classe de règle par défaut ne fonctionne pas dans ce cas car elle s'appuie sur des motifs déclarés de manière statique. 
+En dépit du fait que la classe par défaut [[yii\web\UrlRule]] est suffisamment flexible pour la majorité des projets, il y a des situations dans lesquelles vous devez créer votre propres classes de règle. Par exemple, dans un site Web de vendeur de voitures, vous désirerez peut-être prendre en charge des formats d'URL du type `/Manufacturer/Model`, où `Manufacturer` et `Model` doivent correspondre à quelques données stockées dans une base de données. La classe de règle par défaut ne fonctionne pas dans ce cas car elle s'appuie sur des motifs déclarés de manière statique. 
 
-Vous pouvez créer les classes de règles d'URL suivantes pour résoudre ce problème : 
+Vous pouvez créer les classes de règle d'URL suivantes pour résoudre ce problème : 
 
 ```php
 namespace app\components;
