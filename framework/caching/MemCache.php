@@ -324,6 +324,7 @@ class MemCache extends Cache
      * This is the implementation of the method declared in the parent class.
      *
      * @param string $key the key identifying the value to be cached
+     * @param mixed $value the value to be cached
      * @see \MemcachePool::set()
      * @param integer $duration the number of seconds in which the cached value will expire. 0 means never expire.
      * @return boolean true if the value is successfully stored into cache, false otherwise
