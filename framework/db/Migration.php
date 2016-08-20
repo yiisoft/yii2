@@ -263,7 +263,7 @@ class Migration extends Component implements MigrationInterface
                 $this->db->createCommand()->addCommentOnColumn($table, $column, $type->comment)->execute();
             }
         }
-        echo " done (time: " . sprintf('%.3f', microtime(true) - $time) . "s)\n";
+        echo ' done (time: ' . sprintf('%.3f', microtime(true) - $time) . "s)\n";
     }
 
     /**

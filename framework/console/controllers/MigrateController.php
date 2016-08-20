@@ -375,7 +375,7 @@ class MigrateController extends BaseMigrateController
     protected function addDefaultPrimaryKey(&$fields)
     {
         foreach ($fields as $field) {
-            if ($field['decorators'] === 'primaryKey()') {
+            if ($field['decorators'] === 'primaryKey()' || $field['decorators'] === 'bigPrimaryKey()') {
                 return;
             }
         }

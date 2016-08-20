@@ -7,7 +7,7 @@ use yii\db\Expression;
 use yii\db\Schema;
 use yiiunit\TestCase;
 
-abstract class ColumnSchemaBuilderTest extends TestCase
+abstract class ColumnSchemaBuilderTest extends DatabaseTestCase
 {
     /**
      * @param string $type
@@ -16,7 +16,7 @@ abstract class ColumnSchemaBuilderTest extends TestCase
      */
     public function getColumnSchemaBuilder($type, $length = null)
     {
-        return new ColumnSchemaBuilder($type, $length);
+        return new ColumnSchemaBuilder($type, $length, $this->getConnection());
     }
 
     /**
@@ -36,6 +36,9 @@ abstract class ColumnSchemaBuilderTest extends TestCase
             ]],
             ['timestamp() WITH TIME ZONE DEFAULT NOW()', 'timestamp() WITH TIME ZONE', null, [
                 ['defaultValue', new Expression('NOW()')]
+            ]],
+            ['integer(10)', Schema::TYPE_INTEGER, 10, [
+                ['comment', 'test']
             ]],
         ];
     }

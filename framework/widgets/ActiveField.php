@@ -152,6 +152,11 @@ class ActiveField extends Component
      */
     private $_inputId;
 
+    /**
+     * @var bool if "for" field label attribute should be skipped.
+     */
+    private $_skipLabelFor = false;
+
 
     /**
      * PHP magic method that returns the string representation of this object.
@@ -269,6 +274,11 @@ class ActiveField extends Component
         if ($label !== null) {
             $options['label'] = $label;
         }
+
+        if ($this->_skipLabelFor) {
+            $options['for'] = null;
+        }
+
         $this->parts['{label}'] = Html::activeLabel($this->model, $this->attribute, $options);
 
         return $this;
@@ -304,7 +314,9 @@ class ActiveField extends Component
 
     /**
      * Renders the hint tag.
-     * @param string $content the hint content. It will NOT be HTML-encoded.
+     * @param string|bool $content the hint content. If null, the hint will be generated via [[Model::getAttributeHint()]].
+     * If false, the generated field will not contain the hint part.
+     * Note that this will NOT be [[Html::encode()|encoded]].
      * @param array $options the tag options in terms of name-value pairs. These will be rendered as
      * the attributes of the hint tag. The values will be HTML-encoded using [[Html::encode()]].
      *
@@ -317,8 +329,15 @@ class ActiveField extends Component
      */
     public function hint($content, $options = [])
     {
+		if ($content === false) {
+			$this->parts['{hint}'] = '';
+			return $this;
+		}
+
         $options = array_merge($this->hintOptions, $options);
-        $options['hint'] = $content;
+		if ($content !== null) {
+			$options['hint'] = $content;
+		}
         $this->parts['{hint}'] = Html::activeHint($this->model, $this->attribute, $options);
 
         return $this;
@@ -481,7 +500,7 @@ class ActiveField extends Component
      * If you set a custom `id` for the input element, you may need to adjust the [[$selectors]] accordingly.
      *
      * @param boolean $enclosedByLabel whether to enclose the radio within the label.
-     * If true, the method will still use [[template]] to layout the checkbox and the error message
+     * If true, the method will still use [[template]] to layout the radio button and the error message
      * except that the radio is enclosed by the label tag.
      * @return $this the field object itself
      */
@@ -622,6 +641,7 @@ class ActiveField extends Component
     public function checkboxList($items, $options = [])
     {
         $this->adjustLabelFor($options);
+        $this->_skipLabelFor = true;
         $this->parts['{input}'] = Html::activeCheckboxList($this->model, $this->attribute, $items, $options);
 
         return $this;
@@ -640,6 +660,7 @@ class ActiveField extends Component
     public function radioList($items, $options = [])
     {
         $this->adjustLabelFor($options);
+        $this->_skipLabelFor = true;
         $this->parts['{input}'] = Html::activeRadioList($this->model, $this->attribute, $items, $options);
 
         return $this;

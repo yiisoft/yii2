@@ -4,14 +4,38 @@ Yii Framework 2 Change Log
 2.0.10 under development
 ------------------------
 
+- Enh #12073: Added the ability to suppress the generation of input hint when it is specified through  `Model::attributeHints()` (PowerGamer1)
+- Bug #12009: Do not render "for" field label attribute for active form RadioList and CheckboxList (shevchik87, samdark)
+- Bug #12068: Added missing 'LEVEL_PROFILE' for the syslog target (Mak-Di)
 - Bug #11461: Fixed migration tool error when create migrate with comma in defaultValue (pana1990, s-o-f)
 - Bug #11912: Fixed PostgreSQL Schema to support negative default values for integer/float/decimal columns (nsknewbie)
 - Bug #11947: Fixed `gridData` initialization in `yii.gridView.js` (pavlm)
 - Bug #11949: Fixed `ActiveField::end` generates close tag when it's `option['tag']` is null (egorio)
+- Enh #11275: Added possibility of unset or force replace former value in `ArrayHelper::merge()` (mdmunir, rob006)
 - Enh #11950: Improve BaseArrayHelper::keyExists speed (egorio)
-- Bug #11972: Fixed active form `afterValidate` wasn't triggered in some cases (lynicidn)
 - Bug #11726: `DbSession` was echoing database errors in production mode (samdark, pastuhov, deadkrolik)
 - Bug #12030: Fixed `yii\base\Model::offsetExists()` throws an exception on un-existing field (klimov-paul)
+- Bug #12037: Fixed 2.0.7 regression in memcahe/memcached cache backend (samdark)
+- Bug #12043: Fixed `yii\helpers\Json::encode()` encodes empty array returned by `JsonSerializable::jsonSerialize()` as object (klimov-paul)
+- Bug #12045: Added missing `LEVEL_PROFILE` to `yii\log\Logger::getLevelName()` map (Mak-Di)
+- Bug #10681: Reverted fix of beforeValidate event calling in `yii.activeForm.js` (silverfire)
+- Bug #11715: Fixed JS validation when the same model's attribute file input is listed more than once on the same page (uaoleg)
+- Bug #11541: Fixed default MySQL integer display width for unsigned primary key (h311ion, rob006, cebe)
+- Bug #12143: Fixed `yii\db\BaseActiveRecord::updateAttributes()` change `isNewRecord` state for the new model (klimov-paul)
+- Enh #10583: Do not silence session errors in debug mode (samdark)
+- Enh #11804: Added `yii\behaviors\AttributeTypecastBehavior` for maintaining of strict ActiveRecord attribute types (klimov-paul)
+- Enh #12048: Improved message extraction command performance (samdark)
+- Enh #12038: Introduced `yii\base\ViewNotFoundException` which is thrown when views file doesn't exists, used it in `ViewAction` (samdark)
+- Enh #11979: Added `yii\mutex\OracleMutex` which implements mutex "lock" mechanism via Oracle locks (zlakomanoff)
+- Enh #12082: Used `jQuery.on(` instead of event method to ensure forwards compatibility (newerton)
+- Enh #12028: Add -h|--help option to console command to display help information (pana1990)
+- Enh #12099: HttpCache no longer returns 304 HTTP code when callbacks return null (sergeymakinen)
+- Bug #12053: `./yii migrate/create` was generating wrong code when using `bigPrimaryKey` (VojtechH, samdark)
+- Bug #11907: Fixed `yii\helpers\Console::getScreenSize()` on Windows was giving out width and height swapped (Spell6inder, samdark, cebe)
+- Bug #11973: Fixed `yii\helpers\BaseHtml::getAttributeValue()` to work with `items[]` notation correctly (silverfire)
+- Bug #12100: Fixed `yii\filters\HttpCache` was sending an empty Pragma header (sergeymakinen)
+- Bug #12107: Fixed REST Serializer to validate input for 'expand' and 'fields' parameter, which crashed on array input (njspok, cebe)
+
 
 2.0.9 July 11, 2016
 -------------------

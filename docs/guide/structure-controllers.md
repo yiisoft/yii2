@@ -57,8 +57,8 @@ according to the requested model ID; If the model is loaded successfully, it wil
 a [view](structure-views.md) named `view`. Otherwise, it will throw an exception.
 
 In the `create` action (defined by the `actionCreate()` method), the code is similar. It first tries to populate
-the [model](structure-models.md) using the request data and save the model. If both succeed it will redirect
-the browser to the `view` action with the ID of the newly created model. Otherwise it will display
+a new instance of the [model](structure-models.md) using the request data and save the model. If both succeed it
+will redirect the browser to the `view` action with the ID of the newly created model. Otherwise it will display
 the `create` view through which users can provide the needed input.
 
 
@@ -85,7 +85,7 @@ ModuleID/ControllerID/ActionID
 
 So if a user requests with the URL `http://hostname/index.php?r=site/index`, the `index` action in the `site` controller
 will be executed. For more details on how routes are resolved into actions, please refer to
-the [Routing and URL Generation](runtime-routing.md) section.
+the [Routing and URL Creation](runtime-routing.md) section.
 
 
 ## Creating Controllers <span id="creating-controllers"></span>

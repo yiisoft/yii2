@@ -6,7 +6,7 @@ return <<<CODE
 use yii\db\Migration;
 
 /**
- * Handles the dropping for table `test`.
+ * Handles the dropping of table `test`.
  */
 class {$class} extends Migration
 {

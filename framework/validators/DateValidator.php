@@ -346,6 +346,7 @@ class DateValidator extends Validator
      * @param string $value string representing date
      * @param string $format the expected date format
      * @return integer|boolean a UNIX timestamp or `false` on failure.
+     * @throws InvalidConfigException
      */
     private function parseDateValueIntl($value, $format)
     {
