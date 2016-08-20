@@ -90,7 +90,7 @@ Like [controllers](structure-controllers.md) and [models](structure-models.md), 
 
 * For views rendered by a controller, they should be put under the directory `@app/views/ControllerID` by default,
   where `ControllerID` refers to the [controller ID](structure-controllers.md#routes). For example, if
-  the controller class is `PostController`, the directory would be `@app/views/post`; If it is `PostCommentController`,
+  the controller class is `PostController`, the directory would be `@app/views/post`; if it is `PostCommentController`,
   the directory would be `@app/views/post-comment`. In case the controller belongs to a module, the directory
   would be `views/ControllerID` under the [[yii\base\Module::basePath|module directory]].
 * For views rendered in a [widget](structure-widgets.md), they should be put under the `WidgetPath/views` directory by
