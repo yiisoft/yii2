@@ -242,8 +242,8 @@ should be displayed to help the user to fix the errors.
 
 You may call [[yii\base\Model::validate()]] to validate the received data. The method will use
 the validation rules declared in [[yii\base\Model::rules()]] to validate every relevant attribute. If no error
-is found, it will return true. Otherwise, it will keep the errors in the [[yii\base\Model::errors]] property
-and return false. For example,
+is found, it will return `true`. Otherwise, it will keep the errors in the [[yii\base\Model::errors]] property
+and return `false`. For example,
 
 ```php
 $model = new \app\models\ContactForm;
