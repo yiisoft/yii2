@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @link http://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
@@ -9,219 +10,142 @@ namespace yii\web;
 
 use Yii;
 use yii\base\Object;
+use yii\base\InvalidConfigException;
 
 /**
- * UrlNormalizer normalizes urls for UrlRules.
+ * UrlNormalizer normalizes URLs for [[UrlManager]] and [[UrlRule]].
  *
+ * @author Robert Korulczyk <robert@korulczyk.pl>
+ * @author Cronfy <cronfy@gmail.com>
+ * @since 2.0.10
  */
 class UrlNormalizer extends Object
 {
-    const TRAILING_SLASH_ADD = true;
-    const TRAILING_SLASH_REMOVE = false;
-    const TRAILING_SLASH_IGNORE = 'trailing-slash-ignore';
-
-    const ACTION_REDIRECT = 'redirect';
-    const ACTION_ROUTE = 'route';
-    const ACTION_NONE = false;
-
-    const STRATEGY_DISABLED = 'disabled';
-    const STRATEGY_SAFE_REMOVE_TRAILING_SLASH = 'safe-remove-trailing-slash';
-    const STRATEGY_REMOVE_TRAILING_SLASH = 'remove-trailing-slash';
-    const STRATEGY_ADD_TRAILING_SLASH = 'add-trailing-slash';
-
     /**
-     * @var boolean whether to collapse slashes in urls: 'site///index' => 'site/index'
+     * Represents permament redirection during route normalization.
+     * @see https://en.wikipedia.org/wiki/HTTP_301
      */
-    public $collapseSlashes;
+    const ACTION_REDIRECT_PERMANENT = 301;
     /**
-     * @var boolean|null use TRAILING_SLASH_* constants to set values; true/false supported
-     * to simplify configuration
+     * Represents temporary redirection during route normalization.
+     * @see https://en.wikipedia.org/wiki/HTTP_302
      */
-    public $trailingSlash;
+    const ACTION_REDIRECT_TEMPORARY = 302;
     /**
-     * @var string action to perform if url was changed during normalization, see ACTION_* constants
-     * for possible values
+     * Represents showing 404 error page during route normalization.
+     * @see https://en.wikipedia.org/wiki/HTTP_404
      */
-    public $action;
+    const ACTION_NOT_FOUND = 404;
+
     /**
-     * @var string new route for action 'route', e. g. 'site/redirect'
+     * @var boolean whether slashes should be collapsed, for example `site///index` will be
+     * converted into `site/index`
      */
-    public $route;
+    public $collapseSlashes = true;
     /**
-     * @var string bulk set of other properties via single config option, supported strategies
-     * are STRATEGY_* constants
+     * @var boolean whether trailing slash should be normalized according to the suffix settings
+     * of the rule
      */
-    public $strategy;
-
+    public $normalizeTrailingSlash = true;
     /**
-     * @var string pathinfo after normalization
-     */
-    protected $pathInfoNormalized;
-    /**
-     * @var string original pathinfo
-     */
-    protected $pathInfoOrig;
-    /**
-     * @var string suffix for UrlRule
-     */
-    protected $suffix;
-
-    /**
-     * Prepares normalizer for work. Should be called before usage. Depends on current
-     * context: UrlManager and UrlRule.
-     * @param UrlManager $manager the URL manager
-     * @param UrlRule $rule
-     * @throws \Exception if config is not understood
-     */
-    public function prepare($manager, $rule) {
-        $config = [];
-
-        if ($this->strategy) switch ($this->strategy) {
-            case self::STRATEGY_DISABLED:
-                $config = [
-                    'trailingSlash' => self::TRAILING_SLASH_IGNORE,
-                    'collapseSlashes' => false,
-                    'action' => self::ACTION_NONE
-                ];
-                break;
-            case self::STRATEGY_SAFE_REMOVE_TRAILING_SLASH:
-                // Removes trailing slash only if $suffix != '/'.
-                // Redirects 'posts/' to 'posts' and 'posts.html/' to 'posts.html'
-                // See issue #6498 for details.
-                $suffix = (string)($rule->suffix === null ? $manager->suffix : $rule->suffix);
-
-                $config = [
-                    // if $suffix != '/', set normalizer to remove trailing slash, otherwise don't act.
-                    'trailingSlash' =>  ($suffix != '/') ? self::TRAILING_SLASH_REMOVE : self::TRAILING_SLASH_IGNORE,
-                    'collapseSlashes' => null,
-                    'action' => self::ACTION_REDIRECT
-                ];
-                break;
-            case self::STRATEGY_ADD_TRAILING_SLASH:
-                $config = [
-                    'trailingSlash' => self::TRAILING_SLASH_ADD,
-                    'collapseSlashes' => true,
-                    'action' => self::ACTION_REDIRECT
-                ];
-                break;
-            case self::STRATEGY_REMOVE_TRAILING_SLASH:
-                $config = [
-                    'trailingSlash' => self::TRAILING_SLASH_REMOVE,
-                    'collapseSlashes' => true,
-                    'action' => self::ACTION_REDIRECT
-                ];
-                break;
-            default:
-                throw new \Exception('Unknown normalization strategy ' . $this->strategy);
-        }
-
-        foreach ($config as $name => $value) {
-            // explicit property configuration overrides strategy
-            $config[$name] = !is_null($this->$name) ? $this->$name : $value;
-        }
-
-        Yii::configure($this, $config);
-
-        // set rule's $suffix if trailing slash is required (for createUrl())
-        if ($this->trailingSlash === self::TRAILING_SLASH_ADD) {
-            $this->suffix = '/';
-        } else {
-            $this->suffix = $rule->suffix;
-        }
-    }
-
-    /**
-     * Process request, remember original pathinfo and normalize it.
-     * @param Request $request the Request
-     */
-    public function processRequest($request) {
-        $this->pathInfoOrig = $request->getPathInfo();
-        $this->pathInfoNormalized = $this->normalizePathInfo($request->getPathInfo());
-    }
-
-    /**
-     * @return string normalized pathinfo
-     */
-    public function getPathInfoNormalized() {
-        return $this->pathInfoNormalized;
-    }
-
-    /**
-     * @return string suffix for UrlRule
-     */
-    public function getSuffix() {
-        return $this->suffix;
-    }
-
-    /**
-     * If pathinfo was changed, performs action if required.
-     * @return array new/original route
-     * @throws \Exception if configuration is wrong
-     */
-    public function getNormalizedRoute($origRoute) {
-        if ($this->pathInfoNormalized != $this->pathInfoOrig) {
-            switch (true) {
-                case $this->action === self::ACTION_REDIRECT:
-                    $e = new NormalizerActionException("Request should be normalized");
-                    $e->setAction('redirect');
-                    $e->setRedirectUrl($this->pathInfoNormalized);
-                    $e->setOrigPathInfo($this->pathInfoOrig);
-                    $e->setOrigRoute($origRoute);
-                    throw $e;
-                    break;
-                case $this->action === self::ACTION_ROUTE:
-                    // construct new route
-                    $redirectParams = [
-                        'redirectUrl' => $this->pathInfoNormalized,
-                        'origPathInfo' => $this->pathInfoOrig,
-                        'origRoute' => $origRoute,
-                    ];
-                    return [$this->route, $redirectParams];
-                    break;
-                case !$this->action:
-                case $this->action === self::ACTION_NONE:
-                    // no action
-                    return $origRoute;
-                default:
-                    throw new \Exception("Unknown normalizer action " . $this->action);
-                    break;
-            }
-        }
-
-        return $origRoute;
-    }
-
-    /**
-     * Normalizes supplied pathInfo by normalization rules.
+     * @var integer|callable|null action to perform during route normalization.
+     * Available options are:
+     * - `null` - no special action will be performed
+     * - `301` - the request should be redirected to the normalized URL using
+     * permanent redirection
+     * - `302` - the request should be redirected to the normalized URL using
+     * temporary redirection
+     * - `404` - [[NotFoundHttpException]] will be thrown
+     * - `callable` - custom user callback, for example:
      *
-     * @param $pathInfo string original pathInfo
+     *   ```php
+     *   function ($route, $normalizer) {
+     *       // use custom action for redirections
+     *       $route[1]['oldRoute'] = $route[0];
+     *       $route[0] = 'site/redirect';
+     *       return $route;
+     *   }
+     *   ```
+     */
+    public $action = self::ACTION_REDIRECT_PERMANENT;
+
+    /**
+     * Performs normalization action for the specified $route.
+     * @param $route route for normalization
+     * @return array normalized route
+     * @throws InvalidConfigException if invalid normalization action is used
+     * @throws UrlNormalizerRedirectException if normalization requires redirection
+     */
+    public function normalizeRoute($route)
+    {
+        if ($this->action === null) {
+            return $route;
+        } elseif ($this->action === static::ACTION_REDIRECT_PERMANENT
+                || $this->action === static::ACTION_REDIRECT_TEMPORARY) {
+            throw new UrlNormalizerRedirectException($route[0], $route[1], $this->action);
+        } elseif ($this->action === static::ACTION_NOT_FOUND) {
+            throw new NotFoundHttpException(Yii::t('yii', 'Page not found.'));
+        } elseif (is_callable($this->action)) {
+            return call_user_func($this->action, $route, $this);
+        } else {
+            throw new InvalidConfigException('Invalid normalizer action.');
+        }
+    }
+
+    /**
+     * Normalizes specified pathInfo.
+     * @param $pathInfo string pathInfo for normalization
+     * @param $normalized boolean if specified, this variable will be set to `true` if $pathInfo
+     * was changed during normalization
      * @return string normalized pathInfo
      */
-    protected function normalizePathInfo($pathInfo) {
-        if (!$pathInfo) {
-            return $pathInfo; // nothing to normalize
+    public function normalizePathInfo($pathInfo, $suffix, &$normalized = false)
+    {
+        if (empty($pathInfo)) {
+            return $pathInfo;
         }
 
+        $sourcePathInfo = $pathInfo;
         if ($this->collapseSlashes) {
-            $pathInfo = ltrim(preg_replace('#/+#', '/', $pathInfo), '/');
+            $pathInfo = $this->collapseSlashes($pathInfo);
         }
 
-        if ($this->trailingSlash !== self::TRAILING_SLASH_IGNORE) {
-            if ($this->trailingSlash) {
-                // add trailing slash
-                if (substr($pathInfo, -1) != '/') {
-                    $pathInfo .= '/';
-                }
-            } else {
-                // remove trailing slash
-                if (substr($pathInfo, -1) == '/') {
-                    $pathInfo = rtrim($pathInfo, '/');
-                }
-            }
+        if ($this->normalizeTrailingSlash === true) {
+            $pathInfo = $this->normalizeTrailingSlash($pathInfo, $suffix);
         }
+
+        $normalized = $sourcePathInfo !== $pathInfo;
 
         return $pathInfo;
     }
 
+    /**
+     * Collapse consecutive slashes in $pathInfo, for example converts `site///index` into
+     * `site/index`.
+     * @param string $pathInfo
+     * @return string
+     */
+    protected function collapseSlashes($pathInfo)
+    {
+        return ltrim(preg_replace('#/{2,}#', '/', $pathInfo), '/');
+    }
+
+    /**
+     * Adds or removes trailing slashes from $pathInfo depending on whether the $suffix has a
+     * trailing slash or not.
+     * @param string $pathInfo
+     * @param string $suffix
+     * @return string
+     */
+    protected function normalizeTrailingSlash($pathInfo, $suffix)
+    {
+        if (substr($suffix, -1) === '/' && substr($pathInfo, -1) !== '/') {
+            $pathInfo .= '/';
+        } elseif (substr($suffix, -1) !== '/' && substr($pathInfo, -1) === '/') {
+            $pathInfo = rtrim($pathInfo, '/');
+        }
+
+        return $pathInfo;
+    }
 
 }

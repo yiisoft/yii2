@@ -70,7 +70,6 @@ class Application extends \yii\base\Application
      * Handles the specified request.
      * @param Request $request the request to be handled
      * @return Response the resulting response
-     * @throws \Exception if normalizer action is unknown
      * @throws NotFoundHttpException if the requested route is invalid
      */
     public function handleRequest($request)
@@ -78,19 +77,9 @@ class Application extends \yii\base\Application
         if (empty($this->catchAll)) {
             try {
                 list ($route, $params) = $request->resolve();
-            } catch (NormalizerActionException $e) {
-                $action = $e->getAction();
-                switch ($action) {
-                    case 'redirect':
-                        $url = '/'
-                            . $e->getRedirectUrl()
-                            . ($request->queryString ? '?' . $request->queryString : '');
-                        $this->getResponse()->redirect($url)->send();
-                        Yii::$app->end();
-                        break;
-                    default:
-                        throw new \Exception("Unknown normalizer action", 0, $e);
-                }
+            } catch (UrlNormalizerRedirectException $e) {
+                $url = [$e->route] + $e->params + $request->getQueryParams();
+                return $this->getResponse()->redirect($url, $e->statusCode);
             }
         } else {
             $route = $this->catchAll[0];

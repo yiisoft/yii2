@@ -10,7 +10,6 @@ namespace yii\web;
 use Yii;
 use yii\base\Object;
 use yii\base\InvalidConfigException;
-use yii\helpers\ArrayHelper;
 
 /**
  * UrlRule represents a rule used by [[UrlManager]] for parsing and generating URLs.
@@ -91,7 +90,10 @@ class UrlRule extends Object implements UrlRuleInterface
      */
     public $encodeParams = true;
     /**
-     * @var UrlNormalizer
+     * @var UrlNormalizer|array|false|null the configuration for [[UrlNormalizer]] used by this rule.
+     * If `null`, [[UrlManager::normalizer]] will be used, if `false`, normalization will be skipped
+     * for this rule.
+     * @since 2.0.10
      */
     public $normalizer;
 
@@ -135,6 +137,13 @@ class UrlRule extends Object implements UrlRuleInterface
         }
         if ($this->route === null) {
             throw new InvalidConfigException('UrlRule::route must be set.');
+        }
+        if (is_array($this->normalizer)) {
+            $normalizerConfig = array_merge(['class' => UrlNormalizer::className()], $this->normalizer);
+            $this->normalizer = Yii::createObject($normalizerConfig);
+        }
+        if ($this->normalizer !== null && $this->normalizer !== false && !$this->normalizer instanceof UrlNormalizer) {
+            throw new InvalidConfigException('Invalid config for UrlRule::normalizer.');
         }
         if ($this->verb !== null) {
             if (is_array($this->verb)) {
@@ -222,21 +231,26 @@ class UrlRule extends Object implements UrlRuleInterface
 
     /**
      * @param UrlManager $manager the URL manager
-     * @return UrlNormalizer
+     * @return UrlNormalizer|null
+     * @since 2.0.10
      */
-    protected function getNormalizer($manager) {
-        $defaultConfig = [
-            'class' => UrlNormalizer::className()
-        ];
+    protected function getNormalizer($manager)
+    {
+        if ($this->normalizer === null) {
+            return $manager->normalizer;
+        } else {
+            return $this->normalizer;
+        }
+    }
 
-        $normalizerConfig = ArrayHelper::merge(
-            ArrayHelper::merge($defaultConfig, $manager->normalizer ?: []),
-            $this->normalizer ?: []
-        );
-
-        $normalizer = Yii::createObject($normalizerConfig);
-
-        return $normalizer;
+    /**
+     * @param UrlManager $manager the URL manager
+     * @return boolean
+     * @since 2.0.10
+     */
+    protected function hasNormalizer($manager)
+    {
+        return $this->getNormalizer($manager) instanceof UrlNormalizer;
     }
 
     /**
@@ -244,7 +258,7 @@ class UrlRule extends Object implements UrlRuleInterface
      * @param UrlManager $manager the URL manager
      * @param Request $request the request component
      * @return array|boolean the parsing result. The route and the parameters are returned as an array.
-     * If false, it means this rule cannot be used to parse this path info.
+     * If `false`, it means this rule cannot be used to parse this path info.
      */
     public function parseRequest($manager, $request)
     {
@@ -256,14 +270,12 @@ class UrlRule extends Object implements UrlRuleInterface
             return false;
         }
 
-        $normalizer = $this->getNormalizer($manager);
-        $normalizer->prepare($manager, $this);
-        $this->suffix = $normalizer->getSuffix();
-        $normalizer->processRequest($request);
-
-        $pathInfo = $normalizer->getPathInfoNormalized();
-
         $suffix = (string)($this->suffix === null ? $manager->suffix : $this->suffix);
+        $pathInfo = $request->getPathInfo();
+        $normalized = false;
+        if ($this->hasNormalizer($manager)) {
+            $pathInfo = $this->getNormalizer($manager)->normalizePathInfo($pathInfo, $suffix, $normalized);
+        }
         if ($suffix !== '' && $pathInfo !== '') {
             $n = strlen($suffix);
             if (substr_compare($pathInfo, $suffix, -$n, $n) === 0) {
@@ -284,8 +296,8 @@ class UrlRule extends Object implements UrlRuleInterface
         if (!preg_match($this->pattern, $pathInfo, $matches)) {
             return false;
         }
-
         $matches = $this->substitutePlaceholderNames($matches);
+
         foreach ($this->defaults as $name => $value) {
             if (!isset($matches[$name]) || $matches[$name] === '') {
                 $matches[$name] = $value;
@@ -309,7 +321,12 @@ class UrlRule extends Object implements UrlRuleInterface
 
         Yii::trace("Request parsed with URL rule: {$this->name}", __METHOD__);
 
-        return $normalizer->getNormalizedRoute([$route, $params]);
+        if ($normalized) {
+            // pathInfo was changed by normalizer - we need also normalize route
+            return $this->getNormalizer($manager)->normalizeRoute([$route, $params]);
+        } else {
+            return [$route, $params];
+        }
     }
 
     /**
@@ -317,18 +334,13 @@ class UrlRule extends Object implements UrlRuleInterface
      * @param UrlManager $manager the URL manager
      * @param string $route the route. It should not have slashes at the beginning or the end.
      * @param array $params the parameters
-     * @return string|boolean the created URL, or false if this rule cannot be used for creating this URL.
+     * @return string|boolean the created URL, or `false` if this rule cannot be used for creating this URL.
      */
     public function createUrl($manager, $route, $params)
     {
         if ($this->mode === self::PARSING_ONLY) {
             return false;
         }
-
-        // init normalizer, because it may change $this->suffix according to chosen strategy
-        $normalizer = $this->getNormalizer($manager);
-        $normalizer->prepare($manager, $this);
-        $this->suffix = $normalizer->getSuffix();
 
         $tr = [];
 
