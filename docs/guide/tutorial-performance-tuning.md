@@ -198,7 +198,7 @@ There are two methods to process data offline: pull and push.
 In the pull method, whenever a request involves some complex operation, you create a task and save it in a persistent 
 storage, such as database. You then use a separate process (such as a cron job) to pull the tasks and process them.
 This method is easy to implement, but it has some drawbacks. For example, the task process needs to periodically pull
-from the task storage. If the pull frequency is too low, the tasks may be processed with great delay; but if the frequency
+from the task storage. If the pull frequency is too low, the tasks may be processed with great delay, but if the frequency
 is too high, it will introduce high overhead.
 
 In the push method, you would use a message queue (e.g. RabbitMQ, ActiveMQ, Amazon SQS, etc.) to manage the tasks. 
