@@ -222,7 +222,7 @@ An action is often designed to perform a particular manipulation of a resource. 
 action IDs are usually verbs, such as `view`, `update`, etc.
 
 By default, action IDs should contain these characters only: English letters in lower case, digits,
-underscores, and hyphens. (You can use hyphens to separate words.) For example,
+underscores, and hyphens (you can use hyphens to separate words). For example,
 `view`, `update2`, and `comment-post` are all valid action IDs, while `view?` and `Update` are not.
 
 You can create actions in two ways: inline actions and standalone actions. An inline action is
