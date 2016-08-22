@@ -38,6 +38,7 @@ abstract class BaseDataProvider extends Component implements DataProviderInterfa
     public $id;
 
     private $_sort;
+    private $_filter;
     private $_pagination;
     private $_keys;
     private $_models;
@@ -239,6 +240,36 @@ abstract class BaseDataProvider extends Component implements DataProviderInterfa
             $this->_sort = $value;
         } else {
             throw new InvalidParamException('Only Sort instance, configuration array or false is allowed.');
+        }
+    }
+
+    /**
+     * @return Filter|boolean
+     */
+    public function getFilter()
+    {
+        if ($this->_filter === null) {
+            $this->setFilter([]);
+        }
+
+        return $this->_filter;
+    }
+
+    /**
+     * @param Filter|boolean $value
+     */
+    public function setFilter($value)
+    {
+        if (is_array($value)) {
+            $config = ['class' => Filter::className()];
+            if ($this->id !== null) {
+                $config['filterParam'] = $this->id . '-filter';
+            }
+            $this->_filter = Yii::createObject(array_merge($config, $value));
+        } elseif ($value instanceof Filter || $value === false) {
+            $this->_filter = $value;
+        } else {
+            throw new InvalidParamException('Only Filter instance, configuration array or false is allowed.');
         }
     }
 
