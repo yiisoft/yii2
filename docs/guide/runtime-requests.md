@@ -15,22 +15,22 @@ of the `request` component. They return the values of `$_GET` and `$_POST`, resp
 ```php
 $request = Yii::$app->request;
 
-$get = $request->get(); 
+$get = $request->get();
 // equivalent to: $get = $_GET;
 
-$id = $request->get('id');   
+$id = $request->get('id');
 // equivalent to: $id = isset($_GET['id']) ? $_GET['id'] : null;
 
-$id = $request->get('id', 1);   
+$id = $request->get('id', 1);
 // equivalent to: $id = isset($_GET['id']) ? $_GET['id'] : 1;
 
-$post = $request->post(); 
+$post = $request->post();
 // equivalent to: $post = $_POST;
 
-$name = $request->post('name');   
+$name = $request->post('name');
 // equivalent to: $name = isset($_POST['name']) ? $_POST['name'] : null;
 
-$name = $request->post('name', '');   
+$name = $request->post('name', '');
 // equivalent to: $name = isset($_POST['name']) ? $_POST['name'] : '';
 ```
 
