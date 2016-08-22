@@ -109,7 +109,7 @@ Możesz teraz użyć swojej przeglądarki, aby uzyskać dostęp do zainstalowane
 http://localhost:8080/
 ```
 
-![Poprawna instalacja Yii](../guide/images/start-app-installed.png)
+![Poprawna instalacja Yii](images/start-app-installed.png)
 
 Powinienieś zobaczyć stronę z napisem "Congratulations!" (Gratulacje!). Jeśli nie, sprawdź czy zainstalowane elementy środowiska spełniają wymagania Yii. 
 Możesz sprawdzić minimalne wymagania na dwa sposoby:
