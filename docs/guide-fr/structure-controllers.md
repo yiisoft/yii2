@@ -339,7 +339,7 @@ Lors du traitement d'une requête, une [application](structure-applications.md) 
 1. La méthode [[yii\base\Controller::init()]] est appelée après que le contrôleur est créé et configuré. 
 2. Le contrôleur crée un objet *action* en se basant sur l'identifiant d'action de la requête : 
    * Si l'identifiant de l'action n'est pas spécifié, l'[[yii\base\Controller::defaultAction|identifiant de l'action par défaut]] est utilisé.
-   * Si l'identifiant de l'action est trouvé dans la [yii\base\Controller::actions()|table de mise en correspondance des actions]], une action autonome est créée.
+   * Si l'identifiant de l'action est trouvé dans la [[yii\base\Controller::actions()|table de mise en correspondance des actions]], une action autonome est créée.
    * Si l'identifiant de l'action est trouvé et qu'il correspond à une méthode d'action, une action en ligne est créée.
    * Dans les autres cas, une exception [[yii\base\InvalidRouteException]] est levée.
 3. Le contrôleur appelle consécutivement la méthode `beforeAction()` de l'application, celle du module (si module si le contrôleur appartient à un module) et celle du contrôleur. 
