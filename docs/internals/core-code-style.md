@@ -479,7 +479,7 @@ Always use `static` except the following cases:
 
 ### value for "don't do something"
 
-Properties allowing to configure component not to do something should accept value of `false`. `null`, `''`, or `[]` should not be assumed as such.
+Properties allowing to configure component not to do something should accept value of `false`. `Null`, `''`, or `[]` should not be assumed as such.
 
 ### Directory/namespace names
 
