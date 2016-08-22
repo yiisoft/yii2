@@ -42,6 +42,12 @@ class ActiveController extends Controller
      */
     public $modelClass;
     /**
+     * @var string the search class related to the model. This property is not required.
+     * @see \yii\rest\IndexAction::$searchClass
+     * @since 2.0.10
+     */
+    public $searchClass;
+    /**
      * @var string the scenario used for updating a model.
      * @see \yii\base\Model::scenarios()
      */
@@ -74,6 +80,7 @@ class ActiveController extends Controller
                 'class' => 'yii\rest\IndexAction',
                 'modelClass' => $this->modelClass,
                 'checkAccess' => [$this, 'checkAccess'],
+                'searchClass' => $this->searchClass,
             ],
             'view' => [
                 'class' => 'yii\rest\ViewAction',
