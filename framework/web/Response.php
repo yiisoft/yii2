@@ -80,7 +80,7 @@ class Response extends \yii\base\Response
 
     /**
      * @var string the response format. This determines how to convert [[data]] into [[content]]
-     * when the latter is not set. The value of this property must be one of the keys declared in the [[formatters] array.
+     * when the latter is not set. The value of this property must be one of the keys declared in the [[formatters]] array.
      * By default, the following formats are supported:
      *
      * - [[FORMAT_RAW]]: the data will be treated as the response content without any conversion.
