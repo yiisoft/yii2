@@ -27,6 +27,7 @@ class Post2 extends Object
 class Post3 extends Object
 {
     public $id = 33;
+    /** @var Object */
     public $subObject;
 
     public function init()
@@ -88,6 +89,45 @@ class ArrayHelperTest extends TestCase
                 'content' => 'test',
             ],
         ], ArrayHelper::toArray($object));
+
+        //recursive with attributes of object and subobject
+        $this->assertEquals([
+            'id' => 33,
+            'id_plus_1' => 34,
+            'subObject' => [
+                'id' => 123,
+                'id_plus_1' => 124,
+            ],
+        ], ArrayHelper::toArray($object, [
+            $object->className() => [
+                'id', 'subObject',
+                'id_plus_1' => function ($post) {
+                    return $post->id+1;
+                }
+            ],
+            $object->subObject->className() => [
+                'id',
+                'id_plus_1' => function ($post) {
+                    return $post->id+1;
+                }
+            ],
+        ]));
+
+        //recursive with attributes of subobject only
+        $this->assertEquals([
+            'id' => 33,
+            'subObject' => [
+                'id' => 123,
+                'id_plus_1' => 124,
+            ],
+        ], ArrayHelper::toArray($object, [
+            $object->subObject->className() => [
+                'id',
+                'id_plus_1' => function ($post) {
+                    return $post->id+1;
+                }
+            ],
+        ]));
     }
 
     public function testRemove()
@@ -267,6 +307,92 @@ class ArrayHelperTest extends TestCase
         $this->assertEquals($expected, $result);
     }
 
+    public function testMergeWithUnset()
+    {
+        $a = [
+            'name' => 'Yii',
+            'version' => '1.0',
+            'options' => [
+                'namespace' => false,
+                'unittest' => false,
+            ],
+            'features' => [
+                'mvc',
+            ],
+        ];
+        $b = [
+            'version' => '1.1',
+            'options' => new \yii\helpers\UnsetArrayValue(),
+            'features' => [
+                'gii',
+            ],
+        ];
+
+        $result = ArrayHelper::merge($a, $b);
+        $expected = [
+            'name' => 'Yii',
+            'version' => '1.1',
+            'features' => [
+                'mvc',
+                'gii',
+            ],
+        ];
+
+        $this->assertEquals($expected, $result);
+    }
+
+    public function testMergeWithReplace()
+    {
+        $a = [
+            'name' => 'Yii',
+            'version' => '1.0',
+            'options' => [
+                'namespace' => false,
+                'unittest' => false,
+            ],
+            'features' => [
+                'mvc',
+            ],
+        ];
+        $b = [
+            'version' => '1.1',
+            'options' => [
+                'unittest' => true,
+            ],
+            'features' => new \yii\helpers\ReplaceArrayValue([
+                'gii',
+            ]),
+        ];
+
+        $result = ArrayHelper::merge($a, $b);
+        $expected = [
+            'name' => 'Yii',
+            'version' => '1.1',
+            'options' => [
+                'namespace' => false,
+                'unittest' => true,
+            ],
+            'features' => [
+                'gii',
+            ],
+        ];
+
+        $this->assertEquals($expected, $result);
+    }
+
+    /**
+     * @see https://github.com/yiisoft/yii2/pull/11549
+     */
+    public function test()
+    {
+        $array = [];
+        $array[1.0] = 'some value';
+
+        $result = ArrayHelper::getValue($array, 1.0);
+
+        $this->assertEquals('some value', $result);
+    }
+
     public function testIndex()
     {
         $array = [
@@ -381,6 +507,30 @@ class ArrayHelperTest extends TestCase
         $result = ArrayHelper::index($array, function ($element) {
             return $element['data'];
         }, ['id', 'data']);
+        $this->assertEquals($expected, $result);
+    }
+
+    /**
+     * @see https://github.com/yiisoft/yii2/issues/11739
+     */
+    public function testIndexFloat()
+    {
+        $array = [
+            ['id' => 1e6],
+            ['id' => 1e32],
+            ['id' => 1e64],
+            ['id' => 1465540807.522109],
+        ];
+
+        $expected = [
+            '1000000' => ['id' => 1e6],
+            '1.0E+32' => ['id' => 1e32],
+            '1.0E+64' => ['id' => 1e64],
+            '1465540807.5221' => ['id' => 1465540807.522109],
+        ];
+
+        $result = ArrayHelper::index($array, 'id');
+
         $this->assertEquals($expected, $result);
     }
 
@@ -647,6 +797,17 @@ class ArrayHelperTest extends TestCase
         $this->assertTrue(ArrayHelper::isIn(['a'], new \ArrayObject([['a'], 'b'])));
         $this->assertFalse(ArrayHelper::isIn('a', new \ArrayObject([['a'], 'b'])));
         $this->assertFalse(ArrayHelper::isIn('a', [['a'], 'b']));
+
+    }
+
+    public function testIsInStrict()
+    {
+        // strict comparison
+        $this->assertTrue(ArrayHelper::isIn(1, new \ArrayObject([1, 'a']), true));
+        $this->assertTrue(ArrayHelper::isIn(1, [1, 'a'], true));
+
+        $this->assertFalse(ArrayHelper::isIn('1', new \ArrayObject([1, 'a']), true));
+        $this->assertFalse(ArrayHelper::isIn('1', [1, 'a'], true));
     }
 
     /**
@@ -690,5 +851,44 @@ class ArrayHelperTest extends TestCase
         $this->assertFalse(ArrayHelper::isTraversable(null));
     }
 
-
+    public function testFilter()
+    {
+        $array = [
+            'A' => [
+                'B' => 1,
+                'C' => 2,
+            ],
+            'G' => 1,
+        ];
+        $this->assertEquals(ArrayHelper::filter($array, ['A']), [
+            'A' => [
+                'B' => 1,
+                'C' => 2,
+            ],
+        ]);
+        $this->assertEquals(ArrayHelper::filter($array, ['A.B']), [
+            'A' => [
+                'B' => 1,
+            ],
+        ]);
+        $this->assertEquals(ArrayHelper::filter($array, ['A', '!A.B']), [
+            'A' => [
+                'C' => 2,
+            ],
+        ]);
+        $this->assertEquals(ArrayHelper::filter($array, ['!A.B', 'A']), [
+            'A' => [
+                'C' => 2,
+            ],
+        ]);
+        $this->assertEquals(ArrayHelper::filter($array, ['A', 'G']), [
+            'A' => [
+                'B' => 1,
+                'C' => 2,
+            ],
+            'G' => 1,
+        ]);
+        $this->assertEquals(ArrayHelper::filter($array, ['X']), []);
+        $this->assertEquals(ArrayHelper::filter($array, ['X.Y']), []);
+    }
 }

@@ -1,4 +1,5 @@
 <?php
+
 namespace yiiunit\framework\db;
 
 use yii\db\ActiveQuery;
@@ -16,16 +17,12 @@ use yiiunit\data\ar\OrderWithNullFK;
 use yiiunit\data\ar\Profile;
 use yiiunit\data\ar\Type;
 use yiiunit\framework\ar\ActiveRecordTestTrait;
-use yiiunit\framework\db\cubrid\CubridActiveRecordTest;
+use yiiunit\framework\db\cubrid\ActiveRecordTest as CubridActiveRecordTest;
 use yiiunit\data\ar\Animal;
 use yiiunit\data\ar\Cat;
 use yiiunit\data\ar\Dog;
 
-/**
- * @group db
- * @group mysql
- */
-class ActiveRecordTest extends DatabaseTestCase
+abstract class ActiveRecordTest extends DatabaseTestCase
 {
     use ActiveRecordTestTrait;
 
@@ -95,6 +92,14 @@ class ActiveRecordTest extends DatabaseTestCase
         // query scalar
         $customerName = Customer::find()->where(['[[id]]' => 2])->select('[[name]]')->scalar();
         $this->assertEquals('user2', $customerName);
+    }
+
+    public function testFindExists()
+    {
+        $this->assertTrue(Customer::find()->where(['[[id]]' => 2])->exists());
+        $this->assertFalse(Customer::find()->where(['[[id]]' => 42])->exists());
+        $this->assertTrue(Customer::find()->where(['[[id]]' => 2])->select('[[name]]')->exists());
+        $this->assertFalse(Customer::find()->where(['[[id]]' => 42])->select('[[name]]')->exists());
     }
 
     public function testFindColumn()
@@ -815,6 +820,74 @@ class ActiveRecordTest extends DatabaseTestCase
         $this->assertEquals(0, count($orders[0]->itemsIndexed));
     }
 
+    /**
+     * https://github.com/yiisoft/yii2/issues/10201
+     * https://github.com/yiisoft/yii2/issues/9047
+     */
+    public function testFindCompositeRelationWithJoin()
+    {
+        /* @var $orderItem OrderItem */
+        $orderItem = OrderItem::findOne([1, 1]);
+
+        $orderItemNoJoin = $orderItem->orderItemCompositeNoJoin;
+        $this->assertInstanceOf('yiiunit\data\ar\OrderItem', $orderItemNoJoin);
+
+        $orderItemWithJoin = $orderItem->orderItemCompositeWithJoin;
+        $this->assertInstanceOf('yiiunit\data\ar\OrderItem', $orderItemWithJoin);
+    }
+
+    public function testFindSimpleRelationWithJoin()
+    {
+        /* @var $order Order */
+        $order = Order::findOne(1);
+
+        $customerNoJoin = $order->customer;
+        $this->assertInstanceOf('yiiunit\data\ar\Customer', $customerNoJoin);
+
+        $customerWithJoin = $order->customerJoinedWithProfile;
+        $this->assertInstanceOf('yiiunit\data\ar\Customer', $customerWithJoin);
+
+        $customerWithJoinIndexOrdered = $order->customerJoinedWithProfileIndexOrdered;
+        $this->assertTrue(is_array($customerWithJoinIndexOrdered));
+        $this->assertArrayHasKey('user1', $customerWithJoinIndexOrdered);
+        $this->assertInstanceOf('yiiunit\data\ar\Customer', $customerWithJoinIndexOrdered['user1']);
+    }
+
+    public function tableNameProvider()
+    {
+        return [
+            ['order', 'order_item'],
+            ['order', '{{%order_item}}'],
+            ['{{%order}}', 'order_item'],
+            ['{{%order}}', '{{%order_item}}'],
+        ];
+    }
+
+    /**
+     * Test whether conditions are quoted correctly in conditions where joinWith is used.
+     * @see https://github.com/yiisoft/yii2/issues/11088
+     * @dataProvider tableNameProvider
+     */
+    public function testRelationWhereParams($orderTableName, $orderItemTableName)
+    {
+        Order::$tableName = $orderTableName;
+        OrderItem::$tableName = $orderItemTableName;
+
+        /** @var $order Order */
+        $order = Order::findOne(1);
+        $itemsSQL = $order->getOrderitems()->createCommand()->rawSql;
+        $expectedSQL = $this->replaceQuotes("SELECT * FROM [[order_item]] WHERE [[order_id]]=1");
+        $this->assertEquals($expectedSQL, $itemsSQL);
+
+        $order = Order::findOne(1);
+        $itemsSQL = $order->getOrderItems()->joinWith('item')->createCommand()->rawSql;
+        $expectedSQL = $this->replaceQuotes("SELECT [[order_item]].* FROM [[order_item]] LEFT JOIN [[item]] ON [[order_item]].[[item_id]] = [[item]].[[id]] WHERE [[order_item]].[[order_id]]=1");
+        $this->assertEquals($expectedSQL, $itemsSQL);
+
+        Order::$tableName = null;
+        OrderItem::$tableName = null;
+    }
+
     public function testAlias()
     {
         $query = Order::find();
@@ -854,8 +927,10 @@ class ActiveRecordTest extends DatabaseTestCase
         $customer = Customer::findOne(2);
         $orders = $customer->getOrders2()->all();
         $this->assertTrue(count($orders) === 2);
-        $this->assertTrue($customer->orders2[0]->customer2 === $customer);
-        $this->assertTrue($customer->orders2[1]->customer2 === $customer);
+        $this->assertTrue($orders[0]->isRelationPopulated('customer2'), 'inverse relation did not populate the relation');
+        $this->assertTrue($orders[1]->isRelationPopulated('customer2'), 'inverse relation did not populate the relation');
+        $this->assertTrue($orders[0]->customer2 === $customer);
+        $this->assertTrue($orders[1]->customer2 === $customer);
 
         // the other way around
         $customer = Customer::find()->with('orders2')->where(['id' => 1])->asArray()->one();
@@ -887,6 +962,32 @@ class ActiveRecordTest extends DatabaseTestCase
         $this->assertTrue($orders[0]['customer2']['orders2'][1]['id'] === $orders[1]['id']);
         $this->assertTrue($orders[1]['customer2']['orders2'][0]['id'] === $orders[0]['id']);
         $this->assertTrue($orders[1]['customer2']['orders2'][1]['id'] === $orders[1]['id']);
+    }
+
+    public function testInverseOfDynamic()
+    {
+        $customer = Customer::findOne(1);
+        
+        // request the inverseOf relation without explicitly (eagerly) loading it
+        $orders2 = $customer->getOrders2()->all();
+        $this->assertSame($customer, $orders2[0]->customer2);
+        
+        $orders2 = $customer->getOrders2()->one();
+        $this->assertSame($customer, $orders2->customer2);
+        
+        // request the inverseOf relation while also explicitly eager loading it (while possible, this is of course redundant)
+        $orders2 = $customer->getOrders2()->with('customer2')->all();
+        $this->assertSame($customer, $orders2[0]->customer2);
+        
+        $orders2 = $customer->getOrders2()->with('customer2')->one();
+        $this->assertSame($customer, $orders2->customer2);
+        
+        // request the inverseOf relation as array
+        $orders2 = $customer->getOrders2()->asArray()->all();
+        $this->assertEquals($customer['id'], $orders2[0]['customer2']['id']);
+        
+        $orders2 = $customer->getOrders2()->asArray()->one();
+        $this->assertEquals($customer['id'], $orders2['customer2']['id']);
     }
 
     public function testDefaultValues()
@@ -1173,5 +1274,23 @@ class ActiveRecordTest extends DatabaseTestCase
         ]);
         $order->link('orderItems3', $orderItem);
         $this->assertTrue(isset($order->orderItems3['1_3']));
+    }
+
+    public function testUpdateAttributes()
+    {
+        $order = Order::findOne(1);
+        $newTotal = 978;
+        $this->assertSame(1, $order->updateAttributes(['total' => $newTotal]));
+        $this->assertEquals($newTotal, $order->total);
+        $order = Order::findOne(1);
+        $this->assertEquals($newTotal, $order->total);
+
+        // @see https://github.com/yiisoft/yii2/issues/12143
+        $newOrder = new Order();
+        $this->assertTrue($newOrder->getIsNewRecord());
+        $newTotal = 200;
+        $this->assertSame(0, $newOrder->updateAttributes(['total' => $newTotal]));
+        $this->assertTrue($newOrder->getIsNewRecord());
+        $this->assertEquals($newTotal, $newOrder->total);
     }
 }

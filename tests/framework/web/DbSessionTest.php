@@ -6,6 +6,7 @@ use Yii;
 use yii\db\Connection;
 use yii\db\Query;
 use yii\web\DbSession;
+use yiiunit\framework\console\controllers\EchoMigrateController;
 use yiiunit\TestCase;
 
 /**
@@ -16,6 +17,13 @@ class DbSessionTest extends TestCase
     protected function setUp()
     {
         parent::setUp();
+        /**
+         * @todo Optionally do fallback to some other database, however this might be overkill for tests only since
+         * sqlite is always available on travis.
+         */
+        if (!in_array('sqlite', \PDO::getAvailableDrivers())) {
+            $this->markTestIncomplete('DbSessionTest requires SQLite!');
+        }
         $this->mockApplication();
         Yii::$app->set('db', [
             'class' => Connection::className(),
@@ -95,7 +103,7 @@ class DbSessionTest extends TestCase
 
     protected function runMigrate($action, $params = [])
     {
-        $migrate = new \yii\console\controllers\MigrateController('migrate', Yii::$app, [
+        $migrate = new EchoMigrateController('migrate', Yii::$app, [
             'migrationPath' => '@yii/web/migrations',
             'interactive' => false,
         ]);
@@ -120,7 +128,7 @@ class DbSessionTest extends TestCase
                 ]
             ],
         ]);
-        
+
         $history = $this->runMigrate('history');
         $this->assertEquals(['base'], $history);
 

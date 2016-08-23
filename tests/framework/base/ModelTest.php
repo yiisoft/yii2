@@ -321,6 +321,7 @@ class ModelTest extends TestCase
 
         // isset
         $this->assertFalse(isset($speaker['firstName']));
+        $this->assertFalse(isset($speaker['unExistingField']));
 
         // set
         $speaker['firstName'] = 'Qiang';

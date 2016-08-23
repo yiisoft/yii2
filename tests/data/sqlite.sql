@@ -14,6 +14,7 @@ DROP TABLE IF EXISTS "customer";
 DROP TABLE IF EXISTS "profile";
 DROP TABLE IF EXISTS "type";
 DROP TABLE IF EXISTS "null_values";
+DROP TABLE IF EXISTS "negative_default_values";
 DROP TABLE IF EXISTS "animal";
 DROP TABLE IF EXISTS "default_pk";
 DROP TABLE IF EXISTS "document";
@@ -93,6 +94,14 @@ CREATE TABLE "null_values" (
   var2 INTEGER,
   var3 INTEGER DEFAULT NULL,
   stringcol VARCHAR(32) DEFAULT NULL
+);
+
+CREATE TABLE "negative_default_values" (
+  smallint_col integer default '-123',
+  int_col integer default '-123',
+  bigint_col integer default '-123',
+  float_col double default '-12345.6789',
+  numeric_col decimal(5,2) default '-33.22'
 );
 
 CREATE TABLE "type" (

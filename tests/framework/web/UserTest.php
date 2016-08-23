@@ -18,10 +18,13 @@ use yii\base\NotSupportedException;
 use yii\base\Component;
 use yii\rbac\PhpManager;
 use yii\web\ForbiddenHttpException;
+use yii\web\Cookie;
+use yii\web\CookieCollection;
 use yii\web\IdentityInterface;
 use yii\web\UrlManager;
 use yii\web\UrlRule;
 use yii\web\Request;
+use yii\web\Response;
 use Yii;
 use yiiunit\TestCase;
 
@@ -93,6 +96,47 @@ class UserTest extends TestCase
         $this->assertTrue(Yii::$app->user->isGuest);
         $this->assertFalse(Yii::$app->user->can('doSomething'));
 
+    }
+    
+    public function testCookieCleanup()
+    {
+        global $cookiesMock;
+
+        $cookiesMock = new CookieCollection();
+
+        $appConfig = [
+            'components' => [
+                'user' => [
+                    'identityClass' => UserIdentity::className(),
+                    'enableAutoLogin' => true,
+                ],
+                'response' => [
+                    'class' => MockResponse::className(),
+                ],
+                'request' => [
+                    'class' => MockRequest::className(),
+                ],
+            ],
+        ];
+
+        $this->mockWebApplication($appConfig);
+        Yii::$app->session->removeAll();
+
+        $cookie = new Cookie(Yii::$app->user->identityCookie);
+        $cookie->value = 'junk';
+        $cookiesMock->add($cookie);
+        Yii::$app->user->getIdentity();
+        $this->assertTrue(strlen($cookiesMock->getValue(Yii::$app->user->identityCookie['name'])) == 0);
+
+        Yii::$app->user->login(UserIdentity::findIdentity('user1'),3600);
+        $this->assertFalse(Yii::$app->user->isGuest);
+        $this->assertSame(Yii::$app->user->id, 'user1');
+        $this->assertFalse(strlen($cookiesMock->getValue(Yii::$app->user->identityCookie['name'])) == 0);
+
+        Yii::$app->user->login(UserIdentity::findIdentity('user2'),0);
+        $this->assertFalse(Yii::$app->user->isGuest);
+        $this->assertSame(Yii::$app->user->id, 'user2');
+        $this->assertTrue(strlen($cookiesMock->getValue(Yii::$app->user->identityCookie['name'])) == 0);
     }
 
     /**
@@ -172,10 +216,18 @@ class UserTest extends TestCase
 
         $this->reset();
         Yii::$app->request->setUrl('accept-all');
-        $_SERVER['HTTP_ACCEPT'] = '*;q=0.1';
+        $_SERVER['HTTP_ACCEPT'] = '*/*;q=0.1';
         $user->loginRequired();
         $this->assertEquals('accept-all', $user->getReturnUrl());
         $this->assertTrue(Yii::$app->response->getIsRedirection());
+
+        $this->reset();
+        Yii::$app->request->setUrl('json-and-accept-all');
+        $_SERVER['HTTP_ACCEPT'] = 'text/json, */*; q=0.1';
+        try {
+            $user->loginRequired();
+        } catch (ForbiddenHttpException $e) {}
+        $this->assertFalse(Yii::$app->response->getIsRedirection());
 
         $this->reset();
         Yii::$app->request->setUrl('accept-html-json');
@@ -191,6 +243,20 @@ class UserTest extends TestCase
         $this->assertEquals('accept-html-json', $user->getReturnUrl());
         $this->assertTrue(Yii::$app->response->getIsRedirection());
 
+        $this->reset();
+        $_SERVER['REQUEST_METHOD'] = 'POST';
+        Yii::$app->request->setUrl('dont-set-return-url-on-post-request');
+        Yii::$app->getSession()->set($user->returnUrlParam, null);
+        $user->loginRequired();
+        $this->assertNull(Yii::$app->getSession()->get($user->returnUrlParam));
+
+        $this->reset();
+        $_SERVER['REQUEST_METHOD'] = 'GET';
+        Yii::$app->request->setUrl('set-return-url-on-get-request');
+        Yii::$app->getSession()->set($user->returnUrlParam, null);
+        $user->loginRequired();
+        $this->assertEquals('set-return-url-on-get-request', Yii::$app->getSession()->get($user->returnUrlParam));
+
         // Confirm that returnUrl is not set.
         $this->reset();
         Yii::$app->request->setUrl('json-only');
@@ -199,7 +265,6 @@ class UserTest extends TestCase
             $user->loginRequired();
         } catch (ForbiddenHttpException $e) {}
         $this->assertNotEquals('json-only', $user->getReturnUrl());
-
 
         $this->reset();
         $_SERVER['HTTP_ACCEPT'] = 'text/json;q=0.1';
@@ -263,11 +328,33 @@ class UserIdentity extends Component implements IdentityInterface
 
     public function getAuthKey()
     {
-        throw new NotSupportedException();
+        return 'ABCD1234';
     }
 
     public function validateAuthKey($authKey)
     {
-        throw new NotSupportedException();
+        return $authKey === 'ABCD1234';
+    }
+}
+
+static $cookiesMock;
+
+class MockRequest extends \yii\web\Request
+{
+    public function getCookies()
+    {
+        global $cookiesMock;
+
+        return $cookiesMock;
+   }
+}
+
+class MockResponse extends \yii\web\Response
+{
+    public function getCookies()
+    {
+        global $cookiesMock;
+      
+        return $cookiesMock;
     }
 }

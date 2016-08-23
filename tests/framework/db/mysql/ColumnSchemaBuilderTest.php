@@ -1,15 +1,19 @@
 <?php
+
 namespace yiiunit\framework\db\mysql;
 
 use yii\db\mysql\ColumnSchemaBuilder;
 use yii\db\Schema;
-use \yiiunit\framework\db\ColumnSchemaBuilderTest as BaseColumnSchemaBuilderTest;
 
 /**
  * ColumnSchemaBuilderTest tests ColumnSchemaBuilder for MySQL
+ * @group db
+ * @group mysql
  */
-class ColumnSchemaBuilderTest extends BaseColumnSchemaBuilderTest
+class ColumnSchemaBuilderTest extends \yiiunit\framework\db\ColumnSchemaBuilderTest
 {
+    protected $driverName = 'mysql';
+
     /**
      * @param string $type
      * @param integer $length
@@ -17,13 +21,13 @@ class ColumnSchemaBuilderTest extends BaseColumnSchemaBuilderTest
      */
     public function getColumnSchemaBuilder($type, $length = null)
     {
-        return new ColumnSchemaBuilder($type, $length);
+        return new ColumnSchemaBuilder($type, $length, $this->getConnection());
     }
 
     /**
      * @return array
      */
-    public function unsignedProvider()
+    public function typesProvider()
     {
         return [
             ['integer UNSIGNED', Schema::TYPE_INTEGER, null, [
@@ -31,6 +35,9 @@ class ColumnSchemaBuilderTest extends BaseColumnSchemaBuilderTest
             ]],
             ['integer(10) UNSIGNED', Schema::TYPE_INTEGER, 10, [
                 ['unsigned'],
+            ]],
+            ['integer(10) COMMENT \'test\'', Schema::TYPE_INTEGER, 10, [
+                ['comment', 'test']
             ]],
         ];
     }

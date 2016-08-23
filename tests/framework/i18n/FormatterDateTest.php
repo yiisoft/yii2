@@ -205,7 +205,11 @@ class FormatterDateTest extends TestCase
         $value = time();
         $this->assertSame("$value", $this->formatter->asTimestamp($value));
         $this->assertSame("$value", $this->formatter->asTimestamp((string) $value));
+        $this->assertSame("$value", $this->formatter->asTimestamp(date('Y-m-d H:i:s', $value)));
 
+        $value = -time();
+        $this->assertSame("$value", $this->formatter->asTimestamp($value));
+        $this->assertSame("$value", $this->formatter->asTimestamp((string) $value));
         $this->assertSame("$value", $this->formatter->asTimestamp(date('Y-m-d H:i:s', $value)));
 
         // empty input

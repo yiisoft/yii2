@@ -1,9 +1,4 @@
 <?php
-/**
- * @link http://www.yiiframework.com/
- * @copyright Copyright (c) 2008 Yii Software LLC
- * @license http://www.yiiframework.com/license/
- */
 
 namespace yiiunit\framework\db;
 
@@ -13,11 +8,7 @@ use yii\db\Query;
 use yii\db\BatchQueryResult;
 use yiiunit\data\ar\Customer;
 
-/**
- * @group db
- * @group mysql
- */
-class BatchQueryResultTest extends DatabaseTestCase
+abstract class BatchQueryResultTest extends DatabaseTestCase
 {
     public function setUp()
     {
