@@ -19,7 +19,7 @@ use yii\caching\Cache;
  *
  * Connection works together with [[Command]], [[DataReader]] and [[Transaction]]
  * to provide data access to various DBMS in a common set of APIs. They are a thin wrapper
- * of the [[PDO PHP extension]](php.net/manual/en/book.pdo.php).
+ * of the [PDO PHP extension](http://php.net/manual/en/book.pdo.php).
  *
  * Connection supports database replication and read-write splitting. In particular, a Connection component
  * can be configured with multiple [[masters]] and [[slaves]]. It will do load balancing and failover by choosing
