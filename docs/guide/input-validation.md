@@ -96,6 +96,27 @@ According to the above validation steps, an attribute will be validated if and o
 an active attribute declared in `scenarios()` and is associated with one or multiple active rules
 declared in `rules()`.
 
+> Note: It is handy to give names to rules i.e.
+> ```php
+> public function rules()
+> {
+>     return [
+>         // ...
+>         'password' => [['password'], 'string', 'max' => 60],
+>     ];
+> }
+> ```
+>
+> You can use it in a child model:
+>
+> ```php
+> public function rules()
+> {
+>     $rules = parent::rules();
+>     unset($rules['password']);
+>     return $rules;
+> }
+
 
 ### Customizing Error Messages <span id="customizing-error-messages"></span>
 
@@ -555,6 +576,10 @@ JS;
 >     ['status', 'in', 'range' => Status::find()->select('id')->asArray()->column()],
 > ]
 > ```
+
+> Tip: If you need to work with client validation manually i.e. dynamically add fields or do some custom UI logic, refer
+> to [Working with ActiveForm via JavaScript](https://github.com/samdark/yii2-cookbook/blob/master/book/forms-activeform-js.md)
+> in Yii 2.0 Cookbook.
 
 ### Deferred Validation <span id="deferred-validation"></span>
 

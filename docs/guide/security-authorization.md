@@ -303,6 +303,9 @@ class RbacController extends Controller
 }
 ```
 
+> Note: If you are using advanced template, you need to put your `RbacController` inside `console/controllers` directory
+  and change namespace to `console/controllers`.
+
 After executing the command with `yii rbac/init` we'll get the following hierarchy:
 
 ![Simple RBAC hierarchy](images/rbac-hierarchy-1.png "Simple RBAC hierarchy")
@@ -436,6 +439,50 @@ In case of Jane it is a bit simpler since she is an admin:
 
 ![Access check](images/rbac-access-check-3.png "Access check")
 
+Inside your controller there are a few ways to implement authorization. If you want granular permissions that
+separate access to adding and deleting, then you need to check access for each action. You can either use the
+above condition in each action method, or use [[yii\filters\AccessControl]]:
+
+```php
+public function behaviors()
+{
+    return [
+        'access' => [
+            'class' => AccessControl::className(),
+            'rules' => [
+                [
+                    'allow' => true,
+                    'actions' => ['index'],
+                    'roles' => ['managePost'],
+                ],
+                [
+                    'allow' => true,
+                    'actions' => ['view'],
+                    'roles' => ['viewPost'],
+                ],
+                [
+                    'allow' => true,
+                    'actions' => ['create'],
+                    'roles' => ['createPost'],
+                ],
+                [
+                    'allow' => true,
+                    'actions' => ['update'],
+                    'roles' => ['updatePost'],
+                ],
+                [
+                    'allow' => true,
+                    'actions' => ['delete'],
+                    'roles' => ['deletePost'],
+                ],
+            ],
+        ],
+    ];
+}
+```
+
+If all the CRUD operations are managed together then it's a good idea to use a single permission, like `managePost`, and
+check it in [[yii\web\Controller::beforeAction()]].
 
 ### Using Default Roles <span id="using-default-roles"></span>
 

@@ -182,7 +182,7 @@ Both methods can take one of the following parameter formats:
 - an associative array: the keys are column names and the values are the corresponding desired column values to 
   be looked for. Please refer to [Hash Format](db-query-builder.md#hash-format) for more details.
   
-The following code shows how theses methods can be used:
+The following code shows how these methods can be used:
 
 ```php
 // returns a single customer whose ID is 123
@@ -569,6 +569,11 @@ life cycle will happen:
 > - [[yii\db\ActiveRecord::deleteAll()]]
 > - [[yii\db\ActiveRecord::updateCounters()]] 
 > - [[yii\db\ActiveRecord::updateAllCounters()]] 
+
+### Refreshing Data Life Cycle <span id="refreshing-data-life-cycle"></span>
+
+When calling [[yii\db\ActiveRecord::refresh()|refresh()]] to refresh an Active Record instance, the
+[[yii\db\ActiveRecord::EVENT_AFTER_REFRESH|EVENT_AFTER_REFRESH]] event is triggered if refresh is successful and the method returns `true`.
 
 
 ## Working with Transactions <span id="transactional-operations"></span>

@@ -166,7 +166,7 @@ the three formats to specify a `WHERE` condition:
 
 #### String Format <span id="string-format"></span>
 
-String format is best used to specify very simple conditions or if you need to use builtin functions of the DBMS.
+String format is best used to specify very simple conditions or if you need to use built-in functions of the DBMS.
 It works as if you are writing a raw SQL. For example,
 
 ```php
@@ -291,7 +291,7 @@ the operator can be one of the following:
   the `NOT LIKE` predicates.
 
 - `exists`: requires one operand which must be an instance of [[yii\db\Query]] representing the sub-query.
-  It will build a `EXISTS (sub-query)` expression.
+  It will build an `EXISTS (sub-query)` expression.
 
 - `not exists`: similar to the `exists` operator and builds a `NOT EXISTS (sub-query)` expression.
 
@@ -351,6 +351,20 @@ Like [[yii\db\Query::andWhere()|andWhere()]] and [[yii\db\Query::orWhere()|orWhe
 [[yii\db\Query::andFilterWhere()|andFilterWhere()]] and [[yii\db\Query::orFilterWhere()|orFilterWhere()]]
 to append additional filter conditions to the existing one.
 
+Additionally, there is [[yii\db\Query::andFilterCompare()]] that can intelligently determine operator based on what's
+in the value:
+
+```php
+$query->andFilterCompare('name', 'John Doe');
+$query->andFilterCompare('rating', '>9');
+$query->andFilterCompare('value', '<=100');
+```
+
+You can also specify operator explicitly:
+
+```php
+$query->andFilterCompare('name', 'Doe', 'like');
+```
 
 ### [[yii\db\Query::orderBy()|orderBy()]] <span id="order-by"></span>
 
@@ -364,7 +378,7 @@ $query->orderBy([
 ]);
 ```
  
-In the above code, the array keys are column names while the array values are the corresponding order-by directions.
+In the above code, the array keys are column names while the array values are the corresponding order by directions.
 The PHP constant `SORT_ASC` specifies ascending sort and `SORT_DESC` descending sort.
 
 If `ORDER BY` only involves simple column names, you can specify it using a string, just like you do when writing 
@@ -619,6 +633,12 @@ $query = (new \yii\db\Query())
 
 The anonymous function takes a parameter `$row` which contains the current row data and should return a scalar
 value which will be used as the index value for the current row.
+
+> Note: In contrast to query methods like [[yii\db\Query::groupBy()|groupBy()]] or [[yii\db\Query::orderBy()|orderBy()]]
+> which are converted to SQL and are part of the query, this method works after the data has been fetched from the database.
+> That means that only those column names can be used that have been part of SELECT in your query.
+> Also if you selected a column with table prefix, e.g. `customer.id`, the result set will only contain `id` so you have to call
+> `->indexBy('id')` without table prefix.
 
 
 ### Batch Query <span id="batch-query"></span>
