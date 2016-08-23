@@ -201,7 +201,8 @@
                     settings: settings,
                     attributes: attributes,
                     submitting: false,
-                    validated: false
+                    validated: false,
+                    target: $form.attr('target')
                 });
 
                 /**
@@ -292,6 +293,7 @@
             if (submitting) {
                 var event = $.Event(events.beforeValidate);
                 $form.trigger(event, [messages, deferreds]);
+
                 if (event.result === false) {
                     data.submitting = false;
                     submitFinalize($form);
@@ -301,6 +303,7 @@
 
             // client-side validation
             $.each(data.attributes, function () {
+                this.$form = $form;
                 if (!$(this.input).is(":disabled")) {
                     this.cancelled = false;
                     // perform validation only if the form is being submitted or if an attribute is pending validation
@@ -575,7 +578,14 @@
                 data.submitting = false;
             } else {
                 data.validated = true;
+                var buttonTarget = data.submitObject ? data.submitObject.attr('formtarget') : null;
+                if (buttonTarget) {
+                    // set target attribute to form tag before submit
+                    $form.attr('target', buttonTarget);
+                }
                 $form.submit();
+                // restore original target attribute value
+                $form.attr('target', data.target);
             }
         } else {
             $.each(data.attributes, function () {

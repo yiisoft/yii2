@@ -93,7 +93,7 @@ class BaseArrayHelper
                 }
             }
 
-            return $recursive ? static::toArray($result) : $result;
+            return $recursive ? static::toArray($result, $properties) : $result;
         } else {
             return [$object];
         }
@@ -107,6 +107,8 @@ class BaseArrayHelper
      * type and are having the same key.
      * For integer-keyed elements, the elements from the latter array will
      * be appended to the former array.
+     * You can use [[UnsetArrayValue]] object to unset value from previous array or
+     * [[ReplaceArrayValue]] to force replace former value instead of recursive merging.
      * @param array $a array to be merged to
      * @param array $b array to be merged from. You can specify additional
      * arrays via third argument, fourth argument etc.
@@ -119,7 +121,11 @@ class BaseArrayHelper
         while (!empty($args)) {
             $next = array_shift($args);
             foreach ($next as $k => $v) {
-                if (is_int($k)) {
+                if ($v instanceof UnsetArrayValue) {
+                    unset($res[$k]);
+                } elseif ($v instanceof ReplaceArrayValue) {
+                    $res[$k] = $v->value;
+                } elseif (is_int($k)) {
                     if (isset($res[$k])) {
                         $res[] = $v;
                     } else {
@@ -189,7 +195,7 @@ class BaseArrayHelper
             $key = $lastKey;
         }
 
-        if (is_array($array) && array_key_exists($key, $array)) {
+        if (is_array($array) && (isset($array[$key]) || array_key_exists($key, $array)) ) {
             return $array[$key];
         }
 
@@ -203,7 +209,7 @@ class BaseArrayHelper
             // it is not reliably possible to check whether a property is accessable beforehand
             return $array->$key;
         } elseif (is_array($array)) {
-            return array_key_exists($key, $array) ? $array[$key] : $default;
+            return (isset($array[$key]) || array_key_exists($key, $array)) ? $array[$key] : $default;
         } else {
             return $default;
         }
@@ -265,6 +271,7 @@ class BaseArrayHelper
      * ```
      *
      * The result will be an associative array, where the key is the value of `id` attribute
+     *
      * ```php
      * [
      *     '123' => ['id' => '123', 'data' => 'abc', 'device' => 'laptop'],
@@ -274,6 +281,7 @@ class BaseArrayHelper
      * ```
      *
      * An anonymous function can be used in the grouping array as well.
+     *
      * ```php
      * $result = ArrayHelper::index($array, function ($element) {
      *     return $element['id'];
@@ -281,12 +289,14 @@ class BaseArrayHelper
      * ```
      *
      * Passing `id` as a third argument will group `$array` by `id`:
+     *
      * ```php
      * $result = ArrayHelper::index($array, null, 'id');
      * ```
      *
      * The result will be a multidimensional array grouped by `id` on the first level, by `device` on the second level
      * and indexed by `data` on the third level:
+     *
      * ```php
      * [
      *     '123' => [
@@ -300,6 +310,7 @@ class BaseArrayHelper
      * ```
      *
      * The anonymous function can be used in the array of grouping keys as well:
+     *
      * ```php
      * $result = ArrayHelper::index($array, 'data', [function ($element) {
      *     return $element['id'];
@@ -308,6 +319,7 @@ class BaseArrayHelper
      *
      * The result will be a multidimensional array grouped by `id` on the first level, by the `device` on the second one
      * and indexed by the `data` on the third level:
+     *
      * ```php
      * [
      *     '123' => [
@@ -357,6 +369,9 @@ class BaseArrayHelper
             } else {
                 $value = static::getValue($element, $key);
                 if ($value !== null) {
+                    if (is_float($value)) {
+                        $value = (string) $value;
+                    }
                     $lastArray[$value] = $element;
                 }
             }
@@ -477,7 +492,9 @@ class BaseArrayHelper
     public static function keyExists($key, $array, $caseSensitive = true)
     {
         if ($caseSensitive) {
-            return array_key_exists($key, $array);
+            // Function `isset` checks key faster but skips `null`, `array_key_exists` handles this case
+            // http://php.net/manual/en/function.array-key-exists.php#107786
+            return isset($array[$key]) || array_key_exists($key, $array);
         } else {
             foreach (array_keys($array) as $k) {
                 if (strcasecmp($key, $k) === 0) {
@@ -693,7 +710,7 @@ class BaseArrayHelper
     {
         if ($haystack instanceof \Traversable) {
             foreach ($haystack as $value) {
-                if ($needle == $value && (!$strict || $needle === $haystack)) {
+                if ($needle == $value && (!$strict || $needle === $value)) {
                     return true;
                 }
             }
@@ -745,5 +762,92 @@ class BaseArrayHelper
         } else {
             throw new InvalidParamException('Argument $needles must be an array or implement Traversable');
         }
+    }
+
+    /**
+     * Filters array according to rules specified.
+     *
+     * For example:
+     * ```php
+     * $array = [
+     *     'A' => [1, 2],
+     *     'B' => [
+     *         'C' => 1,
+     *         'D' => 2,
+     *     ],
+     *     'E' => 1,
+     * ];
+     *
+     * $result = \yii\helpers\ArrayHelper::filter($array, ['A']);
+     * // $result will be:
+     * // [
+     * //     'A' => [1, 2],
+     * // ]
+     *
+     * $result = \yii\helpers\ArrayHelper::filter($array, ['A', 'B.C']);
+     * // $result will be:
+     * // [
+     * //     'A' => [1, 2],
+     * //     'B' => ['C' => 1],
+     * // ]
+     *
+     * $result = \yii\helpers\ArrayHelper::filter($array, ['B', '!B.C']);
+     * // $result will be:
+     * // [
+     * //     'B' => ['D' => 2],
+     * // ]
+     * ```
+     *
+     * @param array $array Source array
+     * @param array $filters Rules that define array keys which should be left or removed from results.
+     * Each rule is:
+     * - `var` - `$array['var']` will be left in result.
+     * - `var.key` = only `$array['var']['key'] will be left in result.
+     * - `!var.key` = `$array['var']['key'] will be removed from result.
+     * @return array Filtered array
+     * @since 2.0.9
+     */
+    public static function filter($array, $filters)
+    {
+        $result = [];
+        $forbiddenVars = [];
+
+        foreach ($filters as $var) {
+            $keys = explode('.', $var);
+            $globalKey = $keys[0];
+            $localKey = isset($keys[1]) ? $keys[1] : null;
+
+            if ($globalKey[0] === '!') {
+                $forbiddenVars[] = [
+                    substr($globalKey, 1),
+                    $localKey,
+                ];
+                continue;
+            }
+
+            if (empty($array[$globalKey])) {
+                continue;
+            }
+            if ($localKey === null) {
+                $result[$globalKey] = $array[$globalKey];
+                continue;
+            }
+            if (!isset($array[$globalKey][$localKey])) {
+                continue;
+            }
+            if (!array_key_exists($globalKey, $result)) {
+                $result[$globalKey] = [];
+            }
+            $result[$globalKey][$localKey] = $array[$globalKey][$localKey];
+        }
+
+        foreach ($forbiddenVars as $var) {
+            list($globalKey, $localKey) = $var;
+            if (array_key_exists($globalKey, $result)) {
+                unset($result[$globalKey][$localKey]);
+            }
+        }
+
+        return $result;
     }
 }

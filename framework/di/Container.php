@@ -143,6 +143,7 @@ class Container extends Component
      * @param array $config a list of name-value pairs that will be used to initialize the object properties.
      * @return object an instance of the requested class.
      * @throws InvalidConfigException if the class cannot be recognized or correspond to an invalid definition
+     * @throws NotInstantiableException If resolved to an abstract class or an interface (since 2.0.9)
      */
     public function get($class, $params = [], $config = [])
     {
@@ -353,6 +354,7 @@ class Container extends Component
      * @param array $params constructor parameters
      * @param array $config configurations to be applied to the new instance
      * @return object the newly created instance of the specified class
+     * @throws NotInstantiableException If resolved to an abstract class or an interface (since 2.0.9)
      */
     protected function build($class, $params, $config)
     {
@@ -364,6 +366,9 @@ class Container extends Component
         }
 
         $dependencies = $this->resolveDependencies($dependencies, $reflection);
+        if (!$reflection->isInstantiable()) {
+            throw new NotInstantiableException($reflection->name);
+        }
         if (empty($config)) {
             return $reflection->newInstanceArgs($dependencies);
         }
@@ -480,6 +485,7 @@ class Container extends Component
      * This can be either a list of parameters, or an associative array representing named function parameters.
      * @return mixed the callback return value.
      * @throws InvalidConfigException if a dependency cannot be resolved or if a dependency cannot be fulfilled.
+     * @throws NotInstantiableException If resolved to an abstract class or an interface (since 2.0.9)
      * @since 2.0.7
      */
     public function invoke(callable $callback, $params = [])
@@ -501,6 +507,7 @@ class Container extends Component
      * @param array $params The array of parameters for the function, can be either numeric or associative.
      * @return array The resolved dependencies.
      * @throws InvalidConfigException if a dependency cannot be resolved or if a dependency cannot be fulfilled.
+     * @throws NotInstantiableException If resolved to an abstract class or an interface (since 2.0.9)
      * @since 2.0.7
      */
     public function resolveCallableDependencies(callable $callback, $params = [])
@@ -524,10 +531,20 @@ class Container extends Component
                     unset($params[$name]);
                 } elseif (!$associative && isset($params[0]) && $params[0] instanceof $className) {
                     $args[] = array_shift($params);
-                } elseif (Yii::$app->has($name) && ($obj = Yii::$app->get($name)) instanceof $className) {
+                } elseif (isset(Yii::$app) && Yii::$app->has($name) && ($obj = Yii::$app->get($name)) instanceof $className) {
                     $args[] = $obj;
                 } else {
-                    $args[] = $this->get($className);
+                    // If the argument is optional we catch not instantiable exceptions
+                    try {
+                        $args[] = $this->get($className);
+                    } catch (NotInstantiableException $e) {
+                        if ($param->isDefaultValueAvailable()) {
+                            $args[] = $param->getDefaultValue();
+                        } else {
+                            throw $e;
+                        }
+                    }
+
                 }
             } elseif ($associative && isset($params[$name])) {
                 $args[] = $params[$name];

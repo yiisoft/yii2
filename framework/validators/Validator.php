@@ -18,7 +18,7 @@ use yii\base\NotSupportedException;
  * logic of performing data validation. Child classes may also override [[clientValidateAttribute()]]
  * to provide client-side validation support.
  *
- * Validator declares a set of [[builtInValidators|built-in validators] which can
+ * Validator declares a set of [[builtInValidators|built-in validators]] which can
  * be referenced using short names. They are listed as follows:
  *
  * - `boolean`: [[BooleanValidator]]
@@ -374,7 +374,13 @@ class Validator extends Component
         $params['attribute'] = $model->getAttributeLabel($attribute);
         if (!isset($params['value'])) {
             $value = $model->$attribute;
-            $params['value'] = is_array($value) ? 'array()' : $value;
+            if (is_array($value)) {
+                $params['value'] = 'array()';
+            } elseif (is_object($value) && !method_exists($value, '__toString')) {
+                $params['value'] = '(object)';
+            } else {
+                $params['value'] = $value;
+            }
         }
         $model->addError($attribute, Yii::$app->getI18n()->format($message, $params, Yii::$app->language));
     }

@@ -104,11 +104,12 @@ class FragmentCache extends Widget
         if (($content = $this->getCachedContent()) !== false) {
             echo $content;
         } elseif ($this->cache instanceof Cache) {
+            array_pop($this->getView()->cacheStack);
+            
             $content = ob_get_clean();
             if ($content === false || $content === '') {
                 return;
             }
-            array_pop($this->getView()->cacheStack);
             if (is_array($this->dependency)) {
                 $this->dependency = Yii::createObject($this->dependency);
             }
@@ -129,7 +130,7 @@ class FragmentCache extends Widget
 
     /**
      * Returns the cached content if available.
-     * @return string|boolean the cached content. False is returned if valid content is not found in the cache.
+     * @return string|false the cached content. False is returned if valid content is not found in the cache.
      */
     public function getCachedContent()
     {
