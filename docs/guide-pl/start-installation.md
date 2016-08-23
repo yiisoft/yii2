@@ -67,7 +67,7 @@ Instalacja Yii z pliku archiwum składa się z trzech kroków:
 3. Zmodyfikowanie pliku `config/web.php` przez dodanie sekretnego klucza do elementu konfiguracji `cookieValidationKey`
    (jest to wykonywane automatycznie, jeśli instalujesz Yii używając Composera):
 
-    ```php
+   ```php
    // !!! wprowadź sekretny klucz tutaj - jest to wymagane do walidacji ciasteczek
    'cookieValidationKey' => 'enter your secret key here',
    ```
