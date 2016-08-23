@@ -69,7 +69,7 @@ Il est recommandé de placer les ressources appartenant à une application dans 
 
 Quant aux [extensions](structure-extensions.md), comme leurs ressources sont situées avec le code source dans des dossiers non accessibles depuis le Web, vous devez spécifier la propriété [[yii\web\AssetBundle::sourcePath|sourcePath]] lorsque vous définissez des classes de paquet de ressources pour elles.
 
-> Note: n'utilisez pas  `@webroot/assets` en tant que [yii\web\AssetBundle::sourcePath|chemin des sources]]. Ce dossier est utilisé par défaut par le [[yii\web\AssetManager|gestionnaire de ressources]] pour sauvegarder les fichiers de ressources publiés depuis leur emplacement source. Tout contenu dans ce dossier est considéré temporaire et sujet à suppression. 
+> Note: n'utilisez pas  `@webroot/assets` en tant que [[yii\web\AssetBundle::sourcePath|chemin des sources]]. Ce dossier est utilisé par défaut par le [[yii\web\AssetManager|gestionnaire de ressources]] pour sauvegarder les fichiers de ressources publiés depuis leur emplacement source. Tout contenu dans ce dossier est considéré temporaire et sujet à suppression. 
 
 
 ### Dépendances de ressources <span id="asset-dependencies"></span>
