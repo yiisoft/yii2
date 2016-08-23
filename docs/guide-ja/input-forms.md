@@ -76,6 +76,10 @@ $form = ActiveForm::begin([
 例えば、上記の例における `username` 属性のインプットフィールドの名前は `LoginForm[username]` となります。
 この命名規則の結果として、ログインフォームの全ての属性が配列として、サーバ側においては `$_POST['LoginForm']` に格納されて利用できることになります。
 
+> Tip: 一つのフォームに一つのモデルだけがある場合、インプットの名前を単純化したいときは、
+> モデルの [[yii\base\Model::formName()|formName()]] メソッドをオーバーライドして空文字列を返すようにして、配列の部分をスキップすることが出来ます。
+> この方法を使えば、[GridView](output-data-widgets.md#grid-view) で使われるフィルターモデルで、もっと見栄えの良い URL を生成させることが出来ます。
+
 モデルの属性を指定するために、もっと洗練された方法を使うことも出来ます。
 例えば、複数のファイルをアップロードしたり、複数の項目を選択したりする場合に、属性の名前に `[]` を付けて、属性が配列の値を取り得ることを指定することが出来ます。
 
@@ -128,6 +132,49 @@ echo $form->field($model, 'product_category')->dropdownList(
 ```
 
 モデルのフィールドの値は、前もって自動的に選択されます。
+
+
+Pjax を使う <span id="working-with-pjax"></span>
+-----------
+
+[[yii\widgets\Pjax|Pjax]] ウィジェットを使うと、ページ全体をリロードせずに、ページの一部分だけを更新することが出来ます。
+これを使うと、送信後にフォームだけを更新して、その中身を入れ替えることが出来ます。
+
+[[yii\widgets\Pjax::$formSelector|$formSelector]] を構成すると、どのフォームの送信が pjax を起動するかを指定することが出来ます。
+それが指定されていない場合は、Pjax に囲まれたコンテントの中にあって `data-pjax` 属性を持つすべてのフォームが pjax リクエストを起動することになります。
+
+```php
+use yii\widgets\Pjax;
+use yii\widgets\ActiveForm;
+
+Pjax::begin([
+    // Pjax のオプション
+]);
+    $form = ActiveForm::begin([
+        'options' => ['data' => ['pjax' => true]],
+        // ActiveForm の追加のオプション
+    ]);
+
+        // ActiveForm のコンテント
+
+    ActiveForm::end();
+Pjax::end();
+```
+> Tip: [[yii\widgets\Pjax|Pjax]] ウィジェット内部のリンクに注意してください。
+> と言うのは、リンクに対するレスポンスもウィジェット内部でレンダリングされるからです。
+> これを防ぐためには、`data-pjax="0"` という HTML 属性を使用します。
+
+#### 送信ボタンの値とファイルのアップロード
+
+`jQuery.serializeArray()` については、
+[[https://github.com/jquery/jquery/issues/2321|ファイル]] および
+[[https://github.com/jquery/jquery/issues/2321|送信ボタンの値]]
+を扱うときに問題があることが知られています。
+これは解決される見込みがなく、HTML5 で導入された `FormData` クラスの使用に乗り換えるべく、廃止予定となっています。
+
+このことは、すなわち、ajax または [[yii\widgets\Pjax|Pjax]] ウィジェットを使う場合、ファイルと送信ボタンの値に対する公式なサポートは、ひとえに
+`FormData` クラスに対する [[https://developer.mozilla.org/en-US/docs/Web/API/FormData#Browser_compatibility|ブラウザのサポート]] に依存するということを意味します。
+
 
 さらに読むべき文書 <span id="further-reading"></span>
 ------------------

@@ -17,7 +17,7 @@ Codeception は、特定のプロジェクトのためだけにローカルに�
 ローカルのインストールのためには、次のコマンドを使います。
 
 ```
-composer require "codeception/codeception=2.0.*"
+composer require "codeception/codeception=2.1.*"
 composer require "codeception/specify=*"
 composer require "codeception/verify=*"
 ```
@@ -25,7 +25,7 @@ composer require "codeception/verify=*"
 グローバルのインストールのためには、`global` 命令を使う必要があります。
 
 ```
-composer global require "codeception/codeception=2.0.*"
+composer global require "codeception/codeception=2.1.*"
 composer global require "codeception/specify=*"
 composer global require "codeception/verify=*"
 ```
