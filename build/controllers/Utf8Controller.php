@@ -31,9 +31,13 @@ class Utf8Controller extends Controller
         if ($directory === null) {
             $directory = dirname(dirname(__DIR__)) . '/docs';
         }
-        $files = FileHelper::findFiles($directory, [
-            'only' => ['*.md'],
-        ]);
+        if (is_file($directory)) {
+            $files = [$directory];
+        } else {
+            $files = FileHelper::findFiles($directory, [
+                'only' => ['*.md'],
+            ]);
+        }
 
         foreach($files as $file) {
 
@@ -63,11 +67,17 @@ class Utf8Controller extends Controller
                  || 0x205f <= $ord && $ord <= 0x206F
                     ) {
                     $this->found("UNSUPPORTED SPACE CHARACTER", $c, $line, $pos, $file);
+                    continue;
                 }
                 if ($ord < 0x0020 && $ord != 0x000A && $ord != 0x0009 ||
                     0x0080 <= $ord && $ord < 0x009F) {
                     $this->found("CONTROL CHARARCTER", $c, $line, $pos, $file);
+                    continue;
                 }
+//                if ($ord > 0x009F) {
+//                    $this->found("NON ASCII CHARARCTER", $c, $line, $pos, $file);
+//                    continue;
+//                }
 
             }
         }
