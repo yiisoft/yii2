@@ -1,7 +1,7 @@
 Instalacja Yii
 ==============
 
-Yii możesz zainstalować na dwa sposoby, korzystając z [Composera] (https://getcomposer.org/) lub pobierając plik archiwum.
+Yii możesz zainstalować na dwa sposoby, korzystając z [Composera](https://getcomposer.org/) lub pobierając plik archiwum.
 Pierwszy z nich jest najlepszym sposobem, ponieważ pozwala na instalację nowych [rozszerzeń](structure-extensions.md) lub aktualizację Yii przez wywołanie jednej komendy.
 
 Standardowa instalacja Yii skutkuje pobraniem i zainstalowaniem całego framework'a oraz szablonu projektu.
