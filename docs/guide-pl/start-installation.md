@@ -1,24 +1,28 @@
 Instalacja Yii
 ==============
 
-Yii możesz zainstalować na dwa sposoby, korzystając z [Composera](https://getcomposer.org/) lub pobierając plik archiwum.
-Pierwszy z nich jest najlepszym sposobem, ponieważ pozwala na instalację nowych [rozszerzeń](structure-extensions.md) lub aktualizację Yii przez wywołanie jednej komendy.
+Yii możesz zainstalować na dwa sposoby, korzystając z [Composera](https://getcomposer.org/) lub pobierając plik archiwum.  
+Preferowanym sposobem jest ten pierwszy, ponieważ pozwala na instalację i aktualizację dodatkowych [rozszerzeń](structure-extensions.md) oraz samego Yii przy użyciu 
+zaledwie jednej komendy.
 
-Standardowa instalacja Yii skutkuje pobraniem i zainstalowaniem całego framework'a oraz szablonu projektu.
-Szablon projektu jest działającym projektem Yii zawierającym w sobie podstawowe funkcjonalności, takie jak logowanie, formularz kontaktowy itp.
-Jego kod jest zorganizowany w zalecany sposób, dlatego może służyć jako dobry start dla Twojego projektu.
+Standardowa instalacja Yii skutkuje pobraniem i wstępnym skonfigurowaniem frameworka wraz z szablonem projektu.  
+Szablon projektu jest aplikacją Yii zawierającą podstawowe funkcjonalności, takie jak logowanie, formularz kontaktowy itp.  
+Struktura jego kodu została stworzona w oparciu o zalecany sposób pisania aplikacji opartych na Yii, dlatego może służyć jako dobry punkt wyjściowy dla stworzenia 
+Twojego bardziej zaawansowanego projektu.
     
-W tej oraz kilku kolejnych sekcjach opiszemy jak zainstalować Yii z tzw. "podstawowym szablonem projektu" oraz jak zaimplementować w nim nowe funkcjonalności. 
-Yii dostarcza również drugi, [zaawansowany szablon projektu](https://github.com/yiisoft/yii2-app-advanced/blob/master/docs/guide/README.md), który jest lepszy
-dla programistów tworzących wielowarstwowe aplikacje.
+W tej oraz kilku kolejnych sekcjach opiszemy jak zainstalować Yii z tak zwanym "podstawowym szablonem projektu" oraz jak zaimplementować w nim nowe funkcjonalności.  
+Oprócz podstawowego, Yii dostarcza również drugi, [zaawansowany szablon projektu](https://github.com/yiisoft/yii2-app-advanced/blob/master/docs/guide/README.md), 
+przystosowany dla programistów tworzących wielowarstwowe aplikacje.
 
-> Info: Podstawowy szablon projektu jest odpowiedni dla 90% aplikacji webowych. Główną różnicą, w porównaniu do zaawansowanego szablonu projektu, jest organizacja kodu.
-> Jeśli dopiero zaczynasz swoją przygodę z Yii, mocno zalecamy trzymać się podstawowego szablonu, ze względu na jego prostotę oraz wystarczającą funkcjonalność.
+> Info: Podstawowy szablon projektu jest odpowiedni dla 90% aplikacji webowych. Główną różnicą, w porównaniu do zaawansowanego szablonu projektu, jest organizacja kodu.  
+> Jeśli dopiero zaczynasz swoją przygodę z Yii, zalecamy zapoznać się z podstawowym szablonem, ze względu na jego prostotę oraz funkcjonalność.
 
-Instalacja przez Composer <span id="installing-via-composer"></span>
------------------------
+Instalacja z użyciem Composera <span id="installing-via-composer"></span>
+------------------------------
 
-Jeśli nie posiadasz jeszcze zainstalowanego Composera to możesz to zrobić podążając według zamieszczonych na [getcomposer.org](https://getcomposer.org/download/) instrukcji.
+### Instalacja Composera
+
+Jeśli nie posiadasz jeszcze Composera, to możesz go zainstalować korzystając z instrukcji zamieszczonej na stronie [getcomposer.org](https://getcomposer.org/download/). 
 W systemach operacyjnych Linux i Mac OS X należy wywołać następujące komendy:
 
 ```bash
@@ -28,37 +32,56 @@ mv composer.phar /usr/local/bin/composer
 
 W systemie Windows należy pobrać i uruchomić [Composer-Setup.exe](https://getcomposer.org/Composer-Setup.exe).
 
-W przypadku napotkania jakichkolwiek problemów lub chęci zdobycia większej ilości informacji na temat korzystania z Composer'a zalecamy odniesienie się do 
-[dokumentacji](https://getcomposer.org/doc/)
+W przypadku napotkania jakichkolwiek problemów należy zapoznać się z 
+[sekcją Rozwiązywania problemów w dokumentacji Composera](https://getcomposer.org/doc/articles/troubleshooting.md).  
+Jeśli dopiero rozpoczynasz przygodę z Composerem, zalecamy przeczytanie przynajmniej [sekcji Podstaw użycia](https://getcomposer.org/doc/01-basic-usage.md) 
+w dokumentacji Composera.
 
-Jeśli posiadałeś już wcześniej zainstalowanego Composera, upewnij się, że jest on zaktualizowany. Composer można zaktualizować wywołując komendę 'composer self-update'.
+W tym przewodniku zakładamy, że Composer został zainstalowany [globalnie](https://getcomposer.org/doc/00-intro.md#globally), 
+dzięki czemu jest dostępny z użyciem komendy `composer`. Jeśli jednak zamiast tego używasz pliku `composer.phar` w lokalnym folderze, 
+pamiętaj, żeby odpowiednio zmodyfikować podane tu przykładowe komendy.
 
-Z zainstalowanym Composerem możesz przejść do instalacji Yii wywołując poniższe komendy w katalogu dostępnym z poziomu sieci web:
+Jeśli jesteś już posiadaczem Composera, upewnij się, że jest on zaktualizowany do najnowszej wersji (komenda `composer self-update`).
+
+> Note: Podczas instalacji Yii, Composer będzie potrzebował pobrać sporo informacji z API serwisu Github. 
+> Ilość zapytań zależy od liczby powiązanych wtyczek, rozszerzeń i modułów, których wymaga Twoja aplikacja, i może być większa niż 
+> **limit zapytań API GitHuba**. Jeśli faktycznie tak będzie, Composer może poprosić o Twoje dane logowania w serwisie Github, aby uzyskać 
+> token dostępowy API Githuba. Przy szybkim łączu napotkanie limitu może nastąpić szybciej niż Composer jest w stanie obsłużyć zapytania, 
+> zatem zalecane jest skonfigurowanie tokenu dostępowego przed instalacją Yii.  
+> Instrukcja opisująca jak tego dokonać znajduje się w 
+> [dokumentacji Composera dotyczącej tokenów API Githuba](https://getcomposer.org/doc/articles/troubleshooting.md#api-rate-limit-and-oauth-tokens).
+
+### Installing Yii
+
+Teraz możesz przejść już do instalacji samego Yii, wywołując poniższe komendy w katalogu dostępnym z poziomu sieci web:
 
 ```bash
 composer global require "fxp/composer-asset-plugin:^1.2.0"
 composer create-project --prefer-dist yiisoft/yii2-app-basic basic
 ```
 
-Pierwsza komenda instaluje [wtyczkę zasobów](https://github.com/francoispluchino/composer-asset-plugin/), która pozwala na zarządzanie zasobami [Bowera](http://bower.io) oraz 
-[paczkami zależności NPM](https://www.npmjs.com/) przez Composer.
-Komendę tę wystarczy wywołać raz, po czym wtyczka będzie już na stałe zainstalowana.
-Druga komenda instaluje Yii w katalogu `basic`. Jeśli chcesz, możesz wybrać katalog o innej nazwie.
+Pierwsza komenda instaluje [wtyczkę Composer Asset Plugin](https://github.com/francoispluchino/composer-asset-plugin), która pozwala na zarządzanie zasobami 
+[Bowera](http://bower.io) oraz [NPM](https://www.npmjs.com) z użyciem samego Composera.  
+Komendę tę wystarczy wywołać raz i od tej pory wtyczka będzie zainstalowana globalnie i dostępna dla każdej kolejnej instalacji Yii.  
+Druga komenda instaluje Yii w katalogu `basic`. Jeśli chcesz, możesz podać katalog o innej nazwie.
 
-> Note: Podczas instalacji Composer może zapytać o Twoje dane uwierzytelniające w serwisie Github. Jest to normalna sytuacja, ponieważ Composer potrzebuje wystarczającego limitu 
-> prędkości API do pobrania informacji o pakiecie zależnym z Githuba. Więcej szczegółów znajdziesz w 
-> [dokumentacji Composera](https://getcomposer.org/doc/articles/troubleshooting.md#api-rate-limit-and-oauth-tokens).
+> Info: Jeśli komenda `composer create-project` zwróci błąd, upewnij się, czy Composer Asset Plugin jest poprawnie zainstalowany.
+> Możesz to zrobić wywołując komendę `composer global show`, która powinna wyświetlić wpis (pośród innych możliwych) `fxp/composer-asset-plugin`.
+> Aby sprawdzić, czy przypadkiem nie napotkałeś na jeden z częstych błędów, zerknij również do 
+> [dokumentacji Composera w sekcji Rozwiązywania problemów](https://getcomposer.org/doc/articles/troubleshooting.md). 
+> Kiedy uporasz się już z błędem, możesz wznowić przerwaną instalację uruchamiając komendę `composer update` w folderze `basic`.
 
-> Tip: Jeśli chcesz zainstalować najnowszą wersję deweloperską Yii, użyj poniższej komendy, która dodaje [opcję stabilności](https://getcomposer.org/doc/04-schema.md#minimum-stability):
+> Tip: Jeśli chcesz zainstalować najnowszą wersję deweloperską Yii, użyj poniższej komendy, która dodaje 
+> [opcję stabilności](https://getcomposer.org/doc/04-schema.md#minimum-stability):
 >
 > ```bash
 > composer create-project --prefer-dist --stability=dev yiisoft/yii2-app-basic basic
 > ```
 >
-> Pamiętaj, że wersja deweloperska Yii nie powinna być używana w wersjach produkcyjnych aplikacji, ponieważ mogą wystąpić niespodziewane błędy.
+> Pamiętaj, że wersja deweloperska Yii nie powinna być używana w wersjach produkcyjnych Twojej aplikacji, ponieważ mogą wystąpić w niej niespodziewane błędy.
 
 Instalacja z pliku archiwum <span id="installing-from-archive-file"></span>
--------------------------------
+---------------------------
 
 Instalacja Yii z pliku archiwum składa się z trzech kroków:
 
@@ -67,30 +90,30 @@ Instalacja Yii z pliku archiwum składa się z trzech kroków:
 3. Zmodyfikowanie pliku `config/web.php` przez dodanie sekretnego klucza do elementu konfiguracji `cookieValidationKey`
    (jest to wykonywane automatycznie, jeśli instalujesz Yii używając Composera):
 
-   ```php
-   // !!! wprowadź sekretny klucz tutaj - jest to wymagane do walidacji ciasteczek
-   'cookieValidationKey' => 'enter your secret key here',
-   ```
+```php
+// !!! wprowadź sekretny klucz tutaj - jest to wymagane do walidacji ciasteczek
+'cookieValidationKey' => 'enter your secret key here',
+```
 
 Inne opcje instalacji <span id="other-installation-options"></span>
---------------------------
+---------------------
 
-Powyższe instrukcje instalacji pokazują, jak zainstalować Yii oraz utworzyć podstawową, działającą aplikację Web, która "działa po wyjęciu z pudełka".
-To podejście jest dobrym punktem startowym dla większości projektów, małych bądź dużych. Jest to szczególnie korzystne, gdy zaczynasz naukę Yii.
+Powyższe instrukcje pokazują, jak zainstalować Yii oraz utworzyć podstawową, gotową do uruchomienia aplikację web.
+To podejście jest dobrym punktem startowym dla większości projektów, zarówno małych jak i dużych. Jest to szczególnie korzystne, gdy zaczynasz naukę Yii.
 
 Dostępne są również inne opcje instalacji:
 
-* Jeśli chcesz zainstalować wyłącznie framework i sam budować aplikację od podstaw
-* Jeśli chcesz utworzyć bardziej wyrafinowaną aplikację, lepiej nadającą się dla zespołu programistycznego, powinienieś rozważyć instalację 
-  [zaawansowanego szablonu aplikacji](https://github.com/yiisoft/yii2-app-advanced/blob/master/docs/guide/README.md).
+* Jeśli chcesz zainstalować wyłącznie framework i samemu zbudować aplikację, zapoznaj się z rozdziałem 
+  [Tworzenie aplikacji od podstaw](tutorial-start-from-scratch.md).
+* Jeśli chcesz utworzyć bardziej zaawansowaną aplikację, przystosowaną do programowania dla wielu środowisk, 
+  powinienieś rozważyć instalację [zaawansowanego szablonu aplikacji](https://github.com/yiisoft/yii2-app-advanced/blob/master/docs/guide/README.md).
 
-
-Sprawdzenie instalacji <span id="verifying-installation"></span>
---------------------------
+Weryfikacja instalacji <span id="verifying-installation"></span>
+----------------------
 
 Po zakończeniu instalacji, skonfiguruj swój serwer (zobacz następną sekcję) lub użyj 
-[wbudowanego serwera PHP](https://secure.php.net/manual/en/features.commandline.webserver.php), uruchamiając poniższą komendę w konsoli z poziomu folderu 
-`web` projektu:
+[wbudowanego serwera PHP](https://secure.php.net/manual/en/features.commandline.webserver.php), 
+uruchamiając poniższą komendę w konsoli z poziomu folderu `web` w projekcie:
  
 ```bash
 php yii serve
@@ -111,7 +134,7 @@ http://localhost:8080/
 
 ![Poprawna instalacja Yii](images/start-app-installed.png)
 
-Powinienieś zobaczyć stronę z napisem "Congratulations!" (Gratulacje!). Jeśli nie, sprawdź czy zainstalowane elementy środowiska spełniają wymagania Yii. 
+Powinienieś zobaczyć stronę z napisem "Congratulations!" ("Gratulacje!"). Jeśli nie, sprawdź czy zainstalowane elementy środowiska spełniają wymagania Yii. 
 Możesz sprawdzić minimalne wymagania na dwa sposoby:
 
 * Skopiuj plik `/requirements.php` do `/web/requirements.php`, a następnie przejdź do przeglądarki i uruchom go przechodząc pod adres `http://localhost/requirements.php`
@@ -128,28 +151,31 @@ MySQL), jeśli Twoja aplikacja potrzebuje bazy danych.
 
 
 Konfigurowanie serwerów WWW <span id="configuring-web-servers"></span>
------------------------
+---------------------------
 
 > Info: Możesz pominąć tą sekcję, jeśli tylko testujesz Yii, bez zamiaru zamieszczania aplikacji na serwerze produkcyjnym.
 
-Aplikacja zainstalowana według powyższych instrukcji powinna działać na [serwerze Apache HTTP](http://httpd.apache.org/) oraz [serwerze Nginx HTTP](http://nginx.org/), na systemie 
+Aplikacja zainstalowana według powyższych instrukcji powinna działać bezproblemowo zarówno na 
+[serwerze HTTP Apache](http://httpd.apache.org) jak i [serwerze HTTP Nginx](http://nginx.org), na systemie 
 operacyjnym Windows, Mac OS X oraz Linux, posiadającym zainstalowane PHP 5.4 lub wyższe.
-Yii 2.0 jest również kompatybilne z [facebook'owym HHVM](http://hhvm.com/). Są jednak przypadki, gdzie Yii zachowuje się inaczej w HHVM niż w natywnym PHP, dlatego powinieneś zachować 
+Yii 2.0 jest również kompatybilne z [facebookowym HHVM](http://hhvm.com). 
+Są jednak przypadki, gdzie Yii zachowuje się inaczej w HHVM niż w natywnym PHP, dlatego powinieneś zachować 
 szczególną ostrożność używając HHVM.
 
-Na serwerze produkcyjnym będziesz chciał skonfigurować swój serwer Web tak, aby aplikacja była dostępna pod adresem `http://www.example.com/index.php` zamiast 
+Na serwerze produkcyjnym możesz skonfigurować swój host tak, aby aplikacja była dostępna pod adresem `http://www.example.com/index.php` zamiast 
 `http://www.example.com/basic/web/index.php`.
-Taka konfiguracja wymaga wskazania głównego katalogu serwera jako katalogu `basic/web`. Jeśli chcesz ukryć `index.php` w adresie URL, skorzystaj z informacji opisanych w dziale 
+Taka konfiguracja wymaga wskazania głównego katalogu serwera jako katalogu `basic/web`. 
+Jeśli chcesz ukryć `index.php` w adresie URL, skorzystaj z informacji opisanych w dziale 
 [routing i tworzenie adresów URL](runtime-routing.md).
 W tej sekcji dowiesz się, jak skonfigurować Twój serwer Apache lub Nginx, aby osiągnąć te cele.
 
 > Info: Ustawiając `basic/web` jako główny katalog serwera unikasz niechcianego dostępu użytkowników końcowych do prywatnego kodu oraz wrażliwych plików aplikacji, które są 
-przechowywane w katalogu `basic`. 
-Blokowanie dostępu do tych folderów jest dużą poprawą bezpieczeństwa.
+> przechowywane w katalogu `basic`. 
+> Zablokowanie dostępu do tych folderów jest jednym z wymogów bezpieczeństwa aplikacji.
 
 > Info: W przypadku, gdy Twoja aplikacja działa na wspólnym środowisku hostingowym, gdzie nie masz dostępu do modyfikowania konfiguracji serwera, nadal możesz zmienić strukturę 
 > aplikacji dla lepszej ochrony. 
-> Po więcej informacji zajrzyj do działu [wspólne środowisko hostingowe](tutorial-shared-hosting.md).
+> Po więcej informacji zajrzyj do działu [Współdzielone środowisko hostingowe](tutorial-shared-hosting.md).
 
 ### Zalecane ustawienia Apache <span id="recommended-apache-configuration"></span>
 
@@ -161,7 +187,7 @@ Pamiętaj, że musisz zamienić ścieżkę `path/to/basic/web` na aktualną ści
 DocumentRoot "path/to/basic/web"
 
 <Directory "path/to/basic/web">
-    # użyj mod_rewrite do wsparcia "ładnych URL'i"
+    # użyj mod_rewrite do wsparcia "ładnych URLi"
     RewriteEngine on
     # Jeśli katalog lub plik istnieje, użyj go bezpośrednio
     RewriteCond %{REQUEST_FILENAME} !-f
@@ -196,29 +222,36 @@ server {
 
     location / {
         # Przekieruj wszystko co nie jest prawdziwym plikiem na index.php
-        try_files $uri $uri/ /index.php?$args;
+        try_files $uri $uri/ /index.php$is_args$args;
     }
 
-    # dkomentuj aby uniknąć przetwarzania żądań do nieistniejących plików przez Yii
+    # odkomentuj poniższe aby uniknąć przetwarzania żądań do nieistniejących plików przez Yii
     #location ~ \.(js|css|png|jpg|gif|swf|ico|pdf|mov|fla|zip|rar)$ {
     #    try_files $uri =404;
     #}
     #error_page 404 /404.html;
 
+    # deny accessing php files for the /assets directory
+    location ~ ^/assets/.*\.php$ {
+        deny all;
+    }
+
     location ~ \.php$ {
         include fastcgi_params;
-        fastcgi_param SCRIPT_FILENAME $document_root/$fastcgi_script_name;
-        fastcgi_pass   127.0.0.1:9000;
+        fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;
+        fastcgi_pass 127.0.0.1:9000;
         #fastcgi_pass unix:/var/run/php5-fpm.sock;
         try_files $uri =404;
     }
 
-    location ~ /\.(ht|svn|git) {
+    location ~* /\. {
         deny all;
     }
 }
 ```
 
-W przypadku użycia tej konfiguracji, powinienieś ustawić również `cgi.fix_pathinfo=0` w pliku `php.ini`, aby zapobiec wielu zbędnym wywołaniom 'stat()'.
+W przypadku użycia tej konfiguracji, powinienieś ustawić również `cgi.fix_pathinfo=0` w pliku `php.ini`, 
+aby zapobiec wielu zbędnym wywołaniom `stat()`.
 
-Należy również pamiętać, że podczas pracy na serwerze HTTPS musisz dodać `fastcgi_param HTTPS on;`, aby Yii prawidłowo wykrywało, że połączenie jest bezpieczne.
+Należy również pamiętać, że podczas pracy na serwerze HTTPS musisz dodać `fastcgi_param HTTPS on;`, 
+aby Yii prawidłowo wykrywało, że połączenie jest bezpieczne.
