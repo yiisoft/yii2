@@ -156,7 +156,7 @@ class TargetTest extends TestCase
         $target->setLevels(Logger::LEVEL_TRACE);
         $this->assertEquals(Logger::LEVEL_TRACE, $target->getLevels());
 
-        $this->setExpectedException('yii\\base\\InvalidConfigException', 'Incorrect bitmap value : 128');
+        $this->setExpectedException('yii\\base\\InvalidConfigException', 'Incorrect 128 value');
         $target->setLevels(128);
     }
 }

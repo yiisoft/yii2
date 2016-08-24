@@ -193,7 +193,7 @@ abstract class Target extends Component
                 return $carry | $item;
             });
             if (!($bitmapValues & $levels) && $levels != 0) {
-                throw new InvalidConfigException("Incorrect bitmap value : $levels");
+                throw new InvalidConfigException("Incorrect $levels value");
             }
             $this->_levels = $levels;
         }
