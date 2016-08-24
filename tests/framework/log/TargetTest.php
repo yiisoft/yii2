@@ -128,18 +128,36 @@ class TargetTest extends TestCase
      * @covers \yii\log\Target::setLevels()
      * @covers \yii\log\Target::getLevels()
      */
-    public function testSetupLevels()
+    public function testSetupLevelsThroughArray()
     {
         $target = $this->getMockForAbstractClass('yii\\log\\Target');
 
         $target->setLevels(['info', 'error']);
         $this->assertEquals(Logger::LEVEL_INFO | Logger::LEVEL_ERROR, $target->getLevels());
 
-        $target->setLevels(Logger::LEVEL_TRACE);
+        $target->setLevels(['trace']);
         $this->assertEquals(Logger::LEVEL_TRACE, $target->getLevels());
 
         $this->setExpectedException('yii\\base\\InvalidConfigException', 'Unrecognized level: unknown level');
         $target->setLevels(['info', 'unknown level']);
+    }
+
+    /**
+     * @covers \yii\log\Target::setLevels()
+     * @covers \yii\log\Target::getLevels()
+     */
+    public function testSetupLevelsThroughBitmap()
+    {
+        $target = $this->getMockForAbstractClass('yii\\log\\Target');
+
+        $target->setLevels(Logger::LEVEL_INFO | Logger::LEVEL_WARNING);
+        $this->assertEquals(Logger::LEVEL_INFO | Logger::LEVEL_WARNING, $target->getLevels());
+
+        $target->setLevels(Logger::LEVEL_TRACE);
+        $this->assertEquals(Logger::LEVEL_TRACE, $target->getLevels());
+
+        $this->setExpectedException('yii\\base\\InvalidConfigException', 'Incorrect bitmap value : 128');
+        $target->setLevels(128);
     }
 }
 
