@@ -225,6 +225,10 @@ class ActiveQuery extends Query implements ActiveQueryInterface
             }
         }
 
+        if ($this->collectionClass !== null) {
+            return new $this->collectionClass($models);
+        }
+
         return $models;
     }
 
