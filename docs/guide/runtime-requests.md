@@ -60,7 +60,7 @@ $param = $request->getBodyParam('id');
 ## Request Methods <span id="request-methods"></span>
 
 You can get the HTTP method used by the current request via the expression `Yii::$app->request->method`.
-A whole set of boolean properties are also provided for you to check if the current method is of certain type.
+A whole set of boolean properties is also provided for you to check if the current method is of certain type.
 For example,
 
 ```php
