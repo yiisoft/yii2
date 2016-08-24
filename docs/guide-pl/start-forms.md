@@ -184,11 +184,11 @@ http://hostname/index.php?r=site%2Fentry
 Zobaczysz stronę wyświetlającą formularz z dwoma polami. Przed każdym polem znajduje się etykieta opisująca to pole. Jeśli klikniesz przycisk "Wyślij" nie wpisując żadnych danych, lub 
 jeśli nie wprowadzisz prawidłowego adresu email, zobaczysz wiadomość błędu wyświeloną pod polem którego ona dotyczy.
 
-![Formularz z błędami walidacji](../guide/images/start-form-validation.png)
+![Formularz z błędami walidacji](images/start-form-validation.png)
 
 Po wpisaniu prawidłowej nazwy, adresu email oraz kliknięciu przycisku "Wyślij", zobaczysz nową stronę wyświetlającą dane, które właśnie wprowadziłes.
 
-![Potwierdzenie](../guide/images/start-entry-confirmation.png)
+![Potwierdzenie](images/start-entry-confirmation.png)
 
 
 ### "Wyjaśnienie magii" <span id="magic-explained"></span>

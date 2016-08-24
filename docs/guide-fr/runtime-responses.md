@@ -73,7 +73,7 @@ Si vous disposez déjà d'une chaîne de caractères formatée pour le corps, vo
 Yii::$app->response->content = 'hello world!';
 ```
 
-Si vos données doivent être formatées avant l'envoi à l'utilisateur final, vous devez définir les propriétés [yii\web\Response::format|format]] et [[yii\web\Response::data|data]]. La propriété [[yii\web\Response::format|format]] spécifie dans quel format les  [[yii\web\Response::data|données]] doivent être formatées. Par exemple :
+Si vos données doivent être formatées avant l'envoi à l'utilisateur final, vous devez définir les propriétés [[yii\web\Response::format|format]] et [[yii\web\Response::data|data]]. La propriété [[yii\web\Response::format|format]] spécifie dans quel format les  [[yii\web\Response::data|données]] doivent être formatées. Par exemple :
 
 ```php
 $response = Yii::$app->response;

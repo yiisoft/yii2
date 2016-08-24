@@ -35,6 +35,7 @@ Yii Framework 2 Change Log
 - Bug #11973: Fixed `yii\helpers\BaseHtml::getAttributeValue()` to work with `items[]` notation correctly (silverfire)
 - Bug #12100: Fixed `yii\filters\HttpCache` was sending an empty Pragma header (sergeymakinen)
 - Bug #12107: Fixed REST Serializer to validate input for 'expand' and 'fields' parameter, which crashed on array input (njspok, cebe)
+- Enh #12230: Allows BaseHtml::activeListInput to override the field value (RangelReale)
 
 
 2.0.9 July 11, 2016

@@ -80,7 +80,7 @@ class Response extends \yii\base\Response
 
     /**
      * @var string the response format. This determines how to convert [[data]] into [[content]]
-     * when the latter is not set. The value of this property must be one of the keys declared in the [[formatters] array.
+     * when the latter is not set. The value of this property must be one of the keys declared in the [[formatters]] array.
      * By default, the following formats are supported:
      *
      * - [[FORMAT_RAW]]: the data will be treated as the response content without any conversion.
@@ -421,6 +421,22 @@ class Response extends \yii\base\Response
      * Note that this method only prepares the response for file sending. The file is not sent
      * until [[send()]] is called explicitly or implicitly. The latter is done after you return from a controller action.
      *
+     * The following is an example implementation of a controller action that allows requesting files from a directory
+     * that is not accessible from web:
+     *
+     * ```php
+     * public function actionFile($filename)
+     * {
+     *     $storagePath = Yii::getAlias('@app/files');
+     *
+     *     // check filename for allowed chars (do not allow ../ to avoid security issue: downloading arbitrary files)
+     *     if (!preg_match('/^[a-z0-9]+\.[a-z0-9]+$/i', $filename) || !is_file("$storagePath/$filename")) {
+     *         throw new \yii\web\NotFoundHttpException('The file does not exists.');
+     *     }
+     *     return Yii::$app->response->sendFile("$storagePath/$filename", $filename);
+     * }
+     * ```
+     *
      * @param string $filePath the path of the file to be sent.
      * @param string $attachmentName the file name shown to the user. If null, it will be determined from `$filePath`.
      * @param array $options additional options for sending the file. The following options are supported:
@@ -430,6 +446,9 @@ class Response extends \yii\base\Response
      *    meaning a download dialog will pop up.
      *
      * @return $this the response object itself
+     * @see sendContentAsFile()
+     * @see sendStreamAsFile()
+     * @see xSendFile()
      */
     public function sendFile($filePath, $attachmentName = null, $options = [])
     {
@@ -461,6 +480,7 @@ class Response extends \yii\base\Response
      *
      * @return $this the response object itself
      * @throws HttpException if the requested range is not satisfiable
+     * @see sendFile() for an example implementation.
      */
     public function sendContentAsFile($content, $attachmentName, $options = [])
     {
@@ -511,6 +531,7 @@ class Response extends \yii\base\Response
      *
      * @return $this the response object itself
      * @throws HttpException if the requested range cannot be satisfied.
+     * @see sendFile() for an example implementation.
      */
     public function sendStreamAsFile($handle, $attachmentName, $options = [])
     {
@@ -665,6 +686,7 @@ class Response extends \yii\base\Response
      *  - xHeader: string, the name of the x-sendfile header. Defaults to "X-Sendfile".
      *
      * @return $this the response object itself
+     * @see sendFile()
      */
     public function xSendFile($filePath, $attachmentName = null, $options = [])
     {
