@@ -123,6 +123,24 @@ class TargetTest extends TestCase
         $this->assertNotContains('E_b', $context);
         $this->assertNotContains('E_c', $context);
     }
+
+    /**
+     * @covers \yii\log\Target::setLevels()
+     * @covers \yii\log\Target::getLevels()
+     */
+    public function testSetupLevels()
+    {
+        $target = $this->getMockForAbstractClass('yii\\log\\Target');
+
+        $target->setLevels(['info', 'error']);
+        $this->assertEquals(Logger::LEVEL_INFO | Logger::LEVEL_ERROR, $target->getLevels());
+
+        $target->setLevels(Logger::LEVEL_TRACE);
+        $this->assertEquals(Logger::LEVEL_TRACE, $target->getLevels());
+
+        $this->setExpectedException('yii\\base\\InvalidConfigException', 'Unrecognized level: unknown level');
+        $target->setLevels(['info', 'unknown level']);
+    }
 }
 
 class TestTarget extends Target
