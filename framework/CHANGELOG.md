@@ -38,6 +38,7 @@ Yii Framework 2 Change Log
 - Bug #12100: Fixed `yii\filters\HttpCache` was sending an empty Pragma header (sergeymakinen)
 - Bug #12107: Fixed REST Serializer to validate input for 'expand' and 'fields' parameter, which crashed on array input (njspok, cebe)
 - Enh #12230: Allows BaseHtml::activeListInput to override the field value (RangelReale)
+- Bug #12331: Fixed bug with incorrect currency formatter output, when `$thousandSeparator` was explicitly set (cebe)
 
 
 2.0.9 July 11, 2016
