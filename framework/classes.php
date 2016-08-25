@@ -72,8 +72,6 @@ return [
   'yii\caching\MemCacheServer' => YII2_PATH . '/caching/MemCacheServer.php',
   'yii\caching\TagDependency' => YII2_PATH . '/caching/TagDependency.php',
   'yii\caching\WinCache' => YII2_PATH . '/caching/WinCache.php',
-  'yii\caching\XCache' => YII2_PATH . '/caching/XCache.php',
-  'yii\caching\ZendDataCache' => YII2_PATH . '/caching/ZendDataCache.php',
   'yii\captcha\Captcha' => YII2_PATH . '/captcha/Captcha.php',
   'yii\captcha\CaptchaAction' => YII2_PATH . '/captcha/CaptchaAction.php',
   'yii\captcha\CaptchaAsset' => YII2_PATH . '/captcha/CaptchaAsset.php',

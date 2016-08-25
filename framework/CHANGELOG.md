@@ -9,6 +9,7 @@ Yii Framework 2 Change Log
 - Chg #11397: Minimum required version of PHP is 5.5.0 now (samdark)
 - Chg: Removed `yii\base\Object::className()` in favor of native PHP syntax `::class`, which does not trigger autoloading (cebe)
 - Chg #12074: Updated `yii\widgets\ActiveField::hint()` method signature to match `label()` (PowerGamer1, samdark)
+- Chg #11560: Removed XCache and Zend data cache support as caching backends (samdark)
 
 2.0.10 under development
 ------------------------
