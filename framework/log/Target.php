@@ -192,7 +192,7 @@ abstract class Target extends Component
             $bitmapValues = array_reduce($levelMap, function ($carry, $item) {
                 return $carry | $item;
             });
-            if (!($bitmapValues & $levels) && $levels != 0) {
+            if (!($bitmapValues & $levels) && $levels !== 0) {
                 throw new InvalidConfigException("Incorrect $levels value");
             }
             $this->_levels = $levels;
