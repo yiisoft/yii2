@@ -314,8 +314,9 @@ class ActiveField extends Component
 
     /**
      * Renders the hint tag.
-     * @param string|bool $content the hint content. If null, the hint will be generated via [[Model::getAttributeHint()]].
-     * If false, the generated field will not contain the hint part.
+     * @param string|bool $content the hint content.
+     * If `Null`, the hint will be generated via [[Model::getAttributeHint()]].
+     * If `false`, the generated field will not contain the hint part.
      * Note that this will NOT be [[Html::encode()|encoded]].
      * @param array $options the tag options in terms of name-value pairs. These will be rendered as
      * the attributes of the hint tag. The values will be HTML-encoded using [[Html::encode()]].
@@ -329,15 +330,15 @@ class ActiveField extends Component
      */
     public function hint($content, $options = [])
     {
-		if ($content === false) {
-			$this->parts['{hint}'] = '';
-			return $this;
-		}
+        if ($content === false) {
+            $this->parts['{hint}'] = '';
+            return $this;
+        }
 
         $options = array_merge($this->hintOptions, $options);
-		if ($content !== null) {
-			$options['hint'] = $content;
-		}
+        if ($content !== null) {
+            $options['hint'] = $content;
+        }
         $this->parts['{hint}'] = Html::activeHint($this->model, $this->attribute, $options);
 
         return $this;
