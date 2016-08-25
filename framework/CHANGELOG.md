@@ -4,10 +4,10 @@ Yii Framework 2 Change Log
 2.0.10 under development
 ------------------------
 
+- Enh #9989: ActiveForm now respects formtarget, formmethod and formenctype attributes of submit button (AnatolyRugalev)
 - Enh #12073: Added the ability to suppress the generation of input hint when it is specified through  `Model::attributeHints()` (PowerGamer1)
 - Bug #12009: Do not render "for" field label attribute for active form RadioList and CheckboxList (shevchik87, samdark)
 - Bug #12068: Added missing 'LEVEL_PROFILE' for the syslog target (Mak-Di)
-- Enh #9989: ActiveForm now respects formtarget, formmethod and formenctype attributes of submit button (AnatolyRugalev)
 - Bug #11461: Fixed migration tool error when create migrate with comma in defaultValue (pana1990, s-o-f)
 - Bug #11912: Fixed PostgreSQL Schema to support negative default values for integer/float/decimal columns (nsknewbie)
 - Bug #11947: Fixed `gridData` initialization in `yii.gridView.js` (pavlm)
