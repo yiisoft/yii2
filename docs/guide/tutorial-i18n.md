@@ -110,7 +110,7 @@ to a PHP file with a different naming approach. In the above example, the catego
 the PHP file `@app/messages/ru-RU/error.php` (assuming `ru-RU` is the target language). Without this configuration,
 the category would be mapped to `@app/messages/ru-RU/app/error.php`, instead.
 
-Beside storing the messages in PHP files, you may also use the following message sources to store translated messages
+Besides storing the messages in PHP files, you may also use the following message sources to store translated messages
 in different storage:
 
 - [[yii\i18n\GettextMessageSource]] uses GNU Gettext MO or PO files to maintain translated messages.
@@ -436,7 +436,7 @@ it in a pair of curly brackets.
 
 ### Specifying default message source <span id="default-message-source"></span>
 
-You can specify default message source that will be used as a fallback for category that don't match any
+You can specify default message source that will be used as a fallback for category that doesn't match any
 configured category. You can do that by configuring a wildcard category `*`. In order to do that, add the following
 to the application config:
 
