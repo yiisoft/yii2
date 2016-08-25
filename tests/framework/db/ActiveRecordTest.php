@@ -1293,4 +1293,14 @@ abstract class ActiveRecordTest extends DatabaseTestCase
         $this->assertTrue($newOrder->getIsNewRecord());
         $this->assertEquals($newTotal, $newOrder->total);
     }
+
+    public function testCollection()
+    {
+        $modelClass = 'yiiunit\data\ar\Customer';
+        $collectionClass = 'yiiunit\data\ar\CustomerCollection';
+        $customers = Customer::find()->asCollection($collectionClass)->all();
+        $this->assertInstanceOf($collectionClass, $customers);
+        $this->assertEquals(3, $customers->count());
+        $this->assertContainsOnlyInstancesOf($modelClass, $customers);
+    }
 }

@@ -30,6 +30,11 @@ trait ActiveQueryTrait
      */
     public $asArray;
 
+    /**
+     * @var string collection class to be instantiated and filled with results.
+     * @since 2.0.10
+     */
+    public $collectionClass;
 
     /**
      * Sets the [[asArray]] property.
@@ -39,6 +44,18 @@ trait ActiveQueryTrait
     public function asArray($value = true)
     {
         $this->asArray = $value;
+        return $this;
+    }
+
+    /**
+     * Sets the [[collectionClass]] property.
+     * @param string $className collection class to be instantiated and filled with results.
+     * @return $this the query object itself
+     * @since 2.0.10
+     */
+    public function asCollection($className)
+    {
+        $this->collectionClass = $className;
         return $this;
     }
 
