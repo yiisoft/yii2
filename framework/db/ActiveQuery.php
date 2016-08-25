@@ -241,7 +241,7 @@ class ActiveQuery extends Query implements ActiveQueryInterface
      */
     protected function createCollection($models)
     {
-        return new $this->collectionClass($models);
+        return \Yii::createObject($this->collectionClass, $models);
     }
 
     /**
