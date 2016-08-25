@@ -226,7 +226,7 @@ class ActiveQuery extends Query implements ActiveQueryInterface
         }
 
         if ($this->collectionClass !== null) {
-            return $this->createCollection($this->collectionClass, $models);
+            return $this->createCollection($models);
         }
 
         return $models;
@@ -235,14 +235,13 @@ class ActiveQuery extends Query implements ActiveQueryInterface
     /**
      * Instantiates collection
      *
-     * @param string $class collection class to be instantiated and filled with results.
      * @param array $models array of models to fill collection with.
      * @return object collection instance.
      * @since 2.0.10
      */
-    protected function createCollection($class, $models)
+    protected function createCollection($models)
     {
-        return new $class($models);
+        return new $this->collectionClass($models);
     }
 
     /**
