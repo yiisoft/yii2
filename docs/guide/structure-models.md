@@ -242,8 +242,8 @@ should be displayed to help the user to fix the errors.
 
 You may call [[yii\base\Model::validate()]] to validate the received data. The method will use
 the validation rules declared in [[yii\base\Model::rules()]] to validate every relevant attribute. If no error
-is found, it will return true. Otherwise, it will keep the errors in the [[yii\base\Model::errors]] property
-and return false. For example,
+is found, it will return `true`. Otherwise, it will keep the errors in the [[yii\base\Model::errors]] property
+and return `false`. For example,
 
 ```php
 $model = new \app\models\ContactForm;
@@ -409,9 +409,12 @@ In this case attributes `username`, `password` and `secret` are required, but `s
 ## Data Exporting <span id="data-exporting"></span>
 
 Models often need to be exported in different formats. For example, you may want to convert a collection of
-models into JSON or Excel format. The exporting process can be broken down into two independent steps.
-In the first step, models are converted into arrays; in the second step, the arrays are converted into
-target formats. You may just focus on the first step, because the second step can be achieved by generic
+models into JSON or Excel format. The exporting process can be broken down into two independent steps:
+
+- models are converted into arrays;
+- the arrays are converted into target formats.
+
+You may just focus on the first step, because the second step can be achieved by generic
 data formatters, such as [[yii\web\JsonResponseFormatter]].
 
 The simplest way of converting a model into an array is to use the [[yii\base\Model::$attributes]] property.

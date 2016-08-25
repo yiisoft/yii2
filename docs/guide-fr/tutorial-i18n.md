@@ -84,7 +84,7 @@ La méthode [[Yii::t()]] appelle la méthode `translate` du [composant d'applica
 ],
 ```
 
-Dans le code qui précède, une source de  messages prise en charge par  [[yii\i18n\PhpMessageSource]] est configurée. Le motif `app*` indique que toutes les catégories de messages dont les noms commencent par `app` doivent être traduites en utilisant cette source de messages. La classe [[yii\i18n\PhpMessageSource]] utilise des fichiers PHP pour stocker les traductions de messages. Chacun des fichiers PHP correspond aux messages d'une même catégorie. Par défaut, le nom du fichier doit être celui de la catégorie. Néanmoins, vous pouvez configurer  [[yii\i18n\PhpMessageSource::fileMap|fileMap (cartographie de fichiers)]] pour faire correspondre une catégorie à un fichier PHP dont le nom obéit à une autre approche de nommage. Dans l'exemple qui précède, la catégorie  `app/error` correspond au fichier PHP `@app/messages/fr-FR/error.php` (en supposant que `fr-FR` est la langue cible). Sans cette configuration, la catégorie correspondrait à  `@app/messages/fr-FR/app/error.php`.
+Dans le code qui précède, une source de  messages prise en charge par  [[yii\i18n\PhpMessageSource]] est configurée. Le motif `app*` indique que toutes les catégories de messages dont les noms commencent par `app` doivent être traduites en utilisant cette source de messages. La classe [[yii\i18n\PhpMessageSource]] utilise des fichiers PHP pour stocker les traductions de messages. Chacun des fichiers PHP correspond aux messages d'une même catégorie. Par défaut, le nom du fichier doit être celui de la catégorie. Néanmoins, vous pouvez configurer  [[yii\i18n\PhpMessageSource::fileMap|fileMap (table de mise en correspondance de fichiers)]] pour faire correspondre une catégorie à un fichier PHP dont le nom obéit à une autre approche de nommage. Dans l'exemple qui précède, la catégorie  `app/error` correspond au fichier PHP `@app/messages/fr-FR/error.php` (en supposant que `fr-FR` est la langue cible). Sans cette configuration, la catégorie correspondrait à  `@app/messages/fr-FR/app/error.php`.
 
 En plus de la possibilité de stocker les messages dans des fichiers PHP, vous pouvez aussi utiliser les sources de messages suivantes pour stocker vos traductions sous une autre forme :
 
@@ -464,9 +464,9 @@ Dans l'exemple précédent, nous utilisons le caractère générique pour la cor
 
 Désormais, vous pouvez utiliser  `Module::t('validation', 'your custom validation message')` ou `Module::t('form', 'some form label')` directement.
 
-### Traduction des messages de widgets <span id="widget-translation"></span>
+### Traduction des messages d'objets graphiques <span id="widget-translation"></span>
 
-La règle applicable aux modules présentée ci-dessus s'applique également aux widgets, par exemple :
+La règle applicable aux modules présentée ci-dessus s'applique également aux objets graphiques, par exemple :
 
 ```php
 <?php
@@ -514,7 +514,7 @@ class Menu extends Widget
 Au lieu d'utiliser `fileMap`, vous pouvez utiliser la convention de mise en correspondance du fichier de même nom. 
 Désormais, vous pouvez utiliser `Menu::t('messages', 'new messages {messages}', ['{messages}' => 10])` directement.
 
-> Note: pour les widgets, vous pouvez aussi utiliser les vues i18n, en y appliquant les mêmes règles que celles applicables aux contrôleurs.
+> Note: pour les objets graphiques, vous pouvez aussi utiliser les vues i18n, en y appliquant les mêmes règles que celles applicables aux contrôleurs.
 
 
 ### Traduction des messages du framework <span id="framework-translation"></span>

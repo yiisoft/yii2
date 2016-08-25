@@ -15,6 +15,7 @@ Yii Framework 2 Change Log
 ------------------------
 
 - Enh #12073: Added the ability to suppress the generation of input hint when it is specified through  `Model::attributeHints()` (PowerGamer1)
+- Bug #12009: Do not render "for" field label attribute for active form RadioList and CheckboxList (shevchik87, samdark)
 - Bug #12068: Added missing 'LEVEL_PROFILE' for the syslog target (Mak-Di)
 - Bug #11461: Fixed migration tool error when create migrate with comma in defaultValue (pana1990, s-o-f)
 - Bug #11912: Fixed PostgreSQL Schema to support negative default values for integer/float/decimal columns (nsknewbie)
@@ -44,6 +45,7 @@ Yii Framework 2 Change Log
 - Bug #11973: Fixed `yii\helpers\BaseHtml::getAttributeValue()` to work with `items[]` notation correctly (silverfire)
 - Bug #12100: Fixed `yii\filters\HttpCache` was sending an empty Pragma header (sergeymakinen)
 - Bug #12107: Fixed REST Serializer to validate input for 'expand' and 'fields' parameter, which crashed on array input (njspok, cebe)
+- Enh #12230: Allows BaseHtml::activeListInput to override the field value (RangelReale)
 
 
 2.0.9 July 11, 2016

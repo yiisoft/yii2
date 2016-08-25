@@ -157,7 +157,7 @@ class HelloController extends Controller
     
     public function actionIndex()
     {
-        echo $message . "\n";
+        echo $this->message . "\n";
     }
 }
 ```

@@ -493,8 +493,8 @@ A default role is usually associated with a rule which determines if the role ap
 
 Default roles are often used in applications which already have some sort of role assignment. For example, an application
 may have a "group" column in its user table to represent which privilege group each user belongs to.
-If each privilege group can be mapped to a RBAC role, you can use the default role feature to automatically
-assign each user to a RBAC role. Let's use an example to show how this can be done.
+If each privilege group can be mapped to an RBAC role, you can use the default role feature to automatically
+assign each user to an RBAC role. Let's use an example to show how this can be done.
 
 Assume in the user table, you have a `group` column which uses 1 to represent the administrator group and 2 the author group.
 You plan to have two RBAC roles `admin` and `author` to represent the permissions for these two groups, respectively.

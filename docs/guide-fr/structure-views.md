@@ -77,15 +77,15 @@ use yii\helpers\HtmlPurifier;
 Comme les [contrôleurs](structure-controllers.md) et les  [modèles](structure-models.md), il existe certaines conventions pour organiser les vues. 
 
 * Pour les vues rendues par un contrôleur, elles devraient être placées par défaut dans le dossier  `@app/views/ControllerID` où `ControllerID` doit être remplacé par l'[identifiant du contrôleur](structure-controllers.md#routes). Par exemple, si la classe du contrôleur est  `PostController`, le dossier est `@app/views/post`; si c'est  `PostCommentController` le dossier est `@app/views/post-comment`. Dans le cas où le contrôleur appartient à un module, le dossier s'appelle `views/ControllerID` et se trouve dans le [[yii\base\Module::basePath|dossier de base du module]].
-* Pour les vues rendues dans un [widget (objet graphique)](structure-widgets.md), elles devraient être placées par défaut dans le dossier `WidgetPath/views` où  `WidgetPath` est le dossier contenant le fichier de la classe du widget. 
-* Pour les vues rendues par d'autres objets, il est recommandé d'adopter une convention similaire à celle utilisée pour les *widgets*. 
+* Pour les vues rendues dans un [objet graphique](structure-widgets.md), elles devraient être placées par défaut dans le dossier `WidgetPath/views` où  `WidgetPath` est le dossier contenant le fichier de la classe de l'objet graphique. 
+* Pour les vues rendues par d'autres objets, il est recommandé d'adopter une convention similaire à celle utilisée pour les objets graphiques. 
 
-Vous pouvez personnaliser ces dossiers par défaut en redéfinissant la méthode [[yii\base\ViewContextInterface::getViewPath()]] des contrôleurs ou des *widgets*.
+Vous pouvez personnaliser ces dossiers par défaut en redéfinissant la méthode [[yii\base\ViewContextInterface::getViewPath()]] des contrôleurs ou des objets graphiques.
 
 
 ## Rendu des vues <span id="rendering-views"></span>
 
-Vous pouvez rendre les vues dans des [contrôleurs](structure-controllers.md), des [widgets](structure-widgets.md), ou dans d'autres endroits en appelant les méthodes de rendu des vues. Ces méthodes partagent un signature similaire comme montré ci-dessous :
+Vous pouvez rendre les vues dans des [contrôleurs](structure-controllers.md), des [objets graphiques](structure-widgets.md), ou dans d'autres endroits en appelant les méthodes de rendu des vues. Ces méthodes partagent un signature similaire comme montré ci-dessous :
 ```
 /**
  * @param string $view nom de la vue ou chemin du fichier, selon la méthode réelle de rendu
@@ -135,9 +135,9 @@ class PostController extends Controller
 ```
 
 
-### Rendu des vues dans les *widgets* <span id="rendering-in-widgets"></span>
+### Rendu des vues dans les objets graphiques <span id="rendering-in-widgets"></span>
 
-Dans les [*widgets*](structure-widgets.md), vous pouvez appeler les méthodes suivantes de la classe widget pour rendre une vue : 
+Dans les [objets graphiques](structure-widgets.md), vous pouvez appeler les méthodes suivantes de la classe *widget* pour rendre une vue : 
 
 * [[yii\base\Widget::render()|render()]]: rend une [vue nommée](#named-views).
 * [[yii\base\Widget::renderFile()|renderFile()]]: rend une vue spécifiée en terme de chemin ou d'[alias](concept-aliases.md) de fichier de vue.
@@ -199,7 +199,7 @@ Un nom de vue est résolu en le chemin de fichier correspondant en appliquant le
 * Un nom de vue peut omettre l'extension du nom de fichier. Dans ce cas, `.php` est utilisé par défaut en tant qu'extension. Par exemple, le nom de vue  `about` correspond au nom de fichier `about.php`.
 * Si le nom de vue commence par une double barre de division `//`, le chemin de fichier correspondant est `@app/views/ViewName` où `ViewName` est le nom de la vue. Dans ce cas la vue est recherchée dans le dossier [[yii\base\Application::viewPath|chemin des vues de l'application]]. Par exemple, `//site/about` est résolu en `@app/views/site/about.php`.
 * Si le nom de la vue commence par une unique barre de division `/`, le chemin de fichier de la vue est formé en préfixant le nom de vue avec [[yii\base\Module::viewPath|chemin des vues]] du [module](structure-modules.md) actif courant . Si aucun module n'est actif, `@app/views/ViewName` — où `ViewName` est le nom de la vue — est utilisé. Par exemple, `/user/create` est résolu en `@app/modules/user/views/user/create.php`, si le module actif courant est `user` et en `@app/views/user/create.php`si aucun module n'est actif.
-* Si la vue est rendue avec un  [[yii\base\View::context|contexte]] et que le contexte implémente  [[yii\base\ViewContextInterface]],le chemin de fichier de vue est formé en préfixant le nom de vue avec le [[yii\base\ViewContextInterface::getViewPath()|chemin des vues]] du contexte. Cela s'applique principalement aux vues rendues dans des contrôleurs et dans des *widgets*. Par exemple,  `about` est résolu en `@app/views/site/about.php` si le contexte est le contrôleur `SiteController`.
+* Si la vue est rendue avec un  [[yii\base\View::context|contexte]] et que le contexte implémente  [[yii\base\ViewContextInterface]],le chemin de fichier de vue est formé en préfixant le nom de vue avec le [[yii\base\ViewContextInterface::getViewPath()|chemin des vues]] du contexte. Cela s'applique principalement aux vues rendues dans des contrôleurs et dans des objets graphiques. Par exemple,  `about` est résolu en `@app/views/site/about.php` si le contexte est le contrôleur `SiteController`.
 * Si une vue est rendue dans une autre vue, le dossier contenant le nom de la nouvelle vue est préfixé avec le chemin du dossier contenant l'autre vue. Par exemple, la vue `item` est résolue en  `@app/views/post/item.php` lorsqu'elle est rendue dans `@app/views/post/index.php`.
 
 Selon les règles précédentes, l'appel de `$this->render('view')` dans le contrôleur  `app\controllers\PostController` rend réellement le fichier de vue `@app/views/post/view.php`, tandis que l'appel de `$this->render('_overview')` dans cette vue rend le fichier de vue `@app/views/post/_overview.php`.
@@ -583,6 +583,6 @@ Pour rendre les vues plus gérables, évitez de créer des vues qui sont trop co
 
 * Utiliser des [dispositions](#layouts) pour représenter les sections communes de présentation (p. ex. l'entête de page, le pied de page). 
 * Diviser une vue complexe en plusieurs vues plus réduites. Les vues plus réduites peuvent être rendue et assemblées dans une plus grande en utilisant les méthodes de rendu que nous avons décrites. 
-* Créer et utiliser des [widgets](structure-widgets.md) en tant que blocs de construction des vues.
+* Créer et utiliser des [objets graphiques](structure-widgets.md) en tant que blocs de construction des vues.
 * Créer et utiliser des classes d'aide pour transformer et formater les données dans les vues.
 

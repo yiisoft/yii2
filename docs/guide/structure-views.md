@@ -90,7 +90,7 @@ Like [controllers](structure-controllers.md) and [models](structure-models.md), 
 
 * For views rendered by a controller, they should be put under the directory `@app/views/ControllerID` by default,
   where `ControllerID` refers to the [controller ID](structure-controllers.md#routes). For example, if
-  the controller class is `PostController`, the directory would be `@app/views/post`; If it is `PostCommentController`,
+  the controller class is `PostController`, the directory would be `@app/views/post`; if it is `PostCommentController`,
   the directory would be `@app/views/post-comment`. In case the controller belongs to a module, the directory
   would be `views/ControllerID` under the [[yii\base\Module::basePath|module directory]].
 * For views rendered in a [widget](structure-widgets.md), they should be put under the `WidgetPath/views` directory by
@@ -414,10 +414,10 @@ behind the scene Yii takes two steps to determine what is the actual layout file
 
 In the first step, it determines the layout value and the context module:
 
-- If the [[yii\base\Controller::layout]] property of the controller is not null, use it as the layout value and
+- If the [[yii\base\Controller::layout]] property of the controller is not `null`, use it as the layout value and
   the [[yii\base\Controller::module|module]] of the controller as the context module.
-- If [[yii\base\Controller::layout|layout]] is null, search through all ancestor modules (including the application itself) of the controller and 
-  find the first module whose [[yii\base\Module::layout|layout]] property is not null. Use that module and
+- If the [[yii\base\Controller::layout]] property of the controller is `null`, search through all ancestor modules (including the application itself) of the controller and 
+  find the first module whose [[yii\base\Module::layout|layout]] property is not `null`. Use that module and
   its [[yii\base\Module::layout|layout]] value as the context module and the chosen layout value.
   If such a module cannot be found, it means no layout will be applied.
   

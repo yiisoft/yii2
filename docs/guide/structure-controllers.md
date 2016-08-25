@@ -85,7 +85,7 @@ ModuleID/ControllerID/ActionID
 
 So if a user requests with the URL `http://hostname/index.php?r=site/index`, the `index` action in the `site` controller
 will be executed. For more details on how routes are resolved into actions, please refer to
-the [Routing and URL Generation](runtime-routing.md) section.
+the [Routing and URL Creation](runtime-routing.md) section.
 
 
 ## Creating Controllers <span id="creating-controllers"></span>
@@ -222,7 +222,7 @@ An action is often designed to perform a particular manipulation of a resource. 
 action IDs are usually verbs, such as `view`, `update`, etc.
 
 By default, action IDs should contain these characters only: English letters in lower case, digits,
-underscores, and hyphens. (You can use hyphens to separate words.) For example,
+underscores, and hyphens (you can use hyphens to separate words). For example,
 `view`, `update2`, and `comment-post` are all valid action IDs, while `view?` and `Update` are not.
 
 You can create actions in two ways: inline actions and standalone actions. An inline action is
@@ -355,7 +355,7 @@ class PostController extends Controller
 The action parameters will be populated as follows for different requests:
 
 * `http://hostname/index.php?r=post/view&id=123`: the `$id` parameter will be filled with the value
-  `'123'`,  while `$version` is still null because there is no `version` query parameter.
+  `'123'`,  while `$version` is still `null` because there is no `version` query parameter.
 * `http://hostname/index.php?r=post/view&id=123&version=2`: the `$id` and `$version` parameters will
   be filled with `'123'` and `'2'`, respectively.
 * `http://hostname/index.php?r=post/view`: a [[yii\web\BadRequestHttpException]] exception will be thrown

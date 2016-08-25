@@ -6,7 +6,7 @@ la 2.0. En conséquence, la mise à jour depuis la version 1.1 n'est pas aussi t
 versions mineures. Dans ce guide, vous trouverez les principales différences entre les deux versions.
 
 Si vous n'avez pas utilisé Yii 1.1 avant, vous pouvez ignorer cette section et passer directement à la section
-"[Mise en route] (start-installation.md)".
+"[Mise en route](start-installation.md)".
 
 Merci de noter que Yii 2.0 introduit plus de nouvelles fonctionnalités que celles abordées ici. Il est fortement
 recommandé de lire tout le guide de référence pour en apprendre davantage. Il y a des chances que certaines
@@ -16,7 +16,7 @@ fonctionnalités, que vous aviez préalablement développées pour vous, fassent
 Installation
 ------------
 
-Yii 2.0 exploite pleinement [Composer] (https://getcomposer.org/), le gestionnaire de paquet PHP. L'installation
+Yii 2.0 exploite pleinement [Composer](https://getcomposer.org/), le gestionnaire de paquet PHP. L'installation
 du framework, ainsi que des extensions, sont gérées par Composer. Reportez-vous à la section
 [Installer Yii](start-installation.md) pour apprendre comment installer Yii 2.0. Si vous voulez
 créer de nouvelles extensions, ou rendre vos extensions existantes 1.1 compatibles 2.0, reportez-vous à
@@ -61,7 +61,7 @@ Composants et objets
 Yii 2.0 décompose la classe `CComponent` 1.1 en deux classes: [[yii\base\Object]] et [[yii\base\Component]].
 Le classe [[yii\base\Object|Object]] est une classe de base légère qui permet de définir les
 [Propriétés de l'objet](concept-properties.md) via des accesseurs. La classe [[yii\base\Component|Component]] est une
-sous classe de [[yii\base\Object|Object]] et prend en charge les [Evénements] (concept events.md) et les
+sous classe de [[yii\base\Object|Object]] et prend en charge les [Evénements](concept events.md) et les
 [Comportements](concept-behaviors.md).
 
 Si votre classe n'a pas besoin des événements et des comportements, vous devriez envisager d'utiliser
@@ -160,9 +160,9 @@ Vues
 ----
 
 Le changement le plus significatif à propos des vues dans Yii 2 est que la variable spéciale `$this` dans une vue ne fait plus référence au
-contrôleur ou widget. Au lieu de cela, `$this` correspond maintenant à un objet *vue*, un nouveau concept
+contrôleur ou à l'objet graphique. Au lieu de cela, `$this` correspond maintenant à un objet *vue*, un nouveau concept
 introduit dans la version 2.0. L'objet *vue* est de type [[yii\web\View]], et représente la partie vue
-du modèle MVC. Si vous souhaitez accéder au contrôleur ou widget dans une vue, vous pouvez utiliser `$this->context`.
+du modèle MVC. Si vous souhaitez accéder au contrôleur ou  à l'objet graphique dans une vue, vous pouvez utiliser `$this->context`.
 
 Pour afficher une vue depuis une autre vue, utilisez `$this->render()`, et non `$this->renderPartial()`. Le résultat retourné par la méthode `render()` doit être explicitement envoyé à la sortie, en effet `render()` retournera la vue au lieu de l'afficher. Par exemple :
 
@@ -231,12 +231,12 @@ public function actionView($id)
 Reportez-vous à la section [Contrôleurs](structure-controllers.md) pour plus de détails.
 
 
-Widgets
--------
+Objets graphiques
+-----------------
 
-Yii 2.0 utilise la classe [[yii\base\Widget]] comme classe de base pour les widgets, similaire à la classe `CWidget` de Yii 1.1.
+Yii 2.0 utilise la classe [[yii\base\Widget]] comme classe de base pour les objets graphiques, similaire à la classe `CWidget` de Yii 1.1.
 
-Pour avoir une meilleure prise en charge du framework dans les EDI, Yii2 introduit une nouvelle syntaxe pour utiliser les widgets. Les méthodes statiques
+Pour avoir une meilleure prise en charge du framework dans les EDI, Yii2 introduit une nouvelle syntaxe pour utiliser les objets graphiques. Les méthodes statiques
 [[yii\base\Widget::begin()|begin()]], [[yii\base\Widget::end()|end()]], et [[yii\base\Widget::widget()|widget()]]
 ont été créées et sont utilisables comme suit :
 
@@ -256,17 +256,17 @@ $form = ActiveForm::begin([
 ActiveForm::end();
 ```
 
-Reportez-vous à la section [Widgets](structure-widgets.md) pour en savoir plus.
+Reportez-vous à la section [Objets graphiques](structure-widgets.md) pour en savoir plus.
 
 
 Thèmes
 ------
 
-Les thèmes fonctionnent tout à fait différemment dans la version 2.0. Ils sont maintenant basés sur un mécanisme de mappage de chemin qui mappe un chemin
-de fichier de vue à un chemin de fichier de vue thématisée. Par exemple, si le mappage pour un thème est
+Les thèmes fonctionnent tout à fait différemment dans la version 2.0. Ils sont maintenant basés sur un mécanisme de mise en correspondance de chemin qui met un chemin
+de fichier de vue en correspondance avec un chemin de fichier de vue thématisée. Par exemple, si la mise en correspondance  pour un thème est
 `['/web/views' => '/web/themes/basic']`, alors la version thématisée du fichier de vue
 `/web/views/site/index.php` sera `/web/themes/basic/site/index.php`. Pour cette raison, les thèmes peuvent maintenant
-être appliqués à n'importe quel fichier de vue, même une vue utilisée en dehors du contexte d'un contrôleur ou d'un widget.
+être appliqués à n'importe quel fichier de vue, même une vue utilisée en dehors du contexte d'un contrôleur ou d'un objet graphique.
 
 En outre, il n'y a plus de composant `CThemeManager`. A la place, `theme` est une propriété configurable du composant `view`
 de l'application.
@@ -293,7 +293,7 @@ Reportez-vous à la section [Commandes console](tutorial-console.md) pour plus d
 I18N
 ----
 
-Yii 2.0 supprime les fonctionnalités internes de formatage des dates et des nombres, en faveur du [module PHP PECL intl] (http://pecl.php.net/package/intl).
+Yii 2.0 supprime les fonctionnalités internes de formatage des dates et des nombres, en faveur du [module PHP PECL intl](http://pecl.php.net/package/intl).
 
 La traduction des messages est désormais effectuée via le composant d'application `i18n`.
 Ce composant gère un ensemble de sources de messages, ce qui vous permet d'utiliser différentes
@@ -373,7 +373,7 @@ En utilisant des champs, vous pouvez construire un formulaire plus proprement qu
 Reportez-vous à la section [Créer des formulaires](input-forms.md) pour plus de détails.
 
 
-Constructeur de requête
+Constructeur de requêtes
 -----------------------
 
 Dans la version 1.1, la construction des requêtes était dispersée dans plusieurs classes, y compris `CDbCommand`,

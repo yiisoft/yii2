@@ -261,7 +261,7 @@ class MemCache extends Cache
      * Retrieves a value from cache with a specified key.
      * This is the implementation of the method declared in the parent class.
      * @param string $key a unique key identifying the cached value
-     * @return string|boolean the value stored in cache, false if the value is not in the cache or expired.
+     * @return mixed|false the value stored in cache, false if the value is not in the cache or expired.
      */
     protected function getValue($key)
     {
@@ -283,7 +283,8 @@ class MemCache extends Cache
      * This is the implementation of the method declared in the parent class.
      *
      * @param string $key the key identifying the value to be cached
-     * @param string $value the value to be cached
+     * @param mixed $value the value to be cached.
+     * @see \MemcachePool::set()
      * @param integer $duration the number of seconds in which the cached value will expire. 0 means never expire.
      * @return boolean true if the value is successfully stored into cache, false otherwise
      */
@@ -323,7 +324,8 @@ class MemCache extends Cache
      * This is the implementation of the method declared in the parent class.
      *
      * @param string $key the key identifying the value to be cached
-     * @param string $value the value to be cached
+     * @param mixed $value the value to be cached
+     * @see \MemcachePool::set()
      * @param integer $duration the number of seconds in which the cached value will expire. 0 means never expire.
      * @return boolean true if the value is successfully stored into cache, false otherwise
      */
