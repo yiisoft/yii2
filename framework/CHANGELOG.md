@@ -39,6 +39,7 @@ Yii Framework 2 Change Log
 - Bug #12107: Fixed REST Serializer to validate input for 'expand' and 'fields' parameter, which crashed on array input (njspok, cebe)
 - Enh #12230: Allows BaseHtml::activeListInput to override the field value (RangelReale)
 - Bug #12331: Fixed bug with incorrect currency formatter output, when `$thousandSeparator` was explicitly set (cebe)
+- Bug #11347: Fixed `yii\widgets\Pjax::registerClientScript()` to pass custom `container` to the PJAX JS plugin (silverfire)
 
 
 2.0.9 July 11, 2016
