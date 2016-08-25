@@ -699,7 +699,7 @@ class User extends Component
      * When this parameter is true (default), if the access check of an operation was performed
      * before, its result will be directly returned when calling this method to check the same
      * operation. If this parameter is false, this method will always call
-     * [[\yii\rbac\CheckAcessInterface::checkAccess()]] to obtain the up-to-date access result. Note that this
+     * [[\yii\rbac\CheckAccessInterface::checkAccess()]] to obtain the up-to-date access result. Note that this
      * caching is effective only within the same request and only works when `$params = []`.
      * @return boolean whether the user can perform the operation as specified by the given permission.
      */
@@ -758,7 +758,7 @@ class User extends Component
     }
 
     /**
-     * Returns the acess checker used for checking access.
+     * Returns the access checker used for checking access.
      * @return CheckAccessInterface
      * @since 2.0.9
      */
