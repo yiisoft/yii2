@@ -92,6 +92,14 @@ $url = Url::to(['post/view', 'id' => 100]);
 ];
 ```
 
+アプリケーションのデフォルトルートと同じく、モジュールにもデフォルトルートがあります。
+従って、例えば、`user` というモジュールがあって、リクエストの解析結果が `user` というルートになった場合、
+このモジュールの [[yii\base\Module::defaultRoute|defaultRoute]] がコントローラを決定するのに使用されます。
+デフォルトでは、このコントローラの名前は `default` となります。
+[[yii\base\Module::defaultRoute|defaultRoute]] でアクションが指定されていない場合は、
+コントローラの [[yii\base\Controller::defaultAction|defaultAction]] プロパティがアクションを決定するのに使用されます。
+この例の場合だと、完全なルートは `user/default/index` となります。
+
 
 ### `catchAll` ルート <span id="catchall-route"></span>
 

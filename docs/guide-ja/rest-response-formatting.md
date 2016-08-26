@@ -78,7 +78,7 @@ public function behaviors()
 ## データのシリアライズ <span id="data-serializing"></span>
 
 上記で説明したように、[[yii\rest\Serializer]] が、リソースのオブジェクトやコレクションを配列に変換する際に、中心的な役割を果たします。
-`Serializer` は、[[yii\base\ArrayableInterface]] および [[yii\data\DataProviderInterface]] のインタフェイスを実装したオブジェクトを認識します。
+`Serializer` は、[[yii\base\Arrayable]] および [[yii\data\DataProviderInterface]] のインタフェイスを実装したオブジェクトを認識します。
 前者は主としてリソースオブジェクトによって実装され、後者はリソースコレクションによって実装されています。
 
 [[yii\rest\Controller::serializer]] プロパティに構成情報配列をセットしてシリアライザを構成することが出来ます。
