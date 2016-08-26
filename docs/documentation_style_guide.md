@@ -53,7 +53,7 @@ containing the translations. The following shows an example for German:
 * Web, not web
 * the guide or this guide, not the Guide
 
-## validating the docs
+## Validating the docs
 
 The following are some scripts that help find broken links and other issues in the guide:
 
