@@ -77,7 +77,7 @@ public function behaviors()
 
 ### CORS <span id="cors"></span>
 
-Adding the [Cross Origin Resource Sharing](structure-filters.md#cors) filter to a controller is a bit more complicated
+Adding the [Cross-Origin Resource Sharing](structure-filters.md#cors) filter to a controller is a bit more complicated
 than adding other filters described above, because the CORS filter has to be applied before authentication methods
 and thus needs a slightly different approach compared to other filters. Also authentication has to be disabled for the
 [CORS Preflight requests](https://developer.mozilla.org/en-US/docs/Web/HTTP/Access_control_CORS#Preflighted_requests)
