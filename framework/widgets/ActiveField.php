@@ -68,9 +68,9 @@ class ActiveField extends Component
      * merged with this property when rendering the error tag.
      * The following special options are recognized:
      *
-     * - tag: the tag name of the container element. Defaults to "div". Setting it to `false` will not render a container tag.
+     * - `tag`: the tag name of the container element. Defaults to `div`. Setting it to `false` will not render a container tag.
      *   See also [[\yii\helpers\Html::tag()]].
-     * - encode: whether to encode the error output. Defaults to `true`.
+     * - `encode`: whether to encode the error output. Defaults to `true`.
      *
      * If you set a custom `id` for the error element, you may need to adjust the [[$selectors]] accordingly.
      *
