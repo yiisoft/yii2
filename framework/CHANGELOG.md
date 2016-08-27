@@ -4,6 +4,8 @@ Yii Framework 2 Change Log
 2.0.10 under development
 ------------------------
 
+- Enh #9989: ActiveForm now respects formtarget, formmethod and formenctype attributes of submit button (AnatolyRugalev)
+- Enh #12296: Added value validation to `yii\log\Target::setLevels()` (Mak-Di)
 - Enh #12073: Added the ability to suppress the generation of input hint when it is specified through  `Model::attributeHints()` (PowerGamer1)
 - Bug #12009: Do not render "for" field label attribute for active form RadioList and CheckboxList (shevchik87, samdark)
 - Bug #12068: Added missing 'LEVEL_PROFILE' for the syslog target (Mak-Di)
@@ -35,6 +37,10 @@ Yii Framework 2 Change Log
 - Bug #11973: Fixed `yii\helpers\BaseHtml::getAttributeValue()` to work with `items[]` notation correctly (silverfire)
 - Bug #12100: Fixed `yii\filters\HttpCache` was sending an empty Pragma header (sergeymakinen)
 - Bug #12107: Fixed REST Serializer to validate input for 'expand' and 'fields' parameter, which crashed on array input (njspok, cebe)
+- Enh #12230: Allows BaseHtml::activeListInput to override the field value (RangelReale)
+- Bug #12331: Fixed bug with incorrect currency formatter output, when `$thousandSeparator` was explicitly set (cebe)
+- Bug #11347: Fixed `yii\widgets\Pjax::registerClientScript()` to pass custom `container` to the PJAX JS plugin (silverfire)
+- Bug #12293: Fixed MSSQL `Schema::resolveTableNames()` when using linked database tables (hAppywAy)
 
 
 2.0.9 July 11, 2016

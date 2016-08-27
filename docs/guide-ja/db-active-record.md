@@ -354,7 +354,7 @@ public function save($runValidation = true, $attributeNames = null)
 
 [[yii\db\ActiveRecord::save()|save()]] を呼ぶと、デフォルトでは [[yii\db\ActiveRecord::validate()|validate()]] が自動的に呼ばれます。
 検証が通った時だけ、実際にデータが保存されます。
-検証が通らなかった時は単に false が返され、[[yii\db\ActiveRecord::errors|errors]] プロパティをチェックして検証エラーメッセージを取得することが出来ます。
+検証が通らなかった時は単に `false` が返され、[[yii\db\ActiveRecord::errors|errors]] プロパティをチェックして検証エラーメッセージを取得することが出来ます。
 
 > Tip: データが検証を必要としないことが確実である場合 (例えば、データが信頼できるソースに由来するものである場合) は、検証をスキップするために `save(false)` を呼ぶことが出来ます。
 
@@ -500,11 +500,11 @@ Customer::deleteAll(['status' => Customer::STATUS_INACTIVE]);
 [[yii\db\ActiveRecord::save()|save()]] を呼んでアクティブレコードインスタンスを挿入または更新する場合は、次のライフサイクルを経ます。
 
 1. [[yii\db\ActiveRecord::beforeValidate()|beforeValidate()]]: [[yii\db\ActiveRecord::EVENT_BEFORE_VALIDATE|EVENT_BEFORE_VALIDATE]] イベントをトリガ。
-   このメソッドが false を返すか、[[yii\base\ModelEvent::isValid]] が false であった場合、残りのステップはスキップされる。
+   このメソッドが `false` を返すか、[[yii\base\ModelEvent::isValid]] が `false` であった場合、残りのステップはスキップされる。
 2. データ検証を実行。データ検証が失敗した場合、3 より後のステップはスキップされる。
 3. [[yii\db\ActiveRecord::afterValidate()|afterValidate()]]: [[yii\db\ActiveRecord::EVENT_AFTER_VALIDATE|EVENT_AFTER_VALIDATE]] イベントをトリガ。
 4. [[yii\db\ActiveRecord::beforeSave()|beforeSave()]]: [[yii\db\ActiveRecord::EVENT_BEFORE_INSERT|EVENT_BEFORE_INSERT]] または [[yii\db\ActiveRecord::EVENT_BEFORE_UPDATE|EVENT_BEFORE_UPDATE]] イベントをトリガ。
-   このメソッドが false を返すか、[[yii\base\ModelEvent::isValid]] が false であった場合、残りのステップはスキップされる。
+   このメソッドが `false` を返すか、[[yii\base\ModelEvent::isValid]] が `false` であった場合、残りのステップはスキップされる。
 5. 実際のデータの挿入または更新を実行。
 6. [[yii\db\ActiveRecord::afterSave()|afterSave()]]: [[yii\db\ActiveRecord::EVENT_AFTER_INSERT|EVENT_AFTER_INSERT]] または [[yii\db\ActiveRecord::EVENT_AFTER_UPDATE|EVENT_AFTER_UPDATE]] イベントをトリガ。
    
@@ -514,7 +514,7 @@ Customer::deleteAll(['status' => Customer::STATUS_INACTIVE]);
 [[yii\db\ActiveRecord::delete()|delete()]] を呼んでアクティブレコードインスタンスを削除する際は、次のライフサイクルを経ます。
 
 1. [[yii\db\ActiveRecord::beforeDelete()|beforeDelete()]]: [[yii\db\ActiveRecord::EVENT_BEFORE_DELETE|EVENT_BEFORE_DELETE]] イベントをトリガ。
-   このメソッドが false を返すか、[[yii\base\ModelEvent::isValid]] が false であった場合は、残りのステップはスキップされる。
+   このメソッドが `false` を返すか、[[yii\base\ModelEvent::isValid]] が `false` であった場合は、残りのステップはスキップされる。
 2. 実際のデータの削除を実行。
 3. [[yii\db\ActiveRecord::afterDelete()|afterDelete()]]: [[yii\db\ActiveRecord::EVENT_AFTER_DELETE|EVENT_AFTER_DELETE]] イベントをトリガ。
 
@@ -718,7 +718,7 @@ $orders = $customer->orders;
   名前は大文字と小文字を区別することに注意してください。
 
 リレーションが [[yii\db\ActiveRecord::hasMany()|hasMany()]] によって宣言されている場合は、このリレーションプロパティにアクセスすると、関連付けられたアクティブレコードインスタンスの配列が返されます。
-リレーションが [[yii\db\ActiveRecord::hasOne()|hasOne()]] によって宣言されている場合は、このリレーションプロパティにアクセスすると、関連付けられたアクティブレコードインスタンスか、関連付けられたデータが見つからないときは null が返されます。
+リレーションが [[yii\db\ActiveRecord::hasOne()|hasOne()]] によって宣言されている場合は、このリレーションプロパティにアクセスすると、関連付けられたアクティブレコードインスタンスか、関連付けられたデータが見つからないときは `null` が返されます。
 
 リレーションプロパティに最初にアクセスしたときは、上記の例で示されているように、SQL 文が実行されます。
 その同じプロパティに再びアクセスしたときは、SQL 文を再実行することなく、以前の結果が返されます。
@@ -992,7 +992,7 @@ $customers = Customer::find()
 指定したい結合タイプが `INNER JOIN` である場合は、代りに、[[yii\db\ActiveQuery::innerJoinWith()|innerJoinWith()]] を呼ぶだけで済ませることが出来ます。
 
 デフォルトでは、[[yii\db\ActiveQuery::joinWith()|joinWith()]] を呼ぶと、リレーションのデータが [イーガーロード](#lazy-eager-loading) されます。
-リレーションのデータを読み取りたくない場合は、第二のパラメータ `$eagerLoading` を false に指定することが出来ます。
+リレーションのデータを読み取りたくない場合は、第二のパラメータ `$eagerLoading` を `false` に指定することが出来ます。
 
 [[yii\db\ActiveQuery::with()|with()]] と同じように、一つまたは複数のリレーションを結合したり、リレーションクエリをその場でカスタマイズしたり、ネストされたリレーションを結合したりすることが出来ます。
 また、[[yii\db\ActiveQuery::with()|with()]] と [[yii\db\ActiveQuery::joinWith()|joinWith()]] を混ぜて使用することも出来ます。
@@ -1172,10 +1172,10 @@ $customer = Customer::find()->with('orders')->where(['id' => 123])->one();
 $customer->unlink('orders', $customer->orders[0]);
 ```
 
-デフォルトでは、[[yii\db\ActiveRecord::unlink()|unlink()]] メソッドは、既存のリレーションを指定している外部キーの値を null に設定します。
-ただし、`$delete` パラメータを true にしてメソッドに渡して、その外部キーを含むテーブル行を削除するという方法を選ぶことも出来ます。
+デフォルトでは、[[yii\db\ActiveRecord::unlink()|unlink()]] メソッドは、既存のリレーションを指定している外部キーの値を `null` に設定します。
+ただし、`$delete` パラメータを `true` にしてメソッドに渡して、その外部キーを含むテーブル行を削除するという方法を選ぶことも出来ます。
 
-リレーションに中間テーブルが含まれている場合は、[[yii\db\ActiveRecord::unlink()|unlink()]] を呼ぶと、中間テーブルにある外部キーがクリアされるか、または、`$delete` が true であるときは、中間テーブルにある対応する行が削除されるかします。
+リレーションに中間テーブルが含まれている場合は、[[yii\db\ActiveRecord::unlink()|unlink()]] を呼ぶと、中間テーブルにある外部キーがクリアされるか、または、`$delete` が `true` であるときは、中間テーブルにある対応する行が削除されるかします。
 
 
 ## DBMS 間のリレーション <span id="cross-database-relations"></span> 

@@ -700,7 +700,7 @@ echo GridView::widget([
 ### Using GridView with Pjax
 
 The [[yii\widgets\Pjax|Pjax]] widget allows you to update a certain section of a
-page instead of reloading the entire page. You can use it to to update only the
+page instead of reloading the entire page. You can use it to update only the
 [[yii\grid\GridView|GridView]] content when using filters.
 
 ```php

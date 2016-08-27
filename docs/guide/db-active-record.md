@@ -244,7 +244,7 @@ $email = $customer->email;
 Because Active Record attributes are named after table columns, you may find you are writing PHP code like
 `$customer->first_name`, which uses underscores to separate words in attribute names if your table columns are
 named in this way. If you are concerned about code style consistency, you should rename your table columns accordingly
-(to use camelCase, for example.)
+(to use camelCase, for example).
 
 
 ### Data Transformation <span id="data-transformation"></span>
@@ -378,7 +378,7 @@ You can declare validation rules by overriding the [[yii\db\ActiveRecord::rules(
 data validation by calling the [[yii\db\ActiveRecord::validate()|validate()]] method.
 
 When you call [[yii\db\ActiveRecord::save()|save()]], by default it will call [[yii\db\ActiveRecord::validate()|validate()]]
-automatically. Only when the validation passes, will it actually save the data; otherwise it will simply return false,
+automatically. Only when the validation passes, will it actually save the data; otherwise it will simply return `false`,
 and you can check the [[yii\db\ActiveRecord::errors|errors]] property to retrieve the validation error messages.  
 
 > Tip: If you are certain that your data do not need validation (e.g., the data comes from trustable sources),
@@ -534,15 +534,15 @@ When calling [[yii\db\ActiveRecord::save()|save()]] to insert or update an Activ
 life cycle will happen:
 
 1. [[yii\db\ActiveRecord::beforeValidate()|beforeValidate()]]: triggers 
-   an [[yii\db\ActiveRecord::EVENT_BEFORE_VALIDATE|EVENT_BEFORE_VALIDATE]] event. If the method returns false
-   or [[yii\base\ModelEvent::isValid]] is false, the rest of the steps will be skipped.
+   an [[yii\db\ActiveRecord::EVENT_BEFORE_VALIDATE|EVENT_BEFORE_VALIDATE]] event. If the method returns `false`
+   or [[yii\base\ModelEvent::isValid]] is `false`, the rest of the steps will be skipped.
 2. Performs data validation. If data validation fails, the steps after Step 3 will be skipped. 
 3. [[yii\db\ActiveRecord::afterValidate()|afterValidate()]]: triggers 
    an [[yii\db\ActiveRecord::EVENT_AFTER_VALIDATE|EVENT_AFTER_VALIDATE]] event.
 4. [[yii\db\ActiveRecord::beforeSave()|beforeSave()]]: triggers 
    an [[yii\db\ActiveRecord::EVENT_BEFORE_INSERT|EVENT_BEFORE_INSERT]] 
-   or [[yii\db\ActiveRecord::EVENT_BEFORE_UPDATE|EVENT_BEFORE_UPDATE]] event. If the method returns false
-   or [[yii\base\ModelEvent::isValid]] is false, the rest of the steps will be skipped.
+   or [[yii\db\ActiveRecord::EVENT_BEFORE_UPDATE|EVENT_BEFORE_UPDATE]] event. If the method returns `false`
+   or [[yii\base\ModelEvent::isValid]] is `false`, the rest of the steps will be skipped.
 5. Performs the actual data insertion or updating.
 6. [[yii\db\ActiveRecord::afterSave()|afterSave()]]: triggers
    an [[yii\db\ActiveRecord::EVENT_AFTER_INSERT|EVENT_AFTER_INSERT]] 
@@ -555,8 +555,8 @@ When calling [[yii\db\ActiveRecord::delete()|delete()]] to delete an Active Reco
 life cycle will happen:
 
 1. [[yii\db\ActiveRecord::beforeDelete()|beforeDelete()]]: triggers
-   an [[yii\db\ActiveRecord::EVENT_BEFORE_DELETE|EVENT_BEFORE_DELETE]] event. If the method returns false
-   or [[yii\base\ModelEvent::isValid]] is false, the rest of the steps will be skipped.
+   an [[yii\db\ActiveRecord::EVENT_BEFORE_DELETE|EVENT_BEFORE_DELETE]] event. If the method returns `false`
+   or [[yii\base\ModelEvent::isValid]] is `false`, the rest of the steps will be skipped.
 2. Performs the actual data deletion.
 3. [[yii\db\ActiveRecord::afterDelete()|afterDelete()]]: triggers
    an [[yii\db\ActiveRecord::EVENT_AFTER_DELETE|EVENT_AFTER_DELETE]] event.
@@ -777,7 +777,7 @@ $orders = $customer->orders;
 If a relation is declared with [[yii\db\ActiveRecord::hasMany()|hasMany()]], accessing this relation property
 will return an array of the related Active Record instances; if a relation is declared with 
 [[yii\db\ActiveRecord::hasOne()|hasOne()]], accessing the relation property will return the related
-Active Record instance or null if no related data is found.
+Active Record instance or `null` if no related data is found.
 
 When you access a relation property for the first time, a SQL statement will be executed, like shown in the
 above example. If the same property is accessed again, the previous result will be returned without re-executing
@@ -1058,7 +1058,7 @@ related table. You can specify a different join type (e.g. `RIGHT JOIN`) via its
 the join type you want is `INNER JOIN`, you can simply call [[yii\db\ActiveQuery::innerJoinWith()|innerJoinWith()]], instead.
 
 Calling [[yii\db\ActiveQuery::joinWith()|joinWith()]] will [eagerly load](#lazy-eager-loading) the related data by default.
-If you do not want to bring in the related data, you can specify its second parameter `$eagerLoading` as false. 
+If you do not want to bring in the related data, you can specify its second parameter `$eagerLoading` as `false`. 
 
 Like [[yii\db\ActiveQuery::with()|with()]], you can join with one or multiple relations; you may customize the relation
 queries on-the-fly; you may join with nested relations; and you may mix the use of [[yii\db\ActiveQuery::with()|with()]]
@@ -1254,12 +1254,12 @@ $customer->unlink('orders', $customer->orders[0]);
 ```
 
 By default, the [[yii\db\ActiveRecord::unlink()|unlink()]] method will set the foreign key value(s) that specify
-the existing relationship to be null. You may, however, choose to delete the table row that contains the foreign key value
-by passing the `$delete` parameter as true to the method.
+the existing relationship to be `null`. You may, however, choose to delete the table row that contains the foreign key value
+by passing the `$delete` parameter as `true` to the method.
  
 When a junction table is involved in a relation, calling [[yii\db\ActiveRecord::unlink()|unlink()]] will cause
 the foreign keys in the junction table to be cleared, or the deletion of the corresponding row in the junction table
-if `$delete` is true.
+if `$delete` is `true`.
 
 
 ## Cross-Database Relations <span id="cross-database-relations"></span> 

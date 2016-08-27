@@ -9,8 +9,8 @@ Yii 開発者ドキュメント
 - [課題を報告する仕方](report-an-issue.md)
 - [始めよう](getting-started.md)
 - [Yii 2 寄稿者のための Git ワークフロー](git-workflow.md) - 開発環境をセットアップして Yii に対する寄稿を始めるためのステップバイステップのガイド。
-- [Yii2 コアフレームワークコードスタイル](core-code-style.md)
-- [Yii2 ビューコードスタイル](view-code-style.md)
+- [Yii 2 コアフレームワークコードスタイル](core-code-style.md)
+- [Yii 2 ビューコードスタイル](view-code-style.md)
 
 
 ドキュメント
