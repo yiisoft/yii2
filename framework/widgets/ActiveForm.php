@@ -30,9 +30,9 @@ class ActiveForm extends Widget
      */
     public $action = '';
     /**
-     * @var string the form submission method. This should be either 'post' or 'get'. Defaults to 'post'.
+     * @var string the form submission method. This should be either `post` or `get`. Defaults to `post`.
      *
-     * When you set this to 'get' you may see the url parameters repeated on each request.
+     * When you set this to `get` you may see the url parameters repeated on each request.
      * This is because the default value of [[action]] is set to be the current request url and each submit
      * will add new parameters instead of replacing existing ones.
      * You may set [[action]] explicitly to avoid this:
@@ -105,9 +105,9 @@ class ActiveForm extends Widget
      */
     public $enableAjaxValidation = false;
     /**
-     * @var boolean whether to hook up yii.activeForm JavaScript plugin.
-     * This property must be set true if you want to support client validation and/or AJAX validation, or if you
-     * want to take advantage of the yii.activeForm plugin. When this is false, the form will not generate
+     * @var boolean whether to hook up `yii.activeForm` JavaScript plugin.
+     * This property must be set `true` if you want to support client validation and/or AJAX validation, or if you
+     * want to take advantage of the `yii.activeForm` plugin. When this is `false`, the form will not generate
      * any JavaScript.
      */
     public $enableClientScript = true;
@@ -139,7 +139,7 @@ class ActiveForm extends Widget
     public $validateOnType = false;
     /**
      * @var integer number of milliseconds that the validation should be delayed when the user types in the field
-     * and [[validateOnType]] is set true.
+     * and [[validateOnType]] is set `true`.
      * If [[ActiveField::validationDelay]] is set, its value will take precedence for that input field.
      */
     public $validationDelay = 500;
@@ -250,11 +250,11 @@ class ActiveForm extends Widget
      * @param Model|Model[] $models the model(s) associated with this form
      * @param array $options the tag options in terms of name-value pairs. The following options are specially handled:
      *
-     * - header: string, the header HTML for the error summary. If not set, a default prompt string will be used.
-     * - footer: string, the footer HTML for the error summary.
+     * - `header`: string, the header HTML for the error summary. If not set, a default prompt string will be used.
+     * - `footer`: string, the footer HTML for the error summary.
      *
      * The rest of the options will be rendered as the attributes of the container tag. The values will
-     * be HTML-encoded using [[\yii\helpers\Html::encode()]]. If a value is null, the corresponding attribute will not be rendered.
+     * be HTML-encoded using [[\yii\helpers\Html::encode()]]. If a value is `null`, the corresponding attribute will not be rendered.
      * @return string the generated error summary
      * @see errorSummaryCssClass
      */
