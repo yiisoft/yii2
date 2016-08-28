@@ -1396,12 +1396,12 @@ When Active Record instance is populated from query results, its attributes are 
 values from received data set.
 
 You are able to fetch additional columns or values from query and store it inside the Active Record.
-For example, assume we have a table named 'room', which contains information about rooms available in the hotel.
-Each room stores information about its geometrical size using fields 'length', 'width', 'height'.
+For example, assume we have a table named `room`, which contains information about rooms available in the hotel.
+Each room stores information about its geometrical size using fields `length`, `width`, `height`.
 Imagine we need to retrieve list of all available rooms with their volume in descendant order.
-So you can not calculate volume using PHP, because we need to sort the records by its value, but you also want 'volume'
+So you can not calculate volume using PHP, because we need to sort the records by its value, but you also want `volume`
 to be displayed in the list.
-To achieve the goal, you need to declare an extra field in your 'Room' Active Record class, which will store 'volume' value:
+To achieve the goal, you need to declare an extra field in your `Room` Active Record class, which will store `volume` value:
 
 ```php
 class Room extends \yii\db\ActiveRecord
@@ -1418,7 +1418,7 @@ Then you need to compose a query, which calculates volume of the room and perfor
 $rooms = Room::find()
     ->select([
         '{{room}}.*', // select all columns
-        '([[length]] * [[width]].* [[height]]) AS volume', // calculate a volume
+        '([[length]] * [[width]] * [[height]]) AS volume', // calculate a volume
     ])
     ->orderBy('volume DESC') // apply sort
     ->all();
@@ -1430,7 +1430,7 @@ foreach ($rooms as $room) {
 
 Ability to select extra fields can be exceptionally useful for aggregation queries.
 Assume you need to display a list of customers with the count of orders they have made.
-First of all, you need to declare a `Customer` class with 'orders' relation and extra field for count storage:
+First of all, you need to declare a `Customer` class with `orders` relation and extra field for count storage:
 
 ```php
 class Customer extends \yii\db\ActiveRecord
@@ -1460,7 +1460,7 @@ $customers = Customer::find()
 ```
 
 A disadvantage of using this method would be that if the information isn't loaded on the SQL query it has to be calculated
-separately, which also means that newly saved records won't contain the information from any extra field.
+separately, which also means that newly saved records won't contain the information from any extra field:
 
 ```php
 $room = new Room();
@@ -1468,11 +1468,11 @@ $room->length = 100;
 $room->width = 50;
 $room->height = 2;
 
-$room->volume; // this value will be null since it was not declared yet.
+$room->volume; // this value will be null since it was not declared yet
 ```
 
 Using the [[yii\db\BaseActiveRecord::__get()|__get()]] and [[yii\db\BaseActiveRecord::__set()|__set()]] magic methods
-we can emulate the behavior of a property
+we can emulate the behavior of a property:
 
 ```php
 class Room extends \yii\db\ActiveRecord
@@ -1506,7 +1506,7 @@ class Room extends \yii\db\ActiveRecord
 When the select query doesn't provide the volume, the model will be able to calculate it automatically using
 the attributes of the model.
 
-Similary it can be used on extra fields depending on relational data
+Similary it can be used on extra fields depending on relational data:
 
 ```php
 class Customer extends \yii\db\ActiveRecord
@@ -1521,7 +1521,7 @@ class Customer extends \yii\db\ActiveRecord
     public function getOrdersCount()
     {
         if ($this->isNewRecord) {
-            return null; // This avoid calling a query searching for null primary keys.
+            return null; // this avoid calling a query searching for null primary keys
         }
         
         if ($this->_ordersCount === null) {
