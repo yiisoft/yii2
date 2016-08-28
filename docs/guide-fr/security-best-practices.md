@@ -123,7 +123,7 @@ Par exemple,  un site web `an.example.com` a une URL  `/logout`, qui, lorsqu'ell
 
 C'est l'idée de base. D'aucuns diront que déconnecter un utilisateur n'a rien de très sérieux, mais les gens mal intentionnés peuvent faire bien plus, à partir de cette idée.  Imaginez qu'un site web possède une URL  `http://an.example.com/purse/transfer?to=anotherUser&amout=2000`. Accéder à cette URL en utilisant une requête GET, provoque le transfert de 2000 € d'un compte autorisé à l'utilisateur vers un autre compte `anotherUser`. Nous savons que le navigateur envoie toujours une requête GET pour charger une image. Nous pouvons donc modifier le code pour que seules des requêtes POST soient acceptées sur cette URL. Malheureusement, cela ne nous est pas d'un grand secours parce qu'un attaquant peut placer un peu le JavaScript à la place de la balise `<img>`, ce qui permet d'envoyer des requêtes POST sur cette URL: 
 
-Afin d'éviter le  CSRF vous devez toujours :
+Afin d'éviter la falsification des requêtes inter-sites vous devez toujours :
 
 1. Suivre la spécification  HTTP c.-à-d. GET ne doit pas changer l'état de l'application. 
 2. Tenir la protection Yii CSRF activée.
@@ -176,7 +176,7 @@ Si c'est le cas, n'oubliez-pas de refuser l'accès à tout sauf au dossier `web`
 Éviter les informations et des outils de débogage en mode production
 ----------------------------------------------------------------------
 
-En mode  débogage, Yii présente les erreurs de façon très verbeuse, ce qui s'avère très utile en développement. Le problème est que des erreurs aussi verbeuses sont pleines de renseignement pour l'attaquant lui aussi et peuvent révéler la structure de la base de données, les valeurs de configuration et des parties de votre code. Ne faites jamais tourner vos application avec  `YII_DEBUG` définit à  `true` dans votre fichier `index.php`.
+En mode  débogage, Yii présente les erreurs de façon très verbeuse, ce qui s'avère très utile en développement. Le problème est que des erreurs aussi verbeuses sont pleines de renseignement pour l'attaquant lui aussi et peuvent révéler la structure de la base de données, les valeurs de configuration et des parties de votre code. Ne faites jamais tourner vos applications avec  `YII_DEBUG` définit à  `true` dans votre fichier `index.php`.
 
 Vous ne devriez jamais activer  Gii en production. Il pourrait être utilisé pour obtenir des informations sur la structure de la base de données, sur le code et tout simplement réécrire du code avec celui généré par Gii. 
 
