@@ -1131,16 +1131,22 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
      * It can be declared in either the Active Record class itself or one of its behaviors.
      * @param string $name the relation name
      * @param boolean $throwException whether to throw exception if the relation does not exist.
+     * @param array $relationParams array of params which use in related methods
      * @return ActiveQueryInterface|ActiveQuery the relational query object. If the relation does not exist
      * and `$throwException` is `false`, `null` will be returned.
      * @throws InvalidParamException if the named relation does not exist.
      */
-    public function getRelation($name, $throwException = true)
+    public function getRelation($name, $throwException = true, $relationParams = [])
     {
         $getter = 'get' . $name;
         try {
             // the relation could be defined in a behavior
-            $relation = $this->$getter();
+            $method = new \ReflectionMethod($this, $getter);
+            $necessaryPartOfParams = [];
+            foreach ($method->getParameters() as $parameter) {
+                $necessaryPartOfParams[] = array_key_exists($parameter->name, $relationParams) ? $relationParams[$parameter->name] : null;
+            }
+            $relation = call_user_func_array([$this, $getter], $necessaryPartOfParams);
         } catch (UnknownMethodException $e) {
             if ($throwException) {
                 throw new InvalidParamException(get_class($this) . ' has no relation named "' . $name . '".', 0, $e);
@@ -1158,7 +1164,6 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
 
         if (method_exists($this, $getter)) {
             // relation name is case sensitive, trying to validate it when the relation is defined within this class
-            $method = new \ReflectionMethod($this, $getter);
             $realName = lcfirst(substr($method->getName(), 3));
             if ($realName !== $name) {
                 if ($throwException) {
@@ -1193,7 +1198,7 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
      */
     public function link($name, $model, $extraColumns = [])
     {
-        $relation = $this->getRelation($name);
+        $relation = $this->getRelation($name, true, $this->relationParams);
 
         if ($relation->via !== null) {
             if ($this->getIsNewRecord() || $model->getIsNewRecord()) {
@@ -1286,7 +1291,7 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
      */
     public function unlink($name, $model, $delete = false)
     {
-        $relation = $this->getRelation($name);
+        $relation = $this->getRelation($name, true, $this->relationParams);
 
         if ($relation->via !== null) {
             if (is_array($relation->via)) {
@@ -1381,7 +1386,7 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
      */
     public function unlinkAll($name, $delete = false)
     {
-        $relation = $this->getRelation($name);
+        $relation = $this->getRelation($name, true, $this->relationParams);
 
         if ($relation->via !== null) {
             if (is_array($relation->via)) {
@@ -1507,7 +1512,7 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
                     $relatedModel = $relatedModel->$relationName;
                 } else {
                     try {
-                        $relation = $relatedModel->getRelation($relationName);
+                        $relation = $relatedModel->getRelation($relationName, true, $this->relationParams);
                     } catch (InvalidParamException $e) {
                         return $this->generateAttributeLabel($attribute);
                     }
@@ -1547,7 +1552,7 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
                     $relatedModel = $relatedModel->$relationName;
                 } else {
                     try {
-                        $relation = $relatedModel->getRelation($relationName);
+                        $relation = $relatedModel->getRelation($relationName, true, $this->relationParams);
                     } catch (InvalidParamException $e) {
                         return '';
                     }

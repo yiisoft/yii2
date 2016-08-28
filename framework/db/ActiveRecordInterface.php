@@ -359,9 +359,10 @@ interface ActiveRecordInterface
      * It can be declared in either the ActiveRecord class itself or one of its behaviors.
      * @param string $name the relation name
      * @param boolean $throwException whether to throw exception if the relation does not exist.
+     * @param array $relationParams array of params which use in related methods
      * @return ActiveQueryInterface the relational query object
      */
-    public function getRelation($name, $throwException = true);
+    public function getRelation($name, $throwException = true, $relationParams = []);
 
     /**
      * Populates the named relation with the related records.
