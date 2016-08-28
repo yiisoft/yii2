@@ -138,7 +138,7 @@ Pour faciliter la description qui suit, nous allons d'abord introduire quelques 
 
 Un rôle représente une collection de  *permissions* (p. ex. créer des articles, mettre des articles à jour). Un rôle peut être assigné à un ou plusieurs utilisateurs. Pour vérifier qu'un utilisateur dispose d'une permission spécifiée, nous pouvons vérifier si un rôle contenant cette permission a été assigné à l'utilisateur. 
 
-Associés à chacun des rôles, il peut y avoir une *règle*. Une règle représente un morceau de code à exécuter lors de l'accès pour vérifier si le rôle correspondant, ou la permission correspondante, s'applique à l'utilisateur courant. Par exemple, la permission « mettre un article à jour » peut disposer d'une règle qui  vérifie si l'utilisateur courant est celui qui a créé l'article. Durant la vérification de l'accès, si l'utilisateur n'est PAS le créateur de l'article, il est considéré comme ne disposant pas la permission « mettre un article à jour ». 
+Associée à chacun des rôles, il peut y avoir une *règle*. Une règle représente un morceau de code à exécuter lors de l'accès pour vérifier si le rôle correspondant, ou la permission correspondante, s'applique à l'utilisateur courant. Par exemple, la permission « mettre un article à jour » peut disposer d'une règle qui  vérifie si l'utilisateur courant est celui qui a créé l'article. Durant la vérification de l'accès, si l'utilisateur n'est PAS le créateur de l'article, il est considéré comme ne disposant pas la permission « mettre un article à jour ». 
 
 À la fois les rôles et les permissions peuvent être organisés en une hiérarchie. En particulier, un rôle peut être constitué d'autres rôles ou permissions ; Yii met en œuvre une hiérarchie *d'ordre partiel* qui inclut la hiérarchie plus spécifique dite *en arbre*. Tandis qu'un rôle peut contenir une permission, l'inverse n'est pas vrai. 
 
@@ -480,7 +480,7 @@ $auth->addChild($admin, $author);
 // ... ajoute les  permissions en tant qu'enfant de  $admin ...
 ```
 
-Notez que dans ce qui est présenté ci-dessus, comme « author » est ajouté en tant qu'enfant de « admin », lorsque vus implémentez la méthode `execute()` de la classe de règle, vous devez respecter cette hiérarchie elle aussi. C'est pourquoi, le nom de rôle est « author », la méthode `execute()` retourne `true` (vrai) si le groupe de l'utilisateur est soit 1, soit 2 (ce qui signifie que l'utilisateur est soit dans le groupe « admin », soit dans le groupe « author »).
+Notez que dans ce qui est présenté ci-dessus, comme « author » est ajouté en tant qu'enfant de « admin », lorsque vous implémentez la méthode `execute()` de la classe de règle, vous devez respecter cette hiérarchie elle aussi. C'est pourquoi, lorsque le nom de rôle est « author », la méthode `execute()` retourne `true` (vrai) si le groupe de l'utilisateur est soit 1, soit 2 (ce qui signifie que l'utilisateur est soit dans le groupe « admin », soit dans le groupe « author »).
 
 Ensuite, configurez `authManager` en listant les deux rôles dans  [[yii\rbac\BaseManager::$defaultRoles]]:
 
