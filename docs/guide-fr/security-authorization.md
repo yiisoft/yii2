@@ -480,7 +480,7 @@ $auth->addChild($admin, $author);
 // ... ajoute les  permissions en tant qu'enfant de  $admin ...
 ```
 
-Notez que dans ce qui est présenté ci-dessus, comme « author » est ajouté en tant qu'enfant de « admin », lorsque vous implémentez la méthode `execute()` de la classe de règle, vous devez respecter cette hiérarchie elle aussi. C'est pourquoi,lorsque le nom de rôle est « author », la méthode `execute()` retourne `true` (vrai) si le groupe de l'utilisateur est soit 1, soit 2 (ce qui signifie que l'utilisateur est soit dans le groupe « admin », soit dans le groupe « author »).
+Notez que dans ce qui est présenté ci-dessus, comme « author » est ajouté en tant qu'enfant de « admin », lorsque vous implémentez la méthode `execute()` de la classe de règle, vous devez respecter cette hiérarchie elle aussi. C'est pourquoi, lorsque le nom de rôle est « author », la méthode `execute()` retourne `true` (vrai) si le groupe de l'utilisateur est soit 1, soit 2 (ce qui signifie que l'utilisateur est soit dans le groupe « admin », soit dans le groupe « author »).
 
 Ensuite, configurez `authManager` en listant les deux rôles dans  [[yii\rbac\BaseManager::$defaultRoles]]:
 
