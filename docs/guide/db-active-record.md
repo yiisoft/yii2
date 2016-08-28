@@ -1424,7 +1424,7 @@ $rooms = Room::find()
     ->all();
 
 foreach ($rooms as $room) {
-    echo $room->volume, '<br>'; // contains value calculated by SQL
+    echo $room->volume; // contains value calculated by SQL
 }
 ```
 
