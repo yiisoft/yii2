@@ -151,6 +151,27 @@ EXPECTED;
             ]
         ));
 
+        // test fulwidth chars
+        // @see https://en.wikipedia.org/wiki/Halfwidth_and_fullwidth_forms
+        $expected = <<<EXPECTED
+╔═════════════════╤═════════════════╤═════════════════╗
+║ test1           │ test2           │ ｔｅｓｔ３      ║
+╟─────────────────┼─────────────────┼─────────────────╢
+║ testcontent1    │ testcontent2    │ testcontent3    ║
+╟─────────────────┼─────────────────┼─────────────────╢
+║ testcontent２１ │ testcontent２２ │ testcontent２３ ║
+╚═════════════════╧═════════════════╧═════════════════╝
+
+EXPECTED;
+
+        $this->assertEqualsWithoutLE($expected, Console::table(
+            ['test1', 'test2', 'ｔｅｓｔ３'],
+            [
+                ['testcontent1', 'testcontent2', 'testcontent3'],
+                ['testcontent２１', 'testcontent２２', 'testcontent２３']
+            ]
+        ));
+
         $expected = <<<EXPECTED
 *++++++++++++++++*+++++++++++++++++*++++++++++++++++++*
 / test1          / test2           / test3            /
