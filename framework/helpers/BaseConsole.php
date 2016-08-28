@@ -7,6 +7,7 @@
 
 namespace yii\helpers;
 
+use Yii;
 use yii\console\Markdown as ConsoleMarkdown;
 
 /**
@@ -1086,7 +1087,7 @@ class BaseConsole
             if ($index != 0) {
                 $buffer .= $spanMiddle . ' ';
             }
-            $buffer .= $row . str_repeat(' ', $size[$index] - mb_strwidth($row) - 1);
+            $buffer .= $row . str_repeat(' ', $size[$index] - mb_strwidth($row, Yii::$app->charset) - 1);
         }
         $buffer .= "$spanRight\n";
         return $buffer;
@@ -1113,8 +1114,9 @@ class BaseConsole
             array_push($columns[$i], $headers[$i]);
         }
 
+        $encoding = array_fill(0, count($columns), Yii::$app->charset);
         foreach ($columns as $column) {
-            $arraySizes[] = max(array_map('mb_strwidth', $column)) + 2;
+            $arraySizes[] = max(array_map('mb_strwidth', $column, $encoding)) + 2;
         }
 
         return $arraySizes;
