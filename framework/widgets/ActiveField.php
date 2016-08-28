@@ -28,20 +28,20 @@ class ActiveField extends Component
      */
     public $form;
     /**
-     * @var Model the data model that this field is associated with
+     * @var Model the data model that this field is associated with.
      */
     public $model;
     /**
-     * @var string the model attribute that this field is associated with
+     * @var string the model attribute that this field is associated with.
      */
     public $attribute;
     /**
      * @var array the HTML attributes (name-value pairs) for the field container tag.
      * The values will be HTML-encoded using [[Html::encode()]].
-     * If a value is null, the corresponding attribute will not be rendered.
+     * If a value is `null`, the corresponding attribute will not be rendered.
      * The following special options are recognized:
      *
-     * - tag: the tag name of the container element. Defaults to "div". Setting it to `false` will not render a container tag.
+     * - `tag`: the tag name of the container element. Defaults to `div`. Setting it to `false` will not render a container tag.
      *   See also [[\yii\helpers\Html::tag()]].
      *
      * If you set a custom `id` for the container element, you may need to adjust the [[$selectors]] accordingly.
@@ -88,7 +88,7 @@ class ActiveField extends Component
      * merged with this property when rendering the hint tag.
      * The following special options are recognized:
      *
-     * - tag: the tag name of the container element. Defaults to "div". Setting it to `false` will not render a container tag.
+     * - `tag`: the tag name of the container element. Defaults to `div`. Setting it to `false` will not render a container tag.
      *   See also [[\yii\helpers\Html::tag()]].
      *
      * @see \yii\helpers\Html::renderTagAttributes() for details on how attributes are being rendered.
@@ -122,13 +122,13 @@ class ActiveField extends Component
     public $validateOnType;
     /**
      * @var integer number of milliseconds that the validation should be delayed when the user types in the field
-     * and [[validateOnType]] is set true.
+     * and [[validateOnType]] is set `true`.
      * If not set, it will take the value of [[ActiveForm::validationDelay]].
      */
     public $validationDelay;
     /**
      * @var array the jQuery selectors for selecting the container, input and error tags.
-     * The array keys should be "container", "input", and/or "error", and the array values
+     * The array keys should be `container`, `input`, and/or `error`, and the array values
      * are the corresponding selectors. For example, `['input' => '#my-input']`.
      *
      * The container selector is used under the context of the form, while the input and the error
@@ -179,7 +179,7 @@ class ActiveField extends Component
      * This method will generate the label, error tag, input tag and hint tag (if any), and
      * assemble them into HTML according to [[template]].
      * @param string|callable $content the content within the field container.
-     * If null (not set), the default methods will be called to generate the label, error tag and input tag,
+     * If `null` (not set), the default methods will be called to generate the label, error tag and input tag,
      * and use them as the content.
      * If a callable, it will be called to generate the content. The signature of the callable should be:
      *
@@ -189,7 +189,7 @@ class ActiveField extends Component
      * }
      * ```
      *
-     * @return string the rendering result
+     * @return string the rendering result.
      */
     public function render($content = null)
     {
@@ -255,13 +255,13 @@ class ActiveField extends Component
 
     /**
      * Generates a label tag for [[attribute]].
-     * @param string|boolean $label the label to use. If null, the label will be generated via [[Model::getAttributeLabel()]].
-     * If false, the generated field will not contain the label part.
+     * @param string|boolean $label the label to use. If `null`, the label will be generated via [[Model::getAttributeLabel()]].
+     * If `false`, the generated field will not contain the label part.
      * Note that this will NOT be [[Html::encode()|encoded]].
      * @param array $options the tag options in terms of name-value pairs. It will be merged with [[labelOptions]].
      * The options will be rendered as the attributes of the resulting tag. The values will be HTML-encoded
-     * using [[Html::encode()]]. If a value is null, the corresponding attribute will not be rendered.
-     * @return $this the field object itself
+     * using [[Html::encode()]]. If a value is `null`, the corresponding attribute will not be rendered.
+     * @return $this the field object itself.
      */
     public function label($label = null, $options = [])
     {
@@ -289,16 +289,16 @@ class ActiveField extends Component
      * Note that even if there is no validation error, this method will still return an empty error tag.
      * @param array|false $options the tag options in terms of name-value pairs. It will be merged with [[errorOptions]].
      * The options will be rendered as the attributes of the resulting tag. The values will be HTML-encoded
-     * using [[Html::encode()]]. If this parameter is false, no error tag will be rendered.
+     * using [[Html::encode()]]. If this parameter is `false`, no error tag will be rendered.
      *
      * The following options are specially handled:
      *
-     * - tag: this specifies the tag name. If not set, "div" will be used.
+     * - `tag`: this specifies the tag name. If not set, `div` will be used.
      *   See also [[\yii\helpers\Html::tag()]].
      *
      * If you set a custom `id` for the error element, you may need to adjust the [[$selectors]] accordingly.
      * @see $errorOptions
-     * @return $this the field object itself
+     * @return $this the field object itself.
      */
     public function error($options = [])
     {
@@ -315,7 +315,7 @@ class ActiveField extends Component
     /**
      * Renders the hint tag.
      * @param string|bool $content the hint content.
-     * If `Null`, the hint will be generated via [[Model::getAttributeHint()]].
+     * If `null`, the hint will be generated via [[Model::getAttributeHint()]].
      * If `false`, the generated field will not contain the hint part.
      * Note that this will NOT be [[Html::encode()|encoded]].
      * @param array $options the tag options in terms of name-value pairs. These will be rendered as
@@ -323,10 +323,10 @@ class ActiveField extends Component
      *
      * The following options are specially handled:
      *
-     * - tag: this specifies the tag name. If not set, "div" will be used.
+     * - `tag`: this specifies the tag name. If not set, `div` will be used.
      *   See also [[\yii\helpers\Html::tag()]].
      *
-     * @return $this the field object itself
+     * @return $this the field object itself.
      */
     public function hint($content, $options = [])
     {
@@ -346,13 +346,13 @@ class ActiveField extends Component
 
     /**
      * Renders an input tag.
-     * @param string $type the input type (e.g. 'text', 'password')
+     * @param string $type the input type (e.g. `text`, `password`)
      * @param array $options the tag options in terms of name-value pairs. These will be rendered as
      * the attributes of the resulting tag. The values will be HTML-encoded using [[Html::encode()]].
      *
      * If you set a custom `id` for the input element, you may need to adjust the [[$selectors]] accordingly.
      *
-     * @return $this the field object itself
+     * @return $this the field object itself.
      */
     public function input($type, $options = [])
     {
@@ -365,20 +365,20 @@ class ActiveField extends Component
 
     /**
      * Renders a text input.
-     * This method will generate the "name" and "value" tag attributes automatically for the model attribute
+     * This method will generate the `name` and `value` tag attributes automatically for the model attribute
      * unless they are explicitly specified in `$options`.
      * @param array $options the tag options in terms of name-value pairs. These will be rendered as
      * the attributes of the resulting tag. The values will be HTML-encoded using [[Html::encode()]].
      *
      * The following special options are recognized:
      *
-     * - maxlength: integer|boolean, when `maxlength` is set true and the model attribute is validated
+     * - `maxlength`: integer|boolean, when `maxlength` is set `true` and the model attribute is validated
      *   by a string validator, the `maxlength` option will take the value of [[\yii\validators\StringValidator::max]].
      *   This is available since version 2.0.3.
      *
      * Note that if you set a custom `id` for the input element, you may need to adjust the value of [[selectors]] accordingly.
      *
-     * @return $this the field object itself
+     * @return $this the field object itself.
      */
     public function textInput($options = [])
     {
@@ -403,7 +403,7 @@ class ActiveField extends Component
      *
      * If you set a custom `id` for the input element, you may need to adjust the [[$selectors]] accordingly.
      *
-     * @return $this the field object itself
+     * @return $this the field object itself.
      */
     public function hiddenInput($options = [])
     {
@@ -416,14 +416,14 @@ class ActiveField extends Component
 
     /**
      * Renders a password input.
-     * This method will generate the "name" and "value" tag attributes automatically for the model attribute
+     * This method will generate the `name` and `value` tag attributes automatically for the model attribute
      * unless they are explicitly specified in `$options`.
      * @param array $options the tag options in terms of name-value pairs. These will be rendered as
      * the attributes of the resulting tag. The values will be HTML-encoded using [[Html::encode()]].
      *
      * If you set a custom `id` for the input element, you may need to adjust the [[$selectors]] accordingly.
      *
-     * @return $this the field object itself
+     * @return $this the field object itself.
      */
     public function passwordInput($options = [])
     {
@@ -436,14 +436,14 @@ class ActiveField extends Component
 
     /**
      * Renders a file input.
-     * This method will generate the "name" and "value" tag attributes automatically for the model attribute
+     * This method will generate the `name` and `value` tag attributes automatically for the model attribute
      * unless they are explicitly specified in `$options`.
      * @param array $options the tag options in terms of name-value pairs. These will be rendered as
      * the attributes of the resulting tag. The values will be HTML-encoded using [[Html::encode()]].
      *
      * If you set a custom `id` for the input element, you may need to adjust the [[$selectors]] accordingly.
      *
-     * @return $this the field object itself
+     * @return $this the field object itself.
      */
     public function fileInput($options = [])
     {
@@ -469,7 +469,7 @@ class ActiveField extends Component
      *
      * If you set a custom `id` for the textarea element, you may need to adjust the [[$selectors]] accordingly.
      *
-     * @return $this the field object itself
+     * @return $this the field object itself.
      */
     public function textarea($options = [])
     {
@@ -482,28 +482,28 @@ class ActiveField extends Component
 
     /**
      * Renders a radio button.
-     * This method will generate the "checked" tag attribute according to the model attribute value.
+     * This method will generate the `checked` tag attribute according to the model attribute value.
      * @param array $options the tag options in terms of name-value pairs. The following options are specially handled:
      *
-     * - uncheck: string, the value associated with the uncheck state of the radio button. If not set,
-     *   it will take the default value '0'. This method will render a hidden input so that if the radio button
+     * - `uncheck`: string, the value associated with the uncheck state of the radio button. If not set,
+     *   it will take the default value `0`. This method will render a hidden input so that if the radio button
      *   is not checked and is submitted, the value of this attribute will still be submitted to the server
-     *   via the hidden input. If you do not want any hidden input, you should explicitly set this option as null.
-     * - label: string, a label displayed next to the radio button. It will NOT be HTML-encoded. Therefore you can pass
+     *   via the hidden input. If you do not want any hidden input, you should explicitly set this option as `null`.
+     * - `label`: string, a label displayed next to the radio button. It will NOT be HTML-encoded. Therefore you can pass
      *   in HTML code such as an image tag. If this is coming from end users, you should [[Html::encode()|encode]] it to prevent XSS attacks.
      *   When this option is specified, the radio button will be enclosed by a label tag. If you do not want any label, you should
-     *   explicitly set this option as null.
-     * - labelOptions: array, the HTML attributes for the label tag. This is only used when the "label" option is specified.
+     *   explicitly set this option as `null`.
+     * - `labelOptions`: array, the HTML attributes for the label tag. This is only used when the `label` option is specified.
      *
      * The rest of the options will be rendered as the attributes of the resulting tag. The values will
-     * be HTML-encoded using [[Html::encode()]]. If a value is null, the corresponding attribute will not be rendered.
+     * be HTML-encoded using [[Html::encode()]]. If a value is `null`, the corresponding attribute will not be rendered.
      *
      * If you set a custom `id` for the input element, you may need to adjust the [[$selectors]] accordingly.
      *
      * @param boolean $enclosedByLabel whether to enclose the radio within the label.
-     * If true, the method will still use [[template]] to layout the radio button and the error message
+     * If `true`, the method will still use [[template]] to layout the radio button and the error message
      * except that the radio is enclosed by the label tag.
-     * @return $this the field object itself
+     * @return $this the field object itself.
      */
     public function radio($options = [], $enclosedByLabel = true)
     {
@@ -549,7 +549,7 @@ class ActiveField extends Component
      * @param boolean $enclosedByLabel whether to enclose the checkbox within the label.
      * If true, the method will still use [[template]] to layout the checkbox and the error message
      * except that the checkbox is enclosed by the label tag.
-     * @return $this the field object itself
+     * @return $this the field object itself.
      */
     public function checkbox($options = [], $enclosedByLabel = true)
     {
@@ -589,7 +589,7 @@ class ActiveField extends Component
      *
      * If you set a custom `id` for the input element, you may need to adjust the [[$selectors]] accordingly.
      *
-     * @return $this the field object itself
+     * @return $this the field object itself.
      */
     public function dropDownList($items, $options = [])
     {
@@ -617,7 +617,7 @@ class ActiveField extends Component
      *
      * If you set a custom `id` for the input element, you may need to adjust the [[$selectors]] accordingly.
      *
-     * @return $this the field object itself
+     * @return $this the field object itself.
      */
     public function listBox($items, $options = [])
     {
@@ -637,7 +637,7 @@ class ActiveField extends Component
      * The array values are the labels, while the array keys are the corresponding checkbox values.
      * @param array $options options (name => config) for the checkbox list.
      * For the list of available options please refer to the `$options` parameter of [[\yii\helpers\Html::activeCheckboxList()]].
-     * @return $this the field object itself
+     * @return $this the field object itself.
      */
     public function checkboxList($items, $options = [])
     {
@@ -656,7 +656,7 @@ class ActiveField extends Component
      * The array values are the labels, while the array keys are the corresponding radio values.
      * @param array $options options (name => config) for the radio button list.
      * For the list of available options please refer to the `$options` parameter of [[\yii\helpers\Html::activeRadioList()]].
-     * @return $this the field object itself
+     * @return $this the field object itself.
      */
     public function radioList($items, $options = [])
     {
@@ -687,9 +687,9 @@ class ActiveField extends Component
      *
      * If you set a custom `id` for the input element, you may need to adjust the [[$selectors]] accordingly.
      *
-     * @param string $class the widget class name
-     * @param array $config name-value pairs that will be used to initialize the widget
-     * @return $this the field object itself
+     * @param string $class the widget class name.
+     * @param array $config name-value pairs that will be used to initialize the widget.
+     * @return $this the field object itself.
      */
     public function widget($class, $config = [])
     {
@@ -703,8 +703,8 @@ class ActiveField extends Component
     }
 
     /**
-     * Adjusts the "for" attribute for the label based on the input options.
-     * @param array $options the input options
+     * Adjusts the `for` attribute for the label based on the input options.
+     * @param array $options the input options.
      */
     protected function adjustLabelFor($options)
     {
@@ -719,7 +719,7 @@ class ActiveField extends Component
 
     /**
      * Returns the JS options for the field.
-     * @return array the JS options
+     * @return array the JS options.
      */
     protected function getClientOptions()
     {
