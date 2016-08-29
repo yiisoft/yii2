@@ -38,16 +38,19 @@ And if the created URL is requested later, it will still be parsed back into the
 
 ## URL Formats <span id="url-formats"></span>
 
-The [[yii\web\UrlManager|URL manager]] supports two URL formats: the default URL format and the pretty URL format.
+The [[yii\web\UrlManager|URL manager]] supports two URL formats:
+
+- the default URL format;
+- the pretty URL format.
 
 The default URL format uses a query parameter named `r` to represent the route and normal query parameters 
 to represent the query parameters associated with the route. For example, the URL `/index.php?r=post/view&id=100` represents 
-the route `post/view` and the `id` query parameter 100. The default URL format does not require any configuration of 
+the route `post/view` and the `id` query parameter `100`. The default URL format does not require any configuration of 
 the [[yii\web\UrlManager|URL manager]] and works in any Web server setup.
 
 The pretty URL format uses the extra path following the entry script name to represent the route and the associated 
 query parameters. For example, the extra path in the URL `/index.php/post/100` is `/post/100` which may represent
-the route `post/view` and the `id` query parameter 100 with a proper [[yii\web\UrlManager::rules|URL rule]]. To use
+the route `post/view` and the `id` query parameter `100` with a proper [[yii\web\UrlManager::rules|URL rule]]. To use
 the pretty URL format, you will need to design a set of [[yii\web\UrlManager::rules|URL rules]] according to the actual
 requirement about how the URLs should look like.
  
@@ -57,8 +60,10 @@ property of the [[yii\web\UrlManager|URL manager]] without changing any other ap
 
 ## Routing <span id="routing"></span>
 
-Routing involves two steps. In the first step, the incoming request is parsed into a route and the associated 
-query parameters. In the second step, a [controller action](structure-controllers.md#actions) corresponding to the parsed route
+Routing involves two steps:
+
+- the incoming request is parsed into a route and the associated query parameters;
+- a [controller action](structure-controllers.md#actions) corresponding to the parsed route
 is created to handle the request.
 
 When using the default URL format, parsing a request into a route is as simple as getting the value of a `GET`
