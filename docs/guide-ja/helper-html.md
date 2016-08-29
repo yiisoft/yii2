@@ -273,7 +273,7 @@ $decodedUserName = Html::decode($userName);
 
 ```php
 <?= Html::label('ユーザ名', 'username', ['class' => 'label username']) ?>
-<?= Html::activeLabel($user, 'username', ['class' => 'label username'])
+<?= Html::activeLabel($user, 'username', ['class' => 'label username']) ?>
 ```
 
 一つまたは複数のモデルから取得したエラーを要約として表示するためには、次のコードを使うことが出来ます。

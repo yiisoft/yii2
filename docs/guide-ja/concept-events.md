@@ -80,7 +80,7 @@ function function_name($event) {
 
 ひとつのイベントには、ひとつだけでなく複数のハンドラをアタッチすることができます。イベントがトリガされると、アタッチされたハンドラは、
 それらがイベントにアタッチされた順序どおりに呼び出されます。あるハンドラがその後に続くハンドラの呼び出しを停止する必要がある場合は、
-`$event` パラメータの [[yii\base\Event::handled]] プロパティを true に設定します:
+`$event` パラメータの [[yii\base\Event::handled]] プロパティを `true` に設定します:
 
 ```php
 $foo->on(Foo::EVENT_HELLO, function ($event) {
@@ -90,7 +90,7 @@ $foo->on(Foo::EVENT_HELLO, function ($event) {
 
 デフォルトでは、新たに接続されたハンドラは、イベントの既存のハンドラのキューに追加されます。その結果、
 イベントがトリガされたとき、そのハンドラは一番最後に呼び出されます。もし、そのハンドラが最初に呼び出されるよう、
-ハンドラのキューの先頭に新しいハンドラを挿入したい場合は、[[yii\base\Component::on()]] を呼び出とき、4番目のパラメータ `$append` に false を渡します:
+ハンドラのキューの先頭に新しいハンドラを挿入したい場合は、[[yii\base\Component::on()]] を呼び出とき、4番目のパラメータ `$append` に `false` を渡します:
 
 ```php
 $foo->on(Foo::EVENT_HELLO, function ($event) {
@@ -184,7 +184,7 @@ $foo->off(Foo::EVENT_HELLO, $anonymousFunction);
 一般的には、イベントにアタッチされたときどこかに保存してある場合を除き、無名関数を取り外そうとはしないでください。
 上記の例は、無名関数は変数 `$anonymousFunction` として保存されていたものとしています。
 
-イベントからすべてのハンドラを取り外すには、単純に、第 2 パラメータを指定せずに [[yii\base\Component::off()]] を呼び出します。
+イベントから *すべて* のハンドラを取り外すには、単純に、第 2 パラメータを指定せずに [[yii\base\Component::off()]] を呼び出します。
 
 ```php
 $foo->off(Foo::EVENT_HELLO);

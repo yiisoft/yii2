@@ -169,7 +169,7 @@ Yii::$app->user->login($identity);
 セッションが [[yii\web\User::enableSession|有効]] にされている場合は、ユーザの認証状態がセッション全体を通じて保持されるように、ユーザ識別情報がセッションに保管されます。
 クッキーベースのログイン (つまり "remember me"、「次回は自動ログイン」) が [[yii\web\User::enableAutoLogin|有効]] にされている場合は、ユーザ識別情報をクッキーにも保存して、クッキーが有効である限りは、ユーザの認証状態をクッキーから復元することが可能になります。
 
-クッキーベースのログインを有効にするためには、アプリケーションの構成情報で [[yii\web\User::enableAutoLogin]] を true に構成する必要があります。
+クッキーベースのログインを有効にするためには、アプリケーションの構成情報で [[yii\web\User::enableAutoLogin]] を `true` に構成する必要があります。
 また、[[yii\web\User::login()]] メソッドを呼ぶときには、有効期間のパラメータを与える必要があります。
 
 ユーザをログアウトさせるためには、単に次のように `logout()` を呼びます。
@@ -189,10 +189,10 @@ Yii::$app->user->logout();
 [[yii\web\User]] クラスは、ログインとログアウトのプロセスで、いくつかのイベントを発生させます。
 
 * [[yii\web\User::EVENT_BEFORE_LOGIN|EVENT_BEFORE_LOGIN]]: [[yii\web\User::login()]] の開始時に発生します。
-  イベントハンドラがイベントの [[yii\web\UserEvent::isValid|isValid]] プロパティを false にセットした場合は、ログインのプロセスがキャンセルされます。
+  イベントハンドラがイベントの [[yii\web\UserEvent::isValid|isValid]] プロパティを `false` にセットした場合は、ログインのプロセスがキャンセルされます。
 * [[yii\web\User::EVENT_AFTER_LOGIN|EVENT_AFTER_LOGIN]]: ログインが成功した時に発生します。
 * [[yii\web\User::EVENT_BEFORE_LOGOUT|EVENT_BEFORE_LOGOUT]]: [[yii\web\User::logout()]] の開始時に発生します。
-  イベントハンドラがイベントの [[yii\web\UserEvent::isValid|isValid]] プロパティを false にセットした場合は、ログアウトのプロセスがキャンセルされます。
+  イベントハンドラがイベントの [[yii\web\UserEvent::isValid|isValid]] プロパティを `false` にセットした場合は、ログアウトのプロセスがキャンセルされます。
 * [[yii\web\User::EVENT_AFTER_LOGOUT|EVENT_AFTER_LOGOUT]]: ログアウトが成功した時に発生します。
 
 これらのイベントに反応して、ログイン監査、オンラインユーザ統計などの機能を実装することが出来ます。

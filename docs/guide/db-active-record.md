@@ -244,7 +244,7 @@ $email = $customer->email;
 Because Active Record attributes are named after table columns, you may find you are writing PHP code like
 `$customer->first_name`, which uses underscores to separate words in attribute names if your table columns are
 named in this way. If you are concerned about code style consistency, you should rename your table columns accordingly
-(to use camelCase, for example.)
+(to use camelCase, for example).
 
 
 ### Data Transformation <span id="data-transformation"></span>
@@ -378,7 +378,7 @@ You can declare validation rules by overriding the [[yii\db\ActiveRecord::rules(
 data validation by calling the [[yii\db\ActiveRecord::validate()|validate()]] method.
 
 When you call [[yii\db\ActiveRecord::save()|save()]], by default it will call [[yii\db\ActiveRecord::validate()|validate()]]
-automatically. Only when the validation passes, will it actually save the data; otherwise it will simply return false,
+automatically. Only when the validation passes, will it actually save the data; otherwise it will simply return `false`,
 and you can check the [[yii\db\ActiveRecord::errors|errors]] property to retrieve the validation error messages.  
 
 > Tip: If you are certain that your data do not need validation (e.g., the data comes from trustable sources),
@@ -534,15 +534,15 @@ When calling [[yii\db\ActiveRecord::save()|save()]] to insert or update an Activ
 life cycle will happen:
 
 1. [[yii\db\ActiveRecord::beforeValidate()|beforeValidate()]]: triggers 
-   an [[yii\db\ActiveRecord::EVENT_BEFORE_VALIDATE|EVENT_BEFORE_VALIDATE]] event. If the method returns false
-   or [[yii\base\ModelEvent::isValid]] is false, the rest of the steps will be skipped.
+   an [[yii\db\ActiveRecord::EVENT_BEFORE_VALIDATE|EVENT_BEFORE_VALIDATE]] event. If the method returns `false`
+   or [[yii\base\ModelEvent::isValid]] is `false`, the rest of the steps will be skipped.
 2. Performs data validation. If data validation fails, the steps after Step 3 will be skipped. 
 3. [[yii\db\ActiveRecord::afterValidate()|afterValidate()]]: triggers 
    an [[yii\db\ActiveRecord::EVENT_AFTER_VALIDATE|EVENT_AFTER_VALIDATE]] event.
 4. [[yii\db\ActiveRecord::beforeSave()|beforeSave()]]: triggers 
    an [[yii\db\ActiveRecord::EVENT_BEFORE_INSERT|EVENT_BEFORE_INSERT]] 
-   or [[yii\db\ActiveRecord::EVENT_BEFORE_UPDATE|EVENT_BEFORE_UPDATE]] event. If the method returns false
-   or [[yii\base\ModelEvent::isValid]] is false, the rest of the steps will be skipped.
+   or [[yii\db\ActiveRecord::EVENT_BEFORE_UPDATE|EVENT_BEFORE_UPDATE]] event. If the method returns `false`
+   or [[yii\base\ModelEvent::isValid]] is `false`, the rest of the steps will be skipped.
 5. Performs the actual data insertion or updating.
 6. [[yii\db\ActiveRecord::afterSave()|afterSave()]]: triggers
    an [[yii\db\ActiveRecord::EVENT_AFTER_INSERT|EVENT_AFTER_INSERT]] 
@@ -555,8 +555,8 @@ When calling [[yii\db\ActiveRecord::delete()|delete()]] to delete an Active Reco
 life cycle will happen:
 
 1. [[yii\db\ActiveRecord::beforeDelete()|beforeDelete()]]: triggers
-   an [[yii\db\ActiveRecord::EVENT_BEFORE_DELETE|EVENT_BEFORE_DELETE]] event. If the method returns false
-   or [[yii\base\ModelEvent::isValid]] is false, the rest of the steps will be skipped.
+   an [[yii\db\ActiveRecord::EVENT_BEFORE_DELETE|EVENT_BEFORE_DELETE]] event. If the method returns `false`
+   or [[yii\base\ModelEvent::isValid]] is `false`, the rest of the steps will be skipped.
 2. Performs the actual data deletion.
 3. [[yii\db\ActiveRecord::afterDelete()|afterDelete()]]: triggers
    an [[yii\db\ActiveRecord::EVENT_AFTER_DELETE|EVENT_AFTER_DELETE]] event.
@@ -777,7 +777,7 @@ $orders = $customer->orders;
 If a relation is declared with [[yii\db\ActiveRecord::hasMany()|hasMany()]], accessing this relation property
 will return an array of the related Active Record instances; if a relation is declared with 
 [[yii\db\ActiveRecord::hasOne()|hasOne()]], accessing the relation property will return the related
-Active Record instance or null if no related data is found.
+Active Record instance or `null` if no related data is found.
 
 When you access a relation property for the first time, a SQL statement will be executed, like shown in the
 above example. If the same property is accessed again, the previous result will be returned without re-executing
@@ -1058,7 +1058,7 @@ related table. You can specify a different join type (e.g. `RIGHT JOIN`) via its
 the join type you want is `INNER JOIN`, you can simply call [[yii\db\ActiveQuery::innerJoinWith()|innerJoinWith()]], instead.
 
 Calling [[yii\db\ActiveQuery::joinWith()|joinWith()]] will [eagerly load](#lazy-eager-loading) the related data by default.
-If you do not want to bring in the related data, you can specify its second parameter `$eagerLoading` as false. 
+If you do not want to bring in the related data, you can specify its second parameter `$eagerLoading` as `false`. 
 
 Like [[yii\db\ActiveQuery::with()|with()]], you can join with one or multiple relations; you may customize the relation
 queries on-the-fly; you may join with nested relations; and you may mix the use of [[yii\db\ActiveQuery::with()|with()]]
@@ -1254,12 +1254,12 @@ $customer->unlink('orders', $customer->orders[0]);
 ```
 
 By default, the [[yii\db\ActiveRecord::unlink()|unlink()]] method will set the foreign key value(s) that specify
-the existing relationship to be null. You may, however, choose to delete the table row that contains the foreign key value
-by passing the `$delete` parameter as true to the method.
+the existing relationship to be `null`. You may, however, choose to delete the table row that contains the foreign key value
+by passing the `$delete` parameter as `true` to the method.
  
 When a junction table is involved in a relation, calling [[yii\db\ActiveRecord::unlink()|unlink()]] will cause
 the foreign keys in the junction table to be cleared, or the deletion of the corresponding row in the junction table
-if `$delete` is true.
+if `$delete` is `true`.
 
 
 ## Cross-Database Relations <span id="cross-database-relations"></span> 
@@ -1396,12 +1396,12 @@ When Active Record instance is populated from query results, its attributes are 
 values from received data set.
 
 You are able to fetch additional columns or values from query and store it inside the Active Record.
-For example, assume we have a table named 'room', which contains information about rooms available in the hotel.
-Each room stores information about its geometrical size using fields 'length', 'width', 'height'.
+For example, assume we have a table named `room`, which contains information about rooms available in the hotel.
+Each room stores information about its geometrical size using fields `length`, `width`, `height`.
 Imagine we need to retrieve list of all available rooms with their volume in descendant order.
-So you can not calculate volume using PHP, because we need to sort the records by its value, but you also want 'volume'
+So you can not calculate volume using PHP, because we need to sort the records by its value, but you also want `volume`
 to be displayed in the list.
-To achieve the goal, you need to declare an extra field in your 'Room' Active Record class, which will store 'volume' value:
+To achieve the goal, you need to declare an extra field in your `Room` Active Record class, which will store `volume` value:
 
 ```php
 class Room extends \yii\db\ActiveRecord
@@ -1418,7 +1418,7 @@ Then you need to compose a query, which calculates volume of the room and perfor
 $rooms = Room::find()
     ->select([
         '{{room}}.*', // select all columns
-        '([[length]] * [[width]].* [[height]]) AS volume', // calculate a volume
+        '([[length]] * [[width]] * [[height]]) AS volume', // calculate a volume
     ])
     ->orderBy('volume DESC') // apply sort
     ->all();
@@ -1430,7 +1430,7 @@ foreach ($rooms as $room) {
 
 Ability to select extra fields can be exceptionally useful for aggregation queries.
 Assume you need to display a list of customers with the count of orders they have made.
-First of all, you need to declare a `Customer` class with 'orders' relation and extra field for count storage:
+First of all, you need to declare a `Customer` class with `orders` relation and extra field for count storage:
 
 ```php
 class Customer extends \yii\db\ActiveRecord
@@ -1460,7 +1460,7 @@ $customers = Customer::find()
 ```
 
 A disadvantage of using this method would be that if the information isn't loaded on the SQL query it has to be calculated
-separately, which also means that newly saved records won't contain the information from any extra field.
+separately, which also means that newly saved records won't contain the information from any extra field:
 
 ```php
 $room = new Room();
@@ -1468,11 +1468,11 @@ $room->length = 100;
 $room->width = 50;
 $room->height = 2;
 
-$room->volume; // this value will be null since it was not declared yet.
+$room->volume; // this value will be null since it was not declared yet
 ```
 
 Using the [[yii\db\BaseActiveRecord::__get()|__get()]] and [[yii\db\BaseActiveRecord::__set()|__set()]] magic methods
-we can emulate the behavior of a property
+we can emulate the behavior of a property:
 
 ```php
 class Room extends \yii\db\ActiveRecord
@@ -1506,7 +1506,7 @@ class Room extends \yii\db\ActiveRecord
 When the select query doesn't provide the volume, the model will be able to calculate it automatically using
 the attributes of the model.
 
-Similary it can be used on extra fields depending on relational data
+Similary it can be used on extra fields depending on relational data:
 
 ```php
 class Customer extends \yii\db\ActiveRecord
@@ -1521,7 +1521,7 @@ class Customer extends \yii\db\ActiveRecord
     public function getOrdersCount()
     {
         if ($this->isNewRecord) {
-            return null; // This avoid calling a query searching for null primary keys.
+            return null; // this avoid calling a query searching for null primary keys
         }
         
         if ($this->_ordersCount === null) {

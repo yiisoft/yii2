@@ -91,7 +91,7 @@ Po utworzeniu akcji oraz widoku możesz uzyskać dostęp do nowej strony przez p
 http://hostname/index.php?r=site%2Fsay&message=Hello+World
 ```
 
-![Witaj świecie](../guide/images/start-hello-world.png)
+![Witaj świecie](images/start-hello-world.png)
 
 Wynikiem wywołania tego adresu jest wyświetlenie napisu "Hello World". Strona dzieli ten sam nagłówek i stopkę z innymi stronami aplikacji. 
 

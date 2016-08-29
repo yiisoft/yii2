@@ -17,19 +17,19 @@ $request = Yii::$app->request;
 $get = $request->get(); 
 // $get = $_GET; と同等
 
-$id = $request->get('id');   
+$id = $request->get('id');
 // $id = isset($_GET['id']) ? $_GET['id'] : null; と同等
 
-$id = $request->get('id', 1);   
+$id = $request->get('id', 1);
 // $id = isset($_GET['id']) ? $_GET['id'] : 1; と同等
 
 $post = $request->post(); 
 // $post = $_POST; と同等
 
-$name = $request->post('name');   
+$name = $request->post('name');
 // $name = isset($_POST['name']) ? $_POST['name'] : null; と同等
 
-$name = $request->post('name', '');   
+$name = $request->post('name', '');
 // $name = isset($_POST['name']) ? $_POST['name'] : ''; と同等
 ```
 

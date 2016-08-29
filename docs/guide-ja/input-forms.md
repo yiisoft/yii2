@@ -170,10 +170,10 @@ Pjax::end();
 [[https://github.com/jquery/jquery/issues/2321|ファイル]] および
 [[https://github.com/jquery/jquery/issues/2321|送信ボタンの値]]
 を扱うときに問題があることが知られています。
-これは解決される見込みがなく、HTML5 で導入された `FormData` クラスの使用に乗り換えるべく、廃止予定となっています。
+この問題は解決される見込みがなく、関数自体も HTML5 で導入された `FormData` クラスによって置き換えられるべきものとして、廃止予定となっています。
 
-このことは、すなわち、ajax または [[yii\widgets\Pjax|Pjax]] ウィジェットを使う場合、ファイルと送信ボタンの値に対する公式なサポートは、ひとえに
-`FormData` クラスに対する [[https://developer.mozilla.org/en-US/docs/Web/API/FormData#Browser_compatibility|ブラウザのサポート]] に依存するということを意味します。
+このことは、すなわち、ajax または [[yii\widgets\Pjax|Pjax]] ウィジェットを使う場合、ファイルと送信ボタンの値に対する唯一の公式なサポートは、
+`FormData` クラスに対する [[https://developer.mozilla.org/en-US/docs/Web/API/FormData#Browser_compatibility|ブラウザのサポート]] に依存しているということを意味します。
 
 
 さらに読むべき文書 <span id="further-reading"></span>

@@ -164,6 +164,7 @@ class PageCache extends ActionFilter
         ob_implicit_flush(false);
         if ($this->view->beginCache($id, $properties)) {
             $response->on(Response::EVENT_AFTER_SEND, [$this, 'cacheResponse']);
+            Yii::trace('Valid page content is not found in the cache.', __METHOD__);
             return true;
         } else {
             $data = $this->cache->get($this->calculateCacheKey());
@@ -171,6 +172,7 @@ class PageCache extends ActionFilter
                 $this->restoreResponse($response, $data);
             }
             $response->content = ob_get_clean();
+            Yii::trace('Valid page content is found in the cache.', __METHOD__);
             return false;
         }
     }
