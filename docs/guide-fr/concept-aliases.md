@@ -1,7 +1,7 @@
 Alias
 =====
 
-Les alias sont utilisés  pour représenter des chemins de fichier ou des URL de façon à ce que vous n'ayez pas besoin d'écrire ces chemins ou ces URL en entier dans votre code. Un alias doit commencer par le caractère arobase `@` pour être différentié des chemins de fichier et des URL normaux. Les alias définis sans ce caractère de tête `@` sont automatiquement préfixé avec ce dernier.
+Les alias sont utilisés  pour représenter des chemins de fichier ou des URL de façon à ce que vous n'ayez pas besoin d'écrire ces chemins ou ces URL en entier dans votre code. Un alias doit commencer par le caractère arobase `@` pour être différentié des chemins de fichier et des URL normaux. Les alias définis sans ce caractère de tête `@` sont automatiquement préfixés avec ce dernier.
 
 Yii possèdent de nombreux alias pré-définis déjà disponibles. Par exemple, l'alias `@yii` représente le chemin d'installation de la base structurée de développement PHP (*framework*), Yii ; L'alias `@web` représente l'URL de base de l'application Web en cours d'exécution.
 
@@ -88,9 +88,9 @@ Reportez-vous à la documentation de l'API pour savoir si une propriété ou une
 Alias prédéfinis  <span id="predefined-aliases"></span>
 ----------------
 
-Yii prédéfinit un jeu d'alias pour faire référence à des chemin de fichier ou à des URL d'utilisation courante :
+Yii prédéfinit un jeu d'alias pour faire référence à des chemins de fichier ou à des URL d'utilisation courante :
 
-- `@yii`, le dossier où le fichier `BaseYii.php` se trouve – aussi appelé dossier de la base structurée de développement PHP .
+- `@yii`, le dossier où le fichier `BaseYii.php` se trouve – aussi appelé dossier de la base structurée de développement PHP (*framework*).
 - `@app`, le  [[yii\base\Application::basePath|chemin de base]] de l'application en cours d'exécution. 
 - `@runtime`, le [[yii\base\Application::runtimePath|chemin du dossier runtime]] de l'application en cours d'exécution. Valeur par défaut `@app/runtime`.
 - `@webroot`, le dossier Web racine de l'application en cours d'exécution. Il est déterminé en se basant sur le dossier qui contient le [script d'entrée](structure-entry-scripts.md).
