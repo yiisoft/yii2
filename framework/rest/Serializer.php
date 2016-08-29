@@ -171,7 +171,7 @@ class Serializer extends Component
      */
     protected function serializeDataProvider($dataProvider)
     {
-        $models = $this->serializeModels($dataProvider->getModels());
+        $models = $this->serializeModels(array_values($dataProvider->getModels()));
 
         if (($pagination = $dataProvider->getPagination()) !== false) {
             $this->addPaginationHeaders($pagination);
