@@ -1,7 +1,7 @@
 Chargement automatique des classes
 ==================================
 
-Yii compte sur le [mécanisme de chargement automatique des classes](http://www.php.net/manual/en/language.oop5.autoload.php) pour localiser et inclure tous les fichiers de classes requis. Il fournit un chargeur automatique de classe de haute performance qui est conforme à la [norme PSR-4](https://github.com/php-fig/fig-standards/blob/master/accepted/PSR-4-autoloader.md). Le chargeur automatique est installé lorsque vous incluez le fichier `Yii.php`.
+Yii compte sur le [mécanisme de chargement automatique des classes](http://www.php.net/manual/en/language.oop5.autoload.php) pour localiser et inclure tous les fichiers de classes requis. Il fournit un chargeur automatique de classes de haute performance qui est conforme à la [norme PSR-4](https://github.com/php-fig/fig-standards/blob/master/accepted/PSR-4-autoloader.md). Le chargeur automatique est installé lorsque vous incluez le fichier `Yii.php`.
 
 > Note: pour simplifier la description, dans cette section, nous ne parlerons que du chargement automatique des classes. Néanmoins, gardez présent à l'esprit que le contenu que nous décrivons ici s'applique aussi au chargement automatique des interfaces et des traits. 
 
@@ -21,7 +21,7 @@ $classFile = Yii::getAlias('@' . str_replace('\\', '/', $className) . '.php');
 
 For exemple, si le nom de classe et l'espace de noms sont `foo\bar\MyClass`, l'[alias](concept-aliases.md) pour le chemin du fichier de classe correspondant est `@foo/bar/MyClass.php`. Pour que cet alias puisse être résolu en un chemin de fichier, soit `@foo`, soit `@foo/bar` doit être un [alias racine](concept-aliases.md#defining-aliases).
 
-Lorsque vous utilisez le [modèle de projet *Basic*](start-installation.md), vous pouvez placer vos classes sous l'espace de nom de niveau le plus haut `app` afin qu'elles puissent être chargées automatiquement par Yii sans avoir besoin de définir un nouvel alias. Cela est dû au fait que `@app` est un [alias prédéfini](concept-aliases.md#predefined-aliases), et qu'un nom de classe comme `app\components\MyClass` peut être résolu en le fichier de classe `AppBasePath/components/MyClass.php`, en appliquant l'algorithme précédemment décrit. 
+Lorsque vous utilisez le [modèle de projet *basic*](start-installation.md), vous pouvez placer vos classes sous l'espace de noms de niveau le plus haut `app` afin qu'elles puissent être chargées automatiquement par Yii sans avoir besoin de définir un nouvel alias. Cela est dû au fait que `@app` est un [alias prédéfini](concept-aliases.md#predefined-aliases), et qu'un nom de classe comme `app\components\MyClass` peut être résolu en le fichier de classe `AppBasePath/components/MyClass.php`, en appliquant l'algorithme précédemment décrit. 
 
 Dans le [modèle de projet avancé](https://github.com/yiisoft/yii2-app-advanced/blob/master/docs/guide/README.md), chaque niveau possède son propre alias. Par exemple, le niveau « interface utilisateur » a l'alias `@frontend`, tandis que le niveau « interface d'administration » a l'alias `@backend`. En conséquence, vous pouvez mettre les classes de l'interface utilisateur sous l'espace de noms `frontend`, tandis que les classes de l'interface d'administration sont sous l'espace de noms `backend`. Cela permet à ces classes d'être chargées automatiquement par le chargeur automatique de Yii. 
 
@@ -51,7 +51,7 @@ require(__DIR__ . '/../vendor/autoload.php');
 require(__DIR__ . '/../vendor/yiisoft/yii2/Yii.php');
 ```
 
-Vous pouvez utiliser le chargeur automatique de Composer seul sans celui de Yii. Néanmoins, en faisant de cette manière, la performance de chargement de vos classes est dégradée et vous devez appliquer les règles de Composer pour que vous classes puissent être chargées automatiquement. 
+Vous pouvez utiliser le chargeur automatique de Composer seul sans celui de Yii. Néanmoins, en faisant de cette manière, la performance de chargement de vos classes est dégradée et vous devez appliquer les règles de Composer pour que vos classes puissent être chargées automatiquement. 
 
 > Info: si vous voulez ne pas utiliser le chargeur automatique de Yii, vous devez créer votre propre version du fichier `Yii.php` et l'inclure dans votre [script d'entrée](structure-entry-scripts.md).
 
