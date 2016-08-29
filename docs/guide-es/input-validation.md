@@ -97,6 +97,7 @@ es un atributo activo declarado en `scenarios()` y está asociado a una o varias
 declaradas en `rules()`.
 
 > Note: Es práctico darle nombre a las reglas, por ej:
+>
 > ```php
 > public function rules()
 > {
