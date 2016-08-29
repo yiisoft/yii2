@@ -1,7 +1,7 @@
 Configurations
 ==============
 
-Les configurations sont très largement utilisées dans Yii lors de la création d'objets ou l'initialisation d'objets existants. Les configurations contiennent généralement le nom de la classe de l'objet en cours de création, et une liste de valeurs initiales qui doivent être assignées aux [propriétés](concept-properties.md) de l'objet. Elles peuvent aussi comprendre une liste de gestionnaires qui doivent être attachés aux [événements](concept-events.md) de l'objet et/ou une liste de [comportements](concept-behaviors.md) qui doivent être attaché à l'objet. 
+Les configurations sont très largement utilisées dans Yii lors de la création d'objets ou l'initialisation d'objets existants. Les configurations contiennent généralement le nom de la classe de l'objet en cours de création, et une liste de valeurs initiales qui doivent être assignées aux [propriétés](concept-properties.md) de l'objet. Elles peuvent aussi comprendre une liste de gestionnaires qui doivent être attachés aux [événements](concept-events.md) de l'objet et/ou une liste de [comportements](concept-behaviors.md) qui doivent être attachés à l'objet. 
 
 Dans ce qui suit, une configuration est utilisée pour créer et initialiser une connexion à une base de données :
 
@@ -72,7 +72,7 @@ Les configurations sont utilisées en de nombreux endroits dans Yii. Au début d
 
 ### Configurations d'applications <span id="application-configurations"></span>
 
-La configuration d'une [application](structure-applications.md) est probablement l'un des tableaux les plus complexes dans Yii. Cela est dû au fait que la classe [[yii\web\Application|application]] dispose d'un grand nombre de propriétés et événements configurables. De première importance, se trouve sa propriété [[yii\web\Application::components|components]] qui peut recevoir un tableau de configurations pour créer des composants qui sont enregistrés durant l'exécution de l'application. Ce qui suit est un résumé de la configuration de l'application du [modèle de projet Basic](start-installation.md).
+La configuration d'une [application](structure-applications.md) est probablement l'un des tableaux les plus complexes dans Yii. Cela est dû au fait que la classe [[yii\web\Application|application]] dispose d'un grand nombre de propriétés et événements configurables. De première importance, se trouve sa propriété [[yii\web\Application::components|components]] qui peut recevoir un tableau de configurations pour créer des composants qui sont enregistrés durant l'exécution de l'application. Ce qui suit est un résumé de la configuration de l'application du [modèle de projet *basic*](start-installation.md).
 
 ```php
 $config = [
@@ -134,7 +134,7 @@ echo Menu::widget([
 
 La configuration ci-dessus crée un objet graphique nommé `Menu` et initialise sa propriété `activateItems` à `false` (faux). La propriété `items` est également configurée avec les items de menu à afficher.
 
-Notez que comme le nom de classe est déjà donné, le tableau de configuration ne doit PAS contenir de clé `class`. 
+Notez que, comme le nom de classe est déjà donné, le tableau de configuration ne doit PAS contenir de clé `class`. 
 
 ## Fichiers de configuration <span id="configuration-files"></span>
 
@@ -190,7 +190,7 @@ $config = require('path/to/web.php');
 
 La méthode [[Yii::createObject()]] est implémentée sur la base du [conteneur d'injection de dépendances](concept-di-container.md). Cela vous permet de spécifier un jeu de configurations dites *configurations par défaut* qui seront appliquées à TOUTES les instances des classes spécifiées lors de leur création en utilisant [[Yii::createObject()]]. Les configurations par défaut peuvent être spécifiées en appelant `Yii::$container->set()` dans le code d'[amorçage](runtime-bootstrapping.md).
 
-Par exemple, si vous voulez personnaliser l'objet graphique [[yii\widgets\LinkPager]] de façon à ce que TOUS les pagineurs affichent au plis 5 boutons de page (la valeur par défaut est 10), vous pouvez utiliser le code suivant pour atteindre ce but : 
+Par exemple, si vous voulez personnaliser l'objet graphique [[yii\widgets\LinkPager]] de façon à ce que TOUS les pagineurs affichent au plus 5 boutons de page (la valeur par défaut est 10), vous pouvez utiliser le code suivant pour atteindre ce but : 
 
 ```php
 \Yii::$container->set('yii\widgets\LinkPager', [
@@ -203,7 +203,7 @@ Sans les configurations par défaut, vous devez configurer la propriété `maxBu
 
 ## Constantes d'environment <span id="environment-constants"></span>
 
-Les configurations varient souvent en fonction de l'environnement dans lequel les applications s'exécutent. Par exemple, dans l'environnement de développement, vous désirez peut être utiliser la base de données nommée `mydb_dev`, tandis que sur un serveur en production, vous désirez utiliser la base de données nommée `mydb_prod`. Pour faciliter le changement d'environnement, Yii fournit une constante nommée `YII_ENV` que vous pouvez définir dans le[script d'entrée](structure-entry-scripts.md) de votre application. Par exemple :
+Les configurations varient souvent en fonction de l'environnement dans lequel les applications s'exécutent. Par exemple, dans l'environnement de développement, vous désirez peut être utiliser la base de données nommée `mydb_dev`, tandis que sur un serveur en production, vous désirez utiliser la base de données nommée `mydb_prod`. Pour faciliter le changement d'environnement, Yii fournit une constante nommée `YII_ENV` que vous pouvez définir dans le [script d'entrée](structure-entry-scripts.md) de votre application. Par exemple :
 
 ```php
 defined('YII_ENV') or define('YII_ENV', 'dev');
