@@ -206,7 +206,7 @@ Você pode disparar um evento de *nível de classe* chamando o método estático
 use yii\base\Event;
 
 Event::on(Foo::className(), Foo::EVENT_HELLO, function ($event) {
-   echo $event->sender;  // displays "app\models\Foo"
+   var_dump($event->sender);  // displays "null"
 });
 
 Event::trigger(Foo::className(), Foo::EVENT_HELLO);

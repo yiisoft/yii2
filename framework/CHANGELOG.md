@@ -4,6 +4,8 @@ Yii Framework 2 Change Log
 2.0.10 under development
 ------------------------
 
+- Enh #9989: ActiveForm now respects formtarget, formmethod and formenctype attributes of submit button (AnatolyRugalev)
+- Enh #12296: Added value validation to `yii\log\Target::setLevels()` (Mak-Di)
 - Enh #12073: Added the ability to suppress the generation of input hint when it is specified through  `Model::attributeHints()` (PowerGamer1)
 - Bug #12009: Do not render "for" field label attribute for active form RadioList and CheckboxList (shevchik87, samdark)
 - Bug #12068: Added missing 'LEVEL_PROFILE' for the syslog target (Mak-Di)
@@ -11,9 +13,11 @@ Yii Framework 2 Change Log
 - Bug #11912: Fixed PostgreSQL Schema to support negative default values for integer/float/decimal columns (nsknewbie)
 - Bug #11947: Fixed `gridData` initialization in `yii.gridView.js` (pavlm)
 - Bug #11949: Fixed `ActiveField::end` generates close tag when it's `option['tag']` is null (egorio)
+- Bug #11977: Fixed `yii\rest\Serializer::serialize()` serializes DataProvider incorrectly, if models keys do not compose integer sequence (dcb9, klimov-paul)
 - Enh #11275: Added possibility of unset or force replace former value in `ArrayHelper::merge()` (mdmunir, rob006)
 - Enh #11950: Improve BaseArrayHelper::keyExists speed (egorio)
 - Bug #11726: `DbSession` was echoing database errors in production mode (samdark, pastuhov, deadkrolik)
+- Bug #11922: Fixed `yii\log\FileTarget` does not apply `fileMode` for rotated via copy files (klimov-paul)
 - Bug #12030: Fixed `yii\base\Model::offsetExists()` throws an exception on un-existing field (klimov-paul)
 - Bug #12037: Fixed 2.0.7 regression in memcahe/memcached cache backend (samdark)
 - Bug #12043: Fixed `yii\helpers\Json::encode()` encodes empty array returned by `JsonSerializable::jsonSerialize()` as object (klimov-paul)
@@ -23,6 +27,7 @@ Yii Framework 2 Change Log
 - Bug #11541: Fixed default MySQL integer display width for unsigned primary key (h311ion, rob006, cebe)
 - Bug #12143: Fixed `yii\db\BaseActiveRecord::updateAttributes()` change `isNewRecord` state for the new model (klimov-paul)
 - Enh #10583: Do not silence session errors in debug mode (samdark)
+- Enh #11658: Added argument to `yii\grid\ActionColumn::urlCreator` callback, which holds reference to the column instance (klimov-paul)
 - Enh #11804: Added `yii\behaviors\AttributeTypecastBehavior` for maintaining of strict ActiveRecord attribute types (klimov-paul)
 - Enh #12048: Improved message extraction command performance (samdark)
 - Enh #12038: Introduced `yii\base\ViewNotFoundException` which is thrown when views file doesn't exists, used it in `ViewAction` (samdark)
@@ -35,6 +40,10 @@ Yii Framework 2 Change Log
 - Bug #11973: Fixed `yii\helpers\BaseHtml::getAttributeValue()` to work with `items[]` notation correctly (silverfire)
 - Bug #12100: Fixed `yii\filters\HttpCache` was sending an empty Pragma header (sergeymakinen)
 - Bug #12107: Fixed REST Serializer to validate input for 'expand' and 'fields' parameter, which crashed on array input (njspok, cebe)
+- Enh #12230: Allows BaseHtml::activeListInput to override the field value (RangelReale)
+- Bug #12331: Fixed bug with incorrect currency formatter output, when `$thousandSeparator` was explicitly set (cebe)
+- Bug #11347: Fixed `yii\widgets\Pjax::registerClientScript()` to pass custom `container` to the PJAX JS plugin (silverfire)
+- Bug #12293: Fixed MSSQL `Schema::resolveTableNames()` when using linked database tables (hAppywAy)
 
 
 2.0.9 July 11, 2016

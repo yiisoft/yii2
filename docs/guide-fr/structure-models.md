@@ -277,7 +277,7 @@ $model->body = isset($data['body']) ? $data['body'] : null;
 
 ### Attributs sûr <span id="safe-attributes"></span>
 
-L'assignation massive ne s'applique qu'aux attributs dits *attributs sûrs* qui sont les attributs listés dans la méthode [[yii\base\Model::scenarios()]] pour le [yii\base\Model::scenario|scénario]] courant d'un modèle. 
+L'assignation massive ne s'applique qu'aux attributs dits *attributs sûrs* qui sont les attributs listés dans la méthode [[yii\base\Model::scenarios()]] pour le [[yii\base\Model::scenario|scénario]] courant d'un modèle. 
 Par exemple, si le modèle `User` contient la déclaration de scénarios suivante, alors, lorsque le scénario courant est  `login`, seuls les attributs `username` et `password` peuvent être massivement assignés. Tout autre attribut n'est pas touché par l'assignation massive. 
 
 ```php

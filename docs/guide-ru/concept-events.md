@@ -202,13 +202,13 @@ Event::on(ActiveRecord::className(), ActiveRecord::EVENT_AFTER_INSERT, function 
 use yii\base\Event;
 
 Event::on(Foo::className(), Foo::EVENT_HELLO, function ($event) {
-    echo $event->sender;  // выводит "app\models\Foo"
+    var_dump($event->sender);  // выводит "null"
 });
 
 Event::trigger(Foo::className(), Foo::EVENT_HELLO);
 ```
 
-Обратите внимание, что в данном случае `$event->sender` ссылается на имя класса, который инициировал событие, а не на его экземпляр.
+Обратите внимание, что в данном случае `$event->sender` имеет значение `null` вместо экзепляра класса, который инициировал событие.
 
 > Note: Поскольку обработчики на уровне класса отвечают на события, инициируемые всеми экземплярами этого класса и всех его потомков, их следует использовать с осторожностью, особенно в случае базовых классов низкого уровня, таких как [[yii\base\Object]].
 

@@ -97,6 +97,7 @@ an active attribute declared in `scenarios()` and is associated with one or mult
 declared in `rules()`.
 
 > Note: It is handy to give names to rules i.e.
+>
 > ```php
 > public function rules()
 > {

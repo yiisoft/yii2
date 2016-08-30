@@ -32,7 +32,7 @@ The sentence after the colon should begin with a capital letter.
 When translating documentation, these Block indicators should not be translated.
 Keeps them intact as they are and only translate the block content.
 For translating the `Type` word, each guide translation should have a `blocktypes.json` file
-containing the translations. The following shows an example for german:
+containing the translations. The following shows an example for German:
 
 ```json
 {
@@ -53,7 +53,7 @@ containing the translations. The following shows an example for german:
 * Web, not web
 * the guide or this guide, not the Guide
 
-## validating the docs
+## Validating the docs
 
 The following are some scripts that help find broken links and other issues in the guide:
 
@@ -62,4 +62,18 @@ Find broken links (some false-positives may occur):
     grep -rniP "\[\[[^\],']+?\][^\]]"  docs/guide*
     grep -rniP "[^\[]\[[^\]\[,']+?\]\]"  docs/guide*
     
-    
+## Attribution of Translators
+
+The names of the translators will be listed among the guide authors in the
+rendered versions of the guide.
+Therefor in each guide directory for a different language than english a `translators.json` file
+should be created that contains an array of names of the people who have participated in the translation.
+
+```json
+[
+  "Jane Doe",
+  "John Doe"
+]
+```
+
+If you have contributed a significant part to the translation, feel free to send a pull request adding your name.

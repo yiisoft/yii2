@@ -5,8 +5,8 @@ The primary way of using forms in Yii is through [[yii\widgets\ActiveForm]]. Thi
 the form is based upon a model. Additionally, there are some useful methods in [[yii\helpers\Html]] that are typically
 used for adding buttons and help text to any form.
 
-A form, that is displayed on the client side, will in most cases have a corresponding [model](structure-models.md) which is used
-to validate its input on the server side (Check the [Validating Input](input-validation.md) section for more details on validation).
+A form, that is displayed on the client-side, will in most cases have a corresponding [model](structure-models.md) which is used
+to validate its input on the server-side (Check the [Validating Input](input-validation.md) section for more details on validation).
 When creating model-based forms, the first step is to define the model itself. The model can be either based upon
 an [Active Record](db-active-record.md) class, representing some data from the database, or a generic Model class
 (extending from [[yii\base\Model]]) to capture arbitrary input, for example a login form.
@@ -76,7 +76,7 @@ To customize the output, you can chain additional methods of [[yii\widgets\Activ
 This will create all the `<label>`, `<input>` and other tags according to the [[yii\widgets\ActiveField::$template|template]] defined by the form field.
 The name of the input field is determined automatically from the model's [[yii\base\Model::formName()|form name]] and the attribute name.
 For example, the name for the input field for the `username` attribute in the above example will be `LoginForm[username]`. This naming rule will result in an array
-of all attributes for the login form to be available in `$_POST['LoginForm']` on the server side.
+of all attributes for the login form to be available in `$_POST['LoginForm']` on the server-side.
 
 > Tip: If you have only one model in a form and want to simplify the input names you may skip the array part by
 > overriding the [[yii\base\Model::formName()|formName()]] method of the model to return an empty string.
@@ -188,8 +188,7 @@ for the `FormData` class.
 Further Reading <span id="further-reading"></span>
 ---------------
 
-The next section [Validating Input](input-validation.md) handles the validation of the submitted form data on the server
-side as well as ajax- and client side validation.
+The next section [Validating Input](input-validation.md) handles the validation of the submitted form data on the server-side as well as ajax and client-side validation.
 
 To read about more complex usage of forms, you may want to check out the following sections:
 

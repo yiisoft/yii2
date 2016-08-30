@@ -33,7 +33,7 @@ tests should be changed as well.
 > Tip: If you feel that you are losing time doing a lot of small and simple iterations, try covering more by your
 > test scenario so you do more before executing tests again. If you're debugging too much, try doing the opposite.
 
-The reason to create tests before doing any implemenation is that it allows us to focus on what we want to achieve
+The reason to create tests before doing any implementation is that it allows us to focus on what we want to achieve
 and fully dive into "how to do it" afterwards. Usually it leads to better abstractions and easier test maintenance when
 it comes to feature adjustments or less coupled components.
 

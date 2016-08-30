@@ -148,7 +148,7 @@ specified via [[yii\validators\DateValidator::timestampAttribute|timestampAttrib
   [[yii\validators\DateValidator::$max|maximum]] timestamp.
 
 In case the input is optional you may also want to add a [default value filter](#default) in addition to the date validator
-to ensure empty input is stored as `NULL`. Other wise you may end up with dates like `0000-00-00` in your database
+to ensure empty input is stored as `null`. Otherwise you may end up with dates like `0000-00-00` in your database
 or `1970-01-01` in the input field of a date picker.
 
 ```php
