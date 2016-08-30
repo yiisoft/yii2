@@ -10,6 +10,7 @@ namespace yii\web;
 use Yii;
 use yii\base\Object;
 use yii\base\InvalidConfigException;
+use yii\helpers\ArrayHelper;
 
 /**
  * UrlRule represents a rule used by [[UrlManager]] for parsing and generating URLs.
@@ -89,6 +90,10 @@ class UrlRule extends Object implements UrlRuleInterface
      * @var boolean a value indicating if parameters should be url encoded.
      */
     public $encodeParams = true;
+    /**
+     * @var UrlNormalizer
+     */
+    public $normalizer;
 
     /**
      * @var array list of placeholders for matching parameters names. Used in [[parseRequest()]], [[createUrl()]].
@@ -216,6 +221,25 @@ class UrlRule extends Object implements UrlRuleInterface
     }
 
     /**
+     * @param UrlManager $manager the URL manager
+     * @return UrlNormalizer
+     */
+    protected function getNormalizer($manager) {
+        $defaultConfig = [
+            'class' => UrlNormalizer::className()
+        ];
+
+        $normalizerConfig = ArrayHelper::merge(
+            ArrayHelper::merge($defaultConfig, $manager->normalizer ?: []),
+            $this->normalizer ?: []
+        );
+
+        $normalizer = Yii::createObject($normalizerConfig);
+
+        return $normalizer;
+    }
+
+    /**
      * Parses the given request and returns the corresponding route and parameters.
      * @param UrlManager $manager the URL manager
      * @param Request $request the request component
@@ -232,7 +256,13 @@ class UrlRule extends Object implements UrlRuleInterface
             return false;
         }
 
-        $pathInfo = $request->getPathInfo();
+        $normalizer = $this->getNormalizer($manager);
+        $normalizer->prepare($manager, $this);
+        $this->suffix = $normalizer->getSuffix();
+        $normalizer->processRequest($request);
+
+        $pathInfo = $normalizer->getPathInfoNormalized();
+
         $suffix = (string)($this->suffix === null ? $manager->suffix : $this->suffix);
         if ($suffix !== '' && $pathInfo !== '') {
             $n = strlen($suffix);
@@ -254,8 +284,8 @@ class UrlRule extends Object implements UrlRuleInterface
         if (!preg_match($this->pattern, $pathInfo, $matches)) {
             return false;
         }
-        $matches = $this->substitutePlaceholderNames($matches);
 
+        $matches = $this->substitutePlaceholderNames($matches);
         foreach ($this->defaults as $name => $value) {
             if (!isset($matches[$name]) || $matches[$name] === '') {
                 $matches[$name] = $value;
@@ -279,7 +309,7 @@ class UrlRule extends Object implements UrlRuleInterface
 
         Yii::trace("Request parsed with URL rule: {$this->name}", __METHOD__);
 
-        return [$route, $params];
+        return $normalizer->getNormalizedRoute([$route, $params]);
     }
 
     /**
@@ -294,6 +324,11 @@ class UrlRule extends Object implements UrlRuleInterface
         if ($this->mode === self::PARSING_ONLY) {
             return false;
         }
+
+        // init normalizer, because it may change $this->suffix according to chosen strategy
+        $normalizer = $this->getNormalizer($manager);
+        $normalizer->prepare($manager, $this);
+        $this->suffix = $normalizer->getSuffix();
 
         $tr = [];
 
