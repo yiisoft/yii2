@@ -23,6 +23,30 @@ namespace yii\filters\auth;
  * }
  * ```
  *
+ * The default implementation of HttpBasicAuth uses the [[\yii\web\User::loginByAccessToken()|loginByAccessToken()]]
+ * method of the `user` application component and only passes the user name. This implementation is used
+ * for authenticating API clients.
+ *
+ * If you want to authenticate users using username and password, you should provide the [[auth]] function for example like the following:
+ *
+ * ```php
+ * public function behaviors()
+ * {
+ *     return [
+ *         'basicAuth' => [
+ *             'class' => \yii\filters\auth\HttpBasicAuth::className(),
+ *             'auth' => function ($username, $password) {
+ *                 $user = User::find()->where(['username' => $username])->one();
+ *                 if ($user->verifyPassword($password)) {
+ *                     return $user;
+ *                 }
+ *                 return null;
+ *             },
+ *         ],
+ *     ];
+ * }
+ * ```
+ *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */
