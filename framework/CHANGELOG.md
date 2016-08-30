@@ -17,6 +17,7 @@ Yii Framework 2 Change Log
 - Enh #11275: Added possibility of unset or force replace former value in `ArrayHelper::merge()` (mdmunir, rob006)
 - Enh #11950: Improve BaseArrayHelper::keyExists speed (egorio)
 - Bug #11726: `DbSession` was echoing database errors in production mode (samdark, pastuhov, deadkrolik)
+- Bug #11922: Fixed `yii\log\FileTarget` does not apply `fileMode` for rotated via copy files (klimov-paul)
 - Bug #12030: Fixed `yii\base\Model::offsetExists()` throws an exception on un-existing field (klimov-paul)
 - Bug #12037: Fixed 2.0.7 regression in memcahe/memcached cache backend (samdark)
 - Bug #12043: Fixed `yii\helpers\Json::encode()` encodes empty array returned by `JsonSerializable::jsonSerialize()` as object (klimov-paul)
