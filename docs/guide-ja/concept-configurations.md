@@ -240,10 +240,10 @@ defined('YII_ENV') or define('YII_ENV', 'dev');
 
 `YII_ENV` を次のいずれかの値と定義することができます:
 
-- `prod`: 本番環境。定数 `YII_ENV_PROD` は true と評価されます。
+- `prod`: 本番環境。定数 `YII_ENV_PROD` が `true` と評価されます。
   とくに定義しない場合、これが `YII_ENV` のデフォルト値です。
-- `dev`: 開発環境。定数 `YII_ENV_DEV` は true と評価されます。
-- `test`: テスト環境。定数 `YII_ENV_TEST` は true と評価されます。
+- `dev`: 開発環境。定数 `YII_ENV_DEV` が `true` と評価されます。
+- `test`: テスト環境。定数 `YII_ENV_TEST` が `true` と評価されます。
 
 これらの環境定数を使用すると、現在の環境に基づいて条件付きで構成情報を指定することもできます。
 たとえば、アプリケーション構成情報には、開発環境での [デバッグツールバーとデバッガ](tool-debugger.md)

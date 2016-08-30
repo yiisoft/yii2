@@ -75,7 +75,7 @@ where `<extension-name>` is the name of the extension, e.g. `redis`.
 
 If you want to test the extension in one of the application templates, just add it to the `composer.json` of the application as you would
 normally do e.g. add `"yiisoft/yii2-redis": "*"` to the `require` section of the basic app.
-Running `php build/build dev/app basic` will install the extension and its dependecies and create
+Running `php build/build dev/app basic` will install the extension and its dependencies and create
 a symlink to `extensions/redis` so you are not working in the composer vendor dir but in the yii2 repository directly.
 
 > Note: The default git repository Urls clone from github via SSH, you may add the `--useHttp` flag to the `build` command

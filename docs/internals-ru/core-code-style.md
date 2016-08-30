@@ -421,10 +421,10 @@ public function getEventHandlers($name)
 
 Ниже описан дополнительный синтаксис для описания связей между классами, методами и свойствами в документации:
 
-- `'[[canSetProperty]] ` создаст ссылку на метод или свойство `canSetProperty` этого класса;
-- `'[[Component::canSetProperty]]` создаст ссылку на метод `canSetProperty` класса `Component` того же пространства имен;
-- `'[[yii\base\Component::canSetProperty]]` создаст ссылку на метод `canSetProperty` класса `Component` в пространстве имен `yii\base`;
-- `'[[Component]]` создаст ссылку на класс `Component` в том же пространстве имен. Здесь так же возможно явное указание пространства имен.
+- `[[canSetProperty]]` создаст ссылку на метод или свойство `canSetProperty` этого класса;
+- `[[Component::canSetProperty]]` создаст ссылку на метод `canSetProperty` класса `Component` того же пространства имен;
+- `[[yii\base\Component::canSetProperty]]` создаст ссылку на метод `canSetProperty` класса `Component` в пространстве имен `yii\base`;
+- `[[Component]]` создаст ссылку на класс `Component` в том же пространстве имен. Здесь так же возможно явное указание пространства имен.
 
 Для явного указания текста ссылки возможно использование следующего синтаксиса:
 

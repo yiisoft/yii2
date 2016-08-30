@@ -74,7 +74,7 @@ There are several special rules for, and limitations on, the properties defined 
   This is because method names in PHP are case-insensitive.
 * If the name of such a property is the same as a class member variable, the latter will take precedence.
   For example, if the above `Foo` class has a member variable `label`, then the assignment `$object->label = 'abc'`
-  will affect the *member variable* 'label'; that line would not call the  `setLabel()` setter method.
+  will affect the *member variable* `label`; that line would not call the  `setLabel()` setter method.
 * These properties do not support visibility. It makes no difference to the defining getter or setter method if the property is public, protected or private.
 * The properties can only be defined by *non-static* getters and/or setters. Static methods will not be treated in the same manner.
 * A normal call to `property_exists()` does not work to determine magic properties. You should call [[yii\base\Object::canGetProperty()|canGetProperty()]]

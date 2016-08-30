@@ -2,7 +2,7 @@ Czym jest Yii
 =============
 
 Yii jest wysoko wydajnym, opartym na komponentach frameworkiem PHP do szybkiego programowania 
-nowoczesnych stron internetowych. Nazwa Yii (wymawiana [ji:]) oznacza w języku chińskim "prosto i ewolucyjnie".
+nowoczesnych stron internetowych. Nazwa Yii (wymawiana `[ji:]`) oznacza w języku chińskim "prosto i ewolucyjnie".
 Może to być również rozumiane jako akronim dla **Yes It Is**!
 
 
@@ -34,6 +34,7 @@ Yii nie jest efektem pracy pojedynczego programisty - projekt wspiera zarówno [
 przyczyniając się do jego rozwoju. Deweloperzy trzymają rękę na pulsie najnowszych trendów Internetu, za pomocą prostych i eleganckich interfejsów wzbogacając Yii w najlepsze sprawdzone 
 rozwiązania i funkcjonalności, dostępne w innych frameworkach i projektach.
 
+[about_yii]: http://www.yiiframework.com/about/
  
 Wersje Yii
 ----------

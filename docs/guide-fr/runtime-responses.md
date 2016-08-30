@@ -73,7 +73,7 @@ Si vous disposez déjà d'une chaîne de caractères formatée pour le corps, vo
 Yii::$app->response->content = 'hello world!';
 ```
 
-Si vos données doivent être formatées avant l'envoi à l'utilisateur final, vous devez définir les propriétés [yii\web\Response::format|format]] et [[yii\web\Response::data|data]]. La propriété [[yii\web\Response::format|format]] spécifie dans quel format les  [[yii\web\Response::data|données]] doivent être formatées. Par exemple :
+Si vos données doivent être formatées avant l'envoi à l'utilisateur final, vous devez définir les propriétés [[yii\web\Response::format|format]] et [[yii\web\Response::data|data]]. La propriété [[yii\web\Response::format|format]] spécifie dans quel format les  [[yii\web\Response::data|données]] doivent être formatées. Par exemple :
 
 ```php
 $response = Yii::$app->response;
@@ -198,7 +198,7 @@ Le contenu d'une réponse n'est pas envoyé à l'utilisateur tant que la méthod
 La méthode [[yii\web\Response::send()]] entreprend les étapes suivantes pour envoyer la réponse :
 
 1. Elle déclenche l'événement  [[yii\web\Response::EVENT_BEFORE_SEND]].
-2. Elle appelle [[yii\web\Response::prepare()]] pour formater [[yii\web\Response::data|les données de la réponse] du [[yii\web\Response::content|contenu de la réponse].
+2. Elle appelle [[yii\web\Response::prepare()]] pour formater [[yii\web\Response::data|les données de la réponse]] du [[yii\web\Response::content|contenu de la réponse]].
 3. Elle déclenche l'événement  [[yii\web\Response::EVENT_AFTER_PREPARE]].
 4. Elle appelle la méthode [[yii\web\Response::sendHeaders()]] pour envoyer les entêtes HTTP enregistrés. 
 5. Elle appelle la méthode [[yii\web\Response::sendContent()]] pour envoyer le corps de la réponse.

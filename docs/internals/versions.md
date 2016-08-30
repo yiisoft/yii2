@@ -33,7 +33,7 @@ not be trivial, but a complete upgrade guide will be available.
 
 ### `2.x.Y`: minor releases
 
-Patch releases, which should be 100% BC-compatible. Ideally, we hope they contain only changes that do not affect backwards compatibilty
+Patch releases, which should be 100% BC-compatible. Ideally, we hope they contain only changes that do not affect backwards compatibility
 however it is not always possible to keep 100% BC-compatible, so upgrade notes are recorded in `UPGRADE.md`.
 Practically, since 2.0.x is released more frequently, we are also adding minor features
 to it so that users can enjoy them earlier.

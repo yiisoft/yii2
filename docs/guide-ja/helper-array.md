@@ -302,18 +302,67 @@ $decoded = ArrayHelper::htmlDecode($data);
 
 ## 配列をマージする <span id="merging-arrays"></span>
 
+[[yii\helpers\ArrayHelper::merge()|ArrayHelper::merge()]] を使って、二つまたはそれ以上の配列を再帰的に一つの配列にマージすることが出来ます。
+各配列に同じ文字列のキー値を持つ要素がある場合は、([array_merge_recursive()](http://php.net/manual/ja/function.array-merge-recursive.php) とは違って)後のものが前のものを上書きします。
+両方の配列が、同じキーを持つ配列型の要素を持っている場合は、再帰的なマージが実行されます。
+添字型の要素については、後の配列の要素が前の配列の要素の後に追加されます。
+[[yii\helpers\UnsetArrayValue]] オブジェクトを使って前の配列にある値を非設定に指定したり、
+[[yii\helpers\ReplaceArrayValue]] オブジェクトを使って再帰的なマージでなく前の値の上書きを強制したりすることが出来ます。
+
+例えば、
+
 ```php
-  /**
-    * 二つ以上の配列を再帰的に一つの配列にマージします。
-    * 各配列に同じ文字列のキー値を持つ要素がある場合は、(array_merge_recursive とは違って)
-    * 後のものが前のものを上書きします。
-    * 両方の配列が、同じキーを持つ配列型の要素を持っている場合は、再帰的なマージが実行されます。
-    * 添字型の要素については、後の配列の要素が前の配列の要素の後に追加されます。
-    * @param array $a マージ先の配列
-    * @param array $b マージ元の配列。追加の配列を三番目の引数、四番目の引数、、、として指定可能です。
-    * @return array マージされた配列 (元の配列は変更されません。)
-    */
-    public static function merge($a, $b)
+$array1 = [
+    'name' => 'Yii',
+    'version' => '1.1',
+    'ids' => [
+        1,
+    ],
+    'validDomains' => [
+        'example.com',
+        'www.example.com',
+    ],
+    'emails' => [
+        'admin' => 'admin@example.com',
+        'dev' => 'dev@example.com',
+    ],
+];
+
+$array2 = [
+    'version' => '2.0',
+    'ids' => [
+        2,
+    ],
+    'validDomains' => new \yii\helpers\ReplaceArrayValue([
+        'yiiframework.com',
+        'www.yiiframework.com',
+    ]),
+    'emails' => [
+        'dev' => new \yii\helpers\UnsetArrayValue(),
+    ],
+];
+
+$result = ArrayHelper::merge($array1, $array2);
+```
+
+結果は次のようになります。
+
+```php
+[
+    'name' => 'Yii',
+    'version' => '2.0',
+    'ids' => [
+        1,
+        2,
+    ],
+    'validDomains' => [
+        'yiiframework.com',
+        'www.yiiframework.com',
+    ],
+    'emails' => [
+        'admin' => 'admin@example.com',
+    ],
+]
 ```
 
 
