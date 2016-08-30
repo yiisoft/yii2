@@ -239,7 +239,7 @@ $engine = $container->get('app\components\SearchEngine', [$apiKey, $apiSecret], 
 ```
 
 Behind the scene, the DI container does much more work than just creating a new object.
-The container will first inspect the class constructor to find out dependent class or interface names
+The container will first inspect the class constructor to find out dependency class or interface names
 and then automatically resolve those dependencies recursively.
 
 The following code shows a more sophisticated example. The `UserLister` class depends on an object implementing
@@ -328,7 +328,7 @@ as 5 instead of the default value 10 as defined in the class.
 echo \yii\widgets\LinkPager::widget();
 ```
 
-You can still override the value set via DI container, though:
+You can still override the value set via DI container, through:
 
 ```php
 echo \yii\widgets\LinkPager::widget(['maxButtonCount' => 20]);
