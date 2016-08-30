@@ -105,6 +105,8 @@ use yii\validators\StringValidator;
  * $model->typecastAttributes();
  * ```
  *
+ * @property Model|BaseActiveRecord $owner the owner of this behavior.
+ *
  * @author Paul Klimov <klimov.paul@gmail.com>
  * @since 2.0.10
  */
