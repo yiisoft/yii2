@@ -20,8 +20,8 @@ use yii\helpers\Html;
  *
  * @property-read string $baseName Original file base name.
  * @property-read string $extension File extension.
- * @property-read boolean $hasError Whether there is an error with the uploaded file. Check [[error]] for detailed
- * error code information.
+ * @property-read boolean $hasError Whether there is an error with the uploaded file. Check [[error]] for
+ * detailed error code information.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0

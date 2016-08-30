@@ -29,8 +29,9 @@ use yii\helpers\ArrayHelper;
  * @property-read mixed $oldPrimaryKey The old primary key value. An array (column name => column value) is
  * returned if the primary key is composite. A string is returned otherwise (null will be returned if the key
  * value is null).
- * @property-read mixed $primaryKey The primary key value. An array (column name => column value) is returned if
- * the primary key is composite. A string is returned otherwise (null will be returned if the key value is null).
+ * @property-read mixed $primaryKey The primary key value. An array (column name => column value) is returned
+ * if the primary key is composite. A string is returned otherwise (null will be returned if the key value is
+ * null).
  * @property-read array $relatedRecords An array of related records indexed by relation names.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>

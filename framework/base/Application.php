@@ -13,12 +13,14 @@ use Yii;
  * Application is the base class for all application classes.
  *
  * @property-read \yii\web\AssetManager $assetManager The asset manager application component.
- * @property-read \yii\rbac\ManagerInterface $authManager The auth manager application component. Null is returned
- * if auth manager is not configured.
+ * @property-read \yii\rbac\ManagerInterface $authManager The auth manager application component. Null is
+ * returned if auth manager is not configured.
  * @property string $basePath The root directory of the application.
- * @property-read \yii\caching\Cache $cache The cache application component. Null if the component is not enabled.
+ * @property-read \yii\caching\Cache $cache The cache application component. Null if the component is not
+ * enabled.
  * @property-read \yii\db\Connection $db The database connection.
- * @property-read \yii\web\ErrorHandler|\yii\console\ErrorHandler $errorHandler The error handler application component.
+ * @property-read \yii\web\ErrorHandler|\yii\console\ErrorHandler $errorHandler The error handler application
+ * component.
  * @property-read \yii\i18n\Formatter $formatter The formatter application component.
  * @property-read \yii\i18n\I18N $i18n The internationalization application component.
  * @property-read \yii\log\Dispatcher $log The log dispatcher application component.

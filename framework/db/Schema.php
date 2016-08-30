@@ -19,15 +19,15 @@ use yii\caching\TagDependency;
  *
  * Schema represents the database schema information that is DBMS specific.
  *
- * @property-read string $lastInsertID The row ID of the last row inserted, or the last value retrieved from the
- * sequence object.
+ * @property-read string $lastInsertID The row ID of the last row inserted, or the last value retrieved from
+ * the sequence object.
  * @property-read QueryBuilder $queryBuilder The query builder for this connection.
  * @property-read string[] $schemaNames All schema names in the database, except system schemas.
  * @property-read string[] $tableNames All table names in the database.
- * @property-read TableSchema[] $tableSchemas The metadata for all tables in the database. Each array element is an
- * instance of [[TableSchema]] or its child class.
- * @property-write string $transactionIsolationLevel The transaction isolation level to use for this transaction.
- * This can be one of [[Transaction::READ_UNCOMMITTED]], [[Transaction::READ_COMMITTED]],
+ * @property-read TableSchema[] $tableSchemas The metadata for all tables in the database. Each array element
+ * is an instance of [[TableSchema]] or its child class.
+ * @property-write string $transactionIsolationLevel The transaction isolation level to use for this
+ * transaction. This can be one of [[Transaction::READ_UNCOMMITTED]], [[Transaction::READ_COMMITTED]],
  * [[Transaction::REPEATABLE_READ]] and [[Transaction::SERIALIZABLE]] but also a string containing DBMS specific
  * syntax to be used after `SET TRANSACTION ISOLATION LEVEL`.
  *

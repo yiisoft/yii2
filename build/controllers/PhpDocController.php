@@ -216,15 +216,15 @@ class PhpDocController extends Controller
         $root = FileHelper::normalizePath($root);
         $options = [
             'filter' => function ($path) {
-                    if (is_file($path)) {
-                        $file = basename($path);
-                        if ($file[0] < 'A' || $file[0] > 'Z') {
-                            return false;
-                        }
+                if (is_file($path)) {
+                    $file = basename($path);
+                    if ($file[0] < 'A' || $file[0] > 'Z') {
+                        return false;
                     }
+                }
 
-                    return null;
-                },
+                return null;
+            },
             'only' => ['*.php'],
             'except' => array_merge($except, [
                 '.git/',
@@ -582,7 +582,7 @@ class PhpDocController extends Controller
         $propertyPosition = false;
         foreach ($lines as $i => $line) {
             $line = trim($line);
-            if (strncmp($line, '* @property ', 12) === 0) {
+            if (strncmp($line, '* @property', 11) === 0) {
                 $propertyPart = true;
             } elseif ($propertyPart && $line == '*') {
                 $propertyPosition = $i;
@@ -662,7 +662,7 @@ class PhpDocController extends Controller
                 $class['content'], true);
             // check for @property annotations in getter and setter
             $properties = $this->match(
-                '#\* @(?<kind>property) (?<type>[\w\\|\\\\\\[\\]]+)(?: (?<comment>(?:(?!\*/|\* @).)+?)(?:(?!\*/).)+|[\s\n]*)\*/' .
+                '#\* @(?<kind>property-read|property-write|property) (?<type>[\w\\|\\\\\\[\\]]+)(?: (?<comment>(?:(?!\*/|\* @).)+?)(?:(?!\*/).)+|[\s\n]*)\*/' .
                 '[\s\n]{2,}public function [g|s]et(?<name>\w+)\(((?:,? ?\$\w+ ?= ?[^,]+)*|\$\w+(?:, ?\$\w+ ?= ?[^,]+)*)\)#',
                 $class['content']);
             $acrs = array_merge($properties, $gets, $sets);
@@ -683,7 +683,7 @@ class PhpDocController extends Controller
                 $phpdoc .= " *\n";
                 foreach ($props as $propName => &$prop) {
                     $docline = ' * @';
-                    $docline .= 'property'; // Do not use property-read and property-write as few IDEs support complex syntax.
+                    $docline .= 'property';
                     $note = '';
                     if (isset($prop['get']) && isset($prop['set'])) {
                         if ($prop['get']['type'] != $prop['set']['type']) {
@@ -702,8 +702,7 @@ class PhpDocController extends Controller
                             $c = $parent;
                         }
                         if (!$parentSetter) {
-                            $note = ' This property is read-only.';
-//							$docline .= '-read';
+                            $docline .= '-read';
                         }
                     } elseif (isset($prop['set'])) {
                         // check if parent class has getter defined
@@ -717,8 +716,7 @@ class PhpDocController extends Controller
                             $c = $parent;
                         }
                         if (!$parentGetter) {
-                            $note = ' This property is write-only.';
-//							$docline .= '-write';
+                            $docline .= '-write';
                         }
                     } else {
                         continue;

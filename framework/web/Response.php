@@ -35,18 +35,19 @@ use yii\helpers\StringHelper;
  * ```
  *
  * @property-read CookieCollection $cookies The cookie collection.
+ * @property-write string $downloadHeaders The attachment file name.
  * @property-read HeaderCollection $headers The header collection.
  * @property-read boolean $isClientError Whether this response indicates a client error.
  * @property-read boolean $isEmpty Whether this response is empty.
  * @property-read boolean $isForbidden Whether this response indicates the current request is forbidden.
  * @property-read boolean $isInformational Whether this response is informational.
  * @property-read boolean $isInvalid Whether this response has a valid [[statusCode]].
- * @property-read boolean $isNotFound Whether this response indicates the currently requested resource is not found.
+ * @property-read boolean $isNotFound Whether this response indicates the currently requested resource is not
+ * found.
  * @property-read boolean $isOk Whether this response is OK.
  * @property-read boolean $isRedirection Whether this response is a redirection.
  * @property-read boolean $isServerError Whether this response indicates a server error.
  * @property-read boolean $isSuccessful Whether this response is successful.
- * @property-write string $downloadHeaders The attachment file name.
  * @property integer $statusCode The HTTP status code to send with the response.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>

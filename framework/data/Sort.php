@@ -66,10 +66,10 @@ use yii\web\Request;
  * sorted by the orders specified by the Sort object. In the view, we show two hyperlinks
  * that can lead to pages with the data sorted by the corresponding attributes.
  *
- * @property-read array $attributeOrders Sort directions indexed by attribute names. Sort direction can be either
- * `SORT_ASC` for ascending order or `SORT_DESC` for descending order.
- * @property-read array $orders The columns (keys) and their corresponding sort directions (values). This can be
- * passed to [[\yii\db\Query::orderBy()]] to construct a DB query.
+ * @property-read array $attributeOrders Sort directions indexed by attribute names. Sort direction can be
+ * either `SORT_ASC` for ascending order or `SORT_DESC` for descending order.
+ * @property-read array $orders The columns (keys) and their corresponding sort directions (values). This can
+ * be passed to [[\yii\db\Query::orderBy()]] to construct a DB query.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0

@@ -56,10 +56,11 @@ use yii\web\Request;
  * ]);
  * ```
  *
- * @property-read integer $limit The limit of the data. This may be used to set the LIMIT value for a SQL statement
- * for fetching the current page of data. Note that if the page size is infinite, a value -1 will be returned.
- * @property-read array $links The links for navigational purpose. The array keys specify the purpose of the links
- * (e.g. [[LINK_FIRST]]), and the array values are the corresponding URLs.
+ * @property-read integer $limit The limit of the data. This may be used to set the LIMIT value for a SQL
+ * statement for fetching the current page of data. Note that if the page size is infinite, a value -1 will be
+ * returned.
+ * @property-read array $links The links for navigational purpose. The array keys specify the purpose of the
+ * links (e.g. [[LINK_FIRST]]), and the array values are the corresponding URLs.
  * @property-read integer $offset The offset of the data. This may be used to set the OFFSET value for a SQL
  * statement for fetching the current page of data.
  * @property integer $page The zero-based current page number.

@@ -27,17 +27,18 @@ use yii\helpers\StringHelper;
  * corresponding quality score and other parameters as given in the header.
  * @property array $acceptableLanguages The languages ordered by the preference level. The first element
  * represents the most preferred language.
- * @property-read string|null $authPassword The password sent via HTTP authentication, null if the password is not
- * given.
+ * @property-read string|null $authPassword The password sent via HTTP authentication, null if the password is
+ * not given.
  * @property-read string|null $authUser The username sent via HTTP authentication, null if the username is not
  * given.
  * @property string $baseUrl The relative URL for the application.
  * @property array $bodyParams The request parameters given in the request body.
- * @property-read string $contentType Request content-type. Null is returned if this information is not available.
+ * @property-read string $contentType Request content-type. Null is returned if this information is not
+ * available.
  * @property-read CookieCollection $cookies The cookie collection.
  * @property-read string $csrfToken The token used to perform CSRF validation.
- * @property-read string $csrfTokenFromHeader The CSRF token sent via [[CSRF_HEADER]] by browser. Null is returned
- * if no such header is sent.
+ * @property-read string $csrfTokenFromHeader The CSRF token sent via [[CSRF_HEADER]] by browser. Null is
+ * returned if no such header is sent.
  * @property-read array $eTags The entity tags.
  * @property-read HeaderCollection $headers The header collection.
  * @property string $hostInfo Schema and hostname part (with port number if needed) of the request URL (e.g.
@@ -53,8 +54,8 @@ use yii\helpers\StringHelper;
  * @property-read boolean $isPost Whether this is a POST request.
  * @property-read boolean $isPut Whether this is a PUT request.
  * @property-read boolean $isSecureConnection If the request is sent via secure channel (https).
- * @property-read string $method Request method, such as GET, POST, HEAD, PUT, PATCH, DELETE. The value returned is
- * turned into upper case.
+ * @property-read string $method Request method, such as GET, POST, HEAD, PUT, PATCH, DELETE. The value
+ * returned is turned into upper case.
  * @property string $pathInfo Part of the request URL that is after the entry script and before the question
  * mark. Note, the returned path info is already URL-decoded.
  * @property integer $port Port number for insecure requests.

@@ -46,9 +46,9 @@ use yii\base\InvalidParamException;
  * @property-read array $allFlashes Flash messages (key => message or key => [message1, message2]).
  * @property-read array $cookieParams The session cookie parameters.
  * @property-read integer $count The number of session variables.
- * @property-write string $flash The key identifying the flash message. Note that flash messages and normal session
- * variables share the same name space. If you have a normal session variable using the same name, its value will
- * be overwritten by this method.
+ * @property-write string $flash The key identifying the flash message. Note that flash messages and normal
+ * session variables share the same name space. If you have a normal session variable using the same name, its
+ * value will be overwritten by this method.
  * @property float $gCProbability The probability (percentage) that the GC (garbage collection) process is
  * started on every session initialization, defaults to 1 meaning 1% chance.
  * @property boolean $hasSessionId Whether the current request has sent the session ID.

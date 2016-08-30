@@ -13,7 +13,7 @@ use yii\base\InvalidRouteException;
 /**
  * Application is the base class for all web application classes.
  *
- * @property ErrorHandler $errorHandler The error handler application component. This property is read-only.
+ * @property-read ErrorHandler $errorHandler The error handler application component.
  * @property string $homeUrl The homepage URL.
  * @property-read Request $request The request component.
  * @property-read Response $response The response component.
