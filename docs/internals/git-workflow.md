@@ -29,13 +29,13 @@ Change to the directory where you cloned Yii, normally, "yii2". Then enter the f
 git remote add upstream git://github.com/yiisoft/yii2.git
 ```
 
-### 3. Prepare the testing environment
+### 3. Prepare the testing environment <span id="prepare-the-test-environment"></span>
 
 The following steps are not necessary if you want to work only on translations or documentation.
 
 - run `composer update` to install dependencies (assuming you have [composer installed globally](https://getcomposer.org/doc/00-intro.md#globally)).
 
-> Note: If you see errors like `Problem 1 The requested package bower-asset/jquery could not be found in any version, there may be a typo in the package name.`, you will need to run `composer global require "fxp/composer-asset-plugin:~1.1.1"`
+> Note: If you see errors like `Problem 1 The requested package bower-asset/jquery could not be found in any version, there may be a typo in the package name.`, you will need to run `composer global require "fxp/composer-asset-plugin:^1.2.0"`
 
 - run `php build/build dev/app basic` to clone the basic app and install composer dependencies for the basic app.
   This command will install foreign composer packages as normal but will link the yii2 repo to

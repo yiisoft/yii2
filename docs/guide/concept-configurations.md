@@ -157,7 +157,7 @@ echo Menu::widget([
 ]);
 ```
 
-The above code creates a `Menu` widget and initializes its `activateItems` property to be false.
+The above code creates a `Menu` widget and initializes its `activateItems` property to be `false`.
 The `items` property is also configured with menu items to be displayed.
 
 Note that because the class name is already given, the configuration array should NOT have the `class` key.
@@ -224,7 +224,7 @@ the specified classes when they are being created using [[Yii::createObject()]].
 can be specified by calling `Yii::$container->set()` in the [bootstrapping](runtime-bootstrapping.md) code.
 
 For example, if you want to customize [[yii\widgets\LinkPager]] so that ALL link pagers will show at most 5 page buttons
-(the default value is 10), you may use the following code to achieve this goal,
+(the default value is 10), you may use the following code to achieve this goal:
 
 ```php
 \Yii::$container->set(\yii\widgets\LinkPager::class, [
@@ -250,10 +250,10 @@ defined('YII_ENV') or define('YII_ENV', 'dev');
 
 You may define `YII_ENV` as one of the following values:
 
-- `prod`: production environment. The constant `YII_ENV_PROD` will evaluate as true.
+- `prod`: production environment. The constant `YII_ENV_PROD` will evaluate as `true`.
   This is the default value of `YII_ENV` if you do not define it.
-- `dev`: development environment. The constant `YII_ENV_DEV` will evaluate as true.
-- `test`: testing environment. The constant `YII_ENV_TEST` will evaluate as true.
+- `dev`: development environment. The constant `YII_ENV_DEV` will evaluate as `true`.
+- `test`: testing environment. The constant `YII_ENV_TEST` will evaluate as `true`.
 
 With these environment constants, you may specify your configurations conditionally based on
 the current environment. For example, your application configuration may contain the following

@@ -182,6 +182,10 @@ class QueryBuilder extends \yii\base\Object
      */
     public function batchInsert($table, $columns, $rows)
     {
+        if (empty($rows)) {
+            return '';
+        }
+
         $schema = $this->db->getSchema();
         if (($tableSchema = $schema->getTableSchema($table)) !== null) {
             $columnSchemas = $tableSchema->columns;
@@ -1265,7 +1269,7 @@ class QueryBuilder extends \yii\base\Object
 
         if (empty($vss)) {
             return $operator === 'IN' ? '0=1' : '';
-        };
+        }
 
         $sqlColumns = [];
         foreach ($columns as $i => $column) {

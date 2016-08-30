@@ -141,6 +141,26 @@ trait ActiveRecordTestTrait
         $this->assertArrayHasKey('status', $customers[2]);
     }
 
+    public function testHasAttribute()
+    {
+        /* @var $customerClass \yii\db\ActiveRecordInterface */
+        $customerClass = $this->getCustomerClass();
+
+        $customer = new $customerClass;
+        $this->assertTrue($customer->hasAttribute('id'));
+        $this->assertTrue($customer->hasAttribute('email'));
+        $this->assertFalse($customer->hasAttribute(0));
+        $this->assertFalse($customer->hasAttribute(null));
+        $this->assertFalse($customer->hasAttribute(42));
+
+        $customer = $customerClass::findOne(1);
+        $this->assertTrue($customer->hasAttribute('id'));
+        $this->assertTrue($customer->hasAttribute('email'));
+        $this->assertFalse($customer->hasAttribute(0));
+        $this->assertFalse($customer->hasAttribute(null));
+        $this->assertFalse($customer->hasAttribute(42));
+    }
+
     public function testFindScalar()
     {
         /* @var $customerClass \yii\db\ActiveRecordInterface */

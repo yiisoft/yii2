@@ -152,7 +152,7 @@ class Query extends Component implements QueryInterface
      * ```php
      * $query = (new Query)->from('user');
      * foreach ($query->batch() as $rows) {
-     *     // $rows is an array of 10 or fewer rows from user table
+     *     // $rows is an array of 100 or fewer rows from user table
      * }
      * ```
      *
@@ -609,7 +609,7 @@ class Query extends Component implements QueryInterface
      */
     public function andFilterCompare($name, $value, $defaultOperator = '=')
     {
-        if (preg_match("/^(<>|>=|>|<=|<|=)/", $value, $matches)) {
+        if (preg_match('/^(<>|>=|>|<=|<|=)/', $value, $matches)) {
             $operator = $matches[1];
             $value = substr($value, strlen($operator));
         } else {

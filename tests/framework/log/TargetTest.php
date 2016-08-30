@@ -75,6 +75,72 @@ class TargetTest extends TestCase
             $this->assertEquals('test' . $e, static::$messages[$i++][0]);
         }
     }
+
+    public function testGetContextMessage()
+    {
+        $target = new TestTarget([
+            'logVars' => [
+                'A', '!A.A_b', 'A.A_d',
+                'B.B_a',
+                'C', 'C.C_a',
+                'D',
+            ],
+        ]);
+        $GLOBALS['A'] = [
+            'A_a' => 1,
+            'A_b' => 1,
+            'A_c' => 1,
+        ];
+        $GLOBALS['B'] = [
+            'B_a' => 1,
+            'B_b' => 1,
+            'B_c' => 1,
+        ];
+        $GLOBALS['C'] = [
+            'C_a' => 1,
+            'C_b' => 1,
+            'C_c' => 1,
+        ];
+        $GLOBALS['E'] = [
+            'C_a' => 1,
+            'C_b' => 1,
+            'C_c' => 1,
+        ];
+        $context = $target->getContextMessage();
+        $this->assertContains('A_a', $context);
+        $this->assertNotContains('A_b', $context);
+        $this->assertContains('A_c', $context);
+        $this->assertContains('B_a', $context);
+        $this->assertNotContains('B_b', $context);
+        $this->assertNotContains('B_c', $context);
+        $this->assertContains('C_a', $context);
+        $this->assertContains('C_b', $context);
+        $this->assertContains('C_c', $context);
+        $this->assertNotContains('D_a', $context);
+        $this->assertNotContains('D_b', $context);
+        $this->assertNotContains('D_c', $context);
+        $this->assertNotContains('E_a', $context);
+        $this->assertNotContains('E_b', $context);
+        $this->assertNotContains('E_c', $context);
+    }
+
+    /**
+     * @covers \yii\log\Target::setLevels()
+     * @covers \yii\log\Target::getLevels()
+     */
+    public function testSetupLevels()
+    {
+        $target = $this->getMockForAbstractClass('yii\\log\\Target');
+
+        $target->setLevels(['info', 'error']);
+        $this->assertEquals(Logger::LEVEL_INFO | Logger::LEVEL_ERROR, $target->getLevels());
+
+        $target->setLevels(Logger::LEVEL_TRACE);
+        $this->assertEquals(Logger::LEVEL_TRACE, $target->getLevels());
+
+        $this->setExpectedException('yii\\base\\InvalidConfigException', 'Unrecognized level: unknown level');
+        $target->setLevels(['info', 'unknown level']);
+    }
 }
 
 class TestTarget extends Target
@@ -89,5 +155,13 @@ class TestTarget extends Target
     {
         TargetTest::$messages = array_merge(TargetTest::$messages, $this->messages);
         $this->messages = [];
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function getContextMessage()
+    {
+        return parent::getContextMessage();
     }
 }

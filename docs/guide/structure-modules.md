@@ -125,7 +125,7 @@ Your module may also declare commands, that will be available through the [Conso
 In order for the command line utility to see your commands, you will need to change the [[yii\base\Module::controllerNamespace]]
 property, when Yii is executed in the console mode, and point it to your commands namespace.
 
-One way to achieve that is to test the instance type of the Yii application in the module's `init` method:
+One way to achieve that is to test the instance type of the Yii application in the module's `init()` method:
 
 ```php
 public function init()

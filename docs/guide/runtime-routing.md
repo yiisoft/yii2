@@ -105,6 +105,12 @@ in the application configuration like the following:
 ];
 ```
 
+Similar to the default route of the application, there is also a default route for modules, so for example if there
+is a `user` module and the request is parsed into the route `user` the modules [[yii\base\Module::defaultRoute|defaultRoute]]
+is used to determine the controller. By default the controller name is `default`. If no action is specified in [[yii\base\Module::defaultRoute|defaultRoute]],
+the [[yii\base\Controller::defaultAction|defaultAction]] property of the controller is used to determine the action.
+In this example, the full route would be `user/default/index`.
+
 
 ### `catchAll` Route <span id="catchall-route"></span>
 

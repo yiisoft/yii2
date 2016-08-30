@@ -147,7 +147,7 @@
         setSelectionColumn: function (options) {
             var $grid = $(this);
             var id = $(this).attr('id');
-            if (gridData.id === undefined) {
+            if (gridData[id] === undefined) {
                 gridData[id] = {};
             }
             gridData[id].selectionColumn = options.name;
@@ -155,12 +155,13 @@
                 return;
             }
             var checkAll = "#" + id + " input[name='" + options.checkAll + "']";
-            var inputs = "#" + id + " input[name='" + options.name + "']";
+            var inputs = options.class ? "input." + options.class : "input[name='" + options.name + "']";
+            var inputsEnabled = "#" + id + " " + inputs + ":enabled";
             $(document).off('click.yiiGridView', checkAll).on('click.yiiGridView', checkAll, function () {
-                $grid.find("input[name='" + options.name + "']:enabled").prop('checked', this.checked);
+                $grid.find(inputs + ":enabled").prop('checked', this.checked);
             });
-            $(document).off('click.yiiGridView', inputs + ":enabled").on('click.yiiGridView', inputs + ":enabled", function () {
-                var all = $grid.find("input[name='" + options.name + "']").length == $grid.find("input[name='" + options.name + "']:checked").length;
+            $(document).off('click.yiiGridView', inputsEnabled).on('click.yiiGridView', inputsEnabled, function () {
+                var all = $grid.find(inputs).length == $grid.find(inputs + ":checked").length;
                 $grid.find("input[name='" + options.checkAll + "']").prop('checked', all);
             });
         },

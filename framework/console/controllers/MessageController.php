@@ -84,12 +84,8 @@ class MessageController extends Controller
     /**
      * @var array list of patterns that specify which files/directories should NOT be processed.
      * If empty or not set, all files/directories will be processed.
-     * A path matches a pattern if it contains the pattern string at its end. For example,
-     * '/a/b' will match all files and directories ending with '/a/b';
-     * the '*.svn' will match all files and directories whose name ends with '.svn'.
-     * and the '.svn' will match all files and directories named exactly '.svn'.
-     * Note, the '/' characters in a pattern matches both '/' and '\'.
-     * See helpers/FileHelper::findFiles() description for more details on pattern matching rules.
+     * See helpers/FileHelper::findFiles() description for pattern matching rules.
+     * If a file/directory matches both a pattern in "only" and "except", it will NOT be processed.
      */
     public $except = [
         '.svn',
@@ -104,7 +100,7 @@ class MessageController extends Controller
     /**
      * @var array list of patterns that specify which files (not directories) should be processed.
      * If empty or not set, all files will be processed.
-     * Please refer to "except" for details about the patterns.
+     * See helpers/FileHelper::findFiles() description for pattern matching rules.
      * If a file/directory matches both a pattern in "only" and "except", it will NOT be processed.
      */
     public $only = ['*.php'];
@@ -215,7 +211,7 @@ class MessageController extends Controller
  * You may modify this file to suit your needs.
  *
  * You can use 'yii {$this->id}/{$this->action->id}-template' command to create
- * template configuration file with detaild description for each parameter.
+ * template configuration file with detailed description for each parameter.
  */
 return $array;
 
@@ -453,10 +449,10 @@ EOD;
 
         $subject = file_get_contents($fileName);
         $messages = [];
+        $tokens = token_get_all($subject);
         foreach ((array) $translator as $currentTranslator) {
             $translatorTokens = token_get_all('<?php ' . $currentTranslator);
             array_shift($translatorTokens);
-            $tokens = token_get_all($subject);
             $messages = array_merge_recursive($messages, $this->extractMessagesFromTokens($tokens, $translatorTokens, $ignoreCategories));
         }
 
@@ -644,6 +640,7 @@ EOD;
      * @param boolean $sort if translations should be sorted
      * @param string $category message category
      * @param boolean $markUnused if obsolete translations should be marked
+     * @return int exit code
      */
     protected function saveMessagesCategoryToPHP($messages, $fileName, $overwrite, $removeUnused, $sort, $category, $markUnused)
     {
@@ -654,7 +651,7 @@ EOD;
             ksort($existingMessages);
             if (array_keys($existingMessages) === $messages && (!$sort || array_keys($rawExistingMessages) === $messages)) {
                 $this->stdout("Nothing new in \"$category\" category... Nothing to save.\n\n", Console::FG_GREEN);
-                return;
+                return self::EXIT_CODE_NORMAL;
             }
             unset($rawExistingMessages);
             $merged = [];
@@ -855,11 +852,11 @@ EOD;
             foreach ($msgs as $message) {
                 $merged[$category . chr(4) . $message] = '';
             }
-            ksort($merged);
             $this->stdout("Category \"$category\" merged.\n");
             $hasSomethingToWrite = true;
         }
         if ($hasSomethingToWrite) {
+            ksort($merged);
             $poFile->save($file, $merged);
             $this->stdout("Translation saved.\n", Console::FG_GREEN);
         } else {

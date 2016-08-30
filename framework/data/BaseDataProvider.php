@@ -163,7 +163,7 @@ abstract class BaseDataProvider extends Component implements DataProviderInterfa
      * Returns the pagination object used by this data provider.
      * Note that you should call [[prepare()]] or [[getModels()]] first to get correct values
      * of [[Pagination::totalCount]] and [[Pagination::pageCount]].
-     * @return Pagination|boolean the pagination object. If this is false, it means the pagination is disabled.
+     * @return Pagination|false the pagination object. If this is false, it means the pagination is disabled.
      */
     public function getPagination()
     {
@@ -203,6 +203,7 @@ abstract class BaseDataProvider extends Component implements DataProviderInterfa
     }
 
     /**
+     * Returns the sorting object used by this data provider.
      * @return Sort|boolean the sorting object. If this is false, it means the sorting is disabled.
      */
     public function getSort()

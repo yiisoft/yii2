@@ -89,7 +89,7 @@ Yii supports a wide range of cache storage. The following is a summary:
   the corresponding cache component. In both cases, you may use the same code
   `Yii::$app->cache->get($key)` to attempt retrieving data from the cache without worrying that
   `Yii::$app->cache` might be `null`.
-* [[yii\caching\FileCache]]: uses standard files to store cached data. This is particular suitable
+* [[yii\caching\FileCache]]: uses standard files to store cached data. This is particularly suitable
   to cache large chunk of data, such as page content.
 * [[yii\caching\MemCache]]: uses PHP [memcache](http://php.net/manual/en/book.memcache.php)
   and [memcached](http://php.net/manual/en/book.memcached.php) extensions. This option can be considered as
@@ -99,10 +99,6 @@ Yii supports a wide range of cache storage. The following is a summary:
   (redis version 2.6.12 or higher is required).
 * [[yii\caching\WinCache]]: uses PHP [WinCache](http://iis.net/downloads/microsoft/wincache-extension)
   ([see also](http://php.net/manual/en/book.wincache.php)) extension.
-* [[yii\caching\XCache]]: uses PHP [XCache](http://xcache.lighttpd.net/) extension.
-* [[yii\caching\ZendDataCache]]: uses
-  [Zend Data Cache](http://files.zend.com/help/Zend-Server-6/zend-server.htm#data_cache_component.htm)
-  as the underlying caching medium.
 
 
 > Tip: You may use different cache storage in the same application. A common strategy is to use memory-based
@@ -227,7 +223,7 @@ $cache->set($key, $data, 30, $dependency);
 
 // The cache will check if the data has expired.
 // It will also check if the associated dependency was changed.
-// It will return false if any of these conditions is met.
+// It will return false if any of these conditions are met.
 $data = $cache->get($key);
 ```
 

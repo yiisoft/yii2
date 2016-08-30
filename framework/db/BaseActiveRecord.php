@@ -421,7 +421,7 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
      */
     public function hasAttribute($name)
     {
-        return isset($this->_attributes[$name]) || in_array($name, $this->attributes());
+        return isset($this->_attributes[$name]) || in_array($name, $this->attributes(), true);
     }
 
     /**
@@ -686,7 +686,7 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
         }
 
         $values = $this->getDirtyAttributes($attrs);
-        if (empty($values)) {
+        if (empty($values) || $this->getIsNewRecord()) {
             return 0;
         }
 

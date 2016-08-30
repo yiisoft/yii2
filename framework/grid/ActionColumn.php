@@ -8,7 +8,6 @@
 namespace yii\grid;
 
 use Yii;
-use Closure;
 use yii\helpers\Html;
 use yii\helpers\Url;
 

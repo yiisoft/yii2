@@ -132,7 +132,7 @@ class FragmentCache extends Widget
 
     /**
      * Returns the cached content if available.
-     * @return string|boolean the cached content. False is returned if valid content is not found in the cache.
+     * @return string|false the cached content. False is returned if valid content is not found in the cache.
      */
     public function getCachedContent()
     {

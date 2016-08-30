@@ -37,9 +37,9 @@ class ErrorHandler extends \yii\base\ErrorHandler
      */
     public $maxTraceSourceLines = 13;
     /**
-     * @var string the route (e.g. 'site/error') to the controller action that will be used
+     * @var string the route (e.g. `site/error`) to the controller action that will be used
      * to display external errors. Inside the action, it can retrieve the error information
-     * using `Yii::$app->errorHandler->exception. This property defaults to null, meaning ErrorHandler
+     * using `Yii::$app->errorHandler->exception`. This property defaults to null, meaning ErrorHandler
      * will handle the error display.
      */
     public $errorAction;
@@ -423,9 +423,8 @@ class ErrorHandler extends \yii\base\ErrorHandler
                 $args[$key] = "<span class=\"number\">$key</span> => $args[$key]";
             }
         }
-        $out = implode(', ', $args);
 
-        return $out;
+        return implode(', ', $args);
     }
 
     /**

@@ -24,7 +24,7 @@ and you have already created the [active record](db-active-record.md) class `app
 
 ## Creating a Controller <span id="creating-controller"></span>
 
-First, create a [controller](structure-controllers.md) class `app\controllers\UserController` as follows,
+First, create a [controller](structure-controllers.md) class `app\controllers\UserController` as follows:
 
 ```php
 namespace app\controllers;
@@ -44,7 +44,7 @@ as `app\models\User`, the controller knows which model can be used for fetching 
 
 ## Configuring URL Rules <span id="configuring-url-rules"></span>
 
-Then, modify the configuration about the `urlManager` component in your application configuration:
+Then, modify the configuration of the `urlManager` component in your application configuration:
 
 ```php
 'urlManager' => [
@@ -94,7 +94,7 @@ for accessing the user data. The APIs you have created include:
 * `OPTIONS /users/123`: show the supported verbs regarding endpoint `/users/123`.
 
 > Info: Yii will automatically pluralize controller names for use in endpoints.
-> You can configure this using the [[yii\rest\UrlRule::$pluralize]]-property.
+> You can configure this using the [[yii\rest\UrlRule::$pluralize]] property.
 
 You may access your APIs with the `curl` command like the following,
 
@@ -175,7 +175,7 @@ Content-Type: application/json; charset=UTF-8
 > Tip: You may also access your APIs via Web browser by entering the URL `http://localhost/users`.
   However, you may need some browser plugins to send specific request headers.
 
-As you can see, in the response headers, there are information about the total count, page count, etc.
+As you can see, in the response headers, there is information about the total count, page count, etc.
 There are also links that allow you to navigate to other pages of data. For example, `http://localhost/users?page=2`
 would give you the next page of the user data.
 

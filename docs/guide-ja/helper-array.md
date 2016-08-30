@@ -207,7 +207,7 @@ $array = [
     ['id' => '123', 'name' => 'aaa', 'class' => 'x'],
     ['id' => '124', 'name' => 'bbb', 'class' => 'x'],
     ['id' => '345', 'name' => 'ccc', 'class' => 'y'],
-);
+];
 
 $result = ArrayHelper::map($array, 'id', 'name');
 // 結果は次のようになります
@@ -368,16 +368,17 @@ $data = ArrayHelper::toArray($posts, [
 ある要素が配列の中に存在するかどうか、また、一連の要素が配列のサブセットであるかどうか、ということを調べる必要がある場合がよくあります。
 PHP は `in_array()` を提供していますが、これはサブセットや `\Traversable` なオブジェクトをサポートしていません。
 
-この種のチェックを助けるために、[[yii\base\ArrayHelper]] は [[yii\base\ArrayHelper::isIn()|isIn()]]
-および [[yii\base\ArrayHelper::isSubset()|isSubset()]] を [[in_array()]] と同じシグニチャで提供しています。
+この種のチェックを助けるために、[[yii\helpers\ArrayHelper]] は [[yii\helpers\ArrayHelper::isIn()|isIn()]]
+および [[yii\helpers\ArrayHelper::isSubset()|isSubset()]] を
+[in_array()](http://php.net/manual/en/function.in-array.php) と同じシグニチャで提供しています。
 
 ```php
 // true
 ArrayHelper::isIn('a', ['a']);
 // true
-ArrayHelper::isIn('a', new(ArrayObject['a']));
+ArrayHelper::isIn('a', new ArrayObject(['a']));
 
-// true 
-ArrayHelper::isSubset(new(ArrayObject['a', 'c']), new(ArrayObject['a', 'b', 'c'])
+// true
+ArrayHelper::isSubset(new ArrayObject(['a', 'c']), new ArrayObject(['a', 'b', 'c']));
 
 ```

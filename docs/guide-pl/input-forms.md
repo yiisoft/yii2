@@ -113,7 +113,7 @@ tak jak było to zrobione w przykładzie wyżej z [[yii\helpers\Html::submitButt
 Tworzenie listy rozwijanej <span id="creating-activeform-dropdownlist"></span>
 ---------------------
 
-Możemy użyć metody klasy ActiveForm [yii\widgets\ActiveForm::dropDownList()|dropDownList()] do utworzenia rozwijanej listy:
+Możemy użyć metody klasy ActiveForm [[yii\widgets\ActiveForm::dropDownList()|dropDownList()]] do utworzenia rozwijanej listy:
 
 ```php
 use app\models\ProductCategory;

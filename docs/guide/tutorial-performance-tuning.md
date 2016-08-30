@@ -138,7 +138,7 @@ If you have [Redis](http://redis.io/) on your server, it is highly recommended y
 
 ## Optimizing Databases <span id="optimizing-databases"></span>
 
-Execute DB queries and fetching data from databases is often the main performance bottleneck in
+Executing DB queries and fetching data from databases are often the main performance bottleneck in
 a Web application. Although using [data caching](caching-data.md) techniques may alleviate the performance hit,
 it does not fully solve the problem. When the database contains enormous amounts of data and the cached data is invalid, 
 fetching the latest data could be prohibitively expensive without proper database and query design.
@@ -198,7 +198,7 @@ There are two methods to process data offline: pull and push.
 In the pull method, whenever a request involves some complex operation, you create a task and save it in a persistent 
 storage, such as database. You then use a separate process (such as a cron job) to pull the tasks and process them.
 This method is easy to implement, but it has some drawbacks. For example, the task process needs to periodically pull
-from the task storage. If the pull frequency is too low, the tasks may be processed with great delay; but if the frequency
+from the task storage. If the pull frequency is too low, the tasks may be processed with great delay, but if the frequency
 is too high, it will introduce high overhead.
 
 In the push method, you would use a message queue (e.g. RabbitMQ, ActiveMQ, Amazon SQS, etc.) to manage the tasks. 
