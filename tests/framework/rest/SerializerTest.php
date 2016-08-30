@@ -4,6 +4,7 @@ namespace yiiunit\framework\rest;
 
 use yii\base\Model;
 use yii\data\ArrayDataProvider;
+use yii\helpers\Json;
 use yii\rest\Serializer;
 use yiiunit\TestCase;
 
@@ -72,6 +73,19 @@ class SerializerTest extends TestCase
         $this->assertSame([
             'field1' => 'test',
         ], $serializer->serialize($model));
+    }
+
+    public function testSerializeModelDataEmptyObject()
+    {
+        TestModel::$fields = ['field1' => function() {
+            return new \stdClass();
+        }];
+        TestModel::$extraFields = [];
+
+        $serializer = new Serializer();
+        $model = new TestModel();
+
+        $this->assertSame('{"field1":{}}', Json::encode($serializer->serialize($model)));
     }
 
     public function testExpand()

@@ -242,7 +242,7 @@ class Serializer extends Component
             return null;
         } else {
             list ($fields, $expand) = $this->getRequestedFields();
-            return $model->toArray($fields, $expand);
+            return $model->toArray($fields, $expand, false);
         }
     }
 
