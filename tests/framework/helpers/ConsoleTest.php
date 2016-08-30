@@ -12,6 +12,12 @@ use yiiunit\TestCase;
  */
 class ConsoleTest extends TestCase
 {
+
+    protected function setUp() {
+        parent::setUp();
+        $this->mockApplication();
+    }
+
     public function testStripAnsiFormat()
     {
         ob_start();
@@ -148,6 +154,27 @@ EXPECTED;
             [
                 ['testcontent1', 'testcontent2', 'testcontent3'],
                 ['testcontent21', 'testcontent22', 'testcontent23']
+            ]
+        ));
+
+        // test fulwidth chars
+        // @see https://en.wikipedia.org/wiki/Halfwidth_and_fullwidth_forms
+        $expected = <<<EXPECTED
+╔═════════════════╤═════════════════╤═════════════════╗
+║ test1           │ test2           │ ｔｅｓｔ３      ║
+╟─────────────────┼─────────────────┼─────────────────╢
+║ testcontent1    │ testcontent2    │ testcontent3    ║
+╟─────────────────┼─────────────────┼─────────────────╢
+║ testcontent２１ │ testcontent２２ │ testcontent２３ ║
+╚═════════════════╧═════════════════╧═════════════════╝
+
+EXPECTED;
+
+        $this->assertEqualsWithoutLE($expected, Console::table(
+            ['test1', 'test2', 'ｔｅｓｔ３'],
+            [
+                ['testcontent1', 'testcontent2', 'testcontent3'],
+                ['testcontent２１', 'testcontent２２', 'testcontent２３']
             ]
         ));
 
