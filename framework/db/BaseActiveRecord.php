@@ -973,7 +973,7 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
         foreach ($this->attributes() as $name) {
             $this->_attributes[$name] = isset($record->_attributes[$name]) ? $record->_attributes[$name] : null;
         }
-        $this->_oldAttributes = $this->_attributes;
+        $this->_oldAttributes = $record->_oldAttributes;
         $this->_related = [];
         $this->afterRefresh();
 
