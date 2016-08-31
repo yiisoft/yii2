@@ -8,6 +8,7 @@ Yii Framework 2 Change Log
 - Enh #12296: Added value validation to `yii\log\Target::setLevels()` (Mak-Di)
 - Enh #12073: Added the ability to suppress the generation of input hint when it is specified through  `Model::attributeHints()` (PowerGamer1)
 - Bug #7670: Added `UrlNormalizer` for normalizing requests with and without trailing slashes (rob006, cronfy, klimov-paul)
+- Bug #9277: Fixed `yii\console\controllers\AssetController` looses custom options of 'target' bundles (petrabarus, klimov-paul)
 - Bug #9561: Fixed `canGetProperty()` and `canSetProperty()` returns `false` for `yii\db\BaseActiveRecord` attributes (klimov-paul)
 - Bug #11990: Fixed `yii\db\BaseActiveRecord::refresh()` may set incorrect `oldAttributes` values at some cases (only-victor)
 - Bug #12009: Do not render "for" field label attribute for active form RadioList and CheckboxList (shevchik87, samdark)

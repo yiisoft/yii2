@@ -460,13 +460,15 @@ class AssetController extends Controller
         $array = [];
         foreach ($targets as $name => $target) {
             if (isset($this->targets[$name])) {
-                $array[$name] = [
+                $array[$name] = array_merge($this->targets[$name], [
                     'class' => get_class($target),
+                    'sourcePath' => null,
                     'basePath' => $this->targets[$name]['basePath'],
                     'baseUrl' => $this->targets[$name]['baseUrl'],
                     'js' => $target->js,
                     'css' => $target->css,
-                ];
+                    'depends' => [],
+                ]);
             } else {
                 if ($this->isBundleExternal($target)) {
                     $array[$name] = $this->composeBundleConfig($target);
