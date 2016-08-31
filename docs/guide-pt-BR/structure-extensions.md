@@ -501,6 +501,8 @@ e podem ser facilmente instalados como descrito na subseção [Usando Extensões
 - [yiisoft/yii2-gii](https://github.com/yiisoft/yii2-gii):
   fornece um gerador de código baseado na Web que é altamente extensível e pode 
   ser usado para gerar rapidamente models (modelos), formulários, módulos, CRUD, etc.
+- [yiisoft/yii2-httpclient](https://github.com/yiisoft/yii2-httpclient):
+  provides an HTTP client.
 - [yiisoft/yii2-imagine](https://github.com/yiisoft/yii2-imagine):
   fornece funções de manipulação de imagens comumente utilizados com base no 
   [Imagine](http://imagine.readthedocs.org/).
