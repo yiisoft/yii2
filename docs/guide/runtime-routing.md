@@ -537,7 +537,7 @@ from URL manager. You can set [[yii\web\UrlManager::$normalizer|UrlManager::$nor
             'enableStrictParsing' => true,
             'suffix' => '.html',
             'normalizer' => [
-                'normalizer' => 'app\web\UrlNormalizer',
+                'normalizer' => 'yii\web\UrlNormalizer',
                 'action' => UrlNormalizer::ACTION_REDIRECT_TEMPORARY, // use temporary redirection instead of permanent
             ],
             'rules' => [
