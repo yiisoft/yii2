@@ -640,7 +640,7 @@ EOL;
         $bundleFile = $this->testFilePath . DIRECTORY_SEPARATOR . 'bundle.php';
 
         // Keep source :
-        $configFile = $this->testFilePath . DIRECTORY_SEPARATOR . 'config2.php';
+        $configFile = $this->testFilePath . DIRECTORY_SEPARATOR . 'config_no_source_delete.php';
         $this->createCompressConfigFile($configFile, $bundles, [
             'deleteSource' => false
         ]);
@@ -656,7 +656,7 @@ EOL;
         $this->assertNotEmpty($files);
 
         // Delete source :
-        $configFile = $this->testFilePath . DIRECTORY_SEPARATOR . 'config2.php';
+        $configFile = $this->testFilePath . DIRECTORY_SEPARATOR . 'config_source_delete.php';
         $this->createCompressConfigFile($configFile, $bundles, [
             'deleteSource' => true
         ]);
