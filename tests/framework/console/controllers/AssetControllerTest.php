@@ -671,6 +671,69 @@ EOL;
         ]);
         $this->assertEmpty($files);
     }
+
+    /**
+     * @depends testActionCompress
+     *
+     * @see https://github.com/yiisoft/yii2/issues/10567
+     */
+    public function testActionCompressOverrideAsExternal()
+    {
+        // Given :
+        $cssFiles = [
+            'css/override_external.css' => 'body {
+                padding-top: 20px;
+                padding-bottom: 60px;
+            }',
+        ];
+        $this->createAssetSourceFiles($cssFiles);
+
+        $jsFiles = [
+            'js/override_external.js' => "function test() {
+                alert('Test message');
+            }",
+        ];
+        //$this->createAssetSourceFiles($cssFiles, $sourcePath);
+        //$this->createAssetSourceFiles($jsFiles, $sourcePath);
+        $assetBundleClassName = $this->declareAssetBundleClass([
+            'class' => 'AssetOverrideExternal',
+            'css' => array_keys($cssFiles),
+            'js' => array_keys($jsFiles),
+        ]);
+
+        $bundles = [
+            $assetBundleClassName
+        ];
+        $bundleFile = $this->testFilePath . DIRECTORY_SEPARATOR . 'bundle_override_as_external.php';
+
+        // Keep source :
+        $configFile = $this->testFilePath . DIRECTORY_SEPARATOR . 'config_override_as_external.php';
+        $assetBundleOverrideConfig = [
+            'sourcePath' => null,
+            'basePath' => null,
+            'baseUrl' => null,
+            'css' => [
+                '//some.cdn.com/js/override_external.css'
+            ],
+            'js' => [
+                '//some.cdn.com/js/override_external.js'
+            ],
+        ];
+        $this->createCompressConfigFile($configFile, $bundles, [
+            'assetManager' => [
+                'bundles' => [
+                    $assetBundleClassName => $assetBundleOverrideConfig,
+                ],
+            ]
+        ]);
+
+        $this->runAssetControllerAction('compress', [$configFile, $bundleFile]);
+
+        $bundlesConfig = require $bundleFile;
+        
+        $this->assertEquals($assetBundleOverrideConfig['css'], $bundlesConfig[$assetBundleClassName]['css']);
+        $this->assertEquals($assetBundleOverrideConfig['js'], $bundlesConfig[$assetBundleClassName]['js']);
+    }
 }
 
 /**

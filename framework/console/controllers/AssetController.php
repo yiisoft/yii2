@@ -418,10 +418,9 @@ class AssetController extends Controller
             if (!$this->isBundleExternal($sourceBundle)) {
                 $depends[] = $target;
             }
-            $targets[$bundle] = Yii::createObject([
-                'class' => strpos($bundle, '\\') !== false ? $bundle : 'yii\\web\\AssetBundle',
-                'depends' => $depends,
-            ]);
+            $targetBundle = clone $sourceBundle;
+            $targetBundle->depends = $depends;
+            $targets[$bundle] = $targetBundle;
         }
 
         return $targets;
