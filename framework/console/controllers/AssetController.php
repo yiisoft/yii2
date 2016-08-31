@@ -41,6 +41,7 @@ use yii\web\AssetBundle;
  * differs in getter and setter. See [[getAssetManager()]] and [[setAssetManager()]] for details.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
+ * @author Paul Klimov <klimov.paul@gmail.com>
  * @since 2.0
  */
 class AssetController extends Controller
@@ -120,6 +121,12 @@ class AssetController extends Controller
      * @see https://github.com/yui/yuicompressor/
      */
     public $cssCompressor = 'java -jar yuicompressor.jar --type css {from} -o {to}';
+    /**
+     * @var boolean whether to delete asset source files after compression.
+     * This option affects only those bundles, which have [[\yii\web\AssetBundle::sourcePath]] is set.
+     * @since 2.0.10
+     */
+    public $deleteSource = false;
 
     /**
      * @var array|\yii\web\AssetManager [[\yii\web\AssetManager]] instance or its array configuration, which will be used
@@ -146,6 +153,11 @@ class AssetController extends Controller
             if (!isset($options['baseUrl'])) {
                 throw new Exception("Please specify 'baseUrl' for the 'assetManager' option.");
             }
+
+            if (!isset($options['forceCopy'])) {
+                $options['forceCopy'] = true;
+            }
+
             $this->_assetManager = Yii::createObject($options);
         }
 
@@ -190,6 +202,10 @@ class AssetController extends Controller
 
         $targets = $this->adjustDependency($targets, $bundles);
         $this->saveTargets($targets, $bundleFile);
+
+        if ($this->deleteSource) {
+            $this->deletePublishedAssets($bundles);
+        }
     }
 
     /**
@@ -683,6 +699,8 @@ return [
     'jsCompressor' => {$jsCompressor},
     // Adjust command/callback for CSS files compressing:
     'cssCompressor' => {$cssCompressor},
+    // Whether to delete asset source after compression:
+    'deleteSource' => false,
     // The list of asset bundles to compress:
     'bundles' => [
         // 'app\assets\AppAsset',
@@ -781,5 +799,33 @@ EOD;
         }
         $dependencyTrace[] = $circularDependencyName;
         return implode(' -> ', $dependencyTrace);
+    }
+
+    /**
+     * Deletes bundle asset files, which have been published from `sourcePath`.
+     * @param \yii\web\AssetBundle[] $bundles asset bundles to be processed.
+     * @since 2.0.10
+     */
+    private function deletePublishedAssets($bundles)
+    {
+        $this->stdout("Deleting source files...\n");
+
+        if ($this->getAssetManager()->linkAssets) {
+            $this->stdout("`AssetManager::linkAssets` option is enabled. Deleting of source files canceled.\n", Console::FG_YELLOW);
+            return;
+        }
+
+        foreach ($bundles as $bundle) {
+            if ($bundle->sourcePath !== null) {
+                foreach ($bundle->js as $jsFile) {
+                    @unlink($bundle->basePath . DIRECTORY_SEPARATOR . $jsFile);
+                }
+                foreach ($bundle->css as $cssFile) {
+                    @unlink($bundle->basePath . DIRECTORY_SEPARATOR . $cssFile);
+                }
+            }
+        }
+
+        $this->stdout("Source files deleted.\n", Console::FG_GREEN);
     }
 }
