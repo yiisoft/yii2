@@ -16,21 +16,43 @@ use yii\web\BadRequestHttpException;
 use yii\web\NotAcceptableHttpException;
 use yii\web\Request;
 
+/**
+ * Filter represents information relevant to filtering.
+ * 
+ * When data needs to be filtered according to one or several fields, we can use Filter to represent the 
+ * filtering information.
+ * 
+ * @author Nik Samokhvalov <nik@samokhvalov.info>
+ * @since 2.0.10
+ */
 class Filter extends Object
 {
+    /**
+     * @var array list of filter rules. The rules can be a little. Syntax:
+     * 
+     * - * — allowed filtering by all fields (by default),
+     * - <field> — allowed filtering by field with name <field>,
+     * - !<field> — not allowed filtering by field with name <field>.
+     */
+    public $fields = ['*'];
     /**
      * @var string the name of the parameter that specifies which attributes to be sorted
      * in which direction. Defaults to 'filter'.
      */
     public $filterParam = 'filter';
     /**
-     * @var array
+     * @var array builders for operators from the requested filter. The key of array is operator or system name 
+     * (for example, builder for like or simple conditions), the value — name of the method builder.
      */
-    public $operators = ['>=', '<=', '>', '<', '!='];
-    /**
-     * @var array
-     */
-    public $fields = ['*'];
+    public $builders = [
+        '>=' => 'buildSimpleCondition',
+        '<=' => 'buildSimpleCondition',
+        '>' => 'buildSimpleCondition',
+        '<' => 'buildSimpleCondition',
+        '!=' => 'buildNeqCondition',
+        'simple' => 'buildSimpleCondition',
+        'like' => 'buildLikeCondition'
+    ];
 
     /**
      * @param string $modelClass
@@ -39,34 +61,25 @@ class Filter extends Object
      */
     public function getConditions($modelClass)
     {
-        $requestFilter = $this->getRequestFilter();
-        $filter = [];
+        $filter = $this->getRequestFilter();
+        $conditions = [];
 
-        if (!empty($requestFilter)) {
+        if (!empty($filter)) {
             /** @var $model ActiveRecord */
             $model = new $modelClass;
 
-            foreach ($requestFilter as $field => $value) {
+            foreach ($filter as $field => $value) {
                 list($operator, $field) = $this->prepareField($field);
 
                 if (!$this->isAcceptableField($field) || !$model->hasAttribute($field)) {
                     throw new NotAcceptableHttpException('Filter by field "' . $field . '" unsupported.');
                 }
-                                
-                if ($operator) {
-                    if (is_array($value) && !empty($value) && $operator === '!=') {
-                        $operator = 'NOT IN';
-                    }
-                    $filter[] = [$operator, $field, $value];
-                } elseif (substr($value, 0, 1) === '%' || substr($value, -1, 1) === '%') {
-                    $filter[] = ['like', $field, $value, false];
-                } else {
-                    $filter[] = [$field => $value];
-                }
+                
+                $conditions[] = $this->buildCondition($operator, $field, $value);
             }
         }
         
-        return $filter;
+        return $conditions;
     }
 
     /**
@@ -96,7 +109,7 @@ class Filter extends Object
      */
     private function prepareField($field)
     {
-        foreach ($this->operators as $operator) {
+        foreach ($this->builders as $operator => $builder) {
             if (strpos($field, $operator) === 0) {
                 return [$operator, substr($field, strlen($operator))];
             }
@@ -118,5 +131,41 @@ class Filter extends Object
         }
         
         return true;
+    }
+
+    public function buildCondition($operator = null, $field, $value)
+    {
+        if ($operator !== null && isset($this->builders[$operator])) {
+            $method = $this->builders[$operator];
+        } elseif (is_string($value) && (substr($value, 0, 1) === '%' || substr($value, -1, 1) === '%')) {
+            $method = $this->builders['like'];
+        } else {
+            $method = $this->builders['simple'];
+        }
+
+        return $this->$method($operator, $field, $value);
+    }
+
+    protected function buildSimpleCondition($operator, $field, $value)
+    {
+        if ($operator) {
+            return [$operator, $field, $value];
+        } else {
+            return [$field => $value];
+        }
+    }
+
+    protected function buildNeqCondition($operator, $field, $value)
+    {
+        if (is_array($value) && !empty($value)) {
+            return ['NOT IN', $field, $value];
+        } else {
+            return ['NOT', [$field => $value]];
+        }
+    }
+    
+    protected function buildLikeCondition($operator, $field, $value)
+    {
+        return ['like', $field, $value, false];
     }
 }
