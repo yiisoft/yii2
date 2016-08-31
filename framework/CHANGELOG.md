@@ -300,6 +300,7 @@ Yii Framework 2 Change Log
 - Enh #9573: Added `yii\rbac\ManagerInterface::getUserIdsByRole()` and implementations (samdark)
 - Enh #9635: Added default CSS class for `\yii\grid\ActionColumn` header (arogachev, dynasource)
 - Enh #9643: Added migrations for DB cache (mdmunir)
+- Enh #9708: Added deleting original js/css files from web accessible folder afte run asset/compression command (pana1990)
 - Enh #9711: Added `yii\widgets\LinkPager::$pageCssClass` that allows to set default page class (ShNURoK42)
 - Enh #9733: Added Unprocessable Entity HTTP Exception (janfrs)
 - Enh #9762: Added `JsonResponseFormatter::$encodeOptions` and `::$prettyPrint` for better JSON output formatting (cebe)

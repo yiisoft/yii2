@@ -146,6 +146,7 @@ class AssetController extends Controller
             if (!isset($options['baseUrl'])) {
                 throw new Exception("Please specify 'baseUrl' for the 'assetManager' option.");
             }
+            $options['forceCopy'] = true;
             $this->_assetManager = Yii::createObject($options);
         }
 
@@ -190,6 +191,21 @@ class AssetController extends Controller
 
         $targets = $this->adjustDependency($targets, $bundles);
         $this->saveTargets($targets, $bundleFile);
+
+        foreach ($bundles as $bundle) {
+            if ($bundle->sourcePath !== null) {
+                if (!empty($bundle->js)) {
+                    foreach ($bundle->js as $jsFile) {
+                        @unlink($bundle->basePath . DIRECTORY_SEPARATOR . $jsFile);
+                    }
+                }
+                if (!empty($bundle->css)) {
+                    foreach ($bundle->css as $cssFile) {
+                        @unlink($bundle->basePath . DIRECTORY_SEPARATOR . $cssFile);
+                    }
+                }
+            }
+        }
     }
 
     /**
