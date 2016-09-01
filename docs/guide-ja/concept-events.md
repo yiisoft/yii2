@@ -227,7 +227,7 @@ Event::on(ActiveRecord::className(), ActiveRecord::EVENT_AFTER_INSERT, function 
 use yii\base\Event;
 
 Event::on(Foo::className(), Foo::EVENT_HELLO, function ($event) {
-    echo $event->sender;  // "app\models\Foo" を表示
+    var_dump($event->sender);  // "null" を表示
 });
 
 Event::trigger(Foo::className(), Foo::EVENT_HELLO);

@@ -237,7 +237,7 @@ invocación de los gestores de eventos a nivel de clase.
 use yii\base\Event;
 
 Event::on(Foo::className(), Foo::EVENT_HELLO, function ($event) {
-    echo $event->sender;  // displays "app\models\Foo"
+    var_dump($event->sender);  // displays "null"
 });
 
 Event::trigger(Foo::className(), Foo::EVENT_HELLO);

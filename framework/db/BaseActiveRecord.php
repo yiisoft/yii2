@@ -231,6 +231,28 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
     }
 
     /**
+     * @inheritdoc
+     */
+    public function canGetProperty($name, $checkVars = true, $checkBehaviors = true)
+    {
+        if ($this->hasAttribute($name)) {
+            return true;
+        }
+        return parent::canGetProperty($name, $checkVars, $checkBehaviors);
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function canSetProperty($name, $checkVars = true, $checkBehaviors = true)
+    {
+        if ($this->hasAttribute($name)) {
+            return true;
+        }
+        return parent::canSetProperty($name, $checkVars, $checkBehaviors);
+    }
+
+    /**
      * PHP getter magic method.
      * This method is overridden so that attributes and related objects can be accessed like properties.
      *
@@ -973,7 +995,7 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
         foreach ($this->attributes() as $name) {
             $this->_attributes[$name] = isset($record->_attributes[$name]) ? $record->_attributes[$name] : null;
         }
-        $this->_oldAttributes = $this->_attributes;
+        $this->_oldAttributes = $record->_oldAttributes;
         $this->_related = [];
         $this->afterRefresh();
 

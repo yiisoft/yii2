@@ -420,6 +420,8 @@ se describe en la subsección [Uso de Extensiones](#using-extensions)
   [Faker](https://github.com/fzaninotto/Faker) y generar datos automáticamente.
 - [yiisoft/yii2-gii](https://github.com/yiisoft/yii2-gii): proporciona un generador de código basado den Web altamente
   extensible y que puede usarse para generar modelos, formularios, módulos, CRUD, etc. rápidamente.
+- [yiisoft/yii2-httpclient](https://github.com/yiisoft/yii2-httpclient):
+  provides an HTTP client.
 - [yiisoft/yii2-imagine](https://github.com/yiisoft/yii2-imagine): proporciona funciones comunes de manipulación de
   imágenes basadas en [Imagine](http://imagine.readthedocs.org/).
 - [yiisoft/yii2-jui](https://github.com/yiisoft/yii2-jui): proporciona un conjunto de widgets que encapsulan las

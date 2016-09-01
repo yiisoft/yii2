@@ -166,7 +166,7 @@ class Validator extends Component
      *
      * The following example will enable the validator only when the country currently selected is USA:
      *
-     * ```php
+     * ```javascript
      * function (attribute, value) {
      *     return $('#country').val() === 'USA';
      * }

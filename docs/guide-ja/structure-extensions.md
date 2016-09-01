@@ -395,6 +395,8 @@ Yii は下記のコアエクステンションを提供しています。これ�
   ダミーデータを作る [Faker](https://github.com/fzaninotto/Faker) を使うためのサポートを提供します。
 - [yiisoft/yii2-gii](https://github.com/yiisoft/yii2-gii):
   拡張性が非常に高いウェブベースのコードジェネレータを提供します。これを使って、モデル、フォーム、モジュール、CRUD などを迅速に生成することが出来ます。
+- [yiisoft/yii2-httpclient](https://github.com/yiisoft/yii2-httpclient):
+  provides an HTTP client.
 - [yiisoft/yii2-imagine](https://github.com/yiisoft/yii2-imagine):
   [Imagine](http://imagine.readthedocs.org/) に基づいて、使われることの多い画像操作機能を提供します。
 - [yiisoft/yii2-jui](https://github.com/yiisoft/yii2-jui):

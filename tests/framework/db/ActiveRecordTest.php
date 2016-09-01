@@ -1293,4 +1293,18 @@ abstract class ActiveRecordTest extends DatabaseTestCase
         $this->assertTrue($newOrder->getIsNewRecord());
         $this->assertEquals($newTotal, $newOrder->total);
     }
+
+    public function testAttributeAccess()
+    {
+        $model = new Customer();
+
+        $this->assertTrue($model->canSetProperty('name'));
+        $this->assertTrue($model->canGetProperty('name'));
+        $this->assertFalse(isset($model->name));
+
+        $model->name = 'foo';
+        $this->assertTrue(isset($model->name));
+        unset($model->name);
+        $this->assertNull($model->name);
+    }
 }
