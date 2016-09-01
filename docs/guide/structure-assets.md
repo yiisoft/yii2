@@ -245,6 +245,49 @@ the registered bundles and the order of the assets listed in the [[yii\web\Asset
 properties.
 
 
+### Dynamic Asset Bundles <span id="dynamic-asset-bundles"></span>
+
+Being a regular PHP class asset bundle can bear some extra logic related to it and may adjust its internal parameters dynamically.
+For example: you may use som sophisticated JavaScript library, which provides some internationalization packed in separated
+source files: each per each supported language. Thus you will need to add particular '.js' file to your page in order to
+make library translation work. This can be achieved overriding [[yii\web\AssetBundle::init()]] method:
+
+```php
+namespace app\assets;
+
+use yii\web\AssetBundle;
+use Yii;
+
+class SophisticatedAssetBundle extends AssetBundle
+{
+    public $sourcePath = '/path/to/sophisticated/src';
+    public $js = [
+        'sophisticated.js' // file, which is always used
+    ];
+
+    public function init()
+    {
+        parent::init();
+        $this->js[] = 'i18n/' . Yii::$app->language . '.js'; // dynamic file added
+    }
+}
+```
+
+Particular asset bundle can also be adjusted via its instance returned by [[yii\web\AssetBundle::register()]].
+For example:
+
+```php
+use app\assets\SophisticatedAssetBundle;
+use Yii;
+
+$bundle = SophisticatedAssetBundle::register(Yii::$app->view);
+$bundle->js[] = 'i18n/' . Yii::$app->language . '.js'; // dynamic file added
+```
+
+> Note: although dynamic adjustment of the asset bundles is supported, it is a **bad** practice, which may lead to
+  unexpected side effects, and should be avoided if possible.
+
+
 ### Customizing Asset Bundles <span id="customizing-asset-bundles"></span>
 
 Yii manages asset bundles through an application component named `assetManager` which is implemented by [[yii\web\AssetManager]].
@@ -305,6 +348,55 @@ return [
 ```
 
 You can also disable *all* asset bundles by setting [[yii\web\AssetManager::bundles]] as `false`.
+
+Keep in mind that customization made via [[yii\web\AssetManager::bundles]] applied at the creation of the asset bundle, e.g.
+at object constructor stage. Thus any adjustments, which are made to the bundle object after that, will override the mapping,
+which has been setup at [[yii\web\AssetManager::bundles]] level. In particular: adjustments made inside [[yii\web\AssetBundle::init()]]
+method or over the registered bundle object will take precedence over `AssetManager` configuration.
+Here are the examples, where mapping set via [[yii\web\AssetManager::bundles]] makes no effect:
+
+```php
+// Program source code:
+
+namespace app\assets;
+
+use yii\web\AssetBundle;
+use Yii;
+
+class LanguageAssetBundle extends AssetBundle
+{
+    // ...
+
+    public function init()
+    {
+        parent::init();
+        $this->baseUrl = '@web/i18n/' . Yii::$app->language; // can NOT be handled by `AssetManager`!
+    }
+}
+// ...
+
+$bundle = \app\assets\LargeFileAssetBundle::register(Yii::$app->view);
+$bundle->baseUrl = YII_DEBUG ? '@web/large-files': '@web/large-files/minified'; // can NOT be handled by `AssetManager`!
+
+
+// Application config :
+
+return [
+    // ...
+    'components' => [
+        'assetManager' => [
+            'bundles' => [
+                'app\assets\LanguageAssetBundle' => [
+                    'baseUrl' => 'http://some.cdn.com/files/i18n/en' // makes NO effect!
+                ],
+                'app\assets\LargeFileAssetBundle' => [
+                    'baseUrl' => 'http://some.cdn.com/files/large-files' // makes NO effect!
+                ],
+            ],
+        ],
+    ],
+];
+```
 
 
 ### Asset Mapping <span id="asset-mapping"></span>
@@ -583,6 +675,11 @@ return [
 That is, the asset bundle configuration array is saved in `assets-prod.php` for production mode, and
 `assets-dev.php` for non-production mode.
 
+> Note: this asset combining mechanism is based on ability of [[yii\web\AssetManager::bundles]] to override the properties
+  of the registered asset bundles. However, as it already has been said above, this ability does not cover asset bundle
+  adjustments, which are performed at [[yii\web\AssetBundle::init()]] method or after bundle is registered. You should
+  avoid usage of such dynamic bundles during the asset combining.
+
 
 ### Using the `asset` Command <span id="using-asset-command"></span>
 
@@ -610,6 +707,8 @@ return [
     'jsCompressor' => 'java -jar compiler.jar --js {from} --js_output_file {to}',
     // Adjust command/callback for CSS files compressing:
     'cssCompressor' => 'java -jar yuicompressor.jar --type css {from} -o {to}',
+    // Whether to delete asset source after compression:
+    'deleteSource' => false,
     // The list of asset bundles to compress:
     'bundles' => [
         // 'yii\web\YiiAsset',
@@ -656,6 +755,13 @@ yii asset assets.php config/assets-prod.php
 
 The generated configuration file can be included in the application configuration, like described in
 the last subsection.
+
+> Note: in case you customize asset bundles for your application via [[yii\web\AssetManager::bundles]] or
+  [[yii\web\AssetManager::assetMap]] and want this customization to be applied for the compression source files,
+  you should include these options to the `assetManager` section inside asset command configuration file.
+
+> Note: while specifying the compression source, you should avoid usage of the asset bundles, which parameters may be
+  adjusted dynamically (e.g. at `init()` method or after registration), since they may work incorrectly after compression.
 
 
 > Info: Using the `asset` command is not the only option to automate the asset combining and compressing process.
