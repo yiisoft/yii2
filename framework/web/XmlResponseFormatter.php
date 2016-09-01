@@ -37,7 +37,7 @@ class XmlResponseFormatter extends Component implements ResponseFormatterInterfa
      */
     public $encoding;
     /**
-     * @var string the name of the root element.
+     * @var string the name of the root element or null.
      */
     public $rootTag = 'response';
     /**
@@ -50,7 +50,10 @@ class XmlResponseFormatter extends Component implements ResponseFormatterInterfa
      * @since 2.0.7
      */
     public $useTraversableAsArray = true;
-
+    /**
+     *  @var boolean mandatory addition of the tag of object name
+     */
+    public $objectTags = true;
 
     /**
      * Formats the specified response.
@@ -65,9 +68,13 @@ class XmlResponseFormatter extends Component implements ResponseFormatterInterfa
         $response->getHeaders()->set('Content-Type', $this->contentType);
         if ($response->data !== null) {
             $dom = new DOMDocument($this->version, $charset);
-            $root = new DOMElement($this->rootTag);
-            $dom->appendChild($root);
-            $this->buildXml($root, $response->data);
+            if ($this->rootTag !== null) {
+                $root = new DOMElement($this->rootTag);
+                $dom->appendChild($root);
+                $this->buildXml($root, $response->data);
+            } else {
+                $this->buildXml($dom, $response->data);
+            }
             $response->content = $dom->saveXML();
         }
     }
@@ -95,8 +102,12 @@ class XmlResponseFormatter extends Component implements ResponseFormatterInterfa
                 }
             }
         } elseif (is_object($data)) {
-            $child = new DOMElement(StringHelper::basename(get_class($data)));
-            $element->appendChild($child);
+            if ($this->objectTags) {
+                $child = new DOMElement(StringHelper::basename(get_class($data)));
+                $element->appendChild($child);    
+            } else {
+                $child = $element;
+            }
             if ($data instanceof Arrayable) {
                 $this->buildXml($child, $data->toArray());
             } else {
