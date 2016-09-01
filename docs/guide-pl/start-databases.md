@@ -213,7 +213,7 @@ Aby zobaczyć jak działa powyższy kod, użyj przeglądarki i przejdź pod poda
 http://hostname/index.php?r=country%2Findex
 ```
 
-![Lista krajów](../guide/images/start-country-list.png)
+![Lista krajów](images/start-country-list.png)
 
 Na początku zobaczysz stronę pokazującą pięć krajów. Poniżej listy znajduje się paginacja z czterema przyciskami.
 Jeśli klikniesz przycisk "2", zobaczysz stronę wyświetlającą pięć innych krajów z bazy danych: druga strona wierszy.

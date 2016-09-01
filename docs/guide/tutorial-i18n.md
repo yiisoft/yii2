@@ -9,14 +9,14 @@ translation, view translation, date and number formatting.
 
 ## Locale and Language <span id="locale-language"></span>
 
-Locale is a set of parameters that defines the user's language, country and any special variant preferences 
-that the user wants to see in their user interface. It is usually identified by an ID consisting of a language 
-ID and a region ID. For example, the ID `en-US` stands for the locale of English and United States. 
-For consistency, all locale IDs used in Yii applications should be canonicalized to the format of 
+Locale is a set of parameters that defines the user's language, country and any special variant preferences
+that the user wants to see in their user interface. It is usually identified by an ID consisting of a language
+ID and a region ID. For example, the ID `en-US` stands for the locale of English and United States.
+For consistency, all locale IDs used in Yii applications should be canonicalized to the format of
 `ll-CC`, where `ll` is a two- or three-letter lowercase language code according to
 [ISO-639](http://www.loc.gov/standards/iso639-2/) and `CC` is a two-letter country code according to
 [ISO-3166](http://www.iso.org/iso/en/prods-services/iso3166ma/02iso-3166-code-lists/list-en1.html).
-More details about locale can be found in the 
+More details about locale can be found in the
 [documentation of the ICU project](http://userguide.icu-project.org/locale#TOC-The-Locale-Concept).
 
 In Yii, we often use the term "language" to refer to a locale.
@@ -52,6 +52,9 @@ you can use the following statement to change the target language:
 // change target language to Chinese
 \Yii::$app->language = 'zh-CN';
 ```
+
+> Tip: If your source language varies among different parts of your code, you can
+> override the source language for different message sources, which are described in the next section.
 
 ## Message Translation <span id="message-translation"></span>
 
@@ -107,7 +110,7 @@ to a PHP file with a different naming approach. In the above example, the catego
 the PHP file `@app/messages/ru-RU/error.php` (assuming `ru-RU` is the target language). Without this configuration,
 the category would be mapped to `@app/messages/ru-RU/app/error.php`, instead.
 
-Beside storing the messages in PHP files, you may also use the following message sources to store translated messages
+Besides storing the messages in PHP files, you may also use the following message sources to store translated messages
 in different storage:
 
 - [[yii\i18n\GettextMessageSource]] uses GNU Gettext MO or PO files to maintain translated messages.
@@ -431,10 +434,11 @@ do not match either one of them. Following each possible parameter value, you sh
 it in a pair of curly brackets.
 
 
-### Specifying default translation <span id="default-translation"></span>
+### Specifying default message source <span id="default-message-source"></span>
 
-You can specify default translations that will be used as a fallback for categories that don't match any other translation.
-This translation should be marked with `*`. In order to do it add the following to the application config:
+You can specify default message source that will be used as a fallback for category that doesn't match any
+configured category. You can do that by configuring a wildcard category `*`. In order to do that, add the following
+to the application config:
 
 ```php
 //configure i18n component
@@ -631,7 +635,7 @@ If [[yii\i18n\MissingTranslationEvent::translatedMessage]] is set by the event h
 
 ### Using the `message` command <a name="message-command"></a>
 
-Translations can be stored in [[yii\i18n\PhpMessageSource|php files]], [[yii\i18n\GettextMessageSource|.po files] or to [[yii\i18n\DbMessageSource|database]]. See specific classes for additional options.
+Translations can be stored in [[yii\i18n\PhpMessageSource|php files]], [[yii\i18n\GettextMessageSource|.po files]] or in a [[yii\i18n\DbMessageSource|database]]. See specific classes for additional options.
 
 First of all you need to create a configuration file. Decide where you want to store it and then issue the command 
 

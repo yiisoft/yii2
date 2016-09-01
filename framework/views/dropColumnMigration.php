@@ -6,7 +6,7 @@
 /* @var $className string the new migration class name */
 /* @var $table string the name table */
 /* @var $fields array the fields */
-preg_match('/^drop_(.+)_from_(.+)$/', $name, $matches);
+preg_match('/^drop_(.+)_columns?_from_(.+)_table$/', $name, $matches);
 $columns = $matches[1];
 
 echo "<?php\n";

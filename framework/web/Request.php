@@ -27,10 +27,10 @@ use yii\helpers\StringHelper;
  * corresponding quality score and other parameters as given in the header.
  * @property array $acceptableLanguages The languages ordered by the preference level. The first element
  * represents the most preferred language.
- * @property string $authPassword The password sent via HTTP authentication, null if the password is not
+ * @property string|null $authPassword The password sent via HTTP authentication, null if the password is not
  * given. This property is read-only.
- * @property string $authUser The username sent via HTTP authentication, null if the username is not given.
- * This property is read-only.
+ * @property string|null $authUser The username sent via HTTP authentication, null if the username is not
+ * given. This property is read-only.
  * @property string $baseUrl The relative URL for the application.
  * @property array $bodyParams The request parameters given in the request body.
  * @property string $contentType Request content-type. Null is returned if this information is not available.
@@ -42,7 +42,7 @@ use yii\helpers\StringHelper;
  * @property array $eTags The entity tags. This property is read-only.
  * @property HeaderCollection $headers The header collection. This property is read-only.
  * @property string $hostInfo Schema and hostname part (with port number if needed) of the request URL (e.g.
- * `http://www.yiiframework.com`), null in case it can't be obtained from `$_SERVER` and wasn't set.
+ * `http://www.yiiframework.com`), null if can't be obtained from `$_SERVER` and wasn't set.
  * @property boolean $isAjax Whether this is an AJAX (XMLHttpRequest) request. This property is read-only.
  * @property boolean $isDelete Whether this is a DELETE request. This property is read-only.
  * @property boolean $isFlash Whether this is an Adobe Flash or Adobe Flex request. This property is
@@ -65,17 +65,16 @@ use yii\helpers\StringHelper;
  * @property string $queryString Part of the request URL that is after the question mark. This property is
  * read-only.
  * @property string $rawBody The request body.
- * @property string $referrer URL referrer, null if not present. This property is read-only.
+ * @property string|null $referrer URL referrer, null if not available. This property is read-only.
  * @property string $scriptFile The entry script file path.
  * @property string $scriptUrl The relative URL of the entry script.
  * @property integer $securePort Port number for secure requests.
  * @property string $serverName Server name, null if not available. This property is read-only.
- * @property integer $serverPort Server port number, null if not available. This property is read-only.
+ * @property integer|null $serverPort Server port number, null if not available. This property is read-only.
  * @property string $url The currently requested relative URL. Note that the URI returned is URL-encoded.
- * @property string $userAgent User agent, null if not present. This property is read-only.
- * @property string $userHost User host name, null if cannot be determined. This property is read-only.
- * @property string $userIP User IP address. Null is returned if the user IP address cannot be detected. This
- * property is read-only.
+ * @property string|null $userAgent User agent, null if not available. This property is read-only.
+ * @property string|null $userHost User host name, null if not available. This property is read-only.
+ * @property string|null $userIP User IP address, null if not available. This property is read-only.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
@@ -1267,9 +1266,8 @@ class Request extends \yii\base\Request
     /**
      * Returns the token used to perform CSRF validation.
      *
-     * This token is a masked version of [[rawCsrfToken]] to prevent [BREACH attacks](http://breachattack.com/).
-     * This token may be passed along via a hidden field of an HTML form or an HTTP header value
-     * to support CSRF validation.
+     * This token is generated in a way to prevent [BREACH attacks](http://breachattack.com/). It may be passed
+     * along via a hidden field of an HTML form or an HTTP header value to support CSRF validation.
      * @param boolean $regenerate whether to regenerate CSRF token. When this parameter is true, each time
      * this method is called, a new CSRF token will be generated and persisted (in session or cookie).
      * @return string the token used to perform CSRF validation.
@@ -1405,6 +1403,10 @@ class Request extends \yii\base\Request
      */
     private function validateCsrfTokenInternal($token, $trueToken)
     {
+        if (!is_string($token)) {
+            return false;
+        }
+
         $token = base64_decode(str_replace('.', '+', $token));
         $n = StringHelper::byteLength($token);
         if ($n <= static::CSRF_MASK_LENGTH) {

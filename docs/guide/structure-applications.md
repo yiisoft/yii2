@@ -192,7 +192,7 @@ The rest of the array elements (key-value pairs) specify the parameters to be bo
 ]
 ```
 
-> Info: Debug panel on development environment will not work when this property is enabled
+> Info: Debug panel on development environment will not work when this property is enabled.
 
 #### [[yii\base\Application::components|components]] <span id="components"></span>
 
@@ -233,12 +233,10 @@ specific controllers. In the following example, `account` will be mapped to
 ```php
 [
     'controllerMap' => [
-        [
-            'account' => 'app\controllers\UserController',
-            'article' => [
-                'class' => 'app\controllers\PostController',
-                'enableCsrfValidation' => false,
-            ],
+        'account' => 'app\controllers\UserController',
+        'article' => [
+            'class' => 'app\controllers\PostController',
+            'enableCsrfValidation' => false,
         ],
     ],
 ]

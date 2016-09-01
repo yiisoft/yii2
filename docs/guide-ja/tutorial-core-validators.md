@@ -88,6 +88,27 @@ public function rules()
      * `<=`: 検証される値が比較される値よりも小さいか等しいことを検証する。
 
 
+### 日付の値を比較する
+
+compare バリデータは、文字列や数値を比較するためにしか使えません。
+日付のような値を比較する必要がある場合は、二つの選択肢があります。
+日付をある固定値と比較するときは、単に [[yii\validators\DateValidator|date]] バリデータを使って、その [[yii\validators\DateValidator::$min|$min]] や [[yii\validators\DateValidator::$max|$max]] のプロパティを指定すれば良いでしょう。
+フォームに入力された二つの日付、例えば、`fromDate` と `toDate` のフィールドを比較する必要がある場合は、
+次のように、compare バリデータと date バリデータを組み合わせて使うことが出来ます。
+
+```php
+['fromDate', 'date', 'timestampAttribute' => 'fromDate'],
+['toDate', 'date', 'timestampAttribute' => 'toDate'],
+['fromDate', 'compare', 'compareAttribute' => 'toDate', 'operator' => '<', 'enableClientValidation' => false],
+```
+
+バリデータは指定された順序に従って実行されますので、まず最初に、`fromDate` と `toDate` に入力された値が有効な日付であることが確認されます。
+そして、有効な日付であった場合は、機械が読める形式に変換されます。
+その後に、これらの二つの値が compare バリデータによって比較されます。
+現在、date バリデータはクライアント側のバリデーションを提供していませんので、これはサーバ側でのみ動作します。
+そのため、compare バリデータについても、[[yii\validators\CompareValidator::$enableClientValidation|$enableClientValidation]] は `false` に設定されています。
+
+
 ## [[yii\validators\DateValidator|date]] <span id="date"></span>
 
 ```php
@@ -114,7 +135,7 @@ public function rules()
 
 - バージョン 2.0.4 以降では、タイムスタンプの [[yii\validators\DateValidator::$min|最小値]] または  [[yii\validators\DateValidator::$max|最大値]] を指定することも出来ます。
 
-入力が必須でない場合には、date バリデータに加えて、default バリデータ (デフォルト値フィルタ) を追加すれば、空の入力値が `NULL` として保存されることを保証することが出来ます。
+入力が必須でない場合には、date バリデータに加えて、default バリデータ (デフォルト値フィルタ) を追加すれば、空の入力値が `null` として保存されることを保証することが出来ます。
 そうしないと、データベースに `0000-00-00` という日付が保存されたり、デートピッカーの入力フィールドが `1970-01-01` になったりしてしまいます。
 
 ```php

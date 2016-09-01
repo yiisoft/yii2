@@ -36,9 +36,9 @@ interface ActiveRecordInterface
     /**
      * Returns the named attribute value.
      * If this record is the result of a query and the attribute is not loaded,
-     * null will be returned.
+     * `null` will be returned.
      * @param string $name the attribute name
-     * @return mixed the attribute value. Null if the attribute is not set or does not exist.
+     * @return mixed the attribute value. `null` if the attribute is not set or does not exist.
      * @see hasAttribute()
      */
     public function getAttribute($name);
@@ -64,8 +64,8 @@ interface ActiveRecordInterface
      * the return value will be an array with attribute names as keys and attribute values as values.
      * Note that for composite primary keys, an array will always be returned regardless of this parameter value.
      * @return mixed the primary key value. An array (attribute name => attribute value) is returned if the primary key
-     * is composite or `$asArray` is true. A string is returned otherwise (null will be returned if
-     * the key value is null).
+     * is composite or `$asArray` is true. A string is returned otherwise (`null` will be returned if
+     * the key value is `null`).
      */
     public function getPrimaryKey($asArray = false);
 
@@ -76,13 +76,13 @@ interface ActiveRecordInterface
      * The value remains unchanged even if the primary key attribute is manually assigned with a different value.
      * @param boolean $asArray whether to return the primary key value as an array. If true,
      * the return value will be an array with column name as key and column value as value.
-     * If this is false (default), a scalar value will be returned for non-composite primary key.
+     * If this is `false` (default), a scalar value will be returned for non-composite primary key.
      * @property mixed The old primary key value. An array (column name => column value) is
-     * returned if the primary key is composite. A string is returned otherwise (null will be
-     * returned if the key value is null).
+     * returned if the primary key is composite. A string is returned otherwise (`null` will be
+     * returned if the key value is `null`).
      * @return mixed the old primary key value. An array (column name => column value) is returned if the primary key
-     * is composite or `$asArray` is true. A string is returned otherwise (null will be returned if
-     * the key value is null).
+     * is composite or `$asArray` is true. A string is returned otherwise (`null` will be returned if
+     * the key value is `null`).
      */
     public function getOldPrimaryKey($asArray = false);
 
@@ -156,11 +156,11 @@ interface ActiveRecordInterface
      * The method accepts:
      *
      *  - a scalar value (integer or string): query by a single primary key value and return the
-     *    corresponding record (or null if not found).
+     *    corresponding record (or `null` if not found).
      *  - a non-associative array: query by a list of primary key values and return the
-     *    first record (or null if not found).
+     *    first record (or `null` if not found).
      *  - an associative array of name-value pairs: query by a set of attribute values and return a single record
-     *    matching all of them (or null if not found). Note that `['id' => 1, 2]` is treated as a non-associative array.
+     *    matching all of them (or `null` if not found). Note that `['id' => 1, 2]` is treated as a non-associative array.
      *
      * That this method will automatically call the `one()` method and return an [[ActiveRecordInterface|ActiveRecord]]
      * instance. For example,
@@ -180,7 +180,7 @@ interface ActiveRecordInterface
      * ```
      *
      * @param mixed $condition primary key value or a set of column values
-     * @return static|null ActiveRecord instance matching the condition, or null if nothing matches.
+     * @return static ActiveRecord instance matching the condition, or `null` if nothing matches.
      */
     public static function findOne($condition);
 
@@ -276,10 +276,10 @@ interface ActiveRecordInterface
      * $customer->save();
      * ```
      *
-     * @param boolean $runValidation whether to perform validation (calling [[validate()]])
+     * @param boolean $runValidation whether to perform validation (calling [[Model::validate()|validate()]])
      * before saving the record. Defaults to `true`. If the validation fails, the record
      * will not be saved to the database and this method will return `false`.
-     * @param array $attributeNames list of attribute names that need to be saved. Defaults to null,
+     * @param array $attributeNames list of attribute names that need to be saved. Defaults to `null`,
      * meaning all attributes that are loaded from DB will be saved.
      * @return boolean whether the saving succeeded (i.e. no validation errors occurred).
      */
@@ -297,10 +297,10 @@ interface ActiveRecordInterface
      * $customer->insert();
      * ```
      *
-     * @param boolean $runValidation whether to perform validation (calling [[validate()]])
+     * @param boolean $runValidation whether to perform validation (calling [[Model::validate()|validate()]])
      * before saving the record. Defaults to `true`. If the validation fails, the record
      * will not be saved to the database and this method will return `false`.
-     * @param array $attributes list of attributes that need to be saved. Defaults to null,
+     * @param array $attributes list of attributes that need to be saved. Defaults to `null`,
      * meaning all attributes that are loaded from DB will be saved.
      * @return boolean whether the attributes are valid and the record is inserted successfully.
      */
@@ -318,12 +318,12 @@ interface ActiveRecordInterface
      * $customer->update();
      * ```
      *
-     * @param boolean $runValidation whether to perform validation (calling [[validate()]])
+     * @param boolean $runValidation whether to perform validation (calling [[Model::validate()|validate()]])
      * before saving the record. Defaults to `true`. If the validation fails, the record
      * will not be saved to the database and this method will return `false`.
-     * @param array $attributeNames list of attributes that need to be saved. Defaults to null,
+     * @param array $attributeNames list of attributes that need to be saved. Defaults to `null`,
      * meaning all attributes that are loaded from DB will be saved.
-     * @return integer|boolean the number of rows affected, or false if validation fails
+     * @return integer|boolean the number of rows affected, or `false` if validation fails
      * or updating process is stopped for other reasons.
      * Note that it is possible that the number of rows affected is 0, even though the
      * update execution is successful.
@@ -333,7 +333,7 @@ interface ActiveRecordInterface
     /**
      * Deletes the record from the database.
      *
-     * @return integer|boolean the number of rows deleted, or false if the deletion is unsuccessful for some reason.
+     * @return integer|boolean the number of rows deleted, or `false` if the deletion is unsuccessful for some reason.
      * Note that it is possible that the number of rows deleted is 0, even though the deletion execution is successful.
      */
     public function delete();
@@ -382,13 +382,13 @@ interface ActiveRecordInterface
      * If the relationship involves a junction table, a new row will be inserted into the
      * junction table which contains the primary key values from both records.
      *
-     * This method requires that the primary key value is not null.
+     * This method requires that the primary key value is not `null`.
      *
      * @param string $name the case sensitive name of the relationship.
      * @param static $model the record to be linked with the current one.
      * @param array $extraColumns additional column values to be saved into the junction table.
      * This parameter is only meaningful for a relationship involving a junction table
-     * (i.e., a relation set with `[[ActiveQueryInterface::via()]]`.)
+     * (i.e., a relation set with [[ActiveQueryInterface::via()]]).
      */
     public function link($name, $model, $extraColumns = []);
 
@@ -396,12 +396,12 @@ interface ActiveRecordInterface
      * Destroys the relationship between two records.
      *
      * The record with the foreign key of the relationship will be deleted if `$delete` is true.
-     * Otherwise, the foreign key will be set null and the record will be saved without validation.
+     * Otherwise, the foreign key will be set `null` and the record will be saved without validation.
      *
      * @param string $name the case sensitive name of the relationship.
      * @param static $model the model to be unlinked from the current one.
      * @param boolean $delete whether to delete the model that contains the foreign key.
-     * If false, the model's foreign key will be set null and saved.
+     * If false, the model's foreign key will be set `null` and saved.
      * If true, the model containing the foreign key will be deleted.
      */
     public function unlink($name, $model, $delete = false);

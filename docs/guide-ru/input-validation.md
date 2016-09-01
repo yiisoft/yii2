@@ -91,6 +91,27 @@ public function rules()
 активным атрибутом, объявленным в `scenarios()` и связан с одним или несколькими активными правилами, 
 объявленными в `rules()`.
 
+> Note: Правилам валидации полезно давать имена. Например:
+>
+> ```php
+> public function rules()
+> {
+>     return [
+>         // ...
+>         'password' => [['password'], 'string', 'max' => 60],
+>     ];
+> }
+> ```
+>
+> В случае наследования предыдущей модели, именованные правила можно модифицировать или удалить: 
+>
+> ```php
+> public function rules()
+> {
+>     $rules = parent::rules();
+>     unset($rules['password']);
+>     return $rules;
+> }
 
 ### Настройка сообщений об ошибках <span id="customizing-error-messages"></span>
 

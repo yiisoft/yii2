@@ -250,7 +250,7 @@ class InflectorTest extends TestCase
             'العربي' => 'alʿrby',
             'عرب' => 'ʿrb',
             // Hebrew
-            'עִבְרִית' => 'ʻiberiyt',
+            'עִבְרִית' => version_compare(INTL_ICU_DATA_VERSION, '57.1', '>=') ? '\'iberiyt' : 'ʻiberiyt',
             // Turkish
             'Sanırım hepimiz aynı şeyi düşünüyoruz.' => 'Sanirim hepimiz ayni seyi dusunuyoruz.',
 
@@ -293,7 +293,7 @@ class InflectorTest extends TestCase
             'العربي' => 'alrby',
             'عرب' => 'rb',
             // Hebrew
-            'עִבְרִית' => 'iberiyt',
+            'עִבְרִית' => version_compare(INTL_ICU_DATA_VERSION, '57.1', '>=') ? '\'iberiyt' : 'iberiyt',
             // Turkish
             'Sanırım hepimiz aynı şeyi düşünüyoruz.' => 'Sanirim hepimiz ayni seyi dusunuyoruz.',
 

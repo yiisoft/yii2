@@ -197,6 +197,10 @@ class QueryBuilder extends \yii\base\Object
      */
     public function batchInsert($table, $columns, $rows)
     {
+        if (empty($rows)) {
+            return '';
+        }
+
         $schema = $this->db->getSchema();
         if (($tableSchema = $schema->getTableSchema($table)) !== null) {
             $columnSchemas = $tableSchema->columns;
@@ -1167,18 +1171,21 @@ class QueryBuilder extends \yii\base\Object
         list($column, $values) = $operands;
 
         if ($column === []) {
+            // no columns to test against
             return $operator === 'IN' ? '0=1' : '';
         }
 
         if ($values instanceof Query) {
             return $this->buildSubqueryInCondition($operator, $column, $values, $params);
         }
+        if (!is_array($values) && !$values instanceof \Traversable) {
+            // ensure values is an array
+            $values = (array) $values;
+        }
 
         if ($column instanceof \Traversable || count($column) > 1) {
             return $this->buildCompositeInCondition($operator, $column, $values, $params);
-        }
-
-        if (is_array($column)) {
+        } elseif (is_array($column)) {
             $column = reset($column);
         }
 
@@ -1272,7 +1279,7 @@ class QueryBuilder extends \yii\base\Object
 
         if (empty($vss)) {
             return $operator === 'IN' ? '0=1' : '';
-        };
+        }
 
         $sqlColumns = [];
         foreach ($columns as $i => $column) {

@@ -109,9 +109,11 @@ Displaying Data
 Security
 --------
 
+* [Overview](security-overview.md)
 * [Authentication](security-authentication.md)
 * [Authorization](security-authorization.md)
 * [Working with Passwords](security-passwords.md)
+* [Cryptography](security-cryptography.md)
 * [Auth Clients](https://github.com/yiisoft/yii2-authclient/blob/master/docs/guide/README.md)
 * [Best Practices](security-best-practices.md)
 

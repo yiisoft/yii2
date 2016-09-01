@@ -12,8 +12,16 @@ Make sure you have global install of latest version of composer asset plugin as 
 
 ```
 php composer.phar self-update
-php composer.phar global require "fxp/composer-asset-plugin:~1.1.1"
+php composer.phar global require "fxp/composer-asset-plugin:^1.2.0"
 ```
+
+Upgrade from Yii 2.0.8
+----------------------
+
+* Part of code from `yii\web\User::loginByCookie()` method was moved to new `getIdentityAndDurationFromCookie()`
+  and `removeIdentityCookie()` methods. If you override `loginByCookie()` method, update it in order use new methods.
+* Fixture console command syntax was changed from `yii fixture "*" -User` to `yii fixture "*, -User"`. Upgrade your
+  scripts if necessary.
 
 Upgrade from Yii 2.0.7
 ----------------------
@@ -297,7 +305,7 @@ new ones save the following code as `convert.php` that should be placed in the s
   
   function saveToFile($data, $fileName) {
       $out = var_export($data, true);
-      $out = "<?php\nreturn " . $out . ";";
+      $out = "<?php\nreturn " . $out . ';';
       $out = str_replace(['array (', ')'], ['[', ']'], $out);
       file_put_contents($fileName, $out);
   }

@@ -29,13 +29,13 @@ Change to the directory where you cloned Yii, normally, "yii2". Then enter the f
 git remote add upstream git://github.com/yiisoft/yii2.git
 ```
 
-### 3. Prepare the testing environment
+### 3. Prepare the testing environment <span id="prepare-the-test-environment"></span>
 
 The following steps are not necessary if you want to work only on translations or documentation.
 
 - run `composer update` to install dependencies (assuming you have [composer installed globally](https://getcomposer.org/doc/00-intro.md#globally)).
 
-> Note: If you see errors like `Problem 1 The requested package bower-asset/jquery could not be found in any version, there may be a typo in the package name.`, you will need to run `composer global require "fxp/composer-asset-plugin:~1.1.1"`
+> Note: If you see errors like `Problem 1 The requested package bower-asset/jquery could not be found in any version, there may be a typo in the package name.`, you will need to run `composer global require "fxp/composer-asset-plugin:^1.2.0"`
 
 - run `php build/build dev/app basic` to clone the basic app and install composer dependencies for the basic app.
   This command will install foreign composer packages as normal but will link the yii2 repo to
@@ -75,7 +75,7 @@ where `<extension-name>` is the name of the extension, e.g. `redis`.
 
 If you want to test the extension in one of the application templates, just add it to the `composer.json` of the application as you would
 normally do e.g. add `"yiisoft/yii2-redis": "*"` to the `require` section of the basic app.
-Running `php build/build dev/app basic` will install the extension and its dependecies and create
+Running `php build/build dev/app basic` will install the extension and its dependencies and create
 a symlink to `extensions/redis` so you are not working in the composer vendor dir but in the yii2 repository directly.
 
 > Note: The default git repository Urls clone from github via SSH, you may add the `--useHttp` flag to the `build` command

@@ -67,7 +67,7 @@ use yii\web\Request;
  * that can lead to pages with the data sorted by the corresponding attributes.
  *
  * @property array $attributeOrders Sort directions indexed by attribute names. Sort direction can be either
- * `SORT_ASC` for ascending order or `SORT_DESC` for descending order. This property is read-only.
+ * `SORT_ASC` for ascending order or `SORT_DESC` for descending order.
  * @property array $orders The columns (keys) and their corresponding sort directions (values). This can be
  * passed to [[\yii\db\Query::orderBy()]] to construct a DB query. This property is read-only.
  *
@@ -263,6 +263,32 @@ class Sort extends Object
         }
 
         return $this->_attributeOrders;
+    }
+
+    /**
+     * Sets up the currently sort information.
+     * @param array|null $attributeOrders sort directions indexed by attribute names.
+     * Sort direction can be either `SORT_ASC` for ascending order or
+     * `SORT_DESC` for descending order.
+     * @param boolean $validate whether to validate given attribute orders against [[attributes]] and [[enableMultiSort]].
+     * If validation is enabled incorrect entries will be removed.
+     * @since 2.0.10
+     */
+    public function setAttributeOrders($attributeOrders, $validate = true)
+    {
+        if ($attributeOrders === null || !$validate) {
+            $this->_attributeOrders = $attributeOrders;
+        } else {
+            $this->_attributeOrders = [];
+            foreach ($attributeOrders as $attribute => $order) {
+                if (isset($this->attributes[$attribute])) {
+                    $this->_attributeOrders[$attribute] = $order;
+                    if (!$this->enableMultiSort) {
+                        break;
+                    }
+                }
+            }
+        }
     }
 
     /**

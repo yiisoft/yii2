@@ -238,7 +238,7 @@ class BaseConsole
      * Returns the ANSI format code.
      *
      * @param array $format An array containing formatting values.
-     * You can pass any of the FG_*, BG_* and TEXT_* constants
+     * You can pass any of the `FG_*`, `BG_*` and `TEXT_*` constants
      * and also [[xtermFgColor]] and [[xtermBgColor]] to specify a format.
      * @return string The ANSI format code according to the given formatting constants.
      */
@@ -251,7 +251,7 @@ class BaseConsole
      * Echoes an ANSI format code that affects the formatting of any text that is printed afterwards.
      *
      * @param array $format An array containing formatting values.
-     * You can pass any of the FG_*, BG_* and TEXT_* constants
+     * You can pass any of the `FG_*`, `BG_*` and `TEXT_*` constants
      * and also [[xtermFgColor]] and [[xtermBgColor]] to specify a format.
      * @see ansiFormatCode()
      * @see endAnsiFormat()
@@ -280,7 +280,7 @@ class BaseConsole
      *
      * @param string $string the string to be formatted
      * @param array $format An array containing formatting values.
-     * You can pass any of the FG_*, BG_* and TEXT_* constants
+     * You can pass any of the `FG_*`, `BG_*` and `TEXT_*` constants
      * and also [[xtermFgColor]] and [[xtermBgColor]] to specify a format.
      * @return string
      */
@@ -347,7 +347,7 @@ class BaseConsole
      *
      * @param string $string the string to convert.
      * @param array $styleMap an optional mapping of ANSI control codes such as
-     * [[FG_COLOR]] or [[BOLD]] to a set of css style definitions.
+     * FG\_*COLOR* or [[BOLD]] to a set of css style definitions.
      * The CSS style definitions are represented as an array where the array keys correspond
      * to the css style attribute names and the values are the css values.
      * values may be arrays that will be merged and imploded with `' '` when rendered.
@@ -613,14 +613,14 @@ class BaseConsole
         if (static::isRunningOnWindows()) {
             $output = [];
             exec('mode con', $output);
-            if (isset($output, $output[1]) && strpos($output[1], 'CON') !== false) {
-                return $size = [(int) preg_replace('~\D~', '', $output[3]), (int) preg_replace('~\D~', '', $output[4])];
+            if (isset($output, $output[1]) && preg_match('/con:.*lines:\s+(\d+)\s+columns:\s+(\d+)/mi', implode(' ', $output), $matches)) {
+                return $size = [(int)$matches[2], (int)$matches[1]];
             }
         } else {
             // try stty if available
             $stty = [];
             if (exec('stty -a 2>&1', $stty) && preg_match('/rows\s+(\d+);\s*columns\s+(\d+);/mi', implode(' ', $stty), $matches)) {
-                return $size = [$matches[2], $matches[1]];
+                return $size = [(int)$matches[2], (int)$matches[1]];
             }
 
             // fallback to tput, which may not be updated on terminal resize

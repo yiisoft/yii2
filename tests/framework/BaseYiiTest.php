@@ -2,7 +2,9 @@
 namespace yiiunit\framework;
 
 use Yii;
+use yii\BaseYii;
 use yii\di\Container;
+use yii\log\Logger;
 use yiiunit\data\base\Singer;
 use yiiunit\TestCase;
 
@@ -83,5 +85,67 @@ class BaseYiiTest extends TestCase
         $this->assertTrue(Yii::createObject(function(Singer $singer, $a = 3) {
             return true;
         }));
+    }
+
+    /**
+     * @covers \yii\BaseYii::setLogger()
+     * @covers \yii\BaseYii::getLogger()
+     */
+    public function testSetupLogger()
+    {
+        $logger = new Logger();
+        BaseYii::setLogger($logger);
+
+        $this->assertSame($logger, BaseYii::getLogger());
+
+        BaseYii::setLogger(null);
+        $defaultLogger = BaseYii::getLogger();
+        $this->assertTrue($defaultLogger instanceof Logger);
+    }
+
+    /**
+     * @covers \yii\BaseYii::info()
+     * @covers \yii\BaseYii::warning()
+     * @covers \yii\BaseYii::trace()
+     * @covers \yii\BaseYii::error()
+     * @covers \yii\BaseYii::beginProfile()
+     * @covers \yii\BaseYii::endProfile()
+     */
+    public function testLog()
+    {
+        $logger = $this->getMock('yii\\log\\Logger', ['log']);
+        BaseYii::setLogger($logger);
+
+        $logger->expects($this->exactly(6))
+            ->method('log')
+            ->withConsecutive(
+                [$this->equalTo('info message'), $this->equalTo(Logger::LEVEL_INFO), $this->equalTo('info category')],
+                [
+                    $this->equalTo('warning message'),
+                    $this->equalTo(Logger::LEVEL_WARNING),
+                    $this->equalTo('warning category')
+                ],
+                [$this->equalTo('trace message'), $this->equalTo(Logger::LEVEL_TRACE), $this->equalTo('trace category')],
+                [$this->equalTo('error message'), $this->equalTo(Logger::LEVEL_ERROR), $this->equalTo('error category')],
+                [
+                    $this->equalTo('beginProfile message'),
+                    $this->equalTo(Logger::LEVEL_PROFILE_BEGIN),
+                    $this->equalTo('beginProfile category')
+                ],
+                [
+                    $this->equalTo('endProfile message'),
+                    $this->equalTo(Logger::LEVEL_PROFILE_END),
+                    $this->equalTo('endProfile category')
+                ]
+            );
+
+        BaseYii::info('info message', 'info category');
+        BaseYii::warning('warning message', 'warning category');
+        BaseYii::trace('trace message', 'trace category');
+        BaseYii::error('error message', 'error category');
+        BaseYii::beginProfile('beginProfile message', 'beginProfile category');
+        BaseYii::endProfile('endProfile message', 'endProfile category');
+        
+        BaseYii::setLogger(null);
     }
 }

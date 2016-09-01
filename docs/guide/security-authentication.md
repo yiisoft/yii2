@@ -151,7 +151,7 @@ You mainly use [[yii\web\User]] in terms of the `user` application component.
 
 You can detect the identity of the current user using the expression `Yii::$app->user->identity`. It returns
 an instance of the [[yii\web\User::identityClass|identity class]] representing the currently logged-in user,
-or null if the current user is not authenticated (meaning a guest). The following code shows how to retrieve
+or `null` if the current user is not authenticated (meaning a guest). The following code shows how to retrieve
 other authentication-related information from [[yii\web\User]]:
 
 ```php
@@ -183,7 +183,7 @@ is [[yii\web\User::enableAutoLogin|enabled]], it will also save the identity in 
 the user authentication status can be recovered from the cookie as long as the cookie remains valid.
 
 In order to enable cookie-based login, you need to configure [[yii\web\User::enableAutoLogin]] to be
-true in the application configuration. You also need to provide a duration time parameter when calling 
+`true` in the application configuration. You also need to provide a duration time parameter when calling 
 the [[yii\web\User::login()]] method. 
 
 To logout a user, simply call
@@ -202,11 +202,11 @@ user session data. If you want to keep the session data, you should call `Yii::$
 The [[yii\web\User]] class raises a few events during the login and logout processes. 
 
 * [[yii\web\User::EVENT_BEFORE_LOGIN|EVENT_BEFORE_LOGIN]]: raised at the beginning of [[yii\web\User::login()]].
-  If the event handler sets the [[yii\web\UserEvent::isValid|isValid]] property of the event object to be false,
+  If the event handler sets the [[yii\web\UserEvent::isValid|isValid]] property of the event object to be `false`,
   the login process will be cancelled. 
 * [[yii\web\User::EVENT_AFTER_LOGIN|EVENT_AFTER_LOGIN]]: raised after a successful login.
 * [[yii\web\User::EVENT_BEFORE_LOGOUT|EVENT_BEFORE_LOGOUT]]: raised at the beginning of [[yii\web\User::logout()]].
-  If the event handler sets the [[yii\web\UserEvent::isValid|isValid]] property of the event object to be false,
+  If the event handler sets the [[yii\web\UserEvent::isValid|isValid]] property of the event object to be `false`,
   the logout process will be cancelled. 
 * [[yii\web\User::EVENT_AFTER_LOGOUT|EVENT_AFTER_LOGOUT]]: raised after a successful logout.
 

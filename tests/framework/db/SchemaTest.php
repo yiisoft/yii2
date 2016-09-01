@@ -4,14 +4,11 @@ namespace yiiunit\framework\db;
 
 use PDO;
 use yii\caching\FileCache;
+use yii\db\ColumnSchema;
 use yii\db\Expression;
 use yii\db\Schema;
 
-/**
- * @group db
- * @group mysql
- */
-class SchemaTest extends DatabaseTestCase
+abstract class SchemaTest extends DatabaseTestCase
 {
     public function pdoAttributesProvider()
     {
@@ -342,6 +339,19 @@ class SchemaTest extends DatabaseTestCase
         ];
     }
 
+    public function testNegativeDefaultValues()
+    {
+        /* @var $schema Schema */
+        $schema = $this->getConnection()->schema;
+
+        $table = $schema->getTableSchema('negative_default_values');
+        $this->assertEquals(-123, $table->getColumn('smallint_col')->defaultValue);
+        $this->assertEquals(-123, $table->getColumn('int_col')->defaultValue);
+        $this->assertEquals(-123, $table->getColumn('bigint_col')->defaultValue);
+        $this->assertEquals(-12345.6789, $table->getColumn('float_col')->defaultValue);
+        $this->assertEquals(-33.22, $table->getColumn('numeric_col')->defaultValue);
+    }
+
     public function testColumnSchema()
     {
         $columns = $this->getExpectedColumns();
@@ -372,5 +382,48 @@ class SchemaTest extends DatabaseTestCase
                 $this->assertSame($expected['defaultValue'], $column->defaultValue, "defaultValue of column $name does not match.");
             }
         }
+    }
+
+    public function testColumnSchemaDbTypecastWithEmptyCharType()
+    {
+        $columnSchema = new ColumnSchema(['type' => Schema::TYPE_CHAR]);
+        $this->assertSame('', $columnSchema->dbTypecast(''));
+    }
+
+    public function testFindUniqueIndexes()
+    {
+        $db = $this->getConnection();
+
+        try {
+            $db->createCommand()->dropTable('uniqueIndex')->execute();
+        } catch(\Exception $e) {
+        }
+        $db->createCommand()->createTable('uniqueIndex', [
+            'somecol' => 'string',
+            'someCol2' => 'string',
+        ])->execute();
+
+        /* @var $schema Schema */
+        $schema = $db->schema;
+
+        $uniqueIndexes = $schema->findUniqueIndexes($schema->getTableSchema('uniqueIndex', true));
+        $this->assertEquals([], $uniqueIndexes);
+
+        $db->createCommand()->createIndex('somecolUnique', 'uniqueIndex', 'somecol', true)->execute();
+
+        $uniqueIndexes = $schema->findUniqueIndexes($schema->getTableSchema('uniqueIndex', true));
+        $this->assertEquals([
+            'somecolUnique' => ['somecol'],
+        ], $uniqueIndexes);
+
+        // create another column with upper case letter that fails postgres
+        // see https://github.com/yiisoft/yii2/issues/10613
+        $db->createCommand()->createIndex('someCol2Unique', 'uniqueIndex', 'someCol2', true)->execute();
+
+        $uniqueIndexes = $schema->findUniqueIndexes($schema->getTableSchema('uniqueIndex', true));
+        $this->assertEquals([
+            'somecolUnique' => ['somecol'],
+            'someCol2Unique' => ['someCol2'],
+        ], $uniqueIndexes);
     }
 }

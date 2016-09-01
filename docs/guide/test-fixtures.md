@@ -310,7 +310,7 @@ yii fixture/load User
 yii fixture User
 
 // load several fixtures
-yii fixture User UserProfile
+yii fixture "User, UserProfile"
 
 // load all fixtures
 yii fixture/load "*"
@@ -319,7 +319,7 @@ yii fixture/load "*"
 yii fixture "*"
 
 // load all fixtures except ones
-yii fixture "*" -DoNotLoadThisOne
+yii fixture "*, -DoNotLoadThisOne"
 
 // load fixtures, but search them in different namespace. By default namespace is: tests\unit\fixtures.
 yii fixture User --namespace='alias\my\custom\namespace'
@@ -340,13 +340,13 @@ To unload fixture, run the following command:
 yii fixture/unload User
 
 // Unload several fixtures
-yii fixture/unload User,UserProfile
+yii fixture/unload "User, UserProfile"
 
 // unload all fixtures
 yii fixture/unload "*"
 
 // unload all fixtures except ones
-yii fixture/unload "*" -DoNotUnloadThisOne
+yii fixture/unload "*, -DoNotUnloadThisOne"
 
 ```
 
@@ -375,5 +375,5 @@ Auto-generating fixtures
 ------------------------
 
 Yii also can auto-generate fixtures for you based on some template. You can generate your fixtures with different data on different languages and formats.
-These feature is done by [Faker](https://github.com/fzaninotto/Faker) library and `yii2-faker` extension.
+This feature is done by [Faker](https://github.com/fzaninotto/Faker) library and `yii2-faker` extension.
 See extension [guide](https://github.com/yiisoft/yii2-faker) for more docs.

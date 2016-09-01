@@ -27,13 +27,13 @@ Yii をクローンしたディレクトリ、通常は "yii2" に入って、�
 git remote add upstream git://github.com/yiisoft/yii2.git
 ```
 
-### 3. テスト環境を準備する
+### 3. テスト環境を準備する <span id="prepare-the-test-environment"></span
 
 以下のステップは、翻訳またはドキュメントだけに取り組みたい場合は、必要ではありません。
 
 - `composer update` を実行して、依存パッケージをインストールします ([composer をグローバルにインストール](https://getcomposer.org/doc/00-intro.md#globally) したものと仮定しています)。
 
-> Note: `Problem 1 The requested package bower-asset/jquery could not be found in any version, there may be a typo in the package name.` というようなエラーが生ずる場合は、`composer global require "fxp/composer-asset-plugin:~1.1.1"` を実行する必要があります。
+> Note: `Problem 1 The requested package bower-asset/jquery could not be found in any version, there may be a typo in the package name.` というようなエラーが生ずる場合は、`composer global require "fxp/composer-asset-plugin:^1.2.0"` を実行する必要があります。
 
 - `php build/build dev/app basic` を実行して、ベーシックアプリケーションをクローンし、その依存パッケージをインストールします。
   このコマンドは外部 composer パッケージは通常どおりインストールしますが、yii2 レポジトリは現在チェックアウトされているものをリンクします。
@@ -131,7 +131,7 @@ git checkout -b 999-name-of-your-branch-goes-here
 ### 5. CHANGELOG を更新する
 
 CHANGELOG ファイルを編集して、あなたの修正を追加します。
-新しい行は、ファイル冒頭の "Work in progress" 見出しの下に挿入してください。
+新しい行は、ファイル冒頭の最初の見出し (現在開発中のバージョン) の下に挿入してください。
 チェンジログの行は、下記のどちらかのように書いてください。
 
 ```

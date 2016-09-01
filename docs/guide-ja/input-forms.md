@@ -76,6 +76,10 @@ $form = ActiveForm::begin([
 例えば、上記の例における `username` 属性のインプットフィールドの名前は `LoginForm[username]` となります。
 この命名規則の結果として、ログインフォームの全ての属性が配列として、サーバ側においては `$_POST['LoginForm']` に格納されて利用できることになります。
 
+> Tip: 一つのフォームに一つのモデルだけがある場合、インプットの名前を単純化したいときは、
+> モデルの [[yii\base\Model::formName()|formName()]] メソッドをオーバーライドして空文字列を返すようにして、配列の部分をスキップすることが出来ます。
+> この方法を使えば、[GridView](output-data-widgets.md#grid-view) で使われるフィルターモデルで、もっと見栄えの良い URL を生成させることが出来ます。
+
 モデルの属性を指定するために、もっと洗練された方法を使うことも出来ます。
 例えば、複数のファイルをアップロードしたり、複数の項目を選択したりする場合に、属性の名前に `[]` を付けて、属性が配列の値を取り得ることを指定することが出来ます。
 
@@ -166,10 +170,10 @@ Pjax::end();
 [[https://github.com/jquery/jquery/issues/2321|ファイル]] および
 [[https://github.com/jquery/jquery/issues/2321|送信ボタンの値]]
 を扱うときに問題があることが知られています。
-これは解決される見込みがなく、HTML5 で導入された `FormData` クラスの使用に乗り換えるべく、廃止予定となっています。
+この問題は解決される見込みがなく、関数自体も HTML5 で導入された `FormData` クラスによって置き換えられるべきものとして、廃止予定となっています。
 
-このことは、すなわち、ajax または [[yii\widgets\Pjax|Pjax]] ウィジェットを使う場合、ファイルと送信ボタンの値に対する公式なサポートは、ひとえに
-`FormData` クラスに対する [[https://developer.mozilla.org/en-US/docs/Web/API/FormData#Browser_compatibility|ブラウザのサポート]] に依存するということを意味します。
+このことは、すなわち、ajax または [[yii\widgets\Pjax|Pjax]] ウィジェットを使う場合、ファイルと送信ボタンの値に対する唯一の公式なサポートは、
+`FormData` クラスに対する [[https://developer.mozilla.org/en-US/docs/Web/API/FormData#Browser_compatibility|ブラウザのサポート]] に依存しているということを意味します。
 
 
 さらに読むべき文書 <span id="further-reading"></span>

@@ -3,6 +3,7 @@ namespace yiiunit\framework\web;
 
 use yii\web\Request;
 use yii\web\UrlManager;
+use yii\web\UrlNormalizer;
 use yiiunit\TestCase;
 
 /**
@@ -251,6 +252,27 @@ class UrlManagerTest extends TestCase
         $this->assertEquals('http://www.example.com?r=post%2Fview&id=1&title=sample+post', $url);
     }
 
+    public function testCreateAbsoluteUrlWithSuffix()
+    {
+        $manager = new UrlManager([
+            'baseUrl' => '/',
+            'scriptUrl' => '',
+            'hostInfo' => 'http://app.example.com',
+            'cache' => null,
+
+            'enablePrettyUrl' => true,
+            'showScriptName' => false,
+            'suffix' => '/',
+            'rules' => [
+                'http://app.example.com/login' => 'site/login',
+            ],
+        ]);
+        $url = $manager->createAbsoluteUrl(['site/login']);
+        $this->assertEquals('http://app.example.com/login/', $url);
+        $url = $manager->createUrl(['site/login']);
+        $this->assertEquals('http://app.example.com/login/', $url);
+    }
+
     public function testParseRequest()
     {
         $manager = new UrlManager(['cache' => null]);
@@ -275,6 +297,7 @@ class UrlManagerTest extends TestCase
         $manager = new UrlManager([
             'enablePrettyUrl' => true,
             'cache' => null,
+            'normalizer' => false,
         ]);
         // empty pathinfo
         $request->pathInfo = '';
@@ -293,10 +316,19 @@ class UrlManagerTest extends TestCase
         $result = $manager->parseRequest($request);
         $this->assertEquals(['module/site/index/', []], $result);
 
+        // trailing slash is insignificant if normalizer is enabled
+        $manager->normalizer = new UrlNormalizer([
+            'action' => null,
+        ]);
+        $request->pathInfo = '/module/site/index/';
+        $result = $manager->parseRequest($request);
+        $this->assertEquals(['module/site/index', []], $result);
+
         // pretty URL rules
         $manager = new UrlManager([
             'enablePrettyUrl' => true,
             'cache' => null,
+            'normalizer' => false,
             'rules' => [
                 [
                     'pattern' => 'post/<id>/<title>',
@@ -324,6 +356,14 @@ class UrlManagerTest extends TestCase
         $request->pathInfo = 'module/site/index';
         $result = $manager->parseRequest($request);
         $this->assertEquals(['module/site/index', []], $result);
+
+        // trailing slash is insignificant if normalizer is enabled
+        $manager->normalizer = new UrlNormalizer([
+            'action' => null,
+        ]);
+        $request->pathInfo = 'post/123/this+is+sample/';
+        $result = $manager->parseRequest($request);
+        $this->assertEquals(['post/view', ['id' => '123', 'title' => 'this+is+sample']], $result);
 
         // pretty URL rules
         $manager = new UrlManager([
@@ -451,48 +491,5 @@ class UrlManagerTest extends TestCase
         ]);
         $url = $manager->createAbsoluteUrl(['site/test', '#' => 'testhash']);
         $this->assertEquals('http://example.com/index.php/testPage#testhash', $url);
-    }
-
-    /**
-     * Tests if multislashes not accepted at the end of URL if PrettyUrl is enabled
-     *
-     * @see https://github.com/yiisoft/yii2/issues/10739
-     */
-    public function testMultiSlashesAtTheEnd()
-    {
-        $manager = new UrlManager([
-            'enablePrettyUrl' => true,
-        ]);
-
-        $request = new Request;
-
-        $request->pathInfo = 'post/multi/slash/';
-        $result = $manager->parseRequest($request);
-        $this->assertEquals(['post/multi/slash/', []], $result);
-
-        $request->pathInfo = 'post/multi/slash//';
-        $result = $manager->parseRequest($request);
-        $this->assertEquals(false, $result);
-
-        $request->pathInfo = 'post/multi/slash////';
-        $result = $manager->parseRequest($request);
-        $this->assertEquals(false, $result);
-
-        $manager = new UrlManager([
-            'enablePrettyUrl' => true,
-            'suffix' => '/'
-        ]);
-
-        $request->pathInfo = 'post/multi/slash/';
-        $result = $manager->parseRequest($request);
-        $this->assertEquals(['post/multi/slash', []], $result);
-
-        $request->pathInfo = 'post/multi/slash//';
-        $result = $manager->parseRequest($request);
-        $this->assertEquals(false, $result);
-
-        $request->pathInfo = 'post/multi/slash///////';
-        $result = $manager->parseRequest($request);
-        $this->assertEquals(false, $result);
     }
 }

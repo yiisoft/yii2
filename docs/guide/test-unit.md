@@ -13,10 +13,13 @@ Unit testing in Yii is built on top of PHPUnit and, optionally, Codeception so i
 - [PHPUnit docs starting from chapter 2](http://phpunit.de/manual/current/en/writing-tests-for-phpunit.html).
 - [Codeception Unit Tests](http://codeception.com/docs/05-UnitTests).
 
-Running basic and advanced template unit tests
-----------------------------------------------
+Running basic and advanced template tests
+-----------------------------------------
 
-Please refer to instructions provided in `apps/advanced/tests/README.md` and `apps/basic/tests/README.md`.
+If you've started with advanced template, please refer to ["testing" guide](https://github.com/yiisoft/yii2-app-advanced/blob/master/docs/guide/start-testing.md)
+for more details about running tests.  
+
+If you've started with basic template, check its [README "testing" section](https://github.com/yiisoft/yii2-app-basic/blob/master/README.md#testing).
 
 Framework unit tests
 --------------------

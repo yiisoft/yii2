@@ -152,7 +152,7 @@ class Migration extends Component implements MigrationInterface
      * This method contains the logic to be executed when removing this migration.
      * This method differs from [[down()]] in that the DB logic implemented here will
      * be enclosed within a DB transaction.
-     * Child classes may implement this method instead of [[up()]] if the DB logic
+     * Child classes may implement this method instead of [[down()]] if the DB logic
      * needs to be within a transaction.
      * @return boolean return a false value to indicate the migration fails
      * and should not proceed further. All other return values mean the migration succeeds.
@@ -263,7 +263,7 @@ class Migration extends Component implements MigrationInterface
                 $this->db->createCommand()->addCommentOnColumn($table, $column, $type->comment)->execute();
             }
         }
-        echo " done (time: " . sprintf('%.3f', microtime(true) - $time) . "s)\n";
+        echo ' done (time: ' . sprintf('%.3f', microtime(true) - $time) . "s)\n";
     }
 
     /**
