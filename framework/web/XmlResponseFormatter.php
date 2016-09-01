@@ -51,9 +51,9 @@ class XmlResponseFormatter extends Component implements ResponseFormatterInterfa
      */
     public $useTraversableAsArray = true;
     /**
-     *  @var boolean mandatory addition of the tag of model name
+     *  @var boolean mandatory addition of the tag of object name
      */
-    public $modelTag = true;
+    public $objectTags = true;
 
     /**
      * Formats the specified response.
@@ -102,7 +102,7 @@ class XmlResponseFormatter extends Component implements ResponseFormatterInterfa
                 }
             }
         } elseif (is_object($data)) {
-            if ($this->modelTag) {
+            if ($this->objectTags) {
                 $child = new DOMElement(StringHelper::basename(get_class($data)));
                 $element->appendChild($child);    
             } else {
