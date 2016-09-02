@@ -2,47 +2,21 @@
 
 namespace yiiunit\framework\web;
 
-use yii\base\Model;
 use yiiunit\TestCase;
 use yii\web\UploadedFile;
-use yiiunit\framework\web\stubs\ProductImage;
 use yiiunit\framework\web\stubs\VendorImage;
-use yiiunit\framework\web\stubs\ImageModel;
+use yiiunit\framework\web\stubs\ModelStub;
 
 /**
  * @group web
  */
 class UploadedFileTest extends TestCase
 {
-
     protected function setUp()
     {
         parent::setUp();
         $this->mockApplication();
         $this->generateFakeFiles();
-    }
-
-    public function testGetInstance()
-    {
-        $productImage = ProductImage::getInstance(new ImageModel(), 'prod_image');
-        $vendorImage = VendorImage::getInstance(new ImageModel(), 'vendor_image');
-
-        $this->assertInstanceOf('\yiiunit\framework\web\stubs\ProductImage', $productImage);
-        $this->assertInstanceOf('\yiiunit\framework\web\stubs\VendorImage', $vendorImage);
-    }
-
-    public function testGetInstances()
-    {
-        $productImages = ProductImage::getInstances(new ImageModel(), 'prod_images');
-        $vendorImages = VendorImage::getInstances(new ImageModel(), 'vendor_images');
-
-        foreach ($productImages as $productImage) {
-            $this->assertInstanceOf('\yiiunit\framework\web\stubs\ProductImage', $productImage);
-        }
-
-        foreach ($vendorImages as $vendorImage) {
-            $this->assertInstanceOf('\yiiunit\framework\web\stubs\VendorImage', $vendorImage);
-        }
     }
 
     private function generateFakeFileData()
@@ -58,14 +32,39 @@ class UploadedFileTest extends TestCase
 
     private function generateFakeFiles()
     {
-        $_FILES['ImageModel[prod_image]'] = $this->generateFakeFileData();
-        $_FILES['ImageModel[prod_images][]'] = $this->generateFakeFileData();
-        $_FILES['ImageModel[prod_images][]'] = $this->generateFakeFileData();
-        $_FILES['ImageModel[prod_images][]'] = $this->generateFakeFileData();
+        $_FILES['ModelStub[prod_image]'] = $this->generateFakeFileData();
+        $_FILES['ModelStub[prod_images][]'] = $this->generateFakeFileData();
+        $_FILES['ModelStub[prod_images][]'] = $this->generateFakeFileData();
+        $_FILES['ModelStub[prod_images][]'] = $this->generateFakeFileData();
 
-        $_FILES['ImageModel[vendor_image]'] = $this->generateFakeFileData();
-        $_FILES['ImageModel[vendor_images][]'] = $this->generateFakeFileData();
-        $_FILES['ImageModel[vendor_images][]'] = $this->generateFakeFileData();
-        $_FILES['ImageModel[vendor_images][]'] = $this->generateFakeFileData();
+        $_FILES['ModelStub[vendor_image]'] = $this->generateFakeFileData();
+        $_FILES['ModelStub[vendor_images][]'] = $this->generateFakeFileData();
+        $_FILES['ModelStub[vendor_images][]'] = $this->generateFakeFileData();
+        $_FILES['ModelStub[vendor_images][]'] = $this->generateFakeFileData();
+    }
+
+    // Tests :
+
+    public function testGetInstance()
+    {
+        $productImage = UploadedFile::getInstance(new ModelStub(), 'prod_image');
+        $vendorImage = VendorImage::getInstance(new ModelStub(), 'vendor_image');
+
+        $this->assertTrue($productImage instanceof UploadedFile);
+        $this->assertTrue($vendorImage instanceof VendorImage);
+    }
+
+    public function testGetInstances()
+    {
+        $productImages = UploadedFile::getInstances(new ModelStub(), 'prod_images');
+        $vendorImages = VendorImage::getInstances(new ModelStub(), 'vendor_images');
+
+        foreach ($productImages as $productImage) {
+            $this->assertTrue($productImage instanceof UploadedFile);
+        }
+
+        foreach ($vendorImages as $vendorImage) {
+            $this->assertTrue($vendorImage instanceof VendorImage);
+        }
     }
 }
