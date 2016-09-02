@@ -60,7 +60,7 @@ As a result, server-side rendering and page content transmission are both skippe
 
 The "Entity Tag" (or `ETag` for short) header use a hash to represent the content of a page. If the page
 is changed, the hash will be changed as well. By comparing the hash kept on the client side with the hash
-generated on the server side, the cache may determine whether the page has been changed and should be re-transmitted.
+generated on the server-side, the cache may determine whether the page has been changed and should be re-transmitted.
 
 You may configure the [[yii\filters\HttpCache::etagSeed]] property to enable sending the `ETag` header.
 The property should be a PHP callable returning a seed for generating the ETag hash. The signature of the PHP callable
