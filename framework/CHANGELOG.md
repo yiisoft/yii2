@@ -3,7 +3,7 @@ Yii Framework 2 Change Log
 
 2.0.10 under development
 ------------------------
-
+- Bug #12428: Fixed `yii\db\mysql\QueryBuilder` causes warning when insert default rows into a table without primary key (DrmagicE)
 - Enh #9989: ActiveForm now respects formtarget, formmethod and formenctype attributes of submit button (AnatolyRugalev)
 - Enh #12296: Added value validation to `yii\log\Target::setLevels()` (Mak-Di)
 - Enh #12073: Added the ability to suppress the generation of input hint when it is specified through  `Model::attributeHints()` (PowerGamer1)
@@ -51,6 +51,7 @@ Yii Framework 2 Change Log
 - Bug #12331: Fixed bug with incorrect currency formatter output, when `$thousandSeparator` was explicitly set (cebe)
 - Bug #11347: Fixed `yii\widgets\Pjax::registerClientScript()` to pass custom `container` to the PJAX JS plugin (silverfire)
 - Bug #12293: Fixed MSSQL `Schema::resolveTableNames()` when using linked database tables (hAppywAy)
+- Bug #12431: Fix bug when lock file was not removed after `yii\mutex\FileMutex::release()` (rob006)
 - Enh: Method `yii\console\controllers\AssetController::getAssetManager()` automatically enables `yii\web\AssetManager::forceCopy` in case it is not explicitly specified (pana1990, klimov-paul)
 - Enh #12382: Changed `yii\widgets\MaskedInput` to use `jQuery` instead of `$` to prevent conflicts (samdark)
 
