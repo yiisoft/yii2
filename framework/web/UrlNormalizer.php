@@ -71,7 +71,7 @@ class UrlNormalizer extends Object
 
     /**
      * Performs normalization action for the specified $route.
-     * @param string $route route for normalization
+     * @param array $route route for normalization
      * @return array normalized route
      * @throws InvalidConfigException if invalid normalization action is used
      * @throws UrlNormalizerRedirectException if normalization requires redirection
