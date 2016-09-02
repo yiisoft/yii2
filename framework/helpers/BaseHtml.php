@@ -389,7 +389,7 @@ class BaseHtml
      * Html::a('link text', Url::to($url, true))
      * ```
      *
-     * @param array $options the tag options in terms of name-value pairs. These will be rendered as
+     * @param null|array $options the tag options in terms of name-value pairs. These will be rendered as
      * the attributes of the resulting tag. The values will be HTML-encoded using [[encode()]].
      * If a value is null, the corresponding attribute will not be rendered.
      * See [[renderTagAttributes()]] for details on how attributes are being rendered.
@@ -409,9 +409,9 @@ class BaseHtml
      * @param string $text link body. It will NOT be HTML-encoded. Therefore you can pass in HTML code
      * such as an image tag. If this is coming from end users, you should consider [[encode()]]
      * it to prevent XSS attacks.
-     * @param string $email email address. If this is null, the first parameter (link body) will be treated
+     * @param null|string $email email address. If this is null, the first parameter (link body) will be treated
      * as the email address and used.
-     * @param array $options the tag options in terms of name-value pairs. These will be rendered as
+     * @param null|array $options the tag options in terms of name-value pairs. These will be rendered as
      * the attributes of the resulting tag. The values will be HTML-encoded using [[encode()]].
      * If a value is null, the corresponding attribute will not be rendered.
      * See [[renderTagAttributes()]] for details on how attributes are being rendered.
@@ -426,7 +426,7 @@ class BaseHtml
     /**
      * Generates an image tag.
      * @param array|string $src the image URL. This parameter will be processed by [[Url::to()]].
-     * @param array $options the tag options in terms of name-value pairs. These will be rendered as
+     * @param null|array $options the tag options in terms of name-value pairs. These will be rendered as
      * the attributes of the resulting tag. The values will be HTML-encoded using [[encode()]].
      * If a value is null, the corresponding attribute will not be rendered.
      * See [[renderTagAttributes()]] for details on how attributes are being rendered.
@@ -448,7 +448,7 @@ class BaseHtml
      * it to prevent XSS attacks.
      * @param string $for the ID of the HTML element that this label is associated with.
      * If this is null, the "for" attribute will not be generated.
-     * @param array $options the tag options in terms of name-value pairs. These will be rendered as
+     * @param null|array $options the tag options in terms of name-value pairs. These will be rendered as
      * the attributes of the resulting tag. The values will be HTML-encoded using [[encode()]].
      * If a value is null, the corresponding attribute will not be rendered.
      * See [[renderTagAttributes()]] for details on how attributes are being rendered.
@@ -465,7 +465,7 @@ class BaseHtml
      * @param string $content the content enclosed within the button tag. It will NOT be HTML-encoded.
      * Therefore you can pass in HTML code such as an image tag. If this is is coming from end users,
      * you should consider [[encode()]] it to prevent XSS attacks.
-     * @param array $options the tag options in terms of name-value pairs. These will be rendered as
+     * @param null|array $options the tag options in terms of name-value pairs. These will be rendered as
      * the attributes of the resulting tag. The values will be HTML-encoded using [[encode()]].
      * If a value is null, the corresponding attribute will not be rendered.
      * See [[renderTagAttributes()]] for details on how attributes are being rendered.
@@ -488,7 +488,7 @@ class BaseHtml
      * @param string $content the content enclosed within the button tag. It will NOT be HTML-encoded.
      * Therefore you can pass in HTML code such as an image tag. If this is is coming from end users,
      * you should consider [[encode()]] it to prevent XSS attacks.
-     * @param array $options the tag options in terms of name-value pairs. These will be rendered as
+     * @param null|array $options the tag options in terms of name-value pairs. These will be rendered as
      * the attributes of the resulting tag. The values will be HTML-encoded using [[encode()]].
      * If a value is null, the corresponding attribute will not be rendered.
      * See [[renderTagAttributes()]] for details on how attributes are being rendered.
@@ -505,7 +505,7 @@ class BaseHtml
      * @param string $content the content enclosed within the button tag. It will NOT be HTML-encoded.
      * Therefore you can pass in HTML code such as an image tag. If this is is coming from end users,
      * you should consider [[encode()]] it to prevent XSS attacks.
-     * @param array $options the tag options in terms of name-value pairs. These will be rendered as
+     * @param null|array $options the tag options in terms of name-value pairs. These will be rendered as
      * the attributes of the resulting tag. The values will be HTML-encoded using [[encode()]].
      * If a value is null, the corresponding attribute will not be rendered.
      * See [[renderTagAttributes()]] for details on how attributes are being rendered.
@@ -520,9 +520,9 @@ class BaseHtml
     /**
      * Generates an input type of the given type.
      * @param string $type the type attribute.
-     * @param string $name the name attribute. If it is null, the name attribute will not be generated.
-     * @param string $value the value attribute. If it is null, the value attribute will not be generated.
-     * @param array $options the tag options in terms of name-value pairs. These will be rendered as
+     * @param null|string $name the name attribute. If it is null, the name attribute will not be generated.
+     * @param null|string $value the value attribute. If it is null, the value attribute will not be generated.
+     * @param null|array $options the tag options in terms of name-value pairs. These will be rendered as
      * the attributes of the resulting tag. The values will be HTML-encoded using [[encode()]].
      * If a value is null, the corresponding attribute will not be rendered.
      * See [[renderTagAttributes()]] for details on how attributes are being rendered.
@@ -541,7 +541,7 @@ class BaseHtml
     /**
      * Generates an input button.
      * @param string $label the value attribute. If it is null, the value attribute will not be generated.
-     * @param array $options the tag options in terms of name-value pairs. These will be rendered as
+     * @param null|array $options the tag options in terms of name-value pairs. These will be rendered as
      * the attributes of the resulting tag. The values will be HTML-encoded using [[encode()]].
      * If a value is null, the corresponding attribute will not be rendered.
      * See [[renderTagAttributes()]] for details on how attributes are being rendered.
@@ -561,7 +561,7 @@ class BaseHtml
      * are some reserved names that can cause conflicts, e.g. `submit`, `length`, or `method`.
      *
      * @param string $label the value attribute. If it is null, the value attribute will not be generated.
-     * @param array $options the tag options in terms of name-value pairs. These will be rendered as
+     * @param null|array $options the tag options in terms of name-value pairs. These will be rendered as
      * the attributes of the resulting tag. The values will be HTML-encoded using [[encode()]].
      * If a value is null, the corresponding attribute will not be rendered.
      * See [[renderTagAttributes()]] for details on how attributes are being rendered.
@@ -577,7 +577,7 @@ class BaseHtml
     /**
      * Generates a reset input button.
      * @param string $label the value attribute. If it is null, the value attribute will not be generated.
-     * @param array $options the attributes of the button tag. The values will be HTML-encoded using [[encode()]].
+     * @param null|array $options the attributes of the button tag. The values will be HTML-encoded using [[encode()]].
      * Attributes whose value is null will be ignored and not put in the tag returned.
      * See [[renderTagAttributes()]] for details on how attributes are being rendered.
      * @return string the generated button tag
@@ -592,8 +592,8 @@ class BaseHtml
     /**
      * Generates a text input field.
      * @param string $name the name attribute.
-     * @param string $value the value attribute. If it is null, the value attribute will not be generated.
-     * @param array $options the tag options in terms of name-value pairs. These will be rendered as
+     * @param null|string $value the value attribute. If it is null, the value attribute will not be generated.
+     * @param null|array $options the tag options in terms of name-value pairs. These will be rendered as
      * the attributes of the resulting tag. The values will be HTML-encoded using [[encode()]].
      * If a value is null, the corresponding attribute will not be rendered.
      * See [[renderTagAttributes()]] for details on how attributes are being rendered.
@@ -607,8 +607,8 @@ class BaseHtml
     /**
      * Generates a hidden input field.
      * @param string $name the name attribute.
-     * @param string $value the value attribute. If it is null, the value attribute will not be generated.
-     * @param array $options the tag options in terms of name-value pairs. These will be rendered as
+     * @param null|string $value the value attribute. If it is null, the value attribute will not be generated.
+     * @param null|array $options the tag options in terms of name-value pairs. These will be rendered as
      * the attributes of the resulting tag. The values will be HTML-encoded using [[encode()]].
      * If a value is null, the corresponding attribute will not be rendered.
      * See [[renderTagAttributes()]] for details on how attributes are being rendered.
@@ -622,8 +622,8 @@ class BaseHtml
     /**
      * Generates a password input field.
      * @param string $name the name attribute.
-     * @param string $value the value attribute. If it is null, the value attribute will not be generated.
-     * @param array $options the tag options in terms of name-value pairs. These will be rendered as
+     * @param null|string $value the value attribute. If it is null, the value attribute will not be generated.
+     * @param null|array $options the tag options in terms of name-value pairs. These will be rendered as
      * the attributes of the resulting tag. The values will be HTML-encoded using [[encode()]].
      * If a value is null, the corresponding attribute will not be rendered.
      * See [[renderTagAttributes()]] for details on how attributes are being rendered.
@@ -640,8 +640,8 @@ class BaseHtml
      * be "multipart/form-data". After the form is submitted, the uploaded file information
      * can be obtained via $_FILES[$name] (see PHP documentation).
      * @param string $name the name attribute.
-     * @param string $value the value attribute. If it is null, the value attribute will not be generated.
-     * @param array $options the tag options in terms of name-value pairs. These will be rendered as
+     * @param null|string $value the value attribute. If it is null, the value attribute will not be generated.
+     * @param null|array $options the tag options in terms of name-value pairs. These will be rendered as
      * the attributes of the resulting tag. The values will be HTML-encoded using [[encode()]].
      * If a value is null, the corresponding attribute will not be rendered.
      * See [[renderTagAttributes()]] for details on how attributes are being rendered.
@@ -656,7 +656,7 @@ class BaseHtml
      * Generates a text area input.
      * @param string $name the input name
      * @param string $value the input value. Note that it will be encoded using [[encode()]].
-     * @param array $options the tag options in terms of name-value pairs. These will be rendered as
+     * @param null|array $options the tag options in terms of name-value pairs. These will be rendered as
      * the attributes of the resulting tag. The values will be HTML-encoded using [[encode()]].
      * If a value is null, the corresponding attribute will not be rendered.
      * See [[renderTagAttributes()]] for details on how attributes are being rendered.
@@ -743,7 +743,7 @@ class BaseHtml
     /**
      * Generates a drop-down list.
      * @param string $name the input name
-     * @param string $selection the selected value
+     * @param null|string $selection the selected value
      * @param array $items the option data items. The array keys are option values, and the array values
      * are the corresponding option labels. The array can also be nested (i.e. some array values are arrays too).
      * For each sub-array, an option group will be generated whose label is the key associated with the sub-array.
@@ -752,7 +752,7 @@ class BaseHtml
      *
      * Note, the values and labels will be automatically HTML-encoded by this method, and the blank spaces in
      * the labels will also be HTML-encoded.
-     * @param array $options the tag options in terms of name-value pairs. The following options are specially handled:
+     * @param null|array $options the tag options in terms of name-value pairs. The following options are specially handled:
      *
      * - prompt: string, a prompt text to be displayed as the first option;
      * - options: array, the attributes for the select option tags. The array keys must be valid option values,
