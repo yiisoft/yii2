@@ -1,7 +1,7 @@
 Le constructeur de requêtes
 ===========================
 
-Construit sur la base des [objets d'accès aux bases de données (DAO)](db-dao.md), le constructeur de requête vous permet de construire des requêtes SQL par programme en étant indifférent au système de gestion de base de données utilisé. Comparé à l'écriture d'instructions SQL brutes, l'utilisation du constructeur de requêtes vous aide à écrire du code relatif à SQL plus lisible et à générer des instructions SQL plus sûres. 
+Construit sur la base des [objets d'accès aux bases de données (DAO)](db-dao.md), le constructeur de requêtes vous permet de construire des requêtes SQL par programme qui sont indifférentes au système de gestion de base de données utilisé. Comparé à l'écriture d'instructions SQL brutes, l'utilisation du constructeur de requêtes vous aide à écrire du code relatif à SQL plus lisible et à générer des instructions SQL plus sûres. 
 
 L'utilisation du constructeur de requêtes comprend ordinairement deux étapes :
 
@@ -33,13 +33,13 @@ LIMIT 10
 
 ## Construction des requêtes <span id="building-queries"></span>
 
-Pour construire un objet [[yii\db\Query]], vous appelez différentes méthodes de construction de requêtes pour spécifier différentes parties de la requête SQL. Le nom de ces méthodes ressemble aux mots clés de SQL utilisés dans les parties correspondantes de l'instruction SQL. Par exemple, pour spécifier la partie `FROM` d'une requête SQL, vous appelez la méthode [[yii\db\Query::from()|from()]]. Toutes les méthodes de construction de requêtes retournent l'objet *query* lui-même, ce qui vous permet d'enchaîner plusieurs appels.
+Pour construire un objet [[yii\db\Query]], vous appelez différentes méthodes de construction de requêtes pour spécifier différentes parties de la requête SQL. Les noms de ces méthodes ressemblent aux mots clés de SQL utilisés dans les parties correspondantes de l'instruction SQL. Par exemple, pour spécifier la partie `FROM` d'une requête SQL, vous appelez la méthode [[yii\db\Query::from()|from()]]. Toutes les méthodes de construction de requêtes retournent l'objet *query* lui-même, ce qui vous permet d'enchaîner plusieurs appels.
 
 Dans ce qui suit, nous décrivons l'utilisation de chacune des méthodes de requête.
 
 ### [[yii\db\Query::select()|select()]] <span id="select"></span>
 
-La [[yii\db\Query::select()|select()]] spécifie le fragment `SELECT` d'une instruction SQL. Vous pouvez spécifier les colonnes à sélectionner soit sous forme de chaînes de caractères, soit sous forme de tableau, comme ci-apès. Les noms de colonne sélectionnées sont automatiquement entourés des marques de citation lorsque l'instruction SQL est générée à partir de l'objet *query* (raquête). 
+La méthode [[yii\db\Query::select()|select()]] spécifie le fragment `SELECT` d'une instruction SQL. Vous pouvez spécifier les colonnes à sélectionner soit sous forme de chaînes de caractères, soit sous forme de tableaux, comme ci-apès. Les noms de colonne sélectionnées sont automatiquement entourés des marques de citation lorsque l'instruction SQL est générée à partir de l'objet *query* (requête). 
  
 ```php
 $query->select(['id', 'email']);
@@ -67,13 +67,13 @@ $query->select(['user_id' => 'user.id', 'email']);
 
 Si vous n'appelez pas la méthode [[yii\db\Query::select()|select()]] en construisant une requête, `*` est sélectionné, ce qui signifie la sélection de *toutes* les colonnes. 
 
-En plus des noms de colonne, vous pouvez aussi sélectionner des expression de base de données. Vous devez utiliser le format tableau en sélectionnant une expression de base de données qui contient des virgules pour éviter des entourages  automatiques incorrects des noms par des marques de citation. Par exemple :
+En plus des noms de colonne, vous pouvez aussi sélectionner des expression de base de données. Vous devez utiliser le format tableau en sélectionnant une expression de base de données qui contient des virgules pour éviter des entourages automatiques incorrects des noms par des marques de citation. Par exemple :
 
 ```php
 $query->select(["CONCAT(first_name, ' ', last_name) AS full_name", 'email']); 
 ```
 
-Comme en tout lieu où du SQL brut est impliqué, vous devez utiliser la [syntaxe des marques de citation indifférentes au système de gestion de base de données](db-dao.md#quoting-table-and-column-names) pour les noms de table et de colonne lorsque vous écrivez les expressions de base de données dans `select`. 
+Comme en tout lieu où il est fait appel à du SQL brut, vous devez utiliser la [syntaxe des marques de citation indifférentes au système de gestion de base de données](db-dao.md#quoting-table-and-column-names) pour les noms de table et de colonne lorsque vous écrivez les expressions de base de données dans `select`. 
 
 Depuis la version 2.0.1, vous pouvez aussi sélectionner des sous-requêtes. Vous devez spécifier chacune des sous-requêtes en termes d'objet [[yii\db\Query]]. Par exemple :
  
@@ -108,7 +108,7 @@ La méthode [[yii\db\Query::from()|from()]] spécifie le fragment `FROM`d'une in
 $query->from('user');
 ```
 
-Vous pouvez spécifier les tables à sélectionner soit sous forme de chaînes de caractères, soit sous forme de tableau. Les noms de table peuvent contenir des préfixes et/ou des alias de table. Par exemple :
+Vous pouvez spécifier les tables à sélectionner soit sous forme de chaînes de caractères, soit sous forme de tableaux. Les noms de table peuvent contenir des préfixes et/ou des alias de table. Par exemple :
 
 ```php
 $query->from(['public.user u', 'public.post p']);
@@ -125,7 +125,7 @@ $query->from(['u' => 'public.user', 'p' => 'public.post']);
 ```
 
 En plus des noms de table, vous pouvez aussi sélectionner à partir de sous-requêtes en les spécifiant en termes d'objets [[yii\db\Query]].
-For example,
+Par exemple :
 
 ```php
 $subQuery = (new Query())->select('id')->from('user')->where('status=1');
@@ -146,7 +146,7 @@ La méthode [[yii\db\Query::where()|where()]] spécifie le fragment `WHERE`d'une
 
 #### Format chaîne de caractères <span id="string-format"></span>
 
-Le format chaîne de caractères est celui qui convient le mieux pour spécifier des conditions très simples ou si vous avez besoin d'utiliser les fonctions incorporée du système de gestion de base de données. Il fonctionne comme si vous écriviez une requête SQL brute. Par exemple : 
+Le format chaîne de caractères est celui qui convient le mieux pour spécifier des conditions très simples ou si vous avez besoin d'utiliser les fonctions incorporées au système de gestion de base de données. Il fonctionne comme si vous écriviez une requête SQL brute. Par exemple : 
 
 ```php
 $query->where('status=1');
@@ -171,7 +171,7 @@ $query->where('status=:status')
     ->addParams([':status' => $status]);
 ```
 
-Comme dans tous les endroits ou du SQL brut est impliqué, vous pouvez utiliser la [syntaxe d'entourage par des marques de citation indifférente au système de gestion de base de données](db-dao.md#quoting-table-and-column-names) pour les noms de table et de colonne lorsque vous écrivez les conditions au format chaîne de caractères.
+Comme dans tous les endroits ou il est fait appel à du SQL, vous pouvez utiliser la [syntaxe d'entourage par des marques de citation indifférente au système de gestion de base de données](db-dao.md#quoting-table-and-column-names) pour les noms de table et de colonne lorsque vous écrivez les conditions au format chaîne de caractères.
 
 #### Format haché <span id="hash-format"></span>
 
@@ -197,7 +197,7 @@ $userQuery = (new Query())->select('id')->from('user');
 $query->where(['id' => $userQuery]);
 ```
 
-En utilisant le format haché, Yii, en interne,  utilise la liaison des paramètres de façon à ce que, contrairement au [format chaîne de caractères](#string-format), vous n'ayez pas à ajouter les paramètres à la main.
+En utilisant le format haché, Yii, en interne, utilise la liaison des paramètres de façon à ce que, contrairement au [format chaîne de caractères](#string-format), vous n'ayez pas à ajouter les paramètres à la main.
 
 
 #### Format opérateur <span id="operator-format"></span>
@@ -210,7 +210,7 @@ Le format opérateur vous permet de spécifier des conditions arbitraires par pr
 
 dans lequel chacun des opérandes peut être spécifié au format chaîne de caractères, au format haché ou au format opérateur de façon récursive, tandis que l'opérateur peut être un de ceux qui suivent : 
 
-- `and`: les opérandes doivent être concaténés en utilisant `AND`. Par exemple, `['and', 'id=1', 'id=2']` génère `id=1 AND id=2`. Si l'opérande est un tableau, il est converti en un chaîne de caractères en utilisant les règles décrites ici. Par exemple, `['and', 'type=1', ['or', 'id=1', 'id=2']]` génère `type=1 AND (id=1 OR id=2)`. La méthode ne procède à aucun entourage par des marques de citation, ni à aucun échappement.
+- `and`: les opérandes doivent être concaténés en utilisant `AND`. Par exemple, `['and', 'id=1', 'id=2']` génère `id=1 AND id=2`. Si l'opérande est un tableau, il est converti en une chaîne de caractères en utilisant les règles décrites ici. Par exemple, `['and', 'type=1', ['or', 'id=1', 'id=2']]` génère `type=1 AND (id=1 OR id=2)`. La méthode ne procède à aucun entourage par des marques de citation, ni à aucun échappement.
 
 - `or`: similaire à l'opérateur `and` sauf que les opérandes sont concaténés en utilisant `OR`.
 
@@ -222,13 +222,13 @@ dans lequel chacun des opérandes peut être spécifié au format chaîne de car
 
 - `not in`: similaire à l'opérateur `in` sauf que `IN` est remplacé par `NOT IN` dans la condition générée.
 
-- `like`: l'opérande 1 doit être une colonne ou une expression de base de données, tandis que l'opérande 2 doit être un chaîne de caractères ou un tableau représentant les valeurs que cette colonne ou cette expression de base de données peuvent être. Par exemple, `['like', 'name', 'tester']` génère `name LIKE '%tester%'`. Lorsque la plage de valeurs est données sous forme de tableau, de multiples prédicats `LIKE` sont générés et concaténés en utilisant `AND`. Par exemple, `['like', 'name', ['test', 'sample']]` génère `name LIKE '%test%' AND name LIKE '%sample%'`. Vous pouvez également fournir un troisième paramètre facultatif pour spécifier comment échapper les caractères spéciaux dans les valeurs. Les opérandes doivent être un tableau de correspondance entre les caractères spéciaux et les contre-partie échappée. Si cet opérande n'est pas fourni, une mise en correspondance par défaut est utilisée. Vous pouvez utiliser `false` ou un tableau vide pour indiquer que les valeurs sont déjà échappées et qu'aucun échappement ne doit être appliqué. Notez que lorsqu'un tableau de mise en correspondance pour l'échappement est utilisé(ou quand le troisième opérande n'est pas fourni), les valeurs sont automatiquement entourées par une paire de caractères `%`. 
+- `like`: l'opérande 1 doit être une colonne ou une expression de base de données, tandis que l'opérande 2 doit être une chaîne de caractères ou un tableau représentant les valeurs que cette colonne ou cette expression de base de données peuvent être. Par exemple, `['like', 'name', 'tester']` génère `name LIKE '%tester%'`. Lorsque la plage de valeurs est donnée sous forme de tableau, de multiples prédicats `LIKE` sont générés et concaténés en utilisant `AND`. Par exemple, `['like', 'name', ['test', 'sample']]` génère `name LIKE '%test%' AND name LIKE '%sample%'`. Vous pouvez également fournir un troisième paramètre facultatif pour spécifier comment échapper les caractères spéciaux dans les valeurs. Les opérandes doivent être un tableau de correspondance entre les caractères spéciaux et les contre-parties échappées. Si cet opérande n'est pas fourni, une mise en correspondance par défaut est utilisée. Vous pouvez utiliser `false` ou un tableau vide pour indiquer que les valeurs sont déjà échappées et qu'aucun échappement ne doit être appliqué. Notez que lorsqu'un tableau de mise en correspondance pour l'échappement est utilisé (ou quand le troisième opérande n'est pas fourni), les valeurs sont automatiquement entourées par une paire de caractères `%`. 
 
-  > Note: lors de l'utilisation de  PostgreSQL vous pouvez aussi utiliser [`ilike`](http://www.postgresql.org/docs/8.3/static/functions-matching.html#FUNCTIONS-LIKE) à la place de `like` pour une mise en correspondance insensible à la casse.
+  > Note: lors de l'utilisation de PostgreSQL vous pouvez aussi utiliser [`ilike`](http://www.postgresql.org/docs/8.3/static/functions-matching.html#FUNCTIONS-LIKE) à la place de `like` pour une mise en correspondance insensible à la casse.
 
-- `or like`: similaire à l'opérateur `like` sauf que  `OR`est utilisé pour concaténer les prédicats `LIKE` quand l'opérande 2 est un tableau. 
+- `or like`: similaire à l'opérateur `like` sauf que `OR`est utilisé pour concaténer les prédicats `LIKE` quand l'opérande 2 est un tableau. 
 
-- `not like`: similaire à l'opérateur `like` sauf que  `LIKE` est remplacé par `NOT LIKE` dans la condition générée.
+- `not like`: similaire à l'opérateur `like` sauf que `LIKE` est remplacé par `NOT LIKE` dans la condition générée.
 
 - `or not like`: similaire à l'opérateur `not like` sauf que `OR` est utilisé pour concaténer les prédicats `NOT LIKE`.
 
@@ -238,8 +238,7 @@ dans lequel chacun des opérandes peut être spécifié au format chaîne de car
 
 - `>`, `<=`, ou tout autre opérateur de base de données valide qui accepte deux opérandes : le premier opérande doit être un nom de colonne, tandis que le second doit être une valeur. Par exemple, `['>', 'age', 10]` génère `age>10`.
 
-En utilisant le format opérateur, Yii, en interne, utilise la liaison des paramètres afin, que contrairement au [format chaîne de caractères](#string-format), ici, vous n'avez pas besoin d'ajouter les paramètres  à la main. 
-you do not have to add parameters manually.
+En utilisant le format opérateur, Yii, en interne, utilise la liaison des paramètres afin, que contrairement au [format chaîne de caractères](#string-format), ici, vous n'avez pas besoin d'ajouter les paramètres à la main. 
 
 
 #### Ajout de conditions <span id="appending-conditions"></span>
@@ -253,7 +252,7 @@ $search = 'yii';
 $query->where(['status' => $status]);
 
 if (!empty($search)) {
-    $query->andWhere(['like', 'title', $search]);
+   $query->andWhere(['like', 'title', $search]);
 }
 ```
 
@@ -308,7 +307,7 @@ $query->orderBy([
 ]);
 ```
  
-Dans le code ci-dessus, les clés du tableau sont des noms de colonnes, tandis que les valeurs sont les instructions de direction de tri. La constante PHP `SORT_ASC` spécifie un tri ascendant et  `SORT_DESC`, un tri descendant.
+Dans le code ci-dessus, les clés du tableau sont des noms de colonnes, tandis que les valeurs sont les instructions de direction de tri. La constante PHP `SORT_ASC` spécifie un tri ascendant et `SORT_DESC`, un tri descendant.
 
 Si `ORDER BY` ne fait appel qu'à des noms de colonnes simples, vous pouvez le spécifier en utilisant une chaîne de caractères, juste comme vous le faites en écrivant des instructions SQL brutes. Par exemple :
 
@@ -343,8 +342,7 @@ $query->groupBy('id, status');
 
 > Note: vous devez utiliser le format tableau si `GROUP BY` fait appel à une expression de base de données.
  
-VOus pouvez appeler [[yii\db\Query::addGroupBy()|addGroupBy()]] pour ajouter des colonnes au fragment `GROUP BY`. Par exemple :
-For example,
+Vous pouvez appeler [[yii\db\Query::addGroupBy()|addGroupBy()]] pour ajouter des colonnes au fragment `GROUP BY`. Par exemple :
 
 ```php
 $query->groupBy(['id', 'status'])
@@ -363,7 +361,7 @@ $query->having(['status' => 1]);
 
 Reportez-vous à la documentation de [where()](#where) pour plus de détails sur la manière de spécifier une condition. 
 
-Vous pouvez appelez  [[yii\db\Query::andHaving()|andHaving()]] ou [[yii\db\Query::orHaving()|orHaving()]] pour ajouter des conditions supplémentaires au fragment `HAVING` fragment. Par exemple :
+Vous pouvez appeler [[yii\db\Query::andHaving()|andHaving()]] ou [[yii\db\Query::orHaving()|orHaving()]] pour ajouter des conditions supplémentaires au fragment `HAVING` fragment. Par exemple :
 
 ```php
 // ... HAVING (`status` = 1) AND (`age` > 30)
@@ -388,7 +386,7 @@ Si vous spécifiez une limite ou un décalage (p. ex. une valeur négative), il 
 
 ### [[yii\db\Query::join()|join()]] <span id="join"></span>
 
-La méthode [[yii\db\Query::join()|join()]] spécifie le fragment `JOIN` d'une requête SQL query. Par exemple :
+La méthode [[yii\db\Query::join()|join()]] spécifie le fragment `JOIN` d'une requête SQL. Par exemple :
 
 ```php
 // ... LEFT JOIN `post` ON `post`.`user_id` = `user`.`id`
@@ -397,7 +395,7 @@ $query->join('LEFT JOIN', 'post', 'post.user_id = user.id');
 
 La méthode [[yii\db\Query::join()|join()]] accepte quatre paramètres :
 
-- `$type`: type de jointure , p. ex.  `'INNER JOIN'`, `'LEFT JOIN'`.
+- `$type`: type de jointure , p. ex. `'INNER JOIN'`, `'LEFT JOIN'`.
 - `$table`: le nom de la table à joindre.
 - `$on`: facultatif, la condition de jointure, c.-à-d. le fragment `ON`. Reportez-vous à [where()](#where) pour des détails sur la manière de spécifier une condition. Notez, que la syntaxe tableau ne fonctionne **PAS** pour spécifier une condition basée sur une colonne, p. ex. `['user.id' => 'comment.userId']` conduit à une condition où l'identifiant utilisateur doit être égal à la chaîne de caractères `'comment.userId'`. Vous devez utiliser la syntaxe chaîne de caractères à la place et spécifier la condition `'user.id = comment.userId'`.
 - `$params`: facultatif, les paramètres à lier à la condition de jointure. 
@@ -451,13 +449,13 @@ Vous pouvez appeler [[yii\db\Query::union()|union()]] plusieurs fois pour ajoute
 
 L'objet [[yii\db\Query]] fournit un jeu complet de méthodes pour différents objectifs de requêtes :
 
-- [[yii\db\Query::all()|all()]]: retourne un tableau de lignes dont chacune des lignes est un tableau associatif de paires clé-valeur.  
+- [[yii\db\Query::all()|all()]]: retourne un tableau de lignes dont chacune des lignes est un tableau associatif de paires clé-valeur.
 - [[yii\db\Query::one()|one()]]: retourne la première ligne du résultat. 
 - [[yii\db\Query::column()|column()]]: retourne la première colonne du résultat. 
-- [[yii\db\Query::scalar()|scalar()]]: retourne une valeur scalaire située au croisement de la première ligne et de la première colonne du résulta.
+- [[yii\db\Query::scalar()|scalar()]]: retourne une valeur scalaire située au croisement de la première ligne et de la première colonne du résultat.
 - [[yii\db\Query::exists()|exists()]]: retourne une valeur précisant si le résultat de la requête contient un résultat.
 - [[yii\db\Query::count()|count()]]: retourne le résultat d'une requête `COUNT`..
-- D'autres agrégations de méthodes de requêtes, y compris [[yii\db\Query::sum()|sum($q)]], [[yii\db\Query::average()|average($q)]], [[yii\db\Query::max()|max($q)]], [[yii\db\Query::min()|min($q)]]. Le paramètre `$q` est obligatoire pour ces méthodes et peut être soit un nom de colonne, soit une expression de base de données.
+- D'autres méthodes d'agrégation de requêtes, y compris [[yii\db\Query::sum()|sum($q)]], [[yii\db\Query::average()|average($q)]], [[yii\db\Query::max()|max($q)]], [[yii\db\Query::min()|min($q)]]. Le paramètre `$q` est obligatoire pour ces méthodes et peut être soit un nom de colonne, soit une expression de base de données.
 
 Par exemple :
 
@@ -475,9 +473,9 @@ $row = (new \yii\db\Query())
     ->one();
 ```
 
-> Note: la méthode [[yii\db\Query::one()|one()]] retourne seulement la première ligne du résultat de la requête. Elle n'ajoute PAS `LIMIT 1` à l'instruction SQL générée. Cela est bon et préférable si vous savez que la requête ne retourne qu'une seule ou quelques lignes de données (p. ex. si vous effectuez une requête avec quelques clés primaires). Néanmoins, si la[application  requête peut potentiellement retourner de nombreuses lignes de données, vous devriez appeler `limit(1)` explicitement pour améliorer la performance, p. ex.  `(new \yii\db\Query())->from('user')->limit(1)->one()`.
+> Note: la méthode [[yii\db\Query::one()|one()]] retourne seulement la première ligne du résultat de la requête. Elle n'ajoute PAS `LIMIT 1` à l'instruction SQL générée. Cela est bon et préférable si vous savez que la requête ne retourne qu'une seule ou quelques lignes de données (p. ex. si vous effectuez une requête avec quelques clés primaires). Néanmoins, si la requête peut potentiellement retourner de nombreuses lignes de données, vous devriez appeler `limit(1)` explicitement pour améliorer la performance, p. ex. `(new \yii\db\Query())->from('user')->limit(1)->one()`.
 
-Toutes ces méthodes de requête accepte un paramètre supplémentaire `$db` représentant la [[yii\db\Connection|connexion à la base de données]] qui doit être utilisée pour effectuer la requête. Si vous omettez ce paramètre, le component](structure-application-components.md) `db` est utilisé en tant que connexion à la base de données. Ci-dessous, nous présentons un autre exemple utilisant la méthode [[yii\db\Query::count()|count()]] :
+Toutes ces méthodes de requête accepte un paramètre supplémentaire `$db` représentant la [[yii\db\Connection|connexion à la base de données]] qui doit être utilisée pour effectuer la requête. Si vous omettez ce paramètre, le [composant d'application](structure-application-components.md) `db` est utilisé en tant que connexion à la base de données. Ci-dessous, nous présentons un autre exemple utilisant la méthode [[yii\db\Query::count()|count()]] :
 
 ```php
 // exécute SQL: SELECT COUNT(*) FROM `user` WHERE `last_name`=:last_name
@@ -489,11 +487,11 @@ $count = (new \yii\db\Query())
 
 Lorsque vous appelez une méthode de requête de [[yii\db\Query]], elle effectue réellement le travail suivant en interne :
 
-* Appelle [[yii\db\QueryBuilder]] pour générer une instruction SQL basée sur le construction courant de [[yii\db\Query]] ;
+* Appelle [[yii\db\QueryBuilder]] pour générer une instruction SQL basée sur la construction courante de [[yii\db\Query]] ;
 * Crée un objet [[yii\db\Command]] avec l'instruction SQL générée ;
-* Appelle une méthode de requête (p. ex.   [[yii\db\Command::queryAll()|queryAll()]]) de [[yii\db\Command]] pour exécuter une instruction SQL et retrouver les données.
+* Appelle une méthode de requête (p. ex. [[yii\db\Command::queryAll()|queryAll()]]) de [[yii\db\Command]] pour exécuter une instruction SQL et retrouver les données.
 
-Parfois, vous voulez peut-être examiner ou utiliser une instruction SQL construit à partir d'un objet [[yii\db\Query]]. Vous pouvez faire cela avec le code suivant :
+Parfois, vous voulez peut-être examiner ou utiliser une instruction SQL construite à partir d'un objet [[yii\db\Query]]. Vous pouvez faire cela avec le code suivant :
 
 ```php
 $command = (new \yii\db\Query())
@@ -515,7 +513,7 @@ $rows = $command->queryAll();
 
 ### Indexation des résultats de la requête <span id="indexing-query-results"></span>
 
-Lorsque vous appelez  [[yii\db\Query::all()|all()]], elle retourne un tableau de lignes qui sont indexées par des entiers consécutifs. Parfois, vous désirez peut-être les indexer différemment, comme les indexer par une colonne particulière ou par des expressions donnant une valeur. Vous pouvez le faire en appelant [[yii\db\Query::indexBy()|indexBy()]] avant [[yii\db\Query::all()|all()]]. Par exemple :
+Lorsque vous appelez [[yii\db\Query::all()|all()]], elle retourne un tableau de lignes qui sont indexées par des entiers consécutifs. Parfois, vous désirez peut-être les indexer différemment, comme les indexer par une colonne particulière ou par des expressions donnant une valeur. Vous pouvez le faire en appelant [[yii\db\Query::indexBy()|indexBy()]] avant [[yii\db\Query::all()|all()]]. Par exemple :
 
 ```php
 // retourne [100 => ['id' => 100, 'username' => '...', ...], 101 => [...], 103 => [...], ...]
@@ -538,14 +536,14 @@ $query = (new \yii\db\Query())
 
 Le fonction anonyme accepte un paramètre `$row` qui contient les données de la ligne courante et retourne une valeur scalaire qui est utilisée comme la valeur d'index de la ligne courante.
 
-> Note: contrairement aux méthodes de requête telles que [[yii\db\Query::groupBy()|groupBy()]] ou [[yii\db\Query::orderBy()|orderBy()]] qui sont converties en SQL et font partie de la requête, cette méthode ne fait son travail qu'après que les données ont été retrouvées dans la base de données. Cela signifie que seules les noms de colonne  qui on fait partie du fragemet SELECT dans votre requête peuvent être utilisés. De plus, si vous avez sélectionné une colonne avec un préfixe de table, p. ex. `customer.id`, le jeu de résultats ne contient que `id` c'est pourquoi vous devez appeler `->indexBy('id')` sans  préfixe de table.
+> Note: contrairement aux méthodes de requête telles que [[yii\db\Query::groupBy()|groupBy()]] ou [[yii\db\Query::orderBy()|orderBy()]] qui sont converties en SQL et font partie de la requête, cette méthode ne fait son travail qu'après que les données ont été retrouvées dans la base de données. Cela signifie que seules les noms de colonne qui on fait partie du fragement SELECT dans votre requête peuvent être utilisés. De plus, si vous avez sélectionné une colonne avec un préfixe de table, p. ex. `customer.id`, le jeu de résultats ne contient que `id` c'est pourquoi vous devez appeler `->indexBy('id')` sans  préfixe de table.
 
 
 ### Requêtes par lots <span id="batch-query"></span>
 
 Lorsque vous travaillez sur de grandes quantités de données, des méthodes telles que [[yii\db\Query::all()]] ne conviennent pas  car elles requièrent le chargement de toutes les données en mémoire. Pour conserver l'exigence de capacité mémoire basse, Yii fournit la prise en charge appelé requêtes par lots.
 
-Les requêtes par lots peut être utilisées comme suit :
+Les requêtes par lots peuvent être utilisées comme suit :
 
 ```php
 use yii\db\Query;
@@ -563,10 +561,10 @@ foreach ($query->each() as $user) {
     // $user représente une ligne de données de la table user.
 ```
 
-Les méthodes [[yii\db\Query::batch()]] et [[yii\db\Query::each()]] retournent un objet [[yii\db\BatchQueryResult]] qui implémente l'interface `Iterator` et qui, par conséquent, peut être utilisédans une construction `foreach`.
+Les méthodes [[yii\db\Query::batch()]] et [[yii\db\Query::each()]] retournent un objet [[yii\db\BatchQueryResult]] qui implémente l'interface `Iterator` et qui, par conséquent, peut être utilisé dans une construction `foreach`.
 Durant la première iteration, une requête SQL est faite à la base de données. Les données sont retrouvées en lots dans les itérations suivantes. Par défaut, la taille du lot est 100, ce qui signifie que 100 lignes sont retrouvées dans chacun des lots. Vous pouvez changer la taille du lot en passant le premier paramètre des méthodes `batch()` ou `each()`.
 
-Comparée à la requête [[yii\db\Query::all()]], la requête par lots ne charge que 100 lignes de données à la fois en mémoire. Si vous traitez les données et les détruisez tout de suite, lu requête par lot réduit l'utilisation de la mémoire. 
+Comparée à la requête [[yii\db\Query::all()]], la requête par lots ne charge que 100 lignes de données à la fois en mémoire. Si vous traitez les données et les détruisez tout de suite, la requête par lots réduit l'utilisation de la mémoire. 
 
 Si vous spécifiez l'indexation du résultat de la requête par une colonne via [[yii\db\Query::indexBy()]], la requête par lots conserve l'index approprié. Par exemple :
 
