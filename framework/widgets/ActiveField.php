@@ -255,10 +255,10 @@ class ActiveField extends Component
 
     /**
      * Generates a label tag for [[attribute]].
-     * @param string|boolean $label the label to use. If `null`, the label will be generated via [[Model::getAttributeLabel()]].
+     * @param null|string|false $label the label to use. If `null`, the label will be generated via [[Model::getAttributeLabel()]].
      * If `false`, the generated field will not contain the label part.
      * Note that this will NOT be [[Html::encode()|encoded]].
-     * @param array $options the tag options in terms of name-value pairs. It will be merged with [[labelOptions]].
+     * @param null|array $options the tag options in terms of name-value pairs. It will be merged with [[labelOptions]].
      * The options will be rendered as the attributes of the resulting tag. The values will be HTML-encoded
      * using [[Html::encode()]]. If a value is `null`, the corresponding attribute will not be rendered.
      * @return $this the field object itself.
