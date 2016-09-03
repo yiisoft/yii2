@@ -18,30 +18,34 @@ namespace yii\web;
 class UrlNormalizerRedirectException extends \yii\base\Exception
 {
     /**
-     * @var string route used to generate URL for redirection
+     * @var array|string the parameter to be used to generate a valid URL for redirection
+     * @see [[\yii\helpers\Url::to()]]
      */
-    public $route;
+    public $url;
     /**
-     * @var array params used to generate URL for redirection
+     * @var boolean|string the URI scheme to use in the generated URL for redirection
+     * @see [[\yii\helpers\Url::to()]]
      */
-    public $params;
+    public $scheme;
     /**
      * @var integer the HTTP status code
      */
     public $statusCode;
 
     /**
-     * @param string $route route used to generate URL for redirection
-     * @param string $params params used to generate URL for redirection
+     * @param array|string $url the parameter to be used to generate a valid URL for redirection.
+     * This will be used as first parameter for [[\yii\helpers\Url::to()]]
      * @param integer $statusCode HTTP status code used for redirection
+     * @param boolean|string $scheme the URI scheme to use in the generated URL for redirection.
+     * This will be used as second parameter for [[\yii\helpers\Url::to()]]
      * @param string $message the error message
      * @param integer $code the error code
      * @param \Exception $previous the previous exception used for the exception chaining
      */
-    public function __construct($route, $params = [], $statusCode = 302, $message = null, $code = 0, \Exception $previous = null)
+    public function __construct($url, $statusCode = 302, $scheme = false, $message = null, $code = 0, \Exception $previous = null)
     {
-        $this->route = $route;
-        $this->params = $params;
+        $this->url = $url;
+        $this->scheme = $scheme;
         $this->statusCode = $statusCode;
         parent::__construct($message, $code, $previous);
     }
