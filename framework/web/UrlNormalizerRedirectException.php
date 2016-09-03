@@ -32,7 +32,7 @@ class UrlNormalizerRedirectException extends \yii\base\Exception
 
     /**
      * @param string $route route used to generate URL for redirection
-     * @param string $params params used to generate URL for redirection
+     * @param array $params params used to generate URL for redirection
      * @param integer $statusCode HTTP status code used for redirection
      * @param string $message the error message
      * @param integer $code the error code
