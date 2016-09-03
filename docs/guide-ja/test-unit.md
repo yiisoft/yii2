@@ -28,4 +28,4 @@ check its [README の "testing" の節](https://github.com/yiisoft/yii2-app-basi
 フレームワークの単体テスト
 --------------------------
 
-Yii フレームワーク自体に対する単体テストを走らせたい場合は、"[Yii2 の開発を始めよう](https://github.com/yiisoft/yii2/blob/master/docs/internals-ja/getting-started.md)" の説明に従ってください。
+Yii フレームワーク自体に対する単体テストを走らせたい場合は、"[Yii 2 の開発を始めよう](https://github.com/yiisoft/yii2/blob/master/docs/internals-ja/getting-started.md)" の説明に従ってください。

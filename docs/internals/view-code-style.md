@@ -1,5 +1,5 @@
-Yii2 View Code Style
-====================
+Yii 2 View Code Style
+=====================
 
 The following code style is used for Yii 2.x core and official extensions view files. We aren't forcing you to use this code style for your application. Feel free to choose what suits you better.
 
