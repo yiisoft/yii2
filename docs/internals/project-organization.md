@@ -1,7 +1,7 @@
 Project Organization
 ====================
 
-This document describes the organization of the Yii2 development repositories.
+This document describes the organization of the Yii 2 development repositories.
  
 1. Individual Core extensions and application templates are maintained in
    separate *independent* GitHub projects under the [yiisoft](https://github.com/yiisoft) Github organization.
@@ -22,7 +22,7 @@ This document describes the organization of the Yii2 development repositories.
    Extension repositories will be released independently as needed, Application templates will be released together with the framework.
    See [versioning policy](versions.md) for more details.
 
-2. The `yiisoft/yii2` project is the main repository for developing Yii2 framework.
+2. The `yiisoft/yii2` project is the main repository for developing Yii 2 framework.
    This repository provides the composer package [yiisoft/yii2-dev](https://packagist.org/packages/yiisoft/yii2-dev).
    It contains the core framework code, framework unit tests, the definitive guide, and a set of build tools for framework development and release.
    

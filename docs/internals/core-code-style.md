@@ -1,5 +1,5 @@
-Yii2 Core Framework Code Style
-==============================
+Yii 2 Core Framework Code Style
+===============================
 
 The following code style is used for Yii 2.x core and official extensions development. If you want to pull-request code
 into the core, consider using it. We aren't forcing you to use this code style for your application. Feel free to choose

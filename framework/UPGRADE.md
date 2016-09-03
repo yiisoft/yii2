@@ -56,7 +56,7 @@ Upgrade from Yii 2.0.6
 * Added new requirement: ICU Data version >= 49.1. Please, ensure that your environment has ICU data installed and
   up to date to prevent unexpected behavior or crashes. This may not be the case on older systems e.g. running Debian Wheezy.
 
-  > Tip: Use Yii2 Requirements checker for easy and fast check. Look for `requirements.php` in root of Basic and Advanced
+  > Tip: Use Yii 2 Requirements checker for easy and fast check. Look for `requirements.php` in root of Basic and Advanced
   templates (howto-comment is in head of the script).
 
 * The signature of `yii\helpers\BaseInflector::transliterate()` was changed. The method is now public and has an
