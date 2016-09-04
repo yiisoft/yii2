@@ -81,7 +81,7 @@ class UrlRuleTest extends TestCase
                         $this->assertEquals($expected, $result, "Test#$i-$j: $name");
                     }
                 } catch (UrlNormalizerRedirectException $exc) {
-                    $this->assertEquals($expected, [$exc->route, $exc->params], "Test#$i-$j: $name");
+                    $this->assertEquals([$expected[0]] + $expected[1], $exc->url, "Test#$i-$j: $name");
                 }
             }
         }
@@ -113,7 +113,7 @@ class UrlRuleTest extends TestCase
                     }
                 } catch (UrlNormalizerRedirectException $exc) {
                     $this->assertEquals(UrlNormalizer::ACTION_REDIRECT_PERMANENT, $exc->statusCode, "Test-statusCode#$i-$j: $name");
-                    $this->assertEquals($expected, [$exc->route, $exc->params], "Test#$i-$j: $name");
+                    $this->assertEquals([$expected[0]] + $expected[1], $exc->url, "Test#$i-$j: $name");
                 }
             }
         }
@@ -142,7 +142,7 @@ class UrlRuleTest extends TestCase
                     }
                 } catch (UrlNormalizerRedirectException $exc) {
                     $this->assertEquals(UrlNormalizer::ACTION_REDIRECT_TEMPORARY, $exc->statusCode, "Test-statusCode#$i-$j: $name");
-                    $this->assertEquals($expected, [$exc->route, $exc->params], "Test#$i-$j: $name");
+                    $this->assertEquals([$expected[0]] + $expected[1], $exc->url, "Test#$i-$j: $name");
                 }
             }
         }
