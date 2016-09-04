@@ -313,16 +313,16 @@ This validator checks if the input is a valid uploaded file.
 
 - `extensions`: a list of file name extensions that are allowed to be uploaded. This can be either
   an array or a string consisting of file extension names separated by space or comma (e.g. "gif, jpg").
-  Extension names are case-insensitive. Defaults to null, meaning all file name
+  Extension names are case-insensitive. Defaults to `null`, meaning all file name
   extensions are allowed.
 - `mimeTypes`: a list of file MIME types that are allowed to be uploaded. This can be either an array
   or a string consisting of file MIME types separated by space or comma (e.g. "image/jpeg, image/png").
   The wildcard mask with the special character `*` can be used to match groups of mime types.
   For example `image/*` will pass all mime types, that begin with `image/` (e.g. `image/jpeg`, `image/png`).
-  Mime type names are case-insensitive. Defaults to null, meaning all MIME types are allowed.
+  Mime type names are case-insensitive. Defaults to `null`, meaning all MIME types are allowed.
   For more details, please refer to [common media types](http://en.wikipedia.org/wiki/Internet_media_type#List_of_common_media_types).
-- `minSize`: the minimum number of bytes required for the uploaded file. Defaults to null, meaning no lower limit.
-- `maxSize`: the maximum number of bytes allowed for the uploaded file. Defaults to null, meaning no upper limit.
+- `minSize`: the minimum number of bytes required for the uploaded file. Defaults to `null`, meaning no lower limit.
+- `maxSize`: the maximum number of bytes allowed for the uploaded file. Defaults to `null`, meaning no upper limit.
 - `maxFiles`: the maximum number of files that the given attribute can hold. Defaults to 1, meaning
   the input must be a single uploaded file. If it is greater than 1, then the input must be an array
   consisting of at most `maxFiles` number of uploaded files.
@@ -387,10 +387,10 @@ This validator checks if the input value represents a valid image file. It exten
 and thus inherits all its properties. Besides, it supports the following additional properties specific for image
 validation purpose:
 
-- `minWidth`: the minimum width of the image. Defaults to null, meaning no lower limit.
-- `maxWidth`: the maximum width of the image. Defaults to null, meaning no upper limit.
-- `minHeight`: the minimum height of the image. Defaults to null, meaning no lower limit.
-- `maxHeight`: the maximum height of the image. Defaults to null, meaning no upper limit.
+- `minWidth`: the minimum width of the image. Defaults to `null`, meaning no lower limit.
+- `maxWidth`: the maximum width of the image. Defaults to `null`, meaning no upper limit.
+- `minHeight`: the minimum height of the image. Defaults to `null`, meaning no lower limit.
+- `maxHeight`: the maximum height of the image. Defaults to `null`, meaning no upper limit.
 
 ## [[yii\validators\IpValidator|ip]] <span id="ip"></span>
 ```php
@@ -548,7 +548,7 @@ This validator checks if the input value is provided and not empty.
 - `requiredValue`: the desired value that the input should be. If not set, it means the input should not be empty.
 - `strict`: whether to check data types when validating a value. Defaults to false.
   When `requiredValue` is not set, if this property is true, the validator will check if the input value is
-  not strictly null; If this property is false, the validator will use a loose rule to determine a value is empty or not.
+  not strictly `null`; If this property is false, the validator will use a loose rule to determine a value is empty or not.
   When `requiredValue` is set, the comparison between the input and `requiredValue` will also check data types
   if this property is true.
 
@@ -658,7 +658,7 @@ This validator checks if the input value is a valid URL.
 - `validSchemes`: an array specifying the URI schemes that should be considered valid. Defaults to `['http', 'https']`,
   meaning both `http` and `https` URLs are considered to be valid.
 - `defaultScheme`: the default URI scheme to be prepended to the input if it does not have the scheme part.
-  Defaults to null, meaning do not modify the input value.
+  Defaults to `null`, meaning do not modify the input value.
 - `enableIDN`: whether the validator should take into account IDN (internationalized domain names).
   Defaults to false. Note that in order to use IDN validation you have to install and enable the `intl` PHP
   extension, otherwise an exception would be thrown.
