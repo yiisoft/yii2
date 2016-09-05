@@ -1349,13 +1349,15 @@ class Comment extends ActiveRecord
         return new CommentQuery(get_called_class());
     }
 }
-````
+```
+
 Now whenever you are performing a query (e.g. `find()`, `findOne()`) or defining a relation (e.g. `hasOne()`)
 with `Comment`, you will be calling an instance of `CommentQuery` instead of `ActiveQuery`.
 
 You can customize the `CommentQuery` class in many creative ways to improve your query building experience. For example,
 you can define new query building methods:
-````php
+
+```php
 // file CommentQuery.php
 namespace app\models;
 
@@ -1377,7 +1379,6 @@ class CommentQuery extends ActiveQuery
     }
 }
 ```
-
 
 > Tip: In big projects, it is recommended that you use customized query classes to hold most query-related code
   so that the Active Record classes can be kept clean.
@@ -1403,7 +1404,7 @@ class Customer extends \yii\db\ActiveRecord
     }
 }
 
-$customers = Customer::find()->with('activeComments')->all();
+$customers = Customer::find()->joinWith('activeComments')->all();
 
 // or alternatively
 class Customer extends \yii\db\ActiveRecord
@@ -1414,7 +1415,7 @@ class Customer extends \yii\db\ActiveRecord
     }
 }
 
-$customers = Customer::find()->with([
+$customers = Customer::find()->joinWith([
     'comments' => function($q) {
         $q->active();
     }
