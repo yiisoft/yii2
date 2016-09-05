@@ -37,6 +37,7 @@ class MultipartFormDataParserTest extends TestCase
 
         $this->assertFalse(empty($_FILES['Item']));
         $this->assertFalse(empty($_FILES['Item']['name']['file']));
+        $this->assertEquals(UPLOAD_ERR_OK, $_FILES['Item']['error']['file']);
         $this->assertEquals('item-file.txt', $_FILES['Item']['name']['file']);
         $this->assertEquals('text/plain', $_FILES['Item']['type']['file']);
         $this->assertEquals('item file content', file_get_contents($_FILES['Item']['tmp_name']['file']));

@@ -33,11 +33,62 @@ use yii\helpers\StringHelper;
  *
  * Method `parse()` of this parser automatically populates `$_FILES` with the files parsed from raw body.
  *
+ * @property integer $uploadFileMaxSize upload file max size in bytes.
+ * @property integer $uploadFileMaxCount maximum upload files count.
+ *
  * @author Paul Klimov <klimov.paul@gmail.com>
  * @since 2.0.10
  */
 class MultipartFormDataParser implements RequestParserInterface
 {
+    /**
+     * @var integer upload file max size in bytes.
+     */
+    private $_uploadFileMaxSize;
+    /**
+     * @var integer maximum upload files count.
+     */
+    private $_uploadFileMaxCount;
+
+
+    /**
+     * @return integer upload file max size in bytes.
+     */
+    public function getUploadFileMaxSize()
+    {
+        if ($this->_uploadFileMaxSize === null) {
+            $this->_uploadFileMaxSize = $this->getByteSize(ini_get('upload_max_filesize'));
+        }
+        return $this->_uploadFileMaxSize;
+    }
+
+    /**
+     * @param integer $uploadFileMaxSize upload file max size in bytes.
+     */
+    public function setUploadFileMaxSize($uploadFileMaxSize)
+    {
+        $this->_uploadFileMaxSize = $uploadFileMaxSize;
+    }
+
+    /**
+     * @return integer maximum upload files count.
+     */
+    public function getUploadFileMaxCount()
+    {
+        if ($this->_uploadFileMaxCount === null) {
+            $this->_uploadFileMaxCount = ini_get('max_file_uploads');
+        }
+        return $this->_uploadFileMaxCount;
+    }
+
+    /**
+     * @param integer $uploadFileMaxCount maximum upload files count.
+     */
+    public function setUploadFileMaxCount($uploadFileMaxCount)
+    {
+        $this->_uploadFileMaxCount = $uploadFileMaxCount;
+    }
+
     /**
      * @inheritdoc
      */
@@ -61,6 +112,7 @@ class MultipartFormDataParser implements RequestParserInterface
         array_pop($bodyParts); // last block always has no data
 
         $bodyParams = [];
+        $filesCount = 0;
         foreach ($bodyParts as $bodyPart) {
             if (empty($bodyPart)) {
                 continue;
@@ -74,32 +126,41 @@ class MultipartFormDataParser implements RequestParserInterface
 
             if (isset($headers['content-disposition']['filename'])) {
                 // file upload:
-                $fileSize = StringHelper::byteLength($value);
-                $error = UPLOAD_ERR_OK;
-
-                $tmpResource = tmpfile();
-                $tmpFileName = null;
-                if ($tmpResource === false) {
-                    $error = UPLOAD_ERR_CANT_WRITE;
-                } else {
-                    $tmpResourceMetaData = stream_get_meta_data($tmpResource);
-                    $tmpFileName = $tmpResourceMetaData['uri'];
-                    fwrite($tmpResource, $value);
+                if ($filesCount >= $this->getUploadFileMaxCount()) {
+                    continue;
                 }
 
                 $fileInfo = [
                     'name' => $headers['content-disposition']['filename'],
                     'type' => ArrayHelper::getValue($headers, 'content-type', 'application/octet-stream'),
-                    'size' => $fileSize,
-                    'error' => $error,
+                    'size' => StringHelper::byteLength($value),
+                    'error' => UPLOAD_ERR_OK,
+                    'tmp_name' => null,
                 ];
 
-                if ($error === UPLOAD_ERR_OK) {
-                    $fileInfo['tmp_name'] = $tmpFileName;
-                    $fileInfo['tmp_resource'] = $tmpResource; // save file resource, otherwise it will be deleted
+                if ($fileInfo['size'] > $this->getUploadFileMaxSize()) {
+                    $fileInfo['error'] = UPLOAD_ERR_INI_SIZE;
+                } else {
+                    $tmpResource = tmpfile();
+                    if ($tmpResource === false) {
+                        $fileInfo['error'] = UPLOAD_ERR_CANT_WRITE;
+                    } else {
+                        $tmpResourceMetaData = stream_get_meta_data($tmpResource);
+                        $tmpFileName = $tmpResourceMetaData['uri'];
+                        if (empty($tmpFileName)) {
+                            $fileInfo['error'] = UPLOAD_ERR_CANT_WRITE;
+                            @fclose($tmpResource);
+                        } else {
+                            fwrite($tmpResource, $value);
+                            $fileInfo['tmp_name'] = $tmpFileName;
+                            $fileInfo['tmp_resource'] = $tmpResource; // save file resource, otherwise it will be deleted
+                        }
+                    }
                 }
 
                 $this->addFile($_FILES, $headers['content-disposition']['name'], $fileInfo);
+
+                $filesCount++;
             } else {
                 // regular parameter:
                 $this->addValue($bodyParams, $headers['content-disposition']['name'], $value);
@@ -232,6 +293,41 @@ class MultipartFormDataParser implements RequestParserInterface
                 }
             }
             $current = $info[$attribute];
+        }
+    }
+
+    /**
+     * Gets the size in bytes from verbose size representation.
+     * For example: '5K' => 5*1024
+     * @param string $verboseSize verbose size representation.
+     * @return integer actual size in bytes.
+     */
+    private function getByteSize($verboseSize)
+    {
+        if (empty($verboseSize)) {
+            return 0;
+        }
+        if (is_numeric($verboseSize)) {
+            return (int) $verboseSize;
+        }
+        $sizeUnit = trim($verboseSize, '0123456789');
+        $size = str_replace($sizeUnit, '', $verboseSize);
+        $size = trim($size);
+        if (!is_numeric($size)) {
+            return 0;
+        }
+        switch (strtolower($sizeUnit)) {
+            case 'kb':
+            case 'k':
+                return $size * 1024;
+            case 'mb':
+            case 'm':
+                return $size * 1024 * 1024;
+            case 'gb':
+            case 'g':
+                return $size * 1024 * 1024 * 1024;
+            default:
+                return 0;
         }
     }
 }
