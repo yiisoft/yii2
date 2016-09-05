@@ -27,7 +27,7 @@ use yii\caching\Cache;
  * the masters.
  *
  * To establish a DB connection, set [[dsn]], [[username]] and [[password]], and then
- * call [[open()]] to be true.
+ * call [[open()]] to connect to the database server. The current state of the connection can be checked using [[$isActive]].
  *
  * The following example shows how to create a Connection instance and establish
  * the DB connection:
