@@ -235,10 +235,16 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
      */
     public function canGetProperty($name, $checkVars = true, $checkBehaviors = true)
     {
-        if ($this->hasAttribute($name)) {
+        if (parent::canGetProperty($name, $checkVars, $checkBehaviors)) {
             return true;
         }
-        return parent::canGetProperty($name, $checkVars, $checkBehaviors);
+
+        try {
+            return $this->hasAttribute($name);
+        } catch (\Exception $e) {
+            // `hasAttribute()` may fail on base/abstract classes in case automatic attribute list fetching used
+            return false;
+        }
     }
 
     /**
@@ -246,10 +252,16 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
      */
     public function canSetProperty($name, $checkVars = true, $checkBehaviors = true)
     {
-        if ($this->hasAttribute($name)) {
+        if (parent::canSetProperty($name, $checkVars, $checkBehaviors)) {
             return true;
         }
-        return parent::canSetProperty($name, $checkVars, $checkBehaviors);
+
+        try {
+            return $this->hasAttribute($name);
+        } catch (\Exception $e) {
+            // `hasAttribute()` may fail on base/abstract classes in case automatic attribute list fetching used
+            return false;
+        }
     }
 
     /**
