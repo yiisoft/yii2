@@ -56,6 +56,7 @@ Yii Framework 2 Change Log
 - Bug #12431: Fix bug when lock file was not removed after `yii\mutex\FileMutex::release()` (rob006)
 - Enh: Method `yii\console\controllers\AssetController::getAssetManager()` automatically enables `yii\web\AssetManager::forceCopy` in case it is not explicitly specified (pana1990, klimov-paul)
 - Enh #12382: Changed `yii\widgets\MaskedInput` to use `jQuery` instead of `$` to prevent conflicts (samdark)
+- Bug #12446: Disable slaves when execute migrations to resolve master-slave replication no-sync (lichunqiang)
 
 
 2.0.9 July 11, 2016
