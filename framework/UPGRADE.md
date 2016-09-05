@@ -18,6 +18,13 @@ php composer.phar global require "fxp/composer-asset-plugin:^1.2.0"
 Upgrade from Yii 2.0.8
 ----------------------
 
+* Method `yii\web\Request::getBodyParams()` has been changed to pass full value of 'content-type' header to the second
+  argument of `yii\web\RequestParserInterface::parse()`. If you create your own custom parser, which relies on `$contentType`
+  argument, ensure to process it correctly as it may content additional data.
+
+Upgrade from Yii 2.0.8
+----------------------
+
 * Part of code from `yii\web\User::loginByCookie()` method was moved to new `getIdentityAndDurationFromCookie()`
   and `removeIdentityCookie()` methods. If you override `loginByCookie()` method, update it in order use new methods.
 * Fixture console command syntax was changed from `yii fixture "*" -User` to `yii fixture "*, -User"`. Upgrade your
