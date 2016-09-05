@@ -1337,6 +1337,7 @@ in an Active Record class, you should override the [[yii\db\ActiveRecord::find()
 of your customized query class. For example,
  
 ```php
+// file Comment.php
 namespace app\models;
 
 use yii\db\ActiveRecord;
@@ -1350,17 +1351,17 @@ class Comment extends ActiveRecord
     }
 }
 
+// file CommentQuery.php
+namespace app\models;
+
 class CommentQuery extends ActiveQuery
 {
-    // ...
+    // ... add customized query methods here ...
 }
 ```
 
 Now whenever you are performing a query (e.g. `find()`, `findOne()`) or defining a relation (e.g. `hasOne()`) 
 with `Comment`, you will be working with an instance of `CommentQuery` instead of `ActiveQuery`.
-
-> Tip: In big projects, it is recommended that you use customized query classes to hold most query-related code
-  so that the Active Record classes can be kept clean.
 
 You can customize a query class in many creative ways to improve your query building experience. For example,
 you can define new query building methods in a customized query class: 
@@ -1374,6 +1375,9 @@ class CommentQuery extends ActiveQuery
     }
 }
 ```
+
+> Tip: In big projects, it is recommended that you use customized query classes to hold most query-related code
+  so that the Active Record classes can be kept clean.
 
 > Note: Instead of calling [[yii\db\ActiveQuery::where()|where()]], you usually should call
   [[yii\db\ActiveQuery::andWhere()|andWhere()]] or [[yii\db\ActiveQuery::orWhere()|orWhere()]] to append additional
