@@ -141,7 +141,7 @@ The following example shows the `composer.json` file for the `yiisoft/yii2-imagi
 
     // package dependencies
     "require": {
-        "yiisoft/yii2": "*",
+        "yiisoft/yii2": "~2.0.0",
         "imagine/imagine": "v0.5.0"
     },
 

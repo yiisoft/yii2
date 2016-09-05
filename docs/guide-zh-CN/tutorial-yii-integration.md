@@ -68,10 +68,9 @@ Yii::$classMap['Class2'] = 'path/to/Class2.php';
 
 若这个第三方系统支持 Composer 管理他的依赖文件，你可以直接运行一下命令来安装 Yii：
 
-```
-php composer.phar require yiisoft/yii2-framework:*
-php composer.phar install
-```
+    composer global require "fxp/composer-asset-plugin:^1.2.0"
+    composer require yiisoft/yii2
+    composer install
 
 不然的话，你可以[下载](http://www.yiiframework.com/download/) Yii 的发布包，并把它解压到对应系统的 `BasePath/vendor` 目录内。
 

@@ -43,7 +43,7 @@ a continuación:
     "require": {
         // ... otras dependencias
 
-        "yiisoft/yii2-imagine": "*"
+        "yiisoft/yii2-imagine": "~2.0.0"
     }
 }
 ```
@@ -149,7 +149,7 @@ muestra el archivo `composer.json` para la extensión `yiisoft/yii2-imagine`:
 
     // dependencias del paquete
     "require": {
-        "yiisoft/yii2": "*",
+        "yiisoft/yii2": "~2.0.0",
         "imagine/imagine": "v0.5.0"
     },
 

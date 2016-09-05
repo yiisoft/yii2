@@ -49,7 +49,7 @@ Por exemplo, para instalar a extensão `yiisoft/yii2-imagine`, modifique seu
     "require": {
         // ... other dependencies
 
-        "yiisoft/yii2-imagine": "*"
+        "yiisoft/yii2-imagine": "~2.0.0"
     }
 }
 ```
@@ -167,7 +167,7 @@ O exemplo a seguir mostra o arquivo `composer.json` para a extensão `yiisoft/yi
 
     // dependências do pacote
     "require": {
-        "yiisoft/yii2": "*",
+        "yiisoft/yii2": "~2.0.0",
         "imagine/imagine": "v0.5.0"
     },
 

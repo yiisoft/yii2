@@ -64,7 +64,7 @@ Yii::$classMap['Class2'] = 'path/to/Class2.php';
 Если сторонняя система использует для управления зависимостями Composer, Yii можно просто установить с помощью следующих команд:
 
     composer global require "fxp/composer-asset-plugin:^1.2.0"
-    composer require "yiisoft/yii2:*"
+    composer require yiisoft/yii2
     composer install
 
 Первая команда устанавливает [composer asset plugin](https://github.com/francoispluchino/composer-asset-plugin/), который позволяет управлять зависимостями пакетов bower и npm через Composer. Даже если вы хотите воспользоваться слоем абстракции баз данных или другими элементами Yii, не связанными с ресурсами, этот плагин все равно придется установить, так как без него не установится пакет Yii.
