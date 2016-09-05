@@ -131,6 +131,17 @@ class Event extends Object
     }
 
     /**
+     * Detaches all registered class-level event handlers.
+     * @see on()
+     * @see off()
+     * @since 2.0.10
+     */
+    public static function offAll()
+    {
+        self::$_events = [];
+    }
+
+    /**
      * Returns a value indicating whether there is any handler attached to the specified class-level event.
      * Note that this method will also check all parent classes to see if there is any handler attached
      * to the named event.
