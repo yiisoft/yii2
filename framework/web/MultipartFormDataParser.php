@@ -33,6 +33,11 @@ use yii\helpers\StringHelper;
  *
  * Method `parse()` of this parser automatically populates `$_FILES` with the files parsed from raw body.
  *
+ * Note: although this parser fully emulates regular structure of the `$_FILES`, related temporary
+ * files, which are available via 'tmp_name' key, will not be recognized by PHP as uploaded ones.
+ * Thus functions like `is_uploaded_file()` and `move_uploaded_file()` will fail on them. This also
+ * means [[UploadedFile::saveAs()]] will fail as well.
+ *
  * @property integer $uploadFileMaxSize upload file max size in bytes.
  * @property integer $uploadFileMaxCount maximum upload files count.
  *

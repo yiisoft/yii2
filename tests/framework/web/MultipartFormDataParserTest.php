@@ -9,6 +9,10 @@ class MultipartFormDataParserTest extends TestCase
 {
     public function testParse()
     {
+        if (defined('HHVM_VERSION')) {
+            static::markTestSkipped('Can not test on HHVM because it does not support proper handling of the temporary files.');
+        }
+
         $parser = new MultipartFormDataParser();
 
         $boundary = '---------------------------22472926011618';
