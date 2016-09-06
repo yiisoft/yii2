@@ -147,6 +147,7 @@ class AccessControl extends ActionFilter
     {
         if ($user->getIsGuest()) {
             $user->loginRequired();
+            Yii::$app->end(); //to prevent controller/action resolving
         } else {
             throw new ForbiddenHttpException(Yii::t('yii', 'You are not allowed to perform this action.'));
         }
