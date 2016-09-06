@@ -84,4 +84,43 @@ class MultipartFormDataParserTest extends TestCase
         $bodyParams = $parser->parse($rawBody, $contentType);
         $this->assertEquals([], $bodyParams);
     }
+
+    /**
+     * @depends testParse
+     */
+    public function testUploadFileMaxCount()
+    {
+        $parser = new MultipartFormDataParser();
+        $parser->setUploadFileMaxCount(2);
+
+        $boundary = '---------------------------22472926011618';
+        $contentType = 'multipart/form-data; boundary=' . $boundary;
+        $rawBody = "--{$boundary}\nContent-Disposition: form-data; name=\"firstFile\"; filename=\"first-file.txt\"\nContent-Type: text/plain\r\n\r\nfirst file content";
+        $rawBody .= "--{$boundary}\nContent-Disposition: form-data; name=\"secondFile\"; filename=\"second-file.txt\"\nContent-Type: text/plain\r\n\r\nsecond file content";
+        $rawBody .= "--{$boundary}\nContent-Disposition: form-data; name=\"thirdFile\"; filename=\"third-file.txt\"\nContent-Type: text/plain\r\n\r\nthird file content";
+        $rawBody .= "--{$boundary}--";
+
+        $parser->parse($rawBody, $contentType);
+        $this->assertCount(2, $_FILES);
+    }
+
+    /**
+     * @depends testParse
+     */
+    public function testUploadFileMaxSize()
+    {
+        $parser = new MultipartFormDataParser();
+        $parser->setUploadFileMaxSize(20);
+
+        $boundary = '---------------------------22472926011618';
+        $contentType = 'multipart/form-data; boundary=' . $boundary;
+        $rawBody = "--{$boundary}\nContent-Disposition: form-data; name=\"firstFile\"; filename=\"first-file.txt\"\nContent-Type: text/plain\r\n\r\nfirst file content";
+        $rawBody .= "--{$boundary}\nContent-Disposition: form-data; name=\"secondFile\"; filename=\"second-file.txt\"\nContent-Type: text/plain\r\n\r\nsecond file content";
+        $rawBody .= "--{$boundary}\nContent-Disposition: form-data; name=\"thirdFile\"; filename=\"third-file.txt\"\nContent-Type: text/plain\r\n\r\nthird file with too long file content";
+        $rawBody .= "--{$boundary}--";
+
+        $parser->parse($rawBody, $contentType);
+        $this->assertCount(3, $_FILES);
+        $this->assertEquals(UPLOAD_ERR_INI_SIZE, $_FILES['thirdFile']['error']);
+    }
 }
