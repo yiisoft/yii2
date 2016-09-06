@@ -282,14 +282,25 @@ EOD;
             $configFileContent,
             $this->getPassedOptionValues()
         );
-        $config['sourcePath'] = Yii::getAlias($config['sourcePath']);
+
+        if (!is_array($config['sourcePath'])) {
+            $config['sourcePath'] = (array)$config['sourcePath'];
+        }
+
+        foreach ($config['sourcePath'] as &$path) {
+            $path = Yii::getAlias($path);
+            unset($path);
+        }
         $config['messagePath'] = Yii::getAlias($config['messagePath']);
 
         if (!isset($config['sourcePath'], $config['languages'])) {
             throw new Exception('The configuration file must specify "sourcePath" and "languages".');
         }
-        if (!is_dir($config['sourcePath'])) {
-            throw new Exception("The source path {$config['sourcePath']} is not a valid directory.");
+
+        foreach ($config['sourcePath'] as $path) {
+            if (!is_dir($path)) {
+                throw new Exception("The source path {$path} is not a valid directory.");
+            }
         }
         if (empty($config['format']) || !in_array($config['format'], ['php', 'po', 'pot', 'db'])) {
             throw new Exception('Format should be either "php", "po", "pot" or "db".');
@@ -305,7 +316,10 @@ EOD;
             throw new Exception('Languages cannot be empty.');
         }
 
-        $files = FileHelper::findFiles(realpath($config['sourcePath']), $config);
+        $files = [];
+        foreach ($config['sourcePath'] as $path) {
+            $files = array_merge($files, FileHelper::findFiles(realpath($path), $config));
+        }
 
         $messages = [];
         foreach ($files as $file) {
