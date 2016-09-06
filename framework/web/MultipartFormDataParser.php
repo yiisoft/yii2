@@ -34,6 +34,24 @@ use yii\helpers\StringHelper;
  *
  * Method `parse()` of this parser automatically populates `$_FILES` with the files parsed from raw body.
  *
+ * Note: since this is a request parser, it will initialize `$_FILES` values on [[Request::getBodyParams()]].
+ * Until this method is invoked `$_FILES` array will remain empty event if there are submitted files in the
+ * request body. Make sure you have requested body params before any attempt to get uploaded file in case
+ * you are using this parser.
+ *
+ * Usage example:
+ *
+ * ```php
+ * use yii\web\UploadedFile;
+ *
+ * $restRequestData = Yii::$app->request->getBodyParams();
+ * $uploadedFile = UploadedFile::getInstancesByName('photo');
+ *
+ * $model = new Item();
+ * $model->populate($restRequestData);
+ * copy($uploadedFile->tempName, '/path/to/file/storage/photo.jpg');
+ * ```
+ *
  * Note: although this parser fully emulates regular structure of the `$_FILES`, related temporary
  * files, which are available via 'tmp_name' key, will not be recognized by PHP as uploaded ones.
  * Thus functions like `is_uploaded_file()` and `move_uploaded_file()` will fail on them. This also
