@@ -16,7 +16,7 @@ use yii\helpers\StringHelper;
  * This parser provides the fallback for the 'multipart/form-data' processing on non POST requests,
  * for example: the one with 'PUT' request method.
  *
- * In order to enable this parser you should configure [[\yii\web\Request::parsers]] in the following way:
+ * In order to enable this parser you should configure [[Request::parsers]] in the following way:
  *
  * ```php
  * return [
@@ -32,10 +32,10 @@ use yii\helpers\StringHelper;
  * ];
  * ```
  *
- * Method `parse()` of this parser automatically populates `$_FILES` with the files parsed from raw body.
+ * Method [[parse()]] of this parser automatically populates `$_FILES` with the files parsed from raw body.
  *
- * Note: since this is a request parser, it will initialize `$_FILES` values on [[Request::getBodyParams()]].
- * Until this method is invoked `$_FILES` array will remain empty event if there are submitted files in the
+ * > Note: since this is a request parser, it will initialize `$_FILES` values on [[Request::getBodyParams()]].
+ * Until this method is invoked, `$_FILES` array will remain empty even if there are submitted files in the
  * request body. Make sure you have requested body params before any attempt to get uploaded file in case
  * you are using this parser.
  *
@@ -52,7 +52,7 @@ use yii\helpers\StringHelper;
  * copy($uploadedFile->tempName, '/path/to/file/storage/photo.jpg');
  * ```
  *
- * Note: although this parser fully emulates regular structure of the `$_FILES`, related temporary
+ * > Note: although this parser fully emulates regular structure of the `$_FILES`, related temporary
  * files, which are available via 'tmp_name' key, will not be recognized by PHP as uploaded ones.
  * Thus functions like `is_uploaded_file()` and `move_uploaded_file()` will fail on them. This also
  * means [[UploadedFile::saveAs()]] will fail as well.
@@ -133,7 +133,7 @@ class MultipartFormDataParser extends Object implements RequestParserInterface
         $boundary = $matches[1];
 
         $bodyParts = preg_split('/-+' . preg_quote($boundary) . '/s', $rawBody);
-        array_pop($bodyParts); // last block always has no data
+        array_pop($bodyParts); // last block always has no data, contains boundary ending like `--`
 
         $bodyParams = [];
         $filesCount = 0;
@@ -202,11 +202,8 @@ class MultipartFormDataParser extends Object implements RequestParserInterface
     private function parseHeaders($headerContent)
     {
         $headers = [];
-        $headerParts = preg_split("/[\n|\r]/s", $headerContent);
+        $headerParts = preg_split("/\\R/s", $headerContent, -1, PREG_SPLIT_NO_EMPTY);
         foreach ($headerParts as $headerPart) {
-            if (empty($headerPart)) {
-                continue;
-            }
             if (($separatorPos = strpos($headerPart, ':')) === false) {
                 continue;
             }
