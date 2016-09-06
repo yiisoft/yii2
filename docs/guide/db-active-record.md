@@ -1354,8 +1354,7 @@ class Comment extends ActiveRecord
 Now whenever you are performing a query (e.g. `find()`, `findOne()`) or defining a relation (e.g. `hasOne()`)
 with `Comment`, you will be calling an instance of `CommentQuery` instead of `ActiveQuery`.
 
-You now need to define the `CommentQuery` class which can be customized in many creative ways to improve your query building experience. For example,
-you can define new query building methods:
+You now have to define the `CommentQuery` class, which can be customized in many creative ways to improve your query building experience. For example,
 
 ```php
 // file CommentQuery.php
