@@ -1148,17 +1148,18 @@ class BaseHtml
     /**
      * Generates a summary of the validation errors.
      * If there is no validation error, an empty error summary markup will still be generated, but it will be hidden.
-     * @param Model|Model[] $models the model(s) whose validation errors are to be displayed
+     * @param Model|Model[] $models the model(s) whose validation errors are to be displayed.
      * @param array $options the tag options in terms of name-value pairs. The following options are specially handled:
      *
      * - header: string, the header HTML for the error summary. If not set, a default prompt string will be used.
-     * - footer: string, the footer HTML for the error summary.
-     * - encode: boolean, if set to false then the error messages won't be encoded.
+     * - footer: string, the footer HTML for the error summary. Defaults to empty string.
+     * - encode: boolean, if set to false then the error messages won't be encoded. Defaults to `true`.
      * - showAllErrors: boolean, if set to true every error message for each attribute will be shown otherwise
-     * only the first error message for each attribute will be shown.
+     * only the first error message for each attribute will be shown. Defaults to `false`.
+     * Option is available since 2.0.10.
      *
-     * The rest of the options will be rendered as the attributes of the container tag. The values will
-     * be HTML-encoded using [[encode()]]. If a value is null, the corresponding attribute will not be rendered.
+     * The rest of the options will be rendered as the attributes of the container tag.
+     *
      * @return string the generated error summary
      */
     public static function errorSummary($models, $options = [])
