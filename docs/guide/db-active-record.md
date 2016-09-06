@@ -1354,8 +1354,7 @@ class Comment extends ActiveRecord
 Now whenever you are performing a query (e.g. `find()`, `findOne()`) or defining a relation (e.g. `hasOne()`)
 with `Comment`, you will be calling an instance of `CommentQuery` instead of `ActiveQuery`.
 
-You can customize the `CommentQuery` class in many creative ways to improve your query building experience. For example,
-you can define new query building methods:
+You now have to define the `CommentQuery` class, which can be customized in many creative ways to improve your query building experience. For example,
 
 ```php
 // file CommentQuery.php
@@ -1368,7 +1367,8 @@ class CommentQuery extends ActiveQuery
     // conditions appended by default (can be skipped)
     public function init()
     {
-        return $this->andOnCondition(['deleted' => false]);
+        $this->andOnCondition(['deleted' => false]);
+        parent::init();
     }
 
     // ... add customized query methods here ...
@@ -1380,9 +1380,6 @@ class CommentQuery extends ActiveQuery
 }
 ```
 
-> Tip: In big projects, it is recommended that you use customized query classes to hold most query-related code
-  so that the Active Record classes can be kept clean.
-
 > Note: Instead of calling [[yii\db\ActiveQuery::onCondition()|onCondition()]], you usually should call
   [[yii\db\ActiveQuery::andOnCondition()|andOnCondition()]] or [[yii\db\ActiveQuery::orOnCondition()|orOnCondition()]] to append additional conditions when defining new query building methods so that any existing conditions are not overwritten.
 
@@ -1392,6 +1389,9 @@ This allows you to write query building code like the following:
 $comments = Comment::find()->active()->all();
 $inactiveComments = Comment::find()->active(false)->all();
 ```
+
+> Tip: In big projects, it is recommended that you use customized query classes to hold most query-related code
+  so that the Active Record classes can be kept clean.
 
 You can also use the new query building methods when defining relations about `Comment` or performing relational query:
 
