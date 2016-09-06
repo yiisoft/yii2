@@ -141,7 +141,7 @@ class MultipartFormDataParser extends Object implements RequestParserInterface
             if (empty($bodyPart)) {
                 continue;
             }
-            list($headers, $value) = explode("\r\n\r\n", $bodyPart, 2);
+            list($headers, $value) = preg_split("/\\R\\R/", $bodyPart, 2);
             $headers = $this->parseHeaders($headers);
             
             if (!isset($headers['content-disposition']['name'])) {
