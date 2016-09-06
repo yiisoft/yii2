@@ -322,7 +322,9 @@ class View extends Component
     {
         ob_start();
         ob_implicit_flush(false);
-        extract($_params_, EXTR_OVERWRITE);
+        foreach ($_params_ as $key => $value) {
+            ${$key} = $value;
+        }
         require($_file_);
 
         return ob_get_clean();
