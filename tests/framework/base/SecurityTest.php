@@ -935,6 +935,11 @@ TEXT;
         if (DIRECTORY_SEPARATOR === '\\' && $functions['random_bytes'] === false && $functions['openssl_random_pseudo_bytes'] === false && $functions['mcrypt_create_iv'] === false ) {
             $this->setExpectedException('yii\base\Exception', 'Unable to generate a random key');
         }
+        // Function mcrypt_create_iv() is deprecated since PHP 7.1
+        if (version_compare(PHP_VERSION, '7.1.0', '>=') && $functions['random_bytes'] === false && $functions['mcrypt_create_iv'] === true) {
+            $this->setExpectedException('yii\base\ErrorException', 'Function mcrypt_create_iv() is deprecated');
+        }
+
         static::$functions = $functions;
 
         // test various string lengths
