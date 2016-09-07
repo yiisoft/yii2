@@ -133,6 +133,10 @@ class ActionColumn extends Column
     {
         parent::init();
         $this->initDefaultButtons();
+        
+        if (!empty($this->visibleButtons) && !in_array(true, $this->visibleButtons)) {
+            $this->visible = false;
+        }
     }
 
     /**
