@@ -34,7 +34,6 @@ Yii Framework 2 Change Log
 - Bug #11715: Fixed JS validation when the same model's attribute file input is listed more than once on the same page (uaoleg)
 - Bug #11541: Fixed default MySQL integer display width for unsigned primary key (h311ion, rob006, cebe)
 - Bug #12143: Fixed `yii\db\BaseActiveRecord::updateAttributes()` change `isNewRecord` state for the new model (klimov-paul)
-- Bug #12371: Replaced `extract()` function usages with custom polyfill in order to fix HHVM compatibility (silverfire, klimov-paul)
 - Bug #12463: Fixed `yii\web\Request::getBodyParams()` does not pass full 'content-type' value to `yii\web\RequestParserInterface::parse()` (klimov-paul)
 - Enh #9708: Added `yii\console\controllers\AssetController::deleteSource` option allowing deletion of the source asset files after compression (pana1990, klimov-paul)
 - Enh #10243: Added `yii\data\Sort::setAttributeOrders()` method allowing manual setup of current sort (klimov-paul)

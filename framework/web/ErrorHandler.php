@@ -233,9 +233,7 @@ class ErrorHandler extends \yii\base\ErrorHandler
         if ($this->exception instanceof ErrorException || !Yii::$app->has('view')) {
             ob_start();
             ob_implicit_flush(false);
-            foreach ($_params_ as $key => $value) {
-                ${$key} = $value;
-            }
+            extract($_params_, EXTR_OVERWRITE);
             require(Yii::getAlias($_file_));
 
             return ob_get_clean();

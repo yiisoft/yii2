@@ -304,13 +304,7 @@ class YiiRequirementChecker
     {
         // we use special variable names here to avoid conflict when extracting data
         if (is_array($_data_)) {
-            foreach ($_data_ as $key => $value) {
-                if (isset(${$key})) {
-                    ${'data_'.$key} = $value;
-                } else {
-                    ${$key} = $value;
-                }
-            }
+            extract($_data_, EXTR_PREFIX_SAME, 'data');
         } else {
             $data = $_data_;
         }
