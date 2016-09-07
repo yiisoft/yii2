@@ -37,7 +37,7 @@ Composer は依存関係を管理するものですから、あるパッケー�
     "require": {
         // ... 他の依存パッケージ
 
-        "yiisoft/yii2-imagine": "*"
+        "yiisoft/yii2-imagine": "~2.0.0"
     }
 }
 ```
@@ -140,7 +140,7 @@ Image::thumbnail('@webroot/img/test-image.jpg', 120, 120)
 
     // 依存パッケージ
     "require": {
-        "yiisoft/yii2": "*",
+        "yiisoft/yii2": "~2.0.0",
         "imagine/imagine": "v0.5.0"
     },
 

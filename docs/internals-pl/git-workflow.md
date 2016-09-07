@@ -75,7 +75,7 @@ php build/build dev/ext <nazwa-rozszerzenia>
 Oczywiście zamiast `<nazwa-rozszerzenia>` wpisz konkretną jego nazwę, np. `redis`.
 
 Jeśli chcesz przetestować rozszerzenie w jednym z szablonów projektów, po prostu dodaj je do pliku `composer.json` aplikacji 
-w zwyczajowy sposób, np. dodaj `"yiisoft/yii2-redis": "*"` do sekcji `require` w podstawowym szablonie aplikacji.
+w zwyczajowy sposób, np. dodaj `"yiisoft/yii2-redis": "~2.0.0"` do sekcji `require` w podstawowym szablonie aplikacji.
 Uruchomienie `php build/build dev/app basic` zainstaluje rozszerzenie i jego zależności i utworzy symlink do folderu 
 `extensions/redis`, dzięki czemu możesz pracować bezpośrednio w repozytorium yii2, a nie folderze vendorowym composera.
 

@@ -41,7 +41,7 @@
     "require": {
         // ... другие зависимости
 
-        "yiisoft/yii2-imagine": "*"
+        "yiisoft/yii2-imagine": "~2.0.0"
     }
 }
 ```
@@ -144,7 +144,7 @@ Image::thumbnail('@webroot/img/test-image.jpg', 120, 120)
 
     // зависимости пакета
     "require": {
-        "yiisoft/yii2": "*",
+        "yiisoft/yii2": "~2.0.0",
         "imagine/imagine": "v0.5.0"
     },
 

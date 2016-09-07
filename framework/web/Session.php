@@ -364,9 +364,8 @@ class Session extends Component implements \IteratorAggregate, \ArrayAccess, \Co
     private function setCookieParamsInternal()
     {
         $data = $this->getCookieParams();
-        extract($data);
-        if (isset($lifetime, $path, $domain, $secure, $httponly)) {
-            session_set_cookie_params($lifetime, $path, $domain, $secure, $httponly);
+        if (isset($data['lifetime'], $data['path'], $data['domain'], $data['secure'], $data['httponly'])) {
+            session_set_cookie_params($data['lifetime'], $data['path'], $data['domain'], $data['secure'], $data['httponly']);
         } else {
             throw new InvalidParamException('Please make sure cookieParams contains these elements: lifetime, path, domain, secure and httponly.');
         }
