@@ -936,7 +936,7 @@ TEXT;
             $this->setExpectedException('yii\base\Exception', 'Unable to generate a random key');
         }
         // Function mcrypt_create_iv() is deprecated since PHP 7.1
-        if (version_compare(PHP_VERSION, '7.1.0', '>=') && $functions['random_bytes'] === false && $functions['mcrypt_create_iv'] === true) {
+        if (version_compare(PHP_VERSION, '7.1.0alpha', '>=') && $functions['random_bytes'] === false && $functions['mcrypt_create_iv'] === true) {
             $this->markTestSkipped('Function mcrypt_create_iv() is deprecated as of PHP 7.1');
         }
 
