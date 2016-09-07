@@ -937,7 +937,7 @@ TEXT;
         }
         // Function mcrypt_create_iv() is deprecated since PHP 7.1
         if (version_compare(PHP_VERSION, '7.1.0', '>=') && $functions['random_bytes'] === false && $functions['mcrypt_create_iv'] === true) {
-            $this->setExpectedException('yii\base\ErrorException', 'Function mcrypt_create_iv() is deprecated');
+            $this->markTestSkipped('Function mcrypt_create_iv() is deprecated as of PHP 7.1');
         }
 
         static::$functions = $functions;
