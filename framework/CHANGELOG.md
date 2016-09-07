@@ -6,6 +6,7 @@ Yii Framework 2 Change Log
 
 - Bug #9027: Fixed descendant class of `yii\web\UploadedFile` returns parent instances in case invoked after it (andrewnester)
 - Bug #12428: Fixed `yii\db\mysql\QueryBuilder` causes warning when insert default rows into a table without primary key (DrmagicE)
+- Enh #6996: Added `yii\web\MultipartFormDataParser`, which allows proper processing of 'multipart/form-data' encoded non POST requests (klimov-paul)
 - Enh #9989: ActiveForm now respects formtarget, formmethod and formenctype attributes of submit button (AnatolyRugalev)
 - Enh #12296: Added value validation to `yii\log\Target::setLevels()` (Mak-Di)
 - Enh #12193: Added the ability to suppress the generation of duplicate error messages in `Html::errorSummary`. Added the ability to display error messages beyond the first error for each model attribute (PowerGamer1)
