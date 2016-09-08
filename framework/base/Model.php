@@ -370,8 +370,8 @@ class Model extends Component implements IteratorAggregate, ArrayAccess, Arrayab
      */
     public function beforeValidate()
     {
-        $event = new ModelEvent;
-        $this->trigger(self::EVENT_BEFORE_VALIDATE, $event);
+        $event = new ModelEvent(self::EVENT_BEFORE_VALIDATE);
+        $this->trigger($event);
 
         return $event->isValid;
     }

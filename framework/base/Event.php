@@ -53,6 +53,16 @@ class Event extends Object
      */
     private static $_events = [];
 
+    /**
+     * Constructor.
+     * @param string $name the event name.
+     * @param array $config name-value pairs that will be used to initialize the object properties
+     */
+    public function __construct($name, $config = [])
+    {
+        $this->name = $name;
+        parent::__construct($config);
+    }
 
     /**
      * Attaches an event handler to a class-level event.
@@ -169,19 +179,18 @@ class Event extends Object
      * This method will cause invocation of event handlers that are attached to the named event
      * for the specified class and all its parent classes.
      * @param string|object $class the object or the fully qualified class name specifying the class-level event.
-     * @param string $name the event name.
-     * @param Event $event the event parameter. If not set, a default [[Event]] object will be created.
+     * @param string|Event $event the event parameter. If not set, a default [[Event]] object will be created.
+     * @param array $params Description
      */
-    public static function trigger($class, $name, $event = null)
+    public static function trigger($class, $event, $params = [])
     {
-        if (empty(self::$_events[$name])) {
+        if (!$event instanceof static) {
+            $event = new static($event);
+        }
+        if (empty(self::$_events[$event->name])) {
             return;
         }
-        if ($event === null) {
-            $event = new static;
-        }
         $event->handled = false;
-        $event->name = $name;
 
         if (is_object($class)) {
             if ($event->sender === null) {
@@ -198,12 +207,13 @@ class Event extends Object
             class_implements($class, true)
         );
 
+        array_unshift($params, $event);
         foreach ($classes as $class) {
             if (!empty(self::$_events[$name][$class])) {
                 foreach (self::$_events[$name][$class] as $handler) {
                     $event->data = $handler[1];
-                    call_user_func($handler[0], $event);
-                    if ($event->handled) {
+                    $result = call_user_func_array($handler[0], $params);
+                    if ($result === false || $event->handled) {
                         return;
                     }
                 }

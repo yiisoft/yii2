@@ -274,11 +274,11 @@ class View extends Component
      */
     public function beforeRender($viewFile, $params)
     {
-        $event = new ViewEvent([
+        $event = new ViewEvent(self::EVENT_BEFORE_RENDER, [
             'viewFile' => $viewFile,
             'params' => $params,
         ]);
-        $this->trigger(self::EVENT_BEFORE_RENDER, $event);
+        $this->trigger($event);
 
         return $event->isValid;
     }
@@ -295,12 +295,12 @@ class View extends Component
     public function afterRender($viewFile, $params, &$output)
     {
         if ($this->hasEventHandlers(self::EVENT_AFTER_RENDER)) {
-            $event = new ViewEvent([
+            $event = new ViewEvent(self::EVENT_AFTER_RENDER, [
                 'viewFile' => $viewFile,
                 'params' => $params,
                 'output' => $output,
             ]);
-            $this->trigger(self::EVENT_AFTER_RENDER, $event);
+            $this->trigger($event);
             $output = $event->output;
         }
     }

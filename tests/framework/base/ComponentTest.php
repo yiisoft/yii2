@@ -17,6 +17,12 @@ function globalEventHandler2($event)
     $event->handled = true;
 }
 
+function globalEventHandler3($event)
+{
+    $event->sender->eventHandled = true;
+    return false;
+}
+
 /**
  * @group base
  */
@@ -226,6 +232,39 @@ class ComponentTest extends TestCase
         $component->raiseEvent();
         $this->assertTrue($component->eventHandled);
         $this->assertFalse($this->component->eventHandled);
+
+        // stop event using return false
+        $component = new NewComponent;
+        $component->on('click', 'yiiunit\framework\base\globalEventHandler3');
+        $component->on('click', [$this->component, 'myEventHandler']);
+        $component->raiseEvent();
+        $this->assertTrue($component->eventHandled);
+        $this->assertFalse($this->component->eventHandled);
+
+
+        $handled1 = $handled2 = $handled3 = false;
+        $component = new NewComponent;
+        $component->on('click', function() use(&$handled1){
+            $handled1 = true;
+        });
+        $component->on('click', function() use(&$handled2){
+            $handled2 = true;
+            return false;
+        });
+        $component->on('click', function() use(&$handled3){
+            $handled3 = true;
+        });
+        $component->trigger('click');
+        $this->assertEquals([true, true, false], [$handled1, $handled2, $handled3]);
+    }
+
+    public function testExtraParamEvent()
+    {
+        $component = new NewComponent;
+        $component->on('click', function($event, $param1, $param2){
+            $this->assertEquals(['click', 'mdmunir', 3426], [$event->name, $param1, $param2]);
+        });
+        $component->trigger('click', ['mdmunir', 3426]);
     }
 
     public function testAttachBehavior()
@@ -406,7 +445,7 @@ class NewComponent extends Component
 
     public function raiseEvent()
     {
-        $this->trigger('click', new Event);
+        $this->trigger(new Event('click'));
     }
 
     public function setWriteOnly()

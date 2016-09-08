@@ -448,12 +448,12 @@ class User extends Component
      */
     protected function beforeLogin($identity, $cookieBased, $duration)
     {
-        $event = new UserEvent([
+        $event = new UserEvent(self::EVENT_BEFORE_LOGIN, [
             'identity' => $identity,
             'cookieBased' => $cookieBased,
             'duration' => $duration,
         ]);
-        $this->trigger(self::EVENT_BEFORE_LOGIN, $event);
+        $this->trigger($event);
 
         return $event->isValid;
     }
@@ -470,7 +470,7 @@ class User extends Component
      */
     protected function afterLogin($identity, $cookieBased, $duration)
     {
-        $this->trigger(self::EVENT_AFTER_LOGIN, new UserEvent([
+        $this->trigger(new UserEvent(self::EVENT_AFTER_LOGIN, [
             'identity' => $identity,
             'cookieBased' => $cookieBased,
             'duration' => $duration,
@@ -487,10 +487,10 @@ class User extends Component
      */
     protected function beforeLogout($identity)
     {
-        $event = new UserEvent([
+        $event = new UserEvent(self::EVENT_BEFORE_LOGOUT, [
             'identity' => $identity,
         ]);
-        $this->trigger(self::EVENT_BEFORE_LOGOUT, $event);
+        $this->trigger($event);
 
         return $event->isValid;
     }
@@ -504,7 +504,7 @@ class User extends Component
      */
     protected function afterLogout($identity)
     {
-        $this->trigger(self::EVENT_AFTER_LOGOUT, new UserEvent([
+        $this->trigger(new UserEvent(self::EVENT_AFTER_LOGOUT, [
             'identity' => $identity,
         ]));
     }

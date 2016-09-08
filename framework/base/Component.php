@@ -521,32 +521,33 @@ class Component extends Object
      * Triggers an event.
      * This method represents the happening of an event. It invokes
      * all attached handlers for the event including class-level handlers.
-     * @param string $name the event name
-     * @param Event $event the event parameter. If not set, a default [[Event]] object will be created.
+     * @param string|Event $event the event parameter. If not set, a default [[Event]] object will be created.
+     * @param array $params Description
      */
-    public function trigger($name, Event $event = null)
+    public function trigger($event, $params = [])
     {
         $this->ensureBehaviors();
-        if (!empty($this->_events[$name])) {
-            if ($event === null) {
-                $event = new Event;
-            }
+        if (!$event instanceof Event){
+            $event = new Event($event);
+        }
+        if (!empty($this->_events[$event->name])) {
             if ($event->sender === null) {
                 $event->sender = $this;
             }
             $event->handled = false;
-            $event->name = $name;
-            foreach ($this->_events[$name] as $handler) {
+            $_params = $params;
+            array_unshift($_params, $event);
+            foreach ($this->_events[$event->name] as $handler) {
                 $event->data = $handler[1];
-                call_user_func($handler[0], $event);
+                $result = call_user_func_array($handler[0], $_params);
                 // stop further handling if the event is handled
-                if ($event->handled) {
+                if ($result === false || $event->handled) {
                     return;
                 }
             }
         }
         // invoke class-level attached handlers
-        Event::trigger($this, $name, $event);
+        Event::trigger($this, $event, $params);
     }
 
     /**

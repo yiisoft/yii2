@@ -602,8 +602,8 @@ class Module extends ServiceLocator
      */
     public function beforeAction($action)
     {
-        $event = new ActionEvent($action);
-        $this->trigger(self::EVENT_BEFORE_ACTION, $event);
+        $event = new ActionEvent(self::EVENT_BEFORE_ACTION, $action);
+        $this->trigger($event);
         return $event->isValid;
     }
 
@@ -630,9 +630,9 @@ class Module extends ServiceLocator
      */
     public function afterAction($action, $result)
     {
-        $event = new ActionEvent($action);
+        $event = new ActionEvent(self::EVENT_AFTER_ACTION, $action);
         $event->result = $result;
-        $this->trigger(self::EVENT_AFTER_ACTION, $event);
+        $this->trigger($event);
         return $event->result;
     }
 }
