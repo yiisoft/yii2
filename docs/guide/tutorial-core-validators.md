@@ -111,7 +111,7 @@ you can use a combination of compare and date validator like the following:
 As validators are executed in the order they are specified this will first validate that the values entered in
 `fromDate` and `toDate` are valid date values and if so, they will be converted into a machine readable format.
 Afterwards these two values are compared with the compare validator.
-Client validation is not enabled as this will only work on the server side because the date validator currently does not
+Client validation is not enabled as this will only work on the server-side because the date validator currently does not
 provide client validation, so [[yii\validators\CompareValidator::$enableClientValidation|$enableClientValidation]]
 is set to `false` on the compare validator too.
 
