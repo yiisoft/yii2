@@ -530,14 +530,15 @@ class Component extends Object
         if (!$event instanceof Event){
             $event = new Event($event);
         }
-        if (!empty($this->_events[$event->name])) {
+        $name = $event->name;
+        if (!empty($this->_events[$name])) {
             if ($event->sender === null) {
                 $event->sender = $this;
             }
             $event->handled = false;
             $_params = $params;
             array_unshift($_params, $event);
-            foreach ($this->_events[$event->name] as $handler) {
+            foreach ($this->_events[$name] as $handler) {
                 $event->data = $handler[1];
                 $result = call_user_func_array($handler[0], $_params);
                 // stop further handling if the event is handled

@@ -187,7 +187,8 @@ class Event extends Object
         if (!$event instanceof static) {
             $event = new static($event);
         }
-        if (empty(self::$_events[$event->name])) {
+        $name = $event->name;
+        if (empty(self::$_events[$name])) {
             return;
         }
         $event->handled = false;
