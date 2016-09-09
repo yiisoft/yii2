@@ -55,7 +55,7 @@ class Filter extends Object
     ];
 
     /**
-     * @param null $modelClass
+     * @param string|null $modelClass
      * @return array
      * @throws NotAcceptableHttpException
      */
