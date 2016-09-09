@@ -28,6 +28,7 @@ trait MigrateControllerTestTrait
      */
     protected $migrationPath;
 
+
     public function setUpMigrationPath()
     {
         $this->migrationPath = Yii::getAlias('@yiiunit/runtime/test_migrations');
@@ -233,8 +234,8 @@ CODE;
             ]);
         }
 
-		// @see https://github.com/yiisoft/yii2/issues/10876
-		$this->assertCommandCreatedFile('create_products_from_store_table', 'create_products_from_store_table');
+        // @see https://github.com/yiisoft/yii2/issues/10876
+        $this->assertCommandCreatedFile('create_products_from_store_table', 'create_products_from_store_table');
 
         // @see https://github.com/yiisoft/yii2/issues/11461
         $this->assertCommandCreatedFile('create_title_with_comma_default_values', 'create_test_table', [
@@ -257,8 +258,8 @@ CODE;
             ]);
         }
 
-		// @see https://github.com/yiisoft/yii2/issues/10876
-		$this->assertCommandCreatedFile('drop_products_from_store_table', 'drop_products_from_store_table');
+        // @see https://github.com/yiisoft/yii2/issues/10876
+        $this->assertCommandCreatedFile('drop_products_from_store_table', 'drop_products_from_store_table');
     }
 
     public function testGenerateAddColumnMigration()
