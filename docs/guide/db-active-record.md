@@ -1495,8 +1495,9 @@ $customers = Customer::find()
     ->all();
 ```
 
-A disadvantage of using this method would be that if the information isn't loaded on the SQL query it has to be calculated
-separately, which also means that newly saved records won't contain the information from any extra field:
+A disadvantage of using this method would be that, if the information isn't loaded on the SQL query - it has to be calculated
+separately. Thus, if you have found particular record via regular query without extra select statements, it
+will be unable to return actual value for the extra field. Same will happen for the newly saved record.
 
 ```php
 $room = new Room();
@@ -1504,7 +1505,7 @@ $room->length = 100;
 $room->width = 50;
 $room->height = 2;
 
-$room->volume; // this value will be null since it was not declared yet
+$room->volume; // this value will be `null`, since it was not declared yet
 ```
 
 Using the [[yii\db\BaseActiveRecord::__get()|__get()]] and [[yii\db\BaseActiveRecord::__set()|__set()]] magic methods
@@ -1542,26 +1543,26 @@ class Room extends \yii\db\ActiveRecord
 When the select query doesn't provide the volume, the model will be able to calculate it automatically using
 the attributes of the model.
 
-Similary it can be used on extra fields depending on relational data:
+You can calculate the aggregation fields as well using defined relations:
 
 ```php
 class Customer extends \yii\db\ActiveRecord
 {
     private $_ordersCount;
-    
+
     public function setOrdersCount($count)
     {
         $this->_ordersCount = (int) $count;
     }
-    
+
     public function getOrdersCount()
     {
         if ($this->isNewRecord) {
             return null; // this avoid calling a query searching for null primary keys
         }
-        
+
         if ($this->_ordersCount === null) {
-            $this->setOrdersCount(count($this->orders));
+            $this->setOrdersCount($this->getOrders()->count()); // calculate aggregation on demand from relation
         }
 
         return $this->_ordersCount;
@@ -1574,4 +1575,55 @@ class Customer extends \yii\db\ActiveRecord
         return $this->hasMany(Order::className(), ['customer_id' => 'id']);
     }
 }
+```
+
+With this code, in case 'ordersCount' is present in 'select' statement - `Customer::ordersCount` will be populated
+by query results, otherwise it will be calculated on demand using `Customer::orders` relation.
+
+This approach can be as well used for creation of the shortcuts for the some relational data, especially for the aggregation.
+For example:
+
+```php
+class Customer extends \yii\db\ActiveRecord
+{
+    /**
+     * Defines read-only virtual property for aggregation data.
+     */
+    public function getOrdersCount()
+    {
+        if ($this->isNewRecord) {
+            return null; // this avoid calling a query searching for null primary keys
+        }
+        
+        return $this->ordersAggregation['counted'];
+    }
+
+    /**
+     * Declares normal 'orders' relation.
+     */
+    public function getOrders()
+    {
+        return $this->hasMany(Order::className(), ['customer_id' => 'id']);
+    }
+
+    /**
+     * Declares new relation based on 'orders', which provides aggregation.
+     */
+    public function getOrdersAggregation()
+    {
+        return $this->getOrders()
+            ->select(['customer_id', 'counted' => 'count(*)'])
+            ->groupBy('customer_id')
+            ->asArray(true);
+    }
+
+    // ...
+}
+
+foreach (Customer::find()->with('ordersAggregation')->all() as $customer) {
+    echo $customer->ordersCount; // outputs aggregation data from relation without extra query due to eager loading
+}
+
+$customer = Customer::findOne($pk);
+$customer->ordersCount; // output aggregation data from lazy loaded relation
 ```

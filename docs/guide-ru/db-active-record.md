@@ -1484,3 +1484,137 @@ $customers = Customer::find()
     ->groupBy('{{customer}}.id') // сгруппировать результаты, чтобы заставить агрегацию работать
     ->all();
 ```
+
+Недостаток этого подхода заключается в том, что если данные для поля не загружены по результатам SQL запроса, то они
+должны быть вычисленны отдельно. Это означает, что запись, полученная посредством обычного запроса без дополнительных полей в
+разделе 'select', не может вернуть реальное значения для дополнительного поля. Это же касается и только что сохранненой
+записи.
+
+```php
+$room = new Room();
+$room->length = 100;
+$room->width = 50;
+$room->height = 2;
+
+$room->volume; // значение будет равно `null`, т.к. поле не было заполнено
+```
+
+Использование магических методов [[yii\db\BaseActiveRecord::__get()|__get()]] и [[yii\db\BaseActiveRecord::__set()|__set()]]
+позволяет эмулировать поведение обычного поля:
+
+```php
+class Room extends \yii\db\ActiveRecord
+{
+    private $_volume;
+
+    public function setVolume($volume)
+    {
+        $this->_volume = (float) $volume;
+    }
+
+    public function getVolume()
+    {
+        if (empty($this->length) || empty($this->width) || empty($this->height)) {
+            return null;
+        }
+
+        if ($this->_volume === null) {
+            $this->setVolume(
+                $this->length * $this->width * $this->height
+            );
+        }
+
+        return $this->_volume;
+    }
+
+    // ...
+}
+```
+
+Если результат запроса на выборку данных не содержит поле 'volume', то модель сможет расчитать его автоматически
+используя имеющиеся атрибуты.
+
+Вы также можете вычислять агрегируемые поля используя объявленные отношения:
+
+```php
+class Customer extends \yii\db\ActiveRecord
+{
+    private $_ordersCount;
+
+    public function setOrdersCount($count)
+    {
+        $this->_ordersCount = (int) $count;
+    }
+
+    public function getOrdersCount()
+    {
+        if ($this->isNewRecord) {
+            return null; // нет смысла выполнять запрос на поиск по пустым ключам
+        }
+
+        if ($this->_ordersCount === null) {
+            $this->setOrdersCount($this->getOrders()->count()); // вычисляем агрегацию по требованию из отношения
+        }
+
+        return $this->_ordersCount;
+    }
+
+    // ...
+
+    public function getOrders()
+    {
+        return $this->hasMany(Order::className(), ['customer_id' => 'id']);
+    }
+}
+```
+
+При такой реализации, в случае когда 'ordersCount' присутсвует в разделе 'select' - значение 'Customer::ordersCount' будет
+заполнено из результатов запроса, в противном случае - оно булет вычислено по превому требованию на основании отношения `Customer::orders`.
+
+Этот подход также можно использовать для быстрого доступа к некоторым данным отношений, в особенности для агрегации.
+Например:
+
+```php
+class Customer extends \yii\db\ActiveRecord
+{
+    /**
+     * Объявляет виртуальное свойство для агрегируемых данных, доступное только на чтение.
+     */
+    public function getOrdersCount()
+    {
+        if ($this->isNewRecord) {
+            return null; // нет смысла выполнять запрос на поиск по пустым ключам
+        }
+
+        return $this->ordersAggregation['counted'];
+    }
+
+    /**
+     * Объявляет обычное отношение 'orders'.
+     */
+    public function getOrders()
+    {
+        return $this->hasMany(Order::className(), ['customer_id' => 'id']);
+    }
+
+    /**
+     * Объявляет новое отношение, основанное на 'orders', которое предоставляет агрегацию.
+     */
+    public function getOrdersAggregation()
+    {
+        return $this->getOrders()
+            ->select(['customer_id', 'counted' => 'count(*)'])
+            ->groupBy('customer_id')
+            ->asArray(true);
+    }
+
+    // ...
+}
+
+foreach (Customer::find()->with('ordersAggregation')->all() as $customer) {
+    echo $customer->ordersCount; // выводит агрегируемые данные из отношения без дополнительного запроса благодаря жадной загрузке
+}
+
+$customer = Customer::findOne($pk);
+$customer->ordersCount; // выводит агрегируемые данные отношения через ленивую загрузку
+```
