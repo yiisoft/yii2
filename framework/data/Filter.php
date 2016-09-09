@@ -55,23 +55,26 @@ class Filter extends Object
     ];
 
     /**
-     * @param string $modelClass
+     * @param null $modelClass
      * @return array
      * @throws NotAcceptableHttpException
      */
-    public function getConditions($modelClass)
+    public function getConditions($modelClass = null)
     {
         $filter = $this->getRequestFilter();
         $conditions = [];
 
         if (!empty($filter)) {
-            /** @var $model ActiveRecord */
-            $model = new $modelClass;
+
+            if(!is_null($modelClass)) {
+                /** @var ActiveRecord $model */
+                $model = new $modelClass;
+            }
 
             foreach ($filter as $field => $value) {
                 list($operator, $field) = $this->prepareField($field);
 
-                if (!$this->isAcceptableField($field) || !$model->hasAttribute($field)) {
+                if (!$this->isAcceptableField($field) || (!empty($model) && $model->hasAttribute($field))) {
                     throw new NotAcceptableHttpException('Filter by field "' . $field . '" unsupported.');
                 }
                 

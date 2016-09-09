@@ -113,7 +113,12 @@ class ActiveDataProvider extends BaseDataProvider
         }
         
         if (($filter = $this->getFilter()) !== false) {
-            foreach ($filter->getConditions($this->query->modelClass) as $condition) {
+            if (!empty($this->query->modelClass)) {
+                $modelClass = $this->query->modelClass;
+            } else {
+                $modelClass = null;
+            }
+            foreach ($filter->getConditions($modelClass) as $condition) {
                 $query->andWhere($condition);
             }
         }
