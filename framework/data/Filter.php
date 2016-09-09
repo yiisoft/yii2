@@ -68,7 +68,7 @@ class Filter extends Object
 
             if(!is_null($modelClass)) {
                 /** @var ActiveRecord $model */
-                $model = new $modelClass;
+                $model = Yii::createObject($modelClass);
             }
 
             foreach ($filter as $field => $value) {
