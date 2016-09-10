@@ -27,10 +27,15 @@ trait MigrateControllerTestTrait
      * @var string test migration path.
      */
     protected $migrationPath;
+    /**
+     * @var string test migration namespace
+     */
+    protected $migrationNamespace;
 
 
     public function setUpMigrationPath()
     {
+        $this->migrationNamespace = 'yiiunit\runtime\test_migrations';
         $this->migrationPath = Yii::getAlias('@yiiunit/runtime/test_migrations');
         FileHelper::createDirectory($this->migrationPath);
         if (!file_exists($this->migrationPath)) {
@@ -53,11 +58,8 @@ trait MigrateControllerTestTrait
         );
     }
 
-    public function assertCommandCreatedFile(
-        $expectedFile,
-        $migrationName,
-        $params = []
-    ) {
+    public function assertCommandCreatedFile($expectedFile, $migrationName, $params = [])
+    {
         $class = 'm' . gmdate('ymd_His') . '_' . $migrationName;
         $params[0] = $migrationName;
         $this->runMigrateControllerAction('create', $params);
@@ -71,27 +73,29 @@ trait MigrateControllerTestTrait
 
     /**
      * Creates test migrate controller instance.
+     * @param array $config controller configuration.
      * @return BaseMigrateController migrate command instance.
      */
-    protected function createMigrateController()
+    protected function createMigrateController(array $config = [])
     {
         $module = $this->getMock('yii\\base\\Module', ['fake'], ['console']);
         $class = $this->migrateControllerClass;
         $migrateController = new $class('migrate', $module);
         $migrateController->interactive = false;
         $migrateController->migrationPath = $this->migrationPath;
-        return $migrateController;
+        return Yii::configure($migrateController, $config);
     }
 
     /**
      * Emulates running of the migrate controller action.
-     * @param  string $actionID id of action to be run.
-     * @param  array  $args     action arguments.
+     * @param string $actionID id of action to be run.
+     * @param array $args action arguments.
+     * @param array $config controller configuration.
      * @return string command output.
      */
-    protected function runMigrateControllerAction($actionID, array $args = [])
+    protected function runMigrateControllerAction($actionID, array $args = [], array $config = [])
     {
-        $controller = $this->createMigrateController();
+        $controller = $this->createMigrateController($config);
         ob_start();
         ob_implicit_flush(false);
         $controller->run($actionID, $args);
@@ -116,6 +120,40 @@ trait MigrateControllerTestTrait
 <?php
 
 class {$class} extends {$baseClass}
+{
+    public function up()
+    {
+    }
+
+    public function down()
+    {
+    }
+}
+CODE;
+        file_put_contents($this->migrationPath . DIRECTORY_SEPARATOR . $class . '.php', $code);
+        return $class;
+    }
+
+    /**
+     * @param string $name
+     * @param string|null $date
+     * @return string generated class name
+     */
+    protected function createNamespaceMigration($name, $date = null)
+    {
+        if ($date === null) {
+            $date = gmdate('ymd_His');
+        }
+        $class = 'm' . $date . '_' . $name;
+        $baseClass = $this->migrationBaseClass;
+        $namespace = $this->migrationNamespace;
+
+        $code = <<<CODE
+<?php
+
+namespace {$namespace};
+
+class {$class} extends \\{$baseClass}
 {
     public function up()
     {
@@ -159,7 +197,7 @@ CODE;
         $appliedMigrations = $migrationHistory;
         foreach ($expectedMigrations as $expectedMigrationName) {
             $appliedMigration = array_shift($appliedMigrations);
-            if (strpos($appliedMigration['version'], $expectedMigrationName) === false) {
+            if (!fnmatch(strtr($expectedMigrationName, ['\\' => DIRECTORY_SEPARATOR]), strtr($appliedMigration['version'], ['\\' => DIRECTORY_SEPARATOR]))) {
                 $success = false;
                 break;
             }
@@ -328,7 +366,7 @@ CODE;
 
         $this->runMigrateControllerAction('up');
 
-        $this->assertMigrationHistory(['base', 'test1', 'test2']);
+        $this->assertMigrationHistory(['m*_base', 'm*_test1', 'm*_test2']);
     }
 
     /**
@@ -341,7 +379,7 @@ CODE;
 
         $this->runMigrateControllerAction('up', [1]);
 
-        $this->assertMigrationHistory(['base', 'test1']);
+        $this->assertMigrationHistory(['m*_base', 'm*_test1']);
     }
 
     /**
@@ -355,7 +393,7 @@ CODE;
         $this->runMigrateControllerAction('up');
         $this->runMigrateControllerAction('down', [1]);
 
-        $this->assertMigrationHistory(['base', 'test1']);
+        $this->assertMigrationHistory(['m*_base', 'm*_test1']);
     }
 
     /**
@@ -369,7 +407,7 @@ CODE;
         $this->runMigrateControllerAction('up');
         $this->runMigrateControllerAction('down', ['all']);
 
-        $this->assertMigrationHistory(['base']);
+        $this->assertMigrationHistory(['m*_base']);
     }
 
     /**
@@ -412,7 +450,7 @@ CODE;
 
         $this->runMigrateControllerAction('mark', [$version]);
 
-        $this->assertMigrationHistory(['base', 'test1']);
+        $this->assertMigrationHistory(['m*_base', 'm*_test1']);
     }
 
     /**
@@ -425,6 +463,109 @@ CODE;
 
         $this->runMigrateControllerAction('redo');
 
-        $this->assertMigrationHistory(['base', 'test1']);
+        $this->assertMigrationHistory(['m*_base', 'm*_test1']);
+    }
+
+    // namespace :
+
+    /**
+     * @depends testCreate
+     */
+    public function testNamespaceCreate()
+    {
+        // default namespace apply :
+        $migrationName = 'test_default_namespace';
+        $this->runMigrateControllerAction('create', [$migrationName], [
+            'migrationPath' => null,
+            'migrationNamespaces' => [$this->migrationNamespace]
+        ]);
+        $files = FileHelper::findFiles($this->migrationPath);
+        $fileContent = file_get_contents($files[0]);
+        $this->assertContains("namespace {$this->migrationNamespace};", $fileContent);
+
+        // namespace specify :
+        $migrationName = 'test_default_namespace';
+        $this->runMigrateControllerAction('create', [$this->migrationNamespace . '\\' . $migrationName], [
+            'migrationPath' => $this->migrationPath,
+            'migrationNamespaces' => [$this->migrationNamespace]
+        ]);
+        $files = FileHelper::findFiles($this->migrationPath);
+        $fileContent = file_get_contents($files[0]);
+        $this->assertContains("namespace {$this->migrationNamespace};", $fileContent);
+
+        // no namespace:
+        $migrationName = 'test_default_namespace';
+        $this->runMigrateControllerAction('create', [$migrationName], [
+            'migrationPath' => $this->migrationPath,
+            'migrationNamespaces' => [$this->migrationNamespace]
+        ]);
+        $files = FileHelper::findFiles($this->migrationPath);
+        $fileContent = file_get_contents($files[0]);
+        $this->assertNotContains("namespace {$this->migrationNamespace};", $fileContent);
+    }
+
+    /**
+     * @depends testUp
+     */
+    public function testNamespaceUp()
+    {
+        $this->createNamespaceMigration('test1');
+        $this->createNamespaceMigration('test2');
+
+        $this->runMigrateControllerAction('up', [], [
+            'migrationPath' => null,
+            'migrationNamespaces' => [$this->migrationNamespace]
+        ]);
+
+        $this->assertMigrationHistory([
+            'm*_*_base',
+            $this->migrationNamespace . '\\m*_*_test1',
+            $this->migrationNamespace . '\\m*_*_test2',
+        ]);
+    }
+
+    /**
+     * @depends testNamespaceUp
+     * @depends testDownCount
+     */
+    public function testNamespaceDownCount()
+    {
+        $this->createNamespaceMigration('test1');
+        $this->createNamespaceMigration('test2');
+
+        $controllerConfig = [
+            'migrationPath' => null,
+            'migrationNamespaces' => [$this->migrationNamespace]
+        ];
+        $this->runMigrateControllerAction('up', [], $controllerConfig);
+        $this->runMigrateControllerAction('down', [1], $controllerConfig);
+
+        $this->assertMigrationHistory([
+            'm*_*_base',
+            $this->migrationNamespace . '\\m*_*_test1',
+        ]);
+    }
+
+    /**
+     * @depends testNamespaceUp
+     * @depends testHistory
+     */
+    public function testNamespaceHistory()
+    {
+        $controllerConfig = [
+            'migrationPath' => null,
+            'migrationNamespaces' => [$this->migrationNamespace]
+        ];
+
+        $output = $this->runMigrateControllerAction('history', [], $controllerConfig);
+        $this->assertContains('No migration', $output);
+
+        $this->createNamespaceMigration('test1');
+        $this->createNamespaceMigration('test2');
+        $this->runMigrateControllerAction('up', [], $controllerConfig);
+
+        $output = $this->runMigrateControllerAction('history', [], $controllerConfig);
+        $this->assertRegExp('/' . preg_quote($this->migrationNamespace) . '.*_test1/is', $output);
+        $this->assertRegExp('/' . preg_quote($this->migrationNamespace) . '.*_test2/is', $output);
     }
 }
