@@ -13,7 +13,6 @@ use yii\console\Exception;
 use yii\console\Controller;
 use yii\helpers\Console;
 use yii\helpers\FileHelper;
-use yii\helpers\StringHelper;
 
 /**
  * BaseMigrateController is base class for migrate controllers.
@@ -35,6 +34,9 @@ abstract class BaseMigrateController extends Controller
     /**
      * @var string the directory storing the migration classes. This can be either
      * a path alias or a directory.
+     *
+     * You may set this field to `null` in case you have setup [[migrationNamespaces]] in order
+     * to disable usage of migrations without namespace.
      */
     public $migrationPath = '@app/migrations';
     /**
@@ -309,10 +311,11 @@ abstract class BaseMigrateController extends Controller
      * them again. For example,
      *
      * ```
-     * yii migrate/to 101129_185401                      # using timestamp
-     * yii migrate/to m101129_185401_create_user_table   # using full name
-     * yii migrate/to 1392853618                         # using UNIX timestamp
-     * yii migrate/to "2014-02-15 13:00:50"              # using strtotime() parseable string
+     * yii migrate/to 101129_185401                          # using timestamp
+     * yii migrate/to m101129_185401_create_user_table       # using full name
+     * yii migrate/to 1392853618                             # using UNIX timestamp
+     * yii migrate/to "2014-02-15 13:00:50"                  # using strtotime() parseable string
+     * yii migrate/to app\migrations\M101129185401CreateUser # using full namespace name
      * ```
      *
      * @param string $version either the version name or the certain time value in the past
@@ -343,8 +346,9 @@ abstract class BaseMigrateController extends Controller
      * No actual migration will be performed.
      *
      * ```
-     * yii migrate/mark 101129_185401                      # using timestamp
-     * yii migrate/mark m101129_185401_create_user_table   # using full name
+     * yii migrate/mark 101129_185401                        # using timestamp
+     * yii migrate/mark m101129_185401_create_user_table     # using full name
+     * yii migrate/to app\migrations\M101129185401CreateUser # using full namespace name
      * ```
      *
      * @param string $version the version at which the migration history should be marked.
@@ -507,7 +511,7 @@ abstract class BaseMigrateController extends Controller
      * For example:
      *
      * ```
-     * yii migrate/create 'app\\migrations\\create_user_table'
+     * yii migrate/create 'app\\migrations\\createUserTable'
      * ```
      *
      * In case [[migrationPath]] is not set and no namespace provided the first entry of [[migrationNamespaces]] will be used.
@@ -528,7 +532,7 @@ abstract class BaseMigrateController extends Controller
         }
 
         list($namespace, $className) = $this->generateClassName($name);
-        $migrationPath = $this->findMigrationPath($namespace, $className);
+        $migrationPath = $this->findMigrationPath($namespace);
 
         $file = $migrationPath . DIRECTORY_SEPARATOR . $className . '.php';
         if ($this->confirm("Create new migration '$file'?")) {
@@ -553,9 +557,8 @@ abstract class BaseMigrateController extends Controller
         $namespace = null;
         $name = trim($name, '\\');
         if (strpos($name, '\\') !== false) {
-            $nameParts = explode('\\', $name);
-            $name = array_pop($nameParts);
-            $namespace = implode('\\', $nameParts);
+            $namespace = substr($name, 0, strrpos($name, '\\'));
+            $name = substr($name, strrpos($name, '\\') + 1);
         } else {
             if ($this->migrationPath === null) {
                 $migrationNamespaces = $this->migrationNamespaces;
@@ -575,12 +578,11 @@ abstract class BaseMigrateController extends Controller
     /**
      * Finds the file path for the specified migration class.
      * @param string $namespace migration namespace.
-     * @param string $className migration class self name.
      * @return string migration file path.
      * @throws Exception on failure.
      * @since 2.0.10
      */
-    private function findMigrationPath($namespace, $className)
+    private function findMigrationPath($namespace)
     {
         if (empty($namespace)) {
             return $this->migrationPath;
