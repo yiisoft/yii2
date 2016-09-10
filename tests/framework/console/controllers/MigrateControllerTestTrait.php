@@ -142,9 +142,9 @@ CODE;
     protected function createNamespaceMigration($name, $date = null)
     {
         if ($date === null) {
-            $date = gmdate('ymd_His');
+            $date = gmdate('ymdHis');
         }
-        $class = 'm' . $date . '_' . $name;
+        $class = 'M' . $date . ucfirst($name);
         $baseClass = $this->migrationBaseClass;
         $namespace = $this->migrationNamespace;
 
@@ -453,6 +453,16 @@ CODE;
         $this->assertMigrationHistory(['m*_base', 'm*_test1']);
     }
 
+    public function testTo()
+    {
+        $version = '020202_000001';
+        $this->createMigration('to1', $version);
+
+        $this->runMigrateControllerAction('to', [$version]);
+
+        $this->assertMigrationHistory(['m*_base', 'm*_to1']);
+    }
+
     /**
      * @depends testUp
      */
@@ -474,7 +484,7 @@ CODE;
     public function testNamespaceCreate()
     {
         // default namespace apply :
-        $migrationName = 'test_default_namespace';
+        $migrationName = 'testDefaultNamespace';
         $this->runMigrateControllerAction('create', [$migrationName], [
             'migrationPath' => null,
             'migrationNamespaces' => [$this->migrationNamespace]
@@ -482,9 +492,11 @@ CODE;
         $files = FileHelper::findFiles($this->migrationPath);
         $fileContent = file_get_contents($files[0]);
         $this->assertContains("namespace {$this->migrationNamespace};", $fileContent);
+        $this->assertRegExp('/class M[0-9]{12}' . ucfirst($migrationName) . '/s', $fileContent);
+        unlink($files[0]);
 
         // namespace specify :
-        $migrationName = 'test_default_namespace';
+        $migrationName = 'test_namespace_specify';
         $this->runMigrateControllerAction('create', [$this->migrationNamespace . '\\' . $migrationName], [
             'migrationPath' => $this->migrationPath,
             'migrationNamespaces' => [$this->migrationNamespace]
@@ -492,9 +504,10 @@ CODE;
         $files = FileHelper::findFiles($this->migrationPath);
         $fileContent = file_get_contents($files[0]);
         $this->assertContains("namespace {$this->migrationNamespace};", $fileContent);
+        unlink($files[0]);
 
         // no namespace:
-        $migrationName = 'test_default_namespace';
+        $migrationName = 'test_no_namespace';
         $this->runMigrateControllerAction('create', [$migrationName], [
             'migrationPath' => $this->migrationPath,
             'migrationNamespaces' => [$this->migrationNamespace]
@@ -509,8 +522,8 @@ CODE;
      */
     public function testNamespaceUp()
     {
-        $this->createNamespaceMigration('test1');
-        $this->createNamespaceMigration('test2');
+        $this->createNamespaceMigration('nsTest1');
+        $this->createNamespaceMigration('nsTest2');
 
         $this->runMigrateControllerAction('up', [], [
             'migrationPath' => null,
@@ -519,8 +532,8 @@ CODE;
 
         $this->assertMigrationHistory([
             'm*_*_base',
-            $this->migrationNamespace . '\\m*_*_test1',
-            $this->migrationNamespace . '\\m*_*_test2',
+            $this->migrationNamespace . '\\M*NsTest1',
+            $this->migrationNamespace . '\\M*NsTest2',
         ]);
     }
 
@@ -530,8 +543,8 @@ CODE;
      */
     public function testNamespaceDownCount()
     {
-        $this->createNamespaceMigration('test1');
-        $this->createNamespaceMigration('test2');
+        $this->createNamespaceMigration('down1');
+        $this->createNamespaceMigration('down2');
 
         $controllerConfig = [
             'migrationPath' => null,
@@ -542,7 +555,7 @@ CODE;
 
         $this->assertMigrationHistory([
             'm*_*_base',
-            $this->migrationNamespace . '\\m*_*_test1',
+            $this->migrationNamespace . '\\M*Down1',
         ]);
     }
 
@@ -560,12 +573,48 @@ CODE;
         $output = $this->runMigrateControllerAction('history', [], $controllerConfig);
         $this->assertContains('No migration', $output);
 
-        $this->createNamespaceMigration('test1');
-        $this->createNamespaceMigration('test2');
+        $this->createNamespaceMigration('history1');
+        $this->createNamespaceMigration('history2');
         $this->runMigrateControllerAction('up', [], $controllerConfig);
 
         $output = $this->runMigrateControllerAction('history', [], $controllerConfig);
-        $this->assertRegExp('/' . preg_quote($this->migrationNamespace) . '.*_test1/is', $output);
-        $this->assertRegExp('/' . preg_quote($this->migrationNamespace) . '.*_test2/is', $output);
+        $this->assertRegExp('/' . preg_quote($this->migrationNamespace) . '.*History1/s', $output);
+        $this->assertRegExp('/' . preg_quote($this->migrationNamespace) . '.*History2/s', $output);
+    }
+
+    /**
+     * @depends testMark
+     */
+    public function testNamespaceMark()
+    {
+        $controllerConfig = [
+            'migrationPath' => null,
+            'migrationNamespaces' => [$this->migrationNamespace]
+        ];
+
+        $version = '010101000001';
+        $this->createNamespaceMigration('mark1', $version);
+
+        $this->runMigrateControllerAction('mark', [$this->migrationNamespace . '\\M' . $version], $controllerConfig);
+
+        $this->assertMigrationHistory(['m*_base', $this->migrationNamespace . '\\M*Mark1']);
+    }
+
+    /**
+     * @depends testTo
+     */
+    public function testNamespaceTo()
+    {
+        $controllerConfig = [
+            'migrationPath' => null,
+            'migrationNamespaces' => [$this->migrationNamespace]
+        ];
+
+        $version = '020202000020';
+        $this->createNamespaceMigration('to1', $version);
+
+        $this->runMigrateControllerAction('to', [$this->migrationNamespace . '\\M' . $version], $controllerConfig);
+
+        $this->assertMigrationHistory(['m*_base', $this->migrationNamespace . '\\M*To1']);
     }
 }

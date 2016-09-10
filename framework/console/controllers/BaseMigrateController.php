@@ -323,13 +323,10 @@ abstract class BaseMigrateController extends Controller
      */
     public function actionTo($version)
     {
-        if (strpos($version, '\\') !== false) {
+        if (preg_match('/^\\\\?([\w_]+\\\\)+m(\d{6}_?\d{6})(\D.*?)?$/is', $version, $matches)) {
             $version = trim($version, '\\');
-            if (strpos($version, '\\') === false) {
-                throw new Exception("The specified namespaced version is invalid.");
-            }
             $this->migrateToVersion($version);
-        } elseif (preg_match('/^m?(\d{6}_\d{6})(_.*?)?$/', $version, $matches)) {
+        } elseif (preg_match('/^m?(\d{6}_?\d{6})(\D.*?)?$/', $version, $matches)) {
             $this->migrateToVersion('m' . $matches[1]);
         } elseif ((string) (int) $version == $version) {
             $this->migrateToTime($version);
@@ -358,21 +355,18 @@ abstract class BaseMigrateController extends Controller
     public function actionMark($version)
     {
         $originalVersion = $version;
-        if (strpos($version, '\\') !== false) {
+        if (preg_match('/^\\\\?([\w_]+\\\\)+m(\d{6}_?\d{6})(\D.*?)?$/is', $version, $matches)) {
             $version = trim($version, '\\');
-            if (strpos($version, '\\') === false) {
-                throw new Exception("The specified namespaced version is invalid.");
-            }
-        } elseif (preg_match('/^m?(\d{6}_\d{6})(_.*?)?$/', $version, $matches)) {
+        } elseif (preg_match('/^m?(\d{6}_?\d{6})(\D.*?)?$/is', $version, $matches)) {
             $version = 'm' . $matches[1];
         } else {
-            throw new Exception("The version argument must be either a timestamp (e.g. 101129_185401)\nor the full name of a migration (e.g. m101129_185401_create_user_table).");
+            throw new Exception("The version argument must be either a timestamp (e.g. 101129_185401)\nor the full name of a migration (e.g. m101129_185401_create_user_table)\nor the full name of a namespaced migration (e.g. app\\migrations\\M101129185401CreateUserTable).");
         }
 
         // try mark up
         $migrations = $this->getNewMigrations();
         foreach ($migrations as $i => $migration) {
-            if (strpos($migration, $version . '_') === 0) {
+            if (strpos($migration, $version) === 0) {
                 if ($this->confirm("Set migration history at $originalVersion?")) {
                     for ($j = 0; $j <= $i; ++$j) {
                         $this->addMigrationHistory($migrations[$j]);
@@ -387,7 +381,7 @@ abstract class BaseMigrateController extends Controller
         // try mark down
         $migrations = array_keys($this->getMigrationHistory(null));
         foreach ($migrations as $i => $migration) {
-            if (strpos($migration, $version . '_') === 0) {
+            if (strpos($migration, $version) === 0) {
                 if ($i === 0) {
                     $this->stdout("Already at '$originalVersion'. Nothing needs to be done.\n", Console::FG_YELLOW);
                 } else {
@@ -569,7 +563,12 @@ abstract class BaseMigrateController extends Controller
             }
         }
 
-        $class = 'm' . gmdate('ymd_His') . '_' . $name;
+        if ($namespace === null) {
+            $class = 'm' . gmdate('ymd_His') . '_' . $name;
+        } else {
+            $class = 'M' . gmdate('ymdHis') . ucfirst($name);
+        }
+
         return [$namespace, $class];
     }
 
@@ -662,7 +661,7 @@ abstract class BaseMigrateController extends Controller
             $file = $this->migrationPath . DIRECTORY_SEPARATOR . $class . '.php';
             require_once($file);
         }
-        
+
         return new $class();
     }
 
@@ -697,7 +696,7 @@ abstract class BaseMigrateController extends Controller
         // try migrate up
         $migrations = $this->getNewMigrations();
         foreach ($migrations as $i => $migration) {
-            if (strpos($migration, $version . '_') === 0) {
+            if (strpos($migration, $version) === 0) {
                 $this->actionUp($i + 1);
 
                 return self::EXIT_CODE_NORMAL;
@@ -707,7 +706,7 @@ abstract class BaseMigrateController extends Controller
         // try migrate down
         $migrations = array_keys($this->getMigrationHistory(null));
         foreach ($migrations as $i => $migration) {
-            if (strpos($migration, $version . '_') === 0) {
+            if (strpos($migration, $version) === 0) {
                 if ($i === 0) {
                     $this->stdout("Already at '$originalVersion'. Nothing needs to be done.\n", Console::FG_YELLOW);
                 } else {
@@ -748,12 +747,12 @@ abstract class BaseMigrateController extends Controller
                     continue;
                 }
                 $path = $migrationPath . DIRECTORY_SEPARATOR . $file;
-                if (preg_match('/^(m(\d{6}_\d{6})_.*?)\.php$/', $file, $matches) && is_file($path)) {
+                if (preg_match('/^(m(\d{6}_?\d{6})\D.*?)\.php$/is', $file, $matches) && is_file($path)) {
                     $class = $matches[1];
                     if (!empty($namespace)) {
                         $class = $namespace . '\\' . $class;
                     }
-                    $time = $matches[2];
+                    $time = str_replace('_', '', $matches[2]);
                     if (!isset($applied[$class])) {
                         $migrations[$time . '\\' . $class] = $class;
                     }
