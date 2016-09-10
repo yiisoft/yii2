@@ -348,7 +348,7 @@ EOF;
         return [
             [
                 'js', '@web/assetSources/js/jquery.js', true,
-                '123<script src="/assetSources/js/jquery.js?v=1454496648"></script>4',
+                '123<script src="/assetSources/js/jquery.js\?v=\d{10}"></script>4',
             ],
             [
                 'js', '@web/assetSources/js/missing-file.js', true,
@@ -360,7 +360,7 @@ EOF;
             ],
             [
                 'css', '@web/assetSources/css/stub.css', true,
-                '1<link href="/assetSources/css/stub.css?v=1473509579" rel="stylesheet">234',
+                '1<link href="/assetSources/css/stub.css\?v=\d{10}" rel="stylesheet">234',
             ],
             [
                 'css', '@web/assetSources/css/missing-file.css', true,
@@ -376,16 +376,16 @@ EOF;
     /**
      * @dataProvider registerFileDataProvider
      * @param string $type either `js` or `css`
-     * @param $path
-     * @param bool $appendTimestamp
-     * @param $expected
+     * @param string $path
+     * @param string bool $appendTimestamp
+     * @param string $expectedRegExp
      */
-    public function testRegisterFileAppendTimestamp($type, $path, $appendTimestamp, $expected)
+    public function testRegisterFileAppendTimestamp($type, $path, $appendTimestamp, $expectedRegExp)
     {
         $view = $this->getView(['appendTimestamp' => $appendTimestamp]);
         $method = 'register' . ucfirst($type) . 'File';
         $view->$method($path);
-        $this->assertEquals($expected, $view->renderFile('@yiiunit/data/views/rawlayout.php'));
+        $this->assertRegExp('#' . $expectedRegExp . '#', $view->renderFile('@yiiunit/data/views/rawlayout.php'));
     }
 }
 
