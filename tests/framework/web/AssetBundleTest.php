@@ -57,16 +57,22 @@ class AssetBundleTest extends \yiiunit\TestCase
         $bundle->publish($am);
 
         $this->assertTrue(is_dir($bundle->basePath));
-        foreach ($bundle->js as $filename) {
+        $this->sourcesPublish_VerifyFiles('css', $bundle);
+        $this->sourcesPublish_VerifyFiles('js', $bundle);
+
+        $this->assertTrue(rmdir($bundle->basePath));
+    }
+
+    private function sourcesPublish_VerifyFiles($type, $bundle)
+    {
+        foreach ($bundle->$type as $filename) {
             $publishedFile = $bundle->basePath . DIRECTORY_SEPARATOR . $filename;
             $sourceFile = $bundle->sourcePath . DIRECTORY_SEPARATOR . $filename;
             $this->assertFileExists($publishedFile);
             $this->assertFileEquals($publishedFile, $sourceFile);
             $this->assertTrue(unlink($publishedFile));
         }
-        $this->assertTrue(rmdir($bundle->basePath . DIRECTORY_SEPARATOR . 'js'));
-
-        $this->assertTrue(rmdir($bundle->basePath));
+        $this->assertTrue(rmdir($bundle->basePath . DIRECTORY_SEPARATOR . $type));
     }
 
     public function testSourcesPublishedBySymlink()
@@ -336,6 +342,51 @@ EOF;
 EOF;
         $this->assertEquals($expected, $view->renderFile('@yiiunit/data/views/rawlayout.php'));
     }
+
+    public function registerFileDataProvider()
+    {
+        return [
+            [
+                'js', '@web/assetSources/js/jquery.js', true,
+                '123<script src="/assetSources/js/jquery.js?v=1454496648"></script>4',
+            ],
+            [
+                'js', '@web/assetSources/js/missing-file.js', true,
+                '123<script src="/assetSources/js/missing-file.js"></script>4',
+            ],
+            [
+                'js', '@web/assetSources/js/jquery.js', false,
+                '123<script src="/assetSources/js/jquery.js"></script>4',
+            ],
+            [
+                'css', '@web/assetSources/css/stub.css', true,
+                '1<link href="/assetSources/css/stub.css?v=1473509579" rel="stylesheet">234',
+            ],
+            [
+                'css', '@web/assetSources/css/missing-file.css', true,
+                '1<link href="/assetSources/css/missing-file.css" rel="stylesheet">234',
+            ],
+            [
+                'css', '@web/assetSources/css/stub.css', false,
+                '1<link href="/assetSources/css/stub.css" rel="stylesheet">234',
+            ],
+        ];
+    }
+
+    /**
+     * @dataProvider registerFileDataProvider
+     * @param string $type either `js` or `css`
+     * @param $path
+     * @param bool $appendTimestamp
+     * @param $expected
+     */
+    public function testRegisterFileAppendTimestamp($type, $path, $appendTimestamp, $expected)
+    {
+        $view = $this->getView(['appendTimestamp' => $appendTimestamp]);
+        $method = 'register' . ucfirst($type) . 'File';
+        $view->$method($path);
+        $this->assertEquals($expected, $view->renderFile('@yiiunit/data/views/rawlayout.php'));
+    }
 }
 
 class TestSimpleAsset extends AssetBundle
@@ -352,6 +403,9 @@ class TestSourceAsset extends AssetBundle
     public $sourcePath = '@testSourcePath';
     public $js = [
         'js/jquery.js',
+    ];
+    public $css = [
+        'css/stub.css',
     ];
 }
 

@@ -404,15 +404,15 @@ class View extends \yii\base\View
         $url = str_replace(Yii::getAlias('@web'), '', $url);
         $url = strncmp($url, '//', 2) === 0 ? $url : ltrim($url, '/');
 
-        $bundle = new AssetBundle(
-            [
-                'baseUrl' => '@web',
-                'basePath' => '@webroot',
-                'css' => (array)$url,
-                'cssOptions' => $options,
-                'depends' => (array)$depends,
-            ]
-        );
+        /** @var AssetBundle $bundle */
+        $bundle = Yii::createObject([
+            'class' => AssetBundle::className(),
+            'baseUrl' => '@web',
+            'basePath' => '@webroot',
+            'css' => (array)$url,
+            'cssOptions' => $options,
+            'depends' => (array)$depends,
+        ]);
 
         if (empty($depends)) {
             $url = $this->getAssetManager()->getAssetUrl($bundle, $url);
@@ -479,15 +479,15 @@ class View extends \yii\base\View
         $url = str_replace(Yii::getAlias('@web'), '', $url);
         $url = strncmp($url, '//', 2) === 0 ? $url : ltrim($url, '/');
 
-        $bundle = new AssetBundle(
-            [
-                'baseUrl' => '@web',
-                'basePath' => '@webroot',
-                'js' => (array)$url,
-                'jsOptions' => $options,
-                'depends' => (array)$depends,
-            ]
-        );
+        /** @var AssetBundle $bundle */
+        $bundle = Yii::createObject([
+            'class' => AssetBundle::className(),
+            'baseUrl' => '@web',
+            'basePath' => '@webroot',
+            'css' => (array)$url,
+            'cssOptions' => $options,
+            'depends' => (array)$depends,
+        ]);
 
         if (empty($depends)) {
             $url = $this->getAssetManager()->getAssetUrl($bundle, $url);
