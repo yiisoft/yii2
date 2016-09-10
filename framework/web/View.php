@@ -398,17 +398,27 @@ class View extends \yii\base\View
     {
         $url = Yii::getAlias($url);
         $key = $key ?: $url;
+
         $depends = ArrayHelper::remove($options, 'depends', []);
 
+        $url = str_replace(Yii::getAlias('@web'), '', $url);
+        $url = strncmp($url, '//', 2) === 0 ? $url : ltrim($url, '/');
+
+        $bundle = new AssetBundle(
+            [
+                'baseUrl' => '@web',
+                'basePath' => '@webroot',
+                'css' => (array)$url,
+                'cssOptions' => $options,
+                'depends' => (array)$depends,
+            ]
+        );
+
         if (empty($depends)) {
+            $url = $this->getAssetManager()->getAssetUrl($bundle, $url);
             $this->cssFiles[$key] = Html::cssFile($url, $options);
         } else {
-            $this->getAssetManager()->bundles[$key] = new AssetBundle([
-                'baseUrl' => '',
-                'css' => [strncmp($url, '//', 2) === 0 ? $url : ltrim($url, '/')],
-                'cssOptions' => $options,
-                'depends' => (array) $depends,
-            ]);
+            $this->getAssetManager()->bundles[$key] = $bundle;
             $this->registerAssetBundle($key);
         }
     }
@@ -463,18 +473,28 @@ class View extends \yii\base\View
     {
         $url = Yii::getAlias($url);
         $key = $key ?: $url;
+
         $depends = ArrayHelper::remove($options, 'depends', []);
 
+        $url = str_replace(Yii::getAlias('@web'), '', $url);
+        $url = strncmp($url, '//', 2) === 0 ? $url : ltrim($url, '/');
+
+        $bundle = new AssetBundle(
+            [
+                'baseUrl' => '@web',
+                'basePath' => '@webroot',
+                'js' => (array)$url,
+                'jsOptions' => $options,
+                'depends' => (array)$depends,
+            ]
+        );
+
         if (empty($depends)) {
+            $url = $this->getAssetManager()->getAssetUrl($bundle, $url);
             $position = ArrayHelper::remove($options, 'position', self::POS_END);
             $this->jsFiles[$position][$key] = Html::jsFile($url, $options);
         } else {
-            $this->getAssetManager()->bundles[$key] = new AssetBundle([
-                'baseUrl' => '',
-                'js' => [strncmp($url, '//', 2) === 0 ? $url : ltrim($url, '/')],
-                'jsOptions' => $options,
-                'depends' => (array) $depends,
-            ]);
+            $this->getAssetManager()->bundles[$key] = $bundle;
             $this->registerAssetBundle($key);
         }
     }
