@@ -35,7 +35,7 @@ abstract class BaseMigrateController extends Controller
      * @var string the directory storing the migration classes. This can be either
      * a path alias or a directory.
      *
-     * You may set this field to `null` in case you have setup [[migrationNamespaces]] in order
+     * You may set this field to `null` in case you have set up [[migrationNamespaces]] in order
      * to disable usage of migrations without namespace.
      */
     public $migrationPath = '@app/migrations';
