@@ -57,11 +57,11 @@ Afin de créer un élément *form* dans le formulaire, avec l'élément *label* 
 <?= $form->field($model, 'email')->input('email') ?>
 ```
 
-Cela crée toutes les balises `<label>`, `<input>` et autres, selon le [[yii\widgets\ActiveField::$template|modèle]] définit par le champ de formulaire. Le nom du champ de saisie est déterminé automatiquement à partir du [[yii\base\Model::formName()|nom de formulaire]] du modèle et du nom d'attribut. Par exemple, le nom du champ de saisie de l'attribut `username` dans l'exemple ci-dessus est `LoginForm[username]`. Cette règle de nommage aboutit à un tableau de tous les attributs du formulaire de connexion dans `$_POST['LoginForm']` côté serveur.
+Cela crée toutes les balises `<label>`, `<input>` et autres, selon le [[yii\widgets\ActiveField::$template|modèle]] défini par le champ de formulaire. Le nom du champ de saisie est déterminé automatiquement à partir du [[yii\base\Model::formName()|nom de formulaire]] du modèle et du nom d'attribut. Par exemple, le nom du champ de saisie de l'attribut `username` dans l'exemple ci-dessus est `LoginForm[username]`. Cette règle de nommage aboutit à un tableau de tous les attributs du formulaire de connexion dans `$_POST['LoginForm']` côté serveur.
 
 > Tip: si vous avez seulement un modèle dans un formulaire et que vous voulez simplifier le nom des champs de saisie, vous pouvez sauter la partie tableau en redéfinissant la méthode [[yii\base\Model::formName()|formName()]] du modèle pour qu'elle retourne une chaîne vide. Cela peut s'avérer utile pour les modèles de filtres utilisés dans le composant graphique [GridView](output-data-widgets.md#grid-view) pour créer des URL plus élégantes.
 
-Spécifier l'attribut de modèle peut se faire selon de façon plus sophistiquée. Par exemple, lorsqu'un attribut peut prendre une valeur de tableau lors du chargement sur le serveur de multiples fichiers ou lors de la sélection de multiples items, vous pouvez le spécifier en ajoutant `[]` au nom d'attribut : 
+Spécifier l'attribut de modèle peut se faire de façon plus sophistiquée. Par exemple, lorsqu'un attribut peut prendre une valeur de tableau lors du chargement sur le serveur de multiples fichiers ou lors de la sélection de multiples items, vous pouvez le spécifier en ajoutant `[]` au nom d'attribut : 
 
 ```php
 // permet à de multiples fichiers d'être chargés sur le serveur :
@@ -75,7 +75,7 @@ Soyez prudent lorsque vous nommez des éléments de formulaire tels que des bout
 
 > Les éléments *forms* et leurs éléments enfants ne devraient par utiliser des noms de champ de saisie, ou des identifiants que entrent en conflit avec les propriétés d'un élément de *form*, tels que `submit`, `length`, ou `method`. Les conflits de noms peuvent créer des échecs troublants. Pour une liste complètes des règles et pour vérifier votre code HTML à propos de ces problèmes, reportez-vous à [DOMLint](http://kangax.github.io/domlint/).
 
-Des balises additionnelles HTML peuvent êter ajoutées au formulaire en utilisant du HTML simple ou en utilisant les méthodes de la classe [[yii\helpers\Html|Html]]-helper comme cela est fait dans l'exemple ci-dessus avec le [[yii\helpers\Html::submitButton()|Html::submitButton() (bouton de soumission)]].
+Des balises additionnelles HTML peuvent être ajoutées au formulaire en utilisant du HTML simple ou en utilisant les méthodes de la classe [[yii\helpers\Html|Html]]-helper comme cela est fait dans l'exemple ci-dessus avec le [[yii\helpers\Html::submitButton()|bouton de soumission]].
 
 
 > Tip: si vous utilisez la base structurée *Twitter Bootstrap CSS* dans votre application, vous désirez peut-être utiliser [[yii\bootstrap\ActiveForm]] à la place de [[yii\widgets\ActiveForm]]. La première étend la deuxième et utilise les styles propres à Bootstrap lors de la génération des champs de saisie du formulaire.
@@ -150,6 +150,6 @@ La section suivante, [Validation des entrées](input-validation.md) prend en cha
 
 Pour en apprendre plus sur les utilisations complexes de formulaires, vous pouvez lire les sections suivantes :
 
-- [Collecte des champs de saisie tabulaires](input-tabular-input.md) pour collecter des données à destination de multiples modèles du même genre.
-- [Obtention de données pour de multiples modèles](input-multiple-models.md) pour manipuler plusieurs modèles différents dans le même formulaire.
-- [Chargement de fichiers sur le serveur](input-file-upload.md) sur la manière d'utiliser les formulaires pour charger des fichiers sur le serveur.
+- [Collecte des champs de saisie tabulaires](input-tabular-input.md), pour collecter des données à destination de multiples modèles du même genre.
+- [Obtention de données pour de multiples modèles](input-multiple-models.md), pour manipuler plusieurs modèles différents dans le même formulaire.
+- [Chargement de fichiers sur le serveur](input-file-upload.md), sur la manière d'utiliser les formulaires pour charger des fichiers sur le serveur.
