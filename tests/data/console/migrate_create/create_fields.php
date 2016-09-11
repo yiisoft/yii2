@@ -20,6 +20,7 @@ class {$class} extends Migration
             'title' => \$this->string(10)->notNull()->unique()->defaultValue("test"),
             'body' => \$this->text()->notNull(),
             'price' => \$this->money(11,2)->notNull(),
+            'parenthesis_in_comment' => \$this->string(255)->notNull()->comment('Name of set (RU)'),
         ]);
     }
 

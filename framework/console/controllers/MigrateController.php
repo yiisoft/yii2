@@ -351,7 +351,7 @@ class MigrateController extends BaseMigrateController
                     continue;
                 }
 
-                if (!preg_match('/^(.+?)\(([^)]+)\)$/', $chunk)) {
+                if (!preg_match('/^(.+?)\(([^(]+)\)$/', $chunk)) {
                     $chunk .= '()';
                 }
             }

@@ -16,6 +16,7 @@ Yii Framework 2 Change Log
 - Enh #10583: Do not silence session errors in debug mode (samdark)
 - Enh #12048: Improved message extraction command performance (samdark)
 - Enh #12038: Introduced `yii\base\ViewNotFoundException` which is thrown when views file doesn't exists, used it in `ViewAction` (samdark)
+- Bug #12423: Fixed bug migration tool when creating fields with brackets in comment
 
 2.0.9 July 11, 2016
 -------------------
