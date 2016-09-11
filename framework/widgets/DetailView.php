@@ -153,13 +153,14 @@ class DetailView extends Widget
      */
     protected function renderAttribute($attribute, $index)
     {
-        if (is_string($this->template)) {
-            return strtr($this->template, [
+        $template = (empty($attribute['template'])) ? $this->template : $attribute['template'];
+        if (is_string($template)) {
+            return strtr($template, [
                 '{label}' => $attribute['label'],
                 '{value}' => $this->formatter->format($attribute['value'], $attribute['format']),
             ]);
         } else {
-            return call_user_func($this->template, $attribute, $index, $this);
+            return call_user_func($template, $attribute, $index, $this);
         }
     }
 
