@@ -568,6 +568,7 @@ abstract class BaseMigrateController extends Controller
                 'className' => $className,
                 'namespace' => $namespace,
             ]);
+            FileHelper::createDirectory($migrationPath);
             file_put_contents($file, $content);
             $this->stdout("New migration created successfully.\n", Console::FG_GREEN);
         }
@@ -770,6 +771,9 @@ abstract class BaseMigrateController extends Controller
 
         $migrations = [];
         foreach ($migrationPaths as $namespace => $migrationPath) {
+            if (!file_exists($migrationPath)) {
+                continue;
+            }
             $handle = opendir($migrationPath);
             while (($file = readdir($handle)) !== false) {
                 if ($file === '.' || $file === '..') {
