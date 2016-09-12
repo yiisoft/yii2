@@ -48,8 +48,6 @@ trait MigrateControllerTestTrait
         FileHelper::removeDirectory($this->migrationPath);
     }
 
-    
-
     /**
      * @return array applied migration entries
      */
