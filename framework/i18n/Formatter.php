@@ -920,8 +920,7 @@ class Formatter extends Component
      * value is rounded automatically to the defined decimal digits.
      *
      * @param mixed $value the value to be formatted.
-     * @param integer $decimals the number of digits after the decimal point. If not given the number of digits is determined from the
-     * [[locale]] and if the [PHP intl extension](http://php.net/manual/en/book.intl.php) is not available defaults to `2`.
+     * @param integer $decimals the number of digits after the decimal point. If not given defaults to `2`.
      * @param array $options optional configuration for the number formatter. This parameter will be merged with [[numberFormatterOptions]].
      * @param array $textOptions optional configuration for the number formatter. This parameter will be merged with [[numberFormatterTextOptions]].
      * @return string the formatted result.
@@ -936,6 +935,9 @@ class Formatter extends Component
         }
         $value = $this->normalizeNumericValue($value);
 
+        if ($decimals === null) {
+            $decimals = 2;
+        }
         if ($this->_intlLoaded) {
             $f = $this->createNumberFormatter(NumberFormatter::DECIMAL, $decimals, $options, $textOptions);
             if (($result = $f->format($value)) === false) {
@@ -943,9 +945,6 @@ class Formatter extends Component
             }
             return $result;
         } else {
-            if ($decimals === null) {
-                $decimals = 2;
-            }
             return number_format($value, $decimals, $this->decimalSeparator, $this->thousandSeparator);
         }
     }
