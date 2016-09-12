@@ -326,17 +326,16 @@ abstract class BaseMigrateController extends Controller
      */
     public function actionTo($version)
     {
-        if (preg_match('/^\\\\?([\w_]+\\\\)+m(\d{6}_?\d{6})(\D.*?)?$/is', $version, $matches)) {
-            $version = trim($version, '\\');
-            $this->migrateToVersion($version);
-        } elseif (preg_match('/^m?(\d{6}_?\d{6})(\D.*?)?$/', $version, $matches)) {
-            $this->migrateToVersion('m' . $matches[1]);
+        if (($namespaceVersion = $this->extractNamespaceMigrationVersion($version)) !== false) {
+            $this->migrateToVersion($namespaceVersion);
+        } elseif (($migrationName = $this->extractMigrationVersion($version)) !== false) {
+            $this->migrateToVersion($migrationName);
         } elseif ((string) (int) $version == $version) {
             $this->migrateToTime($version);
         } elseif (($time = strtotime($version)) !== false) {
             $this->migrateToTime($time);
         } else {
-            throw new Exception("The version argument must be either a timestamp (e.g. 101129_185401),\n the full name of a migration (e.g. m101129_185401_create_user_table),\n a UNIX timestamp (e.g. 1392853000), or a datetime string parseable\nby the strtotime() function (e.g. 2014-02-15 13:00:50).");
+            throw new Exception("The version argument must be either a timestamp (e.g. 101129_185401),\n the full name of a migration (e.g. m101129_185401_create_user_table),\n the full namespaced name of a migration (e.g. app\\migrations\\M101129185401CreateUserTable),\n a UNIX timestamp (e.g. 1392853000), or a datetime string parseable\nby the strtotime() function (e.g. 2014-02-15 13:00:50).");
         }
     }
 
@@ -359,10 +358,10 @@ abstract class BaseMigrateController extends Controller
     public function actionMark($version)
     {
         $originalVersion = $version;
-        if (preg_match('/^\\\\?([\w_]+\\\\)+m(\d{6}_?\d{6})(\D.*?)?$/is', $version, $matches)) {
-            $version = trim($version, '\\');
-        } elseif (preg_match('/^m?(\d{6}_?\d{6})(\D.*?)?$/is', $version, $matches)) {
-            $version = 'm' . $matches[1];
+        if (($namespaceVersion = $this->extractNamespaceMigrationVersion($version)) !== false) {
+            $version = $namespaceVersion;
+        } elseif (($migrationName = $this->extractMigrationVersion($version)) !== false) {
+            $version = $migrationName;
         } else {
             throw new Exception("The version argument must be either a timestamp (e.g. 101129_185401)\nor the full name of a migration (e.g. m101129_185401_create_user_table)\nor the full name of a namespaced migration (e.g. app\\migrations\\M101129185401CreateUserTable).");
         }
@@ -402,6 +401,34 @@ abstract class BaseMigrateController extends Controller
         }
 
         throw new Exception("Unable to find the version '$originalVersion'.");
+    }
+
+    /**
+     * Checks if given migration version specification matches namespaced migration name.
+     * @param string $rawVersion raw version specification received from user input.
+     * @return string|false actual migration version, `false` - if not match.
+     * @since 2.0.10
+     */
+    private function extractNamespaceMigrationVersion($rawVersion)
+    {
+        if (preg_match('/^\\\\?([\w_]+\\\\)+m(\d{6}_?\d{6})(\D.*?)?$/is', $rawVersion, $matches)) {
+            return trim($rawVersion, '\\');
+        }
+        return false;
+    }
+
+    /**
+     * Checks if given migration version specification matches migration base name.
+     * @param string $rawVersion raw version specification received from user input.
+     * @return string|false actual migration version, `false` - if not match.
+     * @since 2.0.10
+     */
+    private function extractMigrationVersion($rawVersion)
+    {
+        if (preg_match('/^m?(\d{6}_?\d{6})(\D.*?)?$/is', $rawVersion, $matches)) {
+            return 'm' . $matches[1];
+        }
+        return false;
     }
 
     /**
