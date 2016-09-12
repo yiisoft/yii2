@@ -127,7 +127,7 @@ class FormatterNumberTest extends TestCase
         $this->assertSame("123", $this->formatter->asDecimal($value, 0));
 
         $value = 123;
-        $this->assertSame("123", $this->formatter->asDecimal($value));
+        $this->assertSame("123.00", $this->formatter->asDecimal($value));
         $this->assertSame("123.00", $this->formatter->asDecimal($value, 2));
         $this->formatter->decimalSeparator = ',';
         $this->formatter->thousandSeparator = '.';
@@ -152,11 +152,11 @@ class FormatterNumberTest extends TestCase
         $this->formatter->decimalSeparator = null;
         $this->formatter->thousandSeparator = null;
         $value = '-123456.123';
-        $this->assertSame("-123,456.123", $this->formatter->asDecimal($value));
+        $this->assertSame("-123,456.12", $this->formatter->asDecimal($value));
 
         // empty input
-        $this->assertSame("0", $this->formatter->asDecimal(false));
-        $this->assertSame("0", $this->formatter->asDecimal(""));
+        $this->assertSame("0.00", $this->formatter->asDecimal(false));
+        $this->assertSame("0.00", $this->formatter->asDecimal(""));
 
         // null display
         $this->assertSame($this->formatter->nullDisplay, $this->formatter->asDecimal(null));
