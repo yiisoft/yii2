@@ -22,11 +22,11 @@ class AssetBundleTest extends \yiiunit\TestCase
         parent::setUp();
         $this->mockApplication();
 
-        Yii::setAlias('@testWeb', '/');
-        Yii::setAlias('@testWebRoot', '@yiiunit/data/web');
-        Yii::setAlias('@testAssetsPath', '@testWebRoot/assets');
-        Yii::setAlias('@testAssetsUrl', '@testWeb/assets');
-        Yii::setAlias('@testSourcePath', '@testWebRoot/assetSources');
+        Yii::setAlias('@web', '/');
+        Yii::setAlias('@webroot', '@yiiunit/data/web');
+        Yii::setAlias('@testAssetsPath', '@webroot/assets');
+        Yii::setAlias('@testAssetsUrl', '@web/assets');
+        Yii::setAlias('@testSourcePath', '@webroot/assetSources');
     }
 
     /**
@@ -57,16 +57,22 @@ class AssetBundleTest extends \yiiunit\TestCase
         $bundle->publish($am);
 
         $this->assertTrue(is_dir($bundle->basePath));
-        foreach ($bundle->js as $filename) {
+        $this->sourcesPublish_VerifyFiles('css', $bundle);
+        $this->sourcesPublish_VerifyFiles('js', $bundle);
+
+        $this->assertTrue(rmdir($bundle->basePath));
+    }
+
+    private function sourcesPublish_VerifyFiles($type, $bundle)
+    {
+        foreach ($bundle->$type as $filename) {
             $publishedFile = $bundle->basePath . DIRECTORY_SEPARATOR . $filename;
             $sourceFile = $bundle->sourcePath . DIRECTORY_SEPARATOR . $filename;
             $this->assertFileExists($publishedFile);
             $this->assertFileEquals($publishedFile, $sourceFile);
             $this->assertTrue(unlink($publishedFile));
         }
-        $this->assertTrue(rmdir($bundle->basePath . DIRECTORY_SEPARATOR . 'js'));
-
-        $this->assertTrue(rmdir($bundle->basePath));
+        $this->assertTrue(rmdir($bundle->basePath . DIRECTORY_SEPARATOR . $type));
     }
 
     public function testSourcesPublishedBySymlink()
@@ -336,12 +342,57 @@ EOF;
 EOF;
         $this->assertEquals($expected, $view->renderFile('@yiiunit/data/views/rawlayout.php'));
     }
+
+    public function registerFileDataProvider()
+    {
+        return [
+            [
+                'js', '@web/assetSources/js/jquery.js', true,
+                '123<script src="/assetSources/js/jquery.js\?v=\d{10}"></script>4',
+            ],
+            [
+                'js', '@web/assetSources/js/missing-file.js', true,
+                '123<script src="/assetSources/js/missing-file.js"></script>4',
+            ],
+            [
+                'js', '@web/assetSources/js/jquery.js', false,
+                '123<script src="/assetSources/js/jquery.js"></script>4',
+            ],
+            [
+                'css', '@web/assetSources/css/stub.css', true,
+                '1<link href="/assetSources/css/stub.css\?v=\d{10}" rel="stylesheet">234',
+            ],
+            [
+                'css', '@web/assetSources/css/missing-file.css', true,
+                '1<link href="/assetSources/css/missing-file.css" rel="stylesheet">234',
+            ],
+            [
+                'css', '@web/assetSources/css/stub.css', false,
+                '1<link href="/assetSources/css/stub.css" rel="stylesheet">234',
+            ],
+        ];
+    }
+
+    /**
+     * @dataProvider registerFileDataProvider
+     * @param string $type either `js` or `css`
+     * @param string $path
+     * @param string bool $appendTimestamp
+     * @param string $expectedRegExp
+     */
+    public function testRegisterFileAppendTimestamp($type, $path, $appendTimestamp, $expectedRegExp)
+    {
+        $view = $this->getView(['appendTimestamp' => $appendTimestamp]);
+        $method = 'register' . ucfirst($type) . 'File';
+        $view->$method($path);
+        $this->assertRegExp('#' . $expectedRegExp . '#', $view->renderFile('@yiiunit/data/views/rawlayout.php'));
+    }
 }
 
 class TestSimpleAsset extends AssetBundle
 {
-    public $basePath = '@testWebRoot/js';
-    public $baseUrl = '@testWeb/js';
+    public $basePath = '@webroot/js';
+    public $baseUrl = '@web/js';
     public $js = [
         'jquery.js',
     ];
@@ -353,12 +404,15 @@ class TestSourceAsset extends AssetBundle
     public $js = [
         'js/jquery.js',
     ];
+    public $css = [
+        'css/stub.css',
+    ];
 }
 
 class TestAssetBundle extends AssetBundle
 {
-    public $basePath = '@testWebRoot/files';
-    public $baseUrl = '@testWeb/files';
+    public $basePath = '@webroot/files';
+    public $baseUrl = '@web/files';
     public $css = [
         'cssFile.css',
     ];
@@ -372,8 +426,8 @@ class TestAssetBundle extends AssetBundle
 
 class TestJqueryAsset extends AssetBundle
 {
-    public $basePath = '@testWebRoot/js';
-    public $baseUrl = '@testWeb/js';
+    public $basePath = '@webroot/js';
+    public $baseUrl = '@web/js';
     public $js = [
         'jquery.js',
     ];
@@ -384,14 +438,14 @@ class TestJqueryAsset extends AssetBundle
 
 class TestAssetLevel3 extends AssetBundle
 {
-    public $basePath = '@testWebRoot/js';
-    public $baseUrl = '@testWeb/js';
+    public $basePath = '@webroot/js';
+    public $baseUrl = '@web/js';
 }
 
 class TestAssetCircleA extends AssetBundle
 {
-    public $basePath = '@testWebRoot/js';
-    public $baseUrl = '@testWeb/js';
+    public $basePath = '@webroot/js';
+    public $baseUrl = '@web/js';
     public $js = [
         'jquery.js',
     ];
@@ -402,8 +456,8 @@ class TestAssetCircleA extends AssetBundle
 
 class TestAssetCircleB extends AssetBundle
 {
-    public $basePath = '@testWebRoot/js';
-    public $baseUrl = '@testWeb/js';
+    public $basePath = '@webroot/js';
+    public $baseUrl = '@web/js';
     public $js = [
         'jquery.js',
     ];
@@ -414,8 +468,8 @@ class TestAssetCircleB extends AssetBundle
 
 class TestAssetPerFileOptions extends AssetBundle
 {
-    public $basePath = '@testWebRoot';
-    public $baseUrl = '@testWeb';
+    public $basePath = '@webroot';
+    public $baseUrl = '@web';
     public $css = [
         'default_options.css',
         ['tv.css', 'media' => 'tv'],

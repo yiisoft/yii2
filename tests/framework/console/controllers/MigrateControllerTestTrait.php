@@ -204,7 +204,8 @@ CODE;
             $this->assertCommandCreatedFile('create_fields', $migrationName, [
                 'fields' => 'title:string(10):notNull:unique:defaultValue("test"),
                     body:text:notNull,
-                    price:money(11,2):notNull'
+                    price:money(11,2):notNull,
+                    parenthesis_in_comment:string(255):notNull:comment(\'Name of set (RU)\')'
             ]);
 
             $this->assertCommandCreatedFile('create_title_pk', $migrationName, [

@@ -2043,7 +2043,7 @@ class BaseHtml
         }
         $attribute = $matches[2];
         $value = $model->$attribute;
-        if ($matches[3] !== '' && $matches[3] !== '[]') {
+        if ($matches[3] !== '') {
             foreach (explode('][', trim($matches[3], '[]')) as $id) {
                 if ((is_array($value) || $value instanceof \ArrayAccess) && isset($value[$id])) {
                     $value = $value[$id];
