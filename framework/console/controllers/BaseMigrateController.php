@@ -505,7 +505,7 @@ abstract class BaseMigrateController extends Controller
      * yii migrate/create create_user_table
      * ```
      *
-     * In order to generate migration with namespace, you should add it before migration self name.
+     * In order to generate namespaced migration you should specify namespace before migration's name.
      * Note that backslash (`\`) usually is considered as a special char in console, so you need to escape argument
      * properly to avoid shell error or incorrect behavior.
      * For example:
@@ -547,9 +547,9 @@ abstract class BaseMigrateController extends Controller
     }
 
     /**
-     * Generates class name with possible namespace from migration name.
+     * Generates class base name and namespace from migration name from user input.
      * @param string $name migration name from user input.
-     * @return array list of 2 elements: 'namespace' and 'class self name'
+     * @return array list of 2 elements: 'namespace' and 'class base name'
      * @since 2.0.10
      */
     private function generateClassName($name)
@@ -576,8 +576,8 @@ abstract class BaseMigrateController extends Controller
     }
 
     /**
-     * Finds the file path for the specified migration class.
-     * @param string $namespace migration namespace.
+     * Finds the file path for the specified migration namespace.
+     * @param string|null $namespace migration namespace.
      * @return string migration file path.
      * @throws Exception on failure.
      * @since 2.0.10
