@@ -210,8 +210,6 @@ CODE;
         $this->assertContains($migrationName, basename($files[0]), 'Wrong migration name!');
     }
 
-    
-
     public function testUp()
     {
         $this->createMigration('test1');
