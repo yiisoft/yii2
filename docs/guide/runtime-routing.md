@@ -525,8 +525,8 @@ and `http://example.com/path/` are different URLs, serving the same content for 
 By default normalizer collapses consecutive slashes, adds or removes trailing slashes depending on whether the
 suffix has a trailing slash or not, and redirects to normalized version of URL using [permanent redirection](https://en.wikipedia.org/wiki/HTTP_301).
 Normalizer can be configured individually for URL manager and each rule - by default rule will use normalizer
-from URL manager. You can set [[yii\web\UrlManager::$normalizer|UrlManager::$normalizer]] and
-[[yii\web\UrlRule::$normalizer|UrlRule::$normalizer]] to `false` to disable normalization in given context.
+from URL manager. You can set [[yii\web\UrlRule::$normalizer|UrlRule::$normalizer]] to `false` to disable normalization
+for particular URL rule.
 
 ```php
 [
@@ -560,6 +560,9 @@ from URL manager. You can set [[yii\web\UrlManager::$normalizer|UrlManager::$nor
     ],
 ]
 ```
+
+> Note: by default [[yii\web\UrlManager::$normalizer|UrlManager::$normalizer]] is disabled. You need to explicitly
+  configure it in order to enable URL normalization.
 
 
 ### HTTP Methods <span id="http-methods"></span>

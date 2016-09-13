@@ -1586,7 +1586,7 @@ class Customer extends \yii\db\ActiveRecord
             return null; // нет смысла выполнять запрос на поиск по пустым ключам
         }
 
-        return $this->ordersAggregation['counted'];
+        return $this->ordersAggregation[0]['counted'];
     }
 
     /**
