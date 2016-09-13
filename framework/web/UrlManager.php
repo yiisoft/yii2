@@ -11,6 +11,7 @@ use Yii;
 use yii\base\Component;
 use yii\base\InvalidConfigException;
 use yii\caching\Cache;
+use yii\di\Instance;
 
 /**
  * UrlManager handles HTTP request parsing and creation of URLs based on a set of rules.
@@ -126,11 +127,22 @@ class UrlManager extends Component
      */
     public $ruleConfig = ['class' => 'yii\web\UrlRule'];
     /**
-     * @var UrlNormalizer|array|false the configuration for [[UrlNormalizer]] used by this UrlManager.
-     * If `false` normalization will be skipped.
+     * @var UrlNormalizer|array|string|false the configuration for [[UrlNormalizer]] used by this UrlManager.
+     * The default value is `false`, which means normalization will be skipped.
+     * If you wish to enable URL normalization, you should configure this property manually.
+     * For example:
+     *
+     * ```
+     * [
+     *     'class' => 'yii\web\UrlNormalizer',
+     *     'collapseSlashes' => true,
+     *     'normalizeTrailingSlash' => true,
+     * ]
+     * ```
+     *
      * @since 2.0.10
      */
-    public $normalizer = ['class' => 'yii\web\UrlNormalizer'];
+    public $normalizer = false;
 
     /**
      * @var string the cache key for cached rules
@@ -151,11 +163,8 @@ class UrlManager extends Component
     {
         parent::init();
 
-        if (is_array($this->normalizer)) {
-            $this->normalizer = Yii::createObject($this->normalizer);
-        }
-        if ($this->normalizer !== false && !$this->normalizer instanceof UrlNormalizer) {
-            throw new InvalidConfigException('Invalid config for UrlManager::normalizer.');
+        if ($this->normalizer !== false) {
+            Instance::ensure($this->normalizer, UrlNormalizer::className());
         }
 
         if (!$this->enablePrettyUrl || empty($this->rules)) {

@@ -1,5 +1,4 @@
 <?php
-
 /**
  * @link http://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
@@ -69,27 +68,28 @@ class UrlNormalizer extends Object
      */
     public $action = self::ACTION_REDIRECT_PERMANENT;
 
+
     /**
      * Performs normalization action for the specified $route.
      * @param array $route route for normalization
      * @return array normalized route
-     * @throws InvalidConfigException if invalid normalization action is used
-     * @throws UrlNormalizerRedirectException if normalization requires redirection
+     * @throws InvalidConfigException if invalid normalization action is used.
+     * @throws UrlNormalizerRedirectException if normalization requires redirection.
+     * @throws NotFoundHttpException if normalization suggests action matching route does not exist.
      */
     public function normalizeRoute($route)
     {
         if ($this->action === null) {
             return $route;
-        } elseif ($this->action === static::ACTION_REDIRECT_PERMANENT
-                || $this->action === static::ACTION_REDIRECT_TEMPORARY) {
+        } elseif ($this->action === static::ACTION_REDIRECT_PERMANENT || $this->action === static::ACTION_REDIRECT_TEMPORARY) {
             throw new UrlNormalizerRedirectException([$route[0]] + $route[1], $this->action);
         } elseif ($this->action === static::ACTION_NOT_FOUND) {
             throw new NotFoundHttpException(Yii::t('yii', 'Page not found.'));
         } elseif (is_callable($this->action)) {
             return call_user_func($this->action, $route, $this);
-        } else {
-            throw new InvalidConfigException('Invalid normalizer action.');
         }
+
+        throw new InvalidConfigException('Invalid normalizer action.');
     }
 
     /**
@@ -121,10 +121,9 @@ class UrlNormalizer extends Object
     }
 
     /**
-     * Collapse consecutive slashes in $pathInfo, for example converts `site///index` into
-     * `site/index`.
-     * @param string $pathInfo
-     * @return string
+     * Collapse consecutive slashes in $pathInfo, for example converts `site///index` into `site/index`.
+     * @param string $pathInfo raw path info.
+     * @return string normalized path info.
      */
     protected function collapseSlashes($pathInfo)
     {
@@ -134,9 +133,9 @@ class UrlNormalizer extends Object
     /**
      * Adds or removes trailing slashes from $pathInfo depending on whether the $suffix has a
      * trailing slash or not.
-     * @param string $pathInfo
+     * @param string $pathInfo raw path info.
      * @param string $suffix
-     * @return string
+     * @return string normalized path info.
      */
     protected function normalizeTrailingSlash($pathInfo, $suffix)
     {
@@ -148,5 +147,4 @@ class UrlNormalizer extends Object
 
         return $pathInfo;
     }
-
 }
