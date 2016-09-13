@@ -620,7 +620,17 @@ abstract class BaseMigrateController extends Controller
             throw new Exception("Namespace '{$namespace}' is not mentioned among `migrationNamespaces`");
         }
 
-        return Yii::getAlias('@' . str_replace('\\', DIRECTORY_SEPARATOR, $namespace));
+        return $this->getNamespacePath($namespace);
+    }
+
+    /**
+     * Returns the file path matching the give namespace.
+     * @param string $namespace namespace
+     * @return string file path
+     */
+    private function getNamespacePath($namespace)
+    {
+        return str_replace('/', DIRECTORY_SEPARATOR, Yii::getAlias('@' . str_replace('\\', '/', $namespace)));
     }
 
     /**
@@ -766,7 +776,7 @@ abstract class BaseMigrateController extends Controller
             $migrationPaths[''] = $this->migrationPath;
         }
         foreach ($this->migrationNamespaces as $namespace) {
-            $migrationPaths[$namespace] = Yii::getAlias('@' . str_replace('\\', DIRECTORY_SEPARATOR, $namespace));
+            $migrationPaths[$namespace] = $this->getNamespacePath($namespace);
         }
 
         $migrations = [];
