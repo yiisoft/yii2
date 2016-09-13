@@ -164,7 +164,7 @@ class UrlManager extends Component
         parent::init();
 
         if ($this->normalizer !== false) {
-            Instance::ensure($this->normalizer, UrlNormalizer::className());
+            $this->normalizer = Instance::ensure($this->normalizer, UrlNormalizer::className());
         }
 
         if (!$this->enablePrettyUrl || empty($this->rules)) {

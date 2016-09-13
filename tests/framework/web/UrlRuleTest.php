@@ -64,6 +64,7 @@ class UrlRuleTest extends TestCase
     {
         $manager = new UrlManager([
             'cache' => null,
+            'normalizer' => UrlNormalizer::className(),
         ]);
         $request = new Request(['hostInfo' => 'http://en.example.com']);
         $suites = $this->getTestsForParseRequest();
@@ -92,7 +93,7 @@ class UrlRuleTest extends TestCase
         $manager = new UrlManager([
             'cache' => null,
             'normalizer' => [
-                'class' => 'yii\web\UrlNormalizer',
+                'class' => UrlNormalizer::className(),
                 'action' => UrlNormalizer::ACTION_REDIRECT_PERMANENT,
             ],
         ]);
@@ -121,7 +122,7 @@ class UrlRuleTest extends TestCase
         $manager = new UrlManager([
             'cache' => null,
             'normalizer' => [
-                'class' => 'yii\web\UrlNormalizer',
+                'class' => UrlNormalizer::className(),
                 'action' => UrlNormalizer::ACTION_REDIRECT_TEMPORARY,
             ],
         ]);
@@ -150,7 +151,7 @@ class UrlRuleTest extends TestCase
         $manager = new UrlManager([
             'cache' => null,
             'normalizer' => [
-                'class' => 'yii\web\UrlNormalizer',
+                'class' => UrlNormalizer::className(),
                 'action' => UrlNormalizer::ACTION_NOT_FOUND,
             ],
         ]);
@@ -178,7 +179,7 @@ class UrlRuleTest extends TestCase
         $manager = new UrlManager([
             'cache' => null,
             'normalizer' => [
-                'class' => 'yii\web\UrlNormalizer',
+                'class' => UrlNormalizer::className(),
                 'action' => null,
             ],
         ]);
@@ -207,7 +208,7 @@ class UrlRuleTest extends TestCase
         $manager = new UrlManager([
             'cache' => null,
             'normalizer' => [
-                'class' => 'yii\web\UrlNormalizer',
+                'class' => UrlNormalizer::className(),
                 'action' => $normalizerAction,
             ],
         ]);
