@@ -625,8 +625,9 @@ abstract class BaseMigrateController extends Controller
 
     /**
      * Returns the file path matching the give namespace.
-     * @param string $namespace namespace
-     * @return string file path
+     * @param string $namespace namespace.
+     * @return string file path.
+     * @since 2.0.10
      */
     private function getNamespacePath($namespace)
     {
