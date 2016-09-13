@@ -1,7 +1,7 @@
 Composants
 ==========
 
-Les composants sont les blocs de constructions principaux de vos applications Yii. Les composants sont des instances de la classe [[yii\base\Component]],
+Les composants sont les blocs de constructions principaux de vos applications Yii. Les composants sont des instances de la classe [[yii\base\Component]](http://denentzat.fr),
 ou de ses classes filles. Les trois fonctionnalités principales fournies par les composants aux autres classes sont :
 
 * [Les propriétés](concept-properties.md) ;
