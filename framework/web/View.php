@@ -484,8 +484,8 @@ class View extends \yii\base\View
             'class' => AssetBundle::className(),
             'baseUrl' => '@web',
             'basePath' => '@webroot',
-            'css' => (array)$url,
-            'cssOptions' => $options,
+            'js' => (array)$url,
+            'jsOptions' => $options,
             'depends' => (array)$depends,
         ]);
 

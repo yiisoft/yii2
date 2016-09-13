@@ -139,9 +139,9 @@ Pjax::end();
 
 #### Valeurs dans les boutons de soumission et dans les chargement de fichiers sur le serveur
 
-Il y a des problèmes connus avec l'utilisation de `jQuery.serializeArray()` lorsqu'on manipule des [[https://github.com/jquery/jquery/issues/2321|fichiers]] et des [[https://github.com/jquery/jquery/issues/2321|valeurs de boutons de soumission]] qui ne peuvent être résolus et sont plutôt rendus obsolète en faveur de la classe `FormData` introduite en HTML5. 
+Il y a des problèmes connus avec l'utilisation de `jQuery.serializeArray()` lorsqu'on manipule des [fichiers](https://github.com/jquery/jquery/issues/2321) et des [valeurs de boutons de soumission](https://github.com/jquery/jquery/issues/2321) qui ne peuvent être résolus et sont plutôt rendus obsolète en faveur de la classe `FormData` introduite en HTML5. 
 
-Cela siginifie que la seule prise en charge officielle pour les fichiers et les valeurs de boutons de soumission avec ajax, ou en utilisant le composant graphique  [[yii\widgets\Pjax|Pjax]], dépend de la [[https://developer.mozilla.org/en-US/docs/Web/API/FormData#Browser_compatibility|prise en charge par le navigateur]] de la classe `FormData`.
+Cela siginifie que la seule prise en charge officielle pour les fichiers et les valeurs de boutons de soumission avec ajax, ou en utilisant le composant graphique  [[yii\widgets\Pjax|Pjax]], dépend de la [prise en charge par le navigateur](https://developer.mozilla.org/en-US/docs/Web/API/FormData#Browser_compatibility) de la classe `FormData`.
 
 Lectures d'approfondissement <span id="further-reading"></span>
 ----------------------------
