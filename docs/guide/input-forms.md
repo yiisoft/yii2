@@ -175,14 +175,14 @@ Pjax::end();
 #### Values in Submit Buttons and File Upload
 
 There are known issues using `jQuery.serializeArray()` when dealing with
-[[https://github.com/jquery/jquery/issues/2321|files]] and
-[[https://github.com/jquery/jquery/issues/2321|submit button values]] which
+[files](https://github.com/jquery/jquery/issues/2321) and
+[submit button values](https://github.com/jquery/jquery/issues/2321) which
 won't be solved and are instead deprecated in favor of the `FormData` class
 introduced in HTML5.
 
 That means the only official support for files and submit button values with
 ajax or using the [[yii\widgets\Pjax|Pjax]] widget depends on the
-[[https://developer.mozilla.org/en-US/docs/Web/API/FormData#Browser_compatibility|browser support]]
+[browser support](https://developer.mozilla.org/en-US/docs/Web/API/FormData#Browser_compatibility)
 for the `FormData` class.
 
 Further Reading <span id="further-reading"></span>

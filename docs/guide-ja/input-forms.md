@@ -167,13 +167,13 @@ Pjax::end();
 #### 送信ボタンの値とファイルのアップロード
 
 `jQuery.serializeArray()` については、
-[[https://github.com/jquery/jquery/issues/2321|ファイル]] および
-[[https://github.com/jquery/jquery/issues/2321|送信ボタンの値]]
+[ファイル](https://github.com/jquery/jquery/issues/2321) および
+[送信ボタンの値](https://github.com/jquery/jquery/issues/2321)
 を扱うときに問題があることが知られています。
 この問題は解決される見込みがなく、関数自体も HTML5 で導入された `FormData` クラスによって置き換えられるべきものとして、廃止予定となっています。
 
 このことは、すなわち、ajax または [[yii\widgets\Pjax|Pjax]] ウィジェットを使う場合、ファイルと送信ボタンの値に対する唯一の公式なサポートは、
-`FormData` クラスに対する [[https://developer.mozilla.org/en-US/docs/Web/API/FormData#Browser_compatibility|ブラウザのサポート]] に依存しているということを意味します。
+`FormData` クラスに対する [ブラウザのサポート](https://developer.mozilla.org/en-US/docs/Web/API/FormData#Browser_compatibility) に依存しているということを意味します。
 
 
 さらに読むべき文書 <span id="further-reading"></span>
