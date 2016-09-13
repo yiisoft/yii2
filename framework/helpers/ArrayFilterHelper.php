@@ -11,7 +11,6 @@ namespace yii\helpers;
  * ArrayFilterHelper provide array filter by the array syntax condition functionality
  *
  * @author Daniil Razorenov <daniltmb@mail.ru>
- * @since 2.0
  */
 class ArrayFilterHelper extends BaseArrayFilterHelper
 {

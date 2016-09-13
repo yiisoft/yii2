@@ -15,7 +15,6 @@ use yii\base\InvalidParamException;
  * Do not use BaseArrayFilterHelper. Use [[ArrayFilterHelper]] instead.
  *
  * @author Daniil Razorenov <daniltmb@mail.ru>
- * @since 2.0
  */
 class BaseArrayFilterHelper
 {
@@ -27,7 +26,7 @@ class BaseArrayFilterHelper
      */
     public static function filterModels($models, $conditions)
     {
-        return array_filter($models, function($model) use ($conditions) {
+        return array_filter($models, function ($model) use ($conditions) {
             $result = true;
             foreach ($conditions as $condition) {
                 $result = $result && self::checkCondition($model, $condition);
@@ -57,7 +56,7 @@ class BaseArrayFilterHelper
      * @param mixed $model for which tests the condition
      * @param array $condition the condition specification. Please refer to [[Query::where()]]
      * on how to specify a condition.
-     * @return bool fulfillment of conditions
+     * @return boolean fulfillment of conditions
      */
     protected static function checkCondition($model, $condition)
     {
@@ -80,7 +79,7 @@ class BaseArrayFilterHelper
      * @param mixed $model for which tests the condition
      * @param string $operator the operator to use. Anything could be used e.g. `>`, `<=`, etc.
      * @param array $operands contains two column names.
-     * @return bool fulfillment of conditions
+     * @return boolean fulfillment of conditions
      * @throws InvalidParamException if wrong number of operands have been given.
      */
     protected static function checkSimpleCondition($model, $operator, $operands)
@@ -111,7 +110,7 @@ class BaseArrayFilterHelper
      * @param mixed $model for which tests the condition
      * @param string $operator the operator to use for connecting the given operands
      * @param array $operands condition to connect.
-     * @return bool fulfillment of conditions
+     * @return boolean fulfillment of conditions
      */
     protected static function checkAndCondition($model, $operator, $operands)
     {
@@ -127,7 +126,7 @@ class BaseArrayFilterHelper
      * @param mixed $model for which tests the condition.
      * @param string $operator the operator to use for connecting the given operands.
      * @param array $operands condition to connect.
-     * @return bool fulfillment of conditions
+     * @return boolean fulfillment of conditions
      */
     protected static function checkOrCondition($model, $operator, $operands)
     {
@@ -143,7 +142,7 @@ class BaseArrayFilterHelper
      * @param mixed $model for which tests the condition.
      * @param string $operator the operator to use for connecting the given operands.
      * @param array $operands condition to connect.
-     * @return bool fulfillment of conditions
+     * @return boolean fulfillment of conditions
      */
     protected static function checkNotCondition($model, $operator, $operands)
     {
@@ -156,7 +155,7 @@ class BaseArrayFilterHelper
      * @param string $operator the operator to use (e.g. `BETWEEN` or `NOT BETWEEN`)
      * @param array $operands the first operand is the model property name. The second and third operands
      * describe the interval that property value should be in.
-     * @return bool fulfillment of conditions
+     * @return boolean fulfillment of conditions
      * @throws InvalidParamException if wrong number of operands have been given.
      */
     protected static function checkBetweenCondition($model, $operator, $operands)
@@ -175,7 +174,7 @@ class BaseArrayFilterHelper
      * @param string $operator the operator to use (e.g. `IN` or `NOT IN`)
      * @param array $operands the first operand is the model property name.
      * The second operand is an array of values that property value should be among.
-     * @return bool fulfillment of conditions
+     * @return boolean fulfillment of conditions
      * @throws InvalidParamException if wrong number of operands have been given.
      */
     protected static function checkInCondition($model, $operator, $operands)
@@ -203,7 +202,7 @@ class BaseArrayFilterHelper
      *   You may use `false` or an empty array to indicate the values are already escaped and no escape
      *   should be applied. Note that when using an escape mapping (or the third operand is not provided),
      *   the values will be automatically enclosed within a pair of percentage characters.
-     * @return bool fulfillment of conditions
+     * @return boolean fulfillment of conditions
      * @throws InvalidParamException if wrong number of operands have been given.
      */
     protected static function checkLikeCondition($model, $operator, $operands)
@@ -216,7 +215,7 @@ class BaseArrayFilterHelper
         $wildcard = str_replace('%', '*', $wildcard);
         $wildcard = str_replace('_', '?', $wildcard);
 
-        if(!isset($operands[2]) || $operands[2]) {
+        if (!isset($operands[2]) || $operands[2]) {
             $wildcard = '*' . $wildcard . '*';
         }
 
@@ -228,7 +227,7 @@ class BaseArrayFilterHelper
      * Creates a condition based on column-value pairs.
      * @param mixed $model for which tests the condition.
      * @param array $condition the condition specification.
-     * @return bool fulfillment of conditions
+     * @return boolean fulfillment of conditions
      */
     protected static function checkHashCondition($model, $condition)
     {
