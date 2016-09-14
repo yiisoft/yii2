@@ -19,6 +19,22 @@ use yii\base\InvalidParamException;
 class BaseArrayFilterHelper
 {
     /**
+     * @var array map of condition to check methods.
+     * These methods are used by [[checkCondition]] to check conditions from array syntax.
+     */
+    protected static $checkConditions = [
+        'NOT'           => 'checkNotCondition',
+        'AND'           => 'checkAndCondition',
+        'OR'            => 'checkOrCondition',
+        'BETWEEN'       => 'checkBetweenCondition',
+        'NOT BETWEEN'   => 'checkBetweenCondition',
+        'IN'            => 'checkInCondition',
+        'NOT IN'        => 'checkInCondition',
+        'LIKE'          => 'checkLikeCondition',
+        'NOT LIKE'      => 'checkLikeCondition',
+    ];
+
+    /**
      * Filter array by condition described by array syntax
      * @param array $models filtered by condition
      * @param array $conditions array syntax
@@ -34,22 +50,6 @@ class BaseArrayFilterHelper
             return $result;
         });
     }
-
-    /**
-     * @var array map of condition to check methods.
-     * These methods are used by [[checkCondition]] to check conditions from array syntax.
-     */
-    protected static $checkConditions = [
-        'NOT'           => 'checkNotCondition',
-        'AND'           => 'checkAndCondition',
-        'OR'            => 'checkOrCondition',
-        'BETWEEN'       => 'checkBetweenCondition',
-        'NOT BETWEEN'   => 'checkBetweenCondition',
-        'IN'            => 'checkInCondition',
-        'NOT IN'        => 'checkInCondition',
-        'LIKE'          => 'checkLikeCondition',
-        'NOT LIKE'      => 'checkLikeCondition',
-    ];
 
     /**
      * Parses the condition specification and check the fulfillment of conditions for the model
