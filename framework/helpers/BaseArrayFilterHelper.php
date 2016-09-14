@@ -29,7 +29,7 @@ class BaseArrayFilterHelper
         return array_filter($models, function ($model) use ($conditions) {
             $result = true;
             foreach ($conditions as $condition) {
-                $result = $result && self::checkCondition($model, $condition);
+                $result = $result && static::checkCondition($model, $condition);
             }
             return $result;
         });
@@ -62,15 +62,15 @@ class BaseArrayFilterHelper
     {
         if (isset($condition[0])) { // operator format: operator, operand 1, operand 2, ...
             $operator = strtoupper($condition[0]);
-            if (isset(self::$checkConditions[$operator])) {
-                $method = self::$checkConditions[$operator];
+            if (isset(static::$checkConditions[$operator])) {
+                $method = static::$checkConditions[$operator];
             } else {
                 $method = 'checkSimpleCondition';
             }
             array_shift($condition);
-            return self::$method($model, $operator, $condition);
+            return static::$method($model, $operator, $condition);
         } else { // hash format: 'column1' => 'value1', 'column2' => 'value2', ...
-            return self::checkHashCondition($model, $condition);
+            return static::checkHashCondition($model, $condition);
         }
     }
 
@@ -116,7 +116,7 @@ class BaseArrayFilterHelper
     {
         $result = true;
         foreach ($operands as $operand) {
-            $result = $result && self::checkCondition($model, $operand);
+            $result = $result && static::checkCondition($model, $operand);
         }
         return $result;
     }
@@ -132,7 +132,7 @@ class BaseArrayFilterHelper
     {
         $result = false;
         foreach ($operands as $operand) {
-            $result = $result || self::checkCondition($model, $operand);
+            $result = $result || static::checkCondition($model, $operand);
         }
         return $result;
     }
@@ -146,7 +146,7 @@ class BaseArrayFilterHelper
      */
     protected static function checkNotCondition($model, $operator, $operands)
     {
-        return !self::checkCondition($model, $operands[0]);
+        return !static::checkCondition($model, $operands[0]);
     }
 
     /**
@@ -235,7 +235,7 @@ class BaseArrayFilterHelper
         foreach ($condition as $property => $value) {
             if (ArrayHelper::isTraversable($value)) {
                 // IN condition
-                $result = $result && self::checkInCondition($model, 'IN', [$property, $value]);
+                $result = $result && static::checkInCondition($model, 'IN', [$property, $value]);
             } else {
                 if ($value === null) {
                     $result = $result && $model[$property] == null;
