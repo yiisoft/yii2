@@ -5,6 +5,9 @@ namespace yiiunit\framework\data;
 use yii\data\Filter;
 use yiiunit\TestCase;
 
+/**
+ * @group data
+ */
 class FilterTest extends TestCase
 {
     public function testBuildCondition()
@@ -15,21 +18,25 @@ class FilterTest extends TestCase
         $value_array  = [15, 16];
         $filter       = new Filter();
 
-        $condition = $filter->buildCondition('>=', $field_name, $value_int);
-        $this->assertEquals($condition, ['>=', $field_name, $value_int]);
-        $condition = $filter->buildCondition('<=', $field_name, $value_int);
-        $this->assertEquals($condition, ['<=', $field_name, $value_int]);
-        $condition = $filter->buildCondition('>', $field_name, $value_int);
-        $this->assertEquals($condition, ['>', $field_name, $value_int]);
-        $condition = $filter->buildCondition('<', $field_name, $value_int);
-        $this->assertEquals($condition, ['<', $field_name, $value_int]);
-        $condition = $filter->buildCondition('!=', $field_name, $value_int);
-        $this->assertEquals($condition, ['NOT', [$field_name => $value_int]]);
-        $condition = $filter->buildCondition('!=', $field_name, $value_array);
-        $this->assertEquals($condition, ['NOT IN', $field_name, $value_array]);
-        $condition = $filter->buildCondition(null, $field_name, $value_int);
-        $this->assertEquals($condition, [$field_name => $value_int]);
-        $condition = $filter->buildCondition('like', $field_name, $value_string);
-        $this->assertEquals($condition, ['like', $field_name, $value_string, false]);
+        $this->assertEquals($filter->buildCondition('>=', $field_name, $value_int), ['>=', $field_name, $value_int]);
+        $this->assertEquals($filter->buildCondition('<=', $field_name, $value_int), ['<=', $field_name, $value_int]);
+        $this->assertEquals($filter->buildCondition('>', $field_name, $value_int), ['>', $field_name, $value_int]);
+        $this->assertEquals($filter->buildCondition('<', $field_name, $value_int), ['<', $field_name, $value_int]);
+        $this->assertEquals(
+            $filter->buildCondition('!=', $field_name, $value_int),
+            ['NOT', [$field_name => $value_int]]
+        );
+        $this->assertEquals(
+            $filter->buildCondition('!=', $field_name, $value_array),
+            ['NOT IN', $field_name, $value_array]
+        );
+        $this->assertEquals(
+            $filter->buildCondition(null, $field_name, $value_int),
+            [$field_name => $value_int]
+        );
+        $this->assertEquals(
+            $filter->buildCondition('like', $field_name, $value_string),
+            ['like', $field_name, $value_string, false]
+        );
     }
 }
