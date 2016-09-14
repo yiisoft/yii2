@@ -7,6 +7,7 @@
 
 namespace yii\data;
 
+use yii\helpers\ArrayFilterHelper;
 use yii\helpers\ArrayHelper;
 
 /**
@@ -80,6 +81,10 @@ class ArrayDataProvider extends BaseDataProvider
             return [];
         }
 
+        if (($filter = $this->getFilter()) !== false) {
+            $models = $this->filterModels($models, $filter);
+        }
+
         if (($sort = $this->getSort()) !== false) {
             $models = $this->sortModels($models, $sort);
         }
@@ -138,5 +143,16 @@ class ArrayDataProvider extends BaseDataProvider
         }
 
         return $models;
+    }
+
+    /**
+     * Filter the data models according to the given filter definition
+     * @param array $models the models to be filtered
+     * @param Filter $filter the filter definition
+     * @return array the filtered data models
+     */
+    protected function filterModels($models, $filter)
+    {
+        return ArrayFilterHelper::filterModels($models, $filter->getConditions());
     }
 }
