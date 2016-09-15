@@ -132,7 +132,7 @@ class UrlManager extends Component
      * If you wish to enable URL normalization, you should configure this property manually.
      * For example:
      *
-     * ```
+     * ```php
      * [
      *     'class' => 'yii\web\UrlNormalizer',
      *     'collapseSlashes' => true,

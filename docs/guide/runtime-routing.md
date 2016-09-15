@@ -519,14 +519,16 @@ contains a customized URL rule which uses `.json` as its suffix instead of the g
 
 ### URL normalization <span id="url-normalization"></span>
 
-Since version 2.0.10 [[yii\web\UrlManager|UrlManager]] uses [[yii\web\UrlNormalizer|UrlNormalizer]] for dealing
+Since version 2.0.10 [[yii\web\UrlManager|UrlManager]] can be configured to use [[yii\web\UrlNormalizer|UrlNormalizer]] for dealing
 with variations of the same URL with and without trailing slash. Because technically `http://example.com/path`
 and `http://example.com/path/` are different URLs, serving the same content for both of them can degrade SEO.
 By default normalizer collapses consecutive slashes, adds or removes trailing slashes depending on whether the
-suffix has a trailing slash or not, and redirects to normalized version of URL using [permanent redirection](https://en.wikipedia.org/wiki/HTTP_301).
-Normalizer can be configured individually for URL manager and each rule - by default rule will use normalizer
+suffix has a trailing slash or not, and redirects to the normalized version of the URL using [permanent redirection](https://en.wikipedia.org/wiki/HTTP_301).
+The normalizer can be configured globally for the URL manager or individually for each rule - by default each rule will use the normalizer
 from URL manager. You can set [[yii\web\UrlRule::$normalizer|UrlRule::$normalizer]] to `false` to disable normalization
 for particular URL rule.
+
+The following shows an example configuration for the UrlNormalizer:
 
 ```php
 [
