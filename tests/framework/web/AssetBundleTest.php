@@ -346,6 +346,7 @@ EOF;
     public function registerFileDataProvider()
     {
         return [
+            // JS files registration
             [
                 'js', '@web/assetSources/js/jquery.js', true,
                 '123<script src="/assetSources/js/jquery.js\?v=\d{10}"></script>4',
@@ -374,6 +375,8 @@ EOF;
                 'js', '/assetSources/js/jquery.js', false,
                 '123<script src="/assetSources/js/jquery.js"></script>4',
             ],
+
+            // CSS file registration
             [
                 'css', '@web/assetSources/css/stub.css', true,
                 '1<link href="/assetSources/css/stub.css\?v=\d{10}" rel="stylesheet">234',
@@ -402,6 +405,23 @@ EOF;
                 'css', '/assetSources/css/stub.css', false,
                 '1<link href="/assetSources/css/stub.css" rel="stylesheet">234',
             ],
+
+            // Custom `@web` aliases
+            [
+                'js', '@web/assetSources/js/jquery.js', true,
+                '123<script src="/backend/assetSources/js/jquery.js\?v=\d{10}"></script>4',
+                '/backend'
+            ],
+            [
+                'js', '@web/assetSources/js/missing-file.js', true,
+                '123<script src="/backend/assetSources/js/missing-file.js"></script>4',
+                '/backend'
+            ],
+            [
+                'css', '@web/assetSources/css/stub.css', false,
+                '1<link href="/en/blog/backend/assetSources/css/stub.css" rel="stylesheet">234',
+                '/en/blog/backend'
+            ],
         ];
     }
 
@@ -412,12 +432,21 @@ EOF;
      * @param string bool $appendTimestamp
      * @param string $expectedRegExp
      */
-    public function testRegisterFileAppendTimestamp($type, $path, $appendTimestamp, $expectedRegExp)
+    public function testRegisterFileAppendTimestamp($type, $path, $appendTimestamp, $expectedRegExp, $webAlias = null)
     {
+        $originalAlias = Yii::getAlias('@web');
+        if ($webAlias === null) {
+            $webAlias = $originalAlias;
+        }
+        Yii::setAlias('@web', $webAlias);
+
+
         $view = $this->getView(['appendTimestamp' => $appendTimestamp]);
         $method = 'register' . ucfirst($type) . 'File';
         $view->$method($path);
         $this->assertRegExp('#' . $expectedRegExp . '#', $view->renderFile('@yiiunit/data/views/rawlayout.php'));
+
+        Yii::setAlias('@web', $originalAlias);
     }
 }
 
