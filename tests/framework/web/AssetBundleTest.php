@@ -359,6 +359,22 @@ EOF;
                 '123<script src="/assetSources/js/jquery.js"></script>4',
             ],
             [
+                'js', 'http://example.com/assetSources/js/jquery.js', false,
+                '123<script src="http://example.com/assetSources/js/jquery.js"></script>4',
+            ],
+            [
+                'js', '//example.com/assetSources/js/jquery.js', false,
+                '123<script src="//example.com/assetSources/js/jquery.js"></script>4',
+            ],
+            [
+                'js', 'assetSources/js/jquery.js', false,
+                '123<script src="/assetSources/js/jquery.js"></script>4',
+            ],
+            [
+                'js', '/assetSources/js/jquery.js', false,
+                '123<script src="/assetSources/js/jquery.js"></script>4',
+            ],
+            [
                 'css', '@web/assetSources/css/stub.css', true,
                 '1<link href="/assetSources/css/stub.css\?v=\d{10}" rel="stylesheet">234',
             ],
@@ -368,6 +384,22 @@ EOF;
             ],
             [
                 'css', '@web/assetSources/css/stub.css', false,
+                '1<link href="/assetSources/css/stub.css" rel="stylesheet">234',
+            ],
+            [
+                'css', 'http://example.com/assetSources/css/stub.css', false,
+                '1<link href="http://example.com/assetSources/css/stub.css" rel="stylesheet">234',
+            ],
+            [
+                'css', '//example.com/assetSources/css/stub.css', false,
+                '1<link href="//example.com/assetSources/css/stub.css" rel="stylesheet">234',
+            ],
+            [
+                'css', 'assetSources/css/stub.css', false,
+                '1<link href="/assetSources/css/stub.css" rel="stylesheet">234',
+            ],
+            [
+                'css', '/assetSources/css/stub.css', false,
                 '1<link href="/assetSources/css/stub.css" rel="stylesheet">234',
             ],
         ];
