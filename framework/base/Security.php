@@ -143,7 +143,7 @@ class Security extends Component
     }
 
     /**
-     * Verifies and decrypts data encrypted with [[encryptByPassword()]].
+     * Verifies and decrypts data encrypted with [[encryptByKey()]].
      * @param string $data the encrypted data to decrypt
      * @param string $inputKey the input to use for encryption and authentication
      * @param string $info optional context and application specific information, see [[hkdf()]]
