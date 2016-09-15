@@ -401,7 +401,11 @@ class View extends \yii\base\View
 
         $depends = ArrayHelper::remove($options, 'depends', []);
 
-        $url = str_replace(Yii::getAlias('@web'), '', $url);
+        $webAlias = Yii::getAlias('@web');
+        if ($webAlias !== '' && strpos($url, $webAlias) === 0) {
+            $url = str_replace($webAlias, '', $url);
+        }
+
         $url = strncmp($url, '//', 2) === 0 ? $url : ltrim($url, '/');
 
         /** @var AssetBundle $bundle */
@@ -476,7 +480,11 @@ class View extends \yii\base\View
 
         $depends = ArrayHelper::remove($options, 'depends', []);
 
-        $url = str_replace(Yii::getAlias('@web'), '', $url);
+        $webAlias = Yii::getAlias('@web');
+        if ($webAlias !== '' && strpos($url, $webAlias) === 0) {
+            $url = str_replace($webAlias, '', $url);
+        }
+
         $url = strncmp($url, '//', 2) === 0 ? $url : ltrim($url, '/');
 
         /** @var AssetBundle $bundle */

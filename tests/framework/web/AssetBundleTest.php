@@ -408,13 +408,23 @@ EOF;
 
             // Custom `@web` aliases
             [
+                'js', '@web/assetSources/js/missing-file1.js', true,
+                '123<script src="/backend/assetSources/js/missing-file1.js"></script>4',
+                '/backend'
+            ],
+            [
                 'js', '@web/assetSources/js/jquery.js', true,
                 '123<script src="/backend/assetSources/js/jquery.js\?v=\d{10}"></script>4',
                 '/backend'
             ],
             [
-                'js', '@web/assetSources/js/missing-file.js', true,
-                '123<script src="/backend/assetSources/js/missing-file.js"></script>4',
+                'js', 'http://full-url.example.com/backend/assetSources/js/missing-file.js', true,
+                '123<script src="http://full-url.example.com/backend/assetSources/js/missing-file.js"></script>4',
+                '/backend'
+            ],
+            [
+                'css', '//backend/backend/assetSources/js/missing-file.js', true,
+                '1<link href="//backend/backend/assetSources/js/missing-file.js" rel="stylesheet">234',
                 '/backend'
             ],
             [
