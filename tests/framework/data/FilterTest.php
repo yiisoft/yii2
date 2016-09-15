@@ -18,25 +18,25 @@ class FilterTest extends TestCase
         $value_array  = [15, 16];
         $filter       = new Filter();
 
-        $this->assertEquals($filter->buildCondition('>=', $field_name, $value_int), ['>=', $field_name, $value_int]);
-        $this->assertEquals($filter->buildCondition('<=', $field_name, $value_int), ['<=', $field_name, $value_int]);
-        $this->assertEquals($filter->buildCondition('>', $field_name, $value_int), ['>', $field_name, $value_int]);
-        $this->assertEquals($filter->buildCondition('<', $field_name, $value_int), ['<', $field_name, $value_int]);
+        $this->assertEquals(['>=', $field_name, $value_int], $filter->buildCondition('>=', $field_name, $value_int));
+        $this->assertEquals(['<=', $field_name, $value_int], $filter->buildCondition('<=', $field_name, $value_int));
+        $this->assertEquals(['>', $field_name, $value_int], $filter->buildCondition('>', $field_name, $value_int));
+        $this->assertEquals(['<', $field_name, $value_int], $filter->buildCondition('<', $field_name, $value_int));
         $this->assertEquals(
-            $filter->buildCondition('!=', $field_name, $value_int),
-            ['NOT', [$field_name => $value_int]]
+            ['NOT', [$field_name => $value_int]],
+            $filter->buildCondition('!=', $field_name, $value_int)
         );
         $this->assertEquals(
-            $filter->buildCondition('!=', $field_name, $value_array),
-            ['NOT IN', $field_name, $value_array]
+            ['NOT IN', $field_name, $value_array],
+            $filter->buildCondition('!=', $field_name, $value_array)
         );
         $this->assertEquals(
-            $filter->buildCondition(null, $field_name, $value_int),
-            [$field_name => $value_int]
+            [$field_name => $value_int],
+            $filter->buildCondition(null, $field_name, $value_int)
         );
         $this->assertEquals(
-            $filter->buildCondition('like', $field_name, $value_string),
-            ['like', $field_name, $value_string, false]
+            ['like', $field_name, $value_string, false],
+            $filter->buildCondition('like', $field_name, $value_string)
         );
     }
 }
