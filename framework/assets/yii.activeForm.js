@@ -576,7 +576,7 @@
                 data.submitting = false;
             } else {
                 data.validated = true;
-                if(data.submitObject){
+                if (data.submitObject) {
                     data.submitObject.trigger("click");
                 } else {
                     $form.submit();
