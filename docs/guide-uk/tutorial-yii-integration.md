@@ -179,7 +179,7 @@ class Yii extends \yii\BaseYii
 }
 
 Yii::$classMap = include($yii2path . '/classes.php');
-// реєстрація автозавантажувача Yii2 через Yii1
+// реєстрація автозавантажувача Yii 2 через Yii 1
 Yii::registerAutoloader(['Yii', 'autoload']);
 // створення контейнера впровадження залежностей
 Yii::$container = new yii\di\Container;

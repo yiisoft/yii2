@@ -400,7 +400,7 @@ return [
 
 使用一个示例来解释以上这种方式：
 
-鉴定你的应用有两个页面X 和 Y，页面X使用资源包A，B和C，页面Y使用资源包B，C和D。
+假定你的应用有两个页面X 和 Y，页面X使用资源包A，B和C，页面Y使用资源包B，C和D。
 
 有两种方式划分这些资源包，一种使用一个组包含所有资源包，另一种是将（A,B,C）放在组X，（B，C，D）放在组Y，
 哪种方式更好？第一种方式优点是两个页面使用相同的已合并CSS和JavaScript文件使HTTP缓存更高效，另一方面，由于单个组包含所有文件，
@@ -455,14 +455,14 @@ return [
 ];
 ```
 
-如上所示，在产品上线模式下资源包数组存储在`assets-prod.php`文件中，不是产品上线模式存储在`assets-dev.php`文件中。
+如上所示，产品在上线模式时资源包配置数组存储在`assets-prod.php`文件中，在开发模式时存储在`assets-dev.php`文件中。
 
 
 ### 使用 `asset` 命令 <span id="using-asset-command"></span>
 
 Yii提供一个名为`asset`控制台命令来使上述操作自动处理。
 
-为使用该命令，应先创建一个配置文件设置哪些资源包要合并以及分组方式，可使用`asset/template` 子命令来生成一个模板，
+在使用该命令之前，先创建一个配置文件来设置要合并的资源包以及资源包的分组方式，可使用`asset/template` 子命令来生成一个模板，
 然后修改模板成你想要的。
 
 ```
@@ -526,3 +526,44 @@ yii asset assets.php config/assets-prod.php
 
 
 > Info: 使用`asset` 命令并不是唯一一种自动合并和压缩过程的方法，可使用优秀的工具[grunt](http://gruntjs.com/)来完成这个过程。
+
+### 资源包分组 <span id="grouping-asset-bundles"></span>
+上一小节，介绍了如何压缩所有的资源包到一个文件，减少对应用中引用资源文件的 http 请求数，但是在实践中很少这样做。比如，应用有一个“前端”和一个“后端”，每一个都用了一个不同js和css文件集合。在这种情况下，把所有的资源包压缩到一个文件毫无意义，“前端”不会用到“后端”的资源文件，当请求“前端”页面时，“后端”的资源文件也会被发送过来，浪费网络带宽。
+
+为了解决这个问题，可以吧资源包分成若干组，每个组里面有若干个资源包。下面的配置展示了如何对资源包分组：
+```php
+return [
+    ...
+    //指定分组后输出的资源包
+    'targets' => [
+        'allShared' => [
+            'js' => 'js/all-shared-{hash}.js',
+            'css' => 'css/all-shared-{hash}.css',
+            'depends' => [
+                // “前端”和“后端”共享的资源包：
+                'yii\web\YiiAsset',
+                'app\assets\SharedAsset',
+            ],
+        ],
+        'allBackEnd' => [
+            'js' => 'js/all-{hash}.js',
+            'css' => 'css/all-{hash}.css',
+            'depends' => [
+                // 后端资源包：
+                'app\assets\AdminAsset'
+            ],
+        ],
+        'allFrontEnd' => [
+            'js' => 'js/all-{hash}.js',
+            'css' => 'css/all-{hash}.css',
+            'depends' => [], // Include all remaining assets
+        ],
+    ],
+    ...
+];
+```
+如上所示，资源包分成了三个组：`allShared`，`allBackEnd` 和 `allFrontEnd`
+
+他们分别依赖其他资源包，例如，`allBackEnd` 依赖（depends） `app\assets\AdminAsset`。当使用这个配置运行 `asset` 命令时，将会根据上面的指定组合资源包。
+
+> Info: 其中的一个资源包`depends`配置选项可以留空不配置。如果这样做了的话，留空的这个资源包将会依赖剩余的没有被其他资源包所依赖的资源包。

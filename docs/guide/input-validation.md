@@ -97,6 +97,7 @@ an active attribute declared in `scenarios()` and is associated with one or mult
 declared in `rules()`.
 
 > Note: It is handy to give names to rules i.e.
+>
 > ```php
 > public function rules()
 > {
@@ -230,7 +231,7 @@ return [
 ];
 ```
 
-By default, an input is considered empty if its value is an empty string, an empty array or a null.
+By default, an input is considered empty if its value is an empty string, an empty array or a `null`.
 You may customize the default empty detection logic by configuring the [[yii\validators\Validator::isEmpty]] property
 with a PHP callable. For example,
 
@@ -458,7 +459,7 @@ a validator that supports client-side validation *in addition to* server-side va
 Many [core validators](tutorial-core-validators.md) support client-side validation out-of-the-box. All you need to do
 is just use [[yii\widgets\ActiveForm]] to build your HTML forms. For example, `LoginForm` below declares two
 rules: one uses the [required](tutorial-core-validators.md#required) core validator which is supported on both
-client and server sides; the other uses the `validatePassword` inline validator which is only supported on the server
+client and server-sides; the other uses the `validatePassword` inline validator which is only supported on the server
 side.
 
 ```php
@@ -521,7 +522,7 @@ the former will take precedence.
 
 To create a validator that supports client-side validation, you should implement the
 [[yii\validators\Validator::clientValidateAttribute()]] method which returns a piece of JavaScript code
-that performs the validation on the client side. Within the JavaScript code, you may use the following
+that performs the validation on the client-side. Within the JavaScript code, you may use the following
 predefined variables:
 
 - `attribute`: the name of the attribute being validated.
@@ -530,7 +531,7 @@ predefined variables:
 - `deferred`: an array which deferred objects can be pushed into (explained in the next subsection).
 
 In the following example, we create a `StatusValidator` which validates if an input is a valid status input
-against the existing status data. The validator supports both server side and client side validation.
+against the existing status data. The validator supports both server-side and client-side validation.
 
 ```php
 namespace app\components;
@@ -603,7 +604,7 @@ In the above, the `deferred` variable is provided by Yii, which is an array of D
 jQuery method creates a Deferred object which is pushed to the `deferred` array.
 
 You can also explicitly create a Deferred object and call its `resolve()` method when the asynchronous callback
-is hit. The following example shows how to validate the dimensions of an uploaded image file on the client side.
+is hit. The following example shows how to validate the dimensions of an uploaded image file on the client-side.
 
 ```php
 public function clientValidateAttribute($model, $attribute, $view)
@@ -659,8 +660,8 @@ JS;
 
 ### AJAX Validation <span id="ajax-validation"></span>
 
-Some validations can only be done on the server side, because only the server has the necessary information.
-For example, to validate if a username is unique or not, it is necessary to check the user table on the server side.
+Some validations can only be done on the server-side, because only the server has the necessary information.
+For example, to validate if a username is unique or not, it is necessary to check the user table on the server-side.
 You can use AJAX-based validation in this case. It will trigger an AJAX request in the background to validate the
 input while keeping the same user experience as the regular client-side validation.
 

@@ -60,7 +60,7 @@ $cache = $locator->cache;
 サービスロケータは多くの場合、 [構成情報](concept-configurations.md) で作成されるため、
 [[yii\di\ServiceLocator::setComponents()|components]] という名前の書き込み可能プロパティが提供されています。
 これで一度に複数のコンポーネントを設定して登録することができます。
-次のコードは、サービスロケータ (例えば [アプリケーション](structure-applications.md)) を "db"、"cache"、"search" コンポーネントとともに構成するための構成情報配列を示しています。
+次のコードは、サービスロケータ (例えば [アプリケーション](structure-applications.md)) を `db`、`cache`、`search` コンポーネントとともに構成するための構成情報配列を示しています。
 
 ```php
 return [
@@ -82,7 +82,7 @@ return [
 ];
 ```
 
-上記において、"search" コンポーネントを構成する別の方法があります。
+上記において、`search` コンポーネントを構成する別の方法があります。
 `SolrService` のインスタンスを構築する PHP コールバックを直接に書く代りに、下記のように、そういうコールバックを返すスタティックなクラスメソッドを使うことが出来ます。
 
 ```php

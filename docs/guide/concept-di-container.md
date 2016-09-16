@@ -67,7 +67,7 @@ You may call that method either by passing an instance of `\my\heavy\Dependency`
 
 ```php
 $obj = new MyClass(/*...*/);
-Yii::$container->invoke([$obj, 'doSomethingWithHeavyDependency'], ['param1' => 42]); // $something will be provided by the DI container
+Yii::$container->invoke([$obj, 'doSomething'], ['param1' => 42]); // $something will be provided by the DI container
 ```
 
 ### Setter and Property Injection <span id="setter-and-property-injection"></span>

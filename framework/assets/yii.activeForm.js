@@ -202,7 +202,7 @@
                     attributes: attributes,
                     submitting: false,
                     validated: false,
-                    target: $form.attr('target')
+                    options: getFormOptions($form)
                 });
 
                 /**
@@ -290,9 +290,10 @@
                 deferreds = deferredArray(),
                 submitting = data.submitting;
 
-            var event = $.Event(events.beforeValidate);
-            $form.trigger(event, [messages, deferreds]);
             if (submitting) {
+                var event = $.Event(events.beforeValidate);
+                $form.trigger(event, [messages, deferreds]);
+
                 if (event.result === false) {
                     data.submitting = false;
                     submitFinalize($form);
@@ -302,6 +303,7 @@
 
             // client-side validation
             $.each(data.attributes, function () {
+                this.$form = $form;
                 if (!$(this.input).is(":disabled")) {
                     this.cancelled = false;
                     // perform validation only if the form is being submitted or if an attribute is pending validation
@@ -540,6 +542,47 @@
             this.push(new $.Deferred(callback));
         };
         return array;
+    };
+
+    var buttonOptions = ['action', 'target', 'method', 'enctype'];
+
+    /**
+     * Returns current form options
+     * @param $form
+     * @returns object Object with button of form options
+     */
+    var getFormOptions = function ($form) {
+        var attributes = {};
+        for (var i in buttonOptions) {
+            attributes[buttonOptions[i]] = $form.attr(buttonOptions[i]);
+        }
+        return attributes;
+    };
+
+    /**
+     * Applies temporary form options related to submit button
+     * @param $form the form jQuery object
+     * @param $button the button jQuery object
+     */
+    var applyButtonOptions = function ($form, $button) {
+        for (var i in buttonOptions) {
+            var value = $button.attr('form' + buttonOptions[i]);
+            if (value) {
+                $form.attr(buttonOptions[i], value);
+            }
+        }
+    };
+
+    /**
+     * Restores original form options
+     * @param $form the form jQuery object
+     */
+    var restoreButtonOptions = function ($form) {
+        var data = $form.data('yiiActiveForm');
+
+        for (var i in buttonOptions) {
+            $form.attr(buttonOptions[i], data.options[buttonOptions[i]] || null);
+        }
     };
 
     /**

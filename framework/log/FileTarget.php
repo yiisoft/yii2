@@ -148,6 +148,9 @@ class FileTarget extends Target
                             @ftruncate($fp, 0);
                             @fclose($fp);
                         }
+                        if ($this->fileMode !== null) {
+                            @chmod($file . '.' . ($i + 1), $this->fileMode);
+                        }
                     } else {
                         @rename($rotateFile, $file . '.' . ($i + 1));
                     }

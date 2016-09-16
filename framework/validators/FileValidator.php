@@ -383,10 +383,10 @@ class FileValidator extends Validator
     }
 
     /**
-     * Returns the client side validation options.
+     * Returns the client-side validation options.
      * @param \yii\base\Model $model the model being validated
      * @param string $attribute the attribute name being validated
-     * @return array the client side validation options
+     * @return array the client-side validation options
      */
     protected function getClientOptions($model, $attribute)
     {

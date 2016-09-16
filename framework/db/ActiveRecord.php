@@ -274,8 +274,8 @@ class ActiveRecord extends BaseActiveRecord
     /**
      * Declares the name of the database table associated with this AR class.
      * By default this method returns the class name as the table name by calling [[Inflector::camel2id()]]
-     * with prefix [[Connection::tablePrefix]]. For example if [[Connection::tablePrefix]] is 'tbl_',
-     * 'Customer' becomes 'tbl_customer', and 'OrderItem' becomes 'tbl_order_item'. You may override this method
+     * with prefix [[Connection::tablePrefix]]. For example if [[Connection::tablePrefix]] is `tbl_`,
+     * `Customer` becomes `tbl_customer`, and `OrderItem` becomes `tbl_order_item`. You may override this method
      * if the table is not named after this convention.
      * @return string the table name
      */
@@ -381,9 +381,9 @@ class ActiveRecord extends BaseActiveRecord
      *
      * This method performs the following steps in order:
      *
-     * 1. call [[beforeValidate()]] when `$runValidation` is true. If [[beforeValidate()]]
+     * 1. call [[beforeValidate()]] when `$runValidation` is `true`. If [[beforeValidate()]]
      *    returns `false`, the rest of the steps will be skipped;
-     * 2. call [[afterValidate()]] when `$runValidation` is true. If validation
+     * 2. call [[afterValidate()]] when `$runValidation` is `true`. If validation
      *    failed, the rest of the steps will be skipped;
      * 3. call [[beforeSave()]]. If [[beforeSave()]] returns `false`,
      *    the rest of the steps will be skipped;
@@ -396,7 +396,7 @@ class ActiveRecord extends BaseActiveRecord
      *
      * Only the [[dirtyAttributes|changed attribute values]] will be inserted into database.
      *
-     * If the table's primary key is auto-incremental and is null during insertion,
+     * If the table's primary key is auto-incremental and is `null` during insertion,
      * it will be populated with the actual value after insertion.
      *
      * For example, to insert a customer record:
@@ -411,7 +411,7 @@ class ActiveRecord extends BaseActiveRecord
      * @param boolean $runValidation whether to perform validation (calling [[validate()]])
      * before saving the record. Defaults to `true`. If the validation fails, the record
      * will not be saved to the database and this method will return `false`.
-     * @param array $attributes list of attributes that need to be saved. Defaults to null,
+     * @param array $attributes list of attributes that need to be saved. Defaults to `null`,
      * meaning all attributes that are loaded from DB will be saved.
      * @return boolean whether the attributes are valid and the record is inserted successfully.
      * @throws \Exception in case insert failed.
@@ -444,7 +444,7 @@ class ActiveRecord extends BaseActiveRecord
 
     /**
      * Inserts an ActiveRecord into DB without considering transaction.
-     * @param array $attributes list of attributes that need to be saved. Defaults to null,
+     * @param array $attributes list of attributes that need to be saved. Defaults to `null`,
      * meaning all attributes that are loaded from DB will be saved.
      * @return boolean whether the record is inserted successfully.
      */
@@ -475,9 +475,9 @@ class ActiveRecord extends BaseActiveRecord
      *
      * This method performs the following steps in order:
      *
-     * 1. call [[beforeValidate()]] when `$runValidation` is true. If [[beforeValidate()]]
+     * 1. call [[beforeValidate()]] when `$runValidation` is `true`. If [[beforeValidate()]]
      *    returns `false`, the rest of the steps will be skipped;
-     * 2. call [[afterValidate()]] when `$runValidation` is true. If validation
+     * 2. call [[afterValidate()]] when `$runValidation` is `true`. If validation
      *    failed, the rest of the steps will be skipped;
      * 3. call [[beforeSave()]]. If [[beforeSave()]] returns `false`,
      *    the rest of the steps will be skipped;
@@ -514,9 +514,9 @@ class ActiveRecord extends BaseActiveRecord
      * @param boolean $runValidation whether to perform validation (calling [[validate()]])
      * before saving the record. Defaults to `true`. If the validation fails, the record
      * will not be saved to the database and this method will return `false`.
-     * @param array $attributeNames list of attributes that need to be saved. Defaults to null,
+     * @param array $attributeNames list of attributes that need to be saved. Defaults to `null`,
      * meaning all attributes that are loaded from DB will be saved.
-     * @return integer|boolean the number of rows affected, or false if validation fails
+     * @return integer|false the number of rows affected, or false if validation fails
      * or [[beforeSave()]] stops the updating process.
      * @throws StaleObjectException if [[optimisticLock|optimistic locking]] is enabled and the data
      * being updated is outdated.
@@ -553,7 +553,7 @@ class ActiveRecord extends BaseActiveRecord
      *
      * This method performs the following steps in order:
      *
-     * 1. call [[beforeDelete()]]. If the method returns false, it will skip the
+     * 1. call [[beforeDelete()]]. If the method returns `false`, it will skip the
      *    rest of the steps;
      * 2. delete the record from the database;
      * 3. call [[afterDelete()]].
@@ -561,7 +561,7 @@ class ActiveRecord extends BaseActiveRecord
      * In the above step 1 and 3, events named [[EVENT_BEFORE_DELETE]] and [[EVENT_AFTER_DELETE]]
      * will be raised by the corresponding methods.
      *
-     * @return integer|false the number of rows deleted, or false if the deletion is unsuccessful for some reason.
+     * @return integer|false the number of rows deleted, or `false` if the deletion is unsuccessful for some reason.
      * Note that it is possible the number of rows deleted is 0, even though the deletion execution is successful.
      * @throws StaleObjectException if [[optimisticLock|optimistic locking]] is enabled and the data
      * being deleted is outdated.
@@ -590,7 +590,7 @@ class ActiveRecord extends BaseActiveRecord
 
     /**
      * Deletes an ActiveRecord without considering transaction.
-     * @return integer|false the number of rows deleted, or false if the deletion is unsuccessful for some reason.
+     * @return integer|false the number of rows deleted, or `false` if the deletion is unsuccessful for some reason.
      * Note that it is possible the number of rows deleted is 0, even though the deletion execution is successful.
      * @throws StaleObjectException
      */

@@ -15,11 +15,11 @@ use yii\base\NotSupportedException;
 use yii\caching\Cache;
 
 /**
- * Connection represents a connection to a database via [PDO](php.net/manual/en/book.pdo.php).
+ * Connection represents a connection to a database via [PDO](http://php.net/manual/en/book.pdo.php).
  *
  * Connection works together with [[Command]], [[DataReader]] and [[Transaction]]
  * to provide data access to various DBMS in a common set of APIs. They are a thin wrapper
- * of the [[PDO PHP extension]](php.net/manual/en/book.pdo.php).
+ * of the [PDO PHP extension](http://php.net/manual/en/book.pdo.php).
  *
  * Connection supports database replication and read-write splitting. In particular, a Connection component
  * can be configured with multiple [[masters]] and [[slaves]]. It will do load balancing and failover by choosing
@@ -27,7 +27,7 @@ use yii\caching\Cache;
  * the masters.
  *
  * To establish a DB connection, set [[dsn]], [[username]] and [[password]], and then
- * call [[open()]] to be true.
+ * call [[open()]] to connect to the database server. The current state of the connection can be checked using [[$isActive]].
  *
  * The following example shows how to create a Connection instance and establish
  * the DB connection:
@@ -222,7 +222,6 @@ class Connection extends Component
     public $enableQueryCache = true;
     /**
      * @var integer the default number of seconds that query results can remain valid in cache.
-     * Use 0 to indicate that the cached data will never expire.
      * Defaults to 3600, meaning 3600 seconds, or one hour. Use 0 to indicate that the cached data will never expire.
      * The value of this property will be used when [[cache()]] is called without a cache duration.
      * @see enableQueryCache

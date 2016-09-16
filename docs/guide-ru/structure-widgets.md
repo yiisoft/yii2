@@ -15,7 +15,7 @@ use yii\bootstrap\DatePicker;
 ```
 
 В комплект Yii входит большое количество виджетов, например: [[yii\widgets\ActiveForm|active form]],
-[[yii\widgets\Menu|menu]], [виджеты jQuery UI](widget-jui.md), [виджеты Twitter Bootstrap](widget-bootstrap.md).
+[[yii\widgets\Menu|menu]], [виджеты jQuery UI](https://github.com/yiisoft/yii2-jui/blob/master/docs/guide/README.md), [виджеты Twitter Bootstrap](https://github.com/yiisoft/yii2-bootstrap/blob/master/docs/guide/usage-widgets.md).
 Далее будут представлены базовые сведения о виджетах. Для получения сведений относительно использования
 конкретного виджета, следует обратиться к документации соответствующего класса.
 

@@ -33,7 +33,7 @@ not be trivial, but a complete upgrade guide will be available.
 
 ### `2.x.Y`: minor releases
 
-Patch releases, which should be 100% BC-compatible. Ideally, we hope they contain only changes that do not affect backwards compatibilty
+Patch releases, which should be 100% BC-compatible. Ideally, we hope they contain only changes that do not affect backwards compatibility
 however it is not always possible to keep 100% BC-compatible, so upgrade notes are recorded in `UPGRADE.md`.
 Practically, since 2.0.x is released more frequently, we are also adding minor features
 to it so that users can enjoy them earlier.
@@ -77,7 +77,7 @@ The following image shows an illustration of the branches on changing commit his
 
 ## Releases
 
-Both Yii2 Framework and official extension projects follow the above versioning and branching policies.
+Both Yii 2 Framework and official extension projects follow the above versioning and branching policies.
 Framework and official extension projects are released independently of each other, i.e. version number mismatch between framework and extension is expected.
 The Application Templates are always released together with the framework.
 

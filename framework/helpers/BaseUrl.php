@@ -371,6 +371,17 @@ class BaseUrl
      * echo Url::current(['id' => 100]);
      * ```
      *
+     * Note that if you're replacing array parameters with `[]` at the end you should specify `$params` as nested arrays.
+     * For a `PostSearchForm` model where parameter names are `PostSearchForm[id]` and `PostSearchForm[src]` the syntax
+     * would be the following:
+     *
+     * ```php
+     * // index.php?r=post%2Findex&PostSearchForm%5Bid%5D=100&PostSearchForm%5Bsrc%5D=google
+     * echo Url::current([
+     *     $postSearch->formName() => ['id' => 100, 'src' => 'google'],
+     * ]);
+     * ```
+     *
      * @param array $params an associative array of parameters that will be merged with the current GET parameters.
      * If a parameter value is null, the corresponding GET parameter will be removed.
      * @param boolean|string $scheme the URI scheme to use in the generated URL:

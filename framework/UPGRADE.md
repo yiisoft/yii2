@@ -18,6 +18,13 @@ php composer.phar global require "fxp/composer-asset-plugin:^1.2.0"
 Upgrade from Yii 2.0.8
 ----------------------
 
+* Method `yii\web\Request::getBodyParams()` has been changed to pass full value of 'content-type' header to the second
+  argument of `yii\web\RequestParserInterface::parse()`. If you create your own custom parser, which relies on `$contentType`
+  argument, ensure to process it correctly as it may content additional data.
+
+Upgrade from Yii 2.0.8
+----------------------
+
 * Part of code from `yii\web\User::loginByCookie()` method was moved to new `getIdentityAndDurationFromCookie()`
   and `removeIdentityCookie()` methods. If you override `loginByCookie()` method, update it in order use new methods.
 * Fixture console command syntax was changed from `yii fixture "*" -User` to `yii fixture "*, -User"`. Upgrade your
@@ -56,7 +63,7 @@ Upgrade from Yii 2.0.6
 * Added new requirement: ICU Data version >= 49.1. Please, ensure that your environment has ICU data installed and
   up to date to prevent unexpected behavior or crashes. This may not be the case on older systems e.g. running Debian Wheezy.
 
-  > Tip: Use Yii2 Requirements checker for easy and fast check. Look for `requirements.php` in root of Basic and Advanced
+  > Tip: Use Yii 2 Requirements checker for easy and fast check. Look for `requirements.php` in root of Basic and Advanced
   templates (howto-comment is in head of the script).
 
 * The signature of `yii\helpers\BaseInflector::transliterate()` was changed. The method is now public and has an
@@ -305,7 +312,7 @@ new ones save the following code as `convert.php` that should be placed in the s
   
   function saveToFile($data, $fileName) {
       $out = var_export($data, true);
-      $out = "<?php\nreturn " . $out . ";";
+      $out = "<?php\nreturn " . $out . ';';
       $out = str_replace(['array (', ')'], ['[', ']'], $out);
       file_put_contents($fileName, $out);
   }

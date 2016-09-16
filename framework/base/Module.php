@@ -22,7 +22,7 @@ use yii\di\ServiceLocator;
  * accessible within the module.
  *
  * @property array $aliases List of path aliases to be defined. The array keys are alias names (must start
- * with '@') and the array values are the corresponding paths or aliases. See [[setAliases()]] for an example.
+ * with `@`) and the array values are the corresponding paths or aliases. See [[setAliases()]] for an example.
  * This property is write-only.
  * @property string $basePath The root directory of the module.
  * @property string $controllerPath The directory that contains the controller classes. This property is
@@ -39,7 +39,7 @@ class Module extends ServiceLocator
 {
     /**
      * @event ActionEvent an event raised before executing a controller action.
-     * You may set [[ActionEvent::isValid]] to be false to cancel the action execution.
+     * You may set [[ActionEvent::isValid]] to be `false` to cancel the action execution.
      */
     const EVENT_BEFORE_ACTION = 'beforeAction';
     /**
@@ -56,13 +56,13 @@ class Module extends ServiceLocator
      */
     public $id;
     /**
-     * @var Module the parent module of this module. Null if this module does not have a parent.
+     * @var Module the parent module of this module. `null` if this module does not have a parent.
      */
     public $module;
     /**
      * @var string|boolean the layout that should be applied for views within this module. This refers to a view name
      * relative to [[layoutPath]]. If this is not set, it means the layout value of the [[module|parent module]]
-     * will be taken. If this is false, layout will be disabled within this module.
+     * will be taken. If this is `false`, layout will be disabled within this module.
      */
     public $layout;
     /**
@@ -70,7 +70,7 @@ class Module extends ServiceLocator
      * Each name-value pair specifies the configuration of a single controller.
      * A controller configuration can be either a string or an array.
      * If the former, the string should be the fully qualified class name of the controller.
-     * If the latter, the array must contain a 'class' element which specifies
+     * If the latter, the array must contain a `class` element which specifies
      * the controller's fully qualified class name, and the rest of the name-value pairs
      * in the array are used to initialize the corresponding controller properties. For example,
      *
@@ -91,15 +91,15 @@ class Module extends ServiceLocator
      * class name.
      *
      * If not set, it will use the `controllers` sub-namespace under the namespace of this module.
-     * For example, if the namespace of this module is "foo\bar", then the default
-     * controller namespace would be "foo\bar\controllers".
+     * For example, if the namespace of this module is `foo\bar`, then the default
+     * controller namespace would be `foo\bar\controllers`.
      *
      * See also the [guide section on autoloading](guide:concept-autoloading) to learn more about
      * defining namespaces and how classes are loaded.
      */
     public $controllerNamespace;
     /**
-     * @var string the default route of this module. Defaults to 'default'.
+     * @var string the default route of this module. Defaults to `default`.
      * The route may consist of child module ID, controller ID, and/or action ID.
      * For example, `help`, `post/create`, `admin/post/create`.
      * If action ID is not given, it will take the default value as specified in
@@ -127,9 +127,9 @@ class Module extends ServiceLocator
 
     /**
      * Constructor.
-     * @param string $id the ID of this module
-     * @param Module $parent the parent module (if any)
-     * @param array $config name-value pairs that will be used to initialize the object properties
+     * @param string $id the ID of this module.
+     * @param Module $parent the parent module (if any).
+     * @param array $config name-value pairs that will be used to initialize the object properties.
      */
     public function __construct($id, $parent = null, $config = [])
     {
@@ -140,9 +140,9 @@ class Module extends ServiceLocator
 
     /**
      * Returns the currently requested instance of this module class.
-     * If the module class is not currently requested, null will be returned.
+     * If the module class is not currently requested, `null` will be returned.
      * This method is provided so that you access the module instance from anywhere within the module.
-     * @return static|null the currently requested instance of this module class, or null if the module class is not requested.
+     * @return static|null the currently requested instance of this module class, or `null` if the module class is not requested.
      */
     public static function getInstance()
     {
@@ -153,7 +153,7 @@ class Module extends ServiceLocator
     /**
      * Sets the currently requested instance of this module class.
      * @param Module|null $instance the currently requested instance of this module class.
-     * If it is null, the instance of the calling class will be removed, if any.
+     * If it is `null`, the instance of the calling class will be removed, if any.
      */
     public static function setInstance($instance)
     {
@@ -252,7 +252,7 @@ class Module extends ServiceLocator
     /**
      * Sets the directory that contains the view files.
      * @param string $path the root directory of view files.
-     * @throws InvalidParamException if the directory is invalid
+     * @throws InvalidParamException if the directory is invalid.
      */
     public function setViewPath($path)
     {
@@ -287,10 +287,10 @@ class Module extends ServiceLocator
      * This method calls [[Yii::setAlias()]] to register the path aliases.
      * This method is provided so that you can define path aliases when configuring a module.
      * @property array list of path aliases to be defined. The array keys are alias names
-     * (must start with '@') and the array values are the corresponding paths or aliases.
+     * (must start with `@`) and the array values are the corresponding paths or aliases.
      * See [[setAliases()]] for an example.
      * @param array $aliases list of path aliases to be defined. The array keys are alias names
-     * (must start with '@') and the array values are the corresponding paths or aliases.
+     * (must start with `@`) and the array values are the corresponding paths or aliases.
      * For example,
      *
      * ```php
@@ -332,7 +332,7 @@ class Module extends ServiceLocator
      * @param string $id module ID (case-sensitive). To retrieve grand child modules,
      * use ID path relative to this module (e.g. `admin/content`).
      * @param boolean $load whether to load the module if it is not yet loaded.
-     * @return Module|null the module instance, null if the module does not exist.
+     * @return Module|null the module instance, `null` if the module does not exist.
      * @see hasModule()
      */
     public function getModule($id, $load = true)
@@ -361,14 +361,14 @@ class Module extends ServiceLocator
 
     /**
      * Adds a sub-module to this module.
-     * @param string $id module ID
+     * @param string $id module ID.
      * @param Module|array|null $module the sub-module to be added to this module. This can
      * be one of the following:
      *
      * - a [[Module]] object
      * - a configuration array: when [[getModule()]] is called initially, the array
      *   will be used to instantiate the sub-module
-     * - null: the named sub-module will be removed from this module
+     * - `null`: the named sub-module will be removed from this module
      */
     public function setModule($id, $module)
     {
@@ -381,10 +381,10 @@ class Module extends ServiceLocator
 
     /**
      * Returns the sub-modules in this module.
-     * @param boolean $loadedOnly whether to return the loaded sub-modules only. If this is set false,
+     * @param boolean $loadedOnly whether to return the loaded sub-modules only. If this is set `false`,
      * then all sub-modules registered in this module will be returned, whether they are loaded or not.
      * Loaded modules will be returned as objects, while unloaded modules as configuration arrays.
-     * @return array the modules (indexed by their IDs)
+     * @return array the modules (indexed by their IDs).
      */
     public function getModules($loadedOnly = false)
     {
@@ -424,7 +424,7 @@ class Module extends ServiceLocator
      * ]
      * ```
      *
-     * @param array $modules modules (id => module configuration or instances)
+     * @param array $modules modules (id => module configuration or instances).
      */
     public function setModules($modules)
     {
@@ -441,7 +441,7 @@ class Module extends ServiceLocator
      * @param string $route the route that specifies the action.
      * @param array $params the parameters to be passed to the action
      * @return mixed the result of the action.
-     * @throws InvalidRouteException if the requested route cannot be resolved into an action successfully
+     * @throws InvalidRouteException if the requested route cannot be resolved into an action successfully.
      */
     public function runAction($route, $params = [])
     {
@@ -476,11 +476,11 @@ class Module extends ServiceLocator
      *    or `abc\def\XyzController` class within the [[controllerNamespace|controller namespace]].
      *
      * If any of the above steps resolves into a controller, it is returned together with the rest
-     * part of the route which will be treated as the action ID. Otherwise, false will be returned.
+     * part of the route which will be treated as the action ID. Otherwise, `false` will be returned.
      *
      * @param string $route the route consisting of module, controller and action IDs.
      * @return array|boolean If the controller is created successfully, it will be returned together
-     * with the requested action ID. Otherwise false will be returned.
+     * with the requested action ID. Otherwise `false` will be returned.
      * @throws InvalidConfigException if the controller class and its file do not match.
      */
     public function createController($route)
@@ -534,8 +534,8 @@ class Module extends ServiceLocator
      *
      * Note that this method does not check [[modules]] or [[controllerMap]].
      *
-     * @param string $id the controller ID
-     * @return Controller the newly created controller instance, or null if the controller ID is invalid.
+     * @param string $id the controller ID.
+     * @return Controller the newly created controller instance, or `null` if the controller ID is invalid.
      * @throws InvalidConfigException if the controller class and its file name do not match.
      * This exception is only thrown when in debug mode.
      */

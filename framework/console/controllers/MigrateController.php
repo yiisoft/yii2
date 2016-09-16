@@ -50,6 +50,24 @@ use yii\helpers\Console;
  * yii migrate/down
  * ```
  *
+ * Since 2.0.10 you can use namespaced migrations. In order to enable this feature you should configure [[migrationNamespaces]]
+ * property for the controller at application configuration:
+ *
+ * ```php
+ * return [
+ *     'controllerMap' => [
+ *         'migrate' => [
+ *             'class' => 'yii\console\controllers\MigrateController',
+ *             'migrationNamespaces' => [
+ *                 'app\migrations',
+ *                 'some\extension\migrations',
+ *             ],
+ *             //'migrationPath' => null, // allows to disable not namespaced migration completely
+ *         ],
+ *     ],
+ * ];
+ * ```
+ *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */
@@ -164,8 +182,11 @@ class MigrateController extends BaseMigrateController
      */
     protected function createMigration($class)
     {
-        $file = $this->migrationPath . DIRECTORY_SEPARATOR . $class . '.php';
-        require_once($file);
+        $class = trim($class, '\\');
+        if (strpos($class, '\\') === false) {
+            $file = $this->migrationPath . DIRECTORY_SEPARATOR . $class . '.php';
+            require_once($file);
+        }
 
         return new $class(['db' => $this->db]);
     }
@@ -351,7 +372,7 @@ class MigrateController extends BaseMigrateController
                     continue;
                 }
 
-                if (!preg_match('/^(.+?)\(([^)]+)\)$/', $chunk)) {
+                if (!preg_match('/^(.+?)\(([^(]+)\)$/', $chunk)) {
                     $chunk .= '()';
                 }
             }
@@ -375,7 +396,7 @@ class MigrateController extends BaseMigrateController
     protected function addDefaultPrimaryKey(&$fields)
     {
         foreach ($fields as $field) {
-            if ($field['decorators'] === 'primaryKey()') {
+            if ($field['decorators'] === 'primaryKey()' || $field['decorators'] === 'bigPrimaryKey()') {
                 return;
             }
         }

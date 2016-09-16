@@ -1,10 +1,11 @@
 Walidacja danych wejściowych
-================
+============================
 
-Jedna z głównych zasad mówi, że nigdy nie powinno ufać się danym otrzymanym od użytkowników oraz zawsze walidować je przez użyciem.
+Jedna z głównych zasad mówi, że nigdy nie należy ufać danym otrzymanym od użytkownika oraz że zawsze należy walidować je przed użyciem.
 
-Mamy [model](structure-models.md) wypełniony danymi od użytkownika. Możemy go zwalidować przez wywołanie metody [[yii\base\Model::validate()|validate()]].
-Metoda zwróci wartość `boolean` wskazującą, czy walidacja się powiodła, czy nie. Jeśli nie, możesz pobrać informacje o błędach za pomocą właściwości [[yii\base\Model::errors|errors]].
+Rozważmy [model](structure-models.md) wypełniony danymi pobranymi od użytkownika. Możemy zweryfikować je poprzez wywołanie metody [[yii\base\Model::validate()|validate()]].
+Metoda zwróci wartość `boolean` wskazującą, czy walidacja się powiodła, czy też nie. Jeśli nie, można pobrać informacje o błędach za pomocą właściwości 
+[[yii\base\Model::errors|errors]].
 Dla przykładu, 
 
 ```php
@@ -26,8 +27,9 @@ if ($model->validate()) {
 
 ## Deklaracja zasad <span id="declaring-rules"></span>
 
-Aby metoda [[yii\base\Model::validate()|validate()]] naprawdę zadziałała, powinieneś zadeklarować zasady walidacji dla atrybutów, które mają jej podlegać.
-Powinno zostać to zrobione przez nadpisanie metody [[yii\base\Model::rules()|rules()]]. Poniższy przykład pokazuje jak zostały zadeklarowane zasady walidacji dla modelu `ContactForm`:
+Aby metoda [[yii\base\Model::validate()|validate()]] naprawdę zadziałała, należy zdefiniować zasady walidacji dla atrybutów, które mają jej podlegać.
+Powinno zostać to zrobione przez nadpisanie metody [[yii\base\Model::rules()|rules()]]. Poniższy przykład pokazuje jak zostały zadeklarowane zasady walidacji dla modelu 
+`ContactForm`:
 
 ```php
 public function rules()
@@ -42,7 +44,7 @@ public function rules()
 }
 ```
 
-Metoda [[yii\base\Model::rules()|rules()]] powinna zwracać tablicę zasad, gdzie każda zasada jest tablicą w następującym formacie:
+Metoda [[yii\base\Model::rules()|rules()]] powinna zwracać tablicę zasad, gdzie każda zasada jest również tablicą o następującym formacie:
 
 ```php
 [
@@ -50,49 +52,73 @@ Metoda [[yii\base\Model::rules()|rules()]] powinna zwracać tablicę zasad, gdzi
     // Dla pojedyńczego atrybutu możemy użyć bezpośrednio jego nazwy, bez osadzania go w tablicy
     ['attribute1', 'attribute2', ...],
 
-    // wymagane, określa typ tej zasady walidacji
+    // wymagane, określa rodzaj walidacji
     // Może to być nazwa klasy, alias walidatora lub nazwa metody walidacji
     'validator',
 
-    // opcjonalny, określa, w którym scenariuszu/scenariuszach ta zasada powinna zostać użyta
+    // opcjonalne, określa, w którym scenariuszu/scenariuszach ta zasada powinna zostać użyta
     // w przypadku nie podania żadnego argumentu zasada zostanie zaaplikowana do wszystkich scenariuszy
-    // Możesz również skonfigurować opcję "except" jeśli chcesz użyć tej zasady dla wszystkich scenariuszy. oprócz tych wymienionych przez Ciebie
+    // Możesz również skonfigurować opcję "except", jeśli chcesz użyć tej zasady dla wszystkich scenariuszy, z wyjątkiem wymienionych
     'on' => ['scenario1', 'scenario2', ...],
 
-    // opcjonalny, określa dodatkowe konfiguracje do obiektu walidatora
+    // opcjonalne, określa dodatkową konfigurację dla obiektu walidatora
     'property1' => 'value1', 'property2' => 'value2', ...
 ]
 ```
 
-Dla każdej z zasad musisz określić co najmniej jeden atrybut, którego ma ona dotyczyć, oraz należy określić typ tej zasady.
-Możesz określić typ zasady jako jedną z następujących form:
+Dla każdej z zasad musisz określić co najmniej jeden atrybut, którego ma ona dotyczyć, oraz określić rodzaj zasady jako 
+jedną z następujących form:
 
-* alias walidatora podstawowego, np. `required`, `in`, `date` itd. Zajrzyj do sekcji [Podstawowe walidatory](tutorial-core-validators.md) aby uzyskać pełną listę walidatorów podstawowych.
-* nazwa metody walidacji w klasie modelu, lub funkcja anonimowa. Po więcej szczegółów zajrzyj do sekcji [Inline Validators](#inline-validators).
-* pełna nazwa klasy walidatora. Po więcej szczegółów zajrzyj do sekcji [Standalone Validators](#standalone-validators).
+* alias walidatora podstawowego, np. `required`, `in`, `date` itd. Zajrzyj do sekcji [Podstawowe walidatory](tutorial-core-validators.md), 
+  aby uzyskać pełną listę walidatorów podstawowych.
+* nazwa metody walidacji w klasie modelu lub funkcja anonimowa. Po więcej szczegółów zajrzyj do sekcji [Walidatory wbudowane](#inline-validators).
+* pełna nazwa klasy walidatora. Po więcej szczegółów zajrzyj do sekcji [Walidatory niezależne](#standalone-validators).
 
-Zasada może zostać użyta do walidacji jednego lub wielu atrybutów, a atrybut może być walidowany przez jedną, lub wiele zasad.
-Zasada może zostać użyta dla konkretnych [scenariuszy](structure-models.md#scenarios) przez określenie opcji `on`.
-Jeśli nie określisz opcji `on` oznacza to, że zasada zostanie użyta w każdym scenariuszu.
+Zasada może zostać użyta do walidacji jednego lub wielu atrybutów, a atrybut może być walidowany przez jedną lub wiele zasad.
+Zasada może zostać użyta dla konkretnych [scenariuszy](structure-models.md#scenarios) przez dodanie opcji `on`.
+Jeśli nie dodasz opcji `on` oznacza to, że zasada zostanie użyta w każdym scenariuszu.
 
-Kiedy zostaje wywołana metoda [[yii\base\Model::validate()|validate()]] zostają wykonane następujące kroki w celu wykonania walidacji:
+Wywołanie metody [[yii\base\Model::validate()|validate()]] powoduje podjęcie następujących kroków w celu wykonania walidacji:
 
-1. Określenie które atrybuty powinny zostać zwalidowane przez pobranie listy atrybutów z [[yii\base\Model::scenarios()|scenarios()]] używając aktualnego 
-   [[yii\base\Model::scenario|scenario]]. Wybrane atrybuty nazywane są *atrybutami aktywnymi*.
-2. Określenie które zasady walidacji powinny zostać użyte przez pobranie listy zasad z [[yii\base\Model::rules()|rules()]] używając aktualnego [[yii\base\Model::scenario|scenario]]. 
-   Wybrane zasady nazywane są *zasadami aktywnymi*.
-3. Użycie każdej aktywnej zasady do walidacji każdego aktywnego atrybutu, który jest powiązany do konkretnej zasady. Zasady walidacji są wykonywane w kolejności w jakiej zostały zapisane.
+1. Określenie, które atrybuty powinny zostać zweryfikowane poprzez pobranie ich listy z metody [[yii\base\Model::scenarios()|scenarios()]], używając aktualnego 
+   [[yii\base\Model::scenario|scenariusza]]. Wybrane atrybuty nazywane są *atrybutami aktywnymi*.
+2. Określenie, które zasady walidacji powinny zostać użyte przez pobranie ich listy z metody [[yii\base\Model::rules()|rules()]], używając aktualnego 
+   [[yii\base\Model::scenario|scenariusza]]. Wybrane zasady nazywane są *zasadami aktywnymi*.
+3. Użycie każdej aktywnej zasady do walidacji każdego aktywnego atrybutu, który jest powiązany z konkretną zasadą. Zasady walidacji są wykonywane w kolejności, 
+   w jakiej zostały zapisane.
 
-Odnosząc się do powyższych kroków walidacji, atrybut zostanie zwalidowany wtedy i tylko wtedy, gdy jest on aktywnym atrybutem zadeklarowanym w 
+Odnosząc się do powyższych kroków, atrybut zostanie zwalidowany wtedy i tylko wtedy, gdy jest on aktywnym atrybutem zadeklarowanym w 
 [[yii\base\Model::scenarios()|scenarios()]] oraz jest powiązany z jedną lub wieloma aktywnymi zasadami zadeklarowanymi w [[yii\base\Model::rules()|rules()]].
+
+> Note: Czasem użyteczne jest nadanie nazwy zasadzie np.
+>
+> ```php
+> public function rules()
+> {
+>     return [
+>         // ...
+>         'password' => [['password'], 'string', 'max' => 60],
+>     ];
+> }
+> ```
+>
+> W modelu potomnym można to wykorzystać:
+>
+> ```php
+> public function rules()
+> {
+>     $rules = parent::rules();
+>     unset($rules['password']);
+>     return $rules;
+> }
 
 
 ### Dostosowywanie wiadomości błedów <span id="customizing-error-messages"></span>
 
-Większość walidatorów posiada domyślne wiadomości błędów, które zostaną dodane do poddanego walidacji modelu, kiedy któryś z atrybutów nie przejdzie walidacji.
-Dla przykładu, walidator [[yii\validators\RequiredValidator|required]] doda wiadomość "Username cannot be blank." do modelu, jeśli atrybut `username` nie przejdzie walidacji tej zasady.
+Większość walidatorów posiada domyślne wiadomości błędów, które zostają dodane do poddanego walidacji modelu, kiedy któryś z atrybutów nie przejdzie pomyślnie walidacji.
+Dla przykładu, walidator [[yii\validators\RequiredValidator|required]] dodaje komunikat "Username cannot be blank.", kiedy atrybut `username` nie przejdzie walidacji tej zasady.
 
-Możesz dostosować wiadomość błędu danej zasady przez określenie właściwości `message` przy deklaracji zasady.
+Możesz dostosować wiadomość błędu zasady przez określenie właściwości `message` podczas jej deklaracji.
 Dla przykładu,
 
 ```php
@@ -104,25 +130,27 @@ public function rules()
 }
 ```
 
-Niektóre walidatory mogą wspierać dodatkowe wiadomości błedów, aby bardziej precyzyjnie określić problemy przy walidacji.
-Dla przykładu, walidator [[yii\validators\NumberValidator|number]] dodaje [[yii\validators\NumberValidator::tooBig|tooBig]] oraz [[yii\validators\NumberValidator::tooSmall|tooSmall]] 
-do opisania sytuacji, kiedy liczba jest za duża lub za mała podczas walidacji. Możesz skonfigurować te wiadomości tak, jak pozostałe właściwości walidatorów w zasadzie walidacji.
+Niektóre walidatory mogą wspierać dodatkowe wiadomości błedów, aby bardziej precyzyjnie określić problemy powstałe przy walidacji.
+Dla przykładu, walidator [[yii\validators\NumberValidator|number]] dodaje [[yii\validators\NumberValidator::tooBig|tooBig]] oraz 
+[[yii\validators\NumberValidator::tooSmall|tooSmall]] do opisania sytuacji, kiedy poddawana walidacji liczba jest za duża lub za mała. 
+Możesz skonfigurować te wiadomości tak, jak pozostałe właściwości walidatorów podczas deklaracji zasady.
 
 
 ### Zdarzenia walidacji <span id="validation-events"></span>
 
 Podczas wywołania metody [[yii\base\Model::validate()|validate()]] zostaną wywołane dwie metody, które możesz nadpisać, aby dostosować proces walidacji:
 
-* [[yii\base\Model::beforeValidate()|beforeValidate()]]: domyślna implementacja wywoła zdarzenie [[yii\base\Model::EVENT_BEFORE_VALIDATE|EVENT_BEFORE_VALIDATE]]. Możesz nadpisać tę 
-  metodę lub odnieść się do zdarzenia, aby wykonać dodatkowe operacje przed walidacją. Metoda powinna zwracać wartość `boolean` wskazującą, czy walidacja powinna zostać wykonana, czy nie.
-* [[yii\base\Model::afterValidate()|afterValidate()]]: domyślna implementacja wywoła zdarzenie [[yii\base\Model::EVENT_AFTER_VALIDATE|EVENT_AFTER_VALIDATE]]. Możesz nadpisać tę metodę 
-  lub odnieść się do zdarzenia, aby wykonać dodatkowe operacje po zakończonej walidacji.
+* [[yii\base\Model::beforeValidate()|beforeValidate()]]: domyślna implementacja wywoła zdarzenie [[yii\base\Model::EVENT_BEFORE_VALIDATE|EVENT_BEFORE_VALIDATE]]. 
+  Możesz nadpisać tę metodę lub odnieść się do zdarzenia, aby wykonać dodatkowe operacje przed walidacją. 
+  Metoda powinna zwracać wartość `boolean` wskazującą, czy walidacja powinna zostać przeprowadzona, czy też nie.
+* [[yii\base\Model::afterValidate()|afterValidate()]]: domyślna implementacja wywoła zdarzenie [[yii\base\Model::EVENT_AFTER_VALIDATE|EVENT_AFTER_VALIDATE]]. 
+  Możesz nadpisać tę metodę lub odnieść się do zdarzenia, aby wykonać dodatkowe operacje po zakończonej walidacji.
 
 
 ### Walidacja warunkowa <span id="conditional-validation"></span>
 
 Aby zwalidować atrybuty tylko wtedy, gdy zostaną spełnione pewne założenia, np. walidacja jednego atrybutu zależy od wartości drugiego atrybutu, możesz użyć właściwości
- [[yii\validators\Validator::when|when]] aby zdefiniować taki warunek. Dla przykładu,
+ [[yii\validators\Validator::when|when]], aby zdefiniować taki warunek. Dla przykładu,
 
 ```php
 [
@@ -161,10 +189,10 @@ Dla przykładu,
 ### Filtrowanie danych <span id="data-filtering"></span>
 
 Dane od użytkownika często muszą zostać przefiltrowane. Dla przykładu, możesz chcieć wyciąć znaki spacji na początku i na końcu pola `username`. 
-Aby osiągnąć ten cel, możesz użyć zasad walidacji.
+Aby osiągnąć ten cel, możesz również użyć zasad walidacji.
 
-Poniższy przykład pokazuje, jak wyciąć znaki spacji z pola oraz zmienić puste pole na wartość `NULL` przy użyciu podstawowych walidatorów [trim](tutorial-core-validators.md#trim) oraz 
-[default](tutorial-core-validators.md#default):
+Poniższy przykład pokazuje, jak wyciąć znaki spacji z pola oraz zmienić puste pole na wartość `null` przy użyciu podstawowych walidatorów 
+[trim](tutorial-core-validators.md#trim) oraz [default](tutorial-core-validators.md#default):
 
 ```php
 [
@@ -173,27 +201,28 @@ Poniższy przykład pokazuje, jak wyciąć znaki spacji z pola oraz zmienić pus
 ]
 ```
 
-Możesz użyć również bardziej ogólnego walidatora [filter](tutorial-core-validators.md#filter), aby przeprowadzić bardziej złożone filtrowanie.
+Możesz użyć również bardziej ogólnego walidatora [filter](tutorial-core-validators.md#filter), aby przeprowadzić złożone filtrowanie.
 
-Jak pewnie zauważyłeś, te zasady walidacji tak naprawdę nie walidują danych. Zamiast tego przetwarzają wartości, a następnie przypisują je do atrybutów, które zostały poddane walidacji.
+Jak pewnie zauważyłeś, te zasady walidacji tak naprawdę nie walidują danych. Zamiast tego przetwarzają wartości, a następnie przypisują je do atrybutów, 
+które zostały poddane walidacji.
 
 
 ### Obsługa pustych danych wejściowych <span id="handling-empty-inputs"></span>
 
-Kiedy dane wejściowe są wysłane przez formularz HTML, często zachodzi potrzeba przypisania im domyślnych wartości jeśli są puste.
+Kiedy dane wejściowe są wysłane przez formularz HTML, często zachodzi potrzeba przypisania im domyślnych wartości, jeśli są puste.
 Możesz to osiągnąć przez użycie walidatora [default](tutorial-core-validators.md#default). Dla przykładu,
 
 ```php
 [
-    // ustawia atrybuty "username" oraz "email" jako `NULL` jeśli są puste
+    // ustawia atrybuty "username" oraz "email" jako `null` jeśli są puste
     [['username', 'email'], 'default'],
 
-    // ustawia atrybut "level" równy "1" jeśli jest pusty
+    // ustawia atrybut "level" równy "1", jeśli jest pusty
     ['level', 'default', 'value' => 1],
 ]
 ```
 
-Domyślnie pole uważane jest za puste, jeśli jego wartość to pusty string, pusta tablica lub `NULL`.
+Domyślnie pole uważane jest za puste, jeśli jego wartość to pusty łańcuch znaków, pusta tablica lub `null`.
 Możesz dostosować domyślną logikę wykrywania pustych pól przez skonfigurowanie parametru [[yii\validators\Validator::isEmpty|isEmpty]], przekazując mu funkcję PHP.
 Dla przykładu,
 
@@ -213,8 +242,8 @@ Dla przykładu,
 
 Czasami potrzebna będzie walidacja *ad hoc* dla wartości które nie są powiązane z żadnym modelem. 
 
-Jeśli potrzebujesz wykonać tylko jeden typ walidacji (np. walidacja adresu email), możesz wywołać metodę [[yii\validators\Validator::validate()|validate()]] wybranego walidatora, tak 
-jak poniżej:
+Jeśli potrzebujesz wykonać tylko jeden typ walidacji (np. walidację adresu email), możesz wywołać metodę 
+[[yii\validators\Validator::validate()|validate()]] wybranego walidatora, tak jak poniżej:
 
 ```php
 $email = 'test@example.com';
@@ -227,10 +256,11 @@ if ($validator->validate($email, $error)) {
 }
 ```
 
-> Note: Nie każdy walidator wspiera tego typu walidację. Dla przykładu, podstawowy walidator [unique](tutorial-core-validators.md#unique) został zaprojektowany do pracy wyłącznie z 
-> modelami.
+> Note: Nie każdy walidator wspiera tego typu walidację. Dla przykładu, podstawowy walidator [unique](tutorial-core-validators.md#unique) 
+> został zaprojektowany do pracy wyłącznie z modelami.
 
-Jeśli potrzebujesz przeprowadzić wielokrotne walidacje, możesz użyć [[yii\base\DynamicModel|DynamicModel]], który wspiera deklarację atrybutów oraz zasad walidacji "w locie".
+Jeśli potrzebujesz przeprowadzić wielokrotne walidacje, możesz użyć modelu [[yii\base\DynamicModel|DynamicModel]], 
+który wspiera deklarację atrybutów oraz zasad walidacji "w locie".
 Dla przykładu,
 
 ```php
@@ -249,8 +279,8 @@ public function actionSearch($name, $email)
 }
 ```
 
-Metoda [[yii\base\DynamicModel::validateData()|validateData()]] tworzy instancję `DynamicModel`, definiuje atrybuty używając przekazanych danych (`name` oraz `email` w tym przykładzie),
-a następnie wywołuje metodę [[yii\base\Model::validate()|validate()]] z podanymi zasadami walidacji.
+Metoda [[yii\base\DynamicModel::validateData()|validateData()]] tworzy instancję `DynamicModel`, definiuje atrybuty używając przekazanych danych 
+(`name` oraz `email` w tym przykładzie), a następnie wywołuje metodę [[yii\base\Model::validate()|validate()]] z podanymi zasadami walidacji.
 
 Alternatywnie, możesz użyć bardziej "klasycznego" zapisu to przeprowadzenia tego typu walidacji:
 
@@ -270,14 +300,14 @@ public function actionSearch($name, $email)
 }
 ```
 
-Po walidacji możesz sprawdzić, czy przebiegła ona poprawnie lub nie, przez wywołanie metody [[yii\base\DynamicModel::hasErrors()|hasErrors()]], 
-a następnie pobrać błędy walidacji z właściwości [[yii\base\DynamicModel::errors|errors]], tak jak w normalnym modelu.
-Możesz również uzyskać dostęp do dynamicznych atrybutów tej instancji, np. `$model->name` and `$model->email`.
+Po walidacji możesz sprawdzić, czy przebiegła ona poprawnie, poprzez wywołanie metody [[yii\base\DynamicModel::hasErrors()|hasErrors()]], 
+a następnie pobrać błędy walidacji z właściwości [[yii\base\DynamicModel::errors|errors]], tak jak w przypadku zwykłego modelu.
+Możesz również uzyskać dostęp do dynamicznych atrybutów tej instancji, np. `$model->name` i `$model->email`.
 
 
 ## Tworzenie walidatorów <span id="creating-validators"></span>
 
-Oprócz używania [podstawowych walidatorów](tutorial-core-validators.md) dołączonych do wydania Yii, możesz dodatkowo utworzyć własne: wbudowane lub niezależne.
+Oprócz używania [podstawowych walidatorów](tutorial-core-validators.md) dołączonych do wydania Yii, możesz dodatkowo utworzyć własne; wbudowane lub niezależne.
 
 ### Walidatory wbudowane <span id="inline-validators"></span>
 
@@ -291,8 +321,8 @@ Wbudowany walidator jest zdefiniowaną w modelu metodą lub funkcją anonimową.
 function ($attribute, $params)
 ```
 
-Jeśli atrybut nie przejdzie walidacji, metoda/funkcja powinna wywołać metodę [[yii\base\Model::addError()|addError()]] do zapisania wiadomości błędu w modelu,
-aby mogła ona zostać później pobrana i zaprezentowana użytkownikowi.
+Jeśli atrybut nie przejdzie walidacji, metoda/funkcja powinna wywołać metodę [[yii\base\Model::addError()|addError()]] do zapisania wiadomości o błędzie w modelu,
+która może zostać później pobrana i zaprezentowana użytkownikowi.
 
 Poniżej znajduje się kilka przykładów:
 
@@ -330,7 +360,7 @@ class MyForm extends Model
 
 > Note: Domyślnie wbudowane walidatory nie zostaną zastosowane, jeśli ich powiązane atrybuty otrzymają puste wartości lub wcześniej nie przeszły którejś z zasad walidacji.
 > Jeśli chcesz się upewnić, że zasada zawsze zostanie zastosowana, możesz skonfigurować właściwość [[yii\validators\Validator::skipOnEmpty|skipOnEmpty]] i/lub 
-> [[yii\validators\Validator::skipOnError|skipOnError]] przypisując jej wartość `false` w deklaracji zasady walidacji. Dla przykładu:
+> [[yii\validators\Validator::skipOnError|skipOnError]], przypisując jej wartość `false` w deklaracji zasady walidacji. Dla przykładu:
 >
 > ```php
 > [
@@ -342,7 +372,7 @@ class MyForm extends Model
 ### Walidatory niezależne <span id="standalone-validators"></span>
 
 Walidator niezależy jest klasą rozszerzającą [[yii\validators\Validator|Validator]] lub klasy po nim dziedziczące. 
-Możesz zaimplementować jego logikę walidacji przez nadpisanie metody [[yii\validators\Validator::validateAttribute()|validateAttribute()]].
+Możesz zaimplementować jego logikę walidacji poprzez nadpisanie metody [[yii\validators\Validator::validateAttribute()|validateAttribute()]].
 Jeśli atrybut nie przejdzie walidacji, wywołaj metodę [[yii\base\Model::addError()|addError()]] do zapisania wiadomości błędu w modelu, tak jak w 
 [walidatorach wbudowanych](#inline-validators).
 
@@ -369,7 +399,7 @@ Jeśli chcesz, aby walidator wspierał walidację wartości bez modelu, powinien
 Możesz nadpisać także [[yii\validators\Validator::validateValue()|validateValue()]] zamiast `validateAttribute()` oraz `validate()`, 
 ponieważ domyślnie te dwie metody są implementowane użyciem metody `validateValue()`.
 
-Poniżej znajduje się przykład, jak mógłbyś użyć powyższej klasy walidatora w swoim modelu.
+Poniżej znajduje się przykład użycia powyższej klasy walidatora w modelu.
 
 ```php
 namespace app\models;
@@ -398,20 +428,21 @@ class EntryForm extends Model
 
 ## Walidacja po stronie klienta <span id="client-side-validation"></span>
 
-Walidacja po stronie klienta bazująca na kodzie JavaScript jest wskazana, kiedy użytkownicy dostarczają dane przez formularz HTML, 
-ponieważ pozwala na szybszą walidację błędów, a tym samym zapewnia lepszą ich obsługę dla użytkownika. Możesz użyć lub zaimplementować walidator, który wspiera walidację po stronie 
-klienta *dodatkowo do* walidacji po stronie serwera.
+Walidacja po stronie klienta, bazująca na kodzie JavaScript jest wskazana, kiedy użytkownicy dostarczają dane przez formularz HTML, 
+ponieważ pozwala na szybszą walidację błędów, a tym samym zapewnia lepszą ich obsługę dla użytkownika. Możesz użyć lub zaimplementować walidator, 
+który wspiera walidację po stronie klienta jako *dodatek* do walidacji po stronie serwera.
 
-> Info: Walidacja po stronie klienta nie jest wymagana. Głównym jej celem jest poprawa jakości korzystania z formularzy przez użytkowników.
-> Podobnie do danych wejściowych pochodzących od użytkowników, nigdy nie powinieneś ufać walidacji po stronie klienta. Z tego powodu,
-> powinieneś zawsze przeprowadzać walidację po stronie serwera wywołując metodę [[yii\base\Model::validate()|validate()]], tak jak zostało to opisane w poprzednich sekcjach.
+> Info: Walidacja po stronie klienta nie jest wymagana. Głównym jej celem jest poprawa jakości korzystania z formularzy dla użytkowników.
+> Podobnie jak w przypadku danych wejściowych pochodzących od użytkowników, nigdy nie powinieneś ufać walidacji przeprowadanej po stronie klienta. 
+> Z tego powodu należy zawsze przeprowadzać główną walidację po stronie serwera wywołując metodę [[yii\base\Model::validate()|validate()]], 
+> tak jak zostało to opisane w poprzednich sekcjach.
 
 ### Używanie walidacji po stronie klienta <span id="using-client-side-validation"></span>
 
 Wiele [podstawowych walidatorów](tutorial-core-validators.md) domyślnie wspiera walidację po stronie klienta. Wszystko, co musisz zrobić, to użyć widżetu 
 [[yii\widgets\ActiveForm|ActiveForm]] do zbudowania formularza HTML. Dla przykładu, model `LoginForm` poniżej deklaruje dwie zasady: jedną, używającą podstawowego walidatora 
-[required](tutorial-core-validators.md#required), który wspiera walidację po stronie klienta i serwera, oraz drugą, w której użyto walidatora wbudowanego `validatePassword`, który 
-wspiera tylko walidację po stronie klienta.
+[required](tutorial-core-validators.md#required), który wspiera walidację po stronie klienta i serwera, oraz drugą, w której użyto walidatora wbudowanego `validatePassword`, 
+który wspiera tylko walidację po stronie serwera.
 
 ```php
 namespace app\models;
@@ -460,24 +491,25 @@ Jeśli wyślesz formularz bez wpisywania jakichkolwiek danych, otrzymasz komunik
 "Za kulisami", widżet [[yii\widgets\ActiveForm|ActiveForm]] odczyta wszystkie zasady walidacji zadeklarowane w modelu i wygeneruje odpowiedni kod JavaScript 
 dla walidatorów wspierających walidację po stronie klienta. Kiedy użytkownik zmieni wartość w polu lub spróbuje wysłać formularz, zostanie wywołana walidacja po stronie klienta.
 
-Jeśli chcesz wyłączyć kompletnie walidację po stronie klienta, możesz ustawić właściwość [[yii\widgets\ActiveForm::enableClientValidation|enableClientValidation]] na `false`.
+Jeśli chcesz wyłączyć całkowicie walidację po stronie klienta, możesz ustawić właściwość [[yii\widgets\ActiveForm::enableClientValidation|enableClientValidation]] na `false`.
 Możesz również wyłączyć ten rodzaj walidacji dla konkretnego pola, przez ustawienie jego właściwości 
-[[yii\widgets\ActiveField::enableClientValidation|enableClientValidation]] na `false`. Jeśli właściwość `enableClientValidation` zostanie skonfigurowana na poziomie pola formularza i w 
-samym formularzu jednocześnie, pierwszeństwo będzie miała opcja określona w formularzu.
+[[yii\widgets\ActiveField::enableClientValidation|enableClientValidation]] na `false`. Jeśli właściwość `enableClientValidation` zostanie skonfigurowana na poziomie pola 
+formularza i w samym formularzu jednocześnie, pierwszeństwo będzie miała opcja określona w formularzu.
 
 
 ### Implementacja walidacji po stronie klienta <span id="implementing-client-side-validation"></span>
 
-Aby utworzyć walidator wspierający walidację po stronie klienta, powinieneś zaimplementować metodę [[yii\validators\Validator::clientValidateAttribute()|clientValidateAttribute()]],
-która zwraca kod JavaScript, odpowiedzialny za przeprowadzenie walidacji. W kodzie JavaScript możesz użyć następujących predefiniowanych zmiennych:
+Aby utworzyć walidator wspierający walidację po stronie klienta, powinieneś zaimplementować metodę 
+[[yii\validators\Validator::clientValidateAttribute()|clientValidateAttribute()]], która zwraca kod JavaScript, odpowiedzialny za przeprowadzenie walidacji. 
+W kodzie JavaScript możesz użyć następujących predefiniowanych zmiennych:
 
 - `attribute`: nazwa atrybutu podlegającego walidacji.
 - `value`: wartość atrybutu podlegająca walidacji.
 - `messages`: tablica używana do przechowywania wiadomości błędów dla danego atrybutu. 
 - `deferred`: tablica, do której można dodać zakolejkowane obiekty (wyjaśnione w późniejszej podsekcji).
 
-W poniższym przykładzie, tworzymy walidator `StatusValidator`, który sprawdza, czy wartość danego atrybutu jest wartością znajdującą się w zbiorze statusów w bazie danych.
-Walidator wspiera obydwa typy walidacji: po stronie klienta oraz serwerową.
+W poniższym przykładzie, tworzymy walidator `StatusValidator`, który sprawdza, czy wartość danego atrybutu jest wartością znajdującą się na liście statusów w bazie danych.
+Walidator wspiera obydwa typy walidacji; po stronie klienta oraz serwerową.
 
 ```php
 namespace app\components;
@@ -514,7 +546,7 @@ JS;
 }
 ```
 
-> Tip: Powyższy kod został podany głównie do zademonstrowania jak wspierać walidację po stronie klienta.
+> Tip: Powyższy kod został podany głównie do zademonstrowania, jak wspierać walidację po stronie klienta.
 > W praktyce można użyć podstawowego walidatora [in](tutorial-core-validators.md#in), aby osiągnąć ten sam cel.
 > Możesz napisać taką zasadę walidacji następująco:
 >
@@ -523,6 +555,10 @@ JS;
 >     ['status', 'in', 'range' => Status::find()->select('id')->asArray()->column()],
 > ]
 > ```
+
+> Tip: Jeśli musisz dodać ręcznie walidację po stronie klienta np. podczas dynamicznego dodawania pól formularza lub przeprowadzania specjalnej logiki w obrębie interfejsu 
+> użytkownika, zapoznaj się z rozdziałem [Praca z ActiveForm za pomocą JavaScript](https://github.com/samdark/yii2-cookbook/blob/master/book/forms-activeform-js.md)
+> w Yii 2.0 Cookbook.
 
 ### Kolejkowa walidacja <span id="deferred-validation"></span>
 
@@ -542,7 +578,7 @@ JS;
 }
 ```
 
-W powyższym kodzie, zmienna `deferred` jest dostarczona przez Yii, która jest tablicą zakolejkowanych obiektów.
+W powyższym kodzie, zmienna `deferred` jest dostarczoną przez Yii tablicą zakolejkowanych obiektów.
 Metoda jQuery `$.get()` tworzy obiekt kolejkowy, który jest dodawany do tablicy `deferred`.
 
 Możesz także utworzyć osobny obiekt kolejkowania i wywołać jego metodę `resolve()` po otrzymaniu asynchronicznej informacji zwrotnej.
@@ -571,7 +607,7 @@ JS;
 }
 ```
 
-> Note: Metoda `resolve()` musi być wywołana po zwalidowaniu atrybutu. W przeciwnym razie walidacja formularza nie zostanie ukończona.
+> Note: Metoda `resolve()` musi być wywołana po walidacji atrybutu. W przeciwnym razie główna walidacja formularza nie zostanie ukończona.
 
 Dla uproszczenia, tablica `deferred` jest wyposażona w skrótową metodę `add()`, która automatycznie tworzy obiekt kolejkowy i dodaje go do tej tablicy.
 Używając tej metody, możesz uprościć powyższy przykład:
@@ -605,8 +641,8 @@ Niektóre walidacje mogą zostać wykonane tylko po stronie serwera, ponieważ t
 Dla przykładu, aby sprawdzić, czy login został już zajęty, musimy sprawdzić tabelę użytkowników w bazie danych.
 W tym właśnie przypadku możesz użyć walidacji AJAX. Wywoła ona żądanie AJAX w tle, aby spradzić to pole. 
 
-Aby uaktywnić walidację AJAX dla pojedyńczego pola formularza, ustaw właściwość [[yii\widgets\ActiveField::enableAjaxValidation|enableAjaxValidation]] na `true` oraz określ unikalne ID 
-formularza: 
+Aby uaktywnić walidację AJAX dla pojedyńczego pola formularza, ustaw właściwość [[yii\widgets\ActiveField::enableAjaxValidation|enableAjaxValidation]] na `true` 
+oraz zdefiniuj unikalne `id` formularza: 
 
 ```php
 use yii\widgets\ActiveForm;
@@ -635,7 +671,7 @@ $form = ActiveForm::begin([
 > pierwszeństwo będzie miała opcja określona w formularzu.
 
 
-Musisz również przygotować serwer, aby mógł obsłużyć AJAXowe zapytanie o walidację. Możesz to osiągnąć przez następujący skrawek kodu w akcji kontrolera:
+Musisz również przygotować serwer na obsłużenie AJAXowego zapytanie o walidację. Możesz to osiągnąć przez następujący fragment kodu w akcji kontrolera:
 
 ```php
 if (Yii::$app->request->isAjax && $model->load(Yii::$app->request->post())) {
@@ -646,8 +682,8 @@ if (Yii::$app->request->isAjax && $model->load(Yii::$app->request->post())) {
 
 Powyższy kod sprawdzi, czy zapytanie zostało wysłane przy użyciu AJAXa. Jeśli tak, w odpowiedzi zwróci wynik walidacji w formacie JSON.
 
-> Info: Możesz również użyć [walidacji kolejkowej](#deferred-validation) do wykonania walidacji AJAX, jednakże walidacja AJAXowa opisana w tej sekcji jest bardziej systematyczna i 
-> wymaga mniej wysiłku przy kodowaniu.
+> Info: Możesz również użyć [walidacji kolejkowej](#deferred-validation) do wykonania walidacji AJAX, 
+> jednakże walidacja AJAXowa opisana w tej sekcji jest bardziej systematyczna i wymaga mniej wysiłku przy kodowaniu.
 
-Kiedy zarówno `enableClientValidation`, jak i `enableAjaxValidation` ustawione są na true, walidacja za pomocą AJAX zostanie uruchomiona dopiero po udanej 
+Kiedy zarówno `enableClientValidation`, jak i `enableAjaxValidation` ustawione są na `true`, walidacja za pomocą AJAX zostanie uruchomiona dopiero po udanej 
 walidacji po stronie klienta.

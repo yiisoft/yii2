@@ -8,7 +8,6 @@
 namespace yii\grid;
 
 use Yii;
-use Closure;
 use yii\helpers\Html;
 use yii\helpers\Url;
 
@@ -108,7 +107,15 @@ class ActionColumn extends Column
     public $visibleButtons = [];
     /**
      * @var callable a callback that creates a button URL using the specified model information.
-     * The signature of the callback should be the same as that of [[createUrl()]].
+     * The signature of the callback should be the same as that of [[createUrl()]]
+     * Since 2.0.10 it can accept additional parameter, which refers to the column instance itself:
+     *
+     * ```php
+     * function (string $action, mixed $model, mixed $key, integer $index, ActionColumn $this) {
+     *     //return string;
+     * }
+     * ```
+     *
      * If this property is not set, button URLs will be created using [[createUrl()]].
      */
     public $urlCreator;
@@ -179,7 +186,7 @@ class ActionColumn extends Column
     public function createUrl($action, $model, $key, $index)
     {
         if (is_callable($this->urlCreator)) {
-            return call_user_func($this->urlCreator, $action, $model, $key, $index);
+            return call_user_func($this->urlCreator, $action, $model, $key, $index, $this);
         } else {
             $params = is_array($key) ? $key : ['id' => (string) $key];
             $params[0] = $this->controller ? $this->controller . '/' . $action : $action;

@@ -35,11 +35,11 @@ class MenuTest extends \yiiunit\TestCase
             ]
         ]);
 
-        $this->assertEqualsWithoutLE(<<<HTML
+        $expected = <<<HTML
 <ul><li><a href="#"><span class="glyphicon glyphicon-user"></span> Users</a></li>
 <li><a href="#">Authors &amp; Publications</a></li></ul>
-HTML
-        , $output);
+HTML;
+        $this->assertEqualsWithoutLE($expected, $output);
 
         $output = Menu::widget([
             'route' => 'test/test',
@@ -59,12 +59,11 @@ HTML
             ]
         ]);
 
-        $this->assertEqualsWithoutLE(<<<HTML
+        $expected = <<<HTML
 <ul><li><a href="#"><span class="glyphicon glyphicon-user"></span> Users</a></li>
 <li><a href="#">Authors &amp; Publications</a></li></ul>
-HTML
-            , $output);
-
+HTML;
+        $this->assertEqualsWithoutLE($expected, $output);
     }
 
     /**
@@ -93,11 +92,11 @@ HTML
             ]
         ]);
 
-        $this->assertEqualsWithoutLE(<<<HTML
+        $expected = <<<HTML
 <div><a href="#">item1</a></div>
 <a href="#">item2</a>
-HTML
-        , $output);
+HTML;
+        $this->assertEqualsWithoutLE($expected, $output);
 
         $output = Menu::widget([
             'route' => 'test/test',
@@ -119,11 +118,44 @@ HTML
             'itemOptions' => ['tag' => false]
         ]);
 
-        $this->assertEqualsWithoutLE(<<<HTML
+        $expected = <<<HTML
 <a href="#">item1</a>
 <a href="#">item2</a>
-HTML
-            , $output);
+HTML;
+
+        $this->assertEqualsWithoutLE($expected, $output);
+    }
+
+    public function testItemTemplate()
+    {
+        $output = Menu::widget([
+            'route' => 'test/test',
+            'params' => [],
+            'linkTemplate' => '',
+            'labelTemplate' => '',
+            'items' => [
+                [
+                    'label'  => 'item1',
+                    'url'    => '#',
+                    'template' => 'label: {label}; url: {url}'
+                ],
+                [
+                    'label'  => 'item2',
+                    'template' => 'label: {label}'
+                ],
+                [
+                    'label'  => 'item3 (no template)',
+                ],
+            ]
+        ]);
+
+        $expected = <<<HTML
+<ul><li>label: item1; url: #</li>
+<li>label: item2</li>
+<li></li></ul>
+HTML;
+
+        $this->assertEqualsWithoutLE($expected, $output);
     }
 
 

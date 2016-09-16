@@ -1,7 +1,7 @@
 Page Caching
 ============
 
-Page caching refers to caching the content of a whole page on the server side. Later when the same page
+Page caching refers to caching the content of a whole page on the server-side. Later when the same page
 is requested again, its content will be served from the cache instead of regenerating it from scratch.
 
 Page caching is supported by [[yii\filters\PageCache]], an [action filter](structure-filters.md).
@@ -27,8 +27,8 @@ public function behaviors()
 }
 ```
 
-The above code states that page caching should be used only for the `index` action; the page content should
-be cached for at most 60 seconds and should be variated by the current application language;
+The above code states that page caching should be used only for the `index` action. The page content should
+be cached for at most 60 seconds and should be variated by the current application language
 and the cached page should be invalidated if the total number of posts is changed.
 
 As you can see, page caching is very similar to [fragment caching](caching-fragment.md). They both support options such

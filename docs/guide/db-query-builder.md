@@ -166,7 +166,7 @@ the three formats to specify a `WHERE` condition:
 
 #### String Format <span id="string-format"></span>
 
-String format is best used to specify very simple conditions or if you need to use builtin functions of the DBMS.
+String format is best used to specify very simple conditions or if you need to use built-in functions of the DBMS.
 It works as if you are writing a raw SQL. For example,
 
 ```php
@@ -291,7 +291,7 @@ the operator can be one of the following:
   the `NOT LIKE` predicates.
 
 - `exists`: requires one operand which must be an instance of [[yii\db\Query]] representing the sub-query.
-  It will build a `EXISTS (sub-query)` expression.
+  It will build an `EXISTS (sub-query)` expression.
 
 - `not exists`: similar to the `exists` operator and builds a `NOT EXISTS (sub-query)` expression.
 
@@ -319,7 +319,7 @@ if (!empty($search)) {
 }
 ```
 
-If `$search` is not empty, the following WHERE condition will be generated:
+If `$search` is not empty, the following `WHERE` condition will be generated:
 
 ```sql
 WHERE (`status` = 10) AND (`title` LIKE '%yii%')
@@ -378,7 +378,7 @@ $query->orderBy([
 ]);
 ```
  
-In the above code, the array keys are column names while the array values are the corresponding order-by directions.
+In the above code, the array keys are column names while the array values are the corresponding order by directions.
 The PHP constant `SORT_ASC` specifies ascending sort and `SORT_DESC` descending sort.
 
 If `ORDER BY` only involves simple column names, you can specify it using a string, just like you do when writing 

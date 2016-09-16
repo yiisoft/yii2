@@ -30,9 +30,9 @@ class ActiveForm extends Widget
      */
     public $action = '';
     /**
-     * @var string the form submission method. This should be either 'post' or 'get'. Defaults to 'post'.
+     * @var string the form submission method. This should be either `post` or `get`. Defaults to `post`.
      *
-     * When you set this to 'get' you may see the url parameters repeated on each request.
+     * When you set this to `get` you may see the url parameters repeated on each request.
      * This is because the default value of [[action]] is set to be the current request url and each submit
      * will add new parameters instead of replacing existing ones.
      * You may set [[action]] explicitly to avoid this:
@@ -58,7 +58,7 @@ class ActiveForm extends Widget
     /**
      * @var array|\Closure the default configuration used by [[field()]] when creating a new field object.
      * This can be either a configuration array or an anonymous function returning a configuration array.
-     * If the latter, the signature should be as follows,
+     * If the latter, the signature should be as follows:
      *
      * ```php
      * function ($model, $attribute)
@@ -105,9 +105,9 @@ class ActiveForm extends Widget
      */
     public $enableAjaxValidation = false;
     /**
-     * @var boolean whether to hook up yii.activeForm JavaScript plugin.
-     * This property must be set true if you want to support client validation and/or AJAX validation, or if you
-     * want to take advantage of the yii.activeForm plugin. When this is false, the form will not generate
+     * @var boolean whether to hook up `yii.activeForm` JavaScript plugin.
+     * This property must be set `true` if you want to support client validation and/or AJAX validation, or if you
+     * want to take advantage of the `yii.activeForm` plugin. When this is `false`, the form will not generate
      * any JavaScript.
      */
     public $enableClientScript = true;
@@ -139,7 +139,7 @@ class ActiveForm extends Widget
     public $validateOnType = false;
     /**
      * @var integer number of milliseconds that the validation should be delayed when the user types in the field
-     * and [[validateOnType]] is set true.
+     * and [[validateOnType]] is set `true`.
      * If [[ActiveField::validationDelay]] is set, its value will take precedence for that input field.
      */
     public $validationDelay = 500;
@@ -184,8 +184,8 @@ class ActiveForm extends Widget
 
     /**
      * Runs the widget.
-     * This registers the necessary javascript code and renders the form close tag.
-     * @throws InvalidCallException if `beginField()` and `endField()` calls are not matching
+     * This registers the necessary JavaScript code and renders the form close tag.
+     * @throws InvalidCallException if `beginField()` and `endField()` calls are not matching.
      */
     public function run()
     {
@@ -211,7 +211,7 @@ class ActiveForm extends Widget
 
     /**
      * Returns the options for the form JS widget.
-     * @return array the options
+     * @return array the options.
      */
     protected function getClientOptions()
     {
@@ -247,15 +247,15 @@ class ActiveForm extends Widget
     /**
      * Generates a summary of the validation errors.
      * If there is no validation error, an empty error summary markup will still be generated, but it will be hidden.
-     * @param Model|Model[] $models the model(s) associated with this form
+     * @param Model|Model[] $models the model(s) associated with this form.
      * @param array $options the tag options in terms of name-value pairs. The following options are specially handled:
      *
-     * - header: string, the header HTML for the error summary. If not set, a default prompt string will be used.
-     * - footer: string, the footer HTML for the error summary.
+     * - `header`: string, the header HTML for the error summary. If not set, a default prompt string will be used.
+     * - `footer`: string, the footer HTML for the error summary.
      *
      * The rest of the options will be rendered as the attributes of the container tag. The values will
-     * be HTML-encoded using [[\yii\helpers\Html::encode()]]. If a value is null, the corresponding attribute will not be rendered.
-     * @return string the generated error summary
+     * be HTML-encoded using [[\yii\helpers\Html::encode()]]. If a value is `null`, the corresponding attribute will not be rendered.
+     * @return string the generated error summary.
      * @see errorSummaryCssClass
      */
     public function errorSummary($models, $options = [])
@@ -269,12 +269,12 @@ class ActiveForm extends Widget
      * Generates a form field.
      * A form field is associated with a model and an attribute. It contains a label, an input and an error message
      * and use them to interact with end users to collect their inputs for the attribute.
-     * @param Model $model the data model
+     * @param Model $model the data model.
      * @param string $attribute the attribute name or expression. See [[Html::getAttributeName()]] for the format
      * about attribute expression.
      * @param array $options the additional configurations for the field object. These are properties of [[ActiveField]]
      * or a subclass, depending on the value of [[fieldClass]].
-     * @return ActiveField the created ActiveField object
+     * @return ActiveField the created ActiveField object.
      * @see fieldConfig
      */
     public function field($model, $attribute, $options = [])
@@ -297,11 +297,11 @@ class ActiveForm extends Widget
      * Begins a form field.
      * This method will create a new form field and returns its opening tag.
      * You should call [[endField()]] afterwards.
-     * @param Model $model the data model
+     * @param Model $model the data model.
      * @param string $attribute the attribute name or expression. See [[Html::getAttributeName()]] for the format
      * about attribute expression.
-     * @param array $options the additional configurations for the field object
-     * @return string the opening tag
+     * @param array $options the additional configurations for the field object.
+     * @return string the opening tag.
      * @see endField()
      * @see field()
      */
@@ -315,7 +315,7 @@ class ActiveForm extends Widget
     /**
      * Ends a form field.
      * This method will return the closing tag of an active form field started by [[beginField()]].
-     * @return string the closing tag of the form field
+     * @return string the closing tag of the form field.
      * @throws InvalidCallException if this method is called without a prior [[beginField()]] call.
      */
     public function endField()
@@ -337,7 +337,7 @@ class ActiveForm extends Widget
      *
      * ```php
      * $model = new Post;
-     * $model->load($_POST);
+     * $model->load(Yii::$app->request->post());
      * if (Yii::$app->request->isAjax) {
      *     Yii::$app->response->format = Response::FORMAT_JSON;
      *     return ActiveForm::validate($model);
@@ -352,7 +352,7 @@ class ActiveForm extends Widget
      * ActiveForm::validate($model1, $model2, ...);
      * ```
      *
-     * @param Model $model the model to be validated
+     * @param Model $model the model to be validated.
      * @param mixed $attributes list of attributes that should be validated.
      * If this parameter is empty, it means any attribute listed in the applicable
      * validation rules should be validated.

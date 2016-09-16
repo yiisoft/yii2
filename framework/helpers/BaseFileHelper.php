@@ -357,32 +357,34 @@ class BaseFileHelper
      * @param string $dir the directory under which the files will be looked for.
      * @param array $options options for file searching. Valid options are:
      *
-     * - filter: callback, a PHP callback that is called for each directory or file.
+     * - `filter`: callback, a PHP callback that is called for each directory or file.
      *   The signature of the callback should be: `function ($path)`, where `$path` refers the full path to be filtered.
      *   The callback can return one of the following values:
      *
-     *   * true: the directory or file will be returned (the "only" and "except" options will be ignored)
-     *   * false: the directory or file will NOT be returned (the "only" and "except" options will be ignored)
-     *   * null: the "only" and "except" options will determine whether the directory or file should be returned
+     *   * `true`: the directory or file will be returned (the `only` and `except` options will be ignored)
+     *   * `false`: the directory or file will NOT be returned (the `only` and `except` options will be ignored)
+     *   * `null`: the `only` and `except` options will determine whether the directory or file should be returned
      *
-     * - except: array, list of patterns excluding from the results matching file or directory paths.
-     *   Patterns ending with '/' apply to directory paths only, and patterns not ending with '/'
+     * - `except`: array, list of patterns excluding from the results matching file or directory paths.
+     *   Patterns ending with slash ('/') apply to directory paths only, and patterns not ending with '/'
      *   apply to file paths only. For example, '/a/b' matches all file paths ending with '/a/b';
-     *   and '.svn/' matches directory paths ending with '.svn'.
-     *   If the pattern does not contain a slash /, it is treated as a shell glob pattern and checked for a match against the pathname relative to $dir.
-     *   Otherwise, the pattern is treated as a shell glob suitable for consumption by fnmatch(3) with the FNM_PATHNAME flag: wildcards in the pattern will not match a / in the pathname.
-     *   For example, "views/*.php" matches "views/index.php" but not "views/controller/index.php".
-     *   A leading slash matches the beginning of the pathname. For example, "/*.php" matches "index.php" but not "views/start/index.php".
-     *   An optional prefix "!" which negates the pattern; any matching file excluded by a previous pattern will become included again.
-     *   If a negated pattern matches, this will override lower precedence patterns sources. Put a backslash ("\") in front of the first "!"
-     *   for patterns that begin with a literal "!", for example, "\!important!.txt".
+     *   and `.svn/` matches directory paths ending with `.svn`.
+     *   If the pattern does not contain a slash (`/`), it is treated as a shell glob pattern
+     *   and checked for a match against the pathname relative to `$dir`.
+     *   Otherwise, the pattern is treated as a shell glob suitable for consumption by `fnmatch(3)`
+     *   `with the `FNM_PATHNAME` flag: wildcards in the pattern will not match a `/` in the pathname.
+     *   For example, `views/*.php` matches `views/index.php` but not `views/controller/index.php`.
+     *   A leading slash matches the beginning of the pathname. For example, `/*.php` matches `index.php` but not `views/start/index.php`.
+     *   An optional prefix `!` which negates the pattern; any matching file excluded by a previous pattern will become included again.
+     *   If a negated pattern matches, this will override lower precedence patterns sources. Put a backslash (`\`) in front of the first `!`
+     *   for patterns that begin with a literal `!`, for example, `\!important!.txt`.
      *   Note, the '/' characters in a pattern matches both '/' and '\' in the paths.
-     * - only: array, list of patterns that the file paths should match if they are to be returned. Directory paths are not checked against them.
-     *   Same pattern matching rules as in the "except" option are used.
-     *   If a file path matches a pattern in both "only" and "except", it will NOT be returned.
-     * - caseSensitive: boolean, whether patterns specified at "only" or "except" should be case sensitive. Defaults to true.
-     * - recursive: boolean, whether the files under the subdirectories should also be looked for. Defaults to true.
-     * @return array files found under the directory. The file list is sorted.
+     * - `only`: array, list of patterns that the file paths should match if they are to be returned. Directory paths
+     *   are not checked against them. Same pattern matching rules as in the `except` option are used.
+     *   If a file path matches a pattern in both `only` and `except`, it will NOT be returned.
+     * - `caseSensitive`: boolean, whether patterns specified at `only` or `except` should be case sensitive. Defaults to `true`.
+     * - `recursive`: boolean, whether the files under the subdirectories should also be looked for. Defaults to `true`.
+     * @return array files found under the directory, in no particular order. Ordering depends on the files system used.
      * @throws InvalidParamException if the dir is invalid.
      */
     public static function findFiles($dir, $options = [])
