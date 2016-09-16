@@ -35,7 +35,7 @@ echo Yii::$app->formatter->format('2014-01-01', 'date');
 echo Yii::$app->formatter->format(0.125, ['percent', 2]); 
 ```
 
-> Note: le composant de formatage est conçu pour formater des valeurs à présenter à l'utilisateur. Si vous voulez convertir des entrées utilisateur en un format lisible par la machine, ou simplement formater une date dans un format lisible par la machine, le formateur n'est pas l'outil adapté à cela. Pour convertir une entrée utilisateur pour une date et de temps, vous pouvez utiliser [[yii\validators\DateValidator]] et [[yii\validators\NumberValidator]] respectivement. Pour une simple conversion entre les formats lisibles par la machine de date et de temps, la fonction PHP [date()](http://php.net/manual/en/function.date.php) suffit.
+> Note: le composant de formatage est conçu pour formater des valeurs à présenter à l'utilisateur. Si vous voulez convertir des entrées utilisateur en un format lisible par la machine, ou simplement formater une date dans un format lisible par la machine, le formateur n'est pas l'outil adapté à cela. Pour convertir une entrée utilisateur pour une date et un temps, vous pouvez utiliser [[yii\validators\DateValidator]] et [[yii\validators\NumberValidator]] respectivement. Pour une simple conversion entre les formats lisibles par la machine de date et de temps, la fonction PHP [date()](http://php.net/manual/en/function.date.php) suffit.
 
 ## Configuration du formateur <span id="configuring-formatter"></span>
 
@@ -65,11 +65,11 @@ Le formateur prend en charge les formats de sortie suivants en relation avec les
 - [[yii\i18n\Formatter::asTime()|time]]: la valeur est formatée sous la forme d'un temps, p. ex. `14:23`.
 - [[yii\i18n\Formatter::asDatetime()|datetime]]: la valeur est formatée sous la forme d'une date et d'un temps, p. ex. `January 01, 2014 14:23`.
 - [[yii\i18n\Formatter::asTimestamp()|timestamp]]: la valeur est formatée sous la forme d'un [horodatage unix ](http://en.wikipedia.org/wiki/Unix_time), p. ex. `1412609982`.
-- [[yii\i18n\Formatter::asRelativeTime()|relativeTime]]: la valeur est formatée sous la forme d'une intervalle de temps entre un temps et le temps actuel dans une forme lisible par l'homme, p.ex. `1 hour ago`.
+- [[yii\i18n\Formatter::asRelativeTime()|relativeTime]]: la valeur est formatée sous la forme d'un intervalle de temps entre un temps et le temps actuel dans une forme lisible par l'homme, p.ex. `1 hour ago`.
 - [[yii\i18n\Formatter::asDuration()|duration]]: la valeur est formatée comme une durée dans un format lisible par l'homme, p. ex. `1 day, 2 minutes`.
 
 Les formats par défaut pour les dates et les temps utilisés pour les méthodes [[yii\i18n\Formatter::asDate()|date]], [[yii\i18n\Formatter::asTime()|time]],
-and [[yii\i18n\Formatter::asDatetime()|datetime]] peuvent être configurés globalement en configurant [[yii\i18n\Formatter::dateFormat|dateFormat]], [[yii\i18n\Formatter::timeFormat|timeFormat]], et [[yii\i18n\Formatter::datetimeFormat|datetimeFormat]].
+et [[yii\i18n\Formatter::asDatetime()|datetime]] peuvent être configurés globalement en configurant [[yii\i18n\Formatter::dateFormat|dateFormat]], [[yii\i18n\Formatter::timeFormat|timeFormat]], et [[yii\i18n\Formatter::datetimeFormat|datetimeFormat]].
 
 Vous pouvez spécifier les formats de date et de temps en utilisant la [syntaxe ICU](http://userguide.icu-project.org/formatparse/datetime). Vous pouvez aussi utiliser la [syntaxe date() de PHP](http://php.net/manual/en/function.date.php) avec le préfixe `php:` pour la différentier de la syntaxe ICU. Par exemple :
 
@@ -141,7 +141,7 @@ En plus des formats de date, temps et nombre, Yii prend aussi en charge les autr
 
 - [[yii\i18n\Formatter::asRaw()|raw]]: la valeur est affichée telle quelle, il s'agit d'un pseudo-formateur qui n'a pas d'effet, à l'exception des valeurs `null` qui sont affichées en utilisant la propriété [[nullDisplay]].
 - [[yii\i18n\Formatter::asText()|text]]: la valeur est encodée HTML. C'est le format par défaut utilisé par les [données des colonnes du widget GridView](output-data-widgets.md#data-column).
-- [[yii\i18n\Formatter::asNtext()|ntext]]: la valeur est formatée comme un texte simple encodé HTML avec conversion des retours à la ligne en balise break (<br/>).
+- [[yii\i18n\Formatter::asNtext()|ntext]]: la valeur est formatée comme un texte simple encodé HTML avec conversion des retours à la ligne en balise break.
 - [[yii\i18n\Formatter::asParagraphs()|paragraphs]]: la valeur est formatée comme un paragraphe de texte encodé HTML à l'intérieur d'une balise `<p>`.
 - [[yii\i18n\Formatter::asHtml()|html]]: la valeur est purifiée en utilisant [[HtmlPurifier]] pour éviter les attaques XSS. Vous pouvez passer les options additionnelles telles que `['html', ['Attr.AllowedFrameTargets' => ['_blank']]]`.
 - [[yii\i18n\Formatter::asEmail()|email]]: la valeur est encodé comme un lien `mailto`.
