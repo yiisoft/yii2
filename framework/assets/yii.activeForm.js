@@ -620,11 +620,9 @@
             } else {
                 data.validated = true;
                 if (data.submitObject) {
-                    applyButtonOptions($form, data.submitObject);
-                }
-                $form.submit();
-                if (data.submitObject) {
-                    restoreButtonOptions($form);
+                    data.submitObject.trigger("click");
+                } else {
+                    $form.submit();
                 }
             }
         } else {
