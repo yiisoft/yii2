@@ -453,7 +453,7 @@ class Migration extends Component implements MigrationInterface
      */
     public function dropIndex($name, $table)
     {
-        echo "    > drop index $name ...";
+        echo "    > drop index $name on $table ...";
         $time = microtime(true);
         $this->db->createCommand()->dropIndex($name, $table)->execute();
         echo ' done (time: ' . sprintf('%.3f', microtime(true) - $time) . "s)\n";
