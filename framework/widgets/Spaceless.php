@@ -32,7 +32,7 @@ use yii\base\Widget;
  *
  * ```html
  * <body>
- *     <div class="navbar"><!-- other tags --></div><div class="content"><!-- other tags --></div></body>
+ *     <div class="nav-bar"><!-- tags --></div><div class="content"><!-- tags --></div></body>
  * ```
  *
  * This method is not designed for content compression (you should use `gzip` output compression to
