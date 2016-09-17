@@ -432,6 +432,30 @@ EOF;
                 '1<link href="/en/blog/backend/assetSources/css/stub.css" rel="stylesheet">234',
                 '/en/blog/backend'
             ],
+
+            // UTF-8 chars
+            [
+                'css', '@web/assetSources/css/stub.css', false,
+                '1<link href="/рус/сайт/assetSources/css/stub.css" rel="stylesheet">234',
+                '/рус/сайт'
+            ],
+            [
+                'js', '@web/assetSources/js/jquery.js', false,
+                '123<script src="/汉语/漢語/assetSources/js/jquery.js"></script>4',
+                '/汉语/漢語'
+            ],
+
+            // Custom alias repeats in the asset URL
+            [
+                'css', '@web/assetSources/repeat/css/stub.css', false,
+                '1<link href="/repeat/assetSources/repeat/css/stub.css" rel="stylesheet">234',
+                '/repeat'
+            ],
+            [
+                'js', '@web/assetSources/repeat/js/jquery.js', false,
+                '123<script src="/repeat/assetSources/repeat/js/jquery.js"></script>4',
+                '/repeat'
+            ],
         ];
     }
 

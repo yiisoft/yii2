@@ -403,7 +403,7 @@ class View extends \yii\base\View
 
         $webAlias = Yii::getAlias('@web');
         if ($webAlias !== '' && strpos($url, $webAlias) === 0) {
-            $url = str_replace($webAlias, '', $url);
+            $url = substr($url, strlen($webAlias));
         }
 
         $url = strncmp($url, '//', 2) === 0 ? $url : ltrim($url, '/');
@@ -482,7 +482,7 @@ class View extends \yii\base\View
 
         $webAlias = Yii::getAlias('@web');
         if ($webAlias !== '' && strpos($url, $webAlias) === 0) {
-            $url = str_replace($webAlias, '', $url);
+            $url = substr($url, strlen($webAlias));
         }
 
         $url = strncmp($url, '//', 2) === 0 ? $url : ltrim($url, '/');
