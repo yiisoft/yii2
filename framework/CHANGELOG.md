@@ -65,7 +65,7 @@ Yii Framework 2 Change Log
 - Enh #12382: Changed `yii\widgets\MaskedInput` to use `jQuery` instead of `$` to prevent conflicts (samdark)
 - Bug #12446: Disable slaves when execute migrations to resolve master-slave replication no-sync (lichunqiang)
 - Bug #12423: Fixed migration tool problem of creating fields with brackets in comment (pana1990)
-- Bug #12537: Fixes issues with spaces in `StringHelper:truncatHtml` (Alex-Code)
+- Bug #12537: Fixes issues with spaces in `StringHelper:truncateHtml` (Alex-Code)
 
 2.0.9 July 11, 2016
 -------------------
