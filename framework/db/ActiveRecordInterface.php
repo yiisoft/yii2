@@ -185,6 +185,40 @@ interface ActiveRecordInterface
     public static function findOne($condition);
 
     /**
+     * Returns a first single active record model instance by a primary key or an array of column values.
+     *
+     * The method accepts:
+     *
+     *  - a scalar value (integer or string): query by a single primary key value and return the
+     *    corresponding record (or null if not found).
+     *  - a non-associative array: query by a list of primary key values and return the
+     *    first record (or null if not found).
+     *  - an associative array of name-value pairs: query by a set of attribute values and return a single record
+     *    matching all of them (or null if not found). Note that `['id' => 1, 2]` is treated as a non-associative array.
+     *
+     * That this method will automatically call the `first()` method and return an [[ActiveRecordInterface|ActiveRecord]]
+     * instance. For example,
+     *
+     * ```php
+     * // find a single customer whose primary key value is 10
+     * $customer = Customer::findFirst(10);
+     *
+     * // the above code is equivalent to:
+     * $customer = Customer::find()->where(['id' => 10])->first();
+     *
+     * // find the first customer whose age is 30 and whose status is 1
+     * $customer = Customer::findFirst(['age' => 30, 'status' => 1]);
+     *
+     * // the above code is equivalent to:
+     * $customer = Customer::find()->where(['age' => 30, 'status' => 1])->first();
+     * ```
+     *
+     * @param mixed $condition primary key value or a set of column values
+     * @return static|null ActiveRecord instance matching the condition, or null if nothing matches.
+     */
+    public static function findFirst($condition);
+
+    /**
      * Returns a list of active record models that match the specified primary key value(s) or a set of column values.
      *
      * The method accepts:

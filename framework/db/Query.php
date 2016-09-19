@@ -248,6 +248,19 @@ class Query extends Component implements QueryInterface
     }
 
     /**
+     * Executes the query and returns a first single row of result.
+     * @param Connection $db the database connection used to generate the SQL statement.
+     * If this parameter is not given, the `db` application component will be used.
+     * @return array|boolean the first row (in terms of an array) of the query result. False is returned if the query
+     * results in nothing.
+     */
+    public function first($db = null)
+    {
+        $query = clone $this;
+        return $query->limit(1)->one($db);
+    }
+
+    /**
      * Returns the query result as a scalar value.
      * The value returned will be the first column in the first row of the query results.
      * @param Connection $db the database connection used to generate the SQL statement.
