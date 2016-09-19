@@ -109,7 +109,7 @@ class BaseStringHelper
         }
         
         if (mb_strlen($string, $encoding ?: Yii::$app->charset) > $length) {
-            return trim(mb_substr($string, 0, $length, $encoding ?: Yii::$app->charset)) . $suffix;
+            return rtrim(mb_substr($string, 0, $length, $encoding ?: Yii::$app->charset)) . $suffix;
         } else {
             return $string;
         }
@@ -164,16 +164,14 @@ class BaseStringHelper
                 $truncated[] = $token;
             } elseif ($token instanceof \HTMLPurifier_Token_Text && $totalCount <= $count) { //Text
                 if (false === $encoding) {
-                    $token->data = self::truncateWords($token->data, $count - $totalCount, '');
+                    preg_match('/^(\s*)/um', $token->data, $prefixSpace) ?: $prefixSpace = ['',''];
+                    $token->data = $prefixSpace[1] . self::truncateWords(ltrim($token->data), $count - $totalCount, '');
                     $currentCount = self::countWords($token->data);
                 } else {
-                    $token->data = self::truncate($token->data, $count - $totalCount, '', $encoding) . ' ';
+                    $token->data = self::truncate($token->data, $count - $totalCount, '', $encoding);
                     $currentCount = mb_strlen($token->data, $encoding);
                 }
                 $totalCount += $currentCount;
-                if (1 === $currentCount) {
-                    $token->data = ' ' . $token->data;
-                }
                 $truncated[] = $token;
             } elseif ($token instanceof \HTMLPurifier_Token_End) { //Tag ends
                 $openTokens--;
