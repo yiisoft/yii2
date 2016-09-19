@@ -179,12 +179,15 @@ class Validator extends Component
 
     /**
      * Creates a validator object.
-     * @param mixed $type the validator type. This can be a built-in validator name,
-     * a method name of the model class, an anonymous function, or a validator class name.
+     * @param string|\Closure $type the validator type. This can be either:
+     *  * a built-in validator name listed in [[builtInValidators]];
+     *  * a method name of the model class;
+     *  * an anonymous function;
+     *  * a validator class name.
      * @param \yii\base\Model $model the data model to be validated.
      * @param array|string $attributes list of attributes to be validated. This can be either an array of
      * the attribute names or a string of comma-separated attribute names.
-     * @param array $params initial values to be applied to the validator properties
+     * @param array $params initial values to be applied to the validator properties.
      * @return Validator the validator
      */
     public static function createValidator($type, $model, $attributes, $params = [])
