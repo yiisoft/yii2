@@ -315,7 +315,7 @@ public function behaviors()
         'access' => [
             'class' => 'yii\filters\AccessControl',
             'rules' => [
-                ['allow' => `true`, 'actions' => ['admin'], 'roles' => ['@']],
+                ['allow' => true, 'actions' => ['admin'], 'roles' => ['@']],
             ],
         ],
     ];

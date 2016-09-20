@@ -496,7 +496,7 @@ class Module extends \yii\base\Module
         ];
     }
 
-    public static function t($category, $message, $params = [], $language = `null`)
+    public static function t($category, $message, $params = [], $language = null)
     {
         return Yii::t('modules/users/' . $category, $message, $params, $language);
     }
@@ -547,7 +547,7 @@ class Menu extends Widget
         echo $this->render('index');
     }
 
-    public static function t($category, $message, $params = [], $language = `null`)
+    public static function t($category, $message, $params = [], $language = null)
     {
         return Yii::t('widgets/menu/' . $category, $message, $params, $language);
     }

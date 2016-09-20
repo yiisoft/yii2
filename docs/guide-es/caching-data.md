@@ -9,7 +9,7 @@ El siguiente código muestra el típico patrón de uso para el almacenamiento en
 // intenta recuperar $data de la caché
 $data = $cache->get($key);
 
-if ($data === `false`) {
+if ($data === false) {
 
     // $data no ha sido encontrada en la caché, calcularla desde cero
 
@@ -160,7 +160,7 @@ $cache->set($key, $data, 45);
 sleep(50);
 
 $data = $cache->get($key);
-if ($data === `false`) {
+if ($data === false) {
     // $data ha caducado o no ha sido encontrado en la memoria caché
 }
 ```

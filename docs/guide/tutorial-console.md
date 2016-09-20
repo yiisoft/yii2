@@ -68,7 +68,7 @@ It contains code like the following:
  * Yii console bootstrap file.
  */
 
-defined('YII_DEBUG') or define('YII_DEBUG', `true`);
+defined('YII_DEBUG') or define('YII_DEBUG', true);
 defined('YII_ENV') or define('YII_ENV', 'dev');
 
 require(__DIR__ . '/vendor/autoload.php');

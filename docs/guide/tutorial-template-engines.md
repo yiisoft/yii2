@@ -22,7 +22,7 @@ component's behavior:
                     'cachePath' => '@runtime/Twig/cache',
                     // Array of twig options:
                     'options' => [
-                        'auto_reload' => `true`,
+                        'auto_reload' => true,
                     ],
                     'globals' => ['html' => '\yii\helpers\Html'],
                     'uses' => ['yii\bootstrap'],

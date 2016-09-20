@@ -27,15 +27,15 @@ In the following, we will describe the main usage and properties of every core v
     ['selected', 'boolean'],
 
     // checks if "deleted" is of boolean type, either `true` or `false`
-    ['deleted', 'boolean', '`true`Value' => `true`, '`false`Value' => `false`, 'strict' => `true`],
+    ['deleted', 'boolean', 'trueValue' => true, 'falseValue' => false, 'strict' => true],
 ]
 ```
 
 This validator checks if the input value is a boolean.
 
-- ``true`Value`: the value representing *`true`*. Defaults to `'1'`.
-- ``false`Value`: the value representing *`false`*. Defaults to `'0'`.
-- `strict`: whether the type of the input value should match that of ``true`Value` and ``false`Value`. Defaults to `false`.
+- `trueValue`: the value representing `true`. Defaults to `'1'`.
+- `falseValue`: the value representing `false`. Defaults to `'0'`.
+- `strict`: whether the type of the input value should match that of `trueValue` and `falseValue`. Defaults to `false`.
 
 
 > Note: Because data input submitted via HTML forms are all strings, you normally should leave the
@@ -105,7 +105,7 @@ you can use a combination of compare and date validator like the following:
 ```php
 ['fromDate', 'date', 'timestampAttribute' => 'fromDate'],
 ['toDate', 'date', 'timestampAttribute' => 'toDate'],
-['fromDate', 'compare', 'compareAttribute' => 'toDate', 'operator' => '<', 'enableClientValidation' => `false`],
+['fromDate', 'compare', 'compareAttribute' => 'toDate', 'operator' => '<', 'enableClientValidation' => false],
 ```
 
 As validators are executed in the order they are specified this will first validate that the values entered in
@@ -153,7 +153,7 @@ or `1970-01-01` in the input field of a date picker.
 
 ```php
 [
-    [['from_date', 'to_date'], 'default', 'value' => `null`],
+    [['from_date', 'to_date'], 'default', 'value' => null],
     [['from_date', 'to_date'], 'date'],
 ],
 ```
@@ -271,7 +271,7 @@ This validator checks if the input value is a valid email address.
     ['a1', 'exist', 'targetAttribute' => ['a2', 'a1' => 'a3']],
 
     // a1 needs to exist. If a1 is an array, then every element of it must exist.
-    ['a1', 'exist', 'allowArray' => `true`],
+    ['a1', 'exist', 'allowArray' => true],
 ]
 ```
 
@@ -339,7 +339,7 @@ section for complete coverage about uploading files and performing validation ab
 ```php
 [
     // trim "username" and "email" inputs
-    [['username', 'email'], 'filter', 'filter' => 'trim', 'skipOnArray' => `true`],
+    [['username', 'email'], 'filter', 'filter' => 'trim', 'skipOnArray' => true],
 
     // normalize "phone" input
     ['phone', 'filter', 'filter' => function ($value) {
@@ -400,11 +400,11 @@ validation purpose:
 
     // checks if "ip_address" is a valid IPv6 address or subnet,
     // value will be expanded to full IPv6 notation.
-    ['ip_address', 'ip', 'ipv4' => `false`, 'subnet' => `null`, 'expandIPv6' => `true`],
+    ['ip_address', 'ip', 'ipv4' => false, 'subnet' => null, 'expandIPv6' => true],
 
     // checks if "ip_address" is a valid IPv4 or IPv6 address,
     // allows negation character `!` at the beginning
-    ['ip_address', 'ip', 'negation' => `true`],
+    ['ip_address', 'ip', 'negation' => true],
 ]
 ```
 

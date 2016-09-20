@@ -277,7 +277,7 @@ $query->filterWhere([
 
 La seule différence entre [[yii\db\Query::filterWhere()|filterWhere()]] et [[yii\db\Query::where()|where()]] est que la première ignore les valeurs vides fournies dans la condition au [format haché](#hash-format). Ainsi si `$email` est vide alors que `$username` ne l'est pas, le code ci dessus produit la condition SQL `WHERE username=:username`.
 
-> Info: une valeur est considérée comme vide si elle est `null`e, un tableau vide, ou un chaîne de caractères vide, ou un chaîne de caractères constituée d'espaces uniquement.
+> Info: une valeur est considérée comme vide si elle est nulle, un tableau vide, ou un chaîne de caractères vide, ou un chaîne de caractères constituée d'espaces uniquement.
 
 Comme avec [[yii\db\Query::andWhere()|andWhere()]] et [[yii\db\Query::orWhere()|orWhere()]], vous pouvez utiliser [[yii\db\Query::andFilterWhere()|andFilterWhere()]] et [[yii\db\Query::orFilterWhere()|orFilterWhere()]] pour ajouter des conditions de filtrage supplémentaires à une condition existante.
 

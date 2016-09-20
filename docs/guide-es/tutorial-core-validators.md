@@ -32,8 +32,8 @@ A continuación, vamos a describir el uso principal y las propiedades de cada va
 
 Este validador comprueba si el valor de la entrada (input) es booleano.
 
-- ``true`Value`: El valor representando *`true`*. Valor por defecto a `'1'`.
-- ``false`Value`: El valor representando *`false`*. Valor por defecto a `'0'`.
+- `trueValue`: El valor representando `true`. Valor por defecto a `'1'`.
+- `falseValue`: El valor representando `false`. Valor por defecto a `'0'`.
 - `strict`: Si el tipo del valor de la entrada (input) debe corresponder con `trueValue` y `falseValue`. Valor por defecto a `false`.
 
 
