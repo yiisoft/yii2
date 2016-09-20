@@ -186,7 +186,7 @@ $query->where([
 ]);
 ```
 
-Comme vous pouvez le voir, le constructeur de requêtes est assez intelligent pour manipuler correctement les valeurs qui sont soit `null`es, soit des tableaux.
+Comme vous pouvez le voir, le constructeur de requêtes est assez intelligent pour manipuler correctement les valeurs qui sont soit nulles, soit des tableaux.
 
 Vous pouvez utiliser aussi des sous-requêtes avec le format haché comme suit :
 
