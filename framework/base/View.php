@@ -102,6 +102,12 @@ class View extends Component
      */
     private $_viewFiles = [];
 
+    /**
+     * @var string[] Runtime cache of found view files.
+     * This reduce count of calls to disk and manipulations with strings when calculation the result path.
+     * Caching increase speed when findViewFile() calls many times.
+     */
+    private $_foundViewFiles = [];
 
     /**
      * Initializes the view component.
@@ -162,6 +168,11 @@ class View extends Component
      */
     protected function findViewFile($view, $context = null)
     {
+        $cacheKey = get_class($context) . '@' . $view;
+        if (isset($this->_foundViewFiles[$cacheKey])) {
+            return $this->_foundViewFiles[$cacheKey];
+        }
+
         if (strncmp($view, '@', 1) === 0) {
             // e.g. "@app/views/main"
             $file = Yii::getAlias($view);
@@ -190,6 +201,8 @@ class View extends Component
         if ($this->defaultExtension !== 'php' && !is_file($path)) {
             $path = $file . '.php';
         }
+
+        $this->_foundViewFiles[$cacheKey] = $path;
 
         return $path;
     }
