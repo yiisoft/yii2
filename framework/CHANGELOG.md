@@ -41,7 +41,7 @@ Yii Framework 2 Change Log
 - Bug #12331: Fixed bug with incorrect currency formatter output, when `$thousandSeparator` was explicitly set (cebe)
 - Bug #11347: Fixed `yii\widgets\Pjax::registerClientScript()` to pass custom `container` to the PJAX JS plugin (silverfire)
 - Bug #12293: Fixed MSSQL `Schema::resolveTableNames()` when using linked database tables (hAppywAy)
-
+- Enh #12376: `yii.activeForm.js` - added force form validation in `validate()` (DrDeath72)
 
 2.0.9 July 11, 2016
 -------------------
