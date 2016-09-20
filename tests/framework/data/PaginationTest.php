@@ -5,6 +5,9 @@ namespace yiiunit\framework\data;
 use yii\data\Pagination;
 use yiiunit\TestCase;
 
+/**
+ * @group data
+ */
 class PaginationTest extends TestCase
 {
     protected function setUp()
@@ -30,11 +33,25 @@ class PaginationTest extends TestCase
                 2,
                 null,
                 '/index.php?r=item%2Flist&page=3',
+                null,
             ],
             [
                 2,
                 5,
                 '/index.php?r=item%2Flist&page=3&per-page=5',
+                null,
+            ],
+            [
+                2,
+                null,
+                '/index.php?r=item%2Flist&q=test&page=3',
+                ['q' => 'test'],
+            ],
+            [
+                2,
+                5,
+                '/index.php?r=item%2Flist&q=test&page=3&per-page=5',
+                ['q' => 'test'],
             ],
         ];
     }
@@ -46,10 +63,11 @@ class PaginationTest extends TestCase
      * @param integer $pageSize
      * @param string $expectedUrl
      */
-    public function testCreateUrl($page, $pageSize, $expectedUrl)
+    public function testCreateUrl($page, $pageSize, $expectedUrl, $params)
     {
         $pagination = new Pagination();
         $pagination->route = 'item/list';
+        $pagination->params = $params;
         $this->assertEquals($expectedUrl, $pagination->createUrl($page, $pageSize));
     }
 
