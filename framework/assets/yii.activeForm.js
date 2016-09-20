@@ -282,7 +282,11 @@
         },
 
         // validate all applicable inputs in the form
-        validate: function () {
+        validate: function (forceValidate) {
+            if (forceValidate) {
+                $(this).data('yiiActiveForm').submitting = true;    
+            }
+            
             var $form = $(this),
                 data = $form.data('yiiActiveForm'),
                 needAjaxValidation = false,
