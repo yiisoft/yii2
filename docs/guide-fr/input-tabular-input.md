@@ -49,7 +49,7 @@ class SettingsController extends Controller
 }
 ```
 
-Dans le code ci-dessus, nous utilisons [[yii\db\ActiveQuery::indexBy()|indexBy()]] lors de la retrouvaille de modèles depuis la base de données pour remplir un tableau indexé par les clés primaires des modèles. Celles-ci seront utilisées plus tard pour identifier les champs de formulaires. [[yii\base\Model::loadMultiple()|Model::loadMultiple()]] remplit de multiples modèles avec les données du formulaire issues de la méthode `POST` et [[yii\base\Model::validateMultiple()|Model::validateMultiple()]] valide tous les modèles en une seule fois. Comme nous avons validé auparavant, nous passons maintenant `false` en paramètre à [[yii\db\ActiveRecord::save()|save()]] pour ne pas exécuter la validation deux fois. 
+Dans le code ci-dessus, nous utilisons [[yii\db\ActiveQuery::indexBy()|indexBy()]] lors de l'extraction de modèles depuis la base de données pour remplir un tableau indexé par les clés primaires des modèles. Celles-ci seront utilisées plus tard pour identifier les champs de formulaires. [[yii\base\Model::loadMultiple()|Model::loadMultiple()]] remplit de multiples modèles avec les données du formulaire issues de la méthode `POST` et [[yii\base\Model::validateMultiple()|Model::validateMultiple()]] valide tous les modèles en une seule fois. Comme nous avons validé auparavant, nous passons maintenant `false` en paramètre à [[yii\db\ActiveRecord::save()|save()]] pour ne pas exécuter la validation deux fois. 
 
 Maintenant, voyons le formulaire qui se trouve dans la vue `update` (mise à jour) :
 
