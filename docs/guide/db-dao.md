@@ -588,7 +588,7 @@ $rows = Yii::$app->db->useMaster(function ($db) {
 });
 ```
 
-You may also directly set `Yii::$app->db->enableSlaves` to be false to direct all queries to the master connection.
+You may also directly set `Yii::$app->db->enableSlaves` to be `false` to direct all queries to the master connection.
 
 
 ## Working with Database Schema <span id="database-schema"></span>

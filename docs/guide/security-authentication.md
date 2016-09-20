@@ -155,10 +155,10 @@ or `null` if the current user is not authenticated (meaning a guest). The follow
 other authentication-related information from [[yii\web\User]]:
 
 ```php
-// the current user identity. Null if the user is not authenticated.
+// the current user identity. `null` if the user is not authenticated.
 $identity = Yii::$app->user->identity;
 
-// the ID of the current user. Null if the user not authenticated.
+// the ID of the current user. `null` if the user not authenticated.
 $id = Yii::$app->user->id;
 
 // whether the current user is a guest (not authenticated)

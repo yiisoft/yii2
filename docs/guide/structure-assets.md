@@ -441,7 +441,7 @@ You may customize this location by configuring the [[yii\web\AssetManager::baseP
 [[yii\web\AssetManager::baseUrl|baseUrl]] properties.
 
 Instead of publishing assets by file copying, you may consider using symbolic links, if your OS and Web server allow.
-This feature can be enabled by setting [[yii\web\AssetManager::linkAssets|linkAssets]] to be true.
+This feature can be enabled by setting [[yii\web\AssetManager::linkAssets|linkAssets]] to be `true`.
 
 ```php
 return [

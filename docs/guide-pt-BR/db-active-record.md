@@ -617,7 +617,7 @@ $orders = $customer->orders;
 
 > Observação: quando você declara uma relação chamada `xyz` através de um método getter `getXyz()`, você terá acesso a `xyz` como uma [propriedade de objeto](concept-properties.md). Note que o nome é case-sensitive.
  
-Se a relação for declarada com [[yii\db\ActiveRecord::hasMany()|hasMany()]], acessar esta propriedade irá retornar um array de instâncias de Active Record relacionais; Se a relação for declarada com [[yii\db\ActiveRecord::hasOne()|hasOne()]], acessar esta propriedade irá retornar a instância de Active Record relacional ou null se não encontrar dados relacionais.
+Se a relação for declarada com [[yii\db\ActiveRecord::hasMany()|hasMany()]], acessar esta propriedade irá retornar um array de instâncias de Active Record relacionais; Se a relação for declarada com [[yii\db\ActiveRecord::hasOne()|hasOne()]], acessar esta propriedade irá retornar a instância de Active Record relacional ou `null` se não encontrar dados relacionais.
 
 Quando você acessa uma propriedade de relação pela primeira vez, uma instrução SQL será executada, como mostrado no exemplo acima. Se a mesma propriedade for acessada novamente, o resultado anterior será devolvido sem executar novamente a instrução SQL. Para forçar a execução da instrução SQL, você deve primeiramente remover a configuração da propriedade de relação: `unset($customer->orders)`.
 
@@ -1002,9 +1002,9 @@ $customer->unlink('orders', $customer->orders[0]);
 ```
 
 
-Por padrão, o método [[yii\db\ActiveRecord::unlink()|unlink()]]  irá definir o(s) valor(es) da(s) chave(s) estrangeira(s)  que especificam a relação existente para null. Você pode, entretanto, optar por excluir a linha da tabela que contém a chave estrangeira passando o parâmetro `$delete` como true para o método.
+Por padrão, o método [[yii\db\ActiveRecord::unlink()|unlink()]]  irá definir o(s) valor(es) da(s) chave(s) estrangeira(s)  que especificam a relação existente para `null`. Você pode, entretanto, optar por excluir a linha da tabela que contém a chave estrangeira passando o parâmetro `$delete` como `true` para o método.
 
-Quando uma tabela de junção está envolvida numa relação, chamar o método [[yii\db\ActiveRecord::unlink()|unlink()]] fará com que as chaves estrangeiras na tabela de junção sejam apagadas, ou a deleção da linha correspondente na tabela de junção se `$delete` for true.
+Quando uma tabela de junção está envolvida numa relação, chamar o método [[yii\db\ActiveRecord::unlink()|unlink()]] fará com que as chaves estrangeiras na tabela de junção sejam apagadas, ou a deleção da linha correspondente na tabela de junção se `$delete` for `true`.
 
 
 ## Relações Entre Banco de Dados Diferentes <span id="cross-database-relations"></span> 

@@ -314,8 +314,8 @@ Existem várias maneiras de customizar o comando de migração.
 
 O comando de migração vem com algumas opções de linha de comando que podem ser usadas para customizar o seu comportamento:
 
-* `interactive`: boolean (o padrão é true), especifica se as migrações serão executadas em modo interativo.
-  Quando for true, ao usuário será perguntado se a execução deve continuar antes de o comando executar certas ações. 
+* `interactive`: boolean (o padrão é `true`), especifica se as migrações serão executadas em modo interativo.
+  Quando for `true`, ao usuário será perguntado se a execução deve continuar antes de o comando executar certas ações. 
   Você provavelmente marcará isto para falso se o comando estiver sendo feito em algum processo em segundo plano.
 
 * `migrationPath`: string (o padrão é `@app/migrations`), especifica o diretório em que os arquivos das classes de migração estão. Isto pode ser especificado ou como um diretório ou como um [alias](concept-aliases.md).

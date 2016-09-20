@@ -272,7 +272,7 @@ $query->filterWhere([
 
 A única diferença entre  [[yii\db\Query::filterWhere()|filterWhere()]] e [[yii\db\Query::where()|where()]] é que o primeiro irá ignorar valores vazios fornecidos na condição no [formato hash](#hash-format). Então se `$email` for vazio e `$username` não, o código acima resultará um SQL como: `...WHERE username=:username`.
 
-> Observação: Um valor é considerado vazio se ele for null, um array vazio, uma string vazia ou uma string que consiste em apenas espaços em branco. Assim como [[yii\db\Query::andWhere()|andWhere()]] e [[yii\db\Query::orWhere()|orWhere()]], você pode usar [[yii\db\Query::andFilterWhere()|andFilterWhere()]] e [[yii\db\Query::orFilterWhere()|orFilterWhere()]] para inserir condições de filtro adicionais.
+> Observação: Um valor é considerado vazio se ele for `null`, um array vazio, uma string vazia ou uma string que consiste em apenas espaços em branco. Assim como [[yii\db\Query::andWhere()|andWhere()]] e [[yii\db\Query::orWhere()|orWhere()]], você pode usar [[yii\db\Query::andFilterWhere()|andFilterWhere()]] e [[yii\db\Query::orFilterWhere()|orFilterWhere()]] para inserir condições de filtro adicionais.
 
 
 ### [[yii\db\Query::orderBy()|orderBy()]] <span id="order-by"></span>

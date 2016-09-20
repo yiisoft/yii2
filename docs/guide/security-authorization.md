@@ -178,7 +178,7 @@ During access checking, if the user is NOT the post creator, he/she will be cons
 
 Both roles and permissions can be organized in a hierarchy. In particular, a role may consist of other roles or permissions;
 and a permission may consist of other permissions. Yii implements a *partial order* hierarchy which includes the
-more special *tree* hierarchy. While a role can contain a permission, it is not true vice versa.
+more special *tree* hierarchy. While a role can contain a permission, it is not `true` vice versa.
 
 
 ### Configuring RBAC <span id="configuring-rbac"></span>
@@ -547,7 +547,7 @@ $auth->addChild($admin, $author);
 
 Note that in the above, because "author" is added as a child of "admin", when you implement the `execute()` method
 of the rule class, you need to respect this hierarchy as well. That is why when the role name is "author",
-the `execute()` method will return true if the user group is either 1 or 2 (meaning the user is in either "admin"
+the `execute()` method will return `true` if the user group is either 1 or 2 (meaning the user is in either "admin"
 group or "author" group).
 
 Next, configure `authManager` by listing the two roles in [[yii\rbac\BaseManager::$defaultRoles]]:
@@ -566,6 +566,6 @@ return [
 ```
 
 Now if you perform an access check, both of the `admin` and `author` roles will be checked by evaluating
-the rules associated with them. If the rule returns true, it means the role applies to the current user.
+the rules associated with them. If the rule returns `true`, it means the role applies to the current user.
 Based on the above rule implementation, this means if the `group` value of a user is 1, the `admin` role
 would apply to the user; and if the `group` value is 2, the `author` role would apply.

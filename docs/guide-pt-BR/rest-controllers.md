@@ -112,7 +112,7 @@ Ao disponibilizar recursos por meio de APIs RESTful, muitas vezes você precisa 
 * se o usuário não tiver acesso, uma [[ForbiddenHttpException]] deve ser lançada.
 *
 * @param string $action o ID da ação a ser executada
-* @param \yii\base\Model $model o model a ser acessado. Se null, isso significa que nenhum model específico está sendo acessado.
+* @param \yii\base\Model $model o model a ser acessado. Se `null`, isso significa que nenhum model específico está sendo acessado.
 * @param array $params parâmetros adicionais
 * @throws ForbiddenHttpException se o usuário não tiver acesso
 */

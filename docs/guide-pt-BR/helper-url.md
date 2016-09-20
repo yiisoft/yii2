@@ -90,7 +90,7 @@ O primeiro argumento pode ser:
 - uma string vazia: A URL da requisição corrente será retornado;
 - uma string normal: será devolvida como ele foi passada (como ela é).
 
-Quando `$scheme` é espefificado (como uma string ou true),uma URL absoluta com informações do host (obtida de
+Quando `$scheme` é espefificado (como uma string ou `true`),uma URL absoluta com informações do host (obtida de
 [[\yii\web\UrlManager::hostInfo]]) será retornada. Se `$url` já é uma URL absoluta, seu scheme
 irá ser substituído pelo o especificado.
 

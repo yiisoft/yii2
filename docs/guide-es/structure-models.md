@@ -234,7 +234,7 @@ para ayudar al usuario a corregir estos errores.
 
 Se puede llamar a [[yii\base\Model::validate()]] para validar los datos recibidos. El método se usará para validar las 
 reglas declaradas en [[yii\base\Model::rules()]] para validar cada atributo relevante. Si no se encuentran errores, se 
-devolverá true. De otro modo, este almacenará los errores en la propiedad [[yii\base\Model::errors]] y devolverá falso.
+devolverá `true`. De otro modo, este almacenará los errores en la propiedad [[yii\base\Model::errors]] y devolverá falso.
  Por ejemplo:
 
 ```php
