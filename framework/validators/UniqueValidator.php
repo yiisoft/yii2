@@ -157,7 +157,7 @@ class UniqueValidator extends Validator
                     $exists = $model->getOldPrimaryKey() != $model->getPrimaryKey();
                 } else {
                     // non-primary key, need to exclude the current record based on PK
-                    $exists = $models[0]->getPrimaryKey() != $model->getOldPrimaryKey();
+                    $exists = reset($models)->getPrimaryKey() != $model->getOldPrimaryKey();
                 }
             } else {
                 $exists = $n > 1;
