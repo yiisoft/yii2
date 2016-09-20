@@ -283,7 +283,7 @@
 
         // validate all applicable inputs in the form
         validate: function (forceValidate) {
-            if(forceValidate) {
+            if (forceValidate) {
                 $(this).data('yiiActiveForm').submitting = true;    
             }
             
