@@ -163,7 +163,7 @@ or `1970-01-01` in the input field of a date picker.
 ```php
 [
     // set "age" to be `null` if it is empty
-    ['age', 'default', 'value' => `null`],
+    ['age', 'default', 'value' => null],
 
     // set "country" to be "USA" if it is empty
     ['country', 'default', 'value' => 'USA'],
